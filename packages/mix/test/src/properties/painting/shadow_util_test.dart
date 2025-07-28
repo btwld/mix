@@ -10,7 +10,7 @@ void main() {
       final utility = ShadowUtility(UtilityTestAttribute.new);
 
       test('call() creates ShadowMix', () {
-        final shadowMix = ShadowMix.only(
+        final shadowMix = ShadowMix(
           color: Colors.black,
           blurRadius: 5.0,
           offset: const Offset(2, 2),
@@ -67,7 +67,7 @@ void main() {
       final utility = BoxShadowUtility(UtilityTestAttribute.new);
 
       test('call() creates BoxShadowMix', () {
-        final boxShadowMix = BoxShadowMix.only(
+        final boxShadowMix = BoxShadowMix(
           color: Colors.black,
           blurRadius: 5.0,
           spreadRadius: 2.0,

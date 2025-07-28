@@ -47,7 +47,7 @@ void main() {
           duration: const Duration(milliseconds: 300),
           curve: Curves.linear,
         );
-        final boxAttribute = BoxSpecAttribute.only(
+        final boxAttribute = BoxSpecAttribute(
           constraints: BoxConstraintsMix().width(100).height(200),
           decoration: BoxDecorationMix.color(Colors.blue),
           animation: animation,
@@ -108,14 +108,14 @@ void main() {
           curve: Curves.linear,
         );
 
-        final startAttribute = BoxSpecAttribute.only(
-          constraints: BoxConstraintsMix.only(
+        final startAttribute = BoxSpecAttribute(
+          constraints: BoxConstraintsMix(
             minWidth: 100,
             maxWidth: 100,
             minHeight: 100,
             maxHeight: 100,
           ),
-          decoration: BoxDecorationMix.only(color: Colors.blue),
+          decoration: BoxDecorationMix(color: Colors.blue),
           animation: animation,
         );
 
@@ -135,14 +135,14 @@ void main() {
         );
 
         // Update to new style
-        final endAttribute = BoxSpecAttribute.only(
-          constraints: BoxConstraintsMix.only(
+        final endAttribute = BoxSpecAttribute(
+          constraints: BoxConstraintsMix(
             minWidth: 200,
             maxWidth: 200,
             minHeight: 200,
             maxHeight: 200,
           ),
-          decoration: BoxDecorationMix.only(color: Colors.red),
+          decoration: BoxDecorationMix(color: Colors.red),
           animation: animation,
         );
 
@@ -193,8 +193,8 @@ void main() {
             .height(100)
             .alignment(Alignment.center)
             .modifiers([
-              OpacityModifierAttribute.only(opacity: 0.5),
-              PaddingModifierAttribute.only(padding: EdgeInsetsMix.all(10)),
+              OpacityModifierAttribute(opacity: 0.5),
+              PaddingModifierAttribute(padding: EdgeInsetsMix.all(10)),
               ClipOvalModifierAttribute(),
             ]);
 
@@ -238,10 +238,10 @@ void main() {
         final boxAttribute = BoxSpecAttribute.width(100)
             .height(100)
             .color(Colors.blue)
-            .wrap(OpacityModifierAttribute.only(opacity: 0.5))
-            .wrap(PaddingModifierAttribute.only(padding: EdgeInsetsMix.all(10)))
+            .wrap(OpacityModifierAttribute(opacity: 0.5))
+            .wrap(PaddingModifierAttribute(padding: EdgeInsetsMix.all(10)))
             .wrap(ClipOvalModifierAttribute())
-            .wrap(VisibilityModifierAttribute.only(visible: true));
+            .wrap(VisibilityModifierAttribute(visible: true));
 
         await tester.pumpWidget(
           MaterialApp(
@@ -301,8 +301,8 @@ void main() {
         final boxAttribute = BoxSpecAttribute.width(100)
             .height(100)
             .color(Colors.blue)
-            .wrap(OpacityModifierAttribute.only(opacity: 0.5))
-            .wrap(PaddingModifierAttribute.only(padding: EdgeInsetsMix.all(10)))
+            .wrap(OpacityModifierAttribute(opacity: 0.5))
+            .wrap(PaddingModifierAttribute(padding: EdgeInsetsMix.all(10)))
             .wrap(ClipOvalModifierAttribute());
 
         const customOrder = [

@@ -1,4 +1,3 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -65,7 +64,7 @@ final class AlignModifierUtility<T extends StyleAttribute<Object?>>
     double? heightFactor,
   }) {
     return builder(
-      AlignModifierAttribute.only(
+      AlignModifierAttribute(
         alignment: alignment,
         widthFactor: widthFactor,
         heightFactor: heightFactor,
@@ -79,17 +78,17 @@ class AlignModifierAttribute extends ModifierAttribute<AlignModifier> {
   final Prop<double>? widthFactor;
   final Prop<double>? heightFactor;
 
-  const AlignModifierAttribute({
+  const AlignModifierAttribute.raw({
     this.alignment,
     this.widthFactor,
     this.heightFactor,
   });
 
-  AlignModifierAttribute.only({
+  AlignModifierAttribute({
     AlignmentGeometry? alignment,
     double? widthFactor,
     double? heightFactor,
-  }) : this(
+  }) : this.raw(
          alignment: Prop.maybe(alignment),
          widthFactor: Prop.maybe(widthFactor),
          heightFactor: Prop.maybe(heightFactor),
@@ -108,7 +107,7 @@ class AlignModifierAttribute extends ModifierAttribute<AlignModifier> {
   AlignModifierAttribute merge(AlignModifierAttribute? other) {
     if (other == null) return this;
 
-    return AlignModifierAttribute(
+    return AlignModifierAttribute.raw(
       alignment: MixHelpers.merge(alignment, other.alignment),
       widthFactor: MixHelpers.merge(widthFactor, other.widthFactor),
       heightFactor: MixHelpers.merge(heightFactor, other.heightFactor),

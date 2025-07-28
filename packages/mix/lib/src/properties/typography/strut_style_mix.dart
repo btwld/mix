@@ -22,7 +22,7 @@ class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
   final Prop<double>? $leading;
   final Prop<bool>? $forceStrutHeight;
 
-  StrutStyleMix.only({
+  StrutStyleMix({
     String? fontFamily,
     List<String>? fontFamilyFallback,
     double? fontSize,
@@ -31,7 +31,7 @@ class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
     double? height,
     double? leading,
     bool? forceStrutHeight,
-  }) : this(
+  }) : this.raw(
          fontFamily: Prop.maybe(fontFamily),
          fontFamilyFallback: fontFamilyFallback?.map(Prop.new).toList(),
          fontSize: Prop.maybe(fontSize),
@@ -42,7 +42,7 @@ class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
          forceStrutHeight: Prop.maybe(forceStrutHeight),
        );
 
-  const StrutStyleMix({
+  const StrutStyleMix.raw({
     Prop<String>? fontFamily,
     List<Prop<String>>? fontFamilyFallback,
     Prop<double>? fontSize,
@@ -62,7 +62,7 @@ class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
 
   /// Creates a [StrutStyleMix] from an existing [StrutStyle].
   StrutStyleMix.value(StrutStyle strutStyle)
-    : this.only(
+    : this(
         fontFamily: strutStyle.fontFamily,
         fontFamilyFallback: strutStyle.fontFamilyFallback,
         fontSize: strutStyle.fontSize,
@@ -75,42 +75,42 @@ class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
 
   /// Creates a strut style with the specified font family.
   factory StrutStyleMix.fontFamily(String value) {
-    return StrutStyleMix.only(fontFamily: value);
+    return StrutStyleMix(fontFamily: value);
   }
 
   /// Creates a strut style with the specified font family fallback list.
   factory StrutStyleMix.fontFamilyFallback(List<String> value) {
-    return StrutStyleMix.only(fontFamilyFallback: value);
+    return StrutStyleMix(fontFamilyFallback: value);
   }
 
   /// Creates a strut style with the specified font size.
   factory StrutStyleMix.fontSize(double value) {
-    return StrutStyleMix.only(fontSize: value);
+    return StrutStyleMix(fontSize: value);
   }
 
   /// Creates a strut style with the specified font weight.
   factory StrutStyleMix.fontWeight(FontWeight value) {
-    return StrutStyleMix.only(fontWeight: value);
+    return StrutStyleMix(fontWeight: value);
   }
 
   /// Creates a strut style with the specified font style.
   factory StrutStyleMix.fontStyle(FontStyle value) {
-    return StrutStyleMix.only(fontStyle: value);
+    return StrutStyleMix(fontStyle: value);
   }
 
   /// Creates a strut style with the specified line height.
   factory StrutStyleMix.height(double value) {
-    return StrutStyleMix.only(height: value);
+    return StrutStyleMix(height: value);
   }
 
   /// Creates a strut style with the specified leading space.
   factory StrutStyleMix.leading(double value) {
-    return StrutStyleMix.only(leading: value);
+    return StrutStyleMix(leading: value);
   }
 
   /// Creates a strut style with forced strut height enabled or disabled.
   factory StrutStyleMix.forceStrutHeight(bool value) {
-    return StrutStyleMix.only(forceStrutHeight: value);
+    return StrutStyleMix(forceStrutHeight: value);
   }
 
   /// Creates a [StrutStyleMix] from a nullable [StrutStyle].
@@ -122,42 +122,42 @@ class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
 
   /// Returns a copy with the specified font family.
   StrutStyleMix fontFamily(String value) {
-    return merge(StrutStyleMix.only(fontFamily: value));
+    return merge(StrutStyleMix(fontFamily: value));
   }
 
   /// Returns a copy with the specified font family fallback list.
   StrutStyleMix fontFamilyFallback(List<String> value) {
-    return merge(StrutStyleMix.only(fontFamilyFallback: value));
+    return merge(StrutStyleMix(fontFamilyFallback: value));
   }
 
   /// Returns a copy with the specified font size.
   StrutStyleMix fontSize(double value) {
-    return merge(StrutStyleMix.only(fontSize: value));
+    return merge(StrutStyleMix(fontSize: value));
   }
 
   /// Returns a copy with the specified font weight.
   StrutStyleMix fontWeight(FontWeight value) {
-    return merge(StrutStyleMix.only(fontWeight: value));
+    return merge(StrutStyleMix(fontWeight: value));
   }
 
   /// Returns a copy with the specified font style.
   StrutStyleMix fontStyle(FontStyle value) {
-    return merge(StrutStyleMix.only(fontStyle: value));
+    return merge(StrutStyleMix(fontStyle: value));
   }
 
   /// Returns a copy with the specified line height.
   StrutStyleMix height(double value) {
-    return merge(StrutStyleMix.only(height: value));
+    return merge(StrutStyleMix(height: value));
   }
 
   /// Returns a copy with the specified leading space.
   StrutStyleMix leading(double value) {
-    return merge(StrutStyleMix.only(leading: value));
+    return merge(StrutStyleMix(leading: value));
   }
 
   /// Returns a copy with forced strut height enabled or disabled.
   StrutStyleMix forceStrutHeight(bool value) {
-    return merge(StrutStyleMix.only(forceStrutHeight: value));
+    return merge(StrutStyleMix(forceStrutHeight: value));
   }
 
   @override
@@ -178,7 +178,7 @@ class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
   StrutStyleMix merge(StrutStyleMix? other) {
     if (other == null) return this;
 
-    return StrutStyleMix(
+    return StrutStyleMix.raw(
       fontFamily: MixHelpers.merge($fontFamily, other.$fontFamily),
       fontFamilyFallback: MixHelpers.mergeList(
         $fontFamilyFallback,

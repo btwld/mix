@@ -37,7 +37,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
   // Lists of Mix types
   final List<MixProp<Shadow>>? shadows;
 
-  TextStyleMix.only({
+  TextStyleMix({
     Color? color,
     Color? backgroundColor,
     double? fontSize,
@@ -59,7 +59,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
     double? decorationThickness,
     String? fontFamily,
     List<String>? fontFamilyFallback,
-  }) : this(
+  }) : this.raw(
          color: Prop.maybe(color),
          backgroundColor: Prop.maybe(backgroundColor),
          fontSize: Prop.maybe(fontSize),
@@ -83,7 +83,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
          fontFamilyFallback: fontFamilyFallback?.map(Prop.new).toList(),
        );
 
-  const TextStyleMix({
+  const TextStyleMix.raw({
     this.color,
     this.backgroundColor,
     this.fontSize,
@@ -109,7 +109,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
 
   /// Creates a [TextStyleMix] from an existing [TextStyle].
   TextStyleMix.value(TextStyle textStyle)
-    : this.only(
+    : this(
         color: textStyle.color,
         backgroundColor: textStyle.backgroundColor,
         fontSize: textStyle.fontSize,
@@ -177,7 +177,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
   TextStyleMix merge(TextStyleMix? other) {
     if (other == null) return this;
 
-    return TextStyleMix(
+    return TextStyleMix.raw(
       color: MixHelpers.merge(color, other.color),
       backgroundColor: MixHelpers.merge(backgroundColor, other.backgroundColor),
       fontSize: MixHelpers.merge(fontSize, other.fontSize),

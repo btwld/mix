@@ -11,79 +11,78 @@ import 'text_style_mix.dart';
 
 final class TextStyleUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, TextStyle> {
-  late final color = ColorUtility<T>((prop) => call(TextStyleMix(color: prop)));
+  late final color = ColorUtility<T>(
+    (prop) => call(TextStyleMix.raw(color: prop)),
+  );
 
   late final fontWeight = PropUtility<T, FontWeight>(
-    (prop) => call(TextStyleMix(fontWeight: prop)),
+    (prop) => call(TextStyleMix.raw(fontWeight: prop)),
   );
 
   late final fontStyle = PropUtility<T, FontStyle>(
-    (prop) => call(TextStyleMix(fontStyle: prop)),
+    (prop) => call(TextStyleMix.raw(fontStyle: prop)),
   );
 
   late final decoration = PropUtility<T, TextDecoration>(
-    (prop) => call(TextStyleMix(decoration: prop)),
+    (prop) => call(TextStyleMix.raw(decoration: prop)),
   );
 
   late final fontSize = PropUtility<T, double>(
-    (prop) => call(TextStyleMix(fontSize: prop)),
+    (prop) => call(TextStyleMix.raw(fontSize: prop)),
   );
 
   late final backgroundColor = ColorUtility<T>(
-    (prop) => call(TextStyleMix(backgroundColor: prop)),
+    (prop) => call(TextStyleMix.raw(backgroundColor: prop)),
   );
 
   late final decorationColor = ColorUtility<T>(
-    (prop) => call(TextStyleMix(decorationColor: prop)),
+    (prop) => call(TextStyleMix.raw(decorationColor: prop)),
   );
 
   late final decorationStyle = PropUtility<T, TextDecorationStyle>(
-    (prop) => call(TextStyleMix(decorationStyle: prop)),
+    (prop) => call(TextStyleMix.raw(decorationStyle: prop)),
   );
 
   late final textBaseline = PropUtility<T, TextBaseline>(
-    (prop) => call(TextStyleMix(textBaseline: prop)),
+    (prop) => call(TextStyleMix.raw(textBaseline: prop)),
   );
 
   late final fontFamily = PropUtility<T, String>(
-    (v) => call(TextStyleMix(fontFamily: v)),
+    (v) => call(TextStyleMix.raw(fontFamily: v)),
   );
 
   TextStyleUtility(super.builder) : super(convertToMix: TextStyleMix.value);
 
-  T height(double v) => call(TextStyleMix.only(height: v));
+  T height(double v) => call(TextStyleMix(height: v));
 
-  T wordSpacing(double v) => call(TextStyleMix.only(wordSpacing: v));
+  T wordSpacing(double v) => call(TextStyleMix(wordSpacing: v));
 
-  T letterSpacing(double v) => call(TextStyleMix.only(letterSpacing: v));
+  T letterSpacing(double v) => call(TextStyleMix(letterSpacing: v));
 
   T fontVariations(List<FontVariation> v) =>
-      call(TextStyleMix.only(fontVariations: v));
+      call(TextStyleMix(fontVariations: v));
 
-  T fontVariation(FontVariation v) =>
-      call(TextStyleMix.only(fontVariations: [v]));
+  T fontVariation(FontVariation v) => call(TextStyleMix(fontVariations: [v]));
 
   T shadows(List<Shadow> v) =>
-      call(TextStyleMix.only(shadows: v.map(ShadowMix.value).toList()));
+      call(TextStyleMix(shadows: v.map(ShadowMix.value).toList()));
 
   T italic() => fontStyle.italic();
 
   T bold() => fontWeight.bold();
 
-  T foreground(Paint v) => call(TextStyleMix.only(foreground: v));
+  T foreground(Paint v) => call(TextStyleMix(foreground: v));
 
-  T background(Paint v) => call(TextStyleMix.only(background: v));
+  T background(Paint v) => call(TextStyleMix(background: v));
 
-  T fontFeatures(List<FontFeature> v) =>
-      call(TextStyleMix.only(fontFeatures: v));
+  T fontFeatures(List<FontFeature> v) => call(TextStyleMix(fontFeatures: v));
 
-  T debugLabel(String v) => call(TextStyleMix.only(debugLabel: v));
+  T debugLabel(String v) => call(TextStyleMix(debugLabel: v));
 
-  T decorationThickness(double v) =>
-      call(TextStyleMix.only(decorationThickness: v));
+  T decorationThickness(double v) => call(TextStyleMix(decorationThickness: v));
 
   T fontFamilyFallback(List<String> v) =>
-      call(TextStyleMix.only(fontFamilyFallback: v));
+      call(TextStyleMix(fontFamilyFallback: v));
 
   @override
   T call(TextStyleMix value) => builder(MixProp(value));

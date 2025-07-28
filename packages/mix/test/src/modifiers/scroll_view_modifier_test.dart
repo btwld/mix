@@ -350,7 +350,7 @@ void main() {
   group('ScrollViewModifierAttribute', () {
     group('Constructor', () {
       test('creates with null values by default', () {
-        const attribute = ScrollViewModifierAttribute();
+        final attribute = ScrollViewModifierAttribute();
 
         expect(attribute.scrollDirection, isNull);
         expect(attribute.reverse, isNull);
@@ -366,7 +366,7 @@ void main() {
         final physics = Prop<ScrollPhysics>(const BouncingScrollPhysics());
         final clipBehavior = Prop<Clip>(Clip.antiAlias);
 
-        final attribute = ScrollViewModifierAttribute(
+        final attribute = ScrollViewModifierAttribute.raw(
           scrollDirection: scrollDirection,
           reverse: reverse,
           padding: padding,
@@ -384,7 +384,7 @@ void main() {
 
     group('only constructor', () {
       test('creates Prop values from direct values', () {
-        final attribute = ScrollViewModifierAttribute.only(
+        final attribute = ScrollViewModifierAttribute(
           scrollDirection: Axis.horizontal,
           reverse: true,
           padding: EdgeInsetsMix.all(16.0),
@@ -400,7 +400,7 @@ void main() {
       });
 
       test('handles null values correctly', () {
-        final attribute = ScrollViewModifierAttribute.only();
+        final attribute = ScrollViewModifierAttribute();
 
         expect(attribute.scrollDirection, isNull);
         expect(attribute.reverse, isNull);
@@ -410,7 +410,7 @@ void main() {
       });
 
       test('handles partial values', () {
-        final attribute1 = ScrollViewModifierAttribute.only(
+        final attribute1 = ScrollViewModifierAttribute(
           scrollDirection: Axis.horizontal,
           reverse: true,
         );
@@ -420,7 +420,7 @@ void main() {
         expect(attribute1.physics, isNull);
         expect(attribute1.clipBehavior, isNull);
 
-        final attribute2 = ScrollViewModifierAttribute.only(
+        final attribute2 = ScrollViewModifierAttribute(
           padding: EdgeInsetsMix.all(16.0),
           physics: const ClampingScrollPhysics(),
         );
@@ -434,7 +434,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to ScrollViewModifier with resolved values', () {
-        final attribute = ScrollViewModifierAttribute.only(
+        final attribute = ScrollViewModifierAttribute(
           scrollDirection: Axis.horizontal,
           reverse: true,
           padding: EdgeInsetsMix.all(16.0),
@@ -465,12 +465,12 @@ void main() {
 
     group('merge', () {
       test('merges with other ScrollViewModifierAttribute', () {
-        final attribute1 = ScrollViewModifierAttribute.only(
+        final attribute1 = ScrollViewModifierAttribute(
           scrollDirection: Axis.vertical,
           reverse: false,
           padding: EdgeInsetsMix.all(10.0),
         );
-        final attribute2 = ScrollViewModifierAttribute.only(
+        final attribute2 = ScrollViewModifierAttribute(
           scrollDirection: Axis.horizontal,
           physics: const BouncingScrollPhysics(),
           clipBehavior: Clip.antiAlias,
@@ -486,7 +486,7 @@ void main() {
       });
 
       test('returns original when other is null', () {
-        final attribute = ScrollViewModifierAttribute.only(
+        final attribute = ScrollViewModifierAttribute(
           scrollDirection: Axis.horizontal,
         );
 
@@ -497,7 +497,7 @@ void main() {
 
       test('merges with null values', () {
         final attribute1 = ScrollViewModifierAttribute();
-        final attribute2 = ScrollViewModifierAttribute.only(
+        final attribute2 = ScrollViewModifierAttribute(
           scrollDirection: Axis.horizontal,
           reverse: true,
         );
@@ -514,13 +514,13 @@ void main() {
 
     group('equality and props', () {
       test('equal when all Prop values match', () {
-        final attribute1 = ScrollViewModifierAttribute.only(
+        final attribute1 = ScrollViewModifierAttribute(
           scrollDirection: Axis.horizontal,
           reverse: true,
           padding: EdgeInsetsMix.all(16.0),
           clipBehavior: Clip.antiAlias,
         );
-        final attribute2 = ScrollViewModifierAttribute.only(
+        final attribute2 = ScrollViewModifierAttribute(
           scrollDirection: Axis.horizontal,
           reverse: true,
           padding: EdgeInsetsMix.all(16.0),
@@ -534,10 +534,10 @@ void main() {
       // so we can't reliably test physics difference for inequality
 
       test('not equal when values differ', () {
-        final attribute1 = ScrollViewModifierAttribute.only(
+        final attribute1 = ScrollViewModifierAttribute(
           scrollDirection: Axis.horizontal,
         );
-        final attribute2 = ScrollViewModifierAttribute.only(
+        final attribute2 = ScrollViewModifierAttribute(
           scrollDirection: Axis.vertical,
         );
 
@@ -545,7 +545,7 @@ void main() {
       });
 
       test('props contains all Prop values', () {
-        final attribute = ScrollViewModifierAttribute.only(
+        final attribute = ScrollViewModifierAttribute(
           scrollDirection: Axis.horizontal,
           reverse: true,
           padding: EdgeInsetsMix.all(16.0),
@@ -674,7 +674,7 @@ void main() {
     testWidgets('ScrollViewModifierAttribute resolves and builds correctly', (
       WidgetTester tester,
     ) async {
-      final attribute = ScrollViewModifierAttribute.only(
+      final attribute = ScrollViewModifierAttribute(
         scrollDirection: Axis.horizontal,
         reverse: true,
         padding: EdgeInsetsMix.all(24.0),
@@ -721,18 +721,18 @@ void main() {
     });
 
     test('Complex merge scenario preserves and overrides correctly', () {
-      final base = ScrollViewModifierAttribute.only(
+      final base = ScrollViewModifierAttribute(
         scrollDirection: Axis.vertical,
         reverse: false,
         padding: EdgeInsetsMix.all(10.0),
       );
 
-      final override1 = ScrollViewModifierAttribute.only(
+      final override1 = ScrollViewModifierAttribute(
         scrollDirection: Axis.horizontal,
         physics: const ClampingScrollPhysics(),
       );
 
-      final override2 = ScrollViewModifierAttribute.only(
+      final override2 = ScrollViewModifierAttribute(
         reverse: true,
         clipBehavior: Clip.antiAlias,
       );

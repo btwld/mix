@@ -204,7 +204,7 @@ void main() {
 
     group('Constructor', () {
       test('creates with null values by default', () {
-        const attribute = ClipPathModifierAttribute();
+        final attribute = ClipPathModifierAttribute();
 
         expect(attribute.clipper, isNull);
         expect(attribute.clipBehavior, isNull);
@@ -213,7 +213,7 @@ void main() {
 
     group('only constructor', () {
       test('creates from direct values', () {
-        final attribute = ClipPathModifierAttribute.only(
+        final attribute = ClipPathModifierAttribute(
           clipper: clipper,
           clipBehavior: clipBehavior,
         );
@@ -223,18 +223,18 @@ void main() {
       });
 
       test('handles null values correctly', () {
-        final attribute = ClipPathModifierAttribute.only();
+        final attribute = ClipPathModifierAttribute();
 
         expect(attribute.clipper, isNull);
         expect(attribute.clipBehavior, isNull);
       });
 
       test('handles partial values', () {
-        final attribute1 = ClipPathModifierAttribute.only(clipper: clipper);
+        final attribute1 = ClipPathModifierAttribute(clipper: clipper);
         expectProp(attribute1.clipper, clipper);
         expect(attribute1.clipBehavior, isNull);
 
-        final attribute2 = ClipPathModifierAttribute.only(
+        final attribute2 = ClipPathModifierAttribute(
           clipBehavior: clipBehavior,
         );
         expect(attribute2.clipper, isNull);
@@ -244,7 +244,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to ClipPathModifier with resolved values', () {
-        final attribute = ClipPathModifierAttribute.only(
+        final attribute = ClipPathModifierAttribute(
           clipper: clipper,
           clipBehavior: clipBehavior,
         );
@@ -257,7 +257,7 @@ void main() {
       });
 
       test('resolves with null values', () {
-        const attribute = ClipPathModifierAttribute();
+        final attribute = ClipPathModifierAttribute();
 
         const expectedModifier = ClipPathModifier();
         expect(attribute, resolvesTo(expectedModifier));
@@ -266,11 +266,11 @@ void main() {
 
     group('merge', () {
       test('merges with other ClipPathModifierAttribute', () {
-        final attribute1 = ClipPathModifierAttribute.only(
+        final attribute1 = ClipPathModifierAttribute(
           clipper: clipper,
           clipBehavior: clipBehavior,
         );
-        final attribute2 = ClipPathModifierAttribute.only(
+        final attribute2 = ClipPathModifierAttribute(
           clipper: clipper2,
           clipBehavior: clipBehavior2,
         );
@@ -282,7 +282,7 @@ void main() {
       });
 
       test('returns original when other is null', () {
-        final attribute = ClipPathModifierAttribute.only(clipper: clipper);
+        final attribute = ClipPathModifierAttribute(clipper: clipper);
 
         final merged = attribute.merge(null);
 
@@ -290,8 +290,8 @@ void main() {
       });
 
       test('merges with null values', () {
-        const attribute1 = ClipPathModifierAttribute();
-        final attribute2 = ClipPathModifierAttribute.only(
+        final attribute1 = ClipPathModifierAttribute();
+        final attribute2 = ClipPathModifierAttribute(
           clipper: clipper,
           clipBehavior: clipBehavior,
         );
@@ -305,11 +305,11 @@ void main() {
 
     group('equality and props', () {
       test('equal when all values match', () {
-        final attribute1 = ClipPathModifierAttribute.only(
+        final attribute1 = ClipPathModifierAttribute(
           clipper: clipper,
           clipBehavior: clipBehavior,
         );
-        final attribute2 = ClipPathModifierAttribute.only(
+        final attribute2 = ClipPathModifierAttribute(
           clipper: clipper,
           clipBehavior: clipBehavior,
         );
@@ -318,14 +318,14 @@ void main() {
       });
 
       test('not equal when values differ', () {
-        final attribute1 = ClipPathModifierAttribute.only(clipper: clipper);
-        final attribute2 = ClipPathModifierAttribute.only(clipper: clipper2);
+        final attribute1 = ClipPathModifierAttribute(clipper: clipper);
+        final attribute2 = ClipPathModifierAttribute(clipper: clipper2);
 
         expect(attribute1, isNot(equals(attribute2)));
       });
 
       test('props contains all values', () {
-        final attribute = ClipPathModifierAttribute.only(
+        final attribute = ClipPathModifierAttribute(
           clipper: clipper,
           clipBehavior: clipBehavior,
         );
@@ -415,7 +415,7 @@ void main() {
 
     group('Constructor', () {
       test('creates with null clipBehavior by default', () {
-        const attribute = ClipTriangleModifierAttribute();
+        final attribute = ClipTriangleModifierAttribute();
 
         expect(attribute.clipBehavior, isNull);
       });
@@ -423,7 +423,7 @@ void main() {
 
     group('only constructor', () {
       test('creates from direct value', () {
-        final attribute = ClipTriangleModifierAttribute.only(
+        final attribute = ClipTriangleModifierAttribute(
           clipBehavior: clipBehavior,
         );
 
@@ -431,7 +431,7 @@ void main() {
       });
 
       test('handles null values correctly', () {
-        final attribute = ClipTriangleModifierAttribute.only();
+        final attribute = ClipTriangleModifierAttribute();
 
         expect(attribute.clipBehavior, isNull);
       });
@@ -439,7 +439,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to ClipTriangleModifier with resolved values', () {
-        final attribute = ClipTriangleModifierAttribute.only(
+        final attribute = ClipTriangleModifierAttribute(
           clipBehavior: clipBehavior,
         );
 
@@ -452,10 +452,10 @@ void main() {
 
     group('merge', () {
       test('merges with other ClipTriangleModifierAttribute', () {
-        final attribute1 = ClipTriangleModifierAttribute.only(
+        final attribute1 = ClipTriangleModifierAttribute(
           clipBehavior: clipBehavior,
         );
-        final attribute2 = ClipTriangleModifierAttribute.only(
+        final attribute2 = ClipTriangleModifierAttribute(
           clipBehavior: clipBehavior2,
         );
 
@@ -465,7 +465,7 @@ void main() {
       });
 
       test('returns original when other is null', () {
-        final attribute = ClipTriangleModifierAttribute.only(
+        final attribute = ClipTriangleModifierAttribute(
           clipBehavior: clipBehavior,
         );
 
@@ -477,10 +477,10 @@ void main() {
 
     group('equality and props', () {
       test('equal when all values match', () {
-        final attribute1 = ClipTriangleModifierAttribute.only(
+        final attribute1 = ClipTriangleModifierAttribute(
           clipBehavior: clipBehavior,
         );
-        final attribute2 = ClipTriangleModifierAttribute.only(
+        final attribute2 = ClipTriangleModifierAttribute(
           clipBehavior: clipBehavior,
         );
 
@@ -488,7 +488,7 @@ void main() {
       });
 
       test('props contains clipBehavior', () {
-        final attribute = ClipTriangleModifierAttribute.only(
+        final attribute = ClipTriangleModifierAttribute(
           clipBehavior: clipBehavior,
         );
 
@@ -506,7 +506,7 @@ void main() {
     testWidgets('ClipPathModifierAttribute resolves and builds correctly', (
       WidgetTester tester,
     ) async {
-      final attribute = ClipPathModifierAttribute.only(
+      final attribute = ClipPathModifierAttribute(
         clipper: clipper,
         clipBehavior: clipBehavior,
       );
@@ -531,16 +531,16 @@ void main() {
     test('Complex merge scenario preserves and overrides correctly', () {
       const clipper3 = _PathClipper();
 
-      final base = ClipPathModifierAttribute.only(
+      final base = ClipPathModifierAttribute(
         clipper: clipper,
         clipBehavior: clipBehavior,
       );
 
-      final override1 = ClipPathModifierAttribute.only(
+      final override1 = ClipPathModifierAttribute(
         clipBehavior: Clip.antiAliasWithSaveLayer,
       );
 
-      final override2 = ClipPathModifierAttribute.only(clipper: clipper3);
+      final override2 = ClipPathModifierAttribute(clipper: clipper3);
 
       final result = base.merge(override1).merge(override2);
 

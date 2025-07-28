@@ -79,10 +79,10 @@ class AspectRatioModifierAttribute
     with Diagnosticable {
   final Prop<double>? aspectRatio;
 
-  const AspectRatioModifierAttribute({this.aspectRatio});
+  const AspectRatioModifierAttribute.raw({this.aspectRatio});
 
-  AspectRatioModifierAttribute.only({double? aspectRatio})
-    : this(aspectRatio: Prop.maybe(aspectRatio));
+  AspectRatioModifierAttribute({double? aspectRatio})
+    : this.raw(aspectRatio: Prop.maybe(aspectRatio));
 
   /// Resolves to [AspectRatioModifier] using the provided [MixContext].
   ///
@@ -109,7 +109,7 @@ class AspectRatioModifierAttribute
   AspectRatioModifierAttribute merge(AspectRatioModifierAttribute? other) {
     if (other == null) return this;
 
-    return AspectRatioModifierAttribute(
+    return AspectRatioModifierAttribute.raw(
       aspectRatio: aspectRatio?.merge(other.aspectRatio) ?? other.aspectRatio,
     );
   }
@@ -135,12 +135,12 @@ final class AspectRatioModifierUtility<T extends StyleAttribute<Object?>>
   const AspectRatioModifierUtility(super.builder);
 
   T call(double value) {
-    return builder(AspectRatioModifierAttribute(aspectRatio: Prop(value)));
+    return builder(AspectRatioModifierAttribute.raw(aspectRatio: Prop(value)));
   }
 
   T token(MixToken<double> token) {
     return builder(
-      AspectRatioModifierAttribute(aspectRatio: Prop.token(token)),
+      AspectRatioModifierAttribute.raw(aspectRatio: Prop.token(token)),
     );
   }
 }

@@ -300,7 +300,7 @@ void main() {
   group('FractionallySizedBoxModifierAttribute', () {
     group('Constructor', () {
       test('creates with null values by default', () {
-        const attribute = FractionallySizedBoxModifierAttribute();
+        final attribute = FractionallySizedBoxModifierAttribute();
 
         expect(attribute.widthFactor, isNull);
         expect(attribute.heightFactor, isNull);
@@ -311,7 +311,7 @@ void main() {
         final widthFactor = Prop<double>(0.5);
         final heightFactor = Prop<double>(0.8);
         final alignment = Prop<AlignmentGeometry>(Alignment.center);
-        final attribute = FractionallySizedBoxModifierAttribute(
+        final attribute = FractionallySizedBoxModifierAttribute.raw(
           widthFactor: widthFactor,
           heightFactor: heightFactor,
           alignment: alignment,
@@ -325,7 +325,7 @@ void main() {
 
     group('only constructor', () {
       test('creates Prop values from direct values', () {
-        final attribute = FractionallySizedBoxModifierAttribute.only(
+        final attribute = FractionallySizedBoxModifierAttribute(
           widthFactor: 0.3,
           heightFactor: 0.7,
           alignment: Alignment.topLeft,
@@ -337,7 +337,7 @@ void main() {
       });
 
       test('handles null values correctly', () {
-        final attribute = FractionallySizedBoxModifierAttribute.only();
+        final attribute = FractionallySizedBoxModifierAttribute();
 
         expect(attribute.widthFactor, isNull);
         expect(attribute.heightFactor, isNull);
@@ -345,21 +345,21 @@ void main() {
       });
 
       test('handles partial values', () {
-        final attribute1 = FractionallySizedBoxModifierAttribute.only(
+        final attribute1 = FractionallySizedBoxModifierAttribute(
           widthFactor: 0.5,
         );
         expectProp(attribute1.widthFactor, 0.5);
         expect(attribute1.heightFactor, isNull);
         expect(attribute1.alignment, isNull);
 
-        final attribute2 = FractionallySizedBoxModifierAttribute.only(
+        final attribute2 = FractionallySizedBoxModifierAttribute(
           heightFactor: 0.7,
         );
         expect(attribute2.widthFactor, isNull);
         expectProp(attribute2.heightFactor, 0.7);
         expect(attribute2.alignment, isNull);
 
-        final attribute3 = FractionallySizedBoxModifierAttribute.only(
+        final attribute3 = FractionallySizedBoxModifierAttribute(
           alignment: Alignment.bottomRight,
         );
         expect(attribute3.widthFactor, isNull);
@@ -370,7 +370,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to FractionallySizedBoxModifier with resolved values', () {
-        final attribute = FractionallySizedBoxModifierAttribute.only(
+        final attribute = FractionallySizedBoxModifierAttribute(
           widthFactor: 0.4,
           heightFactor: 0.6,
           alignment: Alignment.topRight,
@@ -394,11 +394,11 @@ void main() {
 
     group('merge', () {
       test('merges with other FractionallySizedBoxModifierAttribute', () {
-        final attribute1 = FractionallySizedBoxModifierAttribute.only(
+        final attribute1 = FractionallySizedBoxModifierAttribute(
           widthFactor: 0.5,
           heightFactor: 0.5,
         );
-        final attribute2 = FractionallySizedBoxModifierAttribute.only(
+        final attribute2 = FractionallySizedBoxModifierAttribute(
           widthFactor: 0.8,
           alignment: Alignment.topLeft,
         );
@@ -411,7 +411,7 @@ void main() {
       });
 
       test('returns original when other is null', () {
-        final attribute = FractionallySizedBoxModifierAttribute.only(
+        final attribute = FractionallySizedBoxModifierAttribute(
           widthFactor: 0.5,
         );
 
@@ -422,7 +422,7 @@ void main() {
 
       test('merges with null values', () {
         final attribute1 = FractionallySizedBoxModifierAttribute();
-        final attribute2 = FractionallySizedBoxModifierAttribute.only(
+        final attribute2 = FractionallySizedBoxModifierAttribute(
           alignment: Alignment.bottomRight,
         );
 
@@ -436,12 +436,12 @@ void main() {
 
     group('equality and props', () {
       test('equal when all Prop values match', () {
-        final attribute1 = FractionallySizedBoxModifierAttribute.only(
+        final attribute1 = FractionallySizedBoxModifierAttribute(
           widthFactor: 0.5,
           heightFactor: 0.8,
           alignment: Alignment.center,
         );
-        final attribute2 = FractionallySizedBoxModifierAttribute.only(
+        final attribute2 = FractionallySizedBoxModifierAttribute(
           widthFactor: 0.5,
           heightFactor: 0.8,
           alignment: Alignment.center,
@@ -451,10 +451,10 @@ void main() {
       });
 
       test('not equal when values differ', () {
-        final attribute1 = FractionallySizedBoxModifierAttribute.only(
+        final attribute1 = FractionallySizedBoxModifierAttribute(
           widthFactor: 0.5,
         );
-        final attribute2 = FractionallySizedBoxModifierAttribute.only(
+        final attribute2 = FractionallySizedBoxModifierAttribute(
           widthFactor: 0.8,
         );
 
@@ -462,7 +462,7 @@ void main() {
       });
 
       test('props contains all Prop values', () {
-        final attribute = FractionallySizedBoxModifierAttribute.only(
+        final attribute = FractionallySizedBoxModifierAttribute(
           widthFactor: 0.5,
           heightFactor: 0.8,
           alignment: Alignment.center,
@@ -535,7 +535,7 @@ void main() {
     testWidgets(
       'FractionallySizedBoxModifierAttribute resolves and builds correctly',
       (WidgetTester tester) async {
-        final attribute = FractionallySizedBoxModifierAttribute.only(
+        final attribute = FractionallySizedBoxModifierAttribute(
           widthFactor: 0.7,
           heightFactor: 0.9,
           alignment: Alignment.bottomCenter,
@@ -564,18 +564,18 @@ void main() {
     );
 
     test('Complex merge scenario preserves and overrides correctly', () {
-      final base = FractionallySizedBoxModifierAttribute.only(
+      final base = FractionallySizedBoxModifierAttribute(
         widthFactor: 0.5,
         heightFactor: 0.5,
         alignment: Alignment.center,
       );
 
-      final override1 = FractionallySizedBoxModifierAttribute.only(
+      final override1 = FractionallySizedBoxModifierAttribute(
         widthFactor: 0.8,
         heightFactor: 0.8,
       );
 
-      final override2 = FractionallySizedBoxModifierAttribute.only(
+      final override2 = FractionallySizedBoxModifierAttribute(
         alignment: Alignment.topLeft,
       );
 

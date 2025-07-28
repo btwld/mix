@@ -15,12 +15,12 @@ final class RoundedRectangleBorderUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, RoundedRectangleBorder> {
   /// Utility for defining [RoundedRectangleBorderMix.borderRadius]
   late final borderRadius = BorderRadiusGeometryUtility<T>(
-    (v) => call(RoundedRectangleBorderMix(borderRadius: v)),
+    (v) => call(RoundedRectangleBorderMix.raw(borderRadius: v)),
   );
 
   /// Utility for defining [RoundedRectangleBorderMix.side]
   late final side = BorderSideUtility<T>(
-    (v) => call(RoundedRectangleBorderMix(side: v)),
+    (v) => call(RoundedRectangleBorderMix.raw(side: v)),
   );
 
   RoundedRectangleBorderUtility(super.builder)
@@ -38,12 +38,12 @@ final class BeveledRectangleBorderUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, BeveledRectangleBorder> {
   /// Utility for defining [BeveledRectangleBorderMix.borderRadius]
   late final borderRadius = BorderRadiusGeometryUtility<T>(
-    (v) => call(BeveledRectangleBorderMix(borderRadius: v)),
+    (v) => call(BeveledRectangleBorderMix.raw(borderRadius: v)),
   );
 
   /// Utility for defining [BeveledRectangleBorderMix.side]
   late final side = BorderSideUtility<T>(
-    (v) => call(BeveledRectangleBorderMix(side: v)),
+    (v) => call(BeveledRectangleBorderMix.raw(side: v)),
   );
 
   BeveledRectangleBorderUtility(super.builder)
@@ -61,12 +61,12 @@ final class ContinuousRectangleBorderUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, ContinuousRectangleBorder> {
   /// Utility for defining [ContinuousRectangleBorderMix.borderRadius]
   late final borderRadius = BorderRadiusGeometryUtility<T>(
-    (v) => call(ContinuousRectangleBorderMix(borderRadius: v)),
+    (v) => call(ContinuousRectangleBorderMix.raw(borderRadius: v)),
   );
 
   /// Utility for defining [ContinuousRectangleBorderMix.side]
   late final side = BorderSideUtility<T>(
-    (v) => call(ContinuousRectangleBorderMix(side: v)),
+    (v) => call(ContinuousRectangleBorderMix.raw(side: v)),
   );
 
   ContinuousRectangleBorderUtility(super.builder)
@@ -83,11 +83,11 @@ final class ContinuousRectangleBorderUtility<T extends StyleAttribute<Object?>>
 final class CircleBorderUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, CircleBorder> {
   /// Utility for defining [CircleBorderMix.side]
-  late final side = BorderSideUtility<T>((v) => call(CircleBorderMix(side: v)));
+  late final side = BorderSideUtility<T>((v) => call(CircleBorderMix.raw(side: v)));
 
   /// Utility for defining [CircleBorderMix.eccentricity]
   late final eccentricity = PropUtility<T, double>(
-    (prop) => call(CircleBorderMix(eccentricity: prop),)
+    (prop) => call(CircleBorderMix.raw(eccentricity: prop),)
   );
 
   CircleBorderUtility(super.builder)
@@ -104,36 +104,36 @@ final class CircleBorderUtility<T extends StyleAttribute<Object?>>
 final class StarBorderUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, StarBorder> {
   /// Utility for defining [StarBorderMix.side]
-  late final side = BorderSideUtility<T>((v) => call(StarBorderMix(side: v)));
+  late final side = BorderSideUtility<T>((v) => call(StarBorderMix.raw(side: v)));
 
   /// Utility for defining [StarBorderMix.points]
   late final points = PropUtility<T, double>(
-    (prop) => call(StarBorderMix(points: prop),)
+    (prop) => call(StarBorderMix.raw(points: prop),)
   );
 
   /// Utility for defining [StarBorderMix.innerRadiusRatio]
   late final innerRadiusRatio = PropUtility<T, double>(
-    (prop) => call(StarBorderMix(innerRadiusRatio: prop),)
+    (prop) => call(StarBorderMix.raw(innerRadiusRatio: prop),)
   );
 
   /// Utility for defining [StarBorderMix.pointRounding]
   late final pointRounding = PropUtility<T, double>(
-    (prop) => call(StarBorderMix(pointRounding: prop),)
+    (prop) => call(StarBorderMix.raw(pointRounding: prop),)
   );
 
   /// Utility for defining [StarBorderMix.valleyRounding]
   late final valleyRounding = PropUtility<T, double>(
-    (prop) => call(StarBorderMix(valleyRounding: prop),)
+    (prop) => call(StarBorderMix.raw(valleyRounding: prop),)
   );
 
   /// Utility for defining [StarBorderMix.rotation]
   late final rotation = PropUtility<T, double>(
-    (prop) => call(StarBorderMix(rotation: prop),)
+    (prop) => call(StarBorderMix.raw(rotation: prop),)
   );
 
   /// Utility for defining [StarBorderMix.squash]
   late final squash = PropUtility<T, double>(
-    (prop) => call(StarBorderMix(squash: prop),)
+    (prop) => call(StarBorderMix.raw(squash: prop),)
   );
 
   StarBorderUtility(super.builder) : super(convertToMix: StarBorderMix.value);
@@ -149,26 +149,26 @@ final class StarBorderUtility<T extends StyleAttribute<Object?>>
 final class LinearBorderUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, LinearBorder> {
   /// Utility for defining [LinearBorderMix.side]
-  late final side = BorderSideUtility<T>((v) => call(LinearBorderMix(side: v)));
+  late final side = BorderSideUtility<T>((v) => call(LinearBorderMix.raw(side: v)));
 
   /// Utility for defining [LinearBorderMix.start]
   late final start = LinearBorderEdgeUtility<T>(
-    (v) => call(LinearBorderMix(start: v)),
+    (v) => call(LinearBorderMix.raw(start: v)),
   );
 
   /// Utility for defining [LinearBorderMix.end]
   late final end = LinearBorderEdgeUtility<T>(
-    (v) => call(LinearBorderMix(end: v)),
+    (v) => call(LinearBorderMix.raw(end: v)),
   );
 
   /// Utility for defining [LinearBorderMix.top]
   late final top = LinearBorderEdgeUtility<T>(
-    (v) => call(LinearBorderMix(top: v)),
+    (v) => call(LinearBorderMix.raw(top: v)),
   );
 
   /// Utility for defining [LinearBorderMix.bottom]
   late final bottom = LinearBorderEdgeUtility<T>(
-    (v) => call(LinearBorderMix(bottom: v)),
+    (v) => call(LinearBorderMix.raw(bottom: v)),
   );
 
   LinearBorderUtility(super.builder)
@@ -186,12 +186,12 @@ final class LinearBorderEdgeUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, LinearBorderEdge> {
   /// Utility for defining [LinearBorderEdgeMix.size]
   late final size = PropUtility<T, double>(
-    (prop) => call(LinearBorderEdgeMix(size: prop),)
+    (prop) => call(LinearBorderEdgeMix.raw(size: prop),)
   );
 
   /// Utility for defining [LinearBorderEdgeMix.alignment]
   late final alignment = PropUtility<T, double>(
-    (prop) => call(LinearBorderEdgeMix(alignment: prop),)
+    (prop) => call(LinearBorderEdgeMix.raw(alignment: prop),)
   );
 
   LinearBorderEdgeUtility(super.builder)
@@ -209,7 +209,7 @@ final class StadiumBorderUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, StadiumBorder> {
   /// Utility for defining [StadiumBorderMix.side]
   late final side = BorderSideUtility<T>(
-    (v) => call(StadiumBorderMix(side: v)),
+    (v) => call(StadiumBorderMix.raw(side: v)),
   );
 
   StadiumBorderUtility(super.builder)

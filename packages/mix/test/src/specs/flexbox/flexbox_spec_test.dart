@@ -9,14 +9,14 @@ void main() {
     group('Constructor', () {
       test('creates FlexBoxSpecAttribute with all properties', () {
         final boxAttr = BoxSpecAttribute(
-          alignment: Prop(Alignment.center),
-          padding: MixProp(EdgeInsetsMix.only(top: 10.0, bottom: 20.0)),
+          alignment: Alignment.center,
+          padding: EdgeInsetsMix(top: 10.0, bottom: 20.0),
         );
 
         final flexAttr = FlexSpecAttribute(
-          direction: Prop(Axis.horizontal),
-          mainAxisAlignment: Prop(MainAxisAlignment.center),
-          crossAxisAlignment: Prop(CrossAxisAlignment.start),
+          direction: Axis.horizontal,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
         );
 
         final attribute = FlexBoxSpecAttribute(box: boxAttr, flex: flexAttr);
@@ -77,14 +77,14 @@ void main() {
       test('utility methods work with mutable pattern', () {
         final utility1 = FlexBoxSpecUtility();
         final utility2 = FlexBoxSpecUtility();
-        
+
         // Use the mutable utilities to set properties
         utility1.padding.all(16);
         utility2.margin.all(8);
 
         // Each utility maintains its own state
         expect(identical(utility1.attribute, utility2.attribute), isFalse);
-        
+
         // Properties are set correctly
         expect(utility1.attribute.$box?.padding, isNotNull);
         expect(utility2.attribute.$box?.margin, isNotNull);
@@ -120,12 +120,12 @@ void main() {
       test('resolves to FlexBoxSpec with correct properties', () {
         final attribute = FlexBoxSpecAttribute(
           box: BoxSpecAttribute(
-            alignment: Prop(Alignment.center),
-            padding: MixProp(EdgeInsetsMix.only(top: 10.0, bottom: 20.0)),
+            alignment: Alignment.center,
+            padding: EdgeInsetsMix(top: 10.0, bottom: 20.0),
           ),
           flex: FlexSpecAttribute(
-            direction: Prop(Axis.horizontal),
-            mainAxisAlignment: Prop(MainAxisAlignment.center),
+            direction: Axis.horizontal,
+            mainAxisAlignment: MainAxisAlignment.center,
           ),
         );
 
@@ -145,26 +145,21 @@ void main() {
       test('resolves complex nested properties correctly', () {
         final attribute = FlexBoxSpecAttribute(
           box: BoxSpecAttribute(
-            decoration: MixProp(
-              BoxDecorationMix(
-                color: Prop(Colors.red),
-                border: MixProp(
-                  BoxBorderMix.all(
-                    BorderSideMix.only(color: Colors.blue, width: 2.0),
-                  ),
-                ),
-                borderRadius: MixProp(
-                  BorderRadiusMix.only(
-                    topLeft: const Radius.circular(8.0),
-                    topRight: const Radius.circular(8.0),
-                  ),
-                ),
+            decoration: BoxDecorationMix(
+              color: Colors.red,
+              border: BoxBorderMix.all(
+                BorderSideMix(color: Colors.blue, width: 2.0),
+              ),
+              borderRadius: BorderRadiusMix(
+                topLeft: const Radius.circular(8.0),
+                topRight: const Radius.circular(8.0),
               ),
             ),
           ),
+
           flex: FlexSpecAttribute(
-            gap: Prop(10.0),
-            mainAxisAlignment: Prop(MainAxisAlignment.spaceBetween),
+            gap: 10.0,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
           ),
         );
 
@@ -185,22 +180,20 @@ void main() {
       test('merges properties correctly', () {
         final first = FlexBoxSpecAttribute(
           box: BoxSpecAttribute(
-            alignment: Prop(Alignment.center),
-            padding: MixProp(EdgeInsetsMix.all(10.0)),
+            alignment: Alignment.center,
+            padding: EdgeInsetsMix.all(10.0),
           ),
-          flex: FlexSpecAttribute(direction: Prop(Axis.horizontal)),
+          flex: FlexSpecAttribute(direction: Axis.horizontal),
         );
 
         final second = FlexBoxSpecAttribute(
           box: BoxSpecAttribute(
-            alignment: Prop(Alignment.topLeft), // This should override
-            margin: MixProp(EdgeInsetsMix.all(20.0)), // This should be added
+            alignment: Alignment.topLeft, // This should override
+            margin: EdgeInsetsMix.all(20.0), // This should be added
           ),
           flex: FlexSpecAttribute(
-            mainAxisAlignment: Prop(
-              MainAxisAlignment.center,
-            ), // This should be added
-          ),
+            mainAxisAlignment: MainAxisAlignment.center,
+          ), // This should be added
         );
 
         final merged = first.merge(second);
@@ -224,7 +217,7 @@ void main() {
 
       test('returns this when other is null', () {
         final attribute = FlexBoxSpecAttribute(
-          box: BoxSpecAttribute(alignment: Prop(Alignment.center)),
+          box: BoxSpecAttribute(alignment: Alignment.center),
         );
 
         final merged = attribute.merge(null);
@@ -235,18 +228,14 @@ void main() {
       test('merges nested box and flex attributes correctly', () {
         final first = FlexBoxSpecAttribute(
           box: BoxSpecAttribute(
-            decoration: MixProp(BoxDecorationMix.only(color: Colors.red)),
+            decoration: BoxDecorationMix(color: Colors.red),
           ),
         );
 
         final second = FlexBoxSpecAttribute(
           box: BoxSpecAttribute(
-            decoration: MixProp(
-              BoxDecorationMix(
-                border: MixProp(
-                  BoxBorderMix.all(BorderSideMix.only(color: Colors.blue)),
-                ),
-              ),
+            decoration: BoxDecorationMix(
+              border: BoxBorderMix.all(BorderSideMix(color: Colors.blue)),
             ),
           ),
         );
@@ -266,13 +255,13 @@ void main() {
     group('Equality', () {
       test('equal attributes have same hashCode', () {
         final attr1 = FlexBoxSpecAttribute(
-          box: BoxSpecAttribute(alignment: Prop(Alignment.center)),
-          flex: FlexSpecAttribute(direction: Prop(Axis.horizontal)),
+          box: BoxSpecAttribute(alignment: Alignment.center),
+          flex: FlexSpecAttribute(direction: Axis.horizontal),
         );
 
         final attr2 = FlexBoxSpecAttribute(
-          box: BoxSpecAttribute(alignment: Prop(Alignment.center)),
-          flex: FlexSpecAttribute(direction: Prop(Axis.horizontal)),
+          box: BoxSpecAttribute(alignment: Alignment.center),
+          flex: FlexSpecAttribute(direction: Axis.horizontal),
         );
 
         expect(attr1, equals(attr2));
@@ -281,11 +270,11 @@ void main() {
 
       test('different attributes are not equal', () {
         final attr1 = FlexBoxSpecAttribute(
-          box: BoxSpecAttribute(alignment: Prop(Alignment.center)),
+          box: BoxSpecAttribute(alignment: Alignment.center),
         );
 
         final attr2 = FlexBoxSpecAttribute(
-          box: BoxSpecAttribute(alignment: Prop(Alignment.topLeft)),
+          box: BoxSpecAttribute(alignment: Alignment.topLeft),
         );
 
         expect(attr1, isNot(equals(attr2)));
@@ -293,11 +282,11 @@ void main() {
 
       test('attributes with different nested properties are not equal', () {
         final attr1 = FlexBoxSpecAttribute(
-          flex: FlexSpecAttribute(direction: Prop(Axis.horizontal)),
+          flex: FlexSpecAttribute(direction: Axis.horizontal),
         );
 
         final attr2 = FlexBoxSpecAttribute(
-          flex: FlexSpecAttribute(direction: Prop(Axis.vertical)),
+          flex: FlexSpecAttribute(direction: Axis.vertical),
         );
 
         expect(attr1, isNot(equals(attr2)));
@@ -308,8 +297,8 @@ void main() {
       test('modifiers can be added to attribute', () {
         final attribute = FlexBoxSpecAttribute(
           modifiers: [
-            OpacityModifierAttribute(opacity: Prop(0.5)),
-            TransformModifierAttribute.only(
+            OpacityModifierAttribute(opacity: 0.5),
+            TransformModifierAttribute(
               transform: Matrix4.identity(),
               alignment: Alignment.center,
             ),
@@ -322,12 +311,12 @@ void main() {
 
       test('modifiers are merged correctly', () {
         final first = FlexBoxSpecAttribute(
-          modifiers: [OpacityModifierAttribute(opacity: Prop(0.5))],
+          modifiers: [OpacityModifierAttribute(opacity: 0.5)],
         );
 
         final second = FlexBoxSpecAttribute(
           modifiers: [
-            TransformModifierAttribute.only(transform: Matrix4.identity()),
+            TransformModifierAttribute(transform: Matrix4.identity()),
           ],
         );
 
@@ -367,9 +356,7 @@ void main() {
               variant,
               FlexBoxSpecAttribute(
                 box: BoxSpecAttribute(
-                  decoration: MixProp(
-                    BoxDecorationMix.only(color: Colors.green),
-                  ),
+                  decoration: BoxDecorationMix(color: Colors.green),
                 ),
               ),
             ),
@@ -384,11 +371,11 @@ void main() {
     group('Composite Behavior', () {
       test('box and flex attributes work independently', () {
         final boxOnly = FlexBoxSpecAttribute(
-          box: BoxSpecAttribute(alignment: Prop(Alignment.center)),
+          box: BoxSpecAttribute(alignment: Alignment.center),
         );
 
         final flexOnly = FlexBoxSpecAttribute(
-          flex: FlexSpecAttribute(direction: Prop(Axis.horizontal)),
+          flex: FlexSpecAttribute(direction: Axis.horizontal),
         );
 
         expect(boxOnly.$box, isNotNull);
@@ -400,12 +387,12 @@ void main() {
 
       test('partial updates preserve other attribute', () {
         final initial = FlexBoxSpecAttribute(
-          box: BoxSpecAttribute(alignment: Prop(Alignment.center)),
-          flex: FlexSpecAttribute(direction: Prop(Axis.horizontal)),
+          box: BoxSpecAttribute(alignment: Alignment.center),
+          flex: FlexSpecAttribute(direction: Axis.horizontal),
         );
 
         final updateBox = FlexBoxSpecAttribute(
-          box: BoxSpecAttribute(padding: MixProp(EdgeInsetsMix.all(10.0))),
+          box: BoxSpecAttribute(padding: EdgeInsetsMix.all(10.0)),
         );
 
         final merged = initial.merge(updateBox);

@@ -10,7 +10,7 @@ void main() {
       final utility = TextHeightBehaviorUtility(UtilityTestAttribute.new);
 
       test('call() creates TextHeightBehaviorMix', () {
-        final textHeightBehaviorMix = TextHeightBehaviorMix.only(
+        final textHeightBehaviorMix = TextHeightBehaviorMix(
           applyHeightToFirstAscent: true,
           applyHeightToLastDescent: false,
           leadingDistribution: TextLeadingDistribution.proportional,
@@ -107,7 +107,7 @@ void main() {
 
       group('Common Text Height Behavior Patterns', () {
         test('creates default text height behavior', () {
-          final textHeightBehaviorMix = TextHeightBehaviorMix.only(
+          final textHeightBehaviorMix = TextHeightBehaviorMix(
             applyHeightToFirstAscent: true,
             applyHeightToLastDescent: true,
             leadingDistribution: TextLeadingDistribution.proportional,
@@ -117,7 +117,7 @@ void main() {
         });
 
         test('creates text height behavior for tight line spacing', () {
-          final textHeightBehaviorMix = TextHeightBehaviorMix.only(
+          final textHeightBehaviorMix = TextHeightBehaviorMix(
             applyHeightToFirstAscent: false,
             applyHeightToLastDescent: false,
             leadingDistribution: TextLeadingDistribution.even,
@@ -127,7 +127,7 @@ void main() {
         });
 
         test('creates text height behavior for loose line spacing', () {
-          final textHeightBehaviorMix = TextHeightBehaviorMix.only(
+          final textHeightBehaviorMix = TextHeightBehaviorMix(
             applyHeightToFirstAscent: true,
             applyHeightToLastDescent: true,
             leadingDistribution: TextLeadingDistribution.proportional,
@@ -137,7 +137,7 @@ void main() {
         });
 
         test('creates text height behavior for headings', () {
-          final textHeightBehaviorMix = TextHeightBehaviorMix.only(
+          final textHeightBehaviorMix = TextHeightBehaviorMix(
             applyHeightToFirstAscent: false,
             applyHeightToLastDescent: true,
             leadingDistribution: TextLeadingDistribution.proportional,
@@ -147,7 +147,7 @@ void main() {
         });
 
         test('creates text height behavior for body text', () {
-          final textHeightBehaviorMix = TextHeightBehaviorMix.only(
+          final textHeightBehaviorMix = TextHeightBehaviorMix(
             applyHeightToFirstAscent: true,
             applyHeightToLastDescent: true,
             leadingDistribution: TextLeadingDistribution.even,
@@ -157,7 +157,7 @@ void main() {
         });
 
         test('creates text height behavior for captions', () {
-          final textHeightBehaviorMix = TextHeightBehaviorMix.only(
+          final textHeightBehaviorMix = TextHeightBehaviorMix(
             applyHeightToFirstAscent: true,
             applyHeightToLastDescent: false,
             leadingDistribution: TextLeadingDistribution.proportional,
@@ -182,7 +182,7 @@ void main() {
         });
 
         test('combines leading distribution with height settings', () {
-          final textHeightBehaviorMix = TextHeightBehaviorMix.only(
+          final textHeightBehaviorMix = TextHeightBehaviorMix(
             applyHeightToFirstAscent: false,
             applyHeightToLastDescent: false,
             leadingDistribution: TextLeadingDistribution.even,
@@ -196,7 +196,7 @@ void main() {
         test(
           'creates text height behavior with both height applications enabled',
           () {
-            final textHeightBehaviorMix = TextHeightBehaviorMix.only(
+            final textHeightBehaviorMix = TextHeightBehaviorMix(
               applyHeightToFirstAscent: true,
               applyHeightToLastDescent: true,
             );
@@ -208,7 +208,7 @@ void main() {
         test(
           'creates text height behavior with both height applications disabled',
           () {
-            final textHeightBehaviorMix = TextHeightBehaviorMix.only(
+            final textHeightBehaviorMix = TextHeightBehaviorMix(
               applyHeightToFirstAscent: false,
               applyHeightToLastDescent: false,
             );
@@ -220,7 +220,7 @@ void main() {
         test(
           'creates text height behavior with only first ascent height enabled',
           () {
-            final textHeightBehaviorMix = TextHeightBehaviorMix.only(
+            final textHeightBehaviorMix = TextHeightBehaviorMix(
               applyHeightToFirstAscent: true,
               applyHeightToLastDescent: false,
             );
@@ -232,7 +232,7 @@ void main() {
         test(
           'creates text height behavior with only last descent height enabled',
           () {
-            final textHeightBehaviorMix = TextHeightBehaviorMix.only(
+            final textHeightBehaviorMix = TextHeightBehaviorMix(
               applyHeightToFirstAscent: false,
               applyHeightToLastDescent: true,
             );
@@ -244,7 +244,7 @@ void main() {
 
       group('Typography Use Cases', () {
         test('creates text height behavior for display text', () {
-          final displayTextBehavior = TextHeightBehaviorMix.only(
+          final displayTextBehavior = TextHeightBehaviorMix(
             applyHeightToFirstAscent: false,
             applyHeightToLastDescent: false,
             leadingDistribution: TextLeadingDistribution.proportional,
@@ -254,7 +254,7 @@ void main() {
         });
 
         test('creates text height behavior for paragraph text', () {
-          final paragraphTextBehavior = TextHeightBehaviorMix.only(
+          final paragraphTextBehavior = TextHeightBehaviorMix(
             applyHeightToFirstAscent: true,
             applyHeightToLastDescent: true,
             leadingDistribution: TextLeadingDistribution.even,
@@ -264,7 +264,7 @@ void main() {
         });
 
         test('creates text height behavior for code text', () {
-          final codeTextBehavior = TextHeightBehaviorMix.only(
+          final codeTextBehavior = TextHeightBehaviorMix(
             applyHeightToFirstAscent: true,
             applyHeightToLastDescent: true,
             leadingDistribution: TextLeadingDistribution.even,
@@ -274,7 +274,7 @@ void main() {
         });
 
         test('creates text height behavior for button text', () {
-          final buttonTextBehavior = TextHeightBehaviorMix.only(
+          final buttonTextBehavior = TextHeightBehaviorMix(
             applyHeightToFirstAscent: false,
             applyHeightToLastDescent: false,
             leadingDistribution: TextLeadingDistribution.proportional,
@@ -284,7 +284,7 @@ void main() {
         });
 
         test('creates text height behavior for label text', () {
-          final labelTextBehavior = TextHeightBehaviorMix.only(
+          final labelTextBehavior = TextHeightBehaviorMix(
             applyHeightToFirstAscent: true,
             applyHeightToLastDescent: false,
             leadingDistribution: TextLeadingDistribution.proportional,
@@ -296,13 +296,13 @@ void main() {
 
       group('Edge Cases', () {
         test('creates text height behavior with minimal configuration', () {
-          final minimalBehavior = TextHeightBehaviorMix.only();
+          final minimalBehavior = TextHeightBehaviorMix();
           final attr = utility(minimalBehavior);
           expect(attr.value, isA<MixProp<TextHeightBehavior>>());
         });
 
         test('creates text height behavior with only leading distribution', () {
-          final onlyLeadingBehavior = TextHeightBehaviorMix.only(
+          final onlyLeadingBehavior = TextHeightBehaviorMix(
             leadingDistribution: TextLeadingDistribution.even,
           );
           final attr = utility(onlyLeadingBehavior);
@@ -312,7 +312,7 @@ void main() {
         test(
           'creates text height behavior with only height to first ascent',
           () {
-            final onlyFirstAscentBehavior = TextHeightBehaviorMix.only(
+            final onlyFirstAscentBehavior = TextHeightBehaviorMix(
               applyHeightToFirstAscent: true,
             );
             final attr = utility(onlyFirstAscentBehavior);
@@ -323,7 +323,7 @@ void main() {
         test(
           'creates text height behavior with only height to last descent',
           () {
-            final onlyLastDescentBehavior = TextHeightBehaviorMix.only(
+            final onlyLastDescentBehavior = TextHeightBehaviorMix(
               applyHeightToLastDescent: false,
             );
             final attr = utility(onlyLastDescentBehavior);

@@ -22,7 +22,7 @@ void main() {
         final edgeInsetsProp = MixProp(EdgeInsetsMix.all(16.0));
         expectProp(edgeInsetsProp, EdgeInsetsMix.all(16.0));
 
-        final borderSide = BorderSideMix(
+        final borderSide = BorderSideMix.raw(
           color: Prop(Colors.red),
           width: Prop(2.0),
         );
@@ -116,7 +116,7 @@ void main() {
       });
 
       test('resolves attributes', () {
-        final attribute = OpacityModifierAttribute.only(opacity: 0.5);
+        final attribute = OpacityModifierAttribute(opacity: 0.5);
         final resolved = attribute.resolve(MockBuildContext());
 
         expect(resolved.opacity, 0.5);
@@ -149,10 +149,10 @@ void main() {
 
       test('resolves merged Mix props with accumulation', () {
         final shadow1 = MixProp(
-          BoxShadowMix(color: Prop(Colors.red), blurRadius: Prop(2.0)),
+          BoxShadowMix(color: Colors.red, blurRadius: 2.0),
         );
         final shadow2 = MixProp(
-          BoxShadowMix(color: Prop(Colors.blue), spreadRadius: Prop(4.0)),
+          BoxShadowMix(color: Colors.blue, spreadRadius: 4.0),
         );
 
         final merged = shadow1.merge(shadow2);

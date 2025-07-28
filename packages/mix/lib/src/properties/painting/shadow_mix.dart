@@ -30,18 +30,18 @@ sealed class BaseShadowMix<T extends Shadow> extends Mix<T> {
 /// Provides shadow styling with color, offset, and blur radius properties
 /// that support resolvable tokens and merging capabilities.
 class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
-  ShadowMix.only({double? blurRadius, Color? color, Offset? offset})
-    : this(
+  ShadowMix({double? blurRadius, Color? color, Offset? offset})
+    : this.raw(
         blurRadius: Prop.maybe(blurRadius),
         color: Prop.maybe(color),
         offset: Prop.maybe(offset),
       );
 
-  const ShadowMix({super.blurRadius, super.color, super.offset});
+  const ShadowMix.raw({super.blurRadius, super.color, super.offset});
 
   /// Creates a [ShadowMix] from an existing [Shadow].
   ShadowMix.value(Shadow shadow)
-    : this.only(
+    : this(
         blurRadius: shadow.blurRadius,
         color: shadow.color,
         offset: shadow.offset,
@@ -49,17 +49,17 @@ class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
 
   /// Creates a shadow with the specified color.
   factory ShadowMix.color(Color value) {
-    return ShadowMix.only(color: value);
+    return ShadowMix(color: value);
   }
 
   /// Creates a shadow with the specified offset.
   factory ShadowMix.offset(Offset value) {
-    return ShadowMix.only(offset: value);
+    return ShadowMix(offset: value);
   }
 
   /// Creates a shadow with the specified blur radius.
   factory ShadowMix.blurRadius(double value) {
-    return ShadowMix.only(blurRadius: value);
+    return ShadowMix(blurRadius: value);
   }
 
   /// Creates a [ShadowMix] from a nullable [Shadow].
@@ -71,17 +71,17 @@ class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
 
   /// Returns a copy with the specified color.
   ShadowMix color(Color value) {
-    return merge(ShadowMix.only(color: value));
+    return merge(ShadowMix(color: value));
   }
 
   /// Returns a copy with the specified offset.
   ShadowMix offset(Offset value) {
-    return merge(ShadowMix.only(offset: value));
+    return merge(ShadowMix(offset: value));
   }
 
   /// Returns a copy with the specified blur radius.
   ShadowMix blurRadius(double value) {
-    return merge(ShadowMix.only(blurRadius: value));
+    return merge(ShadowMix(blurRadius: value));
   }
 
   /// Resolves to [Shadow] using the provided [BuildContext].
@@ -100,7 +100,7 @@ class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
   ShadowMix merge(ShadowMix? other) {
     if (other == null) return this;
 
-    return ShadowMix(
+    return ShadowMix.raw(
       blurRadius: MixHelpers.merge($blurRadius, other.$blurRadius),
       color: MixHelpers.merge($color, other.$color),
       offset: MixHelpers.merge($offset, other.$offset),
@@ -122,19 +122,19 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
     with DefaultValue<BoxShadow> {
   final Prop<double>? $spreadRadius;
 
-  BoxShadowMix.only({
+  BoxShadowMix({
     Color? color,
     Offset? offset,
     double? blurRadius,
     double? spreadRadius,
-  }) : this(
+  }) : this.raw(
          color: Prop.maybe(color),
          offset: Prop.maybe(offset),
          blurRadius: Prop.maybe(blurRadius),
          spreadRadius: Prop.maybe(spreadRadius),
        );
 
-  const BoxShadowMix({
+  const BoxShadowMix.raw({
     super.color,
     super.offset,
     super.blurRadius,
@@ -143,7 +143,7 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
 
   /// Creates a [BoxShadowMix] from an existing [BoxShadow].
   BoxShadowMix.value(BoxShadow boxShadow)
-    : this.only(
+    : this(
         color: boxShadow.color,
         offset: boxShadow.offset,
         blurRadius: boxShadow.blurRadius,
@@ -152,22 +152,22 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
 
   /// Creates a box shadow with the specified color.
   factory BoxShadowMix.color(Color value) {
-    return BoxShadowMix.only(color: value);
+    return BoxShadowMix(color: value);
   }
 
   /// Creates a box shadow with the specified offset.
   factory BoxShadowMix.offset(Offset value) {
-    return BoxShadowMix.only(offset: value);
+    return BoxShadowMix(offset: value);
   }
 
   /// Creates a box shadow with the specified blur radius.
   factory BoxShadowMix.blurRadius(double value) {
-    return BoxShadowMix.only(blurRadius: value);
+    return BoxShadowMix(blurRadius: value);
   }
 
   /// Creates a box shadow with the specified spread radius.
   factory BoxShadowMix.spreadRadius(double value) {
-    return BoxShadowMix.only(spreadRadius: value);
+    return BoxShadowMix(spreadRadius: value);
   }
 
   /// Creates a [BoxShadowMix] from a nullable [BoxShadow].
@@ -186,22 +186,22 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
 
   /// Returns a copy with the specified color.
   BoxShadowMix color(Color value) {
-    return merge(BoxShadowMix.only(color: value));
+    return merge(BoxShadowMix(color: value));
   }
 
   /// Returns a copy with the specified offset.
   BoxShadowMix offset(Offset value) {
-    return merge(BoxShadowMix.only(offset: value));
+    return merge(BoxShadowMix(offset: value));
   }
 
   /// Returns a copy with the specified blur radius.
   BoxShadowMix blurRadius(double value) {
-    return merge(BoxShadowMix.only(blurRadius: value));
+    return merge(BoxShadowMix(blurRadius: value));
   }
 
   /// Returns a copy with the specified spread radius.
   BoxShadowMix spreadRadius(double value) {
-    return merge(BoxShadowMix.only(spreadRadius: value));
+    return merge(BoxShadowMix(spreadRadius: value));
   }
 
   /// Resolves to [BoxShadow] using the provided [BuildContext].
@@ -223,7 +223,7 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
   BoxShadowMix merge(BoxShadowMix? other) {
     if (other == null) return this;
 
-    return BoxShadowMix(
+    return BoxShadowMix.raw(
       color: MixHelpers.merge($color, other.$color),
       offset: MixHelpers.merge($offset, other.$offset),
       blurRadius: MixHelpers.merge($blurRadius, other.$blurRadius),

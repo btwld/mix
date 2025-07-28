@@ -11,7 +11,7 @@ void main() {
       test('creates StackBoxSpecAttribute with all properties', () {
         final boxAttribute = BoxSpecAttribute.width(200.0).height(200.0);
 
-        final stackAttribute = StackSpecAttribute.only(
+        final stackAttribute = StackSpecAttribute(
           alignment: Alignment.center,
           fit: StackFit.expand,
         );
@@ -104,10 +104,10 @@ void main() {
 
     group('Resolution', () {
       test('resolves to ZBoxSpec with correct properties', () {
-        final boxAttribute = BoxSpecAttribute.width(200.0)
-            .height(100.0)
-            .merge(BoxSpecAttribute.only(alignment: Alignment.center));
-        final stackAttribute = StackSpecAttribute.only(
+        final boxAttribute = BoxSpecAttribute.width(
+          200.0,
+        ).height(100.0).merge(BoxSpecAttribute(alignment: Alignment.center));
+        final stackAttribute = StackSpecAttribute(
           alignment: Alignment.topLeft,
           fit: StackFit.expand,
           clipBehavior: Clip.antiAlias,
@@ -148,12 +148,12 @@ void main() {
       test('merges two StackBoxSpecAttributes correctly', () {
         final attr1 = StackBoxSpecAttribute(
           box: BoxSpecAttribute.width(100.0).height(50.0),
-          stack: StackSpecAttribute.only(alignment: Alignment.topLeft),
+          stack: StackSpecAttribute(alignment: Alignment.topLeft),
         );
 
         final attr2 = StackBoxSpecAttribute(
           box: BoxSpecAttribute.width(200.0).merge(
-            BoxSpecAttribute.only(
+            BoxSpecAttribute(
               padding: EdgeInsetsGeometryMix.only(
                 top: 8.0,
                 bottom: 8.0,
@@ -162,7 +162,7 @@ void main() {
               ),
             ),
           ),
-          stack: StackSpecAttribute.only(fit: StackFit.expand),
+          stack: StackSpecAttribute(fit: StackFit.expand),
         );
 
         final merged = attr1.merge(attr2);
@@ -187,7 +187,7 @@ void main() {
       test('returns original when merging with null', () {
         final original = StackBoxSpecAttribute(
           box: BoxSpecAttribute.width(200.0),
-          stack: StackSpecAttribute.only(alignment: Alignment.center),
+          stack: StackSpecAttribute(alignment: Alignment.center),
         );
         final merged = original.merge(null);
 
@@ -197,12 +197,12 @@ void main() {
       test('handles complex merge scenarios', () {
         final attr1 = StackBoxSpecAttribute(
           box: BoxSpecAttribute.width(100.0),
-          stack: StackSpecAttribute.only(alignment: Alignment.topLeft),
+          stack: StackSpecAttribute(alignment: Alignment.topLeft),
         );
 
         final attr2 = StackBoxSpecAttribute(
           box: BoxSpecAttribute.height(200.0),
-          stack: StackSpecAttribute.only(fit: StackFit.expand),
+          stack: StackSpecAttribute(fit: StackFit.expand),
         );
 
         final merged = attr1.merge(attr2);
@@ -227,7 +227,7 @@ void main() {
         final attr1 = StackBoxSpecAttribute(box: BoxSpecAttribute.width(100.0));
 
         final attr2 = StackBoxSpecAttribute(
-          stack: StackSpecAttribute.only(fit: StackFit.expand),
+          stack: StackSpecAttribute(fit: StackFit.expand),
         );
 
         final merged = attr1.merge(attr2);
@@ -245,7 +245,7 @@ void main() {
     group('equality', () {
       test('attributes with same properties are equal', () {
         final boxAttr = BoxSpecAttribute.width(200.0).height(100.0);
-        final stackAttr = StackSpecAttribute.only(alignment: Alignment.center);
+        final stackAttr = StackSpecAttribute(alignment: Alignment.center);
 
         final attr1 = StackBoxSpecAttribute(box: boxAttr, stack: stackAttr);
         final attr2 = StackBoxSpecAttribute(box: boxAttr, stack: stackAttr);
@@ -257,7 +257,7 @@ void main() {
       test('attributes with different box properties are not equal', () {
         final boxAttr1 = BoxSpecAttribute.width(100.0);
         final boxAttr2 = BoxSpecAttribute.width(200.0);
-        final stackAttr = StackSpecAttribute.only(alignment: Alignment.center);
+        final stackAttr = StackSpecAttribute(alignment: Alignment.center);
 
         final attr1 = StackBoxSpecAttribute(box: boxAttr1, stack: stackAttr);
         final attr2 = StackBoxSpecAttribute(box: boxAttr2, stack: stackAttr);
@@ -267,12 +267,8 @@ void main() {
 
       test('attributes with different stack properties are not equal', () {
         final boxAttr = BoxSpecAttribute.width(100.0);
-        final stackAttr1 = StackSpecAttribute.only(
-          alignment: Alignment.topLeft,
-        );
-        final stackAttr2 = StackSpecAttribute.only(
-          alignment: Alignment.bottomRight,
-        );
+        final stackAttr1 = StackSpecAttribute(alignment: Alignment.topLeft);
+        final stackAttr2 = StackSpecAttribute(alignment: Alignment.bottomRight);
 
         final attr1 = StackBoxSpecAttribute(box: boxAttr, stack: stackAttr1);
         final attr2 = StackBoxSpecAttribute(box: boxAttr, stack: stackAttr2);
@@ -284,7 +280,7 @@ void main() {
     group('debugFillProperties', () {
       test('includes all properties in diagnostics', () {
         final boxAttribute = BoxSpecAttribute.width(200.0).height(100.0);
-        final stackAttribute = StackSpecAttribute.only(
+        final stackAttribute = StackSpecAttribute(
           alignment: Alignment.center,
           fit: StackFit.expand,
         );
@@ -306,7 +302,7 @@ void main() {
     group('props', () {
       test('includes all properties in props list', () {
         final boxAttribute = BoxSpecAttribute.width(200.0).height(100.0);
-        final stackAttribute = StackSpecAttribute.only(
+        final stackAttribute = StackSpecAttribute(
           alignment: Alignment.center,
           fit: StackFit.expand,
         );
@@ -326,7 +322,7 @@ void main() {
       test('creates overlay container attribute', () {
         final overlayAttr = StackBoxSpecAttribute(
           box: BoxSpecAttribute.width(double.infinity).height(double.infinity),
-          stack: StackSpecAttribute.only(
+          stack: StackSpecAttribute(
             alignment: Alignment.center,
             fit: StackFit.expand,
           ),
@@ -347,7 +343,7 @@ void main() {
       test('creates positioned card attribute', () {
         final cardAttr = StackBoxSpecAttribute(
           box: BoxSpecAttribute.width(300.0).height(200.0),
-          stack: StackSpecAttribute.only(
+          stack: StackSpecAttribute(
             alignment: Alignment.topLeft,
             fit: StackFit.loose,
             clipBehavior: Clip.antiAlias,
@@ -369,7 +365,7 @@ void main() {
 
       test('creates badge container attribute', () {
         final badgeAttr = StackBoxSpecAttribute(
-          stack: StackSpecAttribute.only(
+          stack: StackSpecAttribute(
             alignment: Alignment.center,
             fit: StackFit.loose,
           ),

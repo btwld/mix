@@ -10,9 +10,9 @@ void main() {
       final utility = DecorationUtility(UtilityTestAttribute.new);
 
       test('call() creates DecorationMix', () {
-        final decorationMix = BoxDecorationMix.only(
+        final decorationMix = BoxDecorationMix(
           color: Colors.red,
-          borderRadius: BorderRadiusMix.only(
+          borderRadius: BorderRadiusMix(
             topLeft: const Radius.circular(8.0),
             topRight: const Radius.circular(8.0),
           ),
@@ -62,14 +62,14 @@ void main() {
       final utility = BoxDecorationUtility(UtilityTestAttribute.new);
 
       test('call() creates BoxDecorationMix', () {
-        final decorationMix = BoxDecorationMix.only(
+        final decorationMix = BoxDecorationMix(
           color: Colors.red,
-          borderRadius: BorderRadiusMix.only(
+          borderRadius: BorderRadiusMix(
             topLeft: const Radius.circular(8.0),
             topRight: const Radius.circular(8.0),
           ),
-          border: BorderMix.only(
-            top: BorderSideMix.only(color: Colors.black, width: 2.0),
+          border: BorderMix(
+            top: BorderSideMix(color: Colors.black, width: 2.0),
           ),
         );
         final attr = utility(decorationMix);
@@ -100,15 +100,15 @@ void main() {
         });
 
         test('border() creates box decoration with border', () {
-          final borderMix = BorderMix.only(
-            top: BorderSideMix.only(color: Colors.black, width: 2.0),
+          final borderMix = BorderMix(
+            top: BorderSideMix(color: Colors.black, width: 2.0),
           );
           final attr = utility.border(borderMix);
           expect(attr.value, isA<MixProp<BoxDecoration>>());
         });
 
         test('border.all() creates box decoration with all borders', () {
-          final borderSideMix = BorderSideMix.only(
+          final borderSideMix = BorderSideMix(
             color: Colors.red,
             width: 1.0,
           );
@@ -117,7 +117,7 @@ void main() {
         });
 
         test('border.top() creates box decoration with top border', () {
-          final borderSideMix = BorderSideMix.only(
+          final borderSideMix = BorderSideMix(
             color: Colors.blue,
             width: 3.0,
           );
@@ -126,7 +126,7 @@ void main() {
         });
 
         test('borderRadius() creates box decoration with border radius', () {
-          final borderRadiusMix = BorderRadiusMix.only(
+          final borderRadiusMix = BorderRadiusMix(
             topLeft: const Radius.circular(8.0),
             topRight: const Radius.circular(8.0),
           );
@@ -185,7 +185,7 @@ void main() {
         );
 
         test('gradient() creates box decoration with gradient', () {
-          final gradientMix = LinearGradientMix.only(
+          final gradientMix = LinearGradientMix(
             colors: const [Colors.red, Colors.blue],
           );
           final attr = utility.gradient(gradientMix);
@@ -195,7 +195,7 @@ void main() {
         test(
           'gradient.linear() creates box decoration with linear gradient',
           () {
-            final linearGradientMix = LinearGradientMix.only(
+            final linearGradientMix = LinearGradientMix(
               colors: const [Colors.red, Colors.blue],
             );
             final attr = utility.gradient.linear(linearGradientMix);
@@ -217,7 +217,7 @@ void main() {
         test(
           'gradient.radial() creates box decoration with radial gradient',
           () {
-            final radialGradientMix = RadialGradientMix.only(
+            final radialGradientMix = RadialGradientMix(
               colors: const [Colors.green, Colors.yellow],
             );
             final attr = utility.gradient.radial(radialGradientMix);
@@ -237,7 +237,7 @@ void main() {
         );
 
         test('gradient.sweep() creates box decoration with sweep gradient', () {
-          final sweepGradientMix = SweepGradientMix.only(
+          final sweepGradientMix = SweepGradientMix(
             colors: const [Colors.purple, Colors.orange],
           );
           final attr = utility.gradient.sweep(sweepGradientMix);
@@ -256,7 +256,7 @@ void main() {
         );
 
         test('image() creates box decoration with decoration image', () {
-          final imageMix = DecorationImageMix.only(
+          final imageMix = DecorationImageMix(
             image: const NetworkImage('https://example.com/image.png'),
             fit: BoxFit.cover,
           );
@@ -277,7 +277,7 @@ void main() {
         });
 
         test('boxShadow() creates box decoration with single box shadow', () {
-          final shadowMix = BoxShadowMix.only(
+          final shadowMix = BoxShadowMix(
             color: Colors.black26,
             blurRadius: 4.0,
             offset: const Offset(0, 2),
@@ -303,8 +303,8 @@ void main() {
           'boxShadows() creates box decoration with multiple box shadows',
           () {
             final shadowMixes = [
-              BoxShadowMix.only(color: Colors.black26, blurRadius: 4.0),
-              BoxShadowMix.only(color: Colors.black12, blurRadius: 8.0),
+              BoxShadowMix(color: Colors.black26, blurRadius: 4.0),
+              BoxShadowMix(color: Colors.black12, blurRadius: 8.0),
             ];
             final attr = utility.boxShadows(shadowMixes);
             expect(attr.value, isA<MixProp<BoxDecoration>>());
@@ -347,9 +347,9 @@ void main() {
       final utility = ShapeDecorationUtility(UtilityTestAttribute.new);
 
       test('call() creates ShapeDecorationMix', () {
-        final decorationMix = ShapeDecorationMix.only(
+        final decorationMix = ShapeDecorationMix(
           color: Colors.red,
-          shape: CircleBorderMix.only(),
+          shape: CircleBorderMix(),
         );
         final attr = utility(decorationMix);
         expect(attr.value, isA<MixProp<ShapeDecoration>>());
@@ -378,8 +378,8 @@ void main() {
         });
 
         test('shape() creates shape decoration with shape border', () {
-          final shapeMix = RoundedRectangleBorderMix.only(
-            borderRadius: BorderRadiusMix.only(
+          final shapeMix = RoundedRectangleBorderMix(
+            borderRadius: BorderRadiusMix(
               topLeft: const Radius.circular(8.0),
               topRight: const Radius.circular(8.0),
             ),
@@ -402,17 +402,17 @@ void main() {
         );
 
         test('shape.circle() creates shape decoration with circle', () {
-          final attr = utility.shape.circle(CircleBorderMix.only());
+          final attr = utility.shape.circle(CircleBorderMix());
           expect(attr.value, isA<MixProp<ShapeDecoration>>());
         });
 
         test('shape.stadium() creates shape decoration with stadium', () {
-          final attr = utility.shape.stadium(StadiumBorderMix.only());
+          final attr = utility.shape.stadium(StadiumBorderMix());
           expect(attr.value, isA<MixProp<ShapeDecoration>>());
         });
 
         test('image() creates shape decoration with decoration image', () {
-          final imageMix = DecorationImageMix.only(
+          final imageMix = DecorationImageMix(
             image: const AssetImage('assets/image.png'),
             fit: BoxFit.cover,
           );
@@ -431,7 +431,7 @@ void main() {
         );
 
         test('gradient() creates shape decoration with gradient', () {
-          final gradientMix = RadialGradientMix.only(
+          final gradientMix = RadialGradientMix(
             colors: const [Colors.red, Colors.blue],
           );
           final attr = utility.gradient(gradientMix);
@@ -441,7 +441,7 @@ void main() {
         test(
           'gradient.radial() creates shape decoration with radial gradient',
           () {
-            final radialGradientMix = RadialGradientMix.only(
+            final radialGradientMix = RadialGradientMix(
               colors: const [Colors.purple, Colors.pink],
             );
             final attr = utility.gradient.radial(radialGradientMix);
@@ -462,8 +462,8 @@ void main() {
 
         test('shadows() creates shape decoration with shadows', () {
           final shadowMixes = [
-            BoxShadowMix.only(color: Colors.black26, blurRadius: 4.0),
-            BoxShadowMix.only(color: Colors.black12, blurRadius: 8.0),
+            BoxShadowMix(color: Colors.black26, blurRadius: 4.0),
+            BoxShadowMix(color: Colors.black12, blurRadius: 8.0),
           ];
           final attr = utility.shadows(shadowMixes);
           expect(attr.value, isA<MixProp<ShapeDecoration>>());

@@ -14,15 +14,15 @@ class ShadowUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, Shadow> {
   /// Utility for defining [ShadowMix.blurRadius].
   late final blurRadius = PropUtility<T, double>(
-    (prop) => call(ShadowMix(blurRadius: prop)),
+    (prop) => call(ShadowMix.raw(blurRadius: prop)),
   );
 
   /// Utility for defining [ShadowMix.color].
-  late final color = ColorUtility<T>((prop) => call(ShadowMix(color: prop)));
+  late final color = ColorUtility<T>((prop) => call(ShadowMix.raw(color: prop)));
 
   /// Utility for defining [ShadowMix.offset].
   late final offset = PropUtility<T, Offset>(
-    (prop) => call(ShadowMix(offset: prop)),
+    (prop) => call(ShadowMix.raw(offset: prop)),
   );
 
   ShadowUtility(super.builder) : super(convertToMix: ShadowMix.value);
@@ -38,21 +38,21 @@ class ShadowUtility<T extends StyleAttribute<Object?>>
 /// Use the methods of this class to configure specific properties of a [BoxShadow].
 class BoxShadowUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, BoxShadow> {
-  late final color = ColorUtility<T>((prop) => call(BoxShadowMix(color: prop)));
+  late final color = ColorUtility<T>((prop) => call(BoxShadowMix.raw(color: prop)));
 
   /// Utility for defining [BoxShadowMix.offset].
   late final offset = PropUtility<T, Offset>(
-    (prop) => call(BoxShadowMix(offset: prop)),
+    (prop) => call(BoxShadowMix.raw(offset: prop)),
   );
 
   /// Utility for defining [BoxShadowMix.blurRadius].
   late final blurRadius = PropUtility<T, double>(
-    (prop) => call(BoxShadowMix(blurRadius: prop)),
+    (prop) => call(BoxShadowMix.raw(blurRadius: prop)),
   );
 
   /// Utility for defining [BoxShadowMix.spreadRadius].
   late final spreadRadius = PropUtility<T, double>(
-    (prop) => call(BoxShadowMix(spreadRadius: prop)),
+    (prop) => call(BoxShadowMix.raw(spreadRadius: prop)),
   );
 
   BoxShadowUtility(super.builder) : super(convertToMix: BoxShadowMix.value);
@@ -153,7 +153,7 @@ final class ElevationMixPropUtility<T extends StyleAttribute<Object?>>
 
     final boxShadows = kElevationToShadow[value]!.map(
       (e) => MixProp(
-        BoxShadowMix(
+        BoxShadowMix.raw(
           color: Prop(e.color),
           offset: Prop(e.offset),
           blurRadius: Prop(e.blurRadius),

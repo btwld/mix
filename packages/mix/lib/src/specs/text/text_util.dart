@@ -21,51 +21,51 @@ class TextSpecUtility extends StyleAttributeBuilder<TextSpec> {
   // TEXT UTILITIES - Same as TextSpecAttribute but return TextSpecUtility for cascade
 
   late final textOverflow = PropUtility<TextSpecUtility, TextOverflow>(
-    (prop) => _build(TextSpecAttribute(overflow: prop)),
+    (prop) => _build(TextSpecAttribute.raw(overflow: prop)),
   );
 
   late final strutStyle = StrutStyleUtility<TextSpecUtility>(
-    (prop) => _build(TextSpecAttribute(strutStyle: prop)),
+    (prop) => _build(TextSpecAttribute.raw(strutStyle: prop)),
   );
 
   late final textAlign = PropUtility<TextSpecUtility, TextAlign>(
-    (prop) => _build(TextSpecAttribute(textAlign: prop)),
+    (prop) => _build(TextSpecAttribute.raw(textAlign: prop)),
   );
 
   late final textScaler = PropUtility<TextSpecUtility, TextScaler>(
-    (prop) => _build(TextSpecAttribute(textScaler: prop)),
+    (prop) => _build(TextSpecAttribute.raw(textScaler: prop)),
   );
 
   late final maxLines = PropUtility<TextSpecUtility, int>(
-    (prop) => _build(TextSpecAttribute(maxLines: prop)),
+    (prop) => _build(TextSpecAttribute.raw(maxLines: prop)),
   );
 
   late final style = TextStyleUtility<TextSpecUtility>(
-    (prop) => _build(TextSpecAttribute(style: prop)),
+    (prop) => _build(TextSpecAttribute.raw(style: prop)),
   );
 
   late final textWidthBasis = PropUtility<TextSpecUtility, TextWidthBasis>(
-    (prop) => _build(TextSpecAttribute(textWidthBasis: prop)),
+    (prop) => _build(TextSpecAttribute.raw(textWidthBasis: prop)),
   );
 
   late final textHeightBehavior = TextHeightBehaviorUtility<TextSpecUtility>(
-    (prop) => _build(TextSpecAttribute(textHeightBehavior: prop)),
+    (prop) => _build(TextSpecAttribute.raw(textHeightBehavior: prop)),
   );
 
   late final textDirection = PropUtility<TextSpecUtility, TextDirection>(
-    (prop) => _build(TextSpecAttribute(textDirection: prop)),
+    (prop) => _build(TextSpecAttribute.raw(textDirection: prop)),
   );
 
   late final softWrap = PropUtility<TextSpecUtility, bool>(
-    (prop) => _build(TextSpecAttribute(softWrap: prop)),
+    (prop) => _build(TextSpecAttribute.raw(softWrap: prop)),
   );
 
   late final directive = TextDirectiveUtility<TextSpecUtility>(
-    (prop) => _build(TextSpecAttribute(directives: [prop])),
+    (prop) => _build(TextSpecAttribute.raw(directives: [prop])),
   );
 
   late final on = OnContextVariantUtility<TextSpec, TextSpecUtility>(
-    (v) => _build(TextSpecAttribute(variants: [v])),
+    (v) => _build(TextSpecAttribute.raw(variants: [v])),
   );
 
   late final wrap = ModifierUtility<TextSpecUtility>(

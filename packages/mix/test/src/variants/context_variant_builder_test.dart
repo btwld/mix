@@ -351,8 +351,8 @@ void main() {
 
       test('can create attributes with multiple properties', () {
         final builder = ContextVariantBuilder<BoxSpecAttribute>((context) {
-          return BoxSpecAttribute.only(
-            constraints: BoxConstraintsMix.only(
+          return BoxSpecAttribute(
+            constraints: BoxConstraintsMix(
               minWidth: 100.0,
               maxWidth: 100.0,
               minHeight: 200.0,
@@ -397,7 +397,7 @@ void main() {
     group('Edge cases', () {
       test('handles function that returns const attributes', () {
         final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute.only(),
+          (context) => BoxSpecAttribute(),
         );
 
         final result = builder.build(MockBuildContext());
@@ -574,8 +574,8 @@ void main() {
           context,
         ) {
           // Always return fixed size for this test
-          return BoxSpecAttribute.only(
-            constraints: BoxConstraintsMix.only(
+          return BoxSpecAttribute(
+            constraints: BoxConstraintsMix(
               minWidth: 100.0,
               maxWidth: 100.0,
               minHeight: 100.0,

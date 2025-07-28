@@ -26,23 +26,23 @@ final class BoxBorderUtility<T extends StyleAttribute<Object?>>
 final class BorderUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, Border> {
   late final all = BorderSideUtility<T>(
-    (v) => call(BorderMix(top: v, bottom: v, left: v, right: v)),
+    (v) => call(BorderMix.raw(top: v, bottom: v, left: v, right: v)),
   );
 
-  late final bottom = BorderSideUtility<T>((v) => call(BorderMix(bottom: v)));
+  late final bottom = BorderSideUtility<T>((v) => call(BorderMix.raw(bottom: v)));
 
-  late final top = BorderSideUtility<T>((v) => call(BorderMix(top: v)));
+  late final top = BorderSideUtility<T>((v) => call(BorderMix.raw(top: v)));
 
-  late final left = BorderSideUtility<T>((v) => call(BorderMix(left: v)));
+  late final left = BorderSideUtility<T>((v) => call(BorderMix.raw(left: v)));
 
-  late final right = BorderSideUtility<T>((v) => call(BorderMix(right: v)));
+  late final right = BorderSideUtility<T>((v) => call(BorderMix.raw(right: v)));
 
   late final vertical = BorderSideUtility<T>(
-    (v) => call(BorderMix(top: v, bottom: v)),
+    (v) => call(BorderMix.raw(top: v, bottom: v)),
   );
 
   late final horizontal = BorderSideUtility<T>(
-    (v) => call(BorderMix(left: v, right: v)),
+    (v) => call(BorderMix.raw(left: v, right: v)),
   );
 
   late final color = all.color;
@@ -64,7 +64,7 @@ final class BorderUtility<T extends StyleAttribute<Object?>>
     BorderSideMix? right,
   }) {
     return call(
-      BorderMix.only(top: top, bottom: bottom, left: left, right: right),
+      BorderMix(top: top, bottom: bottom, left: left, right: right),
     );
   }
 
@@ -77,31 +77,31 @@ final class BorderUtility<T extends StyleAttribute<Object?>>
 final class BorderDirectionalUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, BorderDirectional> {
   late final all = BorderSideUtility<T>(
-    (v) => call(BorderDirectionalMix(top: v, bottom: v, start: v, end: v)),
+    (v) => call(BorderDirectionalMix.raw(top: v, bottom: v, start: v, end: v)),
   );
 
   late final bottom = BorderSideUtility<T>(
-    (v) => call(BorderDirectionalMix(bottom: v)),
+    (v) => call(BorderDirectionalMix.raw(bottom: v)),
   );
 
   late final top = BorderSideUtility<T>(
-    (v) => call(BorderDirectionalMix(top: v)),
+    (v) => call(BorderDirectionalMix.raw(top: v)),
   );
 
   late final start = BorderSideUtility<T>(
-    (v) => call(BorderDirectionalMix(start: v)),
+    (v) => call(BorderDirectionalMix.raw(start: v)),
   );
 
   late final end = BorderSideUtility<T>(
-    (v) => call(BorderDirectionalMix(end: v)),
+    (v) => call(BorderDirectionalMix.raw(end: v)),
   );
 
   late final vertical = BorderSideUtility<T>(
-    (v) => call(BorderDirectionalMix(top: v, bottom: v)),
+    (v) => call(BorderDirectionalMix.raw(top: v, bottom: v)),
   );
 
   late final horizontal = BorderSideUtility<T>(
-    (v) => call(BorderDirectionalMix(start: v, end: v)),
+    (v) => call(BorderDirectionalMix.raw(start: v, end: v)),
   );
 
   BorderDirectionalUtility(super.builder)
@@ -116,7 +116,7 @@ final class BorderDirectionalUtility<T extends StyleAttribute<Object?>>
     BorderSideMix? end,
   }) {
     return call(
-      BorderDirectionalMix.only(
+      BorderDirectionalMix(
         top: top,
         bottom: bottom,
         start: start,
@@ -139,22 +139,22 @@ class BorderSideUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, BorderSide> {
   /// Utility for defining [BorderSideMix.color]
   late final color = ColorUtility<T>(
-    (prop) => call(BorderSideMix(color: prop)),
+    (prop) => call(BorderSideMix.raw(color: prop)),
   );
 
   /// Utility for defining [BorderSideMix.strokeAlign]
   late final strokeAlign = PropUtility<T, double>(
-    (prop) => call(BorderSideMix(strokeAlign: prop)),
+    (prop) => call(BorderSideMix.raw(strokeAlign: prop)),
   );
 
   /// Utility for defining [BorderSideMix.style]
   late final style = PropUtility<T, BorderStyle>(
-    (prop) => call(BorderSideMix(style: prop)),
+    (prop) => call(BorderSideMix.raw(style: prop)),
   );
 
   /// Utility for defining [BorderSideMix.width]
   late final width = PropUtility<T, double>(
-    (prop) => call(BorderSideMix(width: prop)),
+    (prop) => call(BorderSideMix.raw(width: prop)),
   );
 
   BorderSideUtility(super.builder) : super(convertToMix: BorderSideMix.value);
@@ -170,7 +170,7 @@ class BorderSideUtility<T extends StyleAttribute<Object?>>
     double? width,
   }) {
     return call(
-      BorderSideMix.only(
+      BorderSideMix(
         color: color,
         strokeAlign: strokeAlign,
         style: style,

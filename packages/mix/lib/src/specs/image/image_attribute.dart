@@ -29,50 +29,50 @@ class ImageSpecAttribute extends StyleAttribute<ImageSpec>
 
   /// Utility for defining [ImageSpecAttribute.width]
   late final width = PropUtility<ImageSpecAttribute, double>(
-    (prop) => merge(ImageSpecAttribute(width: prop)),
+    (prop) => merge(ImageSpecAttribute.raw(width: prop)),
   );
 
   /// Utility for defining [ImageSpecAttribute.height]
   late final height = PropUtility<ImageSpecAttribute, double>(
-    (prop) => merge(ImageSpecAttribute(height: prop)),
+    (prop) => merge(ImageSpecAttribute.raw(height: prop)),
   );
 
   /// Utility for defining [ImageSpecAttribute.color]
   late final color = ColorUtility(
-    (prop) => merge(ImageSpecAttribute(color: prop)),
+    (prop) => merge(ImageSpecAttribute.raw(color: prop)),
   );
 
   /// Utility for defining [ImageSpecAttribute.repeat]
   late final repeat = PropUtility<ImageSpecAttribute, ImageRepeat>(
-    (prop) => merge(ImageSpecAttribute(repeat: prop)),
+    (prop) => merge(ImageSpecAttribute.raw(repeat: prop)),
   );
 
   /// Utility for defining [ImageSpecAttribute.fit]
   late final fit = PropUtility<ImageSpecAttribute, BoxFit>(
-    (prop) => merge(ImageSpecAttribute(fit: prop)),
+    (prop) => merge(ImageSpecAttribute.raw(fit: prop)),
   );
 
   /// Utility for defining [ImageSpecAttribute.alignment]
   late final alignment = PropUtility<ImageSpecAttribute, AlignmentGeometry>(
-    (prop) => merge(ImageSpecAttribute(alignment: prop)),
+    (prop) => merge(ImageSpecAttribute.raw(alignment: prop)),
   );
 
   /// Utility for defining [ImageSpecAttribute.centerSlice]
   late final centerSlice = PropUtility<ImageSpecAttribute, Rect>(
-    (prop) => merge(ImageSpecAttribute(centerSlice: prop)),
+    (prop) => merge(ImageSpecAttribute.raw(centerSlice: prop)),
   );
 
   /// Utility for defining [ImageSpecAttribute.filterQuality]
   late final filterQuality = PropUtility<ImageSpecAttribute, FilterQuality>(
-    (prop) => merge(ImageSpecAttribute(filterQuality: prop)),
+    (prop) => merge(ImageSpecAttribute.raw(filterQuality: prop)),
   );
 
   /// Utility for defining [ImageSpecAttribute.colorBlendMode]
   late final colorBlendMode = PropUtility<ImageSpecAttribute, BlendMode>(
-    (prop) => merge(ImageSpecAttribute(colorBlendMode: prop)),
+    (prop) => merge(ImageSpecAttribute.raw(colorBlendMode: prop)),
   );
 
-  ImageSpecAttribute({
+  ImageSpecAttribute.raw({
     Prop<double>? width,
     Prop<double>? height,
     Prop<Color>? color,
@@ -95,7 +95,7 @@ class ImageSpecAttribute extends StyleAttribute<ImageSpec>
        $filterQuality = filterQuality,
        $colorBlendMode = colorBlendMode;
 
-  ImageSpecAttribute.only({
+  ImageSpecAttribute({
     double? width,
     double? height,
     Color? color,
@@ -108,7 +108,7 @@ class ImageSpecAttribute extends StyleAttribute<ImageSpec>
     AnimationConfig? animation,
     List<ModifierAttribute>? modifiers,
     List<VariantStyleAttribute<ImageSpec>>? variants,
-  }) : this(
+  }) : this.raw(
          width: Prop.maybe(width),
          height: Prop.maybe(height),
          color: Prop.maybe(color),
@@ -132,7 +132,7 @@ class ImageSpecAttribute extends StyleAttribute<ImageSpec>
   /// final attr = ImageSpecAttribute.value(spec);
   /// ```
   ImageSpecAttribute.value(ImageSpec spec)
-    : this.only(
+    : this(
         width: spec.width,
         height: spec.height,
         color: spec.color,
@@ -158,16 +158,16 @@ class ImageSpecAttribute extends StyleAttribute<ImageSpec>
 
   /// Convenience method for animating the ImageSpec
   ImageSpecAttribute animate(AnimationConfig animation) {
-    return ImageSpecAttribute.only(animation: animation);
+    return ImageSpecAttribute(animation: animation);
   }
 
   ImageSpecAttribute variants(List<VariantStyleAttribute<ImageSpec>> variants) {
-    return merge(ImageSpecAttribute.only(variants: variants));
+    return merge(ImageSpecAttribute(variants: variants));
   }
 
   @override
   ImageSpecAttribute modifiers(List<ModifierAttribute> modifiers) {
-    return merge(ImageSpecAttribute.only(modifiers: modifiers));
+    return merge(ImageSpecAttribute(modifiers: modifiers));
   }
 
   @override
@@ -189,7 +189,7 @@ class ImageSpecAttribute extends StyleAttribute<ImageSpec>
   ImageSpecAttribute merge(ImageSpecAttribute? other) {
     if (other == null) return this;
 
-    return ImageSpecAttribute(
+    return ImageSpecAttribute.raw(
       width: MixHelpers.merge($width, other.$width),
       height: MixHelpers.merge($height, other.$height),
       color: MixHelpers.merge($color, other.$color),
@@ -234,9 +234,7 @@ class ImageSpecAttribute extends StyleAttribute<ImageSpec>
   @override
   ImageSpecAttribute variant(Variant variant, ImageSpecAttribute style) {
     return merge(
-      ImageSpecAttribute.only(
-        variants: [VariantStyleAttribute(variant, style)],
-      ),
+      ImageSpecAttribute(variants: [VariantStyleAttribute(variant, style)]),
     );
   }
 

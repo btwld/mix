@@ -13,42 +13,42 @@ final class DecorationImageUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, DecorationImage> {
   /// Utility for defining [DecorationImageMix.image]
   late final provider = PropUtility<T, ImageProvider>(
-    (prop) => call(DecorationImageMix(image: prop)),
+    (prop) => call(DecorationImageMix.raw(image: prop)),
   );
 
   /// Utility for defining [DecorationImageMix.fit]
   late final fit = PropUtility<T, BoxFit>(
-    (prop) => call(DecorationImageMix(fit: prop)),
+    (prop) => call(DecorationImageMix.raw(fit: prop)),
   );
 
   /// Utility for defining [DecorationImageMix.alignment]
   late final alignment = PropUtility<T, AlignmentGeometry>(
-    (prop) => call(DecorationImageMix(alignment: prop)),
+    (prop) => call(DecorationImageMix.raw(alignment: prop)),
   );
 
   /// Utility for defining [DecorationImageMix.centerSlice]
   late final centerSlice = PropUtility<T, Rect>(
-    (prop) => call(DecorationImageMix(centerSlice: prop)),
+    (prop) => call(DecorationImageMix.raw(centerSlice: prop)),
   );
 
   /// Utility for defining [DecorationImageMix.repeat]
   late final repeat = PropUtility<T, ImageRepeat>(
-    (prop) => call(DecorationImageMix(repeat: prop)),
+    (prop) => call(DecorationImageMix.raw(repeat: prop)),
   );
 
   /// Utility for defining [DecorationImageMix.filterQuality]
   late final filterQuality = PropUtility<T, FilterQuality>(
-    (prop) => call(DecorationImageMix(filterQuality: prop)),
+    (prop) => call(DecorationImageMix.raw(filterQuality: prop)),
   );
 
   /// Utility for defining [DecorationImageMix.invertColors]
   late final invertColors = PropUtility<T, bool>(
-    (prop) => call(DecorationImageMix(invertColors: prop)),
+    (prop) => call(DecorationImageMix.raw(invertColors: prop)),
   );
 
   /// Utility for defining [DecorationImageMix.isAntiAlias]
   late final isAntiAlias = PropUtility<T, bool>(
-    (prop) => call(DecorationImageMix(isAntiAlias: prop)),
+    (prop) => call(DecorationImageMix.raw(isAntiAlias: prop)),
   );
 
   DecorationImageUtility(super.builder)

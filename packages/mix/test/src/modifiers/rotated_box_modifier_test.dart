@@ -150,14 +150,14 @@ void main() {
   group('RotatedBoxModifierAttribute', () {
     group('Constructor', () {
       test('creates with null quarter turns by default', () {
-        const attribute = RotatedBoxModifierAttribute();
+        final attribute = RotatedBoxModifierAttribute();
 
         expect(attribute.quarterTurns, isNull);
       });
 
       test('creates with provided Prop quarter turns', () {
         final quarterTurns = Prop<int>(2);
-        final attribute = RotatedBoxModifierAttribute(
+        final attribute = RotatedBoxModifierAttribute.raw(
           quarterTurns: quarterTurns,
         );
 
@@ -167,14 +167,14 @@ void main() {
 
     group('only constructor', () {
       test('creates Prop from int value', () {
-        final attribute = RotatedBoxModifierAttribute.only(quarterTurns: 3);
+        final attribute = RotatedBoxModifierAttribute(quarterTurns: 3);
 
         expect(attribute.quarterTurns, isNotNull);
         expectProp(attribute.quarterTurns, 3);
       });
 
       test('handles null quarter turns', () {
-        final attribute = RotatedBoxModifierAttribute.only();
+        final attribute = RotatedBoxModifierAttribute();
 
         expect(attribute.quarterTurns, isNull);
       });
@@ -182,13 +182,13 @@ void main() {
 
     group('resolve', () {
       test('resolves to RotatedBoxModifier with resolved quarter turns', () {
-        final attribute = RotatedBoxModifierAttribute.only(quarterTurns: 1);
+        final attribute = RotatedBoxModifierAttribute(quarterTurns: 1);
 
         expect(attribute, resolvesTo(const RotatedBoxModifier(1)));
       });
 
       test('resolves with null quarter turns to zero', () {
-        const attribute = RotatedBoxModifierAttribute();
+        final attribute = RotatedBoxModifierAttribute();
 
         expect(attribute, resolvesTo(const RotatedBoxModifier(0)));
       });
@@ -196,8 +196,8 @@ void main() {
 
     group('merge', () {
       test('merges with other RotatedBoxModifierAttribute', () {
-        final attribute1 = RotatedBoxModifierAttribute.only(quarterTurns: 1);
-        final attribute2 = RotatedBoxModifierAttribute.only(quarterTurns: 3);
+        final attribute1 = RotatedBoxModifierAttribute(quarterTurns: 1);
+        final attribute2 = RotatedBoxModifierAttribute(quarterTurns: 3);
 
         final merged = attribute1.merge(attribute2);
 
@@ -205,7 +205,7 @@ void main() {
       });
 
       test('returns original when other is null', () {
-        final attribute = RotatedBoxModifierAttribute.only(quarterTurns: 2);
+        final attribute = RotatedBoxModifierAttribute(quarterTurns: 2);
 
         final merged = attribute.merge(null);
 
@@ -213,8 +213,8 @@ void main() {
       });
 
       test('merges with null quarter turns', () {
-        const attribute1 = RotatedBoxModifierAttribute();
-        final attribute2 = RotatedBoxModifierAttribute.only(quarterTurns: 1);
+        final attribute1 = RotatedBoxModifierAttribute();
+        final attribute2 = RotatedBoxModifierAttribute(quarterTurns: 1);
 
         final merged = attribute1.merge(attribute2);
 
@@ -224,21 +224,21 @@ void main() {
 
     group('equality and props', () {
       test('equal when quarter turns match', () {
-        final attribute1 = RotatedBoxModifierAttribute.only(quarterTurns: 2);
-        final attribute2 = RotatedBoxModifierAttribute.only(quarterTurns: 2);
+        final attribute1 = RotatedBoxModifierAttribute(quarterTurns: 2);
+        final attribute2 = RotatedBoxModifierAttribute(quarterTurns: 2);
 
         expect(attribute1, equals(attribute2));
       });
 
       test('not equal when quarter turns differ', () {
-        final attribute1 = RotatedBoxModifierAttribute.only(quarterTurns: 1);
-        final attribute2 = RotatedBoxModifierAttribute.only(quarterTurns: 3);
+        final attribute1 = RotatedBoxModifierAttribute(quarterTurns: 1);
+        final attribute2 = RotatedBoxModifierAttribute(quarterTurns: 3);
 
         expect(attribute1, isNot(equals(attribute2)));
       });
 
       test('props contains quarter turns', () {
-        final attribute = RotatedBoxModifierAttribute.only(quarterTurns: 2);
+        final attribute = RotatedBoxModifierAttribute(quarterTurns: 2);
 
         final props = attribute.props;
         expect(props.length, 1);
@@ -328,7 +328,7 @@ void main() {
     testWidgets('RotatedBoxModifierAttribute resolves and builds correctly', (
       WidgetTester tester,
     ) async {
-      final attribute = RotatedBoxModifierAttribute.only(quarterTurns: 2);
+      final attribute = RotatedBoxModifierAttribute(quarterTurns: 2);
 
       expect(attribute, resolvesTo(const RotatedBoxModifier(2)));
 
@@ -348,11 +348,11 @@ void main() {
     });
 
     test('Complex merge scenario preserves and overrides correctly', () {
-      final base = RotatedBoxModifierAttribute.only(quarterTurns: 0);
+      final base = RotatedBoxModifierAttribute(quarterTurns: 0);
 
-      final override1 = RotatedBoxModifierAttribute.only(quarterTurns: 1);
+      final override1 = RotatedBoxModifierAttribute(quarterTurns: 1);
 
-      final override2 = RotatedBoxModifierAttribute.only(quarterTurns: 3);
+      final override2 = RotatedBoxModifierAttribute(quarterTurns: 3);
 
       final result = base.merge(override1).merge(override2);
 

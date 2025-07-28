@@ -162,7 +162,7 @@ class DefaultTextStyleModifierAttribute
   final Prop<TextWidthBasis>? textWidthBasis;
   final MixProp<TextHeightBehavior>? textHeightBehavior;
 
-  const DefaultTextStyleModifierAttribute({
+  const DefaultTextStyleModifierAttribute.raw({
     this.style,
     this.textAlign,
     this.softWrap,
@@ -172,7 +172,7 @@ class DefaultTextStyleModifierAttribute
     this.textHeightBehavior,
   });
 
-  DefaultTextStyleModifierAttribute.only({
+  DefaultTextStyleModifierAttribute({
     TextStyleMix? style,
     TextAlign? textAlign,
     bool? softWrap,
@@ -180,7 +180,7 @@ class DefaultTextStyleModifierAttribute
     int? maxLines,
     TextWidthBasis? textWidthBasis,
     TextHeightBehaviorMix? textHeightBehavior,
-  }) : this(
+  }) : this.raw(
          style: MixProp.maybe(style),
          textAlign: Prop.maybe(textAlign),
          softWrap: Prop.maybe(softWrap),
@@ -225,7 +225,7 @@ class DefaultTextStyleModifierAttribute
   ) {
     if (other == null) return this;
 
-    return DefaultTextStyleModifierAttribute(
+    return DefaultTextStyleModifierAttribute.raw(
       style: MixHelpers.merge(style, other.style),
       textAlign: MixHelpers.merge(textAlign, other.textAlign),
       softWrap: MixHelpers.merge(softWrap, other.softWrap),
@@ -265,15 +265,13 @@ final class DefaultTextStyleModifierUtility<T extends StyleAttribute<Object?>>
   }) {
     return builder(
       DefaultTextStyleModifierAttribute(
-        style: MixProp.maybe(TextStyleMix.maybeValue(style)),
-        textAlign: Prop.maybe(textAlign),
-        softWrap: Prop.maybe(softWrap),
-        overflow: Prop.maybe(overflow),
-        maxLines: Prop.maybe(maxLines),
-        textWidthBasis: Prop.maybe(textWidthBasis),
-        textHeightBehavior: MixProp.maybe(
-          TextHeightBehaviorMix.maybeValue(textHeightBehavior),
-        ),
+        style: TextStyleMix.maybeValue(style),
+        textAlign: textAlign,
+        softWrap: softWrap,
+        overflow: overflow,
+        maxLines: maxLines,
+        textWidthBasis: textWidthBasis,
+        textHeightBehavior: TextHeightBehaviorMix.maybeValue(textHeightBehavior),
       ),
     );
   }

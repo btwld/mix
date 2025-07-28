@@ -38,7 +38,7 @@ class Box extends StyleWidget<BoxSpec> {
     super.inherit,
     this.child,
     super.orderOfModifiers,
-  }) : super(style: style ?? const BoxMix());
+  }) : super(style: style);
 
   /// The child widget that will receive the styles.
   final Widget? child;

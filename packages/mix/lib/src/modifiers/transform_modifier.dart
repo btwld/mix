@@ -50,7 +50,7 @@ final class TransformModifierUtility<T extends StyleAttribute<Object?>>
     extends MixUtility<T, TransformModifierAttribute> {
   late final rotate = TransformRotateModifierUtility(
     (value) => builder(
-      TransformModifierAttribute(
+      TransformModifierAttribute.raw(
         transform: Prop.maybe(value),
         alignment: Prop(Alignment.center),
       ),
@@ -60,7 +60,7 @@ final class TransformModifierUtility<T extends StyleAttribute<Object?>>
   TransformModifierUtility(super.builder);
 
   T _flip(bool x, bool y) => builder(
-    TransformModifierAttribute(
+    TransformModifierAttribute.raw(
       transform: Prop(
         Matrix4.diagonal3Values(x ? -1.0 : 1.0, y ? -1.0 : 1.0, 1.0),
       ),
@@ -72,17 +72,17 @@ final class TransformModifierUtility<T extends StyleAttribute<Object?>>
   T flipY() => _flip(false, true);
 
   T call(Matrix4 value) =>
-      builder(TransformModifierAttribute(transform: Prop(value)));
+      builder(TransformModifierAttribute.raw(transform: Prop(value)));
 
   T scale(double value) => builder(
-    TransformModifierAttribute(
+    TransformModifierAttribute.raw(
       transform: Prop(Matrix4.diagonal3Values(value, value, 1.0)),
       alignment: Prop(Alignment.center),
     ),
   );
 
   T translate(double x, double y) => builder(
-    TransformModifierAttribute(
+    TransformModifierAttribute.raw(
       transform: Prop(Matrix4.translationValues(x, y, 0.0)),
       alignment: Prop(Alignment.center),
     ),
@@ -103,10 +103,10 @@ class TransformModifierAttribute extends ModifierAttribute<TransformModifier> {
   final Prop<Matrix4>? transform;
   final Prop<Alignment>? alignment;
 
-  const TransformModifierAttribute({this.transform, this.alignment});
+  const TransformModifierAttribute.raw({this.transform, this.alignment});
 
-  TransformModifierAttribute.only({Matrix4? transform, Alignment? alignment})
-    : this(transform: Prop.maybe(transform), alignment: Prop.maybe(alignment));
+  TransformModifierAttribute({Matrix4? transform, Alignment? alignment})
+    : this.raw(transform: Prop.maybe(transform), alignment: Prop.maybe(alignment));
 
   @override
   TransformModifier resolve(BuildContext context) {
@@ -120,7 +120,7 @@ class TransformModifierAttribute extends ModifierAttribute<TransformModifier> {
   TransformModifierAttribute merge(TransformModifierAttribute? other) {
     if (other == null) return this;
 
-    return TransformModifierAttribute(
+    return TransformModifierAttribute.raw(
       transform: MixHelpers.merge(transform, other.transform),
       alignment: MixHelpers.merge(alignment, other.alignment),
     );

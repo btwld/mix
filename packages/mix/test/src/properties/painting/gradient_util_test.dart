@@ -10,7 +10,7 @@ void main() {
       final utility = GradientUtility(UtilityTestAttribute.new);
 
       test('call() creates GradientMix', () {
-        final gradientMix = LinearGradientMix.only(
+        final gradientMix = LinearGradientMix(
           colors: const [Colors.red, Colors.blue],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -52,7 +52,7 @@ void main() {
 
       group('Nested Utilities', () {
         test('linear provides access to LinearGradientUtility', () {
-          final linearGradientMix = LinearGradientMix.only(
+          final linearGradientMix = LinearGradientMix(
             colors: const [Colors.red, Colors.blue],
           );
           final attr = utility.linear(linearGradientMix);
@@ -60,7 +60,7 @@ void main() {
         });
 
         test('radial provides access to RadialGradientUtility', () {
-          final radialGradientMix = RadialGradientMix.only(
+          final radialGradientMix = RadialGradientMix(
             colors: const [Colors.green, Colors.yellow],
           );
           final attr = utility.radial(radialGradientMix);
@@ -68,7 +68,7 @@ void main() {
         });
 
         test('sweep provides access to SweepGradientUtility', () {
-          final sweepGradientMix = SweepGradientMix.only(
+          final sweepGradientMix = SweepGradientMix(
             colors: const [Colors.purple, Colors.orange],
           );
           final attr = utility.sweep(sweepGradientMix);
@@ -87,7 +87,7 @@ void main() {
       final utility = LinearGradientUtility(UtilityTestAttribute.new);
 
       test('call() creates LinearGradientMix', () {
-        final gradientMix = LinearGradientMix.only(
+        final gradientMix = LinearGradientMix(
           colors: const [Colors.red, Colors.blue],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -219,7 +219,7 @@ void main() {
       final utility = RadialGradientUtility(UtilityTestAttribute.new);
 
       test('call() creates RadialGradientMix', () {
-        final gradientMix = RadialGradientMix.only(
+        final gradientMix = RadialGradientMix(
           colors: const [Colors.red, Colors.blue],
           center: Alignment.center,
           radius: 0.5,
@@ -364,7 +364,7 @@ void main() {
       final utility = SweepGradientUtility(UtilityTestAttribute.new);
 
       test('call() creates SweepGradientMix', () {
-        final gradientMix = SweepGradientMix.only(
+        final gradientMix = SweepGradientMix(
           colors: const [Colors.red, Colors.blue, Colors.green],
           center: Alignment.center,
           startAngle: 0.0,

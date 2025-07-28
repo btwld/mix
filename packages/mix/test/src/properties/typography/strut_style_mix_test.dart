@@ -10,7 +10,7 @@ void main() {
   group('StrutStyleMix', () {
     group('Constructor', () {
       test('only constructor creates instance with correct properties', () {
-        final strutStyleMix = StrutStyleMix.only(
+        final strutStyleMix = StrutStyleMix(
           fontFamily: 'Roboto',
           fontFamilyFallback: const ['Arial', 'Helvetica'],
           fontSize: 16.0,
@@ -77,7 +77,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to StrutStyle with correct properties', () {
-        final strutStyleMix = StrutStyleMix.only(
+        final strutStyleMix = StrutStyleMix(
           fontFamily: 'Roboto',
           fontSize: 16.0,
           fontWeight: FontWeight.bold,
@@ -99,20 +99,20 @@ void main() {
 
     group('merge', () {
       test('returns this when other is null', () {
-        final strutStyleMix = StrutStyleMix.only(fontSize: 16.0);
+        final strutStyleMix = StrutStyleMix(fontSize: 16.0);
         final merged = strutStyleMix.merge(null);
 
         expect(merged, same(strutStyleMix));
       });
 
       test('merges properties correctly', () {
-        final first = StrutStyleMix.only(
+        final first = StrutStyleMix(
           fontFamily: 'Roboto',
           fontSize: 16.0,
           fontWeight: FontWeight.normal,
         );
 
-        final second = StrutStyleMix.only(
+        final second = StrutStyleMix(
           fontSize: 18.0,
           fontStyle: FontStyle.italic,
           height: 1.5,
@@ -128,11 +128,11 @@ void main() {
       });
 
       test('merges fontFamilyFallback lists by concatenating', () {
-        final first = StrutStyleMix.only(
+        final first = StrutStyleMix(
           fontFamilyFallback: const ['Arial', 'Helvetica'],
         );
 
-        final second = StrutStyleMix.only(
+        final second = StrutStyleMix(
           fontFamilyFallback: const ['Times', 'Georgia'],
         );
 
@@ -146,13 +146,13 @@ void main() {
       });
 
       test('preserves all properties in complex merge', () {
-        final base = StrutStyleMix.only(
+        final base = StrutStyleMix(
           fontFamily: 'Roboto',
           fontSize: 14.0,
           fontFamilyFallback: const ['Arial'],
         );
 
-        final override = StrutStyleMix.only(
+        final override = StrutStyleMix(
           fontSize: 16.0,
           fontWeight: FontWeight.bold,
           fontFamilyFallback: const ['Times'],
@@ -171,13 +171,13 @@ void main() {
 
     group('Equality', () {
       test('returns true when all properties are the same', () {
-        final strutStyleMix1 = StrutStyleMix.only(
+        final strutStyleMix1 = StrutStyleMix(
           fontFamily: 'Roboto',
           fontSize: 16.0,
           fontWeight: FontWeight.bold,
         );
 
-        final strutStyleMix2 = StrutStyleMix.only(
+        final strutStyleMix2 = StrutStyleMix(
           fontFamily: 'Roboto',
           fontSize: 16.0,
           fontWeight: FontWeight.bold,
@@ -188,22 +188,22 @@ void main() {
       });
 
       test('returns false when properties are different', () {
-        final strutStyleMix1 = StrutStyleMix.only(fontSize: 16.0);
-        final strutStyleMix2 = StrutStyleMix.only(fontSize: 18.0);
+        final strutStyleMix1 = StrutStyleMix(fontSize: 16.0);
+        final strutStyleMix2 = StrutStyleMix(fontSize: 18.0);
 
         expect(strutStyleMix1, isNot(strutStyleMix2));
       });
 
       test('handles fontFamilyFallback list equality correctly', () {
-        final strutStyleMix1 = StrutStyleMix.only(
+        final strutStyleMix1 = StrutStyleMix(
           fontFamilyFallback: const ['Arial', 'Helvetica'],
         );
 
-        final strutStyleMix2 = StrutStyleMix.only(
+        final strutStyleMix2 = StrutStyleMix(
           fontFamilyFallback: const ['Arial', 'Helvetica'],
         );
 
-        final strutStyleMix3 = StrutStyleMix.only(
+        final strutStyleMix3 = StrutStyleMix(
           fontFamilyFallback: const ['Arial', 'Times'],
         );
 
@@ -214,7 +214,7 @@ void main() {
 
     group('debugFillProperties', () {
       test('adds all properties to diagnostic properties', () {
-        final strutStyleMix = StrutStyleMix.only(
+        final strutStyleMix = StrutStyleMix(
           fontFamily: 'Roboto',
           fontSize: 16.0,
           fontWeight: FontWeight.bold,

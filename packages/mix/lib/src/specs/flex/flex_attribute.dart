@@ -35,53 +35,53 @@ class FlexSpecAttribute extends StyleAttribute<FlexSpec>
 
   /// Utility for defining [FlexSpecAttribute.direction]
   late final direction = PropUtility<FlexSpecAttribute, Axis>(
-    (prop) => merge(FlexSpecAttribute(direction: prop)),
+    (prop) => merge(FlexSpecAttribute.raw(direction: prop)),
   );
 
   /// Utility for defining [FlexSpecAttribute.mainAxisAlignment]
   late final mainAxisAlignment =
       PropUtility<FlexSpecAttribute, MainAxisAlignment>(
-        (prop) => merge(FlexSpecAttribute(mainAxisAlignment: prop)),
+        (prop) => merge(FlexSpecAttribute.raw(mainAxisAlignment: prop)),
       );
 
   /// Utility for defining [FlexSpecAttribute.crossAxisAlignment]
   late final crossAxisAlignment =
       PropUtility<FlexSpecAttribute, CrossAxisAlignment>(
-        (prop) => merge(FlexSpecAttribute(crossAxisAlignment: prop)),
+        (prop) => merge(FlexSpecAttribute.raw(crossAxisAlignment: prop)),
       );
 
   /// Utility for defining [FlexSpecAttribute.mainAxisSize]
   late final mainAxisSize = PropUtility<FlexSpecAttribute, MainAxisSize>(
-    (prop) => merge(FlexSpecAttribute(mainAxisSize: prop)),
+    (prop) => merge(FlexSpecAttribute.raw(mainAxisSize: prop)),
   );
 
   /// Utility for defining [FlexSpecAttribute.verticalDirection]
   late final verticalDirection =
       PropUtility<FlexSpecAttribute, VerticalDirection>(
-        (prop) => merge(FlexSpecAttribute(verticalDirection: prop)),
+        (prop) => merge(FlexSpecAttribute.raw(verticalDirection: prop)),
       );
 
   /// Utility for defining [FlexSpecAttribute.textDirection]
   late final textDirection = PropUtility<FlexSpecAttribute, TextDirection>(
-    (prop) => merge(FlexSpecAttribute(textDirection: prop)),
+    (prop) => merge(FlexSpecAttribute.raw(textDirection: prop)),
   );
 
   /// Utility for defining [FlexSpecAttribute.textBaseline]
   late final textBaseline = PropUtility<FlexSpecAttribute, TextBaseline>(
-    (prop) => merge(FlexSpecAttribute(textBaseline: prop)),
+    (prop) => merge(FlexSpecAttribute.raw(textBaseline: prop)),
   );
 
   /// Utility for defining [FlexSpecAttribute.clipBehavior]
   late final clipBehavior = PropUtility<FlexSpecAttribute, Clip>(
-    (prop) => merge(FlexSpecAttribute(clipBehavior: prop)),
+    (prop) => merge(FlexSpecAttribute.raw(clipBehavior: prop)),
   );
 
   /// Utility for defining [FlexSpecAttribute.gap]
   late final gap = PropUtility<FlexSpecAttribute, double>(
-    (prop) => merge(FlexSpecAttribute(gap: prop)),
+    (prop) => merge(FlexSpecAttribute.raw(gap: prop)),
   );
 
-  FlexSpecAttribute({
+  FlexSpecAttribute.raw({
     Prop<Axis>? direction,
     Prop<MainAxisAlignment>? mainAxisAlignment,
     Prop<CrossAxisAlignment>? crossAxisAlignment,
@@ -104,7 +104,7 @@ class FlexSpecAttribute extends StyleAttribute<FlexSpec>
        $clipBehavior = clipBehavior,
        $gap = gap;
 
-  FlexSpecAttribute.only({
+  FlexSpecAttribute({
     Axis? direction,
     MainAxisAlignment? mainAxisAlignment,
     CrossAxisAlignment? crossAxisAlignment,
@@ -117,7 +117,7 @@ class FlexSpecAttribute extends StyleAttribute<FlexSpec>
     AnimationConfig? animation,
     List<ModifierAttribute>? modifiers,
     List<VariantStyleAttribute<FlexSpec>>? variants,
-  }) : this(
+  }) : this.raw(
          direction: Prop.maybe(direction),
          mainAxisAlignment: Prop.maybe(mainAxisAlignment),
          crossAxisAlignment: Prop.maybe(crossAxisAlignment),
@@ -141,7 +141,7 @@ class FlexSpecAttribute extends StyleAttribute<FlexSpec>
   /// final attr = FlexSpecAttribute.value(spec);
   /// ```
   FlexSpecAttribute.value(FlexSpec spec)
-    : this.only(
+    : this(
         direction: spec.direction,
         mainAxisAlignment: spec.mainAxisAlignment,
         crossAxisAlignment: spec.crossAxisAlignment,
@@ -166,24 +166,23 @@ class FlexSpecAttribute extends StyleAttribute<FlexSpec>
   }
 
   /// Convenience method for setting direction to horizontal (row)
-  FlexSpecAttribute row() => FlexSpecAttribute.only(direction: Axis.horizontal);
+  FlexSpecAttribute row() => FlexSpecAttribute(direction: Axis.horizontal);
 
   /// Convenience method for setting direction to vertical (column)
-  FlexSpecAttribute column() =>
-      FlexSpecAttribute.only(direction: Axis.vertical);
+  FlexSpecAttribute column() => FlexSpecAttribute(direction: Axis.vertical);
 
   /// Convenience method for animating the FlexSpec
   FlexSpecAttribute animate(AnimationConfig animation) {
-    return FlexSpecAttribute.only(animation: animation);
+    return FlexSpecAttribute(animation: animation);
   }
 
   FlexSpecAttribute variants(List<VariantStyleAttribute<FlexSpec>> variants) {
-    return merge(FlexSpecAttribute.only(variants: variants));
+    return merge(FlexSpecAttribute(variants: variants));
   }
 
   @override
   FlexSpecAttribute modifiers(List<ModifierAttribute> modifiers) {
-    return merge(FlexSpecAttribute.only(modifiers: modifiers));
+    return merge(FlexSpecAttribute(modifiers: modifiers));
   }
 
   /// Resolves to [FlexSpec] using the provided [MixContext].
@@ -221,7 +220,7 @@ class FlexSpecAttribute extends StyleAttribute<FlexSpec>
   FlexSpecAttribute merge(FlexSpecAttribute? other) {
     if (other == null) return this;
 
-    return FlexSpecAttribute(
+    return FlexSpecAttribute.raw(
       direction: MixHelpers.merge($direction, other.$direction),
       mainAxisAlignment: MixHelpers.merge(
         $mainAxisAlignment,
@@ -269,7 +268,7 @@ class FlexSpecAttribute extends StyleAttribute<FlexSpec>
   @override
   FlexSpecAttribute variant(Variant variant, FlexSpecAttribute style) {
     return merge(
-      FlexSpecAttribute.only(variants: [VariantStyleAttribute(variant, style)]),
+      FlexSpecAttribute(variants: [VariantStyleAttribute(variant, style)]),
     );
   }
 

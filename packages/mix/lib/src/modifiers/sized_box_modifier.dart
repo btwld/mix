@@ -81,10 +81,10 @@ class SizedBoxModifierAttribute extends ModifierAttribute<SizedBoxModifier>
   final Prop<double>? width;
   final Prop<double>? height;
 
-  const SizedBoxModifierAttribute({this.width, this.height});
+  const SizedBoxModifierAttribute.raw({this.width, this.height});
 
-  SizedBoxModifierAttribute.only({double? width, double? height})
-    : this(width: Prop.maybe(width), height: Prop.maybe(height));
+  SizedBoxModifierAttribute({double? width, double? height})
+    : this.raw(width: Prop.maybe(width), height: Prop.maybe(height));
 
   /// Resolves to [SizedBoxModifier] using the provided [MixContext].
   ///
@@ -114,7 +114,7 @@ class SizedBoxModifierAttribute extends ModifierAttribute<SizedBoxModifier>
   SizedBoxModifierAttribute merge(SizedBoxModifierAttribute? other) {
     if (other == null) return this;
 
-    return SizedBoxModifierAttribute(
+    return SizedBoxModifierAttribute.raw(
       width: width?.merge(other.width) ?? other.width,
       height: height?.merge(other.height) ?? other.height,
     );
@@ -138,21 +138,22 @@ class SizedBoxModifierAttribute extends ModifierAttribute<SizedBoxModifier>
 final class SizedBoxModifierUtility<T extends StyleAttribute<Object?>>
     extends MixUtility<T, SizedBoxModifierAttribute> {
   late final width = PropUtility<T, double>(
-    (prop) => builder(SizedBoxModifierAttribute(width: prop)),
+    (prop) => builder(SizedBoxModifierAttribute.raw(width: prop)),
   );
   late final height = PropUtility<T, double>(
-    (prop) => builder(SizedBoxModifierAttribute(height: prop)),
+    (prop) => builder(SizedBoxModifierAttribute.raw(height: prop)),
   );
 
   SizedBoxModifierUtility(super.builder);
 
   /// Creates a square-sized box with the same width and height
-  T square(double size) =>
-      builder(SizedBoxModifierAttribute(width: Prop(size), height: Prop(size)));
+  T square(double size) => builder(
+    SizedBoxModifierAttribute.raw(width: Prop(size), height: Prop(size)),
+  );
 
   T call({double? width, double? height}) {
     return builder(
-      SizedBoxModifierAttribute(
+      SizedBoxModifierAttribute.raw(
         width: width != null ? Prop(width) : null,
         height: height != null ? Prop(height) : null,
       ),
@@ -160,9 +161,9 @@ final class SizedBoxModifierUtility<T extends StyleAttribute<Object?>>
   }
 
   T widthToken(MixToken<double> token) =>
-      builder(SizedBoxModifierAttribute(width: Prop.token(token)));
+      builder(SizedBoxModifierAttribute.raw(width: Prop.token(token)));
   T heightToken(MixToken<double> token) =>
-      builder(SizedBoxModifierAttribute(height: Prop.token(token)));
+      builder(SizedBoxModifierAttribute.raw(height: Prop.token(token)));
 
   /// Utility for defining [SizedBoxModifierAttribute.width] and [SizedBoxModifierAttribute.height]
   /// from [Size]

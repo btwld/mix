@@ -8,7 +8,7 @@ void main() {
   group('IconSpecAttribute', () {
     group('Constructor', () {
       test('creates IconSpecAttribute with all properties', () {
-        final attribute = IconSpecAttribute(
+        final attribute = IconSpecAttribute.raw(
           color: Prop(Colors.blue),
           size: Prop(24.0),
           weight: Prop(400.0),
@@ -16,7 +16,7 @@ void main() {
           opticalSize: Prop(24.0),
           shadows: [
             MixProp(
-              ShadowMix.only(
+              ShadowMix(
                 color: Colors.black,
                 offset: const Offset(1, 1),
                 blurRadius: 2.0,
@@ -56,7 +56,7 @@ void main() {
 
     group('only constructor', () {
       test('creates IconSpecAttribute with only specified properties', () {
-        final attribute = IconSpecAttribute.only(
+        final attribute = IconSpecAttribute(
           color: Colors.red,
           size: 32.0,
           weight: 500.0,
@@ -171,14 +171,14 @@ void main() {
             .color(Colors.blue)
             .size(32.0)
             .shadow(
-              ShadowMix.only(
+              ShadowMix(
                 color: Colors.black,
                 offset: const Offset(2, 2),
                 blurRadius: 4.0,
               ),
             )
             .shadow(
-              ShadowMix.only(
+              ShadowMix(
                 color: Colors.grey,
                 offset: const Offset(1, 1),
                 blurRadius: 2.0,
@@ -237,7 +237,7 @@ void main() {
       test('shadow utility creates IconSpecAttribute with shadow', () {
         final attribute = IconSpecAttribute();
         final shadowAttribute = attribute.shadow(
-          ShadowMix.only(
+          ShadowMix(
             color: Colors.black,
             offset: const Offset(1, 1),
             blurRadius: 2.0,
@@ -292,12 +292,12 @@ void main() {
         () {
           final attribute = IconSpecAttribute();
           final shadowsAttribute = attribute.shadows([
-            ShadowMix.only(
+            ShadowMix(
               color: Colors.black,
               offset: const Offset(1, 1),
               blurRadius: 2.0,
             ),
-            ShadowMix.only(
+            ShadowMix(
               color: Colors.grey,
               offset: const Offset(2, 2),
               blurRadius: 4.0,
@@ -313,7 +313,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to IconSpec with correct properties', () {
-        final attribute = IconSpecAttribute.only(
+        final attribute = IconSpecAttribute(
           color: Colors.cyan,
           size: 36.0,
           weight: 700.0,
@@ -339,10 +339,7 @@ void main() {
       });
 
       test('resolves with partial values correctly', () {
-        final attribute = IconSpecAttribute.only(
-          color: Colors.yellow,
-          size: 18.0,
-        );
+        final attribute = IconSpecAttribute(color: Colors.yellow, size: 18.0);
 
         final context = MockBuildContext();
         final spec = attribute.resolve(context);
@@ -362,13 +359,13 @@ void main() {
 
     group('merge', () {
       test('merges properties correctly', () {
-        final first = IconSpecAttribute.only(
+        final first = IconSpecAttribute(
           color: Colors.red,
           size: 24.0,
           weight: 400.0,
         );
 
-        final second = IconSpecAttribute.only(
+        final second = IconSpecAttribute(
           color: Colors.blue,
           grade: 25.0,
           opticalSize: 48.0,
@@ -384,14 +381,14 @@ void main() {
       });
 
       test('merges all properties when both have values', () {
-        final first = IconSpecAttribute.only(
+        final first = IconSpecAttribute(
           color: Colors.green,
           size: 20.0,
           weight: 300.0,
           grade: -25.0,
         );
 
-        final second = IconSpecAttribute.only(
+        final second = IconSpecAttribute(
           color: Colors.purple,
           size: 32.0,
           opticalSize: 32.0,
@@ -416,9 +413,9 @@ void main() {
       });
 
       test('modifiers merge correctly', () {
-        final opacityModifier = OpacityModifierAttribute(opacity: Prop(0.5));
+        final opacityModifier = OpacityModifierAttribute(opacity: 0.5);
         final alignModifier = AlignModifierAttribute(
-          alignment: Prop(Alignment.center),
+          alignment: Alignment.center,
         );
 
         final first = IconSpecAttribute(modifiers: [opacityModifier]);
@@ -428,8 +425,8 @@ void main() {
 
         // Check that the modifiers list matches exactly the expected list
         final expectedModifiers = [
-          OpacityModifierAttribute(opacity: Prop(0.5)),
-          AlignModifierAttribute(alignment: Prop(Alignment.center)),
+          OpacityModifierAttribute(opacity: 0.5),
+          AlignModifierAttribute(alignment: Alignment.center),
         ];
 
         expect(merged.$modifiers, expectedModifiers);
@@ -438,13 +435,13 @@ void main() {
 
     group('equality', () {
       test('instances with same properties are equal', () {
-        final attribute1 = IconSpecAttribute.only(
+        final attribute1 = IconSpecAttribute(
           color: Colors.blue,
           size: 24.0,
           weight: 400.0,
         );
 
-        final attribute2 = IconSpecAttribute.only(
+        final attribute2 = IconSpecAttribute(
           color: Colors.blue,
           size: 24.0,
           weight: 400.0,
@@ -454,15 +451,9 @@ void main() {
       });
 
       test('instances with different properties are not equal', () {
-        final attribute1 = IconSpecAttribute.only(
-          color: Colors.blue,
-          size: 24.0,
-        );
+        final attribute1 = IconSpecAttribute(color: Colors.blue, size: 24.0);
 
-        final attribute2 = IconSpecAttribute.only(
-          color: Colors.red,
-          size: 24.0,
-        );
+        final attribute2 = IconSpecAttribute(color: Colors.red, size: 24.0);
 
         expect(attribute1, isNot(equals(attribute2)));
       });

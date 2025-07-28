@@ -50,52 +50,52 @@ final class BoxDecorationUtility<T extends StyleAttribute<Object?>>
 
   /// Utility for defining [BoxDecorationMix.shape]
   late final shape = PropUtility<T, BoxShape>(
-    (prop) => call(BoxDecorationMix(shape: prop)),
+    (prop) => call(BoxDecorationMix.raw(shape: prop)),
   );
 
   /// Utility for defining [BoxDecorationMix.backgroundBlendMode]
   late final backgroundBlendMode = PropUtility<T, BlendMode>(
-    (prop) => call(BoxDecorationMix(backgroundBlendMode: prop)),
+    (prop) => call(BoxDecorationMix.raw(backgroundBlendMode: prop)),
   );
 
   /// Utility for defining [BoxDecorationMix.color]
   late final color = ColorUtility<T>(
-    (prop) => call(BoxDecorationMix(color: prop)),
+    (prop) => call(BoxDecorationMix.raw(color: prop)),
   );
 
   /// Utility for defining [BoxDecorationMix.gradient]
   late final gradient = GradientUtility<T>(
-    (v) => call(BoxDecorationMix(gradient: v)),
+    (v) => call(BoxDecorationMix.raw(gradient: v)),
   );
 
   /// Utility for defining [BoxDecorationMix.image]
   late final image = DecorationImageUtility<T>(
-    (v) => call(BoxDecorationMix(image: v)),
+    (v) => call(BoxDecorationMix.raw(image: v)),
   );
 
   /// Utility for defining [BoxDecorationMix.boxShadow] from a list of BoxShadow
   late final boxShadows = MixPropListUtility<T, BoxShadow>(
-    (prop) => call(BoxDecorationMix(boxShadow: prop)),
+    (prop) => call(BoxDecorationMix.raw(boxShadow: prop)),
     BoxShadowMix.value,
   );
 
   /// Utility for defining individual [BoxShadow]
   late final boxShadow = BoxShadowUtility<T>(
-    (v) => call(BoxDecorationMix(boxShadow: [v])),
+    (v) => call(BoxDecorationMix.raw(boxShadow: [v])),
   );
 
   /// Utility for defining [BoxDecorationMix.boxShadow] from elevation
   late final elevation = ElevationMixPropUtility<T>(
-    (mixPropList) => call(BoxDecorationMix(boxShadow: mixPropList)),
+    (mixPropList) => call(BoxDecorationMix.raw(boxShadow: mixPropList)),
   );
 
   /// Utility for defining [BoxDecorationMix.borderRadius]
   late final _borderRadiusGeometry = BorderRadiusGeometryUtility<T>(
-    (v) => call(BoxDecorationMix(borderRadius: v)),
+    (v) => call(BoxDecorationMix.raw(borderRadius: v)),
   );
 
   late final _boxBorder = BoxBorderUtility<T>(
-    (v) => call(BoxDecorationMix(border: v)),
+    (v) => call(BoxDecorationMix.raw(border: v)),
   );
 
   BoxDecorationUtility(super.builder)
@@ -114,27 +114,27 @@ final class ShapeDecorationUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, ShapeDecoration> {
   /// Utility for defining [ShapeDecorationMix.shape]
   late final shape = ShapeBorderUtility<T>(
-    (v) => call(ShapeDecorationMix(shape: v)),
+    (v) => call(ShapeDecorationMix.raw(shape: v)),
   );
 
   /// Utility for defining [ShapeDecorationMix.color]
   late final color = ColorUtility<T>(
-    (prop) => call(ShapeDecorationMix(color: prop)),
+    (prop) => call(ShapeDecorationMix.raw(color: prop)),
   );
 
   /// Utility for defining [ShapeDecorationMix.image]
   late final image = DecorationImageUtility<T>(
-    (v) => call(ShapeDecorationMix(image: v)),
+    (v) => call(ShapeDecorationMix.raw(image: v)),
   );
 
   /// Utility for defining [ShapeDecorationMix.gradient]
   late final gradient = GradientUtility<T>(
-    (v) => call(ShapeDecorationMix(gradient: v)),
+    (v) => call(ShapeDecorationMix.raw(gradient: v)),
   );
 
   /// Utility for defining [ShapeDecorationMix.shadows]
   late final shadows = MixPropListUtility<T, BoxShadow>(
-    (prop) => call(ShapeDecorationMix(shadows: prop)),
+    (prop) => call(ShapeDecorationMix.raw(shadows: prop)),
     BoxShadowMix.value,
   );
 
@@ -204,7 +204,7 @@ mixin DecorationMixin<T extends StyleAttribute<S>, S extends Spec<S>>
     List<BoxShadowMix>? shadows,
   }) {
     return decoration(
-      ShapeDecorationMix.only(
+      ShapeDecorationMix(
         shape: shape,
         color: color,
         image: image,

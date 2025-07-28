@@ -45,57 +45,57 @@ class TextSpecAttribute extends StyleAttribute<TextSpec>
 
   /// Utility for defining [TextSpecAttribute.overflow]
   late final overflow = PropUtility<TextSpecAttribute, TextOverflow>(
-    (prop) => merge(TextSpecAttribute(overflow: prop)),
+    (prop) => merge(TextSpecAttribute.raw(overflow: prop)),
   );
 
   /// Utility for defining [TextSpecAttribute.strutStyle]
   late final strutStyle = StrutStyleUtility(
-    (prop) => merge(TextSpecAttribute(strutStyle: prop)),
+    (prop) => merge(TextSpecAttribute.raw(strutStyle: prop)),
   );
 
   /// Utility for defining [TextSpecAttribute.textAlign]
   late final textAlign = PropUtility<TextSpecAttribute, TextAlign>(
-    (prop) => merge(TextSpecAttribute(textAlign: prop)),
+    (prop) => merge(TextSpecAttribute.raw(textAlign: prop)),
   );
 
   /// Utility for defining [TextSpecAttribute.textScaler]
   late final textScaler = PropUtility<TextSpecAttribute, TextScaler>(
-    (prop) => merge(TextSpecAttribute(textScaler: prop)),
+    (prop) => merge(TextSpecAttribute.raw(textScaler: prop)),
   );
 
   /// Utility for defining [TextSpecAttribute.maxLines]
   late final maxLines = PropUtility<TextSpecAttribute, int>(
-    (prop) => merge(TextSpecAttribute(maxLines: prop)),
+    (prop) => merge(TextSpecAttribute.raw(maxLines: prop)),
   );
 
   /// Utility for defining [TextSpecAttribute.style]
   late final style = TextStyleUtility(
-    (prop) => merge(TextSpecAttribute(style: prop)),
+    (prop) => merge(TextSpecAttribute.raw(style: prop)),
   );
 
   /// Utility for defining [TextSpecAttribute.textWidthBasis]
   late final textWidthBasis = PropUtility<TextSpecAttribute, TextWidthBasis>(
-    (prop) => merge(TextSpecAttribute(textWidthBasis: prop)),
+    (prop) => merge(TextSpecAttribute.raw(textWidthBasis: prop)),
   );
 
   /// Utility for defining [TextSpecAttribute.textHeightBehavior]
   late final textHeightBehavior = TextHeightBehaviorUtility(
-    (prop) => merge(TextSpecAttribute(textHeightBehavior: prop)),
+    (prop) => merge(TextSpecAttribute.raw(textHeightBehavior: prop)),
   );
 
   /// Utility for defining [TextSpecAttribute.textDirection]
   late final textDirection = PropUtility<TextSpecAttribute, TextDirection>(
-    (prop) => merge(TextSpecAttribute(textDirection: prop)),
+    (prop) => merge(TextSpecAttribute.raw(textDirection: prop)),
   );
 
   /// Utility for defining [TextSpecAttribute.softWrap]
   late final softWrap = PropUtility<TextSpecAttribute, bool>(
-    (prop) => merge(TextSpecAttribute(softWrap: prop)),
+    (prop) => merge(TextSpecAttribute.raw(softWrap: prop)),
   );
 
   /// Utility for defining [TextSpecAttribute.directive]
   late final directive = TextDirectiveUtility(
-    (prop) => merge(TextSpecAttribute(directives: [prop])),
+    (prop) => merge(TextSpecAttribute.raw(directives: [prop])),
   );
 
   /// Utility for defining [TextSpecAttribute.style.color]
@@ -176,7 +176,7 @@ class TextSpecAttribute extends StyleAttribute<TextSpec>
   /// Utility for defining [TextSpecAttribute.directive.sentenceCase]
   late final sentenceCase = directive.sentenceCase;
 
-  TextSpecAttribute({
+  TextSpecAttribute.raw({
     Prop<TextOverflow>? overflow,
     MixProp<StrutStyle>? strutStyle,
     Prop<TextAlign>? textAlign,
@@ -203,7 +203,7 @@ class TextSpecAttribute extends StyleAttribute<TextSpec>
        $softWrap = softWrap,
        $directives = directives;
 
-  TextSpecAttribute.only({
+  TextSpecAttribute({
     TextOverflow? overflow,
     StrutStyleMix? strutStyle,
     TextAlign? textAlign,
@@ -218,7 +218,7 @@ class TextSpecAttribute extends StyleAttribute<TextSpec>
     AnimationConfig? animation,
     List<ModifierAttribute>? modifiers,
     List<VariantStyleAttribute<TextSpec>>? variants,
-  }) : this(
+  }) : this.raw(
          overflow: Prop.maybe(overflow),
          strutStyle: MixProp.maybe(strutStyle),
          textAlign: Prop.maybe(textAlign),
@@ -244,7 +244,7 @@ class TextSpecAttribute extends StyleAttribute<TextSpec>
   /// final attr = TextSpecAttribute.value(spec);
   /// ```
   TextSpecAttribute.value(TextSpec spec)
-    : this.only(
+    : this(
         overflow: spec.overflow,
         strutStyle: StrutStyleMix.maybeValue(spec.strutStyle),
         textAlign: spec.textAlign,
@@ -274,16 +274,16 @@ class TextSpecAttribute extends StyleAttribute<TextSpec>
 
   /// Convenience method for animating the TextSpec
   TextSpecAttribute animate(AnimationConfig animation) {
-    return TextSpecAttribute.only(animation: animation);
+    return TextSpecAttribute(animation: animation);
   }
 
   TextSpecAttribute variants(List<VariantStyleAttribute<TextSpec>> variants) {
-    return merge(TextSpecAttribute.only(variants: variants));
+    return merge(TextSpecAttribute(variants: variants));
   }
 
   @override
   TextSpecAttribute modifiers(List<ModifierAttribute> modifiers) {
-    return merge(TextSpecAttribute.only(modifiers: modifiers));
+    return merge(TextSpecAttribute(modifiers: modifiers));
   }
 
   /// Resolves to [TextSpec] using the provided [MixContext].
@@ -323,7 +323,7 @@ class TextSpecAttribute extends StyleAttribute<TextSpec>
   TextSpecAttribute merge(TextSpecAttribute? other) {
     if (other == null) return this;
 
-    return TextSpecAttribute(
+    return TextSpecAttribute.raw(
       overflow: MixHelpers.merge($overflow, other.$overflow),
       strutStyle: MixHelpers.merge($strutStyle, other.$strutStyle),
       textAlign: MixHelpers.merge($textAlign, other.$textAlign),
@@ -399,7 +399,7 @@ class TextSpecAttribute extends StyleAttribute<TextSpec>
   @override
   TextSpecAttribute variant(Variant variant, TextSpecAttribute style) {
     return merge(
-      TextSpecAttribute.only(variants: [VariantStyleAttribute(variant, style)]),
+      TextSpecAttribute(variants: [VariantStyleAttribute(variant, style)]),
     );
   }
 

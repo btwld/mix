@@ -1,4 +1,3 @@
-
 import 'package:flutter/widgets.dart';
 
 import '../core/helpers.dart';
@@ -52,10 +51,10 @@ class RotatedBoxModifierAttribute
     extends ModifierAttribute<RotatedBoxModifier> {
   final Prop<int>? quarterTurns;
 
-  const RotatedBoxModifierAttribute({this.quarterTurns});
+  const RotatedBoxModifierAttribute.raw({this.quarterTurns});
 
-  RotatedBoxModifierAttribute.only({int? quarterTurns})
-    : this(quarterTurns: Prop.maybe(quarterTurns));
+  RotatedBoxModifierAttribute({int? quarterTurns})
+    : this.raw(quarterTurns: Prop.maybe(quarterTurns));
 
   /// Resolves to [RotatedBoxModifier] using the provided [MixContext].
   ///
@@ -82,7 +81,7 @@ class RotatedBoxModifierAttribute
   RotatedBoxModifierAttribute merge(RotatedBoxModifierAttribute? other) {
     if (other == null) return this;
 
-    return RotatedBoxModifierAttribute(
+    return RotatedBoxModifierAttribute.raw(
       quarterTurns: MixHelpers.merge(quarterTurns, other.quarterTurns),
     );
   }
@@ -99,5 +98,5 @@ final class RotatedBoxModifierUtility<T extends StyleAttribute<Object?>>
   T d270() => call(3);
 
   T call(int value) =>
-      builder(RotatedBoxModifierAttribute(quarterTurns: Prop(value)));
+      builder(RotatedBoxModifierAttribute.raw(quarterTurns: Prop(value)));
 }

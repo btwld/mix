@@ -9,7 +9,7 @@ void main() {
   group('LinearGradientMix', () {
     group('Constructor', () {
       test('only constructor creates instance with correct properties', () {
-        final linearGradientMix = LinearGradientMix.only(
+        final linearGradientMix = LinearGradientMix(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           tileMode: TileMode.repeated,
@@ -68,7 +68,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to LinearGradient with correct properties', () {
-        final linearGradientMix = LinearGradientMix.only(
+        final linearGradientMix = LinearGradientMix(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: const [Colors.red, Colors.blue],
@@ -86,7 +86,7 @@ void main() {
       });
 
       test('uses default values for null properties', () {
-        final linearGradientMix = LinearGradientMix.only(
+        final linearGradientMix = LinearGradientMix(
           colors: const [Colors.red, Colors.blue],
         );
 
@@ -103,7 +103,7 @@ void main() {
 
     group('merge', () {
       test('returns this when other is null', () {
-        final linearGradientMix = LinearGradientMix.only(
+        final linearGradientMix = LinearGradientMix(
           colors: const [Colors.red, Colors.blue],
         );
         final merged = linearGradientMix.merge(null);
@@ -112,12 +112,12 @@ void main() {
       });
 
       test('merges properties correctly', () {
-        final first = LinearGradientMix.only(
+        final first = LinearGradientMix(
           begin: Alignment.topLeft,
           colors: const [Colors.red, Colors.blue],
         );
 
-        final second = LinearGradientMix.only(
+        final second = LinearGradientMix(
           end: Alignment.bottomRight,
           colors: const [Colors.green, Colors.yellow],
           tileMode: TileMode.repeated,
@@ -136,12 +136,12 @@ void main() {
 
     group('Equality', () {
       test('returns true when all properties are the same', () {
-        final linearGradientMix1 = LinearGradientMix.only(
+        final linearGradientMix1 = LinearGradientMix(
           begin: Alignment.topLeft,
           colors: const [Colors.red, Colors.blue],
         );
 
-        final linearGradientMix2 = LinearGradientMix.only(
+        final linearGradientMix2 = LinearGradientMix(
           begin: Alignment.topLeft,
           colors: const [Colors.red, Colors.blue],
         );
@@ -150,10 +150,10 @@ void main() {
       });
 
       test('returns false when properties are different', () {
-        final linearGradientMix1 = LinearGradientMix.only(
+        final linearGradientMix1 = LinearGradientMix(
           colors: const [Colors.red, Colors.blue],
         );
-        final linearGradientMix2 = LinearGradientMix.only(
+        final linearGradientMix2 = LinearGradientMix(
           colors: const [Colors.green, Colors.yellow],
         );
 
@@ -165,7 +165,7 @@ void main() {
   group('RadialGradientMix', () {
     group('Constructor', () {
       test('only constructor creates instance with correct properties', () {
-        final radialGradientMix = RadialGradientMix.only(
+        final radialGradientMix = RadialGradientMix(
           center: Alignment.center,
           radius: 0.5,
           tileMode: TileMode.mirror,
@@ -214,7 +214,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to RadialGradient with correct properties', () {
-        final radialGradientMix = RadialGradientMix.only(
+        final radialGradientMix = RadialGradientMix(
           center: Alignment.center,
           radius: 0.5,
           colors: const [Colors.red, Colors.blue],
@@ -232,12 +232,12 @@ void main() {
 
     group('merge', () {
       test('merges properties correctly', () {
-        final first = RadialGradientMix.only(
+        final first = RadialGradientMix(
           center: Alignment.center,
           colors: const [Colors.red, Colors.blue],
         );
 
-        final second = RadialGradientMix.only(
+        final second = RadialGradientMix(
           radius: 0.8,
           colors: const [Colors.green, Colors.yellow],
         );
@@ -256,7 +256,7 @@ void main() {
   group('SweepGradientMix', () {
     group('Constructor', () {
       test('only constructor creates instance with correct properties', () {
-        final sweepGradientMix = SweepGradientMix.only(
+        final sweepGradientMix = SweepGradientMix(
           center: Alignment.center,
           startAngle: 0.0,
           endAngle: 3.14159,
@@ -303,7 +303,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to SweepGradient with correct properties', () {
-        final sweepGradientMix = SweepGradientMix.only(
+        final sweepGradientMix = SweepGradientMix(
           center: Alignment.center,
           startAngle: 0.0,
           endAngle: 3.14159,
@@ -323,13 +323,13 @@ void main() {
 
     group('merge', () {
       test('merges properties correctly', () {
-        final first = SweepGradientMix.only(
+        final first = SweepGradientMix(
           center: Alignment.center,
           startAngle: 0.0,
           colors: const [Colors.red, Colors.blue],
         );
 
-        final second = SweepGradientMix.only(
+        final second = SweepGradientMix(
           endAngle: 3.14159,
           colors: const [Colors.green, Colors.yellow],
         );

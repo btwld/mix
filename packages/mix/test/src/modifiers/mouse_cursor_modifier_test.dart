@@ -236,14 +236,14 @@ void main() {
   group('MouseCursorDecoratorSpecAttribute', () {
     group('Constructor', () {
       test('creates with null mouseCursor by default', () {
-        const attribute = MouseCursorDecoratorSpecAttribute();
+        final attribute = MouseCursorDecoratorSpecAttribute();
 
         expect(attribute.mouseCursor, isNull);
       });
 
       test('creates with provided Prop value', () {
         final mouseCursor = Prop<MouseCursor>(SystemMouseCursors.click);
-        final attribute = MouseCursorDecoratorSpecAttribute(
+        final attribute = MouseCursorDecoratorSpecAttribute.raw(
           mouseCursor: mouseCursor,
         );
 
@@ -253,7 +253,7 @@ void main() {
 
     group('only constructor', () {
       test('creates Prop value from direct value', () {
-        final attribute = MouseCursorDecoratorSpecAttribute.only(
+        final attribute = MouseCursorDecoratorSpecAttribute(
           mouseCursor: SystemMouseCursors.basic,
         );
 
@@ -261,7 +261,7 @@ void main() {
       });
 
       test('handles null value correctly', () {
-        final attribute = MouseCursorDecoratorSpecAttribute.only();
+        final attribute = MouseCursorDecoratorSpecAttribute();
 
         expect(attribute.mouseCursor, isNull);
       });
@@ -269,7 +269,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to MouseCursorDecorator with resolved value', () {
-        final attribute = MouseCursorDecoratorSpecAttribute.only(
+        final attribute = MouseCursorDecoratorSpecAttribute(
           mouseCursor: SystemMouseCursors.click,
         );
 
@@ -290,10 +290,10 @@ void main() {
 
     group('merge', () {
       test('merges with other MouseCursorDecoratorSpecAttribute', () {
-        final attribute1 = MouseCursorDecoratorSpecAttribute.only(
+        final attribute1 = MouseCursorDecoratorSpecAttribute(
           mouseCursor: SystemMouseCursors.basic,
         );
-        final attribute2 = MouseCursorDecoratorSpecAttribute.only(
+        final attribute2 = MouseCursorDecoratorSpecAttribute(
           mouseCursor: SystemMouseCursors.click,
         );
 
@@ -303,7 +303,7 @@ void main() {
       });
 
       test('returns original when other is null', () {
-        final attribute = MouseCursorDecoratorSpecAttribute.only(
+        final attribute = MouseCursorDecoratorSpecAttribute(
           mouseCursor: SystemMouseCursors.basic,
         );
 
@@ -314,7 +314,7 @@ void main() {
 
       test('merges with null values', () {
         final attribute1 = MouseCursorDecoratorSpecAttribute();
-        final attribute2 = MouseCursorDecoratorSpecAttribute.only(
+        final attribute2 = MouseCursorDecoratorSpecAttribute(
           mouseCursor: SystemMouseCursors.click,
         );
 
@@ -326,10 +326,10 @@ void main() {
 
     group('equality and props', () {
       test('equal when Prop values match', () {
-        final attribute1 = MouseCursorDecoratorSpecAttribute.only(
+        final attribute1 = MouseCursorDecoratorSpecAttribute(
           mouseCursor: SystemMouseCursors.basic,
         );
-        final attribute2 = MouseCursorDecoratorSpecAttribute.only(
+        final attribute2 = MouseCursorDecoratorSpecAttribute(
           mouseCursor: SystemMouseCursors.basic,
         );
 
@@ -337,10 +337,10 @@ void main() {
       });
 
       test('not equal when values differ', () {
-        final attribute1 = MouseCursorDecoratorSpecAttribute.only(
+        final attribute1 = MouseCursorDecoratorSpecAttribute(
           mouseCursor: SystemMouseCursors.basic,
         );
-        final attribute2 = MouseCursorDecoratorSpecAttribute.only(
+        final attribute2 = MouseCursorDecoratorSpecAttribute(
           mouseCursor: SystemMouseCursors.click,
         );
 
@@ -348,7 +348,7 @@ void main() {
       });
 
       test('props contains mouseCursor Prop', () {
-        final attribute = MouseCursorDecoratorSpecAttribute.only(
+        final attribute = MouseCursorDecoratorSpecAttribute(
           mouseCursor: SystemMouseCursors.basic,
         );
 
@@ -371,7 +371,7 @@ void main() {
     testWidgets(
       'MouseCursorDecoratorSpecAttribute resolves and builds correctly',
       (WidgetTester tester) async {
-        final attribute = MouseCursorDecoratorSpecAttribute.only(
+        final attribute = MouseCursorDecoratorSpecAttribute(
           mouseCursor: SystemMouseCursors.grab,
         );
 
@@ -396,15 +396,15 @@ void main() {
     );
 
     test('Complex merge scenario preserves and overrides correctly', () {
-      final base = MouseCursorDecoratorSpecAttribute.only(
+      final base = MouseCursorDecoratorSpecAttribute(
         mouseCursor: SystemMouseCursors.basic,
       );
 
-      final override1 = MouseCursorDecoratorSpecAttribute.only(
+      final override1 = MouseCursorDecoratorSpecAttribute(
         mouseCursor: SystemMouseCursors.click,
       );
 
-      final override2 = MouseCursorDecoratorSpecAttribute.only(
+      final override2 = MouseCursorDecoratorSpecAttribute(
         mouseCursor: SystemMouseCursors.grab,
       );
 
@@ -470,7 +470,7 @@ void main() {
       ];
 
       for (final cursor in testCases) {
-        final attribute = MouseCursorDecoratorSpecAttribute.only(
+        final attribute = MouseCursorDecoratorSpecAttribute(
           mouseCursor: cursor,
         );
         expect(

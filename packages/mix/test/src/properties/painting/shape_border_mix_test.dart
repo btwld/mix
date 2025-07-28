@@ -8,11 +8,9 @@ void main() {
   group('RoundedRectangleBorderMix', () {
     group('Constructor', () {
       test('only constructor creates instance with correct properties', () {
-        final roundedRectangleBorderMix = RoundedRectangleBorderMix.only(
-          borderRadius: BorderRadiusMix.only(
-            topLeft: const Radius.circular(8.0),
-          ),
-          side: BorderSideMix.only(color: Colors.red, width: 2.0),
+        final roundedRectangleBorderMix = RoundedRectangleBorderMix(
+          borderRadius: BorderRadiusMix(topLeft: const Radius.circular(8.0)),
+          side: BorderSideMix(color: Colors.red, width: 2.0),
         );
 
         expect(
@@ -62,11 +60,9 @@ void main() {
 
     group('resolve', () {
       test('resolves to RoundedRectangleBorder with correct properties', () {
-        final roundedRectangleBorderMix = RoundedRectangleBorderMix.only(
-          borderRadius: BorderRadiusMix.only(
-            topLeft: const Radius.circular(8.0),
-          ),
-          side: BorderSideMix.only(color: Colors.red, width: 2.0),
+        final roundedRectangleBorderMix = RoundedRectangleBorderMix(
+          borderRadius: BorderRadiusMix(topLeft: const Radius.circular(8.0)),
+          side: BorderSideMix(color: Colors.red, width: 2.0),
         );
 
         const expectedBorder = RoundedRectangleBorder(
@@ -80,10 +76,8 @@ void main() {
 
     group('merge', () {
       test('returns this when other is null', () {
-        final roundedRectangleBorderMix = RoundedRectangleBorderMix.only(
-          borderRadius: BorderRadiusMix.only(
-            topLeft: const Radius.circular(8.0),
-          ),
+        final roundedRectangleBorderMix = RoundedRectangleBorderMix(
+          borderRadius: BorderRadiusMix(topLeft: const Radius.circular(8.0)),
         );
         final merged = roundedRectangleBorderMix.merge(null);
 
@@ -91,14 +85,12 @@ void main() {
       });
 
       test('merges properties correctly', () {
-        final first = RoundedRectangleBorderMix.only(
-          borderRadius: BorderRadiusMix.only(
-            topLeft: const Radius.circular(8.0),
-          ),
+        final first = RoundedRectangleBorderMix(
+          borderRadius: BorderRadiusMix(topLeft: const Radius.circular(8.0)),
         );
 
-        final second = RoundedRectangleBorderMix.only(
-          side: BorderSideMix.only(color: Colors.red, width: 2.0),
+        final second = RoundedRectangleBorderMix(
+          side: BorderSideMix(color: Colors.red, width: 2.0),
         );
 
         final merged = first.merge(second) as RoundedRectangleBorderMix;
@@ -110,14 +102,14 @@ void main() {
 
     group('Equality', () {
       test('returns true when all properties are the same', () {
-        final borderRadius = BorderRadiusMix.only(
+        final borderRadius = BorderRadiusMix(
           topLeft: const Radius.circular(8.0),
         );
-        final roundedRectangleBorderMix1 = RoundedRectangleBorderMix.only(
+        final roundedRectangleBorderMix1 = RoundedRectangleBorderMix(
           borderRadius: borderRadius,
         );
 
-        final roundedRectangleBorderMix2 = RoundedRectangleBorderMix.only(
+        final roundedRectangleBorderMix2 = RoundedRectangleBorderMix(
           borderRadius: borderRadius,
         );
 
@@ -129,15 +121,11 @@ void main() {
       });
 
       test('returns false when properties are different', () {
-        final roundedRectangleBorderMix1 = RoundedRectangleBorderMix.only(
-          borderRadius: BorderRadiusMix.only(
-            topLeft: const Radius.circular(8.0),
-          ),
+        final roundedRectangleBorderMix1 = RoundedRectangleBorderMix(
+          borderRadius: BorderRadiusMix(topLeft: const Radius.circular(8.0)),
         );
-        final roundedRectangleBorderMix2 = RoundedRectangleBorderMix.only(
-          borderRadius: BorderRadiusMix.only(
-            topLeft: const Radius.circular(12.0),
-          ),
+        final roundedRectangleBorderMix2 = RoundedRectangleBorderMix(
+          borderRadius: BorderRadiusMix(topLeft: const Radius.circular(12.0)),
         );
 
         expect(roundedRectangleBorderMix1, isNot(roundedRectangleBorderMix2));
@@ -148,8 +136,8 @@ void main() {
   group('CircleBorderMix', () {
     group('Constructor', () {
       test('only constructor creates instance with correct properties', () {
-        final circleBorderMix = CircleBorderMix.only(
-          side: BorderSideMix.only(color: Colors.green, width: 3.0),
+        final circleBorderMix = CircleBorderMix(
+          side: BorderSideMix(color: Colors.green, width: 3.0),
         );
 
         expect(circleBorderMix.$side, isA<MixProp<BorderSide>>());
@@ -180,8 +168,8 @@ void main() {
 
     group('resolve', () {
       test('resolves to CircleBorder with correct properties', () {
-        final circleBorderMix = CircleBorderMix.only(
-          side: BorderSideMix.only(color: Colors.green, width: 3.0),
+        final circleBorderMix = CircleBorderMix(
+          side: BorderSideMix(color: Colors.green, width: 3.0),
         );
 
         const expectedBorder = CircleBorder(
@@ -194,12 +182,12 @@ void main() {
 
     group('merge', () {
       test('merges properties correctly', () {
-        final first = CircleBorderMix.only(
-          side: BorderSideMix.only(color: Colors.green, width: 3.0),
+        final first = CircleBorderMix(
+          side: BorderSideMix(color: Colors.green, width: 3.0),
         );
 
-        final second = CircleBorderMix.only(
-          side: BorderSideMix.only(color: Colors.blue, width: 2.0),
+        final second = CircleBorderMix(
+          side: BorderSideMix(color: Colors.blue, width: 2.0),
         );
 
         final merged = first.merge(second) as CircleBorderMix;
@@ -212,8 +200,8 @@ void main() {
   group('StadiumBorderMix', () {
     group('Constructor', () {
       test('only constructor creates instance with correct properties', () {
-        final stadiumBorderMix = StadiumBorderMix.only(
-          side: BorderSideMix.only(color: Colors.orange, width: 2.5),
+        final stadiumBorderMix = StadiumBorderMix(
+          side: BorderSideMix(color: Colors.orange, width: 2.5),
         );
 
         expect(stadiumBorderMix.$side, isA<MixProp<BorderSide>>());
@@ -244,8 +232,8 @@ void main() {
 
     group('resolve', () {
       test('resolves to StadiumBorder with correct properties', () {
-        final stadiumBorderMix = StadiumBorderMix.only(
-          side: BorderSideMix.only(color: Colors.orange, width: 2.5),
+        final stadiumBorderMix = StadiumBorderMix(
+          side: BorderSideMix(color: Colors.orange, width: 2.5),
         );
 
         const expectedBorder = StadiumBorder(
@@ -258,12 +246,12 @@ void main() {
 
     group('merge', () {
       test('merges properties correctly', () {
-        final first = StadiumBorderMix.only(
-          side: BorderSideMix.only(color: Colors.orange, width: 2.5),
+        final first = StadiumBorderMix(
+          side: BorderSideMix(color: Colors.orange, width: 2.5),
         );
 
-        final second = StadiumBorderMix.only(
-          side: BorderSideMix.only(color: Colors.pink, width: 1.5),
+        final second = StadiumBorderMix(
+          side: BorderSideMix(color: Colors.pink, width: 1.5),
         );
 
         final merged = first.merge(second) as StadiumBorderMix;
@@ -276,11 +264,9 @@ void main() {
   group('BeveledRectangleBorderMix', () {
     group('Constructor', () {
       test('only constructor creates instance with correct properties', () {
-        final beveledRectangleBorderMix = BeveledRectangleBorderMix.only(
-          borderRadius: BorderRadiusMix.only(
-            topLeft: const Radius.circular(6.0),
-          ),
-          side: BorderSideMix.only(color: Colors.yellow, width: 1.5),
+        final beveledRectangleBorderMix = BeveledRectangleBorderMix(
+          borderRadius: BorderRadiusMix(topLeft: const Radius.circular(6.0)),
+          side: BorderSideMix(color: Colors.yellow, width: 1.5),
         );
 
         expect(
@@ -330,11 +316,9 @@ void main() {
 
     group('resolve', () {
       test('resolves to BeveledRectangleBorder with correct properties', () {
-        final beveledRectangleBorderMix = BeveledRectangleBorderMix.only(
-          borderRadius: BorderRadiusMix.only(
-            topLeft: const Radius.circular(6.0),
-          ),
-          side: BorderSideMix.only(color: Colors.yellow, width: 1.5),
+        final beveledRectangleBorderMix = BeveledRectangleBorderMix(
+          borderRadius: BorderRadiusMix(topLeft: const Radius.circular(6.0)),
+          side: BorderSideMix(color: Colors.yellow, width: 1.5),
         );
 
         final resolved = beveledRectangleBorderMix.resolve(MockBuildContext());
@@ -347,14 +331,12 @@ void main() {
 
     group('merge', () {
       test('merges properties correctly', () {
-        final first = BeveledRectangleBorderMix.only(
-          borderRadius: BorderRadiusMix.only(
-            topLeft: const Radius.circular(6.0),
-          ),
+        final first = BeveledRectangleBorderMix(
+          borderRadius: BorderRadiusMix(topLeft: const Radius.circular(6.0)),
         );
 
-        final second = BeveledRectangleBorderMix.only(
-          side: BorderSideMix.only(color: Colors.yellow, width: 1.5),
+        final second = BeveledRectangleBorderMix(
+          side: BorderSideMix(color: Colors.yellow, width: 1.5),
         );
 
         final merged = first.merge(second) as BeveledRectangleBorderMix;

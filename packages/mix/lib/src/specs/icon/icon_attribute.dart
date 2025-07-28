@@ -30,34 +30,34 @@ class IconSpecAttribute extends StyleAttribute<IconSpec>
   final Prop<double>? $fill;
 
   late final color = ColorUtility(
-    (prop) => merge(IconSpecAttribute(color: prop)),
+    (prop) => merge(IconSpecAttribute.raw(color: prop)),
   );
   late final size = PropUtility<IconSpecAttribute, double>(
-    (prop) => merge(IconSpecAttribute(size: prop)),
+    (prop) => merge(IconSpecAttribute.raw(size: prop)),
   );
   late final weight = PropUtility<IconSpecAttribute, double>(
-    (prop) => merge(IconSpecAttribute(weight: prop)),
+    (prop) => merge(IconSpecAttribute.raw(weight: prop)),
   );
   late final grade = PropUtility<IconSpecAttribute, double>(
-    (prop) => merge(IconSpecAttribute(grade: prop)),
+    (prop) => merge(IconSpecAttribute.raw(grade: prop)),
   );
   late final opticalSize = PropUtility<IconSpecAttribute, double>(
-    (prop) => merge(IconSpecAttribute(opticalSize: prop)),
+    (prop) => merge(IconSpecAttribute.raw(opticalSize: prop)),
   );
   late final shadow = ShadowUtility(
-    (v) => merge(IconSpecAttribute(shadows: [v])),
+    (v) => merge(IconSpecAttribute.raw(shadows: [v])),
   );
   late final textDirection = PropUtility<IconSpecAttribute, TextDirection>(
-    (prop) => merge(IconSpecAttribute(textDirection: prop)),
+    (prop) => merge(IconSpecAttribute.raw(textDirection: prop)),
   );
   late final applyTextScaling = PropUtility<IconSpecAttribute, bool>(
-    (prop) => merge(IconSpecAttribute(applyTextScaling: prop)),
+    (prop) => merge(IconSpecAttribute.raw(applyTextScaling: prop)),
   );
   late final fill = PropUtility<IconSpecAttribute, double>(
-    (prop) => merge(IconSpecAttribute(fill: prop)),
+    (prop) => merge(IconSpecAttribute.raw(fill: prop)),
   );
 
-  IconSpecAttribute({
+  IconSpecAttribute.raw({
     Prop<Color>? color,
     Prop<double>? size,
     Prop<double>? weight,
@@ -80,7 +80,7 @@ class IconSpecAttribute extends StyleAttribute<IconSpec>
        $applyTextScaling = applyTextScaling,
        $fill = fill;
 
-  IconSpecAttribute.only({
+  IconSpecAttribute({
     Color? color,
     double? size,
     double? weight,
@@ -93,7 +93,7 @@ class IconSpecAttribute extends StyleAttribute<IconSpec>
     AnimationConfig? animation,
     List<ModifierAttribute>? modifiers,
     List<VariantStyleAttribute<IconSpec>>? variants,
-  }) : this(
+  }) : this.raw(
          color: Prop.maybe(color),
          size: Prop.maybe(size),
          weight: Prop.maybe(weight),
@@ -110,7 +110,7 @@ class IconSpecAttribute extends StyleAttribute<IconSpec>
 
   // Static factory to create from resolved Spec
   static IconSpecAttribute value(IconSpec spec) {
-    return IconSpecAttribute.only(
+    return IconSpecAttribute(
       color: spec.color,
       size: spec.size,
       weight: spec.weight,
@@ -136,12 +136,12 @@ class IconSpecAttribute extends StyleAttribute<IconSpec>
   }
 
   IconSpecAttribute shadows(List<ShadowMix> value) {
-    return IconSpecAttribute.only(shadows: value);
+    return IconSpecAttribute(shadows: value);
   }
 
   @override
   IconSpecAttribute modifiers(List<ModifierAttribute> modifiers) {
-    return merge(IconSpecAttribute.only(modifiers: modifiers));
+    return merge(IconSpecAttribute(modifiers: modifiers));
   }
 
   @override
@@ -163,7 +163,7 @@ class IconSpecAttribute extends StyleAttribute<IconSpec>
   IconSpecAttribute merge(IconSpecAttribute? other) {
     if (other == null) return this;
 
-    return IconSpecAttribute(
+    return IconSpecAttribute.raw(
       color: MixHelpers.merge($color, other.$color),
       size: MixHelpers.merge($size, other.$size),
       weight: MixHelpers.merge($weight, other.$weight),
@@ -211,7 +211,7 @@ class IconSpecAttribute extends StyleAttribute<IconSpec>
   @override
   IconSpecAttribute variant(Variant variant, IconSpecAttribute style) {
     return merge(
-      IconSpecAttribute.only(variants: [VariantStyleAttribute(variant, style)]),
+      IconSpecAttribute(variants: [VariantStyleAttribute(variant, style)]),
     );
   }
 

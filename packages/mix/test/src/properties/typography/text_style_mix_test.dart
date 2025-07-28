@@ -8,7 +8,7 @@ void main() {
   group('TextStyleMix', () {
     group('Constructor', () {
       test('only constructor creates instance with correct properties', () {
-        final textStyleMix = TextStyleMix.only(
+        final textStyleMix = TextStyleMix(
           color: Colors.blue,
           backgroundColor: Colors.yellow,
           fontSize: 16.0,
@@ -44,9 +44,9 @@ void main() {
       });
 
       test('only constructor with lists creates correct properties', () {
-        final textStyleMix = TextStyleMix.only(
+        final textStyleMix = TextStyleMix(
           fontFamilyFallback: const ['Arial', 'Helvetica'],
-          shadows: [ShadowMix.only(blurRadius: 5.0, color: Colors.black)],
+          shadows: [ShadowMix(blurRadius: 5.0, color: Colors.black)],
         );
 
         expect(textStyleMix.fontFamilyFallback, hasLength(2));
@@ -97,7 +97,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to TextStyle with correct properties', () {
-        final textStyleMix = TextStyleMix.only(
+        final textStyleMix = TextStyleMix(
           color: Colors.blue,
           fontSize: 16.0,
           fontWeight: FontWeight.bold,
@@ -115,11 +115,11 @@ void main() {
       });
 
       test('resolves with list properties', () {
-        final textStyleMix = TextStyleMix.only(
+        final textStyleMix = TextStyleMix(
           fontFamilyFallback: const ['Arial', 'Helvetica'],
           shadows: [
-            ShadowMix.only(blurRadius: 5.0, color: Colors.black),
-            ShadowMix.only(blurRadius: 10.0, color: Colors.grey),
+            ShadowMix(blurRadius: 5.0, color: Colors.black),
+            ShadowMix(blurRadius: 10.0, color: Colors.grey),
           ],
         );
 
@@ -137,20 +137,20 @@ void main() {
 
     group('merge', () {
       test('returns this when other is null', () {
-        final textStyleMix = TextStyleMix.only(fontSize: 16.0);
+        final textStyleMix = TextStyleMix(fontSize: 16.0);
         final merged = textStyleMix.merge(null);
 
         expect(merged, same(textStyleMix));
       });
 
       test('merges properties correctly', () {
-        final first = TextStyleMix.only(
+        final first = TextStyleMix(
           color: Colors.blue,
           fontSize: 16.0,
           fontWeight: FontWeight.normal,
         );
 
-        final second = TextStyleMix.only(
+        final second = TextStyleMix(
           fontSize: 18.0,
           fontStyle: FontStyle.italic,
           letterSpacing: 1.0,
@@ -166,14 +166,14 @@ void main() {
       });
 
       test('merges list properties correctly', () {
-        final first = TextStyleMix.only(
+        final first = TextStyleMix(
           fontFamilyFallback: const ['Arial'],
-          shadows: [ShadowMix.only(blurRadius: 5.0)],
+          shadows: [ShadowMix(blurRadius: 5.0)],
         );
 
-        final second = TextStyleMix.only(
+        final second = TextStyleMix(
           fontFamilyFallback: const ['Helvetica', 'Times'],
-          shadows: [ShadowMix.only(blurRadius: 10.0)],
+          shadows: [ShadowMix(blurRadius: 10.0)],
         );
 
         final merged = first.merge(second);
@@ -192,13 +192,13 @@ void main() {
 
     group('Equality', () {
       test('returns true when all properties are the same', () {
-        final textStyleMix1 = TextStyleMix.only(
+        final textStyleMix1 = TextStyleMix(
           color: Colors.blue,
           fontSize: 16.0,
           fontWeight: FontWeight.bold,
         );
 
-        final textStyleMix2 = TextStyleMix.only(
+        final textStyleMix2 = TextStyleMix(
           color: Colors.blue,
           fontSize: 16.0,
           fontWeight: FontWeight.bold,
@@ -209,22 +209,22 @@ void main() {
       });
 
       test('returns false when properties are different', () {
-        final textStyleMix1 = TextStyleMix.only(fontSize: 16.0);
-        final textStyleMix2 = TextStyleMix.only(fontSize: 18.0);
+        final textStyleMix1 = TextStyleMix(fontSize: 16.0);
+        final textStyleMix2 = TextStyleMix(fontSize: 18.0);
 
         expect(textStyleMix1, isNot(textStyleMix2));
       });
 
       test('handles list equality correctly', () {
-        final textStyleMix1 = TextStyleMix.only(
+        final textStyleMix1 = TextStyleMix(
           fontFamilyFallback: const ['Arial', 'Helvetica'],
         );
 
-        final textStyleMix2 = TextStyleMix.only(
+        final textStyleMix2 = TextStyleMix(
           fontFamilyFallback: const ['Arial', 'Helvetica'],
         );
 
-        final textStyleMix3 = TextStyleMix.only(
+        final textStyleMix3 = TextStyleMix(
           fontFamilyFallback: const ['Arial', 'Times'],
         );
 

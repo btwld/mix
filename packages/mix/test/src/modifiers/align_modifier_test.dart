@@ -285,7 +285,7 @@ void main() {
   group('AlignModifierAttribute', () {
     group('Constructor', () {
       test('creates with null values by default', () {
-        const attribute = AlignModifierAttribute();
+        final attribute = AlignModifierAttribute();
 
         expect(attribute.alignment, isNull);
         expect(attribute.widthFactor, isNull);
@@ -296,7 +296,7 @@ void main() {
         final alignment = Prop<AlignmentGeometry>(Alignment.center);
         final widthFactor = Prop<double>(0.5);
         final heightFactor = Prop<double>(0.8);
-        final attribute = AlignModifierAttribute(
+        final attribute = AlignModifierAttribute.raw(
           alignment: alignment,
           widthFactor: widthFactor,
           heightFactor: heightFactor,
@@ -310,7 +310,7 @@ void main() {
 
     group('only constructor', () {
       test('creates Prop values from direct values', () {
-        final attribute = AlignModifierAttribute.only(
+        final attribute = AlignModifierAttribute(
           alignment: Alignment.topLeft,
           widthFactor: 0.3,
           heightFactor: 0.7,
@@ -322,7 +322,7 @@ void main() {
       });
 
       test('handles null values correctly', () {
-        final attribute = AlignModifierAttribute.only();
+        final attribute = AlignModifierAttribute();
 
         expect(attribute.alignment, isNull);
         expect(attribute.widthFactor, isNull);
@@ -330,14 +330,12 @@ void main() {
       });
 
       test('handles partial values', () {
-        final attribute1 = AlignModifierAttribute.only(
-          alignment: Alignment.center,
-        );
+        final attribute1 = AlignModifierAttribute(alignment: Alignment.center);
         expectProp(attribute1.alignment, Alignment.center);
         expect(attribute1.widthFactor, isNull);
         expect(attribute1.heightFactor, isNull);
 
-        final attribute2 = AlignModifierAttribute.only(widthFactor: 0.5);
+        final attribute2 = AlignModifierAttribute(widthFactor: 0.5);
         expect(attribute2.alignment, isNull);
         expect(attribute2.widthFactor!, resolvesTo(0.5));
         expect(attribute2.heightFactor, isNull);
@@ -346,7 +344,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to AlignModifier with resolved values', () {
-        final attribute = AlignModifierAttribute.only(
+        final attribute = AlignModifierAttribute(
           alignment: Alignment.topRight,
           widthFactor: 0.4,
           heightFactor: 0.6,
@@ -372,11 +370,11 @@ void main() {
 
     group('merge', () {
       test('merges with other AlignModifierAttribute', () {
-        final attribute1 = AlignModifierAttribute.only(
+        final attribute1 = AlignModifierAttribute(
           alignment: Alignment.center,
           widthFactor: 0.5,
         );
-        final attribute2 = AlignModifierAttribute.only(
+        final attribute2 = AlignModifierAttribute(
           alignment: Alignment.topLeft,
           heightFactor: 0.8,
         );
@@ -389,9 +387,7 @@ void main() {
       });
 
       test('returns original when other is null', () {
-        final attribute = AlignModifierAttribute.only(
-          alignment: Alignment.center,
-        );
+        final attribute = AlignModifierAttribute(alignment: Alignment.center);
 
         final merged = attribute.merge(null);
 
@@ -400,7 +396,7 @@ void main() {
 
       test('merges with null values', () {
         final attribute1 = AlignModifierAttribute();
-        final attribute2 = AlignModifierAttribute.only(
+        final attribute2 = AlignModifierAttribute(
           alignment: Alignment.bottomRight,
         );
 
@@ -414,12 +410,12 @@ void main() {
 
     group('equality and props', () {
       test('equal when all Prop values match', () {
-        final attribute1 = AlignModifierAttribute.only(
+        final attribute1 = AlignModifierAttribute(
           alignment: Alignment.center,
           widthFactor: 0.5,
           heightFactor: 0.8,
         );
-        final attribute2 = AlignModifierAttribute.only(
+        final attribute2 = AlignModifierAttribute(
           alignment: Alignment.center,
           widthFactor: 0.5,
           heightFactor: 0.8,
@@ -429,18 +425,14 @@ void main() {
       });
 
       test('not equal when values differ', () {
-        final attribute1 = AlignModifierAttribute.only(
-          alignment: Alignment.center,
-        );
-        final attribute2 = AlignModifierAttribute.only(
-          alignment: Alignment.topLeft,
-        );
+        final attribute1 = AlignModifierAttribute(alignment: Alignment.center);
+        final attribute2 = AlignModifierAttribute(alignment: Alignment.topLeft);
 
         expect(attribute1, isNot(equals(attribute2)));
       });
 
       test('props contains all Prop values', () {
-        final attribute = AlignModifierAttribute.only(
+        final attribute = AlignModifierAttribute(
           alignment: Alignment.center,
           widthFactor: 0.5,
           heightFactor: 0.8,
@@ -459,7 +451,7 @@ void main() {
     testWidgets('AlignModifierAttribute resolves and builds correctly', (
       WidgetTester tester,
     ) async {
-      final attribute = AlignModifierAttribute.only(
+      final attribute = AlignModifierAttribute(
         alignment: Alignment.topRight,
         widthFactor: 0.7,
         heightFactor: 0.9,
@@ -478,18 +470,18 @@ void main() {
     });
 
     test('Complex merge scenario preserves and overrides correctly', () {
-      final base = AlignModifierAttribute.only(
+      final base = AlignModifierAttribute(
         alignment: Alignment.center,
         widthFactor: 0.5,
         heightFactor: 0.5,
       );
 
-      final override1 = AlignModifierAttribute.only(
+      final override1 = AlignModifierAttribute(
         alignment: Alignment.topLeft,
         widthFactor: 0.8,
       );
 
-      final override2 = AlignModifierAttribute.only(heightFactor: 0.9);
+      final override2 = AlignModifierAttribute(heightFactor: 0.9);
 
       final result = base.merge(override1).merge(override2);
 

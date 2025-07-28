@@ -47,7 +47,7 @@ mixin ConstraintsMixin<T extends StyleAttribute<S>, S extends Spec<S>>
 
   /// Sets both width and height to specific values
   T size(double width, double height) {
-    return constraints(BoxConstraintsMix.only(
+    return constraints(BoxConstraintsMix(
       minWidth: width,
       maxWidth: width,
       minHeight: height,
@@ -64,30 +64,30 @@ final class BoxConstraintsUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, BoxConstraints> {
   /// Utility for defining [BoxConstraintsMix.minWidth]
   late final minWidth = PropUtility<T, double>(
-    (prop) => call(BoxConstraintsMix(minWidth: prop)),
+    (prop) => call(BoxConstraintsMix.raw(minWidth: prop)),
   );
 
   /// Utility for defining [BoxConstraintsMix.maxWidth]
   late final maxWidth = PropUtility<T, double>(
-    (prop) => call(BoxConstraintsMix(maxWidth: prop)),
+    (prop) => call(BoxConstraintsMix.raw(maxWidth: prop)),
   );
 
   /// Utility for defining [BoxConstraintsMix.minHeight]
   late final minHeight = PropUtility<T, double>(
-    (prop) => call(BoxConstraintsMix(minHeight: prop)),
+    (prop) => call(BoxConstraintsMix.raw(minHeight: prop)),
   );
 
   /// Utility for defining [BoxConstraintsMix.maxHeight]
   late final maxHeight = PropUtility<T, double>(
-    (prop) => call(BoxConstraintsMix(maxHeight: prop)),
+    (prop) => call(BoxConstraintsMix.raw(maxHeight: prop)),
   );
 
   late final height = PropUtility<T, double>(
-    (prop) => call(BoxConstraintsMix(minHeight: prop, maxHeight: prop)),
+    (prop) => call(BoxConstraintsMix.raw(minHeight: prop, maxHeight: prop)),
   );
 
   late final width = PropUtility<T, double>(
-    (prop) => call(BoxConstraintsMix(minWidth: prop, maxWidth: prop)),
+    (prop) => call(BoxConstraintsMix.raw(minWidth: prop, maxWidth: prop)),
   );
 
   BoxConstraintsUtility(super.builder)

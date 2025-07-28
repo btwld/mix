@@ -6,7 +6,6 @@ import '../../../helpers/testing_utils.dart';
 
 void main() {
   group('Scalar Utilities Extensions', () {
-
     group('FontWeightUtility', () {
       final utility = PropUtility<UtilityTestAttribute, FontWeight>(
         UtilityTestAttribute.new,
@@ -68,9 +67,10 @@ void main() {
       });
     });
 
-
     group('AlignmentUtility', () {
-      final utility = PropUtility<UtilityTestAttribute, AlignmentGeometry>(UtilityTestAttribute.new);
+      final utility = PropUtility<UtilityTestAttribute, AlignmentGeometry>(
+        UtilityTestAttribute.new,
+      );
 
       test('topLeft() creates Alignment.topLeft', () {
         final attr = utility.topLeft();

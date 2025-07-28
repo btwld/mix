@@ -102,8 +102,8 @@ void main() {
     });
 
     test('only() creates BorderMix with specified sides', () {
-      final topSide = BorderSideMix.only(color: Colors.red, width: 1.0);
-      final bottomSide = BorderSideMix.only(color: Colors.blue, width: 2.0);
+      final topSide = BorderSideMix(color: Colors.red, width: 1.0);
+      final bottomSide = BorderSideMix(color: Colors.blue, width: 2.0);
 
       final result = utility.only(top: topSide, bottom: bottomSide);
 
@@ -119,7 +119,7 @@ void main() {
     group('side utilities', () {
       test('all creates uniform border', () {
         final result = utility.all(
-          BorderSideMix.only(color: Colors.red, width: 2.0),
+          BorderSideMix(color: Colors.red, width: 2.0),
         );
 
         final mix = result.value.value as BorderMix;
@@ -130,7 +130,7 @@ void main() {
       });
 
       test('top creates top border only', () {
-        final result = utility.top(BorderSideMix.only(width: 1.0));
+        final result = utility.top(BorderSideMix(width: 1.0));
 
         final mix = result.value.value as BorderMix;
         expect(mix.$top, isNotNull);
@@ -140,7 +140,7 @@ void main() {
       });
 
       test('bottom creates bottom border only', () {
-        final result = utility.bottom(BorderSideMix.only(width: 1.0));
+        final result = utility.bottom(BorderSideMix(width: 1.0));
 
         final mix = result.value.value as BorderMix;
         expect(mix.$top, isNull);
@@ -150,7 +150,7 @@ void main() {
       });
 
       test('left creates left border only', () {
-        final result = utility.left(BorderSideMix.only(width: 1.0));
+        final result = utility.left(BorderSideMix(width: 1.0));
 
         final mix = result.value.value as BorderMix;
         expect(mix.$top, isNull);
@@ -160,7 +160,7 @@ void main() {
       });
 
       test('right creates right border only', () {
-        final result = utility.right(BorderSideMix.only(width: 1.0));
+        final result = utility.right(BorderSideMix(width: 1.0));
 
         final mix = result.value.value as BorderMix;
         expect(mix.$top, isNull);
@@ -170,7 +170,7 @@ void main() {
       });
 
       test('horizontal creates left and right borders', () {
-        final result = utility.horizontal(BorderSideMix.only(width: 1.0));
+        final result = utility.horizontal(BorderSideMix(width: 1.0));
 
         final mix = result.value.value as BorderMix;
         expect(mix.$top, isNull);
@@ -180,7 +180,7 @@ void main() {
       });
 
       test('vertical creates top and bottom borders', () {
-        final result = utility.vertical(BorderSideMix.only(width: 1.0));
+        final result = utility.vertical(BorderSideMix(width: 1.0));
 
         final mix = result.value.value as BorderMix;
         expect(mix.$top, isNotNull);
@@ -248,8 +248,8 @@ void main() {
     });
 
     test('only() creates BorderDirectionalMix with specified sides', () {
-      final topSide = BorderSideMix.only(color: Colors.red, width: 1.0);
-      final startSide = BorderSideMix.only(color: Colors.green, width: 2.0);
+      final topSide = BorderSideMix(color: Colors.red, width: 1.0);
+      final startSide = BorderSideMix(color: Colors.green, width: 2.0);
 
       final result = utility.only(top: topSide, start: startSide);
 
@@ -265,7 +265,7 @@ void main() {
     group('side utilities', () {
       test('all creates uniform border', () {
         final result = utility.all(
-          BorderSideMix.only(color: Colors.red, width: 2.0),
+          BorderSideMix(color: Colors.red, width: 2.0),
         );
 
         final mix = result.value.value as BorderDirectionalMix;
@@ -276,7 +276,7 @@ void main() {
       });
 
       test('horizontal creates start and end borders', () {
-        final result = utility.horizontal(BorderSideMix.only(width: 1.0));
+        final result = utility.horizontal(BorderSideMix(width: 1.0));
 
         final mix = result.value.value as BorderDirectionalMix;
         expect(mix.$top, isNull);
@@ -286,7 +286,7 @@ void main() {
       });
 
       test('vertical creates top and bottom borders', () {
-        final result = utility.vertical(BorderSideMix.only(width: 1.0));
+        final result = utility.vertical(BorderSideMix(width: 1.0));
 
         final mix = result.value.value as BorderDirectionalMix;
         expect(mix.$top, isNotNull);
@@ -296,7 +296,7 @@ void main() {
       });
 
       test('start creates start border only', () {
-        final result = utility.start(BorderSideMix.only(width: 1.0));
+        final result = utility.start(BorderSideMix(width: 1.0));
 
         final mix = result.value.value as BorderDirectionalMix;
         expect(mix.$top, isNull);
@@ -306,7 +306,7 @@ void main() {
       });
 
       test('end creates end border only', () {
-        final result = utility.end(BorderSideMix.only(width: 1.0));
+        final result = utility.end(BorderSideMix(width: 1.0));
 
         final mix = result.value.value as BorderDirectionalMix;
         expect(mix.$top, isNull);
@@ -342,7 +342,7 @@ void main() {
     });
 
     test('only() creates BorderMix', () {
-      final topSide = BorderSideMix.only(color: Colors.red, width: 1.0);
+      final topSide = BorderSideMix(color: Colors.red, width: 1.0);
 
       final result = utility.border.only(top: topSide);
 
@@ -360,10 +360,10 @@ void main() {
     group('directional access', () {
       test('start and end utilities work through directional', () {
         final resultStart = utility.borderDirectional.start(
-          BorderSideMix.only(width: 1.0),
+          BorderSideMix(width: 1.0),
         );
         final resultEnd = utility.borderDirectional.end(
-          BorderSideMix.only(width: 2.0),
+          BorderSideMix(width: 2.0),
         );
 
         expect(resultStart, isA<UtilityTestAttribute>());
@@ -374,7 +374,7 @@ void main() {
     group('inherited utilities from BorderUtility', () {
       test('all creates uniform border', () {
         final result = utility.border.all(
-          BorderSideMix.only(color: Colors.red, width: 2.0),
+          BorderSideMix(color: Colors.red, width: 2.0),
         );
         expect(result, isA<UtilityTestAttribute>());
       });

@@ -10,7 +10,7 @@ void main() {
       final utility = TextStyleUtility(UtilityTestAttribute.new);
 
       test('call() creates TextStyleMix', () {
-        final textStyleMix = TextStyleMix.only(
+        final textStyleMix = TextStyleMix(
           color: Colors.red,
           fontSize: 16.0,
           fontWeight: FontWeight.bold,

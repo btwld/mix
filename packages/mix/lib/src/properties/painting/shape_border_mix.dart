@@ -82,20 +82,20 @@ final class RoundedRectangleBorderMix
     extends OutlinedBorderMix<RoundedRectangleBorder> {
   final MixProp<BorderRadiusGeometry>? $borderRadius;
 
-  RoundedRectangleBorderMix.only({
+  RoundedRectangleBorderMix({
     BorderRadiusGeometryMix? borderRadius,
     BorderSideMix? side,
-  }) : this(
+  }) : this.raw(
          borderRadius: MixProp.maybe(borderRadius),
          side: MixProp.maybe(side),
        );
-  const RoundedRectangleBorderMix({
+  const RoundedRectangleBorderMix.raw({
     MixProp<BorderRadiusGeometry>? borderRadius,
     super.side,
   }) : $borderRadius = borderRadius;
 
   RoundedRectangleBorderMix.value(RoundedRectangleBorder border)
-    : this.only(
+    : this(
         borderRadius: BorderRadiusGeometryMix.value(border.borderRadius),
         side: BorderSideMix.maybeValue(border.side),
       );
@@ -115,7 +115,7 @@ final class RoundedRectangleBorderMix
 
   @override
   RoundedRectangleBorderMix mergeShapeBorder(RoundedRectangleBorderMix other) {
-    return RoundedRectangleBorderMix(
+    return RoundedRectangleBorderMix.raw(
       borderRadius: MixHelpers.merge($borderRadius, other.$borderRadius),
       side: MixHelpers.merge($side, other.$side),
     );
@@ -130,21 +130,21 @@ final class BeveledRectangleBorderMix
     extends OutlinedBorderMix<BeveledRectangleBorder> {
   final MixProp<BorderRadiusGeometry>? $borderRadius;
 
-  BeveledRectangleBorderMix.only({
+  BeveledRectangleBorderMix({
     BorderRadiusGeometryMix? borderRadius,
     BorderSideMix? side,
-  }) : this(
+  }) : this.raw(
          borderRadius: MixProp.maybe(borderRadius),
          side: MixProp.maybe(side),
        );
 
-  const BeveledRectangleBorderMix({
+  const BeveledRectangleBorderMix.raw({
     MixProp<BorderRadiusGeometry>? borderRadius,
     super.side,
   }) : $borderRadius = borderRadius;
 
   BeveledRectangleBorderMix.value(BeveledRectangleBorder border)
-    : this.only(
+    : this(
         borderRadius: BorderRadiusGeometryMix.value(border.borderRadius),
         side: BorderSideMix.maybeValue(border.side),
       );
@@ -164,7 +164,7 @@ final class BeveledRectangleBorderMix
 
   @override
   BeveledRectangleBorderMix mergeShapeBorder(BeveledRectangleBorderMix other) {
-    return BeveledRectangleBorderMix(
+    return BeveledRectangleBorderMix.raw(
       borderRadius: MixHelpers.merge($borderRadius, other.$borderRadius),
       side: MixHelpers.merge($side, other.$side),
     );
@@ -179,21 +179,21 @@ final class ContinuousRectangleBorderMix
     extends OutlinedBorderMix<ContinuousRectangleBorder> {
   final MixProp<BorderRadiusGeometry>? $borderRadius;
 
-  ContinuousRectangleBorderMix.only({
+  ContinuousRectangleBorderMix({
     BorderRadiusGeometryMix? borderRadius,
     BorderSideMix? side,
-  }) : this(
+  }) : this.raw(
          borderRadius: MixProp.maybe(borderRadius),
          side: MixProp.maybe(side),
        );
 
-  const ContinuousRectangleBorderMix({
+  const ContinuousRectangleBorderMix.raw({
     MixProp<BorderRadiusGeometry>? borderRadius,
     super.side,
   }) : $borderRadius = borderRadius;
 
   ContinuousRectangleBorderMix.value(ContinuousRectangleBorder border)
-    : this.only(
+    : this(
         borderRadius: BorderRadiusGeometryMix.value(border.borderRadius),
         side: BorderSideMix.maybeValue(border.side),
       );
@@ -217,7 +217,7 @@ final class ContinuousRectangleBorderMix
   ContinuousRectangleBorderMix mergeShapeBorder(
     ContinuousRectangleBorderMix other,
   ) {
-    return ContinuousRectangleBorderMix(
+    return ContinuousRectangleBorderMix.raw(
       borderRadius: MixHelpers.merge($borderRadius, other.$borderRadius),
       side: MixHelpers.merge($side, other.$side),
     );
@@ -231,14 +231,17 @@ final class ContinuousRectangleBorderMix
 final class CircleBorderMix extends OutlinedBorderMix<CircleBorder> {
   final Prop<double>? $eccentricity;
 
-  CircleBorderMix.only({BorderSideMix? side, double? eccentricity})
-    : this(side: MixProp.maybe(side), eccentricity: Prop.maybe(eccentricity));
+  CircleBorderMix({BorderSideMix? side, double? eccentricity})
+    : this.raw(
+        side: MixProp.maybe(side),
+        eccentricity: Prop.maybe(eccentricity),
+      );
 
-  const CircleBorderMix({super.side, Prop<double>? eccentricity})
+  const CircleBorderMix.raw({super.side, Prop<double>? eccentricity})
     : $eccentricity = eccentricity;
 
   CircleBorderMix.value(CircleBorder border)
-    : this.only(
+    : this(
         side: BorderSideMix.maybeValue(border.side),
         eccentricity: border.eccentricity,
       );
@@ -257,7 +260,7 @@ final class CircleBorderMix extends OutlinedBorderMix<CircleBorder> {
 
   @override
   CircleBorderMix mergeShapeBorder(CircleBorderMix other) {
-    return CircleBorderMix(
+    return CircleBorderMix.raw(
       side: MixHelpers.merge($side, other.$side),
       eccentricity: MixHelpers.merge($eccentricity, other.$eccentricity),
     );
@@ -276,7 +279,7 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
   final Prop<double>? $rotation;
   final Prop<double>? $squash;
 
-  StarBorderMix.only({
+  StarBorderMix({
     BorderSideMix? side,
     double? points,
     double? innerRadiusRatio,
@@ -284,7 +287,7 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
     double? valleyRounding,
     double? rotation,
     double? squash,
-  }) : this(
+  }) : this.raw(
          side: MixProp.maybe(side),
          points: Prop.maybe(points),
          innerRadiusRatio: Prop.maybe(innerRadiusRatio),
@@ -295,7 +298,7 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
        );
 
   StarBorderMix.value(StarBorder border)
-    : this.only(
+    : this(
         side: BorderSideMix.maybeValue(border.side),
         points: border.points,
         innerRadiusRatio: border.innerRadiusRatio,
@@ -305,7 +308,7 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
         squash: border.squash,
       );
 
-  const StarBorderMix({
+  const StarBorderMix.raw({
     super.side,
     Prop<double>? points,
     Prop<double>? innerRadiusRatio,
@@ -322,37 +325,37 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
 
   /// Creates a star border with the specified number of points.
   factory StarBorderMix.points(double value) {
-    return StarBorderMix.only(points: value);
+    return StarBorderMix(points: value);
   }
 
   /// Creates a star border with the specified inner radius ratio.
   factory StarBorderMix.innerRadiusRatio(double value) {
-    return StarBorderMix.only(innerRadiusRatio: value);
+    return StarBorderMix(innerRadiusRatio: value);
   }
 
   /// Creates a star border with the specified point rounding.
   factory StarBorderMix.pointRounding(double value) {
-    return StarBorderMix.only(pointRounding: value);
+    return StarBorderMix(pointRounding: value);
   }
 
   /// Creates a star border with the specified valley rounding.
   factory StarBorderMix.valleyRounding(double value) {
-    return StarBorderMix.only(valleyRounding: value);
+    return StarBorderMix(valleyRounding: value);
   }
 
   /// Creates a star border with the specified rotation.
   factory StarBorderMix.rotation(double value) {
-    return StarBorderMix.only(rotation: value);
+    return StarBorderMix(rotation: value);
   }
 
   /// Creates a star border with the specified squash factor.
   factory StarBorderMix.squash(double value) {
-    return StarBorderMix.only(squash: value);
+    return StarBorderMix(squash: value);
   }
 
   /// Creates a star border with the specified border side.
   factory StarBorderMix.side(BorderSideMix value) {
-    return StarBorderMix.only(side: value);
+    return StarBorderMix(side: value);
   }
 
   static StarBorderMix? maybeValue(StarBorder? border) {
@@ -361,37 +364,37 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
 
   /// Returns a copy with the specified number of points.
   StarBorderMix points(double value) {
-    return mergeShapeBorder(StarBorderMix.only(points: value));
+    return mergeShapeBorder(StarBorderMix(points: value));
   }
 
   /// Returns a copy with the specified inner radius ratio.
   StarBorderMix innerRadiusRatio(double value) {
-    return mergeShapeBorder(StarBorderMix.only(innerRadiusRatio: value));
+    return mergeShapeBorder(StarBorderMix(innerRadiusRatio: value));
   }
 
   /// Returns a copy with the specified point rounding.
   StarBorderMix pointRounding(double value) {
-    return mergeShapeBorder(StarBorderMix.only(pointRounding: value));
+    return mergeShapeBorder(StarBorderMix(pointRounding: value));
   }
 
   /// Returns a copy with the specified valley rounding.
   StarBorderMix valleyRounding(double value) {
-    return mergeShapeBorder(StarBorderMix.only(valleyRounding: value));
+    return mergeShapeBorder(StarBorderMix(valleyRounding: value));
   }
 
   /// Returns a copy with the specified rotation.
   StarBorderMix rotation(double value) {
-    return mergeShapeBorder(StarBorderMix.only(rotation: value));
+    return mergeShapeBorder(StarBorderMix(rotation: value));
   }
 
   /// Returns a copy with the specified squash factor.
   StarBorderMix squash(double value) {
-    return mergeShapeBorder(StarBorderMix.only(squash: value));
+    return mergeShapeBorder(StarBorderMix(squash: value));
   }
 
   /// Returns a copy with the specified border side.
   StarBorderMix side(BorderSideMix value) {
-    return mergeShapeBorder(StarBorderMix.only(side: value));
+    return mergeShapeBorder(StarBorderMix(side: value));
   }
 
   @override
@@ -409,7 +412,7 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
 
   @override
   StarBorderMix mergeShapeBorder(StarBorderMix other) {
-    return StarBorderMix(
+    return StarBorderMix.raw(
       side: MixHelpers.merge($side, other.$side),
       points: MixHelpers.merge($points, other.$points),
       innerRadiusRatio: MixHelpers.merge(
@@ -442,20 +445,20 @@ final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
   final MixProp<LinearBorderEdge>? $top;
   final MixProp<LinearBorderEdge>? $bottom;
 
-  LinearBorderMix.only({
+  LinearBorderMix({
     BorderSideMix? side,
     LinearBorderEdgeMix? start,
     LinearBorderEdgeMix? end,
     LinearBorderEdgeMix? top,
     LinearBorderEdgeMix? bottom,
-  }) : this(
+  }) : this.raw(
          side: MixProp.maybe(side),
          start: MixProp.maybe(start),
          end: MixProp.maybe(end),
          top: MixProp.maybe(top),
          bottom: MixProp.maybe(bottom),
        );
-  const LinearBorderMix({
+  const LinearBorderMix.raw({
     super.side,
     MixProp<LinearBorderEdge>? start,
     MixProp<LinearBorderEdge>? end,
@@ -467,7 +470,7 @@ final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
        $bottom = bottom;
 
   LinearBorderMix.value(LinearBorder border)
-    : this.only(
+    : this(
         side: BorderSideMix.maybeValue(border.side),
         start: LinearBorderEdgeMix.maybeValue(border.start),
         end: LinearBorderEdgeMix.maybeValue(border.end),
@@ -477,27 +480,27 @@ final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
 
   /// Creates a linear border with the specified start edge.
   factory LinearBorderMix.start(LinearBorderEdgeMix value) {
-    return LinearBorderMix.only(start: value);
+    return LinearBorderMix(start: value);
   }
 
   /// Creates a linear border with the specified end edge.
   factory LinearBorderMix.end(LinearBorderEdgeMix value) {
-    return LinearBorderMix.only(end: value);
+    return LinearBorderMix(end: value);
   }
 
   /// Creates a linear border with the specified top edge.
   factory LinearBorderMix.top(LinearBorderEdgeMix value) {
-    return LinearBorderMix.only(top: value);
+    return LinearBorderMix(top: value);
   }
 
   /// Creates a linear border with the specified bottom edge.
   factory LinearBorderMix.bottom(LinearBorderEdgeMix value) {
-    return LinearBorderMix.only(bottom: value);
+    return LinearBorderMix(bottom: value);
   }
 
   /// Creates a linear border with the specified border side.
   factory LinearBorderMix.side(BorderSideMix value) {
-    return LinearBorderMix.only(side: value);
+    return LinearBorderMix(side: value);
   }
 
   static LinearBorderMix? maybeValue(LinearBorder? border) {
@@ -506,27 +509,27 @@ final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
 
   /// Returns a copy with the specified start edge.
   LinearBorderMix start(LinearBorderEdgeMix value) {
-    return mergeShapeBorder(LinearBorderMix.only(start: value));
+    return mergeShapeBorder(LinearBorderMix(start: value));
   }
 
   /// Returns a copy with the specified end edge.
   LinearBorderMix end(LinearBorderEdgeMix value) {
-    return mergeShapeBorder(LinearBorderMix.only(end: value));
+    return mergeShapeBorder(LinearBorderMix(end: value));
   }
 
   /// Returns a copy with the specified top edge.
   LinearBorderMix top(LinearBorderEdgeMix value) {
-    return mergeShapeBorder(LinearBorderMix.only(top: value));
+    return mergeShapeBorder(LinearBorderMix(top: value));
   }
 
   /// Returns a copy with the specified bottom edge.
   LinearBorderMix bottom(LinearBorderEdgeMix value) {
-    return mergeShapeBorder(LinearBorderMix.only(bottom: value));
+    return mergeShapeBorder(LinearBorderMix(bottom: value));
   }
 
   /// Returns a copy with the specified border side.
   LinearBorderMix side(BorderSideMix value) {
-    return mergeShapeBorder(LinearBorderMix.only(side: value));
+    return mergeShapeBorder(LinearBorderMix(side: value));
   }
 
   @override
@@ -542,7 +545,7 @@ final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
 
   @override
   LinearBorderMix mergeShapeBorder(LinearBorderMix other) {
-    return LinearBorderMix(
+    return LinearBorderMix.raw(
       side: MixHelpers.merge($side, other.$side),
       start: MixHelpers.merge($start, other.$start),
       end: MixHelpers.merge($end, other.$end),
@@ -560,22 +563,22 @@ final class LinearBorderEdgeMix extends Mix<LinearBorderEdge> {
   final Prop<double>? $size;
   final Prop<double>? $alignment;
 
-  LinearBorderEdgeMix.only({double? size, double? alignment})
-    : this(size: Prop.maybe(size), alignment: Prop.maybe(alignment));
+  LinearBorderEdgeMix({double? size, double? alignment})
+    : this.raw(size: Prop.maybe(size), alignment: Prop.maybe(alignment));
   LinearBorderEdgeMix.value(LinearBorderEdge edge)
-    : this.only(size: edge.size, alignment: edge.alignment);
-  const LinearBorderEdgeMix({Prop<double>? size, Prop<double>? alignment})
+    : this(size: edge.size, alignment: edge.alignment);
+  const LinearBorderEdgeMix.raw({Prop<double>? size, Prop<double>? alignment})
     : $size = size,
       $alignment = alignment;
 
   /// Creates a linear border edge with the specified size.
   factory LinearBorderEdgeMix.size(double value) {
-    return LinearBorderEdgeMix.only(size: value);
+    return LinearBorderEdgeMix(size: value);
   }
 
   /// Creates a linear border edge with the specified alignment.
   factory LinearBorderEdgeMix.alignment(double value) {
-    return LinearBorderEdgeMix.only(alignment: value);
+    return LinearBorderEdgeMix(alignment: value);
   }
 
   static LinearBorderEdgeMix? maybeValue(LinearBorderEdge? edge) {
@@ -584,12 +587,12 @@ final class LinearBorderEdgeMix extends Mix<LinearBorderEdge> {
 
   /// Returns a copy with the specified size.
   LinearBorderEdgeMix size(double value) {
-    return merge(LinearBorderEdgeMix.only(size: value));
+    return merge(LinearBorderEdgeMix(size: value));
   }
 
   /// Returns a copy with the specified alignment.
   LinearBorderEdgeMix alignment(double value) {
-    return merge(LinearBorderEdgeMix.only(alignment: value));
+    return merge(LinearBorderEdgeMix(alignment: value));
   }
 
   @override
@@ -604,7 +607,7 @@ final class LinearBorderEdgeMix extends Mix<LinearBorderEdge> {
   LinearBorderEdgeMix merge(LinearBorderEdgeMix? other) {
     if (other == null) return this;
 
-    return LinearBorderEdgeMix(
+    return LinearBorderEdgeMix.raw(
       size: MixHelpers.merge($size, other.$size),
       alignment: MixHelpers.merge($alignment, other.$alignment),
     );
@@ -616,17 +619,16 @@ final class LinearBorderEdgeMix extends Mix<LinearBorderEdge> {
 
 /// Mix-compatible representation of Flutter's [StadiumBorder] with rounded stadium shape.
 final class StadiumBorderMix extends OutlinedBorderMix<StadiumBorder> {
-  StadiumBorderMix.only({BorderSideMix? side})
-    : this(side: MixProp.maybe(side));
+  StadiumBorderMix({BorderSideMix? side}) : this.raw(side: MixProp.maybe(side));
 
-  const StadiumBorderMix({super.side});
+  const StadiumBorderMix.raw({super.side});
 
   StadiumBorderMix.value(StadiumBorder border)
-    : this.only(side: BorderSideMix.maybeValue(border.side));
+    : this(side: BorderSideMix.maybeValue(border.side));
 
   /// Creates a stadium border with the specified border side.
   factory StadiumBorderMix.side(BorderSideMix value) {
-    return StadiumBorderMix.only(side: value);
+    return StadiumBorderMix(side: value);
   }
 
   static StadiumBorderMix? maybeValue(StadiumBorder? border) {
@@ -635,7 +637,7 @@ final class StadiumBorderMix extends OutlinedBorderMix<StadiumBorder> {
 
   /// Returns a copy with the specified border side.
   StadiumBorderMix side(BorderSideMix value) {
-    return mergeShapeBorder(StadiumBorderMix.only(side: value));
+    return mergeShapeBorder(StadiumBorderMix(side: value));
   }
 
   @override
@@ -647,7 +649,7 @@ final class StadiumBorderMix extends OutlinedBorderMix<StadiumBorder> {
 
   @override
   StadiumBorderMix mergeShapeBorder(StadiumBorderMix other) {
-    return StadiumBorderMix(side: MixHelpers.merge($side, other.$side));
+    return StadiumBorderMix.raw(side: MixHelpers.merge($side, other.$side));
   }
 
   @override

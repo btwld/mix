@@ -8,14 +8,14 @@ import 'text_height_behavior_mix.dart';
 final class TextHeightBehaviorUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, TextHeightBehavior> {
   late final heightToFirstAscent = PropUtility<T, bool>(
-    (prop) => call(TextHeightBehaviorMix(applyHeightToFirstAscent: prop)),
+    (prop) => call(TextHeightBehaviorMix.raw(applyHeightToFirstAscent: prop)),
   );
   late final heightToLastDescent = PropUtility<T, bool>(
-    (prop) => call(TextHeightBehaviorMix(applyHeightToLastDescent: prop)),
+    (prop) => call(TextHeightBehaviorMix.raw(applyHeightToLastDescent: prop)),
   );
 
   late final leadingDistribution = PropUtility<T, TextLeadingDistribution>(
-    (prop) => call(TextHeightBehaviorMix(leadingDistribution: prop)),
+    (prop) => call(TextHeightBehaviorMix.raw(leadingDistribution: prop)),
   );
 
   TextHeightBehaviorUtility(super.builder)

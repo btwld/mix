@@ -12,28 +12,30 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
 
   static BorderMix none = BorderMix.all(BorderSideMix.none);
 
-  const BoxBorderMix({MixProp<BorderSide>? top, MixProp<BorderSide>? bottom})
-    : $top = top,
-      $bottom = bottom;
+  const BoxBorderMix.raw({
+    MixProp<BorderSide>? top,
+    MixProp<BorderSide>? bottom,
+  }) : $top = top,
+       $bottom = bottom;
 
   static BorderMix all(BorderSideMix side) {
-    return BorderMix.only(top: side, bottom: side, left: side, right: side);
+    return BorderMix(top: side, bottom: side, left: side, right: side);
   }
 
   static BorderMix left(BorderSideMix side) {
-    return BorderMix.only(left: side);
+    return BorderMix(left: side);
   }
 
   static BorderMix right(BorderSideMix side) {
-    return BorderMix.only(right: side);
+    return BorderMix(right: side);
   }
 
   static BorderMix top(BorderSideMix side) {
-    return BorderMix.only(top: side);
+    return BorderMix(top: side);
   }
 
   static BorderMix bottom(BorderSideMix side) {
-    return BorderMix.only(bottom: side);
+    return BorderMix(bottom: side);
   }
 
   /// Creates a border with symmetric sides using vertical and horizontal borders.
@@ -44,7 +46,7 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
     BorderSideMix? vertical,
     BorderSideMix? horizontal,
   }) {
-    return BorderMix.only(
+    return BorderMix(
       top: horizontal,
       bottom: horizontal,
       left: vertical,
@@ -65,11 +67,11 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
   }
 
   static BorderDirectionalMix start(BorderSideMix side) {
-    return BorderDirectionalMix.only(start: side);
+    return BorderDirectionalMix(start: side);
   }
 
   static BorderDirectionalMix end(BorderSideMix side) {
-    return BorderDirectionalMix.only(end: side);
+    return BorderDirectionalMix(end: side);
   }
 
   /// Merges two BoxBorderMix instances.
@@ -118,7 +120,7 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
     // Convert BorderDirectionalMix to BorderMix
     final directional = this as BorderDirectionalMix;
 
-    return BorderMix(
+    return BorderMix.raw(
       top: $top,
       bottom: $bottom,
       left: directional.$start, // start maps to left
@@ -133,7 +135,7 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
     // Convert BorderMix to BorderDirectionalMix
     final border = this as BorderMix;
 
-    return BorderDirectionalMix(
+    return BorderDirectionalMix.raw(
       top: $top,
       bottom: $bottom,
       start: border.$left, // left maps to start
@@ -156,25 +158,26 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
   final MixProp<BorderSide>? $left;
   final MixProp<BorderSide>? $right;
 
-  BorderMix.only({
+  BorderMix({
     BorderSideMix? top,
     BorderSideMix? bottom,
     BorderSideMix? left,
     BorderSideMix? right,
-  }) : this(
+  }) : this.raw(
          top: MixProp.maybe(top),
          bottom: MixProp.maybe(bottom),
          left: MixProp.maybe(left),
          right: MixProp.maybe(right),
        );
 
-  const BorderMix({
+  const BorderMix.raw({
     super.top,
     super.bottom,
     MixProp<BorderSide>? left,
     MixProp<BorderSide>? right,
   }) : $left = left,
-       $right = right;
+       $right = right,
+       super.raw();
 
   /// Creates a [BorderMix] from an existing [Border].
   ///
@@ -183,7 +186,7 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
   /// final dto = BorderMix.value(border);
   /// ```
   BorderMix.value(Border border)
-    : this.only(
+    : this(
         top: BorderSideMix.maybeValue(border.top),
         bottom: BorderSideMix.maybeValue(border.bottom),
         left: BorderSideMix.maybeValue(border.left),
@@ -191,10 +194,10 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
       );
 
   BorderMix.all(BorderSideMix side)
-    : this.only(top: side, bottom: side, left: side, right: side);
+    : this(top: side, bottom: side, left: side, right: side);
 
   BorderMix.symmetric({BorderSideMix? vertical, BorderSideMix? horizontal})
-    : this.only(
+    : this(
         top: horizontal,
         bottom: horizontal,
         left: vertical,
@@ -212,19 +215,19 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
   }
 
   factory BorderMix.top(BorderSideMix side) {
-    return BorderMix.only(top: side);
+    return BorderMix(top: side);
   }
 
   factory BorderMix.bottom(BorderSideMix side) {
-    return BorderMix.only(bottom: side);
+    return BorderMix(bottom: side);
   }
 
   factory BorderMix.left(BorderSideMix side) {
-    return BorderMix.only(left: side);
+    return BorderMix(left: side);
   }
 
   factory BorderMix.right(BorderSideMix side) {
-    return BorderMix.only(right: side);
+    return BorderMix(right: side);
   }
 
   /// Creates a [BorderMix] from a nullable [Border].
@@ -241,22 +244,22 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
 
   /// Returns a copy with the specified top border side.
   BorderMix top(BorderSideMix side) {
-    return merge(BorderMix.only(top: side));
+    return merge(BorderMix(top: side));
   }
 
   /// Returns a copy with the specified bottom border side.
   BorderMix bottom(BorderSideMix side) {
-    return merge(BorderMix.only(bottom: side));
+    return merge(BorderMix(bottom: side));
   }
 
   /// Returns a copy with the specified left border side.
   BorderMix left(BorderSideMix side) {
-    return merge(BorderMix.only(left: side));
+    return merge(BorderMix(left: side));
   }
 
   /// Returns a copy with the specified right border side.
   BorderMix right(BorderSideMix side) {
-    return merge(BorderMix.only(right: side));
+    return merge(BorderMix(right: side));
   }
 
   /// Resolves to [Border] using the provided [MixContext].
@@ -289,7 +292,7 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
   BorderMix merge(BorderMix? other) {
     if (other == null) return this;
 
-    return BorderMix(
+    return BorderMix.raw(
       top: MixHelpers.merge($top, other.$top),
       bottom: MixHelpers.merge($bottom, other.$bottom),
       left: MixHelpers.merge($left, other.$left),
@@ -319,25 +322,26 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
     BorderSideMix.none,
   );
 
-  BorderDirectionalMix.only({
+  BorderDirectionalMix({
     BorderSideMix? top,
     BorderSideMix? bottom,
     BorderSideMix? start,
     BorderSideMix? end,
-  }) : this(
+  }) : this.raw(
          top: MixProp.maybe(top),
          bottom: MixProp.maybe(bottom),
          start: MixProp.maybe(start),
          end: MixProp.maybe(end),
        );
 
-  const BorderDirectionalMix({
+  const BorderDirectionalMix.raw({
     super.top,
     super.bottom,
     MixProp<BorderSide>? start,
     MixProp<BorderSide>? end,
   }) : $start = start,
-       $end = end;
+       $end = end,
+       super.raw();
 
   /// Creates a [BorderDirectionalMix] from an existing [BorderDirectional].
   ///
@@ -346,7 +350,7 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
   /// final dto = BorderDirectionalMix.value(border);
   /// ```
   BorderDirectionalMix.value(BorderDirectional border)
-    : this.only(
+    : this(
         top: BorderSideMix.maybeValue(border.top),
         bottom: BorderSideMix.maybeValue(border.bottom),
         start: BorderSideMix.maybeValue(border.start),
@@ -354,12 +358,12 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
       );
 
   BorderDirectionalMix.all(BorderSideMix side)
-    : this.only(top: side, bottom: side, start: side, end: side);
+    : this(top: side, bottom: side, start: side, end: side);
 
   BorderDirectionalMix.symmetric({
     BorderSideMix? vertical,
     BorderSideMix? horizontal,
-  }) : this.only(
+  }) : this(
          top: horizontal,
          bottom: horizontal,
          start: vertical,
@@ -372,19 +376,19 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
     : this.symmetric(horizontal: side);
 
   factory BorderDirectionalMix.top(BorderSideMix side) {
-    return BorderDirectionalMix.only(top: side);
+    return BorderDirectionalMix(top: side);
   }
 
   factory BorderDirectionalMix.bottom(BorderSideMix side) {
-    return BorderDirectionalMix.only(bottom: side);
+    return BorderDirectionalMix(bottom: side);
   }
 
   factory BorderDirectionalMix.start(BorderSideMix side) {
-    return BorderDirectionalMix.only(start: side);
+    return BorderDirectionalMix(start: side);
   }
 
   factory BorderDirectionalMix.end(BorderSideMix side) {
-    return BorderDirectionalMix.only(end: side);
+    return BorderDirectionalMix(end: side);
   }
 
   /// Creates a [BorderDirectionalMix] from a nullable [BorderDirectional].
@@ -401,22 +405,22 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
 
   /// Returns a copy with the specified top border side.
   BorderDirectionalMix top(BorderSideMix side) {
-    return merge(BorderDirectionalMix.only(top: side));
+    return merge(BorderDirectionalMix(top: side));
   }
 
   /// Returns a copy with the specified bottom border side.
   BorderDirectionalMix bottom(BorderSideMix side) {
-    return merge(BorderDirectionalMix.only(bottom: side));
+    return merge(BorderDirectionalMix(bottom: side));
   }
 
   /// Returns a copy with the specified start border side.
   BorderDirectionalMix start(BorderSideMix side) {
-    return merge(BorderDirectionalMix.only(start: side));
+    return merge(BorderDirectionalMix(start: side));
   }
 
   /// Returns a copy with the specified end border side.
   BorderDirectionalMix end(BorderSideMix side) {
-    return merge(BorderDirectionalMix.only(end: side));
+    return merge(BorderDirectionalMix(end: side));
   }
 
   /// Resolves to [BorderDirectional] using the provided [MixContext].
@@ -449,7 +453,7 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
   BorderDirectionalMix merge(BorderDirectionalMix? other) {
     if (other == null) return this;
 
-    return BorderDirectionalMix(
+    return BorderDirectionalMix.raw(
       top: MixHelpers.merge($top, other.$top),
       bottom: MixHelpers.merge($bottom, other.$bottom),
       start: MixHelpers.merge($start, other.$start),
@@ -480,12 +484,12 @@ final class BorderSideMix extends Mix<BorderSide>
 
   static final BorderSideMix none = BorderSideMix.value(BorderSide.none);
 
-  BorderSideMix.only({
+  BorderSideMix({
     Color? color,
     double? strokeAlign,
     BorderStyle? style,
     double? width,
-  }) : this(
+  }) : this.raw(
          color: Prop.maybe(color),
          width: Prop.maybe(width),
          style: Prop.maybe(style),
@@ -499,14 +503,14 @@ final class BorderSideMix extends Mix<BorderSide>
   /// final dto = BorderSideMix.value(borderSide);
   /// ```
   BorderSideMix.value(BorderSide borderSide)
-    : this.only(
+    : this(
         color: borderSide.color,
         strokeAlign: borderSide.strokeAlign,
         style: borderSide.style,
         width: borderSide.width,
       );
 
-  const BorderSideMix({
+  const BorderSideMix.raw({
     Prop<Color>? color,
     Prop<double>? width,
     Prop<BorderStyle>? style,
@@ -517,19 +521,19 @@ final class BorderSideMix extends Mix<BorderSide>
        $strokeAlign = strokeAlign;
 
   factory BorderSideMix.color(Color value) {
-    return BorderSideMix.only(color: value);
+    return BorderSideMix(color: value);
   }
 
   factory BorderSideMix.width(double value) {
-    return BorderSideMix.only(width: value);
+    return BorderSideMix(width: value);
   }
 
   factory BorderSideMix.style(BorderStyle value) {
-    return BorderSideMix.only(style: value);
+    return BorderSideMix(style: value);
   }
 
   factory BorderSideMix.strokeAlign(double value) {
-    return BorderSideMix.only(strokeAlign: value);
+    return BorderSideMix(strokeAlign: value);
   }
 
   /// Creates a [BorderSideMix] from a nullable [BorderSide].
@@ -548,22 +552,22 @@ final class BorderSideMix extends Mix<BorderSide>
 
   /// Returns a copy with the specified color.
   BorderSideMix color(Color value) {
-    return merge(BorderSideMix.only(color: value));
+    return merge(BorderSideMix(color: value));
   }
 
   /// Returns a copy with the specified width.
   BorderSideMix width(double value) {
-    return merge(BorderSideMix.only(width: value));
+    return merge(BorderSideMix(width: value));
   }
 
   /// Returns a copy with the specified border style.
   BorderSideMix style(BorderStyle value) {
-    return merge(BorderSideMix.only(style: value));
+    return merge(BorderSideMix(style: value));
   }
 
   /// Returns a copy with the specified stroke alignment.
   BorderSideMix strokeAlign(double value) {
-    return merge(BorderSideMix.only(strokeAlign: value));
+    return merge(BorderSideMix(strokeAlign: value));
   }
 
   /// Resolves to [BorderSide] using the provided [MixContext].
@@ -597,7 +601,7 @@ final class BorderSideMix extends Mix<BorderSide>
   BorderSideMix merge(BorderSideMix? other) {
     if (other == null) return this;
 
-    return BorderSideMix(
+    return BorderSideMix.raw(
       color: MixHelpers.merge($color, other.$color),
       width: MixHelpers.merge($width, other.$width),
       style: MixHelpers.merge($style, other.$style),

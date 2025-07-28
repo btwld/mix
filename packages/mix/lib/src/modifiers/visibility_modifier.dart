@@ -1,4 +1,3 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -73,10 +72,10 @@ class VisibilityModifierAttribute extends ModifierAttribute<VisibilityModifier>
     with Diagnosticable {
   final Prop<bool>? visible;
 
-  const VisibilityModifierAttribute({this.visible});
+  const VisibilityModifierAttribute.raw({this.visible});
 
-  VisibilityModifierAttribute.only({bool? visible})
-    : this(visible: Prop.maybe(visible));
+  VisibilityModifierAttribute({bool? visible})
+    : this.raw(visible: Prop.maybe(visible));
 
   /// Resolves to [VisibilityModifier] using the provided [MixContext].
   ///
@@ -103,7 +102,7 @@ class VisibilityModifierAttribute extends ModifierAttribute<VisibilityModifier>
   VisibilityModifierAttribute merge(VisibilityModifierAttribute? other) {
     if (other == null) return this;
 
-    return VisibilityModifierAttribute(
+    return VisibilityModifierAttribute.raw(
       visible: visible?.merge(other.visible) ?? other.visible,
     );
   }
@@ -129,8 +128,8 @@ final class VisibilityModifierUtility<T extends StyleAttribute<Object?>>
   T off() => call(false);
 
   T call(bool value) =>
-      builder(VisibilityModifierAttribute(visible: Prop(value)));
+      builder(VisibilityModifierAttribute.raw(visible: Prop(value)));
 
   T token(MixToken<bool> token) =>
-      builder(VisibilityModifierAttribute(visible: Prop.token(token)));
+      builder(VisibilityModifierAttribute.raw(visible: Prop.token(token)));
 }

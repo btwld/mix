@@ -110,17 +110,17 @@ class FractionallySizedBoxModifierAttribute
   final Prop<double>? heightFactor;
   final Prop<AlignmentGeometry>? alignment;
 
-  const FractionallySizedBoxModifierAttribute({
+  const FractionallySizedBoxModifierAttribute.raw({
     this.widthFactor,
     this.heightFactor,
     this.alignment,
   });
 
-  FractionallySizedBoxModifierAttribute.only({
+  FractionallySizedBoxModifierAttribute({
     double? widthFactor,
     double? heightFactor,
     AlignmentGeometry? alignment,
-  }) : this(
+  }) : this.raw(
          widthFactor: Prop.maybe(widthFactor),
          heightFactor: Prop.maybe(heightFactor),
          alignment: Prop.maybe(alignment),
@@ -157,7 +157,7 @@ class FractionallySizedBoxModifierAttribute
   ) {
     if (other == null) return this;
 
-    return FractionallySizedBoxModifierAttribute(
+    return FractionallySizedBoxModifierAttribute.raw(
       widthFactor: MixHelpers.merge(widthFactor, other.widthFactor),
       heightFactor: MixHelpers.merge(heightFactor, other.heightFactor),
       alignment: MixHelpers.merge(alignment, other.alignment),
@@ -181,9 +181,9 @@ final class FractionallySizedBoxModifierUtility<
   }) {
     return builder(
       FractionallySizedBoxModifierAttribute(
-        widthFactor: Prop.maybe(widthFactor),
-        heightFactor: Prop.maybe(heightFactor),
-        alignment: Prop.maybe(alignment),
+        widthFactor: widthFactor,
+        heightFactor: heightFactor,
+        alignment: alignment,
       ),
     );
   }

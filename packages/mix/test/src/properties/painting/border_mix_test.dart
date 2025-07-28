@@ -8,7 +8,7 @@ void main() {
   group('BorderSideMix', () {
     group('Constructor', () {
       test('only constructor creates instance with correct properties', () {
-        final borderSideMix = BorderSideMix.only(
+        final borderSideMix = BorderSideMix(
           color: Colors.red,
           width: 2.0,
           style: BorderStyle.solid,
@@ -66,7 +66,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to BorderSide with correct properties', () {
-        final borderSideMix = BorderSideMix.only(
+        final borderSideMix = BorderSideMix(
           color: Colors.red,
           width: 2.0,
           style: BorderStyle.solid,
@@ -82,7 +82,7 @@ void main() {
       });
 
       test('uses default values for null properties', () {
-        final borderSideMix = BorderSideMix.only(width: 2.0);
+        final borderSideMix = BorderSideMix(width: 2.0);
 
         const resolvedValue = BorderSide(
           width: 2.0,
@@ -96,16 +96,16 @@ void main() {
 
     group('merge', () {
       test('returns this when other is null', () {
-        final borderSideMix = BorderSideMix.only(width: 2.0);
+        final borderSideMix = BorderSideMix(width: 2.0);
         final merged = borderSideMix.merge(null);
 
         expect(merged, same(borderSideMix));
       });
 
       test('merges properties correctly', () {
-        final first = BorderSideMix.only(color: Colors.red, width: 2.0);
+        final first = BorderSideMix(color: Colors.red, width: 2.0);
 
-        final second = BorderSideMix.only(width: 3.0, style: BorderStyle.solid);
+        final second = BorderSideMix(width: 3.0, style: BorderStyle.solid);
 
         final merged = first.merge(second);
 
@@ -120,12 +120,12 @@ void main() {
 
     group('Equality', () {
       test('returns true when all properties are the same', () {
-        final borderSideMix1 = BorderSideMix.only(
+        final borderSideMix1 = BorderSideMix(
           color: Colors.red,
           width: 2.0,
         );
 
-        final borderSideMix2 = BorderSideMix.only(
+        final borderSideMix2 = BorderSideMix(
           color: Colors.red,
           width: 2.0,
         );
@@ -135,8 +135,8 @@ void main() {
       });
 
       test('returns false when properties are different', () {
-        final borderSideMix1 = BorderSideMix.only(width: 2.0);
-        final borderSideMix2 = BorderSideMix.only(width: 3.0);
+        final borderSideMix1 = BorderSideMix(width: 2.0);
+        final borderSideMix2 = BorderSideMix(width: 3.0);
 
         expect(borderSideMix1, isNot(borderSideMix2));
       });
@@ -146,12 +146,12 @@ void main() {
   group('BorderMix', () {
     group('Constructor', () {
       test('only constructor creates instance with correct properties', () {
-        final topSide = BorderSideMix.only(color: Colors.red, width: 1.0);
-        final bottomSide = BorderSideMix.only(color: Colors.blue, width: 2.0);
-        final leftSide = BorderSideMix.only(color: Colors.green, width: 3.0);
-        final rightSide = BorderSideMix.only(color: Colors.yellow, width: 4.0);
+        final topSide = BorderSideMix(color: Colors.red, width: 1.0);
+        final bottomSide = BorderSideMix(color: Colors.blue, width: 2.0);
+        final leftSide = BorderSideMix(color: Colors.green, width: 3.0);
+        final rightSide = BorderSideMix(color: Colors.yellow, width: 4.0);
 
-        final borderMix = BorderMix.only(
+        final borderMix = BorderMix(
           top: topSide,
           bottom: bottomSide,
           left: leftSide,
@@ -165,7 +165,7 @@ void main() {
       });
 
       test('all constructor creates uniform border', () {
-        final side = BorderSideMix.only(color: Colors.red, width: 2.0);
+        final side = BorderSideMix(color: Colors.red, width: 2.0);
         final borderMix = BorderMix.all(side);
 
         expect(borderMix.$top, isA<MixProp<BorderSide>>());
@@ -203,7 +203,7 @@ void main() {
 
         // Test that all props contain the expected BorderSideMix values
         // Border.all(width: 1.0) creates BorderSide with all default values
-        final expectedBorderSide = BorderSideMix.only(
+        final expectedBorderSide = BorderSideMix(
           color: Colors.black,
           width: 1.0,
           style: BorderStyle.solid,
@@ -234,11 +234,11 @@ void main() {
 
     group('resolve', () {
       test('resolves to Border with correct properties', () {
-        final borderMix = BorderMix.only(
-          top: BorderSideMix.only(color: Colors.red, width: 1.0),
-          bottom: BorderSideMix.only(color: Colors.blue, width: 2.0),
-          left: BorderSideMix.only(color: Colors.green, width: 3.0),
-          right: BorderSideMix.only(color: Colors.yellow, width: 4.0),
+        final borderMix = BorderMix(
+          top: BorderSideMix(color: Colors.red, width: 1.0),
+          bottom: BorderSideMix(color: Colors.blue, width: 2.0),
+          left: BorderSideMix(color: Colors.green, width: 3.0),
+          right: BorderSideMix(color: Colors.yellow, width: 4.0),
         );
 
         const resolvedValue = Border(
@@ -254,21 +254,21 @@ void main() {
 
     group('merge', () {
       test('returns this when other is null', () {
-        final borderMix = BorderMix.only(top: BorderSideMix.only(width: 1.0));
+        final borderMix = BorderMix(top: BorderSideMix(width: 1.0));
         final merged = borderMix.merge(null);
 
         expect(merged, same(borderMix));
       });
 
       test('merges properties correctly', () {
-        final first = BorderMix.only(
-          top: BorderSideMix.only(color: Colors.red, width: 1.0),
-          left: BorderSideMix.only(color: Colors.green, width: 3.0),
+        final first = BorderMix(
+          top: BorderSideMix(color: Colors.red, width: 1.0),
+          left: BorderSideMix(color: Colors.green, width: 3.0),
         );
 
-        final second = BorderMix.only(
-          top: BorderSideMix.only(color: Colors.blue, width: 2.0),
-          right: BorderSideMix.only(color: Colors.yellow, width: 4.0),
+        final second = BorderMix(
+          top: BorderSideMix(color: Colors.blue, width: 2.0),
+          right: BorderSideMix(color: Colors.yellow, width: 4.0),
         );
 
         final merged = first.merge(second);
@@ -282,19 +282,19 @@ void main() {
 
     group('Equality', () {
       test('returns true when all properties are the same', () {
-        final side = BorderSideMix.only(color: Colors.red, width: 2.0);
-        final borderMix1 = BorderMix.only(top: side, left: side);
-        final borderMix2 = BorderMix.only(top: side, left: side);
+        final side = BorderSideMix(color: Colors.red, width: 2.0);
+        final borderMix1 = BorderMix(top: side, left: side);
+        final borderMix2 = BorderMix(top: side, left: side);
 
         expect(borderMix1, borderMix2);
         expect(borderMix1.hashCode, borderMix2.hashCode);
       });
 
       test('returns false when properties are different', () {
-        final side1 = BorderSideMix.only(width: 1.0);
-        final side2 = BorderSideMix.only(width: 2.0);
-        final borderMix1 = BorderMix.only(top: side1);
-        final borderMix2 = BorderMix.only(top: side2);
+        final side1 = BorderSideMix(width: 1.0);
+        final side2 = BorderSideMix(width: 2.0);
+        final borderMix1 = BorderMix(top: side1);
+        final borderMix2 = BorderMix(top: side2);
 
         expect(borderMix1, isNot(borderMix2));
       });

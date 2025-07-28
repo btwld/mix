@@ -17,42 +17,42 @@ class FlexSpecUtility extends StyleAttributeBuilder<FlexSpec> {
   // FLEX UTILITIES - Same as FlexSpecAttribute but return FlexSpecUtility for cascade
 
   late final direction = PropUtility<FlexSpecUtility, Axis>(
-    (prop) => _build(FlexSpecAttribute(direction: prop)),
+    (prop) => _build(FlexSpecAttribute.raw(direction: prop)),
   );
 
   late final mainAxisAlignment =
       PropUtility<FlexSpecUtility, MainAxisAlignment>(
-        (prop) => _build(FlexSpecAttribute(mainAxisAlignment: prop)),
+        (prop) => _build(FlexSpecAttribute.raw(mainAxisAlignment: prop)),
       );
 
   late final crossAxisAlignment =
       PropUtility<FlexSpecUtility, CrossAxisAlignment>(
-        (prop) => _build(FlexSpecAttribute(crossAxisAlignment: prop)),
+        (prop) => _build(FlexSpecAttribute.raw(crossAxisAlignment: prop)),
       );
 
   late final mainAxisSize = PropUtility<FlexSpecUtility, MainAxisSize>(
-    (prop) => _build(FlexSpecAttribute(mainAxisSize: prop)),
+    (prop) => _build(FlexSpecAttribute.raw(mainAxisSize: prop)),
   );
 
   late final verticalDirection =
       PropUtility<FlexSpecUtility, VerticalDirection>(
-        (prop) => _build(FlexSpecAttribute(verticalDirection: prop)),
+        (prop) => _build(FlexSpecAttribute.raw(verticalDirection: prop)),
       );
 
   late final textDirection = PropUtility<FlexSpecUtility, TextDirection>(
-    (prop) => _build(FlexSpecAttribute(textDirection: prop)),
+    (prop) => _build(FlexSpecAttribute.raw(textDirection: prop)),
   );
 
   late final textBaseline = PropUtility<FlexSpecUtility, TextBaseline>(
-    (prop) => _build(FlexSpecAttribute(textBaseline: prop)),
+    (prop) => _build(FlexSpecAttribute.raw(textBaseline: prop)),
   );
 
   late final clipBehavior = PropUtility<FlexSpecUtility, Clip>(
-    (prop) => _build(FlexSpecAttribute(clipBehavior: prop)),
+    (prop) => _build(FlexSpecAttribute.raw(clipBehavior: prop)),
   );
 
   late final gap = PropUtility<FlexSpecUtility, double>(
-    (prop) => _build(FlexSpecAttribute(gap: prop)),
+    (prop) => _build(FlexSpecAttribute.raw(gap: prop)),
   );
 
   late final on = OnContextVariantUtility<FlexSpec, FlexSpecUtility>(
@@ -78,9 +78,9 @@ class FlexSpecUtility extends StyleAttributeBuilder<FlexSpec> {
 
   // Convenience methods
   FlexSpecUtility row() =>
-      _build(FlexSpecAttribute.only(direction: Axis.horizontal));
+      _build(FlexSpecAttribute(direction: Axis.horizontal));
   FlexSpecUtility column() =>
-      _build(FlexSpecAttribute.only(direction: Axis.vertical));
+      _build(FlexSpecAttribute(direction: Axis.vertical));
 
   /// Animation
   FlexSpecUtility animate(AnimationConfig animation) =>

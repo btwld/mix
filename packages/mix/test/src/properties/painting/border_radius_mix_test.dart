@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
+import 'package:mix/src/properties/painting/border_radius_mix.dart';
 
 import '../../../helpers/testing_utils.dart';
-import 'package:mix/src/properties/painting/border_radius_mix.dart';
 
 void main() {
   group('BorderRadiusMix', () {
     group('Constructor', () {
       test('only constructor creates instance with correct properties', () {
-        final borderRadiusMix = BorderRadiusMix.only(
+        final borderRadiusMix = BorderRadiusMix(
           topLeft: const Radius.circular(8.0),
           topRight: const Radius.circular(12.0),
           bottomLeft: const Radius.circular(16.0),
@@ -54,7 +54,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to BorderRadius with correct properties', () {
-        final borderRadiusMix = BorderRadiusMix.only(
+        final borderRadiusMix = BorderRadiusMix(
           topLeft: const Radius.circular(8.0),
           topRight: const Radius.circular(12.0),
           bottomLeft: const Radius.circular(16.0),
@@ -72,7 +72,7 @@ void main() {
       });
 
       test('uses zero radius for null properties', () {
-        final borderRadiusMix = BorderRadiusMix.only(
+        final borderRadiusMix = BorderRadiusMix(
           topLeft: const Radius.circular(8.0),
         );
 
@@ -89,7 +89,7 @@ void main() {
 
     group('merge', () {
       test('returns this when other is null', () {
-        final borderRadiusMix = BorderRadiusMix.only(
+        final borderRadiusMix = BorderRadiusMix(
           topLeft: const Radius.circular(8.0),
         );
         final merged = borderRadiusMix.merge(null);
@@ -98,12 +98,12 @@ void main() {
       });
 
       test('merges properties correctly', () {
-        final first = BorderRadiusMix.only(
+        final first = BorderRadiusMix(
           topLeft: const Radius.circular(8.0),
           topRight: const Radius.circular(12.0),
         );
 
-        final second = BorderRadiusMix.only(
+        final second = BorderRadiusMix(
           topRight: const Radius.circular(16.0),
           bottomLeft: const Radius.circular(20.0),
         );
@@ -119,12 +119,12 @@ void main() {
 
     group('Equality', () {
       test('returns true when all properties are the same', () {
-        final borderRadiusMix1 = BorderRadiusMix.only(
+        final borderRadiusMix1 = BorderRadiusMix(
           topLeft: const Radius.circular(8.0),
           topRight: const Radius.circular(12.0),
         );
 
-        final borderRadiusMix2 = BorderRadiusMix.only(
+        final borderRadiusMix2 = BorderRadiusMix(
           topLeft: const Radius.circular(8.0),
           topRight: const Radius.circular(12.0),
         );
@@ -134,10 +134,10 @@ void main() {
       });
 
       test('returns false when properties are different', () {
-        final borderRadiusMix1 = BorderRadiusMix.only(
+        final borderRadiusMix1 = BorderRadiusMix(
           topLeft: const Radius.circular(8.0),
         );
-        final borderRadiusMix2 = BorderRadiusMix.only(
+        final borderRadiusMix2 = BorderRadiusMix(
           topLeft: const Radius.circular(12.0),
         );
 
@@ -149,7 +149,7 @@ void main() {
   group('BorderRadiusDirectionalMix', () {
     group('Constructor', () {
       test('only constructor creates instance with correct properties', () {
-        final borderRadiusDirectionalMix = BorderRadiusDirectionalMix.only(
+        final borderRadiusDirectionalMix = BorderRadiusDirectionalMix(
           topStart: const Radius.circular(8.0),
           topEnd: const Radius.circular(12.0),
           bottomStart: const Radius.circular(16.0),
@@ -226,7 +226,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to BorderRadiusDirectional with correct properties', () {
-        final borderRadiusDirectionalMix = BorderRadiusDirectionalMix.only(
+        final borderRadiusDirectionalMix = BorderRadiusDirectionalMix(
           topStart: const Radius.circular(8.0),
           topEnd: const Radius.circular(12.0),
           bottomStart: const Radius.circular(16.0),
@@ -246,7 +246,7 @@ void main() {
 
     group('merge', () {
       test('returns this when other is null', () {
-        final borderRadiusDirectionalMix = BorderRadiusDirectionalMix.only(
+        final borderRadiusDirectionalMix = BorderRadiusDirectionalMix(
           topStart: const Radius.circular(8.0),
         );
         final merged = borderRadiusDirectionalMix.merge(null);
@@ -255,12 +255,12 @@ void main() {
       });
 
       test('merges properties correctly', () {
-        final first = BorderRadiusDirectionalMix.only(
+        final first = BorderRadiusDirectionalMix(
           topStart: const Radius.circular(8.0),
           topEnd: const Radius.circular(12.0),
         );
 
-        final second = BorderRadiusDirectionalMix.only(
+        final second = BorderRadiusDirectionalMix(
           topEnd: const Radius.circular(16.0),
           bottomStart: const Radius.circular(20.0),
         );
@@ -276,12 +276,12 @@ void main() {
 
     group('Equality', () {
       test('returns true when all properties are the same', () {
-        final borderRadiusDirectionalMix1 = BorderRadiusDirectionalMix.only(
+        final borderRadiusDirectionalMix1 = BorderRadiusDirectionalMix(
           topStart: const Radius.circular(8.0),
           topEnd: const Radius.circular(12.0),
         );
 
-        final borderRadiusDirectionalMix2 = BorderRadiusDirectionalMix.only(
+        final borderRadiusDirectionalMix2 = BorderRadiusDirectionalMix(
           topStart: const Radius.circular(8.0),
           topEnd: const Radius.circular(12.0),
         );
@@ -294,10 +294,10 @@ void main() {
       });
 
       test('returns false when properties are different', () {
-        final borderRadiusDirectionalMix1 = BorderRadiusDirectionalMix.only(
+        final borderRadiusDirectionalMix1 = BorderRadiusDirectionalMix(
           topStart: const Radius.circular(8.0),
         );
-        final borderRadiusDirectionalMix2 = BorderRadiusDirectionalMix.only(
+        final borderRadiusDirectionalMix2 = BorderRadiusDirectionalMix(
           topStart: const Radius.circular(12.0),
         );
 

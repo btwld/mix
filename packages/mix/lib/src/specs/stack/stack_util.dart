@@ -17,19 +17,19 @@ class StackSpecUtility extends StyleAttributeBuilder<StackSpec> {
   // STACK UTILITIES - Same as StackSpecAttribute but return StackSpecUtility for cascade
 
   late final alignment = PropUtility<StackSpecUtility, AlignmentGeometry>(
-    (prop) => _build(StackSpecAttribute(alignment: prop)),
+    (prop) => _build(StackSpecAttribute.raw(alignment: prop)),
   );
 
   late final fit = PropUtility<StackSpecUtility, StackFit>(
-    (prop) => _build(StackSpecAttribute(fit: prop)),
+    (prop) => _build(StackSpecAttribute.raw(fit: prop)),
   );
 
   late final textDirection = PropUtility<StackSpecUtility, TextDirection>(
-    (prop) => _build(StackSpecAttribute(textDirection: prop)),
+    (prop) => _build(StackSpecAttribute.raw(textDirection: prop)),
   );
 
   late final clipBehavior = PropUtility<StackSpecUtility, Clip>(
-    (prop) => _build(StackSpecAttribute(clipBehavior: prop)),
+    (prop) => _build(StackSpecAttribute.raw(clipBehavior: prop)),
   );
 
   late final on = OnContextVariantUtility<StackSpec, StackSpecUtility>(

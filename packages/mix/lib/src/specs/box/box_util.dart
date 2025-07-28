@@ -20,27 +20,27 @@ class BoxSpecUtility extends StyleAttributeBuilder<BoxSpec> {
   // SAME UTILITIES AS BoxSpecAttribute - but return BoxSpecUtility for cascade
 
   late final padding = EdgeInsetsGeometryUtility<BoxSpecUtility>(
-    (prop) => _build(BoxSpecAttribute(padding: prop)),
+    (prop) => _build(BoxSpecAttribute.raw(padding: prop)),
   );
 
   late final margin = EdgeInsetsGeometryUtility<BoxSpecUtility>(
-    (prop) => _build(BoxSpecAttribute(margin: prop)),
+    (prop) => _build(BoxSpecAttribute.raw(margin: prop)),
   );
 
   late final constraints = BoxConstraintsUtility<BoxSpecUtility>(
-    (prop) => _build(BoxSpecAttribute(constraints: prop)),
+    (prop) => _build(BoxSpecAttribute.raw(constraints: prop)),
   );
 
   late final decoration = DecorationUtility<BoxSpecUtility>(
-    (prop) => _build(BoxSpecAttribute(decoration: prop)),
+    (prop) => _build(BoxSpecAttribute.raw(decoration: prop)),
   );
 
   late final on = OnContextVariantUtility<BoxSpec, BoxSpecUtility>(
-    (v) => _build(BoxSpecAttribute(variants: [v])),
+    (v) => _build(BoxSpecAttribute.raw(variants: [v])),
   );
 
   late final wrap = ModifierUtility<BoxSpecUtility>(
-    (prop) => _build(BoxSpecAttribute.only(modifiers: [prop])),
+    (prop) => _build(BoxSpecAttribute.raw(modifiers: [prop])),
   );
 
   // FLATTENED ACCESS - Same as BoxSpecAttribute
@@ -60,20 +60,20 @@ class BoxSpecUtility extends StyleAttributeBuilder<BoxSpec> {
   late final maxHeight =
       constraints.maxHeight; // PROP UTILITIES - Same as BoxSpecAttribute
   late final transform = PropUtility<BoxSpecUtility, Matrix4>(
-    (prop) => _build(BoxSpecAttribute(transform: prop)),
+    (prop) => _build(BoxSpecAttribute.raw(transform: prop)),
   );
 
   late final transformAlignment =
       PropUtility<BoxSpecUtility, AlignmentGeometry>(
-        (prop) => _build(BoxSpecAttribute(transformAlignment: prop)),
+        (prop) => _build(BoxSpecAttribute.raw(transformAlignment: prop)),
       );
 
   late final clipBehavior = PropUtility<BoxSpecUtility, Clip>(
-    (prop) => _build(BoxSpecAttribute(clipBehavior: prop)),
+    (prop) => _build(BoxSpecAttribute.raw(clipBehavior: prop)),
   );
 
   late final alignment = PropUtility<BoxSpecUtility, AlignmentGeometry>(
-    (prop) => _build(BoxSpecAttribute(alignment: prop)),
+    (prop) => _build(BoxSpecAttribute.raw(alignment: prop)),
   );
 
   BoxSpecAttribute _baseAttribute;

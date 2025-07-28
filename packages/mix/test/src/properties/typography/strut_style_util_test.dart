@@ -10,7 +10,7 @@ void main() {
       final utility = StrutStyleUtility(UtilityTestAttribute.new);
 
       test('call() creates StrutStyleMix', () {
-        final strutStyleMix = StrutStyleMix.only(
+        final strutStyleMix = StrutStyleMix(
           fontFamily: 'Roboto',
           fontSize: 16.0,
           fontWeight: FontWeight.bold,
@@ -221,7 +221,7 @@ void main() {
 
       group('Font Weight Combinations', () {
         test('creates strut style with light weight and italic style', () {
-          final lightItalic = StrutStyleMix.only(
+          final lightItalic = StrutStyleMix(
             fontWeight: FontWeight.w300,
             fontStyle: FontStyle.italic,
           );
@@ -230,7 +230,7 @@ void main() {
         });
 
         test('creates strut style with bold weight and normal style', () {
-          final boldNormal = StrutStyleMix.only(
+          final boldNormal = StrutStyleMix(
             fontWeight: FontWeight.bold,
             fontStyle: FontStyle.normal,
           );
@@ -239,7 +239,7 @@ void main() {
         });
 
         test('creates strut style with medium weight and large size', () {
-          final mediumLarge = StrutStyleMix.only(
+          final mediumLarge = StrutStyleMix(
             fontWeight: FontWeight.w500,
             fontSize: 20.0,
           );
@@ -288,7 +288,7 @@ void main() {
 
       group('Complete StrutStyle Configurations', () {
         test('creates complete strut style with all properties', () {
-          final completeStrutStyle = StrutStyleMix.only(
+          final completeStrutStyle = StrutStyleMix(
             fontFamily: 'Roboto',
             fontFamilyFallback: const ['Arial', 'sans-serif'],
             fontSize: 16.0,
@@ -303,7 +303,7 @@ void main() {
         });
 
         test('creates strut style for headings', () {
-          final headingStrutStyle = StrutStyleMix.only(
+          final headingStrutStyle = StrutStyleMix(
             fontFamily: 'Roboto',
             fontSize: 24.0,
             fontWeight: FontWeight.bold,
@@ -314,7 +314,7 @@ void main() {
         });
 
         test('creates strut style for body text', () {
-          final bodyStrutStyle = StrutStyleMix.only(
+          final bodyStrutStyle = StrutStyleMix(
             fontFamily: 'Roboto',
             fontSize: 14.0,
             fontWeight: FontWeight.normal,
@@ -325,7 +325,7 @@ void main() {
         });
 
         test('creates strut style for captions', () {
-          final captionStrutStyle = StrutStyleMix.only(
+          final captionStrutStyle = StrutStyleMix(
             fontFamily: 'Roboto',
             fontSize: 12.0,
             fontWeight: FontWeight.w300,

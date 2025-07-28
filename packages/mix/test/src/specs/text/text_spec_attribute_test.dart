@@ -8,13 +8,13 @@ void main() {
   group('TextSpecAttribute', () {
     group('Constructor', () {
       test('creates TextSpecAttribute with all properties', () {
-        final attribute = TextSpecAttribute(
+        final attribute = TextSpecAttribute.raw(
           overflow: Prop(TextOverflow.ellipsis),
-          strutStyle: MixProp(StrutStyleMix(fontSize: Prop(16.0))),
+          strutStyle: MixProp(StrutStyleMix.raw(fontSize: Prop(16.0))),
           textAlign: Prop(TextAlign.center),
           textScaler: Prop(TextScaler.linear(1.2)),
           maxLines: Prop(3),
-          style: MixProp(TextStyleMix(fontSize: Prop(14.0))),
+          style: MixProp(TextStyleMix.raw(fontSize: Prop(14.0))),
           textWidthBasis: Prop(TextWidthBasis.longestLine),
           textHeightBehavior: MixProp(TextHeightBehaviorMix()),
           textDirection: Prop(TextDirection.rtl),
@@ -54,11 +54,11 @@ void main() {
 
     group('only constructor', () {
       test('creates TextSpecAttribute with only specified properties', () {
-        final attribute = TextSpecAttribute.only(
+        final attribute = TextSpecAttribute(
           overflow: TextOverflow.ellipsis,
           maxLines: 3,
           textAlign: TextAlign.center,
-          style: TextStyleMix(fontSize: Prop(16.0)),
+          style: TextStyleMix(fontSize: 16.0),
         );
 
         expect(attribute.$overflow, resolvesTo(TextOverflow.ellipsis));
@@ -70,7 +70,7 @@ void main() {
       });
 
       test('handles null values correctly', () {
-        final attribute = TextSpecAttribute.only();
+        final attribute = TextSpecAttribute();
 
         expect(attribute.$overflow, isNull);
         expect(attribute.$strutStyle, isNull);
@@ -145,12 +145,12 @@ void main() {
 
     group('Resolution', () {
       test('resolves to TextSpec with correct properties', () {
-        final attribute = TextSpecAttribute.only(
+        final attribute = TextSpecAttribute(
           overflow: TextOverflow.ellipsis,
           maxLines: 3,
           textAlign: TextAlign.center,
-          style: TextStyleMix(fontSize: Prop(16.0)),
-          strutStyle: StrutStyleMix(fontSize: Prop(16.0)),
+          style: TextStyleMix(fontSize: 16.0),
+          strutStyle: StrutStyleMix(fontSize: 16.0),
           softWrap: true,
         );
 
@@ -167,7 +167,7 @@ void main() {
       });
 
       test('resolves to TextSpec with null properties when not set', () {
-        final attribute = TextSpecAttribute.only(maxLines: 3);
+        final attribute = TextSpecAttribute(maxLines: 3);
         final context = MockBuildContext();
         final spec = attribute.resolve(context);
 
@@ -187,15 +187,15 @@ void main() {
 
     group('merge', () {
       test('merges two TextSpecAttributes correctly', () {
-        final attr1 = TextSpecAttribute.only(
+        final attr1 = TextSpecAttribute(
           maxLines: 3,
           overflow: TextOverflow.clip,
           textAlign: TextAlign.left,
         );
 
-        final attr2 = TextSpecAttribute.only(
+        final attr2 = TextSpecAttribute(
           maxLines: 5,
-          style: TextStyleMix(fontSize: Prop(16.0)),
+          style: TextStyleMix(fontSize: 16.0),
           softWrap: true,
         );
 
@@ -209,7 +209,7 @@ void main() {
       });
 
       test('returns original when merging with null', () {
-        final original = TextSpecAttribute.only(
+        final original = TextSpecAttribute(
           maxLines: 3,
           overflow: TextOverflow.ellipsis,
         );
@@ -219,13 +219,13 @@ void main() {
       });
 
       test('handles complex merge scenarios', () {
-        final attr1 = TextSpecAttribute.only(
-          style: TextStyleMix(fontSize: Prop(14.0)),
-          strutStyle: StrutStyleMix(fontSize: Prop(14.0)),
+        final attr1 = TextSpecAttribute(
+          style: TextStyleMix(fontSize: 14.0),
+          strutStyle: StrutStyleMix(fontSize: 14.0),
         );
 
-        final attr2 = TextSpecAttribute.only(
-          style: TextStyleMix(color: Prop(Colors.blue)),
+        final attr2 = TextSpecAttribute(
+          style: TextStyleMix(color: Colors.blue),
           textHeightBehavior: TextHeightBehaviorMix(),
         );
 
@@ -367,12 +367,12 @@ void main() {
     group('Props getter', () {
       test('props includes all properties', () {
         final attribute = TextSpecAttribute(
-          overflow: Prop(TextOverflow.ellipsis),
-          strutStyle: MixProp(StrutStyleMix(fontSize: Prop(16.0))),
-          textAlign: Prop(TextAlign.center),
-          maxLines: Prop(3),
-          style: MixProp(TextStyleMix(fontSize: Prop(14.0))),
-          softWrap: Prop(false),
+          overflow: TextOverflow.ellipsis,
+          strutStyle: StrutStyleMix(fontSize: 16.0),
+          textAlign: TextAlign.center,
+          maxLines: 3,
+          style: TextStyleMix(fontSize: 14.0),
+          softWrap: false,
         );
 
         expect(attribute.props.length, 14);
@@ -387,12 +387,12 @@ void main() {
 
     group('equality', () {
       test('attributes with same properties are equal', () {
-        final attr1 = TextSpecAttribute.only(
+        final attr1 = TextSpecAttribute(
           maxLines: 3,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
         );
-        final attr2 = TextSpecAttribute.only(
+        final attr2 = TextSpecAttribute(
           maxLines: 3,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
@@ -403,11 +403,11 @@ void main() {
       });
 
       test('attributes with different properties are not equal', () {
-        final attr1 = TextSpecAttribute.only(
+        final attr1 = TextSpecAttribute(
           maxLines: 3,
           overflow: TextOverflow.ellipsis,
         );
-        final attr2 = TextSpecAttribute.only(
+        final attr2 = TextSpecAttribute(
           maxLines: 5,
           overflow: TextOverflow.ellipsis,
         );

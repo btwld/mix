@@ -12,7 +12,7 @@ void main() {
         const imageProvider = AssetImage('assets/test.png');
         const centerSlice = Rect.fromLTWH(10, 10, 20, 20);
 
-        final decorationImageMix = DecorationImageMix.only(
+        final decorationImageMix = DecorationImageMix(
           image: imageProvider,
           fit: BoxFit.cover,
           alignment: Alignment.center,
@@ -71,7 +71,7 @@ void main() {
     group('resolve', () {
       test('resolves to DecorationImage with correct properties', () {
         const imageProvider = AssetImage('assets/test.png');
-        final decorationImageMix = DecorationImageMix.only(
+        final decorationImageMix = DecorationImageMix(
           image: imageProvider,
           fit: BoxFit.cover,
           alignment: Alignment.center,
@@ -96,7 +96,7 @@ void main() {
 
       test('uses default values for null properties', () {
         const imageProvider = AssetImage('assets/test.png');
-        final decorationImageMix = DecorationImageMix.only(
+        final decorationImageMix = DecorationImageMix(
           image: imageProvider,
           fit: BoxFit.cover,
         );
@@ -117,7 +117,7 @@ void main() {
 
     group('merge', () {
       test('returns this when other is null', () {
-        final decorationImageMix = DecorationImageMix.only(
+        final decorationImageMix = DecorationImageMix(
           image: const AssetImage('assets/test.png'),
         );
         final merged = decorationImageMix.merge(null);
@@ -129,13 +129,13 @@ void main() {
         const imageProvider1 = AssetImage('assets/test1.png');
         const imageProvider2 = AssetImage('assets/test2.png');
 
-        final first = DecorationImageMix.only(
+        final first = DecorationImageMix(
           image: imageProvider1,
           fit: BoxFit.cover,
           alignment: Alignment.center,
         );
 
-        final second = DecorationImageMix.only(
+        final second = DecorationImageMix(
           image: imageProvider2,
           repeat: ImageRepeat.repeat,
           filterQuality: FilterQuality.high,
@@ -154,13 +154,13 @@ void main() {
     group('Equality', () {
       test('returns true when all properties are the same', () {
         const imageProvider = AssetImage('assets/test.png');
-        final decorationImageMix1 = DecorationImageMix.only(
+        final decorationImageMix1 = DecorationImageMix(
           image: imageProvider,
           fit: BoxFit.cover,
           alignment: Alignment.center,
         );
 
-        final decorationImageMix2 = DecorationImageMix.only(
+        final decorationImageMix2 = DecorationImageMix(
           image: imageProvider,
           fit: BoxFit.cover,
           alignment: Alignment.center,
@@ -171,10 +171,10 @@ void main() {
       });
 
       test('returns false when properties are different', () {
-        final decorationImageMix1 = DecorationImageMix.only(
+        final decorationImageMix1 = DecorationImageMix(
           image: const AssetImage('assets/test1.png'),
         );
-        final decorationImageMix2 = DecorationImageMix.only(
+        final decorationImageMix2 = DecorationImageMix(
           image: const AssetImage('assets/test2.png'),
         );
 
@@ -183,11 +183,11 @@ void main() {
 
       test('handles complex property differences', () {
         const imageProvider = AssetImage('assets/test.png');
-        final decorationImageMix1 = DecorationImageMix.only(
+        final decorationImageMix1 = DecorationImageMix(
           image: imageProvider,
           fit: BoxFit.cover,
         );
-        final decorationImageMix2 = DecorationImageMix.only(
+        final decorationImageMix2 = DecorationImageMix(
           image: imageProvider,
           fit: BoxFit.contain,
         );

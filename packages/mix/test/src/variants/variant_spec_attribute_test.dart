@@ -247,8 +247,8 @@ void main() {
 
       test('merges with overlapping properties - other takes precedence', () {
         const variant = NamedVariant('primary');
-        final style1 = BoxSpecAttribute.only(
-          constraints: BoxConstraintsMix.only(
+        final style1 = BoxSpecAttribute(
+          constraints: BoxConstraintsMix(
             minWidth: 100.0,
             maxWidth: 100.0,
             minHeight: 150.0,
@@ -350,7 +350,7 @@ void main() {
     group('Different SpecAttribute Types', () {
       test('works with TextSpecAttribute', () {
         const variant = NamedVariant('large');
-        final textStyle = TextSpecAttribute.only(
+        final textStyle = TextSpecAttribute(
           textAlign: TextAlign.center,
           maxLines: 2,
         );
@@ -365,7 +365,7 @@ void main() {
 
       test('works with ImageSpecAttribute', () {
         const variant = NamedVariant('avatar');
-        final imageStyle = ImageSpecAttribute.only(
+        final imageStyle = ImageSpecAttribute(
           width: 50.0,
           height: 50.0,
           fit: BoxFit.cover,

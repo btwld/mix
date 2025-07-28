@@ -18,53 +18,53 @@ class ImageSpecUtility extends StyleAttributeBuilder<ImageSpec> {
   // IMAGE UTILITIES - Same as ImageSpecAttribute but return ImageSpecUtility for cascade
 
   late final width = PropUtility<ImageSpecUtility, double>(
-    (prop) => _build(ImageSpecAttribute(width: prop)),
+    (prop) => _build(ImageSpecAttribute.raw(width: prop)),
   );
 
   late final height = PropUtility<ImageSpecUtility, double>(
-    (prop) => _build(ImageSpecAttribute(height: prop)),
+    (prop) => _build(ImageSpecAttribute.raw(height: prop)),
   );
 
   late final color = ColorUtility<ImageSpecUtility>(
-    (prop) => _build(ImageSpecAttribute(color: prop)),
+    (prop) => _build(ImageSpecAttribute.raw(color: prop)),
   );
 
   late final repeat = PropUtility<ImageSpecUtility, ImageRepeat>(
-    (prop) => _build(ImageSpecAttribute(repeat: prop)),
+    (prop) => _build(ImageSpecAttribute.raw(repeat: prop)),
   );
 
   late final fit = PropUtility<ImageSpecUtility, BoxFit>(
-    (prop) => _build(ImageSpecAttribute(fit: prop)),
+    (prop) => _build(ImageSpecAttribute.raw(fit: prop)),
   );
 
   late final alignment = PropUtility<ImageSpecUtility, AlignmentGeometry>(
-    (prop) => _build(ImageSpecAttribute(alignment: prop)),
+    (prop) => _build(ImageSpecAttribute.raw(alignment: prop)),
   );
 
   late final centerSlice = PropUtility<ImageSpecUtility, Rect>(
-    (prop) => _build(ImageSpecAttribute(centerSlice: prop)),
+    (prop) => _build(ImageSpecAttribute.raw(centerSlice: prop)),
   );
 
   late final filterQuality = PropUtility<ImageSpecUtility, FilterQuality>(
-    (prop) => _build(ImageSpecAttribute(filterQuality: prop)),
+    (prop) => _build(ImageSpecAttribute.raw(filterQuality: prop)),
   );
 
   late final colorBlendMode = PropUtility<ImageSpecUtility, BlendMode>(
-    (prop) => _build(ImageSpecAttribute(colorBlendMode: prop)),
+    (prop) => _build(ImageSpecAttribute.raw(colorBlendMode: prop)),
   );
 
   late final on = OnContextVariantUtility<ImageSpec, ImageSpecUtility>(
-    (v) => _build(ImageSpecAttribute(variants: [v])),
+    (v) => _build(ImageSpecAttribute.raw(variants: [v])),
   );
 
   late final wrap = ModifierUtility<ImageSpecUtility>(
-    (prop) => _build(ImageSpecAttribute(modifiers: [prop])),
+    (prop) => _build(ImageSpecAttribute.raw(modifiers: [prop])),
   );
 
   ImageSpecAttribute _baseAttribute;
 
   ImageSpecUtility([ImageSpecAttribute? attribute])
-    : _baseAttribute = attribute ?? ImageSpecAttribute(),
+    : _baseAttribute = attribute ?? ImageSpecAttribute.raw(),
       super();
 
   /// Mutable builder - updates internal state and returns this for cascade

@@ -1,14 +1,13 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../properties/layout/edge_insets_geometry_mix.dart';
-import '../properties/layout/edge_insets_geometry_util.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
+import '../properties/layout/edge_insets_geometry_mix.dart';
+import '../properties/layout/edge_insets_geometry_util.dart';
 
 final class PaddingModifier extends Modifier<PaddingModifier>
     with Diagnosticable {
@@ -71,10 +70,10 @@ class PaddingModifierAttribute extends ModifierAttribute<PaddingModifier>
     with Diagnosticable {
   final MixProp<EdgeInsetsGeometry>? padding;
 
-  const PaddingModifierAttribute({this.padding});
+  const PaddingModifierAttribute.raw({this.padding});
 
-  PaddingModifierAttribute.only({EdgeInsetsGeometryMix? padding})
-    : this(padding: MixProp.maybe(padding));
+  PaddingModifierAttribute({EdgeInsetsGeometryMix? padding})
+    : this.raw(padding: MixProp.maybe(padding));
 
   /// Resolves to [PaddingModifier] using the provided [MixContext].
   ///
@@ -101,7 +100,7 @@ class PaddingModifierAttribute extends ModifierAttribute<PaddingModifier>
   PaddingModifierAttribute merge(PaddingModifierAttribute? other) {
     if (other == null) return this;
 
-    return PaddingModifierAttribute(
+    return PaddingModifierAttribute.raw(
       padding: MixHelpers.merge(padding, other.padding),
     );
   }
@@ -128,13 +127,15 @@ class PaddingModifierUtility<T extends StyleAttribute<Object?>>
     extends MixUtility<T, PaddingModifierAttribute> {
   /// Utility for defining [PaddingModifierAttribute.padding]
   late final padding = EdgeInsetsGeometryUtility(
-    (v) => builder(PaddingModifierAttribute(padding: v)),
+    (v) => builder(PaddingModifierAttribute.raw(padding: v)),
   );
 
   PaddingModifierUtility(super.builder);
 
   /// Returns a new [PaddingModifierAttribute] with the specified properties.
   T call({EdgeInsetsGeometryMix? padding}) {
-    return builder(PaddingModifierAttribute(padding: MixProp.maybe(padding)));
+    return builder(
+      PaddingModifierAttribute.raw(padding: MixProp.maybe(padding)),
+    );
   }
 }

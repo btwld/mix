@@ -10,12 +10,12 @@ void main() {
       final utility = ShapeBorderUtility(UtilityTestAttribute.new);
 
       test('call() creates ShapeBorderMix', () {
-        final shapeBorderMix = RoundedRectangleBorderMix.only(
-          borderRadius: BorderRadiusMix.only(
+        final shapeBorderMix = RoundedRectangleBorderMix(
+          borderRadius: BorderRadiusMix(
             topLeft: const Radius.circular(8.0),
             topRight: const Radius.circular(8.0),
           ),
-          side: BorderSideMix.only(color: Colors.red, width: 2.0),
+          side: BorderSideMix(color: Colors.red, width: 2.0),
         );
         final attr = utility(shapeBorderMix);
         expect(attr.value, isA<MixProp<ShapeBorder>>());
@@ -95,12 +95,12 @@ void main() {
       final utility = RoundedRectangleBorderUtility(UtilityTestAttribute.new);
 
       test('call() creates RoundedRectangleBorderMix', () {
-        final borderMix = RoundedRectangleBorderMix.only(
-          borderRadius: BorderRadiusMix.only(
+        final borderMix = RoundedRectangleBorderMix(
+          borderRadius: BorderRadiusMix(
             topLeft: const Radius.circular(8.0),
             bottomRight: const Radius.circular(12.0),
           ),
-          side: BorderSideMix.only(color: Colors.red, width: 2.0),
+          side: BorderSideMix(color: Colors.red, width: 2.0),
         );
         final attr = utility(borderMix);
         expect(attr.value, isA<MixProp<RoundedRectangleBorder>>());
@@ -122,7 +122,7 @@ void main() {
         test(
           'borderRadius() creates rounded rectangle border with border radius',
           () {
-            final borderRadiusMix = BorderRadiusMix.only(
+            final borderRadiusMix = BorderRadiusMix(
               topLeft: const Radius.circular(8.0),
               topRight: const Radius.circular(8.0),
             );
@@ -150,7 +150,7 @@ void main() {
         );
 
         test('side() creates rounded rectangle border with side', () {
-          final borderSideMix = BorderSideMix.only(
+          final borderSideMix = BorderSideMix(
             color: Colors.green,
             width: 3.0,
           );
@@ -196,8 +196,8 @@ void main() {
       final utility = CircleBorderUtility(UtilityTestAttribute.new);
 
       test('call() creates CircleBorderMix', () {
-        final borderMix = CircleBorderMix.only(
-          side: BorderSideMix.only(color: Colors.red, width: 2.0),
+        final borderMix = CircleBorderMix(
+          side: BorderSideMix(color: Colors.red, width: 2.0),
           eccentricity: 0.5,
         );
         final attr = utility(borderMix);
@@ -215,7 +215,7 @@ void main() {
 
       group('Property Utilities', () {
         test('side() creates circle border with side', () {
-          final borderSideMix = BorderSideMix.only(
+          final borderSideMix = BorderSideMix(
             color: Colors.green,
             width: 3.0,
           );
@@ -266,8 +266,8 @@ void main() {
       final utility = StadiumBorderUtility(UtilityTestAttribute.new);
 
       test('call() creates StadiumBorderMix', () {
-        final borderMix = StadiumBorderMix.only(
-          side: BorderSideMix.only(color: Colors.red, width: 2.0),
+        final borderMix = StadiumBorderMix(
+          side: BorderSideMix(color: Colors.red, width: 2.0),
         );
         final attr = utility(borderMix);
         expect(attr.value, isA<MixProp<StadiumBorder>>());
@@ -283,7 +283,7 @@ void main() {
 
       group('Property Utilities', () {
         test('side() creates stadium border with side', () {
-          final borderSideMix = BorderSideMix.only(
+          final borderSideMix = BorderSideMix(
             color: Colors.green,
             width: 3.0,
           );
@@ -318,12 +318,12 @@ void main() {
       final utility = BeveledRectangleBorderUtility(UtilityTestAttribute.new);
 
       test('call() creates BeveledRectangleBorderMix', () {
-        final borderMix = BeveledRectangleBorderMix.only(
-          borderRadius: BorderRadiusMix.only(
+        final borderMix = BeveledRectangleBorderMix(
+          borderRadius: BorderRadiusMix(
             topLeft: const Radius.circular(8.0),
             bottomRight: const Radius.circular(12.0),
           ),
-          side: BorderSideMix.only(color: Colors.red, width: 2.0),
+          side: BorderSideMix(color: Colors.red, width: 2.0),
         );
         final attr = utility(borderMix);
         expect(attr.value, isA<MixProp<BeveledRectangleBorder>>());
@@ -345,7 +345,7 @@ void main() {
         test(
           'borderRadius() creates beveled rectangle border with border radius',
           () {
-            final borderRadiusMix = BorderRadiusMix.only(
+            final borderRadiusMix = BorderRadiusMix(
               topLeft: const Radius.circular(6.0),
               topRight: const Radius.circular(6.0),
             );
@@ -363,7 +363,7 @@ void main() {
         );
 
         test('side() creates beveled rectangle border with side', () {
-          final borderSideMix = BorderSideMix.only(
+          final borderSideMix = BorderSideMix(
             color: Colors.green,
             width: 3.0,
           );
@@ -395,12 +395,12 @@ void main() {
       );
 
       test('call() creates ContinuousRectangleBorderMix', () {
-        final borderMix = ContinuousRectangleBorderMix.only(
-          borderRadius: BorderRadiusMix.only(
+        final borderMix = ContinuousRectangleBorderMix(
+          borderRadius: BorderRadiusMix(
             topLeft: const Radius.circular(8.0),
             bottomRight: const Radius.circular(12.0),
           ),
-          side: BorderSideMix.only(color: Colors.red, width: 2.0),
+          side: BorderSideMix(color: Colors.red, width: 2.0),
         );
         final attr = utility(borderMix);
         expect(attr.value, isA<MixProp<ContinuousRectangleBorder>>());
@@ -422,7 +422,7 @@ void main() {
         test(
           'borderRadius() creates continuous rectangle border with border radius',
           () {
-            final borderRadiusMix = BorderRadiusMix.only(
+            final borderRadiusMix = BorderRadiusMix(
               topLeft: const Radius.circular(14.0),
               topRight: const Radius.circular(14.0),
             );
@@ -440,7 +440,7 @@ void main() {
         );
 
         test('side() creates continuous rectangle border with side', () {
-          final borderSideMix = BorderSideMix.only(
+          final borderSideMix = BorderSideMix(
             color: Colors.green,
             width: 3.0,
           );

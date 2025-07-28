@@ -194,7 +194,7 @@ void main() {
   group('SizedBoxModifierAttribute', () {
     group('Constructor', () {
       test('creates with null values by default', () {
-        const attribute = SizedBoxModifierAttribute();
+        final attribute = SizedBoxModifierAttribute();
 
         expect(attribute.width, isNull);
         expect(attribute.height, isNull);
@@ -203,7 +203,7 @@ void main() {
       test('creates with provided Prop values', () {
         final width = Prop<double>(100.0);
         final height = Prop<double>(200.0);
-        final attribute = SizedBoxModifierAttribute(
+        final attribute = SizedBoxModifierAttribute.raw(
           width: width,
           height: height,
         );
@@ -215,7 +215,7 @@ void main() {
 
     group('only constructor', () {
       test('creates Prop values from direct values', () {
-        final attribute = SizedBoxModifierAttribute.only(
+        final attribute = SizedBoxModifierAttribute(
           width: 100.0,
           height: 200.0,
         );
@@ -225,18 +225,18 @@ void main() {
       });
 
       test('handles null values correctly', () {
-        final attribute = SizedBoxModifierAttribute.only();
+        final attribute = SizedBoxModifierAttribute();
 
         expect(attribute.width, isNull);
         expect(attribute.height, isNull);
       });
 
       test('handles partial values', () {
-        final attribute1 = SizedBoxModifierAttribute.only(width: 100.0);
+        final attribute1 = SizedBoxModifierAttribute(width: 100.0);
         expect(attribute1.width!, resolvesTo(100.0));
         expect(attribute1.height, isNull);
 
-        final attribute2 = SizedBoxModifierAttribute.only(height: 200.0);
+        final attribute2 = SizedBoxModifierAttribute(height: 200.0);
         expect(attribute2.width, isNull);
         expect(attribute2.height!, resolvesTo(200.0));
       });
@@ -244,7 +244,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to SizedBoxModifier with resolved values', () {
-        final attribute = SizedBoxModifierAttribute.only(
+        final attribute = SizedBoxModifierAttribute(
           width: 100.0,
           height: 200.0,
         );
@@ -255,7 +255,7 @@ void main() {
       });
 
       test('resolves with null values', () {
-        const attribute = SizedBoxModifierAttribute();
+        final attribute = SizedBoxModifierAttribute();
 
         const expectedModifier = SizedBoxModifier();
 
@@ -265,11 +265,11 @@ void main() {
 
     group('merge', () {
       test('merges with other SizedBoxModifierAttribute', () {
-        final attribute1 = SizedBoxModifierAttribute.only(
+        final attribute1 = SizedBoxModifierAttribute(
           width: 100.0,
           height: 100.0,
         );
-        final attribute2 = SizedBoxModifierAttribute.only(
+        final attribute2 = SizedBoxModifierAttribute(
           width: 200.0,
           height: 200.0,
         );
@@ -281,7 +281,7 @@ void main() {
       });
 
       test('returns original when other is null', () {
-        final attribute = SizedBoxModifierAttribute.only(width: 100.0);
+        final attribute = SizedBoxModifierAttribute(width: 100.0);
 
         final merged = attribute.merge(null);
 
@@ -289,8 +289,8 @@ void main() {
       });
 
       test('merges with null values', () {
-        const attribute1 = SizedBoxModifierAttribute();
-        final attribute2 = SizedBoxModifierAttribute.only(
+        final attribute1 = SizedBoxModifierAttribute();
+        final attribute2 = SizedBoxModifierAttribute(
           width: 100.0,
           height: 200.0,
         );
@@ -304,11 +304,11 @@ void main() {
 
     group('equality and props', () {
       test('equal when all Prop values match', () {
-        final attribute1 = SizedBoxModifierAttribute.only(
+        final attribute1 = SizedBoxModifierAttribute(
           width: 100.0,
           height: 200.0,
         );
-        final attribute2 = SizedBoxModifierAttribute.only(
+        final attribute2 = SizedBoxModifierAttribute(
           width: 100.0,
           height: 200.0,
         );
@@ -317,14 +317,14 @@ void main() {
       });
 
       test('not equal when values differ', () {
-        final attribute1 = SizedBoxModifierAttribute.only(width: 100.0);
-        final attribute2 = SizedBoxModifierAttribute.only(width: 200.0);
+        final attribute1 = SizedBoxModifierAttribute(width: 100.0);
+        final attribute2 = SizedBoxModifierAttribute(width: 200.0);
 
         expect(attribute1, isNot(equals(attribute2)));
       });
 
       test('props contains all Prop values', () {
-        final attribute = SizedBoxModifierAttribute.only(
+        final attribute = SizedBoxModifierAttribute(
           width: 100.0,
           height: 200.0,
         );
@@ -341,10 +341,7 @@ void main() {
     testWidgets('SizedBoxModifierAttribute resolves and builds correctly', (
       WidgetTester tester,
     ) async {
-      final attribute = SizedBoxModifierAttribute.only(
-        width: 150.0,
-        height: 250.0,
-      );
+      final attribute = SizedBoxModifierAttribute(width: 150.0, height: 250.0);
 
       final modifier = attribute.resolve(MockBuildContext());
       const child = SizedBox(width: 100, height: 100);
@@ -358,11 +355,11 @@ void main() {
     });
 
     test('Complex merge scenario preserves and overrides correctly', () {
-      final base = SizedBoxModifierAttribute.only(width: 100.0, height: 100.0);
+      final base = SizedBoxModifierAttribute(width: 100.0, height: 100.0);
 
-      final override1 = SizedBoxModifierAttribute.only(width: 200.0);
+      final override1 = SizedBoxModifierAttribute(width: 200.0);
 
-      final override2 = SizedBoxModifierAttribute.only(height: 300.0);
+      final override2 = SizedBoxModifierAttribute(height: 300.0);
 
       final result = base.merge(override1).merge(override2);
 

@@ -9,7 +9,7 @@ void main() {
   group('BoxConstraintsMix', () {
     group('Constructor', () {
       test('only constructor creates instance with correct properties', () {
-        final constraintsMix = BoxConstraintsMix.only(
+        final constraintsMix = BoxConstraintsMix(
           minWidth: 50.0,
           maxWidth: 150.0,
           minHeight: 100.0,
@@ -72,7 +72,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to BoxConstraints with correct properties', () {
-        final constraintsMix = BoxConstraintsMix.only(
+        final constraintsMix = BoxConstraintsMix(
           minWidth: 50.0,
           maxWidth: 150.0,
           minHeight: 100.0,
@@ -90,7 +90,7 @@ void main() {
       });
 
       test('uses default values for null properties', () {
-        final constraintsMix = BoxConstraintsMix.only(
+        final constraintsMix = BoxConstraintsMix(
           minWidth: 50.0,
           minHeight: 100.0,
         );
@@ -106,7 +106,7 @@ void main() {
       });
 
       test('handles infinity and zero values correctly', () {
-        final constraintsMix = BoxConstraintsMix.only(
+        final constraintsMix = BoxConstraintsMix(
           minWidth: 0.0,
           maxWidth: double.infinity,
           minHeight: 0.0,
@@ -126,20 +126,20 @@ void main() {
 
     group('merge', () {
       test('returns this when other is null', () {
-        final constraintsMix = BoxConstraintsMix.only(minWidth: 50.0);
+        final constraintsMix = BoxConstraintsMix(minWidth: 50.0);
         final merged = constraintsMix.merge(null);
 
         expect(merged, same(constraintsMix));
       });
 
       test('merges properties correctly', () {
-        final first = BoxConstraintsMix.only(
+        final first = BoxConstraintsMix(
           minWidth: 50.0,
           maxWidth: 150.0,
           minHeight: 100.0,
         );
 
-        final second = BoxConstraintsMix.only(
+        final second = BoxConstraintsMix(
           maxWidth: 200.0,
           maxHeight: 250.0,
         );
@@ -166,12 +166,12 @@ void main() {
 
     group('Equality', () {
       test('returns true when all properties are the same', () {
-        final constraintsMix1 = BoxConstraintsMix.only(
+        final constraintsMix1 = BoxConstraintsMix(
           minWidth: 50.0,
           maxWidth: 150.0,
         );
 
-        final constraintsMix2 = BoxConstraintsMix.only(
+        final constraintsMix2 = BoxConstraintsMix(
           minWidth: 50.0,
           maxWidth: 150.0,
         );
@@ -181,8 +181,8 @@ void main() {
       });
 
       test('returns false when properties are different', () {
-        final constraintsMix1 = BoxConstraintsMix.only(minWidth: 50.0);
-        final constraintsMix2 = BoxConstraintsMix.only(minWidth: 100.0);
+        final constraintsMix1 = BoxConstraintsMix(minWidth: 50.0);
+        final constraintsMix2 = BoxConstraintsMix(minWidth: 100.0);
 
         expect(constraintsMix1, isNot(constraintsMix2));
       });

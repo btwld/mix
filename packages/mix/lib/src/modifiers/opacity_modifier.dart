@@ -1,4 +1,3 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -77,10 +76,10 @@ class OpacityModifierAttribute extends ModifierAttribute<OpacityModifier>
     with Diagnosticable {
   final Prop<double>? opacity;
 
-  const OpacityModifierAttribute({this.opacity});
+  const OpacityModifierAttribute.raw({this.opacity});
 
-  OpacityModifierAttribute.only({double? opacity})
-    : this(opacity: Prop.maybe(opacity));
+  OpacityModifierAttribute({double? opacity})
+    : this.raw(opacity: Prop.maybe(opacity));
 
   /// Resolves to [OpacityModifier] using the provided [MixContext].
   ///
@@ -107,7 +106,7 @@ class OpacityModifierAttribute extends ModifierAttribute<OpacityModifier>
   OpacityModifierAttribute merge(OpacityModifierAttribute? other) {
     if (other == null) return this;
 
-    return OpacityModifierAttribute(
+    return OpacityModifierAttribute.raw(
       opacity: opacity?.merge(other.opacity) ?? other.opacity,
     );
   }
@@ -131,8 +130,8 @@ final class OpacityModifierUtility<T extends StyleAttribute<Object?>>
   const OpacityModifierUtility(super.builder);
 
   T call(double value) =>
-      builder(OpacityModifierAttribute(opacity: Prop(value)));
+      builder(OpacityModifierAttribute.raw(opacity: Prop(value)));
 
   T token(MixToken<double> token) =>
-      builder(OpacityModifierAttribute(opacity: Prop.token(token)));
+      builder(OpacityModifierAttribute.raw(opacity: Prop.token(token)));
 }

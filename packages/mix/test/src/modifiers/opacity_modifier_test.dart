@@ -106,14 +106,14 @@ void main() {
   group('OpacityModifierAttribute', () {
     group('Constructor', () {
       test('creates with null opacity by default', () {
-        const attribute = OpacityModifierAttribute();
+        final attribute = OpacityModifierAttribute();
 
         expect(attribute.opacity, isNull);
       });
 
       test('creates with provided Prop opacity value', () {
         final opacity = Prop<double>(0.5);
-        final attribute = OpacityModifierAttribute(opacity: opacity);
+        final attribute = OpacityModifierAttribute.raw(opacity: opacity);
 
         expect(attribute.opacity, same(opacity));
       });
@@ -121,13 +121,13 @@ void main() {
 
     group('only constructor', () {
       test('creates Prop value from direct opacity', () {
-        final attribute = OpacityModifierAttribute.only(opacity: 0.7);
+        final attribute = OpacityModifierAttribute(opacity: 0.7);
 
         expect(attribute.opacity!, resolvesTo(0.7));
       });
 
       test('handles null opacity correctly', () {
-        final attribute = OpacityModifierAttribute.only();
+        final attribute = OpacityModifierAttribute();
 
         expect(attribute.opacity, isNull);
       });
@@ -135,7 +135,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to OpacityModifier with resolved opacity', () {
-        final attribute = OpacityModifierAttribute.only(opacity: 0.7);
+        final attribute = OpacityModifierAttribute(opacity: 0.7);
 
         const expectedModifier = OpacityModifier(0.7);
 
@@ -143,7 +143,7 @@ void main() {
       });
 
       test('resolves with null opacity', () {
-        const attribute = OpacityModifierAttribute();
+        final attribute = OpacityModifierAttribute();
 
         const expectedModifier = OpacityModifier(
           1.0,
@@ -155,8 +155,8 @@ void main() {
 
     group('merge', () {
       test('merges with other OpacityModifierAttribute', () {
-        final attribute1 = OpacityModifierAttribute.only(opacity: 0.5);
-        final attribute2 = OpacityModifierAttribute.only(opacity: 0.8);
+        final attribute1 = OpacityModifierAttribute(opacity: 0.5);
+        final attribute2 = OpacityModifierAttribute(opacity: 0.8);
 
         final merged = attribute1.merge(attribute2);
 
@@ -164,7 +164,7 @@ void main() {
       });
 
       test('returns original when other is null', () {
-        final attribute = OpacityModifierAttribute.only(opacity: 0.5);
+        final attribute = OpacityModifierAttribute(opacity: 0.5);
 
         final merged = attribute.merge(null);
 
@@ -172,8 +172,8 @@ void main() {
       });
 
       test('merges with null opacity', () {
-        const attribute1 = OpacityModifierAttribute();
-        final attribute2 = OpacityModifierAttribute.only(opacity: 0.7);
+        final attribute1 = OpacityModifierAttribute();
+        final attribute2 = OpacityModifierAttribute(opacity: 0.7);
 
         final merged = attribute1.merge(attribute2);
 
@@ -183,21 +183,21 @@ void main() {
 
     group('equality and props', () {
       test('equal when opacity values match', () {
-        final attribute1 = OpacityModifierAttribute.only(opacity: 0.5);
-        final attribute2 = OpacityModifierAttribute.only(opacity: 0.5);
+        final attribute1 = OpacityModifierAttribute(opacity: 0.5);
+        final attribute2 = OpacityModifierAttribute(opacity: 0.5);
 
         expect(attribute1, equals(attribute2));
       });
 
       test('not equal when opacity differs', () {
-        final attribute1 = OpacityModifierAttribute.only(opacity: 0.5);
-        final attribute2 = OpacityModifierAttribute.only(opacity: 0.8);
+        final attribute1 = OpacityModifierAttribute(opacity: 0.5);
+        final attribute2 = OpacityModifierAttribute(opacity: 0.8);
 
         expect(attribute1, isNot(equals(attribute2)));
       });
 
       test('props contains Prop opacity value', () {
-        final attribute = OpacityModifierAttribute.only(opacity: 0.5);
+        final attribute = OpacityModifierAttribute(opacity: 0.5);
 
         final props = attribute.props;
         expect(props.length, 1);
@@ -210,7 +210,7 @@ void main() {
     testWidgets('OpacityModifierAttribute resolves and builds correctly', (
       WidgetTester tester,
     ) async {
-      final attribute = OpacityModifierAttribute.only(opacity: 0.3);
+      final attribute = OpacityModifierAttribute(opacity: 0.3);
 
       final modifier = attribute.resolve(MockBuildContext());
       const child = SizedBox(width: 100, height: 100);
@@ -223,9 +223,9 @@ void main() {
     });
 
     test('Complex merge scenario preserves and overrides correctly', () {
-      final base = OpacityModifierAttribute.only(opacity: 0.5);
-      final override1 = OpacityModifierAttribute.only(opacity: 0.8);
-      final override2 = OpacityModifierAttribute.only(opacity: 0.2);
+      final base = OpacityModifierAttribute(opacity: 0.5);
+      final override1 = OpacityModifierAttribute(opacity: 0.8);
+      final override2 = OpacityModifierAttribute(opacity: 0.2);
 
       final result = base.merge(override1).merge(override2);
 

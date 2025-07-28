@@ -18,7 +18,7 @@ final class DecorationImageMix extends Mix<DecorationImage>
   final Prop<bool>? $invertColors;
   final Prop<bool>? $isAntiAlias;
 
-  DecorationImageMix.only({
+  DecorationImageMix({
     ImageProvider? image,
     BoxFit? fit,
     AlignmentGeometry? alignment,
@@ -27,7 +27,7 @@ final class DecorationImageMix extends Mix<DecorationImage>
     FilterQuality? filterQuality,
     bool? invertColors,
     bool? isAntiAlias,
-  }) : this(
+  }) : this.raw(
          image: Prop.maybe(image),
          fit: Prop.maybe(fit),
          alignment: Prop.maybe(alignment),
@@ -38,7 +38,7 @@ final class DecorationImageMix extends Mix<DecorationImage>
          isAntiAlias: Prop.maybe(isAntiAlias),
        );
 
-  const DecorationImageMix({
+  const DecorationImageMix.raw({
     Prop<ImageProvider>? image,
     Prop<BoxFit>? fit,
     Prop<AlignmentGeometry>? alignment,
@@ -63,7 +63,7 @@ final class DecorationImageMix extends Mix<DecorationImage>
   /// final dto = DecorationImageMix.value(decorationImage);
   /// ```
   DecorationImageMix.value(DecorationImage decorationImage)
-    : this.only(
+    : this(
         image: decorationImage.image,
         fit: decorationImage.fit,
         alignment: decorationImage.alignment,
@@ -76,42 +76,42 @@ final class DecorationImageMix extends Mix<DecorationImage>
 
   /// Creates a decoration image with the specified image provider.
   factory DecorationImageMix.image(ImageProvider value) {
-    return DecorationImageMix.only(image: value);
+    return DecorationImageMix(image: value);
   }
 
   /// Creates a decoration image with the specified fit behavior.
   factory DecorationImageMix.fit(BoxFit value) {
-    return DecorationImageMix.only(fit: value);
+    return DecorationImageMix(fit: value);
   }
 
   /// Creates a decoration image with the specified alignment.
   factory DecorationImageMix.alignment(AlignmentGeometry value) {
-    return DecorationImageMix.only(alignment: value);
+    return DecorationImageMix(alignment: value);
   }
 
   /// Creates a decoration image with the specified center slice for nine-patch scaling.
   factory DecorationImageMix.centerSlice(Rect value) {
-    return DecorationImageMix.only(centerSlice: value);
+    return DecorationImageMix(centerSlice: value);
   }
 
   /// Creates a decoration image with the specified repeat behavior.
   factory DecorationImageMix.repeat(ImageRepeat value) {
-    return DecorationImageMix.only(repeat: value);
+    return DecorationImageMix(repeat: value);
   }
 
   /// Creates a decoration image with the specified filter quality.
   factory DecorationImageMix.filterQuality(FilterQuality value) {
-    return DecorationImageMix.only(filterQuality: value);
+    return DecorationImageMix(filterQuality: value);
   }
 
   /// Creates a decoration image with color inversion enabled or disabled.
   factory DecorationImageMix.invertColors(bool value) {
-    return DecorationImageMix.only(invertColors: value);
+    return DecorationImageMix(invertColors: value);
   }
 
   /// Creates a decoration image with anti-aliasing enabled or disabled.
   factory DecorationImageMix.isAntiAlias(bool value) {
-    return DecorationImageMix.only(isAntiAlias: value);
+    return DecorationImageMix(isAntiAlias: value);
   }
 
   /// Creates a [DecorationImageMix] from a nullable [DecorationImage].
@@ -125,42 +125,42 @@ final class DecorationImageMix extends Mix<DecorationImage>
 
   /// Returns a copy with the specified image provider.
   DecorationImageMix image(ImageProvider value) {
-    return merge(DecorationImageMix.only(image: value));
+    return merge(DecorationImageMix(image: value));
   }
 
   /// Returns a copy with the specified fit behavior.
   DecorationImageMix fit(BoxFit value) {
-    return merge(DecorationImageMix.only(fit: value));
+    return merge(DecorationImageMix(fit: value));
   }
 
   /// Returns a copy with the specified alignment.
   DecorationImageMix alignment(AlignmentGeometry value) {
-    return merge(DecorationImageMix.only(alignment: value));
+    return merge(DecorationImageMix(alignment: value));
   }
 
   /// Returns a copy with the specified center slice for nine-patch scaling.
   DecorationImageMix centerSlice(Rect value) {
-    return merge(DecorationImageMix.only(centerSlice: value));
+    return merge(DecorationImageMix(centerSlice: value));
   }
 
   /// Returns a copy with the specified repeat behavior.
   DecorationImageMix repeat(ImageRepeat value) {
-    return merge(DecorationImageMix.only(repeat: value));
+    return merge(DecorationImageMix(repeat: value));
   }
 
   /// Returns a copy with the specified filter quality.
   DecorationImageMix filterQuality(FilterQuality value) {
-    return merge(DecorationImageMix.only(filterQuality: value));
+    return merge(DecorationImageMix(filterQuality: value));
   }
 
   /// Returns a copy with color inversion enabled or disabled.
   DecorationImageMix invertColors(bool value) {
-    return merge(DecorationImageMix.only(invertColors: value));
+    return merge(DecorationImageMix(invertColors: value));
   }
 
   /// Returns a copy with anti-aliasing enabled or disabled.
   DecorationImageMix isAntiAlias(bool value) {
-    return merge(DecorationImageMix.only(isAntiAlias: value));
+    return merge(DecorationImageMix(isAntiAlias: value));
   }
 
   /// Resolves to [DecorationImage] using the provided [MixContext].
@@ -203,7 +203,7 @@ final class DecorationImageMix extends Mix<DecorationImage>
   DecorationImageMix merge(DecorationImageMix? other) {
     if (other == null) return this;
 
-    return DecorationImageMix(
+    return DecorationImageMix.raw(
       image: MixHelpers.merge($image, other.$image),
       fit: MixHelpers.merge($fit, other.$fit),
       alignment: MixHelpers.merge($alignment, other.$alignment),

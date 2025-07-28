@@ -13,32 +13,32 @@ final class LinearGradientUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, LinearGradient> {
   /// Utility for defining [LinearGradientMix.begin]
   late final begin = PropUtility<T, AlignmentGeometry>(
-    (v) => call(LinearGradientMix(begin: v)),
+    (v) => call(LinearGradientMix.raw(begin: v)),
   );
 
   /// Utility for defining [LinearGradientMix.end]
   late final end = PropUtility<T, AlignmentGeometry>(
-    (v) => call(LinearGradientMix(end: v)),
+    (v) => call(LinearGradientMix.raw(end: v)),
   );
 
   /// Utility for defining [LinearGradientMix.tileMode]
   late final tileMode = PropUtility<T, TileMode>(
-    (prop) => call(LinearGradientMix(tileMode: prop)),
+    (prop) => call(LinearGradientMix.raw(tileMode: prop)),
   );
 
   /// Utility for defining [LinearGradientMix.transform]
   late final transform = PropUtility<T, GradientTransform>(
-    (v) => call(LinearGradientMix(transform: v)),
+    (v) => call(LinearGradientMix.raw(transform: v)),
   );
 
   /// Utility for defining [LinearGradientMix.colors]
   late final colors = PropListUtility<T, Color>(
-    (colors) => call(LinearGradientMix(colors: colors)),
+    (colors) => call(LinearGradientMix.raw(colors: colors)),
   );
 
   /// Utility for defining [LinearGradientMix.stops]
   late final stops = PropListUtility<T, double>(
-    (stops) => call(LinearGradientMix(stops: stops)),
+    (stops) => call(LinearGradientMix.raw(stops: stops)),
   );
 
   LinearGradientUtility(super.builder)
@@ -56,42 +56,42 @@ final class RadialGradientUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, RadialGradient> {
   /// Utility for defining [RadialGradientMix.center]
   late final center = PropUtility<T, AlignmentGeometry>(
-    (v) => call(RadialGradientMix(center: v)),
+    (v) => call(RadialGradientMix.raw(center: v)),
   );
 
   /// Utility for defining [RadialGradientMix.radius]
   late final radius = PropUtility<T, double>(
-    (prop) => call(RadialGradientMix(radius: prop)),
+    (prop) => call(RadialGradientMix.raw(radius: prop)),
   );
 
   /// Utility for defining [RadialGradientMix.tileMode]
   late final tileMode = PropUtility<T, TileMode>(
-    (prop) => call(RadialGradientMix(tileMode: prop)),
+    (prop) => call(RadialGradientMix.raw(tileMode: prop)),
   );
 
   /// Utility for defining [RadialGradientMix.focal]
   late final focal = PropUtility<T, AlignmentGeometry>(
-    (v) => call(RadialGradientMix(focal: v)),
+    (v) => call(RadialGradientMix.raw(focal: v)),
   );
 
   /// Utility for defining [RadialGradientMix.focalRadius]
   late final focalRadius = PropUtility<T, double>(
-    (prop) => call(RadialGradientMix(focalRadius: prop)),
+    (prop) => call(RadialGradientMix.raw(focalRadius: prop)),
   );
 
   /// Utility for defining [RadialGradientMix.transform]
   late final transform = PropUtility<T, GradientTransform>(
-    (v) => call(RadialGradientMix(transform: v)),
+    (v) => call(RadialGradientMix.raw(transform: v)),
   );
 
   /// Utility for defining [RadialGradientMix.colors]
   late final colors = PropListUtility<T, Color>(
-    (colors) => call(RadialGradientMix(colors: colors)),
+    (colors) => call(RadialGradientMix.raw(colors: colors)),
   );
 
   /// Utility for defining [RadialGradientMix.stops]
   late final stops = PropListUtility<T, double>(
-    (stops) => call(RadialGradientMix(stops: stops)),
+    (stops) => call(RadialGradientMix.raw(stops: stops)),
   );
 
   RadialGradientUtility(super.builder)
@@ -109,37 +109,37 @@ final class SweepGradientUtility<T extends StyleAttribute<Object?>>
     extends MixPropUtility<T, SweepGradient> {
   /// Utility for defining [SweepGradientMix.center]
   late final center = PropUtility<T, AlignmentGeometry>(
-    (v) => call(SweepGradientMix(center: v)),
+    (v) => call(SweepGradientMix.raw(center: v)),
   );
 
   /// Utility for defining [SweepGradientMix.startAngle]
   late final startAngle = PropUtility<T, double>(
-    (prop) => call(SweepGradientMix(startAngle: prop)),
+    (prop) => call(SweepGradientMix.raw(startAngle: prop)),
   );
 
   /// Utility for defining [SweepGradientMix.endAngle]
   late final endAngle = PropUtility<T, double>(
-    (prop) => call(SweepGradientMix(endAngle: prop)),
+    (prop) => call(SweepGradientMix.raw(endAngle: prop)),
   );
 
   /// Utility for defining [SweepGradientMix.tileMode]
   late final tileMode = PropUtility<T, TileMode>(
-    (prop) => call(SweepGradientMix(tileMode: prop)),
+    (prop) => call(SweepGradientMix.raw(tileMode: prop)),
   );
 
   /// Utility for defining [SweepGradientMix.transform]
   late final transform = PropUtility<T, GradientTransform>(
-    (v) => call(SweepGradientMix(transform: v)),
+    (v) => call(SweepGradientMix.raw(transform: v)),
   );
 
   /// Utility for defining [SweepGradientMix.colors]
   late final colors = PropListUtility<T, Color>(
-    (colors) => call(SweepGradientMix(colors: colors)),
+    (colors) => call(SweepGradientMix.raw(colors: colors)),
   );
 
   /// Utility for defining [SweepGradientMix.stops]
   late final stops = PropListUtility<T, double>(
-    (stops) => call(SweepGradientMix(stops: stops)),
+    (stops) => call(SweepGradientMix.raw(stops: stops)),
   );
 
   SweepGradientUtility(super.builder)

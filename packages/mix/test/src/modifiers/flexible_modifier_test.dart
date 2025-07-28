@@ -199,7 +199,7 @@ void main() {
   group('FlexibleModifierAttribute', () {
     group('Constructor', () {
       test('creates with null values by default', () {
-        const attribute = FlexibleModifierAttribute();
+        final attribute = FlexibleModifierAttribute();
 
         expect(attribute.flex, isNull);
         expect(attribute.fit, isNull);
@@ -208,7 +208,7 @@ void main() {
       test('creates with provided Prop values', () {
         final flex = Prop<int>(2);
         final fit = Prop<FlexFit>(FlexFit.tight);
-        final attribute = FlexibleModifierAttribute(flex: flex, fit: fit);
+        final attribute = FlexibleModifierAttribute.raw(flex: flex, fit: fit);
 
         expect(attribute.flex, same(flex));
         expect(attribute.fit, same(fit));
@@ -217,7 +217,7 @@ void main() {
 
     group('only constructor', () {
       test('creates Prop values from direct values', () {
-        final attribute = FlexibleModifierAttribute.only(
+        final attribute = FlexibleModifierAttribute(
           flex: 3,
           fit: FlexFit.loose,
         );
@@ -227,18 +227,18 @@ void main() {
       });
 
       test('handles null values correctly', () {
-        final attribute = FlexibleModifierAttribute.only();
+        final attribute = FlexibleModifierAttribute();
 
         expect(attribute.flex, isNull);
         expect(attribute.fit, isNull);
       });
 
       test('handles partial values', () {
-        final attribute1 = FlexibleModifierAttribute.only(flex: 2);
+        final attribute1 = FlexibleModifierAttribute(flex: 2);
         expectProp(attribute1.flex, 2);
         expect(attribute1.fit, isNull);
 
-        final attribute2 = FlexibleModifierAttribute.only(fit: FlexFit.tight);
+        final attribute2 = FlexibleModifierAttribute(fit: FlexFit.tight);
         expect(attribute2.flex, isNull);
         expectProp(attribute2.fit, FlexFit.tight);
       });
@@ -246,7 +246,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to FlexibleModifier with resolved values', () {
-        final attribute = FlexibleModifierAttribute.only(
+        final attribute = FlexibleModifierAttribute(
           flex: 4,
           fit: FlexFit.tight,
         );
@@ -266,11 +266,11 @@ void main() {
 
     group('merge', () {
       test('merges with other FlexibleModifierAttribute', () {
-        final attribute1 = FlexibleModifierAttribute.only(
+        final attribute1 = FlexibleModifierAttribute(
           flex: 1,
           fit: FlexFit.loose,
         );
-        final attribute2 = FlexibleModifierAttribute.only(
+        final attribute2 = FlexibleModifierAttribute(
           flex: 3,
           fit: FlexFit.tight,
         );
@@ -282,7 +282,7 @@ void main() {
       });
 
       test('returns original when other is null', () {
-        final attribute = FlexibleModifierAttribute.only(flex: 2);
+        final attribute = FlexibleModifierAttribute(flex: 2);
 
         final merged = attribute.merge(null);
 
@@ -291,7 +291,7 @@ void main() {
 
       test('merges with null values', () {
         final attribute1 = FlexibleModifierAttribute();
-        final attribute2 = FlexibleModifierAttribute.only(fit: FlexFit.tight);
+        final attribute2 = FlexibleModifierAttribute(fit: FlexFit.tight);
 
         final merged = attribute1.merge(attribute2);
 
@@ -302,11 +302,11 @@ void main() {
 
     group('equality and props', () {
       test('equal when all Prop values match', () {
-        final attribute1 = FlexibleModifierAttribute.only(
+        final attribute1 = FlexibleModifierAttribute(
           flex: 2,
           fit: FlexFit.tight,
         );
-        final attribute2 = FlexibleModifierAttribute.only(
+        final attribute2 = FlexibleModifierAttribute(
           flex: 2,
           fit: FlexFit.tight,
         );
@@ -315,14 +315,14 @@ void main() {
       });
 
       test('not equal when values differ', () {
-        final attribute1 = FlexibleModifierAttribute.only(flex: 1);
-        final attribute2 = FlexibleModifierAttribute.only(flex: 2);
+        final attribute1 = FlexibleModifierAttribute(flex: 1);
+        final attribute2 = FlexibleModifierAttribute(flex: 2);
 
         expect(attribute1, isNot(equals(attribute2)));
       });
 
       test('props contains all Prop values', () {
-        final attribute = FlexibleModifierAttribute.only(
+        final attribute = FlexibleModifierAttribute(
           flex: 3,
           fit: FlexFit.tight,
         );
@@ -434,10 +434,7 @@ void main() {
     testWidgets('FlexibleModifierAttribute resolves and builds correctly', (
       WidgetTester tester,
     ) async {
-      final attribute = FlexibleModifierAttribute.only(
-        flex: 2,
-        fit: FlexFit.tight,
-      );
+      final attribute = FlexibleModifierAttribute(flex: 2, fit: FlexFit.tight);
 
       expect(
         attribute,
@@ -461,11 +458,11 @@ void main() {
     });
 
     test('Complex merge scenario preserves and overrides correctly', () {
-      final base = FlexibleModifierAttribute.only(flex: 1, fit: FlexFit.loose);
+      final base = FlexibleModifierAttribute(flex: 1, fit: FlexFit.loose);
 
-      final override1 = FlexibleModifierAttribute.only(flex: 3);
+      final override1 = FlexibleModifierAttribute(flex: 3);
 
-      final override2 = FlexibleModifierAttribute.only(fit: FlexFit.tight);
+      final override2 = FlexibleModifierAttribute(fit: FlexFit.tight);
 
       final result = base.merge(override1).merge(override2);
 

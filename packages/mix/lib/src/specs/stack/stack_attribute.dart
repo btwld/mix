@@ -30,25 +30,25 @@ class StackSpecAttribute extends StyleAttribute<StackSpec>
 
   /// Utility for defining [StackSpecAttribute.alignment]
   late final alignment = PropUtility<StackSpecAttribute, AlignmentGeometry>(
-    (prop) => merge(StackSpecAttribute(alignment: prop)),
+    (prop) => merge(StackSpecAttribute.raw(alignment: prop)),
   );
 
   /// Utility for defining [StackSpecAttribute.fit]
   late final fit = PropUtility<StackSpecAttribute, StackFit>(
-    (prop) => merge(StackSpecAttribute(fit: prop)),
+    (prop) => merge(StackSpecAttribute.raw(fit: prop)),
   );
 
   /// Utility for defining [StackSpecAttribute.textDirection]
   late final textDirection = PropUtility<StackSpecAttribute, TextDirection>(
-    (prop) => merge(StackSpecAttribute(textDirection: prop)),
+    (prop) => merge(StackSpecAttribute.raw(textDirection: prop)),
   );
 
   /// Utility for defining [StackSpecAttribute.clipBehavior]
   late final clipBehavior = PropUtility<StackSpecAttribute, Clip>(
-    (prop) => merge(StackSpecAttribute(clipBehavior: prop)),
+    (prop) => merge(StackSpecAttribute.raw(clipBehavior: prop)),
   );
 
-  StackSpecAttribute({
+  StackSpecAttribute.raw({
     Prop<AlignmentGeometry>? alignment,
     Prop<StackFit>? fit,
     Prop<TextDirection>? textDirection,
@@ -61,7 +61,7 @@ class StackSpecAttribute extends StyleAttribute<StackSpec>
        $textDirection = textDirection,
        $clipBehavior = clipBehavior;
 
-  StackSpecAttribute.only({
+  StackSpecAttribute({
     AlignmentGeometry? alignment,
     StackFit? fit,
     TextDirection? textDirection,
@@ -69,7 +69,7 @@ class StackSpecAttribute extends StyleAttribute<StackSpec>
     AnimationConfig? animation,
     List<ModifierAttribute>? modifiers,
     List<VariantStyleAttribute<StackSpec>>? variants,
-  }) : this(
+  }) : this.raw(
          alignment: Prop.maybe(alignment),
          fit: Prop.maybe(fit),
          textDirection: Prop.maybe(textDirection),
@@ -88,7 +88,7 @@ class StackSpecAttribute extends StyleAttribute<StackSpec>
   /// final attr = StackSpecAttribute.value(spec);
   /// ```
   StackSpecAttribute.value(StackSpec spec)
-    : this.only(
+    : this(
         alignment: spec.alignment,
         fit: spec.fit,
         textDirection: spec.textDirection,
@@ -109,16 +109,16 @@ class StackSpecAttribute extends StyleAttribute<StackSpec>
 
   /// Convenience method for animating the StackSpec
   StackSpecAttribute animate(AnimationConfig animation) {
-    return StackSpecAttribute.only(animation: animation);
+    return StackSpecAttribute(animation: animation);
   }
 
   StackSpecAttribute variants(List<VariantStyleAttribute<StackSpec>> variants) {
-    return merge(StackSpecAttribute.only(variants: variants));
+    return merge(StackSpecAttribute(variants: variants));
   }
 
   @override
   StackSpecAttribute modifiers(List<ModifierAttribute> modifiers) {
-    return merge(StackSpecAttribute.only(modifiers: modifiers));
+    return merge(StackSpecAttribute(modifiers: modifiers));
   }
 
   /// Resolves to [StackSpec] using the provided [MixContext].
@@ -137,7 +137,7 @@ class StackSpecAttribute extends StyleAttribute<StackSpec>
   StackSpecAttribute merge(StackSpecAttribute? other) {
     if (other == null) return this;
 
-    return StackSpecAttribute(
+    return StackSpecAttribute.raw(
       alignment: MixHelpers.merge($alignment, other.$alignment),
       fit: MixHelpers.merge($fit, other.$fit),
       textDirection: MixHelpers.merge($textDirection, other.$textDirection),
@@ -166,9 +166,7 @@ class StackSpecAttribute extends StyleAttribute<StackSpec>
   @override
   StackSpecAttribute variant(Variant variant, StackSpecAttribute style) {
     return merge(
-      StackSpecAttribute.only(
-        variants: [VariantStyleAttribute(variant, style)],
-      ),
+      StackSpecAttribute(variants: [VariantStyleAttribute(variant, style)]),
     );
   }
 

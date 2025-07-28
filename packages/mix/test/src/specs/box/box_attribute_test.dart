@@ -9,17 +9,15 @@ void main() {
     group('Constructor', () {
       test('creates BoxSpecAttribute with all properties', () {
         final attribute = BoxSpecAttribute(
-          alignment: Prop(Alignment.center),
-          padding: MixProp(EdgeInsetsMix.only(top: 8.0)),
-          margin: MixProp(EdgeInsetsMix.only(left: 16.0)),
-          constraints: MixProp(BoxConstraintsMix.only(maxWidth: 200.0)),
-          decoration: MixProp(BoxDecorationMix.only(color: Colors.red)),
-          foregroundDecoration: MixProp(
-            BoxDecorationMix.only(color: Colors.blue),
-          ),
-          transform: Prop(Matrix4.identity()),
-          transformAlignment: Prop(Alignment.topLeft),
-          clipBehavior: Prop(Clip.antiAlias),
+          alignment: Alignment.center,
+          padding: EdgeInsetsMix(top: 8.0),
+          margin: EdgeInsetsMix(left: 16.0),
+          constraints: BoxConstraintsMix(maxWidth: 200.0),
+          decoration: BoxDecorationMix(color: Colors.red),
+          foregroundDecoration: BoxDecorationMix(color: Colors.blue),
+          transform: Matrix4.identity(),
+          transformAlignment: Alignment.topLeft,
+          clipBehavior: Clip.antiAlias,
         );
 
         expectProp(attribute.$alignment, Alignment.center);
@@ -35,13 +33,13 @@ void main() {
       });
 
       test('creates BoxSpecAttribute using only constructor', () {
-        final attribute = BoxSpecAttribute.only(
+        final attribute = BoxSpecAttribute(
           alignment: Alignment.center,
-          padding: EdgeInsetsMix.only(top: 8.0),
-          margin: EdgeInsetsMix.only(left: 16.0),
-          constraints: BoxConstraintsMix.only(maxWidth: 200.0),
-          decoration: BoxDecorationMix.only(color: Colors.red),
-          foregroundDecoration: BoxDecorationMix.only(color: Colors.blue),
+          padding: EdgeInsetsMix(top: 8.0),
+          margin: EdgeInsetsMix(left: 16.0),
+          constraints: BoxConstraintsMix(maxWidth: 200.0),
+          decoration: BoxDecorationMix(color: Colors.red),
+          foregroundDecoration: BoxDecorationMix(color: Colors.blue),
           transform: Matrix4.identity(),
           transformAlignment: Alignment.topLeft,
           clipBehavior: Clip.antiAlias,
@@ -199,7 +197,7 @@ void main() {
         // Each decoration utility creates a new BoxSpecAttribute
         final withColor = BoxSpecAttribute().color(Colors.red);
         final withBorder = BoxSpecAttribute().border(
-          BoxBorderMix.all(BorderSideMix.only(width: 2.0)),
+          BoxBorderMix.all(BorderSideMix(width: 2.0)),
         );
         final withBorderRadius = BoxSpecAttribute().radiusAll(8.0);
 
@@ -230,7 +228,7 @@ void main() {
             .color(Colors.red)
             .merge(
               BoxSpecAttribute().border(
-                BoxBorderMix.all(BorderSideMix.only(width: 2.0)),
+                BoxBorderMix.all(BorderSideMix(width: 2.0)),
               ),
             )
             .merge(BoxSpecAttribute().radiusAll(8.0));
@@ -321,8 +319,8 @@ void main() {
         expect(mergedConstraints?.maxHeight, 200.0);
 
         // Option 2: Use constructor
-        final constructed = BoxSpecAttribute.only(
-          constraints: BoxConstraintsMix.only(
+        final constructed = BoxSpecAttribute(
+          constraints: BoxConstraintsMix(
             minWidth: 100.0,
             maxWidth: 100.0,
             minHeight: 200.0,
@@ -379,8 +377,8 @@ void main() {
         expect(constraints?.maxHeight, 150.0);
 
         // Option 2: Use constructor with BoxConstraintsMix
-        final constructed = BoxSpecAttribute.only(
-          constraints: BoxConstraintsMix.only(
+        final constructed = BoxSpecAttribute(
+          constraints: BoxConstraintsMix(
             minWidth: 100.0,
             maxWidth: 200.0,
             minHeight: 50.0,
@@ -399,11 +397,11 @@ void main() {
     group('Resolution', () {
       test('resolves to BoxSpec with correct properties', () {
         // Use constructor or merge to combine properties
-        final attribute = BoxSpecAttribute.only(
+        final attribute = BoxSpecAttribute(
           alignment: Alignment.center,
           padding: EdgeInsetsMix.all(16.0),
-          decoration: BoxDecorationMix.only(color: Colors.red),
-          constraints: BoxConstraintsMix.only(
+          decoration: BoxDecorationMix(color: Colors.red),
+          constraints: BoxConstraintsMix(
             minWidth: 100.0,
             maxWidth: 100.0,
             minHeight: 200.0,
@@ -427,8 +425,8 @@ void main() {
 
       test('resolves padding with individual sides', () {
         // Use EdgeInsetsMix.only to set specific sides
-        final attribute = BoxSpecAttribute.only(
-          padding: EdgeInsetsMix.only(
+        final attribute = BoxSpecAttribute(
+          padding: EdgeInsetsMix(
             top: 10.0,
             bottom: 20.0,
             left: 30.0,
@@ -455,12 +453,12 @@ void main() {
     group('Merge', () {
       test('merges properties correctly', () {
         // Create attributes with specific properties
-        final first = BoxSpecAttribute.only(
-          decoration: BoxDecorationMix.only(color: Colors.red),
+        final first = BoxSpecAttribute(
+          decoration: BoxDecorationMix(color: Colors.red),
         );
 
-        final second = BoxSpecAttribute.only(
-          constraints: BoxConstraintsMix.only(minWidth: 150.0, maxWidth: 150.0),
+        final second = BoxSpecAttribute(
+          constraints: BoxConstraintsMix(minWidth: 150.0, maxWidth: 150.0),
           padding: EdgeInsetsMix.all(16.0),
           alignment: Alignment.center,
         );
@@ -486,8 +484,8 @@ void main() {
       test('modifiers can be added to attribute', () {
         final attribute = BoxSpecAttribute(
           modifiers: [
-            OpacityModifierAttribute(opacity: Prop(0.5)),
-            TransformModifierAttribute.only(
+            OpacityModifierAttribute(opacity: 0.5),
+            TransformModifierAttribute(
               transform: Matrix4.identity(),
               alignment: Alignment.center,
             ),
@@ -499,8 +497,8 @@ void main() {
       });
 
       test('modifiers merge correctly', () {
-        final opacityModifier = OpacityModifierAttribute(opacity: Prop(0.5));
-        final transformModifier = TransformModifierAttribute.only(
+        final opacityModifier = OpacityModifierAttribute(opacity: 0.5);
+        final transformModifier = TransformModifierAttribute(
           transform: Matrix4.identity(),
         );
 
@@ -511,8 +509,8 @@ void main() {
 
         // Check that the modifiers list matches exactly the expected list
         final expectedModifiers = [
-          OpacityModifierAttribute(opacity: Prop(0.5)),
-          TransformModifierAttribute.only(transform: Matrix4.identity()),
+          OpacityModifierAttribute(opacity: 0.5),
+          TransformModifierAttribute(transform: Matrix4.identity()),
         ];
 
         expect(merged.$modifiers, expectedModifiers);
@@ -522,24 +520,24 @@ void main() {
     group('Equality', () {
       test('equal attributes have same hashCode', () {
         // Note: Chaining doesn't work as expected, so we use constructor
-        final attr1 = BoxSpecAttribute.only(
-          constraints: BoxConstraintsMix.only(
+        final attr1 = BoxSpecAttribute(
+          constraints: BoxConstraintsMix(
             minWidth: 100.0,
             maxWidth: 100.0,
             minHeight: 200.0,
             maxHeight: 200.0,
           ),
-          decoration: BoxDecorationMix.only(color: Colors.red),
+          decoration: BoxDecorationMix(color: Colors.red),
         );
 
-        final attr2 = BoxSpecAttribute.only(
-          constraints: BoxConstraintsMix.only(
+        final attr2 = BoxSpecAttribute(
+          constraints: BoxConstraintsMix(
             minWidth: 100.0,
             maxWidth: 100.0,
             minHeight: 200.0,
             maxHeight: 200.0,
           ),
-          decoration: BoxDecorationMix.only(color: Colors.red),
+          decoration: BoxDecorationMix(color: Colors.red),
         );
 
         expect(attr1, equals(attr2));
@@ -646,17 +644,15 @@ void main() {
     group('Props getter', () {
       test('props includes all properties', () {
         final attribute = BoxSpecAttribute(
-          alignment: Prop(Alignment.center),
-          padding: MixProp(EdgeInsetsMix.all(16.0)),
-          margin: MixProp(EdgeInsetsMix.all(8.0)),
-          constraints: MixProp(BoxConstraintsMix.only(maxWidth: 300.0)),
-          decoration: MixProp(BoxDecorationMix.only(color: Colors.red)),
-          foregroundDecoration: MixProp(
-            BoxDecorationMix.only(color: Colors.blue),
-          ),
-          transform: Prop(Matrix4.identity()),
-          transformAlignment: Prop(Alignment.topLeft),
-          clipBehavior: Prop(Clip.antiAlias),
+          alignment: Alignment.center,
+          padding: EdgeInsetsMix.all(16.0),
+          margin: EdgeInsetsMix.all(8.0),
+          constraints: BoxConstraintsMix(maxWidth: 300.0),
+          decoration: BoxDecorationMix(color: Colors.red),
+          foregroundDecoration: BoxDecorationMix(color: Colors.blue),
+          transform: Matrix4.identity(),
+          transformAlignment: Alignment.topLeft,
+          clipBehavior: Clip.antiAlias,
         );
 
         expect(attribute.props.length, 12);
@@ -773,7 +769,7 @@ void main() {
         test(
           'constraints factory creates attribute with custom constraints',
           () {
-            final constraintsMix = BoxConstraintsMix.only(
+            final constraintsMix = BoxConstraintsMix(
               minWidth: 100.0,
               maxWidth: 200.0,
               minHeight: 150.0,
@@ -794,7 +790,7 @@ void main() {
 
       group('Decoration Factories', () {
         test('decoration factory creates attribute with decoration', () {
-          final decorationMix = BoxDecorationMix.only(color: Colors.blue);
+          final decorationMix = BoxDecorationMix(color: Colors.blue);
           final attribute = BoxSpecAttribute.decoration(decorationMix);
 
           expect(attribute.$decoration, isNotNull);
@@ -807,7 +803,7 @@ void main() {
         test(
           'foregroundDecoration factory creates attribute with foreground decoration',
           () {
-            final decorationMix = BoxDecorationMix.only(color: Colors.green);
+            final decorationMix = BoxDecorationMix(color: Colors.green);
             final attribute = BoxSpecAttribute.foregroundDecoration(
               decorationMix,
             );
@@ -823,7 +819,7 @@ void main() {
 
         test('border factory creates attribute with border decoration', () {
           final borderMix = BoxBorderMix.all(
-            BorderSideMix.only(width: 2.0, color: Colors.red),
+            BorderSideMix(width: 2.0, color: Colors.red),
           );
           final attribute = BoxSpecAttribute.border(borderMix);
 
@@ -911,7 +907,7 @@ void main() {
     group('Instance Methods', () {
       group('Shadow Methods', () {
         test('shadow method creates attribute with single shadow', () {
-          final shadowMix = BoxShadowMix.only(
+          final shadowMix = BoxShadowMix(
             color: Colors.black26,
             blurRadius: 4.0,
             offset: const Offset(2.0, 2.0),
@@ -928,12 +924,12 @@ void main() {
 
         test('shadows method creates attribute with multiple shadows', () {
           final shadowMixes = [
-            BoxShadowMix.only(
+            BoxShadowMix(
               color: Colors.black26,
               blurRadius: 4.0,
               offset: const Offset(2.0, 2.0),
             ),
-            BoxShadowMix.only(
+            BoxShadowMix(
               color: Colors.black12,
               blurRadius: 8.0,
               offset: const Offset(4.0, 4.0),
@@ -1000,11 +996,11 @@ void main() {
             final attribute = BoxSpecAttribute();
 
             final borderAttr = attribute.border(
-              BorderDirectionalMix.only(
-                start: BorderSideMix.only(width: 1.0, color: Colors.grey),
-                end: BorderSideMix.only(width: 1.0, color: Colors.grey),
-                top: BorderSideMix.only(width: 1.0, color: Colors.grey),
-                bottom: BorderSideMix.only(width: 1.0, color: Colors.grey),
+              BorderDirectionalMix(
+                start: BorderSideMix(width: 1.0, color: Colors.grey),
+                end: BorderSideMix(width: 1.0, color: Colors.grey),
+                top: BorderSideMix(width: 1.0, color: Colors.grey),
+                bottom: BorderSideMix(width: 1.0, color: Colors.grey),
               ),
             );
             expect(borderAttr, isA<BoxSpecAttribute>());
@@ -1036,7 +1032,7 @@ void main() {
           final attribute = BoxSpecAttribute();
 
           final gradientAttr = attribute.gradient(
-            LinearGradientMix.only(colors: [Colors.red, Colors.blue]),
+            LinearGradientMix(colors: [Colors.red, Colors.blue]),
           );
           expect(gradientAttr, isA<BoxSpecAttribute>());
           expect(gradientAttr.$decoration, isNotNull);
@@ -1046,7 +1042,7 @@ void main() {
           final attribute = BoxSpecAttribute();
 
           final gradientAttr = attribute.gradient(
-            LinearGradientMix.only(colors: [Colors.red, Colors.blue]),
+            LinearGradientMix(colors: [Colors.red, Colors.blue]),
           );
           expect(gradientAttr, isA<BoxSpecAttribute>());
           expect(gradientAttr.$decoration, isNotNull);
@@ -1056,7 +1052,7 @@ void main() {
           final attribute = BoxSpecAttribute();
 
           final gradientAttr = attribute.gradient(
-            RadialGradientMix.only(colors: [Colors.yellow, Colors.green]),
+            RadialGradientMix(colors: [Colors.yellow, Colors.green]),
           );
           expect(gradientAttr, isA<BoxSpecAttribute>());
           expect(gradientAttr.$decoration, isNotNull);
@@ -1066,7 +1062,7 @@ void main() {
           final attribute = BoxSpecAttribute();
 
           final gradientAttr = attribute.gradient(
-            SweepGradientMix.only(colors: [Colors.pink, Colors.cyan]),
+            SweepGradientMix(colors: [Colors.pink, Colors.cyan]),
           );
           expect(gradientAttr, isA<BoxSpecAttribute>());
           expect(gradientAttr.$decoration, isNotNull);
@@ -1089,21 +1085,21 @@ void main() {
       test(
         'multiple factory methods can be combined with only constructor',
         () {
-          final attribute = BoxSpecAttribute.only(
+          final attribute = BoxSpecAttribute(
             alignment: Alignment.center,
             padding: EdgeInsetsMix.all(16.0),
             margin: EdgeInsetsMix.all(8.0),
-            constraints: BoxConstraintsMix.only(
+            constraints: BoxConstraintsMix(
               minWidth: 100.0,
               maxWidth: 200.0,
               minHeight: 150.0,
               maxHeight: 300.0,
             ),
-            decoration: BoxDecorationMix.only(
+            decoration: BoxDecorationMix(
               color: Colors.blue,
               borderRadius: BorderRadiusMix.all(const Radius.circular(8.0)),
             ),
-            foregroundDecoration: BoxDecorationMix.only(
+            foregroundDecoration: BoxDecorationMix(
               color: Colors.red.withValues(alpha: 0.5),
             ),
             transform: Matrix4.rotationZ(0.1),
@@ -1153,18 +1149,18 @@ void main() {
       });
 
       test('complex decoration styling with only constructor', () {
-        final attribute = BoxSpecAttribute.only(
-          constraints: BoxConstraintsMix.only(
+        final attribute = BoxSpecAttribute(
+          constraints: BoxConstraintsMix(
             minWidth: 150.0,
             maxWidth: 150.0,
             minHeight: 100.0,
             maxHeight: 100.0,
           ),
-          decoration: BoxDecorationMix.only(
+          decoration: BoxDecorationMix(
             color: Colors.indigo,
             borderRadius: BorderRadiusMix.all(const Radius.circular(16.0)),
             boxShadow: [
-              BoxShadowMix.only(
+              BoxShadowMix(
                 color: Colors.black26,
                 blurRadius: 6.0,
                 offset: const Offset(0, 3),

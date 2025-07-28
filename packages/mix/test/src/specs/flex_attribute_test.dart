@@ -9,15 +9,15 @@ void main() {
     group('Constructor', () {
       test('creates FlexSpecAttribute with all properties', () {
         final attribute = FlexSpecAttribute(
-          direction: Prop(Axis.horizontal),
-          mainAxisAlignment: Prop(MainAxisAlignment.center),
-          crossAxisAlignment: Prop(CrossAxisAlignment.stretch),
-          mainAxisSize: Prop(MainAxisSize.max),
-          verticalDirection: Prop(VerticalDirection.down),
-          textDirection: Prop(TextDirection.ltr),
-          textBaseline: Prop(TextBaseline.alphabetic),
-          clipBehavior: Prop(Clip.antiAlias),
-          gap: Prop(16.0),
+          direction: Axis.horizontal,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.max,
+          verticalDirection: VerticalDirection.down,
+          textDirection: TextDirection.ltr,
+          textBaseline: TextBaseline.alphabetic,
+          clipBehavior: Clip.antiAlias,
+          gap: 16.0,
         );
 
         expect(attribute.$direction!, resolvesTo(Axis.horizontal));
@@ -51,7 +51,7 @@ void main() {
 
     group('only constructor', () {
       test('creates FlexSpecAttribute with only constructor', () {
-        final attribute = FlexSpecAttribute.only(
+        final attribute = FlexSpecAttribute(
           direction: Axis.vertical,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -75,7 +75,7 @@ void main() {
       });
 
       test('creates partial FlexSpecAttribute with only constructor', () {
-        final attribute = FlexSpecAttribute.only(
+        final attribute = FlexSpecAttribute(
           direction: Axis.horizontal,
           gap: 12.0,
         );
@@ -226,12 +226,12 @@ void main() {
 
       test('merge combines different attribute instances', () {
         // Merge is still useful for combining separate attribute instances
-        final first = FlexSpecAttribute.only(
+        final first = FlexSpecAttribute(
           direction: Axis.horizontal,
           mainAxisAlignment: MainAxisAlignment.start,
         );
 
-        final second = FlexSpecAttribute.only(
+        final second = FlexSpecAttribute(
           crossAxisAlignment: CrossAxisAlignment.center,
           gap: 16.0,
         );
@@ -271,7 +271,7 @@ void main() {
 
     group('Resolution', () {
       test('resolves to FlexSpec with correct properties', () {
-        final attribute = FlexSpecAttribute.only(
+        final attribute = FlexSpecAttribute(
           direction: Axis.horizontal,
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -321,13 +321,13 @@ void main() {
 
     group('Merge', () {
       test('merges properties correctly', () {
-        final first = FlexSpecAttribute.only(
+        final first = FlexSpecAttribute(
           direction: Axis.horizontal,
           mainAxisAlignment: MainAxisAlignment.start,
           gap: 8.0,
         );
 
-        final second = FlexSpecAttribute.only(
+        final second = FlexSpecAttribute(
           direction: Axis.vertical,
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
@@ -445,15 +445,15 @@ void main() {
     group('Props getter', () {
       test('props includes all properties', () {
         final attribute = FlexSpecAttribute(
-          direction: Prop(Axis.horizontal),
-          mainAxisAlignment: Prop(MainAxisAlignment.center),
-          crossAxisAlignment: Prop(CrossAxisAlignment.stretch),
-          mainAxisSize: Prop(MainAxisSize.max),
-          verticalDirection: Prop(VerticalDirection.down),
-          textDirection: Prop(TextDirection.ltr),
-          textBaseline: Prop(TextBaseline.alphabetic),
-          clipBehavior: Prop(Clip.antiAlias),
-          gap: Prop(16.0),
+          direction: Axis.horizontal,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.max,
+          verticalDirection: VerticalDirection.down,
+          textDirection: TextDirection.ltr,
+          textBaseline: TextBaseline.alphabetic,
+          clipBehavior: Clip.antiAlias,
+          gap: 16.0,
         );
 
         expect(attribute.props.length, 12);
@@ -473,8 +473,8 @@ void main() {
       test('modifiers can be added to attribute', () {
         final attribute = FlexSpecAttribute(
           modifiers: [
-            OpacityModifierAttribute(opacity: Prop(0.5)),
-            PaddingModifierAttribute.only(padding: EdgeInsetsMix.all(8.0)),
+            OpacityModifierAttribute(opacity: 0.5),
+            PaddingModifierAttribute(padding: EdgeInsetsMix.all(8.0)),
           ],
         );
 
@@ -484,12 +484,12 @@ void main() {
 
       test('modifiers merge correctly', () {
         final first = FlexSpecAttribute(
-          modifiers: [OpacityModifierAttribute(opacity: Prop(0.5))],
+          modifiers: [OpacityModifierAttribute(opacity: 0.5)],
         );
 
         final second = FlexSpecAttribute(
           modifiers: [
-            PaddingModifierAttribute.only(padding: EdgeInsetsMix.all(8.0)),
+            PaddingModifierAttribute(padding: EdgeInsetsMix.all(8.0)),
           ],
         );
 

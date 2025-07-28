@@ -8,7 +8,7 @@ void main() {
   group('StackSpecAttribute', () {
     group('Constructor', () {
       test('creates StackSpecAttribute with all properties', () {
-        final attribute = StackSpecAttribute(
+        final attribute = StackSpecAttribute.raw(
           alignment: Prop(AlignmentDirectional.topStart),
           fit: Prop(StackFit.loose),
           textDirection: Prop(TextDirection.ltr),
@@ -33,7 +33,7 @@ void main() {
 
     group('only constructor', () {
       test('creates StackSpecAttribute with only constructor', () {
-        final attribute = StackSpecAttribute.only(
+        final attribute = StackSpecAttribute(
           alignment: AlignmentDirectional.bottomEnd,
           fit: StackFit.expand,
           textDirection: TextDirection.rtl,
@@ -47,7 +47,7 @@ void main() {
       });
 
       test('creates partial StackSpecAttribute with only constructor', () {
-        final attribute = StackSpecAttribute.only(
+        final attribute = StackSpecAttribute(
           alignment: Alignment.center,
           fit: StackFit.passthrough,
         );
@@ -211,7 +211,7 @@ void main() {
 
     group('Resolution', () {
       test('resolves to StackSpec with correct properties', () {
-        final attribute = StackSpecAttribute.only(
+        final attribute = StackSpecAttribute(
           alignment: AlignmentDirectional.centerStart,
           fit: StackFit.loose,
           textDirection: TextDirection.rtl,
@@ -229,7 +229,7 @@ void main() {
       });
 
       test('resolves with partial values correctly', () {
-        final attribute = StackSpecAttribute.only(
+        final attribute = StackSpecAttribute(
           alignment: Alignment.bottomCenter,
           fit: StackFit.passthrough,
         );
@@ -247,13 +247,13 @@ void main() {
 
     group('Merge', () {
       test('merges properties correctly', () {
-        final first = StackSpecAttribute.only(
+        final first = StackSpecAttribute(
           alignment: Alignment.topLeft,
           fit: StackFit.loose,
           textDirection: TextDirection.ltr,
         );
 
-        final second = StackSpecAttribute.only(
+        final second = StackSpecAttribute(
           alignment: Alignment.bottomRight,
           clipBehavior: Clip.antiAlias,
         );
@@ -277,12 +277,12 @@ void main() {
       });
 
       test('merges all properties when both have values', () {
-        final first = StackSpecAttribute.only(
+        final first = StackSpecAttribute(
           alignment: AlignmentDirectional.topStart,
           fit: StackFit.loose,
         );
 
-        final second = StackSpecAttribute.only(
+        final second = StackSpecAttribute(
           alignment: AlignmentDirectional.bottomEnd,
           fit: StackFit.expand,
           textDirection: TextDirection.rtl,
@@ -338,7 +338,7 @@ void main() {
 
     group('Props getter', () {
       test('props includes all properties', () {
-        final attribute = StackSpecAttribute(
+        final attribute = StackSpecAttribute.raw(
           alignment: Prop(AlignmentDirectional.topStart),
           fit: Prop(StackFit.loose),
           textDirection: Prop(TextDirection.ltr),
@@ -357,8 +357,8 @@ void main() {
       test('modifiers can be added to attribute', () {
         final attribute = StackSpecAttribute(
           modifiers: [
-            OpacityModifierAttribute(opacity: Prop(0.5)),
-            AlignModifierAttribute(alignment: Prop(Alignment.center)),
+            OpacityModifierAttribute(opacity: 0.5),
+            AlignModifierAttribute(alignment: Alignment.center),
           ],
         );
 
@@ -367,9 +367,9 @@ void main() {
       });
 
       test('modifiers merge correctly', () {
-        final opacityModifier = OpacityModifierAttribute(opacity: Prop(0.5));
+        final opacityModifier = OpacityModifierAttribute(opacity: 0.5);
         final alignModifier = AlignModifierAttribute(
-          alignment: Prop(Alignment.center),
+          alignment: Alignment.center,
         );
 
         final first = StackSpecAttribute(modifiers: [opacityModifier]);
@@ -380,16 +380,16 @@ void main() {
 
         // Check that the modifiers list matches exactly the expected list
         final expectedModifiers = [
-          OpacityModifierAttribute(opacity: Prop(0.5)),
-          AlignModifierAttribute(alignment: Prop(Alignment.center)),
+          OpacityModifierAttribute(opacity: 0.5),
+          AlignModifierAttribute(alignment: Alignment.center),
         ];
 
         expect(merged.$modifiers, expectedModifiers);
       });
 
       test('modifiers with same type merge correctly', () {
-        final firstOpacity = OpacityModifierAttribute(opacity: Prop(0.3));
-        final secondOpacity = OpacityModifierAttribute(opacity: Prop(0.7));
+        final firstOpacity = OpacityModifierAttribute(opacity: 0.3);
+        final secondOpacity = OpacityModifierAttribute(opacity: 0.7);
 
         final first = StackSpecAttribute(modifiers: [firstOpacity]);
         final second = StackSpecAttribute(modifiers: [secondOpacity]);
@@ -425,7 +425,7 @@ void main() {
       });
 
       test('builder methods can be chained fluently', () {
-        final attribute = StackSpecAttribute.only(
+        final attribute = StackSpecAttribute(
           alignment: AlignmentDirectional.topEnd,
           fit: StackFit.expand,
           textDirection: TextDirection.rtl,

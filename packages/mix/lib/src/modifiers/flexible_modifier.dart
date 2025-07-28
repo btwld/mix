@@ -79,10 +79,10 @@ class FlexibleModifierAttribute extends ModifierAttribute<FlexibleModifier>
   final Prop<int>? flex;
   final Prop<FlexFit>? fit;
 
-  const FlexibleModifierAttribute({this.flex, this.fit});
+  const FlexibleModifierAttribute.raw({this.flex, this.fit});
 
-  FlexibleModifierAttribute.only({int? flex, FlexFit? fit})
-    : this(flex: Prop.maybe(flex), fit: Prop.maybe(fit));
+  FlexibleModifierAttribute({int? flex, FlexFit? fit})
+    : this.raw(flex: Prop.maybe(flex), fit: Prop.maybe(fit));
 
   /// Resolves to [FlexibleModifier] using the provided [MixContext].
   ///
@@ -112,7 +112,7 @@ class FlexibleModifierAttribute extends ModifierAttribute<FlexibleModifier>
   FlexibleModifierAttribute merge(FlexibleModifierAttribute? other) {
     if (other == null) return this;
 
-    return FlexibleModifierAttribute(
+    return FlexibleModifierAttribute.raw(
       flex: flex?.merge(other.flex) ?? other.flex,
       fit: fit?.merge(other.fit) ?? other.fit,
     );
@@ -136,22 +136,22 @@ class FlexibleModifierAttribute extends ModifierAttribute<FlexibleModifier>
 final class FlexibleModifierUtility<T extends StyleAttribute<Object?>>
     extends MixUtility<T, FlexibleModifierAttribute> {
   late final flex = PropUtility<T, int>(
-    (prop) => builder(FlexibleModifierAttribute(flex: prop)),
+    (prop) => builder(FlexibleModifierAttribute.raw(flex: prop)),
   );
   late final fit = PropUtility<T, FlexFit>(
-    (prop) => builder(FlexibleModifierAttribute(fit: prop)),
+    (prop) => builder(FlexibleModifierAttribute.raw(fit: prop)),
   );
 
   FlexibleModifierUtility(super.builder);
   T tight({int? flex}) => builder(
-    FlexibleModifierAttribute(
+    FlexibleModifierAttribute.raw(
       flex: flex != null ? Prop(flex) : null,
       fit: Prop(FlexFit.tight),
     ),
   );
 
   T loose({int? flex}) => builder(
-    FlexibleModifierAttribute(
+    FlexibleModifierAttribute.raw(
       flex: flex != null ? Prop(flex) : null,
       fit: Prop(FlexFit.loose),
     ),
@@ -161,7 +161,7 @@ final class FlexibleModifierUtility<T extends StyleAttribute<Object?>>
 
   T call({int? flex, FlexFit? fit}) {
     return builder(
-      FlexibleModifierAttribute(
+      FlexibleModifierAttribute.raw(
         flex: flex != null ? Prop(flex) : null,
         fit: fit != null ? Prop(fit) : null,
       ),
@@ -169,10 +169,10 @@ final class FlexibleModifierUtility<T extends StyleAttribute<Object?>>
   }
 
   T flexToken(MixToken<int> token) {
-    return builder(FlexibleModifierAttribute(flex: Prop.token(token)));
+    return builder(FlexibleModifierAttribute.raw(flex: Prop.token(token)));
   }
 
   T fitToken(MixToken<FlexFit> token) {
-    return builder(FlexibleModifierAttribute(fit: Prop.token(token)));
+    return builder(FlexibleModifierAttribute.raw(fit: Prop.token(token)));
   }
 }

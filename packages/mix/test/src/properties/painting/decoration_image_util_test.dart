@@ -13,7 +13,7 @@ void main() {
       final utility = DecorationImageUtility(UtilityTestAttribute.new);
 
       test('call() creates DecorationImageMix', () {
-        final decorationImageMix = DecorationImageMix.only(
+        final decorationImageMix = DecorationImageMix(
           image: const AssetImage('assets/test.png'),
           fit: BoxFit.cover,
           alignment: Alignment.center,

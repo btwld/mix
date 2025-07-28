@@ -1,12 +1,12 @@
 import 'package:flutter/widgets.dart';
 
-import '../properties/layout/edge_insets_geometry_mix.dart';
-import '../properties/layout/edge_insets_geometry_util.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
+import '../properties/layout/edge_insets_geometry_mix.dart';
+import '../properties/layout/edge_insets_geometry_util.dart';
 
 final class ScrollViewModifier extends Modifier<ScrollViewModifier> {
   final Axis? scrollDirection;
@@ -86,7 +86,9 @@ final class ScrollViewModifierUtility<T extends StyleAttribute<Object?>>
   );
 
   /// Set the clip behavior of the scroll view.
-  late final clipBehavior = PropUtility<T, Clip>((clip) => call(clipBehavior: clip));
+  late final clipBehavior = PropUtility<T, Clip>(
+    (clip) => call(clipBehavior: clip),
+  );
 
   ScrollViewModifierUtility(super.builder);
 
@@ -119,7 +121,7 @@ final class ScrollViewModifierUtility<T extends StyleAttribute<Object?>>
     Prop<ScrollPhysics>? physics,
     Prop<Clip>? clipBehavior,
   }) => builder(
-    ScrollViewModifierAttribute(
+    ScrollViewModifierAttribute.raw(
       scrollDirection: scrollDirection,
       reverse: reverse,
       padding: padding,
@@ -137,7 +139,7 @@ class ScrollViewModifierAttribute
   final Prop<ScrollPhysics>? physics;
   final Prop<Clip>? clipBehavior;
 
-  const ScrollViewModifierAttribute({
+  const ScrollViewModifierAttribute.raw({
     this.scrollDirection,
     this.reverse,
     this.padding,
@@ -145,13 +147,13 @@ class ScrollViewModifierAttribute
     this.clipBehavior,
   });
 
-  ScrollViewModifierAttribute.only({
+  ScrollViewModifierAttribute({
     Axis? scrollDirection,
     bool? reverse,
     EdgeInsetsGeometryMix? padding,
     ScrollPhysics? physics,
     Clip? clipBehavior,
-  }) : this(
+  }) : this.raw(
          scrollDirection: Prop.maybe(scrollDirection),
          reverse: Prop.maybe(reverse),
          padding: MixProp.maybe(padding),
@@ -174,7 +176,7 @@ class ScrollViewModifierAttribute
   ScrollViewModifierAttribute merge(ScrollViewModifierAttribute? other) {
     if (other == null) return this;
 
-    return ScrollViewModifierAttribute(
+    return ScrollViewModifierAttribute.raw(
       scrollDirection: MixHelpers.merge(scrollDirection, other.scrollDirection),
       reverse: MixHelpers.merge(reverse, other.reverse),
       padding: MixHelpers.merge(padding, other.padding),

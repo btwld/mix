@@ -9,7 +9,7 @@ void main() {
   group('TextHeightBehaviorMix', () {
     group('Constructor', () {
       test('only constructor creates instance with correct properties', () {
-        final textHeightBehaviorMix = TextHeightBehaviorMix.only(
+        final textHeightBehaviorMix = TextHeightBehaviorMix(
           applyHeightToFirstAscent: false,
           applyHeightToLastDescent: true,
           leadingDistribution: TextLeadingDistribution.even,
@@ -60,7 +60,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to TextHeightBehavior with correct properties', () {
-        final textHeightBehaviorMix = TextHeightBehaviorMix.only(
+        final textHeightBehaviorMix = TextHeightBehaviorMix(
           applyHeightToFirstAscent: false,
           applyHeightToLastDescent: true,
           leadingDistribution: TextLeadingDistribution.even,
@@ -76,7 +76,7 @@ void main() {
       });
 
       test('uses default values for null properties', () {
-        final textHeightBehaviorMix = TextHeightBehaviorMix.only(
+        final textHeightBehaviorMix = TextHeightBehaviorMix(
           applyHeightToFirstAscent: false,
         );
 
@@ -92,7 +92,7 @@ void main() {
 
     group('merge', () {
       test('returns this when other is null', () {
-        final textHeightBehaviorMix = TextHeightBehaviorMix.only(
+        final textHeightBehaviorMix = TextHeightBehaviorMix(
           applyHeightToFirstAscent: false,
         );
         final merged = textHeightBehaviorMix.merge(null);
@@ -101,12 +101,12 @@ void main() {
       });
 
       test('merges properties correctly', () {
-        final first = TextHeightBehaviorMix.only(
+        final first = TextHeightBehaviorMix(
           applyHeightToFirstAscent: false,
           applyHeightToLastDescent: true,
         );
 
-        final second = TextHeightBehaviorMix.only(
+        final second = TextHeightBehaviorMix(
           applyHeightToLastDescent: false,
           leadingDistribution: TextLeadingDistribution.even,
         );
@@ -121,12 +121,12 @@ void main() {
 
     group('Equality', () {
       test('returns true when all properties are the same', () {
-        final textHeightBehaviorMix1 = TextHeightBehaviorMix.only(
+        final textHeightBehaviorMix1 = TextHeightBehaviorMix(
           applyHeightToFirstAscent: false,
           applyHeightToLastDescent: true,
         );
 
-        final textHeightBehaviorMix2 = TextHeightBehaviorMix.only(
+        final textHeightBehaviorMix2 = TextHeightBehaviorMix(
           applyHeightToFirstAscent: false,
           applyHeightToLastDescent: true,
         );
@@ -139,10 +139,10 @@ void main() {
       });
 
       test('returns false when properties are different', () {
-        final textHeightBehaviorMix1 = TextHeightBehaviorMix.only(
+        final textHeightBehaviorMix1 = TextHeightBehaviorMix(
           applyHeightToFirstAscent: false,
         );
-        final textHeightBehaviorMix2 = TextHeightBehaviorMix.only(
+        final textHeightBehaviorMix2 = TextHeightBehaviorMix(
           applyHeightToFirstAscent: true,
         );
 

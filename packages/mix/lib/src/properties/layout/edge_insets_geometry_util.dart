@@ -20,7 +20,7 @@ final class EdgeInsetsGeometryUtility<U extends StyleAttribute<Object?>>
 
   U only({double? top, double? bottom, double? left, double? right}) {
     return call(
-      EdgeInsetsMix.only(top: top, bottom: bottom, left: left, right: right),
+      EdgeInsetsMix(top: top, bottom: bottom, left: left, right: right),
     );
   }
 
@@ -69,31 +69,31 @@ final class EdgeInsetsDirectionalUtility<U extends StyleAttribute<Object?>>
     extends MixPropUtility<U, EdgeInsetsDirectional> {
   late final all = SpacingSideUtility(
     (prop) => call(
-      EdgeInsetsDirectionalMix(top: prop, bottom: prop, start: prop, end: prop),
+      EdgeInsetsDirectionalMix.raw(top: prop, bottom: prop, start: prop, end: prop),
     ),
   );
   late final start = SpacingSideUtility(
-    (v) => call(EdgeInsetsDirectionalMix(start: v)),
+    (v) => call(EdgeInsetsDirectionalMix.raw(start: v)),
   );
 
   late final end = SpacingSideUtility(
-    (v) => call(EdgeInsetsDirectionalMix(end: v)),
+    (v) => call(EdgeInsetsDirectionalMix.raw(end: v)),
   );
 
   late final top = SpacingSideUtility(
-    (v) => call(EdgeInsetsDirectionalMix(top: v)),
+    (v) => call(EdgeInsetsDirectionalMix.raw(top: v)),
   );
 
   late final bottom = SpacingSideUtility(
-    (v) => call(EdgeInsetsDirectionalMix(bottom: v)),
+    (v) => call(EdgeInsetsDirectionalMix.raw(bottom: v)),
   );
 
   late final vertical = SpacingSideUtility(
-    (prop) => call(EdgeInsetsDirectionalMix(top: prop, bottom: prop)),
+    (prop) => call(EdgeInsetsDirectionalMix.raw(top: prop, bottom: prop)),
   );
 
   late final horizontal = SpacingSideUtility(
-    (prop) => call(EdgeInsetsDirectionalMix(start: prop, end: prop)),
+    (prop) => call(EdgeInsetsDirectionalMix.raw(start: prop, end: prop)),
   );
 
   EdgeInsetsDirectionalUtility(super.builder)
@@ -170,7 +170,7 @@ EdgeInsetsMix createEdgeInsetsMix({
     if (right != null) r = right;
   }
 
-  return EdgeInsetsMix.only(top: t, bottom: b, left: l, right: r);
+  return EdgeInsetsMix(top: t, bottom: b, left: l, right: r);
 }
 
 /// Mixin that provides convenient padding methods
@@ -194,32 +194,32 @@ mixin PaddingMixin<T extends StyleAttribute<S>, S extends Spec<S>> on StyleAttri
 
   /// Sets padding for top edge
   T paddingTop(double value) {
-    return padding(EdgeInsetsMix.only(top: value));
+    return padding(EdgeInsetsMix(top: value));
   }
 
   /// Sets padding for bottom edge
   T paddingBottom(double value) {
-    return padding(EdgeInsetsMix.only(bottom: value));
+    return padding(EdgeInsetsMix(bottom: value));
   }
 
   /// Sets padding for left edge
   T paddingLeft(double value) {
-    return padding(EdgeInsetsMix.only(left: value));
+    return padding(EdgeInsetsMix(left: value));
   }
 
   /// Sets padding for right edge
   T paddingRight(double value) {
-    return padding(EdgeInsetsMix.only(right: value));
+    return padding(EdgeInsetsMix(right: value));
   }
 
   /// Sets padding for start edge (directional)
   T paddingStart(double value) {
-    return padding(EdgeInsetsDirectionalMix.only(start: value));
+    return padding(EdgeInsetsDirectionalMix(start: value));
   }
 
   /// Sets padding for end edge (directional)
   T paddingEnd(double value) {
-    return padding(EdgeInsetsDirectionalMix.only(end: value));
+    return padding(EdgeInsetsDirectionalMix(end: value));
   }
 
   /// Advanced padding with priority system
@@ -269,32 +269,32 @@ mixin MarginMixin<T extends StyleAttribute<S>, S extends Spec<S>> on StyleAttrib
 
   /// Sets margin for top edge
   T marginTop(double value) {
-    return margin(EdgeInsetsMix.only(top: value));
+    return margin(EdgeInsetsMix(top: value));
   }
 
   /// Sets margin for bottom edge
   T marginBottom(double value) {
-    return margin(EdgeInsetsMix.only(bottom: value));
+    return margin(EdgeInsetsMix(bottom: value));
   }
 
   /// Sets margin for left edge
   T marginLeft(double value) {
-    return margin(EdgeInsetsMix.only(left: value));
+    return margin(EdgeInsetsMix(left: value));
   }
 
   /// Sets margin for right edge
   T marginRight(double value) {
-    return margin(EdgeInsetsMix.only(right: value));
+    return margin(EdgeInsetsMix(right: value));
   }
 
   /// Sets margin for start edge (directional)
   T marginStart(double value) {
-    return margin(EdgeInsetsDirectionalMix.only(start: value));
+    return margin(EdgeInsetsDirectionalMix(start: value));
   }
 
   /// Sets margin for end edge (directional)
   T marginEnd(double value) {
-    return margin(EdgeInsetsDirectionalMix.only(end: value));
+    return margin(EdgeInsetsDirectionalMix(end: value));
   }
 
   /// Advanced margin with priority system

@@ -38,37 +38,37 @@ sealed class DecorationMix<T extends Decoration> extends Mix<T> {
 
   /// Creates a box decoration with the specified color.
   static BoxDecorationMix color(Color value) {
-    return BoxDecorationMix.only(color: value);
+    return BoxDecorationMix(color: value);
   }
 
   /// Creates a box decoration with the specified gradient.
   static BoxDecorationMix gradient(GradientMix value) {
-    return BoxDecorationMix.only(gradient: value);
+    return BoxDecorationMix(gradient: value);
   }
 
   /// Creates a box decoration with the specified background image.
   static BoxDecorationMix image(DecorationImageMix value) {
-    return BoxDecorationMix.only(image: value);
+    return BoxDecorationMix(image: value);
   }
 
   /// Creates a box decoration with the specified box shadows.
   static BoxDecorationMix boxShadow(List<BoxShadowMix> value) {
-    return BoxDecorationMix.only(boxShadow: value);
+    return BoxDecorationMix(boxShadow: value);
   }
 
   /// Creates a box decoration with the specified shape.
   static BoxDecorationMix shape(BoxShape value) {
-    return BoxDecorationMix.only(shape: value);
+    return BoxDecorationMix(shape: value);
   }
 
   /// Creates a box decoration with the specified border.
   static BoxDecorationMix border(BoxBorderMix value) {
-    return BoxDecorationMix.only(border: value);
+    return BoxDecorationMix(border: value);
   }
 
   /// Creates a box decoration with the specified border radius.
   static BoxDecorationMix borderRadius(BorderRadiusGeometryMix value) {
-    return BoxDecorationMix.only(borderRadius: value);
+    return BoxDecorationMix(borderRadius: value);
   }
 
   /// Returns the provided shape decoration (identity function for consistency).
@@ -100,14 +100,14 @@ sealed class DecorationMix<T extends Decoration> extends Mix<T> {
     return switch ((this, other)) {
           (BoxDecorationMix a, BoxDecorationMix b) => a.mergeDecoration(b),
           (ShapeDecorationMix a, ShapeDecorationMix b) => a.mergeDecoration(b),
-          (BoxDecorationMix a, ShapeDecorationMix b) => ShapeDecorationMix(
+          (BoxDecorationMix a, ShapeDecorationMix b) => ShapeDecorationMix.raw(
             shape: b.$shape,
             color: MixHelpers.merge(a.$color, b.$color),
             image: MixHelpers.merge(a.$image, b.$image),
             gradient: MixHelpers.merge(a.$gradient, b.$gradient),
             shadows: MixHelpers.mergeList(a.$boxShadow, b.$boxShadow),
           ),
-          (ShapeDecorationMix a, BoxDecorationMix b) => BoxDecorationMix(
+          (ShapeDecorationMix a, BoxDecorationMix b) => BoxDecorationMix.raw(
             border: b.$border,
             borderRadius: b.$borderRadius,
             shape: b.$shape,
@@ -129,7 +129,7 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
   final Prop<BoxShape>? $shape;
   final Prop<BlendMode>? $backgroundBlendMode;
 
-  BoxDecorationMix.only({
+  BoxDecorationMix({
     BoxBorderMix? border,
     BorderRadiusGeometryMix? borderRadius,
     BoxShape? shape,
@@ -138,7 +138,7 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
     DecorationImageMix? image,
     GradientMix? gradient,
     List<BoxShadowMix>? boxShadow,
-  }) : this(
+  }) : this.raw(
          border: MixProp.maybe(border),
          borderRadius: MixProp.maybe(borderRadius),
          shape: Prop.maybe(shape),
@@ -150,36 +150,35 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
        );
 
   /// Creates a box decoration with only the border specified.
-  BoxDecorationMix.border(BoxBorderMix border) : this.only(border: border);
+  BoxDecorationMix.border(BoxBorderMix border) : this(border: border);
 
   /// Creates a box decoration with only the border radius specified.
   BoxDecorationMix.borderRadius(BorderRadiusGeometryMix borderRadius)
-    : this.only(borderRadius: borderRadius);
+    : this(borderRadius: borderRadius);
 
   /// Creates a box decoration with only the shape specified.
-  BoxDecorationMix.shape(BoxShape shape) : this.only(shape: shape);
+  BoxDecorationMix.shape(BoxShape shape) : this(shape: shape);
 
   /// Creates a box decoration with only the background blend mode specified.
   BoxDecorationMix.backgroundBlendMode(BlendMode backgroundBlendMode)
-    : this.only(backgroundBlendMode: backgroundBlendMode);
+    : this(backgroundBlendMode: backgroundBlendMode);
 
   /// Creates a box decoration with only the color specified.
-  BoxDecorationMix.color(Color? color) : this.only(color: color);
+  BoxDecorationMix.color(Color? color) : this(color: color);
 
   /// Creates a box decoration with only the background image specified.
-  BoxDecorationMix.image(DecorationImageMix? image) : this.only(image: image);
+  BoxDecorationMix.image(DecorationImageMix? image) : this(image: image);
 
   /// Creates a box decoration with only the gradient specified.
-  BoxDecorationMix.gradient(GradientMix? gradient)
-    : this.only(gradient: gradient);
+  BoxDecorationMix.gradient(GradientMix? gradient) : this(gradient: gradient);
 
   /// Creates a box decoration with only the box shadows specified.
   BoxDecorationMix.boxShadow(List<BoxShadowMix>? boxShadow)
-    : this.only(boxShadow: boxShadow);
+    : this(boxShadow: boxShadow);
 
   /// Creates a [BoxDecorationMix] from an existing [BoxDecoration].
   BoxDecorationMix.value(BoxDecoration decoration)
-    : this.only(
+    : this(
         border: BoxBorderMix.maybeValue(decoration.border),
         borderRadius: BorderRadiusGeometryMix.maybeValue(
           decoration.borderRadius,
@@ -192,7 +191,7 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
         boxShadow: decoration.boxShadow?.map(BoxShadowMix.value).toList(),
       );
 
-  const BoxDecorationMix({
+  const BoxDecorationMix.raw({
     MixProp<BoxBorder>? border,
     MixProp<BorderRadiusGeometry>? borderRadius,
     Prop<BoxShape>? shape,
@@ -215,42 +214,42 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
 
   /// Returns a copy with the specified gradient.
   BoxDecorationMix gradient(GradientMix value) {
-    return mergeDecoration(BoxDecorationMix.only(gradient: value));
+    return mergeDecoration(BoxDecorationMix(gradient: value));
   }
 
   /// Returns a copy with the specified background image.
   BoxDecorationMix image(DecorationImageMix image) {
-    return mergeDecoration(BoxDecorationMix.only(image: image));
+    return mergeDecoration(BoxDecorationMix(image: image));
   }
 
   /// Returns a copy with the specified color.
   BoxDecorationMix color(Color value) {
-    return mergeDecoration(BoxDecorationMix.only(color: value));
+    return mergeDecoration(BoxDecorationMix(color: value));
   }
 
   /// Returns a copy with the specified box shadows.
   BoxDecorationMix boxShadow(List<BoxShadowMix> value) {
-    return mergeDecoration(BoxDecorationMix.only(boxShadow: value));
+    return mergeDecoration(BoxDecorationMix(boxShadow: value));
   }
 
   /// Returns a copy with the specified border.
   BoxDecorationMix border(BoxBorderMix value) {
-    return mergeDecoration(BoxDecorationMix.only(border: value));
+    return mergeDecoration(BoxDecorationMix(border: value));
   }
 
   /// Returns a copy with the specified border radius.
   BoxDecorationMix borderRadius(BorderRadiusGeometryMix value) {
-    return mergeDecoration(BoxDecorationMix.only(borderRadius: value));
+    return mergeDecoration(BoxDecorationMix(borderRadius: value));
   }
 
   /// Returns a copy with the specified shape.
   BoxDecorationMix shape(BoxShape value) {
-    return mergeDecoration(BoxDecorationMix.only(shape: value));
+    return mergeDecoration(BoxDecorationMix(shape: value));
   }
 
   /// Returns a copy with the specified background blend mode.
   BoxDecorationMix backgroundBlendMode(BlendMode value) {
-    return mergeDecoration(BoxDecorationMix.only(backgroundBlendMode: value));
+    return mergeDecoration(BoxDecorationMix(backgroundBlendMode: value));
   }
 
   /// Resolves to [BoxDecoration] using the provided [BuildContext].
@@ -271,7 +270,7 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
   /// Merges the properties of this [BoxDecorationMix] with the properties of [other].
   @override
   BoxDecorationMix mergeDecoration(BoxDecorationMix other) {
-    return BoxDecorationMix(
+    return BoxDecorationMix.raw(
       border: MixHelpers.merge($border, other.$border),
       borderRadius: MixHelpers.merge($borderRadius, other.$borderRadius),
       shape: MixHelpers.merge($shape, other.$shape),
@@ -307,13 +306,13 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
     with DefaultValue<ShapeDecoration> {
   final MixProp<ShapeBorder>? $shape;
 
-  ShapeDecorationMix.only({
+  ShapeDecorationMix({
     ShapeBorderMix? shape,
     Color? color,
     DecorationImageMix? image,
     GradientMix? gradient,
     List<BoxShadowMix>? shadows,
-  }) : this(
+  }) : this.raw(
          shape: MixProp.maybe(shape),
          color: Prop.maybe(color),
          image: MixProp.maybe(image),
@@ -321,7 +320,7 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
          shadows: shadows?.map(MixProp<BoxShadow>.new).toList(),
        );
 
-  const ShapeDecorationMix({
+  const ShapeDecorationMix.raw({
     MixProp<ShapeBorder>? shape,
     super.color,
     super.image,
@@ -332,7 +331,7 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
 
   /// Creates a [ShapeDecorationMix] from an existing [ShapeDecoration].
   ShapeDecorationMix.value(ShapeDecoration decoration)
-    : this.only(
+    : this(
         shape: ShapeBorderMix.maybeValue(decoration.shape),
         color: decoration.color,
         image: DecorationImageMix.maybeValue(decoration.image),
@@ -365,7 +364,7 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
   /// Merges the properties of this [ShapeDecorationMix] with the properties of [other].
   @override
   ShapeDecorationMix mergeDecoration(ShapeDecorationMix other) {
-    return ShapeDecorationMix(
+    return ShapeDecorationMix.raw(
       shape: MixHelpers.merge($shape, other.$shape),
       color: MixHelpers.merge($color, other.$color),
       image: MixHelpers.merge($image, other.$image),

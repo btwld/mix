@@ -8,17 +8,17 @@ void main() {
   group('BoxDecorationMix', () {
     group('Constructor', () {
       test('only constructor creates instance with correct properties', () {
-        final boxDecorationMix = BoxDecorationMix.only(
+        final boxDecorationMix = BoxDecorationMix(
           color: Colors.blue,
           shape: BoxShape.circle,
           backgroundBlendMode: BlendMode.multiply,
           border: BorderMix.all(
-            BorderSideMix.only(color: Colors.red, width: 2.0),
+            BorderSideMix(color: Colors.red, width: 2.0),
           ),
-          borderRadius: BorderRadiusMix.only(
+          borderRadius: BorderRadiusMix(
             topLeft: const Radius.circular(8.0),
           ),
-          boxShadow: [BoxShadowMix.only(color: Colors.black, blurRadius: 5.0)],
+          boxShadow: [BoxShadowMix(color: Colors.black, blurRadius: 5.0)],
         );
 
         expectProp(boxDecorationMix.$color, Colors.blue);
@@ -35,7 +35,7 @@ void main() {
 
       test('named constructors work correctly', () {
         final borderMix = BorderMix.all(
-          BorderSideMix.only(color: Colors.red, width: 2.0),
+          BorderSideMix(color: Colors.red, width: 2.0),
         );
         final borderDecorationMix = BoxDecorationMix.border(borderMix);
 
@@ -83,11 +83,11 @@ void main() {
 
     group('resolve', () {
       test('resolves to BoxDecoration with correct properties', () {
-        final boxDecorationMix = BoxDecorationMix.only(
+        final boxDecorationMix = BoxDecorationMix(
           color: Colors.blue,
           shape: BoxShape.circle,
           border: BorderMix.all(
-            BorderSideMix.only(color: Colors.red, width: 2.0),
+            BorderSideMix(color: Colors.red, width: 2.0),
           ),
         );
 
@@ -104,13 +104,13 @@ void main() {
       });
 
       test('resolves with complex properties', () {
-        final boxDecorationMix = BoxDecorationMix.only(
-          borderRadius: BorderRadiusMix.only(
+        final boxDecorationMix = BoxDecorationMix(
+          borderRadius: BorderRadiusMix(
             topLeft: const Radius.circular(8.0),
           ),
           boxShadow: [
-            BoxShadowMix.only(color: Colors.black, blurRadius: 5.0),
-            BoxShadowMix.only(color: Colors.grey, blurRadius: 10.0),
+            BoxShadowMix(color: Colors.black, blurRadius: 5.0),
+            BoxShadowMix(color: Colors.grey, blurRadius: 10.0),
           ],
         );
 
@@ -125,19 +125,19 @@ void main() {
 
     group('merge', () {
       test('returns this when other is null', () {
-        final boxDecorationMix = BoxDecorationMix.only(color: Colors.blue);
+        final boxDecorationMix = BoxDecorationMix(color: Colors.blue);
         final merged = boxDecorationMix.merge(null);
 
         expect(merged, same(boxDecorationMix));
       });
 
       test('merges properties correctly', () {
-        final first = BoxDecorationMix.only(
+        final first = BoxDecorationMix(
           color: Colors.blue,
           shape: BoxShape.rectangle,
         );
 
-        final second = BoxDecorationMix.only(
+        final second = BoxDecorationMix(
           color: Colors.red,
           backgroundBlendMode: BlendMode.multiply,
         );
@@ -150,12 +150,12 @@ void main() {
       });
 
       test('merges list properties correctly', () {
-        final first = BoxDecorationMix.only(
-          boxShadow: [BoxShadowMix.only(color: Colors.black, blurRadius: 5.0)],
+        final first = BoxDecorationMix(
+          boxShadow: [BoxShadowMix(color: Colors.black, blurRadius: 5.0)],
         );
 
-        final second = BoxDecorationMix.only(
-          boxShadow: [BoxShadowMix.only(color: Colors.grey, blurRadius: 10.0)],
+        final second = BoxDecorationMix(
+          boxShadow: [BoxShadowMix(color: Colors.grey, blurRadius: 10.0)],
         );
 
         final merged = first.merge(second);
@@ -167,12 +167,12 @@ void main() {
 
     group('Equality', () {
       test('returns true when all properties are the same', () {
-        final boxDecorationMix1 = BoxDecorationMix.only(
+        final boxDecorationMix1 = BoxDecorationMix(
           color: Colors.blue,
           shape: BoxShape.circle,
         );
 
-        final boxDecorationMix2 = BoxDecorationMix.only(
+        final boxDecorationMix2 = BoxDecorationMix(
           color: Colors.blue,
           shape: BoxShape.circle,
         );
@@ -182,8 +182,8 @@ void main() {
       });
 
       test('returns false when properties are different', () {
-        final boxDecorationMix1 = BoxDecorationMix.only(color: Colors.blue);
-        final boxDecorationMix2 = BoxDecorationMix.only(color: Colors.red);
+        final boxDecorationMix1 = BoxDecorationMix(color: Colors.blue);
+        final boxDecorationMix2 = BoxDecorationMix(color: Colors.red);
 
         expect(boxDecorationMix1, isNot(boxDecorationMix2));
       });
@@ -193,10 +193,10 @@ void main() {
   group('ShapeDecorationMix', () {
     group('Constructor', () {
       test('only constructor creates instance with correct properties', () {
-        final shapeDecorationMix = ShapeDecorationMix.only(
+        final shapeDecorationMix = ShapeDecorationMix(
           color: Colors.green,
-          shape: CircleBorderMix.only(),
-          shadows: [BoxShadowMix.only(color: Colors.black, blurRadius: 5.0)],
+          shape: CircleBorderMix(),
+          shadows: [BoxShadowMix(color: Colors.black, blurRadius: 5.0)],
         );
 
         expectProp(shapeDecorationMix.$color, Colors.green);
@@ -235,9 +235,9 @@ void main() {
 
     group('resolve', () {
       test('resolves to ShapeDecoration with correct properties', () {
-        final shapeDecorationMix = ShapeDecorationMix.only(
+        final shapeDecorationMix = ShapeDecorationMix(
           color: Colors.green,
-          shape: CircleBorderMix.only(),
+          shape: CircleBorderMix(),
         );
 
         const expectedDecoration = ShapeDecoration(
@@ -251,19 +251,19 @@ void main() {
 
     group('merge', () {
       test('returns this when other is null', () {
-        final shapeDecorationMix = ShapeDecorationMix.only(color: Colors.green);
+        final shapeDecorationMix = ShapeDecorationMix(color: Colors.green);
         final merged = shapeDecorationMix.merge(null);
 
         expect(merged, same(shapeDecorationMix));
       });
 
       test('merges properties correctly', () {
-        final first = ShapeDecorationMix.only(
+        final first = ShapeDecorationMix(
           color: Colors.green,
-          shape: CircleBorderMix.only(),
+          shape: CircleBorderMix(),
         );
 
-        final second = ShapeDecorationMix.only(color: Colors.purple);
+        final second = ShapeDecorationMix(color: Colors.purple);
 
         final merged = first.merge(second) as ShapeDecorationMix;
 
@@ -274,11 +274,11 @@ void main() {
 
     group('Equality', () {
       test('returns true when all properties are the same', () {
-        final shapeDecorationMix1 = ShapeDecorationMix.only(
+        final shapeDecorationMix1 = ShapeDecorationMix(
           color: Colors.green,
         );
 
-        final shapeDecorationMix2 = ShapeDecorationMix.only(
+        final shapeDecorationMix2 = ShapeDecorationMix(
           color: Colors.green,
         );
 
@@ -287,10 +287,10 @@ void main() {
       });
 
       test('returns false when properties are different', () {
-        final shapeDecorationMix1 = ShapeDecorationMix.only(
+        final shapeDecorationMix1 = ShapeDecorationMix(
           color: Colors.green,
         );
-        final shapeDecorationMix2 = ShapeDecorationMix.only(
+        final shapeDecorationMix2 = ShapeDecorationMix(
           color: Colors.purple,
         );
 

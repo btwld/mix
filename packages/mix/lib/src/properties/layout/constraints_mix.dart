@@ -8,26 +8,26 @@ import 'package:mix/mix.dart';
 /// Provides common functionality for different constraint types with factory methods
 /// for common sizing operations like width, height, and size constraints.
 sealed class ConstraintsMix<T extends Constraints> extends Mix<T> {
-  const ConstraintsMix();
+  const ConstraintsMix.raw();
 
   /// Creates box constraints with the specified minimum width.
   static BoxConstraintsMix minWidth(double value) {
-    return BoxConstraintsMix.only(minWidth: value);
+    return BoxConstraintsMix(minWidth: value);
   }
 
   /// Creates box constraints with the specified maximum width.
   static BoxConstraintsMix maxWidth(double value) {
-    return BoxConstraintsMix.only(maxWidth: value);
+    return BoxConstraintsMix(maxWidth: value);
   }
 
   /// Creates box constraints with the specified minimum height.
   static BoxConstraintsMix minHeight(double value) {
-    return BoxConstraintsMix.only(minHeight: value);
+    return BoxConstraintsMix(minHeight: value);
   }
 
   /// Creates box constraints with the specified maximum height.
   static BoxConstraintsMix maxHeight(double value) {
-    return BoxConstraintsMix.only(maxHeight: value);
+    return BoxConstraintsMix(maxHeight: value);
   }
 
   /// Creates box constraints with fixed width (min and max width equal).
@@ -63,19 +63,19 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
   final Prop<double>? $minHeight;
   final Prop<double>? $maxHeight;
 
-  BoxConstraintsMix.only({
+  BoxConstraintsMix({
     double? minWidth,
     double? maxWidth,
     double? minHeight,
     double? maxHeight,
-  }) : this(
+  }) : this.raw(
          minWidth: Prop.maybe(minWidth),
          maxWidth: Prop.maybe(maxWidth),
          minHeight: Prop.maybe(minHeight),
          maxHeight: Prop.maybe(maxHeight),
        );
 
-  const BoxConstraintsMix({
+  const BoxConstraintsMix.raw({
     Prop<double>? minWidth,
     Prop<double>? maxWidth,
     Prop<double>? minHeight,
@@ -83,19 +83,20 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
   }) : $minWidth = minWidth,
        $maxWidth = maxWidth,
        $minHeight = minHeight,
-       $maxHeight = maxHeight;
+       $maxHeight = maxHeight,
+       super.raw();
 
   /// Creates constraints with fixed height (min and max height equal).
   BoxConstraintsMix.height(double height)
-    : this.only(minHeight: height, maxHeight: height);
+    : this(minHeight: height, maxHeight: height);
 
   /// Creates constraints with fixed width (min and max width equal).
   BoxConstraintsMix.width(double width)
-    : this.only(minWidth: width, maxWidth: width);
+    : this(minWidth: width, maxWidth: width);
 
   /// Creates constraints with fixed size (both width and height constrained).
   BoxConstraintsMix.size(Size size)
-    : this.only(
+    : this(
         minWidth: size.width,
         maxWidth: size.width,
         minHeight: size.height,
@@ -103,18 +104,16 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
       );
 
   /// Creates constraints with only minimum width specified.
-  BoxConstraintsMix.minWidth(double minWidth) : this.only(minWidth: minWidth);
+  BoxConstraintsMix.minWidth(double minWidth) : this(minWidth: minWidth);
 
   /// Creates constraints with only maximum width specified.
-  BoxConstraintsMix.maxWidth(double maxWidth) : this.only(maxWidth: maxWidth);
+  BoxConstraintsMix.maxWidth(double maxWidth) : this(maxWidth: maxWidth);
 
   /// Creates constraints with only minimum height specified.
-  BoxConstraintsMix.minHeight(double minHeight)
-    : this.only(minHeight: minHeight);
+  BoxConstraintsMix.minHeight(double minHeight) : this(minHeight: minHeight);
 
   /// Creates constraints with only maximum height specified.
-  BoxConstraintsMix.maxHeight(double maxHeight)
-    : this.only(maxHeight: maxHeight);
+  BoxConstraintsMix.maxHeight(double maxHeight) : this(maxHeight: maxHeight);
 
   /// Creates a [BoxConstraintsMix] from an existing [BoxConstraints].
   ///
@@ -123,7 +122,7 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
   /// final dto = BoxConstraintsMix.value(constraints);
   /// ```
   BoxConstraintsMix.value(BoxConstraints constraints)
-    : this.only(
+    : this(
         minWidth: constraints.minWidth,
         maxWidth: constraints.maxWidth,
         minHeight: constraints.minHeight,
@@ -144,32 +143,32 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
 
   /// Returns a copy with fixed height (min and max height equal).
   BoxConstraintsMix height(double height) {
-    return BoxConstraintsMix.only(minHeight: height, maxHeight: height);
+    return BoxConstraintsMix(minHeight: height, maxHeight: height);
   }
 
   /// Returns a copy with fixed width (min and max width equal).
   BoxConstraintsMix width(double width) {
-    return BoxConstraintsMix.only(minWidth: width, maxWidth: width);
+    return BoxConstraintsMix(minWidth: width, maxWidth: width);
   }
 
   /// Returns a copy with the specified minimum width.
   BoxConstraintsMix minWidth(double value) {
-    return merge(BoxConstraintsMix.only(minWidth: value));
+    return merge(BoxConstraintsMix(minWidth: value));
   }
 
   /// Returns a copy with the specified maximum width.
   BoxConstraintsMix maxWidth(double value) {
-    return merge(BoxConstraintsMix.only(maxWidth: value));
+    return merge(BoxConstraintsMix(maxWidth: value));
   }
 
   /// Returns a copy with the specified minimum height.
   BoxConstraintsMix minHeight(double value) {
-    return merge(BoxConstraintsMix.only(minHeight: value));
+    return merge(BoxConstraintsMix(minHeight: value));
   }
 
   /// Returns a copy with the specified maximum height.
   BoxConstraintsMix maxHeight(double value) {
-    return merge(BoxConstraintsMix.only(maxHeight: value));
+    return merge(BoxConstraintsMix(maxHeight: value));
   }
 
   /// Resolves to [BoxConstraints] using the provided [MixContext].
@@ -204,7 +203,7 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
   BoxConstraintsMix merge(BoxConstraintsMix? other) {
     if (other == null) return this;
 
-    return BoxConstraintsMix(
+    return BoxConstraintsMix.raw(
       minWidth: MixHelpers.merge($minWidth, other.$minWidth),
       maxWidth: MixHelpers.merge($maxWidth, other.$maxWidth),
       minHeight: MixHelpers.merge($minHeight, other.$minHeight),

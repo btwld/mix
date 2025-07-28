@@ -68,10 +68,10 @@ class MouseCursorDecoratorSpecAttribute
     extends ModifierAttribute<MouseCursorDecorator> {
   final Prop<MouseCursor>? mouseCursor;
 
-  const MouseCursorDecoratorSpecAttribute({this.mouseCursor});
+  const MouseCursorDecoratorSpecAttribute.raw({this.mouseCursor});
 
-  MouseCursorDecoratorSpecAttribute.only({MouseCursor? mouseCursor})
-    : this(mouseCursor: Prop.maybe(mouseCursor));
+  MouseCursorDecoratorSpecAttribute({MouseCursor? mouseCursor})
+    : this.raw(mouseCursor: Prop.maybe(mouseCursor));
 
   /// Resolves to [MouseCursorDecorator] using the provided [MixContext].
   ///
@@ -102,7 +102,7 @@ class MouseCursorDecoratorSpecAttribute
   ) {
     if (other == null) return this;
 
-    return MouseCursorDecoratorSpecAttribute(
+    return MouseCursorDecoratorSpecAttribute.raw(
       mouseCursor: MixHelpers.merge(mouseCursor, other.mouseCursor),
     );
   }
@@ -120,7 +120,7 @@ class MouseCursorModifierUtility<T extends StyleAttribute<Object?>>
   const MouseCursorModifierUtility(super.builder);
   T call(MouseCursor? mouseCursor) {
     return builder(
-      MouseCursorDecoratorSpecAttribute(mouseCursor: Prop.maybe(mouseCursor)),
+      MouseCursorDecoratorSpecAttribute(mouseCursor: mouseCursor),
     );
   }
 

@@ -14,7 +14,7 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
   final Prop<double>? $top;
   final Prop<double>? $bottom;
 
-  const EdgeInsetsGeometryMix({Prop<double>? top, Prop<double>? bottom})
+  const EdgeInsetsGeometryMix.raw({Prop<double>? top, Prop<double>? bottom})
     : $top = top,
       $bottom = bottom;
 
@@ -40,7 +40,7 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
     double? top,
     double? bottom,
   }) {
-    return EdgeInsetsMix.only(
+    return EdgeInsetsMix(
       top: top,
       bottom: bottom,
       left: left,
@@ -54,7 +54,7 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
     double? end,
     double? top,
     double? bottom,
-  }) => EdgeInsetsDirectionalMix.only(
+  }) => EdgeInsetsDirectionalMix(
     top: top,
     bottom: bottom,
     start: start,
@@ -101,25 +101,25 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
   }
 
   /// Creates edge insets with only the top offset specified.
-  static EdgeInsetsMix top(double value) => EdgeInsetsMix.only(top: value);
+  static EdgeInsetsMix top(double value) => EdgeInsetsMix(top: value);
 
   /// Creates edge insets with only the bottom offset specified.
   static EdgeInsetsMix bottom(double value) =>
-      EdgeInsetsMix.only(bottom: value);
+      EdgeInsetsMix(bottom: value);
 
   /// Creates edge insets with only the left offset specified.
-  static EdgeInsetsMix left(double value) => EdgeInsetsMix.only(left: value);
+  static EdgeInsetsMix left(double value) => EdgeInsetsMix(left: value);
 
   /// Creates edge insets with only the right offset specified.
-  static EdgeInsetsMix right(double value) => EdgeInsetsMix.only(right: value);
+  static EdgeInsetsMix right(double value) => EdgeInsetsMix(right: value);
 
   /// Creates directional edge insets with only the start offset specified.
   static EdgeInsetsDirectionalMix start(double value) =>
-      EdgeInsetsDirectionalMix.only(start: value);
+      EdgeInsetsDirectionalMix(start: value);
 
   /// Creates directional edge insets with only the end offset specified.
   static EdgeInsetsDirectionalMix end(double value) =>
-      EdgeInsetsDirectionalMix.only(end: value);
+      EdgeInsetsDirectionalMix(end: value);
 
   static EdgeInsetsGeometryMix? tryToMerge(
     EdgeInsetsGeometryMix? a,
@@ -146,7 +146,7 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
   EdgeInsetsMix _asEdgeInset() {
     if (this is EdgeInsetsMix) return this as EdgeInsetsMix;
 
-    return EdgeInsetsMix(top: $top, bottom: $bottom);
+    return EdgeInsetsMix.raw(top: $top, bottom: $bottom);
   }
 
   EdgeInsetsDirectionalMix _asEdgeInsetDirectional() {
@@ -154,7 +154,7 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
       return this as EdgeInsetsDirectionalMix;
     }
 
-    return EdgeInsetsDirectionalMix(top: $top, bottom: $bottom);
+    return EdgeInsetsDirectionalMix.raw(top: $top, bottom: $bottom);
   }
 
   @override
@@ -169,16 +169,17 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
   final Prop<double>? $left;
   final Prop<double>? $right;
 
-  const EdgeInsetsMix({
+  const EdgeInsetsMix.raw({
     super.top,
     super.bottom,
     Prop<double>? left,
     Prop<double>? right,
   }) : $left = left,
-       $right = right;
+       $right = right,
+       super.raw();
 
-  EdgeInsetsMix.only({double? top, double? bottom, double? left, double? right})
-    : this(
+  EdgeInsetsMix({double? top, double? bottom, double? left, double? right})
+    : this.raw(
         top: Prop.maybe(top),
         bottom: Prop.maybe(bottom),
         left: Prop.maybe(left),
@@ -186,10 +187,10 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
       );
 
   EdgeInsetsMix.all(double value)
-    : this.only(top: value, bottom: value, left: value, right: value);
+    : this(top: value, bottom: value, left: value, right: value);
 
   EdgeInsetsMix.symmetric({double? vertical, double? horizontal})
-    : this.only(
+    : this(
         top: vertical,
         bottom: vertical,
         left: horizontal,
@@ -201,11 +202,11 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
   EdgeInsetsMix.vertical(double value) : this.symmetric(vertical: value);
 
   EdgeInsetsMix.fromLTRB(double left, double top, double right, double bottom)
-    : this.only(top: top, bottom: bottom, left: left, right: right);
+    : this(top: top, bottom: bottom, left: left, right: right);
 
   /// Creates an [EdgeInsetsMix] from an existing [EdgeInsets].
   EdgeInsetsMix.value(EdgeInsets edgeInsets)
-    : this.only(
+    : this(
         top: edgeInsets.top,
         bottom: edgeInsets.bottom,
         left: edgeInsets.left,
@@ -223,31 +224,31 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
 
   /// Returns a copy with the specified top inset.
   EdgeInsetsMix top(double value) {
-    return merge(EdgeInsetsMix.only(top: value));
+    return merge(EdgeInsetsMix(top: value));
   }
 
   /// Returns a copy with the specified bottom inset.
   EdgeInsetsMix bottom(double value) {
-    return merge(EdgeInsetsMix.only(bottom: value));
+    return merge(EdgeInsetsMix(bottom: value));
   }
 
   /// Returns a copy with the specified left inset.
   EdgeInsetsMix left(double value) {
-    return merge(EdgeInsetsMix.only(left: value));
+    return merge(EdgeInsetsMix(left: value));
   }
 
   /// Returns a copy with the specified right inset.
   EdgeInsetsMix right(double value) {
-    return merge(EdgeInsetsMix.only(right: value));
+    return merge(EdgeInsetsMix(right: value));
   }
 
   @override
   EdgeInsets resolve(BuildContext context) {
-    return EdgeInsets.only(
-      left: MixHelpers.resolve(context, $left) ?? 0,
-      top: MixHelpers.resolve(context, $top) ?? 0,
-      right: MixHelpers.resolve(context, $right) ?? 0,
-      bottom: MixHelpers.resolve(context, $bottom) ?? 0,
+    return EdgeInsets.fromLTRB(
+      MixHelpers.resolve(context, $left) ?? 0,
+      MixHelpers.resolve(context, $top) ?? 0,
+      MixHelpers.resolve(context, $right) ?? 0,
+      MixHelpers.resolve(context, $bottom) ?? 0,
     );
   }
 
@@ -255,7 +256,7 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
   EdgeInsetsMix merge(EdgeInsetsMix? other) {
     if (other == null) return this;
 
-    return EdgeInsetsMix(
+    return EdgeInsetsMix.raw(
       top: MixHelpers.merge($top, other.$top),
       bottom: MixHelpers.merge($bottom, other.$bottom),
       left: MixHelpers.merge($left, other.$left),
@@ -276,20 +277,21 @@ final class EdgeInsetsDirectionalMix
   final Prop<double>? $start;
   final Prop<double>? $end;
 
-  const EdgeInsetsDirectionalMix({
+  const EdgeInsetsDirectionalMix.raw({
     super.top,
     super.bottom,
     Prop<double>? start,
     Prop<double>? end,
   }) : $start = start,
-       $end = end;
+       $end = end,
+       super.raw();
 
-  EdgeInsetsDirectionalMix.only({
+  EdgeInsetsDirectionalMix({
     double? top,
     double? bottom,
     double? start,
     double? end,
-  }) : this(
+  }) : this.raw(
          top: Prop.maybe(top),
          bottom: Prop.maybe(bottom),
          start: Prop.maybe(start),
@@ -297,10 +299,10 @@ final class EdgeInsetsDirectionalMix
        );
 
   EdgeInsetsDirectionalMix.all(double value)
-    : this.only(top: value, bottom: value, start: value, end: value);
+    : this(top: value, bottom: value, start: value, end: value);
 
   EdgeInsetsDirectionalMix.symmetric({double? vertical, double? horizontal})
-    : this.only(
+    : this(
         top: vertical,
         bottom: vertical,
         start: horizontal,
@@ -312,7 +314,7 @@ final class EdgeInsetsDirectionalMix
     double top,
     double end,
     double bottom,
-  ) : this.only(top: top, bottom: bottom, start: start, end: end);
+  ) : this(top: top, bottom: bottom, start: start, end: end);
 
   EdgeInsetsDirectionalMix.horizontal(double value)
     : this.symmetric(horizontal: value);
@@ -322,7 +324,7 @@ final class EdgeInsetsDirectionalMix
 
   /// Creates an [EdgeInsetsDirectionalMix] from an existing [EdgeInsetsDirectional].
   factory EdgeInsetsDirectionalMix.value(EdgeInsetsDirectional edgeInsets) {
-    return EdgeInsetsDirectionalMix.only(
+    return EdgeInsetsDirectionalMix(
       top: edgeInsets.top,
       bottom: edgeInsets.bottom,
       start: edgeInsets.start,
@@ -345,31 +347,31 @@ final class EdgeInsetsDirectionalMix
 
   /// Returns a copy with the specified top inset.
   EdgeInsetsDirectionalMix top(double value) {
-    return merge(EdgeInsetsDirectionalMix.only(top: value));
+    return merge(EdgeInsetsDirectionalMix(top: value));
   }
 
   /// Returns a copy with the specified bottom inset.
   EdgeInsetsDirectionalMix bottom(double value) {
-    return merge(EdgeInsetsDirectionalMix.only(bottom: value));
+    return merge(EdgeInsetsDirectionalMix(bottom: value));
   }
 
   /// Returns a copy with the specified start inset.
   EdgeInsetsDirectionalMix start(double value) {
-    return merge(EdgeInsetsDirectionalMix.only(start: value));
+    return merge(EdgeInsetsDirectionalMix(start: value));
   }
 
   /// Returns a copy with the specified end inset.
   EdgeInsetsDirectionalMix end(double value) {
-    return merge(EdgeInsetsDirectionalMix.only(end: value));
+    return merge(EdgeInsetsDirectionalMix(end: value));
   }
 
   @override
   EdgeInsetsDirectional resolve(BuildContext context) {
-    return EdgeInsetsDirectional.only(
-      start: MixHelpers.resolve(context, $start) ?? 0,
-      top: MixHelpers.resolve(context, $top) ?? 0,
-      end: MixHelpers.resolve(context, $end) ?? 0,
-      bottom: MixHelpers.resolve(context, $bottom) ?? 0,
+    return EdgeInsetsDirectional.fromSTEB(
+      MixHelpers.resolve(context, $start) ?? 0,
+      MixHelpers.resolve(context, $top) ?? 0,
+      MixHelpers.resolve(context, $end) ?? 0,
+      MixHelpers.resolve(context, $bottom) ?? 0,
     );
   }
 
@@ -377,7 +379,7 @@ final class EdgeInsetsDirectionalMix
   EdgeInsetsDirectionalMix merge(EdgeInsetsDirectionalMix? other) {
     if (other == null) return this;
 
-    return EdgeInsetsDirectionalMix(
+    return EdgeInsetsDirectionalMix.raw(
       top: MixHelpers.merge($top, other.$top),
       bottom: MixHelpers.merge($bottom, other.$bottom),
       start: MixHelpers.merge($start, other.$start),

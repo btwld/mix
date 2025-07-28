@@ -9,7 +9,7 @@ void main() {
   group('ShadowMix', () {
     group('Constructor', () {
       test('only constructor creates instance with correct properties', () {
-        final shadowMix = ShadowMix.only(
+        final shadowMix = ShadowMix(
           blurRadius: 10.0,
           color: Colors.blue,
           offset: const Offset(5.0, 8.0),
@@ -50,7 +50,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to Shadow with correct properties', () {
-        final shadowMix = ShadowMix.only(
+        final shadowMix = ShadowMix(
           blurRadius: 12.0,
           color: Colors.green,
           offset: const Offset(2.0, 4.0),
@@ -66,7 +66,7 @@ void main() {
       });
 
       test('uses default values for null properties', () {
-        final shadowMix = ShadowMix.only(blurRadius: 8.0);
+        final shadowMix = ShadowMix(blurRadius: 8.0);
 
         const resolvedValue = Shadow(
           blurRadius: 8.0,
@@ -80,16 +80,16 @@ void main() {
 
     group('merge', () {
       test('returns this when other is null', () {
-        final shadowMix = ShadowMix.only(blurRadius: 5.0);
+        final shadowMix = ShadowMix(blurRadius: 5.0);
         final merged = shadowMix.merge(null);
 
         expect(merged, same(shadowMix));
       });
 
       test('merges properties correctly', () {
-        final first = ShadowMix.only(blurRadius: 10.0, color: Colors.blue);
+        final first = ShadowMix(blurRadius: 10.0, color: Colors.blue);
 
-        final second = ShadowMix.only(
+        final second = ShadowMix(
           color: Colors.red,
           offset: const Offset(3.0, 3.0),
         );
@@ -104,17 +104,17 @@ void main() {
 
     group('Equality', () {
       test('returns true when all properties are the same', () {
-        final shadowMix1 = ShadowMix.only(blurRadius: 10.0, color: Colors.blue);
+        final shadowMix1 = ShadowMix(blurRadius: 10.0, color: Colors.blue);
 
-        final shadowMix2 = ShadowMix.only(blurRadius: 10.0, color: Colors.blue);
+        final shadowMix2 = ShadowMix(blurRadius: 10.0, color: Colors.blue);
 
         expect(shadowMix1, shadowMix2);
         expect(shadowMix1.hashCode, shadowMix2.hashCode);
       });
 
       test('returns false when properties are different', () {
-        final shadowMix1 = ShadowMix.only(blurRadius: 10.0);
-        final shadowMix2 = ShadowMix.only(blurRadius: 15.0);
+        final shadowMix1 = ShadowMix(blurRadius: 10.0);
+        final shadowMix2 = ShadowMix(blurRadius: 15.0);
 
         expect(shadowMix1, isNot(shadowMix2));
       });
@@ -124,7 +124,7 @@ void main() {
   group('BoxShadowMix', () {
     group('Constructor', () {
       test('only constructor creates instance with correct properties', () {
-        final boxShadowMix = BoxShadowMix.only(
+        final boxShadowMix = BoxShadowMix(
           blurRadius: 10.0,
           color: Colors.blue,
           offset: const Offset(5.0, 8.0),
@@ -169,7 +169,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to BoxShadow with correct properties', () {
-        final boxShadowMix = BoxShadowMix.only(
+        final boxShadowMix = BoxShadowMix(
           blurRadius: 12.0,
           color: Colors.green,
           offset: const Offset(2.0, 4.0),
@@ -187,7 +187,7 @@ void main() {
       });
 
       test('uses default values for null properties', () {
-        final boxShadowMix = BoxShadowMix.only(blurRadius: 8.0);
+        final boxShadowMix = BoxShadowMix(blurRadius: 8.0);
 
         const resolvedValue = BoxShadow(
           blurRadius: 8.0,
@@ -202,20 +202,20 @@ void main() {
 
     group('merge', () {
       test('returns this when other is null', () {
-        final boxShadowMix = BoxShadowMix.only(blurRadius: 5.0);
+        final boxShadowMix = BoxShadowMix(blurRadius: 5.0);
         final merged = boxShadowMix.merge(null);
 
         expect(merged, same(boxShadowMix));
       });
 
       test('merges properties correctly', () {
-        final first = BoxShadowMix.only(
+        final first = BoxShadowMix(
           blurRadius: 10.0,
           color: Colors.blue,
           spreadRadius: 1.0,
         );
 
-        final second = BoxShadowMix.only(
+        final second = BoxShadowMix(
           color: Colors.red,
           offset: const Offset(3.0, 3.0),
           spreadRadius: 2.0,
@@ -232,13 +232,13 @@ void main() {
 
     group('Equality', () {
       test('returns true when all properties are the same', () {
-        final boxShadowMix1 = BoxShadowMix.only(
+        final boxShadowMix1 = BoxShadowMix(
           blurRadius: 10.0,
           color: Colors.blue,
           spreadRadius: 2.0,
         );
 
-        final boxShadowMix2 = BoxShadowMix.only(
+        final boxShadowMix2 = BoxShadowMix(
           blurRadius: 10.0,
           color: Colors.blue,
           spreadRadius: 2.0,
@@ -249,8 +249,8 @@ void main() {
       });
 
       test('returns false when properties are different', () {
-        final boxShadowMix1 = BoxShadowMix.only(blurRadius: 10.0);
-        final boxShadowMix2 = BoxShadowMix.only(blurRadius: 15.0);
+        final boxShadowMix1 = BoxShadowMix(blurRadius: 10.0);
+        final boxShadowMix2 = BoxShadowMix(blurRadius: 15.0);
 
         expect(boxShadowMix1, isNot(boxShadowMix2));
       });

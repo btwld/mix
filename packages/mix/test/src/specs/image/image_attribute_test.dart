@@ -9,7 +9,7 @@ void main() {
   group('ImageSpecAttribute', () {
     group('Constructor', () {
       test('creates ImageSpecAttribute with all properties', () {
-        final attribute = ImageSpecAttribute(
+        final attribute = ImageSpecAttribute.raw(
           width: Prop(100.0),
           height: Prop(200.0),
           color: Prop(Colors.red),
@@ -52,7 +52,7 @@ void main() {
 
     group('only constructor', () {
       test('creates ImageSpecAttribute with only constructor', () {
-        final attribute = ImageSpecAttribute.only(
+        final attribute = ImageSpecAttribute(
           width: 150.0,
           height: 250.0,
           color: Colors.blue,
@@ -79,10 +79,7 @@ void main() {
       });
 
       test('creates partial ImageSpecAttribute with only constructor', () {
-        final attribute = ImageSpecAttribute.only(
-          width: 100.0,
-          fit: BoxFit.fill,
-        );
+        final attribute = ImageSpecAttribute(width: 100.0, fit: BoxFit.fill);
 
         expect(attribute.$width, resolvesTo(100.0));
         expect(attribute.$fit, resolvesTo(BoxFit.fill));
@@ -229,9 +226,9 @@ void main() {
 
       test('merge combines different attribute instances', () {
         // Merge is still useful for combining separate attribute instances
-        final first = ImageSpecAttribute.only(width: 100.0, height: 200.0);
+        final first = ImageSpecAttribute(width: 100.0, height: 200.0);
 
-        final second = ImageSpecAttribute.only(
+        final second = ImageSpecAttribute(
           fit: BoxFit.cover,
           alignment: Alignment.center,
           color: Colors.red,
@@ -338,7 +335,7 @@ void main() {
       });
 
       test('merges all properties when both have values', () {
-        final first = ImageSpecAttribute.only(
+        final first = ImageSpecAttribute(
           width: 100.0,
           height: 200.0,
           color: Colors.red,
@@ -346,7 +343,7 @@ void main() {
           fit: BoxFit.cover,
         );
 
-        final second = ImageSpecAttribute.only(
+        final second = ImageSpecAttribute(
           width: 300.0,
           height: 400.0,
           alignment: Alignment.topLeft,
@@ -406,7 +403,7 @@ void main() {
 
     group('Props getter', () {
       test('props includes all properties', () {
-        final attribute = ImageSpecAttribute(
+        final attribute = ImageSpecAttribute.raw(
           width: Prop(100.0),
           height: Prop(200.0),
           color: Prop(Colors.red),
@@ -435,8 +432,8 @@ void main() {
       test('modifiers can be added to attribute', () {
         final attribute = ImageSpecAttribute(
           modifiers: [
-            OpacityModifierAttribute(opacity: Prop(0.5)),
-            ClipRRectModifierAttribute.only(
+            OpacityModifierAttribute(opacity: 0.5),
+            ClipRRectModifierAttribute(
               borderRadius: BorderRadiusMix.all(Radius.circular(10)),
             ),
           ],
@@ -448,11 +445,11 @@ void main() {
 
       test('modifiers merge correctly', () {
         final first = ImageSpecAttribute(
-          modifiers: [OpacityModifierAttribute.only(opacity: 0.5)],
+          modifiers: [OpacityModifierAttribute(opacity: 0.5)],
         );
 
         final second = ImageSpecAttribute(
-          modifiers: [AspectRatioModifierAttribute.only(aspectRatio: 16 / 9)],
+          modifiers: [AspectRatioModifierAttribute(aspectRatio: 16 / 9)],
         );
 
         final merged = first.merge(second);

@@ -72,12 +72,12 @@ class ClipOvalModifierAttribute extends ModifierAttribute<ClipOvalModifier> {
   final Prop<CustomClipper<Rect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
-  const ClipOvalModifierAttribute({this.clipper, this.clipBehavior});
+  const ClipOvalModifierAttribute.raw({this.clipper, this.clipBehavior});
 
-  ClipOvalModifierAttribute.only({
+  ClipOvalModifierAttribute({
     CustomClipper<Rect>? clipper,
     Clip? clipBehavior,
-  }) : this(
+  }) : this.raw(
          clipper: Prop.maybe(clipper),
          clipBehavior: Prop.maybe(clipBehavior),
        );
@@ -103,7 +103,7 @@ class ClipOvalModifierAttribute extends ModifierAttribute<ClipOvalModifier> {
   ClipOvalModifierAttribute merge(ClipOvalModifierAttribute? other) {
     if (other == null) return this;
 
-    return ClipOvalModifierAttribute(
+    return ClipOvalModifierAttribute.raw(
       clipper: MixHelpers.merge(clipper, other.clipper),
       clipBehavior: MixHelpers.merge(clipBehavior, other.clipBehavior),
     );
@@ -175,12 +175,12 @@ class ClipRectModifierAttribute
   final Prop<CustomClipper<Rect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
-  const ClipRectModifierAttribute({this.clipper, this.clipBehavior});
+  const ClipRectModifierAttribute.raw({this.clipper, this.clipBehavior});
 
-  ClipRectModifierAttribute.only({
+  ClipRectModifierAttribute({
     CustomClipper<Rect>? clipper,
     Clip? clipBehavior,
-  }) : this(
+  }) : this.raw(
          clipper: Prop.maybe(clipper),
          clipBehavior: Prop.maybe(clipBehavior),
        );
@@ -213,7 +213,7 @@ class ClipRectModifierAttribute
   ClipRectModifierAttribute merge(ClipRectModifierAttribute? other) {
     if (other == null) return this;
 
-    return ClipRectModifierAttribute(
+    return ClipRectModifierAttribute.raw(
       clipper: MixHelpers.merge(clipper, other.clipper),
       clipBehavior: MixHelpers.merge(clipBehavior, other.clipBehavior),
     );
@@ -320,17 +320,17 @@ class ClipRRectModifierAttribute extends ModifierAttribute<ClipRRectModifier> {
   final Prop<CustomClipper<RRect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
-  const ClipRRectModifierAttribute({
+  const ClipRRectModifierAttribute.raw({
     this.borderRadius,
     this.clipper,
     this.clipBehavior,
   });
 
-  ClipRRectModifierAttribute.only({
+  ClipRRectModifierAttribute({
     BorderRadiusGeometryMix? borderRadius,
     CustomClipper<RRect>? clipper,
     Clip? clipBehavior,
-  }) : this(
+  }) : this.raw(
          borderRadius: MixProp.maybe(borderRadius),
          clipper: Prop.maybe(clipper),
          clipBehavior: Prop.maybe(clipBehavior),
@@ -365,7 +365,7 @@ class ClipRRectModifierAttribute extends ModifierAttribute<ClipRRectModifier> {
   ClipRRectModifierAttribute merge(ClipRRectModifierAttribute? other) {
     if (other == null) return this;
 
-    return ClipRRectModifierAttribute(
+    return ClipRRectModifierAttribute.raw(
       borderRadius: MixHelpers.merge(borderRadius, other.borderRadius),
       clipper: MixHelpers.merge(clipper, other.clipper),
       clipBehavior: MixHelpers.merge(clipBehavior, other.clipBehavior),
@@ -459,12 +459,12 @@ class ClipPathModifierAttribute extends ModifierAttribute<ClipPathModifier> {
   final Prop<CustomClipper<Path>>? clipper;
   final Prop<Clip>? clipBehavior;
 
-  const ClipPathModifierAttribute({this.clipper, this.clipBehavior});
+  const ClipPathModifierAttribute.raw({this.clipper, this.clipBehavior});
 
-  ClipPathModifierAttribute.only({
+  ClipPathModifierAttribute({
     CustomClipper<Path>? clipper,
     Clip? clipBehavior,
-  }) : this(
+  }) : this.raw(
          clipper: Prop.maybe(clipper),
          clipBehavior: Prop.maybe(clipBehavior),
        );
@@ -497,7 +497,7 @@ class ClipPathModifierAttribute extends ModifierAttribute<ClipPathModifier> {
   ClipPathModifierAttribute merge(ClipPathModifierAttribute? other) {
     if (other == null) return this;
 
-    return ClipPathModifierAttribute(
+    return ClipPathModifierAttribute.raw(
       clipper: MixHelpers.merge(clipper, other.clipper),
       clipBehavior: MixHelpers.merge(clipBehavior, other.clipBehavior),
     );
@@ -583,10 +583,10 @@ class ClipTriangleModifierAttribute
     extends ModifierAttribute<ClipTriangleModifier> {
   final Prop<Clip>? clipBehavior;
 
-  const ClipTriangleModifierAttribute({this.clipBehavior});
+  const ClipTriangleModifierAttribute.raw({this.clipBehavior});
 
-  ClipTriangleModifierAttribute.only({Clip? clipBehavior})
-    : this(clipBehavior: Prop.maybe(clipBehavior));
+  ClipTriangleModifierAttribute({Clip? clipBehavior})
+    : this.raw(clipBehavior: Prop.maybe(clipBehavior));
 
   /// Resolves to [ClipTriangleModifier] using the provided [MixContext].
   ///
@@ -615,7 +615,7 @@ class ClipTriangleModifierAttribute
   ClipTriangleModifierAttribute merge(ClipTriangleModifierAttribute? other) {
     if (other == null) return this;
 
-    return ClipTriangleModifierAttribute(
+    return ClipTriangleModifierAttribute.raw(
       clipBehavior: MixHelpers.merge(clipBehavior, other.clipBehavior),
     );
   }
