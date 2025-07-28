@@ -100,6 +100,7 @@ class IconMix extends Style<IconSpec>
     super.modifiers,
     super.variants,
     super.orderOfModifiers,
+    super.inherit,
   }) : $color = color,
        $size = size,
        $weight = weight,
@@ -124,6 +125,7 @@ class IconMix extends Style<IconSpec>
     List<ModifierAttribute>? modifiers,
     List<VariantStyleAttribute<IconSpec>>? variants,
     List<Type>? orderOfModifiers,
+    bool? inherit,
   }) : this.raw(
          color: Prop.maybe(color),
          size: Prop.maybe(size),
@@ -138,6 +140,7 @@ class IconMix extends Style<IconSpec>
          modifiers: modifiers,
          variants: variants,
          orderOfModifiers: orderOfModifiers,
+         inherit: inherit,
        );
 
   // Static factory to create from resolved Spec

@@ -32,7 +32,7 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
   final List<ModifierAttribute>? $modifiers;
   final AnimationConfig? $animation;
   final List<Type> $orderOfModifiers;
-  final bool $inherit;
+  final bool? $inherit;
 
   static final box = BoxMix.new;
   static final icon = IconMix.new;
@@ -51,7 +51,7 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
   }) : $modifiers = modifiers,
        $animation = animation,
        $variants = variants,
-       $inherit = inherit ?? false,
+       $inherit = inherit,
        $orderOfModifiers = orderOfModifiers ?? const [];
 
   @internal
@@ -187,6 +187,7 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
       animation: resolvedAnimation,
       modifiers: resolvedModifiers,
       orderOfModifiers: styleData.$orderOfModifiers,
+      inherit: styleData.$inherit,
     );
   }
 }
@@ -248,12 +249,14 @@ class ResolvedStyle<V extends Spec<V>> with Equatable {
   final AnimationConfig? animation;
   final List<Modifier>? modifiers;
   final List<Type>? orderOfModifiers;
+  final bool? inherit;
 
   const ResolvedStyle({
     this.spec,
     this.animation,
     this.modifiers,
     this.orderOfModifiers,
+    this.inherit,
   });
 
   /// Linearly interpolate between two ResolvedStyles

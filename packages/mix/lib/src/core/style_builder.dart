@@ -18,7 +18,6 @@ class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
     super.key,
     this.style,
     required this.builder,
-    this.inherit = false,
 
     this.controller,
   });
@@ -28,9 +27,6 @@ class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
 
   /// Function that builds the widget with the resolved style.
   final Widget Function(BuildContext context, S? spec) builder;
-
-  /// Whether to inherit style from parent widgets.
-  final bool inherit;
 
   /// Optional controller for managing widget state.
   final WidgetStatesController? controller;
@@ -71,7 +67,6 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
     Widget current = ResolvedStyleBuilder(
       builder: widget.builder,
       style: widget.style,
-      inherit: widget.inherit,
     );
 
     if (needsToTrackWidgetState && !alreadyHasWidgetStateScope) {
@@ -85,21 +80,13 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
 }
 
 class ResolvedStyleBuilder<S extends Spec<S>> extends StatelessWidget {
-  const ResolvedStyleBuilder({
-    super.key,
-    required this.builder,
-    this.style,
-    this.inherit = false,
-  });
+  const ResolvedStyleBuilder({super.key, required this.builder, this.style});
 
   /// The style to resolve.
   final Style<S>? style;
 
   /// The builder function that receives the resolved style.
   final Widget Function(BuildContext context, S? spec) builder;
-
-  /// Whether to inherit style from parent widgets.
-  final bool inherit;
 
   Widget _widgetBuilder(BuildContext context, ResolvedStyle<S> resolvedStyle) {
     Widget current = builder(context, resolvedStyle.spec);
@@ -115,7 +102,7 @@ class ResolvedStyleBuilder<S extends Spec<S>> extends StatelessWidget {
       // Apply modifiers if any
       current = RenderModifiers(
         modifiers: resolvedStyle.modifiers!,
-        orderOfModifiers: orderOfModifiers ?? const [],
+        orderOfModifiers: resolvedStyle.orderOfModifiers,
         child: current,
       );
     }

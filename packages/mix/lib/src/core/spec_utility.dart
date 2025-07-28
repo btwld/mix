@@ -16,6 +16,7 @@ abstract class StyleAttributeBuilder<S extends Spec<S>> extends Style<S>
     super.modifiers,
     super.variants,
     super.orderOfModifiers,
+    super.inherit,
   });
 
   /// Access to the internal mutable StyleAttribute

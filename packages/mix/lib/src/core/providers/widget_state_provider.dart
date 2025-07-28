@@ -1,6 +1,8 @@
 import 'package:flutter/widgets.dart'
     show WidgetState, InheritedModel, BuildContext, WidgetStatesController;
 
+/// Extension on [Set<WidgetState>] to provide convenient boolean checks
+/// for specific widget states.
 extension on Set<WidgetState> {
   bool get hasDisabled => contains(WidgetState.disabled);
   bool get hasHovered => contains(WidgetState.hovered);
@@ -11,6 +13,11 @@ extension on Set<WidgetState> {
   bool get hasError => contains(WidgetState.error);
 }
 
+/// Provider for widget state information using Flutter's [InheritedModel].
+///
+/// This provider makes widget state information available to descendant widgets,
+/// allowing them to conditionally style based on states like hover, pressed, focused, etc.
+/// Uses [InheritedModel] for efficient updates - only widgets depending on changed states rebuild.
 class WidgetStateProvider extends InheritedModel<WidgetState> {
   WidgetStateProvider({
     super.key,
@@ -24,6 +31,10 @@ class WidgetStateProvider extends InheritedModel<WidgetState> {
        selected = states.hasSelected,
        error = states.hasError;
 
+  /// Retrieves the [WidgetStateProvider] from the widget tree.
+  ///
+  /// If [state] is provided, creates a dependency only on that specific state.
+  /// This enables granular rebuilds when only specific states change.
   static WidgetStateProvider? of(BuildContext context, [WidgetState? state]) {
     return InheritedModel.inheritFrom<WidgetStateProvider>(
       context,
@@ -31,6 +42,9 @@ class WidgetStateProvider extends InheritedModel<WidgetState> {
     );
   }
 
+  /// Checks if a specific [WidgetState] is currently active.
+  ///
+  /// Returns false if no [WidgetStateProvider] is found in the widget tree.
   static bool hasStateOf(BuildContext context, WidgetState state) {
     final model = of(context, state);
     if (model == null) {
@@ -83,6 +97,11 @@ class WidgetStateProvider extends InheritedModel<WidgetState> {
   }
 }
 
+/// Extension on [WidgetStatesController] providing convenient setters and getters
+/// for individual widget states.
+///
+/// Simplifies working with widget state controllers by providing direct access
+/// to common states like disabled, hovered, pressed, etc.
 extension WidgetStateControllerExtension on WidgetStatesController {
   set disabled(bool value) => update(WidgetState.disabled, value);
 

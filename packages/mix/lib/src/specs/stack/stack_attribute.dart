@@ -65,6 +65,7 @@ class StackMix extends Style<StackSpec>
     super.animation,
     super.modifiers,
     super.variants,
+    super.inherit,
     super.orderOfModifiers,
   }) : $alignment = alignment,
        $fit = fit,

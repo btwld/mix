@@ -9,6 +9,8 @@ class TestVariantAttribute extends Style<BoxSpec>
     super.variants,
     super.modifiers,
     super.animation,
+    super.inherit,
+    super.orderOfModifiers,
   });
 
   @override

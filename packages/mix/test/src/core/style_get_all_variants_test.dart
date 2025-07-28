@@ -796,6 +796,7 @@ class _MockSpecAttribute extends Style<MockSpec> {
     super.variants,
     super.orderOfModifiers,
     super.animation,
+    super.inherit,
     super.modifiers,
   });
 

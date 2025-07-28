@@ -19,10 +19,11 @@ import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'box_spec.dart';
 
-/// Attribute class for configuring [BoxSpec] properties.
+/// Style class for configuring [BoxSpec] properties.
 ///
 /// Encapsulates alignment, padding, margin, constraints, decoration,
-/// and other styling properties for box layouts.
+/// and other styling properties for box layouts with support for
+/// modifiers, variants, and animations.
 class BoxMix extends Style<BoxSpec>
     with
         Diagnosticable,
@@ -76,7 +77,7 @@ class BoxMix extends Style<BoxSpec>
     return BoxMix(constraints: BoxConstraintsMix.maxWidth(value));
   }
 
-  /// Animation
+  /// Animation factory
   factory BoxMix.animation(AnimationConfig value) {
     return BoxMix(animation: value);
   }
@@ -120,7 +121,7 @@ class BoxMix extends Style<BoxSpec>
     return BoxMix(transform: value);
   }
 
-  /// Animation
+  /// Animation factory (alternative)
   factory BoxMix.animate(AnimationConfig animation) {
     return BoxMix(animation: animation);
   }
@@ -157,6 +158,7 @@ class BoxMix extends Style<BoxSpec>
     super.modifiers,
     super.variants,
     super.orderOfModifiers,
+    super.inherit,
   }) : $alignment = alignment,
        $padding = padding,
        $margin = margin,
@@ -181,6 +183,7 @@ class BoxMix extends Style<BoxSpec>
     List<ModifierAttribute>? modifiers,
     List<VariantStyleAttribute<BoxSpec>>? variants,
     List<Type>? orderOfModifiers,
+    bool? inherit,
   }) : this.raw(
          alignment: Prop.maybe(alignment),
          padding: MixProp.maybe(padding),
@@ -195,6 +198,7 @@ class BoxMix extends Style<BoxSpec>
          modifiers: modifiers,
          variants: variants,
          orderOfModifiers: orderOfModifiers,
+         inherit: inherit,
        );
 
   /// Constructor that accepts a [BoxSpec] value and extracts its properties.
@@ -203,7 +207,7 @@ class BoxMix extends Style<BoxSpec>
   ///
   /// ```dart
   /// const spec = BoxSpec(alignment: Alignment.center, padding: EdgeInsets.all(8));
-  /// final attr = BoxSpecAttribute.value(spec);
+  /// final attr = BoxMix.value(spec);
   /// ```
   BoxMix.value(BoxSpec spec)
     : this(
@@ -222,11 +226,11 @@ class BoxMix extends Style<BoxSpec>
 
   /// Constructor that accepts a nullable [BoxSpec] value and extracts its properties.
   ///
-  /// Returns null if the input is null, otherwise uses [BoxSpecAttribute.value].
+  /// Returns null if the input is null, otherwise uses [BoxMix.value].
   ///
   /// ```dart
   /// const BoxSpec? spec = BoxSpec(alignment: Alignment.center, padding: EdgeInsets.all(8));
-  /// final attr = BoxSpecAttribute.maybeValue(spec); // Returns BoxSpecAttribute or null
+  /// final attr = BoxMix.maybeValue(spec); // Returns BoxMix or null
   /// ```
   static BoxMix? maybeValue(BoxSpec? spec) {
     return spec != null ? BoxMix.value(spec) : null;
@@ -382,7 +386,6 @@ class BoxMix extends Style<BoxSpec>
     return merge(BoxMix(transform: value));
   }
 
-  /// Color instance method
   /// Decoration instance method
   BoxMix decoration(DecorationMix value) {
     return merge(BoxMix(decoration: value));
@@ -424,13 +427,13 @@ class BoxMix extends Style<BoxSpec>
     return merge(BoxMix(modifiers: value));
   }
 
-  /// Resolves to [BoxSpec] using the provided [MixContext].
+  /// Resolves to [BoxSpec] using the provided [BuildContext].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
+  /// If a property is null in the context, it uses the default value
+  /// defined in the property specification.
   ///
   /// ```dart
-  /// final boxSpec = BoxSpecAttribute(...).resolve(mix);
+  /// final boxSpec = BoxMix(...).resolve(context);
   /// ```
   @override
   BoxSpec resolve(BuildContext context) {

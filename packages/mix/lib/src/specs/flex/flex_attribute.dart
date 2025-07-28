@@ -101,6 +101,7 @@ class FlexMix extends Style<FlexSpec>
     super.modifiers,
     super.variants,
     super.orderOfModifiers,
+    super.inherit,
   }) : $direction = direction,
        $mainAxisAlignment = mainAxisAlignment,
        $crossAxisAlignment = crossAxisAlignment,
@@ -125,6 +126,7 @@ class FlexMix extends Style<FlexSpec>
     List<ModifierAttribute>? modifiers,
     List<VariantStyleAttribute<FlexSpec>>? variants,
     List<Type>? orderOfModifiers,
+    bool? inherit,
   }) : this.raw(
          direction: Prop.maybe(direction),
          mainAxisAlignment: Prop.maybe(mainAxisAlignment),
@@ -139,6 +141,7 @@ class FlexMix extends Style<FlexSpec>
          modifiers: modifiers,
          variants: variants,
          orderOfModifiers: orderOfModifiers,
+         inherit: inherit,
        );
 
   /// Constructor that accepts a [FlexSpec] value and extracts its properties.

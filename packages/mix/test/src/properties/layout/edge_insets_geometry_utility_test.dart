@@ -23,7 +23,14 @@ class TestSpec extends Spec<TestSpec> {
 class TestAttribute extends Style<TestSpec> {
   final MixProp<EdgeInsetsGeometry>? edgeInsets;
 
-  const TestAttribute({this.edgeInsets});
+  const TestAttribute({
+    this.edgeInsets,
+    super.inherit,
+    super.variants,
+    super.animation,
+    super.modifiers,
+    super.orderOfModifiers,
+  });
 
   @override
   TestAttribute merge(TestAttribute? other) {

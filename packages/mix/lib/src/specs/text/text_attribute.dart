@@ -245,6 +245,7 @@ class TextMix extends Style<TextSpec>
     super.modifiers,
     super.variants,
     super.orderOfModifiers,
+    super.inherit,
   }) : $overflow = overflow,
        $strutStyle = strutStyle,
        $textAlign = textAlign,
@@ -273,6 +274,7 @@ class TextMix extends Style<TextSpec>
     List<ModifierAttribute>? modifiers,
     List<VariantStyleAttribute<TextSpec>>? variants,
     List<Type>? orderOfModifiers,
+    bool? inherit,
   }) : this.raw(
          overflow: Prop.maybe(overflow),
          strutStyle: MixProp.maybe(strutStyle),
@@ -289,6 +291,7 @@ class TextMix extends Style<TextSpec>
          modifiers: modifiers,
          variants: variants,
          orderOfModifiers: orderOfModifiers,
+         inherit: inherit,
        );
 
   /// Constructor that accepts a [TextSpec] value and extracts its properties.
@@ -528,13 +531,13 @@ class TextMix extends Style<TextSpec>
     return merge(TextMix(modifiers: modifiers));
   }
 
-  /// Resolves to [TextSpec] using the provided [MixContext].
+  /// Resolves to [TextSpec] using the provided [BuildContext].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
+  /// If a property is null in the context, it uses the default value
+  /// defined in the property specification.
   ///
   /// ```dart
-  /// final textSpec = TextSpecAttribute(...).resolve(mix);
+  /// final textSpec = TextMix(...).resolve(context);
   /// ```
   @override
   TextSpec resolve(BuildContext context) {

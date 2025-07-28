@@ -5,6 +5,11 @@ import 'package:flutter/widgets.dart';
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
 
+/// Specification for box styling and layout properties.
+///
+/// Provides comprehensive box styling including alignment, padding, margin, constraints,
+/// decoration, transformation, and clipping behavior. Used as the resolved form
+/// of [BoxMix] styling attributes.
 final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
   /// Aligns the child within the box.
   final AlignmentGeometry? alignment;

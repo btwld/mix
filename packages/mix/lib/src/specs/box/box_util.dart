@@ -14,10 +14,10 @@ import 'box_spec.dart';
 
 /// Mutable utility class for box styling using composition over inheritance.
 ///
-/// Same API as BoxSpecAttribute but with mutable internal state
+/// Same API as BoxMix but with mutable internal state
 /// for cascade notation support: `$box..color.red()..width(100)`
 class BoxSpecUtility extends StyleAttributeBuilder<BoxSpec> {
-  // SAME UTILITIES AS BoxSpecAttribute - but return BoxSpecUtility for cascade
+  // SAME UTILITIES AS BoxMix - but return BoxSpecUtility for cascade
 
   late final padding = EdgeInsetsGeometryUtility<BoxSpecUtility>(
     (prop) => _build(BoxMix.raw(padding: prop)),
@@ -43,14 +43,14 @@ class BoxSpecUtility extends StyleAttributeBuilder<BoxSpec> {
     (prop) => _build(BoxMix.raw(modifiers: [prop])),
   );
 
-  // FLATTENED ACCESS - Same as BoxSpecAttribute
+  // FLATTENED ACCESS - Same as BoxMix
   late final border = decoration.box.border;
 
   late final borderRadius = decoration.box.borderRadius;
   late final color = decoration.box.color;
   late final gradient = decoration.box.gradient;
   late final shape =
-      decoration.box.shape; // CONVENIENCE SHORTCUTS - Same as BoxSpecAttribute
+      decoration.box.shape; // CONVENIENCE SHORTCUTS - Same as BoxMix
   late final width = constraints.width;
 
   late final height = constraints.height;
@@ -58,7 +58,7 @@ class BoxSpecUtility extends StyleAttributeBuilder<BoxSpec> {
   late final maxWidth = constraints.maxWidth;
   late final minHeight = constraints.minHeight;
   late final maxHeight =
-      constraints.maxHeight; // PROP UTILITIES - Same as BoxSpecAttribute
+      constraints.maxHeight; // PROP UTILITIES - Same as BoxMix
   late final transform = PropUtility<BoxSpecUtility, Matrix4>(
     (prop) => _build(BoxMix.raw(transform: prop)),
   );

@@ -94,6 +94,7 @@ class ImageMix extends Style<ImageSpec>
     super.modifiers,
     super.variants,
     super.orderOfModifiers,
+    super.inherit,
   }) : $width = width,
        $height = height,
        $color = color,

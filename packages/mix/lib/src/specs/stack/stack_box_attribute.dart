@@ -25,6 +25,7 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
     super.modifiers,
     super.animation,
     super.variants,
+    super.inherit,
     super.orderOfModifiers,
   });
 
