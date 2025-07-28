@@ -8,7 +8,7 @@ void main() {
   group('FlexSpecAttribute', () {
     group('Constructor', () {
       test('creates FlexSpecAttribute with all properties', () {
-        final attribute = FlexSpecAttribute(
+        final attribute = FlexMix(
           direction: Axis.horizontal,
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -35,7 +35,7 @@ void main() {
       });
 
       test('creates empty FlexSpecAttribute', () {
-        final attribute = FlexSpecAttribute();
+        final attribute = FlexMix();
 
         expect(attribute.$direction, isNull);
         expect(attribute.$mainAxisAlignment, isNull);
@@ -51,7 +51,7 @@ void main() {
 
     group('only constructor', () {
       test('creates FlexSpecAttribute with only constructor', () {
-        final attribute = FlexSpecAttribute(
+        final attribute = FlexMix(
           direction: Axis.vertical,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -75,10 +75,7 @@ void main() {
       });
 
       test('creates partial FlexSpecAttribute with only constructor', () {
-        final attribute = FlexSpecAttribute(
-          direction: Axis.horizontal,
-          gap: 12.0,
-        );
+        final attribute = FlexMix(direction: Axis.horizontal, gap: 12.0);
 
         expect(attribute.$direction, resolvesTo(Axis.horizontal));
         expect(attribute.$gap, resolvesTo(12.0));
@@ -106,7 +103,7 @@ void main() {
           gap: 16.0,
         );
 
-        final attribute = FlexSpecAttribute.value(spec);
+        final attribute = FlexMix.value(spec);
 
         expect(attribute.$direction, resolvesTo(Axis.horizontal));
         expectProp(attribute.$mainAxisAlignment, MainAxisAlignment.center);
@@ -123,12 +120,12 @@ void main() {
       });
 
       test('maybeValue returns null for null spec', () {
-        expect(FlexSpecAttribute.maybeValue(null), isNull);
+        expect(FlexMix.maybeValue(null), isNull);
       });
 
       test('maybeValue returns attribute for non-null spec', () {
         const spec = FlexSpec(direction: Axis.vertical, gap: 8.0);
-        final attribute = FlexSpecAttribute.maybeValue(spec);
+        final attribute = FlexMix.maybeValue(spec);
 
         expect(attribute, isNotNull);
         expect(attribute!.$direction, resolvesTo(Axis.vertical));
@@ -138,15 +135,15 @@ void main() {
 
     group('Utility Methods', () {
       test('direction utility works correctly', () {
-        final horizontal = FlexSpecAttribute().direction(Axis.horizontal);
-        final vertical = FlexSpecAttribute().direction(Axis.vertical);
+        final horizontal = FlexMix().direction(Axis.horizontal);
+        final vertical = FlexMix().direction(Axis.vertical);
 
         expect(horizontal.$direction, resolvesTo(Axis.horizontal));
         expect(vertical.$direction, resolvesTo(Axis.vertical));
       });
 
       test('mainAxisAlignment utility works correctly', () {
-        final attribute = FlexSpecAttribute().mainAxisAlignment(
+        final attribute = FlexMix().mainAxisAlignment(
           MainAxisAlignment.spaceAround,
         );
 
@@ -154,9 +151,7 @@ void main() {
       });
 
       test('crossAxisAlignment utility works correctly', () {
-        final attribute = FlexSpecAttribute().crossAxisAlignment(
-          CrossAxisAlignment.end,
-        );
+        final attribute = FlexMix().crossAxisAlignment(CrossAxisAlignment.end);
 
         expect(
           attribute.$crossAxisAlignment,
@@ -165,37 +160,31 @@ void main() {
       });
 
       test('mainAxisSize utility works correctly', () {
-        final attribute = FlexSpecAttribute().mainAxisSize(MainAxisSize.min);
+        final attribute = FlexMix().mainAxisSize(MainAxisSize.min);
 
         expect(attribute.$mainAxisSize, resolvesTo(MainAxisSize.min));
       });
 
       test('verticalDirection utility works correctly', () {
-        final attribute = FlexSpecAttribute().verticalDirection(
-          VerticalDirection.up,
-        );
+        final attribute = FlexMix().verticalDirection(VerticalDirection.up);
 
         expect(attribute.$verticalDirection, resolvesTo(VerticalDirection.up));
       });
 
       test('textDirection utility works correctly', () {
-        final attribute = FlexSpecAttribute().textDirection(TextDirection.rtl);
+        final attribute = FlexMix().textDirection(TextDirection.rtl);
 
         expect(attribute.$textDirection, resolvesTo(TextDirection.rtl));
       });
 
       test('textBaseline utility works correctly', () {
-        final attribute = FlexSpecAttribute().textBaseline(
-          TextBaseline.ideographic,
-        );
+        final attribute = FlexMix().textBaseline(TextBaseline.ideographic);
 
         expect(attribute.$textBaseline, resolvesTo(TextBaseline.ideographic));
       });
 
       test('clipBehavior utility works correctly', () {
-        final attribute = FlexSpecAttribute().clipBehavior(
-          Clip.antiAliasWithSaveLayer,
-        );
+        final attribute = FlexMix().clipBehavior(Clip.antiAliasWithSaveLayer);
 
         expect(
           attribute.$clipBehavior,
@@ -204,14 +193,14 @@ void main() {
       });
 
       test('gap utility works correctly', () {
-        final attribute = FlexSpecAttribute().gap(24.0);
+        final attribute = FlexMix().gap(24.0);
 
         expect(attribute.$gap, resolvesTo(24.0));
       });
 
       test('chaining utilities accumulates properties correctly', () {
         // Chaining now properly accumulates all properties
-        final chained = FlexSpecAttribute()
+        final chained = FlexMix()
             .direction(Axis.horizontal)
             .mainAxisAlignment(MainAxisAlignment.spaceBetween)
             .crossAxisAlignment(CrossAxisAlignment.center)
@@ -226,12 +215,12 @@ void main() {
 
       test('merge combines different attribute instances', () {
         // Merge is still useful for combining separate attribute instances
-        final first = FlexSpecAttribute(
+        final first = FlexMix(
           direction: Axis.horizontal,
           mainAxisAlignment: MainAxisAlignment.start,
         );
 
-        final second = FlexSpecAttribute(
+        final second = FlexMix(
           crossAxisAlignment: CrossAxisAlignment.center,
           gap: 16.0,
         );
@@ -247,13 +236,13 @@ void main() {
 
     group('Convenience Methods', () {
       test('row() method sets horizontal direction', () {
-        final attribute = FlexSpecAttribute().row();
+        final attribute = FlexMix().row();
 
         expect(attribute.$direction, resolvesTo(Axis.horizontal));
       });
 
       test('column() method sets vertical direction', () {
-        final attribute = FlexSpecAttribute().column();
+        final attribute = FlexMix().column();
 
         expect(attribute.$direction, resolvesTo(Axis.vertical));
       });
@@ -263,7 +252,7 @@ void main() {
           duration: const Duration(milliseconds: 300),
           curve: Curves.linear,
         );
-        final attribute = FlexSpecAttribute().animate(animation);
+        final attribute = FlexMix().animate(animation);
 
         expect(attribute.$animation, equals(animation));
       });
@@ -271,7 +260,7 @@ void main() {
 
     group('Resolution', () {
       test('resolves to FlexSpec with correct properties', () {
-        final attribute = FlexSpecAttribute(
+        final attribute = FlexMix(
           direction: Axis.horizontal,
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -299,9 +288,7 @@ void main() {
       });
 
       test('resolves with null values correctly', () {
-        final attribute = FlexSpecAttribute()
-            .direction(Axis.vertical)
-            .gap(12.0);
+        final attribute = FlexMix().direction(Axis.vertical).gap(12.0);
 
         final context = MockBuildContext();
         final spec = attribute.resolve(context);
@@ -321,13 +308,13 @@ void main() {
 
     group('Merge', () {
       test('merges properties correctly', () {
-        final first = FlexSpecAttribute(
+        final first = FlexMix(
           direction: Axis.horizontal,
           mainAxisAlignment: MainAxisAlignment.start,
           gap: 8.0,
         );
 
-        final second = FlexSpecAttribute(
+        final second = FlexMix(
           direction: Axis.vertical,
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
@@ -355,21 +342,21 @@ void main() {
       });
 
       test('returns this when other is null', () {
-        final attribute = FlexSpecAttribute().direction(Axis.horizontal);
+        final attribute = FlexMix().direction(Axis.horizontal);
         final merged = attribute.merge(null);
 
         expect(identical(attribute, merged), isTrue);
       });
 
       test('merges all properties when both have values', () {
-        final first = FlexSpecAttribute()
+        final first = FlexMix()
             .direction(Axis.horizontal)
             .mainAxisAlignment(MainAxisAlignment.center)
             .crossAxisAlignment(CrossAxisAlignment.start)
             .mainAxisSize(MainAxisSize.max)
             .verticalDirection(VerticalDirection.down);
 
-        final second = FlexSpecAttribute()
+        final second = FlexMix()
             .direction(Axis.vertical)
             .mainAxisAlignment(MainAxisAlignment.end)
             .textDirection(TextDirection.rtl)
@@ -411,12 +398,12 @@ void main() {
 
     group('Equality', () {
       test('equal attributes have same hashCode', () {
-        final attr1 = FlexSpecAttribute()
+        final attr1 = FlexMix()
             .direction(Axis.horizontal)
             .mainAxisAlignment(MainAxisAlignment.center)
             .gap(16.0);
 
-        final attr2 = FlexSpecAttribute()
+        final attr2 = FlexMix()
             .direction(Axis.horizontal)
             .mainAxisAlignment(MainAxisAlignment.center)
             .gap(16.0);
@@ -428,15 +415,15 @@ void main() {
       });
 
       test('different attributes are not equal', () {
-        final attr1 = FlexSpecAttribute().direction(Axis.horizontal);
-        final attr2 = FlexSpecAttribute().direction(Axis.vertical);
+        final attr1 = FlexMix().direction(Axis.horizontal);
+        final attr2 = FlexMix().direction(Axis.vertical);
 
         expect(attr1, isNot(equals(attr2)));
       });
 
       test('attributes with different gaps are not equal', () {
-        final attr1 = FlexSpecAttribute().gap(8.0);
-        final attr2 = FlexSpecAttribute().gap(16.0);
+        final attr1 = FlexMix().gap(8.0);
+        final attr2 = FlexMix().gap(16.0);
 
         expect(attr1, isNot(equals(attr2)));
       });
@@ -444,7 +431,7 @@ void main() {
 
     group('Props getter', () {
       test('props includes all properties', () {
-        final attribute = FlexSpecAttribute(
+        final attribute = FlexMix(
           direction: Axis.horizontal,
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -471,7 +458,7 @@ void main() {
 
     group('Modifiers', () {
       test('modifiers can be added to attribute', () {
-        final attribute = FlexSpecAttribute(
+        final attribute = FlexMix(
           modifiers: [
             OpacityModifierAttribute(opacity: 0.5),
             PaddingModifierAttribute(padding: EdgeInsetsMix.all(8.0)),
@@ -483,11 +470,11 @@ void main() {
       });
 
       test('modifiers merge correctly', () {
-        final first = FlexSpecAttribute(
+        final first = FlexMix(
           modifiers: [OpacityModifierAttribute(opacity: 0.5)],
         );
 
-        final second = FlexSpecAttribute(
+        final second = FlexMix(
           modifiers: [
             PaddingModifierAttribute(padding: EdgeInsetsMix.all(8.0)),
           ],
@@ -502,14 +489,14 @@ void main() {
 
     group('Variants', () {
       test('variants can be added to attribute', () {
-        final attribute = FlexSpecAttribute();
+        final attribute = FlexMix();
         expect(attribute.$variants, isNull); // By default no variants
       });
     });
 
     group('Builder pattern', () {
       test('builder methods create new instances', () {
-        final original = FlexSpecAttribute();
+        final original = FlexMix();
         final modified = original.direction(Axis.horizontal);
 
         expect(identical(original, modified), isFalse);
@@ -518,17 +505,11 @@ void main() {
       });
 
       test('builder methods can be combined with merge', () {
-        final attribute = FlexSpecAttribute()
+        final attribute = FlexMix()
             .direction(Axis.horizontal)
-            .merge(
-              FlexSpecAttribute().mainAxisAlignment(
-                MainAxisAlignment.spaceBetween,
-              ),
-            )
-            .merge(
-              FlexSpecAttribute().crossAxisAlignment(CrossAxisAlignment.center),
-            )
-            .merge(FlexSpecAttribute().gap(16.0));
+            .merge(FlexMix().mainAxisAlignment(MainAxisAlignment.spaceBetween))
+            .merge(FlexMix().crossAxisAlignment(CrossAxisAlignment.center))
+            .merge(FlexMix().gap(16.0));
 
         final context = MockBuildContext();
         final spec = attribute.resolve(context);
@@ -543,13 +524,13 @@ void main() {
     group('Debug Properties', () {
       test('debugFillProperties includes all properties', () {
         // This test verifies that the attribute implements Diagnosticable correctly
-        final attribute = FlexSpecAttribute()
+        final attribute = FlexMix()
             .direction(Axis.horizontal)
             .mainAxisAlignment(MainAxisAlignment.center)
             .gap(16.0);
 
         // The presence of debugFillProperties is tested by the framework
-        expect(attribute, isA<FlexSpecAttribute>());
+        expect(attribute, isA<FlexMix>());
       });
     });
   });

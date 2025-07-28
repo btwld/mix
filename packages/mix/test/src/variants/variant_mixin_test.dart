@@ -19,6 +19,11 @@ class TestVariantAttribute extends Style<BoxSpec>
   }
 
   @override
+  TestVariantAttribute variants(List<VariantStyleAttribute<BoxSpec>> value) {
+    return TestVariantAttribute(variants: value);
+  }
+
+  @override
   BoxSpec resolve(BuildContext context) => const BoxSpec();
 
   @override
@@ -97,7 +102,7 @@ void main() {
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
-      expect(result.$variants!.first.variant, isA<MultiVariant>());
+      expect(result.$variants!.first.variant, isA<ContextVariant>());
     });
 
     test('onMobile creates correct variant', () {

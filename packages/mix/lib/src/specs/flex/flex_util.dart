@@ -17,74 +17,72 @@ class FlexSpecUtility extends StyleAttributeBuilder<FlexSpec> {
   // FLEX UTILITIES - Same as FlexSpecAttribute but return FlexSpecUtility for cascade
 
   late final direction = PropUtility<FlexSpecUtility, Axis>(
-    (prop) => _build(FlexSpecAttribute.raw(direction: prop)),
+    (prop) => _build(FlexMix.raw(direction: prop)),
   );
 
   late final mainAxisAlignment =
       PropUtility<FlexSpecUtility, MainAxisAlignment>(
-        (prop) => _build(FlexSpecAttribute.raw(mainAxisAlignment: prop)),
+        (prop) => _build(FlexMix.raw(mainAxisAlignment: prop)),
       );
 
   late final crossAxisAlignment =
       PropUtility<FlexSpecUtility, CrossAxisAlignment>(
-        (prop) => _build(FlexSpecAttribute.raw(crossAxisAlignment: prop)),
+        (prop) => _build(FlexMix.raw(crossAxisAlignment: prop)),
       );
 
   late final mainAxisSize = PropUtility<FlexSpecUtility, MainAxisSize>(
-    (prop) => _build(FlexSpecAttribute.raw(mainAxisSize: prop)),
+    (prop) => _build(FlexMix.raw(mainAxisSize: prop)),
   );
 
   late final verticalDirection =
       PropUtility<FlexSpecUtility, VerticalDirection>(
-        (prop) => _build(FlexSpecAttribute.raw(verticalDirection: prop)),
+        (prop) => _build(FlexMix.raw(verticalDirection: prop)),
       );
 
   late final textDirection = PropUtility<FlexSpecUtility, TextDirection>(
-    (prop) => _build(FlexSpecAttribute.raw(textDirection: prop)),
+    (prop) => _build(FlexMix.raw(textDirection: prop)),
   );
 
   late final textBaseline = PropUtility<FlexSpecUtility, TextBaseline>(
-    (prop) => _build(FlexSpecAttribute.raw(textBaseline: prop)),
+    (prop) => _build(FlexMix.raw(textBaseline: prop)),
   );
 
   late final clipBehavior = PropUtility<FlexSpecUtility, Clip>(
-    (prop) => _build(FlexSpecAttribute.raw(clipBehavior: prop)),
+    (prop) => _build(FlexMix.raw(clipBehavior: prop)),
   );
 
   late final gap = PropUtility<FlexSpecUtility, double>(
-    (prop) => _build(FlexSpecAttribute.raw(gap: prop)),
+    (prop) => _build(FlexMix.raw(gap: prop)),
   );
 
   late final on = OnContextVariantUtility<FlexSpec, FlexSpecUtility>(
-    (v) => _build(FlexSpecAttribute(variants: [v])),
+    (v) => _build(FlexMix(variants: [v])),
   );
 
   late final wrap = ModifierUtility<FlexSpecUtility>(
-    (prop) => _build(FlexSpecAttribute(modifiers: [prop])),
+    (prop) => _build(FlexMix(modifiers: [prop])),
   );
 
-  FlexSpecAttribute _baseAttribute;
+  FlexMix _baseAttribute;
 
-  FlexSpecUtility([FlexSpecAttribute? attribute])
-    : _baseAttribute = attribute ?? FlexSpecAttribute(),
+  FlexSpecUtility([FlexMix? attribute])
+    : _baseAttribute = attribute ?? FlexMix(),
       super();
 
   /// Mutable builder - updates internal state and returns this for cascade
-  FlexSpecUtility _build(FlexSpecAttribute newAttribute) {
+  FlexSpecUtility _build(FlexMix newAttribute) {
     _baseAttribute = _baseAttribute.merge(newAttribute);
 
     return this;
   }
 
   // Convenience methods
-  FlexSpecUtility row() =>
-      _build(FlexSpecAttribute(direction: Axis.horizontal));
-  FlexSpecUtility column() =>
-      _build(FlexSpecAttribute(direction: Axis.vertical));
+  FlexSpecUtility row() => _build(FlexMix(direction: Axis.horizontal));
+  FlexSpecUtility column() => _build(FlexMix(direction: Axis.vertical));
 
   /// Animation
   FlexSpecUtility animate(AnimationConfig animation) =>
-      _build(FlexSpecAttribute(animation: animation));
+      _build(FlexMix(animation: animation));
 
   // StyleAttribute interface implementation
 
@@ -94,7 +92,7 @@ class FlexSpecUtility extends StyleAttributeBuilder<FlexSpec> {
     if (other is FlexSpecUtility) {
       return FlexSpecUtility(_baseAttribute.merge(other._baseAttribute));
     }
-    if (other is FlexSpecAttribute) {
+    if (other is FlexMix) {
       return FlexSpecUtility(_baseAttribute.merge(other));
     }
 
@@ -108,5 +106,5 @@ class FlexSpecUtility extends StyleAttributeBuilder<FlexSpec> {
 
   /// Access to internal attribute
   @override
-  FlexSpecAttribute get attribute => _baseAttribute;
+  FlexMix get attribute => _baseAttribute;
 }

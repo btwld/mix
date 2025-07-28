@@ -20,57 +20,57 @@ class IconSpecUtility extends StyleAttributeBuilder<IconSpec> {
   // ICON UTILITIES - Same as IconSpecAttribute but return IconSpecUtility for cascade
 
   late final color = ColorUtility<IconSpecUtility>(
-    (prop) => _build(IconSpecAttribute.raw(color: prop)),
+    (prop) => _build(IconMix.raw(color: prop)),
   );
 
   late final size = PropUtility<IconSpecUtility, double>(
-    (prop) => _build(IconSpecAttribute.raw(size: prop)),
+    (prop) => _build(IconMix.raw(size: prop)),
   );
 
   late final weight = PropUtility<IconSpecUtility, double>(
-    (prop) => _build(IconSpecAttribute.raw(weight: prop)),
+    (prop) => _build(IconMix.raw(weight: prop)),
   );
 
   late final grade = PropUtility<IconSpecUtility, double>(
-    (prop) => _build(IconSpecAttribute.raw(grade: prop)),
+    (prop) => _build(IconMix.raw(grade: prop)),
   );
 
   late final opticalSize = PropUtility<IconSpecUtility, double>(
-    (prop) => _build(IconSpecAttribute.raw(opticalSize: prop)),
+    (prop) => _build(IconMix.raw(opticalSize: prop)),
   );
 
   late final shadow = ShadowUtility<IconSpecUtility>(
-    (v) => _build(IconSpecAttribute.raw(shadows: [v])),
+    (v) => _build(IconMix.raw(shadows: [v])),
   );
 
   late final textDirection = PropUtility<IconSpecUtility, TextDirection>(
-    (prop) => _build(IconSpecAttribute.raw(textDirection: prop)),
+    (prop) => _build(IconMix.raw(textDirection: prop)),
   );
 
   late final applyTextScaling = PropUtility<IconSpecUtility, bool>(
-    (prop) => _build(IconSpecAttribute.raw(applyTextScaling: prop)),
+    (prop) => _build(IconMix.raw(applyTextScaling: prop)),
   );
 
   late final fill = PropUtility<IconSpecUtility, double>(
-    (prop) => _build(IconSpecAttribute.raw(fill: prop)),
+    (prop) => _build(IconMix.raw(fill: prop)),
   );
 
   late final on = OnContextVariantUtility<IconSpec, IconSpecUtility>(
-    (v) => _build(IconSpecAttribute(variants: [v])),
+    (v) => _build(IconMix(variants: [v])),
   );
 
   late final wrap = ModifierUtility<IconSpecUtility>(
-    (prop) => _build(IconSpecAttribute(modifiers: [prop])),
+    (prop) => _build(IconMix(modifiers: [prop])),
   );
 
-  IconSpecAttribute _baseAttribute;
+  IconMix _baseAttribute;
 
-  IconSpecUtility([IconSpecAttribute? attribute])
-    : _baseAttribute = attribute ?? IconSpecAttribute(),
+  IconSpecUtility([IconMix? attribute])
+    : _baseAttribute = attribute ?? IconMix(),
       super();
 
   /// Mutable builder - updates internal state and returns this for cascade
-  IconSpecUtility _build(IconSpecAttribute newAttribute) {
+  IconSpecUtility _build(IconMix newAttribute) {
     _baseAttribute = _baseAttribute.merge(newAttribute);
 
     return this;
@@ -78,11 +78,11 @@ class IconSpecUtility extends StyleAttributeBuilder<IconSpec> {
 
   // Instance method for multiple shadows
   IconSpecUtility shadows(List<ShadowMix> value) =>
-      _build(IconSpecAttribute(shadows: value));
+      _build(IconMix(shadows: value));
 
   /// Animation
   IconSpecUtility animate(AnimationConfig animation) =>
-      _build(IconSpecAttribute(animation: animation));
+      _build(IconMix(animation: animation));
 
   // StyleAttribute interface implementation
 
@@ -92,7 +92,7 @@ class IconSpecUtility extends StyleAttributeBuilder<IconSpec> {
     if (other is IconSpecUtility) {
       return IconSpecUtility(_baseAttribute.merge(other._baseAttribute));
     }
-    if (other is IconSpecAttribute) {
+    if (other is IconMix) {
       return IconSpecUtility(_baseAttribute.merge(other));
     }
 
@@ -106,5 +106,5 @@ class IconSpecUtility extends StyleAttributeBuilder<IconSpec> {
 
   /// Access to internal attribute
   @override
-  IconSpecAttribute get attribute => _baseAttribute;
+  IconMix get attribute => _baseAttribute;
 }

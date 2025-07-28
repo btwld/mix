@@ -21,27 +21,27 @@ class FlexBoxSpecUtility extends StyleAttributeBuilder<FlexBoxSpec> {
   // BOX UTILITIES - Same as BoxSpecUtility but return FlexBoxSpecUtility for cascade
 
   late final padding = EdgeInsetsGeometryUtility<FlexBoxSpecUtility>(
-    (prop) => _build(FlexBoxSpecAttribute(box: BoxMix.raw(padding: prop))),
+    (prop) => _build(FlexBoxMix(box: BoxMix.raw(padding: prop))),
   );
 
   late final margin = EdgeInsetsGeometryUtility<FlexBoxSpecUtility>(
-    (prop) => _build(FlexBoxSpecAttribute(box: BoxMix.raw(margin: prop))),
+    (prop) => _build(FlexBoxMix(box: BoxMix.raw(margin: prop))),
   );
 
   late final constraints = BoxConstraintsUtility<FlexBoxSpecUtility>(
-    (prop) => _build(FlexBoxSpecAttribute(box: BoxMix.raw(constraints: prop))),
+    (prop) => _build(FlexBoxMix(box: BoxMix.raw(constraints: prop))),
   );
 
   late final decoration = DecorationUtility<FlexBoxSpecUtility>(
-    (prop) => _build(FlexBoxSpecAttribute(box: BoxMix.raw(decoration: prop))),
+    (prop) => _build(FlexBoxMix(box: BoxMix.raw(decoration: prop))),
   );
 
   late final on = OnContextVariantUtility<FlexBoxSpec, FlexBoxSpecUtility>(
-    (v) => _build(FlexBoxSpecAttribute(variants: [v])),
+    (v) => _build(FlexBoxMix(variants: [v])),
   );
 
   late final wrap = ModifierUtility<FlexBoxSpecUtility>(
-    (prop) => _build(FlexBoxSpecAttribute(modifiers: [prop])),
+    (prop) => _build(FlexBoxMix(modifiers: [prop])),
   );
 
   // FLATTENED ACCESS - Same as BoxSpecUtility but for FlexBox
@@ -59,94 +59,72 @@ class FlexBoxSpecUtility extends StyleAttributeBuilder<FlexBoxSpec> {
   late final minHeight = constraints.minHeight;
   late final maxHeight = constraints.maxHeight; // BOX PROP UTILITIES
   late final transform = PropUtility<FlexBoxSpecUtility, Matrix4>(
-    (prop) => _build(FlexBoxSpecAttribute(box: BoxMix.raw(transform: prop))),
+    (prop) => _build(FlexBoxMix(box: BoxMix.raw(transform: prop))),
   );
 
   late final transformAlignment =
       PropUtility<FlexBoxSpecUtility, AlignmentGeometry>(
-        (prop) => _build(
-          FlexBoxSpecAttribute(box: BoxMix.raw(transformAlignment: prop)),
-        ),
+        (prop) => _build(FlexBoxMix(box: BoxMix.raw(transformAlignment: prop))),
       );
 
   late final clipBehavior = PropUtility<FlexBoxSpecUtility, Clip>(
-    (prop) => _build(FlexBoxSpecAttribute(box: BoxMix.raw(clipBehavior: prop))),
+    (prop) => _build(FlexBoxMix(box: BoxMix.raw(clipBehavior: prop))),
   );
 
   late final alignment = PropUtility<FlexBoxSpecUtility, AlignmentGeometry>(
-    (prop) => _build(FlexBoxSpecAttribute(box: BoxMix.raw(alignment: prop))),
+    (prop) => _build(FlexBoxMix(box: BoxMix.raw(alignment: prop))),
   );
 
   // FLEX UTILITIES
   late final direction = PropUtility<FlexBoxSpecUtility, Axis>(
-    (prop) => _build(
-      FlexBoxSpecAttribute(flex: FlexSpecAttribute.raw(direction: prop)),
-    ),
+    (prop) => _build(FlexBoxMix(flex: FlexMix.raw(direction: prop))),
   );
 
   late final mainAxisAlignment =
       PropUtility<FlexBoxSpecUtility, MainAxisAlignment>(
-        (prop) => _build(
-          FlexBoxSpecAttribute(
-            flex: FlexSpecAttribute.raw(mainAxisAlignment: prop),
-          ),
-        ),
+        (prop) =>
+            _build(FlexBoxMix(flex: FlexMix.raw(mainAxisAlignment: prop))),
       );
 
   late final crossAxisAlignment =
       PropUtility<FlexBoxSpecUtility, CrossAxisAlignment>(
-        (prop) => _build(
-          FlexBoxSpecAttribute(
-            flex: FlexSpecAttribute.raw(crossAxisAlignment: prop),
-          ),
-        ),
+        (prop) =>
+            _build(FlexBoxMix(flex: FlexMix.raw(crossAxisAlignment: prop))),
       );
 
   late final mainAxisSize = PropUtility<FlexBoxSpecUtility, MainAxisSize>(
-    (prop) => _build(
-      FlexBoxSpecAttribute(flex: FlexSpecAttribute.raw(mainAxisSize: prop)),
-    ),
+    (prop) => _build(FlexBoxMix(flex: FlexMix.raw(mainAxisSize: prop))),
   );
 
   late final verticalDirection =
       PropUtility<FlexBoxSpecUtility, VerticalDirection>(
-        (prop) => _build(
-          FlexBoxSpecAttribute(
-            flex: FlexSpecAttribute.raw(verticalDirection: prop),
-          ),
-        ),
+        (prop) =>
+            _build(FlexBoxMix(flex: FlexMix.raw(verticalDirection: prop))),
       );
 
   late final flexTextDirection = PropUtility<FlexBoxSpecUtility, TextDirection>(
-    (prop) => _build(
-      FlexBoxSpecAttribute(flex: FlexSpecAttribute.raw(textDirection: prop)),
-    ),
+    (prop) => _build(FlexBoxMix(flex: FlexMix.raw(textDirection: prop))),
   );
 
   late final textBaseline = PropUtility<FlexBoxSpecUtility, TextBaseline>(
-    (prop) => _build(
-      FlexBoxSpecAttribute(flex: FlexSpecAttribute.raw(textBaseline: prop)),
-    ),
+    (prop) => _build(FlexBoxMix(flex: FlexMix.raw(textBaseline: prop))),
   );
 
   late final flexClipBehavior = PropUtility<FlexBoxSpecUtility, Clip>(
-    (prop) => _build(
-      FlexBoxSpecAttribute(flex: FlexSpecAttribute.raw(clipBehavior: prop)),
-    ),
+    (prop) => _build(FlexBoxMix(flex: FlexMix.raw(clipBehavior: prop))),
   );
 
   late final gap = PropUtility<FlexBoxSpecUtility, double>(
-    (prop) =>
-        _build(FlexBoxSpecAttribute(flex: FlexSpecAttribute.raw(gap: prop))),
+    (prop) => _build(FlexBoxMix(flex: FlexMix.raw(gap: prop))),
   );
 
-  FlexBoxSpecAttribute _baseAttribute;
+  FlexBoxMix _baseAttribute;
 
-  FlexBoxSpecUtility([FlexBoxSpecAttribute? attribute])
-    : _baseAttribute = attribute ?? const FlexBoxSpecAttribute();
+  FlexBoxSpecUtility([FlexBoxMix? attribute])
+    : _baseAttribute = attribute ?? const FlexBoxMix();
 
   /// Mutable builder - updates internal state and returns this for cascade
-  FlexBoxSpecUtility _build(FlexBoxSpecAttribute newAttribute) {
+  FlexBoxSpecUtility _build(FlexBoxMix newAttribute) {
     _baseAttribute = _baseAttribute.merge(newAttribute);
 
     return this;
@@ -156,7 +134,7 @@ class FlexBoxSpecUtility extends StyleAttributeBuilder<FlexBoxSpec> {
 
   /// Animation
   FlexBoxSpecUtility animate(AnimationConfig animation) =>
-      _build(FlexBoxSpecAttribute(animation: animation));
+      _build(FlexBoxMix(animation: animation));
 
   // StyleAttribute interface implementation
 
@@ -166,7 +144,7 @@ class FlexBoxSpecUtility extends StyleAttributeBuilder<FlexBoxSpec> {
     if (other is FlexBoxSpecUtility) {
       return FlexBoxSpecUtility(_baseAttribute.merge(other._baseAttribute));
     }
-    if (other is FlexBoxSpecAttribute) {
+    if (other is FlexBoxMix) {
       return FlexBoxSpecUtility(_baseAttribute.merge(other));
     }
 
@@ -180,5 +158,5 @@ class FlexBoxSpecUtility extends StyleAttributeBuilder<FlexBoxSpec> {
 
   /// Access to internal attribute
   @override
-  FlexBoxSpecAttribute get attribute => _baseAttribute;
+  FlexBoxMix get attribute => _baseAttribute;
 }

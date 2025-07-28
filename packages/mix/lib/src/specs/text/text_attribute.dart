@@ -6,17 +6,12 @@ import '../../core/directive.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
-import '../../core/utility.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/typography/strut_style_mix.dart';
-import '../../properties/typography/strut_style_util.dart';
 import '../../properties/typography/text_height_behavior_mix.dart';
-import '../../properties/typography/text_height_behavior_util.dart';
 import '../../properties/typography/text_style_mix.dart';
-import '../../properties/typography/text_style_util.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
-import 'text_directives_util.dart';
 import 'text_spec.dart';
 
 /// Represents the attributes of a [TextSpec].
@@ -43,140 +38,7 @@ class TextMix extends Style<TextSpec>
   final Prop<bool>? $softWrap;
   final List<Prop<MixDirective<String>>>? $directives;
 
-  /// Utility for defining [TextMix.overflow]
-  late final overflow = PropUtility<TextMix, TextOverflow>(
-    (prop) => merge(TextMix.raw(overflow: prop)),
-  );
-
-  /// Utility for defining [TextMix.strutStyle]
-  late final strutStyle = StrutStyleUtility(
-    (prop) => merge(TextMix.raw(strutStyle: prop)),
-  );
-
-  /// Utility for defining [TextMix.textAlign]
-  late final textAlign = PropUtility<TextMix, TextAlign>(
-    (prop) => merge(TextMix.raw(textAlign: prop)),
-  );
-
-  /// Utility for defining [TextMix.textScaler]
-  late final textScaler = PropUtility<TextMix, TextScaler>(
-    (prop) => merge(TextMix.raw(textScaler: prop)),
-  );
-
-  /// Utility for defining [TextMix.maxLines]
-  late final maxLines = PropUtility<TextMix, int>(
-    (prop) => merge(TextMix.raw(maxLines: prop)),
-  );
-
-  /// Utility for defining [TextMix.style]
-  late final style = TextStyleUtility(
-    (prop) => merge(TextMix.raw(style: prop)),
-  );
-
-  /// Utility for defining [TextMix.textWidthBasis]
-  late final textWidthBasis = PropUtility<TextMix, TextWidthBasis>(
-    (prop) => merge(TextMix.raw(textWidthBasis: prop)),
-  );
-
-  /// Utility for defining [TextMix.textHeightBehavior]
-  late final textHeightBehavior = TextHeightBehaviorUtility(
-    (prop) => merge(TextMix.raw(textHeightBehavior: prop)),
-  );
-
-  /// Utility for defining [TextMix.textDirection]
-  late final textDirection = PropUtility<TextMix, TextDirection>(
-    (prop) => merge(TextMix.raw(textDirection: prop)),
-  );
-
-  /// Utility for defining [TextMix.softWrap]
-  late final softWrap = PropUtility<TextMix, bool>(
-    (prop) => merge(TextMix.raw(softWrap: prop)),
-  );
-
-  /// Utility for defining [TextMix.directive]
-  late final directive = TextDirectiveUtility(
-    (prop) => merge(TextMix.raw(directives: [prop])),
-  );
-
-  /// Utility for defining [TextMix.style.color]
-  late final color = style.color;
-
-  /// Utility for defining [TextMix.style.fontFamily]
-  late final fontFamily = style.fontFamily;
-
-  /// Utility for defining [TextMix.style.fontWeight]
-  late final fontWeight = style.fontWeight;
-
-  /// Utility for defining [TextMix.style.fontStyle]
-  late final fontStyle = style.fontStyle;
-
-  /// Utility for defining [TextMix.style.fontSize]
-  late final fontSize = style.fontSize;
-
-  /// Utility for defining [TextMix.style.letterSpacing]
-  late final letterSpacing = style.letterSpacing;
-
-  /// Utility for defining [TextMix.style.wordSpacing]
-  late final wordSpacing = style.wordSpacing;
-
-  /// Utility for defining [TextMix.style.textBaseline]
-  late final textBaseline = style.textBaseline;
-
-  /// Utility for defining [TextMix.style.backgroundColor]
-  late final backgroundColor = style.backgroundColor;
-
-  /// Utility for defining [TextMix.style.shadows]
-  late final shadows = style.shadows;
-
-  /// Utility for defining [TextMix.style.fontFeatures]
-  late final fontFeatures = style.fontFeatures;
-
-  /// Utility for defining [TextMix.style.fontVariations]
-  late final fontVariations = style.fontVariations;
-
-  /// Utility for defining [TextMix.style.decoration]
-  late final decoration = style.decoration;
-
-  /// Utility for defining [TextMix.style.decorationColor]
-  late final decorationColor = style.decorationColor;
-
-  /// Utility for defining [TextMix.style.decorationStyle]
-  late final decorationStyle = style.decorationStyle;
-
-  /// Utility for defining [TextMix.style.debugLabel]
-  late final debugLabel = style.debugLabel;
-
-  /// Utility for defining [TextMix.style.height]
-  late final height = style.height;
-
-  /// Utility for defining [TextMix.style.foreground]
-  late final foreground = style.foreground;
-
-  /// Utility for defining [TextMix.style.background]
-  late final background = style.background;
-
-  /// Utility for defining [TextMix.style.decorationThickness]
-  late final decorationThickness = style.decorationThickness;
-
-  /// Utility for defining [TextMix.style.fontFamilyFallback]
-  late final fontFamilyFallback = style.fontFamilyFallback;
-
-  /// Utility for defining [TextMix.directive.uppercase]
-  late final uppercase = directive.uppercase;
-
-  /// Utility for defining [TextMix.directive.lowercase]
-  late final lowercase = directive.lowercase;
-
-  /// Utility for defining [TextMix.directive.capitalize]
-  late final capitalize = directive.capitalize;
-
-  /// Utility for defining [TextMix.directive.titleCase]
-  late final titleCase = directive.titleCase;
-
-  /// Utility for defining [TextMix.directive.sentenceCase]
-  late final sentenceCase = directive.sentenceCase;
-
-  TextMix.raw({
+  const TextMix.raw({
     Prop<TextOverflow>? overflow,
     MixProp<StrutStyle>? strutStyle,
     Prop<TextAlign>? textAlign,

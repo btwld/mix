@@ -87,7 +87,7 @@ class FlexBox extends StyleWidget<FlexBoxSpec> {
 /// ```
 class HBox extends FlexBox {
   const HBox({
-    super.style = const FlexBoxSpecAttribute(),
+    super.style = const FlexBoxMix(),
     super.key,
 
     super.children = const <Widget>[],

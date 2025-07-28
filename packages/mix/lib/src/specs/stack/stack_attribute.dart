@@ -18,37 +18,37 @@ import 'stack_spec.dart';
 ///
 /// Use this class to configure the attributes of a [StackSpec] and pass it to
 /// the [StackSpec] constructor.
-class StackSpecAttribute extends Style<StackSpec>
+class StackMix extends Style<StackSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<StackSpecAttribute, StackSpec>,
-        StyleVariantMixin<StackSpecAttribute, StackSpec> {
+        StyleModifierMixin<StackMix, StackSpec>,
+        StyleVariantMixin<StackMix, StackSpec> {
   final Prop<AlignmentGeometry>? $alignment;
   final Prop<StackFit>? $fit;
   final Prop<TextDirection>? $textDirection;
   final Prop<Clip>? $clipBehavior;
 
-  /// Utility for defining [StackSpecAttribute.alignment]
-  late final alignment = PropUtility<StackSpecAttribute, AlignmentGeometry>(
-    (prop) => merge(StackSpecAttribute.raw(alignment: prop)),
+  /// Utility for defining [StackMix.alignment]
+  late final alignment = PropUtility<StackMix, AlignmentGeometry>(
+    (prop) => merge(StackMix.raw(alignment: prop)),
   );
 
-  /// Utility for defining [StackSpecAttribute.fit]
-  late final fit = PropUtility<StackSpecAttribute, StackFit>(
-    (prop) => merge(StackSpecAttribute.raw(fit: prop)),
+  /// Utility for defining [StackMix.fit]
+  late final fit = PropUtility<StackMix, StackFit>(
+    (prop) => merge(StackMix.raw(fit: prop)),
   );
 
-  /// Utility for defining [StackSpecAttribute.textDirection]
-  late final textDirection = PropUtility<StackSpecAttribute, TextDirection>(
-    (prop) => merge(StackSpecAttribute.raw(textDirection: prop)),
+  /// Utility for defining [StackMix.textDirection]
+  late final textDirection = PropUtility<StackMix, TextDirection>(
+    (prop) => merge(StackMix.raw(textDirection: prop)),
   );
 
-  /// Utility for defining [StackSpecAttribute.clipBehavior]
-  late final clipBehavior = PropUtility<StackSpecAttribute, Clip>(
-    (prop) => merge(StackSpecAttribute.raw(clipBehavior: prop)),
+  /// Utility for defining [StackMix.clipBehavior]
+  late final clipBehavior = PropUtility<StackMix, Clip>(
+    (prop) => merge(StackMix.raw(clipBehavior: prop)),
   );
 
-  StackSpecAttribute.raw({
+  StackMix.raw({
     Prop<AlignmentGeometry>? alignment,
     Prop<StackFit>? fit,
     Prop<TextDirection>? textDirection,
@@ -61,7 +61,7 @@ class StackSpecAttribute extends Style<StackSpec>
        $textDirection = textDirection,
        $clipBehavior = clipBehavior;
 
-  StackSpecAttribute({
+  StackMix({
     AlignmentGeometry? alignment,
     StackFit? fit,
     TextDirection? textDirection,
@@ -81,13 +81,13 @@ class StackSpecAttribute extends Style<StackSpec>
 
   /// Constructor that accepts a [StackSpec] value and extracts its properties.
   ///
-  /// This is useful for converting existing [StackSpec] instances to [StackSpecAttribute].
+  /// This is useful for converting existing [StackSpec] instances to [StackMix].
   ///
   /// ```dart
   /// const spec = StackSpec(alignment: AlignmentDirectional.topStart, fit: StackFit.loose);
   /// final attr = StackSpecAttribute.value(spec);
   /// ```
-  StackSpecAttribute.value(StackSpec spec)
+  StackMix.value(StackSpec spec)
     : this(
         alignment: spec.alignment,
         fit: spec.fit,
@@ -103,23 +103,23 @@ class StackSpecAttribute extends Style<StackSpec>
   /// const StackSpec? spec = StackSpec(alignment: AlignmentDirectional.topStart, fit: StackFit.loose);
   /// final attr = StackSpecAttribute.maybeValue(spec); // Returns StackSpecAttribute or null
   /// ```
-  static StackSpecAttribute? maybeValue(StackSpec? spec) {
-    return spec != null ? StackSpecAttribute.value(spec) : null;
+  static StackMix? maybeValue(StackSpec? spec) {
+    return spec != null ? StackMix.value(spec) : null;
   }
 
   /// Convenience method for animating the StackSpec
-  StackSpecAttribute animate(AnimationConfig animation) {
-    return StackSpecAttribute(animation: animation);
+  StackMix animate(AnimationConfig animation) {
+    return StackMix(animation: animation);
   }
 
   @override
-  StackSpecAttribute variants(List<VariantStyleAttribute<StackSpec>> variants) {
-    return merge(StackSpecAttribute(variants: variants));
+  StackMix variants(List<VariantStyleAttribute<StackSpec>> variants) {
+    return merge(StackMix(variants: variants));
   }
 
   @override
-  StackSpecAttribute modifiers(List<ModifierAttribute> modifiers) {
-    return merge(StackSpecAttribute(modifiers: modifiers));
+  StackMix modifiers(List<ModifierAttribute> modifiers) {
+    return merge(StackMix(modifiers: modifiers));
   }
 
   /// Resolves to [StackSpec] using the provided [MixContext].
@@ -133,12 +133,12 @@ class StackSpecAttribute extends Style<StackSpec>
     );
   }
 
-  /// Merges the properties of this [StackSpecAttribute] with the properties of [other].
+  /// Merges the properties of this [StackMix] with the properties of [other].
   @override
-  StackSpecAttribute merge(StackSpecAttribute? other) {
+  StackMix merge(StackMix? other) {
     if (other == null) return this;
 
-    return StackSpecAttribute.raw(
+    return StackMix.raw(
       alignment: MixHelpers.merge($alignment, other.$alignment),
       fit: MixHelpers.merge($fit, other.$fit),
       textDirection: MixHelpers.merge($textDirection, other.$textDirection),
@@ -165,10 +165,8 @@ class StackSpecAttribute extends Style<StackSpec>
   }
 
   @override
-  StackSpecAttribute variant(Variant variant, StackSpecAttribute style) {
-    return merge(
-      StackSpecAttribute(variants: [VariantStyleAttribute(variant, style)]),
-    );
+  StackMix variant(Variant variant, StackMix style) {
+    return merge(StackMix(variants: [VariantStyleAttribute(variant, style)]));
   }
 
   @override

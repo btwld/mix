@@ -541,7 +541,6 @@ void main() {
         const namedVariant = NamedVariant('test');
         final contextVariant = ContextVariant('test', (context) => true);
         final widgetStateVariant = WidgetStateVariant(WidgetState.hovered);
-        final multiVariant = MultiVariant.and([namedVariant, contextVariant]);
 
         expect(
           VariantAttributeBuilder<MockSpec>(namedVariant),
@@ -556,7 +555,7 @@ void main() {
           isA<VariantAttributeBuilder<MockSpec>>(),
         );
         expect(
-          VariantAttributeBuilder<MockSpec>(multiVariant),
+          VariantAttributeBuilder<MockSpec>(namedVariant),
           isA<VariantAttributeBuilder<MockSpec>>(),
         );
       });
@@ -783,14 +782,19 @@ void main() {
         );
       });
 
-      test('works with complex variant compositions', () {
+      test('works with different variant types', () {
         const namedVariant = NamedVariant('test');
         final contextVariant = ContextVariant('test', (context) => true);
-        final multiVariant = MultiVariant.and([namedVariant, contextVariant]);
-        final notVariant = MultiVariant.not(namedVariant);
+        final notVariant = ContextVariant.not(
+          ContextVariant.widgetState(WidgetState.disabled),
+        );
 
         expect(
-          VariantAttributeBuilder<MultiSpec>(multiVariant),
+          VariantAttributeBuilder<MultiSpec>(namedVariant),
+          isA<VariantAttributeBuilder<MultiSpec>>(),
+        );
+        expect(
+          VariantAttributeBuilder<MultiSpec>(contextVariant),
           isA<VariantAttributeBuilder<MultiSpec>>(),
         );
         expect(

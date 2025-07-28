@@ -12,11 +12,11 @@ import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'image_spec.dart';
 
-class ImageSpecAttribute extends Style<ImageSpec>
+class ImageMix extends Style<ImageSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<ImageSpecAttribute, ImageSpec>,
-        StyleVariantMixin<ImageSpecAttribute, ImageSpec> {
+        StyleModifierMixin<ImageMix, ImageSpec>,
+        StyleVariantMixin<ImageMix, ImageSpec> {
   final Prop<double>? $width;
   final Prop<double>? $height;
   final Prop<Color>? $color;
@@ -27,52 +27,50 @@ class ImageSpecAttribute extends Style<ImageSpec>
   final Prop<FilterQuality>? $filterQuality;
   final Prop<BlendMode>? $colorBlendMode;
 
-  /// Utility for defining [ImageSpecAttribute.width]
-  late final width = PropUtility<ImageSpecAttribute, double>(
-    (prop) => merge(ImageSpecAttribute.raw(width: prop)),
+  /// Utility for defining [ImageMix.width]
+  late final width = PropUtility<ImageMix, double>(
+    (prop) => merge(ImageMix.raw(width: prop)),
   );
 
-  /// Utility for defining [ImageSpecAttribute.height]
-  late final height = PropUtility<ImageSpecAttribute, double>(
-    (prop) => merge(ImageSpecAttribute.raw(height: prop)),
+  /// Utility for defining [ImageMix.height]
+  late final height = PropUtility<ImageMix, double>(
+    (prop) => merge(ImageMix.raw(height: prop)),
   );
 
-  /// Utility for defining [ImageSpecAttribute.color]
-  late final color = ColorUtility(
-    (prop) => merge(ImageSpecAttribute.raw(color: prop)),
+  /// Utility for defining [ImageMix.color]
+  late final color = ColorUtility((prop) => merge(ImageMix.raw(color: prop)));
+
+  /// Utility for defining [ImageMix.repeat]
+  late final repeat = PropUtility<ImageMix, ImageRepeat>(
+    (prop) => merge(ImageMix.raw(repeat: prop)),
   );
 
-  /// Utility for defining [ImageSpecAttribute.repeat]
-  late final repeat = PropUtility<ImageSpecAttribute, ImageRepeat>(
-    (prop) => merge(ImageSpecAttribute.raw(repeat: prop)),
+  /// Utility for defining [ImageMix.fit]
+  late final fit = PropUtility<ImageMix, BoxFit>(
+    (prop) => merge(ImageMix.raw(fit: prop)),
   );
 
-  /// Utility for defining [ImageSpecAttribute.fit]
-  late final fit = PropUtility<ImageSpecAttribute, BoxFit>(
-    (prop) => merge(ImageSpecAttribute.raw(fit: prop)),
+  /// Utility for defining [ImageMix.alignment]
+  late final alignment = PropUtility<ImageMix, AlignmentGeometry>(
+    (prop) => merge(ImageMix.raw(alignment: prop)),
   );
 
-  /// Utility for defining [ImageSpecAttribute.alignment]
-  late final alignment = PropUtility<ImageSpecAttribute, AlignmentGeometry>(
-    (prop) => merge(ImageSpecAttribute.raw(alignment: prop)),
+  /// Utility for defining [ImageMix.centerSlice]
+  late final centerSlice = PropUtility<ImageMix, Rect>(
+    (prop) => merge(ImageMix.raw(centerSlice: prop)),
   );
 
-  /// Utility for defining [ImageSpecAttribute.centerSlice]
-  late final centerSlice = PropUtility<ImageSpecAttribute, Rect>(
-    (prop) => merge(ImageSpecAttribute.raw(centerSlice: prop)),
+  /// Utility for defining [ImageMix.filterQuality]
+  late final filterQuality = PropUtility<ImageMix, FilterQuality>(
+    (prop) => merge(ImageMix.raw(filterQuality: prop)),
   );
 
-  /// Utility for defining [ImageSpecAttribute.filterQuality]
-  late final filterQuality = PropUtility<ImageSpecAttribute, FilterQuality>(
-    (prop) => merge(ImageSpecAttribute.raw(filterQuality: prop)),
+  /// Utility for defining [ImageMix.colorBlendMode]
+  late final colorBlendMode = PropUtility<ImageMix, BlendMode>(
+    (prop) => merge(ImageMix.raw(colorBlendMode: prop)),
   );
 
-  /// Utility for defining [ImageSpecAttribute.colorBlendMode]
-  late final colorBlendMode = PropUtility<ImageSpecAttribute, BlendMode>(
-    (prop) => merge(ImageSpecAttribute.raw(colorBlendMode: prop)),
-  );
-
-  ImageSpecAttribute.raw({
+  ImageMix.raw({
     Prop<double>? width,
     Prop<double>? height,
     Prop<Color>? color,
@@ -95,7 +93,7 @@ class ImageSpecAttribute extends Style<ImageSpec>
        $filterQuality = filterQuality,
        $colorBlendMode = colorBlendMode;
 
-  ImageSpecAttribute({
+  ImageMix({
     double? width,
     double? height,
     Color? color,
@@ -125,13 +123,13 @@ class ImageSpecAttribute extends Style<ImageSpec>
 
   /// Constructor that accepts an [ImageSpec] value and extracts its properties.
   ///
-  /// This is useful for converting existing [ImageSpec] instances to [ImageSpecAttribute].
+  /// This is useful for converting existing [ImageSpec] instances to [ImageMix].
   ///
   /// ```dart
   /// const spec = ImageSpec(width: 100, height: 100, fit: BoxFit.cover);
   /// final attr = ImageSpecAttribute.value(spec);
   /// ```
-  ImageSpecAttribute.value(ImageSpec spec)
+  ImageMix.value(ImageSpec spec)
     : this(
         width: spec.width,
         height: spec.height,
@@ -152,23 +150,23 @@ class ImageSpecAttribute extends Style<ImageSpec>
   /// const ImageSpec? spec = ImageSpec(width: 100, height: 100, fit: BoxFit.cover);
   /// final attr = ImageSpecAttribute.maybeValue(spec); // Returns ImageSpecAttribute or null
   /// ```
-  static ImageSpecAttribute? maybeValue(ImageSpec? spec) {
-    return spec != null ? ImageSpecAttribute.value(spec) : null;
+  static ImageMix? maybeValue(ImageSpec? spec) {
+    return spec != null ? ImageMix.value(spec) : null;
   }
 
   /// Convenience method for animating the ImageSpec
-  ImageSpecAttribute animate(AnimationConfig animation) {
-    return ImageSpecAttribute(animation: animation);
+  ImageMix animate(AnimationConfig animation) {
+    return ImageMix(animation: animation);
   }
 
   @override
-  ImageSpecAttribute variants(List<VariantStyleAttribute<ImageSpec>> variants) {
-    return merge(ImageSpecAttribute(variants: variants));
+  ImageMix variants(List<VariantStyleAttribute<ImageSpec>> variants) {
+    return merge(ImageMix(variants: variants));
   }
 
   @override
-  ImageSpecAttribute modifiers(List<ModifierAttribute> modifiers) {
-    return merge(ImageSpecAttribute(modifiers: modifiers));
+  ImageMix modifiers(List<ModifierAttribute> modifiers) {
+    return merge(ImageMix(modifiers: modifiers));
   }
 
   @override
@@ -187,10 +185,10 @@ class ImageSpecAttribute extends Style<ImageSpec>
   }
 
   @override
-  ImageSpecAttribute merge(ImageSpecAttribute? other) {
+  ImageMix merge(ImageMix? other) {
     if (other == null) return this;
 
-    return ImageSpecAttribute.raw(
+    return ImageMix.raw(
       width: MixHelpers.merge($width, other.$width),
       height: MixHelpers.merge($height, other.$height),
       color: MixHelpers.merge($color, other.$color),
@@ -233,10 +231,8 @@ class ImageSpecAttribute extends Style<ImageSpec>
   }
 
   @override
-  ImageSpecAttribute variant(Variant variant, ImageSpecAttribute style) {
-    return merge(
-      ImageSpecAttribute(variants: [VariantStyleAttribute(variant, style)]),
-    );
+  ImageMix variant(Variant variant, ImageMix style) {
+    return merge(ImageMix(variants: [VariantStyleAttribute(variant, style)]));
   }
 
   @override

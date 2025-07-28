@@ -9,7 +9,7 @@ void main() {
   group('ImageSpecAttribute', () {
     group('Constructor', () {
       test('creates ImageSpecAttribute with all properties', () {
-        final attribute = ImageSpecAttribute.raw(
+        final attribute = ImageMix.raw(
           width: Prop(100.0),
           height: Prop(200.0),
           color: Prop(Colors.red),
@@ -36,7 +36,7 @@ void main() {
       });
 
       test('creates empty ImageSpecAttribute', () {
-        final attribute = ImageSpecAttribute();
+        final attribute = ImageMix();
 
         expect(attribute.$width, isNull);
         expect(attribute.$height, isNull);
@@ -52,7 +52,7 @@ void main() {
 
     group('only constructor', () {
       test('creates ImageSpecAttribute with only constructor', () {
-        final attribute = ImageSpecAttribute(
+        final attribute = ImageMix(
           width: 150.0,
           height: 250.0,
           color: Colors.blue,
@@ -79,7 +79,7 @@ void main() {
       });
 
       test('creates partial ImageSpecAttribute with only constructor', () {
-        final attribute = ImageSpecAttribute(width: 100.0, fit: BoxFit.fill);
+        final attribute = ImageMix(width: 100.0, fit: BoxFit.fill);
 
         expect(attribute.$width, resolvesTo(100.0));
         expect(attribute.$fit, resolvesTo(BoxFit.fill));
@@ -107,7 +107,7 @@ void main() {
           colorBlendMode: BlendMode.multiply,
         );
 
-        final attribute = ImageSpecAttribute.value(spec);
+        final attribute = ImageMix.value(spec);
 
         expect(attribute.$width, resolvesTo(100.0));
         expect(attribute.$height, resolvesTo(200.0));
@@ -124,12 +124,12 @@ void main() {
       });
 
       test('maybeValue returns null for null spec', () {
-        expect(ImageSpecAttribute.maybeValue(null), isNull);
+        expect(ImageMix.maybeValue(null), isNull);
       });
 
       test('maybeValue returns attribute for non-null spec', () {
         const spec = ImageSpec(width: 100.0, height: 200.0);
-        final attribute = ImageSpecAttribute.maybeValue(spec);
+        final attribute = ImageMix.maybeValue(spec);
 
         expect(attribute, isNotNull);
         expect(attribute!.$width, resolvesTo(100.0));
@@ -139,23 +139,23 @@ void main() {
 
     group('Utility Methods', () {
       test('width and height utilities work correctly', () {
-        final widthAttr = ImageSpecAttribute().width(100.0);
-        final heightAttr = ImageSpecAttribute().height(200.0);
+        final widthAttr = ImageMix().width(100.0);
+        final heightAttr = ImageMix().height(200.0);
 
         expect(widthAttr.$width, resolvesTo(100.0));
         expect(heightAttr.$height, resolvesTo(200.0));
       });
 
       test('color utility works correctly', () {
-        final attribute = ImageSpecAttribute().color(Colors.green);
+        final attribute = ImageMix().color(Colors.green);
 
         expect(attribute.$color, resolvesTo(Colors.green));
       });
 
       test('repeat utility works correctly', () {
-        final repeatX = ImageSpecAttribute().repeat(ImageRepeat.repeatX);
-        final repeatY = ImageSpecAttribute().repeat(ImageRepeat.repeatY);
-        final noRepeat = ImageSpecAttribute().repeat(ImageRepeat.noRepeat);
+        final repeatX = ImageMix().repeat(ImageRepeat.repeatX);
+        final repeatY = ImageMix().repeat(ImageRepeat.repeatY);
+        final noRepeat = ImageMix().repeat(ImageRepeat.noRepeat);
 
         expect(repeatX.$repeat, resolvesTo(ImageRepeat.repeatX));
         expect(repeatY.$repeat, resolvesTo(ImageRepeat.repeatY));
@@ -163,9 +163,9 @@ void main() {
       });
 
       test('fit utility works correctly', () {
-        final cover = ImageSpecAttribute().fit(BoxFit.cover);
-        final contain = ImageSpecAttribute().fit(BoxFit.contain);
-        final fill = ImageSpecAttribute().fit(BoxFit.fill);
+        final cover = ImageMix().fit(BoxFit.cover);
+        final contain = ImageMix().fit(BoxFit.contain);
+        final fill = ImageMix().fit(BoxFit.fill);
 
         expect(cover.$fit, resolvesTo(BoxFit.cover));
         expect(contain.$fit, resolvesTo(BoxFit.contain));
@@ -173,13 +173,13 @@ void main() {
       });
 
       test('alignment utility works correctly', () {
-        final attribute = ImageSpecAttribute().alignment(Alignment.bottomRight);
+        final attribute = ImageMix().alignment(Alignment.bottomRight);
 
         expectProp(attribute.$alignment, Alignment.bottomRight);
       });
 
       test('centerSlice utility works correctly', () {
-        final attribute = ImageSpecAttribute().centerSlice(
+        final attribute = ImageMix().centerSlice(
           const Rect.fromLTWH(20, 20, 40, 40),
         );
 
@@ -190,18 +190,16 @@ void main() {
       });
 
       test('filterQuality utility works correctly', () {
-        final high = ImageSpecAttribute().filterQuality(FilterQuality.high);
-        final low = ImageSpecAttribute().filterQuality(FilterQuality.low);
+        final high = ImageMix().filterQuality(FilterQuality.high);
+        final low = ImageMix().filterQuality(FilterQuality.low);
 
         expect(high.$filterQuality, resolvesTo(FilterQuality.high));
         expect(low.$filterQuality, resolvesTo(FilterQuality.low));
       });
 
       test('colorBlendMode utility works correctly', () {
-        final multiply = ImageSpecAttribute().colorBlendMode(
-          BlendMode.multiply,
-        );
-        final screen = ImageSpecAttribute().colorBlendMode(BlendMode.screen);
+        final multiply = ImageMix().colorBlendMode(BlendMode.multiply);
+        final screen = ImageMix().colorBlendMode(BlendMode.screen);
 
         expect(multiply.$colorBlendMode, resolvesTo(BlendMode.multiply));
         expect(screen.$colorBlendMode, resolvesTo(BlendMode.screen));
@@ -209,7 +207,7 @@ void main() {
 
       test('chaining utilities accumulates properties correctly', () {
         // Chaining now properly accumulates all properties
-        final chained = ImageSpecAttribute()
+        final chained = ImageMix()
             .width(100.0)
             .height(200.0)
             .fit(BoxFit.cover)
@@ -226,9 +224,9 @@ void main() {
 
       test('merge combines different attribute instances', () {
         // Merge is still useful for combining separate attribute instances
-        final first = ImageSpecAttribute(width: 100.0, height: 200.0);
+        final first = ImageMix(width: 100.0, height: 200.0);
 
-        final second = ImageSpecAttribute(
+        final second = ImageMix(
           fit: BoxFit.cover,
           alignment: Alignment.center,
           color: Colors.red,
@@ -250,7 +248,7 @@ void main() {
           duration: const Duration(milliseconds: 300),
           curve: Curves.ease,
         );
-        final attribute = ImageSpecAttribute().animate(animation);
+        final attribute = ImageMix().animate(animation);
 
         expect(attribute.$animation, equals(animation));
       });
@@ -258,7 +256,7 @@ void main() {
 
     group('Resolution', () {
       test('resolves to ImageSpec with correct properties', () {
-        final attribute = ImageSpecAttribute()
+        final attribute = ImageMix()
             .width(100.0)
             .height(200.0)
             .color(Colors.red)
@@ -286,7 +284,7 @@ void main() {
       });
 
       test('resolves with partial values correctly', () {
-        final attribute = ImageSpecAttribute().width(150.0).fit(BoxFit.contain);
+        final attribute = ImageMix().width(150.0).fit(BoxFit.contain);
 
         final context = MockBuildContext();
         final spec = attribute.resolve(context);
@@ -306,13 +304,13 @@ void main() {
 
     group('Merge', () {
       test('merges properties correctly', () {
-        final first = ImageSpecAttribute()
+        final first = ImageMix()
             .width(100.0)
             .height(200.0)
             .color(Colors.red)
             .fit(BoxFit.cover);
 
-        final second = ImageSpecAttribute()
+        final second = ImageMix()
             .width(150.0)
             .alignment(Alignment.center)
             .repeat(ImageRepeat.repeat);
@@ -328,14 +326,14 @@ void main() {
       });
 
       test('returns this when other is null', () {
-        final attribute = ImageSpecAttribute().width(100.0);
+        final attribute = ImageMix().width(100.0);
         final merged = attribute.merge(null);
 
         expect(identical(attribute, merged), isTrue);
       });
 
       test('merges all properties when both have values', () {
-        final first = ImageSpecAttribute(
+        final first = ImageMix(
           width: 100.0,
           height: 200.0,
           color: Colors.red,
@@ -343,7 +341,7 @@ void main() {
           fit: BoxFit.cover,
         );
 
-        final second = ImageSpecAttribute(
+        final second = ImageMix(
           width: 300.0,
           height: 400.0,
           alignment: Alignment.topLeft,
@@ -371,13 +369,13 @@ void main() {
 
     group('Equality', () {
       test('equal attributes have same hashCode', () {
-        final attr1 = ImageSpecAttribute()
+        final attr1 = ImageMix()
             .width(100.0)
             .height(200.0)
             .color(Colors.red)
             .fit(BoxFit.cover);
 
-        final attr2 = ImageSpecAttribute()
+        final attr2 = ImageMix()
             .width(100.0)
             .height(200.0)
             .color(Colors.red)
@@ -387,15 +385,15 @@ void main() {
       });
 
       test('different attributes are not equal', () {
-        final attr1 = ImageSpecAttribute().width(100.0);
-        final attr2 = ImageSpecAttribute().width(200.0);
+        final attr1 = ImageMix().width(100.0);
+        final attr2 = ImageMix().width(200.0);
 
         expect(attr1, isNot(equals(attr2)));
       });
 
       test('attributes with different colors are not equal', () {
-        final attr1 = ImageSpecAttribute().color(Colors.red);
-        final attr2 = ImageSpecAttribute().color(Colors.blue);
+        final attr1 = ImageMix().color(Colors.red);
+        final attr2 = ImageMix().color(Colors.blue);
 
         expect(attr1, isNot(equals(attr2)));
       });
@@ -403,7 +401,7 @@ void main() {
 
     group('Props getter', () {
       test('props includes all properties', () {
-        final attribute = ImageSpecAttribute.raw(
+        final attribute = ImageMix.raw(
           width: Prop(100.0),
           height: Prop(200.0),
           color: Prop(Colors.red),
@@ -430,7 +428,7 @@ void main() {
 
     group('Modifiers', () {
       test('modifiers can be added to attribute', () {
-        final attribute = ImageSpecAttribute(
+        final attribute = ImageMix(
           modifiers: [
             OpacityModifierAttribute(opacity: 0.5),
             ClipRRectModifierAttribute(
@@ -444,11 +442,11 @@ void main() {
       });
 
       test('modifiers merge correctly', () {
-        final first = ImageSpecAttribute(
+        final first = ImageMix(
           modifiers: [OpacityModifierAttribute(opacity: 0.5)],
         );
 
-        final second = ImageSpecAttribute(
+        final second = ImageMix(
           modifiers: [AspectRatioModifierAttribute(aspectRatio: 16 / 9)],
         );
 
@@ -461,14 +459,14 @@ void main() {
 
     group('Variants', () {
       test('variants can be added to attribute', () {
-        final attribute = ImageSpecAttribute();
+        final attribute = ImageMix();
         expect(attribute.$variants, isNull); // By default no variants
       });
     });
 
     group('Builder pattern', () {
       test('builder methods create new instances', () {
-        final original = ImageSpecAttribute();
+        final original = ImageMix();
         final modified = original.width(100.0);
 
         expect(identical(original, modified), isFalse);
@@ -477,7 +475,7 @@ void main() {
       });
 
       test('builder methods can be chained fluently', () {
-        final attribute = ImageSpecAttribute()
+        final attribute = ImageMix()
             .width(200.0)
             .height(300.0)
             .fit(BoxFit.contain)
@@ -498,7 +496,7 @@ void main() {
     group('Debug Properties', () {
       test('debugFillProperties includes all properties', () {
         // This test verifies that the attribute implements Diagnosticable correctly
-        final attribute = ImageSpecAttribute()
+        final attribute = ImageMix()
             .width(100.0)
             .height(200.0)
             .fit(BoxFit.cover);

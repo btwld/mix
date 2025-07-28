@@ -14,11 +14,11 @@ import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'icon_spec.dart';
 
-class IconSpecAttribute extends Style<IconSpec>
+class IconMix extends Style<IconSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<IconSpecAttribute, IconSpec>,
-        StyleVariantMixin<IconSpecAttribute, IconSpec> {
+        StyleModifierMixin<IconMix, IconSpec>,
+        StyleVariantMixin<IconMix, IconSpec> {
   final Prop<Color>? $color;
   final Prop<double>? $size;
   final Prop<double>? $weight;
@@ -29,35 +29,31 @@ class IconSpecAttribute extends Style<IconSpec>
   final Prop<bool>? $applyTextScaling;
   final Prop<double>? $fill;
 
-  late final color = ColorUtility(
-    (prop) => merge(IconSpecAttribute.raw(color: prop)),
+  late final color = ColorUtility((prop) => merge(IconMix.raw(color: prop)));
+  late final size = PropUtility<IconMix, double>(
+    (prop) => merge(IconMix.raw(size: prop)),
   );
-  late final size = PropUtility<IconSpecAttribute, double>(
-    (prop) => merge(IconSpecAttribute.raw(size: prop)),
+  late final weight = PropUtility<IconMix, double>(
+    (prop) => merge(IconMix.raw(weight: prop)),
   );
-  late final weight = PropUtility<IconSpecAttribute, double>(
-    (prop) => merge(IconSpecAttribute.raw(weight: prop)),
+  late final grade = PropUtility<IconMix, double>(
+    (prop) => merge(IconMix.raw(grade: prop)),
   );
-  late final grade = PropUtility<IconSpecAttribute, double>(
-    (prop) => merge(IconSpecAttribute.raw(grade: prop)),
+  late final opticalSize = PropUtility<IconMix, double>(
+    (prop) => merge(IconMix.raw(opticalSize: prop)),
   );
-  late final opticalSize = PropUtility<IconSpecAttribute, double>(
-    (prop) => merge(IconSpecAttribute.raw(opticalSize: prop)),
+  late final shadow = ShadowUtility((v) => merge(IconMix.raw(shadows: [v])));
+  late final textDirection = PropUtility<IconMix, TextDirection>(
+    (prop) => merge(IconMix.raw(textDirection: prop)),
   );
-  late final shadow = ShadowUtility(
-    (v) => merge(IconSpecAttribute.raw(shadows: [v])),
+  late final applyTextScaling = PropUtility<IconMix, bool>(
+    (prop) => merge(IconMix.raw(applyTextScaling: prop)),
   );
-  late final textDirection = PropUtility<IconSpecAttribute, TextDirection>(
-    (prop) => merge(IconSpecAttribute.raw(textDirection: prop)),
-  );
-  late final applyTextScaling = PropUtility<IconSpecAttribute, bool>(
-    (prop) => merge(IconSpecAttribute.raw(applyTextScaling: prop)),
-  );
-  late final fill = PropUtility<IconSpecAttribute, double>(
-    (prop) => merge(IconSpecAttribute.raw(fill: prop)),
+  late final fill = PropUtility<IconMix, double>(
+    (prop) => merge(IconMix.raw(fill: prop)),
   );
 
-  IconSpecAttribute.raw({
+  IconMix.raw({
     Prop<Color>? color,
     Prop<double>? size,
     Prop<double>? weight,
@@ -80,7 +76,7 @@ class IconSpecAttribute extends Style<IconSpec>
        $applyTextScaling = applyTextScaling,
        $fill = fill;
 
-  IconSpecAttribute({
+  IconMix({
     Color? color,
     double? size,
     double? weight,
@@ -109,8 +105,8 @@ class IconSpecAttribute extends Style<IconSpec>
        );
 
   // Static factory to create from resolved Spec
-  static IconSpecAttribute value(IconSpec spec) {
-    return IconSpecAttribute(
+  static IconMix value(IconSpec spec) {
+    return IconMix(
       color: spec.color,
       size: spec.size,
       weight: spec.weight,
@@ -125,23 +121,23 @@ class IconSpecAttribute extends Style<IconSpec>
 
   /// Constructor that accepts a nullable [IconSpec] value and extracts its properties.
   ///
-  /// Returns null if the input is null, otherwise uses [IconSpecAttribute.value].
+  /// Returns null if the input is null, otherwise uses [IconMix.value].
   ///
   /// ```dart
   /// const IconSpec? spec = IconSpec(color: Colors.blue, size: 24.0);
   /// final attr = IconSpecAttribute.maybeValue(spec); // Returns IconSpecAttribute or null
   /// ```
-  static IconSpecAttribute? maybeValue(IconSpec? spec) {
-    return spec != null ? IconSpecAttribute.value(spec) : null;
+  static IconMix? maybeValue(IconSpec? spec) {
+    return spec != null ? IconMix.value(spec) : null;
   }
 
-  IconSpecAttribute shadows(List<ShadowMix> value) {
-    return IconSpecAttribute(shadows: value);
+  IconMix shadows(List<ShadowMix> value) {
+    return IconMix(shadows: value);
   }
 
   @override
-  IconSpecAttribute modifiers(List<ModifierAttribute> modifiers) {
-    return merge(IconSpecAttribute(modifiers: modifiers));
+  IconMix modifiers(List<ModifierAttribute> modifiers) {
+    return merge(IconMix(modifiers: modifiers));
   }
 
   @override
@@ -160,10 +156,10 @@ class IconSpecAttribute extends Style<IconSpec>
   }
 
   @override
-  IconSpecAttribute merge(IconSpecAttribute? other) {
+  IconMix merge(IconMix? other) {
     if (other == null) return this;
 
-    return IconSpecAttribute.raw(
+    return IconMix.raw(
       color: MixHelpers.merge($color, other.$color),
       size: MixHelpers.merge($size, other.$size),
       weight: MixHelpers.merge($weight, other.$weight),
@@ -209,10 +205,13 @@ class IconSpecAttribute extends Style<IconSpec>
   }
 
   @override
-  IconSpecAttribute variant(Variant variant, IconSpecAttribute style) {
-    return merge(
-      IconSpecAttribute(variants: [VariantStyleAttribute(variant, style)]),
-    );
+  IconMix variant(Variant variant, IconMix style) {
+    return merge(IconMix(variants: [VariantStyleAttribute(variant, style)]));
+  }
+
+  @override
+  IconMix variants(List<VariantStyleAttribute<IconSpec>> value) {
+    return merge(IconMix(variants: value));
   }
 
   @override

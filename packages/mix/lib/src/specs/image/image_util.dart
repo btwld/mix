@@ -18,57 +18,57 @@ class ImageSpecUtility extends StyleAttributeBuilder<ImageSpec> {
   // IMAGE UTILITIES - Same as ImageSpecAttribute but return ImageSpecUtility for cascade
 
   late final width = PropUtility<ImageSpecUtility, double>(
-    (prop) => _build(ImageSpecAttribute.raw(width: prop)),
+    (prop) => _build(ImageMix.raw(width: prop)),
   );
 
   late final height = PropUtility<ImageSpecUtility, double>(
-    (prop) => _build(ImageSpecAttribute.raw(height: prop)),
+    (prop) => _build(ImageMix.raw(height: prop)),
   );
 
   late final color = ColorUtility<ImageSpecUtility>(
-    (prop) => _build(ImageSpecAttribute.raw(color: prop)),
+    (prop) => _build(ImageMix.raw(color: prop)),
   );
 
   late final repeat = PropUtility<ImageSpecUtility, ImageRepeat>(
-    (prop) => _build(ImageSpecAttribute.raw(repeat: prop)),
+    (prop) => _build(ImageMix.raw(repeat: prop)),
   );
 
   late final fit = PropUtility<ImageSpecUtility, BoxFit>(
-    (prop) => _build(ImageSpecAttribute.raw(fit: prop)),
+    (prop) => _build(ImageMix.raw(fit: prop)),
   );
 
   late final alignment = PropUtility<ImageSpecUtility, AlignmentGeometry>(
-    (prop) => _build(ImageSpecAttribute.raw(alignment: prop)),
+    (prop) => _build(ImageMix.raw(alignment: prop)),
   );
 
   late final centerSlice = PropUtility<ImageSpecUtility, Rect>(
-    (prop) => _build(ImageSpecAttribute.raw(centerSlice: prop)),
+    (prop) => _build(ImageMix.raw(centerSlice: prop)),
   );
 
   late final filterQuality = PropUtility<ImageSpecUtility, FilterQuality>(
-    (prop) => _build(ImageSpecAttribute.raw(filterQuality: prop)),
+    (prop) => _build(ImageMix.raw(filterQuality: prop)),
   );
 
   late final colorBlendMode = PropUtility<ImageSpecUtility, BlendMode>(
-    (prop) => _build(ImageSpecAttribute.raw(colorBlendMode: prop)),
+    (prop) => _build(ImageMix.raw(colorBlendMode: prop)),
   );
 
   late final on = OnContextVariantUtility<ImageSpec, ImageSpecUtility>(
-    (v) => _build(ImageSpecAttribute.raw(variants: [v])),
+    (v) => _build(ImageMix.raw(variants: [v])),
   );
 
   late final wrap = ModifierUtility<ImageSpecUtility>(
-    (prop) => _build(ImageSpecAttribute.raw(modifiers: [prop])),
+    (prop) => _build(ImageMix.raw(modifiers: [prop])),
   );
 
-  ImageSpecAttribute _baseAttribute;
+  ImageMix _baseAttribute;
 
-  ImageSpecUtility([ImageSpecAttribute? attribute])
-    : _baseAttribute = attribute ?? ImageSpecAttribute.raw(),
+  ImageSpecUtility([ImageMix? attribute])
+    : _baseAttribute = attribute ?? ImageMix.raw(),
       super();
 
   /// Mutable builder - updates internal state and returns this for cascade
-  ImageSpecUtility _build(ImageSpecAttribute newAttribute) {
+  ImageSpecUtility _build(ImageMix newAttribute) {
     _baseAttribute = _baseAttribute.merge(newAttribute);
 
     return this;
@@ -76,7 +76,7 @@ class ImageSpecUtility extends StyleAttributeBuilder<ImageSpec> {
 
   /// Animation
   ImageSpecUtility animate(AnimationConfig animation) =>
-      _build(ImageSpecAttribute(animation: animation));
+      _build(ImageMix(animation: animation));
 
   // StyleAttribute interface implementation
 
@@ -86,7 +86,7 @@ class ImageSpecUtility extends StyleAttributeBuilder<ImageSpec> {
     if (other is ImageSpecUtility) {
       return ImageSpecUtility(_baseAttribute.merge(other._baseAttribute));
     }
-    if (other is ImageSpecAttribute) {
+    if (other is ImageMix) {
       return ImageSpecUtility(_baseAttribute.merge(other));
     }
 
@@ -100,5 +100,5 @@ class ImageSpecUtility extends StyleAttributeBuilder<ImageSpec> {
 
   /// Access to internal attribute
   @override
-  ImageSpecAttribute get attribute => _baseAttribute;
+  ImageMix get attribute => _baseAttribute;
 }

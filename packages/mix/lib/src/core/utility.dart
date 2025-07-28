@@ -82,7 +82,10 @@ abstract class MixPropUtility<U extends Style<Object?>, Value>
   U call(covariant Mix<Value> value) => builder(MixProp(value));
 
   /// Creates a MixProp from a raw value (converts to Mix)
-  U as(Value value) => call(convertToMix(value));
+  U as(Value value) => builder(MixProp(convertToMix(value)));
+
+  @Deprecated('use token(value) instead')
+  U ref(MixToken<Value> value) => token(value);
 
   /// Token support - expects `MixToken<Value>` (raw type)
   /// Uses MixProp.token with conversion function

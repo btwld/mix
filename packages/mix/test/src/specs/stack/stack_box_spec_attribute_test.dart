@@ -11,15 +11,12 @@ void main() {
       test('creates StackBoxSpecAttribute with all properties', () {
         final boxAttribute = BoxMix.width(200.0).height(200.0);
 
-        final stackAttribute = StackSpecAttribute(
+        final stackAttribute = StackMix(
           alignment: Alignment.center,
           fit: StackFit.expand,
         );
 
-        final attribute = StackBoxSpecAttribute(
-          box: boxAttribute,
-          stack: stackAttribute,
-        );
+        final attribute = StackBoxMix(box: boxAttribute, stack: stackAttribute);
 
         expect(attribute.box, boxAttribute);
         expect(attribute.stack, stackAttribute);
@@ -32,7 +29,7 @@ void main() {
       });
 
       test('creates StackBoxSpecAttribute with default values', () {
-        final attribute = StackBoxSpecAttribute();
+        final attribute = StackBoxMix();
 
         expect(attribute.box, isNull);
         expect(attribute.stack, isNull);
@@ -48,7 +45,7 @@ void main() {
           stack: StackSpec(alignment: Alignment.center, fit: StackFit.expand),
         );
 
-        final attribute = StackBoxSpecAttribute.value(spec);
+        final attribute = StackBoxMix.value(spec);
 
         expect(attribute.box, isNotNull);
         expect(attribute.stack, isNotNull);
@@ -65,7 +62,7 @@ void main() {
           box: BoxSpec(constraints: BoxConstraints.tightFor(width: 200.0)),
           stack: StackSpec(),
         );
-        final attribute = StackBoxSpecAttribute.value(spec);
+        final attribute = StackBoxMix.value(spec);
 
         expect(attribute.box, isNotNull);
         expect(attribute.stack, isNotNull);
@@ -84,7 +81,7 @@ void main() {
           box: BoxSpec(constraints: BoxConstraints.tightFor(width: 200.0)),
           stack: StackSpec(alignment: Alignment.center),
         );
-        final attribute = StackBoxSpecAttribute.maybeValue(spec);
+        final attribute = StackBoxMix.maybeValue(spec);
 
         expect(attribute, isNotNull);
         expect(attribute!.box, isNotNull);
@@ -97,7 +94,7 @@ void main() {
       });
 
       test('returns null when spec is null', () {
-        final attribute = StackBoxSpecAttribute.maybeValue(null);
+        final attribute = StackBoxMix.maybeValue(null);
         expect(attribute, isNull);
       });
     });
@@ -107,16 +104,13 @@ void main() {
         final boxAttribute = BoxMix.width(
           200.0,
         ).height(100.0).merge(BoxMix(alignment: Alignment.center));
-        final stackAttribute = StackSpecAttribute(
+        final stackAttribute = StackMix(
           alignment: Alignment.topLeft,
           fit: StackFit.expand,
           clipBehavior: Clip.antiAlias,
         );
 
-        final attribute = StackBoxSpecAttribute(
-          box: boxAttribute,
-          stack: stackAttribute,
-        );
+        final attribute = StackBoxMix(box: boxAttribute, stack: stackAttribute);
 
         final context = MockBuildContext();
         final spec = attribute.resolve(context);
@@ -133,7 +127,7 @@ void main() {
       });
 
       test('resolves to ZBoxSpec with null properties when not set', () {
-        final attribute = StackBoxSpecAttribute();
+        final attribute = StackBoxMix();
         final context = MockBuildContext();
         final spec = attribute.resolve(context);
 
@@ -146,12 +140,12 @@ void main() {
 
     group('merge', () {
       test('merges two StackBoxSpecAttributes correctly', () {
-        final attr1 = StackBoxSpecAttribute(
+        final attr1 = StackBoxMix(
           box: BoxMix.width(100.0).height(50.0),
-          stack: StackSpecAttribute(alignment: Alignment.topLeft),
+          stack: StackMix(alignment: Alignment.topLeft),
         );
 
-        final attr2 = StackBoxSpecAttribute(
+        final attr2 = StackBoxMix(
           box: BoxMix.width(200.0).merge(
             BoxMix(
               padding: EdgeInsetsGeometryMix.only(
@@ -162,7 +156,7 @@ void main() {
               ),
             ),
           ),
-          stack: StackSpecAttribute(fit: StackFit.expand),
+          stack: StackMix(fit: StackFit.expand),
         );
 
         final merged = attr1.merge(attr2);
@@ -185,9 +179,9 @@ void main() {
       });
 
       test('returns original when merging with null', () {
-        final original = StackBoxSpecAttribute(
+        final original = StackBoxMix(
           box: BoxMix.width(200.0),
-          stack: StackSpecAttribute(alignment: Alignment.center),
+          stack: StackMix(alignment: Alignment.center),
         );
         final merged = original.merge(null);
 
@@ -195,14 +189,14 @@ void main() {
       });
 
       test('handles complex merge scenarios', () {
-        final attr1 = StackBoxSpecAttribute(
+        final attr1 = StackBoxMix(
           box: BoxMix.width(100.0),
-          stack: StackSpecAttribute(alignment: Alignment.topLeft),
+          stack: StackMix(alignment: Alignment.topLeft),
         );
 
-        final attr2 = StackBoxSpecAttribute(
+        final attr2 = StackBoxMix(
           box: BoxMix.height(200.0),
-          stack: StackSpecAttribute(fit: StackFit.expand),
+          stack: StackMix(fit: StackFit.expand),
         );
 
         final merged = attr1.merge(attr2);
@@ -224,11 +218,9 @@ void main() {
       });
 
       test('handles null attributes in merge', () {
-        final attr1 = StackBoxSpecAttribute(box: BoxMix.width(100.0));
+        final attr1 = StackBoxMix(box: BoxMix.width(100.0));
 
-        final attr2 = StackBoxSpecAttribute(
-          stack: StackSpecAttribute(fit: StackFit.expand),
-        );
+        final attr2 = StackBoxMix(stack: StackMix(fit: StackFit.expand));
 
         final merged = attr1.merge(attr2);
 
@@ -245,10 +237,10 @@ void main() {
     group('equality', () {
       test('attributes with same properties are equal', () {
         final boxAttr = BoxMix.width(200.0).height(100.0);
-        final stackAttr = StackSpecAttribute(alignment: Alignment.center);
+        final stackAttr = StackMix(alignment: Alignment.center);
 
-        final attr1 = StackBoxSpecAttribute(box: boxAttr, stack: stackAttr);
-        final attr2 = StackBoxSpecAttribute(box: boxAttr, stack: stackAttr);
+        final attr1 = StackBoxMix(box: boxAttr, stack: stackAttr);
+        final attr2 = StackBoxMix(box: boxAttr, stack: stackAttr);
 
         expect(attr1, attr2);
         expect(attr1.hashCode, attr2.hashCode);
@@ -257,21 +249,21 @@ void main() {
       test('attributes with different box properties are not equal', () {
         final boxAttr1 = BoxMix.width(100.0);
         final boxAttr2 = BoxMix.width(200.0);
-        final stackAttr = StackSpecAttribute(alignment: Alignment.center);
+        final stackAttr = StackMix(alignment: Alignment.center);
 
-        final attr1 = StackBoxSpecAttribute(box: boxAttr1, stack: stackAttr);
-        final attr2 = StackBoxSpecAttribute(box: boxAttr2, stack: stackAttr);
+        final attr1 = StackBoxMix(box: boxAttr1, stack: stackAttr);
+        final attr2 = StackBoxMix(box: boxAttr2, stack: stackAttr);
 
         expect(attr1, isNot(attr2));
       });
 
       test('attributes with different stack properties are not equal', () {
         final boxAttr = BoxMix.width(100.0);
-        final stackAttr1 = StackSpecAttribute(alignment: Alignment.topLeft);
-        final stackAttr2 = StackSpecAttribute(alignment: Alignment.bottomRight);
+        final stackAttr1 = StackMix(alignment: Alignment.topLeft);
+        final stackAttr2 = StackMix(alignment: Alignment.bottomRight);
 
-        final attr1 = StackBoxSpecAttribute(box: boxAttr, stack: stackAttr1);
-        final attr2 = StackBoxSpecAttribute(box: boxAttr, stack: stackAttr2);
+        final attr1 = StackBoxMix(box: boxAttr, stack: stackAttr1);
+        final attr2 = StackBoxMix(box: boxAttr, stack: stackAttr2);
 
         expect(attr1, isNot(attr2));
       });
@@ -280,15 +272,12 @@ void main() {
     group('debugFillProperties', () {
       test('includes all properties in diagnostics', () {
         final boxAttribute = BoxMix.width(200.0).height(100.0);
-        final stackAttribute = StackSpecAttribute(
+        final stackAttribute = StackMix(
           alignment: Alignment.center,
           fit: StackFit.expand,
         );
 
-        final attribute = StackBoxSpecAttribute(
-          box: boxAttribute,
-          stack: stackAttribute,
-        );
+        final attribute = StackBoxMix(box: boxAttribute, stack: stackAttribute);
 
         final diagnostics = DiagnosticPropertiesBuilder();
         attribute.debugFillProperties(diagnostics);
@@ -302,15 +291,12 @@ void main() {
     group('props', () {
       test('includes all properties in props list', () {
         final boxAttribute = BoxMix.width(200.0).height(100.0);
-        final stackAttribute = StackSpecAttribute(
+        final stackAttribute = StackMix(
           alignment: Alignment.center,
           fit: StackFit.expand,
         );
 
-        final attribute = StackBoxSpecAttribute(
-          box: boxAttribute,
-          stack: stackAttribute,
-        );
+        final attribute = StackBoxMix(box: boxAttribute, stack: stackAttribute);
 
         expect(attribute.props.length, 2);
         expect(attribute.props, contains(boxAttribute));
@@ -320,12 +306,9 @@ void main() {
 
     group('Real-world scenarios', () {
       test('creates overlay container attribute', () {
-        final overlayAttr = StackBoxSpecAttribute(
+        final overlayAttr = StackBoxMix(
           box: BoxMix.width(double.infinity).height(double.infinity),
-          stack: StackSpecAttribute(
-            alignment: Alignment.center,
-            fit: StackFit.expand,
-          ),
+          stack: StackMix(alignment: Alignment.center, fit: StackFit.expand),
         );
 
         expect(overlayAttr.box!.$constraints, isNotNull);
@@ -341,9 +324,9 @@ void main() {
       });
 
       test('creates positioned card attribute', () {
-        final cardAttr = StackBoxSpecAttribute(
+        final cardAttr = StackBoxMix(
           box: BoxMix.width(300.0).height(200.0),
-          stack: StackSpecAttribute(
+          stack: StackMix(
             alignment: Alignment.topLeft,
             fit: StackFit.loose,
             clipBehavior: Clip.antiAlias,
@@ -364,11 +347,8 @@ void main() {
       });
 
       test('creates badge container attribute', () {
-        final badgeAttr = StackBoxSpecAttribute(
-          stack: StackSpecAttribute(
-            alignment: Alignment.center,
-            fit: StackFit.loose,
-          ),
+        final badgeAttr = StackBoxMix(
+          stack: StackMix(alignment: Alignment.center, fit: StackFit.loose),
         );
 
         expect(badgeAttr.box, isNull);

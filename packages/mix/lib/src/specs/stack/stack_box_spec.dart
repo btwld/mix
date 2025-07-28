@@ -71,11 +71,11 @@ final class ZBoxSpec extends Spec<ZBoxSpec> with Diagnosticable {
 ///
 /// Use this class to configure the attributes of a [ZBoxSpec] and pass it to
 /// the [ZBoxSpec] constructor.
-class StackBoxSpecAttribute extends Style<ZBoxSpec> with Diagnosticable {
+class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
   final BoxMix? box;
-  final StackSpecAttribute? stack;
+  final StackMix? stack;
 
-  const StackBoxSpecAttribute({
+  const StackBoxMix({
     this.box,
     this.stack,
     super.modifiers,
@@ -85,39 +85,37 @@ class StackBoxSpecAttribute extends Style<ZBoxSpec> with Diagnosticable {
 
   /// Constructor that accepts a [ZBoxSpec] value and extracts its properties.
   ///
-  /// This is useful for converting existing [ZBoxSpec] instances to [StackBoxSpecAttribute].
+  /// This is useful for converting existing [ZBoxSpec] instances to [StackBoxMix].
   ///
   /// ```dart
   /// const spec = StackBoxSpec(box: BoxSpec(...), stack: StackSpec(...));
   /// final attr = StackBoxSpecAttribute.value(spec);
   /// ```
-  static StackBoxSpecAttribute value(ZBoxSpec spec) {
-    return StackBoxSpecAttribute(
+  static StackBoxMix value(ZBoxSpec spec) {
+    return StackBoxMix(
       box: BoxMix.maybeValue(spec.box),
-      stack: StackSpecAttribute.maybeValue(spec.stack),
+      stack: StackMix.maybeValue(spec.stack),
     );
   }
 
   /// Constructor that accepts a nullable [ZBoxSpec] value and extracts its properties.
   ///
-  /// Returns null if the input is null, otherwise uses [StackBoxSpecAttribute.value].
+  /// Returns null if the input is null, otherwise uses [StackBoxMix.value].
   ///
   /// ```dart
   /// const StackBoxSpec? spec = StackBoxSpec(box: BoxSpec(...), stack: StackSpec(...));
   /// final attr = StackBoxSpecAttribute.maybeValue(spec); // Returns StackBoxSpecAttribute or null
   /// ```
-  static StackBoxSpecAttribute? maybeValue(ZBoxSpec? spec) {
-    return spec != null ? StackBoxSpecAttribute.value(spec) : null;
+  static StackBoxMix? maybeValue(ZBoxSpec? spec) {
+    return spec != null ? StackBoxMix.value(spec) : null;
   }
 
-  StackBoxSpecAttribute modifiers(List<ModifierAttribute> modifiers) {
-    return merge(StackBoxSpecAttribute(modifiers: modifiers));
+  StackBoxMix modifiers(List<ModifierAttribute> modifiers) {
+    return merge(StackBoxMix(modifiers: modifiers));
   }
 
-  StackBoxSpecAttribute variants(
-    List<VariantStyleAttribute<ZBoxSpec>> variants,
-  ) {
-    return merge(StackBoxSpecAttribute(variants: variants));
+  StackBoxMix variants(List<VariantStyleAttribute<ZBoxSpec>> variants) {
+    return merge(StackBoxMix(variants: variants));
   }
 
   /// Resolves to [ZBoxSpec] using the provided [BuildContext].
@@ -133,19 +131,19 @@ class StackBoxSpecAttribute extends Style<ZBoxSpec> with Diagnosticable {
     return ZBoxSpec(box: box?.resolve(context), stack: stack?.resolve(context));
   }
 
-  /// Merges the properties of this [StackBoxSpecAttribute] with the properties of [other].
+  /// Merges the properties of this [StackBoxMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [StackBoxSpecAttribute] with the properties of [other] taking precedence over
+  /// [StackBoxMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  StackBoxSpecAttribute merge(StackBoxSpecAttribute? other) {
+  StackBoxMix merge(StackBoxMix? other) {
     if (other == null) return this;
 
-    return StackBoxSpecAttribute(
+    return StackBoxMix(
       box: box?.merge(other.box) ?? other.box,
       stack: stack?.merge(other.stack) ?? other.stack,
       modifiers: mergeModifierLists($modifiers, other.$modifiers),
@@ -161,10 +159,10 @@ class StackBoxSpecAttribute extends Style<ZBoxSpec> with Diagnosticable {
     properties.add(DiagnosticsProperty('stack', stack, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [StackBoxSpecAttribute].
+  /// The list of properties that constitute the state of this [StackBoxMix].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [StackBoxSpecAttribute] instances for equality.
+  /// compare two [StackBoxMix] instances for equality.
   @override
   List<Object?> get props => [box, stack];
 }
@@ -174,25 +172,25 @@ class StackBoxSpecAttribute extends Style<ZBoxSpec> with Diagnosticable {
 /// This class provides methods to set individual properties of a [ZBoxSpec].
 /// Use the methods of this class to configure specific properties of a [ZBoxSpec].
 class StackBoxSpecUtility {
-  /// Utility for defining [StackBoxSpecAttribute.box]
+  /// Utility for defining [StackBoxMix.box]
   final box = BoxMix();
 
-  /// Utility for defining [StackBoxSpecAttribute.stack]
-  final stack = StackSpecAttribute();
+  /// Utility for defining [StackBoxMix.stack]
+  final stack = StackMix();
 
   StackBoxSpecUtility();
 
   static StackBoxSpecUtility get self => StackBoxSpecUtility();
 
-  /// Returns a new [StackBoxSpecAttribute] with the specified properties.
-  StackBoxSpecAttribute only({
+  /// Returns a new [StackBoxMix] with the specified properties.
+  StackBoxMix only({
     BoxMix? box,
-    StackSpecAttribute? stack,
+    StackMix? stack,
     List<ModifierAttribute>? modifiers,
     AnimationConfig? animation,
     List<VariantStyleAttribute<ZBoxSpec>>? variants,
   }) {
-    return StackBoxSpecAttribute(
+    return StackBoxMix(
       box: box,
       stack: stack,
       modifiers: modifiers,

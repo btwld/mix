@@ -39,7 +39,7 @@ export 'src/core/providers/style_provider.dart';
 export 'src/core/providers/widget_state_provider.dart';
 export 'src/core/spec.dart';
 export 'src/core/spec_utility.dart';
-export 'src/core/style.dart';
+export 'src/core/style.dart' hide StyleElement;
 export 'src/core/style_builder.dart';
 export 'src/core/style_widget.dart';
 export 'src/core/utility.dart';

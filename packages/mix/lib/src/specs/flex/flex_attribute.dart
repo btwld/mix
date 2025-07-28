@@ -18,11 +18,11 @@ import 'flex_spec.dart';
 ///
 /// Use this class to configure the attributes of a [FlexSpec] and pass it to
 /// the [FlexSpec] constructor.
-class FlexSpecAttribute extends Style<FlexSpec>
+class FlexMix extends Style<FlexSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<FlexSpecAttribute, FlexSpec>,
-        StyleVariantMixin<FlexSpecAttribute, FlexSpec> {
+        StyleModifierMixin<FlexMix, FlexSpec>,
+        StyleVariantMixin<FlexMix, FlexSpec> {
   final Prop<Axis>? $direction;
   final Prop<MainAxisAlignment>? $mainAxisAlignment;
   final Prop<CrossAxisAlignment>? $crossAxisAlignment;
@@ -33,55 +33,52 @@ class FlexSpecAttribute extends Style<FlexSpec>
   final Prop<Clip>? $clipBehavior;
   final Prop<double>? $gap;
 
-  /// Utility for defining [FlexSpecAttribute.direction]
-  late final direction = PropUtility<FlexSpecAttribute, Axis>(
-    (prop) => merge(FlexSpecAttribute.raw(direction: prop)),
+  /// Utility for defining [FlexMix.direction]
+  late final direction = PropUtility<FlexMix, Axis>(
+    (prop) => merge(FlexMix.raw(direction: prop)),
   );
 
-  /// Utility for defining [FlexSpecAttribute.mainAxisAlignment]
-  late final mainAxisAlignment =
-      PropUtility<FlexSpecAttribute, MainAxisAlignment>(
-        (prop) => merge(FlexSpecAttribute.raw(mainAxisAlignment: prop)),
-      );
-
-  /// Utility for defining [FlexSpecAttribute.crossAxisAlignment]
-  late final crossAxisAlignment =
-      PropUtility<FlexSpecAttribute, CrossAxisAlignment>(
-        (prop) => merge(FlexSpecAttribute.raw(crossAxisAlignment: prop)),
-      );
-
-  /// Utility for defining [FlexSpecAttribute.mainAxisSize]
-  late final mainAxisSize = PropUtility<FlexSpecAttribute, MainAxisSize>(
-    (prop) => merge(FlexSpecAttribute.raw(mainAxisSize: prop)),
+  /// Utility for defining [FlexMix.mainAxisAlignment]
+  late final mainAxisAlignment = PropUtility<FlexMix, MainAxisAlignment>(
+    (prop) => merge(FlexMix.raw(mainAxisAlignment: prop)),
   );
 
-  /// Utility for defining [FlexSpecAttribute.verticalDirection]
-  late final verticalDirection =
-      PropUtility<FlexSpecAttribute, VerticalDirection>(
-        (prop) => merge(FlexSpecAttribute.raw(verticalDirection: prop)),
-      );
-
-  /// Utility for defining [FlexSpecAttribute.textDirection]
-  late final textDirection = PropUtility<FlexSpecAttribute, TextDirection>(
-    (prop) => merge(FlexSpecAttribute.raw(textDirection: prop)),
+  /// Utility for defining [FlexMix.crossAxisAlignment]
+  late final crossAxisAlignment = PropUtility<FlexMix, CrossAxisAlignment>(
+    (prop) => merge(FlexMix.raw(crossAxisAlignment: prop)),
   );
 
-  /// Utility for defining [FlexSpecAttribute.textBaseline]
-  late final textBaseline = PropUtility<FlexSpecAttribute, TextBaseline>(
-    (prop) => merge(FlexSpecAttribute.raw(textBaseline: prop)),
+  /// Utility for defining [FlexMix.mainAxisSize]
+  late final mainAxisSize = PropUtility<FlexMix, MainAxisSize>(
+    (prop) => merge(FlexMix.raw(mainAxisSize: prop)),
   );
 
-  /// Utility for defining [FlexSpecAttribute.clipBehavior]
-  late final clipBehavior = PropUtility<FlexSpecAttribute, Clip>(
-    (prop) => merge(FlexSpecAttribute.raw(clipBehavior: prop)),
+  /// Utility for defining [FlexMix.verticalDirection]
+  late final verticalDirection = PropUtility<FlexMix, VerticalDirection>(
+    (prop) => merge(FlexMix.raw(verticalDirection: prop)),
   );
 
-  /// Utility for defining [FlexSpecAttribute.gap]
-  late final gap = PropUtility<FlexSpecAttribute, double>(
-    (prop) => merge(FlexSpecAttribute.raw(gap: prop)),
+  /// Utility for defining [FlexMix.textDirection]
+  late final textDirection = PropUtility<FlexMix, TextDirection>(
+    (prop) => merge(FlexMix.raw(textDirection: prop)),
   );
 
-  FlexSpecAttribute.raw({
+  /// Utility for defining [FlexMix.textBaseline]
+  late final textBaseline = PropUtility<FlexMix, TextBaseline>(
+    (prop) => merge(FlexMix.raw(textBaseline: prop)),
+  );
+
+  /// Utility for defining [FlexMix.clipBehavior]
+  late final clipBehavior = PropUtility<FlexMix, Clip>(
+    (prop) => merge(FlexMix.raw(clipBehavior: prop)),
+  );
+
+  /// Utility for defining [FlexMix.gap]
+  late final gap = PropUtility<FlexMix, double>(
+    (prop) => merge(FlexMix.raw(gap: prop)),
+  );
+
+  FlexMix.raw({
     Prop<Axis>? direction,
     Prop<MainAxisAlignment>? mainAxisAlignment,
     Prop<CrossAxisAlignment>? crossAxisAlignment,
@@ -104,7 +101,7 @@ class FlexSpecAttribute extends Style<FlexSpec>
        $clipBehavior = clipBehavior,
        $gap = gap;
 
-  FlexSpecAttribute({
+  FlexMix({
     Axis? direction,
     MainAxisAlignment? mainAxisAlignment,
     CrossAxisAlignment? crossAxisAlignment,
@@ -134,13 +131,13 @@ class FlexSpecAttribute extends Style<FlexSpec>
 
   /// Constructor that accepts a [FlexSpec] value and extracts its properties.
   ///
-  /// This is useful for converting existing [FlexSpec] instances to [FlexSpecAttribute].
+  /// This is useful for converting existing [FlexSpec] instances to [FlexMix].
   ///
   /// ```dart
   /// const spec = FlexSpec(direction: Axis.horizontal, gap: 8.0);
   /// final attr = FlexSpecAttribute.value(spec);
   /// ```
-  FlexSpecAttribute.value(FlexSpec spec)
+  FlexMix.value(FlexSpec spec)
     : this(
         direction: spec.direction,
         mainAxisAlignment: spec.mainAxisAlignment,
@@ -161,29 +158,29 @@ class FlexSpecAttribute extends Style<FlexSpec>
   /// const FlexSpec? spec = FlexSpec(direction: Axis.horizontal, gap: 8.0);
   /// final attr = FlexSpecAttribute.maybeValue(spec); // Returns FlexSpecAttribute or null
   /// ```
-  static FlexSpecAttribute? maybeValue(FlexSpec? spec) {
-    return spec != null ? FlexSpecAttribute.value(spec) : null;
+  static FlexMix? maybeValue(FlexSpec? spec) {
+    return spec != null ? FlexMix.value(spec) : null;
   }
 
   /// Convenience method for setting direction to horizontal (row)
-  FlexSpecAttribute row() => FlexSpecAttribute(direction: Axis.horizontal);
+  FlexMix row() => FlexMix(direction: Axis.horizontal);
 
   /// Convenience method for setting direction to vertical (column)
-  FlexSpecAttribute column() => FlexSpecAttribute(direction: Axis.vertical);
+  FlexMix column() => FlexMix(direction: Axis.vertical);
 
   /// Convenience method for animating the FlexSpec
-  FlexSpecAttribute animate(AnimationConfig animation) {
-    return FlexSpecAttribute(animation: animation);
+  FlexMix animate(AnimationConfig animation) {
+    return FlexMix(animation: animation);
   }
 
   @override
-  FlexSpecAttribute variants(List<VariantStyleAttribute<FlexSpec>> variants) {
-    return merge(FlexSpecAttribute(variants: variants));
+  FlexMix variants(List<VariantStyleAttribute<FlexSpec>> variants) {
+    return merge(FlexMix(variants: variants));
   }
 
   @override
-  FlexSpecAttribute modifiers(List<ModifierAttribute> modifiers) {
-    return merge(FlexSpecAttribute(modifiers: modifiers));
+  FlexMix modifiers(List<ModifierAttribute> modifiers) {
+    return merge(FlexMix(modifiers: modifiers));
   }
 
   /// Resolves to [FlexSpec] using the provided [MixContext].
@@ -209,19 +206,19 @@ class FlexSpecAttribute extends Style<FlexSpec>
     );
   }
 
-  /// Merges the properties of this [FlexSpecAttribute] with the properties of [other].
+  /// Merges the properties of this [FlexMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [FlexSpecAttribute] with the properties of [other] taking precedence over
+  /// [FlexMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  FlexSpecAttribute merge(FlexSpecAttribute? other) {
+  FlexMix merge(FlexMix? other) {
     if (other == null) return this;
 
-    return FlexSpecAttribute.raw(
+    return FlexMix.raw(
       direction: MixHelpers.merge($direction, other.$direction),
       mainAxisAlignment: MixHelpers.merge(
         $mainAxisAlignment,
@@ -267,10 +264,8 @@ class FlexSpecAttribute extends Style<FlexSpec>
   }
 
   @override
-  FlexSpecAttribute variant(Variant variant, FlexSpecAttribute style) {
-    return merge(
-      FlexSpecAttribute(variants: [VariantStyleAttribute(variant, style)]),
-    );
+  FlexMix variant(Variant variant, FlexMix style) {
+    return merge(FlexMix(variants: [VariantStyleAttribute(variant, style)]));
   }
 
   @override

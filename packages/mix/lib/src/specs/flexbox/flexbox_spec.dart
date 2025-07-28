@@ -75,14 +75,14 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
 ///
 /// Use this class to configure the attributes of a [FlexBoxSpec] and pass it to
 /// the [FlexBoxSpec] constructor.
-class FlexBoxSpecAttribute extends Style<FlexBoxSpec>
-    with Diagnosticable, StyleModifierMixin<FlexBoxSpecAttribute, FlexBoxSpec> {
+class FlexBoxMix extends Style<FlexBoxSpec>
+    with Diagnosticable, StyleModifierMixin<FlexBoxMix, FlexBoxSpec> {
   final BoxMix? $box;
-  final FlexSpecAttribute? $flex;
+  final FlexMix? $flex;
 
-  const FlexBoxSpecAttribute({
+  const FlexBoxMix({
     BoxMix? box,
-    FlexSpecAttribute? flex,
+    FlexMix? flex,
     super.animation,
     super.modifiers,
     super.variants,
@@ -91,39 +91,37 @@ class FlexBoxSpecAttribute extends Style<FlexBoxSpec>
 
   /// Constructor that accepts a [FlexBoxSpec] value and extracts its properties.
   ///
-  /// This is useful for converting existing [FlexBoxSpec] instances to [FlexBoxSpecAttribute].
+  /// This is useful for converting existing [FlexBoxSpec] instances to [FlexBoxMix].
   ///
   /// ```dart
   /// const spec = FlexBoxSpec(box: BoxSpec(...), flex: FlexSpec(...));
   /// final attr = FlexBoxSpecAttribute.value(spec);
   /// ```
-  static FlexBoxSpecAttribute value(FlexBoxSpec spec) {
-    return FlexBoxSpecAttribute(
+  static FlexBoxMix value(FlexBoxSpec spec) {
+    return FlexBoxMix(
       box: BoxMix.maybeValue(spec.box),
-      flex: FlexSpecAttribute.maybeValue(spec.flex),
+      flex: FlexMix.maybeValue(spec.flex),
     );
   }
 
   /// Constructor that accepts a nullable [FlexBoxSpec] value and extracts its properties.
   ///
-  /// Returns null if the input is null, otherwise uses [FlexBoxSpecAttribute.value].
+  /// Returns null if the input is null, otherwise uses [FlexBoxMix.value].
   ///
   /// ```dart
   /// const FlexBoxSpec? spec = FlexBoxSpec(box: BoxSpec(...), flex: FlexSpec(...));
   /// final attr = FlexBoxSpecAttribute.maybeValue(spec); // Returns FlexBoxSpecAttribute or null
   /// ```
-  static FlexBoxSpecAttribute? maybeValue(FlexBoxSpec? spec) {
-    return spec != null ? FlexBoxSpecAttribute.value(spec) : null;
+  static FlexBoxMix? maybeValue(FlexBoxSpec? spec) {
+    return spec != null ? FlexBoxMix.value(spec) : null;
   }
 
   // Backward compatibility getters
   BoxMix? get box => $box;
-  FlexSpecAttribute? get flex => $flex;
+  FlexMix? get flex => $flex;
 
-  FlexBoxSpecAttribute variants(
-    List<VariantStyleAttribute<FlexBoxSpec>> variants,
-  ) {
-    return merge(FlexBoxSpecAttribute(variants: variants));
+  FlexBoxMix variants(List<VariantStyleAttribute<FlexBoxSpec>> variants) {
+    return merge(FlexBoxMix(variants: variants));
   }
 
   /// Resolves to [FlexBoxSpec] using the provided [MixContext].
@@ -143,23 +141,23 @@ class FlexBoxSpecAttribute extends Style<FlexBoxSpec>
   }
 
   @override
-  FlexBoxSpecAttribute modifiers(List<ModifierAttribute> modifiers) {
-    return merge(FlexBoxSpecAttribute(modifiers: modifiers));
+  FlexBoxMix modifiers(List<ModifierAttribute> modifiers) {
+    return merge(FlexBoxMix(modifiers: modifiers));
   }
 
-  /// Merges the properties of this [FlexBoxSpecAttribute] with the properties of [other].
+  /// Merges the properties of this [FlexBoxMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [FlexBoxSpecAttribute] with the properties of [other] taking precedence over
+  /// [FlexBoxMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  FlexBoxSpecAttribute merge(FlexBoxSpecAttribute? other) {
+  FlexBoxMix merge(FlexBoxMix? other) {
     if (other == null) return this;
 
-    return FlexBoxSpecAttribute(
+    return FlexBoxMix(
       box: $box?.merge(other.$box) ?? other.$box,
       flex: $flex?.merge(other.$flex) ?? other.$flex,
       animation: other.$animation ?? $animation,
@@ -175,10 +173,10 @@ class FlexBoxSpecAttribute extends Style<FlexBoxSpec>
     properties.add(DiagnosticsProperty('flex', $flex, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [FlexBoxSpecAttribute].
+  /// The list of properties that constitute the state of this [FlexBoxMix].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [FlexBoxSpecAttribute] instances for equality.
+  /// compare two [FlexBoxMix] instances for equality.
   @override
   List<Object?> get props => [$box, $flex];
 }

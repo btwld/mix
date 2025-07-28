@@ -224,48 +224,31 @@ void main() {
       });
     });
 
-    group('MultiVariant integration', () {
-      test('can be combined with AND operator', () {
+    group('Variant composition', () {
+      test('separate variants can be used independently', () {
         final variant1 = ContextVariant('test1', (context) => true);
         final variant2 = ContextVariant('test2', (context) => false);
-
-        final combined = variant1 & variant2;
-
-        expect(combined, isA<MultiVariant>());
-        expect(combined.operatorType, MultiVariantOperator.and);
-        expect(combined.variants, contains(variant1));
-        expect(combined.variants, contains(variant2));
+        
+        expect(variant1.key, 'test1');
+        expect(variant2.key, 'test2');
+        expect(variant1, isNot(equals(variant2)));
       });
-
-      test('can be combined with OR operator', () {
-        final variant1 = ContextVariant('test1', (context) => true);
-        final variant2 = ContextVariant('test2', (context) => false);
-
-        final combined = variant1 | variant2;
-
-        expect(combined, isA<MultiVariant>());
-        expect(combined.operatorType, MultiVariantOperator.or);
-        expect(combined.variants, contains(variant1));
-        expect(combined.variants, contains(variant2));
-      });
-
-      test('can be negated with NOT operation', () {
+      
+      test('can be negated with NOT static method', () {
         final variant = ContextVariant('test', (context) => true);
-        final notVariant = MultiVariant.not(variant);
-
-        expect(notVariant, isA<MultiVariant>());
-        expect(notVariant.operatorType, MultiVariantOperator.not);
-        expect(notVariant.variants.first, variant);
+        final notVariant = ContextVariant.not(variant);
+        
+        expect(notVariant, isA<ContextVariant>());
+        expect(notVariant.key, 'not_test');
       });
-
-      test('combines with NamedVariants', () {
+      
+      test('ContextVariants and NamedVariants are distinct types', () {
         final contextVariant = ContextVariant('test', (context) => true);
         const namedVariant = NamedVariant('primary');
-
-        final combined = contextVariant & namedVariant;
-
-        expect(combined.variants, contains(contextVariant));
-        expect(combined.variants, contains(namedVariant));
+        
+        expect(contextVariant, isA<ContextVariant>());
+        expect(namedVariant, isA<NamedVariant>());
+        expect(contextVariant.key, isNot(equals(namedVariant.key)));
       });
     });
 
@@ -557,16 +540,14 @@ void main() {
     test('utility variants using NOT logic are defined', () {
       final disabled = ContextVariant.widgetState(WidgetState.disabled);
       final selected = ContextVariant.widgetState(WidgetState.selected);
-      final enabled = not(disabled);
-      final unselected = not(selected);
+      final enabled = ContextVariant.not(disabled);
+      final unselected = ContextVariant.not(selected);
 
-      expect(enabled, isA<MultiVariant>());
-      expect(enabled.operatorType, MultiVariantOperator.not);
-      expect(enabled.variants.first, disabled);
+      expect(enabled, isA<ContextVariant>());
+      expect(enabled.key, contains('not'));
 
-      expect(unselected, isA<MultiVariant>());
-      expect(unselected.operatorType, MultiVariantOperator.not);
-      expect(unselected.variants.first, selected);
+      expect(unselected, isA<ContextVariant>());
+      expect(unselected.key, contains('not'));
     });
 
     test('named variants are defined', () {

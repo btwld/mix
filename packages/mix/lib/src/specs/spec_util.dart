@@ -39,7 +39,9 @@ StackSpecUtility get $stack => StackSpecUtility();
 
 /// Global accessor for context variant utilities.
 OnContextVariantUtility get $on =>
-    OnContextVariantUtility<MultiSpec, CompoundStyle>((v) => CompoundStyle(v));
+    OnContextVariantUtility<MultiSpec, CompoundStyle>(
+      (v) => CompoundStyle.create([v]),
+    );
 
 /// Global accessor for modifier utilities.
-ModifierUtility get $wrap => ModifierUtility((v) => CompoundStyle(v));
+ModifierUtility get $wrap => ModifierUtility((v) => CompoundStyle.create([v]));

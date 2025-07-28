@@ -145,101 +145,64 @@ void main() {
       });
     });
 
-    group('MultiVariant operations', () {
-      test('& operator creates AND MultiVariant', () {
-        const primary = NamedVariant('primary');
-        const large = NamedVariant('large');
-
-        final combined = primary & large;
-
-        expect(combined, isA<MultiVariant>());
-        expect(combined.operatorType, MultiVariantOperator.and);
-        expect(combined.variants, contains(primary));
-        expect(combined.variants, contains(large));
-      });
-
-      test('| operator creates OR MultiVariant', () {
-        const primary = NamedVariant('primary');
-        const secondary = NamedVariant('secondary');
-
-        final combined = primary | secondary;
-
-        expect(combined, isA<MultiVariant>());
-        expect(combined.operatorType, MultiVariantOperator.or);
-        expect(combined.variants, contains(primary));
-        expect(combined.variants, contains(secondary));
-      });
-
-      test('chains with multiple NamedVariants', () {
+    group('NamedVariant independence', () {
+      test('multiple NamedVariants are independent', () {
         const primary = NamedVariant('primary');
         const large = NamedVariant('large');
         const outlined = NamedVariant('outlined');
 
-        // (primary AND large) OR outlined
-        final complex = (primary & large) | outlined;
-
-        expect(complex, isA<MultiVariant>());
-        expect(complex.operatorType, MultiVariantOperator.or);
-        expect(complex.variants.length, 2);
-        expect(complex.variants, contains(outlined));
-
-        // Should contain the AND combination
-        final andVariant =
-            complex.variants.firstWhere((v) => v is MultiVariant)
-                as MultiVariant;
-        expect(andVariant.operatorType, MultiVariantOperator.and);
-        expect(andVariant.variants, contains(primary));
-        expect(andVariant.variants, contains(large));
+        expect(primary.key, 'primary');
+        expect(large.key, 'large');
+        expect(outlined.key, 'outlined');
+        
+        expect(primary, isNot(equals(large)));
+        expect(primary, isNot(equals(outlined)));
+        expect(large, isNot(equals(outlined)));
       });
 
-      test('works with global not() function', () {
+      test('NamedVariants do not automatically apply based on context', () {
         const primary = NamedVariant('primary');
-        final notPrimary = not(primary);
-
-        expect(notPrimary, isA<MultiVariant>());
-        expect(notPrimary.operatorType, MultiVariantOperator.not);
-        expect(notPrimary.variants.length, 1);
-        expect(notPrimary.variants.first, primary);
+        const secondary = NamedVariant('secondary');
+        
+        // NamedVariants are manual - they only apply when explicitly included
+        expect(primary, isA<NamedVariant>());
+        expect(secondary, isA<NamedVariant>());
+        expect(primary, isNot(isA<ContextVariant>()));
+        expect(secondary, isNot(isA<ContextVariant>()));
       });
     });
 
     group('Integration with other variant types', () {
-      test('combines with WidgetStateVariants', () {
+      test('NamedVariants are distinct from WidgetStateVariants', () {
         const primary = NamedVariant('primary');
         final hovered = WidgetStateVariant(WidgetState.hovered);
 
-        final combined = primary & hovered;
-
-        expect(combined.variants.length, 2);
-        expect(combined.variants, contains(primary));
-        expect(combined.variants, contains(hovered));
+        expect(primary, isA<NamedVariant>());
+        expect(hovered, isA<WidgetStateVariant>());
+        expect(primary.key, isNot(equals(hovered.key)));
       });
 
-      test('combines with ContextVariants', () {
+      test('NamedVariants are distinct from ContextVariants', () {
         const primary = NamedVariant('primary');
         final darkMode = ContextVariant('dark', (context) => true);
 
-        final combined = primary & darkMode;
-
-        expect(combined.variants.length, 2);
-        expect(combined.variants, contains(primary));
-        expect(combined.variants, contains(darkMode));
+        expect(primary, isA<NamedVariant>());
+        expect(darkMode, isA<ContextVariant>());
+        expect(primary.key, isNot(equals(darkMode.key)));
       });
 
-      test('works with predefined variants', () {
+      test('works alongside predefined variants', () {
         const custom = NamedVariant('custom');
 
-        // Combine with widget state variant
+        // Can be used with widget state variants
         final hover = ContextVariant.widgetState(WidgetState.hovered);
-        final withHover = custom & hover;
-        expect(withHover.variants, contains(custom));
-        expect(withHover.variants, contains(hover));
+        expect(custom, isA<NamedVariant>());
+        expect(hover, isA<WidgetStateVariant>());
 
-        // Combine with context variant
+        // Can be used with context variants
         final dark = ContextVariant.platformBrightness(Brightness.dark);
-        final withDark = custom & dark;
-        expect(withDark.variants, contains(custom));
-        expect(withDark.variants, contains(dark));
+        expect(custom, isA<NamedVariant>());
+        expect(dark, isA<ContextVariant>());
       });
     });
 
@@ -359,22 +322,20 @@ void main() {
         const primary = NamedVariant('primary');
         // NamedVariants don't have context-based conditions
         // They're only activated when explicitly included in namedVariants
-        // This is tested indirectly through MultiVariant logic
         expect(primary, isA<NamedVariant>());
         expect(primary, isNot(isA<ContextVariant>()));
       });
 
-      test('multiple NamedVariants in MultiVariant.when return false', () {
+      test('NamedVariants require explicit inclusion to be active', () {
         const primary = NamedVariant('primary');
         const large = NamedVariant('large');
-        final context = MockBuildContext();
-
-        final andVariant = MultiVariant.and(const [primary, large]);
-        final orVariant = MultiVariant.or(const [primary, large]);
-
-        // NamedVariants never match context automatically
-        expect(andVariant.when(context), isFalse);
-        expect(orVariant.when(context), isFalse);
+        
+        // NamedVariants are manual - they don't have when() method
+        // They're only active when explicitly included in namedVariants set
+        expect(primary, isA<NamedVariant>());
+        expect(large, isA<NamedVariant>());
+        expect(primary.key, 'primary');
+        expect(large.key, 'large');
       });
     });
 

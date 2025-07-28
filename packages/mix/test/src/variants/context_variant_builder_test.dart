@@ -22,12 +22,12 @@ void main() {
           (context) => BoxMix().width(100.0),
         );
 
-        final flexBuilder = ContextVariantBuilder<FlexSpecAttribute>(
-          (context) => FlexSpecAttribute(),
+        final flexBuilder = ContextVariantBuilder<FlexMix>(
+          (context) => FlexMix(),
         );
 
         expect(boxBuilder, isA<ContextVariantBuilder<BoxMix>>());
-        expect(flexBuilder, isA<ContextVariantBuilder<FlexSpecAttribute>>());
+        expect(flexBuilder, isA<ContextVariantBuilder<FlexMix>>());
       });
 
       test('stores function correctly', () {
@@ -193,8 +193,8 @@ void main() {
         final boxBuilder = ContextVariantBuilder<BoxMix>(
           (context) => BoxMix().width(100.0),
         );
-        final flexBuilder = ContextVariantBuilder<FlexSpecAttribute>(
-          (context) => FlexSpecAttribute(),
+        final flexBuilder = ContextVariantBuilder<FlexMix>(
+          (context) => FlexMix(),
         );
 
         final context = MockBuildContext();
@@ -202,7 +202,7 @@ void main() {
         final flexResult = flexBuilder.build(context);
 
         expect(boxResult, isA<BoxMix>());
-        expect(flexResult, isA<FlexSpecAttribute>());
+        expect(flexResult, isA<FlexMix>());
       });
 
       test('function can access context properties', () {
@@ -252,8 +252,8 @@ void main() {
         final boxBuilder = ContextVariantBuilder<BoxMix>(
           (context) => BoxMix().width(100.0),
         );
-        final flexBuilder = ContextVariantBuilder<FlexSpecAttribute>(
-          (context) => FlexSpecAttribute(),
+        final flexBuilder = ContextVariantBuilder<FlexMix>(
+          (context) => FlexMix(),
         );
 
         expect(boxBuilder.runtimeType, isNot(equals(flexBuilder.runtimeType)));
@@ -271,43 +271,36 @@ void main() {
     });
 
     group('MultiVariant integration', () {
-      test('can be combined with AND operator', () {
+      test('can be used with other variants', () {
         final builder = ContextVariantBuilder<BoxMix>(
           (context) => BoxMix().width(100.0),
         );
         final contextVariant = ContextVariant('test', (context) => true);
 
-        final combined = builder & contextVariant;
-
-        expect(combined, isA<MultiVariant>());
-        expect(combined.operatorType, MultiVariantOperator.and);
-        expect(combined.variants, contains(builder));
-        expect(combined.variants, contains(contextVariant));
+        // Both are separate variants that can be used independently
+        expect(builder, isA<ContextVariantBuilder>());
+        expect(contextVariant, isA<ContextVariant>());
+        expect(builder, isNot(equals(contextVariant)));
       });
 
-      test('can be combined with OR operator', () {
+      test('can be used alongside named variants', () {
         final builder = ContextVariantBuilder<BoxMix>(
           (context) => BoxMix().width(100.0),
         );
         const namedVariant = NamedVariant('primary');
 
-        final combined = builder | namedVariant;
-
-        expect(combined, isA<MultiVariant>());
-        expect(combined.operatorType, MultiVariantOperator.or);
-        expect(combined.variants, contains(builder));
-        expect(combined.variants, contains(namedVariant));
+        // Both can be used independently
+        expect(builder, isA<ContextVariantBuilder>());
+        expect(namedVariant, isA<NamedVariant>());
+        expect(builder.key, isNot(equals(namedVariant.key)));
       });
 
-      test('can be negated with NOT operation', () {
-        final builder = ContextVariantBuilder<BoxMix>(
-          (context) => BoxMix().width(100.0),
-        );
-        final notVariant = not(builder);
+      test('can use ContextVariant.not for negation', () {
+        final contextVariant = ContextVariant.widgetState(WidgetState.disabled);
+        final notVariant = ContextVariant.not(contextVariant);
 
-        expect(notVariant, isA<MultiVariant>());
-        expect(notVariant.operatorType, MultiVariantOperator.not);
-        expect(notVariant.variants.first, builder);
+        expect(notVariant, isA<ContextVariant>());
+        expect(notVariant.key, contains('not'));
       });
     });
 

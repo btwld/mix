@@ -8,7 +8,7 @@ void main() {
   group('IconSpecAttribute', () {
     group('Constructor', () {
       test('creates IconSpecAttribute with all properties', () {
-        final attribute = IconSpecAttribute.raw(
+        final attribute = IconMix.raw(
           color: Prop(Colors.blue),
           size: Prop(24.0),
           weight: Prop(400.0),
@@ -40,7 +40,7 @@ void main() {
       });
 
       test('creates IconSpecAttribute with default values', () {
-        final attribute = IconSpecAttribute();
+        final attribute = IconMix();
 
         expect(attribute.$color, isNull);
         expect(attribute.$size, isNull);
@@ -56,11 +56,7 @@ void main() {
 
     group('only constructor', () {
       test('creates IconSpecAttribute with only specified properties', () {
-        final attribute = IconSpecAttribute(
-          color: Colors.red,
-          size: 32.0,
-          weight: 500.0,
-        );
+        final attribute = IconMix(color: Colors.red, size: 32.0, weight: 500.0);
 
         expect(attribute.$color, resolvesTo(Colors.red));
         expect(attribute.$size, resolvesTo(32.0));
@@ -90,7 +86,7 @@ void main() {
           fill: 0.5,
         );
 
-        final attribute = IconSpecAttribute.value(spec);
+        final attribute = IconMix.value(spec);
 
         expect(attribute.$color, resolvesTo(Colors.green));
         expect(attribute.$size, resolvesTo(16.0));
@@ -107,7 +103,7 @@ void main() {
     group('maybeValue constructor', () {
       test('creates IconSpecAttribute from non-null IconSpec', () {
         const spec = IconSpec(color: Colors.purple, size: 20.0);
-        final attribute = IconSpecAttribute.maybeValue(spec);
+        final attribute = IconMix.maybeValue(spec);
 
         expect(attribute, isNotNull);
         expect(attribute!.$color, resolvesTo(Colors.purple));
@@ -115,14 +111,14 @@ void main() {
       });
 
       test('returns null for null IconSpec', () {
-        final attribute = IconSpecAttribute.maybeValue(null);
+        final attribute = IconMix.maybeValue(null);
         expect(attribute, isNull);
       });
     });
 
     group('Utility methods', () {
       test('utility methods create new instances', () {
-        final original = IconSpecAttribute();
+        final original = IconMix();
         final withColor = original.color(Colors.orange);
         final withSize = original.size(24.0);
 
@@ -144,7 +140,7 @@ void main() {
 
       test('chaining utilities accumulates properties correctly', () {
         // Chaining now properly accumulates all properties
-        final chained = IconSpecAttribute()
+        final chained = IconMix()
             .color(Colors.red)
             .size(24.0)
             .weight(600.0)
@@ -167,7 +163,7 @@ void main() {
 
       test('chaining with complex properties works correctly', () {
         // Test chaining with shadows
-        final chained = IconSpecAttribute()
+        final chained = IconMix()
             .color(Colors.blue)
             .size(32.0)
             .shadow(
@@ -192,50 +188,50 @@ void main() {
       });
 
       test('color utility creates IconSpecAttribute with color', () {
-        final attribute = IconSpecAttribute();
+        final attribute = IconMix();
         final colorAttribute = attribute.color(Colors.orange);
 
-        expect(colorAttribute, isA<IconSpecAttribute>());
+        expect(colorAttribute, isA<IconMix>());
         expect(colorAttribute.$color, resolvesTo(Colors.orange));
       });
 
       test('size utility creates IconSpecAttribute with size', () {
-        final attribute = IconSpecAttribute();
+        final attribute = IconMix();
         final sizeAttribute = attribute.size(28.0);
 
-        expect(sizeAttribute, isA<IconSpecAttribute>());
+        expect(sizeAttribute, isA<IconMix>());
         expect(sizeAttribute.$size, resolvesTo(28.0));
       });
 
       test('weight utility creates IconSpecAttribute with weight', () {
-        final attribute = IconSpecAttribute();
+        final attribute = IconMix();
         final weightAttribute = attribute.weight(600.0);
 
-        expect(weightAttribute, isA<IconSpecAttribute>());
+        expect(weightAttribute, isA<IconMix>());
         expect(weightAttribute.$weight, resolvesTo(600.0));
       });
 
       test('grade utility creates IconSpecAttribute with grade', () {
-        final attribute = IconSpecAttribute();
+        final attribute = IconMix();
         final gradeAttribute = attribute.grade(25.0);
 
-        expect(gradeAttribute, isA<IconSpecAttribute>());
+        expect(gradeAttribute, isA<IconMix>());
         expect(gradeAttribute.$grade, resolvesTo(25.0));
       });
 
       test(
         'opticalSize utility creates IconSpecAttribute with opticalSize',
         () {
-          final attribute = IconSpecAttribute();
+          final attribute = IconMix();
           final opticalSizeAttribute = attribute.opticalSize(48.0);
 
-          expect(opticalSizeAttribute, isA<IconSpecAttribute>());
+          expect(opticalSizeAttribute, isA<IconMix>());
           expect(opticalSizeAttribute.$opticalSize, resolvesTo(48.0));
         },
       );
 
       test('shadow utility creates IconSpecAttribute with shadow', () {
-        final attribute = IconSpecAttribute();
+        final attribute = IconMix();
         final shadowAttribute = attribute.shadow(
           ShadowMix(
             color: Colors.black,
@@ -244,7 +240,7 @@ void main() {
           ),
         );
 
-        expect(shadowAttribute, isA<IconSpecAttribute>());
+        expect(shadowAttribute, isA<IconMix>());
         expect(shadowAttribute.$shadows, isNotNull);
         expect(shadowAttribute.$shadows!.length, 1);
       });
@@ -252,12 +248,12 @@ void main() {
       test(
         'textDirection utility creates IconSpecAttribute with textDirection',
         () {
-          final attribute = IconSpecAttribute();
+          final attribute = IconMix();
           final textDirectionAttribute = attribute.textDirection(
             TextDirection.rtl,
           );
 
-          expect(textDirectionAttribute, isA<IconSpecAttribute>());
+          expect(textDirectionAttribute, isA<IconMix>());
           expect(
             textDirectionAttribute.$textDirection,
             resolvesTo(TextDirection.rtl),
@@ -268,10 +264,10 @@ void main() {
       test(
         'applyTextScaling utility creates IconSpecAttribute with applyTextScaling',
         () {
-          final attribute = IconSpecAttribute();
+          final attribute = IconMix();
           final applyTextScalingAttribute = attribute.applyTextScaling(false);
 
-          expect(applyTextScalingAttribute, isA<IconSpecAttribute>());
+          expect(applyTextScalingAttribute, isA<IconMix>());
           expect(
             applyTextScalingAttribute.$applyTextScaling,
             resolvesTo(false),
@@ -280,17 +276,17 @@ void main() {
       );
 
       test('fill utility creates IconSpecAttribute with fill', () {
-        final attribute = IconSpecAttribute();
+        final attribute = IconMix();
         final fillAttribute = attribute.fill(0.8);
 
-        expect(fillAttribute, isA<IconSpecAttribute>());
+        expect(fillAttribute, isA<IconMix>());
         expect(fillAttribute.$fill, resolvesTo(0.8));
       });
 
       test(
         'shadows utility creates IconSpecAttribute with multiple shadows',
         () {
-          final attribute = IconSpecAttribute();
+          final attribute = IconMix();
           final shadowsAttribute = attribute.shadows([
             ShadowMix(
               color: Colors.black,
@@ -304,7 +300,7 @@ void main() {
             ),
           ]);
 
-          expect(shadowsAttribute, isA<IconSpecAttribute>());
+          expect(shadowsAttribute, isA<IconMix>());
           expect(shadowsAttribute.$shadows, isNotNull);
           expect(shadowsAttribute.$shadows!.length, 2);
         },
@@ -313,7 +309,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to IconSpec with correct properties', () {
-        final attribute = IconSpecAttribute(
+        final attribute = IconMix(
           color: Colors.cyan,
           size: 36.0,
           weight: 700.0,
@@ -339,7 +335,7 @@ void main() {
       });
 
       test('resolves with partial values correctly', () {
-        final attribute = IconSpecAttribute(color: Colors.yellow, size: 18.0);
+        final attribute = IconMix(color: Colors.yellow, size: 18.0);
 
         final context = MockBuildContext();
         final spec = attribute.resolve(context);
@@ -359,13 +355,9 @@ void main() {
 
     group('merge', () {
       test('merges properties correctly', () {
-        final first = IconSpecAttribute(
-          color: Colors.red,
-          size: 24.0,
-          weight: 400.0,
-        );
+        final first = IconMix(color: Colors.red, size: 24.0, weight: 400.0);
 
-        final second = IconSpecAttribute(
+        final second = IconMix(
           color: Colors.blue,
           grade: 25.0,
           opticalSize: 48.0,
@@ -381,14 +373,14 @@ void main() {
       });
 
       test('merges all properties when both have values', () {
-        final first = IconSpecAttribute(
+        final first = IconMix(
           color: Colors.green,
           size: 20.0,
           weight: 300.0,
           grade: -25.0,
         );
 
-        final second = IconSpecAttribute(
+        final second = IconMix(
           color: Colors.purple,
           size: 32.0,
           opticalSize: 32.0,
@@ -418,8 +410,8 @@ void main() {
           alignment: Alignment.center,
         );
 
-        final first = IconSpecAttribute(modifiers: [opacityModifier]);
-        final second = IconSpecAttribute(modifiers: [alignModifier]);
+        final first = IconMix(modifiers: [opacityModifier]);
+        final second = IconMix(modifiers: [alignModifier]);
 
         final merged = first.merge(second);
 
@@ -435,13 +427,13 @@ void main() {
 
     group('equality', () {
       test('instances with same properties are equal', () {
-        final attribute1 = IconSpecAttribute(
+        final attribute1 = IconMix(
           color: Colors.blue,
           size: 24.0,
           weight: 400.0,
         );
 
-        final attribute2 = IconSpecAttribute(
+        final attribute2 = IconMix(
           color: Colors.blue,
           size: 24.0,
           weight: 400.0,
@@ -451,9 +443,9 @@ void main() {
       });
 
       test('instances with different properties are not equal', () {
-        final attribute1 = IconSpecAttribute(color: Colors.blue, size: 24.0);
+        final attribute1 = IconMix(color: Colors.blue, size: 24.0);
 
-        final attribute2 = IconSpecAttribute(color: Colors.red, size: 24.0);
+        final attribute2 = IconMix(color: Colors.red, size: 24.0);
 
         expect(attribute1, isNot(equals(attribute2)));
       });

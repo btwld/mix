@@ -111,6 +111,31 @@ class ContextVariant extends Variant {
     return ContextVariant('web', (context) => kIsWeb);
   }
 
+  // Responsive breakpoints
+  static ContextVariant mobile() {
+    return ContextVariant(
+      'mobile',
+      (context) => MediaQuery.sizeOf(context).width <= 767,
+    );
+  }
+
+  static ContextVariant tablet() {
+    return ContextVariant(
+      'tablet',
+      (context) {
+        final width = MediaQuery.sizeOf(context).width;
+        return width > 767 && width <= 1279;
+      },
+    );
+  }
+
+  static ContextVariant desktop() {
+    return ContextVariant(
+      'desktop',
+      (context) => MediaQuery.sizeOf(context).width > 1279,
+    );
+  }
+
   /// Check if this variant should be active for the given context
   bool when(BuildContext context) {
     return shouldApply(context);

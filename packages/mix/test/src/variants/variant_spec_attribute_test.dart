@@ -27,17 +27,14 @@ void main() {
         expect(variantAttr.mergeKey, 'widget_state_hovered');
       });
 
-      test('creates VariantSpecAttribute with MultiVariant', () {
-        final variant = MultiVariant.and([
-          NamedVariant('primary'),
-          ContextVariant.widgetState(WidgetState.hovered),
-        ]);
+      test('creates VariantSpecAttribute with ContextVariant', () {
+        final variant = ContextVariant.widgetState(WidgetState.hovered);
         final style = BoxMix.width(150.0);
         final variantAttr = VariantStyleAttribute(variant, style);
 
         expect(variantAttr.variant, variant);
         expect(variantAttr.value, style);
-        expect(variantAttr.mergeKey, isA<String>());
+        expect(variantAttr.mergeKey, 'widget_state_hovered');
       });
     });
 
@@ -68,21 +65,18 @@ void main() {
         expect(variantAttr.matches([]), isFalse);
       });
 
-      test('matches with MultiVariant', () {
-        final variant = MultiVariant.and(const [
-          NamedVariant('primary'),
-          NamedVariant('large'),
-        ]);
+      test('matches with ContextVariant', () {
+        final variant = ContextVariant('test', (context) => true);
         final style = BoxMix.width(100.0);
         final variantAttr = VariantStyleAttribute(variant, style);
 
-        // The exact MultiVariant must be in the list to match
+        // The exact variant must be in the list to match
         final variants = [variant];
         expect(variantAttr.matches(variants), isTrue);
 
-        // Individual components don't match
-        const individualVariants = [NamedVariant('primary')];
-        expect(variantAttr.matches(individualVariants), isFalse);
+        // Different variants don't match
+        const otherVariants = [NamedVariant('primary')];
+        expect(variantAttr.matches(otherVariants), isFalse);
       });
     });
 
@@ -109,87 +103,50 @@ void main() {
         expect(result, same(variantAttr));
       });
 
-      test('handles MultiVariant removal correctly', () {
-        final variant = MultiVariant.and(const [
-          NamedVariant('primary'),
-          NamedVariant('large'),
-          NamedVariant('outlined'),
-        ]);
+      test('handles variant removal correctly', () {
+        const variant = NamedVariant('primary');
         final style = BoxMix.width(100.0);
         final variantAttr = VariantStyleAttribute(variant, style);
 
-        const variantsToRemove = [NamedVariant('large')];
-        final result = variantAttr.removeVariants(variantsToRemove);
-
-        expect(result, isNotNull);
-        expect(result!.variant, isA<MultiVariant>());
-
-        final remainingMultiVariant = result.variant as MultiVariant;
-        expect(remainingMultiVariant.variants.length, 2);
-        expect(
-          remainingMultiVariant.variants,
-          contains(NamedVariant('primary')),
-        );
-        expect(
-          remainingMultiVariant.variants,
-          contains(const NamedVariant('outlined')),
-        );
-        expect(
-          remainingMultiVariant.variants,
-          isNot(contains(NamedVariant('large'))),
-        );
-      });
-
-      test('returns single variant when MultiVariant reduced to one', () {
-        final variant = MultiVariant.and(const [
-          NamedVariant('primary'),
-          NamedVariant('large'),
-        ]);
-        final style = BoxMix.width(100.0);
-        final variantAttr = VariantStyleAttribute(variant, style);
-
-        const variantsToRemove = [NamedVariant('large')];
-        final result = variantAttr.removeVariants(variantsToRemove);
-
-        expect(result, isNotNull);
-        expect(result!.variant, NamedVariant('primary'));
-        expect(result.variant, isNot(isA<MultiVariant>()));
-      });
-
-      test('returns null when all variants removed from MultiVariant', () {
-        final variant = MultiVariant.and(const [
-          NamedVariant('primary'),
-          NamedVariant('large'),
-        ]);
-        final style = BoxMix.width(100.0);
-        final variantAttr = VariantStyleAttribute(variant, style);
-
-        const variantsToRemove = [
-          NamedVariant('primary'),
-          NamedVariant('large'),
-        ];
+        const variantsToRemove = [NamedVariant('primary')];
         final result = variantAttr.removeVariants(variantsToRemove);
 
         expect(result, isNull);
       });
 
-      test('preserves MultiVariant operator type', () {
-        final orVariant = MultiVariant.or(const [
-          NamedVariant('primary'),
-          NamedVariant('large'),
-          NamedVariant('outlined'),
-        ]);
+      test('returns attribute when variant not in removal list', () {
+        const variant = NamedVariant('primary');
         final style = BoxMix.width(100.0);
-        final variantAttr = VariantStyleAttribute(orVariant, style);
+        final variantAttr = VariantStyleAttribute(variant, style);
 
-        const variantsToRemove = [NamedVariant('large')];
+        const variantsToRemove = [NamedVariant('secondary')];
         final result = variantAttr.removeVariants(variantsToRemove);
 
         expect(result, isNotNull);
-        expect(result!.variant, isA<MultiVariant>());
+        expect(result!.variant, variant);
+      });
 
-        final remainingMultiVariant = result.variant as MultiVariant;
-        expect(remainingMultiVariant.operatorType, MultiVariantOperator.or);
+      test('returns null when variant is removed', () {
+        const variant = NamedVariant('primary');
+        final style = BoxMix.width(100.0);
+        final variantAttr = VariantStyleAttribute(variant, style);
+
+        const variantsToRemove = [NamedVariant('primary')];
+        final result = variantAttr.removeVariants(variantsToRemove);
+
+        expect(result, isNull);
+      });
+
+      test('preserves context variant when removal doesnt match', () {
+        final variant = ContextVariant('test', (context) => true);
+        final style = BoxMix.width(100.0);
+        final variantAttr = VariantStyleAttribute(variant, style);
+
+        const variantsToRemove = [NamedVariant('other')];
+        final result = variantAttr.removeVariants(variantsToRemove);
+
+        expect(result, isNotNull);
+        expect(result!.variant, same(variant));
       });
     });
 
@@ -334,16 +291,12 @@ void main() {
         expect(variantAttr.mergeKey, 'widget_state_hovered');
       });
 
-      test('uses MultiVariant key as merge key', () {
-        final variant = MultiVariant.and(const [
-          NamedVariant('primary'),
-          NamedVariant('large'),
-        ]);
+      test('uses variant key as merge key', () {
+        const variant = NamedVariant('primary');
         final style = BoxMix.width(100.0);
         final variantAttr = VariantStyleAttribute(variant, style);
 
-        expect(variantAttr.mergeKey, isA<String>());
-        expect(variantAttr.mergeKey, contains('MultiVariant'));
+        expect(variantAttr.mergeKey, 'primary');
       });
     });
 
@@ -362,7 +315,7 @@ void main() {
 
       test('works with ImageSpecAttribute', () {
         const variant = NamedVariant('avatar');
-        final imageStyle = ImageSpecAttribute(
+        final imageStyle = ImageMix(
           width: 50.0,
           height: 50.0,
           fit: BoxFit.cover,
@@ -371,7 +324,7 @@ void main() {
 
         expect(variantAttr.variant, variant);
         expect(variantAttr.value, imageStyle);
-        final imageAttr = variantAttr.value as ImageSpecAttribute;
+        final imageAttr = variantAttr.value as ImageMix;
         expect(imageAttr.$width, resolvesTo(50.0));
         expect(imageAttr.$height, resolvesTo(50.0));
         expect(imageAttr.$fit, resolvesTo(BoxFit.cover));
@@ -379,44 +332,31 @@ void main() {
     });
 
     group('Complex Scenarios', () {
-      test('nested MultiVariant operations', () {
-        final variant1 = MultiVariant.and(const [
-          NamedVariant('primary'),
-          NamedVariant('large'),
-        ]);
-
-        final variant2 = MultiVariant.or([
-          variant1,
-          const NamedVariant('secondary'),
-        ]);
+      test('complex variant combinations', () {
+        final variant1 = ContextVariant.widgetState(WidgetState.hovered);
+        final variant2 = ContextVariant.platformBrightness(Brightness.dark);
 
         final style = BoxMix.width(100.0);
-        final variantAttr = VariantStyleAttribute(variant2, style);
+        final variantAttr1 = VariantStyleAttribute(variant1, style);
+        final variantAttr2 = VariantStyleAttribute(variant2, style);
 
-        expect(variantAttr.variant, variant2);
-        expect(variantAttr.value, style);
+        expect(variantAttr1.variant, variant1);
+        expect(variantAttr2.variant, variant2);
+        expect(variantAttr1.value, style);
+        expect(variantAttr2.value, style);
       });
 
-      test('removing variants from complex nested structure', () {
-        final innerAnd = MultiVariant.and(const [
-          NamedVariant('primary'),
-          NamedVariant('large'),
-        ]);
-
-        final outerOr = MultiVariant.or([
-          innerAnd,
-          const NamedVariant('secondary'),
-        ]);
-
+      test('removing variants from different variant types', () {
+        final variant = ContextVariant.widgetState(WidgetState.hovered);
         final style = BoxMix.width(100.0);
-        final variantAttr = VariantStyleAttribute(outerOr, style);
+        final variantAttr = VariantStyleAttribute(variant, style);
 
+        // Try to remove a NamedVariant - should not affect ContextVariant
         const variantsToRemove = [NamedVariant('primary')];
         final result = variantAttr.removeVariants(variantsToRemove);
 
         expect(result, isNotNull);
-        // The nested structure should be handled appropriately
-        expect(result!.variant, isA<MultiVariant>());
+        expect(result!.variant, same(variant));
       });
     });
   });

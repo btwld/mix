@@ -17,37 +17,37 @@ class StackSpecUtility extends StyleAttributeBuilder<StackSpec> {
   // STACK UTILITIES - Same as StackSpecAttribute but return StackSpecUtility for cascade
 
   late final alignment = PropUtility<StackSpecUtility, AlignmentGeometry>(
-    (prop) => _build(StackSpecAttribute.raw(alignment: prop)),
+    (prop) => _build(StackMix.raw(alignment: prop)),
   );
 
   late final fit = PropUtility<StackSpecUtility, StackFit>(
-    (prop) => _build(StackSpecAttribute.raw(fit: prop)),
+    (prop) => _build(StackMix.raw(fit: prop)),
   );
 
   late final textDirection = PropUtility<StackSpecUtility, TextDirection>(
-    (prop) => _build(StackSpecAttribute.raw(textDirection: prop)),
+    (prop) => _build(StackMix.raw(textDirection: prop)),
   );
 
   late final clipBehavior = PropUtility<StackSpecUtility, Clip>(
-    (prop) => _build(StackSpecAttribute.raw(clipBehavior: prop)),
+    (prop) => _build(StackMix.raw(clipBehavior: prop)),
   );
 
   late final on = OnContextVariantUtility<StackSpec, StackSpecUtility>(
-    (v) => _build(StackSpecAttribute(variants: [v])),
+    (v) => _build(StackMix(variants: [v])),
   );
 
   late final wrap = ModifierUtility<StackSpecUtility>(
-    (prop) => _build(StackSpecAttribute(modifiers: [prop])),
+    (prop) => _build(StackMix(modifiers: [prop])),
   );
 
-  StackSpecAttribute _baseAttribute;
+  StackMix _baseAttribute;
 
-  StackSpecUtility([StackSpecAttribute? attribute])
-    : _baseAttribute = attribute ?? StackSpecAttribute(),
+  StackSpecUtility([StackMix? attribute])
+    : _baseAttribute = attribute ?? StackMix(),
       super();
 
   /// Mutable builder - updates internal state and returns this for cascade
-  StackSpecUtility _build(StackSpecAttribute newAttribute) {
+  StackSpecUtility _build(StackMix newAttribute) {
     _baseAttribute = _baseAttribute.merge(newAttribute);
 
     return this;
@@ -55,7 +55,7 @@ class StackSpecUtility extends StyleAttributeBuilder<StackSpec> {
 
   /// Animation
   StackSpecUtility animate(AnimationConfig animation) =>
-      _build(StackSpecAttribute(animation: animation));
+      _build(StackMix(animation: animation));
 
   // StyleAttribute interface implementation
 
@@ -65,7 +65,7 @@ class StackSpecUtility extends StyleAttributeBuilder<StackSpec> {
     if (other is StackSpecUtility) {
       return StackSpecUtility(_baseAttribute.merge(other._baseAttribute));
     }
-    if (other is StackSpecAttribute) {
+    if (other is StackMix) {
       return StackSpecUtility(_baseAttribute.merge(other));
     }
 
@@ -79,5 +79,5 @@ class StackSpecUtility extends StyleAttributeBuilder<StackSpec> {
 
   /// Access to internal attribute
   @override
-  StackSpecAttribute get attribute => _baseAttribute;
+  StackMix get attribute => _baseAttribute;
 }

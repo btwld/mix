@@ -2,6 +2,11 @@ import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 
 import '../animation/animation_config.dart';
+import '../specs/box/box_attribute.dart';
+import '../specs/flexbox/flexbox_spec.dart';
+import '../specs/icon/icon_attribute.dart';
+import '../specs/stack/stack_attribute.dart';
+import '../specs/text/text_attribute.dart';
 import '../variants/variant.dart';
 import 'internal/compare_mixin.dart';
 import 'internal/constants.dart';
@@ -24,6 +29,12 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
   final List<VariantStyleAttribute<S>>? $variants;
   final List<ModifierAttribute>? $modifiers;
   final AnimationConfig? $animation;
+
+  static final box = BoxMix.new;
+  static final icon = IconMix.new;
+  static final text = TextMix.new;
+  static final flexbox = FlexBoxMix.new;
+  static final stack = StackMix.new;
 
   const Style({
     List<VariantStyleAttribute<S>>? variants,

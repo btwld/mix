@@ -13,13 +13,13 @@ void main() {
           padding: EdgeInsetsMix(top: 10.0, bottom: 20.0),
         );
 
-        final flexAttr = FlexSpecAttribute(
+        final flexAttr = FlexMix(
           direction: Axis.horizontal,
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
         );
 
-        final attribute = FlexBoxSpecAttribute(box: boxAttr, flex: flexAttr);
+        final attribute = FlexBoxMix(box: boxAttr, flex: flexAttr);
 
         // Verify properties are set
         expect(attribute.$box, equals(boxAttr));
@@ -27,7 +27,7 @@ void main() {
       });
 
       test('creates empty FlexBoxSpecAttribute', () {
-        const attribute = FlexBoxSpecAttribute();
+        const attribute = FlexBoxMix();
 
         // Verify all properties are null in default state
         expect(attribute.$box, isNull);
@@ -48,7 +48,7 @@ void main() {
             ),
           );
 
-          final attribute = FlexBoxSpecAttribute.value(spec);
+          final attribute = FlexBoxMix.value(spec);
 
           expect(attribute.$box, isNotNull);
           expect(attribute.$flex, isNotNull);
@@ -56,7 +56,7 @@ void main() {
       );
 
       test('maybeValue returns null for null spec', () {
-        expect(FlexBoxSpecAttribute.maybeValue(null), isNull);
+        expect(FlexBoxMix.maybeValue(null), isNull);
       });
 
       test('maybeValue returns attribute for non-null spec', () {
@@ -65,7 +65,7 @@ void main() {
           flex: FlexSpec(direction: Axis.vertical),
         );
 
-        final attribute = FlexBoxSpecAttribute.maybeValue(spec);
+        final attribute = FlexBoxMix.maybeValue(spec);
 
         expect(attribute, isNotNull);
         expect(attribute!.$box, isNotNull);
@@ -118,12 +118,12 @@ void main() {
 
     group('Resolution', () {
       test('resolves to FlexBoxSpec with correct properties', () {
-        final attribute = FlexBoxSpecAttribute(
+        final attribute = FlexBoxMix(
           box: BoxMix(
             alignment: Alignment.center,
             padding: EdgeInsetsMix(top: 10.0, bottom: 20.0),
           ),
-          flex: FlexSpecAttribute(
+          flex: FlexMix(
             direction: Axis.horizontal,
             mainAxisAlignment: MainAxisAlignment.center,
           ),
@@ -143,7 +143,7 @@ void main() {
       });
 
       test('resolves complex nested properties correctly', () {
-        final attribute = FlexBoxSpecAttribute(
+        final attribute = FlexBoxMix(
           box: BoxMix(
             decoration: BoxDecorationMix(
               color: Colors.red,
@@ -157,7 +157,7 @@ void main() {
             ),
           ),
 
-          flex: FlexSpecAttribute(
+          flex: FlexMix(
             gap: 10.0,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
           ),
@@ -178,20 +178,20 @@ void main() {
 
     group('Merge', () {
       test('merges properties correctly', () {
-        final first = FlexBoxSpecAttribute(
+        final first = FlexBoxMix(
           box: BoxMix(
             alignment: Alignment.center,
             padding: EdgeInsetsMix.all(10.0),
           ),
-          flex: FlexSpecAttribute(direction: Axis.horizontal),
+          flex: FlexMix(direction: Axis.horizontal),
         );
 
-        final second = FlexBoxSpecAttribute(
+        final second = FlexBoxMix(
           box: BoxMix(
             alignment: Alignment.topLeft, // This should override
             margin: EdgeInsetsMix.all(20.0), // This should be added
           ),
-          flex: FlexSpecAttribute(
+          flex: FlexMix(
             mainAxisAlignment: MainAxisAlignment.center,
           ), // This should be added
         );
@@ -216,9 +216,7 @@ void main() {
       });
 
       test('returns this when other is null', () {
-        final attribute = FlexBoxSpecAttribute(
-          box: BoxMix(alignment: Alignment.center),
-        );
+        final attribute = FlexBoxMix(box: BoxMix(alignment: Alignment.center));
 
         final merged = attribute.merge(null);
 
@@ -226,11 +224,11 @@ void main() {
       });
 
       test('merges nested box and flex attributes correctly', () {
-        final first = FlexBoxSpecAttribute(
+        final first = FlexBoxMix(
           box: BoxMix(decoration: BoxDecorationMix(color: Colors.red)),
         );
 
-        final second = FlexBoxSpecAttribute(
+        final second = FlexBoxMix(
           box: BoxMix(
             decoration: BoxDecorationMix(
               border: BoxBorderMix.all(BorderSideMix(color: Colors.blue)),
@@ -252,14 +250,14 @@ void main() {
 
     group('Equality', () {
       test('equal attributes have same hashCode', () {
-        final attr1 = FlexBoxSpecAttribute(
+        final attr1 = FlexBoxMix(
           box: BoxMix(alignment: Alignment.center),
-          flex: FlexSpecAttribute(direction: Axis.horizontal),
+          flex: FlexMix(direction: Axis.horizontal),
         );
 
-        final attr2 = FlexBoxSpecAttribute(
+        final attr2 = FlexBoxMix(
           box: BoxMix(alignment: Alignment.center),
-          flex: FlexSpecAttribute(direction: Axis.horizontal),
+          flex: FlexMix(direction: Axis.horizontal),
         );
 
         expect(attr1, equals(attr2));
@@ -267,25 +265,17 @@ void main() {
       });
 
       test('different attributes are not equal', () {
-        final attr1 = FlexBoxSpecAttribute(
-          box: BoxMix(alignment: Alignment.center),
-        );
+        final attr1 = FlexBoxMix(box: BoxMix(alignment: Alignment.center));
 
-        final attr2 = FlexBoxSpecAttribute(
-          box: BoxMix(alignment: Alignment.topLeft),
-        );
+        final attr2 = FlexBoxMix(box: BoxMix(alignment: Alignment.topLeft));
 
         expect(attr1, isNot(equals(attr2)));
       });
 
       test('attributes with different nested properties are not equal', () {
-        final attr1 = FlexBoxSpecAttribute(
-          flex: FlexSpecAttribute(direction: Axis.horizontal),
-        );
+        final attr1 = FlexBoxMix(flex: FlexMix(direction: Axis.horizontal));
 
-        final attr2 = FlexBoxSpecAttribute(
-          flex: FlexSpecAttribute(direction: Axis.vertical),
-        );
+        final attr2 = FlexBoxMix(flex: FlexMix(direction: Axis.vertical));
 
         expect(attr1, isNot(equals(attr2)));
       });
@@ -293,7 +283,7 @@ void main() {
 
     group('Modifiers', () {
       test('modifiers can be added to attribute', () {
-        final attribute = FlexBoxSpecAttribute(
+        final attribute = FlexBoxMix(
           modifiers: [
             OpacityModifierAttribute(opacity: 0.5),
             TransformModifierAttribute(
@@ -308,11 +298,11 @@ void main() {
       });
 
       test('modifiers are merged correctly', () {
-        final first = FlexBoxSpecAttribute(
+        final first = FlexBoxMix(
           modifiers: [OpacityModifierAttribute(opacity: 0.5)],
         );
 
-        final second = FlexBoxSpecAttribute(
+        final second = FlexBoxMix(
           modifiers: [
             TransformModifierAttribute(transform: Matrix4.identity()),
           ],
@@ -328,10 +318,10 @@ void main() {
 
     group('Animation', () {
       test('animation config can be added to attribute', () {
-        const attribute = FlexBoxSpecAttribute();
+        const attribute = FlexBoxMix();
         expect(attribute.$animation, isNull); // By default no animation
 
-        final withAnimation = FlexBoxSpecAttribute(
+        final withAnimation = FlexBoxMix(
           animation: CurveAnimationConfig(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeIn,
@@ -344,15 +334,15 @@ void main() {
 
     group('Variants', () {
       test('variants functionality exists', () {
-        const attribute = FlexBoxSpecAttribute();
+        const attribute = FlexBoxMix();
         expect(attribute.$variants, isNull); // By default no variants
 
         final variant = ContextVariant('test', (context) => true);
-        final withVariants = FlexBoxSpecAttribute(
+        final withVariants = FlexBoxMix(
           variants: [
             VariantStyleAttribute(
               variant,
-              FlexBoxSpecAttribute(
+              FlexBoxMix(
                 box: BoxMix(decoration: BoxDecorationMix(color: Colors.green)),
               ),
             ),
@@ -366,13 +356,9 @@ void main() {
 
     group('Composite Behavior', () {
       test('box and flex attributes work independently', () {
-        final boxOnly = FlexBoxSpecAttribute(
-          box: BoxMix(alignment: Alignment.center),
-        );
+        final boxOnly = FlexBoxMix(box: BoxMix(alignment: Alignment.center));
 
-        final flexOnly = FlexBoxSpecAttribute(
-          flex: FlexSpecAttribute(direction: Axis.horizontal),
-        );
+        final flexOnly = FlexBoxMix(flex: FlexMix(direction: Axis.horizontal));
 
         expect(boxOnly.$box, isNotNull);
         expect(boxOnly.$flex, isNull);
@@ -382,12 +368,12 @@ void main() {
       });
 
       test('partial updates preserve other attribute', () {
-        final initial = FlexBoxSpecAttribute(
+        final initial = FlexBoxMix(
           box: BoxMix(alignment: Alignment.center),
-          flex: FlexSpecAttribute(direction: Axis.horizontal),
+          flex: FlexMix(direction: Axis.horizontal),
         );
 
-        final updateBox = FlexBoxSpecAttribute(
+        final updateBox = FlexBoxMix(
           box: BoxMix(padding: EdgeInsetsMix.all(10.0)),
         );
 
@@ -408,8 +394,8 @@ void main() {
 
     group('Edge Cases', () {
       test('handles empty merge correctly', () {
-        const empty1 = FlexBoxSpecAttribute();
-        const empty2 = FlexBoxSpecAttribute();
+        const empty1 = FlexBoxMix();
+        const empty2 = FlexBoxMix();
 
         final merged = empty1.merge(empty2);
 
@@ -418,7 +404,7 @@ void main() {
       });
 
       test('handles resolution with all null properties', () {
-        const attribute = FlexBoxSpecAttribute();
+        const attribute = FlexBoxMix();
 
         final context = MockBuildContext();
         final resolved = attribute.resolve(context);

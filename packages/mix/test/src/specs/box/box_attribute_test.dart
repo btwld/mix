@@ -1081,7 +1081,7 @@ void main() {
           final attribute = BoxMix();
 
           expect(attribute.shape, isNotNull);
-          final shapeAttr = attribute.shape(BoxShape.circle);
+          final shapeAttr = attribute.shape(CircleBorderMix());
           expect(shapeAttr, isA<BoxMix>());
           expect(shapeAttr.$decoration, isNotNull);
         });

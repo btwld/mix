@@ -98,26 +98,17 @@ class OnContextVariantUtility<S extends Spec<S>, T extends Style<S>>
 
   /// Creates a variant attribute for mobile size
   VariantAttributeBuilder<S> get mobile {
-    return VariantAttributeBuilder(
-      ContextVariant.size('mobile', (size) => size.width <= 767),
-    );
+    return VariantAttributeBuilder(ContextVariant.mobile());
   }
 
   /// Creates a variant attribute for tablet size
   VariantAttributeBuilder<S> get tablet {
-    return VariantAttributeBuilder(
-      ContextVariant.size(
-        'tablet',
-        (size) => size.width > 767 && size.width <= 1279,
-      ),
-    );
+    return VariantAttributeBuilder(ContextVariant.tablet());
   }
 
   /// Creates a variant attribute for desktop size
   VariantAttributeBuilder<S> get desktop {
-    return VariantAttributeBuilder(
-      ContextVariant.size('desktop', (size) => size.width > 1279),
-    );
+    return VariantAttributeBuilder(ContextVariant.desktop());
   }
 
   /// Creates a variant attribute for left-to-right direction
@@ -421,29 +412,17 @@ mixin StyleVariantMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
 
   /// Creates a variant for mobile breakpoint
   T onMobile(T style) {
-    return variant(
-      ContextVariant.size('mobile', (size) => size.width <= 767),
-      style,
-    );
+    return variant(ContextVariant.mobile(), style);
   }
 
   /// Creates a variant for tablet breakpoint
   T onTablet(T style) {
-    return variant(
-      ContextVariant.size(
-        'tablet',
-        (size) => size.width > 767 && size.width <= 1279,
-      ),
-      style,
-    );
+    return variant(ContextVariant.tablet(), style);
   }
 
   /// Creates a variant for desktop breakpoint
   T onDesktop(T style) {
-    return variant(
-      ContextVariant.size('desktop', (size) => size.width > 1279),
-      style,
-    );
+    return variant(ContextVariant.desktop(), style);
   }
 
   /// Creates a variant for left-to-right text direction
