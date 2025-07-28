@@ -51,6 +51,7 @@ export 'src/modifiers/clip_modifier.dart';
 export 'src/modifiers/default_text_style_modifier.dart';
 export 'src/modifiers/flexible_modifier.dart';
 export 'src/modifiers/fractionally_sized_box_modifier.dart';
+export 'src/modifiers/icon_theme_modifier.dart';
 export 'src/modifiers/intrinsic_modifier.dart';
 export 'src/modifiers/modifier_util.dart';
 export 'src/modifiers/mouse_cursor_modifier.dart';
