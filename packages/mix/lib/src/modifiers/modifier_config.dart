@@ -4,6 +4,7 @@ import '../core/internal/compare_mixin.dart';
 import '../core/style.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
 import '../properties/painting/border_radius_mix.dart';
+import '../properties/painting/shadow_mix.dart';
 import '../properties/typography/text_height_behavior_mix.dart';
 import '../properties/typography/text_style_mix.dart';
 import '../specs/text/text_attribute.dart';
@@ -13,6 +14,7 @@ import 'clip_modifier.dart';
 import 'default_text_style_modifier.dart';
 import 'flexible_modifier.dart';
 import 'fractionally_sized_box_modifier.dart';
+import 'icon_theme_modifier.dart';
 import 'intrinsic_modifier.dart';
 import 'opacity_modifier.dart';
 import 'padding_modifier.dart';
@@ -198,6 +200,32 @@ final class ModifierConfig with Equatable {
         maxLines: textMix.$maxLines,
         textWidthBasis: textMix.$textWidthBasis,
         textHeightBehavior: textMix.$textHeightBehavior,
+      ),
+    );
+  }
+
+  factory ModifierConfig.iconTheme({
+    Color? color,
+    double? size,
+    double? fill,
+    double? weight,
+    double? grade,
+    double? opticalSize,
+    double? opacity,
+    List<Shadow>? shadows,
+    bool? applyTextScaling,
+  }) {
+    return ModifierConfig.modifier(
+      IconThemeModifierAttribute(
+        color: color,
+        size: size,
+        fill: fill,
+        weight: weight,
+        grade: grade,
+        opticalSize: opticalSize,
+        opacity: opacity,
+        shadows: shadows?.map((shadow) => ShadowMix.value(shadow)).toList(),
+        applyTextScaling: applyTextScaling,
       ),
     );
   }

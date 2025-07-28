@@ -5,6 +5,7 @@ import '../core/style.dart';
 import '../core/utility.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
 import '../properties/painting/border_radius_mix.dart';
+import '../properties/painting/shadow_mix.dart';
 import '../properties/typography/text_style_mix.dart';
 import 'align_modifier.dart';
 import 'aspect_ratio_modifier.dart';
@@ -12,6 +13,7 @@ import 'clip_modifier.dart';
 import 'default_text_style_modifier.dart';
 import 'flexible_modifier.dart';
 import 'fractionally_sized_box_modifier.dart';
+import 'icon_theme_modifier.dart';
 import 'internal/reset_modifier.dart';
 import 'intrinsic_modifier.dart';
 import 'mouse_cursor_modifier.dart';
@@ -70,6 +72,9 @@ final class ModifierUtility<T extends Style<Object?>>
 
   /// Utility for rotated box modifiers
   late final rotatedBox = RotatedBoxModifierUtility<T>(builder);
+
+  /// Utility for icon theme modifiers
+  late final iconTheme = IconThemeModifierUtility<T>(builder);
 
   ModifierUtility(super.builder);
 
@@ -319,6 +324,25 @@ mixin StyleModifierMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   T wrapDefaultTextStyle(TextStyle style) {
     return modifiers([
       DefaultTextStyleModifierAttribute(style: TextStyleMix.value(style)),
+    ]);
+  }
+
+  /// Wraps the widget with an icon theme modifier
+  T wrapIconTheme(IconThemeData data) {
+    return modifiers([
+      IconThemeModifierAttribute(
+        color: data.color,
+        size: data.size,
+        fill: data.fill,
+        weight: data.weight,
+        grade: data.grade,
+        opticalSize: data.opticalSize,
+        opacity: data.opacity,
+        shadows: data.shadows
+            ?.map((shadow) => ShadowMix.value(shadow))
+            .toList(),
+        applyTextScaling: data.applyTextScaling,
+      ),
     ]);
   }
 }
