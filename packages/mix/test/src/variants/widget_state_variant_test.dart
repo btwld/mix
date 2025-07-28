@@ -306,9 +306,7 @@ void main() {
 
       test('negated widget states work correctly', () {
         final hovered = WidgetStateVariant(WidgetState.hovered);
-        final notHovered = ContextVariant.not(
-          ContextVariant.widgetState(WidgetState.hovered),
-        );
+        final notHovered = ContextVariant.not(hovered);
 
         expect(notHovered, isA<ContextVariant>());
         expect(notHovered.key, contains('not'));

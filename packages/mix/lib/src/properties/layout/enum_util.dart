@@ -1,7 +1,9 @@
-// ignore_for_file: unused_element, prefer_relative_imports, avoid-importing-entrypoint-exports
+// ignore_for_file: unused_element
 
 import 'package:flutter/widgets.dart';
-import 'package:mix/mix.dart';
+
+import '../../core/style.dart';
+import '../../core/utility.dart';
 
 /// Extension for creating [VerticalDirection] values with predefined options.
 extension VerticalDirectionPropUtilityExt<T extends Style<Object?>>

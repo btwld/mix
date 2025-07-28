@@ -1,8 +1,16 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
-// ignore_for_file: prefer_relative_imports,avoid-importing-entrypoint-exports
 
 import 'package:flutter/widgets.dart';
-import 'package:mix/mix.dart' hide $image;
+
+import '../../core/helpers.dart';
+import '../../core/mix_element.dart';
+import '../../core/prop.dart';
+import 'border_mix.dart';
+import 'border_radius_mix.dart';
+import 'decoration_image_mix.dart';
+import 'gradient_mix.dart';
+import 'shadow_mix.dart';
+import 'shape_border_mix.dart';
 
 /// Base class for decoration styling that supports color, gradient, image, and shadow properties.
 ///

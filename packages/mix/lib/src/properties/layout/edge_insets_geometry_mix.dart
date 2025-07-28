@@ -1,6 +1,8 @@
-// ignore_for_file: prefer_relative_imports, avoid-importing-entrypoint-exports
 import 'package:flutter/material.dart';
-import 'package:mix/mix.dart';
+
+import '../../core/helpers.dart';
+import '../../core/mix_element.dart';
+import '../../core/prop.dart';
 
 // Deprecated typedef moved to src/core/deprecated.dart
 

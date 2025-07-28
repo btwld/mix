@@ -1,10 +1,13 @@
-// ignore_for_file: unused_element, prefer_relative_imports, avoid-importing-entrypoint-exports
+// ignore_for_file: unused_element
 
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/widgets.dart';
-import 'package:mix/mix.dart';
+
+import '../../animation/curves.dart';
+import '../../core/style.dart';
+import '../../core/utility.dart';
 
 /// Extension for creating [AlignmentGeometry] values with both absolute and directional alignments.
 extension AlignmentPropUtilityExt<S extends Style<Object?>>

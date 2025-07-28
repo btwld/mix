@@ -1,7 +1,8 @@
-// ignore_for_file: prefer_relative_imports,avoid-importing-entrypoint-exports
-
 import 'package:flutter/widgets.dart';
-import 'package:mix/mix.dart';
+
+import '../../core/helpers.dart';
+import '../../core/mix_element.dart';
+import '../../core/prop.dart';
 
 /// Mix-compatible representation of Flutter's [TextHeightBehavior] with token support.
 ///

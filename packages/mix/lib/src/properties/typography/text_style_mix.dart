@@ -1,8 +1,10 @@
-// ignore_for_file: prefer_relative_imports,avoid-importing-entrypoint-exports
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:mix/mix.dart';
+
+import '../../core/helpers.dart';
+import '../../core/mix_element.dart';
+import '../../core/prop.dart';
+import '../painting/shadow_mix.dart';
 
 /// Mix-compatible representation of Flutter's [TextStyle] with comprehensive styling properties.
 ///

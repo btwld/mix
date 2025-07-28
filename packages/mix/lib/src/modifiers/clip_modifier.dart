@@ -1,12 +1,11 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../properties/painting/border_radius_mix.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
+import '../properties/painting/border_radius_mix.dart';
 
 /// Modifier that clips its child to an oval shape.
 ///
@@ -74,13 +73,11 @@ class ClipOvalModifierAttribute extends ModifierAttribute<ClipOvalModifier> {
 
   const ClipOvalModifierAttribute.raw({this.clipper, this.clipBehavior});
 
-  ClipOvalModifierAttribute({
-    CustomClipper<Rect>? clipper,
-    Clip? clipBehavior,
-  }) : this.raw(
-         clipper: Prop.maybe(clipper),
-         clipBehavior: Prop.maybe(clipBehavior),
-       );
+  ClipOvalModifierAttribute({CustomClipper<Rect>? clipper, Clip? clipBehavior})
+    : this.raw(
+        clipper: Prop.maybe(clipper),
+        clipBehavior: Prop.maybe(clipBehavior),
+      );
 
   /// Resolves to [ClipOvalModifier] using the provided [BuildContext].
   @override
@@ -177,13 +174,11 @@ class ClipRectModifierAttribute
 
   const ClipRectModifierAttribute.raw({this.clipper, this.clipBehavior});
 
-  ClipRectModifierAttribute({
-    CustomClipper<Rect>? clipper,
-    Clip? clipBehavior,
-  }) : this.raw(
-         clipper: Prop.maybe(clipper),
-         clipBehavior: Prop.maybe(clipBehavior),
-       );
+  ClipRectModifierAttribute({CustomClipper<Rect>? clipper, Clip? clipBehavior})
+    : this.raw(
+        clipper: Prop.maybe(clipper),
+        clipBehavior: Prop.maybe(clipBehavior),
+      );
 
   /// Resolves to [ClipRectModifierSpec] using the provided [BuildContext].
   ///
@@ -461,13 +456,11 @@ class ClipPathModifierAttribute extends ModifierAttribute<ClipPathModifier> {
 
   const ClipPathModifierAttribute.raw({this.clipper, this.clipBehavior});
 
-  ClipPathModifierAttribute({
-    CustomClipper<Path>? clipper,
-    Clip? clipBehavior,
-  }) : this.raw(
-         clipper: Prop.maybe(clipper),
-         clipBehavior: Prop.maybe(clipBehavior),
-       );
+  ClipPathModifierAttribute({CustomClipper<Path>? clipper, Clip? clipBehavior})
+    : this.raw(
+        clipper: Prop.maybe(clipper),
+        clipBehavior: Prop.maybe(clipBehavior),
+      );
 
   /// Resolves to [ClipPathModifier] using the provided [BuildContext].
   ///

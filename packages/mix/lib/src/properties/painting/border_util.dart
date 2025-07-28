@@ -1,7 +1,10 @@
-// ignore_for_file: prefer_relative_imports, avoid-importing-entrypoint-exports
-
 import 'package:flutter/widgets.dart';
-import 'package:mix/mix.dart';
+
+import '../../core/prop.dart';
+import '../../core/style.dart';
+import '../../core/utility.dart';
+import 'border_mix.dart';
+import 'color_util.dart';
 
 /// Utility class for creating box border styling with comprehensive border support.
 ///

@@ -1,6 +1,9 @@
-// ignore_for_file: prefer_relative_imports,avoid-importing-entrypoint-exports
 import 'package:flutter/widgets.dart';
-import 'package:mix/mix.dart';
+
+import '../../core/directive.dart';
+import '../../core/mix_element.dart';
+import '../../core/prop.dart';
+import '../../theme/tokens/mix_token.dart';
 
 /// A Mix-compatible wrapper for Color values that provides a fluent API
 /// for color transformations and token resolution.
