@@ -9,6 +9,7 @@ import '../aspect_ratio_modifier.dart';
 import '../clip_modifier.dart';
 import '../flexible_modifier.dart';
 import '../fractionally_sized_box_modifier.dart';
+import '../icon_theme_modifier.dart';
 import '../intrinsic_modifier.dart';
 import '../opacity_modifier.dart';
 import '../padding_modifier.dart';
