@@ -63,7 +63,7 @@ void main() {
     test('onHover creates correct variant', () {
       const attribute = TestVariantAttribute();
       const style = TestVariantAttribute();
-      final result = attribute.onHover(style);
+      final result = attribute.onHovered(style);
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
@@ -73,7 +73,7 @@ void main() {
     test('onPress creates correct variant', () {
       const attribute = TestVariantAttribute();
       const style = TestVariantAttribute();
-      final result = attribute.onPress(style);
+      final result = attribute.onPressed(style);
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
@@ -171,7 +171,7 @@ void main() {
       const attribute = TestVariantAttribute();
       const style = TestVariantAttribute();
 
-      final focusResult = attribute.onFocus(style);
+      final focusResult = attribute.onFocused(style);
       final selectedResult = attribute.onSelected(style);
       final draggedResult = attribute.onDragged(style);
       final errorResult = attribute.onError(style);
@@ -221,7 +221,7 @@ void main() {
       const darkStyle = TestVariantAttribute();
       const hoverStyle = TestVariantAttribute();
 
-      final result = attribute.onDark(darkStyle).onHover(hoverStyle);
+      final result = attribute.onDark(darkStyle).onHovered(hoverStyle);
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 2);

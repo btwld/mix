@@ -19,6 +19,7 @@ sealed class ShapeBorderMix<T extends ShapeBorder> extends Mix<T> {
       CircleBorder b => CircleBorderMix.value(b),
       StarBorder b => StarBorderMix.value(b),
       LinearBorder b => LinearBorderMix.value(b),
+
       StadiumBorder b => StadiumBorderMix.value(b),
       _ => throw ArgumentError(
         'Unsupported ShapeBorder type: ${border.runtimeType}',
@@ -116,6 +117,54 @@ final class RoundedRectangleBorderMix
   @override
   RoundedRectangleBorderMix mergeShapeBorder(RoundedRectangleBorderMix other) {
     return RoundedRectangleBorderMix.raw(
+      borderRadius: MixHelpers.merge($borderRadius, other.$borderRadius),
+      side: MixHelpers.merge($side, other.$side),
+    );
+  }
+
+  @override
+  List<Object?> get props => [$borderRadius, $side];
+}
+
+/// Mix-compatible representation of Flutter's [RoundedSuperellipseBorder] with smoother corners.
+final class RoundedSuperellipseBorderMix
+    extends OutlinedBorderMix<RoundedSuperellipseBorder> {
+  final MixProp<BorderRadiusGeometry>? $borderRadius;
+
+  RoundedSuperellipseBorderMix({
+    BorderRadiusGeometryMix? borderRadius,
+    BorderSideMix? side,
+  }) : this.raw(
+         borderRadius: MixProp.maybe(borderRadius),
+         side: MixProp.maybe(side),
+       );
+  const RoundedSuperellipseBorderMix.raw({
+    MixProp<BorderRadiusGeometry>? borderRadius,
+    super.side,
+  }) : $borderRadius = borderRadius;
+
+  RoundedSuperellipseBorderMix.value(RoundedSuperellipseBorder border)
+    : this(
+        borderRadius: BorderRadiusGeometryMix.value(border.borderRadius),
+        side: BorderSideMix.maybeValue(border.side),
+      );
+
+  static RoundedSuperellipseBorderMix? maybeValue(RoundedSuperellipseBorder? border) {
+    return border != null ? RoundedSuperellipseBorderMix.value(border) : null;
+  }
+
+  @override
+  RoundedSuperellipseBorder resolve(BuildContext context) {
+    return RoundedSuperellipseBorder(
+      side: MixHelpers.resolve(context, $side) ?? BorderSide.none,
+      borderRadius:
+          MixHelpers.resolve(context, $borderRadius) ?? BorderRadius.zero,
+    );
+  }
+
+  @override
+  RoundedSuperellipseBorderMix mergeShapeBorder(RoundedSuperellipseBorderMix other) {
+    return RoundedSuperellipseBorderMix.raw(
       borderRadius: MixHelpers.merge($borderRadius, other.$borderRadius),
       side: MixHelpers.merge($side, other.$side),
     );

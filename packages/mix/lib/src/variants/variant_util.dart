@@ -327,6 +327,9 @@ class VariantAttributeBuilder<T extends Spec<T>> {
   int get hashCode => variant.hashCode;
 }
 
+typedef VariantFactoryCallback<T extends StyleAttribute<S>, S extends Spec<S>> =
+    T Function(T style);
+
 /// Mixin that provides convenient variant methods for spec attributes.
 ///
 /// This mixin follows the same pattern as ModifierMixin, providing
@@ -341,23 +344,31 @@ mixin VariantMixin<T extends StyleAttribute<S>, S extends Spec<S>>
     return variant(ContextVariant.platformBrightness(Brightness.dark), style);
   }
 
+  T onNot(ContextVariant contextVariant, T style) {
+    return variant(ContextVariant.not(contextVariant), style);
+  }
+
   /// Creates a variant for light mode
   T onLight(T style) {
     return variant(ContextVariant.platformBrightness(Brightness.light), style);
   }
 
   /// Creates a variant for hover state
-  T onHover(T style) {
+  T onHovered(T style) {
     return variant(ContextVariant.widgetState(WidgetState.hovered), style);
   }
 
+  T onContext(T Function(BuildContext context) builder) {
+    return variant(ContextVariantBuilder(builder));
+  }
+
   /// Creates a variant for pressed state
-  T onPress(T style) {
+  T onPressed(T style) {
     return variant(ContextVariant.widgetState(WidgetState.pressed), style);
   }
 
   /// Creates a variant for focus state
-  T onFocus(T style) {
+  T onFocused(T style) {
     return variant(ContextVariant.widgetState(WidgetState.focused), style);
   }
 

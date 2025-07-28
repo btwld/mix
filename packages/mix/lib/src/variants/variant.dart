@@ -71,6 +71,13 @@ class ContextVariant extends Variant {
     );
   }
 
+  static ContextVariant not(ContextVariant variant) {
+    return ContextVariant(
+      'not_${variant.key}',
+      (context) => !variant.when(context),
+    );
+  }
+
   static ContextVariant breakpoint(Breakpoint breakpoint) {
     return ContextVariant(
       'breakpoint_${breakpoint.minWidth ?? '0.0'}_${breakpoint.maxWidth ?? 'infinity'}',

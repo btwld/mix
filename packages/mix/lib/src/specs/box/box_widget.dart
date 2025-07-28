@@ -33,12 +33,12 @@ import '../../../mix.dart';
 /// * [Container], which is the Flutter equivalent widget.
 class Box extends StyleWidget<BoxSpec> {
   const Box({
-    BoxMix? style,
+    super.style,
     super.key,
     super.inherit,
     this.child,
     super.orderOfModifiers,
-  }) : super(style: style);
+  });
 
   /// The child widget that will receive the styles.
   final Widget? child;

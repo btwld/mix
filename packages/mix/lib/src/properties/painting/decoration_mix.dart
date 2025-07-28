@@ -356,7 +356,6 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
       image: MixHelpers.resolve(context, $image) ?? defaultValue.image,
       gradient: MixHelpers.resolve(context, $gradient) ?? defaultValue.gradient,
       shadows: MixHelpers.resolveList(context, $boxShadow),
-
       shape: MixHelpers.resolve(context, $shape) ?? defaultValue.shape,
     );
   }

@@ -13,17 +13,18 @@ void main() {
           .color(Colors.blue)
           .width(100)
           .height(100)
-          .onHover(
-            BoxSpecAttribute()
-              .color(Colors.red)
-              .width(100)
-              .height(100),
+          .onHovered(
+            BoxSpecAttribute().color(Colors.red).width(100).height(100),
           );
 
       Color? currentColor;
-      
+
       // Verify the style has widget states
-      expect(style.widgetStates.isNotEmpty, isTrue, reason: 'Style should have widget states for hover');
+      expect(
+        style.widgetStates.isNotEmpty,
+        isTrue,
+        reason: 'Style should have widget states for hover',
+      );
 
       await tester.pumpWidget(
         MaterialApp(
@@ -52,7 +53,9 @@ void main() {
       // Create a mouse pointer and hover over the widget
       final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
       await gesture.addPointer(location: Offset.zero);
-      await gesture.moveTo(tester.getCenter(find.byKey(const Key('test_container'))));
+      await gesture.moveTo(
+        tester.getCenter(find.byKey(const Key('test_container'))),
+      );
       await tester.pump();
 
       // Should now be red (hovered)
@@ -67,7 +70,7 @@ void main() {
 
       await gesture.removePointer();
     });
-    
+
     testWidgets('Box widget with onHover changes style correctly', (
       tester,
     ) async {
@@ -81,23 +84,20 @@ void main() {
                     .color(Colors.green)
                     .width(150)
                     .height(150)
-                    .onHover(
-                      BoxSpecAttribute()
-                        .color(Colors.orange),
-                    ),
+                    .onHovered(BoxSpecAttribute().color(Colors.orange)),
                 child: const Text('Hover me'),
               ),
             ),
           ),
         ),
       );
-      
+
       // Find the container inside the Box widget
       final containerFinder = find.descendant(
         of: find.byKey(const Key('test_box')),
         matching: find.byType(Container),
       );
-      
+
       // Get initial color
       Container container = tester.widget<Container>(containerFinder.first);
       BoxDecoration? decoration = container.decoration as BoxDecoration?;
@@ -114,17 +114,17 @@ void main() {
       container = tester.widget<Container>(containerFinder.first);
       decoration = container.decoration as BoxDecoration?;
       expect(decoration?.color, Colors.orange);
-      
+
       // Move mouse away
       await gesture.moveTo(const Offset(-100, -100));
       await tester.pump();
       await tester.pump();
-      
+
       // Check color after mouse leaves
       container = tester.widget<Container>(containerFinder.first);
       decoration = container.decoration as BoxDecoration?;
       expect(decoration?.color, Colors.green);
-      
+
       await gesture.removePointer();
     });
   });

@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 
 import '../animation/animation_config.dart';
+import '../specs/box/box_attribute.dart';
 import '../variants/variant.dart';
 import 'internal/compare_mixin.dart';
 import 'internal/constants.dart';
@@ -84,9 +85,13 @@ abstract class StyleAttribute<S extends Spec<S>>
       ),
     );
 
-    final variantStyles = variants
-        .map((variantAttr) => variantAttr.value)
-        .toList();
+    final variantStyles = variants.map((variantAttr) {
+      return switch (variantAttr.variant) {
+            ContextVariantBuilder variant => variant.build(context),
+            (ContextVariant() || NamedVariant()) => variantAttr,
+          }
+          as StyleAttribute<S>;
+    }).toList();
 
     StyleAttribute<S> styleData = this;
 
@@ -216,7 +221,7 @@ final class VariantStyleAttribute<S extends Spec<S>> extends StyleAttribute<S> {
 
   @override
   S resolve(BuildContext context) {
-    return _style.resolve(context);
+    throw UnimplementedError('Do not try to resolve a variant attribute');
   }
 
   @override
@@ -234,6 +239,8 @@ final class VariantStyleAttribute<S extends Spec<S>> extends StyleAttribute<S> {
 }
 
 class Style extends StyleAttribute<MultiSpec> {
+  static final box = BoxMix.new;
+
   final Map<Object, StyleAttribute> _attributes;
 
   Style._({

@@ -67,7 +67,9 @@ class BoxExampleApp extends StatelessWidget {
                     .height(80)
                     .color(Colors.orange)
                     .borderRadius(.circular(16))
-                    .onHover(.color(Colors.orangeAccent))
+                    .onHovered(
+                      .color(Colors.orangeAccent)
+                    )
                     .border(
                       .all(
                         .width(2)
@@ -86,18 +88,20 @@ class BoxExampleApp extends StatelessWidget {
 
               // Purple rounded box
               Box(
-                style: BoxMix()
+                style: Style.box()
                     .color(Colors.purple)
                     .width(120)
                     .translate(0,0)
                     .height(120)
-                    .onHover(
+                    .onHovered(
                       .color(Colors.red)
-                      .translate(5, 5)
+                      .translate(5, 5)                      
                     )
                     .borderRadius(.circular(20))
                     .animate(.linear(200.ms))
                     .padding(.all(8)),
+
+                    
                 child: const Center(
                   child: Text(
                     'Purple Box',
@@ -138,23 +142,12 @@ class BoxExampleApp extends StatelessWidget {
               // Box with different corner radii
               Box(
                 style: BoxMix()
-                    .color(Colors.teal)
                     .width(160)
+                    .color(Colors.teal)
                     .height(90)
                     .borderRadius(
-                      .topLeft(
-                        .circular(20),
-                      )
-                      .topRight(
-                        .circular(10),
-                      )
-                      .bottomLeft(
-                        .circular(5),
-                      )
-                      .bottomRight(
-                        .circular(30),
-                      )
-                 
+                      .top(.circular(20))
+                      .bottomLeft(.circular(10)),
                     )
                     .padding(.all(12)),
                 child: const Center(
