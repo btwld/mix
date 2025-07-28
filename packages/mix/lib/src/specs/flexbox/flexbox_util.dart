@@ -11,6 +11,7 @@ import '../../properties/painting/decoration_util.dart';
 import '../../variants/variant_util.dart';
 import '../box/box_attribute.dart';
 import '../flex/flex_attribute.dart';
+import 'flexbox_attribute.dart';
 import 'flexbox_spec.dart';
 
 /// Mutable utility class for flexbox styling using composition over inheritance.

@@ -17,13 +17,7 @@ import 'stack_box_spec.dart';
 ///   - [key]: The key for the widget. Inherits from [StyleWidget].
 ///   - [style]: The [Style] to be applied. Inherits from [StyleWidget].
 class ZBox extends StyleWidget<ZBoxSpec> {
-  const ZBox({
-    super.style,
-    this.children = const <Widget>[],
-
-    super.key,
-    super.orderOfModifiers = const [],
-  });
+  const ZBox({super.style, this.children = const <Widget>[], super.key});
 
   final List<Widget> children;
 

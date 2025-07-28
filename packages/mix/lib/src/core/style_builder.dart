@@ -19,7 +19,7 @@ class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
     this.style,
     required this.builder,
     this.inherit = false,
-    this.orderOfModifiers,
+
     this.controller,
   });
 
@@ -31,9 +31,6 @@ class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
 
   /// Whether to inherit style from parent widgets.
   final bool inherit;
-
-  /// The order in which modifiers should be applied.
-  final List<Type>? orderOfModifiers;
 
   /// Optional controller for managing widget state.
   final WidgetStatesController? controller;
@@ -75,7 +72,6 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
       builder: widget.builder,
       style: widget.style,
       inherit: widget.inherit,
-      orderOfModifiers: widget.orderOfModifiers,
     );
 
     if (needsToTrackWidgetState && !alreadyHasWidgetStateScope) {
@@ -94,13 +90,10 @@ class ResolvedStyleBuilder<S extends Spec<S>> extends StatelessWidget {
     required this.builder,
     this.style,
     this.inherit = false,
-    this.orderOfModifiers,
   });
 
   /// The style to resolve.
   final Style<S>? style;
-
-  final List<Type>? orderOfModifiers;
 
   /// The builder function that receives the resolved style.
   final Widget Function(BuildContext context, S? spec) builder;

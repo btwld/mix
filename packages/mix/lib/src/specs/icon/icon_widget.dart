@@ -4,13 +4,7 @@ import '../../core/style_widget.dart';
 import 'icon_spec.dart';
 
 class StyledIcon extends StyleWidget<IconSpec> {
-  const StyledIcon(
-    this.icon, {
-    this.semanticLabel,
-    super.style,
-    super.key,
-    super.orderOfModifiers,
-  });
+  const StyledIcon(this.icon, {this.semanticLabel, super.style, super.key});
 
   final IconData? icon;
   final String? semanticLabel;

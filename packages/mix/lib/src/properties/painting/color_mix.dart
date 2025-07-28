@@ -5,32 +5,43 @@ import '../../core/mix_element.dart';
 import '../../core/prop.dart';
 import '../../theme/tokens/mix_token.dart';
 
+/// A Mix-compatible wrapper for Color values that provides a fluent API
+/// for color transformations and token resolution.
+///
+/// ColorMix allows you to work with colors in the Mix framework while
+/// maintaining support for tokens, directives, and merging operations.
 class ColorMix extends Mix<Color> {
   final Prop<Color> value;
   ColorMix(Color value) : this.raw(Prop(value));
 
   const ColorMix.raw(this.value);
 
+  /// Creates a ColorMix from a color token.
   factory ColorMix.token(MixToken<Color> token) {
     return ColorMix.raw(Prop.token(token));
   }
 
+  /// Creates a ColorMix with a color directive applied.
   factory ColorMix.directive(MixDirective<Color> directive) {
     return ColorMix.raw(Prop.directives([directive]));
   }
 
+  /// Creates a ColorMix with an opacity directive.
   factory ColorMix.withOpacity(double opacity) {
     return ColorMix.raw(Prop.directives([OpacityColorDirective(opacity)]));
   }
 
+  /// Creates a ColorMix with an alpha directive.
   factory ColorMix.withAlpha(int alpha) {
     return ColorMix.raw(Prop.directives([AlphaColorDirective(alpha)]));
   }
 
+  /// Creates a ColorMix with a darken directive.
   factory ColorMix.darken(int amount) {
     return ColorMix.raw(Prop.directives([DarkenColorDirective(amount)]));
   }
 
+  /// Creates a ColorMix with a lighten directive.
   factory ColorMix.lighten(int amount) {
     return ColorMix.raw(Prop.directives([LightenColorDirective(amount)]));
   }
@@ -51,10 +62,12 @@ class ColorMix extends Mix<Color> {
     return ColorMix.raw(Prop.directives([ShadeColorDirective(amount)]));
   }
 
+  /// Merges this ColorMix with a color token.
   ColorMix token(MixToken<Color> token) {
     return merge(ColorMix.token(token));
   }
 
+  /// Merges this ColorMix with a color directive.
   ColorMix directive(MixDirective<Color> directive) {
     return merge(ColorMix.directive(directive));
   }

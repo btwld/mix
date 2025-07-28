@@ -88,9 +88,9 @@ class RenderModifiers extends StatelessWidget {
   const RenderModifiers({
     required this.child,
     required this.modifiers,
-    required this.orderOfModifiers,
+    List<Type>? orderOfModifiers,
     super.key,
-  });
+  }) : orderOfModifiers = orderOfModifiers ?? _defaultOrder;
 
   final Widget child;
   final List<Type> orderOfModifiers;

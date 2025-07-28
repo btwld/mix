@@ -146,7 +146,7 @@ void main() {
       test('separate variants can be used independently', () {
         final hovered = WidgetStateVariant(WidgetState.hovered);
         final pressed = WidgetStateVariant(WidgetState.pressed);
-        
+
         expect(hovered.state, WidgetState.hovered);
         expect(pressed.state, WidgetState.pressed);
         expect(hovered, isNot(equals(pressed)));
@@ -270,7 +270,7 @@ void main() {
       test('predefined enabled variant uses NOT logic', () {
         final disabled = ContextVariant.widgetState(WidgetState.disabled);
         final enabled = ContextVariant.not(disabled);
-        
+
         expect(enabled, isA<ContextVariant>());
         expect(enabled.key, contains('not'));
       });
@@ -278,7 +278,7 @@ void main() {
       test('predefined unselected variant uses NOT logic', () {
         final selected = ContextVariant.widgetState(WidgetState.selected);
         final unselected = ContextVariant.not(selected);
-        
+
         expect(unselected, isA<ContextVariant>());
         expect(unselected.key, contains('not'));
       });
@@ -288,37 +288,37 @@ void main() {
       test('multiple widget states can be applied separately', () {
         final hovered = WidgetStateVariant(WidgetState.hovered);
         final pressed = WidgetStateVariant(WidgetState.pressed);
-        
+
         // Test they are distinct variants
         expect(hovered.key, isNot(equals(pressed.key)));
         expect(hovered.state, isNot(equals(pressed.state)));
       });
-      
+
       test('widget states can combine with named variants', () {
         final hovered = WidgetStateVariant(WidgetState.hovered);
         const primary = NamedVariant('primary');
-        
+
         // Test they are different types of variants
         expect(hovered, isA<WidgetStateVariant>());
         expect(primary, isA<NamedVariant>());
         expect(hovered.key, isNot(equals(primary.key)));
       });
-      
+
       test('negated widget states work correctly', () {
         final hovered = WidgetStateVariant(WidgetState.hovered);
         final notHovered = ContextVariant.not(
           ContextVariant.widgetState(WidgetState.hovered),
         );
-        
+
         expect(notHovered, isA<ContextVariant>());
         expect(notHovered.key, contains('not'));
       });
-      
+
       test('enabled variant is opposite of disabled', () {
         final disabled = ContextVariant.widgetState(WidgetState.disabled);
         final enabled = ContextVariant.not(disabled);
         final hover = ContextVariant.widgetState(WidgetState.hovered);
-        
+
         // Test they are distinct
         expect(enabled.key, isNot(equals(disabled.key)));
         expect(enabled.key, isNot(equals(hover.key)));

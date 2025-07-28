@@ -308,8 +308,8 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: StyleBuilder(
-              style: boxAttribute,
-              orderOfModifiers: customOrder,
+              style: boxAttribute.orderOfModifiers(customOrder),
+
               builder: (context, spec) {
                 return Container(
                   decoration: spec?.decoration,

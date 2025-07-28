@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import '../../core/style_widget.dart';
 import '../box/box_spec.dart';
 import '../flex/flex_spec.dart';
+import 'flexbox_attribute.dart';
 import 'flexbox_spec.dart';
 
 /// A styled flex container widget combining box and flex capabilities.
@@ -30,7 +31,6 @@ class FlexBox extends StyleWidget<FlexBoxSpec> {
     super.key,
     required this.direction,
     this.children = const <Widget>[],
-    super.orderOfModifiers,
   });
 
   final List<Widget> children;

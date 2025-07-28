@@ -334,7 +334,7 @@ void main() {
     group('Complex Scenarios', () {
       test('complex variant combinations', () {
         final variant1 = ContextVariant.widgetState(WidgetState.hovered);
-        final variant2 = ContextVariant.platformBrightness(Brightness.dark);
+        final variant2 = ContextVariant.brightness(Brightness.dark);
 
         final style = BoxMix.width(100.0);
         final variantAttr1 = VariantStyleAttribute(variant1, style);

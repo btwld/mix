@@ -7,6 +7,7 @@ import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../modifiers/modifier_util.dart';
+import '../../properties/painting/shadow_mix.dart';
 import '../../properties/typography/strut_style_mix.dart';
 import '../../properties/typography/text_height_behavior_mix.dart';
 import '../../properties/typography/text_style_mix.dart';
@@ -38,6 +39,196 @@ class TextMix extends Style<TextSpec>
   final Prop<bool>? $softWrap;
   final List<Prop<MixDirective<String>>>? $directives;
 
+  /// Factory for text color
+  factory TextMix.color(Color value) {
+    return TextMix(style: TextStyleMix(color: value));
+  }
+
+  /// Factory for font family
+  factory TextMix.fontFamily(String value) {
+    return TextMix(style: TextStyleMix(fontFamily: value));
+  }
+
+  /// Factory for font weight
+  factory TextMix.fontWeight(FontWeight value) {
+    return TextMix(style: TextStyleMix(fontWeight: value));
+  }
+
+  /// Factory for font style
+  factory TextMix.fontStyle(FontStyle value) {
+    return TextMix(style: TextStyleMix(fontStyle: value));
+  }
+
+  /// Factory for font size
+  factory TextMix.fontSize(double value) {
+    return TextMix(style: TextStyleMix(fontSize: value));
+  }
+
+  /// Factory for letter spacing
+  factory TextMix.letterSpacing(double value) {
+    return TextMix(style: TextStyleMix(letterSpacing: value));
+  }
+
+  /// Factory for word spacing
+  factory TextMix.wordSpacing(double value) {
+    return TextMix(style: TextStyleMix(wordSpacing: value));
+  }
+
+  /// Factory for text baseline
+  factory TextMix.textBaseline(TextBaseline value) {
+    return TextMix(style: TextStyleMix(textBaseline: value));
+  }
+
+  /// Factory for background color
+  factory TextMix.backgroundColor(Color value) {
+    return TextMix(style: TextStyleMix(backgroundColor: value));
+  }
+
+  /// Factory for text shadows
+  factory TextMix.shadows(List<ShadowMix> value) {
+    return TextMix(style: TextStyleMix(shadows: value));
+  }
+
+  /// Factory for font features
+  factory TextMix.fontFeatures(List<FontFeature> value) {
+    return TextMix(style: TextStyleMix(fontFeatures: value));
+  }
+
+  /// Factory for font variations
+  factory TextMix.fontVariations(List<FontVariation> value) {
+    return TextMix(style: TextStyleMix(fontVariations: value));
+  }
+
+  /// Factory for text decoration
+  factory TextMix.decoration(TextDecoration value) {
+    return TextMix(style: TextStyleMix(decoration: value));
+  }
+
+  /// Factory for decoration color
+  factory TextMix.decorationColor(Color value) {
+    return TextMix(style: TextStyleMix(decorationColor: value));
+  }
+
+  /// Factory for decoration style
+  factory TextMix.decorationStyle(TextDecorationStyle value) {
+    return TextMix(style: TextStyleMix(decorationStyle: value));
+  }
+
+  /// Factory for debug label
+  factory TextMix.debugLabel(String value) {
+    return TextMix(style: TextStyleMix(debugLabel: value));
+  }
+
+  /// Factory for line height
+  factory TextMix.height(double value) {
+    return TextMix(style: TextStyleMix(height: value));
+  }
+
+  /// Factory for foreground paint
+  factory TextMix.foreground(Paint value) {
+    return TextMix(style: TextStyleMix(foreground: value));
+  }
+
+  /// Factory for background paint
+  factory TextMix.background(Paint value) {
+    return TextMix(style: TextStyleMix(background: value));
+  }
+
+  /// Factory for decoration thickness
+  factory TextMix.decorationThickness(double value) {
+    return TextMix(style: TextStyleMix(decorationThickness: value));
+  }
+
+  /// Factory for font family fallback
+  factory TextMix.fontFamilyFallback(List<String> value) {
+    return TextMix(style: TextStyleMix(fontFamilyFallback: value));
+  }
+
+  /// Factory for text overflow
+  factory TextMix.overflow(TextOverflow value) {
+    return TextMix(overflow: value);
+  }
+
+  /// Factory for strut style
+  factory TextMix.strutStyle(StrutStyleMix value) {
+    return TextMix(strutStyle: value);
+  }
+
+  /// Factory for text alignment
+  factory TextMix.textAlign(TextAlign value) {
+    return TextMix(textAlign: value);
+  }
+
+  /// Factory for text scaler
+  factory TextMix.textScaler(TextScaler value) {
+    return TextMix(textScaler: value);
+  }
+
+  /// Factory for maximum lines
+  factory TextMix.maxLines(int value) {
+    return TextMix(maxLines: value);
+  }
+
+  /// Factory for text width basis
+  factory TextMix.textWidthBasis(TextWidthBasis value) {
+    return TextMix(textWidthBasis: value);
+  }
+
+  /// Factory for text height behavior
+  factory TextMix.textHeightBehavior(TextHeightBehaviorMix value) {
+    return TextMix(textHeightBehavior: value);
+  }
+
+  /// Factory for text direction
+  factory TextMix.textDirection(TextDirection value) {
+    return TextMix(textDirection: value);
+  }
+
+  /// Factory for soft wrap
+  factory TextMix.softWrap(bool value) {
+    return TextMix(softWrap: value);
+  }
+
+  /// Factory for text directive
+  factory TextMix.directive(MixDirective<String> value) {
+    return TextMix(directives: [value]);
+  }
+
+  /// Factory for uppercase directive
+  factory TextMix.uppercase() {
+    return TextMix.directive(const UppercaseStringDirective());
+  }
+
+  /// Factory for lowercase directive
+  factory TextMix.lowercase() {
+    return TextMix.directive(const LowercaseStringDirective());
+  }
+
+  /// Factory for capitalize directive
+  factory TextMix.capitalize() {
+    return TextMix.directive(const CapitalizeStringDirective());
+  }
+
+  /// Factory for title case directive
+  factory TextMix.titleCase() {
+    return TextMix.directive(const TitleCaseStringDirective());
+  }
+
+  /// Factory for sentence case directive
+  factory TextMix.sentenceCase() {
+    return TextMix.directive(const SentenceCaseStringDirective());
+  }
+
+  /// Factory for animation
+  factory TextMix.animate(AnimationConfig animation) {
+    return TextMix(animation: animation);
+  }
+
+  /// Factory for variant
+  factory TextMix.variant(Variant variant, TextMix value) {
+    return TextMix(variants: [VariantStyleAttribute(variant, value)]);
+  }
+
   const TextMix.raw({
     Prop<TextOverflow>? overflow,
     MixProp<StrutStyle>? strutStyle,
@@ -53,6 +244,7 @@ class TextMix extends Style<TextSpec>
     super.animation,
     super.modifiers,
     super.variants,
+    super.orderOfModifiers,
   }) : $overflow = overflow,
        $strutStyle = strutStyle,
        $textAlign = textAlign,
@@ -80,6 +272,7 @@ class TextMix extends Style<TextSpec>
     AnimationConfig? animation,
     List<ModifierAttribute>? modifiers,
     List<VariantStyleAttribute<TextSpec>>? variants,
+    List<Type>? orderOfModifiers,
   }) : this.raw(
          overflow: Prop.maybe(overflow),
          strutStyle: MixProp.maybe(strutStyle),
@@ -95,6 +288,7 @@ class TextMix extends Style<TextSpec>
          animation: animation,
          modifiers: modifiers,
          variants: variants,
+         orderOfModifiers: orderOfModifiers,
        );
 
   /// Constructor that accepts a [TextSpec] value and extracts its properties.
@@ -134,9 +328,194 @@ class TextMix extends Style<TextSpec>
     return spec != null ? TextMix.value(spec) : null;
   }
 
+  /// Sets text overflow behavior
+  TextMix overflow(TextOverflow value) {
+    return merge(TextMix.overflow(value));
+  }
+
+  /// Sets strut style
+  TextMix strutStyle(StrutStyleMix value) {
+    return merge(TextMix.strutStyle(value));
+  }
+
+  /// Sets text alignment
+  TextMix textAlign(TextAlign value) {
+    return merge(TextMix.textAlign(value));
+  }
+
+  /// Sets text scaler
+  TextMix textScaler(TextScaler value) {
+    return merge(TextMix.textScaler(value));
+  }
+
+  /// Sets maximum number of lines
+  TextMix maxLines(int value) {
+    return merge(TextMix.maxLines(value));
+  }
+
+  /// Sets text style
+  TextMix style(TextStyleMix value) {
+    return merge(TextMix(style: value));
+  }
+
+  /// Sets text width basis
+  TextMix textWidthBasis(TextWidthBasis value) {
+    return merge(TextMix.textWidthBasis(value));
+  }
+
+  /// Sets text height behavior
+  TextMix textHeightBehavior(TextHeightBehaviorMix value) {
+    return merge(TextMix.textHeightBehavior(value));
+  }
+
+  /// Sets text direction
+  TextMix textDirection(TextDirection value) {
+    return merge(TextMix.textDirection(value));
+  }
+
+  /// Sets soft wrap behavior
+  TextMix softWrap(bool value) {
+    return merge(TextMix.softWrap(value));
+  }
+
+  /// Adds a text directive
+  TextMix directive(MixDirective<String> value) {
+    return merge(TextMix.directive(value));
+  }
+
+  /// Sets text color
+  TextMix color(Color value) {
+    return merge(TextMix.color(value));
+  }
+
+  /// Sets font family
+  TextMix fontFamily(String value) {
+    return merge(TextMix.fontFamily(value));
+  }
+
+  /// Sets font weight
+  TextMix fontWeight(FontWeight value) {
+    return merge(TextMix.fontWeight(value));
+  }
+
+  /// Sets font style
+  TextMix fontStyle(FontStyle value) {
+    return merge(TextMix.fontStyle(value));
+  }
+
+  /// Sets font size
+  TextMix fontSize(double value) {
+    return merge(TextMix.fontSize(value));
+  }
+
+  /// Sets letter spacing
+  TextMix letterSpacing(double value) {
+    return merge(TextMix.letterSpacing(value));
+  }
+
+  /// Sets word spacing
+  TextMix wordSpacing(double value) {
+    return merge(TextMix.wordSpacing(value));
+  }
+
+  /// Sets text baseline
+  TextMix textBaseline(TextBaseline value) {
+    return merge(TextMix.textBaseline(value));
+  }
+
+  /// Sets background color
+  TextMix backgroundColor(Color value) {
+    return merge(TextMix.backgroundColor(value));
+  }
+
+  /// Sets text shadows
+  TextMix shadows(List<ShadowMix> value) {
+    return merge(TextMix.shadows(value));
+  }
+
+  /// Sets font features
+  TextMix fontFeatures(List<FontFeature> value) {
+    return merge(TextMix.fontFeatures(value));
+  }
+
+  /// Sets font variations
+  TextMix fontVariations(List<FontVariation> value) {
+    return merge(TextMix.fontVariations(value));
+  }
+
+  /// Sets text decoration
+  TextMix decoration(TextDecoration value) {
+    return merge(TextMix.decoration(value));
+  }
+
+  /// Sets decoration color
+  TextMix decorationColor(Color value) {
+    return merge(TextMix.decorationColor(value));
+  }
+
+  /// Sets decoration style
+  TextMix decorationStyle(TextDecorationStyle value) {
+    return merge(TextMix.decorationStyle(value));
+  }
+
+  /// Sets debug label
+  TextMix debugLabel(String value) {
+    return merge(TextMix.debugLabel(value));
+  }
+
+  /// Sets line height
+  TextMix height(double value) {
+    return merge(TextMix.height(value));
+  }
+
+  /// Sets foreground paint
+  TextMix foreground(Paint value) {
+    return merge(TextMix.foreground(value));
+  }
+
+  /// Sets background paint
+  TextMix background(Paint value) {
+    return merge(TextMix.background(value));
+  }
+
+  /// Sets decoration thickness
+  TextMix decorationThickness(double value) {
+    return merge(TextMix.decorationThickness(value));
+  }
+
+  /// Sets font family fallback
+  TextMix fontFamilyFallback(List<String> value) {
+    return merge(TextMix.fontFamilyFallback(value));
+  }
+
+  /// Applies uppercase directive
+  TextMix uppercase() {
+    return merge(TextMix.uppercase());
+  }
+
+  /// Applies lowercase directive
+  TextMix lowercase() {
+    return merge(TextMix.lowercase());
+  }
+
+  /// Applies capitalize directive
+  TextMix capitalize() {
+    return merge(TextMix.capitalize());
+  }
+
+  /// Applies title case directive
+  TextMix titleCase() {
+    return merge(TextMix.titleCase());
+  }
+
+  /// Applies sentence case directive
+  TextMix sentenceCase() {
+    return merge(TextMix.sentenceCase());
+  }
+
   /// Convenience method for animating the TextSpec
   TextMix animate(AnimationConfig animation) {
-    return TextMix(animation: animation);
+    return merge(TextMix.animate(animation));
   }
 
   @override

@@ -5,7 +5,6 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
-import '../../core/utility.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
@@ -33,52 +32,62 @@ class FlexMix extends Style<FlexSpec>
   final Prop<Clip>? $clipBehavior;
   final Prop<double>? $gap;
 
-  /// Utility for defining [FlexMix.direction]
-  late final direction = PropUtility<FlexMix, Axis>(
-    (prop) => merge(FlexMix.raw(direction: prop)),
-  );
+  /// Factory for flex direction
+  factory FlexMix.direction(Axis value) {
+    return FlexMix(direction: value);
+  }
 
-  /// Utility for defining [FlexMix.mainAxisAlignment]
-  late final mainAxisAlignment = PropUtility<FlexMix, MainAxisAlignment>(
-    (prop) => merge(FlexMix.raw(mainAxisAlignment: prop)),
-  );
+  /// Factory for main axis alignment
+  factory FlexMix.mainAxisAlignment(MainAxisAlignment value) {
+    return FlexMix(mainAxisAlignment: value);
+  }
 
-  /// Utility for defining [FlexMix.crossAxisAlignment]
-  late final crossAxisAlignment = PropUtility<FlexMix, CrossAxisAlignment>(
-    (prop) => merge(FlexMix.raw(crossAxisAlignment: prop)),
-  );
+  /// Factory for cross axis alignment
+  factory FlexMix.crossAxisAlignment(CrossAxisAlignment value) {
+    return FlexMix(crossAxisAlignment: value);
+  }
 
-  /// Utility for defining [FlexMix.mainAxisSize]
-  late final mainAxisSize = PropUtility<FlexMix, MainAxisSize>(
-    (prop) => merge(FlexMix.raw(mainAxisSize: prop)),
-  );
+  /// Factory for main axis size
+  factory FlexMix.mainAxisSize(MainAxisSize value) {
+    return FlexMix(mainAxisSize: value);
+  }
 
-  /// Utility for defining [FlexMix.verticalDirection]
-  late final verticalDirection = PropUtility<FlexMix, VerticalDirection>(
-    (prop) => merge(FlexMix.raw(verticalDirection: prop)),
-  );
+  /// Factory for vertical direction
+  factory FlexMix.verticalDirection(VerticalDirection value) {
+    return FlexMix(verticalDirection: value);
+  }
 
-  /// Utility for defining [FlexMix.textDirection]
-  late final textDirection = PropUtility<FlexMix, TextDirection>(
-    (prop) => merge(FlexMix.raw(textDirection: prop)),
-  );
+  /// Factory for text direction
+  factory FlexMix.textDirection(TextDirection value) {
+    return FlexMix(textDirection: value);
+  }
 
-  /// Utility for defining [FlexMix.textBaseline]
-  late final textBaseline = PropUtility<FlexMix, TextBaseline>(
-    (prop) => merge(FlexMix.raw(textBaseline: prop)),
-  );
+  /// Factory for text baseline
+  factory FlexMix.textBaseline(TextBaseline value) {
+    return FlexMix(textBaseline: value);
+  }
 
-  /// Utility for defining [FlexMix.clipBehavior]
-  late final clipBehavior = PropUtility<FlexMix, Clip>(
-    (prop) => merge(FlexMix.raw(clipBehavior: prop)),
-  );
+  /// Factory for clip behavior
+  factory FlexMix.clipBehavior(Clip value) {
+    return FlexMix(clipBehavior: value);
+  }
 
-  /// Utility for defining [FlexMix.gap]
-  late final gap = PropUtility<FlexMix, double>(
-    (prop) => merge(FlexMix.raw(gap: prop)),
-  );
+  /// Factory for gap
+  factory FlexMix.gap(double value) {
+    return FlexMix(gap: value);
+  }
 
-  FlexMix.raw({
+  /// Factory for animation
+  factory FlexMix.animate(AnimationConfig animation) {
+    return FlexMix(animation: animation);
+  }
+
+  /// Factory for variant
+  factory FlexMix.variant(Variant variant, FlexMix value) {
+    return FlexMix(variants: [VariantStyleAttribute(variant, value)]);
+  }
+
+  const FlexMix.raw({
     Prop<Axis>? direction,
     Prop<MainAxisAlignment>? mainAxisAlignment,
     Prop<CrossAxisAlignment>? crossAxisAlignment,
@@ -91,6 +100,7 @@ class FlexMix extends Style<FlexSpec>
     super.animation,
     super.modifiers,
     super.variants,
+    super.orderOfModifiers,
   }) : $direction = direction,
        $mainAxisAlignment = mainAxisAlignment,
        $crossAxisAlignment = crossAxisAlignment,
@@ -114,6 +124,7 @@ class FlexMix extends Style<FlexSpec>
     AnimationConfig? animation,
     List<ModifierAttribute>? modifiers,
     List<VariantStyleAttribute<FlexSpec>>? variants,
+    List<Type>? orderOfModifiers,
   }) : this.raw(
          direction: Prop.maybe(direction),
          mainAxisAlignment: Prop.maybe(mainAxisAlignment),
@@ -127,6 +138,7 @@ class FlexMix extends Style<FlexSpec>
          animation: animation,
          modifiers: modifiers,
          variants: variants,
+         orderOfModifiers: orderOfModifiers,
        );
 
   /// Constructor that accepts a [FlexSpec] value and extracts its properties.
@@ -162,15 +174,60 @@ class FlexMix extends Style<FlexSpec>
     return spec != null ? FlexMix.value(spec) : null;
   }
 
+  /// Sets flex direction
+  FlexMix direction(Axis value) {
+    return merge(FlexMix.direction(value));
+  }
+
+  /// Sets main axis alignment
+  FlexMix mainAxisAlignment(MainAxisAlignment value) {
+    return merge(FlexMix.mainAxisAlignment(value));
+  }
+
+  /// Sets cross axis alignment
+  FlexMix crossAxisAlignment(CrossAxisAlignment value) {
+    return merge(FlexMix.crossAxisAlignment(value));
+  }
+
+  /// Sets main axis size
+  FlexMix mainAxisSize(MainAxisSize value) {
+    return merge(FlexMix.mainAxisSize(value));
+  }
+
+  /// Sets vertical direction
+  FlexMix verticalDirection(VerticalDirection value) {
+    return merge(FlexMix.verticalDirection(value));
+  }
+
+  /// Sets text direction
+  FlexMix textDirection(TextDirection value) {
+    return merge(FlexMix.textDirection(value));
+  }
+
+  /// Sets text baseline
+  FlexMix textBaseline(TextBaseline value) {
+    return merge(FlexMix.textBaseline(value));
+  }
+
+  /// Sets clip behavior
+  FlexMix clipBehavior(Clip value) {
+    return merge(FlexMix.clipBehavior(value));
+  }
+
+  /// Sets gap
+  FlexMix gap(double value) {
+    return merge(FlexMix.gap(value));
+  }
+
   /// Convenience method for setting direction to horizontal (row)
-  FlexMix row() => FlexMix(direction: Axis.horizontal);
+  FlexMix row() => direction(Axis.horizontal);
 
   /// Convenience method for setting direction to vertical (column)
-  FlexMix column() => FlexMix(direction: Axis.vertical);
+  FlexMix column() => direction(Axis.vertical);
 
   /// Convenience method for animating the FlexSpec
   FlexMix animate(AnimationConfig animation) {
-    return FlexMix(animation: animation);
+    return merge(FlexMix.animate(animation));
   }
 
   @override

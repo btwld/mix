@@ -13,25 +13,13 @@ import 'style_builder.dart';
 /// Generic type [S] must extend [Spec<S>] to ensure type safety.
 abstract class StyleWidget<S extends Spec<S>> extends StatefulWidget {
   /// Creates a styled widget.
-  const StyleWidget({
-    required this.style,
-    super.key,
-    this.inherit = false,
-    this.orderOfModifiers,
-    this.controller,
-  });
+  const StyleWidget({required this.style, super.key, this.inherit = false});
 
   /// The style to apply to this widget.
   final Style<S>? style;
 
   /// Whether to inherit style from parent widgets.
   final bool inherit;
-
-  /// The order in which modifiers should be applied.
-  final List<Type>? orderOfModifiers;
-
-  /// Optional controller for managing widget state.
-  final WidgetStatesController? controller;
 
   @override
   State<StyleWidget<S>> createState() => _StyleWidgetState<S>();
@@ -46,8 +34,6 @@ class _StyleWidgetState<S extends Spec<S>> extends State<StyleWidget<S>> {
       style: widget.style,
       builder: widget.build,
       inherit: widget.inherit,
-      orderOfModifiers: widget.orderOfModifiers,
-      controller: widget.controller,
     );
   }
 }

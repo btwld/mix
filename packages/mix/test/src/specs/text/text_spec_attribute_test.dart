@@ -340,9 +340,9 @@ void main() {
         final chained = TextMix()
             .fontFamily('Roboto')
             .shadows([
-              const Shadow(
+              ShadowMix(
                 color: Colors.black,
-                offset: Offset(1, 1),
+                offset: const Offset(1, 1),
                 blurRadius: 2,
               ),
             ])

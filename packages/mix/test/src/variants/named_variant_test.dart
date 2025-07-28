@@ -154,7 +154,7 @@ void main() {
         expect(primary.key, 'primary');
         expect(large.key, 'large');
         expect(outlined.key, 'outlined');
-        
+
         expect(primary, isNot(equals(large)));
         expect(primary, isNot(equals(outlined)));
         expect(large, isNot(equals(outlined)));
@@ -163,7 +163,7 @@ void main() {
       test('NamedVariants do not automatically apply based on context', () {
         const primary = NamedVariant('primary');
         const secondary = NamedVariant('secondary');
-        
+
         // NamedVariants are manual - they only apply when explicitly included
         expect(primary, isA<NamedVariant>());
         expect(secondary, isA<NamedVariant>());
@@ -200,7 +200,7 @@ void main() {
         expect(hover, isA<WidgetStateVariant>());
 
         // Can be used with context variants
-        final dark = ContextVariant.platformBrightness(Brightness.dark);
+        final dark = ContextVariant.brightness(Brightness.dark);
         expect(custom, isA<NamedVariant>());
         expect(dark, isA<ContextVariant>());
       });
@@ -329,7 +329,7 @@ void main() {
       test('NamedVariants require explicit inclusion to be active', () {
         const primary = NamedVariant('primary');
         const large = NamedVariant('large');
-        
+
         // NamedVariants are manual - they don't have when() method
         // They're only active when explicitly included in namedVariants set
         expect(primary, isA<NamedVariant>());

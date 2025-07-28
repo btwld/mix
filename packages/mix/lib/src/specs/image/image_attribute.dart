@@ -5,9 +5,7 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
-import '../../core/utility.dart';
 import '../../modifiers/modifier_util.dart';
-import '../../properties/painting/color_util.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'image_spec.dart';
@@ -27,50 +25,62 @@ class ImageMix extends Style<ImageSpec>
   final Prop<FilterQuality>? $filterQuality;
   final Prop<BlendMode>? $colorBlendMode;
 
-  /// Utility for defining [ImageMix.width]
-  late final width = PropUtility<ImageMix, double>(
-    (prop) => merge(ImageMix.raw(width: prop)),
-  );
+  /// Factory for image width
+  factory ImageMix.width(double value) {
+    return ImageMix(width: value);
+  }
 
-  /// Utility for defining [ImageMix.height]
-  late final height = PropUtility<ImageMix, double>(
-    (prop) => merge(ImageMix.raw(height: prop)),
-  );
+  /// Factory for image height
+  factory ImageMix.height(double value) {
+    return ImageMix(height: value);
+  }
 
-  /// Utility for defining [ImageMix.color]
-  late final color = ColorUtility((prop) => merge(ImageMix.raw(color: prop)));
+  /// Factory for image color
+  factory ImageMix.color(Color value) {
+    return ImageMix(color: value);
+  }
 
-  /// Utility for defining [ImageMix.repeat]
-  late final repeat = PropUtility<ImageMix, ImageRepeat>(
-    (prop) => merge(ImageMix.raw(repeat: prop)),
-  );
+  /// Factory for image repeat
+  factory ImageMix.repeat(ImageRepeat value) {
+    return ImageMix(repeat: value);
+  }
 
-  /// Utility for defining [ImageMix.fit]
-  late final fit = PropUtility<ImageMix, BoxFit>(
-    (prop) => merge(ImageMix.raw(fit: prop)),
-  );
+  /// Factory for image fit
+  factory ImageMix.fit(BoxFit value) {
+    return ImageMix(fit: value);
+  }
 
-  /// Utility for defining [ImageMix.alignment]
-  late final alignment = PropUtility<ImageMix, AlignmentGeometry>(
-    (prop) => merge(ImageMix.raw(alignment: prop)),
-  );
+  /// Factory for image alignment
+  factory ImageMix.alignment(AlignmentGeometry value) {
+    return ImageMix(alignment: value);
+  }
 
-  /// Utility for defining [ImageMix.centerSlice]
-  late final centerSlice = PropUtility<ImageMix, Rect>(
-    (prop) => merge(ImageMix.raw(centerSlice: prop)),
-  );
+  /// Factory for center slice
+  factory ImageMix.centerSlice(Rect value) {
+    return ImageMix(centerSlice: value);
+  }
 
-  /// Utility for defining [ImageMix.filterQuality]
-  late final filterQuality = PropUtility<ImageMix, FilterQuality>(
-    (prop) => merge(ImageMix.raw(filterQuality: prop)),
-  );
+  /// Factory for filter quality
+  factory ImageMix.filterQuality(FilterQuality value) {
+    return ImageMix(filterQuality: value);
+  }
 
-  /// Utility for defining [ImageMix.colorBlendMode]
-  late final colorBlendMode = PropUtility<ImageMix, BlendMode>(
-    (prop) => merge(ImageMix.raw(colorBlendMode: prop)),
-  );
+  /// Factory for color blend mode
+  factory ImageMix.colorBlendMode(BlendMode value) {
+    return ImageMix(colorBlendMode: value);
+  }
 
-  ImageMix.raw({
+  /// Factory for animation
+  factory ImageMix.animate(AnimationConfig animation) {
+    return ImageMix(animation: animation);
+  }
+
+  /// Factory for variant
+  factory ImageMix.variant(Variant variant, ImageMix value) {
+    return ImageMix(variants: [VariantStyleAttribute(variant, value)]);
+  }
+
+  const ImageMix.raw({
     Prop<double>? width,
     Prop<double>? height,
     Prop<Color>? color,
@@ -83,6 +93,7 @@ class ImageMix extends Style<ImageSpec>
     super.animation,
     super.modifiers,
     super.variants,
+    super.orderOfModifiers,
   }) : $width = width,
        $height = height,
        $color = color,
@@ -106,6 +117,7 @@ class ImageMix extends Style<ImageSpec>
     AnimationConfig? animation,
     List<ModifierAttribute>? modifiers,
     List<VariantStyleAttribute<ImageSpec>>? variants,
+    List<Type>? orderOfModifiers,
   }) : this.raw(
          width: Prop.maybe(width),
          height: Prop.maybe(height),
@@ -119,6 +131,7 @@ class ImageMix extends Style<ImageSpec>
          animation: animation,
          modifiers: modifiers,
          variants: variants,
+         orderOfModifiers: orderOfModifiers,
        );
 
   /// Constructor that accepts an [ImageSpec] value and extracts its properties.
@@ -154,9 +167,54 @@ class ImageMix extends Style<ImageSpec>
     return spec != null ? ImageMix.value(spec) : null;
   }
 
+  /// Sets image width
+  ImageMix width(double value) {
+    return merge(ImageMix.width(value));
+  }
+
+  /// Sets image height
+  ImageMix height(double value) {
+    return merge(ImageMix.height(value));
+  }
+
+  /// Sets image color
+  ImageMix color(Color value) {
+    return merge(ImageMix.color(value));
+  }
+
+  /// Sets image repeat
+  ImageMix repeat(ImageRepeat value) {
+    return merge(ImageMix.repeat(value));
+  }
+
+  /// Sets image fit
+  ImageMix fit(BoxFit value) {
+    return merge(ImageMix.fit(value));
+  }
+
+  /// Sets image alignment
+  ImageMix alignment(AlignmentGeometry value) {
+    return merge(ImageMix.alignment(value));
+  }
+
+  /// Sets center slice
+  ImageMix centerSlice(Rect value) {
+    return merge(ImageMix.centerSlice(value));
+  }
+
+  /// Sets filter quality
+  ImageMix filterQuality(FilterQuality value) {
+    return merge(ImageMix.filterQuality(value));
+  }
+
+  /// Sets color blend mode
+  ImageMix colorBlendMode(BlendMode value) {
+    return merge(ImageMix.colorBlendMode(value));
+  }
+
   /// Convenience method for animating the ImageSpec
   ImageMix animate(AnimationConfig animation) {
-    return ImageMix(animation: animation);
+    return merge(ImageMix.animate(animation));
   }
 
   @override

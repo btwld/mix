@@ -268,7 +268,7 @@ class MockBuildContext extends BuildContext {
 final class UtilityTestAttribute<T> extends Style<MockSpec<T>> {
   final T value;
 
-  const UtilityTestAttribute(this.value);
+  const UtilityTestAttribute(this.value) : super();
 
   @override
   UtilityTestAttribute<T> merge(covariant UtilityTestAttribute<T>? other) {

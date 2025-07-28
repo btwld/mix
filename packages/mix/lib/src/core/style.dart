@@ -3,9 +3,11 @@ import 'package:meta/meta.dart';
 
 import '../animation/animation_config.dart';
 import '../specs/box/box_attribute.dart';
-import '../specs/flexbox/flexbox_spec.dart';
+import '../specs/flex/flex_attribute.dart';
+import '../specs/flexbox/flexbox_attribute.dart';
 import '../specs/icon/icon_attribute.dart';
 import '../specs/stack/stack_attribute.dart';
+import '../specs/stack/stack_box_attribute.dart';
 import '../specs/text/text_attribute.dart';
 import '../variants/variant.dart';
 import 'internal/compare_mixin.dart';
@@ -29,20 +31,28 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
   final List<VariantStyleAttribute<S>>? $variants;
   final List<ModifierAttribute>? $modifiers;
   final AnimationConfig? $animation;
+  final List<Type> $orderOfModifiers;
+  final bool $inherit;
 
   static final box = BoxMix.new;
   static final icon = IconMix.new;
   static final text = TextMix.new;
   static final flexbox = FlexBoxMix.new;
   static final stack = StackMix.new;
+  static final stackBox = StackBoxMix.new;
+  static final flex = FlexMix.new;
 
   const Style({
-    List<VariantStyleAttribute<S>>? variants,
-    List<ModifierAttribute>? modifiers,
-    AnimationConfig? animation,
+    required List<VariantStyleAttribute<S>>? variants,
+    required List<ModifierAttribute>? modifiers,
+    required AnimationConfig? animation,
+    required List<Type>? orderOfModifiers,
+    required bool? inherit,
   }) : $modifiers = modifiers,
        $animation = animation,
-       $variants = variants;
+       $variants = variants,
+       $inherit = inherit ?? false,
+       $orderOfModifiers = orderOfModifiers ?? const [];
 
   @internal
   Set<WidgetState> get widgetStates {
@@ -176,6 +186,7 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
       spec: resolvedSpec,
       animation: resolvedAnimation,
       modifiers: resolvedModifiers,
+      orderOfModifiers: styleData.$orderOfModifiers,
     );
   }
 }
@@ -232,12 +243,18 @@ final class VariantStyleAttribute<S extends Spec<S>> extends Mixable<S>
 
 /// Result of Style.resolve() containing fully resolved styling data
 /// Generic type parameter T for the resolved SpecAttribute
-class ResolvedStyle<V extends Spec<V>> {
-  final V? spec; // Resolved spec
-  final AnimationConfig? animation; // Animation config
-  final List<Modifier>? modifiers; // Modifiers config
+class ResolvedStyle<V extends Spec<V>> with Equatable {
+  final V? spec;
+  final AnimationConfig? animation;
+  final List<Modifier>? modifiers;
+  final List<Type>? orderOfModifiers;
 
-  const ResolvedStyle({this.spec, this.animation, this.modifiers});
+  const ResolvedStyle({
+    this.spec,
+    this.animation,
+    this.modifiers,
+    this.orderOfModifiers,
+  });
 
   /// Linearly interpolate between two ResolvedStyles
   ResolvedStyle<V> lerp(ResolvedStyle<V>? other, double t) {
@@ -255,6 +272,9 @@ class ResolvedStyle<V extends Spec<V>> {
       modifiers: t < 0.5 ? modifiers : other.modifiers,
     );
   }
+
+  @override
+  List<Object?> get props => [spec, animation, modifiers, orderOfModifiers];
 }
 
 class CompoundStyle extends Style<MultiSpec> {
@@ -265,6 +285,8 @@ class CompoundStyle extends Style<MultiSpec> {
     super.animation,
     super.modifiers,
     super.variants,
+    super.orderOfModifiers,
+    super.inherit,
   }) : _attributes = {for (var attr in attributes) attr.mergeKey: attr};
 
   /// Creates a new `Style` instance with specified list of [Style]s.

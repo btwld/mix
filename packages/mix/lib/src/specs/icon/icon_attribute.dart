@@ -5,11 +5,8 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
-import '../../core/utility.dart';
 import '../../modifiers/modifier_util.dart';
-import '../../properties/painting/color_util.dart';
 import '../../properties/painting/shadow_mix.dart';
-import '../../properties/painting/shadow_util.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'icon_spec.dart';
@@ -29,31 +26,67 @@ class IconMix extends Style<IconSpec>
   final Prop<bool>? $applyTextScaling;
   final Prop<double>? $fill;
 
-  late final color = ColorUtility((prop) => merge(IconMix.raw(color: prop)));
-  late final size = PropUtility<IconMix, double>(
-    (prop) => merge(IconMix.raw(size: prop)),
-  );
-  late final weight = PropUtility<IconMix, double>(
-    (prop) => merge(IconMix.raw(weight: prop)),
-  );
-  late final grade = PropUtility<IconMix, double>(
-    (prop) => merge(IconMix.raw(grade: prop)),
-  );
-  late final opticalSize = PropUtility<IconMix, double>(
-    (prop) => merge(IconMix.raw(opticalSize: prop)),
-  );
-  late final shadow = ShadowUtility((v) => merge(IconMix.raw(shadows: [v])));
-  late final textDirection = PropUtility<IconMix, TextDirection>(
-    (prop) => merge(IconMix.raw(textDirection: prop)),
-  );
-  late final applyTextScaling = PropUtility<IconMix, bool>(
-    (prop) => merge(IconMix.raw(applyTextScaling: prop)),
-  );
-  late final fill = PropUtility<IconMix, double>(
-    (prop) => merge(IconMix.raw(fill: prop)),
-  );
+  /// Factory for icon color
+  factory IconMix.color(Color value) {
+    return IconMix(color: value);
+  }
 
-  IconMix.raw({
+  /// Factory for icon size
+  factory IconMix.size(double value) {
+    return IconMix(size: value);
+  }
+
+  /// Factory for icon weight
+  factory IconMix.weight(double value) {
+    return IconMix(weight: value);
+  }
+
+  /// Factory for icon grade
+  factory IconMix.grade(double value) {
+    return IconMix(grade: value);
+  }
+
+  /// Factory for icon optical size
+  factory IconMix.opticalSize(double value) {
+    return IconMix(opticalSize: value);
+  }
+
+  /// Factory for icon shadow
+  factory IconMix.shadow(ShadowMix value) {
+    return IconMix(shadows: [value]);
+  }
+
+  /// Factory for icon shadows
+  factory IconMix.shadows(List<ShadowMix> value) {
+    return IconMix(shadows: value);
+  }
+
+  /// Factory for text direction
+  factory IconMix.textDirection(TextDirection value) {
+    return IconMix(textDirection: value);
+  }
+
+  /// Factory for apply text scaling
+  factory IconMix.applyTextScaling(bool value) {
+    return IconMix(applyTextScaling: value);
+  }
+
+  /// Factory for icon fill
+  factory IconMix.fill(double value) {
+    return IconMix(fill: value);
+  }
+
+  /// Factory for animation
+  factory IconMix.animate(AnimationConfig animation) {
+    return IconMix(animation: animation);
+  }
+
+  /// Factory for variant
+  factory IconMix.variant(Variant variant, IconMix value) {
+    return IconMix(variants: [VariantStyleAttribute(variant, value)]);
+  }
+
+  const IconMix.raw({
     Prop<Color>? color,
     Prop<double>? size,
     Prop<double>? weight,
@@ -66,6 +99,7 @@ class IconMix extends Style<IconSpec>
     super.animation,
     super.modifiers,
     super.variants,
+    super.orderOfModifiers,
   }) : $color = color,
        $size = size,
        $weight = weight,
@@ -89,6 +123,7 @@ class IconMix extends Style<IconSpec>
     AnimationConfig? animation,
     List<ModifierAttribute>? modifiers,
     List<VariantStyleAttribute<IconSpec>>? variants,
+    List<Type>? orderOfModifiers,
   }) : this.raw(
          color: Prop.maybe(color),
          size: Prop.maybe(size),
@@ -102,6 +137,7 @@ class IconMix extends Style<IconSpec>
          animation: animation,
          modifiers: modifiers,
          variants: variants,
+         orderOfModifiers: orderOfModifiers,
        );
 
   // Static factory to create from resolved Spec
@@ -131,8 +167,59 @@ class IconMix extends Style<IconSpec>
     return spec != null ? IconMix.value(spec) : null;
   }
 
+  /// Sets icon color
+  IconMix color(Color value) {
+    return merge(IconMix.color(value));
+  }
+
+  /// Sets icon size
+  IconMix size(double value) {
+    return merge(IconMix.size(value));
+  }
+
+  /// Sets icon weight
+  IconMix weight(double value) {
+    return merge(IconMix.weight(value));
+  }
+
+  /// Sets icon grade
+  IconMix grade(double value) {
+    return merge(IconMix.grade(value));
+  }
+
+  /// Sets icon optical size
+  IconMix opticalSize(double value) {
+    return merge(IconMix.opticalSize(value));
+  }
+
+  /// Sets single icon shadow
+  IconMix shadow(ShadowMix value) {
+    return merge(IconMix.shadow(value));
+  }
+
+  /// Sets icon shadows
   IconMix shadows(List<ShadowMix> value) {
-    return IconMix(shadows: value);
+    return merge(IconMix.shadows(value));
+  }
+
+  /// Sets text direction
+  IconMix textDirection(TextDirection value) {
+    return merge(IconMix.textDirection(value));
+  }
+
+  /// Sets apply text scaling
+  IconMix applyTextScaling(bool value) {
+    return merge(IconMix.applyTextScaling(value));
+  }
+
+  /// Sets icon fill
+  IconMix fill(double value) {
+    return merge(IconMix.fill(value));
+  }
+
+  /// Sets animation
+  IconMix animate(AnimationConfig animation) {
+    return merge(IconMix.animate(animation));
   }
 
   @override

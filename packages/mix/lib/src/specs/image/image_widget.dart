@@ -18,7 +18,6 @@ class StyledImage extends StyleWidget<ImageSpec> {
     this.isAntiAlias = false,
     this.matchTextDirection = false,
     this.opacity,
-    super.orderOfModifiers,
   });
 
   final ImageProvider<Object> image;

@@ -92,7 +92,7 @@ void main() {
 
     group('platformBrightness factory', () {
       test('creates brightness variant with correct key', () {
-        final variant = ContextVariant.platformBrightness(Brightness.dark);
+        final variant = ContextVariant.brightness(Brightness.dark);
 
         expect(variant.key, 'media_query_platform_brightness_dark');
       });
@@ -217,8 +217,8 @@ void main() {
       });
 
       test('factory method variants have consistent keys', () {
-        final variant1 = ContextVariant.platformBrightness(Brightness.dark);
-        final variant2 = ContextVariant.platformBrightness(Brightness.dark);
+        final variant1 = ContextVariant.brightness(Brightness.dark);
+        final variant2 = ContextVariant.brightness(Brightness.dark);
 
         expect(variant1.key, equals(variant2.key));
       });
@@ -228,24 +228,24 @@ void main() {
       test('separate variants can be used independently', () {
         final variant1 = ContextVariant('test1', (context) => true);
         final variant2 = ContextVariant('test2', (context) => false);
-        
+
         expect(variant1.key, 'test1');
         expect(variant2.key, 'test2');
         expect(variant1, isNot(equals(variant2)));
       });
-      
+
       test('can be negated with NOT static method', () {
         final variant = ContextVariant('test', (context) => true);
         final notVariant = ContextVariant.not(variant);
-        
+
         expect(notVariant, isA<ContextVariant>());
         expect(notVariant.key, 'not_test');
       });
-      
+
       test('ContextVariants and NamedVariants are distinct types', () {
         final contextVariant = ContextVariant('test', (context) => true);
         const namedVariant = NamedVariant('primary');
-        
+
         expect(contextVariant, isA<ContextVariant>());
         expect(namedVariant, isA<NamedVariant>());
         expect(contextVariant.key, isNot(equals(namedVariant.key)));
@@ -320,7 +320,7 @@ void main() {
 
       test('all brightness values create valid variants', () {
         for (final brightness in Brightness.values) {
-          final variant = ContextVariant.platformBrightness(brightness);
+          final variant = ContextVariant.brightness(brightness);
           expect(variant.key, contains(brightness.name));
           expect(variant, isA<ContextVariant>());
         }
@@ -440,11 +440,11 @@ void main() {
 
     test('brightness variants are defined', () {
       expect(
-        ContextVariant.platformBrightness(Brightness.dark).key,
+        ContextVariant.brightness(Brightness.dark).key,
         'media_query_platform_brightness_dark',
       );
       expect(
-        ContextVariant.platformBrightness(Brightness.light).key,
+        ContextVariant.brightness(Brightness.light).key,
         'media_query_platform_brightness_light',
       );
     });
@@ -560,12 +560,9 @@ void main() {
     });
 
     test('all predefined context variants are ContextVariant instances', () {
+      expect(ContextVariant.brightness(Brightness.dark), isA<ContextVariant>());
       expect(
-        ContextVariant.platformBrightness(Brightness.dark),
-        isA<ContextVariant>(),
-      );
-      expect(
-        ContextVariant.platformBrightness(Brightness.light),
+        ContextVariant.brightness(Brightness.light),
         isA<ContextVariant>(),
       );
       expect(

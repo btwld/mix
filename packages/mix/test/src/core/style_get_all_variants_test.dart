@@ -186,10 +186,7 @@ void main() {
           tester,
           testAttribute: testAttribute,
           activeStates: {WidgetState.hovered, WidgetState.pressed},
-          namedVariants: {
-            namedVariant,
-            multiNamedVariant,
-          },
+          namedVariants: {namedVariant, multiNamedVariant},
           expectedWidth: 300.0, // WidgetStateVariant2 (pressed) applied last
         );
       });
@@ -455,7 +452,10 @@ void main() {
         );
 
         final varAttrs = [
-          VariantStyleAttribute(multiNamedVariant, _MockSpecAttribute(width: 100.0)),
+          VariantStyleAttribute(
+            multiNamedVariant,
+            _MockSpecAttribute(width: 100.0),
+          ),
           VariantStyleAttribute(
             contextVariant,
             _MockSpecAttribute(width: 200.0),
@@ -790,7 +790,14 @@ class _MockSpecAttribute extends Style<MockSpec> {
   final double width;
   final double? height;
 
-  _MockSpecAttribute({required this.width, this.height, super.variants});
+  _MockSpecAttribute({
+    required this.width,
+    this.height,
+    super.variants,
+    super.orderOfModifiers,
+    super.animation,
+    super.modifiers,
+  });
 
   @override
   MockSpec resolve(BuildContext context) {
@@ -805,6 +812,9 @@ class _MockSpecAttribute extends Style<MockSpec> {
       width: other.width != 0.0 ? other.width : width,
       height: other.height ?? height,
       variants: mergeVariantLists($variants, other.$variants),
+      orderOfModifiers: other.$orderOfModifiers.isNotEmpty
+          ? other.$orderOfModifiers
+          : $orderOfModifiers,
     );
   }
 

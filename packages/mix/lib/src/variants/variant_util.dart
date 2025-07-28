@@ -70,16 +70,12 @@ class OnContextVariantUtility<S extends Spec<S>, T extends Style<S>>
 
   /// Creates a variant attribute for dark mode
   VariantAttributeBuilder<S> get dark {
-    return VariantAttributeBuilder(
-      ContextVariant.platformBrightness(Brightness.dark),
-    );
+    return VariantAttributeBuilder(ContextVariant.brightness(Brightness.dark));
   }
 
   /// Creates a variant attribute for light mode
   VariantAttributeBuilder<S> get light {
-    return VariantAttributeBuilder(
-      ContextVariant.platformBrightness(Brightness.light),
-    );
+    return VariantAttributeBuilder(ContextVariant.brightness(Brightness.light));
   }
 
   /// Creates a variant attribute for portrait orientation
@@ -333,7 +329,7 @@ mixin StyleVariantMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
 
   /// Creates a variant for dark mode
   T onDark(T style) {
-    return variant(ContextVariant.platformBrightness(Brightness.dark), style);
+    return variant(ContextVariant.brightness(Brightness.dark), style);
   }
 
   T onNot(ContextVariant contextVariant, T style) {
@@ -342,7 +338,7 @@ mixin StyleVariantMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
 
   /// Creates a variant for light mode
   T onLight(T style) {
-    return variant(ContextVariant.platformBrightness(Brightness.light), style);
+    return variant(ContextVariant.brightness(Brightness.light), style);
   }
 
   /// Creates a variant for hover state

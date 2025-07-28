@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
-import '../../core/spec.dart';
 import '../../core/style.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/layout/constraints_mix.dart';
@@ -19,10 +18,6 @@ import '../../properties/painting/shape_border_mix.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'box_spec.dart';
-
-abstract class StyleMixAttribute<T extends Style<S>, S extends Spec<S>>
-    extends Style<S>
-    with StyleModifierMixin<T, S>, StyleVariantMixin<T, S> {}
 
 /// Attribute class for configuring [BoxSpec] properties.
 ///
@@ -161,6 +156,7 @@ class BoxMix extends Style<BoxSpec>
     super.animation,
     super.modifiers,
     super.variants,
+    super.orderOfModifiers,
   }) : $alignment = alignment,
        $padding = padding,
        $margin = margin,
@@ -184,6 +180,7 @@ class BoxMix extends Style<BoxSpec>
     AnimationConfig? animation,
     List<ModifierAttribute>? modifiers,
     List<VariantStyleAttribute<BoxSpec>>? variants,
+    List<Type>? orderOfModifiers,
   }) : this.raw(
          alignment: Prop.maybe(alignment),
          padding: MixProp.maybe(padding),
@@ -197,6 +194,7 @@ class BoxMix extends Style<BoxSpec>
          animation: animation,
          modifiers: modifiers,
          variants: variants,
+         orderOfModifiers: orderOfModifiers,
        );
 
   /// Constructor that accepts a [BoxSpec] value and extracts its properties.
@@ -250,6 +248,10 @@ class BoxMix extends Style<BoxSpec>
   /// Sets both min and max width to create a fixed width
   BoxMix width(double value) {
     return constraints(BoxConstraintsMix.width(value));
+  }
+
+  BoxMix orderOfModifiers(List<Type> value) {
+    return merge(BoxMix(orderOfModifiers: value));
   }
 
   /// Sets both min and max height to create a fixed height

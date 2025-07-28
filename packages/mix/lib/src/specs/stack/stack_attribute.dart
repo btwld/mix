@@ -5,7 +5,6 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
-import '../../core/utility.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
@@ -28,27 +27,37 @@ class StackMix extends Style<StackSpec>
   final Prop<TextDirection>? $textDirection;
   final Prop<Clip>? $clipBehavior;
 
-  /// Utility for defining [StackMix.alignment]
-  late final alignment = PropUtility<StackMix, AlignmentGeometry>(
-    (prop) => merge(StackMix.raw(alignment: prop)),
-  );
+  /// Factory for stack alignment
+  factory StackMix.alignment(AlignmentGeometry value) {
+    return StackMix(alignment: value);
+  }
 
-  /// Utility for defining [StackMix.fit]
-  late final fit = PropUtility<StackMix, StackFit>(
-    (prop) => merge(StackMix.raw(fit: prop)),
-  );
+  /// Factory for stack fit
+  factory StackMix.fit(StackFit value) {
+    return StackMix(fit: value);
+  }
 
-  /// Utility for defining [StackMix.textDirection]
-  late final textDirection = PropUtility<StackMix, TextDirection>(
-    (prop) => merge(StackMix.raw(textDirection: prop)),
-  );
+  /// Factory for text direction
+  factory StackMix.textDirection(TextDirection value) {
+    return StackMix(textDirection: value);
+  }
 
-  /// Utility for defining [StackMix.clipBehavior]
-  late final clipBehavior = PropUtility<StackMix, Clip>(
-    (prop) => merge(StackMix.raw(clipBehavior: prop)),
-  );
+  /// Factory for clip behavior
+  factory StackMix.clipBehavior(Clip value) {
+    return StackMix(clipBehavior: value);
+  }
 
-  StackMix.raw({
+  /// Factory for animation
+  factory StackMix.animate(AnimationConfig animation) {
+    return StackMix(animation: animation);
+  }
+
+  /// Factory for variant
+  factory StackMix.variant(Variant variant, StackMix value) {
+    return StackMix(variants: [VariantStyleAttribute(variant, value)]);
+  }
+
+  const StackMix.raw({
     Prop<AlignmentGeometry>? alignment,
     Prop<StackFit>? fit,
     Prop<TextDirection>? textDirection,
@@ -56,6 +65,7 @@ class StackMix extends Style<StackSpec>
     super.animation,
     super.modifiers,
     super.variants,
+    super.orderOfModifiers,
   }) : $alignment = alignment,
        $fit = fit,
        $textDirection = textDirection,
@@ -69,6 +79,7 @@ class StackMix extends Style<StackSpec>
     AnimationConfig? animation,
     List<ModifierAttribute>? modifiers,
     List<VariantStyleAttribute<StackSpec>>? variants,
+    List<Type>? orderOfModifiers,
   }) : this.raw(
          alignment: Prop.maybe(alignment),
          fit: Prop.maybe(fit),
@@ -77,6 +88,7 @@ class StackMix extends Style<StackSpec>
          animation: animation,
          modifiers: modifiers,
          variants: variants,
+         orderOfModifiers: orderOfModifiers,
        );
 
   /// Constructor that accepts a [StackSpec] value and extracts its properties.
@@ -107,9 +119,29 @@ class StackMix extends Style<StackSpec>
     return spec != null ? StackMix.value(spec) : null;
   }
 
+  /// Sets stack alignment
+  StackMix alignment(AlignmentGeometry value) {
+    return merge(StackMix.alignment(value));
+  }
+
+  /// Sets stack fit
+  StackMix fit(StackFit value) {
+    return merge(StackMix.fit(value));
+  }
+
+  /// Sets text direction
+  StackMix textDirection(TextDirection value) {
+    return merge(StackMix.textDirection(value));
+  }
+
+  /// Sets clip behavior
+  StackMix clipBehavior(Clip value) {
+    return merge(StackMix.clipBehavior(value));
+  }
+
   /// Convenience method for animating the StackSpec
   StackMix animate(AnimationConfig animation) {
-    return StackMix(animation: animation);
+    return merge(StackMix.animate(animation));
   }
 
   @override

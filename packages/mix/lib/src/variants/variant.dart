@@ -76,7 +76,7 @@ class ContextVariant extends Variant {
     );
   }
 
-  static ContextVariant platformBrightness(Brightness brightness) {
+  static ContextVariant brightness(Brightness brightness) {
     return ContextVariant(
       'media_query_platform_brightness_${brightness.name}',
       (context) => MediaQuery.platformBrightnessOf(context) == brightness,
@@ -108,32 +108,20 @@ class ContextVariant extends Variant {
 
   // Web
   static ContextVariant web() {
-    return ContextVariant('web', (context) => kIsWeb);
+    return ContextVariant('web', (_) => kIsWeb);
   }
 
   // Responsive breakpoints
   static ContextVariant mobile() {
-    return ContextVariant(
-      'mobile',
-      (context) => MediaQuery.sizeOf(context).width <= 767,
-    );
+    return ContextVariant.breakpoint(Breakpoint.mobile);
   }
 
   static ContextVariant tablet() {
-    return ContextVariant(
-      'tablet',
-      (context) {
-        final width = MediaQuery.sizeOf(context).width;
-        return width > 767 && width <= 1279;
-      },
-    );
+    return ContextVariant.breakpoint(Breakpoint.tablet);
   }
 
   static ContextVariant desktop() {
-    return ContextVariant(
-      'desktop',
-      (context) => MediaQuery.sizeOf(context).width > 1279,
-    );
+    return ContextVariant.breakpoint(Breakpoint.desktop);
   }
 
   /// Check if this variant should be active for the given context

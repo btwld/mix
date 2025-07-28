@@ -16,7 +16,7 @@ abstract class PropSource<T> {
   const PropSource();
 }
 
-/// Source for direct values (used by StaticProp).
+/// Source for direct values (used by Prop).
 @immutable
 class ValuePropSource<T> extends PropSource<T> {
   final T value;
@@ -37,7 +37,7 @@ class ValuePropSource<T> extends PropSource<T> {
   int get hashCode => value.hashCode;
 }
 
-/// Source for token references (used by StaticProp).
+/// Source for token references (used by Prop).
 @immutable
 class TokenPropSource<T> extends PropSource<T> {
   final MixToken<T> token;
@@ -184,7 +184,7 @@ sealed class PropBase<T> extends Mixable<T> with Resolvable<T> {
   T resolve(BuildContext context);
 }
 
-/// Static prop for regular types - uses replacement merge strategy
+/// Prop for regular types - uses replacement merge strategy
 @immutable
 class Prop<T> extends PropBase<T> {
   @override
@@ -228,13 +228,13 @@ class Prop<T> extends PropBase<T> {
     return Prop(value, directives: directives, animation: animation);
   }
 
-  // Helper methods for StaticProp
+  // Helper methods for Prop
   bool get hasValue => source is ValuePropSource<T>;
 
   bool get hasToken => source is TokenPropSource<T>;
   T get value {
     if (source is! ValuePropSource<T>) {
-      throw FlutterError('StaticProp<$T> does not have a direct value source');
+      throw FlutterError('Prop<$T> does not have a direct value source');
     }
 
     return (source as ValuePropSource<T>).value;
@@ -242,7 +242,7 @@ class Prop<T> extends PropBase<T> {
 
   MixToken<T> get token {
     if (source is! TokenPropSource<T>) {
-      throw FlutterError('StaticProp<$T> does not have a token source');
+      throw FlutterError('Prop<$T> does not have a token source');
     }
 
     return (source as TokenPropSource<T>).token;

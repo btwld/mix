@@ -26,9 +26,7 @@ class StyledText extends StyleWidget<TextSpec> {
     this.semanticsLabel,
     super.style,
     super.key,
-
     this.locale,
-    super.orderOfModifiers,
   });
 
   /// Text content to display.
