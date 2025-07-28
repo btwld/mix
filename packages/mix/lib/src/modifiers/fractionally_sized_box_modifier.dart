@@ -1,4 +1,3 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -168,9 +167,7 @@ class FractionallySizedBoxModifierAttribute
   List<Object?> get props => [widthFactor, heightFactor, alignment];
 }
 
-final class FractionallySizedBoxModifierUtility<
-  T extends StyleAttribute<Object?>
->
+final class FractionallySizedBoxModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, FractionallySizedBoxModifierAttribute> {
   const FractionallySizedBoxModifierUtility(super.builder);
 

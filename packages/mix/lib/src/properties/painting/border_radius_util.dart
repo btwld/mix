@@ -10,7 +10,7 @@ import 'border_radius_mix.dart';
 ///
 /// Extends the [BorderRadiusUtility] class to provide additional utility methods for creating and manipulating [BorderRadiusGeometry] attributes.
 /// adds a [directional] property that returns a [BorderRadiusDirectionalUtility] instance.
-final class BorderRadiusGeometryUtility<T extends StyleAttribute<Object?>>
+final class BorderRadiusGeometryUtility<T extends Style<Object?>>
     extends MixPropUtility<T, BorderRadiusGeometry> {
   /// Returns a directional utility for creating and manipulating attributes with [BorderRadiusDirectional]
   late final borderRadiusDirectional = BorderRadiusDirectionalUtility<T>(
@@ -30,7 +30,7 @@ final class BorderRadiusGeometryUtility<T extends StyleAttribute<Object?>>
 ///
 /// Allows setting of radius for a border. This class provides a convenient way to configure and apply border radius to [T]
 /// Accepts a builder function that returns [T] and takes a [BorderRadiusMix] as a parameter.
-final class BorderRadiusUtility<T extends StyleAttribute<Object?>>
+final class BorderRadiusUtility<T extends Style<Object?>>
     extends MixPropUtility<T, BorderRadius> {
   /// Returns a [PropUtility] to manipulate [Radius] for bottomLeft corner.
   late final bottomLeft = PropUtility<T, Radius>(
@@ -71,7 +71,8 @@ final class BorderRadiusUtility<T extends StyleAttribute<Object?>>
 
   /// Returns a [PropUtility] to manipulate [Radius] for bottomLeft and bottomRight corner.
   late final bottom = PropUtility<T, Radius>(
-    (radius) => call(BorderRadiusMix.raw(bottomLeft: radius, bottomRight: radius)),
+    (radius) =>
+        call(BorderRadiusMix.raw(bottomLeft: radius, bottomRight: radius)),
   );
 
   /// Returns a [PropUtility] to manipulate [Radius] for topLeft and bottomLeft corner.
@@ -81,7 +82,8 @@ final class BorderRadiusUtility<T extends StyleAttribute<Object?>>
 
   /// Returns a [PropUtility] to manipulate [Radius] for topRight and bottomRight corner.
   late final right = PropUtility<T, Radius>(
-    (radius) => call(BorderRadiusMix.raw(topRight: radius, bottomRight: radius)),
+    (radius) =>
+        call(BorderRadiusMix.raw(topRight: radius, bottomRight: radius)),
   );
 
   BorderRadiusUtility(super.builder)
@@ -100,7 +102,7 @@ final class BorderRadiusUtility<T extends StyleAttribute<Object?>>
   T call(BorderRadiusMix value) => builder(MixProp(value));
 }
 
-final class BorderRadiusDirectionalUtility<T extends StyleAttribute<Object?>>
+final class BorderRadiusDirectionalUtility<T extends Style<Object?>>
     extends MixPropUtility<T, BorderRadiusDirectional> {
   /// Returns a [PropUtility] to manipulate [Radius] for topStart and topEnd corner.
   late final top = PropUtility<T, Radius>(
@@ -117,8 +119,9 @@ final class BorderRadiusDirectionalUtility<T extends StyleAttribute<Object?>>
 
   /// Returns a [PropUtility] to manipulate [Radius] for topStart and bottomStart corner.
   late final start = PropUtility<T, Radius>(
-    (radius) =>
-        call(BorderRadiusDirectionalMix.raw(topStart: radius, bottomStart: radius)),
+    (radius) => call(
+      BorderRadiusDirectionalMix.raw(topStart: radius, bottomStart: radius),
+    ),
   );
 
   /// Returns a [PropUtility] to manipulate [Radius] for topEnd and bottomEnd corner.
@@ -177,4 +180,3 @@ final class BorderRadiusDirectionalUtility<T extends StyleAttribute<Object?>>
   @override
   T call(BorderRadiusDirectionalMix value) => builder(MixProp(value));
 }
-

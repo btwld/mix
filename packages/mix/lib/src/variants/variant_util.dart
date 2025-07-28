@@ -8,7 +8,7 @@ import 'variant.dart';
 
 /// Utility class for creating variant attributes with context-based variants
 @immutable
-class OnContextVariantUtility<S extends Spec<S>, T extends StyleAttribute<S>>
+class OnContextVariantUtility<S extends Spec<S>, T extends Style<S>>
     extends MixUtility<T, VariantStyleAttribute<S>> {
   const OnContextVariantUtility(super.builder);
 
@@ -279,16 +279,16 @@ class VariantAttributeBuilder<T extends Spec<T>> {
   /// );
   /// ```
   VariantStyleAttribute<MultiSpec> call([
-    StyleAttribute? p1,
-    StyleAttribute? p2,
-    StyleAttribute? p3,
-    StyleAttribute? p4,
-    StyleAttribute? p5,
-    StyleAttribute? p6,
-    StyleAttribute? p7,
-    StyleAttribute? p8,
-    StyleAttribute? p9,
-    StyleAttribute? p10,
+    Style? p1,
+    Style? p2,
+    Style? p3,
+    Style? p4,
+    Style? p5,
+    Style? p6,
+    Style? p7,
+    Style? p8,
+    Style? p9,
+    Style? p10,
   ]) {
     final elements = [
       p1,
@@ -301,7 +301,7 @@ class VariantAttributeBuilder<T extends Spec<T>> {
       p8,
       p9,
       p10,
-    ].whereType<StyleAttribute>().toList();
+    ].whereType<Style>().toList();
 
     if (elements.isEmpty) {
       throw ArgumentError('At least one StyleAttribute must be provided');
@@ -327,15 +327,14 @@ class VariantAttributeBuilder<T extends Spec<T>> {
   int get hashCode => variant.hashCode;
 }
 
-typedef VariantFactoryCallback<T extends StyleAttribute<S>, S extends Spec<S>> =
+typedef VariantFactoryCallback<T extends Style<S>, S extends Spec<S>> =
     T Function(T style);
 
 /// Mixin that provides convenient variant methods for spec attributes.
 ///
 /// This mixin follows the same pattern as ModifierMixin, providing
 /// a fluent API for applying context variants to spec attributes.
-mixin VariantMixin<T extends StyleAttribute<S>, S extends Spec<S>>
-    on StyleAttribute<S> {
+mixin VariantMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   /// Must be implemented by the class using this mixin
   T variant(Variant variant, T style);
 

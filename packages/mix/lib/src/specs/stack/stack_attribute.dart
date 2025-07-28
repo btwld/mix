@@ -18,7 +18,7 @@ import 'stack_spec.dart';
 ///
 /// Use this class to configure the attributes of a [StackSpec] and pass it to
 /// the [StackSpec] constructor.
-class StackSpecAttribute extends StyleAttribute<StackSpec>
+class StackSpecAttribute extends Style<StackSpec>
     with
         Diagnosticable,
         ModifierMixin<StackSpecAttribute, StackSpec>,
@@ -112,6 +112,7 @@ class StackSpecAttribute extends StyleAttribute<StackSpec>
     return StackSpecAttribute(animation: animation);
   }
 
+  @override
   StackSpecAttribute variants(List<VariantStyleAttribute<StackSpec>> variants) {
     return merge(StackSpecAttribute(variants: variants));
   }

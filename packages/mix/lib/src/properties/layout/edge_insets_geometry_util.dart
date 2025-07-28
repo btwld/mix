@@ -9,10 +9,9 @@ import 'edge_insets_geometry_mix.dart';
 // Deprecated typedef moved to src/core/deprecated.dart
 
 @immutable
-final class EdgeInsetsGeometryUtility<U extends StyleAttribute<Object?>>
+final class EdgeInsetsGeometryUtility<U extends Style<Object?>>
     extends MixPropUtility<U, EdgeInsetsGeometry> {
   late final directional = EdgeInsetsDirectionalUtility(builder);
-
 
   EdgeInsetsGeometryUtility(super.builder)
     : super(convertToMix: EdgeInsetsGeometryMix.value);
@@ -64,11 +63,16 @@ final class EdgeInsetsGeometryUtility<U extends StyleAttribute<Object?>>
 }
 
 @immutable
-final class EdgeInsetsDirectionalUtility<U extends StyleAttribute<Object?>>
+final class EdgeInsetsDirectionalUtility<U extends Style<Object?>>
     extends MixPropUtility<U, EdgeInsetsDirectional> {
   late final all = SpacingSideUtility(
     (prop) => call(
-      EdgeInsetsDirectionalMix.raw(top: prop, bottom: prop, start: prop, end: prop),
+      EdgeInsetsDirectionalMix.raw(
+        top: prop,
+        bottom: prop,
+        start: prop,
+        end: prop,
+      ),
     ),
   );
   late final start = SpacingSideUtility(
@@ -105,7 +109,7 @@ final class EdgeInsetsDirectionalUtility<U extends StyleAttribute<Object?>>
 }
 
 @immutable
-class SpacingSideUtility<T extends StyleAttribute<Object?>>
+class SpacingSideUtility<T extends Style<Object?>>
     extends PropUtility<T, double> {
   const SpacingSideUtility(super.builder);
 }
@@ -171,5 +175,3 @@ EdgeInsetsMix createEdgeInsetsMix({
 
   return EdgeInsetsMix(top: t, bottom: b, left: l, right: r);
 }
-
-

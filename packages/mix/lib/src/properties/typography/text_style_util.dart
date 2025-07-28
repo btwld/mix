@@ -9,7 +9,7 @@ import '../painting/color_util.dart';
 import '../painting/shadow_mix.dart';
 import 'text_style_mix.dart';
 
-final class TextStyleUtility<T extends StyleAttribute<Object?>>
+final class TextStyleUtility<T extends Style<Object?>>
     extends MixPropUtility<T, TextStyle> {
   late final color = ColorUtility<T>(
     (prop) => call(TextStyleMix.raw(color: prop)),

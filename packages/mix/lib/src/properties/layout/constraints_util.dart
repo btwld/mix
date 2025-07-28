@@ -9,7 +9,7 @@ import 'constraints_mix.dart';
 ///
 /// This class provides methods to set individual properties of a [BoxConstraints].
 /// Use the methods of this class to configure specific properties of a [BoxConstraints].
-final class BoxConstraintsUtility<T extends StyleAttribute<Object?>>
+final class BoxConstraintsUtility<T extends Style<Object?>>
     extends MixPropUtility<T, BoxConstraints> {
   /// Utility for defining [BoxConstraintsMix.minWidth]
   late final minWidth = PropUtility<T, double>(

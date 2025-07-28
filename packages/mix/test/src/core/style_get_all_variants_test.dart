@@ -793,7 +793,7 @@ void main() {
 }
 
 // Test helper class that implements SpecAttribute for testing
-class _MockSpecAttribute extends StyleAttribute<MockSpec> {
+class _MockSpecAttribute extends Style<MockSpec> {
   final double width;
   final double? height;
 

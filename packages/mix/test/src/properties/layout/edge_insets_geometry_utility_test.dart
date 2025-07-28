@@ -20,7 +20,7 @@ class TestSpec extends Spec<TestSpec> {
 }
 
 // Test attribute class for utility testing
-class TestAttribute extends StyleAttribute<TestSpec> {
+class TestAttribute extends Style<TestSpec> {
   final MixProp<EdgeInsetsGeometry>? edgeInsets;
 
   const TestAttribute({this.edgeInsets});

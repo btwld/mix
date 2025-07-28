@@ -1,4 +1,3 @@
-
 import 'dart:math' as math;
 
 import 'package:flutter/widgets.dart';
@@ -46,7 +45,7 @@ final class TransformModifier extends Modifier<TransformModifier> {
   }
 }
 
-final class TransformModifierUtility<T extends StyleAttribute<Object?>>
+final class TransformModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, TransformModifierAttribute> {
   late final rotate = TransformRotateModifierUtility(
     (value) => builder(
@@ -89,7 +88,7 @@ final class TransformModifierUtility<T extends StyleAttribute<Object?>>
   );
 }
 
-final class TransformRotateModifierUtility<T extends StyleAttribute<Object?>>
+final class TransformRotateModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, Matrix4> {
   const TransformRotateModifierUtility(super.builder);
   T d90() => call(math.pi / 2);
@@ -106,7 +105,10 @@ class TransformModifierAttribute extends ModifierAttribute<TransformModifier> {
   const TransformModifierAttribute.raw({this.transform, this.alignment});
 
   TransformModifierAttribute({Matrix4? transform, Alignment? alignment})
-    : this.raw(transform: Prop.maybe(transform), alignment: Prop.maybe(alignment));
+    : this.raw(
+        transform: Prop.maybe(transform),
+        alignment: Prop.maybe(alignment),
+      );
 
   @override
   TransformModifier resolve(BuildContext context) {

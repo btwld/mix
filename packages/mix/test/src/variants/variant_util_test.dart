@@ -651,7 +651,7 @@ void main() {
 
         expect(result, isA<VariantStyleAttribute<MultiSpec>>());
         expect(result.variant, same(variant));
-        expect(result.value, isA<StyleAttribute>());
+        expect(result.value, isA<Style>());
       });
 
       test(
@@ -666,7 +666,7 @@ void main() {
 
           expect(result, isA<VariantStyleAttribute<MultiSpec>>());
           expect(result.variant, same(variant));
-          expect(result.value, isA<StyleAttribute>());
+          expect(result.value, isA<Style>());
         },
       );
 
@@ -681,7 +681,7 @@ void main() {
         final result = hoverBuilder.call(attribute);
 
         expect(result, isA<VariantStyleAttribute<MultiSpec>>());
-        expect(result.value, isA<StyleAttribute>());
+        expect(result.value, isA<Style>());
       });
 
       test('call method preserves variant information', () {
@@ -693,7 +693,7 @@ void main() {
 
         expect(result, isA<VariantStyleAttribute<MultiSpec>>());
         expect(result.variant, same(contextVariant));
-        expect(result.value, isA<StyleAttribute>());
+        expect(result.value, isA<Style>());
       });
 
       test('call method throws error with no elements', () {
@@ -718,7 +718,7 @@ void main() {
 
         expect(result, isA<VariantStyleAttribute<MultiSpec>>());
         expect(result.variant, equals(darkBuilder.variant));
-        expect(result.value, isA<StyleAttribute>());
+        expect(result.value, isA<Style>());
       });
     });
 

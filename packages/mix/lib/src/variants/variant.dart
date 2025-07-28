@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../core/breakpoint.dart';
-import '../core/internal/deep_collection_equality.dart';
 import '../core/providers/widget_state_provider.dart';
 import '../core/style.dart';
 
@@ -16,7 +15,6 @@ sealed class Variant {
   const Variant();
 
   String get key;
-
 }
 
 /// Manual variants that are only applied when explicitly requested.
@@ -139,7 +137,7 @@ final class WidgetStateVariant extends ContextVariant {
 /// Variant that dynamically builds a Style based on build context.
 /// This variant type allows for complex styling that depends on runtime context.
 @immutable
-class ContextVariantBuilder<S extends StyleAttribute<Object?>> extends Variant {
+class ContextVariantBuilder<S extends Style<Object?>> extends Variant {
   /// Function that builds a Style based on the given BuildContext
   final S Function(BuildContext) fn;
 
@@ -160,9 +158,7 @@ class ContextVariantBuilder<S extends StyleAttribute<Object?>> extends Variant {
   S build(BuildContext context) => fn(context);
 }
 
-
 // Common named variants
 const primary = NamedVariant('primary');
 const secondary = NamedVariant('secondary');
 const outlined = NamedVariant('outlined');
-

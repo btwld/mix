@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../core/helpers.dart';
@@ -115,13 +114,11 @@ class MouseCursorDecoratorSpecAttribute
   List<Object?> get props => [mouseCursor];
 }
 
-class MouseCursorModifierUtility<T extends StyleAttribute<Object?>>
+class MouseCursorModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, MouseCursorDecoratorSpecAttribute> {
   const MouseCursorModifierUtility(super.builder);
   T call(MouseCursor? mouseCursor) {
-    return builder(
-      MouseCursorDecoratorSpecAttribute(mouseCursor: mouseCursor),
-    );
+    return builder(MouseCursorDecoratorSpecAttribute(mouseCursor: mouseCursor));
   }
 
   T defer() => call(MouseCursor.defer);

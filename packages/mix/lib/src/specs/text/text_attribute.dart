@@ -26,7 +26,7 @@ import 'text_spec.dart';
 ///
 /// Use this class to configure the attributes of a [TextSpec] and pass it to
 /// the [TextSpec] constructor.
-class TextMix extends StyleAttribute<TextSpec>
+class TextMix extends Style<TextSpec>
     with
         Diagnosticable,
         ModifierMixin<TextMix, TextSpec>,

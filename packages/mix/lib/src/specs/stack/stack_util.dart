@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show StyleAttributeBuilder;
-import '../../core/style.dart' show StyleAttribute;
+import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../variants/variant_util.dart';
@@ -60,7 +60,7 @@ class StackSpecUtility extends StyleAttributeBuilder<StackSpec> {
   // StyleAttribute interface implementation
 
   @override
-  StackSpecUtility merge(StyleAttribute<StackSpec>? other) {
+  StackSpecUtility merge(Style<StackSpec>? other) {
     // IMMUTABLE: Always create new instance (StyleAttribute contract)
     if (other is StackSpecUtility) {
       return StackSpecUtility(_baseAttribute.merge(other._baseAttribute));

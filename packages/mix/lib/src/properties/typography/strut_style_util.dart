@@ -5,7 +5,7 @@ import '../../core/style.dart';
 import '../../core/utility.dart';
 import 'strut_style_mix.dart';
 
-final class StrutStyleUtility<T extends StyleAttribute<Object?>>
+final class StrutStyleUtility<T extends Style<Object?>>
     extends MixPropUtility<T, StrutStyle> {
   late final fontWeight = PropUtility<T, FontWeight>(
     (prop) => call(StrutStyleMix.raw(fontWeight: prop)),

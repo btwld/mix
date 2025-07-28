@@ -265,7 +265,7 @@ class MockBuildContext extends BuildContext {
 /// final gradientUtility = GradientUtility(UtilityTestAttribute.new);
 /// final attr = gradientUtility.linear(...);
 /// ```
-final class UtilityTestAttribute<T> extends StyleAttribute<MockSpec<T>> {
+final class UtilityTestAttribute<T> extends Style<MockSpec<T>> {
   final T value;
 
   const UtilityTestAttribute(this.value);

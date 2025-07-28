@@ -9,8 +9,7 @@ import 'style.dart';
 ///
 /// Provides mutable internal state where utilities can update the internal
 /// StyleAttribute and return the same instance for cascade notation.
-abstract class StyleAttributeBuilder<S extends Spec<S>>
-    extends StyleAttribute<S>
+abstract class StyleAttributeBuilder<S extends Spec<S>> extends Style<S>
     with Diagnosticable {
   const StyleAttributeBuilder({
     super.animation,
@@ -19,7 +18,7 @@ abstract class StyleAttributeBuilder<S extends Spec<S>>
   });
 
   /// Access to the internal mutable StyleAttribute
-  StyleAttribute<S> get attribute;
+  Style<S> get attribute;
 
   @override
   S resolve(BuildContext context) => attribute.resolve(context);

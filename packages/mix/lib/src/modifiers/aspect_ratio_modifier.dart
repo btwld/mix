@@ -1,4 +1,3 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -130,7 +129,7 @@ class AspectRatioModifierAttribute
   List<Object?> get props => [aspectRatio];
 }
 
-final class AspectRatioModifierUtility<T extends StyleAttribute<Object?>>
+final class AspectRatioModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, AspectRatioModifierAttribute> {
   const AspectRatioModifierUtility(super.builder);
 

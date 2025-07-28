@@ -37,7 +37,7 @@ import 'visibility_modifier.dart';
 ///   $with.aspectRatio(16/9),
 /// )
 /// ```
-final class ModifierUtility<T extends StyleAttribute<Object?>>
+final class ModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, ModifierAttribute> {
   /// Utility for opacity modifiers
   late final opacity = OpacityModifierUtility<T>(builder);
@@ -139,8 +139,7 @@ final class ModifierUtility<T extends StyleAttribute<Object?>>
 ///
 /// This mixin follows the same pattern as BorderRadiusMixin, providing
 /// a fluent API for applying modifiers to spec attributes.
-mixin ModifierMixin<T extends StyleAttribute<S>, S extends Spec<S>>
-    on StyleAttribute<S> {
+mixin ModifierMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   /// Must be implemented by the class using this mixin
   T modifiers(List<ModifierAttribute> modifiers);
 

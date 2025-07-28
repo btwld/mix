@@ -14,7 +14,7 @@ import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'icon_spec.dart';
 
-class IconSpecAttribute extends StyleAttribute<IconSpec>
+class IconSpecAttribute extends Style<IconSpec>
     with
         Diagnosticable,
         ModifierMixin<IconSpecAttribute, IconSpec>,

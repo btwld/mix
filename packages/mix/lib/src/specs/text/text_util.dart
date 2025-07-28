@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show StyleAttributeBuilder;
-import '../../core/style.dart' show StyleAttribute;
+import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/typography/strut_style_util.dart';
@@ -118,7 +118,7 @@ class TextSpecUtility extends StyleAttributeBuilder<TextSpec> {
   // StyleAttribute interface implementation
 
   @override
-  TextSpecUtility merge(StyleAttribute<TextSpec>? other) {
+  TextSpecUtility merge(Style<TextSpec>? other) {
     // IMMUTABLE: Always create new instance (StyleAttribute contract)
     if (other is TextSpecUtility) {
       return TextSpecUtility(_baseAttribute.merge(other._baseAttribute));

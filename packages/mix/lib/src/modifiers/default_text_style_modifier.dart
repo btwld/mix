@@ -1,14 +1,13 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../properties/typography/text_height_behavior_mix.dart';
-import '../properties/typography/text_style_mix.dart';
 import '../core/helpers.dart';
 import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
+import '../properties/typography/text_height_behavior_mix.dart';
+import '../properties/typography/text_style_mix.dart';
 
 final class DefaultTextStyleModifier extends Modifier<DefaultTextStyleModifier>
     with Diagnosticable {
@@ -251,7 +250,7 @@ class DefaultTextStyleModifierAttribute
   ];
 }
 
-final class DefaultTextStyleModifierUtility<T extends StyleAttribute<Object?>>
+final class DefaultTextStyleModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, DefaultTextStyleModifierAttribute> {
   const DefaultTextStyleModifierUtility(super.builder);
   T call({
@@ -271,7 +270,9 @@ final class DefaultTextStyleModifierUtility<T extends StyleAttribute<Object?>>
         overflow: overflow,
         maxLines: maxLines,
         textWidthBasis: textWidthBasis,
-        textHeightBehavior: TextHeightBehaviorMix.maybeValue(textHeightBehavior),
+        textHeightBehavior: TextHeightBehaviorMix.maybeValue(
+          textHeightBehavior,
+        ),
       ),
     );
   }

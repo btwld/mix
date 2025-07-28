@@ -9,7 +9,7 @@ import 'decoration_image_mix.dart';
 ///
 /// This class provides methods to set individual properties of a [DecorationImage].
 /// Use the methods of this class to configure specific properties of a [DecorationImage].
-final class DecorationImageUtility<T extends StyleAttribute<Object?>>
+final class DecorationImageUtility<T extends Style<Object?>>
     extends MixPropUtility<T, DecorationImage> {
   /// Utility for defining [DecorationImageMix.image]
   late final provider = PropUtility<T, ImageProvider>(

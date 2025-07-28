@@ -18,7 +18,7 @@ import 'flex_spec.dart';
 ///
 /// Use this class to configure the attributes of a [FlexSpec] and pass it to
 /// the [FlexSpec] constructor.
-class FlexSpecAttribute extends StyleAttribute<FlexSpec>
+class FlexSpecAttribute extends Style<FlexSpec>
     with
         Diagnosticable,
         ModifierMixin<FlexSpecAttribute, FlexSpec>,
@@ -176,6 +176,7 @@ class FlexSpecAttribute extends StyleAttribute<FlexSpec>
     return FlexSpecAttribute(animation: animation);
   }
 
+  @override
   FlexSpecAttribute variants(List<VariantStyleAttribute<FlexSpec>> variants) {
     return merge(FlexSpecAttribute(variants: variants));
   }

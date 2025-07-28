@@ -18,15 +18,14 @@ sealed class StyleElement {
 /// Base class for style containers that can be resolved to specifications.
 ///
 /// Provides variant support, modifiers, and animation configuration for styled elements.
-abstract class StyleAttribute<S extends Spec<S>>
-    extends Mixable<StyleAttribute<S>>
+abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
     with Equatable, Resolvable<S>
     implements StyleElement {
   final List<VariantStyleAttribute<S>>? $variants;
   final List<ModifierAttribute>? $modifiers;
   final AnimationConfig? $animation;
 
-  const StyleAttribute({
+  const Style({
     List<VariantStyleAttribute<S>>? variants,
     List<ModifierAttribute>? modifiers,
     AnimationConfig? animation,
@@ -69,7 +68,7 @@ abstract class StyleAttribute<S extends Spec<S>>
   }
 
   @visibleForTesting
-  StyleAttribute<S> getAllStyleVariants(
+  Style<S> getAllStyleVariants(
     BuildContext context, {
     required Set<NamedVariant> namedVariants,
   }) {
@@ -96,10 +95,10 @@ abstract class StyleAttribute<S extends Spec<S>>
             ContextVariantBuilder variant => variant.build(context),
             (ContextVariant() || NamedVariant()) => variantAttr,
           }
-          as StyleAttribute<S>;
+          as Style<S>;
     }).toList();
 
-    StyleAttribute<S> styleData = this;
+    Style<S> styleData = this;
 
     for (final style in variantStyles) {
       styleData = styleData.merge(style);
@@ -140,7 +139,7 @@ abstract class StyleAttribute<S extends Spec<S>>
 
   /// Merges this attribute with another attribute of the same type.
   @override
-  StyleAttribute<S> merge(covariant StyleAttribute<S>? other);
+  Style<S> merge(covariant Style<S>? other);
 
   /// Default implementation uses runtimeType as the merge key
   @override
@@ -189,12 +188,11 @@ final class VariantStyleAttribute<S extends Spec<S>> extends Mixable<S>
     with Equatable
     implements StyleElement {
   final Variant variant;
-  final StyleAttribute<S> _style;
+  final Style<S> _style;
 
-  const VariantStyleAttribute(this.variant, StyleAttribute<S> style)
-    : _style = style;
+  const VariantStyleAttribute(this.variant, Style<S> style) : _style = style;
 
-  StyleAttribute<S> get value => _style;
+  Style<S> get value => _style;
 
   bool matches(Iterable<Variant> otherVariants) =>
       otherVariants.contains(variant);
@@ -268,17 +266,17 @@ class ResolvedStyle<V extends Spec<V>> {
   }
 }
 
-class CompoundStyle extends StyleAttribute<MultiSpec> {
-  final Map<Object, StyleAttribute> _attributes;
+class CompoundStyle extends Style<MultiSpec> {
+  final Map<Object, Style> _attributes;
 
   CompoundStyle._({
-    required List<StyleAttribute> attributes,
+    required List<Style> attributes,
     super.animation,
     super.modifiers,
     super.variants,
   }) : _attributes = {for (var attr in attributes) attr.mergeKey: attr};
 
-  /// Creates a new `Style` instance with specified list of [StyleAttribute]s.
+  /// Creates a new `Style` instance with specified list of [Style]s.
   ///
   /// This factory constructor initializes a `Style` with a list of
   /// style elements provided as individual parameters. Only non-null elements
@@ -295,36 +293,36 @@ class CompoundStyle extends StyleAttribute<MultiSpec> {
   /// final style = Style(attribute1, attribute2, attribute3);
   /// ```
   factory CompoundStyle([
-    StyleAttribute? p1,
-    StyleAttribute? p2,
-    StyleAttribute? p3,
-    StyleAttribute? p4,
-    StyleAttribute? p5,
-    StyleAttribute? p6,
-    StyleAttribute? p7,
-    StyleAttribute? p8,
-    StyleAttribute? p9,
-    StyleAttribute? p10,
-    StyleAttribute? p11,
-    StyleAttribute? p12,
-    StyleAttribute? p13,
-    StyleAttribute? p14,
-    StyleAttribute? p15,
-    StyleAttribute? p16,
-    StyleAttribute? p17,
-    StyleAttribute? p18,
-    StyleAttribute? p19,
-    StyleAttribute? p20,
+    Style? p1,
+    Style? p2,
+    Style? p3,
+    Style? p4,
+    Style? p5,
+    Style? p6,
+    Style? p7,
+    Style? p8,
+    Style? p9,
+    Style? p10,
+    Style? p11,
+    Style? p12,
+    Style? p13,
+    Style? p14,
+    Style? p15,
+    Style? p16,
+    Style? p17,
+    Style? p18,
+    Style? p19,
+    Style? p20,
   ]) {
     final params = [
       p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, //
       p11, p12, p13, p14, p15, p16, p17, p18, p19, p20,
-    ].whereType<StyleAttribute>();
+    ].whereType<Style>();
 
     return CompoundStyle.create(params);
   }
 
-  /// Constructs a `Style` from an iterable of [StyleAttribute] instances.
+  /// Constructs a `Style` from an iterable of [Style] instances.
   ///
   /// This factory constructor segregates the style elements into attributes
   /// and variants, initializing a new `MultiSpecAttribute` with these collections.
@@ -335,7 +333,7 @@ class CompoundStyle extends StyleAttribute<MultiSpec> {
   /// final style = Style.create([attribute1, attribute2]);
   /// ```
   factory CompoundStyle.create(Iterable<StyleElement> elements) {
-    final styleList = <StyleAttribute>[];
+    final styleList = <Style>[];
     final modifierList = <ModifierAttribute>[];
     final variants = <VariantStyleAttribute>[];
 
@@ -349,7 +347,7 @@ class CompoundStyle extends StyleAttribute<MultiSpec> {
 
         case ModifierAttribute():
           modifierList.add(element);
-        case StyleAttribute():
+        case Style():
           // Handle MultiSpecAttribute by merging it later
           if (element is! CompoundStyle) {
             styleList.add(element);
@@ -380,7 +378,7 @@ class CompoundStyle extends StyleAttribute<MultiSpec> {
     : this._(attributes: [], animation: null, modifiers: null, variants: null);
 
   /// Returns the list of attributes in this style
-  List<StyleAttribute> get attributes => _attributes.values.toList();
+  List<Style> get attributes => _attributes.values.toList();
 
   CompoundStyle animate({Duration? duration, Curve? curve}) {
     return CompoundStyle._(
@@ -408,7 +406,7 @@ class CompoundStyle extends StyleAttribute<MultiSpec> {
   CompoundStyle merge(CompoundStyle? other) {
     if (other == null) return this;
 
-    final mergedAttributes = <StyleAttribute>[];
+    final mergedAttributes = <Style>[];
 
     // Get all unique merge keys from both attributes
     final allKeys = {..._attributes.keys, ...other._attributes.keys};

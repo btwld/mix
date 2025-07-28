@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show StyleAttributeBuilder;
-import '../../core/style.dart' show StyleAttribute;
+import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/painting/color_util.dart';
@@ -81,7 +81,7 @@ class ImageSpecUtility extends StyleAttributeBuilder<ImageSpec> {
   // StyleAttribute interface implementation
 
   @override
-  ImageSpecUtility merge(StyleAttribute<ImageSpec>? other) {
+  ImageSpecUtility merge(Style<ImageSpec>? other) {
     // IMMUTABLE: Always create new instance (StyleAttribute contract)
     if (other is ImageSpecUtility) {
       return ImageSpecUtility(_baseAttribute.merge(other._baseAttribute));

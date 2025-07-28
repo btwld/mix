@@ -135,7 +135,7 @@ class SizedBoxModifierAttribute extends ModifierAttribute<SizedBoxModifier>
   List<Object?> get props => [width, height];
 }
 
-final class SizedBoxModifierUtility<T extends StyleAttribute<Object?>>
+final class SizedBoxModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, SizedBoxModifierAttribute> {
   late final width = PropUtility<T, double>(
     (prop) => builder(SizedBoxModifierAttribute.raw(width: prop)),

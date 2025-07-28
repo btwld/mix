@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show StyleAttributeBuilder;
-import '../../core/style.dart' show StyleAttribute;
+import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/layout/constraints_util.dart';
@@ -161,7 +161,7 @@ class FlexBoxSpecUtility extends StyleAttributeBuilder<FlexBoxSpec> {
   // StyleAttribute interface implementation
 
   @override
-  FlexBoxSpecUtility merge(StyleAttribute<FlexBoxSpec>? other) {
+  FlexBoxSpecUtility merge(Style<FlexBoxSpec>? other) {
     // IMMUTABLE: Always create new instance (StyleAttribute contract)
     if (other is FlexBoxSpecUtility) {
       return FlexBoxSpecUtility(_baseAttribute.merge(other._baseAttribute));

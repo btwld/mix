@@ -12,7 +12,7 @@ import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'image_spec.dart';
 
-class ImageSpecAttribute extends StyleAttribute<ImageSpec>
+class ImageSpecAttribute extends Style<ImageSpec>
     with
         Diagnosticable,
         ModifierMixin<ImageSpecAttribute, ImageSpec>,
@@ -161,6 +161,7 @@ class ImageSpecAttribute extends StyleAttribute<ImageSpec>
     return ImageSpecAttribute(animation: animation);
   }
 
+  @override
   ImageSpecAttribute variants(List<VariantStyleAttribute<ImageSpec>> variants) {
     return merge(ImageSpecAttribute(variants: variants));
   }

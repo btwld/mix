@@ -71,8 +71,7 @@ final class ZBoxSpec extends Spec<ZBoxSpec> with Diagnosticable {
 ///
 /// Use this class to configure the attributes of a [ZBoxSpec] and pass it to
 /// the [ZBoxSpec] constructor.
-class StackBoxSpecAttribute extends StyleAttribute<ZBoxSpec>
-    with Diagnosticable {
+class StackBoxSpecAttribute extends Style<ZBoxSpec> with Diagnosticable {
   final BoxMix? box;
   final StackSpecAttribute? stack;
 

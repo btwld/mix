@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show StyleAttributeBuilder;
-import '../../core/style.dart' show StyleAttribute;
+import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../variants/variant_util.dart';
@@ -89,7 +89,7 @@ class FlexSpecUtility extends StyleAttributeBuilder<FlexSpec> {
   // StyleAttribute interface implementation
 
   @override
-  FlexSpecUtility merge(StyleAttribute<FlexSpec>? other) {
+  FlexSpecUtility merge(Style<FlexSpec>? other) {
     // IMMUTABLE: Always create new instance (StyleAttribute contract)
     if (other is FlexSpecUtility) {
       return FlexSpecUtility(_baseAttribute.merge(other._baseAttribute));

@@ -1,4 +1,3 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -133,7 +132,7 @@ class FlexibleModifierAttribute extends ModifierAttribute<FlexibleModifier>
   List<Object?> get props => [flex, fit];
 }
 
-final class FlexibleModifierUtility<T extends StyleAttribute<Object?>>
+final class FlexibleModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, FlexibleModifierAttribute> {
   late final flex = PropUtility<T, int>(
     (prop) => builder(FlexibleModifierAttribute.raw(flex: prop)),

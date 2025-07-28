@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show StyleAttributeBuilder;
-import '../../core/style.dart' show StyleAttribute;
+import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/painting/color_util.dart';
@@ -87,7 +87,7 @@ class IconSpecUtility extends StyleAttributeBuilder<IconSpec> {
   // StyleAttribute interface implementation
 
   @override
-  IconSpecUtility merge(StyleAttribute<IconSpec>? other) {
+  IconSpecUtility merge(Style<IconSpec>? other) {
     // IMMUTABLE: Always create new instance (StyleAttribute contract)
     if (other is IconSpecUtility) {
       return IconSpecUtility(_baseAttribute.merge(other._baseAttribute));

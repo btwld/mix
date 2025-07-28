@@ -6,7 +6,7 @@ import 'package:mix/mix.dart';
 /// Utility class for creating box border styling with comprehensive border support.
 ///
 /// Provides access to border and directional border utilities for flexible border styling.
-final class BoxBorderUtility<T extends StyleAttribute<Object?>>
+final class BoxBorderUtility<T extends Style<Object?>>
     extends MixPropUtility<T, BoxBorder> {
   late final border = BorderUtility<T>(builder);
 
@@ -23,7 +23,7 @@ final class BoxBorderUtility<T extends StyleAttribute<Object?>>
 /// Utility class for creating border styling with individual side control.
 ///
 /// Provides utilities for styling all sides together or individual border sides.
-final class BorderUtility<T extends StyleAttribute<Object?>>
+final class BorderUtility<T extends Style<Object?>>
     extends MixPropUtility<T, Border> {
   late final all = BorderSideUtility<T>(
     (v) => call(BorderMix.raw(top: v, bottom: v, left: v, right: v)),
@@ -74,7 +74,7 @@ final class BorderUtility<T extends StyleAttribute<Object?>>
   }
 }
 
-final class BorderDirectionalUtility<T extends StyleAttribute<Object?>>
+final class BorderDirectionalUtility<T extends Style<Object?>>
     extends MixPropUtility<T, BorderDirectional> {
   late final all = BorderSideUtility<T>(
     (v) => call(BorderDirectionalMix.raw(top: v, bottom: v, start: v, end: v)),
@@ -130,7 +130,7 @@ final class BorderDirectionalUtility<T extends StyleAttribute<Object?>>
 ///
 /// This class provides methods to set individual properties of a [BorderSide].
 /// Use the methods of this class to configure specific properties of a [BorderSide].
-class BorderSideUtility<T extends StyleAttribute<Object?>>
+class BorderSideUtility<T extends Style<Object?>>
     extends MixPropUtility<T, BorderSide> {
   /// Utility for defining [BorderSideMix.color]
   late final color = ColorUtility<T>(
@@ -154,7 +154,7 @@ class BorderSideUtility<T extends StyleAttribute<Object?>>
 
   BorderSideUtility(super.builder) : super(convertToMix: BorderSideMix.value);
 
-  /// Creates a [StyleAttribute] instance using the [BorderSideMix.none] constructor.
+  /// Creates a [Style] instance using the [BorderSideMix.none] constructor.
   T none() => call(BorderSideMix.none);
 
   /// Returns a new [BorderSideMix] with the specified properties.

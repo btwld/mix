@@ -20,15 +20,15 @@ import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'box_spec.dart';
 
-abstract class StyleMixAttribute<T extends StyleAttribute<S>, S extends Spec<S>>
-    extends StyleAttribute<S>
+abstract class StyleMixAttribute<T extends Style<S>, S extends Spec<S>>
+    extends Style<S>
     with ModifierMixin<T, S>, VariantMixin<T, S> {}
 
 /// Attribute class for configuring [BoxSpec] properties.
 ///
 /// Encapsulates alignment, padding, margin, constraints, decoration,
 /// and other styling properties for box layouts.
-class BoxMix extends StyleAttribute<BoxSpec>
+class BoxMix extends Style<BoxSpec>
     with
         Diagnosticable,
         ModifierMixin<BoxMix, BoxSpec>,

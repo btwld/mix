@@ -10,7 +10,7 @@ import 'style.dart';
 
 /// Builds widgets with Mix styling.
 ///
-/// StyleBuilder handles the resolution of [StyleAttribute] into [ResolvedStyle]
+/// StyleBuilder handles the resolution of [Style] into [ResolvedStyle]
 /// and provides it to the builder function. It also manages style inheritance,
 /// variant application, and modifier rendering.
 class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
@@ -24,7 +24,7 @@ class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
   });
 
   /// The style element to resolve and apply.
-  final StyleAttribute<S>? style;
+  final Style<S>? style;
 
   /// Function that builds the widget with the resolved style.
   final Widget Function(BuildContext context, S? spec) builder;
@@ -98,7 +98,7 @@ class ResolvedStyleBuilder<S extends Spec<S>> extends StatelessWidget {
   });
 
   /// The style to resolve.
-  final StyleAttribute<S>? style;
+  final Style<S>? style;
 
   final List<Type>? orderOfModifiers;
 

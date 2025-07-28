@@ -4,7 +4,7 @@ import 'package:mix/mix.dart';
 
 Future<void> testOverrideModifiersOrder(
   WidgetTester tester, {
-  required Widget Function(StyleAttribute, List<Type>) widgetBuilder,
+  required Widget Function(Style, List<Type>) widgetBuilder,
 }) async {
   final style = CompoundStyle(
     VisibilityModifierAttribute(visible: true),
@@ -64,7 +64,7 @@ Future<void> testOverrideModifiersOrder(
 
 Future<void> verifyDescendants(
   Widget widget,
-  StyleAttribute style,
+  Style style,
   List<Type> orderOfModifiers,
   WidgetTester tester,
 ) async {

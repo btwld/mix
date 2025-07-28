@@ -121,7 +121,7 @@ class VisibilityModifierAttribute extends ModifierAttribute<VisibilityModifier>
   List<Object?> get props => [visible];
 }
 
-final class VisibilityModifierUtility<T extends StyleAttribute<Object?>>
+final class VisibilityModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, VisibilityModifierAttribute> {
   const VisibilityModifierUtility(super.builder);
   T on() => call(true);

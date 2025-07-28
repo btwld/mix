@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 // Test implementation of VariantMixin
-class TestVariantAttribute extends StyleAttribute<BoxSpec>
+class TestVariantAttribute extends Style<BoxSpec>
     with VariantMixin<TestVariantAttribute, BoxSpec> {
   const TestVariantAttribute({
     super.variants,
