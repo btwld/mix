@@ -17,6 +17,7 @@ dart_code_metrics:
     newline-before-return: true
     avoid-importing-entrypoint-exports:
       only-in-src: true
+    avoid-duplicate-constant-values: false
     prefer-match-file-name: false
     avoid-suspicious-super-overrides: false
     prefer-overriding-parent-equality: false
