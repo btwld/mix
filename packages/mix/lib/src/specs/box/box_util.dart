@@ -88,6 +88,8 @@ class BoxSpecUtility extends StyleAttributeBuilder<BoxSpec> {
     return this;
   }
 
+  BoxSpecAttribute call() => _baseAttribute;
+
   /// Animation
   BoxSpecUtility animate(AnimationConfig animation) =>
       _build(BoxSpecAttribute.animation(animation));

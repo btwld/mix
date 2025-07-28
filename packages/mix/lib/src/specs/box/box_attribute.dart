@@ -244,7 +244,6 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
     return spec != null ? BoxSpecAttribute.value(spec) : null;
   }
 
-
   BoxSpecAttribute transform(Matrix4 value) {
     return merge(BoxSpecAttribute.only(transform: value));
   }
@@ -266,6 +265,15 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
     return merge(BoxSpecAttribute.only(animation: animation));
   }
 
+  // Modifier instance method
+  BoxSpecAttribute wrap(ModifierAttribute modifier) {
+    return merge(BoxSpecAttribute.only(modifiers: [modifier]));
+  }
+
+  BoxSpecAttribute variants(List<VariantStyleAttribute<BoxSpec>> value) {
+    return merge(BoxSpecAttribute.only(variants: value));
+  }
+
   // Color instance method
 
   // Decoration instance method
@@ -278,21 +286,6 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
   @override
   BoxSpecAttribute foregroundDecoration(DecorationMix value) {
     return merge(BoxSpecAttribute.only(foregroundDecoration: value));
-  }
-
-  // Modifier instance method
-  BoxSpecAttribute wrap(ModifierAttribute modifier) {
-    return merge(BoxSpecAttribute.only(modifiers: [modifier]));
-  }
-
-
-
-
-
-
-
-  BoxSpecAttribute variants(List<VariantStyleAttribute<BoxSpec>> value) {
-    return merge(BoxSpecAttribute.only(variants: value));
   }
 
   // Padding instance method
@@ -497,3 +490,5 @@ extension BoxSpecAttributeTransformExtension on BoxSpecAttribute {
     return transform(Matrix4.identity());
   }
 }
+
+typedef BoxMix = BoxSpecAttribute;

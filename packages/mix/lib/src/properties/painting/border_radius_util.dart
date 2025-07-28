@@ -355,6 +355,74 @@ mixin BorderRadiusMixin<T extends StyleAttribute<S>, S extends Spec<S>>
       bottomEnd: _maybeCircular(bottomEnd),
     );
   }
+
+  T roundedAll(double radius) {
+    return rounded(all: radius);
+  }
+
+  T roundedHorizontal(double radius) {
+    return rounded(horizontal: radius);
+  }
+
+  T roundedVertical(double radius) {
+    return rounded(vertical: radius);
+  }
+
+  T roundedTop(double radius) {
+    return rounded(top: radius);
+  }
+
+  T roundedBottom(double radius) {
+    return rounded(bottom: radius);
+  }
+
+  T roundedLeft(double radius) {
+    return rounded(left: radius);
+  }
+
+  T roundedRight(double radius) {
+    return rounded(right: radius);
+  }
+
+  T roundedStart(double radius) {
+    return rounded(start: radius);
+  }
+
+  T roundedEnd(double radius) {
+    return rounded(end: radius);
+  }
+
+  T roundedTopLeft(double radius) {
+    return rounded(topLeft: radius);
+  }
+
+  T roundedTopRight(double radius) {
+    return rounded(topRight: radius);
+  }
+
+  T roundedBottomLeft(double radius) {
+    return rounded(bottomLeft: radius);
+  }
+
+  T roundedBottomRight(double radius) {
+    return rounded(bottomRight: radius);
+  }
+
+  T roundedTopStart(double radius) {
+    return rounded(topStart: radius);
+  }
+
+  T roundedTopEnd(double radius) {
+    return rounded(topEnd: radius);
+  }
+
+  T roundedBottomStart(double radius) {
+    return rounded(bottomStart: radius);
+  }
+
+  T roundedBottomEnd(double radius) {
+    return rounded(bottomEnd: radius);
+  }
 }
 
 Radius? _maybeCircular(double? value) {

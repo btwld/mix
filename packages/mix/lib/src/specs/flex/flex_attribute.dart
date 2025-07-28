@@ -7,6 +7,8 @@ import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
 import '../../modifiers/modifier_util.dart';
+import '../../variants/variant.dart';
+import '../../variants/variant_util.dart';
 import 'flex_spec.dart';
 
 /// Represents the attributes of a [FlexSpec].
@@ -17,7 +19,7 @@ import 'flex_spec.dart';
 /// Use this class to configure the attributes of a [FlexSpec] and pass it to
 /// the [FlexSpec] constructor.
 class FlexSpecAttribute extends StyleAttribute<FlexSpec>
-    with Diagnosticable, ModifierMixin<FlexSpecAttribute, FlexSpec> {
+    with Diagnosticable, ModifierMixin<FlexSpecAttribute, FlexSpec>, VariantMixin<FlexSpecAttribute, FlexSpec> {
   final Prop<Axis>? $direction;
   final Prop<MainAxisAlignment>? $mainAxisAlignment;
   final Prop<CrossAxisAlignment>? $crossAxisAlignment;
@@ -265,6 +267,18 @@ class FlexSpecAttribute extends StyleAttribute<FlexSpec>
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [FlexSpecAttribute] instances for equality.
+  @override
+  FlexSpecAttribute createEmptyStyle() {
+    return FlexSpecAttribute();
+  }
+
+  @override
+  FlexSpecAttribute variant(Variant variant, FlexSpecAttribute style) {
+    return merge(
+      FlexSpecAttribute.only(variants: [VariantStyleAttribute(variant, style)]),
+    );
+  }
+
   @override
   List<Object?> get props => [
     $direction,

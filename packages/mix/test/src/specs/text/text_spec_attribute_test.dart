@@ -375,7 +375,7 @@ void main() {
           softWrap: Prop(false),
         );
 
-        expect(attribute.props.length, 11);
+        expect(attribute.props.length, 14);
         expect(attribute.props, contains(attribute.$overflow));
         expect(attribute.props, contains(attribute.$strutStyle));
         expect(attribute.props, contains(attribute.$textAlign));

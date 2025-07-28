@@ -110,7 +110,9 @@ void main() {
         final utility = FlexBoxSpecUtility();
 
         // Test that flex utilities are accessible
-        expect(utility.flex, isNotNull);
+        expect(utility.direction, isNotNull);
+        expect(utility.mainAxisAlignment, isNotNull);
+        expect(utility.gap, isNotNull);
       });
     });
 
@@ -451,6 +453,9 @@ void main() {
         utility.padding.all(10.0);
         utility.margin.horizontal(20.0);
         utility.color.red();
+        utility.direction(Axis.horizontal);
+        utility.mainAxisAlignment(MainAxisAlignment.spaceBetween);
+        utility.gap(10.0);
 
         final context = MockBuildContext();
         final resolved = utility.attribute.resolve(context);

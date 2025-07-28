@@ -211,7 +211,7 @@ class IconSpecAttribute extends StyleAttribute<IconSpec>
 
   @override
   IconSpecAttribute createEmptyStyle() {
-    return const IconSpecAttribute();
+    return IconSpecAttribute();
   }
 
   @override

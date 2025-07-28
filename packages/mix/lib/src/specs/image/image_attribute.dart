@@ -8,10 +8,12 @@ import '../../core/style.dart';
 import '../../core/utility.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/painting/color_util.dart';
+import '../../variants/variant.dart';
+import '../../variants/variant_util.dart';
 import 'image_spec.dart';
 
 class ImageSpecAttribute extends StyleAttribute<ImageSpec>
-    with Diagnosticable, ModifierMixin<ImageSpecAttribute, ImageSpec> {
+    with Diagnosticable, ModifierMixin<ImageSpecAttribute, ImageSpec>, VariantMixin<ImageSpecAttribute, ImageSpec> {
   final Prop<double>? $width;
   final Prop<double>? $height;
   final Prop<Color>? $color;
@@ -223,6 +225,18 @@ class ImageSpecAttribute extends StyleAttribute<ImageSpec>
         $colorBlendMode,
         defaultValue: null,
       ),
+    );
+  }
+
+  @override
+  ImageSpecAttribute createEmptyStyle() {
+    return ImageSpecAttribute();
+  }
+
+  @override
+  ImageSpecAttribute variant(Variant variant, ImageSpecAttribute style) {
+    return merge(
+      ImageSpecAttribute.only(variants: [VariantStyleAttribute(variant, style)]),
     );
   }
 

@@ -432,5 +432,3 @@ class ResolvedStyle<V extends Spec<V>> {
     );
   }
 }
-
-/// Protected extension for StyleAttribute classes to build PropUtility instances

@@ -7,6 +7,8 @@ import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
 import '../../modifiers/modifier_util.dart';
+import '../../variants/variant.dart';
+import '../../variants/variant_util.dart';
 import 'stack_spec.dart';
 
 /// Represents the attributes of a [StackSpec].
@@ -16,7 +18,7 @@ import 'stack_spec.dart';
 ///
 /// Use this class to configure the attributes of a [StackSpec] and pass it to
 /// the [StackSpec] constructor.
-class StackSpecAttribute extends StyleAttribute<StackSpec> with Diagnosticable, ModifierMixin<StackSpecAttribute, StackSpec> {
+class StackSpecAttribute extends StyleAttribute<StackSpec> with Diagnosticable, ModifierMixin<StackSpecAttribute, StackSpec>, VariantMixin<StackSpecAttribute, StackSpec> {
   final Prop<AlignmentGeometry>? $alignment;
   final Prop<StackFit>? $fit;
   final Prop<TextDirection>? $textDirection;
@@ -158,6 +160,18 @@ class StackSpecAttribute extends StyleAttribute<StackSpec> with Diagnosticable, 
   }
 
   /// The list of properties that constitute the state of this [StackSpecAttribute].
+  @override
+  StackSpecAttribute createEmptyStyle() {
+    return StackSpecAttribute();
+  }
+
+  @override
+  StackSpecAttribute variant(Variant variant, StackSpecAttribute style) {
+    return merge(
+      StackSpecAttribute.only(variants: [VariantStyleAttribute(variant, style)]),
+    );
+  }
+
   @override
   List<Object?> get props => [
     $alignment,

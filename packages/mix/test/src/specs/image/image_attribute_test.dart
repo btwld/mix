@@ -419,7 +419,7 @@ void main() {
           colorBlendMode: Prop(BlendMode.multiply),
         );
 
-        expect(attribute.props.length, 9);
+        expect(attribute.props.length, 12);
         expect(attribute.props, contains(attribute.$width));
         expect(attribute.props, contains(attribute.$height));
         expect(attribute.props, contains(attribute.$color));

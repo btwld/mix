@@ -36,21 +36,21 @@ class BoxExampleApp extends StatelessWidget {
               // Cascade notation API
               Box(
                 style: $box
-                    ..color.red()
-                    ..width(100)
-                    ..height(100)
-                    ..borderRadius.circular(8),
+                  ..color.red()
+                  ..width(100)
+                  ..height(100)
+                  ..borderRadius.circular(8),
               ),
 
               const SizedBox(height: 16),
 
               Box(
-                style: $box
-                    ..color.blue()
-                    ..width(150)
-                    ..height(80)
-                    ..padding.all(16)
-                    ..borderRadius.circular(12),
+                style: BoxMix()
+                    .color(Colors.blue)
+                    .width(150)
+                    .height(80)
+                    .paddingAll(16)
+                    .roundedAll(12),
                 child: const Text(
                   'Cascade API',
                   style: TextStyle(color: Colors.white),
@@ -62,12 +62,12 @@ class BoxExampleApp extends StatelessWidget {
               // Cascade border access
               Box(
                 style: $box
-                    ..width(200)
-                    ..height(80)
-                    ..color.orange()
-                    ..padding.all(12)
-                    ..borderRadius.circular(16)
-                    ..border.all.width(2).color.black(),
+                  ..width(200)
+                  ..height(80)
+                  ..color.orange()
+                  ..padding.all(12)
+                  ..borderRadius.circular(16)
+                  ..border.width(2).color.black(),
                 child: const Center(
                   child: Text(
                     'Cascade Border',
@@ -81,11 +81,11 @@ class BoxExampleApp extends StatelessWidget {
               // Cascade chaining
               Box(
                 style: $box
-                    ..color.purple()
-                    ..width(120)
-                    ..height(120)
-                    ..borderRadius.circular(20)
-                    ..padding.all(8),
+                  ..color.purple()
+                  ..width(120)
+                  ..height(120)
+                  ..borderRadius.circular(20)
+                  ..padding.all(8),
                 child: const Center(
                   child: Text('Cascade', style: TextStyle(color: Colors.white)),
                 ),
@@ -104,7 +104,11 @@ class BoxExampleApp extends StatelessWidget {
               ),
               const Text(
                 'Cascade: \$box..border.all.width(2)',
-                style: TextStyle(fontSize: 12, fontFamily: 'monospace', color: Colors.green),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontFamily: 'monospace',
+                  color: Colors.green,
+                ),
               ),
               const SizedBox(height: 16),
 
@@ -113,12 +117,17 @@ class BoxExampleApp extends StatelessWidget {
                 style: $box
                     .width(180)
                     .height(100)
-                    .color.purple()
-                    .borderRadius.circular(15),
+                    .color
+                    .purple()
+                    .borderRadius
+                    .circular(15),
                 child: const Center(
                   child: Text(
                     'Purple Box',
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
