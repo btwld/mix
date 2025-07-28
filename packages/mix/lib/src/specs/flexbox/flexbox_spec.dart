@@ -77,11 +77,11 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
 /// the [FlexBoxSpec] constructor.
 class FlexBoxSpecAttribute extends StyleAttribute<FlexBoxSpec>
     with Diagnosticable, ModifierMixin<FlexBoxSpecAttribute, FlexBoxSpec> {
-  final BoxSpecAttribute? $box;
+  final BoxMix? $box;
   final FlexSpecAttribute? $flex;
 
   const FlexBoxSpecAttribute({
-    BoxSpecAttribute? box,
+    BoxMix? box,
     FlexSpecAttribute? flex,
     super.animation,
     super.modifiers,
@@ -99,7 +99,7 @@ class FlexBoxSpecAttribute extends StyleAttribute<FlexBoxSpec>
   /// ```
   static FlexBoxSpecAttribute value(FlexBoxSpec spec) {
     return FlexBoxSpecAttribute(
-      box: BoxSpecAttribute.maybeValue(spec.box),
+      box: BoxMix.maybeValue(spec.box),
       flex: FlexSpecAttribute.maybeValue(spec.flex),
     );
   }
@@ -117,7 +117,7 @@ class FlexBoxSpecAttribute extends StyleAttribute<FlexBoxSpec>
   }
 
   // Backward compatibility getters
-  BoxSpecAttribute? get box => $box;
+  BoxMix? get box => $box;
   FlexSpecAttribute? get flex => $flex;
 
   FlexBoxSpecAttribute variants(

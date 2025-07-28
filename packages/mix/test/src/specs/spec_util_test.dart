@@ -61,7 +61,7 @@ void main() {
   group('Utility Functionality', () {
     test('box getter can be used to create attributes', () {
       $box.width(100).height(200);
-      expect($box.attribute, isA<BoxSpecAttribute>());
+      expect($box.attribute, isA<BoxMix>());
     });
 
     test('flex getter can be used to create attributes', () {

@@ -7,10 +7,7 @@ void main() {
   group('StyleBuilder', () {
     group('Basic functionality', () {
       testWidgets('Build from SpecAttribute', (tester) async {
-        final boxAttribute = BoxSpecAttribute()
-            .width(100)
-            .height(200)
-            .color(Colors.blue);
+        final boxAttribute = BoxMix().width(100).height(200).color(Colors.blue);
 
         await tester.pumpWidget(
           MaterialApp(
@@ -47,7 +44,7 @@ void main() {
           duration: const Duration(milliseconds: 300),
           curve: Curves.linear,
         );
-        final boxAttribute = BoxSpecAttribute(
+        final boxAttribute = BoxMix(
           constraints: BoxConstraintsMix().width(100).height(200),
           decoration: BoxDecorationMix.color(Colors.blue),
           animation: animation,
@@ -77,10 +74,7 @@ void main() {
       testWidgets('No animation driver when animation config is null', (
         tester,
       ) async {
-        final boxAttribute = BoxSpecAttribute()
-            .width(100)
-            .height(200)
-            .color(Colors.blue);
+        final boxAttribute = BoxMix().width(100).height(200).color(Colors.blue);
 
         await tester.pumpWidget(
           MaterialApp(
@@ -108,7 +102,7 @@ void main() {
           curve: Curves.linear,
         );
 
-        final startAttribute = BoxSpecAttribute(
+        final startAttribute = BoxMix(
           constraints: BoxConstraintsMix(
             minWidth: 100,
             maxWidth: 100,
@@ -135,7 +129,7 @@ void main() {
         );
 
         // Update to new style
-        final endAttribute = BoxSpecAttribute(
+        final endAttribute = BoxMix(
           constraints: BoxConstraintsMix(
             minWidth: 200,
             maxWidth: 200,
@@ -188,7 +182,7 @@ void main() {
 
     group('RenderModifiers', () {
       testWidgets('Modifiers are applied when present', (tester) async {
-        final boxAttribute = BoxSpecAttribute()
+        final boxAttribute = BoxMix()
             .width(100)
             .height(100)
             .alignment(Alignment.center)
@@ -235,7 +229,7 @@ void main() {
       });
 
       testWidgets('Modifiers follow default order', (tester) async {
-        final boxAttribute = BoxSpecAttribute.width(100)
+        final boxAttribute = BoxMix.width(100)
             .height(100)
             .color(Colors.blue)
             .wrap(OpacityModifierAttribute(opacity: 0.5))
@@ -298,7 +292,7 @@ void main() {
       });
 
       testWidgets('Custom modifier order is respected', (tester) async {
-        final boxAttribute = BoxSpecAttribute.width(100)
+        final boxAttribute = BoxMix.width(100)
             .height(100)
             .color(Colors.blue)
             .wrap(OpacityModifierAttribute(opacity: 0.5))
@@ -360,10 +354,7 @@ void main() {
       testWidgets('No RenderModifiers widget when no modifiers present', (
         tester,
       ) async {
-        final boxAttribute = BoxSpecAttribute()
-            .width(100)
-            .height(100)
-            .color(Colors.blue);
+        final boxAttribute = BoxMix().width(100).height(100).color(Colors.blue);
 
         await tester.pumpWidget(
           MaterialApp(

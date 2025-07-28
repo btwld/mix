@@ -8,43 +8,41 @@ void main() {
   group('ContextVariantBuilder', () {
     group('Constructor', () {
       test('creates builder with function', () {
-        final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute().width(100.0),
+        final builder = ContextVariantBuilder<BoxMix>(
+          (context) => BoxMix().width(100.0),
         );
 
-        expect(builder, isA<ContextVariantBuilder<BoxSpecAttribute>>());
+        expect(builder, isA<ContextVariantBuilder<BoxMix>>());
         expect(builder, isA<Variant>());
         expect(builder.fn, isA<Function>());
       });
 
       test('accepts different SpecAttribute types', () {
-        final boxBuilder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute().width(100.0),
+        final boxBuilder = ContextVariantBuilder<BoxMix>(
+          (context) => BoxMix().width(100.0),
         );
 
         final flexBuilder = ContextVariantBuilder<FlexSpecAttribute>(
           (context) => FlexSpecAttribute(),
         );
 
-        expect(boxBuilder, isA<ContextVariantBuilder<BoxSpecAttribute>>());
+        expect(boxBuilder, isA<ContextVariantBuilder<BoxMix>>());
         expect(flexBuilder, isA<ContextVariantBuilder<FlexSpecAttribute>>());
       });
 
       test('stores function correctly', () {
-        BoxSpecAttribute builderFunction(BuildContext context) {
-          return BoxSpecAttribute().width(200.0);
+        BoxMix builderFunction(BuildContext context) {
+          return BoxMix().width(200.0);
         }
 
-        final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          builderFunction,
-        );
+        final builder = ContextVariantBuilder<BoxMix>(builderFunction);
 
         expect(builder.fn, same(builderFunction));
       });
 
       test('accepts anonymous functions', () {
-        final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute().height(50.0),
+        final builder = ContextVariantBuilder<BoxMix>(
+          (context) => BoxMix().height(50.0),
         );
 
         expect(builder.fn, isA<Function>());
@@ -52,8 +50,8 @@ void main() {
 
       test('accepts closures with captured variables', () {
         const capturedWidth = 150.0;
-        final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute().width(capturedWidth),
+        final builder = ContextVariantBuilder<BoxMix>(
+          (context) => BoxMix().width(capturedWidth),
         );
 
         expect(builder.fn, isA<Function>());
@@ -67,46 +65,40 @@ void main() {
 
     group('Key generation', () {
       test('key is based on function hashCode', () {
-        BoxSpecAttribute builderFunction(BuildContext context) {
-          return BoxSpecAttribute().width(100.0);
+        BoxMix builderFunction(BuildContext context) {
+          return BoxMix().width(100.0);
         }
 
-        final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          builderFunction,
-        );
+        final builder = ContextVariantBuilder<BoxMix>(builderFunction);
 
         expect(builder.key, builderFunction.hashCode.toString());
       });
 
       test('different functions have different keys', () {
-        final builder1 = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute().width(100.0),
+        final builder1 = ContextVariantBuilder<BoxMix>(
+          (context) => BoxMix().width(100.0),
         );
-        final builder2 = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute().width(200.0),
+        final builder2 = ContextVariantBuilder<BoxMix>(
+          (context) => BoxMix().width(200.0),
         );
 
         expect(builder1.key, isNot(equals(builder2.key)));
       });
 
       test('same function reference has same key', () {
-        BoxSpecAttribute builderFunction(BuildContext context) {
-          return BoxSpecAttribute().width(100.0);
+        BoxMix builderFunction(BuildContext context) {
+          return BoxMix().width(100.0);
         }
 
-        final builder1 = ContextVariantBuilder<BoxSpecAttribute>(
-          builderFunction,
-        );
-        final builder2 = ContextVariantBuilder<BoxSpecAttribute>(
-          builderFunction,
-        );
+        final builder1 = ContextVariantBuilder<BoxMix>(builderFunction);
+        final builder2 = ContextVariantBuilder<BoxMix>(builderFunction);
 
         expect(builder1.key, equals(builder2.key));
       });
 
       test('key is consistent across calls', () {
-        final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute().width(100.0),
+        final builder = ContextVariantBuilder<BoxMix>(
+          (context) => BoxMix().width(100.0),
         );
 
         final key1 = builder.key;
@@ -118,27 +110,23 @@ void main() {
 
     group('Equality and hashCode', () {
       test('equality based on function reference', () {
-        BoxSpecAttribute builderFunction(BuildContext context) {
-          return BoxSpecAttribute().width(100.0);
+        BoxMix builderFunction(BuildContext context) {
+          return BoxMix().width(100.0);
         }
 
-        final builder1 = ContextVariantBuilder<BoxSpecAttribute>(
-          builderFunction,
-        );
-        final builder2 = ContextVariantBuilder<BoxSpecAttribute>(
-          builderFunction,
-        );
+        final builder1 = ContextVariantBuilder<BoxMix>(builderFunction);
+        final builder2 = ContextVariantBuilder<BoxMix>(builderFunction);
 
         expect(builder1, equals(builder2));
         expect(builder1.hashCode, equals(builder2.hashCode));
       });
 
       test('different functions are not equal', () {
-        final builder1 = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute().width(100.0),
+        final builder1 = ContextVariantBuilder<BoxMix>(
+          (context) => BoxMix().width(100.0),
         );
-        final builder2 = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute().width(100.0),
+        final builder2 = ContextVariantBuilder<BoxMix>(
+          (context) => BoxMix().width(100.0),
         );
 
         expect(builder1, isNot(equals(builder2)));
@@ -146,8 +134,8 @@ void main() {
       });
 
       test('identical instances are equal', () {
-        final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute().width(100.0),
+        final builder = ContextVariantBuilder<BoxMix>(
+          (context) => BoxMix().width(100.0),
         );
 
         expect(builder, equals(builder));
@@ -155,8 +143,8 @@ void main() {
       });
 
       test('hashCode is consistent', () {
-        final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute().width(100.0),
+        final builder = ContextVariantBuilder<BoxMix>(
+          (context) => BoxMix().width(100.0),
         );
 
         final hashCode1 = builder.hashCode;
@@ -166,13 +154,11 @@ void main() {
       });
 
       test('hashCode matches function hashCode', () {
-        BoxSpecAttribute builderFunction(BuildContext context) {
-          return BoxSpecAttribute().width(100.0);
+        BoxMix builderFunction(BuildContext context) {
+          return BoxMix().width(100.0);
         }
 
-        final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          builderFunction,
-        );
+        final builder = ContextVariantBuilder<BoxMix>(builderFunction);
 
         expect(builder.hashCode, equals(builderFunction.hashCode));
       });
@@ -181,9 +167,9 @@ void main() {
     group('build method', () {
       test('calls function with provided context', () {
         BuildContext? capturedContext;
-        final builder = ContextVariantBuilder<BoxSpecAttribute>((context) {
+        final builder = ContextVariantBuilder<BoxMix>((context) {
           capturedContext = context;
-          return BoxSpecAttribute().width(100.0);
+          return BoxMix().width(100.0);
         });
 
         final mockContext = MockBuildContext();
@@ -193,8 +179,8 @@ void main() {
       });
 
       test('returns function result', () {
-        final expectedAttribute = BoxSpecAttribute().width(150.0);
-        final builder = ContextVariantBuilder<BoxSpecAttribute>(
+        final expectedAttribute = BoxMix().width(150.0);
+        final builder = ContextVariantBuilder<BoxMix>(
           (context) => expectedAttribute,
         );
 
@@ -204,8 +190,8 @@ void main() {
       });
 
       test('works with different SpecAttribute types', () {
-        final boxBuilder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute().width(100.0),
+        final boxBuilder = ContextVariantBuilder<BoxMix>(
+          (context) => BoxMix().width(100.0),
         );
         final flexBuilder = ContextVariantBuilder<FlexSpecAttribute>(
           (context) => FlexSpecAttribute(),
@@ -215,14 +201,14 @@ void main() {
         final boxResult = boxBuilder.build(context);
         final flexResult = flexBuilder.build(context);
 
-        expect(boxResult, isA<BoxSpecAttribute>());
+        expect(boxResult, isA<BoxMix>());
         expect(flexResult, isA<FlexSpecAttribute>());
       });
 
       test('function can access context properties', () {
-        final builder = ContextVariantBuilder<BoxSpecAttribute>((context) {
+        final builder = ContextVariantBuilder<BoxMix>((context) {
           final size = context.size ?? const Size(800, 600);
-          return BoxSpecAttribute().width(size.width);
+          return BoxMix().width(size.width);
         });
 
         final result = builder.build(MockBuildContext());
@@ -234,11 +220,11 @@ void main() {
       });
 
       test('can create different attributes based on context', () {
-        final builder = ContextVariantBuilder<BoxSpecAttribute>((context) {
+        final builder = ContextVariantBuilder<BoxMix>((context) {
           final size = context.size ?? const Size(800, 600);
           return size.width > 1000
-              ? BoxSpecAttribute().width(200.0)
-              : BoxSpecAttribute().width(100.0);
+              ? BoxMix().width(200.0)
+              : BoxMix().width(100.0);
         });
 
         final smallContext = MockBuildContext();
@@ -254,17 +240,17 @@ void main() {
 
     group('Generic type handling', () {
       test('maintains generic type information', () {
-        final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute().width(100.0),
+        final builder = ContextVariantBuilder<BoxMix>(
+          (context) => BoxMix().width(100.0),
         );
 
         final result = builder.build(MockBuildContext());
-        expect(result, isA<BoxSpecAttribute>());
+        expect(result, isA<BoxMix>());
       });
 
       test('different generic types create different builder types', () {
-        final boxBuilder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute().width(100.0),
+        final boxBuilder = ContextVariantBuilder<BoxMix>(
+          (context) => BoxMix().width(100.0),
         );
         final flexBuilder = ContextVariantBuilder<FlexSpecAttribute>(
           (context) => FlexSpecAttribute(),
@@ -275,19 +261,19 @@ void main() {
 
       test('can work with base SpecAttribute type', () {
         final builder = ContextVariantBuilder<StyleAttribute>(
-          (context) => BoxSpecAttribute().width(100.0),
+          (context) => BoxMix().width(100.0),
         );
 
         final result = builder.build(MockBuildContext());
         expect(result, isA<StyleAttribute>());
-        expect(result, isA<BoxSpecAttribute>());
+        expect(result, isA<BoxMix>());
       });
     });
 
     group('MultiVariant integration', () {
       test('can be combined with AND operator', () {
-        final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute().width(100.0),
+        final builder = ContextVariantBuilder<BoxMix>(
+          (context) => BoxMix().width(100.0),
         );
         final contextVariant = ContextVariant('test', (context) => true);
 
@@ -300,8 +286,8 @@ void main() {
       });
 
       test('can be combined with OR operator', () {
-        final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute().width(100.0),
+        final builder = ContextVariantBuilder<BoxMix>(
+          (context) => BoxMix().width(100.0),
         );
         const namedVariant = NamedVariant('primary');
 
@@ -314,8 +300,8 @@ void main() {
       });
 
       test('can be negated with NOT operation', () {
-        final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute().width(100.0),
+        final builder = ContextVariantBuilder<BoxMix>(
+          (context) => BoxMix().width(100.0),
         );
         final notVariant = not(builder);
 
@@ -329,7 +315,7 @@ void main() {
       test(
         'function can return different attributes based on complex logic',
         () {
-          final builder = ContextVariantBuilder<BoxSpecAttribute>((context) {
+          final builder = ContextVariantBuilder<BoxMix>((context) {
             final size = context.size ?? const Size(800, 600);
             final width = switch (size.width) {
               <= 480 => 50.0,
@@ -337,7 +323,7 @@ void main() {
               <= 1024 => 150.0,
               _ => 200.0,
             };
-            return BoxSpecAttribute().width(width);
+            return BoxMix().width(width);
           });
 
           final result = builder.build(MockBuildContext());
@@ -350,8 +336,8 @@ void main() {
       );
 
       test('can create attributes with multiple properties', () {
-        final builder = ContextVariantBuilder<BoxSpecAttribute>((context) {
-          return BoxSpecAttribute(
+        final builder = ContextVariantBuilder<BoxMix>((context) {
+          return BoxMix(
             constraints: BoxConstraintsMix(
               minWidth: 100.0,
               maxWidth: 100.0,
@@ -371,7 +357,7 @@ void main() {
       });
 
       test('function can throw exceptions', () {
-        final builder = ContextVariantBuilder<BoxSpecAttribute>((context) {
+        final builder = ContextVariantBuilder<BoxMix>((context) {
           throw Exception('Test exception');
         });
 
@@ -382,8 +368,8 @@ void main() {
         const baseWidth = 50.0;
         const multiplier = 3;
 
-        final builder = ContextVariantBuilder<BoxSpecAttribute>((context) {
-          return BoxSpecAttribute().width(baseWidth * multiplier);
+        final builder = ContextVariantBuilder<BoxMix>((context) {
+          return BoxMix().width(baseWidth * multiplier);
         });
 
         final result = builder.build(MockBuildContext());
@@ -396,31 +382,29 @@ void main() {
 
     group('Edge cases', () {
       test('handles function that returns const attributes', () {
-        final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute(),
-        );
+        final builder = ContextVariantBuilder<BoxMix>((context) => BoxMix());
 
         final result = builder.build(MockBuildContext());
-        expect(result, isA<BoxSpecAttribute>());
+        expect(result, isA<BoxMix>());
       });
 
       test('function parameters are properly typed', () {
-        final builder = ContextVariantBuilder<BoxSpecAttribute>((context) {
+        final builder = ContextVariantBuilder<BoxMix>((context) {
           // This should compile without issues - context is properly typed
           expect(context, isA<BuildContext>());
-          return BoxSpecAttribute().width(100.0);
+          return BoxMix().width(100.0);
         });
 
         builder.build(MockBuildContext());
       });
 
       test('maintains const constructor', () {
-        BoxSpecAttribute builderFunction(BuildContext context) {
-          return BoxSpecAttribute().width(100.0);
+        BoxMix builderFunction(BuildContext context) {
+          return BoxMix().width(100.0);
         }
 
         expect(
-          () => ContextVariantBuilder<BoxSpecAttribute>(builderFunction),
+          () => ContextVariantBuilder<BoxMix>(builderFunction),
           returnsNormally,
         );
       });
@@ -431,8 +415,8 @@ void main() {
         final stopwatch = Stopwatch()..start();
 
         for (int i = 0; i < 1000; i++) {
-          ContextVariantBuilder<BoxSpecAttribute>(
-            (context) => BoxSpecAttribute().width(i.toDouble()),
+          ContextVariantBuilder<BoxMix>(
+            (context) => BoxMix().width(i.toDouble()),
           );
         }
 
@@ -441,8 +425,8 @@ void main() {
       });
 
       test('build method calls are efficient', () {
-        final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute().width(100.0),
+        final builder = ContextVariantBuilder<BoxMix>(
+          (context) => BoxMix().width(100.0),
         );
         final context = MockBuildContext();
         final stopwatch = Stopwatch()..start();
@@ -456,8 +440,8 @@ void main() {
       });
 
       test('key generation is efficient', () {
-        final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute().width(100.0),
+        final builder = ContextVariantBuilder<BoxMix>(
+          (context) => BoxMix().width(100.0),
         );
         final stopwatch = Stopwatch()..start();
 
@@ -470,16 +454,12 @@ void main() {
       });
 
       test('equality comparison is efficient', () {
-        BoxSpecAttribute builderFunction(BuildContext context) {
-          return BoxSpecAttribute().width(100.0);
+        BoxMix builderFunction(BuildContext context) {
+          return BoxMix().width(100.0);
         }
 
-        final builder1 = ContextVariantBuilder<BoxSpecAttribute>(
-          builderFunction,
-        );
-        final builder2 = ContextVariantBuilder<BoxSpecAttribute>(
-          builderFunction,
-        );
+        final builder1 = ContextVariantBuilder<BoxMix>(builderFunction);
+        final builder2 = ContextVariantBuilder<BoxMix>(builderFunction);
         final stopwatch = Stopwatch()..start();
 
         for (int i = 0; i < 1000; i++) {
@@ -493,8 +473,8 @@ void main() {
 
     group('Integration with other Mix components', () {
       test('can be used in Style resolution context', () {
-        final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute().width(100.0),
+        final builder = ContextVariantBuilder<BoxMix>(
+          (context) => BoxMix().width(100.0),
         );
 
         // ContextVariantBuilder should integrate with the broader Mix system
@@ -504,10 +484,10 @@ void main() {
       });
 
       test('works with VariantSpecAttribute wrapper', () {
-        final builder = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute().width(100.0),
+        final builder = ContextVariantBuilder<BoxMix>(
+          (context) => BoxMix().width(100.0),
         );
-        final style = BoxSpecAttribute().height(200.0);
+        final style = BoxMix().height(200.0);
         final variantAttr = VariantStyleAttribute(builder, style);
 
         expect(variantAttr.variant, builder);
@@ -516,21 +496,15 @@ void main() {
       });
 
       test('key works as mergeKey for VariantSpecAttribute', () {
-        final builder1 = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute().width(100.0),
+        final builder1 = ContextVariantBuilder<BoxMix>(
+          (context) => BoxMix().width(100.0),
         );
-        final builder2 = ContextVariantBuilder<BoxSpecAttribute>(
-          (context) => BoxSpecAttribute().width(200.0),
+        final builder2 = ContextVariantBuilder<BoxMix>(
+          (context) => BoxMix().width(200.0),
         );
 
-        final style1 = VariantStyleAttribute(
-          builder1,
-          BoxSpecAttribute().height(100.0),
-        );
-        final style2 = VariantStyleAttribute(
-          builder2,
-          BoxSpecAttribute().height(200.0),
-        );
+        final style1 = VariantStyleAttribute(builder1, BoxMix().height(100.0));
+        final style2 = VariantStyleAttribute(builder2, BoxMix().height(200.0));
 
         expect(style1.mergeKey, builder1.key);
         expect(style2.mergeKey, builder2.key);
@@ -541,11 +515,9 @@ void main() {
     group('Documentation and usage patterns', () {
       test('demonstrates context-based styling pattern', () {
         // This test documents common usage patterns
-        final responsiveBuilder = ContextVariantBuilder<BoxSpecAttribute>((
-          context,
-        ) {
+        final responsiveBuilder = ContextVariantBuilder<BoxMix>((context) {
           final size = context.size ?? const Size(800, 600);
-          return BoxSpecAttribute().width(size.width > 768 ? 200.0 : 100.0);
+          return BoxMix().width(size.width > 768 ? 200.0 : 100.0);
         });
 
         final result = responsiveBuilder.build(MockBuildContext());
@@ -556,10 +528,10 @@ void main() {
       });
 
       test('demonstrates theme-based styling pattern', () {
-        final themeBuilder = ContextVariantBuilder<BoxSpecAttribute>((context) {
+        final themeBuilder = ContextVariantBuilder<BoxMix>((context) {
           // In a real scenario, this would access Theme.of(context)
           // For testing, we'll simulate theme-based logic
-          return BoxSpecAttribute().width(120.0);
+          return BoxMix().width(120.0);
         });
 
         final result = themeBuilder.build(MockBuildContext());
@@ -570,11 +542,9 @@ void main() {
       });
 
       test('demonstrates utility for conditional attribute creation', () {
-        final conditionalBuilder = ContextVariantBuilder<BoxSpecAttribute>((
-          context,
-        ) {
+        final conditionalBuilder = ContextVariantBuilder<BoxMix>((context) {
           // Always return fixed size for this test
-          return BoxSpecAttribute(
+          return BoxMix(
             constraints: BoxConstraintsMix(
               minWidth: 100.0,
               maxWidth: 100.0,

@@ -20,27 +20,27 @@ class BoxSpecUtility extends StyleAttributeBuilder<BoxSpec> {
   // SAME UTILITIES AS BoxSpecAttribute - but return BoxSpecUtility for cascade
 
   late final padding = EdgeInsetsGeometryUtility<BoxSpecUtility>(
-    (prop) => _build(BoxSpecAttribute.raw(padding: prop)),
+    (prop) => _build(BoxMix.raw(padding: prop)),
   );
 
   late final margin = EdgeInsetsGeometryUtility<BoxSpecUtility>(
-    (prop) => _build(BoxSpecAttribute.raw(margin: prop)),
+    (prop) => _build(BoxMix.raw(margin: prop)),
   );
 
   late final constraints = BoxConstraintsUtility<BoxSpecUtility>(
-    (prop) => _build(BoxSpecAttribute.raw(constraints: prop)),
+    (prop) => _build(BoxMix.raw(constraints: prop)),
   );
 
   late final decoration = DecorationUtility<BoxSpecUtility>(
-    (prop) => _build(BoxSpecAttribute.raw(decoration: prop)),
+    (prop) => _build(BoxMix.raw(decoration: prop)),
   );
 
   late final on = OnContextVariantUtility<BoxSpec, BoxSpecUtility>(
-    (v) => _build(BoxSpecAttribute.raw(variants: [v])),
+    (v) => _build(BoxMix.raw(variants: [v])),
   );
 
   late final wrap = ModifierUtility<BoxSpecUtility>(
-    (prop) => _build(BoxSpecAttribute.raw(modifiers: [prop])),
+    (prop) => _build(BoxMix.raw(modifiers: [prop])),
   );
 
   // FLATTENED ACCESS - Same as BoxSpecAttribute
@@ -60,39 +60,38 @@ class BoxSpecUtility extends StyleAttributeBuilder<BoxSpec> {
   late final maxHeight =
       constraints.maxHeight; // PROP UTILITIES - Same as BoxSpecAttribute
   late final transform = PropUtility<BoxSpecUtility, Matrix4>(
-    (prop) => _build(BoxSpecAttribute.raw(transform: prop)),
+    (prop) => _build(BoxMix.raw(transform: prop)),
   );
 
   late final transformAlignment =
       PropUtility<BoxSpecUtility, AlignmentGeometry>(
-        (prop) => _build(BoxSpecAttribute.raw(transformAlignment: prop)),
+        (prop) => _build(BoxMix.raw(transformAlignment: prop)),
       );
 
   late final clipBehavior = PropUtility<BoxSpecUtility, Clip>(
-    (prop) => _build(BoxSpecAttribute.raw(clipBehavior: prop)),
+    (prop) => _build(BoxMix.raw(clipBehavior: prop)),
   );
 
   late final alignment = PropUtility<BoxSpecUtility, AlignmentGeometry>(
-    (prop) => _build(BoxSpecAttribute.raw(alignment: prop)),
+    (prop) => _build(BoxMix.raw(alignment: prop)),
   );
 
-  BoxSpecAttribute _baseAttribute;
+  BoxMix _baseAttribute;
 
-  BoxSpecUtility([BoxSpecAttribute? attribute])
-    : _baseAttribute = attribute ?? BoxSpecAttribute();
+  BoxSpecUtility([BoxMix? attribute]) : _baseAttribute = attribute ?? BoxMix();
 
   /// Mutable builder - updates internal state and returns this for cascade
-  BoxSpecUtility _build(BoxSpecAttribute newAttribute) {
+  BoxSpecUtility _build(BoxMix newAttribute) {
     _baseAttribute = _baseAttribute.merge(newAttribute);
 
     return this;
   }
 
-  BoxSpecAttribute call() => _baseAttribute;
+  BoxMix call() => _baseAttribute;
 
   /// Animation
   BoxSpecUtility animate(AnimationConfig animation) =>
-      _build(BoxSpecAttribute.animation(animation));
+      _build(BoxMix.animation(animation));
 
   // StyleAttribute interface implementation
 
@@ -102,7 +101,7 @@ class BoxSpecUtility extends StyleAttributeBuilder<BoxSpec> {
     if (other is BoxSpecUtility) {
       return BoxSpecUtility(_baseAttribute.merge(other._baseAttribute));
     }
-    if (other is BoxSpecAttribute) {
+    if (other is BoxMix) {
       return BoxSpecUtility(_baseAttribute.merge(other));
     }
 
@@ -116,5 +115,5 @@ class BoxSpecUtility extends StyleAttributeBuilder<BoxSpec> {
 
   /// Access to internal attribute
   @override
-  BoxSpecAttribute get attribute => _baseAttribute;
+  BoxMix get attribute => _baseAttribute;
 }

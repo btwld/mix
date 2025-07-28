@@ -21,25 +21,19 @@ class FlexBoxSpecUtility extends StyleAttributeBuilder<FlexBoxSpec> {
   // BOX UTILITIES - Same as BoxSpecUtility but return FlexBoxSpecUtility for cascade
 
   late final padding = EdgeInsetsGeometryUtility<FlexBoxSpecUtility>(
-    (prop) =>
-        _build(FlexBoxSpecAttribute(box: BoxSpecAttribute.raw(padding: prop))),
+    (prop) => _build(FlexBoxSpecAttribute(box: BoxMix.raw(padding: prop))),
   );
 
   late final margin = EdgeInsetsGeometryUtility<FlexBoxSpecUtility>(
-    (prop) =>
-        _build(FlexBoxSpecAttribute(box: BoxSpecAttribute.raw(margin: prop))),
+    (prop) => _build(FlexBoxSpecAttribute(box: BoxMix.raw(margin: prop))),
   );
 
   late final constraints = BoxConstraintsUtility<FlexBoxSpecUtility>(
-    (prop) => _build(
-      FlexBoxSpecAttribute(box: BoxSpecAttribute.raw(constraints: prop)),
-    ),
+    (prop) => _build(FlexBoxSpecAttribute(box: BoxMix.raw(constraints: prop))),
   );
 
   late final decoration = DecorationUtility<FlexBoxSpecUtility>(
-    (prop) => _build(
-      FlexBoxSpecAttribute(box: BoxSpecAttribute.raw(decoration: prop)),
-    ),
+    (prop) => _build(FlexBoxSpecAttribute(box: BoxMix.raw(decoration: prop))),
   );
 
   late final on = OnContextVariantUtility<FlexBoxSpec, FlexBoxSpecUtility>(
@@ -65,30 +59,22 @@ class FlexBoxSpecUtility extends StyleAttributeBuilder<FlexBoxSpec> {
   late final minHeight = constraints.minHeight;
   late final maxHeight = constraints.maxHeight; // BOX PROP UTILITIES
   late final transform = PropUtility<FlexBoxSpecUtility, Matrix4>(
-    (prop) => _build(
-      FlexBoxSpecAttribute(box: BoxSpecAttribute.raw(transform: prop)),
-    ),
+    (prop) => _build(FlexBoxSpecAttribute(box: BoxMix.raw(transform: prop))),
   );
 
   late final transformAlignment =
       PropUtility<FlexBoxSpecUtility, AlignmentGeometry>(
         (prop) => _build(
-          FlexBoxSpecAttribute(
-            box: BoxSpecAttribute.raw(transformAlignment: prop),
-          ),
+          FlexBoxSpecAttribute(box: BoxMix.raw(transformAlignment: prop)),
         ),
       );
 
   late final clipBehavior = PropUtility<FlexBoxSpecUtility, Clip>(
-    (prop) => _build(
-      FlexBoxSpecAttribute(box: BoxSpecAttribute.raw(clipBehavior: prop)),
-    ),
+    (prop) => _build(FlexBoxSpecAttribute(box: BoxMix.raw(clipBehavior: prop))),
   );
 
   late final alignment = PropUtility<FlexBoxSpecUtility, AlignmentGeometry>(
-    (prop) => _build(
-      FlexBoxSpecAttribute(box: BoxSpecAttribute.raw(alignment: prop)),
-    ),
+    (prop) => _build(FlexBoxSpecAttribute(box: BoxMix.raw(alignment: prop))),
   );
 
   // FLEX UTILITIES

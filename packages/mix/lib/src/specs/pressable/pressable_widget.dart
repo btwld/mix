@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 
+import '../../core/internal/constants.dart';
 import '../../core/internal/mix_hoverable_region.dart';
 import '../../core/providers/widget_state_provider.dart';
-import '../../core/internal/constants.dart';
 import '../box/box_attribute.dart';
 import '../box/box_widget.dart';
 
@@ -47,7 +47,7 @@ class PressableBox extends StatelessWidget {
   /// If this callback and [onPress] are null, then `PressableBox` will be disabled automatically.
   final VoidCallback? onLongPress;
 
-  final BoxSpecAttribute? style;
+  final BoxMix? style;
   final Widget child;
   final bool enabled;
   final FocusNode? focusNode;

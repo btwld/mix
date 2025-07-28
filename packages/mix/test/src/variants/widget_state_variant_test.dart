@@ -179,33 +179,96 @@ void main() {
 
     group('Predefined widget state variants', () {
       test('predefined variants use WidgetStateVariant', () {
-        expect(ContextVariant.widgetState(WidgetState.hovered), isA<WidgetStateVariant>());
-        expect(ContextVariant.widgetState(WidgetState.pressed), isA<WidgetStateVariant>());
-        expect(ContextVariant.widgetState(WidgetState.focused), isA<WidgetStateVariant>());
-        expect(ContextVariant.widgetState(WidgetState.disabled), isA<WidgetStateVariant>());
-        expect(ContextVariant.widgetState(WidgetState.selected), isA<WidgetStateVariant>());
-        expect(ContextVariant.widgetState(WidgetState.dragged), isA<WidgetStateVariant>());
-        expect(ContextVariant.widgetState(WidgetState.error), isA<WidgetStateVariant>());
+        expect(
+          ContextVariant.widgetState(WidgetState.hovered),
+          isA<WidgetStateVariant>(),
+        );
+        expect(
+          ContextVariant.widgetState(WidgetState.pressed),
+          isA<WidgetStateVariant>(),
+        );
+        expect(
+          ContextVariant.widgetState(WidgetState.focused),
+          isA<WidgetStateVariant>(),
+        );
+        expect(
+          ContextVariant.widgetState(WidgetState.disabled),
+          isA<WidgetStateVariant>(),
+        );
+        expect(
+          ContextVariant.widgetState(WidgetState.selected),
+          isA<WidgetStateVariant>(),
+        );
+        expect(
+          ContextVariant.widgetState(WidgetState.dragged),
+          isA<WidgetStateVariant>(),
+        );
+        expect(
+          ContextVariant.widgetState(WidgetState.error),
+          isA<WidgetStateVariant>(),
+        );
       });
 
       test('predefined variants have correct states', () {
-        expect(ContextVariant.widgetState(WidgetState.hovered).state, WidgetState.hovered);
-        expect(ContextVariant.widgetState(WidgetState.pressed).state, WidgetState.pressed);
-        expect(ContextVariant.widgetState(WidgetState.focused).state, WidgetState.focused);
-        expect(ContextVariant.widgetState(WidgetState.disabled).state, WidgetState.disabled);
-        expect(ContextVariant.widgetState(WidgetState.selected).state, WidgetState.selected);
-        expect(ContextVariant.widgetState(WidgetState.dragged).state, WidgetState.dragged);
-        expect(ContextVariant.widgetState(WidgetState.error).state, WidgetState.error);
+        expect(
+          ContextVariant.widgetState(WidgetState.hovered).state,
+          WidgetState.hovered,
+        );
+        expect(
+          ContextVariant.widgetState(WidgetState.pressed).state,
+          WidgetState.pressed,
+        );
+        expect(
+          ContextVariant.widgetState(WidgetState.focused).state,
+          WidgetState.focused,
+        );
+        expect(
+          ContextVariant.widgetState(WidgetState.disabled).state,
+          WidgetState.disabled,
+        );
+        expect(
+          ContextVariant.widgetState(WidgetState.selected).state,
+          WidgetState.selected,
+        );
+        expect(
+          ContextVariant.widgetState(WidgetState.dragged).state,
+          WidgetState.dragged,
+        );
+        expect(
+          ContextVariant.widgetState(WidgetState.error).state,
+          WidgetState.error,
+        );
       });
 
       test('predefined variants have correct keys', () {
-        expect(ContextVariant.widgetState(WidgetState.hovered).key, 'widget_state_hovered');
-        expect(ContextVariant.widgetState(WidgetState.pressed).key, 'widget_state_pressed');
-        expect(ContextVariant.widgetState(WidgetState.focused).key, 'widget_state_focused');
-        expect(ContextVariant.widgetState(WidgetState.disabled).key, 'widget_state_disabled');
-        expect(ContextVariant.widgetState(WidgetState.selected).key, 'widget_state_selected');
-        expect(ContextVariant.widgetState(WidgetState.dragged).key, 'widget_state_dragged');
-        expect(ContextVariant.widgetState(WidgetState.error).key, 'widget_state_error');
+        expect(
+          ContextVariant.widgetState(WidgetState.hovered).key,
+          'widget_state_hovered',
+        );
+        expect(
+          ContextVariant.widgetState(WidgetState.pressed).key,
+          'widget_state_pressed',
+        );
+        expect(
+          ContextVariant.widgetState(WidgetState.focused).key,
+          'widget_state_focused',
+        );
+        expect(
+          ContextVariant.widgetState(WidgetState.disabled).key,
+          'widget_state_disabled',
+        );
+        expect(
+          ContextVariant.widgetState(WidgetState.selected).key,
+          'widget_state_selected',
+        );
+        expect(
+          ContextVariant.widgetState(WidgetState.dragged).key,
+          'widget_state_dragged',
+        );
+        expect(
+          ContextVariant.widgetState(WidgetState.error).key,
+          'widget_state_error',
+        );
       });
 
       test('predefined enabled variant uses NOT logic', () {
@@ -295,7 +358,7 @@ void main() {
     group('VariantSpecAttribute integration', () {
       test('can be used in VariantSpecAttribute wrapper', () {
         final hoverVariant = WidgetStateVariant(WidgetState.hovered);
-        final style = BoxSpecAttribute.width(100.0);
+        final style = BoxMix.width(100.0);
         final variantAttr = VariantStyleAttribute(hoverVariant, style);
 
         expect(variantAttr.variant, hoverVariant);
@@ -308,12 +371,12 @@ void main() {
         () {
           final hoverStyle = VariantStyleAttribute(
             WidgetStateVariant(WidgetState.hovered),
-            BoxSpecAttribute.width(100.0),
+            BoxMix.width(100.0),
           );
 
           final pressStyle = VariantStyleAttribute(
             WidgetStateVariant(WidgetState.pressed),
-            BoxSpecAttribute.width(150.0),
+            BoxMix.width(150.0),
           );
 
           expect(hoverStyle.mergeKey, isNot(equals(pressStyle.mergeKey)));
@@ -325,20 +388,17 @@ void main() {
       test('merges correctly when variants match', () {
         final hoverVariant = WidgetStateVariant(WidgetState.hovered);
 
-        final style1 = VariantStyleAttribute(
-          hoverVariant,
-          BoxSpecAttribute.width(100.0),
-        );
+        final style1 = VariantStyleAttribute(hoverVariant, BoxMix.width(100.0));
 
         final style2 = VariantStyleAttribute(
           hoverVariant,
-          BoxSpecAttribute.height(200.0),
+          BoxMix.height(200.0),
         );
 
         final merged = style1.merge(style2);
 
         expect(merged.variant, hoverVariant);
-        final mergedBox = merged.value as BoxSpecAttribute;
+        final mergedBox = merged.value as BoxMix;
         final context = MockBuildContext();
         final constraints = mergedBox.resolve(context).constraints;
         expect(constraints?.minWidth, 100.0);

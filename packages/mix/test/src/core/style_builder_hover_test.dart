@@ -9,13 +9,11 @@ void main() {
       tester,
     ) async {
       // Create a style with blue background that changes to red on hover
-      final style = BoxSpecAttribute()
+      final style = BoxMix()
           .color(Colors.blue)
           .width(100)
           .height(100)
-          .onHovered(
-            BoxSpecAttribute().color(Colors.red).width(100).height(100),
-          );
+          .onHovered(BoxMix().color(Colors.red).width(100).height(100));
 
       Color? currentColor;
 
@@ -80,11 +78,11 @@ void main() {
             body: Center(
               child: Box(
                 key: const Key('test_box'),
-                style: BoxSpecAttribute()
+                style: BoxMix()
                     .color(Colors.green)
                     .width(150)
                     .height(150)
-                    .onHovered(BoxSpecAttribute().color(Colors.orange)),
+                    .onHovered(BoxMix().color(Colors.orange)),
                 child: const Text('Hover me'),
               ),
             ),

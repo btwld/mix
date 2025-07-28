@@ -73,7 +73,7 @@ final class ZBoxSpec extends Spec<ZBoxSpec> with Diagnosticable {
 /// the [ZBoxSpec] constructor.
 class StackBoxSpecAttribute extends StyleAttribute<ZBoxSpec>
     with Diagnosticable {
-  final BoxSpecAttribute? box;
+  final BoxMix? box;
   final StackSpecAttribute? stack;
 
   const StackBoxSpecAttribute({
@@ -94,7 +94,7 @@ class StackBoxSpecAttribute extends StyleAttribute<ZBoxSpec>
   /// ```
   static StackBoxSpecAttribute value(ZBoxSpec spec) {
     return StackBoxSpecAttribute(
-      box: BoxSpecAttribute.maybeValue(spec.box),
+      box: BoxMix.maybeValue(spec.box),
       stack: StackSpecAttribute.maybeValue(spec.stack),
     );
   }
@@ -176,7 +176,7 @@ class StackBoxSpecAttribute extends StyleAttribute<ZBoxSpec>
 /// Use the methods of this class to configure specific properties of a [ZBoxSpec].
 class StackBoxSpecUtility {
   /// Utility for defining [StackBoxSpecAttribute.box]
-  final box = BoxSpecAttribute();
+  final box = BoxMix();
 
   /// Utility for defining [StackBoxSpecAttribute.stack]
   final stack = StackSpecAttribute();
@@ -187,7 +187,7 @@ class StackBoxSpecUtility {
 
   /// Returns a new [StackBoxSpecAttribute] with the specified properties.
   StackBoxSpecAttribute only({
-    BoxSpecAttribute? box,
+    BoxMix? box,
     StackSpecAttribute? stack,
     List<ModifierAttribute>? modifiers,
     AnimationConfig? animation,

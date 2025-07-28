@@ -23,11 +23,11 @@ import 'box_spec.dart';
 ///
 /// Encapsulates alignment, padding, margin, constraints, decoration,
 /// and other styling properties for box layouts.
-class BoxSpecAttribute extends StyleAttribute<BoxSpec>
+class BoxMix extends StyleAttribute<BoxSpec>
     with
         Diagnosticable,
-        ModifierMixin<BoxSpecAttribute, BoxSpec>,
-        VariantMixin<BoxSpecAttribute, BoxSpec> {
+        ModifierMixin<BoxMix, BoxSpec>,
+        VariantMixin<BoxMix, BoxSpec> {
   final Prop<AlignmentGeometry>? $alignment;
   final MixProp<EdgeInsetsGeometry>? $padding;
   final MixProp<EdgeInsetsGeometry>? $margin;
@@ -39,111 +39,111 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
   final Prop<Clip>? $clipBehavior;
 
   /// Color factory
-  factory BoxSpecAttribute.color(Color value) {
-    return BoxSpecAttribute(decoration: DecorationMix.color(value));
+  factory BoxMix.color(Color value) {
+    return BoxMix(decoration: DecorationMix.color(value));
   }
 
   /// Gradient factory
-  factory BoxSpecAttribute.gradient(GradientMix value) {
-    return BoxSpecAttribute(decoration: DecorationMix.gradient(value));
+  factory BoxMix.gradient(GradientMix value) {
+    return BoxMix(decoration: DecorationMix.gradient(value));
   }
 
   /// Shape factory
-  factory BoxSpecAttribute.shape(BoxShape value) {
-    return BoxSpecAttribute(decoration: DecorationMix.shape(value));
+  factory BoxMix.shape(BoxShape value) {
+    return BoxMix(decoration: DecorationMix.shape(value));
   }
 
-  factory BoxSpecAttribute.height(double value) {
-    return BoxSpecAttribute.constraints(BoxConstraintsMix.height(value));
+  factory BoxMix.height(double value) {
+    return BoxMix.constraints(BoxConstraintsMix.height(value));
   }
 
-  factory BoxSpecAttribute.width(double value) {
-    return BoxSpecAttribute.constraints(BoxConstraintsMix.width(value));
+  factory BoxMix.width(double value) {
+    return BoxMix.constraints(BoxConstraintsMix.width(value));
   }
 
   /// constraints
-  factory BoxSpecAttribute.constraints(BoxConstraintsMix value) {
-    return BoxSpecAttribute(constraints: value);
+  factory BoxMix.constraints(BoxConstraintsMix value) {
+    return BoxMix(constraints: value);
   }
 
   /// minWidth
-  factory BoxSpecAttribute.minWidth(double value) {
-    return BoxSpecAttribute.constraints(BoxConstraintsMix.minWidth(value));
+  factory BoxMix.minWidth(double value) {
+    return BoxMix.constraints(BoxConstraintsMix.minWidth(value));
   }
 
   /// maxWidth
-  factory BoxSpecAttribute.maxWidth(double value) {
-    return BoxSpecAttribute(constraints: BoxConstraintsMix.maxWidth(value));
+  factory BoxMix.maxWidth(double value) {
+    return BoxMix(constraints: BoxConstraintsMix.maxWidth(value));
   }
 
   /// Animation
-  factory BoxSpecAttribute.animation(AnimationConfig value) {
-    return BoxSpecAttribute(animation: value);
+  factory BoxMix.animation(AnimationConfig value) {
+    return BoxMix(animation: value);
   }
 
   /// Variant
-  factory BoxSpecAttribute.variant(Variant variant, BoxSpecAttribute value) {
-    return BoxSpecAttribute(variants: [VariantStyleAttribute(variant, value)]);
+  factory BoxMix.variant(Variant variant, BoxMix value) {
+    return BoxMix(variants: [VariantStyleAttribute(variant, value)]);
   }
 
   /// minHeight
-  factory BoxSpecAttribute.minHeight(double value) {
-    return BoxSpecAttribute.constraints(BoxConstraintsMix.minHeight(value));
+  factory BoxMix.minHeight(double value) {
+    return BoxMix.constraints(BoxConstraintsMix.minHeight(value));
   }
 
   /// maxHeight
-  factory BoxSpecAttribute.maxHeight(double value) {
-    return BoxSpecAttribute(constraints: BoxConstraintsMix.maxHeight(value));
+  factory BoxMix.maxHeight(double value) {
+    return BoxMix(constraints: BoxConstraintsMix.maxHeight(value));
   }
 
-  factory BoxSpecAttribute.foregroundDecoration(DecorationMix value) {
-    return BoxSpecAttribute(foregroundDecoration: value);
+  factory BoxMix.foregroundDecoration(DecorationMix value) {
+    return BoxMix(foregroundDecoration: value);
   }
 
-  factory BoxSpecAttribute.decoration(DecorationMix value) {
-    return BoxSpecAttribute(decoration: value);
+  factory BoxMix.decoration(DecorationMix value) {
+    return BoxMix(decoration: value);
   }
 
-  factory BoxSpecAttribute.alignment(AlignmentGeometry value) {
-    return BoxSpecAttribute(alignment: value);
+  factory BoxMix.alignment(AlignmentGeometry value) {
+    return BoxMix(alignment: value);
   }
 
-  factory BoxSpecAttribute.padding(EdgeInsetsGeometryMix value) {
-    return BoxSpecAttribute(padding: value);
+  factory BoxMix.padding(EdgeInsetsGeometryMix value) {
+    return BoxMix(padding: value);
   }
 
-  factory BoxSpecAttribute.margin(EdgeInsetsGeometryMix value) {
-    return BoxSpecAttribute(margin: value);
+  factory BoxMix.margin(EdgeInsetsGeometryMix value) {
+    return BoxMix(margin: value);
   }
 
-  factory BoxSpecAttribute.transform(Matrix4 value) {
-    return BoxSpecAttribute(transform: value);
+  factory BoxMix.transform(Matrix4 value) {
+    return BoxMix(transform: value);
   }
 
   /// Animation
-  factory BoxSpecAttribute.animate(AnimationConfig animation) {
-    return BoxSpecAttribute(animation: animation);
+  factory BoxMix.animate(AnimationConfig animation) {
+    return BoxMix(animation: animation);
   }
 
-  factory BoxSpecAttribute.transformAlignment(AlignmentGeometry value) {
-    return BoxSpecAttribute(transformAlignment: value);
+  factory BoxMix.transformAlignment(AlignmentGeometry value) {
+    return BoxMix(transformAlignment: value);
   }
 
-  factory BoxSpecAttribute.clipBehavior(Clip value) {
-    return BoxSpecAttribute(clipBehavior: value);
+  factory BoxMix.clipBehavior(Clip value) {
+    return BoxMix(clipBehavior: value);
   }
 
   /// border
-  factory BoxSpecAttribute.border(BoxBorderMix value) {
-    return BoxSpecAttribute(decoration: DecorationMix.border(value));
+  factory BoxMix.border(BoxBorderMix value) {
+    return BoxMix(decoration: DecorationMix.border(value));
   }
 
   /// Border radius
-  factory BoxSpecAttribute.borderRadius(BorderRadiusGeometryMix value) {
-    return BoxSpecAttribute(decoration: DecorationMix.borderRadius(value));
+  factory BoxMix.borderRadius(BorderRadiusGeometryMix value) {
+    return BoxMix(decoration: DecorationMix.borderRadius(value));
   }
 
-  const BoxSpecAttribute.raw({
+  const BoxMix.raw({
     Prop<AlignmentGeometry>? alignment,
     MixProp<EdgeInsetsGeometry>? padding,
     MixProp<EdgeInsetsGeometry>? margin,
@@ -166,7 +166,7 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
        $transformAlignment = transformAlignment,
        $clipBehavior = clipBehavior;
 
-  BoxSpecAttribute({
+  BoxMix({
     AlignmentGeometry? alignment,
     EdgeInsetsGeometryMix? padding,
     EdgeInsetsGeometryMix? margin,
@@ -196,13 +196,13 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
 
   /// Constructor that accepts a [BoxSpec] value and extracts its properties.
   ///
-  /// This is useful for converting existing [BoxSpec] instances to [BoxSpecAttribute].
+  /// This is useful for converting existing [BoxSpec] instances to [BoxMix].
   ///
   /// ```dart
   /// const spec = BoxSpec(alignment: Alignment.center, padding: EdgeInsets.all(8));
   /// final attr = BoxSpecAttribute.value(spec);
   /// ```
-  BoxSpecAttribute.value(BoxSpec spec)
+  BoxMix.value(BoxSpec spec)
     : this(
         alignment: spec.alignment,
         padding: EdgeInsetsGeometryMix.maybeValue(spec.padding),
@@ -225,50 +225,50 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
   /// const BoxSpec? spec = BoxSpec(alignment: Alignment.center, padding: EdgeInsets.all(8));
   /// final attr = BoxSpecAttribute.maybeValue(spec); // Returns BoxSpecAttribute or null
   /// ```
-  static BoxSpecAttribute? maybeValue(BoxSpec? spec) {
-    return spec != null ? BoxSpecAttribute.value(spec) : null;
+  static BoxMix? maybeValue(BoxSpec? spec) {
+    return spec != null ? BoxMix.value(spec) : null;
   }
 
-  BoxSpecAttribute transformAlignment(AlignmentGeometry value) {
-    return merge(BoxSpecAttribute(transformAlignment: value));
+  BoxMix transformAlignment(AlignmentGeometry value) {
+    return merge(BoxMix(transformAlignment: value));
   }
 
-  BoxSpecAttribute clipBehavior(Clip value) {
-    return merge(BoxSpecAttribute(clipBehavior: value));
+  BoxMix clipBehavior(Clip value) {
+    return merge(BoxMix(clipBehavior: value));
   }
 
   /// Sets background color
-  BoxSpecAttribute color(Color value) {
+  BoxMix color(Color value) {
     return decoration(DecorationMix.color(value));
   }
 
   /// Sets both min and max width to create a fixed width
-  BoxSpecAttribute width(double value) {
+  BoxMix width(double value) {
     return constraints(BoxConstraintsMix.width(value));
   }
 
   /// Sets both min and max height to create a fixed height
-  BoxSpecAttribute height(double value) {
+  BoxMix height(double value) {
     return constraints(BoxConstraintsMix.height(value));
   }
 
   /// Sets rotation transform
-  BoxSpecAttribute rotate(double angle) {
+  BoxMix rotate(double angle) {
     return transform(Matrix4.rotationZ(angle));
   }
 
   /// Sets scale transform
-  BoxSpecAttribute scale(double scale) {
+  BoxMix scale(double scale) {
     return transform(Matrix4.diagonal3Values(scale, scale, 1.0));
   }
 
   /// Sets translation transform
-  BoxSpecAttribute translate(double x, double y, [double z = 0.0]) {
+  BoxMix translate(double x, double y, [double z = 0.0]) {
     return transform(Matrix4.translationValues(x, y, z));
   }
 
   /// Sets skew transform
-  BoxSpecAttribute skew(double skewX, double skewY) {
+  BoxMix skew(double skewX, double skewY) {
     final matrix = Matrix4.identity();
     matrix.setEntry(0, 1, skewX);
     matrix.setEntry(1, 0, skewY);
@@ -277,32 +277,32 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
   }
 
   /// Resets transform to identity (no effect)
-  BoxSpecAttribute transformReset() {
+  BoxMix transformReset() {
     return transform(Matrix4.identity());
   }
 
   /// Sets minimum width constraint
-  BoxSpecAttribute minWidth(double value) {
+  BoxMix minWidth(double value) {
     return constraints(BoxConstraintsMix.minWidth(value));
   }
 
   /// Sets maximum width constraint
-  BoxSpecAttribute maxWidth(double value) {
+  BoxMix maxWidth(double value) {
     return constraints(BoxConstraintsMix.maxWidth(value));
   }
 
   /// Sets minimum height constraint
-  BoxSpecAttribute minHeight(double value) {
+  BoxMix minHeight(double value) {
     return constraints(BoxConstraintsMix.minHeight(value));
   }
 
   /// Sets maximum height constraint
-  BoxSpecAttribute maxHeight(double value) {
+  BoxMix maxHeight(double value) {
     return constraints(BoxConstraintsMix.maxHeight(value));
   }
 
   /// Sets both width and height to specific values
-  BoxSpecAttribute size(double width, double height) {
+  BoxMix size(double width, double height) {
     return constraints(
       BoxConstraintsMix(
         minWidth: width,
@@ -314,111 +314,107 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
   }
 
   /// Sets box shape
-  BoxSpecAttribute shape(ShapeBorderMix value) {
+  BoxMix shape(ShapeBorderMix value) {
     return decoration(ShapeDecorationMix(shape: value));
   }
 
-  BoxSpecAttribute alignment(AlignmentGeometry value) {
-    return merge(BoxSpecAttribute(alignment: value));
+  BoxMix alignment(AlignmentGeometry value) {
+    return merge(BoxMix(alignment: value));
   }
 
   /// Sets single shadow
-  BoxSpecAttribute shadow(BoxShadowMix value) {
+  BoxMix shadow(BoxShadowMix value) {
     return decoration(BoxDecorationMix.boxShadow([value]));
   }
 
   /// Sets multiple shadows
-  BoxSpecAttribute shadows(List<BoxShadowMix> value) {
+  BoxMix shadows(List<BoxShadowMix> value) {
     return decoration(BoxDecorationMix.boxShadow(value));
   }
 
   /// Sets elevation shadow
-  BoxSpecAttribute elevation(ElevationShadow value) {
+  BoxMix elevation(ElevationShadow value) {
     return decoration(
       BoxDecorationMix.boxShadow(BoxShadowMix.fromElevation(value)),
     );
   }
 
   /// Animation instance method
-  BoxSpecAttribute animate(AnimationConfig animation) {
-    return merge(BoxSpecAttribute(animation: animation));
+  BoxMix animate(AnimationConfig animation) {
+    return merge(BoxMix(animation: animation));
   }
 
   /// Modifier instance method
-  BoxSpecAttribute wrap(ModifierAttribute modifier) {
-    return merge(BoxSpecAttribute(modifiers: [modifier]));
+  BoxMix wrap(ModifierAttribute modifier) {
+    return merge(BoxMix(modifiers: [modifier]));
   }
 
   /// Border instance method
-  BoxSpecAttribute border(BoxBorderMix value) {
-    return merge(BoxSpecAttribute(decoration: DecorationMix.border(value)));
+  BoxMix border(BoxBorderMix value) {
+    return merge(BoxMix(decoration: DecorationMix.border(value)));
   }
 
   /// Padding instance method
-  BoxSpecAttribute padding(EdgeInsetsGeometryMix value) {
-    return merge(BoxSpecAttribute(padding: value));
+  BoxMix padding(EdgeInsetsGeometryMix value) {
+    return merge(BoxMix(padding: value));
   }
 
   /// Margin instance method
 
-  BoxSpecAttribute margin(EdgeInsetsGeometryMix value) {
-    return merge(BoxSpecAttribute(margin: value));
+  BoxMix margin(EdgeInsetsGeometryMix value) {
+    return merge(BoxMix(margin: value));
   }
 
   /// Border radius instance method
 
-  BoxSpecAttribute borderRadius(BorderRadiusGeometryMix value) {
-    return merge(
-      BoxSpecAttribute(decoration: DecorationMix.borderRadius(value)),
-    );
+  BoxMix borderRadius(BorderRadiusGeometryMix value) {
+    return merge(BoxMix(decoration: DecorationMix.borderRadius(value)));
   }
 
-  BoxSpecAttribute transform(Matrix4 value) {
-    return merge(BoxSpecAttribute(transform: value));
+  BoxMix transform(Matrix4 value) {
+    return merge(BoxMix(transform: value));
   }
 
   /// Color instance method
   /// Decoration instance method
-  BoxSpecAttribute decoration(DecorationMix value) {
-    return merge(BoxSpecAttribute(decoration: value));
+  BoxMix decoration(DecorationMix value) {
+    return merge(BoxMix(decoration: value));
   }
 
   /// Foreground decoration instance method
-  BoxSpecAttribute foregroundDecoration(DecorationMix value) {
-    return merge(BoxSpecAttribute.foregroundDecoration(value));
+  BoxMix foregroundDecoration(DecorationMix value) {
+    return merge(BoxMix.foregroundDecoration(value));
   }
 
   /// Constraints instance method
-  BoxSpecAttribute constraints(BoxConstraintsMix value) {
-    return merge(BoxSpecAttribute.constraints(value));
+  BoxMix constraints(BoxConstraintsMix value) {
+    return merge(BoxMix.constraints(value));
   }
 
   /// Sets gradient with any GradientMix type
-  BoxSpecAttribute gradient(GradientMix value) {
-    return merge(BoxSpecAttribute.gradient(value));
+  BoxMix gradient(GradientMix value) {
+    return merge(BoxMix.gradient(value));
   }
 
   /// Sets image decoration
-  BoxSpecAttribute image(DecorationImageMix value) {
+  BoxMix image(DecorationImageMix value) {
     return decoration(DecorationMix.image(value));
   }
 
   @override
-  BoxSpecAttribute variants(List<VariantStyleAttribute<BoxSpec>> value) {
-    return merge(BoxSpecAttribute(variants: value));
+  BoxMix variants(List<VariantStyleAttribute<BoxSpec>> value) {
+    return merge(BoxMix(variants: value));
   }
 
   @override
-  BoxSpecAttribute variant(Variant variant, BoxSpecAttribute style) {
-    return merge(
-      BoxSpecAttribute(variants: [VariantStyleAttribute(variant, style)]),
-    );
+  BoxMix variant(Variant variant, BoxMix style) {
+    return merge(BoxMix(variants: [VariantStyleAttribute(variant, style)]));
   }
 
-  /// The list of properties that constitute the state of this [BoxSpecAttribute].
+  /// The list of properties that constitute the state of this [BoxMix].
   @override
-  BoxSpecAttribute modifiers(List<ModifierAttribute> value) {
-    return merge(BoxSpecAttribute(modifiers: value));
+  BoxMix modifiers(List<ModifierAttribute> value) {
+    return merge(BoxMix(modifiers: value));
   }
 
   /// Resolves to [BoxSpec] using the provided [MixContext].
@@ -444,19 +440,19 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
     );
   }
 
-  /// Merges the properties of this [BoxSpecAttribute] with the properties of [other].
+  /// Merges the properties of this [BoxMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [BoxSpecAttribute] with the properties of [other] taking precedence over
+  /// [BoxMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  BoxSpecAttribute merge(BoxSpecAttribute? other) {
+  BoxMix merge(BoxMix? other) {
     if (other == null) return this;
 
-    return BoxSpecAttribute.raw(
+    return BoxMix.raw(
       alignment: MixHelpers.merge($alignment, other.$alignment),
       padding: MixHelpers.merge($padding, other.$padding),
       margin: MixHelpers.merge($margin, other.$margin),
@@ -517,7 +513,7 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
   }
 
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [BoxSpecAttribute] instances for equality.
+  /// compare two [BoxMix] instances for equality.
   @override
   List<Object?> get props => [
     $alignment,
