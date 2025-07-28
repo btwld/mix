@@ -8,7 +8,7 @@ void main() {
   group('TextSpecAttribute', () {
     group('Constructor', () {
       test('creates TextSpecAttribute with all properties', () {
-        final attribute = TextSpecAttribute.raw(
+        final attribute = TextMix.raw(
           overflow: Prop(TextOverflow.ellipsis),
           strutStyle: MixProp(StrutStyleMix.raw(fontSize: Prop(16.0))),
           textAlign: Prop(TextAlign.center),
@@ -36,7 +36,7 @@ void main() {
       });
 
       test('creates TextSpecAttribute with default values', () {
-        final attribute = TextSpecAttribute();
+        final attribute = TextMix();
 
         expect(attribute.$overflow, isNull);
         expect(attribute.$strutStyle, isNull);
@@ -54,7 +54,7 @@ void main() {
 
     group('only constructor', () {
       test('creates TextSpecAttribute with only specified properties', () {
-        final attribute = TextSpecAttribute(
+        final attribute = TextMix(
           overflow: TextOverflow.ellipsis,
           maxLines: 3,
           textAlign: TextAlign.center,
@@ -70,7 +70,7 @@ void main() {
       });
 
       test('handles null values correctly', () {
-        final attribute = TextSpecAttribute();
+        final attribute = TextMix();
 
         expect(attribute.$overflow, isNull);
         expect(attribute.$strutStyle, isNull);
@@ -102,7 +102,7 @@ void main() {
           directives: [],
         );
 
-        final attribute = TextSpecAttribute.value(spec);
+        final attribute = TextMix.value(spec);
 
         expect(attribute.$overflow, resolvesTo(TextOverflow.ellipsis));
         expect(attribute.$textAlign, resolvesTo(TextAlign.center));
@@ -119,7 +119,7 @@ void main() {
 
       test('handles null properties in spec', () {
         const spec = TextSpec(maxLines: 3);
-        final attribute = TextSpecAttribute.value(spec);
+        final attribute = TextMix.value(spec);
 
         expect(attribute.$maxLines, resolvesTo(3));
         expect(attribute.$overflow, isNull);
@@ -130,7 +130,7 @@ void main() {
     group('maybeValue static method', () {
       test('returns TextSpecAttribute when spec is not null', () {
         const spec = TextSpec(maxLines: 3, overflow: TextOverflow.ellipsis);
-        final attribute = TextSpecAttribute.maybeValue(spec);
+        final attribute = TextMix.maybeValue(spec);
 
         expect(attribute, isNotNull);
         expect(attribute!.$maxLines, resolvesTo(3));
@@ -138,14 +138,14 @@ void main() {
       });
 
       test('returns null when spec is null', () {
-        final attribute = TextSpecAttribute.maybeValue(null);
+        final attribute = TextMix.maybeValue(null);
         expect(attribute, isNull);
       });
     });
 
     group('Resolution', () {
       test('resolves to TextSpec with correct properties', () {
-        final attribute = TextSpecAttribute(
+        final attribute = TextMix(
           overflow: TextOverflow.ellipsis,
           maxLines: 3,
           textAlign: TextAlign.center,
@@ -167,7 +167,7 @@ void main() {
       });
 
       test('resolves to TextSpec with null properties when not set', () {
-        final attribute = TextSpecAttribute(maxLines: 3);
+        final attribute = TextMix(maxLines: 3);
         final context = MockBuildContext();
         final spec = attribute.resolve(context);
 
@@ -187,13 +187,13 @@ void main() {
 
     group('merge', () {
       test('merges two TextSpecAttributes correctly', () {
-        final attr1 = TextSpecAttribute(
+        final attr1 = TextMix(
           maxLines: 3,
           overflow: TextOverflow.clip,
           textAlign: TextAlign.left,
         );
 
-        final attr2 = TextSpecAttribute(
+        final attr2 = TextMix(
           maxLines: 5,
           style: TextStyleMix(fontSize: 16.0),
           softWrap: true,
@@ -209,22 +209,19 @@ void main() {
       });
 
       test('returns original when merging with null', () {
-        final original = TextSpecAttribute(
-          maxLines: 3,
-          overflow: TextOverflow.ellipsis,
-        );
+        final original = TextMix(maxLines: 3, overflow: TextOverflow.ellipsis);
         final merged = original.merge(null);
 
         expect(merged, original);
       });
 
       test('handles complex merge scenarios', () {
-        final attr1 = TextSpecAttribute(
+        final attr1 = TextMix(
           style: TextStyleMix(fontSize: 14.0),
           strutStyle: StrutStyleMix(fontSize: 14.0),
         );
 
-        final attr2 = TextSpecAttribute(
+        final attr2 = TextMix(
           style: TextStyleMix(color: Colors.blue),
           textHeightBehavior: TextHeightBehaviorMix(),
         );
@@ -240,7 +237,7 @@ void main() {
 
     group('Utility Properties', () {
       test('has all expected utility properties', () {
-        final attribute = TextSpecAttribute();
+        final attribute = TextMix();
 
         // Basic properties - just check they exist
         expect(attribute.overflow, isNotNull);
@@ -287,23 +284,23 @@ void main() {
 
     group('Helper Methods', () {
       test('utility methods create proper attributes', () {
-        final attribute = TextSpecAttribute();
+        final attribute = TextMix();
 
         // Test that utility methods exist and return proper types
         final fontSizeAttr = attribute.fontSize(16.0);
-        expect(fontSizeAttr, isA<TextSpecAttribute>());
+        expect(fontSizeAttr, isA<TextMix>());
 
         final fontWeightAttr = attribute.fontWeight(FontWeight.bold);
-        expect(fontWeightAttr, isA<TextSpecAttribute>());
+        expect(fontWeightAttr, isA<TextMix>());
 
         final colorAttr = attribute.color(Colors.blue);
-        expect(colorAttr, isA<TextSpecAttribute>());
+        expect(colorAttr, isA<TextMix>());
       });
     });
 
     group('Builder pattern', () {
       test('builder methods create new instances', () {
-        final original = TextSpecAttribute();
+        final original = TextMix();
         final modified = original.maxLines(3);
 
         expect(identical(original, modified), isFalse);
@@ -313,7 +310,7 @@ void main() {
 
       test('chaining utilities accumulates properties correctly', () {
         // Chaining now properly accumulates all properties
-        final chained = TextSpecAttribute()
+        final chained = TextMix()
             .maxLines(3)
             .overflow(TextOverflow.ellipsis)
             .textAlign(TextAlign.center)
@@ -340,10 +337,14 @@ void main() {
 
       test('chaining with complex properties works correctly', () {
         // Test chaining with more complex properties
-        final chained = TextSpecAttribute()
+        final chained = TextMix()
             .fontFamily('Roboto')
             .shadows([
-              const Shadow(color: Colors.black, offset: Offset(1, 1), blurRadius: 2),
+              const Shadow(
+                color: Colors.black,
+                offset: Offset(1, 1),
+                blurRadius: 2,
+              ),
             ])
             .decoration(TextDecoration.underline)
             .decorationColor(Colors.red)
@@ -366,7 +367,7 @@ void main() {
 
     group('Props getter', () {
       test('props includes all properties', () {
-        final attribute = TextSpecAttribute(
+        final attribute = TextMix(
           overflow: TextOverflow.ellipsis,
           strutStyle: StrutStyleMix(fontSize: 16.0),
           textAlign: TextAlign.center,
@@ -387,12 +388,12 @@ void main() {
 
     group('equality', () {
       test('attributes with same properties are equal', () {
-        final attr1 = TextSpecAttribute(
+        final attr1 = TextMix(
           maxLines: 3,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
         );
-        final attr2 = TextSpecAttribute(
+        final attr2 = TextMix(
           maxLines: 3,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
@@ -403,14 +404,8 @@ void main() {
       });
 
       test('attributes with different properties are not equal', () {
-        final attr1 = TextSpecAttribute(
-          maxLines: 3,
-          overflow: TextOverflow.ellipsis,
-        );
-        final attr2 = TextSpecAttribute(
-          maxLines: 5,
-          overflow: TextOverflow.ellipsis,
-        );
+        final attr1 = TextMix(maxLines: 3, overflow: TextOverflow.ellipsis);
+        final attr2 = TextMix(maxLines: 5, overflow: TextOverflow.ellipsis);
 
         expect(attr1, isNot(attr2));
       });

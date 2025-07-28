@@ -3,6 +3,8 @@ import 'package:meta/meta.dart';
 
 import '../animation/animation_config.dart';
 import '../specs/box/box_attribute.dart';
+import '../specs/icon/icon_attribute.dart';
+import '../specs/text/text_attribute.dart';
 import '../variants/variant.dart';
 import 'internal/compare_mixin.dart';
 import 'internal/constants.dart';
@@ -240,7 +242,8 @@ final class VariantStyleAttribute<S extends Spec<S>> extends StyleAttribute<S> {
 
 class Style extends StyleAttribute<MultiSpec> {
   static final box = BoxMix.new;
-
+  static final text = TextMix.new;
+  static final icon = IconSpecAttribute.new;
   final Map<Object, StyleAttribute> _attributes;
 
   Style._({

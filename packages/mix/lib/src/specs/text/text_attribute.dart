@@ -26,11 +26,11 @@ import 'text_spec.dart';
 ///
 /// Use this class to configure the attributes of a [TextSpec] and pass it to
 /// the [TextSpec] constructor.
-class TextSpecAttribute extends StyleAttribute<TextSpec>
+class TextMix extends StyleAttribute<TextSpec>
     with
         Diagnosticable,
-        ModifierMixin<TextSpecAttribute, TextSpec>,
-        VariantMixin<TextSpecAttribute, TextSpec> {
+        ModifierMixin<TextMix, TextSpec>,
+        VariantMixin<TextMix, TextSpec> {
   final Prop<TextOverflow>? $overflow;
   final MixProp<StrutStyle>? $strutStyle;
   final Prop<TextAlign>? $textAlign;
@@ -43,140 +43,140 @@ class TextSpecAttribute extends StyleAttribute<TextSpec>
   final Prop<bool>? $softWrap;
   final List<Prop<MixDirective<String>>>? $directives;
 
-  /// Utility for defining [TextSpecAttribute.overflow]
-  late final overflow = PropUtility<TextSpecAttribute, TextOverflow>(
-    (prop) => merge(TextSpecAttribute.raw(overflow: prop)),
+  /// Utility for defining [TextMix.overflow]
+  late final overflow = PropUtility<TextMix, TextOverflow>(
+    (prop) => merge(TextMix.raw(overflow: prop)),
   );
 
-  /// Utility for defining [TextSpecAttribute.strutStyle]
+  /// Utility for defining [TextMix.strutStyle]
   late final strutStyle = StrutStyleUtility(
-    (prop) => merge(TextSpecAttribute.raw(strutStyle: prop)),
+    (prop) => merge(TextMix.raw(strutStyle: prop)),
   );
 
-  /// Utility for defining [TextSpecAttribute.textAlign]
-  late final textAlign = PropUtility<TextSpecAttribute, TextAlign>(
-    (prop) => merge(TextSpecAttribute.raw(textAlign: prop)),
+  /// Utility for defining [TextMix.textAlign]
+  late final textAlign = PropUtility<TextMix, TextAlign>(
+    (prop) => merge(TextMix.raw(textAlign: prop)),
   );
 
-  /// Utility for defining [TextSpecAttribute.textScaler]
-  late final textScaler = PropUtility<TextSpecAttribute, TextScaler>(
-    (prop) => merge(TextSpecAttribute.raw(textScaler: prop)),
+  /// Utility for defining [TextMix.textScaler]
+  late final textScaler = PropUtility<TextMix, TextScaler>(
+    (prop) => merge(TextMix.raw(textScaler: prop)),
   );
 
-  /// Utility for defining [TextSpecAttribute.maxLines]
-  late final maxLines = PropUtility<TextSpecAttribute, int>(
-    (prop) => merge(TextSpecAttribute.raw(maxLines: prop)),
+  /// Utility for defining [TextMix.maxLines]
+  late final maxLines = PropUtility<TextMix, int>(
+    (prop) => merge(TextMix.raw(maxLines: prop)),
   );
 
-  /// Utility for defining [TextSpecAttribute.style]
+  /// Utility for defining [TextMix.style]
   late final style = TextStyleUtility(
-    (prop) => merge(TextSpecAttribute.raw(style: prop)),
+    (prop) => merge(TextMix.raw(style: prop)),
   );
 
-  /// Utility for defining [TextSpecAttribute.textWidthBasis]
-  late final textWidthBasis = PropUtility<TextSpecAttribute, TextWidthBasis>(
-    (prop) => merge(TextSpecAttribute.raw(textWidthBasis: prop)),
+  /// Utility for defining [TextMix.textWidthBasis]
+  late final textWidthBasis = PropUtility<TextMix, TextWidthBasis>(
+    (prop) => merge(TextMix.raw(textWidthBasis: prop)),
   );
 
-  /// Utility for defining [TextSpecAttribute.textHeightBehavior]
+  /// Utility for defining [TextMix.textHeightBehavior]
   late final textHeightBehavior = TextHeightBehaviorUtility(
-    (prop) => merge(TextSpecAttribute.raw(textHeightBehavior: prop)),
+    (prop) => merge(TextMix.raw(textHeightBehavior: prop)),
   );
 
-  /// Utility for defining [TextSpecAttribute.textDirection]
-  late final textDirection = PropUtility<TextSpecAttribute, TextDirection>(
-    (prop) => merge(TextSpecAttribute.raw(textDirection: prop)),
+  /// Utility for defining [TextMix.textDirection]
+  late final textDirection = PropUtility<TextMix, TextDirection>(
+    (prop) => merge(TextMix.raw(textDirection: prop)),
   );
 
-  /// Utility for defining [TextSpecAttribute.softWrap]
-  late final softWrap = PropUtility<TextSpecAttribute, bool>(
-    (prop) => merge(TextSpecAttribute.raw(softWrap: prop)),
+  /// Utility for defining [TextMix.softWrap]
+  late final softWrap = PropUtility<TextMix, bool>(
+    (prop) => merge(TextMix.raw(softWrap: prop)),
   );
 
-  /// Utility for defining [TextSpecAttribute.directive]
+  /// Utility for defining [TextMix.directive]
   late final directive = TextDirectiveUtility(
-    (prop) => merge(TextSpecAttribute.raw(directives: [prop])),
+    (prop) => merge(TextMix.raw(directives: [prop])),
   );
 
-  /// Utility for defining [TextSpecAttribute.style.color]
+  /// Utility for defining [TextMix.style.color]
   late final color = style.color;
 
-  /// Utility for defining [TextSpecAttribute.style.fontFamily]
+  /// Utility for defining [TextMix.style.fontFamily]
   late final fontFamily = style.fontFamily;
 
-  /// Utility for defining [TextSpecAttribute.style.fontWeight]
+  /// Utility for defining [TextMix.style.fontWeight]
   late final fontWeight = style.fontWeight;
 
-  /// Utility for defining [TextSpecAttribute.style.fontStyle]
+  /// Utility for defining [TextMix.style.fontStyle]
   late final fontStyle = style.fontStyle;
 
-  /// Utility for defining [TextSpecAttribute.style.fontSize]
+  /// Utility for defining [TextMix.style.fontSize]
   late final fontSize = style.fontSize;
 
-  /// Utility for defining [TextSpecAttribute.style.letterSpacing]
+  /// Utility for defining [TextMix.style.letterSpacing]
   late final letterSpacing = style.letterSpacing;
 
-  /// Utility for defining [TextSpecAttribute.style.wordSpacing]
+  /// Utility for defining [TextMix.style.wordSpacing]
   late final wordSpacing = style.wordSpacing;
 
-  /// Utility for defining [TextSpecAttribute.style.textBaseline]
+  /// Utility for defining [TextMix.style.textBaseline]
   late final textBaseline = style.textBaseline;
 
-  /// Utility for defining [TextSpecAttribute.style.backgroundColor]
+  /// Utility for defining [TextMix.style.backgroundColor]
   late final backgroundColor = style.backgroundColor;
 
-  /// Utility for defining [TextSpecAttribute.style.shadows]
+  /// Utility for defining [TextMix.style.shadows]
   late final shadows = style.shadows;
 
-  /// Utility for defining [TextSpecAttribute.style.fontFeatures]
+  /// Utility for defining [TextMix.style.fontFeatures]
   late final fontFeatures = style.fontFeatures;
 
-  /// Utility for defining [TextSpecAttribute.style.fontVariations]
+  /// Utility for defining [TextMix.style.fontVariations]
   late final fontVariations = style.fontVariations;
 
-  /// Utility for defining [TextSpecAttribute.style.decoration]
+  /// Utility for defining [TextMix.style.decoration]
   late final decoration = style.decoration;
 
-  /// Utility for defining [TextSpecAttribute.style.decorationColor]
+  /// Utility for defining [TextMix.style.decorationColor]
   late final decorationColor = style.decorationColor;
 
-  /// Utility for defining [TextSpecAttribute.style.decorationStyle]
+  /// Utility for defining [TextMix.style.decorationStyle]
   late final decorationStyle = style.decorationStyle;
 
-  /// Utility for defining [TextSpecAttribute.style.debugLabel]
+  /// Utility for defining [TextMix.style.debugLabel]
   late final debugLabel = style.debugLabel;
 
-  /// Utility for defining [TextSpecAttribute.style.height]
+  /// Utility for defining [TextMix.style.height]
   late final height = style.height;
 
-  /// Utility for defining [TextSpecAttribute.style.foreground]
+  /// Utility for defining [TextMix.style.foreground]
   late final foreground = style.foreground;
 
-  /// Utility for defining [TextSpecAttribute.style.background]
+  /// Utility for defining [TextMix.style.background]
   late final background = style.background;
 
-  /// Utility for defining [TextSpecAttribute.style.decorationThickness]
+  /// Utility for defining [TextMix.style.decorationThickness]
   late final decorationThickness = style.decorationThickness;
 
-  /// Utility for defining [TextSpecAttribute.style.fontFamilyFallback]
+  /// Utility for defining [TextMix.style.fontFamilyFallback]
   late final fontFamilyFallback = style.fontFamilyFallback;
 
-  /// Utility for defining [TextSpecAttribute.directive.uppercase]
+  /// Utility for defining [TextMix.directive.uppercase]
   late final uppercase = directive.uppercase;
 
-  /// Utility for defining [TextSpecAttribute.directive.lowercase]
+  /// Utility for defining [TextMix.directive.lowercase]
   late final lowercase = directive.lowercase;
 
-  /// Utility for defining [TextSpecAttribute.directive.capitalize]
+  /// Utility for defining [TextMix.directive.capitalize]
   late final capitalize = directive.capitalize;
 
-  /// Utility for defining [TextSpecAttribute.directive.titleCase]
+  /// Utility for defining [TextMix.directive.titleCase]
   late final titleCase = directive.titleCase;
 
-  /// Utility for defining [TextSpecAttribute.directive.sentenceCase]
+  /// Utility for defining [TextMix.directive.sentenceCase]
   late final sentenceCase = directive.sentenceCase;
 
-  TextSpecAttribute.raw({
+  TextMix.raw({
     Prop<TextOverflow>? overflow,
     MixProp<StrutStyle>? strutStyle,
     Prop<TextAlign>? textAlign,
@@ -203,7 +203,7 @@ class TextSpecAttribute extends StyleAttribute<TextSpec>
        $softWrap = softWrap,
        $directives = directives;
 
-  TextSpecAttribute({
+  TextMix({
     TextOverflow? overflow,
     StrutStyleMix? strutStyle,
     TextAlign? textAlign,
@@ -237,13 +237,13 @@ class TextSpecAttribute extends StyleAttribute<TextSpec>
 
   /// Constructor that accepts a [TextSpec] value and extracts its properties.
   ///
-  /// This is useful for converting existing [TextSpec] instances to [TextSpecAttribute].
+  /// This is useful for converting existing [TextSpec] instances to [TextMix].
   ///
   /// ```dart
   /// const spec = TextSpec(overflow: TextOverflow.ellipsis, maxLines: 2);
   /// final attr = TextSpecAttribute.value(spec);
   /// ```
-  TextSpecAttribute.value(TextSpec spec)
+  TextMix.value(TextSpec spec)
     : this(
         overflow: spec.overflow,
         strutStyle: StrutStyleMix.maybeValue(spec.strutStyle),
@@ -268,22 +268,23 @@ class TextSpecAttribute extends StyleAttribute<TextSpec>
   /// const TextSpec? spec = TextSpec(overflow: TextOverflow.ellipsis, maxLines: 2);
   /// final attr = TextSpecAttribute.maybeValue(spec); // Returns TextSpecAttribute or null
   /// ```
-  static TextSpecAttribute? maybeValue(TextSpec? spec) {
-    return spec != null ? TextSpecAttribute.value(spec) : null;
+  static TextMix? maybeValue(TextSpec? spec) {
+    return spec != null ? TextMix.value(spec) : null;
   }
 
   /// Convenience method for animating the TextSpec
-  TextSpecAttribute animate(AnimationConfig animation) {
-    return TextSpecAttribute(animation: animation);
-  }
-
-  TextSpecAttribute variants(List<VariantStyleAttribute<TextSpec>> variants) {
-    return merge(TextSpecAttribute(variants: variants));
+  TextMix animate(AnimationConfig animation) {
+    return TextMix(animation: animation);
   }
 
   @override
-  TextSpecAttribute modifiers(List<ModifierAttribute> modifiers) {
-    return merge(TextSpecAttribute(modifiers: modifiers));
+  TextMix variants(List<VariantStyleAttribute<TextSpec>> variants) {
+    return merge(TextMix(variants: variants));
+  }
+
+  @override
+  TextMix modifiers(List<ModifierAttribute> modifiers) {
+    return merge(TextMix(modifiers: modifiers));
   }
 
   /// Resolves to [TextSpec] using the provided [MixContext].
@@ -311,19 +312,19 @@ class TextSpecAttribute extends StyleAttribute<TextSpec>
     );
   }
 
-  /// Merges the properties of this [TextSpecAttribute] with the properties of [other].
+  /// Merges the properties of this [TextMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [TextSpecAttribute] with the properties of [other] taking precedence over
+  /// [TextMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  TextSpecAttribute merge(TextSpecAttribute? other) {
+  TextMix merge(TextMix? other) {
     if (other == null) return this;
 
-    return TextSpecAttribute.raw(
+    return TextMix.raw(
       overflow: MixHelpers.merge($overflow, other.$overflow),
       strutStyle: MixHelpers.merge($strutStyle, other.$strutStyle),
       textAlign: MixHelpers.merge($textAlign, other.$textAlign),
@@ -397,14 +398,12 @@ class TextSpecAttribute extends StyleAttribute<TextSpec>
   }
 
   @override
-  TextSpecAttribute variant(Variant variant, TextSpecAttribute style) {
-    return merge(
-      TextSpecAttribute(variants: [VariantStyleAttribute(variant, style)]),
-    );
+  TextMix variant(Variant variant, TextMix style) {
+    return merge(TextMix(variants: [VariantStyleAttribute(variant, style)]));
   }
 
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [TextSpecAttribute] instances for equality.
+  /// compare two [TextMix] instances for equality.
   @override
   List<Object?> get props => [
     $overflow,

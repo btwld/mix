@@ -21,55 +21,55 @@ class TextSpecUtility extends StyleAttributeBuilder<TextSpec> {
   // TEXT UTILITIES - Same as TextSpecAttribute but return TextSpecUtility for cascade
 
   late final textOverflow = PropUtility<TextSpecUtility, TextOverflow>(
-    (prop) => _build(TextSpecAttribute.raw(overflow: prop)),
+    (prop) => _build(TextMix.raw(overflow: prop)),
   );
 
   late final strutStyle = StrutStyleUtility<TextSpecUtility>(
-    (prop) => _build(TextSpecAttribute.raw(strutStyle: prop)),
+    (prop) => _build(TextMix.raw(strutStyle: prop)),
   );
 
   late final textAlign = PropUtility<TextSpecUtility, TextAlign>(
-    (prop) => _build(TextSpecAttribute.raw(textAlign: prop)),
+    (prop) => _build(TextMix.raw(textAlign: prop)),
   );
 
   late final textScaler = PropUtility<TextSpecUtility, TextScaler>(
-    (prop) => _build(TextSpecAttribute.raw(textScaler: prop)),
+    (prop) => _build(TextMix.raw(textScaler: prop)),
   );
 
   late final maxLines = PropUtility<TextSpecUtility, int>(
-    (prop) => _build(TextSpecAttribute.raw(maxLines: prop)),
+    (prop) => _build(TextMix.raw(maxLines: prop)),
   );
 
   late final style = TextStyleUtility<TextSpecUtility>(
-    (prop) => _build(TextSpecAttribute.raw(style: prop)),
+    (prop) => _build(TextMix.raw(style: prop)),
   );
 
   late final textWidthBasis = PropUtility<TextSpecUtility, TextWidthBasis>(
-    (prop) => _build(TextSpecAttribute.raw(textWidthBasis: prop)),
+    (prop) => _build(TextMix.raw(textWidthBasis: prop)),
   );
 
   late final textHeightBehavior = TextHeightBehaviorUtility<TextSpecUtility>(
-    (prop) => _build(TextSpecAttribute.raw(textHeightBehavior: prop)),
+    (prop) => _build(TextMix.raw(textHeightBehavior: prop)),
   );
 
   late final textDirection = PropUtility<TextSpecUtility, TextDirection>(
-    (prop) => _build(TextSpecAttribute.raw(textDirection: prop)),
+    (prop) => _build(TextMix.raw(textDirection: prop)),
   );
 
   late final softWrap = PropUtility<TextSpecUtility, bool>(
-    (prop) => _build(TextSpecAttribute.raw(softWrap: prop)),
+    (prop) => _build(TextMix.raw(softWrap: prop)),
   );
 
   late final directive = TextDirectiveUtility<TextSpecUtility>(
-    (prop) => _build(TextSpecAttribute.raw(directives: [prop])),
+    (prop) => _build(TextMix.raw(directives: [prop])),
   );
 
   late final on = OnContextVariantUtility<TextSpec, TextSpecUtility>(
-    (v) => _build(TextSpecAttribute.raw(variants: [v])),
+    (v) => _build(TextMix.raw(variants: [v])),
   );
 
   late final wrap = ModifierUtility<TextSpecUtility>(
-    (prop) => _build(TextSpecAttribute(modifiers: [prop])),
+    (prop) => _build(TextMix(modifiers: [prop])),
   );
 
   // FLATTENED ACCESS - Direct access to commonly used style properties
@@ -94,14 +94,14 @@ class TextSpecUtility extends StyleAttributeBuilder<TextSpec> {
   late final debugLabel = style.debugLabel;
   late final decorationThickness = style.decorationThickness;
   late final fontFamilyFallback = style.fontFamilyFallback;
-  TextSpecAttribute _baseAttribute;
+  TextMix _baseAttribute;
 
-  TextSpecUtility([TextSpecAttribute? attribute])
-    : _baseAttribute = attribute ?? TextSpecAttribute(),
+  TextSpecUtility([TextMix? attribute])
+    : _baseAttribute = attribute ?? TextMix(),
       super();
 
   /// Mutable builder - updates internal state and returns this for cascade
-  TextSpecUtility _build(TextSpecAttribute newAttribute) {
+  TextSpecUtility _build(TextMix newAttribute) {
     _baseAttribute = _baseAttribute.merge(newAttribute);
 
     return this;
@@ -113,7 +113,7 @@ class TextSpecUtility extends StyleAttributeBuilder<TextSpec> {
 
   /// Animation
   TextSpecUtility animate(AnimationConfig animation) =>
-      _build(TextSpecAttribute(animation: animation));
+      _build(TextMix(animation: animation));
 
   // StyleAttribute interface implementation
 
@@ -123,7 +123,7 @@ class TextSpecUtility extends StyleAttributeBuilder<TextSpec> {
     if (other is TextSpecUtility) {
       return TextSpecUtility(_baseAttribute.merge(other._baseAttribute));
     }
-    if (other is TextSpecAttribute) {
+    if (other is TextMix) {
       return TextSpecUtility(_baseAttribute.merge(other));
     }
 
@@ -137,5 +137,5 @@ class TextSpecUtility extends StyleAttributeBuilder<TextSpec> {
 
   /// Access to internal attribute
   @override
-  TextSpecAttribute get attribute => _baseAttribute;
+  TextMix get attribute => _baseAttribute;
 }

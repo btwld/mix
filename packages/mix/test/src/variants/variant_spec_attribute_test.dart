@@ -350,15 +350,12 @@ void main() {
     group('Different SpecAttribute Types', () {
       test('works with TextSpecAttribute', () {
         const variant = NamedVariant('large');
-        final textStyle = TextSpecAttribute(
-          textAlign: TextAlign.center,
-          maxLines: 2,
-        );
+        final textStyle = TextMix(textAlign: TextAlign.center, maxLines: 2);
         final variantAttr = VariantStyleAttribute(variant, textStyle);
 
         expect(variantAttr.variant, variant);
         expect(variantAttr.value, textStyle);
-        final textAttr = variantAttr.value as TextSpecAttribute;
+        final textAttr = variantAttr.value as TextMix;
         expect(textAttr.$textAlign, resolvesTo(TextAlign.center));
         expect(textAttr.$maxLines, resolvesTo(2));
       });

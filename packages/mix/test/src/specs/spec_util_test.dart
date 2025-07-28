@@ -87,7 +87,7 @@ void main() {
 
     test('text getter can be used to create attributes', () {
       $text.style.fontSize(16);
-      expect($text.attribute, isA<TextSpecAttribute>());
+      expect($text.attribute, isA<TextMix>());
     });
 
     test('stack getter can be used to create attributes', () {
