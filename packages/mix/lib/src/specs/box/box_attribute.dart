@@ -397,25 +397,10 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
     return merge(BoxSpecAttribute(foregroundDecoration: value));
   }
 
-  @override
-  BoxSpecAttribute variant(Variant variant, BoxSpecAttribute style) {
-    return merge(
-      BoxSpecAttribute(variants: [VariantStyleAttribute(variant, style)]),
-    );
-  }
-
   // Constraints instance method
 
   BoxSpecAttribute constraints(BoxConstraintsMix value) {
     return merge(BoxSpecAttribute(constraints: value));
-  }
-
-  /// The list of properties that constitute the state of this [BoxSpecAttribute].
-  ///
-
-  @override
-  BoxSpecAttribute modifiers(List<ModifierAttribute> value) {
-    return merge(BoxSpecAttribute(modifiers: value));
   }
 
   /// Sets gradient with any GradientMix type
@@ -428,6 +413,21 @@ class BoxSpecAttribute extends StyleAttribute<BoxSpec>
 
   BoxSpecAttribute image(DecorationImageMix value) {
     return decoration(DecorationMix.image(value));
+  }
+
+  @override
+  BoxSpecAttribute variant(Variant variant, BoxSpecAttribute style) {
+    return merge(
+      BoxSpecAttribute(variants: [VariantStyleAttribute(variant, style)]),
+    );
+  }
+
+  /// The list of properties that constitute the state of this [BoxSpecAttribute].
+  ///
+
+  @override
+  BoxSpecAttribute modifiers(List<ModifierAttribute> value) {
+    return merge(BoxSpecAttribute(modifiers: value));
   }
 
   /// Resolves to [BoxSpec] using the provided [MixContext].

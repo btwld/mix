@@ -89,9 +89,14 @@ class BoxExampleApp extends StatelessWidget {
                 style: BoxMix()
                     .color(Colors.purple)
                     .width(120)
+                    .translate(0,0)
                     .height(120)
-                    .onHover(.color(Colors.red))
+                    .onHover(
+                      .color(Colors.red)
+                      .translate(5, 5)
+                    )
                     .borderRadius(.circular(20))
+                    .animate(.linear(200.ms))
                     .padding(.all(8)),
                 child: const Center(
                   child: Text(
@@ -110,8 +115,8 @@ class BoxExampleApp extends StatelessWidget {
                     .height(100)
                     .gradient(
                       .linear(
-                        .begin(Alignment.topLeft)
-                        .end(Alignment.bottomRight)
+                        .begin(.topLeft)
+                        .end(.bottomRight)
                         .colors([Colors.purple, Colors.blue]),
                       )
                     )

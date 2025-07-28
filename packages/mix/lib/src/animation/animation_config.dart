@@ -98,149 +98,136 @@ final class CurveAnimationConfig extends AnimationConfig {
     this.onEnd,
   });
 
-  const CurveAnimationConfig.linear({required this.duration, this.onEnd})
+  const CurveAnimationConfig.linear(this.duration, {this.onEnd})
     : curve = Curves.linear;
 
-  const CurveAnimationConfig.decelerate({required this.duration, this.onEnd})
+  const CurveAnimationConfig.decelerate(this.duration, {this.onEnd})
     : curve = Curves.decelerate;
 
-  const CurveAnimationConfig.fastLinearToSlowEaseIn({
-    required this.duration,
-    this.onEnd,
-  }) : curve = Curves.fastLinearToSlowEaseIn;
+  const CurveAnimationConfig.fastLinearToSlowEaseIn(this.duration, {this.onEnd})
+    : curve = Curves.fastLinearToSlowEaseIn;
 
-  const CurveAnimationConfig.fastEaseInToSlowEaseOut({
-    required this.duration,
+  const CurveAnimationConfig.fastEaseInToSlowEaseOut(
+    this.duration, {
     this.onEnd,
   }) : curve = Curves.fastEaseInToSlowEaseOut;
 
-  const CurveAnimationConfig.ease({required this.duration, this.onEnd})
+  const CurveAnimationConfig.ease(this.duration, {this.onEnd})
     : curve = Curves.ease;
 
-  const CurveAnimationConfig.easeIn({required this.duration, this.onEnd})
+  const CurveAnimationConfig.easeIn(this.duration, {this.onEnd})
     : curve = Curves.easeIn;
 
-  const CurveAnimationConfig.easeInToLinear({
-    required this.duration,
-    this.onEnd,
-  }) : curve = Curves.easeInToLinear;
+  const CurveAnimationConfig.easeInToLinear(this.duration, {this.onEnd})
+    : curve = Curves.easeInToLinear;
 
-  const CurveAnimationConfig.easeInSine({required this.duration, this.onEnd})
+  const CurveAnimationConfig.easeInSine(this.duration, {this.onEnd})
     : curve = Curves.easeInSine;
 
-  const CurveAnimationConfig.easeInQuad({required this.duration, this.onEnd})
+  const CurveAnimationConfig.easeInQuad(this.duration, {this.onEnd})
     : curve = Curves.easeInQuad;
 
-  const CurveAnimationConfig.easeInCubic({required this.duration, this.onEnd})
+  const CurveAnimationConfig.easeInCubic(this.duration, {this.onEnd})
     : curve = Curves.easeInCubic;
 
-  const CurveAnimationConfig.easeInQuart({required this.duration, this.onEnd})
+  const CurveAnimationConfig.easeInQuart(this.duration, {this.onEnd})
     : curve = Curves.easeInQuart;
 
-  const CurveAnimationConfig.easeInQuint({required this.duration, this.onEnd})
+  const CurveAnimationConfig.easeInQuint(this.duration, {this.onEnd})
     : curve = Curves.easeInQuint;
 
-  const CurveAnimationConfig.easeInExpo({required this.duration, this.onEnd})
+  const CurveAnimationConfig.easeInExpo(this.duration, {this.onEnd})
     : curve = Curves.easeInExpo;
 
-  const CurveAnimationConfig.easeInCirc({required this.duration, this.onEnd})
+  const CurveAnimationConfig.easeInCirc(this.duration, {this.onEnd})
     : curve = Curves.easeInCirc;
 
-  const CurveAnimationConfig.easeInBack({required this.duration, this.onEnd})
+  const CurveAnimationConfig.easeInBack(this.duration, {this.onEnd})
     : curve = Curves.easeInBack;
 
-  const CurveAnimationConfig.easeOut({required this.duration, this.onEnd})
+  const CurveAnimationConfig.easeOut(this.duration, {this.onEnd})
     : curve = Curves.easeOut;
 
-  const CurveAnimationConfig.linearToEaseOut({
-    required this.duration,
-    this.onEnd,
-  }) : curve = Curves.linearToEaseOut;
+  const CurveAnimationConfig.linearToEaseOut(this.duration, {this.onEnd})
+    : curve = Curves.linearToEaseOut;
 
-  const CurveAnimationConfig.easeOutSine({required this.duration, this.onEnd})
+  const CurveAnimationConfig.easeOutSine(this.duration, {this.onEnd})
     : curve = Curves.easeOutSine;
 
-  const CurveAnimationConfig.easeOutQuad({required this.duration, this.onEnd})
+  const CurveAnimationConfig.easeOutQuad(this.duration, {this.onEnd})
     : curve = Curves.easeOutQuad;
 
-  const CurveAnimationConfig.easeOutCubic({required this.duration, this.onEnd})
+  const CurveAnimationConfig.easeOutCubic(this.duration, {this.onEnd})
     : curve = Curves.easeOutCubic;
 
-  const CurveAnimationConfig.easeOutQuart({required this.duration, this.onEnd})
+  const CurveAnimationConfig.easeOutQuart(this.duration, {this.onEnd})
     : curve = Curves.easeOutQuart;
 
-  const CurveAnimationConfig.easeOutQuint({required this.duration, this.onEnd})
+  const CurveAnimationConfig.easeOutQuint(this.duration, {this.onEnd})
     : curve = Curves.easeOutQuint;
 
-  const CurveAnimationConfig.easeOutExpo({required this.duration, this.onEnd})
+  const CurveAnimationConfig.easeOutExpo(this.duration, {this.onEnd})
     : curve = Curves.easeOutExpo;
 
-  const CurveAnimationConfig.easeOutCirc({required this.duration, this.onEnd})
+  const CurveAnimationConfig.easeOutCirc(this.duration, {this.onEnd})
     : curve = Curves.easeOutCirc;
 
-  const CurveAnimationConfig.easeOutBack({required this.duration, this.onEnd})
+  const CurveAnimationConfig.easeOutBack(this.duration, {this.onEnd})
     : curve = Curves.easeOutBack;
 
-  const CurveAnimationConfig.easeInOut({required this.duration, this.onEnd})
+  const CurveAnimationConfig.easeInOut(this.duration, {this.onEnd})
     : curve = Curves.easeInOut;
 
-  const CurveAnimationConfig.easeInOutSine({required this.duration, this.onEnd})
+  const CurveAnimationConfig.easeInOutSine(this.duration, {this.onEnd})
     : curve = Curves.easeInOutSine;
 
-  const CurveAnimationConfig.easeInOutQuad({required this.duration, this.onEnd})
+  const CurveAnimationConfig.easeInOutQuad(this.duration, {this.onEnd})
     : curve = Curves.easeInOutQuad;
 
-  const CurveAnimationConfig.easeInOutCubic({
-    required this.duration,
-    this.onEnd,
-  }) : curve = Curves.easeInOutCubic;
+  const CurveAnimationConfig.easeInOutCubic(this.duration, {this.onEnd})
+    : curve = Curves.easeInOutCubic;
 
-  const CurveAnimationConfig.easeInOutCubicEmphasized({
-    required this.duration,
+  const CurveAnimationConfig.easeInOutCubicEmphasized(
+    this.duration, {
     this.onEnd,
   }) : curve = Curves.easeInOutCubicEmphasized;
+  const CurveAnimationConfig.easeInOutQuart(this.duration, {this.onEnd})
+    : curve = Curves.easeInOutQuart;
 
-  const CurveAnimationConfig.easeInOutQuart({
-    required this.duration,
-    this.onEnd,
-  }) : curve = Curves.easeInOutQuart;
+  const CurveAnimationConfig.easeInOutQuint(this.duration, {this.onEnd})
+    : curve = Curves.easeInOutQuint;
 
-  const CurveAnimationConfig.easeInOutQuint({
-    required this.duration,
-    this.onEnd,
-  }) : curve = Curves.easeInOutQuint;
-
-  const CurveAnimationConfig.easeInOutExpo({required this.duration, this.onEnd})
+  const CurveAnimationConfig.easeInOutExpo(this.duration, {this.onEnd})
     : curve = Curves.easeInOutExpo;
 
-  const CurveAnimationConfig.easeInOutCirc({required this.duration, this.onEnd})
+  const CurveAnimationConfig.easeInOutCirc(this.duration, {this.onEnd})
     : curve = Curves.easeInOutCirc;
 
-  const CurveAnimationConfig.easeInOutBack({required this.duration, this.onEnd})
+  const CurveAnimationConfig.easeInOutBack(this.duration, {this.onEnd})
     : curve = Curves.easeInOutBack;
 
-  const CurveAnimationConfig.fastOutSlowIn({required this.duration, this.onEnd})
+  const CurveAnimationConfig.fastOutSlowIn(this.duration, {this.onEnd})
     : curve = Curves.fastOutSlowIn;
 
-  const CurveAnimationConfig.slowMiddle({required this.duration, this.onEnd})
+  const CurveAnimationConfig.slowMiddle(this.duration, {this.onEnd})
     : curve = Curves.slowMiddle;
 
-  const CurveAnimationConfig.bounceIn({required this.duration, this.onEnd})
+  const CurveAnimationConfig.bounceIn(this.duration, {this.onEnd})
     : curve = Curves.bounceIn;
 
-  const CurveAnimationConfig.bounceOut({required this.duration, this.onEnd})
+  const CurveAnimationConfig.bounceOut(this.duration, {this.onEnd})
     : curve = Curves.bounceOut;
 
-  const CurveAnimationConfig.bounceInOut({required this.duration, this.onEnd})
+  const CurveAnimationConfig.bounceInOut(this.duration, {this.onEnd})
     : curve = Curves.bounceInOut;
 
-  const CurveAnimationConfig.elasticIn({required this.duration, this.onEnd})
+  const CurveAnimationConfig.elasticIn(this.duration, {this.onEnd})
     : curve = Curves.elasticIn;
 
-  const CurveAnimationConfig.elasticOut({required this.duration, this.onEnd})
+  const CurveAnimationConfig.elasticOut(this.duration, {this.onEnd})
     : curve = Curves.elasticOut;
 
-  const CurveAnimationConfig.elasticInOut({required this.duration, this.onEnd})
+  const CurveAnimationConfig.elasticInOut(this.duration, {this.onEnd})
     : curve = Curves.elasticInOut;
 
   @override
