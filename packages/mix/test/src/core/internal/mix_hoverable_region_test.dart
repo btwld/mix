@@ -182,7 +182,7 @@ void main() {
             enabled: false, // This will set disabled to true
             child: Builder(
               builder: (context) {
-                final hasDisabled = WidgetStateProvider.hasState(
+                final hasDisabled = WidgetStateProvider.hasStateOf(
                   context,
                   WidgetState.disabled,
                 );
@@ -203,7 +203,7 @@ void main() {
             enabled: true,
             child: Builder(
               builder: (context) {
-                final hasDisabled = WidgetStateProvider.hasState(
+                final hasDisabled = WidgetStateProvider.hasStateOf(
                   context,
                   WidgetState.disabled,
                 );

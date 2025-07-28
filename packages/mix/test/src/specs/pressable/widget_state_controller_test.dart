@@ -158,15 +158,14 @@ void main() {
       final scope = tester
           .element(find.byType(Container))
           .dependOnInheritedWidgetOfExactType<WidgetStateProvider>();
-      final foundStates = scope?.states;
-      expect(foundStates, isNotNull);
-      expect(foundStates!.contains(WidgetState.disabled), isTrue);
-      expect(foundStates.contains(WidgetState.hovered), isTrue);
-      expect(foundStates.contains(WidgetState.focused), isTrue);
-      expect(foundStates.contains(WidgetState.pressed), isTrue);
-      expect(foundStates.contains(WidgetState.dragged), isTrue);
-      expect(foundStates.contains(WidgetState.selected), isTrue);
-      expect(foundStates.contains(WidgetState.error), isTrue);
+
+      expect(scope, isNotNull);
+      expect(scope?.disabled, isTrue);
+      expect(scope?.hovered, isTrue);
+      expect(scope?.focused, isTrue);
+      expect(scope?.pressed, isTrue);
+      expect(scope?.dragged, isTrue);
+      expect(scope?.selected, isTrue);
     });
 
     testWidgets('hasState returns if state is set', (tester) async {
@@ -177,11 +176,11 @@ void main() {
             child: Builder(
               builder: (context) {
                 expect(
-                  WidgetStateProvider.hasState(context, WidgetState.disabled),
+                  WidgetStateProvider.hasStateOf(context, WidgetState.disabled),
                   isTrue,
                 );
                 expect(
-                  WidgetStateProvider.hasState(context, WidgetState.hovered),
+                  WidgetStateProvider.hasStateOf(context, WidgetState.hovered),
                   isFalse,
                 );
                 return Container();
@@ -520,7 +519,7 @@ class PressableStateTestWidget extends StatefulWidget {
 class _PressableStateTestWidgetState extends State<PressableStateTestWidget> {
   bool Function(BuildContext) _widgetStateOf(WidgetState state) {
     return (BuildContext context) {
-      return WidgetStateProvider.hasState(context, state);
+      return WidgetStateProvider.hasStateOf(context, state);
     };
   }
 

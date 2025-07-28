@@ -124,7 +124,7 @@ final class WidgetStateVariant extends ContextVariant {
 
   WidgetStateVariant(this.state)
     : super('widget_state_${state.name}', (context) {
-        return WidgetStateProvider.watchState(context, state);
+        return WidgetStateProvider.hasStateOf(context, state);
       });
 
   @override

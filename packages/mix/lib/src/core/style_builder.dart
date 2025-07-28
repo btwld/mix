@@ -69,8 +69,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
     final needsToTrackWidgetState =
         widget.controller != null || widgetStates.isNotEmpty;
 
-    final alreadyHasWidgetStateScope =
-        WidgetStateProvider.maybeOf(context) != null;
+    final alreadyHasWidgetStateScope = WidgetStateProvider.of(context) != null;
 
     Widget current = ResolvedStyleBuilder(
       builder: widget.builder,

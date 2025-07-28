@@ -1,52 +1,71 @@
 import 'package:flutter/widgets.dart'
     show WidgetState, InheritedModel, BuildContext, WidgetStatesController;
 
+extension on Set<WidgetState> {
+  bool get hasDisabled => contains(WidgetState.disabled);
+  bool get hasHovered => contains(WidgetState.hovered);
+  bool get hasFocused => contains(WidgetState.focused);
+  bool get hasPressed => contains(WidgetState.pressed);
+  bool get hasDragged => contains(WidgetState.dragged);
+  bool get hasSelected => contains(WidgetState.selected);
+  bool get hasError => contains(WidgetState.error);
+}
+
 class WidgetStateProvider extends InheritedModel<WidgetState> {
-  const WidgetStateProvider({
+  WidgetStateProvider({
     super.key,
-    required this.states,
+    required Set<WidgetState> states,
     required super.child,
-  });
+  }) : disabled = states.hasDisabled,
+       hovered = states.hasHovered,
+       focused = states.hasFocused,
+       pressed = states.hasPressed,
+       dragged = states.hasDragged,
+       selected = states.hasSelected,
+       error = states.hasError;
 
-  /// Gets the [WidgetStateProvider] from the given [context] without establishing a dependency.
-  static WidgetStateProvider? maybeOf(BuildContext context) {
-    return context.getInheritedWidgetOfExactType<WidgetStateProvider>();
-  }
-
-  /// Gets the [WidgetStateProvider] from the given [context] and establishes a dependency.
-  static WidgetStateProvider? of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<WidgetStateProvider>();
-  }
-
-  /// Gets the current widget states from the given [context] without establishing a dependency.
-  static Set<WidgetState> statesOf(BuildContext context) {
-    return maybeOf(context)?.states ?? const {};
-  }
-
-  /// Watches for changes to a specific [state] and returns whether it's currently active.
-  /// 
-  /// This method establishes a dependency on the specific [state], causing the widget
-  /// to rebuild only when that particular state changes.
-  static bool watchState(BuildContext context, WidgetState state) {
-    final provider = InheritedModel.inheritFrom<WidgetStateProvider>(
+  static WidgetStateProvider? of(BuildContext context, [WidgetState? state]) {
+    return InheritedModel.inheritFrom<WidgetStateProvider>(
       context,
       aspect: state,
     );
-    return provider?.states.contains(state) ?? false;
   }
 
-  /// Checks if a specific [state] is currently active without establishing a dependency.
-  /// 
-  /// Use this when you need to check a state without causing rebuilds when it changes.
-  static bool hasState(BuildContext context, WidgetState state) {
-    return statesOf(context).contains(state);
+  static bool hasStateOf(BuildContext context, WidgetState state) {
+    final model = of(context, state);
+    if (model == null) {
+      return false;
+    }
+
+    return switch (state) {
+      WidgetState.disabled => model.disabled,
+      WidgetState.hovered => model.hovered,
+      WidgetState.focused => model.focused,
+      WidgetState.pressed => model.pressed,
+      WidgetState.dragged => model.dragged,
+      WidgetState.selected => model.selected,
+      WidgetState.error => model.error,
+      WidgetState.scrolledUnder => false,
+    };
   }
 
-  final Set<WidgetState> states;
+  final bool disabled;
+  final bool hovered;
+  final bool focused;
+  final bool pressed;
+  final bool dragged;
+  final bool selected;
+  final bool error;
 
   @override
   bool updateShouldNotify(WidgetStateProvider oldWidget) {
-    return true;
+    return oldWidget.disabled != disabled ||
+        oldWidget.hovered != hovered ||
+        oldWidget.focused != focused ||
+        oldWidget.pressed != pressed ||
+        oldWidget.dragged != dragged ||
+        oldWidget.selected != selected ||
+        oldWidget.error != error;
   }
 
   @override
@@ -54,30 +73,13 @@ class WidgetStateProvider extends InheritedModel<WidgetState> {
     WidgetStateProvider oldWidget,
     Set<WidgetState> dependencies,
   ) {
-    // If the states haven't changed at all, no need to notify
-    if (oldWidget.states.length == states.length && 
-        oldWidget.states.containsAll(states)) {
-      return false;
-    }
-    
-    // If there are no dependencies registered, don't notify
-    if (dependencies.isEmpty) {
-      return false;
-    }
-    
-    // Check if any of the states this widget depends on have changed
-    for (final state in dependencies) {
-      final wasActive = oldWidget.states.contains(state);
-      final isActive = states.contains(state);
-      
-      // Notify if the state changed (became active or inactive)
-      if (wasActive != isActive) {
-        return true;
-      }
-    }
-    
-    // No relevant state changes for this widget's dependencies
-    return false;
+    return oldWidget.disabled != disabled && dependencies.hasDisabled ||
+        oldWidget.hovered != hovered && dependencies.hasHovered ||
+        oldWidget.focused != focused && dependencies.hasFocused ||
+        oldWidget.pressed != pressed && dependencies.hasPressed ||
+        oldWidget.dragged != dragged && dependencies.hasDragged ||
+        oldWidget.selected != selected && dependencies.hasSelected ||
+        oldWidget.error != error && dependencies.hasError;
   }
 }
 
