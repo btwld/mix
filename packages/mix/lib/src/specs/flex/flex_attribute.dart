@@ -243,10 +243,10 @@ class FlexMix extends Style<FlexSpec>
     return merge(FlexMix(modifiers: modifiers));
   }
 
-  /// Resolves to [FlexSpec] using the provided [MixContext].
+  /// Resolves to [FlexSpec] using the provided [BuildContext].
   ///
-  /// If a property is null in the [MixContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
+  /// If a property is null in the context, it uses the default value
+  /// defined in the property specification.
   ///
   /// ```dart
   /// final flexSpec = FlexSpecAttribute(...).resolve(mix);

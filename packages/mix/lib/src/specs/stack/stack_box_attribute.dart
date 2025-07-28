@@ -25,8 +25,8 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
     super.modifiers,
     super.animation,
     super.variants,
-    super.inherit,
     super.orderOfModifiers,
+    super.inherit,
   });
 
   /// Factory for box properties
@@ -55,7 +55,7 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
   ///
   /// ```dart
   /// const spec = StackBoxSpec(box: BoxSpec(...), stack: StackSpec(...));
-  /// final attr = StackBoxSpecAttribute.value(spec);
+  /// final attr = StackBoxMix.value(spec);
   /// ```
   static StackBoxMix value(ZBoxSpec spec) {
     return StackBoxMix(
@@ -70,7 +70,7 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
   ///
   /// ```dart
   /// const StackBoxSpec? spec = StackBoxSpec(box: BoxSpec(...), stack: StackSpec(...));
-  /// final attr = StackBoxSpecAttribute.maybeValue(spec); // Returns StackBoxSpecAttribute or null
+  /// final attr = StackBoxMix.maybeValue(spec); // Returns StackBoxMix or null
   /// ```
   static StackBoxMix? maybeValue(ZBoxSpec? spec) {
     return spec != null ? StackBoxMix.value(spec) : null;
@@ -101,11 +101,11 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
 
   /// Resolves to [ZBoxSpec] using the provided [BuildContext].
   ///
-  /// If a property is null in the [BuildContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
+  /// If a property is null in the context, it uses the default value
+  /// defined in the property specification.
   ///
   /// ```dart
-  /// final stackBoxSpec = StackBoxSpecAttribute(...).resolve(context);
+  /// final stackBoxSpec = StackBoxMix(...).resolve(context);
   /// ```
   @override
   ZBoxSpec resolve(BuildContext context) {

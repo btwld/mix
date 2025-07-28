@@ -65,8 +65,8 @@ class StackMix extends Style<StackSpec>
     super.animation,
     super.modifiers,
     super.variants,
-    super.inherit,
     super.orderOfModifiers,
+    super.inherit,
   }) : $alignment = alignment,
        $fit = fit,
        $textDirection = textDirection,
@@ -81,6 +81,7 @@ class StackMix extends Style<StackSpec>
     List<ModifierAttribute>? modifiers,
     List<VariantStyleAttribute<StackSpec>>? variants,
     List<Type>? orderOfModifiers,
+    bool? inherit,
   }) : this.raw(
          alignment: Prop.maybe(alignment),
          fit: Prop.maybe(fit),
@@ -90,6 +91,7 @@ class StackMix extends Style<StackSpec>
          modifiers: modifiers,
          variants: variants,
          orderOfModifiers: orderOfModifiers,
+         inherit: inherit,
        );
 
   /// Constructor that accepts a [StackSpec] value and extracts its properties.
@@ -155,7 +157,7 @@ class StackMix extends Style<StackSpec>
     return merge(StackMix(modifiers: modifiers));
   }
 
-  /// Resolves to [StackSpec] using the provided [MixContext].
+  /// Resolves to [StackSpec] using the provided [BuildContext].
   @override
   StackSpec resolve(BuildContext context) {
     return StackSpec(

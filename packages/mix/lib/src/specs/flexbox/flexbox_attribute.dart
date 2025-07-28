@@ -27,8 +27,8 @@ class FlexBoxMix extends Style<FlexBoxSpec>
     super.animation,
     super.modifiers,
     super.variants,
-    super.inherit,
     super.orderOfModifiers,
+    super.inherit,
   }) : $box = box,
        $flex = flex;
 

@@ -102,7 +102,6 @@ class BoxExampleApp extends StatelessWidget {
                     .animate(.linear(200.ms))
                     .padding(.all(8)),
 
-                    
                 child: const Center(
                   child: Text(
                     'Purple Box',

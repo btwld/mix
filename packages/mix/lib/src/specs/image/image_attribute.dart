@@ -119,6 +119,7 @@ class ImageMix extends Style<ImageSpec>
     List<ModifierAttribute>? modifiers,
     List<VariantStyleAttribute<ImageSpec>>? variants,
     List<Type>? orderOfModifiers,
+    bool? inherit,
   }) : this.raw(
          width: Prop.maybe(width),
          height: Prop.maybe(height),
@@ -133,6 +134,7 @@ class ImageMix extends Style<ImageSpec>
          modifiers: modifiers,
          variants: variants,
          orderOfModifiers: orderOfModifiers,
+         inherit: inherit,
        );
 
   /// Constructor that accepts an [ImageSpec] value and extracts its properties.

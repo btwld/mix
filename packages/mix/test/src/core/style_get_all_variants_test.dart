@@ -794,10 +794,10 @@ class _MockSpecAttribute extends Style<MockSpec> {
     required this.width,
     this.height,
     super.variants,
-    super.orderOfModifiers,
-    super.animation,
-    super.inherit,
     super.modifiers,
+    super.animation,
+    super.orderOfModifiers,
+    super.inherit,
   });
 
   @override
