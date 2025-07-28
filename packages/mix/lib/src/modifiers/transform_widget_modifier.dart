@@ -30,6 +30,14 @@ final class TransformModifierSpec
   }
 
   @override
+  TransformModifierSpecAttribute toAttribute() {
+    return TransformModifierSpecAttribute(
+      transform: transform,
+      alignment: alignment,
+    );
+  }
+
+  @override
   Widget build(Widget child) {
     return Transform(
       transform: transform ?? Matrix4.identity(),

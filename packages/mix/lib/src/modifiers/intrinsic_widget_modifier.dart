@@ -24,6 +24,11 @@ final class IntrinsicHeightModifierSpec
   }
 
   @override
+  IntrinsicHeightModifierSpecAttribute toAttribute() {
+    return const IntrinsicHeightModifierSpecAttribute();
+  }
+
+  @override
   Widget build(Widget child) {
     return IntrinsicHeight(child: child);
   }
@@ -39,6 +44,11 @@ final class IntrinsicWidthModifierSpec
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     _debugFillProperties(properties);
+  }
+
+  @override
+  IntrinsicWidthModifierSpecAttribute toAttribute() {
+    return const IntrinsicWidthModifierSpecAttribute();
   }
 
   @override

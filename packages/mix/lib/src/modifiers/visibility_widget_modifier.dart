@@ -25,6 +25,11 @@ final class VisibilityModifierSpec
   }
 
   @override
+  VisibilityModifierSpecAttribute toAttribute() {
+    return VisibilityModifierSpecAttribute(visible: visible);
+  }
+
+  @override
   Widget build(Widget child) {
     return Visibility(visible: visible, child: child);
   }

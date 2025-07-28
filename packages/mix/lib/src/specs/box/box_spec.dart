@@ -136,6 +136,22 @@ final class BoxSpec extends Spec<BoxSpec> with _$BoxSpec, Diagnosticable {
           );
   }
 
+  BoxSpecAttribute toAttribute() {
+    return BoxSpecAttribute(
+      alignment: alignment,
+      padding: padding?.toDto(),
+      margin: margin?.toDto(),
+      constraints: constraints?.toDto(),
+      decoration: decoration?.toDto(),
+      foregroundDecoration: foregroundDecoration?.toDto(),
+      transform: transform,
+      transformAlignment: transformAlignment,
+      clipBehavior: clipBehavior,
+      width: width,
+      height: height,
+    );
+  }
+
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);

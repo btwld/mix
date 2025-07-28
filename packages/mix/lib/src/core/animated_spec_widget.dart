@@ -11,6 +11,7 @@ class SpecTween<S extends Spec<S>> extends Tween<S?> {
 
   @override
   S? lerp(double t) {
+
     if (begin == null && end == null) return null;
     if (begin == null) return end;
     if (end == null) return begin;

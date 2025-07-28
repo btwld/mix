@@ -27,6 +27,11 @@ final class FlexibleModifierSpec
   }
 
   @override
+  FlexibleModifierSpecAttribute toAttribute() {
+    return FlexibleModifierSpecAttribute(flex: flex, fit: fit);
+  }
+
+  @override
   Widget build(Widget child) {
     return Flexible(
       flex: flex ?? 1,

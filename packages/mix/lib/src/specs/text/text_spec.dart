@@ -136,6 +136,24 @@ final class TextSpec extends Spec<TextSpec> with _$TextSpec, Diagnosticable {
   }
 
   @override
+  TextSpecAttribute toAttribute() {
+    return TextSpecAttribute(
+      overflow: overflow,
+      strutStyle: strutStyle?.toDto(),
+      textAlign: textAlign,
+      textScaleFactor: textScaleFactor,
+      textScaler: textScaler,
+      maxLines: maxLines,
+      style: style?.toDto(),
+      textWidthBasis: textWidthBasis,
+      textHeightBehavior: textHeightBehavior?.toDto(),
+      textDirection: textDirection,
+      softWrap: softWrap,
+      directive: null,
+    );
+  }
+
+  @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     _debugFillProperties(properties);
