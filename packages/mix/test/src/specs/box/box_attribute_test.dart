@@ -983,7 +983,9 @@ void main() {
         test('shapeDecoration utility creates shape decoration attributes', () {
           final attribute = BoxSpecAttribute();
 
-          final colorAttr = attribute.shapeDecoration(color: Colors.orange);
+          final colorAttr = attribute.decoration(
+            ShapeDecorationMix(color: Colors.orange),
+          );
           expect(colorAttr, isA<BoxSpecAttribute>());
           expect(colorAttr.$decoration, isNotNull);
         });

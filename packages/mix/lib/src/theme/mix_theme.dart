@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../material/material_theme.dart';
-import '../tokens/mix_token.dart';
-import '../tokens/value_resolver.dart';
+import 'material/material_theme.dart';
+import 'tokens/mix_token.dart';
+import 'tokens/value_resolver.dart';
 
 /// Inherited widget that provides Mix theme data and token resolution to its descendants.
 ///

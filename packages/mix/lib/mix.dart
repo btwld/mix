@@ -128,7 +128,7 @@ export 'src/specs/text/text_widget.dart';
 /// THEME
 export 'src/theme/material/material_theme.dart';
 export 'src/theme/material/material_tokens.dart';
-export 'src/theme/mix/mix_theme.dart';
+export 'src/theme/mix_theme.dart';
 export 'src/theme/tokens/mix_token.dart';
 export 'src/theme/tokens/token_refs.dart';
 export 'src/theme/tokens/value_resolver.dart';

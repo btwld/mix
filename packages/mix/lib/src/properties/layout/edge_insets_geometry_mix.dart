@@ -40,12 +40,7 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
     double? top,
     double? bottom,
   }) {
-    return EdgeInsetsMix(
-      top: top,
-      bottom: bottom,
-      left: left,
-      right: right,
-    );
+    return EdgeInsetsMix(top: top, bottom: bottom, left: left, right: right);
   }
 
   /// Creates [EdgeInsetsDirectional] with only the given values non-zero.
@@ -104,8 +99,7 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
   static EdgeInsetsMix top(double value) => EdgeInsetsMix(top: value);
 
   /// Creates edge insets with only the bottom offset specified.
-  static EdgeInsetsMix bottom(double value) =>
-      EdgeInsetsMix(bottom: value);
+  static EdgeInsetsMix bottom(double value) => EdgeInsetsMix(bottom: value);
 
   /// Creates edge insets with only the left offset specified.
   static EdgeInsetsMix left(double value) => EdgeInsetsMix(left: value);
@@ -302,12 +296,7 @@ final class EdgeInsetsDirectionalMix
     : this(top: value, bottom: value, start: value, end: value);
 
   EdgeInsetsDirectionalMix.symmetric({double? vertical, double? horizontal})
-    : this(
-        top: vertical,
-        bottom: vertical,
-        start: horizontal,
-        end: horizontal,
-      );
+    : this(top: vertical, bottom: vertical, start: horizontal, end: horizontal);
 
   EdgeInsetsDirectionalMix.fromSTEB(
     double start,

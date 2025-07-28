@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../theme/mix/mix_theme.dart';
-import '../theme/tokens/mix_token.dart';
 import '../animation/animation_config.dart';
+import '../theme/mix_theme.dart';
+import '../theme/tokens/mix_token.dart';
 import 'directive.dart';
 import 'mix_element.dart';
 

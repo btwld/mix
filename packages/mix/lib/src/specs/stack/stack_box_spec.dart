@@ -111,6 +111,16 @@ class StackBoxSpecAttribute extends StyleAttribute<ZBoxSpec>
     return spec != null ? StackBoxSpecAttribute.value(spec) : null;
   }
 
+  StackBoxSpecAttribute modifiers(List<ModifierAttribute> modifiers) {
+    return merge(StackBoxSpecAttribute(modifiers: modifiers));
+  }
+
+  StackBoxSpecAttribute variants(
+    List<VariantStyleAttribute<ZBoxSpec>> variants,
+  ) {
+    return merge(StackBoxSpecAttribute(variants: variants));
+  }
+
   /// Resolves to [ZBoxSpec] using the provided [BuildContext].
   ///
   /// If a property is null in the [BuildContext], it falls back to the
@@ -122,16 +132,6 @@ class StackBoxSpecAttribute extends StyleAttribute<ZBoxSpec>
   @override
   ZBoxSpec resolve(BuildContext context) {
     return ZBoxSpec(box: box?.resolve(context), stack: stack?.resolve(context));
-  }
-
-  StackBoxSpecAttribute modifiers(List<ModifierAttribute> modifiers) {
-    return merge(StackBoxSpecAttribute(modifiers: modifiers));
-  }
-
-  StackBoxSpecAttribute variants(
-    List<VariantStyleAttribute<ZBoxSpec>> variants,
-  ) {
-    return merge(StackBoxSpecAttribute(variants: variants));
   }
 
   /// Merges the properties of this [StackBoxSpecAttribute] with the properties of [other].

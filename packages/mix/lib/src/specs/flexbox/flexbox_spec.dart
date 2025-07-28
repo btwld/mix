@@ -120,6 +120,12 @@ class FlexBoxSpecAttribute extends StyleAttribute<FlexBoxSpec>
   BoxSpecAttribute? get box => $box;
   FlexSpecAttribute? get flex => $flex;
 
+  FlexBoxSpecAttribute variants(
+    List<VariantStyleAttribute<FlexBoxSpec>> variants,
+  ) {
+    return merge(FlexBoxSpecAttribute(variants: variants));
+  }
+
   /// Resolves to [FlexBoxSpec] using the provided [MixContext].
   ///
   /// If a property is null in the [MixContext], it falls back to the
@@ -139,12 +145,6 @@ class FlexBoxSpecAttribute extends StyleAttribute<FlexBoxSpec>
   @override
   FlexBoxSpecAttribute modifiers(List<ModifierAttribute> modifiers) {
     return merge(FlexBoxSpecAttribute(modifiers: modifiers));
-  }
-
-  FlexBoxSpecAttribute variants(
-    List<VariantStyleAttribute<FlexBoxSpec>> variants,
-  ) {
-    return merge(FlexBoxSpecAttribute(variants: variants));
   }
 
   /// Merges the properties of this [FlexBoxSpecAttribute] with the properties of [other].

@@ -2,7 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../../theme/mix/mix_theme.dart';
+import '../../theme/mix_theme.dart';
 
 /// A collection of extension methods for the `String` class and `List<String>` class.
 /// These methods provide various string manipulation functionalities such as converting

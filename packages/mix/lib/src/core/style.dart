@@ -351,8 +351,8 @@ class Style extends StyleAttribute<MultiSpec> {
     return Style._(
       attributes: _attributes.values.toList(),
       animation: AnimationConfig.curve(
-        curve: curve ?? Curves.linear,
         duration: duration ?? kDefaultAnimationDuration,
+        curve: curve ?? Curves.linear,
       ),
       modifiers: $modifiers,
       variants: $variants,

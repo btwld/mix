@@ -29,7 +29,9 @@ final class BorderUtility<T extends StyleAttribute<Object?>>
     (v) => call(BorderMix.raw(top: v, bottom: v, left: v, right: v)),
   );
 
-  late final bottom = BorderSideUtility<T>((v) => call(BorderMix.raw(bottom: v)));
+  late final bottom = BorderSideUtility<T>(
+    (v) => call(BorderMix.raw(bottom: v)),
+  );
 
   late final top = BorderSideUtility<T>((v) => call(BorderMix.raw(top: v)));
 
@@ -63,9 +65,7 @@ final class BorderUtility<T extends StyleAttribute<Object?>>
     BorderSideMix? left,
     BorderSideMix? right,
   }) {
-    return call(
-      BorderMix(top: top, bottom: bottom, left: left, right: right),
-    );
+    return call(BorderMix(top: top, bottom: bottom, left: left, right: right));
   }
 
   @override
@@ -116,12 +116,7 @@ final class BorderDirectionalUtility<T extends StyleAttribute<Object?>>
     BorderSideMix? end,
   }) {
     return call(
-      BorderDirectionalMix(
-        top: top,
-        bottom: bottom,
-        start: start,
-        end: end,
-      ),
+      BorderDirectionalMix(top: top, bottom: bottom, start: start, end: end),
     );
   }
 

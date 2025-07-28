@@ -14,7 +14,6 @@ import 'gradient_mix.dart';
 import 'gradient_util.dart';
 import 'shadow_mix.dart';
 import 'shadow_util.dart';
-import 'shape_border_mix.dart';
 import 'shape_border_util.dart';
 
 class DecorationUtility<T extends StyleAttribute<Object?>>
@@ -193,25 +192,6 @@ mixin DecorationMixin<T extends StyleAttribute<S>, S extends Spec<S>>
   /// This is the complex method similar to corners/insets
   T boxDecoration(BoxDecorationMix value) {
     return decoration(value);
-  }
-
-  /// Creates a shape decoration with specified properties
-  T shapeDecoration({
-    ShapeBorderMix? shape,
-    Color? color,
-    DecorationImageMix? image,
-    GradientMix? gradient,
-    List<BoxShadowMix>? shadows,
-  }) {
-    return decoration(
-      ShapeDecorationMix(
-        shape: shape,
-        color: color,
-        image: image,
-        gradient: gradient,
-        shadows: shadows,
-      ),
-    );
   }
 }
 

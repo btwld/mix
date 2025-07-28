@@ -6,7 +6,7 @@
 library;
 
 import '../../core/internal/internal_extensions.dart';
-import '../mix/mix_theme.dart';
+import '../mix_theme.dart';
 import 'material_tokens.dart';
 
 const _md = MaterialTokens();

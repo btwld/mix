@@ -38,7 +38,7 @@ class BoxExampleApp extends StatelessWidget {
                 style: BoxMix()
                     .color(Colors.red)
                     .width(100)
-                    .height(100)
+                    .height(200)
                     .borderRadius(.circular(8)),
               ),
 

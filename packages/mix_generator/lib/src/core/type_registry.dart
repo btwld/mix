@@ -339,10 +339,7 @@ class TypeReference {
 }
 
 /// List of utility types that should be ignored in certain contexts
-final ignoredUtilities = [
-  'SpacingSideUtility',
-  'FontSizeUtility',
-];
+final ignoredUtilities = ['SpacingSideUtility', 'FontSizeUtility'];
 
 /// Map of resolvable class names to their corresponding Flutter type names
 final resolvables = {
