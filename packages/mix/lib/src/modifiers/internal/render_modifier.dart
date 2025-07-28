@@ -27,7 +27,11 @@ const _defaultOrder = [
   // none of the subsequent decorations are processed, providing an early exit and optimizing performance.
   VisibilityModifier,
 
-  // 3. SizedBoxModifier: Explicitly sets the size of the widget before any other transformations are applied.
+  // 3. IconThemeModifier: Provides default icon properties to descendant Icon widgets.
+  // Applied early to establish theme context before any layout or visual modifications.
+  IconThemeModifier,
+
+  // 4. SizedBoxModifier: Explicitly sets the size of the widget before any other transformations are applied.
   // This ensures that the widget occupies a predetermined space, which is crucial for layouts that require exact dimensions.
   SizedBoxModifier,
 
