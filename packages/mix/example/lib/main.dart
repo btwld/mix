@@ -97,6 +97,7 @@ class BoxExampleApp extends StatelessWidget {
                       .color(Colors.red)
                       .translate(5, 5)                      
                     )
+                    .wrapOpacity(0.2)
                     .borderRadius(.circular(20))
                     .animate(.linear(200.ms))
                     .padding(.all(8)),

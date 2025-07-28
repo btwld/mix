@@ -339,6 +339,8 @@ mixin VariantMixin<T extends StyleAttribute<S>, S extends Spec<S>>
   /// Must be implemented by the class using this mixin
   T variant(Variant variant, T style);
 
+  T variants(List<VariantStyleAttribute<S>> value);
+
   /// Creates a variant for dark mode
   T onDark(T style) {
     return variant(ContextVariant.platformBrightness(Brightness.dark), style);
@@ -357,10 +359,10 @@ mixin VariantMixin<T extends StyleAttribute<S>, S extends Spec<S>>
   T onHovered(T style) {
     return variant(ContextVariant.widgetState(WidgetState.hovered), style);
   }
-
-  T onContext(T Function(BuildContext context) builder) {
-    return variant(ContextVariantBuilder(builder));
-  }
+  // TODO: Implement onContext()
+  // T onContext(T Function(BuildContext context) builder) {
+  //   return variants(ContextVariantBuilder(builder));
+  // }
 
   /// Creates a variant for pressed state
   T onPressed(T style) {

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
+import '../../core/spec.dart';
 import '../../core/style.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/layout/constraints_mix.dart';
@@ -18,6 +19,10 @@ import '../../properties/painting/shape_border_mix.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'box_spec.dart';
+
+abstract class StyleMixAttribute<T extends StyleAttribute<S>, S extends Spec<S>>
+    extends StyleAttribute<S>
+    with ModifierMixin<T, S>, VariantMixin<T, S> {}
 
 /// Attribute class for configuring [BoxSpec] properties.
 ///

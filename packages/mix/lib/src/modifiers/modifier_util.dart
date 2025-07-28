@@ -313,9 +313,7 @@ mixin ModifierMixin<T extends StyleAttribute<S>, S extends Spec<S>>
 
   /// Wraps the widget with a mouse cursor modifier
   T wrapMouseCursor(MouseCursor cursor) {
-    return modifiers([
-      MouseCursorDecoratorSpecAttribute(mouseCursor: cursor),
-    ]);
+    return modifiers([MouseCursorDecoratorSpecAttribute(mouseCursor: cursor)]);
   }
 
   /// Wraps the widget with a default text style modifier

@@ -28,7 +28,6 @@ class FlexBox extends StyleWidget<FlexBoxSpec> {
   const FlexBox({
     super.style,
     super.key,
-
     required this.direction,
     this.children = const <Widget>[],
     super.orderOfModifiers,
