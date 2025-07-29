@@ -253,6 +253,31 @@ final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
     return BorderRadiusMix.all(Radius.circular(radius));
   }
 
+  /// Creates a border radius with the specified top-left corner.
+  factory BorderRadiusMix.topLeft(Radius radius) {
+    return BorderRadiusMix(topLeft: radius);
+  }
+
+  /// Creates a border radius with the specified top-right corner.
+  factory BorderRadiusMix.topRight(Radius radius) {
+    return BorderRadiusMix(topRight: radius);
+  }
+
+  /// Creates a border radius with the specified bottom-left corner.
+  factory BorderRadiusMix.bottomLeft(Radius radius) {
+    return BorderRadiusMix(bottomLeft: radius);
+  }
+
+  /// Creates a border radius with the specified bottom-right corner.
+  factory BorderRadiusMix.bottomRight(Radius radius) {
+    return BorderRadiusMix(bottomRight: radius);
+  }
+
+  /// Creates a border radius with the specified elliptical radius for all corners.
+  factory BorderRadiusMix.elliptical(double xRadius, double yRadius) {
+    return BorderRadiusMix.all(Radius.elliptical(xRadius, yRadius));
+  }
+
   /// Creates a [BorderRadiusMix] from a nullable [BorderRadius].
   ///
   /// Returns null if the input is null.
@@ -357,6 +382,47 @@ final class BorderRadiusDirectionalMix
        $topEnd = topEnd,
        $bottomStart = bottomStart,
        $bottomEnd = bottomEnd;
+
+  /// Creates a border radius with all corners having the same circular radius.
+  factory BorderRadiusDirectionalMix.circular(double radius) {
+    return BorderRadiusDirectionalMix.all(Radius.circular(radius));
+  }
+
+  /// Creates a border radius with the specified top-start corner.
+  factory BorderRadiusDirectionalMix.topStart(Radius radius) {
+    return BorderRadiusDirectionalMix(topStart: radius);
+  }
+
+  /// Creates a border radius with the specified top-end corner.
+  factory BorderRadiusDirectionalMix.topEnd(Radius radius) {
+    return BorderRadiusDirectionalMix(topEnd: radius);
+  }
+
+  /// Creates a border radius with the specified bottom-start corner.
+  factory BorderRadiusDirectionalMix.bottomStart(Radius radius) {
+    return BorderRadiusDirectionalMix(bottomStart: radius);
+  }
+
+  /// Creates a border radius with the specified bottom-end corner.
+  factory BorderRadiusDirectionalMix.bottomEnd(Radius radius) {
+    return BorderRadiusDirectionalMix(bottomEnd: radius);
+  }
+
+  /// Creates a border radius with the specified elliptical radius for all corners.
+  factory BorderRadiusDirectionalMix.elliptical(
+    double xRadius,
+    double yRadius,
+  ) {
+    return BorderRadiusDirectionalMix.all(Radius.elliptical(xRadius, yRadius));
+  }
+
+  BorderRadiusDirectionalMix.all(Radius radius)
+    : this(
+        topStart: radius,
+        topEnd: radius,
+        bottomStart: radius,
+        bottomEnd: radius,
+      );
 
   /// Creates a [BorderRadiusDirectionalMix] from a nullable [BorderRadiusDirectional].
   ///

@@ -69,17 +69,17 @@ class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
 
   /// Returns a copy with the specified color.
   ShadowMix color(Color value) {
-    return merge(ShadowMix(color: value));
+    return merge(ShadowMix.color(value));
   }
 
   /// Returns a copy with the specified offset.
   ShadowMix offset(Offset value) {
-    return merge(ShadowMix(offset: value));
+    return merge(ShadowMix.offset(value));
   }
 
   /// Returns a copy with the specified blur radius.
   ShadowMix blurRadius(double value) {
-    return merge(ShadowMix(blurRadius: value));
+    return merge(ShadowMix.blurRadius(value));
   }
 
   /// Resolves to [Shadow] using the provided [BuildContext].
@@ -184,22 +184,22 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
 
   /// Returns a copy with the specified color.
   BoxShadowMix color(Color value) {
-    return merge(BoxShadowMix(color: value));
+    return merge(BoxShadowMix.color(value));
   }
 
   /// Returns a copy with the specified offset.
   BoxShadowMix offset(Offset value) {
-    return merge(BoxShadowMix(offset: value));
+    return merge(BoxShadowMix.offset(value));
   }
 
   /// Returns a copy with the specified blur radius.
   BoxShadowMix blurRadius(double value) {
-    return merge(BoxShadowMix(blurRadius: value));
+    return merge(BoxShadowMix.blurRadius(value));
   }
 
   /// Returns a copy with the specified spread radius.
   BoxShadowMix spreadRadius(double value) {
-    return merge(BoxShadowMix(spreadRadius: value));
+    return merge(BoxShadowMix.spreadRadius(value));
   }
 
   /// Resolves to [BoxShadow] using the provided [BuildContext].

@@ -105,8 +105,43 @@ final class RoundedRectangleBorderMix
         side: BorderSideMix.maybeValue(border.side),
       );
 
+  /// Creates a rounded rectangle border with the specified border radius.
+  factory RoundedRectangleBorderMix.borderRadius(
+    BorderRadiusGeometryMix value,
+  ) {
+    return RoundedRectangleBorderMix(borderRadius: value);
+  }
+
+  /// Creates a rounded rectangle border with the specified border side.
+  factory RoundedRectangleBorderMix.side(BorderSideMix value) {
+    return RoundedRectangleBorderMix(side: value);
+  }
+
+  /// Creates a rounded rectangle border with circular radius.
+  factory RoundedRectangleBorderMix.circular(double radius) {
+    return RoundedRectangleBorderMix(
+      borderRadius: BorderRadiusMix.circular(radius),
+    );
+  }
+
   static RoundedRectangleBorderMix? maybeValue(RoundedRectangleBorder? border) {
     return border != null ? RoundedRectangleBorderMix.value(border) : null;
+  }
+
+  /// Returns a copy with the specified border radius.
+  RoundedRectangleBorderMix borderRadius(BorderRadiusGeometryMix value) {
+    return RoundedRectangleBorderMix.raw(
+      borderRadius: MixProp(value),
+      side: $side,
+    );
+  }
+
+  /// Returns a copy with the specified border side.
+  RoundedRectangleBorderMix side(BorderSideMix value) {
+    return RoundedRectangleBorderMix.raw(
+      borderRadius: $borderRadius,
+      side: MixProp(value),
+    );
   }
 
   @override
@@ -153,7 +188,9 @@ final class RoundedSuperellipseBorderMix
         side: BorderSideMix.maybeValue(border.side),
       );
 
-  static RoundedSuperellipseBorderMix? maybeValue(RoundedSuperellipseBorder? border) {
+  static RoundedSuperellipseBorderMix? maybeValue(
+    RoundedSuperellipseBorder? border,
+  ) {
     return border != null ? RoundedSuperellipseBorderMix.value(border) : null;
   }
 
@@ -167,7 +204,9 @@ final class RoundedSuperellipseBorderMix
   }
 
   @override
-  RoundedSuperellipseBorderMix mergeShapeBorder(RoundedSuperellipseBorderMix other) {
+  RoundedSuperellipseBorderMix mergeShapeBorder(
+    RoundedSuperellipseBorderMix other,
+  ) {
     return RoundedSuperellipseBorderMix.raw(
       borderRadius: MixHelpers.merge($borderRadius, other.$borderRadius),
       side: MixHelpers.merge($side, other.$side),
@@ -299,8 +338,31 @@ final class CircleBorderMix extends OutlinedBorderMix<CircleBorder> {
         eccentricity: border.eccentricity,
       );
 
+  /// Creates a circle border with the specified border side.
+  factory CircleBorderMix.side(BorderSideMix value) {
+    return CircleBorderMix(side: value);
+  }
+
+  /// Creates a circle border with the specified eccentricity.
+  factory CircleBorderMix.eccentricity(double value) {
+    return CircleBorderMix(eccentricity: value);
+  }
+
   static CircleBorderMix? maybeValue(CircleBorder? border) {
     return border != null ? CircleBorderMix.value(border) : null;
+  }
+
+  /// Returns a copy with the specified border side.
+  CircleBorderMix side(BorderSideMix value) {
+    return CircleBorderMix.raw(
+      side: MixProp(value),
+      eccentricity: $eccentricity,
+    );
+  }
+
+  /// Returns a copy with the specified eccentricity.
+  CircleBorderMix eccentricity(double value) {
+    return CircleBorderMix.raw(side: $side, eccentricity: Prop(value));
   }
 
   @override

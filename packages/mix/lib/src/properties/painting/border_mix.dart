@@ -246,22 +246,22 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
 
   /// Returns a copy with the specified top border side.
   BorderMix top(BorderSideMix side) {
-    return merge(BorderMix(top: side));
+    return merge(BorderMix.top(side));
   }
 
   /// Returns a copy with the specified bottom border side.
   BorderMix bottom(BorderSideMix side) {
-    return merge(BorderMix(bottom: side));
+    return merge(BorderMix.bottom(side));
   }
 
   /// Returns a copy with the specified left border side.
   BorderMix left(BorderSideMix side) {
-    return merge(BorderMix(left: side));
+    return merge(BorderMix.left(side));
   }
 
   /// Returns a copy with the specified right border side.
   BorderMix right(BorderSideMix side) {
-    return merge(BorderMix(right: side));
+    return merge(BorderMix.right(side));
   }
 
   /// Resolves to [Border] using the provided [BuildContext].
@@ -407,22 +407,22 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
 
   /// Returns a copy with the specified top border side.
   BorderDirectionalMix top(BorderSideMix side) {
-    return merge(BorderDirectionalMix(top: side));
+    return merge(BorderDirectionalMix.top(side));
   }
 
   /// Returns a copy with the specified bottom border side.
   BorderDirectionalMix bottom(BorderSideMix side) {
-    return merge(BorderDirectionalMix(bottom: side));
+    return merge(BorderDirectionalMix.bottom(side));
   }
 
   /// Returns a copy with the specified start border side.
   BorderDirectionalMix start(BorderSideMix side) {
-    return merge(BorderDirectionalMix(start: side));
+    return merge(BorderDirectionalMix.start(side));
   }
 
   /// Returns a copy with the specified end border side.
   BorderDirectionalMix end(BorderSideMix side) {
-    return merge(BorderDirectionalMix(end: side));
+    return merge(BorderDirectionalMix.end(side));
   }
 
   /// Resolves to [BorderDirectional] using the provided [BuildContext].
@@ -554,22 +554,22 @@ final class BorderSideMix extends Mix<BorderSide>
 
   /// Returns a copy with the specified color.
   BorderSideMix color(Color value) {
-    return merge(BorderSideMix(color: value));
+    return merge(BorderSideMix.color(value));
   }
 
   /// Returns a copy with the specified width.
   BorderSideMix width(double value) {
-    return merge(BorderSideMix(width: value));
+    return merge(BorderSideMix.width(value));
   }
 
   /// Returns a copy with the specified border style.
   BorderSideMix style(BorderStyle value) {
-    return merge(BorderSideMix(style: value));
+    return merge(BorderSideMix.style(value));
   }
 
   /// Returns a copy with the specified stroke alignment.
   BorderSideMix strokeAlign(double value) {
-    return merge(BorderSideMix(strokeAlign: value));
+    return merge(BorderSideMix.strokeAlign(value));
   }
 
   /// Resolves to [BorderSide] using the provided [BuildContext].
