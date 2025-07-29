@@ -20,7 +20,7 @@ ColorMix.red;
 
 
                                     final decoration = BoxDecorationMix()
-                                      .color(ColorMix.blue)
+                                      .color(Colors.blue)
                                       .borderRadius(.circular(10))
                                       .gradient(
                                         .linear(

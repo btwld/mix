@@ -187,13 +187,6 @@ extension ListExt<T> on List<T> {
 
 /// Extensions for color transformations in Flutter, using HSL for perceptual accuracy.
 extension ColorExtensions on Color {
-  /// Mixes this color with [toColor] by [amount] percent (0-100).
-  Color mix(Color toColor, [int amount = 50]) {
-    final p = _normalizeAmount(amount);
-
-    return Color.lerp(this, toColor, p)!;
-  }
-
   /// Lightens the color by increasing lightness in HSL space by [amount] percent.
   Color lighten([int amount = 10]) {
     final p = _normalizeAmount(amount);
@@ -229,10 +222,16 @@ extension ColorExtensions on Color {
   }
 
   /// Tints the color by mixing with white by [amount] percent.
-  Color tint([int amount = 10]) => mix(Colors.white, amount);
+  Color tint([int amount = 10]) {
+    final p = _normalizeAmount(amount);
+    return Color.lerp(this, Colors.white, p)!;
+  }
 
   /// Shades the color by mixing with black by [amount] percent.
-  Color shade([int amount = 10]) => mix(Colors.black, amount);
+  Color shade([int amount = 10]) {
+    final p = _normalizeAmount(amount);
+    return Color.lerp(this, Colors.black, p)!;
+  }
 
   /// Desaturates the color by decreasing saturation in HSL space by [amount] percent.
   Color desaturate([int amount = 10]) {

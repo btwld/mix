@@ -621,6 +621,3 @@ class ColorValues {
   const ColorValues._();
 }
 
-extension ColorExt on Color {
-  ColorMix mix() => ColorMix(this);
-}
