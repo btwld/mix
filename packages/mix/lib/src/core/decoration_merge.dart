@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../properties/painting/border_mix.dart';
-import '../properties/painting/border_radius_mix.dart';
 import '../properties/painting/decoration_mix.dart';
 import '../properties/painting/shape_border_mix.dart';
 import 'prop.dart';
@@ -81,11 +80,11 @@ class DecorationMerger {
     required MixProp<BorderRadiusGeometry>? borderRadius,
   }) {
     // Extract border side if available and safe to access
-    BorderSideMix? side;
-    if (border?.hasValue == true) {
-      final borderValue = border!.value as BoxBorderMix;
+    MixProp<BorderSide>? side;
+    final borderValue = border?.value;
+    if (borderValue is BoxBorderMix) {
       if (borderValue.isUniform) {
-        side = borderValue.uniformBorderSide?.value as BorderSideMix?;
+        side = borderValue.uniformBorderSide;
       }
     }
 
@@ -94,17 +93,14 @@ class DecorationMerger {
       final boxShape = (shape as Prop<BoxShape>).value;
       switch (boxShape) {
         case BoxShape.circle:
-          return side != null ? MixProp(CircleBorderMix(side: side)) : null;
+          return side != null ? MixProp(CircleBorderMix.raw(side: side)) : null;
         case BoxShape.rectangle:
           if (side != null || borderRadius != null) {
-            // For borderRadius, we need to be careful about token access
-            BorderRadiusGeometryMix? radiusMix;
-            if (borderRadius?.hasValue == true) {
-              radiusMix = borderRadius!.value as BorderRadiusGeometryMix;
-            }
-
             return MixProp(
-              RoundedRectangleBorderMix(borderRadius: radiusMix, side: side),
+              RoundedRectangleBorderMix.raw(
+                borderRadius: borderRadius,
+                side: side,
+              ),
             );
           }
 
@@ -114,13 +110,8 @@ class DecorationMerger {
 
     // Default to rectangle shape if no specific shape
     if (side != null || borderRadius != null) {
-      BorderRadiusGeometryMix? radiusMix;
-      if (borderRadius?.hasValue == true) {
-        radiusMix = borderRadius!.value as BorderRadiusGeometryMix;
-      }
-
       return MixProp(
-        RoundedRectangleBorderMix(borderRadius: radiusMix, side: side),
+        RoundedRectangleBorderMix.raw(borderRadius: borderRadius, side: side),
       );
     }
 
