@@ -1,0 +1,33 @@
+import 'package:flutter/material.dart';
+import 'package:mix/mix.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: Scaffold(body: Center(child: Example())),
+    );
+  }
+}
+
+class Example extends StatelessWidget {
+  const Example({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final style = Style.box()
+        .color(Colors.red)
+        .height(100)
+        .width(100)
+        .borderRadius(BorderRadiusMix.all(Radius.circular(10)))
+        .onHovered(BoxMix.color(Colors.blue));
+
+    return Box(style: style);
+  }
+}
