@@ -302,6 +302,12 @@ void main() {
       });
 
       testWidgets('Custom modifier order is respected', (tester) async {
+        const customOrder = [
+          OpacityModifier,
+          ClipOvalModifier,
+          PaddingModifier,
+        ];
+        
         final boxAttribute = BoxMix.width(100)
             .height(100)
             .color(Colors.blue)
@@ -312,19 +318,13 @@ void main() {
                   padding: EdgeInsetsGeometryMix.all(10),
                 ),
                 ClipOvalModifierAttribute(),
-              ]),
+              ]).orderOfModifiers(customOrder),
             );
-
-        const customOrder = [
-          OpacityModifier,
-          ClipOvalModifier,
-          PaddingModifier,
-        ];
 
         await tester.pumpWidget(
           MaterialApp(
             home: StyleBuilder<BoxSpec>(
-              style: boxAttribute.orderOfModifiers(customOrder),
+              style: boxAttribute,
               builder: (context, spec) {
                 return Container(
                   decoration: spec?.decoration,

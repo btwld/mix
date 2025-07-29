@@ -81,7 +81,6 @@ class StackMix extends Style<StackSpec>
     AnimationConfig? animation,
     ModifierConfig? modifierConfig,
     List<VariantStyleAttribute<StackSpec>>? variants,
-    List<Type>? orderOfModifiers,
     bool? inherit,
   }) : this.raw(
          alignment: Prop.maybe(alignment),

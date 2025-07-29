@@ -274,7 +274,6 @@ class TextMix extends Style<TextSpec>
     AnimationConfig? animation,
     ModifierConfig? modifierConfig,
     List<VariantStyleAttribute<TextSpec>>? variants,
-    List<Type>? orderOfModifiers,
     bool? inherit,
   }) : this.raw(
          overflow: Prop.maybe(overflow),

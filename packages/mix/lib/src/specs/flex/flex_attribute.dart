@@ -126,7 +126,6 @@ class FlexMix extends Style<FlexSpec>
     AnimationConfig? animation,
     ModifierConfig? modifierConfig,
     List<VariantStyleAttribute<FlexSpec>>? variants,
-    List<Type>? orderOfModifiers,
     bool? inherit,
   }) : this.raw(
          direction: Prop.maybe(direction),

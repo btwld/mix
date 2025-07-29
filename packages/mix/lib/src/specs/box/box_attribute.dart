@@ -185,7 +185,6 @@ class BoxMix extends Style<BoxSpec>
     AnimationConfig? animation,
     ModifierConfig? modifierConfig,
     List<VariantStyleAttribute<BoxSpec>>? variants,
-    List<Type>? orderOfModifiers,
     bool? inherit,
   }) : this.raw(
          alignment: Prop.maybe(alignment),
@@ -256,9 +255,6 @@ class BoxMix extends Style<BoxSpec>
     return constraints(BoxConstraintsMix.width(value));
   }
 
-  BoxMix orderOfModifiers(List<Type> value) {
-    return merge(BoxMix(orderOfModifiers: value));
-  }
 
   /// Sets both min and max height to create a fixed height
   BoxMix height(double value) {

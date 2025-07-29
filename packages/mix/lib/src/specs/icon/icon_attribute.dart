@@ -125,7 +125,6 @@ class IconMix extends Style<IconSpec>
     AnimationConfig? animation,
     ModifierConfig? modifierConfig,
     List<VariantStyleAttribute<IconSpec>>? variants,
-    List<Type>? orderOfModifiers,
     bool? inherit,
   }) : this.raw(
          color: Prop.maybe(color),

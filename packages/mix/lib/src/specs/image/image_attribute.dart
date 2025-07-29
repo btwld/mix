@@ -119,7 +119,6 @@ class ImageMix extends Style<ImageSpec>
     AnimationConfig? animation,
     ModifierConfig? modifierConfig,
     List<VariantStyleAttribute<ImageSpec>>? variants,
-    List<Type>? orderOfModifiers,
     bool? inherit,
   }) : this.raw(
          width: Prop.maybe(width),

@@ -102,7 +102,6 @@ class ResolvedStyleBuilder<S extends Spec<S>> extends StatelessWidget {
       // Apply modifiers if any
       current = RenderModifiers(
         modifiers: resolvedStyle.modifiers!,
-        orderOfModifiers: resolvedStyle.orderOfModifiers,
         child: current,
       );
     }

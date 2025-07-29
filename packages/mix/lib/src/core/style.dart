@@ -177,16 +177,12 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
 
     final resolvedSpec = styleData.resolve(context);
     final resolvedAnimation = styleData.$animation;
-    final resolvedModifiers = styleData.$modifierConfig?.$modifiers
-        ?.map((modifier) => modifier.resolve(context))
-        .whereType<Modifier>()
-        .toList();
+    final resolvedModifiers = styleData.$modifierConfig?.resolve(context);
 
     return ResolvedStyle(
       spec: resolvedSpec,
       animation: resolvedAnimation,
       modifiers: resolvedModifiers,
-
       inherit: styleData.$inherit,
     );
   }
