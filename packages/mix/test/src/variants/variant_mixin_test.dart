@@ -10,7 +10,6 @@ class TestVariantAttribute extends Style<BoxSpec>
     super.modifierConfig,
     super.animation,
     super.inherit,
-    super.orderOfModifiers,
   });
 
   @override

@@ -4,19 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 import '../../core/modifier.dart';
-import '../align_modifier.dart';
-import '../aspect_ratio_modifier.dart';
-import '../clip_modifier.dart';
-import '../flexible_modifier.dart';
-import '../fractionally_sized_box_modifier.dart';
-import '../icon_theme_modifier.dart';
-import '../intrinsic_modifier.dart';
-import '../opacity_modifier.dart';
-import '../padding_modifier.dart';
-import '../rotated_box_modifier.dart';
-import '../sized_box_modifier.dart';
-import '../transform_modifier.dart';
-import '../visibility_modifier.dart';
 
 // Note: The default ordering of modifiers has been moved to ModifierConfig._defaultOrder
 
@@ -25,7 +12,8 @@ class RenderModifiers extends StatelessWidget {
   const RenderModifiers({
     required this.child,
     required this.modifiers,
-    @Deprecated('Use ModifierConfig to specify ordering') List<Type>? orderOfModifiers,
+    @Deprecated('Use ModifierConfig to specify ordering')
+    List<Type>? orderOfModifiers,
     super.key,
   });
 
@@ -34,10 +22,7 @@ class RenderModifiers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _RenderModifiers(
-      modifiers: modifiers.reversed,
-      child: child,
-    );
+    return _RenderModifiers(modifiers: modifiers.reversed, child: child);
   }
 }
 
