@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../properties/painting/border_mix.dart';
-import 'decoration_border_utils.dart';
 import '../properties/painting/decoration_mix.dart';
+import '../properties/painting/shape_border_mix.dart';
 
 /// Utility for merging DecorationMix instances with proper validation
-class DecorationMerge {
+class DecorationMerger {
   /// Merges two DecorationMix instances with validation and type conversion support.
   ///
   /// Handles both same-type and cross-type merging:
@@ -27,18 +27,17 @@ class DecorationMerge {
   }
 
   /// Performs cross-type merge between BoxDecorationMix and ShapeDecorationMix
+  /// Determines target type based on type-specific properties to minimize conversions
   static DecorationMix _performCrossTypeMerge(
     DecorationMix a,
     DecorationMix b,
   ) {
     if (a is BoxDecorationMix && b is ShapeDecorationMix) {
-      // Box + Shape = Shape (Box can receive Shape properties)
-      return _mergeBoxWithShape(a, b);
+      return _determineBoxShapeTargetType(a, b);
     }
 
     if (a is ShapeDecorationMix && b is BoxDecorationMix) {
-      // Shape + Box = depends on Box properties
-      return _mergeShapeWithBox(a, b);
+      return _determineShapeBoxTargetType(a, b);
     }
 
     throw ArgumentError(
@@ -46,26 +45,71 @@ class DecorationMerge {
     );
   }
 
+  /// Determines target type for BoxDecorationMix + ShapeDecorationMix merge
+  static DecorationMix _determineBoxShapeTargetType(
+    BoxDecorationMix box,
+    ShapeDecorationMix shape,
+  ) {
+    // Check if ShapeDecorationMix has shape-specific properties
+    final hasShapeSpecificProps = shape.$shape != null;
+    
+    if (!hasShapeSpecificProps) {
+      // Only common properties - keep as BoxDecorationMix
+      return box.merge(BoxDecorationMix.raw(
+        color: shape.$color,
+        gradient: shape.$gradient,
+        image: shape.$image,
+        boxShadow: shape.shadows,
+      ));
+    }
+    
+    // Has shape properties - convert to ShapeDecorationMix
+    return _mergeBoxWithShape(box, shape);
+  }
+
+  /// Determines target type for ShapeDecorationMix + BoxDecorationMix merge  
+  static DecorationMix _determineShapeBoxTargetType(
+    ShapeDecorationMix shape,
+    BoxDecorationMix box,
+  ) {
+    // Check if BoxDecorationMix has box-specific properties
+    final hasBoxSpecificProps = box.$border != null || 
+                                box.$borderRadius != null || 
+                                box.$shape != null || 
+                                box.$backgroundBlendMode != null;
+    
+    if (!hasBoxSpecificProps) {
+      // Only common properties - keep as ShapeDecorationMix
+      return shape.merge(ShapeDecorationMix.raw(
+        color: box.$color,
+        gradient: box.$gradient,
+        image: box.$image,
+        shadows: box.$boxShadow,
+      ));
+    }
+    
+    // Has box-specific properties - validate and convert if possible
+    _validateBoxToShapeConversion(box);
+    return _mergeShapeWithBox(shape, box);
+  }
+
   /// Merges BoxDecorationMix with ShapeDecorationMix
-  /// Box can always receive Shape properties
+  /// Converts to ShapeDecorationMix to accommodate shape properties  
   static DecorationMix _mergeBoxWithShape(
     BoxDecorationMix box,
     ShapeDecorationMix shape,
   ) {
-    // Use the existing mergeableDecor method
-    return box.mergeableDecor(shape);
+    // Convert to ShapeDecorationMix: shape is the target, merge box properties into it
+    return shape.mergeableDecor(box);
   }
 
   /// Merges ShapeDecorationMix with BoxDecorationMix
-  /// Validates that Box properties can be converted to Shape
+  /// Converts to ShapeDecorationMix since it can accommodate box properties after validation
   static DecorationMix _mergeShapeWithBox(
     ShapeDecorationMix shape,
     BoxDecorationMix box,
   ) {
-    // Validate conversion constraints
-    _validateBoxToShapeConversion(box);
-
-    // Use the existing mergeableDecor method
+    // Keep as ShapeDecorationMix: shape is the target, merge box properties into it
     return shape.mergeableDecor(box);
   }
 
@@ -86,7 +130,7 @@ class DecorationMerge {
 
       // Circle requires uniform borders
       if (shape == BoxShape.circle) {
-        if (!DecorationBorderUtils.hasUniformBorders(borderValue)) {
+        if (!borderValue.isUniform) {
           throw ArgumentError(
             'Cannot merge BoxDecoration with circle shape and non-uniform borders. '
             'All border sides must be identical for circles.',
@@ -96,7 +140,7 @@ class DecorationMerge {
 
       // Rectangle with borderRadius requires uniform borders
       if (box.$borderRadius != null) {
-        if (!DecorationBorderUtils.hasUniformBorders(borderValue)) {
+        if (!borderValue.isUniform) {
           throw ArgumentError(
             'Cannot merge BoxDecoration with borderRadius and non-uniform borders. '
             'All border sides must be identical when using borderRadius.',

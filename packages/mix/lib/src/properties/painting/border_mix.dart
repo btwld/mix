@@ -147,6 +147,10 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
 
   bool get isUniform;
 
+  /// Gets any border side from a uniform border (since all sides are identical)
+  /// Returns null if borders are not uniform
+  MixProp<BorderSide>? get uniformBorderSide;
+
   bool get isDirectional => this is BorderDirectionalMix;
   @override
   BoxBorderMix<T> merge(covariant BoxBorderMix<T>? other);
@@ -309,6 +313,12 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
   bool get isUniform => $top == $bottom && $bottom == $left && $left == $right;
 
   @override
+  MixProp<BorderSide>? get uniformBorderSide {
+    if (!isUniform) return null;
+    return $top ?? $right ?? $bottom ?? $left;
+  }
+
+  @override
   Border get defaultValue => const Border();
 }
 
@@ -468,6 +478,12 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
 
   @override
   bool get isUniform => $top == $bottom && $bottom == $start && $start == $end;
+
+  @override
+  MixProp<BorderSide>? get uniformBorderSide {
+    if (!isUniform) return null;
+    return $top ?? $bottom ?? $start ?? $end;
+  }
 
   @override
   BorderDirectional get defaultValue => const BorderDirectional();

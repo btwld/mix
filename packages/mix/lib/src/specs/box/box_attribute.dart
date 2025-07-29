@@ -239,11 +239,11 @@ class BoxMix extends Style<BoxSpec>
   }
 
   BoxMix transformAlignment(AlignmentGeometry value) {
-    return merge(BoxMix(transformAlignment: value));
+    return merge(BoxMix.transformAlignment(value));
   }
 
   BoxMix clipBehavior(Clip value) {
-    return merge(BoxMix(clipBehavior: value));
+    return merge(BoxMix.clipBehavior(value));
   }
 
   /// Sets background color
@@ -332,7 +332,7 @@ class BoxMix extends Style<BoxSpec>
   }
 
   BoxMix alignment(AlignmentGeometry value) {
-    return merge(BoxMix(alignment: value));
+    return merge(BoxMix.alignment(value));
   }
 
   /// Sets single shadow
@@ -354,7 +354,7 @@ class BoxMix extends Style<BoxSpec>
 
   /// Animation instance method
   BoxMix animate(AnimationConfig animation) {
-    return merge(BoxMix(animation: animation));
+    return merge(BoxMix.animate(animation));
   }
 
   /// Modifier instance method
@@ -369,22 +369,21 @@ class BoxMix extends Style<BoxSpec>
 
   /// Padding instance method
   BoxMix padding(EdgeInsetsGeometryMix value) {
-    return merge(BoxMix(padding: value));
+    return merge(BoxMix.padding(value));
   }
 
   /// Margin instance method
-
   BoxMix margin(EdgeInsetsGeometryMix value) {
-    return merge(BoxMix(margin: value));
+    return merge(BoxMix.margin(value));
   }
 
   BoxMix transform(Matrix4 value) {
-    return merge(BoxMix(transform: value));
+    return merge(BoxMix.transform(value));
   }
 
   /// Decoration instance method
   BoxMix decoration(DecorationMix value) {
-    return merge(BoxMix(decoration: value));
+    return merge(BoxMix.decoration(value));
   }
 
   /// Foreground decoration instance method

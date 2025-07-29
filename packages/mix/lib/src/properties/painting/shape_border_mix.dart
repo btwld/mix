@@ -184,10 +184,34 @@ final class RoundedSuperellipseBorderMix
         side: BorderSideMix.maybeValue(border.side),
       );
 
+  /// Creates a rounded superellipse border with the specified border radius.
+  factory RoundedSuperellipseBorderMix.borderRadius(
+    BorderRadiusGeometryMix value,
+  ) {
+    return RoundedSuperellipseBorderMix(borderRadius: value);
+  }
+
+  /// Creates a rounded superellipse border with the specified border side.
+  factory RoundedSuperellipseBorderMix.side(BorderSideMix value) {
+    return RoundedSuperellipseBorderMix(side: value);
+  }
+
   static RoundedSuperellipseBorderMix? maybeValue(
     RoundedSuperellipseBorder? border,
   ) {
     return border != null ? RoundedSuperellipseBorderMix.value(border) : null;
+  }
+
+  /// Returns a copy with the specified border radius.
+  RoundedSuperellipseBorderMix borderRadius(BorderRadiusGeometryMix value) {
+    return merge(RoundedSuperellipseBorderMix.borderRadius(value))
+        as RoundedSuperellipseBorderMix;
+  }
+
+  /// Returns a copy with the specified border side.
+  RoundedSuperellipseBorderMix side(BorderSideMix value) {
+    return merge(RoundedSuperellipseBorderMix.side(value))
+        as RoundedSuperellipseBorderMix;
   }
 
   @override
@@ -237,8 +261,32 @@ final class BeveledRectangleBorderMix
         side: BorderSideMix.maybeValue(border.side),
       );
 
+  /// Creates a beveled rectangle border with the specified border radius.
+  factory BeveledRectangleBorderMix.borderRadius(
+    BorderRadiusGeometryMix value,
+  ) {
+    return BeveledRectangleBorderMix(borderRadius: value);
+  }
+
+  /// Creates a beveled rectangle border with the specified border side.
+  factory BeveledRectangleBorderMix.side(BorderSideMix value) {
+    return BeveledRectangleBorderMix(side: value);
+  }
+
   static BeveledRectangleBorderMix? maybeValue(BeveledRectangleBorder? border) {
     return border != null ? BeveledRectangleBorderMix.value(border) : null;
+  }
+
+  /// Returns a copy with the specified border radius.
+  BeveledRectangleBorderMix borderRadius(BorderRadiusGeometryMix value) {
+    return merge(BeveledRectangleBorderMix.borderRadius(value))
+        as BeveledRectangleBorderMix;
+  }
+
+  /// Returns a copy with the specified border side.
+  BeveledRectangleBorderMix side(BorderSideMix value) {
+    return merge(BeveledRectangleBorderMix.side(value))
+        as BeveledRectangleBorderMix;
   }
 
   @override
@@ -286,10 +334,34 @@ final class ContinuousRectangleBorderMix
         side: BorderSideMix.maybeValue(border.side),
       );
 
+  /// Creates a continuous rectangle border with the specified border radius.
+  factory ContinuousRectangleBorderMix.borderRadius(
+    BorderRadiusGeometryMix value,
+  ) {
+    return ContinuousRectangleBorderMix(borderRadius: value);
+  }
+
+  /// Creates a continuous rectangle border with the specified border side.
+  factory ContinuousRectangleBorderMix.side(BorderSideMix value) {
+    return ContinuousRectangleBorderMix(side: value);
+  }
+
   static ContinuousRectangleBorderMix? maybeValue(
     ContinuousRectangleBorder? border,
   ) {
     return border != null ? ContinuousRectangleBorderMix.value(border) : null;
+  }
+
+  /// Returns a copy with the specified border radius.
+  ContinuousRectangleBorderMix borderRadius(BorderRadiusGeometryMix value) {
+    return merge(ContinuousRectangleBorderMix.borderRadius(value))
+        as ContinuousRectangleBorderMix;
+  }
+
+  /// Returns a copy with the specified border side.
+  ContinuousRectangleBorderMix side(BorderSideMix value) {
+    return merge(ContinuousRectangleBorderMix.side(value))
+        as ContinuousRectangleBorderMix;
   }
 
   @override
@@ -472,37 +544,37 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
 
   /// Returns a copy with the specified number of points.
   StarBorderMix points(double value) {
-    return mergeShapeBorder(StarBorderMix(points: value));
+    return mergeShapeBorder(StarBorderMix.points(value));
   }
 
   /// Returns a copy with the specified inner radius ratio.
   StarBorderMix innerRadiusRatio(double value) {
-    return mergeShapeBorder(StarBorderMix(innerRadiusRatio: value));
+    return mergeShapeBorder(StarBorderMix.innerRadiusRatio(value));
   }
 
   /// Returns a copy with the specified point rounding.
   StarBorderMix pointRounding(double value) {
-    return mergeShapeBorder(StarBorderMix(pointRounding: value));
+    return mergeShapeBorder(StarBorderMix.pointRounding(value));
   }
 
   /// Returns a copy with the specified valley rounding.
   StarBorderMix valleyRounding(double value) {
-    return mergeShapeBorder(StarBorderMix(valleyRounding: value));
+    return mergeShapeBorder(StarBorderMix.valleyRounding(value));
   }
 
   /// Returns a copy with the specified rotation.
   StarBorderMix rotation(double value) {
-    return mergeShapeBorder(StarBorderMix(rotation: value));
+    return mergeShapeBorder(StarBorderMix.rotation(value));
   }
 
   /// Returns a copy with the specified squash factor.
   StarBorderMix squash(double value) {
-    return mergeShapeBorder(StarBorderMix(squash: value));
+    return mergeShapeBorder(StarBorderMix.squash(value));
   }
 
   /// Returns a copy with the specified border side.
   StarBorderMix side(BorderSideMix value) {
-    return mergeShapeBorder(StarBorderMix(side: value));
+    return mergeShapeBorder(StarBorderMix.side(value));
   }
 
   @override
@@ -617,27 +689,27 @@ final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
 
   /// Returns a copy with the specified start edge.
   LinearBorderMix start(LinearBorderEdgeMix value) {
-    return mergeShapeBorder(LinearBorderMix(start: value));
+    return mergeShapeBorder(LinearBorderMix.start(value));
   }
 
   /// Returns a copy with the specified end edge.
   LinearBorderMix end(LinearBorderEdgeMix value) {
-    return mergeShapeBorder(LinearBorderMix(end: value));
+    return mergeShapeBorder(LinearBorderMix.end(value));
   }
 
   /// Returns a copy with the specified top edge.
   LinearBorderMix top(LinearBorderEdgeMix value) {
-    return mergeShapeBorder(LinearBorderMix(top: value));
+    return mergeShapeBorder(LinearBorderMix.top(value));
   }
 
   /// Returns a copy with the specified bottom edge.
   LinearBorderMix bottom(LinearBorderEdgeMix value) {
-    return mergeShapeBorder(LinearBorderMix(bottom: value));
+    return mergeShapeBorder(LinearBorderMix.bottom(value));
   }
 
   /// Returns a copy with the specified border side.
   LinearBorderMix side(BorderSideMix value) {
-    return mergeShapeBorder(LinearBorderMix(side: value));
+    return mergeShapeBorder(LinearBorderMix.side(value));
   }
 
   @override
@@ -695,12 +767,12 @@ final class LinearBorderEdgeMix extends Mix<LinearBorderEdge> {
 
   /// Returns a copy with the specified size.
   LinearBorderEdgeMix size(double value) {
-    return merge(LinearBorderEdgeMix(size: value));
+    return merge(LinearBorderEdgeMix.size(value));
   }
 
   /// Returns a copy with the specified alignment.
   LinearBorderEdgeMix alignment(double value) {
-    return merge(LinearBorderEdgeMix(alignment: value));
+    return merge(LinearBorderEdgeMix.alignment(value));
   }
 
   @override
@@ -745,7 +817,7 @@ final class StadiumBorderMix extends OutlinedBorderMix<StadiumBorder> {
 
   /// Returns a copy with the specified border side.
   StadiumBorderMix side(BorderSideMix value) {
-    return mergeShapeBorder(StadiumBorderMix(side: value));
+    return mergeShapeBorder(StadiumBorderMix.side(value));
   }
 
   @override

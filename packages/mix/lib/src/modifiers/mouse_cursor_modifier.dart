@@ -63,8 +63,7 @@ class MouseCursorDecorator extends Modifier<MouseCursorDecorator> {
 ///
 /// Use this class to configure the attributes of a [MouseCursorDecorator] and pass it to
 /// the [MouseCursorDecorator] constructor.
-class MouseCursorDecoratorMix
-    extends ModifierAttribute<MouseCursorDecorator> {
+class MouseCursorDecoratorMix extends ModifierAttribute<MouseCursorDecorator> {
   final Prop<MouseCursor>? mouseCursor;
 
   const MouseCursorDecoratorMix.raw({this.mouseCursor});
@@ -96,9 +95,7 @@ class MouseCursorDecoratorMix
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  MouseCursorDecoratorMix merge(
-    MouseCursorDecoratorMix? other,
-  ) {
+  MouseCursorDecoratorMix merge(MouseCursorDecoratorMix? other) {
     if (other == null) return this;
 
     return MouseCursorDecoratorMix.raw(

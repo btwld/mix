@@ -5,6 +5,7 @@ import '../animation/animation_config.dart';
 import '../theme/mix_theme.dart';
 import '../theme/tokens/mix_token.dart';
 import 'directive.dart';
+import 'helpers.dart';
 import 'mix_element.dart';
 
 /// Base class for property value sources.
@@ -499,4 +500,41 @@ class MixProp<V> extends PropBase<V> {
 
   @override
   int get hashCode => Object.hash(source, directives, animation);
+}
+
+extension PropExt<T> on Prop<T>? {
+  Prop<T>? tryMerge(Prop<T>? other) {
+    if (this == null) return other;
+    if (other == null) return this;
+
+    return this!.merge(other);
+  }
+}
+
+extension ListPropExt<T> on List<Prop<T>> {
+  List<Prop<T>>? tryMerge(List<Prop<T>>? other, {ListMergeStrategy? strategy}) {
+    if (other == null) return this;
+
+    return MixHelpers.mergeList(this, other, strategy: strategy);
+  }
+}
+
+extension MixPropExt<T> on MixProp<T>? {
+  MixProp<T>? tryMerge(MixProp<T>? other) {
+    if (this == null) return other;
+    if (other == null) return this;
+
+    return this!.merge(other);
+  }
+}
+
+extension ListMixPropExt<T> on List<MixProp<T>> {
+  List<MixProp<T>>? tryMerge(
+    List<MixProp<T>>? other, {
+    ListMergeStrategy? strategy,
+  }) {
+    if (other == null) return this;
+
+    return MixHelpers.mergeList(this, other, strategy: strategy);
+  }
 }
