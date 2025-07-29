@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'border_mix.dart';
-import 'decoration_merge_utils.dart';
-import 'decoration_mix.dart';
+import '../properties/painting/border_mix.dart';
+import 'decoration_border_utils.dart';
+import '../properties/painting/decoration_mix.dart';
 
 /// Utility for merging DecorationMix instances with proper validation
-class DecorationMergeUtility {
+class DecorationMerge {
   /// Merges two DecorationMix instances with validation and type conversion support.
   ///
   /// Handles both same-type and cross-type merging:
@@ -86,7 +86,7 @@ class DecorationMergeUtility {
 
       // Circle requires uniform borders
       if (shape == BoxShape.circle) {
-        if (!DecorationMergeUtils.hasUniformBorders(borderValue)) {
+        if (!DecorationBorderUtils.hasUniformBorders(borderValue)) {
           throw ArgumentError(
             'Cannot merge BoxDecoration with circle shape and non-uniform borders. '
             'All border sides must be identical for circles.',
@@ -96,7 +96,7 @@ class DecorationMergeUtility {
 
       // Rectangle with borderRadius requires uniform borders
       if (box.$borderRadius != null) {
-        if (!DecorationMergeUtils.hasUniformBorders(borderValue)) {
+        if (!DecorationBorderUtils.hasUniformBorders(borderValue)) {
           throw ArgumentError(
             'Cannot merge BoxDecoration with borderRadius and non-uniform borders. '
             'All border sides must be identical when using borderRadius.',

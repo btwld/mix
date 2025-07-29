@@ -292,22 +292,22 @@ final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
 
   /// Returns a copy with the specified top-left corner radius.
   BorderRadiusMix topLeft(Radius radius) {
-    return merge(BorderRadiusMix(topLeft: radius));
+    return merge(BorderRadiusMix.topLeft(radius));
   }
 
   /// Returns a copy with the specified top-right corner radius.
   BorderRadiusMix topRight(Radius radius) {
-    return merge(BorderRadiusMix(topRight: radius));
+    return merge(BorderRadiusMix.topRight(radius));
   }
 
   /// Returns a copy with the specified bottom-left corner radius.
   BorderRadiusMix bottomLeft(Radius radius) {
-    return merge(BorderRadiusMix(bottomLeft: radius));
+    return merge(BorderRadiusMix.bottomLeft(radius));
   }
 
   /// Returns a copy with the specified bottom-right corner radius.
   BorderRadiusMix bottomRight(Radius radius) {
-    return merge(BorderRadiusMix(bottomRight: radius));
+    return merge(BorderRadiusMix.bottomRight(radius));
   }
 
   @override
@@ -442,22 +442,22 @@ final class BorderRadiusDirectionalMix
 
   /// Returns a copy with the specified top-start corner radius.
   BorderRadiusDirectionalMix topStart(Radius radius) {
-    return merge(BorderRadiusDirectionalMix(topStart: radius));
+    return merge(BorderRadiusDirectionalMix.topStart(radius));
   }
 
   /// Returns a copy with the specified top-end corner radius.
   BorderRadiusDirectionalMix topEnd(Radius radius) {
-    return merge(BorderRadiusDirectionalMix(topEnd: radius));
+    return merge(BorderRadiusDirectionalMix.topEnd(radius));
   }
 
   /// Returns a copy with the specified bottom-start corner radius.
   BorderRadiusDirectionalMix bottomStart(Radius radius) {
-    return merge(BorderRadiusDirectionalMix(bottomStart: radius));
+    return merge(BorderRadiusDirectionalMix.bottomStart(radius));
   }
 
   /// Returns a copy with the specified bottom-end corner radius.
   BorderRadiusDirectionalMix bottomEnd(Radius radius) {
-    return merge(BorderRadiusDirectionalMix(bottomEnd: radius));
+    return merge(BorderRadiusDirectionalMix.bottomEnd(radius));
   }
 
   @override

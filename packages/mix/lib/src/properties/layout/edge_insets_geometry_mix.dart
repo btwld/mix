@@ -220,22 +220,22 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
 
   /// Returns a copy with the specified top inset.
   EdgeInsetsMix top(double value) {
-    return merge(EdgeInsetsMix(top: value));
+    return merge(EdgeInsetsGeometryMix.top(value));
   }
 
   /// Returns a copy with the specified bottom inset.
   EdgeInsetsMix bottom(double value) {
-    return merge(EdgeInsetsMix(bottom: value));
+    return merge(EdgeInsetsGeometryMix.bottom(value));
   }
 
   /// Returns a copy with the specified left inset.
   EdgeInsetsMix left(double value) {
-    return merge(EdgeInsetsMix(left: value));
+    return merge(EdgeInsetsGeometryMix.left(value));
   }
 
   /// Returns a copy with the specified right inset.
   EdgeInsetsMix right(double value) {
-    return merge(EdgeInsetsMix(right: value));
+    return merge(EdgeInsetsGeometryMix.right(value));
   }
 
   @override
@@ -348,12 +348,12 @@ final class EdgeInsetsDirectionalMix
 
   /// Returns a copy with the specified start inset.
   EdgeInsetsDirectionalMix start(double value) {
-    return merge(EdgeInsetsDirectionalMix(start: value));
+    return merge(EdgeInsetsGeometryMix.start(value));
   }
 
   /// Returns a copy with the specified end inset.
   EdgeInsetsDirectionalMix end(double value) {
-    return merge(EdgeInsetsDirectionalMix(end: value));
+    return merge(EdgeInsetsGeometryMix.end(value));
   }
 
   @override

@@ -8,7 +8,8 @@ import '../../core/prop.dart';
 import 'border_mix.dart';
 import 'border_radius_mix.dart';
 import 'decoration_image_mix.dart';
-import 'decoration_merge_utils.dart';
+import '../../core/decoration_border_utils.dart';
+import '../../core/decoration_merge.dart';
 import 'gradient_mix.dart';
 import 'shadow_mix.dart';
 import 'shape_border_mix.dart';
@@ -94,36 +95,10 @@ sealed class DecorationMix<T extends Decoration> extends Mix<T> {
 
   /// Merges two DecorationMix instances.
   ///
-  /// If both are the same type, delegates to [merge].
-  /// If different types, checks if they can be merged and converts appropriately.
-  /// If [other] is null, returns this instance.
+  /// Delegates to [DecorationMerge.tryMerge] for all merge operations including
+  /// same-type and cross-type merging with proper validation.
   static DecorationMix? tryMerge(DecorationMix? a, DecorationMix? b) {
-    if (b == null) return a;
-    if (a == null) return b;
-
-    // If same type, use regular merge
-    if (a.runtimeType == b.runtimeType) {
-      return a.merge(b);
-    }
-
-    // Cross-type merging
-    if (a is BoxDecorationMix && b is ShapeDecorationMix) {
-      // Box can always receive Shape properties
-      return a.mergeableDecor(b);
-    }
-    
-    if (a is ShapeDecorationMix && b is BoxDecorationMix) {
-      // Shape can only receive Box if it's mergeable
-      if (!b.isMergeable) {
-        throw ArgumentError(
-          'Cannot merge BoxDecoration into ShapeDecoration: '
-          '${b.$backgroundBlendMode != null ? "backgroundBlendMode is not supported by ShapeDecoration" : "borders must be uniform for conversion"}'
-        );
-      }
-      return a.mergeableDecor(b);
-    }
-
-    throw UnimplementedError('Merging of ${a.runtimeType} and ${b.runtimeType} is not supported.');
+    return DecorationMerge.tryMerge(a, b);
   }
 
   /// Returns true if this decoration can be merged with other decoration types.
@@ -336,12 +311,12 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
       
       // Circle shape requires uniform borders
       if (shape == BoxShape.circle) {
-        return DecorationMergeUtils.hasUniformBorders(borderValue);
+        return DecorationBorderUtils.hasUniformBorders(borderValue);
       }
       
       // Rectangle with borderRadius requires uniform borders
       if ($borderRadius != null) {
-        return DecorationMergeUtils.hasUniformBorders(borderValue);
+        return DecorationBorderUtils.hasUniformBorders(borderValue);
       }
     }
     
@@ -482,39 +457,6 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
       const ShapeDecoration(shape: RoundedRectangleBorder());
 }
 
-/// Converts a [ShapeDecorationMix] to a [BoxDecorationMix].
-BoxDecorationMix _toBoxDecorationMix(ShapeDecorationMix decoration) {
-  final (borderRadius, boxShape, side) = _extractShapeProperties(
-    decoration.$shape,
-  );
-
-  return BoxDecorationMix.raw(
-    border: side != null ? MixProp(BoxBorderMix.all(side)) : null,
-    borderRadius: borderRadius,
-    shape: boxShape,
-    color: decoration.$color,
-    image: decoration.$image,
-    gradient: decoration.$gradient,
-    boxShadow: decoration.$boxShadow,
-  );
-}
-
-/// Converts a [BoxDecorationMix] to a [ShapeDecorationMix].
-ShapeDecorationMix _toShapeDecorationMix(BoxDecorationMix decoration) {
-  final shapeBorder = _fromBoxShape(
-    shape: decoration.$shape,
-    side: _extractBorderSide(decoration.$border),
-    borderRadius: decoration.$borderRadius,
-  );
-
-  return ShapeDecorationMix.raw(
-    shape: shapeBorder,
-    color: decoration.$color,
-    image: decoration.$image,
-    gradient: decoration.$gradient,
-    shadows: decoration.$boxShadow,
-  );
-}
 
 /// Creates a ShapeBorderMix from box decoration properties.
 MixProp<ShapeBorder>? _fromBoxShape({
@@ -569,12 +511,12 @@ BorderSideMix? _extractBorderSide(MixProp<BoxBorder>? border) {
   final borderValue = border.value;
   if (borderValue is BoxBorderMix) {
     // Check if borders are uniform
-    if (!DecorationMergeUtils.hasUniformBorders(borderValue)) {
+    if (!DecorationBorderUtils.hasUniformBorders(borderValue)) {
       return null;
     }
     
     // Get the uniform border side
-    final uniformSide = DecorationMergeUtils.getUniformBorderSide(borderValue);
+    final uniformSide = DecorationBorderUtils.getUniformBorderSide(borderValue);
     return uniformSide?.value as BorderSideMix?;
   }
 

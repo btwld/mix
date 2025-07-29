@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../core/prop.dart';
-import 'border_mix.dart';
+import 'prop.dart';
+import '../properties/painting/border_mix.dart';
 
 /// Simple utilities for validating decoration merging constraints
-class DecorationMergeUtils {
+class DecorationBorderUtils {
   /// Checks if a BoxBorderMix has uniform borders (all sides equal)
   static bool hasUniformBorders(BoxBorderMix? border) {
     if (border == null) return true;

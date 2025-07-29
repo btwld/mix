@@ -130,18 +130,14 @@ final class RoundedRectangleBorderMix
 
   /// Returns a copy with the specified border radius.
   RoundedRectangleBorderMix borderRadius(BorderRadiusGeometryMix value) {
-    return RoundedRectangleBorderMix.raw(
-      borderRadius: MixProp(value),
-      side: $side,
-    );
+    return merge(RoundedRectangleBorderMix.borderRadius(value))
+        as RoundedRectangleBorderMix;
   }
 
   /// Returns a copy with the specified border side.
   RoundedRectangleBorderMix side(BorderSideMix value) {
-    return RoundedRectangleBorderMix.raw(
-      borderRadius: $borderRadius,
-      side: MixProp(value),
-    );
+    return merge(RoundedRectangleBorderMix.side(value))
+        as RoundedRectangleBorderMix;
   }
 
   @override
@@ -354,15 +350,12 @@ final class CircleBorderMix extends OutlinedBorderMix<CircleBorder> {
 
   /// Returns a copy with the specified border side.
   CircleBorderMix side(BorderSideMix value) {
-    return CircleBorderMix.raw(
-      side: MixProp(value),
-      eccentricity: $eccentricity,
-    );
+    return merge(CircleBorderMix.side(value)) as CircleBorderMix;
   }
 
   /// Returns a copy with the specified eccentricity.
   CircleBorderMix eccentricity(double value) {
-    return CircleBorderMix.raw(side: $side, eccentricity: Prop(value));
+    return merge(CircleBorderMix.eccentricity(value)) as CircleBorderMix;
   }
 
   @override
