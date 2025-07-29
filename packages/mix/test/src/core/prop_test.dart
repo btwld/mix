@@ -200,14 +200,14 @@ void main() {
         final directive = MockDirective<int>('double', (v) => v * 2);
         final prop = Prop(42, directives: [directive]);
 
-        expect(prop.directives, equals([directive]));
+        expect(prop.$directives, equals([directive]));
       });
 
       test('supports animation', () {
         final animation = AnimationConfig.withDefaults();
-        final prop = Prop(42, animation: animation);
+        final prop = Prop(42).animation(animation);
 
-        expect(prop.animation, equals(animation));
+        expect(prop.$animation, equals(animation));
       });
 
       test('directives constructor creates prop with only directives', () {
@@ -215,8 +215,8 @@ void main() {
         final prop = Prop<int>.directives([directive]);
 
         expect(prop.source, isNull);
-        expect(prop.directives, equals([directive]));
-        expect(prop.animation, isNull);
+        expect(prop.$directives, equals([directive]));
+        expect(prop.$animation, isNull);
       });
 
       test('animation constructor creates prop with only animation', () {
@@ -224,8 +224,8 @@ void main() {
         final prop = Prop<int>.animation(animation);
 
         expect(prop.source, isNull);
-        expect(prop.directives, isNull);
-        expect(prop.animation, equals(animation));
+        expect(prop.$directives, isNull);
+        expect(prop.$animation, equals(animation));
       });
     });
 
@@ -319,7 +319,7 @@ void main() {
         final prop2 = Prop(20, directives: [directive2]);
         final merged = prop1.merge(prop2);
 
-        expect(merged.directives, equals([directive1, directive2]));
+        expect(merged.$directives, equals([directive1, directive2]));
         expect(merged.resolve(MockBuildContext()), equals(50)); // (20 * 2) + 10
       });
 
@@ -333,11 +333,11 @@ void main() {
           curve: Curves.ease,
         );
 
-        final prop1 = Prop(42, animation: animation1);
-        final prop2 = Prop(24, animation: animation2);
+        final prop1 = Prop(42).animation(animation1);
+        final prop2 = Prop(24).animation(animation2);
         final merged = prop1.merge(prop2);
 
-        expect(merged.animation, equals(animation2));
+        expect(merged.$animation, equals(animation2));
       });
 
       test('preserves animation when other has none', () {
@@ -346,11 +346,11 @@ void main() {
           curve: Curves.linear,
         );
 
-        final prop1 = Prop(42, animation: animation);
+        final prop1 = Prop(42).animation(animation);
         final prop2 = Prop(24);
         final merged = prop1.merge(prop2);
 
-        expect(merged.animation, equals(animation));
+        expect(merged.$animation, equals(animation));
       });
     });
 
@@ -377,7 +377,7 @@ void main() {
       });
 
       test('shows animation', () {
-        final prop = Prop(42, animation: AnimationConfig.withDefaults());
+        final prop = Prop(42).animation(AnimationConfig.withDefaults());
         expect(prop.toString(), contains('animated'));
       });
     });
@@ -409,7 +409,7 @@ void main() {
       test('considers animation', () {
         final animation = AnimationConfig.withDefaults();
         final prop1 = Prop(42);
-        final prop2 = Prop(42, animation: animation);
+        final prop2 = Prop(42).animation(animation);
 
         expect(prop1, isNot(equals(prop2)));
       });
@@ -453,17 +453,17 @@ void main() {
       test('supports directives', () {
         final directive = MockDirective<int>('double', (v) => v * 2);
         final mixValue = MockMix<int>(42, merger: (a, b) => a + b);
-        final prop = MixProp(mixValue, directives: [directive]);
+        final prop = MixProp(mixValue).directives([directive]);
 
-        expect(prop.directives, equals([directive]));
+        expect(prop.$directives, equals([directive]));
       });
 
       test('supports animation', () {
         final animation = AnimationConfig.withDefaults();
         final mixValue = MockMix<int>(42, merger: (a, b) => a + b);
-        final prop = MixProp(mixValue, animation: animation);
+        final prop = MixProp(mixValue).animation(animation);
 
-        expect(prop.animation, equals(animation));
+        expect(prop.$animation, equals(animation));
       });
 
       test('directives constructor creates prop with only directives', () {
@@ -471,8 +471,8 @@ void main() {
         final prop = MixProp<int>.directives([directive]);
 
         expect(prop.source, isNull);
-        expect(prop.directives, equals([directive]));
-        expect(prop.animation, isNull);
+        expect(prop.$directives, equals([directive]));
+        expect(prop.$animation, isNull);
       });
 
       test('animation constructor creates prop with only animation', () {
@@ -480,8 +480,8 @@ void main() {
         final prop = MixProp<int>.animation(animation);
 
         expect(prop.source, isNull);
-        expect(prop.directives, isNull);
-        expect(prop.animation, equals(animation));
+        expect(prop.$directives, isNull);
+        expect(prop.$animation, equals(animation));
       });
     });
 
@@ -566,13 +566,10 @@ void main() {
 
       test('applies directives in order', () {
         const mixValue = MockMix<int>(10);
-        final prop = MixProp(
-          mixValue,
-          directives: [
-            MockDirective<int>('multiply', (v) => v * 2), // 20
-            MockDirective<int>('add', (v) => v + 5), // 25
-          ],
-        );
+        final prop = MixProp(mixValue).directives([
+          MockDirective<int>('multiply', (v) => v * 2), // 20
+          MockDirective<int>('add', (v) => v + 5), // 25
+        ]);
         final context = MockBuildContext();
 
         expect(prop.resolve(context), equals(25));
@@ -637,11 +634,11 @@ void main() {
         final directive1 = MockDirective<int>('multiply', (v) => v * 2);
         final directive2 = MockDirective<int>('add', (v) => v + 10);
 
-        final prop1 = MixProp(MockMix<int>(5), directives: [directive1]);
-        final prop2 = MixProp(MockMix<int>(10), directives: [directive2]);
+        final prop1 = MixProp(MockMix<int>(5)).directives([directive1]);
+        final prop2 = MixProp(MockMix<int>(10)).directives([directive2]);
         final merged = prop1.merge(prop2);
 
-        expect(merged.directives, equals([directive1, directive2]));
+        expect(merged.$directives, equals([directive1, directive2]));
 
         final result = merged.resolve(MockBuildContext());
         expect(
@@ -661,11 +658,11 @@ void main() {
         );
 
         final mixValue = MockMix<int>(42, merger: (a, b) => a + b);
-        final prop1 = MixProp(mixValue, animation: animation1);
-        final prop2 = MixProp(mixValue, animation: animation2);
+        final prop1 = MixProp(mixValue).animation(animation1);
+        final prop2 = MixProp(mixValue).animation(animation2);
         final merged = prop1.merge(prop2);
 
-        expect(merged.animation, equals(animation2));
+        expect(merged.$animation, equals(animation2));
       });
     });
 
@@ -677,19 +674,16 @@ void main() {
       });
 
       test('shows null source', () {
-        const prop = MixProp<int>.directives([]);
+        const prop = MixProp.directives([]);
         expect(prop.toString(), equals('MixProp()'));
       });
 
       test('shows directive count', () {
         final mixValue = MockMix<int>(42, merger: (a, b) => a + b);
-        final prop = MixProp(
-          mixValue,
-          directives: [
-            MockDirective<int>('identity1', (v) => v),
-            MockDirective<int>('identity2', (v) => v),
-          ],
-        );
+        final prop = MixProp(mixValue).directives([
+          MockDirective<int>('identity1', (v) => v),
+          MockDirective<int>('identity2', (v) => v),
+        ]);
         expect(prop.toString(), contains('directives: 2'));
       });
 
@@ -697,8 +691,7 @@ void main() {
         final mixValue = MockMix<int>(42, merger: (a, b) => a + b);
         final prop = MixProp(
           mixValue,
-          animation: AnimationConfig.withDefaults(),
-        );
+        ).animation(AnimationConfig.withDefaults());
         expect(prop.toString(), contains('animated'));
       });
     });
@@ -724,7 +717,7 @@ void main() {
         final directive = MockDirective<int>('double', (v) => v * 2);
         final mixValue = MockMix<int>(42, merger: (a, b) => a + b);
         final prop1 = MixProp(mixValue);
-        final prop2 = MixProp(mixValue, directives: [directive]);
+        final prop2 = MixProp(mixValue).directives([directive]);
 
         expect(prop1, isNot(equals(prop2)));
       });
@@ -733,7 +726,7 @@ void main() {
         final animation = AnimationConfig.withDefaults();
         final mixValue = MockMix<int>(42, merger: (a, b) => a + b);
         final prop1 = MixProp(mixValue);
-        final prop2 = MixProp(mixValue, animation: animation);
+        final prop2 = MixProp(mixValue).animation(animation);
 
         expect(prop1, isNot(equals(prop2)));
       });
@@ -785,9 +778,9 @@ void main() {
         final merged = prop1.merge(prop2);
 
         // All should have empty directives
-        expect(prop1.directives, isNull);
-        expect(prop2.directives, isNull);
-        expect(merged.directives, isNull);
+        expect(prop1.$directives, isNull);
+        expect(prop2.$directives, isNull);
+        expect(merged.$directives, isNull);
 
         // The merged prop should equal a new prop with the same value
         final expected = Prop(Colors.blue);
@@ -801,12 +794,12 @@ void main() {
 
         // Check that directive lists have consistent types
         expect(
-          prop1.directives.runtimeType,
-          equals(prop2.directives.runtimeType),
+          prop1.$directives.runtimeType,
+          equals(prop2.$directives.runtimeType),
         );
         expect(
-          merged.directives.runtimeType,
-          equals(prop2.directives.runtimeType),
+          merged.$directives.runtimeType,
+          equals(prop2.$directives.runtimeType),
         );
       });
     });
@@ -840,9 +833,9 @@ void main() {
         final prop2 = Prop.directives([directive2]);
         final merged = prop1.merge(prop2);
 
-        expect(merged.directives, hasLength(2));
-        expect(merged.directives, contains(directive1));
-        expect(merged.directives, contains(directive2));
+        expect(merged.$directives, hasLength(2));
+        expect(merged.$directives, contains(directive1));
+        expect(merged.$directives, contains(directive2));
       });
 
       test('merged Props with accumulated directives maintain equality', () {
@@ -910,8 +903,8 @@ void main() {
         final prop2 = Prop.directives(const []);
 
         // Both should have empty directive lists
-        expect(prop1.directives, isNull);
-        expect(prop2.directives, isEmpty);
+        expect(prop1.$directives, isNull);
+        expect(prop2.$directives, isEmpty);
 
         // But they're not equal because one has a value and the other doesn't
         expect(prop1, isNot(equals(prop2)));
@@ -949,10 +942,10 @@ void main() {
 
       expect(merged.value, equals(30)); // Last value wins
       expect(
-        merged.directives!.length,
+        merged.$directives!.length,
         equals(3),
       ); // All directives accumulated
-      expect(merged.animation, equals(animation2)); // Last animation wins
+      expect(merged.$animation, equals(animation2)); // Last animation wins
 
       final result = merged.resolve(MockBuildContext());
       expect(result, equals(55)); // ((30 * 2) + 5) - 10

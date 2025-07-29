@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
-import 'package:mix/src/modifiers/modifier_config.dart';
 
 import '../../helpers/testing_utils.dart';
 
@@ -52,7 +51,11 @@ void main() {
         final result = start.lerp(end, 0.5);
 
         expect(result.data.size, 30.0);
-        expect(result.data.color, const Color(0xFF808080));
+        // Use Color.lerp to get the exact expected result
+        expect(
+          result.data.color,
+          Color.lerp(const Color(0xFF000000), const Color(0xFFFFFFFF), 0.5),
+        );
       });
 
       test('handles null other parameter', () {
@@ -180,8 +183,13 @@ void main() {
       const color = Color(0xFF000000);
       final result = utility.color(color);
 
-      expect(result.$modifierConfig?.$modifiers?.first, isA<IconThemeModifierAttribute>());
-      final attr = result.$modifierConfig!.$modifiers!.first as IconThemeModifierAttribute;
+      expect(
+        result.$modifierConfig?.$modifiers?.first,
+        isA<IconThemeModifierAttribute>(),
+      );
+      final attr =
+          result.$modifierConfig!.$modifiers!.first
+              as IconThemeModifierAttribute;
       expect(attr.color?.value, color);
     });
 
@@ -189,8 +197,13 @@ void main() {
       const size = 24.0;
       final result = utility.size(size);
 
-      expect(result.$modifierConfig?.$modifiers?.first, isA<IconThemeModifierAttribute>());
-      final attr = result.$modifierConfig!.$modifiers!.first as IconThemeModifierAttribute;
+      expect(
+        result.$modifierConfig?.$modifiers?.first,
+        isA<IconThemeModifierAttribute>(),
+      );
+      final attr =
+          result.$modifierConfig!.$modifiers!.first
+              as IconThemeModifierAttribute;
       expect(attr.size?.value, size);
     });
 
@@ -198,8 +211,13 @@ void main() {
       const opacity = 0.8;
       final result = utility.opacity(opacity);
 
-      expect(result.$modifierConfig?.$modifiers?.first, isA<IconThemeModifierAttribute>());
-      final attr = result.$modifierConfig!.$modifiers!.first as IconThemeModifierAttribute;
+      expect(
+        result.$modifierConfig?.$modifiers?.first,
+        isA<IconThemeModifierAttribute>(),
+      );
+      final attr =
+          result.$modifierConfig!.$modifiers!.first
+              as IconThemeModifierAttribute;
       expect(attr.opacity?.value, opacity);
     });
   });
@@ -227,7 +245,8 @@ void main() {
       final modifier = attribute.resolve(MockBuildContext());
       const child = SizedBox();
       await tester.pumpWithMixScope(modifier.build(child));
-      final iconTheme = tester.widget<IconTheme>(find.byType(IconTheme));
+      // Find the IconTheme that wraps our SizedBox (the last one in the tree)
+      final iconTheme = tester.widget<IconTheme>(find.byType(IconTheme).last);
       expect(iconTheme.data.color, const Color(0xFF0000FF));
       expect(iconTheme.data.size, 32.0);
       expect(iconTheme.data.opacity, 0.7);

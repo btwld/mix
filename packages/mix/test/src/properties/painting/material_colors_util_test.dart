@@ -78,25 +78,25 @@ void main() {
         test('shade100 with opacity directive', () {
           final attr = utility.shade100.withOpacity(0.5);
           expect(attr.value, isA<Prop<Color>>());
-          expect(attr.value.directives!.length, 1);
+          expect(attr.value.$directives!.length, 1);
         });
 
         test('shade500 with alpha directive', () {
           final attr = utility.shade500.withAlpha(128);
           expect(attr.value, isA<Prop<Color>>());
-          expect(attr.value.directives!.length, 1);
+          expect(attr.value.$directives!.length, 1);
         });
 
         test('shade700 with darken directive', () {
           final attr = utility.shade700.darken(10);
           expect(attr.value, isA<Prop<Color>>());
-          expect(attr.value.directives!.length, 1);
+          expect(attr.value.$directives!.length, 1);
         });
 
         test('shade300 with lighten directive', () {
           final attr = utility.shade300.lighten(15);
           expect(attr.value, isA<Prop<Color>>());
-          expect(attr.value.directives!.length, 1);
+          expect(attr.value.$directives!.length, 1);
         });
       });
 
@@ -187,25 +187,25 @@ void main() {
         test('shade100 with opacity directive', () {
           final attr = utility.shade100.withOpacity(0.7);
           expect(attr.value, isA<Prop<Color>>());
-          expect(attr.value.directives!.length, 1);
+          expect(attr.value.$directives!.length, 1);
         });
 
         test('shade400 with alpha directive', () {
           final attr = utility.shade400.withAlpha(200);
           expect(attr.value, isA<Prop<Color>>());
-          expect(attr.value.directives!.length, 1);
+          expect(attr.value.$directives!.length, 1);
         });
 
         test('shade700 with saturate directive', () {
           final attr = utility.shade700.saturate(20);
           expect(attr.value, isA<Prop<Color>>());
-          expect(attr.value.directives!.length, 1);
+          expect(attr.value.$directives!.length, 1);
         });
 
         test('shade200 with desaturate directive', () {
           final attr = utility.shade200.desaturate(10);
           expect(attr.value, isA<Prop<Color>>());
-          expect(attr.value.directives!.length, 1);
+          expect(attr.value.$directives!.length, 1);
         });
       });
 

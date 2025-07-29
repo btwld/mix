@@ -218,64 +218,64 @@ void main() {
         test('withOpacity() applies opacity directive', () {
           final attr = utility.withOpacity(0.5);
           expect(attr.value, isA<Prop<Color>>());
-          expect(attr.value.directives, isNotNull);
-          expect(attr.value.directives, isNotEmpty);
+          expect(attr.value.$directives, isNotNull);
+          expect(attr.value.$directives, isNotEmpty);
         });
 
         test('withAlpha() applies alpha directive', () {
           final attr = utility.withAlpha(128);
           expect(attr.value, isA<Prop<Color>>());
-          expect(attr.value.directives, isNotNull);
-          expect(attr.value.directives, isNotEmpty);
+          expect(attr.value.$directives, isNotNull);
+          expect(attr.value.$directives, isNotEmpty);
         });
 
         test('darken() applies darken directive', () {
           final attr = utility.darken(10);
           expect(attr.value, isA<Prop<Color>>());
-          expect(attr.value.directives, isNotNull);
-          expect(attr.value.directives, isNotEmpty);
+          expect(attr.value.$directives, isNotNull);
+          expect(attr.value.$directives, isNotEmpty);
         });
 
         test('lighten() applies lighten directive', () {
           final attr = utility.lighten(10);
           expect(attr.value, isA<Prop<Color>>());
-          expect(attr.value.directives, isNotNull);
-          expect(attr.value.directives, isNotEmpty);
+          expect(attr.value.$directives, isNotNull);
+          expect(attr.value.$directives, isNotEmpty);
         });
 
         test('saturate() applies saturate directive', () {
           final attr = utility.saturate(10);
           expect(attr.value, isA<Prop<Color>>());
-          expect(attr.value.directives, isNotNull);
-          expect(attr.value.directives, isNotEmpty);
+          expect(attr.value.$directives, isNotNull);
+          expect(attr.value.$directives, isNotEmpty);
         });
 
         test('desaturate() applies desaturate directive', () {
           final attr = utility.desaturate(10);
           expect(attr.value, isA<Prop<Color>>());
-          expect(attr.value.directives, isNotNull);
-          expect(attr.value.directives, isNotEmpty);
+          expect(attr.value.$directives, isNotNull);
+          expect(attr.value.$directives, isNotEmpty);
         });
 
         test('tint() applies tint directive', () {
           final attr = utility.tint(10);
           expect(attr.value, isA<Prop<Color>>());
-          expect(attr.value.directives, isNotNull);
-          expect(attr.value.directives, isNotEmpty);
+          expect(attr.value.$directives, isNotNull);
+          expect(attr.value.$directives, isNotEmpty);
         });
 
         test('shade() applies shade directive', () {
           final attr = utility.shade(10);
           expect(attr.value, isA<Prop<Color>>());
-          expect(attr.value.directives, isNotNull);
-          expect(attr.value.directives, isNotEmpty);
+          expect(attr.value.$directives, isNotNull);
+          expect(attr.value.$directives, isNotEmpty);
         });
 
         test('brighten() applies brighten directive', () {
           final attr = utility.brighten(10);
           expect(attr.value, isA<Prop<Color>>());
-          expect(attr.value.directives, isNotNull);
-          expect(attr.value.directives, isNotEmpty);
+          expect(attr.value.$directives, isNotNull);
+          expect(attr.value.$directives, isNotEmpty);
         });
       });
     });
@@ -294,13 +294,13 @@ void main() {
       test('withOpacity() creates color with opacity directive', () {
         final attr = utility.withOpacity(0.7);
         expect(attr.value, isA<Prop<Color>>());
-        expect(attr.value.directives?.length, 1);
+        expect(attr.value.$directives?.length, 1);
       });
 
       test('withAlpha() creates color with alpha directive', () {
         final attr = utility.withAlpha(200);
         expect(attr.value, isA<Prop<Color>>());
-        expect(attr.value.directives?.length, 1);
+        expect(attr.value.$directives?.length, 1);
       });
     });
   });

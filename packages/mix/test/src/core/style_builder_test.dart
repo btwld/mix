@@ -187,7 +187,7 @@ void main() {
             .height(100)
             .alignment(Alignment.center)
             .wrap(
-              .modifiers([
+              ModifierConfig.modifiers([
                 OpacityModifierAttribute(opacity: 0.5),
                 PaddingModifierAttribute(
                   padding: EdgeInsetsGeometryMix.all(10),
@@ -237,20 +237,14 @@ void main() {
             .height(100)
             .color(Colors.blue)
             .wrap(
-              ModifierConfig.modifier(OpacityModifierAttribute(opacity: 0.5)),
-            )
-            .wrap(
-              ModifierConfig.modifier(
+              ModifierConfig.modifiers([
+                OpacityModifierAttribute(opacity: 0.5),
                 PaddingModifierAttribute(
                   padding: EdgeInsetsGeometryMix.all(10),
                 ),
-              ),
-            )
-            .wrap(ModifierConfig.modifier(ClipOvalModifierAttribute()))
-            .wrap(
-              ModifierConfig.modifier(
+                ClipOvalModifierAttribute(),
                 VisibilityModifierAttribute(visible: true),
-              ),
+              ]),
             );
 
         await tester.pumpWidget(
@@ -312,16 +306,14 @@ void main() {
             .height(100)
             .color(Colors.blue)
             .wrap(
-              ModifierConfig.modifier(OpacityModifierAttribute(opacity: 0.5)),
-            )
-            .wrap(
-              ModifierConfig.modifier(
+              ModifierConfig.modifiers([
+                OpacityModifierAttribute(opacity: 0.5),
                 PaddingModifierAttribute(
                   padding: EdgeInsetsGeometryMix.all(10),
                 ),
-              ),
-            )
-            .wrap(ModifierConfig.modifier(ClipOvalModifierAttribute()));
+                ClipOvalModifierAttribute(),
+              ]),
+            );
 
         const customOrder = [
           OpacityModifier,
