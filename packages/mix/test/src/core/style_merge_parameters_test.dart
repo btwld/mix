@@ -180,7 +180,7 @@ void main() {
       test('handles null merge correctly', () {
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
-          orderOfModifiers: const [OpacityModifier],
+          modifierConfig: ModifierConfig.orderOfModifiers(const [OpacityModifier]),
           inherit: true,
         );
 
