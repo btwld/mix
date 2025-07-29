@@ -151,16 +151,16 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
     : this(backgroundBlendMode: backgroundBlendMode);
 
   /// Creates a box decoration with only the color specified.
-  BoxDecorationMix.color(Color? color) : this(color: color);
+  BoxDecorationMix.color(Color color) : this(color: color);
 
   /// Creates a box decoration with only the background image specified.
-  BoxDecorationMix.image(DecorationImageMix? image) : this(image: image);
+  BoxDecorationMix.image(DecorationImageMix image) : this(image: image);
 
   /// Creates a box decoration with only the gradient specified.
-  BoxDecorationMix.gradient(GradientMix? gradient) : this(gradient: gradient);
+  BoxDecorationMix.gradient(GradientMix gradient) : this(gradient: gradient);
 
   /// Creates a box decoration with only the box shadows specified.
-  BoxDecorationMix.boxShadow(List<BoxShadowMix>? boxShadow)
+  BoxDecorationMix.boxShadow(List<BoxShadowMix> boxShadow)
     : this(boxShadow: boxShadow);
 
   /// Creates a [BoxDecorationMix] from an existing [BoxDecoration].

@@ -108,19 +108,13 @@ void main() {
         });
 
         test('border.all() creates box decoration with all borders', () {
-          final borderSideMix = BorderSideMix(
-            color: Colors.red,
-            width: 1.0,
-          );
+          final borderSideMix = BorderSideMix(color: Colors.red, width: 1.0);
           final attr = utility.border.all(borderSideMix);
           expect(attr.value, isA<MixProp<BoxDecoration>>());
         });
 
         test('border.top() creates box decoration with top border', () {
-          final borderSideMix = BorderSideMix(
-            color: Colors.blue,
-            width: 3.0,
-          );
+          final borderSideMix = BorderSideMix(color: Colors.blue, width: 3.0);
           final attr = utility.border.top(borderSideMix);
           expect(attr.value, isA<MixProp<BoxDecoration>>());
         });

@@ -14,7 +14,7 @@ void main() {
           textAlign: Prop(TextAlign.center),
           textScaler: Prop(TextScaler.linear(1.2)),
           maxLines: Prop(3),
-          style: MixProp(TextStyleMix.raw($fontSize: Prop(14.0))),
+          style: MixProp(TextStyleMix.raw(fontSize: Prop(14.0))),
           textWidthBasis: Prop(TextWidthBasis.longestLine),
           textHeightBehavior: MixProp(TextHeightBehaviorMix()),
           textDirection: Prop(TextDirection.rtl),

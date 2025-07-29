@@ -481,71 +481,78 @@ final class ModifierConfig with Equatable {
 }
 
 const _defaultOrder = [
-  // 1. FlexibleModifier: When the widget is used inside a Row, Column, or Flex widget, it will
-  // automatically adjust its size to fill the available space. This modifier is applied first to
-  // ensure that the widget is not affected by any other modifiers.
+  // === PHASE 1: CONTEXT & BEHAVIOR SETUP ===
+  
+  // 1. FlexibleModifier: Controls flex behavior when used inside Row, Column, or Flex widgets.
+  // Applied first to establish how the widget participates in flex layouts.
   FlexibleModifier,
 
-  // 2. VisibilityModifier: Controls overall visibility. If the widget is set to be invisible,
-  // none of the subsequent decorations are processed, providing an early exit and optimizing performance.
+  // 2. VisibilityModifier: Controls overall visibility with early exit optimization.
+  // If invisible, subsequent modifiers are skipped, improving performance.
   VisibilityModifier,
 
-  // 3. IconThemeModifier: Provides default icon properties to descendant Icon widgets.
-  // Applied early to establish theme context before any layout or visual modifications.
+  // 3. IconThemeModifier: Provides default icon styling context to descendant Icon widgets.
+  // Applied early to establish icon theme before any layout calculations.
   IconThemeModifier,
 
-  // 4. SizedBoxModifier: Explicitly sets the size of the widget before any other transformations are applied.
-  // This ensures that the widget occupies a predetermined space, which is crucial for layouts that require exact dimensions.
+  // 4. DefaultTextStyleModifier: Provides default text styling context to descendant Text widgets.
+  // Applied early alongside IconTheme to establish text theme context before layout.
+  DefaultTextStyleModifier,
+
+  // === PHASE 2: SIZE ESTABLISHMENT ===
+
+  // 5. SizedBoxModifier: Explicitly sets widget dimensions with fixed constraints.
+  // Applied early to establish concrete size before relative sizing adjustments.
   SizedBoxModifier,
 
-  // 4. FractionallySizedBoxModifier: Adjusts the widget's size relative to its parent's size,
-  // allowing for responsive layouts that scale with the parent widget. This modifier is applied after
-  // explicit sizing to refine the widget's dimensions based on available space.
+  // 6. FractionallySizedBoxModifier: Sets size relative to parent dimensions.
+  // Applied after explicit sizing to allow responsive scaling within constraints.
   FractionallySizedBoxModifier,
 
-  // 5. AlignModifier: Aligns the widget within its allocated space, which is especially important
-  // for positioning the widget correctly before applying any transformations that could affect its position.
-  // Alignment is based on the size constraints established by previous modifiers.
-  AlignModifier,
-
-  // 6. IntrinsicHeightModifier: Adjusts the widget's height to fit its child's intrinsic height,
-  // ensuring that the widget does not force its children to conform to an unnatural height. This is particularly
-  // useful for widgets that should size themselves based on content.
+  // 7. IntrinsicHeightModifier: Adjusts height based on child's intrinsic content height.
+  // Applied to allow content-driven height calculations before aspect ratio constraints.
   IntrinsicHeightModifier,
 
-  // 7. IntrinsicWidthModifier: Similar to the IntrinsicHeightModifier, this adjusts the widget's width
-  // to its child's intrinsic width. This modifier allows for content-driven width adjustments, making it ideal
-  // for widgets that need to wrap their content tightly.
+  // 8. IntrinsicWidthModifier: Adjusts width based on child's intrinsic content width.
+  // Applied alongside intrinsic height for complete content-driven sizing.
   IntrinsicWidthModifier,
 
-  // 8. AspectRatioModifier: Maintains the widget's aspect ratio after sizing adjustments.
-  // This modifier ensures that the widget scales correctly within its given aspect ratio constraints,
-  // which is critical for preserving the visual integrity of images and other aspect-sensitive content.
+  // 9. AspectRatioModifier: Maintains aspect ratio within established size constraints.
+  // Applied after all other sizing to preserve aspect ratio in final dimensions.
   AspectRatioModifier,
 
-  // 9. TransformModifier: Applies arbitrary transformations, such as rotation, scaling, and translation.
-  // Transformations are applied after all sizing and positioning adjustments to modify the widget's appearance
-  // and position in more complex ways without altering the logical layout.
-  TransformModifier,
+  // === PHASE 3: LAYOUT MODIFICATIONS ===
 
-  // 10. PaddingModifier: Adds padding or empty space around a widget. Padding is applied after all
-  // sizing adjustments to ensure that the widget's contents are not affected by the padding.
-  PaddingModifier,
-
-  // 11. RotatedBoxModifier: Rotates the widget by a given angle. This modifier is applied after all sizing
-  // and positioning adjustments to ensure that the widget's contents will be rotated correctly.
+  // 10. RotatedBoxModifier: Rotates widget and changes its layout dimensions.
+  // CRITICAL: Must come before AlignModifier because it changes layout space
+  // (e.g., 200×100 widget becomes 100×200, affecting alignment calculations).
   RotatedBoxModifier,
 
-  // 12. Clip Modifiers: Applies clipping in various shapes to the transformed widget, shaping the final appearance.
-  // Clipping is one of the last steps to ensure it is applied to the widget's final size, position, and transformation state.
+  // 11. AlignModifier: Positions widget within its allocated space.
+  // Applied after RotatedBox to align based on final layout dimensions.
+  AlignModifier,
+
+  // === PHASE 4: SPACING ===
+
+  // 12. PaddingModifier: Adds spacing around the widget content.
+  // Applied after layout positioning to add space without affecting layout calculations.
+  PaddingModifier,
+
+  // === PHASE 5: VISUAL-ONLY EFFECTS ===
+
+  // 13. TransformModifier: Applies visual transformations (scale, rotate, translate).
+  // IMPORTANT: Visual-only - doesn't affect layout space, unlike RotatedBoxModifier.
+  TransformModifier,
+
+  // 14. Clip Modifiers: Applies visual clipping in various shapes.
+  // Applied near the end to clip the widget's final visual appearance.
   ClipOvalModifier,
   ClipRRectModifier,
   ClipPathModifier,
   ClipTriangleModifier,
   ClipRectModifierSpec,
 
-  // 13. OpacityModifier: Modifies the widget's opacity as the final decoration step. Applying opacity last ensures
-  // that it does not influence the layout or transformations, serving purely as a visual effect to alter the transparency
-  // of the widget and its decorations.
+  // 15. OpacityModifier: Applies transparency as the final visual effect.
+  // Always applied last to ensure optimal performance and correct visual layering.
   OpacityModifier,
 ];

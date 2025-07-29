@@ -206,6 +206,69 @@ class BrightenColorDirective extends MixDirective<Color> {
   int get hashCode => amount.hashCode;
 }
 
+/// Directive that sets the red channel of a color.
+class WithRedColorDirective extends MixDirective<Color> {
+  final int red;
+
+  const WithRedColorDirective(this.red);
+
+  @override
+  Color apply(Color color) => color.withRed(red);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is WithRedColorDirective && red == other.red;
+
+  @override
+  String get key => 'color_with_red';
+
+  @override
+  int get hashCode => red.hashCode;
+}
+
+/// Directive that sets the green channel of a color.
+class WithGreenColorDirective extends MixDirective<Color> {
+  final int green;
+
+  const WithGreenColorDirective(this.green);
+
+  @override
+  Color apply(Color color) => color.withGreen(green);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is WithGreenColorDirective && green == other.green;
+
+  @override
+  String get key => 'color_with_green';
+
+  @override
+  int get hashCode => green.hashCode;
+}
+
+/// Directive that sets the blue channel of a color.
+class WithBlueColorDirective extends MixDirective<Color> {
+  final int blue;
+
+  const WithBlueColorDirective(this.blue);
+
+  @override
+  Color apply(Color color) => color.withBlue(blue);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is WithBlueColorDirective && blue == other.blue;
+
+  @override
+  String get key => 'color_with_blue';
+
+  @override
+  int get hashCode => blue.hashCode;
+}
+
 /// Directive that capitalizes the first letter of a string.
 final class CapitalizeStringDirective extends MixDirective<String> {
   const CapitalizeStringDirective();

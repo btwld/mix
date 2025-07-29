@@ -13,13 +13,14 @@ class BoxExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-
+Colors.blue;
+ColorMix.red;
 
 
 
 
                                     final decoration = BoxDecorationMix()
-                                      .color(Colors.blue)
+                                      .color(ColorMix.blue)
                                       .borderRadius(.circular(10))
                                       .gradient(
                                         .linear(

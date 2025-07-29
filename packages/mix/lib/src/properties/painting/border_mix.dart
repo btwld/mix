@@ -315,6 +315,7 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
   @override
   MixProp<BorderSide>? get uniformBorderSide {
     if (!isUniform) return null;
+
     return $top ?? $right ?? $bottom ?? $left;
   }
 
@@ -482,6 +483,7 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
   @override
   MixProp<BorderSide>? get uniformBorderSide {
     if (!isUniform) return null;
+
     return $top ?? $bottom ?? $start ?? $end;
   }
 

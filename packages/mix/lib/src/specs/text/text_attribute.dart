@@ -8,6 +8,7 @@ import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
+import '../../properties/painting/color_mix.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../properties/typography/strut_style_mix.dart';
 import '../../properties/typography/text_height_behavior_mix.dart';
@@ -81,7 +82,7 @@ class TextMix extends Style<TextSpec>
   }
 
   /// Factory for background color
-  factory TextMix.backgroundColor(Color value) {
+  factory TextMix.backgroundColor(ColorMix value) {
     return TextMix(style: TextStyleMix(backgroundColor: value));
   }
 
@@ -106,7 +107,7 @@ class TextMix extends Style<TextSpec>
   }
 
   /// Factory for decoration color
-  factory TextMix.decorationColor(Color value) {
+  factory TextMix.decorationColor(ColorMix value) {
     return TextMix(style: TextStyleMix(decorationColor: value));
   }
 
@@ -426,7 +427,7 @@ class TextMix extends Style<TextSpec>
   }
 
   /// Sets background color
-  TextMix backgroundColor(Color value) {
+  TextMix backgroundColor(ColorMix value) {
     return merge(TextMix.backgroundColor(value));
   }
 
@@ -451,7 +452,7 @@ class TextMix extends Style<TextSpec>
   }
 
   /// Sets decoration color
-  TextMix decorationColor(Color value) {
+  TextMix decorationColor(ColorMix value) {
     return merge(TextMix.decorationColor(value));
   }
 

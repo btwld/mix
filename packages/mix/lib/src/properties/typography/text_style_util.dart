@@ -12,43 +12,43 @@ import 'text_style_mix.dart';
 final class TextStyleUtility<T extends Style<Object?>>
     extends MixPropUtility<T, TextStyle> {
   late final color = ColorUtility<T>(
-    (prop) => call(TextStyleMix.raw($color: prop)),
+    (prop) => call(TextStyleMix.raw(color: prop)),
   );
 
   late final fontWeight = PropUtility<T, FontWeight>(
-    (prop) => call(TextStyleMix.raw($fontWeight: prop)),
+    (prop) => call(TextStyleMix.raw(fontWeight: prop)),
   );
 
   late final fontStyle = PropUtility<T, FontStyle>(
-    (prop) => call(TextStyleMix.raw($fontStyle: prop)),
+    (prop) => call(TextStyleMix.raw(fontStyle: prop)),
   );
 
   late final decoration = PropUtility<T, TextDecoration>(
-    (prop) => call(TextStyleMix.raw($decoration: prop)),
+    (prop) => call(TextStyleMix.raw(decoration: prop)),
   );
 
   late final fontSize = PropUtility<T, double>(
-    (prop) => call(TextStyleMix.raw($fontSize: prop)),
+    (prop) => call(TextStyleMix.raw(fontSize: prop)),
   );
 
   late final backgroundColor = ColorUtility<T>(
-    (prop) => call(TextStyleMix.raw($backgroundColor: prop)),
+    (prop) => call(TextStyleMix.raw(backgroundColor: prop)),
   );
 
   late final decorationColor = ColorUtility<T>(
-    (prop) => call(TextStyleMix.raw($decorationColor: prop)),
+    (prop) => call(TextStyleMix.raw(decorationColor: prop)),
   );
 
   late final decorationStyle = PropUtility<T, TextDecorationStyle>(
-    (prop) => call(TextStyleMix.raw($decorationStyle: prop)),
+    (prop) => call(TextStyleMix.raw(decorationStyle: prop)),
   );
 
   late final textBaseline = PropUtility<T, TextBaseline>(
-    (prop) => call(TextStyleMix.raw($textBaseline: prop)),
+    (prop) => call(TextStyleMix.raw(textBaseline: prop)),
   );
 
   late final fontFamily = PropUtility<T, String>(
-    (v) => call(TextStyleMix.raw($fontFamily: v)),
+    (v) => call(TextStyleMix.raw(fontFamily: v)),
   );
 
   TextStyleUtility(super.builder) : super(convertToMix: TextStyleMix.value);

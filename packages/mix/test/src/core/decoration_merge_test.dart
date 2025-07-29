@@ -61,11 +61,11 @@ void main() {
 
           expect(result.runtimeType, equals(BoxDecorationMix));
           final boxResult = result as BoxDecorationMix;
-          
+
           // Second argument takes precedence
           expect(boxResult.$color?.value, equals(Colors.blue));
           expect(boxResult.$gradient?.value, isA<LinearGradientMix>());
-          
+
           // Box-specific properties preserved
           expect(
             boxResult.$border?.value,
@@ -93,7 +93,7 @@ void main() {
 
           expect(result.runtimeType, equals(ShapeDecorationMix));
           final shapeResult = result as ShapeDecorationMix;
-          
+
           // Second argument takes precedence
           expect(shapeResult.$color?.value, equals(Colors.red));
           expect(shapeResult.$shape?.value, isA<CircleBorderMix>());
@@ -124,7 +124,7 @@ void main() {
 
           expect(result.runtimeType, equals(ShapeDecorationMix));
           final shapeResult = result as ShapeDecorationMix;
-          
+
           // Second argument takes precedence
           expect(shapeResult.$color?.value, equals(Colors.red));
           expect(shapeResult.$gradient?.value, isA<RadialGradientMix>());
@@ -152,11 +152,11 @@ void main() {
 
           expect(result.runtimeType, equals(ShapeDecorationMix));
           final shapeResult = result as ShapeDecorationMix;
-          
+
           // Second argument takes precedence
           expect(shapeResult.$color?.value, equals(Colors.red));
           expect(shapeResult.$gradient?.value, isA<LinearGradientMix>());
-          
+
           // Shape-specific properties preserved
           expect(shapeResult.$shape?.value, isA<CircleBorderMix>());
         },
@@ -177,7 +177,7 @@ void main() {
 
           expect(result.runtimeType, equals(ShapeDecorationMix));
           final shapeResult = result as ShapeDecorationMix;
-          
+
           // Second argument takes precedence
           expect(shapeResult.$color?.value, equals(Colors.red));
           expect(shapeResult.$shape?.value, isA<RoundedRectangleBorderMix>());
@@ -188,7 +188,7 @@ void main() {
     group('Property handling', () {
       test('correctly identifies BoxDecorationMix-specific properties', () {
         final shape = ShapeDecorationMix(color: Colors.blue);
-        
+
         // Test border property
         final boxWithBorder = BoxDecorationMix(
           border: BorderMix.all(BorderSideMix(color: Colors.red, width: 1)),
@@ -197,7 +197,7 @@ void main() {
           DecorationMerger().tryMerge(shape, boxWithBorder).runtimeType,
           equals(ShapeDecorationMix),
         );
-        
+
         // Test borderRadius property
         final boxWithBorderRadius = BoxDecorationMix(
           borderRadius: BorderRadiusGeometryMix.circular(8),
@@ -206,14 +206,14 @@ void main() {
           DecorationMerger().tryMerge(shape, boxWithBorderRadius).runtimeType,
           equals(ShapeDecorationMix),
         );
-        
+
         // Test shape property
         final boxWithShape = BoxDecorationMix(shape: BoxShape.circle);
         expect(
           DecorationMerger().tryMerge(shape, boxWithShape).runtimeType,
           equals(ShapeDecorationMix),
         );
-        
+
         // Test backgroundBlendMode property
         final boxWithBlendMode = BoxDecorationMix(
           backgroundBlendMode: BlendMode.multiply,
@@ -282,7 +282,10 @@ void main() {
         );
         final shapeWithShadows = ShapeDecorationMix(
           shadows: [
-            BoxShadowMix(color: Colors.red.withOpacity(0.26), blurRadius: 8),
+            BoxShadowMix(
+              color: Colors.red.withValues(alpha: 0.26),
+              blurRadius: 8,
+            ),
           ],
         );
 
@@ -296,7 +299,7 @@ void main() {
         expect(boxResult.$boxShadow?.length, equals(1));
         expect(
           (boxResult.$boxShadow?.first.value as BoxShadowMix).$color?.value,
-          equals(Colors.red.withOpacity(0.26)),
+          equals(Colors.red.withValues(alpha: 0.26)),
         ); // Second argument takes precedence
       });
 
@@ -319,8 +322,14 @@ void main() {
         expect(result.runtimeType, equals(BoxDecorationMix));
 
         final boxResult = result as BoxDecorationMix;
-        expect(boxResult.$color?.value, equals(Colors.red)); // First has color, second doesn't
-        expect(boxResult.$gradient?.value, isA<LinearGradientMix>()); // Second takes precedence
+        expect(
+          boxResult.$color?.value,
+          equals(Colors.red),
+        ); // First has color, second doesn't
+        expect(
+          boxResult.$gradient?.value,
+          isA<LinearGradientMix>(),
+        ); // Second takes precedence
       });
     });
 
@@ -333,11 +342,12 @@ void main() {
         );
         final shape = ShapeDecorationMix(
           color: Colors.blue,
-          gradient: LinearGradientMix(
-            colors: [Colors.yellow, Colors.orange],
-          ),
+          gradient: LinearGradientMix(colors: [Colors.yellow, Colors.orange]),
           shadows: [
-            BoxShadowMix(color: Colors.red.withOpacity(0.26), blurRadius: 8),
+            BoxShadowMix(
+              color: Colors.red.withValues(alpha: 0.26),
+              blurRadius: 8,
+            ),
           ],
         );
 
@@ -349,7 +359,7 @@ void main() {
         expect(boxResult.$gradient?.value, isA<LinearGradientMix>());
         expect(
           (boxResult.$boxShadow?.first.value as BoxShadowMix).$color?.value,
-          equals(Colors.red.withOpacity(0.26)),
+          equals(Colors.red.withValues(alpha: 0.26)),
         );
       });
 

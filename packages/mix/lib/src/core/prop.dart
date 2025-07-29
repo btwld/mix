@@ -124,11 +124,11 @@ sealed class PropBase<V> extends Mixable<V> with Resolvable<V> {
 class Prop<V> extends PropBase<V> {
   final PropSource<V>? source;
 
-  const Prop._({this.source, super.directives, super.animation});
+  const Prop.raw({this.source, super.directives, super.animation});
 
   // Named constructors for clarity
   Prop(V value, {List<MixDirective<V>>? directives, AnimationConfig? animation})
-    : this._(
+    : this.raw(
         source: ValuePropSource(value),
         directives: directives,
         animation: animation,
@@ -138,7 +138,7 @@ class Prop<V> extends PropBase<V> {
     MixToken<V> token, {
     List<MixDirective<V>>? directives,
     AnimationConfig? animation,
-  }) : this._(
+  }) : this.raw(
          source: TokenPropSource(token),
          directives: directives,
          animation: animation,
@@ -147,10 +147,10 @@ class Prop<V> extends PropBase<V> {
   const Prop.directives(
     List<MixDirective<V>> directives, {
     AnimationConfig? animation,
-  }) : this._(source: null, directives: directives, animation: animation);
+  }) : this.raw(source: null, directives: directives, animation: animation);
 
   const Prop.animation(AnimationConfig animation)
-    : this._(source: null, directives: null, animation: animation);
+    : this.raw(source: null, directives: null, animation: animation);
 
   static Prop<V>? maybe<V>(V? value) {
     if (value == null) return null;
@@ -192,7 +192,7 @@ class Prop<V> extends PropBase<V> {
     if (other == null) return this;
 
     // For static props, the other source replaces this source
-    return Prop._(
+    return Prop.raw(
       source: other.source ?? source,
       directives: mergeDirectives(other.$directives),
       animation: mergeAnimation(other.$animation),

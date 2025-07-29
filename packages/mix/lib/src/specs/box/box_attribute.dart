@@ -255,7 +255,6 @@ class BoxMix extends Style<BoxSpec>
     return constraints(BoxConstraintsMix.width(value));
   }
 
-
   /// Sets both min and max height to create a fixed height
   BoxMix height(double value) {
     return constraints(BoxConstraintsMix.height(value));

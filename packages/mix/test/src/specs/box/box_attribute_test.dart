@@ -487,13 +487,15 @@ void main() {
     group('Modifiers', () {
       test('modifiers can be added to attribute', () {
         final attribute = BoxMix(
-          modifierConfig: ModifierConfig(modifiers: [
-            OpacityModifierAttribute(opacity: 0.5),
-            TransformModifierAttribute(
-              transform: Matrix4.identity(),
-              alignment: Alignment.center,
-            ),
-          ]),
+          modifierConfig: ModifierConfig(
+            modifiers: [
+              OpacityModifierAttribute(opacity: 0.5),
+              TransformModifierAttribute(
+                transform: Matrix4.identity(),
+                alignment: Alignment.center,
+              ),
+            ],
+          ),
         );
 
         expect(attribute.$modifierConfig, isNotNull);
@@ -506,8 +508,12 @@ void main() {
           transform: Matrix4.identity(),
         );
 
-        final first = BoxMix(modifierConfig: ModifierConfig(modifiers: [opacityModifier]));
-        final second = BoxMix(modifierConfig: ModifierConfig(modifiers: [transformModifier]));
+        final first = BoxMix(
+          modifierConfig: ModifierConfig(modifiers: [opacityModifier]),
+        );
+        final second = BoxMix(
+          modifierConfig: ModifierConfig(modifiers: [transformModifier]),
+        );
 
         final merged = first.merge(second);
 
