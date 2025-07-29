@@ -271,7 +271,7 @@ class MixProp<V> extends PropBase<V> {
     return MixProp(value);
   }
 
-  Mix<V>? _mergeMixes(Mix<V>? a, Mix<V>? b) {
+  M? _mergeMixes<M extends Mix<V>>(M? a, M? b) {
     if (b == null) return a;
     if (a == null) return b;
     if (a is DecorationMix && b is DecorationMix) {
@@ -279,7 +279,7 @@ class MixProp<V> extends PropBase<V> {
             a as DecorationMix,
             b as DecorationMix,
           )!
-          as Mix<V>;
+          as M;
     }
 
     if (a is ShapeBorderMix && b is ShapeBorderMix) {
@@ -287,10 +287,10 @@ class MixProp<V> extends PropBase<V> {
             a as ShapeBorderMix,
             b as ShapeBorderMix,
           )!
-          as Mix<V>;
+          as M;
     }
 
-    return a.merge(b);
+    return a.merge(b) as M;
   }
 
   MixProp<V> directives(List<MixDirective<V>> directives) {

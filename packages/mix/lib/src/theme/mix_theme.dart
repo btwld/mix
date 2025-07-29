@@ -60,16 +60,8 @@ class MixScopeData {
     Map<MixToken, ValueResolver>? tokens,
     List<Type>? defaultOrderOfModifiers,
   }) {
-    final resolverTokens = <MixToken, ValueResolver>{};
-
-    if (tokens != null) {
-      for (final entry in tokens.entries) {
-        resolverTokens[entry.key] = createResolver(entry.value);
-      }
-    }
-
     return MixScopeData._(
-      tokens: resolverTokens.isEmpty ? null : resolverTokens,
+      tokens: tokens,
       defaultOrderOfModifiers: defaultOrderOfModifiers,
     );
   }

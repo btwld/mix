@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../properties/painting/border_mix.dart';
-import '../properties/painting/border_radius_mix.dart';
 import '../properties/painting/shape_border_mix.dart';
 import 'prop.dart';
 
@@ -21,7 +19,7 @@ class ShapeBorderMerger {
 
     // Same type merging - always safe, delegate to standard merge
     if (a.runtimeType == b.runtimeType) {
-      return a.merge(b as dynamic); // Safe cast since we checked runtimeType
+      return a.merge(b); // Safe cast since we checked runtimeType
     }
 
     // Cross-type merging with intelligent rectangle variant support
@@ -54,8 +52,8 @@ class ShapeBorderMerger {
   /// Merges two rectangle variants by preserving properties and using target type.
   ///
   /// All rectangle variants have the same properties:
-  /// - `$borderRadius`: MixProp<BorderRadiusGeometry>?
-  /// - `$side`: MixProp<BorderSide>?
+  /// - `$borderRadius`: M[ixProp<BorderRadiusGeometry>]?
+  /// - `$side`: [MixProp<BorderSide>]?
   ///
   /// The merge preserves properties from both variants, with the second taking precedence.
   /// The result type matches the second variant's type.
@@ -68,7 +66,8 @@ class ShapeBorderMerger {
     final secondProps = _extractRectangleProperties(second);
 
     // Merge properties (second takes precedence when both are non-null)
-    final mergedBorderRadius = secondProps.$borderRadius ?? firstProps.$borderRadius;
+    final mergedBorderRadius =
+        secondProps.$borderRadius ?? firstProps.$borderRadius;
     final mergedSide = secondProps.$side ?? firstProps.$side;
 
     // Use second's type as target, reconstructing with merged properties
@@ -80,15 +79,31 @@ class ShapeBorderMerger {
   }
 
   /// Extracts borderRadius and side properties from rectangle variants.
-  static ({MixProp<BorderRadiusGeometry>? $borderRadius, MixProp<BorderSide>? $side}) _extractRectangleProperties(
-    ShapeBorderMix border,
-  ) {
+  static ({
+    MixProp<BorderRadiusGeometry>? $borderRadius,
+    MixProp<BorderSide>? $side,
+  })
+  _extractRectangleProperties(ShapeBorderMix border) {
     return switch (border) {
-      RoundedRectangleBorderMix b => ($borderRadius: b.$borderRadius, $side: b.$side),
-      BeveledRectangleBorderMix b => ($borderRadius: b.$borderRadius, $side: b.$side),
-      ContinuousRectangleBorderMix b => ($borderRadius: b.$borderRadius, $side: b.$side),
-      RoundedSuperellipseBorderMix b => ($borderRadius: b.$borderRadius, $side: b.$side),
-      _ => throw ArgumentError('Expected rectangle variant, got ${border.runtimeType}'),
+      RoundedRectangleBorderMix b => (
+        $borderRadius: b.$borderRadius,
+        $side: b.$side,
+      ),
+      BeveledRectangleBorderMix b => (
+        $borderRadius: b.$borderRadius,
+        $side: b.$side,
+      ),
+      ContinuousRectangleBorderMix b => (
+        $borderRadius: b.$borderRadius,
+        $side: b.$side,
+      ),
+      RoundedSuperellipseBorderMix b => (
+        $borderRadius: b.$borderRadius,
+        $side: b.$side,
+      ),
+      _ => throw ArgumentError(
+        'Expected rectangle variant, got ${border.runtimeType}',
+      ),
     };
   }
 
@@ -100,34 +115,24 @@ class ShapeBorderMerger {
   ) {
     return switch (targetType) {
       const (RoundedRectangleBorderMix) => RoundedRectangleBorderMix.raw(
-          borderRadius: borderRadius,
-          side: side,
-        ),
+        borderRadius: borderRadius,
+        side: side,
+      ),
       const (BeveledRectangleBorderMix) => BeveledRectangleBorderMix.raw(
-          borderRadius: borderRadius,
-          side: side,
-        ),
+        borderRadius: borderRadius,
+        side: side,
+      ),
       const (ContinuousRectangleBorderMix) => ContinuousRectangleBorderMix.raw(
-          borderRadius: borderRadius,
-          side: side,
-        ),
+        borderRadius: borderRadius,
+        side: side,
+      ),
       const (RoundedSuperellipseBorderMix) => RoundedSuperellipseBorderMix.raw(
-          borderRadius: borderRadius,
-          side: side,
-        ),
-      _ => throw ArgumentError('Unsupported rectangle variant type: $targetType'),
+        borderRadius: borderRadius,
+        side: side,
+      ),
+      _ => throw ArgumentError(
+        'Unsupported rectangle variant type: $targetType',
+      ),
     };
-  }
-
-  /// Checks if two shape borders can be merged without data loss
-  static bool canMerge(ShapeBorderMix? a, ShapeBorderMix? b) {
-    if (a == null || b == null) return true;
-    if (a.runtimeType == b.runtimeType) return true;
-
-    // Rectangle variants can always be merged intelligently
-    if (_isRectangleVariant(a) && _isRectangleVariant(b)) return true;
-
-    // Other cross-type merging uses override behavior (no data loss validation needed)
-    return true;
   }
 }

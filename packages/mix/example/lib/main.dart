@@ -109,11 +109,13 @@ class BoxExampleApp extends StatelessWidget {
                     )
                     .wrap(
                       .opacity(0.5)
-                      .defaultText(.style(
-                        .color(Colors.white),
-                        .fontSize(16),
-                        .fontWeight(.bold),
-                      )).scale()
+                      .defaultTextStyle(
+                        TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ).scale(1.0)
                     )
                     .borderRadius(.circular(20))
                     .animate(.linear(200.ms))

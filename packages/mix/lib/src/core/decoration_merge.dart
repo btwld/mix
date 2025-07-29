@@ -26,10 +26,10 @@ class DecorationMerger {
     }
 
     return ShapeDecorationMix.raw(
-      color: b.$color,
-      image: b.$image,
-      gradient: b.$gradient,
-      shadows: b.shadows,
+      color: a.$color,
+      image: a.$image,
+      gradient: a.$gradient,
+      shadows: a.$boxShadow,
     ).merge(b);
   }
 
