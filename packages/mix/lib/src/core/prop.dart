@@ -363,7 +363,9 @@ class MixProp<V> extends PropBase<V> {
 
     // Special optimization: if both are value sources, merge directly
     if (a is MixPropValueSource<V> && b is MixPropValueSource<V>) {
-      return MixPropValueSource(a.value.merge(b.value));
+      if (!checkNeedsAccumulation(a.value, b.value)) {
+        return MixPropValueSource(a.value.merge(b.value));
+      }
     }
 
     // Otherwise, create accumulative source
@@ -426,6 +428,14 @@ class MixProp<V> extends PropBase<V> {
   bool get hasValue => source is MixPropValueSource<V>;
 
   bool get hasToken => source is MixPropTokenSource<V>;
+
+  bool checkNeedsAccumulation(Mix<V> a, Mix<V> b) {
+    if (a is DecorationMix && b is DecorationMix) {
+      return a.runtimeType != b.runtimeType;
+    }
+
+    return false;
+  }
 
   MixProp<V> directives(List<MixDirective<V>> directives) {
     return merge(MixProp.directives(directives));

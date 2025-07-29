@@ -11,24 +11,27 @@ class DecorationMerger {
   const DecorationMerger();
 
   /// Merges BoxDecorationMix with ShapeDecorationMix, preserving type when possible
-  DecorationMix _mergeBoxWithShape(
-    BoxDecorationMix box,
-    ShapeDecorationMix shape,
-  ) {
-    // Only convert if shape has shape-specific properties
-    if (shape.$shape != null) {
-      return _convertBoxToShape(shape, box);
+  DecorationMix _mergeBoxWithShape(BoxDecorationMix a, ShapeDecorationMix b) {
+    final shape = b.$shape;
+
+    if (shape == null) {
+      // Keep as BoxDecorationMix - only merge common properties
+      return a.merge(
+        BoxDecorationMix.raw(
+          color: b.$color,
+          image: b.$image,
+          gradient: b.$gradient,
+          boxShadow: b.shadows,
+        ),
+      );
     }
 
-    // Keep as BoxDecorationMix - only merge common properties
-    return box.merge(
-      BoxDecorationMix.raw(
-        color: shape.$color,
-        image: shape.$image,
-        gradient: shape.$gradient,
-        boxShadow: shape.shadows,
-      ),
-    );
+    return ShapeDecorationMix.raw(
+      color: b.$color,
+      image: b.$image,
+      gradient: b.$gradient,
+      shadows: b.shadows,
+    ).merge(b);
   }
 
   /// Merges ShapeDecorationMix with BoxDecorationMix, preserving type when possible

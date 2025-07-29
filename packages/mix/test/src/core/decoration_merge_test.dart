@@ -368,25 +368,25 @@ void main() {
     group('canMerge', () {
       test('returns true when either decoration is null', () {
         final box = BoxDecorationMix(color: Colors.red);
-        expect(DecorationMerger.canMerge(null, box), isTrue);
-        expect(DecorationMerger.canMerge(box, null), isTrue);
-        expect(DecorationMerger.canMerge(null, null), isTrue);
+        expect(DecorationMerger.needsAccumulation(null, box), isTrue);
+        expect(DecorationMerger.needsAccumulation(box, null), isTrue);
+        expect(DecorationMerger.needsAccumulation(null, null), isTrue);
       });
 
       test('returns true for same type decorations', () {
         final box1 = BoxDecorationMix(color: Colors.red);
         final box2 = BoxDecorationMix(color: Colors.blue);
-        expect(DecorationMerger.canMerge(box1, box2), isTrue);
+        expect(DecorationMerger.needsAccumulation(box1, box2), isTrue);
 
         final shape1 = ShapeDecorationMix(color: Colors.red);
         final shape2 = ShapeDecorationMix(color: Colors.blue);
-        expect(DecorationMerger.canMerge(shape1, shape2), isTrue);
+        expect(DecorationMerger.needsAccumulation(shape1, shape2), isTrue);
       });
 
       test('returns true for BoxDecorationMix + ShapeDecorationMix', () {
         final box = BoxDecorationMix(color: Colors.red);
         final shape = ShapeDecorationMix(color: Colors.blue);
-        expect(DecorationMerger.canMerge(box, shape), isTrue);
+        expect(DecorationMerger.needsAccumulation(box, shape), isTrue);
       });
 
       test(
@@ -397,7 +397,10 @@ void main() {
             color: Colors.red,
             border: BorderMix.all(BorderSideMix(color: Colors.black, width: 2)),
           );
-          expect(DecorationMerger.canMerge(shape, mergeableBox), isTrue);
+          expect(
+            DecorationMerger.needsAccumulation(shape, mergeableBox),
+            isTrue,
+          );
         },
       );
 
@@ -409,7 +412,10 @@ void main() {
             backgroundBlendMode:
                 BlendMode.multiply, // This makes it non-mergeable
           );
-          expect(DecorationMerger.canMerge(shape, nonMergeableBox), isFalse);
+          expect(
+            DecorationMerger.needsAccumulation(shape, nonMergeableBox),
+            isFalse,
+          );
         },
       );
     });

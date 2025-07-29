@@ -97,7 +97,7 @@ sealed class DecorationMix<T extends Decoration> extends Mix<T> {
   /// Delegates to [DecorationMerger.tryMerge] for all merge operations including
   /// same-type and cross-type merging with proper validation.
   static DecorationMix? tryMerge(DecorationMix? a, DecorationMix? b) {
-    return DecorationMerger.tryMerge(a, b);
+    return DecorationMerger().tryMerge(a, b);
   }
 
   /// Returns true if this decoration can be merged with other decoration types.
