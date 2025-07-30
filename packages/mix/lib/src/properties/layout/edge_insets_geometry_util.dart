@@ -13,98 +13,125 @@ final class EdgeInsetsGeometryUtility<U extends Style<Object?>>
     extends MixPropUtility<U, EdgeInsetsGeometry> {
   late final directional = EdgeInsetsDirectionalUtility(builder);
 
+  late final horizontal = SpacingSideUtility<U>((v) => onlyProps(left: v, right: v));
+  late final vertical = SpacingSideUtility<U>((v) => onlyProps(top: v, bottom: v));
+  late final all = SpacingSideUtility<U>(
+    (v) => onlyProps(top: v, bottom: v, left: v, right: v),
+  );
+  late final top = SpacingSideUtility<U>((v) => onlyProps(top: v));
+  late final bottom = SpacingSideUtility<U>((v) => onlyProps(bottom: v));
+  late final left = SpacingSideUtility<U>((v) => onlyProps(left: v));
+  late final right = SpacingSideUtility<U>((v) => onlyProps(right: v));
+
   EdgeInsetsGeometryUtility(super.builder)
     : super(convertToMix: EdgeInsetsGeometryMix.value);
 
-  U only({double? top, double? bottom, double? left, double? right}) {
-    return call(
-      EdgeInsetsMix(top: top, bottom: bottom, left: left, right: right),
+  @protected
+  U onlyProps({
+    Prop<double>? top,
+    Prop<double>? bottom,
+    Prop<double>? left,
+    Prop<double>? right,
+    Prop<double>? start,
+    Prop<double>? end,
+  }) {
+    return builder(
+      MixProp(
+        EdgeInsetsMix.raw(
+          top: top,
+          bottom: bottom,
+          left: left,
+          right: right,
+          start: start,
+          end: end,
+        ),
+      ),
     );
   }
 
-  U all(double value) {
-    return call(EdgeInsetsMix.all(value));
-  }
-
-  U symmetric({double? vertical, double? horizontal}) {
-    return call(
-      EdgeInsetsMix.symmetric(vertical: vertical, horizontal: horizontal),
+  U only({
+    double? top,
+    double? bottom,
+    double? left,
+    double? right,
+    double? start,
+    double? end,
+  }) {
+    return onlyProps(
+      top: Prop.maybe(top),
+      bottom: Prop.maybe(bottom),
+      left: Prop.maybe(left),
+      right: Prop.maybe(right),
+      start: Prop.maybe(start),
+      end: Prop.maybe(end),
     );
   }
 
-  U horizontal(double value) {
-    return symmetric(horizontal: value);
-  }
-
-  U vertical(double value) {
-    return symmetric(vertical: value);
-  }
-
-  U top(double value) {
-    return only(top: value);
-  }
-
-  U bottom(double value) {
-    return only(bottom: value);
-  }
-
-  U left(double value) {
-    return only(left: value);
-  }
-
-  U right(double value) {
-    return only(right: value);
-  }
-
-  @override
-  U call(EdgeInsetsGeometryMix value) {
-    return builder(MixProp(value));
+  U call(double p1, [double? p2, double? p3, double? p4]) {
+    return only(
+      top: p1,
+      bottom: p3 ?? p1,
+      left: p4 ?? p2 ?? p1,
+      right: p2 ?? p1,
+    );
   }
 }
 
 @immutable
 final class EdgeInsetsDirectionalUtility<U extends Style<Object?>>
     extends MixPropUtility<U, EdgeInsetsDirectional> {
-  late final all = SpacingSideUtility(
-    (prop) => call(
-      EdgeInsetsDirectionalMix.raw(
-        top: prop,
-        bottom: prop,
-        start: prop,
-        end: prop,
-      ),
-    ),
+  late final all = SpacingSideUtility<U>(
+    (v) => onlyProps(top: v, bottom: v, start: v, end: v),
   );
-  late final start = SpacingSideUtility(
-    (v) => call(EdgeInsetsDirectionalMix.raw(start: v)),
+  late final start = SpacingSideUtility<U>((v) => onlyProps(start: v));
+  late final end = SpacingSideUtility<U>((v) => onlyProps(end: v));
+  late final top = SpacingSideUtility<U>((v) => onlyProps(top: v));
+  late final bottom = SpacingSideUtility<U>((v) => onlyProps(bottom: v));
+  late final vertical = SpacingSideUtility<U>(
+    (v) => onlyProps(top: v, bottom: v),
   );
-
-  late final end = SpacingSideUtility(
-    (v) => call(EdgeInsetsDirectionalMix.raw(end: v)),
-  );
-
-  late final top = SpacingSideUtility(
-    (v) => call(EdgeInsetsDirectionalMix.raw(top: v)),
-  );
-
-  late final bottom = SpacingSideUtility(
-    (v) => call(EdgeInsetsDirectionalMix.raw(bottom: v)),
-  );
-
-  late final vertical = SpacingSideUtility(
-    (prop) => call(EdgeInsetsDirectionalMix.raw(top: prop, bottom: prop)),
-  );
-
-  late final horizontal = SpacingSideUtility(
-    (prop) => call(EdgeInsetsDirectionalMix.raw(start: prop, end: prop)),
+  late final horizontal = SpacingSideUtility<U>(
+    (v) => onlyProps(start: v, end: v),
   );
 
   EdgeInsetsDirectionalUtility(super.builder)
     : super(convertToMix: EdgeInsetsGeometryMix.value);
 
-  @override
-  U call(EdgeInsetsDirectionalMix value) {
-    return builder(MixProp(value));
+  @protected
+  U onlyProps({
+    Prop<double>? top,
+    Prop<double>? bottom,
+    Prop<double>? start,
+    Prop<double>? end,
+  }) {
+    return builder(
+      MixProp(
+        EdgeInsetsDirectionalMix.raw(
+          top: top,
+          bottom: bottom,
+          start: start,
+          end: end,
+        ),
+      ),
+    );
+  }
+
+  U only({double? top, double? bottom, double? start, double? end}) {
+    return onlyProps(
+      top: Prop.maybe(top),
+      bottom: Prop.maybe(bottom),
+      start: Prop.maybe(start),
+      end: Prop.maybe(end),
+    );
+  }
+
+  U call(double p1, [double? p2, double? p3, double? p4]) {
+    return only(
+      top: p1,
+      bottom: p3 ?? p1,
+      start: p4 ?? p2 ?? p1,
+      end: p2 ?? p1,
+    );
   }
 }
 

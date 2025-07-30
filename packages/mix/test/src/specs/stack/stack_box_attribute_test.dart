@@ -184,8 +184,9 @@ void main() {
         final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec.box, isNull);
-        expect(spec.stack, isNull);
+        // ZBoxSpec constructor provides default values when null
+        expect(spec.box, const BoxSpec());
+        expect(spec.stack, const StackSpec());
       });
     });
 
@@ -244,7 +245,7 @@ void main() {
 
         final attribute = StackBoxMix(box: boxAttribute, stack: stackAttribute);
 
-        expect(attribute.props.length, 5);
+        expect(attribute.props.length, 2);
         expect(attribute.props, contains(attribute.box));
         expect(attribute.props, contains(attribute.stack));
       });

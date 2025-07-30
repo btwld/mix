@@ -49,6 +49,142 @@ void main() {
 
         expect(result, isNotNull);
         expectProp(result!.$topLeft, const Radius.circular(8.0));
+        expectProp(result.$topRight, const Radius.circular(8.0));
+        expectProp(result.$bottomLeft, const Radius.circular(8.0));
+        expectProp(result.$bottomRight, const Radius.circular(8.0));
+      });
+    });
+
+    group('Factory Constructors', () {
+      test('circular factory creates BorderRadiusMix with circular radius', () {
+        final borderRadiusMix = BorderRadiusMix.circular(10.0);
+
+        expectProp(borderRadiusMix.$topLeft, const Radius.circular(10.0));
+        expectProp(borderRadiusMix.$topRight, const Radius.circular(10.0));
+        expectProp(borderRadiusMix.$bottomLeft, const Radius.circular(10.0));
+        expectProp(borderRadiusMix.$bottomRight, const Radius.circular(10.0));
+      });
+
+      test(
+        'elliptical factory creates BorderRadiusMix with elliptical radius',
+        () {
+          final borderRadiusMix = BorderRadiusMix.elliptical(8.0, 12.0);
+
+          expectProp(
+            borderRadiusMix.$topLeft,
+            const Radius.elliptical(8.0, 12.0),
+          );
+          expectProp(
+            borderRadiusMix.$topRight,
+            const Radius.elliptical(8.0, 12.0),
+          );
+          expectProp(
+            borderRadiusMix.$bottomLeft,
+            const Radius.elliptical(8.0, 12.0),
+          );
+          expectProp(
+            borderRadiusMix.$bottomRight,
+            const Radius.elliptical(8.0, 12.0),
+          );
+        },
+      );
+
+      test('topLeft factory creates BorderRadiusMix with topLeft radius', () {
+        final borderRadiusMix = BorderRadiusMix.topLeft(
+          const Radius.circular(5.0),
+        );
+
+        expectProp(borderRadiusMix.$topLeft, const Radius.circular(5.0));
+        expect(borderRadiusMix.$topRight, isNull);
+        expect(borderRadiusMix.$bottomLeft, isNull);
+        expect(borderRadiusMix.$bottomRight, isNull);
+      });
+
+      test('topRight factory creates BorderRadiusMix with topRight radius', () {
+        final borderRadiusMix = BorderRadiusMix.topRight(
+          const Radius.circular(6.0),
+        );
+
+        expectProp(borderRadiusMix.$topRight, const Radius.circular(6.0));
+        expect(borderRadiusMix.$topLeft, isNull);
+        expect(borderRadiusMix.$bottomLeft, isNull);
+        expect(borderRadiusMix.$bottomRight, isNull);
+      });
+
+      test(
+        'bottomLeft factory creates BorderRadiusMix with bottomLeft radius',
+        () {
+          final borderRadiusMix = BorderRadiusMix.bottomLeft(
+            const Radius.circular(7.0),
+          );
+
+          expectProp(borderRadiusMix.$bottomLeft, const Radius.circular(7.0));
+          expect(borderRadiusMix.$topLeft, isNull);
+          expect(borderRadiusMix.$topRight, isNull);
+          expect(borderRadiusMix.$bottomRight, isNull);
+        },
+      );
+
+      test(
+        'bottomRight factory creates BorderRadiusMix with bottomRight radius',
+        () {
+          final borderRadiusMix = BorderRadiusMix.bottomRight(
+            const Radius.circular(8.0),
+          );
+
+          expectProp(borderRadiusMix.$bottomRight, const Radius.circular(8.0));
+          expect(borderRadiusMix.$topLeft, isNull);
+          expect(borderRadiusMix.$topRight, isNull);
+          expect(borderRadiusMix.$bottomLeft, isNull);
+        },
+      );
+
+      test(
+        'all factory creates BorderRadiusMix with same radius for all corners',
+        () {
+          final borderRadiusMix = BorderRadiusMix.all(
+            const Radius.circular(15.0),
+          );
+
+          expectProp(borderRadiusMix.$topLeft, const Radius.circular(15.0));
+          expectProp(borderRadiusMix.$topRight, const Radius.circular(15.0));
+          expectProp(borderRadiusMix.$bottomLeft, const Radius.circular(15.0));
+          expectProp(borderRadiusMix.$bottomRight, const Radius.circular(15.0));
+        },
+      );
+    });
+
+    group('Utility Methods', () {
+      test('topLeft utility works correctly', () {
+        final borderRadiusMix = BorderRadiusMix().topLeft(
+          const Radius.circular(5.0),
+        );
+
+        expectProp(borderRadiusMix.$topLeft, const Radius.circular(5.0));
+      });
+
+      test('topRight utility works correctly', () {
+        final borderRadiusMix = BorderRadiusMix().topRight(
+          const Radius.circular(6.0),
+        );
+
+        expectProp(borderRadiusMix.$topRight, const Radius.circular(6.0));
+      });
+
+      test('bottomLeft utility works correctly', () {
+        final borderRadiusMix = BorderRadiusMix().bottomLeft(
+          const Radius.circular(7.0),
+        );
+
+        expectProp(borderRadiusMix.$bottomLeft, const Radius.circular(7.0));
+      });
+
+      test('bottomRight utility works correctly', () {
+        final borderRadiusMix = BorderRadiusMix().bottomRight(
+          const Radius.circular(8.0),
+        );
+
+        expectProp(borderRadiusMix.$bottomRight, const Radius.circular(8.0));
       });
     });
 
@@ -142,6 +278,23 @@ void main() {
         );
 
         expect(borderRadiusMix1, isNot(borderRadiusMix2));
+      });
+    });
+
+    group('Props getter', () {
+      test('props includes all properties', () {
+        final borderRadiusMix = BorderRadiusMix(
+          topLeft: const Radius.circular(5.0),
+          topRight: const Radius.circular(10.0),
+          bottomLeft: const Radius.circular(15.0),
+          bottomRight: const Radius.circular(20.0),
+        );
+
+        expect(borderRadiusMix.props.length, 4);
+        expect(borderRadiusMix.props, contains(borderRadiusMix.$topLeft));
+        expect(borderRadiusMix.props, contains(borderRadiusMix.$topRight));
+        expect(borderRadiusMix.props, contains(borderRadiusMix.$bottomLeft));
+        expect(borderRadiusMix.props, contains(borderRadiusMix.$bottomRight));
       });
     });
   });

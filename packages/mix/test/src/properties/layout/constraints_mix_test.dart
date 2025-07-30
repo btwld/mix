@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
+import 'package:mix/src/properties/layout/constraints_mix.dart';
 
 import '../../../helpers/testing_utils.dart';
-import 'package:mix/src/properties/layout/constraints_mix.dart';
 
 void main() {
   group('BoxConstraintsMix', () {
@@ -67,6 +67,111 @@ void main() {
         final maxHeightMix = BoxConstraintsMix.maxHeight(200.0);
         expectProp(maxHeightMix.$maxHeight, 200.0);
         expect(maxHeightMix.$minHeight, isNull);
+      });
+    });
+
+    group('Factory Constructors', () {
+      test('minWidth factory creates BoxConstraintsMix with minWidth', () {
+        final constraintsMix = BoxConstraintsMix.minWidth(100.0);
+
+        expectProp(constraintsMix.$minWidth, 100.0);
+        expect(constraintsMix.$maxWidth, isNull);
+        expect(constraintsMix.$minHeight, isNull);
+        expect(constraintsMix.$maxHeight, isNull);
+      });
+
+      test('maxWidth factory creates BoxConstraintsMix with maxWidth', () {
+        final constraintsMix = BoxConstraintsMix.maxWidth(200.0);
+
+        expectProp(constraintsMix.$maxWidth, 200.0);
+        expect(constraintsMix.$minWidth, isNull);
+        expect(constraintsMix.$minHeight, isNull);
+        expect(constraintsMix.$maxHeight, isNull);
+      });
+
+      test('minHeight factory creates BoxConstraintsMix with minHeight', () {
+        final constraintsMix = BoxConstraintsMix.minHeight(150.0);
+
+        expectProp(constraintsMix.$minHeight, 150.0);
+        expect(constraintsMix.$minWidth, isNull);
+        expect(constraintsMix.$maxWidth, isNull);
+        expect(constraintsMix.$maxHeight, isNull);
+      });
+
+      test('maxHeight factory creates BoxConstraintsMix with maxHeight', () {
+        final constraintsMix = BoxConstraintsMix.maxHeight(250.0);
+
+        expectProp(constraintsMix.$maxHeight, 250.0);
+        expect(constraintsMix.$minWidth, isNull);
+        expect(constraintsMix.$maxWidth, isNull);
+        expect(constraintsMix.$minHeight, isNull);
+      });
+
+      test('width factory creates BoxConstraintsMix with fixed width', () {
+        final constraintsMix = BoxConstraintsMix.width(120.0);
+
+        expectProp(constraintsMix.$minWidth, 120.0);
+        expectProp(constraintsMix.$maxWidth, 120.0);
+        expect(constraintsMix.$minHeight, isNull);
+        expect(constraintsMix.$maxHeight, isNull);
+      });
+
+      test('height factory creates BoxConstraintsMix with fixed height', () {
+        final constraintsMix = BoxConstraintsMix.height(180.0);
+
+        expectProp(constraintsMix.$minHeight, 180.0);
+        expectProp(constraintsMix.$maxHeight, 180.0);
+        expect(constraintsMix.$minWidth, isNull);
+        expect(constraintsMix.$maxWidth, isNull);
+      });
+
+      test('size factory creates BoxConstraintsMix with fixed size', () {
+        final constraintsMix = BoxConstraintsMix.size(const Size(100.0, 200.0));
+
+        expectProp(constraintsMix.$minWidth, 100.0);
+        expectProp(constraintsMix.$maxWidth, 100.0);
+        expectProp(constraintsMix.$minHeight, 200.0);
+        expectProp(constraintsMix.$maxHeight, 200.0);
+      });
+    });
+
+    group('Utility Methods', () {
+      test('minWidth utility works correctly', () {
+        final constraintsMix = BoxConstraintsMix().minWidth(80.0);
+
+        expectProp(constraintsMix.$minWidth, 80.0);
+      });
+
+      test('maxWidth utility works correctly', () {
+        final constraintsMix = BoxConstraintsMix().maxWidth(160.0);
+
+        expectProp(constraintsMix.$maxWidth, 160.0);
+      });
+
+      test('minHeight utility works correctly', () {
+        final constraintsMix = BoxConstraintsMix().minHeight(90.0);
+
+        expectProp(constraintsMix.$minHeight, 90.0);
+      });
+
+      test('maxHeight utility works correctly', () {
+        final constraintsMix = BoxConstraintsMix().maxHeight(180.0);
+
+        expectProp(constraintsMix.$maxHeight, 180.0);
+      });
+
+      test('width utility works correctly', () {
+        final constraintsMix = BoxConstraintsMix().width(100.0);
+
+        expectProp(constraintsMix.$minWidth, 100.0);
+        expectProp(constraintsMix.$maxWidth, 100.0);
+      });
+
+      test('height utility works correctly', () {
+        final constraintsMix = BoxConstraintsMix().height(150.0);
+
+        expectProp(constraintsMix.$minHeight, 150.0);
+        expectProp(constraintsMix.$maxHeight, 150.0);
       });
     });
 
@@ -139,10 +244,7 @@ void main() {
           minHeight: 100.0,
         );
 
-        final second = BoxConstraintsMix(
-          maxWidth: 200.0,
-          maxHeight: 250.0,
-        );
+        final second = BoxConstraintsMix(maxWidth: 200.0, maxHeight: 250.0);
 
         final merged = first.merge(second);
 
@@ -185,6 +287,31 @@ void main() {
         final constraintsMix2 = BoxConstraintsMix(minWidth: 100.0);
 
         expect(constraintsMix1, isNot(constraintsMix2));
+      });
+    });
+
+    group('Props getter', () {
+      test('props includes all properties', () {
+        final constraintsMix = BoxConstraintsMix(
+          minWidth: 50.0,
+          maxWidth: 150.0,
+          minHeight: 100.0,
+          maxHeight: 200.0,
+        );
+
+        expect(constraintsMix.props.length, 4);
+        expect(constraintsMix.props, contains(constraintsMix.$minWidth));
+        expect(constraintsMix.props, contains(constraintsMix.$maxWidth));
+        expect(constraintsMix.props, contains(constraintsMix.$minHeight));
+        expect(constraintsMix.props, contains(constraintsMix.$maxHeight));
+      });
+    });
+
+    group('Default Value', () {
+      test('has correct default value', () {
+        final constraintsMix = BoxConstraintsMix();
+
+        expect(constraintsMix.defaultValue, const BoxConstraints());
       });
     });
   });
