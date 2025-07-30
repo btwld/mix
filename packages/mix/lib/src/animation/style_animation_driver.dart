@@ -1,9 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter/widgets.dart';
 
-import 'animation_config.dart';
 import '../core/spec.dart';
 import '../core/style.dart';
+import 'animation_config.dart';
 
 /// Base class for animation drivers that handle style interpolation.
 ///
@@ -33,8 +34,10 @@ abstract class StyleAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
   @protected
   ResolvedStyle<S>? _fromStyle;
 
-  StyleAnimationDriver({required this.vsync}) {
-    _controller = AnimationController(vsync: vsync);
+  StyleAnimationDriver({required this.vsync, bool unbounded = false}) {
+    _controller = unbounded
+        ? AnimationController.unbounded(vsync: vsync)
+        : AnimationController(vsync: vsync);
 
     _controller.addListener(_onAnimationTick);
     _controller.addStatusListener(_onAnimationStatusChanged);
@@ -197,7 +200,8 @@ class SpringAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   SpringAnimationDriver({
     required super.vsync,
     required SpringAnimationConfig config,
-  }) : _config = config {
+  }) : _config = config,
+       super(unbounded: true) {
     if (config.onEnd != null) {
       addOnCompleteListener(config.onEnd!);
     }
@@ -213,4 +217,38 @@ class SpringAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
       // Animation was cancelled - this is normal
     }
   }
+}
+
+class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
+  final List<S> specs;
+  final List<CurveAnimationConfig> curvesAndDurations;
+  int _currentIndex = 0;
+
+  PhaseAnimationDriver({
+    required super.vsync,
+    required this.curvesAndDurations,
+    required this.specs,
+  }) {
+    if (curvesAndDurations.last.onEnd != null) {
+      addOnCompleteListener(curvesAndDurations.last.onEnd!);
+    }
+  }
+
+  @override
+  Future<void> executeAnimation() async {
+    for (int i = 0; i < specs.length; i++) {
+      _currentIndex = i % specs.length;
+      final nextIndex = (i + 1) % specs.length;
+
+      controller.duration = curvesAndDurations[_currentIndex].duration;
+
+      _fromStyle = ResolvedStyle(spec: specs[_currentIndex]);
+      _targetResolvedStyle = ResolvedStyle(spec: specs[nextIndex]);
+      await controller.forward(from: 0.0);
+    }
+  }
+
+  @override
+  double transformProgress(double t) =>
+      curvesAndDurations[_currentIndex].curve.transform(t);
 }

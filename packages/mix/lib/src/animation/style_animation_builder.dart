@@ -65,6 +65,12 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
         vsync: this,
         config: config,
       ),
+      // ignore: avoid-undisposed-instances
+      PhaseAnimationConfig() => PhaseAnimationDriver<S>(
+        vsync: this,
+        curvesAndDurations: config.curvesAndDurations,
+        specs: config.styles.map((e) => e.resolve(context) as S).toList(),
+      ),
     };
   }
 
