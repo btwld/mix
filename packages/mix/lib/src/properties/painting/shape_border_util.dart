@@ -291,29 +291,19 @@ final class StarBorderUtility<T extends Style<Object?>>
 final class LinearBorderUtility<T extends Style<Object?>>
     extends MixPropUtility<T, LinearBorder> {
   /// Utility for defining [LinearBorderMix.side]
-  late final side = BorderSideUtility<T>(
-    (v) => onlyProps(side: v),
-  );
+  late final side = BorderSideUtility<T>((v) => onlyProps(side: v));
 
   /// Utility for defining [LinearBorderMix.start]
-  late final start = LinearBorderEdgeUtility<T>(
-    (v) => onlyProps(start: v),
-  );
+  late final start = LinearBorderEdgeUtility<T>((v) => onlyProps(start: v));
 
   /// Utility for defining [LinearBorderMix.end]
-  late final end = LinearBorderEdgeUtility<T>(
-    (v) => onlyProps(end: v),
-  );
+  late final end = LinearBorderEdgeUtility<T>((v) => onlyProps(end: v));
 
   /// Utility for defining [LinearBorderMix.top]
-  late final top = LinearBorderEdgeUtility<T>(
-    (v) => onlyProps(top: v),
-  );
+  late final top = LinearBorderEdgeUtility<T>((v) => onlyProps(top: v));
 
   /// Utility for defining [LinearBorderMix.bottom]
-  late final bottom = LinearBorderEdgeUtility<T>(
-    (v) => onlyProps(bottom: v),
-  );
+  late final bottom = LinearBorderEdgeUtility<T>((v) => onlyProps(bottom: v));
 
   LinearBorderUtility(super.builder)
     : super(convertToMix: LinearBorderMix.value);
@@ -362,13 +352,7 @@ final class LinearBorderUtility<T extends Style<Object?>>
     LinearBorderEdgeMix? top,
     LinearBorderEdgeMix? bottom,
   }) {
-    return only(
-      side: side,
-      start: start,
-      end: end,
-      top: top,
-      bottom: bottom,
-    );
+    return only(side: side, start: start, end: end, top: top, bottom: bottom);
   }
 
   T mix(LinearBorderMix value) => builder(MixProp(value));
@@ -465,7 +449,4 @@ final class ShapeBorderUtility<T extends Style<Object?>>
   late final stadium = StadiumBorderUtility<T>(builder);
 
   ShapeBorderUtility(super.builder) : super(convertToMix: ShapeBorderMix.value);
-
-  @override
-  T call(ShapeBorderMix value) => builder(MixProp(value));
 }

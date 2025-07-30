@@ -8,14 +8,12 @@ void main() {
   group('BorderSideUtility', () {
     final utility = BorderSideUtility(UtilityTestAttribute.new);
 
-    test('call() creates BorderSideMix from value', () {
-      const borderSide = BorderSide(
+    test('call() creates BorderSideMix from parameters', () {
+      final result = utility(
         color: Colors.red,
         width: 2.0,
         style: BorderStyle.solid,
       );
-
-      final result = utility(BorderSideMix.value(borderSide));
       expect(result, isA<UtilityTestAttribute>());
       expect(result.value, isA<MixProp<BorderSide>>());
 

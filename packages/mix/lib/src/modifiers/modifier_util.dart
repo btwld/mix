@@ -23,20 +23,6 @@ import 'sized_box_modifier.dart';
 import 'transform_modifier.dart';
 import 'visibility_modifier.dart';
 
-/// Utility class that provides access to all widget modifier utilities.
-///
-/// This class combines all the individual modifier utilities into a single
-/// convenient interface. It's used to create the global `$with` utility.
-///
-/// Example usage:
-/// ```dart
-/// Style(
-///   $with.opacity(0.5),
-///   $with.scale(1.2),
-///   $with.rotate(45),
-///   $with.visibility(true),
-///   $with.aspectRatio(16/9),
-/// )
 /// ```
 final class ModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, ModifierAttribute> {

@@ -487,7 +487,7 @@ class BorderSideUtility<T extends Style<Object?>>
   BorderSideUtility(super.builder) : super(convertToMix: BorderSideMix.value);
 
   /// Creates a [Style] instance using the [BorderSideMix.none] constructor.
-  T none() => call(BorderSide.none);
+  T none() => builder(MixProp(BorderSideMix.none));
 
   T onlyProps({
     Prop<Color>? color,
@@ -522,12 +522,17 @@ class BorderSideUtility<T extends Style<Object?>>
     );
   }
 
-  T call(BorderSide value) {
+  T call({
+    Color? color,
+    double? width,
+    BorderStyle? style,
+    double? strokeAlign,
+  }) {
     return only(
-      color: value.color,
-      strokeAlign: value.strokeAlign,
-      style: value.style,
-      width: value.width,
+      color: color,
+      strokeAlign: strokeAlign,
+      style: style,
+      width: width,
     );
   }
 }
