@@ -75,9 +75,6 @@ abstract class MixPropUtility<U extends Style<Object?>, Value>
 
   const MixPropUtility(this.builder, {required this.convertToMix});
 
-  /// Creates a MixProp with a Mix value
-  U call(covariant Mix<Value> value) => builder(MixProp(value));
-
   /// Creates a MixProp from a raw value (converts to Mix)
   U as(Value value) => builder(MixProp(convertToMix(value)));
 

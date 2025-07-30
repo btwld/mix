@@ -234,6 +234,24 @@ void main() {
       });
     });
 
+    group('Factory Constructors', () {
+      test('animation factory creates FlexMix with animation config', () {
+        final animation = AnimationConfig.linear(Duration(seconds: 1));
+        final flexMix = FlexMix.animate(animation);
+
+        expect(flexMix.$animation, animation);
+      });
+
+      test('variant factory creates FlexMix with variant', () {
+        final variant = ContextVariant.brightness(Brightness.dark);
+        final style = FlexMix.direction(Axis.horizontal);
+        final flexMix = FlexMix.variant(variant, style);
+
+        expect(flexMix.$variants, isNotNull);
+        expect(flexMix.$variants!.length, 1);
+      });
+    });
+
     group('Convenience Methods', () {
       test('row() method sets horizontal direction', () {
         final attribute = FlexMix().row();
@@ -248,10 +266,7 @@ void main() {
       });
 
       test('animate method sets animation config', () {
-        final animation = AnimationConfig.curve(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.linear,
-        );
+        final animation = AnimationConfig.linear(Duration(milliseconds: 500));
         final attribute = FlexMix().animate(animation);
 
         expect(attribute.$animation, equals(animation));
@@ -459,10 +474,12 @@ void main() {
     group('Modifiers', () {
       test('modifiers can be added to attribute', () {
         final attribute = FlexMix(
-          modifierConfig: ModifierConfig(modifiers: [
-            OpacityModifierAttribute(opacity: 0.5),
-            PaddingModifierAttribute(padding: EdgeInsetsMix.all(8.0)),
-          ]),
+          modifierConfig: ModifierConfig(
+            modifiers: [
+              OpacityModifierAttribute(opacity: 0.5),
+              PaddingModifierAttribute(padding: EdgeInsetsMix.all(8.0)),
+            ],
+          ),
         );
 
         expect(attribute.$modifierConfig, isNotNull);
@@ -471,13 +488,17 @@ void main() {
 
       test('modifiers merge correctly', () {
         final first = FlexMix(
-          modifierConfig: ModifierConfig(modifiers: [OpacityModifierAttribute(opacity: 0.5)]),
+          modifierConfig: ModifierConfig(
+            modifiers: [OpacityModifierAttribute(opacity: 0.5)],
+          ),
         );
 
         final second = FlexMix(
-          modifierConfig: ModifierConfig(modifiers: [
-            PaddingModifierAttribute(padding: EdgeInsetsMix.all(8.0)),
-          ]),
+          modifierConfig: ModifierConfig(
+            modifiers: [
+              PaddingModifierAttribute(padding: EdgeInsetsMix.all(8.0)),
+            ],
+          ),
         );
 
         final merged = first.merge(second);
@@ -487,10 +508,31 @@ void main() {
       });
     });
 
-    group('Variants', () {
-      test('variants can be added to attribute', () {
-        final attribute = FlexMix();
-        expect(attribute.$variants, isNull); // By default no variants
+    group('Variant Methods', () {
+      test('variant method adds variant to FlexMix', () {
+        final variant = ContextVariant.brightness(Brightness.dark);
+        final style = FlexMix.direction(Axis.horizontal);
+        final flexMix = FlexMix().variant(variant, style);
+
+        expect(flexMix.$variants, isNotNull);
+        expect(flexMix.$variants!.length, 1);
+      });
+
+      test('variants method sets multiple variants', () {
+        final variants = [
+          VariantStyleAttribute(
+            ContextVariant.brightness(Brightness.dark),
+            FlexMix.direction(Axis.horizontal),
+          ),
+          VariantStyleAttribute(
+            ContextVariant.brightness(Brightness.light),
+            FlexMix.direction(Axis.vertical),
+          ),
+        ];
+        final flexMix = FlexMix().variants(variants);
+
+        expect(flexMix.$variants, isNotNull);
+        expect(flexMix.$variants!.length, 2);
       });
     });
 

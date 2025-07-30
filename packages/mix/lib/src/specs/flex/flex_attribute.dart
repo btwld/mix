@@ -18,6 +18,7 @@ import 'flex_spec.dart';
 ///
 /// Use this class to configure the attributes of a [FlexSpec] and pass it to
 /// the [FlexSpec] constructor.
+/// A style/attribute container for [FlexSpec], used to configure and compose flex layout properties.
 class FlexMix extends Style<FlexSpec>
     with
         Diagnosticable,
@@ -330,6 +331,8 @@ class FlexMix extends Style<FlexSpec>
     return merge(FlexMix(variants: [VariantStyleAttribute(variant, style)]));
   }
 
+  @override
+  /// Returns a list of properties used for equality comparison and hashing.
   @override
   List<Object?> get props => [
     $direction,

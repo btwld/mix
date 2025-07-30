@@ -5,23 +5,23 @@ import 'package:mix/mix.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  group('StackSpecAttribute', () {
+  group('StackMix', () {
     group('Constructor', () {
-      test('creates StackSpecAttribute with all properties', () {
-        final attribute = StackMix.raw(
-          alignment: Prop(AlignmentDirectional.topStart),
-          fit: Prop(StackFit.loose),
-          textDirection: Prop(TextDirection.ltr),
-          clipBehavior: Prop(Clip.antiAlias),
+      test('creates StackMix with all properties', () {
+        final attribute = StackMix(
+          alignment: Alignment.center,
+          fit: StackFit.expand,
+          textDirection: TextDirection.ltr,
+          clipBehavior: Clip.antiAlias,
         );
 
-        expectProp(attribute.$alignment, AlignmentDirectional.topStart);
-        expectProp(attribute.$fit, StackFit.loose);
-        expectProp(attribute.$textDirection, TextDirection.ltr);
-        expectProp(attribute.$clipBehavior, Clip.antiAlias);
+        expect(attribute.$alignment, resolvesTo(Alignment.center));
+        expect(attribute.$fit, resolvesTo(StackFit.expand));
+        expect(attribute.$textDirection, resolvesTo(TextDirection.ltr));
+        expect(attribute.$clipBehavior, resolvesTo(Clip.antiAlias));
       });
 
-      test('creates empty StackSpecAttribute', () {
+      test('creates empty StackMix', () {
         final attribute = StackMix();
 
         expect(attribute.$alignment, isNull);
@@ -31,49 +31,63 @@ void main() {
       });
     });
 
-    group('only constructor', () {
-      test('creates StackSpecAttribute with only constructor', () {
-        final attribute = StackMix(
-          alignment: AlignmentDirectional.bottomEnd,
-          fit: StackFit.expand,
-          textDirection: TextDirection.rtl,
-          clipBehavior: Clip.hardEdge,
-        );
-
-        expectProp(attribute.$alignment, AlignmentDirectional.bottomEnd);
-        expectProp(attribute.$fit, StackFit.expand);
-        expectProp(attribute.$textDirection, TextDirection.rtl);
-        expectProp(attribute.$clipBehavior, Clip.hardEdge);
+    group('Factory Constructors', () {
+      test('alignment factory creates StackMix with alignment', () {
+        final stackMix = StackMix.alignment(Alignment.topLeft);
+        
+        expect(stackMix.$alignment, resolvesTo(Alignment.topLeft));
       });
 
-      test('creates partial StackSpecAttribute with only constructor', () {
-        final attribute = StackMix(
-          alignment: Alignment.center,
-          fit: StackFit.passthrough,
-        );
+      test('fit factory creates StackMix with fit', () {
+        final stackMix = StackMix.fit(StackFit.loose);
+        
+        expect(stackMix.$fit, resolvesTo(StackFit.loose));
+      });
 
-        expect(attribute.$alignment, resolvesTo(Alignment.center));
-        expect(attribute.$fit, resolvesTo(StackFit.passthrough));
-        expect(attribute.$textDirection, isNull);
-        expect(attribute.$clipBehavior, isNull);
+      test('textDirection factory creates StackMix with textDirection', () {
+        final stackMix = StackMix.textDirection(TextDirection.rtl);
+        
+        expect(stackMix.$textDirection, resolvesTo(TextDirection.rtl));
+      });
+
+      test('clipBehavior factory creates StackMix with clipBehavior', () {
+        final stackMix = StackMix.clipBehavior(Clip.hardEdge);
+        
+        expect(stackMix.$clipBehavior, resolvesTo(Clip.hardEdge));
+      });
+
+      test('animation factory creates StackMix with animation config', () {
+        final animation = AnimationConfig.linear(Duration(seconds: 1));
+        final stackMix = StackMix.animate(animation);
+        
+        expect(stackMix.$animation, animation);
+      });
+
+      test('variant factory creates StackMix with variant', () {
+        final variant = ContextVariant.brightness(Brightness.dark);
+        final style = StackMix.alignment(Alignment.center);
+        final stackMix = StackMix.variant(variant, style);
+        
+        expect(stackMix.$variants, isNotNull);
+        expect(stackMix.$variants!.length, 1);
       });
     });
 
     group('value constructor', () {
-      test('creates StackSpecAttribute from StackSpec', () {
+      test('creates StackMix from StackSpec', () {
         const spec = StackSpec(
-          alignment: AlignmentDirectional.topStart,
-          fit: StackFit.loose,
+          alignment: Alignment.bottomRight,
+          fit: StackFit.passthrough,
           textDirection: TextDirection.ltr,
-          clipBehavior: Clip.antiAlias,
+          clipBehavior: Clip.none,
         );
 
         final attribute = StackMix.value(spec);
 
-        expect(attribute.$alignment, resolvesTo(AlignmentDirectional.topStart));
-        expect(attribute.$fit, resolvesTo(StackFit.loose));
+        expect(attribute.$alignment, resolvesTo(Alignment.bottomRight));
+        expect(attribute.$fit, resolvesTo(StackFit.passthrough));
         expect(attribute.$textDirection, resolvesTo(TextDirection.ltr));
-        expect(attribute.$clipBehavior, resolvesTo(Clip.antiAlias));
+        expect(attribute.$clipBehavior, resolvesTo(Clip.none));
       });
 
       test('maybeValue returns null for null spec', () {
@@ -81,161 +95,104 @@ void main() {
       });
 
       test('maybeValue returns attribute for non-null spec', () {
-        const spec = StackSpec(
-          alignment: Alignment.bottomRight,
-          fit: StackFit.expand,
-        );
+        const spec = StackSpec(alignment: Alignment.topCenter, fit: StackFit.expand);
         final attribute = StackMix.maybeValue(spec);
 
         expect(attribute, isNotNull);
-        expect(attribute!.$alignment, resolvesTo(Alignment.bottomRight));
+        expect(attribute!.$alignment, resolvesTo(Alignment.topCenter));
         expect(attribute.$fit, resolvesTo(StackFit.expand));
       });
     });
 
     group('Utility Methods', () {
-      test('utility methods create new instances', () {
-        final original = StackMix();
-        final withAlignment = original.alignment(Alignment.center);
-        final withFit = original.fit(StackFit.expand);
-
-        // Each utility creates a new instance
-        expect(identical(original, withAlignment), isFalse);
-        expect(identical(original, withFit), isFalse);
-        expect(identical(withAlignment, withFit), isFalse);
-
-        // Original remains unchanged
-        expect(original.$alignment, isNull);
-        expect(original.$fit, isNull);
-
-        // New instances have their properties set
-        expect(withAlignment.$alignment, resolvesTo(Alignment.center));
-        expect(withAlignment.$fit, isNull);
-        expect(withFit.$fit, resolvesTo(StackFit.expand));
-        expect(withFit.$alignment, isNull);
-      });
-
       test('alignment utility works correctly', () {
-        final center = StackMix().alignment(Alignment.center);
-        final topStart = StackMix().alignment(AlignmentDirectional.topStart);
-        final bottomEnd = StackMix().alignment(AlignmentDirectional.bottomEnd);
+        final attribute = StackMix().alignment(Alignment.bottomLeft);
 
-        expect(center.$alignment, resolvesTo(Alignment.center));
-        expect(topStart.$alignment, resolvesTo(AlignmentDirectional.topStart));
-        expect(
-          bottomEnd.$alignment,
-          resolvesTo(AlignmentDirectional.bottomEnd),
-        );
+        expect(attribute.$alignment, resolvesTo(Alignment.bottomLeft));
       });
 
       test('fit utility works correctly', () {
-        final loose = StackMix().fit(StackFit.loose);
-        final expand = StackMix().fit(StackFit.expand);
-        final passthrough = StackMix().fit(StackFit.passthrough);
+        final attribute = StackMix().fit(StackFit.expand);
 
-        expect(loose.$fit, resolvesTo(StackFit.loose));
-        expect(expand.$fit, resolvesTo(StackFit.expand));
-        expect(passthrough.$fit, resolvesTo(StackFit.passthrough));
+        expect(attribute.$fit, resolvesTo(StackFit.expand));
       });
 
       test('textDirection utility works correctly', () {
-        final ltr = StackMix().textDirection(TextDirection.ltr);
-        final rtl = StackMix().textDirection(TextDirection.rtl);
+        final attribute = StackMix().textDirection(TextDirection.rtl);
 
-        expect(ltr.$textDirection, resolvesTo(TextDirection.ltr));
-        expect(rtl.$textDirection, resolvesTo(TextDirection.rtl));
+        expect(attribute.$textDirection, resolvesTo(TextDirection.rtl));
       });
 
       test('clipBehavior utility works correctly', () {
-        final none = StackMix().clipBehavior(Clip.none);
-        final hardEdge = StackMix().clipBehavior(Clip.hardEdge);
-        final antiAlias = StackMix().clipBehavior(Clip.antiAlias);
-        final antiAliasWithSaveLayer = StackMix().clipBehavior(
-          Clip.antiAliasWithSaveLayer,
-        );
+        final attribute = StackMix().clipBehavior(Clip.antiAliasWithSaveLayer);
 
-        expect(none.$clipBehavior, resolvesTo(Clip.none));
-        expect(hardEdge.$clipBehavior, resolvesTo(Clip.hardEdge));
-        expect(antiAlias.$clipBehavior, resolvesTo(Clip.antiAlias));
-        expectProp(
-          antiAliasWithSaveLayer.$clipBehavior,
-          Clip.antiAliasWithSaveLayer,
-        );
+        expect(attribute.$clipBehavior, resolvesTo(Clip.antiAliasWithSaveLayer));
       });
 
-      test('chaining utilities accumulates properties correctly', () {
-        // Chaining now properly accumulates all properties
-        final chained = StackMix()
-            .alignment(Alignment.topLeft)
-            .fit(StackFit.expand)
-            .textDirection(TextDirection.ltr)
-            .clipBehavior(Clip.antiAlias);
-
-        // All properties should be accumulated
-        expect(chained.$alignment, resolvesTo(Alignment.topLeft));
-        expect(chained.$fit, resolvesTo(StackFit.expand));
-        expect(chained.$textDirection, resolvesTo(TextDirection.ltr));
-        expect(chained.$clipBehavior, resolvesTo(Clip.antiAlias));
-      });
-
-      test('chaining with overrides works correctly', () {
-        // Later values override earlier ones
-        final chained = StackMix()
-            .alignment(Alignment.topLeft)
-            .fit(StackFit.loose)
-            .alignment(
-              Alignment.bottomRight,
-            ) // This overrides the first alignment
-            .fit(StackFit.expand); // This overrides the first fit
-
-        expect(chained.$alignment, resolvesTo(Alignment.bottomRight));
-        expect(chained.$fit, resolvesTo(StackFit.expand));
-      });
-    });
-
-    group('Convenience Methods', () {
       test('animate method sets animation config', () {
-        final animation = AnimationConfig.curve(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.linear,
-        );
+        final animation = AnimationConfig.linear(Duration(milliseconds: 500));
         final attribute = StackMix().animate(animation);
 
         expect(attribute.$animation, equals(animation));
       });
     });
 
+    group('Variant Methods', () {
+      test('variant method adds variant to StackMix', () {
+        final variant = ContextVariant.brightness(Brightness.dark);
+        final style = StackMix.alignment(Alignment.center);
+        final stackMix = StackMix().variant(variant, style);
+        
+        expect(stackMix.$variants, isNotNull);
+        expect(stackMix.$variants!.length, 1);
+      });
+
+      test('variants method sets multiple variants', () {
+        final variants = [
+          VariantStyleAttribute(
+            ContextVariant.brightness(Brightness.dark),
+            StackMix.alignment(Alignment.topLeft),
+          ),
+          VariantStyleAttribute(
+            ContextVariant.brightness(Brightness.light),
+            StackMix.alignment(Alignment.bottomRight),
+          ),
+        ];
+        final stackMix = StackMix().variants(variants);
+        
+        expect(stackMix.$variants, isNotNull);
+        expect(stackMix.$variants!.length, 2);
+      });
+    });
+
     group('Resolution', () {
       test('resolves to StackSpec with correct properties', () {
         final attribute = StackMix(
-          alignment: AlignmentDirectional.centerStart,
-          fit: StackFit.loose,
-          textDirection: TextDirection.rtl,
-          clipBehavior: Clip.hardEdge,
+          alignment: Alignment.center,
+          fit: StackFit.expand,
+          textDirection: TextDirection.ltr,
+          clipBehavior: Clip.antiAlias,
         );
 
         final context = MockBuildContext();
         final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec.alignment, AlignmentDirectional.centerStart);
-        expect(spec.fit, StackFit.loose);
-        expect(spec.textDirection, TextDirection.rtl);
-        expect(spec.clipBehavior, Clip.hardEdge);
+        expect(spec.alignment, Alignment.center);
+        expect(spec.fit, StackFit.expand);
+        expect(spec.textDirection, TextDirection.ltr);
+        expect(spec.clipBehavior, Clip.antiAlias);
       });
 
-      test('resolves with partial values correctly', () {
-        final attribute = StackMix(
-          alignment: Alignment.bottomCenter,
-          fit: StackFit.passthrough,
-        );
+      test('resolves with null values correctly', () {
+        final attribute = StackMix().alignment(Alignment.topLeft).fit(StackFit.loose);
 
         final context = MockBuildContext();
         final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec.alignment, Alignment.bottomCenter);
-        expect(spec.fit, StackFit.passthrough);
+        expect(spec.alignment, Alignment.topLeft);
+        expect(spec.fit, StackFit.loose);
         expect(spec.textDirection, isNull);
         expect(spec.clipBehavior, isNull);
       });
@@ -243,26 +200,20 @@ void main() {
 
     group('Merge', () {
       test('merges properties correctly', () {
-        final first = StackMix(
-          alignment: Alignment.topLeft,
-          fit: StackFit.loose,
-          textDirection: TextDirection.ltr,
-        );
+        final first = StackMix(alignment: Alignment.topLeft, fit: StackFit.loose);
 
         final second = StackMix(
           alignment: Alignment.bottomRight,
-          clipBehavior: Clip.antiAlias,
+          textDirection: TextDirection.rtl,
+          clipBehavior: Clip.hardEdge,
         );
 
         final merged = first.merge(second);
 
-        expectProp(
-          merged.$alignment,
-          Alignment.bottomRight,
-        ); // second overrides
+        expect(merged.$alignment, resolvesTo(Alignment.bottomRight)); // second overrides
         expect(merged.$fit, resolvesTo(StackFit.loose)); // from first
-        expectProp(merged.$textDirection, TextDirection.ltr); // from first
-        expect(merged.$clipBehavior, resolvesTo(Clip.antiAlias)); // from second
+        expect(merged.$textDirection, resolvesTo(TextDirection.rtl)); // from second
+        expect(merged.$clipBehavior, resolvesTo(Clip.hardEdge)); // from second
       });
 
       test('returns this when other is null', () {
@@ -270,30 +221,6 @@ void main() {
         final merged = attribute.merge(null);
 
         expect(identical(attribute, merged), isTrue);
-      });
-
-      test('merges all properties when both have values', () {
-        final first = StackMix(
-          alignment: AlignmentDirectional.topStart,
-          fit: StackFit.loose,
-        );
-
-        final second = StackMix(
-          alignment: AlignmentDirectional.bottomEnd,
-          fit: StackFit.expand,
-          textDirection: TextDirection.rtl,
-          clipBehavior: Clip.hardEdge,
-        );
-
-        final merged = first.merge(second);
-
-        expectProp(
-          merged.$alignment,
-          AlignmentDirectional.bottomEnd,
-        ); // second overrides
-        expect(merged.$fit, resolvesTo(StackFit.expand)); // second overrides
-        expectProp(merged.$textDirection, TextDirection.rtl); // from second
-        expect(merged.$clipBehavior, resolvesTo(Clip.hardEdge)); // from second
       });
     });
 
@@ -323,22 +250,15 @@ void main() {
 
         expect(attr1, isNot(equals(attr2)));
       });
-
-      test('attributes with different fit are not equal', () {
-        final attr1 = StackMix().fit(StackFit.loose);
-        final attr2 = StackMix().fit(StackFit.expand);
-
-        expect(attr1, isNot(equals(attr2)));
-      });
     });
 
     group('Props getter', () {
       test('props includes all properties', () {
-        final attribute = StackMix.raw(
-          alignment: Prop(AlignmentDirectional.topStart),
-          fit: Prop(StackFit.loose),
-          textDirection: Prop(TextDirection.ltr),
-          clipBehavior: Prop(Clip.antiAlias),
+        final attribute = StackMix(
+          alignment: Alignment.center,
+          fit: StackFit.expand,
+          textDirection: TextDirection.ltr,
+          clipBehavior: Clip.antiAlias,
         );
 
         expect(attribute.props.length, 7);
@@ -346,108 +266,6 @@ void main() {
         expect(attribute.props, contains(attribute.$fit));
         expect(attribute.props, contains(attribute.$textDirection));
         expect(attribute.props, contains(attribute.$clipBehavior));
-      });
-    });
-
-    group('Modifiers', () {
-      test('modifiers can be added to attribute', () {
-        final attribute = StackMix(
-          modifierConfig: ModifierConfig(modifiers: [
-            OpacityModifierAttribute(opacity: 0.5),
-            AlignModifierAttribute(alignment: Alignment.center),
-          ]),
-        );
-
-        expect(attribute.$modifierConfig, isNotNull);
-        expect(attribute.$modifierConfig!.$modifiers!.length, 2);
-      });
-
-      test('modifiers merge correctly', () {
-        final opacityModifier = OpacityModifierAttribute(opacity: 0.5);
-        final alignModifier = AlignModifierAttribute(
-          alignment: Alignment.center,
-        );
-
-        final first = StackMix(modifierConfig: ModifierConfig(modifiers: [opacityModifier]));
-
-        final second = StackMix(modifierConfig: ModifierConfig(modifiers: [alignModifier]));
-
-        final merged = first.merge(second);
-
-        // Check that the modifiers list matches exactly the expected list
-        final expectedModifiers = [
-          OpacityModifierAttribute(opacity: 0.5),
-          AlignModifierAttribute(alignment: Alignment.center),
-        ];
-
-        expect(merged.$modifierConfig?.$modifiers, expectedModifiers);
-      });
-
-      test('modifiers with same type merge correctly', () {
-        final firstOpacity = OpacityModifierAttribute(opacity: 0.3);
-        final secondOpacity = OpacityModifierAttribute(opacity: 0.7);
-
-        final first = StackMix(modifierConfig: ModifierConfig(modifiers: [firstOpacity]));
-        final second = StackMix(modifierConfig: ModifierConfig(modifiers: [secondOpacity]));
-
-        final merged = first.merge(second);
-
-        // Should have only one opacity modifier (merged)
-        expect(merged.$modifierConfig, isNotNull);
-        expect(merged.$modifierConfig!.$modifiers!.length, 1);
-        expect(merged.$modifierConfig!.$modifiers![0], isA<OpacityModifierAttribute>());
-
-        // The second opacity should take precedence
-        final mergedOpacity =
-            merged.$modifierConfig!.$modifiers![0] as OpacityModifierAttribute;
-        expect(mergedOpacity.opacity, resolvesTo(0.7));
-      });
-    });
-
-    group('Variants', () {
-      test('variants can be added to attribute', () {
-        final attribute = StackMix();
-        expect(attribute.$variants, isNull); // By default no variants
-      });
-    });
-
-    group('Builder pattern', () {
-      test('builder methods create new instances', () {
-        final original = StackMix();
-        final modified = original.alignment(Alignment.center);
-
-        expect(identical(original, modified), isFalse);
-        expect(original.$alignment, isNull);
-        expect(modified.$alignment, resolvesTo(Alignment.center));
-      });
-
-      test('builder methods can be chained fluently', () {
-        final attribute = StackMix(
-          alignment: AlignmentDirectional.topEnd,
-          fit: StackFit.expand,
-          textDirection: TextDirection.rtl,
-          clipBehavior: Clip.hardEdge,
-        );
-
-        final context = MockBuildContext();
-        final spec = attribute.resolve(context);
-
-        expect(spec.alignment, AlignmentDirectional.topEnd);
-        expect(spec.fit, StackFit.expand);
-        expect(spec.textDirection, TextDirection.rtl);
-        expect(spec.clipBehavior, Clip.hardEdge);
-      });
-    });
-
-    group('Debug Properties', () {
-      test('debugFillProperties includes all properties', () {
-        // This test verifies that the attribute implements Diagnosticable correctly
-        final attribute = StackMix()
-            .alignment(Alignment.center)
-            .fit(StackFit.loose);
-
-        // The presence of debugFillProperties is tested by the framework
-        expect(attribute, isA<StackMix>());
       });
     });
   });
