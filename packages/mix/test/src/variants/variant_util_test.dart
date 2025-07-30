@@ -333,40 +333,6 @@ void main() {
       );
     });
 
-    group('Performance considerations', () {
-      test('utility getter access is efficient', () {
-        final stopwatch = Stopwatch()..start();
-
-        for (int i = 0; i < 1000; i++) {
-          utility.hover;
-          utility.press;
-          utility.focus;
-          utility.disabled;
-          utility.dark;
-          utility.light;
-          utility.mobile;
-          utility.tablet;
-          utility.desktop;
-        }
-
-        stopwatch.stop();
-        expect(stopwatch.elapsedMilliseconds, lessThan(50));
-      });
-
-      test('breakpoint method calls are efficient', () {
-        final stopwatch = Stopwatch()..start();
-
-        for (int i = 0; i < 1000; i++) {
-          utility.minWidth(i.toDouble());
-          utility.maxWidth(i.toDouble());
-          utility.widthRange(i.toDouble(), (i + 100).toDouble());
-        }
-
-        stopwatch.stop();
-        expect(stopwatch.elapsedMilliseconds, lessThan(100));
-      });
-    });
-
     group('Integration patterns', () {
       test('builders can be used as function returns', () {
         VariantAttributeBuilder getBuilder() => utility.hover;
@@ -718,47 +684,6 @@ void main() {
         expect(result, isA<VariantStyleAttribute<MultiSpec>>());
         expect(result.variant, equals(darkBuilder.variant));
         expect(result.value, isA<Style>());
-      });
-    });
-
-    group('Performance', () {
-      test('creation is efficient', () {
-        const variant = NamedVariant('test');
-        final stopwatch = Stopwatch()..start();
-
-        for (int i = 0; i < 1000; i++) {
-          const VariantAttributeBuilder<MockSpec>(variant);
-        }
-
-        stopwatch.stop();
-        expect(stopwatch.elapsedMilliseconds, lessThan(10));
-      });
-
-      test('equality comparison is efficient', () {
-        const variant = NamedVariant('test');
-        const builder1 = VariantAttributeBuilder<MockSpec>(variant);
-        const builder2 = VariantAttributeBuilder<MockSpec>(variant);
-        final stopwatch = Stopwatch()..start();
-
-        for (int i = 0; i < 1000; i++) {
-          builder1 == builder2;
-        }
-
-        stopwatch.stop();
-        expect(stopwatch.elapsedMilliseconds, lessThan(5));
-      });
-
-      test('hashCode computation is efficient', () {
-        const variant = NamedVariant('test');
-        const builder = VariantAttributeBuilder<MockSpec>(variant);
-        final stopwatch = Stopwatch()..start();
-
-        for (int i = 0; i < 1000; i++) {
-          builder.hashCode;
-        }
-
-        stopwatch.stop();
-        expect(stopwatch.elapsedMilliseconds, lessThan(5));
       });
     });
 

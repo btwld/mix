@@ -34,6 +34,7 @@ export 'src/core/helpers.dart';
 export 'src/core/mix_element.dart';
 export 'src/core/modifier.dart';
 export 'src/core/prop.dart';
+export 'src/core/prop_source.dart';
 export 'src/core/providers/resolved_style_provider.dart';
 export 'src/core/providers/style_provider.dart';
 export 'src/core/providers/widget_state_provider.dart';

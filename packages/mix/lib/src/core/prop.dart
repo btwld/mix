@@ -10,58 +10,8 @@ import 'decoration_merge.dart';
 import 'directive.dart';
 import 'helpers.dart';
 import 'mix_element.dart';
+import 'prop_source.dart';
 import 'shape_border_merge.dart';
-
-/// Base class for property value sources.
-///
-/// Defines the source of a property value, which can be a direct value,
-/// a token reference, or a mix value.
-@immutable
-abstract class PropSource<T> {
-  const PropSource();
-}
-
-/// Source for direct values (used by Prop).
-@immutable
-class ValuePropSource<T> extends PropSource<T> {
-  final T value;
-
-  const ValuePropSource(this.value);
-
-  @override
-  String toString() => 'ValuePropSource($value)';
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is ValuePropSource<T> && other.value == value;
-  }
-
-  @override
-  int get hashCode => value.hashCode;
-}
-
-/// Source for token references (used by Prop).
-@immutable
-class TokenPropSource<T> extends PropSource<T> {
-  final MixToken<T> token;
-
-  const TokenPropSource(this.token);
-
-  @override
-  String toString() => 'TokenPropSource($token)';
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is TokenPropSource<T> && other.token == token;
-  }
-
-  @override
-  int get hashCode => token.hashCode;
-}
 
 // ====== Prop Types ======
 
@@ -84,6 +34,8 @@ sealed class PropBase<V> extends Mixable<V> with Resolvable<V> {
        $animation = animation;
 
   Type get type => V;
+
+  bool get hasToken;
 
   /// Applies directives to the resolved value
   @protected
@@ -160,8 +112,6 @@ class Prop<V> extends PropBase<V> {
 
   // Helper methods for Prop
   bool get hasValue => source is ValuePropSource<V>;
-
-  bool get hasToken => source is TokenPropSource<V>;
 
   V get value {
     if (source is! ValuePropSource<V>) {
@@ -244,26 +194,41 @@ class Prop<V> extends PropBase<V> {
   }
 
   @override
+  bool get hasToken => source is TokenPropSource<V>;
+
+  @override
   int get hashCode => Object.hash(source, $directives, $animation);
 }
 
 /// Mix prop for Mix types - uses accumulation merge strategy
 @immutable
 class MixProp<V> extends PropBase<V> {
-  final Mix<V>? value;
+  final List<MixSource<V>> sources;
 
-  const MixProp._({this.value, super.directives, super.animation});
+  const MixProp._({required this.sources, super.directives, super.animation});
 
   // Named constructors for clarity
-  const MixProp(Mix<V> value)
-    : this._(value: value, directives: null, animation: null);
+  MixProp(Mix<V> value)
+    : this._(
+        sources: [MixValueSource(value)],
+        directives: null,
+        animation: null,
+      );
+
+  // Token constructor
+  MixProp.token(MixToken<V> token, Mix<V> Function(V) converter)
+    : this._(
+        sources: [MixTokenSource(token, converter)],
+        directives: null,
+        animation: null,
+      );
 
   // directives
   const MixProp.directives(List<MixDirective<V>> directives)
-    : this._(value: null, directives: directives, animation: null);
+    : this._(sources: const [], directives: directives, animation: null);
 
   const MixProp.animation(AnimationConfig animation)
-    : this._(value: null, directives: null, animation: animation);
+    : this._(sources: const [], directives: null, animation: animation);
 
   static MixProp<T>? maybe<T>(Mix<T>? value) {
     if (value == null) return null;
@@ -271,15 +236,32 @@ class MixProp<V> extends PropBase<V> {
     return MixProp(value);
   }
 
-  M? _mergeMixes<M extends Mix<V>>(M? a, M? b) {
-    if (b == null) return a;
-    if (a == null) return b;
+  // Backward compatibility getter
+  Mix<V>? get value {
+    if (sources.isEmpty) return null;
+
+    // Collect all value sources (ignore token sources for backward compatibility)
+    final valueSources = sources
+        .whereType<MixValueSource<V>>()
+        .map((source) => source.value)
+        .toList();
+
+    if (valueSources.isEmpty) {
+      // Cannot provide value for tokens without context
+      return null;
+    }
+
+    return valueSources.reduce(mergeMixes);
+  }
+
+  @visibleForTesting
+  Mix<V> mergeMixes(Mix<V> a, Mix<V> b) {
     if (a is DecorationMix && b is DecorationMix) {
       return DecorationMerger().tryMerge(
             a as DecorationMix,
             b as DecorationMix,
           )!
-          as M;
+          as Mix<V>;
     }
 
     if (a is ShapeBorderMix && b is ShapeBorderMix) {
@@ -287,10 +269,46 @@ class MixProp<V> extends PropBase<V> {
             a as ShapeBorderMix,
             b as ShapeBorderMix,
           )!
-          as M;
+          as Mix<V>;
     }
 
-    return a.merge(b) as M;
+    return a.merge(b);
+  }
+
+  /// Consolidates consecutive MixValueSource instances in the sources list
+  @visibleForTesting
+  List<MixSource<V>> consolidateSources(List<MixSource<V>> sources) {
+    if (sources.length <= 1) return sources;
+
+    final consolidated = <MixSource<V>>[];
+    MixValueSource<V>? pendingValueSource;
+
+    for (final source in sources) {
+      if (source is MixValueSource<V>) {
+        if (pendingValueSource != null) {
+          // Merge with pending value source
+          final mergedMix = mergeMixes(pendingValueSource.value, source.value);
+          pendingValueSource = MixValueSource(mergedMix);
+        } else {
+          // Start accumulating
+          pendingValueSource = source;
+        }
+      } else {
+        // Not a value source, flush any pending and add this source
+        if (pendingValueSource != null) {
+          consolidated.add(pendingValueSource);
+          pendingValueSource = null;
+        }
+        consolidated.add(source);
+      }
+    }
+
+    // Don't forget to add any remaining pending value source
+    if (pendingValueSource != null) {
+      consolidated.add(pendingValueSource);
+    }
+
+    return consolidated;
   }
 
   MixProp<V> directives(List<MixDirective<V>> directives) {
@@ -303,11 +321,29 @@ class MixProp<V> extends PropBase<V> {
 
   @override
   V resolve(BuildContext context) {
-    if (value == null) {
-      throw FlutterError('MixProp<$V> has no source defined');
+    if (sources.isEmpty) {
+      throw FlutterError('MixProp<$V> has no sources defined');
     }
 
-    final resolvedValue = value!.resolve(context);
+    // Resolve all sources to Mix values
+    final mixValues = <Mix<V>>[];
+    for (final source in sources) {
+      final mixValue = switch (source) {
+        MixValueSource<V>(:final value) => value,
+        MixTokenSource<V>(:final token, :final converter) => converter(
+          MixScope.tokenOf(token, context),
+        ),
+      };
+      mixValues.add(mixValue);
+    }
+
+    // Merge all Mix values into one
+    Mix<V> mergedMix = mixValues.first;
+    for (int i = 1; i < mixValues.length; i++) {
+      mergedMix = mergeMixes(mergedMix, mixValues[i]);
+    }
+
+    final resolvedValue = mergedMix.resolve(context);
 
     // Apply directives if any
     return applyDirectives(resolvedValue);
@@ -317,11 +353,14 @@ class MixProp<V> extends PropBase<V> {
   MixProp<V> merge(MixProp<V>? other) {
     if (other == null) return this;
 
-    // Merge sources using accumulation strategy
-    final mergedSource = _mergeMixes(value, other.value);
+    // Accumulate sources from both props
+    final accumulatedSources = [...sources, ...other.sources];
+
+    // Consolidate consecutive MixValueSource instances
+    final mergedSources = consolidateSources(accumulatedSources);
 
     return MixProp._(
-      value: mergedSource,
+      sources: mergedSources,
       directives: mergeDirectives(other.$directives),
       animation: mergeAnimation(other.$animation),
     );
@@ -332,13 +371,17 @@ class MixProp<V> extends PropBase<V> {
     if (identical(this, other)) return true;
 
     return other is MixProp<V> &&
-        other.value == value &&
+        listEquals(other.sources, sources) &&
         listEquals(other.$directives, $directives) &&
         other.$animation == $animation;
   }
 
   @override
-  int get hashCode => Object.hash(value, $directives, $animation);
+  bool get hasToken => sources.any((source) => source is MixTokenSource<V>);
+
+  @override
+  int get hashCode =>
+      Object.hash(Object.hashAll(sources), $directives, $animation);
 }
 
 extension PropExt<T> on Prop<T>? {

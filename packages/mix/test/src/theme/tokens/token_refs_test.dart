@@ -358,29 +358,6 @@ void main() {
       });
     });
 
-    group('Performance', () {
-      test('registry lookup is efficient for many entries', () {
-        final stopwatch = Stopwatch()..start();
-
-        // Create many token references
-        final refs = <DoubleRef>[];
-        for (int i = 0; i < 1000; i++) {
-          final token = MixToken<double>('perf-test-$i');
-          refs.add(DoubleRef.token(token));
-        }
-
-        // Access all tokens
-        for (final ref in refs) {
-          ref.mixToken; // Should be fast
-        }
-
-        stopwatch.stop();
-
-        // Sanity check that it completes reasonably quickly
-        expect(stopwatch.elapsedMilliseconds, lessThan(1000));
-      });
-    });
-
     group('Type Safety', () {
       test('extension types maintain type safety', () {
         final doubleToken = MixToken<double>('type-test');

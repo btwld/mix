@@ -84,10 +84,7 @@ abstract class MixPropUtility<U extends Style<Object?>, Value>
   @Deprecated('use token(value) instead')
   U ref(MixToken<Value> value) => token(value);
 
-  // TODO: Check how o implement this
-  U token(MixToken<Value> value) => throw UnsupportedError(
-    'Token support is not implemented for $runtimeType.',
-  );
+  U token(MixToken<Value> value) => builder(MixProp.token(value, convertToMix));
 
   @override
   U directive(MixDirective<Value> directive) {

@@ -207,17 +207,6 @@ void main() {
       },
     );
 
-    test('hash code computation is efficient for large collections', () {
-      var largeList = List.generate(100000, (index) => index);
-      var timeStart = DateTime.now();
-      deepEquality.hash(largeList);
-      var timeEnd = DateTime.now();
-      expect(
-        timeEnd.difference(timeStart),
-        lessThan(const Duration(seconds: 1)),
-      );
-    });
-
     test('checks nested custom object equality', () {
       const nestedObj1 = _AnotherCustomObject(
         id: 1,

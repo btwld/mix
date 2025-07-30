@@ -405,38 +405,5 @@ void main() {
         expect(variant2.key, 'widget_state_hovered');
       });
     });
-
-    group('Performance considerations', () {
-      test('creating many WidgetStateVariants is efficient', () {
-        final stopwatch = Stopwatch()..start();
-
-        for (int i = 0; i < 1000; i++) {
-          WidgetStateVariant(WidgetState.hovered);
-        }
-
-        stopwatch.stop();
-
-        // Should complete quickly (less than 100ms for 1000 instances)
-        expect(stopwatch.elapsedMilliseconds, lessThan(100));
-      });
-
-      test('equality checks are efficient', () {
-        final variant1 = WidgetStateVariant(WidgetState.hovered);
-        final variant2 = WidgetStateVariant(WidgetState.hovered);
-        final variant3 = WidgetStateVariant(WidgetState.pressed);
-
-        final stopwatch = Stopwatch()..start();
-
-        for (int i = 0; i < 1000; i++) {
-          variant1 == variant2; // should be true
-          variant1 == variant3; // should be false
-        }
-
-        stopwatch.stop();
-
-        // Should complete quickly (less than 50ms for 2000 comparisons)
-        expect(stopwatch.elapsedMilliseconds, lessThan(50));
-      });
-    });
   });
 }

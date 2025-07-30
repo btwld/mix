@@ -98,8 +98,7 @@ class TextSpecUtility extends StyleAttributeBuilder<TextSpec> {
   TextMix _baseAttribute;
 
   TextSpecUtility([TextMix? attribute])
-    : _baseAttribute = attribute ?? TextMix(),
-      super();
+    : _baseAttribute = attribute ?? TextMix();
 
   /// Mutable builder - updates internal state and returns this for cascade
   TextSpecUtility _build(TextMix newAttribute) {

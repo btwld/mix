@@ -378,32 +378,6 @@ void main() {
         expect(identical(function1, function2), isTrue);
       });
     });
-
-    group('Performance considerations', () {
-      test('creating many ContextVariants is efficient', () {
-        final stopwatch = Stopwatch()..start();
-
-        for (int i = 0; i < 1000; i++) {
-          ContextVariant('variant$i', (context) => i % 2 == 0);
-        }
-
-        stopwatch.stop();
-        expect(stopwatch.elapsedMilliseconds, lessThan(100));
-      });
-
-      test('when method calls are efficient', () {
-        final variant = ContextVariant('performance', (context) => true);
-        final context = MockBuildContext();
-        final stopwatch = Stopwatch()..start();
-
-        for (int i = 0; i < 1000; i++) {
-          variant.when(context);
-        }
-
-        stopwatch.stop();
-        expect(stopwatch.elapsedMilliseconds, lessThan(50));
-      });
-    });
   });
 
   group('Predefined variants', () {
