@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
+import '../../core/prop.dart';
 import '../../core/spec_utility.dart' show StyleAttributeBuilder;
-import '../../core/style.dart' show Style;
+import '../../core/style.dart' show Style, VariantStyleAttribute;
 import '../../core/utility.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
@@ -21,27 +22,27 @@ class BoxSpecUtility extends StyleAttributeBuilder<BoxSpec> {
   // SAME UTILITIES AS BoxMix - but return BoxSpecUtility for cascade
 
   late final padding = EdgeInsetsGeometryUtility<BoxSpecUtility>(
-    (prop) => _build(BoxMix.raw(padding: prop)),
+    (prop) => buildProps(padding: prop),
   );
 
   late final margin = EdgeInsetsGeometryUtility<BoxSpecUtility>(
-    (prop) => _build(BoxMix.raw(margin: prop)),
+    (prop) => buildProps(margin: prop),
   );
 
   late final constraints = BoxConstraintsUtility<BoxSpecUtility>(
-    (prop) => _build(BoxMix.raw(constraints: prop)),
+    (prop) => buildProps(constraints: prop),
   );
 
   late final decoration = DecorationUtility<BoxSpecUtility>(
-    (prop) => _build(BoxMix.raw(decoration: prop)),
+    (prop) => buildProps(decoration: prop),
   );
 
   late final on = OnContextVariantUtility<BoxSpec, BoxSpecUtility>(
-    (v) => _build(BoxMix.raw(variants: [v])),
+    (v) => buildProps(variants: [v]),
   );
 
   late final wrap = ModifierUtility<BoxSpecUtility>(
-    (prop) => _build(BoxMix.raw(modifierConfig: ModifierConfig.modifier(prop))),
+    (prop) => buildProps(modifierConfig: ModifierConfig.modifier(prop)),
   );
 
   // FLATTENED ACCESS - Same as BoxMix
@@ -61,28 +62,55 @@ class BoxSpecUtility extends StyleAttributeBuilder<BoxSpec> {
   late final maxHeight =
       constraints.maxHeight; // PROP UTILITIES - Same as BoxMix
   late final transform = PropUtility<BoxSpecUtility, Matrix4>(
-    (prop) => _build(BoxMix.raw(transform: prop)),
+    (prop) => buildProps(transform: prop),
   );
 
   late final transformAlignment =
       PropUtility<BoxSpecUtility, AlignmentGeometry>(
-        (prop) => _build(BoxMix.raw(transformAlignment: prop)),
+        (prop) => buildProps(transformAlignment: prop),
       );
 
   late final clipBehavior = PropUtility<BoxSpecUtility, Clip>(
-    (prop) => _build(BoxMix.raw(clipBehavior: prop)),
+    (prop) => buildProps(clipBehavior: prop),
   );
 
   late final alignment = PropUtility<BoxSpecUtility, AlignmentGeometry>(
-    (prop) => _build(BoxMix.raw(alignment: prop)),
+    (prop) => buildProps(alignment: prop),
   );
 
   BoxMix _baseAttribute;
 
   BoxSpecUtility([BoxMix? attribute]) : _baseAttribute = attribute ?? BoxMix();
 
-  /// Mutable builder - updates internal state and returns this for cascade
-  BoxSpecUtility _build(BoxMix newAttribute) {
+  @protected
+  BoxSpecUtility buildProps({
+    Prop<AlignmentGeometry>? alignment,
+    MixProp<EdgeInsetsGeometry>? padding,
+    MixProp<EdgeInsetsGeometry>? margin,
+    MixProp<BoxConstraints>? constraints,
+    MixProp<Decoration>? decoration,
+    MixProp<Decoration>? foregroundDecoration,
+    Prop<Matrix4>? transform,
+    Prop<AlignmentGeometry>? transformAlignment,
+    Prop<Clip>? clipBehavior,
+    AnimationConfig? animation,
+    ModifierConfig? modifierConfig,
+    List<VariantStyleAttribute<BoxSpec>>? variants,
+  }) {
+    final newAttribute = BoxMix.raw(
+      alignment: alignment,
+      padding: padding,
+      margin: margin,
+      constraints: constraints,
+      decoration: decoration,
+      foregroundDecoration: foregroundDecoration,
+      transform: transform,
+      transformAlignment: transformAlignment,
+      clipBehavior: clipBehavior,
+      variants: variants,
+      modifierConfig: modifierConfig,
+      animation: animation,
+    );
     _baseAttribute = _baseAttribute.merge(newAttribute);
 
     return this;
@@ -92,12 +120,13 @@ class BoxSpecUtility extends StyleAttributeBuilder<BoxSpec> {
 
   /// Animation
   BoxSpecUtility animate(AnimationConfig animation) =>
-      _build(BoxMix.animation(animation));
+      buildProps(animation: animation);
 
   // StyleAttribute interface implementation
 
   @override
   BoxSpecUtility merge(Style<BoxSpec>? other) {
+    if (other == null) return this;
     // IMMUTABLE: Always create new instance (StyleAttribute contract)
     if (other is BoxSpecUtility) {
       return BoxSpecUtility(_baseAttribute.merge(other._baseAttribute));
@@ -106,7 +135,7 @@ class BoxSpecUtility extends StyleAttributeBuilder<BoxSpec> {
       return BoxSpecUtility(_baseAttribute.merge(other));
     }
 
-    return BoxSpecUtility(_baseAttribute);
+    throw FlutterError('Unsupported merge type: ${other.runtimeType}');
   }
 
   @override

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../animation/animation_config.dart';
+import '../modifiers/modifier_config.dart';
 import 'spec.dart';
 import 'style.dart';
 
@@ -15,7 +16,6 @@ abstract class StyleAttributeBuilder<S extends Spec<S>> extends Style<S>
     super.animation,
     super.modifierConfig,
     super.variants,
-
     super.inherit,
   });
 
@@ -34,6 +34,9 @@ abstract class StyleAttributeBuilder<S extends Spec<S>> extends Style<S>
   /// Mutable animation configuration from internal attribute
   @override
   AnimationConfig? get $animation => attribute.$animation;
+
+  @override
+  ModifierConfig? get $modifierConfig => attribute.$modifierConfig;
 
   /// Mutable variants from internal attribute
   @override

@@ -538,5 +538,6 @@ class BoxMix extends Style<BoxSpec>
     $animation,
     $modifierConfig,
     $variants,
+    $inherit,
   ];
 }

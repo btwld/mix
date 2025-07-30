@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
+import '../../core/directive.dart';
+import '../../core/prop.dart';
 import '../../core/spec_utility.dart' show StyleAttributeBuilder;
-import '../../core/style.dart' show Style;
+import '../../core/style.dart' show Style, VariantStyleAttribute;
 import '../../core/utility.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
@@ -21,56 +23,54 @@ import 'text_spec.dart';
 class TextSpecUtility extends StyleAttributeBuilder<TextSpec> {
   // TEXT UTILITIES - Same as TextMix but return TextSpecUtility for cascade
 
-  late final textOverflow = PropUtility<TextSpecUtility, TextOverflow>(
-    (prop) => _build(TextMix.raw(overflow: prop)),
-  );
+  late final textOverflow = PropUtility(_baseAttribute.overflow);
 
   late final strutStyle = StrutStyleUtility<TextSpecUtility>(
-    (prop) => _build(TextMix.raw(strutStyle: prop)),
+    (prop) => buildProps(strutStyle: prop),
   );
 
   late final textAlign = PropUtility<TextSpecUtility, TextAlign>(
-    (prop) => _build(TextMix.raw(textAlign: prop)),
+    (prop) => buildProps(textAlign: prop),
   );
 
   late final textScaler = PropUtility<TextSpecUtility, TextScaler>(
-    (prop) => _build(TextMix.raw(textScaler: prop)),
+    (prop) => buildProps(textScaler: prop),
   );
 
   late final maxLines = PropUtility<TextSpecUtility, int>(
-    (prop) => _build(TextMix.raw(maxLines: prop)),
+    (prop) => buildProps(maxLines: prop),
   );
 
   late final style = TextStyleUtility<TextSpecUtility>(
-    (prop) => _build(TextMix.raw(style: prop)),
+    (prop) => buildProps(style: prop),
   );
 
   late final textWidthBasis = PropUtility<TextSpecUtility, TextWidthBasis>(
-    (prop) => _build(TextMix.raw(textWidthBasis: prop)),
+    (prop) => buildProps(textWidthBasis: prop),
   );
 
   late final textHeightBehavior = TextHeightBehaviorUtility<TextSpecUtility>(
-    (prop) => _build(TextMix.raw(textHeightBehavior: prop)),
+    (prop) => buildProps(textHeightBehavior: prop),
   );
 
   late final textDirection = PropUtility<TextSpecUtility, TextDirection>(
-    (prop) => _build(TextMix.raw(textDirection: prop)),
+    (prop) => buildProps(textDirection: prop),
   );
 
   late final softWrap = PropUtility<TextSpecUtility, bool>(
-    (prop) => _build(TextMix.raw(softWrap: prop)),
+    (prop) => buildProps(softWrap: prop),
   );
 
   late final directive = TextDirectiveUtility<TextSpecUtility>(
-    (prop) => _build(TextMix.raw(directives: [prop])),
+    (prop) => buildProps(directives: [prop]),
   );
 
   late final on = OnContextVariantUtility<TextSpec, TextSpecUtility>(
-    (v) => _build(TextMix.raw(variants: [v])),
+    (v) => buildProps(variants: [v]),
   );
 
   late final wrap = ModifierUtility<TextSpecUtility>(
-    (prop) => _build(TextMix(modifierConfig: ModifierConfig.modifier(prop))),
+    (prop) => buildProps(modifierConfig: ModifierConfig.modifier(prop)),
   );
 
   // FLATTENED ACCESS - Direct access to commonly used style properties
@@ -100,8 +100,39 @@ class TextSpecUtility extends StyleAttributeBuilder<TextSpec> {
   TextSpecUtility([TextMix? attribute])
     : _baseAttribute = attribute ?? TextMix();
 
-  /// Mutable builder - updates internal state and returns this for cascade
-  TextSpecUtility _build(TextMix newAttribute) {
+  @protected
+  TextSpecUtility buildProps({
+    Prop<TextOverflow>? overflow,
+    MixProp<StrutStyle>? strutStyle,
+    Prop<TextAlign>? textAlign,
+    Prop<TextScaler>? textScaler,
+    Prop<int>? maxLines,
+    MixProp<TextStyle>? style,
+    Prop<TextWidthBasis>? textWidthBasis,
+    MixProp<TextHeightBehavior>? textHeightBehavior,
+    Prop<TextDirection>? textDirection,
+    Prop<bool>? softWrap,
+    AnimationConfig? animation,
+    ModifierConfig? modifierConfig,
+    List<MixDirective<String>>? directives,
+    List<VariantStyleAttribute<TextSpec>>? variants,
+  }) {
+    final newAttribute = TextMix.raw(
+      overflow: overflow,
+      strutStyle: strutStyle,
+      textAlign: textAlign,
+      textScaler: textScaler,
+      maxLines: maxLines,
+      style: style,
+      textWidthBasis: textWidthBasis,
+      textHeightBehavior: textHeightBehavior,
+      textDirection: textDirection,
+      softWrap: softWrap,
+      directives: directives,
+      animation: animation,
+      modifierConfig: modifierConfig,
+      variants: variants,
+    );
     _baseAttribute = _baseAttribute.merge(newAttribute);
 
     return this;
@@ -113,12 +144,13 @@ class TextSpecUtility extends StyleAttributeBuilder<TextSpec> {
 
   /// Animation
   TextSpecUtility animate(AnimationConfig animation) =>
-      _build(TextMix(animation: animation));
+      buildProps(animation: animation);
 
   // StyleAttribute interface implementation
 
   @override
   TextSpecUtility merge(Style<TextSpec>? other) {
+    if (other == null) return this;
     // IMMUTABLE: Always create new instance (StyleAttribute contract)
     if (other is TextSpecUtility) {
       return TextSpecUtility(_baseAttribute.merge(other._baseAttribute));
@@ -127,7 +159,7 @@ class TextSpecUtility extends StyleAttributeBuilder<TextSpec> {
       return TextSpecUtility(_baseAttribute.merge(other));
     }
 
-    return TextSpecUtility(_baseAttribute);
+    throw FlutterError('Unsupported merge type: ${other.runtimeType}');
   }
 
   @override

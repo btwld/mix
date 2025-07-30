@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
+import '../../core/prop.dart';
 import '../../core/spec_utility.dart' show StyleAttributeBuilder;
-import '../../core/style.dart' show Style;
+import '../../core/style.dart' show Style, VariantStyleAttribute;
 import '../../core/utility.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
@@ -21,47 +22,47 @@ class IconSpecUtility extends StyleAttributeBuilder<IconSpec> {
   // ICON UTILITIES - Same as IconMix but return IconSpecUtility for cascade
 
   late final color = ColorUtility<IconSpecUtility>(
-    (prop) => _build(IconMix.raw(color: prop)),
+    (prop) => buildProps(color: prop),
   );
 
   late final size = PropUtility<IconSpecUtility, double>(
-    (prop) => _build(IconMix.raw(size: prop)),
+    (prop) => buildProps(size: prop),
   );
 
   late final weight = PropUtility<IconSpecUtility, double>(
-    (prop) => _build(IconMix.raw(weight: prop)),
+    (prop) => buildProps(weight: prop),
   );
 
   late final grade = PropUtility<IconSpecUtility, double>(
-    (prop) => _build(IconMix.raw(grade: prop)),
+    (prop) => buildProps(grade: prop),
   );
 
   late final opticalSize = PropUtility<IconSpecUtility, double>(
-    (prop) => _build(IconMix.raw(opticalSize: prop)),
+    (prop) => buildProps(opticalSize: prop),
   );
 
   late final shadow = ShadowUtility<IconSpecUtility>(
-    (v) => _build(IconMix.raw(shadows: [v])),
+    (v) => buildProps(shadows: [v]),
   );
 
   late final textDirection = PropUtility<IconSpecUtility, TextDirection>(
-    (prop) => _build(IconMix.raw(textDirection: prop)),
+    (prop) => buildProps(textDirection: prop),
   );
 
   late final applyTextScaling = PropUtility<IconSpecUtility, bool>(
-    (prop) => _build(IconMix.raw(applyTextScaling: prop)),
+    (prop) => buildProps(applyTextScaling: prop),
   );
 
   late final fill = PropUtility<IconSpecUtility, double>(
-    (prop) => _build(IconMix.raw(fill: prop)),
+    (prop) => buildProps(fill: prop),
   );
 
   late final on = OnContextVariantUtility<IconSpec, IconSpecUtility>(
-    (v) => _build(IconMix(variants: [v])),
+    (v) => buildProps(variants: [v]),
   );
 
   late final wrap = ModifierUtility<IconSpecUtility>(
-    (prop) => _build(IconMix(modifierConfig: ModifierConfig.modifier(prop))),
+    (prop) => buildProps(modifierConfig: ModifierConfig.modifier(prop)),
   );
 
   IconMix _baseAttribute;
@@ -69,8 +70,35 @@ class IconSpecUtility extends StyleAttributeBuilder<IconSpec> {
   IconSpecUtility([IconMix? attribute])
     : _baseAttribute = attribute ?? IconMix();
 
-  /// Mutable builder - updates internal state and returns this for cascade
-  IconSpecUtility _build(IconMix newAttribute) {
+  @protected
+  IconSpecUtility buildProps({
+    Prop<Color>? color,
+    Prop<double>? size,
+    Prop<double>? weight,
+    Prop<double>? grade,
+    Prop<double>? opticalSize,
+    List<MixProp<Shadow>>? shadows,
+    Prop<TextDirection>? textDirection,
+    Prop<bool>? applyTextScaling,
+    Prop<double>? fill,
+    AnimationConfig? animation,
+    ModifierConfig? modifierConfig,
+    List<VariantStyleAttribute<IconSpec>>? variants,
+  }) {
+    final newAttribute = IconMix.raw(
+      color: color,
+      size: size,
+      weight: weight,
+      grade: grade,
+      opticalSize: opticalSize,
+      shadows: shadows,
+      textDirection: textDirection,
+      applyTextScaling: applyTextScaling,
+      fill: fill,
+      animation: animation,
+      modifierConfig: modifierConfig,
+      variants: variants,
+    );
     _baseAttribute = _baseAttribute.merge(newAttribute);
 
     return this;
@@ -78,16 +106,17 @@ class IconSpecUtility extends StyleAttributeBuilder<IconSpec> {
 
   // Instance method for multiple shadows
   IconSpecUtility shadows(List<ShadowMix> value) =>
-      _build(IconMix(shadows: value));
+      buildProps(shadows: value.map(MixProp.new).toList());
 
   /// Animation
   IconSpecUtility animate(AnimationConfig animation) =>
-      _build(IconMix(animation: animation));
+      buildProps(animation: animation);
 
   // StyleAttribute interface implementation
 
   @override
   IconSpecUtility merge(Style<IconSpec>? other) {
+    if (other == null) return this;
     // IMMUTABLE: Always create new instance (StyleAttribute contract)
     if (other is IconSpecUtility) {
       return IconSpecUtility(_baseAttribute.merge(other._baseAttribute));
@@ -96,7 +125,7 @@ class IconSpecUtility extends StyleAttributeBuilder<IconSpec> {
       return IconSpecUtility(_baseAttribute.merge(other));
     }
 
-    return IconSpecUtility(_baseAttribute);
+    throw FlutterError('Unsupported merge type: ${other.runtimeType}');
   }
 
   @override

@@ -1,10 +1,9 @@
 import '../../core/directive.dart';
-import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
 
 final class TextDirectiveUtility<T extends Style<Object?>>
-    extends PropUtility<T, MixDirective<String>> {
+    extends MixUtility<T, MixDirective<String>> {
   const TextDirectiveUtility(super.builder);
 
   T capitalize() => call(CapitalizeStringDirective());
@@ -13,6 +12,5 @@ final class TextDirectiveUtility<T extends Style<Object?>>
   T titleCase() => call(TitleCaseStringDirective());
   T sentenceCase() => call(SentenceCaseStringDirective());
 
-  @override
-  T call(MixDirective<String> value) => builder(Prop(value));
+  T call(MixDirective<String> value) => builder(value);
 }

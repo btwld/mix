@@ -38,7 +38,7 @@ class TextMix extends Style<TextSpec>
   final MixProp<TextHeightBehavior>? $textHeightBehavior;
   final Prop<TextDirection>? $textDirection;
   final Prop<bool>? $softWrap;
-  final List<Prop<MixDirective<String>>>? $directives;
+  final List<MixDirective<String>>? $directives;
 
   /// Factory for text color
   factory TextMix.color(Color value) {
@@ -241,7 +241,7 @@ class TextMix extends Style<TextSpec>
     MixProp<TextHeightBehavior>? textHeightBehavior,
     Prop<TextDirection>? textDirection,
     Prop<bool>? softWrap,
-    List<Prop<MixDirective<String>>>? directives,
+    List<MixDirective<String>>? directives,
     super.animation,
     super.modifierConfig,
     super.variants,
@@ -286,7 +286,7 @@ class TextMix extends Style<TextSpec>
          textHeightBehavior: MixProp.maybe(textHeightBehavior),
          textDirection: Prop.maybe(textDirection),
          softWrap: Prop.maybe(softWrap),
-         directives: directives?.map(Prop.new).toList(),
+         directives: directives,
          animation: animation,
          modifierConfig: modifierConfig,
          variants: variants,
@@ -551,7 +551,7 @@ class TextMix extends Style<TextSpec>
       textHeightBehavior: MixHelpers.resolve(context, $textHeightBehavior),
       textDirection: MixHelpers.resolve(context, $textDirection),
       softWrap: MixHelpers.resolve(context, $softWrap),
-      directives: MixHelpers.resolveList(context, $directives),
+      directives: $directives,
     );
   }
 
