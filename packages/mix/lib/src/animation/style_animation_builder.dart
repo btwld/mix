@@ -43,14 +43,6 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
     super.initState();
 
     animationDriver = _createAnimationDriver(widget.animationConfig);
-
-    // Trigger initial animation if needed
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted &&
-          animationDriver.currentResolvedStyle != widget.resolvedStyle) {
-        animationDriver.animateTo(widget.resolvedStyle);
-      }
-    });
   }
 
   StyleAnimationDriver<S> _createAnimationDriver(AnimationConfig config) {
@@ -98,8 +90,7 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
     return ListenableBuilder(
       listenable: animationDriver,
       builder: (context, child) {
-        final currentResolved =
-            animationDriver.currentResolvedStyle ?? widget.resolvedStyle;
+        final currentResolved = animationDriver.currentResolvedStyle;
 
         return widget.builder(context, currentResolved);
       },

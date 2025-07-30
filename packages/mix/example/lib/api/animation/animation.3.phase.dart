@@ -55,12 +55,24 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
               .alignment(
                 _isExpanded ? Alignment.centerRight : Alignment.centerLeft,
               )
-              .animate(AnimationConfig.decelerate(300.ms)),
+              .animate(AnimationConfig.easeOut(300.ms)),
           child: Box(
             style: Style.box()
                 .height(30)
                 .width(40)
                 .color(Colors.white)
+                .foregroundDecoration(
+                  BoxDecorationMix.gradient(
+                    RadialGradientMix()
+                        .focalRadius(1.1)
+                        .focal(Alignment.center)
+                        .colors([
+                          Colors.black.withValues(alpha: 0.2),
+                          Colors.transparent,
+                        ])
+                        .stops([0.3, 1]),
+                  ).borderRadius(BorderRadiusMix.circular(40)),
+                )
                 .borderRadius(BorderRadiusMix.circular(40))
                 .transformAlignment(Alignment.center)
                 .scale(0.85)
@@ -75,10 +87,11 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
                   styleBuilder: (phase, style) {
                     return style
                         .scale(phase ? 1.25 : 0.85)
+                        .color(Colors.white)
                         .width(phase ? 45 : 40);
                   },
                   configBuilder: (phase) {
-                    return AnimationConfig.easeOut(200.ms);
+                    return AnimationConfig.decelerate(150.ms);
                   },
                 ),
           ),

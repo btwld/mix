@@ -36,11 +36,9 @@ void main() {
     test(
       'interpolateAt should linearly interpolate between start and end styles',
       () {
-        final startStyle = MockResolvedStyle(0);
         final endStyle = MockResolvedStyle(1);
 
         // Set up interpolation
-        driver.animateTo(startStyle);
         driver.animateTo(endStyle);
 
         // Test interpolation at different points
@@ -61,7 +59,7 @@ void main() {
       driver.reset();
 
       expect(driver.progress, 0.0);
-      expect(driver.currentResolvedStyle, null);
+      expect(driver.currentResolvedStyle, MockResolvedStyle(0));
     });
 
     testWidgets('should trigger onStart callback when the animation starts', (
@@ -199,21 +197,9 @@ void main() {
         driver.dispose();
       });
 
-      testWidgets('skips animation when animation is called in first time', (
-        tester,
-      ) async {
-        // First call to set the target
-        await driver.animateTo(MockResolvedStyle(0));
-        expect(driver.executeAnimationCallCounter, 0);
-      });
-
       testWidgets(
         'skips animation when target is already set and not animating',
         (tester) async {
-          // First call to set the target
-          await driver.animateTo(MockResolvedStyle(0));
-          expect(driver.executeAnimationCallCounter, 0);
-
           // Call again with the same target
           await driver.animateTo(MockResolvedStyle(0));
 
@@ -235,37 +221,6 @@ void main() {
         // Call with different target style
         await driver.animateTo(MockResolvedStyle(2.0));
         expect(driver.executeAnimationCallCounter, 2);
-      });
-
-      testWidgets('updates currentResolvedStyle during animation', (
-        tester,
-      ) async {
-        // Create a driver that actually animates
-        final driver = CurveAnimationDriver<MockSpec>(
-          vsync: tester,
-          initialStyle: MockResolvedStyle(0),
-          config: const CurveAnimationConfig(
-            duration: Duration(milliseconds: 100),
-            curve: Curves.linear,
-          ),
-        );
-
-        await tester.pumpWidget(Container());
-
-        expect(driver.currentResolvedStyle, isNull);
-
-        // Aet an initial fromStyle
-        await driver.animateTo(MockResolvedStyle(0));
-        expect(driver.currentResolvedStyle, MockResolvedStyle(0));
-
-        final future = driver.animateTo(MockResolvedStyle(1));
-
-        // Complete animation
-        await tester.pumpAndSettle();
-        await future;
-
-        // After animation completes, currentResolvedStyle should equal target
-        expect(driver.currentResolvedStyle, MockResolvedStyle(1));
       });
     });
   });

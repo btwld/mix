@@ -20,10 +20,10 @@ abstract class StyleAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
   late final AnimationController _controller;
 
   /// The current resolved style being displayed.
-  ResolvedStyle<S>? _currentResolvedStyle;
+  late ResolvedStyle<S> _currentResolvedStyle = _initialStyle;
 
   /// The target resolved style to animate to.
-  ResolvedStyle<S>? _targetResolvedStyle;
+  late ResolvedStyle<S> _targetResolvedStyle = _initialStyle;
 
   /// List of callbacks to invoke when animation starts.
   final List<VoidCallback> _onStartCallbacks = [];
@@ -31,15 +31,17 @@ abstract class StyleAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
   /// List of callbacks to invoke when animation completes.
   final List<VoidCallback> _onCompleteCallbacks = [];
 
+  final ResolvedStyle<S> _initialStyle;
+
   /// The starting style for interpolation.
   @protected
-  ResolvedStyle<S>? _fromStyle;
+  late ResolvedStyle<S> _fromStyle = _initialStyle;
 
   StyleAnimationDriver({
     required this.vsync,
     required ResolvedStyle<S> initialStyle,
     bool unbounded = false,
-  }) : _fromStyle = initialStyle {
+  }) : _initialStyle = initialStyle {
     _controller = unbounded
         ? AnimationController.unbounded(vsync: vsync)
         : AnimationController(vsync: vsync);
@@ -50,10 +52,8 @@ abstract class StyleAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
 
   /// Called on each animation frame.
   void _onAnimationTick() {
-    if (_targetResolvedStyle != null) {
-      _currentResolvedStyle = interpolateAt(_controller.value);
-      notifyListeners();
-    }
+    _currentResolvedStyle = interpolateAt(_controller.value);
+    notifyListeners();
   }
 
   /// Called when animation status changes.
@@ -79,11 +79,11 @@ abstract class StyleAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
   AnimationController get controller => _controller;
 
   /// Gets the current resolved style.
-  ResolvedStyle<S>? get currentResolvedStyle => _currentResolvedStyle;
+  ResolvedStyle<S> get currentResolvedStyle => _currentResolvedStyle;
 
   /// Gets the target resolved style.
   @protected
-  ResolvedStyle<S>? get targetResolvedStyle => _targetResolvedStyle;
+  ResolvedStyle<S> get targetResolvedStyle => _targetResolvedStyle;
 
   /// Whether the animation is currently running.
   bool get isAnimating => _controller.isAnimating;
@@ -102,14 +102,6 @@ abstract class StyleAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
       return;
     }
 
-    // First time should not animate just set the initial targets
-    if (_currentResolvedStyle == null) {
-      _currentResolvedStyle = targetStyle;
-      _targetResolvedStyle = targetStyle;
-
-      return;
-    }
-
     _fromStyle = _currentResolvedStyle;
     _targetResolvedStyle = targetStyle;
 
@@ -125,14 +117,10 @@ abstract class StyleAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
   @visibleForTesting
   @nonVirtual
   ResolvedStyle<S> interpolateAt(double t) {
-    if (_fromStyle == null || _targetResolvedStyle == null) {
-      return _targetResolvedStyle ?? _fromStyle!;
-    }
-
     // Apply any value transformation (e.g., curve)
     final transformedT = transformProgress(t);
 
-    return _fromStyle!.lerp(_targetResolvedStyle!, transformedT);
+    return _fromStyle.lerp(_targetResolvedStyle, transformedT);
   }
 
   /// Transform progress value (e.g., apply curve).
@@ -145,7 +133,7 @@ abstract class StyleAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
   /// Resets the animation to the beginning.
   void reset() {
     _controller.reset();
-    _currentResolvedStyle = null;
+    _currentResolvedStyle = _initialStyle;
   }
 
   /// Adds a callback to be invoked when animation starts.
