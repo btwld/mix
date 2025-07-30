@@ -224,12 +224,14 @@ extension ColorExtensions on Color {
   /// Tints the color by mixing with white by [amount] percent.
   Color tint([int amount = 10]) {
     final p = _normalizeAmount(amount);
+
     return Color.lerp(this, Colors.white, p)!;
   }
 
   /// Shades the color by mixing with black by [amount] percent.
   Color shade([int amount = 10]) {
     final p = _normalizeAmount(amount);
+
     return Color.lerp(this, Colors.black, p)!;
   }
 
