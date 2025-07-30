@@ -63,6 +63,7 @@ class DeepCollectionEquality {
   /// or their types are equal and their fields are equal.
   bool equals(Object? obj1, Object? obj2) {
     if (identical(obj1, obj2)) return true;
+    if (obj1 == null || obj2 == null) return false;
 
     if (obj1 is Map) {
       return _mapsEqual(obj1, obj2 as Map);
