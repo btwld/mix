@@ -61,38 +61,38 @@ void main() {
   group('Utility Functionality', () {
     test('box getter can be used to create attributes', () {
       $box.width(100).height(200);
-      expect($box.attribute, isA<BoxMix>());
+      expect($box.mix, isA<BoxMix>());
     });
 
     test('flex getter can be used to create attributes', () {
       $flex.direction(Axis.horizontal);
-      expect($flex.attribute, isA<FlexMix>());
+      expect($flex.mix, isA<FlexMix>());
     });
 
     test('flexbox getter provides utility methods', () {
       expect($flexbox, isA<FlexBoxSpecUtility>());
       // Verify it can be used to create attributes
-      expect($flexbox.attribute, isA<FlexBoxMix>());
+      expect($flexbox.mix, isA<FlexBoxMix>());
     });
 
     test('image getter can be used to create attributes', () {
       $image.fit(BoxFit.cover);
-      expect($image.attribute, isA<ImageMix>());
+      expect($image.mix, isA<ImageMix>());
     });
 
     test('icon getter can be used to create attributes', () {
       $icon.size(24);
-      expect($icon.attribute, isA<IconMix>());
+      expect($icon.mix, isA<IconMix>());
     });
 
     test('text getter can be used to create attributes', () {
       $text.style.fontSize(16);
-      expect($text.attribute, isA<TextMix>());
+      expect($text.mix, isA<TextMix>());
     });
 
     test('stack getter can be used to create attributes', () {
       $stack.alignment(Alignment.center);
-      expect($stack.attribute, isA<StackMix>());
+      expect($stack.mix, isA<StackMix>());
     });
 
     test('on getter can be used for variant utilities', () {

@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 
-import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
 import 'edge_insets_geometry_mix.dart';
@@ -10,54 +9,21 @@ import 'edge_insets_geometry_mix.dart';
 
 @immutable
 final class EdgeInsetsGeometryUtility<U extends Style<Object?>>
-    extends MixPropUtility<U, EdgeInsetsGeometry> {
+    extends MixPropUtility<U, EdgeInsetsGeometryMix, EdgeInsetsGeometry> {
   late final directional = EdgeInsetsDirectionalUtility(builder);
 
-  late final horizontal = SpacingSideUtility<U>(
-    (v) => onlyProps(left: v, right: v),
-  );
-  late final vertical = SpacingSideUtility<U>(
-    (v) => onlyProps(top: v, bottom: v),
-  );
+  late final horizontal = SpacingSideUtility<U>((v) => only(left: v, right: v));
+  late final vertical = SpacingSideUtility<U>((v) => only(top: v, bottom: v));
   late final all = SpacingSideUtility<U>(
-    (v) => onlyProps(top: v, bottom: v, left: v, right: v),
+    (v) => only(top: v, bottom: v, left: v, right: v),
   );
-  late final top = SpacingSideUtility<U>((v) => onlyProps(top: v));
-  late final bottom = SpacingSideUtility<U>((v) => onlyProps(bottom: v));
-  late final left = SpacingSideUtility<U>((v) => onlyProps(left: v));
-  late final right = SpacingSideUtility<U>((v) => onlyProps(right: v));
+  late final top = SpacingSideUtility<U>((v) => only(top: v));
+  late final bottom = SpacingSideUtility<U>((v) => only(bottom: v));
+  late final left = SpacingSideUtility<U>((v) => only(left: v));
+  late final right = SpacingSideUtility<U>((v) => only(right: v));
 
   EdgeInsetsGeometryUtility(super.builder)
     : super(convertToMix: EdgeInsetsGeometryMix.value);
-
-  @protected
-  U onlyProps({
-    Prop<double>? top,
-    Prop<double>? bottom,
-    Prop<double>? left,
-    Prop<double>? right,
-    Prop<double>? start,
-    Prop<double>? end,
-  }) {
-    EdgeInsetsGeometryMix edgeInsets;
-    if (start != null || left != null) {
-      edgeInsets = EdgeInsetsDirectionalMix.raw(
-        top: top,
-        bottom: bottom,
-        start: start,
-        end: end,
-      );
-    } else {
-      edgeInsets = EdgeInsetsMix.raw(
-        top: top,
-        bottom: bottom,
-        left: left,
-        right: right,
-      );
-    }
-
-    return builder(MixProp(edgeInsets));
-  }
 
   U only({
     double? top,
@@ -67,14 +33,24 @@ final class EdgeInsetsGeometryUtility<U extends Style<Object?>>
     double? start,
     double? end,
   }) {
-    return onlyProps(
-      top: Prop.maybe(top),
-      bottom: Prop.maybe(bottom),
-      left: Prop.maybe(left),
-      right: Prop.maybe(right),
-      start: Prop.maybe(start),
-      end: Prop.maybe(end),
-    );
+    EdgeInsetsGeometryMix edgeInsets;
+    if (start != null || end != null) {
+      edgeInsets = EdgeInsetsDirectionalMix(
+        top: top,
+        bottom: bottom,
+        start: start,
+        end: end,
+      );
+    } else {
+      edgeInsets = EdgeInsetsMix(
+        top: top,
+        bottom: bottom,
+        left: left,
+        right: right,
+      );
+    }
+
+    return builder(edgeInsets);
   }
 
   U call(double p1, [double? p2, double? p3, double? p4]) {
@@ -89,49 +65,28 @@ final class EdgeInsetsGeometryUtility<U extends Style<Object?>>
 
 @immutable
 final class EdgeInsetsDirectionalUtility<U extends Style<Object?>>
-    extends MixPropUtility<U, EdgeInsetsDirectional> {
+    extends MixPropUtility<U, EdgeInsetsDirectionalMix, EdgeInsetsDirectional> {
   late final all = SpacingSideUtility<U>(
-    (v) => onlyProps(top: v, bottom: v, start: v, end: v),
+    (v) => only(top: v, bottom: v, start: v, end: v),
   );
-  late final start = SpacingSideUtility<U>((v) => onlyProps(start: v));
-  late final end = SpacingSideUtility<U>((v) => onlyProps(end: v));
-  late final top = SpacingSideUtility<U>((v) => onlyProps(top: v));
-  late final bottom = SpacingSideUtility<U>((v) => onlyProps(bottom: v));
-  late final vertical = SpacingSideUtility<U>(
-    (v) => onlyProps(top: v, bottom: v),
-  );
-  late final horizontal = SpacingSideUtility<U>(
-    (v) => onlyProps(start: v, end: v),
-  );
+  late final start = SpacingSideUtility<U>((v) => only(start: v));
+  late final end = SpacingSideUtility<U>((v) => only(end: v));
+  late final top = SpacingSideUtility<U>((v) => only(top: v));
+  late final bottom = SpacingSideUtility<U>((v) => only(bottom: v));
+  late final vertical = SpacingSideUtility<U>((v) => only(top: v, bottom: v));
+  late final horizontal = SpacingSideUtility<U>((v) => only(start: v, end: v));
 
   EdgeInsetsDirectionalUtility(super.builder)
-    : super(convertToMix: EdgeInsetsGeometryMix.value);
-
-  @protected
-  U onlyProps({
-    Prop<double>? top,
-    Prop<double>? bottom,
-    Prop<double>? start,
-    Prop<double>? end,
-  }) {
-    return builder(
-      MixProp(
-        EdgeInsetsDirectionalMix.raw(
-          top: top,
-          bottom: bottom,
-          start: start,
-          end: end,
-        ),
-      ),
-    );
-  }
+    : super(convertToMix: EdgeInsetsDirectionalMix.value);
 
   U only({double? top, double? bottom, double? start, double? end}) {
-    return onlyProps(
-      top: Prop.maybe(top),
-      bottom: Prop.maybe(bottom),
-      start: Prop.maybe(start),
-      end: Prop.maybe(end),
+    return builder(
+      EdgeInsetsDirectionalMix(
+        top: top,
+        bottom: bottom,
+        start: start,
+        end: end,
+      ),
     );
   }
 

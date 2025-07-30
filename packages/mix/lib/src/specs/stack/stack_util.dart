@@ -98,5 +98,5 @@ class StackSpecUtility extends StyleAttributeBuilder<StackSpec> {
 
   /// Access to internal attribute
   @override
-  StackMix get attribute => _baseAttribute;
+  StackMix get mix => _baseAttribute;
 }

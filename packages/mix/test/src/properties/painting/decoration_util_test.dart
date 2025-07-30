@@ -62,17 +62,16 @@ void main() {
       final utility = BoxDecorationUtility(UtilityTestAttribute.new);
 
       test('call() creates BoxDecorationMix', () {
-        final decorationMix = BoxDecorationMix(
+        final attr = utility(
           color: Colors.red,
-          borderRadius: BorderRadiusMix(
-            topLeft: const Radius.circular(8.0),
-            topRight: const Radius.circular(8.0),
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(8.0),
+            topRight: Radius.circular(8.0),
           ),
-          border: BorderMix(
-            top: BorderSideMix(color: Colors.black, width: 2.0),
+          border: const Border(
+            top: BorderSide(color: Colors.black, width: 2.0),
           ),
         );
-        final attr = utility(decorationMix);
         expect(attr.value, isA<MixProp<BoxDecoration>>());
       });
 
@@ -108,8 +107,7 @@ void main() {
         });
 
         test('border.all() creates box decoration with all borders', () {
-          final borderSideMix = BorderSideMix(color: Colors.red, width: 1.0);
-          final attr = utility.border.all(borderSideMix);
+          final attr = utility.border(color: Colors.red, width: 1.0);
           expect(attr.value, isA<MixProp<BoxDecoration>>());
         });
 
@@ -120,18 +118,14 @@ void main() {
         });
 
         test('borderRadius() creates box decoration with border radius', () {
-          final borderRadiusMix = BorderRadiusMix(
-            topLeft: const Radius.circular(8.0),
-            topRight: const Radius.circular(8.0),
-          );
-          final attr = utility.borderRadius(borderRadiusMix);
+          final attr = utility.borderRadius(8.0);
           expect(attr.value, isA<MixProp<BoxDecoration>>());
         });
 
         test(
           'borderRadius.circular() creates box decoration with circular border radius',
           () {
-            final attr = utility.borderRadius.circular(12.0);
+            final attr = utility.borderRadius(12.0);
             expect(attr.value, isA<MixProp<BoxDecoration>>());
           },
         );
@@ -139,7 +133,9 @@ void main() {
         test(
           'borderRadius.topLeft() creates box decoration with top left border radius',
           () {
-            final attr = utility.borderRadius.topLeft.circular(8.0);
+            final attr = utility.borderRadius.topLeft(
+              const Radius.circular(8.0),
+            );
             expect(attr.value, isA<MixProp<BoxDecoration>>());
           },
         );
@@ -192,7 +188,9 @@ void main() {
             final linearGradientMix = LinearGradientMix(
               colors: const [Colors.red, Colors.blue],
             );
-            final attr = utility.gradient.linear(linearGradientMix);
+            final attr = utility.gradient.linear(
+              colors: const [Colors.red, Colors.blue],
+            );
             expect(attr.value, isA<MixProp<BoxDecoration>>());
           },
         );
@@ -214,7 +212,9 @@ void main() {
             final radialGradientMix = RadialGradientMix(
               colors: const [Colors.green, Colors.yellow],
             );
-            final attr = utility.gradient.radial(radialGradientMix);
+            final attr = utility.gradient.radial(
+              colors: const [Colors.green, Colors.yellow],
+            );
             expect(attr.value, isA<MixProp<BoxDecoration>>());
           },
         );
@@ -234,7 +234,9 @@ void main() {
           final sweepGradientMix = SweepGradientMix(
             colors: const [Colors.purple, Colors.orange],
           );
-          final attr = utility.gradient.sweep(sweepGradientMix);
+          final attr = utility.gradient.sweep(
+            colors: const [Colors.purple, Colors.orange],
+          );
           expect(attr.value, isA<MixProp<BoxDecoration>>());
         });
 
@@ -254,7 +256,10 @@ void main() {
             image: const NetworkImage('https://example.com/image.png'),
             fit: BoxFit.cover,
           );
-          final attr = utility.image(imageMix);
+          final attr = utility.image(
+            image: const NetworkImage('https://example.com/image.png'),
+            fit: BoxFit.cover,
+          );
           expect(attr.value, isA<MixProp<BoxDecoration>>());
         });
 

@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
 import '../layout/scalar_util.dart';
@@ -193,7 +192,7 @@ Radius? _maybeCircular(double? value) {
 /// Extends the [BorderRadiusUtility] class to provide additional utility methods for creating and manipulating [BorderRadiusGeometry] attributes.
 /// adds a [directional] property that returns a [BorderRadiusDirectionalUtility] instance.
 final class BorderRadiusGeometryUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, BorderRadiusGeometry> {
+    extends MixPropUtility<T, BorderRadiusGeometryMix, BorderRadiusGeometry> {
   /// Returns a directional utility for creating and manipulating attributes with [BorderRadiusDirectional]
   late final borderRadiusDirectional = BorderRadiusDirectionalUtility<T>(
     builder,
@@ -204,7 +203,7 @@ final class BorderRadiusGeometryUtility<T extends Style<Object?>>
   BorderRadiusGeometryUtility(super.builder)
     : super(convertToMix: BorderRadiusGeometryMix.value);
 
-  T call(double value) => builder(MixProp(BorderRadiusMix.circular(value)));
+  T call(double value) => builder(BorderRadiusMix.circular(value));
 }
 
 /// Utility class for creating and manipulating attributes with [BorderRadius]
@@ -212,30 +211,30 @@ final class BorderRadiusGeometryUtility<T extends Style<Object?>>
 /// Allows setting of radius for a border. This class provides a convenient way to configure and apply border radius to [T]
 /// Accepts a builder function that returns [T] and takes a [BorderRadiusMix] as a parameter.
 final class BorderRadiusUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, BorderRadius> {
+    extends MixPropUtility<T, BorderRadiusMix, BorderRadius> {
   /// Returns a [PropUtility] to manipulate [Radius] for bottomLeft corner.
   late final bottomLeft = PropUtility<T, Radius>(
-    (radius) => onlyProps(bottomLeft: radius),
+    (radius) => only(bottomLeft: radius),
   );
 
   /// Returns a [PropUtility] to manipulate [Radius] for bottomRight corner.
   late final bottomRight = PropUtility<T, Radius>(
-    (radius) => onlyProps(bottomRight: radius),
+    (radius) => only(bottomRight: radius),
   );
 
   /// Returns a [PropUtility] to manipulate [Radius] for topLeft corner.
   late final topLeft = PropUtility<T, Radius>(
-    (radius) => onlyProps(topLeft: radius),
+    (radius) => only(topLeft: radius),
   );
 
   /// Returns a [PropUtility] to manipulate [Radius] for topRight corner.
   late final topRight = PropUtility<T, Radius>(
-    (radius) => onlyProps(topRight: radius),
+    (radius) => only(topRight: radius),
   );
 
   /// Returns a [PropUtility] to manipulate [Radius] for all corners.
   late final all = PropUtility<T, Radius>(
-    (radius) => onlyProps(
+    (radius) => only(
       topLeft: radius,
       topRight: radius,
       bottomLeft: radius,
@@ -245,22 +244,22 @@ final class BorderRadiusUtility<T extends Style<Object?>>
 
   /// Returns a [PropUtility] to manipulate [Radius] for topLeft and topRight corner.
   late final top = PropUtility<T, Radius>(
-    (radius) => onlyProps(topLeft: radius, topRight: radius),
+    (radius) => only(topLeft: radius, topRight: radius),
   );
 
   /// Returns a [PropUtility] to manipulate [Radius] for bottomLeft and bottomRight corner.
   late final bottom = PropUtility<T, Radius>(
-    (radius) => onlyProps(bottomLeft: radius, bottomRight: radius),
+    (radius) => only(bottomLeft: radius, bottomRight: radius),
   );
 
   /// Returns a [PropUtility] to manipulate [Radius] for topLeft and bottomLeft corner.
   late final left = PropUtility<T, Radius>(
-    (radius) => onlyProps(topLeft: radius, bottomLeft: radius),
+    (radius) => only(topLeft: radius, bottomLeft: radius),
   );
 
   /// Returns a [PropUtility] to manipulate [Radius] for topRight and bottomRight corner.
   late final right = PropUtility<T, Radius>(
-    (radius) => onlyProps(topRight: radius, bottomRight: radius),
+    (radius) => only(topRight: radius, bottomRight: radius),
   );
 
   BorderRadiusUtility(super.builder)
@@ -275,87 +274,81 @@ final class BorderRadiusUtility<T extends Style<Object?>>
   /// Sets a zero [Radius] for all corners.
   T zero() => all.zero();
 
-  @protected
-  T onlyProps({
-    Prop<Radius>? topLeft,
-    Prop<Radius>? topRight,
-    Prop<Radius>? bottomLeft,
-    Prop<Radius>? bottomRight,
-  }) {
-    return builder(
-      MixProp(
-        BorderRadiusMix.raw(
-          topLeft: topLeft,
-          topRight: topRight,
-          bottomLeft: bottomLeft,
-          bottomRight: bottomRight,
-        ),
-      ),
-    );
-  }
-
   T only({
     Radius? topLeft,
     Radius? topRight,
     Radius? bottomLeft,
     Radius? bottomRight,
   }) {
-    return onlyProps(
-      topLeft: Prop.maybe(topLeft),
-      topRight: Prop.maybe(topRight),
-      bottomLeft: Prop.maybe(bottomLeft),
-      bottomRight: Prop.maybe(bottomRight),
+    return builder(
+      BorderRadiusMix(
+        topLeft: topLeft,
+        topRight: topRight,
+        bottomLeft: bottomLeft,
+        bottomRight: bottomRight,
+      ),
     );
   }
 
-  T call(double value) => builder(MixProp(BorderRadiusMix.circular(value)));
+  T call({
+    Radius? topLeft,
+    Radius? topRight,
+    Radius? bottomLeft,
+    Radius? bottomRight,
+  }) {
+    return only(
+      topLeft: topLeft,
+      topRight: topRight,
+      bottomLeft: bottomLeft,
+      bottomRight: bottomRight,
+    );
+  }
 }
 
 final class BorderRadiusDirectionalUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, BorderRadiusDirectional> {
+    extends
+        MixPropUtility<T, BorderRadiusDirectionalMix, BorderRadiusDirectional> {
   /// Returns a [PropUtility] to manipulate [Radius] for topStart and topEnd corner.
   late final top = PropUtility<T, Radius>(
-    (radius) => onlyProps(topStart: radius, topEnd: radius),
+    (radius) => only(topStart: radius, topEnd: radius),
   );
 
   /// Returns a [PropUtility] to manipulate [Radius] for bottomStart and bottomEnd corner.
   late final bottom = PropUtility<T, Radius>(
-    (radius) => onlyProps(bottomStart: radius, bottomEnd: radius),
+    (radius) => only(bottomStart: radius, bottomEnd: radius),
   );
 
   /// Returns a [PropUtility] to manipulate [Radius] for topStart and bottomStart corner.
   late final start = PropUtility<T, Radius>(
-    (radius) => onlyProps(topStart: radius, bottomStart: radius),
+    (radius) => only(topStart: radius, bottomStart: radius),
   );
 
   /// Returns a [PropUtility] to manipulate [Radius] for topEnd and bottomEnd corner.
   late final end = PropUtility<T, Radius>(
-    (radius) => onlyProps(topEnd: radius, bottomEnd: radius),
+    (radius) => only(topEnd: radius, bottomEnd: radius),
   );
 
   /// Returns a [PropUtility] to manipulate [Radius] for topStart corner.
   late final topStart = PropUtility<T, Radius>(
-    (radius) => onlyProps(topStart: radius),
+    (radius) => only(topStart: radius),
   );
 
   /// Returns a [PropUtility] to manipulate [Radius] for topEnd corner.
-  late final topEnd = PropUtility<T, Radius>(
-    (radius) => onlyProps(topEnd: radius),
-  );
+  late final topEnd = PropUtility<T, Radius>((radius) => only(topEnd: radius));
 
   /// Returns a [PropUtility] to manipulate [Radius] for bottomStart corner.
   late final bottomStart = PropUtility<T, Radius>(
-    (radius) => onlyProps(bottomStart: radius),
+    (radius) => only(bottomStart: radius),
   );
 
   /// Returns a [PropUtility] to manipulate [Radius] for bottomEnd corner.
   late final bottomEnd = PropUtility<T, Radius>(
-    (radius) => onlyProps(bottomEnd: radius),
+    (radius) => only(bottomEnd: radius),
   );
 
   /// Returns a [PropUtility] to manipulate [Radius] for all corners.
   late final all = PropUtility<T, Radius>(
-    (radius) => onlyProps(
+    (radius) => only(
       topStart: radius,
       topEnd: radius,
       bottomStart: radius,
@@ -375,39 +368,33 @@ final class BorderRadiusDirectionalUtility<T extends Style<Object?>>
   /// Sets a zero [Radius] for all corners.
   T zero() => all.zero();
 
-  @protected
-  T onlyProps({
-    Prop<Radius>? topStart,
-    Prop<Radius>? topEnd,
-    Prop<Radius>? bottomStart,
-    Prop<Radius>? bottomEnd,
-  }) {
-    return builder(
-      MixProp(
-        BorderRadiusDirectionalMix.raw(
-          topStart: topStart,
-          topEnd: topEnd,
-          bottomStart: bottomStart,
-          bottomEnd: bottomEnd,
-        ),
-      ),
-    );
-  }
-
   T only({
     Radius? topStart,
     Radius? topEnd,
     Radius? bottomStart,
     Radius? bottomEnd,
   }) {
-    return onlyProps(
-      topStart: Prop.maybe(topStart),
-      topEnd: Prop.maybe(topEnd),
-      bottomStart: Prop.maybe(bottomStart),
-      bottomEnd: Prop.maybe(bottomEnd),
+    return builder(
+      BorderRadiusDirectionalMix(
+        topStart: topStart,
+        topEnd: topEnd,
+        bottomStart: bottomStart,
+        bottomEnd: bottomEnd,
+      ),
     );
   }
 
-  T call(double value) =>
-      builder(MixProp(BorderRadiusDirectionalMix.circular(value)));
+  T call({
+    Radius? topStart,
+    Radius? topEnd,
+    Radius? bottomStart,
+    Radius? bottomEnd,
+  }) {
+    return only(
+      topStart: topStart,
+      topEnd: topEnd,
+      bottomStart: bottomStart,
+      bottomEnd: bottomEnd,
+    );
+  }
 }

@@ -20,33 +20,28 @@ abstract class StyleAttributeBuilder<S extends Spec<S>> extends Style<S>
   });
 
   /// Access to the internal mutable StyleAttribute
-  Style<S> get attribute;
+  Style<S> get mix;
 
   @override
-  S resolve(BuildContext context) => attribute.resolve(context);
+  S resolve(BuildContext context) => mix.resolve(context);
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('attribute', attribute));
+    properties.add(DiagnosticsProperty('attribute', mix));
   }
 
   /// Mutable animation configuration from internal attribute
   @override
-  AnimationConfig? get $animation => attribute.$animation;
+  AnimationConfig? get $animation => mix.$animation;
 
   @override
-  ModifierConfig? get $modifierConfig => attribute.$modifierConfig;
+  ModifierConfig? get $modifierConfig => mix.$modifierConfig;
 
   /// Mutable variants from internal attribute
   @override
-  List<VariantStyleAttribute<S>>? get $variants => attribute.$variants;
+  List<VariantStyleAttribute<S>>? get $variants => mix.$variants;
 
   @override
-  List<Object?> get props => [
-    attribute,
-    $animation,
-    $modifierConfig,
-    $variants,
-  ];
+  List<Object?> get props => [mix, $animation, $modifierConfig, $variants];
 }

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
-import '../../core/prop.dart';
 import '../../core/spec_utility.dart' show StyleAttributeBuilder;
-import '../../core/style.dart' show Style, VariantStyleAttribute;
+import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
@@ -18,99 +17,45 @@ import 'flex_spec.dart';
 class FlexSpecUtility extends StyleAttributeBuilder<FlexSpec> {
   // FLEX UTILITIES - Same as FlexMix but return FlexSpecUtility for cascade
 
-  late final direction = PropUtility<FlexSpecUtility, Axis>(
-    (prop) => buildProps(direction: prop),
+  late final direction = PropUtility(mix.direction);
+
+  late final mainAxisAlignment = PropUtility(mix.mainAxisAlignment);
+
+  late final crossAxisAlignment = PropUtility(mix.crossAxisAlignment);
+
+  late final mainAxisSize = PropUtility(mix.mainAxisSize);
+
+  late final verticalDirection = PropUtility(mix.verticalDirection);
+
+  late final textDirection = PropUtility(mix.textDirection);
+
+  late final textBaseline = PropUtility(mix.textBaseline);
+
+  late final clipBehavior = PropUtility(mix.clipBehavior);
+
+  late final gap = PropUtility(mix.gap);
+
+  late final on = OnContextVariantUtility<FlexSpec, FlexMix>(
+    (v) => mix.variants([v]),
   );
 
-  late final mainAxisAlignment =
-      PropUtility<FlexSpecUtility, MainAxisAlignment>(
-        (prop) => buildProps(mainAxisAlignment: prop),
-      );
-
-  late final crossAxisAlignment =
-      PropUtility<FlexSpecUtility, CrossAxisAlignment>(
-        (prop) => buildProps(crossAxisAlignment: prop),
-      );
-
-  late final mainAxisSize = PropUtility<FlexSpecUtility, MainAxisSize>(
-    (prop) => buildProps(mainAxisSize: prop),
+  late final wrap = ModifierUtility(
+    (prop) => mix.modifier(ModifierConfig(modifiers: [prop])),
   );
 
-  late final verticalDirection =
-      PropUtility<FlexSpecUtility, VerticalDirection>(
-        (prop) => buildProps(verticalDirection: prop),
-      );
+  // ignore: prefer_final_fields
+  @override
+  FlexMix mix;
 
-  late final textDirection = PropUtility<FlexSpecUtility, TextDirection>(
-    (prop) => buildProps(textDirection: prop),
-  );
+  FlexSpecUtility([FlexMix? attribute]) : mix = attribute ?? FlexMix();
 
-  late final textBaseline = PropUtility<FlexSpecUtility, TextBaseline>(
-    (prop) => buildProps(textBaseline: prop),
-  );
-
-  late final clipBehavior = PropUtility<FlexSpecUtility, Clip>(
-    (prop) => buildProps(clipBehavior: prop),
-  );
-
-  late final gap = PropUtility<FlexSpecUtility, double>(
-    (prop) => buildProps(gap: prop),
-  );
-
-  late final on = OnContextVariantUtility<FlexSpec, FlexSpecUtility>(
-    (v) => buildProps(variants: [v]),
-  );
-
-  late final wrap = ModifierUtility<FlexSpecUtility>(
-    (prop) => buildProps(modifierConfig: ModifierConfig.modifier(prop)),
-  );
-
-  FlexMix _baseAttribute;
-
-  FlexSpecUtility([FlexMix? attribute])
-    : _baseAttribute = attribute ?? FlexMix();
-
-  @protected
-  FlexSpecUtility buildProps({
-    Prop<Axis>? direction,
-    Prop<MainAxisAlignment>? mainAxisAlignment,
-    Prop<CrossAxisAlignment>? crossAxisAlignment,
-    Prop<MainAxisSize>? mainAxisSize,
-    Prop<VerticalDirection>? verticalDirection,
-    Prop<TextDirection>? textDirection,
-    Prop<TextBaseline>? textBaseline,
-    Prop<Clip>? clipBehavior,
-    Prop<double>? gap,
-    AnimationConfig? animation,
-    ModifierConfig? modifierConfig,
-    List<VariantStyleAttribute<FlexSpec>>? variants,
-  }) {
-    final newAttribute = FlexMix.raw(
-      direction: direction,
-      mainAxisAlignment: mainAxisAlignment,
-      crossAxisAlignment: crossAxisAlignment,
-      mainAxisSize: mainAxisSize,
-      verticalDirection: verticalDirection,
-      textDirection: textDirection,
-      textBaseline: textBaseline,
-      clipBehavior: clipBehavior,
-      gap: gap,
-      animation: animation,
-      modifierConfig: modifierConfig,
-      variants: variants,
-    );
-    _baseAttribute = _baseAttribute.merge(newAttribute);
-
-    return this;
-  }
 
   // Convenience methods
-  FlexSpecUtility row() => buildProps(direction: Prop(Axis.horizontal));
-  FlexSpecUtility column() => buildProps(direction: Prop(Axis.vertical));
+  FlexMix row() => mix.direction(Axis.horizontal);
+  FlexMix column() => mix.direction(Axis.vertical);
 
   /// Animation
-  FlexSpecUtility animate(AnimationConfig animation) =>
-      buildProps(animation: animation);
+  FlexMix animate(AnimationConfig animation) => mix.animate(animation);
 
   // StyleAttribute interface implementation
 
@@ -119,10 +64,10 @@ class FlexSpecUtility extends StyleAttributeBuilder<FlexSpec> {
     if (other == null) return this;
     // IMMUTABLE: Always create new instance (StyleAttribute contract)
     if (other is FlexSpecUtility) {
-      return FlexSpecUtility(_baseAttribute.merge(other._baseAttribute));
+      return FlexSpecUtility(mix.merge(other.mix));
     }
     if (other is FlexMix) {
-      return FlexSpecUtility(_baseAttribute.merge(other));
+      return FlexSpecUtility(mix.merge(other));
     }
 
     throw FlutterError('Unsupported merge type: ${other.runtimeType}');
@@ -130,10 +75,6 @@ class FlexSpecUtility extends StyleAttributeBuilder<FlexSpec> {
 
   @override
   FlexSpec resolve(BuildContext context) {
-    return _baseAttribute.resolve(context);
+    return mix.resolve(context);
   }
-
-  /// Access to internal attribute
-  @override
-  FlexMix get attribute => _baseAttribute;
 }

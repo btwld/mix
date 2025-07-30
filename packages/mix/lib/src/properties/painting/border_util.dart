@@ -290,26 +290,22 @@ final class BoxBorderUtility<T extends Style<Object?>>
 ///
 /// Provides utilities for styling all sides together or individual border sides.
 final class BorderUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, Border> {
+    extends MixPropUtility<T, BorderMix, Border> {
   late final all = BorderSideUtility<T>(
-    (v) => onlyProps(top: v, bottom: v, left: v, right: v),
+    (v) => only(top: v, bottom: v, left: v, right: v),
   );
 
-  late final bottom = BorderSideUtility<T>((v) => onlyProps(bottom: v));
+  late final bottom = BorderSideUtility<T>((v) => only(bottom: v));
 
-  late final top = BorderSideUtility<T>((v) => onlyProps(top: v));
+  late final top = BorderSideUtility<T>((v) => only(top: v));
 
-  late final left = BorderSideUtility<T>((v) => onlyProps(left: v));
+  late final left = BorderSideUtility<T>((v) => only(left: v));
 
-  late final right = BorderSideUtility<T>((v) => onlyProps(right: v));
+  late final right = BorderSideUtility<T>((v) => only(right: v));
 
-  late final vertical = BorderSideUtility<T>(
-    (v) => onlyProps(top: v, bottom: v),
-  );
+  late final vertical = BorderSideUtility<T>((v) => only(top: v, bottom: v));
 
-  late final horizontal = BorderSideUtility<T>(
-    (v) => onlyProps(left: v, right: v),
-  );
+  late final horizontal = BorderSideUtility<T>((v) => only(left: v, right: v));
 
   late final color = all.color;
 
@@ -328,20 +324,6 @@ final class BorderUtility<T extends Style<Object?>>
     right: BorderSideMix.none,
   );
 
-  @protected
-  T onlyProps({
-    MixProp<BorderSide>? top,
-    MixProp<BorderSide>? bottom,
-    MixProp<BorderSide>? left,
-    MixProp<BorderSide>? right,
-  }) {
-    return builder(
-      MixProp(
-        BorderMix.raw(top: top, bottom: bottom, left: left, right: right),
-      ),
-    );
-  }
-
   T only({
     BorderSideMix? top,
     BorderSideMix? bottom,
@@ -349,7 +331,7 @@ final class BorderUtility<T extends Style<Object?>>
     BorderSideMix? right,
   }) {
     return builder(
-      MixProp(BorderMix(top: top, bottom: bottom, left: left, right: right)),
+      BorderMix(top: top, bottom: bottom, left: left, right: right),
     );
   }
 
@@ -374,26 +356,22 @@ final class BorderUtility<T extends Style<Object?>>
 ///
 /// Provides utilities for styling all sides together or individual border sides.
 final class BorderDirectionalUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, BorderDirectional> {
+    extends MixPropUtility<T, BorderDirectionalMix, BorderDirectional> {
   late final all = BorderSideUtility<T>(
-    (v) => onlyProps(top: v, bottom: v, start: v, end: v),
+    (v) => only(top: v, bottom: v, start: v, end: v),
   );
 
-  late final bottom = BorderSideUtility<T>((v) => onlyProps(bottom: v));
+  late final bottom = BorderSideUtility<T>((v) => only(bottom: v));
 
-  late final top = BorderSideUtility<T>((v) => onlyProps(top: v));
+  late final top = BorderSideUtility<T>((v) => only(top: v));
 
-  late final start = BorderSideUtility<T>((v) => onlyProps(start: v));
+  late final start = BorderSideUtility<T>((v) => only(start: v));
 
-  late final end = BorderSideUtility<T>((v) => onlyProps(end: v));
+  late final end = BorderSideUtility<T>((v) => only(end: v));
 
-  late final vertical = BorderSideUtility<T>(
-    (v) => onlyProps(top: v, bottom: v),
-  );
+  late final vertical = BorderSideUtility<T>((v) => only(top: v, bottom: v));
 
-  late final horizontal = BorderSideUtility<T>(
-    (v) => onlyProps(start: v, end: v),
-  );
+  late final horizontal = BorderSideUtility<T>((v) => only(start: v, end: v));
 
   late final color = all.color;
 
@@ -413,25 +391,6 @@ final class BorderDirectionalUtility<T extends Style<Object?>>
     end: BorderSideMix.none,
   );
 
-  @protected
-  T onlyProps({
-    MixProp<BorderSide>? top,
-    MixProp<BorderSide>? bottom,
-    MixProp<BorderSide>? start,
-    MixProp<BorderSide>? end,
-  }) {
-    return builder(
-      MixProp(
-        BorderDirectionalMix.raw(
-          top: top,
-          bottom: bottom,
-          start: start,
-          end: end,
-        ),
-      ),
-    );
-  }
-
   T only({
     BorderSideMix? top,
     BorderSideMix? bottom,
@@ -439,9 +398,7 @@ final class BorderDirectionalUtility<T extends Style<Object?>>
     BorderSideMix? end,
   }) {
     return builder(
-      MixProp(
-        BorderDirectionalMix(top: top, bottom: bottom, start: start, end: end),
-      ),
+      BorderDirectionalMix(top: top, bottom: bottom, start: start, end: end),
     );
   }
 
@@ -466,46 +423,26 @@ final class BorderDirectionalUtility<T extends Style<Object?>>
 ///
 /// This class provides methods to set individual properties of a [BorderSide].
 /// Use the methods of this class to configure specific properties of a [BorderSide].
-class BorderSideUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, BorderSide> {
+final class BorderSideUtility<T extends Style<Object?>>
+    extends MixPropUtility<T, BorderSideMix, BorderSide> {
   /// Utility for defining [BorderSideMix.color]
-  late final color = ColorUtility<T>((prop) => onlyProps(color: prop));
+  late final color = ColorUtility<T>((prop) => only(color: prop));
 
   /// Utility for defining [BorderSideMix.strokeAlign]
   late final strokeAlign = PropUtility<T, double>(
-    (prop) => onlyProps(strokeAlign: prop),
+    (prop) => only(strokeAlign: prop),
   );
 
   /// Utility for defining [BorderSideMix.style]
-  late final style = PropUtility<T, BorderStyle>(
-    (prop) => onlyProps(style: prop),
-  );
+  late final style = PropUtility<T, BorderStyle>((prop) => only(style: prop));
 
   /// Utility for defining [BorderSideMix.width]
-  late final width = PropUtility<T, double>((prop) => onlyProps(width: prop));
+  late final width = PropUtility<T, double>((prop) => only(width: prop));
 
   BorderSideUtility(super.builder) : super(convertToMix: BorderSideMix.value);
 
   /// Creates a [Style] instance using the [BorderSideMix.none] constructor.
-  T none() => builder(MixProp(BorderSideMix.none));
-
-  T onlyProps({
-    Prop<Color>? color,
-    Prop<double>? strokeAlign,
-    Prop<BorderStyle>? style,
-    Prop<double>? width,
-  }) {
-    return builder(
-      MixProp(
-        BorderSideMix.raw(
-          color: color,
-          width: width,
-          style: style,
-          strokeAlign: strokeAlign,
-        ),
-      ),
-    );
-  }
+  T none() => builder(BorderSideMix.none);
 
   /// Returns a new [BorderSideMix] with the specified properties.
   T only({
@@ -514,11 +451,13 @@ class BorderSideUtility<T extends Style<Object?>>
     BorderStyle? style,
     double? width,
   }) {
-    return onlyProps(
-      color: Prop.maybe(color),
-      strokeAlign: Prop.maybe(strokeAlign),
-      style: Prop.maybe(style),
-      width: Prop.maybe(width),
+    return builder(
+      BorderSideMix(
+        color: color,
+        strokeAlign: strokeAlign,
+        style: style,
+        width: width,
+      ),
     );
   }
 

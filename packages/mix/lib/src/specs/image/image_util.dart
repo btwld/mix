@@ -129,5 +129,5 @@ class ImageSpecUtility extends StyleAttributeBuilder<ImageSpec> {
 
   /// Access to internal attribute
   @override
-  ImageMix get attribute => _baseAttribute;
+  ImageMix get mix => _baseAttribute;
 }

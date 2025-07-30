@@ -11,39 +11,24 @@ import 'shadow_mix.dart';
 /// This class provides methods to set individual properties of a [Shadow].
 /// Use the methods of this class to configure specific properties of a [Shadow].
 ///
-class ShadowUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, Shadow> {
+final class ShadowUtility<T extends Style<Object?>>
+    extends MixPropUtility<T, ShadowMix, Shadow> {
   /// Utility for defining [ShadowMix.blurRadius].
   late final blurRadius = PropUtility<T, double>(
-    (prop) => onlyProps(blurRadius: prop),
+    (prop) => only(blurRadius: prop),
   );
 
   /// Utility for defining [ShadowMix.color].
-  late final color = ColorUtility<T>((prop) => onlyProps(color: prop));
+  late final color = ColorUtility<T>((prop) => only(color: prop));
 
   /// Utility for defining [ShadowMix.offset].
-  late final offset = PropUtility<T, Offset>((prop) => onlyProps(offset: prop));
+  late final offset = PropUtility<T, Offset>((prop) => only(offset: prop));
 
   ShadowUtility(super.builder) : super(convertToMix: ShadowMix.value);
 
-  @protected
-  T onlyProps({
-    Prop<double>? blurRadius,
-    Prop<Color>? color,
-    Prop<Offset>? offset,
-  }) {
-    return builder(
-      MixProp(
-        ShadowMix.raw(blurRadius: blurRadius, color: color, offset: offset),
-      ),
-    );
-  }
-
   T only({double? blurRadius, Color? color, Offset? offset}) {
-    return onlyProps(
-      blurRadius: Prop.maybe(blurRadius),
-      color: Prop.maybe(color),
-      offset: Prop.maybe(offset),
+    return builder(
+      ShadowMix(blurRadius: blurRadius, color: color, offset: offset),
     );
   }
 
@@ -56,43 +41,24 @@ class ShadowUtility<T extends Style<Object?>>
 ///
 /// This class provides methods to set individual properties of a [BoxShadow].
 /// Use the methods of this class to configure specific properties of a [BoxShadow].
-class BoxShadowUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, BoxShadow> {
-  late final color = ColorUtility<T>((prop) => onlyProps(color: prop));
+final class BoxShadowUtility<T extends Style<Object?>>
+    extends MixPropUtility<T, BoxShadowMix, BoxShadow> {
+  late final color = ColorUtility<T>((prop) => only(color: prop));
 
   /// Utility for defining [BoxShadowMix.offset].
-  late final offset = PropUtility<T, Offset>((prop) => onlyProps(offset: prop));
+  late final offset = PropUtility<T, Offset>((prop) => only(offset: prop));
 
   /// Utility for defining [BoxShadowMix.blurRadius].
   late final blurRadius = PropUtility<T, double>(
-    (prop) => onlyProps(blurRadius: prop),
+    (prop) => only(blurRadius: prop),
   );
 
   /// Utility for defining [BoxShadowMix.spreadRadius].
   late final spreadRadius = PropUtility<T, double>(
-    (prop) => onlyProps(spreadRadius: prop),
+    (prop) => only(spreadRadius: prop),
   );
 
   BoxShadowUtility(super.builder) : super(convertToMix: BoxShadowMix.value);
-
-  @protected
-  T onlyProps({
-    Prop<Color>? color,
-    Prop<Offset>? offset,
-    Prop<double>? blurRadius,
-    Prop<double>? spreadRadius,
-  }) {
-    return builder(
-      MixProp(
-        BoxShadowMix.raw(
-          color: color,
-          offset: offset,
-          blurRadius: blurRadius,
-          spreadRadius: spreadRadius,
-        ),
-      ),
-    );
-  }
 
   T only({
     Color? color,
@@ -100,11 +66,13 @@ class BoxShadowUtility<T extends Style<Object?>>
     double? blurRadius,
     double? spreadRadius,
   }) {
-    return onlyProps(
-      color: Prop.maybe(color),
-      offset: Prop.maybe(offset),
-      blurRadius: Prop.maybe(blurRadius),
-      spreadRadius: Prop.maybe(spreadRadius),
+    return builder(
+      BoxShadowMix(
+        color: color,
+        offset: offset,
+        blurRadius: blurRadius,
+        spreadRadius: spreadRadius,
+      ),
     );
   }
 
@@ -121,9 +89,6 @@ class BoxShadowUtility<T extends Style<Object?>>
       spreadRadius: spreadRadius,
     );
   }
-
-  /// Returns a new [T] with the specified [BoxShadowMix] properties.
-  T mix(BoxShadowMix value) => builder(MixProp(value));
 }
 
 /// A utility class for building [Style] instances from elevation values that produces [MixProp<BoxShadow>] lists.

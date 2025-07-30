@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
-import '../../core/directive.dart';
-import '../../core/prop.dart';
 import '../../core/spec_utility.dart' show StyleAttributeBuilder;
-import '../../core/style.dart' show Style, VariantStyleAttribute;
+import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
@@ -23,54 +21,30 @@ import 'text_spec.dart';
 class TextSpecUtility extends StyleAttributeBuilder<TextSpec> {
   // TEXT UTILITIES - Same as TextMix but return TextSpecUtility for cascade
 
-  late final textOverflow = PropUtility(_baseAttribute.overflow);
+  late final textOverflow = PropUtility(mix.overflow);
 
-  late final strutStyle = StrutStyleUtility<TextSpecUtility>(
-    (prop) => buildProps(strutStyle: prop),
+  late final strutStyle = StrutStyleUtility<TextMix>(mix.strutStyle);
+
+  late final textAlign = PropUtility(mix.textAlign);
+  late final textScaler = PropUtility(mix.textScaler);
+  late final maxLines = PropUtility(mix.maxLines);
+  late final style = TextStyleUtility<TextMix>(
+    (prop) => mix.merge(TextMix.raw(style: prop)),
+  );
+  late final textWidthBasis = PropUtility(mix.textWidthBasis);
+  late final textHeightBehavior = TextHeightBehaviorUtility<TextMix>(
+    mix.textHeightBehavior,
+  );
+  late final textDirection = PropUtility(mix.textDirection);
+  late final softWrap = PropUtility(mix.softWrap);
+  late final directives = TextDirectiveUtility(mix.contentModifier);
+
+  late final on = OnContextVariantUtility<TextSpec, TextMix>(
+    (v) => mix.variants([v]),
   );
 
-  late final textAlign = PropUtility<TextSpecUtility, TextAlign>(
-    (prop) => buildProps(textAlign: prop),
-  );
-
-  late final textScaler = PropUtility<TextSpecUtility, TextScaler>(
-    (prop) => buildProps(textScaler: prop),
-  );
-
-  late final maxLines = PropUtility<TextSpecUtility, int>(
-    (prop) => buildProps(maxLines: prop),
-  );
-
-  late final style = TextStyleUtility<TextSpecUtility>(
-    (prop) => buildProps(style: prop),
-  );
-
-  late final textWidthBasis = PropUtility<TextSpecUtility, TextWidthBasis>(
-    (prop) => buildProps(textWidthBasis: prop),
-  );
-
-  late final textHeightBehavior = TextHeightBehaviorUtility<TextSpecUtility>(
-    (prop) => buildProps(textHeightBehavior: prop),
-  );
-
-  late final textDirection = PropUtility<TextSpecUtility, TextDirection>(
-    (prop) => buildProps(textDirection: prop),
-  );
-
-  late final softWrap = PropUtility<TextSpecUtility, bool>(
-    (prop) => buildProps(softWrap: prop),
-  );
-
-  late final directive = TextDirectiveUtility<TextSpecUtility>(
-    (prop) => buildProps(directives: [prop]),
-  );
-
-  late final on = OnContextVariantUtility<TextSpec, TextSpecUtility>(
-    (v) => buildProps(variants: [v]),
-  );
-
-  late final wrap = ModifierUtility<TextSpecUtility>(
-    (prop) => buildProps(modifierConfig: ModifierConfig.modifier(prop)),
+  late final wrap = ModifierUtility(
+    (prop) => mix.modifier(ModifierConfig(modifiers: [prop])),
   );
 
   // FLATTENED ACCESS - Direct access to commonly used style properties
@@ -95,56 +69,18 @@ class TextSpecUtility extends StyleAttributeBuilder<TextSpec> {
   late final debugLabel = style.debugLabel;
   late final decorationThickness = style.decorationThickness;
   late final fontFamilyFallback = style.fontFamilyFallback;
-  TextMix _baseAttribute;
+  // ignore: prefer_final_fields
+  @override
+  TextMix mix;
 
-  TextSpecUtility([TextMix? attribute])
-    : _baseAttribute = attribute ?? TextMix();
-
-  @protected
-  TextSpecUtility buildProps({
-    Prop<TextOverflow>? overflow,
-    MixProp<StrutStyle>? strutStyle,
-    Prop<TextAlign>? textAlign,
-    Prop<TextScaler>? textScaler,
-    Prop<int>? maxLines,
-    MixProp<TextStyle>? style,
-    Prop<TextWidthBasis>? textWidthBasis,
-    MixProp<TextHeightBehavior>? textHeightBehavior,
-    Prop<TextDirection>? textDirection,
-    Prop<bool>? softWrap,
-    AnimationConfig? animation,
-    ModifierConfig? modifierConfig,
-    List<MixDirective<String>>? directives,
-    List<VariantStyleAttribute<TextSpec>>? variants,
-  }) {
-    final newAttribute = TextMix.raw(
-      overflow: overflow,
-      strutStyle: strutStyle,
-      textAlign: textAlign,
-      textScaler: textScaler,
-      maxLines: maxLines,
-      style: style,
-      textWidthBasis: textWidthBasis,
-      textHeightBehavior: textHeightBehavior,
-      textDirection: textDirection,
-      softWrap: softWrap,
-      directives: directives,
-      animation: animation,
-      modifierConfig: modifierConfig,
-      variants: variants,
-    );
-    _baseAttribute = _baseAttribute.merge(newAttribute);
-
-    return this;
-  }
+  TextSpecUtility([TextMix? attribute]) : mix = attribute ?? TextMix();
 
   // Convenience methods
-  TextSpecUtility bold() => style.bold();
-  TextSpecUtility italic() => style.italic();
+  TextMix bold() => style.bold();
+  TextMix italic() => style.italic();
 
   /// Animation
-  TextSpecUtility animate(AnimationConfig animation) =>
-      buildProps(animation: animation);
+  TextMix animate(AnimationConfig animation) => mix.animate(animation);
 
   // StyleAttribute interface implementation
 
@@ -153,10 +89,10 @@ class TextSpecUtility extends StyleAttributeBuilder<TextSpec> {
     if (other == null) return this;
     // IMMUTABLE: Always create new instance (StyleAttribute contract)
     if (other is TextSpecUtility) {
-      return TextSpecUtility(_baseAttribute.merge(other._baseAttribute));
+      return TextSpecUtility(mix.merge(other.mix));
     }
     if (other is TextMix) {
-      return TextSpecUtility(_baseAttribute.merge(other));
+      return TextSpecUtility(mix.merge(other));
     }
 
     throw FlutterError('Unsupported merge type: ${other.runtimeType}');
@@ -164,10 +100,6 @@ class TextSpecUtility extends StyleAttributeBuilder<TextSpec> {
 
   @override
   TextSpec resolve(BuildContext context) {
-    return _baseAttribute.resolve(context);
+    return mix.resolve(context);
   }
-
-  /// Access to internal attribute
-  @override
-  TextMix get attribute => _baseAttribute;
 }

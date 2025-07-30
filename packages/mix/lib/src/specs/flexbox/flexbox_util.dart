@@ -238,5 +238,5 @@ class FlexBoxSpecUtility extends StyleAttributeBuilder<FlexBoxSpec> {
 
   /// Access to internal attribute
   @override
-  FlexBoxMix get attribute => _baseAttribute;
+  FlexBoxMix get mix => _baseAttribute;
 }

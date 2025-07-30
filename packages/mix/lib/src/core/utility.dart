@@ -1,8 +1,6 @@
 import 'package:meta/meta.dart';
 
-import '../animation/animation_config.dart';
 import '../theme/tokens/mix_token.dart';
-import 'directive.dart';
 import 'mix_element.dart';
 import 'prop.dart';
 import 'spec.dart';
@@ -18,19 +16,6 @@ abstract class MixUtility<U extends Style<Object?>, Value> {
   const MixUtility(this.builder);
 }
 
-/// Interface for utilities that work with property-based values.
-///
-/// Provides common methods for working with tokens, directives, and animations.
-abstract interface class PropBaseUtility<U extends Style<Object?>, Value> {
-  const PropBaseUtility();
-
-  /// Creates a styled element with an applied directive.
-  U directive(MixDirective<Value> directive);
-
-  /// Creates a styled element with animation configuration.
-  U animate(AnimationConfig animation);
-}
-
 /// Base utility for simple value properties that use [Prop<T>]
 ///
 /// This utility provides a consistent API for working with:
@@ -41,60 +26,26 @@ abstract interface class PropBaseUtility<U extends Style<Object?>, Value> {
 /// Used for simple types like Color, double, FontWeight, etc.
 @immutable
 class PropUtility<U extends Style<Object?>, Value>
-    extends PropBaseUtility<U, Value> {
-  final U Function(Prop<Value>) builder;
-  const PropUtility(this.builder);
+    extends MixUtility<U, Value> {
+  const PropUtility(super.builder);
 
   /// Creates a Prop with a direct value
-  U call(Value value) => builder(Prop(value));
-
-  /// Token support - creates Prop with token
-
-  U token(MixToken<Value> token) => builder(Prop.token(token));
-
-  @override
-  U directive(MixDirective<Value> directive) {
-    return builder(Prop.directives([directive]));
-  }
-
-  /// Animation support - creates animated Prop (requires token for now)
-  @override
-  U animate(AnimationConfig animation) {
-    // Note: This creates an animated Prop without a source
-    // The actual source will need to be provided later via merge
-    return builder(Prop.animation(animation));
-  }
+  U call(Value value) => builder(value);
 }
 
 @immutable
-abstract class MixPropUtility<U extends Style<Object?>, Value>
-    extends PropBaseUtility<U, Value> {
-  final Mix<Value> Function(Value) convertToMix;
-  @protected
-  final U Function(MixProp<Value>) builder;
-
-  const MixPropUtility(this.builder, {required this.convertToMix});
+abstract class MixPropUtility<
+  U extends Style<Object?>,
+  M extends Mix<Value>,
+  Value
+>
+    extends MixUtility<U, M> {
+  final M Function(Value) convertToMix;
+  @override
+  const MixPropUtility(super.builder, {required this.convertToMix});
 
   /// Creates a MixProp from a raw value (converts to Mix)
-  U as(Value value) => builder(MixProp(convertToMix(value)));
-
-  @Deprecated('use token(value) instead')
-  U ref(MixToken<Value> value) => token(value);
-
-  U token(MixToken<Value> value) => builder(MixProp.token(value, convertToMix));
-
-  @override
-  U directive(MixDirective<Value> directive) {
-    return builder(MixProp.directives([directive]));
-  }
-
-  /// Animation support - creates animated MixProp
-  @override
-  U animate(AnimationConfig animation) {
-    // Note: This creates an animated MixProp without a source
-    // The actual source will need to be provided later via merge
-    return builder(MixProp.animation(animation));
-  }
+  U as(Value value) => builder(convertToMix(value));
 }
 
 /// Utility base class for spec utilities

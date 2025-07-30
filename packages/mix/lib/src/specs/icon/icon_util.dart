@@ -135,5 +135,5 @@ class IconSpecUtility extends StyleAttributeBuilder<IconSpec> {
 
   /// Access to internal attribute
   @override
-  IconMix get attribute => _baseAttribute;
+  IconMix get mix => _baseAttribute;
 }

@@ -574,10 +574,8 @@ extension TableColumnWidthPropUtilityExt<T extends Style<Object?>>
 }
 
 /// Utility for creating [TableBorder] values with predefined border styles.
-class TableBorderUtility<T extends Style<Object?>>
-    extends PropUtility<T, TableBorder> {
-  const TableBorderUtility(super.builder);
-
+extension TableBorderUtility<T extends Style<Object?>>
+    on PropUtility<T, TableBorder> {
   /// Creates a [Style] instance using the [TableBorder.all] constructor.
   T all({
     Color color = const Color(0xFF000000),

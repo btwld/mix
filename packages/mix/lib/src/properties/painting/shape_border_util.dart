@@ -14,7 +14,8 @@ import 'shape_border_mix.dart';
 /// This class provides methods to set individual properties of a [RoundedRectangleBorder].
 /// Use the methods of this class to configure specific properties of a [RoundedRectangleBorder].
 final class RoundedRectangleBorderUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, RoundedRectangleBorder> {
+    extends
+        MixPropUtility<T, RoundedRectangleBorderMix, RoundedRectangleBorder> {
   /// Utility for defining [RoundedRectangleBorderMix.borderRadius]
   late final borderRadius = BorderRadiusGeometryUtility<T>(
     (v) => onlyProps(borderRadius: v),
@@ -151,7 +152,7 @@ final class CircleBorderUtility<T extends Style<Object?>>
   late final side = BorderSideUtility<T>((v) => onlyProps(side: v));
 
   /// Utility for defining [CircleBorderMix.eccentricity]
-  late final eccentricity = PropUtility<T, double>(
+  late final eccentricity = ValueUtility<T, double>(
     (prop) => onlyProps(eccentricity: prop),
   );
 
@@ -189,30 +190,34 @@ final class StarBorderUtility<T extends Style<Object?>>
   late final side = BorderSideUtility<T>((v) => onlyProps(side: v));
 
   /// Utility for defining [StarBorderMix.points]
-  late final points = PropUtility<T, double>((prop) => onlyProps(points: prop));
+  late final points = ValueUtility<T, double>(
+    (prop) => onlyProps(points: prop),
+  );
 
   /// Utility for defining [StarBorderMix.innerRadiusRatio]
-  late final innerRadiusRatio = PropUtility<T, double>(
+  late final innerRadiusRatio = ValueUtility<T, double>(
     (prop) => onlyProps(innerRadiusRatio: prop),
   );
 
   /// Utility for defining [StarBorderMix.pointRounding]
-  late final pointRounding = PropUtility<T, double>(
+  late final pointRounding = ValueUtility<T, double>(
     (prop) => onlyProps(pointRounding: prop),
   );
 
   /// Utility for defining [StarBorderMix.valleyRounding]
-  late final valleyRounding = PropUtility<T, double>(
+  late final valleyRounding = ValueUtility<T, double>(
     (prop) => onlyProps(valleyRounding: prop),
   );
 
   /// Utility for defining [StarBorderMix.rotation]
-  late final rotation = PropUtility<T, double>(
+  late final rotation = ValueUtility<T, double>(
     (prop) => onlyProps(rotation: prop),
   );
 
   /// Utility for defining [StarBorderMix.squash]
-  late final squash = PropUtility<T, double>((prop) => onlyProps(squash: prop));
+  late final squash = ValueUtility<T, double>(
+    (prop) => onlyProps(squash: prop),
+  );
 
   StarBorderUtility(super.builder) : super(convertToMix: StarBorderMix.value);
 
@@ -365,10 +370,10 @@ final class LinearBorderUtility<T extends Style<Object?>>
 final class LinearBorderEdgeUtility<T extends Style<Object?>>
     extends MixPropUtility<T, LinearBorderEdge> {
   /// Utility for defining [LinearBorderEdgeMix.size]
-  late final size = PropUtility<T, double>((prop) => onlyProps(size: prop));
+  late final size = ValueUtility<T, double>((prop) => onlyProps(size: prop));
 
   /// Utility for defining [LinearBorderEdgeMix.alignment]
-  late final alignment = PropUtility<T, double>(
+  late final alignment = ValueUtility<T, double>(
     (prop) => onlyProps(alignment: prop),
   );
 

@@ -83,11 +83,11 @@ void main() {
         utility2.margin.all(8);
 
         // Each utility maintains its own state
-        expect(identical(utility1.attribute, utility2.attribute), isFalse);
+        expect(identical(utility1.mix, utility2.mix), isFalse);
 
         // Properties are set correctly
-        expect(utility1.attribute.$box?.padding, isNotNull);
-        expect(utility2.attribute.$box?.margin, isNotNull);
+        expect(utility1.mix.$box?.padding, isNotNull);
+        expect(utility2.mix.$box?.margin, isNotNull);
       });
 
       test('utility provides access to nested box utilities', () {
@@ -284,13 +284,15 @@ void main() {
     group('Modifiers', () {
       test('modifiers can be added to attribute', () {
         final attribute = FlexBoxMix(
-          modifierConfig: ModifierConfig(modifiers: [
-            OpacityModifierAttribute(opacity: 0.5),
-            TransformModifierAttribute(
-              transform: Matrix4.identity(),
-              alignment: Alignment.center,
-            ),
-          ]),
+          modifierConfig: ModifierConfig(
+            modifiers: [
+              OpacityModifierAttribute(opacity: 0.5),
+              TransformModifierAttribute(
+                transform: Matrix4.identity(),
+                alignment: Alignment.center,
+              ),
+            ],
+          ),
         );
 
         expect(attribute.$modifierConfig, isNotNull);
@@ -299,13 +301,17 @@ void main() {
 
       test('modifiers are merged correctly', () {
         final first = FlexBoxMix(
-          modifierConfig: ModifierConfig(modifiers: [OpacityModifierAttribute(opacity: 0.5)]),
+          modifierConfig: ModifierConfig(
+            modifiers: [OpacityModifierAttribute(opacity: 0.5)],
+          ),
         );
 
         final second = FlexBoxMix(
-          modifierConfig: ModifierConfig(modifiers: [
-            TransformModifierAttribute(transform: Matrix4.identity()),
-          ]),
+          modifierConfig: ModifierConfig(
+            modifiers: [
+              TransformModifierAttribute(transform: Matrix4.identity()),
+            ],
+          ),
         );
 
         final merged = first.merge(second);
@@ -427,7 +433,7 @@ void main() {
         utility.gap(10.0);
 
         final context = MockBuildContext();
-        final resolved = utility.attribute.resolve(context);
+        final resolved = utility.mix.resolve(context);
 
         // Verify all properties are resolved correctly
         expect(resolved.box.alignment, Alignment.center);

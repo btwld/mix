@@ -1,52 +1,36 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
 import 'text_height_behavior_mix.dart';
 
 final class TextHeightBehaviorUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, TextHeightBehavior> {
+    extends MixPropUtility<T, TextHeightBehaviorMix, TextHeightBehavior> {
   late final heightToFirstAscent = PropUtility<T, bool>(
-    (prop) => onlyProps(applyHeightToFirstAscent: prop),
+    (prop) => only(applyHeightToFirstAscent: prop),
   );
   late final heightToLastDescent = PropUtility<T, bool>(
-    (prop) => onlyProps(applyHeightToLastDescent: prop),
+    (prop) => only(applyHeightToLastDescent: prop),
   );
 
   late final leadingDistribution = PropUtility<T, TextLeadingDistribution>(
-    (prop) => onlyProps(leadingDistribution: prop),
+    (prop) => only(leadingDistribution: prop),
   );
 
   TextHeightBehaviorUtility(super.builder)
     : super(convertToMix: TextHeightBehaviorMix.value);
-
-  @protected
-  T onlyProps({
-    Prop<bool>? applyHeightToFirstAscent,
-    Prop<bool>? applyHeightToLastDescent,
-    Prop<TextLeadingDistribution>? leadingDistribution,
-  }) {
-    return builder(
-      MixProp(
-        TextHeightBehaviorMix.raw(
-          applyHeightToFirstAscent: applyHeightToFirstAscent,
-          applyHeightToLastDescent: applyHeightToLastDescent,
-          leadingDistribution: leadingDistribution,
-        ),
-      ),
-    );
-  }
 
   T only({
     bool? applyHeightToFirstAscent,
     bool? applyHeightToLastDescent,
     TextLeadingDistribution? leadingDistribution,
   }) {
-    return onlyProps(
-      applyHeightToFirstAscent: Prop.maybe(applyHeightToFirstAscent),
-      applyHeightToLastDescent: Prop.maybe(applyHeightToLastDescent),
-      leadingDistribution: Prop.maybe(leadingDistribution),
+    return builder(
+      TextHeightBehaviorMix(
+        applyHeightToFirstAscent: applyHeightToFirstAscent,
+        applyHeightToLastDescent: applyHeightToLastDescent,
+        leadingDistribution: leadingDistribution,
+      ),
     );
   }
 
@@ -61,6 +45,4 @@ final class TextHeightBehaviorUtility<T extends Style<Object?>>
       leadingDistribution: leadingDistribution,
     );
   }
-
-  T mix(TextHeightBehaviorMix value) => builder(MixProp(value));
 }

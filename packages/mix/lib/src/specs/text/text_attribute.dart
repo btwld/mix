@@ -230,6 +230,10 @@ class TextMix extends Style<TextSpec>
     return TextMix(variants: [VariantStyleAttribute(variant, value)]);
   }
 
+  factory TextMix.contentModifier(MixDirective<String> value) {
+    return TextMix(directives: [value]);
+  }
+
   const TextMix.raw({
     Prop<TextOverflow>? overflow,
     MixProp<StrutStyle>? strutStyle,
@@ -328,6 +332,10 @@ class TextMix extends Style<TextSpec>
   /// ```
   static TextMix? maybeValue(TextSpec? spec) {
     return spec != null ? TextMix.value(spec) : null;
+  }
+
+  TextMix contentModifier(MixDirective<String> value) {
+    return merge(TextMix.directive(value));
   }
 
   /// Sets text overflow behavior

@@ -19,16 +19,12 @@ import 'shape_border_mix.dart';
 import 'shape_border_util.dart';
 
 class DecorationUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, Decoration> {
+    extends MixPropUtility<T, DecorationMix<Decoration>, Decoration> {
   late final box = BoxDecorationUtility<T>(builder);
 
   late final shape = ShapeDecorationUtility<T>(builder);
 
   DecorationUtility(super.builder) : super(convertToMix: DecorationMix.value);
-
-  T call(DecorationMix value) {
-    return builder(MixProp(value));
-  }
 }
 
 /// Utility class for configuring [BoxDecoration] properties.
@@ -37,7 +33,7 @@ class DecorationUtility<T extends Style<Object?>>
 /// Use the methods of this class to configure specific properties of a [BoxDecoration].
 @immutable
 final class BoxDecorationUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, BoxDecoration> {
+    extends MixPropUtility<T, BoxDecorationMix, BoxDecoration> {
   /// Utility for defining [BoxDecorationMix.border]
   late final border = _boxBorder.border;
 
@@ -167,7 +163,7 @@ final class BoxDecorationUtility<T extends Style<Object?>>
 /// Use the methods of this class to configure specific properties of a [ShapeDecoration].
 @immutable
 final class ShapeDecorationUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, ShapeDecoration> {
+    extends MixPropUtility<T, ShapeDecorationMix, ShapeDecoration> {
   /// Utility for defining [ShapeDecorationMix.shape]
   late final shape = ShapeBorderUtility<T>((v) => onlyProps(shape: v));
 
