@@ -1,170 +1,117 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+final class StyleAnimationDriverTest extends StyleAnimationDriver<MockSpec> {
+  StyleAnimationDriverTest({required super.vsync, super.unbounded});
+  int executeAnimationCallCounter = 0;
+
+  @override
+  Future<void> executeAnimation() async {
+    executeAnimationCallCounter += 1;
+  }
+}
+
 void main() {
-  group('CurveAnimationDriver', () {
-    late AnimationController controller;
-    late CurveAnimationDriver<MockSpec> driver;
+  group('StyleAnimationDriver', () {
+    late StyleAnimationDriverTest driver;
 
     setUp(() {
-      controller = AnimationController(vsync: const TestVSync());
-      driver = CurveAnimationDriver<MockSpec>(
-        vsync: const TestVSync(),
-        config: const CurveAnimationConfig(
-          duration: Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        ),
-      );
+      driver = StyleAnimationDriverTest(vsync: const TestVSync());
     });
 
     tearDown(() {
       driver.dispose();
-      controller.dispose();
     });
 
-    test('initializes with correct properties', () {
-      expect(driver.isAnimating, false);
-      expect(driver.progress, 0.0);
-    });
+    test(
+      'interpolateAt should linearly interpolate between start and end styles',
+      () {
+        final startStyle = MockResolvedStyle(0);
+        final endStyle = MockResolvedStyle(1);
 
-    testWidgets('animates to target style', (tester) async {
-      final endStyle = MockResolvedStyle();
+        // Set up interpolation
+        driver.animateTo(startStyle);
+        driver.animateTo(endStyle);
 
-      bool animationStarted = false;
-      bool animationCompleted = false;
+        // Test interpolation at different points
+        for (var point in [0.3, 0.5, 0.8]) {
+          final interpolated = driver.interpolateAt(point);
 
-      driver.addOnStartListener(() => animationStarted = true);
-      driver.addOnCompleteListener(() => animationCompleted = true);
+          expect(interpolated.spec?.value, point);
+        }
+      },
+    );
 
-      await tester.pumpWidget(Container());
+    test('reset should restore the driver to the begining', () {
+      driver.animateTo(MockResolvedStyle(0));
+      driver.animateTo(MockResolvedStyle(1));
 
-      // Start animation
-      final future = driver.animateTo(endStyle);
+      expect(driver.currentResolvedStyle, MockResolvedStyle(0));
 
-      // Should start immediately
-      await tester.pump();
-      expect(animationStarted, true);
-      expect(driver.isAnimating, true);
-
-      // Mid animation
-      await tester.pump(const Duration(milliseconds: 150));
-      expect(driver.progress, greaterThan(0.0));
-      expect(driver.progress, lessThan(1.0));
-
-      // Complete animation
-      await tester.pumpAndSettle();
-      await future;
-
-      expect(animationCompleted, true);
-      expect(driver.isAnimating, false);
-      expect(driver.progress, 1.0);
-    });
-
-    test('interpolates correctly with curve', () {
-      final startStyle = MockResolvedStyle();
-      final endStyle = MockResolvedStyle();
-
-      // Set up interpolation
-      driver.animateTo(startStyle);
-      driver.animateTo(endStyle);
-
-      // Test interpolation at different points
-      final interpolated = driver.interpolateAt(0.5);
-      expect(interpolated, isNotNull);
-    });
-
-    test('handles stop correctly', () {
-      final style = MockResolvedStyle();
-
-      driver.animateTo(style);
-      driver.stop();
-
-      expect(driver.isAnimating, false);
-    });
-
-    test('handles reset correctly', () {
-      final style = MockResolvedStyle();
-
-      driver.animateTo(style);
       driver.reset();
 
       expect(driver.progress, 0.0);
       expect(driver.currentResolvedStyle, null);
     });
 
-    test('removes listeners correctly', () {
+    testWidgets('should trigger onStart callback when the animation starts', (
+      tester,
+    ) async {
       int callCount = 0;
       void callback() => callCount++;
 
       driver.addOnStartListener(callback);
-      driver.removeOnStartListener(callback);
+      await driver.animateTo(MockResolvedStyle(0));
+      final future = driver.animateTo(MockResolvedStyle(1));
 
-      driver.animateTo(MockResolvedStyle());
+      driver.controller.duration = 300.ms;
+      driver.controller.forward(from: 0);
 
-      expect(callCount, 0);
-    });
-  });
+      await tester.pump(150.ms);
 
-  group('SpringAnimationDriver', () {
-    late SpringAnimationDriver<MockSpec> driver;
+      expect(callCount, 1);
 
-    setUp(() {
-      driver = SpringAnimationDriver<MockSpec>(
-        vsync: const TestVSync(),
-        config: SpringAnimationConfig.standard(
-          stiffness: 200.0,
-          damping: 15.0,
-          mass: 1.0,
-        ),
-      );
-    });
-
-    tearDown(() {
-      driver.dispose();
-    });
-
-    test('initializes with correct spring properties', () {
-      // Spring properties are now internal to the driver
-      expect(driver.isAnimating, false);
-      expect(driver.progress, 0.0);
-    });
-
-    testWidgets('animates with spring physics', (tester) async {
-      final endStyle = MockResolvedStyle();
-
-      await tester.pumpWidget(Container());
-
-      // Start animation
-      final future = driver.animateTo(endStyle);
-
-      // Spring animations don't have fixed duration
-      await tester.pump();
-      expect(driver.isAnimating, true);
-
-      // Let spring settle
       await tester.pumpAndSettle();
       await future;
+    });
+
+    testWidgets(
+      'should trigger onComplete callback when the animation completes',
+      (tester) async {
+        int callCount = 0;
+        void callback() => callCount++;
+
+        driver.addOnCompleteListener(callback);
+        await driver.animateTo(MockResolvedStyle(0));
+        final future = driver.animateTo(MockResolvedStyle(1));
+
+        driver.controller.duration = 300.ms;
+        driver.controller.forward(from: 0);
+        await tester.pumpAndSettle();
+
+        expect(callCount, 1);
+
+        await future;
+      },
+    );
+
+    testWidgets('stop() should stop the animation ', (tester) async {
+      await driver.animateTo(MockResolvedStyle(0));
+      driver.animateTo(MockResolvedStyle(1));
+
+      driver.controller.duration = 300.ms;
+      driver.controller.forward(from: 0);
+
+      await tester.pump(150.ms);
+      expect(driver.isAnimating, true);
+      driver.stop();
 
       expect(driver.isAnimating, false);
     });
 
-    test('interpolates linearly', () {
-      final startStyle = MockResolvedStyle();
-      final endStyle = MockResolvedStyle();
-
-      driver.animateTo(startStyle);
-      driver.animateTo(endStyle);
-
-      // Spring driver uses linear interpolation
-      final interpolated = driver.interpolateAt(0.5);
-      expect(interpolated, isNotNull);
-    });
-  });
-
-  // NoAnimationDriver was removed as it wasn't used in the codebase
-
-  group('AnimationDriver lifecycle', () {
     testWidgets('disposes correctly', (tester) async {
       final driver = CurveAnimationDriver<MockSpec>(
         vsync: tester,
@@ -183,18 +130,253 @@ void main() {
       // Dispose should not throw
       expect(() => driver.dispose(), returnsNormally);
     });
+
+    group('initialization ', () {
+      test('with no progress', () {
+        final driver = StyleAnimationDriverTest(vsync: const TestVSync());
+        addTearDown(() {
+          driver.dispose();
+        });
+
+        expect(driver.isAnimating, false);
+        expect(driver.progress, 0.0);
+      });
+
+      test('with non-unbounded controller', () {
+        final driver = StyleAnimationDriverTest(vsync: const TestVSync());
+        addTearDown(() {
+          driver.dispose();
+        });
+
+        final controller = driver.controller;
+
+        expect(controller.lowerBound, 0);
+        expect(controller.upperBound, 1);
+      });
+
+      test('with unbounded controller when unbounded is true', () {
+        final driver = StyleAnimationDriverTest(
+          vsync: const TestVSync(),
+          unbounded: true,
+        );
+        addTearDown(() {
+          driver.dispose();
+        });
+
+        final controller = driver.controller;
+
+        expect(controller.lowerBound, double.negativeInfinity);
+        expect(controller.upperBound, double.infinity);
+      });
+    });
+
+    group('animateTo ', () {
+      late StyleAnimationDriverTest driver;
+
+      setUp(() {
+        driver = StyleAnimationDriverTest(vsync: const TestVSync());
+      });
+
+      tearDown(() {
+        driver.dispose();
+      });
+
+      testWidgets('skips animation when animation is called in first time', (
+        tester,
+      ) async {
+        // First call to set the target
+        await driver.animateTo(MockResolvedStyle(0));
+        expect(driver.executeAnimationCallCounter, 0);
+      });
+
+      testWidgets(
+        'skips animation when target is already set and not animating',
+        (tester) async {
+          // First call to set the target
+          await driver.animateTo(MockResolvedStyle(0));
+          expect(driver.executeAnimationCallCounter, 0);
+
+          // Call again with the same target
+          await driver.animateTo(MockResolvedStyle(0));
+
+          // Verify executeAnimation was not called
+          expect(driver.executeAnimationCallCounter, 0);
+        },
+      );
+
+      test('calls executeAnimation when target style changes', () async {
+        // Initial call
+        await driver.animateTo(MockResolvedStyle(0));
+        expect(driver.executeAnimationCallCounter, 0);
+
+        // Call with same target style while not animating
+        await driver.animateTo(MockResolvedStyle(1));
+        // Counter should not increase as it should skip animation
+        expect(driver.executeAnimationCallCounter, 1);
+
+        // Call with different target style
+        await driver.animateTo(MockResolvedStyle(2.0));
+        expect(driver.executeAnimationCallCounter, 2);
+      });
+
+      testWidgets('updates currentResolvedStyle during animation', (
+        tester,
+      ) async {
+        // Create a driver that actually animates
+        final driver = CurveAnimationDriver<MockSpec>(
+          vsync: tester,
+          config: const CurveAnimationConfig(
+            duration: Duration(milliseconds: 100),
+            curve: Curves.linear,
+          ),
+        );
+
+        await tester.pumpWidget(Container());
+
+        expect(driver.currentResolvedStyle, isNull);
+
+        // Aet an initial fromStyle
+        await driver.animateTo(MockResolvedStyle(0));
+        expect(driver.currentResolvedStyle, MockResolvedStyle(0));
+
+        final future = driver.animateTo(MockResolvedStyle(1));
+
+        // Complete animation
+        await tester.pumpAndSettle();
+        await future;
+
+        // After animation completes, currentResolvedStyle should equal target
+        expect(driver.currentResolvedStyle, MockResolvedStyle(1));
+      });
+    });
+  });
+
+  group('CurveAnimationDriver', () {
+    test(
+      'interpolateAt should apply the curve when interpolating between styles',
+      () {
+        final curve = Curves.easeInOut;
+
+        final driver = CurveAnimationDriver<MockSpec>(
+          vsync: const TestVSync(),
+          config: CurveAnimationConfig(
+            duration: Duration(milliseconds: 300),
+            curve: curve,
+          ),
+        );
+
+        addTearDown(() {
+          driver.dispose();
+        });
+
+        final startStyle = MockResolvedStyle(0);
+        final endStyle = MockResolvedStyle(1);
+
+        // Set up interpolation
+        driver.animateTo(startStyle);
+        driver.animateTo(endStyle);
+
+        // Test interpolation at different points
+        for (var point in [0.3, 0.5, 0.8]) {
+          final interpolated = driver.interpolateAt(point);
+          final valueOnCurve = curve.transform(point);
+
+          expect(interpolated.spec?.value, valueOnCurve);
+        }
+      },
+    );
+
+    testWidgets('OnEnd should be triggered when the animation is completed', (
+      tester,
+    ) async {
+      int counter = 0;
+
+      final driver = CurveAnimationDriver<MockSpec>(
+        vsync: const TestVSync(),
+        config: AnimationConfig.decelerate(300.ms, onEnd: () => counter++),
+      );
+
+      addTearDown(() {
+        driver.dispose();
+      });
+
+      final startStyle = MockResolvedStyle(0);
+      final endStyle = MockResolvedStyle(1);
+
+      // Set up interpolation
+      await driver.animateTo(startStyle);
+      final future = driver.animateTo(endStyle);
+
+      await tester.pumpAndSettle();
+      await future;
+
+      expect(counter, 1);
+    });
+  });
+
+  group('SpringAnimationDriver', () {
+    test('should create an unbounded animation controller', () {
+      final driver = SpringAnimationDriver<MockSpec>(
+        vsync: const TestVSync(),
+        config: SpringAnimationConfig.standard(),
+      );
+
+      final controller = driver.controller;
+
+      // Verify it's unbounded
+      expect(controller.lowerBound, double.negativeInfinity);
+      expect(controller.upperBound, double.infinity);
+
+      driver.dispose();
+    });
+
+    testWidgets('should complete animation and call onEnd callback', (
+      tester,
+    ) async {
+      int callbackCount = 0;
+
+      final driver = SpringAnimationDriver<MockSpec>(
+        vsync: tester,
+        config: SpringAnimationConfig.standard(
+          stiffness: 100.0,
+          damping: 10.0,
+          mass: 1.0,
+          onEnd: () => callbackCount++,
+        ),
+      );
+
+      addTearDown(() {
+        driver.dispose();
+      });
+
+      await tester.pumpWidget(Container());
+
+      await driver.animateTo(MockResolvedStyle(0));
+      final future = driver.animateTo(MockResolvedStyle(1));
+
+      // Let the animation run to completion
+      await tester.pumpAndSettle();
+      await future;
+
+      expect(callbackCount, 1);
+      expect(driver.isAnimating, false);
+    });
   });
 }
 
 // Test helpers
 class MockSpec extends Spec<MockSpec> {
-  const MockSpec();
+  final double value;
+
+  const MockSpec([this.value = 0]);
 
   @override
   MockSpec copyWith() => this;
 
   @override
-  MockSpec lerp(MockSpec? other, double t) => other ?? this;
+  MockSpec lerp(MockSpec? other, double t) {
+    return MockSpec(lerpDouble(value, other?.value, t)!);
+  }
 
   @override
   List<Object?> get props => [];
@@ -203,10 +385,9 @@ class MockSpec extends Spec<MockSpec> {
 }
 
 class MockResolvedStyle extends ResolvedStyle<MockSpec> {
-  MockResolvedStyle() : super(spec: const MockSpec());
+  final double value;
+  MockResolvedStyle([this.value = 0]) : super(spec: MockSpec(value));
 
   @override
-  ResolvedStyle<MockSpec> lerp(ResolvedStyle<MockSpec>? other, double t) {
-    return other ?? this;
-  }
+  List<Object?> get props => [value];
 }

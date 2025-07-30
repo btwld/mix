@@ -70,7 +70,7 @@ sealed class AnimationConfig {
   }
 
   /// Creates a spring animation configuration with standard spring physics.
-  static SpringAnimationConfig springRaw({
+  static SpringAnimationConfig springDescription({
     double mass = 1.0,
     double stiffness = 180.0,
     double damping = 12.0,

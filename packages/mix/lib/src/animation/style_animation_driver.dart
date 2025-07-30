@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter/widgets.dart';
@@ -70,7 +71,7 @@ abstract class StyleAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
   }
 
   /// Gets the current animation controller.
-  @protected
+  @visibleForTesting
   AnimationController get controller => _controller;
 
   /// Gets the current resolved style.
@@ -90,14 +91,22 @@ abstract class StyleAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
   double get progress => _controller.value;
 
   /// Animates to the given target style.
+  @nonVirtual
   Future<void> animateTo(ResolvedStyle<S> targetStyle) async {
     // Skip if already at target
     if (_targetResolvedStyle == targetStyle && !isAnimating) {
       return;
     }
 
-    // Capture animation start state
-    _fromStyle = _currentResolvedStyle ?? targetStyle;
+    // First time should not animate just set the initial targets
+    if (_currentResolvedStyle == null) {
+      _currentResolvedStyle = targetStyle;
+      _targetResolvedStyle = targetStyle;
+
+      return;
+    }
+
+    _fromStyle = _currentResolvedStyle;
     _targetResolvedStyle = targetStyle;
 
     // Execute subclass-specific animation
@@ -110,6 +119,7 @@ abstract class StyleAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
 
   /// Interpolates between current and target styles at the given progress.
   @visibleForTesting
+  @nonVirtual
   ResolvedStyle<S> interpolateAt(double t) {
     if (_fromStyle == null || _targetResolvedStyle == null) {
       return _targetResolvedStyle ?? _fromStyle!;
