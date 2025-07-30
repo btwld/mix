@@ -35,7 +35,11 @@ abstract class StyleAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
   @protected
   ResolvedStyle<S>? _fromStyle;
 
-  StyleAnimationDriver({required this.vsync, bool unbounded = false}) {
+  StyleAnimationDriver({
+    required this.vsync,
+    required ResolvedStyle<S> initialStyle,
+    bool unbounded = false,
+  }) : _fromStyle = initialStyle {
     _controller = unbounded
         ? AnimationController.unbounded(vsync: vsync)
         : AnimationController(vsync: vsync);
@@ -182,6 +186,7 @@ class CurveAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   CurveAnimationDriver({
     required super.vsync,
     required CurveAnimationConfig config,
+    required super.initialStyle,
   }) : _config = config {
     if (config.onEnd != null) {
       addOnCompleteListener(config.onEnd!);
@@ -210,6 +215,7 @@ class SpringAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   SpringAnimationDriver({
     required super.vsync,
     required SpringAnimationConfig config,
+    required super.initialStyle,
   }) : _config = config,
        super(unbounded: true) {
     if (config.onEnd != null) {
@@ -238,6 +244,7 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     required super.vsync,
     required this.curvesAndDurations,
     required this.specs,
+    required super.initialStyle,
   }) {
     if (curvesAndDurations.last.onEnd != null) {
       addOnCompleteListener(curvesAndDurations.last.onEnd!);

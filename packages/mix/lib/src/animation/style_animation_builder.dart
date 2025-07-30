@@ -59,17 +59,20 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
       CurveAnimationConfig() => CurveAnimationDriver<S>(
         vsync: this,
         config: config,
+        initialStyle: widget.resolvedStyle,
       ),
       // ignore: avoid-undisposed-instances
       SpringAnimationConfig() => SpringAnimationDriver<S>(
         vsync: this,
         config: config,
+        initialStyle: widget.resolvedStyle,
       ),
       // ignore: avoid-undisposed-instances
       PhaseAnimationConfig() => PhaseAnimationDriver<S>(
         vsync: this,
         curvesAndDurations: config.curvesAndDurations,
         specs: config.styles.map((e) => e.resolve(context) as S).toList(),
+        initialStyle: widget.resolvedStyle,
       ),
     };
   }

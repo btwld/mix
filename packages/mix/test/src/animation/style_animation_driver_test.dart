@@ -5,7 +5,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 final class StyleAnimationDriverTest extends StyleAnimationDriver<MockSpec> {
-  StyleAnimationDriverTest({required super.vsync, super.unbounded});
+  StyleAnimationDriverTest({
+    required super.vsync,
+    super.unbounded,
+    required super.initialStyle,
+  });
   int executeAnimationCallCounter = 0;
 
   @override
@@ -19,7 +23,10 @@ void main() {
     late StyleAnimationDriverTest driver;
 
     setUp(() {
-      driver = StyleAnimationDriverTest(vsync: const TestVSync());
+      driver = StyleAnimationDriverTest(
+        vsync: const TestVSync(),
+        initialStyle: MockResolvedStyle(0),
+      );
     });
 
     tearDown(() {
@@ -114,6 +121,7 @@ void main() {
 
     testWidgets('disposes correctly', (tester) async {
       final driver = CurveAnimationDriver<MockSpec>(
+        initialStyle: MockResolvedStyle(0),
         vsync: tester,
         config: const CurveAnimationConfig(
           duration: Duration(milliseconds: 100),
@@ -133,7 +141,10 @@ void main() {
 
     group('initialization ', () {
       test('with no progress', () {
-        final driver = StyleAnimationDriverTest(vsync: const TestVSync());
+        final driver = StyleAnimationDriverTest(
+          vsync: const TestVSync(),
+          initialStyle: MockResolvedStyle(0),
+        );
         addTearDown(() {
           driver.dispose();
         });
@@ -143,7 +154,10 @@ void main() {
       });
 
       test('with non-unbounded controller', () {
-        final driver = StyleAnimationDriverTest(vsync: const TestVSync());
+        final driver = StyleAnimationDriverTest(
+          vsync: const TestVSync(),
+          initialStyle: MockResolvedStyle(0),
+        );
         addTearDown(() {
           driver.dispose();
         });
@@ -157,6 +171,7 @@ void main() {
       test('with unbounded controller when unbounded is true', () {
         final driver = StyleAnimationDriverTest(
           vsync: const TestVSync(),
+          initialStyle: MockResolvedStyle(0),
           unbounded: true,
         );
         addTearDown(() {
@@ -174,7 +189,10 @@ void main() {
       late StyleAnimationDriverTest driver;
 
       setUp(() {
-        driver = StyleAnimationDriverTest(vsync: const TestVSync());
+        driver = StyleAnimationDriverTest(
+          vsync: const TestVSync(),
+          initialStyle: MockResolvedStyle(0),
+        );
       });
 
       tearDown(() {
@@ -225,6 +243,7 @@ void main() {
         // Create a driver that actually animates
         final driver = CurveAnimationDriver<MockSpec>(
           vsync: tester,
+          initialStyle: MockResolvedStyle(0),
           config: const CurveAnimationConfig(
             duration: Duration(milliseconds: 100),
             curve: Curves.linear,
@@ -258,6 +277,7 @@ void main() {
         final curve = Curves.easeInOut;
 
         final driver = CurveAnimationDriver<MockSpec>(
+          initialStyle: MockResolvedStyle(0),
           vsync: const TestVSync(),
           config: CurveAnimationConfig(
             duration: Duration(milliseconds: 300),
@@ -292,6 +312,7 @@ void main() {
       int counter = 0;
 
       final driver = CurveAnimationDriver<MockSpec>(
+        initialStyle: MockResolvedStyle(0),
         vsync: const TestVSync(),
         config: AnimationConfig.decelerate(300.ms, onEnd: () => counter++),
       );
@@ -317,6 +338,7 @@ void main() {
   group('SpringAnimationDriver', () {
     test('should create an unbounded animation controller', () {
       final driver = SpringAnimationDriver<MockSpec>(
+        initialStyle: MockResolvedStyle(0),
         vsync: const TestVSync(),
         config: SpringAnimationConfig.standard(),
       );
@@ -336,6 +358,7 @@ void main() {
       int callbackCount = 0;
 
       final driver = SpringAnimationDriver<MockSpec>(
+        initialStyle: MockResolvedStyle(0),
         vsync: tester,
         config: SpringAnimationConfig.standard(
           stiffness: 100.0,
