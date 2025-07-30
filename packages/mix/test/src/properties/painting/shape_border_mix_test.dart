@@ -58,6 +58,68 @@ void main() {
       );
     });
 
+    group('Factory Constructors', () {
+      test(
+        'borderRadius factory creates RoundedRectangleBorderMix with borderRadius',
+        () {
+          final borderRadius = BorderRadiusMix.circular(12.0);
+          final roundedRectangleBorderMix =
+              RoundedRectangleBorderMix.borderRadius(borderRadius);
+
+          expect(
+            roundedRectangleBorderMix.$borderRadius,
+            isA<MixProp<BorderRadiusGeometry>>(),
+          );
+          expect(roundedRectangleBorderMix.$side, isNull);
+        },
+      );
+
+      test('side factory creates RoundedRectangleBorderMix with side', () {
+        final side = BorderSideMix(color: Colors.purple, width: 3.0);
+        final roundedRectangleBorderMix = RoundedRectangleBorderMix.side(side);
+
+        expect(roundedRectangleBorderMix.$side, isA<MixProp<BorderSide>>());
+        expect(roundedRectangleBorderMix.$borderRadius, isNull);
+      });
+
+      test(
+        'circular factory creates RoundedRectangleBorderMix with circular radius',
+        () {
+          final roundedRectangleBorderMix = RoundedRectangleBorderMix.circular(
+            16.0,
+          );
+
+          expect(
+            roundedRectangleBorderMix.$borderRadius,
+            isA<MixProp<BorderRadiusGeometry>>(),
+          );
+          expect(roundedRectangleBorderMix.$side, isNull);
+        },
+      );
+    });
+
+    group('Utility Methods', () {
+      test('borderRadius utility works correctly', () {
+        final borderRadius = BorderRadiusMix.circular(20.0);
+        final roundedRectangleBorderMix = RoundedRectangleBorderMix()
+            .borderRadius(borderRadius);
+
+        expect(
+          roundedRectangleBorderMix.$borderRadius,
+          isA<MixProp<BorderRadiusGeometry>>(),
+        );
+      });
+
+      test('side utility works correctly', () {
+        final side = BorderSideMix(color: Colors.cyan, width: 2.5);
+        final roundedRectangleBorderMix = RoundedRectangleBorderMix().side(
+          side,
+        );
+
+        expect(roundedRectangleBorderMix.$side, isA<MixProp<BorderSide>>());
+      });
+    });
+
     group('resolve', () {
       test('resolves to RoundedRectangleBorder with correct properties', () {
         final roundedRectangleBorderMix = RoundedRectangleBorderMix(
@@ -131,6 +193,25 @@ void main() {
         expect(roundedRectangleBorderMix1, isNot(roundedRectangleBorderMix2));
       });
     });
+
+    group('Props getter', () {
+      test('props includes all properties', () {
+        final roundedRectangleBorderMix = RoundedRectangleBorderMix(
+          borderRadius: BorderRadiusMix.circular(8.0),
+          side: BorderSideMix(color: Colors.red, width: 2.0),
+        );
+
+        expect(roundedRectangleBorderMix.props.length, 2);
+        expect(
+          roundedRectangleBorderMix.props,
+          contains(roundedRectangleBorderMix.$borderRadius),
+        );
+        expect(
+          roundedRectangleBorderMix.props,
+          contains(roundedRectangleBorderMix.$side),
+        );
+      });
+    });
   });
 
   group('CircleBorderMix', () {
@@ -166,6 +247,41 @@ void main() {
       });
     });
 
+    group('Factory Constructors', () {
+      test('side factory creates CircleBorderMix with side', () {
+        final side = BorderSideMix(color: Colors.red, width: 2.0);
+        final circleBorderMix = CircleBorderMix.side(side);
+
+        expect(circleBorderMix.$side, isA<MixProp<BorderSide>>());
+        expect(circleBorderMix.$eccentricity, isNull);
+      });
+
+      test(
+        'eccentricity factory creates CircleBorderMix with eccentricity',
+        () {
+          final circleBorderMix = CircleBorderMix.eccentricity(0.5);
+
+          expect(circleBorderMix.$eccentricity, isA<Prop<double>>());
+          expect(circleBorderMix.$side, isNull);
+        },
+      );
+    });
+
+    group('Utility Methods', () {
+      test('side utility works correctly', () {
+        final side = BorderSideMix(color: Colors.blue, width: 1.5);
+        final circleBorderMix = CircleBorderMix().side(side);
+
+        expect(circleBorderMix.$side, isA<MixProp<BorderSide>>());
+      });
+
+      test('eccentricity utility works correctly', () {
+        final circleBorderMix = CircleBorderMix().eccentricity(0.8);
+
+        expect(circleBorderMix.$eccentricity, isA<Prop<double>>());
+      });
+    });
+
     group('resolve', () {
       test('resolves to CircleBorder with correct properties', () {
         final circleBorderMix = CircleBorderMix(
@@ -193,6 +309,19 @@ void main() {
         final merged = first.merge(second);
 
         expect(merged.$side, isA<MixProp<BorderSide>>());
+      });
+    });
+
+    group('Props getter', () {
+      test('props includes all properties', () {
+        final circleBorderMix = CircleBorderMix(
+          side: BorderSideMix(color: Colors.green, width: 3.0),
+          eccentricity: 0.5,
+        );
+
+        expect(circleBorderMix.props.length, 2);
+        expect(circleBorderMix.props, contains(circleBorderMix.$side));
+        expect(circleBorderMix.props, contains(circleBorderMix.$eccentricity));
       });
     });
   });

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
+import 'package:mix/src/properties/typography/text_height_behavior_mix.dart';
 
 import '../../../helpers/testing_utils.dart';
-import 'package:mix/src/properties/typography/text_height_behavior_mix.dart';
 
 void main() {
   group('TextHeightBehaviorMix', () {
@@ -55,6 +55,75 @@ void main() {
 
         expect(result, isNotNull);
         expectProp(result!.$applyHeightToFirstAscent, false);
+      });
+    });
+
+    group('Factory Constructors', () {
+      test(
+        'applyHeightToFirstAscent factory creates TextHeightBehaviorMix with applyHeightToFirstAscent',
+        () {
+          final textHeightBehaviorMix =
+              TextHeightBehaviorMix.applyHeightToFirstAscent(false);
+
+          expectProp(textHeightBehaviorMix.$applyHeightToFirstAscent, false);
+          expect(textHeightBehaviorMix.$applyHeightToLastDescent, isNull);
+          expect(textHeightBehaviorMix.$leadingDistribution, isNull);
+        },
+      );
+
+      test(
+        'applyHeightToLastDescent factory creates TextHeightBehaviorMix with applyHeightToLastDescent',
+        () {
+          final textHeightBehaviorMix =
+              TextHeightBehaviorMix.applyHeightToLastDescent(true);
+
+          expectProp(textHeightBehaviorMix.$applyHeightToLastDescent, true);
+          expect(textHeightBehaviorMix.$applyHeightToFirstAscent, isNull);
+          expect(textHeightBehaviorMix.$leadingDistribution, isNull);
+        },
+      );
+
+      test(
+        'leadingDistribution factory creates TextHeightBehaviorMix with leadingDistribution',
+        () {
+          final textHeightBehaviorMix =
+              TextHeightBehaviorMix.leadingDistribution(
+                TextLeadingDistribution.even,
+              );
+
+          expectProp(
+            textHeightBehaviorMix.$leadingDistribution,
+            TextLeadingDistribution.even,
+          );
+          expect(textHeightBehaviorMix.$applyHeightToFirstAscent, isNull);
+          expect(textHeightBehaviorMix.$applyHeightToLastDescent, isNull);
+        },
+      );
+    });
+
+    group('Utility Methods', () {
+      test('applyHeightToFirstAscent utility works correctly', () {
+        final textHeightBehaviorMix = TextHeightBehaviorMix()
+            .applyHeightToFirstAscent(true);
+
+        expectProp(textHeightBehaviorMix.$applyHeightToFirstAscent, true);
+      });
+
+      test('applyHeightToLastDescent utility works correctly', () {
+        final textHeightBehaviorMix = TextHeightBehaviorMix()
+            .applyHeightToLastDescent(false);
+
+        expectProp(textHeightBehaviorMix.$applyHeightToLastDescent, false);
+      });
+
+      test('leadingDistribution utility works correctly', () {
+        final textHeightBehaviorMix = TextHeightBehaviorMix()
+            .leadingDistribution(TextLeadingDistribution.proportional);
+
+        expectProp(
+          textHeightBehaviorMix.$leadingDistribution,
+          TextLeadingDistribution.proportional,
+        );
       });
     });
 
@@ -147,6 +216,30 @@ void main() {
         );
 
         expect(textHeightBehaviorMix1, isNot(textHeightBehaviorMix2));
+      });
+    });
+
+    group('Props getter', () {
+      test('props includes all properties', () {
+        final textHeightBehaviorMix = TextHeightBehaviorMix(
+          applyHeightToFirstAscent: false,
+          applyHeightToLastDescent: true,
+          leadingDistribution: TextLeadingDistribution.even,
+        );
+
+        expect(textHeightBehaviorMix.props.length, 3);
+        expect(
+          textHeightBehaviorMix.props,
+          contains(textHeightBehaviorMix.$applyHeightToFirstAscent),
+        );
+        expect(
+          textHeightBehaviorMix.props,
+          contains(textHeightBehaviorMix.$applyHeightToLastDescent),
+        );
+        expect(
+          textHeightBehaviorMix.props,
+          contains(textHeightBehaviorMix.$leadingDistribution),
+        );
       });
     });
   });

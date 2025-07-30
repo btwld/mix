@@ -14,24 +14,41 @@ class ShadowUtility<T extends Style<Object?>>
     extends MixPropUtility<T, Shadow> {
   /// Utility for defining [ShadowMix.blurRadius].
   late final blurRadius = PropUtility<T, double>(
-    (prop) => call(ShadowMix.raw(blurRadius: prop)),
+    (prop) => onlyProps(blurRadius: prop),
   );
 
   /// Utility for defining [ShadowMix.color].
-  late final color = ColorUtility<T>(
-    (prop) => call(ShadowMix.raw(color: prop)),
-  );
+  late final color = ColorUtility<T>((prop) => onlyProps(color: prop));
 
   /// Utility for defining [ShadowMix.offset].
-  late final offset = PropUtility<T, Offset>(
-    (prop) => call(ShadowMix.raw(offset: prop)),
-  );
+  late final offset = PropUtility<T, Offset>((prop) => onlyProps(offset: prop));
 
   ShadowUtility(super.builder) : super(convertToMix: ShadowMix.value);
 
-  /// Returns a new [T] with the specified [ShadowMix] properties.
-  @override
-  T call(ShadowMix value) => builder(MixProp(value));
+  @protected
+  T onlyProps({
+    Prop<double>? blurRadius,
+    Prop<Color>? color,
+    Prop<Offset>? offset,
+  }) {
+    return builder(
+      MixProp(
+        ShadowMix.raw(blurRadius: blurRadius, color: color, offset: offset),
+      ),
+    );
+  }
+
+  T only({double? blurRadius, Color? color, Offset? offset}) {
+    return onlyProps(
+      blurRadius: Prop.maybe(blurRadius),
+      color: Prop.maybe(color),
+      offset: Prop.maybe(offset),
+    );
+  }
+
+  T call({double? blurRadius, Color? color, Offset? offset}) {
+    return only(blurRadius: blurRadius, color: color, offset: offset);
+  }
 }
 
 /// Utility class for configuring [BoxShadow] properties.
@@ -40,30 +57,72 @@ class ShadowUtility<T extends Style<Object?>>
 /// Use the methods of this class to configure specific properties of a [BoxShadow].
 class BoxShadowUtility<T extends Style<Object?>>
     extends MixPropUtility<T, BoxShadow> {
-  late final color = ColorUtility<T>(
-    (prop) => call(BoxShadowMix.raw(color: prop)),
-  );
+  late final color = ColorUtility<T>((prop) => onlyProps(color: prop));
 
   /// Utility for defining [BoxShadowMix.offset].
-  late final offset = PropUtility<T, Offset>(
-    (prop) => call(BoxShadowMix.raw(offset: prop)),
-  );
+  late final offset = PropUtility<T, Offset>((prop) => onlyProps(offset: prop));
 
   /// Utility for defining [BoxShadowMix.blurRadius].
   late final blurRadius = PropUtility<T, double>(
-    (prop) => call(BoxShadowMix.raw(blurRadius: prop)),
+    (prop) => onlyProps(blurRadius: prop),
   );
 
   /// Utility for defining [BoxShadowMix.spreadRadius].
   late final spreadRadius = PropUtility<T, double>(
-    (prop) => call(BoxShadowMix.raw(spreadRadius: prop)),
+    (prop) => onlyProps(spreadRadius: prop),
   );
 
   BoxShadowUtility(super.builder) : super(convertToMix: BoxShadowMix.value);
 
+  @protected
+  T onlyProps({
+    Prop<Color>? color,
+    Prop<Offset>? offset,
+    Prop<double>? blurRadius,
+    Prop<double>? spreadRadius,
+  }) {
+    return builder(
+      MixProp(
+        BoxShadowMix.raw(
+          color: color,
+          offset: offset,
+          blurRadius: blurRadius,
+          spreadRadius: spreadRadius,
+        ),
+      ),
+    );
+  }
+
+  T only({
+    Color? color,
+    Offset? offset,
+    double? blurRadius,
+    double? spreadRadius,
+  }) {
+    return onlyProps(
+      color: Prop.maybe(color),
+      offset: Prop.maybe(offset),
+      blurRadius: Prop.maybe(blurRadius),
+      spreadRadius: Prop.maybe(spreadRadius),
+    );
+  }
+
+  T call({
+    Color? color,
+    Offset? offset,
+    double? blurRadius,
+    double? spreadRadius,
+  }) {
+    return only(
+      color: color,
+      offset: offset,
+      blurRadius: blurRadius,
+      spreadRadius: spreadRadius,
+    );
+  }
+
   /// Returns a new [T] with the specified [BoxShadowMix] properties.
-  @override
-  T call(BoxShadowMix value) => builder(MixProp(value));
+  T mix(BoxShadowMix value) => builder(MixProp(value));
 }
 
 /// A utility class for building [Style] instances from elevation values that produces [MixProp<BoxShadow>] lists.

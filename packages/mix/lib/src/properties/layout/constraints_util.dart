@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 
 import '../../core/prop.dart';
@@ -13,35 +14,79 @@ final class BoxConstraintsUtility<T extends Style<Object?>>
     extends MixPropUtility<T, BoxConstraints> {
   /// Utility for defining [BoxConstraintsMix.minWidth]
   late final minWidth = PropUtility<T, double>(
-    (prop) => call(BoxConstraintsMix.raw(minWidth: prop)),
+    (prop) => onlyProps(minWidth: prop),
   );
 
   /// Utility for defining [BoxConstraintsMix.maxWidth]
   late final maxWidth = PropUtility<T, double>(
-    (prop) => call(BoxConstraintsMix.raw(maxWidth: prop)),
+    (prop) => onlyProps(maxWidth: prop),
   );
 
   /// Utility for defining [BoxConstraintsMix.minHeight]
   late final minHeight = PropUtility<T, double>(
-    (prop) => call(BoxConstraintsMix.raw(minHeight: prop)),
+    (prop) => onlyProps(minHeight: prop),
   );
 
   /// Utility for defining [BoxConstraintsMix.maxHeight]
   late final maxHeight = PropUtility<T, double>(
-    (prop) => call(BoxConstraintsMix.raw(maxHeight: prop)),
+    (prop) => onlyProps(maxHeight: prop),
   );
 
   late final height = PropUtility<T, double>(
-    (prop) => call(BoxConstraintsMix.raw(minHeight: prop, maxHeight: prop)),
+    (prop) => onlyProps(minHeight: prop, maxHeight: prop),
   );
 
   late final width = PropUtility<T, double>(
-    (prop) => call(BoxConstraintsMix.raw(minWidth: prop, maxWidth: prop)),
+    (prop) => onlyProps(minWidth: prop, maxWidth: prop),
   );
 
   BoxConstraintsUtility(super.builder)
     : super(convertToMix: BoxConstraintsMix.value);
 
-  @override
-  T call(BoxConstraintsMix value) => builder(MixProp(value));
+  @protected
+  T onlyProps({
+    Prop<double>? minWidth,
+    Prop<double>? maxWidth,
+    Prop<double>? minHeight,
+    Prop<double>? maxHeight,
+  }) {
+    return builder(
+      MixProp(
+        BoxConstraintsMix.raw(
+          minWidth: minWidth,
+          maxWidth: maxWidth,
+          minHeight: minHeight,
+          maxHeight: maxHeight,
+        ),
+      ),
+    );
+  }
+
+  T only({
+    double? minWidth,
+    double? maxWidth,
+    double? minHeight,
+    double? maxHeight,
+  }) {
+    return onlyProps(
+      minWidth: Prop.maybe(minWidth),
+      maxWidth: Prop.maybe(maxWidth),
+      minHeight: Prop.maybe(minHeight),
+      maxHeight: Prop.maybe(maxHeight),
+    );
+  }
+
+  T call({
+    double? minWidth,
+    double? maxWidth,
+    double? minHeight,
+    double? maxHeight,
+  }) {
+    return only(
+      minWidth: minWidth,
+      maxWidth: maxWidth,
+      minHeight: minHeight,
+      maxHeight: maxHeight,
+    );
+  }
 }

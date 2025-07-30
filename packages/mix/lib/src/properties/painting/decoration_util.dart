@@ -15,6 +15,7 @@ import 'gradient_mix.dart';
 import 'gradient_util.dart';
 import 'shadow_mix.dart';
 import 'shadow_util.dart';
+import 'shape_border_mix.dart';
 import 'shape_border_util.dart';
 
 class DecorationUtility<T extends Style<Object?>>

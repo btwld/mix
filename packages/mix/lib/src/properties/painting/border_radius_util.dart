@@ -294,6 +294,20 @@ final class BorderRadiusUtility<T extends Style<Object?>>
     );
   }
 
+  T only({
+    Radius? topLeft,
+    Radius? topRight,
+    Radius? bottomLeft,
+    Radius? bottomRight,
+  }) {
+    return onlyProps(
+      topLeft: Prop.maybe(topLeft),
+      topRight: Prop.maybe(topRight),
+      bottomLeft: Prop.maybe(bottomLeft),
+      bottomRight: Prop.maybe(bottomRight),
+    );
+  }
+
   T call(double value) => builder(MixProp(BorderRadiusMix.circular(value)));
 }
 
@@ -377,6 +391,20 @@ final class BorderRadiusDirectionalUtility<T extends Style<Object?>>
           bottomEnd: bottomEnd,
         ),
       ),
+    );
+  }
+
+  T only({
+    Radius? topStart,
+    Radius? topEnd,
+    Radius? bottomStart,
+    Radius? bottomEnd,
+  }) {
+    return onlyProps(
+      topStart: Prop.maybe(topStart),
+      topEnd: Prop.maybe(topEnd),
+      bottomStart: Prop.maybe(bottomStart),
+      bottomEnd: Prop.maybe(bottomEnd),
     );
   }
 

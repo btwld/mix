@@ -13,8 +13,12 @@ final class EdgeInsetsGeometryUtility<U extends Style<Object?>>
     extends MixPropUtility<U, EdgeInsetsGeometry> {
   late final directional = EdgeInsetsDirectionalUtility(builder);
 
-  late final horizontal = SpacingSideUtility<U>((v) => onlyProps(left: v, right: v));
-  late final vertical = SpacingSideUtility<U>((v) => onlyProps(top: v, bottom: v));
+  late final horizontal = SpacingSideUtility<U>(
+    (v) => onlyProps(left: v, right: v),
+  );
+  late final vertical = SpacingSideUtility<U>(
+    (v) => onlyProps(top: v, bottom: v),
+  );
   late final all = SpacingSideUtility<U>(
     (v) => onlyProps(top: v, bottom: v, left: v, right: v),
   );
@@ -35,18 +39,24 @@ final class EdgeInsetsGeometryUtility<U extends Style<Object?>>
     Prop<double>? start,
     Prop<double>? end,
   }) {
-    return builder(
-      MixProp(
-        EdgeInsetsMix.raw(
-          top: top,
-          bottom: bottom,
-          left: left,
-          right: right,
-          start: start,
-          end: end,
-        ),
-      ),
-    );
+    EdgeInsetsGeometryMix edgeInsets;
+    if (start != null || left != null) {
+      edgeInsets = EdgeInsetsDirectionalMix.raw(
+        top: top,
+        bottom: bottom,
+        start: start,
+        end: end,
+      );
+    } else {
+      edgeInsets = EdgeInsetsMix.raw(
+        top: top,
+        bottom: bottom,
+        left: left,
+        right: right,
+      );
+    }
+
+    return builder(MixProp(edgeInsets));
   }
 
   U only({
