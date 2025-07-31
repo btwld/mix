@@ -1,6 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/internal/constants.dart';
+import '../core/spec.dart';
+import '../core/style.dart';
 
 /// Configuration data for animated styles in the Mix framework.
 ///
@@ -183,7 +186,7 @@ sealed class AnimationConfig {
   }
 
   /// Creates a spring animation configuration with standard spring physics.
-  static SpringAnimationConfig spring({
+  static SpringAnimationConfig springDescription({
     double mass = 1.0,
     double stiffness = 180.0,
     double damping = 12.0,
@@ -193,6 +196,32 @@ sealed class AnimationConfig {
       mass: mass,
       stiffness: stiffness,
       damping: damping,
+    ),
+    onEnd: onEnd,
+  );
+
+  static SpringAnimationConfig spring(
+    Duration duration, {
+    double bounce = 0,
+    VoidCallback? onEnd,
+  }) => SpringAnimationConfig(
+    spring: SpringDescription.withDurationAndBounce(
+      duration: duration,
+      bounce: bounce,
+    ),
+    onEnd: onEnd,
+  );
+
+  static SpringAnimationConfig springWithDampingRatio({
+    double mass = 1.0,
+    double stiffness = 180.0,
+    double dampingRatio = 0.8,
+    VoidCallback? onEnd,
+  }) => SpringAnimationConfig(
+    spring: SpringDescription.withDampingRatio(
+      mass: mass,
+      stiffness: stiffness,
+      ratio: dampingRatio,
     ),
     onEnd: onEnd,
   );
@@ -380,6 +409,16 @@ final class SpringAnimationConfig extends AnimationConfig {
          damping: damping,
        );
 
+  /// Creates a spring configuration with standard parameters.
+  SpringAnimationConfig.withDurationAndBounce({
+    Duration duration = const Duration(milliseconds: 500),
+    double bounce = 0.0,
+    this.onEnd,
+  }) : spring = SpringDescription.withDurationAndBounce(
+         duration: duration,
+         bounce: bounce,
+       );
+
   /// Creates a critically damped spring configuration.
   SpringAnimationConfig.criticallyDamped({
     double mass = 1.0,
@@ -416,4 +455,32 @@ final class SpringAnimationConfig extends AnimationConfig {
   @override
   int get hashCode =>
       Object.hash(spring.mass, spring.stiffness, spring.damping);
+}
+
+class PhaseAnimationConfig<T extends Spec<T>, U extends Style<T>>
+    extends AnimationConfig {
+  final List<U> styles;
+  final List<CurveAnimationConfig> curvesAndDurations;
+  final ValueNotifier trigger;
+  final VoidCallback? onEnd;
+
+  const PhaseAnimationConfig({
+    required this.styles,
+    required this.curvesAndDurations,
+    required this.trigger,
+    this.onEnd,
+  });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is PhaseAnimationConfig &&
+        trigger == other.trigger &&
+        listEquals(styles, other.styles) &&
+        listEquals(curvesAndDurations, other.curvesAndDurations);
+  }
+
+  @override
+  int get hashCode => Object.hash(styles, trigger, curvesAndDurations);
 }

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/physics.dart';
 import 'package:flutter/widgets.dart';
 
@@ -13,14 +11,9 @@ class SpringCurve extends Curve {
       '"bounce" value must be between -1.0 and 1.0.',
     );
 
-    final double dur = max(1.0, (duration.inMilliseconds / 1000));
-    final double stiffness = ((2 * pi) / dur) * ((2 * pi) / dur) * 3.5;
-    final double dampingRatio = 1.0 - bounce;
-
-    final SpringDescription desc = SpringDescription.withDampingRatio(
-      mass: 1.0,
-      stiffness: stiffness,
-      ratio: dampingRatio,
+    final SpringDescription desc = SpringDescription.withDurationAndBounce(
+      duration: duration,
+      bounce: bounce,
     );
 
     _sim = SpringSimulation(desc, 0.0, 1.0, 0.0);
