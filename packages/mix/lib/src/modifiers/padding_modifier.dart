@@ -127,7 +127,7 @@ class PaddingModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, PaddingModifierAttribute> {
   /// Utility for defining [PaddingModifierAttribute.padding]
   late final padding = EdgeInsetsGeometryUtility(
-    (v) => builder(PaddingModifierAttribute.raw(padding: v)),
+    (v) => builder(PaddingModifierAttribute(padding: v)),
   );
 
   PaddingModifierUtility(super.builder);

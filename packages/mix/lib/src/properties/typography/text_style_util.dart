@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
 import '../layout/enum_util.dart';
@@ -9,42 +10,46 @@ import '../painting/shadow_mix.dart';
 import 'text_style_mix.dart';
 
 final class TextStyleUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, TextStyleMix, TextStyle> {
-  late final color = ColorUtility<T>((prop) => only(color: prop));
+    extends MixUtility<T, MixProp<TextStyle>> {
+  late final color = ColorUtility<T>(
+    (prop) => buildProp(TextStyleMix.raw(color: prop)),
+  );
 
-  late final fontWeight = PropUtility<T, FontWeight>(
+  late final fontWeight = MixUtility<T, FontWeight>(
     (prop) => only(fontWeight: prop),
   );
 
-  late final fontStyle = PropUtility<T, FontStyle>(
+  late final fontStyle = MixUtility<T, FontStyle>(
     (prop) => only(fontStyle: prop),
   );
 
-  late final decoration = PropUtility<T, TextDecoration>(
+  late final decoration = MixUtility<T, TextDecoration>(
     (prop) => only(decoration: prop),
   );
 
-  late final fontSize = PropUtility<T, double>((prop) => only(fontSize: prop));
+  late final fontSize = MixUtility<T, double>((prop) => only(fontSize: prop));
 
   late final backgroundColor = ColorUtility<T>(
-    (prop) => only(backgroundColor: prop),
+    (prop) => buildProp(TextStyleMix.raw(backgroundColor: prop)),
   );
 
   late final decorationColor = ColorUtility<T>(
-    (prop) => only(decorationColor: prop),
+    (prop) => buildProp(TextStyleMix.raw(decorationColor: prop)),
   );
 
-  late final decorationStyle = PropUtility<T, TextDecorationStyle>(
+  late final decorationStyle = MixUtility<T, TextDecorationStyle>(
     (prop) => only(decorationStyle: prop),
   );
 
-  late final textBaseline = PropUtility<T, TextBaseline>(
+  late final textBaseline = MixUtility<T, TextBaseline>(
     (prop) => only(textBaseline: prop),
   );
 
-  late final fontFamily = PropUtility<T, String>((v) => only(fontFamily: v));
+  late final fontFamily = MixUtility<T, String>((v) => only(fontFamily: v));
 
-  TextStyleUtility(super.builder) : super(convertToMix: TextStyleMix.value);
+  TextStyleUtility(super.builder);
+
+  T buildProp(TextStyleMix value) => builder(MixProp(value));
 
   T only({
     Color? color,
@@ -69,7 +74,7 @@ final class TextStyleUtility<T extends Style<Object?>>
     String? debugLabel,
     List<FontVariation>? fontVariations,
   }) {
-    return builder(
+    return buildProp(
       TextStyleMix(
         color: color,
         backgroundColor: backgroundColor,
@@ -171,4 +176,6 @@ final class TextStyleUtility<T extends Style<Object?>>
       fontVariations: fontVariations,
     );
   }
+
+  T as(TextStyle value) => buildProp(TextStyleMix.value(value));
 }

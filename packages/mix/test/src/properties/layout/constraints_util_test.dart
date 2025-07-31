@@ -18,7 +18,7 @@ void main() {
       expect(result, isA<UtilityTestAttribute>());
       expect(result.value, isA<MixProp<BoxConstraints>>());
 
-      final mix = result.value.value as BoxConstraintsMix;
+      final mix = result.value;
       expectProp(mix.$minWidth, 100.0);
       expectProp(mix.$maxWidth, 200.0);
       expectProp(mix.$minHeight, 50.0);
@@ -30,7 +30,7 @@ void main() {
         final result = utility.minWidth(100.0);
 
         expect(result, isA<UtilityTestAttribute>());
-        final mix = result.value.value as BoxConstraintsMix;
+        final mix = result.value;
         expectProp(mix.$minWidth, 100.0);
         expect(mix.$maxWidth, isNull);
         expect(mix.$minHeight, isNull);
@@ -41,7 +41,7 @@ void main() {
         final result = utility.maxWidth(200.0);
 
         expect(result, isA<UtilityTestAttribute>());
-        final mix = result.value.value as BoxConstraintsMix;
+        final mix = result.value;
         expect(mix.$minWidth, isNull);
         expectProp(mix.$maxWidth, 200.0);
         expect(mix.$minHeight, isNull);
@@ -52,7 +52,7 @@ void main() {
         final result = utility.minHeight(50.0);
 
         expect(result, isA<UtilityTestAttribute>());
-        final mix = result.value.value as BoxConstraintsMix;
+        final mix = result.value;
         expect(mix.$minWidth, isNull);
         expect(mix.$maxWidth, isNull);
         expectProp(mix.$minHeight, 50.0);

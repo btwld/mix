@@ -7,7 +7,7 @@ import '../../../helpers/testing_utils.dart';
 void main() {
   group('Enum Utility Extensions', () {
     group('BorderStylePropUtilityExt', () {
-      final utility = PropUtility<UtilityTestAttribute, BorderStyle>(
+      final utility = MixUtility<UtilityTestAttribute, BorderStyle>(
         UtilityTestAttribute.new,
       );
 
@@ -28,7 +28,7 @@ void main() {
     });
 
     group('AxisPropUtilityExt', () {
-      final utility = PropUtility<UtilityTestAttribute, Axis>(
+      final utility = MixUtility<UtilityTestAttribute, Axis>(
         UtilityTestAttribute.new,
       );
 
@@ -44,7 +44,7 @@ void main() {
     });
 
     group('StackFitPropUtilityExt', () {
-      final utility = PropUtility<UtilityTestAttribute, StackFit>(
+      final utility = MixUtility<UtilityTestAttribute, StackFit>(
         UtilityTestAttribute.new,
       );
 
@@ -65,7 +65,7 @@ void main() {
     });
 
     group('TextDirectionPropUtilityExt', () {
-      final utility = PropUtility<UtilityTestAttribute, TextDirection>(
+      final utility = MixUtility<UtilityTestAttribute, TextDirection>(
         UtilityTestAttribute.new,
       );
 
@@ -81,10 +81,9 @@ void main() {
     });
 
     group('TextLeadingDistributionPropUtilityExt', () {
-      final utility =
-          PropUtility<UtilityTestAttribute, TextLeadingDistribution>(
-            UtilityTestAttribute.new,
-          );
+      final utility = MixUtility<UtilityTestAttribute, TextLeadingDistribution>(
+        UtilityTestAttribute.new,
+      );
 
       test('proportional() creates TextLeadingDistribution.proportional', () {
         final attr = utility.proportional();
@@ -98,7 +97,7 @@ void main() {
     });
 
     group('TileModeUtility', () {
-      const utility = PropUtility<UtilityTestAttribute, TileMode>(
+      const utility = MixUtility<UtilityTestAttribute, TileMode>(
         UtilityTestAttribute.new,
       );
 
@@ -124,7 +123,7 @@ void main() {
     });
 
     group('BoxFitUtility', () {
-      const utility = PropUtility<UtilityTestAttribute, BoxFit>(
+      const utility = MixUtility<UtilityTestAttribute, BoxFit>(
         UtilityTestAttribute.new,
       );
 
@@ -165,7 +164,7 @@ void main() {
     });
 
     group('BoxShapeUtility', () {
-      const utility = PropUtility<UtilityTestAttribute, BoxShape>(
+      const utility = MixUtility<UtilityTestAttribute, BoxShape>(
         UtilityTestAttribute.new,
       );
 
@@ -181,7 +180,7 @@ void main() {
     });
 
     group('FontStyleUtility', () {
-      const utility = PropUtility<UtilityTestAttribute, FontStyle>(
+      const utility = MixUtility<UtilityTestAttribute, FontStyle>(
         UtilityTestAttribute.new,
       );
 
@@ -197,7 +196,7 @@ void main() {
     });
 
     group('TextBaselineUtility', () {
-      const utility = PropUtility<UtilityTestAttribute, TextBaseline>(
+      const utility = MixUtility<UtilityTestAttribute, TextBaseline>(
         UtilityTestAttribute.new,
       );
 
@@ -213,7 +212,7 @@ void main() {
     });
 
     group('TextWidthBasisUtility', () {
-      const utility = PropUtility<UtilityTestAttribute, TextWidthBasis>(
+      const utility = MixUtility<UtilityTestAttribute, TextWidthBasis>(
         UtilityTestAttribute.new,
       );
 

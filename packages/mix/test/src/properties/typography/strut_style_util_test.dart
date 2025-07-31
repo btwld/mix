@@ -10,7 +10,7 @@ void main() {
       final utility = StrutStyleUtility(UtilityTestAttribute.new);
 
       test('call() creates StrutStyleMix', () {
-        final strutStyleMix = StrutStyleMix(
+        final attr = utility.call(
           fontFamily: 'Roboto',
           fontSize: 16.0,
           fontWeight: FontWeight.bold,
@@ -19,7 +19,6 @@ void main() {
           leading: 2.0,
           forceStrutHeight: true,
         );
-        final attr = utility(strutStyleMix);
         expect(attr.value, isA<MixProp<StrutStyle>>());
       });
 

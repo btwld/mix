@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
 import 'border_mix.dart';
@@ -18,31 +17,17 @@ final class RoundedRectangleBorderUtility<T extends Style<Object?>>
         MixPropUtility<T, RoundedRectangleBorderMix, RoundedRectangleBorder> {
   /// Utility for defining [RoundedRectangleBorderMix.borderRadius]
   late final borderRadius = BorderRadiusGeometryUtility<T>(
-    (v) => onlyProps(borderRadius: v),
+    (v) => only(borderRadius: v),
   );
 
   /// Utility for defining [RoundedRectangleBorderMix.side]
-  late final side = BorderSideUtility<T>((v) => onlyProps(side: v));
+  late final side = BorderSideUtility<T>((v) => only(side: v));
 
-  RoundedRectangleBorderUtility(super.builder)
-    : super(convertToMix: RoundedRectangleBorderMix.value);
-
-  @protected
-  T onlyProps({
-    MixProp<BorderRadiusGeometry>? borderRadius,
-    MixProp<BorderSide>? side,
-  }) {
-    return builder(
-      MixProp(
-        RoundedRectangleBorderMix.raw(borderRadius: borderRadius, side: side),
-      ),
-    );
-  }
+  RoundedRectangleBorderUtility(super.builder);
 
   T only({BorderRadiusGeometryMix? borderRadius, BorderSideMix? side}) {
-    return onlyProps(
-      borderRadius: MixProp.maybe(borderRadius),
-      side: MixProp.maybe(side),
+    return builder(
+      RoundedRectangleBorderMix(borderRadius: borderRadius, side: side),
     );
   }
 
@@ -50,7 +35,10 @@ final class RoundedRectangleBorderUtility<T extends Style<Object?>>
     return only(borderRadius: borderRadius, side: side);
   }
 
-  T mix(RoundedRectangleBorderMix value) => builder(MixProp(value));
+  @override
+  T as(RoundedRectangleBorder value) {
+    return builder(RoundedRectangleBorderMix.value(value));
+  }
 }
 
 /// Utility class for configuring [BeveledRectangleBorder] properties.
@@ -58,34 +46,21 @@ final class RoundedRectangleBorderUtility<T extends Style<Object?>>
 /// This class provides methods to set individual properties of a [BeveledRectangleBorder].
 /// Use the methods of this class to configure specific properties of a [BeveledRectangleBorder].
 final class BeveledRectangleBorderUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, BeveledRectangleBorder> {
+    extends
+        MixPropUtility<T, BeveledRectangleBorderMix, BeveledRectangleBorder> {
   /// Utility for defining [BeveledRectangleBorderMix.borderRadius]
   late final borderRadius = BorderRadiusGeometryUtility<T>(
-    (v) => onlyProps(borderRadius: v),
+    (v) => only(borderRadius: v),
   );
 
   /// Utility for defining [BeveledRectangleBorderMix.side]
-  late final side = BorderSideUtility<T>((v) => onlyProps(side: v));
+  late final side = BorderSideUtility<T>((v) => only(side: v));
 
-  BeveledRectangleBorderUtility(super.builder)
-    : super(convertToMix: BeveledRectangleBorderMix.value);
-
-  @protected
-  T onlyProps({
-    MixProp<BorderRadiusGeometry>? borderRadius,
-    MixProp<BorderSide>? side,
-  }) {
-    return builder(
-      MixProp(
-        BeveledRectangleBorderMix.raw(borderRadius: borderRadius, side: side),
-      ),
-    );
-  }
+  BeveledRectangleBorderUtility(super.builder);
 
   T only({BorderRadiusGeometryMix? borderRadius, BorderSideMix? side}) {
-    return onlyProps(
-      borderRadius: MixProp.maybe(borderRadius),
-      side: MixProp.maybe(side),
+    return builder(
+      BeveledRectangleBorderMix(borderRadius: borderRadius, side: side),
     );
   }
 
@@ -93,7 +68,10 @@ final class BeveledRectangleBorderUtility<T extends Style<Object?>>
     return only(borderRadius: borderRadius, side: side);
   }
 
-  T mix(BeveledRectangleBorderMix value) => builder(MixProp(value));
+  @override
+  T as(BeveledRectangleBorder value) {
+    return builder(BeveledRectangleBorderMix.value(value));
+  }
 }
 
 /// Utility class for configuring [ContinuousRectangleBorder] properties.
@@ -101,37 +79,25 @@ final class BeveledRectangleBorderUtility<T extends Style<Object?>>
 /// This class provides methods to set individual properties of a [ContinuousRectangleBorder].
 /// Use the methods of this class to configure specific properties of a [ContinuousRectangleBorder].
 final class ContinuousRectangleBorderUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, ContinuousRectangleBorder> {
+    extends
+        MixPropUtility<
+          T,
+          ContinuousRectangleBorderMix,
+          ContinuousRectangleBorder
+        > {
   /// Utility for defining [ContinuousRectangleBorderMix.borderRadius]
   late final borderRadius = BorderRadiusGeometryUtility<T>(
-    (v) => onlyProps(borderRadius: v),
+    (v) => only(borderRadius: v),
   );
 
   /// Utility for defining [ContinuousRectangleBorderMix.side]
-  late final side = BorderSideUtility<T>((v) => onlyProps(side: v));
+  late final side = BorderSideUtility<T>((v) => only(side: v));
 
-  ContinuousRectangleBorderUtility(super.builder)
-    : super(convertToMix: ContinuousRectangleBorderMix.value);
-
-  @protected
-  T onlyProps({
-    MixProp<BorderRadiusGeometry>? borderRadius,
-    MixProp<BorderSide>? side,
-  }) {
-    return builder(
-      MixProp(
-        ContinuousRectangleBorderMix.raw(
-          borderRadius: borderRadius,
-          side: side,
-        ),
-      ),
-    );
-  }
+  ContinuousRectangleBorderUtility(super.builder);
 
   T only({BorderRadiusGeometryMix? borderRadius, BorderSideMix? side}) {
-    return onlyProps(
-      borderRadius: MixProp.maybe(borderRadius),
-      side: MixProp.maybe(side),
+    return builder(
+      ContinuousRectangleBorderMix(borderRadius: borderRadius, side: side),
     );
   }
 
@@ -139,7 +105,10 @@ final class ContinuousRectangleBorderUtility<T extends Style<Object?>>
     return only(borderRadius: borderRadius, side: side);
   }
 
-  T mix(ContinuousRectangleBorderMix value) => builder(MixProp(value));
+  @override
+  T as(ContinuousRectangleBorder value) {
+    return builder(ContinuousRectangleBorderMix.value(value));
+  }
 }
 
 /// Utility class for configuring [CircleBorder] properties.
@@ -147,37 +116,29 @@ final class ContinuousRectangleBorderUtility<T extends Style<Object?>>
 /// This class provides methods to set individual properties of a [CircleBorder].
 /// Use the methods of this class to configure specific properties of a [CircleBorder].
 final class CircleBorderUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, CircleBorder> {
+    extends MixPropUtility<T, CircleBorderMix, CircleBorder> {
   /// Utility for defining [CircleBorderMix.side]
-  late final side = BorderSideUtility<T>((v) => onlyProps(side: v));
+  late final side = BorderSideUtility<T>((v) => only(side: v));
 
   /// Utility for defining [CircleBorderMix.eccentricity]
-  late final eccentricity = ValueUtility<T, double>(
-    (prop) => onlyProps(eccentricity: prop),
+  late final eccentricity = MixUtility<T, double>(
+    (prop) => only(eccentricity: prop),
   );
 
-  CircleBorderUtility(super.builder)
-    : super(convertToMix: CircleBorderMix.value);
-
-  @protected
-  T onlyProps({MixProp<BorderSide>? side, Prop<double>? eccentricity}) {
-    return builder(
-      MixProp(CircleBorderMix.raw(side: side, eccentricity: eccentricity)),
-    );
-  }
+  CircleBorderUtility(super.builder);
 
   T only({BorderSideMix? side, double? eccentricity}) {
-    return onlyProps(
-      side: MixProp.maybe(side),
-      eccentricity: Prop.maybe(eccentricity),
-    );
+    return builder(CircleBorderMix(side: side, eccentricity: eccentricity));
   }
 
   T call({BorderSideMix? side, double? eccentricity}) {
     return only(side: side, eccentricity: eccentricity);
   }
 
-  T mix(CircleBorderMix value) => builder(MixProp(value));
+  @override
+  T as(CircleBorder value) {
+    return builder(CircleBorderMix.value(value));
+  }
 }
 
 /// Utility class for configuring [StarBorder] properties.
@@ -185,66 +146,35 @@ final class CircleBorderUtility<T extends Style<Object?>>
 /// This class provides methods to set individual properties of a [StarBorder].
 /// Use the methods of this class to configure specific properties of a [StarBorder].
 final class StarBorderUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, StarBorder> {
+    extends MixPropUtility<T, StarBorderMix, StarBorder> {
   /// Utility for defining [StarBorderMix.side]
-  late final side = BorderSideUtility<T>((v) => onlyProps(side: v));
+  late final side = BorderSideUtility<T>((v) => only(side: v));
 
   /// Utility for defining [StarBorderMix.points]
-  late final points = ValueUtility<T, double>(
-    (prop) => onlyProps(points: prop),
-  );
+  late final points = MixUtility<T, double>((prop) => only(points: prop));
 
   /// Utility for defining [StarBorderMix.innerRadiusRatio]
-  late final innerRadiusRatio = ValueUtility<T, double>(
-    (prop) => onlyProps(innerRadiusRatio: prop),
+  late final innerRadiusRatio = MixUtility<T, double>(
+    (prop) => only(innerRadiusRatio: prop),
   );
 
   /// Utility for defining [StarBorderMix.pointRounding]
-  late final pointRounding = ValueUtility<T, double>(
-    (prop) => onlyProps(pointRounding: prop),
+  late final pointRounding = MixUtility<T, double>(
+    (prop) => only(pointRounding: prop),
   );
 
   /// Utility for defining [StarBorderMix.valleyRounding]
-  late final valleyRounding = ValueUtility<T, double>(
-    (prop) => onlyProps(valleyRounding: prop),
+  late final valleyRounding = MixUtility<T, double>(
+    (prop) => only(valleyRounding: prop),
   );
 
   /// Utility for defining [StarBorderMix.rotation]
-  late final rotation = ValueUtility<T, double>(
-    (prop) => onlyProps(rotation: prop),
-  );
+  late final rotation = MixUtility<T, double>((prop) => only(rotation: prop));
 
   /// Utility for defining [StarBorderMix.squash]
-  late final squash = ValueUtility<T, double>(
-    (prop) => onlyProps(squash: prop),
-  );
+  late final squash = MixUtility<T, double>((prop) => only(squash: prop));
 
-  StarBorderUtility(super.builder) : super(convertToMix: StarBorderMix.value);
-
-  @protected
-  T onlyProps({
-    MixProp<BorderSide>? side,
-    Prop<double>? points,
-    Prop<double>? innerRadiusRatio,
-    Prop<double>? pointRounding,
-    Prop<double>? valleyRounding,
-    Prop<double>? rotation,
-    Prop<double>? squash,
-  }) {
-    return builder(
-      MixProp(
-        StarBorderMix.raw(
-          side: side,
-          points: points,
-          innerRadiusRatio: innerRadiusRatio,
-          pointRounding: pointRounding,
-          valleyRounding: valleyRounding,
-          rotation: rotation,
-          squash: squash,
-        ),
-      ),
-    );
-  }
+  StarBorderUtility(super.builder);
 
   T only({
     BorderSideMix? side,
@@ -255,14 +185,16 @@ final class StarBorderUtility<T extends Style<Object?>>
     double? rotation,
     double? squash,
   }) {
-    return onlyProps(
-      side: MixProp.maybe(side),
-      points: Prop.maybe(points),
-      innerRadiusRatio: Prop.maybe(innerRadiusRatio),
-      pointRounding: Prop.maybe(pointRounding),
-      valleyRounding: Prop.maybe(valleyRounding),
-      rotation: Prop.maybe(rotation),
-      squash: Prop.maybe(squash),
+    return builder(
+      StarBorderMix(
+        side: side,
+        points: points,
+        innerRadiusRatio: innerRadiusRatio,
+        pointRounding: pointRounding,
+        valleyRounding: valleyRounding,
+        rotation: rotation,
+        squash: squash,
+      ),
     );
   }
 
@@ -286,7 +218,10 @@ final class StarBorderUtility<T extends Style<Object?>>
     );
   }
 
-  T mix(StarBorderMix value) => builder(MixProp(value));
+  @override
+  T as(StarBorder value) {
+    return builder(StarBorderMix.value(value));
+  }
 }
 
 /// Utility class for configuring [LinearBorder] properties.
@@ -294,45 +229,23 @@ final class StarBorderUtility<T extends Style<Object?>>
 /// This class provides methods to set individual properties of a [LinearBorder].
 /// Use the methods of this class to configure specific properties of a [LinearBorder].
 final class LinearBorderUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, LinearBorder> {
+    extends MixPropUtility<T, LinearBorderMix, LinearBorder> {
   /// Utility for defining [LinearBorderMix.side]
-  late final side = BorderSideUtility<T>((v) => onlyProps(side: v));
+  late final side = BorderSideUtility<T>((v) => only(side: v));
 
   /// Utility for defining [LinearBorderMix.start]
-  late final start = LinearBorderEdgeUtility<T>((v) => onlyProps(start: v));
+  late final start = LinearBorderEdgeUtility<T>((v) => only(start: v));
 
   /// Utility for defining [LinearBorderMix.end]
-  late final end = LinearBorderEdgeUtility<T>((v) => onlyProps(end: v));
+  late final end = LinearBorderEdgeUtility<T>((v) => only(end: v));
 
   /// Utility for defining [LinearBorderMix.top]
-  late final top = LinearBorderEdgeUtility<T>((v) => onlyProps(top: v));
+  late final top = LinearBorderEdgeUtility<T>((v) => only(top: v));
 
   /// Utility for defining [LinearBorderMix.bottom]
-  late final bottom = LinearBorderEdgeUtility<T>((v) => onlyProps(bottom: v));
+  late final bottom = LinearBorderEdgeUtility<T>((v) => only(bottom: v));
 
-  LinearBorderUtility(super.builder)
-    : super(convertToMix: LinearBorderMix.value);
-
-  @protected
-  T onlyProps({
-    MixProp<BorderSide>? side,
-    MixProp<LinearBorderEdge>? start,
-    MixProp<LinearBorderEdge>? end,
-    MixProp<LinearBorderEdge>? top,
-    MixProp<LinearBorderEdge>? bottom,
-  }) {
-    return builder(
-      MixProp(
-        LinearBorderMix.raw(
-          side: side,
-          start: start,
-          end: end,
-          top: top,
-          bottom: bottom,
-        ),
-      ),
-    );
-  }
+  LinearBorderUtility(super.builder);
 
   T only({
     BorderSideMix? side,
@@ -341,12 +254,14 @@ final class LinearBorderUtility<T extends Style<Object?>>
     LinearBorderEdgeMix? top,
     LinearBorderEdgeMix? bottom,
   }) {
-    return onlyProps(
-      side: MixProp.maybe(side),
-      start: MixProp.maybe(start),
-      end: MixProp.maybe(end),
-      top: MixProp.maybe(top),
-      bottom: MixProp.maybe(bottom),
+    return builder(
+      LinearBorderMix(
+        side: side,
+        start: start,
+        end: end,
+        top: top,
+        bottom: bottom,
+      ),
     );
   }
 
@@ -360,7 +275,10 @@ final class LinearBorderUtility<T extends Style<Object?>>
     return only(side: side, start: start, end: end, top: top, bottom: bottom);
   }
 
-  T mix(LinearBorderMix value) => builder(MixProp(value));
+  @override
+  T as(LinearBorder value) {
+    return builder(LinearBorderMix.value(value));
+  }
 }
 
 /// Utility class for configuring [LinearBorderEdge] properties.
@@ -368,34 +286,27 @@ final class LinearBorderUtility<T extends Style<Object?>>
 /// This class provides methods to set individual properties of a [LinearBorderEdge].
 /// Use the methods of this class to configure specific properties of a [LinearBorderEdge].
 final class LinearBorderEdgeUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, LinearBorderEdge> {
+    extends MixPropUtility<T, LinearBorderEdgeMix, LinearBorderEdge> {
   /// Utility for defining [LinearBorderEdgeMix.size]
-  late final size = ValueUtility<T, double>((prop) => onlyProps(size: prop));
+  late final size = MixUtility<T, double>((prop) => only(size: prop));
 
   /// Utility for defining [LinearBorderEdgeMix.alignment]
-  late final alignment = ValueUtility<T, double>(
-    (prop) => onlyProps(alignment: prop),
-  );
+  late final alignment = MixUtility<T, double>((prop) => only(alignment: prop));
 
-  LinearBorderEdgeUtility(super.builder)
-    : super(convertToMix: LinearBorderEdgeMix.value);
-
-  @protected
-  T onlyProps({Prop<double>? size, Prop<double>? alignment}) {
-    return builder(
-      MixProp(LinearBorderEdgeMix.raw(size: size, alignment: alignment)),
-    );
-  }
+  LinearBorderEdgeUtility(super.builder);
 
   T only({double? size, double? alignment}) {
-    return onlyProps(size: Prop.maybe(size), alignment: Prop.maybe(alignment));
+    return builder(LinearBorderEdgeMix(size: size, alignment: alignment));
   }
 
   T call({double? size, double? alignment}) {
     return only(size: size, alignment: alignment);
   }
 
-  T mix(LinearBorderEdgeMix value) => builder(MixProp(value));
+  @override
+  T as(LinearBorderEdge value) {
+    return builder(LinearBorderEdgeMix.value(value));
+  }
 }
 
 /// Utility class for configuring [StadiumBorder] properties.
@@ -403,27 +314,24 @@ final class LinearBorderEdgeUtility<T extends Style<Object?>>
 /// This class provides methods to set individual properties of a [StadiumBorder].
 /// Use the methods of this class to configure specific properties of a [StadiumBorder].
 final class StadiumBorderUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, StadiumBorder> {
+    extends MixPropUtility<T, StadiumBorderMix, StadiumBorder> {
   /// Utility for defining [StadiumBorderMix.side]
-  late final side = BorderSideUtility<T>((v) => onlyProps(side: v));
+  late final side = BorderSideUtility<T>((v) => only(side: v));
 
-  StadiumBorderUtility(super.builder)
-    : super(convertToMix: StadiumBorderMix.value);
-
-  @protected
-  T onlyProps({MixProp<BorderSide>? side}) {
-    return builder(MixProp(StadiumBorderMix.raw(side: side)));
-  }
+  StadiumBorderUtility(super.builder);
 
   T only({BorderSideMix? side}) {
-    return onlyProps(side: MixProp.maybe(side));
+    return builder(StadiumBorderMix(side: side));
   }
 
   T call({BorderSideMix? side}) {
     return only(side: side);
   }
 
-  T mix(StadiumBorderMix value) => builder(MixProp(value));
+  @override
+  T as(StadiumBorder value) {
+    return builder(StadiumBorderMix.value(value));
+  }
 }
 
 /// Utility class for configuring [ShapeBorder] properties.
@@ -431,7 +339,7 @@ final class StadiumBorderUtility<T extends Style<Object?>>
 /// This class provides methods to set individual properties of a [ShapeBorder].
 /// Use the methods of this class to configure specific properties of a [ShapeBorder].
 final class ShapeBorderUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, ShapeBorder> {
+    extends MixPropUtility<T, ShapeBorderMix<ShapeBorder>, ShapeBorder> {
   /// Utility for defining RoundedRectangleBorder
   late final roundedRectangle = RoundedRectangleBorderUtility<T>(builder);
 
@@ -453,5 +361,9 @@ final class ShapeBorderUtility<T extends Style<Object?>>
   /// Utility for defining StadiumBorder
   late final stadium = StadiumBorderUtility<T>(builder);
 
-  ShapeBorderUtility(super.builder) : super(convertToMix: ShapeBorderMix.value);
+  ShapeBorderUtility(super.builder);
+  @override
+  T as(ShapeBorder value) {
+    return builder(ShapeBorderMix.value(value));
+  }
 }

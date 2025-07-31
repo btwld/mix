@@ -21,22 +21,22 @@ import 'text_spec.dart';
 class TextSpecUtility extends StyleAttributeBuilder<TextSpec> {
   // TEXT UTILITIES - Same as TextMix but return TextSpecUtility for cascade
 
-  late final textOverflow = PropUtility(mix.overflow);
+  late final textOverflow = MixUtility(mix.overflow);
 
   late final strutStyle = StrutStyleUtility<TextMix>(mix.strutStyle);
 
-  late final textAlign = PropUtility(mix.textAlign);
-  late final textScaler = PropUtility(mix.textScaler);
-  late final maxLines = PropUtility(mix.maxLines);
+  late final textAlign = MixUtility(mix.textAlign);
+  late final textScaler = MixUtility(mix.textScaler);
+  late final maxLines = MixUtility(mix.maxLines);
   late final style = TextStyleUtility<TextMix>(
     (prop) => mix.merge(TextMix.raw(style: prop)),
   );
-  late final textWidthBasis = PropUtility(mix.textWidthBasis);
+  late final textWidthBasis = MixUtility(mix.textWidthBasis);
   late final textHeightBehavior = TextHeightBehaviorUtility<TextMix>(
     mix.textHeightBehavior,
   );
-  late final textDirection = PropUtility(mix.textDirection);
-  late final softWrap = PropUtility(mix.softWrap);
+  late final textDirection = MixUtility(mix.textDirection);
+  late final softWrap = MixUtility(mix.softWrap);
   late final directives = TextDirectiveUtility(mix.contentModifier);
 
   late final on = OnContextVariantUtility<TextSpec, TextMix>(

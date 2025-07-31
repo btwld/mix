@@ -578,11 +578,11 @@ void main() {
 
     test('call() creates attribute with specified values', () {
       final result = utility.call(
-        scrollDirection: Prop(Axis.horizontal),
-        reverse: Prop(true),
-        padding: MixProp(EdgeInsetsMix.all(16.0)),
-        physics: Prop(const BouncingScrollPhysics()),
-        clipBehavior: Prop(Clip.antiAlias),
+        scrollDirection: Axis.horizontal,
+        reverse: true,
+        padding: EdgeInsets.all(16.0),
+        physics: const BouncingScrollPhysics(),
+        clipBehavior: Clip.antiAlias,
       );
       final attribute = result.value;
 

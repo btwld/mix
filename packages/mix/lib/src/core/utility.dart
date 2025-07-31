@@ -9,28 +9,11 @@ import 'style.dart';
 /// Base class for Mix utilities that convert values to styled elements.
 ///
 /// Utilities provide a fluent API for building styled elements from various value types.
-abstract class MixUtility<U extends Style<Object?>, Value> {
+class MixUtility<U extends Style<Object?>, Value> {
   /// The builder function that converts values to styled elements.
   final U Function(Value) builder;
 
   const MixUtility(this.builder);
-}
-
-/// Base utility for simple value properties that use [Prop<T>]
-///
-/// This utility provides a consistent API for working with:
-/// - Direct values: call(value)
-/// - Tokens: token(token)
-/// - Directives: directive(directive)
-///
-/// Used for simple types like Color, double, FontWeight, etc.
-@immutable
-class PropUtility<U extends Style<Object?>, Value>
-    extends MixUtility<U, Value> {
-  const PropUtility(super.builder);
-
-  /// Creates a Prop with a direct value
-  U call(Value value) => builder(value);
 }
 
 @immutable
@@ -40,12 +23,11 @@ abstract class MixPropUtility<
   Value
 >
     extends MixUtility<U, M> {
-  final M Function(Value) convertToMix;
   @override
-  const MixPropUtility(super.builder, {required this.convertToMix});
+  const MixPropUtility(super.builder);
 
   /// Creates a MixProp from a raw value (converts to Mix)
-  U as(Value value) => builder(convertToMix(value));
+  U as(Value value);
 }
 
 /// Utility base class for spec utilities

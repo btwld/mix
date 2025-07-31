@@ -35,7 +35,8 @@ final class MaterialColorUtility<T extends Style<Object?>>
 ///
 /// Each color method accepts an optional shade parameter (50, 100, 200, etc.) to access
 /// specific variations of the color. Without a shade, returns the primary color.
-mixin ColorsUtilityMixin<T extends Style<Object?>> on PropUtility<T, Color> {
+mixin ColorsUtilityMixin<T extends Style<Object?>>
+    on MixUtility<T, Prop<Color>> {
   T _wrapColor(ColorSwatch color, [int? shade]) =>
       builder(Prop(shade == null ? color : color[shade]!));
 

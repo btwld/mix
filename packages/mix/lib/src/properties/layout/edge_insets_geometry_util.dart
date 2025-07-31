@@ -22,8 +22,7 @@ final class EdgeInsetsGeometryUtility<U extends Style<Object?>>
   late final left = SpacingSideUtility<U>((v) => only(left: v));
   late final right = SpacingSideUtility<U>((v) => only(right: v));
 
-  EdgeInsetsGeometryUtility(super.builder)
-    : super(convertToMix: EdgeInsetsGeometryMix.value);
+  EdgeInsetsGeometryUtility(super.builder);
 
   U only({
     double? top,
@@ -61,6 +60,11 @@ final class EdgeInsetsGeometryUtility<U extends Style<Object?>>
       right: p2 ?? p1,
     );
   }
+
+  @override
+  U as(EdgeInsetsGeometry value) {
+    return builder(EdgeInsetsGeometryMix.value(value));
+  }
 }
 
 @immutable
@@ -76,8 +80,7 @@ final class EdgeInsetsDirectionalUtility<U extends Style<Object?>>
   late final vertical = SpacingSideUtility<U>((v) => only(top: v, bottom: v));
   late final horizontal = SpacingSideUtility<U>((v) => only(start: v, end: v));
 
-  EdgeInsetsDirectionalUtility(super.builder)
-    : super(convertToMix: EdgeInsetsDirectionalMix.value);
+  EdgeInsetsDirectionalUtility(super.builder);
 
   U only({double? top, double? bottom, double? start, double? end}) {
     return builder(
@@ -98,11 +101,16 @@ final class EdgeInsetsDirectionalUtility<U extends Style<Object?>>
       end: p2 ?? p1,
     );
   }
+
+  @override
+  U as(EdgeInsetsDirectional value) {
+    return builder(EdgeInsetsDirectionalMix.value(value));
+  }
 }
 
 @immutable
 class SpacingSideUtility<T extends Style<Object?>>
-    extends PropUtility<T, double> {
+    extends MixUtility<T, double> {
   const SpacingSideUtility(super.builder);
 }
 

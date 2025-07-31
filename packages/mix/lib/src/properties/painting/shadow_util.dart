@@ -14,17 +14,19 @@ import 'shadow_mix.dart';
 final class ShadowUtility<T extends Style<Object?>>
     extends MixPropUtility<T, ShadowMix, Shadow> {
   /// Utility for defining [ShadowMix.blurRadius].
-  late final blurRadius = PropUtility<T, double>(
+  late final blurRadius = MixUtility<T, double>(
     (prop) => only(blurRadius: prop),
   );
 
   /// Utility for defining [ShadowMix.color].
-  late final color = ColorUtility<T>((prop) => only(color: prop));
+  late final color = ColorUtility<T>(
+    (prop) => builder(ShadowMix.raw(color: prop)),
+  );
 
   /// Utility for defining [ShadowMix.offset].
-  late final offset = PropUtility<T, Offset>((prop) => only(offset: prop));
+  late final offset = MixUtility<T, Offset>((prop) => only(offset: prop));
 
-  ShadowUtility(super.builder) : super(convertToMix: ShadowMix.value);
+  ShadowUtility(super.builder);
 
   T only({double? blurRadius, Color? color, Offset? offset}) {
     return builder(
@@ -35,6 +37,11 @@ final class ShadowUtility<T extends Style<Object?>>
   T call({double? blurRadius, Color? color, Offset? offset}) {
     return only(blurRadius: blurRadius, color: color, offset: offset);
   }
+
+  @override
+  T as(Shadow value) {
+    return builder(ShadowMix.value(value));
+  }
 }
 
 /// Utility class for configuring [BoxShadow] properties.
@@ -43,22 +50,25 @@ final class ShadowUtility<T extends Style<Object?>>
 /// Use the methods of this class to configure specific properties of a [BoxShadow].
 final class BoxShadowUtility<T extends Style<Object?>>
     extends MixPropUtility<T, BoxShadowMix, BoxShadow> {
-  late final color = ColorUtility<T>((prop) => only(color: prop));
+  /// Utility for defining [BoxShadowMix.color].
+  late final color = ColorUtility<T>(
+    (prop) => builder(BoxShadowMix.raw(color: prop)),
+  );
 
   /// Utility for defining [BoxShadowMix.offset].
-  late final offset = PropUtility<T, Offset>((prop) => only(offset: prop));
+  late final offset = MixUtility<T, Offset>((prop) => only(offset: prop));
 
   /// Utility for defining [BoxShadowMix.blurRadius].
-  late final blurRadius = PropUtility<T, double>(
+  late final blurRadius = MixUtility<T, double>(
     (prop) => only(blurRadius: prop),
   );
 
   /// Utility for defining [BoxShadowMix.spreadRadius].
-  late final spreadRadius = PropUtility<T, double>(
+  late final spreadRadius = MixUtility<T, double>(
     (prop) => only(spreadRadius: prop),
   );
 
-  BoxShadowUtility(super.builder) : super(convertToMix: BoxShadowMix.value);
+  BoxShadowUtility(super.builder);
 
   T only({
     Color? color,
@@ -88,6 +98,11 @@ final class BoxShadowUtility<T extends Style<Object?>>
       blurRadius: blurRadius,
       spreadRadius: spreadRadius,
     );
+  }
+
+  @override
+  T as(BoxShadow value) {
+    return builder(BoxShadowMix.value(value));
   }
 }
 

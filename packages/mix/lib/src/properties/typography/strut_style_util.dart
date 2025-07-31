@@ -6,19 +6,19 @@ import 'strut_style_mix.dart';
 
 final class StrutStyleUtility<T extends Style<Object?>>
     extends MixPropUtility<T, StrutStyleMix, StrutStyle> {
-  late final fontWeight = PropUtility<T, FontWeight>(
+  late final fontWeight = MixUtility<T, FontWeight>(
     (prop) => only(fontWeight: prop),
   );
 
-  late final fontStyle = PropUtility<T, FontStyle>(
+  late final fontStyle = MixUtility<T, FontStyle>(
     (prop) => only(fontStyle: prop),
   );
 
-  late final fontSize = PropUtility<T, double>((prop) => only(fontSize: prop));
+  late final fontSize = MixUtility<T, double>((prop) => only(fontSize: prop));
 
-  late final fontFamily = PropUtility<T, String>((v) => only(fontFamily: v));
+  late final fontFamily = MixUtility<T, String>((v) => only(fontFamily: v));
 
-  StrutStyleUtility(super.builder) : super(convertToMix: StrutStyleMix.value);
+  StrutStyleUtility(super.builder);
 
   T only({
     String? fontFamily,
@@ -64,5 +64,10 @@ final class StrutStyleUtility<T extends Style<Object?>>
       leading: leading,
       forceStrutHeight: forceStrutHeight,
     );
+  }
+
+  @override
+  T as(StrutStyle value) {
+    return builder(StrutStyleMix.value(value));
   }
 }

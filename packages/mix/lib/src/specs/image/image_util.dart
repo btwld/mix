@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
-import '../../core/prop.dart';
 import '../../core/spec_utility.dart' show StyleAttributeBuilder;
-import '../../core/style.dart' show Style, VariantStyleAttribute;
+import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
@@ -19,92 +18,42 @@ import 'image_spec.dart';
 class ImageSpecUtility extends StyleAttributeBuilder<ImageSpec> {
   // IMAGE UTILITIES - Same as ImageMix but return ImageSpecUtility for cascade
 
-  late final width = PropUtility<ImageSpecUtility, double>(
-    (prop) => buildProps(width: prop),
+  late final width = MixUtility(mix.width);
+
+  late final height = MixUtility(mix.height);
+
+  late final color = ColorUtility(
+    (prop) => mix.merge(ImageMix.raw(color: prop)),
   );
 
-  late final height = PropUtility<ImageSpecUtility, double>(
-    (prop) => buildProps(height: prop),
+  late final repeat = MixUtility(mix.repeat);
+
+  late final fit = MixUtility(mix.fit);
+
+  late final alignment = MixUtility(mix.alignment);
+
+  late final centerSlice = MixUtility(mix.centerSlice);
+
+  late final filterQuality = MixUtility(mix.filterQuality);
+
+  late final colorBlendMode = MixUtility(mix.colorBlendMode);
+
+  late final on = OnContextVariantUtility<ImageSpec, ImageMix>(
+    (v) => mix.variants([v]),
   );
 
-  late final color = ColorUtility<ImageSpecUtility>(
-    (prop) => buildProps(color: prop),
+  late final wrap = ModifierUtility(
+    (prop) => mix.modifier(ModifierConfig(modifiers: [prop])),
   );
 
-  late final repeat = PropUtility<ImageSpecUtility, ImageRepeat>(
-    (prop) => buildProps(repeat: prop),
-  );
+  // ignore: prefer_final_fields
+  @override
+  ImageMix mix;
 
-  late final fit = PropUtility<ImageSpecUtility, BoxFit>(
-    (prop) => buildProps(fit: prop),
-  );
-
-  late final alignment = PropUtility<ImageSpecUtility, AlignmentGeometry>(
-    (prop) => buildProps(alignment: prop),
-  );
-
-  late final centerSlice = PropUtility<ImageSpecUtility, Rect>(
-    (prop) => buildProps(centerSlice: prop),
-  );
-
-  late final filterQuality = PropUtility<ImageSpecUtility, FilterQuality>(
-    (prop) => buildProps(filterQuality: prop),
-  );
-
-  late final colorBlendMode = PropUtility<ImageSpecUtility, BlendMode>(
-    (prop) => buildProps(colorBlendMode: prop),
-  );
-
-  late final on = OnContextVariantUtility<ImageSpec, ImageSpecUtility>(
-    (v) => buildProps(variants: [v]),
-  );
-
-  late final wrap = ModifierUtility<ImageSpecUtility>(
-    (prop) => buildProps(modifierConfig: ModifierConfig.modifier(prop)),
-  );
-
-  ImageMix _baseAttribute;
-
-  ImageSpecUtility([ImageMix? attribute])
-    : _baseAttribute = attribute ?? ImageMix.raw();
-
-  @protected
-  ImageSpecUtility buildProps({
-    Prop<double>? width,
-    Prop<double>? height,
-    Prop<Color>? color,
-    Prop<ImageRepeat>? repeat,
-    Prop<BoxFit>? fit,
-    Prop<AlignmentGeometry>? alignment,
-    Prop<Rect>? centerSlice,
-    Prop<FilterQuality>? filterQuality,
-    Prop<BlendMode>? colorBlendMode,
-    AnimationConfig? animation,
-    ModifierConfig? modifierConfig,
-    List<VariantStyleAttribute<ImageSpec>>? variants,
-  }) {
-    final newAttribute = ImageMix.raw(
-      width: width,
-      height: height,
-      color: color,
-      repeat: repeat,
-      fit: fit,
-      alignment: alignment,
-      centerSlice: centerSlice,
-      filterQuality: filterQuality,
-      colorBlendMode: colorBlendMode,
-      animation: animation,
-      modifierConfig: modifierConfig,
-      variants: variants,
-    );
-    _baseAttribute = _baseAttribute.merge(newAttribute);
-
-    return this;
-  }
+  ImageSpecUtility([ImageMix? attribute]) : mix = attribute ?? ImageMix.raw();
 
   /// Animation
-  ImageSpecUtility animate(AnimationConfig animation) =>
-      buildProps(animation: animation);
+  ImageMix animate(AnimationConfig animation) => mix.animate(animation);
 
   // StyleAttribute interface implementation
 
@@ -113,10 +62,10 @@ class ImageSpecUtility extends StyleAttributeBuilder<ImageSpec> {
     if (other == null) return this;
     // IMMUTABLE: Always create new instance (StyleAttribute contract)
     if (other is ImageSpecUtility) {
-      return ImageSpecUtility(_baseAttribute.merge(other._baseAttribute));
+      return ImageSpecUtility(mix.merge(other.mix));
     }
     if (other is ImageMix) {
-      return ImageSpecUtility(_baseAttribute.merge(other));
+      return ImageSpecUtility(mix.merge(other));
     }
 
     throw FlutterError('Unsupported merge type: ${other.runtimeType}');
@@ -124,10 +73,6 @@ class ImageSpecUtility extends StyleAttributeBuilder<ImageSpec> {
 
   @override
   ImageSpec resolve(BuildContext context) {
-    return _baseAttribute.resolve(context);
+    return mix.resolve(context);
   }
-
-  /// Access to internal attribute
-  @override
-  ImageMix get mix => _baseAttribute;
 }

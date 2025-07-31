@@ -11,7 +11,12 @@ import 'material_colors_util.dart';
 ///
 /// All directive methods modify the color value through transformation directives
 /// that are applied during resolution.
-mixin ColorDirectiveMixin<T extends Style<Object?>> on PropUtility<T, Color> {
+mixin ColorDirectiveMixin<T extends Style<Object?>>
+    on MixUtility<T, Prop<Color>> {
+  T directive(MixDirective<Color> directive) {
+    return builder(Prop.directives([directive]));
+  }
+
   /// Applies the specified opacity to the color (0.0 to 1.0).
   T withOpacity(double opacity) => directive(OpacityColorDirective(opacity));
 
@@ -43,7 +48,7 @@ mixin ColorDirectiveMixin<T extends Style<Object?>> on PropUtility<T, Color> {
 /// Utility for predefined colors (e.g., Colors.red)
 @immutable
 class FoundationColorUtility<T extends Style<Object?>>
-    extends PropUtility<T, Color>
+    extends MixUtility<T, Prop<Color>>
     with ColorDirectiveMixin<T> {
   final Color color;
   const FoundationColorUtility(super.builder, this.color);
@@ -102,7 +107,8 @@ class CallableColorUtility<T extends Style<Object?>> {
 
 /// Simplified ColorUtility using the PropUtility pattern
 @immutable
-final class ColorUtility<T extends Style<Object?>> extends PropUtility<T, Color>
+final class ColorUtility<T extends Style<Object?>>
+    extends MixUtility<T, Prop<Color>>
     with ColorDirectiveMixin<T>, ColorsUtilityMixin<T>, BasicColorsMixin<T> {
   ColorUtility(super.builder);
 
@@ -117,13 +123,15 @@ final class ColorUtility<T extends Style<Object?>> extends PropUtility<T, Color>
   /// $box.color.token(colorToken)
   /// ```
   T ref(MixToken<Color> ref) => token(ref);
+
+  T token(MixToken<Color> token) => builder(Prop.token(token));
 }
 
 /// Provides access to basic black, white, and transparent colors with opacity variants.
 ///
 /// All colors are available as callable utilities that support both direct application
 /// and color transformation methods.
-mixin BasicColorsMixin<T extends Style<Object?>> on PropUtility<T, Color> {
+mixin BasicColorsMixin<T extends Style<Object?>> on MixUtility<T, Prop<Color>> {
   /// Fully transparent color utility.
   late final transparent = CallableColorUtility(builder, Colors.transparent);
 

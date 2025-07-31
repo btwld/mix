@@ -7,7 +7,9 @@ import '../../core/utility.dart';
 
 /// Extension for creating [VerticalDirection] values with predefined options.
 extension VerticalDirectionPropUtilityExt<T extends Style<Object?>>
-    on PropUtility<T, VerticalDirection> {
+    on MixUtility<T, VerticalDirection> {
+  T call(VerticalDirection value) => builder(value);
+
   /// Creates a style with [VerticalDirection.up] value.
   T up() => call(VerticalDirection.up);
 
@@ -17,7 +19,9 @@ extension VerticalDirectionPropUtilityExt<T extends Style<Object?>>
 
 /// Extension for creating [BorderStyle] values with predefined options.
 extension BorderStylePropUtilityExt<T extends Style<Object?>>
-    on PropUtility<T, BorderStyle> {
+    on MixUtility<T, BorderStyle> {
+  T call(BorderStyle value) => builder(value);
+
   /// Creates a style with [BorderStyle.none] value.
   T none() => call(BorderStyle.none);
 
@@ -26,7 +30,9 @@ extension BorderStylePropUtilityExt<T extends Style<Object?>>
 }
 
 /// Extension for creating [Clip] values with predefined options.
-extension ClipPropUtilityExt<T extends Style<Object?>> on PropUtility<T, Clip> {
+extension ClipPropUtilityExt<T extends Style<Object?>> on MixUtility<T, Clip> {
+  T call(Clip value) => builder(value);
+
   /// Creates a [Style] instance with [Clip.none] value.
   T none() => call(Clip.none);
 
@@ -41,7 +47,9 @@ extension ClipPropUtilityExt<T extends Style<Object?>> on PropUtility<T, Clip> {
 }
 
 /// Extension for creating [Axis] values with predefined options.
-extension AxisPropUtilityExt<T extends Style<Object?>> on PropUtility<T, Axis> {
+extension AxisPropUtilityExt<T extends Style<Object?>> on MixUtility<T, Axis> {
+  T call(Axis value) => builder(value);
+
   /// Creates a [Style] instance with [Axis.horizontal] value.
   T horizontal() => call(Axis.horizontal);
 
@@ -51,7 +59,9 @@ extension AxisPropUtilityExt<T extends Style<Object?>> on PropUtility<T, Axis> {
 
 /// Extension for creating [FlexFit] values with predefined options.
 extension FlexFitPropUtilityExt<T extends Style<Object?>>
-    on PropUtility<T, FlexFit> {
+    on MixUtility<T, FlexFit> {
+  T call(FlexFit value) => builder(value);
+
   /// Creates a [Style] instance with [FlexFit.tight] value.
   T tight() => call(FlexFit.tight);
 
@@ -61,7 +71,9 @@ extension FlexFitPropUtilityExt<T extends Style<Object?>>
 
 /// Extension for creating [StackFit] values with predefined options.
 extension StackFitPropUtilityExt<T extends Style<Object?>>
-    on PropUtility<T, StackFit> {
+    on MixUtility<T, StackFit> {
+  T call(StackFit value) => builder(value);
+
   /// Creates a [Style] instance with [StackFit.loose] value.
   T loose() => call(StackFit.loose);
 
@@ -74,7 +86,9 @@ extension StackFitPropUtilityExt<T extends Style<Object?>>
 
 /// Extension for creating [ImageRepeat] values with predefined options.
 extension ImageRepeatPropUtilityExt<T extends Style<Object?>>
-    on PropUtility<T, ImageRepeat> {
+    on MixUtility<T, ImageRepeat> {
+  T call(ImageRepeat value) => builder(value);
+
   /// Creates a [Style] instance with [ImageRepeat.repeat] value.
   T repeat() => call(ImageRepeat.repeat);
 
@@ -90,7 +104,9 @@ extension ImageRepeatPropUtilityExt<T extends Style<Object?>>
 
 /// Extension for creating [TextDirection] values with predefined options.
 extension TextDirectionPropUtilityExt<T extends Style<Object?>>
-    on PropUtility<T, TextDirection> {
+    on MixUtility<T, TextDirection> {
+  T call(TextDirection value) => builder(value);
+
   /// Creates a [Style] instance with [TextDirection.rtl] value.
   T rtl() => call(TextDirection.rtl);
 
@@ -100,7 +116,9 @@ extension TextDirectionPropUtilityExt<T extends Style<Object?>>
 
 /// Extension for creating [TextLeadingDistribution] values with predefined options.
 extension TextLeadingDistributionPropUtilityExt<T extends Style<Object?>>
-    on PropUtility<T, TextLeadingDistribution> {
+    on MixUtility<T, TextLeadingDistribution> {
+  T call(TextLeadingDistribution value) => builder(value);
+
   /// Creates a [Style] instance with [TextLeadingDistribution.proportional] value.
   T proportional() => call(TextLeadingDistribution.proportional);
 
@@ -110,7 +128,9 @@ extension TextLeadingDistributionPropUtilityExt<T extends Style<Object?>>
 
 /// Extension for creating [TileMode] values with predefined options.
 extension TileModePropUtilityExt<T extends Style<Object?>>
-    on PropUtility<T, TileMode> {
+    on MixUtility<T, TileMode> {
+  T call(TileMode value) => builder(value);
+
   /// Creates a [Style] instance with [TileMode.clamp] value.
   T clamp() => call(TileMode.clamp);
 
@@ -126,7 +146,9 @@ extension TileModePropUtilityExt<T extends Style<Object?>>
 
 /// Extension for creating [MainAxisAlignment] values with predefined options.
 extension MainAxisAlignmentPropUtilityExt<T extends Style<Object?>>
-    on PropUtility<T, MainAxisAlignment> {
+    on MixUtility<T, MainAxisAlignment> {
+  T call(MainAxisAlignment value) => builder(value);
+
   /// Creates a [Style] instance with [MainAxisAlignment.start] value.
   T start() => call(MainAxisAlignment.start);
 
@@ -148,7 +170,9 @@ extension MainAxisAlignmentPropUtilityExt<T extends Style<Object?>>
 
 /// Extension for creating [CrossAxisAlignment] values with predefined options.
 extension CrossAxisAlignmentPropUtilityExt<T extends Style<Object?>>
-    on PropUtility<T, CrossAxisAlignment> {
+    on MixUtility<T, CrossAxisAlignment> {
+  T call(CrossAxisAlignment value) => builder(value);
+
   /// Creates a [Style] instance with [CrossAxisAlignment.start] value.
   T start() => call(CrossAxisAlignment.start);
 
@@ -167,7 +191,9 @@ extension CrossAxisAlignmentPropUtilityExt<T extends Style<Object?>>
 
 /// Extension for creating [MainAxisSize] values with predefined options.
 extension MainAxisSizePropUtilityExt<T extends Style<Object?>>
-    on PropUtility<T, MainAxisSize> {
+    on MixUtility<T, MainAxisSize> {
+  T call(MainAxisSize value) => builder(value);
+
   /// Creates a [Style] instance with [MainAxisSize.min] value.
   T min() => call(MainAxisSize.min);
 
@@ -177,7 +203,9 @@ extension MainAxisSizePropUtilityExt<T extends Style<Object?>>
 
 /// Extension for creating [BoxFit] values with predefined options.
 extension BoxFitPropUtilityExt<T extends Style<Object?>>
-    on PropUtility<T, BoxFit> {
+    on MixUtility<T, BoxFit> {
+  T call(BoxFit value) => builder(value);
+
   /// Creates a [Style] instance with [BoxFit.fill] value.
   T fill() => call(BoxFit.fill);
 
@@ -202,7 +230,9 @@ extension BoxFitPropUtilityExt<T extends Style<Object?>>
 
 /// Extension for creating [BlendMode] values with predefined options.
 extension BlendModePropUtilityExt<T extends Style<Object?>>
-    on PropUtility<T, BlendMode> {
+    on MixUtility<T, BlendMode> {
+  T call(BlendMode value) => builder(value);
+
   /// Creates a [Style] instance with [BlendMode.clear] value.
   T clear() => call(BlendMode.clear);
 
@@ -293,7 +323,9 @@ extension BlendModePropUtilityExt<T extends Style<Object?>>
 
 /// Extension for creating [BoxShape] values with predefined options.
 extension BoxShapePropUtilityExt<T extends Style<Object?>>
-    on PropUtility<T, BoxShape> {
+    on MixUtility<T, BoxShape> {
+  T call(BoxShape value) => builder(value);
+
   /// Creates a [Style] instance with [BoxShape.rectangle] value.
   T rectangle() => call(BoxShape.rectangle);
 
@@ -303,7 +335,9 @@ extension BoxShapePropUtilityExt<T extends Style<Object?>>
 
 /// Extension for creating [FontStyle] values with predefined options.
 extension FontStylePropUtilityExt<T extends Style<Object?>>
-    on PropUtility<T, FontStyle> {
+    on MixUtility<T, FontStyle> {
+  T call(FontStyle value) => builder(value);
+
   /// Creates a [Style] instance with [FontStyle.normal] value.
   T normal() => call(FontStyle.normal);
 
@@ -313,7 +347,9 @@ extension FontStylePropUtilityExt<T extends Style<Object?>>
 
 /// Extension for creating [TextDecorationStyle] values with predefined options.
 extension TextDecorationStylePropUtilityExt<T extends Style<Object?>>
-    on PropUtility<T, TextDecorationStyle> {
+    on MixUtility<T, TextDecorationStyle> {
+  T call(TextDecorationStyle value) => builder(value);
+
   /// Creates a [Style] instance with [TextDecorationStyle.solid] value.
   T solid() => call(TextDecorationStyle.solid);
 
@@ -332,7 +368,9 @@ extension TextDecorationStylePropUtilityExt<T extends Style<Object?>>
 
 /// Extension for creating [TextBaseline] values with predefined options.
 extension TextBaselinePropUtilityExt<T extends Style<Object?>>
-    on PropUtility<T, TextBaseline> {
+    on MixUtility<T, TextBaseline> {
+  T call(TextBaseline value) => builder(value);
+
   /// Creates a [Style] instance with [TextBaseline.alphabetic] value.
   T alphabetic() => call(TextBaseline.alphabetic);
 
@@ -342,7 +380,9 @@ extension TextBaselinePropUtilityExt<T extends Style<Object?>>
 
 /// Extension for creating [TextOverflow] values with predefined options.
 extension TextOverflowPropUtilityExt<T extends Style<Object?>>
-    on PropUtility<T, TextOverflow> {
+    on MixUtility<T, TextOverflow> {
+  T call(TextOverflow value) => builder(value);
+
   /// Creates a [Style] instance with [TextOverflow.clip] value.
   T clip() => call(TextOverflow.clip);
 
@@ -358,7 +398,9 @@ extension TextOverflowPropUtilityExt<T extends Style<Object?>>
 
 /// Extension for creating [TextWidthBasis] values with predefined options.
 extension TextWidthBasisPropUtilityExt<T extends Style<Object?>>
-    on PropUtility<T, TextWidthBasis> {
+    on MixUtility<T, TextWidthBasis> {
+  T call(TextWidthBasis value) => builder(value);
+
   /// Creates a [Style] instance with [TextWidthBasis.parent] value.
   T parent() => call(TextWidthBasis.parent);
 
@@ -368,7 +410,9 @@ extension TextWidthBasisPropUtilityExt<T extends Style<Object?>>
 
 /// Extension for creating [TextAlign] values with predefined options.
 extension TextAlignPropUtilityExt<T extends Style<Object?>>
-    on PropUtility<T, TextAlign> {
+    on MixUtility<T, TextAlign> {
+  T call(TextAlign value) => builder(value);
+
   /// Creates a [Style] instance with [TextAlign.left] value.
   T left() => call(TextAlign.left);
 
@@ -390,7 +434,9 @@ extension TextAlignPropUtilityExt<T extends Style<Object?>>
 
 /// Extension for creating [FilterQuality] values with predefined options.
 extension FilterQualityPropUtilityExt<T extends Style<Object?>>
-    on PropUtility<T, FilterQuality> {
+    on MixUtility<T, FilterQuality> {
+  T call(FilterQuality value) => builder(value);
+
   /// Creates a [Style] instance with [FilterQuality.none] value.
   T none() => call(FilterQuality.none);
 
@@ -406,7 +452,9 @@ extension FilterQualityPropUtilityExt<T extends Style<Object?>>
 
 /// Extension for creating [WrapAlignment] values with predefined options.
 extension WrapAlignmentPropUtilityExt<T extends Style<Object?>>
-    on PropUtility<T, WrapAlignment> {
+    on MixUtility<T, WrapAlignment> {
+  T call(WrapAlignment value) => builder(value);
+
   /// Creates a [Style] instance with [WrapAlignment.start] value.
   T start() => call(WrapAlignment.start);
 
@@ -428,7 +476,9 @@ extension WrapAlignmentPropUtilityExt<T extends Style<Object?>>
 
 /// Extension for creating [TableCellVerticalAlignment] values with predefined options.
 extension TableCellVerticalAlignmentPropUtilityExt<T extends Style<Object?>>
-    on PropUtility<T, TableCellVerticalAlignment> {
+    on MixUtility<T, TableCellVerticalAlignment> {
+  T call(TableCellVerticalAlignment value) => builder(value);
+
   /// Creates a [Style] instance with [TableCellVerticalAlignment.top] value.
   T top() => call(TableCellVerticalAlignment.top);
 

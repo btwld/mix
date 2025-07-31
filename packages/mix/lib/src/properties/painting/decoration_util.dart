@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
 import 'border_mix.dart';
@@ -19,12 +18,17 @@ import 'shape_border_mix.dart';
 import 'shape_border_util.dart';
 
 class DecorationUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, DecorationMix<Decoration>, Decoration> {
+    extends MixPropUtility<T, DecorationMix, Decoration> {
   late final box = BoxDecorationUtility<T>(builder);
 
   late final shape = ShapeDecorationUtility<T>(builder);
 
-  DecorationUtility(super.builder) : super(convertToMix: DecorationMix.value);
+  DecorationUtility(super.builder);
+
+  @override
+  T as(Decoration value) {
+    return builder(DecorationMix.value(value));
+  }
 }
 
 /// Utility class for configuring [BoxDecoration] properties.
@@ -45,72 +49,45 @@ final class BoxDecorationUtility<T extends Style<Object?>>
       _borderRadiusGeometry.borderRadiusDirectional;
 
   /// Utility for defining [BoxDecorationMix.shape]
-  late final shape = PropUtility<T, BoxShape>((prop) => onlyProps(shape: prop));
+  late final shape = MixUtility<T, BoxShape>((prop) => only(shape: prop));
 
   /// Utility for defining [BoxDecorationMix.backgroundBlendMode]
-  late final backgroundBlendMode = PropUtility<T, BlendMode>(
-    (prop) => onlyProps(backgroundBlendMode: prop),
+  late final backgroundBlendMode = MixUtility<T, BlendMode>(
+    (prop) => only(backgroundBlendMode: prop),
   );
 
   /// Utility for defining [BoxDecorationMix.color]
-  late final color = ColorUtility<T>((prop) => onlyProps(color: prop));
+  late final color = ColorUtility<T>(
+    (prop) => builder(BoxDecorationMix.raw(color: prop)),
+  );
 
   /// Utility for defining [BoxDecorationMix.gradient]
-  late final gradient = GradientUtility<T>((v) => onlyProps(gradient: v));
+  late final gradient = GradientUtility<T>((v) => only(gradient: v));
 
   /// Utility for defining [BoxDecorationMix.image]
-  late final image = DecorationImageUtility<T>((v) => onlyProps(image: v));
+  late final image = DecorationImageUtility<T>((v) => only(image: v));
 
   /// Utility for defining [BoxDecorationMix.boxShadow] from a list of BoxShadow
-  late final boxShadows = MixPropListUtility<T, BoxShadow>(
-    (prop) => onlyProps(boxShadow: prop),
-    BoxShadowMix.value,
+  late final boxShadows = MixUtility<T, List<BoxShadowMix>>(
+    (prop) => only(boxShadow: prop),
   );
 
   /// Utility for defining individual [BoxShadow]
-  late final boxShadow = BoxShadowUtility<T>((v) => onlyProps(boxShadow: [v]));
+  late final boxShadow = BoxShadowUtility<T>((v) => only(boxShadow: [v]));
 
   /// Utility for defining [BoxDecorationMix.boxShadow] from elevation
-  late final elevation = ElevationMixPropUtility<T>(
-    (mixPropList) => onlyProps(boxShadow: mixPropList),
+  late final elevation = MixUtility<T, ElevationShadow>(
+    (elevation) => only(boxShadow: BoxShadowMix.fromElevation(elevation)),
   );
 
   /// Utility for defining [BoxDecorationMix.borderRadius]
   late final _borderRadiusGeometry = BorderRadiusGeometryUtility<T>(
-    (v) => onlyProps(borderRadius: v),
+    (v) => only(borderRadius: v),
   );
 
-  late final _boxBorder = BoxBorderUtility<T>((v) => onlyProps(border: v));
+  late final _boxBorder = BoxBorderUtility<T>((v) => only(border: v));
 
-  BoxDecorationUtility(super.builder)
-    : super(convertToMix: BoxDecorationMix.value);
-
-  @protected
-  T onlyProps({
-    Prop<Color>? color,
-    MixProp<DecorationImage>? image,
-    MixProp<BoxBorder>? border,
-    MixProp<BorderRadiusGeometry>? borderRadius,
-    List<MixProp<BoxShadow>>? boxShadow,
-    MixProp<Gradient>? gradient,
-    Prop<BlendMode>? backgroundBlendMode,
-    Prop<BoxShape>? shape,
-  }) {
-    return builder(
-      MixProp(
-        BoxDecorationMix.raw(
-          border: border,
-          borderRadius: borderRadius,
-          shape: shape,
-          backgroundBlendMode: backgroundBlendMode,
-          color: color,
-          image: image,
-          gradient: gradient,
-          boxShadow: boxShadow,
-        ),
-      ),
-    );
-  }
+  BoxDecorationUtility(super.builder);
 
   T only({
     Color? color,
@@ -122,15 +99,17 @@ final class BoxDecorationUtility<T extends Style<Object?>>
     BlendMode? backgroundBlendMode,
     BoxShape? shape,
   }) {
-    return onlyProps(
-      color: Prop.maybe(color),
-      image: MixProp.maybe(image),
-      border: MixProp.maybe(border),
-      borderRadius: MixProp.maybe(borderRadius),
-      boxShadow: boxShadow?.map(MixProp<BoxShadow>.new).toList(),
-      gradient: MixProp.maybe(gradient),
-      backgroundBlendMode: Prop.maybe(backgroundBlendMode),
-      shape: Prop.maybe(shape),
+    return builder(
+      BoxDecorationMix(
+        border: border,
+        borderRadius: borderRadius,
+        shape: shape,
+        backgroundBlendMode: backgroundBlendMode,
+        color: color,
+        image: image,
+        gradient: gradient,
+        boxShadow: boxShadow,
+      ),
     );
   }
 
@@ -155,6 +134,11 @@ final class BoxDecorationUtility<T extends Style<Object?>>
       shape: shape,
     );
   }
+
+  @override
+  T as(BoxDecoration value) {
+    return builder(BoxDecorationMix.value(value));
+  }
 }
 
 /// Utility class for configuring [ShapeDecoration] properties.
@@ -165,46 +149,25 @@ final class BoxDecorationUtility<T extends Style<Object?>>
 final class ShapeDecorationUtility<T extends Style<Object?>>
     extends MixPropUtility<T, ShapeDecorationMix, ShapeDecoration> {
   /// Utility for defining [ShapeDecorationMix.shape]
-  late final shape = ShapeBorderUtility<T>((v) => onlyProps(shape: v));
+  late final shape = ShapeBorderUtility<T>((v) => only(shape: v));
 
   /// Utility for defining [ShapeDecorationMix.color]
-  late final color = ColorUtility<T>((prop) => onlyProps(color: prop));
-
-  /// Utility for defining [ShapeDecorationMix.image]
-  late final image = DecorationImageUtility<T>((v) => onlyProps(image: v));
-
-  /// Utility for defining [ShapeDecorationMix.gradient]
-  late final gradient = GradientUtility<T>((v) => onlyProps(gradient: v));
-
-  /// Utility for defining [ShapeDecorationMix.shadows]
-  late final shadows = MixPropListUtility<T, BoxShadow>(
-    (prop) => onlyProps(shadows: prop),
-    BoxShadowMix.value,
+  late final color = ColorUtility<T>(
+    (prop) => builder(ShapeDecorationMix.raw(color: prop)),
   );
 
-  ShapeDecorationUtility(super.builder)
-    : super(convertToMix: ShapeDecorationMix.value);
+  /// Utility for defining [ShapeDecorationMix.image]
+  late final image = DecorationImageUtility<T>((v) => only(image: v));
 
-  @protected
-  T onlyProps({
-    Prop<Color>? color,
-    MixProp<DecorationImage>? image,
-    MixProp<Gradient>? gradient,
-    List<MixProp<BoxShadow>>? shadows,
-    MixProp<ShapeBorder>? shape,
-  }) {
-    return builder(
-      MixProp(
-        ShapeDecorationMix.raw(
-          shape: shape,
-          color: color,
-          image: image,
-          gradient: gradient,
-          shadows: shadows,
-        ),
-      ),
-    );
-  }
+  /// Utility for defining [ShapeDecorationMix.gradient]
+  late final gradient = GradientUtility<T>((v) => only(gradient: v));
+
+  /// Utility for defining [ShapeDecorationMix.shadows]
+  late final shadows = MixUtility<T, List<BoxShadowMix>>(
+    (prop) => only(shadows: prop),
+  );
+
+  ShapeDecorationUtility(super.builder);
 
   T only({
     Color? color,
@@ -213,12 +176,14 @@ final class ShapeDecorationUtility<T extends Style<Object?>>
     List<BoxShadowMix>? shadows,
     ShapeBorderMix? shape,
   }) {
-    return onlyProps(
-      color: Prop.maybe(color),
-      image: MixProp.maybe(image),
-      gradient: MixProp.maybe(gradient),
-      shadows: shadows?.map(MixProp<BoxShadow>.new).toList(),
-      shape: MixProp.maybe(shape),
+    return builder(
+      ShapeDecorationMix(
+        shape: shape,
+        color: color,
+        image: image,
+        gradient: gradient,
+        shadows: shadows,
+      ),
     );
   }
 
@@ -236,5 +201,10 @@ final class ShapeDecorationUtility<T extends Style<Object?>>
       shadows: shadows?.map(BoxShadowMix.value).toList(),
       shape: ShapeBorderMix.maybeValue(shape),
     );
+  }
+
+  @override
+  T as(ShapeDecoration value) {
+    return builder(ShapeDecorationMix.value(value));
   }
 }

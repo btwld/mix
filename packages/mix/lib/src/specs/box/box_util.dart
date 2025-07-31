@@ -52,13 +52,13 @@ class BoxSpecUtility extends StyleAttributeBuilder<BoxSpec> {
   late final minHeight = constraints.minHeight;
   late final maxHeight =
       constraints.maxHeight; // PROP UTILITIES - Same as BoxMix
-  late final transform = PropUtility(mix.transform);
+  late final transform = MixUtility(mix.transform);
 
-  late final transformAlignment = PropUtility(mix.transformAlignment);
+  late final transformAlignment = MixUtility(mix.transformAlignment);
 
-  late final clipBehavior = PropUtility(mix.clipBehavior);
+  late final clipBehavior = MixUtility(mix.clipBehavior);
 
-  late final alignment = PropUtility(mix.alignment);
+  late final alignment = MixUtility(mix.alignment);
 
   // ignore: prefer_final_fields
   @override

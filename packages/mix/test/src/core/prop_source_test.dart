@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
-import 'package:mix/src/core/prop_source.dart';
 
 import '../../helpers/testing_utils.dart';
 
@@ -217,63 +216,6 @@ void main() {
         final mixProp = MixProp(shadowMix);
 
         expect(mixProp.value, equals(shadowMix));
-      });
-    });
-
-    group('MixPropUtility integration', () {
-      test('ShadowUtility token method works', () {
-        final utility = ShadowUtility(UtilityTestAttribute.new);
-        final token = MixToken<Shadow>('shadow.primary');
-
-        final result = utility.token(token);
-
-        expect(result, isA<UtilityTestAttribute<MixProp<Shadow>>>());
-        expect(result.value.sources, hasLength(1));
-        expect(result.value.sources.first, isA<MixTokenSource<Shadow>>());
-      });
-
-      test('TextStyleUtility token method works', () {
-        final utility = TextStyleUtility(UtilityTestAttribute.new);
-        final token = MixToken<TextStyle>('text.body');
-
-        final result = utility.token(token);
-
-        expect(result, isA<UtilityTestAttribute<MixProp<TextStyle>>>());
-        expect(result.value.sources, hasLength(1));
-        expect(result.value.sources.first, isA<MixTokenSource<TextStyle>>());
-      });
-
-      test('GradientUtility token method works', () {
-        final utility = GradientUtility(UtilityTestAttribute.new);
-        final token = MixToken<Gradient>('gradient.primary');
-
-        final result = utility.token(token);
-
-        expect(result, isA<UtilityTestAttribute<MixProp<Gradient>>>());
-        expect(result.value.sources, hasLength(1));
-        expect(result.value.sources.first, isA<MixTokenSource<Gradient>>());
-      });
-
-      test('BorderUtility token method works', () {
-        final utility = BorderUtility(UtilityTestAttribute.new);
-        final token = MixToken<Border>('border.primary');
-
-        final result = utility.token(token);
-
-        expect(result, isA<UtilityTestAttribute<MixProp<Border>>>());
-        expect(result.value.sources, hasLength(1));
-        expect(result.value.sources.first, isA<MixTokenSource<Border>>());
-      });
-
-      test('DecorationUtility token method works', () {
-        final utility = DecorationUtility(UtilityTestAttribute.new);
-        final token = MixToken<Decoration>('decoration.primary');
-
-        final result = utility.token(token);
-
-        expect(result, isA<UtilityTestAttribute<MixProp<Decoration>>>());
-        expect(result.value.sources, hasLength(1));
-        expect(result.value.sources.first, isA<MixTokenSource<Decoration>>());
       });
     });
   });

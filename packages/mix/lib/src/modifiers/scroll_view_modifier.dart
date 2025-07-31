@@ -78,31 +78,31 @@ final class ScrollViewModifier extends Modifier<ScrollViewModifier> {
 final class ScrollViewModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, ScrollViewModifierAttribute> {
   /// Make the scroll view reverse or not.
-  late final reverse = PropUtility<T, bool>((prop) => call(reverse: prop));
+  late final reverse = MixUtility<T, bool>((prop) => only(reverse: prop));
 
   /// Set the padding of the scroll view.
   late final padding = EdgeInsetsGeometryUtility(
-    (padding) => call(padding: padding),
+    (padding) => only(padding: padding),
   );
 
   /// Set the clip behavior of the scroll view.
-  late final clipBehavior = PropUtility<T, Clip>(
-    (clip) => call(clipBehavior: clip),
+  late final clipBehavior = MixUtility<T, Clip>(
+    (clip) => only(clipBehavior: clip),
   );
 
   ScrollViewModifierUtility(super.builder);
 
   /// Set the scroll direction of the scroll view.
-  T direction(Axis axis) => call(scrollDirection: Prop(axis));
+  T direction(Axis axis) => only(scrollDirection: axis);
 
   /// Set the scroll direction of the scroll view to horizontal.
-  T horizontal() => call(scrollDirection: Prop(Axis.horizontal));
+  T horizontal() => only(scrollDirection: Axis.horizontal);
 
   /// Set the scroll direction of the scroll view to vertical.
-  T vertical() => call(scrollDirection: Prop(Axis.vertical));
+  T vertical() => only(scrollDirection: Axis.vertical);
 
   /// Set the physics of the scroll view.
-  T physics(ScrollPhysics physics) => call(physics: Prop(physics));
+  T physics(ScrollPhysics physics) => only(physics: physics);
 
   /// Disable the scroll physics of the scroll view.
   T neverScrollableScrollPhysics() =>
@@ -114,14 +114,14 @@ final class ScrollViewModifierUtility<T extends Style<Object?>>
   /// Set the Android-style scroll physics of the scroll view.
   T clampingScrollPhysics() => physics(const ClampingScrollPhysics());
 
-  T call({
-    Prop<Axis>? scrollDirection,
-    Prop<bool>? reverse,
-    MixProp<EdgeInsetsGeometry>? padding,
-    Prop<ScrollPhysics>? physics,
-    Prop<Clip>? clipBehavior,
+  T only({
+    Axis? scrollDirection,
+    bool? reverse,
+    EdgeInsetsGeometryMix? padding,
+    ScrollPhysics? physics,
+    Clip? clipBehavior,
   }) => builder(
-    ScrollViewModifierAttribute.raw(
+    ScrollViewModifierAttribute(
       scrollDirection: scrollDirection,
       reverse: reverse,
       padding: padding,
@@ -129,6 +129,22 @@ final class ScrollViewModifierUtility<T extends Style<Object?>>
       clipBehavior: clipBehavior,
     ),
   );
+
+  T call({
+    Axis? scrollDirection,
+    bool? reverse,
+    EdgeInsetsGeometry? padding,
+    ScrollPhysics? physics,
+    Clip? clipBehavior,
+  }) {
+    return only(
+      scrollDirection: scrollDirection,
+      reverse: reverse,
+      padding: EdgeInsetsGeometryMix.maybeValue(padding),
+      physics: physics,
+      clipBehavior: clipBehavior,
+    );
+  }
 }
 
 class ScrollViewModifierAttribute

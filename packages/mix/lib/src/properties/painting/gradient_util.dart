@@ -11,18 +11,16 @@ import 'gradient_mix.dart';
 final class LinearGradientUtility<T extends Style<Object?>>
     extends MixPropUtility<T, LinearGradientMix, LinearGradient> {
   /// Utility for defining [LinearGradientMix.begin]
-  late final begin = PropUtility<T, AlignmentGeometry>((v) => only(begin: v));
+  late final begin = MixUtility<T, AlignmentGeometry>((v) => only(begin: v));
 
   /// Utility for defining [LinearGradientMix.end]
-  late final end = PropUtility<T, AlignmentGeometry>((v) => only(end: v));
+  late final end = MixUtility<T, AlignmentGeometry>((v) => only(end: v));
 
   /// Utility for defining [LinearGradientMix.tileMode]
-  late final tileMode = PropUtility<T, TileMode>(
-    (prop) => only(tileMode: prop),
-  );
+  late final tileMode = MixUtility<T, TileMode>((prop) => only(tileMode: prop));
 
   /// Utility for defining [LinearGradientMix.transform]
-  late final transform = PropUtility<T, GradientTransform>(
+  late final transform = MixUtility<T, GradientTransform>(
     (v) => only(transform: v),
   );
 
@@ -36,8 +34,7 @@ final class LinearGradientUtility<T extends Style<Object?>>
     (stops) => builder(LinearGradientMix.raw(stops: stops)),
   );
 
-  LinearGradientUtility(super.builder)
-    : super(convertToMix: LinearGradientMix.value);
+  LinearGradientUtility(super.builder);
 
   T only({
     AlignmentGeometry? begin,
@@ -76,6 +73,11 @@ final class LinearGradientUtility<T extends Style<Object?>>
       stops: stops,
     );
   }
+
+  @override
+  T as(LinearGradient value) {
+    return builder(LinearGradientMix.value(value));
+  }
 }
 
 /// Utility class for configuring [RadialGradient] properties.
@@ -85,26 +87,24 @@ final class LinearGradientUtility<T extends Style<Object?>>
 final class RadialGradientUtility<T extends Style<Object?>>
     extends MixPropUtility<T, RadialGradientMix, RadialGradient> {
   /// Utility for defining [RadialGradientMix.center]
-  late final center = PropUtility<T, AlignmentGeometry>((v) => only(center: v));
+  late final center = MixUtility<T, AlignmentGeometry>((v) => only(center: v));
 
   /// Utility for defining [RadialGradientMix.radius]
-  late final radius = PropUtility<T, double>((prop) => only(radius: prop));
+  late final radius = MixUtility<T, double>((prop) => only(radius: prop));
 
   /// Utility for defining [RadialGradientMix.tileMode]
-  late final tileMode = PropUtility<T, TileMode>(
-    (prop) => only(tileMode: prop),
-  );
+  late final tileMode = MixUtility<T, TileMode>((prop) => only(tileMode: prop));
 
   /// Utility for defining [RadialGradientMix.focal]
-  late final focal = PropUtility<T, AlignmentGeometry>((v) => only(focal: v));
+  late final focal = MixUtility<T, AlignmentGeometry>((v) => only(focal: v));
 
   /// Utility for defining [RadialGradientMix.focalRadius]
-  late final focalRadius = PropUtility<T, double>(
+  late final focalRadius = MixUtility<T, double>(
     (prop) => only(focalRadius: prop),
   );
 
   /// Utility for defining [RadialGradientMix.transform]
-  late final transform = PropUtility<T, GradientTransform>(
+  late final transform = MixUtility<T, GradientTransform>(
     (v) => only(transform: v),
   );
 
@@ -118,8 +118,7 @@ final class RadialGradientUtility<T extends Style<Object?>>
     (stops) => builder(RadialGradientMix.raw(stops: stops)),
   );
 
-  RadialGradientUtility(super.builder)
-    : super(convertToMix: RadialGradientMix.value);
+  RadialGradientUtility(super.builder);
 
   T only({
     AlignmentGeometry? center,
@@ -166,6 +165,11 @@ final class RadialGradientUtility<T extends Style<Object?>>
       stops: stops,
     );
   }
+
+  @override
+  T as(RadialGradient value) {
+    return builder(RadialGradientMix.value(value));
+  }
 }
 
 /// Utility class for configuring [SweepGradient] properties.
@@ -175,23 +179,21 @@ final class RadialGradientUtility<T extends Style<Object?>>
 final class SweepGradientUtility<T extends Style<Object?>>
     extends MixPropUtility<T, SweepGradientMix, SweepGradient> {
   /// Utility for defining [SweepGradientMix.center]
-  late final center = PropUtility<T, AlignmentGeometry>((v) => only(center: v));
+  late final center = MixUtility<T, AlignmentGeometry>((v) => only(center: v));
 
   /// Utility for defining [SweepGradientMix.startAngle]
-  late final startAngle = PropUtility<T, double>(
+  late final startAngle = MixUtility<T, double>(
     (prop) => only(startAngle: prop),
   );
 
   /// Utility for defining [SweepGradientMix.endAngle]
-  late final endAngle = PropUtility<T, double>((prop) => only(endAngle: prop));
+  late final endAngle = MixUtility<T, double>((prop) => only(endAngle: prop));
 
   /// Utility for defining [SweepGradientMix.tileMode]
-  late final tileMode = PropUtility<T, TileMode>(
-    (prop) => only(tileMode: prop),
-  );
+  late final tileMode = MixUtility<T, TileMode>((prop) => only(tileMode: prop));
 
   /// Utility for defining [SweepGradientMix.transform]
-  late final transform = PropUtility<T, GradientTransform>(
+  late final transform = MixUtility<T, GradientTransform>(
     (v) => only(transform: v),
   );
 
@@ -205,8 +207,7 @@ final class SweepGradientUtility<T extends Style<Object?>>
     (stops) => builder(SweepGradientMix.raw(stops: stops)),
   );
 
-  SweepGradientUtility(super.builder)
-    : super(convertToMix: SweepGradientMix.value);
+  SweepGradientUtility(super.builder);
 
   T only({
     AlignmentGeometry? center,
@@ -249,6 +250,11 @@ final class SweepGradientUtility<T extends Style<Object?>>
       stops: stops,
     );
   }
+
+  @override
+  T as(SweepGradient value) {
+    return builder(SweepGradientMix.value(value));
+  }
 }
 
 /// Utility class for working with gradients.
@@ -263,5 +269,10 @@ final class GradientUtility<T extends Style<Object?>>
   /// Returns a [SweepGradientUtility] for creating sweep gradients
   late final sweep = SweepGradientUtility<T>(builder);
 
-  GradientUtility(super.builder) : super(convertToMix: GradientMix.value);
+  GradientUtility(super.builder);
+
+  @override
+  T as(Gradient value) {
+    return builder(GradientMix.value(value));
+  }
 }

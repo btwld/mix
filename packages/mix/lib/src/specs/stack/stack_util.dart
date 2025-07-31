@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
-import '../../core/prop.dart';
 import '../../core/spec_utility.dart' show StyleAttributeBuilder;
-import '../../core/style.dart' show Style, VariantStyleAttribute;
+import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
@@ -18,62 +17,30 @@ import 'stack_spec.dart';
 class StackSpecUtility extends StyleAttributeBuilder<StackSpec> {
   // STACK UTILITIES - Same as StackMix but return StackSpecUtility for cascade
 
-  late final alignment = PropUtility<StackSpecUtility, AlignmentGeometry>(
-    (prop) => buildProps(alignment: prop),
+  late final alignment = MixUtility(mix.alignment);
+
+  late final fit = MixUtility(mix.fit);
+
+  late final textDirection = MixUtility(mix.textDirection);
+
+  late final clipBehavior = MixUtility(mix.clipBehavior);
+
+  late final on = OnContextVariantUtility<StackSpec, StackMix>(
+    (v) => mix.variants([v]),
   );
 
-  late final fit = PropUtility<StackSpecUtility, StackFit>(
-    (prop) => buildProps(fit: prop),
+  late final wrap = ModifierUtility(
+    (prop) => mix.modifier(ModifierConfig(modifiers: [prop])),
   );
 
-  late final textDirection = PropUtility<StackSpecUtility, TextDirection>(
-    (prop) => buildProps(textDirection: prop),
-  );
+  // ignore: prefer_final_fields
+  @override
+  StackMix mix;
 
-  late final clipBehavior = PropUtility<StackSpecUtility, Clip>(
-    (prop) => buildProps(clipBehavior: prop),
-  );
-
-  late final on = OnContextVariantUtility<StackSpec, StackSpecUtility>(
-    (v) => buildProps(variants: [v]),
-  );
-
-  late final wrap = ModifierUtility<StackSpecUtility>(
-    (prop) => buildProps(modifierConfig: ModifierConfig.modifier(prop)),
-  );
-
-  StackMix _baseAttribute;
-
-  StackSpecUtility([StackMix? attribute])
-    : _baseAttribute = attribute ?? StackMix();
-
-  @protected
-  StackSpecUtility buildProps({
-    Prop<AlignmentGeometry>? alignment,
-    Prop<StackFit>? fit,
-    Prop<TextDirection>? textDirection,
-    Prop<Clip>? clipBehavior,
-    AnimationConfig? animation,
-    ModifierConfig? modifierConfig,
-    List<VariantStyleAttribute<StackSpec>>? variants,
-  }) {
-    final newAttribute = StackMix.raw(
-      alignment: alignment,
-      fit: fit,
-      textDirection: textDirection,
-      clipBehavior: clipBehavior,
-      animation: animation,
-      modifierConfig: modifierConfig,
-      variants: variants,
-    );
-    _baseAttribute = _baseAttribute.merge(newAttribute);
-
-    return this;
-  }
+  StackSpecUtility([StackMix? attribute]) : mix = attribute ?? StackMix();
 
   /// Animation
-  StackSpecUtility animate(AnimationConfig animation) =>
-      buildProps(animation: animation);
+  StackMix animate(AnimationConfig animation) => mix.animate(animation);
 
   // StyleAttribute interface implementation
 
@@ -82,10 +49,10 @@ class StackSpecUtility extends StyleAttributeBuilder<StackSpec> {
     if (other == null) return this;
     // IMMUTABLE: Always create new instance (StyleAttribute contract)
     if (other is StackSpecUtility) {
-      return StackSpecUtility(_baseAttribute.merge(other._baseAttribute));
+      return StackSpecUtility(mix.merge(other.mix));
     }
     if (other is StackMix) {
-      return StackSpecUtility(_baseAttribute.merge(other));
+      return StackSpecUtility(mix.merge(other));
     }
 
     throw FlutterError('Unsupported merge type: ${other.runtimeType}');
@@ -93,10 +60,6 @@ class StackSpecUtility extends StyleAttributeBuilder<StackSpec> {
 
   @override
   StackSpec resolve(BuildContext context) {
-    return _baseAttribute.resolve(context);
+    return mix.resolve(context);
   }
-
-  /// Access to internal attribute
-  @override
-  StackMix get mix => _baseAttribute;
 }

@@ -11,43 +11,42 @@ import 'decoration_image_mix.dart';
 final class DecorationImageUtility<T extends Style<Object?>>
     extends MixPropUtility<T, DecorationImageMix, DecorationImage> {
   /// Utility for defining [DecorationImageMix.image]
-  late final provider = PropUtility<T, ImageProvider>(
+  late final provider = MixUtility<T, ImageProvider>(
     (prop) => only(image: prop),
   );
 
   /// Utility for defining [DecorationImageMix.fit]
-  late final fit = PropUtility<T, BoxFit>((prop) => only(fit: prop));
+  late final fit = MixUtility<T, BoxFit>((prop) => only(fit: prop));
 
   /// Utility for defining [DecorationImageMix.alignment]
-  late final alignment = PropUtility<T, AlignmentGeometry>(
+  late final alignment = MixUtility<T, AlignmentGeometry>(
     (prop) => only(alignment: prop),
   );
 
   /// Utility for defining [DecorationImageMix.centerSlice]
-  late final centerSlice = PropUtility<T, Rect>(
+  late final centerSlice = MixUtility<T, Rect>(
     (prop) => only(centerSlice: prop),
   );
 
   /// Utility for defining [DecorationImageMix.repeat]
-  late final repeat = PropUtility<T, ImageRepeat>((prop) => only(repeat: prop));
+  late final repeat = MixUtility<T, ImageRepeat>((prop) => only(repeat: prop));
 
   /// Utility for defining [DecorationImageMix.filterQuality]
-  late final filterQuality = PropUtility<T, FilterQuality>(
+  late final filterQuality = MixUtility<T, FilterQuality>(
     (prop) => only(filterQuality: prop),
   );
 
   /// Utility for defining [DecorationImageMix.invertColors]
-  late final invertColors = PropUtility<T, bool>(
+  late final invertColors = MixUtility<T, bool>(
     (prop) => only(invertColors: prop),
   );
 
   /// Utility for defining [DecorationImageMix.isAntiAlias]
-  late final isAntiAlias = PropUtility<T, bool>(
+  late final isAntiAlias = MixUtility<T, bool>(
     (prop) => only(isAntiAlias: prop),
   );
 
-  DecorationImageUtility(super.builder)
-    : super(convertToMix: DecorationImageMix.value);
+  DecorationImageUtility(super.builder);
 
   T only({
     ImageProvider? image,
@@ -93,5 +92,10 @@ final class DecorationImageUtility<T extends Style<Object?>>
       invertColors: invertColors,
       isAntiAlias: isAntiAlias,
     );
+  }
+
+  @override
+  T as(DecorationImage value) {
+    return builder(DecorationImageMix.value(value));
   }
 }

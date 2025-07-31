@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
 import 'border_mix.dart';
@@ -274,15 +273,20 @@ mixin BorderMixin<T extends Style<Object?>> {
 ///
 /// Provides access to border and directional border utilities for flexible border styling.
 final class BoxBorderUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, BoxBorder> {
+    extends MixPropUtility<T, BoxBorderMix, BoxBorder> {
   late final border = BorderUtility<T>(builder);
 
   late final borderDirectional = BorderDirectionalUtility<T>(builder);
 
-  BoxBorderUtility(super.builder) : super(convertToMix: BoxBorderMix.value);
+  BoxBorderUtility(super.builder);
 
   T call(BoxBorderMix value) {
-    return builder(MixProp(value));
+    return builder(value);
+  }
+
+  @override
+  T as(BoxBorder value) {
+    return builder(BoxBorderMix.value(value));
   }
 }
 
@@ -315,7 +319,7 @@ final class BorderUtility<T extends Style<Object?>>
 
   late final strokeAlign = all.strokeAlign;
 
-  BorderUtility(super.builder) : super(convertToMix: BorderMix.value);
+  BorderUtility(super.builder);
 
   T none() => only(
     top: BorderSideMix.none,
@@ -350,6 +354,11 @@ final class BorderUtility<T extends Style<Object?>>
 
     return only(top: side, bottom: side, left: side, right: side);
   }
+
+  @override
+  T as(Border value) {
+    return builder(BorderMix.value(value));
+  }
 }
 
 /// Utility class for creating border styling with individual side control.
@@ -381,8 +390,7 @@ final class BorderDirectionalUtility<T extends Style<Object?>>
 
   late final strokeAlign = all.strokeAlign;
 
-  BorderDirectionalUtility(super.builder)
-    : super(convertToMix: BorderDirectionalMix.value);
+  BorderDirectionalUtility(super.builder);
 
   T none() => only(
     top: BorderSideMix.none,
@@ -417,6 +425,11 @@ final class BorderDirectionalUtility<T extends Style<Object?>>
 
     return only(top: side, bottom: side, start: side, end: side);
   }
+
+  @override
+  T as(BorderDirectional value) {
+    return builder(BorderDirectionalMix.value(value));
+  }
 }
 
 /// Utility class for configuring [BorderSide] properties.
@@ -426,20 +439,22 @@ final class BorderDirectionalUtility<T extends Style<Object?>>
 final class BorderSideUtility<T extends Style<Object?>>
     extends MixPropUtility<T, BorderSideMix, BorderSide> {
   /// Utility for defining [BorderSideMix.color]
-  late final color = ColorUtility<T>((prop) => only(color: prop));
+  late final color = ColorUtility<T>(
+    (prop) => builder(BorderSideMix.raw(color: prop)),
+  );
 
   /// Utility for defining [BorderSideMix.strokeAlign]
-  late final strokeAlign = PropUtility<T, double>(
+  late final strokeAlign = MixUtility<T, double>(
     (prop) => only(strokeAlign: prop),
   );
 
   /// Utility for defining [BorderSideMix.style]
-  late final style = PropUtility<T, BorderStyle>((prop) => only(style: prop));
+  late final style = MixUtility<T, BorderStyle>((prop) => only(style: prop));
 
   /// Utility for defining [BorderSideMix.width]
-  late final width = PropUtility<T, double>((prop) => only(width: prop));
+  late final width = MixUtility<T, double>((prop) => only(width: prop));
 
-  BorderSideUtility(super.builder) : super(convertToMix: BorderSideMix.value);
+  BorderSideUtility(super.builder);
 
   /// Creates a [Style] instance using the [BorderSideMix.none] constructor.
   T none() => builder(BorderSideMix.none);
@@ -473,5 +488,10 @@ final class BorderSideUtility<T extends Style<Object?>>
       style: style,
       width: width,
     );
+  }
+
+  @override
+  T as(BorderSide value) {
+    return builder(BorderSideMix.value(value));
   }
 }

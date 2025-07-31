@@ -6,7 +6,6 @@ import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
-import '../theme/tokens/mix_token.dart';
 
 final class SizedBoxModifier extends Modifier<SizedBoxModifier>
     with Diagnosticable {
@@ -69,6 +68,28 @@ final class SizedBoxModifier extends Modifier<SizedBoxModifier>
   }
 }
 
+final class SizedBoxModifierUtility<T extends Style<Object?>>
+    extends MixUtility<T, SizedBoxModifierAttribute> {
+  late final width = MixUtility<T, double>((prop) => only(width: prop));
+  late final height = MixUtility<T, double>((prop) => only(height: prop));
+
+  SizedBoxModifierUtility(super.builder);
+
+  /// Creates a square-sized box with the same width and height
+  T square(double size) => only(width: size, height: size);
+
+  T only({double? width, double? height}) =>
+      builder(SizedBoxModifierAttribute(width: width, height: height));
+
+  T call({double? width, double? height}) {
+    return only(width: width, height: height);
+  }
+
+  /// Utility for defining [SizedBoxModifierAttribute.width] and [SizedBoxModifierAttribute.height]
+  /// from [Size]
+  T as(Size size) => call(width: size.width, height: size.height);
+}
+
 /// Represents the attributes of a [SizedBoxModifier].
 ///
 /// This class encapsulates properties defining the layout and
@@ -97,8 +118,8 @@ class SizedBoxModifierAttribute extends ModifierAttribute<SizedBoxModifier>
   @override
   SizedBoxModifier resolve(BuildContext context) {
     return SizedBoxModifier(
-      width: width?.resolve(context),
-      height: height?.resolve(context),
+      width: MixHelpers.resolve(context, width),
+      height: MixHelpers.resolve(context, height),
     );
   }
 
@@ -115,8 +136,8 @@ class SizedBoxModifierAttribute extends ModifierAttribute<SizedBoxModifier>
     if (other == null) return this;
 
     return SizedBoxModifierAttribute.raw(
-      width: width?.merge(other.width) ?? other.width,
-      height: height?.merge(other.height) ?? other.height,
+      width: MixHelpers.merge(width, other.width),
+      height: MixHelpers.merge(height, other.height),
     );
   }
 
@@ -133,39 +154,4 @@ class SizedBoxModifierAttribute extends ModifierAttribute<SizedBoxModifier>
   /// compare two [SizedBoxModifierAttribute] instances for equality.
   @override
   List<Object?> get props => [width, height];
-}
-
-final class SizedBoxModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, SizedBoxModifierAttribute> {
-  late final width = PropUtility<T, double>(
-    (prop) => builder(SizedBoxModifierAttribute.raw(width: prop)),
-  );
-  late final height = PropUtility<T, double>(
-    (prop) => builder(SizedBoxModifierAttribute.raw(height: prop)),
-  );
-
-  SizedBoxModifierUtility(super.builder);
-
-  /// Creates a square-sized box with the same width and height
-  T square(double size) => builder(
-    SizedBoxModifierAttribute.raw(width: Prop(size), height: Prop(size)),
-  );
-
-  T call({double? width, double? height}) {
-    return builder(
-      SizedBoxModifierAttribute.raw(
-        width: width != null ? Prop(width) : null,
-        height: height != null ? Prop(height) : null,
-      ),
-    );
-  }
-
-  T widthToken(MixToken<double> token) =>
-      builder(SizedBoxModifierAttribute.raw(width: Prop.token(token)));
-  T heightToken(MixToken<double> token) =>
-      builder(SizedBoxModifierAttribute.raw(height: Prop.token(token)));
-
-  /// Utility for defining [SizedBoxModifierAttribute.width] and [SizedBoxModifierAttribute.height]
-  /// from [Size]
-  T as(Size size) => call(width: size.width, height: size.height);
 }

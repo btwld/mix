@@ -17,23 +17,23 @@ import 'flex_spec.dart';
 class FlexSpecUtility extends StyleAttributeBuilder<FlexSpec> {
   // FLEX UTILITIES - Same as FlexMix but return FlexSpecUtility for cascade
 
-  late final direction = PropUtility(mix.direction);
+  late final direction = MixUtility(mix.direction);
 
-  late final mainAxisAlignment = PropUtility(mix.mainAxisAlignment);
+  late final mainAxisAlignment = MixUtility(mix.mainAxisAlignment);
 
-  late final crossAxisAlignment = PropUtility(mix.crossAxisAlignment);
+  late final crossAxisAlignment = MixUtility(mix.crossAxisAlignment);
 
-  late final mainAxisSize = PropUtility(mix.mainAxisSize);
+  late final mainAxisSize = MixUtility(mix.mainAxisSize);
 
-  late final verticalDirection = PropUtility(mix.verticalDirection);
+  late final verticalDirection = MixUtility(mix.verticalDirection);
 
-  late final textDirection = PropUtility(mix.textDirection);
+  late final textDirection = MixUtility(mix.textDirection);
 
-  late final textBaseline = PropUtility(mix.textBaseline);
+  late final textBaseline = MixUtility(mix.textBaseline);
 
-  late final clipBehavior = PropUtility(mix.clipBehavior);
+  late final clipBehavior = MixUtility(mix.clipBehavior);
 
-  late final gap = PropUtility(mix.gap);
+  late final gap = MixUtility(mix.gap);
 
   late final on = OnContextVariantUtility<FlexSpec, FlexMix>(
     (v) => mix.variants([v]),
@@ -48,7 +48,6 @@ class FlexSpecUtility extends StyleAttributeBuilder<FlexSpec> {
   FlexMix mix;
 
   FlexSpecUtility([FlexMix? attribute]) : mix = attribute ?? FlexMix();
-
 
   // Convenience methods
   FlexMix row() => mix.direction(Axis.horizontal);
