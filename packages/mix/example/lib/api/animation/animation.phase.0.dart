@@ -45,9 +45,9 @@ class _BlockAnimationState extends State<BlockAnimation> {
             AnimationPhases.expanded => style.scale(1.25),
           },
           configBuilder: (phase) => switch (phase) {
-            AnimationPhases.initial => AnimationConfig.decelerate(200.ms),
-            AnimationPhases.compress => AnimationConfig.decelerate(100.ms),
-            AnimationPhases.expanded => AnimationConfig.bounceOut(600.ms),
+            AnimationPhases.initial => CurveAnimationConfig.decelerate(200.ms),
+            AnimationPhases.compress => CurveAnimationConfig.decelerate(100.ms),
+            AnimationPhases.expanded => CurveAnimationConfig.bounceOut(600.ms),
           },
         );
 

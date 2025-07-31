@@ -269,7 +269,7 @@ void main() {
       final driver = CurveAnimationDriver<MockSpec>(
         initialStyle: MockResolvedStyle(0),
         vsync: const TestVSync(),
-        config: AnimationConfig.decelerate(300.ms, onEnd: () => counter++),
+        config: CurveAnimationConfig.decelerate(300.ms, onEnd: () => counter++),
       );
 
       addTearDown(() {

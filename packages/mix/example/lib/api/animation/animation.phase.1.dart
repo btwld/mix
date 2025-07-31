@@ -97,7 +97,7 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
                         .width(phase ? 45 : 40);
                   },
                   configBuilder: (phase) {
-                    return AnimationConfig.decelerate(150.ms);
+                    return CurveAnimationConfig.decelerate(150.ms);
                   },
                 ),
           ),
