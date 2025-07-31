@@ -9,25 +9,25 @@ import 'style.dart';
 /// Base class for Mix utilities that convert values to styled elements.
 ///
 /// Utilities provide a fluent API for building styled elements from various value types.
-class MixUtility<U extends Style<Object?>, Value> {
+class MixUtility<S extends Style<Object?>, Value> {
   /// The builder function that converts values to styled elements.
-  final U Function(Value) builder;
+  final S Function(Value) builder;
 
   const MixUtility(this.builder);
 }
 
 @immutable
 abstract class MixPropUtility<
-  U extends Style<Object?>,
+  S extends Style<Object?>,
   M extends Mix<Value>,
   Value
 >
-    extends MixUtility<U, M> {
+    extends MixUtility<S, M> {
   @override
   const MixPropUtility(super.builder);
 
   /// Creates a MixProp from a raw value (converts to Mix)
-  U as(Value value);
+  S as(Value value);
 }
 
 /// Utility base class for spec utilities

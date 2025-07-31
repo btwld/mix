@@ -38,6 +38,7 @@ class TextSpecUtility extends StyleAttributeBuilder<TextSpec> {
   late final textDirection = MixUtility(mix.textDirection);
   late final softWrap = MixUtility(mix.softWrap);
   late final directives = TextDirectiveUtility(mix.contentModifier);
+  late final selectionColor = MixUtility(mix.selectionColor);
 
   late final on = OnContextVariantUtility<TextSpec, TextMix>(
     (v) => mix.variants([v]),

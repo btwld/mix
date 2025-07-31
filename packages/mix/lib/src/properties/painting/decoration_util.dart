@@ -68,8 +68,8 @@ final class BoxDecorationUtility<T extends Style<Object?>>
   late final image = DecorationImageUtility<T>((v) => only(image: v));
 
   /// Utility for defining [BoxDecorationMix.boxShadow] from a list of BoxShadow
-  late final boxShadows = MixUtility<T, List<BoxShadowMix>>(
-    (prop) => only(boxShadow: prop),
+  late final boxShadows = MixUtility<T, List<BoxShadow>>(
+    (prop) => only(boxShadow: prop.map(BoxShadowMix.value).toList()),
   );
 
   /// Utility for defining individual [BoxShadow]

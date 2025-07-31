@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import '../../animation/curves.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
+import '../painting/shadow_mix.dart';
 
 @immutable
 class SpacingSideUtility<T extends Style<Object?>>
@@ -578,25 +579,6 @@ extension Matrix4PropUtilityExt<T extends Style<Object?>>
   }
 }
 
-/// Extension for creating font family strings with various constructors.
-extension FontFamilyPropUtilityExt<T extends Style<Object?>>
-    on MixUtility<T, String> {
-  T call(String value) => builder(value);
-
-  /// Creates a [Style] instance using the [String.fromCharCodes] constructor.
-  T fromCharCodes(Iterable<int> charCodes, [int start = 0, int? end]) {
-    return call(String.fromCharCodes(charCodes, start, end));
-  }
-
-  /// Creates a [Style] instance using the [String.fromCharCode] constructor.
-  T fromCharCode(int charCode) => call(String.fromCharCode(charCode));
-
-  /// Creates a [Style] instance using the [String.fromEnvironment] constructor.
-  T fromEnvironment(String name, {String defaultValue = ""}) {
-    return call(String.fromEnvironment(name, defaultValue: defaultValue));
-  }
-}
-
 /// Extension for creating [TextScaler] values for text scaling.
 extension TextScalerPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, TextScaler> {
@@ -659,8 +641,6 @@ extension TableBorderUtility<T extends Style<Object?>>
 extension StringPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, String> {
   T call(String value) => builder(value);
-
-  // No predefined string values - this extension provides type consistency
 }
 
 /// Extension for creating [int] values with predefined options.
@@ -679,4 +659,46 @@ extension BoolPropUtilityExt<T extends Style<Object?>> on MixUtility<T, bool> {
   /// Creates an [Style] instance with a value of `false`.
   @Deprecated('Use call(false) instead')
   T off() => call(false);
+}
+
+/// Extension for creating list values with MixUtility
+extension ListMixUtilityExt<T extends Style<Object?>, V>
+    on MixUtility<T, List<V>> {
+  T call(List<V> value) => builder(value);
+}
+
+/// Extension for creating [ElevationShadow] values with predefined elevation levels.
+extension ElevationShadowPropUtilityExt<T extends Style<Object?>>
+    on MixUtility<T, ElevationShadow> {
+  T call(ElevationShadow value) => builder(value);
+
+  /// Creates a [Style] instance with [ElevationShadow.one] value.
+  T one() => call(ElevationShadow.one);
+
+  /// Creates a [Style] instance with [ElevationShadow.two] value.
+  T two() => call(ElevationShadow.two);
+
+  /// Creates a [Style] instance with [ElevationShadow.three] value.
+  T three() => call(ElevationShadow.three);
+
+  /// Creates a [Style] instance with [ElevationShadow.four] value.
+  T four() => call(ElevationShadow.four);
+
+  /// Creates a [Style] instance with [ElevationShadow.six] value.
+  T six() => call(ElevationShadow.six);
+
+  /// Creates a [Style] instance with [ElevationShadow.eight] value.
+  T eight() => call(ElevationShadow.eight);
+
+  /// Creates a [Style] instance with [ElevationShadow.nine] value.
+  T nine() => call(ElevationShadow.nine);
+
+  /// Creates a [Style] instance with [ElevationShadow.twelve] value.
+  T twelve() => call(ElevationShadow.twelve);
+
+  /// Creates a [Style] instance with [ElevationShadow.sixteen] value.
+  T sixteen() => call(ElevationShadow.sixteen);
+
+  /// Creates a [Style] instance with [ElevationShadow.twentyFour] value.
+  T twentyFour() => call(ElevationShadow.twentyFour);
 }

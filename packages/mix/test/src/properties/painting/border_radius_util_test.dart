@@ -327,10 +327,7 @@ void main() {
       final borderRadius = result.value as BorderRadiusMix;
       final resolved = borderRadius.resolve(MockBuildContext());
 
-      expect(resolved.topLeft, const Radius.circular(10.0));
-      expect(resolved.topRight, const Radius.circular(10.0));
-      expect(resolved.bottomLeft, const Radius.circular(10.0));
-      expect(resolved.bottomRight, const Radius.circular(10.0));
+      expect(resolved, equals(BorderRadius.circular(10.0)));
     });
 
     test('as method accepts BorderRadiusGeometry', () {
@@ -342,10 +339,7 @@ void main() {
       final borderRadiusMix = result.value as BorderRadiusMix;
       final resolved = borderRadiusMix.resolve(MockBuildContext());
 
-      expect(resolved.topLeft, const Radius.circular(5.0));
-      expect(resolved.topRight, Radius.zero);
-      expect(resolved.bottomLeft, Radius.zero);
-      expect(resolved.bottomRight, const Radius.circular(15.0));
+      expect(resolved, equals(borderRadius));
     });
   });
 
@@ -364,10 +358,10 @@ void main() {
         final borderRadius = result.value;
         final resolved = borderRadius.resolve(MockBuildContext());
 
-        expect(resolved.topLeft, const Radius.circular(5.0));
-        expect(resolved.topRight, Radius.zero);
-        expect(resolved.bottomLeft, Radius.zero);
-        expect(resolved.bottomRight, Radius.zero);
+        expect(
+          resolved,
+          equals(BorderRadius.only(topLeft: const Radius.circular(5.0))),
+        );
       });
 
       test('topRight utility creates correct BorderRadiusMix', () {
@@ -375,10 +369,10 @@ void main() {
         final borderRadius = result.value;
         final resolved = borderRadius.resolve(MockBuildContext());
 
-        expect(resolved.topLeft, Radius.zero);
-        expect(resolved.topRight, const Radius.circular(10.0));
-        expect(resolved.bottomLeft, Radius.zero);
-        expect(resolved.bottomRight, Radius.zero);
+        expect(
+          resolved,
+          equals(BorderRadius.only(topRight: const Radius.circular(10.0))),
+        );
       });
 
       test('bottomLeft utility creates correct BorderRadiusMix', () {
@@ -386,10 +380,10 @@ void main() {
         final borderRadius = result.value;
         final resolved = borderRadius.resolve(MockBuildContext());
 
-        expect(resolved.topLeft, Radius.zero);
-        expect(resolved.topRight, Radius.zero);
-        expect(resolved.bottomLeft, const Radius.circular(15.0));
-        expect(resolved.bottomRight, Radius.zero);
+        expect(
+          resolved,
+          equals(BorderRadius.only(bottomLeft: const Radius.circular(15.0))),
+        );
       });
 
       test('bottomRight utility creates correct BorderRadiusMix', () {
@@ -397,10 +391,10 @@ void main() {
         final borderRadius = result.value;
         final resolved = borderRadius.resolve(MockBuildContext());
 
-        expect(resolved.topLeft, Radius.zero);
-        expect(resolved.topRight, Radius.zero);
-        expect(resolved.bottomLeft, Radius.zero);
-        expect(resolved.bottomRight, const Radius.circular(20.0));
+        expect(
+          resolved,
+          equals(BorderRadius.only(bottomRight: const Radius.circular(20.0))),
+        );
       });
 
       test('all utility sets all corners', () {
@@ -408,10 +402,7 @@ void main() {
         final borderRadius = result.value;
         final resolved = borderRadius.resolve(MockBuildContext());
 
-        expect(resolved.topLeft, const Radius.circular(8.0));
-        expect(resolved.topRight, const Radius.circular(8.0));
-        expect(resolved.bottomLeft, const Radius.circular(8.0));
-        expect(resolved.bottomRight, const Radius.circular(8.0));
+        expect(resolved, equals(BorderRadius.all(const Radius.circular(8.0))));
       });
 
       test('top utility sets top corners', () {
@@ -419,10 +410,10 @@ void main() {
         final borderRadius = result.value;
         final resolved = borderRadius.resolve(MockBuildContext());
 
-        expect(resolved.topLeft, const Radius.circular(12.0));
-        expect(resolved.topRight, const Radius.circular(12.0));
-        expect(resolved.bottomLeft, Radius.zero);
-        expect(resolved.bottomRight, Radius.zero);
+        expect(
+          resolved,
+          equals(BorderRadius.only(topLeft: const Radius.circular(12.0))),
+        );
       });
 
       test('bottom utility sets bottom corners', () {
@@ -430,10 +421,10 @@ void main() {
         final borderRadius = result.value;
         final resolved = borderRadius.resolve(MockBuildContext());
 
-        expect(resolved.topLeft, Radius.zero);
-        expect(resolved.topRight, Radius.zero);
-        expect(resolved.bottomLeft, const Radius.circular(16.0));
-        expect(resolved.bottomRight, const Radius.circular(16.0));
+        expect(
+          resolved,
+          equals(BorderRadius.only(bottomLeft: const Radius.circular(16.0))),
+        );
       });
 
       test('left utility sets left corners', () {
@@ -441,10 +432,10 @@ void main() {
         final borderRadius = result.value;
         final resolved = borderRadius.resolve(MockBuildContext());
 
-        expect(resolved.topLeft, const Radius.circular(4.0));
-        expect(resolved.topRight, Radius.zero);
-        expect(resolved.bottomLeft, const Radius.circular(4.0));
-        expect(resolved.bottomRight, Radius.zero);
+        expect(
+          resolved,
+          equals(BorderRadius.only(topLeft: const Radius.circular(4.0))),
+        );
       });
 
       test('right utility sets right corners', () {
@@ -452,10 +443,10 @@ void main() {
         final borderRadius = result.value;
         final resolved = borderRadius.resolve(MockBuildContext());
 
-        expect(resolved.topLeft, Radius.zero);
-        expect(resolved.topRight, const Radius.circular(6.0));
-        expect(resolved.bottomLeft, Radius.zero);
-        expect(resolved.bottomRight, const Radius.circular(6.0));
+        expect(
+          resolved,
+          equals(BorderRadius.only(topRight: const Radius.circular(6.0))),
+        );
       });
     });
 
@@ -465,10 +456,7 @@ void main() {
         final borderRadius = result.value;
         final resolved = borderRadius.resolve(MockBuildContext());
 
-        expect(resolved.topLeft, const Radius.circular(10.0));
-        expect(resolved.topRight, const Radius.circular(10.0));
-        expect(resolved.bottomLeft, const Radius.circular(10.0));
-        expect(resolved.bottomRight, const Radius.circular(10.0));
+        expect(resolved, equals(BorderRadius.circular(10.0)));
       });
 
       test('elliptical method sets elliptical radius for all corners', () {
@@ -476,10 +464,10 @@ void main() {
         final borderRadius = result.value;
         final resolved = borderRadius.resolve(MockBuildContext());
 
-        expect(resolved.topLeft, const Radius.elliptical(8.0, 12.0));
-        expect(resolved.topRight, const Radius.elliptical(8.0, 12.0));
-        expect(resolved.bottomLeft, const Radius.elliptical(8.0, 12.0));
-        expect(resolved.bottomRight, const Radius.elliptical(8.0, 12.0));
+        expect(
+          resolved,
+          equals(BorderRadius.all(Radius.elliptical(8.0, 12.0))),
+        );
       });
 
       test('zero method sets zero radius for all corners', () {
@@ -487,10 +475,7 @@ void main() {
         final borderRadius = result.value;
         final resolved = borderRadius.resolve(MockBuildContext());
 
-        expect(resolved.topLeft, Radius.zero);
-        expect(resolved.topRight, Radius.zero);
-        expect(resolved.bottomLeft, Radius.zero);
-        expect(resolved.bottomRight, Radius.zero);
+        expect(resolved, equals(BorderRadius.zero));
       });
     });
 
@@ -503,10 +488,10 @@ void main() {
         final borderRadius = result.value;
         final resolved = borderRadius.resolve(MockBuildContext());
 
-        expect(resolved.topLeft, const Radius.circular(5.0));
-        expect(resolved.topRight, Radius.zero);
-        expect(resolved.bottomLeft, Radius.zero);
-        expect(resolved.bottomRight, const Radius.circular(15.0));
+        expect(
+          resolved,
+          equals(BorderRadius.only(topLeft: const Radius.circular(5.0))),
+        );
       });
 
       test('call method delegates to only', () {
@@ -517,10 +502,10 @@ void main() {
         final borderRadius = result.value;
         final resolved = borderRadius.resolve(MockBuildContext());
 
-        expect(resolved.topLeft, Radius.zero);
-        expect(resolved.topRight, const Radius.circular(8.0));
-        expect(resolved.bottomLeft, const Radius.circular(12.0));
-        expect(resolved.bottomRight, Radius.zero);
+        expect(
+          resolved,
+          equals(BorderRadius.only(topRight: const Radius.circular(8.0))),
+        );
       });
     });
 
@@ -535,10 +520,7 @@ void main() {
       final borderRadiusMix = result.value;
       final resolved = borderRadiusMix.resolve(MockBuildContext());
 
-      expect(resolved.topLeft, const Radius.circular(3.0));
-      expect(resolved.topRight, const Radius.circular(6.0));
-      expect(resolved.bottomLeft, const Radius.circular(9.0));
-      expect(resolved.bottomRight, const Radius.circular(12.0));
+      expect(resolved, equals(borderRadius));
     });
   });
 
@@ -639,10 +621,15 @@ void main() {
         final borderRadius = result.value;
         final resolved = borderRadius.resolve(MockBuildContext());
 
-        expect(resolved.topStart, const Radius.circular(4.0));
-        expect(resolved.topEnd, Radius.zero);
-        expect(resolved.bottomStart, const Radius.circular(4.0));
-        expect(resolved.bottomEnd, Radius.zero);
+        expect(
+          resolved,
+          equals(
+            BorderRadiusDirectional.only(
+              topStart: const Radius.circular(4.0),
+              bottomStart: const Radius.circular(4.0),
+            ),
+          ),
+        );
       });
 
       test('end utility sets end corners', () {
@@ -650,10 +637,15 @@ void main() {
         final borderRadius = result.value;
         final resolved = borderRadius.resolve(MockBuildContext());
 
-        expect(resolved.topStart, Radius.zero);
-        expect(resolved.topEnd, const Radius.circular(6.0));
-        expect(resolved.bottomStart, Radius.zero);
-        expect(resolved.bottomEnd, const Radius.circular(6.0));
+        expect(
+          resolved,
+          equals(
+            BorderRadiusDirectional.only(
+              topEnd: const Radius.circular(6.0),
+              bottomEnd: const Radius.circular(6.0),
+            ),
+          ),
+        );
       });
     });
 
@@ -663,21 +655,17 @@ void main() {
         final borderRadius = result.value;
         final resolved = borderRadius.resolve(MockBuildContext());
 
-        expect(resolved.topStart, const Radius.circular(10.0));
-        expect(resolved.topEnd, const Radius.circular(10.0));
-        expect(resolved.bottomStart, const Radius.circular(10.0));
-        expect(resolved.bottomEnd, const Radius.circular(10.0));
+        expect(resolved, equals(BorderRadiusDirectional.circular(10.0)));
       });
 
       test('elliptical method sets elliptical radius for all corners', () {
         final result = util.elliptical(8.0, 12.0);
         final borderRadius = result.value;
         final resolved = borderRadius.resolve(MockBuildContext());
-
-        expect(resolved.topStart, const Radius.elliptical(8.0, 12.0));
-        expect(resolved.topEnd, const Radius.elliptical(8.0, 12.0));
-        expect(resolved.bottomStart, const Radius.elliptical(8.0, 12.0));
-        expect(resolved.bottomEnd, const Radius.elliptical(8.0, 12.0));
+        expect(
+          resolved,
+          equals(BorderRadiusDirectional.all(Radius.elliptical(8.0, 12.0))),
+        );
       });
 
       test('zero method sets zero radius for all corners', () {
@@ -685,10 +673,7 @@ void main() {
         final borderRadius = result.value;
         final resolved = borderRadius.resolve(MockBuildContext());
 
-        expect(resolved.topStart, Radius.zero);
-        expect(resolved.topEnd, Radius.zero);
-        expect(resolved.bottomStart, Radius.zero);
-        expect(resolved.bottomEnd, Radius.zero);
+        expect(resolved, equals(BorderRadiusDirectional.all(Radius.zero)));
       });
     });
 
@@ -701,10 +686,15 @@ void main() {
         final borderRadius = result.value;
         final resolved = borderRadius.resolve(MockBuildContext());
 
-        expect(resolved.topStart, const Radius.circular(5.0));
-        expect(resolved.topEnd, Radius.zero);
-        expect(resolved.bottomStart, Radius.zero);
-        expect(resolved.bottomEnd, const Radius.circular(15.0));
+        expect(
+          resolved,
+          equals(
+            BorderRadiusDirectional.only(
+              topStart: const Radius.circular(5.0),
+              bottomEnd: const Radius.circular(15.0),
+            ),
+          ),
+        );
       });
 
       test('call method delegates to only', () {
@@ -715,10 +705,15 @@ void main() {
         final borderRadius = result.value;
         final resolved = borderRadius.resolve(MockBuildContext());
 
-        expect(resolved.topStart, Radius.zero);
-        expect(resolved.topEnd, const Radius.circular(8.0));
-        expect(resolved.bottomStart, const Radius.circular(12.0));
-        expect(resolved.bottomEnd, Radius.zero);
+        expect(
+          resolved,
+          equals(
+            BorderRadiusDirectional.only(
+              topEnd: const Radius.circular(8.0),
+              bottomStart: const Radius.circular(12.0),
+            ),
+          ),
+        );
       });
     });
 
@@ -732,11 +727,19 @@ void main() {
       final result = util.as(borderRadius);
       final borderRadiusMix = result.value;
       final resolved = borderRadiusMix.resolve(MockBuildContext());
+      expect(resolved, equals(borderRadius));
 
-      expect(resolved.topStart, const Radius.circular(3.0));
-      expect(resolved.topEnd, const Radius.circular(6.0));
-      expect(resolved.bottomStart, const Radius.circular(9.0));
-      expect(resolved.bottomEnd, const Radius.circular(12.0));
+      expect(
+        borderRadiusMix,
+        equals(
+          BorderRadiusDirectionalMix(
+            topStart: const Radius.circular(3.0),
+            topEnd: const Radius.circular(6.0),
+            bottomStart: const Radius.circular(9.0),
+            bottomEnd: const Radius.circular(12.0),
+          ),
+        ),
+      );
     });
   });
 
@@ -753,10 +756,7 @@ void main() {
       final borderRadius = result.value as BorderRadiusMix;
       final resolved = borderRadius.resolve(MockBuildContext());
 
-      expect(resolved.topLeft, const Radius.circular(16.0));
-      expect(resolved.topRight, Radius.zero);
-      expect(resolved.bottomLeft, Radius.zero);
-      expect(resolved.bottomRight, Radius.zero);
+      expect(resolved, equals(BorderRadius.circular(16.0)));
     });
   });
 
@@ -780,10 +780,7 @@ void main() {
 
       final resolved = borderRadiusMix.resolve(context);
 
-      expect(resolved.topLeft, const Radius.circular(16.0));
-      expect(resolved.topRight, const Radius.circular(16.0));
-      expect(resolved.bottomLeft, const Radius.circular(16.0));
-      expect(resolved.bottomRight, const Radius.circular(16.0));
+      expect(resolved, equals(BorderRadius.circular(16.0)));
     });
   });
 }

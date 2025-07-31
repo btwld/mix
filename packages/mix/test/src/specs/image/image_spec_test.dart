@@ -18,6 +18,11 @@ void main() {
           centerSlice: Rect.fromLTWH(10, 10, 20, 20),
           filterQuality: FilterQuality.high,
           colorBlendMode: BlendMode.multiply,
+          semanticLabel: 'Test image',
+          excludeFromSemantics: true,
+          gaplessPlayback: true,
+          isAntiAlias: false,
+          matchTextDirection: true,
         );
 
         expect(spec.width, 200.0);
@@ -29,6 +34,11 @@ void main() {
         expect(spec.centerSlice, const Rect.fromLTWH(10, 10, 20, 20));
         expect(spec.filterQuality, FilterQuality.high);
         expect(spec.colorBlendMode, BlendMode.multiply);
+        expect(spec.semanticLabel, 'Test image');
+        expect(spec.excludeFromSemantics, true);
+        expect(spec.gaplessPlayback, true);
+        expect(spec.isAntiAlias, false);
+        expect(spec.matchTextDirection, true);
       });
 
       test('creates ImageSpec with default values', () {
@@ -43,6 +53,11 @@ void main() {
         expect(spec.centerSlice, isNull);
         expect(spec.filterQuality, isNull);
         expect(spec.colorBlendMode, isNull);
+        expect(spec.semanticLabel, isNull);
+        expect(spec.excludeFromSemantics, isNull);
+        expect(spec.gaplessPlayback, isNull);
+        expect(spec.isAntiAlias, isNull);
+        expect(spec.matchTextDirection, isNull);
       });
     });
 
@@ -142,12 +157,22 @@ void main() {
           fit: BoxFit.contain,
           filterQuality: FilterQuality.low,
           colorBlendMode: BlendMode.srcOver,
+          semanticLabel: 'Image 1',
+          excludeFromSemantics: false,
+          gaplessPlayback: false,
+          isAntiAlias: true,
+          matchTextDirection: false,
         );
         const spec2 = ImageSpec(
           repeat: ImageRepeat.repeat,
           fit: BoxFit.cover,
           filterQuality: FilterQuality.high,
           colorBlendMode: BlendMode.multiply,
+          semanticLabel: 'Image 2',
+          excludeFromSemantics: true,
+          gaplessPlayback: true,
+          isAntiAlias: false,
+          matchTextDirection: true,
         );
 
         final lerpedBefore = spec1.lerp(spec2, 0.4);
@@ -158,12 +183,22 @@ void main() {
         expect(lerpedBefore.fit, BoxFit.contain);
         expect(lerpedBefore.filterQuality, FilterQuality.low);
         expect(lerpedBefore.colorBlendMode, BlendMode.srcOver);
+        expect(lerpedBefore.semanticLabel, 'Image 1');
+        expect(lerpedBefore.excludeFromSemantics, false);
+        expect(lerpedBefore.gaplessPlayback, false);
+        expect(lerpedBefore.isAntiAlias, true);
+        expect(lerpedBefore.matchTextDirection, false);
 
         // t >= 0.5 uses spec2
         expect(lerpedAfter.repeat, ImageRepeat.repeat);
         expect(lerpedAfter.fit, BoxFit.cover);
         expect(lerpedAfter.filterQuality, FilterQuality.high);
         expect(lerpedAfter.colorBlendMode, BlendMode.multiply);
+        expect(lerpedAfter.semanticLabel, 'Image 2');
+        expect(lerpedAfter.excludeFromSemantics, true);
+        expect(lerpedAfter.gaplessPlayback, true);
+        expect(lerpedAfter.isAntiAlias, false);
+        expect(lerpedAfter.matchTextDirection, true);
       });
 
       test('interpolates Rect centerSlice correctly', () {
@@ -231,6 +266,11 @@ void main() {
           centerSlice: Rect.fromLTWH(10, 10, 20, 20),
           filterQuality: FilterQuality.high,
           colorBlendMode: BlendMode.multiply,
+          semanticLabel: 'Debug test',
+          excludeFromSemantics: true,
+          gaplessPlayback: false,
+          isAntiAlias: true,
+          matchTextDirection: false,
         );
 
         final diagnostics = DiagnosticPropertiesBuilder();
@@ -246,6 +286,11 @@ void main() {
         expect(properties.any((p) => p.name == 'centerSlice'), isTrue);
         expect(properties.any((p) => p.name == 'filterQuality'), isTrue);
         expect(properties.any((p) => p.name == 'colorBlendMode'), isTrue);
+        expect(properties.any((p) => p.name == 'semanticLabel'), isTrue);
+        expect(properties.any((p) => p.name == 'excludeFromSemantics'), isTrue);
+        expect(properties.any((p) => p.name == 'gaplessPlayback'), isTrue);
+        expect(properties.any((p) => p.name == 'isAntiAlias'), isTrue);
+        expect(properties.any((p) => p.name == 'matchTextDirection'), isTrue);
       });
     });
 
@@ -261,9 +306,14 @@ void main() {
           centerSlice: Rect.fromLTWH(10, 10, 20, 20),
           filterQuality: FilterQuality.high,
           colorBlendMode: BlendMode.multiply,
+          semanticLabel: 'Props test',
+          excludeFromSemantics: true,
+          gaplessPlayback: false,
+          isAntiAlias: true,
+          matchTextDirection: false,
         );
 
-        expect(spec.props.length, 9);
+        expect(spec.props.length, 14);
         expect(spec.props, contains(200.0));
         expect(spec.props, contains(150.0));
         expect(spec.props, contains(Colors.blue));
@@ -273,6 +323,9 @@ void main() {
         expect(spec.props, contains(const Rect.fromLTWH(10, 10, 20, 20)));
         expect(spec.props, contains(FilterQuality.high));
         expect(spec.props, contains(BlendMode.multiply));
+        expect(spec.props, contains('Props test'));
+        expect(spec.props, contains(true));
+        expect(spec.props, contains(false));
       });
     });
 

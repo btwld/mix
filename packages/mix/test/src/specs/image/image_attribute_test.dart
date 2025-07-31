@@ -18,6 +18,11 @@ void main() {
           centerSlice: Rect.fromLTWH(10, 10, 20, 20),
           filterQuality: FilterQuality.high,
           colorBlendMode: BlendMode.multiply,
+          semanticLabel: 'Test image',
+          excludeFromSemantics: true,
+          gaplessPlayback: true,
+          isAntiAlias: false,
+          matchTextDirection: true,
         );
 
         expect(attribute.$width, resolvesTo(100.0));
@@ -32,6 +37,11 @@ void main() {
         );
         expect(attribute.$filterQuality, resolvesTo(FilterQuality.high));
         expect(attribute.$colorBlendMode, resolvesTo(BlendMode.multiply));
+        expect(attribute.$semanticLabel, resolvesTo('Test image'));
+        expect(attribute.$excludeFromSemantics, resolvesTo(true));
+        expect(attribute.$gaplessPlayback, resolvesTo(true));
+        expect(attribute.$isAntiAlias, resolvesTo(false));
+        expect(attribute.$matchTextDirection, resolvesTo(true));
       });
 
       test('creates empty ImageMix', () {
@@ -46,6 +56,11 @@ void main() {
         expect(attribute.$centerSlice, isNull);
         expect(attribute.$filterQuality, isNull);
         expect(attribute.$colorBlendMode, isNull);
+        expect(attribute.$semanticLabel, isNull);
+        expect(attribute.$excludeFromSemantics, isNull);
+        expect(attribute.$gaplessPlayback, isNull);
+        expect(attribute.$isAntiAlias, isNull);
+        expect(attribute.$matchTextDirection, isNull);
       });
     });
 
@@ -82,6 +97,36 @@ void main() {
 
         expect(imageMix.$variants, isNotNull);
         expect(imageMix.$variants!.length, 1);
+      });
+
+      test('semanticLabel factory creates ImageMix with semanticLabel', () {
+        final imageMix = ImageMix.semanticLabel('My Image');
+
+        expect(imageMix.$semanticLabel, resolvesTo('My Image'));
+      });
+
+      test('excludeFromSemantics factory creates ImageMix with excludeFromSemantics', () {
+        final imageMix = ImageMix.excludeFromSemantics(true);
+
+        expect(imageMix.$excludeFromSemantics, resolvesTo(true));
+      });
+
+      test('gaplessPlayback factory creates ImageMix with gaplessPlayback', () {
+        final imageMix = ImageMix.gaplessPlayback(true);
+
+        expect(imageMix.$gaplessPlayback, resolvesTo(true));
+      });
+
+      test('isAntiAlias factory creates ImageMix with isAntiAlias', () {
+        final imageMix = ImageMix.isAntiAlias(false);
+
+        expect(imageMix.$isAntiAlias, resolvesTo(false));
+      });
+
+      test('matchTextDirection factory creates ImageMix with matchTextDirection', () {
+        final imageMix = ImageMix.matchTextDirection(true);
+
+        expect(imageMix.$matchTextDirection, resolvesTo(true));
       });
     });
 

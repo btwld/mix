@@ -562,26 +562,26 @@ void main() {
     });
 
     test('as method accepts Border', () {
-      const border = Border(
-        top: BorderSide(width: 1.0, color: Colors.red),
-        bottom: BorderSide(width: 2.0, color: Colors.blue),
-      );
+      final topBorder = BorderSide(width: 1.0, color: Colors.red);
+
+      final bottomBorder = BorderSide(width: 2.0, color: Colors.blue);
+      final border = Border(top: topBorder, bottom: bottomBorder);
       final result = util.as(border);
 
       expect(
         result.value,
         BorderMix(
           top: BorderSideMix(
-            width: 1.0,
-            color: Colors.red,
-            style: BorderStyle.solid,
-            strokeAlign: -1.0,
+            width: topBorder.width,
+            color: topBorder.color,
+            style: topBorder.style,
+            strokeAlign: topBorder.strokeAlign,
           ),
           bottom: BorderSideMix(
-            width: 2.0,
-            color: Colors.blue,
-            style: BorderStyle.solid,
-            strokeAlign: -1.0,
+            width: bottomBorder.width,
+            color: bottomBorder.color,
+            style: bottomBorder.style,
+            strokeAlign: bottomBorder.strokeAlign,
           ),
         ),
       );

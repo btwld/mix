@@ -39,6 +39,7 @@ class TextMix extends Style<TextSpec>
   final Prop<TextDirection>? $textDirection;
   final Prop<bool>? $softWrap;
   final List<MixDirective<String>>? $directives;
+  final Prop<Color>? $selectionColor;
 
   /// Factory for text color
   factory TextMix.color(Color value) {
@@ -220,6 +221,11 @@ class TextMix extends Style<TextSpec>
     return TextMix.directive(const SentenceCaseStringDirective());
   }
 
+  /// Factory for selection color
+  factory TextMix.selectionColor(Color value) {
+    return TextMix(selectionColor: value);
+  }
+
   /// Factory for animation
   factory TextMix.animate(AnimationConfig animation) {
     return TextMix(animation: animation);
@@ -246,6 +252,7 @@ class TextMix extends Style<TextSpec>
     Prop<TextDirection>? textDirection,
     Prop<bool>? softWrap,
     List<MixDirective<String>>? directives,
+    Prop<Color>? selectionColor,
     super.animation,
     super.modifierConfig,
     super.variants,
@@ -261,7 +268,8 @@ class TextMix extends Style<TextSpec>
        $textHeightBehavior = textHeightBehavior,
        $textDirection = textDirection,
        $softWrap = softWrap,
-       $directives = directives;
+       $directives = directives,
+       $selectionColor = selectionColor;
 
   TextMix({
     TextOverflow? overflow,
@@ -275,6 +283,7 @@ class TextMix extends Style<TextSpec>
     TextDirection? textDirection,
     bool? softWrap,
     List<MixDirective<String>>? directives,
+    Color? selectionColor,
     AnimationConfig? animation,
     ModifierConfig? modifierConfig,
     List<VariantStyleAttribute<TextSpec>>? variants,
@@ -291,6 +300,7 @@ class TextMix extends Style<TextSpec>
          textDirection: Prop.maybe(textDirection),
          softWrap: Prop.maybe(softWrap),
          directives: directives,
+         selectionColor: Prop.maybe(selectionColor),
          animation: animation,
          modifierConfig: modifierConfig,
          variants: variants,
@@ -488,6 +498,11 @@ class TextMix extends Style<TextSpec>
     return merge(TextMix.background(value));
   }
 
+  /// Sets selection color
+  TextMix selectionColor(Color value) {
+    return merge(TextMix.selectionColor(value));
+  }
+
   /// Sets decoration thickness
   TextMix decorationThickness(double value) {
     return merge(TextMix.decorationThickness(value));
@@ -560,6 +575,7 @@ class TextMix extends Style<TextSpec>
       textDirection: MixHelpers.resolve(context, $textDirection),
       softWrap: MixHelpers.resolve(context, $softWrap),
       directives: $directives,
+      selectionColor: MixHelpers.resolve(context, $selectionColor),
     );
   }
 
@@ -594,6 +610,7 @@ class TextMix extends Style<TextSpec>
         other.$directives,
         strategy: ListMergeStrategy.append,
       ),
+      selectionColor: MixHelpers.merge($selectionColor, other.$selectionColor),
       animation: other.$animation ?? $animation,
       modifierConfig:
           $modifierConfig?.merge(other.$modifierConfig) ??
@@ -645,6 +662,9 @@ class TextMix extends Style<TextSpec>
     properties.add(
       DiagnosticsProperty('directive', $directives, defaultValue: null),
     );
+    properties.add(
+      DiagnosticsProperty('selectionColor', $selectionColor, defaultValue: null),
+    );
 
     properties.add(
       DiagnosticsProperty('directives', $directives, defaultValue: null),
@@ -671,6 +691,7 @@ class TextMix extends Style<TextSpec>
     $textDirection,
     $softWrap,
     $directives,
+    $selectionColor,
     $animation,
     $modifierConfig,
     $variants,
