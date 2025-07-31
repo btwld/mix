@@ -1,9 +1,11 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter/widgets.dart';
 
-import 'animation_config.dart';
 import '../core/spec.dart';
 import '../core/style.dart';
+import 'animation_config.dart';
 
 /// Base class for animation drivers that handle style interpolation.
 ///
@@ -18,10 +20,10 @@ abstract class StyleAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
   late final AnimationController _controller;
 
   /// The current resolved style being displayed.
-  ResolvedStyle<S>? _currentResolvedStyle;
+  late ResolvedStyle<S> _currentResolvedStyle = _initialStyle;
 
   /// The target resolved style to animate to.
-  ResolvedStyle<S>? _targetResolvedStyle;
+  late ResolvedStyle<S> _targetResolvedStyle = _initialStyle;
 
   /// List of callbacks to invoke when animation starts.
   final List<VoidCallback> _onStartCallbacks = [];
@@ -29,12 +31,20 @@ abstract class StyleAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
   /// List of callbacks to invoke when animation completes.
   final List<VoidCallback> _onCompleteCallbacks = [];
 
+  final ResolvedStyle<S> _initialStyle;
+
   /// The starting style for interpolation.
   @protected
-  ResolvedStyle<S>? _fromStyle;
+  late ResolvedStyle<S> _fromStyle = _initialStyle;
 
-  StyleAnimationDriver({required this.vsync}) {
-    _controller = AnimationController(vsync: vsync);
+  StyleAnimationDriver({
+    required this.vsync,
+    required ResolvedStyle<S> initialStyle,
+    bool unbounded = false,
+  }) : _initialStyle = initialStyle {
+    _controller = unbounded
+        ? AnimationController.unbounded(vsync: vsync)
+        : AnimationController(vsync: vsync);
 
     _controller.addListener(_onAnimationTick);
     _controller.addStatusListener(_onAnimationStatusChanged);
@@ -42,10 +52,8 @@ abstract class StyleAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
 
   /// Called on each animation frame.
   void _onAnimationTick() {
-    if (_targetResolvedStyle != null) {
-      _currentResolvedStyle = interpolateAt(_controller.value);
-      notifyListeners();
-    }
+    _currentResolvedStyle = interpolateAt(_controller.value);
+    notifyListeners();
   }
 
   /// Called when animation status changes.
@@ -67,15 +75,15 @@ abstract class StyleAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
   }
 
   /// Gets the current animation controller.
-  @protected
+  @visibleForTesting
   AnimationController get controller => _controller;
 
   /// Gets the current resolved style.
-  ResolvedStyle<S>? get currentResolvedStyle => _currentResolvedStyle;
+  ResolvedStyle<S> get currentResolvedStyle => _currentResolvedStyle;
 
   /// Gets the target resolved style.
   @protected
-  ResolvedStyle<S>? get targetResolvedStyle => _targetResolvedStyle;
+  ResolvedStyle<S> get targetResolvedStyle => _targetResolvedStyle;
 
   /// Whether the animation is currently running.
   bool get isAnimating => _controller.isAnimating;
@@ -87,14 +95,14 @@ abstract class StyleAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
   double get progress => _controller.value;
 
   /// Animates to the given target style.
+  @nonVirtual
   Future<void> animateTo(ResolvedStyle<S> targetStyle) async {
     // Skip if already at target
     if (_targetResolvedStyle == targetStyle && !isAnimating) {
       return;
     }
 
-    // Capture animation start state
-    _fromStyle = _currentResolvedStyle ?? targetStyle;
+    _fromStyle = _currentResolvedStyle;
     _targetResolvedStyle = targetStyle;
 
     // Execute subclass-specific animation
@@ -108,14 +116,10 @@ abstract class StyleAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
   /// Interpolates between current and target styles at the given progress.
   @visibleForTesting
   ResolvedStyle<S> interpolateAt(double t) {
-    if (_fromStyle == null || _targetResolvedStyle == null) {
-      return _targetResolvedStyle ?? _fromStyle!;
-    }
-
     // Apply any value transformation (e.g., curve)
     final transformedT = transformProgress(t);
 
-    return _fromStyle!.lerp(_targetResolvedStyle!, transformedT);
+    return _fromStyle.lerp(_targetResolvedStyle, transformedT);
   }
 
   /// Transform progress value (e.g., apply curve).
@@ -128,7 +132,7 @@ abstract class StyleAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
   /// Resets the animation to the beginning.
   void reset() {
     _controller.reset();
-    _currentResolvedStyle = null;
+    _currentResolvedStyle = _initialStyle;
   }
 
   /// Adds a callback to be invoked when animation starts.
@@ -169,6 +173,7 @@ class CurveAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   CurveAnimationDriver({
     required super.vsync,
     required CurveAnimationConfig config,
+    required super.initialStyle,
   }) : _config = config {
     if (config.onEnd != null) {
       addOnCompleteListener(config.onEnd!);
@@ -197,7 +202,9 @@ class SpringAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   SpringAnimationDriver({
     required super.vsync,
     required SpringAnimationConfig config,
-  }) : _config = config {
+    required super.initialStyle,
+  }) : _config = config,
+       super(unbounded: true) {
     if (config.onEnd != null) {
       addOnCompleteListener(config.onEnd!);
     }
@@ -212,5 +219,77 @@ class SpringAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     } on TickerCanceled {
       // Animation was cancelled - this is normal
     }
+  }
+}
+
+class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
+  final List<S> specs;
+  final List<CurveAnimationConfig> curvesAndDurations;
+  final ValueNotifier trigger;
+
+  PhaseAnimationDriver({
+    required super.vsync,
+    required this.curvesAndDurations,
+    required this.specs,
+    required super.initialStyle,
+    required this.trigger,
+  }) {
+    trigger.addListener(_onTriggerChanged);
+
+    if (curvesAndDurations.last.onEnd != null) {
+      addOnCompleteListener(curvesAndDurations.last.onEnd!);
+    }
+  }
+
+  void _onTriggerChanged() {
+    executeAnimation();
+  }
+
+  TweenSequence<S?> get _tween {
+    final items = <TweenSequenceItem<S?>>[];
+    for (int i = 0; i < specs.length; i++) {
+      final currentIndex = i % specs.length;
+      final nextIndex = (i + 1) % specs.length;
+
+      items.add(
+        TweenSequenceItem(
+          tween: SpecTween<S>(
+            begin: specs[currentIndex],
+            end: specs[nextIndex],
+          ).chain(CurveTween(curve: curvesAndDurations[currentIndex].curve)),
+          weight: curvesAndDurations[currentIndex].duration.inMilliseconds
+              .toDouble(),
+        ),
+      );
+    }
+
+    return TweenSequence(items);
+  }
+
+  Duration get totalDuration {
+    return curvesAndDurations.fold(
+      Duration.zero,
+      (acc, config) => acc + config.duration,
+    );
+  }
+
+  @override
+  void dispose() {
+    trigger.removeListener(_onTriggerChanged);
+    super.dispose();
+  }
+
+  @override
+  Future<void> executeAnimation() async {
+    controller.duration = totalDuration;
+    await controller.forward(from: 0);
+  }
+
+  @override
+  ResolvedStyle<S> interpolateAt(double t) {
+    // Apply any value transformation (e.g., curve)
+    final transformedT = transformProgress(t);
+
+    return ResolvedStyle(spec: _tween.transform(transformedT));
   }
 }

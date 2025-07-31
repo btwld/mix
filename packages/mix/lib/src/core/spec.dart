@@ -20,6 +20,19 @@ abstract class Spec<T extends Spec<T>> with Equatable {
   T lerp(covariant T? other, double t);
 }
 
+/// A [Tween] for interpolating between two [Spec] objects.
+class SpecTween<T extends Spec<T>> extends Tween<T?> {
+  SpecTween({super.begin, super.end});
+
+  @override
+  T? lerp(double t) {
+    if (begin == null) return end;
+    if (end == null) return begin;
+
+    return begin?.lerp(end, t);
+  }
+}
+
 /// Combines multiple [Spec] instances into a single specification.
 ///
 /// Allows composing different types of specs together for complex styling.

@@ -352,6 +352,32 @@ class BoxMix extends Style<BoxSpec>
     return merge(BoxMix.animate(animation));
   }
 
+  /// Animation instance method
+  BoxMix phaseAnimation<T>({
+    required ValueNotifier trigger,
+    required List<T> phases,
+    required BoxMix Function(T phase, BoxMix style) styleBuilder,
+    required CurveAnimationConfig Function(T phase) configBuilder,
+  }) {
+    final styles = List<BoxMix>.empty(growable: true);
+    final configs = List<CurveAnimationConfig>.empty(growable: true);
+
+    for (final phase in phases) {
+      styles.add(styleBuilder(phase, this));
+      configs.add(configBuilder(phase));
+    }
+
+    return merge(
+      BoxMix(
+        animation: PhaseAnimationConfig<BoxSpec, BoxMix>(
+          styles: styles,
+          curvesAndDurations: configs,
+          trigger: trigger,
+        ),
+      ),
+    );
+  }
+
   /// Modifier instance method
   BoxMix wrap(ModifierConfig modifier) {
     return merge(BoxMix(modifierConfig: modifier));

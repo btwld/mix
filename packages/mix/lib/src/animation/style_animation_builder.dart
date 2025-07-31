@@ -43,14 +43,6 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
     super.initState();
 
     animationDriver = _createAnimationDriver(widget.animationConfig);
-
-    // Trigger initial animation if needed
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted &&
-          animationDriver.currentResolvedStyle != widget.resolvedStyle) {
-        animationDriver.animateTo(widget.resolvedStyle);
-      }
-    });
   }
 
   StyleAnimationDriver<S> _createAnimationDriver(AnimationConfig config) {
@@ -59,11 +51,21 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
       CurveAnimationConfig() => CurveAnimationDriver<S>(
         vsync: this,
         config: config,
+        initialStyle: widget.resolvedStyle,
       ),
       // ignore: avoid-undisposed-instances
       SpringAnimationConfig() => SpringAnimationDriver<S>(
         vsync: this,
         config: config,
+        initialStyle: widget.resolvedStyle,
+      ),
+      // ignore: avoid-undisposed-instances
+      PhaseAnimationConfig() => PhaseAnimationDriver<S>(
+        vsync: this,
+        curvesAndDurations: config.curvesAndDurations,
+        specs: config.styles.map((e) => e.resolve(context) as S).toList(),
+        initialStyle: widget.resolvedStyle,
+        trigger: config.trigger,
       ),
     };
   }
@@ -89,8 +91,7 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
     return ListenableBuilder(
       listenable: animationDriver,
       builder: (context, child) {
-        final currentResolved =
-            animationDriver.currentResolvedStyle ?? widget.resolvedStyle;
+        final currentResolved = animationDriver.currentResolvedStyle;
 
         return widget.builder(context, currentResolved);
       },

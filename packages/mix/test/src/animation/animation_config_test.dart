@@ -67,7 +67,7 @@ void main() {
 
     group('SpringAnimationConfig', () {
       test('creates with spring factory', () {
-        final config = AnimationConfig.spring(
+        final config = AnimationConfig.springDescription(
           mass: 2.0,
           stiffness: 100.0,
           damping: 10.0,
@@ -80,7 +80,7 @@ void main() {
       });
 
       test('creates with custom SpringDescription', () {
-        final config = AnimationConfig.spring(
+        final config = AnimationConfig.springDescription(
           mass: 3.0,
           stiffness: 150.0,
           damping: 15.0,
@@ -92,7 +92,10 @@ void main() {
       });
 
       test('creates critically damped spring', () {
-        final config = AnimationConfig.spring(mass: 2.0, stiffness: 200.0);
+        final config = AnimationConfig.springDescription(
+          mass: 2.0,
+          stiffness: 200.0,
+        );
 
         expect(config, isA<SpringAnimationConfig>());
         expect(config.spring.mass, 2.0);
@@ -101,7 +104,10 @@ void main() {
       });
 
       test('creates underdamped spring', () {
-        final config = AnimationConfig.spring(mass: 1.5, stiffness: 250.0);
+        final config = AnimationConfig.springDescription(
+          mass: 1.5,
+          stiffness: 250.0,
+        );
 
         expect(config, isA<SpringAnimationConfig>());
         expect(config.spring.mass, 1.5);
@@ -109,17 +115,17 @@ void main() {
       });
 
       test('supports equality', () {
-        final config1 = AnimationConfig.spring(
+        final config1 = AnimationConfig.springDescription(
           mass: 1.0,
           stiffness: 180.0,
           damping: 12.0,
         );
-        final config2 = AnimationConfig.spring(
+        final config2 = AnimationConfig.springDescription(
           mass: 1.0,
           stiffness: 180.0,
           damping: 12.0,
         );
-        final config3 = AnimationConfig.spring(
+        final config3 = AnimationConfig.springDescription(
           mass: 2.0,
           stiffness: 180.0,
           damping: 12.0,
@@ -131,7 +137,9 @@ void main() {
 
       test('handles onEnd callback', () {
         bool called = false;
-        final config = AnimationConfig.spring(onEnd: () => called = true);
+        final config = AnimationConfig.springDescription(
+          onEnd: () => called = true,
+        );
 
         expect(config.onEnd, isNotNull);
         config.onEnd!();
