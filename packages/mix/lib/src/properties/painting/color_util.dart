@@ -125,6 +125,8 @@ final class ColorUtility<T extends Style<Object?>>
   T ref(MixToken<Color> ref) => token(ref);
 
   T token(MixToken<Color> token) => builder(Prop.token(token));
+
+  T call(Color color) => builder(Prop(color));
 }
 
 /// Provides access to basic black, white, and transparent colors with opacity variants.

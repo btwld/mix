@@ -199,12 +199,12 @@ void main() {
 
     group('UtilityTestAttribute', () {
       test('wraps Prop values', () {
-        final attr = UtilityTestAttribute(Prop(Colors.red));
+        final attr = MockStyle(Prop(Colors.red));
         expect(attr.value, isA<Prop<Color>>());
       });
 
       test('resolves to MockSpec', () {
-        final attr = UtilityTestAttribute(Prop(Colors.blue));
+        final attr = MockStyle(Prop(Colors.blue));
         final resolved = attr.resolve(MockBuildContext());
 
         expect(resolved, isA<MockSpec>());
@@ -212,8 +212,8 @@ void main() {
       });
 
       test('merges Prop values correctly', () {
-        final first = UtilityTestAttribute(Prop(Colors.red));
-        final second = UtilityTestAttribute(Prop(Colors.blue));
+        final first = MockStyle(Prop(Colors.red));
+        final second = MockStyle(Prop(Colors.blue));
 
         final merged = first.merge(second);
 

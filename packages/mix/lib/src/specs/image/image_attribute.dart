@@ -25,6 +25,11 @@ class ImageMix extends Style<ImageSpec>
   final Prop<Rect>? $centerSlice;
   final Prop<FilterQuality>? $filterQuality;
   final Prop<BlendMode>? $colorBlendMode;
+  final Prop<String>? $semanticLabel;
+  final Prop<bool>? $excludeFromSemantics;
+  final Prop<bool>? $gaplessPlayback;
+  final Prop<bool>? $isAntiAlias;
+  final Prop<bool>? $matchTextDirection;
 
   /// Factory for image width
   factory ImageMix.width(double value) {
@@ -71,6 +76,31 @@ class ImageMix extends Style<ImageSpec>
     return ImageMix(colorBlendMode: value);
   }
 
+  /// Factory for semantic label
+  factory ImageMix.semanticLabel(String value) {
+    return ImageMix(semanticLabel: value);
+  }
+
+  /// Factory for exclude from semantics
+  factory ImageMix.excludeFromSemantics(bool value) {
+    return ImageMix(excludeFromSemantics: value);
+  }
+
+  /// Factory for gapless playback
+  factory ImageMix.gaplessPlayback(bool value) {
+    return ImageMix(gaplessPlayback: value);
+  }
+
+  /// Factory for is anti alias
+  factory ImageMix.isAntiAlias(bool value) {
+    return ImageMix(isAntiAlias: value);
+  }
+
+  /// Factory for match text direction
+  factory ImageMix.matchTextDirection(bool value) {
+    return ImageMix(matchTextDirection: value);
+  }
+
   /// Factory for animation
   factory ImageMix.animate(AnimationConfig animation) {
     return ImageMix(animation: animation);
@@ -91,6 +121,11 @@ class ImageMix extends Style<ImageSpec>
     Prop<Rect>? centerSlice,
     Prop<FilterQuality>? filterQuality,
     Prop<BlendMode>? colorBlendMode,
+    Prop<String>? semanticLabel,
+    Prop<bool>? excludeFromSemantics,
+    Prop<bool>? gaplessPlayback,
+    Prop<bool>? isAntiAlias,
+    Prop<bool>? matchTextDirection,
     super.animation,
     super.modifierConfig,
     super.variants,
@@ -104,7 +139,12 @@ class ImageMix extends Style<ImageSpec>
        $alignment = alignment,
        $centerSlice = centerSlice,
        $filterQuality = filterQuality,
-       $colorBlendMode = colorBlendMode;
+       $colorBlendMode = colorBlendMode,
+       $semanticLabel = semanticLabel,
+       $excludeFromSemantics = excludeFromSemantics,
+       $gaplessPlayback = gaplessPlayback,
+       $isAntiAlias = isAntiAlias,
+       $matchTextDirection = matchTextDirection;
 
   ImageMix({
     double? width,
@@ -116,6 +156,11 @@ class ImageMix extends Style<ImageSpec>
     Rect? centerSlice,
     FilterQuality? filterQuality,
     BlendMode? colorBlendMode,
+    String? semanticLabel,
+    bool? excludeFromSemantics,
+    bool? gaplessPlayback,
+    bool? isAntiAlias,
+    bool? matchTextDirection,
     AnimationConfig? animation,
     ModifierConfig? modifierConfig,
     List<VariantStyleAttribute<ImageSpec>>? variants,
@@ -130,6 +175,11 @@ class ImageMix extends Style<ImageSpec>
          centerSlice: Prop.maybe(centerSlice),
          filterQuality: Prop.maybe(filterQuality),
          colorBlendMode: Prop.maybe(colorBlendMode),
+         semanticLabel: Prop.maybe(semanticLabel),
+         excludeFromSemantics: Prop.maybe(excludeFromSemantics),
+         gaplessPlayback: Prop.maybe(gaplessPlayback),
+         isAntiAlias: Prop.maybe(isAntiAlias),
+         matchTextDirection: Prop.maybe(matchTextDirection),
          animation: animation,
          modifierConfig: modifierConfig,
          variants: variants,
@@ -155,6 +205,11 @@ class ImageMix extends Style<ImageSpec>
         centerSlice: spec.centerSlice,
         filterQuality: spec.filterQuality,
         colorBlendMode: spec.colorBlendMode,
+        semanticLabel: spec.semanticLabel,
+        excludeFromSemantics: spec.excludeFromSemantics,
+        gaplessPlayback: spec.gaplessPlayback,
+        isAntiAlias: spec.isAntiAlias,
+        matchTextDirection: spec.matchTextDirection,
       );
 
   /// Constructor that accepts a nullable [ImageSpec] value and extracts its properties.
@@ -214,6 +269,31 @@ class ImageMix extends Style<ImageSpec>
     return merge(ImageMix.colorBlendMode(value));
   }
 
+  /// Sets semantic label
+  ImageMix semanticLabel(String value) {
+    return merge(ImageMix.semanticLabel(value));
+  }
+
+  /// Sets exclude from semantics
+  ImageMix excludeFromSemantics(bool value) {
+    return merge(ImageMix.excludeFromSemantics(value));
+  }
+
+  /// Sets gapless playback
+  ImageMix gaplessPlayback(bool value) {
+    return merge(ImageMix.gaplessPlayback(value));
+  }
+
+  /// Sets is anti alias
+  ImageMix isAntiAlias(bool value) {
+    return merge(ImageMix.isAntiAlias(value));
+  }
+
+  /// Sets match text direction
+  ImageMix matchTextDirection(bool value) {
+    return merge(ImageMix.matchTextDirection(value));
+  }
+
   /// Convenience method for animating the ImageSpec
   ImageMix animate(AnimationConfig animation) {
     return merge(ImageMix.animate(animation));
@@ -241,6 +321,11 @@ class ImageMix extends Style<ImageSpec>
       centerSlice: MixHelpers.resolve(context, $centerSlice),
       filterQuality: MixHelpers.resolve(context, $filterQuality),
       colorBlendMode: MixHelpers.resolve(context, $colorBlendMode),
+      semanticLabel: MixHelpers.resolve(context, $semanticLabel),
+      excludeFromSemantics: MixHelpers.resolve(context, $excludeFromSemantics),
+      gaplessPlayback: MixHelpers.resolve(context, $gaplessPlayback),
+      isAntiAlias: MixHelpers.resolve(context, $isAntiAlias),
+      matchTextDirection: MixHelpers.resolve(context, $matchTextDirection),
     );
   }
 
@@ -258,6 +343,11 @@ class ImageMix extends Style<ImageSpec>
       centerSlice: MixHelpers.merge($centerSlice, other.$centerSlice),
       filterQuality: MixHelpers.merge($filterQuality, other.$filterQuality),
       colorBlendMode: MixHelpers.merge($colorBlendMode, other.$colorBlendMode),
+      semanticLabel: MixHelpers.merge($semanticLabel, other.$semanticLabel),
+      excludeFromSemantics: MixHelpers.merge($excludeFromSemantics, other.$excludeFromSemantics),
+      gaplessPlayback: MixHelpers.merge($gaplessPlayback, other.$gaplessPlayback),
+      isAntiAlias: MixHelpers.merge($isAntiAlias, other.$isAntiAlias),
+      matchTextDirection: MixHelpers.merge($matchTextDirection, other.$matchTextDirection),
       animation: other.$animation ?? $animation,
       modifierConfig:
           $modifierConfig?.merge(other.$modifierConfig) ??
@@ -291,6 +381,21 @@ class ImageMix extends Style<ImageSpec>
         defaultValue: null,
       ),
     );
+    properties.add(
+      DiagnosticsProperty('semanticLabel', $semanticLabel, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('excludeFromSemantics', $excludeFromSemantics, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('gaplessPlayback', $gaplessPlayback, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('isAntiAlias', $isAntiAlias, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('matchTextDirection', $matchTextDirection, defaultValue: null),
+    );
   }
 
   @override
@@ -309,6 +414,11 @@ class ImageMix extends Style<ImageSpec>
     $centerSlice,
     $filterQuality,
     $colorBlendMode,
+    $semanticLabel,
+    $excludeFromSemantics,
+    $gaplessPlayback,
+    $isAntiAlias,
+    $matchTextDirection,
     $animation,
     $modifierConfig,
     $variants,

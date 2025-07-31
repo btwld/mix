@@ -14,6 +14,11 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
   final FilterQuality? filterQuality;
 
   final BlendMode? colorBlendMode;
+  final String? semanticLabel;
+  final bool? excludeFromSemantics;
+  final bool? gaplessPlayback;
+  final bool? isAntiAlias;
+  final bool? matchTextDirection;
 
   const ImageSpec({
     this.width,
@@ -25,6 +30,11 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
     this.centerSlice,
     this.filterQuality,
     this.colorBlendMode,
+    this.semanticLabel,
+    this.excludeFromSemantics,
+    this.gaplessPlayback,
+    this.isAntiAlias,
+    this.matchTextDirection,
   });
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -45,6 +55,21 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
     properties.add(
       DiagnosticsProperty('colorBlendMode', colorBlendMode, defaultValue: null),
     );
+    properties.add(
+      DiagnosticsProperty('semanticLabel', semanticLabel, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('excludeFromSemantics', excludeFromSemantics, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('gaplessPlayback', gaplessPlayback, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('isAntiAlias', isAntiAlias, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('matchTextDirection', matchTextDirection, defaultValue: null),
+    );
   }
 
   @override
@@ -58,6 +83,11 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
     Rect? centerSlice,
     FilterQuality? filterQuality,
     BlendMode? colorBlendMode,
+    String? semanticLabel,
+    bool? excludeFromSemantics,
+    bool? gaplessPlayback,
+    bool? isAntiAlias,
+    bool? matchTextDirection,
   }) {
     return ImageSpec(
       width: width ?? this.width,
@@ -69,6 +99,11 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
       centerSlice: centerSlice ?? this.centerSlice,
       filterQuality: filterQuality ?? this.filterQuality,
       colorBlendMode: colorBlendMode ?? this.colorBlendMode,
+      semanticLabel: semanticLabel ?? this.semanticLabel,
+      excludeFromSemantics: excludeFromSemantics ?? this.excludeFromSemantics,
+      gaplessPlayback: gaplessPlayback ?? this.gaplessPlayback,
+      isAntiAlias: isAntiAlias ?? this.isAntiAlias,
+      matchTextDirection: matchTextDirection ?? this.matchTextDirection,
     );
   }
 
@@ -86,6 +121,11 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
       centerSlice: Rect.lerp(centerSlice, other.centerSlice, t),
       filterQuality: t < 0.5 ? filterQuality : other.filterQuality,
       colorBlendMode: t < 0.5 ? colorBlendMode : other.colorBlendMode,
+      semanticLabel: t < 0.5 ? semanticLabel : other.semanticLabel,
+      excludeFromSemantics: t < 0.5 ? excludeFromSemantics : other.excludeFromSemantics,
+      gaplessPlayback: t < 0.5 ? gaplessPlayback : other.gaplessPlayback,
+      isAntiAlias: t < 0.5 ? isAntiAlias : other.isAntiAlias,
+      matchTextDirection: t < 0.5 ? matchTextDirection : other.matchTextDirection,
     );
   }
 
@@ -106,5 +146,10 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
     centerSlice,
     filterQuality,
     colorBlendMode,
+    semanticLabel,
+    excludeFromSemantics,
+    gaplessPlayback,
+    isAntiAlias,
+    matchTextDirection,
   ];
 }

@@ -479,13 +479,13 @@ void main() {
 
   group('FractionallySizedBoxModifierUtility', () {
     late FractionallySizedBoxModifierUtility<
-      UtilityTestAttribute<FractionallySizedBoxModifierAttribute>
+      MockStyle<FractionallySizedBoxModifierAttribute>
     >
     utility;
 
     setUp(() {
       utility = FractionallySizedBoxModifierUtility(
-        (attribute) => UtilityTestAttribute(attribute),
+        (attribute) => MockStyle(attribute),
       );
     });
 

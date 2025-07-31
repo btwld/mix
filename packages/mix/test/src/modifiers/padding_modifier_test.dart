@@ -317,13 +317,10 @@ void main() {
   });
 
   group('PaddingModifierUtility', () {
-    late PaddingModifierUtility<UtilityTestAttribute<PaddingModifierAttribute>>
-    utility;
+    late PaddingModifierUtility<MockStyle<PaddingModifierAttribute>> utility;
 
     setUp(() {
-      utility = PaddingModifierUtility(
-        (attribute) => UtilityTestAttribute(attribute),
-      );
+      utility = PaddingModifierUtility((attribute) => MockStyle(attribute));
     });
 
     test('call() creates attribute with specified padding', () {

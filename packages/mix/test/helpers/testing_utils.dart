@@ -243,10 +243,10 @@ class MockBuildContext extends BuildContext {
 /// final gradientUtility = GradientUtility(UtilityTestAttribute.new);
 /// final attr = gradientUtility.linear(...);
 /// ```
-final class UtilityTestAttribute<T> extends Style<MockSpec<T>> {
+class MockStyle<T> extends Style<MockSpec<T>> {
   final T value;
 
-  const UtilityTestAttribute(
+  const MockStyle(
     this.value, {
     super.variants,
     super.modifierConfig,
@@ -256,20 +256,20 @@ final class UtilityTestAttribute<T> extends Style<MockSpec<T>> {
   });
 
   @override
-  UtilityTestAttribute<T> merge(covariant UtilityTestAttribute<T>? other) {
+  MockStyle<T> merge(covariant MockStyle<T>? other) {
     if (other == null) return this;
     // For PropBase types (Prop<T> and MixProp<V>), use their merge method
     if (value is PropBase && other.value is PropBase) {
       final merged = (value as PropBase).merge(other.value as PropBase);
-      return UtilityTestAttribute(merged as T);
+      return MockStyle(merged as T);
     }
     // For other Mixable types
     if (value is Mixable && other.value is Mixable) {
       final merged = (value as Mixable).merge(other.value as Mixable);
-      return UtilityTestAttribute(merged as T);
+      return MockStyle(merged as T);
     }
     // Default: just return the other value
-    return UtilityTestAttribute(other.value);
+    return MockStyle(other.value);
   }
 
   @override

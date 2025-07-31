@@ -11,12 +11,7 @@ class StyledImage extends StyleWidget<ImageSpec> {
     this.frameBuilder,
     this.loadingBuilder,
     this.errorBuilder,
-    this.semanticLabel,
-    this.excludeFromSemantics = false,
     required this.image,
-    this.gaplessPlayback = false,
-    this.isAntiAlias = false,
-    this.matchTextDirection = false,
     this.opacity,
   });
 
@@ -24,11 +19,6 @@ class StyledImage extends StyleWidget<ImageSpec> {
   final ImageFrameBuilder? frameBuilder;
   final ImageLoadingBuilder? loadingBuilder;
   final ImageErrorWidgetBuilder? errorBuilder;
-  final String? semanticLabel;
-  final bool excludeFromSemantics;
-  final bool gaplessPlayback;
-  final bool isAntiAlias;
-  final bool matchTextDirection;
   final Animation<double>? opacity;
 
   @override
@@ -38,8 +28,8 @@ class StyledImage extends StyleWidget<ImageSpec> {
       frameBuilder: frameBuilder,
       loadingBuilder: loadingBuilder,
       errorBuilder: errorBuilder,
-      semanticLabel: semanticLabel,
-      excludeFromSemantics: excludeFromSemantics,
+      semanticLabel: spec?.semanticLabel,
+      excludeFromSemantics: spec?.excludeFromSemantics ?? false,
       width: spec?.width,
       height: spec?.height,
       color: spec?.color,
@@ -49,9 +39,9 @@ class StyledImage extends StyleWidget<ImageSpec> {
       alignment: spec?.alignment ?? Alignment.center,
       repeat: spec?.repeat ?? ImageRepeat.noRepeat,
       centerSlice: spec?.centerSlice,
-      matchTextDirection: matchTextDirection,
-      gaplessPlayback: gaplessPlayback,
-      isAntiAlias: isAntiAlias,
+      matchTextDirection: spec?.matchTextDirection ?? false,
+      gaplessPlayback: spec?.gaplessPlayback ?? false,
+      isAntiAlias: spec?.isAntiAlias ?? false,
       filterQuality: spec?.filterQuality ?? FilterQuality.low,
     );
   }

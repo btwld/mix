@@ -7,9 +7,7 @@ import '../../../helpers/testing_utils.dart';
 void main() {
   group('Scalar Utilities Extensions', () {
     group('FontWeightUtility', () {
-      final utility = MixUtility<UtilityTestAttribute, FontWeight>(
-        UtilityTestAttribute.new,
-      );
+      final utility = MixUtility<MockStyle, FontWeight>(MockStyle.new);
 
       test('bold() creates FontWeight.bold', () {
         final attr = utility.bold();
@@ -68,9 +66,7 @@ void main() {
     });
 
     group('AlignmentUtility', () {
-      final utility = MixUtility<UtilityTestAttribute, AlignmentGeometry>(
-        UtilityTestAttribute.new,
-      );
+      final utility = MixUtility<MockStyle, AlignmentGeometry>(MockStyle.new);
 
       test('topLeft() creates Alignment.topLeft', () {
         final attr = utility.topLeft();

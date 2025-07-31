@@ -336,15 +336,10 @@ void main() {
   });
 
   group('FlexibleModifierUtility', () {
-    late FlexibleModifierUtility<
-      UtilityTestAttribute<FlexibleModifierAttribute>
-    >
-    utility;
+    late FlexibleModifierUtility<MockStyle<FlexibleModifierAttribute>> utility;
 
     setUp(() {
-      utility = FlexibleModifierUtility(
-        (attribute) => UtilityTestAttribute(attribute),
-      );
+      utility = FlexibleModifierUtility((attribute) => MockStyle(attribute));
     });
 
     test('tight() creates attribute with tight fit', () {

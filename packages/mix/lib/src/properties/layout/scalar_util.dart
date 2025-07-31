@@ -666,9 +666,6 @@ extension StringPropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [int] values with predefined options.
 extension IntPropUtilityExt<T extends Style<Object?>> on MixUtility<T, int> {
   T call(int value) => builder(value);
-
-  /// Creates an [Style] instance with a value of 0.
-  T zero() => call(0);
 }
 
 /// Extension for creating [bool] values with predefined options.
@@ -676,8 +673,10 @@ extension BoolPropUtilityExt<T extends Style<Object?>> on MixUtility<T, bool> {
   T call(bool value) => builder(value);
 
   /// Creates an [Style] instance with a value of `true`.
+  @Deprecated('Use call(true) instead')
   T on() => call(true);
 
   /// Creates an [Style] instance with a value of `false`.
+  @Deprecated('Use call(false) instead')
   T off() => call(false);
 }

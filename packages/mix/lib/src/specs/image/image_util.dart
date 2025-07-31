@@ -38,6 +38,16 @@ class ImageSpecUtility extends StyleAttributeBuilder<ImageSpec> {
 
   late final colorBlendMode = MixUtility(mix.colorBlendMode);
 
+  late final semanticLabel = MixUtility(mix.semanticLabel);
+
+  late final excludeFromSemantics = MixUtility(mix.excludeFromSemantics);
+
+  late final gaplessPlayback = MixUtility(mix.gaplessPlayback);
+
+  late final isAntiAlias = MixUtility(mix.isAntiAlias);
+
+  late final matchTextDirection = MixUtility(mix.matchTextDirection);
+
   late final on = OnContextVariantUtility<ImageSpec, ImageMix>(
     (v) => mix.variants([v]),
   );

@@ -565,15 +565,11 @@ void main() {
   });
 
   group('ScrollViewModifierUtility', () {
-    late ScrollViewModifierUtility<
-      UtilityTestAttribute<ScrollViewModifierAttribute>
-    >
+    late ScrollViewModifierUtility<MockStyle<ScrollViewModifierAttribute>>
     utility;
 
     setUp(() {
-      utility = ScrollViewModifierUtility(
-        (attribute) => UtilityTestAttribute(attribute),
-      );
+      utility = ScrollViewModifierUtility((attribute) => MockStyle(attribute));
     });
 
     test('call() creates attribute with specified values', () {

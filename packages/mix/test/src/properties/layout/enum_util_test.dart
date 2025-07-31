@@ -7,9 +7,7 @@ import '../../../helpers/testing_utils.dart';
 void main() {
   group('Enum Utility Extensions', () {
     group('BorderStylePropUtilityExt', () {
-      final utility = MixUtility<UtilityTestAttribute, BorderStyle>(
-        UtilityTestAttribute.new,
-      );
+      final utility = MixUtility<MockStyle, BorderStyle>(MockStyle.new);
 
       test('none() creates BorderStyle.none', () {
         final attr = utility.none();
@@ -28,9 +26,7 @@ void main() {
     });
 
     group('AxisPropUtilityExt', () {
-      final utility = MixUtility<UtilityTestAttribute, Axis>(
-        UtilityTestAttribute.new,
-      );
+      final utility = MixUtility<MockStyle, Axis>(MockStyle.new);
 
       test('horizontal() creates Axis.horizontal', () {
         final attr = utility.horizontal();
@@ -44,9 +40,7 @@ void main() {
     });
 
     group('StackFitPropUtilityExt', () {
-      final utility = MixUtility<UtilityTestAttribute, StackFit>(
-        UtilityTestAttribute.new,
-      );
+      final utility = MixUtility<MockStyle, StackFit>(MockStyle.new);
 
       test('loose() creates StackFit.loose', () {
         final attr = utility.loose();
@@ -65,9 +59,7 @@ void main() {
     });
 
     group('TextDirectionPropUtilityExt', () {
-      final utility = MixUtility<UtilityTestAttribute, TextDirection>(
-        UtilityTestAttribute.new,
-      );
+      final utility = MixUtility<MockStyle, TextDirection>(MockStyle.new);
 
       test('rtl() creates TextDirection.rtl', () {
         final attr = utility.rtl();
@@ -81,8 +73,8 @@ void main() {
     });
 
     group('TextLeadingDistributionPropUtilityExt', () {
-      final utility = MixUtility<UtilityTestAttribute, TextLeadingDistribution>(
-        UtilityTestAttribute.new,
+      final utility = MixUtility<MockStyle, TextLeadingDistribution>(
+        MockStyle.new,
       );
 
       test('proportional() creates TextLeadingDistribution.proportional', () {
@@ -97,9 +89,7 @@ void main() {
     });
 
     group('TileModeUtility', () {
-      const utility = MixUtility<UtilityTestAttribute, TileMode>(
-        UtilityTestAttribute.new,
-      );
+      const utility = MixUtility<MockStyle, TileMode>(MockStyle.new);
 
       test('clamp() creates TileMode.clamp', () {
         final attr = utility.clamp();
@@ -123,9 +113,7 @@ void main() {
     });
 
     group('BoxFitUtility', () {
-      const utility = MixUtility<UtilityTestAttribute, BoxFit>(
-        UtilityTestAttribute.new,
-      );
+      const utility = MixUtility<MockStyle, BoxFit>(MockStyle.new);
 
       test('fill() creates BoxFit.fill', () {
         final attr = utility.fill();
@@ -164,9 +152,7 @@ void main() {
     });
 
     group('BoxShapeUtility', () {
-      const utility = MixUtility<UtilityTestAttribute, BoxShape>(
-        UtilityTestAttribute.new,
-      );
+      const utility = MixUtility<MockStyle, BoxShape>(MockStyle.new);
 
       test('rectangle() creates BoxShape.rectangle', () {
         final attr = utility.rectangle();
@@ -180,9 +166,7 @@ void main() {
     });
 
     group('FontStyleUtility', () {
-      const utility = MixUtility<UtilityTestAttribute, FontStyle>(
-        UtilityTestAttribute.new,
-      );
+      const utility = MixUtility<MockStyle, FontStyle>(MockStyle.new);
 
       test('normal() creates FontStyle.normal', () {
         final attr = utility.normal();
@@ -196,9 +180,7 @@ void main() {
     });
 
     group('TextBaselineUtility', () {
-      const utility = MixUtility<UtilityTestAttribute, TextBaseline>(
-        UtilityTestAttribute.new,
-      );
+      const utility = MixUtility<MockStyle, TextBaseline>(MockStyle.new);
 
       test('alphabetic() creates TextBaseline.alphabetic', () {
         final attr = utility.alphabetic();
@@ -212,9 +194,7 @@ void main() {
     });
 
     group('TextWidthBasisUtility', () {
-      const utility = MixUtility<UtilityTestAttribute, TextWidthBasis>(
-        UtilityTestAttribute.new,
-      );
+      const utility = MixUtility<MockStyle, TextWidthBasis>(MockStyle.new);
 
       test('parent() creates TextWidthBasis.parent', () {
         final attr = utility.parent();

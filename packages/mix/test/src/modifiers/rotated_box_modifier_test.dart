@@ -248,15 +248,11 @@ void main() {
   });
 
   group('RotatedBoxModifierUtility', () {
-    late RotatedBoxModifierUtility<
-      UtilityTestAttribute<RotatedBoxModifierAttribute>
-    >
+    late RotatedBoxModifierUtility<MockStyle<RotatedBoxModifierAttribute>>
     utility;
 
     setUp(() {
-      utility = RotatedBoxModifierUtility(
-        (attribute) => UtilityTestAttribute(attribute),
-      );
+      utility = RotatedBoxModifierUtility((attribute) => MockStyle(attribute));
     });
 
     test('call() creates attribute with specified quarter turns', () {

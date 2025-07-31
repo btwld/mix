@@ -1,0 +1,407 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mix/mix.dart';
+
+import '../../../helpers/testing_utils.dart';
+
+void main() {
+  group('TextSpecUtility', () {
+    late TextSpecUtility util;
+
+    setUp(() {
+      util = TextSpecUtility();
+    });
+
+    group('Constructor', () {
+      test('creates with default TextMix when no attribute provided', () {
+        final utility = TextSpecUtility();
+        expect(utility.mix, isA<TextMix>());
+      });
+
+      test('creates with provided TextMix attribute', () {
+        final textMix = TextMix(maxLines: 3);
+        final utility = TextSpecUtility(textMix);
+        
+        expect(utility.mix, same(textMix));
+        expectProp(utility.mix.$maxLines, 3);
+      });
+    });
+
+    group('Text utility properties', () {
+      test('textOverflow utility is MixUtility', () {
+        expect(util.textOverflow, isA<MixUtility<TextMix, TextOverflow>>());
+      });
+
+      test('strutStyle utility is StrutStyleUtility', () {
+        expect(util.strutStyle, isA<StrutStyleUtility<TextMix>>());
+      });
+
+      test('textAlign utility is MixUtility', () {
+        expect(util.textAlign, isA<MixUtility<TextMix, TextAlign>>());
+      });
+
+      test('textScaler utility is MixUtility', () {
+        expect(util.textScaler, isA<MixUtility<TextMix, TextScaler>>());
+      });
+
+      test('maxLines utility is MixUtility', () {
+        expect(util.maxLines, isA<MixUtility<TextMix, int>>());
+      });
+
+      test('style utility is TextStyleUtility', () {
+        expect(util.style, isA<TextStyleUtility<TextMix>>());
+      });
+
+      test('textWidthBasis utility is MixUtility', () {
+        expect(util.textWidthBasis, isA<MixUtility<TextMix, TextWidthBasis>>());
+      });
+
+      test('textHeightBehavior utility is TextHeightBehaviorUtility', () {
+        expect(util.textHeightBehavior, isA<TextHeightBehaviorUtility<TextMix>>());
+      });
+
+      test('textDirection utility is MixUtility', () {
+        expect(util.textDirection, isA<MixUtility<TextMix, TextDirection>>());
+      });
+
+      test('softWrap utility is MixUtility', () {
+        expect(util.softWrap, isA<MixUtility<TextMix, bool>>());
+      });
+
+      test('directives utility is TextDirectiveUtility', () {
+        expect(util.directives, isA<TextDirectiveUtility>());
+      });
+
+      test('on utility is OnContextVariantUtility', () {
+        expect(util.on, isA<OnContextVariantUtility<TextSpec, TextMix>>());
+      });
+
+      test('wrap utility is ModifierUtility', () {
+        expect(util.wrap, isA<ModifierUtility<TextMix>>());
+      });
+    });
+
+    group('Flattened access properties', () {
+      test('color utility provides color access', () {
+        expect(util.color, isNotNull);
+      });
+
+      test('fontFamily utility provides fontFamily access', () {
+        expect(util.fontFamily, isNotNull);
+      });
+
+      test('fontSize utility provides fontSize access', () {
+        expect(util.fontSize, isNotNull);
+      });
+
+      test('fontWeight utility provides fontWeight access', () {
+        expect(util.fontWeight, isNotNull);
+      });
+
+      test('fontStyle utility provides fontStyle access', () {
+        expect(util.fontStyle, isNotNull);
+      });
+
+      test('decoration utility provides decoration access', () {
+        expect(util.decoration, isNotNull);
+      });
+
+      test('backgroundColor utility provides backgroundColor access', () {
+        expect(util.backgroundColor, isNotNull);
+      });
+
+      test('decorationColor utility provides decorationColor access', () {
+        expect(util.decorationColor, isNotNull);
+      });
+
+      test('decorationStyle utility provides decorationStyle access', () {
+        expect(util.decorationStyle, isNotNull);
+      });
+
+      test('textBaseline utility provides textBaseline access', () {
+        expect(util.textBaseline, isNotNull);
+      });
+
+      test('height utility provides height access', () {
+        expect(util.height, isNotNull);
+      });
+
+      test('letterSpacing utility provides letterSpacing access', () {
+        expect(util.letterSpacing, isNotNull);
+      });
+
+      test('wordSpacing utility provides wordSpacing access', () {
+        expect(util.wordSpacing, isNotNull);
+      });
+
+      test('fontVariations utility provides fontVariations access', () {
+        expect(util.fontVariations, isNotNull);
+      });
+
+      test('shadows utility provides shadows access', () {
+        expect(util.shadows, isNotNull);
+      });
+
+      test('foreground utility provides foreground access', () {
+        expect(util.foreground, isNotNull);
+      });
+
+      test('background utility provides background access', () {
+        expect(util.background, isNotNull);
+      });
+
+      test('fontFeatures utility provides fontFeatures access', () {
+        expect(util.fontFeatures, isNotNull);
+      });
+
+      test('debugLabel utility provides debugLabel access', () {
+        expect(util.debugLabel, isNotNull);
+      });
+
+      test('decorationThickness utility provides decorationThickness access', () {
+        expect(util.decorationThickness, isNotNull);
+      });
+
+      test('fontFamilyFallback utility provides fontFamilyFallback access', () {
+        expect(util.fontFamilyFallback, isNotNull);
+      });
+    });
+
+    group('Text property utilities', () {
+      test('textOverflow utility creates correct TextMix', () {
+        final result = util.textOverflow(TextOverflow.ellipsis);
+        expectProp(result.$overflow, TextOverflow.ellipsis);
+      });
+
+      test('textAlign utility creates correct TextMix', () {
+        final result = util.textAlign(TextAlign.center);
+        expectProp(result.$textAlign, TextAlign.center);
+      });
+
+      test('maxLines utility creates correct TextMix', () {
+        final result = util.maxLines(3);
+        expectProp(result.$maxLines, 3);
+      });
+
+      test('textWidthBasis utility creates correct TextMix', () {
+        final result = util.textWidthBasis(TextWidthBasis.longestLine);
+        expectProp(result.$textWidthBasis, TextWidthBasis.longestLine);
+      });
+
+      test('textDirection utility creates correct TextMix', () {
+        final result = util.textDirection(TextDirection.rtl);
+        expectProp(result.$textDirection, TextDirection.rtl);
+      });
+
+      test('softWrap utility creates correct TextMix', () {
+        final result = util.softWrap(false);
+        expectProp(result.$softWrap, false);
+      });
+    });
+
+    group('Convenience methods', () {
+      test('bold() creates bold text style', () {
+        final result = util.bold();
+        expect(result, isA<TextMix>());
+      });
+
+      test('italic() creates italic text style', () {
+        final result = util.italic();
+        expect(result, isA<TextMix>());
+      });
+    });
+
+    group('Animation', () {
+      test('animate() adds animation config', () {
+        final animationConfig = AnimationConfig.linear(
+          const Duration(seconds: 1),
+        );
+        final result = util.animate(animationConfig);
+        
+        expect(result.$animation, animationConfig);
+      });
+    });
+
+    group('Variant utilities', () {
+      test('on utility creates VariantAttributeBuilder', () {
+        final hoverBuilder = util.on.hover;
+        
+        expect(hoverBuilder, isA<VariantAttributeBuilder<TextSpec>>());
+      });
+    });
+
+    group('Modifier utilities', () {
+      test('wrap utility creates modifier TextMix', () {
+        final result = util.wrap.opacity(0.5);
+        
+        expect(result, isA<TextMix>());
+        expect(result.$modifierConfig, isNotNull);
+        expect(result.$modifierConfig!.$modifiers!.length, 1);
+      });
+    });
+
+    group('Merge functionality', () {
+      test('merge with null returns same instance', () {
+        final result = util.merge(null);
+        expect(result, same(util));
+      });
+
+      test('merge with TextSpecUtility creates new instance', () {
+        final other = TextSpecUtility(TextMix(maxLines: 5));
+        final result = util.merge(other);
+
+        expect(result, isNot(same(util)));
+        expect(result, isA<TextSpecUtility>());
+        expectProp(result.mix.$maxLines, 5);
+      });
+
+      test('merge with TextMix creates new instance', () {
+        final otherMix = TextMix(textAlign: TextAlign.center);
+        final result = util.merge(otherMix);
+
+        expect(result, isNot(same(util)));
+        expect(result, isA<TextSpecUtility>());
+        expectProp(result.mix.$textAlign, TextAlign.center);
+      });
+
+      test('merge throws error for unsupported type', () {
+        expect(
+          () => util.merge('invalid_type' as Style<TextSpec>),
+          throwsA(isA<TypeError>()),
+        );
+      });
+
+      test('merge combines properties correctly', () {
+        util.mix = TextMix(maxLines: 3, textAlign: TextAlign.left);
+        final other = TextSpecUtility(
+          TextMix(textAlign: TextAlign.center, softWrap: false),
+        );
+        
+        final result = util.merge(other);
+        
+        expectProp(result.mix.$maxLines, 3);
+        expectProp(result.mix.$textAlign, TextAlign.center); // other takes precedence
+        expectProp(result.mix.$softWrap, false);
+      });
+    });
+
+    group('Resolve functionality', () {
+      test('resolve returns TextSpec with resolved properties', () {
+        util.mix = TextMix(
+          maxLines: 3,
+          textAlign: TextAlign.center,
+          softWrap: false,
+        );
+        
+        final context = MockBuildContext();
+        final spec = util.resolve(context);
+        
+        expect(spec, isA<TextSpec>());
+        expect(spec.maxLines, 3);
+        expect(spec.textAlign, TextAlign.center);
+        expect(spec.softWrap, false);
+      });
+
+      test('resolve handles null properties', () {
+        final context = MockBuildContext();
+        final spec = util.resolve(context);
+        
+        expect(spec.maxLines, isNull);
+        expect(spec.textAlign, isNull);
+        expect(spec.softWrap, isNull);
+      });
+    });
+
+    group('Utility method behavior', () {
+      test('utilities return new TextMix instances', () {
+        final result1 = util.maxLines(3);
+        final result2 = util.textAlign(TextAlign.center);
+        final result3 = util.softWrap(false);
+        
+        expectProp(result1.$maxLines, 3);
+        expectProp(result2.$textAlign, TextAlign.center);
+        expectProp(result3.$softWrap, false);
+      });
+    });
+
+    group('Integration with resolvesTo matcher', () {
+      test('utility resolves to correct TextSpec', () {
+        util.mix = TextMix(
+          maxLines: 3,
+          textAlign: TextAlign.center,
+          softWrap: false,
+        );
+        
+        expect(
+          util,
+          resolvesTo(
+            const TextSpec(
+              maxLines: 3,
+              textAlign: TextAlign.center,
+              softWrap: false,
+            ),
+          ),
+        );
+      });
+    });
+
+    group('Token support', () {
+      test('resolves tokens with context', () {
+        const maxLinesToken = MixToken<int>('maxLines');
+        final context = MockBuildContext(
+          mixScopeData: MixScopeData.static(tokens: {maxLinesToken: 5}),
+        );
+        
+        util.mix = TextMix.raw(maxLines: Prop.token(maxLinesToken));
+        final spec = util.resolve(context);
+        
+        expect(spec.maxLines, 5);
+      });
+    });
+
+    group('Complex scenarios', () {
+      test('handles complex utility usage', () {
+        // Test individual utility calls
+        final maxLinesResult = util.maxLines(3);
+        final alignResult = util.textAlign(TextAlign.center);
+        final wrapResult = util.softWrap(false);
+
+        expectProp(maxLinesResult.$maxLines, 3);
+        expectProp(alignResult.$textAlign, TextAlign.center);
+        expectProp(wrapResult.$softWrap, false);
+      });
+
+      test('handles multiple merges correctly', () {
+        final util1 = TextSpecUtility(TextMix(maxLines: 3));
+        final util2 = TextSpecUtility(TextMix(textAlign: TextAlign.center));
+        final util3 = TextSpecUtility(TextMix(softWrap: false));
+        
+        final result = util1.merge(util2).merge(util3);
+        
+        expectProp(result.mix.$maxLines, 3);
+        expectProp(result.mix.$textAlign, TextAlign.center);
+        expectProp(result.mix.$softWrap, false);
+      });
+    });
+
+    group('Edge cases', () {
+      test('handles empty utility', () {
+        final emptyUtil = TextSpecUtility();
+        final context = MockBuildContext();
+        final spec = emptyUtil.resolve(context);
+        
+        expect(spec.maxLines, isNull);
+        expect(spec.textAlign, isNull);
+        expect(spec.softWrap, isNull);
+      });
+
+      test('merge with self returns new instance', () {
+        util.mix = TextMix(maxLines: 3);
+        final result = util.merge(util);
+        
+        expect(result, isNot(same(util)));
+        expectProp(result.mix.$maxLines, 3);
+      });
+    });
+  });
+}

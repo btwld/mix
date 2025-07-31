@@ -6,16 +6,15 @@ import '../../helpers/testing_utils.dart';
 
 void main() {
   group('OnContextVariantUtility', () {
-    final utility =
-        OnContextVariantUtility<MockSpec, UtilityTestAttribute<String>>(
-          (variant) => UtilityTestAttribute('test-value'),
-        );
+    final utility = OnContextVariantUtility<MockSpec, MockStyle<String>>(
+      (variant) => MockStyle('test-value'),
+    );
 
     group('Constructor', () {
       test('can be instantiated with builder function', () {
         expect(
-          () => OnContextVariantUtility<MockSpec, UtilityTestAttribute<String>>(
-            (variant) => UtilityTestAttribute('test'),
+          () => OnContextVariantUtility<MockSpec, MockStyle<String>>(
+            (variant) => MockStyle('test'),
           ),
           returnsNormally,
         );
@@ -583,8 +582,8 @@ void main() {
     group('Integration', () {
       test('works with utility-created builders', () {
         final testUtility =
-            OnContextVariantUtility<MockSpec, UtilityTestAttribute<String>>(
-              (variant) => UtilityTestAttribute('test'),
+            OnContextVariantUtility<MockSpec, MockStyle<String>>(
+              (variant) => MockStyle('test'),
             );
         final hoverBuilder = testUtility.hover;
 
@@ -610,7 +609,7 @@ void main() {
       test('call method creates VariantSpecAttribute with single element', () {
         const variant = NamedVariant('primary');
         const builder = VariantAttributeBuilder<MockSpec>(variant);
-        final attribute = UtilityTestAttribute<double>(100.0);
+        final attribute = MockStyle<double>(100.0);
 
         final result = builder.call(attribute);
 
@@ -624,8 +623,8 @@ void main() {
         () {
           const variant = NamedVariant('primary');
           const builder = VariantAttributeBuilder<MockSpec>(variant);
-          final attr1 = UtilityTestAttribute<double>(100.0);
-          final attr2 = UtilityTestAttribute<String>('test');
+          final attr1 = MockStyle<double>(100.0);
+          final attr2 = MockStyle<String>('test');
 
           final result = builder.call(attr1, attr2);
 
@@ -637,11 +636,11 @@ void main() {
 
       test('call method works with utility-created builders', () {
         final testUtility =
-            OnContextVariantUtility<MockSpec, UtilityTestAttribute<String>>(
-              (variant) => UtilityTestAttribute('test'),
+            OnContextVariantUtility<MockSpec, MockStyle<String>>(
+              (variant) => MockStyle('test'),
             );
         final hoverBuilder = testUtility.hover;
-        final attribute = UtilityTestAttribute<double>(200.0);
+        final attribute = MockStyle<double>(200.0);
 
         final result = hoverBuilder.call(attribute);
 
@@ -652,7 +651,7 @@ void main() {
       test('call method preserves variant information', () {
         final contextVariant = ContextVariant('hover', (context) => true);
         final builder = VariantAttributeBuilder<MockSpec>(contextVariant);
-        final attribute = UtilityTestAttribute<String>('test');
+        final attribute = MockStyle<String>('test');
 
         final result = builder.call(attribute);
 
@@ -670,14 +669,14 @@ void main() {
 
       test('call method supports usage pattern like README examples', () {
         final testUtility =
-            OnContextVariantUtility<MockSpec, UtilityTestAttribute<String>>(
-              (variant) => UtilityTestAttribute('test'),
+            OnContextVariantUtility<MockSpec, MockStyle<String>>(
+              (variant) => MockStyle('test'),
             );
         final darkBuilder = testUtility.dark;
 
         // Simulate: $on.dark($box.color.white(), $text.style.color.black())
-        final boxAttr = UtilityTestAttribute<String>('white');
-        final textAttr = UtilityTestAttribute<String>('black');
+        final boxAttr = MockStyle<String>('white');
+        final textAttr = MockStyle<String>('black');
 
         final result = darkBuilder.call(boxAttr, textAttr);
 
