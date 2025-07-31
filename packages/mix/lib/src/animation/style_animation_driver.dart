@@ -226,6 +226,7 @@ class SpringAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
 class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   final List<S> specs;
   final List<CurveAnimationConfig> curvesAndDurations;
+  final ValueNotifier trigger;
   int _currentIndex = 0;
 
   PhaseAnimationDriver({
@@ -233,10 +234,23 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     required this.curvesAndDurations,
     required this.specs,
     required super.initialStyle,
+    required this.trigger,
   }) {
+    trigger.addListener(_onTriggerChanged);
+
     if (curvesAndDurations.last.onEnd != null) {
       addOnCompleteListener(curvesAndDurations.last.onEnd!);
     }
+  }
+
+  void _onTriggerChanged() {
+    executeAnimation();
+  }
+
+  @override
+  void dispose() {
+    trigger.removeListener(_onTriggerChanged);
+    super.dispose();
   }
 
   @override
@@ -247,9 +261,15 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
 
       controller.duration = curvesAndDurations[_currentIndex].duration;
 
-      _fromStyle = ResolvedStyle(spec: specs[_currentIndex]);
+      if (i == 0) {
+        _fromStyle = currentResolvedStyle;
+      } else {
+        _fromStyle = ResolvedStyle(spec: specs[_currentIndex]);
+      }
       _targetResolvedStyle = ResolvedStyle(spec: specs[nextIndex]);
-      await controller.forward(from: 0.0);
+
+      final double fromValue = controller.value == 1 ? 0 : controller.value;
+      await controller.forward(from: fromValue);
     }
   }
 

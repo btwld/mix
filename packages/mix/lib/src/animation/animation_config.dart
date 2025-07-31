@@ -1,8 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../mix.dart';
 import '../core/internal/constants.dart';
+import '../core/spec.dart';
+import '../core/style.dart';
 
 /// Configuration data for animated styles in the Mix framework.
 ///
@@ -10,6 +11,7 @@ import '../core/internal/constants.dart';
 /// for use with animated widgets and style transitions.
 sealed class AnimationConfig {
   static const curve = CurveAnimationConfig.new;
+
   static const linear = CurveAnimationConfig.linear;
   static const decelerate = CurveAnimationConfig.decelerate;
   static const fastLinearToSlowEaseIn =
@@ -345,7 +347,7 @@ class PhaseAnimationConfig<T extends Spec<T>, U extends Style<T>>
     extends AnimationConfig {
   final List<U> styles;
   final List<CurveAnimationConfig> curvesAndDurations;
-  final Object trigger;
+  final ValueNotifier trigger;
   final VoidCallback? onEnd;
 
   const PhaseAnimationConfig({

@@ -65,6 +65,7 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
         curvesAndDurations: config.curvesAndDurations,
         specs: config.styles.map((e) => e.resolve(context) as S).toList(),
         initialStyle: widget.resolvedStyle,
+        trigger: config.trigger,
       ),
     };
   }

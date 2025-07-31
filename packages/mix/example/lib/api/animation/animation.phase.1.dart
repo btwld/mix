@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       home: Scaffold(
         body: Padding(
           padding: EdgeInsets.all(20),
@@ -32,7 +32,13 @@ class SwitchAnimation extends StatefulWidget {
 }
 
 class _SwitchAnimationState extends State<SwitchAnimation> {
-  bool _isExpanded = false;
+  final ValueNotifier<bool> _trigger = ValueNotifier(false);
+
+  @override
+  void dispose() {
+    _trigger.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,20 +46,20 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
       child: Pressable(
         onPress: () {
           setState(() {
-            _isExpanded = !_isExpanded;
+            _trigger.value = !_trigger.value;
           });
         },
         child: Box(
           style: Style.box()
               .color(
-                _isExpanded ? Colors.deepPurpleAccent : Colors.grey.shade300,
+                _trigger.value ? Colors.deepPurpleAccent : Colors.grey.shade300,
               )
               .height(30)
               .width(65)
               .borderRadius(BorderRadiusMix.all(Radius.circular(40)))
               .transformAlignment(Alignment.center)
               .alignment(
-                _isExpanded ? Alignment.centerRight : Alignment.centerLeft,
+                _trigger.value ? Alignment.centerRight : Alignment.centerLeft,
               )
               .animate(AnimationConfig.easeOut(300.ms)),
           child: Box(
@@ -82,7 +88,7 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
                   ).blurRadius(4).spreadRadius(3).offset(Offset(2, 4)),
                 )
                 .phaseAnimation(
-                  trigger: _isExpanded,
+                  trigger: _trigger,
                   phases: [false, true],
                   styleBuilder: (phase, style) {
                     return style

@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
-import '../../core/extensions/extensions.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
@@ -358,7 +357,7 @@ class BoxMix extends Style<BoxSpec>
 
   /// Animation instance method
   BoxMix phaseAnimation<T>({
-    required Object trigger,
+    required ValueNotifier trigger,
     required List<T> phases,
     required BoxMix Function(T phase, BoxMix style) styleBuilder,
     required CurveAnimationConfig Function(T phase) configBuilder,

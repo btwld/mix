@@ -37,7 +37,7 @@ class _BlockAnimationState extends State<BlockAnimation> {
         .borderRadius(BorderRadiusMix.all(Radius.circular(40)))
         .transformAlignment(Alignment.center)
         .phaseAnimation(
-          trigger: _isExpanded,
+          trigger: ValueNotifier(_isExpanded),
           phases: AnimationPhases.values,
           styleBuilder: (phase, style) => switch (phase) {
             AnimationPhases.initial => style.scale(1),
