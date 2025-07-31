@@ -17,44 +17,44 @@ import 'flex_spec.dart';
 class FlexSpecUtility extends StyleAttributeBuilder<FlexSpec> {
   // FLEX UTILITIES - Same as FlexMix but return FlexSpecUtility for cascade
 
-  late final direction = MixUtility(mix.direction);
+  late final direction = MixUtility(style.direction);
 
-  late final mainAxisAlignment = MixUtility(mix.mainAxisAlignment);
+  late final mainAxisAlignment = MixUtility(style.mainAxisAlignment);
 
-  late final crossAxisAlignment = MixUtility(mix.crossAxisAlignment);
+  late final crossAxisAlignment = MixUtility(style.crossAxisAlignment);
 
-  late final mainAxisSize = MixUtility(mix.mainAxisSize);
+  late final mainAxisSize = MixUtility(style.mainAxisSize);
 
-  late final verticalDirection = MixUtility(mix.verticalDirection);
+  late final verticalDirection = MixUtility(style.verticalDirection);
 
-  late final textDirection = MixUtility(mix.textDirection);
+  late final textDirection = MixUtility(style.textDirection);
 
-  late final textBaseline = MixUtility(mix.textBaseline);
+  late final textBaseline = MixUtility(style.textBaseline);
 
-  late final clipBehavior = MixUtility(mix.clipBehavior);
+  late final clipBehavior = MixUtility(style.clipBehavior);
 
-  late final gap = MixUtility(mix.gap);
+  late final gap = MixUtility(style.gap);
 
   late final on = OnContextVariantUtility<FlexSpec, FlexMix>(
-    (v) => mix.variants([v]),
+    (v) => style.variants([v]),
   );
 
   late final wrap = ModifierUtility(
-    (prop) => mix.modifier(ModifierConfig(modifiers: [prop])),
+    (prop) => style.modifier(ModifierConfig(modifiers: [prop])),
   );
 
   // ignore: prefer_final_fields
   @override
-  FlexMix mix;
+  FlexMix style;
 
-  FlexSpecUtility([FlexMix? attribute]) : mix = attribute ?? FlexMix();
+  FlexSpecUtility([FlexMix? attribute]) : style = attribute ?? FlexMix();
 
   // Convenience methods
-  FlexMix row() => mix.direction(Axis.horizontal);
-  FlexMix column() => mix.direction(Axis.vertical);
+  FlexMix row() => style.direction(Axis.horizontal);
+  FlexMix column() => style.direction(Axis.vertical);
 
   /// Animation
-  FlexMix animate(AnimationConfig animation) => mix.animate(animation);
+  FlexMix animate(AnimationConfig animation) => style.animate(animation);
 
   // StyleAttribute interface implementation
 
@@ -63,10 +63,10 @@ class FlexSpecUtility extends StyleAttributeBuilder<FlexSpec> {
     if (other == null) return this;
     // IMMUTABLE: Always create new instance (StyleAttribute contract)
     if (other is FlexSpecUtility) {
-      return FlexSpecUtility(mix.merge(other.mix));
+      return FlexSpecUtility(style.merge(other.style));
     }
     if (other is FlexMix) {
-      return FlexSpecUtility(mix.merge(other));
+      return FlexSpecUtility(style.merge(other));
     }
 
     throw FlutterError('Unsupported merge type: ${other.runtimeType}');
@@ -74,6 +74,6 @@ class FlexSpecUtility extends StyleAttributeBuilder<FlexSpec> {
 
   @override
   FlexSpec resolve(BuildContext context) {
-    return mix.resolve(context);
+    return style.resolve(context);
   }
 }

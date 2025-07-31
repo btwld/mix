@@ -238,6 +238,11 @@ class TextMix extends Style<TextSpec>
     return TextMix(locale: value);
   }
 
+  /// Factory for text style
+  factory TextMix.style(TextStyleMix value) {
+    return TextMix(style: value);
+  }
+
   /// Factory for animation
   factory TextMix.animate(AnimationConfig animation) {
     return TextMix(animation: animation);

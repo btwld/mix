@@ -18,52 +18,52 @@ import 'image_spec.dart';
 class ImageSpecUtility extends StyleAttributeBuilder<ImageSpec> {
   // IMAGE UTILITIES - Same as ImageMix but return ImageSpecUtility for cascade
 
-  late final width = MixUtility(mix.width);
+  late final width = MixUtility(style.width);
 
-  late final height = MixUtility(mix.height);
+  late final height = MixUtility(style.height);
 
   late final color = ColorUtility(
-    (prop) => mix.merge(ImageMix.raw(color: prop)),
+    (prop) => style.merge(ImageMix.raw(color: prop)),
   );
 
-  late final repeat = MixUtility(mix.repeat);
+  late final repeat = MixUtility(style.repeat);
 
-  late final fit = MixUtility(mix.fit);
+  late final fit = MixUtility(style.fit);
 
-  late final alignment = MixUtility(mix.alignment);
+  late final alignment = MixUtility(style.alignment);
 
-  late final centerSlice = MixUtility(mix.centerSlice);
+  late final centerSlice = MixUtility(style.centerSlice);
 
-  late final filterQuality = MixUtility(mix.filterQuality);
+  late final filterQuality = MixUtility(style.filterQuality);
 
-  late final colorBlendMode = MixUtility(mix.colorBlendMode);
+  late final colorBlendMode = MixUtility(style.colorBlendMode);
 
-  late final semanticLabel = MixUtility(mix.semanticLabel);
+  late final semanticLabel = MixUtility(style.semanticLabel);
 
-  late final excludeFromSemantics = MixUtility(mix.excludeFromSemantics);
+  late final excludeFromSemantics = MixUtility(style.excludeFromSemantics);
 
-  late final gaplessPlayback = MixUtility(mix.gaplessPlayback);
+  late final gaplessPlayback = MixUtility(style.gaplessPlayback);
 
-  late final isAntiAlias = MixUtility(mix.isAntiAlias);
+  late final isAntiAlias = MixUtility(style.isAntiAlias);
 
-  late final matchTextDirection = MixUtility(mix.matchTextDirection);
+  late final matchTextDirection = MixUtility(style.matchTextDirection);
 
   late final on = OnContextVariantUtility<ImageSpec, ImageMix>(
-    (v) => mix.variants([v]),
+    (v) => style.variants([v]),
   );
 
   late final wrap = ModifierUtility(
-    (prop) => mix.modifier(ModifierConfig(modifiers: [prop])),
+    (prop) => style.modifier(ModifierConfig(modifiers: [prop])),
   );
 
   // ignore: prefer_final_fields
   @override
-  ImageMix mix;
+  ImageMix style;
 
-  ImageSpecUtility([ImageMix? attribute]) : mix = attribute ?? ImageMix.raw();
+  ImageSpecUtility([ImageMix? attribute]) : style = attribute ?? ImageMix.raw();
 
   /// Animation
-  ImageMix animate(AnimationConfig animation) => mix.animate(animation);
+  ImageMix animate(AnimationConfig animation) => style.animate(animation);
 
   // StyleAttribute interface implementation
 
@@ -72,10 +72,10 @@ class ImageSpecUtility extends StyleAttributeBuilder<ImageSpec> {
     if (other == null) return this;
     // IMMUTABLE: Always create new instance (StyleAttribute contract)
     if (other is ImageSpecUtility) {
-      return ImageSpecUtility(mix.merge(other.mix));
+      return ImageSpecUtility(style.merge(other.style));
     }
     if (other is ImageMix) {
-      return ImageSpecUtility(mix.merge(other));
+      return ImageSpecUtility(style.merge(other));
     }
 
     throw FlutterError('Unsupported merge type: ${other.runtimeType}');
@@ -83,6 +83,6 @@ class ImageSpecUtility extends StyleAttributeBuilder<ImageSpec> {
 
   @override
   ImageSpec resolve(BuildContext context) {
-    return mix.resolve(context);
+    return style.resolve(context);
   }
 }

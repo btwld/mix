@@ -426,7 +426,7 @@ void main() {
         );
       });
 
-      test('vertical utility sets top and bottom sides', () {
+      test('vertical utility sets left and right sides', () {
         final result = util.vertical(width: 2.5, color: Colors.orange);
 
         final border = result.value.resolve(MockBuildContext());
@@ -434,12 +434,12 @@ void main() {
         expect(
           border,
           const Border.symmetric(
-            horizontal: BorderSide(width: 2.5, color: Colors.orange),
+            vertical: BorderSide(width: 2.5, color: Colors.orange),
           ),
         );
       });
 
-      test('horizontal utility sets left and right sides', () {
+      test('horizontal utility sets top and bottom sides', () {
         final result = util.horizontal(width: 1.5, color: Colors.pink);
 
         final border = result.value.resolve(MockBuildContext());
@@ -447,7 +447,7 @@ void main() {
         expect(
           border,
           const Border.symmetric(
-            vertical: BorderSide(width: 1.5, color: Colors.pink),
+            horizontal: BorderSide(width: 1.5, color: Colors.pink),
           ),
         );
       });

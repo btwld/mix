@@ -15,7 +15,7 @@ void main() {
     group('Constructor', () {
       test('creates with default FlexBoxMix when no attribute provided', () {
         final utility = FlexBoxSpecUtility();
-        expect(utility.mix, isA<FlexBoxMix>());
+        expect(utility.style, isA<FlexBoxMix>());
       });
 
       test('creates with provided FlexBoxMix attribute', () {
@@ -24,7 +24,7 @@ void main() {
         );
         final utility = FlexBoxSpecUtility(flexBoxMix);
 
-        expect(utility.mix, same(flexBoxMix));
+        expect(utility.style, same(flexBoxMix));
       });
     });
 
@@ -236,7 +236,7 @@ void main() {
       });
 
       test('merge combines properties correctly', () {
-        util.mix = FlexBoxMix(flex: FlexMix(direction: Axis.horizontal));
+        util.style = FlexBoxMix(flex: FlexMix(direction: Axis.horizontal));
         final other = FlexBoxSpecUtility(
           FlexBoxMix(
             flex: FlexMix(
@@ -254,7 +254,7 @@ void main() {
 
     group('Resolve functionality', () {
       test('resolve returns FlexBoxSpec with resolved properties', () {
-        util.mix = FlexBoxMix(
+        util.style = FlexBoxMix(
           flex: FlexMix(
             direction: Axis.vertical,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -298,7 +298,7 @@ void main() {
 
     group('Integration with resolvesTo matcher', () {
       test('utility resolves to correct FlexBoxSpec', () {
-        util.mix = FlexBoxMix(
+        util.style = FlexBoxMix(
           flex: FlexMix(
             direction: Axis.horizontal,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -328,7 +328,7 @@ void main() {
           mixScopeData: MixScopeData.static(tokens: {gapToken: 24.0}),
         );
 
-        util.mix = FlexBoxMix(flex: FlexMix.raw(gap: Prop.token(gapToken)));
+        util.style = FlexBoxMix(flex: FlexMix.raw(gap: Prop.token(gapToken)));
         final spec = util.resolve(context);
 
         expect(spec.flex.gap, 24.0);
@@ -380,7 +380,7 @@ void main() {
       });
 
       test('merge with self returns new instance', () {
-        util.mix = FlexBoxMix(flex: FlexMix(direction: Axis.horizontal));
+        util.style = FlexBoxMix(flex: FlexMix(direction: Axis.horizontal));
         final result = util.merge(util);
 
         expect(result, isNot(same(util)));

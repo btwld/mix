@@ -126,7 +126,6 @@ export 'src/specs/stack/stack_spec.dart';
 export 'src/specs/stack/stack_util.dart';
 export 'src/specs/stack/stack_widget.dart';
 export 'src/specs/text/text_attribute.dart';
-export 'src/specs/text/text_directives_util.dart';
 export 'src/specs/text/text_spec.dart';
 export 'src/specs/text/text_util.dart';
 export 'src/specs/text/text_widget.dart';

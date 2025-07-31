@@ -15,15 +15,15 @@ void main() {
     group('Constructor', () {
       test('creates with default ImageMix when no attribute provided', () {
         final utility = ImageSpecUtility();
-        expect(utility.mix, isA<ImageMix>());
+        expect(utility.style, isA<ImageMix>());
       });
 
       test('creates with provided ImageMix attribute', () {
         final imageMix = ImageMix(width: 100.0);
         final utility = ImageSpecUtility(imageMix);
 
-        expect(utility.mix, same(imageMix));
-        expectProp(utility.mix.$width, 100.0);
+        expect(utility.style, same(imageMix));
+        expectProp(utility.style.$width, 100.0);
       });
     });
 
@@ -224,7 +224,7 @@ void main() {
 
         expect(result, isNot(same(util)));
         expect(result, isA<ImageSpecUtility>());
-        expectProp(result.mix.$width, 150.0);
+        expectProp(result.style.$width, 150.0);
       });
 
       test('merge with ImageMix creates new instance', () {
@@ -233,7 +233,7 @@ void main() {
 
         expect(result, isNot(same(util)));
         expect(result, isA<ImageSpecUtility>());
-        expectProp(result.mix.$height, 250.0);
+        expectProp(result.style.$height, 250.0);
       });
 
       test('merge throws error for unsupported type', () {
@@ -244,22 +244,22 @@ void main() {
       });
 
       test('merge combines properties correctly', () {
-        util.mix = ImageMix(width: 100.0, height: 200.0);
+        util.style = ImageMix(width: 100.0, height: 200.0);
         final other = ImageSpecUtility(
           ImageMix(height: 300.0, fit: BoxFit.cover),
         );
 
         final result = util.merge(other);
 
-        expectProp(result.mix.$width, 100.0);
-        expectProp(result.mix.$height, 300.0); // other takes precedence
-        expectProp(result.mix.$fit, BoxFit.cover);
+        expectProp(result.style.$width, 100.0);
+        expectProp(result.style.$height, 300.0); // other takes precedence
+        expectProp(result.style.$fit, BoxFit.cover);
       });
     });
 
     group('Resolve functionality', () {
       test('resolve returns ImageSpec with resolved properties', () {
-        util.mix = ImageMix(width: 100.0, height: 200.0, fit: BoxFit.cover);
+        util.style = ImageMix(width: 100.0, height: 200.0, fit: BoxFit.cover);
 
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -280,7 +280,7 @@ void main() {
       });
 
       test('resolve handles all properties correctly', () {
-        util.mix = ImageMix(
+        util.style = ImageMix(
           width: 100.0,
           height: 200.0,
           color: Colors.red,
@@ -302,22 +302,24 @@ void main() {
 
         expect(
           spec,
-          equals(const ImageSpec(
-            width: 100.0,
-            height: 200.0,
-            color: Colors.red,
-            repeat: ImageRepeat.repeat,
-            fit: BoxFit.cover,
-            alignment: Alignment.center,
-            centerSlice: Rect.fromLTWH(0, 0, 50, 50),
-            filterQuality: FilterQuality.high,
-            colorBlendMode: BlendMode.multiply,
-            semanticLabel: 'Test',
-            excludeFromSemantics: true,
-            gaplessPlayback: true,
-            isAntiAlias: false,
-            matchTextDirection: true,
-          )),
+          equals(
+            const ImageSpec(
+              width: 100.0,
+              height: 200.0,
+              color: Colors.red,
+              repeat: ImageRepeat.repeat,
+              fit: BoxFit.cover,
+              alignment: Alignment.center,
+              centerSlice: Rect.fromLTWH(0, 0, 50, 50),
+              filterQuality: FilterQuality.high,
+              colorBlendMode: BlendMode.multiply,
+              semanticLabel: 'Test',
+              excludeFromSemantics: true,
+              gaplessPlayback: true,
+              isAntiAlias: false,
+              matchTextDirection: true,
+            ),
+          ),
         );
       });
     });
@@ -336,7 +338,7 @@ void main() {
 
     group('Integration with resolvesTo matcher', () {
       test('utility resolves to correct ImageSpec', () {
-        util.mix = ImageMix(width: 100.0, height: 200.0, fit: BoxFit.cover);
+        util.style = ImageMix(width: 100.0, height: 200.0, fit: BoxFit.cover);
 
         expect(
           util,
@@ -354,7 +356,7 @@ void main() {
           mixScopeData: MixScopeData.static(tokens: {widthToken: 150.0}),
         );
 
-        util.mix = ImageMix.raw(width: Prop.token(widthToken));
+        util.style = ImageMix.raw(width: Prop.token(widthToken));
         final spec = util.resolve(context);
 
         expect(spec.width, 150.0);
@@ -364,16 +366,18 @@ void main() {
         const widthToken = MixToken<double>('imageWidth');
         const heightToken = MixToken<double>('imageHeight');
         const colorToken = MixToken<Color>('imageColor');
-        
+
         final context = MockBuildContext(
-          mixScopeData: MixScopeData.static(tokens: {
-            widthToken: 200.0,
-            heightToken: 300.0,
-            colorToken: Colors.blue,
-          }),
+          mixScopeData: MixScopeData.static(
+            tokens: {
+              widthToken: 200.0,
+              heightToken: 300.0,
+              colorToken: Colors.blue,
+            },
+          ),
         );
 
-        util.mix = ImageMix.raw(
+        util.style = ImageMix.raw(
           width: Prop.token(widthToken),
           height: Prop.token(heightToken),
           color: Prop.token(colorToken),
@@ -388,17 +392,21 @@ void main() {
       test('resolves enum tokens', () {
         const fitToken = MixToken<BoxFit>('imageFit');
         const repeatToken = MixToken<ImageRepeat>('imageRepeat');
-        const filterQualityToken = MixToken<FilterQuality>('imageFilterQuality');
-        
-        final context = MockBuildContext(
-          mixScopeData: MixScopeData.static(tokens: {
-            fitToken: BoxFit.cover,
-            repeatToken: ImageRepeat.repeat,
-            filterQualityToken: FilterQuality.high,
-          }),
+        const filterQualityToken = MixToken<FilterQuality>(
+          'imageFilterQuality',
         );
 
-        util.mix = ImageMix.raw(
+        final context = MockBuildContext(
+          mixScopeData: MixScopeData.static(
+            tokens: {
+              fitToken: BoxFit.cover,
+              repeatToken: ImageRepeat.repeat,
+              filterQualityToken: FilterQuality.high,
+            },
+          ),
+        );
+
+        util.style = ImageMix.raw(
           fit: Prop.token(fitToken),
           repeat: Prop.token(repeatToken),
           filterQuality: Prop.token(filterQualityToken),
@@ -414,16 +422,18 @@ void main() {
         const labelToken = MixToken<String>('imageLabel');
         const excludeToken = MixToken<bool>('excludeFromSemantics');
         const gaplessToken = MixToken<bool>('gaplessPlayback');
-        
+
         final context = MockBuildContext(
-          mixScopeData: MixScopeData.static(tokens: {
-            labelToken: 'My Image',
-            excludeToken: true,
-            gaplessToken: false,
-          }),
+          mixScopeData: MixScopeData.static(
+            tokens: {
+              labelToken: 'My Image',
+              excludeToken: true,
+              gaplessToken: false,
+            },
+          ),
         );
 
-        util.mix = ImageMix.raw(
+        util.style = ImageMix.raw(
           semanticLabel: Prop.token(labelToken),
           excludeFromSemantics: Prop.token(excludeToken),
           gaplessPlayback: Prop.token(gaplessToken),
@@ -455,9 +465,9 @@ void main() {
 
         final result = util1.merge(util2).merge(util3);
 
-        expectProp(result.mix.$width, 100.0);
-        expectProp(result.mix.$height, 200.0);
-        expectProp(result.mix.$fit, BoxFit.cover);
+        expectProp(result.style.$width, 100.0);
+        expectProp(result.style.$height, 200.0);
+        expectProp(result.style.$fit, BoxFit.cover);
       });
     });
 
@@ -473,11 +483,11 @@ void main() {
       });
 
       test('merge with self returns new instance', () {
-        util.mix = ImageMix(width: 100.0);
+        util.style = ImageMix(width: 100.0);
         final result = util.merge(util);
 
         expect(result, isNot(same(util)));
-        expectProp(result.mix.$width, 100.0);
+        expectProp(result.style.$width, 100.0);
       });
     });
   });

@@ -15,15 +15,15 @@ void main() {
     group('Constructor', () {
       test('creates with default BoxMix when no attribute provided', () {
         final utility = BoxSpecUtility();
-        expect(utility.mix, isA<BoxMix>());
+        expect(utility.style, isA<BoxMix>());
       });
 
       test('creates with provided BoxMix attribute', () {
         final boxMix = BoxMix(alignment: Alignment.center);
         final utility = BoxSpecUtility(boxMix);
 
-        expect(utility.mix, same(boxMix));
-        expectProp(utility.mix.$alignment, Alignment.center);
+        expect(utility.style, same(boxMix));
+        expectProp(utility.style.$alignment, Alignment.center);
       });
     });
 
@@ -165,7 +165,7 @@ void main() {
 
         expect(result, isNot(same(util)));
         expect(result, isA<BoxSpecUtility>());
-        expectProp(result.mix.$alignment, Alignment.center);
+        expectProp(result.style.$alignment, Alignment.center);
       });
 
       test('merge with BoxMix creates new instance', () {
@@ -174,7 +174,7 @@ void main() {
 
         expect(result, isNot(same(util)));
         expect(result, isA<BoxSpecUtility>());
-        expectProp(result.mix.$clipBehavior, Clip.hardEdge);
+        expectProp(result.style.$clipBehavior, Clip.hardEdge);
       });
 
       test('merge throws error for unsupported type', () {
@@ -185,25 +185,28 @@ void main() {
       });
 
       test('merge combines properties correctly', () {
-        util.mix = BoxMix(alignment: Alignment.center, clipBehavior: Clip.none);
+        util.style = BoxMix(
+          alignment: Alignment.center,
+          clipBehavior: Clip.none,
+        );
         final other = BoxSpecUtility(
           BoxMix(clipBehavior: Clip.hardEdge, transform: Matrix4.identity()),
         );
 
         final result = util.merge(other);
 
-        expectProp(result.mix.$alignment, Alignment.center);
+        expectProp(result.style.$alignment, Alignment.center);
         expectProp(
-          result.mix.$clipBehavior,
+          result.style.$clipBehavior,
           Clip.hardEdge,
         ); // other takes precedence
-        expectProp(result.mix.$transform, Matrix4.identity());
+        expectProp(result.style.$transform, Matrix4.identity());
       });
     });
 
     group('Resolve functionality', () {
       test('resolve returns BoxSpec with resolved properties', () {
-        util.mix = BoxMix(
+        util.style = BoxMix(
           alignment: Alignment.center,
           clipBehavior: Clip.antiAlias,
           transform: Matrix4.identity(),
@@ -242,7 +245,7 @@ void main() {
 
     group('Integration with resolvesTo matcher', () {
       test('utility resolves to correct BoxSpec', () {
-        util.mix = BoxMix(
+        util.style = BoxMix(
           alignment: Alignment.center,
           clipBehavior: Clip.antiAlias,
         );
@@ -268,7 +271,7 @@ void main() {
           ),
         );
 
-        util.mix = BoxMix.raw(alignment: Prop.token(alignmentToken));
+        util.style = BoxMix.raw(alignment: Prop.token(alignmentToken));
         final spec = util.resolve(context);
 
         expect(spec.alignment, Alignment.topLeft);
@@ -294,9 +297,9 @@ void main() {
 
         final result = util1.merge(util2).merge(util3);
 
-        expectProp(result.mix.$alignment, Alignment.center);
-        expectProp(result.mix.$clipBehavior, Clip.antiAlias);
-        expectProp(result.mix.$transform, Matrix4.identity());
+        expectProp(result.style.$alignment, Alignment.center);
+        expectProp(result.style.$clipBehavior, Clip.antiAlias);
+        expectProp(result.style.$transform, Matrix4.identity());
       });
     });
 
@@ -312,11 +315,11 @@ void main() {
       });
 
       test('merge with self returns new instance', () {
-        util.mix = BoxMix(alignment: Alignment.center);
+        util.style = BoxMix(alignment: Alignment.center);
         final result = util.merge(util);
 
         expect(result, isNot(same(util)));
-        expectProp(result.mix.$alignment, Alignment.center);
+        expectProp(result.style.$alignment, Alignment.center);
       });
     });
   });

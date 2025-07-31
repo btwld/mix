@@ -307,9 +307,9 @@ final class BorderUtility<T extends Style<Object?>>
 
   late final right = BorderSideUtility<T>((v) => only(right: v));
 
-  late final vertical = BorderSideUtility<T>((v) => only(top: v, bottom: v));
+  late final vertical = BorderSideUtility<T>((v) => only(left: v, right: v));
 
-  late final horizontal = BorderSideUtility<T>((v) => only(left: v, right: v));
+  late final horizontal = BorderSideUtility<T>((v) => only(top: v, bottom: v));
 
   late final color = all.color;
 

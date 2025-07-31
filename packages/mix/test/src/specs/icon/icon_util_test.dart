@@ -15,15 +15,15 @@ void main() {
     group('Constructor', () {
       test('creates with default IconMix when no attribute provided', () {
         final utility = IconSpecUtility();
-        expect(utility.mix, isA<IconMix>());
+        expect(utility.style, isA<IconMix>());
       });
 
       test('creates with provided IconMix attribute', () {
         final iconMix = IconMix(size: 24.0);
         final utility = IconSpecUtility(iconMix);
 
-        expect(utility.mix, same(iconMix));
-        expectProp(utility.mix.$size, 24.0);
+        expect(utility.style, same(iconMix));
+        expectProp(utility.style.$size, 24.0);
       });
     });
 
@@ -183,7 +183,7 @@ void main() {
 
         expect(result, isNot(same(util)));
         expect(result, isA<IconSpecUtility>());
-        expectProp(result.mix.$size, 32.0);
+        expectProp(result.style.$size, 32.0);
       });
 
       test('merge with IconMix creates new instance', () {
@@ -192,7 +192,7 @@ void main() {
 
         expect(result, isNot(same(util)));
         expect(result, isA<IconSpecUtility>());
-        expectProp(result.mix.$weight, 600.0);
+        expectProp(result.style.$weight, 600.0);
       });
 
       test('merge throws error for unsupported type', () {
@@ -203,20 +203,20 @@ void main() {
       });
 
       test('merge combines properties correctly', () {
-        util.mix = IconMix(size: 24.0, weight: 400.0);
+        util.style = IconMix(size: 24.0, weight: 400.0);
         final other = IconSpecUtility(IconMix(weight: 600.0, fill: 0.8));
 
         final result = util.merge(other);
 
-        expectProp(result.mix.$size, 24.0);
-        expectProp(result.mix.$weight, 600.0); // other takes precedence
-        expectProp(result.mix.$fill, 0.8);
+        expectProp(result.style.$size, 24.0);
+        expectProp(result.style.$weight, 600.0); // other takes precedence
+        expectProp(result.style.$fill, 0.8);
       });
     });
 
     group('Resolve functionality', () {
       test('resolve returns IconSpec with resolved properties', () {
-        util.mix = IconMix(size: 24.0, weight: 400.0, fill: 0.8);
+        util.style = IconMix(size: 24.0, weight: 400.0, fill: 0.8);
 
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -251,7 +251,7 @@ void main() {
 
     group('Integration with resolvesTo matcher', () {
       test('utility resolves to correct IconSpec', () {
-        util.mix = IconMix(size: 24.0, weight: 400.0, fill: 0.8);
+        util.style = IconMix(size: 24.0, weight: 400.0, fill: 0.8);
 
         expect(
           util,
@@ -267,7 +267,7 @@ void main() {
           mixScopeData: MixScopeData.static(tokens: {sizeToken: 32.0}),
         );
 
-        util.mix = IconMix.raw(size: Prop.token(sizeToken));
+        util.style = IconMix.raw(size: Prop.token(sizeToken));
         final spec = util.resolve(context);
 
         expect(spec.size, 32.0);
@@ -293,9 +293,9 @@ void main() {
 
         final result = util1.merge(util2).merge(util3);
 
-        expectProp(result.mix.$size, 24.0);
-        expectProp(result.mix.$weight, 400.0);
-        expectProp(result.mix.$fill, 0.8);
+        expectProp(result.style.$size, 24.0);
+        expectProp(result.style.$weight, 400.0);
+        expectProp(result.style.$fill, 0.8);
       });
     });
 
@@ -311,11 +311,11 @@ void main() {
       });
 
       test('merge with self returns new instance', () {
-        util.mix = IconMix(size: 24.0);
+        util.style = IconMix(size: 24.0);
         final result = util.merge(util);
 
         expect(result, isNot(same(util)));
-        expectProp(result.mix.$size, 24.0);
+        expectProp(result.style.$size, 24.0);
       });
     });
   });

@@ -21,7 +21,44 @@ abstract class StyleAttributeBuilder<S extends Spec<S>> extends Style<S>
 
   /// Access to the internal mutable StyleAttribute
   @protected
-  Style<S> get mix;
+  Style<S> get style;
+
+  @override
+  S resolve(BuildContext context) => style.resolve(context);
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('attribute', style));
+  }
+
+  /// Mutable animation configuration from internal attribute
+  @override
+  AnimationConfig? get $animation => style.$animation;
+
+  @override
+  ModifierConfig? get $modifierConfig => style.$modifierConfig;
+
+  /// Mutable variants from internal attribute
+  @override
+  List<VariantStyleAttribute<S>>? get $variants => style.$variants;
+
+  @override
+  List<Object?> get props => [style];
+}
+
+abstract class StyleMutableBuilder<S extends Spec<S>> extends Style<S>
+    with Diagnosticable {
+  const StyleMutableBuilder({
+    super.animation,
+    super.modifierConfig,
+    super.variants,
+    super.inherit,
+  });
+
+  /// Access to the internal mutable StyleAttribute
+  @protected
+  Mutable<S, Style<S>> get mix;
 
   @override
   S resolve(BuildContext context) => mix.resolve(context);
@@ -44,5 +81,23 @@ abstract class StyleAttributeBuilder<S extends Spec<S>> extends Style<S>
   List<VariantStyleAttribute<S>>? get $variants => mix.$variants;
 
   @override
-  List<Object?> get props => [mix, $animation, $modifierConfig, $variants];
+  List<Object?> get props => [mix];
+}
+
+mixin Mutable<S extends Spec<S>, T extends Style<S>> on Style<S> {
+  T? _accumulated;
+
+  T get accumulated => _accumulated ?? this as T;
+
+  // Intercept merge calls
+  @override
+  T merge(covariant T? other) {
+    if (other == null) return this as T;
+
+    // Accumulate merges - use super.merge to avoid recursion
+    _accumulated = (accumulated == this ? super.merge(other) : accumulated.merge(other)) as T;
+
+    // Return this for chaining
+    return this as T;
+  }
 }

@@ -20,20 +20,20 @@ import 'box_spec.dart';
 class BoxSpecUtility extends StyleAttributeBuilder<BoxSpec> {
   // SAME UTILITIES AS BoxMix - but return BoxSpecUtility for cascade
 
-  late final padding = EdgeInsetsGeometryUtility<BoxMix>(mix.padding);
+  late final padding = EdgeInsetsGeometryUtility<BoxMix>(style.padding);
 
-  late final margin = EdgeInsetsGeometryUtility<BoxMix>(mix.margin);
+  late final margin = EdgeInsetsGeometryUtility<BoxMix>(style.margin);
 
-  late final constraints = BoxConstraintsUtility<BoxMix>(mix.constraints);
+  late final constraints = BoxConstraintsUtility<BoxMix>(style.constraints);
 
-  late final decoration = DecorationUtility<BoxMix>(mix.decoration);
+  late final decoration = DecorationUtility<BoxMix>(style.decoration);
 
   late final on = OnContextVariantUtility<BoxSpec, BoxMix>(
-    (v) => mix.variants([v]),
+    (v) => style.variants([v]),
   );
 
   late final wrap = ModifierUtility(
-    (prop) => mix.modifier(ModifierConfig(modifiers: [prop])),
+    (prop) => style.modifier(ModifierConfig(modifiers: [prop])),
   );
 
   // FLATTENED ACCESS - Same as BoxMix
@@ -52,22 +52,22 @@ class BoxSpecUtility extends StyleAttributeBuilder<BoxSpec> {
   late final minHeight = constraints.minHeight;
   late final maxHeight =
       constraints.maxHeight; // PROP UTILITIES - Same as BoxMix
-  late final transform = MixUtility(mix.transform);
+  late final transform = MixUtility(style.transform);
 
-  late final transformAlignment = MixUtility(mix.transformAlignment);
+  late final transformAlignment = MixUtility(style.transformAlignment);
 
-  late final clipBehavior = MixUtility(mix.clipBehavior);
+  late final clipBehavior = MixUtility(style.clipBehavior);
 
-  late final alignment = MixUtility(mix.alignment);
+  late final alignment = MixUtility(style.alignment);
 
   // ignore: prefer_final_fields
   @override
-  BoxMix mix;
+  BoxMix style;
 
-  BoxSpecUtility([BoxMix? attribute]) : mix = attribute ?? BoxMix();
+  BoxSpecUtility([BoxMix? attribute]) : style = attribute ?? BoxMix();
 
   /// Animation
-  BoxMix animate(AnimationConfig animation) => mix.animate(animation);
+  BoxMix animate(AnimationConfig animation) => style.animate(animation);
 
   // StyleAttribute interface implementation
 
@@ -76,10 +76,10 @@ class BoxSpecUtility extends StyleAttributeBuilder<BoxSpec> {
     if (other == null) return this;
     // IMMUTABLE: Always create new instance (StyleAttribute contract)
     if (other is BoxSpecUtility) {
-      return BoxSpecUtility(mix.merge(other.mix));
+      return BoxSpecUtility(style.merge(other.style));
     }
     if (other is BoxMix) {
-      return BoxSpecUtility(mix.merge(other));
+      return BoxSpecUtility(style.merge(other));
     }
 
     throw FlutterError('Unsupported merge type: ${other.runtimeType}');
@@ -87,6 +87,6 @@ class BoxSpecUtility extends StyleAttributeBuilder<BoxSpec> {
 
   @override
   BoxSpec resolve(BuildContext context) {
-    return mix.resolve(context);
+    return style.resolve(context);
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
-import '../../core/spec_utility.dart' show StyleAttributeBuilder;
+import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
 import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
 import '../../modifiers/modifier_config.dart';
@@ -12,24 +12,26 @@ import '../../properties/typography/text_height_behavior_util.dart';
 import '../../properties/typography/text_style_util.dart';
 import '../../variants/variant_util.dart';
 import 'text_attribute.dart';
-import 'text_directives_util.dart';
 import 'text_spec.dart';
 
 /// Mutable utility class for text styling using composition over inheritance.
 ///
 /// Same API as TextMix but with mutable internal state
 /// for cascade notation support: `$text..color.red()..fontSize(16)`
-class TextSpecUtility extends StyleAttributeBuilder<TextSpec> {
+class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
   // TEXT UTILITIES - Same as TextMix but return TextSpecUtility for cascade
+  @override
+  @protected
+  late final MutableTextMix mix;
 
   late final textOverflow = MixUtility(mix.overflow);
 
-  late final strutStyle = StrutStyleUtility<TextMix>(mix.strutStyle);
+  late final strutStyle = StrutStyleUtility(mix.strutStyle);
 
   late final textAlign = MixUtility(mix.textAlign);
   late final textScaler = MixUtility(mix.textScaler);
   late final maxLines = MixUtility(mix.maxLines);
-  late final style = TextStyleUtility<TextMix>(
+  late final style = TextStyleUtility(
     (prop) => mix.merge(TextMix.raw(style: prop)),
   );
   late final textWidthBasis = MixUtility(mix.textWidthBasis);
@@ -38,7 +40,7 @@ class TextSpecUtility extends StyleAttributeBuilder<TextSpec> {
   );
   late final textDirection = MixUtility(mix.textDirection);
   late final softWrap = MixUtility(mix.softWrap);
-  late final directives = TextDirectiveUtility(mix.contentModifier);
+  late final directives = MixUtility(mix.contentModifier);
   late final selectionColor = ColorUtility<TextMix>(
     (prop) => mix.merge(TextMix.raw(selectionColor: prop)),
   );
@@ -76,10 +78,10 @@ class TextSpecUtility extends StyleAttributeBuilder<TextSpec> {
   late final decorationThickness = style.decorationThickness;
   late final fontFamilyFallback = style.fontFamilyFallback;
   // ignore: prefer_final_fields
-  @override
-  TextMix mix;
 
-  TextSpecUtility([TextMix? attribute]) : mix = attribute ?? TextMix();
+  TextSpecUtility([TextMix? attribute]) {
+    mix = MutableTextMix(attribute ?? TextMix());
+  }
 
   // Convenience methods
   TextMix bold() => style.bold();
@@ -107,5 +109,16 @@ class TextSpecUtility extends StyleAttributeBuilder<TextSpec> {
   @override
   TextSpec resolve(BuildContext context) {
     return mix.resolve(context);
+  }
+}
+
+class MutableTextMix extends TextMix with Mutable<TextSpec, TextMix> {
+  MutableTextMix([TextMix? attribute]) {
+    merge(attribute);
+  }
+
+  @override
+  TextSpec resolve(BuildContext context) {
+    return accumulated.resolve(context);
   }
 }

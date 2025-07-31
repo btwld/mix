@@ -21,44 +21,44 @@ class IconSpecUtility extends StyleAttributeBuilder<IconSpec> {
   // ICON UTILITIES - Same as IconMix but return IconSpecUtility for cascade
 
   late final color = ColorUtility<IconMix>(
-    (prop) => mix.merge(IconMix.raw(color: prop)),
+    (prop) => style.merge(IconMix.raw(color: prop)),
   );
 
-  late final size = MixUtility(mix.size);
+  late final size = MixUtility(style.size);
 
-  late final weight = MixUtility(mix.weight);
+  late final weight = MixUtility(style.weight);
 
-  late final grade = MixUtility(mix.grade);
+  late final grade = MixUtility(style.grade);
 
-  late final opticalSize = MixUtility(mix.opticalSize);
+  late final opticalSize = MixUtility(style.opticalSize);
 
-  late final shadow = ShadowUtility<IconMix>((v) => mix.shadows([v]));
+  late final shadow = ShadowUtility<IconMix>((v) => style.shadows([v]));
 
-  late final textDirection = MixUtility(mix.textDirection);
+  late final textDirection = MixUtility(style.textDirection);
 
-  late final applyTextScaling = MixUtility(mix.applyTextScaling);
+  late final applyTextScaling = MixUtility(style.applyTextScaling);
 
-  late final fill = MixUtility(mix.fill);
+  late final fill = MixUtility(style.fill);
 
   late final on = OnContextVariantUtility<IconSpec, IconMix>(
-    (v) => mix.variants([v]),
+    (v) => style.variants([v]),
   );
 
   late final wrap = ModifierUtility(
-    (prop) => mix.modifier(ModifierConfig(modifiers: [prop])),
+    (prop) => style.modifier(ModifierConfig(modifiers: [prop])),
   );
 
   // ignore: prefer_final_fields
   @override
-  IconMix mix;
+  IconMix style;
 
-  IconSpecUtility([IconMix? attribute]) : mix = attribute ?? IconMix();
+  IconSpecUtility([IconMix? attribute]) : style = attribute ?? IconMix();
 
   // Instance method for multiple shadows
-  IconMix shadows(List<ShadowMix> value) => mix.shadows(value);
+  IconMix shadows(List<ShadowMix> value) => style.shadows(value);
 
   /// Animation
-  IconMix animate(AnimationConfig animation) => mix.animate(animation);
+  IconMix animate(AnimationConfig animation) => style.animate(animation);
 
   // StyleAttribute interface implementation
 
@@ -67,10 +67,10 @@ class IconSpecUtility extends StyleAttributeBuilder<IconSpec> {
     if (other == null) return this;
     // IMMUTABLE: Always create new instance (StyleAttribute contract)
     if (other is IconSpecUtility) {
-      return IconSpecUtility(mix.merge(other.mix));
+      return IconSpecUtility(style.merge(other.style));
     }
     if (other is IconMix) {
-      return IconSpecUtility(mix.merge(other));
+      return IconSpecUtility(style.merge(other));
     }
 
     throw FlutterError('Unsupported merge type: ${other.runtimeType}');
@@ -78,6 +78,6 @@ class IconSpecUtility extends StyleAttributeBuilder<IconSpec> {
 
   @override
   IconSpec resolve(BuildContext context) {
-    return mix.resolve(context);
+    return style.resolve(context);
   }
 }
