@@ -316,6 +316,7 @@ void main() {
       trigger = ValueNotifier(false);
       driver = PhaseAnimationDriver<MockSpec>(
         vsync: const TestVSync(),
+        mode: PhaseAnimationMode.simpleLoop,
         curveConfigs: [
           CurveAnimationConfig(
             duration: Duration(milliseconds: 300),
