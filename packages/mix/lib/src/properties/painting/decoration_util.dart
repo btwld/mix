@@ -13,7 +13,6 @@ import 'decoration_mix.dart';
 import 'gradient_mix.dart';
 import 'gradient_util.dart';
 import 'shadow_mix.dart';
-import 'shadow_util.dart';
 import 'shape_border_mix.dart';
 import 'shape_border_util.dart';
 
@@ -67,14 +66,6 @@ final class BoxDecorationUtility<T extends Style<Object?>>
   /// Utility for defining [BoxDecorationMix.image]
   late final image = DecorationImageUtility<T>((v) => only(image: v));
 
-  /// Utility for defining [BoxDecorationMix.boxShadow] from a list of BoxShadow
-  late final boxShadows = MixUtility<T, List<BoxShadow>>(
-    (prop) => only(boxShadow: prop.map(BoxShadowMix.value).toList()),
-  );
-
-  /// Utility for defining individual [BoxShadow]
-  late final boxShadow = BoxShadowUtility<T>((v) => only(boxShadow: [v]));
-
   /// Utility for defining [BoxDecorationMix.boxShadow] from elevation
   late final elevation = MixUtility<T, ElevationShadow>(
     (elevation) => only(boxShadow: BoxShadowMix.fromElevation(elevation)),
@@ -88,6 +79,12 @@ final class BoxDecorationUtility<T extends Style<Object?>>
   late final _boxBorder = BoxBorderUtility<T>((v) => only(border: v));
 
   BoxDecorationUtility(super.builder);
+
+  /// Utility for defining [BoxDecorationMix.boxShadow] from a list of BoxShadow
+
+  T boxShadows(List<BoxShadow> shadows) {
+    return only(boxShadow: shadows.map(BoxShadowMix.value).toList());
+  }
 
   T only({
     Color? color,

@@ -83,11 +83,11 @@ void main() {
         utility2.margin.all(8);
 
         // Each utility maintains its own state
-        expect(identical(utility1.style, utility2.style), isFalse);
+        expect(identical(utility1.value, utility2.value), isFalse);
 
         // Properties are set correctly
-        expect(utility1.style.$box?.padding, isNotNull);
-        expect(utility2.style.$box?.margin, isNotNull);
+        expect(utility1.value.$box?.padding, isNotNull);
+        expect(utility2.value.$box?.margin, isNotNull);
       });
 
       test('utility provides access to nested box utilities', () {
@@ -433,7 +433,7 @@ void main() {
         utility.gap(10.0);
 
         final context = MockBuildContext();
-        final resolved = utility.style.resolve(context);
+        final resolved = utility.resolve(context);
 
         // Verify all properties are resolved correctly
         expect(resolved.box.alignment, Alignment.center);

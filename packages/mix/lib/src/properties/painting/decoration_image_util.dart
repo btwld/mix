@@ -36,17 +36,16 @@ final class DecorationImageUtility<T extends Style<Object?>>
     (prop) => only(filterQuality: prop),
   );
 
-  /// Utility for defining [DecorationImageMix.invertColors]
-  late final invertColors = MixUtility<T, bool>(
-    (prop) => only(invertColors: prop),
-  );
-
   /// Utility for defining [DecorationImageMix.isAntiAlias]
   late final isAntiAlias = MixUtility<T, bool>(
     (prop) => only(isAntiAlias: prop),
   );
 
   DecorationImageUtility(super.builder);
+
+  /// Utility for defining [DecorationImageMix.invertColors]
+
+  T invertColors(bool value) => only(invertColors: value);
 
   T only({
     ImageProvider? image,

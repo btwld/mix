@@ -21,45 +21,45 @@ class IconSpecUtility extends StyleMutableBuilder<IconSpec> {
   // ICON UTILITIES - Same as IconMix but return IconSpecUtility for cascade
   @override
   @protected
-  late final MutableIconMix mix;
+  late final MutableIconMix value;
 
   late final color = ColorUtility<IconMix>(
-    (prop) => mix.merge(IconMix.raw(color: prop)),
+    (prop) => value.merge(IconMix.raw(color: prop)),
   );
 
-  late final size = MixUtility(mix.size);
+  late final size = MixUtility(value.size);
 
-  late final weight = MixUtility(mix.weight);
+  late final weight = MixUtility(value.weight);
 
-  late final grade = MixUtility(mix.grade);
+  late final grade = MixUtility(value.grade);
 
-  late final opticalSize = MixUtility(mix.opticalSize);
+  late final opticalSize = MixUtility(value.opticalSize);
 
-  late final shadow = ShadowUtility<IconMix>((v) => mix.shadows([v]));
+  late final shadow = ShadowUtility<IconMix>((v) => value.shadows([v]));
 
-  late final textDirection = MixUtility(mix.textDirection);
+  late final textDirection = MixUtility(value.textDirection);
 
-  late final applyTextScaling = MixUtility(mix.applyTextScaling);
+  late final applyTextScaling = MixUtility(value.applyTextScaling);
 
-  late final fill = MixUtility(mix.fill);
+  late final fill = MixUtility(value.fill);
 
   late final on = OnContextVariantUtility<IconSpec, IconMix>(
-    (v) => mix.variants([v]),
+    (v) => value.variants([v]),
   );
 
   late final wrap = ModifierUtility(
-    (prop) => mix.modifier(ModifierConfig(modifiers: [prop])),
+    (prop) => value.modifier(ModifierConfig(modifiers: [prop])),
   );
 
   IconSpecUtility([IconMix? attribute]) {
-    mix = MutableIconMix(attribute ?? IconMix());
+    value = MutableIconMix(attribute ?? IconMix());
   }
 
   // Instance method for multiple shadows
-  IconMix shadows(List<ShadowMix> value) => mix.shadows(value);
+  IconMix shadows(List<ShadowMix> value) => this.value.shadows(value);
 
   /// Animation
-  IconMix animate(AnimationConfig animation) => mix.animate(animation);
+  IconMix animate(AnimationConfig animation) => value.animate(animation);
 
   // StyleAttribute interface implementation
 
@@ -68,10 +68,10 @@ class IconSpecUtility extends StyleMutableBuilder<IconSpec> {
     if (other == null) return this;
     // IMMUTABLE: Always create new instance (StyleAttribute contract)
     if (other is IconSpecUtility) {
-      return IconSpecUtility(mix.merge(other.mix));
+      return IconSpecUtility(value.merge(other.value));
     }
     if (other is IconMix) {
-      return IconSpecUtility(mix.merge(other));
+      return IconSpecUtility(value.merge(other));
     }
 
     throw FlutterError('Unsupported merge type: ${other.runtimeType}');
@@ -79,7 +79,7 @@ class IconSpecUtility extends StyleMutableBuilder<IconSpec> {
 
   @override
   IconSpec resolve(BuildContext context) {
-    return mix.resolve(context);
+    return value.resolve(context);
   }
 }
 

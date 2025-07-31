@@ -57,31 +57,31 @@ abstract class StyleMutableBuilder<S extends Spec<S>> extends Style<S>
   });
 
   /// Access to the internal mutable StyleAttribute
-  @protected
-  Mutable<S, Style<S>> get mix;
+  @visibleForTesting
+  Mutable<S, Style<S>> get value;
 
   @override
-  S resolve(BuildContext context) => mix.resolve(context);
+  S resolve(BuildContext context) => value.resolve(context);
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('attribute', mix));
+    properties.add(DiagnosticsProperty('attribute', value));
   }
 
   /// Mutable animation configuration from internal attribute
   @override
-  AnimationConfig? get $animation => mix.$animation;
+  AnimationConfig? get $animation => value.$animation;
 
   @override
-  ModifierConfig? get $modifierConfig => mix.$modifierConfig;
+  ModifierConfig? get $modifierConfig => value.$modifierConfig;
 
   /// Mutable variants from internal attribute
   @override
-  List<VariantStyleAttribute<S>>? get $variants => mix.$variants;
+  List<VariantStyleAttribute<S>>? get $variants => value.$variants;
 
   @override
-  List<Object?> get props => [mix];
+  List<Object?> get props => [value];
 }
 
 mixin Mutable<S extends Spec<S>, T extends Style<S>> on Style<S> {
@@ -96,10 +96,10 @@ mixin Mutable<S extends Spec<S>, T extends Style<S>> on Style<S> {
 
     try {
       // Accumulate merges - use super.merge to avoid recursion
-      final merged = accumulated == this 
-          ? super.merge(other) 
+      final merged = accumulated == this
+          ? super.merge(other)
           : accumulated.merge(other);
-      
+
       _accumulated = merged as T;
 
       // Return this for chaining

@@ -18,44 +18,44 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexSpec> {
   // FLEX UTILITIES - Same as FlexMix but return FlexSpecUtility for cascade
   @override
   @protected
-  late final MutableFlexMix mix;
+  late final MutableFlexMix value;
 
-  late final direction = MixUtility(mix.direction);
+  late final direction = MixUtility(value.direction);
 
-  late final mainAxisAlignment = MixUtility(mix.mainAxisAlignment);
+  late final mainAxisAlignment = MixUtility(value.mainAxisAlignment);
 
-  late final crossAxisAlignment = MixUtility(mix.crossAxisAlignment);
+  late final crossAxisAlignment = MixUtility(value.crossAxisAlignment);
 
-  late final mainAxisSize = MixUtility(mix.mainAxisSize);
+  late final mainAxisSize = MixUtility(value.mainAxisSize);
 
-  late final verticalDirection = MixUtility(mix.verticalDirection);
+  late final verticalDirection = MixUtility(value.verticalDirection);
 
-  late final textDirection = MixUtility(mix.textDirection);
+  late final textDirection = MixUtility(value.textDirection);
 
-  late final textBaseline = MixUtility(mix.textBaseline);
+  late final textBaseline = MixUtility(value.textBaseline);
 
-  late final clipBehavior = MixUtility(mix.clipBehavior);
+  late final clipBehavior = MixUtility(value.clipBehavior);
 
-  late final gap = MixUtility(mix.gap);
+  late final gap = MixUtility(value.gap);
 
   late final on = OnContextVariantUtility<FlexSpec, FlexMix>(
-    (v) => mix.variants([v]),
+    (v) => value.variants([v]),
   );
 
   late final wrap = ModifierUtility(
-    (prop) => mix.modifier(ModifierConfig(modifiers: [prop])),
+    (prop) => value.modifier(ModifierConfig(modifiers: [prop])),
   );
 
   FlexSpecUtility([FlexMix? attribute]) {
-    mix = MutableFlexMix(attribute ?? FlexMix());
+    value = MutableFlexMix(attribute ?? FlexMix());
   }
 
   // Convenience methods
-  FlexMix row() => mix.direction(Axis.horizontal);
-  FlexMix column() => mix.direction(Axis.vertical);
+  FlexMix row() => value.direction(Axis.horizontal);
+  FlexMix column() => value.direction(Axis.vertical);
 
   /// Animation
-  FlexMix animate(AnimationConfig animation) => mix.animate(animation);
+  FlexMix animate(AnimationConfig animation) => value.animate(animation);
 
   // StyleAttribute interface implementation
 
@@ -64,10 +64,10 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexSpec> {
     if (other == null) return this;
     // IMMUTABLE: Always create new instance (StyleAttribute contract)
     if (other is FlexSpecUtility) {
-      return FlexSpecUtility(mix.merge(other.mix));
+      return FlexSpecUtility(value.merge(other.value));
     }
     if (other is FlexMix) {
-      return FlexSpecUtility(mix.merge(other));
+      return FlexSpecUtility(value.merge(other));
     }
 
     throw FlutterError('Unsupported merge type: ${other.runtimeType}');
@@ -75,7 +75,7 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexSpec> {
 
   @override
   FlexSpec resolve(BuildContext context) {
-    return mix.resolve(context);
+    return value.resolve(context);
   }
 }
 

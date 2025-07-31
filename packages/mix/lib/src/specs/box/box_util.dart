@@ -22,30 +22,30 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec> {
   // BOX UTILITIES - Same as BoxMix but return BoxSpecUtility for cascade
   @override
   @protected
-  late final MutableBoxMix mix;
+  late final MutableBoxMix value;
 
   late final padding = EdgeInsetsGeometryUtility<BoxMix>(
-    (prop) => mix.merge(BoxMix.raw(padding: MixProp(prop))),
+    (prop) => value.merge(BoxMix.raw(padding: MixProp(prop))),
   );
 
   late final margin = EdgeInsetsGeometryUtility<BoxMix>(
-    (prop) => mix.merge(BoxMix.raw(margin: MixProp(prop))),
+    (prop) => value.merge(BoxMix.raw(margin: MixProp(prop))),
   );
 
   late final constraints = BoxConstraintsUtility<BoxMix>(
-    (prop) => mix.merge(BoxMix.raw(constraints: MixProp(prop))),
+    (prop) => value.merge(BoxMix.raw(constraints: MixProp(prop))),
   );
 
   late final decoration = DecorationUtility<BoxMix>(
-    (prop) => mix.merge(BoxMix.raw(decoration: MixProp(prop))),
+    (prop) => value.merge(BoxMix.raw(decoration: MixProp(prop))),
   );
 
   late final on = OnContextVariantUtility<BoxSpec, BoxMix>(
-    (v) => mix.variants([v]),
+    (v) => value.variants([v]),
   );
 
   late final wrap = ModifierUtility(
-    (prop) => mix.modifier(ModifierConfig(modifiers: [prop])),
+    (prop) => value.modifier(ModifierConfig(modifiers: [prop])),
   );
 
   // FLATTENED ACCESS - Same as BoxMix
@@ -62,20 +62,20 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec> {
   late final maxWidth = constraints.maxWidth;
   late final minHeight = constraints.minHeight;
   late final maxHeight = constraints.maxHeight;
-  late final transform = MixUtility(mix.transform);
+  late final transform = MixUtility(value.transform);
 
-  late final transformAlignment = MixUtility(mix.transformAlignment);
+  late final transformAlignment = MixUtility(value.transformAlignment);
 
-  late final clipBehavior = MixUtility(mix.clipBehavior);
+  late final clipBehavior = MixUtility(value.clipBehavior);
 
-  late final alignment = MixUtility(mix.alignment);
+  late final alignment = MixUtility(value.alignment);
 
   BoxSpecUtility([BoxMix? attribute]) {
-    mix = MutableBoxMix(attribute ?? BoxMix());
+    value = MutableBoxMix(attribute ?? BoxMix());
   }
 
   /// Animation
-  BoxMix animate(AnimationConfig animation) => mix.animate(animation);
+  BoxMix animate(AnimationConfig animation) => value.animate(animation);
 
   // StyleAttribute interface implementation
 
@@ -84,10 +84,10 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec> {
     if (other == null) return this;
     // IMMUTABLE: Always create new instance (StyleAttribute contract)
     if (other is BoxSpecUtility) {
-      return BoxSpecUtility(mix.merge(other.mix));
+      return BoxSpecUtility(value.merge(other.value));
     }
     if (other is BoxMix) {
-      return BoxSpecUtility(mix.merge(other));
+      return BoxSpecUtility(value.merge(other));
     }
 
     throw FlutterError('Unsupported merge type: ${other.runtimeType}');
@@ -95,7 +95,7 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec> {
 
   @override
   BoxSpec resolve(BuildContext context) {
-    return mix.resolve(context);
+    return value.resolve(context);
   }
 }
 

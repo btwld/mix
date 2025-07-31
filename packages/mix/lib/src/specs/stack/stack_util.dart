@@ -18,30 +18,30 @@ class StackSpecUtility extends StyleMutableBuilder<StackSpec> {
   // STACK UTILITIES - Same as StackMix but return StackSpecUtility for cascade
   @override
   @protected
-  late final MutableStackMix mix;
+  late final MutableStackMix value;
 
-  late final alignment = MixUtility(mix.alignment);
+  late final alignment = MixUtility(value.alignment);
 
-  late final fit = MixUtility(mix.fit);
+  late final fit = MixUtility(value.fit);
 
-  late final textDirection = MixUtility(mix.textDirection);
+  late final textDirection = MixUtility(value.textDirection);
 
-  late final clipBehavior = MixUtility(mix.clipBehavior);
+  late final clipBehavior = MixUtility(value.clipBehavior);
 
   late final on = OnContextVariantUtility<StackSpec, StackMix>(
-    (v) => mix.variants([v]),
+    (v) => value.variants([v]),
   );
 
   late final wrap = ModifierUtility(
-    (prop) => mix.modifier(ModifierConfig(modifiers: [prop])),
+    (prop) => value.modifier(ModifierConfig(modifiers: [prop])),
   );
 
   StackSpecUtility([StackMix? attribute]) {
-    mix = MutableStackMix(attribute ?? StackMix());
+    value = MutableStackMix(attribute ?? StackMix());
   }
 
   /// Animation
-  StackMix animate(AnimationConfig animation) => mix.animate(animation);
+  StackMix animate(AnimationConfig animation) => value.animate(animation);
 
   // StyleAttribute interface implementation
 
@@ -50,10 +50,10 @@ class StackSpecUtility extends StyleMutableBuilder<StackSpec> {
     if (other == null) return this;
     // IMMUTABLE: Always create new instance (StyleAttribute contract)
     if (other is StackSpecUtility) {
-      return StackSpecUtility(mix.merge(other.mix));
+      return StackSpecUtility(value.merge(other.value));
     }
     if (other is StackMix) {
-      return StackSpecUtility(mix.merge(other));
+      return StackSpecUtility(value.merge(other));
     }
 
     throw FlutterError('Unsupported merge type: ${other.runtimeType}');
@@ -61,7 +61,7 @@ class StackSpecUtility extends StyleMutableBuilder<StackSpec> {
 
   @override
   StackSpec resolve(BuildContext context) {
-    return mix.resolve(context);
+    return value.resolve(context);
   }
 }
 

@@ -13,17 +13,12 @@ void main() {
     });
 
     group('Constructor', () {
-      test('creates with default TextMix when no attribute provided', () {
-        final utility = TextSpecUtility();
-        expect(utility.mix, isA<TextMix>());
-      });
-
       test('creates with provided TextMix attribute', () {
         final textMix = TextMix(maxLines: 3);
         final utility = TextSpecUtility(textMix);
 
-        expect(utility.mix, same(textMix));
-        expectProp(utility.mix.$maxLines, 3);
+        expect(utility.value, same(textMix));
+        expectProp(utility.value.$maxLines, 3);
       });
     });
 
@@ -313,7 +308,9 @@ void main() {
       });
 
       test('merge combines properties correctly', () {
-        final util1 = TextSpecUtility(TextMix(maxLines: 3, textAlign: TextAlign.left));
+        final util1 = TextSpecUtility(
+          TextMix(maxLines: 3, textAlign: TextAlign.left),
+        );
         final other = TextSpecUtility(
           TextMix(textAlign: TextAlign.center, softWrap: false),
         );
@@ -330,14 +327,16 @@ void main() {
 
     group('Resolve functionality', () {
       test('resolve returns TextSpec with resolved properties', () {
-        final testUtil = TextSpecUtility(TextMix(
-          maxLines: 3,
-          textAlign: TextAlign.center,
-          softWrap: false,
-          selectionColor: Colors.blue,
-          semanticsLabel: 'Test label',
-          locale: const Locale('fr', 'FR'),
-        ));
+        final testUtil = TextSpecUtility(
+          TextMix(
+            maxLines: 3,
+            textAlign: TextAlign.center,
+            softWrap: false,
+            selectionColor: Colors.blue,
+            semanticsLabel: 'Test label',
+            locale: const Locale('fr', 'FR'),
+          ),
+        );
 
         final context = MockBuildContext();
         final spec = testUtil.resolve(context);
@@ -378,11 +377,9 @@ void main() {
 
     group('Integration with resolvesTo matcher', () {
       test('utility resolves to correct TextSpec', () {
-        final testUtil = TextSpecUtility(TextMix(
-          maxLines: 3,
-          textAlign: TextAlign.center,
-          softWrap: false,
-        ));
+        final testUtil = TextSpecUtility(
+          TextMix(maxLines: 3, textAlign: TextAlign.center, softWrap: false),
+        );
 
         expect(
           testUtil,
@@ -404,7 +401,9 @@ void main() {
           mixScopeData: MixScopeData.static(tokens: {maxLinesToken: 5}),
         );
 
-        final testUtil = TextSpecUtility(TextMix.raw(maxLines: Prop.token(maxLinesToken)));
+        final testUtil = TextSpecUtility(
+          TextMix.raw(maxLines: Prop.token(maxLinesToken)),
+        );
         final spec = testUtil.resolve(context);
 
         expect(spec.maxLines, 5);
@@ -418,7 +417,9 @@ void main() {
           ),
         );
 
-        final testUtil = TextSpecUtility(TextMix.raw(textAlign: Prop.token(textAlignToken)));
+        final testUtil = TextSpecUtility(
+          TextMix.raw(textAlign: Prop.token(textAlignToken)),
+        );
         final spec = testUtil.resolve(context);
 
         expect(spec.textAlign, TextAlign.center);
@@ -430,7 +431,9 @@ void main() {
           mixScopeData: MixScopeData.static(tokens: {softWrapToken: false}),
         );
 
-        final testUtil = TextSpecUtility(TextMix.raw(softWrap: Prop.token(softWrapToken)));
+        final testUtil = TextSpecUtility(
+          TextMix.raw(softWrap: Prop.token(softWrapToken)),
+        );
         final spec = testUtil.resolve(context);
 
         expect(spec.softWrap, false);
@@ -444,7 +447,9 @@ void main() {
           ),
         );
 
-        final testUtil = TextSpecUtility(TextMix.raw(selectionColor: Prop.token(selectionColorToken)));
+        final testUtil = TextSpecUtility(
+          TextMix.raw(selectionColor: Prop.token(selectionColorToken)),
+        );
         final spec = testUtil.resolve(context);
 
         expect(spec.selectionColor, Colors.red);
@@ -458,7 +463,9 @@ void main() {
           ),
         );
 
-        final testUtil = TextSpecUtility(TextMix.raw(textDirection: Prop.token(textDirectionToken)));
+        final testUtil = TextSpecUtility(
+          TextMix.raw(textDirection: Prop.token(textDirectionToken)),
+        );
         final spec = testUtil.resolve(context);
 
         expect(spec.textDirection, TextDirection.rtl);
@@ -472,7 +479,9 @@ void main() {
           ),
         );
 
-        final testUtil = TextSpecUtility(TextMix.raw(semanticsLabel: Prop.token(semanticsLabelToken)));
+        final testUtil = TextSpecUtility(
+          TextMix.raw(semanticsLabel: Prop.token(semanticsLabelToken)),
+        );
         final spec = testUtil.resolve(context);
 
         expect(spec.semanticsLabel, 'Custom label');
@@ -485,7 +494,9 @@ void main() {
           mixScopeData: MixScopeData.static(tokens: {localeToken: locale}),
         );
 
-        final testUtil = TextSpecUtility(TextMix.raw(locale: Prop.token(localeToken)));
+        final testUtil = TextSpecUtility(
+          TextMix.raw(locale: Prop.token(localeToken)),
+        );
         final spec = testUtil.resolve(context);
 
         expect(spec.locale, locale);
@@ -510,13 +521,15 @@ void main() {
           ),
         );
 
-        final testUtil = TextSpecUtility(TextMix.raw(
-          maxLines: Prop.token(maxLinesToken),
-          textAlign: Prop.token(textAlignToken),
-          selectionColor: Prop.token(selectionColorToken),
-          semanticsLabel: Prop.token(semanticsLabelToken),
-          locale: Prop.token(localeToken),
-        ));
+        final testUtil = TextSpecUtility(
+          TextMix.raw(
+            maxLines: Prop.token(maxLinesToken),
+            textAlign: Prop.token(textAlignToken),
+            selectionColor: Prop.token(selectionColorToken),
+            semanticsLabel: Prop.token(semanticsLabelToken),
+            locale: Prop.token(localeToken),
+          ),
+        );
         final spec = testUtil.resolve(context);
 
         const expectedSpec = TextSpec(
@@ -583,131 +596,131 @@ void main() {
     group('Chaining methods', () {
       test('basic maxLines mutation test', () {
         final util = TextSpecUtility();
-        
+
         final result = util.maxLines(5);
         expect(result, isA<TextMix>());
-        
+
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(spec.maxLines, 5);
       });
 
       test('basic color mutation test', () {
         final util = TextSpecUtility();
-        
+
         final result = util.color.red();
         expect(result, isA<TextMix>());
-        
+
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(spec.style?.color, Colors.red);
       });
-      
+
       test('chaining utility methods accumulates properties', () {
         final util = TextSpecUtility();
-        
+
         // Chain multiple method calls - these mutate internal state
         util.color.red();
         util.fontSize(16);
         util.maxLines(3);
-        
+
         // Verify accumulated state through resolution
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(spec.style?.color, Colors.red);
         expect(spec.style?.fontSize, 16);
         expect(spec.maxLines, 3);
       });
-      
+
       test('cascade notation works with utility methods', () {
         final util = TextSpecUtility()
           ..color.red()
           ..fontSize(16)
           ..maxLines(3);
-        
+
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(spec.style?.color, Colors.red);
         expect(spec.style?.fontSize, 16);
         expect(spec.maxLines, 3);
       });
-      
+
       test('individual utility calls return TextMix for further chaining', () {
         final util = TextSpecUtility();
-        
+
         // Each utility call should return a TextMix
         final colorResult = util.color.red();
         final fontResult = util.fontSize(16);
         final linesResult = util.maxLines(3);
-        
+
         expect(colorResult, isA<TextMix>());
         expect(fontResult, isA<TextMix>());
         expect(linesResult, isA<TextMix>());
-        
+
         // But the utility itself should have accumulated all changes
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(spec.style?.color, Colors.red);
         expect(spec.style?.fontSize, 16);
         expect(spec.maxLines, 3);
       });
     });
-    
+
     group('Mutating behavior vs Builder pattern', () {
       test('utility mutates internal state (not builder pattern)', () {
         final util = TextSpecUtility();
-        
+
         // Store initial resolution
         final context = MockBuildContext();
         final initialSpec = util.resolve(context);
         expect(initialSpec.style?.color, isNull);
-        
+
         // Mutate the utility
         util.color.red();
-        
+
         // Same utility instance should now resolve with the color
         final mutatedSpec = util.resolve(context);
         expect(mutatedSpec.style?.color, Colors.red);
-        
+
         // This proves it's mutating, not building new instances
       });
-      
+
       test('multiple calls accumulate on same instance', () {
         final util = TextSpecUtility();
-        
+
         util.color.red();
         util.fontSize(16);
         util.maxLines(3);
-        
+
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         // All properties should be present in the same instance
         expect(spec.style?.color, Colors.red);
         expect(spec.style?.fontSize, 16);
         expect(spec.maxLines, 3);
       });
-      
+
       test('demonstrates difference from immutable builder pattern', () {
         final util = TextSpecUtility();
-        
+
         // In a builder pattern, this would create new instances
         // In mutable pattern, this modifies the same instance
         final result1 = util.color.red();
         final result2 = util.fontSize(16);
-        
+
         // Both results are different TextMix instances
         expect(result1, isNot(same(result2)));
-        
+
         // But the utility itself has accumulated both changes
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(spec.style?.color, Colors.red);
         expect(spec.style?.fontSize, 16);
       });

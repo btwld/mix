@@ -14,11 +14,11 @@ final class StrutStyleUtility<T extends Style<Object?>>
     (prop) => only(fontStyle: prop),
   );
 
-  late final fontSize = MixUtility<T, double>((prop) => only(fontSize: prop));
-
-  late final fontFamily = MixUtility<T, String>((v) => only(fontFamily: v));
-
   StrutStyleUtility(super.builder);
+
+  T fontSize(double value) => only(fontSize: value);
+
+  T fontFamily(String value) => only(fontFamily: value);
 
   T only({
     String? fontFamily,

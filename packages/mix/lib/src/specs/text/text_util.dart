@@ -21,38 +21,37 @@ import 'text_spec.dart';
 class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
   // TEXT UTILITIES - Same as TextMix but return TextSpecUtility for cascade
   @override
-  @protected
-  late final MutableTextMix mix;
+  late final MutableTextMix value;
 
-  late final textOverflow = MixUtility(mix.overflow);
+  late final textOverflow = MixUtility(value.overflow);
 
-  late final strutStyle = StrutStyleUtility(mix.strutStyle);
+  late final strutStyle = StrutStyleUtility(value.strutStyle);
 
-  late final textAlign = MixUtility(mix.textAlign);
-  late final textScaler = MixUtility(mix.textScaler);
-  late final maxLines = MixUtility(mix.maxLines);
+  late final textAlign = MixUtility(value.textAlign);
+  late final textScaler = MixUtility(value.textScaler);
+  late final maxLines = MixUtility(value.maxLines);
   late final style = TextStyleUtility(
-    (prop) => mix.merge(TextMix.raw(style: prop)),
+    (prop) => value.merge(TextMix.raw(style: prop)),
   );
-  late final textWidthBasis = MixUtility(mix.textWidthBasis);
+  late final textWidthBasis = MixUtility(value.textWidthBasis);
   late final textHeightBehavior = TextHeightBehaviorUtility<TextMix>(
-    mix.textHeightBehavior,
+    value.textHeightBehavior,
   );
-  late final textDirection = MixUtility(mix.textDirection);
-  late final softWrap = MixUtility(mix.softWrap);
-  late final directives = MixUtility(mix.contentModifier);
+  late final textDirection = MixUtility(value.textDirection);
+  late final softWrap = MixUtility(value.softWrap);
+  late final directives = MixUtility(value.contentModifier);
   late final selectionColor = ColorUtility<TextMix>(
-    (prop) => mix.merge(TextMix.raw(selectionColor: prop)),
+    (prop) => value.merge(TextMix.raw(selectionColor: prop)),
   );
-  late final semanticsLabel = MixUtility(mix.semanticsLabel);
-  late final locale = MixUtility(mix.locale);
+  late final semanticsLabel = MixUtility(value.semanticsLabel);
+  late final locale = MixUtility(value.locale);
 
   late final on = OnContextVariantUtility<TextSpec, TextMix>(
-    (v) => mix.variants([v]),
+    (v) => value.variants([v]),
   );
 
   late final wrap = ModifierUtility(
-    (prop) => mix.modifier(ModifierConfig(modifiers: [prop])),
+    (prop) => value.modifier(ModifierConfig(modifiers: [prop])),
   );
 
   // FLATTENED ACCESS - Direct access to commonly used style properties
@@ -80,7 +79,7 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
   // ignore: prefer_final_fields
 
   TextSpecUtility([TextMix? attribute]) {
-    mix = MutableTextMix(attribute ?? TextMix());
+    value = MutableTextMix(attribute ?? TextMix());
   }
 
   // Convenience methods
@@ -88,7 +87,7 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
   TextMix italic() => style.italic();
 
   /// Animation
-  TextMix animate(AnimationConfig animation) => mix.animate(animation);
+  TextMix animate(AnimationConfig animation) => value.animate(animation);
 
   // StyleAttribute interface implementation
 
@@ -97,10 +96,10 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
     if (other == null) return this;
     // IMMUTABLE: Always create new instance (StyleAttribute contract)
     if (other is TextSpecUtility) {
-      return TextSpecUtility(mix.merge(other.mix));
+      return TextSpecUtility(value.merge(other.value));
     }
     if (other is TextMix) {
-      return TextSpecUtility(mix.merge(other));
+      return TextSpecUtility(value.merge(other));
     }
 
     throw FlutterError('Unsupported merge type: ${other.runtimeType}');
@@ -108,7 +107,7 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
 
   @override
   TextSpec resolve(BuildContext context) {
-    return mix.resolve(context);
+    return value.resolve(context);
   }
 }
 

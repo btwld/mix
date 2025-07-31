@@ -27,8 +27,6 @@ final class TextStyleUtility<T extends Style<Object?>>
     (prop) => only(decoration: prop),
   );
 
-  late final fontSize = MixUtility<T, double>((prop) => only(fontSize: prop));
-
   late final backgroundColor = ColorUtility<T>(
     (prop) => buildProp(TextStyleMix.raw(backgroundColor: prop)),
   );
@@ -45,10 +43,13 @@ final class TextStyleUtility<T extends Style<Object?>>
     (prop) => only(textBaseline: prop),
   );
 
-  late final fontFamily = MixUtility<T, String>((v) => only(fontFamily: v));
-
   TextStyleUtility(super.builder);
 
+  T fontSize(double value) => only(fontSize: value);
+
+  T fontFamily(String value) => only(fontFamily: value);
+
+  @protected
   T buildProp(TextStyleMix value) => builder(MixProp(value));
 
   T only({

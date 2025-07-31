@@ -638,30 +638,6 @@ extension TableBorderUtility<T extends Style<Object?>>
   }
 }
 
-/// Extension for creating string values.
-extension StringPropUtilityExt<T extends Style<Object?>>
-    on MixUtility<T, String> {
-  T call(String value) => builder(value);
-}
-
-/// Extension for creating [int] values with predefined options.
-extension IntPropUtilityExt<T extends Style<Object?>> on MixUtility<T, int> {
-  T call(int value) => builder(value);
-}
-
-/// Extension for creating [bool] values with predefined options.
-extension BoolPropUtilityExt<T extends Style<Object?>> on MixUtility<T, bool> {
-  T call(bool value) => builder(value);
-
-  /// Creates an [Style] instance with a value of `true`.
-  @Deprecated('Use call(true) instead')
-  T on() => call(true);
-
-  /// Creates an [Style] instance with a value of `false`.
-  @Deprecated('Use call(false) instead')
-  T off() => call(false);
-}
-
 /// Extension for creating list values with MixUtility
 extension ListMixUtilityExt<T extends Style<Object?>, V>
     on MixUtility<T, List<V>> {

@@ -343,17 +343,7 @@ void main() {
       });
 
       test('handles all BoxFit values', () {
-        final boxFits = [
-          BoxFit.fill,
-          BoxFit.contain,
-          BoxFit.cover,
-          BoxFit.fitWidth,
-          BoxFit.fitHeight,
-          BoxFit.none,
-          BoxFit.scaleDown,
-        ];
-
-        for (final boxFit in boxFits) {
+        for (final boxFit in BoxFit.values) {
           final result = util.fit(boxFit);
           final decorationImage = result.value.resolve(MockBuildContext());
           expect(decorationImage.fit, boxFit);
@@ -376,14 +366,7 @@ void main() {
       });
 
       test('handles all FilterQuality values', () {
-        final filterQualities = [
-          FilterQuality.none,
-          FilterQuality.low,
-          FilterQuality.medium,
-          FilterQuality.high,
-        ];
-
-        for (final filterQuality in filterQualities) {
+        for (final filterQuality in FilterQuality.values) {
           final result = util.filterQuality(filterQuality);
           final decorationImage = result.value.resolve(MockBuildContext());
           expect(decorationImage.filterQuality, filterQuality);

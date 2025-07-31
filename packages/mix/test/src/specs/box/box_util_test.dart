@@ -13,11 +13,6 @@ void main() {
     });
 
     group('Constructor', () {
-      test('creates with default BoxMix when no attribute provided', () {
-        final utility = BoxSpecUtility();
-        expect(utility, isA<BoxSpecUtility>());
-      });
-
       test('creates with provided BoxMix attribute', () {
         final boxMix = BoxMix(alignment: Alignment.center);
         final utility = BoxSpecUtility(boxMix);
@@ -25,7 +20,7 @@ void main() {
         final spec = utility.resolve(context);
 
         expect(utility, isA<BoxSpecUtility>());
-        expect(spec.alignment, Alignment.center);
+        expect(spec, BoxSpec(alignment: Alignment.center));
       });
     });
 
@@ -123,7 +118,7 @@ void main() {
         final result = util.transform(matrix);
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(result, isA<BoxMix>());
         expect(spec.transform, matrix);
       });
@@ -133,7 +128,7 @@ void main() {
         final result = util.transformAlignment(alignment);
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(result, isA<BoxMix>());
         expect(spec.transformAlignment, alignment);
       });
@@ -143,7 +138,7 @@ void main() {
         final result = util.clipBehavior(clipBehavior);
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(result, isA<BoxMix>());
         expect(spec.clipBehavior, clipBehavior);
       });
@@ -153,7 +148,7 @@ void main() {
         final result = util.alignment(alignment);
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(result, isA<BoxMix>());
         expect(spec.alignment, alignment);
       });
@@ -225,9 +220,7 @@ void main() {
 
       test('merge combines properties correctly', () {
         final util1 = BoxSpecUtility(BoxMix(alignment: Alignment.center));
-        final other = BoxSpecUtility(
-          BoxMix(clipBehavior: Clip.antiAlias),
-        );
+        final other = BoxSpecUtility(BoxMix(clipBehavior: Clip.antiAlias));
 
         final result = util1.merge(other);
         final context = MockBuildContext();
@@ -240,11 +233,13 @@ void main() {
 
     group('Resolve functionality', () {
       test('resolve returns BoxSpec with resolved properties', () {
-        final testUtil = BoxSpecUtility(BoxMix(
-          alignment: Alignment.center,
-          clipBehavior: Clip.antiAlias,
-          transform: Matrix4.identity(),
-        ));
+        final testUtil = BoxSpecUtility(
+          BoxMix(
+            alignment: Alignment.center,
+            clipBehavior: Clip.antiAlias,
+            transform: Matrix4.identity(),
+          ),
+        );
 
         final context = MockBuildContext();
         final spec = testUtil.resolve(context);
@@ -269,137 +264,137 @@ void main() {
     group('Chaining methods', () {
       test('basic alignment mutation test', () {
         final util = BoxSpecUtility();
-        
+
         final result = util.alignment(Alignment.center);
         expect(result, isA<BoxMix>());
-        
+
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(spec.alignment, Alignment.center);
       });
 
       test('basic transform mutation test', () {
         final util = BoxSpecUtility();
         final matrix = Matrix4.identity();
-        
+
         final result = util.transform(matrix);
         expect(result, isA<BoxMix>());
-        
+
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(spec.transform, matrix);
       });
-      
+
       test('chaining utility methods accumulates properties', () {
         final util = BoxSpecUtility();
         final matrix = Matrix4.identity();
-        
+
         // Chain multiple method calls - these mutate internal state
         util.alignment(Alignment.center);
         util.transform(matrix);
         util.clipBehavior(Clip.antiAlias);
-        
+
         // Verify accumulated state through resolution
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(spec.alignment, Alignment.center);
         expect(spec.transform, matrix);
         expect(spec.clipBehavior, Clip.antiAlias);
       });
-      
+
       test('cascade notation works with utility methods', () {
         final matrix = Matrix4.identity();
         final util = BoxSpecUtility()
           ..alignment(Alignment.center)
           ..transform(matrix)
           ..clipBehavior(Clip.antiAlias);
-        
+
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(spec.alignment, Alignment.center);
         expect(spec.transform, matrix);
         expect(spec.clipBehavior, Clip.antiAlias);
       });
-      
+
       test('individual utility calls return BoxMix for further chaining', () {
         final util = BoxSpecUtility();
         final matrix = Matrix4.identity();
-        
+
         // Each utility call should return a BoxMix
         final alignmentResult = util.alignment(Alignment.center);
         final transformResult = util.transform(matrix);
         final clipResult = util.clipBehavior(Clip.antiAlias);
-        
+
         expect(alignmentResult, isA<BoxMix>());
         expect(transformResult, isA<BoxMix>());
         expect(clipResult, isA<BoxMix>());
-        
+
         // But the utility itself should have accumulated all changes
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(spec.alignment, Alignment.center);
         expect(spec.transform, matrix);
         expect(spec.clipBehavior, Clip.antiAlias);
       });
     });
-    
+
     group('Mutating behavior vs Builder pattern', () {
       test('utility mutates internal state (not builder pattern)', () {
         final util = BoxSpecUtility();
-        
+
         // Store initial resolution
         final context = MockBuildContext();
         final initialSpec = util.resolve(context);
         expect(initialSpec.alignment, isNull);
-        
+
         // Mutate the utility
         util.alignment(Alignment.center);
-        
+
         // Same utility instance should now resolve with the alignment
         final mutatedSpec = util.resolve(context);
         expect(mutatedSpec.alignment, Alignment.center);
-        
+
         // This proves it's mutating, not building new instances
       });
-      
+
       test('multiple calls accumulate on same instance', () {
         final util = BoxSpecUtility();
         final matrix = Matrix4.identity();
-        
+
         util.alignment(Alignment.center);
         util.transform(matrix);
         util.clipBehavior(Clip.antiAlias);
-        
+
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         // All properties should be present in the same instance
         expect(spec.alignment, Alignment.center);
         expect(spec.transform, matrix);
         expect(spec.clipBehavior, Clip.antiAlias);
       });
-      
+
       test('demonstrates difference from immutable builder pattern', () {
         final util = BoxSpecUtility();
         final matrix = Matrix4.identity();
-        
+
         // In a builder pattern, this would create new instances
         // In mutable pattern, this modifies the same instance
         final result1 = util.alignment(Alignment.center);
         final result2 = util.transform(matrix);
-        
+
         // Both results are different BoxMix instances
         expect(result1, isNot(same(result2)));
-        
+
         // But the utility itself has accumulated both changes
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(spec.alignment, Alignment.center);
         expect(spec.transform, matrix);
       });
@@ -407,10 +402,9 @@ void main() {
 
     group('Integration with resolvesTo matcher', () {
       test('utility resolves to correct BoxSpec', () {
-        final testUtil = BoxSpecUtility(BoxMix(
-          alignment: Alignment.center,
-          clipBehavior: Clip.antiAlias,
-        ));
+        final testUtil = BoxSpecUtility(
+          BoxMix(alignment: Alignment.center, clipBehavior: Clip.antiAlias),
+        );
 
         expect(
           testUtil,
@@ -427,7 +421,7 @@ void main() {
     group('Complex scenarios', () {
       test('handles complex utility usage', () {
         final matrix = Matrix4.identity();
-        
+
         // Test individual utility calls
         final alignmentResult = util.alignment(Alignment.center);
         final transformResult = util.transform(matrix);
