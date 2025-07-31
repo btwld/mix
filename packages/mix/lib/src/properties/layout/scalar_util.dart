@@ -9,6 +9,14 @@ import '../../animation/curves.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
 
+@immutable
+class SpacingSideUtility<T extends Style<Object?>>
+    extends MixUtility<T, double> {
+  const SpacingSideUtility(super.builder);
+
+  T call(double value) => builder(value);
+}
+
 /// Extension for creating [AlignmentGeometry] values with both absolute and directional alignments.
 extension AlignmentPropUtilityExt<S extends Style<Object?>>
     on MixUtility<S, AlignmentGeometry> {
@@ -203,12 +211,10 @@ extension DurationPropUtilityExt<T extends Style<Object?>>
   T zero() => call(Duration.zero);
 }
 
-/// Extension for creating font size values as doubles.
-extension FontSizePropUtilityExt<T extends Style<Object?>>
+/// Extension for creating double values with predefined options.
+extension DoublePropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, double> {
   T call(double value) => builder(value);
-
-  // No predefined font size values - this extension provides type consistency for font sizes
 }
 
 /// Extension for creating [FontWeight] values with predefined weights.
@@ -649,39 +655,12 @@ extension TableBorderUtility<T extends Style<Object?>>
   }
 }
 
-/// Extension for creating stroke alignment values for border positioning.
-extension StrokeAlignPropUtilityExt<T extends Style<Object?>>
-    on MixUtility<T, double> {
-  T call(double value) => builder(value);
-
-  /// Creates a [Style] instance with center stroke alignment (0).
-  T center() => call(0);
-
-  /// Creates a [Style] instance with inside stroke alignment (-1).
-  T inside() => call(-1);
-
-  /// Creates a [Style] instance with outside stroke alignment (1).
-  T outside() => call(1);
-}
-
 /// Extension for creating string values.
 extension StringPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, String> {
   T call(String value) => builder(value);
 
   // No predefined string values - this extension provides type consistency
-}
-
-/// Extension for creating [double] values with predefined options.
-extension DoublePropUtilityExt<T extends Style<Object?>>
-    on MixUtility<T, double> {
-  T call(double value) => builder(value);
-
-  /// Creates an [Style] instance with a value of 0.
-  T zero() => call(0);
-
-  /// Creates an [Style] instance with a value of [double.infinity].
-  T infinity() => call(double.infinity);
 }
 
 /// Extension for creating [int] values with predefined options.

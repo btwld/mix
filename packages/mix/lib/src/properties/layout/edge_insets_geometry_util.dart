@@ -4,6 +4,7 @@ import 'package:meta/meta.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
 import 'edge_insets_geometry_mix.dart';
+import 'scalar_util.dart';
 
 // Deprecated typedef moved to src/core/deprecated.dart
 
@@ -106,12 +107,6 @@ final class EdgeInsetsDirectionalUtility<U extends Style<Object?>>
   U as(EdgeInsetsDirectional value) {
     return builder(EdgeInsetsDirectionalMix.value(value));
   }
-}
-
-@immutable
-class SpacingSideUtility<T extends Style<Object?>>
-    extends MixUtility<T, double> {
-  const SpacingSideUtility(super.builder);
 }
 
 /// Converts edge parameters into EdgeInsetsMix with priority system
