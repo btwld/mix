@@ -66,8 +66,6 @@ class BoxSpecUtility extends StyleAttributeBuilder<BoxSpec> {
 
   BoxSpecUtility([BoxMix? attribute]) : mix = attribute ?? BoxMix();
 
-  BoxMix call() => mix;
-
   /// Animation
   BoxMix animate(AnimationConfig animation) => mix.animate(animation);
 

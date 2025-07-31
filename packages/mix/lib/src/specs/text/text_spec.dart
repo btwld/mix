@@ -27,6 +27,12 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
 
   final Color? selectionColor;
 
+  /// Alternative semantics label for accessibility.
+  final String? semanticsLabel;
+
+  /// Locale for text rendering and formatting.
+  final Locale? locale;
+
   const TextSpec({
     this.overflow,
     this.strutStyle,
@@ -40,6 +46,8 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     this.softWrap,
     this.directives,
     this.selectionColor,
+    this.semanticsLabel,
+    this.locale,
   });
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -81,6 +89,12 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     properties.add(
       DiagnosticsProperty('selectionColor', selectionColor, defaultValue: null),
     );
+    properties.add(
+      DiagnosticsProperty('semanticsLabel', semanticsLabel, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('locale', locale, defaultValue: null),
+    );
   }
 
   /// Creates a copy of this [TextSpec] but with the given fields
@@ -99,6 +113,8 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     bool? softWrap,
     List<MixDirective<String>>? directives,
     Color? selectionColor,
+    String? semanticsLabel,
+    Locale? locale,
   }) {
     return TextSpec(
       overflow: overflow ?? this.overflow,
@@ -113,6 +129,8 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
       softWrap: softWrap ?? this.softWrap,
       directives: directives ?? this.directives,
       selectionColor: selectionColor ?? this.selectionColor,
+      semanticsLabel: semanticsLabel ?? this.semanticsLabel,
+      locale: locale ?? this.locale,
     );
   }
 
@@ -153,6 +171,8 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
       softWrap: t < 0.5 ? softWrap : other.softWrap,
       directives: t < 0.5 ? directives : other.directives,
       selectionColor: Color.lerp(selectionColor, other.selectionColor, t),
+      semanticsLabel: t < 0.5 ? semanticsLabel : other.semanticsLabel,
+      locale: t < 0.5 ? locale : other.locale,
     );
   }
 
@@ -180,5 +200,7 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     softWrap,
     directives,
     selectionColor,
+    semanticsLabel,
+    locale,
   ];
 }

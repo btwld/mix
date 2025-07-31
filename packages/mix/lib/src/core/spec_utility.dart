@@ -20,6 +20,7 @@ abstract class StyleAttributeBuilder<S extends Spec<S>> extends Style<S>
   });
 
   /// Access to the internal mutable StyleAttribute
+  @protected
   Style<S> get mix;
 
   @override

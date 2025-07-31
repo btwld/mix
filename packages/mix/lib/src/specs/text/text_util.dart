@@ -6,6 +6,7 @@ import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
+import '../../properties/painting/color_util.dart';
 import '../../properties/typography/strut_style_util.dart';
 import '../../properties/typography/text_height_behavior_util.dart';
 import '../../properties/typography/text_style_util.dart';
@@ -38,7 +39,11 @@ class TextSpecUtility extends StyleAttributeBuilder<TextSpec> {
   late final textDirection = MixUtility(mix.textDirection);
   late final softWrap = MixUtility(mix.softWrap);
   late final directives = TextDirectiveUtility(mix.contentModifier);
-  late final selectionColor = MixUtility(mix.selectionColor);
+  late final selectionColor = ColorUtility<TextMix>(
+    (prop) => mix.merge(TextMix.raw(selectionColor: prop)),
+  );
+  late final semanticsLabel = MixUtility(mix.semanticsLabel);
+  late final locale = MixUtility(mix.locale);
 
   late final on = OnContextVariantUtility<TextSpec, TextMix>(
     (v) => mix.variants([v]),

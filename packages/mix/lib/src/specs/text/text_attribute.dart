@@ -40,6 +40,8 @@ class TextMix extends Style<TextSpec>
   final Prop<bool>? $softWrap;
   final List<MixDirective<String>>? $directives;
   final Prop<Color>? $selectionColor;
+  final Prop<String>? $semanticsLabel;
+  final Prop<Locale>? $locale;
 
   /// Factory for text color
   factory TextMix.color(Color value) {
@@ -226,6 +228,16 @@ class TextMix extends Style<TextSpec>
     return TextMix(selectionColor: value);
   }
 
+  /// Factory for semantics label
+  factory TextMix.semanticsLabel(String value) {
+    return TextMix(semanticsLabel: value);
+  }
+
+  /// Factory for locale
+  factory TextMix.locale(Locale value) {
+    return TextMix(locale: value);
+  }
+
   /// Factory for animation
   factory TextMix.animate(AnimationConfig animation) {
     return TextMix(animation: animation);
@@ -253,6 +265,8 @@ class TextMix extends Style<TextSpec>
     Prop<bool>? softWrap,
     List<MixDirective<String>>? directives,
     Prop<Color>? selectionColor,
+    Prop<String>? semanticsLabel,
+    Prop<Locale>? locale,
     super.animation,
     super.modifierConfig,
     super.variants,
@@ -269,7 +283,9 @@ class TextMix extends Style<TextSpec>
        $textDirection = textDirection,
        $softWrap = softWrap,
        $directives = directives,
-       $selectionColor = selectionColor;
+       $selectionColor = selectionColor,
+       $semanticsLabel = semanticsLabel,
+       $locale = locale;
 
   TextMix({
     TextOverflow? overflow,
@@ -284,6 +300,8 @@ class TextMix extends Style<TextSpec>
     bool? softWrap,
     List<MixDirective<String>>? directives,
     Color? selectionColor,
+    String? semanticsLabel,
+    Locale? locale,
     AnimationConfig? animation,
     ModifierConfig? modifierConfig,
     List<VariantStyleAttribute<TextSpec>>? variants,
@@ -301,6 +319,8 @@ class TextMix extends Style<TextSpec>
          softWrap: Prop.maybe(softWrap),
          directives: directives,
          selectionColor: Prop.maybe(selectionColor),
+         semanticsLabel: Prop.maybe(semanticsLabel),
+         locale: Prop.maybe(locale),
          animation: animation,
          modifierConfig: modifierConfig,
          variants: variants,
@@ -330,6 +350,9 @@ class TextMix extends Style<TextSpec>
         textDirection: spec.textDirection,
         softWrap: spec.softWrap,
         directives: spec.directives,
+        selectionColor: spec.selectionColor,
+        semanticsLabel: spec.semanticsLabel,
+        locale: spec.locale,
       );
 
   /// Constructor that accepts a nullable [TextSpec] value and extracts its properties.
@@ -503,6 +526,16 @@ class TextMix extends Style<TextSpec>
     return merge(TextMix.selectionColor(value));
   }
 
+  /// Sets semantics label
+  TextMix semanticsLabel(String value) {
+    return merge(TextMix.semanticsLabel(value));
+  }
+
+  /// Sets locale
+  TextMix locale(Locale value) {
+    return merge(TextMix.locale(value));
+  }
+
   /// Sets decoration thickness
   TextMix decorationThickness(double value) {
     return merge(TextMix.decorationThickness(value));
@@ -576,6 +609,8 @@ class TextMix extends Style<TextSpec>
       softWrap: MixHelpers.resolve(context, $softWrap),
       directives: $directives,
       selectionColor: MixHelpers.resolve(context, $selectionColor),
+      semanticsLabel: MixHelpers.resolve(context, $semanticsLabel),
+      locale: MixHelpers.resolve(context, $locale),
     );
   }
 
@@ -611,6 +646,8 @@ class TextMix extends Style<TextSpec>
         strategy: ListMergeStrategy.append,
       ),
       selectionColor: MixHelpers.merge($selectionColor, other.$selectionColor),
+      semanticsLabel: MixHelpers.merge($semanticsLabel, other.$semanticsLabel),
+      locale: MixHelpers.merge($locale, other.$locale),
       animation: other.$animation ?? $animation,
       modifierConfig:
           $modifierConfig?.merge(other.$modifierConfig) ??
@@ -665,6 +702,12 @@ class TextMix extends Style<TextSpec>
     properties.add(
       DiagnosticsProperty('selectionColor', $selectionColor, defaultValue: null),
     );
+    properties.add(
+      DiagnosticsProperty('semanticsLabel', $semanticsLabel, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('locale', $locale, defaultValue: null),
+    );
 
     properties.add(
       DiagnosticsProperty('directives', $directives, defaultValue: null),
@@ -692,6 +735,8 @@ class TextMix extends Style<TextSpec>
     $softWrap,
     $directives,
     $selectionColor,
+    $semanticsLabel,
+    $locale,
     $animation,
     $modifierConfig,
     $variants,

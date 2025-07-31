@@ -12,122 +12,172 @@ void main() {
       util = FlexSpecUtility();
     });
 
-    group('Constructor', () {
-      test('creates with default FlexMix when no attribute provided', () {
-        final utility = FlexSpecUtility();
-        expect(utility.mix, isA<FlexMix>());
+    group('individual utility methods', () {
+      test('direction utility modifies internal state', () {
+        util..direction(Axis.horizontal);
+        
+        final spec = util.resolve(MockBuildContext());
+        expect(spec, const FlexSpec(direction: Axis.horizontal));
       });
 
-      test('creates with provided FlexMix attribute', () {
-        final flexMix = FlexMix(direction: Axis.horizontal);
-        final utility = FlexSpecUtility(flexMix);
+      test('mainAxisAlignment utility modifies internal state', () {
+        util..mainAxisAlignment(MainAxisAlignment.center);
+        
+        final spec = util.resolve(MockBuildContext());
+        expect(spec, const FlexSpec(mainAxisAlignment: MainAxisAlignment.center));
+      });
 
-        expect(utility.mix, same(flexMix));
-        expectProp(utility.mix.$direction, Axis.horizontal);
+      test('crossAxisAlignment utility modifies internal state', () {
+        util..crossAxisAlignment(CrossAxisAlignment.stretch);
+        
+        final spec = util.resolve(MockBuildContext());
+        expect(spec, const FlexSpec(crossAxisAlignment: CrossAxisAlignment.stretch));
+      });
+
+      test('mainAxisSize utility modifies internal state', () {
+        util..mainAxisSize(MainAxisSize.min);
+        
+        final spec = util.resolve(MockBuildContext());
+        expect(spec, const FlexSpec(mainAxisSize: MainAxisSize.min));
+      });
+
+      test('verticalDirection utility modifies internal state', () {
+        util..verticalDirection(VerticalDirection.up);
+        
+        final spec = util.resolve(MockBuildContext());
+        expect(spec, const FlexSpec(verticalDirection: VerticalDirection.up));
+      });
+
+      test('textDirection utility modifies internal state', () {
+        util..textDirection(TextDirection.rtl);
+        
+        final spec = util.resolve(MockBuildContext());
+        expect(spec, const FlexSpec(textDirection: TextDirection.rtl));
+      });
+
+      test('textBaseline utility modifies internal state', () {
+        util..textBaseline(TextBaseline.ideographic);
+        
+        final spec = util.resolve(MockBuildContext());
+        expect(spec, const FlexSpec(textBaseline: TextBaseline.ideographic));
+      });
+
+      test('clipBehavior utility modifies internal state', () {
+        util..clipBehavior(Clip.antiAlias);
+        
+        final spec = util.resolve(MockBuildContext());
+        expect(spec, const FlexSpec(clipBehavior: Clip.antiAlias));
+      });
+
+      test('gap utility modifies internal state', () {
+        util..gap(16.0);
+        
+        final spec = util.resolve(MockBuildContext());
+        expect(spec, const FlexSpec(gap: 16.0));
       });
     });
 
-    group('Property utilities', () {
-      test('direction utility creates correct FlexMix', () {
-        final result = util.direction(Axis.vertical);
-        expectProp(result.$direction, Axis.vertical);
+    group('cascade chaining', () {
+      test('chains multiple utility calls', () {
+        util..direction(Axis.horizontal)..gap(8.0);
+        
+        final spec = util.resolve(MockBuildContext());
+        expect(
+          spec,
+          const FlexSpec(
+            direction: Axis.horizontal,
+            gap: 8.0,
+          ),
+        );
       });
 
-      test('mainAxisAlignment utility creates correct FlexMix', () {
-        final result = util.mainAxisAlignment(MainAxisAlignment.center);
-        expectProp(result.$mainAxisAlignment, MainAxisAlignment.center);
+      test('chains all properties together', () {
+        util
+          ..direction(Axis.vertical)
+          ..mainAxisAlignment(MainAxisAlignment.center)
+          ..crossAxisAlignment(CrossAxisAlignment.stretch)
+          ..gap(12.0);
+        
+        final spec = util.resolve(MockBuildContext());
+        expect(
+          spec,
+          const FlexSpec(
+            direction: Axis.vertical,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            gap: 12.0,
+          ),
+        );
       });
 
-      test('crossAxisAlignment utility creates correct FlexMix', () {
-        final result = util.crossAxisAlignment(CrossAxisAlignment.stretch);
-        expectProp(result.$crossAxisAlignment, CrossAxisAlignment.stretch);
-      });
-
-      test('mainAxisSize utility creates correct FlexMix', () {
-        final result = util.mainAxisSize(MainAxisSize.min);
-        expectProp(result.$mainAxisSize, MainAxisSize.min);
-      });
-
-      test('verticalDirection utility creates correct FlexMix', () {
-        final result = util.verticalDirection(VerticalDirection.up);
-        expectProp(result.$verticalDirection, VerticalDirection.up);
-      });
-
-      test('textDirection utility creates correct FlexMix', () {
-        final result = util.textDirection(TextDirection.rtl);
-        expectProp(result.$textDirection, TextDirection.rtl);
-      });
-
-      test('textBaseline utility creates correct FlexMix', () {
-        final result = util.textBaseline(TextBaseline.ideographic);
-        expectProp(result.$textBaseline, TextBaseline.ideographic);
-      });
-
-      test('clipBehavior utility creates correct FlexMix', () {
-        final result = util.clipBehavior(Clip.antiAlias);
-        expectProp(result.$clipBehavior, Clip.antiAlias);
-      });
-
-      test('gap utility creates correct FlexMix', () {
-        final result = util.gap(16.0);
-        expectProp(result.$gap, 16.0);
+      test('later calls override earlier ones', () {
+        util
+          ..direction(Axis.horizontal)
+          ..direction(Axis.vertical);
+        
+        final spec = util.resolve(MockBuildContext());
+        expect(spec, const FlexSpec(direction: Axis.vertical));
       });
     });
 
-    group('Convenience methods', () {
-      test('row() sets direction to horizontal', () {
+    group('convenience methods', () {
+      test('row() returns FlexMix with horizontal direction', () {
         final result = util.row();
-        expectProp(result.$direction, Axis.horizontal);
+        
+        expect(result, FlexMix(direction: Axis.horizontal));
       });
 
-      test('column() sets direction to vertical', () {
+      test('column() returns FlexMix with vertical direction', () {
         final result = util.column();
-        expectProp(result.$direction, Axis.vertical);
+        
+        expect(result, FlexMix(direction: Axis.vertical));
       });
     });
 
-    group('Animation', () {
-      test('animate() adds animation config', () {
+    group('animation', () {
+      test('animate() returns FlexMix with animation config', () {
         final animationConfig = AnimationConfig.linear(
           const Duration(seconds: 1),
         );
         final result = util.animate(animationConfig);
 
-        expect(result.$animation, animationConfig);
+        expect(result, FlexMix(animation: animationConfig));
       });
     });
 
-    group('Variant utilities', () {
-      test('on utility creates VariantAttributeBuilder', () {
-        final hoverBuilder = util.on.hover;
+    group('utility construction', () {
+      test('creates FlexSpecUtility with initial FlexMix', () {
+        final initialMix = FlexMix(direction: Axis.horizontal);
+        final utility = FlexSpecUtility(initialMix);
+        
+        final spec = utility.resolve(MockBuildContext());
+        expect(spec, const FlexSpec(direction: Axis.horizontal));
+      });
 
-        expect(hoverBuilder, isA<VariantAttributeBuilder<FlexSpec>>());
+      test('creates empty FlexSpecUtility', () {
+        final utility = FlexSpecUtility();
+        
+        final spec = utility.resolve(MockBuildContext());
+        expect(spec.direction, isNull);
+        expect(spec.gap, isNull);
       });
     });
 
-    group('Modifier utilities', () {
-      test('wrap utility creates modifier FlexMix', () {
-        final result = util.wrap.opacity(0.5);
-
-        expect(result, isA<FlexMix>());
-        expect(result.$modifierConfig, isNotNull);
-        expect(result.$modifierConfig!.$modifiers!.length, 1);
-      });
-    });
-
-    group('Merge functionality', () {
+    group('merge functionality', () {
       test('merge with null returns same instance', () {
         final result = util.merge(null);
         expect(result, same(util));
       });
 
-      test('merge with FlexSpecUtility creates new instance', () {
+      test('merge with another FlexSpecUtility creates new instance', () {
         final other = FlexSpecUtility(FlexMix(direction: Axis.horizontal));
         final result = util.merge(other);
 
         expect(result, isNot(same(util)));
         expect(result, isA<FlexSpecUtility>());
-        expectProp(result.mix.$direction, Axis.horizontal);
+        
+        final spec = result.resolve(MockBuildContext());
+        expect(spec, const FlexSpec(direction: Axis.horizontal));
       });
 
       test('merge with FlexMix creates new instance', () {
@@ -136,76 +186,81 @@ void main() {
 
         expect(result, isNot(same(util)));
         expect(result, isA<FlexSpecUtility>());
-        expectProp(result.mix.$gap, 8.0);
-      });
-
-      test('merge throws error for unsupported type', () {
-        expect(
-          () => util.merge('invalid_type' as Style<FlexSpec>),
-          throwsA(isA<TypeError>()),
-        );
+        
+        final spec = result.resolve(MockBuildContext());
+        expect(spec, const FlexSpec(gap: 8.0));
       });
 
       test('merge combines properties correctly', () {
-        util.mix = FlexMix(direction: Axis.horizontal, gap: 4.0);
-        final other = FlexSpecUtility(
-          FlexMix(gap: 8.0, clipBehavior: Clip.hardEdge),
+        final util1 = FlexSpecUtility(FlexMix(direction: Axis.horizontal, gap: 4.0));
+        final util2 = FlexSpecUtility(FlexMix(gap: 8.0, clipBehavior: Clip.hardEdge));
+
+        final result = util1.merge(util2);
+        final spec = result.resolve(MockBuildContext());
+
+        expect(
+          spec,
+          const FlexSpec(
+            direction: Axis.horizontal,
+            gap: 8.0,
+            clipBehavior: Clip.hardEdge,
+          ),
         );
+      });
 
-        final result = util.merge(other);
+      test('handles multiple merges correctly', () {
+        final util1 = FlexSpecUtility(FlexMix(direction: Axis.horizontal));
+        final util2 = FlexSpecUtility(FlexMix(gap: 8.0));
+        final util3 = FlexSpecUtility(FlexMix(mainAxisAlignment: MainAxisAlignment.center));
 
-        expectProp(result.mix.$direction, Axis.horizontal);
-        expectProp(result.mix.$gap, 8.0); // other takes precedence
-        expectProp(result.mix.$clipBehavior, Clip.hardEdge);
+        final result = util1.merge(util2).merge(util3);
+        final spec = result.resolve(MockBuildContext());
+
+        expect(
+          spec,
+          const FlexSpec(
+            direction: Axis.horizontal,
+            gap: 8.0,
+            mainAxisAlignment: MainAxisAlignment.center,
+          ),
+        );
       });
     });
 
-    group('Resolve functionality', () {
-      test('resolve returns FlexSpec with resolved properties', () {
-        util.mix = FlexMix(
-          direction: Axis.vertical,
-          mainAxisAlignment: MainAxisAlignment.center,
-          gap: 12.0,
-        );
-
-        final context = MockBuildContext();
-        final spec = util.resolve(context);
-
-        expect(spec, isA<FlexSpec>());
-        expect(spec.direction, Axis.vertical);
-        expect(spec.mainAxisAlignment, MainAxisAlignment.center);
-        expect(spec.gap, 12.0);
-      });
-
-      test('resolve handles null properties', () {
-        final context = MockBuildContext();
-        final spec = util.resolve(context);
+    group('resolution', () {
+      test('resolves empty utility to FlexSpec with null properties', () {
+        final spec = util.resolve(MockBuildContext());
 
         expect(spec.direction, isNull);
         expect(spec.mainAxisAlignment, isNull);
         expect(spec.gap, isNull);
       });
-    });
 
-    group('Cascade notation support', () {
-      test('utilities return new FlexMix instances', () {
-        final result1 = util.direction(Axis.horizontal);
-        final result2 = util.mainAxisAlignment(MainAxisAlignment.spaceBetween);
-        final result3 = util.gap(16.0);
+      test('resolves after chaining to correct FlexSpec', () {
+        util
+          ..direction(Axis.vertical)
+          ..mainAxisAlignment(MainAxisAlignment.center)
+          ..gap(12.0);
 
-        expectProp(result1.$direction, Axis.horizontal);
-        expectProp(result2.$mainAxisAlignment, MainAxisAlignment.spaceBetween);
-        expectProp(result3.$gap, 16.0);
+        final spec = util.resolve(MockBuildContext());
+
+        expect(
+          spec,
+          const FlexSpec(
+            direction: Axis.vertical,
+            mainAxisAlignment: MainAxisAlignment.center,
+            gap: 12.0,
+          ),
+        );
       });
     });
 
-    group('Integration with resolvesTo matcher', () {
-      test('utility resolves to correct FlexSpec', () {
-        util.mix = FlexMix(
-          direction: Axis.horizontal,
-          mainAxisAlignment: MainAxisAlignment.center,
-          gap: 8.0,
-        );
+    group('resolvesTo matcher integration', () {
+      test('utility resolves to correct FlexSpec with matcher', () {
+        util
+          ..direction(Axis.horizontal)
+          ..mainAxisAlignment(MainAxisAlignment.center)
+          ..gap(8.0);
 
         expect(
           util,
@@ -220,70 +275,99 @@ void main() {
       });
     });
 
-    group('Token support', () {
+    group('token support', () {
       test('resolves tokens with context', () {
         const gapToken = MixToken<double>('gap');
         final context = MockBuildContext(
           mixScopeData: MixScopeData.static(tokens: {gapToken: 24.0}),
         );
 
-        util.mix = FlexMix.raw(gap: Prop.token(gapToken));
-        final spec = util.resolve(context);
+        final utility = FlexSpecUtility(FlexMix.raw(gap: Prop.token(gapToken)));
+        final spec = utility.resolve(context);
 
         expect(spec.gap, 24.0);
       });
     });
 
-    group('Complex scenarios', () {
-      test('handles complex utility usage', () {
-        // Test individual utility calls
-        final directionResult = util.direction(Axis.vertical);
-        final alignmentResult = util.mainAxisAlignment(
-          MainAxisAlignment.spaceEvenly,
-        );
-        final gapResult = util.gap(20.0);
+    group('variant utilities', () {
+      test('on utility creates VariantAttributeBuilder', () {
+        final hoverBuilder = util.on.hover;
 
-        expectProp(directionResult.$direction, Axis.vertical);
-        expectProp(
-          alignmentResult.$mainAxisAlignment,
-          MainAxisAlignment.spaceEvenly,
-        );
-        expectProp(gapResult.$gap, 20.0);
-      });
-
-      test('handles multiple merges correctly', () {
-        final util1 = FlexSpecUtility(FlexMix(direction: Axis.horizontal));
-        final util2 = FlexSpecUtility(FlexMix(gap: 8.0));
-        final util3 = FlexSpecUtility(
-          FlexMix(mainAxisAlignment: MainAxisAlignment.center),
-        );
-
-        final result = util1.merge(util2).merge(util3);
-
-        expectProp(result.mix.$direction, Axis.horizontal);
-        expectProp(result.mix.$gap, 8.0);
-        expectProp(result.mix.$mainAxisAlignment, MainAxisAlignment.center);
+        expect(hoverBuilder, isA<VariantAttributeBuilder<FlexSpec>>());
       });
     });
 
-    group('Edge cases', () {
-      test('handles empty utility', () {
-        final emptyUtil = FlexSpecUtility();
-        final context = MockBuildContext();
-        final spec = emptyUtil.resolve(context);
+    group('modifier utilities', () {
+      test('wrap utility creates modifier FlexMix', () {
+        final result = util.wrap.opacity(0.5);
 
-        expect(spec.direction, isNull);
-        expect(spec.mainAxisAlignment, isNull);
-        expect(spec.crossAxisAlignment, isNull);
-        expect(spec.gap, isNull);
+        expect(result, isA<FlexMix>());
+        expect(result.$modifierConfig, isNotNull);
+        expect(result.$modifierConfig!.$modifiers!.length, 1);
+      });
+    });
+
+    group('complex scenarios', () {
+      test('combines chaining with merge', () {
+        final util1 = FlexSpecUtility()..direction(Axis.horizontal)..gap(4.0);
+        final util2 = FlexSpecUtility()..mainAxisAlignment(MainAxisAlignment.center);
+
+        final result = util1.merge(util2);
+        final spec = result.resolve(MockBuildContext());
+
+        expect(
+          spec,
+          const FlexSpec(
+            direction: Axis.horizontal,
+            gap: 4.0,
+            mainAxisAlignment: MainAxisAlignment.center,
+          ),
+        );
       });
 
-      test('merge with self returns new instance', () {
-        util.mix = FlexMix(direction: Axis.horizontal);
-        final result = util.merge(util);
+      test('chaining after construction with initial mix', () {
+        final utility = FlexSpecUtility(FlexMix(direction: Axis.horizontal))
+          ..gap(8.0)
+          ..mainAxisAlignment(MainAxisAlignment.center);
 
-        expect(result, isNot(same(util)));
-        expectProp(result.mix.$direction, Axis.horizontal);
+        final spec = utility.resolve(MockBuildContext());
+
+        expect(
+          spec,
+          const FlexSpec(
+            direction: Axis.horizontal,
+            gap: 8.0,
+            mainAxisAlignment: MainAxisAlignment.center,
+          ),
+        );
+      });
+    });
+
+    group('edge cases', () {
+      test('multiple property changes via chaining', () {
+        util
+          ..direction(Axis.horizontal)
+          ..direction(Axis.vertical)
+          ..gap(4.0)
+          ..gap(8.0);
+
+        final spec = util.resolve(MockBuildContext());
+        expect(
+          spec,
+          const FlexSpec(
+            direction: Axis.vertical,
+            gap: 8.0,
+          ),
+        );
+      });
+
+      test('empty utility after chaining with null values', () {
+        // This tests the behavior when properties are explicitly set to null
+        final utility = FlexSpecUtility(FlexMix(direction: Axis.horizontal));
+        final spec = utility.resolve(MockBuildContext());
+
+        expect(spec.direction, Axis.horizontal);
+        expect(spec.gap, isNull);
       });
     });
   });

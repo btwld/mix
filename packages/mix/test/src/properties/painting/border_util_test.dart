@@ -39,10 +39,7 @@ void main() {
 
         expect(
           border,
-          const Border(
-            left: BorderSide(width: 3.0),
-            right: BorderSide(width: 3.0),
-          ),
+          const Border.symmetric(horizontal: BorderSide(width: 3.0)),
         );
       });
 
@@ -53,10 +50,7 @@ void main() {
 
         expect(
           border,
-          const Border(
-            top: BorderSide(width: 4.0),
-            bottom: BorderSide(width: 4.0),
-          ),
+          const Border.symmetric(vertical: BorderSide(width: 4.0)),
         );
       });
 
@@ -102,10 +96,10 @@ void main() {
         expect(
           border,
           Border(
-            top: BorderSide(width: 1.0),
-            bottom: BorderSide(width: 1.0),
+            top: BorderSide(width: 2.0),
+            bottom: BorderSide(width: 2.0),
             left: BorderSide(width: 3.0),
-            right: BorderSide(width: 2.0),
+            right: BorderSide(width: 1.0),
           ),
         );
       });
@@ -117,11 +111,9 @@ void main() {
 
         expect(
           border,
-          const Border(
-            top: BorderSide(width: 3.0),
-            bottom: BorderSide(width: 3.0),
-            left: BorderSide(width: 2.0),
-            right: BorderSide(width: 2.0),
+          const Border.symmetric(
+            horizontal: BorderSide(width: 2.0),
+            vertical: BorderSide(width: 3.0),
           ),
         );
       });
@@ -157,10 +149,7 @@ void main() {
 
         expect(
           border,
-          const Border(
-            left: BorderSide(color: Colors.blue),
-            right: BorderSide(color: Colors.blue),
-          ),
+          const Border.symmetric(horizontal: BorderSide(color: Colors.blue)),
         );
       });
 
@@ -171,10 +160,7 @@ void main() {
 
         expect(
           border,
-          const Border(
-            top: BorderSide(color: Colors.green),
-            bottom: BorderSide(color: Colors.green),
-          ),
+          const Border.symmetric(vertical: BorderSide(color: Colors.green)),
         );
       });
 
@@ -229,9 +215,9 @@ void main() {
           border,
           const Border(
             top: BorderSide(color: Colors.red),
-            bottom: BorderSide(color: Colors.white),
-            left: BorderSide(color: Colors.black),
-            right: BorderSide(color: Colors.black),
+            bottom: BorderSide(color: Colors.black),
+            left: BorderSide(color: Colors.white),
+            right: BorderSide(color: Colors.white),
           ),
         );
       });
@@ -260,9 +246,8 @@ void main() {
 
         expect(
           border,
-          const Border(
-            left: BorderSide(style: BorderStyle.none),
-            right: BorderSide(style: BorderStyle.none),
+          const Border.symmetric(
+            horizontal: BorderSide(style: BorderStyle.none),
           ),
         );
       });
@@ -274,9 +259,8 @@ void main() {
 
         expect(
           border,
-          const Border(
-            top: BorderSide(style: BorderStyle.solid),
-            bottom: BorderSide(style: BorderStyle.solid),
+          const Border.symmetric(
+            vertical: BorderSide(style: BorderStyle.solid),
           ),
         );
       });
@@ -449,9 +433,8 @@ void main() {
 
         expect(
           border,
-          const Border(
-            top: BorderSide(width: 2.5, color: Colors.orange),
-            bottom: BorderSide(width: 2.5, color: Colors.orange),
+          const Border.symmetric(
+            horizontal: BorderSide(width: 2.5, color: Colors.orange),
           ),
         );
       });
@@ -463,9 +446,8 @@ void main() {
 
         expect(
           border,
-          const Border(
-            left: BorderSide(width: 1.5, color: Colors.pink),
-            right: BorderSide(width: 1.5, color: Colors.pink),
+          const Border.symmetric(
+            vertical: BorderSide(width: 1.5, color: Colors.pink),
           ),
         );
       });
@@ -636,6 +618,20 @@ void main() {
           border,
           const BorderDirectional(
             end: BorderSide(width: 1.0, color: Colors.green),
+          ),
+        );
+      });
+
+      test('vertical utility sets top and bottom sides', () {
+        final result = util.vertical(width: 2.5, color: Colors.orange);
+
+        final border = result.value.resolve(MockBuildContext());
+
+        expect(
+          border,
+          const BorderDirectional(
+            top: BorderSide(width: 2.5, color: Colors.orange),
+            bottom: BorderSide(width: 2.5, color: Colors.orange),
           ),
         );
       });

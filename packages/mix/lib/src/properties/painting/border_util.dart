@@ -14,8 +14,8 @@ mixin BorderMixin<T extends Style<Object?>> {
   ///
   /// Priority order (lowest to highest):
   /// 1. all - applies to all sides
-  /// 2. horizontal - applies to left and right sides
-  /// 3. vertical - applies to top and bottom sides
+  /// 2. horizontal - applies to top and bottom sides
+  /// 3. vertical - applies to left and right sides
   /// 4. top/bottom/left/right - applies to specific sides
   ///
   /// Cannot mix physical (left/right) with logical (start/end) properties
@@ -51,12 +51,12 @@ mixin BorderMixin<T extends Style<Object?>> {
 
     // Apply horizontal/vertical
     if (horizontal != null) {
-      leftWidth = horizontal;
-      rightWidth = horizontal;
+      topWidth = horizontal;
+      bottomWidth = horizontal;
     }
     if (vertical != null) {
-      topWidth = vertical;
-      bottomWidth = vertical;
+      leftWidth = vertical;
+      rightWidth = vertical;
     }
 
     // Apply specific side values
@@ -100,8 +100,8 @@ mixin BorderMixin<T extends Style<Object?>> {
   ///
   /// Priority order (lowest to highest):
   /// 1. all - applies to all sides
-  /// 2. horizontal - applies to left and right sides
-  /// 3. vertical - applies to top and bottom sides
+  /// 2. horizontal - applies to top and bottom sides
+  /// 3. vertical - applies to left and right sides
   /// 4. top/bottom/left/right - applies to specific sides
   ///
   /// Cannot mix physical (left/right) with logical (start/end) properties
@@ -137,12 +137,12 @@ mixin BorderMixin<T extends Style<Object?>> {
 
     // Apply horizontal/vertical
     if (horizontal != null) {
-      leftColor = horizontal;
-      rightColor = horizontal;
+      topColor = horizontal;
+      bottomColor = horizontal;
     }
     if (vertical != null) {
-      topColor = vertical;
-      bottomColor = vertical;
+      leftColor = vertical;
+      rightColor = vertical;
     }
 
     // Apply specific side values
@@ -186,8 +186,8 @@ mixin BorderMixin<T extends Style<Object?>> {
   ///
   /// Priority order (lowest to highest):
   /// 1. all - applies to all sides
-  /// 2. horizontal - applies to left and right sides
-  /// 3. vertical - applies to top and bottom sides
+  /// 2. horizontal - applies to top and bottom sides
+  /// 3. vertical - applies to left and right sides
   /// 4. top/bottom/left/right - applies to specific sides
   ///
   /// Cannot mix physical (left/right) with logical (start/end) properties
@@ -223,12 +223,12 @@ mixin BorderMixin<T extends Style<Object?>> {
 
     // Apply horizontal/vertical
     if (horizontal != null) {
-      leftStyle = horizontal;
-      rightStyle = horizontal;
+      topStyle = horizontal;
+      bottomStyle = horizontal;
     }
     if (vertical != null) {
-      topStyle = vertical;
-      bottomStyle = vertical;
+      leftStyle = vertical;
+      rightStyle = vertical;
     }
 
     // Apply specific side values

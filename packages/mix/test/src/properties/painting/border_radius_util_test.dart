@@ -56,9 +56,8 @@ void main() {
 
         expect(
           borderRadius,
-          const BorderRadius.only(
-            topLeft: Radius.circular(5.0),
-            topRight: Radius.circular(5.0),
+          const BorderRadius.vertical(
+            top: Radius.circular(5.0),
           ),
         );
       });
@@ -70,9 +69,8 @@ void main() {
 
         expect(
           borderRadius,
-          const BorderRadius.only(
-            bottomLeft: Radius.circular(15.0),
-            bottomRight: Radius.circular(15.0),
+          const BorderRadius.vertical(
+            bottom: Radius.circular(15.0),
           ),
         );
       });
@@ -84,9 +82,8 @@ void main() {
 
         expect(
           borderRadius,
-          const BorderRadius.only(
-            topLeft: Radius.circular(7.0),
-            bottomLeft: Radius.circular(7.0),
+          const BorderRadius.horizontal(
+            left: Radius.circular(7.0),
           ),
         );
       });
@@ -98,9 +95,8 @@ void main() {
 
         expect(
           borderRadius,
-          const BorderRadius.only(
-            topRight: Radius.circular(9.0),
-            bottomRight: Radius.circular(9.0),
+          const BorderRadius.horizontal(
+            right: Radius.circular(9.0),
           ),
         );
       });
@@ -112,9 +108,8 @@ void main() {
 
         expect(
           borderRadius,
-          const BorderRadius.only(
-            topLeft: Radius.circular(6.0),
-            bottomLeft: Radius.circular(6.0),
+          const BorderRadius.horizontal(
+            left: Radius.circular(6.0),
           ),
         );
       });
@@ -126,9 +121,8 @@ void main() {
 
         expect(
           borderRadius,
-          const BorderRadius.only(
-            topRight: Radius.circular(11.0),
-            bottomRight: Radius.circular(11.0),
+          const BorderRadius.horizontal(
+            right: Radius.circular(11.0),
           ),
         );
       });
@@ -327,7 +321,7 @@ void main() {
       final borderRadius = result.value as BorderRadiusMix;
       final resolved = borderRadius.resolve(MockBuildContext());
 
-      expect(resolved, equals(BorderRadius.circular(10.0)));
+      expect(resolved, BorderRadius.circular(10.0));
     });
 
     test('as method accepts BorderRadiusGeometry', () {
@@ -360,7 +354,7 @@ void main() {
 
         expect(
           resolved,
-          equals(BorderRadius.only(topLeft: const Radius.circular(5.0))),
+          const BorderRadius.only(topLeft: Radius.circular(5.0)),
         );
       });
 
@@ -371,7 +365,7 @@ void main() {
 
         expect(
           resolved,
-          equals(BorderRadius.only(topRight: const Radius.circular(10.0))),
+          const BorderRadius.only(topRight: Radius.circular(10.0)),
         );
       });
 
@@ -382,7 +376,7 @@ void main() {
 
         expect(
           resolved,
-          equals(BorderRadius.only(bottomLeft: const Radius.circular(15.0))),
+          const BorderRadius.only(bottomLeft: Radius.circular(15.0)),
         );
       });
 
@@ -393,7 +387,7 @@ void main() {
 
         expect(
           resolved,
-          equals(BorderRadius.only(bottomRight: const Radius.circular(20.0))),
+          const BorderRadius.only(bottomRight: Radius.circular(20.0)),
         );
       });
 
@@ -402,7 +396,7 @@ void main() {
         final borderRadius = result.value;
         final resolved = borderRadius.resolve(MockBuildContext());
 
-        expect(resolved, equals(BorderRadius.all(const Radius.circular(8.0))));
+        expect(resolved, BorderRadius.circular(8.0));
       });
 
       test('top utility sets top corners', () {
@@ -412,7 +406,9 @@ void main() {
 
         expect(
           resolved,
-          equals(BorderRadius.only(topLeft: const Radius.circular(12.0))),
+          const BorderRadius.vertical(
+            top: Radius.circular(12.0),
+          ),
         );
       });
 
@@ -423,7 +419,9 @@ void main() {
 
         expect(
           resolved,
-          equals(BorderRadius.only(bottomLeft: const Radius.circular(16.0))),
+          const BorderRadius.vertical(
+            bottom: Radius.circular(16.0),
+          ),
         );
       });
 
@@ -434,7 +432,9 @@ void main() {
 
         expect(
           resolved,
-          equals(BorderRadius.only(topLeft: const Radius.circular(4.0))),
+          const BorderRadius.horizontal(
+            left: Radius.circular(4.0),
+          ),
         );
       });
 
@@ -445,7 +445,9 @@ void main() {
 
         expect(
           resolved,
-          equals(BorderRadius.only(topRight: const Radius.circular(6.0))),
+          const BorderRadius.horizontal(
+            right: Radius.circular(6.0),
+          ),
         );
       });
     });
@@ -456,7 +458,7 @@ void main() {
         final borderRadius = result.value;
         final resolved = borderRadius.resolve(MockBuildContext());
 
-        expect(resolved, equals(BorderRadius.circular(10.0)));
+        expect(resolved, BorderRadius.circular(10.0));
       });
 
       test('elliptical method sets elliptical radius for all corners', () {
@@ -466,7 +468,7 @@ void main() {
 
         expect(
           resolved,
-          equals(BorderRadius.all(Radius.elliptical(8.0, 12.0))),
+          BorderRadius.all(const Radius.elliptical(8.0, 12.0)),
         );
       });
 
@@ -475,7 +477,7 @@ void main() {
         final borderRadius = result.value;
         final resolved = borderRadius.resolve(MockBuildContext());
 
-        expect(resolved, equals(BorderRadius.zero));
+        expect(resolved, BorderRadius.zero);
       });
     });
 
@@ -490,7 +492,10 @@ void main() {
 
         expect(
           resolved,
-          equals(BorderRadius.only(topLeft: const Radius.circular(5.0))),
+          const BorderRadius.only(
+            topLeft: Radius.circular(5.0),
+            bottomRight: Radius.circular(15.0),
+          ),
         );
       });
 
@@ -504,7 +509,10 @@ void main() {
 
         expect(
           resolved,
-          equals(BorderRadius.only(topRight: const Radius.circular(8.0))),
+          const BorderRadius.only(
+            topRight: Radius.circular(8.0),
+            bottomLeft: Radius.circular(12.0),
+          ),
         );
       });
     });
@@ -655,7 +663,7 @@ void main() {
         final borderRadius = result.value;
         final resolved = borderRadius.resolve(MockBuildContext());
 
-        expect(resolved, equals(BorderRadiusDirectional.circular(10.0)));
+        expect(resolved, BorderRadiusDirectional.circular(10.0));
       });
 
       test('elliptical method sets elliptical radius for all corners', () {
@@ -664,7 +672,7 @@ void main() {
         final resolved = borderRadius.resolve(MockBuildContext());
         expect(
           resolved,
-          equals(BorderRadiusDirectional.all(Radius.elliptical(8.0, 12.0))),
+          BorderRadiusDirectional.all(const Radius.elliptical(8.0, 12.0)),
         );
       });
 
@@ -673,7 +681,7 @@ void main() {
         final borderRadius = result.value;
         final resolved = borderRadius.resolve(MockBuildContext());
 
-        expect(resolved, equals(BorderRadiusDirectional.all(Radius.zero)));
+        expect(resolved, BorderRadiusDirectional.zero);
       });
     });
 
@@ -756,7 +764,7 @@ void main() {
       final borderRadius = result.value as BorderRadiusMix;
       final resolved = borderRadius.resolve(MockBuildContext());
 
-      expect(resolved, equals(BorderRadius.circular(16.0)));
+      expect(resolved, const BorderRadius.only(topLeft: Radius.circular(16.0)));
     });
   });
 
@@ -780,7 +788,7 @@ void main() {
 
       final resolved = borderRadiusMix.resolve(context);
 
-      expect(resolved, equals(BorderRadius.circular(16.0)));
+      expect(resolved, BorderRadius.circular(16.0));
     });
   });
 }

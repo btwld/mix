@@ -44,6 +44,8 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
   ///
   /// The [vertical] border is applied to left and right sides,
   /// while [horizontal] border is applied to top and bottom sides.
+  /// 
+  /// This matches Flutter's Border.symmetric convention.
   static BorderMix symmetric({
     BorderSideMix? vertical,
     BorderSideMix? horizontal,

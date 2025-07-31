@@ -21,7 +21,7 @@ void main() {
       test('creates with provided TextMix attribute', () {
         final textMix = TextMix(maxLines: 3);
         final utility = TextSpecUtility(textMix);
-        
+
         expect(utility.mix, same(textMix));
         expectProp(utility.mix.$maxLines, 3);
       });
@@ -57,7 +57,10 @@ void main() {
       });
 
       test('textHeightBehavior utility is TextHeightBehaviorUtility', () {
-        expect(util.textHeightBehavior, isA<TextHeightBehaviorUtility<TextMix>>());
+        expect(
+          util.textHeightBehavior,
+          isA<TextHeightBehaviorUtility<TextMix>>(),
+        );
       });
 
       test('textDirection utility is MixUtility', () {
@@ -70,6 +73,18 @@ void main() {
 
       test('directives utility is TextDirectiveUtility', () {
         expect(util.directives, isA<TextDirectiveUtility>());
+      });
+
+      test('selectionColor utility is ColorUtility', () {
+        expect(util.selectionColor, isA<ColorUtility<TextMix>>());
+      });
+
+      test('semanticsLabel utility is MixUtility', () {
+        expect(util.semanticsLabel, isA<MixUtility<TextMix, String>>());
+      });
+
+      test('locale utility is MixUtility', () {
+        expect(util.locale, isA<MixUtility<TextMix, Locale>>());
       });
 
       test('on utility is OnContextVariantUtility', () {
@@ -158,9 +173,12 @@ void main() {
         expect(util.debugLabel, isNotNull);
       });
 
-      test('decorationThickness utility provides decorationThickness access', () {
-        expect(util.decorationThickness, isNotNull);
-      });
+      test(
+        'decorationThickness utility provides decorationThickness access',
+        () {
+          expect(util.decorationThickness, isNotNull);
+        },
+      );
 
       test('fontFamilyFallback utility provides fontFamilyFallback access', () {
         expect(util.fontFamilyFallback, isNotNull);
@@ -197,6 +215,22 @@ void main() {
         final result = util.softWrap(false);
         expectProp(result.$softWrap, false);
       });
+
+      test('selectionColor utility creates correct TextMix', () {
+        final result = util.selectionColor(Colors.blue);
+        expectProp(result.$selectionColor, Colors.blue);
+      });
+
+      test('semanticsLabel utility creates correct TextMix', () {
+        final result = util.semanticsLabel('Custom label');
+        expectProp(result.$semanticsLabel, 'Custom label');
+      });
+
+      test('locale utility creates correct TextMix', () {
+        const locale = Locale('en', 'US');
+        final result = util.locale(locale);
+        expectProp(result.$locale, locale);
+      });
     });
 
     group('Convenience methods', () {
@@ -217,7 +251,7 @@ void main() {
           const Duration(seconds: 1),
         );
         final result = util.animate(animationConfig);
-        
+
         expect(result.$animation, animationConfig);
       });
     });
@@ -225,7 +259,7 @@ void main() {
     group('Variant utilities', () {
       test('on utility creates VariantAttributeBuilder', () {
         final hoverBuilder = util.on.hover;
-        
+
         expect(hoverBuilder, isA<VariantAttributeBuilder<TextSpec>>());
       });
     });
@@ -233,7 +267,7 @@ void main() {
     group('Modifier utilities', () {
       test('wrap utility creates modifier TextMix', () {
         final result = util.wrap.opacity(0.5);
-        
+
         expect(result, isA<TextMix>());
         expect(result.$modifierConfig, isNotNull);
         expect(result.$modifierConfig!.$modifiers!.length, 1);
@@ -276,11 +310,14 @@ void main() {
         final other = TextSpecUtility(
           TextMix(textAlign: TextAlign.center, softWrap: false),
         );
-        
+
         final result = util.merge(other);
-        
+
         expectProp(result.mix.$maxLines, 3);
-        expectProp(result.mix.$textAlign, TextAlign.center); // other takes precedence
+        expectProp(
+          result.mix.$textAlign,
+          TextAlign.center,
+        ); // other takes precedence
         expectProp(result.mix.$softWrap, false);
       });
     });
@@ -291,24 +328,33 @@ void main() {
           maxLines: 3,
           textAlign: TextAlign.center,
           softWrap: false,
+          selectionColor: Colors.blue,
+          semanticsLabel: 'Test label',
+          locale: const Locale('fr', 'FR'),
         );
-        
+
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
-        expect(spec, isA<TextSpec>());
-        expect(spec.maxLines, 3);
-        expect(spec.textAlign, TextAlign.center);
-        expect(spec.softWrap, false);
+
+        const expectedSpec = TextSpec(
+          maxLines: 3,
+          textAlign: TextAlign.center,
+          softWrap: false,
+          selectionColor: Colors.blue,
+          semanticsLabel: 'Test label',
+          locale: Locale('fr', 'FR'),
+        );
+
+        expect(spec, equals(expectedSpec));
       });
 
       test('resolve handles null properties', () {
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
-        expect(spec.maxLines, isNull);
-        expect(spec.textAlign, isNull);
-        expect(spec.softWrap, isNull);
+
+        const expectedSpec = TextSpec();
+
+        expect(spec, equals(expectedSpec));
       });
     });
 
@@ -317,7 +363,7 @@ void main() {
         final result1 = util.maxLines(3);
         final result2 = util.textAlign(TextAlign.center);
         final result3 = util.softWrap(false);
-        
+
         expectProp(result1.$maxLines, 3);
         expectProp(result2.$textAlign, TextAlign.center);
         expectProp(result3.$softWrap, false);
@@ -331,7 +377,7 @@ void main() {
           textAlign: TextAlign.center,
           softWrap: false,
         );
-        
+
         expect(
           util,
           resolvesTo(
@@ -346,16 +392,126 @@ void main() {
     });
 
     group('Token support', () {
-      test('resolves tokens with context', () {
+      test('resolves maxLines token with context', () {
         const maxLinesToken = MixToken<int>('maxLines');
         final context = MockBuildContext(
           mixScopeData: MixScopeData.static(tokens: {maxLinesToken: 5}),
         );
-        
+
         util.mix = TextMix.raw(maxLines: Prop.token(maxLinesToken));
         final spec = util.resolve(context);
-        
+
         expect(spec.maxLines, 5);
+      });
+
+      test('resolves textAlign token with context', () {
+        const textAlignToken = MixToken<TextAlign>('textAlign');
+        final context = MockBuildContext(
+          mixScopeData: MixScopeData.static(tokens: {textAlignToken: TextAlign.center}),
+        );
+
+        util.mix = TextMix.raw(textAlign: Prop.token(textAlignToken));
+        final spec = util.resolve(context);
+
+        expect(spec.textAlign, TextAlign.center);
+      });
+
+      test('resolves softWrap token with context', () {
+        const softWrapToken = MixToken<bool>('softWrap');
+        final context = MockBuildContext(
+          mixScopeData: MixScopeData.static(tokens: {softWrapToken: false}),
+        );
+
+        util.mix = TextMix.raw(softWrap: Prop.token(softWrapToken));
+        final spec = util.resolve(context);
+
+        expect(spec.softWrap, false);
+      });
+
+      test('resolves selectionColor token with context', () {
+        const selectionColorToken = MixToken<Color>('selectionColor');
+        final context = MockBuildContext(
+          mixScopeData: MixScopeData.static(tokens: {selectionColorToken: Colors.red}),
+        );
+
+        util.mix = TextMix.raw(selectionColor: Prop.token(selectionColorToken));
+        final spec = util.resolve(context);
+
+        expect(spec.selectionColor, Colors.red);
+      });
+
+      test('resolves textDirection token with context', () {
+        const textDirectionToken = MixToken<TextDirection>('textDirection');
+        final context = MockBuildContext(
+          mixScopeData: MixScopeData.static(tokens: {textDirectionToken: TextDirection.rtl}),
+        );
+
+        util.mix = TextMix.raw(textDirection: Prop.token(textDirectionToken));
+        final spec = util.resolve(context);
+
+        expect(spec.textDirection, TextDirection.rtl);
+      });
+
+      test('resolves semanticsLabel token with context', () {
+        const semanticsLabelToken = MixToken<String>('semanticsLabel');
+        final context = MockBuildContext(
+          mixScopeData: MixScopeData.static(tokens: {semanticsLabelToken: 'Custom label'}),
+        );
+
+        util.mix = TextMix.raw(semanticsLabel: Prop.token(semanticsLabelToken));
+        final spec = util.resolve(context);
+
+        expect(spec.semanticsLabel, 'Custom label');
+      });
+
+      test('resolves locale token with context', () {
+        const localeToken = MixToken<Locale>('locale');
+        const locale = Locale('en', 'US');
+        final context = MockBuildContext(
+          mixScopeData: MixScopeData.static(tokens: {localeToken: locale}),
+        );
+
+        util.mix = TextMix.raw(locale: Prop.token(localeToken));
+        final spec = util.resolve(context);
+
+        expect(spec.locale, locale);
+      });
+
+      test('resolves multiple tokens with context', () {
+        const maxLinesToken = MixToken<int>('maxLines');
+        const textAlignToken = MixToken<TextAlign>('textAlign');
+        const selectionColorToken = MixToken<Color>('selectionColor');
+        const semanticsLabelToken = MixToken<String>('semanticsLabel');
+        const localeToken = MixToken<Locale>('locale');
+        
+        final context = MockBuildContext(
+          mixScopeData: MixScopeData.static(tokens: {
+            maxLinesToken: 2,
+            textAlignToken: TextAlign.right,
+            selectionColorToken: Colors.green,
+            semanticsLabelToken: 'Test label',
+            localeToken: const Locale('es', 'ES'),
+          }),
+        );
+
+        util.mix = TextMix.raw(
+          maxLines: Prop.token(maxLinesToken),
+          textAlign: Prop.token(textAlignToken),
+          selectionColor: Prop.token(selectionColorToken),
+          semanticsLabel: Prop.token(semanticsLabelToken),
+          locale: Prop.token(localeToken),
+        );
+        final spec = util.resolve(context);
+
+        const expectedSpec = TextSpec(
+          maxLines: 2,
+          textAlign: TextAlign.right,
+          selectionColor: Colors.green,
+          semanticsLabel: 'Test label',
+          locale: Locale('es', 'ES'),
+        );
+
+        expect(spec, equals(expectedSpec));
       });
     });
 
@@ -375,9 +531,9 @@ void main() {
         final util1 = TextSpecUtility(TextMix(maxLines: 3));
         final util2 = TextSpecUtility(TextMix(textAlign: TextAlign.center));
         final util3 = TextSpecUtility(TextMix(softWrap: false));
-        
+
         final result = util1.merge(util2).merge(util3);
-        
+
         expectProp(result.mix.$maxLines, 3);
         expectProp(result.mix.$textAlign, TextAlign.center);
         expectProp(result.mix.$softWrap, false);
@@ -389,7 +545,7 @@ void main() {
         final emptyUtil = TextSpecUtility();
         final context = MockBuildContext();
         final spec = emptyUtil.resolve(context);
-        
+
         expect(spec.maxLines, isNull);
         expect(spec.textAlign, isNull);
         expect(spec.softWrap, isNull);
@@ -398,7 +554,7 @@ void main() {
       test('merge with self returns new instance', () {
         util.mix = TextMix(maxLines: 3);
         final result = util.merge(util);
-        
+
         expect(result, isNot(same(util)));
         expectProp(result.mix.$maxLines, 3);
       });

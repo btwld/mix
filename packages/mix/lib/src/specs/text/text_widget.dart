@@ -23,20 +23,13 @@ class StyledText extends StyleWidget<TextSpec> {
   /// Creates a styled text widget.
   const StyledText(
     this.text, {
-    this.semanticsLabel,
     super.style,
     super.key,
-    this.locale,
   });
 
   /// Text content to display.
   final String text;
 
-  /// Alternative semantics label for accessibility.
-  final String? semanticsLabel;
-
-  /// Locale for text rendering and formatting.
-  final Locale? locale;
 
   @override
   Widget build(BuildContext context, TextSpec? spec) {
@@ -46,14 +39,15 @@ class StyledText extends StyleWidget<TextSpec> {
       strutStyle: spec?.strutStyle,
       textAlign: spec?.textAlign,
       textDirection: spec?.textDirection,
-      locale: locale,
+      locale: spec?.locale,
       softWrap: spec?.softWrap,
       overflow: spec?.overflow,
       textScaler: spec?.textScaler,
       maxLines: spec?.maxLines,
-      semanticsLabel: semanticsLabel,
+      semanticsLabel: spec?.semanticsLabel,
       textWidthBasis: spec?.textWidthBasis,
       textHeightBehavior: spec?.textHeightBehavior,
+      selectionColor: spec?.selectionColor,
     );
   }
 }
