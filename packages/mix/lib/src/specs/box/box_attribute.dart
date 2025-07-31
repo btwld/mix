@@ -375,6 +375,7 @@ class BoxMix extends Style<BoxSpec>
     required List<T> phases,
     required BoxMix Function(T phase, BoxMix style) styleBuilder,
     required CurveAnimationConfig Function(T phase) configBuilder,
+    PhaseAnimationMode mode = PhaseAnimationMode.simpleLoop,
   }) {
     final styles = List<BoxMix>.empty(growable: true);
     final configs = List<CurveAnimationConfig>.empty(growable: true);
@@ -388,8 +389,9 @@ class BoxMix extends Style<BoxSpec>
       BoxMix(
         animation: PhaseAnimationConfig<BoxSpec, BoxMix>(
           styles: styles,
-          curvesAndDurations: configs,
+          curveConfigs: configs,
           trigger: trigger,
+          mode: mode,
         ),
       ),
     );

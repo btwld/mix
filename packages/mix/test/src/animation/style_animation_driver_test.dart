@@ -316,7 +316,7 @@ void main() {
       trigger = ValueNotifier(false);
       driver = PhaseAnimationDriver<MockSpec>(
         vsync: const TestVSync(),
-        curvesAndDurations: [
+        curveConfigs: [
           CurveAnimationConfig(
             duration: Duration(milliseconds: 300),
             curve: Curves.linear,
@@ -339,7 +339,7 @@ void main() {
 
     test('initializes with correct specs and curves', () {
       expect(driver.specs.length, 2);
-      expect(driver.curvesAndDurations.length, 2);
+      expect(driver.curveConfigs.length, 2);
     });
 
     testWidgets('animates when trigger updates', (tester) async {

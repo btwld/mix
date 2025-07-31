@@ -62,10 +62,11 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
       // ignore: avoid-undisposed-instances
       PhaseAnimationConfig() => PhaseAnimationDriver<S>(
         vsync: this,
-        curvesAndDurations: config.curvesAndDurations,
+        curveConfigs: config.curveConfigs,
         specs: config.styles.map((e) => e.resolve(context) as S).toList(),
         initialStyle: widget.resolvedStyle,
         trigger: config.trigger,
+        mode: config.mode,
       ),
     };
   }
