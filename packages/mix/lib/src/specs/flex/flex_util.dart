@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
-import '../../core/spec_utility.dart' show StyleAttributeBuilder;
+import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
 import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
 import '../../modifiers/modifier_config.dart';
@@ -14,47 +14,48 @@ import 'flex_spec.dart';
 ///
 /// Same API as FlexMix but with mutable internal state
 /// for cascade notation support: `$flex..direction(Axis.horizontal)..gap(8)`
-class FlexSpecUtility extends StyleAttributeBuilder<FlexSpec> {
+class FlexSpecUtility extends StyleMutableBuilder<FlexSpec> {
   // FLEX UTILITIES - Same as FlexMix but return FlexSpecUtility for cascade
+  @override
+  @protected
+  late final MutableFlexMix mix;
 
-  late final direction = MixUtility(style.direction);
+  late final direction = MixUtility(mix.direction);
 
-  late final mainAxisAlignment = MixUtility(style.mainAxisAlignment);
+  late final mainAxisAlignment = MixUtility(mix.mainAxisAlignment);
 
-  late final crossAxisAlignment = MixUtility(style.crossAxisAlignment);
+  late final crossAxisAlignment = MixUtility(mix.crossAxisAlignment);
 
-  late final mainAxisSize = MixUtility(style.mainAxisSize);
+  late final mainAxisSize = MixUtility(mix.mainAxisSize);
 
-  late final verticalDirection = MixUtility(style.verticalDirection);
+  late final verticalDirection = MixUtility(mix.verticalDirection);
 
-  late final textDirection = MixUtility(style.textDirection);
+  late final textDirection = MixUtility(mix.textDirection);
 
-  late final textBaseline = MixUtility(style.textBaseline);
+  late final textBaseline = MixUtility(mix.textBaseline);
 
-  late final clipBehavior = MixUtility(style.clipBehavior);
+  late final clipBehavior = MixUtility(mix.clipBehavior);
 
-  late final gap = MixUtility(style.gap);
+  late final gap = MixUtility(mix.gap);
 
   late final on = OnContextVariantUtility<FlexSpec, FlexMix>(
-    (v) => style.variants([v]),
+    (v) => mix.variants([v]),
   );
 
   late final wrap = ModifierUtility(
-    (prop) => style.modifier(ModifierConfig(modifiers: [prop])),
+    (prop) => mix.modifier(ModifierConfig(modifiers: [prop])),
   );
 
-  // ignore: prefer_final_fields
-  @override
-  FlexMix style;
-
-  FlexSpecUtility([FlexMix? attribute]) : style = attribute ?? FlexMix();
+  FlexSpecUtility([FlexMix? attribute]) {
+    mix = MutableFlexMix(attribute ?? FlexMix());
+  }
 
   // Convenience methods
-  FlexMix row() => style.direction(Axis.horizontal);
-  FlexMix column() => style.direction(Axis.vertical);
+  FlexMix row() => mix.direction(Axis.horizontal);
+  FlexMix column() => mix.direction(Axis.vertical);
 
   /// Animation
-  FlexMix animate(AnimationConfig animation) => style.animate(animation);
+  FlexMix animate(AnimationConfig animation) => mix.animate(animation);
 
   // StyleAttribute interface implementation
 
@@ -63,10 +64,10 @@ class FlexSpecUtility extends StyleAttributeBuilder<FlexSpec> {
     if (other == null) return this;
     // IMMUTABLE: Always create new instance (StyleAttribute contract)
     if (other is FlexSpecUtility) {
-      return FlexSpecUtility(style.merge(other.style));
+      return FlexSpecUtility(mix.merge(other.mix));
     }
     if (other is FlexMix) {
-      return FlexSpecUtility(style.merge(other));
+      return FlexSpecUtility(mix.merge(other));
     }
 
     throw FlutterError('Unsupported merge type: ${other.runtimeType}');
@@ -74,6 +75,12 @@ class FlexSpecUtility extends StyleAttributeBuilder<FlexSpec> {
 
   @override
   FlexSpec resolve(BuildContext context) {
-    return style.resolve(context);
+    return mix.resolve(context);
+  }
+}
+
+class MutableFlexMix extends FlexMix with Mutable<FlexSpec, FlexMix> {
+  MutableFlexMix([FlexMix? attribute]) {
+    merge(attribute);
   }
 }

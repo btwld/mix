@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
-import '../../core/spec_utility.dart' show StyleAttributeBuilder;
+import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
 import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
 import '../../modifiers/modifier_config.dart';
@@ -15,55 +15,56 @@ import 'image_spec.dart';
 ///
 /// Same API as ImageMix but with mutable internal state
 /// for cascade notation support: `$image..width(100)..height(100)..fit(BoxFit.cover)`
-class ImageSpecUtility extends StyleAttributeBuilder<ImageSpec> {
+class ImageSpecUtility extends StyleMutableBuilder<ImageSpec> {
   // IMAGE UTILITIES - Same as ImageMix but return ImageSpecUtility for cascade
+  @override
+  @protected
+  late final MutableImageMix mix;
 
-  late final width = MixUtility(style.width);
+  late final width = MixUtility(mix.width);
 
-  late final height = MixUtility(style.height);
+  late final height = MixUtility(mix.height);
 
   late final color = ColorUtility(
-    (prop) => style.merge(ImageMix.raw(color: prop)),
+    (prop) => mix.merge(ImageMix.raw(color: prop)),
   );
 
-  late final repeat = MixUtility(style.repeat);
+  late final repeat = MixUtility(mix.repeat);
 
-  late final fit = MixUtility(style.fit);
+  late final fit = MixUtility(mix.fit);
 
-  late final alignment = MixUtility(style.alignment);
+  late final alignment = MixUtility(mix.alignment);
 
-  late final centerSlice = MixUtility(style.centerSlice);
+  late final centerSlice = MixUtility(mix.centerSlice);
 
-  late final filterQuality = MixUtility(style.filterQuality);
+  late final filterQuality = MixUtility(mix.filterQuality);
 
-  late final colorBlendMode = MixUtility(style.colorBlendMode);
+  late final colorBlendMode = MixUtility(mix.colorBlendMode);
 
-  late final semanticLabel = MixUtility(style.semanticLabel);
+  late final semanticLabel = MixUtility(mix.semanticLabel);
 
-  late final excludeFromSemantics = MixUtility(style.excludeFromSemantics);
+  late final excludeFromSemantics = MixUtility(mix.excludeFromSemantics);
 
-  late final gaplessPlayback = MixUtility(style.gaplessPlayback);
+  late final gaplessPlayback = MixUtility(mix.gaplessPlayback);
 
-  late final isAntiAlias = MixUtility(style.isAntiAlias);
+  late final isAntiAlias = MixUtility(mix.isAntiAlias);
 
-  late final matchTextDirection = MixUtility(style.matchTextDirection);
+  late final matchTextDirection = MixUtility(mix.matchTextDirection);
 
   late final on = OnContextVariantUtility<ImageSpec, ImageMix>(
-    (v) => style.variants([v]),
+    (v) => mix.variants([v]),
   );
 
   late final wrap = ModifierUtility(
-    (prop) => style.modifier(ModifierConfig(modifiers: [prop])),
+    (prop) => mix.modifier(ModifierConfig(modifiers: [prop])),
   );
 
-  // ignore: prefer_final_fields
-  @override
-  ImageMix style;
-
-  ImageSpecUtility([ImageMix? attribute]) : style = attribute ?? ImageMix.raw();
+  ImageSpecUtility([ImageMix? attribute]) {
+    mix = MutableImageMix(attribute ?? ImageMix.raw());
+  }
 
   /// Animation
-  ImageMix animate(AnimationConfig animation) => style.animate(animation);
+  ImageMix animate(AnimationConfig animation) => mix.animate(animation);
 
   // StyleAttribute interface implementation
 
@@ -72,10 +73,10 @@ class ImageSpecUtility extends StyleAttributeBuilder<ImageSpec> {
     if (other == null) return this;
     // IMMUTABLE: Always create new instance (StyleAttribute contract)
     if (other is ImageSpecUtility) {
-      return ImageSpecUtility(style.merge(other.style));
+      return ImageSpecUtility(mix.merge(other.mix));
     }
     if (other is ImageMix) {
-      return ImageSpecUtility(style.merge(other));
+      return ImageSpecUtility(mix.merge(other));
     }
 
     throw FlutterError('Unsupported merge type: ${other.runtimeType}');
@@ -83,6 +84,12 @@ class ImageSpecUtility extends StyleAttributeBuilder<ImageSpec> {
 
   @override
   ImageSpec resolve(BuildContext context) {
-    return style.resolve(context);
+    return mix.resolve(context);
+  }
+}
+
+class MutableImageMix extends ImageMix with Mutable<ImageSpec, ImageMix> {
+  MutableImageMix([ImageMix? attribute]) {
+    merge(attribute);
   }
 }

@@ -94,10 +94,29 @@ mixin Mutable<S extends Spec<S>, T extends Style<S>> on Style<S> {
   T merge(covariant T? other) {
     if (other == null) return this as T;
 
-    // Accumulate merges - use super.merge to avoid recursion
-    _accumulated = (accumulated == this ? super.merge(other) : accumulated.merge(other)) as T;
+    try {
+      // Accumulate merges - use super.merge to avoid recursion
+      final merged = accumulated == this 
+          ? super.merge(other) 
+          : accumulated.merge(other);
+      
+      _accumulated = merged as T;
 
-    // Return this for chaining
-    return this as T;
+      // Return this for chaining
+      return this as T;
+    } catch (e, stackTrace) {
+      Error.throwWithStackTrace(
+        StateError(
+          'Failed to merge ${other.runtimeType} with $runtimeType: $e. '
+          'This may indicate incompatible types or a bug in the merge implementation.',
+        ),
+        stackTrace,
+      );
+    }
+  }
+
+  @override
+  S resolve(BuildContext context) {
+    return accumulated.resolve(context);
   }
 }

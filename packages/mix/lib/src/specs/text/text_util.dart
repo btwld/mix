@@ -116,9 +116,4 @@ class MutableTextMix extends TextMix with Mutable<TextSpec, TextMix> {
   MutableTextMix([TextMix? attribute]) {
     merge(attribute);
   }
-
-  @override
-  TextSpec resolve(BuildContext context) {
-    return accumulated.resolve(context);
-  }
 }

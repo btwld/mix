@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
-import '../../core/spec_utility.dart' show StyleAttributeBuilder;
+import '../../core/prop.dart';
+import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
 import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
 import '../../modifiers/modifier_config.dart';
@@ -17,23 +18,34 @@ import 'box_spec.dart';
 ///
 /// Same API as BoxMix but with mutable internal state
 /// for cascade notation support: `$box..color.red()..width(100)`
-class BoxSpecUtility extends StyleAttributeBuilder<BoxSpec> {
-  // SAME UTILITIES AS BoxMix - but return BoxSpecUtility for cascade
+class BoxSpecUtility extends StyleMutableBuilder<BoxSpec> {
+  // BOX UTILITIES - Same as BoxMix but return BoxSpecUtility for cascade
+  @override
+  @protected
+  late final MutableBoxMix mix;
 
-  late final padding = EdgeInsetsGeometryUtility<BoxMix>(style.padding);
+  late final padding = EdgeInsetsGeometryUtility<BoxMix>(
+    (prop) => mix.merge(BoxMix.raw(padding: MixProp(prop))),
+  );
 
-  late final margin = EdgeInsetsGeometryUtility<BoxMix>(style.margin);
+  late final margin = EdgeInsetsGeometryUtility<BoxMix>(
+    (prop) => mix.merge(BoxMix.raw(margin: MixProp(prop))),
+  );
 
-  late final constraints = BoxConstraintsUtility<BoxMix>(style.constraints);
+  late final constraints = BoxConstraintsUtility<BoxMix>(
+    (prop) => mix.merge(BoxMix.raw(constraints: MixProp(prop))),
+  );
 
-  late final decoration = DecorationUtility<BoxMix>(style.decoration);
+  late final decoration = DecorationUtility<BoxMix>(
+    (prop) => mix.merge(BoxMix.raw(decoration: MixProp(prop))),
+  );
 
   late final on = OnContextVariantUtility<BoxSpec, BoxMix>(
-    (v) => style.variants([v]),
+    (v) => mix.variants([v]),
   );
 
   late final wrap = ModifierUtility(
-    (prop) => style.modifier(ModifierConfig(modifiers: [prop])),
+    (prop) => mix.modifier(ModifierConfig(modifiers: [prop])),
   );
 
   // FLATTENED ACCESS - Same as BoxMix
@@ -42,32 +54,28 @@ class BoxSpecUtility extends StyleAttributeBuilder<BoxSpec> {
   late final borderRadius = decoration.box.borderRadius;
   late final color = decoration.box.color;
   late final gradient = decoration.box.gradient;
-  late final shape =
-      decoration.box.shape; // CONVENIENCE SHORTCUTS - Same as BoxMix
+  late final shape = decoration.box.shape;
   late final width = constraints.width;
 
   late final height = constraints.height;
   late final minWidth = constraints.minWidth;
   late final maxWidth = constraints.maxWidth;
   late final minHeight = constraints.minHeight;
-  late final maxHeight =
-      constraints.maxHeight; // PROP UTILITIES - Same as BoxMix
-  late final transform = MixUtility(style.transform);
+  late final maxHeight = constraints.maxHeight;
+  late final transform = MixUtility(mix.transform);
 
-  late final transformAlignment = MixUtility(style.transformAlignment);
+  late final transformAlignment = MixUtility(mix.transformAlignment);
 
-  late final clipBehavior = MixUtility(style.clipBehavior);
+  late final clipBehavior = MixUtility(mix.clipBehavior);
 
-  late final alignment = MixUtility(style.alignment);
+  late final alignment = MixUtility(mix.alignment);
 
-  // ignore: prefer_final_fields
-  @override
-  BoxMix style;
-
-  BoxSpecUtility([BoxMix? attribute]) : style = attribute ?? BoxMix();
+  BoxSpecUtility([BoxMix? attribute]) {
+    mix = MutableBoxMix(attribute ?? BoxMix());
+  }
 
   /// Animation
-  BoxMix animate(AnimationConfig animation) => style.animate(animation);
+  BoxMix animate(AnimationConfig animation) => mix.animate(animation);
 
   // StyleAttribute interface implementation
 
@@ -76,10 +84,10 @@ class BoxSpecUtility extends StyleAttributeBuilder<BoxSpec> {
     if (other == null) return this;
     // IMMUTABLE: Always create new instance (StyleAttribute contract)
     if (other is BoxSpecUtility) {
-      return BoxSpecUtility(style.merge(other.style));
+      return BoxSpecUtility(mix.merge(other.mix));
     }
     if (other is BoxMix) {
-      return BoxSpecUtility(style.merge(other));
+      return BoxSpecUtility(mix.merge(other));
     }
 
     throw FlutterError('Unsupported merge type: ${other.runtimeType}');
@@ -87,6 +95,12 @@ class BoxSpecUtility extends StyleAttributeBuilder<BoxSpec> {
 
   @override
   BoxSpec resolve(BuildContext context) {
-    return style.resolve(context);
+    return mix.resolve(context);
+  }
+}
+
+class MutableBoxMix extends BoxMix with Mutable<BoxSpec, BoxMix> {
+  MutableBoxMix([BoxMix? attribute]) {
+    merge(attribute);
   }
 }
