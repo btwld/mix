@@ -96,7 +96,7 @@ final class LinearGradientMix extends GradientMix<LinearGradient> {
          end: Prop.maybe(end),
          tileMode: Prop.maybe(tileMode),
          transform: Prop.maybe(transform),
-         colors: colors?.map(Prop.new).toList(),
+         colors: colors?.map((c) => Prop(c)).toList(),
          stops: stops?.map(Prop.new).toList(),
        );
 
@@ -161,32 +161,32 @@ final class LinearGradientMix extends GradientMix<LinearGradient> {
 
   /// Returns a copy with the specified start alignment.
   LinearGradientMix begin(AlignmentGeometry value) {
-    return merge(LinearGradientMix(begin: value));
+    return merge(LinearGradientMix.begin(value));
   }
 
   /// Returns a copy with the specified end alignment.
   LinearGradientMix end(AlignmentGeometry value) {
-    return merge(LinearGradientMix(end: value));
+    return merge(LinearGradientMix.end(value));
   }
 
   /// Returns a copy with the specified tile mode.
   LinearGradientMix tileMode(TileMode value) {
-    return merge(LinearGradientMix(tileMode: value));
+    return merge(LinearGradientMix.tileMode(value));
   }
 
   /// Returns a copy with the specified transform.
   LinearGradientMix transform(GradientTransform value) {
-    return merge(LinearGradientMix(transform: value));
+    return merge(LinearGradientMix.transform(value));
   }
 
   /// Returns a copy with the specified colors.
   LinearGradientMix colors(List<Color> value) {
-    return merge(LinearGradientMix(colors: value));
+    return merge(LinearGradientMix.colors(value));
   }
 
   /// Returns a copy with the specified color stops.
   LinearGradientMix stops(List<double> value) {
-    return merge(LinearGradientMix(stops: value));
+    return merge(LinearGradientMix.stops(value));
   }
 
   @override
@@ -194,7 +194,9 @@ final class LinearGradientMix extends GradientMix<LinearGradient> {
     return LinearGradient(
       begin: MixHelpers.resolve(context, $begin) ?? defaultValue.begin,
       end: MixHelpers.resolve(context, $end) ?? defaultValue.end,
-      colors: MixHelpers.resolveList(context, $colors) ?? defaultValue.colors,
+      colors:
+          $colors?.map((c) => c.resolve(context)).toList() ??
+          defaultValue.colors,
       stops: MixHelpers.resolveList(context, $stops) ?? defaultValue.stops,
       tileMode: MixHelpers.resolve(context, $tileMode) ?? defaultValue.tileMode,
       transform:
@@ -256,7 +258,7 @@ final class RadialGradientMix extends GradientMix<RadialGradient> {
          focal: Prop.maybe(focal),
          focalRadius: Prop.maybe(focalRadius),
          transform: Prop.maybe(transform),
-         colors: colors?.map(Prop.new).toList(),
+         colors: colors?.map((c) => Prop(c)).toList(),
          stops: stops?.map(Prop.new).toList(),
        );
 
@@ -337,42 +339,42 @@ final class RadialGradientMix extends GradientMix<RadialGradient> {
 
   /// Returns a copy with the specified center alignment.
   RadialGradientMix center(AlignmentGeometry value) {
-    return merge(RadialGradientMix(center: value));
+    return merge(RadialGradientMix.center(value));
   }
 
   /// Returns a copy with the specified radius.
   RadialGradientMix radius(double value) {
-    return merge(RadialGradientMix(radius: value));
+    return merge(RadialGradientMix.radius(value));
   }
 
   /// Returns a copy with the specified tile mode.
   RadialGradientMix tileMode(TileMode value) {
-    return merge(RadialGradientMix(tileMode: value));
+    return merge(RadialGradientMix.tileMode(value));
   }
 
   /// Returns a copy with the specified focal point.
   RadialGradientMix focal(AlignmentGeometry value) {
-    return merge(RadialGradientMix(focal: value));
+    return merge(RadialGradientMix.focal(value));
   }
 
   /// Returns a copy with the specified focal radius.
   RadialGradientMix focalRadius(double value) {
-    return merge(RadialGradientMix(focalRadius: value));
+    return merge(RadialGradientMix.focalRadius(value));
   }
 
   /// Returns a copy with the specified transform.
   RadialGradientMix transform(GradientTransform value) {
-    return merge(RadialGradientMix(transform: value));
+    return merge(RadialGradientMix.transform(value));
   }
 
   /// Returns a copy with the specified colors.
   RadialGradientMix colors(List<Color> value) {
-    return merge(RadialGradientMix(colors: value));
+    return merge(RadialGradientMix.colors(value));
   }
 
   /// Returns a copy with the specified color stops.
   RadialGradientMix stops(List<double> value) {
-    return merge(RadialGradientMix(stops: value));
+    return merge(RadialGradientMix.stops(value));
   }
 
   @override
@@ -380,7 +382,9 @@ final class RadialGradientMix extends GradientMix<RadialGradient> {
     return RadialGradient(
       center: MixHelpers.resolve(context, $center) ?? defaultValue.center,
       radius: MixHelpers.resolve(context, $radius) ?? defaultValue.radius,
-      colors: MixHelpers.resolveList(context, $colors) ?? defaultValue.colors,
+      colors:
+          $colors?.map((c) => c.resolve(context)).toList() ??
+          defaultValue.colors,
       stops: MixHelpers.resolveList(context, $stops) ?? defaultValue.stops,
       tileMode: MixHelpers.resolve(context, $tileMode) ?? defaultValue.tileMode,
       focal: MixHelpers.resolve(context, $focal) ?? defaultValue.focal,
@@ -447,7 +451,7 @@ final class SweepGradientMix extends GradientMix<SweepGradient> {
          endAngle: Prop.maybe(endAngle),
          tileMode: Prop.maybe(tileMode),
          transform: Prop.maybe(transform),
-         colors: colors?.map(Prop.new).toList(),
+         colors: colors?.map((c) => Prop(c)).toList(),
          stops: stops?.map(Prop.new).toList(),
        );
 
@@ -520,37 +524,37 @@ final class SweepGradientMix extends GradientMix<SweepGradient> {
 
   /// Returns a copy with the specified center alignment.
   SweepGradientMix center(AlignmentGeometry value) {
-    return merge(SweepGradientMix(center: value));
+    return merge(SweepGradientMix.center(value));
   }
 
   /// Returns a copy with the specified start angle.
   SweepGradientMix startAngle(double value) {
-    return merge(SweepGradientMix(startAngle: value));
+    return merge(SweepGradientMix.startAngle(value));
   }
 
   /// Returns a copy with the specified end angle.
   SweepGradientMix endAngle(double value) {
-    return merge(SweepGradientMix(endAngle: value));
+    return merge(SweepGradientMix.endAngle(value));
   }
 
   /// Returns a copy with the specified tile mode.
   SweepGradientMix tileMode(TileMode value) {
-    return merge(SweepGradientMix(tileMode: value));
+    return merge(SweepGradientMix.tileMode(value));
   }
 
   /// Returns a copy with the specified transform.
   SweepGradientMix transform(GradientTransform value) {
-    return merge(SweepGradientMix(transform: value));
+    return merge(SweepGradientMix.transform(value));
   }
 
   /// Returns a copy with the specified colors.
   SweepGradientMix colors(List<Color> value) {
-    return merge(SweepGradientMix(colors: value));
+    return merge(SweepGradientMix.colors(value));
   }
 
   /// Returns a copy with the specified color stops.
   SweepGradientMix stops(List<double> value) {
-    return merge(SweepGradientMix(stops: value));
+    return merge(SweepGradientMix.stops(value));
   }
 
   @override
@@ -560,7 +564,9 @@ final class SweepGradientMix extends GradientMix<SweepGradient> {
       startAngle:
           MixHelpers.resolve(context, $startAngle) ?? defaultValue.startAngle,
       endAngle: MixHelpers.resolve(context, $endAngle) ?? defaultValue.endAngle,
-      colors: MixHelpers.resolveList(context, $colors) ?? defaultValue.colors,
+      colors:
+          $colors?.map((c) => c.resolve(context)).toList() ??
+          defaultValue.colors,
       stops: MixHelpers.resolveList(context, $stops) ?? defaultValue.stops,
       tileMode: MixHelpers.resolve(context, $tileMode) ?? defaultValue.tileMode,
       transform:

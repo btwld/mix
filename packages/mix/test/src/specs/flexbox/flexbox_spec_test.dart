@@ -284,35 +284,35 @@ void main() {
     group('Modifiers', () {
       test('modifiers can be added to attribute', () {
         final attribute = FlexBoxMix(
-          modifiers: [
+          modifierConfig: ModifierConfig(modifiers: [
             OpacityModifierAttribute(opacity: 0.5),
             TransformModifierAttribute(
               transform: Matrix4.identity(),
               alignment: Alignment.center,
             ),
-          ],
+          ]),
         );
 
-        expect(attribute.$modifiers, isNotNull);
-        expect(attribute.$modifiers!.length, 2);
+        expect(attribute.$modifierConfig, isNotNull);
+        expect(attribute.$modifierConfig!.$modifiers!.length, 2);
       });
 
       test('modifiers are merged correctly', () {
         final first = FlexBoxMix(
-          modifiers: [OpacityModifierAttribute(opacity: 0.5)],
+          modifierConfig: ModifierConfig(modifiers: [OpacityModifierAttribute(opacity: 0.5)]),
         );
 
         final second = FlexBoxMix(
-          modifiers: [
+          modifierConfig: ModifierConfig(modifiers: [
             TransformModifierAttribute(transform: Matrix4.identity()),
-          ],
+          ]),
         );
 
         final merged = first.merge(second);
 
         // Modifiers are combined when merging
-        expect(merged.$modifiers, isNotNull);
-        expect(merged.$modifiers!.length, 2);
+        expect(merged.$modifierConfig, isNotNull);
+        expect(merged.$modifierConfig!.$modifiers!.length, 2);
       });
     });
 

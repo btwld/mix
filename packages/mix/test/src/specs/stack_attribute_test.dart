@@ -352,14 +352,14 @@ void main() {
     group('Modifiers', () {
       test('modifiers can be added to attribute', () {
         final attribute = StackMix(
-          modifiers: [
+          modifierConfig: ModifierConfig(modifiers: [
             OpacityModifierAttribute(opacity: 0.5),
             AlignModifierAttribute(alignment: Alignment.center),
-          ],
+          ]),
         );
 
-        expect(attribute.$modifiers, isNotNull);
-        expect(attribute.$modifiers!.length, 2);
+        expect(attribute.$modifierConfig, isNotNull);
+        expect(attribute.$modifierConfig!.$modifiers!.length, 2);
       });
 
       test('modifiers merge correctly', () {
@@ -368,9 +368,9 @@ void main() {
           alignment: Alignment.center,
         );
 
-        final first = StackMix(modifiers: [opacityModifier]);
+        final first = StackMix(modifierConfig: ModifierConfig(modifiers: [opacityModifier]));
 
-        final second = StackMix(modifiers: [alignModifier]);
+        final second = StackMix(modifierConfig: ModifierConfig(modifiers: [alignModifier]));
 
         final merged = first.merge(second);
 
@@ -380,25 +380,26 @@ void main() {
           AlignModifierAttribute(alignment: Alignment.center),
         ];
 
-        expect(merged.$modifiers, expectedModifiers);
+        expect(merged.$modifierConfig?.$modifiers, expectedModifiers);
       });
 
       test('modifiers with same type merge correctly', () {
         final firstOpacity = OpacityModifierAttribute(opacity: 0.3);
         final secondOpacity = OpacityModifierAttribute(opacity: 0.7);
 
-        final first = StackMix(modifiers: [firstOpacity]);
-        final second = StackMix(modifiers: [secondOpacity]);
+        final first = StackMix(modifierConfig: ModifierConfig(modifiers: [firstOpacity]));
+        final second = StackMix(modifierConfig: ModifierConfig(modifiers: [secondOpacity]));
 
         final merged = first.merge(second);
 
         // Should have only one opacity modifier (merged)
-        expect(merged.$modifiers, isNotNull);
-        expect(merged.$modifiers!.length, 1);
-        expect(merged.$modifiers![0], isA<OpacityModifierAttribute>());
+        expect(merged.$modifierConfig, isNotNull);
+        expect(merged.$modifierConfig!.$modifiers!.length, 1);
+        expect(merged.$modifierConfig!.$modifiers![0], isA<OpacityModifierAttribute>());
 
         // The second opacity should take precedence
-        final mergedOpacity = merged.$modifiers![0] as OpacityModifierAttribute;
+        final mergedOpacity =
+            merged.$modifierConfig!.$modifiers![0] as OpacityModifierAttribute;
         expect(mergedOpacity.opacity, resolvesTo(0.7));
       });
     });

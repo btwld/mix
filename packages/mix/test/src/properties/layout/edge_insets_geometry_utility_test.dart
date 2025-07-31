@@ -28,8 +28,7 @@ class TestAttribute extends Style<TestSpec> {
     super.inherit,
     super.variants,
     super.animation,
-    super.modifiers,
-    super.orderOfModifiers,
+    super.modifierConfig,
   });
 
   @override

@@ -24,9 +24,6 @@ abstract class MixUtility<U extends Style<Object?>, Value> {
 abstract interface class PropBaseUtility<U extends Style<Object?>, Value> {
   const PropBaseUtility();
 
-  /// Creates a styled element using a token reference.
-  U token(MixToken<Value> token);
-
   /// Creates a styled element with an applied directive.
   U directive(MixDirective<Value> directive);
 
@@ -52,7 +49,7 @@ class PropUtility<U extends Style<Object?>, Value>
   U call(Value value) => builder(Prop(value));
 
   /// Token support - creates Prop with token
-  @override
+
   U token(MixToken<Value> token) => builder(Prop.token(token));
 
   @override
@@ -87,10 +84,7 @@ abstract class MixPropUtility<U extends Style<Object?>, Value>
   @Deprecated('use token(value) instead')
   U ref(MixToken<Value> value) => token(value);
 
-  /// Token support - expects `MixToken<Value>` (raw type)
-  /// Uses MixProp.token with conversion function
-  @override
-  U token(MixToken<Value> token) => builder(MixProp.token(token, convertToMix));
+  U token(MixToken<Value> value) => builder(MixProp.token(value, convertToMix));
 
   @override
   U directive(MixDirective<Value> directive) {
@@ -192,12 +186,5 @@ final class MixPropListUtility<T extends Style<Object?>, V>
     final props = values.map(convertToMix).map((v) => MixProp(v)).toList();
 
     return builder(props);
-  }
-
-  /// Creates a list from tokens that store V (need conversion)
-  T tokens(List<MixToken<V>> tokens) {
-    final propList = tokens.map((t) => MixProp.token(t, convertToMix)).toList();
-
-    return builder(propList);
   }
 }

@@ -81,13 +81,17 @@ int _lerpInt(int? a, int? b, double t) {
 List<T>? _mergeList<T>(
   List<T>? a,
   List<T>? b, {
-  ListMergeStrategy strategy = ListMergeStrategy.replace,
+
+  /// Defaults to `replace`
+  ListMergeStrategy? strategy,
 }) {
   if (b == null) return a;
   if (a == null) return b;
 
   if (a.isEmpty) return b;
   if (b.isEmpty) return a;
+
+  strategy ??= ListMergeStrategy.replace;
 
   switch (strategy) {
     case ListMergeStrategy.append:

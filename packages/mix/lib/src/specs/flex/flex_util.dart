@@ -4,6 +4,7 @@ import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show StyleAttributeBuilder;
 import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
+import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../variants/variant_util.dart';
 import 'flex_attribute.dart';
@@ -60,14 +61,14 @@ class FlexSpecUtility extends StyleAttributeBuilder<FlexSpec> {
   );
 
   late final wrap = ModifierUtility<FlexSpecUtility>(
-    (prop) => _build(FlexMix(modifiers: [prop])),
+    (prop) =>
+        _build(FlexMix.raw(modifierConfig: ModifierConfig.modifier(prop))),
   );
 
   FlexMix _baseAttribute;
 
   FlexSpecUtility([FlexMix? attribute])
-    : _baseAttribute = attribute ?? FlexMix(),
-      super();
+    : _baseAttribute = attribute ?? FlexMix();
 
   /// Mutable builder - updates internal state and returns this for cascade
   FlexSpecUtility _build(FlexMix newAttribute) {

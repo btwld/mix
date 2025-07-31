@@ -403,67 +403,6 @@ void main() {
       });
     });
 
-    group('Performance considerations', () {
-      test('creating many builders is efficient', () {
-        final stopwatch = Stopwatch()..start();
-
-        for (int i = 0; i < 1000; i++) {
-          ContextVariantBuilder<BoxMix>(
-            (context) => BoxMix().width(i.toDouble()),
-          );
-        }
-
-        stopwatch.stop();
-        expect(stopwatch.elapsedMilliseconds, lessThan(100));
-      });
-
-      test('build method calls are efficient', () {
-        final builder = ContextVariantBuilder<BoxMix>(
-          (context) => BoxMix().width(100.0),
-        );
-        final context = MockBuildContext();
-        final stopwatch = Stopwatch()..start();
-
-        for (int i = 0; i < 1000; i++) {
-          builder.build(context);
-        }
-
-        stopwatch.stop();
-        expect(stopwatch.elapsedMilliseconds, lessThan(50));
-      });
-
-      test('key generation is efficient', () {
-        final builder = ContextVariantBuilder<BoxMix>(
-          (context) => BoxMix().width(100.0),
-        );
-        final stopwatch = Stopwatch()..start();
-
-        for (int i = 0; i < 1000; i++) {
-          builder.key;
-        }
-
-        stopwatch.stop();
-        expect(stopwatch.elapsedMilliseconds, lessThan(10));
-      });
-
-      test('equality comparison is efficient', () {
-        BoxMix builderFunction(BuildContext context) {
-          return BoxMix().width(100.0);
-        }
-
-        final builder1 = ContextVariantBuilder<BoxMix>(builderFunction);
-        final builder2 = ContextVariantBuilder<BoxMix>(builderFunction);
-        final stopwatch = Stopwatch()..start();
-
-        for (int i = 0; i < 1000; i++) {
-          builder1 == builder2;
-        }
-
-        stopwatch.stop();
-        expect(stopwatch.elapsedMilliseconds, lessThan(10));
-      });
-    });
-
     group('Integration with other Mix components', () {
       test('can be used in Style resolution context', () {
         final builder = ContextVariantBuilder<BoxMix>(

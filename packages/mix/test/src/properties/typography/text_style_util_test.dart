@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
+import 'package:mix/src/core/prop_source.dart';
 
 import '../../../helpers/testing_utils.dart';
 
@@ -523,8 +524,11 @@ void main() {
       test('token() creates text style from token', () {
         const token = MixToken<TextStyle>('test.textStyle');
         final attr = utility.token(token);
-        // For tokens, we verify the prop contains the token
-        expectProp(attr.value, token);
+        // For tokens, we verify the prop has a token source
+        expect(attr.value.sources, hasLength(1));
+        expect(attr.value.sources.first, isA<MixTokenSource<TextStyle>>());
+        final source = attr.value.sources.first as MixTokenSource<TextStyle>;
+        expect(source.token, equals(token));
       });
     });
   });

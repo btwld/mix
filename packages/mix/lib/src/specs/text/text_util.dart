@@ -4,6 +4,7 @@ import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show StyleAttributeBuilder;
 import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
+import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/typography/strut_style_util.dart';
 import '../../properties/typography/text_height_behavior_util.dart';
@@ -69,7 +70,7 @@ class TextSpecUtility extends StyleAttributeBuilder<TextSpec> {
   );
 
   late final wrap = ModifierUtility<TextSpecUtility>(
-    (prop) => _build(TextMix(modifiers: [prop])),
+    (prop) => _build(TextMix(modifierConfig: ModifierConfig.modifier(prop))),
   );
 
   // FLATTENED ACCESS - Direct access to commonly used style properties
@@ -97,8 +98,7 @@ class TextSpecUtility extends StyleAttributeBuilder<TextSpec> {
   TextMix _baseAttribute;
 
   TextSpecUtility([TextMix? attribute])
-    : _baseAttribute = attribute ?? TextMix(),
-      super();
+    : _baseAttribute = attribute ?? TextMix();
 
   /// Mutable builder - updates internal state and returns this for cascade
   TextSpecUtility _build(TextMix newAttribute) {

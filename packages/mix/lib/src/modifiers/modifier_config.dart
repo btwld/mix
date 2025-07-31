@@ -1,9 +1,11 @@
 import 'package:flutter/widgets.dart';
 
 import '../core/internal/compare_mixin.dart';
+import '../core/modifier.dart';
 import '../core/style.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
 import '../properties/painting/border_radius_mix.dart';
+import '../properties/painting/shadow_mix.dart';
 import '../properties/typography/text_height_behavior_mix.dart';
 import '../properties/typography/text_style_mix.dart';
 import '../specs/text/text_attribute.dart';
@@ -13,6 +15,7 @@ import 'clip_modifier.dart';
 import 'default_text_style_modifier.dart';
 import 'flexible_modifier.dart';
 import 'fractionally_sized_box_modifier.dart';
+import 'icon_theme_modifier.dart';
 import 'intrinsic_modifier.dart';
 import 'opacity_modifier.dart';
 import 'padding_modifier.dart';
@@ -33,6 +36,10 @@ final class ModifierConfig with Equatable {
 
   factory ModifierConfig.modifier(ModifierAttribute value) {
     return ModifierConfig(modifiers: [value]);
+  }
+
+  factory ModifierConfig.modifiers(List<ModifierAttribute> value) {
+    return ModifierConfig(modifiers: value);
   }
 
   factory ModifierConfig.orderOfModifiers(List<Type> value) {
@@ -99,6 +106,17 @@ final class ModifierConfig with Equatable {
   factory ModifierConfig.transform({Matrix4? transform, Alignment? alignment}) {
     return ModifierConfig.modifier(
       TransformModifierAttribute(transform: transform, alignment: alignment),
+    );
+  }
+
+  /// Scale using tarnsform
+  factory ModifierConfig.scale(
+    double scale, {
+    Alignment alignment = Alignment.center,
+  }) {
+    return ModifierConfig.transform(
+      transform: Matrix4.diagonal3Values(scale, scale, 1.0),
+      alignment: alignment,
     );
   }
 
@@ -202,6 +220,66 @@ final class ModifierConfig with Equatable {
     );
   }
 
+  factory ModifierConfig.iconTheme({
+    Color? color,
+    double? size,
+    double? fill,
+    double? weight,
+    double? grade,
+    double? opticalSize,
+    double? opacity,
+    List<Shadow>? shadows,
+    bool? applyTextScaling,
+  }) {
+    return ModifierConfig.modifier(
+      IconThemeModifierAttribute(
+        color: color,
+        size: size,
+        fill: fill,
+        weight: weight,
+        grade: grade,
+        opticalSize: opticalSize,
+        opacity: opacity,
+        shadows: shadows?.map((shadow) => ShadowMix.value(shadow)).toList(),
+        applyTextScaling: applyTextScaling,
+      ),
+    );
+  }
+
+  /// Orders modifiers according to the specified order or default order
+  ///
+  @visibleForTesting
+  List<Modifier> reorderModifiers(List<Modifier> modifiers) {
+    if (modifiers.isEmpty) return modifiers;
+
+    final orderOfModifiers = {
+      // Prioritize the order of modifiers provided by the user.
+      ...?$orderOfModifiers,
+      // Add the default order of modifiers.
+      ..._defaultOrder,
+      // Add any remaining modifiers that were not included in the order.
+      ...modifiers.map((e) => e.runtimeType),
+    }.toList();
+
+    final orderedSpecs = <Modifier>[];
+
+    for (final modifierType in orderOfModifiers) {
+      // Find and add modifiers matching this type
+      final modifier = modifiers
+          .where((e) => e.runtimeType == modifierType)
+          .firstOrNull;
+      if (modifier != null) {
+        orderedSpecs.add(modifier);
+      }
+    }
+
+    return orderedSpecs;
+  }
+
+  ModifierConfig scale(double scale, {Alignment alignment = Alignment.center}) {
+    return merge(ModifierConfig.scale(scale, alignment: alignment));
+  }
+
   ModifierConfig opacity(double value) {
     return merge(ModifierConfig.opacity(value));
   }
@@ -220,6 +298,10 @@ final class ModifierConfig with Equatable {
     return merge(
       ModifierConfig.clipRect(clipper: clipper, clipBehavior: clipBehavior),
     );
+  }
+
+  ModifierConfig modifiers(List<ModifierAttribute> value) {
+    return merge(ModifierConfig.modifiers(value));
   }
 
   ModifierConfig clipRRect({
@@ -347,7 +429,9 @@ final class ModifierConfig with Equatable {
 
     return ModifierConfig(
       modifiers: mergeModifierLists($modifiers, other.$modifiers),
-      orderOfModifiers: other.$orderOfModifiers ?? $orderOfModifiers,
+      orderOfModifiers: (other.$orderOfModifiers?.isNotEmpty == true)
+          ? other.$orderOfModifiers
+          : $orderOfModifiers,
     );
   }
 
@@ -377,6 +461,98 @@ final class ModifierConfig with Equatable {
     return merged.values.toList();
   }
 
+  /// Resolves the modifiers into a properly ordered list ready for rendering.
+  /// Its important to order the list before resolving to ensure the correct order of modifiers
+  List<Modifier> resolve(BuildContext context) {
+    if ($modifiers == null || $modifiers!.isEmpty) return [];
+
+    // Resolve each modifier attribute to its corresponding modifier spec
+    final resolvedModifiers = <Modifier>[];
+    for (final attribute in $modifiers!) {
+      final resolved = attribute.resolve(context);
+      resolvedModifiers.add(resolved as Modifier);
+    }
+
+    return reorderModifiers(resolvedModifiers).cast();
+  }
+
   @override
   List<Object?> get props => [$orderOfModifiers, $modifiers];
 }
+
+const _defaultOrder = [
+  // === PHASE 1: CONTEXT & BEHAVIOR SETUP ===
+  
+  // 1. FlexibleModifier: Controls flex behavior when used inside Row, Column, or Flex widgets.
+  // Applied first to establish how the widget participates in flex layouts.
+  FlexibleModifier,
+
+  // 2. VisibilityModifier: Controls overall visibility with early exit optimization.
+  // If invisible, subsequent modifiers are skipped, improving performance.
+  VisibilityModifier,
+
+  // 3. IconThemeModifier: Provides default icon styling context to descendant Icon widgets.
+  // Applied early to establish icon theme before any layout calculations.
+  IconThemeModifier,
+
+  // 4. DefaultTextStyleModifier: Provides default text styling context to descendant Text widgets.
+  // Applied early alongside IconTheme to establish text theme context before layout.
+  DefaultTextStyleModifier,
+
+  // === PHASE 2: SIZE ESTABLISHMENT ===
+
+  // 5. SizedBoxModifier: Explicitly sets widget dimensions with fixed constraints.
+  // Applied early to establish concrete size before relative sizing adjustments.
+  SizedBoxModifier,
+
+  // 6. FractionallySizedBoxModifier: Sets size relative to parent dimensions.
+  // Applied after explicit sizing to allow responsive scaling within constraints.
+  FractionallySizedBoxModifier,
+
+  // 7. IntrinsicHeightModifier: Adjusts height based on child's intrinsic content height.
+  // Applied to allow content-driven height calculations before aspect ratio constraints.
+  IntrinsicHeightModifier,
+
+  // 8. IntrinsicWidthModifier: Adjusts width based on child's intrinsic content width.
+  // Applied alongside intrinsic height for complete content-driven sizing.
+  IntrinsicWidthModifier,
+
+  // 9. AspectRatioModifier: Maintains aspect ratio within established size constraints.
+  // Applied after all other sizing to preserve aspect ratio in final dimensions.
+  AspectRatioModifier,
+
+  // === PHASE 3: LAYOUT MODIFICATIONS ===
+
+  // 10. RotatedBoxModifier: Rotates widget and changes its layout dimensions.
+  // CRITICAL: Must come before AlignModifier because it changes layout space
+  // (e.g., 200×100 widget becomes 100×200, affecting alignment calculations).
+  RotatedBoxModifier,
+
+  // 11. AlignModifier: Positions widget within its allocated space.
+  // Applied after RotatedBox to align based on final layout dimensions.
+  AlignModifier,
+
+  // === PHASE 4: SPACING ===
+
+  // 12. PaddingModifier: Adds spacing around the widget content.
+  // Applied after layout positioning to add space without affecting layout calculations.
+  PaddingModifier,
+
+  // === PHASE 5: VISUAL-ONLY EFFECTS ===
+
+  // 13. TransformModifier: Applies visual transformations (scale, rotate, translate).
+  // IMPORTANT: Visual-only - doesn't affect layout space, unlike RotatedBoxModifier.
+  TransformModifier,
+
+  // 14. Clip Modifiers: Applies visual clipping in various shapes.
+  // Applied near the end to clip the widget's final visual appearance.
+  ClipOvalModifier,
+  ClipRRectModifier,
+  ClipPathModifier,
+  ClipTriangleModifier,
+  ClipRectModifierSpec,
+
+  // 15. OpacityModifier: Applies transparency as the final visual effect.
+  // Always applied last to ensure optimal performance and correct visual layering.
+  OpacityModifier,
+];

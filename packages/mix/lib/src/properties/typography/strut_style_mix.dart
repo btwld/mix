@@ -2,14 +2,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/helpers.dart';
+import '../../core/internal/diagnostic_properties_builder_ext.dart';
 import '../../core/mix_element.dart';
 import '../../core/prop.dart';
 
-import '../../core/internal/diagnostic_properties_builder_ext.dart';
-
 /// Mix-compatible representation of Flutter's [StrutStyle] with token support.
 ///
-/// Provides strut styling properties for text layout including font family, size, 
+/// Provides strut styling properties for text layout including font family, size,
 /// weight, height, and spacing with resolvable tokens and merging capabilities.
 @immutable
 class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
@@ -123,42 +122,42 @@ class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
 
   /// Returns a copy with the specified font family.
   StrutStyleMix fontFamily(String value) {
-    return merge(StrutStyleMix(fontFamily: value));
+    return merge(StrutStyleMix.fontFamily(value));
   }
 
   /// Returns a copy with the specified font family fallback list.
   StrutStyleMix fontFamilyFallback(List<String> value) {
-    return merge(StrutStyleMix(fontFamilyFallback: value));
+    return merge(StrutStyleMix.fontFamilyFallback(value));
   }
 
   /// Returns a copy with the specified font size.
   StrutStyleMix fontSize(double value) {
-    return merge(StrutStyleMix(fontSize: value));
+    return merge(StrutStyleMix.fontSize(value));
   }
 
   /// Returns a copy with the specified font weight.
   StrutStyleMix fontWeight(FontWeight value) {
-    return merge(StrutStyleMix(fontWeight: value));
+    return merge(StrutStyleMix.fontWeight(value));
   }
 
   /// Returns a copy with the specified font style.
   StrutStyleMix fontStyle(FontStyle value) {
-    return merge(StrutStyleMix(fontStyle: value));
+    return merge(StrutStyleMix.fontStyle(value));
   }
 
   /// Returns a copy with the specified line height.
   StrutStyleMix height(double value) {
-    return merge(StrutStyleMix(height: value));
+    return merge(StrutStyleMix.height(value));
   }
 
   /// Returns a copy with the specified leading space.
   StrutStyleMix leading(double value) {
-    return merge(StrutStyleMix(leading: value));
+    return merge(StrutStyleMix.leading(value));
   }
 
   /// Returns a copy with forced strut height enabled or disabled.
   StrutStyleMix forceStrutHeight(bool value) {
-    return merge(StrutStyleMix(forceStrutHeight: value));
+    return merge(StrutStyleMix.forceStrutHeight(value));
   }
 
   @override

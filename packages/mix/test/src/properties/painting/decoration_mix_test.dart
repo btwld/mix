@@ -12,12 +12,8 @@ void main() {
           color: Colors.blue,
           shape: BoxShape.circle,
           backgroundBlendMode: BlendMode.multiply,
-          border: BorderMix.all(
-            BorderSideMix(color: Colors.red, width: 2.0),
-          ),
-          borderRadius: BorderRadiusMix(
-            topLeft: const Radius.circular(8.0),
-          ),
+          border: BorderMix.all(BorderSideMix(color: Colors.red, width: 2.0)),
+          borderRadius: BorderRadiusMix(topLeft: const Radius.circular(8.0)),
           boxShadow: [BoxShadowMix(color: Colors.black, blurRadius: 5.0)],
         );
 
@@ -86,9 +82,7 @@ void main() {
         final boxDecorationMix = BoxDecorationMix(
           color: Colors.blue,
           shape: BoxShape.circle,
-          border: BorderMix.all(
-            BorderSideMix(color: Colors.red, width: 2.0),
-          ),
+          border: BorderMix.all(BorderSideMix(color: Colors.red, width: 2.0)),
         );
 
         // For complex objects with nested properties, test specific properties after resolution
@@ -105,9 +99,7 @@ void main() {
 
       test('resolves with complex properties', () {
         final boxDecorationMix = BoxDecorationMix(
-          borderRadius: BorderRadiusMix(
-            topLeft: const Radius.circular(8.0),
-          ),
+          borderRadius: BorderRadiusMix(topLeft: const Radius.circular(8.0)),
           boxShadow: [
             BoxShadowMix(color: Colors.black, blurRadius: 5.0),
             BoxShadowMix(color: Colors.grey, blurRadius: 10.0),
@@ -142,7 +134,7 @@ void main() {
           backgroundBlendMode: BlendMode.multiply,
         );
 
-        final merged = first.merge(second) as BoxDecorationMix;
+        final merged = first.merge(second);
 
         expectProp(merged.$color, Colors.red);
         expectProp(merged.$shape, BoxShape.rectangle);
@@ -265,7 +257,7 @@ void main() {
 
         final second = ShapeDecorationMix(color: Colors.purple);
 
-        final merged = first.merge(second) as ShapeDecorationMix;
+        final merged = first.merge(second);
 
         expectProp(merged.$color, Colors.purple);
         expect(merged.$shape, isA<MixProp<ShapeBorder>>());
@@ -274,25 +266,17 @@ void main() {
 
     group('Equality', () {
       test('returns true when all properties are the same', () {
-        final shapeDecorationMix1 = ShapeDecorationMix(
-          color: Colors.green,
-        );
+        final shapeDecorationMix1 = ShapeDecorationMix(color: Colors.green);
 
-        final shapeDecorationMix2 = ShapeDecorationMix(
-          color: Colors.green,
-        );
+        final shapeDecorationMix2 = ShapeDecorationMix(color: Colors.green);
 
         expect(shapeDecorationMix1, shapeDecorationMix2);
         expect(shapeDecorationMix1.hashCode, shapeDecorationMix2.hashCode);
       });
 
       test('returns false when properties are different', () {
-        final shapeDecorationMix1 = ShapeDecorationMix(
-          color: Colors.green,
-        );
-        final shapeDecorationMix2 = ShapeDecorationMix(
-          color: Colors.purple,
-        );
+        final shapeDecorationMix1 = ShapeDecorationMix(color: Colors.green);
+        final shapeDecorationMix2 = ShapeDecorationMix(color: Colors.purple);
 
         expect(shapeDecorationMix1, isNot(shapeDecorationMix2));
       });

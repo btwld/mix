@@ -5,6 +5,7 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
+import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
@@ -63,9 +64,9 @@ class StackMix extends Style<StackSpec>
     Prop<TextDirection>? textDirection,
     Prop<Clip>? clipBehavior,
     super.animation,
-    super.modifiers,
+    super.modifierConfig,
     super.variants,
-    super.orderOfModifiers,
+
     super.inherit,
   }) : $alignment = alignment,
        $fit = fit,
@@ -78,9 +79,8 @@ class StackMix extends Style<StackSpec>
     TextDirection? textDirection,
     Clip? clipBehavior,
     AnimationConfig? animation,
-    List<ModifierAttribute>? modifiers,
+    ModifierConfig? modifierConfig,
     List<VariantStyleAttribute<StackSpec>>? variants,
-    List<Type>? orderOfModifiers,
     bool? inherit,
   }) : this.raw(
          alignment: Prop.maybe(alignment),
@@ -88,9 +88,8 @@ class StackMix extends Style<StackSpec>
          textDirection: Prop.maybe(textDirection),
          clipBehavior: Prop.maybe(clipBehavior),
          animation: animation,
-         modifiers: modifiers,
+         modifierConfig: modifierConfig,
          variants: variants,
-         orderOfModifiers: orderOfModifiers,
          inherit: inherit,
        );
 
@@ -153,8 +152,8 @@ class StackMix extends Style<StackSpec>
   }
 
   @override
-  StackMix modifiers(List<ModifierAttribute> modifiers) {
-    return merge(StackMix(modifiers: modifiers));
+  StackMix modifier(ModifierConfig value) {
+    return merge(StackMix(modifierConfig: value));
   }
 
   /// Resolves to [StackSpec] using the provided [BuildContext].
@@ -179,11 +178,11 @@ class StackMix extends Style<StackSpec>
       textDirection: MixHelpers.merge($textDirection, other.$textDirection),
       clipBehavior: MixHelpers.merge($clipBehavior, other.$clipBehavior),
       animation: other.$animation ?? $animation,
-      modifiers: mergeModifierLists($modifiers, other.$modifiers),
+      modifierConfig:
+          $modifierConfig?.merge(other.$modifierConfig) ??
+          other.$modifierConfig,
       variants: mergeVariantLists($variants, other.$variants),
-      orderOfModifiers: other.$orderOfModifiers.isNotEmpty
-          ? other.$orderOfModifiers
-          : $orderOfModifiers,
+
       inherit: other.$inherit ?? $inherit,
     );
   }
@@ -215,7 +214,7 @@ class StackMix extends Style<StackSpec>
     $textDirection,
     $clipBehavior,
     $animation,
-    $modifiers,
+    $modifierConfig,
     $variants,
   ];
 }

@@ -34,6 +34,7 @@ export 'src/core/helpers.dart';
 export 'src/core/mix_element.dart';
 export 'src/core/modifier.dart';
 export 'src/core/prop.dart';
+export 'src/core/prop_source.dart';
 export 'src/core/providers/resolved_style_provider.dart';
 export 'src/core/providers/style_provider.dart';
 export 'src/core/providers/widget_state_provider.dart';
@@ -43,15 +44,17 @@ export 'src/core/style.dart' hide StyleElement;
 export 'src/core/style_builder.dart';
 export 'src/core/style_widget.dart';
 export 'src/core/utility.dart';
-
-/// MODIFIERS
 export 'src/modifiers/align_modifier.dart';
 export 'src/modifiers/aspect_ratio_modifier.dart';
 export 'src/modifiers/clip_modifier.dart';
 export 'src/modifiers/default_text_style_modifier.dart';
 export 'src/modifiers/flexible_modifier.dart';
 export 'src/modifiers/fractionally_sized_box_modifier.dart';
+export 'src/modifiers/icon_theme_modifier.dart';
 export 'src/modifiers/intrinsic_modifier.dart';
+
+/// MODIFIERS
+export 'src/modifiers/modifier_config.dart';
 export 'src/modifiers/modifier_util.dart';
 export 'src/modifiers/mouse_cursor_modifier.dart';
 export 'src/modifiers/opacity_modifier.dart';

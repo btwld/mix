@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 
 import '../animation/animation_config.dart';
+import '../modifiers/modifier_config.dart';
 import '../specs/box/box_attribute.dart';
 import '../specs/flex/flex_attribute.dart';
 import '../specs/flexbox/flexbox_attribute.dart';
@@ -29,9 +30,10 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
     with Equatable, Resolvable<S>
     implements StyleElement {
   final List<VariantStyleAttribute<S>>? $variants;
-  final List<ModifierAttribute>? $modifiers;
+
+  final ModifierConfig? $modifierConfig;
   final AnimationConfig? $animation;
-  final List<Type> $orderOfModifiers;
+
   final bool? $inherit;
 
   static final box = BoxMix.new;
@@ -44,15 +46,14 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
 
   const Style({
     required List<VariantStyleAttribute<S>>? variants,
-    required List<ModifierAttribute>? modifiers,
+    required ModifierConfig? modifierConfig,
     required AnimationConfig? animation,
-    required List<Type>? orderOfModifiers,
+
     required bool? inherit,
-  }) : $modifiers = modifiers,
+  }) : $modifierConfig = modifierConfig,
        $animation = animation,
        $variants = variants,
-       $inherit = inherit,
-       $orderOfModifiers = orderOfModifiers ?? const [];
+       $inherit = inherit;
 
   @internal
   Set<WidgetState> get widgetStates {
@@ -128,11 +129,11 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
   }
 
   @protected
-  List<VariantStyleAttribute<S>> mergeVariantLists(
+  List<VariantStyleAttribute<S>>? mergeVariantLists(
     List<VariantStyleAttribute<S>>? current,
     List<VariantStyleAttribute<S>>? other,
   ) {
-    if (current == null && other == null) return [];
+    if (current == null && other == null) return null;
     if (current == null) return List<VariantStyleAttribute<S>>.of(other!);
     if (other == null) return List<VariantStyleAttribute<S>>.of(current);
 
@@ -176,16 +177,12 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
 
     final resolvedSpec = styleData.resolve(context);
     final resolvedAnimation = styleData.$animation;
-    final resolvedModifiers = styleData.$modifiers
-        ?.map((modifier) => modifier.resolve(context))
-        .whereType<Modifier>()
-        .toList();
+    final resolvedModifiers = styleData.$modifierConfig?.resolve(context);
 
     return ResolvedStyle(
       spec: resolvedSpec,
       animation: resolvedAnimation,
       modifiers: resolvedModifiers,
-      orderOfModifiers: styleData.$orderOfModifiers,
       inherit: styleData.$inherit,
     );
   }
@@ -285,9 +282,9 @@ class CompoundStyle extends Style<MultiSpec> {
   CompoundStyle._({
     required List<Style> attributes,
     super.animation,
-    super.modifiers,
+    super.modifierConfig,
     super.variants,
-    super.orderOfModifiers,
+
     super.inherit,
   }) : _attributes = {for (var attr in attributes) attr.mergeKey: attr};
 
@@ -374,7 +371,9 @@ class CompoundStyle extends Style<MultiSpec> {
     CompoundStyle result = CompoundStyle._(
       attributes: styleList,
       animation: animationConfig,
-      modifiers: modifierList.isEmpty ? null : modifierList,
+      modifierConfig: modifierList.isEmpty
+          ? null
+          : ModifierConfig(modifiers: modifierList),
       variants: null,
     );
 
@@ -390,7 +389,19 @@ class CompoundStyle extends Style<MultiSpec> {
   }
 
   CompoundStyle.empty()
-    : this._(attributes: [], animation: null, modifiers: null, variants: null);
+    : this._(
+        attributes: [],
+        animation: null,
+        modifierConfig: null,
+        variants: null,
+      );
+
+  ModifierConfig? _mergeModifierConfigs(ModifierConfig? a, ModifierConfig? b) {
+    if (a == null) return b;
+    if (b == null) return a;
+
+    return a.merge(b);
+  }
 
   /// Returns the list of attributes in this style
   List<Style> get attributes => _attributes.values.toList();
@@ -399,10 +410,10 @@ class CompoundStyle extends Style<MultiSpec> {
     return CompoundStyle._(
       attributes: _attributes.values.toList(),
       animation: AnimationConfig.curve(
-        curve: curve ?? Curves.linear,
         duration: duration ?? kDefaultAnimationDuration,
+        curve: curve ?? Curves.linear,
       ),
-      modifiers: $modifiers,
+      modifierConfig: $modifierConfig,
       variants: $variants,
     );
   }
@@ -445,7 +456,10 @@ class CompoundStyle extends Style<MultiSpec> {
     return CompoundStyle._(
       attributes: mergedAttributes,
       animation: other.$animation ?? $animation,
-      modifiers: mergeModifierLists($modifiers, other.$modifiers),
+      modifierConfig: _mergeModifierConfigs(
+        $modifierConfig,
+        other.$modifierConfig,
+      ),
       variants: mergeVariantLists($variants, other.$variants),
     );
   }

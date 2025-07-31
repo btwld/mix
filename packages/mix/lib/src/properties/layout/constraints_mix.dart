@@ -145,32 +145,32 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
 
   /// Returns a copy with fixed height (min and max height equal).
   BoxConstraintsMix height(double height) {
-    return BoxConstraintsMix(minHeight: height, maxHeight: height);
+    return BoxConstraintsMix.height(height);
   }
 
   /// Returns a copy with fixed width (min and max width equal).
   BoxConstraintsMix width(double width) {
-    return BoxConstraintsMix(minWidth: width, maxWidth: width);
+    return BoxConstraintsMix.width(width);
   }
 
   /// Returns a copy with the specified minimum width.
   BoxConstraintsMix minWidth(double value) {
-    return merge(BoxConstraintsMix(minWidth: value));
+    return merge(BoxConstraintsMix.minWidth(value));
   }
 
   /// Returns a copy with the specified maximum width.
   BoxConstraintsMix maxWidth(double value) {
-    return merge(BoxConstraintsMix(maxWidth: value));
+    return merge(BoxConstraintsMix.maxWidth(value));
   }
 
   /// Returns a copy with the specified minimum height.
   BoxConstraintsMix minHeight(double value) {
-    return merge(BoxConstraintsMix(minHeight: value));
+    return merge(BoxConstraintsMix.minHeight(value));
   }
 
   /// Returns a copy with the specified maximum height.
   BoxConstraintsMix maxHeight(double value) {
-    return merge(BoxConstraintsMix(maxHeight: value));
+    return merge(BoxConstraintsMix.maxHeight(value));
   }
 
   /// Resolves to [BoxConstraints] using the provided [BuildContext].

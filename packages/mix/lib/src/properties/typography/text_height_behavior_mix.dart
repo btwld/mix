@@ -65,17 +65,17 @@ class TextHeightBehaviorMix extends Mix<TextHeightBehavior> {
 
   /// Returns a copy with height applied to first ascent enabled or disabled.
   TextHeightBehaviorMix applyHeightToFirstAscent(bool value) {
-    return merge(TextHeightBehaviorMix(applyHeightToFirstAscent: value));
+    return merge(TextHeightBehaviorMix.applyHeightToFirstAscent(value));
   }
 
   /// Returns a copy with height applied to last descent enabled or disabled.
   TextHeightBehaviorMix applyHeightToLastDescent(bool value) {
-    return merge(TextHeightBehaviorMix(applyHeightToLastDescent: value));
+    return merge(TextHeightBehaviorMix.applyHeightToLastDescent(value));
   }
 
   /// Returns a copy with the specified leading distribution.
   TextHeightBehaviorMix leadingDistribution(TextLeadingDistribution value) {
-    return merge(TextHeightBehaviorMix(leadingDistribution: value));
+    return merge(TextHeightBehaviorMix.leadingDistribution(value));
   }
 
   /// Resolves to [TextHeightBehavior] using the provided [BuildContext].

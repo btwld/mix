@@ -263,25 +263,6 @@ void main() {
 
   group('ColorExtensions', () {
     const testColor = Color(0xFF808080); // Medium gray
-    const red = Color(0xFFFF0000);
-    const blue = Color(0xFF0000FF);
-
-    test('mix blends colors correctly', () {
-      final mixed = red.mix(blue, 50);
-      expect(mixed, isA<Color>());
-      expect(mixed, isNot(equals(red)));
-      expect(mixed, isNot(equals(blue)));
-
-      // Test extremes
-      final mixed0 = red.mix(blue, 0);
-      final mixed100 = red.mix(blue, 100);
-      expect(mixed0, equals(red));
-      expect(mixed100, equals(blue));
-
-      // Test default amount (50)
-      final mixedDefault = red.mix(blue);
-      expect(mixedDefault, equals(mixed));
-    });
 
     test('lighten increases lightness', () {
       final lightened = testColor.lighten(20);

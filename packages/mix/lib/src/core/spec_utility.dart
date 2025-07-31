@@ -13,9 +13,9 @@ abstract class StyleAttributeBuilder<S extends Spec<S>> extends Style<S>
     with Diagnosticable {
   const StyleAttributeBuilder({
     super.animation,
-    super.modifiers,
+    super.modifierConfig,
     super.variants,
-    super.orderOfModifiers,
+
     super.inherit,
   });
 
@@ -35,14 +35,15 @@ abstract class StyleAttributeBuilder<S extends Spec<S>> extends Style<S>
   @override
   AnimationConfig? get $animation => attribute.$animation;
 
-  /// Mutable modifiers from internal attribute
-  @override
-  List<ModifierAttribute>? get $modifiers => attribute.$modifiers;
-
   /// Mutable variants from internal attribute
   @override
   List<VariantStyleAttribute<S>>? get $variants => attribute.$variants;
 
   @override
-  List<Object?> get props => [attribute, $animation, $modifiers, $variants];
+  List<Object?> get props => [
+    attribute,
+    $animation,
+    $modifierConfig,
+    $variants,
+  ];
 }

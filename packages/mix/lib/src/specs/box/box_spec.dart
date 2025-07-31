@@ -10,7 +10,7 @@ import '../../core/spec.dart';
 /// Provides comprehensive box styling including alignment, padding, margin, constraints,
 /// decoration, transformation, and clipping behavior. Used as the resolved form
 /// of [BoxMix] styling attributes.
-final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
+class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
   /// Aligns the child within the box.
   final AlignmentGeometry? alignment;
 
@@ -162,4 +162,18 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
     transformAlignment,
     clipBehavior,
   ];
+}
+
+class FrameSpec extends BoxSpec {
+  const FrameSpec({
+    super.alignment,
+    super.padding,
+    super.margin,
+    super.constraints,
+    ShapeDecoration? decoration,
+    ShapeDecoration? foregroundDecoration,
+    super.transform,
+    super.transformAlignment,
+    super.clipBehavior,
+  });
 }

@@ -5,6 +5,7 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
+import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
@@ -91,9 +92,9 @@ class ImageMix extends Style<ImageSpec>
     Prop<FilterQuality>? filterQuality,
     Prop<BlendMode>? colorBlendMode,
     super.animation,
-    super.modifiers,
+    super.modifierConfig,
     super.variants,
-    super.orderOfModifiers,
+
     super.inherit,
   }) : $width = width,
        $height = height,
@@ -116,9 +117,8 @@ class ImageMix extends Style<ImageSpec>
     FilterQuality? filterQuality,
     BlendMode? colorBlendMode,
     AnimationConfig? animation,
-    List<ModifierAttribute>? modifiers,
+    ModifierConfig? modifierConfig,
     List<VariantStyleAttribute<ImageSpec>>? variants,
-    List<Type>? orderOfModifiers,
     bool? inherit,
   }) : this.raw(
          width: Prop.maybe(width),
@@ -131,9 +131,8 @@ class ImageMix extends Style<ImageSpec>
          filterQuality: Prop.maybe(filterQuality),
          colorBlendMode: Prop.maybe(colorBlendMode),
          animation: animation,
-         modifiers: modifiers,
+         modifierConfig: modifierConfig,
          variants: variants,
-         orderOfModifiers: orderOfModifiers,
          inherit: inherit,
        );
 
@@ -226,8 +225,8 @@ class ImageMix extends Style<ImageSpec>
   }
 
   @override
-  ImageMix modifiers(List<ModifierAttribute> modifiers) {
-    return merge(ImageMix(modifiers: modifiers));
+  ImageMix modifier(ModifierConfig value) {
+    return merge(ImageMix(modifierConfig: value));
   }
 
   @override
@@ -260,11 +259,10 @@ class ImageMix extends Style<ImageSpec>
       filterQuality: MixHelpers.merge($filterQuality, other.$filterQuality),
       colorBlendMode: MixHelpers.merge($colorBlendMode, other.$colorBlendMode),
       animation: other.$animation ?? $animation,
-      modifiers: mergeModifierLists($modifiers, other.$modifiers),
+      modifierConfig:
+          $modifierConfig?.merge(other.$modifierConfig) ??
+          other.$modifierConfig,
       variants: mergeVariantLists($variants, other.$variants),
-      orderOfModifiers: other.$orderOfModifiers.isNotEmpty
-          ? other.$orderOfModifiers
-          : $orderOfModifiers,
       inherit: other.$inherit ?? $inherit,
     );
   }
@@ -312,7 +310,7 @@ class ImageMix extends Style<ImageSpec>
     $filterQuality,
     $colorBlendMode,
     $animation,
-    $modifiers,
+    $modifierConfig,
     $variants,
   ];
 }

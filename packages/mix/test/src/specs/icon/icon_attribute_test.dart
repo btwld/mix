@@ -410,8 +410,8 @@ void main() {
           alignment: Alignment.center,
         );
 
-        final first = IconMix(modifiers: [opacityModifier]);
-        final second = IconMix(modifiers: [alignModifier]);
+        final first = IconMix(modifierConfig: ModifierConfig(modifiers: [opacityModifier]));
+        final second = IconMix(modifierConfig: ModifierConfig(modifiers: [alignModifier]));
 
         final merged = first.merge(second);
 
@@ -421,7 +421,7 @@ void main() {
           AlignModifierAttribute(alignment: Alignment.center),
         ];
 
-        expect(merged.$modifiers, expectedModifiers);
+        expect(merged.$modifierConfig?.$modifiers, expectedModifiers);
       });
     });
 

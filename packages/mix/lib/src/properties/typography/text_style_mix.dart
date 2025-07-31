@@ -13,31 +13,136 @@ import '../painting/shadow_mix.dart';
 @immutable
 class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
   // Simple properties use MixValue directly
-  final Prop<Color>? color;
-  final Prop<Color>? backgroundColor;
-  final Prop<double>? fontSize;
-  final Prop<FontWeight>? fontWeight;
-  final Prop<FontStyle>? fontStyle;
-  final Prop<double>? letterSpacing;
-  final Prop<String>? debugLabel;
-  final Prop<double>? wordSpacing;
-  final Prop<TextBaseline>? textBaseline;
-  final Prop<TextDecoration>? decoration;
-  final Prop<Color>? decorationColor;
-  final Prop<TextDecorationStyle>? decorationStyle;
-  final Prop<double>? height;
-  final Prop<double>? decorationThickness;
-  final Prop<String>? fontFamily;
-  final Prop<Paint>? foreground;
-  final Prop<Paint>? background;
+  final Prop<Color>? $color;
+  final Prop<Color>? $backgroundColor;
+  final Prop<double>? $fontSize;
+  final Prop<FontWeight>? $fontWeight;
+  final Prop<FontStyle>? $fontStyle;
+  final Prop<double>? $letterSpacing;
+  final Prop<String>? $debugLabel;
+  final Prop<double>? $wordSpacing;
+  final Prop<TextBaseline>? $textBaseline;
+  final Prop<TextDecoration>? $decoration;
+  final Prop<Color>? $decorationColor;
+  final Prop<TextDecorationStyle>? $decorationStyle;
+  final Prop<double>? $height;
+  final Prop<double>? $decorationThickness;
+  final Prop<String>? $fontFamily;
+  final Prop<Paint>? $foreground;
+  final Prop<Paint>? $background;
 
   // Lists of MixValues for simple types
-  final List<Prop<String>>? fontFamilyFallback;
-  final List<Prop<FontFeature>>? fontFeatures;
-  final List<Prop<FontVariation>>? fontVariations;
+  final List<Prop<String>>? $fontFamilyFallback;
+  final List<Prop<FontFeature>>? $fontFeatures;
+  final List<Prop<FontVariation>>? $fontVariations;
 
   // Lists of Mix types
-  final List<MixProp<Shadow>>? shadows;
+  final List<MixProp<Shadow>>? $shadows;
+
+  /// Factory for text color
+  factory TextStyleMix.color(Color value) {
+    return TextStyleMix(color: value);
+  }
+
+  /// Factory for background color
+  factory TextStyleMix.backgroundColor(Color value) {
+    return TextStyleMix(backgroundColor: value);
+  }
+
+  /// Factory for font size
+  factory TextStyleMix.fontSize(double value) {
+    return TextStyleMix(fontSize: value);
+  }
+
+  /// Factory for font weight
+  factory TextStyleMix.fontWeight(FontWeight value) {
+    return TextStyleMix(fontWeight: value);
+  }
+
+  /// Factory for font style
+  factory TextStyleMix.fontStyle(FontStyle value) {
+    return TextStyleMix(fontStyle: value);
+  }
+
+  /// Factory for letter spacing
+  factory TextStyleMix.letterSpacing(double value) {
+    return TextStyleMix(letterSpacing: value);
+  }
+
+  /// Factory for debug label
+  factory TextStyleMix.debugLabel(String value) {
+    return TextStyleMix(debugLabel: value);
+  }
+
+  /// Factory for word spacing
+  factory TextStyleMix.wordSpacing(double value) {
+    return TextStyleMix(wordSpacing: value);
+  }
+
+  /// Factory for text baseline
+  factory TextStyleMix.textBaseline(TextBaseline value) {
+    return TextStyleMix(textBaseline: value);
+  }
+
+  /// Factory for shadows
+  factory TextStyleMix.shadows(List<ShadowMix> value) {
+    return TextStyleMix(shadows: value);
+  }
+
+  /// Factory for font features
+  factory TextStyleMix.fontFeatures(List<FontFeature> value) {
+    return TextStyleMix(fontFeatures: value);
+  }
+
+  /// Factory for text decoration
+  factory TextStyleMix.decoration(TextDecoration value) {
+    return TextStyleMix(decoration: value);
+  }
+
+  /// Factory for decoration color
+  factory TextStyleMix.decorationColor(Color value) {
+    return TextStyleMix(decorationColor: value);
+  }
+
+  /// Factory for decoration style
+  factory TextStyleMix.decorationStyle(TextDecorationStyle value) {
+    return TextStyleMix(decorationStyle: value);
+  }
+
+  /// Factory for font variations
+  factory TextStyleMix.fontVariations(List<FontVariation> value) {
+    return TextStyleMix(fontVariations: value);
+  }
+
+  /// Factory for line height
+  factory TextStyleMix.height(double value) {
+    return TextStyleMix(height: value);
+  }
+
+  /// Factory for foreground paint
+  factory TextStyleMix.foreground(Paint value) {
+    return TextStyleMix(foreground: value);
+  }
+
+  /// Factory for background paint
+  factory TextStyleMix.background(Paint value) {
+    return TextStyleMix(background: value);
+  }
+
+  /// Factory for decoration thickness
+  factory TextStyleMix.decorationThickness(double value) {
+    return TextStyleMix(decorationThickness: value);
+  }
+
+  /// Factory for font family
+  factory TextStyleMix.fontFamily(String value) {
+    return TextStyleMix(fontFamily: value);
+  }
+
+  /// Factory for font family fallback
+  factory TextStyleMix.fontFamilyFallback(List<String> value) {
+    return TextStyleMix(fontFamilyFallback: value);
+  }
 
   TextStyleMix({
     Color? color,
@@ -86,28 +191,48 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
        );
 
   const TextStyleMix.raw({
-    this.color,
-    this.backgroundColor,
-    this.fontSize,
-    this.fontWeight,
-    this.fontStyle,
-    this.letterSpacing,
-    this.debugLabel,
-    this.wordSpacing,
-    this.textBaseline,
-    this.shadows,
-    this.fontFeatures,
-    this.decoration,
-    this.decorationColor,
-    this.decorationStyle,
-    this.fontVariations,
-    this.height,
-    this.foreground,
-    this.background,
-    this.decorationThickness,
-    this.fontFamily,
-    this.fontFamilyFallback,
-  });
+    Prop<Color>? color,
+    Prop<Color>? backgroundColor,
+    Prop<double>? fontSize,
+    Prop<FontWeight>? fontWeight,
+    Prop<FontStyle>? fontStyle,
+    Prop<double>? letterSpacing,
+    Prop<String>? debugLabel,
+    Prop<double>? wordSpacing,
+    Prop<TextBaseline>? textBaseline,
+    List<MixProp<Shadow>>? shadows,
+    List<Prop<FontFeature>>? fontFeatures,
+    Prop<TextDecoration>? decoration,
+    Prop<Color>? decorationColor,
+    Prop<TextDecorationStyle>? decorationStyle,
+    List<Prop<FontVariation>>? fontVariations,
+    Prop<double>? height,
+    Prop<Paint>? foreground,
+    Prop<Paint>? background,
+    Prop<double>? decorationThickness,
+    Prop<String>? fontFamily,
+    List<Prop<String>>? fontFamilyFallback,
+  }) : $color = color,
+       $backgroundColor = backgroundColor,
+       $fontSize = fontSize,
+       $fontWeight = fontWeight,
+       $fontStyle = fontStyle,
+       $letterSpacing = letterSpacing,
+       $debugLabel = debugLabel,
+       $wordSpacing = wordSpacing,
+       $textBaseline = textBaseline,
+       $shadows = shadows,
+       $fontFeatures = fontFeatures,
+       $decoration = decoration,
+       $decorationColor = decorationColor,
+       $decorationStyle = decorationStyle,
+       $fontVariations = fontVariations,
+       $height = height,
+       $foreground = foreground,
+       $background = background,
+       $decorationThickness = decorationThickness,
+       $fontFamily = fontFamily,
+       $fontFamilyFallback = fontFamilyFallback;
 
   /// Creates a [TextStyleMix] from an existing [TextStyle].
   TextStyleMix.value(TextStyle textStyle)
@@ -147,31 +272,136 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
     return textStyle != null ? TextStyleMix.value(textStyle) : null;
   }
 
+  /// Sets text color
+  TextStyleMix color(Color value) {
+    return merge(TextStyleMix.color(value));
+  }
+
+  /// Sets background color
+  TextStyleMix backgroundColor(Color value) {
+    return merge(TextStyleMix.backgroundColor(value));
+  }
+
+  /// Sets font size
+  TextStyleMix fontSize(double value) {
+    return merge(TextStyleMix.fontSize(value));
+  }
+
+  /// Sets font weight
+  TextStyleMix fontWeight(FontWeight value) {
+    return merge(TextStyleMix.fontWeight(value));
+  }
+
+  /// Sets font style
+  TextStyleMix fontStyle(FontStyle value) {
+    return merge(TextStyleMix.fontStyle(value));
+  }
+
+  /// Sets letter spacing
+  TextStyleMix letterSpacing(double value) {
+    return merge(TextStyleMix.letterSpacing(value));
+  }
+
+  /// Sets debug label
+  TextStyleMix debugLabel(String value) {
+    return merge(TextStyleMix.debugLabel(value));
+  }
+
+  /// Sets word spacing
+  TextStyleMix wordSpacing(double value) {
+    return merge(TextStyleMix.wordSpacing(value));
+  }
+
+  /// Sets text baseline
+  TextStyleMix textBaseline(TextBaseline value) {
+    return merge(TextStyleMix.textBaseline(value));
+  }
+
+  /// Sets shadows
+  TextStyleMix shadows(List<ShadowMix> value) {
+    return merge(TextStyleMix.shadows(value));
+  }
+
+  /// Sets font features
+  TextStyleMix fontFeatures(List<FontFeature> value) {
+    return merge(TextStyleMix.fontFeatures(value));
+  }
+
+  /// Sets text decoration
+  TextStyleMix decoration(TextDecoration value) {
+    return merge(TextStyleMix.decoration(value));
+  }
+
+  /// Sets decoration color
+  TextStyleMix decorationColor(Color value) {
+    return merge(TextStyleMix.decorationColor(value));
+  }
+
+  /// Sets decoration style
+  TextStyleMix decorationStyle(TextDecorationStyle value) {
+    return merge(TextStyleMix.decorationStyle(value));
+  }
+
+  /// Sets font variations
+  TextStyleMix fontVariations(List<FontVariation> value) {
+    return merge(TextStyleMix.fontVariations(value));
+  }
+
+  /// Sets line height
+  TextStyleMix height(double value) {
+    return merge(TextStyleMix.height(value));
+  }
+
+  /// Sets foreground paint
+  TextStyleMix foreground(Paint value) {
+    return merge(TextStyleMix.foreground(value));
+  }
+
+  /// Sets background paint
+  TextStyleMix background(Paint value) {
+    return merge(TextStyleMix.background(value));
+  }
+
+  /// Sets decoration thickness
+  TextStyleMix decorationThickness(double value) {
+    return merge(TextStyleMix.decorationThickness(value));
+  }
+
+  /// Sets font family
+  TextStyleMix fontFamily(String value) {
+    return merge(TextStyleMix.fontFamily(value));
+  }
+
+  /// Sets font family fallback
+  TextStyleMix fontFamilyFallback(List<String> value) {
+    return merge(TextStyleMix.fontFamilyFallback(value));
+  }
+
   @override
   TextStyle resolve(BuildContext context) {
     return TextStyle(
-      color: MixHelpers.resolve(context, color),
-      backgroundColor: MixHelpers.resolve(context, backgroundColor),
-      fontSize: MixHelpers.resolve(context, fontSize),
-      fontWeight: MixHelpers.resolve(context, fontWeight),
-      fontStyle: MixHelpers.resolve(context, fontStyle),
-      letterSpacing: MixHelpers.resolve(context, letterSpacing),
-      wordSpacing: MixHelpers.resolve(context, wordSpacing),
-      textBaseline: MixHelpers.resolve(context, textBaseline),
-      height: MixHelpers.resolve(context, height),
-      foreground: MixHelpers.resolve(context, foreground),
-      background: MixHelpers.resolve(context, background),
+      color: MixHelpers.resolve(context, $color),
+      backgroundColor: MixHelpers.resolve(context, $backgroundColor),
+      fontSize: MixHelpers.resolve(context, $fontSize),
+      fontWeight: MixHelpers.resolve(context, $fontWeight),
+      fontStyle: MixHelpers.resolve(context, $fontStyle),
+      letterSpacing: MixHelpers.resolve(context, $letterSpacing),
+      wordSpacing: MixHelpers.resolve(context, $wordSpacing),
+      textBaseline: MixHelpers.resolve(context, $textBaseline),
+      height: MixHelpers.resolve(context, $height),
+      foreground: MixHelpers.resolve(context, $foreground),
+      background: MixHelpers.resolve(context, $background),
       // Resolve lists using helpers
-      shadows: MixHelpers.resolveList(context, shadows),
-      fontFeatures: MixHelpers.resolveList(context, fontFeatures),
-      fontVariations: MixHelpers.resolveList(context, fontVariations),
-      decoration: MixHelpers.resolve(context, decoration),
-      decorationColor: MixHelpers.resolve(context, decorationColor),
-      decorationStyle: MixHelpers.resolve(context, decorationStyle),
-      decorationThickness: MixHelpers.resolve(context, decorationThickness),
-      debugLabel: MixHelpers.resolve(context, debugLabel),
-      fontFamily: MixHelpers.resolve(context, fontFamily),
-      fontFamilyFallback: MixHelpers.resolveList(context, fontFamilyFallback),
+      shadows: MixHelpers.resolveList(context, $shadows),
+      fontFeatures: MixHelpers.resolveList(context, $fontFeatures),
+      fontVariations: MixHelpers.resolveList(context, $fontVariations),
+      decoration: MixHelpers.resolve(context, $decoration),
+      decorationColor: MixHelpers.resolve(context, $decorationColor),
+      decorationStyle: MixHelpers.resolve(context, $decorationStyle),
+      decorationThickness: MixHelpers.resolve(context, $decorationThickness),
+      debugLabel: MixHelpers.resolve(context, $debugLabel),
+      fontFamily: MixHelpers.resolve(context, $fontFamily),
+      fontFamilyFallback: MixHelpers.resolveList(context, $fontFamilyFallback),
     );
   }
 
@@ -180,36 +410,45 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
     if (other == null) return this;
 
     return TextStyleMix.raw(
-      color: MixHelpers.merge(color, other.color),
-      backgroundColor: MixHelpers.merge(backgroundColor, other.backgroundColor),
-      fontSize: MixHelpers.merge(fontSize, other.fontSize),
-      fontWeight: MixHelpers.merge(fontWeight, other.fontWeight),
-      fontStyle: MixHelpers.merge(fontStyle, other.fontStyle),
-      letterSpacing: MixHelpers.merge(letterSpacing, other.letterSpacing),
-      debugLabel: MixHelpers.merge(debugLabel, other.debugLabel),
-      wordSpacing: MixHelpers.merge(wordSpacing, other.wordSpacing),
-      textBaseline: MixHelpers.merge(textBaseline, other.textBaseline),
+      color: MixHelpers.merge($color, other.$color),
+      backgroundColor: MixHelpers.merge(
+        $backgroundColor,
+        other.$backgroundColor,
+      ),
+      fontSize: MixHelpers.merge($fontSize, other.$fontSize),
+      fontWeight: MixHelpers.merge($fontWeight, other.$fontWeight),
+      fontStyle: MixHelpers.merge($fontStyle, other.$fontStyle),
+      letterSpacing: MixHelpers.merge($letterSpacing, other.$letterSpacing),
+      debugLabel: MixHelpers.merge($debugLabel, other.$debugLabel),
+      wordSpacing: MixHelpers.merge($wordSpacing, other.$wordSpacing),
+      textBaseline: MixHelpers.merge($textBaseline, other.$textBaseline),
       // Merge lists - default replace strategy (merge at index)
-      shadows: MixHelpers.mergeList(shadows, other.shadows),
-      fontFeatures: MixHelpers.mergeList(fontFeatures, other.fontFeatures),
-      decoration: MixHelpers.merge(decoration, other.decoration),
-      decorationColor: MixHelpers.merge(decorationColor, other.decorationColor),
-      decorationStyle: MixHelpers.merge(decorationStyle, other.decorationStyle),
+      shadows: MixHelpers.mergeList($shadows, other.$shadows),
+      fontFeatures: MixHelpers.mergeList($fontFeatures, other.$fontFeatures),
+      decoration: MixHelpers.merge($decoration, other.$decoration),
+      decorationColor: MixHelpers.merge(
+        $decorationColor,
+        other.$decorationColor,
+      ),
+      decorationStyle: MixHelpers.merge(
+        $decorationStyle,
+        other.$decorationStyle,
+      ),
       fontVariations: MixHelpers.mergeList(
-        fontVariations,
-        other.fontVariations,
+        $fontVariations,
+        other.$fontVariations,
       ),
-      height: MixHelpers.merge(height, other.height),
-      foreground: MixHelpers.merge(foreground, other.foreground),
-      background: MixHelpers.merge(background, other.background),
+      height: MixHelpers.merge($height, other.$height),
+      foreground: MixHelpers.merge($foreground, other.$foreground),
+      background: MixHelpers.merge($background, other.$background),
       decorationThickness: MixHelpers.merge(
-        decorationThickness,
-        other.decorationThickness,
+        $decorationThickness,
+        other.$decorationThickness,
       ),
-      fontFamily: MixHelpers.merge(fontFamily, other.fontFamily),
+      fontFamily: MixHelpers.merge($fontFamily, other.$fontFamily),
       fontFamilyFallback: MixHelpers.mergeList(
-        fontFamilyFallback,
-        other.fontFamilyFallback,
+        $fontFamilyFallback,
+        other.$fontFamilyFallback,
         strategy: ListMergeStrategy.append,
       ),
     );
@@ -218,107 +457,113 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('color', color, defaultValue: null));
+    properties.add(DiagnosticsProperty('color', $color, defaultValue: null));
     properties.add(
       DiagnosticsProperty(
         'backgroundColor',
-        backgroundColor,
+        $backgroundColor,
         defaultValue: null,
       ),
     );
     properties.add(
-      DiagnosticsProperty('fontSize', fontSize, defaultValue: null),
+      DiagnosticsProperty('fontSize', $fontSize, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('fontWeight', fontWeight, defaultValue: null),
+      DiagnosticsProperty('fontWeight', $fontWeight, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('fontStyle', fontStyle, defaultValue: null),
+      DiagnosticsProperty('fontStyle', $fontStyle, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('letterSpacing', letterSpacing, defaultValue: null),
+      DiagnosticsProperty('letterSpacing', $letterSpacing, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('wordSpacing', wordSpacing, defaultValue: null),
+      DiagnosticsProperty('wordSpacing', $wordSpacing, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('textBaseline', textBaseline, defaultValue: null),
+      DiagnosticsProperty('textBaseline', $textBaseline, defaultValue: null),
     );
-    properties.add(DiagnosticsProperty('height', height, defaultValue: null));
+    properties.add(DiagnosticsProperty('height', $height, defaultValue: null));
     properties.add(
-      DiagnosticsProperty('decoration', decoration, defaultValue: null),
+      DiagnosticsProperty('decoration', $decoration, defaultValue: null),
     );
     properties.add(
       DiagnosticsProperty(
         'decorationColor',
-        decorationColor,
+        $decorationColor,
         defaultValue: null,
       ),
     );
     properties.add(
       DiagnosticsProperty(
         'decorationStyle',
-        decorationStyle,
+        $decorationStyle,
         defaultValue: null,
       ),
     );
     properties.add(
       DiagnosticsProperty(
         'decorationThickness',
-        decorationThickness,
+        $decorationThickness,
         defaultValue: null,
       ),
     );
     properties.add(
-      DiagnosticsProperty('fontFamily', fontFamily, defaultValue: null),
+      DiagnosticsProperty('fontFamily', $fontFamily, defaultValue: null),
     );
     properties.add(
       DiagnosticsProperty(
         'fontFamilyFallback',
-        fontFamilyFallback,
+        $fontFamilyFallback,
         defaultValue: null,
       ),
     );
-    properties.add(DiagnosticsProperty('shadows', shadows, defaultValue: null));
     properties.add(
-      DiagnosticsProperty('fontFeatures', fontFeatures, defaultValue: null),
+      DiagnosticsProperty('shadows', $shadows, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('fontVariations', fontVariations, defaultValue: null),
+      DiagnosticsProperty('fontFeatures', $fontFeatures, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('foreground', foreground, defaultValue: null),
+      DiagnosticsProperty(
+        'fontVariations',
+        $fontVariations,
+        defaultValue: null,
+      ),
     );
     properties.add(
-      DiagnosticsProperty('background', background, defaultValue: null),
+      DiagnosticsProperty('foreground', $foreground, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('debugLabel', debugLabel, defaultValue: null),
+      DiagnosticsProperty('background', $background, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('debugLabel', $debugLabel, defaultValue: null),
     );
   }
 
   @override
   List<Object?> get props => [
-    color,
-    backgroundColor,
-    fontSize,
-    fontWeight,
-    fontStyle,
-    letterSpacing,
-    debugLabel,
-    wordSpacing,
-    textBaseline,
-    decoration,
-    decorationColor,
-    decorationStyle,
-    height,
-    decorationThickness,
-    fontFamily,
-    foreground,
-    background,
-    fontFamilyFallback,
-    fontFeatures,
-    fontVariations,
-    shadows,
+    $color,
+    $backgroundColor,
+    $fontSize,
+    $fontWeight,
+    $fontStyle,
+    $letterSpacing,
+    $debugLabel,
+    $wordSpacing,
+    $textBaseline,
+    $decoration,
+    $decorationColor,
+    $decorationStyle,
+    $height,
+    $decorationThickness,
+    $fontFamily,
+    $foreground,
+    $background,
+    $fontFamilyFallback,
+    $fontFeatures,
+    $fontVariations,
+    $shadows,
   ];
 }

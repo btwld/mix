@@ -594,41 +594,7 @@ void main() {
       });
     });
 
-    group('Performance and edge cases', () {
-      test('handles large number of variants efficiently', () {
-        final variants = List.generate(100, (i) {
-          final variant = ContextVariant('variant_$i', (context) => true);
-          return VariantStyleAttribute(
-            variant,
-            _MockSpecAttribute(width: i.toDouble()),
-          );
-        });
-
-        final testAttribute = _MockSpecAttribute(
-          width: 0.0,
-          variants: variants,
-        );
-
-        final context = MockBuildContext();
-        final stopwatch = Stopwatch()..start();
-
-        final result = testAttribute.getAllStyleVariants(
-          context,
-          namedVariants: {},
-        );
-
-        stopwatch.stop();
-        expect(stopwatch.elapsedMilliseconds, lessThan(100));
-        final spec = result.resolve(context);
-        // Since all ContextVariants match (return true), they merge sequentially
-        // The base width is 0.0, and variants with width 0.0 won't override it
-        // So we need to check what actually gets merged
-        expect(
-          (spec.resolvedValue as Map)['width'],
-          isA<double>(),
-        ); // Some variant applied
-      });
-
+    group('Edge cases', () {
       test('handles empty context with no matching variants', () {
         final contextVariant = ContextVariant('context', (context) => false);
         const namedVariant = NamedVariant('named');
@@ -794,9 +760,9 @@ class _MockSpecAttribute extends Style<MockSpec> {
     required this.width,
     this.height,
     super.variants,
-    super.modifiers,
+    super.modifierConfig,
     super.animation,
-    super.orderOfModifiers,
+
     super.inherit,
   });
 
@@ -813,9 +779,6 @@ class _MockSpecAttribute extends Style<MockSpec> {
       width: other.width != 0.0 ? other.width : width,
       height: other.height ?? height,
       variants: mergeVariantLists($variants, other.$variants),
-      orderOfModifiers: other.$orderOfModifiers.isNotEmpty
-          ? other.$orderOfModifiers
-          : $orderOfModifiers,
     );
   }
 

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_unnecessary_containers
+
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
@@ -10,6 +12,30 @@ class BoxExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+Colors.blue;
+ColorMix.red;
+
+
+
+
+                                    final decoration = BoxDecorationMix()
+                                      .color(Colors.blue)
+                                      .borderRadius(.circular(10))
+                                      .gradient(
+                                        .linear(
+                                          .begin(.topLeft)
+                                          .end(.bottomRight)
+                                          .colors([Colors.purple, Colors.blue]),
+                                        )
+                                      );
+
+                                    Container(decoration: decoration.resolve(context));
+
+
+
+
+
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
@@ -91,13 +117,32 @@ class BoxExampleApp extends StatelessWidget {
                 style: Style.box()
                     .color(Colors.purple)
                     .width(120)
-                    .translate(0,0)
+                    
                     .height(120)
+                    // .corners(all:.circular(10))
+                    // .borderColor(all: Colors.white)
+                    // .borderWidth(left: 2)
+                    // .borderStyle(all:.solid)
+                    // .rounded(all:20)
+                    // .insets()
+                    // .outsets()
                     .onHovered(
                       .color(Colors.red)
-                      .translate(5, 5)                      
+                      .translate(5, 5)
+                      .wrap(
+                        ModifierConfig.opacity(0.2)
+                      )                  
                     )
-                    .wrapOpacity(0.2)
+                    .wrap(
+                      ModifierConfig.opacity(0.5)
+                        .defaultTextStyle(
+                          style: TextStyleMix(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ).scale(1.0)
+                    )
                     .borderRadius(.circular(20))
                     .animate(.linear(200.ms))
                     .padding(.all(8)),
@@ -162,7 +207,7 @@ class BoxExampleApp extends StatelessWidget {
 
               // Box with shadows
               Box(
-                style: $box()
+                style: Style.box()
                     .color(Colors.white)
                     .width(140)
                     .height(70)
@@ -173,10 +218,15 @@ class BoxExampleApp extends StatelessWidget {
                       .color(Colors.black26)
                       .blurRadius(8)
                       .offset(Offset(0, 4)),
+                    ).wrap(
+                      ModifierConfig.opacity(0.5)
+                        .scale(1.2)
                     )
                     .padding(
                       .all(12)
                     ),
+
+                    
                 child: const Center(
                   child: Text(
                     'Shadow Box',
@@ -186,6 +236,8 @@ class BoxExampleApp extends StatelessWidget {
               ),
 
               const SizedBox(height: 16),
+
+              
 
               // Box with transform
               Box(
@@ -252,3 +304,63 @@ class BoxExampleApp extends StatelessWidget {
     );
   }
 }
+
+
+                                  extension ContainerExt on Container {
+                                    Widget style(BoxMix style) {
+                                      return StyleBuilder(
+                                        style: style,
+                                        builder: (context, boxSpec) {
+                                          return Container(
+                                            alignment: boxSpec?.alignment,
+                                            padding: boxSpec?.padding,
+                                            margin: boxSpec?.margin,
+                                            constraints: boxSpec?.constraints,
+                                            foregroundDecoration: boxSpec?.foregroundDecoration,
+                                            transform: boxSpec?.transform,
+                                            transformAlignment: boxSpec?.transformAlignment,
+                                            clipBehavior: boxSpec?.clipBehavior ?? Clip.none,
+                                            decoration: boxSpec?.decoration,
+                                            child: child,
+                                          );
+                                        },
+                                      );  
+                                    }
+                                  }
+
+
+
+                                  class Example extends StatelessWidget {
+                                    const Example({super.key});
+
+                                    @override
+                                    Widget build(BuildContext context) {
+                                      return 
+                                      
+                                      
+
+
+                                      Container(
+                                        child: Text('Styled Container')
+                                      ).style(
+                                        BoxMix()
+                                          .height(100)
+                                          .width(50)
+                                          .color(Colors.blue)
+                                          .borderRadius(.circular(30))
+                                          .wrap(
+                                            ModifierConfig.opacity(0.5)
+                                              .scale(1.2)
+                                          ).onDark(
+                                            .color(Colors.red)
+                                          )
+                                          .onHovered(
+                                            .wrap(
+                                              ModifierConfig.scale(1.2)
+                                            )
+                                          )
+                                      );
+                                    }}
+
+
+

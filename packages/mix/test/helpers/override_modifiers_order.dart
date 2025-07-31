@@ -7,14 +7,16 @@ Future<void> testOverrideModifiersOrder(
   required Widget Function(Style, List<Type>) widgetBuilder,
 }) async {
   final style = Style.box(
-    modifiers: [
-      VisibilityModifierAttribute(visible: true),
-      OpacityModifierAttribute(opacity: 1.0),
-      TransformModifierAttribute(),
-      AspectRatioModifierAttribute(aspectRatio: 2.0),
-      AlignModifierAttribute(alignment: Alignment.center),
-      PaddingModifierAttribute(padding: EdgeInsetsDirectionalMix(top: 10.0)),
-    ],
+    modifierConfig: ModifierConfig(
+      modifiers: [
+        VisibilityModifierAttribute(visible: true),
+        OpacityModifierAttribute(opacity: 1.0),
+        TransformModifierAttribute(),
+        AspectRatioModifierAttribute(aspectRatio: 2.0),
+        AlignModifierAttribute(alignment: Alignment.center),
+        PaddingModifierAttribute(padding: EdgeInsetsDirectionalMix(top: 10.0)),
+      ],
+    ),
   );
   const orderOfModifiersOnlySpecs = [
     AlignModifier,

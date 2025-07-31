@@ -127,42 +127,42 @@ final class DecorationImageMix extends Mix<DecorationImage>
 
   /// Returns a copy with the specified image provider.
   DecorationImageMix image(ImageProvider value) {
-    return merge(DecorationImageMix(image: value));
+    return merge(DecorationImageMix.image(value));
   }
 
   /// Returns a copy with the specified fit behavior.
   DecorationImageMix fit(BoxFit value) {
-    return merge(DecorationImageMix(fit: value));
+    return merge(DecorationImageMix.fit(value));
   }
 
   /// Returns a copy with the specified alignment.
   DecorationImageMix alignment(AlignmentGeometry value) {
-    return merge(DecorationImageMix(alignment: value));
+    return merge(DecorationImageMix.alignment(value));
   }
 
   /// Returns a copy with the specified center slice for nine-patch scaling.
   DecorationImageMix centerSlice(Rect value) {
-    return merge(DecorationImageMix(centerSlice: value));
+    return merge(DecorationImageMix.centerSlice(value));
   }
 
   /// Returns a copy with the specified repeat behavior.
   DecorationImageMix repeat(ImageRepeat value) {
-    return merge(DecorationImageMix(repeat: value));
+    return merge(DecorationImageMix.repeat(value));
   }
 
   /// Returns a copy with the specified filter quality.
   DecorationImageMix filterQuality(FilterQuality value) {
-    return merge(DecorationImageMix(filterQuality: value));
+    return merge(DecorationImageMix.filterQuality(value));
   }
 
   /// Returns a copy with color inversion enabled or disabled.
   DecorationImageMix invertColors(bool value) {
-    return merge(DecorationImageMix(invertColors: value));
+    return merge(DecorationImageMix.invertColors(value));
   }
 
   /// Returns a copy with anti-aliasing enabled or disabled.
   DecorationImageMix isAntiAlias(bool value) {
-    return merge(DecorationImageMix(isAntiAlias: value));
+    return merge(DecorationImageMix.isAntiAlias(value));
   }
 
   /// Resolves to [DecorationImage] using the provided [BuildContext].

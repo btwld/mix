@@ -13,80 +13,58 @@ void expectProp<T>(PropBase<T>? prop, dynamic expected) {
     fail('Expected PropBase<$T> to exist, but was null');
   }
 
-  final source = prop.source;
-  if (source == null) {
-    fail('Expected PropBase<$T> to have a source, but source was null');
-  }
-
-  // Handle list expectations (accumulated values for MixProp)
-  if (expected is List) {
-    if (source is! MixPropAccumulativeSource<T>) {
-      fail(
-        'Expected accumulated values (list), but prop source is ${source.runtimeType}. '
-        'Only MixProp with accumulated sources can match lists.',
-      );
+  // Handle MixProp (no accumulation anymore)
+  if (prop is MixProp<T>) {
+    final value = prop.value;
+    if (value == null) {
+      fail('Expected MixProp<$T> to have a value, but value was null');
     }
-
-    final actualValues = <dynamic>[];
-    for (final s in source.sources) {
-      if (s is MixPropValueSource<T>) {
-        actualValues.add(s.value);
-      } else if (s is MixPropTokenSource<T>) {
-        actualValues.add(s.token);
-      } else {
-        fail(
-          'Unknown source type in MixPropAccumulativeSource: ${s.runtimeType}',
-        );
-      }
-    }
-
     expect(
-      actualValues,
-      expected,
-      reason: 'Accumulated values do not match expected',
-    );
-    return;
-  }
-
-  // Handle token expectations
-  if (expected is MixToken<T>) {
-    if (source is TokenPropSource<T>) {
-      expect(
-        source.token,
-        expected,
-        reason: 'Prop<$T> token does not match expected',
-      );
-    } else if (source is MixPropTokenSource<T>) {
-      expect(
-        source.token,
-        expected,
-        reason: 'MixProp<$T> token does not match expected',
-      );
-    } else {
-      fail('Expected token, but prop source is ${source.runtimeType}');
-    }
-    return;
-  }
-
-  // Handle direct value expectations
-  if (source is ValuePropSource<T>) {
-    expect(
-      source.value,
-      expected,
-      reason: 'Prop<$T> value does not match expected',
-    );
-  } else if (source is MixPropValueSource<T>) {
-    expect(
-      source.value,
+      value,
       expected,
       reason: 'MixProp<$T> value does not match expected',
     );
-  } else {
-    fail(
-      'Expected direct value, but prop source is ${source.runtimeType}. '
-      'Use a token expectation if this prop contains a token.',
-    );
+    return;
   }
+
+  // Handle Prop
+  if (prop is Prop<T>) {
+    final source = prop.source;
+    if (source == null) {
+      fail('Expected Prop<$T> to have a source, but source was null');
+    }
+
+    // Handle token expectations
+    if (expected is MixToken<T>) {
+      if (source is TokenPropSource<T>) {
+        expect(
+          source.token,
+          expected,
+          reason: 'Prop<$T> token does not match expected',
+        );
+      } else {
+        fail('Expected token, but prop source is ${source.runtimeType}');
+      }
+      return;
+    }
+
+    // Handle direct value expectations
+    if (source is ValuePropSource<T>) {
+      expect(
+        source.value,
+        expected,
+        reason: 'Prop<$T> value does not match expected',
+      );
+    } else {
+      fail(
+        'Expected direct value, but prop source is ${source.runtimeType}. '
+        'Use a token expectation if this prop contains a token.',
+      );
+    }
+    return;
+  }
+
+  fail('Unknown prop type: ${prop.runtimeType}');
 }
 
 /// Creates a matcher that tests what a Resolvable resolves to
@@ -271,9 +249,9 @@ final class UtilityTestAttribute<T> extends Style<MockSpec<T>> {
   const UtilityTestAttribute(
     this.value, {
     super.variants,
-    super.modifiers,
+    super.modifierConfig,
     super.animation,
-    super.orderOfModifiers,
+
     super.inherit,
   });
 

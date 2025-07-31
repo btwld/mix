@@ -13,7 +13,10 @@ void main() {
         );
 
         expect(config, isA<CurveAnimationConfig>());
-        expect(config.duration, const Duration(milliseconds: 300));
+        expect(
+          (config as CurveAnimationConfig).duration,
+          const Duration(milliseconds: 300),
+        );
         expect(config.curve, Curves.easeIn);
       });
 
@@ -56,7 +59,7 @@ void main() {
           onEnd: () => called = true,
         );
 
-        expect(config.onEnd, isNotNull);
+        expect((config as CurveAnimationConfig).onEnd, isNotNull);
         config.onEnd!();
         expect(called, true);
       });
