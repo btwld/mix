@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../animation/animation_config.dart';
+import '../../animation/animation_mixin.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
@@ -17,7 +18,8 @@ class IconMix extends Style<IconSpec>
     with
         Diagnosticable,
         StyleModifierMixin<IconMix, IconSpec>,
-        StyleVariantMixin<IconMix, IconSpec> {
+        StyleVariantMixin<IconMix, IconSpec>,
+        StyleAnimationMixin<IconSpec, IconMix> {
   final Prop<Color>? $color;
   final Prop<double>? $size;
   final Prop<double>? $weight;
@@ -278,42 +280,18 @@ class IconMix extends Style<IconSpec>
     return merge(IconMix.icon(value));
   }
 
-  IconMix phaseAnimation<T>({
-    required ValueNotifier trigger,
-    required List<T> phases,
-    required IconMix Function(T phase, IconMix style) styleBuilder,
-    required CurveAnimationConfig Function(T phase) configBuilder,
-  }) {
-    final styles = List<IconMix>.empty(growable: true);
-    final configs = List<CurveAnimationConfig>.empty(growable: true);
-
-    for (final phase in phases) {
-      styles.add(styleBuilder(phase, this));
-      configs.add(configBuilder(phase));
-    }
-
-    return merge(
-      IconMix(
-        animation: PhaseAnimationConfig<IconSpec, IconMix>(
-          styles: styles,
-          curveConfigs: configs,
-          trigger: trigger,
-        ),
-      ),
-    );
-  }
-
-  /// Sets animation
-  IconMix animate(AnimationConfig animation) {
-    return merge(IconMix.animate(animation));
-  }
-
   StyledIcon call({IconData? icon, String? semanticLabel}) {
     return StyledIcon(icon: icon, semanticLabel: semanticLabel, style: this);
   }
 
   IconMix modifier(ModifierConfig value) {
     return merge(IconMix(modifier: value));
+  }
+
+  /// Sets animation
+  @override
+  IconMix animate(AnimationConfig animation) {
+    return merge(IconMix.animate(animation));
   }
 
   @override

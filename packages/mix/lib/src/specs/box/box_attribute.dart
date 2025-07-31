@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
+import '../../animation/animation_mixin.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
@@ -34,7 +35,8 @@ class BoxMix extends Style<BoxSpec>
         Diagnosticable,
         StyleModifierMixin<BoxMix, BoxSpec>,
         StyleVariantMixin<BoxMix, BoxSpec>,
-        BorderRadiusMixin<BoxMix> {
+        BorderRadiusMixin<BoxMix>,
+        StyleAnimationMixin<BoxSpec, BoxMix> {
   final Prop<AlignmentGeometry>? $alignment;
   final MixProp<EdgeInsetsGeometry>? $padding;
   final MixProp<EdgeInsetsGeometry>? $margin;
@@ -364,39 +366,6 @@ class BoxMix extends Style<BoxSpec>
     );
   }
 
-  /// Animation instance method
-  BoxMix animate(AnimationConfig animation) {
-    return merge(BoxMix.animate(animation));
-  }
-
-  /// Animation instance method
-  BoxMix phaseAnimation<T>({
-    required Listenable trigger,
-    required List<T> phases,
-    required BoxMix Function(T phase, BoxMix style) styleBuilder,
-    required CurveAnimationConfig Function(T phase) configBuilder,
-    PhaseAnimationMode mode = PhaseAnimationMode.simpleLoop,
-  }) {
-    final styles = List<BoxMix>.empty(growable: true);
-    final configs = List<CurveAnimationConfig>.empty(growable: true);
-
-    for (final phase in phases) {
-      styles.add(styleBuilder(phase, this));
-      configs.add(configBuilder(phase));
-    }
-
-    return merge(
-      BoxMix(
-        animation: PhaseAnimationConfig<BoxSpec, BoxMix>(
-          styles: styles,
-          curveConfigs: configs,
-          trigger: trigger,
-          mode: mode,
-        ),
-      ),
-    );
-  }
-
   /// Border instance method
   BoxMix border(BoxBorderMix value) {
     return merge(BoxMix(decoration: DecorationMix.border(value)));
@@ -448,6 +417,41 @@ class BoxMix extends Style<BoxSpec>
   /// Modifier instance method
   BoxMix modifier(ModifierConfig value) {
     return merge(BoxMix(modifier: value));
+  }
+
+  /// Animation instance method
+  @override
+  BoxMix animate(AnimationConfig animation) {
+    return merge(BoxMix.animate(animation));
+  }
+
+  /// Animation instance method
+  @override
+  BoxMix phaseAnimation<T>({
+    required Listenable trigger,
+    required List<T> phases,
+    required BoxMix Function(T phase, BoxMix style) styleBuilder,
+    required CurveAnimationConfig Function(T phase) configBuilder,
+    PhaseAnimationMode mode = PhaseAnimationMode.simpleLoop,
+  }) {
+    final styles = List<BoxMix>.empty(growable: true);
+    final configs = List<CurveAnimationConfig>.empty(growable: true);
+
+    for (final phase in phases) {
+      styles.add(styleBuilder(phase, this));
+      configs.add(configBuilder(phase));
+    }
+
+    return merge(
+      BoxMix(
+        animation: PhaseAnimationConfig<BoxSpec, BoxMix>(
+          styles: styles,
+          curveConfigs: configs,
+          trigger: trigger,
+          mode: mode,
+        ),
+      ),
+    );
   }
 
   /// Mixin implementation
