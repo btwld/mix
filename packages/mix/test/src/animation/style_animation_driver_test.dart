@@ -340,6 +340,75 @@ void main() {
       expect(driver.isAnimating, false);
     });
   });
+
+  group('PhaseAnimationDriver', () {
+    late PhaseAnimationDriver<MockSpec> driver;
+    late ValueNotifier<bool> trigger;
+
+    setUp(() {
+      trigger = ValueNotifier(false);
+      driver = PhaseAnimationDriver<MockSpec>(
+        vsync: const TestVSync(),
+        curvesAndDurations: [
+          CurveAnimationConfig(
+            duration: Duration(milliseconds: 300),
+            curve: Curves.linear,
+          ),
+          CurveAnimationConfig(
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          ),
+        ],
+        specs: [MockSpec(0), MockSpec(1)],
+        initialStyle: MockResolvedStyle(0),
+        trigger: trigger,
+      );
+    });
+
+    tearDown(() {
+      trigger.dispose();
+      driver.dispose();
+    });
+
+    test('initializes with correct specs and curves', () {
+      expect(driver.specs.length, 2);
+      expect(driver.curvesAndDurations.length, 2);
+    });
+
+    testWidgets('animates when trigger updates', (tester) async {
+      trigger.value = true;
+
+      // Animation should be running
+      await tester.pump();
+      expect(driver.isAnimating, true);
+
+      // Let the animation complete
+      await tester.pumpAndSettle();
+      expect(driver.isAnimating, false);
+
+      // Change the trigger back to false, which should start the animation again
+      trigger.value = false;
+      await tester.pump();
+      expect(driver.isAnimating, true);
+
+      await tester.pumpAndSettle();
+      expect(driver.isAnimating, false);
+    });
+
+    testWidgets('triggers onStart and onComplete callbacks', (tester) async {
+      int startCount = 0;
+      int completeCount = 0;
+
+      driver.addOnStartListener(() => startCount++);
+      driver.addOnCompleteListener(() => completeCount++);
+
+      trigger.value = true;
+      await tester.pumpAndSettle();
+
+      expect(startCount, 1);
+      expect(completeCount, 1);
+    });
+  });
 }
 
 // Test helpers

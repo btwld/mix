@@ -115,7 +115,6 @@ abstract class StyleAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
 
   /// Interpolates between current and target styles at the given progress.
   @visibleForTesting
-  @nonVirtual
   ResolvedStyle<S> interpolateAt(double t) {
     // Apply any value transformation (e.g., curve)
     final transformedT = transformProgress(t);
@@ -227,7 +226,6 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   final List<S> specs;
   final List<CurveAnimationConfig> curvesAndDurations;
   final ValueNotifier trigger;
-  int _currentIndex = 0;
 
   PhaseAnimationDriver({
     required super.vsync,
@@ -247,6 +245,34 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     executeAnimation();
   }
 
+  TweenSequence<S?> get _tween {
+    final items = <TweenSequenceItem<S?>>[];
+    for (int i = 0; i < specs.length; i++) {
+      final currentIndex = i % specs.length;
+      final nextIndex = (i + 1) % specs.length;
+
+      items.add(
+        TweenSequenceItem(
+          tween: SpecTween<S>(
+            begin: specs[currentIndex],
+            end: specs[nextIndex],
+          ).chain(CurveTween(curve: curvesAndDurations[currentIndex].curve)),
+          weight: curvesAndDurations[currentIndex].duration.inMilliseconds
+              .toDouble(),
+        ),
+      );
+    }
+
+    return TweenSequence(items);
+  }
+
+  Duration get totalDuration {
+    return curvesAndDurations.fold(
+      Duration.zero,
+      (acc, config) => acc + config.duration,
+    );
+  }
+
   @override
   void dispose() {
     trigger.removeListener(_onTriggerChanged);
@@ -255,25 +281,15 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
 
   @override
   Future<void> executeAnimation() async {
-    for (int i = 0; i < specs.length; i++) {
-      _currentIndex = i % specs.length;
-      final nextIndex = (i + 1) % specs.length;
-
-      controller.duration = curvesAndDurations[_currentIndex].duration;
-
-      if (i == 0) {
-        _fromStyle = currentResolvedStyle;
-      } else {
-        _fromStyle = ResolvedStyle(spec: specs[_currentIndex]);
-      }
-      _targetResolvedStyle = ResolvedStyle(spec: specs[nextIndex]);
-
-      final double fromValue = controller.value == 1 ? 0 : controller.value;
-      await controller.forward(from: fromValue);
-    }
+    controller.duration = totalDuration;
+    await controller.forward(from: 0);
   }
 
   @override
-  double transformProgress(double t) =>
-      curvesAndDurations[_currentIndex].curve.transform(t);
+  ResolvedStyle<S> interpolateAt(double t) {
+    // Apply any value transformation (e.g., curve)
+    final transformedT = transformProgress(t);
+
+    return ResolvedStyle(spec: _tween.transform(transformedT));
+  }
 }
