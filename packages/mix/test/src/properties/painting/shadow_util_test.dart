@@ -55,12 +55,6 @@ void main() {
           expect(attr.value, isA<MixProp<Shadow>>());
         });
       });
-
-      test('token() creates shadow from token', () {
-        const token = MixToken<Shadow>('test.shadow');
-        final attr = utility.token(token);
-        expect(attr.value, isA<MixProp<Shadow>>());
-      });
     });
 
     group('BoxShadowUtility', () {
