@@ -34,20 +34,20 @@ void main() {
         expect(util.color, isA<ColorUtility<IconMix>>());
       });
 
-      test('size utility is MixUtility', () {
-        expect(util.size, isA<MixUtility<IconMix, double>>());
+      test('size is now a method', () {
+        expect(util.size, isA<Function>());
       });
 
-      test('weight utility is MixUtility', () {
-        expect(util.weight, isA<MixUtility<IconMix, double>>());
+      test('weight is now a method', () {
+        expect(util.weight, isA<Function>());
       });
 
-      test('grade utility is MixUtility', () {
-        expect(util.grade, isA<MixUtility<IconMix, double>>());
+      test('grade is now a method', () {
+        expect(util.grade, isA<Function>());
       });
 
-      test('opticalSize utility is MixUtility', () {
-        expect(util.opticalSize, isA<MixUtility<IconMix, double>>());
+      test('opticalSize is now a method', () {
+        expect(util.opticalSize, isA<Function>());
       });
 
       test('shadow utility is ShadowUtility', () {
@@ -58,12 +58,12 @@ void main() {
         expect(util.textDirection, isA<MixUtility<IconMix, TextDirection>>());
       });
 
-      test('applyTextScaling utility is MixUtility', () {
-        expect(util.applyTextScaling, isA<MixUtility<IconMix, bool>>());
+      test('applyTextScaling is now a method', () {
+        expect(util.applyTextScaling, isA<Function>());
       });
 
-      test('fill utility is MixUtility', () {
-        expect(util.fill, isA<MixUtility<IconMix, double>>());
+      test('fill is now a method', () {
+        expect(util.fill, isA<Function>());
       });
 
       test('on utility is OnContextVariantUtility', () {

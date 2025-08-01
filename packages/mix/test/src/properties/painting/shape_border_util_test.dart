@@ -334,8 +334,8 @@ void main() {
         expect(util.side, isA<BorderSideUtility>());
       });
 
-      test('has eccentricity utility', () {
-        expect(util.eccentricity, isA<MixUtility>());
+      test('eccentricity is now a method', () {
+        expect(util.eccentricity, isA<Function>());
       });
     });
 
@@ -442,28 +442,28 @@ void main() {
         expect(util.side, isA<BorderSideUtility>());
       });
 
-      test('has points utility', () {
-        expect(util.points, isA<MixUtility>());
+      test('points is now a method', () {
+        expect(util.points, isA<Function>());
       });
 
-      test('has innerRadiusRatio utility', () {
-        expect(util.innerRadiusRatio, isA<MixUtility>());
+      test('innerRadiusRatio is now a method', () {
+        expect(util.innerRadiusRatio, isA<Function>());
       });
 
-      test('has pointRounding utility', () {
-        expect(util.pointRounding, isA<MixUtility>());
+      test('pointRounding is now a method', () {
+        expect(util.pointRounding, isA<Function>());
       });
 
-      test('has valleyRounding utility', () {
-        expect(util.valleyRounding, isA<MixUtility>());
+      test('valleyRounding is now a method', () {
+        expect(util.valleyRounding, isA<Function>());
       });
 
-      test('has rotation utility', () {
-        expect(util.rotation, isA<MixUtility>());
+      test('rotation is now a method', () {
+        expect(util.rotation, isA<Function>());
       });
 
-      test('has squash utility', () {
-        expect(util.squash, isA<MixUtility>());
+      test('squash is now a method', () {
+        expect(util.squash, isA<Function>());
       });
     });
 
@@ -828,12 +828,12 @@ void main() {
     });
 
     group('utility properties', () {
-      test('has size utility', () {
-        expect(util.size, isA<MixUtility>());
+      test('size is now a method', () {
+        expect(util.size, isA<Function>());
       });
 
-      test('has alignment utility', () {
-        expect(util.alignment, isA<MixUtility>());
+      test('alignment is now a method', () {
+        expect(util.alignment, isA<Function>());
       });
     });
 

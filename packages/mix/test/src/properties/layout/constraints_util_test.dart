@@ -15,28 +15,28 @@ void main() {
     });
 
     group('utility properties', () {
-      test('has minWidth utility', () {
-        expect(util.minWidth, isA<MixUtility>());
+      test('minWidth is now a method', () {
+        expect(util.minWidth, isA<Function>());
       });
 
-      test('has maxWidth utility', () {
-        expect(util.maxWidth, isA<MixUtility>());
+      test('maxWidth is now a method', () {
+        expect(util.maxWidth, isA<Function>());
       });
 
-      test('has minHeight utility', () {
-        expect(util.minHeight, isA<MixUtility>());
+      test('minHeight is now a method', () {
+        expect(util.minHeight, isA<Function>());
       });
 
-      test('has maxHeight utility', () {
-        expect(util.maxHeight, isA<MixUtility>());
+      test('maxHeight is now a method', () {
+        expect(util.maxHeight, isA<Function>());
       });
 
-      test('has height utility', () {
-        expect(util.height, isA<MixUtility>());
+      test('height is now a method', () {
+        expect(util.height, isA<Function>());
       });
 
-      test('has width utility', () {
-        expect(util.width, isA<MixUtility>());
+      test('width is now a method', () {
+        expect(util.width, isA<Function>());
       });
     });
 

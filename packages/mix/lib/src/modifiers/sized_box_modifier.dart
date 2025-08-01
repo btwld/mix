@@ -70,10 +70,11 @@ final class SizedBoxModifier extends Modifier<SizedBoxModifier>
 
 final class SizedBoxModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, SizedBoxModifierAttribute> {
-  late final width = MixUtility<T, double>((prop) => only(width: prop));
-  late final height = MixUtility<T, double>((prop) => only(height: prop));
+  const SizedBoxModifierUtility(super.builder);
 
-  SizedBoxModifierUtility(super.builder);
+  T width(double v) => only(width: v);
+
+  T height(double v) => only(height: v);
 
   /// Creates a square-sized box with the same width and height
   T square(double size) => only(width: size, height: size);

@@ -10,29 +10,31 @@ import 'constraints_mix.dart';
 /// Use the methods of this class to configure specific properties of a [BoxConstraints].
 final class BoxConstraintsUtility<T extends Style<Object?>>
     extends MixPropUtility<T, BoxConstraintsMix, BoxConstraints> {
+  const BoxConstraintsUtility(super.builder);
+
   /// Utility for defining [BoxConstraintsMix.minWidth]
-  late final minWidth = MixUtility<T, double>((prop) => only(minWidth: prop));
+  @Deprecated('Use call(minWidth: value) instead')
+  T minWidth(double v) => call(minWidth: v);
 
   /// Utility for defining [BoxConstraintsMix.maxWidth]
-  late final maxWidth = MixUtility<T, double>((prop) => only(maxWidth: prop));
+  @Deprecated('Use call(maxWidth: value) instead')
+  T maxWidth(double v) => call(maxWidth: v);
 
   /// Utility for defining [BoxConstraintsMix.minHeight]
-  late final minHeight = MixUtility<T, double>((prop) => only(minHeight: prop));
+  @Deprecated('Use call(minHeight: value) instead')
+  T minHeight(double v) => call(minHeight: v);
 
   /// Utility for defining [BoxConstraintsMix.maxHeight]
-  late final maxHeight = MixUtility<T, double>((prop) => only(maxHeight: prop));
+  @Deprecated('Use call(maxHeight: value) instead')
+  T maxHeight(double v) => call(maxHeight: v);
 
-  late final height = MixUtility<T, double>(
-    (prop) => only(minHeight: prop, maxHeight: prop),
-  );
+  @Deprecated('Use call(minHeight: value, maxHeight: value) instead')
+  T height(double v) => call(minHeight: v, maxHeight: v);
 
-  late final width = MixUtility<T, double>(
-    (prop) => only(minWidth: prop, maxWidth: prop),
-  );
+  @Deprecated('Use call(minWidth: value, maxWidth: value) instead')
+  T width(double v) => call(minWidth: v, maxWidth: v);
 
-  BoxConstraintsUtility(super.builder);
-
-  T only({
+  T call({
     double? minWidth,
     double? maxWidth,
     double? minHeight,
@@ -48,13 +50,14 @@ final class BoxConstraintsUtility<T extends Style<Object?>>
     );
   }
 
-  T call({
+  @Deprecated('Use call(...) instead')
+  T only({
     double? minWidth,
     double? maxWidth,
     double? minHeight,
     double? maxHeight,
   }) {
-    return only(
+    return call(
       minWidth: minWidth,
       maxWidth: maxWidth,
       minHeight: minHeight,

@@ -14,9 +14,7 @@ import 'shadow_mix.dart';
 final class ShadowUtility<T extends Style<Object?>>
     extends MixPropUtility<T, ShadowMix, Shadow> {
   /// Utility for defining [ShadowMix.blurRadius].
-  late final blurRadius = MixUtility<T, double>(
-    (prop) => only(blurRadius: prop),
-  );
+  T blurRadius(double v) => call(blurRadius: v);
 
   /// Utility for defining [ShadowMix.color].
   late final color = ColorUtility<T>(
@@ -24,21 +22,25 @@ final class ShadowUtility<T extends Style<Object?>>
   );
 
   /// Utility for defining [ShadowMix.offset].
-  late final offset = MixUtility<T, Offset>((prop) => only(offset: prop));
+  late final offset = MixUtility<T, Offset>((prop) => call(offset: prop));
+
+  @Deprecated('Use call(...) instead')
+  late final only = call;
 
   ShadowUtility(super.builder);
 
-  T only({double? blurRadius, Color? color, Offset? offset}) {
+  T call({Shadow? as, double? blurRadius, Color? color, Offset? offset}) {
+    if (as != null) {
+      return builder(ShadowMix.value(as));
+    }
+
     return builder(
       ShadowMix(blurRadius: blurRadius, color: color, offset: offset),
     );
   }
 
-  T call({double? blurRadius, Color? color, Offset? offset}) {
-    return only(blurRadius: blurRadius, color: color, offset: offset);
-  }
-
   @override
+  @Deprecated('Use call(as: value) instead')
   T as(Shadow value) {
     return builder(ShadowMix.value(value));
   }
@@ -51,31 +53,39 @@ final class ShadowUtility<T extends Style<Object?>>
 final class BoxShadowUtility<T extends Style<Object?>>
     extends MixPropUtility<T, BoxShadowMix, BoxShadow> {
   /// Utility for defining [BoxShadowMix.color].
+  @Deprecated('Use call(color: value) instead')
   late final color = ColorUtility<T>(
     (prop) => builder(BoxShadowMix.raw(color: prop)),
   );
 
   /// Utility for defining [BoxShadowMix.offset].
-  late final offset = MixUtility<T, Offset>((prop) => only(offset: prop));
+  @Deprecated('Use call(offset: value) instead')
+  late final offset = MixUtility<T, Offset>((prop) => call(offset: prop));
 
   /// Utility for defining [BoxShadowMix.blurRadius].
-  late final blurRadius = MixUtility<T, double>(
-    (prop) => only(blurRadius: prop),
-  );
+  @Deprecated('Use call(blurRadius: value) instead')
+  T blurRadius(double v) => call(blurRadius: v);
 
   /// Utility for defining [BoxShadowMix.spreadRadius].
-  late final spreadRadius = MixUtility<T, double>(
-    (prop) => only(spreadRadius: prop),
-  );
+  @Deprecated('Use call(spreadRadius: value) instead')
+  T spreadRadius(double v) => call(spreadRadius: v);
+
+  @Deprecated('Use call(...) instead')
+  late final only = call;
 
   BoxShadowUtility(super.builder);
 
-  T only({
+  T call({
+    BoxShadow? as,
     Color? color,
     Offset? offset,
     double? blurRadius,
     double? spreadRadius,
   }) {
+    if (as != null) {
+      return builder(BoxShadowMix.value(as));
+    }
+
     return builder(
       BoxShadowMix(
         color: color,
@@ -86,21 +96,8 @@ final class BoxShadowUtility<T extends Style<Object?>>
     );
   }
 
-  T call({
-    Color? color,
-    Offset? offset,
-    double? blurRadius,
-    double? spreadRadius,
-  }) {
-    return only(
-      color: color,
-      offset: offset,
-      blurRadius: blurRadius,
-      spreadRadius: spreadRadius,
-    );
-  }
-
   @override
+  @Deprecated('Use call(as: value) instead')
   T as(BoxShadow value) {
     return builder(BoxShadowMix.value(value));
   }

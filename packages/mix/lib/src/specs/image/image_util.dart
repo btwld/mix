@@ -21,9 +21,9 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageSpec> {
   @protected
   late final MutableImageMix value;
 
-  late final width = MixUtility(value.width);
+  ImageMix width(double v) => value.width(v);
 
-  late final height = MixUtility(value.height);
+  ImageMix height(double v) => value.height(v);
 
   late final color = ColorUtility(
     (prop) => value.merge(ImageMix.raw(color: prop)),
@@ -41,15 +41,15 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageSpec> {
 
   late final colorBlendMode = MixUtility(value.colorBlendMode);
 
-  late final semanticLabel = MixUtility(value.semanticLabel);
+  ImageMix semanticLabel(String v) => value.semanticLabel(v);
 
-  late final excludeFromSemantics = MixUtility(value.excludeFromSemantics);
+  ImageMix excludeFromSemantics(bool v) => value.excludeFromSemantics(v);
 
-  late final gaplessPlayback = MixUtility(value.gaplessPlayback);
+  ImageMix gaplessPlayback(bool v) => value.gaplessPlayback(v);
 
-  late final isAntiAlias = MixUtility(value.isAntiAlias);
+  ImageMix isAntiAlias(bool v) => value.isAntiAlias(v);
 
-  late final matchTextDirection = MixUtility(value.matchTextDirection);
+  ImageMix matchTextDirection(bool v) => value.matchTextDirection(v);
 
   late final on = OnContextVariantUtility<ImageSpec, ImageMix>(
     (v) => value.variants([v]),

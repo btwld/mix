@@ -112,13 +112,11 @@ class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec> {
     (prop) => value.merge(FlexBoxMix.flex(FlexMix(clipBehavior: prop))),
   );
 
-  late final gap = MixUtility<FlexBoxMix, double>(
-    (prop) => value.merge(FlexBoxMix.flex(FlexMix(gap: prop))),
-  );
-
   FlexBoxSpecUtility([FlexBoxMix? attribute]) {
     value = MutableFlexBoxMix(attribute ?? const FlexBoxMix());
   }
+
+  FlexBoxMix gap(double v) => value.merge(FlexBoxMix.flex(FlexMix(gap: v)));
 
   /// Animation
   FlexBoxMix animate(AnimationConfig animation) => value.animate(animation);

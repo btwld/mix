@@ -439,33 +439,42 @@ final class BorderDirectionalUtility<T extends Style<Object?>>
 final class BorderSideUtility<T extends Style<Object?>>
     extends MixPropUtility<T, BorderSideMix, BorderSide> {
   /// Utility for defining [BorderSideMix.color]
+  @Deprecated('Use call(color: value) instead')
   late final color = ColorUtility<T>(
     (prop) => builder(BorderSideMix.raw(color: prop)),
   );
 
-  /// Utility for defining [BorderSideMix.strokeAlign]
-  late final strokeAlign = MixUtility<T, double>(
-    (prop) => only(strokeAlign: prop),
-  );
-
   /// Utility for defining [BorderSideMix.style]
-  late final style = MixUtility<T, BorderStyle>((prop) => only(style: prop));
+  @Deprecated('Use call(style: value) instead')
+  late final style = MixUtility<T, BorderStyle>((prop) => call(style: prop));
 
-  /// Utility for defining [BorderSideMix.width]
-  late final width = MixUtility<T, double>((prop) => only(width: prop));
+  @Deprecated('Use call(...) instead')
+  late final only = call;
 
   BorderSideUtility(super.builder);
+
+  /// Utility for defining [BorderSideMix.strokeAlign]
+  @Deprecated('Use call(strokeAlign: value) instead')
+  T strokeAlign(double v) => call(strokeAlign: v);
+
+  /// Utility for defining [BorderSideMix.width]
+  @Deprecated('Use call(width: value) instead')
+  T width(double v) => call(width: v);
 
   /// Creates a [Style] instance using the [BorderSideMix.none] constructor.
   T none() => builder(BorderSideMix.none);
 
-  /// Returns a new [BorderSideMix] with the specified properties.
-  T only({
+  T call({
+    BorderSide? as,
     Color? color,
-    double? strokeAlign,
-    BorderStyle? style,
     double? width,
+    BorderStyle? style,
+    double? strokeAlign,
   }) {
+    if (as != null) {
+      return builder(BorderSideMix.value(as));
+    }
+    
     return builder(
       BorderSideMix(
         color: color,
@@ -476,21 +485,8 @@ final class BorderSideUtility<T extends Style<Object?>>
     );
   }
 
-  T call({
-    Color? color,
-    double? width,
-    BorderStyle? style,
-    double? strokeAlign,
-  }) {
-    return only(
-      color: color,
-      strokeAlign: strokeAlign,
-      style: style,
-      width: width,
-    );
-  }
-
   @override
+  @Deprecated('Use call(as: value) instead')
   T as(BorderSide value) {
     return builder(BorderSideMix.value(value));
   }

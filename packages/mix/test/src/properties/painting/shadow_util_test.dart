@@ -15,8 +15,8 @@ void main() {
     });
 
     group('utility properties', () {
-      test('has blurRadius utility', () {
-        expect(util.blurRadius, isA<MixUtility>());
+      test('blurRadius is now a method', () {
+        expect(util.blurRadius, isA<Function>());
       });
 
       test('has color utility', () {
@@ -194,20 +194,20 @@ void main() {
     });
 
     group('utility properties', () {
-      test('has color utility', () {
+      test('blurRadius is now a method', () {
+        expect(util.blurRadius, isA<Function>());
+      });
+
+      test('spreadRadius is now a method', () {
+        expect(util.spreadRadius, isA<Function>());
+      });
+
+      test('has color utility (deprecated)', () {
         expect(util.color, isA<ColorUtility>());
       });
 
-      test('has offset utility', () {
+      test('has offset utility (deprecated)', () {
         expect(util.offset, isA<MixUtility>());
-      });
-
-      test('has blurRadius utility', () {
-        expect(util.blurRadius, isA<MixUtility>());
-      });
-
-      test('has spreadRadius utility', () {
-        expect(util.spreadRadius, isA<MixUtility>());
       });
     });
 

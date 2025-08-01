@@ -16,33 +16,10 @@ class MixUtility<S extends Style<Object?>, Value> {
   const MixUtility(this.builder);
 }
 
-class Mutate<S extends Style<Object?>> {
-  S style;
-
-  Mutate(this.style);
-
-  MixUtility<S, V> utility<V>(S Function(V) mutator) {
-    return MixUtility(call(mutator));
-  }
-
-  S Function(V) call<V>(S Function(V) mutator) {
-    return (v) {
-      style = style.merge(mutator(v)) as S;
-
-      return style;
-    };
-  }
-
-  S Function(Prop<V>) prop<V>(S Function(Prop<V>) mutator) {
-    return call(mutator);
-  }
-
-  S Function(MixProp<V>) mixProp<V>(S Function(MixProp<V>) mutator) {
-    return call(mutator);
-  }
-}
-
 @immutable
+@Deprecated(
+  'Use MixUtility<S, Mix<Value>> instead, make sure you implement the as() method.',
+)
 abstract class MixPropUtility<
   S extends Style<Object?>,
   M extends Mix<Value>,

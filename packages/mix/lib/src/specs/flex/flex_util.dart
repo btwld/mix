@@ -36,8 +36,6 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexSpec> {
 
   late final clipBehavior = MixUtility(value.clipBehavior);
 
-  late final gap = MixUtility(value.gap);
-
   late final on = OnContextVariantUtility<FlexSpec, FlexMix>(
     (v) => value.variants([v]),
   );
@@ -49,6 +47,8 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexSpec> {
   FlexSpecUtility([FlexMix? attribute]) {
     value = MutableFlexMix(attribute ?? FlexMix());
   }
+
+  FlexMix gap(double v) => value.gap(v);
 
   // Convenience methods
   FlexMix row() => value.direction(Axis.horizontal);

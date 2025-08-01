@@ -27,21 +27,9 @@ class IconSpecUtility extends StyleMutableBuilder<IconSpec> {
     (prop) => value.merge(IconMix.raw(color: prop)),
   );
 
-  late final size = MixUtility(value.size);
-
-  late final weight = MixUtility(value.weight);
-
-  late final grade = MixUtility(value.grade);
-
-  late final opticalSize = MixUtility(value.opticalSize);
-
   late final shadow = ShadowUtility<IconMix>((v) => value.shadows([v]));
 
   late final textDirection = MixUtility(value.textDirection);
-
-  late final applyTextScaling = MixUtility(value.applyTextScaling);
-
-  late final fill = MixUtility(value.fill);
 
   late final on = OnContextVariantUtility<IconSpec, IconMix>(
     (v) => value.variants([v]),
@@ -54,6 +42,18 @@ class IconSpecUtility extends StyleMutableBuilder<IconSpec> {
   IconSpecUtility([IconMix? attribute]) {
     value = MutableIconMix(attribute ?? IconMix());
   }
+
+  IconMix size(double v) => value.size(v);
+
+  IconMix weight(double v) => value.weight(v);
+
+  IconMix grade(double v) => value.grade(v);
+
+  IconMix opticalSize(double v) => value.opticalSize(v);
+
+  IconMix applyTextScaling(bool v) => value.applyTextScaling(v);
+
+  IconMix fill(double v) => value.fill(v);
 
   // Instance method for multiple shadows
   IconMix shadows(List<ShadowMix> value) => this.value.shadows(value);

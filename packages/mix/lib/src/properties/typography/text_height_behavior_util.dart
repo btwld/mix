@@ -6,24 +6,32 @@ import 'text_height_behavior_mix.dart';
 
 final class TextHeightBehaviorUtility<T extends Style<Object?>>
     extends MixPropUtility<T, TextHeightBehaviorMix, TextHeightBehavior> {
-  late final heightToFirstAscent = MixUtility<T, bool>(
-    (prop) => only(applyHeightToFirstAscent: prop),
-  );
-  late final heightToLastDescent = MixUtility<T, bool>(
-    (prop) => only(applyHeightToLastDescent: prop),
+  @Deprecated('Use call(leadingDistribution: value) instead')
+  late final leadingDistribution = MixUtility<T, TextLeadingDistribution>(
+    (prop) => call(leadingDistribution: prop),
   );
 
-  late final leadingDistribution = MixUtility<T, TextLeadingDistribution>(
-    (prop) => only(leadingDistribution: prop),
-  );
+  @Deprecated('Use call(...) instead')
+  late final only = call;
 
   TextHeightBehaviorUtility(super.builder);
 
-  T only({
+  @Deprecated('Use call(applyHeightToFirstAscent: value) instead')
+  T heightToFirstAscent(bool v) => call(applyHeightToFirstAscent: v);
+
+  @Deprecated('Use call(applyHeightToLastDescent: value) instead')
+  T heightToLastDescent(bool v) => call(applyHeightToLastDescent: v);
+
+  T call({
+    TextHeightBehavior? as,
     bool? applyHeightToFirstAscent,
     bool? applyHeightToLastDescent,
     TextLeadingDistribution? leadingDistribution,
   }) {
+    if (as != null) {
+      return builder(TextHeightBehaviorMix.value(as));
+    }
+
     return builder(
       TextHeightBehaviorMix(
         applyHeightToFirstAscent: applyHeightToFirstAscent,
@@ -33,19 +41,8 @@ final class TextHeightBehaviorUtility<T extends Style<Object?>>
     );
   }
 
-  T call({
-    bool? applyHeightToFirstAscent,
-    bool? applyHeightToLastDescent,
-    TextLeadingDistribution? leadingDistribution,
-  }) {
-    return only(
-      applyHeightToFirstAscent: applyHeightToFirstAscent,
-      applyHeightToLastDescent: applyHeightToLastDescent,
-      leadingDistribution: leadingDistribution,
-    );
-  }
-
   @override
+  @Deprecated('Use call(as: value) instead')
   T as(TextHeightBehavior value) {
     return builder(TextHeightBehaviorMix.value(value));
   }

@@ -118,24 +118,37 @@ final class ContinuousRectangleBorderUtility<T extends Style<Object?>>
 final class CircleBorderUtility<T extends Style<Object?>>
     extends MixPropUtility<T, CircleBorderMix, CircleBorder> {
   /// Utility for defining [CircleBorderMix.side]
-  late final side = BorderSideUtility<T>((v) => only(side: v));
-
-  /// Utility for defining [CircleBorderMix.eccentricity]
-  late final eccentricity = MixUtility<T, double>(
-    (prop) => only(eccentricity: prop),
-  );
+  @Deprecated('Use call(side: value) instead')
+  late final side = BorderSideUtility<T>((v) => call(side: v));
 
   CircleBorderUtility(super.builder);
 
-  T only({BorderSideMix? side, double? eccentricity}) {
+  /// Utility for defining [CircleBorderMix.eccentricity]
+  @Deprecated('Use call(eccentricity: value) instead')
+  T eccentricity(double v) => call(eccentricity: v);
+
+  @Deprecated('Use call(...) instead')
+  late final only = call;
+  
+  @Deprecated('Use call(...) instead')
+  T _only({BorderSideMix? side, double? eccentricity}) {
+    return call(side: side, eccentricity: eccentricity);
+  }
+  
+  T call({
+    CircleBorder? as,
+    BorderSideMix? side,
+    double? eccentricity,
+  }) {
+    if (as != null) {
+      return builder(CircleBorderMix.value(as));
+    }
+    
     return builder(CircleBorderMix(side: side, eccentricity: eccentricity));
   }
 
-  T call({BorderSideMix? side, double? eccentricity}) {
-    return only(side: side, eccentricity: eccentricity);
-  }
-
   @override
+  @Deprecated('Use call(as: value) instead')
   T as(CircleBorder value) {
     return builder(CircleBorderMix.value(value));
   }
@@ -148,35 +161,40 @@ final class CircleBorderUtility<T extends Style<Object?>>
 final class StarBorderUtility<T extends Style<Object?>>
     extends MixPropUtility<T, StarBorderMix, StarBorder> {
   /// Utility for defining [StarBorderMix.side]
-  late final side = BorderSideUtility<T>((v) => only(side: v));
-
-  /// Utility for defining [StarBorderMix.points]
-  late final points = MixUtility<T, double>((prop) => only(points: prop));
-
-  /// Utility for defining [StarBorderMix.innerRadiusRatio]
-  late final innerRadiusRatio = MixUtility<T, double>(
-    (prop) => only(innerRadiusRatio: prop),
-  );
-
-  /// Utility for defining [StarBorderMix.pointRounding]
-  late final pointRounding = MixUtility<T, double>(
-    (prop) => only(pointRounding: prop),
-  );
-
-  /// Utility for defining [StarBorderMix.valleyRounding]
-  late final valleyRounding = MixUtility<T, double>(
-    (prop) => only(valleyRounding: prop),
-  );
-
-  /// Utility for defining [StarBorderMix.rotation]
-  late final rotation = MixUtility<T, double>((prop) => only(rotation: prop));
-
-  /// Utility for defining [StarBorderMix.squash]
-  late final squash = MixUtility<T, double>((prop) => only(squash: prop));
+  @Deprecated('Use call(side: value) instead')
+  late final side = BorderSideUtility<T>((v) => call(side: v));
 
   StarBorderUtility(super.builder);
 
-  T only({
+  /// Utility for defining [StarBorderMix.points]
+  @Deprecated('Use call(points: value) instead')
+  T points(double v) => call(points: v);
+
+  /// Utility for defining [StarBorderMix.innerRadiusRatio]
+  @Deprecated('Use call(innerRadiusRatio: value) instead')
+  T innerRadiusRatio(double v) => call(innerRadiusRatio: v);
+
+  /// Utility for defining [StarBorderMix.pointRounding]
+  @Deprecated('Use call(pointRounding: value) instead')
+  T pointRounding(double v) => call(pointRounding: v);
+
+  /// Utility for defining [StarBorderMix.valleyRounding]
+  @Deprecated('Use call(valleyRounding: value) instead')
+  T valleyRounding(double v) => call(valleyRounding: v);
+
+  /// Utility for defining [StarBorderMix.rotation]
+  @Deprecated('Use call(rotation: value) instead')
+  T rotation(double v) => call(rotation: v);
+
+  /// Utility for defining [StarBorderMix.squash]
+  @Deprecated('Use call(squash: value) instead')
+  T squash(double v) => call(squash: v);
+
+  @Deprecated('Use call(...) instead')
+  late final only = call;
+  
+  @Deprecated('Use call(...) instead')
+  T _only({
     BorderSideMix? side,
     double? points,
     double? innerRadiusRatio,
@@ -185,6 +203,31 @@ final class StarBorderUtility<T extends Style<Object?>>
     double? rotation,
     double? squash,
   }) {
+    return call(
+      side: side,
+      points: points,
+      innerRadiusRatio: innerRadiusRatio,
+      pointRounding: pointRounding,
+      valleyRounding: valleyRounding,
+      rotation: rotation,
+      squash: squash,
+    );
+  }
+  
+  T call({
+    StarBorder? as,
+    BorderSideMix? side,
+    double? points,
+    double? innerRadiusRatio,
+    double? pointRounding,
+    double? valleyRounding,
+    double? rotation,
+    double? squash,
+  }) {
+    if (as != null) {
+      return builder(StarBorderMix.value(as));
+    }
+    
     return builder(
       StarBorderMix(
         side: side,
@@ -198,27 +241,8 @@ final class StarBorderUtility<T extends Style<Object?>>
     );
   }
 
-  T call({
-    BorderSideMix? side,
-    double? points,
-    double? innerRadiusRatio,
-    double? pointRounding,
-    double? valleyRounding,
-    double? rotation,
-    double? squash,
-  }) {
-    return only(
-      side: side,
-      points: points,
-      innerRadiusRatio: innerRadiusRatio,
-      pointRounding: pointRounding,
-      valleyRounding: valleyRounding,
-      rotation: rotation,
-      squash: squash,
-    );
-  }
-
   @override
+  @Deprecated('Use call(as: value) instead')
   T as(StarBorder value) {
     return builder(StarBorderMix.value(value));
   }
@@ -287,23 +311,33 @@ final class LinearBorderUtility<T extends Style<Object?>>
 /// Use the methods of this class to configure specific properties of a [LinearBorderEdge].
 final class LinearBorderEdgeUtility<T extends Style<Object?>>
     extends MixPropUtility<T, LinearBorderEdgeMix, LinearBorderEdge> {
-  /// Utility for defining [LinearBorderEdgeMix.size]
-  late final size = MixUtility<T, double>((prop) => only(size: prop));
-
-  /// Utility for defining [LinearBorderEdgeMix.alignment]
-  late final alignment = MixUtility<T, double>((prop) => only(alignment: prop));
-
   LinearBorderEdgeUtility(super.builder);
 
-  T only({double? size, double? alignment}) {
+  /// Utility for defining [LinearBorderEdgeMix.size]
+  @Deprecated('Use call(size: value) instead')
+  T size(double v) => call(size: v);
+
+  /// Utility for defining [LinearBorderEdgeMix.alignment]
+  @Deprecated('Use call(alignment: value) instead')
+  T alignment(double v) => call(alignment: v);
+
+  @Deprecated('Use call(...) instead')
+  late final only = call;
+  
+  T call({
+    LinearBorderEdge? as,
+    double? size,
+    double? alignment,
+  }) {
+    if (as != null) {
+      return builder(LinearBorderEdgeMix.value(as));
+    }
+    
     return builder(LinearBorderEdgeMix(size: size, alignment: alignment));
   }
 
-  T call({double? size, double? alignment}) {
-    return only(size: size, alignment: alignment);
-  }
-
   @override
+  @Deprecated('Use call(as: value) instead')
   T as(LinearBorderEdge value) {
     return builder(LinearBorderEdgeMix.value(value));
   }

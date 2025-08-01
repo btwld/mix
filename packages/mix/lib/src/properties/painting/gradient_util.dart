@@ -11,32 +11,40 @@ import 'gradient_mix.dart';
 final class LinearGradientUtility<T extends Style<Object?>>
     extends MixPropUtility<T, LinearGradientMix, LinearGradient> {
   /// Utility for defining [LinearGradientMix.begin]
-  late final begin = MixUtility<T, AlignmentGeometry>((v) => only(begin: v));
+  @Deprecated('Use call(begin: value) instead')
+  late final begin = MixUtility<T, AlignmentGeometry>((v) => call(begin: v));
 
   /// Utility for defining [LinearGradientMix.end]
-  late final end = MixUtility<T, AlignmentGeometry>((v) => only(end: v));
+  @Deprecated('Use call(end: value) instead')
+  late final end = MixUtility<T, AlignmentGeometry>((v) => call(end: v));
 
   /// Utility for defining [LinearGradientMix.tileMode]
-  late final tileMode = MixUtility<T, TileMode>((prop) => only(tileMode: prop));
+  @Deprecated('Use call(tileMode: value) instead')
+  late final tileMode = MixUtility<T, TileMode>((prop) => call(tileMode: prop));
 
   /// Utility for defining [LinearGradientMix.transform]
+  @Deprecated('Use call(transform: value) instead')
   late final transform = MixUtility<T, GradientTransform>(
-    (v) => only(transform: v),
-  );
-
-  /// Utility for defining [LinearGradientMix.colors]
-  late final colors = PropListUtility<T, Color>(
-    (colors) => builder(LinearGradientMix.raw(colors: colors)),
+    (v) => call(transform: v),
   );
 
   /// Utility for defining [LinearGradientMix.stops]
+  @Deprecated('Use call(stops: value) instead')
   late final stops = PropListUtility<T, double>(
     (stops) => builder(LinearGradientMix.raw(stops: stops)),
   );
+  @Deprecated('Use call(...) instead')
+  late final only = call;
 
   LinearGradientUtility(super.builder);
 
-  T only({
+  @Deprecated('Use call(colors: value) instead')
+  T colors(List<Color> colors) {
+    return call(colors: colors);
+  }
+
+  T call({
+    LinearGradient? as,
     AlignmentGeometry? begin,
     AlignmentGeometry? end,
     TileMode? tileMode,
@@ -44,7 +52,12 @@ final class LinearGradientUtility<T extends Style<Object?>>
     List<Color>? colors,
     List<double>? stops,
   }) {
-    return builder(
+    var gradient = LinearGradientMix();
+    if (as != null) {
+      gradient = gradient.merge(LinearGradientMix.value(as));
+    }
+    
+    gradient = gradient.merge(
       LinearGradientMix(
         begin: begin,
         end: end,
@@ -54,27 +67,12 @@ final class LinearGradientUtility<T extends Style<Object?>>
         stops: stops,
       ),
     );
-  }
-
-  T call({
-    AlignmentGeometry? begin,
-    AlignmentGeometry? end,
-    TileMode? tileMode,
-    GradientTransform? transform,
-    List<Color>? colors,
-    List<double>? stops,
-  }) {
-    return only(
-      begin: begin,
-      end: end,
-      tileMode: tileMode,
-      transform: transform,
-      colors: colors,
-      stops: stops,
-    );
+    
+    return builder(gradient);
   }
 
   @override
+  @Deprecated('Use call(as: value) instead')
   T as(LinearGradient value) {
     return builder(LinearGradientMix.value(value));
   }
@@ -87,40 +85,50 @@ final class LinearGradientUtility<T extends Style<Object?>>
 final class RadialGradientUtility<T extends Style<Object?>>
     extends MixPropUtility<T, RadialGradientMix, RadialGradient> {
   /// Utility for defining [RadialGradientMix.center]
-  late final center = MixUtility<T, AlignmentGeometry>((v) => only(center: v));
-
-  /// Utility for defining [RadialGradientMix.radius]
-  late final radius = MixUtility<T, double>((prop) => only(radius: prop));
+  @Deprecated('Use call(center: value) instead')
+  late final center = MixUtility<T, AlignmentGeometry>((v) => call(center: v));
 
   /// Utility for defining [RadialGradientMix.tileMode]
-  late final tileMode = MixUtility<T, TileMode>((prop) => only(tileMode: prop));
+  @Deprecated('Use call(tileMode: value) instead')
+  late final tileMode = MixUtility<T, TileMode>((prop) => call(tileMode: prop));
 
   /// Utility for defining [RadialGradientMix.focal]
-  late final focal = MixUtility<T, AlignmentGeometry>((v) => only(focal: v));
-
-  /// Utility for defining [RadialGradientMix.focalRadius]
-  late final focalRadius = MixUtility<T, double>(
-    (prop) => only(focalRadius: prop),
-  );
+  @Deprecated('Use call(focal: value) instead')
+  late final focal = MixUtility<T, AlignmentGeometry>((v) => call(focal: v));
 
   /// Utility for defining [RadialGradientMix.transform]
+  @Deprecated('Use call(transform: value) instead')
   late final transform = MixUtility<T, GradientTransform>(
-    (v) => only(transform: v),
+    (v) => call(transform: v),
   );
 
   /// Utility for defining [RadialGradientMix.colors]
+  @Deprecated('Use call(colors: value) instead')
   late final colors = PropListUtility<T, Color>(
     (colors) => builder(RadialGradientMix.raw(colors: colors)),
   );
 
   /// Utility for defining [RadialGradientMix.stops]
+  @Deprecated('Use call(stops: value) instead')
   late final stops = PropListUtility<T, double>(
     (stops) => builder(RadialGradientMix.raw(stops: stops)),
   );
 
+  @Deprecated('Use call(...) instead')
+  late final only = call;
+  
   RadialGradientUtility(super.builder);
 
-  T only({
+  /// Utility for defining [RadialGradientMix.radius]
+  @Deprecated('Use call(radius: value) instead')
+  T radius(double v) => call(radius: v);
+
+  /// Utility for defining [RadialGradientMix.focalRadius]
+  @Deprecated('Use call(focalRadius: value) instead')
+  T focalRadius(double v) => call(focalRadius: v);
+
+  T call({
+    RadialGradient? as,
     AlignmentGeometry? center,
     double? radius,
     TileMode? tileMode,
@@ -130,7 +138,12 @@ final class RadialGradientUtility<T extends Style<Object?>>
     List<Color>? colors,
     List<double>? stops,
   }) {
-    return builder(
+    var gradient = RadialGradientMix();
+    if (as != null) {
+      gradient = gradient.merge(RadialGradientMix.value(as));
+    }
+    
+    gradient = gradient.merge(
       RadialGradientMix(
         center: center,
         radius: radius,
@@ -142,31 +155,12 @@ final class RadialGradientUtility<T extends Style<Object?>>
         stops: stops,
       ),
     );
-  }
-
-  T call({
-    AlignmentGeometry? center,
-    double? radius,
-    TileMode? tileMode,
-    AlignmentGeometry? focal,
-    double? focalRadius,
-    GradientTransform? transform,
-    List<Color>? colors,
-    List<double>? stops,
-  }) {
-    return only(
-      center: center,
-      radius: radius,
-      tileMode: tileMode,
-      focal: focal,
-      focalRadius: focalRadius,
-      transform: transform,
-      colors: colors,
-      stops: stops,
-    );
+    
+    return builder(gradient);
   }
 
   @override
+  @Deprecated('Use call(as: value) instead')
   T as(RadialGradient value) {
     return builder(RadialGradientMix.value(value));
   }
@@ -179,37 +173,45 @@ final class RadialGradientUtility<T extends Style<Object?>>
 final class SweepGradientUtility<T extends Style<Object?>>
     extends MixPropUtility<T, SweepGradientMix, SweepGradient> {
   /// Utility for defining [SweepGradientMix.center]
-  late final center = MixUtility<T, AlignmentGeometry>((v) => only(center: v));
-
-  /// Utility for defining [SweepGradientMix.startAngle]
-  late final startAngle = MixUtility<T, double>(
-    (prop) => only(startAngle: prop),
-  );
-
-  /// Utility for defining [SweepGradientMix.endAngle]
-  late final endAngle = MixUtility<T, double>((prop) => only(endAngle: prop));
+  @Deprecated('Use call(center: value) instead')
+  late final center = MixUtility<T, AlignmentGeometry>((v) => call(center: v));
 
   /// Utility for defining [SweepGradientMix.tileMode]
-  late final tileMode = MixUtility<T, TileMode>((prop) => only(tileMode: prop));
+  @Deprecated('Use call(tileMode: value) instead')
+  late final tileMode = MixUtility<T, TileMode>((prop) => call(tileMode: prop));
 
+  @Deprecated('Use call(transform: value) instead')
   /// Utility for defining [SweepGradientMix.transform]
   late final transform = MixUtility<T, GradientTransform>(
-    (v) => only(transform: v),
+    (v) => call(transform: v),
   );
 
+  @Deprecated('Use call(colors: value) instead')
   /// Utility for defining [SweepGradientMix.colors]
   late final colors = PropListUtility<T, Color>(
     (colors) => builder(SweepGradientMix.raw(colors: colors)),
   );
 
-  /// Utility for defining [SweepGradientMix.stops]
-  late final stops = PropListUtility<T, double>(
-    (stops) => builder(SweepGradientMix.raw(stops: stops)),
-  );
-
+  @Deprecated('Use call(...) instead')
+  late final only = call;
   SweepGradientUtility(super.builder);
 
-  T only({
+  /// Utility for defining [SweepGradientMix.startAngle]
+  @Deprecated('Use call(startAngle: value) instead')
+  T startAngle(double v) => call(startAngle: v);
+
+  /// Utility for defining [SweepGradientMix.endAngle]
+  @Deprecated('Use call(endAngle: value) instead')
+  T endAngle(double v) => call(endAngle: v);
+
+  @Deprecated('Use call(stops: value) instead')
+  /// Utility for defining [SweepGradientMix.stops]
+  T stops(List<double> stops) {
+    return call(stops: stops);
+  }
+
+  T call({
+    SweepGradient? as,
     AlignmentGeometry? center,
     double? startAngle,
     double? endAngle,
@@ -218,7 +220,12 @@ final class SweepGradientUtility<T extends Style<Object?>>
     List<Color>? colors,
     List<double>? stops,
   }) {
-    return builder(
+    var gradient = SweepGradientMix();
+    if (as != null) {
+      gradient = gradient.merge(SweepGradientMix.value(as));
+    }
+    
+    gradient = gradient.merge(
       SweepGradientMix(
         center: center,
         startAngle: startAngle,
@@ -229,29 +236,12 @@ final class SweepGradientUtility<T extends Style<Object?>>
         stops: stops,
       ),
     );
-  }
-
-  T call({
-    AlignmentGeometry? center,
-    double? startAngle,
-    double? endAngle,
-    TileMode? tileMode,
-    GradientTransform? transform,
-    List<Color>? colors,
-    List<double>? stops,
-  }) {
-    return only(
-      center: center,
-      startAngle: startAngle,
-      endAngle: endAngle,
-      tileMode: tileMode,
-      transform: transform,
-      colors: colors,
-      stops: stops,
-    );
+    
+    return builder(gradient);
   }
 
   @override
+  @Deprecated('Use call(as: value) instead')
   T as(SweepGradient value) {
     return builder(SweepGradientMix.value(value));
   }

@@ -30,12 +30,12 @@ void main() {
     });
 
     group('Image utility properties', () {
-      test('width utility is MixUtility', () {
-        expect(util.width, isA<MixUtility<ImageMix, double>>());
+      test('width is now a method', () {
+        expect(util.width, isA<Function>());
       });
 
-      test('height utility is MixUtility', () {
-        expect(util.height, isA<MixUtility<ImageMix, double>>());
+      test('height is now a method', () {
+        expect(util.height, isA<Function>());
       });
 
       test('color utility is ColorUtility', () {
@@ -70,20 +70,20 @@ void main() {
         expect(util.semanticLabel, isA<MixUtility<ImageMix, String>>());
       });
 
-      test('excludeFromSemantics utility is MixUtility', () {
-        expect(util.excludeFromSemantics, isA<MixUtility<ImageMix, bool>>());
+      test('excludeFromSemantics is now a method', () {
+        expect(util.excludeFromSemantics, isA<Function>());
       });
 
-      test('gaplessPlayback utility is MixUtility', () {
-        expect(util.gaplessPlayback, isA<MixUtility<ImageMix, bool>>());
+      test('gaplessPlayback is now a method', () {
+        expect(util.gaplessPlayback, isA<Function>());
       });
 
-      test('isAntiAlias utility is MixUtility', () {
-        expect(util.isAntiAlias, isA<MixUtility<ImageMix, bool>>());
+      test('isAntiAlias is now a method', () {
+        expect(util.isAntiAlias, isA<Function>());
       });
 
-      test('matchTextDirection utility is MixUtility', () {
-        expect(util.matchTextDirection, isA<MixUtility<ImageMix, bool>>());
+      test('matchTextDirection is now a method', () {
+        expect(util.matchTextDirection, isA<Function>());
       });
 
       test('on utility is OnContextVariantUtility', () {

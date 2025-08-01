@@ -29,7 +29,6 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
 
   late final textAlign = MixUtility(value.textAlign);
   late final textScaler = MixUtility(value.textScaler);
-  late final maxLines = MixUtility(value.maxLines);
   late final style = TextStyleUtility(
     (prop) => value.merge(TextMix.raw(style: prop)),
   );
@@ -38,26 +37,23 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
     value.textHeightBehavior,
   );
   late final textDirection = MixUtility(value.textDirection);
-  late final softWrap = MixUtility(value.softWrap);
   late final directives = MixUtility(value.contentModifier);
   late final selectionColor = ColorUtility<TextMix>(
     (prop) => value.merge(TextMix.raw(selectionColor: prop)),
   );
-  late final semanticsLabel = MixUtility(value.semanticsLabel);
   late final locale = MixUtility(value.locale);
-
   late final on = OnContextVariantUtility<TextSpec, TextMix>(
     (v) => value.variants([v]),
   );
-
   late final wrap = ModifierUtility(
     (prop) => value.modifier(ModifierConfig(modifiers: [prop])),
-  );
-
-  // FLATTENED ACCESS - Direct access to commonly used style properties
+  ); // FLATTENED ACCESS - Direct access to commonly used style properties
   late final color = style.color;
+
   late final fontFamily = style.fontFamily;
+
   late final fontSize = style.fontSize;
+
   late final fontWeight = style.fontWeight;
   late final fontStyle = style.fontStyle;
   late final decoration = style.decoration;
@@ -75,12 +71,16 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
   late final fontFeatures = style.fontFeatures;
   late final debugLabel = style.debugLabel;
   late final decorationThickness = style.decorationThickness;
-  late final fontFamilyFallback = style.fontFamilyFallback;
-  // ignore: prefer_final_fields
+  late final fontFamilyFallback =
+      style.fontFamilyFallback; // ignore: prefer_final_fields
 
   TextSpecUtility([TextMix? attribute]) {
     value = MutableTextMix(attribute ?? TextMix());
   }
+  TextMix maxLines(int v) => value.maxLines(v);
+  TextMix softWrap(bool v) => value.softWrap(v);
+
+  TextMix semanticsLabel(String v) => value.semanticsLabel(v);
 
   // Convenience methods
   TextMix bold() => style.bold();
