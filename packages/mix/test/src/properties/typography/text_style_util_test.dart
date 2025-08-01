@@ -54,6 +54,10 @@ void main() {
       test('has fontFamily utility', () {
         expect(util.fontFamily, isA<Function>());
       });
+
+      test('has inherit utility', () {
+        expect(util.inherit, isA<Function>());
+      });
     });
 
     group('property setters', () {
@@ -144,6 +148,14 @@ void main() {
         final textStyle = result.value.value!.resolve(MockBuildContext());
 
         expect(textStyle, const TextStyle(fontFamily: 'Roboto'));
+      });
+
+      test('inherit sets inherit property', () {
+        final result = util.inherit(false);
+
+        final textStyle = result.value.value!.resolve(MockBuildContext());
+
+        expect(textStyle, const TextStyle(inherit: false));
       });
     });
 
@@ -300,6 +312,7 @@ void main() {
           decorationStyle: TextDecorationStyle.solid,
           decorationThickness: 1.5,
           textBaseline: TextBaseline.alphabetic,
+          inherit: false,
         );
 
         final textStyle = result.value.value!.resolve(MockBuildContext());
@@ -321,6 +334,7 @@ void main() {
             decorationStyle: TextDecorationStyle.solid,
             decorationThickness: 1.5,
             textBaseline: TextBaseline.alphabetic,
+            inherit: false,
           ),
         );
       });
@@ -420,6 +434,7 @@ void main() {
           fontFeatures: fontFeatures,
           fontVariations: fontVariations,
           debugLabel: 'call-test',
+          inherit: false,
         );
 
         final textStyle = result.value.value!.resolve(MockBuildContext());
@@ -445,6 +460,7 @@ void main() {
             fontFeatures: fontFeatures,
             fontVariations: fontVariations,
             debugLabel: 'call-test',
+            inherit: false,
           ),
         );
       });
@@ -505,6 +521,7 @@ void main() {
           fontFeatures: fontFeatures,
           fontVariations: fontVariations,
           debugLabel: 'as-test',
+          inherit: false,
         );
 
         final result = util.as(textStyle);
@@ -529,6 +546,7 @@ void main() {
         expect(resolved.fontFeatures, textStyle.fontFeatures);
         expect(resolved.fontVariations, textStyle.fontVariations);
         expect(resolved.debugLabel, textStyle.debugLabel);
+        expect(resolved.inherit, textStyle.inherit);
       });
 
       test('accepts minimal TextStyle', () {

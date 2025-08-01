@@ -30,6 +30,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
   final Prop<String>? $fontFamily;
   final Prop<Paint>? $foreground;
   final Prop<Paint>? $background;
+  final Prop<bool>? $inherit;
 
   // Lists of MixValues for simple types
   final List<Prop<String>>? $fontFamilyFallback;
@@ -144,6 +145,11 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
     return TextStyleMix(fontFamilyFallback: value);
   }
 
+  /// Factory for inherit
+  factory TextStyleMix.inherit(bool value) {
+    return TextStyleMix(inherit: value);
+  }
+
   TextStyleMix({
     Color? color,
     Color? backgroundColor,
@@ -166,6 +172,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
     double? decorationThickness,
     String? fontFamily,
     List<String>? fontFamilyFallback,
+    bool? inherit,
   }) : this.raw(
          color: Prop.maybe(color),
          backgroundColor: Prop.maybe(backgroundColor),
@@ -188,6 +195,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
          decorationThickness: Prop.maybe(decorationThickness),
          fontFamily: Prop.maybe(fontFamily),
          fontFamilyFallback: fontFamilyFallback?.map(Prop.new).toList(),
+         inherit: Prop.maybe(inherit),
        );
 
   const TextStyleMix.raw({
@@ -212,6 +220,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
     Prop<double>? decorationThickness,
     Prop<String>? fontFamily,
     List<Prop<String>>? fontFamilyFallback,
+    Prop<bool>? inherit,
   }) : $color = color,
        $backgroundColor = backgroundColor,
        $fontSize = fontSize,
@@ -232,7 +241,8 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
        $background = background,
        $decorationThickness = decorationThickness,
        $fontFamily = fontFamily,
-       $fontFamilyFallback = fontFamilyFallback;
+       $fontFamilyFallback = fontFamilyFallback,
+       $inherit = inherit;
 
   /// Creates a [TextStyleMix] from an existing [TextStyle].
   TextStyleMix.value(TextStyle textStyle)
@@ -258,6 +268,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
         decorationThickness: textStyle.decorationThickness,
         fontFamily: textStyle.fontFamily,
         fontFamilyFallback: textStyle.fontFamilyFallback,
+        inherit: textStyle.inherit,
       );
 
   /// Constructor that accepts a nullable [TextStyle] value and extracts its properties.
@@ -377,6 +388,11 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
     return merge(TextStyleMix.fontFamilyFallback(value));
   }
 
+  /// Sets inherit
+  TextStyleMix inherit(bool value) {
+    return merge(TextStyleMix.inherit(value));
+  }
+
   @override
   TextStyle resolve(BuildContext context) {
     return TextStyle(
@@ -402,6 +418,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
       debugLabel: MixHelpers.resolve(context, $debugLabel),
       fontFamily: MixHelpers.resolve(context, $fontFamily),
       fontFamilyFallback: MixHelpers.resolveList(context, $fontFamilyFallback),
+      inherit: MixHelpers.resolve(context, $inherit) ?? true,
     );
   }
 
@@ -451,6 +468,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
         other.$fontFamilyFallback,
         strategy: ListMergeStrategy.append,
       ),
+      inherit: MixHelpers.merge($inherit, other.$inherit),
     );
   }
 
@@ -540,6 +558,9 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
     properties.add(
       DiagnosticsProperty('debugLabel', $debugLabel, defaultValue: null),
     );
+    properties.add(
+      DiagnosticsProperty('inherit', $inherit, defaultValue: null),
+    );
   }
 
   @override
@@ -565,5 +586,6 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
     $fontFeatures,
     $fontVariations,
     $shadows,
+    $inherit,
   ];
 }

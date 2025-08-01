@@ -1,8 +1,5 @@
-import 'dart:async';
-
 import 'package:flutter/widgets.dart';
 
-import '../../core/internal/constants.dart';
 import '../../core/internal/mix_hoverable_region.dart';
 import '../../core/providers/widget_state_provider.dart';
 import '../box/box_attribute.dart';
@@ -23,7 +20,7 @@ class PressableBox extends StatelessWidget {
     required this.child,
     this.autofocus = false,
     this.enableFeedback = false,
-    this.unpressDelay = kDefaultAnimationDuration,
+
     this.onFocusChange,
     this.onPress,
     this.hitTestBehavior = HitTestBehavior.opaque,
@@ -52,7 +49,7 @@ class PressableBox extends StatelessWidget {
   final bool enabled;
   final FocusNode? focusNode;
   final bool autofocus;
-  final Duration unpressDelay;
+
   final Function(bool focus)? onFocusChange;
 
   final HitTestBehavior hitTestBehavior;
@@ -67,7 +64,7 @@ class PressableBox extends StatelessWidget {
       onFocusChange: onFocusChange,
       autofocus: autofocus,
       focusNode: focusNode,
-      unpressDelay: unpressDelay,
+
       child: Box(style: style, child: child),
     );
   }
@@ -94,7 +91,7 @@ class Pressable extends StatefulWidget {
     this.excludeFromSemantics = false,
     this.semanticButtonLabel,
     this.onKeyEvent,
-    this.unpressDelay = kDefaultAnimationDuration,
+
     this.controller,
     this.actions,
     required this.child,
@@ -155,9 +152,6 @@ class Pressable extends StatefulWidget {
 
   final WidgetStatesController? controller;
 
-  /// The duration to wait after the press is released before the state of pressed is removed
-  final Duration unpressDelay;
-
   @override
   State createState() => PressableWidgetState();
 }
@@ -165,8 +159,6 @@ class Pressable extends StatefulWidget {
 @visibleForTesting
 class PressableWidgetState extends State<Pressable> {
   late final WidgetStatesController _controller;
-  int _pressCount = 0;
-  Timer? _timer;
 
   @override
   void initState() {
@@ -174,48 +166,34 @@ class PressableWidgetState extends State<Pressable> {
     _controller = widget.controller ?? WidgetStatesController();
   }
 
-  void _handlePress(bool value) {
-    _controller.pressed = value;
-    if (value) {
-      _pressCount++;
-      final initialPressCount = _pressCount;
-      _unpressAfterDelay(initialPressCount);
-    }
-  }
-
-  void _unpressAfterDelay(int initialPressCount) {
-    void unpressCallback() {
-      if (_controller.has(WidgetState.pressed) &&
-          _pressCount == initialPressCount) {
-        _controller.pressed = false;
-      }
-    }
-
-    _timer?.cancel();
-
-    final delay = widget.unpressDelay;
-
-    if (delay != Duration.zero) {
-      _timer = Timer(delay, unpressCallback);
-    } else {
-      unpressCallback();
-    }
-  }
-
   void _onTap() {
-    _handlePress(true);
     widget.onPress?.call();
     if (widget.enableFeedback) Feedback.forTap(context);
   }
+
+  void _onTapUp() => _controller.pressed = false;
+
+  void _onTapDown() => _controller.pressed = true;
 
   void _onLongPress() {
     widget.onLongPress?.call();
     if (widget.enableFeedback) Feedback.forLongPress(context);
   }
 
+  void _onFocusChange(bool hasFocus) {
+    _controller.focused = hasFocus;
+    widget.onFocusChange?.call(hasFocus);
+  }
+
+  void _onHoverChange(bool isHovered) {
+    // If we are hovered and pressed, we need to change the state
+    if (!isHovered && _controller.pressed) {
+      _controller.pressed = false;
+    }
+  }
+
   @override
   void dispose() {
-    _timer?.cancel();
     if (widget.controller == null) _controller.dispose();
     super.dispose();
   }
@@ -249,6 +227,8 @@ class PressableWidgetState extends State<Pressable> {
   @override
   Widget build(BuildContext context) {
     Widget current = GestureDetector(
+      onTapDown: (_) => _onTapDown(),
+      onTapUp: (_) => _onTapUp(),
       onTap: widget.enabled && widget.onPress != null ? _onTap : null,
       onLongPress: widget.enabled && widget.onLongPress != null
           ? _onLongPress
@@ -262,19 +242,13 @@ class PressableWidgetState extends State<Pressable> {
           child: Focus(
             focusNode: widget.focusNode,
             autofocus: widget.autofocus,
-            onFocusChange: (hasFocus) {
-              if (widget.enabled) {
-                setState(() {
-                  _controller.focused = hasFocus;
-                });
-              }
-              widget.onFocusChange?.call(hasFocus);
-            },
+            onFocusChange: _onFocusChange,
             onKeyEvent: widget.onKeyEvent ?? widget.onKey,
             canRequestFocus: widget.canRequestFocus && widget.enabled,
             child: MixHoverableRegion(
               controller: _controller,
               enabled: widget.enabled,
+              onHoverChange: _onHoverChange,
               child: widget.child,
             ),
           ),
