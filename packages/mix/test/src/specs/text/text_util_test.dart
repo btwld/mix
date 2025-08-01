@@ -39,8 +39,8 @@ void main() {
         expect(util.textScaler, isA<MixUtility<TextMix, TextScaler>>());
       });
 
-      test('maxLines utility is MixUtility', () {
-        expect(util.maxLines, isA<MixUtility<TextMix, int>>());
+      test('maxLines utility is function', () {
+        expect(util.maxLines, isA<Function>());
       });
 
       test('style utility is TextStyleUtility', () {
@@ -62,8 +62,8 @@ void main() {
         expect(util.textDirection, isA<MixUtility<TextMix, TextDirection>>());
       });
 
-      test('softWrap utility is MixUtility', () {
-        expect(util.softWrap, isA<MixUtility<TextMix, bool>>());
+      test('softWrap utility is function', () {
+        expect(util.softWrap, isA<Function>());
       });
 
       test('directives utility is MixUtility', () {
@@ -77,8 +77,8 @@ void main() {
         expect(util.selectionColor, isA<ColorUtility<TextMix>>());
       });
 
-      test('semanticsLabel utility is MixUtility', () {
-        expect(util.semanticsLabel, isA<MixUtility<TextMix, String>>());
+      test('semanticsLabel utility is function', () {
+        expect(util.semanticsLabel, isA<Function>());
       });
 
       test('locale utility is MixUtility', () {
@@ -220,7 +220,7 @@ void main() {
       });
 
       test('semanticsLabel utility creates correct TextMix', () {
-        final result = util.semanticsLabel('Custom label');
+        final result = TextSpecUtility().semanticsLabel('Custom label');
         expectProp(result.$semanticsLabel, 'Custom label');
       });
 

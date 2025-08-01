@@ -113,20 +113,20 @@ class ClipOvalModifierAttribute extends ModifierAttribute<ClipOvalModifier> {
 /// Modifier that clips its child to a rectangular shape.
 ///
 /// Wraps the child in a [ClipRect] widget with the specified clipper and clip behavior.
-final class ClipRectModifierSpec extends Modifier<ClipRectModifierSpec>
+final class ClipRectModifier extends Modifier<ClipRectModifier>
     with Diagnosticable {
   final CustomClipper<Rect>? clipper;
   final Clip? clipBehavior;
 
-  const ClipRectModifierSpec({this.clipper, this.clipBehavior});
+  const ClipRectModifier({this.clipper, this.clipBehavior});
 
   /// Returns a copy with the specified fields replaced.
   @override
-  ClipRectModifierSpec copyWith({
+  ClipRectModifier copyWith({
     CustomClipper<Rect>? clipper,
     Clip? clipBehavior,
   }) {
-    return ClipRectModifierSpec(
+    return ClipRectModifier(
       clipper: clipper ?? this.clipper,
       clipBehavior: clipBehavior ?? this.clipBehavior,
     );
@@ -134,10 +134,10 @@ final class ClipRectModifierSpec extends Modifier<ClipRectModifierSpec>
 
   /// Linearly interpolates between this and [other] using step interpolation.
   @override
-  ClipRectModifierSpec lerp(ClipRectModifierSpec? other, double t) {
+  ClipRectModifier lerp(ClipRectModifier? other, double t) {
     if (other == null) return this;
 
-    return ClipRectModifierSpec(
+    return ClipRectModifier(
       clipper: t < 0.5 ? clipper : other.clipper,
       clipBehavior: t < 0.5 ? clipBehavior : other.clipBehavior,
     );
@@ -166,9 +166,8 @@ final class ClipRectModifierSpec extends Modifier<ClipRectModifierSpec>
   }
 }
 
-/// Attribute class for [ClipRectModifierSpec] with resolvable properties.
-class ClipRectModifierAttribute
-    extends ModifierAttribute<ClipRectModifierSpec> {
+/// Attribute class for [ClipRectModifier] with resolvable properties.
+class ClipRectModifierAttribute extends ModifierAttribute<ClipRectModifier> {
   final Prop<CustomClipper<Rect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
@@ -180,17 +179,17 @@ class ClipRectModifierAttribute
         clipBehavior: Prop.maybe(clipBehavior),
       );
 
-  /// Resolves to [ClipRectModifierSpec] using the provided [BuildContext].
+  /// Resolves to [ClipRectModifier] using the provided [BuildContext].
   ///
   /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final clipRectModifierSpec = ClipRectModifierAttribute(...).resolve(mix);
+  /// final clipRectModifier = ClipRectModifierAttribute(...).resolve(mix);
   /// ```
   @override
-  ClipRectModifierSpec resolve(BuildContext context) {
-    return ClipRectModifierSpec(
+  ClipRectModifier resolve(BuildContext context) {
+    return ClipRectModifier(
       clipper: MixHelpers.resolve(context, clipper),
       clipBehavior: MixHelpers.resolve(context, clipBehavior),
     );

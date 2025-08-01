@@ -107,7 +107,7 @@ class OpacityModifierAttribute extends ModifierAttribute<OpacityModifier>
     if (other == null) return this;
 
     return OpacityModifierAttribute.raw(
-      opacity: opacity?.merge(other.opacity) ?? other.opacity,
+      opacity: MixHelpers.merge(opacity, other.opacity),
     );
   }
 

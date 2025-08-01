@@ -42,11 +42,11 @@ void main() {
       });
 
       test('has invertColors utility', () {
-        expect(util.invertColors, isA<MixUtility>());
+        expect(util.invertColors, isA<Function>());
       });
 
       test('has isAntiAlias utility', () {
-        expect(util.isAntiAlias, isA<MixUtility>());
+        expect(util.isAntiAlias, isA<Function>());
       });
     });
 

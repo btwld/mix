@@ -145,7 +145,7 @@ class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec> {
 
 class MutableFlexBoxMix extends FlexBoxMix
     with Mutable<FlexBoxSpec, FlexBoxMix> {
-  MutableFlexBoxMix([FlexBoxMix? attribute]) {
-    merge(attribute);
+  MutableFlexBoxMix([FlexBoxMix? accumulated]) {
+    this.accumulated = accumulated ?? const FlexBoxMix();
   }
 }

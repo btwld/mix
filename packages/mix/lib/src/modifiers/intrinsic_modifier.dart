@@ -79,8 +79,7 @@ class IntrinsicHeightModifierAttribute
   /// ```
   @override
   IntrinsicHeightModifier resolve(BuildContext context) {
-    // ignore: prefer_const_constructors
-    return IntrinsicHeightModifier();
+    return const IntrinsicHeightModifier();
   }
 
   /// Merges the properties of this [IntrinsicHeightModifierAttribute] with the properties of [other].
@@ -129,8 +128,7 @@ class IntrinsicWidthModifierAttribute
   /// ```
   @override
   IntrinsicWidthModifier resolve(BuildContext context) {
-    // ignore: prefer_const_constructors
-    return IntrinsicWidthModifier();
+    return const IntrinsicWidthModifier();
   }
 
   /// Merges the properties of this [IntrinsicWidthModifierAttribute] with the properties of [other].

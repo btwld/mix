@@ -74,12 +74,10 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
 
     final Map<Object, ModifierAttribute> merged = {};
 
-    // Add current modifiers
     for (final modifier in current) {
       merged[modifier.mergeKey] = modifier;
     }
 
-    // Merge or add other modifiers
     for (final modifier in other) {
       final key = modifier.mergeKey;
       final existing = merged[key];
@@ -139,12 +137,10 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
 
     final Map<Object, VariantStyleAttribute<S>> merged = {};
 
-    // Add current variants
     for (final variant in current) {
       merged[variant.mergeKey] = variant;
     }
 
-    // Merge or add other variants
     for (final variant in other) {
       final key = variant.mergeKey;
       final existing = merged[key];

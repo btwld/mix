@@ -84,7 +84,7 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
       DiagnosticsProperty('softWrap', softWrap, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('directive', directives, defaultValue: null),
+      DiagnosticsProperty('directives', directives, defaultValue: null),
     );
     properties.add(
       DiagnosticsProperty('selectionColor', selectionColor, defaultValue: null),

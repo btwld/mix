@@ -98,8 +98,6 @@ class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
     Matrix4? transform,
     AlignmentGeometry? transformAlignment,
     Clip? clipBehavior,
-    double? width,
-    double? height,
   }) {
     return BoxSpec(
       alignment: alignment ?? this.alignment,

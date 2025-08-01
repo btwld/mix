@@ -49,11 +49,8 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
     (prop) => value.modifier(ModifierConfig(modifiers: [prop])),
   ); // FLATTENED ACCESS - Direct access to commonly used style properties
   late final color = style.color;
-
   late final fontFamily = style.fontFamily;
-
   late final fontSize = style.fontSize;
-
   late final fontWeight = style.fontWeight;
   late final fontStyle = style.fontStyle;
   late final decoration = style.decoration;
@@ -72,7 +69,7 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
   late final debugLabel = style.debugLabel;
   late final decorationThickness = style.decorationThickness;
   late final fontFamilyFallback =
-      style.fontFamilyFallback; // ignore: prefer_final_fields
+      style.fontFamilyFallback;
 
   TextSpecUtility([TextMix? attribute]) {
     value = MutableTextMix(attribute ?? TextMix());

@@ -85,9 +85,7 @@ abstract class StyleMutableBuilder<S extends Spec<S>> extends Style<S>
 }
 
 mixin Mutable<S extends Spec<S>, T extends Style<S>> on Style<S> {
-  T? _accumulated;
-
-  T get accumulated => _accumulated ?? this as T;
+  late T accumulated;
 
   // Intercept merge calls
   @override
@@ -95,12 +93,11 @@ mixin Mutable<S extends Spec<S>, T extends Style<S>> on Style<S> {
     if (other == null) return this as T;
 
     try {
-      // Accumulate merges - use super.merge to avoid recursion
-      final merged = accumulated == this
-          ? super.merge(other)
-          : accumulated.merge(other);
+      // If other is also Mutable, use its accumulated value
+      final otherValue = (other is Mutable<S, T>) ? other.accumulated : other;
 
-      _accumulated = merged as T;
+      // Always merge with accumulated (never with 'this')
+      accumulated = accumulated.merge(otherValue) as T;
 
       // Return this for chaining
       return this as T;

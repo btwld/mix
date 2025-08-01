@@ -11,7 +11,7 @@ import '../../theme/tokens/mix_token.dart';
 /// ColorMix allows you to work with colors in the Mix framework while
 /// maintaining support for tokens, directives, and merging operations.
 class ColorMix extends Mix<Color> {
-  final Prop<Color> $value; // Basic colors
+  final Prop<Color> $value;
 
   static final red = ColorMix(ColorValues.red);
   static final pink = ColorMix(ColorValues.pink);
@@ -100,18 +100,22 @@ class ColorMix extends Mix<Color> {
     return ColorMix.raw(Prop.directives([LightenColorDirective(amount)]));
   }
 
+  /// Creates a ColorMix with a saturate directive.
   factory ColorMix.saturate(int amount) {
     return ColorMix.raw(Prop.directives([SaturateColorDirective(amount)]));
   }
 
+  /// Creates a ColorMix with a desaturate directive.
   factory ColorMix.desaturate(int amount) {
     return ColorMix.raw(Prop.directives([DesaturateColorDirective(amount)]));
   }
 
+  /// Creates a ColorMix with a tint directive.
   factory ColorMix.tint(int amount) {
     return ColorMix.raw(Prop.directives([TintColorDirective(amount)]));
   }
 
+  /// Creates a ColorMix with a shade directive.
   factory ColorMix.shade(int amount) {
     return ColorMix.raw(Prop.directives([ShadeColorDirective(amount)]));
   }

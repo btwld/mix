@@ -24,11 +24,11 @@ void main() {
       });
 
       test('has fontSize utility', () {
-        expect(util.fontSize, isA<MixUtility>());
+        expect(util.fontSize, isA<Function>());
       });
 
       test('has fontFamily utility', () {
-        expect(util.fontFamily, isA<MixUtility>());
+        expect(util.fontFamily, isA<Function>());
       });
     });
 

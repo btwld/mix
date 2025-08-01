@@ -30,4 +30,3 @@ abstract class SpecUtility<S extends Spec<S>> {
   @override
   int get hashCode => Object.hash(attribute, runtimeType);
 }
-

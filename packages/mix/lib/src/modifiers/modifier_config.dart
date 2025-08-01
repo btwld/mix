@@ -550,7 +550,7 @@ const _defaultOrder = [
   ClipRRectModifier,
   ClipPathModifier,
   ClipTriangleModifier,
-  ClipRectModifierSpec,
+  ClipRectModifier,
 
   // 15. OpacityModifier: Applies transparency as the final visual effect.
   // Always applied last to ensure optimal performance and correct visual layering.

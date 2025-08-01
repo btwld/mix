@@ -46,7 +46,7 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageSpec> {
   );
 
   ImageSpecUtility([ImageMix? attribute]) {
-    value = MutableImageMix(attribute ?? ImageMix.raw());
+    value = MutableImageMix(attribute ?? ImageMix());
   }
 
   ImageMix width(double v) => value.width(v);

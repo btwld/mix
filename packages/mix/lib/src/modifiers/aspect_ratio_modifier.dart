@@ -109,7 +109,7 @@ class AspectRatioModifierAttribute
     if (other == null) return this;
 
     return AspectRatioModifierAttribute.raw(
-      aspectRatio: aspectRatio?.merge(other.aspectRatio) ?? other.aspectRatio,
+      aspectRatio: MixHelpers.merge(aspectRatio, other.aspectRatio),
     );
   }
 

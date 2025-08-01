@@ -86,7 +86,7 @@ void main() {
       });
 
       test('has boxShadows utility', () {
-        expect(util.boxShadows, isA<MixUtility>());
+        expect(util.boxShadows, isA<Function>());
       });
 
       test('has boxShadow utility', () {
