@@ -1,0 +1,163 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 300 300" style="enable-background:new 0 0 300 300;" xml:space="preserve">
+<style type="text/css">
+    .st0{fill:url(#SVGID_1_);}
+    .st1{fill:url(#SVGID_2_);}
+    .st2{fill:url(#SVGID_3_);}
+    .st3{fill:url(#SVGID_4_);}
+
+	svg {
+
+       max-width: 500px;
+       margin: 0 auto;
+	}
+
+	#container {
+
+       filter:url("#fancy-goo");
+       -webkit-filter:url("#fancy-goo");
+    }
+
+    @keyframes mov_one {
+
+        25% {
+
+            transform: translate(40.5px, 0);
+        }
+
+        50% {
+
+            transform: translate(40.5px, 40.5px);
+        }
+
+        75% {
+
+            transform: translate(0px, 40.5px);
+        }
+
+        100% {
+
+             transform: translate(0px, 0px);
+        } 
+    }
+
+    @keyframes mov_two {
+
+        25% {
+
+            transform: translate(-40.5px, 0px);
+        }
+
+        50% {
+
+            transform: translate(-40.5px, 40.5px);
+        }
+
+        75% {
+
+            transform: translate(0px, 40.5px);
+        }
+
+        100% {
+
+            transform: translate(0px, 0px);
+        } 
+    }
+
+    @keyframes mov_three {
+
+        25% {
+
+            transform: translate(40.5px, 0px);
+        }
+
+        50% {
+
+            transform: translate(40.5px, -40.5px);
+        }
+
+        75% {
+
+            transform: translate(0px, -40.5px);
+        }
+
+        100% {
+
+            transform: translate(0px, 0px);
+        } 
+    }
+
+    @keyframes mov_four {
+
+        25% {
+
+            transform: translate(-40.5px, 0px);
+        }
+
+        50% {
+
+            transform: translate(-40.5px, -40.5px);
+        }
+
+        75% {
+
+            transform: translate(0px, -40.5px);
+        }
+
+        100% {
+
+            transform: translate(0px, 0px);
+        } 
+    }
+
+    .sub_one circle:nth-of-type(1) {
+
+        animation: mov_one 3.5s ease infinite;
+    }
+
+    .sub_one circle:nth-of-type(2) {
+
+        animation: mov_two 3.5s ease infinite;
+    }
+
+    .sub_one circle:nth-of-type(3) {
+
+        animation: mov_three 3.5s ease infinite;
+    }
+
+    .sub_one circle:nth-of-type(4) {
+
+        animation: mov_four 3.5s ease infinite;
+    }
+</style>
+<g>
+    <linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="85.3" y1="110" x2="129.3" y2="110">
+        <stop  offset="0" style="stop-color:#3298cc"/>
+        <stop  offset="1" style="stop-color:#73c5e5"/>
+    </linearGradient>
+    <linearGradient id="SVGID_2_" gradientUnits="userSpaceOnUse" x1="166.7" y1="110" x2="210.7" y2="110">
+        <stop  offset="0" style="stop-color:#73c5e5"/>
+        <stop  offset="1" style="stop-color:#9cd2e8"/>
+    </linearGradient>
+    <linearGradient id="SVGID_3_" gradientUnits="userSpaceOnUse" x1="85.3" y1="190" x2="129.3" y2="190">
+        <stop  offset="0" style="stop-color:#3298cc"/>
+        <stop  offset="1" style="stop-color:#6a18ca"/>
+    </linearGradient>
+    <linearGradient id="SVGID_4_" gradientUnits="userSpaceOnUse" x1="166.7" y1="190" x2="210.7" y2="190">
+        <stop  offset="0" style="stop-color:#6a18ca"/>
+        <stop  offset="1" style="stop-color:#6a18ca"/>
+    </linearGradient>
+    <g id="container" class="sub_one">
+        <circle class="st0" cx="107.3" cy="110" r="22"/>
+	    <circle class="st1" cx="188.7" cy="110" r="22"/>
+	    <circle class="st2" cx="107.3" cy="190" r="22"/>
+	    <circle class="st3" cx="188.7" cy="190" r="22"/>
+    </g>
+    <defs>
+        <filter id="fancy-goo">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0 0 0 0 19 -9" result="goo" />
+            <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+        </filter>
+    </defs>
+</g>
+</svg>

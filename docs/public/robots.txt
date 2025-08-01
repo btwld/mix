@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://fluttermix.com
+
+# Sitemaps
+Sitemap: https://fluttermix.com/sitemap.xml
