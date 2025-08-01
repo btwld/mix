@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
 import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
@@ -45,26 +44,22 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageSpec> {
   @protected
   late final MutableImageMix mutable;
 
+  late final width = mutable.width;
+
+  late final height = mutable.height;
+
+  late final semanticLabel = mutable.semanticLabel;
+
+  late final excludeFromSemantics = mutable.excludeFromSemantics;
+
+  late final gaplessPlayback = mutable.gaplessPlayback;
+  late final isAntiAlias = mutable.isAntiAlias;
+  late final matchTextDirection = mutable.matchTextDirection;
+  late final animate = mutable.animate;
+  late final variants = mutable.variants;
   ImageSpecUtility([ImageMix? attribute]) {
     mutable = MutableImageMix(attribute ?? ImageMix());
   }
-
-  ImageMix width(double v) => mutable.width(v);
-
-  ImageMix height(double v) => mutable.height(v);
-
-  ImageMix semanticLabel(String v) => mutable.semanticLabel(v);
-
-  ImageMix excludeFromSemantics(bool v) => mutable.excludeFromSemantics(v);
-
-  ImageMix gaplessPlayback(bool v) => mutable.gaplessPlayback(v);
-
-  ImageMix isAntiAlias(bool v) => mutable.isAntiAlias(v);
-
-  ImageMix matchTextDirection(bool v) => mutable.matchTextDirection(v);
-
-  /// Applies animation configuration to the image styling.
-  ImageMix animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
   ImageSpecUtility merge(Style<ImageSpec>? other) {

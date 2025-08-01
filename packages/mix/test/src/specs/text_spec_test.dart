@@ -267,7 +267,7 @@ void main() {
         expect(properties.any((p) => p.name == 'textHeightBehavior'), isTrue);
         expect(properties.any((p) => p.name == 'textDirection'), isTrue);
         expect(properties.any((p) => p.name == 'softWrap'), isTrue);
-        expect(properties.any((p) => p.name == 'directive'), isTrue);
+        expect(properties.any((p) => p.name == 'directives'), isTrue);
       });
     });
 

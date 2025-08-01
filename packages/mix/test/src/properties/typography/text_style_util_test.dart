@@ -270,12 +270,13 @@ void main() {
       });
 
       test('background sets background paint', () {
-        final paint = Paint()..color = const Color(0xFF2196F3);
+        const expectedColor = Color(0xFF2196F3);
+        final paint = Paint()..color = expectedColor;
         final result = util.background(paint);
 
         final textStyle = result.value.value!.resolve(MockBuildContext());
 
-        expect(textStyle.background?.color, const Color(0xFF2196F3));
+        expect(textStyle.background?.color?.toARGB32(), expectedColor.toARGB32());
       });
     });
 

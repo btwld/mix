@@ -458,7 +458,6 @@ class MockMixDirective<T> extends MixDirective<T> {
   int get hashCode => Object.hash(name, transform);
 }
 
-// dart-format: off
 final _blackDot = Uint8List.fromList([
   137,
   80,
@@ -531,7 +530,6 @@ final _blackDot = Uint8List.fromList([
   96,
   130,
 ]);
-// dart-format: on
 
 MemoryImage mockImageProvider() {
   return MemoryImage(_blackDot);
