@@ -77,9 +77,6 @@ final class ScrollViewModifier extends Modifier<ScrollViewModifier> {
 
 final class ScrollViewModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, ScrollViewModifierAttribute> {
-  /// Make the scroll view reverse or not.
-  T reverse(bool v) => only(reverse: v);
-
   /// Set the padding of the scroll view.
   late final padding = EdgeInsetsGeometryUtility(
     (padding) => only(padding: padding),
@@ -91,6 +88,9 @@ final class ScrollViewModifierUtility<T extends Style<Object?>>
   );
 
   ScrollViewModifierUtility(super.builder);
+
+  /// Make the scroll view reverse or not.
+  T reverse(bool v) => only(reverse: v);
 
   /// Set the scroll direction of the scroll view.
   T direction(Axis axis) => only(scrollDirection: axis);

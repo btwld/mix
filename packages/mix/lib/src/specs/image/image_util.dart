@@ -21,10 +21,6 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageSpec> {
   @protected
   late final MutableImageMix value;
 
-  ImageMix width(double v) => value.width(v);
-
-  ImageMix height(double v) => value.height(v);
-
   late final color = ColorUtility(
     (prop) => value.merge(ImageMix.raw(color: prop)),
   );
@@ -41,16 +37,6 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageSpec> {
 
   late final colorBlendMode = MixUtility(value.colorBlendMode);
 
-  ImageMix semanticLabel(String v) => value.semanticLabel(v);
-
-  ImageMix excludeFromSemantics(bool v) => value.excludeFromSemantics(v);
-
-  ImageMix gaplessPlayback(bool v) => value.gaplessPlayback(v);
-
-  ImageMix isAntiAlias(bool v) => value.isAntiAlias(v);
-
-  ImageMix matchTextDirection(bool v) => value.matchTextDirection(v);
-
   late final on = OnContextVariantUtility<ImageSpec, ImageMix>(
     (v) => value.variants([v]),
   );
@@ -62,6 +48,20 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageSpec> {
   ImageSpecUtility([ImageMix? attribute]) {
     value = MutableImageMix(attribute ?? ImageMix.raw());
   }
+
+  ImageMix width(double v) => value.width(v);
+
+  ImageMix height(double v) => value.height(v);
+
+  ImageMix semanticLabel(String v) => value.semanticLabel(v);
+
+  ImageMix excludeFromSemantics(bool v) => value.excludeFromSemantics(v);
+
+  ImageMix gaplessPlayback(bool v) => value.gaplessPlayback(v);
+
+  ImageMix isAntiAlias(bool v) => value.isAntiAlias(v);
+
+  ImageMix matchTextDirection(bool v) => value.matchTextDirection(v);
 
   /// Animation
   ImageMix animate(AnimationConfig animation) => value.animate(animation);

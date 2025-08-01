@@ -21,15 +21,10 @@ import 'text_spec.dart';
 /// ```
 class StyledText extends StyleWidget<TextSpec> {
   /// Creates a styled text widget.
-  const StyledText(
-    this.text, {
-    super.style,
-    super.key,
-  });
+  const StyledText(this.text, {super.style, super.key});
 
   /// Text content to display.
   final String text;
-
 
   @override
   Widget build(BuildContext context, TextSpec? spec) {

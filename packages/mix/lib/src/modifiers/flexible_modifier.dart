@@ -134,12 +134,11 @@ class FlexibleModifierAttribute extends ModifierAttribute<FlexibleModifier>
 
 final class FlexibleModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, FlexibleModifierAttribute> {
-  T flex(int v) => builder(FlexibleModifierAttribute(flex: v));
   late final fit = MixUtility<T, FlexFit>(
     (prop) => builder(FlexibleModifierAttribute(fit: prop)),
   );
-
   FlexibleModifierUtility(super.builder);
+  T flex(int v) => builder(FlexibleModifierAttribute(flex: v));
   T tight({int? flex}) => builder(
     FlexibleModifierAttribute.raw(
       flex: flex != null ? Prop(flex) : null,
