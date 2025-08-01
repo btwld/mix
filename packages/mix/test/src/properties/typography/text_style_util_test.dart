@@ -374,8 +374,8 @@ void main() {
       });
 
       test('sets paint properties', () {
-        final foregroundPaint = Paint()..color = const Color(0xFFFF0000);
-        final backgroundPaint = Paint()..color = const Color(0xFF2196F3);
+        final foregroundPaint = Paint()..color = Colors.red;
+        final backgroundPaint = Paint()..color = Colors.blue;
 
         final result = util(
           foreground: foregroundPaint,
@@ -384,8 +384,8 @@ void main() {
 
         final textStyle = result.value.value!.resolve(MockBuildContext());
 
-        expect(textStyle.foreground?.color, const Color(0xFFFF0000));
-        expect(textStyle.background?.color, const Color(0xFF2196F3));
+        expect(textStyle.foreground?.color, foregroundPaint.color);
+        expect(textStyle.background?.color, backgroundPaint.color);
       });
     });
 
@@ -536,8 +536,8 @@ void main() {
       });
 
       test('accepts TextStyle with paint properties', () {
-        final foregroundPaint = Paint()..color = const Color(0xFFFF0000);
-        final backgroundPaint = Paint()..color = const Color(0xFF2196F3);
+        final foregroundPaint = Paint()..color = Colors.red;
+        final backgroundPaint = Paint()..color = Colors.blue;
 
         final textStyle = TextStyle(
           foreground: foregroundPaint,
@@ -547,8 +547,8 @@ void main() {
         final result = util.as(textStyle);
         final resolved = result.value.value!.resolve(MockBuildContext());
 
-        expect(resolved.foreground?.color, const Color(0xFFFF0000));
-        expect(resolved.background?.color, const Color(0xFF2196F3));
+        expect(resolved.foreground?.color, foregroundPaint.color);
+        expect(resolved.background?.color, backgroundPaint.color);
       });
     });
 

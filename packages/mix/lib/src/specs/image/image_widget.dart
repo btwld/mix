@@ -34,7 +34,7 @@ class StyledImage extends StyleWidget<ImageSpec> {
       height: spec?.height,
       color: spec?.color,
       opacity: opacity,
-      colorBlendMode: spec?.colorBlendMode ?? BlendMode.clear,
+      colorBlendMode: spec?.colorBlendMode,
       fit: spec?.fit,
       alignment: spec?.alignment ?? Alignment.center,
       repeat: spec?.repeat ?? ImageRepeat.noRepeat,
@@ -42,7 +42,7 @@ class StyledImage extends StyleWidget<ImageSpec> {
       matchTextDirection: spec?.matchTextDirection ?? false,
       gaplessPlayback: spec?.gaplessPlayback ?? false,
       isAntiAlias: spec?.isAntiAlias ?? false,
-      filterQuality: spec?.filterQuality ?? FilterQuality.low,
+      filterQuality: spec?.filterQuality ?? FilterQuality.medium,
     );
   }
 }

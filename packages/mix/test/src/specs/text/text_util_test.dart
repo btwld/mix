@@ -17,7 +17,7 @@ void main() {
         final textMix = TextMix(maxLines: 3);
         final utility = TextSpecUtility(textMix);
 
-        expect(utility.value, isNot(same(textMix)));
+        expect(utility.value, equals(textMix));
         expectProp(utility.value.$maxLines, 3);
       });
     });

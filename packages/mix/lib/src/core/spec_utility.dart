@@ -56,9 +56,13 @@ abstract class StyleMutableBuilder<S extends Spec<S>> extends Style<S>
     super.inherit,
   });
 
-  /// Access to the internal mutable StyleAttribute
+  /// Internal mutable wrapper
+  @protected
+  Mutable<S, Style<S>> get mutable;
+
+  /// Access to the actual accumulated style
   @visibleForTesting
-  Mutable<S, Style<S>> get value;
+  Style<S> get value => mutable.value;
 
   @override
   S resolve(BuildContext context) => value.resolve(context);
@@ -81,11 +85,11 @@ abstract class StyleMutableBuilder<S extends Spec<S>> extends Style<S>
   List<VariantStyleAttribute<S>>? get $variants => value.$variants;
 
   @override
-  List<Object?> get props => [value];
+  List<Object?> get props => [mutable];
 }
 
 mixin Mutable<S extends Spec<S>, T extends Style<S>> on Style<S> {
-  late T accumulated;
+  late T value;
 
   // Intercept merge calls
   @override
@@ -93,11 +97,11 @@ mixin Mutable<S extends Spec<S>, T extends Style<S>> on Style<S> {
     if (other == null) return this as T;
 
     try {
-      final otherValue = other is Mutable<S, T> ? other.accumulated : other;
+      final otherValue = other is Mutable<S, T> ? other.value : other;
       // Accumulate merges - use super.merge to avoid recursion
-      accumulated = accumulated.merge(otherValue) as T;
+      value = value.merge(otherValue) as T;
 
-      return accumulated;
+      return value;
     } catch (e, stackTrace) {
       Error.throwWithStackTrace(
         StateError(
@@ -111,6 +115,6 @@ mixin Mutable<S extends Spec<S>, T extends Style<S>> on Style<S> {
 
   @override
   S resolve(BuildContext context) {
-    return accumulated.resolve(context);
+    return value.resolve(context);
   }
 }

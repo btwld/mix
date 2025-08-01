@@ -187,7 +187,7 @@ final class DecorationImageMix extends Mix<DecorationImage>
       centerSlice: MixHelpers.resolve(context, $centerSlice),
       repeat: MixHelpers.resolve(context, $repeat) ?? ImageRepeat.noRepeat,
       filterQuality:
-          MixHelpers.resolve(context, $filterQuality) ?? FilterQuality.low,
+          MixHelpers.resolve(context, $filterQuality) ?? FilterQuality.medium,
       invertColors: MixHelpers.resolve(context, $invertColors) ?? false,
       isAntiAlias: MixHelpers.resolve(context, $isAntiAlias) ?? false,
     );

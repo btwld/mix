@@ -490,8 +490,15 @@ void main() {
 
       final result = util.token(colorToken);
       
-      // Should not throw, but behavior depends on implementation
-      expect(() => result.value.resolve(context), returnsNormally);
+      // Token resolution now throws when token is not found
+      expect(
+        () => result.value.resolve(context),
+        throwsA(isA<StateError>().having(
+          (e) => e.message,
+          'message',
+          contains('Token "missingColor" not found in scope'),
+        )),
+      );
     });
   });
 }

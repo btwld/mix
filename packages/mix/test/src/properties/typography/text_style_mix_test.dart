@@ -674,7 +674,7 @@ void main() {
           shadows: [ShadowMix(blurRadius: 5.0)],
         );
 
-        expect(textStyleMix.props.length, 17);
+        expect(textStyleMix.props.length, 21);
         expect(textStyleMix.props, contains(textStyleMix.$color));
         expect(textStyleMix.props, contains(textStyleMix.$backgroundColor));
         expect(textStyleMix.props, contains(textStyleMix.$fontSize));

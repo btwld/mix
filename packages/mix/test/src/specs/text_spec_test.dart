@@ -287,7 +287,7 @@ void main() {
           directives: [],
         );
 
-        expect(spec.props.length, 11);
+        expect(spec.props.length, 14);
         expect(spec.props, contains(TextOverflow.ellipsis));
         expect(spec.props, contains(spec.strutStyle));
         expect(spec.props, contains(TextAlign.center));

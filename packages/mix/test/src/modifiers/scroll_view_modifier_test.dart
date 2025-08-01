@@ -655,12 +655,7 @@ void main() {
       // Test that the attribute resolves to a ScrollViewModifier with padding
       final resolved = attribute.resolve(MockBuildContext());
 
-      // The actual resolved value is EdgeInsetsDirectional with only top and bottom set
-      // This appears to be a bug in the EdgeInsetsGeometryUtility.onlyProps method
-      expect(
-        resolved.padding,
-        const EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 16.0),
-      );
+      expect(resolved.padding, const EdgeInsets.all(16.0));
     });
 
     test('clipBehavior utility creates attribute with clip behavior', () {

@@ -553,8 +553,10 @@ void main() {
         expect(() => util(-1), throwsA(isA<FlutterError>()));
       });
 
-      test('throws for zero elevation', () {
-        expect(() => util(0), throwsA(isA<FlutterError>()));
+      test('handles zero elevation', () {
+        final result = util(0);
+        expect(result, isA<MockStyle<List<MixProp<BoxShadow>>>>());
+        expect(result.value, isEmpty);
       });
     });
   });

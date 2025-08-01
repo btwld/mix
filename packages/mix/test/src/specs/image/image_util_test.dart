@@ -66,8 +66,8 @@ void main() {
         expect(util.colorBlendMode, isA<MixUtility<ImageMix, BlendMode>>());
       });
 
-      test('semanticLabel utility is MixUtility', () {
-        expect(util.semanticLabel, isA<MixUtility<ImageMix, String>>());
+      test('semanticLabel is now a method', () {
+        expect(util.semanticLabel, isA<Function>());
       });
 
       test('excludeFromSemantics is now a method', () {

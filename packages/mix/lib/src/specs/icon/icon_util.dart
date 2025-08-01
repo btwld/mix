@@ -13,65 +13,63 @@ import '../../variants/variant_util.dart';
 import 'icon_attribute.dart';
 import 'icon_spec.dart';
 
-/// Mutable utility class for icon styling using composition over inheritance.
+/// Provides mutable utility for icon styling with cascade notation support.
 ///
-/// Same API as IconMix but with mutable internal state
-/// for cascade notation support: `$icon..color(Colors.blue)..size(24)..weight(400)`
+/// Supports the same API as [IconMix] but maintains mutable internal state
+/// enabling fluid styling: `$icon..color(Colors.blue)..size(24)..weight(400)`.
 class IconSpecUtility extends StyleMutableBuilder<IconSpec> {
-  // ICON UTILITIES - Same as IconMix but return IconSpecUtility for cascade
-  @override
-  @protected
-  late final MutableIconMix value;
-
   late final color = ColorUtility<IconMix>(
-    (prop) => value.merge(IconMix.raw(color: prop)),
+    (prop) => mutable.merge(IconMix.raw(color: prop)),
   );
 
-  late final shadow = ShadowUtility<IconMix>((v) => value.shadows([v]));
+  late final shadow = ShadowUtility<IconMix>((v) => mutable.shadows([v]));
 
-  late final textDirection = MixUtility(value.textDirection);
+  late final textDirection = MixUtility(mutable.textDirection);
 
   late final on = OnContextVariantUtility<IconSpec, IconMix>(
-    (v) => value.variants([v]),
+    (v) => mutable.variants([v]),
   );
 
   late final wrap = ModifierUtility(
-    (prop) => value.modifier(ModifierConfig(modifiers: [prop])),
+    (prop) => mutable.modifier(ModifierConfig(modifiers: [prop])),
   );
 
+  /// Internal mutable state for accumulating icon styling properties.
+  @override
+  @protected
+  late final MutableIconMix mutable;
+
   IconSpecUtility([IconMix? attribute]) {
-    value = MutableIconMix(attribute ?? IconMix());
+    mutable = MutableIconMix(attribute ?? IconMix());
   }
 
-  IconMix size(double v) => value.size(v);
+  IconMix size(double v) => mutable.size(v);
 
-  IconMix weight(double v) => value.weight(v);
+  IconMix weight(double v) => mutable.weight(v);
 
-  IconMix grade(double v) => value.grade(v);
+  IconMix grade(double v) => mutable.grade(v);
 
-  IconMix opticalSize(double v) => value.opticalSize(v);
+  IconMix opticalSize(double v) => mutable.opticalSize(v);
 
-  IconMix applyTextScaling(bool v) => value.applyTextScaling(v);
+  IconMix applyTextScaling(bool v) => mutable.applyTextScaling(v);
 
-  IconMix fill(double v) => value.fill(v);
+  IconMix fill(double v) => mutable.fill(v);
 
-  // Instance method for multiple shadows
-  IconMix shadows(List<ShadowMix> value) => this.value.shadows(value);
+  /// Applies multiple shadows to the icon.
+  IconMix shadows(List<ShadowMix> value) => mutable.shadows(value);
 
-  /// Animation
-  IconMix animate(AnimationConfig animation) => value.animate(animation);
-
-  // StyleAttribute interface implementation
+  /// Applies animation configuration to the icon styling.
+  IconMix animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
   IconSpecUtility merge(Style<IconSpec>? other) {
     if (other == null) return this;
-    // IMMUTABLE: Always create new instance (StyleAttribute contract)
+    // Always create new instance (StyleAttribute contract)
     if (other is IconSpecUtility) {
-      return IconSpecUtility(value.merge(other.value));
+      return IconSpecUtility(mutable.merge(other.mutable.value));
     }
     if (other is IconMix) {
-      return IconSpecUtility(value.merge(other));
+      return IconSpecUtility(mutable.merge(other));
     }
 
     throw FlutterError('Unsupported merge type: ${other.runtimeType}');
@@ -79,12 +77,16 @@ class IconSpecUtility extends StyleMutableBuilder<IconSpec> {
 
   @override
   IconSpec resolve(BuildContext context) {
-    return value.resolve(context);
+    return mutable.resolve(context);
   }
+
+  /// The accumulated [IconMix] with all applied styling properties.
+  @override
+  IconMix get value => mutable.value;
 }
 
 class MutableIconMix extends IconMix with Mutable<IconSpec, IconMix> {
   MutableIconMix(IconMix style) {
-    accumulated = style;
+    value = style;
   }
 }

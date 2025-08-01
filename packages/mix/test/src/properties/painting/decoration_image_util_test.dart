@@ -61,25 +61,27 @@ void main() {
       });
 
       test('fit sets box fit', () {
-        final result = util.fit(BoxFit.cover);
+        final provider = mockImageProvider();
+        final result = util(image: provider, fit: BoxFit.cover);
 
         final decorationImage = result.value.resolve(MockBuildContext());
 
         expect(
           decorationImage,
-          const DecorationImage(image: NetworkImage(''), fit: BoxFit.cover),
+          DecorationImage(image: provider, fit: BoxFit.cover),
         );
       });
 
       test('alignment sets alignment geometry', () {
-        final result = util.alignment(Alignment.topRight);
+        final provider = mockImageProvider();
+        final result = util(image: provider, alignment: Alignment.topRight);
 
         final decorationImage = result.value.resolve(MockBuildContext());
 
         expect(
           decorationImage,
-          const DecorationImage(
-            image: NetworkImage(''),
+          DecorationImage(
+            image: provider,
             alignment: Alignment.topRight,
           ),
         );
@@ -87,63 +89,68 @@ void main() {
 
       test('centerSlice sets center slice rect', () {
         const rect = Rect.fromLTWH(10, 10, 20, 20);
-        final result = util.centerSlice(rect);
+        final provider = mockImageProvider();
+        final result = util(image: provider, centerSlice: rect);
 
         final decorationImage = result.value.resolve(MockBuildContext());
 
         expect(
           decorationImage,
-          const DecorationImage(image: NetworkImage(''), centerSlice: rect),
+          DecorationImage(image: provider, centerSlice: rect),
         );
       });
 
       test('repeat sets image repeat', () {
-        final result = util.repeat(ImageRepeat.repeatX);
+        final provider = mockImageProvider();
+        final result = util(image: provider, repeat: ImageRepeat.repeatX);
 
         final decorationImage = result.value.resolve(MockBuildContext());
 
         expect(
           decorationImage,
-          const DecorationImage(
-            image: NetworkImage(''),
+          DecorationImage(
+            image: provider,
             repeat: ImageRepeat.repeatX,
           ),
         );
       });
 
       test('filterQuality sets filter quality', () {
-        final result = util.filterQuality(FilterQuality.high);
+        final provider = mockImageProvider();
+        final result = util(image: provider, filterQuality: FilterQuality.high);
 
         final decorationImage = result.value.resolve(MockBuildContext());
 
         expect(
           decorationImage,
-          const DecorationImage(
-            image: NetworkImage(''),
+          DecorationImage(
+            image: provider,
             filterQuality: FilterQuality.high,
           ),
         );
       });
 
       test('invertColors sets invert colors flag', () {
-        final result = util.invertColors(true);
+        final provider = mockImageProvider();
+        final result = util(image: provider, invertColors: true);
 
         final decorationImage = result.value.resolve(MockBuildContext());
 
         expect(
           decorationImage,
-          const DecorationImage(image: NetworkImage(''), invertColors: true),
+          DecorationImage(image: provider, invertColors: true),
         );
       });
 
       test('isAntiAlias sets anti-alias flag', () {
-        final result = util.isAntiAlias(true);
+        final provider = mockImageProvider();
+        final result = util(image: provider, isAntiAlias: true);
 
         final decorationImage = result.value.resolve(MockBuildContext());
 
         expect(
           decorationImage,
-          const DecorationImage(image: NetworkImage(''), isAntiAlias: true),
+          DecorationImage(image: provider, isAntiAlias: true),
         );
       });
     });
@@ -308,8 +315,8 @@ void main() {
         const provider = NetworkImage('https://example.com/combo.png');
 
         final providerResult = util.provider(provider);
-        final fitResult = util.fit(BoxFit.cover);
-        final alignmentResult = util.alignment(Alignment.bottomRight);
+        final fitResult = util(image: provider, fit: BoxFit.cover);
+        final alignmentResult = util(image: provider, alignment: Alignment.bottomRight);
 
         final providerImage = providerResult.value.resolve(MockBuildContext());
         final fitImage = fitResult.value.resolve(MockBuildContext());
@@ -343,14 +350,16 @@ void main() {
       });
 
       test('handles all BoxFit values', () {
+        final provider = mockImageProvider();
         for (final boxFit in BoxFit.values) {
-          final result = util.fit(boxFit);
+          final result = util(image: provider, fit: boxFit);
           final decorationImage = result.value.resolve(MockBuildContext());
           expect(decorationImage.fit, boxFit);
         }
       });
 
       test('handles all ImageRepeat values', () {
+        final provider = mockImageProvider();
         final imageRepeats = [
           ImageRepeat.repeat,
           ImageRepeat.repeatX,
@@ -359,23 +368,25 @@ void main() {
         ];
 
         for (final imageRepeat in imageRepeats) {
-          final result = util.repeat(imageRepeat);
+          final result = util(image: provider, repeat: imageRepeat);
           final decorationImage = result.value.resolve(MockBuildContext());
           expect(decorationImage.repeat, imageRepeat);
         }
       });
 
       test('handles all FilterQuality values', () {
+        final provider = mockImageProvider();
         for (final filterQuality in FilterQuality.values) {
-          final result = util.filterQuality(filterQuality);
+          final result = util(image: provider, filterQuality: filterQuality);
           final decorationImage = result.value.resolve(MockBuildContext());
           expect(decorationImage.filterQuality, filterQuality);
         }
       });
 
       test('handles boolean properties', () {
-        final result1 = util.invertColors(true);
-        final result2 = util.isAntiAlias(false);
+        final provider = mockImageProvider();
+        final result1 = util(image: provider, invertColors: true);
+        final result2 = util(image: provider, isAntiAlias: false);
 
         final image1 = result1.value.resolve(MockBuildContext());
         final image2 = result2.value.resolve(MockBuildContext());
