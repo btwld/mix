@@ -153,7 +153,7 @@ void main() {
         const provider = AssetImage('assets/test.png');
         const rect = Rect.fromLTWH(5, 5, 10, 10);
 
-        final result = util.only(
+        final result = util(
           image: provider,
           fit: BoxFit.fitHeight,
           alignment: Alignment.bottomLeft,
@@ -184,7 +184,7 @@ void main() {
       test('sets partial properties', () {
         final provider = MemoryImage(Uint8List.fromList([1, 2, 3, 4]));
 
-        final result = util.only(
+        final result = util(
           image: provider,
           fit: BoxFit.contain,
           alignment: Alignment.center,
@@ -203,7 +203,7 @@ void main() {
       });
 
       test('handles null values', () {
-        final result = util.only();
+        final result = util();
 
         expect(
           () => result.value.resolve(MockBuildContext()),

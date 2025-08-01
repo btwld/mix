@@ -10,8 +10,6 @@ final class TextHeightBehaviorUtility<T extends Style<Object?>>
     (prop) => call(leadingDistribution: prop),
   );
 
-  @Deprecated('Use call(...) instead')
-  late final only = call;
 
   TextHeightBehaviorUtility(super.builder);
 

@@ -36,8 +36,6 @@ final class DecorationImageUtility<T extends Style<Object?>>
     (prop) => call(filterQuality: prop),
   );
 
-  @Deprecated('Use call(...) instead')
-  late final only = call;
 
   DecorationImageUtility(super.builder);
 

@@ -760,7 +760,7 @@ void main() {
     });
 
     test('only method sets specified properties', () {
-      final result = util.only(
+      final result = util(
         color: Colors.blue,
         width: 2.0,
         style: BorderStyle.solid,

@@ -68,7 +68,7 @@ void main() {
 
     group('only method', () {
       test('sets all properties', () {
-        final result = util.only(
+        final result = util(
           fontFamily: 'Arial',
           fontFamilyFallback: ['Helvetica', 'sans-serif'],
           fontSize: 18.0,
@@ -97,26 +97,18 @@ void main() {
       });
 
       test('sets partial properties', () {
-        final result = util.only(
-          fontFamily: 'Georgia',
-          fontSize: 14.0,
-          height: 1.2,
-        );
+        final result = util(fontFamily: 'Georgia', fontSize: 14.0, height: 1.2);
 
         final strutStyle = result.value.resolve(MockBuildContext());
 
         expect(
           strutStyle,
-          const StrutStyle(
-            fontFamily: 'Georgia',
-            fontSize: 14.0,
-            height: 1.2,
-          ),
+          const StrutStyle(fontFamily: 'Georgia', fontSize: 14.0, height: 1.2),
         );
       });
 
       test('handles null values', () {
-        final result = util.only();
+        final result = util();
 
         final strutStyle = result.value.resolve(MockBuildContext());
 
@@ -124,9 +116,7 @@ void main() {
       });
 
       test('handles font family fallback only', () {
-        final result = util.only(
-          fontFamilyFallback: ['Times', 'serif'],
-        );
+        final result = util(fontFamilyFallback: ['Times', 'serif']);
 
         final strutStyle = result.value.resolve(MockBuildContext());
 
@@ -137,7 +127,7 @@ void main() {
       });
 
       test('handles boolean properties', () {
-        final result = util.only(forceStrutHeight: false);
+        final result = util(forceStrutHeight: false);
 
         final strutStyle = result.value.resolve(MockBuildContext());
 
@@ -145,7 +135,7 @@ void main() {
       });
 
       test('handles leading property', () {
-        final result = util.only(leading: 1.5);
+        final result = util(leading: 1.5);
 
         final strutStyle = result.value.resolve(MockBuildContext());
 
@@ -184,19 +174,13 @@ void main() {
       });
 
       test('handles partial parameters', () {
-        final result = util(
-          fontWeight: FontWeight.w800,
-          fontSize: 20.0,
-        );
+        final result = util(fontWeight: FontWeight.w800, fontSize: 20.0);
 
         final strutStyle = result.value.resolve(MockBuildContext());
 
         expect(
           strutStyle,
-          const StrutStyle(
-            fontWeight: FontWeight.w800,
-            fontSize: 20.0,
-          ),
+          const StrutStyle(fontWeight: FontWeight.w800, fontSize: 20.0),
         );
       });
 
@@ -350,7 +334,7 @@ void main() {
       });
 
       test('handles small height', () {
-        final result = util.only(height: 0.1);
+        final result = util(height: 0.1);
 
         final strutStyle = result.value.resolve(MockBuildContext());
 
@@ -358,7 +342,7 @@ void main() {
       });
 
       test('handles large height', () {
-        final result = util.only(height: 5.0);
+        final result = util(height: 5.0);
 
         final strutStyle = result.value.resolve(MockBuildContext());
 
@@ -366,7 +350,7 @@ void main() {
       });
 
       test('handles zero leading', () {
-        final result = util.only(leading: 0.0);
+        final result = util(leading: 0.0);
 
         final strutStyle = result.value.resolve(MockBuildContext());
 
@@ -374,7 +358,7 @@ void main() {
       });
 
       test('handles large leading', () {
-        final result = util.only(leading: 10.0);
+        final result = util(leading: 10.0);
 
         final strutStyle = result.value.resolve(MockBuildContext());
 
@@ -411,7 +395,7 @@ void main() {
       });
 
       test('handles empty font family list', () {
-        final result = util.only(fontFamilyFallback: []);
+        final result = util(fontFamilyFallback: []);
 
         final strutStyle = result.value.resolve(MockBuildContext());
 
@@ -419,7 +403,7 @@ void main() {
       });
 
       test('handles single font family fallback', () {
-        final result = util.only(fontFamilyFallback: ['serif']);
+        final result = util(fontFamilyFallback: ['serif']);
 
         final strutStyle = result.value.resolve(MockBuildContext());
 
@@ -428,7 +412,7 @@ void main() {
 
       test('handles multiple font family fallbacks', () {
         final fallbacks = ['Helvetica', 'Arial', 'sans-serif'];
-        final result = util.only(fontFamilyFallback: fallbacks);
+        final result = util(fontFamilyFallback: fallbacks);
 
         final strutStyle = result.value.resolve(MockBuildContext());
 
@@ -438,7 +422,7 @@ void main() {
 
     group('boolean property variations', () {
       test('handles forceStrutHeight true', () {
-        final result = util.only(forceStrutHeight: true);
+        final result = util(forceStrutHeight: true);
 
         final strutStyle = result.value.resolve(MockBuildContext());
 
@@ -446,7 +430,7 @@ void main() {
       });
 
       test('handles forceStrutHeight false', () {
-        final result = util.only(forceStrutHeight: false);
+        final result = util(forceStrutHeight: false);
 
         final strutStyle = result.value.resolve(MockBuildContext());
 
@@ -456,7 +440,7 @@ void main() {
 
     group('property combinations', () {
       test('combines font properties', () {
-        final result = util.only(
+        final result = util(
           fontFamily: 'Roboto',
           fontSize: 16.0,
           fontWeight: FontWeight.w500,
@@ -477,26 +461,18 @@ void main() {
       });
 
       test('combines layout properties', () {
-        final result = util.only(
-          height: 1.6,
-          leading: 0.2,
-          forceStrutHeight: true,
-        );
+        final result = util(height: 1.6, leading: 0.2, forceStrutHeight: true);
 
         final strutStyle = result.value.resolve(MockBuildContext());
 
         expect(
           strutStyle,
-          const StrutStyle(
-            height: 1.6,
-            leading: 0.2,
-            forceStrutHeight: true,
-          ),
+          const StrutStyle(height: 1.6, leading: 0.2, forceStrutHeight: true),
         );
       });
 
       test('combines font family with fallbacks', () {
-        final result = util.only(
+        final result = util(
           fontFamily: 'Custom Font',
           fontFamilyFallback: ['Helvetica', 'Arial', 'sans-serif'],
         );
@@ -520,10 +496,7 @@ void main() {
           fontSize: 14.0,
           fontWeight: FontWeight.normal,
         );
-        final style2 = StrutStyleMix(
-          fontStyle: FontStyle.italic,
-          height: 1.5,
-        );
+        final style2 = StrutStyleMix(fontStyle: FontStyle.italic, height: 1.5);
 
         final merged = style1.merge(style2);
         final resolved = merged.resolve(MockBuildContext());
@@ -567,17 +540,17 @@ void main() {
         final style1 = StrutStyleMix(
           fontFamilyFallback: ['Arial', 'Helvetica'],
         );
-        final style2 = StrutStyleMix(
-          fontFamilyFallback: ['Times', 'serif'],
-        );
+        final style2 = StrutStyleMix(fontFamilyFallback: ['Times', 'serif']);
 
         final merged = style1.merge(style2);
         final resolved = merged.resolve(MockBuildContext());
 
-        expect(
-          resolved.fontFamilyFallback,
-          ['Arial', 'Helvetica', 'Times', 'serif'],
-        );
+        expect(resolved.fontFamilyFallback, [
+          'Arial',
+          'Helvetica',
+          'Times',
+          'serif',
+        ]);
       });
     });
 
@@ -591,7 +564,7 @@ void main() {
       });
 
       test('handles extremely small height', () {
-        final result = util.only(height: 0.1);
+        final result = util(height: 0.1);
 
         final strutStyle = result.value.resolve(MockBuildContext());
 
@@ -609,7 +582,7 @@ void main() {
 
       test('handles long font family fallback list', () {
         final longFallbackList = List.generate(10, (i) => 'Font$i');
-        final result = util.only(fontFamilyFallback: longFallbackList);
+        final result = util(fontFamilyFallback: longFallbackList);
 
         final strutStyle = result.value.resolve(MockBuildContext());
 
@@ -632,7 +605,7 @@ void main() {
       );
 
       expect(result.value, isA<StrutStyleMix>());
-      
+
       final resolved = result.value.resolve(MockBuildContext());
       expect(resolved, isA<StrutStyle>());
       expect(resolved.fontFamily, 'Roboto');
@@ -651,12 +624,19 @@ void main() {
       final familyResult = util.fontFamily('Arial');
       final styleResult = util.fontStyle(FontStyle.italic);
 
-      expect(weightResult.value.resolve(MockBuildContext()).fontWeight,
-          FontWeight.bold);
+      expect(
+        weightResult.value.resolve(MockBuildContext()).fontWeight,
+        FontWeight.bold,
+      );
       expect(sizeResult.value.resolve(MockBuildContext()).fontSize, 18.0);
-      expect(familyResult.value.resolve(MockBuildContext()).fontFamily, 'Arial');
-      expect(styleResult.value.resolve(MockBuildContext()).fontStyle,
-          FontStyle.italic);
+      expect(
+        familyResult.value.resolve(MockBuildContext()).fontFamily,
+        'Arial',
+      );
+      expect(
+        styleResult.value.resolve(MockBuildContext()).fontStyle,
+        FontStyle.italic,
+      );
     });
   });
 }

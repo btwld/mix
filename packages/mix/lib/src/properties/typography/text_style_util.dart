@@ -43,8 +43,6 @@ final class TextStyleUtility<T extends Style<Object?>>
     (prop) => call(textBaseline: prop),
   );
 
-  @Deprecated('Use call(...) instead')
-  late final only = call;
 
   TextStyleUtility(super.builder);
 

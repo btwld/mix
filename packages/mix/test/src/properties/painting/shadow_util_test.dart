@@ -58,7 +58,7 @@ void main() {
     group('only method', () {
       test('sets specific properties', () {
         const offset = Offset(4.0, 5.0);
-        final result = util.only(
+        final result = util(
           blurRadius: 8.0,
           color: Colors.blue,
           offset: offset,
@@ -77,7 +77,7 @@ void main() {
       });
 
       test('handles partial properties', () {
-        final result = util.only(
+        final result = util(
           blurRadius: 6.0,
           color: Colors.green,
         );
@@ -94,7 +94,7 @@ void main() {
       });
 
       test('handles null values', () {
-        final result = util.only();
+        final result = util();
 
         final shadow = result.value.resolve(MockBuildContext());
 
@@ -249,7 +249,7 @@ void main() {
     group('only method', () {
       test('sets all properties', () {
         const offset = Offset(4.0, 5.0);
-        final result = util.only(
+        final result = util(
           color: Colors.blue,
           offset: offset,
           blurRadius: 10.0,
@@ -270,7 +270,7 @@ void main() {
       });
 
       test('handles partial properties', () {
-        final result = util.only(
+        final result = util(
           color: Colors.green,
           blurRadius: 6.0,
         );
@@ -287,7 +287,7 @@ void main() {
       });
 
       test('handles null values', () {
-        final result = util.only();
+        final result = util();
 
         final boxShadow = result.value.resolve(MockBuildContext());
 

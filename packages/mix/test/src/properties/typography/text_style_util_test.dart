@@ -281,7 +281,7 @@ void main() {
 
     group('only method', () {
       test('sets all basic properties', () {
-        final result = util.only(
+        final result = util(
           color: Colors.red,
           backgroundColor: Colors.yellow,
           fontFamily: 'Arial',
@@ -322,7 +322,7 @@ void main() {
       });
 
       test('sets partial properties', () {
-        final result = util.only(
+        final result = util(
           fontFamily: 'Georgia',
           fontSize: 14.0,
           color: Colors.green,
@@ -341,7 +341,7 @@ void main() {
       });
 
       test('handles null values', () {
-        final result = util.only();
+        final result = util();
 
         final textStyle = result.value.value!.resolve(MockBuildContext());
 
@@ -356,7 +356,7 @@ void main() {
         const fontVariations = [FontVariation('wght', 500)];
         final fallbacks = ['Helvetica', 'sans-serif'];
 
-        final result = util.only(
+        final result = util(
           shadows: shadows.map(ShadowMix.value).toList(),
           fontFeatures: fontFeatures,
           fontVariations: fontVariations,
@@ -377,7 +377,7 @@ void main() {
         final foregroundPaint = Paint()..color = const Color(0xFFFF0000);
         final backgroundPaint = Paint()..color = const Color(0xFF2196F3);
 
-        final result = util.only(
+        final result = util(
           foreground: foregroundPaint,
           background: backgroundPaint,
         );

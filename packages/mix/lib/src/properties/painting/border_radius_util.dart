@@ -301,54 +301,51 @@ final class BorderRadiusDirectionalUtility<T extends Style<Object?>>
     extends MixUtility<T, BorderRadiusDirectionalMix> {
   /// Returns a [MixUtility] to manipulate [Radius] for topStart and topEnd corner.
   late final top = MixUtility<T, Radius>(
-    (radius) => call(topStart: radius, topEnd: radius),
+    (radius) => only(topStart: radius, topEnd: radius),
   );
 
   /// Returns a [MixUtility] to manipulate [Radius] for bottomStart and bottomEnd corner.
   late final bottom = MixUtility<T, Radius>(
-    (radius) => call(bottomStart: radius, bottomEnd: radius),
+    (radius) => only(bottomStart: radius, bottomEnd: radius),
   );
 
   /// Returns a [MixUtility] to manipulate [Radius] for topStart and bottomStart corner.
   late final start = MixUtility<T, Radius>(
-    (radius) => call(topStart: radius, bottomStart: radius),
+    (radius) => only(topStart: radius, bottomStart: radius),
   );
 
   /// Returns a [MixUtility] to manipulate [Radius] for topEnd and bottomEnd corner.
   late final end = MixUtility<T, Radius>(
-    (radius) => call(topEnd: radius, bottomEnd: radius),
+    (radius) => only(topEnd: radius, bottomEnd: radius),
   );
 
   /// Returns a [MixUtility] to manipulate [Radius] for topStart corner.
   late final topStart = MixUtility<T, Radius>(
-    (radius) => call(topStart: radius),
+    (radius) => only(topStart: radius),
   );
 
   /// Returns a [MixUtility] to manipulate [Radius] for topEnd corner.
-  late final topEnd = MixUtility<T, Radius>((radius) => call(topEnd: radius));
+  late final topEnd = MixUtility<T, Radius>((radius) => only(topEnd: radius));
 
   /// Returns a [MixUtility] to manipulate [Radius] for bottomStart corner.
   late final bottomStart = MixUtility<T, Radius>(
-    (radius) => call(bottomStart: radius),
+    (radius) => only(bottomStart: radius),
   );
 
   /// Returns a [MixUtility] to manipulate [Radius] for bottomEnd corner.
   late final bottomEnd = MixUtility<T, Radius>(
-    (radius) => call(bottomEnd: radius),
+    (radius) => only(bottomEnd: radius),
   );
 
   /// Returns a [MixUtility] to manipulate [Radius] for all corners.
   late final all = MixUtility<T, Radius>(
-    (radius) => call(
+    (radius) => only(
       topStart: radius,
       topEnd: radius,
       bottomStart: radius,
       bottomEnd: radius,
     ),
   );
-
-  @Deprecated('Use call(...) instead')
-  late final only = call;
 
   BorderRadiusDirectionalUtility(super.builder);
 
@@ -361,19 +358,23 @@ final class BorderRadiusDirectionalUtility<T extends Style<Object?>>
   /// Sets a zero [Radius] for all corners.
   T zero() => all.zero();
 
-  T call({
+  T only({
     Radius? topStart,
     Radius? topEnd,
     Radius? bottomStart,
     Radius? bottomEnd,
   }) {
-    return only(
-      bottomEnd: bottomEnd,
-      bottomStart: bottomStart,
-      topEnd: topEnd,
-      topStart: topStart,
+    return builder(
+      BorderRadiusDirectionalMix(
+        topStart: topStart,
+        topEnd: topEnd,
+        bottomStart: bottomStart,
+        bottomEnd: bottomEnd,
+      ),
     );
   }
+
+  T call(double value) => builder(BorderRadiusDirectionalMix.circular(value));
 
   T as(BorderRadiusDirectional value) {
     return builder(BorderRadiusDirectionalMix.value(value));

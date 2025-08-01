@@ -100,11 +100,11 @@ void main() {
       });
 
       test('has colors utility', () {
-        expect(util.colors, isA<PropListUtility>());
+        expect(util.colors, isA<Function>());
       });
 
       test('has stops utility', () {
-        expect(util.stops, isA<PropListUtility>());
+        expect(util.stops, isA<Function>());
       });
     });
 
@@ -295,11 +295,11 @@ void main() {
       });
 
       test('has colors utility', () {
-        expect(util.colors, isA<PropListUtility>());
+        expect(util.colors, isA<Function>());
       });
 
       test('has stops utility', () {
-        expect(util.stops, isA<PropListUtility>());
+        expect(util.stops, isA<Function>());
       });
     });
 
@@ -441,6 +441,7 @@ void main() {
             colors: [Colors.orange, Colors.purple],
             center: Alignment.centerRight,
             radius: 0.9,
+            tileMode: TileMode.clamp,
             focal: Alignment.center,
             focalRadius: 0.1,
           ),
@@ -480,11 +481,11 @@ void main() {
       });
 
       test('has colors utility', () {
-        expect(util.colors, isA<PropListUtility>());
+        expect(util.colors, isA<Function>());
       });
 
       test('has stops utility', () {
-        expect(util.stops, isA<PropListUtility>());
+        expect(util.stops, isA<Function>());
       });
     });
 

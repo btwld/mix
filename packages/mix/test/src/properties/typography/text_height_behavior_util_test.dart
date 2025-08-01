@@ -67,7 +67,7 @@ void main() {
 
     group('only method', () {
       test('sets all properties', () {
-        final result = util.only(
+        final result = util(
           applyHeightToFirstAscent: false,
           applyHeightToLastDescent: false,
           leadingDistribution: TextLeadingDistribution.even,
@@ -86,7 +86,7 @@ void main() {
       });
 
       test('sets partial properties', () {
-        final result = util.only(
+        final result = util(
           applyHeightToFirstAscent: true,
           leadingDistribution: TextLeadingDistribution.proportional,
         );
@@ -103,7 +103,7 @@ void main() {
       });
 
       test('handles null values with defaults', () {
-        final result = util.only();
+        final result = util();
 
         final behavior = result.value.resolve(MockBuildContext());
 
@@ -112,13 +112,14 @@ void main() {
           const TextHeightBehavior(
             applyHeightToFirstAscent: true, // Default value
             applyHeightToLastDescent: true, // Default value
-            leadingDistribution: TextLeadingDistribution.proportional, // Default
+            leadingDistribution:
+                TextLeadingDistribution.proportional, // Default
           ),
         );
       });
 
       test('sets only applyHeightToFirstAscent', () {
-        final result = util.only(applyHeightToFirstAscent: false);
+        final result = util(applyHeightToFirstAscent: false);
 
         final behavior = result.value.resolve(MockBuildContext());
 
@@ -127,13 +128,14 @@ void main() {
           const TextHeightBehavior(
             applyHeightToFirstAscent: false,
             applyHeightToLastDescent: true, // Default
-            leadingDistribution: TextLeadingDistribution.proportional, // Default
+            leadingDistribution:
+                TextLeadingDistribution.proportional, // Default
           ),
         );
       });
 
       test('sets only applyHeightToLastDescent', () {
-        final result = util.only(applyHeightToLastDescent: false);
+        final result = util(applyHeightToLastDescent: false);
 
         final behavior = result.value.resolve(MockBuildContext());
 
@@ -142,15 +144,14 @@ void main() {
           const TextHeightBehavior(
             applyHeightToFirstAscent: true, // Default
             applyHeightToLastDescent: false,
-            leadingDistribution: TextLeadingDistribution.proportional, // Default
+            leadingDistribution:
+                TextLeadingDistribution.proportional, // Default
           ),
         );
       });
 
       test('sets only leadingDistribution', () {
-        final result = util.only(
-          leadingDistribution: TextLeadingDistribution.even,
-        );
+        final result = util(leadingDistribution: TextLeadingDistribution.even);
 
         final behavior = result.value.resolve(MockBuildContext());
 
@@ -213,7 +214,8 @@ void main() {
           const TextHeightBehavior(
             applyHeightToFirstAscent: true, // Default
             applyHeightToLastDescent: true, // Default
-            leadingDistribution: TextLeadingDistribution.proportional, // Default
+            leadingDistribution:
+                TextLeadingDistribution.proportional, // Default
           ),
         );
       });
@@ -243,8 +245,14 @@ void main() {
         final result = util.as(behavior);
 
         final resolved = result.value.resolve(MockBuildContext());
-        expect(resolved.applyHeightToFirstAscent, behavior.applyHeightToFirstAscent);
-        expect(resolved.applyHeightToLastDescent, behavior.applyHeightToLastDescent);
+        expect(
+          resolved.applyHeightToFirstAscent,
+          behavior.applyHeightToFirstAscent,
+        );
+        expect(
+          resolved.applyHeightToLastDescent,
+          behavior.applyHeightToLastDescent,
+        );
         expect(resolved.leadingDistribution, behavior.leadingDistribution);
       });
 
@@ -271,7 +279,7 @@ void main() {
         ];
 
         for (final (firstAscent, lastDescent) in combinations) {
-          final result = util.only(
+          final result = util(
             applyHeightToFirstAscent: firstAscent,
             applyHeightToLastDescent: lastDescent,
           );
@@ -354,7 +362,7 @@ void main() {
 
     group('property combinations', () {
       test('combines height properties with proportional distribution', () {
-        final result = util.only(
+        final result = util(
           applyHeightToFirstAscent: false,
           applyHeightToLastDescent: false,
           leadingDistribution: TextLeadingDistribution.proportional,
@@ -373,7 +381,7 @@ void main() {
       });
 
       test('combines height properties with even distribution', () {
-        final result = util.only(
+        final result = util(
           applyHeightToFirstAscent: true,
           applyHeightToLastDescent: true,
           leadingDistribution: TextLeadingDistribution.even,
@@ -392,7 +400,7 @@ void main() {
       });
 
       test('combines mixed boolean values with different distributions', () {
-        final result = util.only(
+        final result = util(
           applyHeightToFirstAscent: true,
           applyHeightToLastDescent: false,
           leadingDistribution: TextLeadingDistribution.even,
@@ -452,7 +460,8 @@ void main() {
           const TextHeightBehavior(
             applyHeightToFirstAscent: false, // Should use merged value
             applyHeightToLastDescent: true, // Default
-            leadingDistribution: TextLeadingDistribution.even, // Should use merged value
+            leadingDistribution:
+                TextLeadingDistribution.even, // Should use merged value
           ),
         );
       });
@@ -472,24 +481,30 @@ void main() {
 
     group('default value behavior', () {
       test('uses correct default values when properties are null', () {
-        final result = util.only();
+        final result = util();
 
         final behavior = result.value.resolve(MockBuildContext());
 
         // Check that defaults match Flutter's TextHeightBehavior defaults
         expect(behavior.applyHeightToFirstAscent, true);
         expect(behavior.applyHeightToLastDescent, true);
-        expect(behavior.leadingDistribution, TextLeadingDistribution.proportional);
+        expect(
+          behavior.leadingDistribution,
+          TextLeadingDistribution.proportional,
+        );
       });
 
       test('partial properties use defaults for unspecified values', () {
-        final result = util.only(applyHeightToFirstAscent: false);
+        final result = util(applyHeightToFirstAscent: false);
 
         final behavior = result.value.resolve(MockBuildContext());
 
         expect(behavior.applyHeightToFirstAscent, false);
         expect(behavior.applyHeightToLastDescent, true); // Default
-        expect(behavior.leadingDistribution, TextLeadingDistribution.proportional); // Default
+        expect(
+          behavior.leadingDistribution,
+          TextLeadingDistribution.proportional,
+        ); // Default
       });
     });
 
@@ -501,7 +516,10 @@ void main() {
 
         expect(behavior.applyHeightToFirstAscent, false);
         expect(behavior.applyHeightToLastDescent, true); // Default
-        expect(behavior.leadingDistribution, TextLeadingDistribution.proportional); // Default
+        expect(
+          behavior.leadingDistribution,
+          TextLeadingDistribution.proportional,
+        ); // Default
       });
 
       test('heightToLastDescent utility works independently', () {
@@ -511,7 +529,10 @@ void main() {
 
         expect(behavior.applyHeightToFirstAscent, true); // Default
         expect(behavior.applyHeightToLastDescent, false);
-        expect(behavior.leadingDistribution, TextLeadingDistribution.proportional); // Default
+        expect(
+          behavior.leadingDistribution,
+          TextLeadingDistribution.proportional,
+        ); // Default
       });
 
       test('leadingDistribution utility works independently', () {
@@ -539,15 +560,23 @@ void main() {
         expect(resolved, originalBehavior);
       });
 
-      test('ensures consistency between utility properties and only method', () {
-        final utilityResult = util.heightToFirstAscent(false);
-        final onlyResult = util.only(applyHeightToFirstAscent: false);
+      test(
+        'ensures consistency between utility properties and only method',
+        () {
+          final utilityResult = util.heightToFirstAscent(false);
+          final onlyResult = util(applyHeightToFirstAscent: false);
 
-        final utilityBehavior = utilityResult.value.resolve(MockBuildContext());
-        final onlyBehavior = onlyResult.value.resolve(MockBuildContext());
+          final utilityBehavior = utilityResult.value.resolve(
+            MockBuildContext(),
+          );
+          final onlyBehavior = onlyResult.value.resolve(MockBuildContext());
 
-        expect(utilityBehavior.applyHeightToFirstAscent, onlyBehavior.applyHeightToFirstAscent);
-      });
+          expect(
+            utilityBehavior.applyHeightToFirstAscent,
+            onlyBehavior.applyHeightToFirstAscent,
+          );
+        },
+      );
 
       test('maintains immutability after operations', () {
         final original = TextHeightBehaviorMix(
@@ -559,9 +588,15 @@ void main() {
         final modified = original.applyHeightToFirstAscent(false);
 
         // Original should remain unchanged
-        expect(original.resolve(MockBuildContext()).applyHeightToFirstAscent, true);
+        expect(
+          original.resolve(MockBuildContext()).applyHeightToFirstAscent,
+          true,
+        );
         // Modified should have the new value
-        expect(modified.resolve(MockBuildContext()).applyHeightToFirstAscent, false);
+        expect(
+          modified.resolve(MockBuildContext()).applyHeightToFirstAscent,
+          false,
+        );
       });
     });
   });
@@ -579,7 +614,7 @@ void main() {
       );
 
       expect(result.value, isA<TextHeightBehaviorMix>());
-      
+
       final resolved = result.value.resolve(MockBuildContext());
       expect(resolved, isA<TextHeightBehavior>());
       expect(resolved.applyHeightToFirstAscent, false);
@@ -594,12 +629,29 @@ void main() {
 
       final heightFirstResult = util.heightToFirstAscent(false);
       final heightLastResult = util.heightToLastDescent(false);
-      final distributionResult = util.leadingDistribution(TextLeadingDistribution.even);
+      final distributionResult = util.leadingDistribution(
+        TextLeadingDistribution.even,
+      );
 
       // Individual properties work
-      expect(heightFirstResult.value.resolve(MockBuildContext()).applyHeightToFirstAscent, false);
-      expect(heightLastResult.value.resolve(MockBuildContext()).applyHeightToLastDescent, false);
-      expect(distributionResult.value.resolve(MockBuildContext()).leadingDistribution, TextLeadingDistribution.even);
+      expect(
+        heightFirstResult.value
+            .resolve(MockBuildContext())
+            .applyHeightToFirstAscent,
+        false,
+      );
+      expect(
+        heightLastResult.value
+            .resolve(MockBuildContext())
+            .applyHeightToLastDescent,
+        false,
+      );
+      expect(
+        distributionResult.value
+            .resolve(MockBuildContext())
+            .leadingDistribution,
+        TextLeadingDistribution.even,
+      );
 
       // Properties can be combined through merging
       final combined = heightFirstResult.value
@@ -609,7 +661,10 @@ void main() {
       final combinedResolved = combined.resolve(MockBuildContext());
       expect(combinedResolved.applyHeightToFirstAscent, false);
       expect(combinedResolved.applyHeightToLastDescent, false);
-      expect(combinedResolved.leadingDistribution, TextLeadingDistribution.even);
+      expect(
+        combinedResolved.leadingDistribution,
+        TextLeadingDistribution.even,
+      );
     });
 
     test('preserves Flutter TextHeightBehavior semantics', () {
@@ -627,9 +682,18 @@ void main() {
       final mixResult = util.as(flutterBehavior);
       final mixResolved = mixResult.value.resolve(MockBuildContext());
 
-      expect(mixResolved.applyHeightToFirstAscent, flutterBehavior.applyHeightToFirstAscent);
-      expect(mixResolved.applyHeightToLastDescent, flutterBehavior.applyHeightToLastDescent);
-      expect(mixResolved.leadingDistribution, flutterBehavior.leadingDistribution);
+      expect(
+        mixResolved.applyHeightToFirstAscent,
+        flutterBehavior.applyHeightToFirstAscent,
+      );
+      expect(
+        mixResolved.applyHeightToLastDescent,
+        flutterBehavior.applyHeightToLastDescent,
+      );
+      expect(
+        mixResolved.leadingDistribution,
+        flutterBehavior.leadingDistribution,
+      );
     });
   });
 }

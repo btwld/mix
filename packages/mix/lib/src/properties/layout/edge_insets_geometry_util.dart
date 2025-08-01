@@ -11,25 +11,17 @@ import 'scalar_util.dart';
 @immutable
 final class EdgeInsetsGeometryUtility<U extends Style<Object?>>
     extends MixUtility<U, EdgeInsetsGeometryMix> {
-  @Deprecated('Use call(...) with start/end parameters instead')
-  late final directional = EdgeInsetsDirectionalUtility(builder);
+    late final directional = EdgeInsetsDirectionalUtility(builder);
 
-  @Deprecated('Use call(left: value, right: value) instead')
-  late final horizontal = SpacingSideUtility<U>((v) => only(left: v, right: v));
-  @Deprecated('Use call(top: value, bottom: value) instead')
-  late final vertical = SpacingSideUtility<U>((v) => only(top: v, bottom: v));
-  @Deprecated('Use call(value) instead')
-  late final all = SpacingSideUtility<U>(
+    late final horizontal = SpacingSideUtility<U>((v) => only(left: v, right: v));
+    late final vertical = SpacingSideUtility<U>((v) => only(top: v, bottom: v));
+    late final all = SpacingSideUtility<U>(
     (v) => only(top: v, bottom: v, left: v, right: v),
   );
-  @Deprecated('Use call(top: value) instead')
-  late final top = SpacingSideUtility<U>((v) => only(top: v));
-  @Deprecated('Use call(bottom: value) instead')
-  late final bottom = SpacingSideUtility<U>((v) => only(bottom: v));
-  @Deprecated('Use call(left: value) instead')
-  late final left = SpacingSideUtility<U>((v) => only(left: v));
-  @Deprecated('Use call(right: value) instead')
-  late final right = SpacingSideUtility<U>((v) => only(right: v));
+    late final top = SpacingSideUtility<U>((v) => only(top: v));
+    late final bottom = SpacingSideUtility<U>((v) => only(bottom: v));
+    late final left = SpacingSideUtility<U>((v) => only(left: v));
+    late final right = SpacingSideUtility<U>((v) => only(right: v));
 
   EdgeInsetsGeometryUtility(super.builder);
 
@@ -62,16 +54,17 @@ final class EdgeInsetsGeometryUtility<U extends Style<Object?>>
   }
 
   U call(double p1, [double? p2, double? p3, double? p4]) {
-    return only(
+    EdgeInsetsGeometryMix edgeInsets = EdgeInsetsMix(
       top: p1,
       bottom: p3 ?? p1,
       left: p4 ?? p2 ?? p1,
       right: p2 ?? p1,
     );
+
+    return builder(edgeInsets);
   }
 
-  @Deprecated('Use call(as: value) instead')
-  U as(EdgeInsetsGeometry value) {
+    U as(EdgeInsetsGeometry value) {
     return builder(EdgeInsetsGeometryMix.value(value));
   }
 }
@@ -79,22 +72,15 @@ final class EdgeInsetsGeometryUtility<U extends Style<Object?>>
 @immutable
 final class EdgeInsetsDirectionalUtility<U extends Style<Object?>>
     extends MixUtility<U, EdgeInsetsDirectionalMix> {
-  @Deprecated('Use call(value) instead')
-  late final all = SpacingSideUtility<U>(
+    late final all = SpacingSideUtility<U>(
     (v) => only(top: v, bottom: v, start: v, end: v),
   );
-  @Deprecated('Use call(start: value) instead')
-  late final start = SpacingSideUtility<U>((v) => only(start: v));
-  @Deprecated('Use call(end: value) instead')
-  late final end = SpacingSideUtility<U>((v) => only(end: v));
-  @Deprecated('Use call(top: value) instead')
-  late final top = SpacingSideUtility<U>((v) => only(top: v));
-  @Deprecated('Use call(bottom: value) instead')
-  late final bottom = SpacingSideUtility<U>((v) => only(bottom: v));
-  @Deprecated('Use call(top: value, bottom: value) instead')
-  late final vertical = SpacingSideUtility<U>((v) => only(top: v, bottom: v));
-  @Deprecated('Use call(start: value, end: value) instead')
-  late final horizontal = SpacingSideUtility<U>((v) => only(start: v, end: v));
+    late final start = SpacingSideUtility<U>((v) => only(start: v));
+    late final end = SpacingSideUtility<U>((v) => only(end: v));
+    late final top = SpacingSideUtility<U>((v) => only(top: v));
+    late final bottom = SpacingSideUtility<U>((v) => only(bottom: v));
+    late final vertical = SpacingSideUtility<U>((v) => only(top: v, bottom: v));
+    late final horizontal = SpacingSideUtility<U>((v) => only(start: v, end: v));
 
   EdgeInsetsDirectionalUtility(super.builder);
 
@@ -118,8 +104,7 @@ final class EdgeInsetsDirectionalUtility<U extends Style<Object?>>
     );
   }
 
-  @Deprecated('Use call(as: value) instead')
-  U as(EdgeInsetsDirectional value) {
+    U as(EdgeInsetsDirectional value) {
     return builder(EdgeInsetsDirectionalMix.value(value));
   }
 }

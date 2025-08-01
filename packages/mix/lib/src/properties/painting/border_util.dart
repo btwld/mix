@@ -443,8 +443,6 @@ final class BorderSideUtility<T extends Style<Object?>>
   /// Utility for defining [BorderSideMix.style]
   late final style = MixUtility<T, BorderStyle>((prop) => call(style: prop));
 
-  @Deprecated('Use call(...) instead')
-  late final only = call;
 
   BorderSideUtility(super.builder);
 

@@ -500,7 +500,7 @@ void main() {
       });
 
       test('call method delegates to only', () {
-        final result = util(
+        final result = util.only(
           topRight: const Radius.circular(8.0),
           bottomLeft: const Radius.circular(12.0),
         );
@@ -706,7 +706,7 @@ void main() {
       });
 
       test('call method delegates to only', () {
-        final result = util(
+        final result = util.only(
           topEnd: const Radius.circular(8.0),
           bottomStart: const Radius.circular(12.0),
         );

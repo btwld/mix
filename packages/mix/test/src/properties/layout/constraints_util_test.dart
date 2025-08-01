@@ -46,10 +46,7 @@ void main() {
 
         final constraints = result.value.resolve(MockBuildContext());
 
-        expect(
-          constraints,
-          const BoxConstraints(minWidth: 100.0),
-        );
+        expect(constraints, const BoxConstraints(minWidth: 100.0));
       });
 
       test('maxWidth sets maximum width constraint', () {
@@ -57,10 +54,7 @@ void main() {
 
         final constraints = result.value.resolve(MockBuildContext());
 
-        expect(
-          constraints,
-          const BoxConstraints(maxWidth: 200.0),
-        );
+        expect(constraints, const BoxConstraints(maxWidth: 200.0));
       });
 
       test('minHeight sets minimum height constraint', () {
@@ -68,10 +62,7 @@ void main() {
 
         final constraints = result.value.resolve(MockBuildContext());
 
-        expect(
-          constraints,
-          const BoxConstraints(minHeight: 50.0),
-        );
+        expect(constraints, const BoxConstraints(minHeight: 50.0));
       });
 
       test('maxHeight sets maximum height constraint', () {
@@ -79,10 +70,7 @@ void main() {
 
         final constraints = result.value.resolve(MockBuildContext());
 
-        expect(
-          constraints,
-          const BoxConstraints(maxHeight: 150.0),
-        );
+        expect(constraints, const BoxConstraints(maxHeight: 150.0));
       });
 
       test('height sets both min and max height constraints', () {
@@ -110,7 +98,7 @@ void main() {
 
     group('only method', () {
       test('sets specific constraints', () {
-        final result = util.only(
+        final result = util(
           minWidth: 50.0,
           maxWidth: 200.0,
           minHeight: 30.0,
@@ -131,24 +119,18 @@ void main() {
       });
 
       test('sets partial constraints', () {
-        final result = util.only(
-          minWidth: 100.0,
-          maxHeight: 200.0,
-        );
+        final result = util(minWidth: 100.0, maxHeight: 200.0);
 
         final constraints = result.value.resolve(MockBuildContext());
 
         expect(
           constraints,
-          const BoxConstraints(
-            minWidth: 100.0,
-            maxHeight: 200.0,
-          ),
+          const BoxConstraints(minWidth: 100.0, maxHeight: 200.0),
         );
       });
 
       test('handles null values', () {
-        final result = util.only();
+        final result = util();
 
         final constraints = result.value.resolve(MockBuildContext());
 
@@ -179,19 +161,13 @@ void main() {
       });
 
       test('handles partial parameters', () {
-        final result = util(
-          minWidth: 80.0,
-          maxHeight: 120.0,
-        );
+        final result = util(minWidth: 80.0, maxHeight: 120.0);
 
         final constraints = result.value.resolve(MockBuildContext());
 
         expect(
           constraints,
-          const BoxConstraints(
-            minWidth: 80.0,
-            maxHeight: 120.0,
-          ),
+          const BoxConstraints(minWidth: 80.0, maxHeight: 120.0),
         );
       });
     });
@@ -218,7 +194,10 @@ void main() {
       });
 
       test('handles tight constraints', () {
-        const constraints = BoxConstraints.tightFor(width: 200.0, height: 100.0);
+        const constraints = BoxConstraints.tightFor(
+          width: 200.0,
+          height: 100.0,
+        );
         final result = util.as(constraints);
 
         final resolved = result.value.resolve(MockBuildContext());
@@ -240,7 +219,9 @@ void main() {
         final heightResult = util.height(100.0);
 
         final widthConstraints = widthResult.value.resolve(MockBuildContext());
-        final heightConstraints = heightResult.value.resolve(MockBuildContext());
+        final heightConstraints = heightResult.value.resolve(
+          MockBuildContext(),
+        );
 
         expect(
           widthConstraints,

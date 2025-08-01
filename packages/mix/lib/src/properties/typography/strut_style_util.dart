@@ -14,8 +14,6 @@ final class StrutStyleUtility<T extends Style<Object?>>
     (prop) => call(fontStyle: prop),
   );
 
-  @Deprecated('Use call(...) instead')
-  late final only = call;
 
   StrutStyleUtility(super.builder);
 
