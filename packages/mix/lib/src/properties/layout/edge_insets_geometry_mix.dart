@@ -238,6 +238,16 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
     return merge(EdgeInsetsGeometryMix.right(value));
   }
 
+  /// Returns a copy with the specified vertical insets.
+  EdgeInsetsMix vertical(double value) {
+    return merge(EdgeInsetsGeometryMix.vertical(value));
+  }
+
+  /// Returns a copy with the specified horizontal insets.
+  EdgeInsetsMix horizontal(double value) {
+    return merge(EdgeInsetsGeometryMix.horizontal(value));
+  }
+
   @override
   EdgeInsets resolve(BuildContext context) {
     return EdgeInsets.fromLTRB(

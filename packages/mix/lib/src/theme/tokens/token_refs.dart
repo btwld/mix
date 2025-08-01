@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import 'mix_token.dart';
 
-abstract class TokenRef<T extends Object> {
+abstract class TokenRef<T> {
   final MixToken<T> token;
   const TokenRef(this.token);
   @override
@@ -270,9 +270,6 @@ extension type const DoubleRef(double _value) implements double {
 
     return ref;
   }
-
-  /// Gets the associated token for this reference
-  MixToken<double> get mixToken => _tokenRegistry[this]! as MixToken<double>;
 }
 
 /// Extension type for [int] values with token tracking
@@ -284,9 +281,6 @@ extension type const IntRef(int _value) implements int {
 
     return ref;
   }
-
-  /// Gets the associated token for this reference
-  MixToken<int> get mixToken => _tokenRegistry[this]! as MixToken<int>;
 }
 
 /// Extension type for [String] values with token tracking
@@ -299,13 +293,35 @@ extension type const StringRef(String _value) implements String {
 
     return ref;
   }
-
-  /// Gets the associated token for this reference
-  MixToken<String> get mixToken => _tokenRegistry[this]! as MixToken<String>;
 }
 
 /// Utility to clean up token registry (for memory management)
 @visibleForTesting
 void clearTokenRegistry() {
   _tokenRegistry.clear();
+}
+
+/// Checks if a value is any type of token reference
+bool isAnyTokenRef(Object value) {
+  // Check class-based token references
+  if (value is TokenRef) return true;
+
+  // Check extension type token references via registry
+  return _tokenRegistry.containsKey(value);
+}
+
+/// Gets the token from a value if it's a token reference
+MixToken<T>? getTokenFromValue<T>(T value) {
+  // Handle class-based token references
+  if (value is TokenRef<T>) {
+    return value.token;
+  }
+
+  // Handle extension type token references
+  final token = _tokenRegistry[value as Object];
+  if (token is MixToken<T>) {
+    return token;
+  }
+
+  return null;
 }

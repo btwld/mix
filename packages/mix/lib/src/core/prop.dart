@@ -6,6 +6,7 @@ import '../properties/painting/decoration_mix.dart';
 import '../properties/painting/shape_border_mix.dart';
 import '../theme/mix_theme.dart';
 import '../theme/tokens/mix_token.dart';
+import '../theme/tokens/token_refs.dart';
 import 'decoration_merge.dart';
 import 'directive.dart';
 import 'helpers.dart';
@@ -79,12 +80,23 @@ class Prop<V> extends PropBase<V> {
   const Prop.raw({this.source, super.directives, super.animation});
 
   // Named constructors for clarity
-  Prop(V value, {List<MixDirective<V>>? directives, AnimationConfig? animation})
-    : this.raw(
-        source: ValuePropSource(value),
-        directives: directives,
-        animation: animation,
-      );
+  factory Prop(
+    V value, {
+    List<MixDirective<V>>? directives,
+    AnimationConfig? animation,
+  }) {
+    final token = getTokenFromValue(value);
+
+    if (token != null) {
+      return Prop.token(token, directives: directives, animation: animation);
+    }
+
+    return Prop.raw(
+      source: ValuePropSource(value),
+      directives: directives,
+      animation: animation,
+    );
+  }
 
   Prop.token(
     MixToken<V> token, {

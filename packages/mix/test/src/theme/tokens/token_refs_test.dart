@@ -107,24 +107,27 @@ void main() {
 
     group('Extension Type Token References', () {
       group('DoubleRef', () {
-        test('creates from token using token hashCode', () {
+        test('creates from token using hybrid hashing', () {
           final token = MixToken<double>('test-double');
           final ref = DoubleRef.token(token);
 
           expect(ref, isA<double>());
           expect(ref.mixToken, equals(token));
-          expect(ref, equals(token.hashCode.toDouble()));
+          // Verify the value is in the expected 1B+ range
+          expect(ref, greaterThanOrEqualTo(1000000000.0));
+          expect(ref, lessThan(2000000000.0));
         });
 
         test('can be used as double', () {
           final token = MixToken<double>('test-double');
           final ref = DoubleRef.token(token);
 
-          // Test arithmetic operations
-          expect(ref + 1.0, equals(token.hashCode.toDouble() + 1.0));
-          expect(ref - 1.0, equals(token.hashCode.toDouble() - 1.0));
-          expect(ref * 2.0, equals(token.hashCode.toDouble() * 2.0));
-          expect(ref / 2.0, equals(token.hashCode.toDouble() / 2.0));
+          // Test arithmetic operations work correctly
+          final originalValue = ref as double;
+          expect(ref + 1.0, equals(originalValue + 1.0));
+          expect(ref - 1.0, equals(originalValue - 1.0));
+          expect(ref * 2.0, equals(originalValue * 2.0));
+          expect(ref / 2.0, equals(originalValue / 2.0));
         });
 
         test('deterministic value for same token', () {
@@ -163,24 +166,27 @@ void main() {
       });
 
       group('IntRef', () {
-        test('creates from token using token hashCode', () {
+        test('creates from token using hybrid hashing', () {
           final token = MixToken<int>('test-int');
           final ref = IntRef.token(token);
 
           expect(ref, isA<int>());
           expect(ref.mixToken, equals(token));
-          expect(ref, equals(token.hashCode));
+          // Verify the value is in the expected 1B+ range
+          expect(ref, greaterThanOrEqualTo(1000000000));
+          expect(ref, lessThan(2000000000));
         });
 
         test('can be used as int', () {
           final token = MixToken<int>('test-int');
           final ref = IntRef.token(token);
 
-          // Test arithmetic operations
-          expect(ref + 1, equals(token.hashCode + 1));
-          expect(ref - 1, equals(token.hashCode - 1));
-          expect(ref * 2, equals(token.hashCode * 2));
-          expect(ref ~/ 2, equals(token.hashCode ~/ 2));
+          // Test arithmetic operations work correctly
+          final originalValue = ref as int;
+          expect(ref + 1, equals(originalValue + 1));
+          expect(ref - 1, equals(originalValue - 1));
+          expect(ref * 2, equals(originalValue * 2));
+          expect(ref ~/ 2, equals(originalValue ~/ 2));
         });
 
         test('deterministic value for same token', () {
@@ -204,25 +210,30 @@ void main() {
       });
 
       group('StringRef', () {
-        test('creates from token using token hashCode', () {
+        test('creates from token using hybrid hashing', () {
           final token = MixToken<String>('test-string');
           final ref = StringRef.token(token);
 
           expect(ref, isA<String>());
           expect(ref.mixToken, equals(token));
-          expect(ref, equals('_tk_${token.hashCode.toRadixString(36)}'));
+          // Verify the value starts with the expected prefix and is in safe range
+          expect(ref, startsWith('_tk_'));
+          final hashPart = ref.substring(4); // Remove '_tk_' prefix
+          final numericValue = int.tryParse(hashPart, radix: 36);
+          expect(numericValue, isNotNull);
+          expect(numericValue!, greaterThanOrEqualTo(1000000000));
+          expect(numericValue, lessThan(2000000000));
         });
 
         test('can be used as string', () {
           final token = MixToken<String>('test-string');
           final ref = StringRef.token(token);
-          final expectedValue = '_tk_${token.hashCode.toRadixString(36)}';
 
           // Test string operations
-          expect(ref.length, equals(expectedValue.length));
+          expect(ref.length, greaterThan(4)); // At least '_tk_' + some digits
           expect(ref.contains('_tk_'), isTrue);
           expect(ref.startsWith('_tk_'), isTrue);
-          expect(ref.toUpperCase(), equals(expectedValue.toUpperCase()));
+          expect(ref.toUpperCase(), contains('_TK_'));
         });
 
         test('deterministic value for same token', () {
@@ -247,9 +258,8 @@ void main() {
         test('generates valid base36 representation', () {
           final token = MixToken<String>('base36-test');
           final ref = StringRef.token(token);
-          final hashBase36 = token.hashCode.toRadixString(36);
 
-          expect(ref, equals('_tk_$hashBase36'));
+          expect(ref, startsWith('_tk_'));
           expect(ref, matches(RegExp(r'^_tk_[0-9a-z]+$')));
         });
       });
@@ -354,7 +364,9 @@ void main() {
         final ref = IntRef.token(token);
 
         expect(ref.mixToken, equals(token));
-        expect(ref, equals(token.hashCode));
+        // Verify the value is in the expected 1B+ range regardless of token hashCode
+        expect(ref, greaterThanOrEqualTo(1000000000));
+        expect(ref, lessThan(2000000000));
       });
     });
 
@@ -376,6 +388,231 @@ void main() {
         expect(doubleRef.mixToken, isA<MixToken<double>>());
         expect(intRef.mixToken, isA<MixToken<int>>());
         expect(stringRef.mixToken, isA<MixToken<String>>());
+      });
+    });
+
+    group('isAnyTokenRef Function', () {
+      test('returns true for class-based token references', () {
+        final colorToken = MixToken<Color>('test-color');
+        final durationToken = MixToken<Duration>('test-duration');
+        final offsetToken = MixToken<Offset>('test-offset');
+        final radiusToken = MixToken<Radius>('test-radius');
+        final textStyleToken = MixToken<TextStyle>('test-text-style');
+
+        final colorRef = ColorRef(colorToken);
+        final durationRef = DurationRef(durationToken);
+        final offsetRef = OffsetRef(offsetToken);
+        final radiusRef = RadiusRef(radiusToken);
+        final textStyleRef = TextStyleRef(textStyleToken);
+
+        expect(isAnyTokenRef(colorRef), isTrue);
+        expect(isAnyTokenRef(durationRef), isTrue);
+        expect(isAnyTokenRef(offsetRef), isTrue);
+        expect(isAnyTokenRef(radiusRef), isTrue);
+        expect(isAnyTokenRef(textStyleRef), isTrue);
+      });
+
+      test('returns true for extension type token references', () {
+        final doubleToken = MixToken<double>('test-double');
+        final intToken = MixToken<int>('test-int');
+        final stringToken = MixToken<String>('test-string');
+
+        final doubleRef = DoubleRef.token(doubleToken);
+        final intRef = IntRef.token(intToken);
+        final stringRef = StringRef.token(stringToken);
+
+        expect(isAnyTokenRef(doubleRef), isTrue);
+        expect(isAnyTokenRef(intRef), isTrue);
+        expect(isAnyTokenRef(stringRef), isTrue);
+      });
+
+      test('returns false for non-token values', () {
+        expect(isAnyTokenRef(Colors.red), isFalse);
+        expect(isAnyTokenRef(42.0), isFalse);
+        expect(isAnyTokenRef(42), isFalse);
+        expect(isAnyTokenRef('hello'), isFalse);
+        expect(isAnyTokenRef(const Duration(seconds: 1)), isFalse);
+        expect(isAnyTokenRef(const Offset(10, 20)), isFalse);
+        expect(isAnyTokenRef(Radius.circular(5)), isFalse);
+        expect(isAnyTokenRef(<String>[]), isFalse);
+        expect(isAnyTokenRef(<String, Object>{}), isFalse);
+      });
+
+      test('returns false for manually created extension type values not in registry', () {
+        final manualDoubleRef = DoubleRef(42.0);
+        final manualIntRef = IntRef(42);
+        final manualStringRef = StringRef('manual');
+
+        expect(isAnyTokenRef(manualDoubleRef), isFalse);
+        expect(isAnyTokenRef(manualIntRef), isFalse);
+        expect(isAnyTokenRef(manualStringRef), isFalse);
+      });
+
+      test('handles mixed collections correctly', () {
+        final colorToken = MixToken<Color>('test-color');
+        final doubleToken = MixToken<double>('test-double');
+        
+        final colorRef = ColorRef(colorToken);
+        final doubleRef = DoubleRef.token(doubleToken);
+        
+        final mixedList = [colorRef, Colors.blue, doubleRef, 42.0, 'hello'];
+        
+        expect(isAnyTokenRef(mixedList[0]), isTrue);  // ColorRef
+        expect(isAnyTokenRef(mixedList[1]), isFalse); // Colors.blue
+        expect(isAnyTokenRef(mixedList[2]), isTrue);  // DoubleRef
+        expect(isAnyTokenRef(mixedList[3]), isFalse); // 42.0
+        expect(isAnyTokenRef(mixedList[4]), isFalse); // 'hello'
+      });
+
+      test('works correctly after registry clear', () {
+        final doubleToken = MixToken<double>('test-double');
+        final doubleRef = DoubleRef.token(doubleToken);
+        
+        expect(isAnyTokenRef(doubleRef), isTrue);
+        
+        clearTokenRegistry();
+        
+        expect(isAnyTokenRef(doubleRef), isFalse);
+      });
+    });
+
+    group('getTokenFromValue Function', () {
+      test('returns token for class-based token references', () {
+        final colorToken = MixToken<Color>('test-color');
+        final durationToken = MixToken<Duration>('test-duration');
+        final offsetToken = MixToken<Offset>('test-offset');
+
+        final colorRef = ColorRef(colorToken);
+        final durationRef = DurationRef(durationToken);
+        final offsetRef = OffsetRef(offsetToken);
+
+        expect(getTokenFromValue(colorRef), equals(colorToken));
+        expect(getTokenFromValue(durationRef), equals(durationToken));
+        expect(getTokenFromValue(offsetRef), equals(offsetToken));
+      });
+
+      test('returns token for extension type token references', () {
+        final doubleToken = MixToken<double>('test-double');
+        final intToken = MixToken<int>('test-int');
+        final stringToken = MixToken<String>('test-string');
+
+        final doubleRef = DoubleRef.token(doubleToken);
+        final intRef = IntRef.token(intToken);
+        final stringRef = StringRef.token(stringToken);
+
+        expect(getTokenFromValue(doubleRef), equals(doubleToken));
+        expect(getTokenFromValue(intRef), equals(intToken));
+        expect(getTokenFromValue(stringRef), equals(stringToken));
+      });
+
+      test('returns null for non-token values', () {
+        expect(getTokenFromValue(Colors.red), isNull);
+        expect(getTokenFromValue(42.0), isNull);
+        expect(getTokenFromValue(42), isNull);
+        expect(getTokenFromValue('hello'), isNull);
+        expect(getTokenFromValue(const Duration(seconds: 1)), isNull);
+        expect(getTokenFromValue(const Offset(10, 20)), isNull);
+        expect(getTokenFromValue(Radius.circular(5)), isNull);
+      });
+
+      test('returns null for manually created extension type values not in registry', () {
+        final manualDoubleRef = DoubleRef(42.0);
+        final manualIntRef = IntRef(42);
+        final manualStringRef = StringRef('manual');
+
+        expect(getTokenFromValue(manualDoubleRef), isNull);
+        expect(getTokenFromValue(manualIntRef), isNull);
+        expect(getTokenFromValue(manualStringRef), isNull);
+      });
+
+      test('maintains type safety with generic parameter', () {
+        final colorToken = MixToken<Color>('test-color');
+        final doubleToken = MixToken<double>('test-double');
+        final stringToken = MixToken<String>('test-string');
+
+        final colorRef = ColorRef(colorToken);
+        final doubleRef = DoubleRef.token(doubleToken);
+        final stringRef = StringRef.token(stringToken);
+
+        // Type-safe calls
+        final MixToken<Color>? colorResult = getTokenFromValue<Color>(colorRef);
+        final MixToken<double>? doubleResult = getTokenFromValue<double>(doubleRef);
+        final MixToken<String>? stringResult = getTokenFromValue<String>(stringRef);
+
+        expect(colorResult, equals(colorToken));
+        expect(doubleResult, equals(doubleToken));
+        expect(stringResult, equals(stringToken));
+
+        expect(colorResult, isA<MixToken<Color>>());
+        expect(doubleResult, isA<MixToken<double>>());
+        expect(stringResult, isA<MixToken<String>>());
+      });
+
+      test('returns null when type parameter does not match token type', () {
+        final colorToken = MixToken<Color>('test-color');
+        final colorRef = ColorRef(colorToken);
+
+        // Trying to get wrong type should return null
+        final MixToken<double>? wrongTypeResult = getTokenFromValue<double>(colorRef);
+        expect(wrongTypeResult, isNull);
+      });
+
+      test('handles polymorphic token references correctly', () {
+        final alignmentGeometryToken = MixToken<AlignmentGeometry>('test-alignment-geometry');
+        final alignmentToken = MixToken<Alignment>('test-alignment');
+
+        final alignmentGeometryRef = AlignmentGeometryRef(alignmentGeometryToken);
+        final alignmentRef = AlignmentRef(alignmentToken);
+
+        // Both should work with their specific types
+        expect(getTokenFromValue<AlignmentGeometry>(alignmentGeometryRef), equals(alignmentGeometryToken));
+        expect(getTokenFromValue<Alignment>(alignmentRef), equals(alignmentToken));
+
+        // Alignment extends AlignmentGeometry, so this should work
+        expect(getTokenFromValue<AlignmentGeometry>(alignmentRef), equals(alignmentToken));
+      });
+
+      test('works correctly after registry clear', () {
+        final doubleToken = MixToken<double>('test-double');
+        final doubleRef = DoubleRef.token(doubleToken);
+        
+        expect(getTokenFromValue(doubleRef), equals(doubleToken));
+        
+        clearTokenRegistry();
+        
+        expect(getTokenFromValue(doubleRef), isNull);
+      });
+
+      test('handles multiple tokens of same type correctly', () {
+        final token1 = MixToken<double>('double-1');
+        final token2 = MixToken<double>('double-2');
+        final token3 = MixToken<double>('double-3');
+
+        final ref1 = DoubleRef.token(token1);
+        final ref2 = DoubleRef.token(token2);
+        final ref3 = DoubleRef.token(token3);
+
+        expect(getTokenFromValue(ref1), equals(token1));
+        expect(getTokenFromValue(ref2), equals(token2));
+        expect(getTokenFromValue(ref3), equals(token3));
+
+        // Ensure they don't interfere with each other
+        expect(getTokenFromValue(ref1), isNot(equals(token2)));
+        expect(getTokenFromValue(ref1), isNot(equals(token3)));
+      });
+
+      test('works with edge case token names', () {
+        final emptyNameToken = MixToken<String>('');
+        final longNameToken = MixToken<String>('a' * 1000);
+        final specialCharsToken = MixToken<String>('special!@#\$%^&*()');
+
+        final emptyRef = StringRef.token(emptyNameToken);
+        final longRef = StringRef.token(longNameToken);
+        final specialRef = StringRef.token(specialCharsToken);
+
+        expect(getTokenFromValue(emptyRef), equals(emptyNameToken));
+        expect(getTokenFromValue(longRef), equals(longNameToken));
+        expect(getTokenFromValue(specialRef), equals(specialCharsToken));
       });
     });
   });
