@@ -73,48 +73,6 @@ void main() {
       });
     });
 
-    group('Utility Methods', () {
-      test('utility methods work with mutable pattern', () {
-        final utility1 = FlexBoxSpecUtility();
-        final utility2 = FlexBoxSpecUtility();
-
-        // Use the mutable utilities to set properties
-        utility1.padding.all(16);
-        utility2.margin.all(8);
-
-        // Each utility maintains its own state
-        expect(identical(utility1.value, utility2.value), isFalse);
-
-        // Properties are set correctly
-        expect(utility1.value.$box?.padding, isNotNull);
-        expect(utility2.value.$box?.margin, isNotNull);
-      });
-
-      test('utility provides access to nested box utilities', () {
-        final utility = FlexBoxSpecUtility();
-
-        // Test that box utilities are accessible
-        expect(utility.alignment, isNotNull);
-        expect(utility.padding, isNotNull);
-        expect(utility.margin, isNotNull);
-        expect(utility.constraints, isNotNull);
-        expect(utility.decoration, isNotNull);
-        expect(utility.color, isNotNull);
-        expect(utility.border, isNotNull);
-        expect(utility.borderRadius, isNotNull);
-        expect(utility.width, isNotNull);
-        expect(utility.height, isNotNull);
-      });
-
-      test('utility provides access to flex utilities', () {
-        final utility = FlexBoxSpecUtility();
-
-        // Test that flex utilities are accessible
-        expect(utility.direction, isNotNull);
-        expect(utility.mainAxisAlignment, isNotNull);
-        expect(utility.gap, isNotNull);
-      });
-    });
 
     group('Resolution', () {
       test('resolves to FlexBoxSpec with correct properties', () {

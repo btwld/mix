@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import '../../core/modifier.dart';
 import '../../core/style.dart';
 
+/// A modifier specification that resets the style context.
 final class ResetModifierSpec extends Modifier<ResetModifierSpec>
     with Diagnosticable {
   const ResetModifierSpec();
@@ -35,6 +36,7 @@ final class ResetModifierSpec extends Modifier<ResetModifierSpec>
   }
 }
 
+/// An attribute that resets the modifier context.
 class ResetModifierAttribute extends ModifierAttribute<ResetModifierSpec>
     with Diagnosticable {
   const ResetModifierAttribute();

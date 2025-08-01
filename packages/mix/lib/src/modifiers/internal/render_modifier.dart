@@ -5,10 +5,10 @@ import 'package:meta/meta.dart';
 
 import '../../core/modifier.dart';
 
-// Note: The default ordering of modifiers has been moved to ModifierConfig._defaultOrder
-
+/// Renders a widget with applied modifiers in the correct order.
 @internal
 class RenderModifiers extends StatelessWidget {
+  /// Creates a widget that applies [modifiers] to a [child] widget.
   const RenderModifiers({
     required this.child,
     required this.modifiers,
@@ -17,7 +17,10 @@ class RenderModifiers extends StatelessWidget {
     super.key,
   });
 
+  /// Widget to which modifiers will be applied.
   final Widget child;
+  
+  /// List of modifiers to apply to the [child].
   final List<Modifier<dynamic>> modifiers;
 
   @override
@@ -26,16 +29,21 @@ class RenderModifiers extends StatelessWidget {
   }
 }
 
+/// Internal widget that iteratively applies modifiers to a child widget.
 class _RenderModifiers extends StatelessWidget {
   const _RenderModifiers({required this.child, required this.modifiers});
 
+  /// Base widget to transform.
   final Widget child;
+  
+  /// Modifiers to apply in sequence.
   final Iterable<Modifier<dynamic>> modifiers;
 
   @override
   Widget build(BuildContext context) {
     var current = child;
 
+    // Apply each modifier in sequence
     for (final spec in modifiers) {
       current = spec.build(current);
     }

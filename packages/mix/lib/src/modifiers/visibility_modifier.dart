@@ -7,33 +7,28 @@ import '../core/style.dart';
 import '../core/utility.dart';
 import '../theme/tokens/mix_token.dart';
 
+/// A modifier that wraps a widget with the [Visibility] widget.
+///
+/// Controls whether a child widget is visible or hidden while maintaining
+/// its space in the layout.
 final class VisibilityModifier extends Modifier<VisibilityModifier>
     with Diagnosticable {
+  /// Whether the child widget should be visible.
   final bool visible;
   const VisibilityModifier([bool? visible]) : visible = visible ?? true;
 
-  /// Creates a copy of this [VisibilityModifier] but with the given fields
-  /// replaced with the new values.
+  /// Creates a copy of this [VisibilityModifier] with the given fields replaced.
   @override
   VisibilityModifier copyWith({bool? visible}) {
     return VisibilityModifier(visible ?? this.visible);
   }
 
-  /// Linearly interpolates between this [VisibilityModifier] and another [VisibilityModifier] based on the given parameter [t].
+  /// Linearly interpolates between this [VisibilityModifier] and [other].
   ///
-  /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [VisibilityModifier] is returned. When [t] is 1.0, the [other] [VisibilityModifier] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [VisibilityModifier] is returned.
+  /// Uses a step function for [visible] property - values below 0.5 use this
+  /// instance's value, otherwise uses [other]'s value.
   ///
-  /// If [other] is null, this method returns the current [VisibilityModifier] instance.
-  ///
-  /// The interpolation is performed on each property of the [VisibilityModifier] using the appropriate
-  /// interpolation method:
-  /// For [visible], the interpolation is performed using a step function.
-  /// If [t] is less than 0.5, the value from the current [VisibilityModifier] is used. Otherwise, the value
-  /// from the [other] [VisibilityModifier] is used.
-  ///
-  /// This method is typically used in animations to smoothly transition between
+  /// This method is typically used in animations to transition between
   /// different [VisibilityModifier] configurations.
   @override
   VisibilityModifier lerp(VisibilityModifier? other, double t) {
@@ -49,9 +44,6 @@ final class VisibilityModifier extends Modifier<VisibilityModifier>
   }
 
   /// The list of properties that constitute the state of this [VisibilityModifier].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [VisibilityModifier] instances for equality.
   @override
   List<Object?> get props => [visible];
 
@@ -63,13 +55,11 @@ final class VisibilityModifier extends Modifier<VisibilityModifier>
 
 /// Represents the attributes of a [VisibilityModifier].
 ///
-/// This class encapsulates properties defining the layout and
-/// appearance of a [VisibilityModifier].
-///
-/// Use this class to configure the attributes of a [VisibilityModifier] and pass it to
-/// the [VisibilityModifier] constructor.
+/// This class encapsulates properties defining the visibility behavior
+/// of a [VisibilityModifier].
 class VisibilityModifierAttribute extends ModifierAttribute<VisibilityModifier>
     with Diagnosticable {
+  /// Whether the child widget should be visible.
   final Prop<bool>? visible;
 
   const VisibilityModifierAttribute.raw({this.visible});
@@ -79,25 +69,18 @@ class VisibilityModifierAttribute extends ModifierAttribute<VisibilityModifier>
 
   /// Resolves to [VisibilityModifier] using the provided [BuildContext].
   ///
-  /// If a property is null in the [BuildContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
-  ///
   /// ```dart
-  /// final visibilityModifierSpec = VisibilityModifierAttribute(...).resolve(mix);
+  /// final visibilityModifier = VisibilityModifierAttribute(...).resolve(context);
   /// ```
   @override
   VisibilityModifier resolve(BuildContext context) {
     return VisibilityModifier(visible?.resolve(context));
   }
 
-  /// Merges the properties of this [VisibilityModifierAttribute] with the properties of [other].
+  /// Merges the properties of this [VisibilityModifierAttribute] with [other].
   ///
-  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [VisibilityModifierAttribute] with the properties of [other] taking precedence over
-  /// the corresponding properties of this instance.
-  ///
-  /// Properties from [other] that are null will fall back
-  /// to the values from this instance.
+  /// Properties from [other] take precedence over the corresponding properties
+  /// of this instance. Returns this instance unchanged if [other] is null.
   @override
   VisibilityModifierAttribute merge(VisibilityModifierAttribute? other) {
     if (other == null) return this;
@@ -114,22 +97,28 @@ class VisibilityModifierAttribute extends ModifierAttribute<VisibilityModifier>
   }
 
   /// The list of properties that constitute the state of this [VisibilityModifierAttribute].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [VisibilityModifierAttribute] instances for equality.
   @override
   List<Object?> get props => [visible];
 }
 
+/// Utility class for configuring [VisibilityModifier] properties.
+///
+/// This class provides methods to set the visibility state of a [VisibilityModifier].
 final class VisibilityModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, VisibilityModifierAttribute> {
   const VisibilityModifierUtility(super.builder);
+  
+  /// Sets the visibility to true.
   T on() => call(true);
+  
+  /// Sets the visibility to false.
   T off() => call(false);
 
+  /// Creates a [VisibilityModifierAttribute] with the specified visibility state.
   T call(bool value) =>
       builder(VisibilityModifierAttribute.raw(visible: Prop(value)));
 
+  /// Creates a [VisibilityModifierAttribute] with the specified visibility token.
   T token(MixToken<bool> token) =>
       builder(VisibilityModifierAttribute.raw(visible: Prop.token(token)));
 }
