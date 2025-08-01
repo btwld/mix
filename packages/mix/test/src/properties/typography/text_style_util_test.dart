@@ -276,7 +276,10 @@ void main() {
 
         final textStyle = result.value.value!.resolve(MockBuildContext());
 
-        expect(textStyle.background?.color?.toARGB32(), expectedColor.toARGB32());
+        expect(
+          textStyle.background?.color.toARGB32(),
+          expectedColor.toARGB32(),
+        );
       });
     });
 

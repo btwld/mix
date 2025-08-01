@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_relative_imports
-import 'package:flutter/foundation.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -458,79 +459,10 @@ class MockMixDirective<T> extends MixDirective<T> {
   int get hashCode => Object.hash(name, transform);
 }
 
-final _blackDot = Uint8List.fromList([
-  137,
-  80,
-  78,
-  71,
-  13,
-  10,
-  26,
-  10,
-  0,
-  0,
-  0,
-  13,
-  73,
-  72,
-  68,
-  82,
-  0,
-  0,
-  0,
-  1,
-  0,
-  0,
-  0,
-  1,
-  8,
-  6,
-  0,
-  0,
-  0,
-  31,
-  21,
-  196,
-  137,
-  0,
-  0,
-  0,
-  13,
-  73,
-  68,
-  65,
-  84,
-  120,
-  218,
-  99,
-  100,
-  96,
-  248,
-  95,
-  15,
-  0,
-  2,
-  135,
-  1,
-  128,
-  235,
-  71,
-  186,
-  146,
-  0,
-  0,
-  0,
-  0,
-  73,
-  69,
-  78,
-  68,
-  174,
-  66,
-  96,
-  130,
-]);
+final blackPixelBytes = base64Decode(
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
+);
 
 MemoryImage mockImageProvider() {
-  return MemoryImage(_blackDot);
+  return MemoryImage(blackPixelBytes);
 }
