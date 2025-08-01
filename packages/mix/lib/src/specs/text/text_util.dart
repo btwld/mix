@@ -109,7 +109,7 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
 }
 
 class MutableTextMix extends TextMix with Mutable<TextSpec, TextMix> {
-  MutableTextMix([TextMix? attribute]) {
-    merge(attribute);
+  MutableTextMix(TextMix style) {
+    accumulated = style;
   }
 }

@@ -93,14 +93,11 @@ mixin Mutable<S extends Spec<S>, T extends Style<S>> on Style<S> {
     if (other == null) return this as T;
 
     try {
-      // If other is also Mutable, use its accumulated value
-      final otherValue = (other is Mutable<S, T>) ? other.accumulated : other;
-
-      // Always merge with accumulated (never with 'this')
+      final otherValue = other is Mutable<S, T> ? other.accumulated : other;
+      // Accumulate merges - use super.merge to avoid recursion
       accumulated = accumulated.merge(otherValue) as T;
 
-      // Return this for chaining
-      return this as T;
+      return accumulated;
     } catch (e, stackTrace) {
       Error.throwWithStackTrace(
         StateError(

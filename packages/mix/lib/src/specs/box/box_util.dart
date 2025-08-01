@@ -100,7 +100,7 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec> {
 }
 
 class MutableBoxMix extends BoxMix with Mutable<BoxSpec, BoxMix> {
-  MutableBoxMix([BoxMix? attribute]) {
-    merge(attribute);
+  MutableBoxMix(BoxMix style) {
+    accumulated = style;
   }
 }

@@ -80,7 +80,7 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexSpec> {
 }
 
 class MutableFlexMix extends FlexMix with Mutable<FlexSpec, FlexMix> {
-  MutableFlexMix([FlexMix? attribute]) {
-    merge(attribute);
+  MutableFlexMix(FlexMix style) {
+    accumulated = style;
   }
 }

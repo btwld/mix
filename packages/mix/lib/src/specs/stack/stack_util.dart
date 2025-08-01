@@ -66,7 +66,7 @@ class StackSpecUtility extends StyleMutableBuilder<StackSpec> {
 }
 
 class MutableStackMix extends StackMix with Mutable<StackSpec, StackMix> {
-  MutableStackMix([StackMix? attribute]) {
-    merge(attribute);
+  MutableStackMix(StackMix style) {
+    accumulated = style;
   }
 }

@@ -89,7 +89,7 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageSpec> {
 }
 
 class MutableImageMix extends ImageMix with Mutable<ImageSpec, ImageMix> {
-  MutableImageMix([ImageMix? attribute]) {
-    merge(attribute);
+  MutableImageMix(ImageMix style) {
+    accumulated = style;
   }
 }

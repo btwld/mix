@@ -12,7 +12,7 @@ void main() {
 
     setUp(() {
       util = DecorationImageUtility<MockStyle<DecorationImageMix>>(
-        (mix) => MockStyle(mix),
+        MockStyle.new,
       );
     });
 

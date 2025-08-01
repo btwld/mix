@@ -84,7 +84,7 @@ class IconSpecUtility extends StyleMutableBuilder<IconSpec> {
 }
 
 class MutableIconMix extends IconMix with Mutable<IconSpec, IconMix> {
-  MutableIconMix([IconMix? attribute]) {
-    merge(attribute);
+  MutableIconMix(IconMix style) {
+    accumulated = style;
   }
 }
