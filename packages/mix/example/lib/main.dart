@@ -13,24 +13,20 @@ class BoxExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-Colors.blue;
-ColorMix.red;
 
 
+  final decoration = BoxDecorationMix()
+    .color(Colors.blue)
+    .borderRadius(.circular(10))
+    .gradient(
+      .linear(
+        .begin(.topLeft)
+        .end(.bottomRight)
+        .colors([Colors.purple, Colors.blue]),
+      )
+    );
 
-
-                                    final decoration = BoxDecorationMix()
-                                      .color(Colors.blue)
-                                      .borderRadius(.circular(10))
-                                      .gradient(
-                                        .linear(
-                                          .begin(.topLeft)
-                                          .end(.bottomRight)
-                                          .colors([Colors.purple, Colors.blue]),
-                                        )
-                                      );
-
-                                    Container(decoration: decoration.resolve(context));
+  Container(decoration: decoration.resolve(context));
 
 
 
