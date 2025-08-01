@@ -9,7 +9,7 @@ mixin StyleAnimationMixin<S extends Spec<S>, T extends Style<S>> on Style<S> {
   T animate(AnimationConfig config);
 
   T phaseAnimation<P>({
-    required ValueNotifier trigger,
+    required Listenable trigger,
     required List<P> phases,
     required T Function(P phase, T style) styleBuilder,
     required CurveAnimationConfig Function(P phase) configBuilder,
