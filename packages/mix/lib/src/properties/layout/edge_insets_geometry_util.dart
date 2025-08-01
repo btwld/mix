@@ -10,7 +10,7 @@ import 'scalar_util.dart';
 
 @immutable
 final class EdgeInsetsGeometryUtility<U extends Style<Object?>>
-    extends MixPropUtility<U, EdgeInsetsGeometryMix, EdgeInsetsGeometry> {
+    extends MixUtility<U, EdgeInsetsGeometryMix> {
   @Deprecated('Use call(...) with start/end parameters instead')
   late final directional = EdgeInsetsDirectionalUtility(builder);
 
@@ -70,7 +70,6 @@ final class EdgeInsetsGeometryUtility<U extends Style<Object?>>
     );
   }
 
-  @override
   @Deprecated('Use call(as: value) instead')
   U as(EdgeInsetsGeometry value) {
     return builder(EdgeInsetsGeometryMix.value(value));
@@ -79,7 +78,7 @@ final class EdgeInsetsGeometryUtility<U extends Style<Object?>>
 
 @immutable
 final class EdgeInsetsDirectionalUtility<U extends Style<Object?>>
-    extends MixPropUtility<U, EdgeInsetsDirectionalMix, EdgeInsetsDirectional> {
+    extends MixUtility<U, EdgeInsetsDirectionalMix> {
   @Deprecated('Use call(value) instead')
   late final all = SpacingSideUtility<U>(
     (v) => only(top: v, bottom: v, start: v, end: v),
@@ -119,7 +118,6 @@ final class EdgeInsetsDirectionalUtility<U extends Style<Object?>>
     );
   }
 
-  @override
   @Deprecated('Use call(as: value) instead')
   U as(EdgeInsetsDirectional value) {
     return builder(EdgeInsetsDirectionalMix.value(value));

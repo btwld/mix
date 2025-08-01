@@ -86,7 +86,10 @@ void main() {
 
         final textStyle = result.value.value!.resolve(MockBuildContext());
 
-        expect(textStyle, const TextStyle(decoration: TextDecoration.underline));
+        expect(
+          textStyle,
+          const TextStyle(decoration: TextDecoration.underline),
+        );
       });
 
       test('fontSize sets font size', () {
@@ -388,7 +391,7 @@ void main() {
 
     group('call method', () {
       test('delegates to only method with all properties', () {
-        const shadows = [
+        final shadows = [
           Shadow(color: Colors.grey, offset: Offset(0, 1), blurRadius: 3),
         ];
         const fontFeatures = [FontFeature.enable('kern')];
@@ -409,7 +412,7 @@ void main() {
           decorationStyle: TextDecorationStyle.dotted,
           decorationThickness: 2.0,
           textBaseline: TextBaseline.ideographic,
-          shadows: shadows,
+          shadows: shadows.map(ShadowMix.value).toList(),
           fontFeatures: fontFeatures,
           fontVariations: fontVariations,
           debugLabel: 'call-test',
@@ -631,10 +634,7 @@ void main() {
 
     group('text baseline variations', () {
       test('handles all TextBaseline values', () {
-        final baselines = [
-          TextBaseline.alphabetic,
-          TextBaseline.ideographic,
-        ];
+        final baselines = [TextBaseline.alphabetic, TextBaseline.ideographic];
 
         for (final baseline in baselines) {
           final result = util.textBaseline(baseline);
@@ -778,7 +778,7 @@ void main() {
       );
 
       expect(result.value, isA<MixProp<TextStyle>>());
-      
+
       final resolved = result.value.value!.resolve(MockBuildContext());
       expect(resolved, isA<TextStyle>());
       expect(resolved.color, Colors.blue);
@@ -797,10 +797,22 @@ void main() {
       final weightResult = util.fontWeight(FontWeight.bold);
       final familyResult = util.fontFamily('Arial');
 
-      expect(colorResult.value.value!.resolve(MockBuildContext()).color, Colors.red);
-      expect(sizeResult.value.value!.resolve(MockBuildContext()).fontSize, 18.0);
-      expect(weightResult.value.value!.resolve(MockBuildContext()).fontWeight, FontWeight.bold);
-      expect(familyResult.value.value!.resolve(MockBuildContext()).fontFamily, 'Arial');
+      expect(
+        colorResult.value.value!.resolve(MockBuildContext()).color,
+        Colors.red,
+      );
+      expect(
+        sizeResult.value.value!.resolve(MockBuildContext()).fontSize,
+        18.0,
+      );
+      expect(
+        weightResult.value.value!.resolve(MockBuildContext()).fontWeight,
+        FontWeight.bold,
+      );
+      expect(
+        familyResult.value.value!.resolve(MockBuildContext()).fontFamily,
+        'Arial',
+      );
     });
 
     test('convenience methods work correctly', () {
@@ -811,8 +823,14 @@ void main() {
       final boldResult = util.bold();
       final italicResult = util.italic();
 
-      expect(boldResult.value.value!.resolve(MockBuildContext()).fontWeight, FontWeight.bold);
-      expect(italicResult.value.value!.resolve(MockBuildContext()).fontStyle, FontStyle.italic);
+      expect(
+        boldResult.value.value!.resolve(MockBuildContext()).fontWeight,
+        FontWeight.bold,
+      );
+      expect(
+        italicResult.value.value!.resolve(MockBuildContext()).fontStyle,
+        FontStyle.italic,
+      );
     });
 
     test('preserves Flutter TextStyle semantics', () {

@@ -5,13 +5,11 @@ import '../../core/utility.dart';
 import 'strut_style_mix.dart';
 
 final class StrutStyleUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, StrutStyleMix, StrutStyle> {
-  @Deprecated('Use call(fontFamily: value) instead')
+    extends MixUtility<T, StrutStyleMix> {
   late final fontWeight = MixUtility<T, FontWeight>(
     (prop) => call(fontWeight: prop),
   );
 
-  @Deprecated('Use call(fontStyle: value) instead')
   late final fontStyle = MixUtility<T, FontStyle>(
     (prop) => call(fontStyle: prop),
   );
@@ -21,23 +19,17 @@ final class StrutStyleUtility<T extends Style<Object?>>
 
   StrutStyleUtility(super.builder);
 
-  @Deprecated('Use call(fontSize: value) instead')
   T fontSize(double value) => call(fontSize: value);
 
-  @Deprecated('Use call(fontFamily: value) instead')
   T fontFamily(String value) => call(fontFamily: value);
 
-  @Deprecated('Use call(height: value) instead')
   T height(double value) => call(height: value);
 
-  @Deprecated('Use call(leading: value) instead')
   T leading(double value) => call(leading: value);
 
-  @Deprecated('Use call(forceStrutHeight: value) instead')
   T forceStrutHeight(bool value) => call(forceStrutHeight: value);
 
   T call({
-    StrutStyle? as,
     String? fontFamily,
     List<String>? fontFamilyFallback,
     double? fontSize,
@@ -47,10 +39,6 @@ final class StrutStyleUtility<T extends Style<Object?>>
     double? leading,
     bool? forceStrutHeight,
   }) {
-    if (as != null) {
-      return builder(StrutStyleMix.value(as));
-    }
-
     return builder(
       StrutStyleMix(
         fontFamily: fontFamily,
@@ -65,8 +53,6 @@ final class StrutStyleUtility<T extends Style<Object?>>
     );
   }
 
-  @override
-  @Deprecated('Use call(as: value) instead')
   T as(StrutStyle value) {
     return builder(StrutStyleMix.value(value));
   }

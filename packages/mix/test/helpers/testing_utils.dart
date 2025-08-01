@@ -239,7 +239,7 @@ class MockBuildContext extends BuildContext {
 /// final colorUtility = ColorUtility(UtilityTestAttribute.new);
 /// final attr = colorUtility(Colors.red);
 ///
-/// // For MixPropUtility (takes MixProp<V>)
+/// // For complex utilities (takes Mix<V>)
 /// final gradientUtility = GradientUtility(UtilityTestAttribute.new);
 /// final attr = gradientUtility.linear(...);
 /// ```

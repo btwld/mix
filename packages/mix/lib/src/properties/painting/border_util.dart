@@ -273,7 +273,7 @@ mixin BorderMixin<T extends Style<Object?>> {
 ///
 /// Provides access to border and directional border utilities for flexible border styling.
 final class BoxBorderUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, BoxBorderMix, BoxBorder> {
+    extends MixUtility<T, BoxBorderMix> {
   late final border = BorderUtility<T>(builder);
 
   late final borderDirectional = BorderDirectionalUtility<T>(builder);
@@ -284,7 +284,6 @@ final class BoxBorderUtility<T extends Style<Object?>>
     return builder(value);
   }
 
-  @override
   T as(BoxBorder value) {
     return builder(BoxBorderMix.value(value));
   }
@@ -294,7 +293,7 @@ final class BoxBorderUtility<T extends Style<Object?>>
 ///
 /// Provides utilities for styling all sides together or individual border sides.
 final class BorderUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, BorderMix, Border> {
+    extends MixUtility<T, BorderMix> {
   late final all = BorderSideUtility<T>(
     (v) => only(top: v, bottom: v, left: v, right: v),
   );
@@ -355,7 +354,6 @@ final class BorderUtility<T extends Style<Object?>>
     return only(top: side, bottom: side, left: side, right: side);
   }
 
-  @override
   T as(Border value) {
     return builder(BorderMix.value(value));
   }
@@ -365,7 +363,7 @@ final class BorderUtility<T extends Style<Object?>>
 ///
 /// Provides utilities for styling all sides together or individual border sides.
 final class BorderDirectionalUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, BorderDirectionalMix, BorderDirectional> {
+    extends MixUtility<T, BorderDirectionalMix> {
   late final all = BorderSideUtility<T>(
     (v) => only(top: v, bottom: v, start: v, end: v),
   );
@@ -426,7 +424,6 @@ final class BorderDirectionalUtility<T extends Style<Object?>>
     return only(top: side, bottom: side, start: side, end: side);
   }
 
-  @override
   T as(BorderDirectional value) {
     return builder(BorderDirectionalMix.value(value));
   }
@@ -437,15 +434,13 @@ final class BorderDirectionalUtility<T extends Style<Object?>>
 /// This class provides methods to set individual properties of a [BorderSide].
 /// Use the methods of this class to configure specific properties of a [BorderSide].
 final class BorderSideUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, BorderSideMix, BorderSide> {
+    extends MixUtility<T, BorderSideMix> {
   /// Utility for defining [BorderSideMix.color]
-  @Deprecated('Use call(color: value) instead')
   late final color = ColorUtility<T>(
     (prop) => builder(BorderSideMix.raw(color: prop)),
   );
 
   /// Utility for defining [BorderSideMix.style]
-  @Deprecated('Use call(style: value) instead')
   late final style = MixUtility<T, BorderStyle>((prop) => call(style: prop));
 
   @Deprecated('Use call(...) instead')
@@ -454,27 +449,20 @@ final class BorderSideUtility<T extends Style<Object?>>
   BorderSideUtility(super.builder);
 
   /// Utility for defining [BorderSideMix.strokeAlign]
-  @Deprecated('Use call(strokeAlign: value) instead')
   T strokeAlign(double v) => call(strokeAlign: v);
 
   /// Utility for defining [BorderSideMix.width]
-  @Deprecated('Use call(width: value) instead')
   T width(double v) => call(width: v);
 
   /// Creates a [Style] instance using the [BorderSideMix.none] constructor.
   T none() => builder(BorderSideMix.none);
 
   T call({
-    BorderSide? as,
     Color? color,
     double? width,
     BorderStyle? style,
     double? strokeAlign,
   }) {
-    if (as != null) {
-      return builder(BorderSideMix.value(as));
-    }
-    
     return builder(
       BorderSideMix(
         color: color,
@@ -485,8 +473,6 @@ final class BorderSideUtility<T extends Style<Object?>>
     );
   }
 
-  @override
-  @Deprecated('Use call(as: value) instead')
   T as(BorderSide value) {
     return builder(BorderSideMix.value(value));
   }

@@ -16,22 +16,6 @@ class MixUtility<S extends Style<Object?>, Value> {
   const MixUtility(this.builder);
 }
 
-@immutable
-@Deprecated(
-  'Use MixUtility<S, Mix<Value>> instead, make sure you implement the as() method.',
-)
-abstract class MixPropUtility<
-  S extends Style<Object?>,
-  M extends Mix<Value>,
-  Value
->
-    extends MixUtility<S, M> {
-  @override
-  const MixPropUtility(super.builder);
-
-  /// Creates a MixProp from a raw value (converts to Mix)
-  S as(Value value);
-}
 
 /// Utility base class for spec utilities
 abstract class SpecUtility<S extends Spec<S>> {

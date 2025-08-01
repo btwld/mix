@@ -9,7 +9,7 @@ import 'gradient_mix.dart';
 /// This class provides methods to set individual properties of a [LinearGradient].
 /// Use the methods of this class to configure specific properties of a [LinearGradient].
 final class LinearGradientUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, LinearGradientMix, LinearGradient> {
+    extends MixUtility<T, LinearGradientMix> {
   /// Utility for defining [LinearGradientMix.begin]
   @Deprecated('Use call(begin: value) instead')
   late final begin = MixUtility<T, AlignmentGeometry>((v) => call(begin: v));
@@ -71,7 +71,6 @@ final class LinearGradientUtility<T extends Style<Object?>>
     return builder(gradient);
   }
 
-  @override
   @Deprecated('Use call(as: value) instead')
   T as(LinearGradient value) {
     return builder(LinearGradientMix.value(value));
@@ -83,7 +82,7 @@ final class LinearGradientUtility<T extends Style<Object?>>
 /// This class provides methods to set individual properties of a [RadialGradient].
 /// Use the methods of this class to configure specific properties of a [RadialGradient].
 final class RadialGradientUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, RadialGradientMix, RadialGradient> {
+    extends MixUtility<T, RadialGradientMix> {
   /// Utility for defining [RadialGradientMix.center]
   @Deprecated('Use call(center: value) instead')
   late final center = MixUtility<T, AlignmentGeometry>((v) => call(center: v));
@@ -121,11 +120,11 @@ final class RadialGradientUtility<T extends Style<Object?>>
 
   /// Utility for defining [RadialGradientMix.radius]
   @Deprecated('Use call(radius: value) instead')
-  T radius(double v) => call(radius: v);
+  late final radius = MixUtility<T, double>((v) => call(radius: v));
 
   /// Utility for defining [RadialGradientMix.focalRadius]
   @Deprecated('Use call(focalRadius: value) instead')
-  T focalRadius(double v) => call(focalRadius: v);
+  late final focalRadius = MixUtility<T, double>((v) => call(focalRadius: v));
 
   T call({
     RadialGradient? as,
@@ -159,7 +158,6 @@ final class RadialGradientUtility<T extends Style<Object?>>
     return builder(gradient);
   }
 
-  @override
   @Deprecated('Use call(as: value) instead')
   T as(RadialGradient value) {
     return builder(RadialGradientMix.value(value));
@@ -171,7 +169,7 @@ final class RadialGradientUtility<T extends Style<Object?>>
 /// This class provides methods to set individual properties of a [SweepGradient].
 /// Use the methods of this class to configure specific properties of a [SweepGradient].
 final class SweepGradientUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, SweepGradientMix, SweepGradient> {
+    extends MixUtility<T, SweepGradientMix> {
   /// Utility for defining [SweepGradientMix.center]
   @Deprecated('Use call(center: value) instead')
   late final center = MixUtility<T, AlignmentGeometry>((v) => call(center: v));
@@ -198,17 +196,17 @@ final class SweepGradientUtility<T extends Style<Object?>>
 
   /// Utility for defining [SweepGradientMix.startAngle]
   @Deprecated('Use call(startAngle: value) instead')
-  T startAngle(double v) => call(startAngle: v);
+  late final startAngle = MixUtility<T, double>((v) => call(startAngle: v));
 
   /// Utility for defining [SweepGradientMix.endAngle]
   @Deprecated('Use call(endAngle: value) instead')
-  T endAngle(double v) => call(endAngle: v);
+  late final endAngle = MixUtility<T, double>((v) => call(endAngle: v));
 
-  @Deprecated('Use call(stops: value) instead')
   /// Utility for defining [SweepGradientMix.stops]
-  T stops(List<double> stops) {
-    return call(stops: stops);
-  }
+  @Deprecated('Use call(stops: value) instead')
+  late final stops = PropListUtility<T, double>(
+    (stops) => builder(SweepGradientMix.raw(stops: stops)),
+  );
 
   T call({
     SweepGradient? as,
@@ -240,7 +238,6 @@ final class SweepGradientUtility<T extends Style<Object?>>
     return builder(gradient);
   }
 
-  @override
   @Deprecated('Use call(as: value) instead')
   T as(SweepGradient value) {
     return builder(SweepGradientMix.value(value));
@@ -249,7 +246,7 @@ final class SweepGradientUtility<T extends Style<Object?>>
 
 /// Utility class for working with gradients.
 final class GradientUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, GradientMix, Gradient> {
+    extends MixUtility<T, GradientMix> {
   /// Returns a [LinearGradientUtility] for creating linear gradients
   late final linear = LinearGradientUtility<T>(builder);
 
@@ -261,7 +258,6 @@ final class GradientUtility<T extends Style<Object?>>
 
   GradientUtility(super.builder);
 
-  @override
   T as(Gradient value) {
     return builder(GradientMix.value(value));
   }

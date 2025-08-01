@@ -13,18 +13,18 @@ import 'decoration_mix.dart';
 import 'gradient_mix.dart';
 import 'gradient_util.dart';
 import 'shadow_mix.dart';
+import 'shadow_util.dart';
 import 'shape_border_mix.dart';
 import 'shape_border_util.dart';
 
 class DecorationUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, DecorationMix, Decoration> {
+    extends MixUtility<T, DecorationMix> {
   late final box = BoxDecorationUtility<T>(builder);
 
   late final shape = ShapeDecorationUtility<T>(builder);
 
   DecorationUtility(super.builder);
 
-  @override
   T as(Decoration value) {
     return builder(DecorationMix.value(value));
   }
@@ -36,7 +36,7 @@ class DecorationUtility<T extends Style<Object?>>
 /// Use the methods of this class to configure specific properties of a [BoxDecoration].
 @immutable
 final class BoxDecorationUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, BoxDecorationMix, BoxDecoration> {
+    extends MixUtility<T, BoxDecorationMix> {
   /// Utility for defining [BoxDecorationMix.border]
   late final border = _boxBorder.border;
 
@@ -70,6 +70,8 @@ final class BoxDecorationUtility<T extends Style<Object?>>
   late final elevation = MixUtility<T, ElevationShadow>(
     (elevation) => only(boxShadow: BoxShadowMix.fromElevation(elevation)),
   );
+
+  late final boxShadow = BoxShadowUtility<T>((v) => only(boxShadow: [v]));
 
   /// Utility for defining [BoxDecorationMix.borderRadius]
   late final _borderRadiusGeometry = BorderRadiusGeometryUtility<T>(
@@ -132,7 +134,6 @@ final class BoxDecorationUtility<T extends Style<Object?>>
     );
   }
 
-  @override
   T as(BoxDecoration value) {
     return builder(BoxDecorationMix.value(value));
   }
@@ -144,7 +145,7 @@ final class BoxDecorationUtility<T extends Style<Object?>>
 /// Use the methods of this class to configure specific properties of a [ShapeDecoration].
 @immutable
 final class ShapeDecorationUtility<T extends Style<Object?>>
-    extends MixPropUtility<T, ShapeDecorationMix, ShapeDecoration> {
+    extends MixUtility<T, ShapeDecorationMix> {
   /// Utility for defining [ShapeDecorationMix.shape]
   late final shape = ShapeBorderUtility<T>((v) => only(shape: v));
 
@@ -200,7 +201,6 @@ final class ShapeDecorationUtility<T extends Style<Object?>>
     );
   }
 
-  @override
   T as(ShapeDecoration value) {
     return builder(ShapeDecorationMix.value(value));
   }
