@@ -78,50 +78,36 @@ class Prop<V> extends PropBase<V> {
   final MixToken<V>? $token;
 
   @protected
-  const Prop.internal({
-    V? value,
-    MixToken<V>? token,
-    super.directives,
-    super.animation,
-  }) : $value = value,
-       $token = token;
-
-  // Named constructors for clarity
-  @Deprecated('Use Prop.value(value) instead.')
-  factory Prop(
-    V value, {
-    List<MixDirective<V>>? directives,
-    AnimationConfig? animation,
-  }) {
-    return Prop.internal(
-      value: value,
-      directives: directives,
-      animation: animation,
-    );
-  }
+  const Prop({V? value, MixToken<V>? token, super.directives, super.animation})
+    : $value = value,
+      $token = token;
 
   const Prop.token(
     MixToken<V> token, {
     List<MixDirective<V>>? directives,
     AnimationConfig? animation,
-  }) : this.internal(
-         token: token,
-         directives: directives,
-         animation: animation,
-       );
+  }) : this(token: token, directives: directives, animation: animation);
+
+  Prop.fromProp(Prop<V> other)
+    : this(
+        value: other.$value,
+        token: other.$token,
+        directives: other.$directives,
+        animation: other.$animation,
+      );
 
   const Prop.directives(
     List<MixDirective<V>> directives, {
     AnimationConfig? animation,
-  }) : this.internal(directives: directives, animation: animation);
+  }) : this(directives: directives, animation: animation);
 
   const Prop.animation(AnimationConfig animation)
-    : this.internal(directives: null, animation: animation);
+    : this(directives: null, animation: animation);
 
   static Prop<V> value<V>(V value) {
     if (value is Prop<V>) return value;
 
-    return Prop.internal(value: value);
+    return Prop(value: value);
   }
 
   static Prop<V>? maybe<V>(V? value) {
@@ -160,7 +146,7 @@ class Prop<V> extends PropBase<V> {
     }
 
     // For static props, the other source replaces this source
-    return Prop.internal(
+    return Prop(
       value: value,
       token: token,
       directives: mergeDirectives(other.$directives),

@@ -308,9 +308,9 @@ void main() {
       });
 
       test('creates with provided Prop values', () {
-        final widthFactor = Prop<double>(0.5);
-        final heightFactor = Prop<double>(0.8);
-        final alignment = Prop<AlignmentGeometry>(Alignment.center);
+        final widthFactor = Prop.value(0.5);
+        final heightFactor = Prop.value(0.8);
+        final alignment = Prop.value<AlignmentGeometry>(Alignment.center);
         final attribute = FractionallySizedBoxModifierAttribute.raw(
           widthFactor: widthFactor,
           heightFactor: heightFactor,

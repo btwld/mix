@@ -98,5 +98,5 @@ final class RotatedBoxModifierUtility<T extends Style<Object?>>
   T d270() => call(3);
 
   T call(int value) =>
-      builder(RotatedBoxModifierAttribute.raw(quarterTurns: Prop(value)));
+      builder(RotatedBoxModifierAttribute.raw(quarterTurns: Prop.value(value)));
 }

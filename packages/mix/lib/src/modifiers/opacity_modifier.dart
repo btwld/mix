@@ -130,7 +130,7 @@ final class OpacityModifierUtility<T extends Style<Object?>>
   const OpacityModifierUtility(super.builder);
 
   T call(double value) =>
-      builder(OpacityModifierAttribute.raw(opacity: Prop(value)));
+      builder(OpacityModifierAttribute.raw(opacity: Prop.value(value)));
 
   T token(MixToken<double> token) =>
       builder(OpacityModifierAttribute.raw(opacity: Prop.token(token)));

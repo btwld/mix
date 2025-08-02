@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mix/src/core/prop.dart';
 import 'package:mix/src/theme/tokens/mix_token.dart';
 import 'package:mix/src/theme/tokens/token_refs.dart';
 
@@ -13,9 +14,9 @@ void main() {
     group('TokenRef Base Class', () {
       test('creates with token', () {
         final token = MixToken<Color>('test-color');
-        final ref = ColorRef(token);
+        final ref = ColorRef(Prop.token(token));
 
-        expect(ref.token, equals(token));
+        expect(ref.$token, equals(token));
       });
 
       test('equality based on token', () {
@@ -25,10 +26,12 @@ void main() {
         ); // Same name, different instance
         final token3 = MixToken<Color>('different-color');
 
-        final ref1 = ColorRef(token1);
-        final ref2 = ColorRef(token1); // Same token instance
-        final ref3 = ColorRef(token2); // Different token instance, same name
-        final ref4 = ColorRef(token3); // Different token
+        final ref1 = ColorRef(Prop.token(token1));
+        final ref2 = ColorRef(Prop.token(token1)); // Same token instance
+        final ref3 = ColorRef(
+          Prop.token(token2),
+        ); // Different token instance, same name
+        final ref4 = ColorRef(Prop.token(token3)); // Different token
 
         expect(ref1, equals(ref2));
         expect(
@@ -40,8 +43,8 @@ void main() {
 
       test('hashCode based on token', () {
         final token = MixToken<Color>('test-color');
-        final ref1 = ColorRef(token);
-        final ref2 = ColorRef(token);
+        final ref1 = ColorRef(Prop.token(token));
+        final ref2 = ColorRef(Prop.token(token));
 
         expect(ref1.hashCode, equals(ref2.hashCode));
         expect(ref1.hashCode, equals(token.hashCode));
@@ -49,14 +52,14 @@ void main() {
 
       test('toString shows type and token name', () {
         final token = MixToken<Color>('primary-color');
-        final ref = ColorRef(token);
+        final ref = ColorRef(Prop.token(token));
 
-        expect(ref.toString(), equals('TokenRef<Color>(primary-color)'));
+        expect(ref.toString(), equals('ColorRef(primary-color)'));
       });
 
       test('noSuchMethod throws UnimplementedError', () {
         final token = MixToken<Color>('test-color');
-        final ref = ColorRef(token);
+        final ref = ColorRef(Prop.token(token));
 
         expect(
           () => (ref as dynamic).nonExistentMethod(),
@@ -74,34 +77,34 @@ void main() {
     group('Class-based Token References', () {
       test('ColorRef implements Color interface', () {
         final token = MixToken<Color>('test-color');
-        final ref = ColorRef(token);
+        final ref = ColorRef(Prop.token(token));
 
         expect(ref, isA<Color>());
-        expect(ref.token, equals(token));
+        expect(ref.$token, equals(token));
       });
 
       test('DurationRef implements Duration interface', () {
         final token = MixToken<Duration>('test-duration');
-        final ref = DurationRef(token);
+        final ref = DurationRef(Prop.token(token));
 
         expect(ref, isA<Duration>());
-        expect(ref.token, equals(token));
+        expect(ref.$token, equals(token));
       });
 
       test('OffsetRef implements Offset interface', () {
         final token = MixToken<Offset>('test-offset');
-        final ref = OffsetRef(token);
+        final ref = OffsetRef(Prop.token(token));
 
         expect(ref, isA<Offset>());
-        expect(ref.token, equals(token));
+        expect(ref.$token, equals(token));
       });
 
       test('RadiusRef implements Radius interface', () {
         final token = MixToken<Radius>('test-radius');
-        final ref = RadiusRef(token);
+        final ref = RadiusRef(Prop.token(token));
 
         expect(ref, isA<Radius>());
-        expect(ref.token, equals(token));
+        expect(ref.$token, equals(token));
       });
     });
 
@@ -134,7 +137,10 @@ void main() {
           final ref2 = DoubleRef.token(token);
 
           expect(ref1, equals(ref2));
-          expect(getTokenFromValue<double>(ref1), equals(getTokenFromValue<double>(ref2)));
+          expect(
+            getTokenFromValue<double>(ref1),
+            equals(getTokenFromValue<double>(ref2)),
+          );
         });
 
         test('different values for different tokens', () {
@@ -144,7 +150,10 @@ void main() {
           final ref2 = DoubleRef.token(token2);
 
           expect(ref1, isNot(equals(ref2)));
-          expect(getTokenFromValue<double>(ref1), isNot(equals(getTokenFromValue<double>(ref2))));
+          expect(
+            getTokenFromValue<double>(ref1),
+            isNot(equals(getTokenFromValue<double>(ref2))),
+          );
         });
 
         test('registry lookup works correctly', () {
@@ -191,7 +200,10 @@ void main() {
           final ref2 = IntRef.token(token);
 
           expect(ref1, equals(ref2));
-          expect(getTokenFromValue<int>(ref1), equals(getTokenFromValue<int>(ref2)));
+          expect(
+            getTokenFromValue<int>(ref1),
+            equals(getTokenFromValue<int>(ref2)),
+          );
         });
 
         test('different values for different tokens', () {
@@ -201,7 +213,10 @@ void main() {
           final ref2 = IntRef.token(token2);
 
           expect(ref1, isNot(equals(ref2)));
-          expect(getTokenFromValue<int>(ref1), isNot(equals(getTokenFromValue<int>(ref2))));
+          expect(
+            getTokenFromValue<int>(ref1),
+            isNot(equals(getTokenFromValue<int>(ref2))),
+          );
         });
       });
 
@@ -243,7 +258,10 @@ void main() {
           final ref2 = StringRef.token(token2);
 
           expect(ref1, isNot(equals(ref2)));
-          expect(getTokenFromValue<String>(ref1), isNot(equals(getTokenFromValue<String>(ref2))));
+          expect(
+            getTokenFromValue<String>(ref1),
+            isNot(equals(getTokenFromValue<String>(ref2))),
+          );
         });
 
         test('generates valid base36 representation', () {
@@ -335,7 +353,10 @@ void main() {
         final ref = StringRef.token(token);
 
         expect(getTokenFromValue(ref), equals(token));
-        expect(getTokenFromValue(ref)?.name, equals('special!@#\$%^&*()_+-={}[]|;:,.<>?'));
+        expect(
+          getTokenFromValue(ref)?.name,
+          equals('special!@#\$%^&*()_+-={}[]|;:,.<>?'),
+        );
       });
 
       test('handles empty and very long token names', () {
@@ -427,28 +448,31 @@ void main() {
         expect(isAnyTokenRef(<String, Object>{}), isFalse);
       });
 
-      test('returns false for manually created extension type values not in registry', () {
-        final manualDoubleRef = DoubleRef(42.0);
-        final manualIntRef = IntRef(42);
-        final manualStringRef = StringRef('manual');
+      test(
+        'returns false for manually created extension type values not in registry',
+        () {
+          final manualDoubleRef = DoubleRef(42.0);
+          final manualIntRef = IntRef(42);
+          final manualStringRef = StringRef('manual');
 
-        expect(isAnyTokenRef(manualDoubleRef), isFalse);
-        expect(isAnyTokenRef(manualIntRef), isFalse);
-        expect(isAnyTokenRef(manualStringRef), isFalse);
-      });
+          expect(isAnyTokenRef(manualDoubleRef), isFalse);
+          expect(isAnyTokenRef(manualIntRef), isFalse);
+          expect(isAnyTokenRef(manualStringRef), isFalse);
+        },
+      );
 
       test('handles mixed collections correctly', () {
         final colorToken = MixToken<Color>('test-color');
         final doubleToken = MixToken<double>('test-double');
-        
+
         final colorRef = ColorRef(colorToken);
         final doubleRef = DoubleRef.token(doubleToken);
-        
+
         final mixedList = [colorRef, Colors.blue, doubleRef, 42.0, 'hello'];
-        
-        expect(isAnyTokenRef(mixedList[0]), isTrue);  // ColorRef
+
+        expect(isAnyTokenRef(mixedList[0]), isTrue); // ColorRef
         expect(isAnyTokenRef(mixedList[1]), isFalse); // Colors.blue
-        expect(isAnyTokenRef(mixedList[2]), isTrue);  // DoubleRef
+        expect(isAnyTokenRef(mixedList[2]), isTrue); // DoubleRef
         expect(isAnyTokenRef(mixedList[3]), isFalse); // 42.0
         expect(isAnyTokenRef(mixedList[4]), isFalse); // 'hello'
       });
@@ -456,11 +480,11 @@ void main() {
       test('works correctly after registry clear', () {
         final doubleToken = MixToken<double>('test-double');
         final doubleRef = DoubleRef.token(doubleToken);
-        
+
         expect(isAnyTokenRef(doubleRef), isTrue);
-        
+
         clearTokenRegistry();
-        
+
         expect(isAnyTokenRef(doubleRef), isFalse);
       });
     });
@@ -504,15 +528,18 @@ void main() {
         expect(getTokenFromValue(Radius.circular(5)), isNull);
       });
 
-      test('returns null for manually created extension type values not in registry', () {
-        final manualDoubleRef = DoubleRef(42.0);
-        final manualIntRef = IntRef(42);
-        final manualStringRef = StringRef('manual');
+      test(
+        'returns null for manually created extension type values not in registry',
+        () {
+          final manualDoubleRef = DoubleRef(42.0);
+          final manualIntRef = IntRef(42);
+          final manualStringRef = StringRef('manual');
 
-        expect(getTokenFromValue(manualDoubleRef), isNull);
-        expect(getTokenFromValue(manualIntRef), isNull);
-        expect(getTokenFromValue(manualStringRef), isNull);
-      });
+          expect(getTokenFromValue(manualDoubleRef), isNull);
+          expect(getTokenFromValue(manualIntRef), isNull);
+          expect(getTokenFromValue(manualStringRef), isNull);
+        },
+      );
 
       test('maintains type safety with generic parameter', () {
         final colorToken = MixToken<Color>('test-color');
@@ -525,8 +552,12 @@ void main() {
 
         // Type-safe calls
         final MixToken<Color>? colorResult = getTokenFromValue<Color>(colorRef);
-        final MixToken<double>? doubleResult = getTokenFromValue<double>(doubleRef);
-        final MixToken<String>? stringResult = getTokenFromValue<String>(stringRef);
+        final MixToken<double>? doubleResult = getTokenFromValue<double>(
+          doubleRef,
+        );
+        final MixToken<String>? stringResult = getTokenFromValue<String>(
+          stringRef,
+        );
 
         expect(colorResult, equals(colorToken));
         expect(doubleResult, equals(doubleToken));
@@ -544,28 +575,41 @@ void main() {
       });
 
       test('handles polymorphic token references correctly', () {
-        final alignmentGeometryToken = MixToken<AlignmentGeometry>('test-alignment-geometry');
+        final alignmentGeometryToken = MixToken<AlignmentGeometry>(
+          'test-alignment-geometry',
+        );
         final alignmentToken = MixToken<Alignment>('test-alignment');
 
-        final alignmentGeometryRef = AlignmentGeometryRef(alignmentGeometryToken);
+        final alignmentGeometryRef = AlignmentGeometryRef(
+          alignmentGeometryToken,
+        );
         final alignmentRef = AlignmentRef(alignmentToken);
 
         // Both should work with their specific types
-        expect(getTokenFromValue<AlignmentGeometry>(alignmentGeometryRef), equals(alignmentGeometryToken));
-        expect(getTokenFromValue<Alignment>(alignmentRef), equals(alignmentToken));
+        expect(
+          getTokenFromValue<AlignmentGeometry>(alignmentGeometryRef),
+          equals(alignmentGeometryToken),
+        );
+        expect(
+          getTokenFromValue<Alignment>(alignmentRef),
+          equals(alignmentToken),
+        );
 
         // Alignment extends AlignmentGeometry, so this should work
-        expect(getTokenFromValue<AlignmentGeometry>(alignmentRef), equals(alignmentToken));
+        expect(
+          getTokenFromValue<AlignmentGeometry>(alignmentRef),
+          equals(alignmentToken),
+        );
       });
 
       test('works correctly after registry clear', () {
         final doubleToken = MixToken<double>('test-double');
         final doubleRef = DoubleRef.token(doubleToken);
-        
+
         expect(getTokenFromValue(doubleRef), equals(doubleToken));
-        
+
         clearTokenRegistry();
-        
+
         expect(getTokenFromValue(doubleRef), isNull);
       });
 

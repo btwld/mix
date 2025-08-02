@@ -112,7 +112,7 @@ void main() {
       });
 
       test('creates with provided Prop opacity value', () {
-        final opacity = Prop<double>(0.5);
+        final opacity = Prop.value(0.5);
         final attribute = OpacityModifierAttribute.raw(opacity: opacity);
 
         expect(attribute.opacity, same(opacity));

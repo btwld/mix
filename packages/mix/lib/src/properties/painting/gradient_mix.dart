@@ -96,8 +96,8 @@ final class LinearGradientMix extends GradientMix<LinearGradient> {
          end: Prop.maybe(end),
          tileMode: Prop.maybe(tileMode),
          transform: Prop.maybe(transform),
-         colors: colors?.map((c) => Prop(c)).toList(),
-         stops: stops?.map(Prop.new).toList(),
+         colors: colors?.map((c) => Prop.value(c)).toList(),
+         stops: stops?.map(Prop.value).toList(),
        );
 
   const LinearGradientMix.raw({
@@ -258,8 +258,8 @@ final class RadialGradientMix extends GradientMix<RadialGradient> {
          focal: Prop.maybe(focal),
          focalRadius: Prop.maybe(focalRadius),
          transform: Prop.maybe(transform),
-         colors: colors?.map((c) => Prop(c)).toList(),
-         stops: stops?.map(Prop.new).toList(),
+         colors: colors?.map((c) => Prop.value(c)).toList(),
+         stops: stops?.map(Prop.value).toList(),
        );
 
   const RadialGradientMix.raw({
@@ -451,8 +451,8 @@ final class SweepGradientMix extends GradientMix<SweepGradient> {
          endAngle: Prop.maybe(endAngle),
          tileMode: Prop.maybe(tileMode),
          transform: Prop.maybe(transform),
-         colors: colors?.map((c) => Prop(c)).toList(),
-         stops: stops?.map(Prop.new).toList(),
+         colors: colors?.map((c) => Prop.value(c)).toList(),
+         stops: stops?.map(Prop.value).toList(),
        );
 
   const SweepGradientMix.raw({

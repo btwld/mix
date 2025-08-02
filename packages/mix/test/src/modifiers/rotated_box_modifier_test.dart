@@ -156,7 +156,7 @@ void main() {
       });
 
       test('creates with provided Prop quarter turns', () {
-        final quarterTurns = Prop<int>(2);
+        final quarterTurns = Prop.value(2);
         final attribute = RotatedBoxModifierAttribute.raw(
           quarterTurns: quarterTurns,
         );

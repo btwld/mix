@@ -360,11 +360,13 @@ void main() {
       });
 
       test('creates with provided Prop values', () {
-        final scrollDirection = Prop<Axis>(Axis.horizontal);
-        final reverse = Prop<bool>(true);
+        final scrollDirection = Prop.value<Axis>(Axis.horizontal);
+        final reverse = Prop.value<bool>(true);
         final padding = MixProp<EdgeInsetsGeometry>(EdgeInsetsMix.all(16.0));
-        final physics = Prop<ScrollPhysics>(const BouncingScrollPhysics());
-        final clipBehavior = Prop<Clip>(Clip.antiAlias);
+        final physics = Prop.value<ScrollPhysics>(
+          const BouncingScrollPhysics(),
+        );
+        final clipBehavior = Prop.value<Clip>(Clip.antiAlias);
 
         final attribute = ScrollViewModifierAttribute.raw(
           scrollDirection: scrollDirection,

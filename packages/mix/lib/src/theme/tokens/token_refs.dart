@@ -3,32 +3,6 @@ import 'package:flutter/widgets.dart';
 import '../../core/prop.dart';
 import 'mix_token.dart';
 
-sealed class TokenRef<T> {
-  final MixToken<T> token;
-  const TokenRef(this.token);
-  @override
-  Never noSuchMethod(Invocation invocation) {
-    throw UnimplementedError(
-      'This is a Token reference for $T, so it does not implement ${invocation.memberName}.',
-    );
-  }
-
-  @override
-  operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is TokenRef && other.token == token;
-  }
-
-  @override
-  String toString() {
-    return '$runtimeType(${token.name})';
-  }
-
-  @override
-  int get hashCode => token.hashCode;
-}
-
 mixin ValueRef<T> on Prop<T> {
   @override
   Never noSuchMethod(Invocation invocation) {
@@ -39,106 +13,131 @@ mixin ValueRef<T> on Prop<T> {
 }
 
 final class ColorRef extends Prop<Color> with ValueRef<Color> implements Color {
-  const ColorRef({super.value, super.token, super.directives, super.animation})
-    : super.internal();
+  ColorRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [AlignmentGeometry] values
-final class AlignmentGeometryRef extends TokenRef<AlignmentGeometry>
+final class AlignmentGeometryRef extends Prop<AlignmentGeometry>
+    with ValueRef<AlignmentGeometry>
     implements AlignmentGeometry {
-  const AlignmentGeometryRef(super.token);
+  AlignmentGeometryRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [Alignment] values
-final class AlignmentRef extends TokenRef<Alignment> implements Alignment {
-  const AlignmentRef(super.token);
+final class AlignmentRef extends Prop<Alignment>
+    with ValueRef<Alignment>
+    implements Alignment {
+  AlignmentRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [AlignmentDirectional] values
-final class AlignmentDirectionalRef extends TokenRef<AlignmentDirectional>
+final class AlignmentDirectionalRef extends Prop<AlignmentDirectional>
+    with ValueRef<AlignmentDirectional>
     implements AlignmentDirectional {
-  const AlignmentDirectionalRef(super.token);
+  AlignmentDirectionalRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [FontFeature] values
-final class FontFeatureRef extends TokenRef<FontFeature>
+final class FontFeatureRef extends Prop<FontFeature>
+    with ValueRef<FontFeature>
     implements FontFeature {
-  const FontFeatureRef(super.token);
+  FontFeatureRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [Duration] values
-final class DurationRef extends TokenRef<Duration> implements Duration {
-  const DurationRef(super.token);
+final class DurationRef extends Prop<Duration>
+    with ValueRef<Duration>
+    implements Duration {
+  DurationRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [FontWeight] values
-final class FontWeightRef extends TokenRef<FontWeight> implements FontWeight {
-  const FontWeightRef(super.token);
+final class FontWeightRef extends Prop<FontWeight>
+    with ValueRef<FontWeight>
+    implements FontWeight {
+  FontWeightRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [TextDecoration] values
-final class TextDecorationRef extends TokenRef<TextDecoration>
+final class TextDecorationRef extends Prop<TextDecoration>
+    with ValueRef<TextDecoration>
     implements TextDecoration {
-  const TextDecorationRef(super.token);
+  TextDecorationRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [Offset] values
-final class OffsetRef extends TokenRef<Offset> implements Offset {
-  const OffsetRef(super.token);
+final class OffsetRef extends Prop<Offset>
+    with ValueRef<Offset>
+    implements Offset {
+  OffsetRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [Radius] values
-final class RadiusRef extends TokenRef<Radius> implements Radius {
-  const RadiusRef(super.token);
+final class RadiusRef extends Prop<Radius>
+    with ValueRef<Radius>
+    implements Radius {
+  RadiusRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [Rect] values
-final class RectRef extends TokenRef<Rect> implements Rect {
-  const RectRef(super.token);
+final class RectRef extends Prop<Rect> with ValueRef<Rect> implements Rect {
+  RectRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [Locale] values
-final class LocaleRef extends TokenRef<Locale> implements Locale {
-  const LocaleRef(super.token);
+final class LocaleRef extends Prop<Locale>
+    with ValueRef<Locale>
+    implements Locale {
+  LocaleRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [ImageProvider] values
-final class ImageProviderRef extends TokenRef<ImageProvider>
+final class ImageProviderRef extends Prop<ImageProvider>
+    with ValueRef<ImageProvider>
     implements ImageProvider {
-  const ImageProviderRef(super.token);
+  ImageProviderRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [GradientTransform] values
-final class GradientTransformRef extends TokenRef<GradientTransform>
+final class GradientTransformRef extends Prop<GradientTransform>
+    with ValueRef<GradientTransform>
     implements GradientTransform {
-  const GradientTransformRef(super.token);
+  GradientTransformRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [Matrix4] values
-final class Matrix4Ref extends TokenRef<Matrix4> implements Matrix4 {
-  const Matrix4Ref(super.token);
+final class Matrix4Ref extends Prop<Matrix4>
+    with ValueRef<Matrix4>
+    implements Matrix4 {
+  Matrix4Ref(super.prop) : super.fromProp();
 }
 
 /// Token reference for [TextScaler] values
-final class TextScalerRef extends TokenRef<TextScaler> implements TextScaler {
-  const TextScalerRef(super.token);
+final class TextScalerRef extends Prop<TextScaler>
+    with ValueRef<TextScaler>
+    implements TextScaler {
+  TextScalerRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [TableColumnWidth] values
-final class TableColumnWidthRef extends TokenRef<TableColumnWidth>
+final class TableColumnWidthRef extends Prop<TableColumnWidth>
+    with ValueRef<TableColumnWidth>
     implements TableColumnWidth {
-  const TableColumnWidthRef(super.token);
+  TableColumnWidthRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [TableBorder] values
-final class TableBorderRef extends TokenRef<TableBorder>
+final class TableBorderRef extends Prop<TableBorder>
+    with ValueRef<TableBorder>
     implements TableBorder {
-  const TableBorderRef(super.token);
+  TableBorderRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [TextStyle] values
-final class TextStyleRef extends TokenRef<TextStyle> implements TextStyle {
-  const TextStyleRef(super.token);
+final class TextStyleRef extends Prop<TextStyle>
+    with ValueRef<TextStyle>
+    implements TextStyle {
+  TextStyleRef(super.prop) : super.fromProp();
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -147,8 +146,10 @@ final class TextStyleRef extends TokenRef<TextStyle> implements TextStyle {
 }
 
 /// Token reference for [StrutStyle] values
-final class StrutStyleRef extends TokenRef<StrutStyle> implements StrutStyle {
-  const StrutStyleRef(super.token);
+final class StrutStyleRef extends Prop<StrutStyle>
+    with ValueRef<StrutStyle>
+    implements StrutStyle {
+  StrutStyleRef(super.prop) : super.fromProp();
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -157,9 +158,10 @@ final class StrutStyleRef extends TokenRef<StrutStyle> implements StrutStyle {
 }
 
 /// Token reference for [TextHeightBehavior] values
-final class TextHeightBehaviorRef extends TokenRef<TextHeightBehavior>
+final class TextHeightBehaviorRef extends Prop<TextHeightBehavior>
+    with ValueRef<TextHeightBehavior>
     implements TextHeightBehavior {
-  const TextHeightBehaviorRef(super.token);
+  TextHeightBehaviorRef(super.prop) : super.fromProp();
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -168,79 +170,98 @@ final class TextHeightBehaviorRef extends TokenRef<TextHeightBehavior>
 }
 
 /// Token reference for [BoxBorder] values
-final class BoxBorderRef extends TokenRef<BoxBorder> implements BoxBorder {
-  const BoxBorderRef(super.token);
+final class BoxBorderRef extends Prop<BoxBorder>
+    with ValueRef<BoxBorder>
+    implements BoxBorder {
+  BoxBorderRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [BorderRadiusGeometry] values
-final class BorderRadiusGeometryRef extends TokenRef<BorderRadiusGeometry>
+final class BorderRadiusGeometryRef extends Prop<BorderRadiusGeometry>
+    with ValueRef<BorderRadiusGeometry>
     implements BorderRadiusGeometry {
-  const BorderRadiusGeometryRef(super.token);
+  BorderRadiusGeometryRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [BorderRadius] values
-final class BorderRadiusRef extends TokenRef<BorderRadius>
+final class BorderRadiusRef extends Prop<BorderRadius>
+    with ValueRef<BorderRadius>
     implements BorderRadius {
-  const BorderRadiusRef(super.token);
+  BorderRadiusRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [BorderRadiusDirectional] values
-final class BorderRadiusDirectionalRef extends TokenRef<BorderRadiusDirectional>
+final class BorderRadiusDirectionalRef extends Prop<BorderRadiusDirectional>
+    with ValueRef<BorderRadiusDirectional>
     implements BorderRadiusDirectional {
-  const BorderRadiusDirectionalRef(super.token);
+  BorderRadiusDirectionalRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [Shadow] values
-final class ShadowRef extends TokenRef<Shadow> implements Shadow {
-  const ShadowRef(super.token);
+final class ShadowRef extends Prop<Shadow>
+    with ValueRef<Shadow>
+    implements Shadow {
+  ShadowRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [BoxShadow] values
-final class BoxShadowRef extends TokenRef<BoxShadow> implements BoxShadow {
-  const BoxShadowRef(super.token);
+final class BoxShadowRef extends Prop<BoxShadow>
+    with ValueRef<BoxShadow>
+    implements BoxShadow {
+  BoxShadowRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [Gradient] values
-final class GradientRef extends TokenRef<Gradient> implements Gradient {
-  const GradientRef(super.token);
+final class GradientRef extends Prop<Gradient>
+    with ValueRef<Gradient>
+    implements Gradient {
+  GradientRef(super.prop) : super.fromProp();
 }
 
-final class LinearGradientRef extends TokenRef<LinearGradient>
+final class LinearGradientRef extends Prop<LinearGradient>
+    with ValueRef<LinearGradient>
     implements LinearGradient {
-  const LinearGradientRef(super.token);
+  LinearGradientRef(super.prop) : super.fromProp();
 }
 
-final class RadialGradientRef extends TokenRef<RadialGradient>
+final class RadialGradientRef extends Prop<RadialGradient>
+    with ValueRef<RadialGradient>
     implements RadialGradient {
-  const RadialGradientRef(super.token);
+  RadialGradientRef(super.prop) : super.fromProp();
 }
 
-final class SweepGradientRef extends TokenRef<SweepGradient>
+final class SweepGradientRef extends Prop<SweepGradient>
+    with ValueRef<SweepGradient>
     implements SweepGradient {
-  const SweepGradientRef(super.token);
+  SweepGradientRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [EdgeInsetsGeometry] values
-final class EdgeInsetsGeometryRef extends TokenRef<EdgeInsetsGeometry>
+final class EdgeInsetsGeometryRef extends Prop<EdgeInsetsGeometry>
+    with ValueRef<EdgeInsetsGeometry>
     implements EdgeInsetsGeometry {
-  const EdgeInsetsGeometryRef(super.token);
+  EdgeInsetsGeometryRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [EdgeInsets] values
-final class EdgeInsetsRef extends TokenRef<EdgeInsets> implements EdgeInsets {
-  const EdgeInsetsRef(super.token);
+final class EdgeInsetsRef extends Prop<EdgeInsets>
+    with ValueRef<EdgeInsets>
+    implements EdgeInsets {
+  EdgeInsetsRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [EdgeInsetsDirectional] values
-final class EdgeInsetsDirectionalRef extends TokenRef<EdgeInsetsDirectional>
+final class EdgeInsetsDirectionalRef extends Prop<EdgeInsetsDirectional>
+    with ValueRef<EdgeInsetsDirectional>
     implements EdgeInsetsDirectional {
-  const EdgeInsetsDirectionalRef(super.token);
+  EdgeInsetsDirectionalRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [BoxDecoration] values
-final class BoxDecorationRef extends TokenRef<BoxDecoration>
+final class BoxDecorationRef extends Prop<BoxDecoration>
+    with ValueRef<BoxDecoration>
     implements BoxDecoration {
-  const BoxDecorationRef(super.token);
+  BoxDecorationRef(super.prop) : super.fromProp();
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -248,8 +269,10 @@ final class BoxDecorationRef extends TokenRef<BoxDecoration>
   }
 }
 
-final class BorderSideRef extends TokenRef<BorderSide> implements BorderSide {
-  const BorderSideRef(super.token);
+final class BorderSideRef extends Prop<BorderSide>
+    with ValueRef<BorderSide>
+    implements BorderSide {
+  BorderSideRef(super.prop) : super.fromProp();
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -258,9 +281,10 @@ final class BorderSideRef extends TokenRef<BorderSide> implements BorderSide {
 }
 
 /// Token reference for [ShapeBorder] values
-final class ShapeBorderRef extends TokenRef<ShapeBorder>
+final class ShapeBorderRef extends Prop<ShapeBorder>
+    with ValueRef<ShapeBorder>
     implements ShapeBorder {
-  const ShapeBorderRef(super.token);
+  ShapeBorderRef(super.prop) : super.fromProp();
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -269,20 +293,22 @@ final class ShapeBorderRef extends TokenRef<ShapeBorder>
 }
 
 /// Token reference for [BoxConstraints] values
-final class BoxConstraintsRef extends TokenRef<BoxConstraints>
+final class BoxConstraintsRef extends Prop<BoxConstraints>
+    with ValueRef<BoxConstraints>
     implements BoxConstraints {
-  const BoxConstraintsRef(super.token);
+  BoxConstraintsRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [DecorationImage] values
-final class DecorationImageRef extends TokenRef<DecorationImage>
+final class DecorationImageRef extends Prop<DecorationImage>
+    with ValueRef<DecorationImage>
     implements DecorationImage {
-  const DecorationImageRef(super.token);
+  DecorationImageRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [Curve] values
-final class CurveRef extends TokenRef<Curve> implements Curve {
-  const CurveRef(super.token);
+final class CurveRef extends Prop<Curve> with ValueRef<Curve> implements Curve {
+  CurveRef(super.prop) : super.fromProp();
 }
 
 // =============================================================================

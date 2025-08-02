@@ -33,7 +33,7 @@ class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
     bool? forceStrutHeight,
   }) : this.raw(
          fontFamily: Prop.maybe(fontFamily),
-         fontFamilyFallback: fontFamilyFallback?.map(Prop.new).toList(),
+         fontFamilyFallback: fontFamilyFallback?.map(Prop.value).toList(),
          fontSize: Prop.maybe(fontSize),
          fontWeight: Prop.maybe(fontWeight),
          fontStyle: Prop.maybe(fontStyle),

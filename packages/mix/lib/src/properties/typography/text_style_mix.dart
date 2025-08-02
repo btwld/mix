@@ -184,17 +184,17 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
          wordSpacing: Prop.maybe(wordSpacing),
          textBaseline: Prop.maybe(textBaseline),
          shadows: shadows?.map(MixProp<Shadow>.new).toList(),
-         fontFeatures: fontFeatures?.map(Prop.new).toList(),
+         fontFeatures: fontFeatures?.map(Prop.value).toList(),
          decoration: Prop.maybe(decoration),
          decorationColor: Prop.maybe(decorationColor),
          decorationStyle: Prop.maybe(decorationStyle),
-         fontVariations: fontVariations?.map(Prop.new).toList(),
+         fontVariations: fontVariations?.map(Prop.value).toList(),
          height: Prop.maybe(height),
          foreground: Prop.maybe(foreground),
          background: Prop.maybe(background),
          decorationThickness: Prop.maybe(decorationThickness),
          fontFamily: Prop.maybe(fontFamily),
-         fontFamilyFallback: fontFamilyFallback?.map(Prop.new).toList(),
+         fontFamilyFallback: fontFamilyFallback?.map(Prop.value).toList(),
          inherit: Prop.maybe(inherit),
        );
 
@@ -396,6 +396,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
   @override
   TextStyle resolve(BuildContext context) {
     return TextStyle(
+      inherit: MixHelpers.resolve(context, $inherit) ?? true,
       color: MixHelpers.resolve(context, $color),
       backgroundColor: MixHelpers.resolve(context, $backgroundColor),
       fontSize: MixHelpers.resolve(context, $fontSize),
@@ -418,7 +419,6 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
       debugLabel: MixHelpers.resolve(context, $debugLabel),
       fontFamily: MixHelpers.resolve(context, $fontFamily),
       fontFamilyFallback: MixHelpers.resolveList(context, $fontFamilyFallback),
-      inherit: MixHelpers.resolve(context, $inherit) ?? true,
     );
   }
 

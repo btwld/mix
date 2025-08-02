@@ -38,7 +38,7 @@ final class MaterialColorUtility<T extends Style<Object?>>
 mixin ColorsUtilityMixin<T extends Style<Object?>>
     on MixUtility<T, Prop<Color>> {
   T _wrapColor(ColorSwatch color, [int? shade]) =>
-      builder(Prop(shade == null ? color : color[shade]!));
+      builder(Prop.value(shade == null ? color : color[shade]!));
 
   T red([int? shade]) => _wrapColor(Colors.red, shade);
   T pink([int? shade]) => _wrapColor(Colors.pink, shade);

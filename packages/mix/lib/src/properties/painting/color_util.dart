@@ -67,7 +67,7 @@ class CallableColorUtility<T extends Style<Object?>> {
 
   /// Call operator to make this utility callable as a function
   /// Usage: colorUtil.black() returns T that resolves to Colors.black
-  T call() => builder(Prop(color));
+  T call() => builder(Prop.value(color));
 
   /// Applies the specified opacity to the color (0.0 to 1.0).
   T withOpacity(double opacity) =>
@@ -126,7 +126,7 @@ final class ColorUtility<T extends Style<Object?>>
 
   T token(MixToken<Color> token) => builder(Prop.token(token));
 
-  T call(Color color) => builder(Prop(color));
+  T call(Color color) => builder(Prop.value(color));
 }
 
 /// Provides access to basic black, white, and transparent colors with opacity variants.

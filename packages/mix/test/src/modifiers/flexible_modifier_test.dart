@@ -206,8 +206,8 @@ void main() {
       });
 
       test('creates with provided Prop values', () {
-        final flex = Prop<int>(2);
-        final fit = Prop<FlexFit>(FlexFit.tight);
+        final flex = Prop.value(2);
+        final fit = Prop.value(FlexFit.tight);
         final attribute = FlexibleModifierAttribute.raw(flex: flex, fit: fit);
 
         expect(attribute.flex, same(flex));

@@ -7,7 +7,7 @@ import '../../helpers/testing_utils.dart';
 void main() {
   group('Prop', () {
     test('value constructor stores direct value', () {
-      final prop = Prop<int>(42);
+      final prop = Prop.value(42);
 
       expect(prop.hasValue, isTrue);
       expect(prop.hasToken, isFalse);
@@ -24,8 +24,8 @@ void main() {
     });
 
     test('merge replaces source with other source', () {
-      final prop1 = Prop<int>(10);
-      final prop2 = Prop<int>(20);
+      final prop1 = Prop.value(10);
+      final prop2 = Prop.value(20);
 
       final merged = prop1.merge(prop2);
 
@@ -34,7 +34,7 @@ void main() {
     });
 
     test('resolves direct values', () {
-      final prop = Prop<int>(42);
+      final prop = Prop.value(42);
       final context = MockBuildContext();
 
       final resolved = prop.resolve(context);

@@ -134,7 +134,9 @@ final class AspectRatioModifierUtility<T extends Style<Object?>>
   const AspectRatioModifierUtility(super.builder);
 
   T call(double value) {
-    return builder(AspectRatioModifierAttribute.raw(aspectRatio: Prop(value)));
+    return builder(
+      AspectRatioModifierAttribute.raw(aspectRatio: Prop.value(value)),
+    );
   }
 
   T token(MixToken<double> token) {

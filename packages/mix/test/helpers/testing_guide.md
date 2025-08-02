@@ -47,10 +47,10 @@ Use `expectProp()` to test what a Prop contains - not what it resolves to.
 
 ```dart
 test('Prop contains direct values', () {
-  final colorProp = Prop(Colors.red);
+  final colorProp = Prop.value(Colors.red);
   expectProp(colorProp, Colors.red);
   
-  final paddingProp = Prop(EdgeInsetsMix.all(16.0));
+  final paddingProp = Prop.value(EdgeInsetsMix.all(16.0));
   expectProp(paddingProp, EdgeInsetsMix.all(16.0));
 });
 
@@ -61,16 +61,16 @@ test('Prop contains tokens', () {
 });
 
 test('Prop uses replacement merge strategy', () {
-  final prop1 = Prop(Colors.red);
-  final prop2 = Prop(Colors.blue);
+  final prop1 = Prop.value(Colors.red);
+  final prop2 = Prop.value(Colors.blue);
   final merged = prop1.merge(prop2);
 
   expectProp(merged, Colors.blue); // Second value wins for Prop<T>
 });
 
 test('MixProp uses accumulation merge strategy', () {
-  final borderMix1 = BorderMix(color: Prop(Colors.red), width: Prop(1.0));
-  final borderMix2 = BorderMix(color: Prop(Colors.blue));
+  final borderMix1 = BorderMix(color: Prop.value(Colors.red), width: Prop.value(1.0));
+  final borderMix2 = BorderMix(color: Prop.value(Colors.blue));
 
   final prop1 = MixProp(borderMix1);
   final prop2 = MixProp(borderMix2);
@@ -83,7 +83,7 @@ test('MixProp uses accumulation merge strategy', () {
 });
 
 test('expectProp supports matchers', () {
-  final colorProp = Prop(Colors.red);
+  final colorProp = Prop.value(Colors.red);
   expectProp(colorProp, isA<Color>());
 
   final mixProp = MixProp(EdgeInsetsMix.all(16.0));
@@ -97,7 +97,7 @@ Use `resolvesTo()` to test what Resolvable types actually resolve to in context.
 
 ```dart
 test('Props resolve to their values', () {
-  final colorProp = Prop(Colors.red);
+  final colorProp = Prop.value(Colors.red);
   expect(colorProp, resolvesTo(Colors.red));
 });
 
@@ -136,7 +136,7 @@ Use when you need BuildContext for resolution:
 
 ```dart
 test('resolving requires context', () {
-  final attribute = SomeAttribute(color: Prop(Colors.red));
+  final attribute = SomeAttribute(color: Prop.value(Colors.red));
   final context = MockBuildContext();
   final resolved = attribute.resolve(context);
   
@@ -209,14 +209,14 @@ expect(mergedProp, resolvesTo(Colors.blue)); // Tests what it resolves to (last 
 
 ```dart
 test('modifier attribute properties are set correctly', () {
-  final attribute = OpacityModifierAttribute(opacity: Prop(0.5));
+  final attribute = OpacityModifierAttribute(opacity: Prop.value(0.5));
 
   expectProp(attribute.opacity, 0.5);
 });
 
 test('modifier attribute merging uses replacement strategy', () {
-  final attr1 = AspectRatioModifierAttribute(aspectRatio: Prop(1.0));
-  final attr2 = AspectRatioModifierAttribute(aspectRatio: Prop(2.0));
+  final attr1 = AspectRatioModifierAttribute(aspectRatio: Prop.value(1.0));
+  final attr2 = AspectRatioModifierAttribute(aspectRatio: Prop.value(2.0));
 
   final merged = attr1.merge(attr2);
 
@@ -224,7 +224,7 @@ test('modifier attribute merging uses replacement strategy', () {
 });
 
 test('modifier attribute resolves to modifier', () {
-  final attribute = OpacityModifierAttribute(opacity: Prop(0.8));
+  final attribute = OpacityModifierAttribute(opacity: Prop.value(0.8));
 
   expect(attribute, resolvesTo(const OpacityModifier(0.8)));
 });
@@ -235,7 +235,7 @@ test('modifier attribute resolves to modifier', () {
 ```dart
 test('spec attribute with mixed prop types', () {
   final attribute = BoxSpecAttribute(
-    width: Prop(100.0),                    // Prop<double> - replacement merge
+    width: Prop.value(100.0),                    // Prop<double> - replacement merge
     padding: MixProp(EdgeInsetsMix.all(16.0)), // MixProp<EdgeInsetsGeometry> - accumulation merge
   );
 
@@ -245,12 +245,12 @@ test('spec attribute with mixed prop types', () {
 
 test('spec attribute merging with different prop types', () {
   final base = BoxSpecAttribute(
-    width: Prop(100.0),
+    width: Prop.value(100.0),
     padding: MixProp(EdgeInsetsMix.only(left: 8.0)),
   );
 
   final override = BoxSpecAttribute(
-    width: Prop(200.0),                     // Will replace
+    width: Prop.value(200.0),                     // Will replace
     padding: MixProp(EdgeInsetsMix.only(right: 16.0)), // Will accumulate
   );
 
@@ -266,8 +266,8 @@ test('spec attribute merging with different prop types', () {
 
 test('spec attribute resolves to spec', () {
   final attribute = BoxSpecAttribute(
-    width: Prop(150.0),
-    height: Prop(200.0),
+    width: Prop.value(150.0),
+    height: Prop.value(200.0),
   );
 
   const expectedSpec = BoxSpec(width: 150.0, height: 200.0);
@@ -280,8 +280,8 @@ test('spec attribute resolves to spec', () {
 ```dart
 test('Mix properties are set', () {
   final borderMix = BorderMix(
-    color: Prop(Colors.green),
-    width: Prop(4.0),
+    color: Prop.value(Colors.green),
+    width: Prop.value(4.0),
   );
   
   expectProp(borderMix.color, Colors.green);
@@ -290,8 +290,8 @@ test('Mix properties are set', () {
 
 test('Mix resolves to Flutter type', () {
   final borderSide = BorderSideMix(
-    color: Prop(Colors.red),
-    width: Prop(2.0),
+    color: Prop.value(Colors.red),
+    width: Prop.value(2.0),
   );
   
   const expectedBorderSide = BorderSide(color: Colors.red, width: 2.0);
@@ -318,9 +318,9 @@ test('utility function creates correct Prop', () {
 
 ```dart
 test('Prop<T> merge behavior - replacement strategy', () {
-  final prop1 = Prop(100.0);
-  final prop2 = Prop(200.0);
-  final prop3 = Prop(300.0);
+  final prop1 = Prop.value(100.0);
+  final prop2 = Prop.value(200.0);
+  final prop3 = Prop.value(300.0);
 
   final merged = prop1.merge(prop2).merge(prop3);
 
@@ -332,9 +332,9 @@ test('Prop<T> merge behavior - replacement strategy', () {
 });
 
 test('MixProp<V> merge behavior - accumulation strategy', () {
-  final borderMix1 = BorderMix(color: Prop(Colors.red), width: Prop(1.0));
-  final borderMix2 = BorderMix(color: Prop(Colors.blue));
-  final borderMix3 = BorderMix(style: Prop(BorderStyle.dashed));
+  final borderMix1 = BorderMix(color: Prop.value(Colors.red), width: Prop.value(1.0));
+  final borderMix2 = BorderMix(color: Prop.value(Colors.blue));
+  final borderMix3 = BorderMix(style: Prop.value(BorderStyle.dashed));
 
   final prop1 = MixProp(borderMix1);
   final prop2 = MixProp(borderMix2);
@@ -379,8 +379,8 @@ expect(tokenProp, resolvesTo(Colors.blue, context: context));
 ### **3. Confusing Prop<T> vs MixProp<V> merge behavior**
 ```dart
 // ❌ Wrong - Prop<T> uses replacement, not accumulation
-final doubleProp1 = Prop(10.0);
-final doubleProp2 = Prop(20.0);
+final doubleProp1 = Prop.value(10.0);
+final doubleProp2 = Prop.value(20.0);
 final merged = doubleProp1.merge(doubleProp2);
 expectProp(merged, [10.0, 20.0]); // Wrong! Prop<T> uses replacement
 
@@ -389,8 +389,8 @@ expectProp(merged, 20.0); // Prop<T> replacement: second wins
 expect(merged, resolvesTo(20.0)); // Resolves to the replacement value
 
 // ✅ Right - MixProp<V> does accumulate
-final mixProp1 = MixProp(BorderMix(color: Prop(Colors.red)));
-final mixProp2 = MixProp(BorderMix(width: Prop(2.0)));
+final mixProp1 = MixProp(BorderMix(color: Prop.value(Colors.red)));
+final mixProp2 = MixProp(BorderMix(width: Prop.value(2.0)));
 final mergedMix = mixProp1.merge(mixProp2);
 final resolvedMix = mergedMix.value;
 expectProp(resolvedMix.color, Colors.red); // Accumulated from first

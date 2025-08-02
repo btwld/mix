@@ -66,29 +66,39 @@ void main() {
   group('AspectRatioModifierAttribute', () {
     test('constructor assigns aspectRatio', () {
       final attribute = AspectRatioModifierAttribute.raw(
-        aspectRatio: Prop(1.5),
+        aspectRatio: Prop.value(1.5),
       );
       expectProp(attribute.aspectRatio, 1.5);
     });
 
     test('merge returns correct attribute', () {
-      final attr1 = AspectRatioModifierAttribute.raw(aspectRatio: Prop(1.0));
-      final attr2 = AspectRatioModifierAttribute.raw(aspectRatio: Prop(2.0));
+      final attr1 = AspectRatioModifierAttribute.raw(
+        aspectRatio: Prop.value(1.0),
+      );
+      final attr2 = AspectRatioModifierAttribute.raw(
+        aspectRatio: Prop.value(2.0),
+      );
       final merged = attr1.merge(attr2);
       expectProp(merged.aspectRatio, 2.0); // Prop uses replacement strategy
     });
 
     test('resolve returns correct modifier', () {
       final attribute = AspectRatioModifierAttribute.raw(
-        aspectRatio: Prop(1.5),
+        aspectRatio: Prop.value(1.5),
       );
       expect(attribute, resolvesTo(const AspectRatioModifier(1.5)));
     });
 
     test('equality', () {
-      final attr1 = AspectRatioModifierAttribute.raw(aspectRatio: Prop(1.0));
-      final attr2 = AspectRatioModifierAttribute.raw(aspectRatio: Prop(1.0));
-      final attr3 = AspectRatioModifierAttribute.raw(aspectRatio: Prop(2.0));
+      final attr1 = AspectRatioModifierAttribute.raw(
+        aspectRatio: Prop.value(1.0),
+      );
+      final attr2 = AspectRatioModifierAttribute.raw(
+        aspectRatio: Prop.value(1.0),
+      );
+      final attr3 = AspectRatioModifierAttribute.raw(
+        aspectRatio: Prop.value(2.0),
+      );
       expect(attr1, equals(attr2));
       expect(attr1, isNot(equals(attr3)));
     });
@@ -97,7 +107,7 @@ void main() {
   group('Integration', () {
     testWidgets('attribute resolves and builds correctly', (tester) async {
       final attribute = AspectRatioModifierAttribute.raw(
-        aspectRatio: Prop(2.5),
+        aspectRatio: Prop.value(2.5),
       );
       expect(attribute, resolvesTo(const AspectRatioModifier(2.5)));
 

@@ -201,8 +201,8 @@ void main() {
       });
 
       test('creates with provided Prop values', () {
-        final width = Prop<double>(100.0);
-        final height = Prop<double>(200.0);
+        final width = Prop.value(100.0);
+        final height = Prop.value(200.0);
         final attribute = SizedBoxModifierAttribute.raw(
           width: width,
           height: height,

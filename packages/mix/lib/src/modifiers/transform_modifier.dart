@@ -51,7 +51,7 @@ final class TransformModifierUtility<T extends Style<Object?>>
     (value) => builder(
       TransformModifierAttribute.raw(
         transform: Prop.maybe(value),
-        alignment: Prop(Alignment.center),
+        alignment: Prop.value(Alignment.center),
       ),
     ),
   );
@@ -60,10 +60,10 @@ final class TransformModifierUtility<T extends Style<Object?>>
 
   T _flip(bool x, bool y) => builder(
     TransformModifierAttribute.raw(
-      transform: Prop(
+      transform: Prop.value(
         Matrix4.diagonal3Values(x ? -1.0 : 1.0, y ? -1.0 : 1.0, 1.0),
       ),
-      alignment: Prop(Alignment.center),
+      alignment: Prop.value(Alignment.center),
     ),
   );
 
@@ -71,19 +71,19 @@ final class TransformModifierUtility<T extends Style<Object?>>
   T flipY() => _flip(false, true);
 
   T call(Matrix4 value) =>
-      builder(TransformModifierAttribute.raw(transform: Prop(value)));
+      builder(TransformModifierAttribute.raw(transform: Prop.value(value)));
 
   T scale(double value) => builder(
     TransformModifierAttribute.raw(
-      transform: Prop(Matrix4.diagonal3Values(value, value, 1.0)),
-      alignment: Prop(Alignment.center),
+      transform: Prop.value(Matrix4.diagonal3Values(value, value, 1.0)),
+      alignment: Prop.value(Alignment.center),
     ),
   );
 
   T translate(double x, double y) => builder(
     TransformModifierAttribute.raw(
-      transform: Prop(Matrix4.translationValues(x, y, 0.0)),
-      alignment: Prop(Alignment.center),
+      transform: Prop.value(Matrix4.translationValues(x, y, 0.0)),
+      alignment: Prop.value(Alignment.center),
     ),
   );
 }

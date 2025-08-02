@@ -116,7 +116,7 @@ final class VisibilityModifierUtility<T extends Style<Object?>>
 
   /// Creates a [VisibilityModifierAttribute] with the specified visibility state.
   T call(bool value) =>
-      builder(VisibilityModifierAttribute.raw(visible: Prop(value)));
+      builder(VisibilityModifierAttribute.raw(visible: Prop.value(value)));
 
   /// Creates a [VisibilityModifierAttribute] with the specified visibility token.
   T token(MixToken<bool> token) =>

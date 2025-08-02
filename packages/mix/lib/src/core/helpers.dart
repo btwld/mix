@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart' as w;
 
 import 'internal/deep_collection_equality.dart';
 import 'mix_element.dart';
+import 'prop.dart';
 
 /// Utility class providing helper functions for value resolution, merging, and interpolation.
 ///
@@ -42,7 +43,7 @@ class MixHelpers {
   static const lerpShadowList = ui.Shadow.lerpList;
 
   const MixHelpers._();
-  static V? resolve<V>(BuildContext context, Resolvable<V>? prop) {
+  static V? resolve<V>(BuildContext context, PropBase<V>? prop) {
     if (prop == null) return null;
 
     return prop.resolve(context);
@@ -122,10 +123,7 @@ List<T>? _mergeList<T>(
   }
 }
 
-List<V>? _resolveList<T extends Resolvable<V>, V>(
-  BuildContext mix,
-  List<T>? a,
-) {
+List<V>? _resolveList<T extends PropBase<V>, V>(BuildContext mix, List<T>? a) {
   if (a == null) return null;
 
   return a.map((e) => e.resolve(mix)).whereType<V>().toList();
