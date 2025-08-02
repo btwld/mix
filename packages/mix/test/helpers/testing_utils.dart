@@ -40,25 +40,30 @@ void expectProp<T>(PropBase<T>? prop, dynamic expected) {
         expected,
         reason: 'Prop<$T> has no value or token defined',
       );
-
-      // Handle token expectations
-      if (expected is MixToken<T>) {
-        if (token != null) {
-          expect(
-            token,
-            expected,
-            reason: 'Prop<$T> token does not match expected',
-          );
-        } else {
-          fail('Expected token, but prop has value: $value');
-        }
-        return;
-      }
-
-      // Handle direct value expectations
-
-      expect(value, expected, reason: 'Prop<$T> value does not match expected');
+      return;
     }
+
+    // Handle token expectations
+    if (expected is MixToken<T>) {
+      if (token != null) {
+        expect(
+          token,
+          expected,
+          reason: 'Prop<$T> token does not match expected',
+        );
+      } else {
+        fail('Expected token, but prop has value: $value');
+      }
+      return;
+    }
+
+    // Handle direct value expectations
+    if (token != null) {
+      fail('Expected value, but prop has token: $token');
+    }
+
+    expect(value, expected, reason: 'Prop<$T> value does not match expected');
+    return;
   }
 
   fail('Unknown prop type: ${prop.runtimeType}');
@@ -94,14 +99,20 @@ class _ResolvesToMatcher<T> extends Matcher {
   @override
   bool matches(dynamic item, Map matchState) {
     // Check if item implements Resolvable (any type)
-    if (item is! Resolvable) {
-      matchState['error'] = 'Expected Resolvable, but got ${item.runtimeType}';
+    if (item is! Resolvable && item is! PropBase) {
+      matchState['error'] =
+          'Expected Resolvable or PropBase, but got ${item.runtimeType}';
       return false;
     }
 
     try {
       final ctx = context ?? MockBuildContext();
-      final resolved = item.resolve(ctx);
+      dynamic resolved;
+      if (item is PropBase) {
+        resolved = item.resolveProp(ctx);
+      } else {
+        resolved = item.resolve(ctx);
+      }
 
       // Let runtime comparison handle type compatibility
       // This allows Prop<AlignmentGeometry> to work with Alignment expectations

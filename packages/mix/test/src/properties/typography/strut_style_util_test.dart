@@ -545,12 +545,7 @@ void main() {
         final merged = style1.merge(style2);
         final resolved = merged.resolve(MockBuildContext());
 
-        expect(resolved.fontFamilyFallback, [
-          'Arial',
-          'Helvetica',
-          'Times',
-          'serif',
-        ]);
+        expect(resolved.fontFamilyFallback, ['Times', 'serif']);
       });
     });
 

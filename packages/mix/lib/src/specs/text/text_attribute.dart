@@ -644,7 +644,7 @@ class TextMix extends Style<TextSpec>
       ),
       textDirection: $textDirection.tryMerge(other.$textDirection),
       softWrap: $softWrap.tryMerge(other.$softWrap),
-      directives: $directives?.tryMerge(other.$directives),
+      directives: $directives.tryMerge(other.$directives),
       selectionColor: $selectionColor.tryMerge(other.$selectionColor),
       semanticsLabel: $semanticsLabel.tryMerge(other.$semanticsLabel),
       locale: $locale.tryMerge(other.$locale),

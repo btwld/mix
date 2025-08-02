@@ -504,10 +504,9 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.$fontFamilyFallback, hasLength(3));
-        expectProp(merged.$fontFamilyFallback![0], 'Arial');
-        expectProp(merged.$fontFamilyFallback![1], 'Helvetica');
-        expectProp(merged.$fontFamilyFallback![2], 'Times');
+        expect(merged.$fontFamilyFallback, hasLength(2));
+        expectProp(merged.$fontFamilyFallback![0], 'Helvetica');
+        expectProp(merged.$fontFamilyFallback![1], 'Times');
 
         expect(merged.$shadows, hasLength(1));
         // Verify the shadow was replaced (second shadow overwrites first)

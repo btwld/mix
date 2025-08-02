@@ -34,6 +34,7 @@ export 'src/core/helpers.dart';
 export 'src/core/mix_element.dart';
 export 'src/core/modifier.dart';
 export 'src/core/prop.dart';
+export 'src/core/prop_refs.dart';
 export 'src/core/prop_source.dart';
 export 'src/core/providers/resolved_style_provider.dart';
 export 'src/core/providers/style_provider.dart';
@@ -135,7 +136,6 @@ export 'src/theme/material/material_theme.dart';
 export 'src/theme/material/material_tokens.dart';
 export 'src/theme/mix_theme.dart';
 export 'src/theme/tokens/mix_token.dart';
-export 'src/theme/tokens/token_refs.dart';
 export 'src/theme/tokens/value_resolver.dart';
 
 /// VARIANTS
