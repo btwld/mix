@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' as r;
 import 'package:flutter/widgets.dart' as w;
 
-import '../modifiers/modifier_config.dart';
+import '../modifiers/widget_decorator_config.dart';
 import 'directive.dart';
 import 'internal/deep_collection_equality.dart';
 import 'mix_element.dart';

@@ -14,7 +14,6 @@ import 'fractionally_sized_box_modifier.dart';
 import 'icon_theme_modifier.dart';
 import 'internal/reset_modifier.dart';
 import 'intrinsic_modifier.dart';
-import 'modifier_config.dart';
 import 'mouse_cursor_modifier.dart';
 import 'opacity_modifier.dart';
 import 'padding_modifier.dart';
@@ -22,9 +21,10 @@ import 'rotated_box_modifier.dart';
 import 'sized_box_modifier.dart';
 import 'transform_modifier.dart';
 import 'visibility_modifier.dart';
+import 'widget_decorator_config.dart';
 
 /// Provides utilities for applying modifiers to styles.
-final class ModifierUtility<T extends Style<Object?>>
+final class WidgetDecoratorUtility<T extends Style<Object?>>
     extends MixUtility<T, WidgetDecoratorStyle> {
   /// Opacity modifier utility.
   late final opacity = OpacityModifierUtility<T>(builder);
@@ -61,7 +61,7 @@ final class ModifierUtility<T extends Style<Object?>>
   /// Icon theme modifier utility.
   late final iconTheme = IconThemeModifierUtility<T>(builder);
 
-  ModifierUtility(super.builder);
+  WidgetDecoratorUtility(super.builder);
 
   /// Scales the widget by the given [value].
   T scale(double value) => transform.scale(value);

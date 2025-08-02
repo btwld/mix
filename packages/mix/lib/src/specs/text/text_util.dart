@@ -4,8 +4,8 @@ import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
 import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
-import '../../modifiers/modifier_config.dart';
-import '../../modifiers/modifier_util.dart';
+import '../../modifiers/widget_decorator_config.dart';
+import '../../modifiers/widget_decorator_util.dart';
 import '../../properties/painting/color_util.dart';
 import '../../properties/typography/strut_style_util.dart';
 import '../../properties/typography/text_height_behavior_util.dart';
@@ -43,7 +43,7 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
   late final on = OnContextVariantUtility<TextSpec, TextMix>(
     (v) => mutable.variants([v]),
   );
-  late final wrap = ModifierUtility(
+  late final wrap = WidgetDecoratorUtility(
     (prop) => mutable.modifier(WidgetDecoratorConfig(decorators: [prop])),
   );
 

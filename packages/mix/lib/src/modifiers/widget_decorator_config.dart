@@ -260,10 +260,10 @@ final class WidgetDecoratorConfig with Equatable {
   /// Orders modifiers according to the specified order or default order
   ///
   @visibleForTesting
-  List<WidgetDecorator> reorderModifiers(List<WidgetDecorator> modifiers) {
+  List<WidgetDecorator> reorderDecorators(List<WidgetDecorator> modifiers) {
     if (modifiers.isEmpty) return modifiers;
 
-    final orderOfModifiers = {
+    final orderOfDecorators = {
       // Prioritize the order of modifiers provided by the user.
       ...?$orderOfDecorators,
       // Add the default order of modifiers.
@@ -274,7 +274,7 @@ final class WidgetDecoratorConfig with Equatable {
 
     final orderedSpecs = <WidgetDecorator>[];
 
-    for (final modifierType in orderOfModifiers) {
+    for (final modifierType in orderOfDecorators) {
       // Find and add modifiers matching this type
       final modifier = modifiers
           .where((e) => e.runtimeType == modifierType)
@@ -457,7 +457,7 @@ final class WidgetDecoratorConfig with Equatable {
     return merge(WidgetDecoratorConfig.decorator(value));
   }
 
-  WidgetDecoratorConfig orderOfModifiers(List<Type> value) {
+  WidgetDecoratorConfig orderOfDecorators(List<Type> value) {
     return merge(WidgetDecoratorConfig.orderOfDecorators(value));
   }
 
@@ -510,7 +510,7 @@ final class WidgetDecoratorConfig with Equatable {
       resolvedModifiers.add(resolved as WidgetDecorator);
     }
 
-    return reorderModifiers(resolvedModifiers).cast();
+    return reorderDecorators(resolvedModifiers).cast();
   }
 
   @override

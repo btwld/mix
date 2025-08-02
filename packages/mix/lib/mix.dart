@@ -53,10 +53,6 @@ export 'src/modifiers/flexible_modifier.dart';
 export 'src/modifiers/fractionally_sized_box_modifier.dart';
 export 'src/modifiers/icon_theme_modifier.dart';
 export 'src/modifiers/intrinsic_modifier.dart';
-
-/// MODIFIERS
-export 'src/modifiers/modifier_config.dart';
-export 'src/modifiers/modifier_util.dart';
 export 'src/modifiers/mouse_cursor_modifier.dart';
 export 'src/modifiers/opacity_modifier.dart';
 export 'src/modifiers/padding_modifier.dart';
@@ -65,6 +61,10 @@ export 'src/modifiers/scroll_view_modifier.dart';
 export 'src/modifiers/sized_box_modifier.dart';
 export 'src/modifiers/transform_modifier.dart';
 export 'src/modifiers/visibility_modifier.dart';
+
+/// MODIFIERS
+export 'src/modifiers/widget_decorator_config.dart';
+export 'src/modifiers/widget_decorator_util.dart';
 
 /// PROPERTIES
 export 'src/properties/layout/constraints_mix.dart';

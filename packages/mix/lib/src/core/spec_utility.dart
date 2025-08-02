@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../animation/animation_config.dart';
-import '../modifiers/modifier_config.dart';
+import '../modifiers/widget_decorator_config.dart';
 import 'spec.dart';
 import 'style.dart';
 

@@ -6,7 +6,7 @@ library;
 
 import '../core/spec.dart';
 import '../core/style.dart';
-import '../modifiers/modifier_util.dart';
+import '../modifiers/widget_decorator_util.dart';
 import '../variants/variant_util.dart';
 import 'box/box_util.dart';
 import 'flex/flex_util.dart';
@@ -44,4 +44,5 @@ OnContextVariantUtility get $on =>
     );
 
 /// Global accessor for modifier utilities.
-ModifierUtility get $wrap => ModifierUtility((v) => CompoundStyle.create([v]));
+WidgetDecoratorUtility get $wrap =>
+    WidgetDecoratorUtility((v) => CompoundStyle.create([v]));

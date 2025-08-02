@@ -71,7 +71,7 @@ void main() {
       });
 
       test('wrap utility is ModifierUtility', () {
-        expect(util.wrap, isA<ModifierUtility<IconMix>>());
+        expect(util.wrap, isA<WidgetDecoratorUtility<IconMix>>());
       });
     });
 

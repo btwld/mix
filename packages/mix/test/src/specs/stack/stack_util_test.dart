@@ -51,7 +51,7 @@ void main() {
       });
 
       test('wrap utility is ModifierUtility', () {
-        expect(util.wrap, isA<ModifierUtility<StackMix>>());
+        expect(util.wrap, isA<WidgetDecoratorUtility<StackMix>>());
       });
     });
 

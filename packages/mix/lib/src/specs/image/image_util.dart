@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
 import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
-import '../../modifiers/modifier_config.dart';
-import '../../modifiers/modifier_util.dart';
+import '../../modifiers/widget_decorator_config.dart';
+import '../../modifiers/widget_decorator_util.dart';
 import '../../properties/painting/color_util.dart';
 import '../../variants/variant_util.dart';
 import 'image_attribute.dart';
@@ -35,7 +35,7 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageSpec> {
     (v) => mutable.variants([v]),
   );
 
-  late final wrap = ModifierUtility(
+  late final wrap = WidgetDecoratorUtility(
     (prop) => mutable.modifier(WidgetDecoratorConfig(decorators: [prop])),
   );
 
