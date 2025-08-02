@@ -15,7 +15,7 @@ import 'icon_spec.dart';
 class IconMix extends Style<IconSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<IconMix, IconSpec>,
+        StyleWidgetDecoratorMixin<IconMix, IconSpec>,
         StyleVariantMixin<IconMix, IconSpec> {
   final Prop<Color>? $color;
   final Prop<double>? $size;
@@ -225,7 +225,7 @@ class IconMix extends Style<IconSpec>
   }
 
   @override
-  IconMix modifier(WidgetDecoratorConfig value) {
+  IconMix widgetDecorator(WidgetDecoratorConfig value) {
     return merge(IconMix(modifierConfig: value));
   }
 

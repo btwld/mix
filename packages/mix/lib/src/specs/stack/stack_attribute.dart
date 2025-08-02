@@ -21,7 +21,7 @@ import 'stack_spec.dart';
 class StackMix extends Style<StackSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<StackMix, StackSpec>,
+        StyleWidgetDecoratorMixin<StackMix, StackSpec>,
         StyleVariantMixin<StackMix, StackSpec> {
   final Prop<AlignmentGeometry>? $alignment;
   final Prop<StackFit>? $fit;
@@ -152,7 +152,7 @@ class StackMix extends Style<StackSpec>
   }
 
   @override
-  StackMix modifier(WidgetDecoratorConfig value) {
+  StackMix widgetDecorator(WidgetDecoratorConfig value) {
     return merge(StackMix(modifierConfig: value));
   }
 

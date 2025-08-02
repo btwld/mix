@@ -14,7 +14,7 @@ import 'image_spec.dart';
 class ImageMix extends Style<ImageSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<ImageMix, ImageSpec>,
+        StyleWidgetDecoratorMixin<ImageMix, ImageSpec>,
         StyleVariantMixin<ImageMix, ImageSpec> {
   final Prop<double>? $width;
   final Prop<double>? $height;
@@ -305,7 +305,7 @@ class ImageMix extends Style<ImageSpec>
   }
 
   @override
-  ImageMix modifier(WidgetDecoratorConfig value) {
+  ImageMix widgetDecorator(WidgetDecoratorConfig value) {
     return merge(ImageMix(modifierConfig: value));
   }
 

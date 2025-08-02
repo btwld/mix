@@ -19,7 +19,7 @@ import 'flexbox_spec.dart';
 /// Use this class to configure the attributes of a [FlexBoxSpec] and pass it to
 /// the [FlexBoxSpec] constructor.
 class FlexBoxMix extends Style<FlexBoxSpec>
-    with Diagnosticable, StyleModifierMixin<FlexBoxMix, FlexBoxSpec> {
+    with Diagnosticable, StyleWidgetDecoratorMixin<FlexBoxMix, FlexBoxSpec> {
   final BoxMix? $box;
   final FlexMix? $flex;
 
@@ -117,7 +117,7 @@ class FlexBoxMix extends Style<FlexBoxSpec>
   }
 
   @override
-  FlexBoxMix modifier(WidgetDecoratorConfig value) {
+  FlexBoxMix widgetDecorator(WidgetDecoratorConfig value) {
     return merge(FlexBoxMix(modifierConfig: value));
   }
 

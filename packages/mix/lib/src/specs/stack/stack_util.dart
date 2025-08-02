@@ -28,7 +28,8 @@ class StackSpecUtility extends StyleMutableBuilder<StackSpec> {
   );
 
   late final wrap = WidgetDecoratorUtility(
-    (prop) => mutable.modifier(WidgetDecoratorConfig(decorators: [prop])),
+    (prop) =>
+        mutable.widgetDecorator(WidgetDecoratorConfig(decorators: [prop])),
   );
 
   /// Internal mutable state for accumulating stack styling properties.

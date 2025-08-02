@@ -408,7 +408,7 @@ void main() {
     group('Modifier Methods', () {
       test('modifier method sets modifier config', () {
         final modifier = WidgetDecoratorConfig();
-        final boxMix = BoxMix().modifier(modifier);
+        final boxMix = BoxMix().widgetDecorator(modifier);
 
         expect(boxMix.$modifierConfig, modifier);
       });

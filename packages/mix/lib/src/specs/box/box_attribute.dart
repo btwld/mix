@@ -30,7 +30,7 @@ import 'box_util.dart';
 class BoxMix extends Style<BoxSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<BoxMix, BoxSpec>,
+        StyleWidgetDecoratorMixin<BoxMix, BoxSpec>,
         StyleVariantMixin<BoxMix, BoxSpec>,
         BorderRadiusMixin<BoxMix> {
   final Prop<AlignmentGeometry>? $alignment;
@@ -449,7 +449,7 @@ class BoxMix extends Style<BoxSpec>
 
   /// The list of properties that constitute the state of this [BoxMix].
   @override
-  BoxMix modifier(WidgetDecoratorConfig value) {
+  BoxMix widgetDecorator(WidgetDecoratorConfig value) {
     return merge(BoxMix(modifierConfig: value));
   }
 

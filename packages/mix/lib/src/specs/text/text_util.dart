@@ -44,7 +44,8 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
     (v) => mutable.variants([v]),
   );
   late final wrap = WidgetDecoratorUtility(
-    (prop) => mutable.modifier(WidgetDecoratorConfig(decorators: [prop])),
+    (prop) =>
+        mutable.widgetDecorator(WidgetDecoratorConfig(decorators: [prop])),
   );
 
   // Direct access to commonly used style properties
