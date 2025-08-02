@@ -38,6 +38,7 @@ class FlexBoxMix extends Style<FlexBoxSpec>
     return FlexBoxMix(box: value);
   }
 
+
   /// Factory for flex properties
   factory FlexBoxMix.flex(FlexMix value) {
     return FlexBoxMix(flex: value);

@@ -11,11 +11,11 @@ class StyledImage extends StyleWidget<ImageSpec> {
     this.frameBuilder,
     this.loadingBuilder,
     this.errorBuilder,
-    required this.image,
+    this.image,
     this.opacity,
   });
 
-  final ImageProvider<Object> image;
+  final ImageProvider<Object>? image;
   final ImageFrameBuilder? frameBuilder;
   final ImageLoadingBuilder? loadingBuilder;
   final ImageErrorWidgetBuilder? errorBuilder;
@@ -24,7 +24,7 @@ class StyledImage extends StyleWidget<ImageSpec> {
   @override
   Widget build(BuildContext context, ImageSpec? spec) {
     return Image(
-      image: image,
+      image: image!,
       frameBuilder: frameBuilder,
       loadingBuilder: loadingBuilder,
       errorBuilder: errorBuilder,

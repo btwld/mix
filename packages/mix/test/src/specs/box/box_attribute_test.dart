@@ -9,12 +9,12 @@ void main() {
   group('BoxMix', () {
     group('Factory Constructors', () {
       test('color factory creates BoxMix with color decoration', () {
-        final boxMix = BoxMix.color(ColorProp.red);
+        final boxMix = BoxMix.color(Colors.red);
 
         expect(boxMix.$decoration, isNotNull);
         final decoration = boxMix.$decoration!.resolve(MockBuildContext());
         expect(decoration, isA<BoxDecoration>());
-        expect((decoration as BoxDecoration).color, ColorValues.red);
+        expect((decoration as BoxDecoration).color, Colors.red);
       });
 
       test('gradient factory creates BoxMix with gradient decoration', () {
@@ -80,7 +80,7 @@ void main() {
 
       test('variant factory creates BoxMix with variant', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = BoxMix.color(ColorProp.blue);
+        final style = BoxMix.color(Colors.blue);
         final boxMix = BoxMix.variant(variant, style);
 
         expect(boxMix.$variants, isNotNull);
@@ -131,8 +131,8 @@ void main() {
           padding: EdgeInsetsGeometryMix.all(10.0),
           margin: EdgeInsetsGeometryMix.all(5.0),
           constraints: BoxConstraintsMix.minHeight(100.0),
-          decoration: DecorationMix.color(ColorProp.green),
-          foregroundDecoration: DecorationMix.color(ColorProp.yellow),
+          decoration: DecorationMix.color(Colors.green),
+          foregroundDecoration: DecorationMix.color(Colors.yellow),
           transform: Matrix4.identity(),
           transformAlignment: Alignment.center,
           clipBehavior: Clip.hardEdge,
@@ -183,7 +183,7 @@ void main() {
 
     group('Instance Methods', () {
       test('color method sets decoration color', () {
-        final boxMix = BoxMix().color(ColorProp.purple);
+        final boxMix = BoxMix().color(ColorValues.purple);
 
         expect(boxMix.$decoration, isNotNull);
         final decoration = boxMix.$decoration!.resolve(MockBuildContext());
@@ -366,7 +366,7 @@ void main() {
     group('Variant Methods', () {
       test('variant method adds variant to BoxMix', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = BoxMix.color(ColorProp.white);
+        final style = BoxMix.color(Colors.white);
         final boxMix = BoxMix().variant(variant, style);
 
         expect(boxMix.$variants, isNotNull);
@@ -377,11 +377,11 @@ void main() {
         final variants = [
           VariantStyleAttribute(
             ContextVariant.brightness(Brightness.dark),
-            BoxMix.color(ColorProp.white),
+            BoxMix.color(Colors.white),
           ),
           VariantStyleAttribute(
             ContextVariant.brightness(Brightness.light),
-            BoxMix.color(ColorProp.black),
+            BoxMix.color(Colors.black),
           ),
         ];
         final boxMix = BoxMix().variants(variants);

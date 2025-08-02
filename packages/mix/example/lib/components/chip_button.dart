@@ -11,22 +11,22 @@ final chipButtonContainer = Style.box()
     .height(40)
     .width(100)
     .color(Colors.blue)
-    .borderRadius(.circular(20))
-    .onHovered(.color(Colors.blue.shade700))
-    .onPressed(.color(Colors.blue.shade900))
+    .borderRadius(BorderRadiusMix.circular(20))
+    .onHovered(BoxMix.color(Colors.blue.shade700))
+    .onPressed(BoxMix.color(Colors.blue.shade900))
     .wrap(
-      .defaultText(chipButtonLabel),
+      ModifierConfig.defaultText(chipButtonLabel),
     );
 
 final filterChipContainer = Style.box()
     .height(36)
     .color(Colors.grey.shade200)
-    .borderRadius(.circular(18))
-    .padding(.symmetric(horizontal: 16, vertical: 8))
-    .onHovered(.color(Colors.grey.shade300))
-    .onPressed(.color(Colors.grey.shade400))
+    .borderRadius(BorderRadiusMix.circular(18))
+    .padding(EdgeInsetsMix.symmetric(horizontal: 16, vertical: 8))
+    .onHovered(BoxMix.color(Colors.grey.shade300))
+    .onPressed(BoxMix.color(Colors.grey.shade400))
     .wrap(
-      .defaultText(
+      ModifierConfig.defaultText(
         Style.text()
             .fontSize(14)
             .fontWeight(FontWeight.w500)
@@ -37,12 +37,12 @@ final filterChipContainer = Style.box()
 final filterChipSelectedContainer = Style.box()
     .height(36)
     .color(Colors.blue.shade100)
-    .borderRadius(.circular(18))
-    .padding(.symmetric(horizontal: 16, vertical: 8))
-    .onHovered(.color(Colors.blue.shade200))
-    .onPressed(.color(Colors.blue.shade300))
+    .borderRadius(BorderRadiusMix.circular(18))
+    .padding(EdgeInsetsMix.symmetric(horizontal: 16, vertical: 8))
+    .onHovered(BoxMix.color(Colors.blue.shade200))
+    .onPressed(BoxMix.color(Colors.blue.shade300))
     .wrap(
-      .defaultText(
+      ModifierConfig.defaultText(
         Style.text()
             .fontSize(14)
             .fontWeight(FontWeight.w500)

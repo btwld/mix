@@ -12,7 +12,6 @@ import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/painting/border_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
 import '../../properties/painting/border_radius_util.dart';
-import '../../properties/painting/color_mix.dart';
 import '../../properties/painting/decoration_image_mix.dart';
 import '../../properties/painting/decoration_mix.dart';
 import '../../properties/painting/gradient_mix.dart';
@@ -45,7 +44,7 @@ class BoxMix extends Style<BoxSpec>
   final Prop<Clip>? $clipBehavior;
 
   /// Color factory
-  factory BoxMix.color(ColorProp value) {
+  factory BoxMix.color(Color value) {
     return BoxMix(decoration: DecorationMix.color(value));
   }
 
@@ -250,7 +249,7 @@ class BoxMix extends Style<BoxSpec>
   }
 
   /// Sets background color
-  BoxMix color(ColorProp value) {
+  BoxMix color(Color value) {
     return decoration(DecorationMix.color(value));
   }
 

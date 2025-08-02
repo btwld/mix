@@ -59,10 +59,10 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec> {
   late final maxWidth = constraints.maxWidth;
   late final minHeight = constraints.minHeight;
   late final maxHeight = constraints.maxHeight;
+
   late final transform = MixUtility(mutable.transform);
   late final transformAlignment = MixUtility(mutable.transformAlignment);
   late final clipBehavior = MixUtility(mutable.clipBehavior);
-
   late final alignment = MixUtility(mutable.alignment);
 
   /// Internal mutable state for accumulating box styling properties.

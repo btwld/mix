@@ -3,21 +3,21 @@ import 'package:mix/mix.dart';
 
 final scaffoldContainer = Style.flexbox()
     .flex(
-      .mainAxisSize(.max)
-      .crossAxisAlignment(.stretch)
-      .mainAxisAlignment(.start),
+      FlexMix.mainAxisSize(MainAxisSize.max)
+      .crossAxisAlignment(CrossAxisAlignment.stretch)
+      .mainAxisAlignment(MainAxisAlignment.start),
     )
     .box(
-      .color(Colors.white)
+      BoxMix.color(Colors.white)
     );
 
 final appHeaderContainer = Style.box()
     .height(80)
     .width(double.infinity)
     .color(Colors.blue.shade100)
-    .padding(.all(16))
+    .padding(EdgeInsetsMix.all(16))
     .wrap(
-      .defaultText(
+      ModifierConfig.defaultText(
         Style.text()
             .fontSize(20)
             .fontWeight(FontWeight.bold)
@@ -27,7 +27,7 @@ final appHeaderContainer = Style.box()
 
 final scaffoldBodyContainer = Style.box()
     .color(Colors.grey.shade50)
-    .padding(.all(16))
+    .padding(EdgeInsetsMix.all(16))
     .width(double.infinity);
 
 class CustomScaffold extends StatelessWidget {

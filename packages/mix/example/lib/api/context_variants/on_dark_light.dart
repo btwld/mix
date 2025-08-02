@@ -72,7 +72,7 @@ class Example extends StatelessWidget {
     final style = BoxMix()
         .height(100)
         .width(100)
-        .borderRadius(BorderRadiusMix.all(Radius.circular(10)))
+        .borderRadius(BorderRadiusMix.circular(10))
         .onDark(BoxMix.color(Colors.white));
 
     return FlexBox(

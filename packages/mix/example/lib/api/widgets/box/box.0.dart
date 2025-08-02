@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
 void main() {
-  runMixApp(Example());
+  runMixApp( Example());
 }
 
 
@@ -16,7 +16,7 @@ class Example extends StatelessWidget {
         .color(Colors.red)
         .height(100)
         .width(100)
-        .borderRadius(.all(.circular(10)));
+        .borderRadius(BorderRadiusMix.all(Radius.circular(10)));
 
     return Box(style: style);
   }

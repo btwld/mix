@@ -112,7 +112,7 @@ void main() {
       });
 
       test('colors factory creates LinearGradientMix with colors', () {
-        final colors = <ColorProp>[ColorProp.red, ColorProp.green, ColorProp.blue];
+        final colors = [Colors.red, Colors.green, Colors.blue];
         final gradientMix = LinearGradientMix.colors(colors);
 
         expect(gradientMix.$colors?.length, 3);
@@ -163,7 +163,7 @@ void main() {
       });
 
       test('colors utility works correctly', () {
-        final colors = [ColorProp.value(Colors.yellow), ColorProp.value(Colors.purple)];
+        final colors = [Colors.yellow, Colors.purple];
         final gradientMix = LinearGradientMix().colors(colors);
 
         expect(gradientMix.$colors?.length, 2);

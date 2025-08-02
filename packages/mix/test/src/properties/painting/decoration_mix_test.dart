@@ -38,7 +38,7 @@ void main() {
         expect(borderDecorationMix.$border, isA<MixProp<BoxBorder>>());
         expect(borderDecorationMix.$color, isNull);
 
-        final colorDecorationMix = BoxDecorationMix.color(Colors.green);
+        final colorDecorationMix = DecorationMix.color(Colors.green);
         expectProp(colorDecorationMix.$color, Colors.green);
         expect(colorDecorationMix.$border, isNull);
 

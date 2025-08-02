@@ -46,7 +46,7 @@ void main() {
         );
         final boxAttribute = BoxMix(
           constraints: BoxConstraintsMix().width(100).height(200),
-          decoration: BoxDecorationMix.color(Colors.blue),
+          decoration: DecorationMix.color(Colors.blue),
           animation: animation,
         );
 
