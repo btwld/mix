@@ -13,7 +13,7 @@ Future<void> testOverrideModifiersOrder(
           VisibilityModifierAttribute(visible: true),
           OpacityModifierAttribute(opacity: 1.0),
           TransformModifierAttribute(),
-          AspectRatioModifierAttribute(aspectRatio: 2.0),
+          AspectRatioWidgetDecoratorStyle(aspectRatio: 2.0),
           AlignModifierAttribute(alignment: Alignment.center),
           PaddingModifierAttribute(
             padding: EdgeInsetsDirectionalMix(top: 10.0),
@@ -24,7 +24,7 @@ Future<void> testOverrideModifiersOrder(
   );
   const orderOfModifiersOnlySpecs = [
     AlignModifier,
-    AspectRatioModifier,
+    AspectRatioWidgetDecorator,
     TransformModifier,
     OpacityModifier,
     VisibilityModifier,
@@ -41,7 +41,7 @@ Future<void> testOverrideModifiersOrder(
   // SPECS + ATTRIBUTES
   const orderOfModifiersSpecsAndAttributes = [
     AlignModifier,
-    AspectRatioModifierAttribute,
+    AspectRatioWidgetDecoratorStyle,
     TransformModifierAttribute,
     OpacityModifier,
     VisibilityModifierAttribute,
@@ -56,7 +56,7 @@ Future<void> testOverrideModifiersOrder(
   // JUST ATTRIBUTES
   const orderOfModifiersOnlyAttributes = [
     AlignModifierAttribute,
-    AspectRatioModifierAttribute,
+    AspectRatioWidgetDecoratorStyle,
     TransformModifierAttribute,
     OpacityModifierAttribute,
     VisibilityModifierAttribute,

@@ -36,7 +36,7 @@ final class WidgetDecoratorUtility<T extends Style<Object?>>
   late final visibility = VisibilityModifierUtility<T>(builder);
 
   /// Aspect ratio modifier utility.
-  late final aspectRatio = AspectRatioModifierUtility<T>(builder);
+  late final aspectRatio = AspectRatioWidgetDecoratorUtility<T>(builder);
 
   /// Align modifier utility.
   late final align = AlignModifierUtility<T>(builder);

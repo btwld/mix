@@ -54,7 +54,7 @@ final class WidgetDecoratorConfig with Equatable {
 
   factory WidgetDecoratorConfig.aspectRatio(double aspectRatio) {
     return WidgetDecoratorConfig.decorator(
-      AspectRatioModifierAttribute(aspectRatio: aspectRatio),
+      AspectRatioWidgetDecoratorStyle(aspectRatio: aspectRatio),
     );
   }
 
@@ -556,7 +556,7 @@ const _defaultOrder = [
 
   // 9. AspectRatioModifier: Maintains aspect ratio within established size constraints.
   // Applied after all other sizing to preserve aspect ratio in final dimensions.
-  AspectRatioModifier,
+  AspectRatioWidgetDecorator,
 
   // === PHASE 3: LAYOUT MODIFICATIONS ===
 

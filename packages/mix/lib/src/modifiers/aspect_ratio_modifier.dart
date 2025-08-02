@@ -8,39 +8,40 @@ import '../core/style.dart';
 import '../core/utility.dart';
 import '../theme/tokens/mix_token.dart';
 
-final class AspectRatioModifier extends WidgetDecorator<AspectRatioModifier>
+final class AspectRatioWidgetDecorator
+    extends WidgetDecorator<AspectRatioWidgetDecorator>
     with Diagnosticable {
   final double aspectRatio;
 
-  const AspectRatioModifier([double? aspectRatio])
+  const AspectRatioWidgetDecorator([double? aspectRatio])
     : aspectRatio = aspectRatio ?? 1.0;
 
-  /// Creates a copy of this [AspectRatioModifier] but with the given fields
+  /// Creates a copy of this [AspectRatioWidgetDecorator] but with the given fields
   /// replaced with the new values.
   @override
-  AspectRatioModifier copyWith({double? aspectRatio}) {
-    return AspectRatioModifier(aspectRatio ?? this.aspectRatio);
+  AspectRatioWidgetDecorator copyWith({double? aspectRatio}) {
+    return AspectRatioWidgetDecorator(aspectRatio ?? this.aspectRatio);
   }
 
-  /// Linearly interpolates between this [AspectRatioModifier] and another [AspectRatioModifier] based on the given parameter [t].
+  /// Linearly interpolates between this [AspectRatioWidgetDecorator] and another [AspectRatioWidgetDecorator] based on the given parameter [t].
   ///
   /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [AspectRatioModifier] is returned. When [t] is 1.0, the [other] [AspectRatioModifier] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [AspectRatioModifier] is returned.
+  /// When [t] is 0.0, the current [AspectRatioWidgetDecorator] is returned. When [t] is 1.0, the [other] [AspectRatioWidgetDecorator] is returned.
+  /// For values of [t] between 0.0 and 1.0, an interpolated [AspectRatioWidgetDecorator] is returned.
   ///
-  /// If [other] is null, this method returns the current [AspectRatioModifier] instance.
+  /// If [other] is null, this method returns the current [AspectRatioWidgetDecorator] instance.
   ///
-  /// The interpolation is performed on each property of the [AspectRatioModifier] using the appropriate
+  /// The interpolation is performed on each property of the [AspectRatioWidgetDecorator] using the appropriate
   /// interpolation method:
   /// - [MixHelpers.lerpDouble] for [aspectRatio].
 
   /// This method is typically used in animations to smoothly transition between
-  /// different [AspectRatioModifier] configurations.
+  /// different [AspectRatioWidgetDecorator] configurations.
   @override
-  AspectRatioModifier lerp(AspectRatioModifier? other, double t) {
+  AspectRatioWidgetDecorator lerp(AspectRatioWidgetDecorator? other, double t) {
     if (other == null) return this;
 
-    return AspectRatioModifier(
+    return AspectRatioWidgetDecorator(
       MixHelpers.lerpDouble(aspectRatio, other.aspectRatio, t)!,
     );
   }
@@ -53,10 +54,10 @@ final class AspectRatioModifier extends WidgetDecorator<AspectRatioModifier>
     );
   }
 
-  /// The list of properties that constitute the state of this [AspectRatioModifier].
+  /// The list of properties that constitute the state of this [AspectRatioWidgetDecorator].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [AspectRatioModifier] instances for equality.
+  /// compare two [AspectRatioWidgetDecorator] instances for equality.
   @override
   List<Object?> get props => [aspectRatio];
 
@@ -66,24 +67,24 @@ final class AspectRatioModifier extends WidgetDecorator<AspectRatioModifier>
   }
 }
 
-/// Represents the attributes of a [AspectRatioModifier].
+/// Represents the attributes of a [AspectRatioWidgetDecorator].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [AspectRatioModifier].
+/// appearance of a [AspectRatioWidgetDecorator].
 ///
-/// Use this class to configure the attributes of a [AspectRatioModifier] and pass it to
-/// the [AspectRatioModifier] constructor.
-class AspectRatioModifierAttribute
-    extends WidgetDecoratorStyle<AspectRatioModifier>
+/// Use this class to configure the attributes of a [AspectRatioWidgetDecorator] and pass it to
+/// the [AspectRatioWidgetDecorator] constructor.
+class AspectRatioWidgetDecoratorStyle
+    extends WidgetDecoratorStyle<AspectRatioWidgetDecorator>
     with Diagnosticable {
   final Prop<double>? aspectRatio;
 
-  const AspectRatioModifierAttribute.raw({this.aspectRatio});
+  const AspectRatioWidgetDecoratorStyle.raw({this.aspectRatio});
 
-  AspectRatioModifierAttribute({double? aspectRatio})
+  AspectRatioWidgetDecoratorStyle({double? aspectRatio})
     : this.raw(aspectRatio: Prop.maybe(aspectRatio));
 
-  /// Resolves to [AspectRatioModifier] using the provided [BuildContext].
+  /// Resolves to [AspectRatioWidgetDecorator] using the provided [BuildContext].
   ///
   /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
@@ -92,23 +93,25 @@ class AspectRatioModifierAttribute
   /// final aspectRatioModifierSpec = AspectRatioModifierAttribute(...).resolve(mix);
   /// ```
   @override
-  AspectRatioModifier resolve(BuildContext context) {
-    return AspectRatioModifier(aspectRatio?.resolveProp(context));
+  AspectRatioWidgetDecorator resolve(BuildContext context) {
+    return AspectRatioWidgetDecorator(aspectRatio?.resolveProp(context));
   }
 
-  /// Merges the properties of this [AspectRatioModifierAttribute] with the properties of [other].
+  /// Merges the properties of this [AspectRatioWidgetDecoratorStyle] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [AspectRatioModifierAttribute] with the properties of [other] taking precedence over
+  /// [AspectRatioWidgetDecoratorStyle] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  AspectRatioModifierAttribute merge(AspectRatioModifierAttribute? other) {
+  AspectRatioWidgetDecoratorStyle merge(
+    AspectRatioWidgetDecoratorStyle? other,
+  ) {
     if (other == null) return this;
 
-    return AspectRatioModifierAttribute.raw(
+    return AspectRatioWidgetDecoratorStyle.raw(
       aspectRatio: aspectRatio.tryMerge(other.aspectRatio),
     );
   }
@@ -121,27 +124,27 @@ class AspectRatioModifierAttribute
     );
   }
 
-  /// The list of properties that constitute the state of this [AspectRatioModifierAttribute].
+  /// The list of properties that constitute the state of this [AspectRatioWidgetDecoratorStyle].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [AspectRatioModifierAttribute] instances for equality.
+  /// compare two [AspectRatioWidgetDecoratorStyle] instances for equality.
   @override
   List<Object?> get props => [aspectRatio];
 }
 
-final class AspectRatioModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, AspectRatioModifierAttribute> {
-  const AspectRatioModifierUtility(super.builder);
+final class AspectRatioWidgetDecoratorUtility<T extends Style<Object?>>
+    extends MixUtility<T, AspectRatioWidgetDecoratorStyle> {
+  const AspectRatioWidgetDecoratorUtility(super.builder);
 
   T call(double value) {
     return builder(
-      AspectRatioModifierAttribute.raw(aspectRatio: Prop.value(value)),
+      AspectRatioWidgetDecoratorStyle.raw(aspectRatio: Prop.value(value)),
     );
   }
 
   T token(MixToken<double> token) {
     return builder(
-      AspectRatioModifierAttribute.raw(aspectRatio: Prop.token(token)),
+      AspectRatioWidgetDecoratorStyle.raw(aspectRatio: Prop.token(token)),
     );
   }
 }
