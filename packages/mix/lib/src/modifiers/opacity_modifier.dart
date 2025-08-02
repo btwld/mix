@@ -8,42 +8,42 @@ import '../core/style.dart';
 import '../core/utility.dart';
 import '../theme/tokens/mix_token.dart';
 
-/// A modifier that wraps a widget with the [Opacity] widget.
+/// A decorator that wraps a widget with the [Opacity] widget.
 ///
 /// The [Opacity] widget is used to make a widget partially transparent.
-final class OpacityModifier extends WidgetDecorator<OpacityModifier>
+final class OpacityWidgetDecorator extends WidgetDecorator<OpacityWidgetDecorator>
     with Diagnosticable {
   /// The [opacity] argument must not be null and
   /// must be between 0.0 and 1.0 (inclusive).
   final double opacity;
-  const OpacityModifier([double? opacity]) : opacity = opacity ?? 1.0;
+  const OpacityWidgetDecorator([double? opacity]) : opacity = opacity ?? 1.0;
 
-  /// Creates a copy of this [OpacityModifier] but with the given fields
+  /// Creates a copy of this [OpacityWidgetDecorator] but with the given fields
   /// replaced with the new values.
   @override
-  OpacityModifier copyWith({double? opacity}) {
-    return OpacityModifier(opacity ?? this.opacity);
+  OpacityWidgetDecorator copyWith({double? opacity}) {
+    return OpacityWidgetDecorator(opacity ?? this.opacity);
   }
 
-  /// Linearly interpolates between this [OpacityModifier] and another [OpacityModifier] based on the given parameter [t].
+  /// Linearly interpolates between this [OpacityWidgetDecorator] and another [OpacityWidgetDecorator] based on the given parameter [t].
   ///
   /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [OpacityModifier] is returned. When [t] is 1.0, the [other] [OpacityModifier] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [OpacityModifier] is returned.
+  /// When [t] is 0.0, the current [OpacityWidgetDecorator] is returned. When [t] is 1.0, the [other] [OpacityWidgetDecorator] is returned.
+  /// For values of [t] between 0.0 and 1.0, an interpolated [OpacityWidgetDecorator] is returned.
   ///
-  /// If [other] is null, this method returns the current [OpacityModifier] instance.
+  /// If [other] is null, this method returns the current [OpacityWidgetDecorator] instance.
   ///
-  /// The interpolation is performed on each property of the [OpacityModifier] using the appropriate
+  /// The interpolation is performed on each property of the [OpacityWidgetDecorator] using the appropriate
   /// interpolation method:
   /// - [MixHelpers.lerpDouble] for [opacity].
 
   /// This method is typically used in animations to smoothly transition between
-  /// different [OpacityModifier] configurations.
+  /// different [OpacityWidgetDecorator] configurations.
   @override
-  OpacityModifier lerp(OpacityModifier? other, double t) {
+  OpacityWidgetDecorator lerp(OpacityWidgetDecorator? other, double t) {
     if (other == null) return this;
 
-    return OpacityModifier(MixHelpers.lerpDouble(opacity, other.opacity, t)!);
+    return OpacityWidgetDecorator(MixHelpers.lerpDouble(opacity, other.opacity, t)!);
   }
 
   @override
@@ -52,10 +52,10 @@ final class OpacityModifier extends WidgetDecorator<OpacityModifier>
     properties.add(DiagnosticsProperty('opacity', opacity, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [OpacityModifier].
+  /// The list of properties that constitute the state of this [OpacityWidgetDecorator].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [OpacityModifier] instances for equality.
+  /// compare two [OpacityWidgetDecorator] instances for equality.
   @override
   List<Object?> get props => [opacity];
 
@@ -65,48 +65,48 @@ final class OpacityModifier extends WidgetDecorator<OpacityModifier>
   }
 }
 
-/// Represents the attributes of a [OpacityModifier].
+/// Represents the attributes of a [OpacityWidgetDecorator].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [OpacityModifier].
+/// appearance of a [OpacityWidgetDecorator].
 ///
-/// Use this class to configure the attributes of a [OpacityModifier] and pass it to
-/// the [OpacityModifier] constructor.
-class OpacityModifierAttribute extends WidgetDecoratorStyle<OpacityModifier>
+/// Use this class to configure the attributes of a [OpacityWidgetDecorator] and pass it to
+/// the [OpacityWidgetDecorator] constructor.
+class OpacityWidgetDecoratorStyle extends WidgetDecoratorStyle<OpacityWidgetDecorator>
     with Diagnosticable {
   final Prop<double>? opacity;
 
-  const OpacityModifierAttribute.raw({this.opacity});
+  const OpacityWidgetDecoratorStyle.raw({this.opacity});
 
-  OpacityModifierAttribute({double? opacity})
+  OpacityWidgetDecoratorStyle({double? opacity})
     : this.raw(opacity: Prop.maybe(opacity));
 
-  /// Resolves to [OpacityModifier] using the provided [BuildContext].
+  /// Resolves to [OpacityWidgetDecorator] using the provided [BuildContext].
   ///
   /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final opacityModifierSpec = OpacityModifierAttribute(...).resolve(mix);
+  /// final opacityModifierSpec = OpacityWidgetDecoratorStyle(...).resolve(mix);
   /// ```
   @override
-  OpacityModifier resolve(BuildContext context) {
-    return OpacityModifier(opacity?.resolveProp(context));
+  OpacityWidgetDecorator resolve(BuildContext context) {
+    return OpacityWidgetDecorator(opacity?.resolveProp(context));
   }
 
-  /// Merges the properties of this [OpacityModifierAttribute] with the properties of [other].
+  /// Merges the properties of this [OpacityWidgetDecoratorStyle] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [OpacityModifierAttribute] with the properties of [other] taking precedence over
+  /// [OpacityWidgetDecoratorStyle] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  OpacityModifierAttribute merge(OpacityModifierAttribute? other) {
+  OpacityWidgetDecoratorStyle merge(OpacityWidgetDecoratorStyle? other) {
     if (other == null) return this;
 
-    return OpacityModifierAttribute.raw(
+    return OpacityWidgetDecoratorStyle.raw(
       opacity: opacity.tryMerge(other.opacity),
     );
   }
@@ -117,21 +117,21 @@ class OpacityModifierAttribute extends WidgetDecoratorStyle<OpacityModifier>
     properties.add(DiagnosticsProperty('opacity', opacity, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [OpacityModifierAttribute].
+  /// The list of properties that constitute the state of this [OpacityWidgetDecoratorStyle].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [OpacityModifierAttribute] instances for equality.
+  /// compare two [OpacityWidgetDecoratorStyle] instances for equality.
   @override
   List<Object?> get props => [opacity];
 }
 
-final class OpacityModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, OpacityModifierAttribute> {
-  const OpacityModifierUtility(super.builder);
+final class OpacityWidgetDecoratorUtility<T extends Style<Object?>>
+    extends MixUtility<T, OpacityWidgetDecoratorStyle> {
+  const OpacityWidgetDecoratorUtility(super.builder);
 
   T call(double value) =>
-      builder(OpacityModifierAttribute.raw(opacity: Prop.value(value)));
+      builder(OpacityWidgetDecoratorStyle.raw(opacity: Prop.value(value)));
 
   T token(MixToken<double> token) =>
-      builder(OpacityModifierAttribute.raw(opacity: Prop.token(token)));
+      builder(OpacityWidgetDecoratorStyle.raw(opacity: Prop.token(token)));
 }

@@ -90,7 +90,7 @@ void main() {
         expect(util.on, isA<OnContextVariantUtility<ImageSpec, ImageMix>>());
       });
 
-      test('wrap utility is ModifierUtility', () {
+      test('wrap utility is WidgetDecoratorUtility', () {
         expect(util.wrap, isA<WidgetDecoratorUtility<ImageMix>>());
       });
     });
@@ -256,7 +256,7 @@ void main() {
       });
     });
 
-    group('Modifier utilities', () {
+    group('Decorator utilities', () {
       test('wrap utility creates modifier ImageMix', () {
         final result = util.wrap.opacity(0.5);
 

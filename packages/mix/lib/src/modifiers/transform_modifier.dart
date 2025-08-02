@@ -8,25 +8,25 @@ import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 
-final class TransformModifier extends WidgetDecorator<TransformModifier> {
+final class TransformWidgetDecorator extends WidgetDecorator<TransformWidgetDecorator> {
   final Matrix4? transform;
   final Alignment? alignment;
 
-  const TransformModifier({this.transform, this.alignment});
+  const TransformWidgetDecorator({this.transform, this.alignment});
 
   @override
-  TransformModifier copyWith({Matrix4? transform, Alignment? alignment}) {
-    return TransformModifier(
+  TransformWidgetDecorator copyWith({Matrix4? transform, Alignment? alignment}) {
+    return TransformWidgetDecorator(
       transform: transform ?? this.transform,
       alignment: alignment ?? this.alignment,
     );
   }
 
   @override
-  TransformModifier lerp(TransformModifier? other, double t) {
+  TransformWidgetDecorator lerp(TransformWidgetDecorator? other, double t) {
     if (other == null) return this;
 
-    return TransformModifier(
+    return TransformWidgetDecorator(
       transform: MixHelpers.lerpMatrix4(transform, other.transform, t),
       alignment: Alignment.lerp(alignment, other.alignment, t),
     );
@@ -45,21 +45,21 @@ final class TransformModifier extends WidgetDecorator<TransformModifier> {
   }
 }
 
-final class TransformModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, TransformModifierAttribute> {
-  late final rotate = TransformRotateModifierUtility(
+final class TransformWidgetDecoratorUtility<T extends Style<Object?>>
+    extends MixUtility<T, TransformWidgetDecoratorStyle> {
+  late final rotate = TransformRotateWidgetDecoratorUtility(
     (value) => builder(
-      TransformModifierAttribute.raw(
+      TransformWidgetDecoratorStyle.raw(
         transform: Prop.maybe(value),
         alignment: Prop.value(Alignment.center),
       ),
     ),
   );
 
-  TransformModifierUtility(super.builder);
+  TransformWidgetDecoratorUtility(super.builder);
 
   T _flip(bool x, bool y) => builder(
-    TransformModifierAttribute.raw(
+    TransformWidgetDecoratorStyle.raw(
       transform: Prop.value(
         Matrix4.diagonal3Values(x ? -1.0 : 1.0, y ? -1.0 : 1.0, 1.0),
       ),
@@ -71,26 +71,26 @@ final class TransformModifierUtility<T extends Style<Object?>>
   T flipY() => _flip(false, true);
 
   T call(Matrix4 value) =>
-      builder(TransformModifierAttribute.raw(transform: Prop.value(value)));
+      builder(TransformWidgetDecoratorStyle.raw(transform: Prop.value(value)));
 
   T scale(double value) => builder(
-    TransformModifierAttribute.raw(
+    TransformWidgetDecoratorStyle.raw(
       transform: Prop.value(Matrix4.diagonal3Values(value, value, 1.0)),
       alignment: Prop.value(Alignment.center),
     ),
   );
 
   T translate(double x, double y) => builder(
-    TransformModifierAttribute.raw(
+    TransformWidgetDecoratorStyle.raw(
       transform: Prop.value(Matrix4.translationValues(x, y, 0.0)),
       alignment: Prop.value(Alignment.center),
     ),
   );
 }
 
-final class TransformRotateModifierUtility<T extends Style<Object?>>
+final class TransformRotateWidgetDecoratorUtility<T extends Style<Object?>>
     extends MixUtility<T, Matrix4> {
-  const TransformRotateModifierUtility(super.builder);
+  const TransformRotateWidgetDecoratorUtility(super.builder);
   T d90() => call(math.pi / 2);
   T d180() => call(math.pi);
   T d270() => call(3 * math.pi / 2);
@@ -98,32 +98,32 @@ final class TransformRotateModifierUtility<T extends Style<Object?>>
   T call(double value) => builder(Matrix4.rotationZ(value));
 }
 
-class TransformModifierAttribute
-    extends WidgetDecoratorStyle<TransformModifier> {
+class TransformWidgetDecoratorStyle
+    extends WidgetDecoratorStyle<TransformWidgetDecorator> {
   final Prop<Matrix4>? transform;
   final Prop<Alignment>? alignment;
 
-  const TransformModifierAttribute.raw({this.transform, this.alignment});
+  const TransformWidgetDecoratorStyle.raw({this.transform, this.alignment});
 
-  TransformModifierAttribute({Matrix4? transform, Alignment? alignment})
+  TransformWidgetDecoratorStyle({Matrix4? transform, Alignment? alignment})
     : this.raw(
         transform: Prop.maybe(transform),
         alignment: Prop.maybe(alignment),
       );
 
   @override
-  TransformModifier resolve(BuildContext context) {
-    return TransformModifier(
+  TransformWidgetDecorator resolve(BuildContext context) {
+    return TransformWidgetDecorator(
       transform: MixHelpers.resolve(context, transform),
       alignment: MixHelpers.resolve(context, alignment),
     );
   }
 
   @override
-  TransformModifierAttribute merge(TransformModifierAttribute? other) {
+  TransformWidgetDecoratorStyle merge(TransformWidgetDecoratorStyle? other) {
     if (other == null) return this;
 
-    return TransformModifierAttribute.raw(
+    return TransformWidgetDecoratorStyle.raw(
       transform: transform.tryMerge(other.transform),
       alignment: alignment.tryMerge(other.alignment),
     );

@@ -50,7 +50,7 @@ void main() {
         expect(util.on, isA<OnContextVariantUtility<StackSpec, StackMix>>());
       });
 
-      test('wrap utility is ModifierUtility', () {
+      test('wrap utility is WidgetDecoratorUtility', () {
         expect(util.wrap, isA<WidgetDecoratorUtility<StackMix>>());
       });
     });
@@ -112,7 +112,7 @@ void main() {
       });
     });
 
-    group('Modifier utilities', () {
+    group('Decorator utilities', () {
       test('wrap utility creates modifier StackMix', () {
         final result = util.wrap.opacity(0.5);
 

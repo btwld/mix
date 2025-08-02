@@ -27,31 +27,31 @@ import 'widget_decorator_config.dart';
 final class WidgetDecoratorUtility<T extends Style<Object?>>
     extends MixUtility<T, WidgetDecoratorStyle> {
   /// Opacity modifier utility.
-  late final opacity = OpacityModifierUtility<T>(builder);
+  late final opacity = OpacityWidgetDecoratorUtility<T>(builder);
 
   /// Transform modifier utility.
-  late final transform = TransformModifierUtility<T>(builder);
+  late final transform = TransformWidgetDecoratorUtility<T>(builder);
 
   /// Visibility modifier utility.
-  late final visibility = VisibilityModifierUtility<T>(builder);
+  late final visibility = VisibilityWidgetDecoratorUtility<T>(builder);
 
   /// Aspect ratio modifier utility.
   late final aspectRatio = AspectRatioWidgetDecoratorUtility<T>(builder);
 
   /// Align modifier utility.
-  late final align = AlignModifierUtility<T>(builder);
+  late final align = AlignWidgetDecoratorUtility<T>(builder);
 
   /// Padding modifier utility.
-  late final padding = PaddingModifierUtility<T>(builder);
+  late final padding = PaddingWidgetDecoratorUtility<T>(builder);
 
   /// Sized box modifier utility.
-  late final sizedBox = SizedBoxModifierUtility<T>(builder);
+  late final sizedBox = SizedBoxWidgetDecoratorUtility<T>(builder);
 
   /// Flexible modifier utility.
-  late final flexible = FlexibleModifierUtility<T>(builder);
+  late final flexible = FlexibleWidgetDecoratorUtility<T>(builder);
 
   /// Fractionally sized box modifier utility.
-  late final fractionallySizedBox = FractionallySizedBoxModifierUtility<T>(
+  late final fractionallySizedBox = FractionallySizedBoxWidgetDecoratorUtility<T>(
     builder,
   );
 
@@ -59,7 +59,7 @@ final class WidgetDecoratorUtility<T extends Style<Object?>>
   late final rotatedBox = RotatedBoxWidgetDecoratorUtility<T>(builder);
 
   /// Icon theme modifier utility.
-  late final iconTheme = IconThemeModifierUtility<T>(builder);
+  late final iconTheme = IconThemeWidgetDecoratorUtility<T>(builder);
 
   WidgetDecoratorUtility(super.builder);
 
@@ -70,15 +70,15 @@ final class WidgetDecoratorUtility<T extends Style<Object?>>
   T rotate(double value) => transform.rotate(value);
 
   /// Makes the widget take up only its intrinsic width.
-  T intrinsicWidth() => builder(const IntrinsicWidthModifierAttribute());
+  T intrinsicWidth() => builder(const IntrinsicWidthWidgetDecoratorStyle());
 
   /// Makes the widget take up only its intrinsic height.
-  T intrinsicHeight() => builder(const IntrinsicHeightModifierAttribute());
+  T intrinsicHeight() => builder(const IntrinsicHeightWidgetDecoratorStyle());
 
   /// Clips the widget to an oval shape.
   T clipOval({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
     return builder(
-      ClipOvalModifierAttribute(clipper: clipper, clipBehavior: clipBehavior),
+      ClipOvalWidgetDecoratorStyle(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
@@ -89,7 +89,7 @@ final class WidgetDecoratorUtility<T extends Style<Object?>>
     Clip? clipBehavior,
   }) {
     return builder(
-      ClipRRectModifierAttribute(
+      ClipRRectWidgetDecoratorStyle(
         borderRadius: BorderRadiusMix.maybeValue(borderRadius),
         clipper: clipper,
         clipBehavior: clipBehavior,
@@ -100,24 +100,24 @@ final class WidgetDecoratorUtility<T extends Style<Object?>>
   /// Clips the widget to a rectangle.
   T clipRect({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
     return builder(
-      ClipRectModifierAttribute(clipper: clipper, clipBehavior: clipBehavior),
+      ClipRectWidgetDecoratorStyle(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
   /// Clips the widget to a triangle shape.
   T clipTriangle({Clip? clipBehavior}) {
-    return builder(ClipTriangleModifierAttribute(clipBehavior: clipBehavior));
+    return builder(ClipTriangleWidgetDecoratorStyle(clipBehavior: clipBehavior));
   }
 
   /// Clips the widget to a custom path.
   T clipPath({CustomClipper<Path>? clipper, Clip? clipBehavior}) {
     return builder(
-      ClipPathModifierAttribute(clipper: clipper, clipBehavior: clipBehavior),
+      ClipPathWidgetDecoratorStyle(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
   /// Resets all modifiers.
-  T reset() => builder(const ResetModifierAttribute());
+  T reset() => builder(const ResetWidgetDecoratorStyle());
 }
 
 /// Provides convenient modifier methods for spec attributes.

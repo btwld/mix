@@ -43,6 +43,6 @@ OnContextVariantUtility get $on =>
       (v) => CompoundStyle.create([v]),
     );
 
-/// Global accessor for modifier utilities.
+/// Global accessor for decorator utilities.
 WidgetDecoratorUtility get $wrap =>
     WidgetDecoratorUtility((v) => CompoundStyle.create([v]));

@@ -7,24 +7,24 @@ import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 
-/// Modifier that aligns its child within the available space.
+/// Decorator that aligns its child within the available space.
 ///
 /// Wraps the child in an [Align] widget with the specified alignment and size factors.
-final class AlignModifier extends WidgetDecorator<AlignModifier>
+final class AlignWidgetDecorator extends WidgetDecorator<AlignWidgetDecorator>
     with Diagnosticable {
   final AlignmentGeometry? alignment;
   final double? widthFactor;
   final double? heightFactor;
 
-  const AlignModifier({this.alignment, this.widthFactor, this.heightFactor});
+  const AlignWidgetDecorator({this.alignment, this.widthFactor, this.heightFactor});
 
   @override
-  AlignModifier copyWith({
+  AlignWidgetDecorator copyWith({
     AlignmentGeometry? alignment,
     double? widthFactor,
     double? heightFactor,
   }) {
-    return AlignModifier(
+    return AlignWidgetDecorator(
       alignment: alignment ?? this.alignment,
       widthFactor: widthFactor ?? this.widthFactor,
       heightFactor: heightFactor ?? this.heightFactor,
@@ -32,10 +32,10 @@ final class AlignModifier extends WidgetDecorator<AlignModifier>
   }
 
   @override
-  AlignModifier lerp(AlignModifier? other, double t) {
+  AlignWidgetDecorator lerp(AlignWidgetDecorator? other, double t) {
     if (other == null) return this;
 
-    return AlignModifier(
+    return AlignWidgetDecorator(
       alignment: AlignmentGeometry.lerp(alignment, other.alignment, t),
       widthFactor: MixHelpers.lerpDouble(widthFactor, other.widthFactor, t),
       heightFactor: MixHelpers.lerpDouble(heightFactor, other.heightFactor, t),
@@ -56,16 +56,16 @@ final class AlignModifier extends WidgetDecorator<AlignModifier>
   }
 }
 
-final class AlignModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, AlignModifierAttribute> {
-  const AlignModifierUtility(super.builder);
+final class AlignWidgetDecoratorUtility<T extends Style<Object?>>
+    extends MixUtility<T, AlignWidgetDecoratorStyle> {
+  const AlignWidgetDecoratorUtility(super.builder);
   T call({
     AlignmentGeometry? alignment,
     double? widthFactor,
     double? heightFactor,
   }) {
     return builder(
-      AlignModifierAttribute(
+      AlignWidgetDecoratorStyle(
         alignment: alignment,
         widthFactor: widthFactor,
         heightFactor: heightFactor,
@@ -74,18 +74,18 @@ final class AlignModifierUtility<T extends Style<Object?>>
   }
 }
 
-class AlignModifierAttribute extends WidgetDecoratorStyle<AlignModifier> {
+class AlignWidgetDecoratorStyle extends WidgetDecoratorStyle<AlignWidgetDecorator> {
   final Prop<AlignmentGeometry>? alignment;
   final Prop<double>? widthFactor;
   final Prop<double>? heightFactor;
 
-  const AlignModifierAttribute.raw({
+  const AlignWidgetDecoratorStyle.raw({
     this.alignment,
     this.widthFactor,
     this.heightFactor,
   });
 
-  AlignModifierAttribute({
+  AlignWidgetDecoratorStyle({
     AlignmentGeometry? alignment,
     double? widthFactor,
     double? heightFactor,
@@ -96,8 +96,8 @@ class AlignModifierAttribute extends WidgetDecoratorStyle<AlignModifier> {
        );
 
   @override
-  AlignModifier resolve(BuildContext context) {
-    return AlignModifier(
+  AlignWidgetDecorator resolve(BuildContext context) {
+    return AlignWidgetDecorator(
       alignment: MixHelpers.resolve(context, alignment),
       widthFactor: MixHelpers.resolve(context, widthFactor),
       heightFactor: MixHelpers.resolve(context, heightFactor),
@@ -105,10 +105,10 @@ class AlignModifierAttribute extends WidgetDecoratorStyle<AlignModifier> {
   }
 
   @override
-  AlignModifierAttribute merge(AlignModifierAttribute? other) {
+  AlignWidgetDecoratorStyle merge(AlignWidgetDecoratorStyle? other) {
     if (other == null) return this;
 
-    return AlignModifierAttribute.raw(
+    return AlignWidgetDecoratorStyle.raw(
       alignment: alignment.tryMerge(other.alignment),
       widthFactor: widthFactor.tryMerge(other.widthFactor),
       heightFactor: heightFactor.tryMerge(other.heightFactor),

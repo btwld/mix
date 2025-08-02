@@ -9,8 +9,8 @@ import '../core/utility.dart';
 import '../properties/typography/text_height_behavior_mix.dart';
 import '../properties/typography/text_style_mix.dart';
 
-final class DefaultTextStyleModifier
-    extends WidgetDecorator<DefaultTextStyleModifier>
+final class DefaultTextStyleWidgetDecorator
+    extends WidgetDecorator<DefaultTextStyleWidgetDecorator>
     with Diagnosticable {
   final TextStyle? style;
   final TextAlign? textAlign;
@@ -20,7 +20,7 @@ final class DefaultTextStyleModifier
   final TextWidthBasis? textWidthBasis;
   final TextHeightBehavior? textHeightBehavior;
 
-  const DefaultTextStyleModifier({
+  const DefaultTextStyleWidgetDecorator({
     this.style,
     this.textAlign,
     this.softWrap,
@@ -30,10 +30,10 @@ final class DefaultTextStyleModifier
     this.textHeightBehavior,
   });
 
-  /// Creates a copy of this [DefaultTextStyleModifier] but with the given fields
+  /// Creates a copy of this [DefaultTextStyleWidgetDecorator] but with the given fields
   /// replaced with the new values.
   @override
-  DefaultTextStyleModifier copyWith({
+  DefaultTextStyleWidgetDecorator copyWith({
     TextStyle? style,
     TextAlign? textAlign,
     bool? softWrap,
@@ -42,7 +42,7 @@ final class DefaultTextStyleModifier
     TextWidthBasis? textWidthBasis,
     TextHeightBehavior? textHeightBehavior,
   }) {
-    return DefaultTextStyleModifier(
+    return DefaultTextStyleWidgetDecorator(
       style: style ?? this.style,
       textAlign: textAlign ?? this.textAlign,
       softWrap: softWrap ?? this.softWrap,
@@ -53,28 +53,28 @@ final class DefaultTextStyleModifier
     );
   }
 
-  /// Linearly interpolates between this [DefaultTextStyleModifier] and another [DefaultTextStyleModifier] based on the given parameter [t].
+  /// Linearly interpolates between this [DefaultTextStyleWidgetDecorator] and another [DefaultTextStyleWidgetDecorator] based on the given parameter [t].
   ///
   /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [DefaultTextStyleModifier] is returned. When [t] is 1.0, the [other] [DefaultTextStyleModifier] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [DefaultTextStyleModifier] is returned.
+  /// When [t] is 0.0, the current [DefaultTextStyleWidgetDecorator] is returned. When [t] is 1.0, the [other] [DefaultTextStyleWidgetDecorator] is returned.
+  /// For values of [t] between 0.0 and 1.0, an interpolated [DefaultTextStyleWidgetDecorator] is returned.
   ///
-  /// If [other] is null, this method returns the current [DefaultTextStyleModifier] instance.
+  /// If [other] is null, this method returns the current [DefaultTextStyleWidgetDecorator] instance.
   ///
-  /// The interpolation is performed on each property of the [DefaultTextStyleModifier] using the appropriate
+  /// The interpolation is performed on each property of the [DefaultTextStyleWidgetDecorator] using the appropriate
   /// interpolation method:
   /// - [MixHelpers.lerpTextStyle] for [style].
   /// For [textAlign] and [softWrap] and [overflow] and [maxLines] and [textWidthBasis] and [textHeightBehavior], the interpolation is performed using a step function.
-  /// If [t] is less than 0.5, the value from the current [DefaultTextStyleModifier] is used. Otherwise, the value
-  /// from the [other] [DefaultTextStyleModifier] is used.
+  /// If [t] is less than 0.5, the value from the current [DefaultTextStyleWidgetDecorator] is used. Otherwise, the value
+  /// from the [other] [DefaultTextStyleWidgetDecorator] is used.
   ///
   /// This method is typically used in animations to smoothly transition between
-  /// different [DefaultTextStyleModifier] configurations.
+  /// different [DefaultTextStyleWidgetDecorator] configurations.
   @override
-  DefaultTextStyleModifier lerp(DefaultTextStyleModifier? other, double t) {
+  DefaultTextStyleWidgetDecorator lerp(DefaultTextStyleWidgetDecorator? other, double t) {
     if (other == null) return this;
 
-    return DefaultTextStyleModifier(
+    return DefaultTextStyleWidgetDecorator(
       style: MixHelpers.lerpTextStyle(style, other.style, t),
       textAlign: t < 0.5 ? textAlign : other.textAlign,
       softWrap: t < 0.5 ? softWrap : other.softWrap,
@@ -115,10 +115,10 @@ final class DefaultTextStyleModifier
     );
   }
 
-  /// The list of properties that constitute the state of this [DefaultTextStyleModifier].
+  /// The list of properties that constitute the state of this [DefaultTextStyleWidgetDecorator].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [DefaultTextStyleModifier] instances for equality.
+  /// compare two [DefaultTextStyleWidgetDecorator] instances for equality.
   @override
   List<Object?> get props => [
     style,
@@ -145,15 +145,15 @@ final class DefaultTextStyleModifier
   }
 }
 
-/// Represents the attributes of a [DefaultTextStyleModifier].
+/// Represents the attributes of a [DefaultTextStyleWidgetDecorator].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [DefaultTextStyleModifier].
+/// appearance of a [DefaultTextStyleWidgetDecorator].
 ///
-/// Use this class to configure the attributes of a [DefaultTextStyleModifier] and pass it to
-/// the [DefaultTextStyleModifier] constructor.
-class DefaultTextStyleModifierAttribute
-    extends WidgetDecoratorStyle<DefaultTextStyleModifier> {
+/// Use this class to configure the attributes of a [DefaultTextStyleWidgetDecorator] and pass it to
+/// the [DefaultTextStyleWidgetDecorator] constructor.
+class DefaultTextStyleWidgetDecoratorStyle
+    extends WidgetDecoratorStyle<DefaultTextStyleWidgetDecorator> {
   final MixProp<TextStyle>? style;
   final Prop<TextAlign>? textAlign;
   final Prop<bool>? softWrap;
@@ -162,7 +162,7 @@ class DefaultTextStyleModifierAttribute
   final Prop<TextWidthBasis>? textWidthBasis;
   final MixProp<TextHeightBehavior>? textHeightBehavior;
 
-  const DefaultTextStyleModifierAttribute.raw({
+  const DefaultTextStyleWidgetDecoratorStyle.raw({
     this.style,
     this.textAlign,
     this.softWrap,
@@ -172,7 +172,7 @@ class DefaultTextStyleModifierAttribute
     this.textHeightBehavior,
   });
 
-  DefaultTextStyleModifierAttribute({
+  DefaultTextStyleWidgetDecoratorStyle({
     TextStyleMix? style,
     TextAlign? textAlign,
     bool? softWrap,
@@ -190,17 +190,17 @@ class DefaultTextStyleModifierAttribute
          textHeightBehavior: MixProp.maybe(textHeightBehavior),
        );
 
-  /// Resolves to [DefaultTextStyleModifier] using the provided [BuildContext].
+  /// Resolves to [DefaultTextStyleWidgetDecorator] using the provided [BuildContext].
   ///
   /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final defaultTextStyleModifierSpec = DefaultTextStyleModifierAttribute(...).resolve(mix);
+  /// final defaultTextStyleModifierSpec = DefaultTextStyleWidgetDecoratorStyle(...).resolve(mix);
   /// ```
   @override
-  DefaultTextStyleModifier resolve(BuildContext context) {
-    return DefaultTextStyleModifier(
+  DefaultTextStyleWidgetDecorator resolve(BuildContext context) {
+    return DefaultTextStyleWidgetDecorator(
       style: MixHelpers.resolve(context, style),
       textAlign: MixHelpers.resolve(context, textAlign),
       softWrap: MixHelpers.resolve(context, softWrap),
@@ -211,21 +211,21 @@ class DefaultTextStyleModifierAttribute
     );
   }
 
-  /// Merges the properties of this [DefaultTextStyleModifierAttribute] with the properties of [other].
+  /// Merges the properties of this [DefaultTextStyleWidgetDecoratorStyle] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [DefaultTextStyleModifierAttribute] with the properties of [other] taking precedence over
+  /// [DefaultTextStyleWidgetDecoratorStyle] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  DefaultTextStyleModifierAttribute merge(
-    DefaultTextStyleModifierAttribute? other,
+  DefaultTextStyleWidgetDecoratorStyle merge(
+    DefaultTextStyleWidgetDecoratorStyle? other,
   ) {
     if (other == null) return this;
 
-    return DefaultTextStyleModifierAttribute.raw(
+    return DefaultTextStyleWidgetDecoratorStyle.raw(
       style: style.tryMerge(other.style),
       textAlign: textAlign.tryMerge(other.textAlign),
       softWrap: softWrap.tryMerge(other.softWrap),
@@ -248,9 +248,9 @@ class DefaultTextStyleModifierAttribute
   ];
 }
 
-final class DefaultTextStyleModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, DefaultTextStyleModifierAttribute> {
-  const DefaultTextStyleModifierUtility(super.builder);
+final class DefaultTextStyleWidgetDecoratorUtility<T extends Style<Object?>>
+    extends MixUtility<T, DefaultTextStyleWidgetDecoratorStyle> {
+  const DefaultTextStyleWidgetDecoratorUtility(super.builder);
   T call({
     TextStyle? style,
     TextAlign? textAlign,
@@ -261,7 +261,7 @@ final class DefaultTextStyleModifierUtility<T extends Style<Object?>>
     TextHeightBehavior? textHeightBehavior,
   }) {
     return builder(
-      DefaultTextStyleModifierAttribute(
+      DefaultTextStyleWidgetDecoratorStyle(
         style: TextStyleMix.maybeValue(style),
         textAlign: textAlign,
         softWrap: softWrap,

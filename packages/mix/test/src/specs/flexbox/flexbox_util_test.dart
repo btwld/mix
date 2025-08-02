@@ -55,7 +55,7 @@ void main() {
         );
       });
 
-      test('wrap utility is ModifierUtility', () {
+      test('wrap utility is WidgetDecoratorUtility', () {
         expect(util.wrap, isA<WidgetDecoratorUtility<FlexBoxMix>>());
       });
     });
@@ -197,7 +197,7 @@ void main() {
       });
     });
 
-    group('Modifier utilities', () {
+    group('Decorator utilities', () {
       test('wrap utility creates modifier FlexBoxMix', () {
         final result = util.wrap.opacity(0.5);
 

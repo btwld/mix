@@ -5,10 +5,10 @@ import 'package:mix/mix.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  group('FractionallySizedBoxModifier', () {
+  group('FractionallySizedBoxWidgetDecorator', () {
     group('Constructor', () {
       test('creates with null values by default', () {
-        const modifier = FractionallySizedBoxModifier();
+        const modifier = FractionallySizedBoxWidgetDecorator();
 
         expect(modifier.widthFactor, isNull);
         expect(modifier.heightFactor, isNull);
@@ -19,7 +19,7 @@ void main() {
         const widthFactor = 0.8;
         const heightFactor = 0.6;
         const alignment = Alignment.topLeft;
-        const modifier = FractionallySizedBoxModifier(
+        const modifier = FractionallySizedBoxWidgetDecorator(
           widthFactor: widthFactor,
           heightFactor: heightFactor,
           alignment: alignment,
@@ -33,7 +33,7 @@ void main() {
 
     group('copyWith', () {
       test('returns new instance with updated values', () {
-        const original = FractionallySizedBoxModifier(
+        const original = FractionallySizedBoxWidgetDecorator(
           widthFactor: 0.5,
           heightFactor: 0.7,
           alignment: Alignment.center,
@@ -52,7 +52,7 @@ void main() {
       });
 
       test('preserves original values when parameters are null', () {
-        const original = FractionallySizedBoxModifier(
+        const original = FractionallySizedBoxWidgetDecorator(
           widthFactor: 0.5,
           heightFactor: 0.7,
           alignment: Alignment.center,
@@ -67,7 +67,7 @@ void main() {
       });
 
       test('allows partial updates', () {
-        const original = FractionallySizedBoxModifier(
+        const original = FractionallySizedBoxWidgetDecorator(
           widthFactor: 0.5,
           heightFactor: 0.7,
           alignment: Alignment.center,
@@ -94,26 +94,26 @@ void main() {
 
     group('lerp', () {
       test('interpolates widthFactor correctly', () {
-        const start = FractionallySizedBoxModifier(widthFactor: 0.2);
-        const end = FractionallySizedBoxModifier(widthFactor: 0.8);
+        const start = FractionallySizedBoxWidgetDecorator(widthFactor: 0.2);
+        const end = FractionallySizedBoxWidgetDecorator(widthFactor: 0.8);
         final result = start.lerp(end, 0.5);
 
         expect(result.widthFactor, 0.5);
       });
 
       test('interpolates heightFactor correctly', () {
-        const start = FractionallySizedBoxModifier(heightFactor: 0.1);
-        const end = FractionallySizedBoxModifier(heightFactor: 0.9);
+        const start = FractionallySizedBoxWidgetDecorator(heightFactor: 0.1);
+        const end = FractionallySizedBoxWidgetDecorator(heightFactor: 0.9);
         final result = start.lerp(end, 0.5);
 
         expect(result.heightFactor, 0.5);
       });
 
       test('interpolates alignment correctly', () {
-        const start = FractionallySizedBoxModifier(
+        const start = FractionallySizedBoxWidgetDecorator(
           alignment: Alignment.topLeft,
         );
-        const end = FractionallySizedBoxModifier(
+        const end = FractionallySizedBoxWidgetDecorator(
           alignment: Alignment.bottomRight,
         );
         final result = start.lerp(end, 0.5);
@@ -122,12 +122,12 @@ void main() {
       });
 
       test('interpolates all properties together', () {
-        const start = FractionallySizedBoxModifier(
+        const start = FractionallySizedBoxWidgetDecorator(
           widthFactor: 0.0,
           heightFactor: 0.0,
           alignment: Alignment.topLeft,
         );
-        const end = FractionallySizedBoxModifier(
+        const end = FractionallySizedBoxWidgetDecorator(
           widthFactor: 1.0,
           heightFactor: 1.0,
           alignment: Alignment.bottomRight,
@@ -140,7 +140,7 @@ void main() {
       });
 
       test('handles null other parameter', () {
-        const start = FractionallySizedBoxModifier(
+        const start = FractionallySizedBoxWidgetDecorator(
           widthFactor: 0.5,
           heightFactor: 0.5,
           alignment: Alignment.center,
@@ -151,8 +151,8 @@ void main() {
       });
 
       test('handles null values in properties', () {
-        const start = FractionallySizedBoxModifier(widthFactor: 0.5);
-        const end = FractionallySizedBoxModifier(heightFactor: 0.5);
+        const start = FractionallySizedBoxWidgetDecorator(widthFactor: 0.5);
+        const end = FractionallySizedBoxWidgetDecorator(heightFactor: 0.5);
         final result = start.lerp(end, 0.5);
 
         expect(result.widthFactor, 0.25); // 0.5 to null (0) at t=0.5
@@ -161,11 +161,11 @@ void main() {
       });
 
       test('handles extreme t values', () {
-        const start = FractionallySizedBoxModifier(
+        const start = FractionallySizedBoxWidgetDecorator(
           widthFactor: 0.2,
           alignment: Alignment.topLeft,
         );
-        const end = FractionallySizedBoxModifier(
+        const end = FractionallySizedBoxWidgetDecorator(
           widthFactor: 0.8,
           alignment: Alignment.bottomRight,
         );
@@ -182,12 +182,12 @@ void main() {
 
     group('equality and hashCode', () {
       test('equal when all properties match', () {
-        const modifier1 = FractionallySizedBoxModifier(
+        const modifier1 = FractionallySizedBoxWidgetDecorator(
           widthFactor: 0.5,
           heightFactor: 0.8,
           alignment: Alignment.center,
         );
-        const modifier2 = FractionallySizedBoxModifier(
+        const modifier2 = FractionallySizedBoxWidgetDecorator(
           widthFactor: 0.5,
           heightFactor: 0.8,
           alignment: Alignment.center,
@@ -198,8 +198,8 @@ void main() {
       });
 
       test('not equal when widthFactor differs', () {
-        const modifier1 = FractionallySizedBoxModifier(widthFactor: 0.5);
-        const modifier2 = FractionallySizedBoxModifier(widthFactor: 0.8);
+        const modifier1 = FractionallySizedBoxWidgetDecorator(widthFactor: 0.5);
+        const modifier2 = FractionallySizedBoxWidgetDecorator(widthFactor: 0.8);
 
         expect(modifier1, isNot(equals(modifier2)));
         // Hash codes might be equal due to hash collisions, so we only test inequality
@@ -207,8 +207,8 @@ void main() {
       });
 
       test('not equal when heightFactor differs', () {
-        const modifier1 = FractionallySizedBoxModifier(heightFactor: 0.5);
-        const modifier2 = FractionallySizedBoxModifier(heightFactor: 0.8);
+        const modifier1 = FractionallySizedBoxWidgetDecorator(heightFactor: 0.5);
+        const modifier2 = FractionallySizedBoxWidgetDecorator(heightFactor: 0.8);
 
         expect(modifier1, isNot(equals(modifier2)));
         // Hash codes might be equal due to hash collisions, so we only test inequality
@@ -216,10 +216,10 @@ void main() {
       });
 
       test('not equal when alignment differs', () {
-        const modifier1 = FractionallySizedBoxModifier(
+        const modifier1 = FractionallySizedBoxWidgetDecorator(
           alignment: Alignment.center,
         );
-        const modifier2 = FractionallySizedBoxModifier(
+        const modifier2 = FractionallySizedBoxWidgetDecorator(
           alignment: Alignment.topLeft,
         );
 
@@ -229,8 +229,8 @@ void main() {
       });
 
       test('equal when both have all null values', () {
-        const modifier1 = FractionallySizedBoxModifier();
-        const modifier2 = FractionallySizedBoxModifier();
+        const modifier1 = FractionallySizedBoxWidgetDecorator();
+        const modifier2 = FractionallySizedBoxWidgetDecorator();
 
         expect(modifier1, equals(modifier2));
         expect(modifier1.hashCode, equals(modifier2.hashCode));
@@ -239,7 +239,7 @@ void main() {
 
     group('props', () {
       test('contains all properties', () {
-        const modifier = FractionallySizedBoxModifier(
+        const modifier = FractionallySizedBoxWidgetDecorator(
           widthFactor: 0.5,
           heightFactor: 0.8,
           alignment: Alignment.center,
@@ -249,7 +249,7 @@ void main() {
       });
 
       test('contains null values', () {
-        const modifier = FractionallySizedBoxModifier();
+        const modifier = FractionallySizedBoxWidgetDecorator();
 
         expect(modifier.props, [null, null, null]);
       });
@@ -259,7 +259,7 @@ void main() {
       testWidgets(
         'creates FractionallySizedBox widget with default center alignment',
         (WidgetTester tester) async {
-          const modifier = FractionallySizedBoxModifier();
+          const modifier = FractionallySizedBoxWidgetDecorator();
           const child = SizedBox(width: 50, height: 50);
 
           await tester.pumpWidget(modifier.build(child));
@@ -277,7 +277,7 @@ void main() {
       testWidgets('creates FractionallySizedBox widget with custom values', (
         WidgetTester tester,
       ) async {
-        const modifier = FractionallySizedBoxModifier(
+        const modifier = FractionallySizedBoxWidgetDecorator(
           widthFactor: 0.7,
           heightFactor: 0.9,
           alignment: Alignment.topRight,
@@ -297,10 +297,10 @@ void main() {
     });
   });
 
-  group('FractionallySizedBoxModifierAttribute', () {
+  group('FractionallySizedBoxWidgetDecoratorStyle', () {
     group('Constructor', () {
       test('creates with null values by default', () {
-        final attribute = FractionallySizedBoxModifierAttribute();
+        final attribute = FractionallySizedBoxWidgetDecoratorStyle();
 
         expect(attribute.widthFactor, isNull);
         expect(attribute.heightFactor, isNull);
@@ -311,7 +311,7 @@ void main() {
         final widthFactor = Prop.value(0.5);
         final heightFactor = Prop.value(0.8);
         final alignment = Prop.value<AlignmentGeometry>(Alignment.center);
-        final attribute = FractionallySizedBoxModifierAttribute.raw(
+        final attribute = FractionallySizedBoxWidgetDecoratorStyle.raw(
           widthFactor: widthFactor,
           heightFactor: heightFactor,
           alignment: alignment,
@@ -325,7 +325,7 @@ void main() {
 
     group('only constructor', () {
       test('creates Prop values from direct values', () {
-        final attribute = FractionallySizedBoxModifierAttribute(
+        final attribute = FractionallySizedBoxWidgetDecoratorStyle(
           widthFactor: 0.3,
           heightFactor: 0.7,
           alignment: Alignment.topLeft,
@@ -337,7 +337,7 @@ void main() {
       });
 
       test('handles null values correctly', () {
-        final attribute = FractionallySizedBoxModifierAttribute();
+        final attribute = FractionallySizedBoxWidgetDecoratorStyle();
 
         expect(attribute.widthFactor, isNull);
         expect(attribute.heightFactor, isNull);
@@ -345,21 +345,21 @@ void main() {
       });
 
       test('handles partial values', () {
-        final attribute1 = FractionallySizedBoxModifierAttribute(
+        final attribute1 = FractionallySizedBoxWidgetDecoratorStyle(
           widthFactor: 0.5,
         );
         expectProp(attribute1.widthFactor, 0.5);
         expect(attribute1.heightFactor, isNull);
         expect(attribute1.alignment, isNull);
 
-        final attribute2 = FractionallySizedBoxModifierAttribute(
+        final attribute2 = FractionallySizedBoxWidgetDecoratorStyle(
           heightFactor: 0.7,
         );
         expect(attribute2.widthFactor, isNull);
         expectProp(attribute2.heightFactor, 0.7);
         expect(attribute2.alignment, isNull);
 
-        final attribute3 = FractionallySizedBoxModifierAttribute(
+        final attribute3 = FractionallySizedBoxWidgetDecoratorStyle(
           alignment: Alignment.bottomRight,
         );
         expect(attribute3.widthFactor, isNull);
@@ -369,14 +369,14 @@ void main() {
     });
 
     group('resolve', () {
-      test('resolves to FractionallySizedBoxModifier with resolved values', () {
-        final attribute = FractionallySizedBoxModifierAttribute(
+      test('resolves to FractionallySizedBoxWidgetDecorator with resolved values', () {
+        final attribute = FractionallySizedBoxWidgetDecoratorStyle(
           widthFactor: 0.4,
           heightFactor: 0.6,
           alignment: Alignment.topRight,
         );
 
-        const expectedModifier = FractionallySizedBoxModifier(
+        const expectedModifier = FractionallySizedBoxWidgetDecorator(
           widthFactor: 0.4,
           heightFactor: 0.6,
           alignment: Alignment.topRight,
@@ -385,20 +385,20 @@ void main() {
       });
 
       test('resolves with null values', () {
-        final attribute = FractionallySizedBoxModifierAttribute();
+        final attribute = FractionallySizedBoxWidgetDecoratorStyle();
 
-        const expectedModifier = FractionallySizedBoxModifier();
+        const expectedModifier = FractionallySizedBoxWidgetDecorator();
         expect(attribute, resolvesTo(expectedModifier));
       });
     });
 
     group('merge', () {
-      test('merges with other FractionallySizedBoxModifierAttribute', () {
-        final attribute1 = FractionallySizedBoxModifierAttribute(
+      test('merges with other FractionallySizedBoxWidgetDecoratorStyle', () {
+        final attribute1 = FractionallySizedBoxWidgetDecoratorStyle(
           widthFactor: 0.5,
           heightFactor: 0.5,
         );
-        final attribute2 = FractionallySizedBoxModifierAttribute(
+        final attribute2 = FractionallySizedBoxWidgetDecoratorStyle(
           widthFactor: 0.8,
           alignment: Alignment.topLeft,
         );
@@ -411,7 +411,7 @@ void main() {
       });
 
       test('returns original when other is null', () {
-        final attribute = FractionallySizedBoxModifierAttribute(
+        final attribute = FractionallySizedBoxWidgetDecoratorStyle(
           widthFactor: 0.5,
         );
 
@@ -421,8 +421,8 @@ void main() {
       });
 
       test('merges with null values', () {
-        final attribute1 = FractionallySizedBoxModifierAttribute();
-        final attribute2 = FractionallySizedBoxModifierAttribute(
+        final attribute1 = FractionallySizedBoxWidgetDecoratorStyle();
+        final attribute2 = FractionallySizedBoxWidgetDecoratorStyle(
           alignment: Alignment.bottomRight,
         );
 
@@ -436,12 +436,12 @@ void main() {
 
     group('equality and props', () {
       test('equal when all Prop values match', () {
-        final attribute1 = FractionallySizedBoxModifierAttribute(
+        final attribute1 = FractionallySizedBoxWidgetDecoratorStyle(
           widthFactor: 0.5,
           heightFactor: 0.8,
           alignment: Alignment.center,
         );
-        final attribute2 = FractionallySizedBoxModifierAttribute(
+        final attribute2 = FractionallySizedBoxWidgetDecoratorStyle(
           widthFactor: 0.5,
           heightFactor: 0.8,
           alignment: Alignment.center,
@@ -451,10 +451,10 @@ void main() {
       });
 
       test('not equal when values differ', () {
-        final attribute1 = FractionallySizedBoxModifierAttribute(
+        final attribute1 = FractionallySizedBoxWidgetDecoratorStyle(
           widthFactor: 0.5,
         );
-        final attribute2 = FractionallySizedBoxModifierAttribute(
+        final attribute2 = FractionallySizedBoxWidgetDecoratorStyle(
           widthFactor: 0.8,
         );
 
@@ -462,7 +462,7 @@ void main() {
       });
 
       test('props contains all Prop values', () {
-        final attribute = FractionallySizedBoxModifierAttribute(
+        final attribute = FractionallySizedBoxWidgetDecoratorStyle(
           widthFactor: 0.5,
           heightFactor: 0.8,
           alignment: Alignment.center,
@@ -477,14 +477,14 @@ void main() {
     });
   });
 
-  group('FractionallySizedBoxModifierUtility', () {
-    late FractionallySizedBoxModifierUtility<
-      MockStyle<FractionallySizedBoxModifierAttribute>
+  group('FractionallySizedBoxWidgetDecoratorUtility', () {
+    late FractionallySizedBoxWidgetDecoratorUtility<
+      MockStyle<FractionallySizedBoxWidgetDecoratorStyle>
     >
     utility;
 
     setUp(() {
-      utility = FractionallySizedBoxModifierUtility(
+      utility = FractionallySizedBoxWidgetDecoratorUtility(
         (attribute) => MockStyle(attribute),
       );
     });
@@ -533,15 +533,15 @@ void main() {
 
   group('Integration tests', () {
     testWidgets(
-      'FractionallySizedBoxModifierAttribute resolves and builds correctly',
+      'FractionallySizedBoxWidgetDecoratorStyle resolves and builds correctly',
       (WidgetTester tester) async {
-        final attribute = FractionallySizedBoxModifierAttribute(
+        final attribute = FractionallySizedBoxWidgetDecoratorStyle(
           widthFactor: 0.7,
           heightFactor: 0.9,
           alignment: Alignment.bottomCenter,
         );
 
-        const expectedModifier = FractionallySizedBoxModifier(
+        const expectedModifier = FractionallySizedBoxWidgetDecorator(
           widthFactor: 0.7,
           heightFactor: 0.9,
           alignment: Alignment.bottomCenter,
@@ -564,18 +564,18 @@ void main() {
     );
 
     test('Complex merge scenario preserves and overrides correctly', () {
-      final base = FractionallySizedBoxModifierAttribute(
+      final base = FractionallySizedBoxWidgetDecoratorStyle(
         widthFactor: 0.5,
         heightFactor: 0.5,
         alignment: Alignment.center,
       );
 
-      final override1 = FractionallySizedBoxModifierAttribute(
+      final override1 = FractionallySizedBoxWidgetDecoratorStyle(
         widthFactor: 0.8,
         heightFactor: 0.8,
       );
 
-      final override2 = FractionallySizedBoxModifierAttribute(
+      final override2 = FractionallySizedBoxWidgetDecoratorStyle(
         alignment: Alignment.topLeft,
       );
 
@@ -587,12 +587,12 @@ void main() {
     });
 
     test('Lerp produces expected intermediate values', () {
-      const start = FractionallySizedBoxModifier(
+      const start = FractionallySizedBoxWidgetDecorator(
         widthFactor: 0.0,
         heightFactor: 0.0,
         alignment: Alignment.topLeft,
       );
-      const end = FractionallySizedBoxModifier(
+      const end = FractionallySizedBoxWidgetDecorator(
         widthFactor: 1.0,
         heightFactor: 1.0,
         alignment: Alignment.bottomRight,

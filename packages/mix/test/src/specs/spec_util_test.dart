@@ -51,7 +51,7 @@ void main() {
       expect($on, isNot(same($on)));
     });
 
-    test('\$wrap returns ModifierUtility instance', () {
+    test('\$wrap returns WidgetDecoratorUtility instance', () {
       expect($wrap, isA<WidgetDecoratorUtility>());
       // Each call returns a new instance
       expect($wrap, isNot(same($wrap)));
@@ -104,7 +104,7 @@ void main() {
       expect(hoverBuilder, isA<VariantAttributeBuilder<MultiSpec>>());
     });
 
-    test('wrap getter can be used for modifier utilities', () {
+    test('wrap getter can be used for decorator utilities', () {
       expect($wrap, isA<WidgetDecoratorUtility>());
       final opacityModifier = $wrap.opacity(0.5);
       expect(opacityModifier, isA<Style>());

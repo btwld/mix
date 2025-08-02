@@ -89,7 +89,7 @@ void main() {
         expect(util.on, isA<OnContextVariantUtility<TextSpec, TextMix>>());
       });
 
-      test('wrap utility is ModifierUtility', () {
+      test('wrap utility is WidgetDecoratorUtility', () {
         expect(util.wrap, isA<WidgetDecoratorUtility<TextMix>>());
       });
     });
@@ -262,7 +262,7 @@ void main() {
       });
     });
 
-    group('Modifier utilities', () {
+    group('Decorator utilities', () {
       test('wrap utility creates modifier TextMix', () {
         final result = util.wrap.opacity(0.5);
 

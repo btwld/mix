@@ -476,8 +476,8 @@ void main() {
         final attribute = FlexMix(
           modifierConfig: WidgetDecoratorConfig(
             decorators: [
-              OpacityModifierAttribute(opacity: 0.5),
-              PaddingModifierAttribute(padding: EdgeInsetsMix.all(8.0)),
+              OpacityWidgetDecoratorStyle(opacity: 0.5),
+              PaddingWidgetDecoratorStyle(padding: EdgeInsetsMix.all(8.0)),
             ],
           ),
         );
@@ -489,14 +489,14 @@ void main() {
       test('modifiers merge correctly', () {
         final first = FlexMix(
           modifierConfig: WidgetDecoratorConfig(
-            decorators: [OpacityModifierAttribute(opacity: 0.5)],
+            decorators: [OpacityWidgetDecoratorStyle(opacity: 0.5)],
           ),
         );
 
         final second = FlexMix(
           modifierConfig: WidgetDecoratorConfig(
             decorators: [
-              PaddingModifierAttribute(padding: EdgeInsetsMix.all(8.0)),
+              PaddingWidgetDecoratorStyle(padding: EdgeInsetsMix.all(8.0)),
             ],
           ),
         );

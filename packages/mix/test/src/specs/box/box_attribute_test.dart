@@ -405,8 +405,8 @@ void main() {
       });
     });
 
-    group('Modifier Methods', () {
-      test('modifier method sets modifier config', () {
+    group('Decorator Methods', () {
+      test('decorator method sets decorator config', () {
         final modifier = WidgetDecoratorConfig();
         final boxMix = BoxMix().widgetDecorator(modifier);
 

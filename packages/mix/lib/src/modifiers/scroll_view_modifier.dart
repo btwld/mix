@@ -8,14 +8,14 @@ import '../core/utility.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
 import '../properties/layout/edge_insets_geometry_util.dart';
 
-final class ScrollViewModifier extends WidgetDecorator<ScrollViewModifier> {
+final class ScrollViewWidgetDecorator extends WidgetDecorator<ScrollViewWidgetDecorator> {
   final Axis? scrollDirection;
   final bool? reverse;
   final EdgeInsetsGeometry? padding;
   final ScrollPhysics? physics;
   final Clip? clipBehavior;
 
-  const ScrollViewModifier({
+  const ScrollViewWidgetDecorator({
     this.scrollDirection,
     this.reverse,
     this.padding,
@@ -24,14 +24,14 @@ final class ScrollViewModifier extends WidgetDecorator<ScrollViewModifier> {
   });
 
   @override
-  ScrollViewModifier copyWith({
+  ScrollViewWidgetDecorator copyWith({
     Axis? scrollDirection,
     bool? reverse,
     EdgeInsetsGeometry? padding,
     ScrollPhysics? physics,
     Clip? clipBehavior,
   }) {
-    return ScrollViewModifier(
+    return ScrollViewWidgetDecorator(
       scrollDirection: scrollDirection ?? this.scrollDirection,
       reverse: reverse ?? this.reverse,
       padding: padding ?? this.padding,
@@ -41,10 +41,10 @@ final class ScrollViewModifier extends WidgetDecorator<ScrollViewModifier> {
   }
 
   @override
-  ScrollViewModifier lerp(ScrollViewModifier? other, double t) {
+  ScrollViewWidgetDecorator lerp(ScrollViewWidgetDecorator? other, double t) {
     if (other == null) return this;
 
-    return ScrollViewModifier(
+    return ScrollViewWidgetDecorator(
       scrollDirection: t < 0.5 ? scrollDirection : other.scrollDirection,
       reverse: t < 0.5 ? reverse : other.reverse,
       padding: EdgeInsetsGeometry.lerp(padding, other.padding, t),
@@ -75,8 +75,8 @@ final class ScrollViewModifier extends WidgetDecorator<ScrollViewModifier> {
   }
 }
 
-final class ScrollViewModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, ScrollViewModifierAttribute> {
+final class ScrollViewWidgetDecoratorUtility<T extends Style<Object?>>
+    extends MixUtility<T, ScrollViewWidgetDecoratorStyle> {
   /// Set the padding of the scroll view.
   late final padding = EdgeInsetsGeometryUtility(
     (padding) => only(padding: padding),
@@ -87,7 +87,7 @@ final class ScrollViewModifierUtility<T extends Style<Object?>>
     (clip) => only(clipBehavior: clip),
   );
 
-  ScrollViewModifierUtility(super.builder);
+  ScrollViewWidgetDecoratorUtility(super.builder);
 
   /// Make the scroll view reverse or not.
   T reverse(bool v) => only(reverse: v);
@@ -121,7 +121,7 @@ final class ScrollViewModifierUtility<T extends Style<Object?>>
     ScrollPhysics? physics,
     Clip? clipBehavior,
   }) => builder(
-    ScrollViewModifierAttribute(
+    ScrollViewWidgetDecoratorStyle(
       scrollDirection: scrollDirection,
       reverse: reverse,
       padding: padding,
@@ -147,15 +147,15 @@ final class ScrollViewModifierUtility<T extends Style<Object?>>
   }
 }
 
-class ScrollViewModifierAttribute
-    extends WidgetDecoratorStyle<ScrollViewModifier> {
+class ScrollViewWidgetDecoratorStyle
+    extends WidgetDecoratorStyle<ScrollViewWidgetDecorator> {
   final Prop<Axis>? scrollDirection;
   final Prop<bool>? reverse;
   final MixProp<EdgeInsetsGeometry>? padding;
   final Prop<ScrollPhysics>? physics;
   final Prop<Clip>? clipBehavior;
 
-  const ScrollViewModifierAttribute.raw({
+  const ScrollViewWidgetDecoratorStyle.raw({
     this.scrollDirection,
     this.reverse,
     this.padding,
@@ -163,7 +163,7 @@ class ScrollViewModifierAttribute
     this.clipBehavior,
   });
 
-  ScrollViewModifierAttribute({
+  ScrollViewWidgetDecoratorStyle({
     Axis? scrollDirection,
     bool? reverse,
     EdgeInsetsGeometryMix? padding,
@@ -178,8 +178,8 @@ class ScrollViewModifierAttribute
        );
 
   @override
-  ScrollViewModifier resolve(BuildContext context) {
-    return ScrollViewModifier(
+  ScrollViewWidgetDecorator resolve(BuildContext context) {
+    return ScrollViewWidgetDecorator(
       scrollDirection: MixHelpers.resolve(context, scrollDirection),
       reverse: MixHelpers.resolve(context, reverse),
       padding: MixHelpers.resolve(context, padding),
@@ -189,10 +189,10 @@ class ScrollViewModifierAttribute
   }
 
   @override
-  ScrollViewModifierAttribute merge(ScrollViewModifierAttribute? other) {
+  ScrollViewWidgetDecoratorStyle merge(ScrollViewWidgetDecoratorStyle? other) {
     if (other == null) return this;
 
-    return ScrollViewModifierAttribute.raw(
+    return ScrollViewWidgetDecoratorStyle.raw(
       scrollDirection: scrollDirection.tryMerge(other.scrollDirection),
       reverse: reverse.tryMerge(other.reverse),
       padding: padding.tryMerge(other.padding),

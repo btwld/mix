@@ -5,23 +5,23 @@ import 'package:mix/mix.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  // IntrinsicHeightModifierSpec
-  group('IntrinsicHeightModifierSpec', () {
+  // IntrinsicHeightWidgetDecoratorSpec
+  group('IntrinsicHeightWidgetDecoratorSpec', () {
     test('lerp', () {
-      const spec = IntrinsicHeightModifier();
-      const other = IntrinsicHeightModifier();
+      const spec = IntrinsicHeightWidgetDecorator();
+      const other = IntrinsicHeightWidgetDecorator();
       final result = spec.lerp(other, 0.5);
       expect(result, spec);
     });
 
     test('copyWith', () {
-      const spec = IntrinsicHeightModifier();
+      const spec = IntrinsicHeightWidgetDecorator();
       final result = spec.copyWith();
       expect(result, spec);
     });
 
     testWidgets('build', (tester) async {
-      const modifier = IntrinsicHeightModifier();
+      const modifier = IntrinsicHeightWidgetDecorator();
 
       await tester.pumpMaterialApp(modifier.build(Container()));
 
@@ -36,58 +36,58 @@ void main() {
 
     // equality
     test('equality', () {
-      const spec = IntrinsicHeightModifier();
-      const other = IntrinsicHeightModifier();
+      const spec = IntrinsicHeightWidgetDecorator();
+      const other = IntrinsicHeightWidgetDecorator();
       expect(spec, other);
     });
   });
 
-  // IntrinsicHeightModifierAttribute
-  group('IntrinsicHeightModifierAttribute', () {
+  // IntrinsicHeightWidgetDecoratorStyle
+  group('IntrinsicHeightWidgetDecoratorStyle', () {
     test('merge', () {
-      const modifier = IntrinsicHeightModifierAttribute();
-      const other = IntrinsicHeightModifierAttribute();
+      const modifier = IntrinsicHeightWidgetDecoratorStyle();
+      const other = IntrinsicHeightWidgetDecoratorStyle();
       final result = modifier.merge(other);
       expect(result, modifier);
     });
 
     test('resolve', () {
-      const modifier = IntrinsicHeightModifierAttribute();
-      expect(modifier, resolvesTo(const IntrinsicHeightModifier()));
+      const modifier = IntrinsicHeightWidgetDecoratorStyle();
+      expect(modifier, resolvesTo(const IntrinsicHeightWidgetDecorator()));
     });
 
     // equality
     test('equality', () {
-      const modifier = IntrinsicHeightModifierAttribute();
-      const other = IntrinsicHeightModifierAttribute();
+      const modifier = IntrinsicHeightWidgetDecoratorStyle();
+      const other = IntrinsicHeightWidgetDecoratorStyle();
       expect(modifier, other);
     });
   });
 
-  // IntrinsicWidthModifierSpec
-  group('IntrinsicWidthModifierSpec', () {
+  // IntrinsicWidthWidgetDecoratorSpec
+  group('IntrinsicWidthWidgetDecoratorSpec', () {
     test('lerp', () {
-      const spec = IntrinsicWidthModifier();
-      const other = IntrinsicWidthModifier();
+      const spec = IntrinsicWidthWidgetDecorator();
+      const other = IntrinsicWidthWidgetDecorator();
       final result = spec.lerp(other, 0.5);
       expect(result, spec);
     });
 
     test('copyWith', () {
-      const spec = IntrinsicWidthModifier();
+      const spec = IntrinsicWidthWidgetDecorator();
       final result = spec.copyWith();
       expect(result, spec);
     });
 
     // equality
     test('equality', () {
-      const spec = IntrinsicWidthModifier();
-      const other = IntrinsicWidthModifier();
+      const spec = IntrinsicWidthWidgetDecorator();
+      const other = IntrinsicWidthWidgetDecorator();
       expect(spec, other);
     });
 
     testWidgets('build', (tester) async {
-      const modifier = IntrinsicWidthModifier();
+      const modifier = IntrinsicWidthWidgetDecorator();
 
       await tester.pumpMaterialApp(modifier.build(Container()));
 
@@ -101,24 +101,24 @@ void main() {
     });
   });
 
-  // IntrinsicWidthModifierAttribute
-  group('IntrinsicWidthModifierAttribute', () {
+  // IntrinsicWidthWidgetDecoratorStyle
+  group('IntrinsicWidthWidgetDecoratorStyle', () {
     test('merge', () {
-      const modifier = IntrinsicWidthModifierAttribute();
-      const other = IntrinsicWidthModifierAttribute();
+      const modifier = IntrinsicWidthWidgetDecoratorStyle();
+      const other = IntrinsicWidthWidgetDecoratorStyle();
       final result = modifier.merge(other);
       expect(result, modifier);
     });
 
     test('resolve', () {
-      const modifier = IntrinsicWidthModifierAttribute();
-      expect(modifier, resolvesTo(const IntrinsicWidthModifier()));
+      const modifier = IntrinsicWidthWidgetDecoratorStyle();
+      expect(modifier, resolvesTo(const IntrinsicWidthWidgetDecorator()));
     });
 
     // equality
     test('equality', () {
-      const modifier = IntrinsicWidthModifierAttribute();
-      const other = IntrinsicWidthModifierAttribute();
+      const modifier = IntrinsicWidthWidgetDecoratorStyle();
+      const other = IntrinsicWidthWidgetDecoratorStyle();
       expect(modifier, other);
     });
   });

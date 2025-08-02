@@ -5,7 +5,7 @@ import 'package:mix/mix.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  group('AspectRatioModifier', () {
+  group('AspectRatioWidgetDecorator', () {
     test('constructor assigns aspectRatio correctly', () {
       const aspectRatio = 2.0;
       const modifier = AspectRatioWidgetDecorator(aspectRatio);
@@ -63,7 +63,7 @@ void main() {
     });
   });
 
-  group('AspectRatioModifierAttribute', () {
+  group('AspectRatioWidgetDecoratorStyle', () {
     test('constructor assigns aspectRatio', () {
       final attribute = AspectRatioWidgetDecoratorStyle.raw(
         aspectRatio: Prop.value(1.5),

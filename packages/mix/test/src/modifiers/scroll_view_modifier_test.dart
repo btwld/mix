@@ -5,10 +5,10 @@ import 'package:mix/mix.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  group('ScrollViewModifier', () {
+  group('ScrollViewWidgetDecorator', () {
     group('Constructor', () {
       test('creates with null values by default', () {
-        const modifier = ScrollViewModifier();
+        const modifier = ScrollViewWidgetDecorator();
 
         expect(modifier.scrollDirection, isNull);
         expect(modifier.reverse, isNull);
@@ -24,7 +24,7 @@ void main() {
         const physics = BouncingScrollPhysics();
         const clipBehavior = Clip.antiAlias;
 
-        const modifier = ScrollViewModifier(
+        const modifier = ScrollViewWidgetDecorator(
           scrollDirection: scrollDirection,
           reverse: reverse,
           padding: padding,
@@ -42,7 +42,7 @@ void main() {
 
     group('copyWith', () {
       test('returns new instance with updated values', () {
-        const original = ScrollViewModifier(
+        const original = ScrollViewWidgetDecorator(
           scrollDirection: Axis.vertical,
           reverse: false,
           padding: EdgeInsets.all(10.0),
@@ -67,7 +67,7 @@ void main() {
       });
 
       test('preserves original values when parameters are null', () {
-        const original = ScrollViewModifier(
+        const original = ScrollViewWidgetDecorator(
           scrollDirection: Axis.vertical,
           reverse: true,
           padding: EdgeInsets.all(10.0),
@@ -86,7 +86,7 @@ void main() {
       });
 
       test('allows partial updates', () {
-        const original = ScrollViewModifier(
+        const original = ScrollViewWidgetDecorator(
           scrollDirection: Axis.vertical,
           reverse: false,
           padding: EdgeInsets.all(10.0),
@@ -108,8 +108,8 @@ void main() {
 
     group('lerp', () {
       test('uses step function for scrollDirection', () {
-        const start = ScrollViewModifier(scrollDirection: Axis.vertical);
-        const end = ScrollViewModifier(scrollDirection: Axis.horizontal);
+        const start = ScrollViewWidgetDecorator(scrollDirection: Axis.vertical);
+        const end = ScrollViewWidgetDecorator(scrollDirection: Axis.horizontal);
 
         expect(start.lerp(end, 0.0).scrollDirection, Axis.vertical);
         expect(start.lerp(end, 0.49).scrollDirection, Axis.vertical);
@@ -118,8 +118,8 @@ void main() {
       });
 
       test('uses step function for reverse', () {
-        const start = ScrollViewModifier(reverse: false);
-        const end = ScrollViewModifier(reverse: true);
+        const start = ScrollViewWidgetDecorator(reverse: false);
+        const end = ScrollViewWidgetDecorator(reverse: true);
 
         expect(start.lerp(end, 0.0).reverse, false);
         expect(start.lerp(end, 0.49).reverse, false);
@@ -128,31 +128,31 @@ void main() {
       });
 
       test('interpolates padding correctly', () {
-        const start = ScrollViewModifier(padding: EdgeInsets.all(10.0));
-        const end = ScrollViewModifier(padding: EdgeInsets.all(30.0));
+        const start = ScrollViewWidgetDecorator(padding: EdgeInsets.all(10.0));
+        const end = ScrollViewWidgetDecorator(padding: EdgeInsets.all(30.0));
         final result = start.lerp(end, 0.5);
 
         expect(result.padding, const EdgeInsets.all(20.0));
       });
 
       test('uses step function for physics', () {
-        const start = ScrollViewModifier(physics: BouncingScrollPhysics());
-        const end = ScrollViewModifier(physics: ClampingScrollPhysics());
+        const start = ScrollViewWidgetDecorator(physics: BouncingScrollPhysics());
+        const end = ScrollViewWidgetDecorator(physics: ClampingScrollPhysics());
 
         expect(start.lerp(end, 0.49).physics, isA<BouncingScrollPhysics>());
         expect(start.lerp(end, 0.5).physics, isA<ClampingScrollPhysics>());
       });
 
       test('uses step function for clipBehavior', () {
-        const start = ScrollViewModifier(clipBehavior: Clip.hardEdge);
-        const end = ScrollViewModifier(clipBehavior: Clip.antiAlias);
+        const start = ScrollViewWidgetDecorator(clipBehavior: Clip.hardEdge);
+        const end = ScrollViewWidgetDecorator(clipBehavior: Clip.antiAlias);
 
         expect(start.lerp(end, 0.49).clipBehavior, Clip.hardEdge);
         expect(start.lerp(end, 0.5).clipBehavior, Clip.antiAlias);
       });
 
       test('handles null other parameter', () {
-        const start = ScrollViewModifier(
+        const start = ScrollViewWidgetDecorator(
           scrollDirection: Axis.horizontal,
           reverse: true,
           padding: EdgeInsets.all(10.0),
@@ -163,14 +163,14 @@ void main() {
       });
 
       test('interpolates all properties together', () {
-        const start = ScrollViewModifier(
+        const start = ScrollViewWidgetDecorator(
           scrollDirection: Axis.vertical,
           reverse: false,
           padding: EdgeInsets.all(0.0),
           physics: BouncingScrollPhysics(),
           clipBehavior: Clip.none,
         );
-        const end = ScrollViewModifier(
+        const end = ScrollViewWidgetDecorator(
           scrollDirection: Axis.horizontal,
           reverse: true,
           padding: EdgeInsets.all(100.0),
@@ -196,13 +196,13 @@ void main() {
 
     group('equality and hashCode', () {
       test('equal when all properties match', () {
-        const modifier1 = ScrollViewModifier(
+        const modifier1 = ScrollViewWidgetDecorator(
           scrollDirection: Axis.horizontal,
           reverse: true,
           padding: EdgeInsets.all(16.0),
           clipBehavior: Clip.antiAlias,
         );
-        const modifier2 = ScrollViewModifier(
+        const modifier2 = ScrollViewWidgetDecorator(
           scrollDirection: Axis.horizontal,
           reverse: true,
           padding: EdgeInsets.all(16.0),
@@ -215,37 +215,37 @@ void main() {
 
       test('physics instances affect equality', () {
         // With const, Dart might optimize to the same instance
-        const modifier1 = ScrollViewModifier(physics: BouncingScrollPhysics());
-        const modifier2 = ScrollViewModifier(physics: BouncingScrollPhysics());
+        const modifier1 = ScrollViewWidgetDecorator(physics: BouncingScrollPhysics());
+        const modifier2 = ScrollViewWidgetDecorator(physics: BouncingScrollPhysics());
 
         // These might be equal due to const optimization
         // Different physics types should definitely not be equal
-        const modifier3 = ScrollViewModifier(physics: ClampingScrollPhysics());
+        const modifier3 = ScrollViewWidgetDecorator(physics: ClampingScrollPhysics());
 
         expect(modifier1, isNot(equals(modifier3)));
         expect(modifier1, equals(modifier2));
       });
 
       test('not equal when any property differs', () {
-        const base = ScrollViewModifier(
+        const base = ScrollViewWidgetDecorator(
           scrollDirection: Axis.horizontal,
           reverse: true,
           padding: EdgeInsets.all(16.0),
         );
 
-        const differentDirection = ScrollViewModifier(
+        const differentDirection = ScrollViewWidgetDecorator(
           scrollDirection: Axis.vertical,
           reverse: true,
           padding: EdgeInsets.all(16.0),
         );
 
-        const differentReverse = ScrollViewModifier(
+        const differentReverse = ScrollViewWidgetDecorator(
           scrollDirection: Axis.horizontal,
           reverse: false,
           padding: EdgeInsets.all(16.0),
         );
 
-        const differentPadding = ScrollViewModifier(
+        const differentPadding = ScrollViewWidgetDecorator(
           scrollDirection: Axis.horizontal,
           reverse: true,
           padding: EdgeInsets.all(32.0),
@@ -257,8 +257,8 @@ void main() {
       });
 
       test('equal when both have all null values', () {
-        const modifier1 = ScrollViewModifier();
-        const modifier2 = ScrollViewModifier();
+        const modifier1 = ScrollViewWidgetDecorator();
+        const modifier2 = ScrollViewWidgetDecorator();
 
         expect(modifier1, equals(modifier2));
         expect(modifier1.hashCode, equals(modifier2.hashCode));
@@ -267,7 +267,7 @@ void main() {
 
     group('props', () {
       test('contains all properties', () {
-        const modifier = ScrollViewModifier(
+        const modifier = ScrollViewWidgetDecorator(
           scrollDirection: Axis.horizontal,
           reverse: true,
           padding: EdgeInsets.all(16.0),
@@ -284,7 +284,7 @@ void main() {
       });
 
       test('contains null values', () {
-        const modifier = ScrollViewModifier();
+        const modifier = ScrollViewWidgetDecorator();
 
         expect(modifier.props, [null, null, null, null, null]);
       });
@@ -294,7 +294,7 @@ void main() {
       testWidgets('creates SingleChildScrollView with default values', (
         WidgetTester tester,
       ) async {
-        const modifier = ScrollViewModifier();
+        const modifier = ScrollViewWidgetDecorator();
         const child = SizedBox(width: 50, height: 50);
 
         await tester.pumpWidget(
@@ -318,7 +318,7 @@ void main() {
       testWidgets('creates SingleChildScrollView with custom values', (
         WidgetTester tester,
       ) async {
-        const modifier = ScrollViewModifier(
+        const modifier = ScrollViewWidgetDecorator(
           scrollDirection: Axis.horizontal,
           reverse: true,
           padding: EdgeInsets.all(24.0),
@@ -347,10 +347,10 @@ void main() {
     });
   });
 
-  group('ScrollViewModifierAttribute', () {
+  group('ScrollViewWidgetDecoratorStyle', () {
     group('Constructor', () {
       test('creates with null values by default', () {
-        final attribute = ScrollViewModifierAttribute();
+        final attribute = ScrollViewWidgetDecoratorStyle();
 
         expect(attribute.scrollDirection, isNull);
         expect(attribute.reverse, isNull);
@@ -368,7 +368,7 @@ void main() {
         );
         final clipBehavior = Prop.value<Clip>(Clip.antiAlias);
 
-        final attribute = ScrollViewModifierAttribute.raw(
+        final attribute = ScrollViewWidgetDecoratorStyle.raw(
           scrollDirection: scrollDirection,
           reverse: reverse,
           padding: padding,
@@ -386,7 +386,7 @@ void main() {
 
     group('only constructor', () {
       test('creates Prop values from direct values', () {
-        final attribute = ScrollViewModifierAttribute(
+        final attribute = ScrollViewWidgetDecoratorStyle(
           scrollDirection: Axis.horizontal,
           reverse: true,
           padding: EdgeInsetsMix.all(16.0),
@@ -402,7 +402,7 @@ void main() {
       });
 
       test('handles null values correctly', () {
-        final attribute = ScrollViewModifierAttribute();
+        final attribute = ScrollViewWidgetDecoratorStyle();
 
         expect(attribute.scrollDirection, isNull);
         expect(attribute.reverse, isNull);
@@ -412,7 +412,7 @@ void main() {
       });
 
       test('handles partial values', () {
-        final attribute1 = ScrollViewModifierAttribute(
+        final attribute1 = ScrollViewWidgetDecoratorStyle(
           scrollDirection: Axis.horizontal,
           reverse: true,
         );
@@ -422,7 +422,7 @@ void main() {
         expect(attribute1.physics, isNull);
         expect(attribute1.clipBehavior, isNull);
 
-        final attribute2 = ScrollViewModifierAttribute(
+        final attribute2 = ScrollViewWidgetDecoratorStyle(
           padding: EdgeInsetsMix.all(16.0),
           physics: const ClampingScrollPhysics(),
         );
@@ -435,8 +435,8 @@ void main() {
     });
 
     group('resolve', () {
-      test('resolves to ScrollViewModifier with resolved values', () {
-        final attribute = ScrollViewModifierAttribute(
+      test('resolves to ScrollViewWidgetDecorator with resolved values', () {
+        final attribute = ScrollViewWidgetDecoratorStyle(
           scrollDirection: Axis.horizontal,
           reverse: true,
           padding: EdgeInsetsMix.all(16.0),
@@ -447,7 +447,7 @@ void main() {
         expect(
           attribute,
           resolvesTo(
-            const ScrollViewModifier(
+            const ScrollViewWidgetDecorator(
               scrollDirection: Axis.horizontal,
               reverse: true,
               padding: EdgeInsets.all(16.0),
@@ -459,20 +459,20 @@ void main() {
       });
 
       test('resolves with null values', () {
-        final attribute = ScrollViewModifierAttribute();
+        final attribute = ScrollViewWidgetDecoratorStyle();
 
-        expect(attribute, resolvesTo(const ScrollViewModifier()));
+        expect(attribute, resolvesTo(const ScrollViewWidgetDecorator()));
       });
     });
 
     group('merge', () {
-      test('merges with other ScrollViewModifierAttribute', () {
-        final attribute1 = ScrollViewModifierAttribute(
+      test('merges with other ScrollViewWidgetDecoratorStyle', () {
+        final attribute1 = ScrollViewWidgetDecoratorStyle(
           scrollDirection: Axis.vertical,
           reverse: false,
           padding: EdgeInsetsMix.all(10.0),
         );
-        final attribute2 = ScrollViewModifierAttribute(
+        final attribute2 = ScrollViewWidgetDecoratorStyle(
           scrollDirection: Axis.horizontal,
           physics: const BouncingScrollPhysics(),
           clipBehavior: Clip.antiAlias,
@@ -488,7 +488,7 @@ void main() {
       });
 
       test('returns original when other is null', () {
-        final attribute = ScrollViewModifierAttribute(
+        final attribute = ScrollViewWidgetDecoratorStyle(
           scrollDirection: Axis.horizontal,
         );
 
@@ -498,8 +498,8 @@ void main() {
       });
 
       test('merges with null values', () {
-        final attribute1 = ScrollViewModifierAttribute();
-        final attribute2 = ScrollViewModifierAttribute(
+        final attribute1 = ScrollViewWidgetDecoratorStyle();
+        final attribute2 = ScrollViewWidgetDecoratorStyle(
           scrollDirection: Axis.horizontal,
           reverse: true,
         );
@@ -516,13 +516,13 @@ void main() {
 
     group('equality and props', () {
       test('equal when all Prop values match', () {
-        final attribute1 = ScrollViewModifierAttribute(
+        final attribute1 = ScrollViewWidgetDecoratorStyle(
           scrollDirection: Axis.horizontal,
           reverse: true,
           padding: EdgeInsetsMix.all(16.0),
           clipBehavior: Clip.antiAlias,
         );
-        final attribute2 = ScrollViewModifierAttribute(
+        final attribute2 = ScrollViewWidgetDecoratorStyle(
           scrollDirection: Axis.horizontal,
           reverse: true,
           padding: EdgeInsetsMix.all(16.0),
@@ -536,10 +536,10 @@ void main() {
       // so we can't reliably test physics difference for inequality
 
       test('not equal when values differ', () {
-        final attribute1 = ScrollViewModifierAttribute(
+        final attribute1 = ScrollViewWidgetDecoratorStyle(
           scrollDirection: Axis.horizontal,
         );
-        final attribute2 = ScrollViewModifierAttribute(
+        final attribute2 = ScrollViewWidgetDecoratorStyle(
           scrollDirection: Axis.vertical,
         );
 
@@ -547,7 +547,7 @@ void main() {
       });
 
       test('props contains all Prop values', () {
-        final attribute = ScrollViewModifierAttribute(
+        final attribute = ScrollViewWidgetDecoratorStyle(
           scrollDirection: Axis.horizontal,
           reverse: true,
           padding: EdgeInsetsMix.all(16.0),
@@ -566,12 +566,12 @@ void main() {
     });
   });
 
-  group('ScrollViewModifierUtility', () {
-    late ScrollViewModifierUtility<MockStyle<ScrollViewModifierAttribute>>
+  group('ScrollViewWidgetDecoratorUtility', () {
+    late ScrollViewWidgetDecoratorUtility<MockStyle<ScrollViewWidgetDecoratorStyle>>
     utility;
 
     setUp(() {
-      utility = ScrollViewModifierUtility((attribute) => MockStyle(attribute));
+      utility = ScrollViewWidgetDecoratorUtility((attribute) => MockStyle(attribute));
     });
 
     test('call() creates attribute with specified values', () {
@@ -654,7 +654,7 @@ void main() {
       final result = utility.padding.all(16.0);
       final attribute = result.value;
 
-      // Test that the attribute resolves to a ScrollViewModifier with padding
+      // Test that the attribute resolves to a ScrollViewWidgetDecorator with padding
       final resolved = attribute.resolve(MockBuildContext());
 
       expect(resolved.padding, const EdgeInsets.all(16.0));
@@ -669,10 +669,10 @@ void main() {
   });
 
   group('Integration tests', () {
-    testWidgets('ScrollViewModifierAttribute resolves and builds correctly', (
+    testWidgets('ScrollViewWidgetDecoratorStyle resolves and builds correctly', (
       WidgetTester tester,
     ) async {
-      final attribute = ScrollViewModifierAttribute(
+      final attribute = ScrollViewWidgetDecoratorStyle(
         scrollDirection: Axis.horizontal,
         reverse: true,
         padding: EdgeInsetsMix.all(24.0),
@@ -683,7 +683,7 @@ void main() {
       expect(
         attribute,
         resolvesTo(
-          const ScrollViewModifier(
+          const ScrollViewWidgetDecorator(
             scrollDirection: Axis.horizontal,
             reverse: true,
             padding: EdgeInsets.all(24.0),
@@ -719,18 +719,18 @@ void main() {
     });
 
     test('Complex merge scenario preserves and overrides correctly', () {
-      final base = ScrollViewModifierAttribute(
+      final base = ScrollViewWidgetDecoratorStyle(
         scrollDirection: Axis.vertical,
         reverse: false,
         padding: EdgeInsetsMix.all(10.0),
       );
 
-      final override1 = ScrollViewModifierAttribute(
+      final override1 = ScrollViewWidgetDecoratorStyle(
         scrollDirection: Axis.horizontal,
         physics: const ClampingScrollPhysics(),
       );
 
-      final override2 = ScrollViewModifierAttribute(
+      final override2 = ScrollViewWidgetDecoratorStyle(
         reverse: true,
         clipBehavior: Clip.antiAlias,
       );
@@ -745,14 +745,14 @@ void main() {
     });
 
     test('Lerp produces expected intermediate values', () {
-      const start = ScrollViewModifier(
+      const start = ScrollViewWidgetDecorator(
         scrollDirection: Axis.vertical,
         reverse: false,
         padding: EdgeInsets.all(0.0),
         physics: BouncingScrollPhysics(),
         clipBehavior: Clip.none,
       );
-      const end = ScrollViewModifier(
+      const end = ScrollViewWidgetDecorator(
         scrollDirection: Axis.horizontal,
         reverse: true,
         padding: EdgeInsets.all(100.0),

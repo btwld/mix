@@ -112,9 +112,9 @@ class MouseCursorDecoratorMix
   List<Object?> get props => [mouseCursor];
 }
 
-class MouseCursorModifierUtility<T extends Style<Object?>>
+class MouseCursorWidgetDecoratorUtility<T extends Style<Object?>>
     extends MixUtility<T, MouseCursorDecoratorMix> {
-  const MouseCursorModifierUtility(super.builder);
+  const MouseCursorWidgetDecoratorUtility(super.builder);
   T call(MouseCursor? mouseCursor) {
     return builder(MouseCursorDecoratorMix(mouseCursor: mouseCursor));
   }

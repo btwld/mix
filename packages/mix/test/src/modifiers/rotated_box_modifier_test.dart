@@ -147,7 +147,7 @@ void main() {
     });
   });
 
-  group('RotatedBoxModifierAttribute', () {
+  group('RotatedBoxWidgetDecoratorStyle', () {
     group('Constructor', () {
       test('creates with null quarter turns by default', () {
         final attribute = RotatedBoxWidgetDecoratorStyle();
@@ -195,7 +195,7 @@ void main() {
     });
 
     group('merge', () {
-      test('merges with other RotatedBoxModifierAttribute', () {
+      test('merges with other RotatedBoxWidgetDecoratorStyle', () {
         final attribute1 = RotatedBoxWidgetDecoratorStyle(quarterTurns: 1);
         final attribute2 = RotatedBoxWidgetDecoratorStyle(quarterTurns: 3);
 
@@ -247,7 +247,7 @@ void main() {
     });
   });
 
-  group('RotatedBoxModifierUtility', () {
+  group('RotatedBoxWidgetDecoratorUtility', () {
     late RotatedBoxWidgetDecoratorUtility<
       MockStyle<RotatedBoxWidgetDecoratorStyle>
     >
@@ -325,7 +325,7 @@ void main() {
   });
 
   group('Integration tests', () {
-    testWidgets('RotatedBoxModifierAttribute resolves and builds correctly', (
+    testWidgets('RotatedBoxWidgetDecoratorStyle resolves and builds correctly', (
       WidgetTester tester,
     ) async {
       final attribute = RotatedBoxWidgetDecoratorStyle(quarterTurns: 2);

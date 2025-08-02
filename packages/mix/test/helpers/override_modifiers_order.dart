@@ -10,12 +10,12 @@ Future<void> testOverrideModifiersOrder(
     BoxMix(
       modifierConfig: WidgetDecoratorConfig(
         decorators: [
-          VisibilityModifierAttribute(visible: true),
-          OpacityModifierAttribute(opacity: 1.0),
-          TransformModifierAttribute(),
+          VisibilityWidgetDecoratorStyle(visible: true),
+          OpacityWidgetDecoratorStyle(opacity: 1.0),
+          TransformWidgetDecoratorStyle(),
           AspectRatioWidgetDecoratorStyle(aspectRatio: 2.0),
-          AlignModifierAttribute(alignment: Alignment.center),
-          PaddingModifierAttribute(
+          AlignWidgetDecoratorStyle(alignment: Alignment.center),
+          PaddingWidgetDecoratorStyle(
             padding: EdgeInsetsDirectionalMix(top: 10.0),
           ),
         ],
@@ -23,11 +23,11 @@ Future<void> testOverrideModifiersOrder(
     ),
   );
   const orderOfModifiersOnlySpecs = [
-    AlignModifier,
+    AlignWidgetDecorator,
     AspectRatioWidgetDecorator,
-    TransformModifier,
-    OpacityModifier,
-    VisibilityModifier,
+    TransformWidgetDecorator,
+    OpacityWidgetDecorator,
+    VisibilityWidgetDecorator,
   ];
 
   // JUST SPECS
@@ -40,11 +40,11 @@ Future<void> testOverrideModifiersOrder(
 
   // SPECS + ATTRIBUTES
   const orderOfModifiersSpecsAndAttributes = [
-    AlignModifier,
+    AlignWidgetDecorator,
     AspectRatioWidgetDecoratorStyle,
-    TransformModifierAttribute,
-    OpacityModifier,
-    VisibilityModifierAttribute,
+    TransformWidgetDecoratorStyle,
+    OpacityWidgetDecorator,
+    VisibilityWidgetDecoratorStyle,
   ];
   await verifyDescendants(
     widgetBuilder(style, orderOfModifiersSpecsAndAttributes),
@@ -55,11 +55,11 @@ Future<void> testOverrideModifiersOrder(
 
   // JUST ATTRIBUTES
   const orderOfModifiersOnlyAttributes = [
-    AlignModifierAttribute,
+    AlignWidgetDecoratorStyle,
     AspectRatioWidgetDecoratorStyle,
-    TransformModifierAttribute,
-    OpacityModifierAttribute,
-    VisibilityModifierAttribute,
+    TransformWidgetDecoratorStyle,
+    OpacityWidgetDecoratorStyle,
+    VisibilityWidgetDecoratorStyle,
   ];
 
   await verifyDescendants(

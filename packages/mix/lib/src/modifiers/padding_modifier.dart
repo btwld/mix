@@ -9,39 +9,39 @@ import '../core/utility.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
 import '../properties/layout/edge_insets_geometry_util.dart';
 
-final class PaddingModifier extends WidgetDecorator<PaddingModifier>
+final class PaddingWidgetDecorator extends WidgetDecorator<PaddingWidgetDecorator>
     with Diagnosticable {
   final EdgeInsetsGeometry padding;
 
-  const PaddingModifier([EdgeInsetsGeometry? padding])
+  const PaddingWidgetDecorator([EdgeInsetsGeometry? padding])
     : padding = padding ?? EdgeInsets.zero;
 
-  /// Creates a copy of this [PaddingModifier] but with the given fields
+  /// Creates a copy of this [PaddingWidgetDecorator] but with the given fields
   /// replaced with the new values.
   @override
-  PaddingModifier copyWith({EdgeInsetsGeometry? padding}) {
-    return PaddingModifier(padding ?? this.padding);
+  PaddingWidgetDecorator copyWith({EdgeInsetsGeometry? padding}) {
+    return PaddingWidgetDecorator(padding ?? this.padding);
   }
 
-  /// Linearly interpolates between this [PaddingModifier] and another [PaddingModifier] based on the given parameter [t].
+  /// Linearly interpolates between this [PaddingWidgetDecorator] and another [PaddingWidgetDecorator] based on the given parameter [t].
   ///
   /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [PaddingModifier] is returned. When [t] is 1.0, the [other] [PaddingModifier] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [PaddingModifier] is returned.
+  /// When [t] is 0.0, the current [PaddingWidgetDecorator] is returned. When [t] is 1.0, the [other] [PaddingWidgetDecorator] is returned.
+  /// For values of [t] between 0.0 and 1.0, an interpolated [PaddingWidgetDecorator] is returned.
   ///
-  /// If [other] is null, this method returns the current [PaddingModifier] instance.
+  /// If [other] is null, this method returns the current [PaddingWidgetDecorator] instance.
   ///
-  /// The interpolation is performed on each property of the [PaddingModifier] using the appropriate
+  /// The interpolation is performed on each property of the [PaddingWidgetDecorator] using the appropriate
   /// interpolation method:
   /// - [EdgeInsetsGeometry.lerp] for [padding].
 
   /// This method is typically used in animations to smoothly transition between
-  /// different [PaddingModifier] configurations.
+  /// different [PaddingWidgetDecorator] configurations.
   @override
-  PaddingModifier lerp(PaddingModifier? other, double t) {
+  PaddingWidgetDecorator lerp(PaddingWidgetDecorator? other, double t) {
     if (other == null) return this;
 
-    return PaddingModifier(EdgeInsetsGeometry.lerp(padding, other.padding, t)!);
+    return PaddingWidgetDecorator(EdgeInsetsGeometry.lerp(padding, other.padding, t)!);
   }
 
   @override
@@ -50,10 +50,10 @@ final class PaddingModifier extends WidgetDecorator<PaddingModifier>
     properties.add(DiagnosticsProperty('padding', padding, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [PaddingModifier].
+  /// The list of properties that constitute the state of this [PaddingWidgetDecorator].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [PaddingModifier] instances for equality.
+  /// compare two [PaddingWidgetDecorator] instances for equality.
   @override
   List<Object?> get props => [padding];
 
@@ -63,44 +63,44 @@ final class PaddingModifier extends WidgetDecorator<PaddingModifier>
   }
 }
 
-/// Attribute class for configuring [PaddingModifier] properties.
+/// Attribute class for configuring [PaddingWidgetDecorator] properties.
 ///
 /// Encapsulates padding values for widget spacing and layout.
-class PaddingModifierAttribute extends WidgetDecoratorStyle<PaddingModifier>
+class PaddingWidgetDecoratorStyle extends WidgetDecoratorStyle<PaddingWidgetDecorator>
     with Diagnosticable {
   final MixProp<EdgeInsetsGeometry>? padding;
 
-  const PaddingModifierAttribute.raw({this.padding});
+  const PaddingWidgetDecoratorStyle.raw({this.padding});
 
-  PaddingModifierAttribute({EdgeInsetsGeometryMix? padding})
+  PaddingWidgetDecoratorStyle({EdgeInsetsGeometryMix? padding})
     : this.raw(padding: MixProp.maybe(padding));
 
-  /// Resolves to [PaddingModifier] using the provided [BuildContext].
+  /// Resolves to [PaddingWidgetDecorator] using the provided [BuildContext].
   ///
   /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final paddingModifierSpec = PaddingModifierAttribute(...).resolve(mix);
+  /// final paddingModifierSpec = PaddingWidgetDecoratorStyle(...).resolve(mix);
   /// ```
   @override
-  PaddingModifier resolve(BuildContext context) {
-    return PaddingModifier(MixHelpers.resolve(context, padding));
+  PaddingWidgetDecorator resolve(BuildContext context) {
+    return PaddingWidgetDecorator(MixHelpers.resolve(context, padding));
   }
 
-  /// Merges the properties of this [PaddingModifierAttribute] with the properties of [other].
+  /// Merges the properties of this [PaddingWidgetDecoratorStyle] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [PaddingModifierAttribute] with the properties of [other] taking precedence over
+  /// [PaddingWidgetDecoratorStyle] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  PaddingModifierAttribute merge(PaddingModifierAttribute? other) {
+  PaddingWidgetDecoratorStyle merge(PaddingWidgetDecoratorStyle? other) {
     if (other == null) return this;
 
-    return PaddingModifierAttribute.raw(
+    return PaddingWidgetDecoratorStyle.raw(
       padding: padding.tryMerge(other.padding),
     );
   }
@@ -111,31 +111,31 @@ class PaddingModifierAttribute extends WidgetDecoratorStyle<PaddingModifier>
     properties.add(DiagnosticsProperty('padding', padding, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [PaddingModifierAttribute].
+  /// The list of properties that constitute the state of this [PaddingWidgetDecoratorStyle].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [PaddingModifierAttribute] instances for equality.
+  /// compare two [PaddingWidgetDecoratorStyle] instances for equality.
   @override
   List<Object?> get props => [padding];
 }
 
-/// Utility class for configuring [PaddingModifier] properties.
+/// Utility class for configuring [PaddingWidgetDecorator] properties.
 ///
-/// This class provides methods to set individual properties of a [PaddingModifier].
-/// Use the methods of this class to configure specific properties of a [PaddingModifier].
-class PaddingModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, PaddingModifierAttribute> {
-  /// Utility for defining [PaddingModifierAttribute.padding]
+/// This class provides methods to set individual properties of a [PaddingWidgetDecorator].
+/// Use the methods of this class to configure specific properties of a [PaddingWidgetDecorator].
+class PaddingWidgetDecoratorUtility<T extends Style<Object?>>
+    extends MixUtility<T, PaddingWidgetDecoratorStyle> {
+  /// Utility for defining [PaddingWidgetDecoratorStyle.padding]
   late final padding = EdgeInsetsGeometryUtility(
-    (v) => builder(PaddingModifierAttribute(padding: v)),
+    (v) => builder(PaddingWidgetDecoratorStyle(padding: v)),
   );
 
-  PaddingModifierUtility(super.builder);
+  PaddingWidgetDecoratorUtility(super.builder);
 
-  /// Returns a new [PaddingModifierAttribute] with the specified properties.
+  /// Returns a new [PaddingWidgetDecoratorStyle] with the specified properties.
   T call({EdgeInsetsGeometryMix? padding}) {
     return builder(
-      PaddingModifierAttribute.raw(padding: MixProp.maybe(padding)),
+      PaddingWidgetDecoratorStyle.raw(padding: MixProp.maybe(padding)),
     );
   }
 }

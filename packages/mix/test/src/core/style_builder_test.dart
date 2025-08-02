@@ -188,11 +188,11 @@ void main() {
             .alignment(Alignment.center)
             .wrap(
               WidgetDecoratorConfig.decorators([
-                OpacityModifierAttribute(opacity: 0.5),
-                PaddingModifierAttribute(
+                OpacityWidgetDecoratorStyle(opacity: 0.5),
+                PaddingWidgetDecoratorStyle(
                   padding: EdgeInsetsGeometryMix.all(10),
                 ),
-                ClipOvalModifierAttribute(),
+                ClipOvalWidgetDecoratorStyle(),
               ]),
             );
 
@@ -238,12 +238,12 @@ void main() {
             .color(Colors.blue)
             .wrap(
               WidgetDecoratorConfig.decorators([
-                OpacityModifierAttribute(opacity: 0.5),
-                PaddingModifierAttribute(
+                OpacityWidgetDecoratorStyle(opacity: 0.5),
+                PaddingWidgetDecoratorStyle(
                   padding: EdgeInsetsGeometryMix.all(10),
                 ),
-                ClipOvalModifierAttribute(),
-                VisibilityModifierAttribute(visible: true),
+                ClipOvalWidgetDecoratorStyle(),
+                VisibilityWidgetDecoratorStyle(visible: true),
               ]),
             );
 
@@ -303,9 +303,9 @@ void main() {
 
       testWidgets('Custom modifier order is respected', (tester) async {
         const customOrder = [
-          OpacityModifier,
-          ClipOvalModifier,
-          PaddingModifier,
+          OpacityWidgetDecorator,
+          ClipOvalWidgetDecorator,
+          PaddingWidgetDecorator,
         ];
 
         final boxAttribute = BoxMix.width(100)
@@ -313,11 +313,11 @@ void main() {
             .color(Colors.blue)
             .wrap(
               WidgetDecoratorConfig.decorators([
-                OpacityModifierAttribute(opacity: 0.5),
-                PaddingModifierAttribute(
+                OpacityWidgetDecoratorStyle(opacity: 0.5),
+                PaddingWidgetDecoratorStyle(
                   padding: EdgeInsetsGeometryMix.all(10),
                 ),
-                ClipOvalModifierAttribute(),
+                ClipOvalWidgetDecoratorStyle(),
               ])..orderOfDecorators(customOrder),
             );
 

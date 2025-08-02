@@ -3,23 +3,23 @@ import 'package:flutter/widgets.dart';
 import '../core/modifier.dart';
 import '../core/style.dart';
 
-/// Modifier that forces its child to be exactly as tall as its intrinsic height.
+/// Decorator that forces its child to be exactly as tall as its intrinsic height.
 ///
 /// Wraps the child in an [IntrinsicHeight] widget.
-final class IntrinsicHeightModifier
-    extends WidgetDecorator<IntrinsicHeightModifier> {
-  const IntrinsicHeightModifier();
+final class IntrinsicHeightWidgetDecorator
+    extends WidgetDecorator<IntrinsicHeightWidgetDecorator> {
+  const IntrinsicHeightWidgetDecorator();
 
   @override
-  IntrinsicHeightModifier copyWith() {
-    return const IntrinsicHeightModifier();
+  IntrinsicHeightWidgetDecorator copyWith() {
+    return const IntrinsicHeightWidgetDecorator();
   }
 
   @override
-  IntrinsicHeightModifier lerp(IntrinsicHeightModifier? other, double t) {
+  IntrinsicHeightWidgetDecorator lerp(IntrinsicHeightWidgetDecorator? other, double t) {
     if (other == null) return this;
 
-    return const IntrinsicHeightModifier();
+    return const IntrinsicHeightWidgetDecorator();
   }
 
   @override
@@ -31,23 +31,23 @@ final class IntrinsicHeightModifier
   }
 }
 
-/// Modifier that forces its child to be exactly as wide as its intrinsic width.
+/// Decorator that forces its child to be exactly as wide as its intrinsic width.
 ///
 /// Wraps the child in an [IntrinsicWidth] widget.
-final class IntrinsicWidthModifier
-    extends WidgetDecorator<IntrinsicWidthModifier> {
-  const IntrinsicWidthModifier();
+final class IntrinsicWidthWidgetDecorator
+    extends WidgetDecorator<IntrinsicWidthWidgetDecorator> {
+  const IntrinsicWidthWidgetDecorator();
 
   @override
-  IntrinsicWidthModifier copyWith() {
-    return const IntrinsicWidthModifier();
+  IntrinsicWidthWidgetDecorator copyWith() {
+    return const IntrinsicWidthWidgetDecorator();
   }
 
   @override
-  IntrinsicWidthModifier lerp(IntrinsicWidthModifier? other, double t) {
+  IntrinsicWidthWidgetDecorator lerp(IntrinsicWidthWidgetDecorator? other, double t) {
     if (other == null) return this;
 
-    return const IntrinsicWidthModifier();
+    return const IntrinsicWidthWidgetDecorator();
   }
 
   @override
@@ -59,100 +59,100 @@ final class IntrinsicWidthModifier
   }
 }
 
-/// Represents the attributes of a [IntrinsicHeightModifier].
+/// Represents the attributes of a [IntrinsicHeightWidgetDecorator].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [IntrinsicHeightModifier].
+/// appearance of a [IntrinsicHeightWidgetDecorator].
 ///
-/// Use this class to configure the attributes of a [IntrinsicHeightModifier] and pass it to
-/// the [IntrinsicHeightModifier] constructor.
-class IntrinsicHeightModifierAttribute
-    extends WidgetDecoratorStyle<IntrinsicHeightModifier> {
-  const IntrinsicHeightModifierAttribute();
+/// Use this class to configure the attributes of a [IntrinsicHeightWidgetDecorator] and pass it to
+/// the [IntrinsicHeightWidgetDecorator] constructor.
+class IntrinsicHeightWidgetDecoratorStyle
+    extends WidgetDecoratorStyle<IntrinsicHeightWidgetDecorator> {
+  const IntrinsicHeightWidgetDecoratorStyle();
 
-  /// Resolves to [IntrinsicHeightModifier] using the provided [BuildContext].
+  /// Resolves to [IntrinsicHeightWidgetDecorator] using the provided [BuildContext].
   ///
   /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final intrinsicHeightModifierSpec = IntrinsicHeightModifierAttribute(...).resolve(mix);
+  /// final intrinsicHeightModifierSpec = IntrinsicHeightWidgetDecoratorStyle(...).resolve(mix);
   /// ```
   @override
-  IntrinsicHeightModifier resolve(BuildContext context) {
-    return const IntrinsicHeightModifier();
+  IntrinsicHeightWidgetDecorator resolve(BuildContext context) {
+    return const IntrinsicHeightWidgetDecorator();
   }
 
-  /// Merges the properties of this [IntrinsicHeightModifierAttribute] with the properties of [other].
+  /// Merges the properties of this [IntrinsicHeightWidgetDecoratorStyle] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [IntrinsicHeightModifierAttribute] with the properties of [other] taking precedence over
+  /// [IntrinsicHeightWidgetDecoratorStyle] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  IntrinsicHeightModifierAttribute merge(
-    IntrinsicHeightModifierAttribute? other,
+  IntrinsicHeightWidgetDecoratorStyle merge(
+    IntrinsicHeightWidgetDecoratorStyle? other,
   ) {
     if (other == null) return this;
 
     return other;
   }
 
-  /// The list of properties that constitute the state of this [IntrinsicHeightModifierAttribute].
+  /// The list of properties that constitute the state of this [IntrinsicHeightWidgetDecoratorStyle].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [IntrinsicHeightModifierAttribute] instances for equality.
+  /// compare two [IntrinsicHeightWidgetDecoratorStyle] instances for equality.
   @override
   List<Object?> get props => [];
 }
 
-/// Represents the attributes of a [IntrinsicWidthModifier].
+/// Represents the attributes of a [IntrinsicWidthWidgetDecorator].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [IntrinsicWidthModifier].
+/// appearance of a [IntrinsicWidthWidgetDecorator].
 ///
-/// Use this class to configure the attributes of a [IntrinsicWidthModifier] and pass it to
-/// the [IntrinsicWidthModifier] constructor.
-class IntrinsicWidthModifierAttribute
-    extends WidgetDecoratorStyle<IntrinsicWidthModifier> {
-  const IntrinsicWidthModifierAttribute();
+/// Use this class to configure the attributes of a [IntrinsicWidthWidgetDecorator] and pass it to
+/// the [IntrinsicWidthWidgetDecorator] constructor.
+class IntrinsicWidthWidgetDecoratorStyle
+    extends WidgetDecoratorStyle<IntrinsicWidthWidgetDecorator> {
+  const IntrinsicWidthWidgetDecoratorStyle();
 
-  /// Resolves to [IntrinsicWidthModifier] using the provided [BuildContext].
+  /// Resolves to [IntrinsicWidthWidgetDecorator] using the provided [BuildContext].
   ///
   /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final intrinsicWidthModifierSpec = IntrinsicWidthModifierAttribute(...).resolve(mix);
+  /// final intrinsicWidthModifierSpec = IntrinsicWidthWidgetDecoratorStyle(...).resolve(mix);
   /// ```
   @override
-  IntrinsicWidthModifier resolve(BuildContext context) {
-    return const IntrinsicWidthModifier();
+  IntrinsicWidthWidgetDecorator resolve(BuildContext context) {
+    return const IntrinsicWidthWidgetDecorator();
   }
 
-  /// Merges the properties of this [IntrinsicWidthModifierAttribute] with the properties of [other].
+  /// Merges the properties of this [IntrinsicWidthWidgetDecoratorStyle] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [IntrinsicWidthModifierAttribute] with the properties of [other] taking precedence over
+  /// [IntrinsicWidthWidgetDecoratorStyle] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  IntrinsicWidthModifierAttribute merge(
-    IntrinsicWidthModifierAttribute? other,
+  IntrinsicWidthWidgetDecoratorStyle merge(
+    IntrinsicWidthWidgetDecoratorStyle? other,
   ) {
     if (other == null) return this;
 
     return other;
   }
 
-  /// The list of properties that constitute the state of this [IntrinsicWidthModifierAttribute].
+  /// The list of properties that constitute the state of this [IntrinsicWidthWidgetDecoratorStyle].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [IntrinsicWidthModifierAttribute] instances for equality.
+  /// compare two [IntrinsicWidthWidgetDecoratorStyle] instances for equality.
   @override
   List<Object?> get props => [];
 }

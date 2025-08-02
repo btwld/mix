@@ -305,7 +305,7 @@ void main() {
       });
     });
 
-    group('modifier utilities', () {
+    group('decorator utilities', () {
       test('wrap utility creates modifier FlexMix', () {
         final result = util.wrap.opacity(0.5);
 

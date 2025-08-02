@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import '../../core/modifier.dart';
 import '../../core/style.dart';
 
-/// A modifier specification that resets the style context.
+/// A decorator specification that resets the style context.
 final class ResetModifierSpec extends WidgetDecorator<ResetModifierSpec>
     with Diagnosticable {
   const ResetModifierSpec();
@@ -36,9 +36,9 @@ final class ResetModifierSpec extends WidgetDecorator<ResetModifierSpec>
 }
 
 /// An attribute that resets the modifier context.
-class ResetModifierAttribute extends WidgetDecoratorStyle<ResetModifierSpec>
+class ResetWidgetDecoratorStyle extends WidgetDecoratorStyle<ResetModifierSpec>
     with Diagnosticable {
-  const ResetModifierAttribute();
+  const ResetWidgetDecoratorStyle();
 
   @override
   ResetModifierSpec resolve(BuildContext context) {
@@ -46,7 +46,7 @@ class ResetModifierAttribute extends WidgetDecoratorStyle<ResetModifierSpec>
   }
 
   @override
-  ResetModifierAttribute merge(ResetModifierAttribute? other) {
+  ResetWidgetDecoratorStyle merge(ResetWidgetDecoratorStyle? other) {
     if (other == null) return this;
 
     return other;

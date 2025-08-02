@@ -48,7 +48,7 @@ final class WidgetDecoratorConfig with Equatable {
 
   factory WidgetDecoratorConfig.opacity(double opacity) {
     return WidgetDecoratorConfig.decorator(
-      OpacityModifierAttribute(opacity: opacity),
+      OpacityWidgetDecoratorStyle(opacity: opacity),
     );
   }
 
@@ -63,7 +63,7 @@ final class WidgetDecoratorConfig with Equatable {
     Clip? clipBehavior,
   }) {
     return WidgetDecoratorConfig.decorator(
-      ClipOvalModifierAttribute(clipper: clipper, clipBehavior: clipBehavior),
+      ClipOvalWidgetDecoratorStyle(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
@@ -72,7 +72,7 @@ final class WidgetDecoratorConfig with Equatable {
     Clip? clipBehavior,
   }) {
     return WidgetDecoratorConfig.decorator(
-      ClipRectModifierAttribute(clipper: clipper, clipBehavior: clipBehavior),
+      ClipRectWidgetDecoratorStyle(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
@@ -82,7 +82,7 @@ final class WidgetDecoratorConfig with Equatable {
     Clip? clipBehavior,
   }) {
     return WidgetDecoratorConfig.decorator(
-      ClipRRectModifierAttribute(
+      ClipRRectWidgetDecoratorStyle(
         borderRadius: borderRadius,
         clipper: clipper,
         clipBehavior: clipBehavior,
@@ -95,13 +95,13 @@ final class WidgetDecoratorConfig with Equatable {
     Clip? clipBehavior,
   }) {
     return WidgetDecoratorConfig.decorator(
-      ClipPathModifierAttribute(clipper: clipper, clipBehavior: clipBehavior),
+      ClipPathWidgetDecoratorStyle(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
   factory WidgetDecoratorConfig.clipTriangle({Clip? clipBehavior}) {
     return WidgetDecoratorConfig.decorator(
-      ClipTriangleModifierAttribute(clipBehavior: clipBehavior),
+      ClipTriangleWidgetDecoratorStyle(clipBehavior: clipBehavior),
     );
   }
 
@@ -110,7 +110,7 @@ final class WidgetDecoratorConfig with Equatable {
     Alignment? alignment,
   }) {
     return WidgetDecoratorConfig.decorator(
-      TransformModifierAttribute(transform: transform, alignment: alignment),
+      TransformWidgetDecoratorStyle(transform: transform, alignment: alignment),
     );
   }
 
@@ -127,7 +127,7 @@ final class WidgetDecoratorConfig with Equatable {
 
   factory WidgetDecoratorConfig.visibility(bool visible) {
     return WidgetDecoratorConfig.decorator(
-      VisibilityModifierAttribute(visible: visible),
+      VisibilityWidgetDecoratorStyle(visible: visible),
     );
   }
 
@@ -137,7 +137,7 @@ final class WidgetDecoratorConfig with Equatable {
     double? heightFactor,
   }) {
     return WidgetDecoratorConfig.decorator(
-      AlignModifierAttribute(
+      AlignWidgetDecoratorStyle(
         alignment: alignment,
         widthFactor: widthFactor,
         heightFactor: heightFactor,
@@ -147,19 +147,19 @@ final class WidgetDecoratorConfig with Equatable {
 
   factory WidgetDecoratorConfig.padding(EdgeInsetsGeometryMix? padding) {
     return WidgetDecoratorConfig.decorator(
-      PaddingModifierAttribute(padding: padding),
+      PaddingWidgetDecoratorStyle(padding: padding),
     );
   }
 
   factory WidgetDecoratorConfig.sizedBox({double? width, double? height}) {
     return WidgetDecoratorConfig.decorator(
-      SizedBoxModifierAttribute(width: width, height: height),
+      SizedBoxWidgetDecoratorStyle(width: width, height: height),
     );
   }
 
   factory WidgetDecoratorConfig.flexible({int? flex, FlexFit? fit}) {
     return WidgetDecoratorConfig.decorator(
-      FlexibleModifierAttribute(flex: flex, fit: fit),
+      FlexibleWidgetDecoratorStyle(flex: flex, fit: fit),
     );
   }
 
@@ -171,13 +171,13 @@ final class WidgetDecoratorConfig with Equatable {
 
   factory WidgetDecoratorConfig.intrinsicHeight() {
     return WidgetDecoratorConfig.decorator(
-      const IntrinsicHeightModifierAttribute(),
+      const IntrinsicHeightWidgetDecoratorStyle(),
     );
   }
 
   factory WidgetDecoratorConfig.intrinsicWidth() {
     return WidgetDecoratorConfig.decorator(
-      const IntrinsicWidthModifierAttribute(),
+      const IntrinsicWidthWidgetDecoratorStyle(),
     );
   }
 
@@ -187,7 +187,7 @@ final class WidgetDecoratorConfig with Equatable {
     AlignmentGeometry? alignment,
   }) {
     return WidgetDecoratorConfig.decorator(
-      FractionallySizedBoxModifierAttribute(
+      FractionallySizedBoxWidgetDecoratorStyle(
         widthFactor: widthFactor,
         heightFactor: heightFactor,
         alignment: alignment,
@@ -205,7 +205,7 @@ final class WidgetDecoratorConfig with Equatable {
     TextHeightBehaviorMix? textHeightBehavior,
   }) {
     return WidgetDecoratorConfig.decorator(
-      DefaultTextStyleModifierAttribute(
+      DefaultTextStyleWidgetDecoratorStyle(
         style: style,
         textAlign: textAlign,
         softWrap: softWrap,
@@ -219,7 +219,7 @@ final class WidgetDecoratorConfig with Equatable {
 
   factory WidgetDecoratorConfig.defaultText(TextMix textMix) {
     return WidgetDecoratorConfig.decorator(
-      DefaultTextStyleModifierAttribute.raw(
+      DefaultTextStyleWidgetDecoratorStyle.raw(
         style: textMix.$style,
         textAlign: textMix.$textAlign,
         softWrap: textMix.$softWrap,
@@ -243,7 +243,7 @@ final class WidgetDecoratorConfig with Equatable {
     bool? applyTextScaling,
   }) {
     return WidgetDecoratorConfig.decorator(
-      IconThemeModifierAttribute(
+      IconThemeWidgetDecoratorStyle(
         color: color,
         size: size,
         fill: fill,
@@ -276,11 +276,11 @@ final class WidgetDecoratorConfig with Equatable {
 
     for (final modifierType in orderOfDecorators) {
       // Find and add modifiers matching this type
-      final modifier = modifiers
+      final decorator = modifiers
           .where((e) => e.runtimeType == modifierType)
           .firstOrNull;
-      if (modifier != null) {
-        orderedSpecs.add(modifier);
+      if (decorator != null) {
+        orderedSpecs.add(decorator);
       }
     }
 
@@ -326,7 +326,7 @@ final class WidgetDecoratorConfig with Equatable {
     );
   }
 
-  WidgetDecoratorConfig modifiers(List<WidgetDecoratorStyle> value) {
+  WidgetDecoratorConfig decorators(List<WidgetDecoratorStyle> value) {
     return merge(WidgetDecoratorConfig.decorators(value));
   }
 
@@ -453,7 +453,7 @@ final class WidgetDecoratorConfig with Equatable {
     return merge(WidgetDecoratorConfig.defaultText(textMix));
   }
 
-  WidgetDecoratorConfig modifier(WidgetDecoratorStyle value) {
+  WidgetDecoratorConfig decorator(WidgetDecoratorStyle value) {
     return merge(WidgetDecoratorConfig.decorator(value));
   }
 
@@ -484,15 +484,15 @@ final class WidgetDecoratorConfig with Equatable {
     final Map<Object, WidgetDecoratorStyle> merged = {};
 
     // Add current modifiers
-    for (final modifier in current) {
-      merged[modifier.mergeKey] = modifier;
+    for (final decorator in current) {
+      merged[decorator.mergeKey] = decorator;
     }
 
     // Merge or add other modifiers
-    for (final modifier in other) {
-      final key = modifier.mergeKey;
+    for (final decorator in other) {
+      final key = decorator.mergeKey;
       final existing = merged[key];
-      merged[key] = existing != null ? existing.merge(modifier) : modifier;
+      merged[key] = existing != null ? existing.merge(decorator) : decorator;
     }
 
     return merged.values.toList();
@@ -503,7 +503,7 @@ final class WidgetDecoratorConfig with Equatable {
   List<WidgetDecorator> resolve(BuildContext context) {
     if ($decorators == null || $decorators!.isEmpty) return [];
 
-    // Resolve each modifier attribute to its corresponding modifier spec
+    // Resolve each decorator attribute to its corresponding decorator spec
     final resolvedModifiers = <WidgetDecorator>[];
     for (final attribute in $decorators!) {
       final resolved = attribute.resolve(context);
@@ -520,76 +520,76 @@ final class WidgetDecoratorConfig with Equatable {
 const _defaultOrder = [
   // === PHASE 1: CONTEXT & BEHAVIOR SETUP ===
 
-  // 1. FlexibleModifier: Controls flex behavior when used inside Row, Column, or Flex widgets.
+  // 1. FlexibleWidgetDecorator: Controls flex behavior when used inside Row, Column, or Flex widgets.
   // Applied first to establish how the widget participates in flex layouts.
-  FlexibleModifier,
+  FlexibleWidgetDecorator,
 
-  // 2. VisibilityModifier: Controls overall visibility with early exit optimization.
+  // 2. VisibilityWidgetDecorator: Controls overall visibility with early exit optimization.
   // If invisible, subsequent modifiers are skipped, improving performance.
-  VisibilityModifier,
+  VisibilityWidgetDecorator,
 
-  // 3. IconThemeModifier: Provides default icon styling context to descendant Icon widgets.
+  // 3. IconThemeWidgetDecorator: Provides default icon styling context to descendant Icon widgets.
   // Applied early to establish icon theme before any layout calculations.
-  IconThemeModifier,
+  IconThemeWidgetDecorator,
 
-  // 4. DefaultTextStyleModifier: Provides default text styling context to descendant Text widgets.
+  // 4. DefaultTextStyleWidgetDecorator: Provides default text styling context to descendant Text widgets.
   // Applied early alongside IconTheme to establish text theme context before layout.
-  DefaultTextStyleModifier,
+  DefaultTextStyleWidgetDecorator,
 
   // === PHASE 2: SIZE ESTABLISHMENT ===
 
-  // 5. SizedBoxModifier: Explicitly sets widget dimensions with fixed constraints.
+  // 5. SizedBoxWidgetDecorator: Explicitly sets widget dimensions with fixed constraints.
   // Applied early to establish concrete size before relative sizing adjustments.
-  SizedBoxModifier,
+  SizedBoxWidgetDecorator,
 
-  // 6. FractionallySizedBoxModifier: Sets size relative to parent dimensions.
+  // 6. FractionallySizedBoxWidgetDecorator: Sets size relative to parent dimensions.
   // Applied after explicit sizing to allow responsive scaling within constraints.
-  FractionallySizedBoxModifier,
+  FractionallySizedBoxWidgetDecorator,
 
-  // 7. IntrinsicHeightModifier: Adjusts height based on child's intrinsic content height.
+  // 7. IntrinsicHeightWidgetDecorator: Adjusts height based on child's intrinsic content height.
   // Applied to allow content-driven height calculations before aspect ratio constraints.
-  IntrinsicHeightModifier,
+  IntrinsicHeightWidgetDecorator,
 
-  // 8. IntrinsicWidthModifier: Adjusts width based on child's intrinsic content width.
+  // 8. IntrinsicWidthWidgetDecorator: Adjusts width based on child's intrinsic content width.
   // Applied alongside intrinsic height for complete content-driven sizing.
-  IntrinsicWidthModifier,
+  IntrinsicWidthWidgetDecorator,
 
-  // 9. AspectRatioModifier: Maintains aspect ratio within established size constraints.
+  // 9. AspectRatioWidgetDecorator: Maintains aspect ratio within established size constraints.
   // Applied after all other sizing to preserve aspect ratio in final dimensions.
   AspectRatioWidgetDecorator,
 
   // === PHASE 3: LAYOUT MODIFICATIONS ===
 
-  // 10. RotatedBoxModifier: Rotates widget and changes its layout dimensions.
-  // CRITICAL: Must come before AlignModifier because it changes layout space
+  // 10. RotatedBoxWidgetDecorator: Rotates widget and changes its layout dimensions.
+  // CRITICAL: Must come before AlignWidgetDecorator because it changes layout space
   // (e.g., 200×100 widget becomes 100×200, affecting alignment calculations).
   RotatedBoxWidgetDecorator,
 
-  // 11. AlignModifier: Positions widget within its allocated space.
+  // 11. AlignWidgetDecorator: Positions widget within its allocated space.
   // Applied after RotatedBox to align based on final layout dimensions.
-  AlignModifier,
+  AlignWidgetDecorator,
 
   // === PHASE 4: SPACING ===
 
-  // 12. PaddingModifier: Adds spacing around the widget content.
+  // 12. PaddingWidgetDecorator: Adds spacing around the widget content.
   // Applied after layout positioning to add space without affecting layout calculations.
-  PaddingModifier,
+  PaddingWidgetDecorator,
 
   // === PHASE 5: VISUAL-ONLY EFFECTS ===
 
-  // 13. TransformModifier: Applies visual transformations (scale, rotate, translate).
-  // IMPORTANT: Visual-only - doesn't affect layout space, unlike RotatedBoxModifier.
-  TransformModifier,
+  // 13. TransformWidgetDecorator: Applies visual transformations (scale, rotate, translate).
+  // IMPORTANT: Visual-only - doesn't affect layout space, unlike RotatedBoxWidgetDecorator.
+  TransformWidgetDecorator,
 
   // 14. Clip Modifiers: Applies visual clipping in various shapes.
   // Applied near the end to clip the widget's final visual appearance.
-  ClipOvalModifier,
-  ClipRRectModifier,
-  ClipPathModifier,
-  ClipTriangleModifier,
-  ClipRectModifier,
+  ClipOvalWidgetDecorator,
+  ClipRRectWidgetDecorator,
+  ClipPathWidgetDecorator,
+  ClipTriangleWidgetDecorator,
+  ClipRectWidgetDecorator,
 
-  // 15. OpacityModifier: Applies transparency as the final visual effect.
+  // 15. OpacityWidgetDecorator: Applies transparency as the final visual effect.
   // Always applied last to ensure optimal performance and correct visual layering.
-  OpacityModifier,
+  OpacityWidgetDecorator,
 ];

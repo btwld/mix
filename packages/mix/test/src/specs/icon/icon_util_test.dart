@@ -70,7 +70,7 @@ void main() {
         expect(util.on, isA<OnContextVariantUtility<IconSpec, IconMix>>());
       });
 
-      test('wrap utility is ModifierUtility', () {
+      test('wrap utility is WidgetDecoratorUtility', () {
         expect(util.wrap, isA<WidgetDecoratorUtility<IconMix>>());
       });
     });
@@ -191,7 +191,7 @@ void main() {
       });
     });
 
-    group('Modifier utilities', () {
+    group('Decorator utilities', () {
       test('wrap utility creates modifier IconMix', () {
         final result = util.wrap.opacity(0.5);
 

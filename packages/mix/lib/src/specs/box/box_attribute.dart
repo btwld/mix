@@ -381,7 +381,7 @@ class BoxMix extends Style<BoxSpec>
     );
   }
 
-  /// Modifier instance method
+  /// Decorator instance method
   BoxMix wrap(WidgetDecoratorConfig modifier) {
     return merge(BoxMix(modifierConfig: modifier));
   }

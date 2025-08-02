@@ -36,7 +36,7 @@ class _RenderModifiers extends StatelessWidget {
   /// Base widget to transform.
   final Widget child;
 
-  /// Modifiers to apply in sequence.
+  /// Decorators to apply in sequence.
   final Iterable<WidgetDecorator<dynamic>> modifiers;
 
   @override

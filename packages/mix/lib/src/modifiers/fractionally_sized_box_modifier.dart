@@ -7,57 +7,57 @@ import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 
-final class FractionallySizedBoxModifier
-    extends WidgetDecorator<FractionallySizedBoxModifier>
+final class FractionallySizedBoxWidgetDecorator
+    extends WidgetDecorator<FractionallySizedBoxWidgetDecorator>
     with Diagnosticable {
   final double? widthFactor;
   final double? heightFactor;
   final AlignmentGeometry? alignment;
 
-  const FractionallySizedBoxModifier({
+  const FractionallySizedBoxWidgetDecorator({
     this.widthFactor,
     this.heightFactor,
     this.alignment,
   });
 
-  /// Creates a copy of this [FractionallySizedBoxModifier] but with the given fields
+  /// Creates a copy of this [FractionallySizedBoxWidgetDecorator] but with the given fields
   /// replaced with the new values.
   @override
-  FractionallySizedBoxModifier copyWith({
+  FractionallySizedBoxWidgetDecorator copyWith({
     double? widthFactor,
     double? heightFactor,
     AlignmentGeometry? alignment,
   }) {
-    return FractionallySizedBoxModifier(
+    return FractionallySizedBoxWidgetDecorator(
       widthFactor: widthFactor ?? this.widthFactor,
       heightFactor: heightFactor ?? this.heightFactor,
       alignment: alignment ?? this.alignment,
     );
   }
 
-  /// Linearly interpolates between this [FractionallySizedBoxModifier] and another [FractionallySizedBoxModifier] based on the given parameter [t].
+  /// Linearly interpolates between this [FractionallySizedBoxWidgetDecorator] and another [FractionallySizedBoxWidgetDecorator] based on the given parameter [t].
   ///
   /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [FractionallySizedBoxModifier] is returned. When [t] is 1.0, the [other] [FractionallySizedBoxModifier] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [FractionallySizedBoxModifier] is returned.
+  /// When [t] is 0.0, the current [FractionallySizedBoxWidgetDecorator] is returned. When [t] is 1.0, the [other] [FractionallySizedBoxWidgetDecorator] is returned.
+  /// For values of [t] between 0.0 and 1.0, an interpolated [FractionallySizedBoxWidgetDecorator] is returned.
   ///
-  /// If [other] is null, this method returns the current [FractionallySizedBoxModifier] instance.
+  /// If [other] is null, this method returns the current [FractionallySizedBoxWidgetDecorator] instance.
   ///
-  /// The interpolation is performed on each property of the [FractionallySizedBoxModifier] using the appropriate
+  /// The interpolation is performed on each property of the [FractionallySizedBoxWidgetDecorator] using the appropriate
   /// interpolation method:
   /// - [MixHelpers.lerpDouble] for [widthFactor] and [heightFactor].
   /// - [AlignmentGeometry.lerp] for [alignment].
 
   /// This method is typically used in animations to smoothly transition between
-  /// different [FractionallySizedBoxModifier] configurations.
+  /// different [FractionallySizedBoxWidgetDecorator] configurations.
   @override
-  FractionallySizedBoxModifier lerp(
-    FractionallySizedBoxModifier? other,
+  FractionallySizedBoxWidgetDecorator lerp(
+    FractionallySizedBoxWidgetDecorator? other,
     double t,
   ) {
     if (other == null) return this;
 
-    return FractionallySizedBoxModifier(
+    return FractionallySizedBoxWidgetDecorator(
       widthFactor: MixHelpers.lerpDouble(widthFactor, other.widthFactor, t),
       heightFactor: MixHelpers.lerpDouble(heightFactor, other.heightFactor, t),
       alignment: AlignmentGeometry.lerp(alignment, other.alignment, t),
@@ -78,10 +78,10 @@ final class FractionallySizedBoxModifier
     );
   }
 
-  /// The list of properties that constitute the state of this [FractionallySizedBoxModifier].
+  /// The list of properties that constitute the state of this [FractionallySizedBoxWidgetDecorator].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [FractionallySizedBoxModifier] instances for equality.
+  /// compare two [FractionallySizedBoxWidgetDecorator] instances for equality.
   @override
   List<Object?> get props => [widthFactor, heightFactor, alignment];
 
@@ -96,26 +96,26 @@ final class FractionallySizedBoxModifier
   }
 }
 
-/// Represents the attributes of a [FractionallySizedBoxModifier].
+/// Represents the attributes of a [FractionallySizedBoxWidgetDecorator].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [FractionallySizedBoxModifier].
+/// appearance of a [FractionallySizedBoxWidgetDecorator].
 ///
-/// Use this class to configure the attributes of a [FractionallySizedBoxModifier] and pass it to
-/// the [FractionallySizedBoxModifier] constructor.
-class FractionallySizedBoxModifierAttribute
-    extends WidgetDecoratorStyle<FractionallySizedBoxModifier> {
+/// Use this class to configure the attributes of a [FractionallySizedBoxWidgetDecorator] and pass it to
+/// the [FractionallySizedBoxWidgetDecorator] constructor.
+class FractionallySizedBoxWidgetDecoratorStyle
+    extends WidgetDecoratorStyle<FractionallySizedBoxWidgetDecorator> {
   final Prop<double>? widthFactor;
   final Prop<double>? heightFactor;
   final Prop<AlignmentGeometry>? alignment;
 
-  const FractionallySizedBoxModifierAttribute.raw({
+  const FractionallySizedBoxWidgetDecoratorStyle.raw({
     this.widthFactor,
     this.heightFactor,
     this.alignment,
   });
 
-  FractionallySizedBoxModifierAttribute({
+  FractionallySizedBoxWidgetDecoratorStyle({
     double? widthFactor,
     double? heightFactor,
     AlignmentGeometry? alignment,
@@ -125,38 +125,38 @@ class FractionallySizedBoxModifierAttribute
          alignment: Prop.maybe(alignment),
        );
 
-  /// Resolves to [FractionallySizedBoxModifier] using the provided [BuildContext].
+  /// Resolves to [FractionallySizedBoxWidgetDecorator] using the provided [BuildContext].
   ///
   /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final fractionallySizedBoxModifierSpec = FractionallySizedBoxModifierAttribute(...).resolve(mix);
+  /// final fractionallySizedBoxWidgetDecoratorSpec = FractionallySizedBoxWidgetDecoratorStyle(...).resolve(mix);
   /// ```
   @override
-  FractionallySizedBoxModifier resolve(BuildContext context) {
-    return FractionallySizedBoxModifier(
+  FractionallySizedBoxWidgetDecorator resolve(BuildContext context) {
+    return FractionallySizedBoxWidgetDecorator(
       widthFactor: MixHelpers.resolve(context, widthFactor),
       heightFactor: MixHelpers.resolve(context, heightFactor),
       alignment: MixHelpers.resolve(context, alignment),
     );
   }
 
-  /// Merges the properties of this [FractionallySizedBoxModifierAttribute] with the properties of [other].
+  /// Merges the properties of this [FractionallySizedBoxWidgetDecoratorStyle] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [FractionallySizedBoxModifierAttribute] with the properties of [other] taking precedence over
+  /// [FractionallySizedBoxWidgetDecoratorStyle] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  FractionallySizedBoxModifierAttribute merge(
-    FractionallySizedBoxModifierAttribute? other,
+  FractionallySizedBoxWidgetDecoratorStyle merge(
+    FractionallySizedBoxWidgetDecoratorStyle? other,
   ) {
     if (other == null) return this;
 
-    return FractionallySizedBoxModifierAttribute.raw(
+    return FractionallySizedBoxWidgetDecoratorStyle.raw(
       widthFactor: widthFactor.tryMerge(other.widthFactor),
       heightFactor: heightFactor.tryMerge(other.heightFactor),
       alignment: alignment.tryMerge(other.alignment),
@@ -167,9 +167,9 @@ class FractionallySizedBoxModifierAttribute
   List<Object?> get props => [widthFactor, heightFactor, alignment];
 }
 
-final class FractionallySizedBoxModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, FractionallySizedBoxModifierAttribute> {
-  const FractionallySizedBoxModifierUtility(super.builder);
+final class FractionallySizedBoxWidgetDecoratorUtility<T extends Style<Object?>>
+    extends MixUtility<T, FractionallySizedBoxWidgetDecoratorStyle> {
+  const FractionallySizedBoxWidgetDecoratorUtility(super.builder);
 
   T call({
     AlignmentGeometry? alignment,
@@ -177,7 +177,7 @@ final class FractionallySizedBoxModifierUtility<T extends Style<Object?>>
     double? heightFactor,
   }) {
     return builder(
-      FractionallySizedBoxModifierAttribute(
+      FractionallySizedBoxWidgetDecoratorStyle(
         widthFactor: widthFactor,
         heightFactor: heightFactor,
         alignment: alignment,

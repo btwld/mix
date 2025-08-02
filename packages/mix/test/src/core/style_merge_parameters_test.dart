@@ -11,23 +11,23 @@ void main() {
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
           modifierConfig: WidgetDecoratorConfig.orderOfDecorators([
-            OpacityModifier,
-            PaddingModifier,
+            OpacityWidgetDecorator,
+            PaddingWidgetDecorator,
           ]),
         );
         final second = BoxMix(
           constraints: BoxConstraintsMix.height(200.0),
           modifierConfig: WidgetDecoratorConfig.orderOfDecorators([
-            ClipOvalModifier,
-            TransformModifier,
+            ClipOvalWidgetDecorator,
+            TransformWidgetDecorator,
           ]),
         );
 
         final merged = first.merge(second);
 
         expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
-          ClipOvalModifier,
-          TransformModifier,
+          ClipOvalWidgetDecorator,
+          TransformWidgetDecorator,
         ]);
       });
 
@@ -35,8 +35,8 @@ void main() {
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
           modifierConfig: WidgetDecoratorConfig.orderOfDecorators([
-            OpacityModifier,
-            PaddingModifier,
+            OpacityWidgetDecorator,
+            PaddingWidgetDecorator,
           ]),
         );
         final second = BoxMix(constraints: BoxConstraintsMix.height(200.0));
@@ -44,8 +44,8 @@ void main() {
         final merged = first.merge(second);
 
         expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
-          OpacityModifier,
-          PaddingModifier,
+          OpacityWidgetDecorator,
+          PaddingWidgetDecorator,
         ]);
       });
 
@@ -118,9 +118,9 @@ void main() {
       });
 
       test('merges modifiers correctly', () {
-        final firstModifiers = [OpacityModifierAttribute(opacity: 0.5)];
+        final firstModifiers = [OpacityWidgetDecoratorStyle(opacity: 0.5)];
         final secondModifiers = [
-          PaddingModifierAttribute(padding: EdgeInsetsMix.all(10)),
+          PaddingWidgetDecoratorStyle(padding: EdgeInsetsMix.all(10)),
         ];
 
         final first = BoxMix(
@@ -138,11 +138,11 @@ void main() {
         expect(merged.$widgetDecoratorConfig!.$decorators!.length, 2);
         expect(
           merged.$widgetDecoratorConfig!.$decorators![0],
-          isA<OpacityModifierAttribute>(),
+          isA<OpacityWidgetDecoratorStyle>(),
         );
         expect(
           merged.$widgetDecoratorConfig!.$decorators![1],
-          isA<PaddingModifierAttribute>(),
+          isA<PaddingWidgetDecoratorStyle>(),
         );
       });
 
@@ -181,7 +181,7 @@ void main() {
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
           modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
-            OpacityModifier,
+            OpacityWidgetDecorator,
           ]),
           inherit: true,
         );
@@ -197,23 +197,23 @@ void main() {
         final first = TextMix(
           maxLines: 2,
           modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
-            OpacityModifier,
-            PaddingModifier,
+            OpacityWidgetDecorator,
+            PaddingWidgetDecorator,
           ]),
         );
         final second = TextMix(
           overflow: TextOverflow.ellipsis,
           modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
-            ClipOvalModifier,
-            TransformModifier,
+            ClipOvalWidgetDecorator,
+            TransformWidgetDecorator,
           ]),
         );
 
         final merged = first.merge(second);
 
         expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
-          ClipOvalModifier,
-          TransformModifier,
+          ClipOvalWidgetDecorator,
+          TransformWidgetDecorator,
         ]);
       });
 
@@ -232,23 +232,23 @@ void main() {
         final first = IconMix(
           size: 24.0,
           modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
-            OpacityModifier,
-            PaddingModifier,
+            OpacityWidgetDecorator,
+            PaddingWidgetDecorator,
           ]),
         );
         final second = IconMix(
           color: Colors.red,
           modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
-            ClipOvalModifier,
-            TransformModifier,
+            ClipOvalWidgetDecorator,
+            TransformWidgetDecorator,
           ]),
         );
 
         final merged = first.merge(second);
 
         expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
-          ClipOvalModifier,
-          TransformModifier,
+          ClipOvalWidgetDecorator,
+          TransformWidgetDecorator,
         ]);
       });
 
@@ -267,23 +267,23 @@ void main() {
         final first = FlexMix(
           direction: Axis.horizontal,
           modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
-            OpacityModifier,
-            PaddingModifier,
+            OpacityWidgetDecorator,
+            PaddingWidgetDecorator,
           ]),
         );
         final second = FlexMix(
           gap: 8.0,
           modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
-            ClipOvalModifier,
-            TransformModifier,
+            ClipOvalWidgetDecorator,
+            TransformWidgetDecorator,
           ]),
         );
 
         final merged = first.merge(second);
 
         expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
-          ClipOvalModifier,
-          TransformModifier,
+          ClipOvalWidgetDecorator,
+          TransformWidgetDecorator,
         ]);
       });
 
@@ -302,23 +302,23 @@ void main() {
         final first = ImageMix(
           width: 100.0,
           modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
-            OpacityModifier,
-            PaddingModifier,
+            OpacityWidgetDecorator,
+            PaddingWidgetDecorator,
           ]),
         );
         final second = ImageMix(
           height: 200.0,
           modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
-            ClipOvalModifier,
-            TransformModifier,
+            ClipOvalWidgetDecorator,
+            TransformWidgetDecorator,
           ]),
         );
 
         final merged = first.merge(second);
 
         expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
-          ClipOvalModifier,
-          TransformModifier,
+          ClipOvalWidgetDecorator,
+          TransformWidgetDecorator,
         ]);
       });
 
@@ -337,23 +337,23 @@ void main() {
         final first = StackMix(
           alignment: Alignment.center,
           modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
-            OpacityModifier,
-            PaddingModifier,
+            OpacityWidgetDecorator,
+            PaddingWidgetDecorator,
           ]),
         );
         final second = StackMix(
           fit: StackFit.expand,
           modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
-            ClipOvalModifier,
-            TransformModifier,
+            ClipOvalWidgetDecorator,
+            TransformWidgetDecorator,
           ]),
         );
 
         final merged = first.merge(second);
 
         expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
-          ClipOvalModifier,
-          TransformModifier,
+          ClipOvalWidgetDecorator,
+          TransformWidgetDecorator,
         ]);
       });
 
@@ -372,23 +372,23 @@ void main() {
         final first = FlexBoxMix(
           box: BoxMix.width(100),
           modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
-            OpacityModifier,
-            PaddingModifier,
+            OpacityWidgetDecorator,
+            PaddingWidgetDecorator,
           ]),
         );
         final second = FlexBoxMix(
           flex: FlexMix.gap(8.0),
           modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
-            ClipOvalModifier,
-            TransformModifier,
+            ClipOvalWidgetDecorator,
+            TransformWidgetDecorator,
           ]),
         );
 
         final merged = first.merge(second);
 
         expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
-          ClipOvalModifier,
-          TransformModifier,
+          ClipOvalWidgetDecorator,
+          TransformWidgetDecorator,
         ]);
       });
 
@@ -407,23 +407,23 @@ void main() {
         final first = StackBoxMix(
           box: BoxMix.width(100),
           modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
-            OpacityModifier,
-            PaddingModifier,
+            OpacityWidgetDecorator,
+            PaddingWidgetDecorator,
           ]),
         );
         final second = StackBoxMix(
           stack: StackMix.alignment(Alignment.center),
           modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
-            ClipOvalModifier,
-            TransformModifier,
+            ClipOvalWidgetDecorator,
+            TransformWidgetDecorator,
           ]),
         );
 
         final merged = first.merge(second);
 
         expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
-          ClipOvalModifier,
-          TransformModifier,
+          ClipOvalWidgetDecorator,
+          TransformWidgetDecorator,
         ]);
       });
 
@@ -445,21 +445,21 @@ void main() {
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
           modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
-            OpacityModifier,
+            OpacityWidgetDecorator,
           ]),
           inherit: true,
         );
         final second = BoxMix(
           constraints: BoxConstraintsMix.height(200.0),
           modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
-            PaddingModifier,
+            PaddingWidgetDecorator,
           ]),
           inherit: false,
         );
         final third = BoxMix(
           decoration: DecorationMix.color(Colors.blue),
           modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
-            ClipOvalModifier,
+            ClipOvalWidgetDecorator,
           ]),
           inherit: true,
         );
@@ -467,15 +467,15 @@ void main() {
         final merged = first.merge(second).merge(third);
 
         expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
-          ClipOvalModifier,
+          ClipOvalWidgetDecorator,
         ]);
         expect(merged.$inherit, true);
         expect(merged.$decoration, isNotNull);
       });
 
       test('merges with same modifier types correctly', () {
-        final firstOpacity = OpacityModifierAttribute(opacity: 0.3);
-        final secondOpacity = OpacityModifierAttribute(opacity: 0.7);
+        final firstOpacity = OpacityWidgetDecoratorStyle(opacity: 0.3);
+        final secondOpacity = OpacityWidgetDecoratorStyle(opacity: 0.7);
 
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
@@ -492,12 +492,12 @@ void main() {
         expect(merged.$widgetDecoratorConfig!.$decorators!.length, 1);
         expect(
           merged.$widgetDecoratorConfig!.$decorators![0],
-          isA<OpacityModifierAttribute>(),
+          isA<OpacityWidgetDecoratorStyle>(),
         );
 
         final mergedOpacity =
             merged.$widgetDecoratorConfig!.$decorators![0]
-                as OpacityModifierAttribute;
+                as OpacityWidgetDecoratorStyle;
         expect(mergedOpacity.opacity, resolvesTo(0.7));
       });
 
@@ -532,7 +532,7 @@ void main() {
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
           modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
-            OpacityModifier,
+            OpacityWidgetDecorator,
           ]),
         );
         final second = BoxMix(
@@ -543,7 +543,7 @@ void main() {
         final merged = first.merge(second);
 
         expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
-          OpacityModifier,
+          OpacityWidgetDecorator,
         ]);
       });
 
@@ -551,7 +551,7 @@ void main() {
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
           modifierConfig: WidgetDecoratorConfig(
-            decorators: [OpacityModifierAttribute(opacity: 0.5)],
+            decorators: [OpacityWidgetDecoratorStyle(opacity: 0.5)],
           ),
         );
         final second = BoxMix(
@@ -564,7 +564,7 @@ void main() {
         expect(merged.$widgetDecoratorConfig!.$decorators!.length, 1);
         expect(
           merged.$widgetDecoratorConfig!.$decorators![0],
-          isA<OpacityModifierAttribute>(),
+          isA<OpacityWidgetDecoratorStyle>(),
         );
       });
 
@@ -595,7 +595,7 @@ void main() {
         final style = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
           modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
-            OpacityModifier,
+            OpacityWidgetDecorator,
           ]),
           inherit: true,
         );
@@ -628,7 +628,7 @@ void main() {
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
           modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
-            OpacityModifier,
+            OpacityWidgetDecorator,
           ]),
           inherit: null,
           animation: null,
@@ -646,7 +646,7 @@ void main() {
         final merged = first.merge(second);
 
         expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
-          OpacityModifier,
+          OpacityWidgetDecorator,
         ]);
         expect(merged.$inherit, true);
         expect(merged.$animation, isNotNull);

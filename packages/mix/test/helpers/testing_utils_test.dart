@@ -116,7 +116,7 @@ void main() {
       });
 
       test('resolves attributes', () {
-        final attribute = OpacityModifierAttribute(opacity: 0.5);
+        final attribute = OpacityWidgetDecoratorStyle(opacity: 0.5);
         final resolved = attribute.resolve(MockBuildContext());
 
         expect(resolved.opacity, 0.5);
