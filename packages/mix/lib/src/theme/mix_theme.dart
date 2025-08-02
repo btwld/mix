@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'material/material_theme.dart';
 import 'tokens/mix_token.dart';
@@ -13,13 +14,26 @@ class MixScope extends InheritedWidget {
   const MixScope({required this.data, super.key, required super.child});
 
   static MixScopeData of(BuildContext context) {
-    final scopeData = context
-        .dependOnInheritedWidgetOfExactType<MixScope>()
-        ?.data;
-
-    assert(scopeData != null, 'No MixScope found in context');
-
-    return scopeData!;
+    final MixScopeData? scopeData = maybeOf(context);
+    if (scopeData != null) {
+      return scopeData;
+    }
+    throw FlutterError.fromParts([
+      ErrorSummary('No MixScope found.'),
+      ErrorDescription(
+        '${context.widget.runtimeType} tried to access Mix theme data, but no MixScope widget was found in the widget tree.',
+      ),
+      context.describeElement('The context used was'),
+      ...context.describeMissingAncestor(expectedAncestorType: MixScope),
+      ErrorHint(
+        'To fix this, ensure that a MixScope widget is present above ${context.widget.runtimeType} in the widget tree. '
+        'This is typically done by wrapping your app with MixScope:\n'
+        '  MixScope(\n'
+        '    data: MixScopeData.withMaterial(), // or your custom theme\n'
+        '    child: MaterialApp(...),\n'
+        '  )',
+      ),
+    ]);
   }
 
   static T tokenOf<T>(MixToken<T> token, BuildContext context) {

@@ -36,14 +36,12 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
 
   final bool? $inherit;
 
-  static final box = BoxMix.new;
   static final icon = IconMix.new;
   static final text = TextMix.new;
   static final flexbox = FlexBoxMix.new;
   static final stack = StackMix.new;
   static final stackBox = StackBoxMix.new;
   static final flex = FlexMix.new;
-
   const Style({
     required List<VariantStyleAttribute<S>>? variants,
     required ModifierConfig? modifierConfig,
@@ -54,6 +52,10 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
        $animation = animation,
        $variants = variants,
        $inherit = inherit;
+
+  static BoxMix box([BoxMix? value]) {
+    return value ?? BoxMix();
+  }
 
   @internal
   Set<WidgetState> get widgetStates {

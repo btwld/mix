@@ -5,9 +5,6 @@ import '../../core/providers/widget_state_provider.dart';
 import '../box/box_attribute.dart';
 import '../box/box_widget.dart';
 
-// It expects Style? but Box requires StyleAttribute<BoxSpec>
-// Need to redesign how Style interacts with typed widgets
-
 /// A pressable widget that wraps content in a [Box] with gesture handling.
 ///
 /// Provides press, long press, and focus interactions with customizable styling.
@@ -185,13 +182,6 @@ class PressableWidgetState extends State<Pressable> {
     widget.onFocusChange?.call(hasFocus);
   }
 
-  void _onHoverChange(bool isHovered) {
-    // If we are hovered and pressed, we need to change the state
-    if (!isHovered && _controller.pressed) {
-      _controller.pressed = false;
-    }
-  }
-
   @override
   void dispose() {
     if (widget.controller == null) _controller.dispose();
@@ -230,6 +220,7 @@ class PressableWidgetState extends State<Pressable> {
       onTapDown: (_) => _onTapDown(),
       onTapUp: (_) => _onTapUp(),
       onTap: widget.enabled && widget.onPress != null ? _onTap : null,
+      onTapCancel: () => _onTapUp(),
       onLongPress: widget.enabled && widget.onLongPress != null
           ? _onLongPress
           : null,
@@ -248,7 +239,6 @@ class PressableWidgetState extends State<Pressable> {
             child: MixHoverableRegion(
               controller: _controller,
               enabled: widget.enabled,
-              onHoverChange: _onHoverChange,
               child: widget.child,
             ),
           ),

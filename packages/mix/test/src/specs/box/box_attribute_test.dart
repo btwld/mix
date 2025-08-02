@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
+import 'package:mix/src/core/internal/color_values.dart';
 
 import '../../../helpers/testing_utils.dart';
 
@@ -8,12 +9,12 @@ void main() {
   group('BoxMix', () {
     group('Factory Constructors', () {
       test('color factory creates BoxMix with color decoration', () {
-        final boxMix = BoxMix.color(Colors.red);
+        final boxMix = BoxMix.color(ColorProp.red);
 
         expect(boxMix.$decoration, isNotNull);
         final decoration = boxMix.$decoration!.resolve(MockBuildContext());
         expect(decoration, isA<BoxDecoration>());
-        expect((decoration as BoxDecoration).color, Colors.red);
+        expect((decoration as BoxDecoration).color, ColorValues.red);
       });
 
       test('gradient factory creates BoxMix with gradient decoration', () {
@@ -79,7 +80,7 @@ void main() {
 
       test('variant factory creates BoxMix with variant', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = BoxMix.color(Colors.blue);
+        final style = BoxMix.color(ColorProp.blue);
         final boxMix = BoxMix.variant(variant, style);
 
         expect(boxMix.$variants, isNotNull);
@@ -130,8 +131,8 @@ void main() {
           padding: EdgeInsetsGeometryMix.all(10.0),
           margin: EdgeInsetsGeometryMix.all(5.0),
           constraints: BoxConstraintsMix.minHeight(100.0),
-          decoration: DecorationMix.color(Colors.green),
-          foregroundDecoration: DecorationMix.color(Colors.yellow),
+          decoration: DecorationMix.color(ColorProp.green),
+          foregroundDecoration: DecorationMix.color(ColorProp.yellow),
           transform: Matrix4.identity(),
           transformAlignment: Alignment.center,
           clipBehavior: Clip.hardEdge,
@@ -182,11 +183,11 @@ void main() {
 
     group('Instance Methods', () {
       test('color method sets decoration color', () {
-        final boxMix = BoxMix().color(Colors.purple);
+        final boxMix = BoxMix().color(ColorProp.purple);
 
         expect(boxMix.$decoration, isNotNull);
         final decoration = boxMix.$decoration!.resolve(MockBuildContext());
-        expect((decoration as BoxDecoration).color, Colors.purple);
+        expect((decoration as BoxDecoration).color, ColorValues.purple);
       });
 
       test('width method sets fixed width constraints', () {
@@ -365,7 +366,7 @@ void main() {
     group('Variant Methods', () {
       test('variant method adds variant to BoxMix', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = BoxMix.color(Colors.white);
+        final style = BoxMix.color(ColorProp.white);
         final boxMix = BoxMix().variant(variant, style);
 
         expect(boxMix.$variants, isNotNull);
@@ -376,11 +377,11 @@ void main() {
         final variants = [
           VariantStyleAttribute(
             ContextVariant.brightness(Brightness.dark),
-            BoxMix.color(Colors.white),
+            BoxMix.color(ColorProp.white),
           ),
           VariantStyleAttribute(
             ContextVariant.brightness(Brightness.light),
-            BoxMix.color(Colors.black),
+            BoxMix.color(ColorProp.black),
           ),
         ];
         final boxMix = BoxMix().variants(variants);

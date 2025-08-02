@@ -12,6 +12,7 @@ import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/painting/border_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
 import '../../properties/painting/border_radius_util.dart';
+import '../../properties/painting/color_mix.dart';
 import '../../properties/painting/decoration_image_mix.dart';
 import '../../properties/painting/decoration_mix.dart';
 import '../../properties/painting/gradient_mix.dart';
@@ -20,6 +21,7 @@ import '../../properties/painting/shape_border_mix.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'box_spec.dart';
+import 'box_util.dart';
 
 /// Style class for configuring [BoxSpec] properties.
 ///
@@ -43,7 +45,7 @@ class BoxMix extends Style<BoxSpec>
   final Prop<Clip>? $clipBehavior;
 
   /// Color factory
-  factory BoxMix.color(Color value) {
+  factory BoxMix.color(ColorProp value) {
     return BoxMix(decoration: DecorationMix.color(value));
   }
 
@@ -237,6 +239,8 @@ class BoxMix extends Style<BoxSpec>
     return spec != null ? BoxMix.value(spec) : null;
   }
 
+  BoxSpecUtility builder() => BoxSpecUtility(this);
+
   BoxMix transformAlignment(AlignmentGeometry value) {
     return merge(BoxMix.transformAlignment(value));
   }
@@ -246,7 +250,7 @@ class BoxMix extends Style<BoxSpec>
   }
 
   /// Sets background color
-  BoxMix color(Color value) {
+  BoxMix color(ColorProp value) {
     return decoration(DecorationMix.color(value));
   }
 

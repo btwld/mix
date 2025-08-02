@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
-import 'package:mix/src/properties/painting/gradient_mix.dart';
 
 import '../../../helpers/testing_utils.dart';
 
@@ -113,7 +112,7 @@ void main() {
       });
 
       test('colors factory creates LinearGradientMix with colors', () {
-        final colors = [Colors.red, Colors.green, Colors.blue];
+        final colors = <ColorProp>[ColorProp.red, ColorProp.green, ColorProp.blue];
         final gradientMix = LinearGradientMix.colors(colors);
 
         expect(gradientMix.$colors?.length, 3);
@@ -164,7 +163,7 @@ void main() {
       });
 
       test('colors utility works correctly', () {
-        final colors = [Colors.yellow, Colors.purple];
+        final colors = [ColorProp.value(Colors.yellow), ColorProp.value(Colors.purple)];
         final gradientMix = LinearGradientMix().colors(colors);
 
         expect(gradientMix.$colors?.length, 2);

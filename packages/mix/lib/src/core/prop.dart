@@ -85,8 +85,8 @@ class Prop<V> extends PropBase<V> {
     List<MixDirective<V>>? directives,
     AnimationConfig? animation,
   }) {
-    final token = getTokenFromValue(value);
-
+    // Check for token references and use explicit type parameter
+    final token = getTokenFromValue<V>(value);
     if (token != null) {
       return Prop.token(token, directives: directives, animation: animation);
     }
@@ -150,7 +150,7 @@ class Prop<V> extends PropBase<V> {
   }
 
   @override
-  Prop<V> merge(Prop<V>? other) {
+  Prop<V> merge(covariant Prop<V>? other) {
     if (other == null) return this;
 
     // For static props, the other source replaces this source

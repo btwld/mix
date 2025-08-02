@@ -1,8 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-
-import '../../core/internal/internal_extensions.dart';
 
 /// A design token that can be resolved to a value within a Mix theme.
 ///
@@ -29,59 +26,4 @@ class MixToken<T> {
   int get hashCode => Object.hash(name, T);
 }
 
-/// Mixin that provides call() and resolve() methods for MixToken implementations
-mixin MixTokenCallable<T> on MixToken<T> {
-  T call();
-  T resolve(BuildContext context);
-}
-
-/// Mixin for classes that provide token resolution capabilities.
-mixin WithTokenResolver<V> {
-  /// The resolver function for converting context to values.
-  BuildContextResolver<V> get resolve;
-}
-
 typedef BuildContextResolver<T> = T Function(BuildContext context);
-
-class StyledTokens<T extends MixToken<V>, V> {
-  final Map<T, V> _map;
-
-  const StyledTokens(this._map);
-
-  //  empty
-  const StyledTokens.empty() : this(const {});
-
-  V? operator [](T token) => _map[token];
-
-  /// Finds a token by its resolved value using linear search.
-  ///
-  /// Performance note: This method performs O(n) lookup through all tokens.
-  /// Consider using direct token references instead of reverse lookups when possible.
-  T? findByRef(V value) {
-    return _map.keys.firstWhereOrNull((token) {
-      if (token is MixTokenCallable<V>) {
-        return token() == value;
-      }
-
-      return false;
-    });
-  }
-
-  StyledTokens<T, V> merge(StyledTokens<T, V> other) {
-    final newMap = Map<T, V>.of(_map);
-
-    newMap.addAll(other._map);
-
-    return StyledTokens(newMap);
-  }
-
-  @override
-  operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is StyledTokens && mapEquals(other._map, _map);
-  }
-
-  @override
-  int get hashCode => _map.hashCode;
-}

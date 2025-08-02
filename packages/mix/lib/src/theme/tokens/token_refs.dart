@@ -312,9 +312,22 @@ bool isAnyTokenRef(Object value) {
 
 /// Gets the token from a value if it's a token reference
 MixToken<T>? getTokenFromValue<T>(T value) {
+  assertIsRealType(T);
+
   // Handle class-based token references
-  if (value is TokenRef<T>) {
-    return value.token;
+  if (value is TokenRef) {
+    final token = value.token;
+    // Try to return the token if type matches
+    if (token is MixToken<T>) {
+      return token;
+    }
+    // If direct type match fails, check if this is a safe cast scenario
+    // This handles cases like ColorRef implementing Color
+    try {
+      return token as MixToken<T>;
+    } catch (e) {
+      return null;
+    }
   }
 
   // Handle extension type token references
@@ -324,4 +337,64 @@ MixToken<T>? getTokenFromValue<T>(T value) {
   }
 
   return null;
+}
+
+@visibleForTesting
+void assertIsRealType(Type value) {
+  Type? realType;
+
+  if (value == ColorRef) {
+    realType = Color;
+  } else if (value == RadiusRef) {
+    realType = Radius;
+  } else if (value == TextStyleRef) {
+    realType = TextStyle;
+  } else if (value == ShadowRef) {
+    realType = Shadow;
+  } else if (value == GradientRef) {
+    realType = Gradient;
+  } else if (value == BoxDecorationRef) {
+    realType = BoxDecoration;
+  } else if (value == ShapeBorderRef) {
+    realType = ShapeBorder;
+  } else if (value == BoxConstraintsRef) {
+    realType = BoxConstraints;
+  } else if (value == DecorationImageRef) {
+    realType = DecorationImage;
+  } else if (value == EdgeInsetsGeometryRef) {
+    realType = EdgeInsetsGeometry;
+  } else if (value == BorderRadiusGeometryRef) {
+    realType = BorderRadiusGeometry;
+  } else if (value == AlignmentGeometryRef) {
+    realType = AlignmentGeometry;
+  } else if (value == TextDecorationRef) {
+    realType = TextDecoration;
+  } else if (value == OffsetRef) {
+    realType = Offset;
+  } else if (value == RectRef) {
+    realType = Rect;
+  } else if (value == LocaleRef) {
+    realType = Locale;
+  } else if (value == ImageProviderRef) {
+    realType = ImageProvider;
+  } else if (value == GradientTransformRef) {
+    realType = GradientTransform;
+  } else if (value == Matrix4Ref) {
+    realType = Matrix4;
+  } else if (value == TextScalerRef) {
+    realType = TextScaler;
+  } else if (value == TableColumnWidthRef) {
+    realType = TableColumnWidth;
+  } else if (value == TableBorderRef) {
+    realType = TableBorder;
+  } else if (value == StrutStyleRef) {
+    realType = StrutStyle;
+  } else if (value == TextHeightBehaviorRef) {
+    realType = TextHeightBehavior;
+  }
+
+  assert(
+    realType == null,
+    'Cannot use $value for generic, use $realType instead.',
+  );
 }
