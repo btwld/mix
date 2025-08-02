@@ -56,7 +56,7 @@ final class ModifierUtility<T extends Style<Object?>>
   );
 
   /// Rotated box modifier utility.
-  late final rotatedBox = RotatedBoxModifierUtility<T>(builder);
+  late final rotatedBox = RotatedBoxWidgetDecoratorUtility<T>(builder);
 
   /// Icon theme modifier utility.
   late final iconTheme = IconThemeModifierUtility<T>(builder);

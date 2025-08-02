@@ -8,19 +8,19 @@ void main() {
   group('RotatedBoxModifier', () {
     group('Constructor', () {
       test('creates with zero quarter turns by default', () {
-        const modifier = RotatedBoxModifier();
+        const modifier = RotatedBoxWidgetDecorator();
 
         expect(modifier.quarterTurns, 0);
       });
 
       test('creates with specified quarter turns', () {
-        const modifier = RotatedBoxModifier(2);
+        const modifier = RotatedBoxWidgetDecorator(2);
 
         expect(modifier.quarterTurns, 2);
       });
 
       test('creates with null quarter turns defaults to zero', () {
-        const modifier = RotatedBoxModifier(null);
+        const modifier = RotatedBoxWidgetDecorator(null);
 
         expect(modifier.quarterTurns, 0);
       });
@@ -28,7 +28,7 @@ void main() {
 
     group('copyWith', () {
       test('returns new instance with updated quarter turns', () {
-        const original = RotatedBoxModifier(1);
+        const original = RotatedBoxWidgetDecorator(1);
         final updated = original.copyWith(quarterTurns: 3);
 
         expect(updated.quarterTurns, 3);
@@ -36,7 +36,7 @@ void main() {
       });
 
       test('preserves original value when parameter is null', () {
-        const original = RotatedBoxModifier(2);
+        const original = RotatedBoxWidgetDecorator(2);
         final updated = original.copyWith();
 
         expect(updated.quarterTurns, original.quarterTurns);
@@ -46,16 +46,16 @@ void main() {
 
     group('lerp', () {
       test('interpolates quarter turns correctly', () {
-        const start = RotatedBoxModifier(0);
-        const end = RotatedBoxModifier(4);
+        const start = RotatedBoxWidgetDecorator(0);
+        const end = RotatedBoxWidgetDecorator(4);
         final result = start.lerp(end, 0.5);
 
         expect(result.quarterTurns, 2);
       });
 
       test('handles decimal interpolation with rounding', () {
-        const start = RotatedBoxModifier(1);
-        const end = RotatedBoxModifier(2);
+        const start = RotatedBoxWidgetDecorator(1);
+        const end = RotatedBoxWidgetDecorator(2);
 
         final result25 = start.lerp(end, 0.25);
         expect(result25.quarterTurns, 1); // rounds down
@@ -65,15 +65,15 @@ void main() {
       });
 
       test('handles null other parameter', () {
-        const start = RotatedBoxModifier(2);
+        const start = RotatedBoxWidgetDecorator(2);
         final result = start.lerp(null, 0.5);
 
         expect(result, same(start));
       });
 
       test('handles extreme t values', () {
-        const start = RotatedBoxModifier(1);
-        const end = RotatedBoxModifier(3);
+        const start = RotatedBoxWidgetDecorator(1);
+        const end = RotatedBoxWidgetDecorator(3);
 
         final result0 = start.lerp(end, 0.0);
         expect(result0.quarterTurns, 1);
@@ -85,16 +85,16 @@ void main() {
 
     group('equality and hashCode', () {
       test('equal when quarter turns match', () {
-        const modifier1 = RotatedBoxModifier(2);
-        const modifier2 = RotatedBoxModifier(2);
+        const modifier1 = RotatedBoxWidgetDecorator(2);
+        const modifier2 = RotatedBoxWidgetDecorator(2);
 
         expect(modifier1, equals(modifier2));
         expect(modifier1.hashCode, equals(modifier2.hashCode));
       });
 
       test('not equal when quarter turns differ', () {
-        const modifier1 = RotatedBoxModifier(1);
-        const modifier2 = RotatedBoxModifier(3);
+        const modifier1 = RotatedBoxWidgetDecorator(1);
+        const modifier2 = RotatedBoxWidgetDecorator(3);
 
         expect(modifier1, isNot(equals(modifier2)));
         // Hash codes might be equal due to hash collisions, so we only test inequality
@@ -102,8 +102,8 @@ void main() {
       });
 
       test('equal when both have default zero turns', () {
-        const modifier1 = RotatedBoxModifier();
-        const modifier2 = RotatedBoxModifier(0);
+        const modifier1 = RotatedBoxWidgetDecorator();
+        const modifier2 = RotatedBoxWidgetDecorator(0);
 
         expect(modifier1, equals(modifier2));
         expect(modifier1.hashCode, equals(modifier2.hashCode));
@@ -112,7 +112,7 @@ void main() {
 
     group('props', () {
       test('contains quarter turns', () {
-        const modifier = RotatedBoxModifier(3);
+        const modifier = RotatedBoxWidgetDecorator(3);
 
         expect(modifier.props, [3]);
       });
@@ -122,7 +122,7 @@ void main() {
       testWidgets('creates RotatedBox widget with specified quarter turns', (
         WidgetTester tester,
       ) async {
-        const modifier = RotatedBoxModifier(2);
+        const modifier = RotatedBoxWidgetDecorator(2);
         const child = SizedBox(width: 50, height: 50);
 
         await tester.pumpWidget(modifier.build(child));
@@ -135,7 +135,7 @@ void main() {
       testWidgets('creates RotatedBox widget with zero turns by default', (
         WidgetTester tester,
       ) async {
-        const modifier = RotatedBoxModifier();
+        const modifier = RotatedBoxWidgetDecorator();
         const child = SizedBox(width: 50, height: 50);
 
         await tester.pumpWidget(modifier.build(child));
@@ -150,14 +150,14 @@ void main() {
   group('RotatedBoxModifierAttribute', () {
     group('Constructor', () {
       test('creates with null quarter turns by default', () {
-        final attribute = RotatedBoxModifierAttribute();
+        final attribute = RotatedBoxWidgetDecoratorStyle();
 
         expect(attribute.quarterTurns, isNull);
       });
 
       test('creates with provided Prop quarter turns', () {
         final quarterTurns = Prop.value(2);
-        final attribute = RotatedBoxModifierAttribute.raw(
+        final attribute = RotatedBoxWidgetDecoratorStyle.raw(
           quarterTurns: quarterTurns,
         );
 
@@ -167,14 +167,14 @@ void main() {
 
     group('only constructor', () {
       test('creates Prop from int value', () {
-        final attribute = RotatedBoxModifierAttribute(quarterTurns: 3);
+        final attribute = RotatedBoxWidgetDecoratorStyle(quarterTurns: 3);
 
         expect(attribute.quarterTurns, isNotNull);
         expectProp(attribute.quarterTurns, 3);
       });
 
       test('handles null quarter turns', () {
-        final attribute = RotatedBoxModifierAttribute();
+        final attribute = RotatedBoxWidgetDecoratorStyle();
 
         expect(attribute.quarterTurns, isNull);
       });
@@ -182,22 +182,22 @@ void main() {
 
     group('resolve', () {
       test('resolves to RotatedBoxModifier with resolved quarter turns', () {
-        final attribute = RotatedBoxModifierAttribute(quarterTurns: 1);
+        final attribute = RotatedBoxWidgetDecoratorStyle(quarterTurns: 1);
 
-        expect(attribute, resolvesTo(const RotatedBoxModifier(1)));
+        expect(attribute, resolvesTo(const RotatedBoxWidgetDecorator(1)));
       });
 
       test('resolves with null quarter turns to zero', () {
-        final attribute = RotatedBoxModifierAttribute();
+        final attribute = RotatedBoxWidgetDecoratorStyle();
 
-        expect(attribute, resolvesTo(const RotatedBoxModifier(0)));
+        expect(attribute, resolvesTo(const RotatedBoxWidgetDecorator(0)));
       });
     });
 
     group('merge', () {
       test('merges with other RotatedBoxModifierAttribute', () {
-        final attribute1 = RotatedBoxModifierAttribute(quarterTurns: 1);
-        final attribute2 = RotatedBoxModifierAttribute(quarterTurns: 3);
+        final attribute1 = RotatedBoxWidgetDecoratorStyle(quarterTurns: 1);
+        final attribute2 = RotatedBoxWidgetDecoratorStyle(quarterTurns: 3);
 
         final merged = attribute1.merge(attribute2);
 
@@ -205,7 +205,7 @@ void main() {
       });
 
       test('returns original when other is null', () {
-        final attribute = RotatedBoxModifierAttribute(quarterTurns: 2);
+        final attribute = RotatedBoxWidgetDecoratorStyle(quarterTurns: 2);
 
         final merged = attribute.merge(null);
 
@@ -213,8 +213,8 @@ void main() {
       });
 
       test('merges with null quarter turns', () {
-        final attribute1 = RotatedBoxModifierAttribute();
-        final attribute2 = RotatedBoxModifierAttribute(quarterTurns: 1);
+        final attribute1 = RotatedBoxWidgetDecoratorStyle();
+        final attribute2 = RotatedBoxWidgetDecoratorStyle(quarterTurns: 1);
 
         final merged = attribute1.merge(attribute2);
 
@@ -224,21 +224,21 @@ void main() {
 
     group('equality and props', () {
       test('equal when quarter turns match', () {
-        final attribute1 = RotatedBoxModifierAttribute(quarterTurns: 2);
-        final attribute2 = RotatedBoxModifierAttribute(quarterTurns: 2);
+        final attribute1 = RotatedBoxWidgetDecoratorStyle(quarterTurns: 2);
+        final attribute2 = RotatedBoxWidgetDecoratorStyle(quarterTurns: 2);
 
         expect(attribute1, equals(attribute2));
       });
 
       test('not equal when quarter turns differ', () {
-        final attribute1 = RotatedBoxModifierAttribute(quarterTurns: 1);
-        final attribute2 = RotatedBoxModifierAttribute(quarterTurns: 3);
+        final attribute1 = RotatedBoxWidgetDecoratorStyle(quarterTurns: 1);
+        final attribute2 = RotatedBoxWidgetDecoratorStyle(quarterTurns: 3);
 
         expect(attribute1, isNot(equals(attribute2)));
       });
 
       test('props contains quarter turns', () {
-        final attribute = RotatedBoxModifierAttribute(quarterTurns: 2);
+        final attribute = RotatedBoxWidgetDecoratorStyle(quarterTurns: 2);
 
         final props = attribute.props;
         expect(props.length, 1);
@@ -248,11 +248,15 @@ void main() {
   });
 
   group('RotatedBoxModifierUtility', () {
-    late RotatedBoxModifierUtility<MockStyle<RotatedBoxModifierAttribute>>
+    late RotatedBoxWidgetDecoratorUtility<
+      MockStyle<RotatedBoxWidgetDecoratorStyle>
+    >
     utility;
 
     setUp(() {
-      utility = RotatedBoxModifierUtility((attribute) => MockStyle(attribute));
+      utility = RotatedBoxWidgetDecoratorUtility(
+        (attribute) => MockStyle(attribute),
+      );
     });
 
     test('call() creates attribute with specified quarter turns', () {
@@ -270,7 +274,7 @@ void main() {
       expect(attribute.quarterTurns!, resolvesTo(1));
 
       // Verify it creates 90-degree rotation
-      expect(attribute, resolvesTo(const RotatedBoxModifier(1)));
+      expect(attribute, resolvesTo(const RotatedBoxWidgetDecorator(1)));
     });
 
     test('d180() creates attribute with 2 quarter turns', () {
@@ -280,7 +284,7 @@ void main() {
       expect(attribute.quarterTurns!, resolvesTo(2));
 
       // Verify it creates 180-degree rotation
-      expect(attribute, resolvesTo(const RotatedBoxModifier(2)));
+      expect(attribute, resolvesTo(const RotatedBoxWidgetDecorator(2)));
     });
 
     test('d270() creates attribute with 3 quarter turns', () {
@@ -290,7 +294,7 @@ void main() {
       expect(attribute.quarterTurns!, resolvesTo(3));
 
       // Verify it creates 270-degree rotation
-      expect(attribute, resolvesTo(const RotatedBoxModifier(3)));
+      expect(attribute, resolvesTo(const RotatedBoxWidgetDecorator(3)));
     });
 
     test('utility methods are convenience for call()', () {
@@ -324,9 +328,9 @@ void main() {
     testWidgets('RotatedBoxModifierAttribute resolves and builds correctly', (
       WidgetTester tester,
     ) async {
-      final attribute = RotatedBoxModifierAttribute(quarterTurns: 2);
+      final attribute = RotatedBoxWidgetDecoratorStyle(quarterTurns: 2);
 
-      expect(attribute, resolvesTo(const RotatedBoxModifier(2)));
+      expect(attribute, resolvesTo(const RotatedBoxWidgetDecorator(2)));
 
       final modifier = attribute.resolve(MockBuildContext());
       const child = SizedBox(width: 100, height: 50);
@@ -344,11 +348,11 @@ void main() {
     });
 
     test('Complex merge scenario preserves and overrides correctly', () {
-      final base = RotatedBoxModifierAttribute(quarterTurns: 0);
+      final base = RotatedBoxWidgetDecoratorStyle(quarterTurns: 0);
 
-      final override1 = RotatedBoxModifierAttribute(quarterTurns: 1);
+      final override1 = RotatedBoxWidgetDecoratorStyle(quarterTurns: 1);
 
-      final override2 = RotatedBoxModifierAttribute(quarterTurns: 3);
+      final override2 = RotatedBoxWidgetDecoratorStyle(quarterTurns: 3);
 
       final result = base.merge(override1).merge(override2);
 
@@ -356,8 +360,8 @@ void main() {
     });
 
     test('Lerp produces expected intermediate values', () {
-      const start = RotatedBoxModifier(0);
-      const end = RotatedBoxModifier(4);
+      const start = RotatedBoxWidgetDecorator(0);
+      const end = RotatedBoxWidgetDecorator(4);
 
       final quarter = start.lerp(end, 0.25);
       final half = start.lerp(end, 0.5);
@@ -375,7 +379,7 @@ void main() {
       for (final turns in [0, 1, 2, 3]) {
         await tester.pumpWidget(
           Center(
-            child: RotatedBoxModifier(turns).build(
+            child: RotatedBoxWidgetDecorator(turns).build(
               Container(width: 100, height: 50, color: const Color(0xFF00FF00)),
             ),
           ),

@@ -165,7 +165,7 @@ final class WidgetDecoratorConfig with Equatable {
 
   factory WidgetDecoratorConfig.rotatedBox(int quarterTurns) {
     return WidgetDecoratorConfig.decorator(
-      RotatedBoxModifierAttribute(quarterTurns: quarterTurns),
+      RotatedBoxWidgetDecoratorStyle(quarterTurns: quarterTurns),
     );
   }
 
@@ -563,7 +563,7 @@ const _defaultOrder = [
   // 10. RotatedBoxModifier: Rotates widget and changes its layout dimensions.
   // CRITICAL: Must come before AlignModifier because it changes layout space
   // (e.g., 200×100 widget becomes 100×200, affecting alignment calculations).
-  RotatedBoxModifier,
+  RotatedBoxWidgetDecorator,
 
   // 11. AlignModifier: Positions widget within its allocated space.
   // Applied after RotatedBox to align based on final layout dimensions.
