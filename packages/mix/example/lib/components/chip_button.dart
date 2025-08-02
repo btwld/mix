@@ -7,7 +7,7 @@ final chipButtonLabel = Style.text()
     .fontWeight(FontWeight.w500)
     .color(Colors.pink);
 
-final chipButtonContainer = Style.box()
+final chipButtonContainer = Style.box(
     .height(40)
     .width(100)
     .color(Colors.blue)
@@ -16,9 +16,10 @@ final chipButtonContainer = Style.box()
     .onPressed(BoxMix.color(Colors.blue.shade900))
     .wrap(
       ModifierConfig.defaultText(chipButtonLabel),
-    );
+    )
+);
 
-final filterChipContainer = Style.box()
+final filterChipContainer = Style.box(
     .height(36)
     .color(Colors.grey.shade200)
     .borderRadius(BorderRadiusMix.circular(18))
@@ -32,9 +33,10 @@ final filterChipContainer = Style.box()
             .fontWeight(FontWeight.w500)
             .color(Colors.grey.shade700),
       ),
-    );
+    )
+);
 
-final filterChipSelectedContainer = Style.box()
+final filterChipSelectedContainer = Style.box(
     .height(36)
     .color(Colors.blue.shade100)
     .borderRadius(BorderRadiusMix.circular(18))
@@ -48,7 +50,8 @@ final filterChipSelectedContainer = Style.box()
             .fontWeight(FontWeight.w500)
             .color(Colors.blue.shade800),
       ),
-    );
+    )
+);
 
  
 class ChipButton extends StatelessWidget {

@@ -16,10 +16,11 @@ class Example extends StatelessWidget {
     ).withBox(BoxMix.height(100).width(100));
 
     final boxStyle =
-        Style.box() //
+        Style.box( //
             .color(Colors.deepOrange)
             .height(100)
-            .width(100);
+            .width(100)
+        );
 
     return ZBox(
       style: flexStyle,

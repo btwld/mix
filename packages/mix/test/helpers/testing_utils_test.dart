@@ -52,7 +52,7 @@ void main() {
       test('matches value from chained merges (replacement strategy)', () {
         const colorToken = MixToken<Color>('primary');
         final prop1 = Prop<Color>(Colors.red);
-        final prop2 = Prop<Color>.token(colorToken);
+        final prop2 = Prop.token(colorToken);
         final prop3 = Prop<Color>(Colors.blue);
 
         final merged = prop1.merge(prop2).merge(prop3);

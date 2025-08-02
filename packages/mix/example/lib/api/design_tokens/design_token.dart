@@ -31,11 +31,12 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = Style.box()
+    final style = Style.box(
         .borderRadius(BorderRadiusMix.raw(topLeft: Prop.token(pill)))
         .color(Colors.red)
         .height(100)
-        .width(100);
+        .width(100)
+    );
 
     return Box(style: style);
   }

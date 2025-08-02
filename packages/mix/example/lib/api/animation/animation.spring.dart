@@ -18,7 +18,7 @@ class _ExampleState extends State<Example> {
 
   @override
   Widget build(BuildContext context) {
-    final style = Style.box()
+    final style = Style.box(
         .color(Colors.black)
         .height(100)
         .width(100)
@@ -26,7 +26,8 @@ class _ExampleState extends State<Example> {
         .transform(Matrix4.identity())
         .transformAlignment(Alignment.center)
         .translate(0, _translated ? 100 : -100)
-        .animate(AnimationConfig.spring(300.ms, bounce: 0.6));
+        .animate(AnimationConfig.spring(300.ms, bounce: 0.6))
+    );
 
     return Row(
       spacing: 20,

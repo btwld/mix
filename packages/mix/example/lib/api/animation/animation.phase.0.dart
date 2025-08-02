@@ -20,7 +20,7 @@ class _BlockAnimationState extends State<BlockAnimation> {
 
   @override
   Widget build(BuildContext context) {
-    final style = Style.box()
+    final style = Style.box(
         .color(Colors.deepPurple)
         .height(100)
         .width(100)
@@ -39,7 +39,8 @@ class _BlockAnimationState extends State<BlockAnimation> {
             .compress => .decelerate(100.ms),
             .expanded => .bounceOut(600.ms),
           },
-        );
+        )
+    );
 
     return GestureDetector(
       onTap: () {

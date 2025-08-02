@@ -60,7 +60,7 @@ void main() {
         final result = util.alignment(Alignment.topLeft);
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(result, isA<StackMix>());
         expect(spec.alignment, Alignment.topLeft);
       });
@@ -69,7 +69,7 @@ void main() {
         final result = util.fit(StackFit.expand);
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(result, isA<StackMix>());
         expect(spec.fit, StackFit.expand);
       });
@@ -78,7 +78,7 @@ void main() {
         final result = util.textDirection(TextDirection.rtl);
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(result, isA<StackMix>());
         expect(spec.textDirection, TextDirection.rtl);
       });
@@ -87,7 +87,7 @@ void main() {
         final result = util.clipBehavior(Clip.antiAlias);
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(result, isA<StackMix>());
         expect(spec.clipBehavior, Clip.antiAlias);
       });
@@ -177,11 +177,13 @@ void main() {
 
     group('Resolve functionality', () {
       test('resolve returns StackSpec with resolved properties', () {
-        final testUtil = StackSpecUtility(StackMix(
-          alignment: Alignment.center,
-          fit: StackFit.expand,
-          clipBehavior: Clip.antiAlias,
-        ));
+        final testUtil = StackSpecUtility(
+          StackMix(
+            alignment: Alignment.center,
+            fit: StackFit.expand,
+            clipBehavior: Clip.antiAlias,
+          ),
+        );
 
         final context = MockBuildContext();
         final spec = testUtil.resolve(context);
@@ -206,131 +208,131 @@ void main() {
     group('Chaining methods', () {
       test('basic alignment mutation test', () {
         final util = StackSpecUtility();
-        
+
         final result = util.alignment(Alignment.center);
         expect(result, isA<StackMix>());
-        
+
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(spec.alignment, Alignment.center);
       });
 
       test('basic fit mutation test', () {
         final util = StackSpecUtility();
-        
+
         final result = util.fit(StackFit.expand);
         expect(result, isA<StackMix>());
-        
+
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(spec.fit, StackFit.expand);
       });
-      
+
       test('chaining utility methods accumulates properties', () {
         final util = StackSpecUtility();
-        
+
         // Chain multiple method calls - these mutate internal state
         util.alignment(Alignment.center);
         util.fit(StackFit.expand);
         util.clipBehavior(Clip.antiAlias);
-        
+
         // Verify accumulated state through resolution
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(spec.alignment, Alignment.center);
         expect(spec.fit, StackFit.expand);
         expect(spec.clipBehavior, Clip.antiAlias);
       });
-      
+
       test('cascade notation works with utility methods', () {
         final util = StackSpecUtility()
           ..alignment(Alignment.center)
           ..fit(StackFit.expand)
           ..clipBehavior(Clip.antiAlias);
-        
+
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(spec.alignment, Alignment.center);
         expect(spec.fit, StackFit.expand);
         expect(spec.clipBehavior, Clip.antiAlias);
       });
-      
+
       test('individual utility calls return StackMix for further chaining', () {
         final util = StackSpecUtility();
-        
+
         // Each utility call should return a StackMix
         final alignmentResult = util.alignment(Alignment.center);
         final fitResult = util.fit(StackFit.expand);
         final clipResult = util.clipBehavior(Clip.antiAlias);
-        
+
         expect(alignmentResult, isA<StackMix>());
         expect(fitResult, isA<StackMix>());
         expect(clipResult, isA<StackMix>());
-        
+
         // But the utility itself should have accumulated all changes
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(spec.alignment, Alignment.center);
         expect(spec.fit, StackFit.expand);
         expect(spec.clipBehavior, Clip.antiAlias);
       });
     });
-    
+
     group('Mutating behavior vs Builder pattern', () {
       test('utility mutates internal state (not builder pattern)', () {
         final util = StackSpecUtility();
-        
+
         // Store initial resolution
         final context = MockBuildContext();
         final initialSpec = util.resolve(context);
         expect(initialSpec.alignment, isNull);
-        
+
         // Mutate the utility
         util.alignment(Alignment.center);
-        
+
         // Same utility instance should now resolve with the alignment
         final mutatedSpec = util.resolve(context);
         expect(mutatedSpec.alignment, Alignment.center);
-        
+
         // This proves it's mutating, not building new instances
       });
-      
+
       test('multiple calls accumulate on same instance', () {
         final util = StackSpecUtility();
-        
+
         util.alignment(Alignment.center);
         util.fit(StackFit.expand);
         util.clipBehavior(Clip.antiAlias);
-        
+
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         // All properties should be present in the same instance
         expect(spec.alignment, Alignment.center);
         expect(spec.fit, StackFit.expand);
         expect(spec.clipBehavior, Clip.antiAlias);
       });
-      
+
       test('demonstrates difference from immutable builder pattern', () {
         final util = StackSpecUtility();
-        
+
         // In a builder pattern, this would create new instances
         // In mutable pattern, this modifies the same instance
         final result1 = util.alignment(Alignment.center);
         final result2 = util.fit(StackFit.expand);
-        
+
         // Both results are different StackMix instances
         expect(result1, isNot(same(result2)));
-        
+
         // But the utility itself has accumulated both changes
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(spec.alignment, Alignment.center);
         expect(spec.fit, StackFit.expand);
       });
@@ -338,11 +340,13 @@ void main() {
 
     group('Integration with resolvesTo matcher', () {
       test('utility resolves to correct StackSpec', () {
-        final testUtil = StackSpecUtility(StackMix(
-          alignment: Alignment.center,
-          fit: StackFit.expand,
-          clipBehavior: Clip.antiAlias,
-        ));
+        final testUtil = StackSpecUtility(
+          StackMix(
+            alignment: Alignment.center,
+            fit: StackFit.expand,
+            clipBehavior: Clip.antiAlias,
+          ),
+        );
 
         expect(
           testUtil,
@@ -414,7 +418,9 @@ void main() {
       });
 
       test('merge with self returns new instance', () {
-        final testUtil = StackSpecUtility(StackMix(alignment: Alignment.center));
+        final testUtil = StackSpecUtility(
+          StackMix(alignment: Alignment.center),
+        );
         final result = testUtil.merge(testUtil);
         final context = MockBuildContext();
         final spec = result.resolve(context);

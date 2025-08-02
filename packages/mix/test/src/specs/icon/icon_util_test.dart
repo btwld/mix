@@ -80,7 +80,7 @@ void main() {
         final result = util.size(24.0);
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(result, isA<IconMix>());
         expect(spec.size, 24.0);
       });
@@ -89,7 +89,7 @@ void main() {
         final result = util.weight(400.0);
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(result, isA<IconMix>());
         expect(spec.weight, 400.0);
       });
@@ -98,7 +98,7 @@ void main() {
         final result = util.grade(0.5);
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(result, isA<IconMix>());
         expect(spec.grade, 0.5);
       });
@@ -107,7 +107,7 @@ void main() {
         final result = util.opticalSize(48.0);
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(result, isA<IconMix>());
         expect(spec.opticalSize, 48.0);
       });
@@ -116,7 +116,7 @@ void main() {
         final result = util.textDirection(TextDirection.rtl);
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(result, isA<IconMix>());
         expect(spec.textDirection, TextDirection.rtl);
       });
@@ -125,7 +125,7 @@ void main() {
         final result = util.applyTextScaling(false);
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(result, isA<IconMix>());
         expect(spec.applyTextScaling, false);
       });
@@ -134,7 +134,7 @@ void main() {
         final result = util.fill(0.8);
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(result, isA<IconMix>());
         expect(spec.fill, 0.8);
       });
@@ -279,131 +279,131 @@ void main() {
     group('Chaining methods', () {
       test('basic size mutation test', () {
         final util = IconSpecUtility();
-        
+
         final result = util.size(24.0);
         expect(result, isA<IconMix>());
-        
+
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(spec.size, 24.0);
       });
 
       test('basic weight mutation test', () {
         final util = IconSpecUtility();
-        
+
         final result = util.weight(400.0);
         expect(result, isA<IconMix>());
-        
+
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(spec.weight, 400.0);
       });
-      
+
       test('chaining utility methods accumulates properties', () {
         final util = IconSpecUtility();
-        
+
         // Chain multiple method calls - these mutate internal state
         util.size(24.0);
         util.weight(400.0);
         util.fill(0.8);
-        
+
         // Verify accumulated state through resolution
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(spec.size, 24.0);
         expect(spec.weight, 400.0);
         expect(spec.fill, 0.8);
       });
-      
+
       test('cascade notation works with utility methods', () {
         final util = IconSpecUtility()
           ..size(24.0)
           ..weight(400.0)
           ..fill(0.8);
-        
+
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(spec.size, 24.0);
         expect(spec.weight, 400.0);
         expect(spec.fill, 0.8);
       });
-      
+
       test('individual utility calls return IconMix for further chaining', () {
         final util = IconSpecUtility();
-        
+
         // Each utility call should return an IconMix
         final sizeResult = util.size(24.0);
         final weightResult = util.weight(400.0);
         final fillResult = util.fill(0.8);
-        
+
         expect(sizeResult, isA<IconMix>());
         expect(weightResult, isA<IconMix>());
         expect(fillResult, isA<IconMix>());
-        
+
         // But the utility itself should have accumulated all changes
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(spec.size, 24.0);
         expect(spec.weight, 400.0);
         expect(spec.fill, 0.8);
       });
     });
-    
+
     group('Mutating behavior vs Builder pattern', () {
       test('utility mutates internal state (not builder pattern)', () {
         final util = IconSpecUtility();
-        
+
         // Store initial resolution
         final context = MockBuildContext();
         final initialSpec = util.resolve(context);
         expect(initialSpec.size, isNull);
-        
+
         // Mutate the utility
         util.size(24.0);
-        
+
         // Same utility instance should now resolve with the size
         final mutatedSpec = util.resolve(context);
         expect(mutatedSpec.size, 24.0);
-        
+
         // This proves it's mutating, not building new instances
       });
-      
+
       test('multiple calls accumulate on same instance', () {
         final util = IconSpecUtility();
-        
+
         util.size(24.0);
         util.weight(400.0);
         util.fill(0.8);
-        
+
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         // All properties should be present in the same instance
         expect(spec.size, 24.0);
         expect(spec.weight, 400.0);
         expect(spec.fill, 0.8);
       });
-      
+
       test('demonstrates difference from immutable builder pattern', () {
         final util = IconSpecUtility();
-        
+
         // In a builder pattern, this would create new instances
         // In mutable pattern, this modifies the same instance
         final result1 = util.size(24.0);
         final result2 = util.weight(400.0);
-        
+
         // Both results are different IconMix instances
         expect(result1, isNot(same(result2)));
-        
+
         // But the utility itself has accumulated both changes
         final context = MockBuildContext();
         final spec = util.resolve(context);
-        
+
         expect(spec.size, 24.0);
         expect(spec.weight, 400.0);
       });

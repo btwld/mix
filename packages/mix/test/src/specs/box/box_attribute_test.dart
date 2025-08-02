@@ -212,7 +212,7 @@ void main() {
         final boxMix = BoxMix().rotate(1.5);
 
         expect(boxMix.$transform, isNotNull);
-        final transform = boxMix.$transform!.value;
+        final transform = boxMix.$transform!.$value;
         expect(transform, isA<Matrix4>());
       });
 
@@ -220,7 +220,7 @@ void main() {
         final boxMix = BoxMix().scale(2.0);
 
         expect(boxMix.$transform, isNotNull);
-        final transform = boxMix.$transform!.value;
+        final transform = boxMix.$transform!.$value;
         expect(transform, isA<Matrix4>());
       });
 
@@ -228,7 +228,7 @@ void main() {
         final boxMix = BoxMix().translate(10.0, 20.0, 5.0);
 
         expect(boxMix.$transform, isNotNull);
-        final transform = boxMix.$transform!.value;
+        final transform = boxMix.$transform!.$value;
         expect(transform, isA<Matrix4>());
       });
 
@@ -236,7 +236,7 @@ void main() {
         final boxMix = BoxMix().skew(0.1, 0.2);
 
         expect(boxMix.$transform, isNotNull);
-        final transform = boxMix.$transform!.value;
+        final transform = boxMix.$transform!.$value;
         expect(transform, isA<Matrix4>());
       });
 
@@ -244,7 +244,7 @@ void main() {
         final boxMix = BoxMix().transformReset();
 
         expect(boxMix.$transform, isNotNull);
-        final transform = boxMix.$transform!.value;
+        final transform = boxMix.$transform!.$value;
         expect(transform, Matrix4.identity());
       });
 

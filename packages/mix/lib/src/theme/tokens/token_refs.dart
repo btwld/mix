@@ -1,8 +1,9 @@
 import 'package:flutter/widgets.dart';
 
+import '../../core/prop.dart';
 import 'mix_token.dart';
 
-abstract class TokenRef<T> {
+sealed class TokenRef<T> {
   final MixToken<T> token;
   const TokenRef(this.token);
   @override
@@ -21,15 +22,25 @@ abstract class TokenRef<T> {
 
   @override
   String toString() {
-    return 'TokenRef<$T>(${token.name})';
+    return '$runtimeType(${token.name})';
   }
 
   @override
   int get hashCode => token.hashCode;
 }
 
-final class ColorRef extends TokenRef<Color> implements Color {
-  const ColorRef(super.token);
+mixin ValueRef<T> on Prop<T> {
+  @override
+  Never noSuchMethod(Invocation invocation) {
+    throw UnimplementedError(
+      'This is a Token reference for $T, so it does not implement ${invocation.memberName}.',
+    );
+  }
+}
+
+final class ColorRef extends Prop<Color> with ValueRef<Color> implements Color {
+  const ColorRef({super.value, super.token, super.directives, super.animation})
+    : super.internal();
 }
 
 /// Token reference for [AlignmentGeometry] values
@@ -156,15 +167,15 @@ final class TextHeightBehaviorRef extends TokenRef<TextHeightBehavior>
   }
 }
 
+/// Token reference for [BoxBorder] values
+final class BoxBorderRef extends TokenRef<BoxBorder> implements BoxBorder {
+  const BoxBorderRef(super.token);
+}
+
 /// Token reference for [BorderRadiusGeometry] values
 final class BorderRadiusGeometryRef extends TokenRef<BorderRadiusGeometry>
     implements BorderRadiusGeometry {
   const BorderRadiusGeometryRef(super.token);
-}
-
-/// Token reference for [BoxBorder] values
-final class BoxBorderRef extends TokenRef<BoxBorder> implements BoxBorder {
-  const BoxBorderRef(super.token);
 }
 
 /// Token reference for [BorderRadius] values
@@ -194,6 +205,21 @@ final class GradientRef extends TokenRef<Gradient> implements Gradient {
   const GradientRef(super.token);
 }
 
+final class LinearGradientRef extends TokenRef<LinearGradient>
+    implements LinearGradient {
+  const LinearGradientRef(super.token);
+}
+
+final class RadialGradientRef extends TokenRef<RadialGradient>
+    implements RadialGradient {
+  const RadialGradientRef(super.token);
+}
+
+final class SweepGradientRef extends TokenRef<SweepGradient>
+    implements SweepGradient {
+  const SweepGradientRef(super.token);
+}
+
 /// Token reference for [EdgeInsetsGeometry] values
 final class EdgeInsetsGeometryRef extends TokenRef<EdgeInsetsGeometry>
     implements EdgeInsetsGeometry {
@@ -215,6 +241,15 @@ final class EdgeInsetsDirectionalRef extends TokenRef<EdgeInsetsDirectional>
 final class BoxDecorationRef extends TokenRef<BoxDecoration>
     implements BoxDecoration {
   const BoxDecorationRef(super.token);
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return super.toString();
+  }
+}
+
+final class BorderSideRef extends TokenRef<BorderSide> implements BorderSide {
+  const BorderSideRef(super.token);
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -341,57 +376,65 @@ MixToken<T>? getTokenFromValue<T>(T value) {
 
 @visibleForTesting
 void assertIsRealType(Type value) {
-  Type? realType;
+  // Only check if the value is a TokenRef type that should be replaced
+  final Type? realType = switch (value) {
+    // Color types
+    == ColorRef => Color,
 
-  if (value == ColorRef) {
-    realType = Color;
-  } else if (value == RadiusRef) {
-    realType = Radius;
-  } else if (value == TextStyleRef) {
-    realType = TextStyle;
-  } else if (value == ShadowRef) {
-    realType = Shadow;
-  } else if (value == GradientRef) {
-    realType = Gradient;
-  } else if (value == BoxDecorationRef) {
-    realType = BoxDecoration;
-  } else if (value == ShapeBorderRef) {
-    realType = ShapeBorder;
-  } else if (value == BoxConstraintsRef) {
-    realType = BoxConstraints;
-  } else if (value == DecorationImageRef) {
-    realType = DecorationImage;
-  } else if (value == EdgeInsetsGeometryRef) {
-    realType = EdgeInsetsGeometry;
-  } else if (value == BorderRadiusGeometryRef) {
-    realType = BorderRadiusGeometry;
-  } else if (value == AlignmentGeometryRef) {
-    realType = AlignmentGeometry;
-  } else if (value == TextDecorationRef) {
-    realType = TextDecoration;
-  } else if (value == OffsetRef) {
-    realType = Offset;
-  } else if (value == RectRef) {
-    realType = Rect;
-  } else if (value == LocaleRef) {
-    realType = Locale;
-  } else if (value == ImageProviderRef) {
-    realType = ImageProvider;
-  } else if (value == GradientTransformRef) {
-    realType = GradientTransform;
-  } else if (value == Matrix4Ref) {
-    realType = Matrix4;
-  } else if (value == TextScalerRef) {
-    realType = TextScaler;
-  } else if (value == TableColumnWidthRef) {
-    realType = TableColumnWidth;
-  } else if (value == TableBorderRef) {
-    realType = TableBorder;
-  } else if (value == StrutStyleRef) {
-    realType = StrutStyle;
-  } else if (value == TextHeightBehaviorRef) {
-    realType = TextHeightBehavior;
-  }
+    // Border types
+    == BorderSideRef => BorderSide,
+    == BoxBorderRef => BoxBorder,
+    == BorderRadiusRef => BorderRadius,
+    == BorderRadiusDirectionalRef => BorderRadiusDirectional,
+    == BorderRadiusGeometryRef => BorderRadiusGeometry,
+
+    // Gradient types
+    == GradientRef => Gradient,
+    == LinearGradientRef => LinearGradient,
+    == RadialGradientRef => RadialGradient,
+    == SweepGradientRef => SweepGradient,
+    == GradientTransformRef => GradientTransform,
+
+    // Geometry types
+    == AlignmentGeometryRef => AlignmentGeometry,
+    == AlignmentRef => Alignment,
+    == AlignmentDirectionalRef => AlignmentDirectional,
+    == EdgeInsetsGeometryRef => EdgeInsetsGeometry,
+    == EdgeInsetsRef => EdgeInsets,
+    == EdgeInsetsDirectionalRef => EdgeInsetsDirectional,
+
+    // Shape and decoration types
+    == RadiusRef => Radius,
+    == OffsetRef => Offset,
+    == RectRef => Rect,
+    == ShadowRef => Shadow,
+    == BoxShadowRef => BoxShadow,
+    == BoxDecorationRef => BoxDecoration,
+    == DecorationImageRef => DecorationImage,
+    == ShapeBorderRef => ShapeBorder,
+    == BoxConstraintsRef => BoxConstraints,
+
+    // Text types
+    == TextStyleRef => TextStyle,
+    == TextDecorationRef => TextDecoration,
+    == StrutStyleRef => StrutStyle,
+    == TextHeightBehaviorRef => TextHeightBehavior,
+    == TextScalerRef => TextScaler,
+    == FontFeatureRef => FontFeature,
+    == FontWeightRef => FontWeight,
+
+    // Other types
+    == LocaleRef => Locale,
+    == ImageProviderRef => ImageProvider,
+    == Matrix4Ref => Matrix4,
+    == TableColumnWidthRef => TableColumnWidth,
+    == TableBorderRef => TableBorder,
+    == DurationRef => Duration,
+    == CurveRef => Curve,
+
+    // All other types are valid - not TokenRef types
+    _ => null,
+  };
 
   assert(
     realType == null,

@@ -53,9 +53,7 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
        $variants = variants,
        $inherit = inherit;
 
-  static BoxMix box([BoxMix? value]) {
-    return value ?? BoxMix();
-  }
+  static BoxMix box(BoxMix value) => value;
 
   @internal
   Set<WidgetState> get widgetStates {

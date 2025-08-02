@@ -31,39 +31,34 @@ void expectProp<T>(PropBase<T>? prop, dynamic expected) {
 
   // Handle Prop
   if (prop is Prop<T>) {
-    final source = prop.source;
-    if (source == null) {
-      fail('Expected Prop<$T> to have a source, but source was null');
-    }
+    final value = prop.$value;
+    final token = prop.$token;
 
-    // Handle token expectations
-    if (expected is MixToken<T>) {
-      if (source is TokenPropSource<T>) {
-        expect(
-          source.token,
-          expected,
-          reason: 'Prop<$T> token does not match expected',
-        );
-      } else {
-        fail('Expected token, but prop source is ${source.runtimeType}');
-      }
-      return;
-    }
-
-    // Handle direct value expectations
-    if (source is ValuePropSource<T>) {
+    if (value == null && token == null) {
       expect(
-        source.value,
+        isNull,
         expected,
-        reason: 'Prop<$T> value does not match expected',
+        reason: 'Prop<$T> has no value or token defined',
       );
-    } else {
-      fail(
-        'Expected direct value, but prop source is ${source.runtimeType}. '
-        'Use a token expectation if this prop contains a token.',
-      );
+
+      // Handle token expectations
+      if (expected is MixToken<T>) {
+        if (token != null) {
+          expect(
+            token,
+            expected,
+            reason: 'Prop<$T> token does not match expected',
+          );
+        } else {
+          fail('Expected token, but prop has value: $value');
+        }
+        return;
+      }
+
+      // Handle direct value expectations
+
+      expect(value, expected, reason: 'Prop<$T> value does not match expected');
     }
-    return;
   }
 
   fail('Unknown prop type: ${prop.runtimeType}');

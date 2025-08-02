@@ -5,54 +5,13 @@ import 'package:mix/mix.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  group('PropSource Types', () {
-    group('ValuePropSource', () {
-      test('stores and returns value', () {
-        const source = ValuePropSource<int>(42);
-        expect(source.value, equals(42));
-      });
-
-      test('equality and hashCode', () {
-        const source1 = ValuePropSource<int>(42);
-        const source2 = ValuePropSource<int>(42);
-        const source3 = ValuePropSource<int>(24);
-
-        expect(source1, equals(source2));
-        expect(source1.hashCode, equals(source2.hashCode));
-        expect(source1, isNot(equals(source3)));
-      });
-    });
-
-    group('TokenPropSource', () {
-      test('stores token reference', () {
-        final token = MixToken<Color>('primary');
-        final source = TokenPropSource<Color>(token);
-
-        expect(source.token, equals(token));
-      });
-
-      test('equality and hashCode', () {
-        final token1 = MixToken<Color>('primary');
-        final token2 = MixToken<Color>('secondary');
-
-        final source1 = TokenPropSource<Color>(token1);
-        final source2 = TokenPropSource<Color>(token1);
-        final source3 = TokenPropSource<Color>(token2);
-
-        expect(source1, equals(source2));
-        expect(source1.hashCode, equals(source2.hashCode));
-        expect(source1, isNot(equals(source3)));
-      });
-    });
-  });
-
   group('Prop', () {
     test('value constructor stores direct value', () {
       final prop = Prop<int>(42);
 
       expect(prop.hasValue, isTrue);
       expect(prop.hasToken, isFalse);
-      expect(prop.value, equals(42));
+      expect(prop.$value, equals(42));
     });
 
     test('token constructor stores token reference', () {
@@ -61,7 +20,7 @@ void main() {
 
       expect(prop.hasValue, isFalse);
       expect(prop.hasToken, isTrue);
-      expect(prop.token, equals(token));
+      expect(prop.$token, equals(token));
     });
 
     test('merge replaces source with other source', () {
@@ -71,7 +30,7 @@ void main() {
       final merged = prop1.merge(prop2);
 
       expect(merged.hasValue, isTrue);
-      expect(merged.value, equals(20));
+      expect(merged.$value, equals(20));
     });
 
     test('resolves direct values', () {

@@ -11,12 +11,13 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = Style.box()
+    final style = Style.box(
         .color(Colors.red)
         .height(100)
         .width(100)
         .borderRadius(BorderRadiusMix.all(Radius.circular(10)))
-        .onFocused(BoxMix.color(Colors.blue));
+        .onFocused(BoxMix.color(Colors.blue))
+    );
 
     return Row(
       mainAxisSize: MainAxisSize.min,

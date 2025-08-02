@@ -32,7 +32,7 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
           });
         },
         child: Box(
-          style: Style.box()
+          style: Style.box(
               .color(
                 _trigger.value ? Colors.deepPurpleAccent : Colors.grey.shade300,
               )
@@ -43,9 +43,10 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
               .alignment(
                 _trigger.value ? Alignment.centerRight : Alignment.centerLeft,
               )
-              .animate(AnimationConfig.easeOut(300.ms)),
+              .animate(AnimationConfig.easeOut(300.ms))
+          ),
           child: Box(
-            style: Style.box()
+            style: Style.box(
                 .height(30)
                 .width(40)
                 .color(Colors.white)
@@ -81,7 +82,8 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
                   configBuilder: (phase) {
                     return CurveAnimationConfig.decelerate(150.ms);
                   },
-                ),
+                )
+            ),
           ),
         ),
       ),

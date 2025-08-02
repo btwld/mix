@@ -11,7 +11,7 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = Style.box()
+    final style = Style.box(
         .gradient(
           GradientMix.linear(
             LinearGradientMix(
@@ -24,7 +24,8 @@ class Example extends StatelessWidget {
         .shadow(BoxShadowMix(color: Colors.deepPurple.shade700, blurRadius: 10))
         .height(50)
         .width(100)
-        .borderRadius(BorderRadiusMix.all(Radius.circular(10)));
+        .borderRadius(BorderRadiusMix.all(Radius.circular(10)))
+    );
 
     return Box(style: style);
   }

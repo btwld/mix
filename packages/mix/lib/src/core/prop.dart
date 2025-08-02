@@ -6,7 +6,6 @@ import '../properties/painting/decoration_mix.dart';
 import '../properties/painting/shape_border_mix.dart';
 import '../theme/mix_theme.dart';
 import '../theme/tokens/mix_token.dart';
-import '../theme/tokens/token_refs.dart';
 import 'decoration_merge.dart';
 import 'directive.dart';
 import 'helpers.dart';
@@ -75,35 +74,38 @@ sealed class PropBase<V> extends Mixable<V> with Resolvable<V> {
 /// Prop for regular types - uses replacement merge strategy
 @immutable
 class Prop<V> extends PropBase<V> {
-  final PropSource<V>? source;
+  final V? $value;
+  final MixToken<V>? $token;
 
-  const Prop.raw({this.source, super.directives, super.animation});
+  @protected
+  const Prop.internal({
+    V? value,
+    MixToken<V>? token,
+    super.directives,
+    super.animation,
+  }) : $value = value,
+       $token = token;
 
   // Named constructors for clarity
+  @Deprecated('Use Prop.value(value) instead.')
   factory Prop(
     V value, {
     List<MixDirective<V>>? directives,
     AnimationConfig? animation,
   }) {
-    // Check for token references and use explicit type parameter
-    final token = getTokenFromValue<V>(value);
-    if (token != null) {
-      return Prop.token(token, directives: directives, animation: animation);
-    }
-
-    return Prop.raw(
-      source: ValuePropSource(value),
+    return Prop.internal(
+      value: value,
       directives: directives,
       animation: animation,
     );
   }
 
-  Prop.token(
+  const Prop.token(
     MixToken<V> token, {
     List<MixDirective<V>>? directives,
     AnimationConfig? animation,
-  }) : this.raw(
-         source: TokenPropSource(token),
+  }) : this.internal(
+         token: token,
          directives: directives,
          animation: animation,
        );
@@ -111,35 +113,25 @@ class Prop<V> extends PropBase<V> {
   const Prop.directives(
     List<MixDirective<V>> directives, {
     AnimationConfig? animation,
-  }) : this.raw(source: null, directives: directives, animation: animation);
+  }) : this.internal(directives: directives, animation: animation);
 
   const Prop.animation(AnimationConfig animation)
-    : this.raw(source: null, directives: null, animation: animation);
+    : this.internal(directives: null, animation: animation);
+
+  static Prop<V> value<V>(V value) {
+    if (value is Prop<V>) return value;
+
+    return Prop.internal(value: value);
+  }
 
   static Prop<V>? maybe<V>(V? value) {
     if (value == null) return null;
 
-    return Prop(value);
+    return Prop.value(value);
   }
 
   // Helper methods for Prop
-  bool get hasValue => source is ValuePropSource<V>;
-
-  V get value {
-    if (source is! ValuePropSource<V>) {
-      throw FlutterError('Prop<$V> does not have a direct value source');
-    }
-
-    return (source as ValuePropSource<V>).value;
-  }
-
-  MixToken<V> get token {
-    if (source is! TokenPropSource<V>) {
-      throw FlutterError('Prop<$V> does not have a token source');
-    }
-
-    return (source as TokenPropSource<V>).token;
-  }
+  bool get hasValue => $value != null;
 
   Prop<V> directives(List<MixDirective<V>> directives) {
     return merge(Prop.directives(directives));
@@ -153,9 +145,24 @@ class Prop<V> extends PropBase<V> {
   Prop<V> merge(covariant Prop<V>? other) {
     if (other == null) return this;
 
+    var value = $value;
+    var token = $token;
+
+    var otherValue = other.$value;
+    var otherToken = other.$token;
+
+    if (otherToken != null) {
+      value = null;
+      token = otherToken;
+    } else if (otherValue != null) {
+      value = otherValue;
+      token = null;
+    }
+
     // For static props, the other source replaces this source
-    return Prop.raw(
-      source: other.source ?? source,
+    return Prop.internal(
+      value: value,
+      token: token,
       directives: mergeDirectives(other.$directives),
       animation: mergeAnimation(other.$animation),
     );
@@ -163,21 +170,17 @@ class Prop<V> extends PropBase<V> {
 
   @override
   V resolve(BuildContext context) {
-    if (source == null) {
-      throw FlutterError('Prop<$V> has no source defined');
+    if ($token == null && $value == null) {
+      throw FlutterError('Prop<$V> has no value or token defined defined');
     }
 
-    // Resolve the value from the source
-    final resolvedValue = switch (source) {
-      ValuePropSource<V> valueSource => valueSource.value,
-      TokenPropSource<V> tokenSource => MixScope.tokenOf(
-        tokenSource.token,
-        context,
-      ),
-      _ => throw FlutterError(
-        'Unsupported PropSource type: ${source ?? 'null'}',
-      ),
-    };
+    V resolvedValue;
+
+    if ($token != null) {
+      resolvedValue = MixScope.tokenOf($token!, context);
+    } else {
+      resolvedValue = $value as V;
+    }
 
     // Apply directives if any
     return applyDirectives(resolvedValue);
@@ -186,7 +189,11 @@ class Prop<V> extends PropBase<V> {
   @override
   String toString() {
     final parts = <String>[];
-    parts.add('source: ${source ?? 'null'}');
+    if ($token != null) {
+      parts.add('token: ${$token!.name}');
+    } else {
+      parts.add('value: ${$value ?? 'null'}');
+    }
     if ($directives != null && $directives!.isNotEmpty) {
       parts.add('directives: ${$directives!.length}');
     }
@@ -200,16 +207,17 @@ class Prop<V> extends PropBase<V> {
     if (identical(this, other)) return true;
 
     return other is Prop<V> &&
-        other.source == source &&
+        other.$token == $token &&
+        other.$value == $value &&
         listEquals(other.$directives, $directives) &&
         other.$animation == $animation;
   }
 
   @override
-  bool get hasToken => source is TokenPropSource<V>;
+  bool get hasToken => $token != null;
 
   @override
-  int get hashCode => Object.hash(source, $directives, $animation);
+  int get hashCode => Object.hash($token, $value, $directives, $animation);
 }
 
 /// Mix prop for Mix types - uses accumulation merge strategy

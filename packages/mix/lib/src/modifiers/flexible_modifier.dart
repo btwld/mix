@@ -141,7 +141,7 @@ final class FlexibleModifierUtility<T extends Style<Object?>>
   T flex(int v) => builder(FlexibleModifierAttribute(flex: v));
   T tight({int? flex}) => builder(
     FlexibleModifierAttribute.raw(
-      flex: flex != null ? Prop(flex) : null,
+      flex: Prop.maybe(flex),
       fit: Prop(FlexFit.tight),
     ),
   );

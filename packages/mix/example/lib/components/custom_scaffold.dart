@@ -11,7 +11,7 @@ final scaffoldContainer = Style.flexbox()
       BoxMix.color(Colors.white)
     );
 
-final appHeaderContainer = Style.box()
+final appHeaderContainer = Style.box(
     .height(80)
     .width(double.infinity)
     .color(Colors.blue.shade100)
@@ -23,12 +23,14 @@ final appHeaderContainer = Style.box()
             .fontWeight(FontWeight.bold)
             .color(Colors.blue.shade800),
       ),
-    );
+    )
+);
 
-final scaffoldBodyContainer = Style.box()
+final scaffoldBodyContainer = Style.box(
     .color(Colors.grey.shade50)
     .padding(EdgeInsetsMix.all(16))
-    .width(double.infinity);
+    .width(double.infinity)
+);
 
 class CustomScaffold extends StatelessWidget {
   const CustomScaffold({

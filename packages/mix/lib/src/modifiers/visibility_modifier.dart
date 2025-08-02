@@ -107,10 +107,10 @@ class VisibilityModifierAttribute extends ModifierAttribute<VisibilityModifier>
 final class VisibilityModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, VisibilityModifierAttribute> {
   const VisibilityModifierUtility(super.builder);
-  
+
   /// Sets the visibility to true.
   T on() => call(true);
-  
+
   /// Sets the visibility to false.
   T off() => call(false);
 

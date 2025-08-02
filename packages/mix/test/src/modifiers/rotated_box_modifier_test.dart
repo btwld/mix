@@ -299,7 +299,7 @@ void main() {
 
       expect(
         d90Result.value.quarterTurns!,
-        resolvesTo(call1Result.value.quarterTurns!.value),
+        resolvesTo(call1Result.value.quarterTurns!.$value),
       );
 
       final d180Result = utility.d180();
@@ -307,7 +307,7 @@ void main() {
 
       expect(
         d180Result.value.quarterTurns!,
-        resolvesTo(call2Result.value.quarterTurns!.value),
+        resolvesTo(call2Result.value.quarterTurns!.$value),
       );
 
       final d270Result = utility.d270();
@@ -315,7 +315,7 @@ void main() {
 
       expect(
         d270Result.value.quarterTurns!,
-        resolvesTo(call3Result.value.quarterTurns!.value),
+        resolvesTo(call3Result.value.quarterTurns!.$value),
       );
     });
   });
