@@ -291,7 +291,9 @@ class FlexMix extends Style<FlexSpec>
       clipBehavior: $clipBehavior.tryMerge(other.$clipBehavior),
       gap: $gap.tryMerge(other.$gap),
       animation: other.$animation ?? $animation,
-      modifierConfig: $modifierConfig.tryMerge(other.$modifierConfig),
+      modifierConfig: $widgetDecoratorConfig.tryMerge(
+        other.$widgetDecoratorConfig,
+      ),
       variants: mergeVariantLists($variants, other.$variants),
       inherit: other.$inherit ?? $inherit,
     );
@@ -336,7 +338,7 @@ class FlexMix extends Style<FlexSpec>
     $clipBehavior,
     $gap,
     $animation,
-    $modifierConfig,
+    $widgetDecoratorConfig,
     $variants,
   ];
 }

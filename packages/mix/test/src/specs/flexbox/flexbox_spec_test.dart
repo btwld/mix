@@ -252,8 +252,8 @@ void main() {
           ),
         );
 
-        expect(attribute.$modifierConfig, isNotNull);
-        expect(attribute.$modifierConfig!.$decorators!.length, 2);
+        expect(attribute.$widgetDecoratorConfig, isNotNull);
+        expect(attribute.$widgetDecoratorConfig!.$decorators!.length, 2);
       });
 
       test('modifiers are merged correctly', () {
@@ -274,8 +274,8 @@ void main() {
         final merged = first.merge(second);
 
         // Modifiers are combined when merging
-        expect(merged.$modifierConfig, isNotNull);
-        expect(merged.$modifierConfig!.$decorators!.length, 2);
+        expect(merged.$widgetDecoratorConfig, isNotNull);
+        expect(merged.$widgetDecoratorConfig!.$decorators!.length, 2);
       });
     });
 

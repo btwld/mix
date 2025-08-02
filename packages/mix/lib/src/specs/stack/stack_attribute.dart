@@ -178,7 +178,9 @@ class StackMix extends Style<StackSpec>
       textDirection: $textDirection.tryMerge(other.$textDirection),
       clipBehavior: $clipBehavior.tryMerge(other.$clipBehavior),
       animation: other.$animation ?? $animation,
-      modifierConfig: $modifierConfig.tryMerge(other.$modifierConfig),
+      modifierConfig: $widgetDecoratorConfig.tryMerge(
+        other.$widgetDecoratorConfig,
+      ),
       variants: mergeVariantLists($variants, other.$variants),
 
       inherit: other.$inherit ?? $inherit,
@@ -212,7 +214,7 @@ class StackMix extends Style<StackSpec>
     $textDirection,
     $clipBehavior,
     $animation,
-    $modifierConfig,
+    $widgetDecoratorConfig,
     $variants,
   ];
 }

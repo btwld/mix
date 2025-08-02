@@ -649,7 +649,9 @@ class TextMix extends Style<TextSpec>
       semanticsLabel: $semanticsLabel.tryMerge(other.$semanticsLabel),
       locale: $locale.tryMerge(other.$locale),
       animation: other.$animation ?? $animation,
-      modifierConfig: $modifierConfig.tryMerge(other.$modifierConfig),
+      modifierConfig: $widgetDecoratorConfig.tryMerge(
+        other.$widgetDecoratorConfig,
+      ),
       variants: mergeVariantLists($variants, other.$variants),
       inherit: other.$inherit ?? $inherit,
     );
@@ -742,7 +744,7 @@ class TextMix extends Style<TextSpec>
     $semanticsLabel,
     $locale,
     $animation,
-    $modifierConfig,
+    $widgetDecoratorConfig,
     $variants,
   ];
 }

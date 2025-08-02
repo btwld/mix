@@ -31,7 +31,7 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
     implements StyleElement {
   final List<VariantStyle<S>>? $variants;
 
-  final WidgetDecoratorConfig? $modifierConfig;
+  final WidgetDecoratorConfig? $widgetDecoratorConfig;
   final AnimationConfig? $animation;
 
   final bool? $inherit;
@@ -48,7 +48,7 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
     required AnimationConfig? animation,
 
     required bool? inherit,
-  }) : $modifierConfig = modifierConfig,
+  }) : $widgetDecoratorConfig = modifierConfig,
        $animation = animation,
        $variants = variants,
        $inherit = inherit;
@@ -173,7 +173,9 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
 
     final resolvedSpec = styleData.resolve(context);
     final resolvedAnimation = styleData.$animation;
-    final resolvedModifiers = styleData.$modifierConfig?.resolve(context);
+    final resolvedModifiers = styleData.$widgetDecoratorConfig?.resolve(
+      context,
+    );
 
     return ResolvedStyle(
       spec: resolvedSpec,
@@ -412,7 +414,7 @@ class CompoundStyle extends Style<MultiSpec> {
         duration: duration ?? kDefaultAnimationDuration,
         curve: curve ?? Curves.linear,
       ),
-      modifierConfig: $modifierConfig,
+      modifierConfig: $widgetDecoratorConfig,
       variants: $variants,
     );
   }
@@ -456,8 +458,8 @@ class CompoundStyle extends Style<MultiSpec> {
       attributes: mergedAttributes,
       animation: other.$animation ?? $animation,
       modifierConfig: _mergeModifierConfigs(
-        $modifierConfig,
-        other.$modifierConfig,
+        $widgetDecoratorConfig,
+        other.$widgetDecoratorConfig,
       ),
       variants: mergeVariantLists($variants, other.$variants),
     );

@@ -25,7 +25,7 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.$modifierConfig?.$orderOfDecorators, [
+        expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
           ClipOvalModifier,
           TransformModifier,
         ]);
@@ -43,7 +43,7 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.$modifierConfig?.$orderOfDecorators, [
+        expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
           OpacityModifier,
           PaddingModifier,
         ]);
@@ -134,14 +134,14 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.$modifierConfig, isNotNull);
-        expect(merged.$modifierConfig!.$decorators!.length, 2);
+        expect(merged.$widgetDecoratorConfig, isNotNull);
+        expect(merged.$widgetDecoratorConfig!.$decorators!.length, 2);
         expect(
-          merged.$modifierConfig!.$decorators![0],
+          merged.$widgetDecoratorConfig!.$decorators![0],
           isA<OpacityModifierAttribute>(),
         );
         expect(
-          merged.$modifierConfig!.$decorators![1],
+          merged.$widgetDecoratorConfig!.$decorators![1],
           isA<PaddingModifierAttribute>(),
         );
       });
@@ -211,7 +211,7 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.$modifierConfig?.$orderOfDecorators, [
+        expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
           ClipOvalModifier,
           TransformModifier,
         ]);
@@ -246,7 +246,7 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.$modifierConfig?.$orderOfDecorators, [
+        expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
           ClipOvalModifier,
           TransformModifier,
         ]);
@@ -281,7 +281,7 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.$modifierConfig?.$orderOfDecorators, [
+        expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
           ClipOvalModifier,
           TransformModifier,
         ]);
@@ -316,7 +316,7 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.$modifierConfig?.$orderOfDecorators, [
+        expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
           ClipOvalModifier,
           TransformModifier,
         ]);
@@ -351,7 +351,7 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.$modifierConfig?.$orderOfDecorators, [
+        expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
           ClipOvalModifier,
           TransformModifier,
         ]);
@@ -386,7 +386,7 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.$modifierConfig?.$orderOfDecorators, [
+        expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
           ClipOvalModifier,
           TransformModifier,
         ]);
@@ -421,7 +421,7 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.$modifierConfig?.$orderOfDecorators, [
+        expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
           ClipOvalModifier,
           TransformModifier,
         ]);
@@ -466,7 +466,9 @@ void main() {
 
         final merged = first.merge(second).merge(third);
 
-        expect(merged.$modifierConfig?.$orderOfDecorators, [ClipOvalModifier]);
+        expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
+          ClipOvalModifier,
+        ]);
         expect(merged.$inherit, true);
         expect(merged.$decoration, isNotNull);
       });
@@ -486,15 +488,16 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.$modifierConfig, isNotNull);
-        expect(merged.$modifierConfig!.$decorators!.length, 1);
+        expect(merged.$widgetDecoratorConfig, isNotNull);
+        expect(merged.$widgetDecoratorConfig!.$decorators!.length, 1);
         expect(
-          merged.$modifierConfig!.$decorators![0],
+          merged.$widgetDecoratorConfig!.$decorators![0],
           isA<OpacityModifierAttribute>(),
         );
 
         final mergedOpacity =
-            merged.$modifierConfig!.$decorators![0] as OpacityModifierAttribute;
+            merged.$widgetDecoratorConfig!.$decorators![0]
+                as OpacityModifierAttribute;
         expect(mergedOpacity.opacity, resolvesTo(0.7));
       });
 
@@ -539,7 +542,9 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.$modifierConfig?.$orderOfDecorators, [OpacityModifier]);
+        expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
+          OpacityModifier,
+        ]);
       });
 
       test('null vs empty list handling for modifiers', () {
@@ -555,10 +560,10 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.$modifierConfig, isNotNull);
-        expect(merged.$modifierConfig!.$decorators!.length, 1);
+        expect(merged.$widgetDecoratorConfig, isNotNull);
+        expect(merged.$widgetDecoratorConfig!.$decorators!.length, 1);
         expect(
-          merged.$modifierConfig!.$decorators![0],
+          merged.$widgetDecoratorConfig!.$decorators![0],
           isA<OpacityModifierAttribute>(),
         );
       });
@@ -600,8 +605,8 @@ void main() {
         // Merging with self should return a new instance (not the same reference) with identical values to ensure immutability.
         expect(merged, isNot(same(style)));
         expect(
-          merged.$modifierConfig?.$orderOfDecorators,
-          style.$modifierConfig?.$orderOfDecorators,
+          merged.$widgetDecoratorConfig?.$orderOfDecorators,
+          style.$widgetDecoratorConfig?.$orderOfDecorators,
         );
         expect(merged.$inherit, style.$inherit);
       });
@@ -612,10 +617,10 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.$modifierConfig?.$orderOfDecorators, isNull);
+        expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, isNull);
         expect(merged.$inherit, isNull);
         expect(merged.$animation, isNull);
-        expect(merged.$modifierConfig, isNull);
+        expect(merged.$widgetDecoratorConfig, isNull);
         expect(merged.$variants, isNull);
       });
 
@@ -640,7 +645,9 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.$modifierConfig?.$orderOfDecorators, [OpacityModifier]);
+        expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
+          OpacityModifier,
+        ]);
         expect(merged.$inherit, true);
         expect(merged.$animation, isNotNull);
       });

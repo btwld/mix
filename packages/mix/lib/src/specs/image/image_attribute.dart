@@ -353,7 +353,9 @@ class ImageMix extends Style<ImageSpec>
         other.$matchTextDirection,
       ),
       animation: other.$animation ?? $animation,
-      modifierConfig: $modifierConfig.tryMerge(other.$modifierConfig),
+      modifierConfig: $widgetDecoratorConfig.tryMerge(
+        other.$widgetDecoratorConfig,
+      ),
       variants: mergeVariantLists($variants, other.$variants),
       inherit: other.$inherit ?? $inherit,
     );
@@ -434,7 +436,7 @@ class ImageMix extends Style<ImageSpec>
     $isAntiAlias,
     $matchTextDirection,
     $animation,
-    $modifierConfig,
+    $widgetDecoratorConfig,
     $variants,
   ];
 }

@@ -129,7 +129,9 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
     return StackBoxMix(
       box: box?.merge(other.box) ?? other.box,
       stack: stack?.merge(other.stack) ?? other.stack,
-      modifierConfig: $modifierConfig.tryMerge(other.$modifierConfig),
+      modifierConfig: $widgetDecoratorConfig.tryMerge(
+        other.$widgetDecoratorConfig,
+      ),
       animation: other.$animation ?? $animation,
       variants: mergeVariantLists($variants, other.$variants),
 

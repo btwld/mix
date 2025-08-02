@@ -259,7 +259,9 @@ class IconMix extends Style<IconSpec>
       applyTextScaling: $applyTextScaling.tryMerge(other.$applyTextScaling),
       fill: $fill.tryMerge(other.$fill),
       animation: other.$animation ?? $animation,
-      modifierConfig: $modifierConfig.tryMerge(other.$modifierConfig),
+      modifierConfig: $widgetDecoratorConfig.tryMerge(
+        other.$widgetDecoratorConfig,
+      ),
       variants: mergeVariantLists($variants, other.$variants),
 
       inherit: other.$inherit ?? $inherit,
@@ -314,7 +316,7 @@ class IconMix extends Style<IconSpec>
     $applyTextScaling,
     $fill,
     $animation,
-    $modifierConfig,
+    $widgetDecoratorConfig,
     $variants,
   ];
 }

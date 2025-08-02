@@ -503,7 +503,9 @@ class BoxMix extends Style<BoxSpec>
       ),
       clipBehavior: $clipBehavior.tryMerge(other.$clipBehavior),
       variants: mergeVariantLists($variants, other.$variants),
-      modifierConfig: $modifierConfig.tryMerge(other.$modifierConfig),
+      modifierConfig: $widgetDecoratorConfig.tryMerge(
+        other.$widgetDecoratorConfig,
+      ),
       animation: other.$animation ?? $animation,
       inherit: other.$inherit ?? $inherit,
     );
@@ -561,7 +563,7 @@ class BoxMix extends Style<BoxSpec>
     $transformAlignment,
     $clipBehavior,
     $animation,
-    $modifierConfig,
+    $widgetDecoratorConfig,
     $variants,
     $inherit,
   ];

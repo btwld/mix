@@ -410,14 +410,14 @@ void main() {
         final modifier = WidgetDecoratorConfig();
         final boxMix = BoxMix().widgetDecorator(modifier);
 
-        expect(boxMix.$modifierConfig, modifier);
+        expect(boxMix.$widgetDecoratorConfig, modifier);
       });
 
       test('wrap method sets modifier config', () {
         final modifier = WidgetDecoratorConfig();
         final boxMix = BoxMix().wrap(modifier);
 
-        expect(boxMix.$modifierConfig, modifier);
+        expect(boxMix.$widgetDecoratorConfig, modifier);
       });
     });
   });

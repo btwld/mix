@@ -37,7 +37,8 @@ abstract class StyleAttributeBuilder<S extends Spec<S>> extends Style<S>
   AnimationConfig? get $animation => style.$animation;
 
   @override
-  WidgetDecoratorConfig? get $modifierConfig => style.$modifierConfig;
+  WidgetDecoratorConfig? get $widgetDecoratorConfig =>
+      style.$widgetDecoratorConfig;
 
   /// Mutable variants from internal attribute
   @override
@@ -78,7 +79,8 @@ abstract class StyleMutableBuilder<S extends Spec<S>> extends Style<S>
   AnimationConfig? get $animation => value.$animation;
 
   @override
-  WidgetDecoratorConfig? get $modifierConfig => value.$modifierConfig;
+  WidgetDecoratorConfig? get $widgetDecoratorConfig =>
+      value.$widgetDecoratorConfig;
 
   /// Mutable variants from internal attribute
   @override

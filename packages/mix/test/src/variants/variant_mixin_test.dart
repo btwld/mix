@@ -31,13 +31,13 @@ class TestVariantAttribute extends Style<BoxSpec>
   TestVariantAttribute merge(TestVariantAttribute? other) {
     return TestVariantAttribute(
       variants: other?.$variants ?? $variants,
-      modifierConfig: other?.$modifierConfig ?? $modifierConfig,
+      modifierConfig: other?.$widgetDecoratorConfig ?? $widgetDecoratorConfig,
       animation: other?.$animation ?? $animation,
     );
   }
 
   @override
-  List<Object?> get props => [$variants, $modifierConfig, $animation];
+  List<Object?> get props => [$variants, $widgetDecoratorConfig, $animation];
 }
 
 void main() {

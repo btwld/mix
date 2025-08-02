@@ -310,8 +310,8 @@ void main() {
         final result = util.wrap.opacity(0.5);
 
         expect(result, isA<FlexMix>());
-        expect(result.$modifierConfig, isNotNull);
-        expect(result.$modifierConfig!.$decorators!.length, 1);
+        expect(result.$widgetDecoratorConfig, isNotNull);
+        expect(result.$widgetDecoratorConfig!.$decorators!.length, 1);
       });
     });
 
