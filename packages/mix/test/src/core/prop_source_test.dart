@@ -97,7 +97,7 @@ void main() {
         final tokenProp = MixProp.token(token, ShadowMix.value);
         final valueProp = MixProp(directShadow);
 
-        final merged = tokenProp.merge(valueProp);
+        final merged = tokenProp.mergeProp(valueProp);
 
         // Both sources should be accumulated and resolved during resolution
         expect(merged.sources, hasLength(2));
@@ -109,7 +109,7 @@ void main() {
           mixScopeData: MixScopeData.static(tokens: {token: shadowValue}),
         );
 
-        final resolved = merged.resolve(context);
+        final resolved = merged.resolveProp(context);
         // The resolved value should be the merged result of token + direct value
         expect(resolved, isA<Shadow>());
       });
@@ -121,7 +121,7 @@ void main() {
         final valueProp = MixProp(directShadow);
         final tokenProp = MixProp.token(token, ShadowMix.value);
 
-        final merged = valueProp.merge(tokenProp);
+        final merged = valueProp.mergeProp(tokenProp);
 
         // Both sources should be accumulated
         expect(merged.sources, hasLength(2));
@@ -136,7 +136,7 @@ void main() {
         final prop1 = MixProp.token(token1, ShadowMix.value);
         final prop2 = MixProp.token(token2, ShadowMix.value);
 
-        final merged = prop1.merge(prop2);
+        final merged = prop1.mergeProp(prop2);
 
         // Both token sources should be accumulated
         expect(merged.sources, hasLength(2));
@@ -160,7 +160,7 @@ void main() {
         final prop2 = MixProp<Shadow>.directives([directive]);
         final prop3 = MixProp<Shadow>.animation(animation);
 
-        final merged = prop1.merge(prop2).merge(prop3);
+        final merged = prop1.mergeProp(prop2).mergeProp(prop3);
 
         expect(merged.$directives, contains(directive));
         expect(merged.$animation, equals(animation));
@@ -174,14 +174,14 @@ void main() {
 
         final context = MockBuildContext(); // No tokens defined
 
-        expect(() => mixProp.resolve(context), throwsA(isA<StateError>()));
+        expect(() => mixProp.resolveProp(context), throwsA(isA<StateError>()));
       });
 
       test('handles null merge correctly', () {
         final token = MixToken<Shadow>('shadow.primary');
         final mixProp = MixProp.token(token, ShadowMix.value);
 
-        final merged = mixProp.merge(null);
+        final merged = mixProp.mergeProp(null);
 
         expect(merged, equals(mixProp));
       });

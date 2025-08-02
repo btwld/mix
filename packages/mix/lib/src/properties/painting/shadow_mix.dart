@@ -99,9 +99,9 @@ class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
     if (other == null) return this;
 
     return ShadowMix.raw(
-      blurRadius: MixHelpers.merge($blurRadius, other.$blurRadius),
-      color: MixHelpers.merge($color, other.$color),
-      offset: MixHelpers.merge($offset, other.$offset),
+      blurRadius: $blurRadius.tryMerge(other.$blurRadius),
+      color: $color.tryMerge(other.$color),
+      offset: $offset.tryMerge(other.$offset),
     );
   }
 
@@ -222,10 +222,10 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
     if (other == null) return this;
 
     return BoxShadowMix.raw(
-      color: MixHelpers.merge($color, other.$color),
-      offset: MixHelpers.merge($offset, other.$offset),
-      blurRadius: MixHelpers.merge($blurRadius, other.$blurRadius),
-      spreadRadius: MixHelpers.merge($spreadRadius, other.$spreadRadius),
+      color: $color.tryMerge(other.$color),
+      offset: $offset.tryMerge(other.$offset),
+      blurRadius: $blurRadius.tryMerge(other.$blurRadius),
+      spreadRadius: $spreadRadius.tryMerge(other.$spreadRadius),
     );
   }
 

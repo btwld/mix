@@ -101,7 +101,7 @@ class PaddingModifierAttribute extends ModifierAttribute<PaddingModifier>
     if (other == null) return this;
 
     return PaddingModifierAttribute.raw(
-      padding: MixHelpers.merge(padding, other.padding),
+      padding: padding.tryMerge(other.padding),
     );
   }
 

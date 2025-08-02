@@ -148,18 +148,15 @@ class IconThemeModifierAttribute extends ModifierAttribute<IconThemeModifier> {
     if (other == null) return this;
 
     return IconThemeModifierAttribute.raw(
-      color: MixHelpers.merge(color, other.color),
-      size: MixHelpers.merge(size, other.size),
-      fill: MixHelpers.merge(fill, other.fill),
-      weight: MixHelpers.merge(weight, other.weight),
-      grade: MixHelpers.merge(grade, other.grade),
-      opticalSize: MixHelpers.merge(opticalSize, other.opticalSize),
-      opacity: MixHelpers.merge(opacity, other.opacity),
-      shadows: MixHelpers.mergeList(shadows, other.shadows),
-      applyTextScaling: MixHelpers.merge(
-        applyTextScaling,
-        other.applyTextScaling,
-      ),
+      color: color.tryMerge(other.color),
+      size: size.tryMerge(other.size),
+      fill: fill.tryMerge(other.fill),
+      weight: weight.tryMerge(other.weight),
+      grade: grade.tryMerge(other.grade),
+      opticalSize: opticalSize.tryMerge(other.opticalSize),
+      opacity: opacity.tryMerge(other.opacity),
+      shadows: shadows.tryMerge(other.shadows),
+      applyTextScaling: applyTextScaling.tryMerge(other.applyTextScaling),
     );
   }
 

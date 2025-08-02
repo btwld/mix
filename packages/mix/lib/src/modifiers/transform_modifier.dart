@@ -123,8 +123,8 @@ class TransformModifierAttribute extends ModifierAttribute<TransformModifier> {
     if (other == null) return this;
 
     return TransformModifierAttribute.raw(
-      transform: MixHelpers.merge(transform, other.transform),
-      alignment: MixHelpers.merge(alignment, other.alignment),
+      transform: transform.tryMerge(other.transform),
+      alignment: alignment.tryMerge(other.alignment),
     );
   }
 

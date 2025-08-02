@@ -179,21 +179,16 @@ class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
     if (other == null) return this;
 
     return StrutStyleMix.raw(
-      fontFamily: MixHelpers.merge($fontFamily, other.$fontFamily),
-      fontFamilyFallback: MixHelpers.mergeList(
-        $fontFamilyFallback,
+      fontFamily: $fontFamily.tryMerge(other.$fontFamily),
+      fontFamilyFallback: $fontFamilyFallback.tryMerge(
         other.$fontFamilyFallback,
-        strategy: ListMergeStrategy.append,
       ),
-      fontSize: MixHelpers.merge($fontSize, other.$fontSize),
-      fontWeight: MixHelpers.merge($fontWeight, other.$fontWeight),
-      fontStyle: MixHelpers.merge($fontStyle, other.$fontStyle),
-      height: MixHelpers.merge($height, other.$height),
-      leading: MixHelpers.merge($leading, other.$leading),
-      forceStrutHeight: MixHelpers.merge(
-        $forceStrutHeight,
-        other.$forceStrutHeight,
-      ),
+      fontSize: $fontSize.tryMerge(other.$fontSize),
+      fontWeight: $fontWeight.tryMerge(other.$fontWeight),
+      fontStyle: $fontStyle.tryMerge(other.$fontStyle),
+      height: $height.tryMerge(other.$height),
+      leading: $leading.tryMerge(other.$leading),
+      forceStrutHeight: $forceStrutHeight.tryMerge(other.$forceStrutHeight),
     );
   }
 

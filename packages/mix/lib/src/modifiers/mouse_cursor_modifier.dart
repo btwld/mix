@@ -99,7 +99,7 @@ class MouseCursorDecoratorMix extends ModifierAttribute<MouseCursorDecorator> {
     if (other == null) return this;
 
     return MouseCursorDecoratorMix.raw(
-      mouseCursor: MixHelpers.merge(mouseCursor, other.mouseCursor),
+      mouseCursor: mouseCursor.tryMerge(other.mouseCursor),
     );
   }
 

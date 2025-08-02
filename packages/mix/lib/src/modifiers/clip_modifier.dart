@@ -101,8 +101,8 @@ class ClipOvalModifierAttribute extends ModifierAttribute<ClipOvalModifier> {
     if (other == null) return this;
 
     return ClipOvalModifierAttribute.raw(
-      clipper: MixHelpers.merge(clipper, other.clipper),
-      clipBehavior: MixHelpers.merge(clipBehavior, other.clipBehavior),
+      clipper: clipper.tryMerge(other.clipper),
+      clipBehavior: clipBehavior.tryMerge(other.clipBehavior),
     );
   }
 
@@ -208,8 +208,8 @@ class ClipRectModifierAttribute extends ModifierAttribute<ClipRectModifier> {
     if (other == null) return this;
 
     return ClipRectModifierAttribute.raw(
-      clipper: MixHelpers.merge(clipper, other.clipper),
-      clipBehavior: MixHelpers.merge(clipBehavior, other.clipBehavior),
+      clipper: clipper.tryMerge(other.clipper),
+      clipBehavior: clipBehavior.tryMerge(other.clipBehavior),
     );
   }
 
@@ -360,9 +360,9 @@ class ClipRRectModifierAttribute extends ModifierAttribute<ClipRRectModifier> {
     if (other == null) return this;
 
     return ClipRRectModifierAttribute.raw(
-      borderRadius: MixHelpers.merge(borderRadius, other.borderRadius),
-      clipper: MixHelpers.merge(clipper, other.clipper),
-      clipBehavior: MixHelpers.merge(clipBehavior, other.clipBehavior),
+      borderRadius: borderRadius.tryMerge(other.borderRadius),
+      clipper: clipper.tryMerge(other.clipper),
+      clipBehavior: clipBehavior.tryMerge(other.clipBehavior),
     );
   }
 
@@ -490,8 +490,8 @@ class ClipPathModifierAttribute extends ModifierAttribute<ClipPathModifier> {
     if (other == null) return this;
 
     return ClipPathModifierAttribute.raw(
-      clipper: MixHelpers.merge(clipper, other.clipper),
-      clipBehavior: MixHelpers.merge(clipBehavior, other.clipBehavior),
+      clipper: clipper.tryMerge(other.clipper),
+      clipBehavior: clipBehavior.tryMerge(other.clipBehavior),
     );
   }
 
@@ -608,7 +608,7 @@ class ClipTriangleModifierAttribute
     if (other == null) return this;
 
     return ClipTriangleModifierAttribute.raw(
-      clipBehavior: MixHelpers.merge(clipBehavior, other.clipBehavior),
+      clipBehavior: clipBehavior.tryMerge(other.clipBehavior),
     );
   }
 

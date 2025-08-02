@@ -94,8 +94,8 @@ class FlexibleModifierAttribute extends ModifierAttribute<FlexibleModifier>
   @override
   FlexibleModifier resolve(BuildContext context) {
     return FlexibleModifier(
-      flex: flex?.resolve(context),
-      fit: fit?.resolve(context),
+      flex: flex?.resolveProp(context),
+      fit: fit?.resolveProp(context),
     );
   }
 
@@ -112,8 +112,8 @@ class FlexibleModifierAttribute extends ModifierAttribute<FlexibleModifier>
     if (other == null) return this;
 
     return FlexibleModifierAttribute.raw(
-      flex: flex?.merge(other.flex) ?? other.flex,
-      fit: fit?.merge(other.fit) ?? other.fit,
+      flex: flex?.mergeProp(other.flex) ?? other.flex,
+      fit: fit?.mergeProp(other.fit) ?? other.fit,
     );
   }
 

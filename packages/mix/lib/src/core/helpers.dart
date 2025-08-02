@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' as r;
 import 'package:flutter/widgets.dart' as w;
 
+import '../modifiers/modifier_config.dart';
+import 'directive.dart';
 import 'internal/deep_collection_equality.dart';
 import 'mix_element.dart';
 import 'prop.dart';
@@ -46,7 +48,7 @@ class MixHelpers {
   static V? resolve<V>(BuildContext context, PropBase<V>? prop) {
     if (prop == null) return null;
 
-    return prop.resolve(context);
+    return prop.resolveProp(context);
   }
 
   static V? merge<V extends Mixable>(V? a, V? b) {
@@ -126,7 +128,7 @@ List<T>? _mergeList<T>(
 List<V>? _resolveList<T extends PropBase<V>, V>(BuildContext mix, List<T>? a) {
   if (a == null) return null;
 
-  return a.map((e) => e.resolve(mix)).whereType<V>().toList();
+  return a.map((e) => e.resolveProp(mix)).whereType<V>().toList();
 }
 
 w.Matrix4? _lerpMatrix4(w.Matrix4? a, w.Matrix4? b, double t) {
@@ -168,4 +170,61 @@ enum ListMergeStrategy {
 
   /// Override entire list
   override,
+}
+
+extension PropExt<T> on Prop<T>? {
+  Prop<T>? tryMerge(Prop<T>? other) {
+    if (this == null) return other;
+    if (other == null) return this;
+
+    return this!.mergeProp(other);
+  }
+}
+
+extension ListPropExt<T> on List<Prop<T>>? {
+  List<Prop<T>>? tryMerge(List<Prop<T>>? other, {ListMergeStrategy? strategy}) {
+    if (other == null) return this;
+    if (this == null) return other;
+
+    return MixHelpers.mergeList(this, other, strategy: strategy);
+  }
+}
+
+extension MixPropExt<T> on MixProp<T>? {
+  MixProp<T>? tryMerge(MixProp<T>? other) {
+    if (this == null) return other;
+    if (other == null) return this;
+
+    return this!.mergeProp(other);
+  }
+}
+
+extension ListMixPropExt<T> on List<MixProp<T>>? {
+  List<MixProp<T>>? tryMerge(
+    List<MixProp<T>>? other, {
+    ListMergeStrategy? strategy,
+  }) {
+    if (other == null) return this;
+    if (this == null) return other;
+
+    return MixHelpers.mergeList(this, other, strategy: strategy);
+  }
+}
+
+extension ListMixDirectiveExt<T> on List<MixDirective<T>>? {
+  List<MixDirective<T>>? tryMerge(List<MixDirective<T>>? other) {
+    if (other == null) return this;
+    if (this == null) return other;
+
+    return MixHelpers.mergeList(this, other);
+  }
+}
+
+extension ModifierConfigExt on ModifierConfig? {
+  ModifierConfig? tryMerge(ModifierConfig? other) {
+    if (other == null) return this;
+    if (this == null) return other;
+
+    return this!.merge(other);
+  }
 }

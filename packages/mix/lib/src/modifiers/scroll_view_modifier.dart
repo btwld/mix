@@ -193,11 +193,11 @@ class ScrollViewModifierAttribute
     if (other == null) return this;
 
     return ScrollViewModifierAttribute.raw(
-      scrollDirection: MixHelpers.merge(scrollDirection, other.scrollDirection),
-      reverse: MixHelpers.merge(reverse, other.reverse),
-      padding: MixHelpers.merge(padding, other.padding),
-      physics: MixHelpers.merge(physics, other.physics),
-      clipBehavior: MixHelpers.merge(clipBehavior, other.clipBehavior),
+      scrollDirection: scrollDirection.tryMerge(other.scrollDirection),
+      reverse: reverse.tryMerge(other.reverse),
+      padding: padding.tryMerge(other.padding),
+      physics: physics.tryMerge(other.physics),
+      clipBehavior: clipBehavior.tryMerge(other.clipBehavior),
     );
   }
 

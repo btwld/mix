@@ -160,7 +160,7 @@ final class ShapeDecorationUtility<T extends Style<Object?>>
   /// Utility for defining [ShapeDecorationMix.gradient]
   late final gradient = GradientUtility<T>((v) => only(gradient: v));
 
-  /// Utility for defining [ShapeDecorationMix.shadows]
+  /// Utility for defining [ShapeDecorationMix.$shadows]
   late final shadows = MixUtility<T, List<BoxShadowMix>>(
     (prop) => only(shadows: prop),
   );

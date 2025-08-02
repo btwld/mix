@@ -279,28 +279,19 @@ class FlexMix extends Style<FlexSpec>
     if (other == null) return this;
 
     return FlexMix.raw(
-      direction: MixHelpers.merge($direction, other.$direction),
-      mainAxisAlignment: MixHelpers.merge(
-        $mainAxisAlignment,
-        other.$mainAxisAlignment,
-      ),
-      crossAxisAlignment: MixHelpers.merge(
-        $crossAxisAlignment,
+      direction: $direction.tryMerge(other.$direction),
+      mainAxisAlignment: $mainAxisAlignment.tryMerge(other.$mainAxisAlignment),
+      crossAxisAlignment: $crossAxisAlignment.tryMerge(
         other.$crossAxisAlignment,
       ),
-      mainAxisSize: MixHelpers.merge($mainAxisSize, other.$mainAxisSize),
-      verticalDirection: MixHelpers.merge(
-        $verticalDirection,
-        other.$verticalDirection,
-      ),
-      textDirection: MixHelpers.merge($textDirection, other.$textDirection),
-      textBaseline: MixHelpers.merge($textBaseline, other.$textBaseline),
-      clipBehavior: MixHelpers.merge($clipBehavior, other.$clipBehavior),
-      gap: MixHelpers.merge($gap, other.$gap),
+      mainAxisSize: $mainAxisSize.tryMerge(other.$mainAxisSize),
+      verticalDirection: $verticalDirection.tryMerge(other.$verticalDirection),
+      textDirection: $textDirection.tryMerge(other.$textDirection),
+      textBaseline: $textBaseline.tryMerge(other.$textBaseline),
+      clipBehavior: $clipBehavior.tryMerge(other.$clipBehavior),
+      gap: $gap.tryMerge(other.$gap),
       animation: other.$animation ?? $animation,
-      modifierConfig:
-          $modifierConfig?.merge(other.$modifierConfig) ??
-          other.$modifierConfig,
+      modifierConfig: $modifierConfig.tryMerge(other.$modifierConfig),
       variants: mergeVariantLists($variants, other.$variants),
       inherit: other.$inherit ?? $inherit,
     );

@@ -137,8 +137,8 @@ class SizedBoxModifierAttribute extends ModifierAttribute<SizedBoxModifier>
     if (other == null) return this;
 
     return SizedBoxModifierAttribute.raw(
-      width: MixHelpers.merge(width, other.width),
-      height: MixHelpers.merge(height, other.height),
+      width: width.tryMerge(other.width),
+      height: height.tryMerge(other.height),
     );
   }
 

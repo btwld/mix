@@ -93,7 +93,7 @@ class AspectRatioModifierAttribute
   /// ```
   @override
   AspectRatioModifier resolve(BuildContext context) {
-    return AspectRatioModifier(aspectRatio?.resolve(context));
+    return AspectRatioModifier(aspectRatio?.resolveProp(context));
   }
 
   /// Merges the properties of this [AspectRatioModifierAttribute] with the properties of [other].
@@ -109,7 +109,7 @@ class AspectRatioModifierAttribute
     if (other == null) return this;
 
     return AspectRatioModifierAttribute.raw(
-      aspectRatio: MixHelpers.merge(aspectRatio, other.aspectRatio),
+      aspectRatio: aspectRatio.tryMerge(other.aspectRatio),
     );
   }
 

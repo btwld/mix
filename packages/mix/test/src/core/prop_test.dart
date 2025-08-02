@@ -27,7 +27,7 @@ void main() {
       final prop1 = Prop.value(10);
       final prop2 = Prop.value(20);
 
-      final merged = prop1.merge(prop2);
+      final merged = prop1.mergeProp(prop2);
 
       expect(merged.hasValue, isTrue);
       expect(merged.$value, equals(20));
@@ -37,7 +37,7 @@ void main() {
       final prop = Prop.value(42);
       final context = MockBuildContext();
 
-      final resolved = prop.resolve(context);
+      final resolved = prop.resolveProp(context);
 
       expect(resolved, equals(42));
     });
@@ -58,7 +58,7 @@ void main() {
       final prop1 = MixProp<int>(mix1);
       final prop2 = MixProp<int>(mix2);
 
-      final merged = prop1.merge(prop2);
+      final merged = prop1.mergeProp(prop2);
 
       expect(merged.value?.resolve(MockBuildContext()), equals(30));
     });
@@ -68,7 +68,7 @@ void main() {
       final prop = MixProp<int>(mixValue);
       final context = MockBuildContext();
 
-      final resolved = prop.resolve(context);
+      final resolved = prop.resolveProp(context);
 
       expect(resolved, equals(42));
     });

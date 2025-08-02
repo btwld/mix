@@ -20,7 +20,7 @@ class DecorationMerger {
           color: b.$color,
           image: b.$image,
           gradient: b.$gradient,
-          boxShadow: b.shadows,
+          boxShadow: b.$shadows,
         ),
       );
     }

@@ -173,14 +173,12 @@ class StackMix extends Style<StackSpec>
     if (other == null) return this;
 
     return StackMix.raw(
-      alignment: MixHelpers.merge($alignment, other.$alignment),
-      fit: MixHelpers.merge($fit, other.$fit),
-      textDirection: MixHelpers.merge($textDirection, other.$textDirection),
-      clipBehavior: MixHelpers.merge($clipBehavior, other.$clipBehavior),
+      alignment: $alignment.tryMerge(other.$alignment),
+      fit: $fit.tryMerge(other.$fit),
+      textDirection: $textDirection.tryMerge(other.$textDirection),
+      clipBehavior: $clipBehavior.tryMerge(other.$clipBehavior),
       animation: other.$animation ?? $animation,
-      modifierConfig:
-          $modifierConfig?.merge(other.$modifierConfig) ??
-          other.$modifierConfig,
+      modifierConfig: $modifierConfig.tryMerge(other.$modifierConfig),
       variants: mergeVariantLists($variants, other.$variants),
 
       inherit: other.$inherit ?? $inherit,

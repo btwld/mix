@@ -157,9 +157,9 @@ class FractionallySizedBoxModifierAttribute
     if (other == null) return this;
 
     return FractionallySizedBoxModifierAttribute.raw(
-      widthFactor: MixHelpers.merge(widthFactor, other.widthFactor),
-      heightFactor: MixHelpers.merge(heightFactor, other.heightFactor),
-      alignment: MixHelpers.merge(alignment, other.alignment),
+      widthFactor: widthFactor.tryMerge(other.widthFactor),
+      heightFactor: heightFactor.tryMerge(other.heightFactor),
+      alignment: alignment.tryMerge(other.alignment),
     );
   }
 

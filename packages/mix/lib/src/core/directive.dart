@@ -17,6 +17,7 @@ abstract class MixDirective<T> {
   T apply(T value);
 }
 
+
 /// Directive that applies opacity to a color.
 class OpacityColorDirective extends MixDirective<Color> {
   final double opacity;

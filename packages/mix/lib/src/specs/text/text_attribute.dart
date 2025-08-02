@@ -632,31 +632,24 @@ class TextMix extends Style<TextSpec>
     if (other == null) return this;
 
     return TextMix.raw(
-      overflow: MixHelpers.merge($overflow, other.$overflow),
-      strutStyle: MixHelpers.merge($strutStyle, other.$strutStyle),
-      textAlign: MixHelpers.merge($textAlign, other.$textAlign),
-      textScaler: MixHelpers.merge($textScaler, other.$textScaler),
-      maxLines: MixHelpers.merge($maxLines, other.$maxLines),
-      style: MixHelpers.merge($style, other.$style),
-      textWidthBasis: MixHelpers.merge($textWidthBasis, other.$textWidthBasis),
-      textHeightBehavior: MixHelpers.merge(
-        $textHeightBehavior,
+      overflow: $overflow.tryMerge(other.$overflow),
+      strutStyle: $strutStyle.tryMerge(other.$strutStyle),
+      textAlign: $textAlign.tryMerge(other.$textAlign),
+      textScaler: $textScaler.tryMerge(other.$textScaler),
+      maxLines: $maxLines.tryMerge(other.$maxLines),
+      style: $style.tryMerge(other.$style),
+      textWidthBasis: $textWidthBasis.tryMerge(other.$textWidthBasis),
+      textHeightBehavior: $textHeightBehavior.tryMerge(
         other.$textHeightBehavior,
       ),
-      textDirection: MixHelpers.merge($textDirection, other.$textDirection),
-      softWrap: MixHelpers.merge($softWrap, other.$softWrap),
-      directives: MixHelpers.mergeList(
-        $directives,
-        other.$directives,
-        strategy: ListMergeStrategy.append,
-      ),
-      selectionColor: MixHelpers.merge($selectionColor, other.$selectionColor),
-      semanticsLabel: MixHelpers.merge($semanticsLabel, other.$semanticsLabel),
-      locale: MixHelpers.merge($locale, other.$locale),
+      textDirection: $textDirection.tryMerge(other.$textDirection),
+      softWrap: $softWrap.tryMerge(other.$softWrap),
+      directives: $directives?.tryMerge(other.$directives),
+      selectionColor: $selectionColor.tryMerge(other.$selectionColor),
+      semanticsLabel: $semanticsLabel.tryMerge(other.$semanticsLabel),
+      locale: $locale.tryMerge(other.$locale),
       animation: other.$animation ?? $animation,
-      modifierConfig:
-          $modifierConfig?.merge(other.$modifierConfig) ??
-          other.$modifierConfig,
+      modifierConfig: $modifierConfig.tryMerge(other.$modifierConfig),
       variants: mergeVariantLists($variants, other.$variants),
       inherit: other.$inherit ?? $inherit,
     );
@@ -705,14 +698,20 @@ class TextMix extends Style<TextSpec>
       DiagnosticsProperty('directive', $directives, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('selectionColor', $selectionColor, defaultValue: null),
+      DiagnosticsProperty(
+        'selectionColor',
+        $selectionColor,
+        defaultValue: null,
+      ),
     );
     properties.add(
-      DiagnosticsProperty('semanticsLabel', $semanticsLabel, defaultValue: null),
+      DiagnosticsProperty(
+        'semanticsLabel',
+        $semanticsLabel,
+        defaultValue: null,
+      ),
     );
-    properties.add(
-      DiagnosticsProperty('locale', $locale, defaultValue: null),
-    );
+    properties.add(DiagnosticsProperty('locale', $locale, defaultValue: null));
 
     properties.add(
       DiagnosticsProperty('directives', $directives, defaultValue: null),

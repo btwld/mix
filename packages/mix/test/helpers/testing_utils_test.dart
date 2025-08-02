@@ -43,7 +43,7 @@ void main() {
       test('matches value from merged props (replacement strategy)', () {
         final prop1 = Prop.value(Colors.red);
         final prop2 = Prop.value(Colors.blue);
-        final merged = prop1.merge(prop2);
+        final merged = prop1.mergeProp(prop2);
 
         // Prop uses replacement strategy - second value wins
         expectProp(merged, Colors.blue);
@@ -55,7 +55,7 @@ void main() {
         final prop2 = Prop.token(colorToken);
         final prop3 = Prop.value<Color>(Colors.blue);
 
-        final merged = prop1.merge(prop2).merge(prop3);
+        final merged = prop1.mergeProp(prop2).mergeProp(prop3);
 
         // Prop uses replacement strategy - last value wins
         expectProp(merged, Colors.blue);
@@ -141,7 +141,7 @@ void main() {
       test('resolves merged props', () {
         final prop1 = Prop.value(100.0);
         final prop2 = Prop.value(200.0);
-        final merged = prop1.merge(prop2);
+        final merged = prop1.mergeProp(prop2);
 
         // For non-Mix types, last value wins
         expect(merged, resolvesTo(200.0));
@@ -155,8 +155,8 @@ void main() {
           BoxShadowMix(color: Colors.blue, spreadRadius: 4.0),
         );
 
-        final merged = shadow1.merge(shadow2);
-        final resolved = merged.resolve(MockBuildContext());
+        final merged = shadow1.mergeProp(shadow2);
+        final resolved = merged.resolveProp(MockBuildContext());
 
         // MixProp types accumulate properties
         expect(resolved.color, Colors.blue);

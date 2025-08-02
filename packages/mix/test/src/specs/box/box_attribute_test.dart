@@ -12,7 +12,7 @@ void main() {
         final boxMix = BoxMix.color(Colors.red);
 
         expect(boxMix.$decoration, isNotNull);
-        final decoration = boxMix.$decoration!.resolve(MockBuildContext());
+        final decoration = boxMix.$decoration!.resolveProp(MockBuildContext());
         expect(decoration, isA<BoxDecoration>());
         expect((decoration as BoxDecoration).color, Colors.red);
       });
@@ -34,7 +34,9 @@ void main() {
         final boxMix = BoxMix.height(100.0);
 
         expect(boxMix.$constraints, isNotNull);
-        final constraints = boxMix.$constraints!.resolve(MockBuildContext());
+        final constraints = boxMix.$constraints!.resolveProp(
+          MockBuildContext(),
+        );
         expect(constraints.minHeight, 100.0);
         expect(constraints.maxHeight, 100.0);
       });
@@ -43,7 +45,9 @@ void main() {
         final boxMix = BoxMix.width(200.0);
 
         expect(boxMix.$constraints, isNotNull);
-        final constraints = boxMix.$constraints!.resolve(MockBuildContext());
+        final constraints = boxMix.$constraints!.resolveProp(
+          MockBuildContext(),
+        );
         expect(constraints.minWidth, 200.0);
         expect(constraints.maxWidth, 200.0);
       });
@@ -59,7 +63,9 @@ void main() {
         final boxMix = BoxMix.minWidth(150.0);
 
         expect(boxMix.$constraints, isNotNull);
-        final constraints = boxMix.$constraints!.resolve(MockBuildContext());
+        final constraints = boxMix.$constraints!.resolveProp(
+          MockBuildContext(),
+        );
         expect(constraints.minWidth, 150.0);
       });
 
@@ -67,7 +73,9 @@ void main() {
         final boxMix = BoxMix.maxWidth(300.0);
 
         expect(boxMix.$constraints, isNotNull);
-        final constraints = boxMix.$constraints!.resolve(MockBuildContext());
+        final constraints = boxMix.$constraints!.resolveProp(
+          MockBuildContext(),
+        );
         expect(constraints.maxWidth, 300.0);
       });
 
@@ -186,7 +194,7 @@ void main() {
         final boxMix = BoxMix().color(ColorValues.purple);
 
         expect(boxMix.$decoration, isNotNull);
-        final decoration = boxMix.$decoration!.resolve(MockBuildContext());
+        final decoration = boxMix.$decoration!.resolveProp(MockBuildContext());
         expect((decoration as BoxDecoration).color, ColorValues.purple);
       });
 
@@ -194,7 +202,9 @@ void main() {
         final boxMix = BoxMix().width(250.0);
 
         expect(boxMix.$constraints, isNotNull);
-        final constraints = boxMix.$constraints!.resolve(MockBuildContext());
+        final constraints = boxMix.$constraints!.resolveProp(
+          MockBuildContext(),
+        );
         expect(constraints.minWidth, 250.0);
         expect(constraints.maxWidth, 250.0);
       });
@@ -203,7 +213,9 @@ void main() {
         final boxMix = BoxMix().height(150.0);
 
         expect(boxMix.$constraints, isNotNull);
-        final constraints = boxMix.$constraints!.resolve(MockBuildContext());
+        final constraints = boxMix.$constraints!.resolveProp(
+          MockBuildContext(),
+        );
         expect(constraints.minHeight, 150.0);
         expect(constraints.maxHeight, 150.0);
       });
@@ -252,7 +264,9 @@ void main() {
         final boxMix = BoxMix().size(100.0, 200.0);
 
         expect(boxMix.$constraints, isNotNull);
-        final constraints = boxMix.$constraints!.resolve(MockBuildContext());
+        final constraints = boxMix.$constraints!.resolveProp(
+          MockBuildContext(),
+        );
         expect(constraints.minWidth, 100.0);
         expect(constraints.maxWidth, 100.0);
         expect(constraints.minHeight, 200.0);

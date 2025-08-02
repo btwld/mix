@@ -154,8 +154,8 @@ final class RoundedRectangleBorderMix
     if (other == null) return this;
 
     return RoundedRectangleBorderMix.raw(
-      borderRadius: MixHelpers.merge($borderRadius, other.$borderRadius),
-      side: MixHelpers.merge($side, other.$side),
+      borderRadius: $borderRadius.tryMerge(other.$borderRadius),
+      side: $side.tryMerge(other.$side),
     );
   }
 
@@ -228,8 +228,8 @@ final class RoundedSuperellipseBorderMix
     if (other == null) return this;
 
     return RoundedSuperellipseBorderMix.raw(
-      borderRadius: MixHelpers.merge($borderRadius, other.$borderRadius),
-      side: MixHelpers.merge($side, other.$side),
+      borderRadius: $borderRadius.tryMerge(other.$borderRadius),
+      side: $side.tryMerge(other.$side),
     );
   }
 
@@ -301,8 +301,8 @@ final class BeveledRectangleBorderMix
     if (other == null) return this;
 
     return BeveledRectangleBorderMix.raw(
-      borderRadius: MixHelpers.merge($borderRadius, other.$borderRadius),
-      side: MixHelpers.merge($side, other.$side),
+      borderRadius: $borderRadius.tryMerge(other.$borderRadius),
+      side: $side.tryMerge(other.$side),
     );
   }
 
@@ -376,8 +376,8 @@ final class ContinuousRectangleBorderMix
     if (other == null) return this;
 
     return ContinuousRectangleBorderMix.raw(
-      borderRadius: MixHelpers.merge($borderRadius, other.$borderRadius),
-      side: MixHelpers.merge($side, other.$side),
+      borderRadius: $borderRadius.tryMerge(other.$borderRadius),
+      side: $side.tryMerge(other.$side),
     );
   }
 
@@ -441,8 +441,8 @@ final class CircleBorderMix extends OutlinedBorderMix<CircleBorder> {
     if (other == null) return this;
 
     return CircleBorderMix.raw(
-      side: MixHelpers.merge($side, other.$side),
-      eccentricity: MixHelpers.merge($eccentricity, other.$eccentricity),
+      side: $side.tryMerge(other.$side),
+      eccentricity: $eccentricity.tryMerge(other.$eccentricity),
     );
   }
 
@@ -595,16 +595,13 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
     if (other == null) return this;
 
     return StarBorderMix.raw(
-      side: MixHelpers.merge($side, other.$side),
-      points: MixHelpers.merge($points, other.$points),
-      innerRadiusRatio: MixHelpers.merge(
-        $innerRadiusRatio,
-        other.$innerRadiusRatio,
-      ),
-      pointRounding: MixHelpers.merge($pointRounding, other.$pointRounding),
-      valleyRounding: MixHelpers.merge($valleyRounding, other.$valleyRounding),
-      rotation: MixHelpers.merge($rotation, other.$rotation),
-      squash: MixHelpers.merge($squash, other.$squash),
+      side: $side.tryMerge(other.$side),
+      points: $points.tryMerge(other.$points),
+      innerRadiusRatio: $innerRadiusRatio.tryMerge(other.$innerRadiusRatio),
+      pointRounding: $pointRounding.tryMerge(other.$pointRounding),
+      valleyRounding: $valleyRounding.tryMerge(other.$valleyRounding),
+      rotation: $rotation.tryMerge(other.$rotation),
+      squash: $squash.tryMerge(other.$squash),
     );
   }
 
@@ -730,11 +727,11 @@ final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
     if (other == null) return this;
 
     return LinearBorderMix.raw(
-      side: MixHelpers.merge($side, other.$side),
-      start: MixHelpers.merge($start, other.$start),
-      end: MixHelpers.merge($end, other.$end),
-      top: MixHelpers.merge($top, other.$top),
-      bottom: MixHelpers.merge($bottom, other.$bottom),
+      side: $side.tryMerge(other.$side),
+      start: $start.tryMerge(other.$start),
+      end: $end.tryMerge(other.$end),
+      top: $top.tryMerge(other.$top),
+      bottom: $bottom.tryMerge(other.$bottom),
     );
   }
 
@@ -792,8 +789,8 @@ final class LinearBorderEdgeMix extends Mix<LinearBorderEdge> {
     if (other == null) return this;
 
     return LinearBorderEdgeMix.raw(
-      size: MixHelpers.merge($size, other.$size),
-      alignment: MixHelpers.merge($alignment, other.$alignment),
+      size: $size.tryMerge(other.$size),
+      alignment: $alignment.tryMerge(other.$alignment),
     );
   }
 
@@ -835,7 +832,7 @@ final class StadiumBorderMix extends OutlinedBorderMix<StadiumBorder> {
   StadiumBorderMix merge(StadiumBorderMix? other) {
     if (other == null) return this;
 
-    return StadiumBorderMix.raw(side: MixHelpers.merge($side, other.$side));
+    return StadiumBorderMix.raw(side: $side.tryMerge(other.$side));
   }
 
   @override

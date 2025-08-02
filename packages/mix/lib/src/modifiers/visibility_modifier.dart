@@ -74,7 +74,7 @@ class VisibilityModifierAttribute extends ModifierAttribute<VisibilityModifier>
   /// ```
   @override
   VisibilityModifier resolve(BuildContext context) {
-    return VisibilityModifier(visible?.resolve(context));
+    return VisibilityModifier(visible?.resolveProp(context));
   }
 
   /// Merges the properties of this [VisibilityModifierAttribute] with [other].
@@ -86,7 +86,7 @@ class VisibilityModifierAttribute extends ModifierAttribute<VisibilityModifier>
     if (other == null) return this;
 
     return VisibilityModifierAttribute.raw(
-      visible: visible?.merge(other.visible) ?? other.visible,
+      visible: visible?.mergeProp(other.visible) ?? other.visible,
     );
   }
 

@@ -252,9 +252,9 @@ class AlignModifierAttribute extends ModifierAttribute<AlignModifier>
     if (other == null) return this;
 
     return AlignModifierAttribute.raw(
-      alignment: MixHelpers.merge(alignment, other.alignment),
-      widthFactor: MixHelpers.merge(widthFactor, other.widthFactor),
-      heightFactor: MixHelpers.merge(heightFactor, other.heightFactor),
+      alignment: alignment.tryMerge(other.alignment),
+      widthFactor: widthFactor.tryMerge(other.widthFactor),
+      heightFactor: heightFactor.tryMerge(other.heightFactor),
     );
   }
 

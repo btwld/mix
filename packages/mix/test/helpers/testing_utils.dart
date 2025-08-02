@@ -257,7 +257,7 @@ class MockStyle<T> extends Style<MockSpec<T>> {
     if (other == null) return this;
     // For PropBase types (Prop<T> and MixProp<V>), use their merge method
     if (value is PropBase && other.value is PropBase) {
-      final merged = (value as PropBase).merge(other.value as PropBase);
+      final merged = (value as PropBase).mergeProp(other.value as PropBase);
       return MockStyle(merged as T);
     }
     // For other Mixable types

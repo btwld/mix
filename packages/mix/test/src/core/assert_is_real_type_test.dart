@@ -1,316 +1,316 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/src/theme/tokens/token_refs.dart';
+import 'package:mix/src/core/prop_refs.dart';
 
 void main() {
   group('assertIsRealType', () {
-    test('should assert when ColorRef is passed', () {
+    test('should assert when ColorProp is passed', () {
       expect(
-        () => assertIsRealType(ColorRef),
+        () => assertIsRealType(ColorProp),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
             'message',
-            'Cannot use ColorRef for generic, use Color instead.',
+            'Cannot use ColorProp for generic, use Color instead.',
           ),
         ),
       );
     });
 
-    test('should assert when RadiusRef is passed', () {
+    test('should assert when RadiusProp is passed', () {
       expect(
-        () => assertIsRealType(RadiusRef),
+        () => assertIsRealType(RadiusProp),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
             'message',
-            'Cannot use RadiusRef for generic, use Radius instead.',
+            'Cannot use RadiusProp for generic, use Radius instead.',
           ),
         ),
       );
     });
 
-    test('should assert when TextStyleRef is passed', () {
+    test('should assert when TextStyleProp is passed', () {
       expect(
-        () => assertIsRealType(TextStyleRef),
+        () => assertIsRealType(TextStyleProp),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
             'message',
-            'Cannot use TextStyleRef for generic, use TextStyle instead.',
+            'Cannot use TextStyleProp for generic, use TextStyle instead.',
           ),
         ),
       );
     });
 
-    test('should assert when ShadowRef is passed', () {
+    test('should assert when ShadowProp is passed', () {
       expect(
-        () => assertIsRealType(ShadowRef),
+        () => assertIsRealType(ShadowProp),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
             'message',
-            'Cannot use ShadowRef for generic, use Shadow instead.',
+            'Cannot use ShadowProp for generic, use Shadow instead.',
           ),
         ),
       );
     });
 
-    test('should assert when GradientRef is passed', () {
+    test('should assert when GradientProp is passed', () {
       expect(
-        () => assertIsRealType(GradientRef),
+        () => assertIsRealType(GradientProp),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
             'message',
-            'Cannot use GradientRef for generic, use Gradient instead.',
+            'Cannot use GradientProp for generic, use Gradient instead.',
           ),
         ),
       );
     });
 
-    test('should assert when BoxDecorationRef is passed', () {
+    test('should assert when BoxDecorationProp is passed', () {
       expect(
-        () => assertIsRealType(BoxDecorationRef),
+        () => assertIsRealType(BoxDecorationProp),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
             'message',
-            'Cannot use BoxDecorationRef for generic, use BoxDecoration instead.',
+            'Cannot use BoxDecorationProp for generic, use BoxDecoration instead.',
           ),
         ),
       );
     });
 
-    test('should assert when ShapeBorderRef is passed', () {
+    test('should assert when ShapeBorderProp is passed', () {
       expect(
-        () => assertIsRealType(ShapeBorderRef),
+        () => assertIsRealType(ShapeBorderProp),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
             'message',
-            'Cannot use ShapeBorderRef for generic, use ShapeBorder instead.',
+            'Cannot use ShapeBorderProp for generic, use ShapeBorder instead.',
           ),
         ),
       );
     });
 
-    test('should assert when BoxConstraintsRef is passed', () {
+    test('should assert when BoxConstraintsProp is passed', () {
       expect(
-        () => assertIsRealType(BoxConstraintsRef),
+        () => assertIsRealType(BoxConstraintsProp),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
             'message',
-            'Cannot use BoxConstraintsRef for generic, use BoxConstraints instead.',
+            'Cannot use BoxConstraintsProp for generic, use BoxConstraints instead.',
           ),
         ),
       );
     });
 
-    test('should assert when DecorationImageRef is passed', () {
+    test('should assert when DecorationImageProp is passed', () {
       expect(
-        () => assertIsRealType(DecorationImageRef),
+        () => assertIsRealType(DecorationImageProp),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
             'message',
-            'Cannot use DecorationImageRef for generic, use DecorationImage instead.',
+            'Cannot use DecorationImageProp for generic, use DecorationImage instead.',
           ),
         ),
       );
     });
 
-    test('should assert when EdgeInsetsGeometryRef is passed', () {
+    test('should assert when EdgeInsetsGeometryProp is passed', () {
       expect(
-        () => assertIsRealType(EdgeInsetsGeometryRef),
+        () => assertIsRealType(EdgeInsetsGeometryProp),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
             'message',
-            'Cannot use EdgeInsetsGeometryRef for generic, use EdgeInsetsGeometry instead.',
+            'Cannot use EdgeInsetsGeometryProp for generic, use EdgeInsetsGeometry instead.',
           ),
         ),
       );
     });
 
-    test('should assert when BorderRadiusGeometryRef is passed', () {
+    test('should assert when BorderRadiusGeometryProp is passed', () {
       expect(
-        () => assertIsRealType(BorderRadiusGeometryRef),
+        () => assertIsRealType(BorderRadiusGeometryProp),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
             'message',
-            'Cannot use BorderRadiusGeometryRef for generic, use BorderRadiusGeometry instead.',
+            'Cannot use BorderRadiusGeometryProp for generic, use BorderRadiusGeometry instead.',
           ),
         ),
       );
     });
 
-    test('should assert when AlignmentGeometryRef is passed', () {
+    test('should assert when AlignmentGeometryProp is passed', () {
       expect(
-        () => assertIsRealType(AlignmentGeometryRef),
+        () => assertIsRealType(AlignmentGeometryProp),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
             'message',
-            'Cannot use AlignmentGeometryRef for generic, use AlignmentGeometry instead.',
+            'Cannot use AlignmentGeometryProp for generic, use AlignmentGeometry instead.',
           ),
         ),
       );
     });
 
-    test('should assert when TextDecorationRef is passed', () {
+    test('should assert when TextDecorationProp is passed', () {
       expect(
-        () => assertIsRealType(TextDecorationRef),
+        () => assertIsRealType(TextDecorationProp),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
             'message',
-            'Cannot use TextDecorationRef for generic, use TextDecoration instead.',
+            'Cannot use TextDecorationProp for generic, use TextDecoration instead.',
           ),
         ),
       );
     });
 
-    test('should assert when OffsetRef is passed', () {
+    test('should assert when OffsetProp is passed', () {
       expect(
-        () => assertIsRealType(OffsetRef),
+        () => assertIsRealType(OffsetProp),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
             'message',
-            'Cannot use OffsetRef for generic, use Offset instead.',
+            'Cannot use OffsetProp for generic, use Offset instead.',
           ),
         ),
       );
     });
 
-    test('should assert when RectRef is passed', () {
+    test('should assert when RectProp is passed', () {
       expect(
-        () => assertIsRealType(RectRef),
+        () => assertIsRealType(RectProp),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
             'message',
-            'Cannot use RectRef for generic, use Rect instead.',
+            'Cannot use RectProp for generic, use Rect instead.',
           ),
         ),
       );
     });
 
-    test('should assert when LocaleRef is passed', () {
+    test('should assert when LocaleProp is passed', () {
       expect(
-        () => assertIsRealType(LocaleRef),
+        () => assertIsRealType(LocaleProp),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
             'message',
-            'Cannot use LocaleRef for generic, use Locale instead.',
+            'Cannot use LocaleProp for generic, use Locale instead.',
           ),
         ),
       );
     });
 
-    test('should assert when ImageProviderRef is passed', () {
+    test('should assert when ImageProviderProp is passed', () {
       expect(
-        () => assertIsRealType(ImageProviderRef),
+        () => assertIsRealType(ImageProviderProp),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
             'message',
-            'Cannot use ImageProviderRef for generic, use ImageProvider<Object> instead.',
+            'Cannot use ImageProviderProp for generic, use ImageProvider<Object> instead.',
           ),
         ),
       );
     });
 
-    test('should assert when GradientTransformRef is passed', () {
+    test('should assert when GradientTransformProp is passed', () {
       expect(
-        () => assertIsRealType(GradientTransformRef),
+        () => assertIsRealType(GradientTransformProp),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
             'message',
-            'Cannot use GradientTransformRef for generic, use GradientTransform instead.',
+            'Cannot use GradientTransformProp for generic, use GradientTransform instead.',
           ),
         ),
       );
     });
 
-    test('should assert when Matrix4Ref is passed', () {
+    test('should assert when Matrix4Prop is passed', () {
       expect(
-        () => assertIsRealType(Matrix4Ref),
+        () => assertIsRealType(Matrix4Prop),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
             'message',
-            'Cannot use Matrix4Ref for generic, use Matrix4 instead.',
+            'Cannot use Matrix4Prop for generic, use Matrix4 instead.',
           ),
         ),
       );
     });
 
-    test('should assert when TextScalerRef is passed', () {
+    test('should assert when TextScalerProp is passed', () {
       expect(
-        () => assertIsRealType(TextScalerRef),
+        () => assertIsRealType(TextScalerProp),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
             'message',
-            'Cannot use TextScalerRef for generic, use TextScaler instead.',
+            'Cannot use TextScalerProp for generic, use TextScaler instead.',
           ),
         ),
       );
     });
 
-    test('should assert when TableColumnWidthRef is passed', () {
+    test('should assert when TableColumnWidthProp is passed', () {
       expect(
-        () => assertIsRealType(TableColumnWidthRef),
+        () => assertIsRealType(TableColumnWidthProp),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
             'message',
-            'Cannot use TableColumnWidthRef for generic, use TableColumnWidth instead.',
+            'Cannot use TableColumnWidthProp for generic, use TableColumnWidth instead.',
           ),
         ),
       );
     });
 
-    test('should assert when TableBorderRef is passed', () {
+    test('should assert when TableBorderProp is passed', () {
       expect(
-        () => assertIsRealType(TableBorderRef),
+        () => assertIsRealType(TableBorderProp),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
             'message',
-            'Cannot use TableBorderRef for generic, use TableBorder instead.',
+            'Cannot use TableBorderProp for generic, use TableBorder instead.',
           ),
         ),
       );
     });
 
-    test('should assert when StrutStyleRef is passed', () {
+    test('should assert when StrutStyleProp is passed', () {
       expect(
-        () => assertIsRealType(StrutStyleRef),
+        () => assertIsRealType(StrutStyleProp),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
             'message',
-            'Cannot use StrutStyleRef for generic, use StrutStyle instead.',
+            'Cannot use StrutStyleProp for generic, use StrutStyle instead.',
           ),
         ),
       );
     });
 
-    test('should assert when TextHeightBehaviorRef is passed', () {
+    test('should assert when TextHeightBehaviorProp is passed', () {
       expect(
-        () => assertIsRealType(TextHeightBehaviorRef),
+        () => assertIsRealType(TextHeightBehaviorProp),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
             'message',
-            'Cannot use TextHeightBehaviorRef for generic, use TextHeightBehavior instead.',
+            'Cannot use TextHeightBehaviorProp for generic, use TextHeightBehavior instead.',
           ),
         ),
       );

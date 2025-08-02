@@ -8,7 +8,6 @@ import '../theme/mix_theme.dart';
 import '../theme/tokens/mix_token.dart';
 import 'decoration_merge.dart';
 import 'directive.dart';
-import 'helpers.dart';
 import 'mix_element.dart';
 import 'prop_source.dart';
 import 'shape_border_merge.dart';
@@ -20,7 +19,7 @@ import 'shape_border_merge.dart';
 /// Properties are the foundation of the Mix system, providing value resolution,
 /// merging capabilities, directive application, and animation support.
 @immutable
-sealed class PropBase<V> extends Mixable<V> with Resolvable<V> {
+sealed class PropBase<V> {
   /// Directives to apply to the resolved value
   final List<MixDirective<V>>? $directives;
 
@@ -66,9 +65,11 @@ sealed class PropBase<V> extends Mixable<V> with Resolvable<V> {
     return other ?? $animation; // Other's animation wins
   }
 
+  PropBase<V> mergeProp(covariant PropBase<V>? other);
+
   /// Resolves the property value using the provided context
-  @override
-  V resolve(BuildContext context);
+
+  V resolveProp(BuildContext context);
 }
 
 /// Prop for regular types - uses replacement merge strategy
@@ -120,15 +121,15 @@ class Prop<V> extends PropBase<V> {
   bool get hasValue => $value != null;
 
   Prop<V> directives(List<MixDirective<V>> directives) {
-    return merge(Prop.directives(directives));
+    return mergeProp(Prop.directives(directives));
   }
 
   Prop<V> animation(AnimationConfig animation) {
-    return merge(Prop.animation(animation));
+    return mergeProp(Prop.animation(animation));
   }
 
   @override
-  Prop<V> merge(covariant Prop<V>? other) {
+  Prop<V> mergeProp(covariant Prop<V>? other) {
     if (other == null) return this;
 
     var value = $value;
@@ -155,7 +156,7 @@ class Prop<V> extends PropBase<V> {
   }
 
   @override
-  V resolve(BuildContext context) {
+  V resolveProp(BuildContext context) {
     if ($token == null && $value == null) {
       throw FlutterError('Prop<$V> has no value or token defined defined');
     }
@@ -318,15 +319,15 @@ class MixProp<V> extends PropBase<V> {
   }
 
   MixProp<V> directives(List<MixDirective<V>> directives) {
-    return merge(MixProp.directives(directives));
+    return mergeProp(MixProp.directives(directives));
   }
 
   MixProp<V> animation(AnimationConfig animation) {
-    return merge(MixProp.animation(animation));
+    return mergeProp(MixProp.animation(animation));
   }
 
   @override
-  V resolve(BuildContext context) {
+  V resolveProp(BuildContext context) {
     if (sources.isEmpty) {
       throw FlutterError('MixProp<$V> has no sources defined');
     }
@@ -356,7 +357,7 @@ class MixProp<V> extends PropBase<V> {
   }
 
   @override
-  MixProp<V> merge(MixProp<V>? other) {
+  MixProp<V> mergeProp(MixProp<V>? other) {
     if (other == null) return this;
 
     // Accumulate sources from both props
@@ -388,41 +389,4 @@ class MixProp<V> extends PropBase<V> {
   @override
   int get hashCode =>
       Object.hash(Object.hashAll(sources), $directives, $animation);
-}
-
-extension PropExt<T> on Prop<T>? {
-  Prop<T>? tryMerge(Prop<T>? other) {
-    if (this == null) return other;
-    if (other == null) return this;
-
-    return this!.merge(other);
-  }
-}
-
-extension ListPropExt<T> on List<Prop<T>> {
-  List<Prop<T>>? tryMerge(List<Prop<T>>? other, {ListMergeStrategy? strategy}) {
-    if (other == null) return this;
-
-    return MixHelpers.mergeList(this, other, strategy: strategy);
-  }
-}
-
-extension MixPropExt<T> on MixProp<T>? {
-  MixProp<T>? tryMerge(MixProp<T>? other) {
-    if (this == null) return other;
-    if (other == null) return this;
-
-    return this!.merge(other);
-  }
-}
-
-extension ListMixPropExt<T> on List<MixProp<T>> {
-  List<MixProp<T>>? tryMerge(
-    List<MixProp<T>>? other, {
-    ListMergeStrategy? strategy,
-  }) {
-    if (other == null) return this;
-
-    return MixHelpers.mergeList(this, other, strategy: strategy);
-  }
 }

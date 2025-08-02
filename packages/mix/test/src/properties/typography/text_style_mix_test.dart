@@ -511,7 +511,9 @@ void main() {
 
         expect(merged.$shadows, hasLength(1));
         // Verify the shadow was replaced (second shadow overwrites first)
-        final resolvedShadow = merged.$shadows![0].resolve(MockBuildContext());
+        final resolvedShadow = merged.$shadows![0].resolveProp(
+          MockBuildContext(),
+        );
         expect(resolvedShadow.blurRadius, 10.0);
       });
     });

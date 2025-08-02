@@ -91,7 +91,7 @@ class OpacityModifierAttribute extends ModifierAttribute<OpacityModifier>
   /// ```
   @override
   OpacityModifier resolve(BuildContext context) {
-    return OpacityModifier(opacity?.resolve(context));
+    return OpacityModifier(opacity?.resolveProp(context));
   }
 
   /// Merges the properties of this [OpacityModifierAttribute] with the properties of [other].
@@ -107,7 +107,7 @@ class OpacityModifierAttribute extends ModifierAttribute<OpacityModifier>
     if (other == null) return this;
 
     return OpacityModifierAttribute.raw(
-      opacity: MixHelpers.merge(opacity, other.opacity),
+      opacity: opacity.tryMerge(other.opacity),
     );
   }
 

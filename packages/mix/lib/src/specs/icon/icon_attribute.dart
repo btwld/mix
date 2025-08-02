@@ -249,22 +249,17 @@ class IconMix extends Style<IconSpec>
     if (other == null) return this;
 
     return IconMix.raw(
-      color: MixHelpers.merge($color, other.$color),
-      size: MixHelpers.merge($size, other.$size),
-      weight: MixHelpers.merge($weight, other.$weight),
-      grade: MixHelpers.merge($grade, other.$grade),
-      opticalSize: MixHelpers.merge($opticalSize, other.$opticalSize),
-      shadows: MixHelpers.mergeList($shadows, other.$shadows),
-      textDirection: MixHelpers.merge($textDirection, other.$textDirection),
-      applyTextScaling: MixHelpers.merge(
-        $applyTextScaling,
-        other.$applyTextScaling,
-      ),
-      fill: MixHelpers.merge($fill, other.$fill),
+      color: $color.tryMerge(other.$color),
+      size: $size.tryMerge(other.$size),
+      weight: $weight.tryMerge(other.$weight),
+      grade: $grade.tryMerge(other.$grade),
+      opticalSize: $opticalSize.tryMerge(other.$opticalSize),
+      shadows: $shadows.tryMerge(other.$shadows),
+      textDirection: $textDirection.tryMerge(other.$textDirection),
+      applyTextScaling: $applyTextScaling.tryMerge(other.$applyTextScaling),
+      fill: $fill.tryMerge(other.$fill),
       animation: other.$animation ?? $animation,
-      modifierConfig:
-          $modifierConfig?.merge(other.$modifierConfig) ??
-          other.$modifierConfig,
+      modifierConfig: $modifierConfig.tryMerge(other.$modifierConfig),
       variants: mergeVariantLists($variants, other.$variants),
 
       inherit: other.$inherit ?? $inherit,

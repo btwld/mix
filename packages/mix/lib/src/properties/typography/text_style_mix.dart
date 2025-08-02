@@ -427,48 +427,33 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
     if (other == null) return this;
 
     return TextStyleMix.raw(
-      color: MixHelpers.merge($color, other.$color),
-      backgroundColor: MixHelpers.merge(
-        $backgroundColor,
-        other.$backgroundColor,
-      ),
-      fontSize: MixHelpers.merge($fontSize, other.$fontSize),
-      fontWeight: MixHelpers.merge($fontWeight, other.$fontWeight),
-      fontStyle: MixHelpers.merge($fontStyle, other.$fontStyle),
-      letterSpacing: MixHelpers.merge($letterSpacing, other.$letterSpacing),
-      debugLabel: MixHelpers.merge($debugLabel, other.$debugLabel),
-      wordSpacing: MixHelpers.merge($wordSpacing, other.$wordSpacing),
-      textBaseline: MixHelpers.merge($textBaseline, other.$textBaseline),
+      color: $color.tryMerge(other.$color),
+      backgroundColor: $backgroundColor.tryMerge(other.$backgroundColor),
+      fontSize: $fontSize.tryMerge(other.$fontSize),
+      fontWeight: $fontWeight.tryMerge(other.$fontWeight),
+      fontStyle: $fontStyle.tryMerge(other.$fontStyle),
+      letterSpacing: $letterSpacing.tryMerge(other.$letterSpacing),
+      debugLabel: $debugLabel.tryMerge(other.$debugLabel),
+      wordSpacing: $wordSpacing.tryMerge(other.$wordSpacing),
+      textBaseline: $textBaseline.tryMerge(other.$textBaseline),
       // Merge lists - default replace strategy (merge at index)
-      shadows: MixHelpers.mergeList($shadows, other.$shadows),
-      fontFeatures: MixHelpers.mergeList($fontFeatures, other.$fontFeatures),
-      decoration: MixHelpers.merge($decoration, other.$decoration),
-      decorationColor: MixHelpers.merge(
-        $decorationColor,
-        other.$decorationColor,
-      ),
-      decorationStyle: MixHelpers.merge(
-        $decorationStyle,
-        other.$decorationStyle,
-      ),
-      fontVariations: MixHelpers.mergeList(
-        $fontVariations,
-        other.$fontVariations,
-      ),
-      height: MixHelpers.merge($height, other.$height),
-      foreground: MixHelpers.merge($foreground, other.$foreground),
-      background: MixHelpers.merge($background, other.$background),
-      decorationThickness: MixHelpers.merge(
-        $decorationThickness,
+      shadows: $shadows.tryMerge(other.$shadows),
+      fontFeatures: $fontFeatures.tryMerge(other.$fontFeatures),
+      decoration: $decoration.tryMerge(other.$decoration),
+      decorationColor: $decorationColor.tryMerge(other.$decorationColor),
+      decorationStyle: $decorationStyle.tryMerge(other.$decorationStyle),
+      fontVariations: $fontVariations.tryMerge(other.$fontVariations),
+      height: $height.tryMerge(other.$height),
+      foreground: $foreground.tryMerge(other.$foreground),
+      background: $background.tryMerge(other.$background),
+      decorationThickness: $decorationThickness.tryMerge(
         other.$decorationThickness,
       ),
-      fontFamily: MixHelpers.merge($fontFamily, other.$fontFamily),
-      fontFamilyFallback: MixHelpers.mergeList(
-        $fontFamilyFallback,
+      fontFamily: $fontFamily.tryMerge(other.$fontFamily),
+      fontFamilyFallback: $fontFamilyFallback.tryMerge(
         other.$fontFamilyFallback,
-        strategy: ListMergeStrategy.append,
       ),
-      inherit: MixHelpers.merge($inherit, other.$inherit),
+      inherit: $inherit.tryMerge(other.$inherit),
     );
   }
 

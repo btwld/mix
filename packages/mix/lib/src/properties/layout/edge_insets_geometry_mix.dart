@@ -263,10 +263,10 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
     if (other == null) return this;
 
     return EdgeInsetsMix.raw(
-      top: MixHelpers.merge($top, other.$top),
-      bottom: MixHelpers.merge($bottom, other.$bottom),
-      left: MixHelpers.merge($left, other.$left),
-      right: MixHelpers.merge($right, other.$right),
+      top: $top.tryMerge(other.$top),
+      bottom: $bottom.tryMerge(other.$bottom),
+      left: $left.tryMerge(other.$left),
+      right: $right.tryMerge(other.$right),
     );
   }
 
@@ -381,10 +381,10 @@ final class EdgeInsetsDirectionalMix
     if (other == null) return this;
 
     return EdgeInsetsDirectionalMix.raw(
-      top: MixHelpers.merge($top, other.$top),
-      bottom: MixHelpers.merge($bottom, other.$bottom),
-      start: MixHelpers.merge($start, other.$start),
-      end: MixHelpers.merge($end, other.$end),
+      top: $top.tryMerge(other.$top),
+      bottom: $bottom.tryMerge(other.$bottom),
+      start: $start.tryMerge(other.$start),
+      end: $end.tryMerge(other.$end),
     );
   }
 

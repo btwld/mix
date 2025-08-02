@@ -82,7 +82,7 @@ class RotatedBoxModifierAttribute
     if (other == null) return this;
 
     return RotatedBoxModifierAttribute.raw(
-      quarterTurns: MixHelpers.merge(quarterTurns, other.quarterTurns),
+      quarterTurns: quarterTurns.tryMerge(other.quarterTurns),
     );
   }
 

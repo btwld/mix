@@ -9,16 +9,14 @@ void main() {
     late ColorUtility<MockStyle<Prop<Color>>> util;
 
     setUp(() {
-      util = ColorUtility<MockStyle<Prop<Color>>>(
-        (prop) => MockStyle(prop),
-      );
+      util = ColorUtility<MockStyle<Prop<Color>>>((prop) => MockStyle(prop));
     });
 
     group('basic functionality', () {
       test('call method creates color prop', () {
         final result = util(Colors.red);
 
-        final color = result.value.resolve(MockBuildContext());
+        final color = result.value.resolveProp(MockBuildContext());
 
         expect(color, Colors.red);
       });
@@ -26,13 +24,11 @@ void main() {
       test('token method creates token prop', () {
         const colorToken = MixToken<Color>('primaryColor');
         final context = MockBuildContext(
-          mixScopeData: MixScopeData.static(
-            tokens: {colorToken: Colors.blue},
-          ),
+          mixScopeData: MixScopeData.static(tokens: {colorToken: Colors.blue}),
         );
 
         final result = util.token(colorToken);
-        final color = result.value.resolve(context);
+        final color = result.value.resolveProp(context);
 
         expect(color, Colors.blue);
       });
@@ -40,13 +36,11 @@ void main() {
       test('ref method (deprecated) delegates to token', () {
         const colorToken = MixToken<Color>('primaryColor');
         final context = MockBuildContext(
-          mixScopeData: MixScopeData.static(
-            tokens: {colorToken: Colors.green},
-          ),
+          mixScopeData: MixScopeData.static(tokens: {colorToken: Colors.green}),
         );
 
         final result = util.ref(colorToken);
-        final color = result.value.resolve(context);
+        final color = result.value.resolveProp(context);
 
         expect(color, Colors.green);
       });
@@ -82,35 +76,35 @@ void main() {
       group('basic color values', () {
         test('transparent creates transparent color', () {
           final result = util.transparent();
-          final color = result.value.resolve(MockBuildContext());
+          final color = result.value.resolveProp(MockBuildContext());
 
           expect(color, Colors.transparent);
         });
 
         test('black creates black color', () {
           final result = util.black();
-          final color = result.value.resolve(MockBuildContext());
+          final color = result.value.resolveProp(MockBuildContext());
 
           expect(color, Colors.black);
         });
 
         test('black87 creates black87 color', () {
           final result = util.black87();
-          final color = result.value.resolve(MockBuildContext());
+          final color = result.value.resolveProp(MockBuildContext());
 
           expect(color, Colors.black87);
         });
 
         test('white creates white color', () {
           final result = util.white();
-          final color = result.value.resolve(MockBuildContext());
+          final color = result.value.resolveProp(MockBuildContext());
 
           expect(color, Colors.white);
         });
 
         test('white70 creates white70 color', () {
           final result = util.white70();
-          final color = result.value.resolve(MockBuildContext());
+          final color = result.value.resolveProp(MockBuildContext());
 
           expect(color, Colors.white70);
         });
@@ -222,7 +216,7 @@ void main() {
 
     test('call operator returns the predefined color', () {
       final result = util();
-      final color = result.value.resolve(MockBuildContext());
+      final color = result.value.resolveProp(MockBuildContext());
 
       expect(color, Colors.blue);
     });
@@ -349,9 +343,7 @@ void main() {
     late ColorUtility<MockStyle<Prop<Color>>> util;
 
     setUp(() {
-      util = ColorUtility<MockStyle<Prop<Color>>>(
-        (prop) => MockStyle(prop),
-      );
+      util = ColorUtility<MockStyle<Prop<Color>>>((prop) => MockStyle(prop));
     });
 
     group('black variants with directives', () {
@@ -381,10 +373,8 @@ void main() {
         final result = util.white.withOpacity(0.9);
         final directives = result.value.$directives;
 
-        
         expect(directives, isNotEmpty);
-        expect(directives!.first, isA<OpacityColorDirective>
-        ());
+        expect(directives!.first, isA<OpacityColorDirective>());
         expect((directives.first as OpacityColorDirective).opacity, 0.9);
       });
 
@@ -416,9 +406,7 @@ void main() {
     late ColorUtility<MockStyle<Prop<Color>>> util;
 
     setUp(() {
-      util = ColorUtility<MockStyle<Prop<Color>>>(
-        (prop) => MockStyle(prop),
-      );
+      util = ColorUtility<MockStyle<Prop<Color>>>((prop) => MockStyle(prop));
     });
 
     test('has material color methods from ColorsUtilityMixin', () {
@@ -426,33 +414,36 @@ void main() {
       final redResult = util.red();
       final blueResult = util.blue();
       final greenResult = util.green();
-      
-      expect(redResult.value.resolve(MockBuildContext()), Colors.red);
-      expect(blueResult.value.resolve(MockBuildContext()), Colors.blue);
-      expect(greenResult.value.resolve(MockBuildContext()), Colors.green);
+
+      expect(redResult.value.resolveProp(MockBuildContext()), Colors.red);
+      expect(blueResult.value.resolveProp(MockBuildContext()), Colors.blue);
+      expect(greenResult.value.resolveProp(MockBuildContext()), Colors.green);
     });
 
     test('material color methods work with shades', () {
       final red100 = util.red(100);
       final blue500 = util.blue(500);
       final green900 = util.green(900);
-      
-      expect(red100.value.resolve(MockBuildContext()), Colors.red[100]);
-      expect(blue500.value.resolve(MockBuildContext()), Colors.blue[500]);
-      expect(green900.value.resolve(MockBuildContext()), Colors.green[900]);
+
+      expect(red100.value.resolveProp(MockBuildContext()), Colors.red[100]);
+      expect(blue500.value.resolveProp(MockBuildContext()), Colors.blue[500]);
+      expect(green900.value.resolveProp(MockBuildContext()), Colors.green[900]);
     });
 
     test('can apply directives to material colors', () {
       // Apply directives to a red color by first creating it, then applying directives
       final redColor = util(Colors.red);
-      final result = redColor.value.resolve(MockBuildContext());
-      
+      final result = redColor.value.resolveProp(MockBuildContext());
+
       expect(result, Colors.red);
-      
+
       // Test that directives can be applied using the base utility methods
       final withOpacity = util.withOpacity(0.6);
       expect(withOpacity.value.$directives, hasLength(1));
-      expect(withOpacity.value.$directives!.first, isA<OpacityColorDirective>());
+      expect(
+        withOpacity.value.$directives!.first,
+        isA<OpacityColorDirective>(),
+      );
     });
   });
 
@@ -460,11 +451,9 @@ void main() {
     test('token resolves from MixScopeData', () {
       const colorToken = MixToken<Color>('testColor');
       const expectedColor = Colors.purple;
-      
+
       final context = MockBuildContext(
-        mixScopeData: MixScopeData.static(
-          tokens: {colorToken: expectedColor},
-        ),
+        mixScopeData: MixScopeData.static(tokens: {colorToken: expectedColor}),
       );
 
       final util = ColorUtility<MockStyle<Prop<Color>>>(
@@ -472,14 +461,14 @@ void main() {
       );
 
       final result = util.token(colorToken);
-      final resolvedColor = result.value.resolve(context);
+      final resolvedColor = result.value.resolveProp(context);
 
       expect(resolvedColor, expectedColor);
     });
 
     test('token falls back when not found in context', () {
       const colorToken = MixToken<Color>('missingColor');
-      
+
       final context = MockBuildContext(
         mixScopeData: MixScopeData.static(tokens: {}),
       );
@@ -489,15 +478,17 @@ void main() {
       );
 
       final result = util.token(colorToken);
-      
+
       // Token resolution now throws when token is not found
       expect(
-        () => result.value.resolve(context),
-        throwsA(isA<StateError>().having(
-          (e) => e.message,
-          'message',
-          contains('Token "missingColor" not found in scope'),
-        )),
+        () => result.value.resolveProp(context),
+        throwsA(
+          isA<StateError>().having(
+            (e) => e.message,
+            'message',
+            contains('Token "missingColor" not found in scope'),
+          ),
+        ),
       );
     });
   });

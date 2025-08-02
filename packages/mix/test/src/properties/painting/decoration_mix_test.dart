@@ -193,7 +193,7 @@ void main() {
 
         expectProp(shapeDecorationMix.$color, Colors.green);
         expect(shapeDecorationMix.$shape, isA<MixProp<ShapeBorder>>());
-        expect(shapeDecorationMix.shadows, hasLength(1));
+        expect(shapeDecorationMix.$shadows, hasLength(1));
       });
 
       test('value constructor extracts properties from ShapeDecoration', () {

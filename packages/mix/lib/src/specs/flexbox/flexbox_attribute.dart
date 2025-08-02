@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../animation/animation_config.dart';
+import '../../core/helpers.dart';
 import '../../core/style.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
@@ -37,7 +38,6 @@ class FlexBoxMix extends Style<FlexBoxSpec>
   factory FlexBoxMix.box(BoxMix value) {
     return FlexBoxMix(box: value);
   }
-
 
   /// Factory for flex properties
   factory FlexBoxMix.flex(FlexMix value) {
@@ -137,9 +137,7 @@ class FlexBoxMix extends Style<FlexBoxSpec>
       box: $box?.merge(other.$box) ?? other.$box,
       flex: $flex?.merge(other.$flex) ?? other.$flex,
       animation: other.$animation ?? $animation,
-      modifierConfig:
-          $modifierConfig?.merge(other.$modifierConfig) ??
-          other.$modifierConfig,
+      modifierConfig: $modifierConfig.tryMerge(other.$modifierConfig),
       variants: mergeVariantLists($variants, other.$variants),
       inherit: other.$inherit ?? $inherit,
     );

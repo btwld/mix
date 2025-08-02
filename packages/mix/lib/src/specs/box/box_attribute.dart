@@ -489,25 +489,21 @@ class BoxMix extends Style<BoxSpec>
     if (other == null) return this;
 
     return BoxMix.raw(
-      alignment: MixHelpers.merge($alignment, other.$alignment),
-      padding: MixHelpers.merge($padding, other.$padding),
-      margin: MixHelpers.merge($margin, other.$margin),
-      constraints: MixHelpers.merge($constraints, other.$constraints),
-      decoration: MixHelpers.merge($decoration, other.$decoration),
-      foregroundDecoration: MixHelpers.merge(
-        $foregroundDecoration,
+      alignment: $alignment.tryMerge(other.$alignment),
+      padding: $padding.tryMerge(other.$padding),
+      margin: $margin.tryMerge(other.$margin),
+      constraints: $constraints.tryMerge(other.$constraints),
+      decoration: $decoration.tryMerge(other.$decoration),
+      foregroundDecoration: $foregroundDecoration.tryMerge(
         other.$foregroundDecoration,
       ),
-      transform: MixHelpers.merge($transform, other.$transform),
-      transformAlignment: MixHelpers.merge(
-        $transformAlignment,
+      transform: $transform.tryMerge(other.$transform),
+      transformAlignment: $transformAlignment.tryMerge(
         other.$transformAlignment,
       ),
-      clipBehavior: MixHelpers.merge($clipBehavior, other.$clipBehavior),
+      clipBehavior: $clipBehavior.tryMerge(other.$clipBehavior),
       variants: mergeVariantLists($variants, other.$variants),
-      modifierConfig:
-          $modifierConfig?.merge(other.$modifierConfig) ??
-          other.$modifierConfig,
+      modifierConfig: $modifierConfig.tryMerge(other.$modifierConfig),
       animation: other.$animation ?? $animation,
       inherit: other.$inherit ?? $inherit,
     );

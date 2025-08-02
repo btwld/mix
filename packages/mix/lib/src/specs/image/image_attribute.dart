@@ -334,24 +334,26 @@ class ImageMix extends Style<ImageSpec>
     if (other == null) return this;
 
     return ImageMix.raw(
-      width: MixHelpers.merge($width, other.$width),
-      height: MixHelpers.merge($height, other.$height),
-      color: MixHelpers.merge($color, other.$color),
-      repeat: MixHelpers.merge($repeat, other.$repeat),
-      fit: MixHelpers.merge($fit, other.$fit),
-      alignment: MixHelpers.merge($alignment, other.$alignment),
-      centerSlice: MixHelpers.merge($centerSlice, other.$centerSlice),
-      filterQuality: MixHelpers.merge($filterQuality, other.$filterQuality),
-      colorBlendMode: MixHelpers.merge($colorBlendMode, other.$colorBlendMode),
-      semanticLabel: MixHelpers.merge($semanticLabel, other.$semanticLabel),
-      excludeFromSemantics: MixHelpers.merge($excludeFromSemantics, other.$excludeFromSemantics),
-      gaplessPlayback: MixHelpers.merge($gaplessPlayback, other.$gaplessPlayback),
-      isAntiAlias: MixHelpers.merge($isAntiAlias, other.$isAntiAlias),
-      matchTextDirection: MixHelpers.merge($matchTextDirection, other.$matchTextDirection),
+      width: $width.tryMerge(other.$width),
+      height: $height.tryMerge(other.$height),
+      color: $color.tryMerge(other.$color),
+      repeat: $repeat.tryMerge(other.$repeat),
+      fit: $fit.tryMerge(other.$fit),
+      alignment: $alignment.tryMerge(other.$alignment),
+      centerSlice: $centerSlice.tryMerge(other.$centerSlice),
+      filterQuality: $filterQuality.tryMerge(other.$filterQuality),
+      colorBlendMode: $colorBlendMode.tryMerge(other.$colorBlendMode),
+      semanticLabel: $semanticLabel.tryMerge(other.$semanticLabel),
+      excludeFromSemantics: $excludeFromSemantics.tryMerge(
+        other.$excludeFromSemantics,
+      ),
+      gaplessPlayback: $gaplessPlayback.tryMerge(other.$gaplessPlayback),
+      isAntiAlias: $isAntiAlias.tryMerge(other.$isAntiAlias),
+      matchTextDirection: $matchTextDirection.tryMerge(
+        other.$matchTextDirection,
+      ),
       animation: other.$animation ?? $animation,
-      modifierConfig:
-          $modifierConfig?.merge(other.$modifierConfig) ??
-          other.$modifierConfig,
+      modifierConfig: $modifierConfig.tryMerge(other.$modifierConfig),
       variants: mergeVariantLists($variants, other.$variants),
       inherit: other.$inherit ?? $inherit,
     );
@@ -385,16 +387,28 @@ class ImageMix extends Style<ImageSpec>
       DiagnosticsProperty('semanticLabel', $semanticLabel, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('excludeFromSemantics', $excludeFromSemantics, defaultValue: null),
+      DiagnosticsProperty(
+        'excludeFromSemantics',
+        $excludeFromSemantics,
+        defaultValue: null,
+      ),
     );
     properties.add(
-      DiagnosticsProperty('gaplessPlayback', $gaplessPlayback, defaultValue: null),
+      DiagnosticsProperty(
+        'gaplessPlayback',
+        $gaplessPlayback,
+        defaultValue: null,
+      ),
     );
     properties.add(
       DiagnosticsProperty('isAntiAlias', $isAntiAlias, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('matchTextDirection', $matchTextDirection, defaultValue: null),
+      DiagnosticsProperty(
+        'matchTextDirection',
+        $matchTextDirection,
+        defaultValue: null,
+      ),
     );
   }
 

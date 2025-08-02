@@ -225,16 +225,13 @@ class DefaultTextStyleModifierAttribute
     if (other == null) return this;
 
     return DefaultTextStyleModifierAttribute.raw(
-      style: MixHelpers.merge(style, other.style),
-      textAlign: MixHelpers.merge(textAlign, other.textAlign),
-      softWrap: MixHelpers.merge(softWrap, other.softWrap),
-      overflow: MixHelpers.merge(overflow, other.overflow),
-      maxLines: MixHelpers.merge(maxLines, other.maxLines),
-      textWidthBasis: MixHelpers.merge(textWidthBasis, other.textWidthBasis),
-      textHeightBehavior: MixHelpers.merge(
-        textHeightBehavior,
-        other.textHeightBehavior,
-      ),
+      style: style.tryMerge(other.style),
+      textAlign: textAlign.tryMerge(other.textAlign),
+      softWrap: softWrap.tryMerge(other.softWrap),
+      overflow: overflow.tryMerge(other.overflow),
+      maxLines: maxLines.tryMerge(other.maxLines),
+      textWidthBasis: textWidthBasis.tryMerge(other.textWidthBasis),
+      textHeightBehavior: textHeightBehavior.tryMerge(other.textHeightBehavior),
     );
   }
 
