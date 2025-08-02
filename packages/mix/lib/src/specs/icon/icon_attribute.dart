@@ -84,7 +84,7 @@ class IconMix extends Style<IconSpec>
 
   /// Factory for variant
   factory IconMix.variant(Variant variant, IconMix value) {
-    return IconMix(variants: [VariantStyleAttribute(variant, value)]);
+    return IconMix(variants: [VariantStyle(variant, value)]);
   }
 
   const IconMix.raw({
@@ -123,8 +123,8 @@ class IconMix extends Style<IconSpec>
     bool? applyTextScaling,
     double? fill,
     AnimationConfig? animation,
-    ModifierConfig? modifierConfig,
-    List<VariantStyleAttribute<IconSpec>>? variants,
+    WidgetDecoratorConfig? modifierConfig,
+    List<VariantStyle<IconSpec>>? variants,
     bool? inherit,
   }) : this.raw(
          color: Prop.maybe(color),
@@ -225,7 +225,7 @@ class IconMix extends Style<IconSpec>
   }
 
   @override
-  IconMix modifier(ModifierConfig value) {
+  IconMix modifier(WidgetDecoratorConfig value) {
     return merge(IconMix(modifierConfig: value));
   }
 
@@ -294,11 +294,11 @@ class IconMix extends Style<IconSpec>
 
   @override
   IconMix variant(Variant variant, IconMix style) {
-    return merge(IconMix(variants: [VariantStyleAttribute(variant, style)]));
+    return merge(IconMix(variants: [VariantStyle(variant, style)]));
   }
 
   @override
-  IconMix variants(List<VariantStyleAttribute<IconSpec>> value) {
+  IconMix variants(List<VariantStyle<IconSpec>> value) {
     return merge(IconMix(variants: value));
   }
 

@@ -1,4 +1,3 @@
-
 import 'package:flutter/widgets.dart';
 
 import '../core/modifier.dart';
@@ -7,7 +6,8 @@ import '../core/style.dart';
 /// Modifier that forces its child to be exactly as tall as its intrinsic height.
 ///
 /// Wraps the child in an [IntrinsicHeight] widget.
-final class IntrinsicHeightModifier extends Modifier<IntrinsicHeightModifier> {
+final class IntrinsicHeightModifier
+    extends WidgetDecorator<IntrinsicHeightModifier> {
   const IntrinsicHeightModifier();
 
   @override
@@ -34,7 +34,8 @@ final class IntrinsicHeightModifier extends Modifier<IntrinsicHeightModifier> {
 /// Modifier that forces its child to be exactly as wide as its intrinsic width.
 ///
 /// Wraps the child in an [IntrinsicWidth] widget.
-final class IntrinsicWidthModifier extends Modifier<IntrinsicWidthModifier> {
+final class IntrinsicWidthModifier
+    extends WidgetDecorator<IntrinsicWidthModifier> {
   const IntrinsicWidthModifier();
 
   @override
@@ -66,7 +67,7 @@ final class IntrinsicWidthModifier extends Modifier<IntrinsicWidthModifier> {
 /// Use this class to configure the attributes of a [IntrinsicHeightModifier] and pass it to
 /// the [IntrinsicHeightModifier] constructor.
 class IntrinsicHeightModifierAttribute
-    extends ModifierAttribute<IntrinsicHeightModifier> {
+    extends WidgetDecoratorStyle<IntrinsicHeightModifier> {
   const IntrinsicHeightModifierAttribute();
 
   /// Resolves to [IntrinsicHeightModifier] using the provided [BuildContext].
@@ -115,7 +116,7 @@ class IntrinsicHeightModifierAttribute
 /// Use this class to configure the attributes of a [IntrinsicWidthModifier] and pass it to
 /// the [IntrinsicWidthModifier] constructor.
 class IntrinsicWidthModifierAttribute
-    extends ModifierAttribute<IntrinsicWidthModifier> {
+    extends WidgetDecoratorStyle<IntrinsicWidthModifier> {
   const IntrinsicWidthModifierAttribute();
 
   /// Resolves to [IntrinsicWidthModifier] using the provided [BuildContext].

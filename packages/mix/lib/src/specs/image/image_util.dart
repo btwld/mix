@@ -36,7 +36,7 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageSpec> {
   );
 
   late final wrap = ModifierUtility(
-    (prop) => mutable.modifier(ModifierConfig(modifiers: [prop])),
+    (prop) => mutable.modifier(WidgetDecoratorConfig(decorators: [prop])),
   );
 
   /// Internal mutable state for accumulating image styling properties.

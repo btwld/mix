@@ -44,7 +44,7 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
     (v) => mutable.variants([v]),
   );
   late final wrap = ModifierUtility(
-    (prop) => mutable.modifier(ModifierConfig(modifiers: [prop])),
+    (prop) => mutable.modifier(WidgetDecoratorConfig(decorators: [prop])),
   );
 
   // Direct access to commonly used style properties
@@ -68,8 +68,7 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
   late final fontFeatures = style.fontFeatures;
   late final debugLabel = style.debugLabel;
   late final decorationThickness = style.decorationThickness;
-  late final fontFamilyFallback = style
-      .fontFamilyFallback;
+  late final fontFamilyFallback = style.fontFamilyFallback;
 
   /// Internal mutable state for accumulating text styling properties.
   @override

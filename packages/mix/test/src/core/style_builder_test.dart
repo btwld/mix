@@ -187,7 +187,7 @@ void main() {
             .height(100)
             .alignment(Alignment.center)
             .wrap(
-              ModifierConfig.modifiers([
+              WidgetDecoratorConfig.decorators([
                 OpacityModifierAttribute(opacity: 0.5),
                 PaddingModifierAttribute(
                   padding: EdgeInsetsGeometryMix.all(10),
@@ -237,7 +237,7 @@ void main() {
             .height(100)
             .color(Colors.blue)
             .wrap(
-              ModifierConfig.modifiers([
+              WidgetDecoratorConfig.decorators([
                 OpacityModifierAttribute(opacity: 0.5),
                 PaddingModifierAttribute(
                   padding: EdgeInsetsGeometryMix.all(10),
@@ -307,18 +307,18 @@ void main() {
           ClipOvalModifier,
           PaddingModifier,
         ];
-        
+
         final boxAttribute = BoxMix.width(100)
             .height(100)
             .color(Colors.blue)
             .wrap(
-              ModifierConfig.modifiers([
+              WidgetDecoratorConfig.decorators([
                 OpacityModifierAttribute(opacity: 0.5),
                 PaddingModifierAttribute(
                   padding: EdgeInsetsGeometryMix.all(10),
                 ),
                 ClipOvalModifierAttribute(),
-              ]).orderOfModifiers(customOrder),
+              ])..orderOfDecorators(customOrder),
             );
 
         await tester.pumpWidget(

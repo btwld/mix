@@ -73,7 +73,6 @@ void main() {
       });
     });
 
-
     group('Resolution', () {
       test('resolves to FlexBoxSpec with correct properties', () {
         final attribute = FlexBoxMix(
@@ -242,8 +241,8 @@ void main() {
     group('Modifiers', () {
       test('modifiers can be added to attribute', () {
         final attribute = FlexBoxMix(
-          modifierConfig: ModifierConfig(
-            modifiers: [
+          modifierConfig: WidgetDecoratorConfig(
+            decorators: [
               OpacityModifierAttribute(opacity: 0.5),
               TransformModifierAttribute(
                 transform: Matrix4.identity(),
@@ -254,19 +253,19 @@ void main() {
         );
 
         expect(attribute.$modifierConfig, isNotNull);
-        expect(attribute.$modifierConfig!.$modifiers!.length, 2);
+        expect(attribute.$modifierConfig!.$decorators!.length, 2);
       });
 
       test('modifiers are merged correctly', () {
         final first = FlexBoxMix(
-          modifierConfig: ModifierConfig(
-            modifiers: [OpacityModifierAttribute(opacity: 0.5)],
+          modifierConfig: WidgetDecoratorConfig(
+            decorators: [OpacityModifierAttribute(opacity: 0.5)],
           ),
         );
 
         final second = FlexBoxMix(
-          modifierConfig: ModifierConfig(
-            modifiers: [
+          modifierConfig: WidgetDecoratorConfig(
+            decorators: [
               TransformModifierAttribute(transform: Matrix4.identity()),
             ],
           ),
@@ -276,7 +275,7 @@ void main() {
 
         // Modifiers are combined when merging
         expect(merged.$modifierConfig, isNotNull);
-        expect(merged.$modifierConfig!.$modifiers!.length, 2);
+        expect(merged.$modifierConfig!.$decorators!.length, 2);
       });
     });
 
@@ -304,7 +303,7 @@ void main() {
         final variant = ContextVariant('test', (context) => true);
         final withVariants = FlexBoxMix(
           variants: [
-            VariantStyleAttribute(
+            VariantStyle(
               variant,
               FlexBoxMix(
                 box: BoxMix(decoration: BoxDecorationMix(color: Colors.green)),

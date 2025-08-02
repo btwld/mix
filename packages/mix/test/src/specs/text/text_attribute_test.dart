@@ -549,11 +549,11 @@ void main() {
 
       test('variants method sets multiple variants', () {
         final variants = [
-          VariantStyleAttribute(
+          VariantStyle(
             ContextVariant.brightness(Brightness.dark),
             TextMix.color(Colors.white),
           ),
-          VariantStyleAttribute(
+          VariantStyle(
             ContextVariant.brightness(Brightness.light),
             TextMix.color(Colors.black),
           ),

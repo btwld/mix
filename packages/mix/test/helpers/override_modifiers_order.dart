@@ -8,14 +8,16 @@ Future<void> testOverrideModifiersOrder(
 }) async {
   final style = Style.box(
     BoxMix(
-      modifierConfig: ModifierConfig(
-        modifiers: [
+      modifierConfig: WidgetDecoratorConfig(
+        decorators: [
           VisibilityModifierAttribute(visible: true),
           OpacityModifierAttribute(opacity: 1.0),
           TransformModifierAttribute(),
           AspectRatioModifierAttribute(aspectRatio: 2.0),
           AlignModifierAttribute(alignment: Alignment.center),
-          PaddingModifierAttribute(padding: EdgeInsetsDirectionalMix(top: 10.0)),
+          PaddingModifierAttribute(
+            padding: EdgeInsetsDirectionalMix(top: 10.0),
+          ),
         ],
       ),
     ),

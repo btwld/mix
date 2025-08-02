@@ -6,7 +6,7 @@ import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 
-class MouseCursorDecorator extends Modifier<MouseCursorDecorator> {
+class MouseCursorDecorator extends WidgetDecorator<MouseCursorDecorator> {
   final MouseCursor? mouseCursor;
 
   const MouseCursorDecorator({this.mouseCursor});
@@ -63,7 +63,8 @@ class MouseCursorDecorator extends Modifier<MouseCursorDecorator> {
 ///
 /// Use this class to configure the attributes of a [MouseCursorDecorator] and pass it to
 /// the [MouseCursorDecorator] constructor.
-class MouseCursorDecoratorMix extends ModifierAttribute<MouseCursorDecorator> {
+class MouseCursorDecoratorMix
+    extends WidgetDecoratorStyle<MouseCursorDecorator> {
   final Prop<MouseCursor>? mouseCursor;
 
   const MouseCursorDecoratorMix.raw({this.mouseCursor});

@@ -17,7 +17,7 @@ final appHeaderContainer = Style.box(
     .color(Colors.blue.shade100)
     .padding(EdgeInsetsMix.all(16))
     .wrap(
-      ModifierConfig.defaultText(
+      WidgetDecoratorConfig.defaultText(
         Style.text()
             .fontSize(20)
             .fontWeight(FontWeight.bold)

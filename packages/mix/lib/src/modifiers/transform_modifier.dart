@@ -8,7 +8,7 @@ import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 
-final class TransformModifier extends Modifier<TransformModifier> {
+final class TransformModifier extends WidgetDecorator<TransformModifier> {
   final Matrix4? transform;
   final Alignment? alignment;
 
@@ -98,7 +98,8 @@ final class TransformRotateModifierUtility<T extends Style<Object?>>
   T call(double value) => builder(Matrix4.rotationZ(value));
 }
 
-class TransformModifierAttribute extends ModifierAttribute<TransformModifier> {
+class TransformModifierAttribute
+    extends WidgetDecoratorStyle<TransformModifier> {
   final Prop<Matrix4>? transform;
   final Prop<Alignment>? alignment;
 

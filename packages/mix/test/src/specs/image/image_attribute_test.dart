@@ -105,11 +105,14 @@ void main() {
         expect(imageMix.$semanticLabel, resolvesTo('My Image'));
       });
 
-      test('excludeFromSemantics factory creates ImageMix with excludeFromSemantics', () {
-        final imageMix = ImageMix.excludeFromSemantics(true);
+      test(
+        'excludeFromSemantics factory creates ImageMix with excludeFromSemantics',
+        () {
+          final imageMix = ImageMix.excludeFromSemantics(true);
 
-        expect(imageMix.$excludeFromSemantics, resolvesTo(true));
-      });
+          expect(imageMix.$excludeFromSemantics, resolvesTo(true));
+        },
+      );
 
       test('gaplessPlayback factory creates ImageMix with gaplessPlayback', () {
         final imageMix = ImageMix.gaplessPlayback(true);
@@ -123,11 +126,14 @@ void main() {
         expect(imageMix.$isAntiAlias, resolvesTo(false));
       });
 
-      test('matchTextDirection factory creates ImageMix with matchTextDirection', () {
-        final imageMix = ImageMix.matchTextDirection(true);
+      test(
+        'matchTextDirection factory creates ImageMix with matchTextDirection',
+        () {
+          final imageMix = ImageMix.matchTextDirection(true);
 
-        expect(imageMix.$matchTextDirection, resolvesTo(true));
-      });
+          expect(imageMix.$matchTextDirection, resolvesTo(true));
+        },
+      );
     });
 
     group('value constructor', () {
@@ -237,11 +243,11 @@ void main() {
 
       test('variants method sets multiple variants', () {
         final variants = [
-          VariantStyleAttribute(
+          VariantStyle(
             ContextVariant.brightness(Brightness.dark),
             ImageMix.color(Colors.white),
           ),
-          VariantStyleAttribute(
+          VariantStyle(
             ContextVariant.brightness(Brightness.light),
             ImageMix.color(Colors.black),
           ),

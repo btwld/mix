@@ -118,7 +118,7 @@ void main() {
 
         expect(result, isA<StackMix>());
         expect(result.$modifierConfig, isNotNull);
-        expect(result.$modifierConfig!.$modifiers!.length, 1);
+        expect(result.$modifierConfig!.$decorators!.length, 1);
       });
     });
 

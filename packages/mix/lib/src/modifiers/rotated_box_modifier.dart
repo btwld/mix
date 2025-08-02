@@ -6,7 +6,7 @@ import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 
-final class RotatedBoxModifier extends Modifier<RotatedBoxModifier> {
+final class RotatedBoxModifier extends WidgetDecorator<RotatedBoxModifier> {
   final int quarterTurns;
   const RotatedBoxModifier([int? quarterTurns])
     : quarterTurns = quarterTurns ?? 0;
@@ -48,7 +48,7 @@ final class RotatedBoxModifier extends Modifier<RotatedBoxModifier> {
 /// Use this class to configure the attributes of a [RotatedBoxModifier] and pass it to
 /// the [RotatedBoxModifier] constructor.
 class RotatedBoxModifierAttribute
-    extends ModifierAttribute<RotatedBoxModifier> {
+    extends WidgetDecoratorStyle<RotatedBoxModifier> {
   final Prop<int>? quarterTurns;
 
   const RotatedBoxModifierAttribute.raw({this.quarterTurns});

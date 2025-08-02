@@ -108,7 +108,7 @@ class ImageMix extends Style<ImageSpec>
 
   /// Factory for variant
   factory ImageMix.variant(Variant variant, ImageMix value) {
-    return ImageMix(variants: [VariantStyleAttribute(variant, value)]);
+    return ImageMix(variants: [VariantStyle(variant, value)]);
   }
 
   const ImageMix.raw({
@@ -162,8 +162,8 @@ class ImageMix extends Style<ImageSpec>
     bool? isAntiAlias,
     bool? matchTextDirection,
     AnimationConfig? animation,
-    ModifierConfig? modifierConfig,
-    List<VariantStyleAttribute<ImageSpec>>? variants,
+    WidgetDecoratorConfig? modifierConfig,
+    List<VariantStyle<ImageSpec>>? variants,
     bool? inherit,
   }) : this.raw(
          width: Prop.maybe(width),
@@ -300,12 +300,12 @@ class ImageMix extends Style<ImageSpec>
   }
 
   @override
-  ImageMix variants(List<VariantStyleAttribute<ImageSpec>> variants) {
+  ImageMix variants(List<VariantStyle<ImageSpec>> variants) {
     return merge(ImageMix(variants: variants));
   }
 
   @override
-  ImageMix modifier(ModifierConfig value) {
+  ImageMix modifier(WidgetDecoratorConfig value) {
     return merge(ImageMix(modifierConfig: value));
   }
 
@@ -414,7 +414,7 @@ class ImageMix extends Style<ImageSpec>
 
   @override
   ImageMix variant(Variant variant, ImageMix style) {
-    return merge(ImageMix(variants: [VariantStyleAttribute(variant, style)]));
+    return merge(ImageMix(variants: [VariantStyle(variant, style)]));
   }
 
   @override

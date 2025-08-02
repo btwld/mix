@@ -210,7 +210,7 @@ void main() {
       test('can be used in VariantSpecAttribute wrapper', () {
         const primaryVariant = NamedVariant('primary');
         final style = BoxMix.width(100.0);
-        final variantAttr = VariantStyleAttribute(primaryVariant, style);
+        final variantAttr = VariantStyle(primaryVariant, style);
 
         expect(variantAttr.variant, primaryVariant);
         expect(variantAttr.value, style);
@@ -221,12 +221,9 @@ void main() {
         const primaryVariant = NamedVariant('primary');
         const secondaryVariant = NamedVariant('secondary');
 
-        final primaryStyle = VariantStyleAttribute(
-          primaryVariant,
-          BoxMix.width(100.0),
-        );
+        final primaryStyle = VariantStyle(primaryVariant, BoxMix.width(100.0));
 
-        final secondaryStyle = VariantStyleAttribute(
+        final secondaryStyle = VariantStyle(
           secondaryVariant,
           BoxMix.width(150.0),
         );
@@ -239,15 +236,9 @@ void main() {
       test('merges correctly when variants match', () {
         const primaryVariant = NamedVariant('primary');
 
-        final style1 = VariantStyleAttribute(
-          primaryVariant,
-          BoxMix.width(100.0),
-        );
+        final style1 = VariantStyle(primaryVariant, BoxMix.width(100.0));
 
-        final style2 = VariantStyleAttribute(
-          primaryVariant,
-          BoxMix.height(200.0),
-        );
+        final style2 = VariantStyle(primaryVariant, BoxMix.height(200.0));
 
         final merged = style1.merge(style2);
 
@@ -265,12 +256,9 @@ void main() {
         const primaryVariant = NamedVariant('primary');
         const secondaryVariant = NamedVariant('secondary');
 
-        final primaryStyle = VariantStyleAttribute(
-          primaryVariant,
-          BoxMix.width(100.0),
-        );
+        final primaryStyle = VariantStyle(primaryVariant, BoxMix.width(100.0));
 
-        final secondaryStyle = VariantStyleAttribute(
+        final secondaryStyle = VariantStyle(
           secondaryVariant,
           BoxMix.height(200.0),
         );

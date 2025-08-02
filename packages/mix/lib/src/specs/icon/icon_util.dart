@@ -31,7 +31,7 @@ class IconSpecUtility extends StyleMutableBuilder<IconSpec> {
   );
 
   late final wrap = ModifierUtility(
-    (prop) => mutable.modifier(ModifierConfig(modifiers: [prop])),
+    (prop) => mutable.modifier(WidgetDecoratorConfig(decorators: [prop])),
   );
 
   /// Internal mutable state for accumulating icon styling properties.

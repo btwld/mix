@@ -9,7 +9,7 @@ import '../core/utility.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
 import '../properties/layout/edge_insets_geometry_util.dart';
 
-final class PaddingModifier extends Modifier<PaddingModifier>
+final class PaddingModifier extends WidgetDecorator<PaddingModifier>
     with Diagnosticable {
   final EdgeInsetsGeometry padding;
 
@@ -66,7 +66,7 @@ final class PaddingModifier extends Modifier<PaddingModifier>
 /// Attribute class for configuring [PaddingModifier] properties.
 ///
 /// Encapsulates padding values for widget spacing and layout.
-class PaddingModifierAttribute extends ModifierAttribute<PaddingModifier>
+class PaddingModifierAttribute extends WidgetDecoratorStyle<PaddingModifier>
     with Diagnosticable {
   final MixProp<EdgeInsetsGeometry>? padding;
 

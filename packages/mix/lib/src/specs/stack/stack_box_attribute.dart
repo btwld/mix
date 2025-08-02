@@ -48,7 +48,7 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
 
   /// Factory for variant
   factory StackBoxMix.variant(Variant variant, StackBoxMix value) {
-    return StackBoxMix(variants: [VariantStyleAttribute(variant, value)]);
+    return StackBoxMix(variants: [VariantStyle(variant, value)]);
   }
 
   /// Constructor that accepts a [ZBoxSpec] value and extracts its properties.
@@ -93,11 +93,11 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
     return merge(StackBoxMix.animate(animation));
   }
 
-  StackBoxMix modifier(ModifierConfig value) {
+  StackBoxMix modifier(WidgetDecoratorConfig value) {
     return merge(StackBoxMix(modifierConfig: value));
   }
 
-  StackBoxMix variants(List<VariantStyleAttribute<ZBoxSpec>> variants) {
+  StackBoxMix variants(List<VariantStyle<ZBoxSpec>> variants) {
     return merge(StackBoxMix(variants: variants));
   }
 
@@ -171,9 +171,9 @@ class StackBoxSpecUtility {
   StackBoxMix only({
     BoxMix? box,
     StackMix? stack,
-    ModifierConfig? modifierConfig,
+    WidgetDecoratorConfig? modifierConfig,
     AnimationConfig? animation,
-    List<VariantStyleAttribute<ZBoxSpec>>? variants,
+    List<VariantStyle<ZBoxSpec>>? variants,
   }) {
     return StackBoxMix(
       box: box,

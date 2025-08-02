@@ -250,7 +250,7 @@ class TextMix extends Style<TextSpec>
 
   /// Factory for variant
   factory TextMix.variant(Variant variant, TextMix value) {
-    return TextMix(variants: [VariantStyleAttribute(variant, value)]);
+    return TextMix(variants: [VariantStyle(variant, value)]);
   }
 
   factory TextMix.contentModifier(MixDirective<String> value) {
@@ -308,8 +308,8 @@ class TextMix extends Style<TextSpec>
     String? semanticsLabel,
     Locale? locale,
     AnimationConfig? animation,
-    ModifierConfig? modifierConfig,
-    List<VariantStyleAttribute<TextSpec>>? variants,
+    WidgetDecoratorConfig? modifierConfig,
+    List<VariantStyle<TextSpec>>? variants,
     bool? inherit,
   }) : this.raw(
          overflow: Prop.maybe(overflow),
@@ -582,12 +582,12 @@ class TextMix extends Style<TextSpec>
   }
 
   @override
-  TextMix variants(List<VariantStyleAttribute<TextSpec>> variants) {
+  TextMix variants(List<VariantStyle<TextSpec>> variants) {
     return merge(TextMix(variants: variants));
   }
 
   @override
-  TextMix modifier(ModifierConfig value) {
+  TextMix modifier(WidgetDecoratorConfig value) {
     return merge(TextMix(modifierConfig: value));
   }
 
@@ -720,7 +720,7 @@ class TextMix extends Style<TextSpec>
 
   @override
   TextMix variant(Variant variant, TextMix style) {
-    return merge(TextMix(variants: [VariantStyleAttribute(variant, style)]));
+    return merge(TextMix(variants: [VariantStyle(variant, style)]));
   }
 
   /// This property is used by the [==] operator and the [hashCode] getter to

@@ -36,7 +36,7 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexSpec> {
   );
 
   late final wrap = ModifierUtility(
-    (prop) => mutable.modifier(ModifierConfig(modifiers: [prop])),
+    (prop) => mutable.modifier(WidgetDecoratorConfig(decorators: [prop])),
   );
 
   /// Internal mutable state for accumulating flex styling properties.

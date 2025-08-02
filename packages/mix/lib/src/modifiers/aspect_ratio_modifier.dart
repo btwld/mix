@@ -8,7 +8,7 @@ import '../core/style.dart';
 import '../core/utility.dart';
 import '../theme/tokens/mix_token.dart';
 
-final class AspectRatioModifier extends Modifier<AspectRatioModifier>
+final class AspectRatioModifier extends WidgetDecorator<AspectRatioModifier>
     with Diagnosticable {
   final double aspectRatio;
 
@@ -74,7 +74,7 @@ final class AspectRatioModifier extends Modifier<AspectRatioModifier>
 /// Use this class to configure the attributes of a [AspectRatioModifier] and pass it to
 /// the [AspectRatioModifier] constructor.
 class AspectRatioModifierAttribute
-    extends ModifierAttribute<AspectRatioModifier>
+    extends WidgetDecoratorStyle<AspectRatioModifier>
     with Diagnosticable {
   final Prop<double>? aspectRatio;
 

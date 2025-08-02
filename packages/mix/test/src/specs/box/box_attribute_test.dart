@@ -389,11 +389,11 @@ void main() {
 
       test('variants method sets multiple variants', () {
         final variants = [
-          VariantStyleAttribute(
+          VariantStyle(
             ContextVariant.brightness(Brightness.dark),
             BoxMix.color(Colors.white),
           ),
-          VariantStyleAttribute(
+          VariantStyle(
             ContextVariant.brightness(Brightness.light),
             BoxMix.color(Colors.black),
           ),
@@ -407,14 +407,14 @@ void main() {
 
     group('Modifier Methods', () {
       test('modifier method sets modifier config', () {
-        final modifier = ModifierConfig();
+        final modifier = WidgetDecoratorConfig();
         final boxMix = BoxMix().modifier(modifier);
 
         expect(boxMix.$modifierConfig, modifier);
       });
 
       test('wrap method sets modifier config', () {
-        final modifier = ModifierConfig();
+        final modifier = WidgetDecoratorConfig();
         final boxMix = BoxMix().wrap(modifier);
 
         expect(boxMix.$modifierConfig, modifier);

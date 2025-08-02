@@ -19,9 +19,9 @@ class RenderModifiers extends StatelessWidget {
 
   /// Widget to which modifiers will be applied.
   final Widget child;
-  
+
   /// List of modifiers to apply to the [child].
-  final List<Modifier<dynamic>> modifiers;
+  final List<WidgetDecorator<dynamic>> modifiers;
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +35,9 @@ class _RenderModifiers extends StatelessWidget {
 
   /// Base widget to transform.
   final Widget child;
-  
+
   /// Modifiers to apply in sequence.
-  final Iterable<Modifier<dynamic>> modifiers;
+  final Iterable<WidgetDecorator<dynamic>> modifiers;
 
   @override
   Widget build(BuildContext context) {

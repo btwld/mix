@@ -51,7 +51,7 @@ class FlexBoxMix extends Style<FlexBoxSpec>
 
   /// Factory for variant
   factory FlexBoxMix.variant(Variant variant, FlexBoxMix value) {
-    return FlexBoxMix(variants: [VariantStyleAttribute(variant, value)]);
+    return FlexBoxMix(variants: [VariantStyle(variant, value)]);
   }
 
   /// Constructor that accepts a [FlexBoxSpec] value and extracts its properties.
@@ -96,7 +96,7 @@ class FlexBoxMix extends Style<FlexBoxSpec>
     return merge(FlexBoxMix.animate(animation));
   }
 
-  FlexBoxMix variants(List<VariantStyleAttribute<FlexBoxSpec>> variants) {
+  FlexBoxMix variants(List<VariantStyle<FlexBoxSpec>> variants) {
     return merge(FlexBoxMix(variants: variants));
   }
 
@@ -117,7 +117,7 @@ class FlexBoxMix extends Style<FlexBoxSpec>
   }
 
   @override
-  FlexBoxMix modifier(ModifierConfig value) {
+  FlexBoxMix modifier(WidgetDecoratorConfig value) {
     return merge(FlexBoxMix(modifierConfig: value));
   }
 

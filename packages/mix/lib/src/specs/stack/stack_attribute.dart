@@ -55,7 +55,7 @@ class StackMix extends Style<StackSpec>
 
   /// Factory for variant
   factory StackMix.variant(Variant variant, StackMix value) {
-    return StackMix(variants: [VariantStyleAttribute(variant, value)]);
+    return StackMix(variants: [VariantStyle(variant, value)]);
   }
 
   const StackMix.raw({
@@ -79,8 +79,8 @@ class StackMix extends Style<StackSpec>
     TextDirection? textDirection,
     Clip? clipBehavior,
     AnimationConfig? animation,
-    ModifierConfig? modifierConfig,
-    List<VariantStyleAttribute<StackSpec>>? variants,
+    WidgetDecoratorConfig? modifierConfig,
+    List<VariantStyle<StackSpec>>? variants,
     bool? inherit,
   }) : this.raw(
          alignment: Prop.maybe(alignment),
@@ -147,12 +147,12 @@ class StackMix extends Style<StackSpec>
   }
 
   @override
-  StackMix variants(List<VariantStyleAttribute<StackSpec>> variants) {
+  StackMix variants(List<VariantStyle<StackSpec>> variants) {
     return merge(StackMix(variants: variants));
   }
 
   @override
-  StackMix modifier(ModifierConfig value) {
+  StackMix modifier(WidgetDecoratorConfig value) {
     return merge(StackMix(modifierConfig: value));
   }
 
@@ -202,7 +202,7 @@ class StackMix extends Style<StackSpec>
 
   @override
   StackMix variant(Variant variant, StackMix style) {
-    return merge(StackMix(variants: [VariantStyleAttribute(variant, style)]));
+    return merge(StackMix(variants: [VariantStyle(variant, style)]));
   }
 
   @override

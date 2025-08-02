@@ -474,8 +474,8 @@ void main() {
     group('Modifiers', () {
       test('modifiers can be added to attribute', () {
         final attribute = FlexMix(
-          modifierConfig: ModifierConfig(
-            modifiers: [
+          modifierConfig: WidgetDecoratorConfig(
+            decorators: [
               OpacityModifierAttribute(opacity: 0.5),
               PaddingModifierAttribute(padding: EdgeInsetsMix.all(8.0)),
             ],
@@ -483,19 +483,19 @@ void main() {
         );
 
         expect(attribute.$modifierConfig, isNotNull);
-        expect(attribute.$modifierConfig!.$modifiers!.length, 2);
+        expect(attribute.$modifierConfig!.$decorators!.length, 2);
       });
 
       test('modifiers merge correctly', () {
         final first = FlexMix(
-          modifierConfig: ModifierConfig(
-            modifiers: [OpacityModifierAttribute(opacity: 0.5)],
+          modifierConfig: WidgetDecoratorConfig(
+            decorators: [OpacityModifierAttribute(opacity: 0.5)],
           ),
         );
 
         final second = FlexMix(
-          modifierConfig: ModifierConfig(
-            modifiers: [
+          modifierConfig: WidgetDecoratorConfig(
+            decorators: [
               PaddingModifierAttribute(padding: EdgeInsetsMix.all(8.0)),
             ],
           ),
@@ -520,11 +520,11 @@ void main() {
 
       test('variants method sets multiple variants', () {
         final variants = [
-          VariantStyleAttribute(
+          VariantStyle(
             ContextVariant.brightness(Brightness.dark),
             FlexMix.direction(Axis.horizontal),
           ),
-          VariantStyleAttribute(
+          VariantStyle(
             ContextVariant.brightness(Brightness.light),
             FlexMix.direction(Axis.vertical),
           ),

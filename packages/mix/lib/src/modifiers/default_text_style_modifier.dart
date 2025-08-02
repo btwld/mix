@@ -9,7 +9,8 @@ import '../core/utility.dart';
 import '../properties/typography/text_height_behavior_mix.dart';
 import '../properties/typography/text_style_mix.dart';
 
-final class DefaultTextStyleModifier extends Modifier<DefaultTextStyleModifier>
+final class DefaultTextStyleModifier
+    extends WidgetDecorator<DefaultTextStyleModifier>
     with Diagnosticable {
   final TextStyle? style;
   final TextAlign? textAlign;
@@ -152,7 +153,7 @@ final class DefaultTextStyleModifier extends Modifier<DefaultTextStyleModifier>
 /// Use this class to configure the attributes of a [DefaultTextStyleModifier] and pass it to
 /// the [DefaultTextStyleModifier] constructor.
 class DefaultTextStyleModifierAttribute
-    extends ModifierAttribute<DefaultTextStyleModifier> {
+    extends WidgetDecoratorStyle<DefaultTextStyleModifier> {
   final MixProp<TextStyle>? style;
   final Prop<TextAlign>? textAlign;
   final Prop<bool>? softWrap;

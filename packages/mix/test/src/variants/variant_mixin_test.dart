@@ -15,12 +15,12 @@ class TestVariantAttribute extends Style<BoxSpec>
   @override
   TestVariantAttribute variant(Variant variant, TestVariantAttribute style) {
     return TestVariantAttribute(
-      variants: [...?$variants, VariantStyleAttribute(variant, style)],
+      variants: [...?$variants, VariantStyle(variant, style)],
     );
   }
 
   @override
-  TestVariantAttribute variants(List<VariantStyleAttribute<BoxSpec>> value) {
+  TestVariantAttribute variants(List<VariantStyle<BoxSpec>> value) {
     return TestVariantAttribute(variants: value);
   }
 

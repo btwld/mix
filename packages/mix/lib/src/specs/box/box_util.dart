@@ -40,7 +40,7 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec> {
   );
 
   late final wrap = ModifierUtility(
-    (prop) => mutable.modifier(ModifierConfig(modifiers: [prop])),
+    (prop) => mutable.modifier(WidgetDecoratorConfig(decorators: [prop])),
   );
 
   // Convenience accessors for commonly used properties

@@ -41,7 +41,7 @@ class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec> {
   );
 
   late final wrap = ModifierUtility(
-    (prop) => mutable.modifier(ModifierConfig(modifiers: [prop])),
+    (prop) => mutable.modifier(WidgetDecoratorConfig(decorators: [prop])),
   );
 
   // Box decoration convenience accessors

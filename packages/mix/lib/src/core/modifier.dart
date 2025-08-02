@@ -6,8 +6,9 @@ import 'spec.dart';
 ///
 /// Widget modifiers transform or wrap widgets with additional functionality
 /// while maintaining style inheritance and animation support.
-abstract class Modifier<Self extends Modifier<Self>> extends Spec<Self> {
-  const Modifier();
+abstract class WidgetDecorator<Self extends WidgetDecorator<Self>>
+    extends Spec<Self> {
+  const WidgetDecorator();
 
   /// Builds the modified widget by wrapping or transforming [child].
   Widget build(Widget child);

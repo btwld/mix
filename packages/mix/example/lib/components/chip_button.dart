@@ -15,7 +15,7 @@ final chipButtonContainer = Style.box(
     .onHovered(BoxMix.color(Colors.blue.shade700))
     .onPressed(BoxMix.color(Colors.blue.shade900))
     .wrap(
-      ModifierConfig.defaultText(chipButtonLabel),
+      WidgetDecoratorConfig.defaultText(chipButtonLabel),
     )
 );
 
@@ -27,7 +27,7 @@ final filterChipContainer = Style.box(
     .onHovered(BoxMix.color(Colors.grey.shade300))
     .onPressed(BoxMix.color(Colors.grey.shade400))
     .wrap(
-      ModifierConfig.defaultText(
+      WidgetDecoratorConfig.defaultText(
         Style.text()
             .fontSize(14)
             .fontWeight(FontWeight.w500)
@@ -44,7 +44,7 @@ final filterChipSelectedContainer = Style.box(
     .onHovered(BoxMix.color(Colors.blue.shade200))
     .onPressed(BoxMix.color(Colors.blue.shade300))
     .wrap(
-      ModifierConfig.defaultText(
+      WidgetDecoratorConfig.defaultText(
         Style.text()
             .fontSize(14)
             .fontWeight(FontWeight.w500)

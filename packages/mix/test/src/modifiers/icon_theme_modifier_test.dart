@@ -156,7 +156,7 @@ void main() {
 
     setUp(() {
       utility = IconThemeModifierUtility(
-        (attr) => BoxMix(modifierConfig: ModifierConfig.modifier(attr)),
+        (attr) => BoxMix(modifierConfig: WidgetDecoratorConfig.decorator(attr)),
       );
     });
 
@@ -168,11 +168,11 @@ void main() {
       final result = utility.call(color: color, size: size, opacity: opacity);
 
       expect(
-        result.$modifierConfig?.$modifiers?.first,
+        result.$modifierConfig?.$decorators?.first,
         isA<IconThemeModifierAttribute>(),
       );
       final attr =
-          result.$modifierConfig!.$modifiers!.first
+          result.$modifierConfig!.$decorators!.first
               as IconThemeModifierAttribute;
       expect(attr.color?.$value, color);
       expect(attr.size?.$value, size);
@@ -184,11 +184,11 @@ void main() {
       final result = utility.color(color);
 
       expect(
-        result.$modifierConfig?.$modifiers?.first,
+        result.$modifierConfig?.$decorators?.first,
         isA<IconThemeModifierAttribute>(),
       );
       final attr =
-          result.$modifierConfig!.$modifiers!.first
+          result.$modifierConfig!.$decorators!.first
               as IconThemeModifierAttribute;
       expect(attr.color?.$value, color);
     });
@@ -198,11 +198,11 @@ void main() {
       final result = utility.size(size);
 
       expect(
-        result.$modifierConfig?.$modifiers?.first,
+        result.$modifierConfig?.$decorators?.first,
         isA<IconThemeModifierAttribute>(),
       );
       final attr =
-          result.$modifierConfig!.$modifiers!.first
+          result.$modifierConfig!.$decorators!.first
               as IconThemeModifierAttribute;
       expect(attr.size?.$value, size);
     });
@@ -212,11 +212,11 @@ void main() {
       final result = utility.opacity(opacity);
 
       expect(
-        result.$modifierConfig?.$modifiers?.first,
+        result.$modifierConfig?.$decorators?.first,
         isA<IconThemeModifierAttribute>(),
       );
       final attr =
-          result.$modifierConfig!.$modifiers!.first
+          result.$modifierConfig!.$decorators!.first
               as IconThemeModifierAttribute;
       expect(attr.opacity?.$value, opacity);
     });

@@ -7,7 +7,7 @@ import '../core/style.dart';
 import '../core/utility.dart';
 import '../theme/tokens/mix_token.dart';
 
-final class FlexibleModifier extends Modifier<FlexibleModifier>
+final class FlexibleModifier extends WidgetDecorator<FlexibleModifier>
     with Diagnosticable {
   final int? flex;
   final FlexFit? fit;
@@ -73,7 +73,7 @@ final class FlexibleModifier extends Modifier<FlexibleModifier>
 ///
 /// Use this class to configure the attributes of a [FlexibleModifier] and pass it to
 /// the [FlexibleModifier] constructor.
-class FlexibleModifierAttribute extends ModifierAttribute<FlexibleModifier>
+class FlexibleModifierAttribute extends WidgetDecoratorStyle<FlexibleModifier>
     with Diagnosticable {
   final Prop<int>? flex;
   final Prop<FlexFit>? fit;

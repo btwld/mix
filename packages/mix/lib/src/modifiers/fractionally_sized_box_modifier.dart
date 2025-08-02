@@ -8,7 +8,7 @@ import '../core/style.dart';
 import '../core/utility.dart';
 
 final class FractionallySizedBoxModifier
-    extends Modifier<FractionallySizedBoxModifier>
+    extends WidgetDecorator<FractionallySizedBoxModifier>
     with Diagnosticable {
   final double? widthFactor;
   final double? heightFactor;
@@ -104,7 +104,7 @@ final class FractionallySizedBoxModifier
 /// Use this class to configure the attributes of a [FractionallySizedBoxModifier] and pass it to
 /// the [FractionallySizedBoxModifier] constructor.
 class FractionallySizedBoxModifierAttribute
-    extends ModifierAttribute<FractionallySizedBoxModifier> {
+    extends WidgetDecoratorStyle<FractionallySizedBoxModifier> {
   final Prop<double>? widthFactor;
   final Prop<double>? heightFactor;
   final Prop<AlignmentGeometry>? alignment;

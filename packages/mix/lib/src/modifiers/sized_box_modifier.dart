@@ -7,7 +7,7 @@ import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 
-final class SizedBoxModifier extends Modifier<SizedBoxModifier>
+final class SizedBoxModifier extends WidgetDecorator<SizedBoxModifier>
     with Diagnosticable {
   final double? width;
   final double? height;
@@ -98,7 +98,7 @@ final class SizedBoxModifierUtility<T extends Style<Object?>>
 ///
 /// Use this class to configure the attributes of a [SizedBoxModifier] and pass it to
 /// the [SizedBoxModifier] constructor.
-class SizedBoxModifierAttribute extends ModifierAttribute<SizedBoxModifier>
+class SizedBoxModifierAttribute extends WidgetDecoratorStyle<SizedBoxModifier>
     with Diagnosticable {
   final Prop<double>? width;
   final Prop<double>? height;

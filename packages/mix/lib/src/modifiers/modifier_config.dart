@@ -24,62 +24,64 @@ import 'sized_box_modifier.dart';
 import 'transform_modifier.dart';
 import 'visibility_modifier.dart';
 
-final class ModifierConfig with Equatable {
-  final List<Type>? $orderOfModifiers;
-  final List<ModifierAttribute>? $modifiers;
+final class WidgetDecoratorConfig with Equatable {
+  final List<Type>? $orderOfDecorators;
+  final List<WidgetDecoratorStyle>? $decorators;
 
-  const ModifierConfig({
-    List<ModifierAttribute>? modifiers,
-    List<Type>? orderOfModifiers,
-  }) : $modifiers = modifiers,
-       $orderOfModifiers = orderOfModifiers;
+  const WidgetDecoratorConfig({
+    List<WidgetDecoratorStyle>? decorators,
+    List<Type>? orderOfDecorators,
+  }) : $decorators = decorators,
+       $orderOfDecorators = orderOfDecorators;
 
-  factory ModifierConfig.modifier(ModifierAttribute value) {
-    return ModifierConfig(modifiers: [value]);
+  factory WidgetDecoratorConfig.decorator(WidgetDecoratorStyle value) {
+    return WidgetDecoratorConfig(decorators: [value]);
   }
 
-  factory ModifierConfig.modifiers(List<ModifierAttribute> value) {
-    return ModifierConfig(modifiers: value);
+  factory WidgetDecoratorConfig.decorators(List<WidgetDecoratorStyle> value) {
+    return WidgetDecoratorConfig(decorators: value);
   }
 
-  factory ModifierConfig.orderOfModifiers(List<Type> value) {
-    return ModifierConfig(orderOfModifiers: value);
+  factory WidgetDecoratorConfig.orderOfDecorators(List<Type> value) {
+    return WidgetDecoratorConfig(orderOfDecorators: value);
   }
 
-  factory ModifierConfig.opacity(double opacity) {
-    return ModifierConfig.modifier(OpacityModifierAttribute(opacity: opacity));
+  factory WidgetDecoratorConfig.opacity(double opacity) {
+    return WidgetDecoratorConfig.decorator(
+      OpacityModifierAttribute(opacity: opacity),
+    );
   }
 
-  factory ModifierConfig.aspectRatio(double aspectRatio) {
-    return ModifierConfig.modifier(
+  factory WidgetDecoratorConfig.aspectRatio(double aspectRatio) {
+    return WidgetDecoratorConfig.decorator(
       AspectRatioModifierAttribute(aspectRatio: aspectRatio),
     );
   }
 
-  factory ModifierConfig.clipOval({
+  factory WidgetDecoratorConfig.clipOval({
     CustomClipper<Rect>? clipper,
     Clip? clipBehavior,
   }) {
-    return ModifierConfig.modifier(
+    return WidgetDecoratorConfig.decorator(
       ClipOvalModifierAttribute(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
-  factory ModifierConfig.clipRect({
+  factory WidgetDecoratorConfig.clipRect({
     CustomClipper<Rect>? clipper,
     Clip? clipBehavior,
   }) {
-    return ModifierConfig.modifier(
+    return WidgetDecoratorConfig.decorator(
       ClipRectModifierAttribute(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
-  factory ModifierConfig.clipRRect({
+  factory WidgetDecoratorConfig.clipRRect({
     BorderRadiusGeometryMix? borderRadius,
     CustomClipper<RRect>? clipper,
     Clip? clipBehavior,
   }) {
-    return ModifierConfig.modifier(
+    return WidgetDecoratorConfig.decorator(
       ClipRRectModifierAttribute(
         borderRadius: borderRadius,
         clipper: clipper,
@@ -88,50 +90,53 @@ final class ModifierConfig with Equatable {
     );
   }
 
-  factory ModifierConfig.clipPath({
+  factory WidgetDecoratorConfig.clipPath({
     CustomClipper<Path>? clipper,
     Clip? clipBehavior,
   }) {
-    return ModifierConfig.modifier(
+    return WidgetDecoratorConfig.decorator(
       ClipPathModifierAttribute(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
-  factory ModifierConfig.clipTriangle({Clip? clipBehavior}) {
-    return ModifierConfig.modifier(
+  factory WidgetDecoratorConfig.clipTriangle({Clip? clipBehavior}) {
+    return WidgetDecoratorConfig.decorator(
       ClipTriangleModifierAttribute(clipBehavior: clipBehavior),
     );
   }
 
-  factory ModifierConfig.transform({Matrix4? transform, Alignment? alignment}) {
-    return ModifierConfig.modifier(
+  factory WidgetDecoratorConfig.transform({
+    Matrix4? transform,
+    Alignment? alignment,
+  }) {
+    return WidgetDecoratorConfig.decorator(
       TransformModifierAttribute(transform: transform, alignment: alignment),
     );
   }
 
   /// Scale using tarnsform
-  factory ModifierConfig.scale(
+  factory WidgetDecoratorConfig.scale(
     double scale, {
     Alignment alignment = Alignment.center,
   }) {
-    return ModifierConfig.transform(
+    return WidgetDecoratorConfig.transform(
       transform: Matrix4.diagonal3Values(scale, scale, 1.0),
       alignment: alignment,
     );
   }
 
-  factory ModifierConfig.visibility(bool visible) {
-    return ModifierConfig.modifier(
+  factory WidgetDecoratorConfig.visibility(bool visible) {
+    return WidgetDecoratorConfig.decorator(
       VisibilityModifierAttribute(visible: visible),
     );
   }
 
-  factory ModifierConfig.align({
+  factory WidgetDecoratorConfig.align({
     AlignmentGeometry? alignment,
     double? widthFactor,
     double? heightFactor,
   }) {
-    return ModifierConfig.modifier(
+    return WidgetDecoratorConfig.decorator(
       AlignModifierAttribute(
         alignment: alignment,
         widthFactor: widthFactor,
@@ -140,42 +145,48 @@ final class ModifierConfig with Equatable {
     );
   }
 
-  factory ModifierConfig.padding(EdgeInsetsGeometryMix? padding) {
-    return ModifierConfig.modifier(PaddingModifierAttribute(padding: padding));
+  factory WidgetDecoratorConfig.padding(EdgeInsetsGeometryMix? padding) {
+    return WidgetDecoratorConfig.decorator(
+      PaddingModifierAttribute(padding: padding),
+    );
   }
 
-  factory ModifierConfig.sizedBox({double? width, double? height}) {
-    return ModifierConfig.modifier(
+  factory WidgetDecoratorConfig.sizedBox({double? width, double? height}) {
+    return WidgetDecoratorConfig.decorator(
       SizedBoxModifierAttribute(width: width, height: height),
     );
   }
 
-  factory ModifierConfig.flexible({int? flex, FlexFit? fit}) {
-    return ModifierConfig.modifier(
+  factory WidgetDecoratorConfig.flexible({int? flex, FlexFit? fit}) {
+    return WidgetDecoratorConfig.decorator(
       FlexibleModifierAttribute(flex: flex, fit: fit),
     );
   }
 
-  factory ModifierConfig.rotatedBox(int quarterTurns) {
-    return ModifierConfig.modifier(
+  factory WidgetDecoratorConfig.rotatedBox(int quarterTurns) {
+    return WidgetDecoratorConfig.decorator(
       RotatedBoxModifierAttribute(quarterTurns: quarterTurns),
     );
   }
 
-  factory ModifierConfig.intrinsicHeight() {
-    return ModifierConfig.modifier(const IntrinsicHeightModifierAttribute());
+  factory WidgetDecoratorConfig.intrinsicHeight() {
+    return WidgetDecoratorConfig.decorator(
+      const IntrinsicHeightModifierAttribute(),
+    );
   }
 
-  factory ModifierConfig.intrinsicWidth() {
-    return ModifierConfig.modifier(const IntrinsicWidthModifierAttribute());
+  factory WidgetDecoratorConfig.intrinsicWidth() {
+    return WidgetDecoratorConfig.decorator(
+      const IntrinsicWidthModifierAttribute(),
+    );
   }
 
-  factory ModifierConfig.fractionallySizedBox({
+  factory WidgetDecoratorConfig.fractionallySizedBox({
     double? widthFactor,
     double? heightFactor,
     AlignmentGeometry? alignment,
   }) {
-    return ModifierConfig.modifier(
+    return WidgetDecoratorConfig.decorator(
       FractionallySizedBoxModifierAttribute(
         widthFactor: widthFactor,
         heightFactor: heightFactor,
@@ -184,7 +195,7 @@ final class ModifierConfig with Equatable {
     );
   }
 
-  factory ModifierConfig.defaultTextStyle({
+  factory WidgetDecoratorConfig.defaultTextStyle({
     TextStyleMix? style,
     TextAlign? textAlign,
     bool? softWrap,
@@ -193,7 +204,7 @@ final class ModifierConfig with Equatable {
     TextWidthBasis? textWidthBasis,
     TextHeightBehaviorMix? textHeightBehavior,
   }) {
-    return ModifierConfig.modifier(
+    return WidgetDecoratorConfig.decorator(
       DefaultTextStyleModifierAttribute(
         style: style,
         textAlign: textAlign,
@@ -206,8 +217,8 @@ final class ModifierConfig with Equatable {
     );
   }
 
-  factory ModifierConfig.defaultText(TextMix textMix) {
-    return ModifierConfig.modifier(
+  factory WidgetDecoratorConfig.defaultText(TextMix textMix) {
+    return WidgetDecoratorConfig.decorator(
       DefaultTextStyleModifierAttribute.raw(
         style: textMix.$style,
         textAlign: textMix.$textAlign,
@@ -220,7 +231,7 @@ final class ModifierConfig with Equatable {
     );
   }
 
-  factory ModifierConfig.iconTheme({
+  factory WidgetDecoratorConfig.iconTheme({
     Color? color,
     double? size,
     double? fill,
@@ -231,7 +242,7 @@ final class ModifierConfig with Equatable {
     List<Shadow>? shadows,
     bool? applyTextScaling,
   }) {
-    return ModifierConfig.modifier(
+    return WidgetDecoratorConfig.decorator(
       IconThemeModifierAttribute(
         color: color,
         size: size,
@@ -249,19 +260,19 @@ final class ModifierConfig with Equatable {
   /// Orders modifiers according to the specified order or default order
   ///
   @visibleForTesting
-  List<Modifier> reorderModifiers(List<Modifier> modifiers) {
+  List<WidgetDecorator> reorderModifiers(List<WidgetDecorator> modifiers) {
     if (modifiers.isEmpty) return modifiers;
 
     final orderOfModifiers = {
       // Prioritize the order of modifiers provided by the user.
-      ...?$orderOfModifiers,
+      ...?$orderOfDecorators,
       // Add the default order of modifiers.
       ..._defaultOrder,
       // Add any remaining modifiers that were not included in the order.
       ...modifiers.map((e) => e.runtimeType),
     }.toList();
 
-    final orderedSpecs = <Modifier>[];
+    final orderedSpecs = <WidgetDecorator>[];
 
     for (final modifierType in orderOfModifiers) {
       // Find and add modifiers matching this type
@@ -276,41 +287,56 @@ final class ModifierConfig with Equatable {
     return orderedSpecs;
   }
 
-  ModifierConfig scale(double scale, {Alignment alignment = Alignment.center}) {
-    return merge(ModifierConfig.scale(scale, alignment: alignment));
+  WidgetDecoratorConfig scale(
+    double scale, {
+    Alignment alignment = Alignment.center,
+  }) {
+    return merge(WidgetDecoratorConfig.scale(scale, alignment: alignment));
   }
 
-  ModifierConfig opacity(double value) {
-    return merge(ModifierConfig.opacity(value));
+  WidgetDecoratorConfig opacity(double value) {
+    return merge(WidgetDecoratorConfig.opacity(value));
   }
 
-  ModifierConfig aspectRatio(double value) {
-    return merge(ModifierConfig.aspectRatio(value));
+  WidgetDecoratorConfig aspectRatio(double value) {
+    return merge(WidgetDecoratorConfig.aspectRatio(value));
   }
 
-  ModifierConfig clipOval({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
+  WidgetDecoratorConfig clipOval({
+    CustomClipper<Rect>? clipper,
+    Clip? clipBehavior,
+  }) {
     return merge(
-      ModifierConfig.clipOval(clipper: clipper, clipBehavior: clipBehavior),
+      WidgetDecoratorConfig.clipOval(
+        clipper: clipper,
+        clipBehavior: clipBehavior,
+      ),
     );
   }
 
-  ModifierConfig clipRect({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
+  WidgetDecoratorConfig clipRect({
+    CustomClipper<Rect>? clipper,
+    Clip? clipBehavior,
+  }) {
     return merge(
-      ModifierConfig.clipRect(clipper: clipper, clipBehavior: clipBehavior),
+      WidgetDecoratorConfig.clipRect(
+        clipper: clipper,
+        clipBehavior: clipBehavior,
+      ),
     );
   }
 
-  ModifierConfig modifiers(List<ModifierAttribute> value) {
-    return merge(ModifierConfig.modifiers(value));
+  WidgetDecoratorConfig modifiers(List<WidgetDecoratorStyle> value) {
+    return merge(WidgetDecoratorConfig.decorators(value));
   }
 
-  ModifierConfig clipRRect({
+  WidgetDecoratorConfig clipRRect({
     BorderRadiusGeometryMix? borderRadius,
     CustomClipper<RRect>? clipper,
     Clip? clipBehavior,
   }) {
     return merge(
-      ModifierConfig.clipRRect(
+      WidgetDecoratorConfig.clipRRect(
         borderRadius: borderRadius,
         clipper: clipper,
         clipBehavior: clipBehavior,
@@ -318,33 +344,44 @@ final class ModifierConfig with Equatable {
     );
   }
 
-  ModifierConfig clipPath({CustomClipper<Path>? clipper, Clip? clipBehavior}) {
+  WidgetDecoratorConfig clipPath({
+    CustomClipper<Path>? clipper,
+    Clip? clipBehavior,
+  }) {
     return merge(
-      ModifierConfig.clipPath(clipper: clipper, clipBehavior: clipBehavior),
+      WidgetDecoratorConfig.clipPath(
+        clipper: clipper,
+        clipBehavior: clipBehavior,
+      ),
     );
   }
 
-  ModifierConfig clipTriangle({Clip? clipBehavior}) {
-    return merge(ModifierConfig.clipTriangle(clipBehavior: clipBehavior));
-  }
-
-  ModifierConfig transform({Matrix4? transform, Alignment? alignment}) {
+  WidgetDecoratorConfig clipTriangle({Clip? clipBehavior}) {
     return merge(
-      ModifierConfig.transform(transform: transform, alignment: alignment),
+      WidgetDecoratorConfig.clipTriangle(clipBehavior: clipBehavior),
     );
   }
 
-  ModifierConfig visibility(bool visible) {
-    return merge(ModifierConfig.visibility(visible));
+  WidgetDecoratorConfig transform({Matrix4? transform, Alignment? alignment}) {
+    return merge(
+      WidgetDecoratorConfig.transform(
+        transform: transform,
+        alignment: alignment,
+      ),
+    );
   }
 
-  ModifierConfig align({
+  WidgetDecoratorConfig visibility(bool visible) {
+    return merge(WidgetDecoratorConfig.visibility(visible));
+  }
+
+  WidgetDecoratorConfig align({
     AlignmentGeometry? alignment,
     double? widthFactor,
     double? heightFactor,
   }) {
     return merge(
-      ModifierConfig.align(
+      WidgetDecoratorConfig.align(
         alignment: alignment,
         widthFactor: widthFactor,
         heightFactor: heightFactor,
@@ -352,37 +389,37 @@ final class ModifierConfig with Equatable {
     );
   }
 
-  ModifierConfig padding(EdgeInsetsGeometryMix? padding) {
-    return merge(ModifierConfig.padding(padding));
+  WidgetDecoratorConfig padding(EdgeInsetsGeometryMix? padding) {
+    return merge(WidgetDecoratorConfig.padding(padding));
   }
 
-  ModifierConfig sizedBox({double? width, double? height}) {
-    return merge(ModifierConfig.sizedBox(width: width, height: height));
+  WidgetDecoratorConfig sizedBox({double? width, double? height}) {
+    return merge(WidgetDecoratorConfig.sizedBox(width: width, height: height));
   }
 
-  ModifierConfig flexible({int? flex, FlexFit? fit}) {
-    return merge(ModifierConfig.flexible(flex: flex, fit: fit));
+  WidgetDecoratorConfig flexible({int? flex, FlexFit? fit}) {
+    return merge(WidgetDecoratorConfig.flexible(flex: flex, fit: fit));
   }
 
-  ModifierConfig rotatedBox(int quarterTurns) {
-    return merge(ModifierConfig.rotatedBox(quarterTurns));
+  WidgetDecoratorConfig rotatedBox(int quarterTurns) {
+    return merge(WidgetDecoratorConfig.rotatedBox(quarterTurns));
   }
 
-  ModifierConfig intrinsicHeight() {
-    return merge(ModifierConfig.intrinsicHeight());
+  WidgetDecoratorConfig intrinsicHeight() {
+    return merge(WidgetDecoratorConfig.intrinsicHeight());
   }
 
-  ModifierConfig intrinsicWidth() {
-    return merge(ModifierConfig.intrinsicWidth());
+  WidgetDecoratorConfig intrinsicWidth() {
+    return merge(WidgetDecoratorConfig.intrinsicWidth());
   }
 
-  ModifierConfig fractionallySizedBox({
+  WidgetDecoratorConfig fractionallySizedBox({
     double? widthFactor,
     double? heightFactor,
     AlignmentGeometry? alignment,
   }) {
     return merge(
-      ModifierConfig.fractionallySizedBox(
+      WidgetDecoratorConfig.fractionallySizedBox(
         widthFactor: widthFactor,
         heightFactor: heightFactor,
         alignment: alignment,
@@ -390,7 +427,7 @@ final class ModifierConfig with Equatable {
     );
   }
 
-  ModifierConfig defaultTextStyle({
+  WidgetDecoratorConfig defaultTextStyle({
     TextStyleMix? style,
     TextAlign? textAlign,
     bool? softWrap,
@@ -400,7 +437,7 @@ final class ModifierConfig with Equatable {
     TextHeightBehaviorMix? textHeightBehavior,
   }) {
     return merge(
-      ModifierConfig.defaultTextStyle(
+      WidgetDecoratorConfig.defaultTextStyle(
         style: style,
         textAlign: textAlign,
         softWrap: softWrap,
@@ -412,39 +449,39 @@ final class ModifierConfig with Equatable {
     );
   }
 
-  ModifierConfig defaultText(TextMix textMix) {
-    return merge(ModifierConfig.defaultText(textMix));
+  WidgetDecoratorConfig defaultText(TextMix textMix) {
+    return merge(WidgetDecoratorConfig.defaultText(textMix));
   }
 
-  ModifierConfig modifier(ModifierAttribute value) {
-    return merge(ModifierConfig.modifier(value));
+  WidgetDecoratorConfig modifier(WidgetDecoratorStyle value) {
+    return merge(WidgetDecoratorConfig.decorator(value));
   }
 
-  ModifierConfig orderOfModifiers(List<Type> value) {
-    return merge(ModifierConfig.orderOfModifiers(value));
+  WidgetDecoratorConfig orderOfModifiers(List<Type> value) {
+    return merge(WidgetDecoratorConfig.orderOfDecorators(value));
   }
 
-  ModifierConfig merge(ModifierConfig? other) {
+  WidgetDecoratorConfig merge(WidgetDecoratorConfig? other) {
     if (other == null) return this;
 
-    return ModifierConfig(
-      modifiers: mergeModifierLists($modifiers, other.$modifiers),
-      orderOfModifiers: (other.$orderOfModifiers?.isNotEmpty == true)
-          ? other.$orderOfModifiers
-          : $orderOfModifiers,
+    return WidgetDecoratorConfig(
+      decorators: mergeDecoratorLists($decorators, other.$decorators),
+      orderOfDecorators: (other.$orderOfDecorators?.isNotEmpty == true)
+          ? other.$orderOfDecorators
+          : $orderOfDecorators,
     );
   }
 
   @protected
-  List<ModifierAttribute>? mergeModifierLists(
-    List<ModifierAttribute>? current,
-    List<ModifierAttribute>? other,
+  List<WidgetDecoratorStyle>? mergeDecoratorLists(
+    List<WidgetDecoratorStyle>? current,
+    List<WidgetDecoratorStyle>? other,
   ) {
     if (current == null && other == null) return null;
     if (current == null) return List.of(other!);
     if (other == null) return List.of(current);
 
-    final Map<Object, ModifierAttribute> merged = {};
+    final Map<Object, WidgetDecoratorStyle> merged = {};
 
     // Add current modifiers
     for (final modifier in current) {
@@ -463,26 +500,26 @@ final class ModifierConfig with Equatable {
 
   /// Resolves the modifiers into a properly ordered list ready for rendering.
   /// Its important to order the list before resolving to ensure the correct order of modifiers
-  List<Modifier> resolve(BuildContext context) {
-    if ($modifiers == null || $modifiers!.isEmpty) return [];
+  List<WidgetDecorator> resolve(BuildContext context) {
+    if ($decorators == null || $decorators!.isEmpty) return [];
 
     // Resolve each modifier attribute to its corresponding modifier spec
-    final resolvedModifiers = <Modifier>[];
-    for (final attribute in $modifiers!) {
+    final resolvedModifiers = <WidgetDecorator>[];
+    for (final attribute in $decorators!) {
       final resolved = attribute.resolve(context);
-      resolvedModifiers.add(resolved as Modifier);
+      resolvedModifiers.add(resolved as WidgetDecorator);
     }
 
     return reorderModifiers(resolvedModifiers).cast();
   }
 
   @override
-  List<Object?> get props => [$orderOfModifiers, $modifiers];
+  List<Object?> get props => [$orderOfDecorators, $decorators];
 }
 
 const _defaultOrder = [
   // === PHASE 1: CONTEXT & BEHAVIOR SETUP ===
-  
+
   // 1. FlexibleModifier: Controls flex behavior when used inside Row, Column, or Flex widgets.
   // Applied first to establish how the widget participates in flex layouts.
   FlexibleModifier,

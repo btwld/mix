@@ -29,9 +29,9 @@ sealed class StyleElement {
 abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
     with Equatable, Resolvable<S>
     implements StyleElement {
-  final List<VariantStyleAttribute<S>>? $variants;
+  final List<VariantStyle<S>>? $variants;
 
-  final ModifierConfig? $modifierConfig;
+  final WidgetDecoratorConfig? $modifierConfig;
   final AnimationConfig? $animation;
 
   final bool? $inherit;
@@ -43,8 +43,8 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
   static final stackBox = StackBoxMix.new;
   static final flex = FlexMix.new;
   const Style({
-    required List<VariantStyleAttribute<S>>? variants,
-    required ModifierConfig? modifierConfig,
+    required List<VariantStyle<S>>? variants,
+    required WidgetDecoratorConfig? modifierConfig,
     required AnimationConfig? animation,
 
     required bool? inherit,
@@ -64,15 +64,15 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
   }
 
   @protected
-  List<ModifierAttribute>? mergeModifierLists(
-    List<ModifierAttribute>? current,
-    List<ModifierAttribute>? other,
+  List<WidgetDecoratorStyle>? mergeModifierLists(
+    List<WidgetDecoratorStyle>? current,
+    List<WidgetDecoratorStyle>? other,
   ) {
     if (current == null && other == null) return null;
     if (current == null) return List.of(other!);
     if (other == null) return List.of(current);
 
-    final Map<Object, ModifierAttribute> merged = {};
+    final Map<Object, WidgetDecoratorStyle> merged = {};
 
     for (final modifier in current) {
       merged[modifier.mergeKey] = modifier;
@@ -127,15 +127,15 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
   }
 
   @protected
-  List<VariantStyleAttribute<S>>? mergeVariantLists(
-    List<VariantStyleAttribute<S>>? current,
-    List<VariantStyleAttribute<S>>? other,
+  List<VariantStyle<S>>? mergeVariantLists(
+    List<VariantStyle<S>>? current,
+    List<VariantStyle<S>>? other,
   ) {
     if (current == null && other == null) return null;
-    if (current == null) return List<VariantStyleAttribute<S>>.of(other!);
-    if (other == null) return List<VariantStyleAttribute<S>>.of(current);
+    if (current == null) return List<VariantStyle<S>>.of(other!);
+    if (other == null) return List<VariantStyle<S>>.of(current);
 
-    final Map<Object, VariantStyleAttribute<S>> merged = {};
+    final Map<Object, VariantStyle<S>> merged = {};
 
     for (final variant in current) {
       merged[variant.mergeKey] = variant;
@@ -184,12 +184,12 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
   }
 }
 
-abstract class ModifierAttribute<S extends Modifier<S>> extends Mix<S>
+abstract class WidgetDecoratorStyle<S extends WidgetDecorator<S>> extends Mix<S>
     implements StyleElement {
-  const ModifierAttribute();
+  const WidgetDecoratorStyle();
 
   @override
-  ModifierAttribute<S> merge(covariant ModifierAttribute<S>? other);
+  WidgetDecoratorStyle<S> merge(covariant WidgetDecoratorStyle<S>? other);
 
   @override
   S resolve(BuildContext context);
@@ -199,20 +199,20 @@ abstract class ModifierAttribute<S extends Modifier<S>> extends Mix<S>
 }
 
 /// Variant wrapper for conditional styling
-final class VariantStyleAttribute<S extends Spec<S>> extends Mixable<S>
+final class VariantStyle<S extends Spec<S>> extends Mixable<S>
     with Equatable
     implements StyleElement {
   final Variant variant;
   final Style<S> _style;
 
-  const VariantStyleAttribute(this.variant, Style<S> style) : _style = style;
+  const VariantStyle(this.variant, Style<S> style) : _style = style;
 
   Style<S> get value => _style;
 
   bool matches(Iterable<Variant> otherVariants) =>
       otherVariants.contains(variant);
 
-  VariantStyleAttribute<S>? removeVariants(Iterable<Variant> variantsToRemove) {
+  VariantStyle<S>? removeVariants(Iterable<Variant> variantsToRemove) {
     if (!variantsToRemove.contains(variant)) {
       return this;
     }
@@ -221,10 +221,10 @@ final class VariantStyleAttribute<S extends Spec<S>> extends Mixable<S>
   }
 
   @override
-  VariantStyleAttribute<S> merge(covariant VariantStyleAttribute<S>? other) {
+  VariantStyle<S> merge(covariant VariantStyle<S>? other) {
     if (other == null || other.variant != variant) return this;
 
-    return VariantStyleAttribute(variant, _style.merge(other._style));
+    return VariantStyle(variant, _style.merge(other._style));
   }
 
   @override
@@ -239,7 +239,7 @@ final class VariantStyleAttribute<S extends Spec<S>> extends Mixable<S>
 class ResolvedStyle<V extends Spec<V>> with Equatable {
   final V? spec;
   final AnimationConfig? animation;
-  final List<Modifier>? modifiers;
+  final List<WidgetDecorator>? modifiers;
   final List<Type>? orderOfModifiers;
   final bool? inherit;
 
@@ -342,18 +342,18 @@ class CompoundStyle extends Style<MultiSpec> {
   /// ```
   factory CompoundStyle.create(Iterable<StyleElement> elements) {
     final styleList = <Style>[];
-    final modifierList = <ModifierAttribute>[];
-    final variants = <VariantStyleAttribute>[];
+    final modifierList = <WidgetDecoratorStyle>[];
+    final variants = <VariantStyle>[];
 
     AnimationConfig? animationConfig;
 
     for (final element in elements) {
       switch (element) {
-        case VariantStyleAttribute():
+        case VariantStyle():
           variants.add(element);
           break;
 
-        case ModifierAttribute():
+        case WidgetDecoratorStyle():
           modifierList.add(element);
         case Style():
           // Handle MultiMix by merging it later
@@ -369,7 +369,7 @@ class CompoundStyle extends Style<MultiSpec> {
       animation: animationConfig,
       modifierConfig: modifierList.isEmpty
           ? null
-          : ModifierConfig(modifiers: modifierList),
+          : WidgetDecoratorConfig(decorators: modifierList),
       variants: null,
     );
 
@@ -392,7 +392,10 @@ class CompoundStyle extends Style<MultiSpec> {
         variants: null,
       );
 
-  ModifierConfig? _mergeModifierConfigs(ModifierConfig? a, ModifierConfig? b) {
+  WidgetDecoratorConfig? _mergeModifierConfigs(
+    WidgetDecoratorConfig? a,
+    WidgetDecoratorConfig? b,
+  ) {
     if (a == null) return b;
     if (b == null) return a;
 

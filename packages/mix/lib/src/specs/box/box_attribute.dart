@@ -88,7 +88,7 @@ class BoxMix extends Style<BoxSpec>
 
   /// Variant
   factory BoxMix.variant(Variant variant, BoxMix value) {
-    return BoxMix(variants: [VariantStyleAttribute(variant, value)]);
+    return BoxMix(variants: [VariantStyle(variant, value)]);
   }
 
   /// minHeight
@@ -184,8 +184,8 @@ class BoxMix extends Style<BoxSpec>
     AlignmentGeometry? transformAlignment,
     Clip? clipBehavior,
     AnimationConfig? animation,
-    ModifierConfig? modifierConfig,
-    List<VariantStyleAttribute<BoxSpec>>? variants,
+    WidgetDecoratorConfig? modifierConfig,
+    List<VariantStyle<BoxSpec>>? variants,
     bool? inherit,
   }) : this.raw(
          alignment: Prop.maybe(alignment),
@@ -382,7 +382,7 @@ class BoxMix extends Style<BoxSpec>
   }
 
   /// Modifier instance method
-  BoxMix wrap(ModifierConfig modifier) {
+  BoxMix wrap(WidgetDecoratorConfig modifier) {
     return merge(BoxMix(modifierConfig: modifier));
   }
 
@@ -438,18 +438,18 @@ class BoxMix extends Style<BoxSpec>
   }
 
   @override
-  BoxMix variants(List<VariantStyleAttribute<BoxSpec>> value) {
+  BoxMix variants(List<VariantStyle<BoxSpec>> value) {
     return merge(BoxMix(variants: value));
   }
 
   @override
   BoxMix variant(Variant variant, BoxMix style) {
-    return merge(BoxMix(variants: [VariantStyleAttribute(variant, style)]));
+    return merge(BoxMix(variants: [VariantStyle(variant, style)]));
   }
 
   /// The list of properties that constitute the state of this [BoxMix].
   @override
-  BoxMix modifier(ModifierConfig value) {
+  BoxMix modifier(WidgetDecoratorConfig value) {
     return merge(BoxMix(modifierConfig: value));
   }
 

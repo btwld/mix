@@ -137,11 +137,11 @@ void main() {
     group('Variant Methods', () {
       test('variants method sets multiple variants', () {
         final variants = [
-          VariantStyleAttribute(
+          VariantStyle(
             ContextVariant.brightness(Brightness.dark),
             StackBoxMix.box(BoxMix.color(Colors.white)),
           ),
-          VariantStyleAttribute(
+          VariantStyle(
             ContextVariant.brightness(Brightness.light),
             StackBoxMix.box(BoxMix.color(Colors.black)),
           ),

@@ -220,8 +220,8 @@ extension ListMixDirectiveExt<T> on List<MixDirective<T>>? {
   }
 }
 
-extension ModifierConfigExt on ModifierConfig? {
-  ModifierConfig? tryMerge(ModifierConfig? other) {
+extension ModifierConfigExt on WidgetDecoratorConfig? {
+  WidgetDecoratorConfig? tryMerge(WidgetDecoratorConfig? other) {
     if (other == null) return this;
     if (this == null) return other;
 

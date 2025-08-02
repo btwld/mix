@@ -613,7 +613,7 @@ void main() {
 
         final result = builder.call(attribute);
 
-        expect(result, isA<VariantStyleAttribute<MultiSpec>>());
+        expect(result, isA<VariantStyle<MultiSpec>>());
         expect(result.variant, same(variant));
         expect(result.value, isA<Style>());
       });
@@ -628,7 +628,7 @@ void main() {
 
           final result = builder.call(attr1, attr2);
 
-          expect(result, isA<VariantStyleAttribute<MultiSpec>>());
+          expect(result, isA<VariantStyle<MultiSpec>>());
           expect(result.variant, same(variant));
           expect(result.value, isA<Style>());
         },
@@ -644,7 +644,7 @@ void main() {
 
         final result = hoverBuilder.call(attribute);
 
-        expect(result, isA<VariantStyleAttribute<MultiSpec>>());
+        expect(result, isA<VariantStyle<MultiSpec>>());
         expect(result.value, isA<Style>());
       });
 
@@ -655,7 +655,7 @@ void main() {
 
         final result = builder.call(attribute);
 
-        expect(result, isA<VariantStyleAttribute<MultiSpec>>());
+        expect(result, isA<VariantStyle<MultiSpec>>());
         expect(result.variant, same(contextVariant));
         expect(result.value, isA<Style>());
       });
@@ -680,7 +680,7 @@ void main() {
 
         final result = darkBuilder.call(boxAttr, textAttr);
 
-        expect(result, isA<VariantStyleAttribute<MultiSpec>>());
+        expect(result, isA<VariantStyle<MultiSpec>>());
         expect(result.variant, equals(darkBuilder.variant));
         expect(result.value, isA<Style>());
       });

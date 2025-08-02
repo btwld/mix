@@ -86,7 +86,7 @@ class FlexMix extends Style<FlexSpec>
 
   /// Factory for variant
   factory FlexMix.variant(Variant variant, FlexMix value) {
-    return FlexMix(variants: [VariantStyleAttribute(variant, value)]);
+    return FlexMix(variants: [VariantStyle(variant, value)]);
   }
 
   const FlexMix.raw({
@@ -125,8 +125,8 @@ class FlexMix extends Style<FlexSpec>
     Clip? clipBehavior,
     double? gap,
     AnimationConfig? animation,
-    ModifierConfig? modifierConfig,
-    List<VariantStyleAttribute<FlexSpec>>? variants,
+    WidgetDecoratorConfig? modifierConfig,
+    List<VariantStyle<FlexSpec>>? variants,
     bool? inherit,
   }) : this.raw(
          direction: Prop.maybe(direction),
@@ -234,12 +234,12 @@ class FlexMix extends Style<FlexSpec>
   }
 
   @override
-  FlexMix variants(List<VariantStyleAttribute<FlexSpec>> variants) {
+  FlexMix variants(List<VariantStyle<FlexSpec>> variants) {
     return merge(FlexMix(variants: variants));
   }
 
   @override
-  FlexMix modifier(ModifierConfig value) {
+  FlexMix modifier(WidgetDecoratorConfig value) {
     return merge(FlexMix(modifierConfig: value));
   }
 
@@ -319,7 +319,7 @@ class FlexMix extends Style<FlexSpec>
 
   @override
   FlexMix variant(Variant variant, FlexMix style) {
-    return merge(FlexMix(variants: [VariantStyleAttribute(variant, style)]));
+    return merge(FlexMix(variants: [VariantStyle(variant, style)]));
   }
 
   @override

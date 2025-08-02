@@ -10,7 +10,7 @@ import '../properties/painting/border_radius_mix.dart';
 /// Modifier that clips its child to an oval shape.
 ///
 /// Wraps the child in a [ClipOval] widget with the specified clipper and clip behavior.
-final class ClipOvalModifier extends Modifier<ClipOvalModifier>
+final class ClipOvalModifier extends WidgetDecorator<ClipOvalModifier>
     with Diagnosticable {
   final CustomClipper<Rect>? clipper;
   final Clip? clipBehavior;
@@ -67,7 +67,7 @@ final class ClipOvalModifier extends Modifier<ClipOvalModifier>
 }
 
 /// Attribute class for [ClipOvalModifier] with resolvable properties.
-class ClipOvalModifierAttribute extends ModifierAttribute<ClipOvalModifier> {
+class ClipOvalModifierAttribute extends WidgetDecoratorStyle<ClipOvalModifier> {
   final Prop<CustomClipper<Rect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
@@ -113,7 +113,7 @@ class ClipOvalModifierAttribute extends ModifierAttribute<ClipOvalModifier> {
 /// Modifier that clips its child to a rectangular shape.
 ///
 /// Wraps the child in a [ClipRect] widget with the specified clipper and clip behavior.
-final class ClipRectModifier extends Modifier<ClipRectModifier>
+final class ClipRectModifier extends WidgetDecorator<ClipRectModifier>
     with Diagnosticable {
   final CustomClipper<Rect>? clipper;
   final Clip? clipBehavior;
@@ -167,7 +167,7 @@ final class ClipRectModifier extends Modifier<ClipRectModifier>
 }
 
 /// Attribute class for [ClipRectModifier] with resolvable properties.
-class ClipRectModifierAttribute extends ModifierAttribute<ClipRectModifier> {
+class ClipRectModifierAttribute extends WidgetDecoratorStyle<ClipRectModifier> {
   final Prop<CustomClipper<Rect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
@@ -217,7 +217,7 @@ class ClipRectModifierAttribute extends ModifierAttribute<ClipRectModifier> {
   List<Object?> get props => [clipper, clipBehavior];
 }
 
-final class ClipRRectModifier extends Modifier<ClipRRectModifier>
+final class ClipRRectModifier extends WidgetDecorator<ClipRRectModifier>
     with Diagnosticable {
   final BorderRadiusGeometry? borderRadius;
   final CustomClipper<RRect>? clipper;
@@ -309,7 +309,8 @@ final class ClipRRectModifier extends Modifier<ClipRRectModifier>
 ///
 /// Use this class to configure the attributes of a [ClipRRectModifier] and pass it to
 /// the [ClipRRectModifier] constructor.
-class ClipRRectModifierAttribute extends ModifierAttribute<ClipRRectModifier> {
+class ClipRRectModifierAttribute
+    extends WidgetDecoratorStyle<ClipRRectModifier> {
   final MixProp<BorderRadiusGeometry>? borderRadius;
   final Prop<CustomClipper<RRect>>? clipper;
   final Prop<Clip>? clipBehavior;
@@ -370,7 +371,7 @@ class ClipRRectModifierAttribute extends ModifierAttribute<ClipRRectModifier> {
   List<Object?> get props => [borderRadius, clipper, clipBehavior];
 }
 
-final class ClipPathModifier extends Modifier<ClipPathModifier>
+final class ClipPathModifier extends WidgetDecorator<ClipPathModifier>
     with Diagnosticable {
   final CustomClipper<Path>? clipper;
   final Clip? clipBehavior;
@@ -449,7 +450,7 @@ final class ClipPathModifier extends Modifier<ClipPathModifier>
 ///
 /// Use this class to configure the attributes of a [ClipPathModifier] and pass it to
 /// the [ClipPathModifier] constructor.
-class ClipPathModifierAttribute extends ModifierAttribute<ClipPathModifier> {
+class ClipPathModifierAttribute extends WidgetDecoratorStyle<ClipPathModifier> {
   final Prop<CustomClipper<Path>>? clipper;
   final Prop<Clip>? clipBehavior;
 
@@ -499,7 +500,7 @@ class ClipPathModifierAttribute extends ModifierAttribute<ClipPathModifier> {
   List<Object?> get props => [clipper, clipBehavior];
 }
 
-final class ClipTriangleModifier extends Modifier<ClipTriangleModifier>
+final class ClipTriangleModifier extends WidgetDecorator<ClipTriangleModifier>
     with Diagnosticable {
   final Clip? clipBehavior;
 
@@ -572,7 +573,7 @@ final class ClipTriangleModifier extends Modifier<ClipTriangleModifier>
 /// Use this class to configure the attributes of a [ClipTriangleModifier] and pass it to
 /// the [ClipTriangleModifier] constructor.
 class ClipTriangleModifierAttribute
-    extends ModifierAttribute<ClipTriangleModifier> {
+    extends WidgetDecoratorStyle<ClipTriangleModifier> {
   final Prop<Clip>? clipBehavior;
 
   const ClipTriangleModifierAttribute.raw({this.clipBehavior});
