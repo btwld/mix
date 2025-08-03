@@ -49,7 +49,7 @@ final class RotatedBoxWidgetDecorator
 /// Use this class to configure the attributes of a [RotatedBoxWidgetDecorator] and pass it to
 /// the [RotatedBoxWidgetDecorator] constructor.
 class RotatedBoxWidgetDecoratorStyle
-    extends WidgetDecoratorStyle<RotatedBoxWidgetDecorator> {
+    extends WidgetDecoratorMix<RotatedBoxWidgetDecorator> {
   final Prop<int>? quarterTurns;
 
   const RotatedBoxWidgetDecoratorStyle.raw({this.quarterTurns});

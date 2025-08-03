@@ -16,7 +16,11 @@ final class AlignWidgetDecorator extends WidgetDecorator<AlignWidgetDecorator>
   final double? widthFactor;
   final double? heightFactor;
 
-  const AlignWidgetDecorator({this.alignment, this.widthFactor, this.heightFactor});
+  const AlignWidgetDecorator({
+    this.alignment,
+    this.widthFactor,
+    this.heightFactor,
+  });
 
   @override
   AlignWidgetDecorator copyWith({
@@ -74,7 +78,8 @@ final class AlignWidgetDecoratorUtility<T extends Style<Object?>>
   }
 }
 
-class AlignWidgetDecoratorStyle extends WidgetDecoratorStyle<AlignWidgetDecorator> {
+class AlignWidgetDecoratorStyle
+    extends WidgetDecoratorMix<AlignWidgetDecorator> {
   final Prop<AlignmentGeometry>? alignment;
   final Prop<double>? widthFactor;
   final Prop<double>? heightFactor;

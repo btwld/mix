@@ -8,14 +8,18 @@ import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 
-final class TransformWidgetDecorator extends WidgetDecorator<TransformWidgetDecorator> {
+final class TransformWidgetDecorator
+    extends WidgetDecorator<TransformWidgetDecorator> {
   final Matrix4? transform;
   final Alignment? alignment;
 
   const TransformWidgetDecorator({this.transform, this.alignment});
 
   @override
-  TransformWidgetDecorator copyWith({Matrix4? transform, Alignment? alignment}) {
+  TransformWidgetDecorator copyWith({
+    Matrix4? transform,
+    Alignment? alignment,
+  }) {
     return TransformWidgetDecorator(
       transform: transform ?? this.transform,
       alignment: alignment ?? this.alignment,
@@ -99,7 +103,7 @@ final class TransformRotateWidgetDecoratorUtility<T extends Style<Object?>>
 }
 
 class TransformWidgetDecoratorStyle
-    extends WidgetDecoratorStyle<TransformWidgetDecorator> {
+    extends WidgetDecoratorMix<TransformWidgetDecorator> {
   final Prop<Matrix4>? transform;
   final Prop<Alignment>? alignment;
 

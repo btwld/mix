@@ -36,7 +36,7 @@ final class ResetWidgetDecorator extends WidgetDecorator<ResetWidgetDecorator>
 }
 
 /// An attribute that resets the modifier context.
-class ResetWidgetDecoratorStyle extends WidgetDecoratorStyle<ResetWidgetDecorator>
+class ResetWidgetDecoratorStyle extends WidgetDecoratorMix<ResetWidgetDecorator>
     with Diagnosticable {
   const ResetWidgetDecoratorStyle();
 

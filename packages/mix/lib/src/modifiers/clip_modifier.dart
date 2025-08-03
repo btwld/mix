@@ -10,7 +10,8 @@ import '../properties/painting/border_radius_mix.dart';
 /// Decorator that clips its child to an oval shape.
 ///
 /// Wraps the child in a [ClipOval] widget with the specified clipper and clip behavior.
-final class ClipOvalWidgetDecorator extends WidgetDecorator<ClipOvalWidgetDecorator>
+final class ClipOvalWidgetDecorator
+    extends WidgetDecorator<ClipOvalWidgetDecorator>
     with Diagnosticable {
   final CustomClipper<Rect>? clipper;
   final Clip? clipBehavior;
@@ -67,17 +68,20 @@ final class ClipOvalWidgetDecorator extends WidgetDecorator<ClipOvalWidgetDecora
 }
 
 /// Attribute class for [ClipOvalWidgetDecorator] with resolvable properties.
-class ClipOvalWidgetDecoratorStyle extends WidgetDecoratorStyle<ClipOvalWidgetDecorator> {
+class ClipOvalWidgetDecoratorStyle
+    extends WidgetDecoratorMix<ClipOvalWidgetDecorator> {
   final Prop<CustomClipper<Rect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
   const ClipOvalWidgetDecoratorStyle.raw({this.clipper, this.clipBehavior});
 
-  ClipOvalWidgetDecoratorStyle({CustomClipper<Rect>? clipper, Clip? clipBehavior})
-    : this.raw(
-        clipper: Prop.maybe(clipper),
-        clipBehavior: Prop.maybe(clipBehavior),
-      );
+  ClipOvalWidgetDecoratorStyle({
+    CustomClipper<Rect>? clipper,
+    Clip? clipBehavior,
+  }) : this.raw(
+         clipper: Prop.maybe(clipper),
+         clipBehavior: Prop.maybe(clipBehavior),
+       );
 
   /// Resolves to [ClipOvalWidgetDecorator] using the provided [BuildContext].
   @override
@@ -113,7 +117,8 @@ class ClipOvalWidgetDecoratorStyle extends WidgetDecoratorStyle<ClipOvalWidgetDe
 /// Decorator that clips its child to a rectangular shape.
 ///
 /// Wraps the child in a [ClipRect] widget with the specified clipper and clip behavior.
-final class ClipRectWidgetDecorator extends WidgetDecorator<ClipRectWidgetDecorator>
+final class ClipRectWidgetDecorator
+    extends WidgetDecorator<ClipRectWidgetDecorator>
     with Diagnosticable {
   final CustomClipper<Rect>? clipper;
   final Clip? clipBehavior;
@@ -167,17 +172,20 @@ final class ClipRectWidgetDecorator extends WidgetDecorator<ClipRectWidgetDecora
 }
 
 /// Attribute class for [ClipRectWidgetDecorator] with resolvable properties.
-class ClipRectWidgetDecoratorStyle extends WidgetDecoratorStyle<ClipRectWidgetDecorator> {
+class ClipRectWidgetDecoratorStyle
+    extends WidgetDecoratorMix<ClipRectWidgetDecorator> {
   final Prop<CustomClipper<Rect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
   const ClipRectWidgetDecoratorStyle.raw({this.clipper, this.clipBehavior});
 
-  ClipRectWidgetDecoratorStyle({CustomClipper<Rect>? clipper, Clip? clipBehavior})
-    : this.raw(
-        clipper: Prop.maybe(clipper),
-        clipBehavior: Prop.maybe(clipBehavior),
-      );
+  ClipRectWidgetDecoratorStyle({
+    CustomClipper<Rect>? clipper,
+    Clip? clipBehavior,
+  }) : this.raw(
+         clipper: Prop.maybe(clipper),
+         clipBehavior: Prop.maybe(clipBehavior),
+       );
 
   /// Resolves to [ClipRectWidgetDecorator] using the provided [BuildContext].
   ///
@@ -217,13 +225,18 @@ class ClipRectWidgetDecoratorStyle extends WidgetDecoratorStyle<ClipRectWidgetDe
   List<Object?> get props => [clipper, clipBehavior];
 }
 
-final class ClipRRectWidgetDecorator extends WidgetDecorator<ClipRRectWidgetDecorator>
+final class ClipRRectWidgetDecorator
+    extends WidgetDecorator<ClipRRectWidgetDecorator>
     with Diagnosticable {
   final BorderRadiusGeometry? borderRadius;
   final CustomClipper<RRect>? clipper;
   final Clip? clipBehavior;
 
-  const ClipRRectWidgetDecorator({this.borderRadius, this.clipper, this.clipBehavior});
+  const ClipRRectWidgetDecorator({
+    this.borderRadius,
+    this.clipper,
+    this.clipBehavior,
+  });
 
   /// Creates a copy of this [ClipRRectWidgetDecorator] but with the given fields
   /// replaced with the new values.
@@ -310,7 +323,7 @@ final class ClipRRectWidgetDecorator extends WidgetDecorator<ClipRRectWidgetDeco
 /// Use this class to configure the attributes of a [ClipRRectWidgetDecorator] and pass it to
 /// the [ClipRRectWidgetDecorator] constructor.
 class ClipRRectWidgetDecoratorStyle
-    extends WidgetDecoratorStyle<ClipRRectWidgetDecorator> {
+    extends WidgetDecoratorMix<ClipRRectWidgetDecorator> {
   final MixProp<BorderRadiusGeometry>? borderRadius;
   final Prop<CustomClipper<RRect>>? clipper;
   final Prop<Clip>? clipBehavior;
@@ -371,7 +384,8 @@ class ClipRRectWidgetDecoratorStyle
   List<Object?> get props => [borderRadius, clipper, clipBehavior];
 }
 
-final class ClipPathWidgetDecorator extends WidgetDecorator<ClipPathWidgetDecorator>
+final class ClipPathWidgetDecorator
+    extends WidgetDecorator<ClipPathWidgetDecorator>
     with Diagnosticable {
   final CustomClipper<Path>? clipper;
   final Clip? clipBehavior;
@@ -450,17 +464,20 @@ final class ClipPathWidgetDecorator extends WidgetDecorator<ClipPathWidgetDecora
 ///
 /// Use this class to configure the attributes of a [ClipPathWidgetDecorator] and pass it to
 /// the [ClipPathWidgetDecorator] constructor.
-class ClipPathWidgetDecoratorStyle extends WidgetDecoratorStyle<ClipPathWidgetDecorator> {
+class ClipPathWidgetDecoratorStyle
+    extends WidgetDecoratorMix<ClipPathWidgetDecorator> {
   final Prop<CustomClipper<Path>>? clipper;
   final Prop<Clip>? clipBehavior;
 
   const ClipPathWidgetDecoratorStyle.raw({this.clipper, this.clipBehavior});
 
-  ClipPathWidgetDecoratorStyle({CustomClipper<Path>? clipper, Clip? clipBehavior})
-    : this.raw(
-        clipper: Prop.maybe(clipper),
-        clipBehavior: Prop.maybe(clipBehavior),
-      );
+  ClipPathWidgetDecoratorStyle({
+    CustomClipper<Path>? clipper,
+    Clip? clipBehavior,
+  }) : this.raw(
+         clipper: Prop.maybe(clipper),
+         clipBehavior: Prop.maybe(clipBehavior),
+       );
 
   /// Resolves to [ClipPathWidgetDecorator] using the provided [BuildContext].
   ///
@@ -500,7 +517,8 @@ class ClipPathWidgetDecoratorStyle extends WidgetDecoratorStyle<ClipPathWidgetDe
   List<Object?> get props => [clipper, clipBehavior];
 }
 
-final class ClipTriangleWidgetDecorator extends WidgetDecorator<ClipTriangleWidgetDecorator>
+final class ClipTriangleWidgetDecorator
+    extends WidgetDecorator<ClipTriangleWidgetDecorator>
     with Diagnosticable {
   final Clip? clipBehavior;
 
@@ -532,7 +550,10 @@ final class ClipTriangleWidgetDecorator extends WidgetDecorator<ClipTriangleWidg
   /// This method is typically used in animations to smoothly transition between
   /// different [ClipTriangleWidgetDecorator] configurations.
   @override
-  ClipTriangleWidgetDecorator lerp(ClipTriangleWidgetDecorator? other, double t) {
+  ClipTriangleWidgetDecorator lerp(
+    ClipTriangleWidgetDecorator? other,
+    double t,
+  ) {
     if (other == null) return this;
 
     return ClipTriangleWidgetDecorator(
@@ -573,7 +594,7 @@ final class ClipTriangleWidgetDecorator extends WidgetDecorator<ClipTriangleWidg
 /// Use this class to configure the attributes of a [ClipTriangleWidgetDecorator] and pass it to
 /// the [ClipTriangleWidgetDecorator] constructor.
 class ClipTriangleWidgetDecoratorStyle
-    extends WidgetDecoratorStyle<ClipTriangleWidgetDecorator> {
+    extends WidgetDecoratorMix<ClipTriangleWidgetDecorator> {
   final Prop<Clip>? clipBehavior;
 
   const ClipTriangleWidgetDecoratorStyle.raw({this.clipBehavior});
@@ -605,7 +626,9 @@ class ClipTriangleWidgetDecoratorStyle
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  ClipTriangleWidgetDecoratorStyle merge(ClipTriangleWidgetDecoratorStyle? other) {
+  ClipTriangleWidgetDecoratorStyle merge(
+    ClipTriangleWidgetDecoratorStyle? other,
+  ) {
     if (other == null) return this;
 
     return ClipTriangleWidgetDecoratorStyle.raw(

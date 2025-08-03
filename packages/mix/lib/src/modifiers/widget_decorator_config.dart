@@ -26,19 +26,19 @@ import 'visibility_modifier.dart';
 
 final class WidgetDecoratorConfig with Equatable {
   final List<Type>? $orderOfDecorators;
-  final List<WidgetDecoratorStyle>? $decorators;
+  final List<WidgetDecoratorMix>? $decorators;
 
   const WidgetDecoratorConfig({
-    List<WidgetDecoratorStyle>? decorators,
+    List<WidgetDecoratorMix>? decorators,
     List<Type>? orderOfDecorators,
   }) : $decorators = decorators,
        $orderOfDecorators = orderOfDecorators;
 
-  factory WidgetDecoratorConfig.decorator(WidgetDecoratorStyle value) {
+  factory WidgetDecoratorConfig.decorator(WidgetDecoratorMix value) {
     return WidgetDecoratorConfig(decorators: [value]);
   }
 
-  factory WidgetDecoratorConfig.decorators(List<WidgetDecoratorStyle> value) {
+  factory WidgetDecoratorConfig.decorators(List<WidgetDecoratorMix> value) {
     return WidgetDecoratorConfig(decorators: value);
   }
 
@@ -63,7 +63,10 @@ final class WidgetDecoratorConfig with Equatable {
     Clip? clipBehavior,
   }) {
     return WidgetDecoratorConfig.decorator(
-      ClipOvalWidgetDecoratorStyle(clipper: clipper, clipBehavior: clipBehavior),
+      ClipOvalWidgetDecoratorStyle(
+        clipper: clipper,
+        clipBehavior: clipBehavior,
+      ),
     );
   }
 
@@ -72,7 +75,10 @@ final class WidgetDecoratorConfig with Equatable {
     Clip? clipBehavior,
   }) {
     return WidgetDecoratorConfig.decorator(
-      ClipRectWidgetDecoratorStyle(clipper: clipper, clipBehavior: clipBehavior),
+      ClipRectWidgetDecoratorStyle(
+        clipper: clipper,
+        clipBehavior: clipBehavior,
+      ),
     );
   }
 
@@ -95,7 +101,10 @@ final class WidgetDecoratorConfig with Equatable {
     Clip? clipBehavior,
   }) {
     return WidgetDecoratorConfig.decorator(
-      ClipPathWidgetDecoratorStyle(clipper: clipper, clipBehavior: clipBehavior),
+      ClipPathWidgetDecoratorStyle(
+        clipper: clipper,
+        clipBehavior: clipBehavior,
+      ),
     );
   }
 
@@ -326,7 +335,7 @@ final class WidgetDecoratorConfig with Equatable {
     );
   }
 
-  WidgetDecoratorConfig decorators(List<WidgetDecoratorStyle> value) {
+  WidgetDecoratorConfig decorators(List<WidgetDecoratorMix> value) {
     return merge(WidgetDecoratorConfig.decorators(value));
   }
 
@@ -453,7 +462,7 @@ final class WidgetDecoratorConfig with Equatable {
     return merge(WidgetDecoratorConfig.defaultText(textMix));
   }
 
-  WidgetDecoratorConfig decorator(WidgetDecoratorStyle value) {
+  WidgetDecoratorConfig decorator(WidgetDecoratorMix value) {
     return merge(WidgetDecoratorConfig.decorator(value));
   }
 
@@ -473,15 +482,15 @@ final class WidgetDecoratorConfig with Equatable {
   }
 
   @protected
-  List<WidgetDecoratorStyle>? mergeDecoratorLists(
-    List<WidgetDecoratorStyle>? current,
-    List<WidgetDecoratorStyle>? other,
+  List<WidgetDecoratorMix>? mergeDecoratorLists(
+    List<WidgetDecoratorMix>? current,
+    List<WidgetDecoratorMix>? other,
   ) {
     if (current == null && other == null) return null;
     if (current == null) return List.of(other!);
     if (other == null) return List.of(current);
 
-    final Map<Object, WidgetDecoratorStyle> merged = {};
+    final Map<Object, WidgetDecoratorMix> merged = {};
 
     // Add current modifiers
     for (final decorator in current) {

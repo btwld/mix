@@ -104,7 +104,7 @@ final class FractionallySizedBoxWidgetDecorator
 /// Use this class to configure the attributes of a [FractionallySizedBoxWidgetDecorator] and pass it to
 /// the [FractionallySizedBoxWidgetDecorator] constructor.
 class FractionallySizedBoxWidgetDecoratorStyle
-    extends WidgetDecoratorStyle<FractionallySizedBoxWidgetDecorator> {
+    extends WidgetDecoratorMix<FractionallySizedBoxWidgetDecorator> {
   final Prop<double>? widthFactor;
   final Prop<double>? heightFactor;
   final Prop<AlignmentGeometry>? alignment;

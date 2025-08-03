@@ -11,7 +11,8 @@ import '../theme/tokens/mix_token.dart';
 /// A decorator that wraps a widget with the [Opacity] widget.
 ///
 /// The [Opacity] widget is used to make a widget partially transparent.
-final class OpacityWidgetDecorator extends WidgetDecorator<OpacityWidgetDecorator>
+final class OpacityWidgetDecorator
+    extends WidgetDecorator<OpacityWidgetDecorator>
     with Diagnosticable {
   /// The [opacity] argument must not be null and
   /// must be between 0.0 and 1.0 (inclusive).
@@ -43,7 +44,9 @@ final class OpacityWidgetDecorator extends WidgetDecorator<OpacityWidgetDecorato
   OpacityWidgetDecorator lerp(OpacityWidgetDecorator? other, double t) {
     if (other == null) return this;
 
-    return OpacityWidgetDecorator(MixHelpers.lerpDouble(opacity, other.opacity, t)!);
+    return OpacityWidgetDecorator(
+      MixHelpers.lerpDouble(opacity, other.opacity, t)!,
+    );
   }
 
   @override
@@ -72,7 +75,8 @@ final class OpacityWidgetDecorator extends WidgetDecorator<OpacityWidgetDecorato
 ///
 /// Use this class to configure the attributes of a [OpacityWidgetDecorator] and pass it to
 /// the [OpacityWidgetDecorator] constructor.
-class OpacityWidgetDecoratorStyle extends WidgetDecoratorStyle<OpacityWidgetDecorator>
+class OpacityWidgetDecoratorStyle
+    extends WidgetDecoratorMix<OpacityWidgetDecorator>
     with Diagnosticable {
   final Prop<double>? opacity;
 

@@ -13,7 +13,8 @@ import '../properties/painting/shadow_mix.dart';
 /// The [IconTheme] widget is used to provide default icon properties to descendant
 /// [Icon] widgets. This modifier allows setting default color, size, opacity, and
 /// other icon properties that will be inherited by child icons.
-final class IconThemeWidgetDecorator extends WidgetDecorator<IconThemeWidgetDecorator>
+final class IconThemeWidgetDecorator
+    extends WidgetDecorator<IconThemeWidgetDecorator>
     with Diagnosticable {
   final IconThemeData data;
 
@@ -37,7 +38,9 @@ final class IconThemeWidgetDecorator extends WidgetDecorator<IconThemeWidgetDeco
   IconThemeWidgetDecorator lerp(IconThemeWidgetDecorator? other, double t) {
     if (other == null) return this;
 
-    return IconThemeWidgetDecorator(data: IconThemeData.lerp(data, other.data, t));
+    return IconThemeWidgetDecorator(
+      data: IconThemeData.lerp(data, other.data, t),
+    );
   }
 
   @override
@@ -67,7 +70,7 @@ final class IconThemeWidgetDecorator extends WidgetDecorator<IconThemeWidgetDeco
 /// Use this class to configure the attributes of a [IconThemeWidgetDecorator] and pass it to
 /// the [IconThemeWidgetDecorator] constructor.
 class IconThemeWidgetDecoratorStyle
-    extends WidgetDecoratorStyle<IconThemeWidgetDecorator> {
+    extends WidgetDecoratorMix<IconThemeWidgetDecorator> {
   final Prop<Color>? color;
   final Prop<double>? size;
   final Prop<double>? fill;

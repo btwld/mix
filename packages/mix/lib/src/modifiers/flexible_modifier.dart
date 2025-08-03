@@ -7,7 +7,8 @@ import '../core/style.dart';
 import '../core/utility.dart';
 import '../theme/tokens/mix_token.dart';
 
-final class FlexibleWidgetDecorator extends WidgetDecorator<FlexibleWidgetDecorator>
+final class FlexibleWidgetDecorator
+    extends WidgetDecorator<FlexibleWidgetDecorator>
     with Diagnosticable {
   final int? flex;
   final FlexFit? fit;
@@ -17,7 +18,10 @@ final class FlexibleWidgetDecorator extends WidgetDecorator<FlexibleWidgetDecora
   /// replaced with the new values.
   @override
   FlexibleWidgetDecorator copyWith({int? flex, FlexFit? fit}) {
-    return FlexibleWidgetDecorator(flex: flex ?? this.flex, fit: fit ?? this.fit);
+    return FlexibleWidgetDecorator(
+      flex: flex ?? this.flex,
+      fit: fit ?? this.fit,
+    );
   }
 
   /// Linearly interpolates between this [FlexibleWidgetDecorator] and another [FlexibleWidgetDecorator] based on the given parameter [t].
@@ -73,7 +77,8 @@ final class FlexibleWidgetDecorator extends WidgetDecorator<FlexibleWidgetDecora
 ///
 /// Use this class to configure the attributes of a [FlexibleWidgetDecorator] and pass it to
 /// the [FlexibleWidgetDecorator] constructor.
-class FlexibleWidgetDecoratorStyle extends WidgetDecoratorStyle<FlexibleWidgetDecorator>
+class FlexibleWidgetDecoratorStyle
+    extends WidgetDecoratorMix<FlexibleWidgetDecorator>
     with Diagnosticable {
   final Prop<int>? flex;
   final Prop<FlexFit>? fit;

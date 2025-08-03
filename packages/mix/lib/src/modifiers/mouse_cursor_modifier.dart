@@ -63,8 +63,7 @@ class MouseCursorDecorator extends WidgetDecorator<MouseCursorDecorator> {
 ///
 /// Use this class to configure the attributes of a [MouseCursorDecorator] and pass it to
 /// the [MouseCursorDecorator] constructor.
-class MouseCursorDecoratorMix
-    extends WidgetDecoratorStyle<MouseCursorDecorator> {
+class MouseCursorDecoratorMix extends WidgetDecoratorMix<MouseCursorDecorator> {
   final Prop<MouseCursor>? mouseCursor;
 
   const MouseCursorDecoratorMix.raw({this.mouseCursor});

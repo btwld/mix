@@ -8,7 +8,8 @@ import '../core/utility.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
 import '../properties/layout/edge_insets_geometry_util.dart';
 
-final class ScrollViewWidgetDecorator extends WidgetDecorator<ScrollViewWidgetDecorator> {
+final class ScrollViewWidgetDecorator
+    extends WidgetDecorator<ScrollViewWidgetDecorator> {
   final Axis? scrollDirection;
   final bool? reverse;
   final EdgeInsetsGeometry? padding;
@@ -148,7 +149,7 @@ final class ScrollViewWidgetDecoratorUtility<T extends Style<Object?>>
 }
 
 class ScrollViewWidgetDecoratorStyle
-    extends WidgetDecoratorStyle<ScrollViewWidgetDecorator> {
+    extends WidgetDecoratorMix<ScrollViewWidgetDecorator> {
   final Prop<Axis>? scrollDirection;
   final Prop<bool>? reverse;
   final MixProp<EdgeInsetsGeometry>? padding;

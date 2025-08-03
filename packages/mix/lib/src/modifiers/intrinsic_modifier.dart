@@ -16,7 +16,10 @@ final class IntrinsicHeightWidgetDecorator
   }
 
   @override
-  IntrinsicHeightWidgetDecorator lerp(IntrinsicHeightWidgetDecorator? other, double t) {
+  IntrinsicHeightWidgetDecorator lerp(
+    IntrinsicHeightWidgetDecorator? other,
+    double t,
+  ) {
     if (other == null) return this;
 
     return const IntrinsicHeightWidgetDecorator();
@@ -44,7 +47,10 @@ final class IntrinsicWidthWidgetDecorator
   }
 
   @override
-  IntrinsicWidthWidgetDecorator lerp(IntrinsicWidthWidgetDecorator? other, double t) {
+  IntrinsicWidthWidgetDecorator lerp(
+    IntrinsicWidthWidgetDecorator? other,
+    double t,
+  ) {
     if (other == null) return this;
 
     return const IntrinsicWidthWidgetDecorator();
@@ -67,7 +73,7 @@ final class IntrinsicWidthWidgetDecorator
 /// Use this class to configure the attributes of a [IntrinsicHeightWidgetDecorator] and pass it to
 /// the [IntrinsicHeightWidgetDecorator] constructor.
 class IntrinsicHeightWidgetDecoratorStyle
-    extends WidgetDecoratorStyle<IntrinsicHeightWidgetDecorator> {
+    extends WidgetDecoratorMix<IntrinsicHeightWidgetDecorator> {
   const IntrinsicHeightWidgetDecoratorStyle();
 
   /// Resolves to [IntrinsicHeightWidgetDecorator] using the provided [BuildContext].
@@ -116,7 +122,7 @@ class IntrinsicHeightWidgetDecoratorStyle
 /// Use this class to configure the attributes of a [IntrinsicWidthWidgetDecorator] and pass it to
 /// the [IntrinsicWidthWidgetDecorator] constructor.
 class IntrinsicWidthWidgetDecoratorStyle
-    extends WidgetDecoratorStyle<IntrinsicWidthWidgetDecorator> {
+    extends WidgetDecoratorMix<IntrinsicWidthWidgetDecorator> {
   const IntrinsicWidthWidgetDecoratorStyle();
 
   /// Resolves to [IntrinsicWidthWidgetDecorator] using the provided [BuildContext].

@@ -71,7 +71,10 @@ final class DefaultTextStyleWidgetDecorator
   /// This method is typically used in animations to smoothly transition between
   /// different [DefaultTextStyleWidgetDecorator] configurations.
   @override
-  DefaultTextStyleWidgetDecorator lerp(DefaultTextStyleWidgetDecorator? other, double t) {
+  DefaultTextStyleWidgetDecorator lerp(
+    DefaultTextStyleWidgetDecorator? other,
+    double t,
+  ) {
     if (other == null) return this;
 
     return DefaultTextStyleWidgetDecorator(
@@ -153,7 +156,7 @@ final class DefaultTextStyleWidgetDecorator
 /// Use this class to configure the attributes of a [DefaultTextStyleWidgetDecorator] and pass it to
 /// the [DefaultTextStyleWidgetDecorator] constructor.
 class DefaultTextStyleWidgetDecoratorStyle
-    extends WidgetDecoratorStyle<DefaultTextStyleWidgetDecorator> {
+    extends WidgetDecoratorMix<DefaultTextStyleWidgetDecorator> {
   final MixProp<TextStyle>? style;
   final Prop<TextAlign>? textAlign;
   final Prop<bool>? softWrap;

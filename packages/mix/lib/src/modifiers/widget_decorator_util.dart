@@ -25,7 +25,7 @@ import 'widget_decorator_config.dart';
 
 /// Provides utilities for applying modifiers to styles.
 final class WidgetDecoratorUtility<T extends Style<Object?>>
-    extends MixUtility<T, WidgetDecoratorStyle> {
+    extends MixUtility<T, WidgetDecoratorMix> {
   /// Opacity modifier utility.
   late final opacity = OpacityWidgetDecoratorUtility<T>(builder);
 
@@ -51,9 +51,8 @@ final class WidgetDecoratorUtility<T extends Style<Object?>>
   late final flexible = FlexibleWidgetDecoratorUtility<T>(builder);
 
   /// Fractionally sized box modifier utility.
-  late final fractionallySizedBox = FractionallySizedBoxWidgetDecoratorUtility<T>(
-    builder,
-  );
+  late final fractionallySizedBox =
+      FractionallySizedBoxWidgetDecoratorUtility<T>(builder);
 
   /// Rotated box modifier utility.
   late final rotatedBox = RotatedBoxWidgetDecoratorUtility<T>(builder);
@@ -78,7 +77,10 @@ final class WidgetDecoratorUtility<T extends Style<Object?>>
   /// Clips the widget to an oval shape.
   T clipOval({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
     return builder(
-      ClipOvalWidgetDecoratorStyle(clipper: clipper, clipBehavior: clipBehavior),
+      ClipOvalWidgetDecoratorStyle(
+        clipper: clipper,
+        clipBehavior: clipBehavior,
+      ),
     );
   }
 
@@ -100,19 +102,27 @@ final class WidgetDecoratorUtility<T extends Style<Object?>>
   /// Clips the widget to a rectangle.
   T clipRect({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
     return builder(
-      ClipRectWidgetDecoratorStyle(clipper: clipper, clipBehavior: clipBehavior),
+      ClipRectWidgetDecoratorStyle(
+        clipper: clipper,
+        clipBehavior: clipBehavior,
+      ),
     );
   }
 
   /// Clips the widget to a triangle shape.
   T clipTriangle({Clip? clipBehavior}) {
-    return builder(ClipTriangleWidgetDecoratorStyle(clipBehavior: clipBehavior));
+    return builder(
+      ClipTriangleWidgetDecoratorStyle(clipBehavior: clipBehavior),
+    );
   }
 
   /// Clips the widget to a custom path.
   T clipPath({CustomClipper<Path>? clipper, Clip? clipBehavior}) {
     return builder(
-      ClipPathWidgetDecoratorStyle(clipper: clipper, clipBehavior: clipBehavior),
+      ClipPathWidgetDecoratorStyle(
+        clipper: clipper,
+        clipBehavior: clipBehavior,
+      ),
     );
   }
 

@@ -9,7 +9,8 @@ import '../core/utility.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
 import '../properties/layout/edge_insets_geometry_util.dart';
 
-final class PaddingWidgetDecorator extends WidgetDecorator<PaddingWidgetDecorator>
+final class PaddingWidgetDecorator
+    extends WidgetDecorator<PaddingWidgetDecorator>
     with Diagnosticable {
   final EdgeInsetsGeometry padding;
 
@@ -41,7 +42,9 @@ final class PaddingWidgetDecorator extends WidgetDecorator<PaddingWidgetDecorato
   PaddingWidgetDecorator lerp(PaddingWidgetDecorator? other, double t) {
     if (other == null) return this;
 
-    return PaddingWidgetDecorator(EdgeInsetsGeometry.lerp(padding, other.padding, t)!);
+    return PaddingWidgetDecorator(
+      EdgeInsetsGeometry.lerp(padding, other.padding, t)!,
+    );
   }
 
   @override
@@ -66,7 +69,8 @@ final class PaddingWidgetDecorator extends WidgetDecorator<PaddingWidgetDecorato
 /// Attribute class for configuring [PaddingWidgetDecorator] properties.
 ///
 /// Encapsulates padding values for widget spacing and layout.
-class PaddingWidgetDecoratorStyle extends WidgetDecoratorStyle<PaddingWidgetDecorator>
+class PaddingWidgetDecoratorStyle
+    extends WidgetDecoratorMix<PaddingWidgetDecorator>
     with Diagnosticable {
   final MixProp<EdgeInsetsGeometry>? padding;
 

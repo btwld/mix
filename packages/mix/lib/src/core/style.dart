@@ -64,15 +64,15 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
   }
 
   @protected
-  List<WidgetDecoratorStyle>? mergeModifierLists(
-    List<WidgetDecoratorStyle>? current,
-    List<WidgetDecoratorStyle>? other,
+  List<WidgetDecoratorMix>? mergeModifierLists(
+    List<WidgetDecoratorMix>? current,
+    List<WidgetDecoratorMix>? other,
   ) {
     if (current == null && other == null) return null;
     if (current == null) return List.of(other!);
     if (other == null) return List.of(current);
 
-    final Map<Object, WidgetDecoratorStyle> merged = {};
+    final Map<Object, WidgetDecoratorMix> merged = {};
 
     for (final modifier in current) {
       merged[modifier.mergeKey] = modifier;
@@ -186,12 +186,12 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
   }
 }
 
-abstract class WidgetDecoratorStyle<S extends WidgetDecorator<S>> extends Mix<S>
+abstract class WidgetDecoratorMix<S extends WidgetDecorator<S>> extends Mix<S>
     implements StyleElement {
-  const WidgetDecoratorStyle();
+  const WidgetDecoratorMix();
 
   @override
-  WidgetDecoratorStyle<S> merge(covariant WidgetDecoratorStyle<S>? other);
+  WidgetDecoratorMix<S> merge(covariant WidgetDecoratorMix<S>? other);
 
   @override
   S resolve(BuildContext context);
@@ -344,7 +344,7 @@ class CompoundStyle extends Style<MultiSpec> {
   /// ```
   factory CompoundStyle.create(Iterable<StyleElement> elements) {
     final styleList = <Style>[];
-    final modifierList = <WidgetDecoratorStyle>[];
+    final modifierList = <WidgetDecoratorMix>[];
     final variants = <VariantStyle>[];
 
     AnimationConfig? animationConfig;
@@ -355,7 +355,7 @@ class CompoundStyle extends Style<MultiSpec> {
           variants.add(element);
           break;
 
-        case WidgetDecoratorStyle():
+        case WidgetDecoratorMix():
           modifierList.add(element);
         case Style():
           // Handle MultiMix by merging it later

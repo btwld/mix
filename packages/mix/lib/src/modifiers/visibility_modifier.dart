@@ -11,7 +11,8 @@ import '../theme/tokens/mix_token.dart';
 ///
 /// Controls whether a child widget is visible or hidden while maintaining
 /// its space in the layout.
-final class VisibilityWidgetDecorator extends WidgetDecorator<VisibilityWidgetDecorator>
+final class VisibilityWidgetDecorator
+    extends WidgetDecorator<VisibilityWidgetDecorator>
     with Diagnosticable {
   /// Whether the child widget should be visible.
   final bool visible;
@@ -58,7 +59,7 @@ final class VisibilityWidgetDecorator extends WidgetDecorator<VisibilityWidgetDe
 /// This class encapsulates properties defining the visibility behavior
 /// of a [VisibilityWidgetDecorator].
 class VisibilityWidgetDecoratorStyle
-    extends WidgetDecoratorStyle<VisibilityWidgetDecorator>
+    extends WidgetDecoratorMix<VisibilityWidgetDecorator>
     with Diagnosticable {
   /// Whether the child widget should be visible.
   final Prop<bool>? visible;

@@ -75,7 +75,7 @@ final class AspectRatioWidgetDecorator
 /// Use this class to configure the attributes of a [AspectRatioWidgetDecorator] and pass it to
 /// the [AspectRatioWidgetDecorator] constructor.
 class AspectRatioWidgetDecoratorStyle
-    extends WidgetDecoratorStyle<AspectRatioWidgetDecorator>
+    extends WidgetDecoratorMix<AspectRatioWidgetDecorator>
     with Diagnosticable {
   final Prop<double>? aspectRatio;
 
