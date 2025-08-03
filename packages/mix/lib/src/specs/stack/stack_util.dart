@@ -4,56 +4,55 @@ import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
 import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
-import '../../modifiers/modifier_config.dart';
-import '../../modifiers/modifier_util.dart';
+import '../../decorators/widget_decorator_config.dart';
+import '../../decorators/widget_decorator_util.dart';
 import '../../variants/variant_util.dart';
 import 'stack_attribute.dart';
 import 'stack_spec.dart';
 
-/// Mutable utility class for stack styling using composition over inheritance.
+/// Provides mutable utility for stack styling with cascade notation support.
 ///
-/// Same API as StackMix but with mutable internal state
-/// for cascade notation support: `$stack..alignment(Alignment.center)..fit(StackFit.expand)`
+/// Supports the same API as [StackMix] but maintains mutable internal state
+/// enabling fluid styling: `$stack..alignment(Alignment.center)..fit(StackFit.expand)`.
 class StackSpecUtility extends StyleMutableBuilder<StackSpec> {
-  // STACK UTILITIES - Same as StackMix but return StackSpecUtility for cascade
-  @override
-  @protected
-  late final MutableStackMix value;
+  late final alignment = MixUtility(mutable.alignment);
 
-  late final alignment = MixUtility(value.alignment);
+  late final fit = MixUtility(mutable.fit);
 
-  late final fit = MixUtility(value.fit);
+  late final textDirection = MixUtility(mutable.textDirection);
 
-  late final textDirection = MixUtility(value.textDirection);
-
-  late final clipBehavior = MixUtility(value.clipBehavior);
+  late final clipBehavior = MixUtility(mutable.clipBehavior);
 
   late final on = OnContextVariantUtility<StackSpec, StackMix>(
-    (v) => value.variants([v]),
+    (v) => mutable.variants([v]),
   );
 
-  late final wrap = ModifierUtility(
-    (prop) => value.modifier(ModifierConfig(modifiers: [prop])),
+  late final wrap = WidgetDecoratorUtility(
+    (prop) =>
+        mutable.widgetDecorator(WidgetDecoratorConfig(decorators: [prop])),
   );
+
+  /// Internal mutable state for accumulating stack styling properties.
+  @override
+  @protected
+  late final MutableStackMix mutable;
 
   StackSpecUtility([StackMix? attribute]) {
-    value = MutableStackMix(attribute ?? StackMix());
+    mutable = MutableStackMix(attribute ?? StackMix());
   }
 
-  /// Animation
-  StackMix animate(AnimationConfig animation) => value.animate(animation);
-
-  // StyleAttribute interface implementation
+  /// Applies animation configuration to the stack styling.
+  StackMix animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
   StackSpecUtility merge(Style<StackSpec>? other) {
     if (other == null) return this;
-    // IMMUTABLE: Always create new instance (StyleAttribute contract)
+    // Always create new instance (StyleAttribute contract)
     if (other is StackSpecUtility) {
-      return StackSpecUtility(value.merge(other.value));
+      return StackSpecUtility(mutable.merge(other.mutable.value));
     }
     if (other is StackMix) {
-      return StackSpecUtility(value.merge(other));
+      return StackSpecUtility(mutable.merge(other));
     }
 
     throw FlutterError('Unsupported merge type: ${other.runtimeType}');
@@ -61,12 +60,16 @@ class StackSpecUtility extends StyleMutableBuilder<StackSpec> {
 
   @override
   StackSpec resolve(BuildContext context) {
-    return value.resolve(context);
+    return mutable.resolve(context);
   }
+
+  /// The accumulated [StackMix] with all applied styling properties.
+  @override
+  StackMix get value => mutable.value;
 }
 
 class MutableStackMix extends StackMix with Mutable<StackSpec, StackMix> {
-  MutableStackMix([StackMix? attribute]) {
-    merge(attribute);
+  MutableStackMix(StackMix style) {
+    value = style;
   }
 }

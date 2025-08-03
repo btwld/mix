@@ -1,19 +1,9 @@
+import 'package:example/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
 void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(body: Center(child: BlockAnimation())),
-    );
-  }
+  runMixApp(BlockAnimation());
 }
 
 enum AnimationPhases { initial, compress, expanded }
@@ -30,26 +20,27 @@ class _BlockAnimationState extends State<BlockAnimation> {
 
   @override
   Widget build(BuildContext context) {
-    final style = Style.box()
-        .color(Colors.deepPurpleAccent)
+    final style = Style.box(
+        .color(Colors.deepPurple)
         .height(100)
         .width(100)
-        .borderRadius(BorderRadiusMix.all(Radius.circular(40)))
-        .transformAlignment(Alignment.center)
+        .borderRadius(.circular(40))
+        .transformAlignment(.center)
         .phaseAnimation(
           trigger: ValueNotifier(_isExpanded),
           phases: AnimationPhases.values,
           styleBuilder: (phase, style) => switch (phase) {
-            AnimationPhases.initial => style.scale(1),
-            AnimationPhases.compress => style.scale(0.75),
-            AnimationPhases.expanded => style.scale(1.25),
+            .initial => style.scale(1),
+            .compress => style.scale(0.75),
+            .expanded => style.scale(1.25),
           },
           configBuilder: (phase) => switch (phase) {
-            AnimationPhases.initial => CurveAnimationConfig.decelerate(200.ms),
-            AnimationPhases.compress => CurveAnimationConfig.decelerate(100.ms),
-            AnimationPhases.expanded => CurveAnimationConfig.bounceOut(600.ms),
+            .initial => .decelerate(200.ms),
+            .compress => .decelerate(100.ms),
+            .expanded => .bounceOut(600.ms),
           },
-        );
+        )
+    );
 
     return GestureDetector(
       onTap: () {

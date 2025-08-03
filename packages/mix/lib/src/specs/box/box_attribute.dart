@@ -5,8 +5,8 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
-import '../../modifiers/modifier_config.dart';
-import '../../modifiers/modifier_util.dart';
+import '../../decorators/widget_decorator_config.dart';
+import '../../decorators/widget_decorator_util.dart';
 import '../../properties/layout/constraints_mix.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/painting/border_mix.dart';
@@ -20,6 +20,7 @@ import '../../properties/painting/shape_border_mix.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'box_spec.dart';
+import 'box_util.dart';
 
 /// Style class for configuring [BoxSpec] properties.
 ///
@@ -29,7 +30,7 @@ import 'box_spec.dart';
 class BoxMix extends Style<BoxSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<BoxMix, BoxSpec>,
+        StyleWidgetDecoratorMixin<BoxMix, BoxSpec>,
         StyleVariantMixin<BoxMix, BoxSpec>,
         BorderRadiusMixin<BoxMix> {
   final Prop<AlignmentGeometry>? $alignment;
@@ -87,7 +88,7 @@ class BoxMix extends Style<BoxSpec>
 
   /// Variant
   factory BoxMix.variant(Variant variant, BoxMix value) {
-    return BoxMix(variants: [VariantStyleAttribute(variant, value)]);
+    return BoxMix(variants: [VariantStyle(variant, value)]);
   }
 
   /// minHeight
@@ -158,7 +159,7 @@ class BoxMix extends Style<BoxSpec>
     Prop<AlignmentGeometry>? transformAlignment,
     Prop<Clip>? clipBehavior,
     super.variants,
-    super.modifierConfig,
+    super.widgetDecoratorConfig,
     super.animation,
 
     super.inherit,
@@ -183,8 +184,8 @@ class BoxMix extends Style<BoxSpec>
     AlignmentGeometry? transformAlignment,
     Clip? clipBehavior,
     AnimationConfig? animation,
-    ModifierConfig? modifierConfig,
-    List<VariantStyleAttribute<BoxSpec>>? variants,
+    WidgetDecoratorConfig? widgetDecoratorConfig,
+    List<VariantStyle<BoxSpec>>? variants,
     bool? inherit,
   }) : this.raw(
          alignment: Prop.maybe(alignment),
@@ -197,7 +198,7 @@ class BoxMix extends Style<BoxSpec>
          transformAlignment: Prop.maybe(transformAlignment),
          clipBehavior: Prop.maybe(clipBehavior),
          variants: variants,
-         modifierConfig: modifierConfig,
+         widgetDecoratorConfig: widgetDecoratorConfig,
          animation: animation,
          inherit: inherit,
        );
@@ -236,6 +237,8 @@ class BoxMix extends Style<BoxSpec>
   static BoxMix? maybeValue(BoxSpec? spec) {
     return spec != null ? BoxMix.value(spec) : null;
   }
+
+  BoxSpecUtility builder() => BoxSpecUtility(this);
 
   BoxMix transformAlignment(AlignmentGeometry value) {
     return merge(BoxMix.transformAlignment(value));
@@ -378,9 +381,9 @@ class BoxMix extends Style<BoxSpec>
     );
   }
 
-  /// Modifier instance method
-  BoxMix wrap(ModifierConfig modifier) {
-    return merge(BoxMix(modifierConfig: modifier));
+  /// Decorator instance method
+  BoxMix wrap(WidgetDecoratorConfig modifier) {
+    return merge(BoxMix(widgetDecoratorConfig: modifier));
   }
 
   /// Border instance method
@@ -435,19 +438,19 @@ class BoxMix extends Style<BoxSpec>
   }
 
   @override
-  BoxMix variants(List<VariantStyleAttribute<BoxSpec>> value) {
+  BoxMix variants(List<VariantStyle<BoxSpec>> value) {
     return merge(BoxMix(variants: value));
   }
 
   @override
   BoxMix variant(Variant variant, BoxMix style) {
-    return merge(BoxMix(variants: [VariantStyleAttribute(variant, style)]));
+    return merge(BoxMix(variants: [VariantStyle(variant, style)]));
   }
 
   /// The list of properties that constitute the state of this [BoxMix].
   @override
-  BoxMix modifier(ModifierConfig value) {
-    return merge(BoxMix(modifierConfig: value));
+  BoxMix widgetDecorator(WidgetDecoratorConfig value) {
+    return merge(BoxMix(widgetDecoratorConfig: value));
   }
 
   /// Resolves to [BoxSpec] using the provided [BuildContext].
@@ -486,25 +489,23 @@ class BoxMix extends Style<BoxSpec>
     if (other == null) return this;
 
     return BoxMix.raw(
-      alignment: MixHelpers.merge($alignment, other.$alignment),
-      padding: MixHelpers.merge($padding, other.$padding),
-      margin: MixHelpers.merge($margin, other.$margin),
-      constraints: MixHelpers.merge($constraints, other.$constraints),
-      decoration: MixHelpers.merge($decoration, other.$decoration),
-      foregroundDecoration: MixHelpers.merge(
-        $foregroundDecoration,
+      alignment: $alignment.tryMerge(other.$alignment),
+      padding: $padding.tryMerge(other.$padding),
+      margin: $margin.tryMerge(other.$margin),
+      constraints: $constraints.tryMerge(other.$constraints),
+      decoration: $decoration.tryMerge(other.$decoration),
+      foregroundDecoration: $foregroundDecoration.tryMerge(
         other.$foregroundDecoration,
       ),
-      transform: MixHelpers.merge($transform, other.$transform),
-      transformAlignment: MixHelpers.merge(
-        $transformAlignment,
+      transform: $transform.tryMerge(other.$transform),
+      transformAlignment: $transformAlignment.tryMerge(
         other.$transformAlignment,
       ),
-      clipBehavior: MixHelpers.merge($clipBehavior, other.$clipBehavior),
+      clipBehavior: $clipBehavior.tryMerge(other.$clipBehavior),
       variants: mergeVariantLists($variants, other.$variants),
-      modifierConfig:
-          $modifierConfig?.merge(other.$modifierConfig) ??
-          other.$modifierConfig,
+      widgetDecoratorConfig: $widgetDecoratorConfig.tryMerge(
+        other.$widgetDecoratorConfig,
+      ),
       animation: other.$animation ?? $animation,
       inherit: other.$inherit ?? $inherit,
     );
@@ -562,7 +563,7 @@ class BoxMix extends Style<BoxSpec>
     $transformAlignment,
     $clipBehavior,
     $animation,
-    $modifierConfig,
+    $widgetDecoratorConfig,
     $variants,
     $inherit,
   ];

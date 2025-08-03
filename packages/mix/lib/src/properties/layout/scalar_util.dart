@@ -6,7 +6,7 @@ import 'dart:typed_data';
 import 'package:flutter/widgets.dart';
 
 import '../../animation/curves.dart';
-import '../../core/directive.dart';
+import '../../core/modifier.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
 import '../painting/shadow_mix.dart';
@@ -680,14 +680,14 @@ extension ElevationShadowPropUtilityExt<T extends Style<Object?>>
   T twentyFour() => call(ElevationShadow.twentyFour);
 }
 
-/// Extension for creating [MixDirective<String>] values with text transformations.
-extension MixDirectiveStringPropUtilityExt<T extends Style<Object?>>
-    on MixUtility<T, MixDirective<String>> {
-  T call(MixDirective<String> value) => builder(value);
+/// Extension for creating [Modifier<String>] values with text transformations.
+extension ModifierStringPropUtilityExt<T extends Style<Object?>>
+    on MixUtility<T, Modifier<String>> {
+  T call(Modifier<String> value) => builder(value);
 
-  T capitalize() => call(CapitalizeStringDirective());
-  T uppercase() => call(UppercaseStringDirective());
-  T lowercase() => call(LowercaseStringDirective());
-  T titleCase() => call(TitleCaseStringDirective());
-  T sentenceCase() => call(SentenceCaseStringDirective());
+  T capitalize() => call(CapitalizeStringModifier());
+  T uppercase() => call(UppercaseStringModifier());
+  T lowercase() => call(LowercaseStringModifier());
+  T titleCase() => call(TitleCaseStringModifier());
+  T sentenceCase() => call(SentenceCaseStringModifier());
 }

@@ -16,11 +16,11 @@ void main() {
 
     group('utility properties', () {
       test('has heightToFirstAscent utility', () {
-        expect(util.heightToFirstAscent, isA<MixUtility>());
+        expect(util.heightToFirstAscent, isA<Function>());
       });
 
       test('has heightToLastDescent utility', () {
-        expect(util.heightToLastDescent, isA<MixUtility>());
+        expect(util.heightToLastDescent, isA<Function>());
       });
 
       test('has leadingDistribution utility', () {

@@ -7,23 +7,27 @@ Future<void> testOverrideModifiersOrder(
   required Widget Function(Style, List<Type>) widgetBuilder,
 }) async {
   final style = Style.box(
-    modifierConfig: ModifierConfig(
-      modifiers: [
-        VisibilityModifierAttribute(visible: true),
-        OpacityModifierAttribute(opacity: 1.0),
-        TransformModifierAttribute(),
-        AspectRatioModifierAttribute(aspectRatio: 2.0),
-        AlignModifierAttribute(alignment: Alignment.center),
-        PaddingModifierAttribute(padding: EdgeInsetsDirectionalMix(top: 10.0)),
-      ],
+    BoxMix(
+      widgetDecoratorConfig: WidgetDecoratorConfig(
+        decorators: [
+          VisibilityWidgetDecoratorMix(visible: true),
+          OpacityWidgetDecoratorMix(opacity: 1.0),
+          TransformWidgetDecoratorMix(),
+          AspectRatioWidgetDecoratorMix(aspectRatio: 2.0),
+          AlignWidgetDecoratorMix(alignment: Alignment.center),
+          PaddingWidgetDecoratorMix(
+            padding: EdgeInsetsDirectionalMix(top: 10.0),
+          ),
+        ],
+      ),
     ),
   );
   const orderOfModifiersOnlySpecs = [
-    AlignModifier,
-    AspectRatioModifier,
-    TransformModifier,
-    OpacityModifier,
-    VisibilityModifier,
+    AlignWidgetDecorator,
+    AspectRatioWidgetDecorator,
+    TransformWidgetDecorator,
+    OpacityWidgetDecorator,
+    VisibilityWidgetDecorator,
   ];
 
   // JUST SPECS
@@ -36,11 +40,11 @@ Future<void> testOverrideModifiersOrder(
 
   // SPECS + ATTRIBUTES
   const orderOfModifiersSpecsAndAttributes = [
-    AlignModifier,
-    AspectRatioModifierAttribute,
-    TransformModifierAttribute,
-    OpacityModifier,
-    VisibilityModifierAttribute,
+    AlignWidgetDecorator,
+    AspectRatioWidgetDecoratorMix,
+    TransformWidgetDecoratorMix,
+    OpacityWidgetDecorator,
+    VisibilityWidgetDecoratorMix,
   ];
   await verifyDescendants(
     widgetBuilder(style, orderOfModifiersSpecsAndAttributes),
@@ -51,11 +55,11 @@ Future<void> testOverrideModifiersOrder(
 
   // JUST ATTRIBUTES
   const orderOfModifiersOnlyAttributes = [
-    AlignModifierAttribute,
-    AspectRatioModifierAttribute,
-    TransformModifierAttribute,
-    OpacityModifierAttribute,
-    VisibilityModifierAttribute,
+    AlignWidgetDecoratorMix,
+    AspectRatioWidgetDecoratorMix,
+    TransformWidgetDecoratorMix,
+    OpacityWidgetDecoratorMix,
+    VisibilityWidgetDecoratorMix,
   ];
 
   await verifyDescendants(

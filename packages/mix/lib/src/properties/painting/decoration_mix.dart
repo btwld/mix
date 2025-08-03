@@ -260,17 +260,16 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
     if (other == null) return this;
 
     return BoxDecorationMix.raw(
-      border: MixHelpers.merge($border, other.$border),
-      borderRadius: MixHelpers.merge($borderRadius, other.$borderRadius),
-      shape: MixHelpers.merge($shape, other.$shape),
-      backgroundBlendMode: MixHelpers.merge(
-        $backgroundBlendMode,
+      border: $border.tryMerge(other.$border),
+      borderRadius: $borderRadius.tryMerge(other.$borderRadius),
+      shape: $shape.tryMerge(other.$shape),
+      backgroundBlendMode: $backgroundBlendMode.tryMerge(
         other.$backgroundBlendMode,
       ),
-      color: MixHelpers.merge($color, other.$color),
-      image: MixHelpers.merge($image, other.$image),
-      gradient: MixHelpers.merge($gradient, other.$gradient),
-      boxShadow: MixHelpers.mergeList($boxShadow, other.$boxShadow),
+      color: $color.tryMerge(other.$color),
+      image: $image.tryMerge(other.$image),
+      gradient: $gradient.tryMerge(other.$gradient),
+      boxShadow: $boxShadow.tryMerge(other.$boxShadow),
     );
   }
 
@@ -345,7 +344,7 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
     return decoration != null ? ShapeDecorationMix.value(decoration) : null;
   }
 
-  List<MixProp<BoxShadow>>? get shadows => $boxShadow;
+  List<MixProp<BoxShadow>>? get $shadows => $boxShadow;
 
   /// Resolves to [ShapeDecoration] using the provided [BuildContext].
   @override
@@ -365,11 +364,11 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
     if (other == null) return this;
 
     return ShapeDecorationMix.raw(
-      shape: MixHelpers.merge($shape, other.$shape),
-      color: MixHelpers.merge($color, other.$color),
-      image: MixHelpers.merge($image, other.$image),
-      gradient: MixHelpers.merge($gradient, other.$gradient),
-      shadows: MixHelpers.mergeList(shadows, other.shadows),
+      shape: $shape.tryMerge(other.$shape),
+      color: $color.tryMerge(other.$color),
+      image: $image.tryMerge(other.$image),
+      gradient: $gradient.tryMerge(other.$gradient),
+      shadows: $boxShadow.tryMerge(other.$boxShadow),
     );
   }
 
@@ -389,7 +388,7 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
   }
 
   @override
-  List<Object?> get props => [$shape, $color, $image, $gradient, shadows];
+  List<Object?> get props => [$shape, $color, $image, $gradient, $shadows];
 
   @override
   ShapeDecoration get defaultValue =>

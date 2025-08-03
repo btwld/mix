@@ -73,7 +73,6 @@ void main() {
       });
     });
 
-
     group('Resolution', () {
       test('resolves to FlexBoxSpec with correct properties', () {
         final attribute = FlexBoxMix(
@@ -242,10 +241,10 @@ void main() {
     group('Modifiers', () {
       test('modifiers can be added to attribute', () {
         final attribute = FlexBoxMix(
-          modifierConfig: ModifierConfig(
-            modifiers: [
-              OpacityModifierAttribute(opacity: 0.5),
-              TransformModifierAttribute(
+          widgetDecoratorConfig: WidgetDecoratorConfig(
+            decorators: [
+              OpacityWidgetDecoratorMix(opacity: 0.5),
+              TransformWidgetDecoratorMix(
                 transform: Matrix4.identity(),
                 alignment: Alignment.center,
               ),
@@ -253,21 +252,21 @@ void main() {
           ),
         );
 
-        expect(attribute.$modifierConfig, isNotNull);
-        expect(attribute.$modifierConfig!.$modifiers!.length, 2);
+        expect(attribute.$widgetDecoratorConfig, isNotNull);
+        expect(attribute.$widgetDecoratorConfig!.$decorators!.length, 2);
       });
 
       test('modifiers are merged correctly', () {
         final first = FlexBoxMix(
-          modifierConfig: ModifierConfig(
-            modifiers: [OpacityModifierAttribute(opacity: 0.5)],
+          widgetDecoratorConfig: WidgetDecoratorConfig(
+            decorators: [OpacityWidgetDecoratorMix(opacity: 0.5)],
           ),
         );
 
         final second = FlexBoxMix(
-          modifierConfig: ModifierConfig(
-            modifiers: [
-              TransformModifierAttribute(transform: Matrix4.identity()),
+          widgetDecoratorConfig: WidgetDecoratorConfig(
+            decorators: [
+              TransformWidgetDecoratorMix(transform: Matrix4.identity()),
             ],
           ),
         );
@@ -275,8 +274,8 @@ void main() {
         final merged = first.merge(second);
 
         // Modifiers are combined when merging
-        expect(merged.$modifierConfig, isNotNull);
-        expect(merged.$modifierConfig!.$modifiers!.length, 2);
+        expect(merged.$widgetDecoratorConfig, isNotNull);
+        expect(merged.$widgetDecoratorConfig!.$decorators!.length, 2);
       });
     });
 
@@ -304,7 +303,7 @@ void main() {
         final variant = ContextVariant('test', (context) => true);
         final withVariants = FlexBoxMix(
           variants: [
-            VariantStyleAttribute(
+            VariantStyle(
               variant,
               FlexBoxMix(
                 box: BoxMix(decoration: BoxDecorationMix(color: Colors.green)),

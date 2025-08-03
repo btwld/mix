@@ -5,8 +5,8 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
-import '../../modifiers/modifier_config.dart';
-import '../../modifiers/modifier_util.dart';
+import '../../decorators/widget_decorator_config.dart';
+import '../../decorators/widget_decorator_util.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'image_spec.dart';
@@ -14,7 +14,7 @@ import 'image_spec.dart';
 class ImageMix extends Style<ImageSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<ImageMix, ImageSpec>,
+        StyleWidgetDecoratorMixin<ImageMix, ImageSpec>,
         StyleVariantMixin<ImageMix, ImageSpec> {
   final Prop<double>? $width;
   final Prop<double>? $height;
@@ -108,7 +108,7 @@ class ImageMix extends Style<ImageSpec>
 
   /// Factory for variant
   factory ImageMix.variant(Variant variant, ImageMix value) {
-    return ImageMix(variants: [VariantStyleAttribute(variant, value)]);
+    return ImageMix(variants: [VariantStyle(variant, value)]);
   }
 
   const ImageMix.raw({
@@ -127,7 +127,7 @@ class ImageMix extends Style<ImageSpec>
     Prop<bool>? isAntiAlias,
     Prop<bool>? matchTextDirection,
     super.animation,
-    super.modifierConfig,
+    super.widgetDecoratorConfig,
     super.variants,
 
     super.inherit,
@@ -162,8 +162,8 @@ class ImageMix extends Style<ImageSpec>
     bool? isAntiAlias,
     bool? matchTextDirection,
     AnimationConfig? animation,
-    ModifierConfig? modifierConfig,
-    List<VariantStyleAttribute<ImageSpec>>? variants,
+    WidgetDecoratorConfig? widgetDecoratorConfig,
+    List<VariantStyle<ImageSpec>>? variants,
     bool? inherit,
   }) : this.raw(
          width: Prop.maybe(width),
@@ -181,7 +181,7 @@ class ImageMix extends Style<ImageSpec>
          isAntiAlias: Prop.maybe(isAntiAlias),
          matchTextDirection: Prop.maybe(matchTextDirection),
          animation: animation,
-         modifierConfig: modifierConfig,
+         widgetDecoratorConfig: widgetDecoratorConfig,
          variants: variants,
          inherit: inherit,
        );
@@ -300,13 +300,13 @@ class ImageMix extends Style<ImageSpec>
   }
 
   @override
-  ImageMix variants(List<VariantStyleAttribute<ImageSpec>> variants) {
+  ImageMix variants(List<VariantStyle<ImageSpec>> variants) {
     return merge(ImageMix(variants: variants));
   }
 
   @override
-  ImageMix modifier(ModifierConfig value) {
-    return merge(ImageMix(modifierConfig: value));
+  ImageMix widgetDecorator(WidgetDecoratorConfig value) {
+    return merge(ImageMix(widgetDecoratorConfig: value));
   }
 
   @override
@@ -334,24 +334,28 @@ class ImageMix extends Style<ImageSpec>
     if (other == null) return this;
 
     return ImageMix.raw(
-      width: MixHelpers.merge($width, other.$width),
-      height: MixHelpers.merge($height, other.$height),
-      color: MixHelpers.merge($color, other.$color),
-      repeat: MixHelpers.merge($repeat, other.$repeat),
-      fit: MixHelpers.merge($fit, other.$fit),
-      alignment: MixHelpers.merge($alignment, other.$alignment),
-      centerSlice: MixHelpers.merge($centerSlice, other.$centerSlice),
-      filterQuality: MixHelpers.merge($filterQuality, other.$filterQuality),
-      colorBlendMode: MixHelpers.merge($colorBlendMode, other.$colorBlendMode),
-      semanticLabel: MixHelpers.merge($semanticLabel, other.$semanticLabel),
-      excludeFromSemantics: MixHelpers.merge($excludeFromSemantics, other.$excludeFromSemantics),
-      gaplessPlayback: MixHelpers.merge($gaplessPlayback, other.$gaplessPlayback),
-      isAntiAlias: MixHelpers.merge($isAntiAlias, other.$isAntiAlias),
-      matchTextDirection: MixHelpers.merge($matchTextDirection, other.$matchTextDirection),
+      width: $width.tryMerge(other.$width),
+      height: $height.tryMerge(other.$height),
+      color: $color.tryMerge(other.$color),
+      repeat: $repeat.tryMerge(other.$repeat),
+      fit: $fit.tryMerge(other.$fit),
+      alignment: $alignment.tryMerge(other.$alignment),
+      centerSlice: $centerSlice.tryMerge(other.$centerSlice),
+      filterQuality: $filterQuality.tryMerge(other.$filterQuality),
+      colorBlendMode: $colorBlendMode.tryMerge(other.$colorBlendMode),
+      semanticLabel: $semanticLabel.tryMerge(other.$semanticLabel),
+      excludeFromSemantics: $excludeFromSemantics.tryMerge(
+        other.$excludeFromSemantics,
+      ),
+      gaplessPlayback: $gaplessPlayback.tryMerge(other.$gaplessPlayback),
+      isAntiAlias: $isAntiAlias.tryMerge(other.$isAntiAlias),
+      matchTextDirection: $matchTextDirection.tryMerge(
+        other.$matchTextDirection,
+      ),
       animation: other.$animation ?? $animation,
-      modifierConfig:
-          $modifierConfig?.merge(other.$modifierConfig) ??
-          other.$modifierConfig,
+      widgetDecoratorConfig: $widgetDecoratorConfig.tryMerge(
+        other.$widgetDecoratorConfig,
+      ),
       variants: mergeVariantLists($variants, other.$variants),
       inherit: other.$inherit ?? $inherit,
     );
@@ -385,22 +389,34 @@ class ImageMix extends Style<ImageSpec>
       DiagnosticsProperty('semanticLabel', $semanticLabel, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('excludeFromSemantics', $excludeFromSemantics, defaultValue: null),
+      DiagnosticsProperty(
+        'excludeFromSemantics',
+        $excludeFromSemantics,
+        defaultValue: null,
+      ),
     );
     properties.add(
-      DiagnosticsProperty('gaplessPlayback', $gaplessPlayback, defaultValue: null),
+      DiagnosticsProperty(
+        'gaplessPlayback',
+        $gaplessPlayback,
+        defaultValue: null,
+      ),
     );
     properties.add(
       DiagnosticsProperty('isAntiAlias', $isAntiAlias, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('matchTextDirection', $matchTextDirection, defaultValue: null),
+      DiagnosticsProperty(
+        'matchTextDirection',
+        $matchTextDirection,
+        defaultValue: null,
+      ),
     );
   }
 
   @override
   ImageMix variant(Variant variant, ImageMix style) {
-    return merge(ImageMix(variants: [VariantStyleAttribute(variant, style)]));
+    return merge(ImageMix(variants: [VariantStyle(variant, style)]));
   }
 
   @override
@@ -420,7 +436,7 @@ class ImageMix extends Style<ImageSpec>
     $isAntiAlias,
     $matchTextDirection,
     $animation,
-    $modifierConfig,
+    $widgetDecoratorConfig,
     $variants,
   ];
 }

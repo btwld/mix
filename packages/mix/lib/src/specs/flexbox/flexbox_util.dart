@@ -4,8 +4,8 @@ import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
 import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
-import '../../modifiers/modifier_config.dart';
-import '../../modifiers/modifier_util.dart';
+import '../../decorators/widget_decorator_config.dart';
+import '../../decorators/widget_decorator_util.dart';
 import '../../properties/layout/constraints_util.dart';
 import '../../properties/layout/edge_insets_geometry_util.dart';
 import '../../properties/painting/decoration_util.dart';
@@ -15,123 +15,126 @@ import '../flex/flex_attribute.dart';
 import 'flexbox_attribute.dart';
 import 'flexbox_spec.dart';
 
-/// Mutable utility class for flexbox styling using composition over inheritance.
+/// Provides mutable utility for flexbox styling with cascade notation support.
 ///
-/// Same API as FlexBoxMix but with mutable internal state
-/// for cascade notation support: `$flexbox..color.red()..width(100)`
+/// Combines box and flex styling capabilities. Supports the same API as [FlexBoxMix]
+/// but maintains mutable internal state enabling fluid styling: `$flexbox..color.red()..width(100)`.
 class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec> {
-  // BOX UTILITIES - Same as BoxSpecUtility but return FlexBoxSpecUtility for cascade
-  @override
-  @protected
-  late final MutableFlexBoxMix value;
-
   late final padding = EdgeInsetsGeometryUtility<FlexBoxMix>(
-    (prop) => value.merge(FlexBoxMix.box(BoxMix(padding: prop))),
+    (prop) => mutable.merge(FlexBoxMix.box(BoxMix(padding: prop))),
   );
 
   late final margin = EdgeInsetsGeometryUtility<FlexBoxMix>(
-    (prop) => value.merge(FlexBoxMix.box(BoxMix(margin: prop))),
+    (prop) => mutable.merge(FlexBoxMix.box(BoxMix(margin: prop))),
   );
 
   late final constraints = BoxConstraintsUtility<FlexBoxMix>(
-    (prop) => value.merge(FlexBoxMix.box(BoxMix(constraints: prop))),
+    (prop) => mutable.merge(FlexBoxMix.box(BoxMix(constraints: prop))),
   );
 
   late final decoration = DecorationUtility<FlexBoxMix>(
-    (prop) => value.merge(FlexBoxMix.box(BoxMix(decoration: prop))),
+    (prop) => mutable.merge(FlexBoxMix.box(BoxMix(decoration: prop))),
   );
 
   late final on = OnContextVariantUtility<FlexBoxSpec, FlexBoxMix>(
-    (v) => value.variants([v]),
+    (v) => mutable.variants([v]),
   );
 
-  late final wrap = ModifierUtility(
-    (prop) => value.modifier(ModifierConfig(modifiers: [prop])),
+  late final wrap = WidgetDecoratorUtility(
+    (prop) =>
+        mutable.widgetDecorator(WidgetDecoratorConfig(decorators: [prop])),
   );
 
-  // FLATTENED ACCESS - Same as BoxSpecUtility but for FlexBox
+  // Box decoration convenience accessors
   late final border = decoration.box.border;
 
   late final borderRadius = decoration.box.borderRadius;
-  late final color = decoration.box.color;
-  late final gradient = decoration.box.gradient;
-  late final shape = decoration.box.shape; // BOX CONVENIENCE SHORTCUTS
-  late final width = constraints.width;
 
+  late final color = decoration.box.color;
+
+  late final gradient = decoration.box.gradient;
+  late final shape = decoration.box.shape;
+
+  // Box constraint convenience accessors
+  late final width = constraints.width;
   late final height = constraints.height;
   late final minWidth = constraints.minWidth;
+
   late final maxWidth = constraints.maxWidth;
   late final minHeight = constraints.minHeight;
-  late final maxHeight = constraints.maxHeight; // BOX PROP UTILITIES
+  late final maxHeight = constraints.maxHeight;
+
+  // Box transformation utilities
   late final transform = MixUtility<FlexBoxMix, Matrix4>(
-    (prop) => value.merge(FlexBoxMix.box(BoxMix(transform: prop))),
+    (prop) => mutable.merge(FlexBoxMix.box(BoxMix(transform: prop))),
   );
-
   late final transformAlignment = MixUtility<FlexBoxMix, AlignmentGeometry>(
-    (prop) => value.merge(FlexBoxMix.box(BoxMix(transformAlignment: prop))),
+    (prop) => mutable.merge(FlexBoxMix.box(BoxMix(transformAlignment: prop))),
   );
-
   late final clipBehavior = MixUtility<FlexBoxMix, Clip>(
-    (prop) => value.merge(FlexBoxMix.box(BoxMix(clipBehavior: prop))),
+    (prop) => mutable.merge(FlexBoxMix.box(BoxMix(clipBehavior: prop))),
   );
 
   late final alignment = MixUtility<FlexBoxMix, AlignmentGeometry>(
-    (prop) => value.merge(FlexBoxMix.box(BoxMix(alignment: prop))),
+    (prop) => mutable.merge(FlexBoxMix.box(BoxMix(alignment: prop))),
   );
 
-  // FLEX UTILITIES
+  // Flex layout utilities
   late final direction = MixUtility<FlexBoxMix, Axis>(
-    (prop) => value.merge(FlexBoxMix.flex(FlexMix(direction: prop))),
+    (prop) => mutable.merge(FlexBoxMix.flex(FlexMix(direction: prop))),
   );
 
   late final mainAxisAlignment = MixUtility<FlexBoxMix, MainAxisAlignment>(
-    (prop) => value.merge(FlexBoxMix.flex(FlexMix(mainAxisAlignment: prop))),
+    (prop) => mutable.merge(FlexBoxMix.flex(FlexMix(mainAxisAlignment: prop))),
   );
 
   late final crossAxisAlignment = MixUtility<FlexBoxMix, CrossAxisAlignment>(
-    (prop) => value.merge(FlexBoxMix.flex(FlexMix(crossAxisAlignment: prop))),
+    (prop) => mutable.merge(FlexBoxMix.flex(FlexMix(crossAxisAlignment: prop))),
   );
 
   late final mainAxisSize = MixUtility<FlexBoxMix, MainAxisSize>(
-    (prop) => value.merge(FlexBoxMix.flex(FlexMix(mainAxisSize: prop))),
+    (prop) => mutable.merge(FlexBoxMix.flex(FlexMix(mainAxisSize: prop))),
   );
 
   late final verticalDirection = MixUtility<FlexBoxMix, VerticalDirection>(
-    (prop) => value.merge(FlexBoxMix.flex(FlexMix(verticalDirection: prop))),
+    (prop) => mutable.merge(FlexBoxMix.flex(FlexMix(verticalDirection: prop))),
   );
 
   late final flexTextDirection = MixUtility<FlexBoxMix, TextDirection>(
-    (prop) => value.merge(FlexBoxMix.flex(FlexMix(textDirection: prop))),
+    (prop) => mutable.merge(FlexBoxMix.flex(FlexMix(textDirection: prop))),
   );
 
   late final textBaseline = MixUtility<FlexBoxMix, TextBaseline>(
-    (prop) => value.merge(FlexBoxMix.flex(FlexMix(textBaseline: prop))),
+    (prop) => mutable.merge(FlexBoxMix.flex(FlexMix(textBaseline: prop))),
   );
 
   late final flexClipBehavior = MixUtility<FlexBoxMix, Clip>(
-    (prop) => value.merge(FlexBoxMix.flex(FlexMix(clipBehavior: prop))),
+    (prop) => mutable.merge(FlexBoxMix.flex(FlexMix(clipBehavior: prop))),
   );
 
+  /// Internal mutable state for accumulating flexbox styling properties.
+  @override
+  @protected
+  late final MutableFlexBoxMix mutable;
+
   FlexBoxSpecUtility([FlexBoxMix? attribute]) {
-    value = MutableFlexBoxMix(attribute ?? const FlexBoxMix());
+    mutable = MutableFlexBoxMix(attribute ?? const FlexBoxMix());
   }
 
-  FlexBoxMix gap(double v) => value.merge(FlexBoxMix.flex(FlexMix(gap: v)));
+  FlexBoxMix gap(double v) => mutable.merge(FlexBoxMix.flex(FlexMix(gap: v)));
 
-  /// Animation
-  FlexBoxMix animate(AnimationConfig animation) => value.animate(animation);
-
-  // StyleAttribute interface implementation
+  /// Applies animation configuration to the flexbox styling.
+  FlexBoxMix animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
   FlexBoxSpecUtility merge(Style<FlexBoxSpec>? other) {
     if (other == null) return this;
-    // IMMUTABLE: Always create new instance (StyleAttribute contract)
+    // Always create new instance (StyleAttribute contract)
     if (other is FlexBoxSpecUtility) {
-      return FlexBoxSpecUtility(value.merge(other.value));
+      return FlexBoxSpecUtility(mutable.merge(other.mutable.value));
     }
     if (other is FlexBoxMix) {
-      return FlexBoxSpecUtility(value.merge(other));
+      return FlexBoxSpecUtility(mutable.merge(other));
     }
 
     throw FlutterError('Unsupported merge type: ${other.runtimeType}');
@@ -139,13 +142,17 @@ class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec> {
 
   @override
   FlexBoxSpec resolve(BuildContext context) {
-    return value.resolve(context);
+    return mutable.resolve(context);
   }
+
+  /// The accumulated [FlexBoxMix] with all applied styling properties.
+  @override
+  FlexBoxMix get value => mutable.value;
 }
 
 class MutableFlexBoxMix extends FlexBoxMix
     with Mutable<FlexBoxSpec, FlexBoxMix> {
-  MutableFlexBoxMix([FlexBoxMix? attribute]) {
-    merge(attribute);
+  MutableFlexBoxMix(FlexBoxMix style) {
+    value = style;
   }
 }

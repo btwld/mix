@@ -1,4 +1,6 @@
 // ignore_for_file: prefer_relative_imports
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -29,38 +31,38 @@ void expectProp<T>(PropBase<T>? prop, dynamic expected) {
 
   // Handle Prop
   if (prop is Prop<T>) {
-    final source = prop.source;
-    if (source == null) {
-      fail('Expected Prop<$T> to have a source, but source was null');
+    final value = prop.$value;
+    final token = prop.$token;
+
+    if (value == null && token == null) {
+      expect(
+        isNull,
+        expected,
+        reason: 'Prop<$T> has no value or token defined',
+      );
+      return;
     }
 
     // Handle token expectations
     if (expected is MixToken<T>) {
-      if (source is TokenPropSource<T>) {
+      if (token != null) {
         expect(
-          source.token,
+          token,
           expected,
           reason: 'Prop<$T> token does not match expected',
         );
       } else {
-        fail('Expected token, but prop source is ${source.runtimeType}');
+        fail('Expected token, but prop has value: $value');
       }
       return;
     }
 
     // Handle direct value expectations
-    if (source is ValuePropSource<T>) {
-      expect(
-        source.value,
-        expected,
-        reason: 'Prop<$T> value does not match expected',
-      );
-    } else {
-      fail(
-        'Expected direct value, but prop source is ${source.runtimeType}. '
-        'Use a token expectation if this prop contains a token.',
-      );
+    if (token != null) {
+      fail('Expected value, but prop has token: $token');
     }
+
+    expect(value, expected, reason: 'Prop<$T> value does not match expected');
     return;
   }
 
@@ -97,14 +99,20 @@ class _ResolvesToMatcher<T> extends Matcher {
   @override
   bool matches(dynamic item, Map matchState) {
     // Check if item implements Resolvable (any type)
-    if (item is! Resolvable) {
-      matchState['error'] = 'Expected Resolvable, but got ${item.runtimeType}';
+    if (item is! Resolvable && item is! PropBase) {
+      matchState['error'] =
+          'Expected Resolvable or PropBase, but got ${item.runtimeType}';
       return false;
     }
 
     try {
       final ctx = context ?? MockBuildContext();
-      final resolved = item.resolve(ctx);
+      dynamic resolved;
+      if (item is PropBase) {
+        resolved = item.resolveProp(ctx);
+      } else {
+        resolved = item.resolve(ctx);
+      }
 
       // Let runtime comparison handle type compatibility
       // This allows Prop<AlignmentGeometry> to work with Alignment expectations
@@ -249,7 +257,7 @@ class MockStyle<T> extends Style<MockSpec<T>> {
   const MockStyle(
     this.value, {
     super.variants,
-    super.modifierConfig,
+    super.widgetDecoratorConfig,
     super.animation,
 
     super.inherit,
@@ -260,7 +268,7 @@ class MockStyle<T> extends Style<MockSpec<T>> {
     if (other == null) return this;
     // For PropBase types (Prop<T> and MixProp<V>), use their merge method
     if (value is PropBase && other.value is PropBase) {
-      final merged = (value as PropBase).merge(other.value as PropBase);
+      final merged = (value as PropBase).mergeProp(other.value as PropBase);
       return MockStyle(merged as T);
     }
     // For other Mixable types
@@ -353,28 +361,28 @@ class MockMix<T> extends Mix<T> {
   String toString() => 'MockMix<$T>($value)';
 }
 
-/// Mock directive for testing
+/// Mock modifier for testing
 ///
-/// A simple directive implementation for testing purposes.
+/// A simple modifier implementation for testing purposes.
 /// By default, applies identity transformation (returns value unchanged).
 /// Can optionally provide a custom transformer function.
 ///
 /// Usage:
 /// ```dart
-/// // Simple directive for testing presence (identity transform)
-/// final directive1 = MockDirective<int>('test');
+/// // Simple modifier for testing presence (identity transform)
+/// final modifier1 = MockModifier<int>('test');
 ///
 /// // With custom transformer
-/// final doubleDirective = MockDirective<int>(
+/// final doubleModifier = MockModifier<int>(
 ///   'double',
 ///   (value) => value * 2,
 /// );
 /// ```
-class MockDirective<T> extends MixDirective<T> {
+class MockModifier<T> extends Modifier<T> {
   final String name;
   final T Function(T)? transformer;
 
-  const MockDirective(this.name, [this.transformer]);
+  const MockModifier(this.name, [this.transformer]);
 
   @override
   T apply(T value) => transformer?.call(value) ?? value;
@@ -385,7 +393,7 @@ class MockDirective<T> extends MixDirective<T> {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is MockDirective<T> &&
+    return other is MockModifier<T> &&
         other.name == name &&
         other.transformer == transformer;
   }
@@ -394,7 +402,7 @@ class MockDirective<T> extends MixDirective<T> {
   int get hashCode => Object.hash(name, transformer);
 
   @override
-  String toString() => 'MockDirective<$T>($name)';
+  String toString() => 'MockModifier<$T>($name)';
 }
 
 // =============================================================================
@@ -425,16 +433,16 @@ extension WidgetTesterExtension on WidgetTester {
 // MOCK CLASSES FOR TESTING
 // =============================================================================
 
-/// Mock directive for testing purposes
+/// Mock modifier for testing purposes
 ///
-/// A simple directive implementation for testing purposes.
+/// A simple modifier implementation for testing purposes.
 /// By default, applies identity transformation (returns value unchanged).
 /// Can optionally provide a custom transformer function.
-class MockMixDirective<T> extends MixDirective<T> {
+class MockMixModifier<T> extends Modifier<T> {
   final String name;
   final T Function(T)? transform;
 
-  const MockMixDirective(this.name, [this.transform]);
+  const MockMixModifier(this.name, [this.transform]);
 
   @override
   String get key => name;
@@ -443,16 +451,24 @@ class MockMixDirective<T> extends MixDirective<T> {
   T apply(T value) => transform?.call(value) ?? value;
 
   @override
-  String toString() => 'MockMixDirective($name)';
+  String toString() => 'MockMixModifier($name)';
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is MockMixDirective<T> &&
+    return other is MockMixModifier<T> &&
         other.name == name &&
         other.transform == transform;
   }
 
   @override
   int get hashCode => Object.hash(name, transform);
+}
+
+final blackPixelBytes = base64Decode(
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
+);
+
+MemoryImage mockImageProvider() {
+  return MemoryImage(blackPixelBytes);
 }

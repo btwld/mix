@@ -44,7 +44,7 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
   ///
   /// The [vertical] border is applied to left and right sides,
   /// while [horizontal] border is applied to top and bottom sides.
-  /// 
+  ///
   /// This matches Flutter's Border.symmetric convention.
   static BorderMix symmetric({
     BorderSideMix? vertical,
@@ -301,10 +301,10 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
     if (other == null) return this;
 
     return BorderMix.raw(
-      top: MixHelpers.merge($top, other.$top),
-      bottom: MixHelpers.merge($bottom, other.$bottom),
-      left: MixHelpers.merge($left, other.$left),
-      right: MixHelpers.merge($right, other.$right),
+      top: $top.tryMerge(other.$top),
+      bottom: $bottom.tryMerge(other.$bottom),
+      left: $left.tryMerge(other.$left),
+      right: $right.tryMerge(other.$right),
     );
   }
 
@@ -469,10 +469,10 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
     if (other == null) return this;
 
     return BorderDirectionalMix.raw(
-      top: MixHelpers.merge($top, other.$top),
-      bottom: MixHelpers.merge($bottom, other.$bottom),
-      start: MixHelpers.merge($start, other.$start),
-      end: MixHelpers.merge($end, other.$end),
+      top: $top.tryMerge(other.$top),
+      bottom: $bottom.tryMerge(other.$bottom),
+      start: $start.tryMerge(other.$start),
+      end: $end.tryMerge(other.$end),
     );
   }
 
@@ -624,10 +624,10 @@ final class BorderSideMix extends Mix<BorderSide>
     if (other == null) return this;
 
     return BorderSideMix.raw(
-      color: MixHelpers.merge($color, other.$color),
-      width: MixHelpers.merge($width, other.$width),
-      style: MixHelpers.merge($style, other.$style),
-      strokeAlign: MixHelpers.merge($strokeAlign, other.$strokeAlign),
+      color: $color.tryMerge(other.$color),
+      width: $width.tryMerge(other.$width),
+      style: $style.tryMerge(other.$style),
+      strokeAlign: $strokeAlign.tryMerge(other.$strokeAlign),
     );
   }
 

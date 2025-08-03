@@ -8,13 +8,13 @@ void main() {
   group('Core Test Matchers', () {
     group('expectProp', () {
       test('matches direct values', () {
-        final colorProp = Prop(Colors.red);
+        final colorProp = Prop.value(Colors.red);
         expectProp(colorProp, Colors.red);
 
-        final doubleProp = Prop(42.0);
+        final doubleProp = Prop.value(42.0);
         expectProp(doubleProp, 42.0);
 
-        final stringProp = Prop('test');
+        final stringProp = Prop.value('test');
         expectProp(stringProp, 'test');
       });
 
@@ -23,8 +23,8 @@ void main() {
         expectProp(edgeInsetsProp, EdgeInsetsMix.all(16.0));
 
         final borderSide = BorderSideMix.raw(
-          color: Prop(Colors.red),
-          width: Prop(2.0),
+          color: Prop.value(Colors.red),
+          width: Prop.value(2.0),
         );
         final borderProp = MixProp(BorderMix.all(borderSide));
         expectProp(borderProp, BorderMix.all(borderSide));
@@ -41,9 +41,9 @@ void main() {
       });
 
       test('matches value from merged props (replacement strategy)', () {
-        final prop1 = Prop(Colors.red);
-        final prop2 = Prop(Colors.blue);
-        final merged = prop1.merge(prop2);
+        final prop1 = Prop.value(Colors.red);
+        final prop2 = Prop.value(Colors.blue);
+        final merged = prop1.mergeProp(prop2);
 
         // Prop uses replacement strategy - second value wins
         expectProp(merged, Colors.blue);
@@ -51,11 +51,11 @@ void main() {
 
       test('matches value from chained merges (replacement strategy)', () {
         const colorToken = MixToken<Color>('primary');
-        final prop1 = Prop<Color>(Colors.red);
-        final prop2 = Prop<Color>.token(colorToken);
-        final prop3 = Prop<Color>(Colors.blue);
+        final prop1 = Prop.value<Color>(Colors.red);
+        final prop2 = Prop.token(colorToken);
+        final prop3 = Prop.value<Color>(Colors.blue);
 
-        final merged = prop1.merge(prop2).merge(prop3);
+        final merged = prop1.mergeProp(prop2).mergeProp(prop3);
 
         // Prop uses replacement strategy - last value wins
         expectProp(merged, Colors.blue);
@@ -79,7 +79,7 @@ void main() {
       });
 
       test('fails when expecting token but prop has value', () {
-        final valueProp = Prop(Colors.red);
+        final valueProp = Prop.value(Colors.red);
         const colorToken = MixToken<Color>('primary');
 
         expect(
@@ -89,7 +89,7 @@ void main() {
       });
 
       test('fails when expecting accumulated but prop has single value', () {
-        final valueProp = Prop(Colors.red);
+        final valueProp = Prop.value(Colors.red);
 
         expect(
           () => expectProp(valueProp, [Colors.red, Colors.blue]),
@@ -100,10 +100,10 @@ void main() {
 
     group('resolvesTo', () {
       test('resolves Prop values', () {
-        final colorProp = Prop(Colors.red);
+        final colorProp = Prop.value(Colors.red);
         expect(colorProp, resolvesTo(Colors.red));
 
-        final doubleProp = Prop(42.0);
+        final doubleProp = Prop.value(42.0);
         expect(doubleProp, resolvesTo(42.0));
       });
 
@@ -116,7 +116,7 @@ void main() {
       });
 
       test('resolves attributes', () {
-        final attribute = OpacityModifierAttribute(opacity: 0.5);
+        final attribute = OpacityWidgetDecoratorMix(opacity: 0.5);
         final resolved = attribute.resolve(MockBuildContext());
 
         expect(resolved.opacity, 0.5);
@@ -139,9 +139,9 @@ void main() {
       });
 
       test('resolves merged props', () {
-        final prop1 = Prop(100.0);
-        final prop2 = Prop(200.0);
-        final merged = prop1.merge(prop2);
+        final prop1 = Prop.value(100.0);
+        final prop2 = Prop.value(200.0);
+        final merged = prop1.mergeProp(prop2);
 
         // For non-Mix types, last value wins
         expect(merged, resolvesTo(200.0));
@@ -155,8 +155,8 @@ void main() {
           BoxShadowMix(color: Colors.blue, spreadRadius: 4.0),
         );
 
-        final merged = shadow1.merge(shadow2);
-        final resolved = merged.resolve(MockBuildContext());
+        final merged = shadow1.mergeProp(shadow2);
+        final resolved = merged.resolveProp(MockBuildContext());
 
         // MixProp types accumulate properties
         expect(resolved.color, Colors.blue);
@@ -169,7 +169,7 @@ void main() {
       });
 
       test('fails when resolved value does not match expected', () {
-        final prop = Prop(Colors.red);
+        final prop = Prop.value(Colors.red);
 
         expect(prop, isNot(resolvesTo(Colors.blue)));
       });
@@ -199,12 +199,12 @@ void main() {
 
     group('UtilityTestAttribute', () {
       test('wraps Prop values', () {
-        final attr = MockStyle(Prop(Colors.red));
+        final attr = MockStyle(Prop.value<Color>(Colors.red));
         expect(attr.value, isA<Prop<Color>>());
       });
 
       test('resolves to MockSpec', () {
-        final attr = MockStyle(Prop(Colors.blue));
+        final attr = MockStyle(Prop.value<Color>(Colors.blue));
         final resolved = attr.resolve(MockBuildContext());
 
         expect(resolved, isA<MockSpec>());
@@ -212,13 +212,13 @@ void main() {
       });
 
       test('merges Prop values correctly', () {
-        final first = MockStyle(Prop(Colors.red));
-        final second = MockStyle(Prop(Colors.blue));
+        final first = MockStyle(Prop.value<Color>(Colors.red));
+        final second = MockStyle(Prop.value<Color>(Colors.blue));
 
         final merged = first.merge(second);
 
         // The merged attribute should contain a merged Prop (replacement strategy)
-        expectProp(merged.value as Prop<Color>, Colors.blue);
+        expectProp(merged.value, Colors.blue);
       });
     });
   });

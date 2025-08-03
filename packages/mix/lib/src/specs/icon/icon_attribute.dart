@@ -5,8 +5,8 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
-import '../../modifiers/modifier_config.dart';
-import '../../modifiers/modifier_util.dart';
+import '../../decorators/widget_decorator_config.dart';
+import '../../decorators/widget_decorator_util.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
@@ -15,7 +15,7 @@ import 'icon_spec.dart';
 class IconMix extends Style<IconSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<IconMix, IconSpec>,
+        StyleWidgetDecoratorMixin<IconMix, IconSpec>,
         StyleVariantMixin<IconMix, IconSpec> {
   final Prop<Color>? $color;
   final Prop<double>? $size;
@@ -84,7 +84,7 @@ class IconMix extends Style<IconSpec>
 
   /// Factory for variant
   factory IconMix.variant(Variant variant, IconMix value) {
-    return IconMix(variants: [VariantStyleAttribute(variant, value)]);
+    return IconMix(variants: [VariantStyle(variant, value)]);
   }
 
   const IconMix.raw({
@@ -98,7 +98,7 @@ class IconMix extends Style<IconSpec>
     Prop<bool>? applyTextScaling,
     Prop<double>? fill,
     super.animation,
-    super.modifierConfig,
+    super.widgetDecoratorConfig,
     super.variants,
 
     super.inherit,
@@ -123,8 +123,8 @@ class IconMix extends Style<IconSpec>
     bool? applyTextScaling,
     double? fill,
     AnimationConfig? animation,
-    ModifierConfig? modifierConfig,
-    List<VariantStyleAttribute<IconSpec>>? variants,
+    WidgetDecoratorConfig? widgetDecoratorConfig,
+    List<VariantStyle<IconSpec>>? variants,
     bool? inherit,
   }) : this.raw(
          color: Prop.maybe(color),
@@ -137,7 +137,7 @@ class IconMix extends Style<IconSpec>
          applyTextScaling: Prop.maybe(applyTextScaling),
          fill: Prop.maybe(fill),
          animation: animation,
-         modifierConfig: modifierConfig,
+         widgetDecoratorConfig: widgetDecoratorConfig,
          variants: variants,
          inherit: inherit,
        );
@@ -225,8 +225,8 @@ class IconMix extends Style<IconSpec>
   }
 
   @override
-  IconMix modifier(ModifierConfig value) {
-    return merge(IconMix(modifierConfig: value));
+  IconMix widgetDecorator(WidgetDecoratorConfig value) {
+    return merge(IconMix(widgetDecoratorConfig: value));
   }
 
   @override
@@ -249,22 +249,19 @@ class IconMix extends Style<IconSpec>
     if (other == null) return this;
 
     return IconMix.raw(
-      color: MixHelpers.merge($color, other.$color),
-      size: MixHelpers.merge($size, other.$size),
-      weight: MixHelpers.merge($weight, other.$weight),
-      grade: MixHelpers.merge($grade, other.$grade),
-      opticalSize: MixHelpers.merge($opticalSize, other.$opticalSize),
-      shadows: MixHelpers.mergeList($shadows, other.$shadows),
-      textDirection: MixHelpers.merge($textDirection, other.$textDirection),
-      applyTextScaling: MixHelpers.merge(
-        $applyTextScaling,
-        other.$applyTextScaling,
-      ),
-      fill: MixHelpers.merge($fill, other.$fill),
+      color: $color.tryMerge(other.$color),
+      size: $size.tryMerge(other.$size),
+      weight: $weight.tryMerge(other.$weight),
+      grade: $grade.tryMerge(other.$grade),
+      opticalSize: $opticalSize.tryMerge(other.$opticalSize),
+      shadows: $shadows.tryMerge(other.$shadows),
+      textDirection: $textDirection.tryMerge(other.$textDirection),
+      applyTextScaling: $applyTextScaling.tryMerge(other.$applyTextScaling),
+      fill: $fill.tryMerge(other.$fill),
       animation: other.$animation ?? $animation,
-      modifierConfig:
-          $modifierConfig?.merge(other.$modifierConfig) ??
-          other.$modifierConfig,
+      widgetDecoratorConfig: $widgetDecoratorConfig.tryMerge(
+        other.$widgetDecoratorConfig,
+      ),
       variants: mergeVariantLists($variants, other.$variants),
 
       inherit: other.$inherit ?? $inherit,
@@ -299,11 +296,11 @@ class IconMix extends Style<IconSpec>
 
   @override
   IconMix variant(Variant variant, IconMix style) {
-    return merge(IconMix(variants: [VariantStyleAttribute(variant, style)]));
+    return merge(IconMix(variants: [VariantStyle(variant, style)]));
   }
 
   @override
-  IconMix variants(List<VariantStyleAttribute<IconSpec>> value) {
+  IconMix variants(List<VariantStyle<IconSpec>> value) {
     return merge(IconMix(variants: value));
   }
 
@@ -319,7 +316,7 @@ class IconMix extends Style<IconSpec>
     $applyTextScaling,
     $fill,
     $animation,
-    $modifierConfig,
+    $widgetDecoratorConfig,
     $variants,
   ];
 }

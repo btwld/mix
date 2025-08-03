@@ -187,7 +187,7 @@ final class DecorationImageMix extends Mix<DecorationImage>
       centerSlice: MixHelpers.resolve(context, $centerSlice),
       repeat: MixHelpers.resolve(context, $repeat) ?? ImageRepeat.noRepeat,
       filterQuality:
-          MixHelpers.resolve(context, $filterQuality) ?? FilterQuality.low,
+          MixHelpers.resolve(context, $filterQuality) ?? FilterQuality.medium,
       invertColors: MixHelpers.resolve(context, $invertColors) ?? false,
       isAntiAlias: MixHelpers.resolve(context, $isAntiAlias) ?? false,
     );
@@ -206,14 +206,14 @@ final class DecorationImageMix extends Mix<DecorationImage>
     if (other == null) return this;
 
     return DecorationImageMix.raw(
-      image: MixHelpers.merge($image, other.$image),
-      fit: MixHelpers.merge($fit, other.$fit),
-      alignment: MixHelpers.merge($alignment, other.$alignment),
-      centerSlice: MixHelpers.merge($centerSlice, other.$centerSlice),
-      repeat: MixHelpers.merge($repeat, other.$repeat),
-      filterQuality: MixHelpers.merge($filterQuality, other.$filterQuality),
-      invertColors: MixHelpers.merge($invertColors, other.$invertColors),
-      isAntiAlias: MixHelpers.merge($isAntiAlias, other.$isAntiAlias),
+      image: $image.tryMerge(other.$image),
+      fit: $fit.tryMerge(other.$fit),
+      alignment: $alignment.tryMerge(other.$alignment),
+      centerSlice: $centerSlice.tryMerge(other.$centerSlice),
+      repeat: $repeat.tryMerge(other.$repeat),
+      filterQuality: $filterQuality.tryMerge(other.$filterQuality),
+      invertColors: $invertColors.tryMerge(other.$invertColors),
+      isAntiAlias: $isAntiAlias.tryMerge(other.$isAntiAlias),
     );
   }
 

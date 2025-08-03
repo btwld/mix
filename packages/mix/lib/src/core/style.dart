@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 
 import '../animation/animation_config.dart';
-import '../modifiers/modifier_config.dart';
+import '../decorators/widget_decorator_config.dart';
 import '../specs/box/box_attribute.dart';
 import '../specs/flex/flex_attribute.dart';
 import '../specs/flexbox/flexbox_attribute.dart';
@@ -14,8 +14,8 @@ import '../variants/variant.dart';
 import 'internal/compare_mixin.dart';
 import 'internal/constants.dart';
 import 'mix_element.dart';
-import 'modifier.dart';
 import 'spec.dart';
+import 'widget_decorator.dart';
 
 /// This is used just to pass all the values into one place if needed
 @internal
@@ -29,31 +29,31 @@ sealed class StyleElement {
 abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
     with Equatable, Resolvable<S>
     implements StyleElement {
-  final List<VariantStyleAttribute<S>>? $variants;
+  final List<VariantStyle<S>>? $variants;
 
-  final ModifierConfig? $modifierConfig;
+  final WidgetDecoratorConfig? $widgetDecoratorConfig;
   final AnimationConfig? $animation;
 
   final bool? $inherit;
 
-  static final box = BoxMix.new;
-  static final icon = IconMix.new;
-  static final text = TextMix.new;
-  static final flexbox = FlexBoxMix.new;
-  static final stack = StackMix.new;
-  static final stackBox = StackBoxMix.new;
-  static final flex = FlexMix.new;
-
   const Style({
-    required List<VariantStyleAttribute<S>>? variants,
-    required ModifierConfig? modifierConfig,
+    required List<VariantStyle<S>>? variants,
+    required WidgetDecoratorConfig? widgetDecoratorConfig,
     required AnimationConfig? animation,
-
     required bool? inherit,
-  }) : $modifierConfig = modifierConfig,
+  }) : $widgetDecoratorConfig = widgetDecoratorConfig,
        $animation = animation,
        $variants = variants,
        $inherit = inherit;
+
+  static IconMix icon(IconMix value) => value;
+  static TextMix text(TextMix value) => value;
+  static FlexBoxMix flexbox(FlexBoxMix value) => value;
+  static StackMix stack(StackMix value) => value;
+  static StackBoxMix stackBox(StackBoxMix value) => value;
+  static FlexMix flex(FlexMix value) => value;
+
+  static BoxMix box(BoxMix value) => value;
 
   @internal
   Set<WidgetState> get widgetStates {
@@ -64,22 +64,20 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
   }
 
   @protected
-  List<ModifierAttribute>? mergeModifierLists(
-    List<ModifierAttribute>? current,
-    List<ModifierAttribute>? other,
+  List<WidgetDecoratorMix>? mergeModifierLists(
+    List<WidgetDecoratorMix>? current,
+    List<WidgetDecoratorMix>? other,
   ) {
     if (current == null && other == null) return null;
     if (current == null) return List.of(other!);
     if (other == null) return List.of(current);
 
-    final Map<Object, ModifierAttribute> merged = {};
+    final Map<Object, WidgetDecoratorMix> merged = {};
 
-    // Add current modifiers
     for (final modifier in current) {
       merged[modifier.mergeKey] = modifier;
     }
 
-    // Merge or add other modifiers
     for (final modifier in other) {
       final key = modifier.mergeKey;
       final existing = merged[key];
@@ -129,22 +127,20 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
   }
 
   @protected
-  List<VariantStyleAttribute<S>>? mergeVariantLists(
-    List<VariantStyleAttribute<S>>? current,
-    List<VariantStyleAttribute<S>>? other,
+  List<VariantStyle<S>>? mergeVariantLists(
+    List<VariantStyle<S>>? current,
+    List<VariantStyle<S>>? other,
   ) {
     if (current == null && other == null) return null;
-    if (current == null) return List<VariantStyleAttribute<S>>.of(other!);
-    if (other == null) return List<VariantStyleAttribute<S>>.of(current);
+    if (current == null) return List<VariantStyle<S>>.of(other!);
+    if (other == null) return List<VariantStyle<S>>.of(current);
 
-    final Map<Object, VariantStyleAttribute<S>> merged = {};
+    final Map<Object, VariantStyle<S>> merged = {};
 
-    // Add current variants
     for (final variant in current) {
       merged[variant.mergeKey] = variant;
     }
 
-    // Merge or add other variants
     for (final variant in other) {
       final key = variant.mergeKey;
       final existing = merged[key];
@@ -177,7 +173,9 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
 
     final resolvedSpec = styleData.resolve(context);
     final resolvedAnimation = styleData.$animation;
-    final resolvedModifiers = styleData.$modifierConfig?.resolve(context);
+    final resolvedModifiers = styleData.$widgetDecoratorConfig?.resolve(
+      context,
+    );
 
     return ResolvedStyle(
       spec: resolvedSpec,
@@ -188,12 +186,12 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
   }
 }
 
-abstract class ModifierAttribute<S extends Modifier<S>> extends Mix<S>
+abstract class WidgetDecoratorMix<S extends WidgetDecorator<S>> extends Mix<S>
     implements StyleElement {
-  const ModifierAttribute();
+  const WidgetDecoratorMix();
 
   @override
-  ModifierAttribute<S> merge(covariant ModifierAttribute<S>? other);
+  WidgetDecoratorMix<S> merge(covariant WidgetDecoratorMix<S>? other);
 
   @override
   S resolve(BuildContext context);
@@ -203,20 +201,20 @@ abstract class ModifierAttribute<S extends Modifier<S>> extends Mix<S>
 }
 
 /// Variant wrapper for conditional styling
-final class VariantStyleAttribute<S extends Spec<S>> extends Mixable<S>
+final class VariantStyle<S extends Spec<S>> extends Mixable<S>
     with Equatable
     implements StyleElement {
   final Variant variant;
   final Style<S> _style;
 
-  const VariantStyleAttribute(this.variant, Style<S> style) : _style = style;
+  const VariantStyle(this.variant, Style<S> style) : _style = style;
 
   Style<S> get value => _style;
 
   bool matches(Iterable<Variant> otherVariants) =>
       otherVariants.contains(variant);
 
-  VariantStyleAttribute<S>? removeVariants(Iterable<Variant> variantsToRemove) {
+  VariantStyle<S>? removeVariants(Iterable<Variant> variantsToRemove) {
     if (!variantsToRemove.contains(variant)) {
       return this;
     }
@@ -225,10 +223,10 @@ final class VariantStyleAttribute<S extends Spec<S>> extends Mixable<S>
   }
 
   @override
-  VariantStyleAttribute<S> merge(covariant VariantStyleAttribute<S>? other) {
+  VariantStyle<S> merge(covariant VariantStyle<S>? other) {
     if (other == null || other.variant != variant) return this;
 
-    return VariantStyleAttribute(variant, _style.merge(other._style));
+    return VariantStyle(variant, _style.merge(other._style));
   }
 
   @override
@@ -243,7 +241,7 @@ final class VariantStyleAttribute<S extends Spec<S>> extends Mixable<S>
 class ResolvedStyle<V extends Spec<V>> with Equatable {
   final V? spec;
   final AnimationConfig? animation;
-  final List<Modifier>? modifiers;
+  final List<WidgetDecorator>? modifiers;
   final List<Type>? orderOfModifiers;
   final bool? inherit;
 
@@ -282,7 +280,7 @@ class CompoundStyle extends Style<MultiSpec> {
   CompoundStyle._({
     required List<Style> attributes,
     super.animation,
-    super.modifierConfig,
+    super.widgetDecoratorConfig,
     super.variants,
 
     super.inherit,
@@ -346,18 +344,18 @@ class CompoundStyle extends Style<MultiSpec> {
   /// ```
   factory CompoundStyle.create(Iterable<StyleElement> elements) {
     final styleList = <Style>[];
-    final modifierList = <ModifierAttribute>[];
-    final variants = <VariantStyleAttribute>[];
+    final modifierList = <WidgetDecoratorMix>[];
+    final variants = <VariantStyle>[];
 
     AnimationConfig? animationConfig;
 
     for (final element in elements) {
       switch (element) {
-        case VariantStyleAttribute():
+        case VariantStyle():
           variants.add(element);
           break;
 
-        case ModifierAttribute():
+        case WidgetDecoratorMix():
           modifierList.add(element);
         case Style():
           // Handle MultiMix by merging it later
@@ -371,9 +369,9 @@ class CompoundStyle extends Style<MultiSpec> {
     CompoundStyle result = CompoundStyle._(
       attributes: styleList,
       animation: animationConfig,
-      modifierConfig: modifierList.isEmpty
+      widgetDecoratorConfig: modifierList.isEmpty
           ? null
-          : ModifierConfig(modifiers: modifierList),
+          : WidgetDecoratorConfig(decorators: modifierList),
       variants: null,
     );
 
@@ -392,11 +390,14 @@ class CompoundStyle extends Style<MultiSpec> {
     : this._(
         attributes: [],
         animation: null,
-        modifierConfig: null,
+        widgetDecoratorConfig: null,
         variants: null,
       );
 
-  ModifierConfig? _mergeModifierConfigs(ModifierConfig? a, ModifierConfig? b) {
+  WidgetDecoratorConfig? _mergeModifierConfigs(
+    WidgetDecoratorConfig? a,
+    WidgetDecoratorConfig? b,
+  ) {
     if (a == null) return b;
     if (b == null) return a;
 
@@ -413,7 +414,7 @@ class CompoundStyle extends Style<MultiSpec> {
         duration: duration ?? kDefaultAnimationDuration,
         curve: curve ?? Curves.linear,
       ),
-      modifierConfig: $modifierConfig,
+      widgetDecoratorConfig: $widgetDecoratorConfig,
       variants: $variants,
     );
   }
@@ -456,9 +457,9 @@ class CompoundStyle extends Style<MultiSpec> {
     return CompoundStyle._(
       attributes: mergedAttributes,
       animation: other.$animation ?? $animation,
-      modifierConfig: _mergeModifierConfigs(
-        $modifierConfig,
-        other.$modifierConfig,
+      widgetDecoratorConfig: _mergeModifierConfigs(
+        $widgetDecoratorConfig,
+        other.$widgetDecoratorConfig,
       ),
       variants: mergeVariantLists($variants, other.$variants),
     );

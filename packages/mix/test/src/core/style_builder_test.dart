@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
-import 'package:mix/src/modifiers/internal/render_modifier.dart';
+import 'package:mix/src/decorators/internal/render_decorator.dart';
 
 void main() {
   group('StyleBuilder', () {
@@ -46,7 +46,7 @@ void main() {
         );
         final boxAttribute = BoxMix(
           constraints: BoxConstraintsMix().width(100).height(200),
-          decoration: BoxDecorationMix.color(Colors.blue),
+          decoration: DecorationMix.color(Colors.blue),
           animation: animation,
         );
 
@@ -187,12 +187,12 @@ void main() {
             .height(100)
             .alignment(Alignment.center)
             .wrap(
-              ModifierConfig.modifiers([
-                OpacityModifierAttribute(opacity: 0.5),
-                PaddingModifierAttribute(
+              WidgetDecoratorConfig.decorators([
+                OpacityWidgetDecoratorMix(opacity: 0.5),
+                PaddingWidgetDecoratorMix(
                   padding: EdgeInsetsGeometryMix.all(10),
                 ),
-                ClipOvalModifierAttribute(),
+                ClipOvalWidgetDecoratorMix(),
               ]),
             );
 
@@ -237,13 +237,13 @@ void main() {
             .height(100)
             .color(Colors.blue)
             .wrap(
-              ModifierConfig.modifiers([
-                OpacityModifierAttribute(opacity: 0.5),
-                PaddingModifierAttribute(
+              WidgetDecoratorConfig.decorators([
+                OpacityWidgetDecoratorMix(opacity: 0.5),
+                PaddingWidgetDecoratorMix(
                   padding: EdgeInsetsGeometryMix.all(10),
                 ),
-                ClipOvalModifierAttribute(),
-                VisibilityModifierAttribute(visible: true),
+                ClipOvalWidgetDecoratorMix(),
+                VisibilityWidgetDecoratorMix(visible: true),
               ]),
             );
 
@@ -303,22 +303,22 @@ void main() {
 
       testWidgets('Custom modifier order is respected', (tester) async {
         const customOrder = [
-          OpacityModifier,
-          ClipOvalModifier,
-          PaddingModifier,
+          OpacityWidgetDecorator,
+          ClipOvalWidgetDecorator,
+          PaddingWidgetDecorator,
         ];
-        
+
         final boxAttribute = BoxMix.width(100)
             .height(100)
             .color(Colors.blue)
             .wrap(
-              ModifierConfig.modifiers([
-                OpacityModifierAttribute(opacity: 0.5),
-                PaddingModifierAttribute(
+              WidgetDecoratorConfig.decorators([
+                OpacityWidgetDecoratorMix(opacity: 0.5),
+                PaddingWidgetDecoratorMix(
                   padding: EdgeInsetsGeometryMix.all(10),
                 ),
-                ClipOvalModifierAttribute(),
-              ]).orderOfModifiers(customOrder),
+                ClipOvalWidgetDecoratorMix(),
+              ]).orderOfDecorators(customOrder),
             );
 
         await tester.pumpWidget(

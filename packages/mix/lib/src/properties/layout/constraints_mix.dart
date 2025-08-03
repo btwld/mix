@@ -206,10 +206,10 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
     if (other == null) return this;
 
     return BoxConstraintsMix.raw(
-      minWidth: MixHelpers.merge($minWidth, other.$minWidth),
-      maxWidth: MixHelpers.merge($maxWidth, other.$maxWidth),
-      minHeight: MixHelpers.merge($minHeight, other.$minHeight),
-      maxHeight: MixHelpers.merge($maxHeight, other.$maxHeight),
+      minWidth: $minWidth.tryMerge(other.$minWidth),
+      maxWidth: $maxWidth.tryMerge(other.$maxWidth),
+      minHeight: $minHeight.tryMerge(other.$minHeight),
+      maxHeight: $maxHeight.tryMerge(other.$maxHeight),
     );
   }
 

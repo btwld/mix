@@ -1,8 +1,9 @@
+import 'package:example/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
 void main() {
-  runApp(const MyApp());
+  runMixApp(MyApp());
 }
 
 final primaryColor = MixToken<Color>('primary');
@@ -30,11 +31,12 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = Style.box()
+    final style = Style.box(
         .borderRadius(BorderRadiusMix.raw(topLeft: Prop.token(pill)))
         .color(Colors.red)
         .height(100)
-        .width(100);
+        .width(100)
+    );
 
     return Box(style: style);
   }

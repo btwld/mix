@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
+import 'package:mix/src/core/internal/color_values.dart';
 
 import '../../../helpers/testing_utils.dart';
 
@@ -11,7 +12,7 @@ void main() {
         final boxMix = BoxMix.color(Colors.red);
 
         expect(boxMix.$decoration, isNotNull);
-        final decoration = boxMix.$decoration!.resolve(MockBuildContext());
+        final decoration = boxMix.$decoration!.resolveProp(MockBuildContext());
         expect(decoration, isA<BoxDecoration>());
         expect((decoration as BoxDecoration).color, Colors.red);
       });
@@ -33,7 +34,9 @@ void main() {
         final boxMix = BoxMix.height(100.0);
 
         expect(boxMix.$constraints, isNotNull);
-        final constraints = boxMix.$constraints!.resolve(MockBuildContext());
+        final constraints = boxMix.$constraints!.resolveProp(
+          MockBuildContext(),
+        );
         expect(constraints.minHeight, 100.0);
         expect(constraints.maxHeight, 100.0);
       });
@@ -42,7 +45,9 @@ void main() {
         final boxMix = BoxMix.width(200.0);
 
         expect(boxMix.$constraints, isNotNull);
-        final constraints = boxMix.$constraints!.resolve(MockBuildContext());
+        final constraints = boxMix.$constraints!.resolveProp(
+          MockBuildContext(),
+        );
         expect(constraints.minWidth, 200.0);
         expect(constraints.maxWidth, 200.0);
       });
@@ -58,7 +63,9 @@ void main() {
         final boxMix = BoxMix.minWidth(150.0);
 
         expect(boxMix.$constraints, isNotNull);
-        final constraints = boxMix.$constraints!.resolve(MockBuildContext());
+        final constraints = boxMix.$constraints!.resolveProp(
+          MockBuildContext(),
+        );
         expect(constraints.minWidth, 150.0);
       });
 
@@ -66,7 +73,9 @@ void main() {
         final boxMix = BoxMix.maxWidth(300.0);
 
         expect(boxMix.$constraints, isNotNull);
-        final constraints = boxMix.$constraints!.resolve(MockBuildContext());
+        final constraints = boxMix.$constraints!.resolveProp(
+          MockBuildContext(),
+        );
         expect(constraints.maxWidth, 300.0);
       });
 
@@ -182,18 +191,20 @@ void main() {
 
     group('Instance Methods', () {
       test('color method sets decoration color', () {
-        final boxMix = BoxMix().color(Colors.purple);
+        final boxMix = BoxMix().color(ColorValues.purple);
 
         expect(boxMix.$decoration, isNotNull);
-        final decoration = boxMix.$decoration!.resolve(MockBuildContext());
-        expect((decoration as BoxDecoration).color, Colors.purple);
+        final decoration = boxMix.$decoration!.resolveProp(MockBuildContext());
+        expect((decoration as BoxDecoration).color, ColorValues.purple);
       });
 
       test('width method sets fixed width constraints', () {
         final boxMix = BoxMix().width(250.0);
 
         expect(boxMix.$constraints, isNotNull);
-        final constraints = boxMix.$constraints!.resolve(MockBuildContext());
+        final constraints = boxMix.$constraints!.resolveProp(
+          MockBuildContext(),
+        );
         expect(constraints.minWidth, 250.0);
         expect(constraints.maxWidth, 250.0);
       });
@@ -202,7 +213,9 @@ void main() {
         final boxMix = BoxMix().height(150.0);
 
         expect(boxMix.$constraints, isNotNull);
-        final constraints = boxMix.$constraints!.resolve(MockBuildContext());
+        final constraints = boxMix.$constraints!.resolveProp(
+          MockBuildContext(),
+        );
         expect(constraints.minHeight, 150.0);
         expect(constraints.maxHeight, 150.0);
       });
@@ -211,7 +224,7 @@ void main() {
         final boxMix = BoxMix().rotate(1.5);
 
         expect(boxMix.$transform, isNotNull);
-        final transform = boxMix.$transform!.value;
+        final transform = boxMix.$transform!.$value;
         expect(transform, isA<Matrix4>());
       });
 
@@ -219,7 +232,7 @@ void main() {
         final boxMix = BoxMix().scale(2.0);
 
         expect(boxMix.$transform, isNotNull);
-        final transform = boxMix.$transform!.value;
+        final transform = boxMix.$transform!.$value;
         expect(transform, isA<Matrix4>());
       });
 
@@ -227,7 +240,7 @@ void main() {
         final boxMix = BoxMix().translate(10.0, 20.0, 5.0);
 
         expect(boxMix.$transform, isNotNull);
-        final transform = boxMix.$transform!.value;
+        final transform = boxMix.$transform!.$value;
         expect(transform, isA<Matrix4>());
       });
 
@@ -235,7 +248,7 @@ void main() {
         final boxMix = BoxMix().skew(0.1, 0.2);
 
         expect(boxMix.$transform, isNotNull);
-        final transform = boxMix.$transform!.value;
+        final transform = boxMix.$transform!.$value;
         expect(transform, isA<Matrix4>());
       });
 
@@ -243,7 +256,7 @@ void main() {
         final boxMix = BoxMix().transformReset();
 
         expect(boxMix.$transform, isNotNull);
-        final transform = boxMix.$transform!.value;
+        final transform = boxMix.$transform!.$value;
         expect(transform, Matrix4.identity());
       });
 
@@ -251,7 +264,9 @@ void main() {
         final boxMix = BoxMix().size(100.0, 200.0);
 
         expect(boxMix.$constraints, isNotNull);
-        final constraints = boxMix.$constraints!.resolve(MockBuildContext());
+        final constraints = boxMix.$constraints!.resolveProp(
+          MockBuildContext(),
+        );
         expect(constraints.minWidth, 100.0);
         expect(constraints.maxWidth, 100.0);
         expect(constraints.minHeight, 200.0);
@@ -374,11 +389,11 @@ void main() {
 
       test('variants method sets multiple variants', () {
         final variants = [
-          VariantStyleAttribute(
+          VariantStyle(
             ContextVariant.brightness(Brightness.dark),
             BoxMix.color(Colors.white),
           ),
-          VariantStyleAttribute(
+          VariantStyle(
             ContextVariant.brightness(Brightness.light),
             BoxMix.color(Colors.black),
           ),
@@ -390,19 +405,19 @@ void main() {
       });
     });
 
-    group('Modifier Methods', () {
-      test('modifier method sets modifier config', () {
-        final modifier = ModifierConfig();
-        final boxMix = BoxMix().modifier(modifier);
+    group('Decorator Methods', () {
+      test('decorator method sets decorator config', () {
+        final modifier = WidgetDecoratorConfig();
+        final boxMix = BoxMix().widgetDecorator(modifier);
 
-        expect(boxMix.$modifierConfig, modifier);
+        expect(boxMix.$widgetDecoratorConfig, modifier);
       });
 
       test('wrap method sets modifier config', () {
-        final modifier = ModifierConfig();
+        final modifier = WidgetDecoratorConfig();
         final boxMix = BoxMix().wrap(modifier);
 
-        expect(boxMix.$modifierConfig, modifier);
+        expect(boxMix.$widgetDecoratorConfig, modifier);
       });
     });
   });

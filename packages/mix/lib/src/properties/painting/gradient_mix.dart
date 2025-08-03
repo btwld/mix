@@ -67,9 +67,9 @@ sealed class GradientMix<T extends Gradient> extends Mix<T>
   @protected
   Map<String, dynamic> mergeCommonProperties(GradientMix other) {
     return {
-      'transform': MixHelpers.merge($transform, other.$transform),
-      'colors': MixHelpers.mergeList($colors, other.$colors),
-      'stops': MixHelpers.mergeList($stops, other.$stops),
+      'transform': $transform.tryMerge(other.$transform),
+      'colors': $colors.tryMerge(other.$colors),
+      'stops': $stops.tryMerge(other.$stops),
     };
   }
 
@@ -96,8 +96,8 @@ final class LinearGradientMix extends GradientMix<LinearGradient> {
          end: Prop.maybe(end),
          tileMode: Prop.maybe(tileMode),
          transform: Prop.maybe(transform),
-         colors: colors?.map((c) => Prop(c)).toList(),
-         stops: stops?.map(Prop.new).toList(),
+         colors: colors?.map((c) => Prop.value(c)).toList(),
+         stops: stops?.map(Prop.value).toList(),
        );
 
   const LinearGradientMix.raw({
@@ -195,7 +195,7 @@ final class LinearGradientMix extends GradientMix<LinearGradient> {
       begin: MixHelpers.resolve(context, $begin) ?? defaultValue.begin,
       end: MixHelpers.resolve(context, $end) ?? defaultValue.end,
       colors:
-          $colors?.map((c) => c.resolve(context)).toList() ??
+          $colors?.map((c) => c.resolveProp(context)).toList() ??
           defaultValue.colors,
       stops: MixHelpers.resolveList(context, $stops) ?? defaultValue.stops,
       tileMode: MixHelpers.resolve(context, $tileMode) ?? defaultValue.tileMode,
@@ -211,9 +211,9 @@ final class LinearGradientMix extends GradientMix<LinearGradient> {
     final commonProps = mergeCommonProperties(other);
 
     return LinearGradientMix.raw(
-      begin: MixHelpers.merge($begin, other.$begin),
-      end: MixHelpers.merge($end, other.$end),
-      tileMode: MixHelpers.merge($tileMode, other.$tileMode),
+      begin: $begin.tryMerge(other.$begin),
+      end: $end.tryMerge(other.$end),
+      tileMode: $tileMode.tryMerge(other.$tileMode),
       transform: commonProps['transform'],
       colors: commonProps['colors'],
       stops: commonProps['stops'],
@@ -258,8 +258,8 @@ final class RadialGradientMix extends GradientMix<RadialGradient> {
          focal: Prop.maybe(focal),
          focalRadius: Prop.maybe(focalRadius),
          transform: Prop.maybe(transform),
-         colors: colors?.map((c) => Prop(c)).toList(),
-         stops: stops?.map(Prop.new).toList(),
+         colors: colors?.map((c) => Prop.value(c)).toList(),
+         stops: stops?.map(Prop.value).toList(),
        );
 
   const RadialGradientMix.raw({
@@ -383,7 +383,7 @@ final class RadialGradientMix extends GradientMix<RadialGradient> {
       center: MixHelpers.resolve(context, $center) ?? defaultValue.center,
       radius: MixHelpers.resolve(context, $radius) ?? defaultValue.radius,
       colors:
-          $colors?.map((c) => c.resolve(context)).toList() ??
+          $colors?.map((c) => c.resolveProp(context)).toList() ??
           defaultValue.colors,
       stops: MixHelpers.resolveList(context, $stops) ?? defaultValue.stops,
       tileMode: MixHelpers.resolve(context, $tileMode) ?? defaultValue.tileMode,
@@ -402,11 +402,11 @@ final class RadialGradientMix extends GradientMix<RadialGradient> {
     final commonProps = mergeCommonProperties(other);
 
     return RadialGradientMix.raw(
-      center: MixHelpers.merge($center, other.$center),
-      radius: MixHelpers.merge($radius, other.$radius),
-      tileMode: MixHelpers.merge($tileMode, other.$tileMode),
-      focal: MixHelpers.merge($focal, other.$focal),
-      focalRadius: MixHelpers.merge($focalRadius, other.$focalRadius),
+      center: $center.tryMerge(other.$center),
+      radius: $radius.tryMerge(other.$radius),
+      tileMode: $tileMode.tryMerge(other.$tileMode),
+      focal: $focal.tryMerge(other.$focal),
+      focalRadius: $focalRadius.tryMerge(other.$focalRadius),
       transform: commonProps['transform'],
       colors: commonProps['colors'],
       stops: commonProps['stops'],
@@ -451,8 +451,8 @@ final class SweepGradientMix extends GradientMix<SweepGradient> {
          endAngle: Prop.maybe(endAngle),
          tileMode: Prop.maybe(tileMode),
          transform: Prop.maybe(transform),
-         colors: colors?.map((c) => Prop(c)).toList(),
-         stops: stops?.map(Prop.new).toList(),
+         colors: colors?.map((c) => Prop.value(c)).toList(),
+         stops: stops?.map(Prop.value).toList(),
        );
 
   const SweepGradientMix.raw({
@@ -565,7 +565,7 @@ final class SweepGradientMix extends GradientMix<SweepGradient> {
           MixHelpers.resolve(context, $startAngle) ?? defaultValue.startAngle,
       endAngle: MixHelpers.resolve(context, $endAngle) ?? defaultValue.endAngle,
       colors:
-          $colors?.map((c) => c.resolve(context)).toList() ??
+          $colors?.map((c) => c.resolveProp(context)).toList() ??
           defaultValue.colors,
       stops: MixHelpers.resolveList(context, $stops) ?? defaultValue.stops,
       tileMode: MixHelpers.resolve(context, $tileMode) ?? defaultValue.tileMode,
@@ -581,10 +581,10 @@ final class SweepGradientMix extends GradientMix<SweepGradient> {
     final commonProps = mergeCommonProperties(other);
 
     return SweepGradientMix.raw(
-      center: MixHelpers.merge($center, other.$center),
-      startAngle: MixHelpers.merge($startAngle, other.$startAngle),
-      endAngle: MixHelpers.merge($endAngle, other.$endAngle),
-      tileMode: MixHelpers.merge($tileMode, other.$tileMode),
+      center: $center.tryMerge(other.$center),
+      startAngle: $startAngle.tryMerge(other.$startAngle),
+      endAngle: $endAngle.tryMerge(other.$endAngle),
+      tileMode: $tileMode.tryMerge(other.$tileMode),
       transform: commonProps['transform'],
       colors: commonProps['colors'],
       stops: commonProps['stops'],

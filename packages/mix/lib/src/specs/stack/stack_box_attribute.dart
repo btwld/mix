@@ -2,8 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../animation/animation_config.dart';
+import '../../core/helpers.dart';
 import '../../core/style.dart';
-import '../../modifiers/modifier_config.dart';
+import '../../decorators/widget_decorator_config.dart';
 import '../../variants/variant.dart';
 import '../box/box_attribute.dart';
 import 'stack_attribute.dart';
@@ -23,7 +24,7 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
   const StackBoxMix({
     this.box,
     this.stack,
-    super.modifierConfig,
+    super.widgetDecoratorConfig,
     super.animation,
     super.variants,
 
@@ -47,7 +48,7 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
 
   /// Factory for variant
   factory StackBoxMix.variant(Variant variant, StackBoxMix value) {
-    return StackBoxMix(variants: [VariantStyleAttribute(variant, value)]);
+    return StackBoxMix(variants: [VariantStyle(variant, value)]);
   }
 
   /// Constructor that accepts a [ZBoxSpec] value and extracts its properties.
@@ -92,11 +93,11 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
     return merge(StackBoxMix.animate(animation));
   }
 
-  StackBoxMix modifier(ModifierConfig value) {
-    return merge(StackBoxMix(modifierConfig: value));
+  StackBoxMix modifier(WidgetDecoratorConfig value) {
+    return merge(StackBoxMix(widgetDecoratorConfig: value));
   }
 
-  StackBoxMix variants(List<VariantStyleAttribute<ZBoxSpec>> variants) {
+  StackBoxMix variants(List<VariantStyle<ZBoxSpec>> variants) {
     return merge(StackBoxMix(variants: variants));
   }
 
@@ -128,9 +129,9 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
     return StackBoxMix(
       box: box?.merge(other.box) ?? other.box,
       stack: stack?.merge(other.stack) ?? other.stack,
-      modifierConfig:
-          $modifierConfig?.merge(other.$modifierConfig) ??
-          other.$modifierConfig,
+      widgetDecoratorConfig: $widgetDecoratorConfig.tryMerge(
+        other.$widgetDecoratorConfig,
+      ),
       animation: other.$animation ?? $animation,
       variants: mergeVariantLists($variants, other.$variants),
 
@@ -172,14 +173,14 @@ class StackBoxSpecUtility {
   StackBoxMix only({
     BoxMix? box,
     StackMix? stack,
-    ModifierConfig? modifierConfig,
+    WidgetDecoratorConfig? widgetDecoratorConfig,
     AnimationConfig? animation,
-    List<VariantStyleAttribute<ZBoxSpec>>? variants,
+    List<VariantStyle<ZBoxSpec>>? variants,
   }) {
     return StackBoxMix(
       box: box,
       stack: stack,
-      modifierConfig: modifierConfig,
+      widgetDecoratorConfig: widgetDecoratorConfig,
       animation: animation,
       variants: variants,
     );

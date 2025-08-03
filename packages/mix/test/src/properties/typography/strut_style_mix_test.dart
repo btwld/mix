@@ -255,11 +255,10 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.$fontFamilyFallback, hasLength(4));
-        expectProp(merged.$fontFamilyFallback![0], 'Arial');
-        expectProp(merged.$fontFamilyFallback![1], 'Helvetica');
-        expectProp(merged.$fontFamilyFallback![2], 'Times');
-        expectProp(merged.$fontFamilyFallback![3], 'Georgia');
+        expect(merged.$fontFamilyFallback, hasLength(2));
+
+        expectProp(merged.$fontFamilyFallback![0], 'Times');
+        expectProp(merged.$fontFamilyFallback![1], 'Georgia');
       });
 
       test('preserves all properties in complex merge', () {
@@ -280,9 +279,8 @@ void main() {
         expectProp(merged.$fontFamily, 'Roboto'); // preserved
         expectProp(merged.$fontSize, 16.0); // overridden
         expectProp(merged.$fontWeight, FontWeight.bold); // added
-        expect(merged.$fontFamilyFallback, hasLength(2)); // concatenated
-        expectProp(merged.$fontFamilyFallback![0], 'Arial');
-        expectProp(merged.$fontFamilyFallback![1], 'Times');
+        expect(merged.$fontFamilyFallback, hasLength(1)); // concatenated
+        expectProp(merged.$fontFamilyFallback![0], 'Times');
       });
     });
 

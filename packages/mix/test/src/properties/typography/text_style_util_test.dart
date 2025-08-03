@@ -32,7 +32,7 @@ void main() {
       });
 
       test('has fontSize utility', () {
-        expect(util.fontSize, isA<MixUtility>());
+        expect(util.fontSize, isA<Function>());
       });
 
       test('has backgroundColor utility', () {
@@ -52,7 +52,11 @@ void main() {
       });
 
       test('has fontFamily utility', () {
-        expect(util.fontFamily, isA<MixUtility>());
+        expect(util.fontFamily, isA<Function>());
+      });
+
+      test('has inherit utility', () {
+        expect(util.inherit, isA<Function>());
       });
     });
 
@@ -144,6 +148,14 @@ void main() {
         final textStyle = result.value.value!.resolve(MockBuildContext());
 
         expect(textStyle, const TextStyle(fontFamily: 'Roboto'));
+      });
+
+      test('inherit sets inherit property', () {
+        final result = util.inherit(false);
+
+        final textStyle = result.value.value!.resolve(MockBuildContext());
+
+        expect(textStyle, const TextStyle(inherit: false));
       });
     });
 
@@ -270,12 +282,16 @@ void main() {
       });
 
       test('background sets background paint', () {
-        final paint = Paint()..color = const Color(0xFF2196F3);
+        const expectedColor = Color(0xFF2196F3);
+        final paint = Paint()..color = expectedColor;
         final result = util.background(paint);
 
         final textStyle = result.value.value!.resolve(MockBuildContext());
 
-        expect(textStyle.background?.color, const Color(0xFF2196F3));
+        expect(
+          textStyle.background?.color.toARGB32(),
+          expectedColor.toARGB32(),
+        );
       });
     });
 
@@ -296,6 +312,7 @@ void main() {
           decorationStyle: TextDecorationStyle.solid,
           decorationThickness: 1.5,
           textBaseline: TextBaseline.alphabetic,
+          inherit: false,
         );
 
         final textStyle = result.value.value!.resolve(MockBuildContext());
@@ -317,6 +334,7 @@ void main() {
             decorationStyle: TextDecorationStyle.solid,
             decorationThickness: 1.5,
             textBaseline: TextBaseline.alphabetic,
+            inherit: false,
           ),
         );
       });
@@ -374,8 +392,8 @@ void main() {
       });
 
       test('sets paint properties', () {
-        final foregroundPaint = Paint()..color = const Color(0xFFFF0000);
-        final backgroundPaint = Paint()..color = const Color(0xFF2196F3);
+        final foregroundPaint = Paint()..color = Colors.red;
+        final backgroundPaint = Paint()..color = Colors.blue;
 
         final result = util(
           foreground: foregroundPaint,
@@ -384,8 +402,8 @@ void main() {
 
         final textStyle = result.value.value!.resolve(MockBuildContext());
 
-        expect(textStyle.foreground?.color, const Color(0xFFFF0000));
-        expect(textStyle.background?.color, const Color(0xFF2196F3));
+        expect(textStyle.foreground?.color, foregroundPaint.color);
+        expect(textStyle.background?.color, backgroundPaint.color);
       });
     });
 
@@ -416,6 +434,7 @@ void main() {
           fontFeatures: fontFeatures,
           fontVariations: fontVariations,
           debugLabel: 'call-test',
+          inherit: false,
         );
 
         final textStyle = result.value.value!.resolve(MockBuildContext());
@@ -441,6 +460,7 @@ void main() {
             fontFeatures: fontFeatures,
             fontVariations: fontVariations,
             debugLabel: 'call-test',
+            inherit: false,
           ),
         );
       });
@@ -501,6 +521,7 @@ void main() {
           fontFeatures: fontFeatures,
           fontVariations: fontVariations,
           debugLabel: 'as-test',
+          inherit: false,
         );
 
         final result = util.as(textStyle);
@@ -525,6 +546,7 @@ void main() {
         expect(resolved.fontFeatures, textStyle.fontFeatures);
         expect(resolved.fontVariations, textStyle.fontVariations);
         expect(resolved.debugLabel, textStyle.debugLabel);
+        expect(resolved.inherit, textStyle.inherit);
       });
 
       test('accepts minimal TextStyle', () {
@@ -536,8 +558,8 @@ void main() {
       });
 
       test('accepts TextStyle with paint properties', () {
-        final foregroundPaint = Paint()..color = const Color(0xFFFF0000);
-        final backgroundPaint = Paint()..color = const Color(0xFF2196F3);
+        final foregroundPaint = Paint()..color = Colors.red;
+        final backgroundPaint = Paint()..color = Colors.blue;
 
         final textStyle = TextStyle(
           foreground: foregroundPaint,
@@ -547,8 +569,8 @@ void main() {
         final result = util.as(textStyle);
         final resolved = result.value.value!.resolve(MockBuildContext());
 
-        expect(resolved.foreground?.color, const Color(0xFFFF0000));
-        expect(resolved.background?.color, const Color(0xFF2196F3));
+        expect(resolved.foreground?.color, foregroundPaint.color);
+        expect(resolved.background?.color, backgroundPaint.color);
       });
     });
 
@@ -645,11 +667,11 @@ void main() {
     });
 
     group('color utility integration', () {
-      test('color utility supports directives', () {
+      test('color utility supports modifiers', () {
         final result = util.color.withOpacity(0.8);
 
         expect(result.value, isA<MixProp<TextStyle>>());
-        // Color directives should be applied during resolution
+        // Color modifiers should be applied during resolution
       });
 
       test('color utility supports material colors', () {
@@ -660,7 +682,7 @@ void main() {
         expect(textStyle.color, Colors.red);
       });
 
-      test('backgroundColor utility supports directives', () {
+      test('backgroundColor utility supports modifiers', () {
         final result = util.backgroundColor.withAlpha(128);
 
         expect(result.value, isA<MixProp<TextStyle>>());

@@ -1,8 +1,9 @@
+import 'package:example/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
 void main() {
-  runApp(const MyApp());
+  runMixApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
@@ -12,8 +13,9 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-final kdefaultFlexStyle = Style.flexbox().flex(
-  FlexMix.mainAxisSize(MainAxisSize.min).gap(8),
+final kdefaultFlexStyle = Style.flexbox(
+  .mainAxisSize(MainAxisSize.min)
+  .gap(8)
 );
 
 class _MyAppState extends State<MyApp> {
@@ -21,11 +23,10 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final flexboxStyle = kdefaultFlexStyle.box(
-      BoxMix.color(Colors.grey.shade100)
-          .padding(EdgeInsetsMix.symmetric(horizontal: 12, vertical: 4))
-          .borderRadius(BorderRadiusMix.circular(10)),
-    );
+    final flexboxStyle = kdefaultFlexStyle
+        .color(Colors.grey.shade100)
+        .padding(EdgeInsetsMix.symmetric(horizontal: 12, vertical: 4))
+        .borderRadius(BorderRadiusMix.circular(10));
 
     return MaterialApp(
       home: MediaQuery(
@@ -71,7 +72,7 @@ class Example extends StatelessWidget {
     final style = BoxMix()
         .height(100)
         .width(100)
-        .borderRadius(BorderRadiusMix.all(Radius.circular(10)))
+        .borderRadius(BorderRadiusMix.circular(10))
         .onDark(BoxMix.color(Colors.white));
 
     return FlexBox(

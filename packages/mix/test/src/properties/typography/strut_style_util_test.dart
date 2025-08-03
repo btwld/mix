@@ -24,11 +24,11 @@ void main() {
       });
 
       test('has fontSize utility', () {
-        expect(util.fontSize, isA<MixUtility>());
+        expect(util.fontSize, isA<Function>());
       });
 
       test('has fontFamily utility', () {
-        expect(util.fontFamily, isA<MixUtility>());
+        expect(util.fontFamily, isA<Function>());
       });
     });
 
@@ -545,12 +545,7 @@ void main() {
         final merged = style1.merge(style2);
         final resolved = merged.resolve(MockBuildContext());
 
-        expect(resolved.fontFamilyFallback, [
-          'Arial',
-          'Helvetica',
-          'Times',
-          'serif',
-        ]);
+        expect(resolved.fontFamilyFallback, ['Times', 'serif']);
       });
     });
 

@@ -325,10 +325,10 @@ final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
     if (other == null) return this;
 
     return BorderRadiusMix.raw(
-      topLeft: MixHelpers.merge($topLeft, other.$topLeft),
-      topRight: MixHelpers.merge($topRight, other.$topRight),
-      bottomLeft: MixHelpers.merge($bottomLeft, other.$bottomLeft),
-      bottomRight: MixHelpers.merge($bottomRight, other.$bottomRight),
+      topLeft: $topLeft.tryMerge(other.$topLeft),
+      topRight: $topRight.tryMerge(other.$topRight),
+      bottomLeft: $bottomLeft.tryMerge(other.$bottomLeft),
+      bottomRight: $bottomRight.tryMerge(other.$bottomRight),
     );
   }
 
@@ -475,10 +475,10 @@ final class BorderRadiusDirectionalMix
     if (other == null) return this;
 
     return BorderRadiusDirectionalMix.raw(
-      topStart: MixHelpers.merge($topStart, other.$topStart),
-      topEnd: MixHelpers.merge($topEnd, other.$topEnd),
-      bottomStart: MixHelpers.merge($bottomStart, other.$bottomStart),
-      bottomEnd: MixHelpers.merge($bottomEnd, other.$bottomEnd),
+      topStart: $topStart.tryMerge(other.$topStart),
+      topEnd: $topEnd.tryMerge(other.$topEnd),
+      bottomStart: $bottomStart.tryMerge(other.$bottomStart),
+      bottomEnd: $bottomEnd.tryMerge(other.$bottomEnd),
     );
   }
 

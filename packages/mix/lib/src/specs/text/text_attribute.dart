@@ -2,12 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../animation/animation_config.dart';
-import '../../core/directive.dart';
 import '../../core/helpers.dart';
+import '../../core/modifier.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
-import '../../modifiers/modifier_config.dart';
-import '../../modifiers/modifier_util.dart';
+import '../../decorators/widget_decorator_config.dart';
+import '../../decorators/widget_decorator_util.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../properties/typography/strut_style_mix.dart';
 import '../../properties/typography/text_height_behavior_mix.dart';
@@ -26,7 +26,7 @@ import 'text_spec.dart';
 class TextMix extends Style<TextSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<TextMix, TextSpec>,
+        StyleWidgetDecoratorMixin<TextMix, TextSpec>,
         StyleVariantMixin<TextMix, TextSpec> {
   final Prop<TextOverflow>? $overflow;
   final MixProp<StrutStyle>? $strutStyle;
@@ -38,7 +38,7 @@ class TextMix extends Style<TextSpec>
   final MixProp<TextHeightBehavior>? $textHeightBehavior;
   final Prop<TextDirection>? $textDirection;
   final Prop<bool>? $softWrap;
-  final List<MixDirective<String>>? $directives;
+  final List<Modifier<String>>? $textModifiers;
   final Prop<Color>? $selectionColor;
   final Prop<String>? $semanticsLabel;
   final Prop<Locale>? $locale;
@@ -193,34 +193,34 @@ class TextMix extends Style<TextSpec>
     return TextMix(softWrap: value);
   }
 
-  /// Factory for text directive
-  factory TextMix.directive(MixDirective<String> value) {
-    return TextMix(directives: [value]);
+  /// Factory for text modifier
+  factory TextMix.textModifiers(Modifier<String> value) {
+    return TextMix(textModifiers: [value]);
   }
 
-  /// Factory for uppercase directive
+  /// Factory for uppercase modifier
   factory TextMix.uppercase() {
-    return TextMix.directive(const UppercaseStringDirective());
+    return TextMix.textModifiers(const UppercaseStringModifier());
   }
 
-  /// Factory for lowercase directive
+  /// Factory for lowercase modifier
   factory TextMix.lowercase() {
-    return TextMix.directive(const LowercaseStringDirective());
+    return TextMix.textModifiers(const LowercaseStringModifier());
   }
 
-  /// Factory for capitalize directive
+  /// Factory for capitalize modifier
   factory TextMix.capitalize() {
-    return TextMix.directive(const CapitalizeStringDirective());
+    return TextMix.textModifiers(const CapitalizeStringModifier());
   }
 
-  /// Factory for title case directive
+  /// Factory for title case modifier
   factory TextMix.titleCase() {
-    return TextMix.directive(const TitleCaseStringDirective());
+    return TextMix.textModifiers(const TitleCaseStringModifier());
   }
 
-  /// Factory for sentence case directive
+  /// Factory for sentence case modifier
   factory TextMix.sentenceCase() {
-    return TextMix.directive(const SentenceCaseStringDirective());
+    return TextMix.textModifiers(const SentenceCaseStringModifier());
   }
 
   /// Factory for selection color
@@ -250,11 +250,11 @@ class TextMix extends Style<TextSpec>
 
   /// Factory for variant
   factory TextMix.variant(Variant variant, TextMix value) {
-    return TextMix(variants: [VariantStyleAttribute(variant, value)]);
+    return TextMix(variants: [VariantStyle(variant, value)]);
   }
 
-  factory TextMix.contentModifier(MixDirective<String> value) {
-    return TextMix(directives: [value]);
+  factory TextMix.textModifier(Modifier<String> value) {
+    return TextMix(textModifiers: [value]);
   }
 
   const TextMix.raw({
@@ -268,12 +268,12 @@ class TextMix extends Style<TextSpec>
     MixProp<TextHeightBehavior>? textHeightBehavior,
     Prop<TextDirection>? textDirection,
     Prop<bool>? softWrap,
-    List<MixDirective<String>>? directives,
+    List<Modifier<String>>? textModifiers,
     Prop<Color>? selectionColor,
     Prop<String>? semanticsLabel,
     Prop<Locale>? locale,
     super.animation,
-    super.modifierConfig,
+    super.widgetDecoratorConfig,
     super.variants,
 
     super.inherit,
@@ -287,7 +287,7 @@ class TextMix extends Style<TextSpec>
        $textHeightBehavior = textHeightBehavior,
        $textDirection = textDirection,
        $softWrap = softWrap,
-       $directives = directives,
+       $textModifiers = textModifiers,
        $selectionColor = selectionColor,
        $semanticsLabel = semanticsLabel,
        $locale = locale;
@@ -303,13 +303,13 @@ class TextMix extends Style<TextSpec>
     TextHeightBehaviorMix? textHeightBehavior,
     TextDirection? textDirection,
     bool? softWrap,
-    List<MixDirective<String>>? directives,
+    List<Modifier<String>>? textModifiers,
     Color? selectionColor,
     String? semanticsLabel,
     Locale? locale,
     AnimationConfig? animation,
-    ModifierConfig? modifierConfig,
-    List<VariantStyleAttribute<TextSpec>>? variants,
+    WidgetDecoratorConfig? widgetDecoratorConfig,
+    List<VariantStyle<TextSpec>>? variants,
     bool? inherit,
   }) : this.raw(
          overflow: Prop.maybe(overflow),
@@ -322,12 +322,12 @@ class TextMix extends Style<TextSpec>
          textHeightBehavior: MixProp.maybe(textHeightBehavior),
          textDirection: Prop.maybe(textDirection),
          softWrap: Prop.maybe(softWrap),
-         directives: directives,
+         textModifiers: textModifiers,
          selectionColor: Prop.maybe(selectionColor),
          semanticsLabel: Prop.maybe(semanticsLabel),
          locale: Prop.maybe(locale),
          animation: animation,
-         modifierConfig: modifierConfig,
+         widgetDecoratorConfig: widgetDecoratorConfig,
          variants: variants,
          inherit: inherit,
        );
@@ -354,7 +354,7 @@ class TextMix extends Style<TextSpec>
         ),
         textDirection: spec.textDirection,
         softWrap: spec.softWrap,
-        directives: spec.directives,
+        textModifiers: spec.textModifiers,
         selectionColor: spec.selectionColor,
         semanticsLabel: spec.semanticsLabel,
         locale: spec.locale,
@@ -372,8 +372,8 @@ class TextMix extends Style<TextSpec>
     return spec != null ? TextMix.value(spec) : null;
   }
 
-  TextMix contentModifier(MixDirective<String> value) {
-    return merge(TextMix.directive(value));
+  TextMix textModifier(Modifier<String> value) {
+    return merge(TextMix.textModifiers(value));
   }
 
   /// Sets text overflow behavior
@@ -426,9 +426,9 @@ class TextMix extends Style<TextSpec>
     return merge(TextMix.softWrap(value));
   }
 
-  /// Adds a text directive
-  TextMix directive(MixDirective<String> value) {
-    return merge(TextMix.directive(value));
+  /// Adds a text modifier
+  TextMix modifier(Modifier<String> value) {
+    return merge(TextMix.textModifiers(value));
   }
 
   /// Sets text color
@@ -551,27 +551,27 @@ class TextMix extends Style<TextSpec>
     return merge(TextMix.fontFamilyFallback(value));
   }
 
-  /// Applies uppercase directive
+  /// Applies uppercase modifier
   TextMix uppercase() {
     return merge(TextMix.uppercase());
   }
 
-  /// Applies lowercase directive
+  /// Applies lowercase modifier
   TextMix lowercase() {
     return merge(TextMix.lowercase());
   }
 
-  /// Applies capitalize directive
+  /// Applies capitalize modifier
   TextMix capitalize() {
     return merge(TextMix.capitalize());
   }
 
-  /// Applies title case directive
+  /// Applies title case modifier
   TextMix titleCase() {
     return merge(TextMix.titleCase());
   }
 
-  /// Applies sentence case directive
+  /// Applies sentence case modifier
   TextMix sentenceCase() {
     return merge(TextMix.sentenceCase());
   }
@@ -582,13 +582,13 @@ class TextMix extends Style<TextSpec>
   }
 
   @override
-  TextMix variants(List<VariantStyleAttribute<TextSpec>> variants) {
+  TextMix variants(List<VariantStyle<TextSpec>> variants) {
     return merge(TextMix(variants: variants));
   }
 
   @override
-  TextMix modifier(ModifierConfig value) {
-    return merge(TextMix(modifierConfig: value));
+  TextMix widgetDecorator(WidgetDecoratorConfig value) {
+    return merge(TextMix(widgetDecoratorConfig: value));
   }
 
   /// Resolves to [TextSpec] using the provided [BuildContext].
@@ -612,7 +612,7 @@ class TextMix extends Style<TextSpec>
       textHeightBehavior: MixHelpers.resolve(context, $textHeightBehavior),
       textDirection: MixHelpers.resolve(context, $textDirection),
       softWrap: MixHelpers.resolve(context, $softWrap),
-      directives: $directives,
+      textModifiers: $textModifiers,
       selectionColor: MixHelpers.resolve(context, $selectionColor),
       semanticsLabel: MixHelpers.resolve(context, $semanticsLabel),
       locale: MixHelpers.resolve(context, $locale),
@@ -632,31 +632,26 @@ class TextMix extends Style<TextSpec>
     if (other == null) return this;
 
     return TextMix.raw(
-      overflow: MixHelpers.merge($overflow, other.$overflow),
-      strutStyle: MixHelpers.merge($strutStyle, other.$strutStyle),
-      textAlign: MixHelpers.merge($textAlign, other.$textAlign),
-      textScaler: MixHelpers.merge($textScaler, other.$textScaler),
-      maxLines: MixHelpers.merge($maxLines, other.$maxLines),
-      style: MixHelpers.merge($style, other.$style),
-      textWidthBasis: MixHelpers.merge($textWidthBasis, other.$textWidthBasis),
-      textHeightBehavior: MixHelpers.merge(
-        $textHeightBehavior,
+      overflow: $overflow.tryMerge(other.$overflow),
+      strutStyle: $strutStyle.tryMerge(other.$strutStyle),
+      textAlign: $textAlign.tryMerge(other.$textAlign),
+      textScaler: $textScaler.tryMerge(other.$textScaler),
+      maxLines: $maxLines.tryMerge(other.$maxLines),
+      style: $style.tryMerge(other.$style),
+      textWidthBasis: $textWidthBasis.tryMerge(other.$textWidthBasis),
+      textHeightBehavior: $textHeightBehavior.tryMerge(
         other.$textHeightBehavior,
       ),
-      textDirection: MixHelpers.merge($textDirection, other.$textDirection),
-      softWrap: MixHelpers.merge($softWrap, other.$softWrap),
-      directives: MixHelpers.mergeList(
-        $directives,
-        other.$directives,
-        strategy: ListMergeStrategy.append,
-      ),
-      selectionColor: MixHelpers.merge($selectionColor, other.$selectionColor),
-      semanticsLabel: MixHelpers.merge($semanticsLabel, other.$semanticsLabel),
-      locale: MixHelpers.merge($locale, other.$locale),
+      textDirection: $textDirection.tryMerge(other.$textDirection),
+      softWrap: $softWrap.tryMerge(other.$softWrap),
+      textModifiers: $textModifiers.tryMerge(other.$textModifiers),
+      selectionColor: $selectionColor.tryMerge(other.$selectionColor),
+      semanticsLabel: $semanticsLabel.tryMerge(other.$semanticsLabel),
+      locale: $locale.tryMerge(other.$locale),
       animation: other.$animation ?? $animation,
-      modifierConfig:
-          $modifierConfig?.merge(other.$modifierConfig) ??
-          other.$modifierConfig,
+      widgetDecoratorConfig: $widgetDecoratorConfig.tryMerge(
+        other.$widgetDecoratorConfig,
+      ),
       variants: mergeVariantLists($variants, other.$variants),
       inherit: other.$inherit ?? $inherit,
     );
@@ -702,26 +697,29 @@ class TextMix extends Style<TextSpec>
       DiagnosticsProperty('softWrap', $softWrap, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('directive', $directives, defaultValue: null),
+      DiagnosticsProperty(
+        'selectionColor',
+        $selectionColor,
+        defaultValue: null,
+      ),
     );
     properties.add(
-      DiagnosticsProperty('selectionColor', $selectionColor, defaultValue: null),
+      DiagnosticsProperty(
+        'semanticsLabel',
+        $semanticsLabel,
+        defaultValue: null,
+      ),
     );
-    properties.add(
-      DiagnosticsProperty('semanticsLabel', $semanticsLabel, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('locale', $locale, defaultValue: null),
-    );
+    properties.add(DiagnosticsProperty('locale', $locale, defaultValue: null));
 
     properties.add(
-      DiagnosticsProperty('directives', $directives, defaultValue: null),
+      DiagnosticsProperty('modifiers', $textModifiers, defaultValue: null),
     );
   }
 
   @override
   TextMix variant(Variant variant, TextMix style) {
-    return merge(TextMix(variants: [VariantStyleAttribute(variant, style)]));
+    return merge(TextMix(variants: [VariantStyle(variant, style)]));
   }
 
   /// This property is used by the [==] operator and the [hashCode] getter to
@@ -738,12 +736,12 @@ class TextMix extends Style<TextSpec>
     $textHeightBehavior,
     $textDirection,
     $softWrap,
-    $directives,
+    $textModifiers,
     $selectionColor,
     $semanticsLabel,
     $locale,
     $animation,
-    $modifierConfig,
+    $widgetDecoratorConfig,
     $variants,
   ];
 }

@@ -24,6 +24,7 @@ void main() {
           decorationStyle: TextDecorationStyle.solid,
           textBaseline: TextBaseline.alphabetic,
           debugLabel: 'test-style',
+          inherit: false,
         );
 
         expectProp(textStyleMix.$color, Colors.blue);
@@ -41,6 +42,7 @@ void main() {
         expectProp(textStyleMix.$decorationStyle, TextDecorationStyle.solid);
         expectProp(textStyleMix.$textBaseline, TextBaseline.alphabetic);
         expectProp(textStyleMix.$debugLabel, 'test-style');
+        expectProp(textStyleMix.$inherit, false);
       });
 
       test('only constructor with lists creates correct properties', () {
@@ -67,6 +69,7 @@ void main() {
           height: 1.4,
           fontFamily: 'Arial',
           decoration: TextDecoration.lineThrough,
+          inherit: false,
         );
 
         final textStyleMix = TextStyleMix.value(textStyle);
@@ -79,6 +82,7 @@ void main() {
         expectProp(textStyleMix.$height, 1.4);
         expectProp(textStyleMix.$fontFamily, 'Arial');
         expectProp(textStyleMix.$decoration, TextDecoration.lineThrough);
+        expectProp(textStyleMix.$inherit, false);
       });
 
       test('maybeValue returns null for null input', () {
@@ -398,6 +402,23 @@ void main() {
         expect(textStyleMix.$decorationThickness, isNull);
         expect(textStyleMix.$fontFamily, isNull);
       });
+
+      test('inherit factory creates TextStyleMix with inherit', () {
+        final textStyleMix = TextStyleMix.inherit(false);
+
+        expectProp(textStyleMix.$inherit, false);
+        expect(textStyleMix.$color, isNull);
+        expect(textStyleMix.$backgroundColor, isNull);
+        expect(textStyleMix.$fontSize, isNull);
+        expect(textStyleMix.$fontWeight, isNull);
+        expect(textStyleMix.$fontStyle, isNull);
+        expect(textStyleMix.$letterSpacing, isNull);
+        expect(textStyleMix.$wordSpacing, isNull);
+        expect(textStyleMix.$textBaseline, isNull);
+        expect(textStyleMix.$height, isNull);
+        expect(textStyleMix.$decorationThickness, isNull);
+        expect(textStyleMix.$fontFamily, isNull);
+      });
     });
 
     group('resolve', () {
@@ -483,14 +504,15 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.$fontFamilyFallback, hasLength(3));
-        expectProp(merged.$fontFamilyFallback![0], 'Arial');
-        expectProp(merged.$fontFamilyFallback![1], 'Helvetica');
-        expectProp(merged.$fontFamilyFallback![2], 'Times');
+        expect(merged.$fontFamilyFallback, hasLength(2));
+        expectProp(merged.$fontFamilyFallback![0], 'Helvetica');
+        expectProp(merged.$fontFamilyFallback![1], 'Times');
 
         expect(merged.$shadows, hasLength(1));
         // Verify the shadow was replaced (second shadow overwrites first)
-        final resolvedShadow = merged.$shadows![0].resolve(MockBuildContext());
+        final resolvedShadow = merged.$shadows![0].resolveProp(
+          MockBuildContext(),
+        );
         expect(resolvedShadow.blurRadius, 10.0);
       });
     });
@@ -650,6 +672,12 @@ void main() {
 
         expect(textStyleMix.$shadows?.length, 1);
       });
+
+      test('inherit utility works correctly', () {
+        final textStyleMix = TextStyleMix().inherit(false);
+
+        expectProp(textStyleMix.$inherit, false);
+      });
     });
 
     group('Props getter', () {
@@ -674,7 +702,7 @@ void main() {
           shadows: [ShadowMix(blurRadius: 5.0)],
         );
 
-        expect(textStyleMix.props.length, 17);
+        expect(textStyleMix.props.length, 22);
         expect(textStyleMix.props, contains(textStyleMix.$color));
         expect(textStyleMix.props, contains(textStyleMix.$backgroundColor));
         expect(textStyleMix.props, contains(textStyleMix.$fontSize));
@@ -692,6 +720,7 @@ void main() {
         expect(textStyleMix.props, contains(textStyleMix.$debugLabel));
         expect(textStyleMix.props, contains(textStyleMix.$fontFamilyFallback));
         expect(textStyleMix.props, contains(textStyleMix.$shadows));
+        expect(textStyleMix.props, contains(textStyleMix.$inherit));
       });
     });
   });

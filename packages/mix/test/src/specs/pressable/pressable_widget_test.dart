@@ -396,7 +396,7 @@ void main() {
             autofocus: true,
             enabled: true,
             enableFeedback: true,
-            unpressDelay: const Duration(milliseconds: 100),
+
             hitTestBehavior: HitTestBehavior.deferToChild,
             child: const SizedBox(width: 100, height: 100),
           ),
@@ -408,7 +408,7 @@ void main() {
       expect(pressable.enabled, isTrue);
       expect(pressable.autofocus, isTrue);
       expect(pressable.focusNode, same(focusNode));
-      expect(pressable.unpressDelay, const Duration(milliseconds: 100));
+
       expect(pressable.hitTestBehavior, HitTestBehavior.deferToChild);
 
       // Test callbacks work

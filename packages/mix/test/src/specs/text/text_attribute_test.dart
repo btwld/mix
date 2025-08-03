@@ -49,7 +49,7 @@ void main() {
         expect(attribute.$textHeightBehavior, isNull);
         expect(attribute.$textDirection, isNull);
         expect(attribute.$softWrap, isNull);
-        expect(attribute.$directives, isNull);
+        expect(attribute.$textModifiers, isNull);
       });
     });
 
@@ -227,48 +227,48 @@ void main() {
         expect(textMix.$softWrap, resolvesTo(false));
       });
 
-      test('directive factory creates TextMix with directive', () {
-        final textMix = TextMix.directive(const UppercaseStringDirective());
+      test('modifier factory creates TextMix with modifier', () {
+        final textMix = TextMix.textModifier(const UppercaseStringModifier());
 
-        expect(textMix.$directives, isNotNull);
-        expect(textMix.$directives!.length, 1);
+        expect(textMix.$textModifiers, isNotNull);
+        expect(textMix.$textModifiers!.length, 1);
       });
 
-      test('uppercase factory creates TextMix with uppercase directive', () {
+      test('uppercase factory creates TextMix with uppercase modifier', () {
         final textMix = TextMix.uppercase();
 
-        expect(textMix.$directives, isNotNull);
-        expect(textMix.$directives!.length, 1);
+        expect(textMix.$textModifiers, isNotNull);
+        expect(textMix.$textModifiers!.length, 1);
       });
 
-      test('lowercase factory creates TextMix with lowercase directive', () {
+      test('lowercase factory creates TextMix with lowercase modifier', () {
         final textMix = TextMix.lowercase();
 
-        expect(textMix.$directives, isNotNull);
-        expect(textMix.$directives!.length, 1);
+        expect(textMix.$textModifiers, isNotNull);
+        expect(textMix.$textModifiers!.length, 1);
       });
 
-      test('capitalize factory creates TextMix with capitalize directive', () {
+      test('capitalize factory creates TextMix with capitalize modifier', () {
         final textMix = TextMix.capitalize();
 
-        expect(textMix.$directives, isNotNull);
-        expect(textMix.$directives!.length, 1);
+        expect(textMix.$textModifiers, isNotNull);
+        expect(textMix.$textModifiers!.length, 1);
       });
 
-      test('titleCase factory creates TextMix with titleCase directive', () {
+      test('titleCase factory creates TextMix with titleCase modifier', () {
         final textMix = TextMix.titleCase();
 
-        expect(textMix.$directives, isNotNull);
-        expect(textMix.$directives!.length, 1);
+        expect(textMix.$textModifiers, isNotNull);
+        expect(textMix.$textModifiers!.length, 1);
       });
 
       test(
-        'sentenceCase factory creates TextMix with sentenceCase directive',
+        'sentenceCase factory creates TextMix with sentenceCase modifier',
         () {
           final textMix = TextMix.sentenceCase();
 
-          expect(textMix.$directives, isNotNull);
-          expect(textMix.$directives!.length, 1);
+          expect(textMix.$textModifiers, isNotNull);
+          expect(textMix.$textModifiers!.length, 1);
         },
       );
 
@@ -375,11 +375,13 @@ void main() {
         expect(attribute.$softWrap, resolvesTo(false));
       });
 
-      test('directive utility works correctly', () {
-        final attribute = TextMix().directive(const UppercaseStringDirective());
+      test('modifier utility works correctly', () {
+        final attribute = TextMix().textModifier(
+          const UppercaseStringModifier(),
+        );
 
-        expect(attribute.$directives, isNotNull);
-        expect(attribute.$directives!.length, 1);
+        expect(attribute.$textModifiers, isNotNull);
+        expect(attribute.$textModifiers!.length, 1);
       });
 
       test('color utility works correctly', () {
@@ -497,36 +499,36 @@ void main() {
       test('uppercase utility works correctly', () {
         final attribute = TextMix().uppercase();
 
-        expect(attribute.$directives, isNotNull);
-        expect(attribute.$directives!.length, 1);
+        expect(attribute.$textModifiers, isNotNull);
+        expect(attribute.$textModifiers!.length, 1);
       });
 
       test('lowercase utility works correctly', () {
         final attribute = TextMix().lowercase();
 
-        expect(attribute.$directives, isNotNull);
-        expect(attribute.$directives!.length, 1);
+        expect(attribute.$textModifiers, isNotNull);
+        expect(attribute.$textModifiers!.length, 1);
       });
 
       test('capitalize utility works correctly', () {
         final attribute = TextMix().capitalize();
 
-        expect(attribute.$directives, isNotNull);
-        expect(attribute.$directives!.length, 1);
+        expect(attribute.$textModifiers, isNotNull);
+        expect(attribute.$textModifiers!.length, 1);
       });
 
       test('titleCase utility works correctly', () {
         final attribute = TextMix().titleCase();
 
-        expect(attribute.$directives, isNotNull);
-        expect(attribute.$directives!.length, 1);
+        expect(attribute.$textModifiers, isNotNull);
+        expect(attribute.$textModifiers!.length, 1);
       });
 
       test('sentenceCase utility works correctly', () {
         final attribute = TextMix().sentenceCase();
 
-        expect(attribute.$directives, isNotNull);
-        expect(attribute.$directives!.length, 1);
+        expect(attribute.$textModifiers, isNotNull);
+        expect(attribute.$textModifiers!.length, 1);
       });
 
       test('animate method sets animation config', () {
@@ -549,11 +551,11 @@ void main() {
 
       test('variants method sets multiple variants', () {
         final variants = [
-          VariantStyleAttribute(
+          VariantStyle(
             ContextVariant.brightness(Brightness.dark),
             TextMix.color(Colors.white),
           ),
-          VariantStyleAttribute(
+          VariantStyle(
             ContextVariant.brightness(Brightness.light),
             TextMix.color(Colors.black),
           ),
@@ -675,7 +677,7 @@ void main() {
           softWrap: false,
         );
 
-        expect(attribute.props.length, 14);
+        expect(attribute.props.length, 17);
         expect(attribute.props, contains(attribute.$overflow));
         expect(attribute.props, contains(attribute.$strutStyle));
         expect(attribute.props, contains(attribute.$textAlign));
@@ -686,7 +688,7 @@ void main() {
         expect(attribute.props, contains(attribute.$textHeightBehavior));
         expect(attribute.props, contains(attribute.$textDirection));
         expect(attribute.props, contains(attribute.$softWrap));
-        expect(attribute.props, contains(attribute.$directives));
+        expect(attribute.props, contains(attribute.$textModifiers));
       });
     });
   });

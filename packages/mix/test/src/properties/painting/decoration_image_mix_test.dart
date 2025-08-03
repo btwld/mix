@@ -292,7 +292,7 @@ void main() {
           fit: BoxFit.cover,
           alignment: Alignment.center, // default
           repeat: ImageRepeat.noRepeat, // default
-          filterQuality: FilterQuality.low, // default
+          filterQuality: FilterQuality.medium, // default
           invertColors: false, // default
           isAntiAlias: false, // default
         );

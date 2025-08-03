@@ -45,8 +45,8 @@ void main() {
         expect(util.on, isA<OnContextVariantUtility<BoxSpec, BoxMix>>());
       });
 
-      test('wrap utility is ModifierUtility', () {
-        expect(util.wrap, isA<ModifierUtility<BoxMix>>());
+      test('wrap utility is WidgetDecoratorUtility', () {
+        expect(util.wrap, isA<WidgetDecoratorUtility<BoxMix>>());
       });
     });
 
@@ -173,13 +173,13 @@ void main() {
       });
     });
 
-    group('Modifier utilities', () {
+    group('Decorator utilities', () {
       test('wrap utility creates modifier BoxMix', () {
         final result = util.wrap.opacity(0.5);
 
         expect(result, isA<BoxMix>());
-        expect(result.$modifierConfig, isNotNull);
-        expect(result.$modifierConfig!.$modifiers!.length, 1);
+        expect(result.$widgetDecoratorConfig, isNotNull);
+        expect(result.$widgetDecoratorConfig!.$decorators!.length, 1);
       });
     });
 

@@ -6,8 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' as r;
 import 'package:flutter/widgets.dart' as w;
 
+import '../decorators/widget_decorator_config.dart';
 import 'internal/deep_collection_equality.dart';
 import 'mix_element.dart';
+import 'modifier.dart';
+import 'prop.dart';
 
 /// Utility class providing helper functions for value resolution, merging, and interpolation.
 ///
@@ -42,10 +45,10 @@ class MixHelpers {
   static const lerpShadowList = ui.Shadow.lerpList;
 
   const MixHelpers._();
-  static V? resolve<V>(BuildContext context, Resolvable<V>? prop) {
+  static V? resolve<V>(BuildContext context, PropBase<V>? prop) {
     if (prop == null) return null;
 
-    return prop.resolve(context);
+    return prop.resolveProp(context);
   }
 
   static V? merge<V extends Mixable>(V? a, V? b) {
@@ -122,13 +125,10 @@ List<T>? _mergeList<T>(
   }
 }
 
-List<V>? _resolveList<T extends Resolvable<V>, V>(
-  BuildContext mix,
-  List<T>? a,
-) {
+List<V>? _resolveList<T extends PropBase<V>, V>(BuildContext mix, List<T>? a) {
   if (a == null) return null;
 
-  return a.map((e) => e.resolve(mix)).whereType<V>().toList();
+  return a.map((e) => e.resolveProp(mix)).whereType<V>().toList();
 }
 
 w.Matrix4? _lerpMatrix4(w.Matrix4? a, w.Matrix4? b, double t) {
@@ -170,4 +170,61 @@ enum ListMergeStrategy {
 
   /// Override entire list
   override,
+}
+
+extension PropExt<T> on Prop<T>? {
+  Prop<T>? tryMerge(Prop<T>? other) {
+    if (this == null) return other;
+    if (other == null) return this;
+
+    return this!.mergeProp(other);
+  }
+}
+
+extension ListPropExt<T> on List<Prop<T>>? {
+  List<Prop<T>>? tryMerge(List<Prop<T>>? other, {ListMergeStrategy? strategy}) {
+    if (other == null) return this;
+    if (this == null) return other;
+
+    return MixHelpers.mergeList(this, other, strategy: strategy);
+  }
+}
+
+extension MixPropExt<T> on MixProp<T>? {
+  MixProp<T>? tryMerge(MixProp<T>? other) {
+    if (this == null) return other;
+    if (other == null) return this;
+
+    return this!.mergeProp(other);
+  }
+}
+
+extension ListMixPropExt<T> on List<MixProp<T>>? {
+  List<MixProp<T>>? tryMerge(
+    List<MixProp<T>>? other, {
+    ListMergeStrategy? strategy,
+  }) {
+    if (other == null) return this;
+    if (this == null) return other;
+
+    return MixHelpers.mergeList(this, other, strategy: strategy);
+  }
+}
+
+extension ListModifierExt<T> on List<Modifier<T>>? {
+  List<Modifier<T>>? tryMerge(List<Modifier<T>>? other) {
+    if (other == null) return this;
+    if (this == null) return other;
+
+    return MixHelpers.mergeList(this, other);
+  }
+}
+
+extension ModifierConfigExt on WidgetDecoratorConfig? {
+  WidgetDecoratorConfig? tryMerge(WidgetDecoratorConfig? other) {
+    if (other == null) return this;
+    if (this == null) return other;
+
+    return this!.merge(other);
+  }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../core/directive.dart';
+import '../../core/modifier.dart';
 import '../../core/style_widget.dart';
 import 'text_spec.dart';
 
@@ -21,20 +21,15 @@ import 'text_spec.dart';
 /// ```
 class StyledText extends StyleWidget<TextSpec> {
   /// Creates a styled text widget.
-  const StyledText(
-    this.text, {
-    super.style,
-    super.key,
-  });
+  const StyledText(this.text, {super.style, super.key});
 
   /// Text content to display.
   final String text;
 
-
   @override
   Widget build(BuildContext context, TextSpec? spec) {
     return Text(
-      spec?.directives?.apply(text) ?? text,
+      spec?.textModifiers?.apply(text) ?? text,
       style: spec?.style,
       strutStyle: spec?.strutStyle,
       textAlign: spec?.textAlign,

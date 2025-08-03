@@ -102,6 +102,7 @@ final class TextStyleUtility<T extends Style<Object?>>
     double? decorationThickness,
     String? debugLabel,
     List<FontVariation>? fontVariations,
+    bool? inherit,
   }) {
     final textStyle = TextStyleMix().merge(
       TextStyleMix(
@@ -126,6 +127,7 @@ final class TextStyleUtility<T extends Style<Object?>>
         decorationThickness: decorationThickness,
         fontFamily: fontFamily,
         fontFamilyFallback: fontFamilyFallback,
+        inherit: inherit,
       ),
     );
 
@@ -133,4 +135,6 @@ final class TextStyleUtility<T extends Style<Object?>>
   }
 
   T as(TextStyle value) => buildProp(TextStyleMix.value(value));
+
+  T inherit(bool value) => call(inherit: value);
 }

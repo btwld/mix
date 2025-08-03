@@ -1,27 +1,9 @@
+import 'package:example/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
 void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Padding(
-          padding: EdgeInsets.all(20),
-          child: Align(
-            alignment: Alignment.topCenter,
-            child: SwitchAnimation(),
-          ),
-        ),
-      ),
-    );
-  }
+  runMixApp(SwitchAnimation());
 }
 
 class SwitchAnimation extends StatefulWidget {
@@ -50,7 +32,7 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
           });
         },
         child: Box(
-          style: Style.box()
+          style: Style.box(
               .color(
                 _trigger.value ? Colors.deepPurpleAccent : Colors.grey.shade300,
               )
@@ -61,9 +43,10 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
               .alignment(
                 _trigger.value ? Alignment.centerRight : Alignment.centerLeft,
               )
-              .animate(AnimationConfig.easeOut(300.ms)),
+              .animate(AnimationConfig.easeOut(300.ms))
+          ),
           child: Box(
-            style: Style.box()
+            style: Style.box(
                 .height(30)
                 .width(40)
                 .color(Colors.white)
@@ -99,7 +82,8 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
                   configBuilder: (phase) {
                     return CurveAnimationConfig.decelerate(150.ms);
                   },
-                ),
+                )
+            ),
           ),
         ),
       ),

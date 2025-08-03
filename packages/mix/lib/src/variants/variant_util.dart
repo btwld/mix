@@ -9,7 +9,7 @@ import 'variant.dart';
 /// Utility class for creating variant attributes with context-based variants
 @immutable
 class OnContextVariantUtility<S extends Spec<S>, T extends Style<S>>
-    extends MixUtility<T, VariantStyleAttribute<S>> {
+    extends MixUtility<T, VariantStyle<S>> {
   const OnContextVariantUtility(super.builder);
 
   /// Creates a variant attribute for the hover state
@@ -241,7 +241,7 @@ class OnContextVariantUtility<S extends Spec<S>, T extends Style<S>>
 /// Builder class for creating variant-based styling attributes.
 ///
 /// This class wraps a [Variant] and provides methods to create
-/// [VariantStyleAttribute] instances with styling rules that apply
+/// [VariantStyle] instances with styling rules that apply
 /// when the variant condition is met.
 @immutable
 class VariantAttributeBuilder<T extends Spec<T>> {
@@ -251,7 +251,7 @@ class VariantAttributeBuilder<T extends Spec<T>> {
   /// Creates a new [VariantAttributeBuilder] with the given [variant]
   const VariantAttributeBuilder(this.variant);
 
-  /// Creates a [VariantStyleAttribute] that applies the given styling elements
+  /// Creates a [VariantStyle] that applies the given styling elements
   /// when this variant's condition is met.
   ///
   /// Supports both single and multiple style elements:
@@ -265,7 +265,7 @@ class VariantAttributeBuilder<T extends Spec<T>> {
   ///   $text.style.color.black(),
   /// );
   /// ```
-  VariantStyleAttribute<MultiSpec> call([
+  VariantStyle<MultiSpec> call([
     Style? p1,
     Style? p2,
     Style? p3,
@@ -297,7 +297,7 @@ class VariantAttributeBuilder<T extends Spec<T>> {
     // Create a Style to contain the elements
     final style = CompoundStyle.create(elements);
 
-    return VariantStyleAttribute(variant, style);
+    return VariantStyle(variant, style);
   }
 
   @override
@@ -325,7 +325,7 @@ mixin StyleVariantMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   /// Must be implemented by the class using this mixin
   T variant(Variant variant, T style);
 
-  T variants(List<VariantStyleAttribute<S>> value);
+  T variants(List<VariantStyle<S>> value);
 
   /// Creates a variant for dark mode
   T onDark(T style) {

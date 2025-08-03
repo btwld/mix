@@ -5,8 +5,8 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
-import '../../modifiers/modifier_config.dart';
-import '../../modifiers/modifier_util.dart';
+import '../../decorators/widget_decorator_config.dart';
+import '../../decorators/widget_decorator_util.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'flex_spec.dart';
@@ -22,7 +22,7 @@ import 'flex_spec.dart';
 class FlexMix extends Style<FlexSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<FlexMix, FlexSpec>,
+        StyleWidgetDecoratorMixin<FlexMix, FlexSpec>,
         StyleVariantMixin<FlexMix, FlexSpec> {
   final Prop<Axis>? $direction;
   final Prop<MainAxisAlignment>? $mainAxisAlignment;
@@ -86,7 +86,7 @@ class FlexMix extends Style<FlexSpec>
 
   /// Factory for variant
   factory FlexMix.variant(Variant variant, FlexMix value) {
-    return FlexMix(variants: [VariantStyleAttribute(variant, value)]);
+    return FlexMix(variants: [VariantStyle(variant, value)]);
   }
 
   const FlexMix.raw({
@@ -100,7 +100,7 @@ class FlexMix extends Style<FlexSpec>
     Prop<Clip>? clipBehavior,
     Prop<double>? gap,
     super.animation,
-    super.modifierConfig,
+    super.widgetDecoratorConfig,
     super.variants,
 
     super.inherit,
@@ -125,8 +125,8 @@ class FlexMix extends Style<FlexSpec>
     Clip? clipBehavior,
     double? gap,
     AnimationConfig? animation,
-    ModifierConfig? modifierConfig,
-    List<VariantStyleAttribute<FlexSpec>>? variants,
+    WidgetDecoratorConfig? widgetDecoratorConfig,
+    List<VariantStyle<FlexSpec>>? variants,
     bool? inherit,
   }) : this.raw(
          direction: Prop.maybe(direction),
@@ -139,7 +139,7 @@ class FlexMix extends Style<FlexSpec>
          clipBehavior: Prop.maybe(clipBehavior),
          gap: Prop.maybe(gap),
          animation: animation,
-         modifierConfig: modifierConfig,
+         widgetDecoratorConfig: widgetDecoratorConfig,
          variants: variants,
          inherit: inherit,
        );
@@ -234,13 +234,13 @@ class FlexMix extends Style<FlexSpec>
   }
 
   @override
-  FlexMix variants(List<VariantStyleAttribute<FlexSpec>> variants) {
+  FlexMix variants(List<VariantStyle<FlexSpec>> variants) {
     return merge(FlexMix(variants: variants));
   }
 
   @override
-  FlexMix modifier(ModifierConfig value) {
-    return merge(FlexMix(modifierConfig: value));
+  FlexMix widgetDecorator(WidgetDecoratorConfig value) {
+    return merge(FlexMix(widgetDecoratorConfig: value));
   }
 
   /// Resolves to [FlexSpec] using the provided [BuildContext].
@@ -279,28 +279,21 @@ class FlexMix extends Style<FlexSpec>
     if (other == null) return this;
 
     return FlexMix.raw(
-      direction: MixHelpers.merge($direction, other.$direction),
-      mainAxisAlignment: MixHelpers.merge(
-        $mainAxisAlignment,
-        other.$mainAxisAlignment,
-      ),
-      crossAxisAlignment: MixHelpers.merge(
-        $crossAxisAlignment,
+      direction: $direction.tryMerge(other.$direction),
+      mainAxisAlignment: $mainAxisAlignment.tryMerge(other.$mainAxisAlignment),
+      crossAxisAlignment: $crossAxisAlignment.tryMerge(
         other.$crossAxisAlignment,
       ),
-      mainAxisSize: MixHelpers.merge($mainAxisSize, other.$mainAxisSize),
-      verticalDirection: MixHelpers.merge(
-        $verticalDirection,
-        other.$verticalDirection,
-      ),
-      textDirection: MixHelpers.merge($textDirection, other.$textDirection),
-      textBaseline: MixHelpers.merge($textBaseline, other.$textBaseline),
-      clipBehavior: MixHelpers.merge($clipBehavior, other.$clipBehavior),
-      gap: MixHelpers.merge($gap, other.$gap),
+      mainAxisSize: $mainAxisSize.tryMerge(other.$mainAxisSize),
+      verticalDirection: $verticalDirection.tryMerge(other.$verticalDirection),
+      textDirection: $textDirection.tryMerge(other.$textDirection),
+      textBaseline: $textBaseline.tryMerge(other.$textBaseline),
+      clipBehavior: $clipBehavior.tryMerge(other.$clipBehavior),
+      gap: $gap.tryMerge(other.$gap),
       animation: other.$animation ?? $animation,
-      modifierConfig:
-          $modifierConfig?.merge(other.$modifierConfig) ??
-          other.$modifierConfig,
+      widgetDecoratorConfig: $widgetDecoratorConfig.tryMerge(
+        other.$widgetDecoratorConfig,
+      ),
       variants: mergeVariantLists($variants, other.$variants),
       inherit: other.$inherit ?? $inherit,
     );
@@ -328,7 +321,7 @@ class FlexMix extends Style<FlexSpec>
 
   @override
   FlexMix variant(Variant variant, FlexMix style) {
-    return merge(FlexMix(variants: [VariantStyleAttribute(variant, style)]));
+    return merge(FlexMix(variants: [VariantStyle(variant, style)]));
   }
 
   @override
@@ -345,7 +338,7 @@ class FlexMix extends Style<FlexSpec>
     $clipBehavior,
     $gap,
     $animation,
-    $modifierConfig,
+    $widgetDecoratorConfig,
     $variants,
   ];
 }

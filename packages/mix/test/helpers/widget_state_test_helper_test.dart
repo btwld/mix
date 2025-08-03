@@ -47,15 +47,7 @@ void main() {
       // Verify callback was triggered
       expect(wasPressed, isTrue);
 
-      // Verify press state manually
-      WidgetStateTestHelper.expectState(
-        controller,
-        WidgetState.pressed,
-        isActive: true,
-      );
-
-      // Wait for timers to clear press state
-      await WidgetStateTestHelper.waitForTimers(tester);
+      // After tap completion, press state should be cleared (onTapUp was called)
       WidgetStateTestHelper.expectState(
         controller,
         WidgetState.pressed,

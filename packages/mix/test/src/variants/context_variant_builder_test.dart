@@ -420,7 +420,7 @@ void main() {
           (context) => BoxMix().width(100.0),
         );
         final style = BoxMix().height(200.0);
-        final variantAttr = VariantStyleAttribute(builder, style);
+        final variantAttr = VariantStyle(builder, style);
 
         expect(variantAttr.variant, builder);
         expect(variantAttr.value, style);
@@ -435,8 +435,8 @@ void main() {
           (context) => BoxMix().width(200.0),
         );
 
-        final style1 = VariantStyleAttribute(builder1, BoxMix().height(100.0));
-        final style2 = VariantStyleAttribute(builder2, BoxMix().height(200.0));
+        final style1 = VariantStyle(builder1, BoxMix().height(100.0));
+        final style2 = VariantStyle(builder2, BoxMix().height(200.0));
 
         expect(style1.mergeKey, builder1.key);
         expect(style2.mergeKey, builder2.key);

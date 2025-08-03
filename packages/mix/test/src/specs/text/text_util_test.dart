@@ -17,7 +17,7 @@ void main() {
         final textMix = TextMix(maxLines: 3);
         final utility = TextSpecUtility(textMix);
 
-        expect(utility.value, same(textMix));
+        expect(utility.value, equals(textMix));
         expectProp(utility.value.$maxLines, 3);
       });
     });
@@ -39,8 +39,8 @@ void main() {
         expect(util.textScaler, isA<MixUtility<TextMix, TextScaler>>());
       });
 
-      test('maxLines utility is MixUtility', () {
-        expect(util.maxLines, isA<MixUtility<TextMix, int>>());
+      test('maxLines utility is function', () {
+        expect(util.maxLines, isA<Function>());
       });
 
       test('style utility is TextStyleUtility', () {
@@ -62,23 +62,20 @@ void main() {
         expect(util.textDirection, isA<MixUtility<TextMix, TextDirection>>());
       });
 
-      test('softWrap utility is MixUtility', () {
-        expect(util.softWrap, isA<MixUtility<TextMix, bool>>());
+      test('softWrap utility is function', () {
+        expect(util.softWrap, isA<Function>());
       });
 
-      test('directives utility is MixUtility', () {
-        expect(
-          util.directives,
-          isA<MixUtility<TextMix, MixDirective<String>>>(),
-        );
+      test('modifiers utility is MixUtility', () {
+        expect(util.modifiers, isA<MixUtility<TextMix, Modifier<String>>>());
       });
 
       test('selectionColor utility is ColorUtility', () {
         expect(util.selectionColor, isA<ColorUtility<TextMix>>());
       });
 
-      test('semanticsLabel utility is MixUtility', () {
-        expect(util.semanticsLabel, isA<MixUtility<TextMix, String>>());
+      test('semanticsLabel utility is function', () {
+        expect(util.semanticsLabel, isA<Function>());
       });
 
       test('locale utility is MixUtility', () {
@@ -89,8 +86,8 @@ void main() {
         expect(util.on, isA<OnContextVariantUtility<TextSpec, TextMix>>());
       });
 
-      test('wrap utility is ModifierUtility', () {
-        expect(util.wrap, isA<ModifierUtility<TextMix>>());
+      test('wrap utility is WidgetDecoratorUtility', () {
+        expect(util.wrap, isA<WidgetDecoratorUtility<TextMix>>());
       });
     });
 
@@ -220,7 +217,7 @@ void main() {
       });
 
       test('semanticsLabel utility creates correct TextMix', () {
-        final result = util.semanticsLabel('Custom label');
+        final result = TextSpecUtility().semanticsLabel('Custom label');
         expectProp(result.$semanticsLabel, 'Custom label');
       });
 
@@ -262,13 +259,13 @@ void main() {
       });
     });
 
-    group('Modifier utilities', () {
+    group('Decorator utilities', () {
       test('wrap utility creates modifier TextMix', () {
         final result = util.wrap.opacity(0.5);
 
         expect(result, isA<TextMix>());
-        expect(result.$modifierConfig, isNotNull);
-        expect(result.$modifierConfig!.$modifiers!.length, 1);
+        expect(result.$widgetDecoratorConfig, isNotNull);
+        expect(result.$widgetDecoratorConfig!.$decorators!.length, 1);
       });
     });
 

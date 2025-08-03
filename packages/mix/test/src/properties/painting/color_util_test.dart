@@ -9,16 +9,14 @@ void main() {
     late ColorUtility<MockStyle<Prop<Color>>> util;
 
     setUp(() {
-      util = ColorUtility<MockStyle<Prop<Color>>>(
-        (prop) => MockStyle(prop),
-      );
+      util = ColorUtility<MockStyle<Prop<Color>>>((prop) => MockStyle(prop));
     });
 
     group('basic functionality', () {
       test('call method creates color prop', () {
         final result = util(Colors.red);
 
-        final color = result.value.resolve(MockBuildContext());
+        final color = result.value.resolveProp(MockBuildContext());
 
         expect(color, Colors.red);
       });
@@ -26,13 +24,11 @@ void main() {
       test('token method creates token prop', () {
         const colorToken = MixToken<Color>('primaryColor');
         final context = MockBuildContext(
-          mixScopeData: MixScopeData.static(
-            tokens: {colorToken: Colors.blue},
-          ),
+          mixScopeData: MixScopeData.static(tokens: {colorToken: Colors.blue}),
         );
 
         final result = util.token(colorToken);
-        final color = result.value.resolve(context);
+        final color = result.value.resolveProp(context);
 
         expect(color, Colors.blue);
       });
@@ -40,13 +36,11 @@ void main() {
       test('ref method (deprecated) delegates to token', () {
         const colorToken = MixToken<Color>('primaryColor');
         final context = MockBuildContext(
-          mixScopeData: MixScopeData.static(
-            tokens: {colorToken: Colors.green},
-          ),
+          mixScopeData: MixScopeData.static(tokens: {colorToken: Colors.green}),
         );
 
         final result = util.ref(colorToken);
-        final color = result.value.resolve(context);
+        final color = result.value.resolveProp(context);
 
         expect(color, Colors.green);
       });
@@ -82,130 +76,130 @@ void main() {
       group('basic color values', () {
         test('transparent creates transparent color', () {
           final result = util.transparent();
-          final color = result.value.resolve(MockBuildContext());
+          final color = result.value.resolveProp(MockBuildContext());
 
           expect(color, Colors.transparent);
         });
 
         test('black creates black color', () {
           final result = util.black();
-          final color = result.value.resolve(MockBuildContext());
+          final color = result.value.resolveProp(MockBuildContext());
 
           expect(color, Colors.black);
         });
 
         test('black87 creates black87 color', () {
           final result = util.black87();
-          final color = result.value.resolve(MockBuildContext());
+          final color = result.value.resolveProp(MockBuildContext());
 
           expect(color, Colors.black87);
         });
 
         test('white creates white color', () {
           final result = util.white();
-          final color = result.value.resolve(MockBuildContext());
+          final color = result.value.resolveProp(MockBuildContext());
 
           expect(color, Colors.white);
         });
 
         test('white70 creates white70 color', () {
           final result = util.white70();
-          final color = result.value.resolve(MockBuildContext());
+          final color = result.value.resolveProp(MockBuildContext());
 
           expect(color, Colors.white70);
         });
       });
     });
 
-    group('ColorDirectiveMixin methods', () {
-      test('withOpacity applies opacity directive', () {
+    group('ColorModifierMixin methods', () {
+      test('withOpacity applies opacity modifier', () {
         final result = util.withOpacity(0.5);
-        final directives = result.value.$directives;
+        final modifiers = result.value.$modifiers;
 
         expect(result.value, isA<Prop<Color>>());
-        expect(directives, isNotEmpty);
-        expect(directives!.first, isA<OpacityColorDirective>());
-        expect((directives.first as OpacityColorDirective).opacity, 0.5);
+        expect(modifiers, isNotEmpty);
+        expect(modifiers!.first, isA<OpacityColorModifier>());
+        expect((modifiers.first as OpacityColorModifier).opacity, 0.5);
       });
 
-      test('withAlpha applies alpha directive', () {
+      test('withAlpha applies alpha modifier', () {
         final result = util.withAlpha(128);
-        final directives = result.value.$directives;
+        final modifiers = result.value.$modifiers;
 
         expect(result.value, isA<Prop<Color>>());
-        expect(directives, isNotEmpty);
-        expect(directives!.first, isA<AlphaColorDirective>());
-        expect((directives.first as AlphaColorDirective).alpha, 128);
+        expect(modifiers, isNotEmpty);
+        expect(modifiers!.first, isA<AlphaColorModifier>());
+        expect((modifiers.first as AlphaColorModifier).alpha, 128);
       });
 
-      test('darken applies darken directive', () {
+      test('darken applies darken modifier', () {
         final result = util.darken(20);
-        final directives = result.value.$directives;
+        final modifiers = result.value.$modifiers;
 
         expect(result.value, isA<Prop<Color>>());
-        expect(directives, isNotEmpty);
-        expect(directives!.first, isA<DarkenColorDirective>());
-        expect((directives.first as DarkenColorDirective).amount, 20);
+        expect(modifiers, isNotEmpty);
+        expect(modifiers!.first, isA<DarkenColorModifier>());
+        expect((modifiers.first as DarkenColorModifier).amount, 20);
       });
 
-      test('lighten applies lighten directive', () {
+      test('lighten applies lighten modifier', () {
         final result = util.lighten(30);
-        final directives = result.value.$directives;
+        final modifiers = result.value.$modifiers;
 
         expect(result.value, isA<Prop<Color>>());
-        expect(directives, isNotEmpty);
-        expect(directives!.first, isA<LightenColorDirective>());
-        expect((directives.first as LightenColorDirective).amount, 30);
+        expect(modifiers, isNotEmpty);
+        expect(modifiers!.first, isA<LightenColorModifier>());
+        expect((modifiers.first as LightenColorModifier).amount, 30);
       });
 
-      test('saturate applies saturate directive', () {
+      test('saturate applies saturate modifier', () {
         final result = util.saturate(25);
-        final directives = result.value.$directives;
+        final modifiers = result.value.$modifiers;
 
         expect(result.value, isA<Prop<Color>>());
-        expect(directives, isNotEmpty);
-        expect(directives!.first, isA<SaturateColorDirective>());
-        expect((directives.first as SaturateColorDirective).amount, 25);
+        expect(modifiers, isNotEmpty);
+        expect(modifiers!.first, isA<SaturateColorModifier>());
+        expect((modifiers.first as SaturateColorModifier).amount, 25);
       });
 
-      test('desaturate applies desaturate directive', () {
+      test('desaturate applies desaturate modifier', () {
         final result = util.desaturate(15);
-        final directives = result.value.$directives;
+        final modifiers = result.value.$modifiers;
 
         expect(result.value, isA<Prop<Color>>());
-        expect(directives, isNotEmpty);
-        expect(directives!.first, isA<DesaturateColorDirective>());
-        expect((directives.first as DesaturateColorDirective).amount, 15);
+        expect(modifiers, isNotEmpty);
+        expect(modifiers!.first, isA<DesaturateColorModifier>());
+        expect((modifiers.first as DesaturateColorModifier).amount, 15);
       });
 
-      test('tint applies tint directive', () {
+      test('tint applies tint modifier', () {
         final result = util.tint(40);
-        final directives = result.value.$directives;
+        final modifiers = result.value.$modifiers;
 
         expect(result.value, isA<Prop<Color>>());
-        expect(directives, isNotEmpty);
-        expect(directives!.first, isA<TintColorDirective>());
-        expect((directives.first as TintColorDirective).amount, 40);
+        expect(modifiers, isNotEmpty);
+        expect(modifiers!.first, isA<TintColorModifier>());
+        expect((modifiers.first as TintColorModifier).amount, 40);
       });
 
-      test('shade applies shade directive', () {
+      test('shade applies shade modifier', () {
         final result = util.shade(35);
-        final directives = result.value.$directives;
+        final modifiers = result.value.$modifiers;
 
         expect(result.value, isA<Prop<Color>>());
-        expect(directives, isNotEmpty);
-        expect(directives!.first, isA<ShadeColorDirective>());
-        expect((directives.first as ShadeColorDirective).amount, 35);
+        expect(modifiers, isNotEmpty);
+        expect(modifiers!.first, isA<ShadeColorModifier>());
+        expect((modifiers.first as ShadeColorModifier).amount, 35);
       });
 
-      test('brighten applies brighten directive', () {
+      test('brighten applies brighten modifier', () {
         final result = util.brighten(50);
-        final directives = result.value.$directives;
+        final modifiers = result.value.$modifiers;
 
         expect(result.value, isA<Prop<Color>>());
-        expect(directives, isNotEmpty);
-        expect(directives!.first, isA<BrightenColorDirective>());
-        expect((directives.first as BrightenColorDirective).amount, 50);
+        expect(modifiers, isNotEmpty);
+        expect(modifiers!.first, isA<BrightenColorModifier>());
+        expect((modifiers.first as BrightenColorModifier).amount, 50);
       });
     });
   });
@@ -222,100 +216,100 @@ void main() {
 
     test('call operator returns the predefined color', () {
       final result = util();
-      final color = result.value.resolve(MockBuildContext());
+      final color = result.value.resolveProp(MockBuildContext());
 
       expect(color, Colors.blue);
     });
 
-    group('color directive methods', () {
-      test('withOpacity applies opacity directive', () {
+    group('color modifier methods', () {
+      test('withOpacity applies opacity modifier', () {
         final result = util.withOpacity(0.7);
-        final directives = result.value.$directives;
+        final modifiers = result.value.$modifiers;
 
         expect(result.value, isA<Prop<Color>>());
-        expect(directives, isNotEmpty);
-        expect(directives!.first, isA<OpacityColorDirective>());
-        expect((directives.first as OpacityColorDirective).opacity, 0.7);
+        expect(modifiers, isNotEmpty);
+        expect(modifiers!.first, isA<OpacityColorModifier>());
+        expect((modifiers.first as OpacityColorModifier).opacity, 0.7);
       });
 
-      test('withAlpha applies alpha directive', () {
+      test('withAlpha applies alpha modifier', () {
         final result = util.withAlpha(200);
-        final directives = result.value.$directives;
+        final modifiers = result.value.$modifiers;
 
         expect(result.value, isA<Prop<Color>>());
-        expect(directives, isNotEmpty);
-        expect(directives!.first, isA<AlphaColorDirective>());
-        expect((directives.first as AlphaColorDirective).alpha, 200);
+        expect(modifiers, isNotEmpty);
+        expect(modifiers!.first, isA<AlphaColorModifier>());
+        expect((modifiers.first as AlphaColorModifier).alpha, 200);
       });
 
-      test('darken applies darken directive', () {
+      test('darken applies darken modifier', () {
         final result = util.darken(10);
-        final directives = result.value.$directives;
+        final modifiers = result.value.$modifiers;
 
         expect(result.value, isA<Prop<Color>>());
-        expect(directives, isNotEmpty);
-        expect(directives!.first, isA<DarkenColorDirective>());
-        expect((directives.first as DarkenColorDirective).amount, 10);
+        expect(modifiers, isNotEmpty);
+        expect(modifiers!.first, isA<DarkenColorModifier>());
+        expect((modifiers.first as DarkenColorModifier).amount, 10);
       });
 
-      test('lighten applies lighten directive', () {
+      test('lighten applies lighten modifier', () {
         final result = util.lighten(15);
-        final directives = result.value.$directives;
+        final modifiers = result.value.$modifiers;
 
         expect(result.value, isA<Prop<Color>>());
-        expect(directives, isNotEmpty);
-        expect(directives!.first, isA<LightenColorDirective>());
-        expect((directives.first as LightenColorDirective).amount, 15);
+        expect(modifiers, isNotEmpty);
+        expect(modifiers!.first, isA<LightenColorModifier>());
+        expect((modifiers.first as LightenColorModifier).amount, 15);
       });
 
-      test('saturate applies saturate directive', () {
+      test('saturate applies saturate modifier', () {
         final result = util.saturate(20);
-        final directives = result.value.$directives;
+        final modifiers = result.value.$modifiers;
 
         expect(result.value, isA<Prop<Color>>());
-        expect(directives, isNotEmpty);
-        expect(directives!.first, isA<SaturateColorDirective>());
-        expect((directives.first as SaturateColorDirective).amount, 20);
+        expect(modifiers, isNotEmpty);
+        expect(modifiers!.first, isA<SaturateColorModifier>());
+        expect((modifiers.first as SaturateColorModifier).amount, 20);
       });
 
-      test('desaturate applies desaturate directive', () {
+      test('desaturate applies desaturate modifier', () {
         final result = util.desaturate(25);
-        final directives = result.value.$directives;
+        final modifiers = result.value.$modifiers;
 
         expect(result.value, isA<Prop<Color>>());
-        expect(directives, isNotEmpty);
-        expect(directives!.first, isA<DesaturateColorDirective>());
-        expect((directives.first as DesaturateColorDirective).amount, 25);
+        expect(modifiers, isNotEmpty);
+        expect(modifiers!.first, isA<DesaturateColorModifier>());
+        expect((modifiers.first as DesaturateColorModifier).amount, 25);
       });
 
-      test('tint applies tint directive', () {
+      test('tint applies tint modifier', () {
         final result = util.tint(30);
-        final directives = result.value.$directives;
+        final modifiers = result.value.$modifiers;
 
         expect(result.value, isA<Prop<Color>>());
-        expect(directives, isNotEmpty);
-        expect(directives!.first, isA<TintColorDirective>());
-        expect((directives.first as TintColorDirective).amount, 30);
+        expect(modifiers, isNotEmpty);
+        expect(modifiers!.first, isA<TintColorModifier>());
+        expect((modifiers.first as TintColorModifier).amount, 30);
       });
 
-      test('shade applies shade directive', () {
+      test('shade applies shade modifier', () {
         final result = util.shade(40);
-        final directives = result.value.$directives;
+        final modifiers = result.value.$modifiers;
 
         expect(result.value, isA<Prop<Color>>());
-        expect(directives, isNotEmpty);
-        expect(directives!.first, isA<ShadeColorDirective>());
-        expect((directives.first as ShadeColorDirective).amount, 40);
+        expect(modifiers, isNotEmpty);
+        expect(modifiers!.first, isA<ShadeColorModifier>());
+        expect((modifiers.first as ShadeColorModifier).amount, 40);
       });
 
-      test('brighten applies brighten directive', () {
+      test('brighten applies brighten modifier', () {
         final result = util.brighten(45);
-        final directives = result.value.$directives;
+        final modifiers = result.value.$modifiers;
 
         expect(result.value, isA<Prop<Color>>());
-        expect(directives, isNotEmpty);
-        expect(directives!.first, isA<BrightenColorDirective>());
-        expect((directives.first as BrightenColorDirective).amount, 45);
+        expect(modifiers, isNotEmpty);
+        expect(modifiers!.first, isA<BrightenColorModifier>());
+        expect((modifiers.first as BrightenColorModifier).amount, 45);
       });
     });
   });
@@ -334,14 +328,14 @@ void main() {
       expect(util.color, Colors.red);
     });
 
-    test('can use ColorDirectiveMixin methods', () {
+    test('can use ColorModifierMixin methods', () {
       final result = util.withOpacity(0.8);
-      final directives = result.value.$directives;
+      final modifiers = result.value.$modifiers;
 
       expect(result.value, isA<Prop<Color>>());
-      expect(directives, isNotEmpty);
-      expect(directives!.first, isA<OpacityColorDirective>());
-      expect((directives.first as OpacityColorDirective).opacity, 0.8);
+      expect(modifiers, isNotEmpty);
+      expect(modifiers!.first, isA<OpacityColorModifier>());
+      expect((modifiers.first as OpacityColorModifier).opacity, 0.8);
     });
   });
 
@@ -349,65 +343,61 @@ void main() {
     late ColorUtility<MockStyle<Prop<Color>>> util;
 
     setUp(() {
-      util = ColorUtility<MockStyle<Prop<Color>>>(
-        (prop) => MockStyle(prop),
-      );
+      util = ColorUtility<MockStyle<Prop<Color>>>((prop) => MockStyle(prop));
     });
 
-    group('black variants with directives', () {
+    group('black variants with modifiers', () {
       test('black.withOpacity creates black with opacity', () {
         final result = util.black.withOpacity(0.5);
-        final directives = result.value.$directives;
+        final modifiers = result.value.$modifiers;
 
         expect(result.value, isA<Prop<Color>>());
-        expect(directives, isNotEmpty);
-        expect(directives!.first, isA<OpacityColorDirective>());
-        expect((directives.first as OpacityColorDirective).opacity, 0.5);
+        expect(modifiers, isNotEmpty);
+        expect(modifiers!.first, isA<OpacityColorModifier>());
+        expect((modifiers.first as OpacityColorModifier).opacity, 0.5);
       });
 
       test('black.darken creates darkened black', () {
         final result = util.black.darken(10);
-        final directives = result.value.$directives;
+        final modifiers = result.value.$modifiers;
 
         expect(result.value, isA<Prop<Color>>());
-        expect(directives, isNotEmpty);
-        expect(directives!.first, isA<DarkenColorDirective>());
-        expect((directives.first as DarkenColorDirective).amount, 10);
+        expect(modifiers, isNotEmpty);
+        expect(modifiers!.first, isA<DarkenColorModifier>());
+        expect((modifiers.first as DarkenColorModifier).amount, 10);
       });
     });
 
-    group('white variants with directives', () {
+    group('white variants with modifiers', () {
       test('white.withOpacity creates white with opacity', () {
         final result = util.white.withOpacity(0.9);
-        final directives = result.value.$directives;
+        final modifiers = result.value.$modifiers;
 
-        
-        expect(directives, isNotEmpty);
-        expect(directives!.first, isA<OpacityColorDirective>
-        ());
-        expect((directives.first as OpacityColorDirective).opacity, 0.9);
+        expect(modifiers, isNotEmpty);
+        expect(modifiers!.first, isA<OpacityColorModifier>());
+        expect((modifiers.first as OpacityColorModifier).opacity, 0.9);
       });
 
       test('white.lighten creates lightened white', () {
         final result = util.white.lighten(5);
-        final directives = result.value.$directives;
+        final modifiers = result.value.$modifiers;
 
         expect(result.value, isA<Prop<Color>>());
-        expect(directives, isNotEmpty);
-        expect(directives!.first, isA<LightenColorDirective>());
-        expect((directives.first as LightenColorDirective).amount, 5);
+        expect(modifiers, isNotEmpty);
+        expect(modifiers!.first, isA<LightenColorModifier>());
+        expect((modifiers.first as LightenColorModifier).amount, 5);
       });
     });
 
-    group('transparent with directives', () {
+    group('transparent with modifiers', () {
       test('transparent.withAlpha creates transparent with alpha', () {
         final result = util.transparent.withAlpha(100);
-        final directives = result.value.$directives;
+        final modifiers = result.value.$modifiers;
 
         expect(result.value, isA<Prop<Color>>());
-        expect(directives, isNotEmpty);
-        expect(directives!.first, isA<AlphaColorDirective>());
-        expect((directives.first as AlphaColorDirective).alpha, 100);
+        expect(modifiers, isNotEmpty);
+        expect(modifiers!.first, isA<AlphaColorModifier>());
+        expect((modifiers.first as AlphaColorModifier).alpha, 100);
       });
     });
   });
@@ -416,9 +406,7 @@ void main() {
     late ColorUtility<MockStyle<Prop<Color>>> util;
 
     setUp(() {
-      util = ColorUtility<MockStyle<Prop<Color>>>(
-        (prop) => MockStyle(prop),
-      );
+      util = ColorUtility<MockStyle<Prop<Color>>>((prop) => MockStyle(prop));
     });
 
     test('has material color methods from ColorsUtilityMixin', () {
@@ -426,33 +414,33 @@ void main() {
       final redResult = util.red();
       final blueResult = util.blue();
       final greenResult = util.green();
-      
-      expect(redResult.value.resolve(MockBuildContext()), Colors.red);
-      expect(blueResult.value.resolve(MockBuildContext()), Colors.blue);
-      expect(greenResult.value.resolve(MockBuildContext()), Colors.green);
+
+      expect(redResult.value.resolveProp(MockBuildContext()), Colors.red);
+      expect(blueResult.value.resolveProp(MockBuildContext()), Colors.blue);
+      expect(greenResult.value.resolveProp(MockBuildContext()), Colors.green);
     });
 
     test('material color methods work with shades', () {
       final red100 = util.red(100);
       final blue500 = util.blue(500);
       final green900 = util.green(900);
-      
-      expect(red100.value.resolve(MockBuildContext()), Colors.red[100]);
-      expect(blue500.value.resolve(MockBuildContext()), Colors.blue[500]);
-      expect(green900.value.resolve(MockBuildContext()), Colors.green[900]);
+
+      expect(red100.value.resolveProp(MockBuildContext()), Colors.red[100]);
+      expect(blue500.value.resolveProp(MockBuildContext()), Colors.blue[500]);
+      expect(green900.value.resolveProp(MockBuildContext()), Colors.green[900]);
     });
 
-    test('can apply directives to material colors', () {
-      // Apply directives to a red color by first creating it, then applying directives
+    test('can apply modifiers to material colors', () {
+      // Apply modifiers to a red color by first creating it, then applying modifiers
       final redColor = util(Colors.red);
-      final result = redColor.value.resolve(MockBuildContext());
-      
+      final result = redColor.value.resolveProp(MockBuildContext());
+
       expect(result, Colors.red);
-      
-      // Test that directives can be applied using the base utility methods
+
+      // Test that modifiers can be applied using the base utility methods
       final withOpacity = util.withOpacity(0.6);
-      expect(withOpacity.value.$directives, hasLength(1));
-      expect(withOpacity.value.$directives!.first, isA<OpacityColorDirective>());
+      expect(withOpacity.value.$modifiers, hasLength(1));
+      expect(withOpacity.value.$modifiers!.first, isA<OpacityColorModifier>());
     });
   });
 
@@ -460,11 +448,9 @@ void main() {
     test('token resolves from MixScopeData', () {
       const colorToken = MixToken<Color>('testColor');
       const expectedColor = Colors.purple;
-      
+
       final context = MockBuildContext(
-        mixScopeData: MixScopeData.static(
-          tokens: {colorToken: expectedColor},
-        ),
+        mixScopeData: MixScopeData.static(tokens: {colorToken: expectedColor}),
       );
 
       final util = ColorUtility<MockStyle<Prop<Color>>>(
@@ -472,14 +458,14 @@ void main() {
       );
 
       final result = util.token(colorToken);
-      final resolvedColor = result.value.resolve(context);
+      final resolvedColor = result.value.resolveProp(context);
 
       expect(resolvedColor, expectedColor);
     });
 
     test('token falls back when not found in context', () {
       const colorToken = MixToken<Color>('missingColor');
-      
+
       final context = MockBuildContext(
         mixScopeData: MixScopeData.static(tokens: {}),
       );
@@ -489,9 +475,18 @@ void main() {
       );
 
       final result = util.token(colorToken);
-      
-      // Should not throw, but behavior depends on implementation
-      expect(() => result.value.resolve(context), returnsNormally);
+
+      // Token resolution now throws when token is not found
+      expect(
+        () => result.value.resolveProp(context),
+        throwsA(
+          isA<StateError>().having(
+            (e) => e.message,
+            'message',
+            contains('Token "missingColor" not found in scope'),
+          ),
+        ),
+      );
     });
   });
 }

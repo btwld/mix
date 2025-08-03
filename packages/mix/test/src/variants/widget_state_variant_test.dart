@@ -327,7 +327,7 @@ void main() {
       test('can be used in VariantSpecAttribute wrapper', () {
         final hoverVariant = WidgetStateVariant(WidgetState.hovered);
         final style = BoxMix.width(100.0);
-        final variantAttr = VariantStyleAttribute(hoverVariant, style);
+        final variantAttr = VariantStyle(hoverVariant, style);
 
         expect(variantAttr.variant, hoverVariant);
         expect(variantAttr.value, style);
@@ -337,12 +337,12 @@ void main() {
       test(
         'different widget states create different VariantSpecAttribute mergeKeys',
         () {
-          final hoverStyle = VariantStyleAttribute(
+          final hoverStyle = VariantStyle(
             WidgetStateVariant(WidgetState.hovered),
             BoxMix.width(100.0),
           );
 
-          final pressStyle = VariantStyleAttribute(
+          final pressStyle = VariantStyle(
             WidgetStateVariant(WidgetState.pressed),
             BoxMix.width(150.0),
           );
@@ -356,12 +356,9 @@ void main() {
       test('merges correctly when variants match', () {
         final hoverVariant = WidgetStateVariant(WidgetState.hovered);
 
-        final style1 = VariantStyleAttribute(hoverVariant, BoxMix.width(100.0));
+        final style1 = VariantStyle(hoverVariant, BoxMix.width(100.0));
 
-        final style2 = VariantStyleAttribute(
-          hoverVariant,
-          BoxMix.height(200.0),
-        );
+        final style2 = VariantStyle(hoverVariant, BoxMix.height(200.0));
 
         final merged = style1.merge(style2);
 

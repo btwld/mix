@@ -5,8 +5,8 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
-import '../../modifiers/modifier_config.dart';
-import '../../modifiers/modifier_util.dart';
+import '../../decorators/widget_decorator_config.dart';
+import '../../decorators/widget_decorator_util.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'stack_spec.dart';
@@ -21,7 +21,7 @@ import 'stack_spec.dart';
 class StackMix extends Style<StackSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<StackMix, StackSpec>,
+        StyleWidgetDecoratorMixin<StackMix, StackSpec>,
         StyleVariantMixin<StackMix, StackSpec> {
   final Prop<AlignmentGeometry>? $alignment;
   final Prop<StackFit>? $fit;
@@ -55,7 +55,7 @@ class StackMix extends Style<StackSpec>
 
   /// Factory for variant
   factory StackMix.variant(Variant variant, StackMix value) {
-    return StackMix(variants: [VariantStyleAttribute(variant, value)]);
+    return StackMix(variants: [VariantStyle(variant, value)]);
   }
 
   const StackMix.raw({
@@ -64,7 +64,7 @@ class StackMix extends Style<StackSpec>
     Prop<TextDirection>? textDirection,
     Prop<Clip>? clipBehavior,
     super.animation,
-    super.modifierConfig,
+    super.widgetDecoratorConfig,
     super.variants,
 
     super.inherit,
@@ -79,8 +79,8 @@ class StackMix extends Style<StackSpec>
     TextDirection? textDirection,
     Clip? clipBehavior,
     AnimationConfig? animation,
-    ModifierConfig? modifierConfig,
-    List<VariantStyleAttribute<StackSpec>>? variants,
+    WidgetDecoratorConfig? widgetDecoratorConfig,
+    List<VariantStyle<StackSpec>>? variants,
     bool? inherit,
   }) : this.raw(
          alignment: Prop.maybe(alignment),
@@ -88,7 +88,7 @@ class StackMix extends Style<StackSpec>
          textDirection: Prop.maybe(textDirection),
          clipBehavior: Prop.maybe(clipBehavior),
          animation: animation,
-         modifierConfig: modifierConfig,
+         widgetDecoratorConfig: widgetDecoratorConfig,
          variants: variants,
          inherit: inherit,
        );
@@ -147,13 +147,13 @@ class StackMix extends Style<StackSpec>
   }
 
   @override
-  StackMix variants(List<VariantStyleAttribute<StackSpec>> variants) {
+  StackMix variants(List<VariantStyle<StackSpec>> variants) {
     return merge(StackMix(variants: variants));
   }
 
   @override
-  StackMix modifier(ModifierConfig value) {
-    return merge(StackMix(modifierConfig: value));
+  StackMix widgetDecorator(WidgetDecoratorConfig value) {
+    return merge(StackMix(widgetDecoratorConfig: value));
   }
 
   /// Resolves to [StackSpec] using the provided [BuildContext].
@@ -173,14 +173,14 @@ class StackMix extends Style<StackSpec>
     if (other == null) return this;
 
     return StackMix.raw(
-      alignment: MixHelpers.merge($alignment, other.$alignment),
-      fit: MixHelpers.merge($fit, other.$fit),
-      textDirection: MixHelpers.merge($textDirection, other.$textDirection),
-      clipBehavior: MixHelpers.merge($clipBehavior, other.$clipBehavior),
+      alignment: $alignment.tryMerge(other.$alignment),
+      fit: $fit.tryMerge(other.$fit),
+      textDirection: $textDirection.tryMerge(other.$textDirection),
+      clipBehavior: $clipBehavior.tryMerge(other.$clipBehavior),
       animation: other.$animation ?? $animation,
-      modifierConfig:
-          $modifierConfig?.merge(other.$modifierConfig) ??
-          other.$modifierConfig,
+      widgetDecoratorConfig: $widgetDecoratorConfig.tryMerge(
+        other.$widgetDecoratorConfig,
+      ),
       variants: mergeVariantLists($variants, other.$variants),
 
       inherit: other.$inherit ?? $inherit,
@@ -204,7 +204,7 @@ class StackMix extends Style<StackSpec>
 
   @override
   StackMix variant(Variant variant, StackMix style) {
-    return merge(StackMix(variants: [VariantStyleAttribute(variant, style)]));
+    return merge(StackMix(variants: [VariantStyle(variant, style)]));
   }
 
   @override
@@ -214,7 +214,7 @@ class StackMix extends Style<StackSpec>
     $textDirection,
     $clipBehavior,
     $animation,
-    $modifierConfig,
+    $widgetDecoratorConfig,
     $variants,
   ];
 }

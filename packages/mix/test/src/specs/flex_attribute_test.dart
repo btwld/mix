@@ -474,29 +474,29 @@ void main() {
     group('Modifiers', () {
       test('modifiers can be added to attribute', () {
         final attribute = FlexMix(
-          modifierConfig: ModifierConfig(
-            modifiers: [
-              OpacityModifierAttribute(opacity: 0.5),
-              PaddingModifierAttribute(padding: EdgeInsetsMix.all(8.0)),
+          widgetDecoratorConfig: WidgetDecoratorConfig(
+            decorators: [
+              OpacityWidgetDecoratorMix(opacity: 0.5),
+              PaddingWidgetDecoratorMix(padding: EdgeInsetsMix.all(8.0)),
             ],
           ),
         );
 
-        expect(attribute.$modifierConfig, isNotNull);
-        expect(attribute.$modifierConfig!.$modifiers!.length, 2);
+        expect(attribute.$widgetDecoratorConfig, isNotNull);
+        expect(attribute.$widgetDecoratorConfig!.$decorators!.length, 2);
       });
 
       test('modifiers merge correctly', () {
         final first = FlexMix(
-          modifierConfig: ModifierConfig(
-            modifiers: [OpacityModifierAttribute(opacity: 0.5)],
+          widgetDecoratorConfig: WidgetDecoratorConfig(
+            decorators: [OpacityWidgetDecoratorMix(opacity: 0.5)],
           ),
         );
 
         final second = FlexMix(
-          modifierConfig: ModifierConfig(
-            modifiers: [
-              PaddingModifierAttribute(padding: EdgeInsetsMix.all(8.0)),
+          widgetDecoratorConfig: WidgetDecoratorConfig(
+            decorators: [
+              PaddingWidgetDecoratorMix(padding: EdgeInsetsMix.all(8.0)),
             ],
           ),
         );
@@ -504,7 +504,7 @@ void main() {
         final merged = first.merge(second);
 
         // Note: The actual merge behavior depends on the parent class implementation
-        expect(merged.$modifierConfig, isNotNull);
+        expect(merged.$widgetDecoratorConfig, isNotNull);
       });
     });
 
@@ -520,11 +520,11 @@ void main() {
 
       test('variants method sets multiple variants', () {
         final variants = [
-          VariantStyleAttribute(
+          VariantStyle(
             ContextVariant.brightness(Brightness.dark),
             FlexMix.direction(Axis.horizontal),
           ),
-          VariantStyleAttribute(
+          VariantStyle(
             ContextVariant.brightness(Brightness.light),
             FlexMix.direction(Axis.vertical),
           ),

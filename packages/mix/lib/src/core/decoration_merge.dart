@@ -20,7 +20,7 @@ class DecorationMerger {
           color: b.$color,
           image: b.$image,
           gradient: b.$gradient,
-          boxShadow: b.shadows,
+          boxShadow: b.$shadows,
         ),
       );
     }
@@ -88,10 +88,11 @@ class DecorationMerger {
       }
     }
 
+    final propValue = shape?.$value;
+
     // Handle shape conversion - only if we have a direct value
-    if (shape?.hasValue == true) {
-      final boxShape = (shape as Prop<BoxShape>).value;
-      switch (boxShape) {
+    if (propValue != null) {
+      switch (propValue) {
         case BoxShape.circle:
           return side != null ? MixProp(CircleBorderMix.raw(side: side)) : null;
         case BoxShape.rectangle:

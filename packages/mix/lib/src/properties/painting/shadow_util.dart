@@ -21,7 +21,6 @@ final class ShadowUtility<T extends Style<Object?>>
   /// Utility for defining [ShadowMix.offset].
   late final offset = MixUtility<T, Offset>((prop) => call(offset: prop));
 
-
   ShadowUtility(super.builder);
 
   /// Utility for defining [ShadowMix.blurRadius].
@@ -51,7 +50,6 @@ final class BoxShadowUtility<T extends Style<Object?>>
 
   /// Utility for defining [BoxShadowMix.offset].
   late final offset = MixUtility<T, Offset>((prop) => call(offset: prop));
-
 
   BoxShadowUtility(super.builder);
 
@@ -178,10 +176,10 @@ final class ElevationMixPropUtility<T extends Style<Object?>>
     final boxShadows = kElevationToShadow[value]!.map(
       (e) => MixProp(
         BoxShadowMix.raw(
-          color: Prop(e.color),
-          offset: Prop(e.offset),
-          blurRadius: Prop(e.blurRadius),
-          spreadRadius: Prop(e.spreadRadius),
+          color: Prop.value(e.color),
+          offset: Prop.value(e.offset),
+          blurRadius: Prop.value(e.blurRadius),
+          spreadRadius: Prop.value(e.spreadRadius),
         ),
       ),
     );

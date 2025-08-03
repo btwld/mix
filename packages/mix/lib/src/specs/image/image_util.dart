@@ -1,82 +1,76 @@
 import 'package:flutter/material.dart';
 
-import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
 import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
-import '../../modifiers/modifier_config.dart';
-import '../../modifiers/modifier_util.dart';
+import '../../decorators/widget_decorator_config.dart';
+import '../../decorators/widget_decorator_util.dart';
 import '../../properties/painting/color_util.dart';
 import '../../variants/variant_util.dart';
 import 'image_attribute.dart';
 import 'image_spec.dart';
 
-/// Mutable utility class for image styling using composition over inheritance.
+/// Provides mutable utility for image styling with cascade notation support.
 ///
-/// Same API as ImageMix but with mutable internal state
-/// for cascade notation support: `$image..width(100)..height(100)..fit(BoxFit.cover)`
+/// Supports the same API as [ImageMix] but maintains mutable internal state
+/// enabling fluid styling: `$image..width(100)..height(100)..fit(BoxFit.cover)`.
 class ImageSpecUtility extends StyleMutableBuilder<ImageSpec> {
-  // IMAGE UTILITIES - Same as ImageMix but return ImageSpecUtility for cascade
-  @override
-  @protected
-  late final MutableImageMix value;
-
-  ImageMix width(double v) => value.width(v);
-
-  ImageMix height(double v) => value.height(v);
-
   late final color = ColorUtility(
-    (prop) => value.merge(ImageMix.raw(color: prop)),
+    (prop) => mutable.merge(ImageMix.raw(color: prop)),
   );
 
-  late final repeat = MixUtility(value.repeat);
+  late final repeat = MixUtility(mutable.repeat);
 
-  late final fit = MixUtility(value.fit);
+  late final fit = MixUtility(mutable.fit);
 
-  late final alignment = MixUtility(value.alignment);
+  late final alignment = MixUtility(mutable.alignment);
 
-  late final centerSlice = MixUtility(value.centerSlice);
+  late final centerSlice = MixUtility(mutable.centerSlice);
 
-  late final filterQuality = MixUtility(value.filterQuality);
+  late final filterQuality = MixUtility(mutable.filterQuality);
 
-  late final colorBlendMode = MixUtility(value.colorBlendMode);
-
-  ImageMix semanticLabel(String v) => value.semanticLabel(v);
-
-  ImageMix excludeFromSemantics(bool v) => value.excludeFromSemantics(v);
-
-  ImageMix gaplessPlayback(bool v) => value.gaplessPlayback(v);
-
-  ImageMix isAntiAlias(bool v) => value.isAntiAlias(v);
-
-  ImageMix matchTextDirection(bool v) => value.matchTextDirection(v);
+  late final colorBlendMode = MixUtility(mutable.colorBlendMode);
 
   late final on = OnContextVariantUtility<ImageSpec, ImageMix>(
-    (v) => value.variants([v]),
+    (v) => mutable.variants([v]),
   );
 
-  late final wrap = ModifierUtility(
-    (prop) => value.modifier(ModifierConfig(modifiers: [prop])),
+  late final wrap = WidgetDecoratorUtility(
+    (prop) =>
+        mutable.widgetDecorator(WidgetDecoratorConfig(decorators: [prop])),
   );
 
+  /// Internal mutable state for accumulating image styling properties.
+  @override
+  @protected
+  late final MutableImageMix mutable;
+
+  late final width = mutable.width;
+
+  late final height = mutable.height;
+
+  late final semanticLabel = mutable.semanticLabel;
+
+  late final excludeFromSemantics = mutable.excludeFromSemantics;
+
+  late final gaplessPlayback = mutable.gaplessPlayback;
+  late final isAntiAlias = mutable.isAntiAlias;
+  late final matchTextDirection = mutable.matchTextDirection;
+  late final animate = mutable.animate;
+  late final variants = mutable.variants;
   ImageSpecUtility([ImageMix? attribute]) {
-    value = MutableImageMix(attribute ?? ImageMix.raw());
+    mutable = MutableImageMix(attribute ?? ImageMix());
   }
-
-  /// Animation
-  ImageMix animate(AnimationConfig animation) => value.animate(animation);
-
-  // StyleAttribute interface implementation
 
   @override
   ImageSpecUtility merge(Style<ImageSpec>? other) {
     if (other == null) return this;
-    // IMMUTABLE: Always create new instance (StyleAttribute contract)
+    // Always create new instance (StyleAttribute contract)
     if (other is ImageSpecUtility) {
-      return ImageSpecUtility(value.merge(other.value));
+      return ImageSpecUtility(mutable.merge(other.mutable.value));
     }
     if (other is ImageMix) {
-      return ImageSpecUtility(value.merge(other));
+      return ImageSpecUtility(mutable.merge(other));
     }
 
     throw FlutterError('Unsupported merge type: ${other.runtimeType}');
@@ -84,12 +78,16 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageSpec> {
 
   @override
   ImageSpec resolve(BuildContext context) {
-    return value.resolve(context);
+    return mutable.resolve(context);
   }
+
+  /// The accumulated [ImageMix] with all applied styling properties.
+  @override
+  ImageMix get value => mutable.value;
 }
 
 class MutableImageMix extends ImageMix with Mutable<ImageSpec, ImageMix> {
-  MutableImageMix([ImageMix? attribute]) {
-    merge(attribute);
+  MutableImageMix(ImageMix style) {
+    value = style;
   }
 }

@@ -1,19 +1,9 @@
+import 'package:example/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
 void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(body: Center(child: Example())),
-    );
-  }
+  runMixApp(Example());
 }
 
 class Example extends StatefulWidget {
@@ -28,7 +18,7 @@ class _ExampleState extends State<Example> {
 
   @override
   Widget build(BuildContext context) {
-    final style = Style.box()
+    final style = Style.box(
         .color(Colors.black)
         .height(100)
         .width(100)
@@ -36,7 +26,8 @@ class _ExampleState extends State<Example> {
         .transform(Matrix4.identity())
         .transformAlignment(Alignment.center)
         .translate(0, _translated ? 100 : -100)
-        .animate(AnimationConfig.spring(300.ms, bounce: 0.6));
+        .animate(AnimationConfig.spring(300.ms, bounce: 0.6))
+    );
 
     return Row(
       spacing: 20,
