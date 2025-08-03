@@ -150,19 +150,19 @@ void main() {
 
       test('preserves directives and animation during merge', () {
         final token = MixToken<Shadow>('shadow.primary');
-        final directive = MockModifier<Shadow>('test');
+        final modifier = MockModifier<Shadow>('test');
         final animation = AnimationConfig.curve(
           duration: Duration(milliseconds: 300),
           curve: Curves.easeIn,
         );
 
         final prop1 = MixProp<Shadow>.token(token, ShadowMix.value);
-        final prop2 = MixProp<Shadow>.directives([directive]);
+        final prop2 = MixProp<Shadow>.modifiers([modifier]);
         final prop3 = MixProp<Shadow>.animation(animation);
 
         final merged = prop1.mergeProp(prop2).mergeProp(prop3);
 
-        expect(merged.$directives, contains(directive));
+        expect(merged.$modifiers, contains(modifier));
         expect(merged.$animation, equals(animation));
       });
     });

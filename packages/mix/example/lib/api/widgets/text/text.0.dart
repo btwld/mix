@@ -14,7 +14,7 @@ class Example extends StatelessWidget {
     final style = Style.text()
         .fontSize(20)
         .fontWeight(FontWeight.w700)
-        .directive(UppercaseStringDirective())
+        .textModifier(UppercaseStringModifier())
         .color(Colors.red);
 
     return StyledText('I love Mix', style: style);

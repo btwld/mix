@@ -23,41 +23,41 @@ import 'transform_decorator.dart';
 import 'visibility_decorator.dart';
 import 'widget_decorator_config.dart';
 
-/// Provides utilities for applying modifiers to styles.
+/// Provides utilities for applying decorators to styles.
 final class WidgetDecoratorUtility<T extends Style<Object?>>
     extends MixUtility<T, WidgetDecoratorMix> {
-  /// Opacity modifier utility.
+  /// Opacity decorator utility.
   late final opacity = OpacityWidgetDecoratorUtility<T>(builder);
 
-  /// Transform modifier utility.
+  /// Transform decorator utility.
   late final transform = TransformWidgetDecoratorUtility<T>(builder);
 
-  /// Visibility modifier utility.
+  /// Visibility decorator utility.
   late final visibility = VisibilityWidgetDecoratorUtility<T>(builder);
 
-  /// Aspect ratio modifier utility.
+  /// Aspect ratio decorator utility.
   late final aspectRatio = AspectRatioWidgetDecoratorUtility<T>(builder);
 
-  /// Align modifier utility.
+  /// Align decorator utility.
   late final align = AlignWidgetDecoratorUtility<T>(builder);
 
-  /// Padding modifier utility.
+  /// Padding decorator utility.
   late final padding = PaddingWidgetDecoratorUtility<T>(builder);
 
-  /// Sized box modifier utility.
+  /// Sized box decorator utility.
   late final sizedBox = SizedBoxWidgetDecoratorUtility<T>(builder);
 
-  /// Flexible modifier utility.
+  /// Flexible decorator utility.
   late final flexible = FlexibleWidgetDecoratorUtility<T>(builder);
 
-  /// Fractionally sized box modifier utility.
+  /// Fractionally sized box decorator utility.
   late final fractionallySizedBox =
       FractionallySizedBoxWidgetDecoratorUtility<T>(builder);
 
-  /// Rotated box modifier utility.
+  /// Rotated box decorator utility.
   late final rotatedBox = RotatedBoxWidgetDecoratorUtility<T>(builder);
 
-  /// Icon theme modifier utility.
+  /// Icon theme decorator utility.
   late final iconTheme = IconThemeWidgetDecoratorUtility<T>(builder);
 
   WidgetDecoratorUtility(super.builder);
@@ -126,27 +126,27 @@ final class WidgetDecoratorUtility<T extends Style<Object?>>
     );
   }
 
-  /// Resets all modifiers.
+  /// Resets all decorators.
   T reset() => builder(const ResetWidgetDecoratorMix());
 }
 
-/// Provides convenient modifier methods for spec attributes.
+/// Provides convenient decorator methods for spec attributes.
 mixin StyleWidgetDecoratorMixin<T extends Style<S>, S extends Spec<S>>
     on Style<S> {
-  /// Applies the given [value] modifier configuration.
+  /// Applies the given [value] decorator configuration.
   T widgetDecorator(WidgetDecoratorConfig value);
 
-  /// Wraps the widget with an opacity modifier.
+  /// Wraps the widget with an opacity decorator.
   T wrapOpacity(double opacity) {
     return widgetDecorator(WidgetDecoratorConfig.opacity(opacity));
   }
 
-  /// Wraps the widget with a padding modifier.
+  /// Wraps the widget with a padding decorator.
   T wrapPadding(EdgeInsetsGeometryMix padding) {
     return widgetDecorator(WidgetDecoratorConfig.padding(padding));
   }
 
-  /// Wraps the widget with a clip oval modifier.
+  /// Wraps the widget with a clip oval decorator.
   T wrapClipOval({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
     return widgetDecorator(
       WidgetDecoratorConfig.clipOval(
@@ -156,7 +156,7 @@ mixin StyleWidgetDecoratorMixin<T extends Style<S>, S extends Spec<S>>
     );
   }
 
-  /// Wraps the widget with a clip rect modifier.
+  /// Wraps the widget with a clip rect decorator.
   T wrapClipRect({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
     return widgetDecorator(
       WidgetDecoratorConfig.clipRect(
@@ -166,7 +166,7 @@ mixin StyleWidgetDecoratorMixin<T extends Style<S>, S extends Spec<S>>
     );
   }
 
-  /// Wraps the widget with a clip path modifier.
+  /// Wraps the widget with a clip path decorator.
   T wrapClipPath({CustomClipper<Path>? clipper, Clip? clipBehavior}) {
     return widgetDecorator(
       WidgetDecoratorConfig.clipPath(
@@ -176,14 +176,14 @@ mixin StyleWidgetDecoratorMixin<T extends Style<S>, S extends Spec<S>>
     );
   }
 
-  /// Wraps the widget with a clip triangle modifier.
+  /// Wraps the widget with a clip triangle decorator.
   T wrapClipTriangle({Clip? clipBehavior}) {
     return widgetDecorator(
       WidgetDecoratorConfig.clipTriangle(clipBehavior: clipBehavior),
     );
   }
 
-  /// Wraps the widget with a clip rounded rectangle modifier.
+  /// Wraps the widget with a clip rounded rectangle decorator.
   T wrapClipRRect({
     required BorderRadius borderRadius,
     CustomClipper<RRect>? clipper,
@@ -198,31 +198,31 @@ mixin StyleWidgetDecoratorMixin<T extends Style<S>, S extends Spec<S>>
     );
   }
 
-  /// Wraps the widget with a visibility modifier.
+  /// Wraps the widget with a visibility decorator.
   T wrapVisibility(bool visible) {
     return widgetDecorator(WidgetDecoratorConfig.visibility(visible));
   }
 
-  /// Wraps the widget with an aspect ratio modifier.
+  /// Wraps the widget with an aspect ratio decorator.
   T wrapAspectRatio(double aspectRatio) {
     return widgetDecorator(WidgetDecoratorConfig.aspectRatio(aspectRatio));
   }
 
-  /// Wraps the widget with a flexible modifier.
+  /// Wraps the widget with a flexible decorator.
   T wrapFlexible({int flex = 1, FlexFit fit = FlexFit.loose}) {
     return widgetDecorator(
       WidgetDecoratorConfig.flexible(flex: flex, fit: fit),
     );
   }
 
-  /// Wraps the widget with an expanded modifier.
+  /// Wraps the widget with an expanded decorator.
   T wrapExpanded({int flex = 1}) {
     return widgetDecorator(
       WidgetDecoratorConfig.flexible(flex: flex, fit: FlexFit.tight),
     );
   }
 
-  /// Wraps the widget with a scale transform modifier.
+  /// Wraps the widget with a scale transform decorator.
   T wrapScale(double scale, {Alignment alignment = Alignment.center}) {
     return widgetDecorator(
       WidgetDecoratorConfig.transform(
@@ -232,7 +232,7 @@ mixin StyleWidgetDecoratorMixin<T extends Style<S>, S extends Spec<S>>
     );
   }
 
-  /// Wraps the widget with a rotate transform modifier.
+  /// Wraps the widget with a rotate transform decorator.
   T wrapRotate(double angle, {Alignment alignment = Alignment.center}) {
     return widgetDecorator(
       WidgetDecoratorConfig.transform(
@@ -242,7 +242,7 @@ mixin StyleWidgetDecoratorMixin<T extends Style<S>, S extends Spec<S>>
     );
   }
 
-  /// Wraps the widget with a translate transform modifier.
+  /// Wraps the widget with a translate transform decorator.
   T wrapTranslate({double x = 0, double y = 0}) {
     return widgetDecorator(
       WidgetDecoratorConfig.transform(
@@ -251,7 +251,7 @@ mixin StyleWidgetDecoratorMixin<T extends Style<S>, S extends Spec<S>>
     );
   }
 
-  /// Wraps the widget with a transform modifier.
+  /// Wraps the widget with a transform decorator.
   T wrapTransform(Matrix4 transform, {Alignment? alignment}) {
     return widgetDecorator(
       WidgetDecoratorConfig.transform(
@@ -261,14 +261,14 @@ mixin StyleWidgetDecoratorMixin<T extends Style<S>, S extends Spec<S>>
     );
   }
 
-  /// Wraps the widget with a sized box modifier.
+  /// Wraps the widget with a sized box decorator.
   T wrapSizedBox({double? width, double? height}) {
     return widgetDecorator(
       WidgetDecoratorConfig.sizedBox(width: width, height: height),
     );
   }
 
-  /// Wraps the widget with constrained box modifier.
+  /// Wraps the widget with constrained box decorator.
   T wrapConstrainedBox(BoxConstraints constraints) {
     // Convert BoxConstraints to SizedBox for simplicity
     return widgetDecorator(
@@ -279,19 +279,19 @@ mixin StyleWidgetDecoratorMixin<T extends Style<S>, S extends Spec<S>>
     );
   }
 
-  /// Wraps the widget with an align modifier.
+  /// Wraps the widget with an align decorator.
   T wrapAlign(AlignmentGeometry alignment) {
     return widgetDecorator(WidgetDecoratorConfig.align(alignment: alignment));
   }
 
-  /// Wraps the widget with a center modifier.
+  /// Wraps the widget with a center decorator.
   T wrapCenter() {
     return widgetDecorator(
       WidgetDecoratorConfig.align(alignment: Alignment.center),
     );
   }
 
-  /// Wraps the widget with a fractionally sized box modifier.
+  /// Wraps the widget with a fractionally sized box decorator.
   T wrapFractionallySizedBox({
     double? widthFactor,
     double? heightFactor,
@@ -306,22 +306,22 @@ mixin StyleWidgetDecoratorMixin<T extends Style<S>, S extends Spec<S>>
     );
   }
 
-  /// Wraps the widget with a rotated box modifier.
+  /// Wraps the widget with a rotated box decorator.
   T wrapRotatedBox(int quarterTurns) {
     return widgetDecorator(WidgetDecoratorConfig.rotatedBox(quarterTurns));
   }
 
-  /// Wraps the widget with an intrinsic width modifier.
+  /// Wraps the widget with an intrinsic width decorator.
   T wrapIntrinsicWidth() {
     return widgetDecorator(WidgetDecoratorConfig.intrinsicWidth());
   }
 
-  /// Wraps the widget with an intrinsic height modifier.
+  /// Wraps the widget with an intrinsic height decorator.
   T wrapIntrinsicHeight() {
     return widgetDecorator(WidgetDecoratorConfig.intrinsicHeight());
   }
 
-  /// Wraps the widget with a mouse cursor modifier.
+  /// Wraps the widget with a mouse cursor decorator.
   T wrapMouseCursor(MouseCursor cursor) {
     // Note: MouseCursorDecoratorMix needs to be wrapped in ModifierConfig
     return widgetDecorator(
@@ -331,14 +331,14 @@ mixin StyleWidgetDecoratorMixin<T extends Style<S>, S extends Spec<S>>
     );
   }
 
-  /// Wraps the widget with a default text style modifier.
+  /// Wraps the widget with a default text style decorator.
   T wrapDefaultTextStyle(TextStyleMix style) {
     return widgetDecorator(
       WidgetDecoratorConfig.defaultTextStyle(style: style),
     );
   }
 
-  /// Wraps the widget with an icon theme modifier.
+  /// Wraps the widget with an icon theme decorator.
   T wrapIconTheme(IconThemeData data) {
     return widgetDecorator(
       WidgetDecoratorConfig.iconTheme(

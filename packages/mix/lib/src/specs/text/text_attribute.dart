@@ -38,7 +38,7 @@ class TextMix extends Style<TextSpec>
   final MixProp<TextHeightBehavior>? $textHeightBehavior;
   final Prop<TextDirection>? $textDirection;
   final Prop<bool>? $softWrap;
-  final List<Modifier<String>>? $directives;
+  final List<Modifier<String>>? $textModifiers;
   final Prop<Color>? $selectionColor;
   final Prop<String>? $semanticsLabel;
   final Prop<Locale>? $locale;
@@ -193,34 +193,34 @@ class TextMix extends Style<TextSpec>
     return TextMix(softWrap: value);
   }
 
-  /// Factory for text directive
-  factory TextMix.directive(Modifier<String> value) {
-    return TextMix(directives: [value]);
+  /// Factory for text modifier
+  factory TextMix.textModifiers(Modifier<String> value) {
+    return TextMix(textModifiers: [value]);
   }
 
-  /// Factory for uppercase directive
+  /// Factory for uppercase modifier
   factory TextMix.uppercase() {
-    return TextMix.directive(const UppercaseStringDirective());
+    return TextMix.textModifiers(const UppercaseStringModifier());
   }
 
-  /// Factory for lowercase directive
+  /// Factory for lowercase modifier
   factory TextMix.lowercase() {
-    return TextMix.directive(const LowercaseStringDirective());
+    return TextMix.textModifiers(const LowercaseStringModifier());
   }
 
-  /// Factory for capitalize directive
+  /// Factory for capitalize modifier
   factory TextMix.capitalize() {
-    return TextMix.directive(const CapitalizeStringDirective());
+    return TextMix.textModifiers(const CapitalizeStringModifier());
   }
 
-  /// Factory for title case directive
+  /// Factory for title case modifier
   factory TextMix.titleCase() {
-    return TextMix.directive(const TitleCaseStringDirective());
+    return TextMix.textModifiers(const TitleCaseStringModifier());
   }
 
-  /// Factory for sentence case directive
+  /// Factory for sentence case modifier
   factory TextMix.sentenceCase() {
-    return TextMix.directive(const SentenceCaseStringDirective());
+    return TextMix.textModifiers(const SentenceCaseStringModifier());
   }
 
   /// Factory for selection color
@@ -253,8 +253,8 @@ class TextMix extends Style<TextSpec>
     return TextMix(variants: [VariantStyle(variant, value)]);
   }
 
-  factory TextMix.contentModifier(Modifier<String> value) {
-    return TextMix(directives: [value]);
+  factory TextMix.textModifier(Modifier<String> value) {
+    return TextMix(textModifiers: [value]);
   }
 
   const TextMix.raw({
@@ -268,7 +268,7 @@ class TextMix extends Style<TextSpec>
     MixProp<TextHeightBehavior>? textHeightBehavior,
     Prop<TextDirection>? textDirection,
     Prop<bool>? softWrap,
-    List<Modifier<String>>? directives,
+    List<Modifier<String>>? textModifiers,
     Prop<Color>? selectionColor,
     Prop<String>? semanticsLabel,
     Prop<Locale>? locale,
@@ -287,7 +287,7 @@ class TextMix extends Style<TextSpec>
        $textHeightBehavior = textHeightBehavior,
        $textDirection = textDirection,
        $softWrap = softWrap,
-       $directives = directives,
+       $textModifiers = textModifiers,
        $selectionColor = selectionColor,
        $semanticsLabel = semanticsLabel,
        $locale = locale;
@@ -303,7 +303,7 @@ class TextMix extends Style<TextSpec>
     TextHeightBehaviorMix? textHeightBehavior,
     TextDirection? textDirection,
     bool? softWrap,
-    List<Modifier<String>>? directives,
+    List<Modifier<String>>? textModifiers,
     Color? selectionColor,
     String? semanticsLabel,
     Locale? locale,
@@ -322,7 +322,7 @@ class TextMix extends Style<TextSpec>
          textHeightBehavior: MixProp.maybe(textHeightBehavior),
          textDirection: Prop.maybe(textDirection),
          softWrap: Prop.maybe(softWrap),
-         directives: directives,
+         textModifiers: textModifiers,
          selectionColor: Prop.maybe(selectionColor),
          semanticsLabel: Prop.maybe(semanticsLabel),
          locale: Prop.maybe(locale),
@@ -354,7 +354,7 @@ class TextMix extends Style<TextSpec>
         ),
         textDirection: spec.textDirection,
         softWrap: spec.softWrap,
-        directives: spec.directives,
+        textModifiers: spec.textModifiers,
         selectionColor: spec.selectionColor,
         semanticsLabel: spec.semanticsLabel,
         locale: spec.locale,
@@ -372,8 +372,8 @@ class TextMix extends Style<TextSpec>
     return spec != null ? TextMix.value(spec) : null;
   }
 
-  TextMix contentModifier(Modifier<String> value) {
-    return merge(TextMix.directive(value));
+  TextMix textModifier(Modifier<String> value) {
+    return merge(TextMix.textModifiers(value));
   }
 
   /// Sets text overflow behavior
@@ -426,9 +426,9 @@ class TextMix extends Style<TextSpec>
     return merge(TextMix.softWrap(value));
   }
 
-  /// Adds a text directive
-  TextMix directive(Modifier<String> value) {
-    return merge(TextMix.directive(value));
+  /// Adds a text modifier
+  TextMix modifier(Modifier<String> value) {
+    return merge(TextMix.textModifiers(value));
   }
 
   /// Sets text color
@@ -551,27 +551,27 @@ class TextMix extends Style<TextSpec>
     return merge(TextMix.fontFamilyFallback(value));
   }
 
-  /// Applies uppercase directive
+  /// Applies uppercase modifier
   TextMix uppercase() {
     return merge(TextMix.uppercase());
   }
 
-  /// Applies lowercase directive
+  /// Applies lowercase modifier
   TextMix lowercase() {
     return merge(TextMix.lowercase());
   }
 
-  /// Applies capitalize directive
+  /// Applies capitalize modifier
   TextMix capitalize() {
     return merge(TextMix.capitalize());
   }
 
-  /// Applies title case directive
+  /// Applies title case modifier
   TextMix titleCase() {
     return merge(TextMix.titleCase());
   }
 
-  /// Applies sentence case directive
+  /// Applies sentence case modifier
   TextMix sentenceCase() {
     return merge(TextMix.sentenceCase());
   }
@@ -612,7 +612,7 @@ class TextMix extends Style<TextSpec>
       textHeightBehavior: MixHelpers.resolve(context, $textHeightBehavior),
       textDirection: MixHelpers.resolve(context, $textDirection),
       softWrap: MixHelpers.resolve(context, $softWrap),
-      directives: $directives,
+      textModifiers: $textModifiers,
       selectionColor: MixHelpers.resolve(context, $selectionColor),
       semanticsLabel: MixHelpers.resolve(context, $semanticsLabel),
       locale: MixHelpers.resolve(context, $locale),
@@ -644,7 +644,7 @@ class TextMix extends Style<TextSpec>
       ),
       textDirection: $textDirection.tryMerge(other.$textDirection),
       softWrap: $softWrap.tryMerge(other.$softWrap),
-      directives: $directives.tryMerge(other.$directives),
+      textModifiers: $textModifiers.tryMerge(other.$textModifiers),
       selectionColor: $selectionColor.tryMerge(other.$selectionColor),
       semanticsLabel: $semanticsLabel.tryMerge(other.$semanticsLabel),
       locale: $locale.tryMerge(other.$locale),
@@ -697,9 +697,6 @@ class TextMix extends Style<TextSpec>
       DiagnosticsProperty('softWrap', $softWrap, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('directive', $directives, defaultValue: null),
-    );
-    properties.add(
       DiagnosticsProperty(
         'selectionColor',
         $selectionColor,
@@ -716,7 +713,7 @@ class TextMix extends Style<TextSpec>
     properties.add(DiagnosticsProperty('locale', $locale, defaultValue: null));
 
     properties.add(
-      DiagnosticsProperty('directives', $directives, defaultValue: null),
+      DiagnosticsProperty('modifiers', $textModifiers, defaultValue: null),
     );
   }
 
@@ -739,7 +736,7 @@ class TextMix extends Style<TextSpec>
     $textHeightBehavior,
     $textDirection,
     $softWrap,
-    $directives,
+    $textModifiers,
     $selectionColor,
     $semanticsLabel,
     $locale,

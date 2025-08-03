@@ -2,22 +2,22 @@ import 'package:flutter/widgets.dart';
 
 import 'internal/internal_extensions.dart';
 
-/// Base class for directives that apply transformations to values.
+/// Base class for modifiers that apply transformations to values.
 ///
-/// Directives provide a way to modify values like colors or strings in a consistent,
+/// Modifiers provide a way to modify values like colors or strings in a consistent,
 /// composable manner throughout the Mix framework.
 @immutable
 abstract class Modifier<T> {
   const Modifier();
 
-  /// The unique identifier for this directive type.
+  /// The unique identifier for this modifier type.
   String get key;
 
   /// Applies the transformation to the given value.
   T apply(T value);
 }
 
-/// Directive that applies opacity to a color.
+/// Modifier that applies opacity to a color.
 class OpacityColorModifier extends Modifier<Color> {
   final double opacity;
 
@@ -38,7 +38,7 @@ class OpacityColorModifier extends Modifier<Color> {
   int get hashCode => opacity.hashCode;
 }
 
-/// Directive that applies alpha to a color.
+/// Modifier that applies alpha to a color.
 class AlphaColorModifier extends Modifier<Color> {
   final int alpha;
 
@@ -59,7 +59,7 @@ class AlphaColorModifier extends Modifier<Color> {
   int get hashCode => alpha.hashCode;
 }
 
-/// Directive that darkens a color.
+/// Modifier that darkens a color.
 class DarkenColorModifier extends Modifier<Color> {
   final int amount;
 
@@ -80,7 +80,7 @@ class DarkenColorModifier extends Modifier<Color> {
   int get hashCode => amount.hashCode;
 }
 
-/// Directive that lightens a color.
+/// Modifier that lightens a color.
 class LightenColorModifier extends Modifier<Color> {
   final int amount;
 
@@ -101,7 +101,7 @@ class LightenColorModifier extends Modifier<Color> {
   int get hashCode => amount.hashCode;
 }
 
-/// Directive that saturates a color.
+/// Modifier that saturates a color.
 class SaturateColorModifier extends Modifier<Color> {
   final int amount;
 
@@ -122,7 +122,7 @@ class SaturateColorModifier extends Modifier<Color> {
   int get hashCode => amount.hashCode;
 }
 
-/// Directive that desaturates a color.
+/// Modifier that desaturates a color.
 class DesaturateColorModifier extends Modifier<Color> {
   final int amount;
 
@@ -143,7 +143,7 @@ class DesaturateColorModifier extends Modifier<Color> {
   int get hashCode => amount.hashCode;
 }
 
-/// Directive that applies tint to a color.
+/// Modifier that applies tint to a color.
 class TintColorModifier extends Modifier<Color> {
   final int amount;
 
@@ -164,7 +164,7 @@ class TintColorModifier extends Modifier<Color> {
   int get hashCode => amount.hashCode;
 }
 
-/// Directive that applies shade to a color.
+/// Modifier that applies shade to a color.
 class ShadeColorModifier extends Modifier<Color> {
   final int amount;
 
@@ -185,7 +185,7 @@ class ShadeColorModifier extends Modifier<Color> {
   int get hashCode => amount.hashCode;
 }
 
-/// Directive that brightens a color.
+/// Modifier that brightens a color.
 class BrightenColorModifier extends Modifier<Color> {
   final int amount;
 
@@ -206,7 +206,7 @@ class BrightenColorModifier extends Modifier<Color> {
   int get hashCode => amount.hashCode;
 }
 
-/// Directive that sets the red channel of a color.
+/// Modifier that sets the red channel of a color.
 class WithRedColorModifier extends Modifier<Color> {
   final int red;
 
@@ -227,7 +227,7 @@ class WithRedColorModifier extends Modifier<Color> {
   int get hashCode => red.hashCode;
 }
 
-/// Directive that sets the green channel of a color.
+/// Modifier that sets the green channel of a color.
 class WithGreenColorModifier extends Modifier<Color> {
   final int green;
 
@@ -248,7 +248,7 @@ class WithGreenColorModifier extends Modifier<Color> {
   int get hashCode => green.hashCode;
 }
 
-/// Directive that sets the blue channel of a color.
+/// Modifier that sets the blue channel of a color.
 class WithBlueColorModifier extends Modifier<Color> {
   final int blue;
 
@@ -269,83 +269,83 @@ class WithBlueColorModifier extends Modifier<Color> {
   int get hashCode => blue.hashCode;
 }
 
-/// Directive that capitalizes the first letter of a string.
-final class CapitalizeStringDirective extends Modifier<String> {
-  const CapitalizeStringDirective();
+/// Modifier that capitalizes the first letter of a string.
+final class CapitalizeStringModifier extends Modifier<String> {
+  const CapitalizeStringModifier();
   @override
   String apply(String value) => value.capitalize;
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is CapitalizeStringDirective;
+      identical(this, other) || other is CapitalizeStringModifier;
   @override
   String get key => 'capitalize';
   @override
   int get hashCode => key.hashCode;
 }
 
-/// Directive that converts a string to uppercase.
-final class UppercaseStringDirective extends Modifier<String> {
-  const UppercaseStringDirective();
+/// Modifier that converts a string to uppercase.
+final class UppercaseStringModifier extends Modifier<String> {
+  const UppercaseStringModifier();
   @override
   String apply(String value) => value.toUpperCase();
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is UppercaseStringDirective;
+      identical(this, other) || other is UppercaseStringModifier;
   @override
   String get key => 'uppercase';
   @override
   int get hashCode => key.hashCode;
 }
 
-/// Directive that converts a string to lowercase.
-final class LowercaseStringDirective extends Modifier<String> {
-  const LowercaseStringDirective();
+/// Modifier that converts a string to lowercase.
+final class LowercaseStringModifier extends Modifier<String> {
+  const LowercaseStringModifier();
   @override
   String apply(String value) => value.toLowerCase();
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is LowercaseStringDirective;
+      identical(this, other) || other is LowercaseStringModifier;
   @override
   String get key => 'lowercase';
   @override
   int get hashCode => key.hashCode;
 }
 
-/// Directive that converts a string to title case.
-final class TitleCaseStringDirective extends Modifier<String> {
-  const TitleCaseStringDirective();
+/// Modifier that converts a string to title case.
+final class TitleCaseStringModifier extends Modifier<String> {
+  const TitleCaseStringModifier();
   @override
   String apply(String value) => value.titleCase;
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is TitleCaseStringDirective;
+      identical(this, other) || other is TitleCaseStringModifier;
   @override
   String get key => 'title_case';
   @override
   int get hashCode => key.hashCode;
 }
 
-/// Directive that converts a string to sentence case.
-final class SentenceCaseStringDirective extends Modifier<String> {
-  const SentenceCaseStringDirective();
+/// Modifier that converts a string to sentence case.
+final class SentenceCaseStringModifier extends Modifier<String> {
+  const SentenceCaseStringModifier();
   @override
   String apply(String value) => value.sentenceCase;
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is SentenceCaseStringDirective;
+      identical(this, other) || other is SentenceCaseStringModifier;
   @override
   String get key => 'sentence_case';
   @override
   int get hashCode => key.hashCode;
 }
 
-/// Extension on [List<MixDirective<T>>] to provide apply functionality
-extension MixDirectiveListExt<T> on List<Modifier<T>> {
-  /// Applies all directives in the list to the given value in sequence
+/// Extension on [List<Modifier<T>>] to provide apply functionality
+extension ModifierListExt<T> on List<Modifier<T>> {
+  /// Applies all modifiers in the list to the given value in sequence
   T apply(T value) {
     var result = value;
-    for (final directive in this) {
-      result = directive.apply(result);
+    for (final modifier in this) {
+      result = modifier.apply(result);
     }
 
     return result;

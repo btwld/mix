@@ -211,7 +211,7 @@ extension ListMixPropExt<T> on List<MixProp<T>>? {
   }
 }
 
-extension ListMixDirectiveExt<T> on List<Modifier<T>>? {
+extension ListModifierExt<T> on List<Modifier<T>>? {
   List<Modifier<T>>? tryMerge(List<Modifier<T>>? other) {
     if (other == null) return this;
     if (this == null) return other;

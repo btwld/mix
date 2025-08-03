@@ -369,11 +369,11 @@ class MockMix<T> extends Mix<T> {
 ///
 /// Usage:
 /// ```dart
-/// // Simple directive for testing presence (identity transform)
-/// final directive1 = MockModifier<int>('test');
+/// // Simple modifier for testing presence (identity transform)
+/// final modifier1 = MockModifier<int>('test');
 ///
 /// // With custom transformer
-/// final doubleDirective = MockModifier<int>(
+/// final doubleModifier = MockModifier<int>(
 ///   'double',
 ///   (value) => value * 2,
 /// );

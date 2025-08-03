@@ -29,7 +29,7 @@ class StyledText extends StyleWidget<TextSpec> {
   @override
   Widget build(BuildContext context, TextSpec? spec) {
     return Text(
-      spec?.directives?.apply(text) ?? text,
+      spec?.textModifiers?.apply(text) ?? text,
       style: spec?.style,
       strutStyle: spec?.strutStyle,
       textAlign: spec?.textAlign,

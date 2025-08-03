@@ -22,7 +22,7 @@ void main() {
           ),
           textDirection: TextDirection.rtl,
           softWrap: false,
-          directives: [],
+          textModifiers: [],
         );
 
         expect(spec.overflow, TextOverflow.ellipsis);
@@ -36,7 +36,7 @@ void main() {
         expect(spec.textHeightBehavior, isA<TextHeightBehavior>());
         expect(spec.textDirection, TextDirection.rtl);
         expect(spec.softWrap, false);
-        expect(spec.directives, isEmpty);
+        expect(spec.textModifiers, isEmpty);
       });
 
       test('creates TextSpec with default values', () {
@@ -52,7 +52,7 @@ void main() {
         expect(spec.textHeightBehavior, isNull);
         expect(spec.textDirection, isNull);
         expect(spec.softWrap, isNull);
-        expect(spec.directives, isNull);
+        expect(spec.textModifiers, isNull);
       });
     });
 
@@ -250,7 +250,7 @@ void main() {
           textHeightBehavior: TextHeightBehavior(),
           textDirection: TextDirection.rtl,
           softWrap: false,
-          directives: [],
+          textModifiers: [],
         );
 
         final diagnostics = DiagnosticPropertiesBuilder();
@@ -267,7 +267,7 @@ void main() {
         expect(properties.any((p) => p.name == 'textHeightBehavior'), isTrue);
         expect(properties.any((p) => p.name == 'textDirection'), isTrue);
         expect(properties.any((p) => p.name == 'softWrap'), isTrue);
-        expect(properties.any((p) => p.name == 'directives'), isTrue);
+        expect(properties.any((p) => p.name == 'textModifiers'), isTrue);
       });
     });
 
@@ -284,7 +284,7 @@ void main() {
           textHeightBehavior: TextHeightBehavior(),
           textDirection: TextDirection.rtl,
           softWrap: false,
-          directives: [],
+          textModifiers: [],
         );
 
         expect(spec.props.length, 14);
@@ -298,7 +298,7 @@ void main() {
         expect(spec.props, contains(spec.textHeightBehavior));
         expect(spec.props, contains(TextDirection.rtl));
         expect(spec.props, contains(false));
-        expect(spec.props, contains(spec.directives));
+        expect(spec.props, contains(spec.textModifiers));
       });
     });
 

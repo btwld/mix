@@ -11,7 +11,7 @@ import '../properties/painting/shadow_mix.dart';
 /// A decorator that wraps a widget with the [IconTheme] widget.
 ///
 /// The [IconTheme] widget is used to provide default icon properties to descendant
-/// [Icon] widgets. This modifier allows setting default color, size, opacity, and
+/// [Icon] widgets. This decorator allows setting default color, size, opacity, and
 /// other icon properties that will be inherited by child icons.
 final class IconThemeWidgetDecorator
     extends WidgetDecorator<IconThemeWidgetDecorator>
@@ -146,7 +146,7 @@ class IconThemeWidgetDecoratorMix
   /// [IconThemeWidgetDecoratorMix] with the properties of [other] taking precedence over
   /// the properties of this instance.
   ///
-  /// This method is typically used when combining or overriding icon theme modifier attributes.
+  /// This method is typically used when combining or overriding icon theme decorator attributes.
   @override
   IconThemeWidgetDecoratorMix merge(IconThemeWidgetDecoratorMix? other) {
     if (other == null) return this;

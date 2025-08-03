@@ -17,40 +17,40 @@ import 'shape_border_merge.dart';
 /// Base class for property values that can be resolved and merged.
 ///
 /// Properties are the foundation of the Mix system, providing value resolution,
-/// merging capabilities, directive application, and animation support.
+/// merging capabilities, modifier application, and animation support.
 @immutable
 sealed class PropBase<V> {
-  /// Directives to apply to the resolved value
-  final List<Modifier<V>>? $directives;
+  /// Modifiers to apply to the resolved value
+  final List<Modifier<V>>? $modifiers;
 
   /// Animation configuration for this property
   final AnimationConfig? $animation;
 
-  const PropBase({List<Modifier<V>>? directives, AnimationConfig? animation})
-    : $directives = directives,
+  const PropBase({List<Modifier<V>>? modifiers, AnimationConfig? animation})
+    : $modifiers = modifiers,
       $animation = animation;
 
   Type get type => V;
 
   bool get hasToken;
 
-  /// Applies directives to the resolved value
+  /// Applies modifiers to the resolved value
   @protected
-  V applyDirectives(V value) {
-    if ($directives == null || $directives!.isEmpty) return value;
+  V applyModifiers(V value) {
+    if ($modifiers == null || $modifiers!.isEmpty) return value;
 
     var result = value;
-    for (final directive in $directives!) {
-      result = directive.apply(result);
+    for (final modifier in $modifiers!) {
+      result = modifier.apply(result);
     }
 
     return result;
   }
 
-  // Helper methods for merging directives and animation
+  // Helper methods for merging modifiers and animation
   @protected
-  List<Modifier<V>>? mergeDirectives(List<Modifier<V>>? other) {
-    return switch (($directives, other)) {
+  List<Modifier<V>>? mergeModifiers(List<Modifier<V>>? other) {
+    return switch (($modifiers, other)) {
       (null, null) => null,
       (final a?, null) => a,
       (null, final b?) => b,
@@ -77,31 +77,31 @@ class Prop<V> extends PropBase<V> {
   final MixToken<V>? $token;
 
   @protected
-  const Prop({V? value, MixToken<V>? token, super.directives, super.animation})
+  const Prop({V? value, MixToken<V>? token, super.modifiers, super.animation})
     : $value = value,
       $token = token;
 
   const Prop.token(
     MixToken<V> token, {
-    List<Modifier<V>>? directives,
+    List<Modifier<V>>? modifiers,
     AnimationConfig? animation,
-  }) : this(token: token, directives: directives, animation: animation);
+  }) : this(token: token, modifiers: modifiers, animation: animation);
 
   Prop.fromProp(Prop<V> other)
     : this(
         value: other.$value,
         token: other.$token,
-        directives: other.$directives,
+        modifiers: other.$modifiers,
         animation: other.$animation,
       );
 
-  const Prop.directives(
-    List<Modifier<V>> directives, {
+  const Prop.modifiers(
+    List<Modifier<V>> modifiers, {
     AnimationConfig? animation,
-  }) : this(directives: directives, animation: animation);
+  }) : this(modifiers: modifiers, animation: animation);
 
   const Prop.animation(AnimationConfig animation)
-    : this(directives: null, animation: animation);
+    : this(modifiers: null, animation: animation);
 
   static Prop<V> value<V>(V value) {
     if (value is Prop<V>) return value;
@@ -118,8 +118,8 @@ class Prop<V> extends PropBase<V> {
   // Helper methods for Prop
   bool get hasValue => $value != null;
 
-  Prop<V> directives(List<Modifier<V>> directives) {
-    return mergeProp(Prop.directives(directives));
+  Prop<V> modifiers(List<Modifier<V>> modifiers) {
+    return mergeProp(Prop.modifiers(modifiers));
   }
 
   Prop<V> animation(AnimationConfig animation) {
@@ -148,7 +148,7 @@ class Prop<V> extends PropBase<V> {
     return Prop(
       value: value,
       token: token,
-      directives: mergeDirectives(other.$directives),
+      modifiers: mergeModifiers(other.$modifiers),
       animation: mergeAnimation(other.$animation),
     );
   }
@@ -167,8 +167,8 @@ class Prop<V> extends PropBase<V> {
       resolvedValue = $value as V;
     }
 
-    // Apply directives if any
-    return applyDirectives(resolvedValue);
+    // Apply modifiers if any
+    return applyModifiers(resolvedValue);
   }
 
   @override
@@ -179,8 +179,8 @@ class Prop<V> extends PropBase<V> {
     } else {
       parts.add('value: ${$value ?? 'null'}');
     }
-    if ($directives != null && $directives!.isNotEmpty) {
-      parts.add('directives: ${$directives!.length}');
+    if ($modifiers != null && $modifiers!.isNotEmpty) {
+      parts.add('modifiers: ${$modifiers!.length}');
     }
     if ($animation != null) parts.add('animated');
 
@@ -194,7 +194,7 @@ class Prop<V> extends PropBase<V> {
     return other is Prop<V> &&
         other.$token == $token &&
         other.$value == $value &&
-        listEquals(other.$directives, $directives) &&
+        listEquals(other.$modifiers, $modifiers) &&
         other.$animation == $animation;
   }
 
@@ -202,7 +202,7 @@ class Prop<V> extends PropBase<V> {
   bool get hasToken => $token != null;
 
   @override
-  int get hashCode => Object.hash($token, $value, $directives, $animation);
+  int get hashCode => Object.hash($token, $value, $modifiers, $animation);
 }
 
 /// Mix prop for Mix types - uses accumulation merge strategy
@@ -210,13 +210,13 @@ class Prop<V> extends PropBase<V> {
 class MixProp<V> extends PropBase<V> {
   final List<MixSource<V>> sources;
 
-  const MixProp._({required this.sources, super.directives, super.animation});
+  const MixProp._({required this.sources, super.modifiers, super.animation});
 
   // Named constructors for clarity
   MixProp(Mix<V> value)
     : this._(
         sources: [MixValueSource(value)],
-        directives: null,
+        modifiers: null,
         animation: null,
       );
 
@@ -224,16 +224,16 @@ class MixProp<V> extends PropBase<V> {
   MixProp.token(MixToken<V> token, Mix<V> Function(V) converter)
     : this._(
         sources: [MixTokenSource(token, converter)],
-        directives: null,
+        modifiers: null,
         animation: null,
       );
 
-  // directives
-  const MixProp.directives(List<Modifier<V>> directives)
-    : this._(sources: const [], directives: directives, animation: null);
+  // modifiers
+  const MixProp.modifiers(List<Modifier<V>> modifiers)
+    : this._(sources: const [], modifiers: modifiers, animation: null);
 
   const MixProp.animation(AnimationConfig animation)
-    : this._(sources: const [], directives: null, animation: animation);
+    : this._(sources: const [], modifiers: null, animation: animation);
 
   static MixProp<T>? maybe<T>(Mix<T>? value) {
     if (value == null) return null;
@@ -316,8 +316,8 @@ class MixProp<V> extends PropBase<V> {
     return consolidated;
   }
 
-  MixProp<V> directives(List<Modifier<V>> directives) {
-    return mergeProp(MixProp.directives(directives));
+  MixProp<V> modifiers(List<Modifier<V>> modifiers) {
+    return mergeProp(MixProp.modifiers(modifiers));
   }
 
   MixProp<V> animation(AnimationConfig animation) {
@@ -350,8 +350,8 @@ class MixProp<V> extends PropBase<V> {
 
     final resolvedValue = mergedMix.resolve(context);
 
-    // Apply directives if any
-    return applyDirectives(resolvedValue);
+    // Apply modifiers if any
+    return applyModifiers(resolvedValue);
   }
 
   @override
@@ -366,7 +366,7 @@ class MixProp<V> extends PropBase<V> {
 
     return MixProp._(
       sources: mergedSources,
-      directives: mergeDirectives(other.$directives),
+      modifiers: mergeModifiers(other.$modifiers),
       animation: mergeAnimation(other.$animation),
     );
   }
@@ -377,7 +377,7 @@ class MixProp<V> extends PropBase<V> {
 
     return other is MixProp<V> &&
         listEquals(other.sources, sources) &&
-        listEquals(other.$directives, $directives) &&
+        listEquals(other.$modifiers, $modifiers) &&
         other.$animation == $animation;
   }
 
@@ -386,5 +386,5 @@ class MixProp<V> extends PropBase<V> {
 
   @override
   int get hashCode =>
-      Object.hash(Object.hashAll(sources), $directives, $animation);
+      Object.hash(Object.hashAll(sources), $modifiers, $animation);
 }
