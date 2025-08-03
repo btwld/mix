@@ -191,10 +191,10 @@ void main() {
     });
   });
 
-  group('SizedBoxWidgetDecoratorStyle', () {
+  group('SizedBoxWidgetDecoratorMix', () {
     group('Constructor', () {
       test('creates with null values by default', () {
-        final attribute = SizedBoxWidgetDecoratorStyle();
+        final attribute = SizedBoxWidgetDecoratorMix();
 
         expect(attribute.width, isNull);
         expect(attribute.height, isNull);
@@ -203,7 +203,7 @@ void main() {
       test('creates with provided Prop values', () {
         final width = Prop.value(100.0);
         final height = Prop.value(200.0);
-        final attribute = SizedBoxWidgetDecoratorStyle.raw(
+        final attribute = SizedBoxWidgetDecoratorMix.raw(
           width: width,
           height: height,
         );
@@ -215,7 +215,7 @@ void main() {
 
     group('only constructor', () {
       test('creates Prop values from direct values', () {
-        final attribute = SizedBoxWidgetDecoratorStyle(
+        final attribute = SizedBoxWidgetDecoratorMix(
           width: 100.0,
           height: 200.0,
         );
@@ -225,18 +225,18 @@ void main() {
       });
 
       test('handles null values correctly', () {
-        final attribute = SizedBoxWidgetDecoratorStyle();
+        final attribute = SizedBoxWidgetDecoratorMix();
 
         expect(attribute.width, isNull);
         expect(attribute.height, isNull);
       });
 
       test('handles partial values', () {
-        final attribute1 = SizedBoxWidgetDecoratorStyle(width: 100.0);
+        final attribute1 = SizedBoxWidgetDecoratorMix(width: 100.0);
         expect(attribute1.width!, resolvesTo(100.0));
         expect(attribute1.height, isNull);
 
-        final attribute2 = SizedBoxWidgetDecoratorStyle(height: 200.0);
+        final attribute2 = SizedBoxWidgetDecoratorMix(height: 200.0);
         expect(attribute2.width, isNull);
         expect(attribute2.height!, resolvesTo(200.0));
       });
@@ -244,7 +244,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to SizedBoxWidgetDecorator with resolved values', () {
-        final attribute = SizedBoxWidgetDecoratorStyle(
+        final attribute = SizedBoxWidgetDecoratorMix(
           width: 100.0,
           height: 200.0,
         );
@@ -255,7 +255,7 @@ void main() {
       });
 
       test('resolves with null values', () {
-        final attribute = SizedBoxWidgetDecoratorStyle();
+        final attribute = SizedBoxWidgetDecoratorMix();
 
         const expectedModifier = SizedBoxWidgetDecorator();
 
@@ -264,12 +264,12 @@ void main() {
     });
 
     group('merge', () {
-      test('merges with other SizedBoxWidgetDecoratorStyle', () {
-        final attribute1 = SizedBoxWidgetDecoratorStyle(
+      test('merges with other SizedBoxWidgetDecoratorMix', () {
+        final attribute1 = SizedBoxWidgetDecoratorMix(
           width: 100.0,
           height: 100.0,
         );
-        final attribute2 = SizedBoxWidgetDecoratorStyle(
+        final attribute2 = SizedBoxWidgetDecoratorMix(
           width: 200.0,
           height: 200.0,
         );
@@ -281,7 +281,7 @@ void main() {
       });
 
       test('returns original when other is null', () {
-        final attribute = SizedBoxWidgetDecoratorStyle(width: 100.0);
+        final attribute = SizedBoxWidgetDecoratorMix(width: 100.0);
 
         final merged = attribute.merge(null);
 
@@ -289,8 +289,8 @@ void main() {
       });
 
       test('merges with null values', () {
-        final attribute1 = SizedBoxWidgetDecoratorStyle();
-        final attribute2 = SizedBoxWidgetDecoratorStyle(
+        final attribute1 = SizedBoxWidgetDecoratorMix();
+        final attribute2 = SizedBoxWidgetDecoratorMix(
           width: 100.0,
           height: 200.0,
         );
@@ -304,11 +304,11 @@ void main() {
 
     group('equality and props', () {
       test('equal when all Prop values match', () {
-        final attribute1 = SizedBoxWidgetDecoratorStyle(
+        final attribute1 = SizedBoxWidgetDecoratorMix(
           width: 100.0,
           height: 200.0,
         );
-        final attribute2 = SizedBoxWidgetDecoratorStyle(
+        final attribute2 = SizedBoxWidgetDecoratorMix(
           width: 100.0,
           height: 200.0,
         );
@@ -317,14 +317,14 @@ void main() {
       });
 
       test('not equal when values differ', () {
-        final attribute1 = SizedBoxWidgetDecoratorStyle(width: 100.0);
-        final attribute2 = SizedBoxWidgetDecoratorStyle(width: 200.0);
+        final attribute1 = SizedBoxWidgetDecoratorMix(width: 100.0);
+        final attribute2 = SizedBoxWidgetDecoratorMix(width: 200.0);
 
         expect(attribute1, isNot(equals(attribute2)));
       });
 
       test('props contains all Prop values', () {
-        final attribute = SizedBoxWidgetDecoratorStyle(
+        final attribute = SizedBoxWidgetDecoratorMix(
           width: 100.0,
           height: 200.0,
         );
@@ -338,10 +338,10 @@ void main() {
   });
 
   group('Integration tests', () {
-    testWidgets('SizedBoxWidgetDecoratorStyle resolves and builds correctly', (
+    testWidgets('SizedBoxWidgetDecoratorMix resolves and builds correctly', (
       WidgetTester tester,
     ) async {
-      final attribute = SizedBoxWidgetDecoratorStyle(width: 150.0, height: 250.0);
+      final attribute = SizedBoxWidgetDecoratorMix(width: 150.0, height: 250.0);
 
       final modifier = attribute.resolve(MockBuildContext());
       const child = SizedBox(width: 100, height: 100);
@@ -355,11 +355,11 @@ void main() {
     });
 
     test('Complex merge scenario preserves and overrides correctly', () {
-      final base = SizedBoxWidgetDecoratorStyle(width: 100.0, height: 100.0);
+      final base = SizedBoxWidgetDecoratorMix(width: 100.0, height: 100.0);
 
-      final override1 = SizedBoxWidgetDecoratorStyle(width: 200.0);
+      final override1 = SizedBoxWidgetDecoratorMix(width: 200.0);
 
-      final override2 = SizedBoxWidgetDecoratorStyle(height: 300.0);
+      final override2 = SizedBoxWidgetDecoratorMix(height: 300.0);
 
       final result = base.merge(override1).merge(override2);
 

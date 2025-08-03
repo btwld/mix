@@ -188,11 +188,11 @@ void main() {
             .alignment(Alignment.center)
             .wrap(
               WidgetDecoratorConfig.decorators([
-                OpacityWidgetDecoratorStyle(opacity: 0.5),
-                PaddingWidgetDecoratorStyle(
+                OpacityWidgetDecoratorMix(opacity: 0.5),
+                PaddingWidgetDecoratorMix(
                   padding: EdgeInsetsGeometryMix.all(10),
                 ),
-                ClipOvalWidgetDecoratorStyle(),
+                ClipOvalWidgetDecoratorMix(),
               ]),
             );
 
@@ -238,12 +238,12 @@ void main() {
             .color(Colors.blue)
             .wrap(
               WidgetDecoratorConfig.decorators([
-                OpacityWidgetDecoratorStyle(opacity: 0.5),
-                PaddingWidgetDecoratorStyle(
+                OpacityWidgetDecoratorMix(opacity: 0.5),
+                PaddingWidgetDecoratorMix(
                   padding: EdgeInsetsGeometryMix.all(10),
                 ),
-                ClipOvalWidgetDecoratorStyle(),
-                VisibilityWidgetDecoratorStyle(visible: true),
+                ClipOvalWidgetDecoratorMix(),
+                VisibilityWidgetDecoratorMix(visible: true),
               ]),
             );
 
@@ -313,11 +313,11 @@ void main() {
             .color(Colors.blue)
             .wrap(
               WidgetDecoratorConfig.decorators([
-                OpacityWidgetDecoratorStyle(opacity: 0.5),
-                PaddingWidgetDecoratorStyle(
+                OpacityWidgetDecoratorMix(opacity: 0.5),
+                PaddingWidgetDecoratorMix(
                   padding: EdgeInsetsGeometryMix.all(10),
                 ),
-                ClipOvalWidgetDecoratorStyle(),
+                ClipOvalWidgetDecoratorMix(),
               ]).orderOfDecorators(customOrder),
             );
 

@@ -42,24 +42,24 @@ void main() {
     });
   });
 
-  // IntrinsicHeightWidgetDecoratorStyle
-  group('IntrinsicHeightWidgetDecoratorStyle', () {
+  // IntrinsicHeightWidgetDecoratorMix
+  group('IntrinsicHeightWidgetDecoratorMix', () {
     test('merge', () {
-      const modifier = IntrinsicHeightWidgetDecoratorStyle();
-      const other = IntrinsicHeightWidgetDecoratorStyle();
+      const modifier = IntrinsicHeightWidgetDecoratorMix();
+      const other = IntrinsicHeightWidgetDecoratorMix();
       final result = modifier.merge(other);
       expect(result, modifier);
     });
 
     test('resolve', () {
-      const modifier = IntrinsicHeightWidgetDecoratorStyle();
+      const modifier = IntrinsicHeightWidgetDecoratorMix();
       expect(modifier, resolvesTo(const IntrinsicHeightWidgetDecorator()));
     });
 
     // equality
     test('equality', () {
-      const modifier = IntrinsicHeightWidgetDecoratorStyle();
-      const other = IntrinsicHeightWidgetDecoratorStyle();
+      const modifier = IntrinsicHeightWidgetDecoratorMix();
+      const other = IntrinsicHeightWidgetDecoratorMix();
       expect(modifier, other);
     });
   });
@@ -101,24 +101,24 @@ void main() {
     });
   });
 
-  // IntrinsicWidthWidgetDecoratorStyle
-  group('IntrinsicWidthWidgetDecoratorStyle', () {
+  // IntrinsicWidthWidgetDecoratorMix
+  group('IntrinsicWidthWidgetDecoratorMix', () {
     test('merge', () {
-      const modifier = IntrinsicWidthWidgetDecoratorStyle();
-      const other = IntrinsicWidthWidgetDecoratorStyle();
+      const modifier = IntrinsicWidthWidgetDecoratorMix();
+      const other = IntrinsicWidthWidgetDecoratorMix();
       final result = modifier.merge(other);
       expect(result, modifier);
     });
 
     test('resolve', () {
-      const modifier = IntrinsicWidthWidgetDecoratorStyle();
+      const modifier = IntrinsicWidthWidgetDecoratorMix();
       expect(modifier, resolvesTo(const IntrinsicWidthWidgetDecorator()));
     });
 
     // equality
     test('equality', () {
-      const modifier = IntrinsicWidthWidgetDecoratorStyle();
-      const other = IntrinsicWidthWidgetDecoratorStyle();
+      const modifier = IntrinsicWidthWidgetDecoratorMix();
+      const other = IntrinsicWidthWidgetDecoratorMix();
       expect(modifier, other);
     });
   });

@@ -68,14 +68,14 @@ final class ClipOvalWidgetDecorator
 }
 
 /// Attribute class for [ClipOvalWidgetDecorator] with resolvable properties.
-class ClipOvalWidgetDecoratorStyle
+class ClipOvalWidgetDecoratorMix
     extends WidgetDecoratorMix<ClipOvalWidgetDecorator> {
   final Prop<CustomClipper<Rect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
-  const ClipOvalWidgetDecoratorStyle.raw({this.clipper, this.clipBehavior});
+  const ClipOvalWidgetDecoratorMix.raw({this.clipper, this.clipBehavior});
 
-  ClipOvalWidgetDecoratorStyle({
+  ClipOvalWidgetDecoratorMix({
     CustomClipper<Rect>? clipper,
     Clip? clipBehavior,
   }) : this.raw(
@@ -92,19 +92,19 @@ class ClipOvalWidgetDecoratorStyle
     );
   }
 
-  /// Merges the properties of this [ClipOvalWidgetDecoratorStyle] with the properties of [other].
+  /// Merges the properties of this [ClipOvalWidgetDecoratorMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [ClipOvalWidgetDecoratorStyle] with the properties of [other] taking precedence over
+  /// [ClipOvalWidgetDecoratorMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  ClipOvalWidgetDecoratorStyle merge(ClipOvalWidgetDecoratorStyle? other) {
+  ClipOvalWidgetDecoratorMix merge(ClipOvalWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return ClipOvalWidgetDecoratorStyle.raw(
+    return ClipOvalWidgetDecoratorMix.raw(
       clipper: clipper.tryMerge(other.clipper),
       clipBehavior: clipBehavior.tryMerge(other.clipBehavior),
     );
@@ -172,14 +172,14 @@ final class ClipRectWidgetDecorator
 }
 
 /// Attribute class for [ClipRectWidgetDecorator] with resolvable properties.
-class ClipRectWidgetDecoratorStyle
+class ClipRectWidgetDecoratorMix
     extends WidgetDecoratorMix<ClipRectWidgetDecorator> {
   final Prop<CustomClipper<Rect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
-  const ClipRectWidgetDecoratorStyle.raw({this.clipper, this.clipBehavior});
+  const ClipRectWidgetDecoratorMix.raw({this.clipper, this.clipBehavior});
 
-  ClipRectWidgetDecoratorStyle({
+  ClipRectWidgetDecoratorMix({
     CustomClipper<Rect>? clipper,
     Clip? clipBehavior,
   }) : this.raw(
@@ -193,7 +193,7 @@ class ClipRectWidgetDecoratorStyle
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final clipRectModifier = ClipRectWidgetDecoratorStyle(...).resolve(mix);
+  /// final clipRectModifier = ClipRectWidgetDecoratorMix(...).resolve(mix);
   /// ```
   @override
   ClipRectWidgetDecorator resolve(BuildContext context) {
@@ -203,19 +203,19 @@ class ClipRectWidgetDecoratorStyle
     );
   }
 
-  /// Merges the properties of this [ClipRectWidgetDecoratorStyle] with the properties of [other].
+  /// Merges the properties of this [ClipRectWidgetDecoratorMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [ClipRectWidgetDecoratorStyle] with the properties of [other] taking precedence over
+  /// [ClipRectWidgetDecoratorMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  ClipRectWidgetDecoratorStyle merge(ClipRectWidgetDecoratorStyle? other) {
+  ClipRectWidgetDecoratorMix merge(ClipRectWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return ClipRectWidgetDecoratorStyle.raw(
+    return ClipRectWidgetDecoratorMix.raw(
       clipper: clipper.tryMerge(other.clipper),
       clipBehavior: clipBehavior.tryMerge(other.clipBehavior),
     );
@@ -322,19 +322,19 @@ final class ClipRRectWidgetDecorator
 ///
 /// Use this class to configure the attributes of a [ClipRRectWidgetDecorator] and pass it to
 /// the [ClipRRectWidgetDecorator] constructor.
-class ClipRRectWidgetDecoratorStyle
+class ClipRRectWidgetDecoratorMix
     extends WidgetDecoratorMix<ClipRRectWidgetDecorator> {
   final MixProp<BorderRadiusGeometry>? borderRadius;
   final Prop<CustomClipper<RRect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
-  const ClipRRectWidgetDecoratorStyle.raw({
+  const ClipRRectWidgetDecoratorMix.raw({
     this.borderRadius,
     this.clipper,
     this.clipBehavior,
   });
 
-  ClipRRectWidgetDecoratorStyle({
+  ClipRRectWidgetDecoratorMix({
     BorderRadiusGeometryMix? borderRadius,
     CustomClipper<RRect>? clipper,
     Clip? clipBehavior,
@@ -350,7 +350,7 @@ class ClipRRectWidgetDecoratorStyle
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final clipRRectDecorator = ClipRRectWidgetDecoratorStyle(...).resolve(mix);
+  /// final clipRRectDecorator = ClipRRectWidgetDecoratorMix(...).resolve(mix);
   /// ```
   @override
   ClipRRectWidgetDecorator resolve(BuildContext context) {
@@ -361,19 +361,19 @@ class ClipRRectWidgetDecoratorStyle
     );
   }
 
-  /// Merges the properties of this [ClipRRectWidgetDecoratorStyle] with the properties of [other].
+  /// Merges the properties of this [ClipRRectWidgetDecoratorMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [ClipRRectWidgetDecoratorStyle] with the properties of [other] taking precedence over
+  /// [ClipRRectWidgetDecoratorMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  ClipRRectWidgetDecoratorStyle merge(ClipRRectWidgetDecoratorStyle? other) {
+  ClipRRectWidgetDecoratorMix merge(ClipRRectWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return ClipRRectWidgetDecoratorStyle.raw(
+    return ClipRRectWidgetDecoratorMix.raw(
       borderRadius: borderRadius.tryMerge(other.borderRadius),
       clipper: clipper.tryMerge(other.clipper),
       clipBehavior: clipBehavior.tryMerge(other.clipBehavior),
@@ -464,14 +464,14 @@ final class ClipPathWidgetDecorator
 ///
 /// Use this class to configure the attributes of a [ClipPathWidgetDecorator] and pass it to
 /// the [ClipPathWidgetDecorator] constructor.
-class ClipPathWidgetDecoratorStyle
+class ClipPathWidgetDecoratorMix
     extends WidgetDecoratorMix<ClipPathWidgetDecorator> {
   final Prop<CustomClipper<Path>>? clipper;
   final Prop<Clip>? clipBehavior;
 
-  const ClipPathWidgetDecoratorStyle.raw({this.clipper, this.clipBehavior});
+  const ClipPathWidgetDecoratorMix.raw({this.clipper, this.clipBehavior});
 
-  ClipPathWidgetDecoratorStyle({
+  ClipPathWidgetDecoratorMix({
     CustomClipper<Path>? clipper,
     Clip? clipBehavior,
   }) : this.raw(
@@ -485,7 +485,7 @@ class ClipPathWidgetDecoratorStyle
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final clipPathDecorator = ClipPathWidgetDecoratorStyle(...).resolve(mix);
+  /// final clipPathDecorator = ClipPathWidgetDecoratorMix(...).resolve(mix);
   /// ```
   @override
   ClipPathWidgetDecorator resolve(BuildContext context) {
@@ -495,19 +495,19 @@ class ClipPathWidgetDecoratorStyle
     );
   }
 
-  /// Merges the properties of this [ClipPathWidgetDecoratorStyle] with the properties of [other].
+  /// Merges the properties of this [ClipPathWidgetDecoratorMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [ClipPathWidgetDecoratorStyle] with the properties of [other] taking precedence over
+  /// [ClipPathWidgetDecoratorMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  ClipPathWidgetDecoratorStyle merge(ClipPathWidgetDecoratorStyle? other) {
+  ClipPathWidgetDecoratorMix merge(ClipPathWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return ClipPathWidgetDecoratorStyle.raw(
+    return ClipPathWidgetDecoratorMix.raw(
       clipper: clipper.tryMerge(other.clipper),
       clipBehavior: clipBehavior.tryMerge(other.clipBehavior),
     );
@@ -593,13 +593,13 @@ final class ClipTriangleWidgetDecorator
 ///
 /// Use this class to configure the attributes of a [ClipTriangleWidgetDecorator] and pass it to
 /// the [ClipTriangleWidgetDecorator] constructor.
-class ClipTriangleWidgetDecoratorStyle
+class ClipTriangleWidgetDecoratorMix
     extends WidgetDecoratorMix<ClipTriangleWidgetDecorator> {
   final Prop<Clip>? clipBehavior;
 
-  const ClipTriangleWidgetDecoratorStyle.raw({this.clipBehavior});
+  const ClipTriangleWidgetDecoratorMix.raw({this.clipBehavior});
 
-  ClipTriangleWidgetDecoratorStyle({Clip? clipBehavior})
+  ClipTriangleWidgetDecoratorMix({Clip? clipBehavior})
     : this.raw(clipBehavior: Prop.maybe(clipBehavior));
 
   /// Resolves to [ClipTriangleWidgetDecorator] using the provided [BuildContext].
@@ -608,7 +608,7 @@ class ClipTriangleWidgetDecoratorStyle
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final clipTriangleDecorator = ClipTriangleWidgetDecoratorStyle(...).resolve(mix);
+  /// final clipTriangleDecorator = ClipTriangleWidgetDecoratorMix(...).resolve(mix);
   /// ```
   @override
   ClipTriangleWidgetDecorator resolve(BuildContext context) {
@@ -617,21 +617,21 @@ class ClipTriangleWidgetDecoratorStyle
     );
   }
 
-  /// Merges the properties of this [ClipTriangleWidgetDecoratorStyle] with the properties of [other].
+  /// Merges the properties of this [ClipTriangleWidgetDecoratorMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [ClipTriangleWidgetDecoratorStyle] with the properties of [other] taking precedence over
+  /// [ClipTriangleWidgetDecoratorMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  ClipTriangleWidgetDecoratorStyle merge(
-    ClipTriangleWidgetDecoratorStyle? other,
+  ClipTriangleWidgetDecoratorMix merge(
+    ClipTriangleWidgetDecoratorMix? other,
   ) {
     if (other == null) return this;
 
-    return ClipTriangleWidgetDecoratorStyle.raw(
+    return ClipTriangleWidgetDecoratorMix.raw(
       clipBehavior: clipBehavior.tryMerge(other.clipBehavior),
     );
   }

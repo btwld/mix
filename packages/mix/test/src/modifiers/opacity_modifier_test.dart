@@ -103,17 +103,17 @@ void main() {
     });
   });
 
-  group('OpacityWidgetDecoratorStyle', () {
+  group('OpacityWidgetDecoratorMix', () {
     group('Constructor', () {
       test('creates with null opacity by default', () {
-        final attribute = OpacityWidgetDecoratorStyle();
+        final attribute = OpacityWidgetDecoratorMix();
 
         expect(attribute.opacity, isNull);
       });
 
       test('creates with provided Prop opacity value', () {
         final opacity = Prop.value(0.5);
-        final attribute = OpacityWidgetDecoratorStyle.raw(opacity: opacity);
+        final attribute = OpacityWidgetDecoratorMix.raw(opacity: opacity);
 
         expect(attribute.opacity, same(opacity));
       });
@@ -121,13 +121,13 @@ void main() {
 
     group('only constructor', () {
       test('creates Prop value from direct opacity', () {
-        final attribute = OpacityWidgetDecoratorStyle(opacity: 0.7);
+        final attribute = OpacityWidgetDecoratorMix(opacity: 0.7);
 
         expect(attribute.opacity!, resolvesTo(0.7));
       });
 
       test('handles null opacity correctly', () {
-        final attribute = OpacityWidgetDecoratorStyle();
+        final attribute = OpacityWidgetDecoratorMix();
 
         expect(attribute.opacity, isNull);
       });
@@ -135,7 +135,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to OpacityWidgetDecorator with resolved opacity', () {
-        final attribute = OpacityWidgetDecoratorStyle(opacity: 0.7);
+        final attribute = OpacityWidgetDecoratorMix(opacity: 0.7);
 
         const expectedModifier = OpacityWidgetDecorator(0.7);
 
@@ -143,7 +143,7 @@ void main() {
       });
 
       test('resolves with null opacity', () {
-        final attribute = OpacityWidgetDecoratorStyle();
+        final attribute = OpacityWidgetDecoratorMix();
 
         const expectedModifier = OpacityWidgetDecorator(
           1.0,
@@ -154,9 +154,9 @@ void main() {
     });
 
     group('merge', () {
-      test('merges with other OpacityWidgetDecoratorStyle', () {
-        final attribute1 = OpacityWidgetDecoratorStyle(opacity: 0.5);
-        final attribute2 = OpacityWidgetDecoratorStyle(opacity: 0.8);
+      test('merges with other OpacityWidgetDecoratorMix', () {
+        final attribute1 = OpacityWidgetDecoratorMix(opacity: 0.5);
+        final attribute2 = OpacityWidgetDecoratorMix(opacity: 0.8);
 
         final merged = attribute1.merge(attribute2);
 
@@ -164,7 +164,7 @@ void main() {
       });
 
       test('returns original when other is null', () {
-        final attribute = OpacityWidgetDecoratorStyle(opacity: 0.5);
+        final attribute = OpacityWidgetDecoratorMix(opacity: 0.5);
 
         final merged = attribute.merge(null);
 
@@ -172,8 +172,8 @@ void main() {
       });
 
       test('merges with null opacity', () {
-        final attribute1 = OpacityWidgetDecoratorStyle();
-        final attribute2 = OpacityWidgetDecoratorStyle(opacity: 0.7);
+        final attribute1 = OpacityWidgetDecoratorMix();
+        final attribute2 = OpacityWidgetDecoratorMix(opacity: 0.7);
 
         final merged = attribute1.merge(attribute2);
 
@@ -183,21 +183,21 @@ void main() {
 
     group('equality and props', () {
       test('equal when opacity values match', () {
-        final attribute1 = OpacityWidgetDecoratorStyle(opacity: 0.5);
-        final attribute2 = OpacityWidgetDecoratorStyle(opacity: 0.5);
+        final attribute1 = OpacityWidgetDecoratorMix(opacity: 0.5);
+        final attribute2 = OpacityWidgetDecoratorMix(opacity: 0.5);
 
         expect(attribute1, equals(attribute2));
       });
 
       test('not equal when opacity differs', () {
-        final attribute1 = OpacityWidgetDecoratorStyle(opacity: 0.5);
-        final attribute2 = OpacityWidgetDecoratorStyle(opacity: 0.8);
+        final attribute1 = OpacityWidgetDecoratorMix(opacity: 0.5);
+        final attribute2 = OpacityWidgetDecoratorMix(opacity: 0.8);
 
         expect(attribute1, isNot(equals(attribute2)));
       });
 
       test('props contains Prop opacity value', () {
-        final attribute = OpacityWidgetDecoratorStyle(opacity: 0.5);
+        final attribute = OpacityWidgetDecoratorMix(opacity: 0.5);
 
         final props = attribute.props;
         expect(props.length, 1);
@@ -207,10 +207,10 @@ void main() {
   });
 
   group('Integration tests', () {
-    testWidgets('OpacityWidgetDecoratorStyle resolves and builds correctly', (
+    testWidgets('OpacityWidgetDecoratorMix resolves and builds correctly', (
       WidgetTester tester,
     ) async {
-      final attribute = OpacityWidgetDecoratorStyle(opacity: 0.3);
+      final attribute = OpacityWidgetDecoratorMix(opacity: 0.3);
 
       final modifier = attribute.resolve(MockBuildContext());
       const child = SizedBox(width: 100, height: 100);
@@ -223,9 +223,9 @@ void main() {
     });
 
     test('Complex merge scenario preserves and overrides correctly', () {
-      final base = OpacityWidgetDecoratorStyle(opacity: 0.5);
-      final override1 = OpacityWidgetDecoratorStyle(opacity: 0.8);
-      final override2 = OpacityWidgetDecoratorStyle(opacity: 0.2);
+      final base = OpacityWidgetDecoratorMix(opacity: 0.5);
+      final override1 = OpacityWidgetDecoratorMix(opacity: 0.8);
+      final override2 = OpacityWidgetDecoratorMix(opacity: 0.2);
 
       final result = base.merge(override1).merge(override2);
 

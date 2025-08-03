@@ -75,14 +75,14 @@ final class OpacityWidgetDecorator
 ///
 /// Use this class to configure the attributes of a [OpacityWidgetDecorator] and pass it to
 /// the [OpacityWidgetDecorator] constructor.
-class OpacityWidgetDecoratorStyle
+class OpacityWidgetDecoratorMix
     extends WidgetDecoratorMix<OpacityWidgetDecorator>
     with Diagnosticable {
   final Prop<double>? opacity;
 
-  const OpacityWidgetDecoratorStyle.raw({this.opacity});
+  const OpacityWidgetDecoratorMix.raw({this.opacity});
 
-  OpacityWidgetDecoratorStyle({double? opacity})
+  OpacityWidgetDecoratorMix({double? opacity})
     : this.raw(opacity: Prop.maybe(opacity));
 
   /// Resolves to [OpacityWidgetDecorator] using the provided [BuildContext].
@@ -91,26 +91,26 @@ class OpacityWidgetDecoratorStyle
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final opacityDecorator = OpacityWidgetDecoratorStyle(...).resolve(mix);
+  /// final opacityDecorator = OpacityWidgetDecoratorMix(...).resolve(mix);
   /// ```
   @override
   OpacityWidgetDecorator resolve(BuildContext context) {
     return OpacityWidgetDecorator(opacity?.resolveProp(context));
   }
 
-  /// Merges the properties of this [OpacityWidgetDecoratorStyle] with the properties of [other].
+  /// Merges the properties of this [OpacityWidgetDecoratorMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [OpacityWidgetDecoratorStyle] with the properties of [other] taking precedence over
+  /// [OpacityWidgetDecoratorMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  OpacityWidgetDecoratorStyle merge(OpacityWidgetDecoratorStyle? other) {
+  OpacityWidgetDecoratorMix merge(OpacityWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return OpacityWidgetDecoratorStyle.raw(
+    return OpacityWidgetDecoratorMix.raw(
       opacity: opacity.tryMerge(other.opacity),
     );
   }
@@ -121,21 +121,21 @@ class OpacityWidgetDecoratorStyle
     properties.add(DiagnosticsProperty('opacity', opacity, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [OpacityWidgetDecoratorStyle].
+  /// The list of properties that constitute the state of this [OpacityWidgetDecoratorMix].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [OpacityWidgetDecoratorStyle] instances for equality.
+  /// compare two [OpacityWidgetDecoratorMix] instances for equality.
   @override
   List<Object?> get props => [opacity];
 }
 
 final class OpacityWidgetDecoratorUtility<T extends Style<Object?>>
-    extends MixUtility<T, OpacityWidgetDecoratorStyle> {
+    extends MixUtility<T, OpacityWidgetDecoratorMix> {
   const OpacityWidgetDecoratorUtility(super.builder);
 
   T call(double value) =>
-      builder(OpacityWidgetDecoratorStyle.raw(opacity: Prop.value(value)));
+      builder(OpacityWidgetDecoratorMix.raw(opacity: Prop.value(value)));
 
   T token(MixToken<double> token) =>
-      builder(OpacityWidgetDecoratorStyle.raw(opacity: Prop.token(token)));
+      builder(OpacityWidgetDecoratorMix.raw(opacity: Prop.token(token)));
 }

@@ -69,15 +69,15 @@ final class WidgetDecoratorUtility<T extends Style<Object?>>
   T rotate(double value) => transform.rotate(value);
 
   /// Makes the widget take up only its intrinsic width.
-  T intrinsicWidth() => builder(const IntrinsicWidthWidgetDecoratorStyle());
+  T intrinsicWidth() => builder(const IntrinsicWidthWidgetDecoratorMix());
 
   /// Makes the widget take up only its intrinsic height.
-  T intrinsicHeight() => builder(const IntrinsicHeightWidgetDecoratorStyle());
+  T intrinsicHeight() => builder(const IntrinsicHeightWidgetDecoratorMix());
 
   /// Clips the widget to an oval shape.
   T clipOval({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
     return builder(
-      ClipOvalWidgetDecoratorStyle(
+      ClipOvalWidgetDecoratorMix(
         clipper: clipper,
         clipBehavior: clipBehavior,
       ),
@@ -91,7 +91,7 @@ final class WidgetDecoratorUtility<T extends Style<Object?>>
     Clip? clipBehavior,
   }) {
     return builder(
-      ClipRRectWidgetDecoratorStyle(
+      ClipRRectWidgetDecoratorMix(
         borderRadius: BorderRadiusMix.maybeValue(borderRadius),
         clipper: clipper,
         clipBehavior: clipBehavior,
@@ -102,7 +102,7 @@ final class WidgetDecoratorUtility<T extends Style<Object?>>
   /// Clips the widget to a rectangle.
   T clipRect({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
     return builder(
-      ClipRectWidgetDecoratorStyle(
+      ClipRectWidgetDecoratorMix(
         clipper: clipper,
         clipBehavior: clipBehavior,
       ),
@@ -112,14 +112,14 @@ final class WidgetDecoratorUtility<T extends Style<Object?>>
   /// Clips the widget to a triangle shape.
   T clipTriangle({Clip? clipBehavior}) {
     return builder(
-      ClipTriangleWidgetDecoratorStyle(clipBehavior: clipBehavior),
+      ClipTriangleWidgetDecoratorMix(clipBehavior: clipBehavior),
     );
   }
 
   /// Clips the widget to a custom path.
   T clipPath({CustomClipper<Path>? clipper, Clip? clipBehavior}) {
     return builder(
-      ClipPathWidgetDecoratorStyle(
+      ClipPathWidgetDecoratorMix(
         clipper: clipper,
         clipBehavior: clipBehavior,
       ),
@@ -127,7 +127,7 @@ final class WidgetDecoratorUtility<T extends Style<Object?>>
   }
 
   /// Resets all modifiers.
-  T reset() => builder(const ResetWidgetDecoratorStyle());
+  T reset() => builder(const ResetWidgetDecoratorMix());
 }
 
 /// Provides convenient modifier methods for spec attributes.

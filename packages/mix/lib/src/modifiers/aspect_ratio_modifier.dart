@@ -74,14 +74,14 @@ final class AspectRatioWidgetDecorator
 ///
 /// Use this class to configure the attributes of a [AspectRatioWidgetDecorator] and pass it to
 /// the [AspectRatioWidgetDecorator] constructor.
-class AspectRatioWidgetDecoratorStyle
+class AspectRatioWidgetDecoratorMix
     extends WidgetDecoratorMix<AspectRatioWidgetDecorator>
     with Diagnosticable {
   final Prop<double>? aspectRatio;
 
-  const AspectRatioWidgetDecoratorStyle.raw({this.aspectRatio});
+  const AspectRatioWidgetDecoratorMix.raw({this.aspectRatio});
 
-  AspectRatioWidgetDecoratorStyle({double? aspectRatio})
+  AspectRatioWidgetDecoratorMix({double? aspectRatio})
     : this.raw(aspectRatio: Prop.maybe(aspectRatio));
 
   /// Resolves to [AspectRatioWidgetDecorator] using the provided [BuildContext].
@@ -90,28 +90,28 @@ class AspectRatioWidgetDecoratorStyle
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final aspectRatioDecorator = AspectRatioWidgetDecoratorStyle(...).resolve(mix);
+  /// final aspectRatioDecorator = AspectRatioWidgetDecoratorMix(...).resolve(mix);
   /// ```
   @override
   AspectRatioWidgetDecorator resolve(BuildContext context) {
     return AspectRatioWidgetDecorator(aspectRatio?.resolveProp(context));
   }
 
-  /// Merges the properties of this [AspectRatioWidgetDecoratorStyle] with the properties of [other].
+  /// Merges the properties of this [AspectRatioWidgetDecoratorMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [AspectRatioWidgetDecoratorStyle] with the properties of [other] taking precedence over
+  /// [AspectRatioWidgetDecoratorMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  AspectRatioWidgetDecoratorStyle merge(
-    AspectRatioWidgetDecoratorStyle? other,
+  AspectRatioWidgetDecoratorMix merge(
+    AspectRatioWidgetDecoratorMix? other,
   ) {
     if (other == null) return this;
 
-    return AspectRatioWidgetDecoratorStyle.raw(
+    return AspectRatioWidgetDecoratorMix.raw(
       aspectRatio: aspectRatio.tryMerge(other.aspectRatio),
     );
   }
@@ -124,27 +124,27 @@ class AspectRatioWidgetDecoratorStyle
     );
   }
 
-  /// The list of properties that constitute the state of this [AspectRatioWidgetDecoratorStyle].
+  /// The list of properties that constitute the state of this [AspectRatioWidgetDecoratorMix].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [AspectRatioWidgetDecoratorStyle] instances for equality.
+  /// compare two [AspectRatioWidgetDecoratorMix] instances for equality.
   @override
   List<Object?> get props => [aspectRatio];
 }
 
 final class AspectRatioWidgetDecoratorUtility<T extends Style<Object?>>
-    extends MixUtility<T, AspectRatioWidgetDecoratorStyle> {
+    extends MixUtility<T, AspectRatioWidgetDecoratorMix> {
   const AspectRatioWidgetDecoratorUtility(super.builder);
 
   T call(double value) {
     return builder(
-      AspectRatioWidgetDecoratorStyle.raw(aspectRatio: Prop.value(value)),
+      AspectRatioWidgetDecoratorMix.raw(aspectRatio: Prop.value(value)),
     );
   }
 
   T token(MixToken<double> token) {
     return builder(
-      AspectRatioWidgetDecoratorStyle.raw(aspectRatio: Prop.token(token)),
+      AspectRatioWidgetDecoratorMix.raw(aspectRatio: Prop.token(token)),
     );
   }
 }

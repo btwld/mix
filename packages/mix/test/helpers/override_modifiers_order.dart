@@ -10,12 +10,12 @@ Future<void> testOverrideModifiersOrder(
     BoxMix(
       modifierConfig: WidgetDecoratorConfig(
         decorators: [
-          VisibilityWidgetDecoratorStyle(visible: true),
-          OpacityWidgetDecoratorStyle(opacity: 1.0),
-          TransformWidgetDecoratorStyle(),
-          AspectRatioWidgetDecoratorStyle(aspectRatio: 2.0),
-          AlignWidgetDecoratorStyle(alignment: Alignment.center),
-          PaddingWidgetDecoratorStyle(
+          VisibilityWidgetDecoratorMix(visible: true),
+          OpacityWidgetDecoratorMix(opacity: 1.0),
+          TransformWidgetDecoratorMix(),
+          AspectRatioWidgetDecoratorMix(aspectRatio: 2.0),
+          AlignWidgetDecoratorMix(alignment: Alignment.center),
+          PaddingWidgetDecoratorMix(
             padding: EdgeInsetsDirectionalMix(top: 10.0),
           ),
         ],
@@ -41,10 +41,10 @@ Future<void> testOverrideModifiersOrder(
   // SPECS + ATTRIBUTES
   const orderOfModifiersSpecsAndAttributes = [
     AlignWidgetDecorator,
-    AspectRatioWidgetDecoratorStyle,
-    TransformWidgetDecoratorStyle,
+    AspectRatioWidgetDecoratorMix,
+    TransformWidgetDecoratorMix,
     OpacityWidgetDecorator,
-    VisibilityWidgetDecoratorStyle,
+    VisibilityWidgetDecoratorMix,
   ];
   await verifyDescendants(
     widgetBuilder(style, orderOfModifiersSpecsAndAttributes),
@@ -55,11 +55,11 @@ Future<void> testOverrideModifiersOrder(
 
   // JUST ATTRIBUTES
   const orderOfModifiersOnlyAttributes = [
-    AlignWidgetDecoratorStyle,
-    AspectRatioWidgetDecoratorStyle,
-    TransformWidgetDecoratorStyle,
-    OpacityWidgetDecoratorStyle,
-    VisibilityWidgetDecoratorStyle,
+    AlignWidgetDecoratorMix,
+    AspectRatioWidgetDecoratorMix,
+    TransformWidgetDecoratorMix,
+    OpacityWidgetDecoratorMix,
+    VisibilityWidgetDecoratorMix,
   ];
 
   await verifyDescendants(

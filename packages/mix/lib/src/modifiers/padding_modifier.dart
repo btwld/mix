@@ -69,14 +69,14 @@ final class PaddingWidgetDecorator
 /// Attribute class for configuring [PaddingWidgetDecorator] properties.
 ///
 /// Encapsulates padding values for widget spacing and layout.
-class PaddingWidgetDecoratorStyle
+class PaddingWidgetDecoratorMix
     extends WidgetDecoratorMix<PaddingWidgetDecorator>
     with Diagnosticable {
   final MixProp<EdgeInsetsGeometry>? padding;
 
-  const PaddingWidgetDecoratorStyle.raw({this.padding});
+  const PaddingWidgetDecoratorMix.raw({this.padding});
 
-  PaddingWidgetDecoratorStyle({EdgeInsetsGeometryMix? padding})
+  PaddingWidgetDecoratorMix({EdgeInsetsGeometryMix? padding})
     : this.raw(padding: MixProp.maybe(padding));
 
   /// Resolves to [PaddingWidgetDecorator] using the provided [BuildContext].
@@ -85,26 +85,26 @@ class PaddingWidgetDecoratorStyle
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final paddingDecorator = PaddingWidgetDecoratorStyle(...).resolve(mix);
+  /// final paddingDecorator = PaddingWidgetDecoratorMix(...).resolve(mix);
   /// ```
   @override
   PaddingWidgetDecorator resolve(BuildContext context) {
     return PaddingWidgetDecorator(MixHelpers.resolve(context, padding));
   }
 
-  /// Merges the properties of this [PaddingWidgetDecoratorStyle] with the properties of [other].
+  /// Merges the properties of this [PaddingWidgetDecoratorMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [PaddingWidgetDecoratorStyle] with the properties of [other] taking precedence over
+  /// [PaddingWidgetDecoratorMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  PaddingWidgetDecoratorStyle merge(PaddingWidgetDecoratorStyle? other) {
+  PaddingWidgetDecoratorMix merge(PaddingWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return PaddingWidgetDecoratorStyle.raw(
+    return PaddingWidgetDecoratorMix.raw(
       padding: padding.tryMerge(other.padding),
     );
   }
@@ -115,10 +115,10 @@ class PaddingWidgetDecoratorStyle
     properties.add(DiagnosticsProperty('padding', padding, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [PaddingWidgetDecoratorStyle].
+  /// The list of properties that constitute the state of this [PaddingWidgetDecoratorMix].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [PaddingWidgetDecoratorStyle] instances for equality.
+  /// compare two [PaddingWidgetDecoratorMix] instances for equality.
   @override
   List<Object?> get props => [padding];
 }
@@ -128,18 +128,18 @@ class PaddingWidgetDecoratorStyle
 /// This class provides methods to set individual properties of a [PaddingWidgetDecorator].
 /// Use the methods of this class to configure specific properties of a [PaddingWidgetDecorator].
 class PaddingWidgetDecoratorUtility<T extends Style<Object?>>
-    extends MixUtility<T, PaddingWidgetDecoratorStyle> {
-  /// Utility for defining [PaddingWidgetDecoratorStyle.padding]
+    extends MixUtility<T, PaddingWidgetDecoratorMix> {
+  /// Utility for defining [PaddingWidgetDecoratorMix.padding]
   late final padding = EdgeInsetsGeometryUtility(
-    (v) => builder(PaddingWidgetDecoratorStyle(padding: v)),
+    (v) => builder(PaddingWidgetDecoratorMix(padding: v)),
   );
 
   PaddingWidgetDecoratorUtility(super.builder);
 
-  /// Returns a new [PaddingWidgetDecoratorStyle] with the specified properties.
+  /// Returns a new [PaddingWidgetDecoratorMix] with the specified properties.
   T call({EdgeInsetsGeometryMix? padding}) {
     return builder(
-      PaddingWidgetDecoratorStyle.raw(padding: MixProp.maybe(padding)),
+      PaddingWidgetDecoratorMix.raw(padding: MixProp.maybe(padding)),
     );
   }
 }

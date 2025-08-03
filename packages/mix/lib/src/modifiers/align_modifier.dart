@@ -61,7 +61,7 @@ final class AlignWidgetDecorator extends WidgetDecorator<AlignWidgetDecorator>
 }
 
 final class AlignWidgetDecoratorUtility<T extends Style<Object?>>
-    extends MixUtility<T, AlignWidgetDecoratorStyle> {
+    extends MixUtility<T, AlignWidgetDecoratorMix> {
   const AlignWidgetDecoratorUtility(super.builder);
   T call({
     AlignmentGeometry? alignment,
@@ -69,7 +69,7 @@ final class AlignWidgetDecoratorUtility<T extends Style<Object?>>
     double? heightFactor,
   }) {
     return builder(
-      AlignWidgetDecoratorStyle(
+      AlignWidgetDecoratorMix(
         alignment: alignment,
         widthFactor: widthFactor,
         heightFactor: heightFactor,
@@ -78,19 +78,19 @@ final class AlignWidgetDecoratorUtility<T extends Style<Object?>>
   }
 }
 
-class AlignWidgetDecoratorStyle
+class AlignWidgetDecoratorMix
     extends WidgetDecoratorMix<AlignWidgetDecorator> {
   final Prop<AlignmentGeometry>? alignment;
   final Prop<double>? widthFactor;
   final Prop<double>? heightFactor;
 
-  const AlignWidgetDecoratorStyle.raw({
+  const AlignWidgetDecoratorMix.raw({
     this.alignment,
     this.widthFactor,
     this.heightFactor,
   });
 
-  AlignWidgetDecoratorStyle({
+  AlignWidgetDecoratorMix({
     AlignmentGeometry? alignment,
     double? widthFactor,
     double? heightFactor,
@@ -110,10 +110,10 @@ class AlignWidgetDecoratorStyle
   }
 
   @override
-  AlignWidgetDecoratorStyle merge(AlignWidgetDecoratorStyle? other) {
+  AlignWidgetDecoratorMix merge(AlignWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return AlignWidgetDecoratorStyle.raw(
+    return AlignWidgetDecoratorMix.raw(
       alignment: alignment.tryMerge(other.alignment),
       widthFactor: widthFactor.tryMerge(other.widthFactor),
       heightFactor: heightFactor.tryMerge(other.heightFactor),

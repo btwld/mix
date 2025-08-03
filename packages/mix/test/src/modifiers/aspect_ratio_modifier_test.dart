@@ -63,19 +63,19 @@ void main() {
     });
   });
 
-  group('AspectRatioWidgetDecoratorStyle', () {
+  group('AspectRatioWidgetDecoratorMix', () {
     test('constructor assigns aspectRatio', () {
-      final attribute = AspectRatioWidgetDecoratorStyle.raw(
+      final attribute = AspectRatioWidgetDecoratorMix.raw(
         aspectRatio: Prop.value(1.5),
       );
       expectProp(attribute.aspectRatio, 1.5);
     });
 
     test('merge returns correct attribute', () {
-      final attr1 = AspectRatioWidgetDecoratorStyle.raw(
+      final attr1 = AspectRatioWidgetDecoratorMix.raw(
         aspectRatio: Prop.value(1.0),
       );
-      final attr2 = AspectRatioWidgetDecoratorStyle.raw(
+      final attr2 = AspectRatioWidgetDecoratorMix.raw(
         aspectRatio: Prop.value(2.0),
       );
       final merged = attr1.merge(attr2);
@@ -83,20 +83,20 @@ void main() {
     });
 
     test('resolve returns correct modifier', () {
-      final attribute = AspectRatioWidgetDecoratorStyle.raw(
+      final attribute = AspectRatioWidgetDecoratorMix.raw(
         aspectRatio: Prop.value(1.5),
       );
       expect(attribute, resolvesTo(const AspectRatioWidgetDecorator(1.5)));
     });
 
     test('equality', () {
-      final attr1 = AspectRatioWidgetDecoratorStyle.raw(
+      final attr1 = AspectRatioWidgetDecoratorMix.raw(
         aspectRatio: Prop.value(1.0),
       );
-      final attr2 = AspectRatioWidgetDecoratorStyle.raw(
+      final attr2 = AspectRatioWidgetDecoratorMix.raw(
         aspectRatio: Prop.value(1.0),
       );
-      final attr3 = AspectRatioWidgetDecoratorStyle.raw(
+      final attr3 = AspectRatioWidgetDecoratorMix.raw(
         aspectRatio: Prop.value(2.0),
       );
       expect(attr1, equals(attr2));
@@ -106,7 +106,7 @@ void main() {
 
   group('Integration', () {
     testWidgets('attribute resolves and builds correctly', (tester) async {
-      final attribute = AspectRatioWidgetDecoratorStyle.raw(
+      final attribute = AspectRatioWidgetDecoratorMix.raw(
         aspectRatio: Prop.value(2.5),
       );
       expect(attribute, resolvesTo(const AspectRatioWidgetDecorator(2.5)));

@@ -297,10 +297,10 @@ void main() {
     });
   });
 
-  group('FractionallySizedBoxWidgetDecoratorStyle', () {
+  group('FractionallySizedBoxWidgetDecoratorMix', () {
     group('Constructor', () {
       test('creates with null values by default', () {
-        final attribute = FractionallySizedBoxWidgetDecoratorStyle();
+        final attribute = FractionallySizedBoxWidgetDecoratorMix();
 
         expect(attribute.widthFactor, isNull);
         expect(attribute.heightFactor, isNull);
@@ -311,7 +311,7 @@ void main() {
         final widthFactor = Prop.value(0.5);
         final heightFactor = Prop.value(0.8);
         final alignment = Prop.value<AlignmentGeometry>(Alignment.center);
-        final attribute = FractionallySizedBoxWidgetDecoratorStyle.raw(
+        final attribute = FractionallySizedBoxWidgetDecoratorMix.raw(
           widthFactor: widthFactor,
           heightFactor: heightFactor,
           alignment: alignment,
@@ -325,7 +325,7 @@ void main() {
 
     group('only constructor', () {
       test('creates Prop values from direct values', () {
-        final attribute = FractionallySizedBoxWidgetDecoratorStyle(
+        final attribute = FractionallySizedBoxWidgetDecoratorMix(
           widthFactor: 0.3,
           heightFactor: 0.7,
           alignment: Alignment.topLeft,
@@ -337,7 +337,7 @@ void main() {
       });
 
       test('handles null values correctly', () {
-        final attribute = FractionallySizedBoxWidgetDecoratorStyle();
+        final attribute = FractionallySizedBoxWidgetDecoratorMix();
 
         expect(attribute.widthFactor, isNull);
         expect(attribute.heightFactor, isNull);
@@ -345,21 +345,21 @@ void main() {
       });
 
       test('handles partial values', () {
-        final attribute1 = FractionallySizedBoxWidgetDecoratorStyle(
+        final attribute1 = FractionallySizedBoxWidgetDecoratorMix(
           widthFactor: 0.5,
         );
         expectProp(attribute1.widthFactor, 0.5);
         expect(attribute1.heightFactor, isNull);
         expect(attribute1.alignment, isNull);
 
-        final attribute2 = FractionallySizedBoxWidgetDecoratorStyle(
+        final attribute2 = FractionallySizedBoxWidgetDecoratorMix(
           heightFactor: 0.7,
         );
         expect(attribute2.widthFactor, isNull);
         expectProp(attribute2.heightFactor, 0.7);
         expect(attribute2.alignment, isNull);
 
-        final attribute3 = FractionallySizedBoxWidgetDecoratorStyle(
+        final attribute3 = FractionallySizedBoxWidgetDecoratorMix(
           alignment: Alignment.bottomRight,
         );
         expect(attribute3.widthFactor, isNull);
@@ -370,7 +370,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to FractionallySizedBoxWidgetDecorator with resolved values', () {
-        final attribute = FractionallySizedBoxWidgetDecoratorStyle(
+        final attribute = FractionallySizedBoxWidgetDecoratorMix(
           widthFactor: 0.4,
           heightFactor: 0.6,
           alignment: Alignment.topRight,
@@ -385,7 +385,7 @@ void main() {
       });
 
       test('resolves with null values', () {
-        final attribute = FractionallySizedBoxWidgetDecoratorStyle();
+        final attribute = FractionallySizedBoxWidgetDecoratorMix();
 
         const expectedModifier = FractionallySizedBoxWidgetDecorator();
         expect(attribute, resolvesTo(expectedModifier));
@@ -393,12 +393,12 @@ void main() {
     });
 
     group('merge', () {
-      test('merges with other FractionallySizedBoxWidgetDecoratorStyle', () {
-        final attribute1 = FractionallySizedBoxWidgetDecoratorStyle(
+      test('merges with other FractionallySizedBoxWidgetDecoratorMix', () {
+        final attribute1 = FractionallySizedBoxWidgetDecoratorMix(
           widthFactor: 0.5,
           heightFactor: 0.5,
         );
-        final attribute2 = FractionallySizedBoxWidgetDecoratorStyle(
+        final attribute2 = FractionallySizedBoxWidgetDecoratorMix(
           widthFactor: 0.8,
           alignment: Alignment.topLeft,
         );
@@ -411,7 +411,7 @@ void main() {
       });
 
       test('returns original when other is null', () {
-        final attribute = FractionallySizedBoxWidgetDecoratorStyle(
+        final attribute = FractionallySizedBoxWidgetDecoratorMix(
           widthFactor: 0.5,
         );
 
@@ -421,8 +421,8 @@ void main() {
       });
 
       test('merges with null values', () {
-        final attribute1 = FractionallySizedBoxWidgetDecoratorStyle();
-        final attribute2 = FractionallySizedBoxWidgetDecoratorStyle(
+        final attribute1 = FractionallySizedBoxWidgetDecoratorMix();
+        final attribute2 = FractionallySizedBoxWidgetDecoratorMix(
           alignment: Alignment.bottomRight,
         );
 
@@ -436,12 +436,12 @@ void main() {
 
     group('equality and props', () {
       test('equal when all Prop values match', () {
-        final attribute1 = FractionallySizedBoxWidgetDecoratorStyle(
+        final attribute1 = FractionallySizedBoxWidgetDecoratorMix(
           widthFactor: 0.5,
           heightFactor: 0.8,
           alignment: Alignment.center,
         );
-        final attribute2 = FractionallySizedBoxWidgetDecoratorStyle(
+        final attribute2 = FractionallySizedBoxWidgetDecoratorMix(
           widthFactor: 0.5,
           heightFactor: 0.8,
           alignment: Alignment.center,
@@ -451,10 +451,10 @@ void main() {
       });
 
       test('not equal when values differ', () {
-        final attribute1 = FractionallySizedBoxWidgetDecoratorStyle(
+        final attribute1 = FractionallySizedBoxWidgetDecoratorMix(
           widthFactor: 0.5,
         );
-        final attribute2 = FractionallySizedBoxWidgetDecoratorStyle(
+        final attribute2 = FractionallySizedBoxWidgetDecoratorMix(
           widthFactor: 0.8,
         );
 
@@ -462,7 +462,7 @@ void main() {
       });
 
       test('props contains all Prop values', () {
-        final attribute = FractionallySizedBoxWidgetDecoratorStyle(
+        final attribute = FractionallySizedBoxWidgetDecoratorMix(
           widthFactor: 0.5,
           heightFactor: 0.8,
           alignment: Alignment.center,
@@ -479,7 +479,7 @@ void main() {
 
   group('FractionallySizedBoxWidgetDecoratorUtility', () {
     late FractionallySizedBoxWidgetDecoratorUtility<
-      MockStyle<FractionallySizedBoxWidgetDecoratorStyle>
+      MockStyle<FractionallySizedBoxWidgetDecoratorMix>
     >
     utility;
 
@@ -533,9 +533,9 @@ void main() {
 
   group('Integration tests', () {
     testWidgets(
-      'FractionallySizedBoxWidgetDecoratorStyle resolves and builds correctly',
+      'FractionallySizedBoxWidgetDecoratorMix resolves and builds correctly',
       (WidgetTester tester) async {
-        final attribute = FractionallySizedBoxWidgetDecoratorStyle(
+        final attribute = FractionallySizedBoxWidgetDecoratorMix(
           widthFactor: 0.7,
           heightFactor: 0.9,
           alignment: Alignment.bottomCenter,
@@ -564,18 +564,18 @@ void main() {
     );
 
     test('Complex merge scenario preserves and overrides correctly', () {
-      final base = FractionallySizedBoxWidgetDecoratorStyle(
+      final base = FractionallySizedBoxWidgetDecoratorMix(
         widthFactor: 0.5,
         heightFactor: 0.5,
         alignment: Alignment.center,
       );
 
-      final override1 = FractionallySizedBoxWidgetDecoratorStyle(
+      final override1 = FractionallySizedBoxWidgetDecoratorMix(
         widthFactor: 0.8,
         heightFactor: 0.8,
       );
 
-      final override2 = FractionallySizedBoxWidgetDecoratorStyle(
+      final override2 = FractionallySizedBoxWidgetDecoratorMix(
         alignment: Alignment.topLeft,
       );
 

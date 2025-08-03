@@ -155,7 +155,7 @@ final class DefaultTextStyleWidgetDecorator
 ///
 /// Use this class to configure the attributes of a [DefaultTextStyleWidgetDecorator] and pass it to
 /// the [DefaultTextStyleWidgetDecorator] constructor.
-class DefaultTextStyleWidgetDecoratorStyle
+class DefaultTextStyleWidgetDecoratorMix
     extends WidgetDecoratorMix<DefaultTextStyleWidgetDecorator> {
   final MixProp<TextStyle>? style;
   final Prop<TextAlign>? textAlign;
@@ -165,7 +165,7 @@ class DefaultTextStyleWidgetDecoratorStyle
   final Prop<TextWidthBasis>? textWidthBasis;
   final MixProp<TextHeightBehavior>? textHeightBehavior;
 
-  const DefaultTextStyleWidgetDecoratorStyle.raw({
+  const DefaultTextStyleWidgetDecoratorMix.raw({
     this.style,
     this.textAlign,
     this.softWrap,
@@ -175,7 +175,7 @@ class DefaultTextStyleWidgetDecoratorStyle
     this.textHeightBehavior,
   });
 
-  DefaultTextStyleWidgetDecoratorStyle({
+  DefaultTextStyleWidgetDecoratorMix({
     TextStyleMix? style,
     TextAlign? textAlign,
     bool? softWrap,
@@ -199,7 +199,7 @@ class DefaultTextStyleWidgetDecoratorStyle
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final defaultTextStyleDecorator = DefaultTextStyleWidgetDecoratorStyle(...).resolve(mix);
+  /// final defaultTextStyleDecorator = DefaultTextStyleWidgetDecoratorMix(...).resolve(mix);
   /// ```
   @override
   DefaultTextStyleWidgetDecorator resolve(BuildContext context) {
@@ -214,21 +214,21 @@ class DefaultTextStyleWidgetDecoratorStyle
     );
   }
 
-  /// Merges the properties of this [DefaultTextStyleWidgetDecoratorStyle] with the properties of [other].
+  /// Merges the properties of this [DefaultTextStyleWidgetDecoratorMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [DefaultTextStyleWidgetDecoratorStyle] with the properties of [other] taking precedence over
+  /// [DefaultTextStyleWidgetDecoratorMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  DefaultTextStyleWidgetDecoratorStyle merge(
-    DefaultTextStyleWidgetDecoratorStyle? other,
+  DefaultTextStyleWidgetDecoratorMix merge(
+    DefaultTextStyleWidgetDecoratorMix? other,
   ) {
     if (other == null) return this;
 
-    return DefaultTextStyleWidgetDecoratorStyle.raw(
+    return DefaultTextStyleWidgetDecoratorMix.raw(
       style: style.tryMerge(other.style),
       textAlign: textAlign.tryMerge(other.textAlign),
       softWrap: softWrap.tryMerge(other.softWrap),
@@ -252,7 +252,7 @@ class DefaultTextStyleWidgetDecoratorStyle
 }
 
 final class DefaultTextStyleWidgetDecoratorUtility<T extends Style<Object?>>
-    extends MixUtility<T, DefaultTextStyleWidgetDecoratorStyle> {
+    extends MixUtility<T, DefaultTextStyleWidgetDecoratorMix> {
   const DefaultTextStyleWidgetDecoratorUtility(super.builder);
   T call({
     TextStyle? style,
@@ -264,7 +264,7 @@ final class DefaultTextStyleWidgetDecoratorUtility<T extends Style<Object?>>
     TextHeightBehavior? textHeightBehavior,
   }) {
     return builder(
-      DefaultTextStyleWidgetDecoratorStyle(
+      DefaultTextStyleWidgetDecoratorMix(
         style: TextStyleMix.maybeValue(style),
         textAlign: textAlign,
         softWrap: softWrap,

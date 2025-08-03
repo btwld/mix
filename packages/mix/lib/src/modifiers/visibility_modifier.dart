@@ -58,36 +58,36 @@ final class VisibilityWidgetDecorator
 ///
 /// This class encapsulates properties defining the visibility behavior
 /// of a [VisibilityWidgetDecorator].
-class VisibilityWidgetDecoratorStyle
+class VisibilityWidgetDecoratorMix
     extends WidgetDecoratorMix<VisibilityWidgetDecorator>
     with Diagnosticable {
   /// Whether the child widget should be visible.
   final Prop<bool>? visible;
 
-  const VisibilityWidgetDecoratorStyle.raw({this.visible});
+  const VisibilityWidgetDecoratorMix.raw({this.visible});
 
-  VisibilityWidgetDecoratorStyle({bool? visible})
+  VisibilityWidgetDecoratorMix({bool? visible})
     : this.raw(visible: Prop.maybe(visible));
 
   /// Resolves to [VisibilityWidgetDecorator] using the provided [BuildContext].
   ///
   /// ```dart
-  /// final visibilityModifier = VisibilityWidgetDecoratorStyle(...).resolve(context);
+  /// final visibilityModifier = VisibilityWidgetDecoratorMix(...).resolve(context);
   /// ```
   @override
   VisibilityWidgetDecorator resolve(BuildContext context) {
     return VisibilityWidgetDecorator(visible?.resolveProp(context));
   }
 
-  /// Merges the properties of this [VisibilityWidgetDecoratorStyle] with [other].
+  /// Merges the properties of this [VisibilityWidgetDecoratorMix] with [other].
   ///
   /// Properties from [other] take precedence over the corresponding properties
   /// of this instance. Returns this instance unchanged if [other] is null.
   @override
-  VisibilityWidgetDecoratorStyle merge(VisibilityWidgetDecoratorStyle? other) {
+  VisibilityWidgetDecoratorMix merge(VisibilityWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return VisibilityWidgetDecoratorStyle.raw(
+    return VisibilityWidgetDecoratorMix.raw(
       visible: visible?.mergeProp(other.visible) ?? other.visible,
     );
   }
@@ -98,7 +98,7 @@ class VisibilityWidgetDecoratorStyle
     properties.add(DiagnosticsProperty('visible', visible, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [VisibilityWidgetDecoratorStyle].
+  /// The list of properties that constitute the state of this [VisibilityWidgetDecoratorMix].
   @override
   List<Object?> get props => [visible];
 }
@@ -107,7 +107,7 @@ class VisibilityWidgetDecoratorStyle
 ///
 /// This class provides methods to set the visibility state of a [VisibilityWidgetDecorator].
 final class VisibilityWidgetDecoratorUtility<T extends Style<Object?>>
-    extends MixUtility<T, VisibilityWidgetDecoratorStyle> {
+    extends MixUtility<T, VisibilityWidgetDecoratorMix> {
   const VisibilityWidgetDecoratorUtility(super.builder);
 
   /// Sets the visibility to true.
@@ -116,11 +116,11 @@ final class VisibilityWidgetDecoratorUtility<T extends Style<Object?>>
   /// Sets the visibility to false.
   T off() => call(false);
 
-  /// Creates a [VisibilityWidgetDecoratorStyle] with the specified visibility state.
+  /// Creates a [VisibilityWidgetDecoratorMix] with the specified visibility state.
   T call(bool value) =>
-      builder(VisibilityWidgetDecoratorStyle.raw(visible: Prop.value(value)));
+      builder(VisibilityWidgetDecoratorMix.raw(visible: Prop.value(value)));
 
-  /// Creates a [VisibilityWidgetDecoratorStyle] with the specified visibility token.
+  /// Creates a [VisibilityWidgetDecoratorMix] with the specified visibility token.
   T token(MixToken<bool> token) =>
-      builder(VisibilityWidgetDecoratorStyle.raw(visible: Prop.token(token)));
+      builder(VisibilityWidgetDecoratorMix.raw(visible: Prop.token(token)));
 }

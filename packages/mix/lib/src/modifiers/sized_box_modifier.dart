@@ -70,7 +70,7 @@ final class SizedBoxWidgetDecorator
 }
 
 final class SizedBoxWidgetDecoratorUtility<T extends Style<Object?>>
-    extends MixUtility<T, SizedBoxWidgetDecoratorStyle> {
+    extends MixUtility<T, SizedBoxWidgetDecoratorMix> {
   const SizedBoxWidgetDecoratorUtility(super.builder);
 
   T width(double v) => only(width: v);
@@ -81,13 +81,13 @@ final class SizedBoxWidgetDecoratorUtility<T extends Style<Object?>>
   T square(double size) => only(width: size, height: size);
 
   T only({double? width, double? height}) =>
-      builder(SizedBoxWidgetDecoratorStyle(width: width, height: height));
+      builder(SizedBoxWidgetDecoratorMix(width: width, height: height));
 
   T call({double? width, double? height}) {
     return only(width: width, height: height);
   }
 
-  /// Utility for defining [SizedBoxWidgetDecoratorStyle.width] and [SizedBoxWidgetDecoratorStyle.height]
+  /// Utility for defining [SizedBoxWidgetDecoratorMix.width] and [SizedBoxWidgetDecoratorMix.height]
   /// from [Size]
   T as(Size size) => call(width: size.width, height: size.height);
 }
@@ -99,15 +99,15 @@ final class SizedBoxWidgetDecoratorUtility<T extends Style<Object?>>
 ///
 /// Use this class to configure the attributes of a [SizedBoxWidgetDecorator] and pass it to
 /// the [SizedBoxWidgetDecorator] constructor.
-class SizedBoxWidgetDecoratorStyle
+class SizedBoxWidgetDecoratorMix
     extends WidgetDecoratorMix<SizedBoxWidgetDecorator>
     with Diagnosticable {
   final Prop<double>? width;
   final Prop<double>? height;
 
-  const SizedBoxWidgetDecoratorStyle.raw({this.width, this.height});
+  const SizedBoxWidgetDecoratorMix.raw({this.width, this.height});
 
-  SizedBoxWidgetDecoratorStyle({double? width, double? height})
+  SizedBoxWidgetDecoratorMix({double? width, double? height})
     : this.raw(width: Prop.maybe(width), height: Prop.maybe(height));
 
   /// Resolves to [SizedBoxWidgetDecorator] using the provided [BuildContext].
@@ -116,7 +116,7 @@ class SizedBoxWidgetDecoratorStyle
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final sizedBoxDecorator = SizedBoxWidgetDecoratorStyle(...).resolve(mix);
+  /// final sizedBoxDecorator = SizedBoxWidgetDecoratorMix(...).resolve(mix);
   /// ```
   @override
   SizedBoxWidgetDecorator resolve(BuildContext context) {
@@ -126,19 +126,19 @@ class SizedBoxWidgetDecoratorStyle
     );
   }
 
-  /// Merges the properties of this [SizedBoxWidgetDecoratorStyle] with the properties of [other].
+  /// Merges the properties of this [SizedBoxWidgetDecoratorMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [SizedBoxWidgetDecoratorStyle] with the properties of [other] taking precedence over
+  /// [SizedBoxWidgetDecoratorMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  SizedBoxWidgetDecoratorStyle merge(SizedBoxWidgetDecoratorStyle? other) {
+  SizedBoxWidgetDecoratorMix merge(SizedBoxWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return SizedBoxWidgetDecoratorStyle.raw(
+    return SizedBoxWidgetDecoratorMix.raw(
       width: width.tryMerge(other.width),
       height: height.tryMerge(other.height),
     );
@@ -151,10 +151,10 @@ class SizedBoxWidgetDecoratorStyle
     properties.add(DiagnosticsProperty('height', height, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [SizedBoxWidgetDecoratorStyle].
+  /// The list of properties that constitute the state of this [SizedBoxWidgetDecoratorMix].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [SizedBoxWidgetDecoratorStyle] instances for equality.
+  /// compare two [SizedBoxWidgetDecoratorMix] instances for equality.
   @override
   List<Object?> get props => [width, height];
 }

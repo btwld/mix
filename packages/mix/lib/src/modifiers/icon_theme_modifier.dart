@@ -69,7 +69,7 @@ final class IconThemeWidgetDecorator
 ///
 /// Use this class to configure the attributes of a [IconThemeWidgetDecorator] and pass it to
 /// the [IconThemeWidgetDecorator] constructor.
-class IconThemeWidgetDecoratorStyle
+class IconThemeWidgetDecoratorMix
     extends WidgetDecoratorMix<IconThemeWidgetDecorator> {
   final Prop<Color>? color;
   final Prop<double>? size;
@@ -81,7 +81,7 @@ class IconThemeWidgetDecoratorStyle
   final List<MixProp<Shadow>>? shadows;
   final Prop<bool>? applyTextScaling;
 
-  const IconThemeWidgetDecoratorStyle.raw({
+  const IconThemeWidgetDecoratorMix.raw({
     this.color,
     this.size,
     this.fill,
@@ -93,7 +93,7 @@ class IconThemeWidgetDecoratorStyle
     this.applyTextScaling,
   });
 
-  IconThemeWidgetDecoratorStyle({
+  IconThemeWidgetDecoratorMix({
     Color? color,
     double? size,
     double? fill,
@@ -121,7 +121,7 @@ class IconThemeWidgetDecoratorStyle
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final iconThemeModifier = IconThemeWidgetDecoratorStyle(...).resolve(context);
+  /// final iconThemeModifier = IconThemeWidgetDecoratorMix(...).resolve(context);
   /// ```
   @override
   IconThemeWidgetDecorator resolve(BuildContext context) {
@@ -140,18 +140,18 @@ class IconThemeWidgetDecoratorStyle
     );
   }
 
-  /// Merges the properties of this [IconThemeWidgetDecoratorStyle] with the properties of [other].
+  /// Merges the properties of this [IconThemeWidgetDecoratorMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [IconThemeWidgetDecoratorStyle] with the properties of [other] taking precedence over
+  /// [IconThemeWidgetDecoratorMix] with the properties of [other] taking precedence over
   /// the properties of this instance.
   ///
   /// This method is typically used when combining or overriding icon theme modifier attributes.
   @override
-  IconThemeWidgetDecoratorStyle merge(IconThemeWidgetDecoratorStyle? other) {
+  IconThemeWidgetDecoratorMix merge(IconThemeWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return IconThemeWidgetDecoratorStyle.raw(
+    return IconThemeWidgetDecoratorMix.raw(
       color: color.tryMerge(other.color),
       size: size.tryMerge(other.size),
       fill: fill.tryMerge(other.fill),
@@ -183,10 +183,10 @@ class IconThemeWidgetDecoratorStyle
 /// This class provides methods to set individual properties of a [IconThemeWidgetDecorator].
 /// Use the methods of this class to configure specific properties of a [IconThemeWidgetDecorator].
 final class IconThemeWidgetDecoratorUtility<T extends Style<Object?>>
-    extends MixUtility<T, IconThemeWidgetDecoratorStyle> {
+    extends MixUtility<T, IconThemeWidgetDecoratorMix> {
   const IconThemeWidgetDecoratorUtility(super.builder);
 
-  /// Creates an [IconThemeWidgetDecoratorStyle] with the specified properties.
+  /// Creates an [IconThemeWidgetDecoratorMix] with the specified properties.
   T call({
     Color? color,
     double? size,
@@ -199,7 +199,7 @@ final class IconThemeWidgetDecoratorUtility<T extends Style<Object?>>
     bool? applyTextScaling,
   }) {
     return builder(
-      IconThemeWidgetDecoratorStyle(
+      IconThemeWidgetDecoratorMix(
         color: color,
         size: size,
         fill: fill,

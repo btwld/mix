@@ -48,13 +48,13 @@ final class RotatedBoxWidgetDecorator
 ///
 /// Use this class to configure the attributes of a [RotatedBoxWidgetDecorator] and pass it to
 /// the [RotatedBoxWidgetDecorator] constructor.
-class RotatedBoxWidgetDecoratorStyle
+class RotatedBoxWidgetDecoratorMix
     extends WidgetDecoratorMix<RotatedBoxWidgetDecorator> {
   final Prop<int>? quarterTurns;
 
-  const RotatedBoxWidgetDecoratorStyle.raw({this.quarterTurns});
+  const RotatedBoxWidgetDecoratorMix.raw({this.quarterTurns});
 
-  RotatedBoxWidgetDecoratorStyle({int? quarterTurns})
+  RotatedBoxWidgetDecoratorMix({int? quarterTurns})
     : this.raw(quarterTurns: Prop.maybe(quarterTurns));
 
   /// Resolves to [RotatedBoxWidgetDecorator] using the provided [BuildContext].
@@ -63,26 +63,26 @@ class RotatedBoxWidgetDecoratorStyle
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final rotatedBoxDecorator = RotatedBoxWidgetDecoratorStyle(...).resolve(mix);
+  /// final rotatedBoxDecorator = RotatedBoxWidgetDecoratorMix(...).resolve(mix);
   /// ```
   @override
   RotatedBoxWidgetDecorator resolve(BuildContext context) {
     return RotatedBoxWidgetDecorator(MixHelpers.resolve(context, quarterTurns));
   }
 
-  /// Merges the properties of this [RotatedBoxWidgetDecoratorStyle] with the properties of [other].
+  /// Merges the properties of this [RotatedBoxWidgetDecoratorMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [RotatedBoxWidgetDecoratorStyle] with the properties of [other] taking precedence over
+  /// [RotatedBoxWidgetDecoratorMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  RotatedBoxWidgetDecoratorStyle merge(RotatedBoxWidgetDecoratorStyle? other) {
+  RotatedBoxWidgetDecoratorMix merge(RotatedBoxWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return RotatedBoxWidgetDecoratorStyle.raw(
+    return RotatedBoxWidgetDecoratorMix.raw(
       quarterTurns: quarterTurns.tryMerge(other.quarterTurns),
     );
   }
@@ -92,13 +92,13 @@ class RotatedBoxWidgetDecoratorStyle
 }
 
 final class RotatedBoxWidgetDecoratorUtility<T extends Style<Object?>>
-    extends MixUtility<T, RotatedBoxWidgetDecoratorStyle> {
+    extends MixUtility<T, RotatedBoxWidgetDecoratorMix> {
   const RotatedBoxWidgetDecoratorUtility(super.builder);
   T d90() => call(1);
   T d180() => call(2);
   T d270() => call(3);
 
   T call(int value) => builder(
-    RotatedBoxWidgetDecoratorStyle.raw(quarterTurns: Prop.value(value)),
+    RotatedBoxWidgetDecoratorMix.raw(quarterTurns: Prop.value(value)),
   );
 }

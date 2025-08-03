@@ -103,19 +103,19 @@ final class FractionallySizedBoxWidgetDecorator
 ///
 /// Use this class to configure the attributes of a [FractionallySizedBoxWidgetDecorator] and pass it to
 /// the [FractionallySizedBoxWidgetDecorator] constructor.
-class FractionallySizedBoxWidgetDecoratorStyle
+class FractionallySizedBoxWidgetDecoratorMix
     extends WidgetDecoratorMix<FractionallySizedBoxWidgetDecorator> {
   final Prop<double>? widthFactor;
   final Prop<double>? heightFactor;
   final Prop<AlignmentGeometry>? alignment;
 
-  const FractionallySizedBoxWidgetDecoratorStyle.raw({
+  const FractionallySizedBoxWidgetDecoratorMix.raw({
     this.widthFactor,
     this.heightFactor,
     this.alignment,
   });
 
-  FractionallySizedBoxWidgetDecoratorStyle({
+  FractionallySizedBoxWidgetDecoratorMix({
     double? widthFactor,
     double? heightFactor,
     AlignmentGeometry? alignment,
@@ -131,7 +131,7 @@ class FractionallySizedBoxWidgetDecoratorStyle
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final fractionallySizedBoxWidgetDecoratorSpec = FractionallySizedBoxWidgetDecoratorStyle(...).resolve(mix);
+  /// final fractionallySizedBoxWidgetDecoratorSpec = FractionallySizedBoxWidgetDecoratorMix(...).resolve(mix);
   /// ```
   @override
   FractionallySizedBoxWidgetDecorator resolve(BuildContext context) {
@@ -142,21 +142,21 @@ class FractionallySizedBoxWidgetDecoratorStyle
     );
   }
 
-  /// Merges the properties of this [FractionallySizedBoxWidgetDecoratorStyle] with the properties of [other].
+  /// Merges the properties of this [FractionallySizedBoxWidgetDecoratorMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [FractionallySizedBoxWidgetDecoratorStyle] with the properties of [other] taking precedence over
+  /// [FractionallySizedBoxWidgetDecoratorMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  FractionallySizedBoxWidgetDecoratorStyle merge(
-    FractionallySizedBoxWidgetDecoratorStyle? other,
+  FractionallySizedBoxWidgetDecoratorMix merge(
+    FractionallySizedBoxWidgetDecoratorMix? other,
   ) {
     if (other == null) return this;
 
-    return FractionallySizedBoxWidgetDecoratorStyle.raw(
+    return FractionallySizedBoxWidgetDecoratorMix.raw(
       widthFactor: widthFactor.tryMerge(other.widthFactor),
       heightFactor: heightFactor.tryMerge(other.heightFactor),
       alignment: alignment.tryMerge(other.alignment),
@@ -168,7 +168,7 @@ class FractionallySizedBoxWidgetDecoratorStyle
 }
 
 final class FractionallySizedBoxWidgetDecoratorUtility<T extends Style<Object?>>
-    extends MixUtility<T, FractionallySizedBoxWidgetDecoratorStyle> {
+    extends MixUtility<T, FractionallySizedBoxWidgetDecoratorMix> {
   const FractionallySizedBoxWidgetDecoratorUtility(super.builder);
 
   T call({
@@ -177,7 +177,7 @@ final class FractionallySizedBoxWidgetDecoratorUtility<T extends Style<Object?>>
     double? heightFactor,
   }) {
     return builder(
-      FractionallySizedBoxWidgetDecoratorStyle(
+      FractionallySizedBoxWidgetDecoratorMix(
         widthFactor: widthFactor,
         heightFactor: heightFactor,
         alignment: alignment,

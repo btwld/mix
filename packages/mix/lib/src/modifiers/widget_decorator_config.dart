@@ -48,13 +48,13 @@ final class WidgetDecoratorConfig with Equatable {
 
   factory WidgetDecoratorConfig.opacity(double opacity) {
     return WidgetDecoratorConfig.decorator(
-      OpacityWidgetDecoratorStyle(opacity: opacity),
+      OpacityWidgetDecoratorMix(opacity: opacity),
     );
   }
 
   factory WidgetDecoratorConfig.aspectRatio(double aspectRatio) {
     return WidgetDecoratorConfig.decorator(
-      AspectRatioWidgetDecoratorStyle(aspectRatio: aspectRatio),
+      AspectRatioWidgetDecoratorMix(aspectRatio: aspectRatio),
     );
   }
 
@@ -63,7 +63,7 @@ final class WidgetDecoratorConfig with Equatable {
     Clip? clipBehavior,
   }) {
     return WidgetDecoratorConfig.decorator(
-      ClipOvalWidgetDecoratorStyle(
+      ClipOvalWidgetDecoratorMix(
         clipper: clipper,
         clipBehavior: clipBehavior,
       ),
@@ -75,7 +75,7 @@ final class WidgetDecoratorConfig with Equatable {
     Clip? clipBehavior,
   }) {
     return WidgetDecoratorConfig.decorator(
-      ClipRectWidgetDecoratorStyle(
+      ClipRectWidgetDecoratorMix(
         clipper: clipper,
         clipBehavior: clipBehavior,
       ),
@@ -88,7 +88,7 @@ final class WidgetDecoratorConfig with Equatable {
     Clip? clipBehavior,
   }) {
     return WidgetDecoratorConfig.decorator(
-      ClipRRectWidgetDecoratorStyle(
+      ClipRRectWidgetDecoratorMix(
         borderRadius: borderRadius,
         clipper: clipper,
         clipBehavior: clipBehavior,
@@ -101,7 +101,7 @@ final class WidgetDecoratorConfig with Equatable {
     Clip? clipBehavior,
   }) {
     return WidgetDecoratorConfig.decorator(
-      ClipPathWidgetDecoratorStyle(
+      ClipPathWidgetDecoratorMix(
         clipper: clipper,
         clipBehavior: clipBehavior,
       ),
@@ -110,7 +110,7 @@ final class WidgetDecoratorConfig with Equatable {
 
   factory WidgetDecoratorConfig.clipTriangle({Clip? clipBehavior}) {
     return WidgetDecoratorConfig.decorator(
-      ClipTriangleWidgetDecoratorStyle(clipBehavior: clipBehavior),
+      ClipTriangleWidgetDecoratorMix(clipBehavior: clipBehavior),
     );
   }
 
@@ -119,7 +119,7 @@ final class WidgetDecoratorConfig with Equatable {
     Alignment? alignment,
   }) {
     return WidgetDecoratorConfig.decorator(
-      TransformWidgetDecoratorStyle(transform: transform, alignment: alignment),
+      TransformWidgetDecoratorMix(transform: transform, alignment: alignment),
     );
   }
 
@@ -136,7 +136,7 @@ final class WidgetDecoratorConfig with Equatable {
 
   factory WidgetDecoratorConfig.visibility(bool visible) {
     return WidgetDecoratorConfig.decorator(
-      VisibilityWidgetDecoratorStyle(visible: visible),
+      VisibilityWidgetDecoratorMix(visible: visible),
     );
   }
 
@@ -146,7 +146,7 @@ final class WidgetDecoratorConfig with Equatable {
     double? heightFactor,
   }) {
     return WidgetDecoratorConfig.decorator(
-      AlignWidgetDecoratorStyle(
+      AlignWidgetDecoratorMix(
         alignment: alignment,
         widthFactor: widthFactor,
         heightFactor: heightFactor,
@@ -156,37 +156,37 @@ final class WidgetDecoratorConfig with Equatable {
 
   factory WidgetDecoratorConfig.padding(EdgeInsetsGeometryMix? padding) {
     return WidgetDecoratorConfig.decorator(
-      PaddingWidgetDecoratorStyle(padding: padding),
+      PaddingWidgetDecoratorMix(padding: padding),
     );
   }
 
   factory WidgetDecoratorConfig.sizedBox({double? width, double? height}) {
     return WidgetDecoratorConfig.decorator(
-      SizedBoxWidgetDecoratorStyle(width: width, height: height),
+      SizedBoxWidgetDecoratorMix(width: width, height: height),
     );
   }
 
   factory WidgetDecoratorConfig.flexible({int? flex, FlexFit? fit}) {
     return WidgetDecoratorConfig.decorator(
-      FlexibleWidgetDecoratorStyle(flex: flex, fit: fit),
+      FlexibleWidgetDecoratorMix(flex: flex, fit: fit),
     );
   }
 
   factory WidgetDecoratorConfig.rotatedBox(int quarterTurns) {
     return WidgetDecoratorConfig.decorator(
-      RotatedBoxWidgetDecoratorStyle(quarterTurns: quarterTurns),
+      RotatedBoxWidgetDecoratorMix(quarterTurns: quarterTurns),
     );
   }
 
   factory WidgetDecoratorConfig.intrinsicHeight() {
     return WidgetDecoratorConfig.decorator(
-      const IntrinsicHeightWidgetDecoratorStyle(),
+      const IntrinsicHeightWidgetDecoratorMix(),
     );
   }
 
   factory WidgetDecoratorConfig.intrinsicWidth() {
     return WidgetDecoratorConfig.decorator(
-      const IntrinsicWidthWidgetDecoratorStyle(),
+      const IntrinsicWidthWidgetDecoratorMix(),
     );
   }
 
@@ -196,7 +196,7 @@ final class WidgetDecoratorConfig with Equatable {
     AlignmentGeometry? alignment,
   }) {
     return WidgetDecoratorConfig.decorator(
-      FractionallySizedBoxWidgetDecoratorStyle(
+      FractionallySizedBoxWidgetDecoratorMix(
         widthFactor: widthFactor,
         heightFactor: heightFactor,
         alignment: alignment,
@@ -214,7 +214,7 @@ final class WidgetDecoratorConfig with Equatable {
     TextHeightBehaviorMix? textHeightBehavior,
   }) {
     return WidgetDecoratorConfig.decorator(
-      DefaultTextStyleWidgetDecoratorStyle(
+      DefaultTextStyleWidgetDecoratorMix(
         style: style,
         textAlign: textAlign,
         softWrap: softWrap,
@@ -228,7 +228,7 @@ final class WidgetDecoratorConfig with Equatable {
 
   factory WidgetDecoratorConfig.defaultText(TextMix textMix) {
     return WidgetDecoratorConfig.decorator(
-      DefaultTextStyleWidgetDecoratorStyle.raw(
+      DefaultTextStyleWidgetDecoratorMix.raw(
         style: textMix.$style,
         textAlign: textMix.$textAlign,
         softWrap: textMix.$softWrap,
@@ -252,7 +252,7 @@ final class WidgetDecoratorConfig with Equatable {
     bool? applyTextScaling,
   }) {
     return WidgetDecoratorConfig.decorator(
-      IconThemeWidgetDecoratorStyle(
+      IconThemeWidgetDecoratorMix(
         color: color,
         size: size,
         fill: fill,

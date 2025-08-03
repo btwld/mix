@@ -147,17 +147,17 @@ void main() {
     });
   });
 
-  group('RotatedBoxWidgetDecoratorStyle', () {
+  group('RotatedBoxWidgetDecoratorMix', () {
     group('Constructor', () {
       test('creates with null quarter turns by default', () {
-        final attribute = RotatedBoxWidgetDecoratorStyle();
+        final attribute = RotatedBoxWidgetDecoratorMix();
 
         expect(attribute.quarterTurns, isNull);
       });
 
       test('creates with provided Prop quarter turns', () {
         final quarterTurns = Prop.value(2);
-        final attribute = RotatedBoxWidgetDecoratorStyle.raw(
+        final attribute = RotatedBoxWidgetDecoratorMix.raw(
           quarterTurns: quarterTurns,
         );
 
@@ -167,14 +167,14 @@ void main() {
 
     group('only constructor', () {
       test('creates Prop from int value', () {
-        final attribute = RotatedBoxWidgetDecoratorStyle(quarterTurns: 3);
+        final attribute = RotatedBoxWidgetDecoratorMix(quarterTurns: 3);
 
         expect(attribute.quarterTurns, isNotNull);
         expectProp(attribute.quarterTurns, 3);
       });
 
       test('handles null quarter turns', () {
-        final attribute = RotatedBoxWidgetDecoratorStyle();
+        final attribute = RotatedBoxWidgetDecoratorMix();
 
         expect(attribute.quarterTurns, isNull);
       });
@@ -182,22 +182,22 @@ void main() {
 
     group('resolve', () {
       test('resolves to RotatedBoxModifier with resolved quarter turns', () {
-        final attribute = RotatedBoxWidgetDecoratorStyle(quarterTurns: 1);
+        final attribute = RotatedBoxWidgetDecoratorMix(quarterTurns: 1);
 
         expect(attribute, resolvesTo(const RotatedBoxWidgetDecorator(1)));
       });
 
       test('resolves with null quarter turns to zero', () {
-        final attribute = RotatedBoxWidgetDecoratorStyle();
+        final attribute = RotatedBoxWidgetDecoratorMix();
 
         expect(attribute, resolvesTo(const RotatedBoxWidgetDecorator(0)));
       });
     });
 
     group('merge', () {
-      test('merges with other RotatedBoxWidgetDecoratorStyle', () {
-        final attribute1 = RotatedBoxWidgetDecoratorStyle(quarterTurns: 1);
-        final attribute2 = RotatedBoxWidgetDecoratorStyle(quarterTurns: 3);
+      test('merges with other RotatedBoxWidgetDecoratorMix', () {
+        final attribute1 = RotatedBoxWidgetDecoratorMix(quarterTurns: 1);
+        final attribute2 = RotatedBoxWidgetDecoratorMix(quarterTurns: 3);
 
         final merged = attribute1.merge(attribute2);
 
@@ -205,7 +205,7 @@ void main() {
       });
 
       test('returns original when other is null', () {
-        final attribute = RotatedBoxWidgetDecoratorStyle(quarterTurns: 2);
+        final attribute = RotatedBoxWidgetDecoratorMix(quarterTurns: 2);
 
         final merged = attribute.merge(null);
 
@@ -213,8 +213,8 @@ void main() {
       });
 
       test('merges with null quarter turns', () {
-        final attribute1 = RotatedBoxWidgetDecoratorStyle();
-        final attribute2 = RotatedBoxWidgetDecoratorStyle(quarterTurns: 1);
+        final attribute1 = RotatedBoxWidgetDecoratorMix();
+        final attribute2 = RotatedBoxWidgetDecoratorMix(quarterTurns: 1);
 
         final merged = attribute1.merge(attribute2);
 
@@ -224,21 +224,21 @@ void main() {
 
     group('equality and props', () {
       test('equal when quarter turns match', () {
-        final attribute1 = RotatedBoxWidgetDecoratorStyle(quarterTurns: 2);
-        final attribute2 = RotatedBoxWidgetDecoratorStyle(quarterTurns: 2);
+        final attribute1 = RotatedBoxWidgetDecoratorMix(quarterTurns: 2);
+        final attribute2 = RotatedBoxWidgetDecoratorMix(quarterTurns: 2);
 
         expect(attribute1, equals(attribute2));
       });
 
       test('not equal when quarter turns differ', () {
-        final attribute1 = RotatedBoxWidgetDecoratorStyle(quarterTurns: 1);
-        final attribute2 = RotatedBoxWidgetDecoratorStyle(quarterTurns: 3);
+        final attribute1 = RotatedBoxWidgetDecoratorMix(quarterTurns: 1);
+        final attribute2 = RotatedBoxWidgetDecoratorMix(quarterTurns: 3);
 
         expect(attribute1, isNot(equals(attribute2)));
       });
 
       test('props contains quarter turns', () {
-        final attribute = RotatedBoxWidgetDecoratorStyle(quarterTurns: 2);
+        final attribute = RotatedBoxWidgetDecoratorMix(quarterTurns: 2);
 
         final props = attribute.props;
         expect(props.length, 1);
@@ -249,7 +249,7 @@ void main() {
 
   group('RotatedBoxWidgetDecoratorUtility', () {
     late RotatedBoxWidgetDecoratorUtility<
-      MockStyle<RotatedBoxWidgetDecoratorStyle>
+      MockStyle<RotatedBoxWidgetDecoratorMix>
     >
     utility;
 
@@ -325,10 +325,10 @@ void main() {
   });
 
   group('Integration tests', () {
-    testWidgets('RotatedBoxWidgetDecoratorStyle resolves and builds correctly', (
+    testWidgets('RotatedBoxWidgetDecoratorMix resolves and builds correctly', (
       WidgetTester tester,
     ) async {
-      final attribute = RotatedBoxWidgetDecoratorStyle(quarterTurns: 2);
+      final attribute = RotatedBoxWidgetDecoratorMix(quarterTurns: 2);
 
       expect(attribute, resolvesTo(const RotatedBoxWidgetDecorator(2)));
 
@@ -348,11 +348,11 @@ void main() {
     });
 
     test('Complex merge scenario preserves and overrides correctly', () {
-      final base = RotatedBoxWidgetDecoratorStyle(quarterTurns: 0);
+      final base = RotatedBoxWidgetDecoratorMix(quarterTurns: 0);
 
-      final override1 = RotatedBoxWidgetDecoratorStyle(quarterTurns: 1);
+      final override1 = RotatedBoxWidgetDecoratorMix(quarterTurns: 1);
 
-      final override2 = RotatedBoxWidgetDecoratorStyle(quarterTurns: 3);
+      final override2 = RotatedBoxWidgetDecoratorMix(quarterTurns: 3);
 
       final result = base.merge(override1).merge(override2);
 

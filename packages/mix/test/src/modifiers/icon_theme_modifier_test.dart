@@ -83,13 +83,13 @@ void main() {
     });
   });
 
-  group('IconThemeWidgetDecoratorStyle', () {
+  group('IconThemeWidgetDecoratorMix', () {
     group('Constructor', () {
       test('assigns properties correctly', () {
         const color = Color(0xFF000000);
         const size = 24.0;
         const opacity = 0.8;
-        final attribute = IconThemeWidgetDecoratorStyle(
+        final attribute = IconThemeWidgetDecoratorMix(
           color: color,
           size: size,
           opacity: opacity,
@@ -106,7 +106,7 @@ void main() {
         const color = Color(0xFF000000);
         const size = 24.0;
         const opacity = 0.8;
-        final attribute = IconThemeWidgetDecoratorStyle(
+        final attribute = IconThemeWidgetDecoratorMix(
           color: color,
           size: size,
           opacity: opacity,
@@ -122,11 +122,11 @@ void main() {
 
     group('merge', () {
       test('merges properties correctly', () {
-        final first = IconThemeWidgetDecoratorStyle(
+        final first = IconThemeWidgetDecoratorMix(
           color: const Color(0xFF000000),
           size: 24.0,
         );
-        final second = IconThemeWidgetDecoratorStyle(
+        final second = IconThemeWidgetDecoratorMix(
           color: const Color(0xFF0000FF),
           opacity: 0.8,
         );
@@ -139,7 +139,7 @@ void main() {
       });
 
       test('handles null other parameter', () {
-        final attribute = IconThemeWidgetDecoratorStyle(
+        final attribute = IconThemeWidgetDecoratorMix(
           color: const Color(0xFF000000),
           size: 24.0,
         );
@@ -169,11 +169,11 @@ void main() {
 
       expect(
         result.$widgetDecoratorConfig?.$decorators?.first,
-        isA<IconThemeWidgetDecoratorStyle>(),
+        isA<IconThemeWidgetDecoratorMix>(),
       );
       final attr =
           result.$widgetDecoratorConfig!.$decorators!.first
-              as IconThemeWidgetDecoratorStyle;
+              as IconThemeWidgetDecoratorMix;
       expect(attr.color?.$value, color);
       expect(attr.size?.$value, size);
       expect(attr.opacity?.$value, opacity);
@@ -185,11 +185,11 @@ void main() {
 
       expect(
         result.$widgetDecoratorConfig?.$decorators?.first,
-        isA<IconThemeWidgetDecoratorStyle>(),
+        isA<IconThemeWidgetDecoratorMix>(),
       );
       final attr =
           result.$widgetDecoratorConfig!.$decorators!.first
-              as IconThemeWidgetDecoratorStyle;
+              as IconThemeWidgetDecoratorMix;
       expect(attr.color?.$value, color);
     });
 
@@ -199,11 +199,11 @@ void main() {
 
       expect(
         result.$widgetDecoratorConfig?.$decorators?.first,
-        isA<IconThemeWidgetDecoratorStyle>(),
+        isA<IconThemeWidgetDecoratorMix>(),
       );
       final attr =
           result.$widgetDecoratorConfig!.$decorators!.first
-              as IconThemeWidgetDecoratorStyle;
+              as IconThemeWidgetDecoratorMix;
       expect(attr.size?.$value, size);
     });
 
@@ -213,18 +213,18 @@ void main() {
 
       expect(
         result.$widgetDecoratorConfig?.$decorators?.first,
-        isA<IconThemeWidgetDecoratorStyle>(),
+        isA<IconThemeWidgetDecoratorMix>(),
       );
       final attr =
           result.$widgetDecoratorConfig!.$decorators!.first
-              as IconThemeWidgetDecoratorStyle;
+              as IconThemeWidgetDecoratorMix;
       expect(attr.opacity?.$value, opacity);
     });
   });
 
   group('Integration', () {
     testWidgets('attribute resolves and builds correctly', (tester) async {
-      final attribute = IconThemeWidgetDecoratorStyle(
+      final attribute = IconThemeWidgetDecoratorMix(
         color: const Color(0xFF0000FF),
         size: 32.0,
         opacity: 0.7,

@@ -77,7 +77,7 @@ final class ScrollViewWidgetDecorator
 }
 
 final class ScrollViewWidgetDecoratorUtility<T extends Style<Object?>>
-    extends MixUtility<T, ScrollViewWidgetDecoratorStyle> {
+    extends MixUtility<T, ScrollViewWidgetDecoratorMix> {
   /// Set the padding of the scroll view.
   late final padding = EdgeInsetsGeometryUtility(
     (padding) => only(padding: padding),
@@ -122,7 +122,7 @@ final class ScrollViewWidgetDecoratorUtility<T extends Style<Object?>>
     ScrollPhysics? physics,
     Clip? clipBehavior,
   }) => builder(
-    ScrollViewWidgetDecoratorStyle(
+    ScrollViewWidgetDecoratorMix(
       scrollDirection: scrollDirection,
       reverse: reverse,
       padding: padding,
@@ -148,7 +148,7 @@ final class ScrollViewWidgetDecoratorUtility<T extends Style<Object?>>
   }
 }
 
-class ScrollViewWidgetDecoratorStyle
+class ScrollViewWidgetDecoratorMix
     extends WidgetDecoratorMix<ScrollViewWidgetDecorator> {
   final Prop<Axis>? scrollDirection;
   final Prop<bool>? reverse;
@@ -156,7 +156,7 @@ class ScrollViewWidgetDecoratorStyle
   final Prop<ScrollPhysics>? physics;
   final Prop<Clip>? clipBehavior;
 
-  const ScrollViewWidgetDecoratorStyle.raw({
+  const ScrollViewWidgetDecoratorMix.raw({
     this.scrollDirection,
     this.reverse,
     this.padding,
@@ -164,7 +164,7 @@ class ScrollViewWidgetDecoratorStyle
     this.clipBehavior,
   });
 
-  ScrollViewWidgetDecoratorStyle({
+  ScrollViewWidgetDecoratorMix({
     Axis? scrollDirection,
     bool? reverse,
     EdgeInsetsGeometryMix? padding,
@@ -190,10 +190,10 @@ class ScrollViewWidgetDecoratorStyle
   }
 
   @override
-  ScrollViewWidgetDecoratorStyle merge(ScrollViewWidgetDecoratorStyle? other) {
+  ScrollViewWidgetDecoratorMix merge(ScrollViewWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return ScrollViewWidgetDecoratorStyle.raw(
+    return ScrollViewWidgetDecoratorMix.raw(
       scrollDirection: scrollDirection.tryMerge(other.scrollDirection),
       reverse: reverse.tryMerge(other.reverse),
       padding: padding.tryMerge(other.padding),

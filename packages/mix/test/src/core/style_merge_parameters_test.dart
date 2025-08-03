@@ -118,9 +118,9 @@ void main() {
       });
 
       test('merges modifiers correctly', () {
-        final firstModifiers = [OpacityWidgetDecoratorStyle(opacity: 0.5)];
+        final firstModifiers = [OpacityWidgetDecoratorMix(opacity: 0.5)];
         final secondModifiers = [
-          PaddingWidgetDecoratorStyle(padding: EdgeInsetsMix.all(10)),
+          PaddingWidgetDecoratorMix(padding: EdgeInsetsMix.all(10)),
         ];
 
         final first = BoxMix(
@@ -138,11 +138,11 @@ void main() {
         expect(merged.$widgetDecoratorConfig!.$decorators!.length, 2);
         expect(
           merged.$widgetDecoratorConfig!.$decorators![0],
-          isA<OpacityWidgetDecoratorStyle>(),
+          isA<OpacityWidgetDecoratorMix>(),
         );
         expect(
           merged.$widgetDecoratorConfig!.$decorators![1],
-          isA<PaddingWidgetDecoratorStyle>(),
+          isA<PaddingWidgetDecoratorMix>(),
         );
       });
 
@@ -474,8 +474,8 @@ void main() {
       });
 
       test('merges with same modifier types correctly', () {
-        final firstOpacity = OpacityWidgetDecoratorStyle(opacity: 0.3);
-        final secondOpacity = OpacityWidgetDecoratorStyle(opacity: 0.7);
+        final firstOpacity = OpacityWidgetDecoratorMix(opacity: 0.3);
+        final secondOpacity = OpacityWidgetDecoratorMix(opacity: 0.7);
 
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
@@ -492,12 +492,12 @@ void main() {
         expect(merged.$widgetDecoratorConfig!.$decorators!.length, 1);
         expect(
           merged.$widgetDecoratorConfig!.$decorators![0],
-          isA<OpacityWidgetDecoratorStyle>(),
+          isA<OpacityWidgetDecoratorMix>(),
         );
 
         final mergedOpacity =
             merged.$widgetDecoratorConfig!.$decorators![0]
-                as OpacityWidgetDecoratorStyle;
+                as OpacityWidgetDecoratorMix;
         expect(mergedOpacity.opacity, resolvesTo(0.7));
       });
 
@@ -551,7 +551,7 @@ void main() {
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
           modifierConfig: WidgetDecoratorConfig(
-            decorators: [OpacityWidgetDecoratorStyle(opacity: 0.5)],
+            decorators: [OpacityWidgetDecoratorMix(opacity: 0.5)],
           ),
         );
         final second = BoxMix(
@@ -564,7 +564,7 @@ void main() {
         expect(merged.$widgetDecoratorConfig!.$decorators!.length, 1);
         expect(
           merged.$widgetDecoratorConfig!.$decorators![0],
-          isA<OpacityWidgetDecoratorStyle>(),
+          isA<OpacityWidgetDecoratorMix>(),
         );
       });
 

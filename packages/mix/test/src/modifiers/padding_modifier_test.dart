@@ -147,17 +147,17 @@ void main() {
     });
   });
 
-  group('PaddingWidgetDecoratorStyle', () {
+  group('PaddingWidgetDecoratorMix', () {
     group('Constructor', () {
       test('creates with null padding by default', () {
-        final attribute = PaddingWidgetDecoratorStyle();
+        final attribute = PaddingWidgetDecoratorMix();
 
         expect(attribute.padding, isNull);
       });
 
       test('creates with provided MixProp padding', () {
         final padding = MixProp<EdgeInsetsGeometry>(EdgeInsetsMix.all(16.0));
-        final attribute = PaddingWidgetDecoratorStyle.raw(padding: padding);
+        final attribute = PaddingWidgetDecoratorMix.raw(padding: padding);
 
         expect(attribute.padding, same(padding));
       });
@@ -166,13 +166,13 @@ void main() {
     group('only constructor', () {
       test('creates MixProp from EdgeInsetsMix', () {
         final edgeInsetsMix = EdgeInsetsMix.all(16.0);
-        final attribute = PaddingWidgetDecoratorStyle(padding: edgeInsetsMix);
+        final attribute = PaddingWidgetDecoratorMix(padding: edgeInsetsMix);
 
         expectProp(attribute.padding, edgeInsetsMix);
       });
 
       test('handles null padding', () {
-        final attribute = PaddingWidgetDecoratorStyle();
+        final attribute = PaddingWidgetDecoratorMix();
 
         expect(attribute.padding, isNull);
       });
@@ -184,7 +184,7 @@ void main() {
           left: 30.0,
           right: 40.0,
         );
-        final attribute = PaddingWidgetDecoratorStyle(padding: edgeInsetsMix);
+        final attribute = PaddingWidgetDecoratorMix(padding: edgeInsetsMix);
 
         expect(attribute.padding, isNotNull);
         expectProp(attribute.padding, isA<EdgeInsetsMix>());
@@ -200,7 +200,7 @@ void main() {
     group('resolve', () {
       test('resolves to PaddingWidgetDecorator with resolved padding', () {
         final edgeInsetsMix = EdgeInsetsMix.all(16.0);
-        final attribute = PaddingWidgetDecoratorStyle(padding: edgeInsetsMix);
+        final attribute = PaddingWidgetDecoratorMix(padding: edgeInsetsMix);
 
         expect(
           attribute,
@@ -209,7 +209,7 @@ void main() {
       });
 
       test('resolves with null padding to zero padding', () {
-        final attribute = PaddingWidgetDecoratorStyle();
+        final attribute = PaddingWidgetDecoratorMix();
 
         expect(attribute, resolvesTo(const PaddingWidgetDecorator(EdgeInsets.zero)));
       });
@@ -221,7 +221,7 @@ void main() {
           start: 30.0,
           end: 40.0,
         );
-        final attribute = PaddingWidgetDecoratorStyle(padding: edgeInsetsMix);
+        final attribute = PaddingWidgetDecoratorMix(padding: edgeInsetsMix);
 
         expect(
           attribute,
@@ -235,11 +235,11 @@ void main() {
     });
 
     group('merge', () {
-      test('merges with other PaddingWidgetDecoratorStyle', () {
-        final attribute1 = PaddingWidgetDecoratorStyle(
+      test('merges with other PaddingWidgetDecoratorMix', () {
+        final attribute1 = PaddingWidgetDecoratorMix(
           padding: EdgeInsetsMix.all(10.0),
         );
-        final attribute2 = PaddingWidgetDecoratorStyle(
+        final attribute2 = PaddingWidgetDecoratorMix(
           padding: EdgeInsetsMix.all(20.0),
         );
 
@@ -251,7 +251,7 @@ void main() {
       });
 
       test('returns original when other is null', () {
-        final attribute = PaddingWidgetDecoratorStyle(
+        final attribute = PaddingWidgetDecoratorMix(
           padding: EdgeInsetsMix.all(10.0),
         );
 
@@ -261,10 +261,10 @@ void main() {
       });
 
       test('merges with partial values', () {
-        final attribute1 = PaddingWidgetDecoratorStyle(
+        final attribute1 = PaddingWidgetDecoratorMix(
           padding: EdgeInsetsMix(top: 10.0, bottom: 10.0),
         );
-        final attribute2 = PaddingWidgetDecoratorStyle(
+        final attribute2 = PaddingWidgetDecoratorMix(
           padding: EdgeInsetsMix(left: 20.0, right: 20.0),
         );
 
@@ -283,10 +283,10 @@ void main() {
 
     group('equality and props', () {
       test('equal when padding matches', () {
-        final attribute1 = PaddingWidgetDecoratorStyle(
+        final attribute1 = PaddingWidgetDecoratorMix(
           padding: EdgeInsetsMix.all(16.0),
         );
-        final attribute2 = PaddingWidgetDecoratorStyle(
+        final attribute2 = PaddingWidgetDecoratorMix(
           padding: EdgeInsetsMix.all(16.0),
         );
 
@@ -294,10 +294,10 @@ void main() {
       });
 
       test('not equal when padding differs', () {
-        final attribute1 = PaddingWidgetDecoratorStyle(
+        final attribute1 = PaddingWidgetDecoratorMix(
           padding: EdgeInsetsMix.all(10.0),
         );
-        final attribute2 = PaddingWidgetDecoratorStyle(
+        final attribute2 = PaddingWidgetDecoratorMix(
           padding: EdgeInsetsMix.all(20.0),
         );
 
@@ -305,7 +305,7 @@ void main() {
       });
 
       test('props contains padding', () {
-        final attribute = PaddingWidgetDecoratorStyle(
+        final attribute = PaddingWidgetDecoratorMix(
           padding: EdgeInsetsMix.all(16.0),
         );
 
@@ -317,7 +317,7 @@ void main() {
   });
 
   group('PaddingWidgetDecoratorUtility', () {
-    late PaddingWidgetDecoratorUtility<MockStyle<PaddingWidgetDecoratorStyle>> utility;
+    late PaddingWidgetDecoratorUtility<MockStyle<PaddingWidgetDecoratorMix>> utility;
 
     setUp(() {
       utility = PaddingWidgetDecoratorUtility((attribute) => MockStyle(attribute));
@@ -393,10 +393,10 @@ void main() {
   });
 
   group('Integration tests', () {
-    testWidgets('PaddingWidgetDecoratorStyle resolves and builds correctly', (
+    testWidgets('PaddingWidgetDecoratorMix resolves and builds correctly', (
       WidgetTester tester,
     ) async {
-      final attribute = PaddingWidgetDecoratorStyle(
+      final attribute = PaddingWidgetDecoratorMix(
         padding: EdgeInsetsMix.all(24.0),
       );
 
@@ -416,9 +416,9 @@ void main() {
     });
 
     test('Complex merge scenario preserves and overrides correctly', () {
-      final base = PaddingWidgetDecoratorStyle(padding: EdgeInsetsMix.all(10.0));
+      final base = PaddingWidgetDecoratorMix(padding: EdgeInsetsMix.all(10.0));
 
-      final override1 = PaddingWidgetDecoratorStyle(
+      final override1 = PaddingWidgetDecoratorMix(
         padding: EdgeInsetsMix(
           left: 20.0,
           right: 20.0,
@@ -427,7 +427,7 @@ void main() {
         ),
       );
 
-      final override2 = PaddingWidgetDecoratorStyle(
+      final override2 = PaddingWidgetDecoratorMix(
         padding: EdgeInsetsMix(top: 30.0),
       );
 
@@ -455,7 +455,7 @@ void main() {
     });
 
     test('EdgeInsetsDirectional works correctly', () {
-      final attribute = PaddingWidgetDecoratorStyle(
+      final attribute = PaddingWidgetDecoratorMix(
         padding: EdgeInsetsDirectionalMix(
           start: 10.0,
           end: 20.0,

@@ -196,10 +196,10 @@ void main() {
     });
   });
 
-  group('FlexibleWidgetDecoratorStyle', () {
+  group('FlexibleWidgetDecoratorMix', () {
     group('Constructor', () {
       test('creates with null values by default', () {
-        final attribute = FlexibleWidgetDecoratorStyle();
+        final attribute = FlexibleWidgetDecoratorMix();
 
         expect(attribute.flex, isNull);
         expect(attribute.fit, isNull);
@@ -208,7 +208,7 @@ void main() {
       test('creates with provided Prop values', () {
         final flex = Prop.value(2);
         final fit = Prop.value(FlexFit.tight);
-        final attribute = FlexibleWidgetDecoratorStyle.raw(flex: flex, fit: fit);
+        final attribute = FlexibleWidgetDecoratorMix.raw(flex: flex, fit: fit);
 
         expect(attribute.flex, same(flex));
         expect(attribute.fit, same(fit));
@@ -217,7 +217,7 @@ void main() {
 
     group('only constructor', () {
       test('creates Prop values from direct values', () {
-        final attribute = FlexibleWidgetDecoratorStyle(
+        final attribute = FlexibleWidgetDecoratorMix(
           flex: 3,
           fit: FlexFit.loose,
         );
@@ -227,18 +227,18 @@ void main() {
       });
 
       test('handles null values correctly', () {
-        final attribute = FlexibleWidgetDecoratorStyle();
+        final attribute = FlexibleWidgetDecoratorMix();
 
         expect(attribute.flex, isNull);
         expect(attribute.fit, isNull);
       });
 
       test('handles partial values', () {
-        final attribute1 = FlexibleWidgetDecoratorStyle(flex: 2);
+        final attribute1 = FlexibleWidgetDecoratorMix(flex: 2);
         expectProp(attribute1.flex, 2);
         expect(attribute1.fit, isNull);
 
-        final attribute2 = FlexibleWidgetDecoratorStyle(fit: FlexFit.tight);
+        final attribute2 = FlexibleWidgetDecoratorMix(fit: FlexFit.tight);
         expect(attribute2.flex, isNull);
         expectProp(attribute2.fit, FlexFit.tight);
       });
@@ -246,7 +246,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to FlexibleWidgetDecorator with resolved values', () {
-        final attribute = FlexibleWidgetDecoratorStyle(
+        final attribute = FlexibleWidgetDecoratorMix(
           flex: 4,
           fit: FlexFit.tight,
         );
@@ -258,19 +258,19 @@ void main() {
       });
 
       test('resolves with null values', () {
-        final attribute = FlexibleWidgetDecoratorStyle();
+        final attribute = FlexibleWidgetDecoratorMix();
 
         expect(attribute, resolvesTo(const FlexibleWidgetDecorator()));
       });
     });
 
     group('merge', () {
-      test('merges with other FlexibleWidgetDecoratorStyle', () {
-        final attribute1 = FlexibleWidgetDecoratorStyle(
+      test('merges with other FlexibleWidgetDecoratorMix', () {
+        final attribute1 = FlexibleWidgetDecoratorMix(
           flex: 1,
           fit: FlexFit.loose,
         );
-        final attribute2 = FlexibleWidgetDecoratorStyle(
+        final attribute2 = FlexibleWidgetDecoratorMix(
           flex: 3,
           fit: FlexFit.tight,
         );
@@ -282,7 +282,7 @@ void main() {
       });
 
       test('returns original when other is null', () {
-        final attribute = FlexibleWidgetDecoratorStyle(flex: 2);
+        final attribute = FlexibleWidgetDecoratorMix(flex: 2);
 
         final merged = attribute.merge(null);
 
@@ -290,8 +290,8 @@ void main() {
       });
 
       test('merges with null values', () {
-        final attribute1 = FlexibleWidgetDecoratorStyle();
-        final attribute2 = FlexibleWidgetDecoratorStyle(fit: FlexFit.tight);
+        final attribute1 = FlexibleWidgetDecoratorMix();
+        final attribute2 = FlexibleWidgetDecoratorMix(fit: FlexFit.tight);
 
         final merged = attribute1.merge(attribute2);
 
@@ -302,11 +302,11 @@ void main() {
 
     group('equality and props', () {
       test('equal when all Prop values match', () {
-        final attribute1 = FlexibleWidgetDecoratorStyle(
+        final attribute1 = FlexibleWidgetDecoratorMix(
           flex: 2,
           fit: FlexFit.tight,
         );
-        final attribute2 = FlexibleWidgetDecoratorStyle(
+        final attribute2 = FlexibleWidgetDecoratorMix(
           flex: 2,
           fit: FlexFit.tight,
         );
@@ -315,14 +315,14 @@ void main() {
       });
 
       test('not equal when values differ', () {
-        final attribute1 = FlexibleWidgetDecoratorStyle(flex: 1);
-        final attribute2 = FlexibleWidgetDecoratorStyle(flex: 2);
+        final attribute1 = FlexibleWidgetDecoratorMix(flex: 1);
+        final attribute2 = FlexibleWidgetDecoratorMix(flex: 2);
 
         expect(attribute1, isNot(equals(attribute2)));
       });
 
       test('props contains all Prop values', () {
-        final attribute = FlexibleWidgetDecoratorStyle(
+        final attribute = FlexibleWidgetDecoratorMix(
           flex: 3,
           fit: FlexFit.tight,
         );
@@ -336,7 +336,7 @@ void main() {
   });
 
   group('FlexibleWidgetDecoratorUtility', () {
-    late FlexibleWidgetDecoratorUtility<MockStyle<FlexibleWidgetDecoratorStyle>> utility;
+    late FlexibleWidgetDecoratorUtility<MockStyle<FlexibleWidgetDecoratorMix>> utility;
 
     setUp(() {
       utility = FlexibleWidgetDecoratorUtility((attribute) => MockStyle(attribute));
@@ -426,10 +426,10 @@ void main() {
   });
 
   group('Integration tests', () {
-    testWidgets('FlexibleWidgetDecoratorStyle resolves and builds correctly', (
+    testWidgets('FlexibleWidgetDecoratorMix resolves and builds correctly', (
       WidgetTester tester,
     ) async {
-      final attribute = FlexibleWidgetDecoratorStyle(flex: 2, fit: FlexFit.tight);
+      final attribute = FlexibleWidgetDecoratorMix(flex: 2, fit: FlexFit.tight);
 
       expect(
         attribute,
@@ -453,11 +453,11 @@ void main() {
     });
 
     test('Complex merge scenario preserves and overrides correctly', () {
-      final base = FlexibleWidgetDecoratorStyle(flex: 1, fit: FlexFit.loose);
+      final base = FlexibleWidgetDecoratorMix(flex: 1, fit: FlexFit.loose);
 
-      final override1 = FlexibleWidgetDecoratorStyle(flex: 3);
+      final override1 = FlexibleWidgetDecoratorMix(flex: 3);
 
-      final override2 = FlexibleWidgetDecoratorStyle(fit: FlexFit.tight);
+      final override2 = FlexibleWidgetDecoratorMix(fit: FlexFit.tight);
 
       final result = base.merge(override1).merge(override2);
 

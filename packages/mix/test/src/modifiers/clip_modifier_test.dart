@@ -196,7 +196,7 @@ void main() {
     });
   });
 
-  group('ClipPathWidgetDecoratorStyle', () {
+  group('ClipPathWidgetDecoratorMix', () {
     const clipper = _PathClipper();
     const clipper2 = _OtherPathClipper();
     const clipBehavior = Clip.antiAlias;
@@ -204,7 +204,7 @@ void main() {
 
     group('Constructor', () {
       test('creates with null values by default', () {
-        final attribute = ClipPathWidgetDecoratorStyle();
+        final attribute = ClipPathWidgetDecoratorMix();
 
         expect(attribute.clipper, isNull);
         expect(attribute.clipBehavior, isNull);
@@ -213,7 +213,7 @@ void main() {
 
     group('only constructor', () {
       test('creates from direct values', () {
-        final attribute = ClipPathWidgetDecoratorStyle(
+        final attribute = ClipPathWidgetDecoratorMix(
           clipper: clipper,
           clipBehavior: clipBehavior,
         );
@@ -223,18 +223,18 @@ void main() {
       });
 
       test('handles null values correctly', () {
-        final attribute = ClipPathWidgetDecoratorStyle();
+        final attribute = ClipPathWidgetDecoratorMix();
 
         expect(attribute.clipper, isNull);
         expect(attribute.clipBehavior, isNull);
       });
 
       test('handles partial values', () {
-        final attribute1 = ClipPathWidgetDecoratorStyle(clipper: clipper);
+        final attribute1 = ClipPathWidgetDecoratorMix(clipper: clipper);
         expectProp(attribute1.clipper, clipper);
         expect(attribute1.clipBehavior, isNull);
 
-        final attribute2 = ClipPathWidgetDecoratorStyle(
+        final attribute2 = ClipPathWidgetDecoratorMix(
           clipBehavior: clipBehavior,
         );
         expect(attribute2.clipper, isNull);
@@ -244,7 +244,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to ClipPathWidgetDecorator with resolved values', () {
-        final attribute = ClipPathWidgetDecoratorStyle(
+        final attribute = ClipPathWidgetDecoratorMix(
           clipper: clipper,
           clipBehavior: clipBehavior,
         );
@@ -257,7 +257,7 @@ void main() {
       });
 
       test('resolves with null values', () {
-        final attribute = ClipPathWidgetDecoratorStyle();
+        final attribute = ClipPathWidgetDecoratorMix();
 
         const expectedModifier = ClipPathWidgetDecorator();
         expect(attribute, resolvesTo(expectedModifier));
@@ -265,12 +265,12 @@ void main() {
     });
 
     group('merge', () {
-      test('merges with other ClipPathWidgetDecoratorStyle', () {
-        final attribute1 = ClipPathWidgetDecoratorStyle(
+      test('merges with other ClipPathWidgetDecoratorMix', () {
+        final attribute1 = ClipPathWidgetDecoratorMix(
           clipper: clipper,
           clipBehavior: clipBehavior,
         );
-        final attribute2 = ClipPathWidgetDecoratorStyle(
+        final attribute2 = ClipPathWidgetDecoratorMix(
           clipper: clipper2,
           clipBehavior: clipBehavior2,
         );
@@ -282,7 +282,7 @@ void main() {
       });
 
       test('returns original when other is null', () {
-        final attribute = ClipPathWidgetDecoratorStyle(clipper: clipper);
+        final attribute = ClipPathWidgetDecoratorMix(clipper: clipper);
 
         final merged = attribute.merge(null);
 
@@ -290,8 +290,8 @@ void main() {
       });
 
       test('merges with null values', () {
-        final attribute1 = ClipPathWidgetDecoratorStyle();
-        final attribute2 = ClipPathWidgetDecoratorStyle(
+        final attribute1 = ClipPathWidgetDecoratorMix();
+        final attribute2 = ClipPathWidgetDecoratorMix(
           clipper: clipper,
           clipBehavior: clipBehavior,
         );
@@ -305,11 +305,11 @@ void main() {
 
     group('equality and props', () {
       test('equal when all values match', () {
-        final attribute1 = ClipPathWidgetDecoratorStyle(
+        final attribute1 = ClipPathWidgetDecoratorMix(
           clipper: clipper,
           clipBehavior: clipBehavior,
         );
-        final attribute2 = ClipPathWidgetDecoratorStyle(
+        final attribute2 = ClipPathWidgetDecoratorMix(
           clipper: clipper,
           clipBehavior: clipBehavior,
         );
@@ -318,14 +318,14 @@ void main() {
       });
 
       test('not equal when values differ', () {
-        final attribute1 = ClipPathWidgetDecoratorStyle(clipper: clipper);
-        final attribute2 = ClipPathWidgetDecoratorStyle(clipper: clipper2);
+        final attribute1 = ClipPathWidgetDecoratorMix(clipper: clipper);
+        final attribute2 = ClipPathWidgetDecoratorMix(clipper: clipper2);
 
         expect(attribute1, isNot(equals(attribute2)));
       });
 
       test('props contains all values', () {
-        final attribute = ClipPathWidgetDecoratorStyle(
+        final attribute = ClipPathWidgetDecoratorMix(
           clipper: clipper,
           clipBehavior: clipBehavior,
         );
@@ -409,13 +409,13 @@ void main() {
     });
   });
 
-  group('ClipTriangleWidgetDecoratorStyle', () {
+  group('ClipTriangleWidgetDecoratorMix', () {
     const clipBehavior = Clip.antiAlias;
     const clipBehavior2 = Clip.antiAliasWithSaveLayer;
 
     group('Constructor', () {
       test('creates with null clipBehavior by default', () {
-        final attribute = ClipTriangleWidgetDecoratorStyle();
+        final attribute = ClipTriangleWidgetDecoratorMix();
 
         expect(attribute.clipBehavior, isNull);
       });
@@ -423,7 +423,7 @@ void main() {
 
     group('only constructor', () {
       test('creates from direct value', () {
-        final attribute = ClipTriangleWidgetDecoratorStyle(
+        final attribute = ClipTriangleWidgetDecoratorMix(
           clipBehavior: clipBehavior,
         );
 
@@ -431,7 +431,7 @@ void main() {
       });
 
       test('handles null values correctly', () {
-        final attribute = ClipTriangleWidgetDecoratorStyle();
+        final attribute = ClipTriangleWidgetDecoratorMix();
 
         expect(attribute.clipBehavior, isNull);
       });
@@ -439,7 +439,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to ClipTriangleWidgetDecorator with resolved values', () {
-        final attribute = ClipTriangleWidgetDecoratorStyle(
+        final attribute = ClipTriangleWidgetDecoratorMix(
           clipBehavior: clipBehavior,
         );
 
@@ -451,11 +451,11 @@ void main() {
     });
 
     group('merge', () {
-      test('merges with other ClipTriangleWidgetDecoratorStyle', () {
-        final attribute1 = ClipTriangleWidgetDecoratorStyle(
+      test('merges with other ClipTriangleWidgetDecoratorMix', () {
+        final attribute1 = ClipTriangleWidgetDecoratorMix(
           clipBehavior: clipBehavior,
         );
-        final attribute2 = ClipTriangleWidgetDecoratorStyle(
+        final attribute2 = ClipTriangleWidgetDecoratorMix(
           clipBehavior: clipBehavior2,
         );
 
@@ -465,7 +465,7 @@ void main() {
       });
 
       test('returns original when other is null', () {
-        final attribute = ClipTriangleWidgetDecoratorStyle(
+        final attribute = ClipTriangleWidgetDecoratorMix(
           clipBehavior: clipBehavior,
         );
 
@@ -477,10 +477,10 @@ void main() {
 
     group('equality and props', () {
       test('equal when all values match', () {
-        final attribute1 = ClipTriangleWidgetDecoratorStyle(
+        final attribute1 = ClipTriangleWidgetDecoratorMix(
           clipBehavior: clipBehavior,
         );
-        final attribute2 = ClipTriangleWidgetDecoratorStyle(
+        final attribute2 = ClipTriangleWidgetDecoratorMix(
           clipBehavior: clipBehavior,
         );
 
@@ -488,7 +488,7 @@ void main() {
       });
 
       test('props contains clipBehavior', () {
-        final attribute = ClipTriangleWidgetDecoratorStyle(
+        final attribute = ClipTriangleWidgetDecoratorMix(
           clipBehavior: clipBehavior,
         );
 
@@ -503,10 +503,10 @@ void main() {
     const clipper = _PathClipper();
     const clipBehavior = Clip.antiAlias;
 
-    testWidgets('ClipPathWidgetDecoratorStyle resolves and builds correctly', (
+    testWidgets('ClipPathWidgetDecoratorMix resolves and builds correctly', (
       WidgetTester tester,
     ) async {
-      final attribute = ClipPathWidgetDecoratorStyle(
+      final attribute = ClipPathWidgetDecoratorMix(
         clipper: clipper,
         clipBehavior: clipBehavior,
       );
@@ -531,16 +531,16 @@ void main() {
     test('Complex merge scenario preserves and overrides correctly', () {
       const clipper3 = _PathClipper();
 
-      final base = ClipPathWidgetDecoratorStyle(
+      final base = ClipPathWidgetDecoratorMix(
         clipper: clipper,
         clipBehavior: clipBehavior,
       );
 
-      final override1 = ClipPathWidgetDecoratorStyle(
+      final override1 = ClipPathWidgetDecoratorMix(
         clipBehavior: Clip.antiAliasWithSaveLayer,
       );
 
-      final override2 = ClipPathWidgetDecoratorStyle(clipper: clipper3);
+      final override2 = ClipPathWidgetDecoratorMix(clipper: clipper3);
 
       final result = base.merge(override1).merge(override2);
 

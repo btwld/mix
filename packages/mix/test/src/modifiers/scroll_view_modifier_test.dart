@@ -347,10 +347,10 @@ void main() {
     });
   });
 
-  group('ScrollViewWidgetDecoratorStyle', () {
+  group('ScrollViewWidgetDecoratorMix', () {
     group('Constructor', () {
       test('creates with null values by default', () {
-        final attribute = ScrollViewWidgetDecoratorStyle();
+        final attribute = ScrollViewWidgetDecoratorMix();
 
         expect(attribute.scrollDirection, isNull);
         expect(attribute.reverse, isNull);
@@ -368,7 +368,7 @@ void main() {
         );
         final clipBehavior = Prop.value<Clip>(Clip.antiAlias);
 
-        final attribute = ScrollViewWidgetDecoratorStyle.raw(
+        final attribute = ScrollViewWidgetDecoratorMix.raw(
           scrollDirection: scrollDirection,
           reverse: reverse,
           padding: padding,
@@ -386,7 +386,7 @@ void main() {
 
     group('only constructor', () {
       test('creates Prop values from direct values', () {
-        final attribute = ScrollViewWidgetDecoratorStyle(
+        final attribute = ScrollViewWidgetDecoratorMix(
           scrollDirection: Axis.horizontal,
           reverse: true,
           padding: EdgeInsetsMix.all(16.0),
@@ -402,7 +402,7 @@ void main() {
       });
 
       test('handles null values correctly', () {
-        final attribute = ScrollViewWidgetDecoratorStyle();
+        final attribute = ScrollViewWidgetDecoratorMix();
 
         expect(attribute.scrollDirection, isNull);
         expect(attribute.reverse, isNull);
@@ -412,7 +412,7 @@ void main() {
       });
 
       test('handles partial values', () {
-        final attribute1 = ScrollViewWidgetDecoratorStyle(
+        final attribute1 = ScrollViewWidgetDecoratorMix(
           scrollDirection: Axis.horizontal,
           reverse: true,
         );
@@ -422,7 +422,7 @@ void main() {
         expect(attribute1.physics, isNull);
         expect(attribute1.clipBehavior, isNull);
 
-        final attribute2 = ScrollViewWidgetDecoratorStyle(
+        final attribute2 = ScrollViewWidgetDecoratorMix(
           padding: EdgeInsetsMix.all(16.0),
           physics: const ClampingScrollPhysics(),
         );
@@ -436,7 +436,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to ScrollViewWidgetDecorator with resolved values', () {
-        final attribute = ScrollViewWidgetDecoratorStyle(
+        final attribute = ScrollViewWidgetDecoratorMix(
           scrollDirection: Axis.horizontal,
           reverse: true,
           padding: EdgeInsetsMix.all(16.0),
@@ -459,20 +459,20 @@ void main() {
       });
 
       test('resolves with null values', () {
-        final attribute = ScrollViewWidgetDecoratorStyle();
+        final attribute = ScrollViewWidgetDecoratorMix();
 
         expect(attribute, resolvesTo(const ScrollViewWidgetDecorator()));
       });
     });
 
     group('merge', () {
-      test('merges with other ScrollViewWidgetDecoratorStyle', () {
-        final attribute1 = ScrollViewWidgetDecoratorStyle(
+      test('merges with other ScrollViewWidgetDecoratorMix', () {
+        final attribute1 = ScrollViewWidgetDecoratorMix(
           scrollDirection: Axis.vertical,
           reverse: false,
           padding: EdgeInsetsMix.all(10.0),
         );
-        final attribute2 = ScrollViewWidgetDecoratorStyle(
+        final attribute2 = ScrollViewWidgetDecoratorMix(
           scrollDirection: Axis.horizontal,
           physics: const BouncingScrollPhysics(),
           clipBehavior: Clip.antiAlias,
@@ -488,7 +488,7 @@ void main() {
       });
 
       test('returns original when other is null', () {
-        final attribute = ScrollViewWidgetDecoratorStyle(
+        final attribute = ScrollViewWidgetDecoratorMix(
           scrollDirection: Axis.horizontal,
         );
 
@@ -498,8 +498,8 @@ void main() {
       });
 
       test('merges with null values', () {
-        final attribute1 = ScrollViewWidgetDecoratorStyle();
-        final attribute2 = ScrollViewWidgetDecoratorStyle(
+        final attribute1 = ScrollViewWidgetDecoratorMix();
+        final attribute2 = ScrollViewWidgetDecoratorMix(
           scrollDirection: Axis.horizontal,
           reverse: true,
         );
@@ -516,13 +516,13 @@ void main() {
 
     group('equality and props', () {
       test('equal when all Prop values match', () {
-        final attribute1 = ScrollViewWidgetDecoratorStyle(
+        final attribute1 = ScrollViewWidgetDecoratorMix(
           scrollDirection: Axis.horizontal,
           reverse: true,
           padding: EdgeInsetsMix.all(16.0),
           clipBehavior: Clip.antiAlias,
         );
-        final attribute2 = ScrollViewWidgetDecoratorStyle(
+        final attribute2 = ScrollViewWidgetDecoratorMix(
           scrollDirection: Axis.horizontal,
           reverse: true,
           padding: EdgeInsetsMix.all(16.0),
@@ -536,10 +536,10 @@ void main() {
       // so we can't reliably test physics difference for inequality
 
       test('not equal when values differ', () {
-        final attribute1 = ScrollViewWidgetDecoratorStyle(
+        final attribute1 = ScrollViewWidgetDecoratorMix(
           scrollDirection: Axis.horizontal,
         );
-        final attribute2 = ScrollViewWidgetDecoratorStyle(
+        final attribute2 = ScrollViewWidgetDecoratorMix(
           scrollDirection: Axis.vertical,
         );
 
@@ -547,7 +547,7 @@ void main() {
       });
 
       test('props contains all Prop values', () {
-        final attribute = ScrollViewWidgetDecoratorStyle(
+        final attribute = ScrollViewWidgetDecoratorMix(
           scrollDirection: Axis.horizontal,
           reverse: true,
           padding: EdgeInsetsMix.all(16.0),
@@ -567,7 +567,7 @@ void main() {
   });
 
   group('ScrollViewWidgetDecoratorUtility', () {
-    late ScrollViewWidgetDecoratorUtility<MockStyle<ScrollViewWidgetDecoratorStyle>>
+    late ScrollViewWidgetDecoratorUtility<MockStyle<ScrollViewWidgetDecoratorMix>>
     utility;
 
     setUp(() {
@@ -669,10 +669,10 @@ void main() {
   });
 
   group('Integration tests', () {
-    testWidgets('ScrollViewWidgetDecoratorStyle resolves and builds correctly', (
+    testWidgets('ScrollViewWidgetDecoratorMix resolves and builds correctly', (
       WidgetTester tester,
     ) async {
-      final attribute = ScrollViewWidgetDecoratorStyle(
+      final attribute = ScrollViewWidgetDecoratorMix(
         scrollDirection: Axis.horizontal,
         reverse: true,
         padding: EdgeInsetsMix.all(24.0),
@@ -719,18 +719,18 @@ void main() {
     });
 
     test('Complex merge scenario preserves and overrides correctly', () {
-      final base = ScrollViewWidgetDecoratorStyle(
+      final base = ScrollViewWidgetDecoratorMix(
         scrollDirection: Axis.vertical,
         reverse: false,
         padding: EdgeInsetsMix.all(10.0),
       );
 
-      final override1 = ScrollViewWidgetDecoratorStyle(
+      final override1 = ScrollViewWidgetDecoratorMix(
         scrollDirection: Axis.horizontal,
         physics: const ClampingScrollPhysics(),
       );
 
-      final override2 = ScrollViewWidgetDecoratorStyle(
+      final override2 = ScrollViewWidgetDecoratorMix(
         reverse: true,
         clipBehavior: Clip.antiAlias,
       );

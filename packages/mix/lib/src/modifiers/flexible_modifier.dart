@@ -77,15 +77,15 @@ final class FlexibleWidgetDecorator
 ///
 /// Use this class to configure the attributes of a [FlexibleWidgetDecorator] and pass it to
 /// the [FlexibleWidgetDecorator] constructor.
-class FlexibleWidgetDecoratorStyle
+class FlexibleWidgetDecoratorMix
     extends WidgetDecoratorMix<FlexibleWidgetDecorator>
     with Diagnosticable {
   final Prop<int>? flex;
   final Prop<FlexFit>? fit;
 
-  const FlexibleWidgetDecoratorStyle.raw({this.flex, this.fit});
+  const FlexibleWidgetDecoratorMix.raw({this.flex, this.fit});
 
-  FlexibleWidgetDecoratorStyle({int? flex, FlexFit? fit})
+  FlexibleWidgetDecoratorMix({int? flex, FlexFit? fit})
     : this.raw(flex: Prop.maybe(flex), fit: Prop.maybe(fit));
 
   /// Resolves to [FlexibleWidgetDecorator] using the provided [BuildContext].
@@ -94,7 +94,7 @@ class FlexibleWidgetDecoratorStyle
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final flexibleDecorator = FlexibleWidgetDecoratorStyle(...).resolve(mix);
+  /// final flexibleDecorator = FlexibleWidgetDecoratorMix(...).resolve(mix);
   /// ```
   @override
   FlexibleWidgetDecorator resolve(BuildContext context) {
@@ -104,19 +104,19 @@ class FlexibleWidgetDecoratorStyle
     );
   }
 
-  /// Merges the properties of this [FlexibleWidgetDecoratorStyle] with the properties of [other].
+  /// Merges the properties of this [FlexibleWidgetDecoratorMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [FlexibleWidgetDecoratorStyle] with the properties of [other] taking precedence over
+  /// [FlexibleWidgetDecoratorMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  FlexibleWidgetDecoratorStyle merge(FlexibleWidgetDecoratorStyle? other) {
+  FlexibleWidgetDecoratorMix merge(FlexibleWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return FlexibleWidgetDecoratorStyle.raw(
+    return FlexibleWidgetDecoratorMix.raw(
       flex: flex?.mergeProp(other.flex) ?? other.flex,
       fit: fit?.mergeProp(other.fit) ?? other.fit,
     );
@@ -129,30 +129,30 @@ class FlexibleWidgetDecoratorStyle
     properties.add(DiagnosticsProperty('fit', fit, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [FlexibleWidgetDecoratorStyle].
+  /// The list of properties that constitute the state of this [FlexibleWidgetDecoratorMix].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [FlexibleWidgetDecoratorStyle] instances for equality.
+  /// compare two [FlexibleWidgetDecoratorMix] instances for equality.
   @override
   List<Object?> get props => [flex, fit];
 }
 
 final class FlexibleWidgetDecoratorUtility<T extends Style<Object?>>
-    extends MixUtility<T, FlexibleWidgetDecoratorStyle> {
+    extends MixUtility<T, FlexibleWidgetDecoratorMix> {
   late final fit = MixUtility<T, FlexFit>(
-    (prop) => builder(FlexibleWidgetDecoratorStyle(fit: prop)),
+    (prop) => builder(FlexibleWidgetDecoratorMix(fit: prop)),
   );
   FlexibleWidgetDecoratorUtility(super.builder);
-  T flex(int v) => builder(FlexibleWidgetDecoratorStyle(flex: v));
+  T flex(int v) => builder(FlexibleWidgetDecoratorMix(flex: v));
   T tight({int? flex}) => builder(
-    FlexibleWidgetDecoratorStyle.raw(
+    FlexibleWidgetDecoratorMix.raw(
       flex: Prop.maybe(flex),
       fit: Prop.value(FlexFit.tight),
     ),
   );
 
   T loose({int? flex}) => builder(
-    FlexibleWidgetDecoratorStyle.raw(
+    FlexibleWidgetDecoratorMix.raw(
       flex: Prop.maybe(flex),
       fit: Prop.value(FlexFit.loose),
     ),
@@ -161,14 +161,14 @@ final class FlexibleWidgetDecoratorUtility<T extends Style<Object?>>
   T expanded({int? flex}) => tight(flex: flex);
 
   T call({int? flex, FlexFit? fit}) {
-    return builder(FlexibleWidgetDecoratorStyle(flex: flex, fit: fit));
+    return builder(FlexibleWidgetDecoratorMix(flex: flex, fit: fit));
   }
 
   T flexToken(MixToken<int> token) {
-    return builder(FlexibleWidgetDecoratorStyle.raw(flex: Prop.token(token)));
+    return builder(FlexibleWidgetDecoratorMix.raw(flex: Prop.token(token)));
   }
 
   T fitToken(MixToken<FlexFit> token) {
-    return builder(FlexibleWidgetDecoratorStyle.raw(fit: Prop.token(token)));
+    return builder(FlexibleWidgetDecoratorMix.raw(fit: Prop.token(token)));
   }
 }
