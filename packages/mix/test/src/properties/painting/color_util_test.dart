@@ -112,7 +112,7 @@ void main() {
     });
 
     group('ColorModifierMixin methods', () {
-      test('withOpacity applies opacity directive', () {
+      test('withOpacity applies opacity modifier', () {
         final result = util.withOpacity(0.5);
         final modifiers = result.value.$modifiers;
 
@@ -122,7 +122,7 @@ void main() {
         expect((modifiers.first as OpacityColorModifier).opacity, 0.5);
       });
 
-      test('withAlpha applies alpha directive', () {
+      test('withAlpha applies alpha modifier', () {
         final result = util.withAlpha(128);
         final modifiers = result.value.$modifiers;
 
@@ -132,7 +132,7 @@ void main() {
         expect((modifiers.first as AlphaColorModifier).alpha, 128);
       });
 
-      test('darken applies darken directive', () {
+      test('darken applies darken modifier', () {
         final result = util.darken(20);
         final modifiers = result.value.$modifiers;
 
@@ -142,7 +142,7 @@ void main() {
         expect((modifiers.first as DarkenColorModifier).amount, 20);
       });
 
-      test('lighten applies lighten directive', () {
+      test('lighten applies lighten modifier', () {
         final result = util.lighten(30);
         final modifiers = result.value.$modifiers;
 
@@ -152,7 +152,7 @@ void main() {
         expect((modifiers.first as LightenColorModifier).amount, 30);
       });
 
-      test('saturate applies saturate directive', () {
+      test('saturate applies saturate modifier', () {
         final result = util.saturate(25);
         final modifiers = result.value.$modifiers;
 
@@ -162,7 +162,7 @@ void main() {
         expect((modifiers.first as SaturateColorModifier).amount, 25);
       });
 
-      test('desaturate applies desaturate directive', () {
+      test('desaturate applies desaturate modifier', () {
         final result = util.desaturate(15);
         final modifiers = result.value.$modifiers;
 
@@ -172,7 +172,7 @@ void main() {
         expect((modifiers.first as DesaturateColorModifier).amount, 15);
       });
 
-      test('tint applies tint directive', () {
+      test('tint applies tint modifier', () {
         final result = util.tint(40);
         final modifiers = result.value.$modifiers;
 
@@ -182,7 +182,7 @@ void main() {
         expect((modifiers.first as TintColorModifier).amount, 40);
       });
 
-      test('shade applies shade directive', () {
+      test('shade applies shade modifier', () {
         final result = util.shade(35);
         final modifiers = result.value.$modifiers;
 
@@ -192,7 +192,7 @@ void main() {
         expect((modifiers.first as ShadeColorModifier).amount, 35);
       });
 
-      test('brighten applies brighten directive', () {
+      test('brighten applies brighten modifier', () {
         final result = util.brighten(50);
         final modifiers = result.value.$modifiers;
 
@@ -221,8 +221,8 @@ void main() {
       expect(color, Colors.blue);
     });
 
-    group('color directive methods', () {
-      test('withOpacity applies opacity directive', () {
+    group('color modifier methods', () {
+      test('withOpacity applies opacity modifier', () {
         final result = util.withOpacity(0.7);
         final modifiers = result.value.$modifiers;
 
@@ -232,7 +232,7 @@ void main() {
         expect((modifiers.first as OpacityColorModifier).opacity, 0.7);
       });
 
-      test('withAlpha applies alpha directive', () {
+      test('withAlpha applies alpha modifier', () {
         final result = util.withAlpha(200);
         final modifiers = result.value.$modifiers;
 
@@ -242,7 +242,7 @@ void main() {
         expect((modifiers.first as AlphaColorModifier).alpha, 200);
       });
 
-      test('darken applies darken directive', () {
+      test('darken applies darken modifier', () {
         final result = util.darken(10);
         final modifiers = result.value.$modifiers;
 
@@ -252,7 +252,7 @@ void main() {
         expect((modifiers.first as DarkenColorModifier).amount, 10);
       });
 
-      test('lighten applies lighten directive', () {
+      test('lighten applies lighten modifier', () {
         final result = util.lighten(15);
         final modifiers = result.value.$modifiers;
 
@@ -262,7 +262,7 @@ void main() {
         expect((modifiers.first as LightenColorModifier).amount, 15);
       });
 
-      test('saturate applies saturate directive', () {
+      test('saturate applies saturate modifier', () {
         final result = util.saturate(20);
         final modifiers = result.value.$modifiers;
 
@@ -272,7 +272,7 @@ void main() {
         expect((modifiers.first as SaturateColorModifier).amount, 20);
       });
 
-      test('desaturate applies desaturate directive', () {
+      test('desaturate applies desaturate modifier', () {
         final result = util.desaturate(25);
         final modifiers = result.value.$modifiers;
 
@@ -282,7 +282,7 @@ void main() {
         expect((modifiers.first as DesaturateColorModifier).amount, 25);
       });
 
-      test('tint applies tint directive', () {
+      test('tint applies tint modifier', () {
         final result = util.tint(30);
         final modifiers = result.value.$modifiers;
 
@@ -292,7 +292,7 @@ void main() {
         expect((modifiers.first as TintColorModifier).amount, 30);
       });
 
-      test('shade applies shade directive', () {
+      test('shade applies shade modifier', () {
         final result = util.shade(40);
         final modifiers = result.value.$modifiers;
 
@@ -302,7 +302,7 @@ void main() {
         expect((modifiers.first as ShadeColorModifier).amount, 40);
       });
 
-      test('brighten applies brighten directive', () {
+      test('brighten applies brighten modifier', () {
         final result = util.brighten(45);
         final modifiers = result.value.$modifiers;
 

@@ -13,8 +13,10 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-final kdefaultFlexStyle = Style.flexbox().flex(
-  FlexMix.mainAxisSize(MainAxisSize.min).gap(8),
+final kdefaultFlexStyle = Style.flexbox(
+  .flex(
+    FlexMix.mainAxisSize(MainAxisSize.min).gap(8),
+  )
 );
 
 class _MyAppState extends State<MyApp> {

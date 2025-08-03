@@ -36,22 +36,22 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
 
   final bool? $inherit;
 
-  static final icon = IconMix.new;
-  static final text = TextMix.new;
-  static final flexbox = FlexBoxMix.new;
-  static final stack = StackMix.new;
-  static final stackBox = StackBoxMix.new;
-  static final flex = FlexMix.new;
   const Style({
     required List<VariantStyle<S>>? variants,
     required WidgetDecoratorConfig? modifierConfig,
     required AnimationConfig? animation,
-
     required bool? inherit,
   }) : $widgetDecoratorConfig = modifierConfig,
        $animation = animation,
        $variants = variants,
        $inherit = inherit;
+
+  static IconMix icon(IconMix value) => value;
+  static TextMix text(TextMix value) => value;
+  static FlexBoxMix flexbox(FlexBoxMix value) => value;
+  static StackMix stack(StackMix value) => value;
+  static StackBoxMix stackBox(StackBoxMix value) => value;
+  static FlexMix flex(FlexMix value) => value;
 
   static BoxMix box(BoxMix value) => value;
 

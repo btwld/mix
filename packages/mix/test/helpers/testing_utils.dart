@@ -361,9 +361,9 @@ class MockMix<T> extends Mix<T> {
   String toString() => 'MockMix<$T>($value)';
 }
 
-/// Mock directive for testing
+/// Mock modifier for testing
 ///
-/// A simple directive implementation for testing purposes.
+/// A simple modifier implementation for testing purposes.
 /// By default, applies identity transformation (returns value unchanged).
 /// Can optionally provide a custom transformer function.
 ///
@@ -433,9 +433,9 @@ extension WidgetTesterExtension on WidgetTester {
 // MOCK CLASSES FOR TESTING
 // =============================================================================
 
-/// Mock directive for testing purposes
+/// Mock modifier for testing purposes
 ///
-/// A simple directive implementation for testing purposes.
+/// A simple modifier implementation for testing purposes.
 /// By default, applies identity transformation (returns value unchanged).
 /// Can optionally provide a custom transformer function.
 class MockMixModifier<T> extends Modifier<T> {

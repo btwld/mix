@@ -66,8 +66,8 @@ void main() {
         expect(util.softWrap, isA<Function>());
       });
 
-      test('directives utility is MixUtility', () {
-        expect(util.directives, isA<MixUtility<TextMix, Modifier<String>>>());
+      test('modifiers utility is MixUtility', () {
+        expect(util.modifiers, isA<MixUtility<TextMix, Modifier<String>>>());
       });
 
       test('selectionColor utility is ColorUtility', () {

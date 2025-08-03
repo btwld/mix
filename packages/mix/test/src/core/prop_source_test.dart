@@ -148,7 +148,7 @@ void main() {
         expect(source2.token, equals(token2));
       });
 
-      test('preserves directives and animation during merge', () {
+      test('preserves modifiers and animation during merge', () {
         final token = MixToken<Shadow>('shadow.primary');
         final modifier = MockModifier<Shadow>('test');
         final animation = AnimationConfig.curve(

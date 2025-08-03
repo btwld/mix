@@ -227,35 +227,35 @@ void main() {
         expect(textMix.$softWrap, resolvesTo(false));
       });
 
-      test('directive factory creates TextMix with directive', () {
+      test('modifier factory creates TextMix with modifier', () {
         final textMix = TextMix.textModifier(const UppercaseStringModifier());
 
         expect(textMix.$textModifiers, isNotNull);
         expect(textMix.$textModifiers!.length, 1);
       });
 
-      test('uppercase factory creates TextMix with uppercase directive', () {
+      test('uppercase factory creates TextMix with uppercase modifier', () {
         final textMix = TextMix.uppercase();
 
         expect(textMix.$textModifiers, isNotNull);
         expect(textMix.$textModifiers!.length, 1);
       });
 
-      test('lowercase factory creates TextMix with lowercase directive', () {
+      test('lowercase factory creates TextMix with lowercase modifier', () {
         final textMix = TextMix.lowercase();
 
         expect(textMix.$textModifiers, isNotNull);
         expect(textMix.$textModifiers!.length, 1);
       });
 
-      test('capitalize factory creates TextMix with capitalize directive', () {
+      test('capitalize factory creates TextMix with capitalize modifier', () {
         final textMix = TextMix.capitalize();
 
         expect(textMix.$textModifiers, isNotNull);
         expect(textMix.$textModifiers!.length, 1);
       });
 
-      test('titleCase factory creates TextMix with titleCase directive', () {
+      test('titleCase factory creates TextMix with titleCase modifier', () {
         final textMix = TextMix.titleCase();
 
         expect(textMix.$textModifiers, isNotNull);
@@ -263,7 +263,7 @@ void main() {
       });
 
       test(
-        'sentenceCase factory creates TextMix with sentenceCase directive',
+        'sentenceCase factory creates TextMix with sentenceCase modifier',
         () {
           final textMix = TextMix.sentenceCase();
 
@@ -375,7 +375,7 @@ void main() {
         expect(attribute.$softWrap, resolvesTo(false));
       });
 
-      test('directive utility works correctly', () {
+      test('modifier utility works correctly', () {
         final attribute = TextMix().textModifier(
           const UppercaseStringModifier(),
         );

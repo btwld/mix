@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
 
-final chipButtonLabel = Style.text()
+final chipButtonLabel = Style.text(
     .fontSize(16)
     .fontWeight(FontWeight.w500)
-    .color(Colors.pink);
+    .color(Colors.pink)
+);
 
 final chipButtonContainer = Style.box(
     .height(40)
@@ -28,10 +29,11 @@ final filterChipContainer = Style.box(
     .onPressed(BoxMix.color(Colors.grey.shade400))
     .wrap(
       WidgetDecoratorConfig.defaultText(
-        Style.text()
+        Style.text(
             .fontSize(14)
             .fontWeight(FontWeight.w500)
-            .color(Colors.grey.shade700),
+            .color(Colors.grey.shade700)
+        ),
       ),
     )
 );
@@ -45,10 +47,11 @@ final filterChipSelectedContainer = Style.box(
     .onPressed(BoxMix.color(Colors.blue.shade300))
     .wrap(
       WidgetDecoratorConfig.defaultText(
-        Style.text()
+        Style.text(
             .fontSize(14)
             .fontWeight(FontWeight.w500)
-            .color(Colors.blue.shade800),
+            .color(Colors.blue.shade800)
+        ),
       ),
     )
 );

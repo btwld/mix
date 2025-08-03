@@ -12,9 +12,10 @@ class Example extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style =
-        Style.icon() //
+        Style.icon( //
             .size(30)
-            .color(Colors.blueAccent);
+            .color(Colors.blueAccent)
+        );
 
     return StyledIcon(Icons.format_paint_rounded, style: style);
   }

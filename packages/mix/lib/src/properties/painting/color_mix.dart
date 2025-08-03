@@ -2,7 +2,7 @@
 
 // import 'package:flutter/widgets.dart';
 
-// import '../../core/directive.dart';
+// import '../../core/modifier.dart';
 // import '../../core/internal/color_values.dart';
 // import '../../core/prop.dart';
 // import '../../core/prop_source.dart';
@@ -12,7 +12,7 @@
 // /// for color transformations and token resolution.
 // ///
 // /// ColorProp allows you to work with colors in the Mix framework while
-// /// maintaining support for tokens, directives, and merging operations.
+// /// maintaining support for tokens, modifiers, and merging operations.
 // class ColorProp extends Prop<Color> {
 //   static final red = ColorProp.value(ColorValues.red);
 //   static final pink = ColorProp.value(ColorValues.pink);
@@ -67,7 +67,7 @@
 //   static final white12 = ColorProp.value(ColorValues.white12);
 //   static final white10 = ColorProp.value(ColorValues.white10);
 
-//   const ColorProp.raw({super.source, super.directives, super.animation})
+//   const ColorProp.raw({super.source, super.modifiers, super.animation})
 //     : super.internal();
 
 //   /// Creates a ColorMix from a color token.
@@ -75,68 +75,68 @@
 //     return ColorProp.raw(source: TokenPropSource(token));
 //   }
 
-//   /// Creates a ColorMix with a color directive applied.
-//   factory ColorProp.directive(MixDirective<Color> directive) {
-//     return ColorProp.raw(directives: [directive]);
+//   /// Creates a ColorMix with a color modifier applied.
+//   factory ColorProp.modifier(Modifier<Color> modifier) {
+//     return ColorProp.raw(modifiers: [modifier]);
 //   }
 
 //   factory ColorProp.value(Color color) {
 //     return ColorProp.raw(source: ValuePropSource(color));
 //   }
 
-//   /// Creates a ColorMix with an opacity directive.
+//   /// Creates a ColorMix with an opacity modifier.
 //   factory ColorProp.withOpacity(double opacity) {
-//     return ColorProp.directive(OpacityColorModifier(opacity));
+//     return ColorProp.modifier(OpacityColorModifier(opacity));
 //   }
 
-//   /// Creates a ColorMix with an alpha directive.
+//   /// Creates a ColorMix with an alpha modifier.
 //   factory ColorProp.withAlpha(int alpha) {
-//     return ColorProp.directive(AlphaColorModifier(alpha));
+//     return ColorProp.modifier(AlphaColorModifier(alpha));
 //   }
 
-//   /// Creates a ColorMix with a darken directive.
+//   /// Creates a ColorMix with a darken modifier.
 //   factory ColorProp.darken(int amount) {
-//     return ColorProp.directive(DarkenColorModifier(amount));
+//     return ColorProp.modifier(DarkenColorModifier(amount));
 //   }
 
-//   /// Creates a ColorMix with a lighten directive.
+//   /// Creates a ColorMix with a lighten modifier.
 //   factory ColorProp.lighten(int amount) {
-//     return ColorProp.directive(LightenColorModifier(amount));
+//     return ColorProp.modifier(LightenColorModifier(amount));
 //   }
 
-//   /// Creates a ColorMix with a saturate directive.
+//   /// Creates a ColorMix with a saturate modifier.
 //   factory ColorProp.saturate(int amount) {
-//     return ColorProp.directive(SaturateColorModifier(amount));
+//     return ColorProp.modifier(SaturateColorModifier(amount));
 //   }
 
-//   /// Creates a ColorMix with a desaturate directive.
+//   /// Creates a ColorMix with a desaturate modifier.
 //   factory ColorProp.desaturate(int amount) {
-//     return ColorProp.directive(DesaturateColorModifier(amount));
+//     return ColorProp.modifier(DesaturateColorModifier(amount));
 //   }
 
-//   /// Creates a ColorMix with a tint directive.
+//   /// Creates a ColorMix with a tint modifier.
 //   factory ColorProp.tint(int amount) {
-//     return ColorProp.directive(TintColorModifier(amount));
+//     return ColorProp.modifier(TintColorModifier(amount));
 //   }
 
-//   /// Creates a ColorMix with a shade directive.
+//   /// Creates a ColorMix with a shade modifier.
 //   factory ColorProp.shade(int amount) {
-//     return ColorProp.directive(ShadeColorModifier(amount));
+//     return ColorProp.modifier(ShadeColorModifier(amount));
 //   }
 
-//   /// Creates a ColorMix with a withRed directive.
+//   /// Creates a ColorMix with a withRed modifier.
 //   factory ColorProp.withRed(int red) {
-//     return ColorProp.directive(WithRedColorModifier(red));
+//     return ColorProp.modifier(WithRedColorModifier(red));
 //   }
 
-//   /// Creates a ColorMix with a withGreen directive.
+//   /// Creates a ColorMix with a withGreen modifier.
 //   factory ColorProp.withGreen(int green) {
-//     return ColorProp.directive(WithGreenColorModifier(green));
+//     return ColorProp.modifier(WithGreenColorModifier(green));
 //   }
 
-//   /// Creates a ColorMix with a withBlue directive.
+//   /// Creates a ColorMix with a withBlue modifier.
 //   factory ColorProp.withBlue(int blue) {
-//     return ColorProp.directive(WithBlueColorModifier(blue));
+//     return ColorProp.modifier(WithBlueColorModifier(blue));
 //   }
 
 //   /// Creates a ColorMix from a nullable Color value.
@@ -147,9 +147,9 @@
 //     return ColorProp.value(color);
 //   }
 
-//   /// Merges this ColorMix with a color directive.
-//   ColorProp directive(MixDirective<Color> directive) {
-//     return merge(ColorProp.directive(directive));
+//   /// Merges this ColorMix with a color modifier.
+//   ColorProp modifier(Modifier<Color> modifier) {
+//     return merge(ColorProp.modifier(modifier));
 //   }
 
 //   ColorProp darken(int amount) {
@@ -196,7 +196,7 @@
 
 //     return ColorProp.raw(
 //       source: merged.source,
-//       directives: merged.$directives,
+//       modifiers: merged.$modifiers,
 //       animation: merged.$animation,
 //     );
 //   }

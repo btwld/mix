@@ -11,7 +11,7 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final flexStyle = Style.flexbox()
+    final flexStyle = Style.flexbox(
         .flex(FlexMix.mainAxisSize(MainAxisSize.min).gap(4))
         .box(
           BoxMix.color(Colors.cyan.shade50)
@@ -24,13 +24,18 @@ class Example extends StatelessWidget {
                   BorderSideMix.color(Colors.cyan.shade600).width(2),
                 ),
               ),
-        );
+        )
+    );
 
-    final iconStyle = Style.icon().color(Colors.cyan.shade600).size(18);
-    final textStyle = Style.text()
+    final iconStyle = Style.icon(
+        .color(Colors.cyan.shade600)
+        .size(18)
+    );
+    final textStyle = Style.text(
         .fontSize(16)
         .fontWeight(FontWeight.w500)
-        .color(Colors.cyan.shade700);
+        .color(Colors.cyan.shade700)
+    );
 
     return HBox(
       style: flexStyle,
