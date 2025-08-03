@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../core/directive.dart';
 import '../../core/helpers.dart';
+import '../../core/modifier.dart';
 import '../../core/spec.dart';
 
 /// Specification for text styling and layout properties.
@@ -23,7 +23,7 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
 
   final TextHeightBehavior? textHeightBehavior;
 
-  final List<MixDirective<String>>? directives;
+  final List<Modifier<String>>? directives;
 
   final Color? selectionColor;
 
@@ -92,9 +92,7 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     properties.add(
       DiagnosticsProperty('semanticsLabel', semanticsLabel, defaultValue: null),
     );
-    properties.add(
-      DiagnosticsProperty('locale', locale, defaultValue: null),
-    );
+    properties.add(DiagnosticsProperty('locale', locale, defaultValue: null));
   }
 
   /// Creates a copy of this [TextSpec] but with the given fields
@@ -111,7 +109,7 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     TextHeightBehavior? textHeightBehavior,
     TextDirection? textDirection,
     bool? softWrap,
-    List<MixDirective<String>>? directives,
+    List<Modifier<String>>? directives,
     Color? selectionColor,
     String? semanticsLabel,
     Locale? locale,

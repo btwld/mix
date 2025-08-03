@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 
 import '../core/internal/compare_mixin.dart';
-import '../core/modifier.dart';
 import '../core/style.dart';
+import '../core/widget_decorator.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
 import '../properties/painting/border_radius_mix.dart';
 import '../properties/painting/shadow_mix.dart';

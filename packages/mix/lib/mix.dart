@@ -28,7 +28,6 @@ export 'src/animation/style_animation_driver.dart';
 /// CORE
 export 'src/core/breakpoint.dart';
 export 'src/core/cursor_position.dart';
-export 'src/core/directive.dart';
 export 'src/core/extensions/extensions.dart';
 export 'src/core/helpers.dart';
 export 'src/core/mix_element.dart';
@@ -45,6 +44,7 @@ export 'src/core/style.dart' hide StyleElement;
 export 'src/core/style_builder.dart';
 export 'src/core/style_widget.dart';
 export 'src/core/utility.dart';
+export 'src/core/widget_decorator.dart';
 export 'src/decorators/align_decorator.dart';
 export 'src/decorators/aspect_ratio_decorator.dart';
 export 'src/decorators/clip_decorator.dart';

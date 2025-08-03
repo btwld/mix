@@ -67,10 +67,7 @@ void main() {
       });
 
       test('directives utility is MixUtility', () {
-        expect(
-          util.directives,
-          isA<MixUtility<TextMix, MixDirective<String>>>(),
-        );
+        expect(util.directives, isA<MixUtility<TextMix, Modifier<String>>>());
       });
 
       test('selectionColor utility is ColorUtility', () {

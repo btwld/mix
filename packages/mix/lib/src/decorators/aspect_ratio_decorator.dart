@@ -2,10 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/helpers.dart';
-import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
+import '../core/widget_decorator.dart';
 import '../theme/tokens/mix_token.dart';
 
 final class AspectRatioWidgetDecorator
@@ -106,9 +106,7 @@ class AspectRatioWidgetDecoratorMix
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  AspectRatioWidgetDecoratorMix merge(
-    AspectRatioWidgetDecoratorMix? other,
-  ) {
+  AspectRatioWidgetDecoratorMix merge(AspectRatioWidgetDecoratorMix? other) {
     if (other == null) return this;
 
     return AspectRatioWidgetDecoratorMix.raw(

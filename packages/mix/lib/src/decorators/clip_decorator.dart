@@ -2,9 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/helpers.dart';
-import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
+import '../core/widget_decorator.dart';
 import '../properties/painting/border_radius_mix.dart';
 
 /// Decorator that clips its child to an oval shape.
@@ -75,13 +75,11 @@ class ClipOvalWidgetDecoratorMix
 
   const ClipOvalWidgetDecoratorMix.raw({this.clipper, this.clipBehavior});
 
-  ClipOvalWidgetDecoratorMix({
-    CustomClipper<Rect>? clipper,
-    Clip? clipBehavior,
-  }) : this.raw(
-         clipper: Prop.maybe(clipper),
-         clipBehavior: Prop.maybe(clipBehavior),
-       );
+  ClipOvalWidgetDecoratorMix({CustomClipper<Rect>? clipper, Clip? clipBehavior})
+    : this.raw(
+        clipper: Prop.maybe(clipper),
+        clipBehavior: Prop.maybe(clipBehavior),
+      );
 
   /// Resolves to [ClipOvalWidgetDecorator] using the provided [BuildContext].
   @override
@@ -179,13 +177,11 @@ class ClipRectWidgetDecoratorMix
 
   const ClipRectWidgetDecoratorMix.raw({this.clipper, this.clipBehavior});
 
-  ClipRectWidgetDecoratorMix({
-    CustomClipper<Rect>? clipper,
-    Clip? clipBehavior,
-  }) : this.raw(
-         clipper: Prop.maybe(clipper),
-         clipBehavior: Prop.maybe(clipBehavior),
-       );
+  ClipRectWidgetDecoratorMix({CustomClipper<Rect>? clipper, Clip? clipBehavior})
+    : this.raw(
+        clipper: Prop.maybe(clipper),
+        clipBehavior: Prop.maybe(clipBehavior),
+      );
 
   /// Resolves to [ClipRectWidgetDecorator] using the provided [BuildContext].
   ///
@@ -471,13 +467,11 @@ class ClipPathWidgetDecoratorMix
 
   const ClipPathWidgetDecoratorMix.raw({this.clipper, this.clipBehavior});
 
-  ClipPathWidgetDecoratorMix({
-    CustomClipper<Path>? clipper,
-    Clip? clipBehavior,
-  }) : this.raw(
-         clipper: Prop.maybe(clipper),
-         clipBehavior: Prop.maybe(clipBehavior),
-       );
+  ClipPathWidgetDecoratorMix({CustomClipper<Path>? clipper, Clip? clipBehavior})
+    : this.raw(
+        clipper: Prop.maybe(clipper),
+        clipBehavior: Prop.maybe(clipBehavior),
+      );
 
   /// Resolves to [ClipPathWidgetDecorator] using the provided [BuildContext].
   ///
@@ -626,9 +620,7 @@ class ClipTriangleWidgetDecoratorMix
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  ClipTriangleWidgetDecoratorMix merge(
-    ClipTriangleWidgetDecoratorMix? other,
-  ) {
+  ClipTriangleWidgetDecoratorMix merge(ClipTriangleWidgetDecoratorMix? other) {
     if (other == null) return this;
 
     return ClipTriangleWidgetDecoratorMix.raw(

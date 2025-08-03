@@ -14,8 +14,8 @@ import '../variants/variant.dart';
 import 'internal/compare_mixin.dart';
 import 'internal/constants.dart';
 import 'mix_element.dart';
-import 'modifier.dart';
 import 'spec.dart';
+import 'widget_decorator.dart';
 
 /// This is used just to pass all the values into one place if needed
 @internal

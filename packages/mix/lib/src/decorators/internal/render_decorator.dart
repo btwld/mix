@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import '../../core/modifier.dart';
+import '../../core/widget_decorator.dart';
 
 /// Renders a widget with applied modifiers in the correct order.
 @internal

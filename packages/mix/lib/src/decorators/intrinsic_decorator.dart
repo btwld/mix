@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import '../core/modifier.dart';
 import '../core/style.dart';
+import '../core/widget_decorator.dart';
 
 /// Decorator that forces its child to be exactly as tall as its intrinsic height.
 ///

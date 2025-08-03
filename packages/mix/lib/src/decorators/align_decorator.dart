@@ -2,10 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/helpers.dart';
-import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
+import '../core/widget_decorator.dart';
 
 /// Decorator that aligns its child within the available space.
 ///
@@ -78,8 +78,7 @@ final class AlignWidgetDecoratorUtility<T extends Style<Object?>>
   }
 }
 
-class AlignWidgetDecoratorMix
-    extends WidgetDecoratorMix<AlignWidgetDecorator> {
+class AlignWidgetDecoratorMix extends WidgetDecoratorMix<AlignWidgetDecorator> {
   final Prop<AlignmentGeometry>? alignment;
   final Prop<double>? widthFactor;
   final Prop<double>? heightFactor;

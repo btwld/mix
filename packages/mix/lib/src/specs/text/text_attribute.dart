@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../animation/animation_config.dart';
-import '../../core/directive.dart';
 import '../../core/helpers.dart';
+import '../../core/modifier.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../decorators/widget_decorator_config.dart';
@@ -38,7 +38,7 @@ class TextMix extends Style<TextSpec>
   final MixProp<TextHeightBehavior>? $textHeightBehavior;
   final Prop<TextDirection>? $textDirection;
   final Prop<bool>? $softWrap;
-  final List<MixDirective<String>>? $directives;
+  final List<Modifier<String>>? $directives;
   final Prop<Color>? $selectionColor;
   final Prop<String>? $semanticsLabel;
   final Prop<Locale>? $locale;
@@ -194,7 +194,7 @@ class TextMix extends Style<TextSpec>
   }
 
   /// Factory for text directive
-  factory TextMix.directive(MixDirective<String> value) {
+  factory TextMix.directive(Modifier<String> value) {
     return TextMix(directives: [value]);
   }
 
@@ -253,7 +253,7 @@ class TextMix extends Style<TextSpec>
     return TextMix(variants: [VariantStyle(variant, value)]);
   }
 
-  factory TextMix.contentModifier(MixDirective<String> value) {
+  factory TextMix.contentModifier(Modifier<String> value) {
     return TextMix(directives: [value]);
   }
 
@@ -268,7 +268,7 @@ class TextMix extends Style<TextSpec>
     MixProp<TextHeightBehavior>? textHeightBehavior,
     Prop<TextDirection>? textDirection,
     Prop<bool>? softWrap,
-    List<MixDirective<String>>? directives,
+    List<Modifier<String>>? directives,
     Prop<Color>? selectionColor,
     Prop<String>? semanticsLabel,
     Prop<Locale>? locale,
@@ -303,7 +303,7 @@ class TextMix extends Style<TextSpec>
     TextHeightBehaviorMix? textHeightBehavior,
     TextDirection? textDirection,
     bool? softWrap,
-    List<MixDirective<String>>? directives,
+    List<Modifier<String>>? directives,
     Color? selectionColor,
     String? semanticsLabel,
     Locale? locale,
@@ -372,7 +372,7 @@ class TextMix extends Style<TextSpec>
     return spec != null ? TextMix.value(spec) : null;
   }
 
-  TextMix contentModifier(MixDirective<String> value) {
+  TextMix contentModifier(Modifier<String> value) {
     return merge(TextMix.directive(value));
   }
 
@@ -427,7 +427,7 @@ class TextMix extends Style<TextSpec>
   }
 
   /// Adds a text directive
-  TextMix directive(MixDirective<String> value) {
+  TextMix directive(Modifier<String> value) {
     return merge(TextMix.directive(value));
   }
 

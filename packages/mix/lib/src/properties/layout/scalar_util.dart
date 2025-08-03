@@ -6,7 +6,7 @@ import 'dart:typed_data';
 import 'package:flutter/widgets.dart';
 
 import '../../animation/curves.dart';
-import '../../core/directive.dart';
+import '../../core/modifier.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
 import '../painting/shadow_mix.dart';
@@ -682,8 +682,8 @@ extension ElevationShadowPropUtilityExt<T extends Style<Object?>>
 
 /// Extension for creating [MixDirective<String>] values with text transformations.
 extension MixDirectiveStringPropUtilityExt<T extends Style<Object?>>
-    on MixUtility<T, MixDirective<String>> {
-  T call(MixDirective<String> value) => builder(value);
+    on MixUtility<T, Modifier<String>> {
+  T call(Modifier<String> value) => builder(value);
 
   T capitalize() => call(CapitalizeStringDirective());
   T uppercase() => call(UppercaseStringDirective());

@@ -7,9 +7,9 @@ import 'package:flutter/rendering.dart' as r;
 import 'package:flutter/widgets.dart' as w;
 
 import '../decorators/widget_decorator_config.dart';
-import 'directive.dart';
 import 'internal/deep_collection_equality.dart';
 import 'mix_element.dart';
+import 'modifier.dart';
 import 'prop.dart';
 
 /// Utility class providing helper functions for value resolution, merging, and interpolation.
@@ -211,8 +211,8 @@ extension ListMixPropExt<T> on List<MixProp<T>>? {
   }
 }
 
-extension ListMixDirectiveExt<T> on List<MixDirective<T>>? {
-  List<MixDirective<T>>? tryMerge(List<MixDirective<T>>? other) {
+extension ListMixDirectiveExt<T> on List<Modifier<T>>? {
+  List<Modifier<T>>? tryMerge(List<Modifier<T>>? other) {
     if (other == null) return this;
     if (this == null) return other;
 
