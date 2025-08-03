@@ -16,6 +16,7 @@ import 'default_text_style_modifier.dart';
 import 'flexible_modifier.dart';
 import 'fractionally_sized_box_modifier.dart';
 import 'icon_theme_modifier.dart';
+import 'internal/reset_modifier.dart';
 import 'intrinsic_modifier.dart';
 import 'opacity_modifier.dart';
 import 'padding_modifier.dart';
@@ -63,10 +64,7 @@ final class WidgetDecoratorConfig with Equatable {
     Clip? clipBehavior,
   }) {
     return WidgetDecoratorConfig.decorator(
-      ClipOvalWidgetDecoratorMix(
-        clipper: clipper,
-        clipBehavior: clipBehavior,
-      ),
+      ClipOvalWidgetDecoratorMix(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
@@ -75,10 +73,7 @@ final class WidgetDecoratorConfig with Equatable {
     Clip? clipBehavior,
   }) {
     return WidgetDecoratorConfig.decorator(
-      ClipRectWidgetDecoratorMix(
-        clipper: clipper,
-        clipBehavior: clipBehavior,
-      ),
+      ClipRectWidgetDecoratorMix(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
@@ -101,10 +96,7 @@ final class WidgetDecoratorConfig with Equatable {
     Clip? clipBehavior,
   }) {
     return WidgetDecoratorConfig.decorator(
-      ClipPathWidgetDecoratorMix(
-        clipper: clipper,
-        clipBehavior: clipBehavior,
-      ),
+      ClipPathWidgetDecoratorMix(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
@@ -500,6 +492,12 @@ final class WidgetDecoratorConfig with Equatable {
     // Merge or add other modifiers
     for (final decorator in other) {
       final key = decorator.mergeKey;
+
+      /// If the other decorators is a reset, clear the merged map
+      if (key == ResetWidgetDecoratorMix().mergeKey) {
+        merged.clear();
+        continue;
+      }
       final existing = merged[key];
       merged[key] = existing != null ? existing.merge(decorator) : decorator;
     }
