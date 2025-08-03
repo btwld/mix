@@ -251,7 +251,7 @@ class MockBuildContext extends BuildContext {
 
 /// Mock InheritedElement for testing InheritedModel functionality
 class _MockInheritedElement extends InheritedElement {
-  _MockInheritedElement(MixScope widget) : super(widget);
+  _MockInheritedElement(super.widget);
 
   @override
   MixScope get widget => super.widget as MixScope;
