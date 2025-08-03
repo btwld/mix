@@ -175,12 +175,20 @@ class _ResolvesToMatcher<T> extends Matcher {
 class MockBuildContext extends BuildContext {
   final Set<TokenDefinition>? _tokens;
   final List<Type>? _orderOfWidgetDecorators;
-
+  MixScope? _mixScope;
+  
   MockBuildContext({
     Set<TokenDefinition>? tokens,
     List<Type>? orderOfWidgetDecorators,
   }) : _tokens = tokens,
-       _orderOfWidgetDecorators = orderOfWidgetDecorators;
+       _orderOfWidgetDecorators = orderOfWidgetDecorators {
+    // Create MixScope instance once
+    _mixScope = MixScope(
+      tokens: _tokens,
+      orderOfWidgetDecorators: _orderOfWidgetDecorators,
+      child: const SizedBox(),
+    );
+  }
 
   @override
   bool get debugDoingBuild => false;
@@ -188,18 +196,13 @@ class MockBuildContext extends BuildContext {
   @override
   bool get mounted => true;
 
-  /// Inherited widget
+  /// Inherited widget - supports both InheritedWidget and InheritedModel
   @override
   T? dependOnInheritedWidgetOfExactType<T extends InheritedWidget>({
     Object? aspect,
   }) {
     if (T == MixScope) {
-      return MixScope(
-            tokens: _tokens,
-            orderOfWidgetDecorators: _orderOfWidgetDecorators,
-            child: const SizedBox(),
-          )
-          as T?;
+      return _mixScope as T?;
     }
     return null;
   }
@@ -207,11 +210,18 @@ class MockBuildContext extends BuildContext {
   @override
   InheritedElement?
   getElementForInheritedWidgetOfExactType<T extends InheritedWidget>() {
+    // For InheritedModel.inheritFrom to work, we need to return a mock element
+    if (T == MixScope && _mixScope != null) {
+      return _MockInheritedElement(_mixScope!);
+    }
     return null;
   }
 
   @override
   T? getInheritedWidgetOfExactType<T extends InheritedWidget>() {
+    if (T == MixScope) {
+      return _mixScope as T?;
+    }
     return null;
   }
 
@@ -237,6 +247,24 @@ class MockBuildContext extends BuildContext {
 
   @override
   dynamic noSuchMethod(Invocation invocation) => null;
+}
+
+/// Mock InheritedElement for testing InheritedModel functionality
+class _MockInheritedElement extends InheritedElement {
+  _MockInheritedElement(MixScope widget) : super(widget);
+
+  @override
+  MixScope get widget => super.widget as MixScope;
+
+  @override
+  void updateDependencies(Element dependent, Object? aspect) {
+    // Mock implementation - just track the dependency
+  }
+
+  @override
+  void notifyDependent(InheritedWidget oldWidget, Element dependent) {
+    // Mock implementation
+  }
 }
 
 // =============================================================================
