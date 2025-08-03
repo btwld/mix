@@ -150,7 +150,7 @@ void main() {
 
       test('preserves directives and animation during merge', () {
         final token = MixToken<Shadow>('shadow.primary');
-        final directive = MockDirective<Shadow>('test');
+        final directive = MockModifier<Shadow>('test');
         final animation = AnimationConfig.curve(
           duration: Duration(milliseconds: 300),
           curve: Curves.easeIn,
