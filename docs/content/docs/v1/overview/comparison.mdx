@@ -1,0 +1,154 @@
+---
+title: "A Comparative Look"
+---
+
+## A Comparative Look at Mix
+
+Mix rethinks the way we handle styling in Flutter by simplifying and streamlining the process. This comparison aims to showcase how Mix enhances code readability, maintainability, and reduces boilerplate, especially when dealing with complex widget styles and interactions.
+
+### Code Comparison: With Mix vs. Without Mix
+
+We'll compare a common scenario: styling a custom widget, to illustrate the advantages of using Mix. In this example, we'll be styling a custom widget with the following requirements:
+
+- **Flexible Overriding of Styles**: This demonstrates the ability to override specific TextStyle and BoxDecoration properties, showcasing Mix's flexibility and adaptability in customization.
+- **Simplified Interaction-Based Styling**: This highlights Mix’s capability to handle hover states effortlessly, allowing for dynamic styling changes in response to user interactions.
+- **Inherited Text Styles**: This shows how text styles can be inherited within the same style context in Mix, eliminating the need for repetitive style declarations.
+- **Use of Context Variants**: This shows how Mix can be used to create context-based variables, allowing for dynamic styling changes in response to user interactions.
+
+#### With Mix
+
+```dart filename="widget.style.dart"
+Style get customStyle {
+  final style = Style(
+    $box.height(120),
+    $box.width(120),
+    $box.padding(20),
+    $box.elevation.nine(),
+    $box.alignment.center(),
+    $box.borderRadius(10),
+    $box.color(Colors.blue),
+    $text.style.ref($material.textTheme.button),
+    $text.style.color(Colors.white),
+    $with.scale(1),
+    $on.dark(
+      $box.color(Colors.cyan),
+      $text.style.color(Colors.black),
+    ),
+    $on.hover(
+      $box.alignment.topLeft(),
+      $box.elevation(2),
+      $box.padding(10),
+      $with.scale(1.5),
+      $on.dark(
+        $text.style.color.lighten(20),
+        $box.color.lighten(20),
+      ),
+      $on.light(
+        $box.color.darken(30),
+        $text.style.color.darken(20),
+      ),
+    ),
+  );
+
+  return style.animate(
+    curve: Curves.linear,
+    duration: const Duration(milliseconds: 100),
+  );
+}
+```
+
+```dart filename="widget.dart"
+import 'widget.style.dart';
+
+class CustomMixWidget extends StatelessWidget {
+  const CustomMixWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return PressableBox(
+      style: customStyle,
+      child: const StyledText('Custom Widget'),
+    );
+  }
+}
+```
+
+In this Mix example, notice the streamlined declaration of styles and the simplified handling of hover states. The code is more concise and easier to read.
+
+### Without Mix
+
+```dart
+class CustomWidget extends StatefulWidget {
+  const CustomWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  _CustomWidgetState createState() => _CustomWidgetState();
+}
+
+class _CustomWidgetState extends State<CustomWidget> {
+  bool _isHover = false;
+
+  final _curve = Curves.linear;
+  final _duration = const Duration(milliseconds: 100);
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = isDark ? Colors.cyan : Colors.blue;
+    final textColor = isDark ? Colors.black : Colors.white;
+    final borderRadius = BorderRadius.circular(10);
+
+    final onHoverTextColor =
+        isDark ? textColor.lighten(20) : textColor.darken(20);
+
+    final onHoverBgColor =
+        isDark ? backgroundColor.lighten(20) : backgroundColor.darken(30);
+
+    return MouseRegion(
+      onEnter: (event) {
+        setState(() => _isHover = true);
+      },
+      onExit: (event) {
+        setState(() => _isHover = false);
+      },
+      child: Material(
+        elevation: _isHover ? 2 : 9,
+        borderRadius: borderRadius,
+        child: AnimatedScale(
+          scale: _isHover ? 1.5 : 1,
+          curve: _curve,
+          duration: _duration,
+          child: AnimatedContainer(
+            curve: _curve,
+            duration: _duration,
+            height: 120,
+            width: 120,
+            padding:
+                _isHover ? const EdgeInsets.all(10) : const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: _isHover ? onHoverBgColor : backgroundColor,
+              borderRadius: borderRadius,
+            ),
+            child: AnimatedAlign(
+              alignment: _isHover ? Alignment.topLeft : Alignment.center,
+              curve: _curve,
+              duration: _duration,
+              child: Text(
+                'Custom Widget',
+                style: Theme.of(context)
+                    .textTheme
+                    .labelLarge
+                    ?.copyWith(color: _isHover ? onHoverTextColor : textColor),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+
+Without Mix, the code is more verbose, especially in managing the hover state and styling. The separation between logic and presentation is less clear.

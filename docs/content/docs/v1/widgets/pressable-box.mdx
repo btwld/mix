@@ -1,0 +1,85 @@
+---
+title: PressableBox
+---
+
+# PressableBox
+
+A widget that builds on Flutter's interactivity foundation to provide a pressable area with customizable style and behavior.
+
+It is designed as a flexible and style-friendly alternative to traditional `GestureDetector` widgets.
+
+With `PressableBox`, you can apply visual changes when user interactions like pressing or focusing occur, and integrate these seamlessly into your styled components.
+
+## Usage
+
+To use `PressableBox`, simply wrap your widget with it and specify the interaction callbacks you're interested in, along with any styles you wish to apply:
+
+```dart
+PressableBox(
+  style: Style(
+    $box.color.blue(),
+    $on.press(
+      $box.color.red(),
+    ),
+    $on.hover(
+      $box.color.green(),
+    ),
+  ),
+  onPress: () => print('Pressed!'),
+  child: StyledText('Press Me'),
+);
+```
+
+In the example above, the `PressableBox` will apply a blue background color to the child `StyledText` by default, and a red background color when the user presses on it (and a green background color when the user hovers over it, if the platform supports it). The `onPress` callback will also be invoked when the user presses on the `PressableBox`.
+
+### Enabled and Disabled 
+
+Both `Pressable` and `PressableBox` have the parameter `enabled` that allows you to enable or disable the widget. When the widget is disabled, it will not trigger any interaction and the styles defined in the `$on.disabled` will be applied.
+
+## Interaction States
+
+`PressableBox` integrates with various context variant utilities that apply styles based on different widget states and gestures. Here are a few of the interaction states and their corresponding styling hooks:
+
+- `$on.press`: Styles applied when the widget is being pressed.
+- `$on.longPress`: Styles applied when the widget is being long-pressed.
+- `$on.disabled`: Styles applied when the widget is disabled and therefore non-interactive.
+- `$on.enabled`: Styles applied when the widget is enabled and interactive.
+- `$on.focus`: Styles applied when the widget gains focus.
+- `$on.hover`: Styles applied when a pointer has hovered over a widget.
+
+### Interaction events
+
+All the interaction states have corresponding callbacks that can be used to handle the interaction events. You can do this through the `event` method. For example:
+
+```dart
+PressableBox(
+  style: Style(
+    $box.color.blue(),
+    $on.press(
+      $box.color.red(),
+    ),
+    $on.hover.event((e) {
+      if (e!.position.x > 0) {
+        return Style(
+          $box.color.red(),
+        );
+      }
+      return Style(
+        $box.color.amber(),
+      );
+    }),
+  ),
+  onPress: () => print('Pressed!'),
+  child: StyledText('Press Me'),
+);
+
+```
+
+Using the `event` method in `hover`, you can access the `PointerEvent` and apply styles based on the event. The same can be done for the other interaction states as well. The only difference is that the parameter of the `event` method varies depending on the interaction state.
+
+- `$on.press.event(Style Function(bool))`: It is triggered when the widget is being pressed
+- `$on.longPress.event(Style Function(bool))`: It is triggered when the widget is being long-pressed.
+- `$on.disabled.event(Style Function(bool))`: It is triggered when the widget change its state to disabled.
+- `$on.enabled.event(Style Function(bool))`: It is triggered when the widget change its state to enabled.
+- `$on.focus.event(Style Function(bool))`: It is triggered when the widget gains focus or loses focus.
+- `$on.hover.event(Style Function(PointerPosition?))`: It is triggered when the mouse pointer is over the widget.

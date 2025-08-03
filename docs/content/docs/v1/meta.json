@@ -1,0 +1,37 @@
+{
+  "title": "Mix v1 Documentation",
+  "root": true,
+  "pages": [
+    {
+      "type": "separator",
+      "title": "Overview"
+    },
+    "overview",
+
+    {
+      "type": "separator",
+      "title": "Guides"
+    },
+    "guides",
+    {
+      "type": "separator",
+      "title": "Tutorials"
+    },
+    "tutorials",
+    {
+      "type": "separator",
+      "title": "Widgets"
+    },
+    "widgets",
+    {
+      "type": "separator",
+      "title": "Utilities"
+    },
+    "utilities",
+    {
+      "type": "separator",
+      "title": "Tools"
+    },
+    "tools"
+  ]
+}
