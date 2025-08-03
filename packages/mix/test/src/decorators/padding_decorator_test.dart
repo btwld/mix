@@ -8,22 +8,22 @@ void main() {
   group('PaddingWidgetDecorator', () {
     group('Constructor', () {
       test('creates with zero padding by default', () {
-        const modifier = PaddingWidgetDecorator();
+        const decorator = PaddingWidgetDecorator();
 
-        expect(modifier.padding, EdgeInsets.zero);
+        expect(decorator.padding, EdgeInsets.zero);
       });
 
       test('creates with specified padding', () {
         const padding = EdgeInsets.all(16.0);
-        const modifier = PaddingWidgetDecorator(padding);
+        const decorator = PaddingWidgetDecorator(padding);
 
-        expect(modifier.padding, padding);
+        expect(decorator.padding, padding);
       });
 
       test('creates with null padding defaults to zero', () {
-        const modifier = PaddingWidgetDecorator(null);
+        const decorator = PaddingWidgetDecorator(null);
 
-        expect(modifier.padding, EdgeInsets.zero);
+        expect(decorator.padding, EdgeInsets.zero);
       });
     });
 
@@ -83,37 +83,37 @@ void main() {
 
     group('equality and hashCode', () {
       test('equal when padding matches', () {
-        const modifier1 = PaddingWidgetDecorator(EdgeInsets.all(10.0));
-        const modifier2 = PaddingWidgetDecorator(EdgeInsets.all(10.0));
+        const decorator1 = PaddingWidgetDecorator(EdgeInsets.all(10.0));
+        const decorator2 = PaddingWidgetDecorator(EdgeInsets.all(10.0));
 
-        expect(modifier1, equals(modifier2));
-        expect(modifier1.hashCode, equals(modifier2.hashCode));
+        expect(decorator1, equals(decorator2));
+        expect(decorator1.hashCode, equals(decorator2.hashCode));
       });
 
       test('not equal when padding differs', () {
-        const modifier1 = PaddingWidgetDecorator(EdgeInsets.all(10.0));
-        const modifier2 = PaddingWidgetDecorator(EdgeInsets.all(20.0));
+        const decorator1 = PaddingWidgetDecorator(EdgeInsets.all(10.0));
+        const decorator2 = PaddingWidgetDecorator(EdgeInsets.all(20.0));
 
-        expect(modifier1, isNot(equals(modifier2)));
+        expect(decorator1, isNot(equals(decorator2)));
         // Hash codes might be equal due to hash collisions, so we only test inequality
-        expect(modifier1 == modifier2, isFalse);
+        expect(decorator1 == decorator2, isFalse);
       });
 
       test('equal when both have zero padding', () {
-        const modifier1 = PaddingWidgetDecorator();
-        const modifier2 = PaddingWidgetDecorator(EdgeInsets.zero);
+        const decorator1 = PaddingWidgetDecorator();
+        const decorator2 = PaddingWidgetDecorator(EdgeInsets.zero);
 
-        expect(modifier1, equals(modifier2));
-        expect(modifier1.hashCode, equals(modifier2.hashCode));
+        expect(decorator1, equals(decorator2));
+        expect(decorator1.hashCode, equals(decorator2.hashCode));
       });
     });
 
     group('props', () {
       test('contains padding', () {
         const padding = EdgeInsets.all(16.0);
-        const modifier = PaddingWidgetDecorator(padding);
+        const decorator = PaddingWidgetDecorator(padding);
 
-        expect(modifier.props, [padding]);
+        expect(decorator.props, [padding]);
       });
     });
 
@@ -122,10 +122,10 @@ void main() {
         WidgetTester tester,
       ) async {
         const padding = EdgeInsets.all(16.0);
-        const modifier = PaddingWidgetDecorator(padding);
+        const decorator = PaddingWidgetDecorator(padding);
         const child = SizedBox(width: 50, height: 50);
 
-        await tester.pumpWidget(modifier.build(child));
+        await tester.pumpWidget(decorator.build(child));
 
         final paddingWidget = tester.widget<Padding>(find.byType(Padding));
         expect(paddingWidget.padding, padding);
@@ -135,10 +135,10 @@ void main() {
       testWidgets('creates Padding widget with zero padding by default', (
         WidgetTester tester,
       ) async {
-        const modifier = PaddingWidgetDecorator();
+        const decorator = PaddingWidgetDecorator();
         const child = SizedBox(width: 50, height: 50);
 
-        await tester.pumpWidget(modifier.build(child));
+        await tester.pumpWidget(decorator.build(child));
 
         final paddingWidget = tester.widget<Padding>(find.byType(Padding));
         expect(paddingWidget.padding, EdgeInsets.zero);
@@ -405,10 +405,10 @@ void main() {
         resolvesTo(const PaddingWidgetDecorator(EdgeInsets.all(24.0))),
       );
 
-      final modifier = attribute.resolve(MockBuildContext());
+      final decorator = attribute.resolve(MockBuildContext());
       const child = SizedBox(width: 100, height: 100);
 
-      await tester.pumpWidget(modifier.build(child));
+      await tester.pumpWidget(decorator.build(child));
 
       final paddingWidget = tester.widget<Padding>(find.byType(Padding));
       expect(paddingWidget.padding, const EdgeInsets.all(24.0));

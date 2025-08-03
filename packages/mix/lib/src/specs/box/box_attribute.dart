@@ -159,7 +159,7 @@ class BoxMix extends Style<BoxSpec>
     Prop<AlignmentGeometry>? transformAlignment,
     Prop<Clip>? clipBehavior,
     super.variants,
-    super.modifierConfig,
+    super.widgetDecoratorConfig,
     super.animation,
 
     super.inherit,
@@ -184,7 +184,7 @@ class BoxMix extends Style<BoxSpec>
     AlignmentGeometry? transformAlignment,
     Clip? clipBehavior,
     AnimationConfig? animation,
-    WidgetDecoratorConfig? modifierConfig,
+    WidgetDecoratorConfig? widgetDecoratorConfig,
     List<VariantStyle<BoxSpec>>? variants,
     bool? inherit,
   }) : this.raw(
@@ -198,7 +198,7 @@ class BoxMix extends Style<BoxSpec>
          transformAlignment: Prop.maybe(transformAlignment),
          clipBehavior: Prop.maybe(clipBehavior),
          variants: variants,
-         modifierConfig: modifierConfig,
+         widgetDecoratorConfig: widgetDecoratorConfig,
          animation: animation,
          inherit: inherit,
        );
@@ -383,7 +383,7 @@ class BoxMix extends Style<BoxSpec>
 
   /// Decorator instance method
   BoxMix wrap(WidgetDecoratorConfig modifier) {
-    return merge(BoxMix(modifierConfig: modifier));
+    return merge(BoxMix(widgetDecoratorConfig: modifier));
   }
 
   /// Border instance method
@@ -450,7 +450,7 @@ class BoxMix extends Style<BoxSpec>
   /// The list of properties that constitute the state of this [BoxMix].
   @override
   BoxMix widgetDecorator(WidgetDecoratorConfig value) {
-    return merge(BoxMix(modifierConfig: value));
+    return merge(BoxMix(widgetDecoratorConfig: value));
   }
 
   /// Resolves to [BoxSpec] using the provided [BuildContext].
@@ -503,7 +503,7 @@ class BoxMix extends Style<BoxSpec>
       ),
       clipBehavior: $clipBehavior.tryMerge(other.$clipBehavior),
       variants: mergeVariantLists($variants, other.$variants),
-      modifierConfig: $widgetDecoratorConfig.tryMerge(
+      widgetDecoratorConfig: $widgetDecoratorConfig.tryMerge(
         other.$widgetDecoratorConfig,
       ),
       animation: other.$animation ?? $animation,

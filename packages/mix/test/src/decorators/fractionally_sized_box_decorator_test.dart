@@ -8,26 +8,26 @@ void main() {
   group('FractionallySizedBoxWidgetDecorator', () {
     group('Constructor', () {
       test('creates with null values by default', () {
-        const modifier = FractionallySizedBoxWidgetDecorator();
+        const decorator = FractionallySizedBoxWidgetDecorator();
 
-        expect(modifier.widthFactor, isNull);
-        expect(modifier.heightFactor, isNull);
-        expect(modifier.alignment, isNull);
+        expect(decorator.widthFactor, isNull);
+        expect(decorator.heightFactor, isNull);
+        expect(decorator.alignment, isNull);
       });
 
       test('assigns all parameters correctly', () {
         const widthFactor = 0.8;
         const heightFactor = 0.6;
         const alignment = Alignment.topLeft;
-        const modifier = FractionallySizedBoxWidgetDecorator(
+        const decorator = FractionallySizedBoxWidgetDecorator(
           widthFactor: widthFactor,
           heightFactor: heightFactor,
           alignment: alignment,
         );
 
-        expect(modifier.widthFactor, widthFactor);
-        expect(modifier.heightFactor, heightFactor);
-        expect(modifier.alignment, alignment);
+        expect(decorator.widthFactor, widthFactor);
+        expect(decorator.heightFactor, heightFactor);
+        expect(decorator.alignment, alignment);
       });
     });
 
@@ -182,76 +182,76 @@ void main() {
 
     group('equality and hashCode', () {
       test('equal when all properties match', () {
-        const modifier1 = FractionallySizedBoxWidgetDecorator(
+        const decorator1 = FractionallySizedBoxWidgetDecorator(
           widthFactor: 0.5,
           heightFactor: 0.8,
           alignment: Alignment.center,
         );
-        const modifier2 = FractionallySizedBoxWidgetDecorator(
+        const decorator2 = FractionallySizedBoxWidgetDecorator(
           widthFactor: 0.5,
           heightFactor: 0.8,
           alignment: Alignment.center,
         );
 
-        expect(modifier1, equals(modifier2));
-        expect(modifier1.hashCode, equals(modifier2.hashCode));
+        expect(decorator1, equals(decorator2));
+        expect(decorator1.hashCode, equals(decorator2.hashCode));
       });
 
       test('not equal when widthFactor differs', () {
-        const modifier1 = FractionallySizedBoxWidgetDecorator(widthFactor: 0.5);
-        const modifier2 = FractionallySizedBoxWidgetDecorator(widthFactor: 0.8);
+        const decorator1 = FractionallySizedBoxWidgetDecorator(widthFactor: 0.5);
+        const decorator2 = FractionallySizedBoxWidgetDecorator(widthFactor: 0.8);
 
-        expect(modifier1, isNot(equals(modifier2)));
+        expect(decorator1, isNot(equals(decorator2)));
         // Hash codes might be equal due to hash collisions, so we only test inequality
-        expect(modifier1 == modifier2, isFalse);
+        expect(decorator1 == decorator2, isFalse);
       });
 
       test('not equal when heightFactor differs', () {
-        const modifier1 = FractionallySizedBoxWidgetDecorator(heightFactor: 0.5);
-        const modifier2 = FractionallySizedBoxWidgetDecorator(heightFactor: 0.8);
+        const decorator1 = FractionallySizedBoxWidgetDecorator(heightFactor: 0.5);
+        const decorator2 = FractionallySizedBoxWidgetDecorator(heightFactor: 0.8);
 
-        expect(modifier1, isNot(equals(modifier2)));
+        expect(decorator1, isNot(equals(decorator2)));
         // Hash codes might be equal due to hash collisions, so we only test inequality
-        expect(modifier1 == modifier2, isFalse);
+        expect(decorator1 == decorator2, isFalse);
       });
 
       test('not equal when alignment differs', () {
-        const modifier1 = FractionallySizedBoxWidgetDecorator(
+        const decorator1 = FractionallySizedBoxWidgetDecorator(
           alignment: Alignment.center,
         );
-        const modifier2 = FractionallySizedBoxWidgetDecorator(
+        const decorator2 = FractionallySizedBoxWidgetDecorator(
           alignment: Alignment.topLeft,
         );
 
-        expect(modifier1, isNot(equals(modifier2)));
+        expect(decorator1, isNot(equals(decorator2)));
         // Hash codes might be equal due to hash collisions, so we only test inequality
-        expect(modifier1 == modifier2, isFalse);
+        expect(decorator1 == decorator2, isFalse);
       });
 
       test('equal when both have all null values', () {
-        const modifier1 = FractionallySizedBoxWidgetDecorator();
-        const modifier2 = FractionallySizedBoxWidgetDecorator();
+        const decorator1 = FractionallySizedBoxWidgetDecorator();
+        const decorator2 = FractionallySizedBoxWidgetDecorator();
 
-        expect(modifier1, equals(modifier2));
-        expect(modifier1.hashCode, equals(modifier2.hashCode));
+        expect(decorator1, equals(decorator2));
+        expect(decorator1.hashCode, equals(decorator2.hashCode));
       });
     });
 
     group('props', () {
       test('contains all properties', () {
-        const modifier = FractionallySizedBoxWidgetDecorator(
+        const decorator = FractionallySizedBoxWidgetDecorator(
           widthFactor: 0.5,
           heightFactor: 0.8,
           alignment: Alignment.center,
         );
 
-        expect(modifier.props, [0.5, 0.8, Alignment.center]);
+        expect(decorator.props, [0.5, 0.8, Alignment.center]);
       });
 
       test('contains null values', () {
-        const modifier = FractionallySizedBoxWidgetDecorator();
+        const decorator = FractionallySizedBoxWidgetDecorator();
 
-        expect(modifier.props, [null, null, null]);
+        expect(decorator.props, [null, null, null]);
       });
     });
 
@@ -259,10 +259,10 @@ void main() {
       testWidgets(
         'creates FractionallySizedBox widget with default center alignment',
         (WidgetTester tester) async {
-          const modifier = FractionallySizedBoxWidgetDecorator();
+          const decorator = FractionallySizedBoxWidgetDecorator();
           const child = SizedBox(width: 50, height: 50);
 
-          await tester.pumpWidget(modifier.build(child));
+          await tester.pumpWidget(decorator.build(child));
 
           final box = tester.widget<FractionallySizedBox>(
             find.byType(FractionallySizedBox),
@@ -277,14 +277,14 @@ void main() {
       testWidgets('creates FractionallySizedBox widget with custom values', (
         WidgetTester tester,
       ) async {
-        const modifier = FractionallySizedBoxWidgetDecorator(
+        const decorator = FractionallySizedBoxWidgetDecorator(
           widthFactor: 0.7,
           heightFactor: 0.9,
           alignment: Alignment.topRight,
         );
         const child = SizedBox(width: 50, height: 50);
 
-        await tester.pumpWidget(modifier.build(child));
+        await tester.pumpWidget(decorator.build(child));
 
         final box = tester.widget<FractionallySizedBox>(
           find.byType(FractionallySizedBox),
@@ -376,19 +376,19 @@ void main() {
           alignment: Alignment.topRight,
         );
 
-        const expectedModifier = FractionallySizedBoxWidgetDecorator(
+        const expectedDecorator = FractionallySizedBoxWidgetDecorator(
           widthFactor: 0.4,
           heightFactor: 0.6,
           alignment: Alignment.topRight,
         );
-        expect(attribute, resolvesTo(expectedModifier));
+        expect(attribute, resolvesTo(expectedDecorator));
       });
 
       test('resolves with null values', () {
         final attribute = FractionallySizedBoxWidgetDecoratorMix();
 
-        const expectedModifier = FractionallySizedBoxWidgetDecorator();
-        expect(attribute, resolvesTo(expectedModifier));
+        const expectedDecorator = FractionallySizedBoxWidgetDecorator();
+        expect(attribute, resolvesTo(expectedDecorator));
       });
     });
 
@@ -541,17 +541,17 @@ void main() {
           alignment: Alignment.bottomCenter,
         );
 
-        const expectedModifier = FractionallySizedBoxWidgetDecorator(
+        const expectedDecorator = FractionallySizedBoxWidgetDecorator(
           widthFactor: 0.7,
           heightFactor: 0.9,
           alignment: Alignment.bottomCenter,
         );
-        expect(attribute, resolvesTo(expectedModifier));
+        expect(attribute, resolvesTo(expectedDecorator));
 
-        final modifier = attribute.resolve(MockBuildContext());
+        final decorator = attribute.resolve(MockBuildContext());
         const child = SizedBox(width: 100, height: 100);
 
-        await tester.pumpWidget(modifier.build(child));
+        await tester.pumpWidget(decorator.build(child));
 
         final box = tester.widget<FractionallySizedBox>(
           find.byType(FractionallySizedBox),

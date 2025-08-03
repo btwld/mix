@@ -8,26 +8,26 @@ void main() {
   group('AlignWidgetDecorator', () {
     group('Constructor', () {
       test('creates with null values by default', () {
-        const modifier = AlignWidgetDecorator();
+        const decorator = AlignWidgetDecorator();
 
-        expect(modifier.alignment, isNull);
-        expect(modifier.widthFactor, isNull);
-        expect(modifier.heightFactor, isNull);
+        expect(decorator.alignment, isNull);
+        expect(decorator.widthFactor, isNull);
+        expect(decorator.heightFactor, isNull);
       });
 
       test('assigns all parameters correctly', () {
         const alignment = Alignment.topLeft;
         const widthFactor = 0.8;
         const heightFactor = 0.6;
-        const modifier = AlignWidgetDecorator(
+        const decorator = AlignWidgetDecorator(
           alignment: alignment,
           widthFactor: widthFactor,
           heightFactor: heightFactor,
         );
 
-        expect(modifier.alignment, alignment);
-        expect(modifier.widthFactor, widthFactor);
-        expect(modifier.heightFactor, heightFactor);
+        expect(decorator.alignment, alignment);
+        expect(decorator.widthFactor, widthFactor);
+        expect(decorator.heightFactor, heightFactor);
       });
     });
 
@@ -170,65 +170,65 @@ void main() {
 
     group('equality and hashCode', () {
       test('equal when all properties match', () {
-        const modifier1 = AlignWidgetDecorator(
+        const decorator1 = AlignWidgetDecorator(
           alignment: Alignment.center,
           widthFactor: 0.5,
           heightFactor: 0.8,
         );
-        const modifier2 = AlignWidgetDecorator(
+        const decorator2 = AlignWidgetDecorator(
           alignment: Alignment.center,
           widthFactor: 0.5,
           heightFactor: 0.8,
         );
 
-        expect(modifier1, equals(modifier2));
-        expect(modifier1.hashCode, equals(modifier2.hashCode));
+        expect(decorator1, equals(decorator2));
+        expect(decorator1.hashCode, equals(decorator2.hashCode));
       });
 
       test('not equal when alignment differs', () {
-        const modifier1 = AlignWidgetDecorator(alignment: Alignment.center);
-        const modifier2 = AlignWidgetDecorator(alignment: Alignment.topLeft);
+        const decorator1 = AlignWidgetDecorator(alignment: Alignment.center);
+        const decorator2 = AlignWidgetDecorator(alignment: Alignment.topLeft);
 
-        expect(modifier1, isNot(equals(modifier2)));
+        expect(decorator1, isNot(equals(decorator2)));
       });
 
       test('not equal when widthFactor differs', () {
-        const modifier1 = AlignWidgetDecorator(widthFactor: 0.5);
-        const modifier2 = AlignWidgetDecorator(widthFactor: 0.8);
+        const decorator1 = AlignWidgetDecorator(widthFactor: 0.5);
+        const decorator2 = AlignWidgetDecorator(widthFactor: 0.8);
 
-        expect(modifier1, isNot(equals(modifier2)));
+        expect(decorator1, isNot(equals(decorator2)));
       });
 
       test('not equal when heightFactor differs', () {
-        const modifier1 = AlignWidgetDecorator(heightFactor: 0.5);
-        const modifier2 = AlignWidgetDecorator(heightFactor: 0.8);
+        const decorator1 = AlignWidgetDecorator(heightFactor: 0.5);
+        const decorator2 = AlignWidgetDecorator(heightFactor: 0.8);
 
-        expect(modifier1, isNot(equals(modifier2)));
+        expect(decorator1, isNot(equals(decorator2)));
       });
 
       test('equal when both have all null values', () {
-        const modifier1 = AlignWidgetDecorator();
-        const modifier2 = AlignWidgetDecorator();
+        const decorator1 = AlignWidgetDecorator();
+        const decorator2 = AlignWidgetDecorator();
 
-        expect(modifier1, equals(modifier2));
+        expect(decorator1, equals(decorator2));
       });
     });
 
     group('props', () {
       test('contains all properties', () {
-        const modifier = AlignWidgetDecorator(
+        const decorator = AlignWidgetDecorator(
           alignment: Alignment.center,
           widthFactor: 0.5,
           heightFactor: 0.8,
         );
 
-        expect(modifier.props, [Alignment.center, 0.5, 0.8]);
+        expect(decorator.props, [Alignment.center, 0.5, 0.8]);
       });
 
       test('contains null values', () {
-        const modifier = AlignWidgetDecorator();
+        const decorator = AlignWidgetDecorator();
 
-        expect(modifier.props, [null, null, null]);
+        expect(decorator.props, [null, null, null]);
       });
     });
 
@@ -236,10 +236,10 @@ void main() {
       testWidgets('creates Align widget with default center alignment', (
         WidgetTester tester,
       ) async {
-        const modifier = AlignWidgetDecorator();
+        const decorator = AlignWidgetDecorator();
         const child = SizedBox(width: 50, height: 50);
 
-        await tester.pumpWidget(modifier.build(child));
+        await tester.pumpWidget(decorator.build(child));
 
         final align = tester.widget<Align>(find.byType(Align));
         expect(align.alignment, Alignment.center);
@@ -251,10 +251,10 @@ void main() {
       testWidgets('creates Align widget with custom alignment', (
         WidgetTester tester,
       ) async {
-        const modifier = AlignWidgetDecorator(alignment: Alignment.topRight);
+        const decorator = AlignWidgetDecorator(alignment: Alignment.topRight);
         const child = SizedBox(width: 50, height: 50);
 
-        await tester.pumpWidget(modifier.build(child));
+        await tester.pumpWidget(decorator.build(child));
 
         final align = tester.widget<Align>(find.byType(Align));
         expect(align.alignment, Alignment.topRight);
@@ -264,14 +264,14 @@ void main() {
       testWidgets('creates Align widget with all parameters', (
         WidgetTester tester,
       ) async {
-        const modifier = AlignWidgetDecorator(
+        const decorator = AlignWidgetDecorator(
           alignment: Alignment.bottomLeft,
           widthFactor: 0.6,
           heightFactor: 0.4,
         );
         const child = SizedBox(width: 50, height: 50);
 
-        await tester.pumpWidget(modifier.build(child));
+        await tester.pumpWidget(decorator.build(child));
 
         final align = tester.widget<Align>(find.byType(Align));
         expect(align.alignment, Alignment.bottomLeft);
@@ -350,21 +350,21 @@ void main() {
           heightFactor: 0.6,
         );
 
-        const expectedModifier = AlignWidgetDecorator(
+        const expectedDecorator = AlignWidgetDecorator(
           alignment: Alignment.topRight,
           widthFactor: 0.4,
           heightFactor: 0.6,
         );
 
-        expect(attribute, resolvesTo(expectedModifier));
+        expect(attribute, resolvesTo(expectedDecorator));
       });
 
       test('resolves with null values', () {
         final attribute = AlignWidgetDecoratorMix();
 
-        const expectedModifier = AlignWidgetDecorator();
+        const expectedDecorator = AlignWidgetDecorator();
 
-        expect(attribute, resolvesTo(expectedModifier));
+        expect(attribute, resolvesTo(expectedDecorator));
       });
     });
 
@@ -457,10 +457,10 @@ void main() {
         heightFactor: 0.9,
       );
 
-      final modifier = attribute.resolve(MockBuildContext());
+      final decorator = attribute.resolve(MockBuildContext());
       const child = SizedBox(width: 100, height: 100);
 
-      await tester.pumpWidget(modifier.build(child));
+      await tester.pumpWidget(decorator.build(child));
 
       final align = tester.widget<Align>(find.byType(Align));
       expect(align.alignment, Alignment.topRight);

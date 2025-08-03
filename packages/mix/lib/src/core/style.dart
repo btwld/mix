@@ -38,10 +38,10 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
 
   const Style({
     required List<VariantStyle<S>>? variants,
-    required WidgetDecoratorConfig? modifierConfig,
+    required WidgetDecoratorConfig? widgetDecoratorConfig,
     required AnimationConfig? animation,
     required bool? inherit,
-  }) : $widgetDecoratorConfig = modifierConfig,
+  }) : $widgetDecoratorConfig = widgetDecoratorConfig,
        $animation = animation,
        $variants = variants,
        $inherit = inherit;
@@ -280,7 +280,7 @@ class CompoundStyle extends Style<MultiSpec> {
   CompoundStyle._({
     required List<Style> attributes,
     super.animation,
-    super.modifierConfig,
+    super.widgetDecoratorConfig,
     super.variants,
 
     super.inherit,
@@ -369,7 +369,7 @@ class CompoundStyle extends Style<MultiSpec> {
     CompoundStyle result = CompoundStyle._(
       attributes: styleList,
       animation: animationConfig,
-      modifierConfig: modifierList.isEmpty
+      widgetDecoratorConfig: modifierList.isEmpty
           ? null
           : WidgetDecoratorConfig(decorators: modifierList),
       variants: null,
@@ -390,7 +390,7 @@ class CompoundStyle extends Style<MultiSpec> {
     : this._(
         attributes: [],
         animation: null,
-        modifierConfig: null,
+        widgetDecoratorConfig: null,
         variants: null,
       );
 
@@ -414,7 +414,7 @@ class CompoundStyle extends Style<MultiSpec> {
         duration: duration ?? kDefaultAnimationDuration,
         curve: curve ?? Curves.linear,
       ),
-      modifierConfig: $widgetDecoratorConfig,
+      widgetDecoratorConfig: $widgetDecoratorConfig,
       variants: $variants,
     );
   }
@@ -457,7 +457,7 @@ class CompoundStyle extends Style<MultiSpec> {
     return CompoundStyle._(
       attributes: mergedAttributes,
       animation: other.$animation ?? $animation,
-      modifierConfig: _mergeModifierConfigs(
+      widgetDecoratorConfig: _mergeModifierConfigs(
         $widgetDecoratorConfig,
         other.$widgetDecoratorConfig,
       ),

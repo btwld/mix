@@ -14,9 +14,8 @@ class MyApp extends StatefulWidget {
 }
 
 final kdefaultFlexStyle = Style.flexbox(
-  .flex(
-    FlexMix.mainAxisSize(MainAxisSize.min).gap(8),
-  )
+  .mainAxisSize(MainAxisSize.min)
+  .gap(8)
 );
 
 class _MyAppState extends State<MyApp> {
@@ -24,11 +23,10 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final flexboxStyle = kdefaultFlexStyle.box(
-      BoxMix.color(Colors.grey.shade100)
-          .padding(EdgeInsetsMix.symmetric(horizontal: 12, vertical: 4))
-          .borderRadius(BorderRadiusMix.circular(10)),
-    );
+    final flexboxStyle = kdefaultFlexStyle
+        .color(Colors.grey.shade100)
+        .padding(EdgeInsetsMix.symmetric(horizontal: 12, vertical: 4))
+        .borderRadius(BorderRadiusMix.circular(10));
 
     return MaterialApp(
       home: MediaQuery(

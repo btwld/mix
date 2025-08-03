@@ -8,13 +8,13 @@ void main() {
   group('ScrollViewWidgetDecorator', () {
     group('Constructor', () {
       test('creates with null values by default', () {
-        const modifier = ScrollViewWidgetDecorator();
+        const decorator = ScrollViewWidgetDecorator();
 
-        expect(modifier.scrollDirection, isNull);
-        expect(modifier.reverse, isNull);
-        expect(modifier.padding, isNull);
-        expect(modifier.physics, isNull);
-        expect(modifier.clipBehavior, isNull);
+        expect(decorator.scrollDirection, isNull);
+        expect(decorator.reverse, isNull);
+        expect(decorator.padding, isNull);
+        expect(decorator.physics, isNull);
+        expect(decorator.clipBehavior, isNull);
       });
 
       test('assigns all parameters correctly', () {
@@ -24,7 +24,7 @@ void main() {
         const physics = BouncingScrollPhysics();
         const clipBehavior = Clip.antiAlias;
 
-        const modifier = ScrollViewWidgetDecorator(
+        const decorator = ScrollViewWidgetDecorator(
           scrollDirection: scrollDirection,
           reverse: reverse,
           padding: padding,
@@ -32,11 +32,11 @@ void main() {
           clipBehavior: clipBehavior,
         );
 
-        expect(modifier.scrollDirection, scrollDirection);
-        expect(modifier.reverse, reverse);
-        expect(modifier.padding, padding);
-        expect(modifier.physics, physics);
-        expect(modifier.clipBehavior, clipBehavior);
+        expect(decorator.scrollDirection, scrollDirection);
+        expect(decorator.reverse, reverse);
+        expect(decorator.padding, padding);
+        expect(decorator.physics, physics);
+        expect(decorator.clipBehavior, clipBehavior);
       });
     });
 
@@ -196,34 +196,34 @@ void main() {
 
     group('equality and hashCode', () {
       test('equal when all properties match', () {
-        const modifier1 = ScrollViewWidgetDecorator(
+        const decorator1 = ScrollViewWidgetDecorator(
           scrollDirection: Axis.horizontal,
           reverse: true,
           padding: EdgeInsets.all(16.0),
           clipBehavior: Clip.antiAlias,
         );
-        const modifier2 = ScrollViewWidgetDecorator(
+        const decorator2 = ScrollViewWidgetDecorator(
           scrollDirection: Axis.horizontal,
           reverse: true,
           padding: EdgeInsets.all(16.0),
           clipBehavior: Clip.antiAlias,
         );
 
-        expect(modifier1, equals(modifier2));
-        expect(modifier1.hashCode, equals(modifier2.hashCode));
+        expect(decorator1, equals(decorator2));
+        expect(decorator1.hashCode, equals(decorator2.hashCode));
       });
 
       test('physics instances affect equality', () {
         // With const, Dart might optimize to the same instance
-        const modifier1 = ScrollViewWidgetDecorator(physics: BouncingScrollPhysics());
-        const modifier2 = ScrollViewWidgetDecorator(physics: BouncingScrollPhysics());
+        const decorator1 = ScrollViewWidgetDecorator(physics: BouncingScrollPhysics());
+        const decorator2 = ScrollViewWidgetDecorator(physics: BouncingScrollPhysics());
 
         // These might be equal due to const optimization
         // Different physics types should definitely not be equal
-        const modifier3 = ScrollViewWidgetDecorator(physics: ClampingScrollPhysics());
+        const decorator3 = ScrollViewWidgetDecorator(physics: ClampingScrollPhysics());
 
-        expect(modifier1, isNot(equals(modifier3)));
-        expect(modifier1, equals(modifier2));
+        expect(decorator1, isNot(equals(decorator3)));
+        expect(decorator1, equals(decorator2));
       });
 
       test('not equal when any property differs', () {
@@ -257,17 +257,17 @@ void main() {
       });
 
       test('equal when both have all null values', () {
-        const modifier1 = ScrollViewWidgetDecorator();
-        const modifier2 = ScrollViewWidgetDecorator();
+        const decorator1 = ScrollViewWidgetDecorator();
+        const decorator2 = ScrollViewWidgetDecorator();
 
-        expect(modifier1, equals(modifier2));
-        expect(modifier1.hashCode, equals(modifier2.hashCode));
+        expect(decorator1, equals(decorator2));
+        expect(decorator1.hashCode, equals(decorator2.hashCode));
       });
     });
 
     group('props', () {
       test('contains all properties', () {
-        const modifier = ScrollViewWidgetDecorator(
+        const decorator = ScrollViewWidgetDecorator(
           scrollDirection: Axis.horizontal,
           reverse: true,
           padding: EdgeInsets.all(16.0),
@@ -275,18 +275,18 @@ void main() {
           clipBehavior: Clip.antiAlias,
         );
 
-        expect(modifier.props.length, 5);
-        expect(modifier.props[0], Axis.horizontal);
-        expect(modifier.props[1], true);
-        expect(modifier.props[2], const EdgeInsets.all(16.0));
-        expect(modifier.props[3], isA<BouncingScrollPhysics>());
-        expect(modifier.props[4], Clip.antiAlias);
+        expect(decorator.props.length, 5);
+        expect(decorator.props[0], Axis.horizontal);
+        expect(decorator.props[1], true);
+        expect(decorator.props[2], const EdgeInsets.all(16.0));
+        expect(decorator.props[3], isA<BouncingScrollPhysics>());
+        expect(decorator.props[4], Clip.antiAlias);
       });
 
       test('contains null values', () {
-        const modifier = ScrollViewWidgetDecorator();
+        const decorator = ScrollViewWidgetDecorator();
 
-        expect(modifier.props, [null, null, null, null, null]);
+        expect(decorator.props, [null, null, null, null, null]);
       });
     });
 
@@ -294,13 +294,13 @@ void main() {
       testWidgets('creates SingleChildScrollView with default values', (
         WidgetTester tester,
       ) async {
-        const modifier = ScrollViewWidgetDecorator();
+        const decorator = ScrollViewWidgetDecorator();
         const child = SizedBox(width: 50, height: 50);
 
         await tester.pumpWidget(
           Directionality(
             textDirection: TextDirection.ltr,
-            child: modifier.build(child),
+            child: decorator.build(child),
           ),
         );
 
@@ -318,7 +318,7 @@ void main() {
       testWidgets('creates SingleChildScrollView with custom values', (
         WidgetTester tester,
       ) async {
-        const modifier = ScrollViewWidgetDecorator(
+        const decorator = ScrollViewWidgetDecorator(
           scrollDirection: Axis.horizontal,
           reverse: true,
           padding: EdgeInsets.all(24.0),
@@ -330,7 +330,7 @@ void main() {
         await tester.pumpWidget(
           Directionality(
             textDirection: TextDirection.ltr,
-            child: modifier.build(child),
+            child: decorator.build(child),
           ),
         );
 
@@ -693,7 +693,7 @@ void main() {
         ),
       );
 
-      final modifier = attribute.resolve(MockBuildContext());
+      final decorator = attribute.resolve(MockBuildContext());
       const child = SizedBox(width: 1000, height: 100);
 
       await tester.pumpWidget(
@@ -702,7 +702,7 @@ void main() {
           child: SizedBox(
             width: 200,
             height: 200,
-            child: modifier.build(child),
+            child: decorator.build(child),
           ),
         ),
       );

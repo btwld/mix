@@ -273,7 +273,7 @@ class TextMix extends Style<TextSpec>
     Prop<String>? semanticsLabel,
     Prop<Locale>? locale,
     super.animation,
-    super.modifierConfig,
+    super.widgetDecoratorConfig,
     super.variants,
 
     super.inherit,
@@ -308,7 +308,7 @@ class TextMix extends Style<TextSpec>
     String? semanticsLabel,
     Locale? locale,
     AnimationConfig? animation,
-    WidgetDecoratorConfig? modifierConfig,
+    WidgetDecoratorConfig? widgetDecoratorConfig,
     List<VariantStyle<TextSpec>>? variants,
     bool? inherit,
   }) : this.raw(
@@ -327,7 +327,7 @@ class TextMix extends Style<TextSpec>
          semanticsLabel: Prop.maybe(semanticsLabel),
          locale: Prop.maybe(locale),
          animation: animation,
-         modifierConfig: modifierConfig,
+         widgetDecoratorConfig: widgetDecoratorConfig,
          variants: variants,
          inherit: inherit,
        );
@@ -588,7 +588,7 @@ class TextMix extends Style<TextSpec>
 
   @override
   TextMix widgetDecorator(WidgetDecoratorConfig value) {
-    return merge(TextMix(modifierConfig: value));
+    return merge(TextMix(widgetDecoratorConfig: value));
   }
 
   /// Resolves to [TextSpec] using the provided [BuildContext].
@@ -649,7 +649,7 @@ class TextMix extends Style<TextSpec>
       semanticsLabel: $semanticsLabel.tryMerge(other.$semanticsLabel),
       locale: $locale.tryMerge(other.$locale),
       animation: other.$animation ?? $animation,
-      modifierConfig: $widgetDecoratorConfig.tryMerge(
+      widgetDecoratorConfig: $widgetDecoratorConfig.tryMerge(
         other.$widgetDecoratorConfig,
       ),
       variants: mergeVariantLists($variants, other.$variants),

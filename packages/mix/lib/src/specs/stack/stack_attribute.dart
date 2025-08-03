@@ -64,7 +64,7 @@ class StackMix extends Style<StackSpec>
     Prop<TextDirection>? textDirection,
     Prop<Clip>? clipBehavior,
     super.animation,
-    super.modifierConfig,
+    super.widgetDecoratorConfig,
     super.variants,
 
     super.inherit,
@@ -79,7 +79,7 @@ class StackMix extends Style<StackSpec>
     TextDirection? textDirection,
     Clip? clipBehavior,
     AnimationConfig? animation,
-    WidgetDecoratorConfig? modifierConfig,
+    WidgetDecoratorConfig? widgetDecoratorConfig,
     List<VariantStyle<StackSpec>>? variants,
     bool? inherit,
   }) : this.raw(
@@ -88,7 +88,7 @@ class StackMix extends Style<StackSpec>
          textDirection: Prop.maybe(textDirection),
          clipBehavior: Prop.maybe(clipBehavior),
          animation: animation,
-         modifierConfig: modifierConfig,
+         widgetDecoratorConfig: widgetDecoratorConfig,
          variants: variants,
          inherit: inherit,
        );
@@ -153,7 +153,7 @@ class StackMix extends Style<StackSpec>
 
   @override
   StackMix widgetDecorator(WidgetDecoratorConfig value) {
-    return merge(StackMix(modifierConfig: value));
+    return merge(StackMix(widgetDecoratorConfig: value));
   }
 
   /// Resolves to [StackSpec] using the provided [BuildContext].
@@ -178,7 +178,7 @@ class StackMix extends Style<StackSpec>
       textDirection: $textDirection.tryMerge(other.$textDirection),
       clipBehavior: $clipBehavior.tryMerge(other.$clipBehavior),
       animation: other.$animation ?? $animation,
-      modifierConfig: $widgetDecoratorConfig.tryMerge(
+      widgetDecoratorConfig: $widgetDecoratorConfig.tryMerge(
         other.$widgetDecoratorConfig,
       ),
       variants: mergeVariantLists($variants, other.$variants),

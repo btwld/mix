@@ -8,19 +8,19 @@ void main() {
   group('FlexibleWidgetDecorator', () {
     group('Constructor', () {
       test('creates with null values by default', () {
-        const modifier = FlexibleWidgetDecorator();
+        const decorator = FlexibleWidgetDecorator();
 
-        expect(modifier.flex, isNull);
-        expect(modifier.fit, isNull);
+        expect(decorator.flex, isNull);
+        expect(decorator.fit, isNull);
       });
 
       test('assigns all parameters correctly', () {
         const flex = 2;
         const fit = FlexFit.tight;
-        const modifier = FlexibleWidgetDecorator(flex: flex, fit: fit);
+        const decorator = FlexibleWidgetDecorator(flex: flex, fit: fit);
 
-        expect(modifier.flex, flex);
-        expect(modifier.fit, fit);
+        expect(decorator.flex, flex);
+        expect(decorator.fit, fit);
       });
     });
 
@@ -111,47 +111,47 @@ void main() {
 
     group('equality and hashCode', () {
       test('equal when all properties match', () {
-        const modifier1 = FlexibleWidgetDecorator(flex: 2, fit: FlexFit.tight);
-        const modifier2 = FlexibleWidgetDecorator(flex: 2, fit: FlexFit.tight);
+        const decorator1 = FlexibleWidgetDecorator(flex: 2, fit: FlexFit.tight);
+        const decorator2 = FlexibleWidgetDecorator(flex: 2, fit: FlexFit.tight);
 
-        expect(modifier1, equals(modifier2));
-        expect(modifier1.hashCode, equals(modifier2.hashCode));
+        expect(decorator1, equals(decorator2));
+        expect(decorator1.hashCode, equals(decorator2.hashCode));
       });
 
       test('not equal when flex differs', () {
-        const modifier1 = FlexibleWidgetDecorator(flex: 1);
-        const modifier2 = FlexibleWidgetDecorator(flex: 2);
+        const decorator1 = FlexibleWidgetDecorator(flex: 1);
+        const decorator2 = FlexibleWidgetDecorator(flex: 2);
 
-        expect(modifier1, isNot(equals(modifier2)));
+        expect(decorator1, isNot(equals(decorator2)));
       });
 
       test('not equal when fit differs', () {
-        const modifier1 = FlexibleWidgetDecorator(fit: FlexFit.loose);
-        const modifier2 = FlexibleWidgetDecorator(fit: FlexFit.tight);
+        const decorator1 = FlexibleWidgetDecorator(fit: FlexFit.loose);
+        const decorator2 = FlexibleWidgetDecorator(fit: FlexFit.tight);
 
-        expect(modifier1, isNot(equals(modifier2)));
+        expect(decorator1, isNot(equals(decorator2)));
       });
 
       test('equal when both have all null values', () {
-        const modifier1 = FlexibleWidgetDecorator();
-        const modifier2 = FlexibleWidgetDecorator();
+        const decorator1 = FlexibleWidgetDecorator();
+        const decorator2 = FlexibleWidgetDecorator();
 
-        expect(modifier1, equals(modifier2));
-        expect(modifier1.hashCode, equals(modifier2.hashCode));
+        expect(decorator1, equals(decorator2));
+        expect(decorator1.hashCode, equals(decorator2.hashCode));
       });
     });
 
     group('props', () {
       test('contains all properties', () {
-        const modifier = FlexibleWidgetDecorator(flex: 3, fit: FlexFit.tight);
+        const decorator = FlexibleWidgetDecorator(flex: 3, fit: FlexFit.tight);
 
-        expect(modifier.props, [3, FlexFit.tight]);
+        expect(decorator.props, [3, FlexFit.tight]);
       });
 
       test('contains null values', () {
-        const modifier = FlexibleWidgetDecorator();
+        const decorator = FlexibleWidgetDecorator();
 
-        expect(modifier.props, [null, null]);
+        expect(decorator.props, [null, null]);
       });
     });
 
@@ -159,13 +159,13 @@ void main() {
       testWidgets('creates Flexible widget with default values', (
         WidgetTester tester,
       ) async {
-        const modifier = FlexibleWidgetDecorator();
+        const decorator = FlexibleWidgetDecorator();
         const child = SizedBox(width: 50, height: 50);
 
         await tester.pumpWidget(
           Directionality(
             textDirection: TextDirection.ltr,
-            child: Row(children: [modifier.build(child)]),
+            child: Row(children: [decorator.build(child)]),
           ),
         );
 
@@ -178,13 +178,13 @@ void main() {
       testWidgets('creates Flexible widget with custom values', (
         WidgetTester tester,
       ) async {
-        const modifier = FlexibleWidgetDecorator(flex: 3, fit: FlexFit.tight);
+        const decorator = FlexibleWidgetDecorator(flex: 3, fit: FlexFit.tight);
         const child = SizedBox(width: 50, height: 50);
 
         await tester.pumpWidget(
           Directionality(
             textDirection: TextDirection.ltr,
-            child: Row(children: [modifier.build(child)]),
+            child: Row(children: [decorator.build(child)]),
           ),
         );
 
@@ -436,13 +436,13 @@ void main() {
         resolvesTo(const FlexibleWidgetDecorator(flex: 2, fit: FlexFit.tight)),
       );
 
-      final modifier = attribute.resolve(MockBuildContext());
+      final decorator = attribute.resolve(MockBuildContext());
       const child = SizedBox(width: 100, height: 100);
 
       await tester.pumpWidget(
         Directionality(
           textDirection: TextDirection.ltr,
-          child: Row(children: [modifier.build(child)]),
+          child: Row(children: [decorator.build(child)]),
         ),
       );
 

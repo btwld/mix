@@ -98,7 +98,7 @@ class IconMix extends Style<IconSpec>
     Prop<bool>? applyTextScaling,
     Prop<double>? fill,
     super.animation,
-    super.modifierConfig,
+    super.widgetDecoratorConfig,
     super.variants,
 
     super.inherit,
@@ -123,7 +123,7 @@ class IconMix extends Style<IconSpec>
     bool? applyTextScaling,
     double? fill,
     AnimationConfig? animation,
-    WidgetDecoratorConfig? modifierConfig,
+    WidgetDecoratorConfig? widgetDecoratorConfig,
     List<VariantStyle<IconSpec>>? variants,
     bool? inherit,
   }) : this.raw(
@@ -137,7 +137,7 @@ class IconMix extends Style<IconSpec>
          applyTextScaling: Prop.maybe(applyTextScaling),
          fill: Prop.maybe(fill),
          animation: animation,
-         modifierConfig: modifierConfig,
+         widgetDecoratorConfig: widgetDecoratorConfig,
          variants: variants,
          inherit: inherit,
        );
@@ -226,7 +226,7 @@ class IconMix extends Style<IconSpec>
 
   @override
   IconMix widgetDecorator(WidgetDecoratorConfig value) {
-    return merge(IconMix(modifierConfig: value));
+    return merge(IconMix(widgetDecoratorConfig: value));
   }
 
   @override
@@ -259,7 +259,7 @@ class IconMix extends Style<IconSpec>
       applyTextScaling: $applyTextScaling.tryMerge(other.$applyTextScaling),
       fill: $fill.tryMerge(other.$fill),
       animation: other.$animation ?? $animation,
-      modifierConfig: $widgetDecoratorConfig.tryMerge(
+      widgetDecoratorConfig: $widgetDecoratorConfig.tryMerge(
         other.$widgetDecoratorConfig,
       ),
       variants: mergeVariantLists($variants, other.$variants),

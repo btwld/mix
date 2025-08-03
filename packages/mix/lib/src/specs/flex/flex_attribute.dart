@@ -100,7 +100,7 @@ class FlexMix extends Style<FlexSpec>
     Prop<Clip>? clipBehavior,
     Prop<double>? gap,
     super.animation,
-    super.modifierConfig,
+    super.widgetDecoratorConfig,
     super.variants,
 
     super.inherit,
@@ -125,7 +125,7 @@ class FlexMix extends Style<FlexSpec>
     Clip? clipBehavior,
     double? gap,
     AnimationConfig? animation,
-    WidgetDecoratorConfig? modifierConfig,
+    WidgetDecoratorConfig? widgetDecoratorConfig,
     List<VariantStyle<FlexSpec>>? variants,
     bool? inherit,
   }) : this.raw(
@@ -139,7 +139,7 @@ class FlexMix extends Style<FlexSpec>
          clipBehavior: Prop.maybe(clipBehavior),
          gap: Prop.maybe(gap),
          animation: animation,
-         modifierConfig: modifierConfig,
+         widgetDecoratorConfig: widgetDecoratorConfig,
          variants: variants,
          inherit: inherit,
        );
@@ -240,7 +240,7 @@ class FlexMix extends Style<FlexSpec>
 
   @override
   FlexMix widgetDecorator(WidgetDecoratorConfig value) {
-    return merge(FlexMix(modifierConfig: value));
+    return merge(FlexMix(widgetDecoratorConfig: value));
   }
 
   /// Resolves to [FlexSpec] using the provided [BuildContext].
@@ -291,7 +291,7 @@ class FlexMix extends Style<FlexSpec>
       clipBehavior: $clipBehavior.tryMerge(other.$clipBehavior),
       gap: $gap.tryMerge(other.$gap),
       animation: other.$animation ?? $animation,
-      modifierConfig: $widgetDecoratorConfig.tryMerge(
+      widgetDecoratorConfig: $widgetDecoratorConfig.tryMerge(
         other.$widgetDecoratorConfig,
       ),
       variants: mergeVariantLists($variants, other.$variants),

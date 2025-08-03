@@ -8,19 +8,19 @@ void main() {
   group('SizedBoxWidgetDecorator', () {
     group('Constructor', () {
       test('creates with null values by default', () {
-        const modifier = SizedBoxWidgetDecorator();
+        const decorator = SizedBoxWidgetDecorator();
 
-        expect(modifier.width, isNull);
-        expect(modifier.height, isNull);
+        expect(decorator.width, isNull);
+        expect(decorator.height, isNull);
       });
 
       test('assigns all parameters correctly', () {
         const width = 100.0;
         const height = 100.0;
-        const modifier = SizedBoxWidgetDecorator(width: width, height: height);
+        const decorator = SizedBoxWidgetDecorator(width: width, height: height);
 
-        expect(modifier.width, width);
-        expect(modifier.height, height);
+        expect(decorator.width, width);
+        expect(decorator.height, height);
       });
     });
 
@@ -116,47 +116,47 @@ void main() {
 
     group('equality and hashCode', () {
       test('equal when all properties match', () {
-        const modifier1 = SizedBoxWidgetDecorator(width: 100.0, height: 100.0);
-        const modifier2 = SizedBoxWidgetDecorator(width: 100.0, height: 100.0);
+        const decorator1 = SizedBoxWidgetDecorator(width: 100.0, height: 100.0);
+        const decorator2 = SizedBoxWidgetDecorator(width: 100.0, height: 100.0);
 
-        expect(modifier1, equals(modifier2));
-        expect(modifier1.hashCode, equals(modifier2.hashCode));
+        expect(decorator1, equals(decorator2));
+        expect(decorator1.hashCode, equals(decorator2.hashCode));
       });
 
       test('not equal when width differs', () {
-        const modifier1 = SizedBoxWidgetDecorator(width: 100.0);
-        const modifier2 = SizedBoxWidgetDecorator(width: 200.0);
+        const decorator1 = SizedBoxWidgetDecorator(width: 100.0);
+        const decorator2 = SizedBoxWidgetDecorator(width: 200.0);
 
-        expect(modifier1, isNot(equals(modifier2)));
+        expect(decorator1, isNot(equals(decorator2)));
       });
 
       test('not equal when height differs', () {
-        const modifier1 = SizedBoxWidgetDecorator(height: 100.0);
-        const modifier2 = SizedBoxWidgetDecorator(height: 200.0);
+        const decorator1 = SizedBoxWidgetDecorator(height: 100.0);
+        const decorator2 = SizedBoxWidgetDecorator(height: 200.0);
 
-        expect(modifier1, isNot(equals(modifier2)));
+        expect(decorator1, isNot(equals(decorator2)));
       });
 
       test('equal when both have all null values', () {
-        const modifier1 = SizedBoxWidgetDecorator();
-        const modifier2 = SizedBoxWidgetDecorator();
+        const decorator1 = SizedBoxWidgetDecorator();
+        const decorator2 = SizedBoxWidgetDecorator();
 
-        expect(modifier1, equals(modifier2));
-        expect(modifier1.hashCode, equals(modifier2.hashCode));
+        expect(decorator1, equals(decorator2));
+        expect(decorator1.hashCode, equals(decorator2.hashCode));
       });
     });
 
     group('props', () {
       test('contains all properties', () {
-        const modifier = SizedBoxWidgetDecorator(width: 100.0, height: 200.0);
+        const decorator = SizedBoxWidgetDecorator(width: 100.0, height: 200.0);
 
-        expect(modifier.props, [100.0, 200.0]);
+        expect(decorator.props, [100.0, 200.0]);
       });
 
       test('contains null values', () {
-        const modifier = SizedBoxWidgetDecorator();
+        const decorator = SizedBoxWidgetDecorator();
 
-        expect(modifier.props, [null, null]);
+        expect(decorator.props, [null, null]);
       });
     });
 
@@ -164,10 +164,10 @@ void main() {
       testWidgets('creates SizedBox widget with default values', (
         WidgetTester tester,
       ) async {
-        const modifier = SizedBoxWidgetDecorator();
+        const decorator = SizedBoxWidgetDecorator();
         const child = SizedBox(width: 50, height: 50);
 
-        await tester.pumpWidget(modifier.build(child));
+        await tester.pumpWidget(decorator.build(child));
 
         final sizedBox = tester.widget<SizedBox>(find.byType(SizedBox).first);
         expect(sizedBox.width, isNull);
@@ -178,10 +178,10 @@ void main() {
       testWidgets('creates SizedBox widget with custom dimensions', (
         WidgetTester tester,
       ) async {
-        const modifier = SizedBoxWidgetDecorator(width: 100.0, height: 200.0);
+        const decorator = SizedBoxWidgetDecorator(width: 100.0, height: 200.0);
         const child = SizedBox(width: 50, height: 50);
 
-        await tester.pumpWidget(modifier.build(child));
+        await tester.pumpWidget(decorator.build(child));
 
         final sizedBox = tester.widget<SizedBox>(find.byType(SizedBox).first);
         expect(sizedBox.width, 100.0);
@@ -249,17 +249,17 @@ void main() {
           height: 200.0,
         );
 
-        const expectedModifier = SizedBoxWidgetDecorator(width: 100.0, height: 200.0);
+        const expectedDecorator = SizedBoxWidgetDecorator(width: 100.0, height: 200.0);
 
-        expect(attribute, resolvesTo(expectedModifier));
+        expect(attribute, resolvesTo(expectedDecorator));
       });
 
       test('resolves with null values', () {
         final attribute = SizedBoxWidgetDecoratorMix();
 
-        const expectedModifier = SizedBoxWidgetDecorator();
+        const expectedDecorator = SizedBoxWidgetDecorator();
 
-        expect(attribute, resolvesTo(expectedModifier));
+        expect(attribute, resolvesTo(expectedDecorator));
       });
     });
 
@@ -343,10 +343,10 @@ void main() {
     ) async {
       final attribute = SizedBoxWidgetDecoratorMix(width: 150.0, height: 250.0);
 
-      final modifier = attribute.resolve(MockBuildContext());
+      final decorator = attribute.resolve(MockBuildContext());
       const child = SizedBox(width: 100, height: 100);
 
-      await tester.pumpWidget(modifier.build(child));
+      await tester.pumpWidget(decorator.build(child));
 
       final sizedBox = tester.widget<SizedBox>(find.byType(SizedBox).first);
       expect(sizedBox.width, 150.0);

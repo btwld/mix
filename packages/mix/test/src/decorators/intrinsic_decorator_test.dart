@@ -21,9 +21,9 @@ void main() {
     });
 
     testWidgets('build', (tester) async {
-      const modifier = IntrinsicHeightWidgetDecorator();
+      const decorator = IntrinsicHeightWidgetDecorator();
 
-      await tester.pumpMaterialApp(modifier.build(Container()));
+      await tester.pumpMaterialApp(decorator.build(Container()));
 
       final IntrinsicHeight intrinsicHeight = tester.widget(
         find.byType(IntrinsicHeight),
@@ -45,22 +45,22 @@ void main() {
   // IntrinsicHeightWidgetDecoratorMix
   group('IntrinsicHeightWidgetDecoratorMix', () {
     test('merge', () {
-      const modifier = IntrinsicHeightWidgetDecoratorMix();
+      const decorator = IntrinsicHeightWidgetDecoratorMix();
       const other = IntrinsicHeightWidgetDecoratorMix();
-      final result = modifier.merge(other);
-      expect(result, modifier);
+      final result = decorator.merge(other);
+      expect(result, decorator);
     });
 
     test('resolve', () {
-      const modifier = IntrinsicHeightWidgetDecoratorMix();
-      expect(modifier, resolvesTo(const IntrinsicHeightWidgetDecorator()));
+      const decorator = IntrinsicHeightWidgetDecoratorMix();
+      expect(decorator, resolvesTo(const IntrinsicHeightWidgetDecorator()));
     });
 
     // equality
     test('equality', () {
-      const modifier = IntrinsicHeightWidgetDecoratorMix();
+      const decorator = IntrinsicHeightWidgetDecoratorMix();
       const other = IntrinsicHeightWidgetDecoratorMix();
-      expect(modifier, other);
+      expect(decorator, other);
     });
   });
 
@@ -87,9 +87,9 @@ void main() {
     });
 
     testWidgets('build', (tester) async {
-      const modifier = IntrinsicWidthWidgetDecorator();
+      const decorator = IntrinsicWidthWidgetDecorator();
 
-      await tester.pumpMaterialApp(modifier.build(Container()));
+      await tester.pumpMaterialApp(decorator.build(Container()));
 
       final IntrinsicWidth intrinsicWidth = tester.widget(
         find.byType(IntrinsicWidth),
@@ -104,22 +104,22 @@ void main() {
   // IntrinsicWidthWidgetDecoratorMix
   group('IntrinsicWidthWidgetDecoratorMix', () {
     test('merge', () {
-      const modifier = IntrinsicWidthWidgetDecoratorMix();
+      const decorator = IntrinsicWidthWidgetDecoratorMix();
       const other = IntrinsicWidthWidgetDecoratorMix();
-      final result = modifier.merge(other);
-      expect(result, modifier);
+      final result = decorator.merge(other);
+      expect(result, decorator);
     });
 
     test('resolve', () {
-      const modifier = IntrinsicWidthWidgetDecoratorMix();
-      expect(modifier, resolvesTo(const IntrinsicWidthWidgetDecorator()));
+      const decorator = IntrinsicWidthWidgetDecoratorMix();
+      expect(decorator, resolvesTo(const IntrinsicWidthWidgetDecorator()));
     });
 
     // equality
     test('equality', () {
-      const modifier = IntrinsicWidthWidgetDecoratorMix();
+      const decorator = IntrinsicWidthWidgetDecoratorMix();
       const other = IntrinsicWidthWidgetDecoratorMix();
-      expect(modifier, other);
+      expect(decorator, other);
     });
   });
 }

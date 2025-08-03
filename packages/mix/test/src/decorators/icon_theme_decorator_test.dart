@@ -9,9 +9,9 @@ void main() {
     group('Constructor', () {
       test('assigns data correctly', () {
         const data = IconThemeData(color: Color(0xFF000000), size: 24.0);
-        const modifier = IconThemeWidgetDecorator(data: data);
+        const decorator = IconThemeWidgetDecorator(data: data);
 
-        expect(modifier.data, data);
+        expect(decorator.data, data);
       });
     });
 
@@ -70,10 +70,10 @@ void main() {
     group('build', () {
       test('wraps child with IconTheme', () {
         const data = IconThemeData(color: Color(0xFF000000), size: 24.0);
-        const modifier = IconThemeWidgetDecorator(data: data);
+        const decorator = IconThemeWidgetDecorator(data: data);
         const child = SizedBox();
 
-        final result = modifier.build(child);
+        final result = decorator.build(child);
 
         expect(result, isA<IconTheme>());
         final iconTheme = result as IconTheme;
@@ -112,11 +112,11 @@ void main() {
           opacity: opacity,
         );
 
-        final modifier = attribute.resolve(MockBuildContext());
+        final decorator = attribute.resolve(MockBuildContext());
 
-        expect(modifier.data.color, color);
-        expect(modifier.data.size, size);
-        expect(modifier.data.opacity, opacity);
+        expect(decorator.data.color, color);
+        expect(decorator.data.size, size);
+        expect(decorator.data.opacity, opacity);
       });
     });
 
@@ -156,7 +156,7 @@ void main() {
 
     setUp(() {
       utility = IconThemeWidgetDecoratorUtility(
-        (attr) => BoxMix(modifierConfig: WidgetDecoratorConfig.decorator(attr)),
+        (attr) => BoxMix(widgetDecoratorConfig: WidgetDecoratorConfig.decorator(attr)),
       );
     });
 
@@ -242,9 +242,9 @@ void main() {
         ),
       );
 
-      final modifier = attribute.resolve(MockBuildContext());
+      final decorator = attribute.resolve(MockBuildContext());
       const child = SizedBox();
-      await tester.pumpWithMixScope(modifier.build(child));
+      await tester.pumpWithMixScope(decorator.build(child));
       // Find the IconTheme that wraps our SizedBox (the last one in the tree)
       final iconTheme = tester.widget<IconTheme>(find.byType(IconTheme).last);
       expect(iconTheme.data.color, const Color(0xFF0000FF));

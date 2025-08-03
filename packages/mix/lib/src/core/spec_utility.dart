@@ -14,7 +14,7 @@ abstract class StyleAttributeBuilder<S extends Spec<S>> extends Style<S>
     with Diagnosticable {
   const StyleAttributeBuilder({
     super.animation,
-    super.modifierConfig,
+    super.widgetDecoratorConfig,
     super.variants,
     super.inherit,
   });
@@ -52,7 +52,7 @@ abstract class StyleMutableBuilder<S extends Spec<S>> extends Style<S>
     with Diagnosticable {
   const StyleMutableBuilder({
     super.animation,
-    super.modifierConfig,
+    super.widgetDecoratorConfig,
     super.variants,
     super.inherit,
   });

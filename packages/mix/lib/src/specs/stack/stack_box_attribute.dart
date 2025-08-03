@@ -24,7 +24,7 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
   const StackBoxMix({
     this.box,
     this.stack,
-    super.modifierConfig,
+    super.widgetDecoratorConfig,
     super.animation,
     super.variants,
 
@@ -94,7 +94,7 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
   }
 
   StackBoxMix modifier(WidgetDecoratorConfig value) {
-    return merge(StackBoxMix(modifierConfig: value));
+    return merge(StackBoxMix(widgetDecoratorConfig: value));
   }
 
   StackBoxMix variants(List<VariantStyle<ZBoxSpec>> variants) {
@@ -129,7 +129,7 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
     return StackBoxMix(
       box: box?.merge(other.box) ?? other.box,
       stack: stack?.merge(other.stack) ?? other.stack,
-      modifierConfig: $widgetDecoratorConfig.tryMerge(
+      widgetDecoratorConfig: $widgetDecoratorConfig.tryMerge(
         other.$widgetDecoratorConfig,
       ),
       animation: other.$animation ?? $animation,
@@ -173,14 +173,14 @@ class StackBoxSpecUtility {
   StackBoxMix only({
     BoxMix? box,
     StackMix? stack,
-    WidgetDecoratorConfig? modifierConfig,
+    WidgetDecoratorConfig? widgetDecoratorConfig,
     AnimationConfig? animation,
     List<VariantStyle<ZBoxSpec>>? variants,
   }) {
     return StackBoxMix(
       box: box,
       stack: stack,
-      modifierConfig: modifierConfig,
+      widgetDecoratorConfig: widgetDecoratorConfig,
       animation: animation,
       variants: variants,
     );

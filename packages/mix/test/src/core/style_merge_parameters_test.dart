@@ -10,14 +10,14 @@ void main() {
       test('merges orderOfModifiers correctly', () {
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
-          modifierConfig: WidgetDecoratorConfig.orderOfDecorators([
+          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators([
             OpacityWidgetDecorator,
             PaddingWidgetDecorator,
           ]),
         );
         final second = BoxMix(
           constraints: BoxConstraintsMix.height(200.0),
-          modifierConfig: WidgetDecoratorConfig.orderOfDecorators([
+          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators([
             ClipOvalWidgetDecorator,
             TransformWidgetDecorator,
           ]),
@@ -34,7 +34,7 @@ void main() {
       test('preserves first orderOfModifiers when second is empty', () {
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
-          modifierConfig: WidgetDecoratorConfig.orderOfDecorators([
+          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators([
             OpacityWidgetDecorator,
             PaddingWidgetDecorator,
           ]),
@@ -125,11 +125,11 @@ void main() {
 
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
-          modifierConfig: WidgetDecoratorConfig(decorators: firstModifiers),
+          widgetDecoratorConfig: WidgetDecoratorConfig(decorators: firstModifiers),
         );
         final second = BoxMix(
           constraints: BoxConstraintsMix.height(200.0),
-          modifierConfig: WidgetDecoratorConfig(decorators: secondModifiers),
+          widgetDecoratorConfig: WidgetDecoratorConfig(decorators: secondModifiers),
         );
 
         final merged = first.merge(second);
@@ -180,7 +180,7 @@ void main() {
       test('handles null merge correctly', () {
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
-          modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
+          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators(const [
             OpacityWidgetDecorator,
           ]),
           inherit: true,
@@ -196,14 +196,14 @@ void main() {
       test('merges orderOfModifiers correctly', () {
         final first = TextMix(
           maxLines: 2,
-          modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
+          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators(const [
             OpacityWidgetDecorator,
             PaddingWidgetDecorator,
           ]),
         );
         final second = TextMix(
           overflow: TextOverflow.ellipsis,
-          modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
+          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators(const [
             ClipOvalWidgetDecorator,
             TransformWidgetDecorator,
           ]),
@@ -231,14 +231,14 @@ void main() {
       test('merges orderOfModifiers correctly', () {
         final first = IconMix(
           size: 24.0,
-          modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
+          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators(const [
             OpacityWidgetDecorator,
             PaddingWidgetDecorator,
           ]),
         );
         final second = IconMix(
           color: Colors.red,
-          modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
+          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators(const [
             ClipOvalWidgetDecorator,
             TransformWidgetDecorator,
           ]),
@@ -266,14 +266,14 @@ void main() {
       test('merges orderOfModifiers correctly', () {
         final first = FlexMix(
           direction: Axis.horizontal,
-          modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
+          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators(const [
             OpacityWidgetDecorator,
             PaddingWidgetDecorator,
           ]),
         );
         final second = FlexMix(
           gap: 8.0,
-          modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
+          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators(const [
             ClipOvalWidgetDecorator,
             TransformWidgetDecorator,
           ]),
@@ -301,14 +301,14 @@ void main() {
       test('merges orderOfModifiers correctly', () {
         final first = ImageMix(
           width: 100.0,
-          modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
+          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators(const [
             OpacityWidgetDecorator,
             PaddingWidgetDecorator,
           ]),
         );
         final second = ImageMix(
           height: 200.0,
-          modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
+          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators(const [
             ClipOvalWidgetDecorator,
             TransformWidgetDecorator,
           ]),
@@ -336,14 +336,14 @@ void main() {
       test('merges orderOfModifiers correctly', () {
         final first = StackMix(
           alignment: Alignment.center,
-          modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
+          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators(const [
             OpacityWidgetDecorator,
             PaddingWidgetDecorator,
           ]),
         );
         final second = StackMix(
           fit: StackFit.expand,
-          modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
+          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators(const [
             ClipOvalWidgetDecorator,
             TransformWidgetDecorator,
           ]),
@@ -371,14 +371,14 @@ void main() {
       test('merges orderOfModifiers correctly', () {
         final first = FlexBoxMix(
           box: BoxMix.width(100),
-          modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
+          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators(const [
             OpacityWidgetDecorator,
             PaddingWidgetDecorator,
           ]),
         );
         final second = FlexBoxMix(
           flex: FlexMix.gap(8.0),
-          modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
+          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators(const [
             ClipOvalWidgetDecorator,
             TransformWidgetDecorator,
           ]),
@@ -406,14 +406,14 @@ void main() {
       test('merges orderOfModifiers correctly', () {
         final first = StackBoxMix(
           box: BoxMix.width(100),
-          modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
+          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators(const [
             OpacityWidgetDecorator,
             PaddingWidgetDecorator,
           ]),
         );
         final second = StackBoxMix(
           stack: StackMix.alignment(Alignment.center),
-          modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
+          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators(const [
             ClipOvalWidgetDecorator,
             TransformWidgetDecorator,
           ]),
@@ -444,21 +444,21 @@ void main() {
       test('chained merges preserve final values', () {
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
-          modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
+          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators(const [
             OpacityWidgetDecorator,
           ]),
           inherit: true,
         );
         final second = BoxMix(
           constraints: BoxConstraintsMix.height(200.0),
-          modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
+          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators(const [
             PaddingWidgetDecorator,
           ]),
           inherit: false,
         );
         final third = BoxMix(
           decoration: DecorationMix.color(Colors.blue),
-          modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
+          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators(const [
             ClipOvalWidgetDecorator,
           ]),
           inherit: true,
@@ -479,11 +479,11 @@ void main() {
 
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
-          modifierConfig: WidgetDecoratorConfig(decorators: [firstOpacity]),
+          widgetDecoratorConfig: WidgetDecoratorConfig(decorators: [firstOpacity]),
         );
         final second = BoxMix(
           constraints: BoxConstraintsMix.height(200.0),
-          modifierConfig: WidgetDecoratorConfig(decorators: [secondOpacity]),
+          widgetDecoratorConfig: WidgetDecoratorConfig(decorators: [secondOpacity]),
         );
 
         final merged = first.merge(second);
@@ -531,13 +531,13 @@ void main() {
       test('empty orderOfModifiers list behavior', () {
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
-          modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
+          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators(const [
             OpacityWidgetDecorator,
           ]),
         );
         final second = BoxMix(
           constraints: BoxConstraintsMix.height(200.0),
-          modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const []),
+          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators(const []),
         );
 
         final merged = first.merge(second);
@@ -550,7 +550,7 @@ void main() {
       test('null vs empty list handling for modifiers', () {
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
-          modifierConfig: WidgetDecoratorConfig(
+          widgetDecoratorConfig: WidgetDecoratorConfig(
             decorators: [OpacityWidgetDecoratorMix(opacity: 0.5)],
           ),
         );
@@ -594,7 +594,7 @@ void main() {
       test('merge with self returns same instance', () {
         final style = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
-          modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
+          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators(const [
             OpacityWidgetDecorator,
           ]),
           inherit: true,
@@ -627,7 +627,7 @@ void main() {
       test('mixed null and non-null parameters', () {
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
-          modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const [
+          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators(const [
             OpacityWidgetDecorator,
           ]),
           inherit: null,
@@ -635,7 +635,7 @@ void main() {
         );
         final second = BoxMix(
           constraints: BoxConstraintsMix.height(200.0),
-          modifierConfig: WidgetDecoratorConfig.orderOfDecorators(const []),
+          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators(const []),
           inherit: true,
           animation: const CurveAnimationConfig(
             duration: Duration(milliseconds: 100),

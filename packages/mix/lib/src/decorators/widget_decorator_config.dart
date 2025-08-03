@@ -258,27 +258,27 @@ final class WidgetDecoratorConfig with Equatable {
     );
   }
 
-  /// Orders modifiers according to the specified order or default order
+  /// Orders decorators according to the specified order or default order
   ///
   @visibleForTesting
-  List<WidgetDecorator> reorderDecorators(List<WidgetDecorator> modifiers) {
-    if (modifiers.isEmpty) return modifiers;
+  List<WidgetDecorator> reorderDecorators(List<WidgetDecorator> decorators) {
+    if (decorators.isEmpty) return decorators;
 
     final orderOfDecorators = {
-      // Prioritize the order of modifiers provided by the user.
+      // Prioritize the order of decorators provided by the user.
       ...?$orderOfDecorators,
-      // Add the default order of modifiers.
+      // Add the default order of decorators.
       ..._defaultOrder,
-      // Add any remaining modifiers that were not included in the order.
-      ...modifiers.map((e) => e.runtimeType),
+      // Add any remaining decorators that were not included in the order.
+      ...decorators.map((e) => e.runtimeType),
     }.toList();
 
     final orderedSpecs = <WidgetDecorator>[];
 
-    for (final modifierType in orderOfDecorators) {
-      // Find and add modifiers matching this type
-      final decorator = modifiers
-          .where((e) => e.runtimeType == modifierType)
+    for (final decoratorType in orderOfDecorators) {
+      // Find and add decorators matching this type
+      final decorator = decorators
+          .where((e) => e.runtimeType == decoratorType)
           .firstOrNull;
       if (decorator != null) {
         orderedSpecs.add(decorator);
@@ -484,12 +484,12 @@ final class WidgetDecoratorConfig with Equatable {
 
     final Map<Object, WidgetDecoratorMix> merged = {};
 
-    // Add current modifiers
+    // Add current decorators
     for (final decorator in current) {
       merged[decorator.mergeKey] = decorator;
     }
 
-    // Merge or add other modifiers
+    // Merge or add other decorators
     for (final decorator in other) {
       final key = decorator.mergeKey;
 
@@ -505,19 +505,19 @@ final class WidgetDecoratorConfig with Equatable {
     return merged.values.toList();
   }
 
-  /// Resolves the modifiers into a properly ordered list ready for rendering.
-  /// Its important to order the list before resolving to ensure the correct order of modifiers
+  /// Resolves the decorators into a properly ordered list ready for rendering.
+  /// Its important to order the list before resolving to ensure the correct order of decorators
   List<WidgetDecorator> resolve(BuildContext context) {
     if ($decorators == null || $decorators!.isEmpty) return [];
 
     // Resolve each decorator attribute to its corresponding decorator spec
-    final resolvedModifiers = <WidgetDecorator>[];
+    final resolvedDecorators = <WidgetDecorator>[];
     for (final attribute in $decorators!) {
       final resolved = attribute.resolve(context);
-      resolvedModifiers.add(resolved as WidgetDecorator);
+      resolvedDecorators.add(resolved as WidgetDecorator);
     }
 
-    return reorderDecorators(resolvedModifiers).cast();
+    return reorderDecorators(resolvedDecorators).cast();
   }
 
   @override
@@ -588,7 +588,7 @@ const _defaultOrder = [
   // IMPORTANT: Visual-only - doesn't affect layout space, unlike RotatedBoxWidgetDecorator.
   TransformWidgetDecorator,
 
-  // 14. Clip Modifiers: Applies visual clipping in various shapes.
+  // 14. Clip Decorators: Applies visual clipping in various shapes.
   // Applied near the end to clip the widget's final visual appearance.
   ClipOvalWidgetDecorator,
   ClipRRectWidgetDecorator,

@@ -8,8 +8,8 @@ void main() {
   group('AspectRatioWidgetDecorator', () {
     test('constructor assigns aspectRatio correctly', () {
       const aspectRatio = 2.0;
-      const modifier = AspectRatioWidgetDecorator(aspectRatio);
-      expect(modifier.aspectRatio, aspectRatio);
+      const decorator = AspectRatioWidgetDecorator(aspectRatio);
+      expect(decorator.aspectRatio, aspectRatio);
     });
 
     test('copyWith returns new instance with updated value', () {
@@ -34,27 +34,27 @@ void main() {
     });
 
     test('equality and hashCode', () {
-      const modifier1 = AspectRatioWidgetDecorator(1.0);
-      const modifier2 = AspectRatioWidgetDecorator(1.0);
-      const modifier3 = AspectRatioWidgetDecorator(2.0);
-      expect(modifier1, modifier2);
-      expect(modifier1.hashCode, modifier2.hashCode);
-      expect(modifier1 == modifier3, false);
-      expect(modifier1.hashCode == modifier3.hashCode, false);
+      const decorator1 = AspectRatioWidgetDecorator(1.0);
+      const decorator2 = AspectRatioWidgetDecorator(1.0);
+      const decorator3 = AspectRatioWidgetDecorator(2.0);
+      expect(decorator1, decorator2);
+      expect(decorator1.hashCode, decorator2.hashCode);
+      expect(decorator1 == decorator3, false);
+      expect(decorator1.hashCode == decorator3.hashCode, false);
     });
 
     test('props contains aspectRatio', () {
-      const modifier = AspectRatioWidgetDecorator(2.0);
-      expect(modifier.props, [2.0]);
+      const decorator = AspectRatioWidgetDecorator(2.0);
+      expect(decorator.props, [2.0]);
     });
 
     testWidgets('build creates AspectRatio widget with correct aspectRatio', (
       tester,
     ) async {
       const aspectRatio = 2.0;
-      const modifier = AspectRatioWidgetDecorator(aspectRatio);
+      const decorator = AspectRatioWidgetDecorator(aspectRatio);
       const child = SizedBox();
-      await tester.pumpWithMixScope(modifier.build(child));
+      await tester.pumpWithMixScope(decorator.build(child));
       final aspectRatioWidget = tester.widget<AspectRatio>(
         find.byType(AspectRatio),
       );
@@ -111,9 +111,9 @@ void main() {
       );
       expect(attribute, resolvesTo(const AspectRatioWidgetDecorator(2.5)));
 
-      final modifier = attribute.resolve(MockBuildContext());
+      final decorator = attribute.resolve(MockBuildContext());
       const child = SizedBox();
-      await tester.pumpWithMixScope(modifier.build(child));
+      await tester.pumpWithMixScope(decorator.build(child));
       final aspectRatioWidget = tester.widget<AspectRatio>(
         find.byType(AspectRatio),
       );

@@ -8,16 +8,16 @@ void main() {
   group('MouseCursorDecorator', () {
     group('Constructor', () {
       test('creates with null mouseCursor by default', () {
-        const modifier = MouseCursorDecorator();
+        const decorator = MouseCursorDecorator();
 
-        expect(modifier.mouseCursor, isNull);
+        expect(decorator.mouseCursor, isNull);
       });
 
       test('assigns mouseCursor correctly', () {
         const cursor = SystemMouseCursors.click;
-        const modifier = MouseCursorDecorator(mouseCursor: cursor);
+        const decorator = MouseCursorDecorator(mouseCursor: cursor);
 
-        expect(modifier.mouseCursor, cursor);
+        expect(decorator.mouseCursor, cursor);
       });
     });
 
@@ -114,59 +114,59 @@ void main() {
 
     group('equality and hashCode', () {
       test('equal when mouseCursor matches', () {
-        const modifier1 = MouseCursorDecorator(
+        const decorator1 = MouseCursorDecorator(
           mouseCursor: SystemMouseCursors.basic,
         );
-        const modifier2 = MouseCursorDecorator(
+        const decorator2 = MouseCursorDecorator(
           mouseCursor: SystemMouseCursors.basic,
         );
 
-        expect(modifier1, equals(modifier2));
-        expect(modifier1.hashCode, equals(modifier2.hashCode));
+        expect(decorator1, equals(decorator2));
+        expect(decorator1.hashCode, equals(decorator2.hashCode));
       });
 
       test('not equal when mouseCursor differs', () {
-        const modifier1 = MouseCursorDecorator(
+        const decorator1 = MouseCursorDecorator(
           mouseCursor: SystemMouseCursors.basic,
         );
-        const modifier2 = MouseCursorDecorator(
+        const decorator2 = MouseCursorDecorator(
           mouseCursor: SystemMouseCursors.click,
         );
 
-        expect(modifier1, isNot(equals(modifier2)));
+        expect(decorator1, isNot(equals(decorator2)));
       });
 
       test('equal when both have null mouseCursor', () {
-        const modifier1 = MouseCursorDecorator();
-        const modifier2 = MouseCursorDecorator();
+        const decorator1 = MouseCursorDecorator();
+        const decorator2 = MouseCursorDecorator();
 
-        expect(modifier1, equals(modifier2));
-        expect(modifier1.hashCode, equals(modifier2.hashCode));
+        expect(decorator1, equals(decorator2));
+        expect(decorator1.hashCode, equals(decorator2.hashCode));
       });
 
       test('not equal when one has null and other has value', () {
-        const modifier1 = MouseCursorDecorator();
-        const modifier2 = MouseCursorDecorator(
+        const decorator1 = MouseCursorDecorator();
+        const decorator2 = MouseCursorDecorator(
           mouseCursor: SystemMouseCursors.basic,
         );
 
-        expect(modifier1, isNot(equals(modifier2)));
+        expect(decorator1, isNot(equals(decorator2)));
       });
     });
 
     group('props', () {
       test('contains mouseCursor', () {
-        const modifier = MouseCursorDecorator(
+        const decorator = MouseCursorDecorator(
           mouseCursor: SystemMouseCursors.basic,
         );
 
-        expect(modifier.props, [SystemMouseCursors.basic]);
+        expect(decorator.props, [SystemMouseCursors.basic]);
       });
 
       test('contains null when mouseCursor is null', () {
-        const modifier = MouseCursorDecorator();
+        const decorator = MouseCursorDecorator();
 
-        expect(modifier.props, [null]);
+        expect(decorator.props, [null]);
       });
     });
 
@@ -174,10 +174,10 @@ void main() {
       testWidgets('creates MouseRegion with defer cursor by default', (
         WidgetTester tester,
       ) async {
-        const modifier = MouseCursorDecorator();
+        const decorator = MouseCursorDecorator();
         const child = SizedBox(width: 50, height: 50);
 
-        await tester.pumpWidget(modifier.build(child));
+        await tester.pumpWidget(decorator.build(child));
 
         final mouseRegion = tester.widget<MouseRegion>(
           find.byType(MouseRegion),
@@ -190,10 +190,10 @@ void main() {
         WidgetTester tester,
       ) async {
         const cursor = SystemMouseCursors.click;
-        const modifier = MouseCursorDecorator(mouseCursor: cursor);
+        const decorator = MouseCursorDecorator(mouseCursor: cursor);
         const child = SizedBox(width: 50, height: 50);
 
-        await tester.pumpWidget(modifier.build(child));
+        await tester.pumpWidget(decorator.build(child));
 
         final mouseRegion = tester.widget<MouseRegion>(
           find.byType(MouseRegion),
@@ -218,10 +218,10 @@ void main() {
         ];
 
         for (final cursor in cursors) {
-          final modifier = MouseCursorDecorator(mouseCursor: cursor);
+          final decorator = MouseCursorDecorator(mouseCursor: cursor);
           const child = SizedBox(width: 50, height: 50);
 
-          await tester.pumpWidget(modifier.build(child));
+          await tester.pumpWidget(decorator.build(child));
 
           final mouseRegion = tester.widget<MouseRegion>(
             find.byType(MouseRegion),
@@ -380,10 +380,10 @@ void main() {
         ),
       );
 
-      final modifier = attribute.resolve(MockBuildContext());
+      final decorator = attribute.resolve(MockBuildContext());
       const child = SizedBox(width: 100, height: 100);
 
-      await tester.pumpWidget(modifier.build(child));
+      await tester.pumpWidget(decorator.build(child));
 
       final mouseRegion = tester.widget<MouseRegion>(find.byType(MouseRegion));
       expect(mouseRegion.cursor, SystemMouseCursors.grab);
@@ -471,10 +471,10 @@ void main() {
           resolvesTo(MouseCursorDecorator(mouseCursor: cursor)),
         );
 
-        final modifier = attribute.resolve(MockBuildContext());
+        final decorator = attribute.resolve(MockBuildContext());
         const child = SizedBox(width: 50, height: 50);
 
-        await tester.pumpWidget(modifier.build(child));
+        await tester.pumpWidget(decorator.build(child));
 
         final mouseRegion = tester.widget<MouseRegion>(
           find.byType(MouseRegion),

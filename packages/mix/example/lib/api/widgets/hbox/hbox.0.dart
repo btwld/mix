@@ -12,18 +12,17 @@ class Example extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final flexStyle = Style.flexbox(
-        .flex(FlexMix.mainAxisSize(MainAxisSize.min).gap(4))
-        .box(
-          BoxMix.color(Colors.cyan.shade50)
-              .padding(
-                EdgeInsetsDirectionalMix.symmetric(horizontal: 10, vertical: 4),
-              )
-              .borderRadius(BorderRadiusMix.circular(99))
-              .border(
-                BoxBorderMix.all(
-                  BorderSideMix.color(Colors.cyan.shade600).width(2),
-                ),
-              ),
+        .mainAxisSize(MainAxisSize.min)
+        .gap(4)
+        .color(Colors.cyan.shade50)
+        .padding(
+          EdgeInsetsDirectionalMix.symmetric(horizontal: 10, vertical: 4),
+        )
+        .borderRadius(BorderRadiusMix.circular(99))
+        .border(
+          BoxBorderMix.all(
+            BorderSideMix.color(Colors.cyan.shade600).width(2),
+          ),
         )
     );
 

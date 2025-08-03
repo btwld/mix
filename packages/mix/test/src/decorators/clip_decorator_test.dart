@@ -13,20 +13,20 @@ void main() {
 
     group('Constructor', () {
       test('creates with null values by default', () {
-        const modifier = ClipPathWidgetDecorator();
+        const decorator = ClipPathWidgetDecorator();
 
-        expect(modifier.clipper, isNull);
-        expect(modifier.clipBehavior, isNull);
+        expect(decorator.clipper, isNull);
+        expect(decorator.clipBehavior, isNull);
       });
 
       test('assigns all parameters correctly', () {
-        const modifier = ClipPathWidgetDecorator(
+        const decorator = ClipPathWidgetDecorator(
           clipper: clipper,
           clipBehavior: clipBehavior,
         );
 
-        expect(modifier.clipper, clipper);
-        expect(modifier.clipBehavior, clipBehavior);
+        expect(decorator.clipper, clipper);
+        expect(decorator.clipBehavior, clipBehavior);
       });
     });
 
@@ -117,48 +117,48 @@ void main() {
 
     group('equality and hashCode', () {
       test('equal when all properties match', () {
-        const modifier1 = ClipPathWidgetDecorator(
+        const decorator1 = ClipPathWidgetDecorator(
           clipper: clipper,
           clipBehavior: clipBehavior,
         );
-        const modifier2 = ClipPathWidgetDecorator(
+        const decorator2 = ClipPathWidgetDecorator(
           clipper: clipper,
           clipBehavior: clipBehavior,
         );
 
-        expect(modifier1, equals(modifier2));
-        expect(modifier1.hashCode, equals(modifier2.hashCode));
+        expect(decorator1, equals(decorator2));
+        expect(decorator1.hashCode, equals(decorator2.hashCode));
       });
 
       test('not equal when clipper differs', () {
-        const modifier1 = ClipPathWidgetDecorator(clipper: clipper);
-        const modifier2 = ClipPathWidgetDecorator(clipper: clipper2);
+        const decorator1 = ClipPathWidgetDecorator(clipper: clipper);
+        const decorator2 = ClipPathWidgetDecorator(clipper: clipper2);
 
-        expect(modifier1, isNot(equals(modifier2)));
+        expect(decorator1, isNot(equals(decorator2)));
       });
 
       test('not equal when clipBehavior differs', () {
-        const modifier1 = ClipPathWidgetDecorator(clipBehavior: clipBehavior);
-        const modifier2 = ClipPathWidgetDecorator(clipBehavior: clipBehavior2);
+        const decorator1 = ClipPathWidgetDecorator(clipBehavior: clipBehavior);
+        const decorator2 = ClipPathWidgetDecorator(clipBehavior: clipBehavior2);
 
-        expect(modifier1, isNot(equals(modifier2)));
+        expect(decorator1, isNot(equals(decorator2)));
       });
     });
 
     group('props', () {
       test('contains all properties', () {
-        const modifier = ClipPathWidgetDecorator(
+        const decorator = ClipPathWidgetDecorator(
           clipper: clipper,
           clipBehavior: clipBehavior,
         );
 
-        expect(modifier.props, [clipper, clipBehavior]);
+        expect(decorator.props, [clipper, clipBehavior]);
       });
 
       test('contains null values', () {
-        const modifier = ClipPathWidgetDecorator();
+        const decorator = ClipPathWidgetDecorator();
 
-        expect(modifier.props, [null, null]);
+        expect(decorator.props, [null, null]);
       });
     });
 
@@ -166,13 +166,13 @@ void main() {
       testWidgets('creates ClipPath widget with correct properties', (
         WidgetTester tester,
       ) async {
-        const modifier = ClipPathWidgetDecorator(
+        const decorator = ClipPathWidgetDecorator(
           clipper: clipper,
           clipBehavior: clipBehavior,
         );
         const child = SizedBox(width: 50, height: 50);
 
-        await tester.pumpWidget(modifier.build(child));
+        await tester.pumpWidget(decorator.build(child));
 
         final clipPath = tester.widget<ClipPath>(find.byType(ClipPath));
         expect(clipPath.clipper, clipper);
@@ -183,10 +183,10 @@ void main() {
       testWidgets('creates ClipPath widget with default behavior', (
         WidgetTester tester,
       ) async {
-        const modifier = ClipPathWidgetDecorator();
+        const decorator = ClipPathWidgetDecorator();
         const child = SizedBox(width: 50, height: 50);
 
-        await tester.pumpWidget(modifier.build(child));
+        await tester.pumpWidget(decorator.build(child));
 
         final clipPath = tester.widget<ClipPath>(find.byType(ClipPath));
         expect(clipPath.clipper, isNull);
@@ -249,18 +249,18 @@ void main() {
           clipBehavior: clipBehavior,
         );
 
-        const expectedModifier = ClipPathWidgetDecorator(
+        const expectedDecorator = ClipPathWidgetDecorator(
           clipper: clipper,
           clipBehavior: clipBehavior,
         );
-        expect(attribute, resolvesTo(expectedModifier));
+        expect(attribute, resolvesTo(expectedDecorator));
       });
 
       test('resolves with null values', () {
         final attribute = ClipPathWidgetDecoratorMix();
 
-        const expectedModifier = ClipPathWidgetDecorator();
-        expect(attribute, resolvesTo(expectedModifier));
+        const expectedDecorator = ClipPathWidgetDecorator();
+        expect(attribute, resolvesTo(expectedDecorator));
       });
     });
 
@@ -344,15 +344,15 @@ void main() {
 
     group('Constructor', () {
       test('creates with default clip behavior', () {
-        const modifier = ClipTriangleWidgetDecorator();
+        const decorator = ClipTriangleWidgetDecorator();
 
-        expect(modifier.clipBehavior, isNull);
+        expect(decorator.clipBehavior, isNull);
       });
 
       test('assigns clipBehavior correctly', () {
-        const modifier = ClipTriangleWidgetDecorator(clipBehavior: clipBehavior);
+        const decorator = ClipTriangleWidgetDecorator(clipBehavior: clipBehavior);
 
-        expect(modifier.clipBehavior, clipBehavior);
+        expect(decorator.clipBehavior, clipBehavior);
       });
     });
 
@@ -379,16 +379,16 @@ void main() {
 
     group('equality and props', () {
       test('equal when all properties match', () {
-        const modifier1 = ClipTriangleWidgetDecorator(clipBehavior: clipBehavior);
-        const modifier2 = ClipTriangleWidgetDecorator(clipBehavior: clipBehavior);
+        const decorator1 = ClipTriangleWidgetDecorator(clipBehavior: clipBehavior);
+        const decorator2 = ClipTriangleWidgetDecorator(clipBehavior: clipBehavior);
 
-        expect(modifier1, equals(modifier2));
+        expect(decorator1, equals(decorator2));
       });
 
       test('props contains clipBehavior', () {
-        const modifier = ClipTriangleWidgetDecorator(clipBehavior: clipBehavior);
+        const decorator = ClipTriangleWidgetDecorator(clipBehavior: clipBehavior);
 
-        expect(modifier.props, [clipBehavior]);
+        expect(decorator.props, [clipBehavior]);
       });
     });
 
@@ -396,10 +396,10 @@ void main() {
       testWidgets('creates ClipPath widget with TriangleClipper', (
         WidgetTester tester,
       ) async {
-        const modifier = ClipTriangleWidgetDecorator(clipBehavior: clipBehavior);
+        const decorator = ClipTriangleWidgetDecorator(clipBehavior: clipBehavior);
         const child = SizedBox(width: 50, height: 50);
 
-        await tester.pumpWidget(modifier.build(child));
+        await tester.pumpWidget(decorator.build(child));
 
         final clipPath = tester.widget<ClipPath>(find.byType(ClipPath));
         expect(clipPath.clipper, isA<TriangleClipper>());
@@ -443,10 +443,10 @@ void main() {
           clipBehavior: clipBehavior,
         );
 
-        const expectedModifier = ClipTriangleWidgetDecorator(
+        const expectedDecorator = ClipTriangleWidgetDecorator(
           clipBehavior: clipBehavior,
         );
-        expect(attribute, resolvesTo(expectedModifier));
+        expect(attribute, resolvesTo(expectedDecorator));
       });
     });
 
@@ -511,16 +511,16 @@ void main() {
         clipBehavior: clipBehavior,
       );
 
-      const expectedModifier = ClipPathWidgetDecorator(
+      const expectedDecorator = ClipPathWidgetDecorator(
         clipper: clipper,
         clipBehavior: clipBehavior,
       );
-      expect(attribute, resolvesTo(expectedModifier));
+      expect(attribute, resolvesTo(expectedDecorator));
 
-      final modifier = attribute.resolve(MockBuildContext());
+      final decorator = attribute.resolve(MockBuildContext());
       const child = SizedBox(width: 100, height: 100);
 
-      await tester.pumpWidget(modifier.build(child));
+      await tester.pumpWidget(decorator.build(child));
 
       final clipPath = tester.widget<ClipPath>(find.byType(ClipPath));
       expect(clipPath.clipper, clipper);

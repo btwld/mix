@@ -241,7 +241,7 @@ void main() {
     group('Modifiers', () {
       test('modifiers can be added to attribute', () {
         final attribute = FlexBoxMix(
-          modifierConfig: WidgetDecoratorConfig(
+          widgetDecoratorConfig: WidgetDecoratorConfig(
             decorators: [
               OpacityWidgetDecoratorMix(opacity: 0.5),
               TransformWidgetDecoratorMix(
@@ -258,13 +258,13 @@ void main() {
 
       test('modifiers are merged correctly', () {
         final first = FlexBoxMix(
-          modifierConfig: WidgetDecoratorConfig(
+          widgetDecoratorConfig: WidgetDecoratorConfig(
             decorators: [OpacityWidgetDecoratorMix(opacity: 0.5)],
           ),
         );
 
         final second = FlexBoxMix(
-          modifierConfig: WidgetDecoratorConfig(
+          widgetDecoratorConfig: WidgetDecoratorConfig(
             decorators: [
               TransformWidgetDecoratorMix(transform: Matrix4.identity()),
             ],

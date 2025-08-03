@@ -2,14 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
 final scaffoldContainer = Style.flexbox(
-    .flex(
-      FlexMix.mainAxisSize(MainAxisSize.max)
-      .crossAxisAlignment(CrossAxisAlignment.stretch)
-      .mainAxisAlignment(MainAxisAlignment.start),
-    )
-    .box(
-      BoxMix.color(Colors.white)
-    )
+    .mainAxisSize(MainAxisSize.max)
+    .crossAxisAlignment(CrossAxisAlignment.stretch)
+    .mainAxisAlignment(MainAxisAlignment.start)
+    .color(Colors.white)
 );
 
 final appHeaderContainer = Style.box(

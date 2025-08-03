@@ -5,24 +5,24 @@ import 'package:mix/mix.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  group('RotatedBoxModifier', () {
+  group('RotatedBoxWidgetDecorator', () {
     group('Constructor', () {
       test('creates with zero quarter turns by default', () {
-        const modifier = RotatedBoxWidgetDecorator();
+        const decorator = RotatedBoxWidgetDecorator();
 
-        expect(modifier.quarterTurns, 0);
+        expect(decorator.quarterTurns, 0);
       });
 
       test('creates with specified quarter turns', () {
-        const modifier = RotatedBoxWidgetDecorator(2);
+        const decorator = RotatedBoxWidgetDecorator(2);
 
-        expect(modifier.quarterTurns, 2);
+        expect(decorator.quarterTurns, 2);
       });
 
       test('creates with null quarter turns defaults to zero', () {
-        const modifier = RotatedBoxWidgetDecorator(null);
+        const decorator = RotatedBoxWidgetDecorator(null);
 
-        expect(modifier.quarterTurns, 0);
+        expect(decorator.quarterTurns, 0);
       });
     });
 
@@ -85,36 +85,36 @@ void main() {
 
     group('equality and hashCode', () {
       test('equal when quarter turns match', () {
-        const modifier1 = RotatedBoxWidgetDecorator(2);
-        const modifier2 = RotatedBoxWidgetDecorator(2);
+        const decorator1 = RotatedBoxWidgetDecorator(2);
+        const decorator2 = RotatedBoxWidgetDecorator(2);
 
-        expect(modifier1, equals(modifier2));
-        expect(modifier1.hashCode, equals(modifier2.hashCode));
+        expect(decorator1, equals(decorator2));
+        expect(decorator1.hashCode, equals(decorator2.hashCode));
       });
 
       test('not equal when quarter turns differ', () {
-        const modifier1 = RotatedBoxWidgetDecorator(1);
-        const modifier2 = RotatedBoxWidgetDecorator(3);
+        const decorator1 = RotatedBoxWidgetDecorator(1);
+        const decorator2 = RotatedBoxWidgetDecorator(3);
 
-        expect(modifier1, isNot(equals(modifier2)));
+        expect(decorator1, isNot(equals(decorator2)));
         // Hash codes might be equal due to hash collisions, so we only test inequality
-        expect(modifier1 == modifier2, isFalse);
+        expect(decorator1 == decorator2, isFalse);
       });
 
       test('equal when both have default zero turns', () {
-        const modifier1 = RotatedBoxWidgetDecorator();
-        const modifier2 = RotatedBoxWidgetDecorator(0);
+        const decorator1 = RotatedBoxWidgetDecorator();
+        const decorator2 = RotatedBoxWidgetDecorator(0);
 
-        expect(modifier1, equals(modifier2));
-        expect(modifier1.hashCode, equals(modifier2.hashCode));
+        expect(decorator1, equals(decorator2));
+        expect(decorator1.hashCode, equals(decorator2.hashCode));
       });
     });
 
     group('props', () {
       test('contains quarter turns', () {
-        const modifier = RotatedBoxWidgetDecorator(3);
+        const decorator = RotatedBoxWidgetDecorator(3);
 
-        expect(modifier.props, [3]);
+        expect(decorator.props, [3]);
       });
     });
 
@@ -122,10 +122,10 @@ void main() {
       testWidgets('creates RotatedBox widget with specified quarter turns', (
         WidgetTester tester,
       ) async {
-        const modifier = RotatedBoxWidgetDecorator(2);
+        const decorator = RotatedBoxWidgetDecorator(2);
         const child = SizedBox(width: 50, height: 50);
 
-        await tester.pumpWidget(modifier.build(child));
+        await tester.pumpWidget(decorator.build(child));
 
         final rotatedBox = tester.widget<RotatedBox>(find.byType(RotatedBox));
         expect(rotatedBox.quarterTurns, 2);
@@ -135,10 +135,10 @@ void main() {
       testWidgets('creates RotatedBox widget with zero turns by default', (
         WidgetTester tester,
       ) async {
-        const modifier = RotatedBoxWidgetDecorator();
+        const decorator = RotatedBoxWidgetDecorator();
         const child = SizedBox(width: 50, height: 50);
 
-        await tester.pumpWidget(modifier.build(child));
+        await tester.pumpWidget(decorator.build(child));
 
         final rotatedBox = tester.widget<RotatedBox>(find.byType(RotatedBox));
         expect(rotatedBox.quarterTurns, 0);
@@ -181,7 +181,7 @@ void main() {
     });
 
     group('resolve', () {
-      test('resolves to RotatedBoxModifier with resolved quarter turns', () {
+      test('resolves to RotatedBoxWidgetDecorator with resolved quarter turns', () {
         final attribute = RotatedBoxWidgetDecoratorMix(quarterTurns: 1);
 
         expect(attribute, resolvesTo(const RotatedBoxWidgetDecorator(1)));
@@ -332,10 +332,10 @@ void main() {
 
       expect(attribute, resolvesTo(const RotatedBoxWidgetDecorator(2)));
 
-      final modifier = attribute.resolve(MockBuildContext());
+      final decorator = attribute.resolve(MockBuildContext());
       const child = SizedBox(width: 100, height: 50);
 
-      await tester.pumpWidget(Center(child: modifier.build(child)));
+      await tester.pumpWidget(Center(child: decorator.build(child)));
 
       final rotatedBox = tester.widget<RotatedBox>(find.byType(RotatedBox));
       expect(rotatedBox.quarterTurns, 2);

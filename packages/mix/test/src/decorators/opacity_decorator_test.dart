@@ -9,9 +9,9 @@ void main() {
     group('Constructor', () {
       test('assigns opacity correctly', () {
         const opacity = 0.5;
-        const modifier = OpacityWidgetDecorator(opacity);
+        const decorator = OpacityWidgetDecorator(opacity);
 
-        expect(modifier.opacity, opacity);
+        expect(decorator.opacity, opacity);
       });
     });
 
@@ -63,26 +63,26 @@ void main() {
 
     group('equality and hashCode', () {
       test('equal when opacity values match', () {
-        const modifier1 = OpacityWidgetDecorator(0.5);
-        const modifier2 = OpacityWidgetDecorator(0.5);
+        const decorator1 = OpacityWidgetDecorator(0.5);
+        const decorator2 = OpacityWidgetDecorator(0.5);
 
-        expect(modifier1, equals(modifier2));
-        expect(modifier1.hashCode, equals(modifier2.hashCode));
+        expect(decorator1, equals(decorator2));
+        expect(decorator1.hashCode, equals(decorator2.hashCode));
       });
 
       test('not equal when opacity differs', () {
-        const modifier1 = OpacityWidgetDecorator(0.5);
-        const modifier2 = OpacityWidgetDecorator(0.8);
+        const decorator1 = OpacityWidgetDecorator(0.5);
+        const decorator2 = OpacityWidgetDecorator(0.8);
 
-        expect(modifier1, isNot(equals(modifier2)));
+        expect(decorator1, isNot(equals(decorator2)));
       });
     });
 
     group('props', () {
       test('contains opacity value', () {
-        const modifier = OpacityWidgetDecorator(0.5);
+        const decorator = OpacityWidgetDecorator(0.5);
 
-        expect(modifier.props, [0.5]);
+        expect(decorator.props, [0.5]);
       });
     });
 
@@ -91,10 +91,10 @@ void main() {
         WidgetTester tester,
       ) async {
         const opacity = 0.5;
-        const modifier = OpacityWidgetDecorator(opacity);
+        const decorator = OpacityWidgetDecorator(opacity);
         const child = SizedBox(width: 50, height: 50);
 
-        await tester.pumpWidget(modifier.build(child));
+        await tester.pumpWidget(decorator.build(child));
 
         final opacityWidget = tester.widget<Opacity>(find.byType(Opacity));
         expect(opacityWidget.opacity, opacity);
@@ -137,19 +137,19 @@ void main() {
       test('resolves to OpacityWidgetDecorator with resolved opacity', () {
         final attribute = OpacityWidgetDecoratorMix(opacity: 0.7);
 
-        const expectedModifier = OpacityWidgetDecorator(0.7);
+        const expectedDecorator = OpacityWidgetDecorator(0.7);
 
-        expect(attribute, resolvesTo(expectedModifier));
+        expect(attribute, resolvesTo(expectedDecorator));
       });
 
       test('resolves with null opacity', () {
         final attribute = OpacityWidgetDecoratorMix();
 
-        const expectedModifier = OpacityWidgetDecorator(
+        const expectedDecorator = OpacityWidgetDecorator(
           1.0,
         ); // OpacityWidgetDecorator defaults to 1.0
 
-        expect(attribute, resolvesTo(expectedModifier));
+        expect(attribute, resolvesTo(expectedDecorator));
       });
     });
 
@@ -212,10 +212,10 @@ void main() {
     ) async {
       final attribute = OpacityWidgetDecoratorMix(opacity: 0.3);
 
-      final modifier = attribute.resolve(MockBuildContext());
+      final decorator = attribute.resolve(MockBuildContext());
       const child = SizedBox(width: 100, height: 100);
 
-      await tester.pumpWidget(modifier.build(child));
+      await tester.pumpWidget(decorator.build(child));
 
       final opacity = tester.widget<Opacity>(find.byType(Opacity));
       expect(opacity.opacity, 0.3);
