@@ -181,11 +181,14 @@ void main() {
     });
 
     group('resolve', () {
-      test('resolves to RotatedBoxWidgetDecorator with resolved quarter turns', () {
-        final attribute = RotatedBoxWidgetDecoratorMix(quarterTurns: 1);
+      test(
+        'resolves to RotatedBoxWidgetDecorator with resolved quarter turns',
+        () {
+          final attribute = RotatedBoxWidgetDecoratorMix(quarterTurns: 1);
 
-        expect(attribute, resolvesTo(const RotatedBoxWidgetDecorator(1)));
-      });
+          expect(attribute, resolvesTo(const RotatedBoxWidgetDecorator(1)));
+        },
+      );
 
       test('resolves with null quarter turns to zero', () {
         final attribute = RotatedBoxWidgetDecoratorMix();

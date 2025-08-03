@@ -198,8 +198,12 @@ void main() {
       });
 
       test('not equal when widthFactor differs', () {
-        const decorator1 = FractionallySizedBoxWidgetDecorator(widthFactor: 0.5);
-        const decorator2 = FractionallySizedBoxWidgetDecorator(widthFactor: 0.8);
+        const decorator1 = FractionallySizedBoxWidgetDecorator(
+          widthFactor: 0.5,
+        );
+        const decorator2 = FractionallySizedBoxWidgetDecorator(
+          widthFactor: 0.8,
+        );
 
         expect(decorator1, isNot(equals(decorator2)));
         // Hash codes might be equal due to hash collisions, so we only test inequality
@@ -207,8 +211,12 @@ void main() {
       });
 
       test('not equal when heightFactor differs', () {
-        const decorator1 = FractionallySizedBoxWidgetDecorator(heightFactor: 0.5);
-        const decorator2 = FractionallySizedBoxWidgetDecorator(heightFactor: 0.8);
+        const decorator1 = FractionallySizedBoxWidgetDecorator(
+          heightFactor: 0.5,
+        );
+        const decorator2 = FractionallySizedBoxWidgetDecorator(
+          heightFactor: 0.8,
+        );
 
         expect(decorator1, isNot(equals(decorator2)));
         // Hash codes might be equal due to hash collisions, so we only test inequality
@@ -369,20 +377,23 @@ void main() {
     });
 
     group('resolve', () {
-      test('resolves to FractionallySizedBoxWidgetDecorator with resolved values', () {
-        final attribute = FractionallySizedBoxWidgetDecoratorMix(
-          widthFactor: 0.4,
-          heightFactor: 0.6,
-          alignment: Alignment.topRight,
-        );
+      test(
+        'resolves to FractionallySizedBoxWidgetDecorator with resolved values',
+        () {
+          final attribute = FractionallySizedBoxWidgetDecoratorMix(
+            widthFactor: 0.4,
+            heightFactor: 0.6,
+            alignment: Alignment.topRight,
+          );
 
-        const expectedDecorator = FractionallySizedBoxWidgetDecorator(
-          widthFactor: 0.4,
-          heightFactor: 0.6,
-          alignment: Alignment.topRight,
-        );
-        expect(attribute, resolvesTo(expectedDecorator));
-      });
+          const expectedDecorator = FractionallySizedBoxWidgetDecorator(
+            widthFactor: 0.4,
+            heightFactor: 0.6,
+            alignment: Alignment.topRight,
+          );
+          expect(attribute, resolvesTo(expectedDecorator));
+        },
+      );
 
       test('resolves with null values', () {
         final attribute = FractionallySizedBoxWidgetDecoratorMix();

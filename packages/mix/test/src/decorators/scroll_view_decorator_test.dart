@@ -136,7 +136,9 @@ void main() {
       });
 
       test('uses step function for physics', () {
-        const start = ScrollViewWidgetDecorator(physics: BouncingScrollPhysics());
+        const start = ScrollViewWidgetDecorator(
+          physics: BouncingScrollPhysics(),
+        );
         const end = ScrollViewWidgetDecorator(physics: ClampingScrollPhysics());
 
         expect(start.lerp(end, 0.49).physics, isA<BouncingScrollPhysics>());
@@ -215,12 +217,18 @@ void main() {
 
       test('physics instances affect equality', () {
         // With const, Dart might optimize to the same instance
-        const decorator1 = ScrollViewWidgetDecorator(physics: BouncingScrollPhysics());
-        const decorator2 = ScrollViewWidgetDecorator(physics: BouncingScrollPhysics());
+        const decorator1 = ScrollViewWidgetDecorator(
+          physics: BouncingScrollPhysics(),
+        );
+        const decorator2 = ScrollViewWidgetDecorator(
+          physics: BouncingScrollPhysics(),
+        );
 
         // These might be equal due to const optimization
         // Different physics types should definitely not be equal
-        const decorator3 = ScrollViewWidgetDecorator(physics: ClampingScrollPhysics());
+        const decorator3 = ScrollViewWidgetDecorator(
+          physics: ClampingScrollPhysics(),
+        );
 
         expect(decorator1, isNot(equals(decorator3)));
         expect(decorator1, equals(decorator2));
@@ -567,11 +575,15 @@ void main() {
   });
 
   group('ScrollViewWidgetDecoratorUtility', () {
-    late ScrollViewWidgetDecoratorUtility<MockStyle<ScrollViewWidgetDecoratorMix>>
+    late ScrollViewWidgetDecoratorUtility<
+      MockStyle<ScrollViewWidgetDecoratorMix>
+    >
     utility;
 
     setUp(() {
-      utility = ScrollViewWidgetDecoratorUtility((attribute) => MockStyle(attribute));
+      utility = ScrollViewWidgetDecoratorUtility(
+        (attribute) => MockStyle(attribute),
+      );
     });
 
     test('call() creates attribute with specified values', () {

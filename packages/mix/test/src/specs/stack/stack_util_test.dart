@@ -365,9 +365,7 @@ void main() {
       test('resolves tokens with context', () {
         const alignmentToken = MixToken<AlignmentGeometry>('stackAlignment');
         final context = MockBuildContext(
-          mixScopeData: MixScopeData.static(
-            tokens: {alignmentToken: Alignment.topLeft},
-          ),
+          tokens: {alignmentToken.defineValue(Alignment.topLeft)},
         );
 
         final testUtil = StackSpecUtility(

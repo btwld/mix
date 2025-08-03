@@ -3,37 +3,37 @@ import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
 void main() {
-  runMixApp(MyApp());
+  runMixApp(Example());
 }
 
-final primaryColor = MixToken<Color>('primary');
-final pill = MixToken<Radius>('pill');
+final $primaryColor = MixToken<Color>('primary');
+final $pill = MixToken<Radius>('pill');
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      builder: (context, child) => MixScope(
-        data: MixScopeData.static(
-          tokens: {primaryColor: Colors.amber, pill: Radius.circular(999)},
-        ),
-        child: child!,
-      ),
-      home: Scaffold(body: Center(child: Example())),
-    );
-  }
-}
+final tokenDefinitions = {
+  $primaryColor.defineValue(Colors.blue),
+  $pill.defineValue(Radius.circular(20)),
+};
 
 class Example extends StatelessWidget {
   const Example({super.key});
 
   @override
   Widget build(BuildContext context) {
+    return MixScope(
+      tokens: tokenDefinitions,
+      child: _Example(),
+    );
+  }
+}
+
+class _Example extends StatelessWidget {
+  const _Example();
+
+  @override
+  Widget build(BuildContext context) {
     final style = Style.box(
-        .borderRadius(BorderRadiusMix.raw(topLeft: Prop.token(pill)))
-        .color(Colors.red)
+        .borderRadius(.topLeft($pill()))
+        .color($primaryColor())
         .height(100)
         .width(100)
     );

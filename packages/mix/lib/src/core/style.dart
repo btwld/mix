@@ -180,7 +180,7 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
     return ResolvedStyle(
       spec: resolvedSpec,
       animation: resolvedAnimation,
-      modifiers: resolvedModifiers,
+      widgetDecorators: resolvedModifiers,
       inherit: styleData.$inherit,
     );
   }
@@ -241,15 +241,15 @@ final class VariantStyle<S extends Spec<S>> extends Mixable<S>
 class ResolvedStyle<V extends Spec<V>> with Equatable {
   final V? spec;
   final AnimationConfig? animation;
-  final List<WidgetDecorator>? modifiers;
-  final List<Type>? orderOfModifiers;
+  final List<WidgetDecorator>? widgetDecorators;
+  final List<Type>? orderOfWidgetDecorators;
   final bool? inherit;
 
   const ResolvedStyle({
     this.spec,
     this.animation,
-    this.modifiers,
-    this.orderOfModifiers,
+    this.widgetDecorators,
+    this.orderOfWidgetDecorators,
     this.inherit,
   });
 
@@ -266,12 +266,17 @@ class ResolvedStyle<V extends Spec<V>> with Equatable {
     return ResolvedStyle(
       spec: lerpedSpec,
       animation: other.animation ?? animation,
-      modifiers: t < 0.5 ? modifiers : other.modifiers,
+      widgetDecorators: t < 0.5 ? widgetDecorators : other.widgetDecorators,
     );
   }
 
   @override
-  List<Object?> get props => [spec, animation, modifiers, orderOfModifiers];
+  List<Object?> get props => [
+    spec,
+    animation,
+    widgetDecorators,
+    orderOfWidgetDecorators,
+  ];
 }
 
 class CompoundStyle extends Style<MultiSpec> {

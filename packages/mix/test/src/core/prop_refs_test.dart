@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/src/core/prop.dart';
-import 'package:mix/src/theme/tokens/mix_token.dart';
 import 'package:mix/src/core/prop_refs.dart';
+import 'package:mix/src/theme/tokens/mix_token.dart';
 
 void main() {
   group('Token References', () {

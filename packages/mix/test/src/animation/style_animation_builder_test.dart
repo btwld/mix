@@ -16,8 +16,10 @@ void main() {
           home: StyleAnimationBuilder<TestSpec>(
             animationConfig: animationConfig,
             resolvedStyle: style,
-            builder: (context, resolvedStyle) =>
-                Container(key: const Key('test-container'), color: resolvedStyle.spec?.color),
+            builder: (context, resolvedStyle) => Container(
+              key: const Key('test-container'),
+              color: resolvedStyle.spec?.color,
+            ),
           ),
         ),
       );
@@ -37,9 +39,8 @@ void main() {
           home: StyleAnimationBuilder<TestSpec>(
             animationConfig: animationConfig,
             resolvedStyle: style,
-            builder: (context, resolvedStyle) => Container(
-              key: ValueKey(resolvedStyle.spec?.color),
-            ),
+            builder: (context, resolvedStyle) =>
+                Container(key: ValueKey(resolvedStyle.spec?.color)),
           ),
         ),
       );
@@ -47,7 +48,7 @@ void main() {
       // Wait for post frame callback and animation
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 50));
-      
+
       // Animation should be in progress
       expect(find.byType(Container), findsOneWidget);
     });
@@ -65,9 +66,8 @@ void main() {
           home: StyleAnimationBuilder<TestSpec>(
             animationConfig: animationConfig,
             resolvedStyle: style1,
-            builder: (context, resolvedStyle) => Container(
-              key: ValueKey(resolvedStyle.spec?.color),
-            ),
+            builder: (context, resolvedStyle) =>
+                Container(key: ValueKey(resolvedStyle.spec?.color)),
           ),
         ),
       );
@@ -80,9 +80,8 @@ void main() {
           home: StyleAnimationBuilder<TestSpec>(
             animationConfig: animationConfig,
             resolvedStyle: style2,
-            builder: (context, resolvedStyle) => Container(
-              key: ValueKey(resolvedStyle.spec?.color),
-            ),
+            builder: (context, resolvedStyle) =>
+                Container(key: ValueKey(resolvedStyle.spec?.color)),
           ),
         ),
       );
@@ -109,9 +108,8 @@ void main() {
           home: StyleAnimationBuilder<TestSpec>(
             animationConfig: config1,
             resolvedStyle: style,
-            builder: (context, resolvedStyle) => Container(
-              color: resolvedStyle.spec?.color,
-            ),
+            builder: (context, resolvedStyle) =>
+                Container(color: resolvedStyle.spec?.color),
           ),
         ),
       );
@@ -124,16 +122,14 @@ void main() {
           home: StyleAnimationBuilder<TestSpec>(
             animationConfig: config2,
             resolvedStyle: style,
-            builder: (context, resolvedStyle) => Container(
-              color: resolvedStyle.spec?.color,
-            ),
+            builder: (context, resolvedStyle) =>
+                Container(color: resolvedStyle.spec?.color),
           ),
         ),
       );
 
       await tester.pump();
       await tester.pumpAndSettle();
-
     });
 
     testWidgets('disposes correctly', (tester) async {
@@ -220,5 +216,3 @@ class TestResolvedStyle extends ResolvedStyle<TestSpec> {
     );
   }
 }
-
-// TestAnimationDriver removed - using real animation config for tests

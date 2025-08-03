@@ -171,9 +171,7 @@ void main() {
       test('color utility supports tokens', () {
         const colorToken = MixToken<Color>('shadowColor');
         final context = MockBuildContext(
-          mixScopeData: MixScopeData.static(
-            tokens: {colorToken: Colors.black54},
-          ),
+          tokens: {colorToken.defineValue(Colors.black54)},
         );
 
         final result = util.color.token(colorToken);

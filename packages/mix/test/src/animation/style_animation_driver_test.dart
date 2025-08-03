@@ -188,8 +188,8 @@ void main() {
 
       setUp(() {
         driver = StyleAnimationDriverTest(
-          vsync: const TestVSync(),
           initialStyle: MockResolvedStyle(0),
+          vsync: const TestVSync(),
         );
       });
 

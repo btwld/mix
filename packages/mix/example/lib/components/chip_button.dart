@@ -4,7 +4,7 @@ import 'package:mix/mix.dart';
 
 final chipButtonLabel = Style.text(
     .fontSize(16)
-    .fontWeight(FontWeight.w500)
+    .fontWeight(.w500)
     .color(Colors.pink)
 );
 
@@ -12,28 +12,24 @@ final chipButtonContainer = Style.box(
     .height(40)
     .width(100)
     .color(Colors.blue)
-    .borderRadius(BorderRadiusMix.circular(20))
-    .onHovered(BoxMix.color(Colors.blue.shade700))
-    .onPressed(BoxMix.color(Colors.blue.shade900))
-    .wrap(
-      WidgetDecoratorConfig.defaultText(chipButtonLabel),
-    )
+    .borderRadius(.circular(20))
+    .onHovered(.color(Colors.blue.shade700))
+    .onPressed(.color(Colors.blue.shade900))
+    .text(chipButtonLabel)
 );
 
 final filterChipContainer = Style.box(
     .height(36)
     .color(Colors.grey.shade200)
-    .borderRadius(BorderRadiusMix.circular(18))
-    .padding(EdgeInsetsMix.symmetric(horizontal: 16, vertical: 8))
-    .onHovered(BoxMix.color(Colors.grey.shade300))
-    .onPressed(BoxMix.color(Colors.grey.shade400))
-    .wrap(
-      WidgetDecoratorConfig.defaultText(
-        Style.text(
-            .fontSize(14)
-            .fontWeight(FontWeight.w500)
-            .color(Colors.grey.shade700)
-        ),
+    .borderRadius(.circular(18))
+    .padding(.horizontal(16).vertical(8))
+    .onHovered(.color(Colors.grey.shade300))
+    .onPressed(.color(Colors.grey.shade400))
+    .text(
+      .style(
+        .fontSize(14)
+        .fontWeight(.w500)
+        .color(Colors.grey.shade700)
       ),
     )
 );
@@ -41,17 +37,15 @@ final filterChipContainer = Style.box(
 final filterChipSelectedContainer = Style.box(
     .height(36)
     .color(Colors.blue.shade100)
-    .borderRadius(BorderRadiusMix.circular(18))
-    .padding(EdgeInsetsMix.symmetric(horizontal: 16, vertical: 8))
+    .borderRadius(.circular(18))
+    .padding(.horizontal(16).vertical(8))
     .onHovered(BoxMix.color(Colors.blue.shade200))
     .onPressed(BoxMix.color(Colors.blue.shade300))
-    .wrap(
-      WidgetDecoratorConfig.defaultText(
-        Style.text(
-            .fontSize(14)
-            .fontWeight(FontWeight.w500)
-            .color(Colors.blue.shade800)
-        ),
+    .text(
+      .style(
+        .fontSize(14)
+        .fontWeight(.w500)
+        .color(Colors.blue.shade800)
       ),
     )
 );

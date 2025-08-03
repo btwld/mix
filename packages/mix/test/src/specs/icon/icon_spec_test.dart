@@ -280,7 +280,7 @@ void main() {
           fill: 1.0,
         );
 
-        expect(spec.props.length, 9);
+        expect(spec.props.length, 12);
         expect(spec.props, contains(Colors.blue));
         expect(spec.props, contains(24.0));
         expect(spec.props, contains(400.0));

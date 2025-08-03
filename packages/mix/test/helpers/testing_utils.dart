@@ -80,11 +80,11 @@ void expectProp<T>(PropBase<T>? prop, dynamic expected) {
 ///
 /// // With custom context for token resolution
 /// final context = MockBuildContext(
-///   mixScopeData: MixScopeData.static(tokens: {
-///     MixToken<Color>('primary'): Colors.blue,
-///   }),
+///   tokens: {
+///     MixToken<Color>('primary').defineValue(Colors.blue),
+///   },
 /// );
-/// expect(tokenProp, resolvesTo(Colors.blue).withContext(context));
+/// expect(tokenProp, resolvesTo(Colors.blue, context: context));
 /// ```
 Matcher resolvesTo<T>(T expected, {BuildContext? context}) {
   return _ResolvesToMatcher<T>(expected, context);
@@ -173,9 +173,14 @@ class _ResolvesToMatcher<T> extends Matcher {
 
 /// Mock BuildContext for testing Mix components
 class MockBuildContext extends BuildContext {
-  final MixScopeData? _mixScopeData;
+  final Set<TokenDefinition>? _tokens;
+  final List<Type>? _orderOfWidgetDecorators;
 
-  MockBuildContext({MixScopeData? mixScopeData}) : _mixScopeData = mixScopeData;
+  MockBuildContext({
+    Set<TokenDefinition>? tokens,
+    List<Type>? orderOfWidgetDecorators,
+  }) : _tokens = tokens,
+       _orderOfWidgetDecorators = orderOfWidgetDecorators;
 
   @override
   bool get debugDoingBuild => false;
@@ -183,13 +188,15 @@ class MockBuildContext extends BuildContext {
   @override
   bool get mounted => true;
 
+  /// Inherited widget
   @override
   T? dependOnInheritedWidgetOfExactType<T extends InheritedWidget>({
     Object? aspect,
   }) {
     if (T == MixScope) {
       return MixScope(
-            data: _mixScopeData ?? const MixScopeData.empty(),
+            tokens: _tokens,
+            orderOfWidgetDecorators: _orderOfWidgetDecorators,
             child: const SizedBox(),
           )
           as T?;
@@ -412,13 +419,27 @@ class MockModifier<T> extends Modifier<T> {
 /// Extension to add Mix testing utilities to WidgetTester
 extension WidgetTesterExtension on WidgetTester {
   /// Pump widget with Mix scope
-  Future<void> pumpWithMixScope(Widget widget, {MixScopeData? theme}) async {
+  Future<void> pumpWithMixScope(
+    Widget widget, {
+    Set<TokenDefinition>? tokens,
+    List<Type>? orderOfWidgetDecorators,
+    bool withMaterial = false,
+  }) async {
     await pumpWidget(
       MaterialApp(
-        home: MixScope(
-          data: theme ?? const MixScopeData.empty(),
-          child: widget,
-        ),
+        home: withMaterial
+            ? MixScope.withMaterial(
+                tokens: tokens,
+                orderOfWidgetDecorators: orderOfWidgetDecorators,
+                child: widget,
+              )
+            : tokens != null || orderOfWidgetDecorators != null
+            ? MixScope(
+                tokens: tokens,
+                orderOfWidgetDecorators: orderOfWidgetDecorators,
+                child: widget,
+              )
+            : MixScope.empty(child: widget),
       ),
     );
   }

@@ -4,24 +4,77 @@ import 'package:flutter/widgets.dart';
 
 import 'material/material_theme.dart';
 import 'tokens/mix_token.dart';
-import 'tokens/value_resolver.dart';
 
 /// Inherited widget that provides Mix theme data and token resolution to its descendants.
 ///
 /// The [MixScope] is the root of the Mix theming system, providing access to design tokens,
 /// default modifier ordering, and other theme-related configuration.
-class MixScope extends InheritedWidget {
-  const MixScope({required this.data, super.key, required super.child});
+///
+/// Uses InheritedModel to enable aspect-based dependencies for efficient rebuilds.
+/// Supported aspects:
+/// - 'tokens': Rebuilds when token values change
+/// - 'decoratorOrder': Rebuilds when decorator ordering changes
+class MixScope extends InheritedModel<String> {
+  const MixScope._({
+    required Map<MixToken, ValueBuilder>? tokens,
+    required this.orderOfWidgetDecorators,
+    required super.child,
+    super.key,
+  }) : _tokens = tokens;
 
-  static MixScopeData of(BuildContext context) {
-    final MixScopeData? scopeData = maybeOf(context);
-    if (scopeData != null) {
-      return scopeData;
+  /// Creates an empty MixScope with no tokens or decorator ordering
+  const MixScope.empty({required super.child, super.key})
+    : _tokens = null,
+      orderOfWidgetDecorators = null;
+
+  /// Creates a MixScope with the provided tokens and decorator ordering
+  factory MixScope({
+    Set<TokenDefinition>? tokens,
+    List<Type>? orderOfWidgetDecorators,
+    required Widget child,
+    Key? key,
+  }) {
+    return MixScope._(
+      key: key,
+      tokens: tokens != null
+          ? {for (final token in tokens) token.token: token.resolver}
+          : null,
+      orderOfWidgetDecorators: orderOfWidgetDecorators,
+      child: child,
+    );
+  }
+
+  /// Creates a MixScope with Material design tokens pre-configured
+  factory MixScope.withMaterial({
+    Set<TokenDefinition>? tokens,
+    List<Type>? orderOfWidgetDecorators,
+    required Widget child,
+    Key? key,
+  }) {
+    // Merge material tokens with custom tokens
+    final mergedTokens = {...materialTokens, ...?tokens};
+
+    return MixScope(
+      key: key,
+      tokens: mergedTokens,
+      orderOfWidgetDecorators: orderOfWidgetDecorators,
+      child: child,
+    );
+  }
+
+  /// Gets the MixScope from the widget tree.
+  ///
+  /// Optionally specify an [aspect] to create a dependency only on that aspect.
+  /// Supported aspects: 'tokens', 'decoratorOrder'
+  static MixScope of(BuildContext context, [String? aspect]) {
+    final MixScope? scope = maybeOf(context, aspect);
+    if (scope != null) {
+      return scope;
     }
     throw FlutterError.fromParts([
       ErrorSummary('No MixScope found.'),
       ErrorDescription(
-        '${context.widget.runtimeType} tried to access Mix theme data, but no MixScope widget was found in the widget tree.',
+        '${context.widget.runtimeType} tried to access Mix scope, but no MixScope widget was found in the widget tree.',
       ),
       context.describeElement('The context used was'),
       ...context.describeMissingAncestor(expectedAncestorType: MixScope),
@@ -29,112 +82,60 @@ class MixScope extends InheritedWidget {
         'To fix this, ensure that a MixScope widget is present above ${context.widget.runtimeType} in the widget tree. '
         'This is typically done by wrapping your app with MixScope:\n'
         '  MixScope(\n'
-        '    data: MixScopeData.withMaterial(), // or your custom theme\n'
+        '    tokens: {...}, // your tokens\n'
         '    child: MaterialApp(...),\n'
         '  )',
       ),
     ]);
   }
 
+  /// Resolves a token value from the nearest MixScope.
+  ///
+  /// This method creates a dependency on the 'tokens' aspect.
   static T tokenOf<T>(MixToken<T> token, BuildContext context) {
-    final scope = MixScope.of(context);
+    final scope = MixScope.of(context, 'tokens');
 
     return scope.getToken(token, context);
   }
 
-  static MixScopeData? maybeOf(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<MixScope>()?.data;
-  }
-
-  final MixScopeData data;
-
-  @override
-  bool updateShouldNotify(MixScope oldWidget) => data != oldWidget.data;
-}
-
-// Deprecated typedefs moved to src/core/deprecated.dart
-
-/// Data container for Mix theme configuration.
-///
-/// Contains design tokens, default modifier ordering, and other theme-related settings
-/// that are provided throughout the widget tree via [MixScope].
-@immutable
-class MixScopeData {
-  final List<Type>? defaultOrderOfModifiers;
-  final Map<MixToken, ValueResolver>? _tokens;
-
-  const MixScopeData.empty() : _tokens = null, defaultOrderOfModifiers = null;
-
-  const MixScopeData._({
-    required Map<MixToken, ValueResolver>? tokens,
-    required this.defaultOrderOfModifiers,
-  }) : _tokens = tokens;
-
-  factory MixScopeData({
-    Map<MixToken, ValueResolver>? tokens,
-    List<Type>? defaultOrderOfModifiers,
-  }) {
-    return MixScopeData._(
-      tokens: tokens,
-      defaultOrderOfModifiers: defaultOrderOfModifiers,
-    );
-  }
-
-  factory MixScopeData.withMaterial({
-    Map<MixToken, ValueResolver>? tokens,
-    List<Type>? defaultOrderOfModifiers,
-  }) {
-    return materialMixScope.merge(
-      MixScopeData(
-        tokens: tokens,
-        defaultOrderOfModifiers: defaultOrderOfModifiers,
-      ),
-    );
-  }
-
-  /// Combine all [themes] into a single [MixScopeData] root.
-  static MixScopeData combine(Iterable<MixScopeData> themes) {
-    if (themes.isEmpty) return const MixScopeData.empty();
-
-    return themes.fold(
-      const MixScopeData.empty(),
-      (previous, theme) => previous.merge(theme),
-    );
-  }
-
-  static MixScopeData static({
-    Map<MixToken, Object>? tokens,
-    List<Type>? defaultOrderOfModifiers,
-  }) {
-    // Convert tokens to resolvers
-    Map<MixToken, ValueResolver>? resolverTokens;
-    if (tokens != null) {
-      resolverTokens = {};
-      for (final entry in tokens.entries) {
-        resolverTokens[entry.key] = createResolver(entry.value);
-      }
+  /// Gets the MixScope from the widget tree, or null if not found.
+  ///
+  /// Optionally specify an [aspect] to create a dependency only on that aspect.
+  static MixScope? maybeOf(BuildContext context, [String? aspect]) {
+    if (aspect != null) {
+      return InheritedModel.inheritFrom<MixScope>(context, aspect: aspect);
     }
 
-    return MixScopeData._(
-      tokens: resolverTokens,
-      defaultOrderOfModifiers: defaultOrderOfModifiers,
-    );
+    return context.dependOnInheritedWidgetOfExactType();
   }
 
-  /// Creates a MixScopeData with pre-defined resolvers.
-  /// Unlike the regular constructor, this doesn't wrap the resolvers again.
-  static MixScopeData fromResolvers({
-    Map<MixToken, ValueResolver>? tokens,
-    List<Type>? defaultOrderOfModifiers,
+  /// Combines multiple MixScopes into a single scope
+  static MixScope combine({
+    required Iterable<MixScope> scopes,
+    required Widget child,
+    Key? key,
   }) {
-    return MixScopeData._(
-      tokens: tokens,
-      defaultOrderOfModifiers: defaultOrderOfModifiers,
+    if (scopes.isEmpty) return MixScope.empty(key: key, child: child);
+
+    final combined = scopes.fold<MixScope>(
+      MixScope.empty(child: child),
+      (previous, scope) => previous.merge(scope),
+    );
+
+    return MixScope._(
+      key: key,
+      tokens: combined._tokens,
+      orderOfWidgetDecorators: combined.orderOfWidgetDecorators,
+      child: child,
     );
   }
 
-  /// Getter for tokens
-  Map<MixToken, ValueResolver>? get tokens => _tokens;
+  final Map<MixToken, ValueBuilder>? _tokens;
+
+  final List<Type>? orderOfWidgetDecorators;
+
+  /// Getter for tokens map
+  Map<MixToken, ValueBuilder>? get tokens => _tokens;
 
   /// Type-safe token resolution with error handling
   T getToken<T>(MixToken<T> token, BuildContext context) {
@@ -153,49 +154,50 @@ class MixScopeData {
     );
   }
 
-  MixScopeData copyWith({
-    Map<MixToken, dynamic>? tokens,
-    List<Type>? defaultOrderOfModifiers,
-  }) {
-    // If tokens are provided, convert them to resolvers
-    Map<MixToken, ValueResolver>? resolverTokens;
-    if (tokens != null) {
-      resolverTokens = {};
-      for (final entry in tokens.entries) {
-        resolverTokens[entry.key] = createResolver(entry.value);
-      }
-    }
-
-    return MixScopeData._(
-      tokens: resolverTokens ?? _tokens,
-      defaultOrderOfModifiers:
-          defaultOrderOfModifiers ?? this.defaultOrderOfModifiers,
-    );
-  }
-
-  MixScopeData merge(MixScopeData other) {
+  /// Creates a new MixScope by merging this scope with another
+  MixScope merge(MixScope other) {
     final mergedTokens = _tokens != null || other._tokens != null
-        ? <MixToken, ValueResolver>{...?_tokens, ...?other._tokens}
+        ? <MixToken, ValueBuilder>{...?_tokens, ...?other._tokens}
         : null;
 
-    return MixScopeData._(
+    return MixScope._(
+      key: other.key,
       tokens: mergedTokens,
-      defaultOrderOfModifiers:
-          other.defaultOrderOfModifiers ?? defaultOrderOfModifiers,
+      orderOfWidgetDecorators:
+          other.orderOfWidgetDecorators ?? orderOfWidgetDecorators,
+      child: other.child,
     );
   }
 
   @override
-  operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is MixScopeData &&
-        mapEquals(other._tokens, _tokens) &&
-        listEquals(other.defaultOrderOfModifiers, defaultOrderOfModifiers);
+  bool updateShouldNotify(MixScope oldWidget) {
+    return !mapEquals(_tokens, oldWidget._tokens) ||
+        !listEquals(orderOfWidgetDecorators, oldWidget.orderOfWidgetDecorators);
   }
 
   @override
-  int get hashCode {
-    return Object.hash(_tokens, defaultOrderOfModifiers);
+  bool updateShouldNotifyDependent(
+    MixScope oldWidget,
+    Set<String> dependencies,
+  ) {
+    // Check if tokens changed and widget depends on tokens
+    if (dependencies.contains('tokens') &&
+        !mapEquals(_tokens, oldWidget._tokens)) {
+      return true;
+    }
+
+    // Check if decorator order changed and widget depends on it
+    if (dependencies.contains('decoratorOrder') &&
+        !listEquals(
+          orderOfWidgetDecorators,
+          oldWidget.orderOfWidgetDecorators,
+        )) {
+      return true;
+    }
+
+    return false;
   }
+
 }
+
+// Deprecated typedefs moved to src/core/deprecated.dart

@@ -18,6 +18,9 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
   final bool? applyTextScaling;
   final List<Shadow>? shadows;
   final double? fill;
+  final String? semanticsLabel;
+  final BlendMode? blendMode;
+  final IconData? icon;
 
   const IconSpec({
     this.color,
@@ -29,6 +32,9 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
     this.textDirection,
     this.applyTextScaling,
     this.fill,
+    this.semanticsLabel,
+    this.blendMode,
+    this.icon,
   });
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -51,6 +57,13 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
       ),
     );
     properties.add(DiagnosticsProperty('fill', fill, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('semanticsLabel', semanticsLabel, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('blendMode', blendMode, defaultValue: null),
+    );
+    properties.add(DiagnosticsProperty('icon', icon, defaultValue: null));
   }
 
   @override
@@ -64,6 +77,9 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
     TextDirection? textDirection,
     bool? applyTextScaling,
     double? fill,
+    String? semanticsLabel,
+    BlendMode? blendMode,
+    IconData? icon,
   }) {
     return IconSpec(
       color: color ?? this.color,
@@ -75,6 +91,9 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
       textDirection: textDirection ?? this.textDirection,
       applyTextScaling: applyTextScaling ?? this.applyTextScaling,
       fill: fill ?? this.fill,
+      semanticsLabel: semanticsLabel ?? this.semanticsLabel,
+      blendMode: blendMode ?? this.blendMode,
+      icon: icon ?? this.icon,
     );
   }
 
@@ -92,6 +111,9 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
       textDirection: t < 0.5 ? textDirection : other.textDirection,
       applyTextScaling: t < 0.5 ? applyTextScaling : other.applyTextScaling,
       fill: MixHelpers.lerpDouble(fill, other.fill, t),
+      semanticsLabel: t < 0.5 ? semanticsLabel : other.semanticsLabel,
+      blendMode: t < 0.5 ? blendMode : other.blendMode,
+      icon: t < 0.5 ? icon : other.icon,
     );
   }
 
@@ -112,5 +134,8 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
     textDirection,
     applyTextScaling,
     fill,
+    semanticsLabel,
+    blendMode,
+    icon,
   ];
 }

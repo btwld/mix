@@ -426,7 +426,7 @@ void main() {
       test('resolves tokens with context', () {
         const sizeToken = MixToken<double>('iconSize');
         final context = MockBuildContext(
-          mixScopeData: MixScopeData.static(tokens: {sizeToken: 32.0}),
+          tokens: {sizeToken.defineValue(32.0)},
         );
 
         final testUtil = IconSpecUtility(

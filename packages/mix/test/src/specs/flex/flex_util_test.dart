@@ -287,7 +287,7 @@ void main() {
       test('resolves tokens with context', () {
         const gapToken = MixToken<double>('gap');
         final context = MockBuildContext(
-          mixScopeData: MixScopeData.static(tokens: {gapToken: 24.0}),
+          tokens: {gapToken.defineValue(24.0)},
         );
 
         final utility = FlexSpecUtility(FlexMix.raw(gap: Prop.token(gapToken)));

@@ -13,7 +13,7 @@ void main() {
       final theme = ThemeData.light();
       await tester.pumpWithMixScope(
         Container(),
-        theme: MixScopeData.withMaterial(),
+        withMaterial: true,
       );
       final context = tester.element(find.byType(Container));
       final colors = const MaterialTokens().colorScheme;

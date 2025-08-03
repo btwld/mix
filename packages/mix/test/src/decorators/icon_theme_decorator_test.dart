@@ -156,7 +156,9 @@ void main() {
 
     setUp(() {
       utility = IconThemeWidgetDecoratorUtility(
-        (attr) => BoxMix(widgetDecoratorConfig: WidgetDecoratorConfig.decorator(attr)),
+        (attr) => BoxMix(
+          widgetDecoratorConfig: WidgetDecoratorConfig.decorator(attr),
+        ),
       );
     });
 

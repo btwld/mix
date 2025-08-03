@@ -19,6 +19,7 @@ import '../../properties/painting/shadow_mix.dart';
 import '../../properties/painting/shape_border_mix.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
+import '../text/text_attribute.dart';
 import 'box_spec.dart';
 import 'box_util.dart';
 
@@ -121,8 +122,16 @@ class BoxMix extends Style<BoxSpec>
     return BoxMix(margin: value);
   }
 
+  factory BoxMix.text(TextMix value) {
+    return BoxMix.wrap(WidgetDecoratorConfig.defaultText(value));
+  }
+
   factory BoxMix.transform(Matrix4 value) {
     return BoxMix(transform: value);
+  }
+
+  factory BoxMix.wrap(WidgetDecoratorConfig value) {
+    return BoxMix(widgetDecoratorConfig: value);
   }
 
   /// Animation factory (alternative)
@@ -236,6 +245,10 @@ class BoxMix extends Style<BoxSpec>
   /// ```
   static BoxMix? maybeValue(BoxSpec? spec) {
     return spec != null ? BoxMix.value(spec) : null;
+  }
+
+  BoxMix text(TextMix value) {
+    return merge(BoxMix.text(value));
   }
 
   BoxSpecUtility builder() => BoxSpecUtility(this);

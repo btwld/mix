@@ -12,7 +12,7 @@ class StyledIcon extends StyleWidget<IconSpec> {
   @override
   Widget build(BuildContext context, IconSpec? spec) {
     return Icon(
-      icon,
+      icon ?? spec?.icon,
       size: spec?.size,
       fill: spec?.fill,
       weight: spec?.weight,
@@ -20,8 +20,10 @@ class StyledIcon extends StyleWidget<IconSpec> {
       opticalSize: spec?.opticalSize,
       color: spec?.color,
       shadows: spec?.shadows,
-      semanticLabel: semanticLabel,
+      semanticLabel: semanticLabel ?? spec?.semanticsLabel,
       textDirection: spec?.textDirection,
+      applyTextScaling: spec?.applyTextScaling,
+      blendMode: spec?.blendMode,
     );
   }
 }

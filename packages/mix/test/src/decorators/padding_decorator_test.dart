@@ -55,7 +55,9 @@ void main() {
       });
 
       test('interpolates asymmetric padding correctly', () {
-        const start = PaddingWidgetDecorator(EdgeInsets.fromLTRB(10, 20, 30, 40));
+        const start = PaddingWidgetDecorator(
+          EdgeInsets.fromLTRB(10, 20, 30, 40),
+        );
         const end = PaddingWidgetDecorator(EdgeInsets.fromLTRB(20, 40, 60, 80));
         final result = start.lerp(end, 0.5);
 
@@ -211,7 +213,10 @@ void main() {
       test('resolves with null padding to zero padding', () {
         final attribute = PaddingWidgetDecoratorMix();
 
-        expect(attribute, resolvesTo(const PaddingWidgetDecorator(EdgeInsets.zero)));
+        expect(
+          attribute,
+          resolvesTo(const PaddingWidgetDecorator(EdgeInsets.zero)),
+        );
       });
 
       test('resolves EdgeInsetsDirectionalMix correctly', () {
@@ -247,7 +252,10 @@ void main() {
 
         // MixProp accumulates, but since both set all sides, second wins
         expect(merged.padding, isNotNull);
-        expect(merged, resolvesTo(const PaddingWidgetDecorator(EdgeInsets.all(20.0))));
+        expect(
+          merged,
+          resolvesTo(const PaddingWidgetDecorator(EdgeInsets.all(20.0))),
+        );
       });
 
       test('returns original when other is null', () {
@@ -317,10 +325,13 @@ void main() {
   });
 
   group('PaddingWidgetDecoratorUtility', () {
-    late PaddingWidgetDecoratorUtility<MockStyle<PaddingWidgetDecoratorMix>> utility;
+    late PaddingWidgetDecoratorUtility<MockStyle<PaddingWidgetDecoratorMix>>
+    utility;
 
     setUp(() {
-      utility = PaddingWidgetDecoratorUtility((attribute) => MockStyle(attribute));
+      utility = PaddingWidgetDecoratorUtility(
+        (attribute) => MockStyle(attribute),
+      );
     });
 
     test('call() creates attribute with specified padding', () {
@@ -354,7 +365,10 @@ void main() {
       // Test all padding
       final allResult = utility.call(padding: EdgeInsetsMix.all(16.0));
       final allAttr = allResult.value;
-      expect(allAttr, resolvesTo(const PaddingWidgetDecorator(EdgeInsets.all(16.0))));
+      expect(
+        allAttr,
+        resolvesTo(const PaddingWidgetDecorator(EdgeInsets.all(16.0))),
+      );
 
       // Test horizontal padding
       final horizontalResult = utility.call(
@@ -375,13 +389,18 @@ void main() {
       final verticalAttr = verticalResult.value;
       expect(
         verticalAttr,
-        resolvesTo(const PaddingWidgetDecorator(EdgeInsets.symmetric(vertical: 25.0))),
+        resolvesTo(
+          const PaddingWidgetDecorator(EdgeInsets.symmetric(vertical: 25.0)),
+        ),
       );
 
       // Test individual sides
       final topResult = utility.call(padding: EdgeInsetsMix(top: 10.0));
       final topAttr = topResult.value;
-      expect(topAttr, resolvesTo(PaddingWidgetDecorator(EdgeInsets.only(top: 10.0))));
+      expect(
+        topAttr,
+        resolvesTo(PaddingWidgetDecorator(EdgeInsets.only(top: 10.0))),
+      );
 
       final leftResult = utility.call(padding: EdgeInsetsMix(left: 20.0));
       final leftAttr = leftResult.value;
@@ -437,7 +456,9 @@ void main() {
       // Final result: left/right from override1, top from override2, bottom from override1
       expect(
         result,
-        resolvesTo(const PaddingWidgetDecorator(EdgeInsets.fromLTRB(20, 30, 20, 10))),
+        resolvesTo(
+          const PaddingWidgetDecorator(EdgeInsets.fromLTRB(20, 30, 20, 10)),
+        ),
       );
     });
 
@@ -467,7 +488,9 @@ void main() {
       expect(
         attribute,
         resolvesTo(
-          const PaddingWidgetDecorator(EdgeInsetsDirectional.fromSTEB(10, 30, 20, 40)),
+          const PaddingWidgetDecorator(
+            EdgeInsetsDirectional.fromSTEB(10, 30, 20, 40),
+          ),
         ),
       );
     });

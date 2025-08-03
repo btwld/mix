@@ -22,7 +22,6 @@ void main() {
             TransformWidgetDecorator,
           ]),
         );
-
         final merged = first.merge(second);
 
         expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
@@ -125,11 +124,15 @@ void main() {
 
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
-          widgetDecoratorConfig: WidgetDecoratorConfig(decorators: firstModifiers),
+          widgetDecoratorConfig: WidgetDecoratorConfig(
+            decorators: firstModifiers,
+          ),
         );
         final second = BoxMix(
           constraints: BoxConstraintsMix.height(200.0),
-          widgetDecoratorConfig: WidgetDecoratorConfig(decorators: secondModifiers),
+          widgetDecoratorConfig: WidgetDecoratorConfig(
+            decorators: secondModifiers,
+          ),
         );
 
         final merged = first.merge(second);
@@ -208,7 +211,6 @@ void main() {
             TransformWidgetDecorator,
           ]),
         );
-
         final merged = first.merge(second);
 
         expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
@@ -243,7 +245,6 @@ void main() {
             TransformWidgetDecorator,
           ]),
         );
-
         final merged = first.merge(second);
 
         expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
@@ -278,7 +279,6 @@ void main() {
             TransformWidgetDecorator,
           ]),
         );
-
         final merged = first.merge(second);
 
         expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
@@ -313,7 +313,6 @@ void main() {
             TransformWidgetDecorator,
           ]),
         );
-
         final merged = first.merge(second);
 
         expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
@@ -348,7 +347,6 @@ void main() {
             TransformWidgetDecorator,
           ]),
         );
-
         final merged = first.merge(second);
 
         expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
@@ -383,7 +381,6 @@ void main() {
             TransformWidgetDecorator,
           ]),
         );
-
         final merged = first.merge(second);
 
         expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
@@ -418,7 +415,6 @@ void main() {
             TransformWidgetDecorator,
           ]),
         );
-
         final merged = first.merge(second);
 
         expect(merged.$widgetDecoratorConfig?.$orderOfDecorators, [
@@ -479,11 +475,15 @@ void main() {
 
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
-          widgetDecoratorConfig: WidgetDecoratorConfig(decorators: [firstOpacity]),
+          widgetDecoratorConfig: WidgetDecoratorConfig(
+            decorators: [firstOpacity],
+          ),
         );
         final second = BoxMix(
           constraints: BoxConstraintsMix.height(200.0),
-          widgetDecoratorConfig: WidgetDecoratorConfig(decorators: [secondOpacity]),
+          widgetDecoratorConfig: WidgetDecoratorConfig(
+            decorators: [secondOpacity],
+          ),
         );
 
         final merged = first.merge(second);
@@ -537,7 +537,9 @@ void main() {
         );
         final second = BoxMix(
           constraints: BoxConstraintsMix.height(200.0),
-          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators(const []),
+          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators(
+            const [],
+          ),
         );
 
         final merged = first.merge(second);
@@ -635,7 +637,9 @@ void main() {
         );
         final second = BoxMix(
           constraints: BoxConstraintsMix.height(200.0),
-          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators(const []),
+          widgetDecoratorConfig: WidgetDecoratorConfig.orderOfDecorators(
+            const [],
+          ),
           inherit: true,
           animation: const CurveAnimationConfig(
             duration: Duration(milliseconds: 100),

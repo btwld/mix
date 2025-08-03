@@ -395,7 +395,7 @@ void main() {
       test('resolves maxLines token with context', () {
         const maxLinesToken = MixToken<int>('maxLines');
         final context = MockBuildContext(
-          mixScopeData: MixScopeData.static(tokens: {maxLinesToken: 5}),
+          tokens: {maxLinesToken.defineValue(5)},
         );
 
         final testUtil = TextSpecUtility(
@@ -409,9 +409,7 @@ void main() {
       test('resolves textAlign token with context', () {
         const textAlignToken = MixToken<TextAlign>('textAlign');
         final context = MockBuildContext(
-          mixScopeData: MixScopeData.static(
-            tokens: {textAlignToken: TextAlign.center},
-          ),
+          tokens: {textAlignToken.defineValue(TextAlign.center)},
         );
 
         final testUtil = TextSpecUtility(
@@ -425,7 +423,7 @@ void main() {
       test('resolves softWrap token with context', () {
         const softWrapToken = MixToken<bool>('softWrap');
         final context = MockBuildContext(
-          mixScopeData: MixScopeData.static(tokens: {softWrapToken: false}),
+          tokens: {softWrapToken.defineValue(false)},
         );
 
         final testUtil = TextSpecUtility(
@@ -439,9 +437,7 @@ void main() {
       test('resolves selectionColor token with context', () {
         const selectionColorToken = MixToken<Color>('selectionColor');
         final context = MockBuildContext(
-          mixScopeData: MixScopeData.static(
-            tokens: {selectionColorToken: Colors.red},
-          ),
+          tokens: {selectionColorToken.defineValue(Colors.red)},
         );
 
         final testUtil = TextSpecUtility(
@@ -455,9 +451,7 @@ void main() {
       test('resolves textDirection token with context', () {
         const textDirectionToken = MixToken<TextDirection>('textDirection');
         final context = MockBuildContext(
-          mixScopeData: MixScopeData.static(
-            tokens: {textDirectionToken: TextDirection.rtl},
-          ),
+          tokens: {textDirectionToken.defineValue(TextDirection.rtl)},
         );
 
         final testUtil = TextSpecUtility(
@@ -471,9 +465,7 @@ void main() {
       test('resolves semanticsLabel token with context', () {
         const semanticsLabelToken = MixToken<String>('semanticsLabel');
         final context = MockBuildContext(
-          mixScopeData: MixScopeData.static(
-            tokens: {semanticsLabelToken: 'Custom label'},
-          ),
+          tokens: {semanticsLabelToken.defineValue('Custom label')},
         );
 
         final testUtil = TextSpecUtility(
@@ -488,7 +480,7 @@ void main() {
         const localeToken = MixToken<Locale>('locale');
         const locale = Locale('en', 'US');
         final context = MockBuildContext(
-          mixScopeData: MixScopeData.static(tokens: {localeToken: locale}),
+          tokens: {localeToken.defineValue(locale)},
         );
 
         final testUtil = TextSpecUtility(
@@ -507,15 +499,13 @@ void main() {
         const localeToken = MixToken<Locale>('locale');
 
         final context = MockBuildContext(
-          mixScopeData: MixScopeData.static(
-            tokens: {
-              maxLinesToken: 2,
-              textAlignToken: TextAlign.right,
-              selectionColorToken: Colors.green,
-              semanticsLabelToken: 'Test label',
-              localeToken: const Locale('es', 'ES'),
-            },
-          ),
+          tokens: {
+            maxLinesToken.defineValue(2),
+            textAlignToken.defineValue(TextAlign.right),
+            selectionColorToken.defineValue(Colors.green),
+            semanticsLabelToken.defineValue('Test label'),
+            localeToken.defineValue(const Locale('es', 'ES')),
+          },
         );
 
         final testUtil = TextSpecUtility(

@@ -541,7 +541,7 @@ void main() {
       test('resolves tokens with context', () {
         const widthToken = MixToken<double>('imageWidth');
         final context = MockBuildContext(
-          mixScopeData: MixScopeData.static(tokens: {widthToken: 150.0}),
+          tokens: {widthToken.defineValue(150.0)},
         );
 
         final testUtil = ImageSpecUtility(
@@ -558,13 +558,11 @@ void main() {
         const colorToken = MixToken<Color>('imageColor');
 
         final context = MockBuildContext(
-          mixScopeData: MixScopeData.static(
-            tokens: {
-              widthToken: 200.0,
-              heightToken: 300.0,
-              colorToken: Colors.blue,
-            },
-          ),
+          tokens: {
+            widthToken.defineValue(200.0),
+            heightToken.defineValue(300.0),
+            colorToken.defineValue(Colors.blue),
+          },
         );
 
         final testUtil = ImageSpecUtility(
@@ -589,13 +587,11 @@ void main() {
         );
 
         final context = MockBuildContext(
-          mixScopeData: MixScopeData.static(
-            tokens: {
-              fitToken: BoxFit.cover,
-              repeatToken: ImageRepeat.repeat,
-              filterQualityToken: FilterQuality.high,
-            },
-          ),
+          tokens: {
+            fitToken.defineValue(BoxFit.cover),
+            repeatToken.defineValue(ImageRepeat.repeat),
+            filterQualityToken.defineValue(FilterQuality.high),
+          },
         );
 
         final testUtil = ImageSpecUtility(
@@ -618,13 +614,11 @@ void main() {
         const gaplessToken = MixToken<bool>('gaplessPlayback');
 
         final context = MockBuildContext(
-          mixScopeData: MixScopeData.static(
-            tokens: {
-              labelToken: 'My Image',
-              excludeToken: true,
-              gaplessToken: false,
-            },
-          ),
+          tokens: {
+            labelToken.defineValue('My Image'),
+            excludeToken.defineValue(true),
+            gaplessToken.defineValue(false),
+          },
         );
 
         final testUtil = ImageSpecUtility(

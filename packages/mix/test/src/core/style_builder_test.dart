@@ -194,7 +194,7 @@ void main() {
                 ),
                 ClipOvalWidgetDecoratorMix(),
               ]),
-            );
+        );
 
         await tester.pumpWidget(
           MaterialApp(
@@ -245,7 +245,7 @@ void main() {
                 ClipOvalWidgetDecoratorMix(),
                 VisibilityWidgetDecoratorMix(visible: true),
               ]),
-            );
+        );
 
         await tester.pumpWidget(
           MaterialApp(
@@ -319,7 +319,7 @@ void main() {
                 ),
                 ClipOvalWidgetDecoratorMix(),
               ]).orderOfDecorators(customOrder),
-            );
+        );
 
         await tester.pumpWidget(
           MaterialApp(
@@ -386,7 +386,7 @@ void main() {
         );
 
         // Verify no modifier widgets are present
-        expect(find.byType(RenderModifiers), findsNothing);
+        expect(find.byType(RenderWidgetDecorators), findsNothing);
       });
     });
   });

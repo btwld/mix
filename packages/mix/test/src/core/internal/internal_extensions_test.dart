@@ -376,8 +376,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           theme: ThemeData.light(),
-          home: MixScope(
-            data: const MixScopeData.empty(),
+          home: MixScope.empty(
             child: Builder(
               builder: (context) {
                 capturedContext = context;
@@ -419,7 +418,7 @@ void main() {
       expect(capturedContext.textTheme, Theme.of(capturedContext).textTheme);
 
       // Test mix theme
-      expect(capturedContext.mixTheme, const MixScopeData.empty());
+      expect(capturedContext.mixTheme, isA<MixScope>());
 
       // Test computed properties
       expect(
@@ -442,8 +441,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           theme: ThemeData.dark(),
-          home: MixScope(
-            data: const MixScopeData.empty(),
+          home: MixScope.empty(
             child: Builder(
               builder: (context) {
                 capturedContext = context;
@@ -467,8 +465,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: MixScope(
-            data: const MixScopeData.empty(),
+          home: MixScope.empty(
             child: Builder(
               builder: (context) {
                 capturedContext = context;

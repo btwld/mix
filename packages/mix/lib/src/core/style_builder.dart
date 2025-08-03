@@ -4,6 +4,7 @@ import '../animation/style_animation_builder.dart';
 import '../decorators/internal/render_decorator.dart';
 import 'internal/mix_hoverable_region.dart';
 import 'providers/resolved_style_provider.dart';
+import 'providers/style_provider.dart';
 import 'providers/widget_state_provider.dart';
 import 'spec.dart';
 import 'style.dart';
@@ -18,7 +19,6 @@ class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
     super.key,
     this.style,
     required this.builder,
-
     this.controller,
   });
 
@@ -64,9 +64,11 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
 
     final alreadyHasWidgetStateScope = WidgetStateProvider.of(context) != null;
 
+    final inheritedStyle = StyleProvider.maybeOf<S>(context);
+
     Widget current = ResolvedStyleBuilder(
       builder: widget.builder,
-      style: widget.style,
+      style: inheritedStyle?.merge(widget.style) ?? widget.style,
     );
 
     if (needsToTrackWidgetState && !alreadyHasWidgetStateScope) {
@@ -97,11 +99,11 @@ class ResolvedStyleBuilder<S extends Spec<S>> extends StatelessWidget {
       child: current,
     );
 
-    if (resolvedStyle.modifiers != null &&
-        resolvedStyle.modifiers!.isNotEmpty) {
+    if (resolvedStyle.widgetDecorators != null &&
+        resolvedStyle.widgetDecorators!.isNotEmpty) {
       // Apply modifiers if any
-      current = RenderModifiers(
-        modifiers: resolvedStyle.modifiers!,
+      current = RenderWidgetDecorators(
+        widgetDecorators: resolvedStyle.widgetDecorators!,
         child: current,
       );
     }

@@ -751,9 +751,7 @@ void main() {
       // We need to use a Radius token instead of double token
       const radiusValueToken = MixToken<Radius>('radiusValue');
       final context = MockBuildContext(
-        mixScopeData: MixScopeData.static(
-          tokens: {radiusValueToken: const Radius.circular(16.0)},
-        ),
+        tokens: {radiusValueToken.defineValue(const Radius.circular(16.0))},
       );
 
       final borderRadiusMix = BorderRadiusMix.raw(

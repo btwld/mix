@@ -253,7 +253,9 @@ void main() {
 
         expect(
           attribute,
-          resolvesTo(const FlexibleWidgetDecorator(flex: 4, fit: FlexFit.tight)),
+          resolvesTo(
+            const FlexibleWidgetDecorator(flex: 4, fit: FlexFit.tight),
+          ),
         );
       });
 
@@ -336,10 +338,13 @@ void main() {
   });
 
   group('FlexibleWidgetDecoratorUtility', () {
-    late FlexibleWidgetDecoratorUtility<MockStyle<FlexibleWidgetDecoratorMix>> utility;
+    late FlexibleWidgetDecoratorUtility<MockStyle<FlexibleWidgetDecoratorMix>>
+    utility;
 
     setUp(() {
-      utility = FlexibleWidgetDecoratorUtility((attribute) => MockStyle(attribute));
+      utility = FlexibleWidgetDecoratorUtility(
+        (attribute) => MockStyle(attribute),
+      );
     });
 
     test('tight() creates attribute with tight fit', () {

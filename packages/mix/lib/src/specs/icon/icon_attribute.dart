@@ -26,6 +26,9 @@ class IconMix extends Style<IconSpec>
   final Prop<TextDirection>? $textDirection;
   final Prop<bool>? $applyTextScaling;
   final Prop<double>? $fill;
+  final Prop<String>? $semanticsLabel;
+  final Prop<BlendMode>? $blendMode;
+  final Prop<IconData>? $icon;
 
   /// Factory for icon color
   factory IconMix.color(Color value) {
@@ -77,6 +80,21 @@ class IconMix extends Style<IconSpec>
     return IconMix(fill: value);
   }
 
+  /// Factory for semantics label
+  factory IconMix.semanticsLabel(String value) {
+    return IconMix(semanticsLabel: value);
+  }
+
+  /// Factory for blend mode
+  factory IconMix.blendMode(BlendMode value) {
+    return IconMix(blendMode: value);
+  }
+
+  /// Factory for icon data
+  factory IconMix.icon(IconData value) {
+    return IconMix(icon: value);
+  }
+
   /// Factory for animation
   factory IconMix.animate(AnimationConfig animation) {
     return IconMix(animation: animation);
@@ -97,6 +115,9 @@ class IconMix extends Style<IconSpec>
     Prop<TextDirection>? textDirection,
     Prop<bool>? applyTextScaling,
     Prop<double>? fill,
+    Prop<String>? semanticsLabel,
+    Prop<BlendMode>? blendMode,
+    Prop<IconData>? icon,
     super.animation,
     super.widgetDecoratorConfig,
     super.variants,
@@ -110,7 +131,10 @@ class IconMix extends Style<IconSpec>
        $shadows = shadows,
        $textDirection = textDirection,
        $applyTextScaling = applyTextScaling,
-       $fill = fill;
+       $fill = fill,
+       $semanticsLabel = semanticsLabel,
+       $blendMode = blendMode,
+       $icon = icon;
 
   IconMix({
     Color? color,
@@ -122,6 +146,9 @@ class IconMix extends Style<IconSpec>
     TextDirection? textDirection,
     bool? applyTextScaling,
     double? fill,
+    String? semanticsLabel,
+    BlendMode? blendMode,
+    IconData? icon,
     AnimationConfig? animation,
     WidgetDecoratorConfig? widgetDecoratorConfig,
     List<VariantStyle<IconSpec>>? variants,
@@ -136,6 +163,9 @@ class IconMix extends Style<IconSpec>
          textDirection: Prop.maybe(textDirection),
          applyTextScaling: Prop.maybe(applyTextScaling),
          fill: Prop.maybe(fill),
+         semanticsLabel: Prop.maybe(semanticsLabel),
+         blendMode: Prop.maybe(blendMode),
+         icon: Prop.maybe(icon),
          animation: animation,
          widgetDecoratorConfig: widgetDecoratorConfig,
          variants: variants,
@@ -154,6 +184,9 @@ class IconMix extends Style<IconSpec>
       textDirection: spec.textDirection,
       applyTextScaling: spec.applyTextScaling,
       fill: spec.fill,
+      semanticsLabel: spec.semanticsLabel,
+      blendMode: spec.blendMode,
+      icon: spec.icon,
     );
   }
 
@@ -219,6 +252,21 @@ class IconMix extends Style<IconSpec>
     return merge(IconMix.fill(value));
   }
 
+  /// Sets semantics label
+  IconMix semanticsLabel(String value) {
+    return merge(IconMix.semanticsLabel(value));
+  }
+
+  /// Sets blend mode
+  IconMix blendMode(BlendMode value) {
+    return merge(IconMix.blendMode(value));
+  }
+
+  /// Sets icon data
+  IconMix icon(IconData value) {
+    return merge(IconMix.icon(value));
+  }
+
   /// Sets animation
   IconMix animate(AnimationConfig animation) {
     return merge(IconMix.animate(animation));
@@ -241,6 +289,9 @@ class IconMix extends Style<IconSpec>
       textDirection: MixHelpers.resolve(context, $textDirection),
       applyTextScaling: MixHelpers.resolve(context, $applyTextScaling),
       fill: MixHelpers.resolve(context, $fill),
+      semanticsLabel: MixHelpers.resolve(context, $semanticsLabel),
+      blendMode: MixHelpers.resolve(context, $blendMode),
+      icon: MixHelpers.resolve(context, $icon),
     );
   }
 
@@ -258,6 +309,9 @@ class IconMix extends Style<IconSpec>
       textDirection: $textDirection.tryMerge(other.$textDirection),
       applyTextScaling: $applyTextScaling.tryMerge(other.$applyTextScaling),
       fill: $fill.tryMerge(other.$fill),
+      semanticsLabel: $semanticsLabel.tryMerge(other.$semanticsLabel),
+      blendMode: $blendMode.tryMerge(other.$blendMode),
+      icon: $icon.tryMerge(other.$icon),
       animation: other.$animation ?? $animation,
       widgetDecoratorConfig: $widgetDecoratorConfig.tryMerge(
         other.$widgetDecoratorConfig,
@@ -292,6 +346,13 @@ class IconMix extends Style<IconSpec>
       ),
     );
     properties.add(DiagnosticsProperty('fill', $fill, defaultValue: null));
+    properties.add(
+      DiagnosticsProperty('semanticsLabel', $semanticsLabel, defaultValue: null),
+    );
+    properties.add(
+      DiagnosticsProperty('blendMode', $blendMode, defaultValue: null),
+    );
+    properties.add(DiagnosticsProperty('icon', $icon, defaultValue: null));
   }
 
   @override
@@ -315,6 +376,9 @@ class IconMix extends Style<IconSpec>
     $textDirection,
     $applyTextScaling,
     $fill,
+    $semanticsLabel,
+    $blendMode,
+    $icon,
     $animation,
     $widgetDecoratorConfig,
     $variants,

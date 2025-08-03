@@ -136,7 +136,6 @@ export 'src/theme/material/material_theme.dart';
 export 'src/theme/material/material_tokens.dart';
 export 'src/theme/mix_theme.dart';
 export 'src/theme/tokens/mix_token.dart';
-export 'src/theme/tokens/value_resolver.dart';
 
 /// VARIANTS
 export 'src/variants/variant.dart';

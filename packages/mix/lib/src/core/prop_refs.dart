@@ -453,3 +453,97 @@ bool isAnyTokenRef(Object value) {
   // Check if it's an extension type token reference by looking in the registry
   return _tokenRegistry.containsKey(value);
 }
+
+T getRefernceValue<T>(MixToken<T> token) {
+  final prop = Prop.token(token);
+  if (T == Color) {
+    return ColorProp(prop as Prop<Color>) as T;
+  } else if (T == double) {
+    return DoubleRef.token(token as MixToken<double>) as T;
+  } else if (T == int) {
+    return IntRef.token(token as MixToken<int>) as T;
+  } else if (T == String) {
+    return StringRef.token(token as MixToken<String>) as T;
+  } else if (T == Radius) {
+    return RadiusProp(prop as Prop<Radius>) as T;
+  } else if (T == Offset) {
+    return OffsetProp(prop as Prop<Offset>) as T;
+  } else if (T == Rect) {
+    return RectProp(prop as Prop<Rect>) as T;
+  } else if (T == Shadow) {
+    return ShadowProp(prop as Prop<Shadow>) as T;
+  } else if (T == BoxShadow) {
+    return BoxShadowProp(prop as Prop<BoxShadow>) as T;
+  } else if (T == BoxDecoration) {
+    return BoxDecorationProp(prop as Prop<BoxDecoration>) as T;
+  } else if (T == DecorationImage) {
+    return DecorationImageProp(prop as Prop<DecorationImage>) as T;
+  } else if (T == ShapeBorder) {
+    return ShapeBorderProp(prop as Prop<ShapeBorder>) as T;
+  } else if (T == BoxConstraints) {
+    return BoxConstraintsProp(prop as Prop<BoxConstraints>) as T;
+  } else if (T == Gradient) {
+    return GradientProp(prop as Prop<Gradient>) as T;
+  } else if (T == LinearGradient) {
+    return LinearGradientProp(prop as Prop<LinearGradient>) as T;
+  } else if (T == RadialGradient) {
+    return RadialGradientProp(prop as Prop<RadialGradient>) as T;
+  } else if (T == SweepGradient) {
+    return SweepGradientProp(prop as Prop<SweepGradient>) as T;
+  } else if (T == GradientTransform) {
+    return GradientTransformProp(prop as Prop<GradientTransform>) as T;
+  } else if (T == AlignmentGeometry) {
+    return AlignmentGeometryProp(prop as Prop<AlignmentGeometry>) as T;
+  } else if (T == Alignment) {
+    return AlignmentProp(prop as Prop<Alignment>) as T;
+  } else if (T == AlignmentDirectional) {
+    return AlignmentDirectionalProp(prop as Prop<AlignmentDirectional>) as T;
+  } else if (T == EdgeInsetsGeometry) {
+    return EdgeInsetsGeometryProp(prop as Prop<EdgeInsetsGeometry>) as T;
+  } else if (T == EdgeInsets) {
+    return EdgeInsetsProp(prop as Prop<EdgeInsets>) as T;
+  } else if (T == EdgeInsetsDirectional) {
+    return EdgeInsetsDirectionalProp(prop as Prop<EdgeInsetsDirectional>) as T;
+  } else if (T == BorderSide) {
+    return BorderSideProp(prop as Prop<BorderSide>) as T;
+  } else if (T == BoxBorder) {
+    return BoxBorderProp(prop as Prop<BoxBorder>) as T;
+  } else if (T == BorderRadius) {
+    return BorderRadiusProp(prop as Prop<BorderRadius>) as T;
+  } else if (T == BorderRadiusDirectional) {
+    return BorderRadiusDirectionalProp(prop as Prop<BorderRadiusDirectional>)
+        as T;
+  } else if (T == BorderRadiusGeometry) {
+    return BorderRadiusGeometryProp(prop as Prop<BorderRadiusGeometry>) as T;
+  } else if (T == TextStyle) {
+    return TextStyleProp(prop as Prop<TextStyle>) as T;
+  } else if (T == TextDecoration) {
+    return TextDecorationProp(prop as Prop<TextDecoration>) as T;
+  } else if (T == StrutStyle) {
+    return StrutStyleProp(prop as Prop<StrutStyle>) as T;
+  } else if (T == TextHeightBehavior) {
+    return TextHeightBehaviorProp(prop as Prop<TextHeightBehavior>) as T;
+  } else if (T == TextScaler) {
+    return TextScalerProp(prop as Prop<TextScaler>) as T;
+  } else if (T == FontFeature) {
+    return FontFeatureProp(prop as Prop<FontFeature>) as T;
+  } else if (T == FontWeight) {
+    return FontWeightProp(prop as Prop<FontWeight>) as T;
+  } else if (T == Locale) {
+    return LocaleProp(prop as Prop<Locale>) as T;
+  } else if (T == ImageProvider) {
+    return ImageProviderProp(prop as Prop<ImageProvider>) as T;
+  } else if (T == Matrix4) {
+    return Matrix4Prop(prop as Prop<Matrix4>) as T;
+  } else if (T == TableColumnWidth) {
+    return TableColumnWidthProp(prop as Prop<TableColumnWidth>) as T;
+  } else if (T == TableBorder) {
+    return TableBorderProp(prop as Prop<TableBorder>) as T;
+  } else if (T == Duration) {
+    return DurationProp(prop as Prop<Duration>) as T;
+  } else if (T == Curve) {
+    return CurveProp(prop as Prop<Curve>) as T;
+  }
+
+  return prop as T;
+}
