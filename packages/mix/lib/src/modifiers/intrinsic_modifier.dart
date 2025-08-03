@@ -76,7 +76,7 @@ class IntrinsicHeightWidgetDecoratorStyle
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final intrinsicHeightModifierSpec = IntrinsicHeightWidgetDecoratorStyle(...).resolve(mix);
+  /// final intrinsicHeightDecorator = IntrinsicHeightWidgetDecoratorStyle(...).resolve(mix);
   /// ```
   @override
   IntrinsicHeightWidgetDecorator resolve(BuildContext context) {
@@ -125,7 +125,7 @@ class IntrinsicWidthWidgetDecoratorStyle
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final intrinsicWidthModifierSpec = IntrinsicWidthWidgetDecoratorStyle(...).resolve(mix);
+  /// final intrinsicWidthDecorator = IntrinsicWidthWidgetDecoratorStyle(...).resolve(mix);
   /// ```
   @override
   IntrinsicWidthWidgetDecorator resolve(BuildContext context) {

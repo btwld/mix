@@ -87,7 +87,7 @@ class OpacityWidgetDecoratorStyle extends WidgetDecoratorStyle<OpacityWidgetDeco
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final opacityModifierSpec = OpacityWidgetDecoratorStyle(...).resolve(mix);
+  /// final opacityDecorator = OpacityWidgetDecoratorStyle(...).resolve(mix);
   /// ```
   @override
   OpacityWidgetDecorator resolve(BuildContext context) {

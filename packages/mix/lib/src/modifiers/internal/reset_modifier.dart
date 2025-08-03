@@ -5,20 +5,20 @@ import '../../core/modifier.dart';
 import '../../core/style.dart';
 
 /// A decorator specification that resets the style context.
-final class ResetModifierSpec extends WidgetDecorator<ResetModifierSpec>
+final class ResetWidgetDecorator extends WidgetDecorator<ResetWidgetDecorator>
     with Diagnosticable {
-  const ResetModifierSpec();
+  const ResetWidgetDecorator();
 
   @override
-  ResetModifierSpec copyWith() {
-    return const ResetModifierSpec();
+  ResetWidgetDecorator copyWith() {
+    return const ResetWidgetDecorator();
   }
 
   @override
-  ResetModifierSpec lerp(ResetModifierSpec? other, double t) {
+  ResetWidgetDecorator lerp(ResetWidgetDecorator? other, double t) {
     if (other == null) return this;
 
-    return const ResetModifierSpec();
+    return const ResetWidgetDecorator();
   }
 
   @override
@@ -36,13 +36,13 @@ final class ResetModifierSpec extends WidgetDecorator<ResetModifierSpec>
 }
 
 /// An attribute that resets the modifier context.
-class ResetWidgetDecoratorStyle extends WidgetDecoratorStyle<ResetModifierSpec>
+class ResetWidgetDecoratorStyle extends WidgetDecoratorStyle<ResetWidgetDecorator>
     with Diagnosticable {
   const ResetWidgetDecoratorStyle();
 
   @override
-  ResetModifierSpec resolve(BuildContext context) {
-    return const ResetModifierSpec();
+  ResetWidgetDecorator resolve(BuildContext context) {
+    return const ResetWidgetDecorator();
   }
 
   @override

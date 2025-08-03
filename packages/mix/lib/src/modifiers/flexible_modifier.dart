@@ -89,7 +89,7 @@ class FlexibleWidgetDecoratorStyle extends WidgetDecoratorStyle<FlexibleWidgetDe
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final flexibleModifierSpec = FlexibleWidgetDecoratorStyle(...).resolve(mix);
+  /// final flexibleDecorator = FlexibleWidgetDecoratorStyle(...).resolve(mix);
   /// ```
   @override
   FlexibleWidgetDecorator resolve(BuildContext context) {

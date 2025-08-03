@@ -114,7 +114,7 @@ class SizedBoxWidgetDecoratorStyle extends WidgetDecoratorStyle<SizedBoxWidgetDe
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final sizedBoxModifierSpec = SizedBoxWidgetDecoratorStyle(...).resolve(mix);
+  /// final sizedBoxDecorator = SizedBoxWidgetDecoratorStyle(...).resolve(mix);
   /// ```
   @override
   SizedBoxWidgetDecorator resolve(BuildContext context) {

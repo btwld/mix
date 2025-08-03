@@ -196,7 +196,7 @@ class DefaultTextStyleWidgetDecoratorStyle
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final defaultTextStyleModifierSpec = DefaultTextStyleWidgetDecoratorStyle(...).resolve(mix);
+  /// final defaultTextStyleDecorator = DefaultTextStyleWidgetDecoratorStyle(...).resolve(mix);
   /// ```
   @override
   DefaultTextStyleWidgetDecorator resolve(BuildContext context) {

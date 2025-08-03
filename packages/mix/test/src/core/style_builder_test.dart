@@ -318,7 +318,7 @@ void main() {
                   padding: EdgeInsetsGeometryMix.all(10),
                 ),
                 ClipOvalWidgetDecoratorStyle(),
-              ])..orderOfDecorators(customOrder),
+              ]).orderOfDecorators(customOrder),
             );
 
         await tester.pumpWidget(

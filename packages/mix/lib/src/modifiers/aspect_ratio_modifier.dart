@@ -90,7 +90,7 @@ class AspectRatioWidgetDecoratorStyle
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final aspectRatioModifierSpec = AspectRatioWidgetDecoratorStyle(...).resolve(mix);
+  /// final aspectRatioDecorator = AspectRatioWidgetDecoratorStyle(...).resolve(mix);
   /// ```
   @override
   AspectRatioWidgetDecorator resolve(BuildContext context) {

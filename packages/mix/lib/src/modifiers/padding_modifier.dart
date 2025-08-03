@@ -81,7 +81,7 @@ class PaddingWidgetDecoratorStyle extends WidgetDecoratorStyle<PaddingWidgetDeco
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final paddingModifierSpec = PaddingWidgetDecoratorStyle(...).resolve(mix);
+  /// final paddingDecorator = PaddingWidgetDecoratorStyle(...).resolve(mix);
   /// ```
   @override
   PaddingWidgetDecorator resolve(BuildContext context) {
