@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/style.dart';
-import '../../modifiers/widget_decorator_config.dart';
+import '../../decorators/widget_decorator_config.dart';
 import '../../variants/variant.dart';
 import '../box/box_attribute.dart';
 import 'stack_attribute.dart';

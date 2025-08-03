@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 
 import '../animation/animation_config.dart';
-import '../modifiers/widget_decorator_config.dart';
+import '../decorators/widget_decorator_config.dart';
 import '../specs/box/box_attribute.dart';
 import '../specs/flex/flex_attribute.dart';
 import '../specs/flexbox/flexbox_attribute.dart';

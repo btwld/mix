@@ -6,7 +6,7 @@ library;
 
 import '../core/spec.dart';
 import '../core/style.dart';
-import '../modifiers/widget_decorator_util.dart';
+import '../decorators/widget_decorator_util.dart';
 import '../variants/variant_util.dart';
 import 'box/box_util.dart';
 import 'flex/flex_util.dart';

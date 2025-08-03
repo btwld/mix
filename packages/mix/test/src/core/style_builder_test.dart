@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
-import 'package:mix/src/modifiers/internal/render_decorator.dart';
+import 'package:mix/src/decorators/internal/render_decorator.dart';
 
 void main() {
   group('StyleBuilder', () {
