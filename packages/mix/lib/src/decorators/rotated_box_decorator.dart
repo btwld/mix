@@ -63,7 +63,7 @@ class RotatedBoxWidgetDecoratorMix
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final rotatedBoxDecorator = RotatedBoxWidgetDecoratorMix(...).resolve(mix);
+  /// final rotatedBoxWidgetDecorator = RotatedBoxWidgetDecoratorMix(...).resolve(mix);
   /// ```
   @override
   RotatedBoxWidgetDecorator resolve(BuildContext context) {

@@ -27,7 +27,7 @@ import 'box_util.dart';
 ///
 /// Encapsulates alignment, padding, margin, constraints, decoration,
 /// and other styling properties for box layouts with support for
-/// modifiers, variants, and animations.
+/// widget decorators, variants, and animations.
 class BoxMix extends Style<BoxSpec>
     with
         Diagnosticable,
@@ -394,11 +394,6 @@ class BoxMix extends Style<BoxSpec>
     );
   }
 
-  /// Decorator instance method
-  BoxMix wrap(WidgetDecoratorConfig modifier) {
-    return merge(BoxMix(widgetDecoratorConfig: modifier));
-  }
-
   /// Border instance method
   BoxMix border(BoxBorderMix value) {
     return merge(BoxMix(decoration: DecorationMix.border(value)));
@@ -441,6 +436,12 @@ class BoxMix extends Style<BoxSpec>
   /// Sets image decoration
   BoxMix image(DecorationImageMix value) {
     return decoration(DecorationMix.image(value));
+  }
+
+  /// Decorator instance method
+  @override
+  BoxMix wrap(WidgetDecoratorConfig decorator) {
+    return merge(BoxMix(widgetDecoratorConfig: decorator));
   }
 
   /// Border radius instance method

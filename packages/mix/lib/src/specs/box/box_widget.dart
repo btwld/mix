@@ -54,3 +54,5 @@ class Box extends StyleWidget<BoxSpec> {
     );
   }
 }
+
+typedef StyledContainer = Box;

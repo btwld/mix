@@ -77,7 +77,7 @@ class MouseCursorDecoratorMix extends WidgetDecoratorMix<MouseCursorDecorator> {
   /// defined in the property specification.
   ///
   /// ```dart
-  /// final mouseCursorDecoratorSpec = MouseCursorDecoratorMix(...).resolve(context);
+  /// final mouseCursorDecorator = MouseCursorDecoratorMix(...).resolve(context);
   /// ```
   @override
   MouseCursorDecorator resolve(BuildContext context) {

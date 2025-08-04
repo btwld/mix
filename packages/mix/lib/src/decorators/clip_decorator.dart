@@ -189,7 +189,7 @@ class ClipRectWidgetDecoratorMix
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final clipRectModifier = ClipRectWidgetDecoratorMix(...).resolve(mix);
+  /// final clipRectWidgetDecorator = ClipRectWidgetDecoratorMix(...).resolve(mix);
   /// ```
   @override
   ClipRectWidgetDecorator resolve(BuildContext context) {
@@ -346,7 +346,7 @@ class ClipRRectWidgetDecoratorMix
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final clipRRectDecorator = ClipRRectWidgetDecoratorMix(...).resolve(mix);
+  /// final clipRRectWidgetDecorator = ClipRRectWidgetDecoratorMix(...).resolve(mix);
   /// ```
   @override
   ClipRRectWidgetDecorator resolve(BuildContext context) {
@@ -479,7 +479,7 @@ class ClipPathWidgetDecoratorMix
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final clipPathDecorator = ClipPathWidgetDecoratorMix(...).resolve(mix);
+  /// final clipPathWidgetDecorator = ClipPathWidgetDecoratorMix(...).resolve(mix);
   /// ```
   @override
   ClipPathWidgetDecorator resolve(BuildContext context) {
@@ -602,7 +602,7 @@ class ClipTriangleWidgetDecoratorMix
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final clipTriangleDecorator = ClipTriangleWidgetDecoratorMix(...).resolve(mix);
+  /// final clipTriangleWidgetDecorator = ClipTriangleWidgetDecoratorMix(...).resolve(mix);
   /// ```
   @override
   ClipTriangleWidgetDecorator resolve(BuildContext context) {

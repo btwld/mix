@@ -107,7 +107,7 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
   /// defined in the property specification.
   ///
   /// ```dart
-  /// final stackBoxSpec = StackBoxMix(...).resolve(context);
+  /// final ZBoxSpec = StackBoxMix(...).resolve(context);
   /// ```
   @override
   ZBoxSpec resolve(BuildContext context) {

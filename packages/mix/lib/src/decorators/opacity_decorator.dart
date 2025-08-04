@@ -91,7 +91,7 @@ class OpacityWidgetDecoratorMix
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final opacityDecorator = OpacityWidgetDecoratorMix(...).resolve(mix);
+  /// final opacityWidgetDecorator = OpacityWidgetDecoratorMix(...).resolve(mix);
   /// ```
   @override
   OpacityWidgetDecorator resolve(BuildContext context) {

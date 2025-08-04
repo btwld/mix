@@ -116,7 +116,7 @@ class SizedBoxWidgetDecoratorMix
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final sizedBoxDecorator = SizedBoxWidgetDecoratorMix(...).resolve(mix);
+  /// final sizedBoxWidgetDecorator = SizedBoxWidgetDecoratorMix(...).resolve(mix);
   /// ```
   @override
   SizedBoxWidgetDecorator resolve(BuildContext context) {

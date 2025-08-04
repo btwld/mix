@@ -199,7 +199,7 @@ class DefaultTextStyleWidgetDecoratorMix
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final defaultTextStyleDecorator = DefaultTextStyleWidgetDecoratorMix(...).resolve(mix);
+  /// final defaultTextStyleWidgetDecorator = DefaultTextStyleWidgetDecoratorMix(...).resolve(mix);
   /// ```
   @override
   DefaultTextStyleWidgetDecorator resolve(BuildContext context) {

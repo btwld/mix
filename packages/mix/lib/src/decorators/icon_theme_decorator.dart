@@ -121,7 +121,7 @@ class IconThemeWidgetDecoratorMix
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final iconThemeModifier = IconThemeWidgetDecoratorMix(...).resolve(context);
+  /// final iconThemeWidgetDecorator = IconThemeWidgetDecoratorMix(...).resolve(context);
   /// ```
   @override
   IconThemeWidgetDecorator resolve(BuildContext context) {

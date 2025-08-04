@@ -85,7 +85,7 @@ class PaddingWidgetDecoratorMix
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final paddingDecorator = PaddingWidgetDecoratorMix(...).resolve(mix);
+  /// final paddingWidgetDecorator = PaddingWidgetDecoratorMix(...).resolve(mix);
   /// ```
   @override
   PaddingWidgetDecorator resolve(BuildContext context) {

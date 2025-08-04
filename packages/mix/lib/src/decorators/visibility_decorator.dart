@@ -72,7 +72,7 @@ class VisibilityWidgetDecoratorMix
   /// Resolves to [VisibilityWidgetDecorator] using the provided [BuildContext].
   ///
   /// ```dart
-  /// final visibilityModifier = VisibilityWidgetDecoratorMix(...).resolve(context);
+  /// final visibilityDecorator = VisibilityWidgetDecoratorMix(...).resolve(context);
   /// ```
   @override
   VisibilityWidgetDecorator resolve(BuildContext context) {

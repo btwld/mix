@@ -11,8 +11,6 @@ class StyledIcon extends StyleWidget<IconSpec> {
 
   @override
   Widget build(BuildContext context, IconSpec? spec) {
-    print('icon-name: ${spec?.icon?.toString()}');
-
     return Icon(
       icon ?? spec?.icon,
       size: spec?.size,

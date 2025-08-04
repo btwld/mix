@@ -62,7 +62,7 @@ export 'src/decorators/sized_box_decorator.dart';
 export 'src/decorators/transform_decorator.dart';
 export 'src/decorators/visibility_decorator.dart';
 
-/// MODIFIERS
+/// WIDGET DECORATORS
 export 'src/decorators/widget_decorator_config.dart';
 export 'src/decorators/widget_decorator_util.dart';
 

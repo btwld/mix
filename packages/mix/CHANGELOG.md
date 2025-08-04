@@ -37,7 +37,7 @@
 
  - **REFACTOR**: Solve dcm lint issues (#519).
  - **FIX**: Order of modifiers implementation on Box, Image and Text (#529).
- - **FIX**: reset modifiers and directives when using fluentAPI (#482).
+ - **FIX**: reset modifiers and modifiers when using fluentAPI (#482).
  - **FEAT**: Add spring curve (#503).
  - **FEAT**: Create StrokeAlignUtility (#496).
  - **FEAT**: Utilities for text height behavior (#495).
@@ -60,7 +60,7 @@
  - **FIX**: Update OnBrightnessVariant to use `MediaQuery` instead of `Theme` (#471).
  - **FIX**: Style when merged with an AnimatedStyle should generate an AnimatedStyle (#472).
  - **FEAT**: Create a specific utility to Transform.translate (#484).
- - **FEAT**: Add more directives to Colors (#477).
+ - **FEAT**: Add more modifiers to Colors (#477).
  - **FEAT**: implement a way to clear inline modifiers (#478).
  - **FEAT**: Fluent API (#475).
 

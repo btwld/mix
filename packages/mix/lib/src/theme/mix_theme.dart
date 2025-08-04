@@ -8,7 +8,7 @@ import 'tokens/mix_token.dart';
 /// Inherited widget that provides Mix theme data and token resolution to its descendants.
 ///
 /// The [MixScope] is the root of the Mix theming system, providing access to design tokens,
-/// default modifier ordering, and other theme-related configuration.
+/// default widget decorator ordering, and other theme-related configuration.
 ///
 /// Uses InheritedModel to enable aspect-based dependencies for efficient rebuilds.
 /// Supported aspects:

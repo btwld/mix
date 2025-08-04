@@ -94,7 +94,7 @@ class FlexibleWidgetDecoratorMix
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final flexibleDecorator = FlexibleWidgetDecoratorMix(...).resolve(mix);
+  /// final flexibleWidgetDecorator = FlexibleWidgetDecoratorMix(...).resolve(mix);
   /// ```
   @override
   FlexibleWidgetDecorator resolve(BuildContext context) {

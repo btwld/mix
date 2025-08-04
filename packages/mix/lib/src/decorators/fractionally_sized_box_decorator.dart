@@ -131,7 +131,7 @@ class FractionallySizedBoxWidgetDecoratorMix
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final fractionallySizedBoxWidgetDecoratorSpec = FractionallySizedBoxWidgetDecoratorMix(...).resolve(mix);
+  /// final fractionallySizedBoxWidgetDecorator = FractionallySizedBoxWidgetDecoratorMix(...).resolve(mix);
   /// ```
   @override
   FractionallySizedBoxWidgetDecorator resolve(BuildContext context) {
