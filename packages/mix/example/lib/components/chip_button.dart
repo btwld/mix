@@ -1,77 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:mix/mix.dart';
 
 
 final chipButtonLabel = Style.text(
-    .fontSize(16)
+    .fontSize(12)
     .fontWeight(.w500)
-    .color(Colors.pink)
+    .textAlign(.center)
+    .color(Colors.white)
 );
 
 final chipButtonContainer = Style.box(
     .height(40)
-    .width(100)
+    .width(120)
     .color(Colors.blue)
     .borderRadius(.circular(20))
     .onHovered(.color(Colors.blue.shade700))
-    .onPressed(.color(Colors.blue.shade900))
+    .onSelected(.color(Colors.black))
+    .alignment(.center)
     .text(chipButtonLabel)
-);
-
-final filterChipContainer = Style.box(
-    .height(36)
-    .color(Colors.grey.shade200)
-    .borderRadius(.circular(18))
-    .padding(.horizontal(16).vertical(8))
-    .onHovered(.color(Colors.grey.shade300))
-    .onPressed(.color(Colors.grey.shade400))
-    .text(
-      .style(
-        .fontSize(14)
-        .fontWeight(.w500)
-        .color(Colors.grey.shade700)
-      ),
-    )
-);
-
-final filterChipSelectedContainer = Style.box(
-    .height(36)
-    .color(Colors.blue.shade100)
-    .borderRadius(.circular(18))
-    .padding(.horizontal(16).vertical(8))
-    .onHovered(BoxMix.color(Colors.blue.shade200))
-    .onPressed(BoxMix.color(Colors.blue.shade300))
-    .text(
-      .style(
-        .fontSize(14)
-        .fontWeight(.w500)
-        .color(Colors.blue.shade800)
-      ),
-    )
+    .animate(.easeInOut(300.ms))
 );
 
  
-class ChipButton extends StatelessWidget {
-  const ChipButton({
-    super.key,
-    required this.label,
-    required this.onPress,
-  });
 
-  final String label;
-  final VoidCallback onPress;
 
-  @override
-  Widget build(BuildContext context) {
-    return PressableBox(
-      onPress: onPress,
-      style: chipButtonContainer,
-      child: Text(label),
-    );
-  }
-}
-
-class FilterChipButton extends StatelessWidget {
+class FilterChipButton extends StatefulWidget {
   const FilterChipButton({
     super.key,
     required this.label,
@@ -84,11 +38,44 @@ class FilterChipButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   @override
+  State<FilterChipButton> createState() => _FilterChipButtonState();
+}
+
+class _FilterChipButtonState extends State<FilterChipButton> {
+  late final WidgetStatesController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = WidgetStatesController();
+
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      controller.selected = widget.selected;
+    });
+  }
+
+  @override
+  void didUpdateWidget(FilterChipButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selected != widget.selected) {
+      controller.selected = widget.selected;
+    }
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return PressableBox(
-      onPress: onPressed,
-      style: selected ? filterChipSelectedContainer : filterChipContainer,
-      child: Text(label),
+    return Pressable(
+      onPress: widget.onPressed,
+      controller: controller,
+      child: Box(
+        style: chipButtonContainer ,
+        child:Text(widget.label),)
     );
   }
 }

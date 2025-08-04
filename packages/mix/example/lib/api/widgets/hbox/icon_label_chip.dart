@@ -12,21 +12,24 @@ class Example extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final flexStyle = Style.flexbox(
-        .mainAxisSize(MainAxisSize.min)
+        .mainAxisSize(.min)
         .gap(4)
         .color(Colors.cyan.shade50)
         .padding(
-          EdgeInsetsDirectionalMix.symmetric(horizontal: 10, vertical: 4),
+          .horizontal(10)
+          .vertical(4),
         )
-        .borderRadius(BorderRadiusMix.circular(99))
+        .borderRadius(.circular(99))
         .border(
-          BoxBorderMix.all(
-            BorderSideMix.color(Colors.cyan.shade600).width(2),
+          .all(
+            .color(Colors.cyan.shade600)
+            .width(2),
           ),
         )
     );
 
     final iconStyle = Style.icon(
+        .icon(Icons.ac_unit_rounded)
         .color(Colors.cyan.shade600)
         .size(18)
     );
@@ -39,7 +42,7 @@ class Example extends StatelessWidget {
     return HBox(
       style: flexStyle,
       children: [
-        StyledIcon(Icons.ac_unit_rounded, style: iconStyle),
+        StyledIcon(style: iconStyle),
         StyledText('Snow', style: textStyle),
       ],
     );

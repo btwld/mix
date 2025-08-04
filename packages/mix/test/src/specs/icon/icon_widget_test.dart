@@ -8,13 +8,13 @@ void main() {
       const testIcon = Icons.star;
       const styledIconKey = Key('styled-icon');
       const iconKey = Key('icon');
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
             body: Column(
               children: [
-                StyledIcon(testIcon, key: styledIconKey),
+                StyledIcon(icon: testIcon, key: styledIconKey),
                 Icon(testIcon, key: iconKey),
               ],
             ),

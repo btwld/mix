@@ -4,13 +4,15 @@ import '../../core/style_widget.dart';
 import 'icon_spec.dart';
 
 class StyledIcon extends StyleWidget<IconSpec> {
-  const StyledIcon(this.icon, {this.semanticLabel, super.style, super.key});
+  const StyledIcon({this.icon, this.semanticLabel, super.style, super.key});
 
   final IconData? icon;
   final String? semanticLabel;
 
   @override
   Widget build(BuildContext context, IconSpec? spec) {
+    print('icon-name: ${spec?.icon?.toString()}');
+
     return Icon(
       icon ?? spec?.icon,
       size: spec?.size,

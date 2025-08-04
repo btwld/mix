@@ -1,3 +1,14 @@
+/// Simple Box Example
+/// 
+/// This example demonstrates the basic usage of the Box widget with Mix styling.
+/// Shows how to apply color, dimensions, and border radius to create a simple
+/// styled container.
+/// 
+/// Key concepts:
+/// - Using Style.box() to create box styles
+/// - Setting color, width, and height properties
+/// - Applying border radius with BorderRadiusMix
+
 import 'package:example/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';

@@ -1,3 +1,15 @@
+/// Theme Tokens Example
+/// 
+/// Shows how to use design tokens for consistent theming across your app.
+/// Design tokens allow you to define reusable values that can be referenced
+/// throughout your styles and updated in one place.
+/// 
+/// Key concepts:
+/// - Creating MixToken instances for colors and other values
+/// - Using tokens in styles with token() method
+/// - Providing token values through MixScope
+/// - Building a design system with consistent values
+
 import 'package:example/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';

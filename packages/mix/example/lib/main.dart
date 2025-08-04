@@ -2,27 +2,35 @@ import 'package:flutter/material.dart';
 
 import 'components/custom_scaffold.dart';
 import 'components/chip_button.dart';
-import 'api/animation/animation.curved.0.dart' as animCurved0;
-import 'api/animation/animation.curved.1.dart' as animCurved1;
-import 'api/animation/animation.phase.0.dart' as animPhase0;
-import 'api/animation/animation.phase.1.dart' as animPhase1;
-import 'api/animation/animation.spring.dart' as animSpring;
+import 'api/animation/hover_scale_animation.dart' as hover_scale;
+import 'api/animation/auto_scale_animation.dart' as auto_scale;
+import 'api/animation/tap_phase_animation.dart' as tap_phase;
+import 'api/animation/animated_switch.dart' as animated_switch;
+import 'api/animation/spring_animation.dart' as spring_anim;
 import 'api/context_variants/disabled.dart' as disabled;
 import 'api/context_variants/focused.dart' as focused;
 import 'api/context_variants/hovered.dart' as hovered;
 import 'api/context_variants/on_dark_light.dart' as darkLight;
 import 'api/context_variants/pressed.dart' as pressed;
 import 'api/context_variants/selected.dart' as selected;
+import 'api/context_variants/selected_toggle.dart' as selected_toggle;
+import 'api/context_variants/responsive_size.dart' as responsive_size;
 // Animation examples have different class names, will be added separately
-import 'api/design_tokens/design_token.dart' as designToken;
+import 'api/design_tokens/theme_tokens.dart' as theme_tokens;
 // Import all example widgets
-import 'api/widgets/box/box.0.dart' as box0;
-import 'api/widgets/box/box.1.dart' as box1;
-import 'api/widgets/hbox/hbox.0.dart' as hbox0;
-import 'api/widgets/icon/icon.0.dart' as icon0;
-import 'api/widgets/text/text.0.dart' as text0;
-import 'api/widgets/vbox/vbox.0.dart' as vbox0;
-import 'api/widgets/zbox/stack.0.dart' as zbox0;
+import 'api/widgets/box/simple_box.dart' as simple_box;
+import 'api/widgets/box/gradient_box.dart' as gradient_box;
+import 'api/widgets/hbox/icon_label_chip.dart' as icon_label_chip;
+import 'api/widgets/icon/styled_icon.dart' as styled_icon;
+import 'api/widgets/text/styled_text.dart' as styled_text;
+import 'api/widgets/vbox/card_layout.dart' as card_layout;
+import 'api/widgets/zbox/layered_boxes.dart' as layered_boxes;
+// Text examples
+import 'api/text/text_modifiers.dart' as text_modifiers;
+// Gradient examples
+import 'api/gradients/gradient_linear.dart' as gradient_linear;
+import 'api/gradients/gradient_radial.dart' as gradient_radial;
+import 'api/gradients/gradient_sweep.dart' as gradient_sweep;
 
 void main() {
   runApp(const MixExampleApp());
@@ -63,43 +71,49 @@ class _ExampleNavigatorState extends State<ExampleNavigator> {
       title: 'Box - Basic',
       description: 'Simple red box with rounded corners',
       category: 'Widgets',
-      widget: const box0.Example(),
+      widget: const simple_box.Example(),
     ),
     ExampleItem(
       title: 'Box - Gradient',
       description: 'Box with gradient and shadow',
       category: 'Widgets',
-      widget: const box1.Example(),
+      widget: const gradient_box.Example(),
     ),
     ExampleItem(
       title: 'HBox - Horizontal Layout',
       description: 'Horizontal flex container with icon and text',
       category: 'Widgets',
-      widget: const hbox0.Example(),
+      widget: const icon_label_chip.Example(),
     ),
     ExampleItem(
       title: 'VBox - Vertical Layout',
       description: 'Vertical flex container with styled elements',
       category: 'Widgets',
-      widget: const vbox0.Example(),
+      widget: const card_layout.Example(),
     ),
     ExampleItem(
       title: 'ZBox - Stack Layout',
       description: 'Stacked boxes with different alignments',
       category: 'Widgets',
-      widget: const zbox0.Example(),
+      widget: const layered_boxes.Example(),
     ),
     ExampleItem(
       title: 'Icon - Styled',
       description: 'Styled icon with custom size and color',
       category: 'Widgets',
-      widget: const icon0.Example(),
+      widget: const styled_icon.Example(),
     ),
     ExampleItem(
       title: 'Text - Styled',
       description: 'Styled text with custom typography',
       category: 'Widgets',
-      widget: const text0.Example(),
+      widget: const styled_text.Example(),
+    ),
+    ExampleItem(
+      title: 'Text - Modifiers',
+      description: 'Text transformations: uppercase, lowercase, capitalize, etc.',
+      category: 'Widgets',
+      widget: const text_modifiers.Example(),
     ),
 
     // Context Variants
@@ -139,44 +153,76 @@ class _ExampleNavigatorState extends State<ExampleNavigator> {
       category: 'Context Variants',
       widget: const darkLight.Example(),
     ),
+    ExampleItem(
+      title: 'Selected Toggle',
+      description: 'Beautiful toggle button with selected state',
+      category: 'Context Variants',
+      widget: const selected_toggle.Example(),
+    ),
+    ExampleItem(
+      title: 'Responsive Size',
+      description: 'Dynamic sizing based on screen width',
+      category: 'Context Variants',
+      widget: const responsive_size.Example(),
+    ),
+
+    // Gradients
+    ExampleItem(
+      title: 'Linear Gradient',
+      description: 'Beautiful purple-to-pink gradient with shadow',
+      category: 'Gradients',
+      widget: const gradient_linear.Example(),
+    ),
+    ExampleItem(
+      title: 'Radial Gradient',
+      description: 'Orange radial gradient with focal points',
+      category: 'Gradients',
+      widget: const gradient_radial.Example(),
+    ),
+    ExampleItem(
+      title: 'Sweep Gradient',
+      description: 'Colorful sweep gradient creating rainbow effect',
+      category: 'Gradients',
+      widget: const gradient_sweep.Example(),
+    ),
 
     // Design Tokens
     ExampleItem(
       title: 'Design Tokens',
       description: 'Using design tokens for consistent styling',
       category: 'Design System',
-      widget: const designToken.Example(),
+      widget: const theme_tokens.Example(),
     ),
     // Animations
     ExampleItem(
-      title: 'Animation - Curved 0',
-      description: 'Box that animates on hover',
+      title: 'Hover Scale Animation',
+      description: 'Box that scales up smoothly when hovered',
       category: 'Animations',
-      widget: const animCurved0.Example(),
+      widget: const hover_scale.Example(),
     ),
     ExampleItem(
-      title: 'Animation - Curved 1',
-      description: 'Box that animates on appear',
+      title: 'Auto Scale Animation',
+      description: 'Box that automatically scales on load',
       category: 'Animations',
-      widget: const animCurved1.Example(),
+      widget: const auto_scale.Example(),
     ),
     ExampleItem(
-      title: 'Animation - Phase 0',
-      description: 'Box that animates on hover',
+      title: 'Tap Phase Animation',
+      description: 'Multi-phase animation triggered by tap',
       category: 'Animations',
-      widget: const animPhase0.BlockAnimation(),
+      widget: const tap_phase.BlockAnimation(),
     ),
     ExampleItem(
-      title: 'Animation - Phase 1',
-      description: 'Box that animates on appear',
+      title: 'Animated Switch',
+      description: 'Toggle switch with phase-based animation',
       category: 'Animations',
-      widget: const animPhase1.SwitchAnimation(),
+      widget: const animated_switch.SwitchAnimation(),
     ),
     ExampleItem(
-      title: 'Animation - Spring',
-      description: 'Box that animates on appear',
+      title: 'Spring Animation',
+      description: 'Bouncy spring physics animation',
       category: 'Animations',
-      widget: const animSpring.Example(),
+      widget: const spring_anim.Example(),
     ),
   ];
 

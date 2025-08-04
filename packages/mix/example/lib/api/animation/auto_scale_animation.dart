@@ -33,11 +33,11 @@ class _ExampleState extends State<Example> {
         .color(Colors.black)
         .height(100)
         .width(100)
-        .borderRadius(BorderRadiusMix.all(Radius.circular(10)))
-        .transformAlignment(Alignment.center)
+        .borderRadius(.all(.circular(10)))
+        .transformAlignment(.center)
         .translate(appear ? 0 : -50, 0)
         .scale(appear ? 1 : 0.1)
-        .animate(AnimationConfig.easeInOut(1.s))
+        .animate(.easeInOut(1.s))
     );
 
     return Box(style: style);

@@ -17,6 +17,6 @@ class Example extends StatelessWidget {
             .color(Colors.blueAccent)
         );
 
-    return StyledIcon(Icons.format_paint_rounded, style: style);
+    return StyledIcon(icon:Icons.format_paint_rounded, style: style);
   }
 }

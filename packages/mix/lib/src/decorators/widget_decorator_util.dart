@@ -77,10 +77,7 @@ final class WidgetDecoratorUtility<T extends Style<Object?>>
   /// Clips the widget to an oval shape.
   T clipOval({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
     return builder(
-      ClipOvalWidgetDecoratorMix(
-        clipper: clipper,
-        clipBehavior: clipBehavior,
-      ),
+      ClipOvalWidgetDecoratorMix(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
@@ -102,27 +99,19 @@ final class WidgetDecoratorUtility<T extends Style<Object?>>
   /// Clips the widget to a rectangle.
   T clipRect({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
     return builder(
-      ClipRectWidgetDecoratorMix(
-        clipper: clipper,
-        clipBehavior: clipBehavior,
-      ),
+      ClipRectWidgetDecoratorMix(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
   /// Clips the widget to a triangle shape.
   T clipTriangle({Clip? clipBehavior}) {
-    return builder(
-      ClipTriangleWidgetDecoratorMix(clipBehavior: clipBehavior),
-    );
+    return builder(ClipTriangleWidgetDecoratorMix(clipBehavior: clipBehavior));
   }
 
   /// Clips the widget to a custom path.
   T clipPath({CustomClipper<Path>? clipper, Clip? clipBehavior}) {
     return builder(
-      ClipPathWidgetDecoratorMix(
-        clipper: clipper,
-        clipBehavior: clipBehavior,
-      ),
+      ClipPathWidgetDecoratorMix(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
@@ -135,6 +124,10 @@ mixin StyleWidgetDecoratorMixin<T extends Style<S>, S extends Spec<S>>
     on Style<S> {
   /// Applies the given [value] decorator configuration.
   T widgetDecorator(WidgetDecoratorConfig value);
+
+  T wrap(WidgetDecoratorConfig value) {
+    return widgetDecorator(value);
+  }
 
   /// Wraps the widget with an opacity decorator.
   T wrapOpacity(double opacity) {

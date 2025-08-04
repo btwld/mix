@@ -3,89 +3,59 @@ import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
 void main() {
-  runMixApp(MyApp());
+  runMixApp(Example());
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class Example extends StatefulWidget {
+  const Example({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<Example> createState() => _ExampleState();
 }
 
-final kdefaultFlexStyle = Style.flexbox(
-  .mainAxisSize(MainAxisSize.min)
-  .gap(8)
-);
-
-class _MyAppState extends State<MyApp> {
+class _ExampleState extends State<Example> {
   bool isDark = false;
 
   @override
   Widget build(BuildContext context) {
-    final flexboxStyle = kdefaultFlexStyle
-        .color(Colors.grey.shade100)
-        .padding(EdgeInsetsMix.symmetric(horizontal: 12, vertical: 4))
-        .borderRadius(BorderRadiusMix.circular(10));
+    // Button style that adapts to dark/light mode
+    final buttonStyle = Style.box(
+        .height(60)
+        .width(60)
+        .borderRadius(.circular(30))
+        .color(Colors.grey.shade200)
+        .animate(.easeInOut(600.ms))
+        .onDark(
+          .color(Colors.grey.shade800)
+        )
+        .shadow(
+          .color(Colors.black.withValues(alpha: 0.1))
+          .blurRadius(10)
+          .offset(Offset(0, 4))
+        )
+    );
 
-    return MaterialApp(
-      home: MediaQuery(
-        data: MediaQueryData(
+    // Icon style that adapts to dark/light mode
+    final iconStyle = Style.icon(
+        .color(Colors.grey.shade800)
+        .size(28)
+        .icon(Icons.dark_mode)
+        .animate(.easeInOut(200.ms))
+        .onDark(
+          .icon(Icons.light_mode)
+          .color(Colors.yellow)
+        )
+    );
+
+    return MediaQuery(
+        data: MediaQuery.of(context).copyWith(
           platformBrightness: isDark ? Brightness.dark : Brightness.light,
         ),
-        child: Scaffold(
-          backgroundColor: isDark ? Colors.black : Colors.white,
-          body: Center(
-            child: VBox(
-              style: kdefaultFlexStyle,
-              children: [
-                Example(),
-                HBox(
-                  style: flexboxStyle,
-                  children: [
-                    Text('Light'),
-                    Switch(
-                      value: isDark,
-                      onChanged: (value) {
-                        setState(() {
-                          isDark = value;
-                        });
-                      },
-                    ),
-                    Text('Dark'),
-                  ],
-                ),
-              ],
-            ),
-          ),
+        child: PressableBox(
+          style: buttonStyle,
+          onPress: () => setState(() => isDark = !isDark),
+          child: StyledIcon(style: iconStyle),
         ),
-      ),
-    );
-  }
-}
-
-class Example extends StatelessWidget {
-  const Example({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final style = BoxMix()
-        .height(100)
-        .width(100)
-        .borderRadius(BorderRadiusMix.circular(10))
-        .onDark(BoxMix.color(Colors.white));
-
-    return FlexBox(
-      direction: Axis.horizontal,
-      style: kdefaultFlexStyle,
-      children: [
-        Box(
-          style: style.color(Colors.black).onDark(BoxMix.color(Colors.white)),
-        ),
-        Box(
-          style: style.color(Colors.white).onLight(BoxMix.color(Colors.black)),
-        ),
-      ],
-    );
-  }
+      );
+    }
 }

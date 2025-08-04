@@ -15,8 +15,8 @@ class Example extends StatelessWidget {
         .color(Colors.red)
         .height(100)
         .width(100)
-        .borderRadius(BorderRadiusMix.all(Radius.circular(10)))
-        .onHovered(BoxMix.color(Colors.blue))
+        .borderRadius(.all(.circular(10)))
+        .onHovered(.color(Colors.blue))
     );
 
     return Box(style: style);

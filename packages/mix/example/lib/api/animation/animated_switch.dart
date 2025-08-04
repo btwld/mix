@@ -38,12 +38,12 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
               )
               .height(30)
               .width(65)
-              .borderRadius(BorderRadiusMix.all(Radius.circular(40)))
-              .transformAlignment(Alignment.center)
+              .borderRadius(.all(Radius.circular(40)))
+              .transformAlignment(.center)
               .alignment(
-                _trigger.value ? Alignment.centerRight : Alignment.centerLeft,
+                _trigger.value ? .centerRight : .centerLeft,
               )
-              .animate(AnimationConfig.easeOut(300.ms))
+              .animate(.easeOut(300.ms))
           ),
           child: Box(
             style: Style.box(
@@ -51,24 +51,28 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
                 .width(40)
                 .color(Colors.white)
                 .foregroundDecoration(
-                  BoxDecorationMix.gradient(
-                    RadialGradientMix()
-                        .focalRadius(1.1)
-                        .focal(Alignment.center)
-                        .colors([
-                          Colors.black.withValues(alpha: 0.2),
-                          Colors.transparent,
-                        ])
-                        .stops([0.3, 1]),
-                  ).borderRadius(BorderRadiusMix.circular(40)),
+                  .gradient(
+                    .radial(
+                      .focalRadius(1.1)
+                      .focal(.center)
+                      .colors([
+                        Colors.black.withValues(alpha: 0.2),
+                        Colors.transparent,
+                      ])
+                      .stops([0.3, 1])
+                    ),
+                  ).borderRadius(.circular(40)),
                 )
-                .borderRadius(BorderRadiusMix.circular(40))
-                .transformAlignment(Alignment.center)
+                .borderRadius(.circular(40))
+                .transformAlignment(.center)
                 .scale(0.85)
                 .shadow(
-                  BoxShadowMix.color(
+                  .blurRadius(4)
+                  .spreadRadius(3)
+                  .offset(Offset(2, 4))
+                  .color(
                     Colors.black.withValues(alpha: 0.1),
-                  ).blurRadius(4).spreadRadius(3).offset(Offset(2, 4)),
+                  )
                 )
                 .phaseAnimation(
                   trigger: _trigger,
@@ -80,7 +84,7 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
                         .width(phase ? 45 : 40);
                   },
                   configBuilder: (phase) {
-                    return CurveAnimationConfig.decelerate(150.ms);
+                    return .decelerate(150.ms);
                   },
                 )
             ),

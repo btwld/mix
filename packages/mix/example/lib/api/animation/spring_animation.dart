@@ -22,11 +22,11 @@ class _ExampleState extends State<Example> {
         .color(Colors.black)
         .height(100)
         .width(100)
-        .borderRadius(BorderRadiusMix.all(Radius.circular(10)))
-        .transform(Matrix4.identity())
-        .transformAlignment(Alignment.center)
+        .borderRadius(.all(.circular(10)))
+        .transform(.identity())
+        .transformAlignment(.center)
         .translate(0, _translated ? 100 : -100)
-        .animate(AnimationConfig.spring(300.ms, bounce: 0.6))
+        .animate(.spring(300.ms, bounce: 0.6))
     );
 
     return Row(

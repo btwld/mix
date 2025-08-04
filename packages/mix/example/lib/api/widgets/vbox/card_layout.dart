@@ -12,29 +12,34 @@ class Example extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final flexStyle = Style.flexbox(
-        .mainAxisSize(MainAxisSize.min)
+        .mainAxisSize(.min)
         .gap(4)
-        .crossAxisAlignment(CrossAxisAlignment.start)
-        .mainAxisAlignment(MainAxisAlignment.spaceBetween)
+        .crossAxisAlignment(.start)
+        .mainAxisAlignment(.spaceBetween)
         .color(Colors.grey.shade50)
         .padding(
-          EdgeInsetsDirectionalMix.symmetric(
+          .symmetric(
             horizontal: 12,
             vertical: 10,
           ),
         )
-        .borderRadius(BorderRadiusMix.circular(10))
+        .borderRadius(.circular(10))
         .border(
-          BoxBorderMix.all(
-            BorderSideMix.color(Colors.blueGrey.shade400).width(1),
+          .all(
+            .color(Colors.blueGrey.shade400)
+            .width(1),
           ),
         )
         .height(150)
         .width(120)
-        .shadow(BoxShadowMix.blurRadius(10).color(Colors.black12))
+        .shadow(
+          .blurRadius(10)
+          .color(Colors.black12)
+        )
     );
 
     final iconStyle = Style.icon(
+        .icon(Icons.piano_outlined)
         .color(Colors.blueGrey.shade600)
         .size(20)
     );
@@ -47,7 +52,7 @@ class Example extends StatelessWidget {
     return VBox(
       style: flexStyle,
       children: [
-        StyledIcon(Icons.piano_outlined, style: iconStyle),
+        StyledIcon( style: iconStyle),
         StyledText('Musician', style: textStyle),
       ],
     );

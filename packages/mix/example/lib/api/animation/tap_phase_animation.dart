@@ -1,3 +1,16 @@
+/// Tap Phase Animation Example
+/// 
+/// Demonstrates multi-phase animations that respond to user taps. The animation
+/// progresses through three distinct phases: initial, compress, and expanded.
+/// 
+/// Key concepts:
+/// - Using .phaseAnimation() for complex state-based animations
+/// - Defining animation phases with enums
+/// - Different animation configs for each phase
+/// - ValueNotifier for animation triggers
+/// - Transform alignment and scaling
+library;
+
 import 'package:example/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
@@ -16,7 +29,14 @@ class BlockAnimation extends StatefulWidget {
 }
 
 class _BlockAnimationState extends State<BlockAnimation> {
-  bool _isExpanded = false;
+  
+  final _isExpanded = ValueNotifier(false);
+
+  @override
+  void dispose() {
+    _isExpanded.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +47,7 @@ class _BlockAnimationState extends State<BlockAnimation> {
         .borderRadius(.circular(40))
         .transformAlignment(.center)
         .phaseAnimation(
-          trigger: ValueNotifier(_isExpanded),
+          trigger: _isExpanded,
           phases: AnimationPhases.values,
           styleBuilder: (phase, style) => switch (phase) {
             .initial => style.scale(1),
@@ -45,7 +65,7 @@ class _BlockAnimationState extends State<BlockAnimation> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          _isExpanded = !_isExpanded;
+          _isExpanded.value = !_isExpanded.value;
         });
       },
       child: Box(style: style),

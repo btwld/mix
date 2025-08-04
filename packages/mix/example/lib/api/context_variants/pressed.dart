@@ -11,12 +11,13 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BoxMix()
+    final style = Style.box(
         .color(Colors.red)
         .height(100)
         .width(100)
-        .borderRadius(BorderRadiusMix.all(Radius.circular(10)))
-        .onPressed(BoxMix.color(Colors.blue));
+        .borderRadius(.all(.circular(10)))
+        .onPressed(.color(Colors.blue))
+     );
 
     return Pressable(
       onPress: () {

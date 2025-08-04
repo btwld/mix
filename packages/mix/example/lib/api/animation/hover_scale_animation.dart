@@ -1,3 +1,14 @@
+/// Hover Scale Animation Example
+/// 
+/// This example shows how to create smooth animations that respond to hover
+/// interactions. The box scales up when the mouse hovers over it.
+/// 
+/// Key concepts:
+/// - Using .onHovered() variant for hover states
+/// - Applying .scale() transformation
+/// - Adding .animate() for smooth transitions
+/// - Transform alignment with .transformAlignment()
+
 import 'package:example/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
