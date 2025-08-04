@@ -225,7 +225,7 @@ class SpringAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
 class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   final List<S> specs;
   final List<CurveAnimationConfig> curvesAndDurations;
-  final ValueNotifier trigger;
+  final Listenable trigger;
 
   PhaseAnimationDriver({
     required super.vsync,

@@ -370,7 +370,7 @@ class BoxMix extends Style<BoxSpec>
 
   /// Animation instance method
   BoxMix phaseAnimation<T>({
-    required ValueNotifier trigger,
+    required Listenable trigger,
     required List<T> phases,
     required BoxMix Function(T phase, BoxMix style) styleBuilder,
     required CurveAnimationConfig Function(T phase) configBuilder,

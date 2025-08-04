@@ -1,8 +1,6 @@
-## Unreleased
+## 2.0.0-dev.1
 
-### Breaking Changes
- - **BREAKING**: Remove deprecated `textScaleFactor` property from TextSpec in favor of `textScaler` for Flutter compatibility.
- - **BREAKING**: Remove long press functionality (`LongPressInheritedState`, `OnLongPressVariant`) as it has been deprecated and is no longer supported in Mix 2.0.
+- Initial development version for Mix 2.0
 
 ### 1.7.0
 

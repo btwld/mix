@@ -461,7 +461,7 @@ class PhaseAnimationConfig<T extends Spec<T>, U extends Style<T>>
     extends AnimationConfig {
   final List<U> styles;
   final List<CurveAnimationConfig> curvesAndDurations;
-  final ValueNotifier trigger;
+  final Listenable trigger;
   final VoidCallback? onEnd;
 
   const PhaseAnimationConfig({
