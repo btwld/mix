@@ -42,6 +42,7 @@ class MixExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WidgetsApp(
+      debugShowCheckedModeBanner: false,
       title: 'Mix Examples',
       color: const Color(0xFF2196F3),
       home: const ExampleNavigator(),
@@ -111,7 +112,8 @@ class _ExampleNavigatorState extends State<ExampleNavigator> {
     ),
     ExampleItem(
       title: 'Text - Modifiers',
-      description: 'Text transformations: uppercase, lowercase, capitalize, etc.',
+      description:
+          'Text transformations: uppercase, lowercase, capitalize, etc.',
       category: 'Widgets',
       widget: const text_modifiers.Example(),
     ),
