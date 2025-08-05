@@ -33,42 +33,30 @@ void main() {
       driver.dispose();
     });
 
-    test(
-      'interpolateAt should linearly interpolate between start and end styles',
-      () {
-        final endStyle = MockResolvedStyle(1);
-
-        // Set up interpolation
-        driver.animateTo(endStyle);
-
-        // Test interpolation at different points
-        for (var point in [0.3, 0.5, 0.8]) {
-          final interpolated = driver.interpolateAt(point);
-
-          expect(interpolated.spec?.value, point);
-        }
-      },
-    );
 
     test('reset should restore the driver to the begining', () {
       driver.animateTo(MockResolvedStyle(0));
       driver.animateTo(MockResolvedStyle(1));
 
-      expect(driver.currentResolvedStyle, MockResolvedStyle(0));
+      expect(driver.animation.value, MockResolvedStyle(0));
 
       driver.reset();
 
-      expect(driver.progress, 0.0);
-      expect(driver.currentResolvedStyle, MockResolvedStyle(0));
+      expect(driver.controller.value, 0.0);
+      expect(driver.animation.value, MockResolvedStyle(0));
     });
 
-    testWidgets('should trigger onStart callback when the animation starts', (
+    testWidgets('should trigger animation status changes when the animation starts', (
       tester,
     ) async {
-      int callCount = 0;
-      void callback() => callCount++;
-
-      driver.addOnStartListener(callback);
+      int startCallCount = 0;
+      
+      driver.animation.addStatusListener((status) {
+        if (status == AnimationStatus.forward || status == AnimationStatus.reverse) {
+          startCallCount++;
+        }
+      });
+      
       await driver.animateTo(MockResolvedStyle(0));
       final future = driver.animateTo(MockResolvedStyle(1));
 
@@ -77,19 +65,23 @@ void main() {
 
       await tester.pump(150.ms);
 
-      expect(callCount, 1);
+      expect(startCallCount, 1);
 
       await tester.pumpAndSettle();
       await future;
     });
 
     testWidgets(
-      'should trigger onComplete callback when the animation completes',
+      'should trigger status changes when the animation completes',
       (tester) async {
-        int callCount = 0;
-        void callback() => callCount++;
-
-        driver.addOnCompleteListener(callback);
+        int completeCallCount = 0;
+        
+        driver.animation.addStatusListener((status) {
+          if (status == AnimationStatus.completed || status == AnimationStatus.dismissed) {
+            completeCallCount++;
+          }
+        });
+        
         await driver.animateTo(MockResolvedStyle(0));
         final future = driver.animateTo(MockResolvedStyle(1));
 
@@ -97,7 +89,7 @@ void main() {
         driver.controller.forward(from: 0);
         await tester.pumpAndSettle();
 
-        expect(callCount, 1);
+        expect(completeCallCount, 1);
 
         await future;
       },
@@ -111,10 +103,10 @@ void main() {
       driver.controller.forward(from: 0);
 
       await tester.pump(150.ms);
-      expect(driver.isAnimating, true);
+      expect(driver.animation.isAnimating, true);
       driver.stop();
 
-      expect(driver.isAnimating, false);
+      expect(driver.animation.isAnimating, false);
     });
 
     testWidgets('disposes correctly', (tester) async {
@@ -147,8 +139,8 @@ void main() {
           driver.dispose();
         });
 
-        expect(driver.isAnimating, false);
-        expect(driver.progress, 0.0);
+        expect(driver.animation.isAnimating, false);
+        expect(driver.controller.value, 0.0);
       });
 
       test('with non-unbounded controller', () {
@@ -226,40 +218,6 @@ void main() {
   });
 
   group('CurveAnimationDriver', () {
-    test(
-      'interpolateAt should apply the curve when interpolating between styles',
-      () {
-        final curve = Curves.easeInOut;
-
-        final driver = CurveAnimationDriver<MockSpec>(
-          initialStyle: MockResolvedStyle(0),
-          vsync: const TestVSync(),
-          config: CurveAnimationConfig(
-            duration: Duration(milliseconds: 300),
-            curve: curve,
-          ),
-        );
-
-        addTearDown(() {
-          driver.dispose();
-        });
-
-        final startStyle = MockResolvedStyle(0);
-        final endStyle = MockResolvedStyle(1);
-
-        // Set up interpolation
-        driver.animateTo(startStyle);
-        driver.animateTo(endStyle);
-
-        // Test interpolation at different points
-        for (var point in [0.3, 0.5, 0.8]) {
-          final interpolated = driver.interpolateAt(point);
-          final valueOnCurve = curve.transform(point);
-
-          expect(interpolated.spec?.value, valueOnCurve);
-        }
-      },
-    );
 
     testWidgets('OnEnd should be triggered when the animation is completed', (
       tester,
@@ -337,7 +295,7 @@ void main() {
       await future;
 
       expect(callbackCount, 1);
-      expect(driver.isAnimating, false);
+      expect(driver.animation.isAnimating, false);
     });
   });
 
@@ -380,27 +338,33 @@ void main() {
 
       // Animation should be running
       await tester.pump();
-      expect(driver.isAnimating, true);
+      expect(driver.animation.isAnimating, true);
 
       // Let the animation complete
       await tester.pumpAndSettle();
-      expect(driver.isAnimating, false);
+      expect(driver.animation.isAnimating, false);
 
       // Change the trigger back to false, which should start the animation again
       trigger.value = false;
       await tester.pump();
-      expect(driver.isAnimating, true);
+      expect(driver.animation.isAnimating, true);
 
       await tester.pumpAndSettle();
-      expect(driver.isAnimating, false);
+      expect(driver.animation.isAnimating, false);
     });
 
-    testWidgets('triggers onStart and onComplete callbacks', (tester) async {
+    testWidgets('triggers animation status changes', (tester) async {
       int startCount = 0;
       int completeCount = 0;
 
-      driver.addOnStartListener(() => startCount++);
-      driver.addOnCompleteListener(() => completeCount++);
+      driver.animation.addStatusListener((status) {
+        if (status == AnimationStatus.forward || status == AnimationStatus.reverse) {
+          startCount++;
+        }
+        if (status == AnimationStatus.completed || status == AnimationStatus.dismissed) {
+          completeCount++;
+        }
+      });
 
       trigger.value = true;
       await tester.pumpAndSettle();

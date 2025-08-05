@@ -22,6 +22,7 @@ import '../../variants/variant_util.dart';
 import '../text/text_attribute.dart';
 import 'box_spec.dart';
 import 'box_util.dart';
+import 'box_widget.dart';
 
 /// Style class for configuring [BoxSpec] properties.
 ///
@@ -247,11 +248,11 @@ class BoxMix extends Style<BoxSpec>
     return spec != null ? BoxMix.value(spec) : null;
   }
 
+  BoxSpecUtility get builder => BoxSpecUtility(this);
+
   BoxMix text(TextMix value) {
     return merge(BoxMix.text(value));
   }
-
-  BoxSpecUtility builder() => BoxSpecUtility(this);
 
   BoxMix transformAlignment(AlignmentGeometry value) {
     return merge(BoxMix.transformAlignment(value));
@@ -436,6 +437,10 @@ class BoxMix extends Style<BoxSpec>
   /// Sets image decoration
   BoxMix image(DecorationImageMix value) {
     return decoration(DecorationMix.image(value));
+  }
+
+  Box call({Widget? child}) {
+    return Box(style: this, child: child);
   }
 
   /// Decorator instance method

@@ -88,11 +88,12 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: animationDriver,
+    return AnimatedBuilder(
+      animation: animationDriver.animation,
       builder: (context, child) {
-        final currentResolved = animationDriver.currentResolvedStyle;
-
+        final currentResolved = animationDriver.animation.value ?? 
+                               widget.resolvedStyle;
+        
         return widget.builder(context, currentResolved);
       },
     );

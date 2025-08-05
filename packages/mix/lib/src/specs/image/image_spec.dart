@@ -5,6 +5,7 @@ import '../../core/helpers.dart';
 import '../../core/spec.dart';
 
 final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
+  final ImageProvider<Object>? image;
   final double? width, height;
   final Color? color;
   final ImageRepeat? repeat;
@@ -21,6 +22,7 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
   final bool? matchTextDirection;
 
   const ImageSpec({
+    this.image,
     this.width,
     this.height,
     this.color,
@@ -38,6 +40,7 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
   });
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties.add(DiagnosticsProperty('image', image, defaultValue: null));
     properties.add(DiagnosticsProperty('width', width, defaultValue: null));
     properties.add(DiagnosticsProperty('height', height, defaultValue: null));
     properties.add(DiagnosticsProperty('color', color, defaultValue: null));
@@ -74,6 +77,7 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
 
   @override
   ImageSpec copyWith({
+    ImageProvider<Object>? image,
     double? width,
     double? height,
     Color? color,
@@ -90,6 +94,7 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
     bool? matchTextDirection,
   }) {
     return ImageSpec(
+      image: image ?? this.image,
       width: width ?? this.width,
       height: height ?? this.height,
       color: color ?? this.color,
@@ -112,6 +117,7 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
     if (other == null) return this;
 
     return ImageSpec(
+      image: t < 0.5 ? image : other.image,
       width: MixHelpers.lerpDouble(width, other.width, t),
       height: MixHelpers.lerpDouble(height, other.height, t),
       color: Color.lerp(color, other.color, t),
@@ -137,6 +143,7 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
 
   @override
   List<Object?> get props => [
+    image,
     width,
     height,
     color,

@@ -8,7 +8,7 @@ import '../core/spec.dart';
 import '../core/style.dart';
 import '../decorators/widget_decorator_util.dart';
 import '../variants/variant_util.dart';
-import 'box/box_util.dart';
+import 'box/box_attribute.dart';
 import 'flex/flex_util.dart';
 import 'flexbox/flexbox_util.dart';
 import 'icon/icon_util.dart';
@@ -17,7 +17,7 @@ import 'stack/stack_util.dart';
 import 'text/text_util.dart';
 
 /// Global accessor for box specification utilities.
-BoxSpecUtility get $box => BoxSpecUtility();
+BoxMix get $box => BoxMix();
 
 /// Global accessor for flex specification utilities.
 FlexSpecUtility get $flex => FlexSpecUtility();

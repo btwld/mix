@@ -11,6 +11,7 @@ import '../../properties/painting/shadow_mix.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'icon_spec.dart';
+import 'icon_widget.dart';
 
 class IconMix extends Style<IconSpec>
     with
@@ -272,6 +273,10 @@ class IconMix extends Style<IconSpec>
     return merge(IconMix.animate(animation));
   }
 
+  StyledIcon call({IconData? icon, String? semanticLabel}) {
+    return StyledIcon(icon: icon, semanticLabel: semanticLabel, style: this);
+  }
+
   @override
   IconMix widgetDecorator(WidgetDecoratorConfig value) {
     return merge(IconMix(widgetDecoratorConfig: value));
@@ -347,7 +352,11 @@ class IconMix extends Style<IconSpec>
     );
     properties.add(DiagnosticsProperty('fill', $fill, defaultValue: null));
     properties.add(
-      DiagnosticsProperty('semanticsLabel', $semanticsLabel, defaultValue: null),
+      DiagnosticsProperty(
+        'semanticsLabel',
+        $semanticsLabel,
+        defaultValue: null,
+      ),
     );
     properties.add(
       DiagnosticsProperty('blendMode', $blendMode, defaultValue: null),

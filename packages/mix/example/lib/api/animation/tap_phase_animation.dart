@@ -40,7 +40,11 @@ class _BlockAnimationState extends State<BlockAnimation> {
 
   @override
   Widget build(BuildContext context) {
-    final style = Style.box(
+
+
+
+
+    final style = $box 
         .color(Colors.deepPurple)
         .height(100)
         .width(100)
@@ -51,15 +55,19 @@ class _BlockAnimationState extends State<BlockAnimation> {
           phases: AnimationPhases.values,
           styleBuilder: (phase, style) => switch (phase) {
             .initial => style.scale(1),
-            .compress => style.scale(0.75),
-            .expanded => style.scale(1.25),
+            .compress => style
+                .scale(0.75)
+                .color(Colors.blue),
+            .expanded => style
+                .scale(1.25)
+                .borderRadius(.circular(20))
+                .color(Colors.red)
           },
           configBuilder: (phase) => switch (phase) {
             .initial => .decelerate(200.ms),
             .compress => .decelerate(100.ms),
-            .expanded => .bounceOut(600.ms),
-          },
-        )
+            .expanded => .bounceOut(800.ms),
+          },  
     );
 
     return GestureDetector(

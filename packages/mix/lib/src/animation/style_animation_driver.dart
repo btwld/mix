@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter/widgets.dart';
 
@@ -7,35 +6,54 @@ import '../core/spec.dart';
 import '../core/style.dart';
 import 'animation_config.dart';
 
+/// Tween for ResolvedStyle interpolation.
+class ResolvedStyleTween<S extends Spec<S>> extends Tween<ResolvedStyle<S>?> {
+  ResolvedStyleTween({super.begin, super.end});
+
+  @override
+  ResolvedStyle<S>? lerp(double t) {
+    if (begin == null) return end;
+    if (end == null) return begin;
+
+    return begin!.lerp(end!, t);
+  }
+}
+
+/// Tween that converts Spec to ResolvedStyle for PhaseAnimationDriver.
+class _SpecToResolvedStyleTween<S extends Spec<S>>
+    extends Tween<ResolvedStyle<S>?> {
+  final TweenSequence<S?> _tweenSequence;
+
+  _SpecToResolvedStyleTween(this._tweenSequence);
+
+  @override
+  ResolvedStyle<S> lerp(double t) {
+    final spec = _tweenSequence.transform(t);
+
+    return ResolvedStyle(spec: spec);
+  }
+}
+
 /// Base class for animation drivers that handle style interpolation.
 ///
 /// Animation drivers define how styles should be animated between changes.
-/// This base class provides lifecycle management, event callbacks, and
-/// common animation control methods.
-abstract class StyleAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
+/// This base class provides lifecycle management and common animation control methods.
+abstract class StyleAnimationDriver<S extends Spec<S>> {
   /// The ticker provider for animations.
   final TickerProvider vsync;
 
   /// The animation controller managing the animation.
   late final AnimationController _controller;
 
-  /// The current resolved style being displayed.
-  late ResolvedStyle<S> _currentResolvedStyle = _initialStyle;
-
-  /// The target resolved style to animate to.
-  late ResolvedStyle<S> _targetResolvedStyle = _initialStyle;
-
-  /// List of callbacks to invoke when animation starts.
-  final List<VoidCallback> _onStartCallbacks = [];
-
-  /// List of callbacks to invoke when animation completes.
-  final List<VoidCallback> _onCompleteCallbacks = [];
-
   final ResolvedStyle<S> _initialStyle;
 
-  /// The starting style for interpolation.
+  /// Mutable tween for animating between styles.
   @protected
-  late ResolvedStyle<S> _fromStyle = _initialStyle;
+  final _tween = ResolvedStyleTween<S>();
+
+  /// The animation that drives style changes using Flutter's Tween system.
+  @protected
+  late Animation<ResolvedStyle<S>?> _animation;
 
   StyleAnimationDriver({
     required this.vsync,
@@ -46,66 +64,37 @@ abstract class StyleAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
         ? AnimationController.unbounded(vsync: vsync)
         : AnimationController(vsync: vsync);
 
-    _controller.addListener(_onAnimationTick);
-    _controller.addStatusListener(_onAnimationStatusChanged);
-  }
+    // Initialize tween with initial style
+    _tween.begin = initialStyle;
+    _tween.end = initialStyle;
 
-  /// Called on each animation frame.
-  void _onAnimationTick() {
-    _currentResolvedStyle = interpolateAt(_controller.value);
-    notifyListeners();
-  }
+    // Create the animation once - it will use the mutable tween
+    _animation = _controller.drive(_tween);
 
-  /// Called when animation status changes.
-  void _onAnimationStatusChanged(AnimationStatus status) {
-    switch (status) {
-      case AnimationStatus.forward:
-      case AnimationStatus.reverse:
-        for (final callback in _onStartCallbacks) {
-          callback();
-        }
-        break;
-      case AnimationStatus.completed:
-      case AnimationStatus.dismissed:
-        for (final callback in _onCompleteCallbacks) {
-          callback();
-        }
-        break;
-    }
+    // Create the animation - no need for listeners since we expose it directly
   }
 
   /// Gets the current animation controller.
   @visibleForTesting
   AnimationController get controller => _controller;
 
-  /// Gets the current resolved style.
-  ResolvedStyle<S> get currentResolvedStyle => _currentResolvedStyle;
-
-  /// Gets the target resolved style.
-  @protected
-  ResolvedStyle<S> get targetResolvedStyle => _targetResolvedStyle;
-
-  /// Whether the animation is currently running.
-  bool get isAnimating => _controller.isAnimating;
-
-  /// The current animation status.
-  AnimationStatus get status => _controller.status;
-
-  /// The current animation progress (0.0 to 1.0).
-  double get progress => _controller.value;
+  /// Gets the animation that drives style changes.
+  Animation<ResolvedStyle<S>?> get animation => _animation;
 
   /// Animates to the given target style.
   @nonVirtual
   Future<void> animateTo(ResolvedStyle<S> targetStyle) async {
-    // Skip if already at target
-    if (_targetResolvedStyle == targetStyle && !isAnimating) {
+    if (_tween.end == targetStyle && !_controller.isAnimating) return;
+
+    final currentValue = _animation.value ?? _initialStyle;
+    if (currentValue == targetStyle) {
+      _tween.end = targetStyle;
+
       return;
     }
 
-    _fromStyle = _currentResolvedStyle;
-    _targetResolvedStyle = targetStyle;
-
-    // Execute subclass-specific animation
+    _tween.begin = currentValue;
+    _tween.end = targetStyle;
     await executeAnimation();
   }
 
@@ -113,56 +102,18 @@ abstract class StyleAnimationDriver<S extends Spec<S>> extends ChangeNotifier {
   @protected
   Future<void> executeAnimation();
 
-  /// Interpolates between current and target styles at the given progress.
-  @visibleForTesting
-  ResolvedStyle<S> interpolateAt(double t) {
-    // Apply any value transformation (e.g., curve)
-    final transformedT = transformProgress(t);
-
-    return _fromStyle.lerp(_targetResolvedStyle, transformedT);
-  }
-
-  /// Transform progress value (e.g., apply curve).
-  @protected
-  double transformProgress(double t) => t;
-
   /// Stops the current animation.
   void stop() => _controller.stop();
 
   /// Resets the animation to the beginning.
   void reset() {
     _controller.reset();
-    _currentResolvedStyle = _initialStyle;
+    _tween.begin = _initialStyle;
+    _tween.end = _initialStyle;
   }
 
-  /// Adds a callback to be invoked when animation starts.
-  void addOnStartListener(VoidCallback callback) {
-    _onStartCallbacks.add(callback);
-  }
-
-  /// Removes a start callback.
-  void removeOnStartListener(VoidCallback callback) {
-    _onStartCallbacks.remove(callback);
-  }
-
-  /// Adds a callback to be invoked when animation completes.
-  void addOnCompleteListener(VoidCallback callback) {
-    _onCompleteCallbacks.add(callback);
-  }
-
-  /// Removes a complete callback.
-  void removeOnCompleteListener(VoidCallback callback) {
-    _onCompleteCallbacks.remove(callback);
-  }
-
-  @override
   void dispose() {
-    _controller.removeListener(_onAnimationTick);
-    _controller.removeStatusListener(_onAnimationStatusChanged);
     _controller.dispose();
-    _onStartCallbacks.clear();
-    _onCompleteCallbacks.clear();
-    super.dispose();
   }
 }
 
@@ -175,8 +126,19 @@ class CurveAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     required CurveAnimationConfig config,
     required super.initialStyle,
   }) : _config = config {
+    // Override the animation with curve applied
+    _animation = CurvedAnimation(
+      parent: controller,
+      curve: _config.curve,
+    ).drive(_tween);
+
+    // Add status listener for onEnd callback
     if (config.onEnd != null) {
-      addOnCompleteListener(config.onEnd!);
+      _animation.addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          config.onEnd!();
+        }
+      });
     }
   }
 
@@ -190,9 +152,6 @@ class CurveAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
       // Animation was cancelled - this is normal
     }
   }
-
-  @override
-  double transformProgress(double t) => _config.curve.transform(t);
 }
 
 /// A driver for spring-based physics animations.
@@ -205,8 +164,13 @@ class SpringAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     required super.initialStyle,
   }) : _config = config,
        super(unbounded: true) {
+    // Add status listener for onEnd callback
     if (config.onEnd != null) {
-      addOnCompleteListener(config.onEnd!);
+      _animation.addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          config.onEnd!();
+        }
+      });
     }
   }
 
@@ -227,6 +191,8 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   final List<CurveAnimationConfig> curvesAndDurations;
   final Listenable trigger;
 
+  late final TweenSequence<S?> _tweenSequence = _createTweenSequence();
+
   PhaseAnimationDriver({
     required super.vsync,
     required this.curvesAndDurations,
@@ -234,10 +200,18 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     required super.initialStyle,
     required this.trigger,
   }) {
+    // Override the animation to use TweenSequence wrapped in a tween
+    _animation = controller.drive(_SpecToResolvedStyleTween(_tweenSequence));
+
     trigger.addListener(_onTriggerChanged);
 
+    // Add status listener for onEnd callback
     if (curvesAndDurations.last.onEnd != null) {
-      addOnCompleteListener(curvesAndDurations.last.onEnd!);
+      _animation.addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          curvesAndDurations.last.onEnd!();
+        }
+      });
     }
   }
 
@@ -245,7 +219,7 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     executeAnimation();
   }
 
-  TweenSequence<S?> get _tween {
+  TweenSequence<S?> _createTweenSequence() {
     final items = <TweenSequenceItem<S?>>[];
     for (int i = 0; i < specs.length; i++) {
       final currentIndex = i % specs.length;
@@ -282,14 +256,7 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   @override
   Future<void> executeAnimation() async {
     controller.duration = totalDuration;
-    await controller.forward(from: 0);
-  }
 
-  @override
-  ResolvedStyle<S> interpolateAt(double t) {
-    // Apply any value transformation (e.g., curve)
-    final transformedT = transformProgress(t);
-
-    return ResolvedStyle(spec: _tween.transform(transformedT));
+    await controller.forward(from: 0.0);
   }
 }

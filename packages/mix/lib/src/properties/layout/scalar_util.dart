@@ -40,6 +40,7 @@ extension AlignmentPropUtilityExt<S extends Style<Object?>>
   }
 
   /// Creates a [StyleBase] instance with [Alignment.topLeft] value.
+
   S topLeft() => call(Alignment.topLeft);
 
   /// Creates a [StyleBase] instance with [Alignment.topCenter] value.

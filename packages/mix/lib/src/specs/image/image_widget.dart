@@ -23,8 +23,10 @@ class StyledImage extends StyleWidget<ImageSpec> {
 
   @override
   Widget build(BuildContext context, ImageSpec? spec) {
+    final imageProvider = _resolveImage(image, spec);
+    
     return Image(
-      image: image!,
+      image: imageProvider,
       frameBuilder: frameBuilder,
       loadingBuilder: loadingBuilder,
       errorBuilder: errorBuilder,
@@ -45,4 +47,25 @@ class StyledImage extends StyleWidget<ImageSpec> {
       filterQuality: spec?.filterQuality ?? FilterQuality.medium,
     );
   }
+}
+
+ImageProvider<Object> _resolveImage(ImageProvider<Object>? widgetImage, ImageSpec? spec) {
+  final imageProvider = widgetImage ?? spec?.image;
+  
+  if (imageProvider == null) {
+    throw FlutterError.fromParts([
+      ErrorSummary('No ImageProvider found for StyledImage.'),
+      ErrorDescription(
+        'StyledImage requires an ImageProvider to be specified either through '
+        'the widget\'s image parameter or through the style\'s image property.',
+      ),
+      ErrorHint(
+        'To fix this, either:\n'
+        '  - Pass an image parameter when creating the StyledImage\n'
+        '  - Include an image property in your ImageMix style',
+      ),
+    ]);
+  }
+  
+  return imageProvider;
 }

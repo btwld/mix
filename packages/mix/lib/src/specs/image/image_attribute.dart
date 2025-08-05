@@ -10,12 +10,14 @@ import '../../decorators/widget_decorator_util.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'image_spec.dart';
+import 'image_widget.dart';
 
 class ImageMix extends Style<ImageSpec>
     with
         Diagnosticable,
         StyleWidgetDecoratorMixin<ImageMix, ImageSpec>,
         StyleVariantMixin<ImageMix, ImageSpec> {
+  final Prop<ImageProvider<Object>>? $image;
   final Prop<double>? $width;
   final Prop<double>? $height;
   final Prop<Color>? $color;
@@ -30,6 +32,11 @@ class ImageMix extends Style<ImageSpec>
   final Prop<bool>? $gaplessPlayback;
   final Prop<bool>? $isAntiAlias;
   final Prop<bool>? $matchTextDirection;
+
+  /// Factory for image provider
+  factory ImageMix.image(ImageProvider<Object> value) {
+    return ImageMix(image: value);
+  }
 
   /// Factory for image width
   factory ImageMix.width(double value) {
@@ -112,6 +119,7 @@ class ImageMix extends Style<ImageSpec>
   }
 
   const ImageMix.raw({
+    Prop<ImageProvider<Object>>? image,
     Prop<double>? width,
     Prop<double>? height,
     Prop<Color>? color,
@@ -131,7 +139,8 @@ class ImageMix extends Style<ImageSpec>
     super.variants,
 
     super.inherit,
-  }) : $width = width,
+  }) : $image = image,
+       $width = width,
        $height = height,
        $color = color,
        $repeat = repeat,
@@ -147,6 +156,7 @@ class ImageMix extends Style<ImageSpec>
        $matchTextDirection = matchTextDirection;
 
   ImageMix({
+    ImageProvider<Object>? image,
     double? width,
     double? height,
     Color? color,
@@ -166,6 +176,7 @@ class ImageMix extends Style<ImageSpec>
     List<VariantStyle<ImageSpec>>? variants,
     bool? inherit,
   }) : this.raw(
+         image: Prop.maybe(image),
          width: Prop.maybe(width),
          height: Prop.maybe(height),
          color: Prop.maybe(color),
@@ -196,6 +207,7 @@ class ImageMix extends Style<ImageSpec>
   /// ```
   ImageMix.value(ImageSpec spec)
     : this(
+        image: spec.image,
         width: spec.width,
         height: spec.height,
         color: spec.color,
@@ -222,6 +234,11 @@ class ImageMix extends Style<ImageSpec>
   /// ```
   static ImageMix? maybeValue(ImageSpec? spec) {
     return spec != null ? ImageMix.value(spec) : null;
+  }
+
+  /// Sets image provider
+  ImageMix image(ImageProvider<Object> value) {
+    return merge(ImageMix.image(value));
   }
 
   /// Sets image width
@@ -252,6 +269,23 @@ class ImageMix extends Style<ImageSpec>
   /// Sets image alignment
   ImageMix alignment(AlignmentGeometry value) {
     return merge(ImageMix.alignment(value));
+  }
+
+  StyledImage call({
+    ImageProvider? image,
+    ImageFrameBuilder? frameBuilder,
+    ImageLoadingBuilder? loadingBuilder,
+    ImageErrorWidgetBuilder? errorBuilder,
+    Animation<double>? opacity,
+  }) {
+    return StyledImage(
+      style: this,
+      frameBuilder: frameBuilder,
+      loadingBuilder: loadingBuilder,
+      errorBuilder: errorBuilder,
+      image: image,
+      opacity: opacity,
+    );
   }
 
   /// Sets center slice
@@ -312,6 +346,7 @@ class ImageMix extends Style<ImageSpec>
   @override
   ImageSpec resolve(BuildContext context) {
     return ImageSpec(
+      image: MixHelpers.resolve(context, $image),
       width: MixHelpers.resolve(context, $width),
       height: MixHelpers.resolve(context, $height),
       color: MixHelpers.resolve(context, $color),
@@ -334,6 +369,7 @@ class ImageMix extends Style<ImageSpec>
     if (other == null) return this;
 
     return ImageMix.raw(
+      image: $image.tryMerge(other.$image),
       width: $width.tryMerge(other.$width),
       height: $height.tryMerge(other.$height),
       color: $color.tryMerge(other.$color),
@@ -364,6 +400,7 @@ class ImageMix extends Style<ImageSpec>
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('image', $image, defaultValue: null));
     properties.add(DiagnosticsProperty('width', $width, defaultValue: null));
     properties.add(DiagnosticsProperty('height', $height, defaultValue: null));
     properties.add(DiagnosticsProperty('color', $color, defaultValue: null));
@@ -421,6 +458,7 @@ class ImageMix extends Style<ImageSpec>
 
   @override
   List<Object?> get props => [
+    $image,
     $width,
     $height,
     $color,

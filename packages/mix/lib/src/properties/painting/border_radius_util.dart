@@ -201,7 +201,7 @@ final class BorderRadiusGeometryUtility<T extends Style<Object?>>
   late final borderRadius = BorderRadiusUtility<T>(builder);
 
   BorderRadiusGeometryUtility(super.builder);
-
+  @Deprecated('Use borderRadius.circular instead')
   T call(double value) => builder(BorderRadiusMix.circular(value));
 
   T as(BorderRadiusGeometry value) {
@@ -274,6 +274,7 @@ final class BorderRadiusUtility<T extends Style<Object?>>
   /// Sets a zero [Radius] for all corners.
   T zero() => all.zero();
 
+  @Deprecated('Use borderRadius.circular instead')
   T call(double value) => builder(BorderRadiusMix.circular(value));
 
   T only({
@@ -374,6 +375,7 @@ final class BorderRadiusDirectionalUtility<T extends Style<Object?>>
     );
   }
 
+  @Deprecated('Use borderRadiusDirectional.circular instead')
   T call(double value) => builder(BorderRadiusDirectionalMix.circular(value));
 
   T as(BorderRadiusDirectional value) {

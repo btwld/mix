@@ -7,6 +7,7 @@ import '../specs/box/box_attribute.dart';
 import '../specs/flex/flex_attribute.dart';
 import '../specs/flexbox/flexbox_attribute.dart';
 import '../specs/icon/icon_attribute.dart';
+import '../specs/image/image_attribute.dart';
 import '../specs/stack/stack_attribute.dart';
 import '../specs/stack/stack_box_attribute.dart';
 import '../specs/text/text_attribute.dart';
@@ -47,6 +48,7 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
        $inherit = inherit;
 
   static IconMix icon(IconMix value) => value;
+  static ImageMix image(ImageMix value) => value;
   static TextMix text(TextMix value) => value;
   static FlexBoxMix flexbox(FlexBoxMix value) => value;
   static StackMix stack(StackMix value) => value;

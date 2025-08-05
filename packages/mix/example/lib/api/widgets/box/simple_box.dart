@@ -8,6 +8,8 @@
 /// - Using Style.box() to create box styles
 /// - Setting color, width, and height properties
 /// - Applying border radius with BorderRadiusMix
+// ignore_for_file: unused_local_variable
+
 library;
 
 import 'package:example/helpers.dart';
@@ -24,13 +26,40 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = Style.box(
-        .color(Colors.red)
-        .height(100)
-        .width(100)
-        .borderRadius(.all(.circular(10)))
-    );
 
-    return Box(style: style);
+
+            // OLD Syntax
+            // final boxStyle = Style(
+            //   $box.color(Colors.red),
+            //   $box.height(100),
+            //   $box.width(100),
+            //   $box.borderRadius(10),
+            // );
+
+            // NEW Fluent API with dot notation
+            final fluentStyle = $box
+              .color(Colors.red)
+              .height(100)
+              .width(100)
+              .borderRadius(.circular(10));
+
+            /// Builder Pattern Syntax for backwards compatibility
+            final builderStyle = $box.builder
+              ..color.red()
+              ..height(100)
+              ..width(100)
+              ..borderRadius.circular(10);
+
+            final boxStyle = Style.box(
+                .color(Colors.red)
+                .height(100)
+                .width(100)
+                .borderRadius(.circular(10))
+            );
+
+            return Box(style: boxStyle);
+            // or
+            // return simpleBox();
+
   }
 }

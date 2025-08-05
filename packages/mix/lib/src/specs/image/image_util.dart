@@ -45,6 +45,8 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageSpec> {
   @protected
   late final MutableImageMix mutable;
 
+  late final image = mutable.image;
+
   late final width = mutable.width;
 
   late final height = mutable.height;

@@ -15,6 +15,7 @@ import '../../properties/typography/text_style_mix.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'text_spec.dart';
+import 'text_widget.dart';
 
 /// Represents the attributes of a [TextSpec].
 ///
@@ -370,6 +371,10 @@ class TextMix extends Style<TextSpec>
   /// ```
   static TextMix? maybeValue(TextSpec? spec) {
     return spec != null ? TextMix.value(spec) : null;
+  }
+
+  StyledText call(String text) {
+    return StyledText(text, style: this);
   }
 
   TextMix textModifier(Modifier<String> value) {
