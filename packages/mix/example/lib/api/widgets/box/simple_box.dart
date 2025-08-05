@@ -8,6 +8,7 @@
 /// - Using Style.box() to create box styles
 /// - Setting color, width, and height properties
 /// - Applying border radius with BorderRadiusMix
+library;
 
 import 'package:example/helpers.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,7 @@ class Example extends StatelessWidget {
         .color(Colors.red)
         .height(100)
         .width(100)
-        .borderRadius(BorderRadiusMix.all(Radius.circular(10)))
+        .borderRadius(.all(.circular(10)))
     );
 
     return Box(style: style);
