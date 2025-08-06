@@ -89,33 +89,44 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
        super.create();
 
   /// Creates constraints with fixed height (min and max height equal).
-  BoxConstraintsMix.height(double height)
-    : this(minHeight: height, maxHeight: height);
+  factory BoxConstraintsMix.height(double value) {
+    return BoxConstraintsMix(minHeight: value, maxHeight: value);
+  }
 
   /// Creates constraints with fixed width (min and max width equal).
-  BoxConstraintsMix.width(double width)
-    : this(minWidth: width, maxWidth: width);
+  factory BoxConstraintsMix.width(double value) {
+    return BoxConstraintsMix(minWidth: value, maxWidth: value);
+  }
 
   /// Creates constraints with fixed size (both width and height constrained).
-  BoxConstraintsMix.size(Size size)
-    : this(
-        minWidth: size.width,
-        maxWidth: size.width,
-        minHeight: size.height,
-        maxHeight: size.height,
-      );
+  factory BoxConstraintsMix.size(Size value) {
+    return BoxConstraintsMix(
+      minWidth: value.width,
+      maxWidth: value.width,
+      minHeight: value.height,
+      maxHeight: value.height,
+    );
+  }
 
   /// Creates constraints with only minimum width specified.
-  BoxConstraintsMix.minWidth(double minWidth) : this(minWidth: minWidth);
+  factory BoxConstraintsMix.minWidth(double value) {
+    return BoxConstraintsMix(minWidth: value);
+  }
 
   /// Creates constraints with only maximum width specified.
-  BoxConstraintsMix.maxWidth(double maxWidth) : this(maxWidth: maxWidth);
+  factory BoxConstraintsMix.maxWidth(double value) {
+    return BoxConstraintsMix(maxWidth: value);
+  }
 
   /// Creates constraints with only minimum height specified.
-  BoxConstraintsMix.minHeight(double minHeight) : this(minHeight: minHeight);
+  factory BoxConstraintsMix.minHeight(double value) {
+    return BoxConstraintsMix(minHeight: value);
+  }
 
   /// Creates constraints with only maximum height specified.
-  BoxConstraintsMix.maxHeight(double maxHeight) : this(maxHeight: maxHeight);
+  factory BoxConstraintsMix.maxHeight(double value) {
+    return BoxConstraintsMix(maxHeight: value);
+  }
 
   /// Creates a [BoxConstraintsMix] from an existing [BoxConstraints].
   ///
@@ -145,12 +156,12 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
 
   /// Returns a copy with fixed height (min and max height equal).
   BoxConstraintsMix height(double height) {
-    return BoxConstraintsMix.height(height);
+    return merge(BoxConstraintsMix.height(height));
   }
 
   /// Returns a copy with fixed width (min and max width equal).
   BoxConstraintsMix width(double width) {
-    return BoxConstraintsMix.width(width);
+    return merge(BoxConstraintsMix.width(width));
   }
 
   /// Returns a copy with the specified minimum width.

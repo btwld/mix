@@ -186,6 +186,7 @@ void main() {
 
         expectProp(borderRadiusMix.$bottomRight, const Radius.circular(8.0));
       });
+
     });
 
     group('resolve', () {
@@ -456,6 +457,55 @@ void main() {
 
         expect(borderRadiusDirectionalMix1, isNot(borderRadiusDirectionalMix2));
       });
+    });
+
+    group('Utility Methods', () {
+      test('topStart utility works correctly', () {
+        final borderRadiusDirectionalMix = BorderRadiusDirectionalMix().topStart(
+          const Radius.circular(5.0),
+        );
+
+        expectProp(
+          borderRadiusDirectionalMix.$topStart,
+          const Radius.circular(5.0),
+        );
+      });
+
+      test('topEnd utility works correctly', () {
+        final borderRadiusDirectionalMix = BorderRadiusDirectionalMix().topEnd(
+          const Radius.circular(6.0),
+        );
+
+        expectProp(
+          borderRadiusDirectionalMix.$topEnd,
+          const Radius.circular(6.0),
+        );
+      });
+
+      test('bottomStart utility works correctly', () {
+        final borderRadiusDirectionalMix = BorderRadiusDirectionalMix()
+            .bottomStart(
+          const Radius.circular(7.0),
+        );
+
+        expectProp(
+          borderRadiusDirectionalMix.$bottomStart,
+          const Radius.circular(7.0),
+        );
+      });
+
+      test('bottomEnd utility works correctly', () {
+        final borderRadiusDirectionalMix = BorderRadiusDirectionalMix()
+            .bottomEnd(
+          const Radius.circular(8.0),
+        );
+
+        expectProp(
+          borderRadiusDirectionalMix.$bottomEnd,
+          const Radius.circular(8.0),
+        );
+      });
+
     });
   });
 }

@@ -140,6 +140,50 @@ void main() {
 
         expectProp(edgeInsetsMix.$right, 15.0);
       });
+
+      test('all factory works correctly', () {
+        final edgeInsetsMix = EdgeInsetsMix.all(16.0);
+
+        expectProp(edgeInsetsMix.$top, 16.0);
+        expectProp(edgeInsetsMix.$bottom, 16.0);
+        expectProp(edgeInsetsMix.$left, 16.0);
+        expectProp(edgeInsetsMix.$right, 16.0);
+      });
+
+      test('symmetric utility works correctly', () {
+        final edgeInsetsMix = EdgeInsetsMix().symmetric(
+          vertical: 10.0,
+          horizontal: 20.0,
+        );
+
+        expectProp(edgeInsetsMix.$top, 10.0);
+        expectProp(edgeInsetsMix.$bottom, 10.0);
+        expectProp(edgeInsetsMix.$left, 20.0);
+        expectProp(edgeInsetsMix.$right, 20.0);
+      });
+
+      test('only utility works correctly', () {
+        final edgeInsetsMix = EdgeInsetsMix().only(
+          left: 5.0,
+          top: 10.0,
+          right: 15.0,
+          bottom: 20.0,
+        );
+
+        expectProp(edgeInsetsMix.$left, 5.0);
+        expectProp(edgeInsetsMix.$top, 10.0);
+        expectProp(edgeInsetsMix.$right, 15.0);
+        expectProp(edgeInsetsMix.$bottom, 20.0);
+      });
+
+      test('fromLTRB factory works correctly', () {
+        final edgeInsetsMix = EdgeInsetsMix.fromLTRB(5.0, 10.0, 15.0, 20.0);
+
+        expectProp(edgeInsetsMix.$left, 5.0);
+        expectProp(edgeInsetsMix.$top, 10.0);
+        expectProp(edgeInsetsMix.$right, 15.0);
+        expectProp(edgeInsetsMix.$bottom, 20.0);
+      });
     });
 
     group('resolve', () {
@@ -344,6 +388,57 @@ void main() {
         expect(merged.$bottom, isNull);
         expectProp(merged.$start, 16.0);
         expectProp(merged.$end, 20.0);
+      });
+    });
+
+    group('Utility Methods', () {
+      test('all factory works correctly', () {
+        final edgeInsetsDirectionalMix = EdgeInsetsDirectionalMix.all(16.0);
+
+        expectProp(edgeInsetsDirectionalMix.$top, 16.0);
+        expectProp(edgeInsetsDirectionalMix.$bottom, 16.0);
+        expectProp(edgeInsetsDirectionalMix.$start, 16.0);
+        expectProp(edgeInsetsDirectionalMix.$end, 16.0);
+      });
+
+      test('symmetric utility works correctly', () {
+        final edgeInsetsDirectionalMix = EdgeInsetsDirectionalMix().symmetric(
+          vertical: 10.0,
+          horizontal: 20.0,
+        );
+
+        expectProp(edgeInsetsDirectionalMix.$top, 10.0);
+        expectProp(edgeInsetsDirectionalMix.$bottom, 10.0);
+        expectProp(edgeInsetsDirectionalMix.$start, 20.0);
+        expectProp(edgeInsetsDirectionalMix.$end, 20.0);
+      });
+
+      test('directional utility works correctly', () {
+        final edgeInsetsDirectionalMix = EdgeInsetsDirectionalMix().directional(
+          start: 5.0,
+          top: 10.0,
+          end: 15.0,
+          bottom: 20.0,
+        );
+
+        expectProp(edgeInsetsDirectionalMix.$start, 5.0);
+        expectProp(edgeInsetsDirectionalMix.$top, 10.0);
+        expectProp(edgeInsetsDirectionalMix.$end, 15.0);
+        expectProp(edgeInsetsDirectionalMix.$bottom, 20.0);
+      });
+
+      test('fromSTEB factory works correctly', () {
+        final edgeInsetsDirectionalMix = EdgeInsetsDirectionalMix.fromSTEB(
+          5.0,
+          10.0,
+          15.0,
+          20.0,
+        );
+
+        expectProp(edgeInsetsDirectionalMix.$start, 5.0);
+        expectProp(edgeInsetsDirectionalMix.$top, 10.0);
+        expectProp(edgeInsetsDirectionalMix.$end, 15.0);
+        expectProp(edgeInsetsDirectionalMix.$bottom, 20.0);
       });
     });
 

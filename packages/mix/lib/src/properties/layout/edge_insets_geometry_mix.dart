@@ -248,6 +248,31 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
     return merge(EdgeInsetsGeometryMix.horizontal(value));
   }
 
+
+  /// Returns a copy with symmetric insets.
+  EdgeInsetsMix symmetric({double? vertical, double? horizontal}) {
+    return merge(EdgeInsetsGeometryMix.symmetric(
+      vertical: vertical,
+      horizontal: horizontal,
+    ));
+  }
+
+  /// Returns a copy with only the specified insets.
+  EdgeInsetsMix only({
+    double? left,
+    double? right,
+    double? top,
+    double? bottom,
+  }) {
+    return merge(EdgeInsetsGeometryMix.only(
+      left: left,
+      right: right,
+      top: top,
+      bottom: bottom,
+    ));
+  }
+
+
   @override
   EdgeInsets resolve(BuildContext context) {
     return EdgeInsets.fromLTRB(
@@ -365,6 +390,31 @@ final class EdgeInsetsDirectionalMix
   EdgeInsetsDirectionalMix end(double value) {
     return merge(EdgeInsetsGeometryMix.end(value));
   }
+
+
+  /// Returns a copy with symmetric insets.
+  EdgeInsetsDirectionalMix symmetric({double? vertical, double? horizontal}) {
+    return merge(EdgeInsetsDirectionalMix.symmetric(
+      vertical: vertical,
+      horizontal: horizontal,
+    ));
+  }
+
+  /// Returns a copy with directional insets.
+  EdgeInsetsDirectionalMix directional({
+    double? start,
+    double? end,
+    double? top,
+    double? bottom,
+  }) {
+    return merge(EdgeInsetsDirectionalMix(
+      top: top,
+      bottom: bottom,
+      start: start,
+      end: end,
+    ));
+  }
+
 
   @override
   EdgeInsetsDirectional resolve(BuildContext context) {

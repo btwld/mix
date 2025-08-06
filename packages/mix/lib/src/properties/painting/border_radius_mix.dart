@@ -310,6 +310,7 @@ final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
     return merge(BorderRadiusMix.bottomRight(radius));
   }
 
+
   @override
   BorderRadius resolve(BuildContext context) {
     return BorderRadius.only(
@@ -459,6 +460,7 @@ final class BorderRadiusDirectionalMix
   BorderRadiusDirectionalMix bottomEnd(Radius radius) {
     return merge(BorderRadiusDirectionalMix.bottomEnd(radius));
   }
+
 
   @override
   BorderRadiusDirectional resolve(BuildContext context) {

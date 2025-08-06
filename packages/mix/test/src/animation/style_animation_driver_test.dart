@@ -104,10 +104,19 @@ void main() {
       driver.controller.forward(from: 0);
 
       await tester.pump(150.ms);
-      expect(driver.animation.isAnimating, true);
+      expect(driver.controller.isAnimating, true);
+
+      // Record the current value before stopping
+      final valueBeforeStop = driver.controller.value;
+
       driver.stop();
 
-      expect(driver.animation.isAnimating, false);
+      // After stop(), the controller should no longer be animating
+      expect(driver.controller.isAnimating, false);
+
+      // Pump some time and verify the value hasn't changed
+      await tester.pump(100.ms);
+      expect(driver.controller.value, valueBeforeStop);
     });
 
     testWidgets('disposes correctly', (tester) async {

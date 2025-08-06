@@ -173,6 +173,26 @@ void main() {
         expectProp(constraintsMix.$minHeight, 150.0);
         expectProp(constraintsMix.$maxHeight, 150.0);
       });
+
+      test('width utility merges correctly with existing properties', () {
+        final initial = BoxConstraintsMix(minHeight: 50.0, maxHeight: 100.0);
+        final result = initial.width(75.0);
+        
+        expectProp(result.$minWidth, 75.0);
+        expectProp(result.$maxWidth, 75.0);
+        expectProp(result.$minHeight, 50.0);  // Should preserve existing
+        expectProp(result.$maxHeight, 100.0); // Should preserve existing
+      });
+
+      test('height utility merges correctly with existing properties', () {
+        final initial = BoxConstraintsMix(minWidth: 50.0, maxWidth: 100.0);
+        final result = initial.height(75.0);
+        
+        expectProp(result.$minHeight, 75.0);
+        expectProp(result.$maxHeight, 75.0);
+        expectProp(result.$minWidth, 50.0);  // Should preserve existing
+        expectProp(result.$maxWidth, 100.0); // Should preserve existing
+      });
     });
 
     group('resolve', () {

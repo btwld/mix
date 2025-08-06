@@ -44,7 +44,7 @@ class Example extends StatelessWidget {
               .borderRadius(.circular(10));
 
             /// Builder Pattern Syntax for backwards compatibility
-            final builderStyle = $box.builder
+            final builderStyle = $box
               ..color.red()
               ..height(100)
               ..width(100)
