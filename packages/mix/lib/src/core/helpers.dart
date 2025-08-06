@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' as r;
 import 'package:flutter/widgets.dart' as w;
@@ -11,40 +10,22 @@ import 'internal/deep_collection_equality.dart';
 import 'mix_element.dart';
 import 'modifier.dart';
 import 'prop.dart';
+import 'spec.dart';
 
-/// Utility class providing helper functions for value resolution, merging, and interpolation.
+/// Core operations for Mix framework value transformations.
 ///
-/// Contains static methods for common operations in the Mix framework including
-/// property resolution, value merging, and interpolation functions.
-class MixHelpers {
-  /// Override for target platform in testing scenarios.
-  @visibleForTesting
-  static TargetPlatform? targetPlatformOverride;
-
-  /// Override for web platform detection in testing scenarios.
-  @visibleForTesting
-  static bool? isWebOverride;
+/// Provides value resolution, merging, and interpolation operations
+/// used throughout the Mix styling system.
+class MixOps {
   static const deepEquality = DeepCollectionEquality();
 
-  static const lerpDouble = ui.lerpDouble;
+  static const lerp = _lerpValue;
 
   static const mergeList = _mergeList;
 
   static const resolveList = _resolveList;
 
-  static const lerpStrutStyle = _lerpStrutStyle;
-
-  static const lerpMatrix4 = _lerpMatrix4;
-
-  static const lerpTextStyle = _lerpTextStyle;
-
-  static const lerpInt = _lerpInt;
-
-  static const lerpSnap = _lerpSnap;
-
-  static const lerpShadowList = ui.Shadow.lerpList;
-
-  const MixHelpers._();
+  const MixOps._();
   static V? resolve<V>(BuildContext context, PropBase<V>? prop) {
     if (prop == null) return null;
 
@@ -54,31 +35,6 @@ class MixHelpers {
   static V? merge<V extends Mixable>(V? a, V? b) {
     return (a?.merge(b) ?? b) as V?;
   }
-
-  static bool get isWeb => isWebOverride ?? kIsWeb;
-  static TargetPlatform get targetPlatform =>
-      targetPlatformOverride ?? defaultTargetPlatform;
-}
-
-P? _lerpSnap<P>(P? from, P? to, double t) {
-  if (from == null) return to;
-  if (to == null) return from;
-
-  return t < 0.5 ? from : to;
-}
-
-w.TextStyle? _lerpTextStyle(w.TextStyle? a, w.TextStyle? b, double t) {
-  return w.TextStyle.lerp(a, b, t)?.copyWith(
-    shadows: w.Shadow.lerpList(a?.shadows, b?.shadows, t),
-    fontVariations: lerpFontVariations(a?.fontVariations, b?.fontVariations, t),
-  );
-}
-
-int _lerpInt(int? a, int? b, double t) {
-  a ??= 0;
-  b ??= 0;
-
-  return (a + (b - a) * t).round();
 }
 
 List<T>? _mergeList<T>(
@@ -131,14 +87,6 @@ List<V>? _resolveList<T extends PropBase<V>, V>(BuildContext mix, List<T>? a) {
   return a.map((e) => e.resolveProp(mix)).whereType<V>().toList();
 }
 
-w.Matrix4? _lerpMatrix4(w.Matrix4? a, w.Matrix4? b, double t) {
-  if (a == null && b == null) return null;
-  if (a == null) return b;
-  if (b == null) return a;
-
-  return w.Matrix4Tween(begin: a, end: b).lerp(t);
-}
-
 w.StrutStyle? _lerpStrutStyle(w.StrutStyle? a, w.StrutStyle? b, double t) {
   if (a == null && b == null) return null;
   if (a == null) return b;
@@ -147,12 +95,12 @@ w.StrutStyle? _lerpStrutStyle(w.StrutStyle? a, w.StrutStyle? b, double t) {
   return w.StrutStyle(
     fontFamily: t < 0.5 ? a.fontFamily : b.fontFamily,
     fontFamilyFallback: t < 0.5 ? a.fontFamilyFallback : b.fontFamilyFallback,
-    fontSize: MixHelpers.lerpDouble(a.fontSize, b.fontSize, t),
-    height: MixHelpers.lerpDouble(a.height, b.height, t),
+    fontSize: ui.lerpDouble(a.fontSize, b.fontSize, t),
+    height: ui.lerpDouble(a.height, b.height, t),
     leadingDistribution: t < 0.5
         ? a.leadingDistribution
         : b.leadingDistribution,
-    leading: MixHelpers.lerpDouble(a.leading, b.leading, t),
+    leading: ui.lerpDouble(a.leading, b.leading, t),
     fontWeight: r.FontWeight.lerp(a.fontWeight, b.fontWeight, t),
     fontStyle: t < 0.5 ? a.fontStyle : b.fontStyle,
     forceStrutHeight: t < 0.5 ? a.forceStrutHeight : b.forceStrutHeight,
@@ -186,7 +134,7 @@ extension ListPropExt<T> on List<Prop<T>>? {
     if (other == null) return this;
     if (this == null) return other;
 
-    return MixHelpers.mergeList(this, other, strategy: strategy);
+    return MixOps.mergeList(this, other, strategy: strategy);
   }
 }
 
@@ -207,7 +155,7 @@ extension ListMixPropExt<T> on List<MixProp<T>>? {
     if (other == null) return this;
     if (this == null) return other;
 
-    return MixHelpers.mergeList(this, other, strategy: strategy);
+    return MixOps.mergeList(this, other, strategy: strategy);
   }
 }
 
@@ -216,7 +164,7 @@ extension ListModifierExt<T> on List<Modifier<T>>? {
     if (other == null) return this;
     if (this == null) return other;
 
-    return MixHelpers.mergeList(this, other);
+    return MixOps.mergeList(this, other);
   }
 }
 
@@ -227,4 +175,82 @@ extension ModifierConfigExt on WidgetDecoratorConfig? {
 
     return this!.merge(other);
   }
+}
+
+T? _lerpValue<T>(T? a, T? b, double t) {
+  return switch ((a, b)) {
+    // Null handling
+    (null, null) => null,
+    (_, null) => a,
+    (null, _) => b,
+
+    (Spec a, Spec b) => a.lerp(b, t) as T?,
+
+    // Numeric types
+    (num a, num b) => ui.lerpDouble(a, b, t) as T?,
+
+    // Core Flutter geometry (dart:ui)
+    (Offset a, Offset b) => Offset.lerp(a, b, t) as T?,
+    (Size a, Size b) => Size.lerp(a, b, t) as T?,
+    (Rect a, Rect b) => Rect.lerp(a, b, t) as T?,
+    (RRect a, RRect b) => RRect.lerp(a, b, t) as T?,
+
+    // Core Flutter color (dart:ui)
+    (Color a, Color b) => Color.lerp(a, b, t) as T?,
+    (HSVColor a, HSVColor b) => HSVColor.lerp(a, b, t) as T?,
+    (HSLColor a, HSLColor b) => HSLColor.lerp(a, b, t) as T?,
+
+    // Alignment - handle specific types first
+    (FractionalOffset a, FractionalOffset b) =>
+      FractionalOffset.lerp(a, b, t) as T?,
+    (Alignment a, Alignment b) => Alignment.lerp(a, b, t) as T?,
+    (AlignmentGeometry a, AlignmentGeometry b) =>
+      AlignmentGeometry.lerp(a, b, t) as T?,
+
+    // EdgeInsets - handle specific types first
+    (EdgeInsets a, EdgeInsets b) => EdgeInsets.lerp(a, b, t) as T?,
+    (EdgeInsetsGeometry a, EdgeInsetsGeometry b) =>
+      EdgeInsetsGeometry.lerp(a, b, t) as T?,
+
+    // BorderRadius - handle specific types first
+    (BorderRadius a, BorderRadius b) => BorderRadius.lerp(a, b, t) as T?,
+    (BorderRadiusGeometry a, BorderRadiusGeometry b) =>
+      BorderRadiusGeometry.lerp(a, b, t) as T?,
+
+    // Relative positioning
+    (RelativeRect a, RelativeRect b) => RelativeRect.lerp(a, b, t) as T?,
+
+    (List<BoxShadow> a, List<BoxShadow> b) => BoxShadow.lerpList(a, b, t) as T?,
+    (List<Shadow> a, List<Shadow> b) => Shadow.lerpList(a, b, t) as T?,
+
+    // Text painting
+    (TextStyle a, TextStyle b) => TextStyle.lerp(a, b, t) as T?,
+    (StrutStyle a, StrutStyle b) => _lerpStrutStyle(a, b, t) as T?,
+
+    // Shadows
+    (BoxShadow a, BoxShadow b) => BoxShadow.lerp(a, b, t) as T?,
+    (Shadow a, Shadow b) => Shadow.lerp(a, b, t) as T?,
+
+    // Borders and shapes
+    (Border a, Border b) => Border.lerp(a, b, t) as T?,
+    (ShapeBorder a, ShapeBorder b) => ShapeBorder.lerp(a, b, t) as T?,
+
+    // Gradients
+    (LinearGradient a, LinearGradient b) => LinearGradient.lerp(a, b, t) as T?,
+    (RadialGradient a, RadialGradient b) => RadialGradient.lerp(a, b, t) as T?,
+    (SweepGradient a, SweepGradient b) => SweepGradient.lerp(a, b, t) as T?,
+
+    // Constraints
+    (BoxConstraints a, BoxConstraints b) => BoxConstraints.lerp(a, b, t) as T?,
+
+    // Theme data
+    (IconThemeData a, IconThemeData b) => IconThemeData.lerp(a, b, t) as T?,
+    (ThemeData a, ThemeData b) => ThemeData.lerp(a, b, t) as T?,
+
+    // Matrix4 - use proper tween instead of snap
+    (Matrix4 a, Matrix4 b) => Matrix4Tween(begin: a, end: b).lerp(t) as T?,
+
+    // Default snap behavior for non-lerpable types
+    _ => t < 0.5 ? a : b,
+  };
 }

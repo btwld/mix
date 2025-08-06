@@ -285,18 +285,18 @@ class IconMix extends Style<IconSpec>
   @override
   IconSpec resolve(BuildContext context) {
     return IconSpec(
-      color: MixHelpers.resolve(context, $color),
-      size: MixHelpers.resolve(context, $size),
-      weight: MixHelpers.resolve(context, $weight),
-      grade: MixHelpers.resolve(context, $grade),
-      opticalSize: MixHelpers.resolve(context, $opticalSize),
-      shadows: MixHelpers.resolveList(context, $shadows),
-      textDirection: MixHelpers.resolve(context, $textDirection),
-      applyTextScaling: MixHelpers.resolve(context, $applyTextScaling),
-      fill: MixHelpers.resolve(context, $fill),
-      semanticsLabel: MixHelpers.resolve(context, $semanticsLabel),
-      blendMode: MixHelpers.resolve(context, $blendMode),
-      icon: MixHelpers.resolve(context, $icon),
+      color: MixOps.resolve(context, $color),
+      size: MixOps.resolve(context, $size),
+      weight: MixOps.resolve(context, $weight),
+      grade: MixOps.resolve(context, $grade),
+      opticalSize: MixOps.resolve(context, $opticalSize),
+      shadows: MixOps.resolveList(context, $shadows),
+      textDirection: MixOps.resolve(context, $textDirection),
+      applyTextScaling: MixOps.resolve(context, $applyTextScaling),
+      fill: MixOps.resolve(context, $fill),
+      semanticsLabel: MixOps.resolve(context, $semanticsLabel),
+      blendMode: MixOps.resolve(context, $blendMode),
+      icon: MixOps.resolve(context, $icon),
     );
   }
 

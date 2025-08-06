@@ -33,7 +33,7 @@ final class AspectRatioWidgetDecorator
   ///
   /// The interpolation is performed on each property of the [AspectRatioWidgetDecorator] using the appropriate
   /// interpolation method:
-  /// - [MixHelpers.lerpDouble] for [aspectRatio].
+  /// - [MixOps.lerp] for [aspectRatio].
 
   /// This method is typically used in animations to smoothly transition between
   /// different [AspectRatioWidgetDecorator] configurations.
@@ -42,7 +42,7 @@ final class AspectRatioWidgetDecorator
     if (other == null) return this;
 
     return AspectRatioWidgetDecorator(
-      MixHelpers.lerpDouble(aspectRatio, other.aspectRatio, t)!,
+      MixOps.lerp(aspectRatio, other.aspectRatio, t)!,
     );
   }
 

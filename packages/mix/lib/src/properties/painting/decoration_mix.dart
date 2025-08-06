@@ -243,14 +243,14 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
   @override
   BoxDecoration resolve(BuildContext context) {
     return BoxDecoration(
-      color: MixHelpers.resolve(context, $color),
-      image: MixHelpers.resolve(context, $image),
-      border: MixHelpers.resolve(context, $border),
-      borderRadius: MixHelpers.resolve(context, $borderRadius),
-      boxShadow: MixHelpers.resolveList(context, $boxShadow),
-      gradient: MixHelpers.resolve(context, $gradient),
-      backgroundBlendMode: MixHelpers.resolve(context, $backgroundBlendMode),
-      shape: MixHelpers.resolve(context, $shape) ?? BoxShape.rectangle,
+      color: MixOps.resolve(context, $color),
+      image: MixOps.resolve(context, $image),
+      border: MixOps.resolve(context, $border),
+      borderRadius: MixOps.resolve(context, $borderRadius),
+      boxShadow: MixOps.resolveList(context, $boxShadow),
+      gradient: MixOps.resolve(context, $gradient),
+      backgroundBlendMode: MixOps.resolve(context, $backgroundBlendMode),
+      shape: MixOps.resolve(context, $shape) ?? BoxShape.rectangle,
     );
   }
 
@@ -350,11 +350,11 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
   @override
   ShapeDecoration resolve(BuildContext context) {
     return ShapeDecoration(
-      color: MixHelpers.resolve(context, $color) ?? defaultValue.color,
-      image: MixHelpers.resolve(context, $image) ?? defaultValue.image,
-      gradient: MixHelpers.resolve(context, $gradient) ?? defaultValue.gradient,
-      shadows: MixHelpers.resolveList(context, $boxShadow),
-      shape: MixHelpers.resolve(context, $shape) ?? defaultValue.shape,
+      color: MixOps.resolve(context, $color) ?? defaultValue.color,
+      image: MixOps.resolve(context, $image) ?? defaultValue.image,
+      gradient: MixOps.resolve(context, $gradient) ?? defaultValue.gradient,
+      shadows: MixOps.resolveList(context, $boxShadow),
+      shape: MixOps.resolve(context, $shape) ?? defaultValue.shape,
     );
   }
 

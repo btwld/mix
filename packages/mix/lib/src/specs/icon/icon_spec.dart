@@ -102,18 +102,22 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
     if (other == null) return this;
 
     return IconSpec(
-      color: Color.lerp(color, other.color, t),
-      size: MixHelpers.lerpDouble(size, other.size, t),
-      weight: MixHelpers.lerpDouble(weight, other.weight, t),
-      grade: MixHelpers.lerpDouble(grade, other.grade, t),
-      opticalSize: MixHelpers.lerpDouble(opticalSize, other.opticalSize, t),
-      shadows: MixHelpers.lerpShadowList(shadows, other.shadows, t),
-      textDirection: t < 0.5 ? textDirection : other.textDirection,
-      applyTextScaling: t < 0.5 ? applyTextScaling : other.applyTextScaling,
-      fill: MixHelpers.lerpDouble(fill, other.fill, t),
-      semanticsLabel: t < 0.5 ? semanticsLabel : other.semanticsLabel,
-      blendMode: t < 0.5 ? blendMode : other.blendMode,
-      icon: t < 0.5 ? icon : other.icon,
+      color: MixOps.lerp(color, other.color, t),
+      size: MixOps.lerp(size, other.size, t),
+      weight: MixOps.lerp(weight, other.weight, t),
+      grade: MixOps.lerp(grade, other.grade, t),
+      opticalSize: MixOps.lerp(opticalSize, other.opticalSize, t),
+      shadows: MixOps.lerp(shadows, other.shadows, t),
+      textDirection: MixOps.lerp(textDirection, other.textDirection, t),
+      applyTextScaling: MixOps.lerp(
+        applyTextScaling,
+        other.applyTextScaling,
+        t,
+      ),
+      fill: MixOps.lerp(fill, other.fill, t),
+      semanticsLabel: MixOps.lerp(semanticsLabel, other.semanticsLabel, t),
+      blendMode: MixOps.lerp(blendMode, other.blendMode, t),
+      icon: MixOps.lerp(icon, other.icon, t),
     );
   }
 

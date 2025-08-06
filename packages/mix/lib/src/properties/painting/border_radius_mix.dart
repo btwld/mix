@@ -188,7 +188,7 @@ sealed class BorderRadiusGeometryMix<T extends BorderRadiusGeometry>
   @override
   /// Merges this [BorderRadiusGeometryMix] instance with another of the same type.
   ///
-  /// Returns a new instance where each property is merged using the [MixHelpers.merge] logic.
+  /// Returns a new instance where each property is merged using the [MixOps.merge] logic.
   /// If [other] is null, returns this instance.
   /// The resulting type will match this instance's type parameter [T].
   BorderRadiusGeometryMix<T> merge(covariant BorderRadiusGeometryMix<T>? other);
@@ -313,10 +313,10 @@ final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
   @override
   BorderRadius resolve(BuildContext context) {
     return BorderRadius.only(
-      topLeft: MixHelpers.resolve(context, $topLeft) ?? Radius.zero,
-      topRight: MixHelpers.resolve(context, $topRight) ?? Radius.zero,
-      bottomLeft: MixHelpers.resolve(context, $bottomLeft) ?? Radius.zero,
-      bottomRight: MixHelpers.resolve(context, $bottomRight) ?? Radius.zero,
+      topLeft: MixOps.resolve(context, $topLeft) ?? Radius.zero,
+      topRight: MixOps.resolve(context, $topRight) ?? Radius.zero,
+      bottomLeft: MixOps.resolve(context, $bottomLeft) ?? Radius.zero,
+      bottomRight: MixOps.resolve(context, $bottomRight) ?? Radius.zero,
     );
   }
 
@@ -463,10 +463,10 @@ final class BorderRadiusDirectionalMix
   @override
   BorderRadiusDirectional resolve(BuildContext context) {
     return BorderRadiusDirectional.only(
-      topStart: MixHelpers.resolve(context, $topStart) ?? Radius.zero,
-      topEnd: MixHelpers.resolve(context, $topEnd) ?? Radius.zero,
-      bottomStart: MixHelpers.resolve(context, $bottomStart) ?? Radius.zero,
-      bottomEnd: MixHelpers.resolve(context, $bottomEnd) ?? Radius.zero,
+      topStart: MixOps.resolve(context, $topStart) ?? Radius.zero,
+      topEnd: MixOps.resolve(context, $topEnd) ?? Radius.zero,
+      bottomStart: MixOps.resolve(context, $bottomStart) ?? Radius.zero,
+      bottomEnd: MixOps.resolve(context, $bottomEnd) ?? Radius.zero,
     );
   }
 

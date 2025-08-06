@@ -130,7 +130,7 @@ class MixableTypeMethods {
             final spreadOperator = hasDefaultValue ? '...' : '...?';
 
             return shouldMergeLists
-                ? '$fieldName: MixHelpers.mergeList($fieldNameRef, other.$fieldName),'
+                ? '$fieldName: MixOps.mergeList($fieldNameRef, other.$fieldName),'
                 : '$fieldName: [$spreadOperator $fieldNameRef, $spreadOperator other.$fieldName],';
           } else if (field.hasResolvable) {
             final resolvable = field.resolvable;

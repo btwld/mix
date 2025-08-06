@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../core/helpers.dart';
 import '../../core/spec.dart';
 
 final class StackSpec extends Spec<StackSpec> with Diagnosticable {
@@ -52,10 +53,10 @@ final class StackSpec extends Spec<StackSpec> with Diagnosticable {
     if (other == null) return this;
 
     return StackSpec(
-      alignment: AlignmentGeometry.lerp(alignment, other.alignment, t),
-      fit: t < 0.5 ? fit : other.fit,
-      textDirection: t < 0.5 ? textDirection : other.textDirection,
-      clipBehavior: t < 0.5 ? clipBehavior : other.clipBehavior,
+      alignment: MixOps.lerp(alignment, other.alignment, t),
+      fit: MixOps.lerp(fit, other.fit, t),
+      textDirection: MixOps.lerp(textDirection, other.textDirection, t),
+      clipBehavior: MixOps.lerp(clipBehavior, other.clipBehavior, t),
     );
   }
 

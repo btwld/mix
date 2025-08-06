@@ -8,6 +8,7 @@
 /// - Applying .scale() transformation
 /// - Adding .animate() for smooth transitions
 /// - Transform alignment with .transformAlignment()
+library;
 
 import 'package:example/helpers.dart';
 import 'package:flutter/material.dart';

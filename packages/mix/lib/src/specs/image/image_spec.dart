@@ -62,16 +62,28 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
       DiagnosticsProperty('semanticLabel', semanticLabel, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('excludeFromSemantics', excludeFromSemantics, defaultValue: null),
+      DiagnosticsProperty(
+        'excludeFromSemantics',
+        excludeFromSemantics,
+        defaultValue: null,
+      ),
     );
     properties.add(
-      DiagnosticsProperty('gaplessPlayback', gaplessPlayback, defaultValue: null),
+      DiagnosticsProperty(
+        'gaplessPlayback',
+        gaplessPlayback,
+        defaultValue: null,
+      ),
     );
     properties.add(
       DiagnosticsProperty('isAntiAlias', isAntiAlias, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('matchTextDirection', matchTextDirection, defaultValue: null),
+      DiagnosticsProperty(
+        'matchTextDirection',
+        matchTextDirection,
+        defaultValue: null,
+      ),
     );
   }
 
@@ -117,21 +129,29 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
     if (other == null) return this;
 
     return ImageSpec(
-      image: t < 0.5 ? image : other.image,
-      width: MixHelpers.lerpDouble(width, other.width, t),
-      height: MixHelpers.lerpDouble(height, other.height, t),
-      color: Color.lerp(color, other.color, t),
-      repeat: t < 0.5 ? repeat : other.repeat,
-      fit: t < 0.5 ? fit : other.fit,
-      alignment: AlignmentGeometry.lerp(alignment, other.alignment, t),
-      centerSlice: Rect.lerp(centerSlice, other.centerSlice, t),
-      filterQuality: t < 0.5 ? filterQuality : other.filterQuality,
-      colorBlendMode: t < 0.5 ? colorBlendMode : other.colorBlendMode,
-      semanticLabel: t < 0.5 ? semanticLabel : other.semanticLabel,
-      excludeFromSemantics: t < 0.5 ? excludeFromSemantics : other.excludeFromSemantics,
-      gaplessPlayback: t < 0.5 ? gaplessPlayback : other.gaplessPlayback,
-      isAntiAlias: t < 0.5 ? isAntiAlias : other.isAntiAlias,
-      matchTextDirection: t < 0.5 ? matchTextDirection : other.matchTextDirection,
+      image: MixOps.lerp(image, other.image, t),
+      width: MixOps.lerp(width, other.width, t),
+      height: MixOps.lerp(height, other.height, t),
+      color: MixOps.lerp(color, other.color, t),
+      repeat: MixOps.lerp(repeat, other.repeat, t),
+      fit: MixOps.lerp(fit, other.fit, t),
+      alignment: MixOps.lerp(alignment, other.alignment, t),
+      centerSlice: MixOps.lerp(centerSlice, other.centerSlice, t),
+      filterQuality: MixOps.lerp(filterQuality, other.filterQuality, t),
+      colorBlendMode: MixOps.lerp(colorBlendMode, other.colorBlendMode, t),
+      semanticLabel: MixOps.lerp(semanticLabel, other.semanticLabel, t),
+      excludeFromSemantics: MixOps.lerp(
+        excludeFromSemantics,
+        other.excludeFromSemantics,
+        t,
+      ),
+      gaplessPlayback: MixOps.lerp(gaplessPlayback, other.gaplessPlayback, t),
+      isAntiAlias: MixOps.lerp(isAntiAlias, other.isAntiAlias, t),
+      matchTextDirection: MixOps.lerp(
+        matchTextDirection,
+        other.matchTextDirection,
+        t,
+      ),
     );
   }
 

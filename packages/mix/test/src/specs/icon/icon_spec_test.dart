@@ -185,7 +185,7 @@ void main() {
 
         expect(lerped.shadows, isA<List<Shadow>>());
         expect(lerped.shadows!.length, 1);
-        // Shadow interpolation details would depend on MixHelpers.lerpShadowList implementation
+        // Shadow interpolation is handled by MixOps.lerp
       });
 
       test('handles null shadow interpolation', () {

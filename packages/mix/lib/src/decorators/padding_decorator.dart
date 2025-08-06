@@ -42,9 +42,7 @@ final class PaddingWidgetDecorator
   PaddingWidgetDecorator lerp(PaddingWidgetDecorator? other, double t) {
     if (other == null) return this;
 
-    return PaddingWidgetDecorator(
-      EdgeInsetsGeometry.lerp(padding, other.padding, t)!,
-    );
+    return PaddingWidgetDecorator(MixOps.lerp(padding, other.padding, t)!);
   }
 
   @override
@@ -89,7 +87,7 @@ class PaddingWidgetDecoratorMix
   /// ```
   @override
   PaddingWidgetDecorator resolve(BuildContext context) {
-    return PaddingWidgetDecorator(MixHelpers.resolve(context, padding));
+    return PaddingWidgetDecorator(MixOps.resolve(context, padding));
   }
 
   /// Merges the properties of this [PaddingWidgetDecoratorMix] with the properties of [other].

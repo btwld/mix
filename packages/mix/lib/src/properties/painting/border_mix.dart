@@ -281,10 +281,10 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
   @override
   Border resolve(BuildContext context) {
     return Border(
-      top: MixHelpers.resolve(context, $top) ?? BorderSide.none,
-      right: MixHelpers.resolve(context, $right) ?? BorderSide.none,
-      bottom: MixHelpers.resolve(context, $bottom) ?? BorderSide.none,
-      left: MixHelpers.resolve(context, $left) ?? BorderSide.none,
+      top: MixOps.resolve(context, $top) ?? BorderSide.none,
+      right: MixOps.resolve(context, $right) ?? BorderSide.none,
+      bottom: MixOps.resolve(context, $bottom) ?? BorderSide.none,
+      left: MixOps.resolve(context, $left) ?? BorderSide.none,
     );
   }
 
@@ -449,10 +449,10 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
   @override
   BorderDirectional resolve(BuildContext context) {
     return BorderDirectional(
-      top: MixHelpers.resolve(context, $top) ?? defaultValue.top,
-      start: MixHelpers.resolve(context, $start) ?? defaultValue.start,
-      end: MixHelpers.resolve(context, $end) ?? defaultValue.end,
-      bottom: MixHelpers.resolve(context, $bottom) ?? defaultValue.bottom,
+      top: MixOps.resolve(context, $top) ?? defaultValue.top,
+      start: MixOps.resolve(context, $start) ?? defaultValue.start,
+      end: MixOps.resolve(context, $end) ?? defaultValue.end,
+      bottom: MixOps.resolve(context, $bottom) ?? defaultValue.bottom,
     );
   }
 
@@ -603,11 +603,11 @@ final class BorderSideMix extends Mix<BorderSide>
   @override
   BorderSide resolve(BuildContext context) {
     return BorderSide(
-      color: MixHelpers.resolve(context, $color) ?? defaultValue.color,
-      width: MixHelpers.resolve(context, $width) ?? defaultValue.width,
-      style: MixHelpers.resolve(context, $style) ?? defaultValue.style,
+      color: MixOps.resolve(context, $color) ?? defaultValue.color,
+      width: MixOps.resolve(context, $width) ?? defaultValue.width,
+      style: MixOps.resolve(context, $style) ?? defaultValue.style,
       strokeAlign:
-          MixHelpers.resolve(context, $strokeAlign) ?? defaultValue.strokeAlign,
+          MixOps.resolve(context, $strokeAlign) ?? defaultValue.strokeAlign,
     );
   }
 

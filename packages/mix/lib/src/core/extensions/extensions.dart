@@ -6,7 +6,7 @@
 /// final duration2 = 5.seconds; // Duration(seconds: 5)
 /// final duration3 = 2.hours; // Duration(hours: 2)
 /// ```
-extension MixDurationInt on int {
+extension DurationIntExt on int {
   /// Creates a [Duration] with this many days.
   Duration get days => Duration(days: this);
 

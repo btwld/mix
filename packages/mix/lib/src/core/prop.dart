@@ -66,7 +66,6 @@ sealed class PropBase<V> {
   PropBase<V> mergeProp(covariant PropBase<V>? other);
 
   /// Resolves the property value using the provided context
-
   V resolveProp(BuildContext context);
 }
 

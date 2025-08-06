@@ -45,7 +45,7 @@ final class FractionallySizedBoxWidgetDecorator
   ///
   /// The interpolation is performed on each property of the [FractionallySizedBoxWidgetDecorator] using the appropriate
   /// interpolation method:
-  /// - [MixHelpers.lerpDouble] for [widthFactor] and [heightFactor].
+  /// - [MixOps.lerp] for [widthFactor] and [heightFactor].
   /// - [AlignmentGeometry.lerp] for [alignment].
 
   /// This method is typically used in animations to smoothly transition between
@@ -58,9 +58,9 @@ final class FractionallySizedBoxWidgetDecorator
     if (other == null) return this;
 
     return FractionallySizedBoxWidgetDecorator(
-      widthFactor: MixHelpers.lerpDouble(widthFactor, other.widthFactor, t),
-      heightFactor: MixHelpers.lerpDouble(heightFactor, other.heightFactor, t),
-      alignment: AlignmentGeometry.lerp(alignment, other.alignment, t),
+      widthFactor: MixOps.lerp(widthFactor, other.widthFactor, t),
+      heightFactor: MixOps.lerp(heightFactor, other.heightFactor, t),
+      alignment: MixOps.lerp(alignment, other.alignment, t),
     );
   }
 
@@ -136,9 +136,9 @@ class FractionallySizedBoxWidgetDecoratorMix
   @override
   FractionallySizedBoxWidgetDecorator resolve(BuildContext context) {
     return FractionallySizedBoxWidgetDecorator(
-      widthFactor: MixHelpers.resolve(context, widthFactor),
-      heightFactor: MixHelpers.resolve(context, heightFactor),
-      alignment: MixHelpers.resolve(context, alignment),
+      widthFactor: MixOps.resolve(context, widthFactor),
+      heightFactor: MixOps.resolve(context, heightFactor),
+      alignment: MixOps.resolve(context, alignment),
     );
   }
 

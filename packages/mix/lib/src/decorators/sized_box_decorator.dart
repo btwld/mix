@@ -35,7 +35,7 @@ final class SizedBoxWidgetDecorator
   ///
   /// The interpolation is performed on each property of the [SizedBoxWidgetDecorator] using the appropriate
   /// interpolation method:
-  /// - [MixHelpers.lerpDouble] for [width] and [height].
+  /// - [MixOps.lerp] for [width] and [height].
 
   /// This method is typically used in animations to smoothly transition between
   /// different [SizedBoxWidgetDecorator] configurations.
@@ -44,8 +44,8 @@ final class SizedBoxWidgetDecorator
     if (other == null) return this;
 
     return SizedBoxWidgetDecorator(
-      width: MixHelpers.lerpDouble(width, other.width, t),
-      height: MixHelpers.lerpDouble(height, other.height, t),
+      width: MixOps.lerp(width, other.width, t),
+      height: MixOps.lerp(height, other.height, t),
     );
   }
 
@@ -121,8 +121,8 @@ class SizedBoxWidgetDecoratorMix
   @override
   SizedBoxWidgetDecorator resolve(BuildContext context) {
     return SizedBoxWidgetDecorator(
-      width: MixHelpers.resolve(context, width),
-      height: MixHelpers.resolve(context, height),
+      width: MixOps.resolve(context, width),
+      height: MixOps.resolve(context, height),
     );
   }
 

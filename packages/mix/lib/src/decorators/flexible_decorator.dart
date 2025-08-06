@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import '../core/helpers.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
@@ -45,8 +46,8 @@ final class FlexibleWidgetDecorator
     if (other == null) return this;
 
     return FlexibleWidgetDecorator(
-      flex: t < 0.5 ? flex : other.flex,
-      fit: t < 0.5 ? fit : other.fit,
+      flex: MixOps.lerp(flex, other.flex, t),
+      fit: MixOps.lerp(fit, other.fit, t),
     );
   }
 

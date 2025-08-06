@@ -24,7 +24,7 @@ final class RotatedBoxWidgetDecorator
     if (other == null) return this;
 
     return RotatedBoxWidgetDecorator(
-      MixHelpers.lerpInt(quarterTurns, other.quarterTurns, t),
+      MixOps.lerp(quarterTurns, other.quarterTurns, t),
     );
   }
 
@@ -67,7 +67,7 @@ class RotatedBoxWidgetDecoratorMix
   /// ```
   @override
   RotatedBoxWidgetDecorator resolve(BuildContext context) {
-    return RotatedBoxWidgetDecorator(MixHelpers.resolve(context, quarterTurns));
+    return RotatedBoxWidgetDecorator(MixOps.resolve(context, quarterTurns));
   }
 
   /// Merges the properties of this [RotatedBoxWidgetDecoratorMix] with the properties of [other].

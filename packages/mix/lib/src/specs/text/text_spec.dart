@@ -142,8 +142,8 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
   ///
   /// The interpolation is performed on each property of the [TextSpec] using the appropriate
   /// interpolation method:
-  /// - [MixHelpers.lerpStrutStyle] for [strutStyle].
-  /// - [MixHelpers.lerpTextStyle] for [style].
+  /// - [MixOps.lerpStrutStyle] for [strutStyle].
+  /// - [MixOps.lerp] for [style].
   /// For [overflow] and [textAlign] and [textScaler] and [maxLines] and [textWidthBasis] and [textHeightBehavior] and [textDirection] and [softWrap] and [textModifiers], the interpolation is performed using a step function.
   /// If [t] is less than 0.5, the value from the current [TextSpec] is used. Otherwise, the value
   /// from the [other] [TextSpec] is used.
@@ -155,22 +155,24 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     if (other == null) return this;
 
     return TextSpec(
-      overflow: t < 0.5 ? overflow : other.overflow,
-      strutStyle: MixHelpers.lerpStrutStyle(strutStyle, other.strutStyle, t),
-      textAlign: t < 0.5 ? textAlign : other.textAlign,
-      textScaler: t < 0.5 ? textScaler : other.textScaler,
-      maxLines: t < 0.5 ? maxLines : other.maxLines,
-      style: MixHelpers.lerpTextStyle(style, other.style, t),
-      textWidthBasis: t < 0.5 ? textWidthBasis : other.textWidthBasis,
-      textHeightBehavior: t < 0.5
-          ? textHeightBehavior
-          : other.textHeightBehavior,
-      textDirection: t < 0.5 ? textDirection : other.textDirection,
-      softWrap: t < 0.5 ? softWrap : other.softWrap,
-      textModifiers: t < 0.5 ? textModifiers : other.textModifiers,
-      selectionColor: Color.lerp(selectionColor, other.selectionColor, t),
-      semanticsLabel: t < 0.5 ? semanticsLabel : other.semanticsLabel,
-      locale: t < 0.5 ? locale : other.locale,
+      overflow: MixOps.lerp(overflow, other.overflow, t),
+      strutStyle: MixOps.lerp(strutStyle, other.strutStyle, t),
+      textAlign: MixOps.lerp(textAlign, other.textAlign, t),
+      textScaler: MixOps.lerp(textScaler, other.textScaler, t),
+      maxLines: MixOps.lerp(maxLines, other.maxLines, t),
+      style: MixOps.lerp(style, other.style, t),
+      textWidthBasis: MixOps.lerp(textWidthBasis, other.textWidthBasis, t),
+      textHeightBehavior: MixOps.lerp(
+        textHeightBehavior,
+        other.textHeightBehavior,
+        t,
+      ),
+      textDirection: MixOps.lerp(textDirection, other.textDirection, t),
+      softWrap: MixOps.lerp(softWrap, other.softWrap, t),
+      textModifiers: MixOps.lerp(textModifiers, other.textModifiers, t),
+      selectionColor: MixOps.lerp(selectionColor, other.selectionColor, t),
+      semanticsLabel: MixOps.lerp(semanticsLabel, other.semanticsLabel, t),
+      locale: MixOps.lerp(locale, other.locale, t),
     );
   }
 

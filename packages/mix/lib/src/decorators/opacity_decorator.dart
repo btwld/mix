@@ -36,7 +36,7 @@ final class OpacityWidgetDecorator
   ///
   /// The interpolation is performed on each property of the [OpacityWidgetDecorator] using the appropriate
   /// interpolation method:
-  /// - [MixHelpers.lerpDouble] for [opacity].
+  /// - [MixOps.lerp] for [opacity].
 
   /// This method is typically used in animations to smoothly transition between
   /// different [OpacityWidgetDecorator] configurations.
@@ -44,9 +44,7 @@ final class OpacityWidgetDecorator
   OpacityWidgetDecorator lerp(OpacityWidgetDecorator? other, double t) {
     if (other == null) return this;
 
-    return OpacityWidgetDecorator(
-      MixHelpers.lerpDouble(opacity, other.opacity, t)!,
-    );
+    return OpacityWidgetDecorator(MixOps.lerp(opacity, other.opacity, t)!);
   }
 
   @override

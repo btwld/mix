@@ -1,8 +1,7 @@
-import 'dart:ui' show lerpDouble;
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../core/helpers.dart';
 import '../../core/spec.dart';
 
 /// Defines the styling for a Flex widget.
@@ -95,17 +94,27 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
     if (other == null) return this;
 
     return FlexSpec(
-      direction: t < 0.5 ? direction : other.direction,
-      mainAxisAlignment: t < 0.5 ? mainAxisAlignment : other.mainAxisAlignment,
-      crossAxisAlignment: t < 0.5
-          ? crossAxisAlignment
-          : other.crossAxisAlignment,
-      mainAxisSize: t < 0.5 ? mainAxisSize : other.mainAxisSize,
-      verticalDirection: t < 0.5 ? verticalDirection : other.verticalDirection,
-      textDirection: t < 0.5 ? textDirection : other.textDirection,
-      textBaseline: t < 0.5 ? textBaseline : other.textBaseline,
-      clipBehavior: t < 0.5 ? clipBehavior : other.clipBehavior,
-      gap: lerpDouble(gap, other.gap, t),
+      direction: MixOps.lerp(direction, other.direction, t),
+      mainAxisAlignment: MixOps.lerp(
+        mainAxisAlignment,
+        other.mainAxisAlignment,
+        t,
+      ),
+      crossAxisAlignment: MixOps.lerp(
+        crossAxisAlignment,
+        other.crossAxisAlignment,
+        t,
+      ),
+      mainAxisSize: MixOps.lerp(mainAxisSize, other.mainAxisSize, t),
+      verticalDirection: MixOps.lerp(
+        verticalDirection,
+        other.verticalDirection,
+        t,
+      ),
+      textDirection: MixOps.lerp(textDirection, other.textDirection, t),
+      textBaseline: MixOps.lerp(textBaseline, other.textBaseline, t),
+      clipBehavior: MixOps.lerp(clipBehavior, other.clipBehavior, t),
+      gap: MixOps.lerp(gap, other.gap, t),
     );
   }
 

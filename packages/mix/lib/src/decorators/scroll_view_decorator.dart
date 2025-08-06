@@ -46,11 +46,11 @@ final class ScrollViewWidgetDecorator
     if (other == null) return this;
 
     return ScrollViewWidgetDecorator(
-      scrollDirection: t < 0.5 ? scrollDirection : other.scrollDirection,
-      reverse: t < 0.5 ? reverse : other.reverse,
-      padding: EdgeInsetsGeometry.lerp(padding, other.padding, t),
-      physics: t < 0.5 ? physics : other.physics,
-      clipBehavior: t < 0.5 ? clipBehavior : other.clipBehavior,
+      scrollDirection: MixOps.lerp(scrollDirection, other.scrollDirection, t),
+      reverse: MixOps.lerp(reverse, other.reverse, t),
+      padding: MixOps.lerp(padding, other.padding, t),
+      physics: MixOps.lerp(physics, other.physics, t),
+      clipBehavior: MixOps.lerp(clipBehavior, other.clipBehavior, t),
     );
   }
 
@@ -181,11 +181,11 @@ class ScrollViewWidgetDecoratorMix
   @override
   ScrollViewWidgetDecorator resolve(BuildContext context) {
     return ScrollViewWidgetDecorator(
-      scrollDirection: MixHelpers.resolve(context, scrollDirection),
-      reverse: MixHelpers.resolve(context, reverse),
-      padding: MixHelpers.resolve(context, padding),
-      physics: MixHelpers.resolve(context, physics),
-      clipBehavior: MixHelpers.resolve(context, clipBehavior),
+      scrollDirection: MixOps.resolve(context, scrollDirection),
+      reverse: MixOps.resolve(context, reverse),
+      padding: MixOps.resolve(context, padding),
+      physics: MixOps.resolve(context, physics),
+      clipBehavior: MixOps.resolve(context, clipBehavior),
     );
   }
 

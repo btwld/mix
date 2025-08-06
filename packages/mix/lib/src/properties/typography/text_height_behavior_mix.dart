@@ -83,11 +83,11 @@ class TextHeightBehaviorMix extends Mix<TextHeightBehavior> {
   TextHeightBehavior resolve(BuildContext context) {
     return TextHeightBehavior(
       applyHeightToFirstAscent:
-          MixHelpers.resolve(context, $applyHeightToFirstAscent) ?? true,
+          MixOps.resolve(context, $applyHeightToFirstAscent) ?? true,
       applyHeightToLastDescent:
-          MixHelpers.resolve(context, $applyHeightToLastDescent) ?? true,
+          MixOps.resolve(context, $applyHeightToLastDescent) ?? true,
       leadingDistribution:
-          MixHelpers.resolve(context, $leadingDistribution) ??
+          MixOps.resolve(context, $leadingDistribution) ??
           TextLeadingDistribution.proportional,
     );
   }

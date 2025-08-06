@@ -36,8 +36,8 @@ final class ClipOvalWidgetDecorator
     if (other == null) return this;
 
     return ClipOvalWidgetDecorator(
-      clipper: t < 0.5 ? clipper : other.clipper,
-      clipBehavior: t < 0.5 ? clipBehavior : other.clipBehavior,
+      clipper: MixOps.lerp(clipper, other.clipper, t),
+      clipBehavior: MixOps.lerp(clipBehavior, other.clipBehavior, t),
     );
   }
 
@@ -85,8 +85,8 @@ class ClipOvalWidgetDecoratorMix
   @override
   ClipOvalWidgetDecorator resolve(BuildContext context) {
     return ClipOvalWidgetDecorator(
-      clipper: MixHelpers.resolve(context, clipper),
-      clipBehavior: MixHelpers.resolve(context, clipBehavior),
+      clipper: MixOps.resolve(context, clipper),
+      clipBehavior: MixOps.resolve(context, clipBehavior),
     );
   }
 
@@ -141,8 +141,8 @@ final class ClipRectWidgetDecorator
     if (other == null) return this;
 
     return ClipRectWidgetDecorator(
-      clipper: t < 0.5 ? clipper : other.clipper,
-      clipBehavior: t < 0.5 ? clipBehavior : other.clipBehavior,
+      clipper: MixOps.lerp(clipper, other.clipper, t),
+      clipBehavior: MixOps.lerp(clipBehavior, other.clipBehavior, t),
     );
   }
 
@@ -194,8 +194,8 @@ class ClipRectWidgetDecoratorMix
   @override
   ClipRectWidgetDecorator resolve(BuildContext context) {
     return ClipRectWidgetDecorator(
-      clipper: MixHelpers.resolve(context, clipper),
-      clipBehavior: MixHelpers.resolve(context, clipBehavior),
+      clipper: MixOps.resolve(context, clipper),
+      clipBehavior: MixOps.resolve(context, clipBehavior),
     );
   }
 
@@ -271,13 +271,9 @@ final class ClipRRectWidgetDecorator
     if (other == null) return this;
 
     return ClipRRectWidgetDecorator(
-      borderRadius: BorderRadiusGeometry.lerp(
-        borderRadius,
-        other.borderRadius,
-        t,
-      ),
-      clipper: t < 0.5 ? clipper : other.clipper,
-      clipBehavior: t < 0.5 ? clipBehavior : other.clipBehavior,
+      borderRadius: MixOps.lerp(borderRadius, other.borderRadius, t),
+      clipper: MixOps.lerp(clipper, other.clipper, t),
+      clipBehavior: MixOps.lerp(clipBehavior, other.clipBehavior, t),
     );
   }
 
@@ -351,9 +347,9 @@ class ClipRRectWidgetDecoratorMix
   @override
   ClipRRectWidgetDecorator resolve(BuildContext context) {
     return ClipRRectWidgetDecorator(
-      borderRadius: MixHelpers.resolve(context, borderRadius),
-      clipper: MixHelpers.resolve(context, clipper),
-      clipBehavior: MixHelpers.resolve(context, clipBehavior),
+      borderRadius: MixOps.resolve(context, borderRadius),
+      clipper: MixOps.resolve(context, clipper),
+      clipBehavior: MixOps.resolve(context, clipBehavior),
     );
   }
 
@@ -422,8 +418,8 @@ final class ClipPathWidgetDecorator
     if (other == null) return this;
 
     return ClipPathWidgetDecorator(
-      clipper: t < 0.5 ? clipper : other.clipper,
-      clipBehavior: t < 0.5 ? clipBehavior : other.clipBehavior,
+      clipper: MixOps.lerp(clipper, other.clipper, t),
+      clipBehavior: MixOps.lerp(clipBehavior, other.clipBehavior, t),
     );
   }
 
@@ -484,8 +480,8 @@ class ClipPathWidgetDecoratorMix
   @override
   ClipPathWidgetDecorator resolve(BuildContext context) {
     return ClipPathWidgetDecorator(
-      clipper: MixHelpers.resolve(context, clipper),
-      clipBehavior: MixHelpers.resolve(context, clipBehavior),
+      clipper: MixOps.resolve(context, clipper),
+      clipBehavior: MixOps.resolve(context, clipBehavior),
     );
   }
 
@@ -551,7 +547,7 @@ final class ClipTriangleWidgetDecorator
     if (other == null) return this;
 
     return ClipTriangleWidgetDecorator(
-      clipBehavior: t < 0.5 ? clipBehavior : other.clipBehavior,
+      clipBehavior: MixOps.lerp(clipBehavior, other.clipBehavior, t),
     );
   }
 
@@ -607,7 +603,7 @@ class ClipTriangleWidgetDecoratorMix
   @override
   ClipTriangleWidgetDecorator resolve(BuildContext context) {
     return ClipTriangleWidgetDecorator(
-      clipBehavior: MixHelpers.resolve(context, clipBehavior),
+      clipBehavior: MixOps.resolve(context, clipBehavior),
     );
   }
 

@@ -207,7 +207,7 @@ void main() {
         final lerped = spec1.lerp(spec2, 0.5);
 
         expect(lerped.transform, isNotNull);
-        // Matrix4 lerp is handled by MixHelpers.lerpMatrix4
+        // Matrix4 lerp is handled by MixOps.lerp
       });
     });
 

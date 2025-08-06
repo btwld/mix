@@ -175,21 +175,21 @@ final class DecorationImageMix extends Mix<DecorationImage>
   /// ```
   @override
   DecorationImage resolve(BuildContext context) {
-    final resolvedImage = MixHelpers.resolve(context, $image);
+    final resolvedImage = MixOps.resolve(context, $image);
     if (resolvedImage == null) {
       throw StateError('DecorationImage requires an image provider');
     }
 
     return DecorationImage(
       image: resolvedImage,
-      fit: MixHelpers.resolve(context, $fit),
-      alignment: MixHelpers.resolve(context, $alignment) ?? Alignment.center,
-      centerSlice: MixHelpers.resolve(context, $centerSlice),
-      repeat: MixHelpers.resolve(context, $repeat) ?? ImageRepeat.noRepeat,
+      fit: MixOps.resolve(context, $fit),
+      alignment: MixOps.resolve(context, $alignment) ?? Alignment.center,
+      centerSlice: MixOps.resolve(context, $centerSlice),
+      repeat: MixOps.resolve(context, $repeat) ?? ImageRepeat.noRepeat,
       filterQuality:
-          MixHelpers.resolve(context, $filterQuality) ?? FilterQuality.medium,
-      invertColors: MixHelpers.resolve(context, $invertColors) ?? false,
-      isAntiAlias: MixHelpers.resolve(context, $isAntiAlias) ?? false,
+          MixOps.resolve(context, $filterQuality) ?? FilterQuality.medium,
+      invertColors: MixOps.resolve(context, $invertColors) ?? false,
+      isAntiAlias: MixOps.resolve(context, $isAntiAlias) ?? false,
     );
   }
 

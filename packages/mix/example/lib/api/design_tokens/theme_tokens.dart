@@ -9,6 +9,7 @@
 /// - Using tokens in styles with token() method
 /// - Providing token values through MixScope
 /// - Building a design system with consistent values
+library;
 
 import 'package:example/helpers.dart';
 import 'package:flutter/material.dart';

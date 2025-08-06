@@ -483,15 +483,15 @@ class BoxMix extends Style<BoxSpec>
   @override
   BoxSpec resolve(BuildContext context) {
     return BoxSpec(
-      alignment: MixHelpers.resolve(context, $alignment),
-      padding: MixHelpers.resolve(context, $padding),
-      margin: MixHelpers.resolve(context, $margin),
-      constraints: MixHelpers.resolve(context, $constraints),
-      decoration: MixHelpers.resolve(context, $decoration),
-      foregroundDecoration: MixHelpers.resolve(context, $foregroundDecoration),
-      transform: MixHelpers.resolve(context, $transform),
-      transformAlignment: MixHelpers.resolve(context, $transformAlignment),
-      clipBehavior: MixHelpers.resolve(context, $clipBehavior),
+      alignment: MixOps.resolve(context, $alignment),
+      padding: MixOps.resolve(context, $padding),
+      margin: MixOps.resolve(context, $margin),
+      constraints: MixOps.resolve(context, $constraints),
+      decoration: MixOps.resolve(context, $decoration),
+      foregroundDecoration: MixOps.resolve(context, $foregroundDecoration),
+      transform: MixOps.resolve(context, $transform),
+      transformAlignment: MixOps.resolve(context, $transformAlignment),
+      clipBehavior: MixOps.resolve(context, $clipBehavior),
     );
   }
 

@@ -254,15 +254,15 @@ class FlexMix extends Style<FlexSpec>
   @override
   FlexSpec resolve(BuildContext context) {
     return FlexSpec(
-      direction: MixHelpers.resolve(context, $direction),
-      mainAxisAlignment: MixHelpers.resolve(context, $mainAxisAlignment),
-      crossAxisAlignment: MixHelpers.resolve(context, $crossAxisAlignment),
-      mainAxisSize: MixHelpers.resolve(context, $mainAxisSize),
-      verticalDirection: MixHelpers.resolve(context, $verticalDirection),
-      textDirection: MixHelpers.resolve(context, $textDirection),
-      textBaseline: MixHelpers.resolve(context, $textBaseline),
-      clipBehavior: MixHelpers.resolve(context, $clipBehavior),
-      gap: MixHelpers.resolve(context, $gap),
+      direction: MixOps.resolve(context, $direction),
+      mainAxisAlignment: MixOps.resolve(context, $mainAxisAlignment),
+      crossAxisAlignment: MixOps.resolve(context, $crossAxisAlignment),
+      mainAxisSize: MixOps.resolve(context, $mainAxisSize),
+      verticalDirection: MixOps.resolve(context, $verticalDirection),
+      textDirection: MixOps.resolve(context, $textDirection),
+      textBaseline: MixOps.resolve(context, $textBaseline),
+      clipBehavior: MixOps.resolve(context, $clipBehavior),
+      gap: MixOps.resolve(context, $gap),
     );
   }
 

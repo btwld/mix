@@ -192,15 +192,14 @@ final class LinearGradientMix extends GradientMix<LinearGradient> {
   @override
   LinearGradient resolve(BuildContext context) {
     return LinearGradient(
-      begin: MixHelpers.resolve(context, $begin) ?? defaultValue.begin,
-      end: MixHelpers.resolve(context, $end) ?? defaultValue.end,
+      begin: MixOps.resolve(context, $begin) ?? defaultValue.begin,
+      end: MixOps.resolve(context, $end) ?? defaultValue.end,
       colors:
           $colors?.map((c) => c.resolveProp(context)).toList() ??
           defaultValue.colors,
-      stops: MixHelpers.resolveList(context, $stops) ?? defaultValue.stops,
-      tileMode: MixHelpers.resolve(context, $tileMode) ?? defaultValue.tileMode,
-      transform:
-          MixHelpers.resolve(context, $transform) ?? defaultValue.transform,
+      stops: MixOps.resolveList(context, $stops) ?? defaultValue.stops,
+      tileMode: MixOps.resolve(context, $tileMode) ?? defaultValue.tileMode,
+      transform: MixOps.resolve(context, $transform) ?? defaultValue.transform,
     );
   }
 
@@ -380,18 +379,17 @@ final class RadialGradientMix extends GradientMix<RadialGradient> {
   @override
   RadialGradient resolve(BuildContext context) {
     return RadialGradient(
-      center: MixHelpers.resolve(context, $center) ?? defaultValue.center,
-      radius: MixHelpers.resolve(context, $radius) ?? defaultValue.radius,
+      center: MixOps.resolve(context, $center) ?? defaultValue.center,
+      radius: MixOps.resolve(context, $radius) ?? defaultValue.radius,
       colors:
           $colors?.map((c) => c.resolveProp(context)).toList() ??
           defaultValue.colors,
-      stops: MixHelpers.resolveList(context, $stops) ?? defaultValue.stops,
-      tileMode: MixHelpers.resolve(context, $tileMode) ?? defaultValue.tileMode,
-      focal: MixHelpers.resolve(context, $focal) ?? defaultValue.focal,
+      stops: MixOps.resolveList(context, $stops) ?? defaultValue.stops,
+      tileMode: MixOps.resolve(context, $tileMode) ?? defaultValue.tileMode,
+      focal: MixOps.resolve(context, $focal) ?? defaultValue.focal,
       focalRadius:
-          MixHelpers.resolve(context, $focalRadius) ?? defaultValue.focalRadius,
-      transform:
-          MixHelpers.resolve(context, $transform) ?? defaultValue.transform,
+          MixOps.resolve(context, $focalRadius) ?? defaultValue.focalRadius,
+      transform: MixOps.resolve(context, $transform) ?? defaultValue.transform,
     );
   }
 
@@ -560,17 +558,16 @@ final class SweepGradientMix extends GradientMix<SweepGradient> {
   @override
   SweepGradient resolve(BuildContext context) {
     return SweepGradient(
-      center: MixHelpers.resolve(context, $center) ?? defaultValue.center,
+      center: MixOps.resolve(context, $center) ?? defaultValue.center,
       startAngle:
-          MixHelpers.resolve(context, $startAngle) ?? defaultValue.startAngle,
-      endAngle: MixHelpers.resolve(context, $endAngle) ?? defaultValue.endAngle,
+          MixOps.resolve(context, $startAngle) ?? defaultValue.startAngle,
+      endAngle: MixOps.resolve(context, $endAngle) ?? defaultValue.endAngle,
       colors:
           $colors?.map((c) => c.resolveProp(context)).toList() ??
           defaultValue.colors,
-      stops: MixHelpers.resolveList(context, $stops) ?? defaultValue.stops,
-      tileMode: MixHelpers.resolve(context, $tileMode) ?? defaultValue.tileMode,
-      transform:
-          MixHelpers.resolve(context, $transform) ?? defaultValue.transform,
+      stops: MixOps.resolveList(context, $stops) ?? defaultValue.stops,
+      tileMode: MixOps.resolve(context, $tileMode) ?? defaultValue.tileMode,
+      transform: MixOps.resolve(context, $transform) ?? defaultValue.transform,
     );
   }
 

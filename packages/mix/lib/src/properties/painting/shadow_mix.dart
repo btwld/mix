@@ -86,10 +86,10 @@ class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
   @override
   Shadow resolve(BuildContext context) {
     return Shadow(
-      color: MixHelpers.resolve(context, $color) ?? defaultValue.color,
-      offset: MixHelpers.resolve(context, $offset) ?? defaultValue.offset,
+      color: MixOps.resolve(context, $color) ?? defaultValue.color,
+      offset: MixOps.resolve(context, $offset) ?? defaultValue.offset,
       blurRadius:
-          MixHelpers.resolve(context, $blurRadius) ?? defaultValue.blurRadius,
+          MixOps.resolve(context, $blurRadius) ?? defaultValue.blurRadius,
     );
   }
 
@@ -206,13 +206,12 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
   @override
   BoxShadow resolve(BuildContext context) {
     return BoxShadow(
-      color: MixHelpers.resolve(context, $color) ?? defaultValue.color,
-      offset: MixHelpers.resolve(context, $offset) ?? defaultValue.offset,
+      color: MixOps.resolve(context, $color) ?? defaultValue.color,
+      offset: MixOps.resolve(context, $offset) ?? defaultValue.offset,
       blurRadius:
-          MixHelpers.resolve(context, $blurRadius) ?? defaultValue.blurRadius,
+          MixOps.resolve(context, $blurRadius) ?? defaultValue.blurRadius,
       spreadRadius:
-          MixHelpers.resolve(context, $spreadRadius) ??
-          defaultValue.spreadRadius,
+          MixOps.resolve(context, $spreadRadius) ?? defaultValue.spreadRadius,
     );
   }
 

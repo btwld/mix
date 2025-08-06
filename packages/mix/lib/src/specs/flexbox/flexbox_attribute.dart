@@ -343,6 +343,7 @@ class FlexBoxMix extends Style<FlexBoxSpec>
   }
 
   /// Decorator instance method
+  @override
   FlexBoxMix wrap(WidgetDecoratorConfig modifier) {
     return merge(FlexBoxMix(widgetDecoratorConfig: modifier));
   }

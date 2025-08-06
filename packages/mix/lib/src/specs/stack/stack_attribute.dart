@@ -160,10 +160,10 @@ class StackMix extends Style<StackSpec>
   @override
   StackSpec resolve(BuildContext context) {
     return StackSpec(
-      alignment: MixHelpers.resolve(context, $alignment),
-      fit: MixHelpers.resolve(context, $fit),
-      textDirection: MixHelpers.resolve(context, $textDirection),
-      clipBehavior: MixHelpers.resolve(context, $clipBehavior),
+      alignment: MixOps.resolve(context, $alignment),
+      fit: MixOps.resolve(context, $fit),
+      textDirection: MixOps.resolve(context, $textDirection),
+      clipBehavior: MixOps.resolve(context, $clipBehavior),
     );
   }
 

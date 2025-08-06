@@ -184,12 +184,10 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
   @override
   BoxConstraints resolve(BuildContext context) {
     return BoxConstraints(
-      minWidth: MixHelpers.resolve(context, $minWidth) ?? defaultValue.minWidth,
-      maxWidth: MixHelpers.resolve(context, $maxWidth) ?? defaultValue.maxWidth,
-      minHeight:
-          MixHelpers.resolve(context, $minHeight) ?? defaultValue.minHeight,
-      maxHeight:
-          MixHelpers.resolve(context, $maxHeight) ?? defaultValue.maxHeight,
+      minWidth: MixOps.resolve(context, $minWidth) ?? defaultValue.minWidth,
+      maxWidth: MixOps.resolve(context, $maxWidth) ?? defaultValue.maxWidth,
+      minHeight: MixOps.resolve(context, $minHeight) ?? defaultValue.minHeight,
+      maxHeight: MixOps.resolve(context, $maxHeight) ?? defaultValue.maxHeight,
     );
   }
 

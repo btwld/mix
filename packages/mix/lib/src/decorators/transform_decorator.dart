@@ -31,8 +31,8 @@ final class TransformWidgetDecorator
     if (other == null) return this;
 
     return TransformWidgetDecorator(
-      transform: MixHelpers.lerpMatrix4(transform, other.transform, t),
-      alignment: Alignment.lerp(alignment, other.alignment, t),
+      transform: MixOps.lerp(transform, other.transform, t),
+      alignment: MixOps.lerp(alignment, other.alignment, t),
     );
   }
 
@@ -118,8 +118,8 @@ class TransformWidgetDecoratorMix
   @override
   TransformWidgetDecorator resolve(BuildContext context) {
     return TransformWidgetDecorator(
-      transform: MixHelpers.resolve(context, transform),
-      alignment: MixHelpers.resolve(context, alignment),
+      transform: MixOps.resolve(context, transform),
+      alignment: MixOps.resolve(context, alignment),
     );
   }
 

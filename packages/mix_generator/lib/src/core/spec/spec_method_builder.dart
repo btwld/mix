@@ -220,11 +220,6 @@ String? _getLerpMethodName(ParameterMetadata field) {
     return null;
   }
 
-  // Special case handling
-  if (field.type == 'TextStyle') {
-    return MixHelperRef.lerpTextStyle;
-  }
-
   // Check if the field is a Spec type
   if (field.isSpec) {
     return '${field.type}.lerp';
@@ -235,12 +230,6 @@ String? _getLerpMethodName(ParameterMetadata field) {
     return '${field.type}.lerp';
   }
 
-  // Known types with standard lerp methods
-  return switch (field.type) {
-    'double' => MixHelperRef.lerpDouble,
-    'Matrix4' => MixHelperRef.lerpMatrix4,
-    'StrutStyle' => MixHelperRef.lerpStrutStyle,
-    'List<Shadow>' => MixHelperRef.lerpShadowList,
-    _ => null,
-  };
+  // For all other types, use the general lerp method
+  return MixHelperRef.lerp;
 }

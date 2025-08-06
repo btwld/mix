@@ -607,20 +607,20 @@ class TextMix extends Style<TextSpec>
   @override
   TextSpec resolve(BuildContext context) {
     return TextSpec(
-      overflow: MixHelpers.resolve(context, $overflow),
-      strutStyle: MixHelpers.resolve(context, $strutStyle),
-      textAlign: MixHelpers.resolve(context, $textAlign),
-      textScaler: MixHelpers.resolve(context, $textScaler),
-      maxLines: MixHelpers.resolve(context, $maxLines),
-      style: MixHelpers.resolve(context, $style),
-      textWidthBasis: MixHelpers.resolve(context, $textWidthBasis),
-      textHeightBehavior: MixHelpers.resolve(context, $textHeightBehavior),
-      textDirection: MixHelpers.resolve(context, $textDirection),
-      softWrap: MixHelpers.resolve(context, $softWrap),
+      overflow: MixOps.resolve(context, $overflow),
+      strutStyle: MixOps.resolve(context, $strutStyle),
+      textAlign: MixOps.resolve(context, $textAlign),
+      textScaler: MixOps.resolve(context, $textScaler),
+      maxLines: MixOps.resolve(context, $maxLines),
+      style: MixOps.resolve(context, $style),
+      textWidthBasis: MixOps.resolve(context, $textWidthBasis),
+      textHeightBehavior: MixOps.resolve(context, $textHeightBehavior),
+      textDirection: MixOps.resolve(context, $textDirection),
+      softWrap: MixOps.resolve(context, $softWrap),
       textModifiers: $textModifiers,
-      selectionColor: MixHelpers.resolve(context, $selectionColor),
-      semanticsLabel: MixHelpers.resolve(context, $semanticsLabel),
-      locale: MixHelpers.resolve(context, $locale),
+      selectionColor: MixOps.resolve(context, $selectionColor),
+      semanticsLabel: MixOps.resolve(context, $semanticsLabel),
+      locale: MixOps.resolve(context, $locale),
     );
   }
 

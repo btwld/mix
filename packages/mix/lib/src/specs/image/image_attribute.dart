@@ -346,21 +346,21 @@ class ImageMix extends Style<ImageSpec>
   @override
   ImageSpec resolve(BuildContext context) {
     return ImageSpec(
-      image: MixHelpers.resolve(context, $image),
-      width: MixHelpers.resolve(context, $width),
-      height: MixHelpers.resolve(context, $height),
-      color: MixHelpers.resolve(context, $color),
-      repeat: MixHelpers.resolve(context, $repeat),
-      fit: MixHelpers.resolve(context, $fit),
-      alignment: MixHelpers.resolve(context, $alignment),
-      centerSlice: MixHelpers.resolve(context, $centerSlice),
-      filterQuality: MixHelpers.resolve(context, $filterQuality),
-      colorBlendMode: MixHelpers.resolve(context, $colorBlendMode),
-      semanticLabel: MixHelpers.resolve(context, $semanticLabel),
-      excludeFromSemantics: MixHelpers.resolve(context, $excludeFromSemantics),
-      gaplessPlayback: MixHelpers.resolve(context, $gaplessPlayback),
-      isAntiAlias: MixHelpers.resolve(context, $isAntiAlias),
-      matchTextDirection: MixHelpers.resolve(context, $matchTextDirection),
+      image: MixOps.resolve(context, $image),
+      width: MixOps.resolve(context, $width),
+      height: MixOps.resolve(context, $height),
+      color: MixOps.resolve(context, $color),
+      repeat: MixOps.resolve(context, $repeat),
+      fit: MixOps.resolve(context, $fit),
+      alignment: MixOps.resolve(context, $alignment),
+      centerSlice: MixOps.resolve(context, $centerSlice),
+      filterQuality: MixOps.resolve(context, $filterQuality),
+      colorBlendMode: MixOps.resolve(context, $colorBlendMode),
+      semanticLabel: MixOps.resolve(context, $semanticLabel),
+      excludeFromSemantics: MixOps.resolve(context, $excludeFromSemantics),
+      gaplessPlayback: MixOps.resolve(context, $gaplessPlayback),
+      isAntiAlias: MixOps.resolve(context, $isAntiAlias),
+      matchTextDirection: MixOps.resolve(context, $matchTextDirection),
     );
   }
 

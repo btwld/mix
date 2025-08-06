@@ -40,9 +40,9 @@ final class AlignWidgetDecorator extends WidgetDecorator<AlignWidgetDecorator>
     if (other == null) return this;
 
     return AlignWidgetDecorator(
-      alignment: AlignmentGeometry.lerp(alignment, other.alignment, t),
-      widthFactor: MixHelpers.lerpDouble(widthFactor, other.widthFactor, t),
-      heightFactor: MixHelpers.lerpDouble(heightFactor, other.heightFactor, t),
+      alignment: MixOps.lerp(alignment, other.alignment, t),
+      widthFactor: MixOps.lerp(widthFactor, other.widthFactor, t),
+      heightFactor: MixOps.lerp(heightFactor, other.heightFactor, t),
     );
   }
 
@@ -102,9 +102,9 @@ class AlignWidgetDecoratorMix extends WidgetDecoratorMix<AlignWidgetDecorator> {
   @override
   AlignWidgetDecorator resolve(BuildContext context) {
     return AlignWidgetDecorator(
-      alignment: MixHelpers.resolve(context, alignment),
-      widthFactor: MixHelpers.resolve(context, widthFactor),
-      heightFactor: MixHelpers.resolve(context, heightFactor),
+      alignment: MixOps.resolve(context, alignment),
+      widthFactor: MixOps.resolve(context, widthFactor),
+      heightFactor: MixOps.resolve(context, heightFactor),
     );
   }
 

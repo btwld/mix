@@ -39,7 +39,7 @@ final class IconThemeWidgetDecorator
     if (other == null) return this;
 
     return IconThemeWidgetDecorator(
-      data: IconThemeData.lerp(data, other.data, t),
+      data: MixOps.lerp(data, other.data, t) ?? data,
     );
   }
 
@@ -127,15 +127,15 @@ class IconThemeWidgetDecoratorMix
   IconThemeWidgetDecorator resolve(BuildContext context) {
     return IconThemeWidgetDecorator(
       data: IconThemeData(
-        size: MixHelpers.resolve(context, size),
-        fill: MixHelpers.resolve(context, fill),
-        weight: MixHelpers.resolve(context, weight),
-        grade: MixHelpers.resolve(context, grade),
-        opticalSize: MixHelpers.resolve(context, opticalSize),
-        color: MixHelpers.resolve(context, color),
-        opacity: MixHelpers.resolve(context, opacity),
-        shadows: MixHelpers.resolveList(context, shadows),
-        applyTextScaling: MixHelpers.resolve(context, applyTextScaling),
+        size: MixOps.resolve(context, size),
+        fill: MixOps.resolve(context, fill),
+        weight: MixOps.resolve(context, weight),
+        grade: MixOps.resolve(context, grade),
+        opticalSize: MixOps.resolve(context, opticalSize),
+        color: MixOps.resolve(context, color),
+        opacity: MixOps.resolve(context, opacity),
+        shadows: MixOps.resolveList(context, shadows),
+        applyTextScaling: MixOps.resolve(context, applyTextScaling),
       ),
     );
   }

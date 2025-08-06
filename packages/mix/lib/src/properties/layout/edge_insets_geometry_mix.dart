@@ -251,10 +251,10 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
   @override
   EdgeInsets resolve(BuildContext context) {
     return EdgeInsets.fromLTRB(
-      MixHelpers.resolve(context, $left) ?? 0,
-      MixHelpers.resolve(context, $top) ?? 0,
-      MixHelpers.resolve(context, $right) ?? 0,
-      MixHelpers.resolve(context, $bottom) ?? 0,
+      MixOps.resolve(context, $left) ?? 0,
+      MixOps.resolve(context, $top) ?? 0,
+      MixOps.resolve(context, $right) ?? 0,
+      MixOps.resolve(context, $bottom) ?? 0,
     );
   }
 
@@ -369,10 +369,10 @@ final class EdgeInsetsDirectionalMix
   @override
   EdgeInsetsDirectional resolve(BuildContext context) {
     return EdgeInsetsDirectional.fromSTEB(
-      MixHelpers.resolve(context, $start) ?? 0,
-      MixHelpers.resolve(context, $top) ?? 0,
-      MixHelpers.resolve(context, $end) ?? 0,
-      MixHelpers.resolve(context, $bottom) ?? 0,
+      MixOps.resolve(context, $start) ?? 0,
+      MixOps.resolve(context, $top) ?? 0,
+      MixOps.resolve(context, $end) ?? 0,
+      MixOps.resolve(context, $bottom) ?? 0,
     );
   }
 

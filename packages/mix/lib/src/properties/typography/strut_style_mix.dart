@@ -163,14 +163,14 @@ class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
   @override
   StrutStyle resolve(BuildContext context) {
     return StrutStyle(
-      fontFamily: MixHelpers.resolve(context, $fontFamily),
-      fontFamilyFallback: MixHelpers.resolveList(context, $fontFamilyFallback),
-      fontSize: MixHelpers.resolve(context, $fontSize),
-      height: MixHelpers.resolve(context, $height),
-      leading: MixHelpers.resolve(context, $leading),
-      fontWeight: MixHelpers.resolve(context, $fontWeight),
-      fontStyle: MixHelpers.resolve(context, $fontStyle),
-      forceStrutHeight: MixHelpers.resolve(context, $forceStrutHeight),
+      fontFamily: MixOps.resolve(context, $fontFamily),
+      fontFamilyFallback: MixOps.resolveList(context, $fontFamilyFallback),
+      fontSize: MixOps.resolve(context, $fontSize),
+      height: MixOps.resolve(context, $height),
+      leading: MixOps.resolve(context, $leading),
+      fontWeight: MixOps.resolve(context, $fontWeight),
+      fontStyle: MixOps.resolve(context, $fontStyle),
+      forceStrutHeight: MixOps.resolve(context, $forceStrutHeight),
     );
   }
 

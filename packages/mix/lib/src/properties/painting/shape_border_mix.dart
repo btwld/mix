@@ -143,9 +143,8 @@ final class RoundedRectangleBorderMix
   @override
   RoundedRectangleBorder resolve(BuildContext context) {
     return RoundedRectangleBorder(
-      side: MixHelpers.resolve(context, $side) ?? BorderSide.none,
-      borderRadius:
-          MixHelpers.resolve(context, $borderRadius) ?? BorderRadius.zero,
+      side: MixOps.resolve(context, $side) ?? BorderSide.none,
+      borderRadius: MixOps.resolve(context, $borderRadius) ?? BorderRadius.zero,
     );
   }
 
@@ -217,9 +216,8 @@ final class RoundedSuperellipseBorderMix
   @override
   RoundedSuperellipseBorder resolve(BuildContext context) {
     return RoundedSuperellipseBorder(
-      side: MixHelpers.resolve(context, $side) ?? BorderSide.none,
-      borderRadius:
-          MixHelpers.resolve(context, $borderRadius) ?? BorderRadius.zero,
+      side: MixOps.resolve(context, $side) ?? BorderSide.none,
+      borderRadius: MixOps.resolve(context, $borderRadius) ?? BorderRadius.zero,
     );
   }
 
@@ -290,9 +288,8 @@ final class BeveledRectangleBorderMix
   @override
   BeveledRectangleBorder resolve(BuildContext context) {
     return BeveledRectangleBorder(
-      side: MixHelpers.resolve(context, $side) ?? BorderSide.none,
-      borderRadius:
-          MixHelpers.resolve(context, $borderRadius) ?? BorderRadius.zero,
+      side: MixOps.resolve(context, $side) ?? BorderSide.none,
+      borderRadius: MixOps.resolve(context, $borderRadius) ?? BorderRadius.zero,
     );
   }
 
@@ -365,9 +362,8 @@ final class ContinuousRectangleBorderMix
   @override
   ContinuousRectangleBorder resolve(BuildContext context) {
     return ContinuousRectangleBorder(
-      side: MixHelpers.resolve(context, $side) ?? BorderSide.none,
-      borderRadius:
-          MixHelpers.resolve(context, $borderRadius) ?? BorderRadius.zero,
+      side: MixOps.resolve(context, $side) ?? BorderSide.none,
+      borderRadius: MixOps.resolve(context, $borderRadius) ?? BorderRadius.zero,
     );
   }
 
@@ -431,8 +427,8 @@ final class CircleBorderMix extends OutlinedBorderMix<CircleBorder> {
   @override
   CircleBorder resolve(BuildContext context) {
     return CircleBorder(
-      side: MixHelpers.resolve(context, $side) ?? BorderSide.none,
-      eccentricity: MixHelpers.resolve(context, $eccentricity) ?? 0.0,
+      side: MixOps.resolve(context, $side) ?? BorderSide.none,
+      eccentricity: MixOps.resolve(context, $eccentricity) ?? 0.0,
     );
   }
 
@@ -580,13 +576,13 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
   @override
   StarBorder resolve(BuildContext context) {
     return StarBorder(
-      side: MixHelpers.resolve(context, $side) ?? BorderSide.none,
-      points: MixHelpers.resolve(context, $points) ?? 5,
-      innerRadiusRatio: MixHelpers.resolve(context, $innerRadiusRatio) ?? 0.4,
-      pointRounding: MixHelpers.resolve(context, $pointRounding) ?? 0,
-      valleyRounding: MixHelpers.resolve(context, $valleyRounding) ?? 0,
-      rotation: MixHelpers.resolve(context, $rotation) ?? 0,
-      squash: MixHelpers.resolve(context, $squash) ?? 0,
+      side: MixOps.resolve(context, $side) ?? BorderSide.none,
+      points: MixOps.resolve(context, $points) ?? 5,
+      innerRadiusRatio: MixOps.resolve(context, $innerRadiusRatio) ?? 0.4,
+      pointRounding: MixOps.resolve(context, $pointRounding) ?? 0,
+      valleyRounding: MixOps.resolve(context, $valleyRounding) ?? 0,
+      rotation: MixOps.resolve(context, $rotation) ?? 0,
+      squash: MixOps.resolve(context, $squash) ?? 0,
     );
   }
 
@@ -714,11 +710,11 @@ final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
   @override
   LinearBorder resolve(BuildContext context) {
     return LinearBorder(
-      side: MixHelpers.resolve(context, $side) ?? BorderSide.none,
-      start: MixHelpers.resolve(context, $start),
-      end: MixHelpers.resolve(context, $end),
-      top: MixHelpers.resolve(context, $top),
-      bottom: MixHelpers.resolve(context, $bottom),
+      side: MixOps.resolve(context, $side) ?? BorderSide.none,
+      start: MixOps.resolve(context, $start),
+      end: MixOps.resolve(context, $end),
+      top: MixOps.resolve(context, $top),
+      bottom: MixOps.resolve(context, $bottom),
     );
   }
 
@@ -779,8 +775,8 @@ final class LinearBorderEdgeMix extends Mix<LinearBorderEdge> {
   @override
   LinearBorderEdge resolve(BuildContext context) {
     return LinearBorderEdge(
-      size: MixHelpers.resolve(context, $size) ?? 1.0,
-      alignment: MixHelpers.resolve(context, $alignment) ?? 0.0,
+      size: MixOps.resolve(context, $size) ?? 1.0,
+      alignment: MixOps.resolve(context, $alignment) ?? 0.0,
     );
   }
 
@@ -824,7 +820,7 @@ final class StadiumBorderMix extends OutlinedBorderMix<StadiumBorder> {
   @override
   StadiumBorder resolve(BuildContext context) {
     return StadiumBorder(
-      side: MixHelpers.resolve(context, $side) ?? BorderSide.none,
+      side: MixOps.resolve(context, $side) ?? BorderSide.none,
     );
   }
 

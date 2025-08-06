@@ -39,7 +39,7 @@ class MouseCursorDecorator extends WidgetDecorator<MouseCursorDecorator> {
     if (other == null) return this;
 
     return MouseCursorDecorator(
-      mouseCursor: t < 0.5 ? mouseCursor : other.mouseCursor,
+      mouseCursor: MixOps.lerp(mouseCursor, other.mouseCursor, t),
     );
   }
 
@@ -82,7 +82,7 @@ class MouseCursorDecoratorMix extends WidgetDecoratorMix<MouseCursorDecorator> {
   @override
   MouseCursorDecorator resolve(BuildContext context) {
     return MouseCursorDecorator(
-      mouseCursor: MixHelpers.resolve(context, mouseCursor),
+      mouseCursor: MixOps.resolve(context, mouseCursor),
     );
   }
 

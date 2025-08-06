@@ -63,7 +63,7 @@ final class DefaultTextStyleWidgetDecorator
   ///
   /// The interpolation is performed on each property of the [DefaultTextStyleWidgetDecorator] using the appropriate
   /// interpolation method:
-  /// - [MixHelpers.lerpTextStyle] for [style].
+  /// - [MixOps.lerp] for [style].
   /// For [textAlign] and [softWrap] and [overflow] and [maxLines] and [textWidthBasis] and [textHeightBehavior], the interpolation is performed using a step function.
   /// If [t] is less than 0.5, the value from the current [DefaultTextStyleWidgetDecorator] is used. Otherwise, the value
   /// from the [other] [DefaultTextStyleWidgetDecorator] is used.
@@ -78,15 +78,17 @@ final class DefaultTextStyleWidgetDecorator
     if (other == null) return this;
 
     return DefaultTextStyleWidgetDecorator(
-      style: MixHelpers.lerpTextStyle(style, other.style, t),
-      textAlign: t < 0.5 ? textAlign : other.textAlign,
-      softWrap: t < 0.5 ? softWrap : other.softWrap,
-      overflow: t < 0.5 ? overflow : other.overflow,
-      maxLines: t < 0.5 ? maxLines : other.maxLines,
-      textWidthBasis: t < 0.5 ? textWidthBasis : other.textWidthBasis,
-      textHeightBehavior: t < 0.5
-          ? textHeightBehavior
-          : other.textHeightBehavior,
+      style: MixOps.lerp(style, other.style, t),
+      textAlign: MixOps.lerp(textAlign, other.textAlign, t),
+      softWrap: MixOps.lerp(softWrap, other.softWrap, t),
+      overflow: MixOps.lerp(overflow, other.overflow, t),
+      maxLines: MixOps.lerp(maxLines, other.maxLines, t),
+      textWidthBasis: MixOps.lerp(textWidthBasis, other.textWidthBasis, t),
+      textHeightBehavior: MixOps.lerp(
+        textHeightBehavior,
+        other.textHeightBehavior,
+        t,
+      ),
     );
   }
 
@@ -204,13 +206,13 @@ class DefaultTextStyleWidgetDecoratorMix
   @override
   DefaultTextStyleWidgetDecorator resolve(BuildContext context) {
     return DefaultTextStyleWidgetDecorator(
-      style: MixHelpers.resolve(context, style),
-      textAlign: MixHelpers.resolve(context, textAlign),
-      softWrap: MixHelpers.resolve(context, softWrap),
-      overflow: MixHelpers.resolve(context, overflow),
-      maxLines: MixHelpers.resolve(context, maxLines),
-      textWidthBasis: MixHelpers.resolve(context, textWidthBasis),
-      textHeightBehavior: MixHelpers.resolve(context, textHeightBehavior),
+      style: MixOps.resolve(context, style),
+      textAlign: MixOps.resolve(context, textAlign),
+      softWrap: MixOps.resolve(context, softWrap),
+      overflow: MixOps.resolve(context, overflow),
+      maxLines: MixOps.resolve(context, maxLines),
+      textWidthBasis: MixOps.resolve(context, textWidthBasis),
+      textHeightBehavior: MixOps.resolve(context, textHeightBehavior),
     );
   }
 
