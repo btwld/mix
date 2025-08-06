@@ -78,10 +78,10 @@ class OpacityWidgetDecoratorMix
     with Diagnosticable {
   final Prop<double>? opacity;
 
-  const OpacityWidgetDecoratorMix.raw({this.opacity});
+  const OpacityWidgetDecoratorMix.create({this.opacity});
 
   OpacityWidgetDecoratorMix({double? opacity})
-    : this.raw(opacity: Prop.maybe(opacity));
+    : this.create(opacity: Prop.maybe(opacity));
 
   /// Resolves to [OpacityWidgetDecorator] using the provided [BuildContext].
   ///
@@ -108,7 +108,7 @@ class OpacityWidgetDecoratorMix
   OpacityWidgetDecoratorMix merge(OpacityWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return OpacityWidgetDecoratorMix.raw(
+    return OpacityWidgetDecoratorMix.create(
       opacity: opacity.tryMerge(other.opacity),
     );
   }
@@ -132,8 +132,8 @@ final class OpacityWidgetDecoratorUtility<T extends Style<Object?>>
   const OpacityWidgetDecoratorUtility(super.builder);
 
   T call(double value) =>
-      builder(OpacityWidgetDecoratorMix.raw(opacity: Prop.value(value)));
+      builder(OpacityWidgetDecoratorMix.create(opacity: Prop.value(value)));
 
   T token(MixToken<double> token) =>
-      builder(OpacityWidgetDecoratorMix.raw(opacity: Prop.token(token)));
+      builder(OpacityWidgetDecoratorMix.create(opacity: Prop.token(token)));
 }

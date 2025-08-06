@@ -92,11 +92,11 @@ final class RoundedRectangleBorderMix
   RoundedRectangleBorderMix({
     BorderRadiusGeometryMix? borderRadius,
     BorderSideMix? side,
-  }) : this.raw(
+  }) : this.create(
          borderRadius: MixProp.maybe(borderRadius),
          side: MixProp.maybe(side),
        );
-  const RoundedRectangleBorderMix.raw({
+  const RoundedRectangleBorderMix.create({
     MixProp<BorderRadiusGeometry>? borderRadius,
     super.side,
   }) : $borderRadius = borderRadius;
@@ -152,7 +152,7 @@ final class RoundedRectangleBorderMix
   RoundedRectangleBorderMix merge(RoundedRectangleBorderMix? other) {
     if (other == null) return this;
 
-    return RoundedRectangleBorderMix.raw(
+    return RoundedRectangleBorderMix.create(
       borderRadius: $borderRadius.tryMerge(other.$borderRadius),
       side: $side.tryMerge(other.$side),
     );
@@ -170,11 +170,11 @@ final class RoundedSuperellipseBorderMix
   RoundedSuperellipseBorderMix({
     BorderRadiusGeometryMix? borderRadius,
     BorderSideMix? side,
-  }) : this.raw(
+  }) : this.create(
          borderRadius: MixProp.maybe(borderRadius),
          side: MixProp.maybe(side),
        );
-  const RoundedSuperellipseBorderMix.raw({
+  const RoundedSuperellipseBorderMix.create({
     MixProp<BorderRadiusGeometry>? borderRadius,
     super.side,
   }) : $borderRadius = borderRadius;
@@ -225,7 +225,7 @@ final class RoundedSuperellipseBorderMix
   RoundedSuperellipseBorderMix merge(RoundedSuperellipseBorderMix? other) {
     if (other == null) return this;
 
-    return RoundedSuperellipseBorderMix.raw(
+    return RoundedSuperellipseBorderMix.create(
       borderRadius: $borderRadius.tryMerge(other.$borderRadius),
       side: $side.tryMerge(other.$side),
     );
@@ -243,12 +243,12 @@ final class BeveledRectangleBorderMix
   BeveledRectangleBorderMix({
     BorderRadiusGeometryMix? borderRadius,
     BorderSideMix? side,
-  }) : this.raw(
+  }) : this.create(
          borderRadius: MixProp.maybe(borderRadius),
          side: MixProp.maybe(side),
        );
 
-  const BeveledRectangleBorderMix.raw({
+  const BeveledRectangleBorderMix.create({
     MixProp<BorderRadiusGeometry>? borderRadius,
     super.side,
   }) : $borderRadius = borderRadius;
@@ -297,7 +297,7 @@ final class BeveledRectangleBorderMix
   BeveledRectangleBorderMix merge(BeveledRectangleBorderMix? other) {
     if (other == null) return this;
 
-    return BeveledRectangleBorderMix.raw(
+    return BeveledRectangleBorderMix.create(
       borderRadius: $borderRadius.tryMerge(other.$borderRadius),
       side: $side.tryMerge(other.$side),
     );
@@ -315,12 +315,12 @@ final class ContinuousRectangleBorderMix
   ContinuousRectangleBorderMix({
     BorderRadiusGeometryMix? borderRadius,
     BorderSideMix? side,
-  }) : this.raw(
+  }) : this.create(
          borderRadius: MixProp.maybe(borderRadius),
          side: MixProp.maybe(side),
        );
 
-  const ContinuousRectangleBorderMix.raw({
+  const ContinuousRectangleBorderMix.create({
     MixProp<BorderRadiusGeometry>? borderRadius,
     super.side,
   }) : $borderRadius = borderRadius;
@@ -371,7 +371,7 @@ final class ContinuousRectangleBorderMix
   ContinuousRectangleBorderMix merge(ContinuousRectangleBorderMix? other) {
     if (other == null) return this;
 
-    return ContinuousRectangleBorderMix.raw(
+    return ContinuousRectangleBorderMix.create(
       borderRadius: $borderRadius.tryMerge(other.$borderRadius),
       side: $side.tryMerge(other.$side),
     );
@@ -386,12 +386,12 @@ final class CircleBorderMix extends OutlinedBorderMix<CircleBorder> {
   final Prop<double>? $eccentricity;
 
   CircleBorderMix({BorderSideMix? side, double? eccentricity})
-    : this.raw(
+    : this.create(
         side: MixProp.maybe(side),
         eccentricity: Prop.maybe(eccentricity),
       );
 
-  const CircleBorderMix.raw({super.side, Prop<double>? eccentricity})
+  const CircleBorderMix.create({super.side, Prop<double>? eccentricity})
     : $eccentricity = eccentricity;
 
   CircleBorderMix.value(CircleBorder border)
@@ -436,7 +436,7 @@ final class CircleBorderMix extends OutlinedBorderMix<CircleBorder> {
   CircleBorderMix merge(CircleBorderMix? other) {
     if (other == null) return this;
 
-    return CircleBorderMix.raw(
+    return CircleBorderMix.create(
       side: $side.tryMerge(other.$side),
       eccentricity: $eccentricity.tryMerge(other.$eccentricity),
     );
@@ -463,7 +463,7 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
     double? valleyRounding,
     double? rotation,
     double? squash,
-  }) : this.raw(
+  }) : this.create(
          side: MixProp.maybe(side),
          points: Prop.maybe(points),
          innerRadiusRatio: Prop.maybe(innerRadiusRatio),
@@ -484,7 +484,7 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
         squash: border.squash,
       );
 
-  const StarBorderMix.raw({
+  const StarBorderMix.create({
     super.side,
     Prop<double>? points,
     Prop<double>? innerRadiusRatio,
@@ -590,7 +590,7 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
   StarBorderMix merge(StarBorderMix? other) {
     if (other == null) return this;
 
-    return StarBorderMix.raw(
+    return StarBorderMix.create(
       side: $side.tryMerge(other.$side),
       points: $points.tryMerge(other.$points),
       innerRadiusRatio: $innerRadiusRatio.tryMerge(other.$innerRadiusRatio),
@@ -626,14 +626,14 @@ final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
     LinearBorderEdgeMix? end,
     LinearBorderEdgeMix? top,
     LinearBorderEdgeMix? bottom,
-  }) : this.raw(
+  }) : this.create(
          side: MixProp.maybe(side),
          start: MixProp.maybe(start),
          end: MixProp.maybe(end),
          top: MixProp.maybe(top),
          bottom: MixProp.maybe(bottom),
        );
-  const LinearBorderMix.raw({
+  const LinearBorderMix.create({
     super.side,
     MixProp<LinearBorderEdge>? start,
     MixProp<LinearBorderEdge>? end,
@@ -722,7 +722,7 @@ final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
   LinearBorderMix merge(LinearBorderMix? other) {
     if (other == null) return this;
 
-    return LinearBorderMix.raw(
+    return LinearBorderMix.create(
       side: $side.tryMerge(other.$side),
       start: $start.tryMerge(other.$start),
       end: $end.tryMerge(other.$end),
@@ -741,10 +741,10 @@ final class LinearBorderEdgeMix extends Mix<LinearBorderEdge> {
   final Prop<double>? $alignment;
 
   LinearBorderEdgeMix({double? size, double? alignment})
-    : this.raw(size: Prop.maybe(size), alignment: Prop.maybe(alignment));
+    : this.create(size: Prop.maybe(size), alignment: Prop.maybe(alignment));
   LinearBorderEdgeMix.value(LinearBorderEdge edge)
     : this(size: edge.size, alignment: edge.alignment);
-  const LinearBorderEdgeMix.raw({Prop<double>? size, Prop<double>? alignment})
+  const LinearBorderEdgeMix.create({Prop<double>? size, Prop<double>? alignment})
     : $size = size,
       $alignment = alignment;
 
@@ -784,7 +784,7 @@ final class LinearBorderEdgeMix extends Mix<LinearBorderEdge> {
   LinearBorderEdgeMix merge(LinearBorderEdgeMix? other) {
     if (other == null) return this;
 
-    return LinearBorderEdgeMix.raw(
+    return LinearBorderEdgeMix.create(
       size: $size.tryMerge(other.$size),
       alignment: $alignment.tryMerge(other.$alignment),
     );
@@ -796,9 +796,9 @@ final class LinearBorderEdgeMix extends Mix<LinearBorderEdge> {
 
 /// Mix-compatible representation of Flutter's [StadiumBorder] with rounded stadium shape.
 final class StadiumBorderMix extends OutlinedBorderMix<StadiumBorder> {
-  StadiumBorderMix({BorderSideMix? side}) : this.raw(side: MixProp.maybe(side));
+  StadiumBorderMix({BorderSideMix? side}) : this.create(side: MixProp.maybe(side));
 
-  const StadiumBorderMix.raw({super.side});
+  const StadiumBorderMix.create({super.side});
 
   StadiumBorderMix.value(StadiumBorder border)
     : this(side: BorderSideMix.maybeValue(border.side));
@@ -828,7 +828,7 @@ final class StadiumBorderMix extends OutlinedBorderMix<StadiumBorder> {
   StadiumBorderMix merge(StadiumBorderMix? other) {
     if (other == null) return this;
 
-    return StadiumBorderMix.raw(side: $side.tryMerge(other.$side));
+    return StadiumBorderMix.create(side: $side.tryMerge(other.$side));
   }
 
   @override

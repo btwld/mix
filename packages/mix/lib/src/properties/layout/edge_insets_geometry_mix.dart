@@ -16,7 +16,7 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
   final Prop<double>? $top;
   final Prop<double>? $bottom;
 
-  const EdgeInsetsGeometryMix.raw({Prop<double>? top, Prop<double>? bottom})
+  const EdgeInsetsGeometryMix.create({Prop<double>? top, Prop<double>? bottom})
     : $top = top,
       $bottom = bottom;
 
@@ -142,7 +142,7 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
   EdgeInsetsMix _asEdgeInset() {
     if (this is EdgeInsetsMix) return this as EdgeInsetsMix;
 
-    return EdgeInsetsMix.raw(top: $top, bottom: $bottom);
+    return EdgeInsetsMix.create(top: $top, bottom: $bottom);
   }
 
   EdgeInsetsDirectionalMix _asEdgeInsetDirectional() {
@@ -150,7 +150,7 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
       return this as EdgeInsetsDirectionalMix;
     }
 
-    return EdgeInsetsDirectionalMix.raw(top: $top, bottom: $bottom);
+    return EdgeInsetsDirectionalMix.create(top: $top, bottom: $bottom);
   }
 
   @override
@@ -165,17 +165,17 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
   final Prop<double>? $left;
   final Prop<double>? $right;
 
-  const EdgeInsetsMix.raw({
+  const EdgeInsetsMix.create({
     super.top,
     super.bottom,
     Prop<double>? left,
     Prop<double>? right,
   }) : $left = left,
        $right = right,
-       super.raw();
+       super.create();
 
   EdgeInsetsMix({double? top, double? bottom, double? left, double? right})
-    : this.raw(
+    : this.create(
         top: Prop.maybe(top),
         bottom: Prop.maybe(bottom),
         left: Prop.maybe(left),
@@ -262,7 +262,7 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
   EdgeInsetsMix merge(EdgeInsetsMix? other) {
     if (other == null) return this;
 
-    return EdgeInsetsMix.raw(
+    return EdgeInsetsMix.create(
       top: $top.tryMerge(other.$top),
       bottom: $bottom.tryMerge(other.$bottom),
       left: $left.tryMerge(other.$left),
@@ -283,21 +283,21 @@ final class EdgeInsetsDirectionalMix
   final Prop<double>? $start;
   final Prop<double>? $end;
 
-  const EdgeInsetsDirectionalMix.raw({
+  const EdgeInsetsDirectionalMix.create({
     super.top,
     super.bottom,
     Prop<double>? start,
     Prop<double>? end,
   }) : $start = start,
        $end = end,
-       super.raw();
+       super.create();
 
   EdgeInsetsDirectionalMix({
     double? top,
     double? bottom,
     double? start,
     double? end,
-  }) : this.raw(
+  }) : this.create(
          top: Prop.maybe(top),
          bottom: Prop.maybe(bottom),
          start: Prop.maybe(start),
@@ -380,7 +380,7 @@ final class EdgeInsetsDirectionalMix
   EdgeInsetsDirectionalMix merge(EdgeInsetsDirectionalMix? other) {
     if (other == null) return this;
 
-    return EdgeInsetsDirectionalMix.raw(
+    return EdgeInsetsDirectionalMix.create(
       top: $top.tryMerge(other.$top),
       bottom: $bottom.tryMerge(other.$bottom),
       start: $start.tryMerge(other.$start),

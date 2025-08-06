@@ -17,7 +17,7 @@ class TextHeightBehaviorMix extends Mix<TextHeightBehavior> {
     bool? applyHeightToFirstAscent,
     bool? applyHeightToLastDescent,
     TextLeadingDistribution? leadingDistribution,
-  }) : this.raw(
+  }) : this.create(
          applyHeightToFirstAscent: Prop.maybe(applyHeightToFirstAscent),
          applyHeightToLastDescent: Prop.maybe(applyHeightToLastDescent),
          leadingDistribution: Prop.maybe(leadingDistribution),
@@ -31,7 +31,7 @@ class TextHeightBehaviorMix extends Mix<TextHeightBehavior> {
         leadingDistribution: behavior.leadingDistribution,
       );
 
-  const TextHeightBehaviorMix.raw({
+  const TextHeightBehaviorMix.create({
     Prop<bool>? applyHeightToFirstAscent,
     Prop<bool>? applyHeightToLastDescent,
     Prop<TextLeadingDistribution>? leadingDistribution,
@@ -97,7 +97,7 @@ class TextHeightBehaviorMix extends Mix<TextHeightBehavior> {
   TextHeightBehaviorMix merge(TextHeightBehaviorMix? other) {
     if (other == null) return this;
 
-    return TextHeightBehaviorMix.raw(
+    return TextHeightBehaviorMix.create(
       applyHeightToFirstAscent: $applyHeightToFirstAscent.tryMerge(
         other.$applyHeightToFirstAscent,
       ),

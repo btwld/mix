@@ -376,7 +376,7 @@ void main() {
         );
         final clipBehavior = Prop.value<Clip>(Clip.antiAlias);
 
-        final attribute = ScrollViewWidgetDecoratorMix.raw(
+        final attribute = ScrollViewWidgetDecoratorMix.create(
           scrollDirection: scrollDirection,
           reverse: reverse,
           padding: padding,

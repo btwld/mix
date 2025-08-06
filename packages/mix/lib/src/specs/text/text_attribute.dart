@@ -258,7 +258,7 @@ class TextMix extends Style<TextSpec>
     return TextMix(textModifiers: [value]);
   }
 
-  const TextMix.raw({
+  const TextMix.create({
     Prop<TextOverflow>? overflow,
     MixProp<StrutStyle>? strutStyle,
     Prop<TextAlign>? textAlign,
@@ -312,7 +312,7 @@ class TextMix extends Style<TextSpec>
     WidgetDecoratorConfig? widgetDecoratorConfig,
     List<VariantStyle<TextSpec>>? variants,
     bool? inherit,
-  }) : this.raw(
+  }) : this.create(
          overflow: Prop.maybe(overflow),
          strutStyle: MixProp.maybe(strutStyle),
          textAlign: Prop.maybe(textAlign),
@@ -636,7 +636,7 @@ class TextMix extends Style<TextSpec>
   TextMix merge(TextMix? other) {
     if (other == null) return this;
 
-    return TextMix.raw(
+    return TextMix.create(
       overflow: $overflow.tryMerge(other.$overflow),
       strutStyle: $strutStyle.tryMerge(other.$strutStyle),
       textAlign: $textAlign.tryMerge(other.$textAlign),

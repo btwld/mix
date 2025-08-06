@@ -57,7 +57,7 @@ final class BoxDecorationUtility<T extends Style<Object?>>
 
   /// Utility for defining [BoxDecorationMix.color]
   late final color = ColorUtility<T>(
-    (prop) => builder(BoxDecorationMix.raw(color: prop)),
+    (prop) => builder(BoxDecorationMix.create(color: prop)),
   );
 
   /// Utility for defining [BoxDecorationMix.gradient]
@@ -151,7 +151,7 @@ final class ShapeDecorationUtility<T extends Style<Object?>>
 
   /// Utility for defining [ShapeDecorationMix.color]
   late final color = ColorUtility<T>(
-    (prop) => builder(ShapeDecorationMix.raw(color: prop)),
+    (prop) => builder(ShapeDecorationMix.create(color: prop)),
   );
 
   /// Utility for defining [ShapeDecorationMix.image]

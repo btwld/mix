@@ -156,7 +156,7 @@ class ScrollViewWidgetDecoratorMix
   final Prop<ScrollPhysics>? physics;
   final Prop<Clip>? clipBehavior;
 
-  const ScrollViewWidgetDecoratorMix.raw({
+  const ScrollViewWidgetDecoratorMix.create({
     this.scrollDirection,
     this.reverse,
     this.padding,
@@ -170,7 +170,7 @@ class ScrollViewWidgetDecoratorMix
     EdgeInsetsGeometryMix? padding,
     ScrollPhysics? physics,
     Clip? clipBehavior,
-  }) : this.raw(
+  }) : this.create(
          scrollDirection: Prop.maybe(scrollDirection),
          reverse: Prop.maybe(reverse),
          padding: MixProp.maybe(padding),
@@ -193,7 +193,7 @@ class ScrollViewWidgetDecoratorMix
   ScrollViewWidgetDecoratorMix merge(ScrollViewWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return ScrollViewWidgetDecoratorMix.raw(
+    return ScrollViewWidgetDecoratorMix.create(
       scrollDirection: scrollDirection.tryMerge(other.scrollDirection),
       reverse: reverse.tryMerge(other.reverse),
       padding: padding.tryMerge(other.padding),

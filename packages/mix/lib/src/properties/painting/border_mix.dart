@@ -14,7 +14,7 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
 
   static BorderMix none = BorderMix.all(BorderSideMix.none);
 
-  const BoxBorderMix.raw({
+  const BoxBorderMix.create({
     MixProp<BorderSide>? top,
     MixProp<BorderSide>? bottom,
   }) : $top = top,
@@ -124,7 +124,7 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
     // Convert BorderDirectionalMix to BorderMix
     final directional = this as BorderDirectionalMix;
 
-    return BorderMix.raw(
+    return BorderMix.create(
       top: $top,
       bottom: $bottom,
       left: directional.$start, // start maps to left
@@ -139,7 +139,7 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
     // Convert BorderMix to BorderDirectionalMix
     final border = this as BorderMix;
 
-    return BorderDirectionalMix.raw(
+    return BorderDirectionalMix.create(
       top: $top,
       bottom: $bottom,
       start: border.$left, // left maps to start
@@ -171,21 +171,21 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
     BorderSideMix? bottom,
     BorderSideMix? left,
     BorderSideMix? right,
-  }) : this.raw(
+  }) : this.create(
          top: MixProp.maybe(top),
          bottom: MixProp.maybe(bottom),
          left: MixProp.maybe(left),
          right: MixProp.maybe(right),
        );
 
-  const BorderMix.raw({
+  const BorderMix.create({
     super.top,
     super.bottom,
     MixProp<BorderSide>? left,
     MixProp<BorderSide>? right,
   }) : $left = left,
        $right = right,
-       super.raw();
+       super.create();
 
   /// Creates a [BorderMix] from an existing [Border].
   ///
@@ -300,7 +300,7 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
   BorderMix merge(BorderMix? other) {
     if (other == null) return this;
 
-    return BorderMix.raw(
+    return BorderMix.create(
       top: $top.tryMerge(other.$top),
       bottom: $bottom.tryMerge(other.$bottom),
       left: $left.tryMerge(other.$left),
@@ -342,21 +342,21 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
     BorderSideMix? bottom,
     BorderSideMix? start,
     BorderSideMix? end,
-  }) : this.raw(
+  }) : this.create(
          top: MixProp.maybe(top),
          bottom: MixProp.maybe(bottom),
          start: MixProp.maybe(start),
          end: MixProp.maybe(end),
        );
 
-  const BorderDirectionalMix.raw({
+  const BorderDirectionalMix.create({
     super.top,
     super.bottom,
     MixProp<BorderSide>? start,
     MixProp<BorderSide>? end,
   }) : $start = start,
        $end = end,
-       super.raw();
+       super.create();
 
   /// Creates a [BorderDirectionalMix] from an existing [BorderDirectional].
   ///
@@ -468,7 +468,7 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
   BorderDirectionalMix merge(BorderDirectionalMix? other) {
     if (other == null) return this;
 
-    return BorderDirectionalMix.raw(
+    return BorderDirectionalMix.create(
       top: $top.tryMerge(other.$top),
       bottom: $bottom.tryMerge(other.$bottom),
       start: $start.tryMerge(other.$start),
@@ -511,7 +511,7 @@ final class BorderSideMix extends Mix<BorderSide>
     double? strokeAlign,
     BorderStyle? style,
     double? width,
-  }) : this.raw(
+  }) : this.create(
          color: Prop.maybe(color),
          width: Prop.maybe(width),
          style: Prop.maybe(style),
@@ -532,7 +532,7 @@ final class BorderSideMix extends Mix<BorderSide>
         width: borderSide.width,
       );
 
-  const BorderSideMix.raw({
+  const BorderSideMix.create({
     Prop<Color>? color,
     Prop<double>? width,
     Prop<BorderStyle>? style,
@@ -623,7 +623,7 @@ final class BorderSideMix extends Mix<BorderSide>
   BorderSideMix merge(BorderSideMix? other) {
     if (other == null) return this;
 
-    return BorderSideMix.raw(
+    return BorderSideMix.create(
       color: $color.tryMerge(other.$color),
       width: $width.tryMerge(other.$width),
       style: $style.tryMerge(other.$style),

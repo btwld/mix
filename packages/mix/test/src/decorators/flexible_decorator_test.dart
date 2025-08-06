@@ -208,7 +208,7 @@ void main() {
       test('creates with provided Prop values', () {
         final flex = Prop.value(2);
         final fit = Prop.value(FlexFit.tight);
-        final attribute = FlexibleWidgetDecoratorMix.raw(flex: flex, fit: fit);
+        final attribute = FlexibleWidgetDecoratorMix.create(flex: flex, fit: fit);
 
         expect(attribute.flex, same(flex));
         expect(attribute.fit, same(fit));

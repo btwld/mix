@@ -369,7 +369,7 @@ void main() {
         );
 
         final testUtil = StackSpecUtility(
-          StackMix.raw(alignment: Prop.token(alignmentToken)),
+          StackMix.create(alignment: Prop.token(alignmentToken)),
         );
         final spec = testUtil.resolve(context);
 

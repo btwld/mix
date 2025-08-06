@@ -106,7 +106,7 @@ class IconMix extends Style<IconSpec>
     return IconMix(variants: [VariantStyle(variant, value)]);
   }
 
-  const IconMix.raw({
+  const IconMix.create({
     Prop<Color>? color,
     Prop<double>? size,
     Prop<double>? weight,
@@ -154,7 +154,7 @@ class IconMix extends Style<IconSpec>
     WidgetDecoratorConfig? widgetDecoratorConfig,
     List<VariantStyle<IconSpec>>? variants,
     bool? inherit,
-  }) : this.raw(
+  }) : this.create(
          color: Prop.maybe(color),
          size: Prop.maybe(size),
          weight: Prop.maybe(weight),
@@ -304,7 +304,7 @@ class IconMix extends Style<IconSpec>
   IconMix merge(IconMix? other) {
     if (other == null) return this;
 
-    return IconMix.raw(
+    return IconMix.create(
       color: $color.tryMerge(other.$color),
       size: $size.tryMerge(other.$size),
       weight: $weight.tryMerge(other.$weight),

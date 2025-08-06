@@ -125,7 +125,7 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
     DecorationImageMix? image,
     GradientMix? gradient,
     List<BoxShadowMix>? boxShadow,
-  }) : this.raw(
+  }) : this.create(
          border: MixProp.maybe(border),
          borderRadius: MixProp.maybe(borderRadius),
          shape: Prop.maybe(shape),
@@ -178,7 +178,7 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
         boxShadow: decoration.boxShadow?.map(BoxShadowMix.value).toList(),
       );
 
-  const BoxDecorationMix.raw({
+  const BoxDecorationMix.create({
     MixProp<BoxBorder>? border,
     MixProp<BorderRadiusGeometry>? borderRadius,
     Prop<BoxShape>? shape,
@@ -259,7 +259,7 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
   BoxDecorationMix merge(BoxDecorationMix? other) {
     if (other == null) return this;
 
-    return BoxDecorationMix.raw(
+    return BoxDecorationMix.create(
       border: $border.tryMerge(other.$border),
       borderRadius: $borderRadius.tryMerge(other.$borderRadius),
       shape: $shape.tryMerge(other.$shape),
@@ -310,7 +310,7 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
     DecorationImageMix? image,
     GradientMix? gradient,
     List<BoxShadowMix>? shadows,
-  }) : this.raw(
+  }) : this.create(
          shape: MixProp.maybe(shape),
          color: Prop.maybe(color),
          image: MixProp.maybe(image),
@@ -318,7 +318,7 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
          shadows: shadows?.map(MixProp<BoxShadow>.new).toList(),
        );
 
-  const ShapeDecorationMix.raw({
+  const ShapeDecorationMix.create({
     MixProp<ShapeBorder>? shape,
     super.color,
     super.image,
@@ -363,7 +363,7 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
   ShapeDecorationMix merge(ShapeDecorationMix? other) {
     if (other == null) return this;
 
-    return ShapeDecorationMix.raw(
+    return ShapeDecorationMix.create(
       shape: $shape.tryMerge(other.$shape),
       color: $color.tryMerge(other.$color),
       image: $image.tryMerge(other.$image),

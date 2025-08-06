@@ -15,7 +15,7 @@ final class ShadowUtility<T extends Style<Object?>>
     extends MixUtility<T, ShadowMix> {
   /// Utility for defining [ShadowMix.color].
   late final color = ColorUtility<T>(
-    (prop) => builder(ShadowMix.raw(color: prop)),
+    (prop) => builder(ShadowMix.create(color: prop)),
   );
 
   /// Utility for defining [ShadowMix.offset].
@@ -45,7 +45,7 @@ final class BoxShadowUtility<T extends Style<Object?>>
     extends MixUtility<T, BoxShadowMix> {
   /// Utility for defining [BoxShadowMix.color].
   late final color = ColorUtility<T>(
-    (prop) => builder(BoxShadowMix.raw(color: prop)),
+    (prop) => builder(BoxShadowMix.create(color: prop)),
   );
 
   /// Utility for defining [BoxShadowMix.offset].
@@ -175,7 +175,7 @@ final class ElevationMixPropUtility<T extends Style<Object?>>
 
     final boxShadows = kElevationToShadow[value]!.map(
       (e) => MixProp(
-        BoxShadowMix.raw(
+        BoxShadowMix.create(
           color: Prop.value(e.color),
           offset: Prop.value(e.offset),
           blurRadius: Prop.value(e.blurRadius),

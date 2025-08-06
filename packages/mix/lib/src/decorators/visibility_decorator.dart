@@ -65,10 +65,10 @@ class VisibilityWidgetDecoratorMix
   /// Whether the child widget should be visible.
   final Prop<bool>? visible;
 
-  const VisibilityWidgetDecoratorMix.raw({this.visible});
+  const VisibilityWidgetDecoratorMix.create({this.visible});
 
   VisibilityWidgetDecoratorMix({bool? visible})
-    : this.raw(visible: Prop.maybe(visible));
+    : this.create(visible: Prop.maybe(visible));
 
   /// Resolves to [VisibilityWidgetDecorator] using the provided [BuildContext].
   ///
@@ -88,7 +88,7 @@ class VisibilityWidgetDecoratorMix
   VisibilityWidgetDecoratorMix merge(VisibilityWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return VisibilityWidgetDecoratorMix.raw(
+    return VisibilityWidgetDecoratorMix.create(
       visible: visible?.mergeProp(other.visible) ?? other.visible,
     );
   }
@@ -119,9 +119,9 @@ final class VisibilityWidgetDecoratorUtility<T extends Style<Object?>>
 
   /// Creates a [VisibilityWidgetDecoratorMix] with the specified visibility state.
   T call(bool value) =>
-      builder(VisibilityWidgetDecoratorMix.raw(visible: Prop.value(value)));
+      builder(VisibilityWidgetDecoratorMix.create(visible: Prop.value(value)));
 
   /// Creates a [VisibilityWidgetDecoratorMix] with the specified visibility token.
   T token(MixToken<bool> token) =>
-      builder(VisibilityWidgetDecoratorMix.raw(visible: Prop.token(token)));
+      builder(VisibilityWidgetDecoratorMix.create(visible: Prop.token(token)));
 }

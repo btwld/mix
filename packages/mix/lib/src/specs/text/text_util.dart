@@ -28,7 +28,7 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
   late final textScaler = MixUtility(mutable.textScaler);
 
   late final style = TextStyleUtility(
-    (prop) => mutable.merge(TextMix.raw(style: prop)),
+    (prop) => mutable.merge(TextMix.create(style: prop)),
   );
   late final textWidthBasis = MixUtility(mutable.textWidthBasis);
   late final textHeightBehavior = TextHeightBehaviorUtility<TextMix>(
@@ -37,7 +37,7 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
   late final textDirection = MixUtility(mutable.textDirection);
   late final modifiers = MixUtility(mutable.textModifier);
   late final selectionColor = ColorUtility<TextMix>(
-    (prop) => mutable.merge(TextMix.raw(selectionColor: prop)),
+    (prop) => mutable.merge(TextMix.create(selectionColor: prop)),
   );
   late final locale = MixUtility(mutable.locale);
   late final on = OnContextVariantUtility<TextSpec, TextMix>(

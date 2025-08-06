@@ -67,21 +67,21 @@
 //   static final white12 = ColorProp.value(ColorValues.white12);
 //   static final white10 = ColorProp.value(ColorValues.white10);
 
-//   const ColorProp.raw({super.source, super.modifiers, super.animation})
+//   const ColorProp.create({super.source, super.modifiers, super.animation})
 //     : super.internal();
 
 //   /// Creates a ColorMix from a color token.
 //   factory ColorProp.token(MixToken<Color> token) {
-//     return ColorProp.raw(source: TokenPropSource(token));
+//     return ColorProp.create(source: TokenPropSource(token));
 //   }
 
 //   /// Creates a ColorMix with a color modifier applied.
 //   factory ColorProp.modifier(Modifier<Color> modifier) {
-//     return ColorProp.raw(modifiers: [modifier]);
+//     return ColorProp.create(modifiers: [modifier]);
 //   }
 
 //   factory ColorProp.value(Color color) {
-//     return ColorProp.raw(source: ValuePropSource(color));
+//     return ColorProp.create(source: ValuePropSource(color));
 //   }
 
 //   /// Creates a ColorMix with an opacity modifier.
@@ -194,7 +194,7 @@
 
 //     final merged = super.merge(other);
 
-//     return ColorProp.raw(
+//     return ColorProp.create(
 //       source: merged.source,
 //       modifiers: merged.$modifiers,
 //       animation: merged.$animation,

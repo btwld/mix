@@ -10,7 +10,7 @@ import '../../core/prop.dart';
 /// Provides common functionality for different constraint types with factory methods
 /// for common sizing operations like width, height, and size constraints.
 sealed class ConstraintsMix<T extends Constraints> extends Mix<T> {
-  const ConstraintsMix.raw();
+  const ConstraintsMix.create();
 
   /// Creates box constraints with the specified minimum width.
   static BoxConstraintsMix minWidth(double value) {
@@ -70,14 +70,14 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
     double? maxWidth,
     double? minHeight,
     double? maxHeight,
-  }) : this.raw(
+  }) : this.create(
          minWidth: Prop.maybe(minWidth),
          maxWidth: Prop.maybe(maxWidth),
          minHeight: Prop.maybe(minHeight),
          maxHeight: Prop.maybe(maxHeight),
        );
 
-  const BoxConstraintsMix.raw({
+  const BoxConstraintsMix.create({
     Prop<double>? minWidth,
     Prop<double>? maxWidth,
     Prop<double>? minHeight,
@@ -86,7 +86,7 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
        $maxWidth = maxWidth,
        $minHeight = minHeight,
        $maxHeight = maxHeight,
-       super.raw();
+       super.create();
 
   /// Creates constraints with fixed height (min and max height equal).
   BoxConstraintsMix.height(double height)
@@ -203,7 +203,7 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
   BoxConstraintsMix merge(BoxConstraintsMix? other) {
     if (other == null) return this;
 
-    return BoxConstraintsMix.raw(
+    return BoxConstraintsMix.create(
       minWidth: $minWidth.tryMerge(other.$minWidth),
       maxWidth: $maxWidth.tryMerge(other.$maxWidth),
       minHeight: $minHeight.tryMerge(other.$minHeight),

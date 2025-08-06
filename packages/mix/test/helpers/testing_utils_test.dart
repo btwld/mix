@@ -22,7 +22,7 @@ void main() {
         final edgeInsetsProp = MixProp(EdgeInsetsMix.all(16.0));
         expectProp(edgeInsetsProp, EdgeInsetsMix.all(16.0));
 
-        final borderSide = BorderSideMix.raw(
+        final borderSide = BorderSideMix.create(
           color: Prop.value(Colors.red),
           width: Prop.value(2.0),
         );

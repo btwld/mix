@@ -157,7 +157,7 @@ void main() {
 
       test('creates with provided Prop quarter turns', () {
         final quarterTurns = Prop.value(2);
-        final attribute = RotatedBoxWidgetDecoratorMix.raw(
+        final attribute = RotatedBoxWidgetDecoratorMix.create(
           quarterTurns: quarterTurns,
         );
 

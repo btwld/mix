@@ -89,7 +89,7 @@ class FlexMix extends Style<FlexSpec>
     return FlexMix(variants: [VariantStyle(variant, value)]);
   }
 
-  const FlexMix.raw({
+  const FlexMix.create({
     Prop<Axis>? direction,
     Prop<MainAxisAlignment>? mainAxisAlignment,
     Prop<CrossAxisAlignment>? crossAxisAlignment,
@@ -128,7 +128,7 @@ class FlexMix extends Style<FlexSpec>
     WidgetDecoratorConfig? widgetDecoratorConfig,
     List<VariantStyle<FlexSpec>>? variants,
     bool? inherit,
-  }) : this.raw(
+  }) : this.create(
          direction: Prop.maybe(direction),
          mainAxisAlignment: Prop.maybe(mainAxisAlignment),
          crossAxisAlignment: Prop.maybe(crossAxisAlignment),
@@ -278,7 +278,7 @@ class FlexMix extends Style<FlexSpec>
   FlexMix merge(FlexMix? other) {
     if (other == null) return this;
 
-    return FlexMix.raw(
+    return FlexMix.create(
       direction: $direction.tryMerge(other.$direction),
       mainAxisAlignment: $mainAxisAlignment.tryMerge(other.$mainAxisAlignment),
       crossAxisAlignment: $crossAxisAlignment.tryMerge(

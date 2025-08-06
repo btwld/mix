@@ -66,10 +66,10 @@ class MouseCursorDecorator extends WidgetDecorator<MouseCursorDecorator> {
 class MouseCursorDecoratorMix extends WidgetDecoratorMix<MouseCursorDecorator> {
   final Prop<MouseCursor>? mouseCursor;
 
-  const MouseCursorDecoratorMix.raw({this.mouseCursor});
+  const MouseCursorDecoratorMix.create({this.mouseCursor});
 
   MouseCursorDecoratorMix({MouseCursor? mouseCursor})
-    : this.raw(mouseCursor: Prop.maybe(mouseCursor));
+    : this.create(mouseCursor: Prop.maybe(mouseCursor));
 
   /// Resolves to [MouseCursorDecorator] using the provided [BuildContext].
   ///
@@ -98,7 +98,7 @@ class MouseCursorDecoratorMix extends WidgetDecoratorMix<MouseCursorDecorator> {
   MouseCursorDecoratorMix merge(MouseCursorDecoratorMix? other) {
     if (other == null) return this;
 
-    return MouseCursorDecoratorMix.raw(
+    return MouseCursorDecoratorMix.create(
       mouseCursor: mouseCursor.tryMerge(other.mouseCursor),
     );
   }

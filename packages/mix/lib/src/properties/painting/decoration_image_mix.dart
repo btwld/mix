@@ -29,7 +29,7 @@ final class DecorationImageMix extends Mix<DecorationImage>
     FilterQuality? filterQuality,
     bool? invertColors,
     bool? isAntiAlias,
-  }) : this.raw(
+  }) : this.create(
          image: Prop.maybe(image),
          fit: Prop.maybe(fit),
          alignment: Prop.maybe(alignment),
@@ -40,7 +40,7 @@ final class DecorationImageMix extends Mix<DecorationImage>
          isAntiAlias: Prop.maybe(isAntiAlias),
        );
 
-  const DecorationImageMix.raw({
+  const DecorationImageMix.create({
     Prop<ImageProvider>? image,
     Prop<BoxFit>? fit,
     Prop<AlignmentGeometry>? alignment,
@@ -205,7 +205,7 @@ final class DecorationImageMix extends Mix<DecorationImage>
   DecorationImageMix merge(DecorationImageMix? other) {
     if (other == null) return this;
 
-    return DecorationImageMix.raw(
+    return DecorationImageMix.create(
       image: $image.tryMerge(other.$image),
       fit: $fit.tryMerge(other.$fit),
       alignment: $alignment.tryMerge(other.$alignment),

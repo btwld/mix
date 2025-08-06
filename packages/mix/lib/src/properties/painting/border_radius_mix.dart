@@ -167,7 +167,7 @@ sealed class BorderRadiusGeometryMix<T extends BorderRadiusGeometry>
       (BorderRadiusDirectionalMix a, BorderRadiusDirectionalMix b) =>
         a.merge(b) as B,
       (BorderRadiusMix a, BorderRadiusDirectionalMix b) =>
-        BorderRadiusDirectionalMix.raw(
+        BorderRadiusDirectionalMix.create(
               topStart: a.$topLeft,
               topEnd: a.$topRight,
               bottomStart: a.$bottomLeft,
@@ -175,7 +175,7 @@ sealed class BorderRadiusGeometryMix<T extends BorderRadiusGeometry>
             ).merge(b)
             as B,
       (BorderRadiusDirectionalMix a, BorderRadiusMix b) =>
-        BorderRadiusMix.raw(
+        BorderRadiusMix.create(
               topLeft: a.$topStart,
               topRight: a.$topEnd,
               bottomLeft: a.$bottomStart,
@@ -209,7 +209,7 @@ final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
     Radius? topRight,
     Radius? bottomLeft,
     Radius? bottomRight,
-  }) : this.raw(
+  }) : this.create(
          topLeft: Prop.maybe(topLeft),
          topRight: Prop.maybe(topRight),
          bottomLeft: Prop.maybe(bottomLeft),
@@ -230,7 +230,7 @@ final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
         bottomRight: borderRadius.bottomRight,
       );
 
-  const BorderRadiusMix.raw({
+  const BorderRadiusMix.create({
     Prop<Radius>? topLeft,
     Prop<Radius>? topRight,
     Prop<Radius>? bottomLeft,
@@ -324,7 +324,7 @@ final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
   BorderRadiusMix merge(BorderRadiusMix? other) {
     if (other == null) return this;
 
-    return BorderRadiusMix.raw(
+    return BorderRadiusMix.create(
       topLeft: $topLeft.tryMerge(other.$topLeft),
       topRight: $topRight.tryMerge(other.$topRight),
       bottomLeft: $bottomLeft.tryMerge(other.$bottomLeft),
@@ -352,7 +352,7 @@ final class BorderRadiusDirectionalMix
     Radius? topEnd,
     Radius? bottomStart,
     Radius? bottomEnd,
-  }) : this.raw(
+  }) : this.create(
          topStart: Prop.maybe(topStart),
          topEnd: Prop.maybe(topEnd),
          bottomStart: Prop.maybe(bottomStart),
@@ -373,7 +373,7 @@ final class BorderRadiusDirectionalMix
         bottomEnd: borderRadius.bottomEnd,
       );
 
-  const BorderRadiusDirectionalMix.raw({
+  const BorderRadiusDirectionalMix.create({
     Prop<Radius>? topStart,
     Prop<Radius>? topEnd,
     Prop<Radius>? bottomStart,
@@ -474,7 +474,7 @@ final class BorderRadiusDirectionalMix
   BorderRadiusDirectionalMix merge(BorderRadiusDirectionalMix? other) {
     if (other == null) return this;
 
-    return BorderRadiusDirectionalMix.raw(
+    return BorderRadiusDirectionalMix.create(
       topStart: $topStart.tryMerge(other.$topStart),
       topEnd: $topEnd.tryMerge(other.$topEnd),
       bottomStart: $bottomStart.tryMerge(other.$bottomStart),

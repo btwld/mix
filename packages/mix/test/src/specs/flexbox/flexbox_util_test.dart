@@ -466,7 +466,7 @@ void main() {
         );
 
         final testUtil = FlexBoxSpecUtility(
-          FlexBoxMix(flex: FlexMix.raw(gap: Prop.token(gapToken))),
+          FlexBoxMix(flex: FlexMix.create(gap: Prop.token(gapToken))),
         );
         final spec = testUtil.resolve(context);
 

@@ -109,7 +109,7 @@ class FractionallySizedBoxWidgetDecoratorMix
   final Prop<double>? heightFactor;
   final Prop<AlignmentGeometry>? alignment;
 
-  const FractionallySizedBoxWidgetDecoratorMix.raw({
+  const FractionallySizedBoxWidgetDecoratorMix.create({
     this.widthFactor,
     this.heightFactor,
     this.alignment,
@@ -119,7 +119,7 @@ class FractionallySizedBoxWidgetDecoratorMix
     double? widthFactor,
     double? heightFactor,
     AlignmentGeometry? alignment,
-  }) : this.raw(
+  }) : this.create(
          widthFactor: Prop.maybe(widthFactor),
          heightFactor: Prop.maybe(heightFactor),
          alignment: Prop.maybe(alignment),
@@ -156,7 +156,7 @@ class FractionallySizedBoxWidgetDecoratorMix
   ) {
     if (other == null) return this;
 
-    return FractionallySizedBoxWidgetDecoratorMix.raw(
+    return FractionallySizedBoxWidgetDecoratorMix.create(
       widthFactor: widthFactor.tryMerge(other.widthFactor),
       heightFactor: heightFactor.tryMerge(other.heightFactor),
       alignment: alignment.tryMerge(other.alignment),

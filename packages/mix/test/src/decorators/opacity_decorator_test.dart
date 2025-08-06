@@ -113,7 +113,7 @@ void main() {
 
       test('creates with provided Prop opacity value', () {
         final opacity = Prop.value(0.5);
-        final attribute = OpacityWidgetDecoratorMix.raw(opacity: opacity);
+        final attribute = OpacityWidgetDecoratorMix.create(opacity: opacity);
 
         expect(attribute.opacity, same(opacity));
       });

@@ -12,7 +12,7 @@ import 'text_style_mix.dart';
 final class TextStyleUtility<T extends Style<Object?>>
     extends MixUtility<T, MixProp<TextStyle>> {
   late final color = ColorUtility<T>(
-    (prop) => buildProp(TextStyleMix.raw(color: prop)),
+    (prop) => buildProp(TextStyleMix.create(color: prop)),
   );
 
   late final fontWeight = MixUtility<T, FontWeight>(
@@ -28,11 +28,11 @@ final class TextStyleUtility<T extends Style<Object?>>
   );
 
   late final backgroundColor = ColorUtility<T>(
-    (prop) => buildProp(TextStyleMix.raw(backgroundColor: prop)),
+    (prop) => buildProp(TextStyleMix.create(backgroundColor: prop)),
   );
 
   late final decorationColor = ColorUtility<T>(
-    (prop) => buildProp(TextStyleMix.raw(decorationColor: prop)),
+    (prop) => buildProp(TextStyleMix.create(decorationColor: prop)),
   );
 
   late final decorationStyle = MixUtility<T, TextDecorationStyle>(

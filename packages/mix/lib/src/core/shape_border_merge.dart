@@ -114,19 +114,19 @@ class ShapeBorderMerger {
     MixProp<BorderSide>? side,
   ) {
     return switch (targetType) {
-      const (RoundedRectangleBorderMix) => RoundedRectangleBorderMix.raw(
+      const (RoundedRectangleBorderMix) => RoundedRectangleBorderMix.create(
         borderRadius: borderRadius,
         side: side,
       ),
-      const (BeveledRectangleBorderMix) => BeveledRectangleBorderMix.raw(
+      const (BeveledRectangleBorderMix) => BeveledRectangleBorderMix.create(
         borderRadius: borderRadius,
         side: side,
       ),
-      const (ContinuousRectangleBorderMix) => ContinuousRectangleBorderMix.raw(
+      const (ContinuousRectangleBorderMix) => ContinuousRectangleBorderMix.create(
         borderRadius: borderRadius,
         side: side,
       ),
-      const (RoundedSuperellipseBorderMix) => RoundedSuperellipseBorderMix.raw(
+      const (RoundedSuperellipseBorderMix) => RoundedSuperellipseBorderMix.create(
         borderRadius: borderRadius,
         side: side,
       ),

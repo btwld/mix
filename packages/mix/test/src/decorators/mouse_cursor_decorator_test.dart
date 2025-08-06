@@ -243,7 +243,7 @@ void main() {
 
       test('creates with provided Prop value', () {
         final mouseCursor = Prop.value<MouseCursor>(SystemMouseCursors.click);
-        final attribute = MouseCursorDecoratorMix.raw(mouseCursor: mouseCursor);
+        final attribute = MouseCursorDecoratorMix.create(mouseCursor: mouseCursor);
 
         expect(attribute.mouseCursor, same(mouseCursor));
       });

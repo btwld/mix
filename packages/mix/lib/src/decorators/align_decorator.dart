@@ -83,7 +83,7 @@ class AlignWidgetDecoratorMix extends WidgetDecoratorMix<AlignWidgetDecorator> {
   final Prop<double>? widthFactor;
   final Prop<double>? heightFactor;
 
-  const AlignWidgetDecoratorMix.raw({
+  const AlignWidgetDecoratorMix.create({
     this.alignment,
     this.widthFactor,
     this.heightFactor,
@@ -93,7 +93,7 @@ class AlignWidgetDecoratorMix extends WidgetDecoratorMix<AlignWidgetDecorator> {
     AlignmentGeometry? alignment,
     double? widthFactor,
     double? heightFactor,
-  }) : this.raw(
+  }) : this.create(
          alignment: Prop.maybe(alignment),
          widthFactor: Prop.maybe(widthFactor),
          heightFactor: Prop.maybe(heightFactor),
@@ -112,7 +112,7 @@ class AlignWidgetDecoratorMix extends WidgetDecoratorMix<AlignWidgetDecorator> {
   AlignWidgetDecoratorMix merge(AlignWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return AlignWidgetDecoratorMix.raw(
+    return AlignWidgetDecoratorMix.create(
       alignment: alignment.tryMerge(other.alignment),
       widthFactor: widthFactor.tryMerge(other.widthFactor),
       heightFactor: heightFactor.tryMerge(other.heightFactor),

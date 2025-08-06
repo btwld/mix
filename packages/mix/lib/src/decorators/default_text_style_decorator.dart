@@ -167,7 +167,7 @@ class DefaultTextStyleWidgetDecoratorMix
   final Prop<TextWidthBasis>? textWidthBasis;
   final MixProp<TextHeightBehavior>? textHeightBehavior;
 
-  const DefaultTextStyleWidgetDecoratorMix.raw({
+  const DefaultTextStyleWidgetDecoratorMix.create({
     this.style,
     this.textAlign,
     this.softWrap,
@@ -185,7 +185,7 @@ class DefaultTextStyleWidgetDecoratorMix
     int? maxLines,
     TextWidthBasis? textWidthBasis,
     TextHeightBehaviorMix? textHeightBehavior,
-  }) : this.raw(
+  }) : this.create(
          style: MixProp.maybe(style),
          textAlign: Prop.maybe(textAlign),
          softWrap: Prop.maybe(softWrap),
@@ -230,7 +230,7 @@ class DefaultTextStyleWidgetDecoratorMix
   ) {
     if (other == null) return this;
 
-    return DefaultTextStyleWidgetDecoratorMix.raw(
+    return DefaultTextStyleWidgetDecoratorMix.create(
       style: style.tryMerge(other.style),
       textAlign: textAlign.tryMerge(other.textAlign),
       softWrap: softWrap.tryMerge(other.softWrap),

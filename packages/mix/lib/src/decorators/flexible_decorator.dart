@@ -84,10 +84,10 @@ class FlexibleWidgetDecoratorMix
   final Prop<int>? flex;
   final Prop<FlexFit>? fit;
 
-  const FlexibleWidgetDecoratorMix.raw({this.flex, this.fit});
+  const FlexibleWidgetDecoratorMix.create({this.flex, this.fit});
 
   FlexibleWidgetDecoratorMix({int? flex, FlexFit? fit})
-    : this.raw(flex: Prop.maybe(flex), fit: Prop.maybe(fit));
+    : this.create(flex: Prop.maybe(flex), fit: Prop.maybe(fit));
 
   /// Resolves to [FlexibleWidgetDecorator] using the provided [BuildContext].
   ///
@@ -117,7 +117,7 @@ class FlexibleWidgetDecoratorMix
   FlexibleWidgetDecoratorMix merge(FlexibleWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return FlexibleWidgetDecoratorMix.raw(
+    return FlexibleWidgetDecoratorMix.create(
       flex: flex?.mergeProp(other.flex) ?? other.flex,
       fit: fit?.mergeProp(other.fit) ?? other.fit,
     );
@@ -146,14 +146,14 @@ final class FlexibleWidgetDecoratorUtility<T extends Style<Object?>>
   FlexibleWidgetDecoratorUtility(super.builder);
   T flex(int v) => builder(FlexibleWidgetDecoratorMix(flex: v));
   T tight({int? flex}) => builder(
-    FlexibleWidgetDecoratorMix.raw(
+    FlexibleWidgetDecoratorMix.create(
       flex: Prop.maybe(flex),
       fit: Prop.value(FlexFit.tight),
     ),
   );
 
   T loose({int? flex}) => builder(
-    FlexibleWidgetDecoratorMix.raw(
+    FlexibleWidgetDecoratorMix.create(
       flex: Prop.maybe(flex),
       fit: Prop.value(FlexFit.loose),
     ),
@@ -166,10 +166,10 @@ final class FlexibleWidgetDecoratorUtility<T extends Style<Object?>>
   }
 
   T flexToken(MixToken<int> token) {
-    return builder(FlexibleWidgetDecoratorMix.raw(flex: Prop.token(token)));
+    return builder(FlexibleWidgetDecoratorMix.create(flex: Prop.token(token)));
   }
 
   T fitToken(MixToken<FlexFit> token) {
-    return builder(FlexibleWidgetDecoratorMix.raw(fit: Prop.token(token)));
+    return builder(FlexibleWidgetDecoratorMix.create(fit: Prop.token(token)));
   }
 }

@@ -20,19 +20,19 @@ import 'box_spec.dart';
 /// enabling fluid styling: `$box..color.red()..width(100)`.
 class BoxSpecUtility extends StyleMutableBuilder<BoxSpec> {
   late final padding = EdgeInsetsGeometryUtility<BoxMix>(
-    (prop) => mutable.merge(BoxMix.raw(padding: MixProp(prop))),
+    (prop) => mutable.merge(BoxMix.create(padding: MixProp(prop))),
   );
 
   late final margin = EdgeInsetsGeometryUtility<BoxMix>(
-    (prop) => mutable.merge(BoxMix.raw(margin: MixProp(prop))),
+    (prop) => mutable.merge(BoxMix.create(margin: MixProp(prop))),
   );
 
   late final constraints = BoxConstraintsUtility<BoxMix>(
-    (prop) => mutable.merge(BoxMix.raw(constraints: MixProp(prop))),
+    (prop) => mutable.merge(BoxMix.create(constraints: MixProp(prop))),
   );
 
   late final decoration = DecorationUtility<BoxMix>(
-    (prop) => mutable.merge(BoxMix.raw(decoration: MixProp(prop))),
+    (prop) => mutable.merge(BoxMix.create(decoration: MixProp(prop))),
   );
 
   late final on = OnContextVariantUtility<BoxSpec, BoxMix>(

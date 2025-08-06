@@ -52,10 +52,10 @@ class RotatedBoxWidgetDecoratorMix
     extends WidgetDecoratorMix<RotatedBoxWidgetDecorator> {
   final Prop<int>? quarterTurns;
 
-  const RotatedBoxWidgetDecoratorMix.raw({this.quarterTurns});
+  const RotatedBoxWidgetDecoratorMix.create({this.quarterTurns});
 
   RotatedBoxWidgetDecoratorMix({int? quarterTurns})
-    : this.raw(quarterTurns: Prop.maybe(quarterTurns));
+    : this.create(quarterTurns: Prop.maybe(quarterTurns));
 
   /// Resolves to [RotatedBoxWidgetDecorator] using the provided [BuildContext].
   ///
@@ -82,7 +82,7 @@ class RotatedBoxWidgetDecoratorMix
   RotatedBoxWidgetDecoratorMix merge(RotatedBoxWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return RotatedBoxWidgetDecoratorMix.raw(
+    return RotatedBoxWidgetDecoratorMix.create(
       quarterTurns: quarterTurns.tryMerge(other.quarterTurns),
     );
   }
@@ -99,6 +99,6 @@ final class RotatedBoxWidgetDecoratorUtility<T extends Style<Object?>>
   T d270() => call(3);
 
   T call(int value) => builder(
-    RotatedBoxWidgetDecoratorMix.raw(quarterTurns: Prop.value(value)),
+    RotatedBoxWidgetDecoratorMix.create(quarterTurns: Prop.value(value)),
   );
 }

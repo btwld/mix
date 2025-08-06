@@ -173,7 +173,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
     String? fontFamily,
     List<String>? fontFamilyFallback,
     bool? inherit,
-  }) : this.raw(
+  }) : this.create(
          color: Prop.maybe(color),
          backgroundColor: Prop.maybe(backgroundColor),
          fontSize: Prop.maybe(fontSize),
@@ -198,7 +198,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
          inherit: Prop.maybe(inherit),
        );
 
-  const TextStyleMix.raw({
+  const TextStyleMix.create({
     Prop<Color>? color,
     Prop<Color>? backgroundColor,
     Prop<double>? fontSize,
@@ -426,7 +426,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
   TextStyleMix merge(TextStyleMix? other) {
     if (other == null) return this;
 
-    return TextStyleMix.raw(
+    return TextStyleMix.create(
       color: $color.tryMerge(other.$color),
       backgroundColor: $backgroundColor.tryMerge(other.$backgroundColor),
       fontSize: $fontSize.tryMerge(other.$fontSize),

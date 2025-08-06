@@ -319,7 +319,7 @@ void main() {
         final widthFactor = Prop.value(0.5);
         final heightFactor = Prop.value(0.8);
         final alignment = Prop.value<AlignmentGeometry>(Alignment.center);
-        final attribute = FractionallySizedBoxWidgetDecoratorMix.raw(
+        final attribute = FractionallySizedBoxWidgetDecoratorMix.create(
           widthFactor: widthFactor,
           heightFactor: heightFactor,
           alignment: alignment,

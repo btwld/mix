@@ -430,7 +430,7 @@ void main() {
         );
 
         final testUtil = IconSpecUtility(
-          IconMix.raw(size: Prop.token(sizeToken)),
+          IconMix.create(size: Prop.token(sizeToken)),
         );
         final spec = testUtil.resolve(context);
 

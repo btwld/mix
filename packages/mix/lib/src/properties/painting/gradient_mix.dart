@@ -91,7 +91,7 @@ final class LinearGradientMix extends GradientMix<LinearGradient> {
     GradientTransform? transform,
     List<Color>? colors,
     List<double>? stops,
-  }) : this.raw(
+  }) : this.create(
          begin: Prop.maybe(begin),
          end: Prop.maybe(end),
          tileMode: Prop.maybe(tileMode),
@@ -100,7 +100,7 @@ final class LinearGradientMix extends GradientMix<LinearGradient> {
          stops: stops?.map(Prop.value).toList(),
        );
 
-  const LinearGradientMix.raw({
+  const LinearGradientMix.create({
     Prop<AlignmentGeometry>? begin,
     Prop<AlignmentGeometry>? end,
     Prop<TileMode>? tileMode,
@@ -209,7 +209,7 @@ final class LinearGradientMix extends GradientMix<LinearGradient> {
 
     final commonProps = mergeCommonProperties(other);
 
-    return LinearGradientMix.raw(
+    return LinearGradientMix.create(
       begin: $begin.tryMerge(other.$begin),
       end: $end.tryMerge(other.$end),
       tileMode: $tileMode.tryMerge(other.$tileMode),
@@ -250,7 +250,7 @@ final class RadialGradientMix extends GradientMix<RadialGradient> {
     GradientTransform? transform,
     List<Color>? colors,
     List<double>? stops,
-  }) : this.raw(
+  }) : this.create(
          center: Prop.maybe(center),
          radius: Prop.maybe(radius),
          tileMode: Prop.maybe(tileMode),
@@ -261,7 +261,7 @@ final class RadialGradientMix extends GradientMix<RadialGradient> {
          stops: stops?.map(Prop.value).toList(),
        );
 
-  const RadialGradientMix.raw({
+  const RadialGradientMix.create({
     Prop<AlignmentGeometry>? center,
     Prop<double>? radius,
     Prop<TileMode>? tileMode,
@@ -399,7 +399,7 @@ final class RadialGradientMix extends GradientMix<RadialGradient> {
 
     final commonProps = mergeCommonProperties(other);
 
-    return RadialGradientMix.raw(
+    return RadialGradientMix.create(
       center: $center.tryMerge(other.$center),
       radius: $radius.tryMerge(other.$radius),
       tileMode: $tileMode.tryMerge(other.$tileMode),
@@ -443,7 +443,7 @@ final class SweepGradientMix extends GradientMix<SweepGradient> {
     GradientTransform? transform,
     List<Color>? colors,
     List<double>? stops,
-  }) : this.raw(
+  }) : this.create(
          center: Prop.maybe(center),
          startAngle: Prop.maybe(startAngle),
          endAngle: Prop.maybe(endAngle),
@@ -453,7 +453,7 @@ final class SweepGradientMix extends GradientMix<SweepGradient> {
          stops: stops?.map(Prop.value).toList(),
        );
 
-  const SweepGradientMix.raw({
+  const SweepGradientMix.create({
     Prop<AlignmentGeometry>? center,
     Prop<double>? startAngle,
     Prop<double>? endAngle,
@@ -577,7 +577,7 @@ final class SweepGradientMix extends GradientMix<SweepGradient> {
 
     final commonProps = mergeCommonProperties(other);
 
-    return SweepGradientMix.raw(
+    return SweepGradientMix.create(
       center: $center.tryMerge(other.$center),
       startAngle: $startAngle.tryMerge(other.$startAngle),
       endAngle: $endAngle.tryMerge(other.$endAngle),

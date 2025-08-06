@@ -53,7 +53,7 @@ final class TransformWidgetDecoratorUtility<T extends Style<Object?>>
     extends MixUtility<T, TransformWidgetDecoratorMix> {
   late final rotate = TransformRotateWidgetDecoratorUtility(
     (value) => builder(
-      TransformWidgetDecoratorMix.raw(
+      TransformWidgetDecoratorMix.create(
         transform: Prop.maybe(value),
         alignment: Prop.value(Alignment.center),
       ),
@@ -63,7 +63,7 @@ final class TransformWidgetDecoratorUtility<T extends Style<Object?>>
   TransformWidgetDecoratorUtility(super.builder);
 
   T _flip(bool x, bool y) => builder(
-    TransformWidgetDecoratorMix.raw(
+    TransformWidgetDecoratorMix.create(
       transform: Prop.value(
         Matrix4.diagonal3Values(x ? -1.0 : 1.0, y ? -1.0 : 1.0, 1.0),
       ),
@@ -75,17 +75,17 @@ final class TransformWidgetDecoratorUtility<T extends Style<Object?>>
   T flipY() => _flip(false, true);
 
   T call(Matrix4 value) =>
-      builder(TransformWidgetDecoratorMix.raw(transform: Prop.value(value)));
+      builder(TransformWidgetDecoratorMix.create(transform: Prop.value(value)));
 
   T scale(double value) => builder(
-    TransformWidgetDecoratorMix.raw(
+    TransformWidgetDecoratorMix.create(
       transform: Prop.value(Matrix4.diagonal3Values(value, value, 1.0)),
       alignment: Prop.value(Alignment.center),
     ),
   );
 
   T translate(double x, double y) => builder(
-    TransformWidgetDecoratorMix.raw(
+    TransformWidgetDecoratorMix.create(
       transform: Prop.value(Matrix4.translationValues(x, y, 0.0)),
       alignment: Prop.value(Alignment.center),
     ),
@@ -107,10 +107,10 @@ class TransformWidgetDecoratorMix
   final Prop<Matrix4>? transform;
   final Prop<Alignment>? alignment;
 
-  const TransformWidgetDecoratorMix.raw({this.transform, this.alignment});
+  const TransformWidgetDecoratorMix.create({this.transform, this.alignment});
 
   TransformWidgetDecoratorMix({Matrix4? transform, Alignment? alignment})
-    : this.raw(
+    : this.create(
         transform: Prop.maybe(transform),
         alignment: Prop.maybe(alignment),
       );
@@ -127,7 +127,7 @@ class TransformWidgetDecoratorMix
   TransformWidgetDecoratorMix merge(TransformWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return TransformWidgetDecoratorMix.raw(
+    return TransformWidgetDecoratorMix.create(
       transform: transform.tryMerge(other.transform),
       alignment: alignment.tryMerge(other.alignment),
     );

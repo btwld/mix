@@ -81,7 +81,7 @@ class IconThemeWidgetDecoratorMix
   final List<MixProp<Shadow>>? shadows;
   final Prop<bool>? applyTextScaling;
 
-  const IconThemeWidgetDecoratorMix.raw({
+  const IconThemeWidgetDecoratorMix.create({
     this.color,
     this.size,
     this.fill,
@@ -103,7 +103,7 @@ class IconThemeWidgetDecoratorMix
     double? opacity,
     List<ShadowMix>? shadows,
     bool? applyTextScaling,
-  }) : this.raw(
+  }) : this.create(
          color: Prop.maybe(color),
          size: Prop.maybe(size),
          fill: Prop.maybe(fill),
@@ -151,7 +151,7 @@ class IconThemeWidgetDecoratorMix
   IconThemeWidgetDecoratorMix merge(IconThemeWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return IconThemeWidgetDecoratorMix.raw(
+    return IconThemeWidgetDecoratorMix.create(
       color: color.tryMerge(other.color),
       size: size.tryMerge(other.size),
       fill: fill.tryMerge(other.fill),

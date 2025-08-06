@@ -399,7 +399,7 @@ void main() {
         );
 
         final testUtil = TextSpecUtility(
-          TextMix.raw(maxLines: Prop.token(maxLinesToken)),
+          TextMix.create(maxLines: Prop.token(maxLinesToken)),
         );
         final spec = testUtil.resolve(context);
 
@@ -413,7 +413,7 @@ void main() {
         );
 
         final testUtil = TextSpecUtility(
-          TextMix.raw(textAlign: Prop.token(textAlignToken)),
+          TextMix.create(textAlign: Prop.token(textAlignToken)),
         );
         final spec = testUtil.resolve(context);
 
@@ -427,7 +427,7 @@ void main() {
         );
 
         final testUtil = TextSpecUtility(
-          TextMix.raw(softWrap: Prop.token(softWrapToken)),
+          TextMix.create(softWrap: Prop.token(softWrapToken)),
         );
         final spec = testUtil.resolve(context);
 
@@ -441,7 +441,7 @@ void main() {
         );
 
         final testUtil = TextSpecUtility(
-          TextMix.raw(selectionColor: Prop.token(selectionColorToken)),
+          TextMix.create(selectionColor: Prop.token(selectionColorToken)),
         );
         final spec = testUtil.resolve(context);
 
@@ -455,7 +455,7 @@ void main() {
         );
 
         final testUtil = TextSpecUtility(
-          TextMix.raw(textDirection: Prop.token(textDirectionToken)),
+          TextMix.create(textDirection: Prop.token(textDirectionToken)),
         );
         final spec = testUtil.resolve(context);
 
@@ -469,7 +469,7 @@ void main() {
         );
 
         final testUtil = TextSpecUtility(
-          TextMix.raw(semanticsLabel: Prop.token(semanticsLabelToken)),
+          TextMix.create(semanticsLabel: Prop.token(semanticsLabelToken)),
         );
         final spec = testUtil.resolve(context);
 
@@ -484,7 +484,7 @@ void main() {
         );
 
         final testUtil = TextSpecUtility(
-          TextMix.raw(locale: Prop.token(localeToken)),
+          TextMix.create(locale: Prop.token(localeToken)),
         );
         final spec = testUtil.resolve(context);
 
@@ -509,7 +509,7 @@ void main() {
         );
 
         final testUtil = TextSpecUtility(
-          TextMix.raw(
+          TextMix.create(
             maxLines: Prop.token(maxLinesToken),
             textAlign: Prop.token(textAlignToken),
             selectionColor: Prop.token(selectionColorToken),

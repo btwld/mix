@@ -73,10 +73,10 @@ class ClipOvalWidgetDecoratorMix
   final Prop<CustomClipper<Rect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
-  const ClipOvalWidgetDecoratorMix.raw({this.clipper, this.clipBehavior});
+  const ClipOvalWidgetDecoratorMix.create({this.clipper, this.clipBehavior});
 
   ClipOvalWidgetDecoratorMix({CustomClipper<Rect>? clipper, Clip? clipBehavior})
-    : this.raw(
+    : this.create(
         clipper: Prop.maybe(clipper),
         clipBehavior: Prop.maybe(clipBehavior),
       );
@@ -102,7 +102,7 @@ class ClipOvalWidgetDecoratorMix
   ClipOvalWidgetDecoratorMix merge(ClipOvalWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return ClipOvalWidgetDecoratorMix.raw(
+    return ClipOvalWidgetDecoratorMix.create(
       clipper: clipper.tryMerge(other.clipper),
       clipBehavior: clipBehavior.tryMerge(other.clipBehavior),
     );
@@ -175,10 +175,10 @@ class ClipRectWidgetDecoratorMix
   final Prop<CustomClipper<Rect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
-  const ClipRectWidgetDecoratorMix.raw({this.clipper, this.clipBehavior});
+  const ClipRectWidgetDecoratorMix.create({this.clipper, this.clipBehavior});
 
   ClipRectWidgetDecoratorMix({CustomClipper<Rect>? clipper, Clip? clipBehavior})
-    : this.raw(
+    : this.create(
         clipper: Prop.maybe(clipper),
         clipBehavior: Prop.maybe(clipBehavior),
       );
@@ -211,7 +211,7 @@ class ClipRectWidgetDecoratorMix
   ClipRectWidgetDecoratorMix merge(ClipRectWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return ClipRectWidgetDecoratorMix.raw(
+    return ClipRectWidgetDecoratorMix.create(
       clipper: clipper.tryMerge(other.clipper),
       clipBehavior: clipBehavior.tryMerge(other.clipBehavior),
     );
@@ -320,7 +320,7 @@ class ClipRRectWidgetDecoratorMix
   final Prop<CustomClipper<RRect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
-  const ClipRRectWidgetDecoratorMix.raw({
+  const ClipRRectWidgetDecoratorMix.create({
     this.borderRadius,
     this.clipper,
     this.clipBehavior,
@@ -330,7 +330,7 @@ class ClipRRectWidgetDecoratorMix
     BorderRadiusGeometryMix? borderRadius,
     CustomClipper<RRect>? clipper,
     Clip? clipBehavior,
-  }) : this.raw(
+  }) : this.create(
          borderRadius: MixProp.maybe(borderRadius),
          clipper: Prop.maybe(clipper),
          clipBehavior: Prop.maybe(clipBehavior),
@@ -365,7 +365,7 @@ class ClipRRectWidgetDecoratorMix
   ClipRRectWidgetDecoratorMix merge(ClipRRectWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return ClipRRectWidgetDecoratorMix.raw(
+    return ClipRRectWidgetDecoratorMix.create(
       borderRadius: borderRadius.tryMerge(other.borderRadius),
       clipper: clipper.tryMerge(other.clipper),
       clipBehavior: clipBehavior.tryMerge(other.clipBehavior),
@@ -461,10 +461,10 @@ class ClipPathWidgetDecoratorMix
   final Prop<CustomClipper<Path>>? clipper;
   final Prop<Clip>? clipBehavior;
 
-  const ClipPathWidgetDecoratorMix.raw({this.clipper, this.clipBehavior});
+  const ClipPathWidgetDecoratorMix.create({this.clipper, this.clipBehavior});
 
   ClipPathWidgetDecoratorMix({CustomClipper<Path>? clipper, Clip? clipBehavior})
-    : this.raw(
+    : this.create(
         clipper: Prop.maybe(clipper),
         clipBehavior: Prop.maybe(clipBehavior),
       );
@@ -497,7 +497,7 @@ class ClipPathWidgetDecoratorMix
   ClipPathWidgetDecoratorMix merge(ClipPathWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return ClipPathWidgetDecoratorMix.raw(
+    return ClipPathWidgetDecoratorMix.create(
       clipper: clipper.tryMerge(other.clipper),
       clipBehavior: clipBehavior.tryMerge(other.clipBehavior),
     );
@@ -587,10 +587,10 @@ class ClipTriangleWidgetDecoratorMix
     extends WidgetDecoratorMix<ClipTriangleWidgetDecorator> {
   final Prop<Clip>? clipBehavior;
 
-  const ClipTriangleWidgetDecoratorMix.raw({this.clipBehavior});
+  const ClipTriangleWidgetDecoratorMix.create({this.clipBehavior});
 
   ClipTriangleWidgetDecoratorMix({Clip? clipBehavior})
-    : this.raw(clipBehavior: Prop.maybe(clipBehavior));
+    : this.create(clipBehavior: Prop.maybe(clipBehavior));
 
   /// Resolves to [ClipTriangleWidgetDecorator] using the provided [BuildContext].
   ///
@@ -619,7 +619,7 @@ class ClipTriangleWidgetDecoratorMix
   ClipTriangleWidgetDecoratorMix merge(ClipTriangleWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return ClipTriangleWidgetDecoratorMix.raw(
+    return ClipTriangleWidgetDecoratorMix.create(
       clipBehavior: clipBehavior.tryMerge(other.clipBehavior),
     );
   }

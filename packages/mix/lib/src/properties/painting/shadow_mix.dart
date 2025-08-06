@@ -29,13 +29,13 @@ sealed class BaseShadowMix<T extends Shadow> extends Mix<T> {
 /// that support resolvable tokens and merging capabilities.
 class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
   ShadowMix({double? blurRadius, Color? color, Offset? offset})
-    : this.raw(
+    : this.create(
         blurRadius: Prop.maybe(blurRadius),
         color: Prop.maybe(color),
         offset: Prop.maybe(offset),
       );
 
-  const ShadowMix.raw({super.blurRadius, super.color, super.offset});
+  const ShadowMix.create({super.blurRadius, super.color, super.offset});
 
   /// Creates a [ShadowMix] from an existing [Shadow].
   ShadowMix.value(Shadow shadow)
@@ -98,7 +98,7 @@ class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
   ShadowMix merge(ShadowMix? other) {
     if (other == null) return this;
 
-    return ShadowMix.raw(
+    return ShadowMix.create(
       blurRadius: $blurRadius.tryMerge(other.$blurRadius),
       color: $color.tryMerge(other.$color),
       offset: $offset.tryMerge(other.$offset),
@@ -125,14 +125,14 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
     Offset? offset,
     double? blurRadius,
     double? spreadRadius,
-  }) : this.raw(
+  }) : this.create(
          color: Prop.maybe(color),
          offset: Prop.maybe(offset),
          blurRadius: Prop.maybe(blurRadius),
          spreadRadius: Prop.maybe(spreadRadius),
        );
 
-  const BoxShadowMix.raw({
+  const BoxShadowMix.create({
     super.color,
     super.offset,
     super.blurRadius,
@@ -220,7 +220,7 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
   BoxShadowMix merge(BoxShadowMix? other) {
     if (other == null) return this;
 
-    return BoxShadowMix.raw(
+    return BoxShadowMix.create(
       color: $color.tryMerge(other.$color),
       offset: $offset.tryMerge(other.$offset),
       blurRadius: $blurRadius.tryMerge(other.$blurRadius),

@@ -290,7 +290,7 @@ void main() {
           tokens: {gapToken.defineValue(24.0)},
         );
 
-        final utility = FlexSpecUtility(FlexMix.raw(gap: Prop.token(gapToken)));
+        final utility = FlexSpecUtility(FlexMix.create(gap: Prop.token(gapToken)));
         final spec = utility.resolve(context);
 
         expect(spec.gap, 24.0);

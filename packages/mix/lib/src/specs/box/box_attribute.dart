@@ -158,7 +158,7 @@ class BoxMix extends Style<BoxSpec>
     return BoxMix(decoration: DecorationMix.borderRadius(value));
   }
 
-  const BoxMix.raw({
+  const BoxMix.create({
     Prop<AlignmentGeometry>? alignment,
     MixProp<EdgeInsetsGeometry>? padding,
     MixProp<EdgeInsetsGeometry>? margin,
@@ -197,7 +197,7 @@ class BoxMix extends Style<BoxSpec>
     WidgetDecoratorConfig? widgetDecoratorConfig,
     List<VariantStyle<BoxSpec>>? variants,
     bool? inherit,
-  }) : this.raw(
+  }) : this.create(
          alignment: Prop.maybe(alignment),
          padding: MixProp.maybe(padding),
          margin: MixProp.maybe(margin),
@@ -507,7 +507,7 @@ class BoxMix extends Style<BoxSpec>
   BoxMix merge(BoxMix? other) {
     if (other == null) return this;
 
-    return BoxMix.raw(
+    return BoxMix.create(
       alignment: $alignment.tryMerge(other.$alignment),
       padding: $padding.tryMerge(other.$padding),
       margin: $margin.tryMerge(other.$margin),

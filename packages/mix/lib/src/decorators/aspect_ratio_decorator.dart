@@ -79,10 +79,10 @@ class AspectRatioWidgetDecoratorMix
     with Diagnosticable {
   final Prop<double>? aspectRatio;
 
-  const AspectRatioWidgetDecoratorMix.raw({this.aspectRatio});
+  const AspectRatioWidgetDecoratorMix.create({this.aspectRatio});
 
   AspectRatioWidgetDecoratorMix({double? aspectRatio})
-    : this.raw(aspectRatio: Prop.maybe(aspectRatio));
+    : this.create(aspectRatio: Prop.maybe(aspectRatio));
 
   /// Resolves to [AspectRatioWidgetDecorator] using the provided [BuildContext].
   ///
@@ -109,7 +109,7 @@ class AspectRatioWidgetDecoratorMix
   AspectRatioWidgetDecoratorMix merge(AspectRatioWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return AspectRatioWidgetDecoratorMix.raw(
+    return AspectRatioWidgetDecoratorMix.create(
       aspectRatio: aspectRatio.tryMerge(other.aspectRatio),
     );
   }
@@ -136,13 +136,13 @@ final class AspectRatioWidgetDecoratorUtility<T extends Style<Object?>>
 
   T call(double value) {
     return builder(
-      AspectRatioWidgetDecoratorMix.raw(aspectRatio: Prop.value(value)),
+      AspectRatioWidgetDecoratorMix.create(aspectRatio: Prop.value(value)),
     );
   }
 
   T token(MixToken<double> token) {
     return builder(
-      AspectRatioWidgetDecoratorMix.raw(aspectRatio: Prop.token(token)),
+      AspectRatioWidgetDecoratorMix.create(aspectRatio: Prop.token(token)),
     );
   }
 }

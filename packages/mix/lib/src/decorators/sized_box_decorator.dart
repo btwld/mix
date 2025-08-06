@@ -105,10 +105,10 @@ class SizedBoxWidgetDecoratorMix
   final Prop<double>? width;
   final Prop<double>? height;
 
-  const SizedBoxWidgetDecoratorMix.raw({this.width, this.height});
+  const SizedBoxWidgetDecoratorMix.create({this.width, this.height});
 
   SizedBoxWidgetDecoratorMix({double? width, double? height})
-    : this.raw(width: Prop.maybe(width), height: Prop.maybe(height));
+    : this.create(width: Prop.maybe(width), height: Prop.maybe(height));
 
   /// Resolves to [SizedBoxWidgetDecorator] using the provided [BuildContext].
   ///
@@ -138,7 +138,7 @@ class SizedBoxWidgetDecoratorMix
   SizedBoxWidgetDecoratorMix merge(SizedBoxWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return SizedBoxWidgetDecoratorMix.raw(
+    return SizedBoxWidgetDecoratorMix.create(
       width: width.tryMerge(other.width),
       height: height.tryMerge(other.height),
     );

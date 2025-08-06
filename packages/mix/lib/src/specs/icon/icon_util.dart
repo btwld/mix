@@ -19,7 +19,7 @@ import 'icon_spec.dart';
 /// enabling fluid styling: `$icon..color(Colors.blue)..size(24)..weight(400)`.
 class IconSpecUtility extends StyleMutableBuilder<IconSpec> {
   late final color = ColorUtility<IconMix>(
-    (prop) => mutable.merge(IconMix.raw(color: prop)),
+    (prop) => mutable.merge(IconMix.create(color: prop)),
   );
 
   late final shadow = ShadowUtility<IconMix>((v) => mutable.shadows([v]));

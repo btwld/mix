@@ -545,7 +545,7 @@ void main() {
         );
 
         final testUtil = ImageSpecUtility(
-          ImageMix.raw(width: Prop.token(widthToken)),
+          ImageMix.create(width: Prop.token(widthToken)),
         );
         final spec = testUtil.resolve(context);
 
@@ -566,7 +566,7 @@ void main() {
         );
 
         final testUtil = ImageSpecUtility(
-          ImageMix.raw(
+          ImageMix.create(
             width: Prop.token(widthToken),
             height: Prop.token(heightToken),
             color: Prop.token(colorToken),
@@ -595,7 +595,7 @@ void main() {
         );
 
         final testUtil = ImageSpecUtility(
-          ImageMix.raw(
+          ImageMix.create(
             fit: Prop.token(fitToken),
             repeat: Prop.token(repeatToken),
             filterQuality: Prop.token(filterQualityToken),
@@ -622,7 +622,7 @@ void main() {
         );
 
         final testUtil = ImageSpecUtility(
-          ImageMix.raw(
+          ImageMix.create(
             semanticLabel: Prop.token(labelToken),
             excludeFromSemantics: Prop.token(excludeToken),
             gaplessPlayback: Prop.token(gaplessToken),

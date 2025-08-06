@@ -296,7 +296,7 @@ void main() {
         final alignment = Prop.value<AlignmentGeometry>(Alignment.center);
         final widthFactor = Prop.value(0.5);
         final heightFactor = Prop.value(0.8);
-        final attribute = AlignWidgetDecoratorMix.raw(
+        final attribute = AlignWidgetDecoratorMix.create(
           alignment: alignment,
           widthFactor: widthFactor,
           heightFactor: heightFactor,

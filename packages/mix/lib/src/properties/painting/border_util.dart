@@ -437,7 +437,7 @@ final class BorderSideUtility<T extends Style<Object?>>
     extends MixUtility<T, BorderSideMix> {
   /// Utility for defining [BorderSideMix.color]
   late final color = ColorUtility<T>(
-    (prop) => builder(BorderSideMix.raw(color: prop)),
+    (prop) => builder(BorderSideMix.create(color: prop)),
   );
 
   /// Utility for defining [BorderSideMix.style]

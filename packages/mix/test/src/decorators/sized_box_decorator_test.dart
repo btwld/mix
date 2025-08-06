@@ -203,7 +203,7 @@ void main() {
       test('creates with provided Prop values', () {
         final width = Prop.value(100.0);
         final height = Prop.value(200.0);
-        final attribute = SizedBoxWidgetDecoratorMix.raw(
+        final attribute = SizedBoxWidgetDecoratorMix.create(
           width: width,
           height: height,
         );

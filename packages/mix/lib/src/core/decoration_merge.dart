@@ -16,7 +16,7 @@ class DecorationMerger {
     if (shape == null) {
       // Keep as BoxDecorationMix - only merge common properties
       return a.merge(
-        BoxDecorationMix.raw(
+        BoxDecorationMix.create(
           color: b.$color,
           image: b.$image,
           gradient: b.$gradient,
@@ -25,7 +25,7 @@ class DecorationMerger {
       );
     }
 
-    return ShapeDecorationMix.raw(
+    return ShapeDecorationMix.create(
       color: a.$color,
       image: a.$image,
       gradient: a.$gradient,
@@ -45,7 +45,7 @@ class DecorationMerger {
     if (!needsConversion) {
       // Keep as ShapeDecorationMix - only merge common properties
       return a.merge(
-        ShapeDecorationMix.raw(
+        ShapeDecorationMix.create(
           color: b.$color,
           image: b.$image,
           gradient: b.$gradient,
@@ -62,7 +62,7 @@ class DecorationMerger {
     );
 
     return a.merge(
-      ShapeDecorationMix.raw(
+      ShapeDecorationMix.create(
         shape: shapeBorder,
         color: b.$color,
         image: b.$image,
@@ -94,11 +94,11 @@ class DecorationMerger {
     if (propValue != null) {
       switch (propValue) {
         case BoxShape.circle:
-          return side != null ? MixProp(CircleBorderMix.raw(side: side)) : null;
+          return side != null ? MixProp(CircleBorderMix.create(side: side)) : null;
         case BoxShape.rectangle:
           if (side != null || borderRadius != null) {
             return MixProp(
-              RoundedRectangleBorderMix.raw(
+              RoundedRectangleBorderMix.create(
                 borderRadius: borderRadius,
                 side: side,
               ),
@@ -112,7 +112,7 @@ class DecorationMerger {
     // Default to rectangle shape if no specific shape
     if (side != null || borderRadius != null) {
       return MixProp(
-        RoundedRectangleBorderMix.raw(borderRadius: borderRadius, side: side),
+        RoundedRectangleBorderMix.create(borderRadius: borderRadius, side: side),
       );
     }
 

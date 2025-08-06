@@ -72,10 +72,10 @@ class PaddingWidgetDecoratorMix
     with Diagnosticable {
   final MixProp<EdgeInsetsGeometry>? padding;
 
-  const PaddingWidgetDecoratorMix.raw({this.padding});
+  const PaddingWidgetDecoratorMix.create({this.padding});
 
   PaddingWidgetDecoratorMix({EdgeInsetsGeometryMix? padding})
-    : this.raw(padding: MixProp.maybe(padding));
+    : this.create(padding: MixProp.maybe(padding));
 
   /// Resolves to [PaddingWidgetDecorator] using the provided [BuildContext].
   ///
@@ -102,7 +102,7 @@ class PaddingWidgetDecoratorMix
   PaddingWidgetDecoratorMix merge(PaddingWidgetDecoratorMix? other) {
     if (other == null) return this;
 
-    return PaddingWidgetDecoratorMix.raw(
+    return PaddingWidgetDecoratorMix.create(
       padding: padding.tryMerge(other.padding),
     );
   }
@@ -137,7 +137,7 @@ class PaddingWidgetDecoratorUtility<T extends Style<Object?>>
   /// Returns a new [PaddingWidgetDecoratorMix] with the specified properties.
   T call({EdgeInsetsGeometryMix? padding}) {
     return builder(
-      PaddingWidgetDecoratorMix.raw(padding: MixProp.maybe(padding)),
+      PaddingWidgetDecoratorMix.create(padding: MixProp.maybe(padding)),
     );
   }
 }

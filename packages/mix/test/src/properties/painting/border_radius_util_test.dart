@@ -754,7 +754,7 @@ void main() {
         tokens: {radiusValueToken.defineValue(const Radius.circular(16.0))},
       );
 
-      final borderRadiusMix = BorderRadiusMix.raw(
+      final borderRadiusMix = BorderRadiusMix.create(
         topLeft: Prop.token(radiusValueToken),
         topRight: Prop.token(radiusValueToken),
         bottomLeft: Prop.token(radiusValueToken),

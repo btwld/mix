@@ -16,7 +16,7 @@ import 'image_spec.dart';
 /// enabling fluid styling: `$image..width(100)..height(100)..fit(BoxFit.cover)`.
 class ImageSpecUtility extends StyleMutableBuilder<ImageSpec> {
   late final color = ColorUtility(
-    (prop) => mutable.merge(ImageMix.raw(color: prop)),
+    (prop) => mutable.merge(ImageMix.create(color: prop)),
   );
 
   late final repeat = MixUtility(mutable.repeat);

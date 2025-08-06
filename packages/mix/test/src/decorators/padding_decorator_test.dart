@@ -159,7 +159,7 @@ void main() {
 
       test('creates with provided MixProp padding', () {
         final padding = MixProp<EdgeInsetsGeometry>(EdgeInsetsMix.all(16.0));
-        final attribute = PaddingWidgetDecoratorMix.raw(padding: padding);
+        final attribute = PaddingWidgetDecoratorMix.create(padding: padding);
 
         expect(attribute.padding, same(padding));
       });

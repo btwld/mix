@@ -31,7 +31,7 @@ class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
     double? height,
     double? leading,
     bool? forceStrutHeight,
-  }) : this.raw(
+  }) : this.create(
          fontFamily: Prop.maybe(fontFamily),
          fontFamilyFallback: fontFamilyFallback?.map(Prop.value).toList(),
          fontSize: Prop.maybe(fontSize),
@@ -42,7 +42,7 @@ class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
          forceStrutHeight: Prop.maybe(forceStrutHeight),
        );
 
-  const StrutStyleMix.raw({
+  const StrutStyleMix.create({
     Prop<String>? fontFamily,
     List<Prop<String>>? fontFamilyFallback,
     Prop<double>? fontSize,
@@ -178,7 +178,7 @@ class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
   StrutStyleMix merge(StrutStyleMix? other) {
     if (other == null) return this;
 
-    return StrutStyleMix.raw(
+    return StrutStyleMix.create(
       fontFamily: $fontFamily.tryMerge(other.$fontFamily),
       fontFamilyFallback: $fontFamilyFallback.tryMerge(
         other.$fontFamilyFallback,

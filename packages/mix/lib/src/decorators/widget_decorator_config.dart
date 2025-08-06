@@ -220,7 +220,7 @@ final class WidgetDecoratorConfig with Equatable {
 
   factory WidgetDecoratorConfig.defaultText(TextMix textMix) {
     return WidgetDecoratorConfig.decorator(
-      DefaultTextStyleWidgetDecoratorMix.raw(
+      DefaultTextStyleWidgetDecoratorMix.create(
         style: textMix.$style,
         textAlign: textMix.$textAlign,
         softWrap: textMix.$softWrap,

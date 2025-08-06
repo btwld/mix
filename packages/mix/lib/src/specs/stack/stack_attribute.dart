@@ -58,7 +58,7 @@ class StackMix extends Style<StackSpec>
     return StackMix(variants: [VariantStyle(variant, value)]);
   }
 
-  const StackMix.raw({
+  const StackMix.create({
     Prop<AlignmentGeometry>? alignment,
     Prop<StackFit>? fit,
     Prop<TextDirection>? textDirection,
@@ -82,7 +82,7 @@ class StackMix extends Style<StackSpec>
     WidgetDecoratorConfig? widgetDecoratorConfig,
     List<VariantStyle<StackSpec>>? variants,
     bool? inherit,
-  }) : this.raw(
+  }) : this.create(
          alignment: Prop.maybe(alignment),
          fit: Prop.maybe(fit),
          textDirection: Prop.maybe(textDirection),
@@ -172,7 +172,7 @@ class StackMix extends Style<StackSpec>
   StackMix merge(StackMix? other) {
     if (other == null) return this;
 
-    return StackMix.raw(
+    return StackMix.create(
       alignment: $alignment.tryMerge(other.$alignment),
       fit: $fit.tryMerge(other.$fit),
       textDirection: $textDirection.tryMerge(other.$textDirection),

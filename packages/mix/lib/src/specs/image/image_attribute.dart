@@ -118,7 +118,7 @@ class ImageMix extends Style<ImageSpec>
     return ImageMix(variants: [VariantStyle(variant, value)]);
   }
 
-  const ImageMix.raw({
+  const ImageMix.create({
     Prop<ImageProvider<Object>>? image,
     Prop<double>? width,
     Prop<double>? height,
@@ -175,7 +175,7 @@ class ImageMix extends Style<ImageSpec>
     WidgetDecoratorConfig? widgetDecoratorConfig,
     List<VariantStyle<ImageSpec>>? variants,
     bool? inherit,
-  }) : this.raw(
+  }) : this.create(
          image: Prop.maybe(image),
          width: Prop.maybe(width),
          height: Prop.maybe(height),
@@ -368,7 +368,7 @@ class ImageMix extends Style<ImageSpec>
   ImageMix merge(ImageMix? other) {
     if (other == null) return this;
 
-    return ImageMix.raw(
+    return ImageMix.create(
       image: $image.tryMerge(other.$image),
       width: $width.tryMerge(other.$width),
       height: $height.tryMerge(other.$height),
