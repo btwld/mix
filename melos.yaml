@@ -4,6 +4,7 @@ name: mix_workspace
 packages:
   - packages/*
   - packages/mix/example
+  - packages/mix_generator/example
   - examples/*
   - packages/*/demo
 

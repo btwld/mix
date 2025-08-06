@@ -2,15 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../animation/animation_config.dart';
-import '../properties/painting/decoration_mix.dart';
-import '../properties/painting/shape_border_mix.dart';
-import '../theme/mix_theme.dart';
 import '../theme/tokens/mix_token.dart';
-import 'decoration_merge.dart';
+import 'helpers.dart';
 import 'mix_element.dart';
 import 'modifier.dart';
 import 'prop_source.dart';
-import 'shape_border_merge.dart';
 
 // ====== Prop Types ======
 
@@ -33,35 +29,6 @@ sealed class PropBase<V> {
   Type get type => V;
 
   bool get hasToken;
-
-  /// Applies modifiers to the resolved value
-  @protected
-  V applyModifiers(V value) {
-    if ($modifiers == null || $modifiers!.isEmpty) return value;
-
-    var result = value;
-    for (final modifier in $modifiers!) {
-      result = modifier.apply(result);
-    }
-
-    return result;
-  }
-
-  // Helper methods for merging modifiers and animation
-  @protected
-  List<Modifier<V>>? mergeModifiers(List<Modifier<V>>? other) {
-    return switch (($modifiers, other)) {
-      (null, null) => null,
-      (final a?, null) => a,
-      (null, final b?) => b,
-      (final a?, final b?) => [...a, ...b],
-    };
-  }
-
-  @protected
-  AnimationConfig? mergeAnimation(AnimationConfig? other) {
-    return other ?? $animation; // Other's animation wins
-  }
 
   PropBase<V> mergeProp(covariant PropBase<V>? other);
 
@@ -127,47 +94,12 @@ class Prop<V> extends PropBase<V> {
 
   @override
   Prop<V> mergeProp(covariant Prop<V>? other) {
-    if (other == null) return this;
-
-    var value = $value;
-    var token = $token;
-
-    var otherValue = other.$value;
-    var otherToken = other.$token;
-
-    if (otherToken != null) {
-      value = null;
-      token = otherToken;
-    } else if (otherValue != null) {
-      value = otherValue;
-      token = null;
-    }
-
-    // For static props, the other source replaces this source
-    return Prop(
-      value: value,
-      token: token,
-      modifiers: mergeModifiers(other.$modifiers),
-      animation: mergeAnimation(other.$animation),
-    );
+    return PropOps.merge(this, other);
   }
 
   @override
   V resolveProp(BuildContext context) {
-    if ($token == null && $value == null) {
-      throw FlutterError('Prop<$V> has no value or token defined defined');
-    }
-
-    V resolvedValue;
-
-    if ($token != null) {
-      resolvedValue = MixScope.tokenOf($token!, context);
-    } else {
-      resolvedValue = $value as V;
-    }
-
-    // Apply modifiers if any
-    return applyModifiers(resolvedValue);
+    return PropOps.resolve(this, context);
   }
 
   @override
@@ -210,6 +142,20 @@ class MixProp<V> extends PropBase<V> {
   final List<MixSource<V>> sources;
 
   const MixProp._({required this.sources, super.modifiers, super.animation});
+
+  // Factory for internal use only
+
+  factory MixProp.create({
+    required List<MixSource<V>> sources,
+    List<Modifier<V>>? modifiers,
+    AnimationConfig? animation,
+  }) {
+    return MixProp._(
+      sources: sources,
+      modifiers: modifiers,
+      animation: animation,
+    );
+  }
 
   // Named constructors for clarity
   MixProp(Mix<V> value)
@@ -255,64 +201,7 @@ class MixProp<V> extends PropBase<V> {
       return null;
     }
 
-    return valueSources.reduce(mergeMixes);
-  }
-
-  @visibleForTesting
-  Mix<V> mergeMixes(Mix<V> a, Mix<V> b) {
-    if (a is DecorationMix && b is DecorationMix) {
-      return DecorationMerger().tryMerge(
-            a as DecorationMix,
-            b as DecorationMix,
-          )!
-          as Mix<V>;
-    }
-
-    if (a is ShapeBorderMix && b is ShapeBorderMix) {
-      return ShapeBorderMerger.tryMerge(
-            a as ShapeBorderMix,
-            b as ShapeBorderMix,
-          )!
-          as Mix<V>;
-    }
-
-    return a.merge(b);
-  }
-
-  /// Consolidates consecutive MixValueSource instances in the sources list
-  @visibleForTesting
-  List<MixSource<V>> consolidateSources(List<MixSource<V>> sources) {
-    if (sources.length <= 1) return sources;
-
-    final consolidated = <MixSource<V>>[];
-    MixValueSource<V>? pendingValueSource;
-
-    for (final source in sources) {
-      if (source is MixValueSource<V>) {
-        if (pendingValueSource != null) {
-          // Merge with pending value source
-          final mergedMix = mergeMixes(pendingValueSource.value, source.value);
-          pendingValueSource = MixValueSource(mergedMix);
-        } else {
-          // Start accumulating
-          pendingValueSource = source;
-        }
-      } else {
-        // Not a value source, flush any pending and add this source
-        if (pendingValueSource != null) {
-          consolidated.add(pendingValueSource);
-          pendingValueSource = null;
-        }
-        consolidated.add(source);
-      }
-    }
-
-    // Don't forget to add any remaining pending value source
-    if (pendingValueSource != null) {
-      consolidated.add(pendingValueSource);
-    }
-
-    return consolidated;
+    return valueSources.reduce((a, b) => PropOps.mergeMixes(a, b));
   }
 
   MixProp<V> modifiers(List<Modifier<V>> modifiers) {
@@ -325,49 +214,12 @@ class MixProp<V> extends PropBase<V> {
 
   @override
   V resolveProp(BuildContext context) {
-    if (sources.isEmpty) {
-      throw FlutterError('MixProp<$V> has no sources defined');
-    }
-
-    // Resolve all sources to Mix values
-    final mixValues = <Mix<V>>[];
-    for (final source in sources) {
-      final mixValue = switch (source) {
-        MixValueSource<V>(:final value) => value,
-        MixTokenSource<V>(:final token, :final converter) => converter(
-          MixScope.tokenOf(token, context),
-        ),
-      };
-      mixValues.add(mixValue);
-    }
-
-    // Merge all Mix values into one
-    Mix<V> mergedMix = mixValues.first;
-    for (int i = 1; i < mixValues.length; i++) {
-      mergedMix = mergeMixes(mergedMix, mixValues[i]);
-    }
-
-    final resolvedValue = mergedMix.resolve(context);
-
-    // Apply modifiers if any
-    return applyModifiers(resolvedValue);
+    return PropOps.resolveMix(this, context);
   }
 
   @override
   MixProp<V> mergeProp(MixProp<V>? other) {
-    if (other == null) return this;
-
-    // Accumulate sources from both props
-    final accumulatedSources = [...sources, ...other.sources];
-
-    // Consolidate consecutive MixValueSource instances
-    final mergedSources = consolidateSources(accumulatedSources);
-
-    return MixProp._(
-      sources: mergedSources,
-      modifiers: mergeModifiers(other.$modifiers),
-      animation: mergeAnimation(other.$animation),
-    );
+    return PropOps.mergeMix(this, other);
   }
 
   @override

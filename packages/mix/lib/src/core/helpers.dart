@@ -6,10 +6,16 @@ import 'package:flutter/rendering.dart' as r;
 import 'package:flutter/widgets.dart' as w;
 
 import '../decorators/widget_decorator_config.dart';
+import '../properties/painting/decoration_mix.dart';
+import '../properties/painting/shape_border_mix.dart';
+import '../theme/mix_theme.dart';
+import 'decoration_merge.dart';
 import 'internal/deep_collection_equality.dart';
 import 'mix_element.dart';
 import 'modifier.dart';
 import 'prop.dart';
+import 'prop_source.dart';
+import 'shape_border_merge.dart';
 import 'spec.dart';
 
 /// Core operations for Mix framework value transformations.
@@ -26,6 +32,7 @@ class MixOps {
   static const resolveList = _resolveList;
 
   const MixOps._();
+
   static V? resolve<V>(BuildContext context, PropBase<V>? prop) {
     if (prop == null) return null;
 
@@ -35,77 +42,338 @@ class MixOps {
   static V? merge<V extends Mixable>(V? a, V? b) {
     return (a?.merge(b) ?? b) as V?;
   }
-}
 
-List<T>? _mergeList<T>(
-  List<T>? a,
-  List<T>? b, {
+  static List<T>? _mergeList<T>(
+    List<T>? a,
+    List<T>? b, {
 
-  /// Defaults to `replace`
-  ListMergeStrategy? strategy,
-}) {
-  if (b == null) return a;
-  if (a == null) return b;
+    /// Defaults to `replace`
+    ListMergeStrategy? strategy,
+  }) {
+    if (b == null) return a;
+    if (a == null) return b;
 
-  if (a.isEmpty) return b;
-  if (b.isEmpty) return a;
+    if (a.isEmpty) return b;
+    if (b.isEmpty) return a;
 
-  strategy ??= ListMergeStrategy.replace;
+    strategy ??= ListMergeStrategy.replace;
 
-  switch (strategy) {
-    case ListMergeStrategy.append:
-      return [...a, ...b];
-    case ListMergeStrategy.replace:
-      final listLength = a.length;
-      final otherLength = b.length;
-      final maxLength = math.max(listLength, otherLength);
+    switch (strategy) {
+      case ListMergeStrategy.append:
+        return [...a, ...b];
+      case ListMergeStrategy.replace:
+        final listLength = a.length;
+        final otherLength = b.length;
+        final maxLength = math.max(listLength, otherLength);
 
-      return List.generate(maxLength, (int index) {
-        if (index < listLength && index < otherLength) {
-          final currentValue = a[index];
-          final otherValue = b[index];
+        return List.generate(maxLength, (int index) {
+          if (index < listLength && index < otherLength) {
+            final currentValue = a[index];
+            final otherValue = b[index];
 
-          if (currentValue is Mixable && otherValue is Mixable) {
-            return currentValue.merge(otherValue) as T;
+            if (currentValue is Mixable && otherValue is Mixable) {
+              return currentValue.merge(otherValue) as T;
+            }
+
+            return otherValue ?? currentValue;
+          } else if (index < listLength) {
+            return a[index];
           }
 
-          return otherValue ?? currentValue;
-        } else if (index < listLength) {
-          return a[index];
-        }
+          return b[index];
+        });
+      case ListMergeStrategy.override:
+        return b;
+    }
+  }
 
-        return b[index];
-      });
-    case ListMergeStrategy.override:
-      return b;
+  static List<V>? _resolveList<T extends PropBase<V>, V>(
+    BuildContext mix,
+    List<T>? a,
+  ) {
+    if (a == null) return null;
+
+    return a.map((e) => e.resolveProp(mix)).whereType<V>().toList();
+  }
+
+  static w.StrutStyle? _lerpStrutStyle(
+    w.StrutStyle? a,
+    w.StrutStyle? b,
+    double t,
+  ) {
+    if (a == null && b == null) return null;
+    if (a == null) return b;
+    if (b == null) return a;
+
+    return w.StrutStyle(
+      fontFamily: t < 0.5 ? a.fontFamily : b.fontFamily,
+      fontFamilyFallback: t < 0.5 ? a.fontFamilyFallback : b.fontFamilyFallback,
+      fontSize: ui.lerpDouble(a.fontSize, b.fontSize, t),
+      height: ui.lerpDouble(a.height, b.height, t),
+      leadingDistribution: t < 0.5
+          ? a.leadingDistribution
+          : b.leadingDistribution,
+      leading: ui.lerpDouble(a.leading, b.leading, t),
+      fontWeight: r.FontWeight.lerp(a.fontWeight, b.fontWeight, t),
+      fontStyle: t < 0.5 ? a.fontStyle : b.fontStyle,
+      forceStrutHeight: t < 0.5 ? a.forceStrutHeight : b.forceStrutHeight,
+      debugLabel: a.debugLabel ?? b.debugLabel,
+    );
   }
 }
 
-List<V>? _resolveList<T extends PropBase<V>, V>(BuildContext mix, List<T>? a) {
-  if (a == null) return null;
+T? _lerpValue<T>(T? a, T? b, double t) {
+  return switch ((a, b)) {
+    // Null handling
+    (null, null) => null,
+    (_, null) => a,
+    (null, _) => b,
 
-  return a.map((e) => e.resolveProp(mix)).whereType<V>().toList();
+    (Spec a, Spec b) => a.lerp(b, t) as T?,
+
+    // Numeric types
+    // (int a, int b) => ui.lerpDouble(a, b, t)?.toInt() as T?,
+    (double a, double b) => ui.lerpDouble(a, b, t) as T?,
+
+    // Core Flutter geometry (dart:ui)
+    (Offset a, Offset b) => Offset.lerp(a, b, t) as T?,
+    (Size a, Size b) => Size.lerp(a, b, t) as T?,
+    (Rect a, Rect b) => Rect.lerp(a, b, t) as T?,
+    (RRect a, RRect b) => RRect.lerp(a, b, t) as T?,
+
+    // Core Flutter color (dart:ui)
+    (Color a, Color b) => Color.lerp(a, b, t) as T?,
+    (HSVColor a, HSVColor b) => HSVColor.lerp(a, b, t) as T?,
+    (HSLColor a, HSLColor b) => HSLColor.lerp(a, b, t) as T?,
+
+    // Alignment - handle specific types first
+    (FractionalOffset a, FractionalOffset b) =>
+      FractionalOffset.lerp(a, b, t) as T?,
+    (Alignment a, Alignment b) => Alignment.lerp(a, b, t) as T?,
+    (AlignmentGeometry a, AlignmentGeometry b) =>
+      AlignmentGeometry.lerp(a, b, t) as T?,
+
+    // EdgeInsets - handle specific types first
+    (EdgeInsets a, EdgeInsets b) => EdgeInsets.lerp(a, b, t) as T?,
+    (EdgeInsetsGeometry a, EdgeInsetsGeometry b) =>
+      EdgeInsetsGeometry.lerp(a, b, t) as T?,
+
+    // BorderRadius - handle specific types first
+    (BorderRadius a, BorderRadius b) => BorderRadius.lerp(a, b, t) as T?,
+    (BorderRadiusGeometry a, BorderRadiusGeometry b) =>
+      BorderRadiusGeometry.lerp(a, b, t) as T?,
+
+    // Relative positioning
+    (RelativeRect a, RelativeRect b) => RelativeRect.lerp(a, b, t) as T?,
+
+    (List<BoxShadow> a, List<BoxShadow> b) => BoxShadow.lerpList(a, b, t) as T?,
+    (List<Shadow> a, List<Shadow> b) => Shadow.lerpList(a, b, t) as T?,
+
+    // Text painting
+    (TextStyle a, TextStyle b) => TextStyle.lerp(a, b, t) as T?,
+    (StrutStyle a, StrutStyle b) => MixOps._lerpStrutStyle(a, b, t) as T?,
+
+    // Shadows
+    (BoxShadow a, BoxShadow b) => BoxShadow.lerp(a, b, t) as T?,
+    (Shadow a, Shadow b) => Shadow.lerp(a, b, t) as T?,
+
+    // Borders and shapes
+    (Border a, Border b) => Border.lerp(a, b, t) as T?,
+    (ShapeBorder a, ShapeBorder b) => ShapeBorder.lerp(a, b, t) as T?,
+
+    // Gradients
+    (LinearGradient a, LinearGradient b) => LinearGradient.lerp(a, b, t) as T?,
+    (RadialGradient a, RadialGradient b) => RadialGradient.lerp(a, b, t) as T?,
+    (SweepGradient a, SweepGradient b) => SweepGradient.lerp(a, b, t) as T?,
+
+    // Constraints
+    (BoxConstraints a, BoxConstraints b) => BoxConstraints.lerp(a, b, t) as T?,
+
+    // Theme data
+    (IconThemeData a, IconThemeData b) => IconThemeData.lerp(a, b, t) as T?,
+    (ThemeData a, ThemeData b) => ThemeData.lerp(a, b, t) as T?,
+
+    // Matrix4 - use proper tween instead of snap
+    (Matrix4 a, Matrix4 b) => Matrix4Tween(begin: a, end: b).lerp(t) as T?,
+
+    // Default snap behavior for non-lerpable types
+    _ => t < 0.5 ? a : b,
+  };
 }
 
-w.StrutStyle? _lerpStrutStyle(w.StrutStyle? a, w.StrutStyle? b, double t) {
-  if (a == null && b == null) return null;
-  if (a == null) return b;
-  if (b == null) return a;
+/// Operations for Prop and MixProp merge and resolution logic.
+///
+/// Centralizes all prop-related operations to keep prop classes lean
+/// and focused on data storage while providing sophisticated merge
+/// and resolution capabilities.
+class PropOps {
+  const PropOps._();
 
-  return w.StrutStyle(
-    fontFamily: t < 0.5 ? a.fontFamily : b.fontFamily,
-    fontFamilyFallback: t < 0.5 ? a.fontFamilyFallback : b.fontFamilyFallback,
-    fontSize: ui.lerpDouble(a.fontSize, b.fontSize, t),
-    height: ui.lerpDouble(a.height, b.height, t),
-    leadingDistribution: t < 0.5
-        ? a.leadingDistribution
-        : b.leadingDistribution,
-    leading: ui.lerpDouble(a.leading, b.leading, t),
-    fontWeight: r.FontWeight.lerp(a.fontWeight, b.fontWeight, t),
-    fontStyle: t < 0.5 ? a.fontStyle : b.fontStyle,
-    forceStrutHeight: t < 0.5 ? a.forceStrutHeight : b.forceStrutHeight,
-    debugLabel: a.debugLabel ?? b.debugLabel,
-  );
+  /// Applies modifiers to a resolved value (internal use)
+  @visibleForTesting
+  static V applyModifiers<V>(V value, List<Modifier<V>>? modifiers) {
+    if (modifiers == null || modifiers.isEmpty) return value;
+
+    var result = value;
+    for (final modifier in modifiers) {
+      result = modifier.apply(result);
+    }
+
+    return result;
+  }
+
+  /// Merges two modifier lists (internal use)
+  @visibleForTesting
+  static List<Modifier<V>>? mergeModifiers<V>(
+    List<Modifier<V>>? current,
+    List<Modifier<V>>? other,
+  ) {
+    return switch ((current, other)) {
+      (null, null) => null,
+      (final a?, null) => a,
+      (null, final b?) => b,
+      (final a?, final b?) => [...a, ...b],
+    };
+  }
+
+  /// Merges two Prop instances using replacement strategy
+  static Prop<V> merge<V>(Prop<V> current, Prop<V>? other) {
+    if (other == null) return current;
+
+    var value = current.$value;
+    var token = current.$token;
+
+    var otherValue = other.$value;
+    var otherToken = other.$token;
+
+    if (otherToken != null) {
+      value = null;
+      token = otherToken;
+    } else if (otherValue != null) {
+      value = otherValue;
+      token = null;
+    }
+
+    // Import Prop from prop.dart to access constructor
+    return Prop(
+      value: value,
+      token: token,
+      modifiers: mergeModifiers(current.$modifiers, other.$modifiers),
+      animation: other.$animation ?? current.$animation,
+    );
+  }
+
+  /// Resolves a Prop instance to its final value
+  static V resolve<V>(Prop<V> prop, BuildContext context) {
+    if (prop.$token == null && prop.$value == null) {
+      throw FlutterError('Prop<$V> has no value or token defined');
+    }
+
+    V resolvedValue;
+
+    if (prop.$token != null) {
+      resolvedValue = MixScope.tokenOf(prop.$token!, context);
+    } else {
+      resolvedValue = prop.$value as V;
+    }
+
+    return applyModifiers(resolvedValue, prop.$modifiers);
+  }
+
+  /// Merges two MixProp instances using accumulation strategy
+  static MixProp<V> mergeMix<V>(MixProp<V> current, MixProp<V>? other) {
+    if (other == null) return current;
+
+    final accumulatedSources = [...current.sources, ...other.sources];
+    final mergedSources = consolidateSources(accumulatedSources);
+
+    return MixProp.create(
+      sources: mergedSources,
+      modifiers: mergeModifiers(current.$modifiers, other.$modifiers),
+      animation: other.$animation ?? current.$animation,
+    );
+  }
+
+  /// Resolves a MixProp instance to its final value
+  static V resolveMix<V>(MixProp<V> prop, BuildContext context) {
+    if (prop.sources.isEmpty) {
+      throw FlutterError('MixProp<$V> has no sources defined');
+    }
+
+    final mixValues = <Mix<V>>[];
+    for (final source in prop.sources) {
+      final mixValue = switch (source) {
+        MixValueSource<V>(:final value) => value,
+        MixTokenSource<V>(:final token, :final converter) => converter(
+          MixScope.tokenOf(token, context),
+        ),
+      };
+      mixValues.add(mixValue);
+    }
+
+    Mix<V> mergedMix = mixValues.first;
+    for (int i = 1; i < mixValues.length; i++) {
+      mergedMix = mergeMixes(mergedMix, mixValues[i]);
+    }
+
+    final resolvedValue = mergedMix.resolve(context);
+
+    return applyModifiers(resolvedValue, prop.$modifiers);
+  }
+
+  /// Merges two Mix instances using appropriate merger
+
+  static Mix<V> mergeMixes<V>(Mix<V> a, Mix<V> b) {
+    if (a is DecorationMix && b is DecorationMix) {
+      return DecorationMerger().tryMerge(
+            a as DecorationMix,
+            b as DecorationMix,
+          )!
+          as Mix<V>;
+    }
+
+    if (a is ShapeBorderMix && b is ShapeBorderMix) {
+      return ShapeBorderMerger.tryMerge(
+            a as ShapeBorderMix,
+            b as ShapeBorderMix,
+          )!
+          as Mix<V>;
+    }
+
+    return a.merge(b);
+  }
+
+  /// Consolidates consecutive MixValueSource instances (internal use)
+  @visibleForTesting
+  static List<MixSource<V>> consolidateSources<V>(List<MixSource<V>> sources) {
+    if (sources.length <= 1) return sources;
+
+    final consolidated = <MixSource<V>>[];
+    MixValueSource<V>? pendingValueSource;
+
+    for (final source in sources) {
+      if (source is MixValueSource<V>) {
+        if (pendingValueSource != null) {
+          final mergedMix = mergeMixes(pendingValueSource.value, source.value);
+          pendingValueSource = MixValueSource(mergedMix);
+        } else {
+          pendingValueSource = source;
+        }
+      } else {
+        if (pendingValueSource != null) {
+          consolidated.add(pendingValueSource);
+          pendingValueSource = null;
+        }
+        consolidated.add(source);
+      }
+    }
+
+    if (pendingValueSource != null) {
+      consolidated.add(pendingValueSource);
+    }
+
+    return consolidated;
+  }
 }
 
 /// Merge strategy for lists
@@ -175,82 +443,4 @@ extension ModifierConfigExt on WidgetDecoratorConfig? {
 
     return this!.merge(other);
   }
-}
-
-T? _lerpValue<T>(T? a, T? b, double t) {
-  return switch ((a, b)) {
-    // Null handling
-    (null, null) => null,
-    (_, null) => a,
-    (null, _) => b,
-
-    (Spec a, Spec b) => a.lerp(b, t) as T?,
-
-    // Numeric types
-    (num a, num b) => ui.lerpDouble(a, b, t) as T?,
-
-    // Core Flutter geometry (dart:ui)
-    (Offset a, Offset b) => Offset.lerp(a, b, t) as T?,
-    (Size a, Size b) => Size.lerp(a, b, t) as T?,
-    (Rect a, Rect b) => Rect.lerp(a, b, t) as T?,
-    (RRect a, RRect b) => RRect.lerp(a, b, t) as T?,
-
-    // Core Flutter color (dart:ui)
-    (Color a, Color b) => Color.lerp(a, b, t) as T?,
-    (HSVColor a, HSVColor b) => HSVColor.lerp(a, b, t) as T?,
-    (HSLColor a, HSLColor b) => HSLColor.lerp(a, b, t) as T?,
-
-    // Alignment - handle specific types first
-    (FractionalOffset a, FractionalOffset b) =>
-      FractionalOffset.lerp(a, b, t) as T?,
-    (Alignment a, Alignment b) => Alignment.lerp(a, b, t) as T?,
-    (AlignmentGeometry a, AlignmentGeometry b) =>
-      AlignmentGeometry.lerp(a, b, t) as T?,
-
-    // EdgeInsets - handle specific types first
-    (EdgeInsets a, EdgeInsets b) => EdgeInsets.lerp(a, b, t) as T?,
-    (EdgeInsetsGeometry a, EdgeInsetsGeometry b) =>
-      EdgeInsetsGeometry.lerp(a, b, t) as T?,
-
-    // BorderRadius - handle specific types first
-    (BorderRadius a, BorderRadius b) => BorderRadius.lerp(a, b, t) as T?,
-    (BorderRadiusGeometry a, BorderRadiusGeometry b) =>
-      BorderRadiusGeometry.lerp(a, b, t) as T?,
-
-    // Relative positioning
-    (RelativeRect a, RelativeRect b) => RelativeRect.lerp(a, b, t) as T?,
-
-    (List<BoxShadow> a, List<BoxShadow> b) => BoxShadow.lerpList(a, b, t) as T?,
-    (List<Shadow> a, List<Shadow> b) => Shadow.lerpList(a, b, t) as T?,
-
-    // Text painting
-    (TextStyle a, TextStyle b) => TextStyle.lerp(a, b, t) as T?,
-    (StrutStyle a, StrutStyle b) => _lerpStrutStyle(a, b, t) as T?,
-
-    // Shadows
-    (BoxShadow a, BoxShadow b) => BoxShadow.lerp(a, b, t) as T?,
-    (Shadow a, Shadow b) => Shadow.lerp(a, b, t) as T?,
-
-    // Borders and shapes
-    (Border a, Border b) => Border.lerp(a, b, t) as T?,
-    (ShapeBorder a, ShapeBorder b) => ShapeBorder.lerp(a, b, t) as T?,
-
-    // Gradients
-    (LinearGradient a, LinearGradient b) => LinearGradient.lerp(a, b, t) as T?,
-    (RadialGradient a, RadialGradient b) => RadialGradient.lerp(a, b, t) as T?,
-    (SweepGradient a, SweepGradient b) => SweepGradient.lerp(a, b, t) as T?,
-
-    // Constraints
-    (BoxConstraints a, BoxConstraints b) => BoxConstraints.lerp(a, b, t) as T?,
-
-    // Theme data
-    (IconThemeData a, IconThemeData b) => IconThemeData.lerp(a, b, t) as T?,
-    (ThemeData a, ThemeData b) => ThemeData.lerp(a, b, t) as T?,
-
-    // Matrix4 - use proper tween instead of snap
-    (Matrix4 a, Matrix4 b) => Matrix4Tween(begin: a, end: b).lerp(t) as T?,
-
-    // Default snap behavior for non-lerpable types
-    _ => t < 0.5 ? a : b,
-  };
 }
