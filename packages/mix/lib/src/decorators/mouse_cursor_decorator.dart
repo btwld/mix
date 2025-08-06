@@ -39,7 +39,7 @@ class MouseCursorDecorator extends WidgetDecorator<MouseCursorDecorator> {
     if (other == null) return this;
 
     return MouseCursorDecorator(
-      mouseCursor: MixOps.lerp(mouseCursor, other.mouseCursor, t),
+      mouseCursor: MixOps.lerpSnap(mouseCursor, other.mouseCursor, t),
     );
   }
 

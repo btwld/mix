@@ -108,16 +108,16 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
       grade: MixOps.lerp(grade, other.grade, t),
       opticalSize: MixOps.lerp(opticalSize, other.opticalSize, t),
       shadows: MixOps.lerp(shadows, other.shadows, t),
-      textDirection: MixOps.lerp(textDirection, other.textDirection, t),
-      applyTextScaling: MixOps.lerp(
+      textDirection: MixOps.lerpSnap(textDirection, other.textDirection, t),
+      applyTextScaling: MixOps.lerpSnap(
         applyTextScaling,
         other.applyTextScaling,
         t,
       ),
       fill: MixOps.lerp(fill, other.fill, t),
-      semanticsLabel: MixOps.lerp(semanticsLabel, other.semanticsLabel, t),
-      blendMode: MixOps.lerp(blendMode, other.blendMode, t),
-      icon: MixOps.lerp(icon, other.icon, t),
+      semanticsLabel: MixOps.lerpSnap(semanticsLabel, other.semanticsLabel, t),
+      blendMode: MixOps.lerpSnap(blendMode, other.blendMode, t),
+      icon: MixOps.lerpSnap(icon, other.icon, t),
     );
   }
 

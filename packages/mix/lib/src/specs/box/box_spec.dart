@@ -134,7 +134,7 @@ class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
         other.transformAlignment,
         t,
       ),
-      clipBehavior: MixOps.lerp(clipBehavior, other.clipBehavior, t),
+      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t),
     );
   }
 

@@ -94,26 +94,26 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
     if (other == null) return this;
 
     return FlexSpec(
-      direction: MixOps.lerp(direction, other.direction, t),
-      mainAxisAlignment: MixOps.lerp(
+      direction: MixOps.lerpSnap(direction, other.direction, t),
+      mainAxisAlignment: MixOps.lerpSnap(
         mainAxisAlignment,
         other.mainAxisAlignment,
         t,
       ),
-      crossAxisAlignment: MixOps.lerp(
+      crossAxisAlignment: MixOps.lerpSnap(
         crossAxisAlignment,
         other.crossAxisAlignment,
         t,
       ),
-      mainAxisSize: MixOps.lerp(mainAxisSize, other.mainAxisSize, t),
-      verticalDirection: MixOps.lerp(
+      mainAxisSize: MixOps.lerpSnap(mainAxisSize, other.mainAxisSize, t),
+      verticalDirection: MixOps.lerpSnap(
         verticalDirection,
         other.verticalDirection,
         t,
       ),
-      textDirection: MixOps.lerp(textDirection, other.textDirection, t),
-      textBaseline: MixOps.lerp(textBaseline, other.textBaseline, t),
-      clipBehavior: MixOps.lerp(clipBehavior, other.clipBehavior, t),
+      textDirection: MixOps.lerpSnap(textDirection, other.textDirection, t),
+      textBaseline: MixOps.lerpSnap(textBaseline, other.textBaseline, t),
+      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t),
       gap: MixOps.lerp(gap, other.gap, t),
     );
   }

@@ -54,9 +54,9 @@ final class StackSpec extends Spec<StackSpec> with Diagnosticable {
 
     return StackSpec(
       alignment: MixOps.lerp(alignment, other.alignment, t),
-      fit: MixOps.lerp(fit, other.fit, t),
-      textDirection: MixOps.lerp(textDirection, other.textDirection, t),
-      clipBehavior: MixOps.lerp(clipBehavior, other.clipBehavior, t),
+      fit: MixOps.lerpSnap(fit, other.fit, t),
+      textDirection: MixOps.lerpSnap(textDirection, other.textDirection, t),
+      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t),
     );
   }
 

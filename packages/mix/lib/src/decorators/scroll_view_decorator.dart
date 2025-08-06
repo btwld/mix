@@ -46,11 +46,11 @@ final class ScrollViewWidgetDecorator
     if (other == null) return this;
 
     return ScrollViewWidgetDecorator(
-      scrollDirection: MixOps.lerp(scrollDirection, other.scrollDirection, t),
-      reverse: MixOps.lerp(reverse, other.reverse, t),
+      scrollDirection: MixOps.lerpSnap(scrollDirection, other.scrollDirection, t),
+      reverse: MixOps.lerpSnap(reverse, other.reverse, t),
       padding: MixOps.lerp(padding, other.padding, t),
-      physics: MixOps.lerp(physics, other.physics, t),
-      clipBehavior: MixOps.lerp(clipBehavior, other.clipBehavior, t),
+      physics: MixOps.lerpSnap(physics, other.physics, t),
+      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t),
     );
   }
 

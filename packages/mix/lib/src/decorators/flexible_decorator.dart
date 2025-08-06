@@ -46,8 +46,8 @@ final class FlexibleWidgetDecorator
     if (other == null) return this;
 
     return FlexibleWidgetDecorator(
-      flex: MixOps.lerp(flex, other.flex, t),
-      fit: MixOps.lerp(fit, other.fit, t),
+      flex: MixOps.lerpSnap(flex, other.flex, t),
+      fit: MixOps.lerpSnap(fit, other.fit, t),
     );
   }
 

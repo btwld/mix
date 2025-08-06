@@ -27,6 +27,8 @@ class MixOps {
 
   static const lerp = _lerpValue;
 
+  static const lerpSnap = _lerpSnap;
+
   static const mergeList = _mergeList;
 
   static const resolveList = _resolveList;
@@ -122,79 +124,83 @@ class MixOps {
   }
 }
 
+/// Snap interpolation for non-lerpable types.
+/// Returns [a] when t < 0.5, otherwise returns [b].
+T? _lerpSnap<T>(T? a, T? b, double t) {
+  return t < 0.5 ? a : b;
+}
+
 T? _lerpValue<T>(T? a, T? b, double t) {
   return switch ((a, b)) {
-    // Null handling
-    (null, null) => null,
-    (_, null) => a,
-    (null, _) => b,
-
-    (Spec a, Spec b) => a.lerp(b, t) as T?,
+    (Spec? a, Spec? b) => a?.lerp(b, t) as T?,
 
     // Numeric types
-    // (int a, int b) => ui.lerpDouble(a, b, t)?.toInt() as T?,
-    (double a, double b) => ui.lerpDouble(a, b, t) as T?,
+    (int? a, int? b) => ui.lerpDouble(a, b, t)?.round() as T?,
+    (double? a, double? b) => ui.lerpDouble(a, b, t) as T?,
 
     // Core Flutter geometry (dart:ui)
-    (Offset a, Offset b) => Offset.lerp(a, b, t) as T?,
-    (Size a, Size b) => Size.lerp(a, b, t) as T?,
-    (Rect a, Rect b) => Rect.lerp(a, b, t) as T?,
-    (RRect a, RRect b) => RRect.lerp(a, b, t) as T?,
+    (Offset? a, Offset? b) => Offset.lerp(a, b, t) as T?,
+    (Size? a, Size? b) => Size.lerp(a, b, t) as T?,
+    (Rect? a, Rect? b) => Rect.lerp(a, b, t) as T?,
+    (RRect? a, RRect? b) => RRect.lerp(a, b, t) as T?,
 
     // Core Flutter color (dart:ui)
-    (Color a, Color b) => Color.lerp(a, b, t) as T?,
-    (HSVColor a, HSVColor b) => HSVColor.lerp(a, b, t) as T?,
-    (HSLColor a, HSLColor b) => HSLColor.lerp(a, b, t) as T?,
+    (Color? a, Color? b) => Color.lerp(a, b, t) as T?,
+    (HSVColor? a, HSVColor? b) => HSVColor.lerp(a, b, t) as T?,
+    (HSLColor? a, HSLColor? b) => HSLColor.lerp(a, b, t) as T?,
 
     // Alignment - handle specific types first
-    (FractionalOffset a, FractionalOffset b) =>
+    (FractionalOffset? a, FractionalOffset? b) =>
       FractionalOffset.lerp(a, b, t) as T?,
-    (Alignment a, Alignment b) => Alignment.lerp(a, b, t) as T?,
-    (AlignmentGeometry a, AlignmentGeometry b) =>
+    (Alignment? a, Alignment? b) => Alignment.lerp(a, b, t) as T?,
+    (AlignmentGeometry? a, AlignmentGeometry? b) =>
       AlignmentGeometry.lerp(a, b, t) as T?,
 
     // EdgeInsets - handle specific types first
-    (EdgeInsets a, EdgeInsets b) => EdgeInsets.lerp(a, b, t) as T?,
-    (EdgeInsetsGeometry a, EdgeInsetsGeometry b) =>
+    (EdgeInsets? a, EdgeInsets? b) => EdgeInsets.lerp(a, b, t) as T?,
+    (EdgeInsetsGeometry? a, EdgeInsetsGeometry? b) =>
       EdgeInsetsGeometry.lerp(a, b, t) as T?,
 
     // BorderRadius - handle specific types first
-    (BorderRadius a, BorderRadius b) => BorderRadius.lerp(a, b, t) as T?,
-    (BorderRadiusGeometry a, BorderRadiusGeometry b) =>
+    (BorderRadius? a, BorderRadius? b) => BorderRadius.lerp(a, b, t) as T?,
+    (BorderRadiusGeometry? a, BorderRadiusGeometry? b) =>
       BorderRadiusGeometry.lerp(a, b, t) as T?,
 
     // Relative positioning
-    (RelativeRect a, RelativeRect b) => RelativeRect.lerp(a, b, t) as T?,
+    (RelativeRect? a, RelativeRect? b) => RelativeRect.lerp(a, b, t) as T?,
 
-    (List<BoxShadow> a, List<BoxShadow> b) => BoxShadow.lerpList(a, b, t) as T?,
-    (List<Shadow> a, List<Shadow> b) => Shadow.lerpList(a, b, t) as T?,
+    (List<BoxShadow>? a, List<BoxShadow>? b) =>
+      BoxShadow.lerpList(a, b, t) as T?,
+    (List<Shadow>? a, List<Shadow>? b) => Shadow.lerpList(a, b, t) as T?,
 
     // Text painting
-    (TextStyle a, TextStyle b) => TextStyle.lerp(a, b, t) as T?,
-    (StrutStyle a, StrutStyle b) => MixOps._lerpStrutStyle(a, b, t) as T?,
+    (TextStyle? a, TextStyle? b) => TextStyle.lerp(a, b, t) as T?,
+    (StrutStyle? a, StrutStyle? b) => MixOps._lerpStrutStyle(a, b, t) as T?,
 
     // Shadows
-    (BoxShadow a, BoxShadow b) => BoxShadow.lerp(a, b, t) as T?,
-    (Shadow a, Shadow b) => Shadow.lerp(a, b, t) as T?,
+    (BoxShadow? a, BoxShadow? b) => BoxShadow.lerp(a, b, t) as T?,
+    (Shadow? a, Shadow? b) => Shadow.lerp(a, b, t) as T?,
 
     // Borders and shapes
-    (Border a, Border b) => Border.lerp(a, b, t) as T?,
-    (ShapeBorder a, ShapeBorder b) => ShapeBorder.lerp(a, b, t) as T?,
+    (Border? a, Border? b) => Border.lerp(a, b, t) as T?,
+    (ShapeBorder? a, ShapeBorder? b) => ShapeBorder.lerp(a, b, t) as T?,
 
     // Gradients
-    (LinearGradient a, LinearGradient b) => LinearGradient.lerp(a, b, t) as T?,
-    (RadialGradient a, RadialGradient b) => RadialGradient.lerp(a, b, t) as T?,
-    (SweepGradient a, SweepGradient b) => SweepGradient.lerp(a, b, t) as T?,
+    (LinearGradient? a, LinearGradient? b) =>
+      LinearGradient.lerp(a, b, t) as T?,
+    (RadialGradient? a, RadialGradient? b) =>
+      RadialGradient.lerp(a, b, t) as T?,
+    (SweepGradient? a, SweepGradient? b) => SweepGradient.lerp(a, b, t) as T?,
 
     // Constraints
-    (BoxConstraints a, BoxConstraints b) => BoxConstraints.lerp(a, b, t) as T?,
+    (BoxConstraints? a, BoxConstraints? b) =>
+      BoxConstraints.lerp(a, b, t) as T?,
 
     // Theme data
-    (IconThemeData a, IconThemeData b) => IconThemeData.lerp(a, b, t) as T?,
-    (ThemeData a, ThemeData b) => ThemeData.lerp(a, b, t) as T?,
+    (IconThemeData? a, IconThemeData? b) => IconThemeData.lerp(a, b, t) as T?,
 
     // Matrix4 - use proper tween instead of snap
-    (Matrix4 a, Matrix4 b) => Matrix4Tween(begin: a, end: b).lerp(t) as T?,
+    (Matrix4? a, Matrix4? b) => Matrix4Tween(begin: a, end: b).lerp(t) as T?,
 
     // Default snap behavior for non-lerpable types
     _ => t < 0.5 ? a : b,

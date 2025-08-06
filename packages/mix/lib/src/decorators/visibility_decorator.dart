@@ -36,7 +36,7 @@ final class VisibilityWidgetDecorator
   VisibilityWidgetDecorator lerp(VisibilityWidgetDecorator? other, double t) {
     if (other == null) return this;
 
-    return VisibilityWidgetDecorator(MixOps.lerp(visible, other.visible, t));
+    return VisibilityWidgetDecorator(MixOps.lerpSnap(visible, other.visible, t));
   }
 
   @override

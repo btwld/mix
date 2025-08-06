@@ -129,25 +129,25 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
     if (other == null) return this;
 
     return ImageSpec(
-      image: MixOps.lerp(image, other.image, t),
+      image: MixOps.lerpSnap(image, other.image, t),
       width: MixOps.lerp(width, other.width, t),
       height: MixOps.lerp(height, other.height, t),
       color: MixOps.lerp(color, other.color, t),
-      repeat: MixOps.lerp(repeat, other.repeat, t),
-      fit: MixOps.lerp(fit, other.fit, t),
+      repeat: MixOps.lerpSnap(repeat, other.repeat, t),
+      fit: MixOps.lerpSnap(fit, other.fit, t),
       alignment: MixOps.lerp(alignment, other.alignment, t),
       centerSlice: MixOps.lerp(centerSlice, other.centerSlice, t),
-      filterQuality: MixOps.lerp(filterQuality, other.filterQuality, t),
-      colorBlendMode: MixOps.lerp(colorBlendMode, other.colorBlendMode, t),
-      semanticLabel: MixOps.lerp(semanticLabel, other.semanticLabel, t),
-      excludeFromSemantics: MixOps.lerp(
+      filterQuality: MixOps.lerpSnap(filterQuality, other.filterQuality, t),
+      colorBlendMode: MixOps.lerpSnap(colorBlendMode, other.colorBlendMode, t),
+      semanticLabel: MixOps.lerpSnap(semanticLabel, other.semanticLabel, t),
+      excludeFromSemantics: MixOps.lerpSnap(
         excludeFromSemantics,
         other.excludeFromSemantics,
         t,
       ),
-      gaplessPlayback: MixOps.lerp(gaplessPlayback, other.gaplessPlayback, t),
-      isAntiAlias: MixOps.lerp(isAntiAlias, other.isAntiAlias, t),
-      matchTextDirection: MixOps.lerp(
+      gaplessPlayback: MixOps.lerpSnap(gaplessPlayback, other.gaplessPlayback, t),
+      isAntiAlias: MixOps.lerpSnap(isAntiAlias, other.isAntiAlias, t),
+      matchTextDirection: MixOps.lerpSnap(
         matchTextDirection,
         other.matchTextDirection,
         t,

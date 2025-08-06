@@ -300,6 +300,7 @@ void main() {
           width: 200.0,
           height: 150.0,
           color: Colors.blue,
+          image: AssetImage('test_image.png'),
           repeat: ImageRepeat.repeat,
           fit: BoxFit.cover,
           alignment: Alignment.center,
@@ -313,7 +314,7 @@ void main() {
           matchTextDirection: false,
         );
 
-        expect(spec.props.length, 14);
+        expect(spec.props.length, 15);
         expect(spec.props, contains(200.0));
         expect(spec.props, contains(150.0));
         expect(spec.props, contains(Colors.blue));
@@ -325,6 +326,7 @@ void main() {
         expect(spec.props, contains(BlendMode.multiply));
         expect(spec.props, contains('Props test'));
         expect(spec.props, contains(true));
+        expect(spec.props, contains(AssetImage('test_image.png')));
         expect(spec.props, contains(false));
       });
     });

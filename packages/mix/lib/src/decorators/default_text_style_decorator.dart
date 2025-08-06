@@ -79,12 +79,12 @@ final class DefaultTextStyleWidgetDecorator
 
     return DefaultTextStyleWidgetDecorator(
       style: MixOps.lerp(style, other.style, t),
-      textAlign: MixOps.lerp(textAlign, other.textAlign, t),
-      softWrap: MixOps.lerp(softWrap, other.softWrap, t),
-      overflow: MixOps.lerp(overflow, other.overflow, t),
-      maxLines: MixOps.lerp(maxLines, other.maxLines, t),
-      textWidthBasis: MixOps.lerp(textWidthBasis, other.textWidthBasis, t),
-      textHeightBehavior: MixOps.lerp(
+      textAlign: MixOps.lerpSnap(textAlign, other.textAlign, t),
+      softWrap: MixOps.lerpSnap(softWrap, other.softWrap, t),
+      overflow: MixOps.lerpSnap(overflow, other.overflow, t),
+      maxLines: MixOps.lerpSnap(maxLines, other.maxLines, t),
+      textWidthBasis: MixOps.lerpSnap(textWidthBasis, other.textWidthBasis, t),
+      textHeightBehavior: MixOps.lerpSnap(
         textHeightBehavior,
         other.textHeightBehavior,
         t,

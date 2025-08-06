@@ -155,24 +155,24 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     if (other == null) return this;
 
     return TextSpec(
-      overflow: MixOps.lerp(overflow, other.overflow, t),
+      overflow: MixOps.lerpSnap(overflow, other.overflow, t),
       strutStyle: MixOps.lerp(strutStyle, other.strutStyle, t),
-      textAlign: MixOps.lerp(textAlign, other.textAlign, t),
-      textScaler: MixOps.lerp(textScaler, other.textScaler, t),
-      maxLines: MixOps.lerp(maxLines, other.maxLines, t),
+      textAlign: MixOps.lerpSnap(textAlign, other.textAlign, t),
+      textScaler: MixOps.lerpSnap(textScaler, other.textScaler, t),
+      maxLines: MixOps.lerpSnap(maxLines, other.maxLines, t),
       style: MixOps.lerp(style, other.style, t),
-      textWidthBasis: MixOps.lerp(textWidthBasis, other.textWidthBasis, t),
-      textHeightBehavior: MixOps.lerp(
+      textWidthBasis: MixOps.lerpSnap(textWidthBasis, other.textWidthBasis, t),
+      textHeightBehavior: MixOps.lerpSnap(
         textHeightBehavior,
         other.textHeightBehavior,
         t,
       ),
-      textDirection: MixOps.lerp(textDirection, other.textDirection, t),
-      softWrap: MixOps.lerp(softWrap, other.softWrap, t),
-      textModifiers: MixOps.lerp(textModifiers, other.textModifiers, t),
+      textDirection: MixOps.lerpSnap(textDirection, other.textDirection, t),
+      softWrap: MixOps.lerpSnap(softWrap, other.softWrap, t),
+      textModifiers: MixOps.lerpSnap(textModifiers, other.textModifiers, t),
       selectionColor: MixOps.lerp(selectionColor, other.selectionColor, t),
-      semanticsLabel: MixOps.lerp(semanticsLabel, other.semanticsLabel, t),
-      locale: MixOps.lerp(locale, other.locale, t),
+      semanticsLabel: MixOps.lerpSnap(semanticsLabel, other.semanticsLabel, t),
+      locale: MixOps.lerpSnap(locale, other.locale, t),
     );
   }
 

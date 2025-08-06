@@ -36,8 +36,8 @@ final class ClipOvalWidgetDecorator
     if (other == null) return this;
 
     return ClipOvalWidgetDecorator(
-      clipper: MixOps.lerp(clipper, other.clipper, t),
-      clipBehavior: MixOps.lerp(clipBehavior, other.clipBehavior, t),
+      clipper: MixOps.lerpSnap(clipper, other.clipper, t),
+      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t),
     );
   }
 
@@ -141,8 +141,8 @@ final class ClipRectWidgetDecorator
     if (other == null) return this;
 
     return ClipRectWidgetDecorator(
-      clipper: MixOps.lerp(clipper, other.clipper, t),
-      clipBehavior: MixOps.lerp(clipBehavior, other.clipBehavior, t),
+      clipper: MixOps.lerpSnap(clipper, other.clipper, t),
+      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t),
     );
   }
 
@@ -272,8 +272,8 @@ final class ClipRRectWidgetDecorator
 
     return ClipRRectWidgetDecorator(
       borderRadius: MixOps.lerp(borderRadius, other.borderRadius, t),
-      clipper: MixOps.lerp(clipper, other.clipper, t),
-      clipBehavior: MixOps.lerp(clipBehavior, other.clipBehavior, t),
+      clipper: MixOps.lerpSnap(clipper, other.clipper, t),
+      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t),
     );
   }
 
@@ -418,8 +418,8 @@ final class ClipPathWidgetDecorator
     if (other == null) return this;
 
     return ClipPathWidgetDecorator(
-      clipper: MixOps.lerp(clipper, other.clipper, t),
-      clipBehavior: MixOps.lerp(clipBehavior, other.clipBehavior, t),
+      clipper: MixOps.lerpSnap(clipper, other.clipper, t),
+      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t),
     );
   }
 
@@ -547,7 +547,7 @@ final class ClipTriangleWidgetDecorator
     if (other == null) return this;
 
     return ClipTriangleWidgetDecorator(
-      clipBehavior: MixOps.lerp(clipBehavior, other.clipBehavior, t),
+      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t),
     );
   }
 

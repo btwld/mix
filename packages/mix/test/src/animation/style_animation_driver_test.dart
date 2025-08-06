@@ -33,7 +33,6 @@ void main() {
       driver.dispose();
     });
 
-
     test('reset should restore the driver to the begining', () {
       driver.animateTo(MockResolvedStyle(0));
       driver.animateTo(MockResolvedStyle(1));
@@ -46,60 +45,62 @@ void main() {
       expect(driver.animation.value, MockResolvedStyle(0));
     });
 
-    testWidgets('should trigger animation status changes when the animation starts', (
-      tester,
-    ) async {
-      int startCallCount = 0;
-      
-      driver.animation.addStatusListener((status) {
-        if (status == AnimationStatus.forward || status == AnimationStatus.reverse) {
-          startCallCount++;
-        }
-      });
-      
-      await driver.animateTo(MockResolvedStyle(0));
-      final future = driver.animateTo(MockResolvedStyle(1));
-
-      driver.controller.duration = 300.ms;
-      driver.controller.forward(from: 0);
-
-      await tester.pump(150.ms);
-
-      expect(startCallCount, 1);
-
-      await tester.pumpAndSettle();
-      await future;
-    });
-
     testWidgets(
-      'should trigger status changes when the animation completes',
+      'should trigger animation status changes when the animation starts',
       (tester) async {
-        int completeCallCount = 0;
-        
+        int startCallCount = 0;
+
         driver.animation.addStatusListener((status) {
-          if (status == AnimationStatus.completed || status == AnimationStatus.dismissed) {
-            completeCallCount++;
+          if (status == AnimationStatus.forward ||
+              status == AnimationStatus.reverse) {
+            startCallCount++;
           }
         });
-        
+
         await driver.animateTo(MockResolvedStyle(0));
         final future = driver.animateTo(MockResolvedStyle(1));
 
         driver.controller.duration = 300.ms;
         driver.controller.forward(from: 0);
+
+        await tester.pump(150.ms);
+
+        expect(startCallCount, 1);
+
         await tester.pumpAndSettle();
-
-        expect(completeCallCount, 1);
-
         await future;
       },
     );
 
+    testWidgets('should trigger status changes when the animation completes', (
+      tester,
+    ) async {
+      int completeCallCount = 0;
+
+      driver.animation.addStatusListener((status) {
+        if (status == AnimationStatus.completed ||
+            status == AnimationStatus.dismissed) {
+          completeCallCount++;
+        }
+      });
+
+      await driver.animateTo(MockResolvedStyle(0));
+      final future = driver.animateTo(MockResolvedStyle(1));
+
+      driver.controller.duration = 300.ms;
+      driver.controller.forward(from: 0);
+      await tester.pumpAndSettle();
+
+      expect(completeCallCount, 1);
+
+      await future;
+    });
+
     testWidgets('stop() should stop the animation ', (tester) async {
+      driver.controller.duration = 300.ms;
       await driver.animateTo(MockResolvedStyle(0));
       driver.animateTo(MockResolvedStyle(1));
 
-      driver.controller.duration = 300.ms;
       driver.controller.forward(from: 0);
 
       await tester.pump(150.ms);
@@ -218,7 +219,6 @@ void main() {
   });
 
   group('CurveAnimationDriver', () {
-
     testWidgets('OnEnd should be triggered when the animation is completed', (
       tester,
     ) async {
@@ -358,10 +358,12 @@ void main() {
       int completeCount = 0;
 
       driver.animation.addStatusListener((status) {
-        if (status == AnimationStatus.forward || status == AnimationStatus.reverse) {
+        if (status == AnimationStatus.forward ||
+            status == AnimationStatus.reverse) {
           startCount++;
         }
-        if (status == AnimationStatus.completed || status == AnimationStatus.dismissed) {
+        if (status == AnimationStatus.completed ||
+            status == AnimationStatus.dismissed) {
           completeCount++;
         }
       });

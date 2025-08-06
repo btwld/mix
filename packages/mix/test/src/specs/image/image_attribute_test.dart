@@ -360,6 +360,7 @@ void main() {
           width: 100.0,
           height: 200.0,
           color: Colors.red,
+          image: AssetImage('test_image.png'),
           repeat: ImageRepeat.repeat,
           fit: BoxFit.cover,
           alignment: Alignment.center,
@@ -368,12 +369,13 @@ void main() {
           colorBlendMode: BlendMode.multiply,
         );
 
-        expect(attribute.props.length, 17);
+        expect(attribute.props.length, 18);
         expect(attribute.props, contains(attribute.$width));
         expect(attribute.props, contains(attribute.$height));
         expect(attribute.props, contains(attribute.$color));
         expect(attribute.props, contains(attribute.$repeat));
         expect(attribute.props, contains(attribute.$fit));
+        expect(attribute.props, contains(attribute.$image));
         expect(attribute.props, contains(attribute.$alignment));
         expect(attribute.props, contains(attribute.$centerSlice));
         expect(attribute.props, contains(attribute.$filterQuality));
