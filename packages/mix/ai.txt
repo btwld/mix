@@ -61,10 +61,10 @@ Mix provides a set of utility functions to style widgets effectively. These util
   - **Press**: `$on.press($box.color.blue(900))` changes color on press.
   - **Dark Mode**: `$on.dark($box.color.black())` applies styles in dark mode.
 
-### Widget Decorators
-- **$box.decorator**: Used for applying decorators to widgets.
-  - **Scale**: `$box.decorator.scale(1.2)` scales the widget.
-  - **Opacity**: `$box.decorator.opacity(0.7)` sets the widget's opacity.
+### Widget Modifiers
+- **$box.modifier**: Used for applying modifiers to widgets.
+  - **Scale**: `$box.modifier.scale(1.2)` scales the widget.
+  - **Opacity**: `$box.modifier.opacity(0.7)` sets the widget's opacity.
 
 These utilities allow for a highly customizable and consistent styling approach across your Flutter application using Mix. By leveraging these utilities, you can create complex styles that are easy to maintain and extend.
 

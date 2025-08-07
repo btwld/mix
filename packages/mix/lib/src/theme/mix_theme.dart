@@ -8,29 +8,29 @@ import 'tokens/mix_token.dart';
 /// Inherited widget that provides Mix theme data and token resolution to its descendants.
 ///
 /// The [MixScope] is the root of the Mix theming system, providing access to design tokens,
-/// default widget decorator ordering, and other theme-related configuration.
+/// default widget modifier ordering, and other theme-related configuration.
 ///
 /// Uses InheritedModel to enable aspect-based dependencies for efficient rebuilds.
 /// Supported aspects:
 /// - 'tokens': Rebuilds when token values change
-/// - 'decoratorOrder': Rebuilds when decorator ordering changes
+/// - 'modifierOrder': Rebuilds when modifier ordering changes
 class MixScope extends InheritedModel<String> {
   const MixScope._({
     required Map<MixToken, ValueBuilder>? tokens,
-    required this.orderOfWidgetDecorators,
+    required this.orderOfWidgetModifiers,
     required super.child,
     super.key,
   }) : _tokens = tokens;
 
-  /// Creates an empty MixScope with no tokens or decorator ordering
+  /// Creates an empty MixScope with no tokens or modifier ordering
   const MixScope.empty({required super.child, super.key})
     : _tokens = null,
-      orderOfWidgetDecorators = null;
+      orderOfWidgetModifiers = null;
 
-  /// Creates a MixScope with the provided tokens and decorator ordering
+  /// Creates a MixScope with the provided tokens and modifier ordering
   factory MixScope({
     Set<TokenDefinition>? tokens,
-    List<Type>? orderOfWidgetDecorators,
+    List<Type>? orderOfWidgetModifiers,
     required Widget child,
     Key? key,
   }) {
@@ -39,7 +39,7 @@ class MixScope extends InheritedModel<String> {
       tokens: tokens != null
           ? {for (final token in tokens) token.token: token.resolver}
           : null,
-      orderOfWidgetDecorators: orderOfWidgetDecorators,
+      orderOfWidgetModifiers: orderOfWidgetModifiers,
       child: child,
     );
   }
@@ -47,7 +47,7 @@ class MixScope extends InheritedModel<String> {
   /// Creates a MixScope with Material design tokens pre-configured
   factory MixScope.withMaterial({
     Set<TokenDefinition>? tokens,
-    List<Type>? orderOfWidgetDecorators,
+    List<Type>? orderOfWidgetModifiers,
     required Widget child,
     Key? key,
   }) {
@@ -57,7 +57,7 @@ class MixScope extends InheritedModel<String> {
     return MixScope(
       key: key,
       tokens: mergedTokens,
-      orderOfWidgetDecorators: orderOfWidgetDecorators,
+      orderOfWidgetModifiers: orderOfWidgetModifiers,
       child: child,
     );
   }
@@ -65,7 +65,7 @@ class MixScope extends InheritedModel<String> {
   /// Gets the MixScope from the widget tree.
   ///
   /// Optionally specify an [aspect] to create a dependency only on that aspect.
-  /// Supported aspects: 'tokens', 'decoratorOrder'
+  /// Supported aspects: 'tokens', 'modifierOrder'
   static MixScope of(BuildContext context, [String? aspect]) {
     final MixScope? scope = maybeOf(context, aspect);
     if (scope != null) {
@@ -125,14 +125,14 @@ class MixScope extends InheritedModel<String> {
     return MixScope._(
       key: key,
       tokens: combined._tokens,
-      orderOfWidgetDecorators: combined.orderOfWidgetDecorators,
+      orderOfWidgetModifiers: combined.orderOfWidgetModifiers,
       child: child,
     );
   }
 
   final Map<MixToken, ValueBuilder>? _tokens;
 
-  final List<Type>? orderOfWidgetDecorators;
+  final List<Type>? orderOfWidgetModifiers;
 
   /// Getter for tokens map
   Map<MixToken, ValueBuilder>? get tokens => _tokens;
@@ -163,8 +163,8 @@ class MixScope extends InheritedModel<String> {
     return MixScope._(
       key: other.key,
       tokens: mergedTokens,
-      orderOfWidgetDecorators:
-          other.orderOfWidgetDecorators ?? orderOfWidgetDecorators,
+      orderOfWidgetModifiers:
+          other.orderOfWidgetModifiers ?? orderOfWidgetModifiers,
       child: other.child,
     );
   }
@@ -172,7 +172,7 @@ class MixScope extends InheritedModel<String> {
   @override
   bool updateShouldNotify(MixScope oldWidget) {
     return !mapEquals(_tokens, oldWidget._tokens) ||
-        !listEquals(orderOfWidgetDecorators, oldWidget.orderOfWidgetDecorators);
+        !listEquals(orderOfWidgetModifiers, oldWidget.orderOfWidgetModifiers);
   }
 
   @override
@@ -186,11 +186,11 @@ class MixScope extends InheritedModel<String> {
       return true;
     }
 
-    // Check if decorator order changed and widget depends on it
-    if (dependencies.contains('decoratorOrder') &&
+    // Check if modifier order changed and widget depends on it
+    if (dependencies.contains('modifierOrder') &&
         !listEquals(
-          orderOfWidgetDecorators,
-          oldWidget.orderOfWidgetDecorators,
+          orderOfWidgetModifiers,
+          oldWidget.orderOfWidgetModifiers,
         )) {
       return true;
     }

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' as r;
 import 'package:flutter/widgets.dart' as w;
 
-import '../decorators/widget_decorator_config.dart';
+import '../modifiers/widget_modifier_config.dart';
 import '../properties/painting/decoration_mix.dart';
 import '../properties/painting/shape_border_mix.dart';
 import '../theme/mix_theme.dart';
@@ -442,8 +442,8 @@ extension ListDirectiveExt<T> on List<Directive<T>>? {
   }
 }
 
-extension DirectiveConfigExt on WidgetDecoratorConfig? {
-  WidgetDecoratorConfig? tryMerge(WidgetDecoratorConfig? other) {
+extension DirectiveConfigExt on WidgetModifierConfig? {
+  WidgetModifierConfig? tryMerge(WidgetModifierConfig? other) {
     if (other == null) return this;
     if (this == null) return other;
 

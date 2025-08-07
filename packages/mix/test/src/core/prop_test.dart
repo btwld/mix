@@ -41,6 +41,38 @@ void main() {
 
       expect(resolved, equals(42));
     });
+
+    test('token overrides direct value on merge (replacement)', () {
+      final token = MixToken<int>('n');
+      final p1 = Prop.value(1);
+      final p2 = Prop.token(token);
+
+      final merged = p1.mergeProp(p2);
+
+      expect(merged.hasToken, isTrue);
+      expect(merged.$token, token);
+      expect(merged.hasValue, isFalse);
+    });
+
+    test('merges directives and animation', () {
+      // Intentionally pass an empty directives list to 'a' and verify it is preserved
+      final a = Prop.value(1).directives(<Directive<int>>[]);
+      final anim = AnimationConfig.linear(const Duration(milliseconds: 100));
+      final b = Prop.value(2).animation(anim);
+
+      final merged = a.mergeProp(b);
+
+      expect(merged.$animation, anim);
+      expect(merged.$directives, a.$directives); // preserved from a
+    });
+
+    test('throws when resolving without value or token', () {
+      final p = const Prop<int>.directives([]);
+      expect(
+        () => p.resolveProp(MockBuildContext()),
+        throwsA(isA<FlutterError>()),
+      );
+    });
   });
 
   group('MixProp', () {

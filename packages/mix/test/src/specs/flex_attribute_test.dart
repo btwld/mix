@@ -471,32 +471,32 @@ void main() {
       });
     });
 
-    group('Decorators', () {
-      test('decorators can be added to attribute', () {
+    group('Modifiers', () {
+      test('modifiers can be added to attribute', () {
         final attribute = FlexMix(
-          widgetDecoratorConfig: WidgetDecoratorConfig(
-            decorators: [
-              OpacityWidgetDecoratorMix(opacity: 0.5),
-              PaddingWidgetDecoratorMix(padding: EdgeInsetsMix.all(8.0)),
+          modifier: WidgetModifierConfig(
+            modifiers: [
+              OpacityWidgetModifierMix(opacity: 0.5),
+              PaddingWidgetModifierMix(padding: EdgeInsetsMix.all(8.0)),
             ],
           ),
         );
 
-        expect(attribute.$widgetDecoratorConfig, isNotNull);
-        expect(attribute.$widgetDecoratorConfig!.$decorators!.length, 2);
+        expect(attribute.$modifier, isNotNull);
+        expect(attribute.$modifier!.$modifiers!.length, 2);
       });
 
-      test('decorators merge correctly', () {
+      test('modifiers merge correctly', () {
         final first = FlexMix(
-          widgetDecoratorConfig: WidgetDecoratorConfig(
-            decorators: [OpacityWidgetDecoratorMix(opacity: 0.5)],
+          modifier: WidgetModifierConfig(
+            modifiers: [OpacityWidgetModifierMix(opacity: 0.5)],
           ),
         );
 
         final second = FlexMix(
-          widgetDecoratorConfig: WidgetDecoratorConfig(
-            decorators: [
-              PaddingWidgetDecoratorMix(padding: EdgeInsetsMix.all(8.0)),
+          modifier: WidgetModifierConfig(
+            modifiers: [
+              PaddingWidgetModifierMix(padding: EdgeInsetsMix.all(8.0)),
             ],
           ),
         );
@@ -504,7 +504,7 @@ void main() {
         final merged = first.merge(second);
 
         // Note: The actual merge behavior depends on the parent class implementation
-        expect(merged.$widgetDecoratorConfig, isNotNull);
+        expect(merged.$modifier, isNotNull);
       });
     });
 

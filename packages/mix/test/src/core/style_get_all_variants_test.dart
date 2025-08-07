@@ -736,7 +736,7 @@ class _MockSpecAttribute extends Style<MockSpec> {
     required this.width,
     this.height,
     super.variants,
-    super.widgetDecoratorConfig,
+    super.modifier,
     super.animation,
 
     super.inherit,

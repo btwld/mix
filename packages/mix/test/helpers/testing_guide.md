@@ -14,7 +14,7 @@ Mix has two distinct prop types with different merge behaviors:
 
 - **`Prop<T>`** - For regular Flutter types (double, Color, AlignmentGeometry, etc.)
   - **Merge Strategy**: **Replacement** (second value wins)
-  - **Used in**: Most DecoratorAttributes, simple SpecAttribute properties
+  - **Used in**: Most ModifierAttributes, simple SpecAttribute properties
   - **Example**: `Prop<double>? aspectRatio`, `Prop<Color>? color`
 
 - **`MixProp<V>`** - For Mix types (EdgeInsetsMix, BorderMix, TextStyleMix, etc.)
@@ -110,8 +110,8 @@ test('Mix types resolve to Flutter types', () {
 });
 
 test('Attributes resolve to specs', () {
-  final attribute = OpacityDecoratorAttribute.only(opacity: 0.5);
-  expect(attribute, resolvesTo(const OpacityDecorator(0.5)));
+  final attribute = OpacityModifierAttribute.only(opacity: 0.5);
+  expect(attribute, resolvesTo(const OpacityModifier(0.5)));
 });
 
 test('Tokens resolve with custom context', () {
@@ -205,28 +205,28 @@ expect(mergedProp, resolvesTo(Colors.blue)); // Tests what it resolves to (last 
 
 ## 🧭 **Common Testing Scenarios**
 
-### **Testing DecoratorAttributes**
+### **Testing ModifierAttributes**
 
 ```dart
-test('decorator attribute properties are set correctly', () {
-  final attribute = OpacityDecoratorAttribute(opacity: Prop.value(0.5));
+test('modifier attribute properties are set correctly', () {
+  final attribute = OpacityModifierAttribute(opacity: Prop.value(0.5));
 
   expectProp(attribute.opacity, 0.5);
 });
 
-test('decorator attribute merging uses replacement strategy', () {
-  final attr1 = AspectRatioDecoratorAttribute(aspectRatio: Prop.value(1.0));
-  final attr2 = AspectRatioDecoratorAttribute(aspectRatio: Prop.value(2.0));
+test('modifier attribute merging uses replacement strategy', () {
+  final attr1 = AspectRatioModifierAttribute(aspectRatio: Prop.value(1.0));
+  final attr2 = AspectRatioModifierAttribute(aspectRatio: Prop.value(2.0));
 
   final merged = attr1.merge(attr2);
 
   expectProp(merged.aspectRatio, 2.0); // Prop<T> uses replacement
 });
 
-test('decorator attribute resolves to decorator', () {
-  final attribute = OpacityDecoratorAttribute(opacity: Prop.value(0.8));
+test('modifier attribute resolves to modifier', () {
+  final attribute = OpacityModifierAttribute(opacity: Prop.value(0.8));
 
-  expect(attribute, resolvesTo(const OpacityDecorator(0.8)));
+  expect(attribute, resolvesTo(const OpacityModifier(0.8)));
 });
 ```
 

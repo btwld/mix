@@ -86,8 +86,8 @@ void main() {
         expect(util.on, isA<OnContextVariantUtility<TextSpec, TextMix>>());
       });
 
-      test('wrap utility is WidgetDecoratorUtility', () {
-        expect(util.wrap, isA<WidgetDecoratorUtility<TextMix>>());
+      test('wrap utility is WidgetModifierUtility', () {
+        expect(util.wrap, isA<WidgetModifierUtility<TextMix>>());
       });
     });
 
@@ -259,13 +259,13 @@ void main() {
       });
     });
 
-    group('Decorator utilities', () {
-      test('wrap utility creates decorator TextMix', () {
+    group('Modifier utilities', () {
+      test('wrap utility creates modifier TextMix', () {
         final result = util.wrap.opacity(0.5);
 
         expect(result, isA<TextMix>());
-        expect(result.$widgetDecoratorConfig, isNotNull);
-        expect(result.$widgetDecoratorConfig!.$decorators!.length, 1);
+        expect(result.$modifier, isNotNull);
+        expect(result.$modifier!.$modifiers!.length, 1);
       });
     });
 

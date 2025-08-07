@@ -5,8 +5,8 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
-import '../../decorators/widget_decorator_config.dart';
-import '../../decorators/widget_decorator_util.dart';
+import '../../modifiers/widget_modifier_config.dart';
+import '../../modifiers/widget_modifier_util.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'image_spec.dart';
@@ -15,7 +15,7 @@ import 'image_widget.dart';
 class ImageMix extends Style<ImageSpec>
     with
         Diagnosticable,
-        StyleWidgetDecoratorMixin<ImageMix, ImageSpec>,
+        StyleWidgetModifierMixin<ImageMix, ImageSpec>,
         StyleVariantMixin<ImageMix, ImageSpec> {
   final Prop<ImageProvider<Object>>? $image;
   final Prop<double>? $width;
@@ -118,6 +118,16 @@ class ImageMix extends Style<ImageSpec>
     return ImageMix(variants: [VariantStyle(variant, value)]);
   }
 
+  /// Factory for widget modifier
+  factory ImageMix.modifier(WidgetModifierConfig modifier) {
+    return ImageMix(modifier: modifier);
+  }
+
+  /// Factory for widget modifier
+  factory ImageMix.wrap(WidgetModifierConfig value) {
+    return ImageMix(modifier: value);
+  }
+
   const ImageMix.create({
     Prop<ImageProvider<Object>>? image,
     Prop<double>? width,
@@ -135,7 +145,7 @@ class ImageMix extends Style<ImageSpec>
     Prop<bool>? isAntiAlias,
     Prop<bool>? matchTextDirection,
     super.animation,
-    super.widgetDecoratorConfig,
+    super.modifier,
     super.variants,
 
     super.inherit,
@@ -172,7 +182,7 @@ class ImageMix extends Style<ImageSpec>
     bool? isAntiAlias,
     bool? matchTextDirection,
     AnimationConfig? animation,
-    WidgetDecoratorConfig? widgetDecoratorConfig,
+    WidgetModifierConfig? modifier,
     List<VariantStyle<ImageSpec>>? variants,
     bool? inherit,
   }) : this.create(
@@ -192,7 +202,7 @@ class ImageMix extends Style<ImageSpec>
          isAntiAlias: Prop.maybe(isAntiAlias),
          matchTextDirection: Prop.maybe(matchTextDirection),
          animation: animation,
-         widgetDecoratorConfig: widgetDecoratorConfig,
+         modifier: modifier,
          variants: variants,
          inherit: inherit,
        );
@@ -338,9 +348,8 @@ class ImageMix extends Style<ImageSpec>
     return merge(ImageMix(variants: variants));
   }
 
-  @override
-  ImageMix widgetDecorator(WidgetDecoratorConfig value) {
-    return merge(ImageMix(widgetDecoratorConfig: value));
+  ImageMix modifier(WidgetModifierConfig value) {
+    return merge(ImageMix(modifier: value));
   }
 
   @override
@@ -389,8 +398,8 @@ class ImageMix extends Style<ImageSpec>
         other.$matchTextDirection,
       ),
       animation: other.$animation ?? $animation,
-      widgetDecoratorConfig: $widgetDecoratorConfig.tryMerge(
-        other.$widgetDecoratorConfig,
+      modifier: $modifier.tryMerge(
+        other.$modifier,
       ),
       variants: mergeVariantLists($variants, other.$variants),
       inherit: other.$inherit ?? $inherit,
@@ -457,6 +466,11 @@ class ImageMix extends Style<ImageSpec>
   }
 
   @override
+  ImageMix wrap(WidgetModifierConfig value) {
+    return this.modifier(value);
+  }
+
+  @override
   List<Object?> get props => [
     $image,
     $width,
@@ -474,7 +488,7 @@ class ImageMix extends Style<ImageSpec>
     $isAntiAlias,
     $matchTextDirection,
     $animation,
-    $widgetDecoratorConfig,
+    $modifier,
     $variants,
   ];
 }

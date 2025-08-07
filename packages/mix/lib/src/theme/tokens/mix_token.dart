@@ -22,7 +22,7 @@ class MixToken<T> {
   const MixToken(this.name);
 
   T call() {
-    return getRefernceValue(this);
+    return getReferenceValue(this);
   }
 
   TokenDefinition<T> defineValue(T value) {

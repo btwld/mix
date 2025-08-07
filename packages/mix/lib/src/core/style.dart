@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 
 import '../animation/animation_config.dart';
-import '../decorators/widget_decorator_config.dart';
+import '../modifiers/widget_modifier_config.dart';
 import '../specs/box/box_attribute.dart';
 import '../specs/flex/flex_attribute.dart';
 import '../specs/flexbox/flexbox_attribute.dart';
@@ -16,7 +16,7 @@ import 'internal/compare_mixin.dart';
 import 'internal/constants.dart';
 import 'mix_element.dart';
 import 'spec.dart';
-import 'widget_decorator.dart';
+import 'widget_modifier.dart';
 
 /// This is used just to pass all the values into one place if needed
 @internal
@@ -26,23 +26,23 @@ sealed class StyleElement {
 
 /// Base class for style containers that can be resolved to specifications.
 ///
-/// Provides variant support, decorators, and animation configuration for styled elements.
+/// Provides variant support, modifiers, and animation configuration for styled elements.
 abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
     with Equatable, Resolvable<S>
     implements StyleElement {
   final List<VariantStyle<S>>? $variants;
 
-  final WidgetDecoratorConfig? $widgetDecoratorConfig;
+  final WidgetModifierConfig? $modifier;
   final AnimationConfig? $animation;
 
   final bool? $inherit;
 
   const Style({
     required List<VariantStyle<S>>? variants,
-    required WidgetDecoratorConfig? widgetDecoratorConfig,
+    required WidgetModifierConfig? modifier,
     required AnimationConfig? animation,
     required bool? inherit,
-  }) : $widgetDecoratorConfig = widgetDecoratorConfig,
+  }) : $modifier = modifier,
        $animation = animation,
        $variants = variants,
        $inherit = inherit;
@@ -66,24 +66,24 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
   }
 
   @protected
-  List<WidgetDecoratorMix>? mergeDecoratorLists(
-    List<WidgetDecoratorMix>? current,
-    List<WidgetDecoratorMix>? other,
+  List<WidgetModifierMix>? mergeModifierLists(
+    List<WidgetModifierMix>? current,
+    List<WidgetModifierMix>? other,
   ) {
     if (current == null && other == null) return null;
     if (current == null) return List.of(other!);
     if (other == null) return List.of(current);
 
-    final Map<Object, WidgetDecoratorMix> merged = {};
+    final Map<Object, WidgetModifierMix> merged = {};
 
-    for (final decorator in current) {
-      merged[decorator.mergeKey] = decorator;
+    for (final modifier in current) {
+      merged[modifier.mergeKey] = modifier;
     }
 
-    for (final decorator in other) {
-      final key = decorator.mergeKey;
+    for (final modifier in other) {
+      final key = modifier.mergeKey;
       final existing = merged[key];
-      merged[key] = existing != null ? existing.merge(decorator) : decorator;
+      merged[key] = existing != null ? existing.merge(modifier) : modifier;
     }
 
     return merged.values.toList();
@@ -175,25 +175,25 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
 
     final resolvedSpec = styleData.resolve(context);
     final resolvedAnimation = styleData.$animation;
-    final resolvedDecorators = styleData.$widgetDecoratorConfig?.resolve(
+    final resolvedModifiers = styleData.$modifier?.resolve(
       context,
     );
 
     return ResolvedStyle(
       spec: resolvedSpec,
       animation: resolvedAnimation,
-      widgetDecorators: resolvedDecorators,
+      widgetModifiers: resolvedModifiers,
       inherit: styleData.$inherit,
     );
   }
 }
 
-abstract class WidgetDecoratorMix<S extends WidgetDecorator<S>> extends Mix<S>
+abstract class WidgetModifierMix<S extends WidgetModifier<S>> extends Mix<S>
     implements StyleElement {
-  const WidgetDecoratorMix();
+  const WidgetModifierMix();
 
   @override
-  WidgetDecoratorMix<S> merge(covariant WidgetDecoratorMix<S>? other);
+  WidgetModifierMix<S> merge(covariant WidgetModifierMix<S>? other);
 
   @override
   S resolve(BuildContext context);
@@ -243,15 +243,15 @@ final class VariantStyle<S extends Spec<S>> extends Mixable<S>
 class ResolvedStyle<V extends Spec<V>> with Equatable {
   final V? spec;
   final AnimationConfig? animation;
-  final List<WidgetDecorator>? widgetDecorators;
-  final List<Type>? orderOfWidgetDecorators;
+  final List<WidgetModifier>? widgetModifiers;
+  final List<Type>? orderOfWidgetModifiers;
   final bool? inherit;
 
   const ResolvedStyle({
     this.spec,
     this.animation,
-    this.widgetDecorators,
-    this.orderOfWidgetDecorators,
+    this.widgetModifiers,
+    this.orderOfWidgetModifiers,
     this.inherit,
   });
 
@@ -263,12 +263,12 @@ class ResolvedStyle<V extends Spec<V>> with Equatable {
     // Lerp the spec if it's a Spec type
     final lerpedSpec = (spec as Spec<V>).lerp(other.spec, t);
 
-    // For decorators and animation, use the target (end) values
+    // For modifiers and animation, use the target (end) values
     // We can't meaningfully interpolate these
     return ResolvedStyle(
       spec: lerpedSpec,
       animation: other.animation ?? animation,
-      widgetDecorators: t < 0.5 ? widgetDecorators : other.widgetDecorators,
+      widgetModifiers: t < 0.5 ? widgetModifiers : other.widgetModifiers,
     );
   }
 
@@ -276,8 +276,8 @@ class ResolvedStyle<V extends Spec<V>> with Equatable {
   List<Object?> get props => [
     spec,
     animation,
-    widgetDecorators,
-    orderOfWidgetDecorators,
+    widgetModifiers,
+    orderOfWidgetModifiers,
   ];
 }
 
@@ -287,7 +287,7 @@ class CompoundStyle extends Style<MultiSpec> {
   CompoundStyle._({
     required List<Style> attributes,
     super.animation,
-    super.widgetDecoratorConfig,
+    super.modifier,
     super.variants,
 
     super.inherit,
@@ -351,7 +351,7 @@ class CompoundStyle extends Style<MultiSpec> {
   /// ```
   factory CompoundStyle.create(Iterable<StyleElement> elements) {
     final styleList = <Style>[];
-    final decoratorList = <WidgetDecoratorMix>[];
+    final modifierList = <WidgetModifierMix>[];
     final variants = <VariantStyle>[];
 
     AnimationConfig? animationConfig;
@@ -362,8 +362,8 @@ class CompoundStyle extends Style<MultiSpec> {
           variants.add(element);
           break;
 
-        case WidgetDecoratorMix():
-          decoratorList.add(element);
+        case WidgetModifierMix():
+          modifierList.add(element);
         case Style():
           // Handle MultiMix by merging it later
           if (element is! CompoundStyle) {
@@ -376,9 +376,9 @@ class CompoundStyle extends Style<MultiSpec> {
     CompoundStyle result = CompoundStyle._(
       attributes: styleList,
       animation: animationConfig,
-      widgetDecoratorConfig: decoratorList.isEmpty
+      modifier: modifierList.isEmpty
           ? null
-          : WidgetDecoratorConfig(decorators: decoratorList),
+          : WidgetModifierConfig(modifiers: modifierList),
       variants: null,
     );
 
@@ -397,13 +397,13 @@ class CompoundStyle extends Style<MultiSpec> {
     : this._(
         attributes: [],
         animation: null,
-        widgetDecoratorConfig: null,
+        modifier: null,
         variants: null,
       );
 
-  WidgetDecoratorConfig? _mergeDecoratorConfigs(
-    WidgetDecoratorConfig? a,
-    WidgetDecoratorConfig? b,
+  WidgetModifierConfig? _mergeModifierConfigs(
+    WidgetModifierConfig? a,
+    WidgetModifierConfig? b,
   ) {
     if (a == null) return b;
     if (b == null) return a;
@@ -421,7 +421,7 @@ class CompoundStyle extends Style<MultiSpec> {
         duration: duration ?? kDefaultAnimationDuration,
         curve: curve ?? Curves.linear,
       ),
-      widgetDecoratorConfig: $widgetDecoratorConfig,
+      modifier: $modifier,
       variants: $variants,
     );
   }
@@ -464,9 +464,9 @@ class CompoundStyle extends Style<MultiSpec> {
     return CompoundStyle._(
       attributes: mergedAttributes,
       animation: other.$animation ?? $animation,
-      widgetDecoratorConfig: _mergeDecoratorConfigs(
-        $widgetDecoratorConfig,
-        other.$widgetDecoratorConfig,
+      modifier: _mergeModifierConfigs(
+        $modifier,
+        other.$modifier,
       ),
       variants: mergeVariantLists($variants, other.$variants),
     );

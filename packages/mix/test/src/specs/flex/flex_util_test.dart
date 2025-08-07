@@ -305,13 +305,13 @@ void main() {
       });
     });
 
-    group('decorator utilities', () {
-      test('wrap utility creates decorator FlexMix', () {
+    group('modifier utilities', () {
+      test('wrap utility creates modifier FlexMix', () {
         final result = util.wrap.opacity(0.5);
 
         expect(result, isA<FlexMix>());
-        expect(result.$widgetDecoratorConfig, isNotNull);
-        expect(result.$widgetDecoratorConfig!.$decorators!.length, 1);
+        expect(result.$modifier, isNotNull);
+        expect(result.$modifier!.$modifiers!.length, 1);
       });
     });
 

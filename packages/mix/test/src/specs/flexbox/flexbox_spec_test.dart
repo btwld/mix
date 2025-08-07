@@ -238,13 +238,13 @@ void main() {
       });
     });
 
-    group('Decorators', () {
-      test('decorators can be added to attribute', () {
+    group('Modifiers', () {
+      test('modifiers can be added to attribute', () {
         final attribute = FlexBoxMix(
-          widgetDecoratorConfig: WidgetDecoratorConfig(
-            decorators: [
-              OpacityWidgetDecoratorMix(opacity: 0.5),
-              TransformWidgetDecoratorMix(
+          modifier: WidgetModifierConfig(
+            modifiers: [
+              OpacityWidgetModifierMix(opacity: 0.5),
+              TransformWidgetModifierMix(
                 transform: Matrix4.identity(),
                 alignment: Alignment.center,
               ),
@@ -252,30 +252,30 @@ void main() {
           ),
         );
 
-        expect(attribute.$widgetDecoratorConfig, isNotNull);
-        expect(attribute.$widgetDecoratorConfig!.$decorators!.length, 2);
+        expect(attribute.$modifier, isNotNull);
+        expect(attribute.$modifier!.$modifiers!.length, 2);
       });
 
-      test('decorators are merged correctly', () {
+      test('modifiers are merged correctly', () {
         final first = FlexBoxMix(
-          widgetDecoratorConfig: WidgetDecoratorConfig(
-            decorators: [OpacityWidgetDecoratorMix(opacity: 0.5)],
+          modifier: WidgetModifierConfig(
+            modifiers: [OpacityWidgetModifierMix(opacity: 0.5)],
           ),
         );
 
         final second = FlexBoxMix(
-          widgetDecoratorConfig: WidgetDecoratorConfig(
-            decorators: [
-              TransformWidgetDecoratorMix(transform: Matrix4.identity()),
+          modifier: WidgetModifierConfig(
+            modifiers: [
+              TransformWidgetModifierMix(transform: Matrix4.identity()),
             ],
           ),
         );
 
         final merged = first.merge(second);
 
-        // Decorators are combined when merging
-        expect(merged.$widgetDecoratorConfig, isNotNull);
-        expect(merged.$widgetDecoratorConfig!.$decorators!.length, 2);
+        // Modifiers are combined when merging
+        expect(merged.$modifier, isNotNull);
+        expect(merged.$modifier!.$modifiers!.length, 2);
       });
     });
 

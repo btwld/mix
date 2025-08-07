@@ -6,8 +6,8 @@ import '../../core/helpers.dart';
 import '../../core/directive.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
-import '../../decorators/widget_decorator_config.dart';
-import '../../decorators/widget_decorator_util.dart';
+import '../../modifiers/widget_modifier_config.dart';
+import '../../modifiers/widget_modifier_util.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../properties/typography/strut_style_mix.dart';
 import '../../properties/typography/text_height_behavior_mix.dart';
@@ -27,7 +27,7 @@ import 'text_widget.dart';
 class TextMix extends Style<TextSpec>
     with
         Diagnosticable,
-        StyleWidgetDecoratorMixin<TextMix, TextSpec>,
+        StyleWidgetModifierMixin<TextMix, TextSpec>,
         StyleVariantMixin<TextMix, TextSpec> {
   final Prop<TextOverflow>? $overflow;
   final MixProp<StrutStyle>? $strutStyle;
@@ -258,6 +258,16 @@ class TextMix extends Style<TextSpec>
     return TextMix(textDirectives: [value]);
   }
 
+  /// Factory for widget modifier
+  factory TextMix.modifier(WidgetModifierConfig modifier) {
+    return TextMix(modifier: modifier);
+  }
+
+  /// Factory for widget modifier
+  factory TextMix.wrap(WidgetModifierConfig value) {
+    return TextMix(modifier: value);
+  }
+
   const TextMix.create({
     Prop<TextOverflow>? overflow,
     MixProp<StrutStyle>? strutStyle,
@@ -274,7 +284,7 @@ class TextMix extends Style<TextSpec>
     Prop<String>? semanticsLabel,
     Prop<Locale>? locale,
     super.animation,
-    super.widgetDecoratorConfig,
+    super.modifier,
     super.variants,
 
     super.inherit,
@@ -309,7 +319,7 @@ class TextMix extends Style<TextSpec>
     String? semanticsLabel,
     Locale? locale,
     AnimationConfig? animation,
-    WidgetDecoratorConfig? widgetDecoratorConfig,
+    WidgetModifierConfig? modifier,
     List<VariantStyle<TextSpec>>? variants,
     bool? inherit,
   }) : this.create(
@@ -328,7 +338,7 @@ class TextMix extends Style<TextSpec>
          semanticsLabel: Prop.maybe(semanticsLabel),
          locale: Prop.maybe(locale),
          animation: animation,
-         widgetDecoratorConfig: widgetDecoratorConfig,
+         modifier: modifier,
          variants: variants,
          inherit: inherit,
        );
@@ -591,9 +601,8 @@ class TextMix extends Style<TextSpec>
     return merge(TextMix(variants: variants));
   }
 
-  @override
-  TextMix widgetDecorator(WidgetDecoratorConfig value) {
-    return merge(TextMix(widgetDecoratorConfig: value));
+  TextMix modifier(WidgetModifierConfig value) {
+    return merge(TextMix(modifier: value));
   }
 
   /// Resolves to [TextSpec] using the provided [BuildContext].
@@ -654,8 +663,8 @@ class TextMix extends Style<TextSpec>
       semanticsLabel: $semanticsLabel.tryMerge(other.$semanticsLabel),
       locale: $locale.tryMerge(other.$locale),
       animation: other.$animation ?? $animation,
-      widgetDecoratorConfig: $widgetDecoratorConfig.tryMerge(
-        other.$widgetDecoratorConfig,
+      modifier: $modifier.tryMerge(
+        other.$modifier,
       ),
       variants: mergeVariantLists($variants, other.$variants),
       inherit: other.$inherit ?? $inherit,
@@ -727,6 +736,11 @@ class TextMix extends Style<TextSpec>
     return merge(TextMix(variants: [VariantStyle(variant, style)]));
   }
 
+  @override
+  TextMix wrap(WidgetModifierConfig value) {
+    return this.modifier(value);
+  }
+
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [TextMix] instances for equality.
   @override
@@ -746,7 +760,7 @@ class TextMix extends Style<TextSpec>
     $semanticsLabel,
     $locale,
     $animation,
-    $widgetDecoratorConfig,
+    $modifier,
     $variants,
   ];
 }

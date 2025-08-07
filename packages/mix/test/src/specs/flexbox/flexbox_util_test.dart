@@ -55,8 +55,8 @@ void main() {
         );
       });
 
-      test('wrap utility is WidgetDecoratorUtility', () {
-        expect(util.wrap, isA<WidgetDecoratorUtility<FlexBoxMix>>());
+      test('wrap utility is WidgetModifierUtility', () {
+        expect(util.wrap, isA<WidgetModifierUtility<FlexBoxMix>>());
       });
     });
 
@@ -197,13 +197,13 @@ void main() {
       });
     });
 
-    group('Decorator utilities', () {
-      test('wrap utility creates decorator FlexBoxMix', () {
+    group('Modifier utilities', () {
+      test('wrap utility creates modifier FlexBoxMix', () {
         final result = util.wrap.opacity(0.5);
 
         expect(result, isA<FlexBoxMix>());
-        expect(result.$widgetDecoratorConfig, isNotNull);
-        expect(result.$widgetDecoratorConfig!.$decorators!.length, 1);
+        expect(result.$modifier, isNotNull);
+        expect(result.$modifier!.$modifiers!.length, 1);
       });
     });
 

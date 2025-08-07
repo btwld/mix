@@ -4,8 +4,8 @@ import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
 import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
-import '../../decorators/widget_decorator_config.dart';
-import '../../decorators/widget_decorator_util.dart';
+import '../../modifiers/widget_modifier_config.dart';
+import '../../modifiers/widget_modifier_util.dart';
 import '../../properties/layout/constraints_util.dart';
 import '../../properties/layout/edge_insets_geometry_util.dart';
 import '../../properties/painting/decoration_util.dart';
@@ -40,9 +40,9 @@ class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec> {
     (v) => mutable.variants([v]),
   );
 
-  late final wrap = WidgetDecoratorUtility(
+  late final wrap = WidgetModifierUtility(
     (prop) =>
-        mutable.widgetDecorator(WidgetDecoratorConfig(decorators: [prop])),
+        mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
   );
 
   // Box decoration convenience accessors

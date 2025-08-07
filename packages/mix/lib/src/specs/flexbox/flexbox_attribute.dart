@@ -4,8 +4,8 @@ import 'package:flutter/widgets.dart';
 import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/style.dart';
-import '../../decorators/widget_decorator_config.dart';
-import '../../decorators/widget_decorator_util.dart';
+import '../../modifiers/widget_modifier_config.dart';
+import '../../modifiers/widget_modifier_util.dart';
 import '../../properties/layout/constraints_mix.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/painting/border_mix.dart';
@@ -31,7 +31,7 @@ import 'flexbox_spec.dart';
 class FlexBoxMix extends Style<FlexBoxSpec>
     with
         Diagnosticable,
-        StyleWidgetDecoratorMixin<FlexBoxMix, FlexBoxSpec>,
+        StyleWidgetModifierMixin<FlexBoxMix, FlexBoxSpec>,
         StyleVariantMixin<FlexBoxMix, FlexBoxSpec>,
         BorderRadiusMixin<FlexBoxMix> {
   final BoxMix? $box;
@@ -41,7 +41,7 @@ class FlexBoxMix extends Style<FlexBoxSpec>
     BoxMix? box,
     FlexMix? flex,
     super.animation,
-    super.widgetDecoratorConfig,
+    super.modifier,
     super.variants,
 
     super.inherit,
@@ -66,6 +66,16 @@ class FlexBoxMix extends Style<FlexBoxSpec>
   /// Factory for variant
   factory FlexBoxMix.variant(Variant variant, FlexBoxMix value) {
     return FlexBoxMix(variants: [VariantStyle(variant, value)]);
+  }
+
+  /// Factory for widget modifier
+  factory FlexBoxMix.modifier(WidgetModifierConfig modifier) {
+    return FlexBoxMix(modifier: modifier);
+  }
+
+  /// Factory for widget modifier
+  factory FlexBoxMix.wrap(WidgetModifierConfig value) {
+    return FlexBoxMix(modifier: value);
   }
 
   // BoxMix factory methods
@@ -435,10 +445,10 @@ class FlexBoxMix extends Style<FlexBoxSpec>
     return merge(FlexBoxMix.gap(value));
   }
 
-  /// Decorator instance method
+  /// Modifier instance method
   @override
-  FlexBoxMix wrap(WidgetDecoratorConfig decorator) {
-    return merge(FlexBoxMix(widgetDecoratorConfig: decorator));
+  FlexBoxMix wrap(WidgetModifierConfig value) {
+    return this.modifier(value);
   }
 
   @override
@@ -473,9 +483,8 @@ class FlexBoxMix extends Style<FlexBoxSpec>
     );
   }
 
-  @override
-  FlexBoxMix widgetDecorator(WidgetDecoratorConfig value) {
-    return merge(FlexBoxMix(widgetDecoratorConfig: value));
+  FlexBoxMix modifier(WidgetModifierConfig value) {
+    return merge(FlexBoxMix(modifier: value));
   }
 
   /// Merges the properties of this [FlexBoxMix] with the properties of [other].
@@ -494,8 +503,8 @@ class FlexBoxMix extends Style<FlexBoxSpec>
       box: $box?.merge(other.$box) ?? other.$box,
       flex: $flex?.merge(other.$flex) ?? other.$flex,
       animation: other.$animation ?? $animation,
-      widgetDecoratorConfig: $widgetDecoratorConfig.tryMerge(
-        other.$widgetDecoratorConfig,
+      modifier: $modifier.tryMerge(
+        other.$modifier,
       ),
       variants: mergeVariantLists($variants, other.$variants),
       inherit: other.$inherit ?? $inherit,

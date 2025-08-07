@@ -168,6 +168,13 @@ void main() {
     });
 
     group('Edge cases', () {
+      test('throws when resolving MixProp with no sources', () {
+        const p = MixProp<int>.directives([]);
+        expect(
+          () => p.resolveProp(MockBuildContext()),
+          throwsA(isA<FlutterError>()),
+        );
+      });
       test('throws error when resolving without context token', () {
         final token = MixToken<Shadow>('shadow.missing');
         final mixProp = MixProp.token(token, ShadowMix.value);

@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../animation/style_animation_builder.dart';
-import '../decorators/internal/render_decorator.dart';
+import '../modifiers/internal/render_modifier.dart';
 import 'internal/mix_hoverable_region.dart';
 import 'providers/resolved_style_provider.dart';
 import 'providers/style_provider.dart';
@@ -13,7 +13,7 @@ import 'style.dart';
 ///
 /// StyleBuilder handles the resolution of [Style] into [ResolvedStyle]
 /// and provides it to the builder function. It also manages style inheritance,
-/// variant application, and decorator rendering.
+/// variant application, and modifier rendering.
 class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
   const StyleBuilder({
     super.key,
@@ -99,11 +99,11 @@ class ResolvedStyleBuilder<S extends Spec<S>> extends StatelessWidget {
       child: current,
     );
 
-    if (resolvedStyle.widgetDecorators != null &&
-        resolvedStyle.widgetDecorators!.isNotEmpty) {
-      // Apply decorators if any
-      current = RenderWidgetDecorators(
-        widgetDecorators: resolvedStyle.widgetDecorators!,
+    if (resolvedStyle.widgetModifiers != null &&
+        resolvedStyle.widgetModifiers!.isNotEmpty) {
+      // Apply modifiers if any
+      current = RenderWidgetModifiers(
+        widgetModifiers: resolvedStyle.widgetModifiers!,
         child: current,
       );
     }

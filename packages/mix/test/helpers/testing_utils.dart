@@ -174,18 +174,18 @@ class _ResolvesToMatcher<T> extends Matcher {
 /// Mock BuildContext for testing Mix components
 class MockBuildContext extends BuildContext {
   final Set<TokenDefinition>? _tokens;
-  final List<Type>? _orderOfWidgetDecorators;
+  final List<Type>? _orderOfWidgetModifiers;
   MixScope? _mixScope;
   
   MockBuildContext({
     Set<TokenDefinition>? tokens,
-    List<Type>? orderOfWidgetDecorators,
+    List<Type>? orderOfWidgetModifiers,
   }) : _tokens = tokens,
-       _orderOfWidgetDecorators = orderOfWidgetDecorators {
+       _orderOfWidgetModifiers = orderOfWidgetModifiers {
     // Create MixScope instance once
     _mixScope = MixScope(
       tokens: _tokens,
-      orderOfWidgetDecorators: _orderOfWidgetDecorators,
+      orderOfWidgetModifiers: _orderOfWidgetModifiers,
       child: const SizedBox(),
     );
   }
@@ -292,7 +292,7 @@ class MockStyle<T> extends Style<MockSpec<T>> {
   const MockStyle(
     this.value, {
     super.variants,
-    super.widgetDecoratorConfig,
+    super.modifier,
     super.animation,
 
     super.inherit,
@@ -450,7 +450,7 @@ extension WidgetTesterExtension on WidgetTester {
   Future<void> pumpWithMixScope(
     Widget widget, {
     Set<TokenDefinition>? tokens,
-    List<Type>? orderOfWidgetDecorators,
+    List<Type>? orderOfWidgetModifiers,
     bool withMaterial = false,
   }) async {
     await pumpWidget(
@@ -458,13 +458,13 @@ extension WidgetTesterExtension on WidgetTester {
         home: withMaterial
             ? MixScope.withMaterial(
                 tokens: tokens,
-                orderOfWidgetDecorators: orderOfWidgetDecorators,
+                orderOfWidgetModifiers: orderOfWidgetModifiers,
                 child: widget,
               )
-            : tokens != null || orderOfWidgetDecorators != null
+            : tokens != null || orderOfWidgetModifiers != null
             ? MixScope(
                 tokens: tokens,
-                orderOfWidgetDecorators: orderOfWidgetDecorators,
+                orderOfWidgetModifiers: orderOfWidgetModifiers,
                 child: widget,
               )
             : MixScope.empty(child: widget),

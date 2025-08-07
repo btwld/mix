@@ -454,7 +454,7 @@ bool isAnyTokenRef(Object value) {
   return _tokenRegistry.containsKey(value);
 }
 
-T getRefernceValue<T>(MixToken<T> token) {
+T getReferenceValue<T>(MixToken<T> token) {
   final prop = Prop.token(token);
   if (T == Color) {
     return ColorProp(prop as Prop<Color>) as T;

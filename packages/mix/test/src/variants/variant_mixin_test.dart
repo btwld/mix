@@ -7,7 +7,7 @@ class TestVariantAttribute extends Style<BoxSpec>
     with StyleVariantMixin<TestVariantAttribute, BoxSpec> {
   const TestVariantAttribute({
     super.variants,
-    super.widgetDecoratorConfig,
+    super.modifier,
     super.animation,
     super.inherit,
   });
@@ -31,13 +31,13 @@ class TestVariantAttribute extends Style<BoxSpec>
   TestVariantAttribute merge(TestVariantAttribute? other) {
     return TestVariantAttribute(
       variants: other?.$variants ?? $variants,
-      widgetDecoratorConfig: other?.$widgetDecoratorConfig ?? $widgetDecoratorConfig,
+      modifier: other?.$modifier ?? $modifier,
       animation: other?.$animation ?? $animation,
     );
   }
 
   @override
-  List<Object?> get props => [$variants, $widgetDecoratorConfig, $animation];
+  List<Object?> get props => [$variants, $modifier, $animation];
 }
 
 void main() {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
-import 'package:mix/src/decorators/internal/render_decorator.dart';
+import 'package:mix/src/modifiers/internal/render_modifier.dart';
 
 void main() {
   group('StyleBuilder', () {
@@ -180,19 +180,19 @@ void main() {
       });
     });
 
-    group('RenderDecorators', () {
-      testWidgets('Decorators are applied when present', (tester) async {
+    group('RenderModifiers', () {
+      testWidgets('Modifiers are applied when present', (tester) async {
         final boxAttribute = BoxMix()
             .width(100)
             .height(100)
             .alignment(Alignment.center)
             .wrap(
-              WidgetDecoratorConfig.decorators([
-                OpacityWidgetDecoratorMix(opacity: 0.5),
-                PaddingWidgetDecoratorMix(
+              WidgetModifierConfig.modifiers([
+                OpacityWidgetModifierMix(opacity: 0.5),
+                PaddingWidgetModifierMix(
                   padding: EdgeInsetsGeometryMix.all(10),
                 ),
-                ClipOvalWidgetDecoratorMix(),
+                ClipOvalWidgetModifierMix(),
               ]),
         );
 
@@ -211,7 +211,7 @@ void main() {
           ),
         );
 
-        // Verify decorators are applied
+        // Verify modifiers are applied
         expect(find.byType(Opacity), findsOneWidget);
         expect(find.byType(ClipOval), findsOneWidget);
 
@@ -232,18 +232,18 @@ void main() {
         expect(opacity.opacity, 0.5);
       });
 
-      testWidgets('Decorators follow default order', (tester) async {
+      testWidgets('Modifiers follow default order', (tester) async {
         final boxAttribute = BoxMix.width(100)
             .height(100)
             .color(Colors.blue)
             .wrap(
-              WidgetDecoratorConfig.decorators([
-                OpacityWidgetDecoratorMix(opacity: 0.5),
-                PaddingWidgetDecoratorMix(
+              WidgetModifierConfig.modifiers([
+                OpacityWidgetModifierMix(opacity: 0.5),
+                PaddingWidgetModifierMix(
                   padding: EdgeInsetsGeometryMix.all(10),
                 ),
-                ClipOvalWidgetDecoratorMix(),
-                VisibilityWidgetDecoratorMix(visible: true),
+                ClipOvalWidgetModifierMix(),
+                VisibilityWidgetModifierMix(visible: true),
               ]),
         );
 
@@ -264,25 +264,25 @@ void main() {
         // Find the StyleBuilder widget
         final styleBuilder = find.byType(StyleBuilder<BoxSpec>);
 
-        // Verify ordering: Visibility should wrap everything, then other decorators in order
+        // Verify ordering: Visibility should wrap everything, then other modifiers in order
         // The default order has Visibility early, Padding after transformations, ClipOval near end, and Opacity last
         expect(
           find.descendant(of: styleBuilder, matching: find.byType(Visibility)),
           findsOneWidget,
         );
 
-        // Find the decorator padding (EdgeInsets.all(10))
+        // Find the modifier padding (EdgeInsets.all(10))
         final visibilityWidget = find.byType(Visibility);
         final paddingWidgets = find.descendant(
           of: visibilityWidget,
           matching: find.byType(Padding),
         );
-        final decoratorPadding = paddingWidgets
+        final modifierPadding = paddingWidgets
             .evaluate()
             .map((e) => e.widget as Padding)
             .where((p) => p.padding == const EdgeInsets.all(10))
             .toList();
-        expect(decoratorPadding, hasLength(1));
+        expect(modifierPadding, hasLength(1));
 
         expect(
           find.descendant(
@@ -301,24 +301,24 @@ void main() {
         );
       });
 
-      testWidgets('Custom decorator order is respected', (tester) async {
+      testWidgets('Custom modifier order is respected', (tester) async {
         const customOrder = [
-          OpacityWidgetDecorator,
-          ClipOvalWidgetDecorator,
-          PaddingWidgetDecorator,
+          OpacityWidgetModifier,
+          ClipOvalWidgetModifier,
+          PaddingWidgetModifier,
         ];
 
         final boxAttribute = BoxMix.width(100)
             .height(100)
             .color(Colors.blue)
             .wrap(
-              WidgetDecoratorConfig.decorators([
-                OpacityWidgetDecoratorMix(opacity: 0.5),
-                PaddingWidgetDecoratorMix(
+              WidgetModifierConfig.modifiers([
+                OpacityWidgetModifierMix(opacity: 0.5),
+                PaddingWidgetModifierMix(
                   padding: EdgeInsetsGeometryMix.all(10),
                 ),
-                ClipOvalWidgetDecoratorMix(),
-              ]).orderOfDecorators(customOrder),
+                ClipOvalWidgetModifierMix(),
+              ]).orderOfModifiers(customOrder),
         );
 
         await tester.pumpWidget(
@@ -352,21 +352,21 @@ void main() {
           findsOneWidget,
         );
 
-        // Find the decorator padding (EdgeInsets.all(10))
+        // Find the modifier padding (EdgeInsets.all(10))
         final clipOvalWidget = find.byType(ClipOval);
         final paddingWidgets = find.descendant(
           of: clipOvalWidget,
           matching: find.byType(Padding),
         );
-        final decoratorPadding = paddingWidgets
+        final modifierPadding = paddingWidgets
             .evaluate()
             .map((e) => e.widget as Padding)
             .where((p) => p.padding == const EdgeInsets.all(10))
             .toList();
-        expect(decoratorPadding, hasLength(1));
+        expect(modifierPadding, hasLength(1));
       });
 
-      testWidgets('No RenderDecorators widget when no decorators present', (
+      testWidgets('No RenderModifiers widget when no modifiers present', (
         tester,
       ) async {
         final boxAttribute = BoxMix().width(100).height(100).color(Colors.blue);
@@ -385,8 +385,8 @@ void main() {
           ),
         );
 
-        // Verify no decorator widgets are present
-        expect(find.byType(RenderWidgetDecorators), findsNothing);
+        // Verify no modifier widgets are present
+        expect(find.byType(RenderWidgetModifiers), findsNothing);
       });
     });
   });

@@ -1,12 +1,12 @@
 /// Utility exports for Mix specification system.
 ///
 /// This file provides convenient global accessors for commonly used spec attributes,
-/// utilities, and decorators in the Mix framework.
+/// utilities, and modifiers in the Mix framework.
 library;
 
 import '../core/spec.dart';
 import '../core/style.dart';
-import '../decorators/widget_decorator_util.dart';
+import '../modifiers/widget_modifier_util.dart';
 import '../variants/variant_util.dart';
 import 'box/box_util.dart';
 import 'flex/flex_util.dart';
@@ -43,6 +43,6 @@ OnContextVariantUtility get $on =>
       (v) => CompoundStyle.create([v]),
     );
 
-/// Global accessor for decorator utilities.
-WidgetDecoratorUtility get $wrap =>
-    WidgetDecoratorUtility((v) => CompoundStyle.create([v]));
+/// Global accessor for modifier utilities.
+WidgetModifierUtility get $wrap =>
+    WidgetModifierUtility((v) => CompoundStyle.create([v]));

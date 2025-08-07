@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../animation/animation_config.dart';
-import '../decorators/widget_decorator_config.dart';
+import '../modifiers/widget_modifier_config.dart';
 import 'spec.dart';
 import 'style.dart';
 
@@ -14,7 +14,7 @@ abstract class StyleAttributeBuilder<S extends Spec<S>> extends Style<S>
     with Diagnosticable {
   const StyleAttributeBuilder({
     super.animation,
-    super.widgetDecoratorConfig,
+    super.modifier,
     super.variants,
     super.inherit,
   });
@@ -37,8 +37,8 @@ abstract class StyleAttributeBuilder<S extends Spec<S>> extends Style<S>
   AnimationConfig? get $animation => style.$animation;
 
   @override
-  WidgetDecoratorConfig? get $widgetDecoratorConfig =>
-      style.$widgetDecoratorConfig;
+  WidgetModifierConfig? get $modifier =>
+      style.$modifier;
 
   /// Mutable variants from internal attribute
   @override
@@ -52,7 +52,7 @@ abstract class StyleMutableBuilder<S extends Spec<S>> extends Style<S>
     with Diagnosticable {
   const StyleMutableBuilder({
     super.animation,
-    super.widgetDecoratorConfig,
+    super.modifier,
     super.variants,
     super.inherit,
   });
@@ -79,8 +79,8 @@ abstract class StyleMutableBuilder<S extends Spec<S>> extends Style<S>
   AnimationConfig? get $animation => value.$animation;
 
   @override
-  WidgetDecoratorConfig? get $widgetDecoratorConfig =>
-      value.$widgetDecoratorConfig;
+  WidgetModifierConfig? get $modifier =>
+      value.$modifier;
 
   /// Mutable variants from internal attribute
   @override

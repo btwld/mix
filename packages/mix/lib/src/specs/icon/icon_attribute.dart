@@ -5,8 +5,8 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
-import '../../decorators/widget_decorator_config.dart';
-import '../../decorators/widget_decorator_util.dart';
+import '../../modifiers/widget_modifier_config.dart';
+import '../../modifiers/widget_modifier_util.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
@@ -16,7 +16,7 @@ import 'icon_widget.dart';
 class IconMix extends Style<IconSpec>
     with
         Diagnosticable,
-        StyleWidgetDecoratorMixin<IconMix, IconSpec>,
+        StyleWidgetModifierMixin<IconMix, IconSpec>,
         StyleVariantMixin<IconMix, IconSpec> {
   final Prop<Color>? $color;
   final Prop<double>? $size;
@@ -106,6 +106,16 @@ class IconMix extends Style<IconSpec>
     return IconMix(variants: [VariantStyle(variant, value)]);
   }
 
+  /// Factory for widget modifier
+  factory IconMix.modifier(WidgetModifierConfig modifier) {
+    return IconMix(modifier: modifier);
+  }
+
+  /// Factory for widget modifier
+  factory IconMix.wrap(WidgetModifierConfig value) {
+    return IconMix(modifier: value);
+  }
+
   const IconMix.create({
     Prop<Color>? color,
     Prop<double>? size,
@@ -120,7 +130,7 @@ class IconMix extends Style<IconSpec>
     Prop<BlendMode>? blendMode,
     Prop<IconData>? icon,
     super.animation,
-    super.widgetDecoratorConfig,
+    super.modifier,
     super.variants,
 
     super.inherit,
@@ -151,7 +161,7 @@ class IconMix extends Style<IconSpec>
     BlendMode? blendMode,
     IconData? icon,
     AnimationConfig? animation,
-    WidgetDecoratorConfig? widgetDecoratorConfig,
+    WidgetModifierConfig? modifier,
     List<VariantStyle<IconSpec>>? variants,
     bool? inherit,
   }) : this.create(
@@ -168,7 +178,7 @@ class IconMix extends Style<IconSpec>
          blendMode: Prop.maybe(blendMode),
          icon: Prop.maybe(icon),
          animation: animation,
-         widgetDecoratorConfig: widgetDecoratorConfig,
+         modifier: modifier,
          variants: variants,
          inherit: inherit,
        );
@@ -277,9 +287,8 @@ class IconMix extends Style<IconSpec>
     return StyledIcon(icon: icon, semanticLabel: semanticLabel, style: this);
   }
 
-  @override
-  IconMix widgetDecorator(WidgetDecoratorConfig value) {
-    return merge(IconMix(widgetDecoratorConfig: value));
+  IconMix modifier(WidgetModifierConfig value) {
+    return merge(IconMix(modifier: value));
   }
 
   @override
@@ -318,8 +327,8 @@ class IconMix extends Style<IconSpec>
       blendMode: $blendMode.tryMerge(other.$blendMode),
       icon: $icon.tryMerge(other.$icon),
       animation: other.$animation ?? $animation,
-      widgetDecoratorConfig: $widgetDecoratorConfig.tryMerge(
-        other.$widgetDecoratorConfig,
+      modifier: $modifier.tryMerge(
+        other.$modifier,
       ),
       variants: mergeVariantLists($variants, other.$variants),
 
@@ -375,6 +384,11 @@ class IconMix extends Style<IconSpec>
   }
 
   @override
+  IconMix wrap(WidgetModifierConfig value) {
+    return this.modifier(value);
+  }
+
+  @override
   List<Object?> get props => [
     $color,
     $size,
@@ -389,7 +403,7 @@ class IconMix extends Style<IconSpec>
     $blendMode,
     $icon,
     $animation,
-    $widgetDecoratorConfig,
+    $modifier,
     $variants,
   ];
 }

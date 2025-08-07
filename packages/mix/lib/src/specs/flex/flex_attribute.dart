@@ -5,8 +5,8 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
-import '../../decorators/widget_decorator_config.dart';
-import '../../decorators/widget_decorator_util.dart';
+import '../../modifiers/widget_modifier_config.dart';
+import '../../modifiers/widget_modifier_util.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'flex_spec.dart';
@@ -22,7 +22,7 @@ import 'flex_spec.dart';
 class FlexMix extends Style<FlexSpec>
     with
         Diagnosticable,
-        StyleWidgetDecoratorMixin<FlexMix, FlexSpec>,
+        StyleWidgetModifierMixin<FlexMix, FlexSpec>,
         StyleVariantMixin<FlexMix, FlexSpec> {
   final Prop<Axis>? $direction;
   final Prop<MainAxisAlignment>? $mainAxisAlignment;
@@ -100,7 +100,7 @@ class FlexMix extends Style<FlexSpec>
     Prop<Clip>? clipBehavior,
     Prop<double>? gap,
     super.animation,
-    super.widgetDecoratorConfig,
+    super.modifier,
     super.variants,
 
     super.inherit,
@@ -125,7 +125,7 @@ class FlexMix extends Style<FlexSpec>
     Clip? clipBehavior,
     double? gap,
     AnimationConfig? animation,
-    WidgetDecoratorConfig? widgetDecoratorConfig,
+    WidgetModifierConfig? modifier,
     List<VariantStyle<FlexSpec>>? variants,
     bool? inherit,
   }) : this.create(
@@ -139,7 +139,7 @@ class FlexMix extends Style<FlexSpec>
          clipBehavior: Prop.maybe(clipBehavior),
          gap: Prop.maybe(gap),
          animation: animation,
-         widgetDecoratorConfig: widgetDecoratorConfig,
+         modifier: modifier,
          variants: variants,
          inherit: inherit,
        );
@@ -228,6 +228,16 @@ class FlexMix extends Style<FlexSpec>
   /// Convenience method for setting direction to vertical (column)
   FlexMix column() => direction(Axis.vertical);
 
+  /// Factory for widget modifier
+  factory FlexMix.modifier(WidgetModifierConfig modifier) {
+    return FlexMix(modifier: modifier);
+  }
+
+  /// Factory for widget modifier
+  factory FlexMix.wrap(WidgetModifierConfig value) {
+    return FlexMix(modifier: value);
+  }
+
   /// Convenience method for animating the FlexSpec
   FlexMix animate(AnimationConfig animation) {
     return merge(FlexMix.animate(animation));
@@ -238,9 +248,8 @@ class FlexMix extends Style<FlexSpec>
     return merge(FlexMix(variants: variants));
   }
 
-  @override
-  FlexMix widgetDecorator(WidgetDecoratorConfig value) {
-    return merge(FlexMix(widgetDecoratorConfig: value));
+  FlexMix modifier(WidgetModifierConfig value) {
+    return merge(FlexMix(modifier: value));
   }
 
   /// Resolves to [FlexSpec] using the provided [BuildContext].
@@ -291,11 +300,11 @@ class FlexMix extends Style<FlexSpec>
       clipBehavior: $clipBehavior.tryMerge(other.$clipBehavior),
       gap: $gap.tryMerge(other.$gap),
       animation: other.$animation ?? $animation,
-      widgetDecoratorConfig: $widgetDecoratorConfig.tryMerge(
-        other.$widgetDecoratorConfig,
+      modifier: $modifier.tryMerge(
+        other.$modifier,
       ),
       variants: mergeVariantLists($variants, other.$variants),
-      inherit: other.$inherit ?? $inherit,
+      inherit: other.$inherit ?? $inherit
     );
   }
 
@@ -325,6 +334,11 @@ class FlexMix extends Style<FlexSpec>
   }
 
   @override
+  FlexMix wrap(WidgetModifierConfig value) {
+    return this.modifier(value);
+  }
+
+  @override
   /// Returns a list of properties used for equality comparison and hashing.
   @override
   List<Object?> get props => [
@@ -338,7 +352,7 @@ class FlexMix extends Style<FlexSpec>
     $clipBehavior,
     $gap,
     $animation,
-    $widgetDecoratorConfig,
+    $modifier,
     $variants,
   ];
 }

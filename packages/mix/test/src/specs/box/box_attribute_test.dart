@@ -405,19 +405,19 @@ void main() {
       });
     });
 
-    group('Decorator Methods', () {
-      test('decorator method sets decorator config', () {
-        final decorator = WidgetDecoratorConfig();
-        final boxMix = BoxMix().widgetDecorator(decorator);
+    group('Modifier Methods', () {
+      test('modifier method sets modifier config', () {
+        final modifier = WidgetModifierConfig();
+        final boxMix = BoxMix().modifier(modifier);
 
-        expect(boxMix.$widgetDecoratorConfig, decorator);
+        expect(boxMix.$modifier, modifier);
       });
 
-      test('wrap method sets decorator config', () {
-        final decorator = WidgetDecoratorConfig();
-        final boxMix = BoxMix().wrap(decorator);
+      test('wrap method sets modifier config', () {
+        final modifier = WidgetModifierConfig();
+        final boxMix = BoxMix().wrap(modifier);
 
-        expect(boxMix.$widgetDecoratorConfig, decorator);
+        expect(boxMix.$modifier, modifier);
       });
     });
   });

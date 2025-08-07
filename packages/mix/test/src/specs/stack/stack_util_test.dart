@@ -50,8 +50,8 @@ void main() {
         expect(util.on, isA<OnContextVariantUtility<StackSpec, StackMix>>());
       });
 
-      test('wrap utility is WidgetDecoratorUtility', () {
-        expect(util.wrap, isA<WidgetDecoratorUtility<StackMix>>());
+      test('wrap utility is WidgetModifierUtility', () {
+        expect(util.wrap, isA<WidgetModifierUtility<StackMix>>());
       });
     });
 
@@ -112,13 +112,13 @@ void main() {
       });
     });
 
-    group('Decorator utilities', () {
-      test('wrap utility creates decorator StackMix', () {
+    group('Modifier utilities', () {
+      test('wrap utility creates modifier StackMix', () {
         final result = util.wrap.opacity(0.5);
 
         expect(result, isA<StackMix>());
-        expect(result.$widgetDecoratorConfig, isNotNull);
-        expect(result.$widgetDecoratorConfig!.$decorators!.length, 1);
+        expect(result.$modifier, isNotNull);
+        expect(result.$modifier!.$modifiers!.length, 1);
       });
     });
 
