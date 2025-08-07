@@ -93,7 +93,7 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
     return merge(StackBoxMix.animate(animation));
   }
 
-  StackBoxMix modifier(WidgetDecoratorConfig value) {
+  StackBoxMix decorator(WidgetDecoratorConfig value) {
     return merge(StackBoxMix(widgetDecoratorConfig: value));
   }
 

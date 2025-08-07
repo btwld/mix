@@ -257,7 +257,7 @@ void main() {
     });
 
     group('Decorator utilities', () {
-      test('wrap utility creates modifier ImageMix', () {
+      test('wrap utility creates decorator ImageMix', () {
         final result = util.wrap.opacity(0.5);
 
         expect(result, isA<ImageMix>());

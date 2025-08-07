@@ -26,7 +26,7 @@ sealed class StyleElement {
 
 /// Base class for style containers that can be resolved to specifications.
 ///
-/// Provides variant support, modifiers, and animation configuration for styled elements.
+/// Provides variant support, decorators, and animation configuration for styled elements.
 abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
     with Equatable, Resolvable<S>
     implements StyleElement {
@@ -66,7 +66,7 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
   }
 
   @protected
-  List<WidgetDecoratorMix>? mergeModifierLists(
+  List<WidgetDecoratorMix>? mergeDecoratorLists(
     List<WidgetDecoratorMix>? current,
     List<WidgetDecoratorMix>? other,
   ) {
@@ -76,14 +76,14 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
 
     final Map<Object, WidgetDecoratorMix> merged = {};
 
-    for (final modifier in current) {
-      merged[modifier.mergeKey] = modifier;
+    for (final decorator in current) {
+      merged[decorator.mergeKey] = decorator;
     }
 
-    for (final modifier in other) {
-      final key = modifier.mergeKey;
+    for (final decorator in other) {
+      final key = decorator.mergeKey;
       final existing = merged[key];
-      merged[key] = existing != null ? existing.merge(modifier) : modifier;
+      merged[key] = existing != null ? existing.merge(decorator) : decorator;
     }
 
     return merged.values.toList();
@@ -175,14 +175,14 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
 
     final resolvedSpec = styleData.resolve(context);
     final resolvedAnimation = styleData.$animation;
-    final resolvedModifiers = styleData.$widgetDecoratorConfig?.resolve(
+    final resolvedDecorators = styleData.$widgetDecoratorConfig?.resolve(
       context,
     );
 
     return ResolvedStyle(
       spec: resolvedSpec,
       animation: resolvedAnimation,
-      widgetDecorators: resolvedModifiers,
+      widgetDecorators: resolvedDecorators,
       inherit: styleData.$inherit,
     );
   }
@@ -263,7 +263,7 @@ class ResolvedStyle<V extends Spec<V>> with Equatable {
     // Lerp the spec if it's a Spec type
     final lerpedSpec = (spec as Spec<V>).lerp(other.spec, t);
 
-    // For modifiers and animation, use the target (end) values
+    // For decorators and animation, use the target (end) values
     // We can't meaningfully interpolate these
     return ResolvedStyle(
       spec: lerpedSpec,
@@ -351,7 +351,7 @@ class CompoundStyle extends Style<MultiSpec> {
   /// ```
   factory CompoundStyle.create(Iterable<StyleElement> elements) {
     final styleList = <Style>[];
-    final modifierList = <WidgetDecoratorMix>[];
+    final decoratorList = <WidgetDecoratorMix>[];
     final variants = <VariantStyle>[];
 
     AnimationConfig? animationConfig;
@@ -363,7 +363,7 @@ class CompoundStyle extends Style<MultiSpec> {
           break;
 
         case WidgetDecoratorMix():
-          modifierList.add(element);
+          decoratorList.add(element);
         case Style():
           // Handle MultiMix by merging it later
           if (element is! CompoundStyle) {
@@ -376,9 +376,9 @@ class CompoundStyle extends Style<MultiSpec> {
     CompoundStyle result = CompoundStyle._(
       attributes: styleList,
       animation: animationConfig,
-      widgetDecoratorConfig: modifierList.isEmpty
+      widgetDecoratorConfig: decoratorList.isEmpty
           ? null
-          : WidgetDecoratorConfig(decorators: modifierList),
+          : WidgetDecoratorConfig(decorators: decoratorList),
       variants: null,
     );
 
@@ -401,7 +401,7 @@ class CompoundStyle extends Style<MultiSpec> {
         variants: null,
       );
 
-  WidgetDecoratorConfig? _mergeModifierConfigs(
+  WidgetDecoratorConfig? _mergeDecoratorConfigs(
     WidgetDecoratorConfig? a,
     WidgetDecoratorConfig? b,
   ) {
@@ -464,7 +464,7 @@ class CompoundStyle extends Style<MultiSpec> {
     return CompoundStyle._(
       attributes: mergedAttributes,
       animation: other.$animation ?? $animation,
-      widgetDecoratorConfig: _mergeModifierConfigs(
+      widgetDecoratorConfig: _mergeDecoratorConfigs(
         $widgetDecoratorConfig,
         other.$widgetDecoratorConfig,
       ),

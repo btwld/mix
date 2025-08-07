@@ -396,28 +396,28 @@ class MockMix<T> extends Mix<T> {
   String toString() => 'MockMix<$T>($value)';
 }
 
-/// Mock modifier for testing
+/// Mock directive for testing
 ///
-/// A simple modifier implementation for testing purposes.
+/// A simple directive implementation for testing purposes.
 /// By default, applies identity transformation (returns value unchanged).
 /// Can optionally provide a custom transformer function.
 ///
 /// Usage:
 /// ```dart
-/// // Simple modifier for testing presence (identity transform)
-/// final modifier1 = MockModifier<int>('test');
+/// // Simple directive for testing presence (identity transform)
+/// final directive1 = MockDirective<int>('test');
 ///
 /// // With custom transformer
-/// final doubleModifier = MockModifier<int>(
+/// final doubleDirective = MockDirective<int>(
 ///   'double',
 ///   (value) => value * 2,
 /// );
 /// ```
-class MockModifier<T> extends Modifier<T> {
+class MockDirective<T> extends Directive<T> {
   final String name;
   final T Function(T)? transformer;
 
-  const MockModifier(this.name, [this.transformer]);
+  const MockDirective(this.name, [this.transformer]);
 
   @override
   T apply(T value) => transformer?.call(value) ?? value;
@@ -428,7 +428,7 @@ class MockModifier<T> extends Modifier<T> {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is MockModifier<T> &&
+    return other is MockDirective<T> &&
         other.name == name &&
         other.transformer == transformer;
   }
@@ -437,7 +437,7 @@ class MockModifier<T> extends Modifier<T> {
   int get hashCode => Object.hash(name, transformer);
 
   @override
-  String toString() => 'MockModifier<$T>($name)';
+  String toString() => 'MockDirective<$T>($name)';
 }
 
 // =============================================================================
@@ -482,16 +482,16 @@ extension WidgetTesterExtension on WidgetTester {
 // MOCK CLASSES FOR TESTING
 // =============================================================================
 
-/// Mock modifier for testing purposes
+/// Mock directive for testing purposes
 ///
-/// A simple modifier implementation for testing purposes.
+/// A simple directive implementation for testing purposes.
 /// By default, applies identity transformation (returns value unchanged).
 /// Can optionally provide a custom transformer function.
-class MockMixModifier<T> extends Modifier<T> {
+class MockMixDirective<T> extends Directive<T> {
   final String name;
   final T Function(T)? transform;
 
-  const MockMixModifier(this.name, [this.transform]);
+  const MockMixDirective(this.name, [this.transform]);
 
   @override
   String get key => name;
@@ -500,12 +500,12 @@ class MockMixModifier<T> extends Modifier<T> {
   T apply(T value) => transform?.call(value) ?? value;
 
   @override
-  String toString() => 'MockMixModifier($name)';
+  String toString() => 'MockMixDirective($name)';
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is MockMixModifier<T> &&
+    return other is MockMixDirective<T> &&
         other.name == name &&
         other.transform == transform;
   }

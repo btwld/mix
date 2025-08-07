@@ -12,7 +12,7 @@ import '../theme/mix_theme.dart';
 import 'decoration_merge.dart';
 import 'internal/deep_collection_equality.dart';
 import 'mix_element.dart';
-import 'modifier.dart';
+import 'directive.dart';
 import 'prop.dart';
 import 'prop_source.dart';
 import 'shape_border_merge.dart';
@@ -215,24 +215,24 @@ T? _lerpValue<T>(T? a, T? b, double t) {
 class PropOps {
   const PropOps._();
 
-  /// Applies modifiers to a resolved value (internal use)
+  /// Applies directives to a resolved value (internal use)
   @visibleForTesting
-  static V applyModifiers<V>(V value, List<Modifier<V>>? modifiers) {
-    if (modifiers == null || modifiers.isEmpty) return value;
+  static V applyDirectives<V>(V value, List<Directive<V>>? directives) {
+    if (directives == null || directives.isEmpty) return value;
 
     var result = value;
-    for (final modifier in modifiers) {
-      result = modifier.apply(result);
+    for (final directive in directives) {
+      result = directive.apply(result);
     }
 
     return result;
   }
 
-  /// Merges two modifier lists (internal use)
+  /// Merges two directive lists (internal use)
   @visibleForTesting
-  static List<Modifier<V>>? mergeModifiers<V>(
-    List<Modifier<V>>? current,
-    List<Modifier<V>>? other,
+  static List<Directive<V>>? mergeDirectives<V>(
+    List<Directive<V>>? current,
+    List<Directive<V>>? other,
   ) {
     return switch ((current, other)) {
       (null, null) => null,
@@ -264,7 +264,7 @@ class PropOps {
     return Prop(
       value: value,
       token: token,
-      modifiers: mergeModifiers(current.$modifiers, other.$modifiers),
+      directives: mergeDirectives(current.$directives, other.$directives),
       animation: other.$animation ?? current.$animation,
     );
   }
@@ -283,7 +283,7 @@ class PropOps {
       resolvedValue = prop.$value as V;
     }
 
-    return applyModifiers(resolvedValue, prop.$modifiers);
+    return applyDirectives(resolvedValue, prop.$directives);
   }
 
   /// Merges two MixProp instances using accumulation strategy
@@ -295,7 +295,7 @@ class PropOps {
 
     return MixProp.create(
       sources: mergedSources,
-      modifiers: mergeModifiers(current.$modifiers, other.$modifiers),
+      directives: mergeDirectives(current.$directives, other.$directives),
       animation: other.$animation ?? current.$animation,
     );
   }
@@ -324,7 +324,7 @@ class PropOps {
 
     final resolvedValue = mergedMix.resolve(context);
 
-    return applyModifiers(resolvedValue, prop.$modifiers);
+    return applyDirectives(resolvedValue, prop.$directives);
   }
 
   /// Merges two Mix instances using appropriate merger
@@ -433,8 +433,8 @@ extension ListMixPropExt<T> on List<MixProp<T>>? {
   }
 }
 
-extension ListModifierExt<T> on List<Modifier<T>>? {
-  List<Modifier<T>>? tryMerge(List<Modifier<T>>? other) {
+extension ListDirectiveExt<T> on List<Directive<T>>? {
+  List<Directive<T>>? tryMerge(List<Directive<T>>? other) {
     if (other == null) return this;
     if (this == null) return other;
 
@@ -442,7 +442,7 @@ extension ListModifierExt<T> on List<Modifier<T>>? {
   }
 }
 
-extension ModifierConfigExt on WidgetDecoratorConfig? {
+extension DirectiveConfigExt on WidgetDecoratorConfig? {
   WidgetDecoratorConfig? tryMerge(WidgetDecoratorConfig? other) {
     if (other == null) return this;
     if (this == null) return other;

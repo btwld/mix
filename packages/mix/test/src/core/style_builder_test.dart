@@ -180,8 +180,8 @@ void main() {
       });
     });
 
-    group('RenderModifiers', () {
-      testWidgets('Modifiers are applied when present', (tester) async {
+    group('RenderDecorators', () {
+      testWidgets('Decorators are applied when present', (tester) async {
         final boxAttribute = BoxMix()
             .width(100)
             .height(100)
@@ -211,7 +211,7 @@ void main() {
           ),
         );
 
-        // Verify modifiers are applied
+        // Verify decorators are applied
         expect(find.byType(Opacity), findsOneWidget);
         expect(find.byType(ClipOval), findsOneWidget);
 
@@ -232,7 +232,7 @@ void main() {
         expect(opacity.opacity, 0.5);
       });
 
-      testWidgets('Modifiers follow default order', (tester) async {
+      testWidgets('Decorators follow default order', (tester) async {
         final boxAttribute = BoxMix.width(100)
             .height(100)
             .color(Colors.blue)
@@ -264,25 +264,25 @@ void main() {
         // Find the StyleBuilder widget
         final styleBuilder = find.byType(StyleBuilder<BoxSpec>);
 
-        // Verify ordering: Visibility should wrap everything, then other modifiers in order
+        // Verify ordering: Visibility should wrap everything, then other decorators in order
         // The default order has Visibility early, Padding after transformations, ClipOval near end, and Opacity last
         expect(
           find.descendant(of: styleBuilder, matching: find.byType(Visibility)),
           findsOneWidget,
         );
 
-        // Find the modifier padding (EdgeInsets.all(10))
+        // Find the decorator padding (EdgeInsets.all(10))
         final visibilityWidget = find.byType(Visibility);
         final paddingWidgets = find.descendant(
           of: visibilityWidget,
           matching: find.byType(Padding),
         );
-        final modifierPadding = paddingWidgets
+        final decoratorPadding = paddingWidgets
             .evaluate()
             .map((e) => e.widget as Padding)
             .where((p) => p.padding == const EdgeInsets.all(10))
             .toList();
-        expect(modifierPadding, hasLength(1));
+        expect(decoratorPadding, hasLength(1));
 
         expect(
           find.descendant(
@@ -301,7 +301,7 @@ void main() {
         );
       });
 
-      testWidgets('Custom modifier order is respected', (tester) async {
+      testWidgets('Custom decorator order is respected', (tester) async {
         const customOrder = [
           OpacityWidgetDecorator,
           ClipOvalWidgetDecorator,
@@ -352,21 +352,21 @@ void main() {
           findsOneWidget,
         );
 
-        // Find the modifier padding (EdgeInsets.all(10))
+        // Find the decorator padding (EdgeInsets.all(10))
         final clipOvalWidget = find.byType(ClipOval);
         final paddingWidgets = find.descendant(
           of: clipOvalWidget,
           matching: find.byType(Padding),
         );
-        final modifierPadding = paddingWidgets
+        final decoratorPadding = paddingWidgets
             .evaluate()
             .map((e) => e.widget as Padding)
             .where((p) => p.padding == const EdgeInsets.all(10))
             .toList();
-        expect(modifierPadding, hasLength(1));
+        expect(decoratorPadding, hasLength(1));
       });
 
-      testWidgets('No RenderModifiers widget when no modifiers present', (
+      testWidgets('No RenderDecorators widget when no decorators present', (
         tester,
       ) async {
         final boxAttribute = BoxMix().width(100).height(100).color(Colors.blue);
@@ -385,7 +385,7 @@ void main() {
           ),
         );
 
-        // Verify no modifier widgets are present
+        // Verify no decorator widgets are present
         expect(find.byType(RenderWidgetDecorators), findsNothing);
       });
     });

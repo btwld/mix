@@ -66,8 +66,8 @@ void main() {
         expect(util.softWrap, isA<Function>());
       });
 
-      test('modifiers utility is MixUtility', () {
-        expect(util.modifiers, isA<MixUtility<TextMix, Modifier<String>>>());
+      test('directives utility is MixUtility', () {
+        expect(util.directives, isA<MixUtility<TextMix, Directive<String>>>());
       });
 
       test('selectionColor utility is ColorUtility', () {
@@ -260,7 +260,7 @@ void main() {
     });
 
     group('Decorator utilities', () {
-      test('wrap utility creates modifier TextMix', () {
+      test('wrap utility creates decorator TextMix', () {
         final result = util.wrap.opacity(0.5);
 
         expect(result, isA<TextMix>());

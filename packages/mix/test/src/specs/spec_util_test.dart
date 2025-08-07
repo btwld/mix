@@ -106,8 +106,8 @@ void main() {
 
     test('wrap getter can be used for decorator utilities', () {
       expect($wrap, isA<WidgetDecoratorUtility>());
-      final opacityModifier = $wrap.opacity(0.5);
-      expect(opacityModifier, isA<Style>());
+      final opacityDecorator = $wrap.opacity(0.5);
+      expect(opacityDecorator, isA<Style>());
     });
   });
 

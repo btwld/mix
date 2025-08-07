@@ -2,13 +2,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../core/helpers.dart';
-import '../../core/modifier.dart';
+import '../../core/directive.dart';
 import '../../core/spec.dart';
 
 /// Specification for text styling and layout properties.
 ///
 /// Provides comprehensive text styling including overflow behavior, structure styling,
-/// alignment, line limits, text direction, and string modifier support.
+/// alignment, line limits, text direction, and string directive support.
 final class TextSpec extends Spec<TextSpec> with Diagnosticable {
   final TextOverflow? overflow;
   final StrutStyle? strutStyle;
@@ -23,7 +23,7 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
 
   final TextHeightBehavior? textHeightBehavior;
 
-  final List<Modifier<String>>? textModifiers;
+  final List<Directive<String>>? textDirectives;
 
   final Color? selectionColor;
 
@@ -44,7 +44,7 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     this.textHeightBehavior,
     this.textDirection,
     this.softWrap,
-    this.textModifiers,
+    this.textDirectives,
     this.selectionColor,
     this.semanticsLabel,
     this.locale,
@@ -84,7 +84,7 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
       DiagnosticsProperty('softWrap', softWrap, defaultValue: null),
     );
     properties.add(
-      DiagnosticsProperty('textModifiers', textModifiers, defaultValue: null),
+      DiagnosticsProperty('textDirectives', textDirectives, defaultValue: null),
     );
     properties.add(
       DiagnosticsProperty('selectionColor', selectionColor, defaultValue: null),
@@ -109,7 +109,7 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     TextHeightBehavior? textHeightBehavior,
     TextDirection? textDirection,
     bool? softWrap,
-    List<Modifier<String>>? textModifiers,
+    List<Directive<String>>? textDirectives,
     Color? selectionColor,
     String? semanticsLabel,
     Locale? locale,
@@ -125,7 +125,7 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
       textHeightBehavior: textHeightBehavior ?? this.textHeightBehavior,
       textDirection: textDirection ?? this.textDirection,
       softWrap: softWrap ?? this.softWrap,
-      textModifiers: textModifiers ?? this.textModifiers,
+      textDirectives: textDirectives ?? this.textDirectives,
       selectionColor: selectionColor ?? this.selectionColor,
       semanticsLabel: semanticsLabel ?? this.semanticsLabel,
       locale: locale ?? this.locale,
@@ -144,7 +144,7 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
   /// interpolation method:
   /// - [MixOps.lerpStrutStyle] for [strutStyle].
   /// - [MixOps.lerp] for [style].
-  /// For [overflow] and [textAlign] and [textScaler] and [maxLines] and [textWidthBasis] and [textHeightBehavior] and [textDirection] and [softWrap] and [textModifiers], the interpolation is performed using a step function.
+  /// For [overflow] and [textAlign] and [textScaler] and [maxLines] and [textWidthBasis] and [textHeightBehavior] and [textDirection] and [softWrap] and [textDirectives], the interpolation is performed using a step function.
   /// If [t] is less than 0.5, the value from the current [TextSpec] is used. Otherwise, the value
   /// from the [other] [TextSpec] is used.
   ///
@@ -169,7 +169,7 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
       ),
       textDirection: MixOps.lerpSnap(textDirection, other.textDirection, t),
       softWrap: MixOps.lerpSnap(softWrap, other.softWrap, t),
-      textModifiers: MixOps.lerpSnap(textModifiers, other.textModifiers, t),
+      textDirectives: MixOps.lerpSnap(textDirectives, other.textDirectives, t),
       selectionColor: MixOps.lerp(selectionColor, other.selectionColor, t),
       semanticsLabel: MixOps.lerpSnap(semanticsLabel, other.semanticsLabel, t),
       locale: MixOps.lerpSnap(locale, other.locale, t),
@@ -198,7 +198,7 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     textHeightBehavior,
     textDirection,
     softWrap,
-    textModifiers,
+    textDirectives,
     selectionColor,
     semanticsLabel,
     locale,

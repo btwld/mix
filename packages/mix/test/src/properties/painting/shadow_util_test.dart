@@ -161,11 +161,11 @@ void main() {
     });
 
     group('color utility integration', () {
-      test('color utility supports modifiers', () {
+      test('color utility supports directives', () {
         final result = util.color.withOpacity(0.5);
 
         expect(result.value, isA<ShadowMix>());
-        // Shadow color modifiers should be applied during resolution
+        // Shadow color directives should be applied during resolution
       });
 
       test('color utility supports tokens', () {
@@ -365,11 +365,11 @@ void main() {
     });
 
     group('color utility integration', () {
-      test('color utility supports modifiers', () {
+      test('color utility supports directives', () {
         final result = util.color.withAlpha(128);
 
         expect(result.value, isA<BoxShadowMix>());
-        // BoxShadow color modifiers should be applied during resolution
+        // BoxShadow color directives should be applied during resolution
       });
 
       test('color utility supports material colors', () {

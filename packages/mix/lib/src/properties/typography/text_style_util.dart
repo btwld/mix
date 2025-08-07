@@ -43,7 +43,6 @@ final class TextStyleUtility<T extends Style<Object?>>
     (prop) => call(textBaseline: prop),
   );
 
-
   TextStyleUtility(super.builder);
 
   T fontSize(double value) => call(fontSize: value);

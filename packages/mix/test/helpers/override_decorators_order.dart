@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-Future<void> testOverrideModifiersOrder(
+Future<void> testOverrideDecoratorsOrder(
   WidgetTester tester, {
   required Widget Function(Style, List<Type>) widgetBuilder,
 }) async {
@@ -22,7 +22,7 @@ Future<void> testOverrideModifiersOrder(
       ),
     ),
   );
-  const orderOfModifiersOnlySpecs = [
+  const orderOfDecoratorsOnlySpecs = [
     AlignWidgetDecorator,
     AspectRatioWidgetDecorator,
     TransformWidgetDecorator,
@@ -32,14 +32,14 @@ Future<void> testOverrideModifiersOrder(
 
   // JUST SPECS
   await verifyDescendants(
-    widgetBuilder(style, orderOfModifiersOnlySpecs),
+    widgetBuilder(style, orderOfDecoratorsOnlySpecs),
     style,
-    orderOfModifiersOnlySpecs,
+    orderOfDecoratorsOnlySpecs,
     tester,
   );
 
   // SPECS + ATTRIBUTES
-  const orderOfModifiersSpecsAndAttributes = [
+  const orderOfDecoratorsSpecsAndAttributes = [
     AlignWidgetDecorator,
     AspectRatioWidgetDecoratorMix,
     TransformWidgetDecoratorMix,
@@ -47,14 +47,14 @@ Future<void> testOverrideModifiersOrder(
     VisibilityWidgetDecoratorMix,
   ];
   await verifyDescendants(
-    widgetBuilder(style, orderOfModifiersSpecsAndAttributes),
+    widgetBuilder(style, orderOfDecoratorsSpecsAndAttributes),
     style,
-    orderOfModifiersSpecsAndAttributes,
+    orderOfDecoratorsSpecsAndAttributes,
     tester,
   );
 
   // JUST ATTRIBUTES
-  const orderOfModifiersOnlyAttributes = [
+  const orderOfDecoratorsOnlyAttributes = [
     AlignWidgetDecoratorMix,
     AspectRatioWidgetDecoratorMix,
     TransformWidgetDecoratorMix,
@@ -63,9 +63,9 @@ Future<void> testOverrideModifiersOrder(
   ];
 
   await verifyDescendants(
-    widgetBuilder(style, orderOfModifiersOnlyAttributes),
+    widgetBuilder(style, orderOfDecoratorsOnlyAttributes),
     style,
-    orderOfModifiersOnlyAttributes,
+    orderOfDecoratorsOnlyAttributes,
     tester,
   );
 }
@@ -73,7 +73,7 @@ Future<void> testOverrideModifiersOrder(
 Future<void> verifyDescendants(
   Widget widget,
   Style style,
-  List<Type> orderOfModifiers,
+  List<Type> orderOfDecorators,
   WidgetTester tester,
 ) async {
   await tester.pumpWidget(MaterialApp(home: Scaffold(body: widget)));

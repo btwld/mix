@@ -35,7 +35,7 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
     mutable.textHeightBehavior,
   );
   late final textDirection = MixUtility(mutable.textDirection);
-  late final modifiers = MixUtility(mutable.textModifier);
+  late final directives = MixUtility(mutable.textDirective);
   late final selectionColor = ColorUtility<TextMix>(
     (prop) => mutable.merge(TextMix.create(selectionColor: prop)),
   );

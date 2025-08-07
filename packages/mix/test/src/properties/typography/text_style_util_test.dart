@@ -667,11 +667,11 @@ void main() {
     });
 
     group('color utility integration', () {
-      test('color utility supports modifiers', () {
+      test('color utility supports directives', () {
         final result = util.color.withOpacity(0.8);
 
         expect(result.value, isA<MixProp<TextStyle>>());
-        // Color modifiers should be applied during resolution
+        // Color directives should be applied during resolution
       });
 
       test('color utility supports material colors', () {
@@ -682,7 +682,7 @@ void main() {
         expect(textStyle.color, Colors.red);
       });
 
-      test('backgroundColor utility supports modifiers', () {
+      test('backgroundColor utility supports directives', () {
         final result = util.backgroundColor.withAlpha(128);
 
         expect(result.value, isA<MixProp<TextStyle>>());

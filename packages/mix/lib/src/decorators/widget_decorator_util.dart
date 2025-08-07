@@ -316,7 +316,7 @@ mixin StyleWidgetDecoratorMixin<T extends Style<S>, S extends Spec<S>>
 
   /// Wraps the widget with a mouse cursor decorator.
   T wrapMouseCursor(MouseCursor cursor) {
-    // Note: MouseCursorDecoratorMix needs to be wrapped in ModifierConfig
+    // Note: MouseCursorDecoratorMix needs to be wrapped in DecoratorConfig
     return widgetDecorator(
       WidgetDecoratorConfig.decorator(
         MouseCursorDecoratorMix(mouseCursor: cursor),

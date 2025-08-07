@@ -57,22 +57,22 @@ class MixScopeData {
   
   factory MixScopeData({
     Map<MixToken, ValueResolver>? tokens,
-    List<Type>? defaultOrderOfModifiers,
+    List<Type>? orderOfWidgetDecorators,
   });
   
   static MixScopeData static({
     Map<MixToken, Object>? tokens,
-    List<Type>? defaultOrderOfModifiers,
+    List<Type>? orderOfWidgetDecorators,
   });
   
   factory MixScopeData.withMaterial({
     Map<MixToken, ValueResolver>? tokens,
-    List<Type>? defaultOrderOfModifiers,
+    List<Type>? orderOfWidgetDecorators,
   });
   
   static MixScopeData fromResolvers({
     Map<MixToken, ValueResolver>? tokens,
-    List<Type>? defaultOrderOfModifiers,
+    List<Type>? orderOfWidgetDecorators,
   });
   
   T getToken<T>(MixToken<T> token, BuildContext context);

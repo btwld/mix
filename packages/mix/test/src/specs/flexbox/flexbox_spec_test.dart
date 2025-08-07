@@ -238,8 +238,8 @@ void main() {
       });
     });
 
-    group('Modifiers', () {
-      test('modifiers can be added to attribute', () {
+    group('Decorators', () {
+      test('decorators can be added to attribute', () {
         final attribute = FlexBoxMix(
           widgetDecoratorConfig: WidgetDecoratorConfig(
             decorators: [
@@ -256,7 +256,7 @@ void main() {
         expect(attribute.$widgetDecoratorConfig!.$decorators!.length, 2);
       });
 
-      test('modifiers are merged correctly', () {
+      test('decorators are merged correctly', () {
         final first = FlexBoxMix(
           widgetDecoratorConfig: WidgetDecoratorConfig(
             decorators: [OpacityWidgetDecoratorMix(opacity: 0.5)],
@@ -273,7 +273,7 @@ void main() {
 
         final merged = first.merge(second);
 
-        // Modifiers are combined when merging
+        // Decorators are combined when merging
         expect(merged.$widgetDecoratorConfig, isNotNull);
         expect(merged.$widgetDecoratorConfig!.$decorators!.length, 2);
       });

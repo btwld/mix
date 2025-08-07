@@ -30,7 +30,7 @@ export 'src/core/breakpoint.dart';
 export 'src/core/extensions/extensions.dart';
 export 'src/core/helpers.dart';
 export 'src/core/mix_element.dart';
-export 'src/core/modifier.dart';
+export 'src/core/directive.dart';
 export 'src/core/pointer_position.dart';
 export 'src/core/prop.dart';
 export 'src/core/prop_refs.dart';

@@ -532,7 +532,7 @@ const _defaultOrder = [
   FlexibleWidgetDecorator,
 
   // 2. VisibilityWidgetDecorator: Controls overall visibility with early exit optimization.
-  // If invisible, subsequent modifiers are skipped, improving performance.
+  // If invisible, subsequent decorators are skipped, improving performance.
   VisibilityWidgetDecorator,
 
   // 3. IconThemeWidgetDecorator: Provides default icon styling context to descendant Icon widgets.

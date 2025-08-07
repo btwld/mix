@@ -82,7 +82,7 @@ void main() {
       expectProp(merged.aspectRatio, 2.0); // Prop uses replacement strategy
     });
 
-    test('resolve returns correct modifier', () {
+    test('resolve returns correct decorator', () {
       final attribute = AspectRatioWidgetDecoratorMix.create(
         aspectRatio: Prop.value(1.5),
       );

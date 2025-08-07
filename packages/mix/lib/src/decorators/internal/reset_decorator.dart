@@ -35,7 +35,7 @@ final class ResetWidgetDecorator extends WidgetDecorator<ResetWidgetDecorator>
   }
 }
 
-/// An attribute that resets the modifier context.
+/// An attribute that resets the decorator context.
 class ResetWidgetDecoratorMix extends WidgetDecoratorMix<ResetWidgetDecorator>
     with Diagnosticable {
   const ResetWidgetDecoratorMix();

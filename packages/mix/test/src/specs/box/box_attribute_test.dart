@@ -407,17 +407,17 @@ void main() {
 
     group('Decorator Methods', () {
       test('decorator method sets decorator config', () {
-        final modifier = WidgetDecoratorConfig();
-        final boxMix = BoxMix().widgetDecorator(modifier);
+        final decorator = WidgetDecoratorConfig();
+        final boxMix = BoxMix().widgetDecorator(decorator);
 
-        expect(boxMix.$widgetDecoratorConfig, modifier);
+        expect(boxMix.$widgetDecoratorConfig, decorator);
       });
 
-      test('wrap method sets modifier config', () {
-        final modifier = WidgetDecoratorConfig();
-        final boxMix = BoxMix().wrap(modifier);
+      test('wrap method sets decorator config', () {
+        final decorator = WidgetDecoratorConfig();
+        final boxMix = BoxMix().wrap(decorator);
 
-        expect(boxMix.$widgetDecoratorConfig, modifier);
+        expect(boxMix.$widgetDecoratorConfig, decorator);
       });
     });
   });

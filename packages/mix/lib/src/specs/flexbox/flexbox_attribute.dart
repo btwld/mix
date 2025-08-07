@@ -11,8 +11,8 @@ import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/painting/border_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
 import '../../properties/painting/border_radius_util.dart';
-import '../../properties/painting/decoration_mix.dart';
 import '../../properties/painting/decoration_image_mix.dart';
+import '../../properties/painting/decoration_mix.dart';
 import '../../properties/painting/gradient_mix.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../variants/variant.dart';
@@ -342,12 +342,6 @@ class FlexBoxMix extends Style<FlexBoxSpec>
     return merge(FlexBoxMix(box: BoxMix().elevation(value)));
   }
 
-  /// Decorator instance method
-  @override
-  FlexBoxMix wrap(WidgetDecoratorConfig modifier) {
-    return merge(FlexBoxMix(widgetDecoratorConfig: modifier));
-  }
-
   /// Border instance method
   FlexBoxMix border(BoxBorderMix value) {
     return merge(FlexBoxMix.border(value));
@@ -439,6 +433,12 @@ class FlexBoxMix extends Style<FlexBoxSpec>
   /// Sets gap
   FlexBoxMix gap(double value) {
     return merge(FlexBoxMix.gap(value));
+  }
+
+  /// Decorator instance method
+  @override
+  FlexBoxMix wrap(WidgetDecoratorConfig decorator) {
+    return merge(FlexBoxMix(widgetDecoratorConfig: decorator));
   }
 
   @override

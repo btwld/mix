@@ -174,7 +174,7 @@ void main() {
     });
 
     group('Decorator utilities', () {
-      test('wrap utility creates modifier BoxMix', () {
+      test('wrap utility creates decorator BoxMix', () {
         final result = util.wrap.opacity(0.5);
 
         expect(result, isA<BoxMix>());

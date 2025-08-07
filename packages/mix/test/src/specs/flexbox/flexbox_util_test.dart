@@ -198,7 +198,7 @@ void main() {
     });
 
     group('Decorator utilities', () {
-      test('wrap utility creates modifier FlexBoxMix', () {
+      test('wrap utility creates decorator FlexBoxMix', () {
         final result = util.wrap.opacity(0.5);
 
         expect(result, isA<FlexBoxMix>());

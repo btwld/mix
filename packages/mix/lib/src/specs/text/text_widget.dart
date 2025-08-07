@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../core/modifier.dart';
+import '../../core/directive.dart';
 import '../../core/style_widget.dart';
 import 'text_spec.dart';
 
@@ -29,7 +29,7 @@ class StyledText extends StyleWidget<TextSpec> {
   @override
   Widget build(BuildContext context, TextSpec? spec) {
     return Text(
-      spec?.textModifiers?.apply(text) ?? text,
+      spec?.textDirectives?.apply(text) ?? text,
       style: spec?.style,
       strutStyle: spec?.strutStyle,
       textAlign: spec?.textAlign,

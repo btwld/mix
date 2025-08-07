@@ -13,7 +13,7 @@ import 'style.dart';
 ///
 /// StyleBuilder handles the resolution of [Style] into [ResolvedStyle]
 /// and provides it to the builder function. It also manages style inheritance,
-/// variant application, and modifier rendering.
+/// variant application, and decorator rendering.
 class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
   const StyleBuilder({
     super.key,
@@ -101,7 +101,7 @@ class ResolvedStyleBuilder<S extends Spec<S>> extends StatelessWidget {
 
     if (resolvedStyle.widgetDecorators != null &&
         resolvedStyle.widgetDecorators!.isNotEmpty) {
-      // Apply modifiers if any
+      // Apply decorators if any
       current = RenderWidgetDecorators(
         widgetDecorators: resolvedStyle.widgetDecorators!,
         child: current,

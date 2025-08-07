@@ -319,7 +319,7 @@ typedef VariantFactoryCallback<T extends Style<S>, S extends Spec<S>> =
 
 /// Mixin that provides convenient variant methods for spec attributes.
 ///
-/// This mixin follows the same pattern as ModifierMixin, providing
+/// This mixin follows the same pattern as DecoratorMixin, providing
 /// a fluent API for applying context variants to spec attributes.
 mixin StyleVariantMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   /// Must be implemented by the class using this mixin

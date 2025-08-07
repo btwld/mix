@@ -26,7 +26,7 @@ import 'api/widgets/text/styled_text.dart' as styled_text;
 import 'api/widgets/vbox/card_layout.dart' as card_layout;
 import 'api/widgets/zbox/layered_boxes.dart' as layered_boxes;
 // Text examples
-import 'api/text/text_modifiers.dart' as text_modifiers;
+import 'api/text/text_directives.dart' as text_directives;
 // Gradient examples
 import 'api/gradients/gradient_linear.dart' as gradient_linear;
 import 'api/gradients/gradient_radial.dart' as gradient_radial;
@@ -111,11 +111,11 @@ class _ExampleNavigatorState extends State<ExampleNavigator> {
       widget: const styled_text.Example(),
     ),
     ExampleItem(
-      title: 'Text - Modifiers',
+      title: 'Text - Directives',
       description:
           'Text transformations: uppercase, lowercase, capitalize, etc.',
       category: 'Widgets',
-      widget: const text_modifiers.Example(),
+      widget: const text_directives.Example(),
     ),
 
     // Context Variants

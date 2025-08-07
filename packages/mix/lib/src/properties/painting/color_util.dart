@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../core/modifier.dart';
+import '../../core/directive.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
@@ -9,52 +9,52 @@ import 'material_colors_util.dart';
 
 /// Provides color transformation methods for applying opacity, brightness, and saturation changes.
 ///
-/// All modifier methods modify the color value through transformation modifiers
+/// All directive methods modify the color value through transformation directives
 /// that are applied during resolution.
-mixin ColorModifierMixin<T extends Style<Object?>>
+mixin ColorDirectiveMixin<T extends Style<Object?>>
     on MixUtility<T, Prop<Color>> {
-  T modifier(Modifier<Color> modifier) {
-    return builder(Prop.modifiers([modifier]));
+  T directive(Directive<Color> directive) {
+    return builder(Prop.directives([directive]));
   }
 
   /// Applies the specified opacity to the color (0.0 to 1.0).
-  T withOpacity(double opacity) => modifier(OpacityColorModifier(opacity));
+  T withOpacity(double opacity) => directive(OpacityColorDirective(opacity));
 
   /// Sets the alpha channel of the color (0 to 255).
-  T withAlpha(int alpha) => modifier(AlphaColorModifier(alpha));
+  T withAlpha(int alpha) => directive(AlphaColorDirective(alpha));
 
   /// Darkens the color by the specified percentage (0 to 100).
-  T darken(int amount) => modifier(DarkenColorModifier(amount));
+  T darken(int amount) => directive(DarkenColorDirective(amount));
 
   /// Lightens the color by the specified percentage (0 to 100).
-  T lighten(int amount) => modifier(LightenColorModifier(amount));
+  T lighten(int amount) => directive(LightenColorDirective(amount));
 
   /// Increases the color saturation by the specified percentage (0 to 100).
-  T saturate(int amount) => modifier(SaturateColorModifier(amount));
+  T saturate(int amount) => directive(SaturateColorDirective(amount));
 
   /// Decreases the color saturation by the specified percentage (0 to 100).
-  T desaturate(int amount) => modifier(DesaturateColorModifier(amount));
+  T desaturate(int amount) => directive(DesaturateColorDirective(amount));
 
   /// Mixes the color with white by the specified percentage (0 to 100).
-  T tint(int amount) => modifier(TintColorModifier(amount));
+  T tint(int amount) => directive(TintColorDirective(amount));
 
   /// Mixes the color with black by the specified percentage (0 to 100).
-  T shade(int amount) => modifier(ShadeColorModifier(amount));
+  T shade(int amount) => directive(ShadeColorDirective(amount));
 
   /// Increases the color brightness by the specified percentage (0 to 100).
-  T brighten(int amount) => modifier(BrightenColorModifier(amount));
+  T brighten(int amount) => directive(BrightenColorDirective(amount));
 }
 
 /// Utility for predefined colors (e.g., Colors.red)
 @immutable
 class FoundationColorUtility<T extends Style<Object?>>
     extends MixUtility<T, Prop<Color>>
-    with ColorModifierMixin<T> {
+    with ColorDirectiveMixin<T> {
   final Color color;
   const FoundationColorUtility(super.builder, this.color);
 }
 
-/// Color utility that can be called as a function or used with modifier methods.
+/// Color utility that can be called as a function or used with directive methods.
 ///
 /// Supports both direct function calls to apply the color and method chaining
 /// for color transformations like opacity, darkening, or saturation changes.
@@ -71,44 +71,46 @@ class CallableColorUtility<T extends Style<Object?>> {
 
   /// Applies the specified opacity to the color (0.0 to 1.0).
   T withOpacity(double opacity) =>
-      builder(Prop.modifiers([OpacityColorModifier(opacity)]));
+      builder(Prop.directives([OpacityColorDirective(opacity)]));
 
   /// Sets the alpha channel of the color (0 to 255).
   T withAlpha(int alpha) =>
-      builder(Prop.modifiers([AlphaColorModifier(alpha)]));
+      builder(Prop.directives([AlphaColorDirective(alpha)]));
 
   /// Darkens the color by the specified percentage (0 to 100).
   T darken(int amount) =>
-      builder(Prop.modifiers([DarkenColorModifier(amount)]));
+      builder(Prop.directives([DarkenColorDirective(amount)]));
 
   /// Lightens the color by the specified percentage (0 to 100).
   T lighten(int amount) =>
-      builder(Prop.modifiers([LightenColorModifier(amount)]));
+      builder(Prop.directives([LightenColorDirective(amount)]));
 
   /// Increases the color saturation by the specified percentage (0 to 100).
   T saturate(int amount) =>
-      builder(Prop.modifiers([SaturateColorModifier(amount)]));
+      builder(Prop.directives([SaturateColorDirective(amount)]));
 
   /// Decreases the color saturation by the specified percentage (0 to 100).
   T desaturate(int amount) =>
-      builder(Prop.modifiers([DesaturateColorModifier(amount)]));
+      builder(Prop.directives([DesaturateColorDirective(amount)]));
 
   /// Mixes the color with white by the specified percentage (0 to 100).
-  T tint(int amount) => builder(Prop.modifiers([TintColorModifier(amount)]));
+  T tint(int amount) => builder(Prop.directives([TintColorDirective(amount)]));
 
   /// Mixes the color with black by the specified percentage (0 to 100).
-  T shade(int amount) => builder(Prop.modifiers([ShadeColorModifier(amount)]));
+  T shade(int amount) => builder(Prop.directives([ShadeColorDirective(amount)]));
 
   /// Increases the color brightness by the specified percentage (0 to 100).
   T brighten(int amount) =>
-      builder(Prop.modifiers([BrightenColorModifier(amount)]));
+      builder(Prop.directives([BrightenColorDirective(amount)]));
 }
 
 /// Simplified ColorUtility using the PropUtility pattern
 @immutable
 final class ColorUtility<T extends Style<Object?>>
     extends MixUtility<T, Prop<Color>>
-    with ColorModifierMixin<T>, ColorsUtilityMixin<T>, BasicColorsMixin<T> {
+    with ColorDirectiveMixin<T>, 
+         ColorsUtilityMixin<T>,
+         BasicColorsMixin<T> {
   ColorUtility(super.builder);
 
   /// @deprecated Use [token] instead

@@ -5,6 +5,52 @@ import '../../core/style.dart';
 import '../../core/utility.dart';
 import 'color_util.dart';
 
+/// Utility for accessing Material colors with both method call and .shadeXXX() syntax.
+/// 
+/// This class allows both `.grey(300)` (recommended) and `.grey.shade300()` (deprecated) syntax.
+@immutable
+class MaterialColorCallableUtility<T extends Style<Object?>> {
+  final T Function(Prop<Color>) builder;
+  final MaterialColor materialColor;
+  
+  const MaterialColorCallableUtility(this.builder, this.materialColor);
+  
+  // Call method for new syntax: grey(300)
+  T call([int? shade]) => 
+      builder(Prop.value(shade == null ? materialColor : materialColor[shade]!));
+  
+  // Deprecated shade methods for backward compatibility
+  @Deprecated('Use grey(50) instead of grey.shade50()')
+  T shade50() => call(50);
+  
+  @Deprecated('Use grey(100) instead of grey.shade100()')
+  T shade100() => call(100);
+  
+  @Deprecated('Use grey(200) instead of grey.shade200()')
+  T shade200() => call(200);
+  
+  @Deprecated('Use grey(300) instead of grey.shade300()')
+  T shade300() => call(300);
+  
+  @Deprecated('Use grey(400) instead of grey.shade400()')
+  T shade400() => call(400);
+  
+  @Deprecated('Use grey(500) instead of grey.shade500()')
+  T shade500() => call(500);
+  
+  @Deprecated('Use grey(600) instead of grey.shade600()')
+  T shade600() => call(600);
+  
+  @Deprecated('Use grey(700) instead of grey.shade700()')
+  T shade700() => call(700);
+  
+  @Deprecated('Use grey(800) instead of grey.shade800()')
+  T shade800() => call(800);
+  
+  @Deprecated('Use grey(900) instead of grey.shade900()')
+  T shade900() => call(900);
+}
+
 /// Utility for Material Design color palettes with shade access.
 ///
 /// Provides access to Material Design color shades (50, 100, 200, etc.) for
@@ -40,25 +86,26 @@ mixin ColorsUtilityMixin<T extends Style<Object?>>
   T _wrapColor(ColorSwatch color, [int? shade]) =>
       builder(Prop.value(shade == null ? color : color[shade]!));
 
-  T red([int? shade]) => _wrapColor(Colors.red, shade);
-  T pink([int? shade]) => _wrapColor(Colors.pink, shade);
-  T purple([int? shade]) => _wrapColor(Colors.purple, shade);
-  T deepPurple([int? shade]) => _wrapColor(Colors.deepPurple, shade);
-  T indigo([int? shade]) => _wrapColor(Colors.indigo, shade);
-  T blue([int? shade]) => _wrapColor(Colors.blue, shade);
-  T lightBlue([int? shade]) => _wrapColor(Colors.lightBlue, shade);
-  T cyan([int? shade]) => _wrapColor(Colors.cyan, shade);
-  T teal([int? shade]) => _wrapColor(Colors.teal, shade);
-  T green([int? shade]) => _wrapColor(Colors.green, shade);
-  T lightGreen([int? shade]) => _wrapColor(Colors.lightGreen, shade);
-  T lime([int? shade]) => _wrapColor(Colors.lime, shade);
-  T yellow([int? shade]) => _wrapColor(Colors.yellow, shade);
-  T amber([int? shade]) => _wrapColor(Colors.amber, shade);
-  T orange([int? shade]) => _wrapColor(Colors.orange, shade);
-  T deepOrange([int? shade]) => _wrapColor(Colors.deepOrange, shade);
-  T brown([int? shade]) => _wrapColor(Colors.brown, shade);
-  T grey([int? shade]) => _wrapColor(Colors.grey, shade);
-  T blueGrey([int? shade]) => _wrapColor(Colors.blueGrey, shade);
+  // Use MaterialColorCallableUtility to support both .grey(300) and .grey.shade300()
+  late final red = MaterialColorCallableUtility(builder, Colors.red);
+  late final pink = MaterialColorCallableUtility(builder, Colors.pink);
+  late final purple = MaterialColorCallableUtility(builder, Colors.purple);
+  late final deepPurple = MaterialColorCallableUtility(builder, Colors.deepPurple);
+  late final indigo = MaterialColorCallableUtility(builder, Colors.indigo);
+  late final blue = MaterialColorCallableUtility(builder, Colors.blue);
+  late final lightBlue = MaterialColorCallableUtility(builder, Colors.lightBlue);
+  late final cyan = MaterialColorCallableUtility(builder, Colors.cyan);
+  late final teal = MaterialColorCallableUtility(builder, Colors.teal);
+  late final green = MaterialColorCallableUtility(builder, Colors.green);
+  late final lightGreen = MaterialColorCallableUtility(builder, Colors.lightGreen);
+  late final lime = MaterialColorCallableUtility(builder, Colors.lime);
+  late final yellow = MaterialColorCallableUtility(builder, Colors.yellow);
+  late final amber = MaterialColorCallableUtility(builder, Colors.amber);
+  late final orange = MaterialColorCallableUtility(builder, Colors.orange);
+  late final deepOrange = MaterialColorCallableUtility(builder, Colors.deepOrange);
+  late final brown = MaterialColorCallableUtility(builder, Colors.brown);
+  late final grey = MaterialColorCallableUtility(builder, Colors.grey);
+  late final blueGrey = MaterialColorCallableUtility(builder, Colors.blueGrey);
   T redAccent([int? shade]) => _wrapColor(Colors.redAccent, shade);
   T pinkAccent([int? shade]) => _wrapColor(Colors.pinkAccent, shade);
   T purpleAccent([int? shade]) => _wrapColor(Colors.purpleAccent, shade);
@@ -79,6 +126,7 @@ mixin ColorsUtilityMixin<T extends Style<Object?>>
   T deepOrangeAccent([int? shade]) =>
       _wrapColor(Colors.deepOrangeAccent, shade);
 }
+
 
 /// Utility for Material Design accent colors with limited shade access.
 ///

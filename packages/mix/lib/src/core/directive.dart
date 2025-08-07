@@ -2,26 +2,26 @@ import 'package:flutter/widgets.dart';
 
 import 'internal/internal_extensions.dart';
 
-/// Base class for modifiers that apply transformations to values.
+/// Base class for directives that apply transformations to values.
 ///
-/// Modifiers provide a way to modify values like colors or strings in a consistent,
+/// Directives provide a way to transform values like colors or strings in a consistent,
 /// composable manner throughout the Mix framework.
 @immutable
-abstract class Modifier<T> {
-  const Modifier();
+abstract class Directive<T> {
+  const Directive();
 
-  /// The unique identifier for this modifier type.
+  /// The unique identifier for this directive type.
   String get key;
 
   /// Applies the transformation to the given value.
   T apply(T value);
 }
 
-/// Modifier that applies opacity to a color.
-class OpacityColorModifier extends Modifier<Color> {
+/// Directive that applies opacity to a color.
+class OpacityColorDirective extends Directive<Color> {
   final double opacity;
 
-  const OpacityColorModifier(this.opacity);
+  const OpacityColorDirective(this.opacity);
 
   @override
   Color apply(Color color) => color.withValues(alpha: opacity);
@@ -29,7 +29,7 @@ class OpacityColorModifier extends Modifier<Color> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is OpacityColorModifier && opacity == other.opacity;
+      other is OpacityColorDirective && opacity == other.opacity;
 
   @override
   String get key => 'color_opacity';
@@ -38,11 +38,11 @@ class OpacityColorModifier extends Modifier<Color> {
   int get hashCode => opacity.hashCode;
 }
 
-/// Modifier that applies alpha to a color.
-class AlphaColorModifier extends Modifier<Color> {
+/// Directive that applies alpha to a color.
+class AlphaColorDirective extends Directive<Color> {
   final int alpha;
 
-  const AlphaColorModifier(this.alpha);
+  const AlphaColorDirective(this.alpha);
 
   @override
   Color apply(Color color) => color.withAlpha(alpha);
@@ -50,7 +50,7 @@ class AlphaColorModifier extends Modifier<Color> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is AlphaColorModifier && alpha == other.alpha;
+      other is AlphaColorDirective && alpha == other.alpha;
 
   @override
   String get key => 'color_alpha';
@@ -59,11 +59,11 @@ class AlphaColorModifier extends Modifier<Color> {
   int get hashCode => alpha.hashCode;
 }
 
-/// Modifier that darkens a color.
-class DarkenColorModifier extends Modifier<Color> {
+/// Directive that darkens a color.
+class DarkenColorDirective extends Directive<Color> {
   final int amount;
 
-  const DarkenColorModifier(this.amount);
+  const DarkenColorDirective(this.amount);
 
   @override
   Color apply(Color color) => color.darken(amount);
@@ -71,7 +71,7 @@ class DarkenColorModifier extends Modifier<Color> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is DarkenColorModifier && amount == other.amount;
+      other is DarkenColorDirective && amount == other.amount;
 
   @override
   String get key => 'color_darken';
@@ -80,11 +80,11 @@ class DarkenColorModifier extends Modifier<Color> {
   int get hashCode => amount.hashCode;
 }
 
-/// Modifier that lightens a color.
-class LightenColorModifier extends Modifier<Color> {
+/// Directive that lightens a color.
+class LightenColorDirective extends Directive<Color> {
   final int amount;
 
-  const LightenColorModifier(this.amount);
+  const LightenColorDirective(this.amount);
 
   @override
   Color apply(Color color) => color.lighten(amount);
@@ -92,7 +92,7 @@ class LightenColorModifier extends Modifier<Color> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is LightenColorModifier && amount == other.amount;
+      other is LightenColorDirective && amount == other.amount;
 
   @override
   String get key => 'color_lighten';
@@ -101,11 +101,11 @@ class LightenColorModifier extends Modifier<Color> {
   int get hashCode => amount.hashCode;
 }
 
-/// Modifier that saturates a color.
-class SaturateColorModifier extends Modifier<Color> {
+/// Directive that saturates a color.
+class SaturateColorDirective extends Directive<Color> {
   final int amount;
 
-  const SaturateColorModifier(this.amount);
+  const SaturateColorDirective(this.amount);
 
   @override
   Color apply(Color color) => color.saturate(amount);
@@ -113,7 +113,7 @@ class SaturateColorModifier extends Modifier<Color> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SaturateColorModifier && amount == other.amount;
+      other is SaturateColorDirective && amount == other.amount;
 
   @override
   String get key => 'color_saturate';
@@ -122,11 +122,11 @@ class SaturateColorModifier extends Modifier<Color> {
   int get hashCode => amount.hashCode;
 }
 
-/// Modifier that desaturates a color.
-class DesaturateColorModifier extends Modifier<Color> {
+/// Directive that desaturates a color.
+class DesaturateColorDirective extends Directive<Color> {
   final int amount;
 
-  const DesaturateColorModifier(this.amount);
+  const DesaturateColorDirective(this.amount);
 
   @override
   Color apply(Color color) => color.desaturate(amount);
@@ -134,7 +134,7 @@ class DesaturateColorModifier extends Modifier<Color> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is DesaturateColorModifier && amount == other.amount;
+      other is DesaturateColorDirective && amount == other.amount;
 
   @override
   String get key => 'color_desaturate';
@@ -143,11 +143,11 @@ class DesaturateColorModifier extends Modifier<Color> {
   int get hashCode => amount.hashCode;
 }
 
-/// Modifier that applies tint to a color.
-class TintColorModifier extends Modifier<Color> {
+/// Directive that applies tint to a color.
+class TintColorDirective extends Directive<Color> {
   final int amount;
 
-  const TintColorModifier(this.amount);
+  const TintColorDirective(this.amount);
 
   @override
   Color apply(Color color) => color.tint(amount);
@@ -155,7 +155,7 @@ class TintColorModifier extends Modifier<Color> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TintColorModifier && amount == other.amount;
+      other is TintColorDirective && amount == other.amount;
 
   @override
   String get key => 'color_tint';
@@ -164,11 +164,11 @@ class TintColorModifier extends Modifier<Color> {
   int get hashCode => amount.hashCode;
 }
 
-/// Modifier that applies shade to a color.
-class ShadeColorModifier extends Modifier<Color> {
+/// Directive that applies shade to a color.
+class ShadeColorDirective extends Directive<Color> {
   final int amount;
 
-  const ShadeColorModifier(this.amount);
+  const ShadeColorDirective(this.amount);
 
   @override
   Color apply(Color color) => color.shade(amount);
@@ -176,7 +176,7 @@ class ShadeColorModifier extends Modifier<Color> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ShadeColorModifier && amount == other.amount;
+      other is ShadeColorDirective && amount == other.amount;
 
   @override
   String get key => 'color_shade';
@@ -185,11 +185,11 @@ class ShadeColorModifier extends Modifier<Color> {
   int get hashCode => amount.hashCode;
 }
 
-/// Modifier that brightens a color.
-class BrightenColorModifier extends Modifier<Color> {
+/// Directive that brightens a color.
+class BrightenColorDirective extends Directive<Color> {
   final int amount;
 
-  const BrightenColorModifier(this.amount);
+  const BrightenColorDirective(this.amount);
 
   @override
   Color apply(Color color) => color.brighten(amount);
@@ -197,7 +197,7 @@ class BrightenColorModifier extends Modifier<Color> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is BrightenColorModifier && amount == other.amount;
+      other is BrightenColorDirective && amount == other.amount;
 
   @override
   String get key => 'color_brighten';
@@ -206,11 +206,11 @@ class BrightenColorModifier extends Modifier<Color> {
   int get hashCode => amount.hashCode;
 }
 
-/// Modifier that sets the red channel of a color.
-class WithRedColorModifier extends Modifier<Color> {
+/// Directive that sets the red channel of a color.
+class WithRedColorDirective extends Directive<Color> {
   final int red;
 
-  const WithRedColorModifier(this.red);
+  const WithRedColorDirective(this.red);
 
   @override
   Color apply(Color color) => color.withRed(red);
@@ -218,7 +218,7 @@ class WithRedColorModifier extends Modifier<Color> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is WithRedColorModifier && red == other.red;
+      other is WithRedColorDirective && red == other.red;
 
   @override
   String get key => 'color_with_red';
@@ -227,11 +227,11 @@ class WithRedColorModifier extends Modifier<Color> {
   int get hashCode => red.hashCode;
 }
 
-/// Modifier that sets the green channel of a color.
-class WithGreenColorModifier extends Modifier<Color> {
+/// Directive that sets the green channel of a color.
+class WithGreenColorDirective extends Directive<Color> {
   final int green;
 
-  const WithGreenColorModifier(this.green);
+  const WithGreenColorDirective(this.green);
 
   @override
   Color apply(Color color) => color.withGreen(green);
@@ -239,7 +239,7 @@ class WithGreenColorModifier extends Modifier<Color> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is WithGreenColorModifier && green == other.green;
+      other is WithGreenColorDirective && green == other.green;
 
   @override
   String get key => 'color_with_green';
@@ -248,11 +248,11 @@ class WithGreenColorModifier extends Modifier<Color> {
   int get hashCode => green.hashCode;
 }
 
-/// Modifier that sets the blue channel of a color.
-class WithBlueColorModifier extends Modifier<Color> {
+/// Directive that sets the blue channel of a color.
+class WithBlueColorDirective extends Directive<Color> {
   final int blue;
 
-  const WithBlueColorModifier(this.blue);
+  const WithBlueColorDirective(this.blue);
 
   @override
   Color apply(Color color) => color.withBlue(blue);
@@ -260,7 +260,7 @@ class WithBlueColorModifier extends Modifier<Color> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is WithBlueColorModifier && blue == other.blue;
+      other is WithBlueColorDirective && blue == other.blue;
 
   @override
   String get key => 'color_with_blue';
@@ -269,83 +269,83 @@ class WithBlueColorModifier extends Modifier<Color> {
   int get hashCode => blue.hashCode;
 }
 
-/// Modifier that capitalizes the first letter of a string.
-final class CapitalizeStringModifier extends Modifier<String> {
-  const CapitalizeStringModifier();
+/// Directive that capitalizes the first letter of a string.
+final class CapitalizeStringDirective extends Directive<String> {
+  const CapitalizeStringDirective();
   @override
   String apply(String value) => value.capitalize;
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is CapitalizeStringModifier;
+      identical(this, other) || other is CapitalizeStringDirective;
   @override
   String get key => 'capitalize';
   @override
   int get hashCode => key.hashCode;
 }
 
-/// Modifier that converts a string to uppercase.
-final class UppercaseStringModifier extends Modifier<String> {
-  const UppercaseStringModifier();
+/// Directive that converts a string to uppercase.
+final class UppercaseStringDirective extends Directive<String> {
+  const UppercaseStringDirective();
   @override
   String apply(String value) => value.toUpperCase();
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is UppercaseStringModifier;
+      identical(this, other) || other is UppercaseStringDirective;
   @override
   String get key => 'uppercase';
   @override
   int get hashCode => key.hashCode;
 }
 
-/// Modifier that converts a string to lowercase.
-final class LowercaseStringModifier extends Modifier<String> {
-  const LowercaseStringModifier();
+/// Directive that converts a string to lowercase.
+final class LowercaseStringDirective extends Directive<String> {
+  const LowercaseStringDirective();
   @override
   String apply(String value) => value.toLowerCase();
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is LowercaseStringModifier;
+      identical(this, other) || other is LowercaseStringDirective;
   @override
   String get key => 'lowercase';
   @override
   int get hashCode => key.hashCode;
 }
 
-/// Modifier that converts a string to title case.
-final class TitleCaseStringModifier extends Modifier<String> {
-  const TitleCaseStringModifier();
+/// Directive that converts a string to title case.
+final class TitleCaseStringDirective extends Directive<String> {
+  const TitleCaseStringDirective();
   @override
   String apply(String value) => value.titleCase;
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is TitleCaseStringModifier;
+      identical(this, other) || other is TitleCaseStringDirective;
   @override
   String get key => 'title_case';
   @override
   int get hashCode => key.hashCode;
 }
 
-/// Modifier that converts a string to sentence case.
-final class SentenceCaseStringModifier extends Modifier<String> {
-  const SentenceCaseStringModifier();
+/// Directive that converts a string to sentence case.
+final class SentenceCaseStringDirective extends Directive<String> {
+  const SentenceCaseStringDirective();
   @override
   String apply(String value) => value.sentenceCase;
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is SentenceCaseStringModifier;
+      identical(this, other) || other is SentenceCaseStringDirective;
   @override
   String get key => 'sentence_case';
   @override
   int get hashCode => key.hashCode;
 }
 
-/// Extension on [List<Modifier<T>>] to provide apply functionality
-extension ModifierListExt<T> on List<Modifier<T>> {
-  /// Applies all modifiers in the list to the given value in sequence
+/// Extension on [List<Directive<T>>] to provide apply functionality
+extension DirectiveListExt<T> on List<Directive<T>> {
+  /// Applies all directives in the list to the given value in sequence
   T apply(T value) {
     var result = value;
-    for (final modifier in this) {
-      result = modifier.apply(result);
+    for (final directive in this) {
+      result = directive.apply(result);
     }
 
     return result;
