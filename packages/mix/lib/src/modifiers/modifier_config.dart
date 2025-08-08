@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../core/internal/compare_mixin.dart';
 import '../core/modifier.dart';
+import '../core/spec.dart';
 import '../core/style.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
 import '../properties/painting/border_radius_mix.dart';
@@ -22,6 +23,7 @@ import 'opacity_modifier.dart';
 import 'padding_modifier.dart';
 import 'rotated_box_modifier.dart';
 import 'sized_box_modifier.dart';
+import 'style_provider_modifier.dart';
 import 'transform_modifier.dart';
 import 'visibility_modifier.dart';
 
@@ -250,6 +252,11 @@ final class ModifierConfig with Equatable {
     );
   }
 
+  /// Static method for creating StyleProvider that works with any spec type
+  static ModifierConfig styleProvider<S extends Spec<S>>(Style<S> style) {
+    return ModifierConfig.modifier(StyleProviderWidgetModifierMix<S>(style));
+  }
+
   void _mergeWithReset(
     Map<Object, WidgetModifierMix> acc,
     Iterable<WidgetModifierMix> list,
@@ -267,7 +274,7 @@ final class ModifierConfig with Equatable {
   /// Orders modifiers according to the specified order or default order
   ///
   @visibleForTesting
-  List<WidgetModifier> reorderModifiers(List<WidgetModifier> modifiers) {
+  List<Modifier> reorderModifiers(List<Modifier> modifiers) {
     if (modifiers.isEmpty) return modifiers;
 
     final orderOfModifiers = {
@@ -279,7 +286,7 @@ final class ModifierConfig with Equatable {
       ...modifiers.map((e) => e.runtimeType),
     }.toList();
 
-    final orderedSpecs = <WidgetModifier>[];
+    final orderedSpecs = <Modifier>[];
 
     for (final modifierType in orderOfModifiers) {
       // Find and add modifiers matching this type
@@ -434,6 +441,11 @@ final class ModifierConfig with Equatable {
     return merge(ModifierConfig.defaultText(textMix));
   }
 
+  /// Generic instance method for StyleProvider (uses static method)
+  ModifierConfig styleProviderFor<S extends Spec<S>>(Style<S> style) {
+    return merge(ModifierConfig.styleProvider(style));
+  }
+
   ModifierConfig modifier(WidgetModifierMix value) {
     return merge(ModifierConfig.modifier(value));
   }
@@ -476,19 +488,16 @@ final class ModifierConfig with Equatable {
     if ($modifiers == null || $modifiers!.isEmpty) return [];
 
     // Resolve each modifier attribute to its corresponding modifier spec
-    final resolvedModifiers = <WidgetModifier>[];
+    final resolvedModifiers = <Modifier>[];
     for (final attribute in $modifiers!) {
       final resolved = attribute.resolve(context);
       // Filter out reset specs so they never reach rendering
       if (resolved is! ResetWidgetModifier) {
-        resolvedModifiers.add(resolved as WidgetModifier);
+        resolvedModifiers.add(resolved as Modifier);
       }
     }
 
-    final ordered = reorderModifiers(resolvedModifiers);
-
-    // Map legacy WidgetModifier to unified Modifier via adapter
-    return ordered.map<Modifier>((m) => LegacyModifierAdapter(m)).toList();
+    return reorderModifiers(resolvedModifiers);
   }
 
   @override

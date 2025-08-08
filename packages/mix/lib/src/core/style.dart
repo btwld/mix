@@ -183,7 +183,7 @@ abstract class Style<S extends Spec<S>> extends Mix<S> implements StyleElement {
   }
 }
 
-abstract class WidgetModifierMix<S extends WidgetModifier<S>> extends Mix<S>
+abstract class WidgetModifierMix<S extends Modifier<S>> extends Mix<S>
     implements StyleElement {
   const WidgetModifierMix();
 

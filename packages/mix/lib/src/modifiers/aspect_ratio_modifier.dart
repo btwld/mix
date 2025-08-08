@@ -9,7 +9,7 @@ import '../core/utility.dart';
 import '../theme/tokens/mix_token.dart';
 
 final class AspectRatioWidgetModifier
-    extends WidgetModifier<AspectRatioWidgetModifier>
+    extends Modifier<AspectRatioWidgetModifier>
     with Diagnosticable {
   final double aspectRatio;
 

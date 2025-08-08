@@ -8,8 +8,7 @@ import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 
-final class TransformWidgetModifier
-    extends WidgetModifier<TransformWidgetModifier> {
+final class TransformWidgetModifier extends Modifier<TransformWidgetModifier> {
   final Matrix4? transform;
   final Alignment? alignment;
 

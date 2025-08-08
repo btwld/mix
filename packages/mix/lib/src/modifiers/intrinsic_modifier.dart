@@ -7,7 +7,7 @@ import '../core/style.dart';
 ///
 /// Wraps the child in an [IntrinsicHeight] widget.
 final class IntrinsicHeightWidgetModifier
-    extends WidgetModifier<IntrinsicHeightWidgetModifier> {
+    extends Modifier<IntrinsicHeightWidgetModifier> {
   const IntrinsicHeightWidgetModifier();
 
   @override
@@ -38,7 +38,7 @@ final class IntrinsicHeightWidgetModifier
 ///
 /// Wraps the child in an [IntrinsicWidth] widget.
 final class IntrinsicWidthWidgetModifier
-    extends WidgetModifier<IntrinsicWidthWidgetModifier> {
+    extends Modifier<IntrinsicWidthWidgetModifier> {
   const IntrinsicWidthWidgetModifier();
 
   @override

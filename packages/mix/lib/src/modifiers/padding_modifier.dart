@@ -9,7 +9,7 @@ import '../core/utility.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
 import '../properties/layout/edge_insets_geometry_util.dart';
 
-final class PaddingWidgetModifier extends WidgetModifier<PaddingWidgetModifier>
+final class PaddingWidgetModifier extends Modifier<PaddingWidgetModifier>
     with Diagnosticable {
   final EdgeInsetsGeometry padding;
 

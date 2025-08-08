@@ -6,7 +6,7 @@ import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 
-class MouseCursorModifier extends WidgetModifier<MouseCursorModifier> {
+class MouseCursorModifier extends Modifier<MouseCursorModifier> {
   final MouseCursor? mouseCursor;
 
   const MouseCursorModifier({this.mouseCursor});

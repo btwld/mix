@@ -9,7 +9,7 @@ import '../properties/layout/edge_insets_geometry_mix.dart';
 import '../properties/layout/edge_insets_geometry_util.dart';
 
 final class ScrollViewWidgetModifier
-    extends WidgetModifier<ScrollViewWidgetModifier> {
+    extends Modifier<ScrollViewWidgetModifier> {
   final Axis? scrollDirection;
   final bool? reverse;
   final EdgeInsetsGeometry? padding;

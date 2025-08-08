@@ -12,8 +12,7 @@ import '../theme/tokens/mix_token.dart';
 ///
 /// Controls whether a child widget is visible or hidden while maintaining
 /// its space in the layout.
-final class VisibilityWidgetModifier
-    extends WidgetModifier<VisibilityWidgetModifier>
+final class VisibilityWidgetModifier extends Modifier<VisibilityWidgetModifier>
     with Diagnosticable {
   /// Whether the child widget should be visible.
   final bool visible;

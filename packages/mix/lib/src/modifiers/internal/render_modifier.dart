@@ -46,7 +46,7 @@ class _RenderWidgetModifiers extends StatelessWidget {
 
     // Apply each modifier in sequence
     for (final spec in modifiers) {
-      current = spec.build(context, current);
+      current = spec.build(current);
     }
 
     return current;

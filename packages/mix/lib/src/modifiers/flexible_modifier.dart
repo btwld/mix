@@ -8,8 +8,7 @@ import '../core/style.dart';
 import '../core/utility.dart';
 import '../theme/tokens/mix_token.dart';
 
-final class FlexibleWidgetModifier
-    extends WidgetModifier<FlexibleWidgetModifier>
+final class FlexibleWidgetModifier extends Modifier<FlexibleWidgetModifier>
     with Diagnosticable {
   final int? flex;
   final FlexFit? fit;

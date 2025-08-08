@@ -11,7 +11,7 @@ import '../theme/tokens/mix_token.dart';
 /// A modifier that wraps a widget with the [Opacity] widget.
 ///
 /// The [Opacity] widget is used to make a widget partially transparent.
-final class OpacityWidgetModifier extends WidgetModifier<OpacityWidgetModifier>
+final class OpacityWidgetModifier extends Modifier<OpacityWidgetModifier>
     with Diagnosticable {
   /// The [opacity] argument must not be null and
   /// must be between 0.0 and 1.0 (inclusive).

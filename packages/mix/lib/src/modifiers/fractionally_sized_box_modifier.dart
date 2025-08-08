@@ -8,7 +8,7 @@ import '../core/style.dart';
 import '../core/utility.dart';
 
 final class FractionallySizedBoxWidgetModifier
-    extends WidgetModifier<FractionallySizedBoxWidgetModifier>
+    extends Modifier<FractionallySizedBoxWidgetModifier>
     with Diagnosticable {
   final double? widthFactor;
   final double? heightFactor;

@@ -10,8 +10,7 @@ import '../properties/painting/border_radius_mix.dart';
 /// Modifier that clips its child to an oval shape.
 ///
 /// Wraps the child in a [ClipOval] widget with the specified clipper and clip behavior.
-final class ClipOvalWidgetModifier
-    extends WidgetModifier<ClipOvalWidgetModifier>
+final class ClipOvalWidgetModifier extends Modifier<ClipOvalWidgetModifier>
     with Diagnosticable {
   final CustomClipper<Rect>? clipper;
   final Clip? clipBehavior;
@@ -115,8 +114,7 @@ class ClipOvalWidgetModifierMix
 /// Modifier that clips its child to a rectangular shape.
 ///
 /// Wraps the child in a [ClipRect] widget with the specified clipper and clip behavior.
-final class ClipRectWidgetModifier
-    extends WidgetModifier<ClipRectWidgetModifier>
+final class ClipRectWidgetModifier extends Modifier<ClipRectWidgetModifier>
     with Diagnosticable {
   final CustomClipper<Rect>? clipper;
   final Clip? clipBehavior;
@@ -221,8 +219,7 @@ class ClipRectWidgetModifierMix
   List<Object?> get props => [clipper, clipBehavior];
 }
 
-final class ClipRRectWidgetModifier
-    extends WidgetModifier<ClipRRectWidgetModifier>
+final class ClipRRectWidgetModifier extends Modifier<ClipRRectWidgetModifier>
     with Diagnosticable {
   final BorderRadiusGeometry? borderRadius;
   final CustomClipper<RRect>? clipper;
@@ -376,8 +373,7 @@ class ClipRRectWidgetModifierMix
   List<Object?> get props => [borderRadius, clipper, clipBehavior];
 }
 
-final class ClipPathWidgetModifier
-    extends WidgetModifier<ClipPathWidgetModifier>
+final class ClipPathWidgetModifier extends Modifier<ClipPathWidgetModifier>
     with Diagnosticable {
   final CustomClipper<Path>? clipper;
   final Clip? clipBehavior;
@@ -508,7 +504,7 @@ class ClipPathWidgetModifierMix
 }
 
 final class ClipTriangleWidgetModifier
-    extends WidgetModifier<ClipTriangleWidgetModifier>
+    extends Modifier<ClipTriangleWidgetModifier>
     with Diagnosticable {
   final Clip? clipBehavior;
 

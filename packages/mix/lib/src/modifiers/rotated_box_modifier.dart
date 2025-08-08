@@ -7,7 +7,7 @@ import '../core/style.dart';
 import '../core/utility.dart';
 
 final class RotatedBoxWidgetModifier
-    extends WidgetModifier<RotatedBoxWidgetModifier> {
+    extends Modifier<RotatedBoxWidgetModifier> {
   final int quarterTurns;
   const RotatedBoxWidgetModifier([int? quarterTurns])
     : quarterTurns = quarterTurns ?? 0;

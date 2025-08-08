@@ -10,7 +10,7 @@ import '../properties/typography/text_height_behavior_mix.dart';
 import '../properties/typography/text_style_mix.dart';
 
 final class DefaultTextStyleWidgetModifier
-    extends WidgetModifier<DefaultTextStyleWidgetModifier>
+    extends Modifier<DefaultTextStyleWidgetModifier>
     with Diagnosticable {
   final TextStyle? style;
   final TextAlign? textAlign;
