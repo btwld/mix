@@ -5,8 +5,8 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
-import '../../modifiers/widget_modifier_config.dart';
-import '../../modifiers/widget_modifier_util.dart';
+import '../../modifiers/modifier_config.dart';
+import '../../modifiers/modifier_util.dart';
 import '../../properties/layout/constraints_mix.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/painting/border_mix.dart';
@@ -124,18 +124,18 @@ class BoxMix extends Style<BoxSpec>
   }
 
   factory BoxMix.text(TextMix value) {
-    return BoxMix.modifier(WidgetModifierConfig.defaultText(value));
+    return BoxMix.modifier(ModifierConfig.defaultText(value));
   }
 
   factory BoxMix.transform(Matrix4 value) {
     return BoxMix(transform: value);
   }
 
-  factory BoxMix.modifier(WidgetModifierConfig modifier) {
+  factory BoxMix.modifier(ModifierConfig modifier) {
     return BoxMix(modifier: modifier);
   }
 
-  factory BoxMix.wrap(WidgetModifierConfig value) {
+  factory BoxMix.wrap(ModifierConfig value) {
     return BoxMix(modifier: value);
   }
 
@@ -198,7 +198,7 @@ class BoxMix extends Style<BoxSpec>
     AlignmentGeometry? transformAlignment,
     Clip? clipBehavior,
     AnimationConfig? animation,
-    WidgetModifierConfig? modifier,
+    ModifierConfig? modifier,
     List<VariantStyle<BoxSpec>>? variants,
     bool? inherit,
   }) : this.create(
@@ -253,10 +253,6 @@ class BoxMix extends Style<BoxSpec>
   }
 
   BoxSpecUtility get builder => BoxSpecUtility(this);
-
-  BoxMix text(TextMix value) {
-    return merge(BoxMix.text(value));
-  }
 
   BoxMix transformAlignment(AlignmentGeometry value) {
     return merge(BoxMix.transformAlignment(value));
@@ -448,13 +444,13 @@ class BoxMix extends Style<BoxSpec>
   }
 
   /// Modifier instance method
-  BoxMix modifier(WidgetModifierConfig value) {
+  BoxMix modifier(ModifierConfig value) {
     return merge(BoxMix(modifier: value));
   }
 
   /// Mixin implementation
   @override
-  BoxMix wrap(WidgetModifierConfig value) {
+  BoxMix wrap(ModifierConfig value) {
     return modifier(value);
   }
 

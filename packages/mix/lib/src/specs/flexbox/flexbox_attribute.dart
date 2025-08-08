@@ -3,8 +3,8 @@ import 'package:flutter/widgets.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/style.dart';
-import '../../modifiers/widget_modifier_config.dart';
-import '../../modifiers/widget_modifier_util.dart';
+import '../../modifiers/modifier_config.dart';
+import '../../modifiers/modifier_util.dart';
 import '../../properties/layout/constraints_mix.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/painting/border_mix.dart';
@@ -68,12 +68,12 @@ class FlexBoxMix extends Style<FlexBoxSpec>
   }
 
   /// Factory for widget modifier
-  factory FlexBoxMix.modifier(WidgetModifierConfig modifier) {
+  factory FlexBoxMix.modifier(ModifierConfig modifier) {
     return FlexBoxMix(modifier: modifier);
   }
 
   /// Factory for widget modifier
-  factory FlexBoxMix.wrap(WidgetModifierConfig value) {
+  factory FlexBoxMix.wrap(ModifierConfig value) {
     return FlexBoxMix(modifier: value);
   }
 
@@ -444,13 +444,13 @@ class FlexBoxMix extends Style<FlexBoxSpec>
     return merge(FlexBoxMix.gap(value));
   }
 
-  FlexBoxMix modifier(WidgetModifierConfig value) {
+  FlexBoxMix modifier(ModifierConfig value) {
     return merge(FlexBoxMix(modifier: value));
   }
 
   /// Modifier instance method
   @override
-  FlexBoxMix wrap(WidgetModifierConfig value) {
+  FlexBoxMix wrap(ModifierConfig value) {
     return modifier(value);
   }
 

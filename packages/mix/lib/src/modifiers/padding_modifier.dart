@@ -2,15 +2,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/helpers.dart';
+import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
-import '../core/widget_modifier.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
 import '../properties/layout/edge_insets_geometry_util.dart';
 
-final class PaddingWidgetModifier
-    extends WidgetModifier<PaddingWidgetModifier>
+final class PaddingWidgetModifier extends WidgetModifier<PaddingWidgetModifier>
     with Diagnosticable {
   final EdgeInsetsGeometry padding;
 
@@ -67,8 +66,7 @@ final class PaddingWidgetModifier
 /// Attribute class for configuring [PaddingWidgetModifier] properties.
 ///
 /// Encapsulates padding values for widget spacing and layout.
-class PaddingWidgetModifierMix
-    extends WidgetModifierMix<PaddingWidgetModifier>
+class PaddingWidgetModifierMix extends WidgetModifierMix<PaddingWidgetModifier>
     with Diagnosticable {
   final MixProp<EdgeInsetsGeometry>? padding;
 

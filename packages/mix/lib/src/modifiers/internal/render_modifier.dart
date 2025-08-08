@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import '../../core/widget_modifier.dart';
+import '../../core/modifier.dart';
 
 /// Renders a widget with applied modifiers in the correct order.
 @internal
@@ -19,7 +19,7 @@ class RenderWidgetModifiers extends StatelessWidget {
   final Widget child;
 
   /// List of modifiers to apply to the [child].
-  final List<WidgetModifier> widgetModifiers;
+  final List<Modifier> widgetModifiers;
 
   @override
   Widget build(BuildContext context) {
@@ -32,16 +32,13 @@ class RenderWidgetModifiers extends StatelessWidget {
 
 /// Internal widget that iteratively applies modifiers to a child widget.
 class _RenderWidgetModifiers extends StatelessWidget {
-  const _RenderWidgetModifiers({
-    required this.child,
-    required this.modifiers,
-  });
+  const _RenderWidgetModifiers({required this.child, required this.modifiers});
 
   /// Base widget to transform.
   final Widget child;
 
   /// Modifiers to apply in sequence.
-  final Iterable<WidgetModifier> modifiers;
+  final Iterable<Modifier> modifiers;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +46,7 @@ class _RenderWidgetModifiers extends StatelessWidget {
 
     // Apply each modifier in sequence
     for (final spec in modifiers) {
-      current = spec.build(current);
+      current = spec.build(context, current);
     }
 
     return current;

@@ -5,8 +5,8 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
-import '../../modifiers/widget_modifier_config.dart';
-import '../../modifiers/widget_modifier_util.dart';
+import '../../modifiers/modifier_config.dart';
+import '../../modifiers/modifier_util.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'flex_spec.dart';
@@ -125,7 +125,7 @@ class FlexMix extends Style<FlexSpec>
     Clip? clipBehavior,
     double? gap,
     AnimationConfig? animation,
-    WidgetModifierConfig? modifier,
+    ModifierConfig? modifier,
     List<VariantStyle<FlexSpec>>? variants,
     bool? inherit,
   }) : this.create(
@@ -166,12 +166,12 @@ class FlexMix extends Style<FlexSpec>
       );
 
   /// Factory for widget modifier
-  factory FlexMix.modifier(WidgetModifierConfig modifier) {
+  factory FlexMix.modifier(ModifierConfig modifier) {
     return FlexMix(modifier: modifier);
   }
 
   /// Factory for widget modifier
-  factory FlexMix.wrap(WidgetModifierConfig value) {
+  factory FlexMix.wrap(ModifierConfig value) {
     return FlexMix(modifier: value);
   }
 
@@ -243,7 +243,7 @@ class FlexMix extends Style<FlexSpec>
     return merge(FlexMix.animate(animation));
   }
 
-  FlexMix modifier(WidgetModifierConfig value) {
+  FlexMix modifier(ModifierConfig value) {
     return merge(FlexMix(modifier: value));
   }
 
@@ -332,7 +332,7 @@ class FlexMix extends Style<FlexSpec>
   }
 
   @override
-  FlexMix wrap(WidgetModifierConfig value) {
+  FlexMix wrap(ModifierConfig value) {
     return modifier(value);
   }
 

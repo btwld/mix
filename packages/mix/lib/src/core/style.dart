@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 
 import '../animation/animation_config.dart';
-import '../modifiers/widget_modifier_config.dart';
+import '../modifiers/modifier_config.dart';
 import '../specs/box/box_attribute.dart';
 import '../specs/flex/flex_attribute.dart';
 import '../specs/flexbox/flexbox_attribute.dart';
@@ -15,8 +15,8 @@ import '../variants/variant.dart';
 import 'internal/compare_mixin.dart';
 import 'internal/constants.dart';
 import 'mix_element.dart';
+import 'modifier.dart';
 import 'spec.dart';
-import 'widget_modifier.dart';
 
 /// This is used just to pass all the values into one place if needed
 @internal
@@ -30,14 +30,14 @@ sealed class StyleElement {
 abstract class Style<S extends Spec<S>> extends Mix<S> implements StyleElement {
   final List<VariantStyle<S>>? $variants;
 
-  final WidgetModifierConfig? $modifier;
+  final ModifierConfig? $modifier;
   final AnimationConfig? $animation;
 
   final bool? $inherit;
 
   const Style({
     required List<VariantStyle<S>>? variants,
-    required WidgetModifierConfig? modifier,
+    required ModifierConfig? modifier,
     required AnimationConfig? animation,
     required bool? inherit,
   }) : $modifier = modifier,
@@ -45,15 +45,14 @@ abstract class Style<S extends Spec<S>> extends Mix<S> implements StyleElement {
        $variants = variants,
        $inherit = inherit;
 
+  static BoxMix box(BoxMix value) => value;
+  static TextMix text(TextMix value) => value;
   static IconMix icon(IconMix value) => value;
   static ImageMix image(ImageMix value) => value;
-  static TextMix text(TextMix value) => value;
-  static FlexBoxMix flexbox(FlexBoxMix value) => value;
   static StackMix stack(StackMix value) => value;
-  static StackBoxMix stackBox(StackBoxMix value) => value;
   static FlexMix flex(FlexMix value) => value;
-
-  static BoxMix box(BoxMix value) => value;
+  static FlexBoxMix flexBox(FlexBoxMix value) => value;
+  static StackBoxMix stackBox(StackBoxMix value) => value;
 
   @internal
   Set<WidgetState> get widgetStates {
@@ -239,7 +238,7 @@ final class VariantStyle<S extends Spec<S>> extends Mixable<S>
 class ResolvedStyle<V extends Spec<V>> with Equatable {
   final V? spec;
   final AnimationConfig? animation;
-  final List<WidgetModifier>? widgetModifiers;
+  final List<Modifier>? widgetModifiers;
   final List<Type>? orderOfWidgetModifiers;
   final bool? inherit;
 
@@ -374,7 +373,7 @@ class CompoundStyle extends Style<MultiSpec> {
       animation: animationConfig,
       modifier: modifierList.isEmpty
           ? null
-          : WidgetModifierConfig(modifiers: modifierList),
+          : ModifierConfig(modifiers: modifierList),
       variants: null,
     );
 
@@ -392,10 +391,7 @@ class CompoundStyle extends Style<MultiSpec> {
   CompoundStyle.empty()
     : this._(attributes: [], animation: null, modifier: null, variants: null);
 
-  WidgetModifierConfig? _mergeModifierConfigs(
-    WidgetModifierConfig? a,
-    WidgetModifierConfig? b,
-  ) {
+  ModifierConfig? _mergeModifierConfigs(ModifierConfig? a, ModifierConfig? b) {
     if (a == null) return b;
     if (b == null) return a;
 

@@ -1,10 +1,10 @@
 import 'package:flutter/widgets.dart';
 
 import '../core/helpers.dart';
+import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
-import '../core/widget_modifier.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
 import '../properties/layout/edge_insets_geometry_util.dart';
 
@@ -46,7 +46,11 @@ final class ScrollViewWidgetModifier
     if (other == null) return this;
 
     return ScrollViewWidgetModifier(
-      scrollDirection: MixOps.lerpSnap(scrollDirection, other.scrollDirection, t),
+      scrollDirection: MixOps.lerpSnap(
+        scrollDirection,
+        other.scrollDirection,
+        t,
+      ),
       reverse: MixOps.lerpSnap(reverse, other.reverse, t),
       padding: MixOps.lerp(padding, other.padding, t),
       physics: MixOps.lerpSnap(physics, other.physics, t),

@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' as r;
 import 'package:flutter/widgets.dart' as w;
 
-import '../modifiers/widget_modifier_config.dart';
+import '../modifiers/modifier_config.dart';
 import '../properties/painting/decoration_mix.dart';
 import '../properties/painting/shape_border_mix.dart';
 import '../theme/mix_theme.dart';
 import 'decoration_merge.dart';
+import 'directive.dart';
 import 'internal/deep_collection_equality.dart';
 import 'mix_element.dart';
-import 'directive.dart';
 import 'prop.dart';
 import 'prop_source.dart';
 import 'shape_border_merge.dart';
@@ -444,9 +444,9 @@ extension ListDirectiveExt<T> on List<Directive<T>>? {
   }
 }
 
-extension DirectiveConfigExt on WidgetModifierConfig? {
+extension DirectiveConfigExt on ModifierConfig? {
   @Deprecated('Use direct merge() method instead. Will be removed in v3.0.0')
-  WidgetModifierConfig? tryMerge(WidgetModifierConfig? other) {
+  ModifierConfig? tryMerge(ModifierConfig? other) {
     if (other == null) return this;
     if (this == null) return other;
 

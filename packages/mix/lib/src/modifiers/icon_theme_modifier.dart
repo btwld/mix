@@ -2,10 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/helpers.dart';
+import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
-import '../core/widget_modifier.dart';
 import '../properties/painting/shadow_mix.dart';
 
 /// A modifier that wraps a widget with the [IconTheme] widget.

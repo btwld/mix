@@ -4,8 +4,8 @@ import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
 import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
-import '../../modifiers/widget_modifier_config.dart';
-import '../../modifiers/widget_modifier_util.dart';
+import '../../modifiers/modifier_config.dart';
+import '../../modifiers/modifier_util.dart';
 import '../../properties/painting/color_util.dart';
 import '../../properties/typography/strut_style_util.dart';
 import '../../properties/typography/text_height_behavior_util.dart';
@@ -44,8 +44,7 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
     (v) => mutable.variants([v]),
   );
   late final wrap = WidgetModifierUtility(
-    (prop) =>
-        mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
+    (prop) => mutable.wrap(ModifierConfig(modifiers: [prop])),
   );
 
   // Direct access to commonly used style properties

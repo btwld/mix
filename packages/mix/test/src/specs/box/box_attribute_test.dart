@@ -407,14 +407,14 @@ void main() {
 
     group('Modifier Methods', () {
       test('modifier method sets modifier config', () {
-        final modifier = WidgetModifierConfig();
+        final modifier = ModifierConfig();
         final boxMix = BoxMix().modifier(modifier);
 
         expect(boxMix.$modifier, modifier);
       });
 
       test('wrap method sets modifier config', () {
-        final modifier = WidgetModifierConfig();
+        final modifier = ModifierConfig();
         final boxMix = BoxMix().wrap(modifier);
 
         expect(boxMix.$modifier, modifier);

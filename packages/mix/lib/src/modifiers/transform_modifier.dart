@@ -3,10 +3,10 @@ import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 
 import '../core/helpers.dart';
+import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
-import '../core/widget_modifier.dart';
 
 final class TransformWidgetModifier
     extends WidgetModifier<TransformWidgetModifier> {
@@ -16,10 +16,7 @@ final class TransformWidgetModifier
   const TransformWidgetModifier({this.transform, this.alignment});
 
   @override
-  TransformWidgetModifier copyWith({
-    Matrix4? transform,
-    Alignment? alignment,
-  }) {
+  TransformWidgetModifier copyWith({Matrix4? transform, Alignment? alignment}) {
     return TransformWidgetModifier(
       transform: transform ?? this.transform,
       alignment: alignment ?? this.alignment,

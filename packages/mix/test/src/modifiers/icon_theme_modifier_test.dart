@@ -156,9 +156,7 @@ void main() {
 
     setUp(() {
       utility = IconThemeWidgetModifierUtility(
-        (attr) => BoxMix(
-          modifier: WidgetModifierConfig.modifier(attr),
-        ),
+        (attr) => BoxMix(modifier: ModifierConfig.modifier(attr)),
       );
     });
 
@@ -174,8 +172,7 @@ void main() {
         isA<IconThemeWidgetModifierMix>(),
       );
       final attr =
-          result.$modifier!.$modifiers!.first
-              as IconThemeWidgetModifierMix;
+          result.$modifier!.$modifiers!.first as IconThemeWidgetModifierMix;
       expect(attr.color?.$value, color);
       expect(attr.size?.$value, size);
       expect(attr.opacity?.$value, opacity);
@@ -190,8 +187,7 @@ void main() {
         isA<IconThemeWidgetModifierMix>(),
       );
       final attr =
-          result.$modifier!.$modifiers!.first
-              as IconThemeWidgetModifierMix;
+          result.$modifier!.$modifiers!.first as IconThemeWidgetModifierMix;
       expect(attr.color?.$value, color);
     });
 
@@ -204,8 +200,7 @@ void main() {
         isA<IconThemeWidgetModifierMix>(),
       );
       final attr =
-          result.$modifier!.$modifiers!.first
-              as IconThemeWidgetModifierMix;
+          result.$modifier!.$modifiers!.first as IconThemeWidgetModifierMix;
       expect(attr.size?.$value, size);
     });
 
@@ -218,8 +213,7 @@ void main() {
         isA<IconThemeWidgetModifierMix>(),
       );
       final attr =
-          result.$modifier!.$modifiers!.first
-              as IconThemeWidgetModifierMix;
+          result.$modifier!.$modifiers!.first as IconThemeWidgetModifierMix;
       expect(attr.opacity?.$value, opacity);
     });
   });

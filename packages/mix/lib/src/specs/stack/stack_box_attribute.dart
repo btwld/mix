@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/style.dart';
-import '../../modifiers/widget_modifier_config.dart';
+import '../../modifiers/modifier_config.dart';
 import '../../variants/variant.dart';
 import '../box/box_attribute.dart';
 import 'stack_attribute.dart';
@@ -92,7 +92,7 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
     return merge(StackBoxMix.animate(animation));
   }
 
-  StackBoxMix modifier(WidgetModifierConfig value) {
+  StackBoxMix modifier(ModifierConfig value) {
     return merge(StackBoxMix(modifier: value));
   }
 
@@ -170,7 +170,7 @@ class StackBoxSpecUtility {
   StackBoxMix only({
     BoxMix? box,
     StackMix? stack,
-    WidgetModifierConfig? modifier,
+    ModifierConfig? modifier,
     AnimationConfig? animation,
     List<VariantStyle<ZBoxSpec>>? variants,
   }) {

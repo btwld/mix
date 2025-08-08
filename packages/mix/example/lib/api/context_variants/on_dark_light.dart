@@ -36,7 +36,7 @@ class _ExampleState extends State<Example> {
     );
 
     // Icon style that adapts to dark/light mode
-    final iconStyle = Style.icon(
+    final iconStyle = IconMix()
         .color(Colors.grey.shade800)
         .size(28)
         .icon(Icons.dark_mode)
@@ -44,7 +44,7 @@ class _ExampleState extends State<Example> {
         .onDark(
           .icon(Icons.light_mode)
           .color(Colors.yellow)
-        )
+        
     );
 
     return MediaQuery(

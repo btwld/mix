@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../core/helpers.dart';
+import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
-import '../core/widget_modifier.dart';
 
 class MouseCursorModifier extends WidgetModifier<MouseCursorModifier> {
   final MouseCursor? mouseCursor;

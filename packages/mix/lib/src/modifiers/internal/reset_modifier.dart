@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../core/modifier.dart';
 import '../../core/style.dart';
-import '../../core/widget_modifier.dart';
 
 /// A modifier specification that resets the style context.
 final class ResetWidgetModifier extends WidgetModifier<ResetWidgetModifier>

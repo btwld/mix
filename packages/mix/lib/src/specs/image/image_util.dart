@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
 import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
-import '../../modifiers/widget_modifier_config.dart';
-import '../../modifiers/widget_modifier_util.dart';
+import '../../modifiers/modifier_config.dart';
+import '../../modifiers/modifier_util.dart';
 import '../../properties/painting/color_util.dart';
 import '../../variants/variant_util.dart';
 import 'image_attribute.dart';
@@ -36,8 +36,7 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageSpec> {
   );
 
   late final wrap = WidgetModifierUtility(
-    (prop) =>
-        mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
+    (prop) => mutable.wrap(ModifierConfig(modifiers: [prop])),
   );
 
   /// Internal mutable state for accumulating image styling properties.

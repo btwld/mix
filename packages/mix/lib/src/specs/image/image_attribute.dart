@@ -5,8 +5,8 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
-import '../../modifiers/widget_modifier_config.dart';
-import '../../modifiers/widget_modifier_util.dart';
+import '../../modifiers/modifier_config.dart';
+import '../../modifiers/modifier_util.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'image_spec.dart';
@@ -119,12 +119,12 @@ class ImageMix extends Style<ImageSpec>
   }
 
   /// Factory for widget modifier
-  factory ImageMix.modifier(WidgetModifierConfig modifier) {
+  factory ImageMix.modifier(ModifierConfig modifier) {
     return ImageMix(modifier: modifier);
   }
 
   /// Factory for widget modifier
-  factory ImageMix.wrap(WidgetModifierConfig value) {
+  factory ImageMix.wrap(ModifierConfig value) {
     return ImageMix(modifier: value);
   }
 
@@ -182,7 +182,7 @@ class ImageMix extends Style<ImageSpec>
     bool? isAntiAlias,
     bool? matchTextDirection,
     AnimationConfig? animation,
-    WidgetModifierConfig? modifier,
+    ModifierConfig? modifier,
     List<VariantStyle<ImageSpec>>? variants,
     bool? inherit,
   }) : this.create(
@@ -343,7 +343,7 @@ class ImageMix extends Style<ImageSpec>
     return merge(ImageMix.animate(animation));
   }
 
-  ImageMix modifier(WidgetModifierConfig value) {
+  ImageMix modifier(ModifierConfig value) {
     return merge(ImageMix(modifier: value));
   }
 
@@ -464,7 +464,7 @@ class ImageMix extends Style<ImageSpec>
   }
 
   @override
-  ImageMix wrap(WidgetModifierConfig value) {
+  ImageMix wrap(ModifierConfig value) {
     return modifier(value);
   }
 

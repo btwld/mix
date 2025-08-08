@@ -2,9 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/helpers.dart';
+import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
-import '../core/widget_modifier.dart';
 import '../properties/painting/border_radius_mix.dart';
 
 /// Modifier that clips its child to an oval shape.
@@ -540,10 +540,7 @@ final class ClipTriangleWidgetModifier
   /// This method is typically used in animations to smoothly transition between
   /// different [ClipTriangleWidgetModifier] configurations.
   @override
-  ClipTriangleWidgetModifier lerp(
-    ClipTriangleWidgetModifier? other,
-    double t,
-  ) {
+  ClipTriangleWidgetModifier lerp(ClipTriangleWidgetModifier? other, double t) {
     if (other == null) return this;
 
     return ClipTriangleWidgetModifier(

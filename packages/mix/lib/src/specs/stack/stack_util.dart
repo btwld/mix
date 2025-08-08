@@ -4,8 +4,8 @@ import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
 import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
-import '../../modifiers/widget_modifier_config.dart';
-import '../../modifiers/widget_modifier_util.dart';
+import '../../modifiers/modifier_config.dart';
+import '../../modifiers/modifier_util.dart';
 import '../../variants/variant_util.dart';
 import 'stack_attribute.dart';
 import 'stack_spec.dart';
@@ -28,8 +28,7 @@ class StackSpecUtility extends StyleMutableBuilder<StackSpec> {
   );
 
   late final wrap = WidgetModifierUtility(
-    (prop) =>
-        mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
+    (prop) => mutable.wrap(ModifierConfig(modifiers: [prop])),
   );
 
   /// Internal mutable state for accumulating stack styling properties.

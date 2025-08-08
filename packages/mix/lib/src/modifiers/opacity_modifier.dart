@@ -2,17 +2,16 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/helpers.dart';
+import '../core/modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
-import '../core/widget_modifier.dart';
 import '../theme/tokens/mix_token.dart';
 
 /// A modifier that wraps a widget with the [Opacity] widget.
 ///
 /// The [Opacity] widget is used to make a widget partially transparent.
-final class OpacityWidgetModifier
-    extends WidgetModifier<OpacityWidgetModifier>
+final class OpacityWidgetModifier extends WidgetModifier<OpacityWidgetModifier>
     with Diagnosticable {
   /// The [opacity] argument must not be null and
   /// must be between 0.0 and 1.0 (inclusive).
@@ -73,8 +72,7 @@ final class OpacityWidgetModifier
 ///
 /// Use this class to configure the attributes of a [OpacityWidgetModifier] and pass it to
 /// the [OpacityWidgetModifier] constructor.
-class OpacityWidgetModifierMix
-    extends WidgetModifierMix<OpacityWidgetModifier>
+class OpacityWidgetModifierMix extends WidgetModifierMix<OpacityWidgetModifier>
     with Diagnosticable {
   final Prop<double>? opacity;
 

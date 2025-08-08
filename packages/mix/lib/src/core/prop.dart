@@ -3,9 +3,9 @@ import 'package:flutter/widgets.dart';
 
 import '../animation/animation_config.dart';
 import '../theme/tokens/mix_token.dart';
+import 'directive.dart';
 import 'helpers.dart';
 import 'mix_element.dart';
-import 'directive.dart';
 import 'prop_source.dart';
 
 // ====== Prop Types ======
@@ -42,9 +42,12 @@ class Prop<V> extends PropBase<V> {
   final V? $value;
   final MixToken<V>? $token;
 
-  @protected
   const Prop({V? value, MixToken<V>? token, super.directives, super.animation})
-    : $value = value,
+    : assert(
+        value == null || token == null,
+        'Cannot have both value and token',
+      ),
+      $value = value,
       $token = token;
 
   const Prop.token(

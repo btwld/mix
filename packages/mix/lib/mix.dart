@@ -27,10 +27,11 @@ export 'src/animation/style_animation_driver.dart';
 
 /// CORE
 export 'src/core/breakpoint.dart';
+export 'src/core/directive.dart';
 export 'src/core/extensions/extensions.dart';
 export 'src/core/helpers.dart';
 export 'src/core/mix_element.dart';
-export 'src/core/directive.dart';
+export 'src/core/modifier.dart';
 export 'src/core/pointer_position.dart';
 export 'src/core/prop.dart';
 export 'src/core/prop_refs.dart';
@@ -44,7 +45,6 @@ export 'src/core/style.dart' hide StyleElement;
 export 'src/core/style_builder.dart';
 export 'src/core/style_widget.dart';
 export 'src/core/utility.dart';
-export 'src/core/widget_modifier.dart';
 export 'src/modifiers/align_modifier.dart';
 export 'src/modifiers/aspect_ratio_modifier.dart';
 export 'src/modifiers/clip_modifier.dart';
@@ -52,7 +52,12 @@ export 'src/modifiers/default_text_style_modifier.dart';
 export 'src/modifiers/flexible_modifier.dart';
 export 'src/modifiers/fractionally_sized_box_modifier.dart';
 export 'src/modifiers/icon_theme_modifier.dart';
+export 'src/modifiers/internal/reset_modifier.dart';
 export 'src/modifiers/intrinsic_modifier.dart';
+
+/// PROPERTIES
+export 'src/modifiers/modifier_config.dart';
+export 'src/modifiers/modifier_util.dart';
 export 'src/modifiers/mouse_cursor_modifier.dart';
 export 'src/modifiers/opacity_modifier.dart';
 export 'src/modifiers/padding_modifier.dart';
@@ -61,12 +66,6 @@ export 'src/modifiers/scroll_view_modifier.dart';
 export 'src/modifiers/sized_box_modifier.dart';
 export 'src/modifiers/transform_modifier.dart';
 export 'src/modifiers/visibility_modifier.dart';
-
-/// WIDGET MODIFIERS
-export 'src/modifiers/widget_modifier_config.dart';
-export 'src/modifiers/widget_modifier_util.dart';
-
-/// PROPERTIES
 export 'src/properties/layout/constraints_mix.dart';
 export 'src/properties/layout/constraints_util.dart';
 export 'src/properties/layout/edge_insets_geometry_mix.dart';

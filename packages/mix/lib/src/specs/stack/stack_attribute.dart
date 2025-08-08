@@ -5,8 +5,8 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
-import '../../modifiers/widget_modifier_config.dart';
-import '../../modifiers/widget_modifier_util.dart';
+import '../../modifiers/modifier_config.dart';
+import '../../modifiers/modifier_util.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'stack_spec.dart';
@@ -59,11 +59,11 @@ class StackMix extends Style<StackSpec>
   }
 
   /// Factory for widget modifier
-  factory StackMix.modifier(WidgetModifierConfig modifier) {
+  factory StackMix.modifier(ModifierConfig modifier) {
     return StackMix(modifier: modifier);
   }
 
-  factory StackMix.wrap(WidgetModifierConfig value) {
+  factory StackMix.wrap(ModifierConfig value) {
     return StackMix(modifier: value);
   }
 
@@ -88,7 +88,7 @@ class StackMix extends Style<StackSpec>
     TextDirection? textDirection,
     Clip? clipBehavior,
     AnimationConfig? animation,
-    WidgetModifierConfig? modifier,
+    ModifierConfig? modifier,
     List<VariantStyle<StackSpec>>? variants,
     bool? inherit,
   }) : this.create(
@@ -155,7 +155,7 @@ class StackMix extends Style<StackSpec>
     return merge(StackMix.animate(animation));
   }
 
-  StackMix modifier(WidgetModifierConfig value) {
+  StackMix modifier(ModifierConfig value) {
     return merge(StackMix(modifier: value));
   }
 
@@ -214,7 +214,7 @@ class StackMix extends Style<StackSpec>
   }
 
   @override
-  StackMix wrap(WidgetModifierConfig value) {
+  StackMix wrap(ModifierConfig value) {
     return modifier(value);
   }
 

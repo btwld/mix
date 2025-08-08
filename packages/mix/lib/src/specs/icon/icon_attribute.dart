@@ -5,8 +5,8 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
-import '../../modifiers/widget_modifier_config.dart';
-import '../../modifiers/widget_modifier_util.dart';
+import '../../modifiers/modifier_config.dart';
+import '../../modifiers/modifier_util.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
@@ -107,12 +107,12 @@ class IconMix extends Style<IconSpec>
   }
 
   /// Factory for widget modifier
-  factory IconMix.modifier(WidgetModifierConfig modifier) {
+  factory IconMix.modifier(ModifierConfig modifier) {
     return IconMix(modifier: modifier);
   }
 
   /// Factory for widget modifier
-  factory IconMix.wrap(WidgetModifierConfig value) {
+  factory IconMix.wrap(ModifierConfig value) {
     return IconMix(modifier: value);
   }
 
@@ -161,7 +161,7 @@ class IconMix extends Style<IconSpec>
     BlendMode? blendMode,
     IconData? icon,
     AnimationConfig? animation,
-    WidgetModifierConfig? modifier,
+    ModifierConfig? modifier,
     List<VariantStyle<IconSpec>>? variants,
     bool? inherit,
   }) : this.create(
@@ -287,7 +287,7 @@ class IconMix extends Style<IconSpec>
     return StyledIcon(icon: icon, semanticLabel: semanticLabel, style: this);
   }
 
-  IconMix modifier(WidgetModifierConfig value) {
+  IconMix modifier(ModifierConfig value) {
     return merge(IconMix(modifier: value));
   }
 
@@ -382,7 +382,7 @@ class IconMix extends Style<IconSpec>
   }
 
   @override
-  IconMix wrap(WidgetModifierConfig value) {
+  IconMix wrap(ModifierConfig value) {
     return modifier(value);
   }
 

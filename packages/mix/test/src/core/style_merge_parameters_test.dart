@@ -10,14 +10,14 @@ void main() {
       test('merges orderOfModifiers correctly', () {
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: WidgetModifierConfig.orderOfModifiers([
+          modifier: ModifierConfig.orderOfModifiers([
             OpacityWidgetModifier,
             PaddingWidgetModifier,
           ]),
         );
         final second = BoxMix(
           constraints: BoxConstraintsMix.height(200.0),
-          modifier: WidgetModifierConfig.orderOfModifiers([
+          modifier: ModifierConfig.orderOfModifiers([
             ClipOvalWidgetModifier,
             TransformWidgetModifier,
           ]),
@@ -33,7 +33,7 @@ void main() {
       test('preserves first orderOfModifiers when second is empty', () {
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: WidgetModifierConfig.orderOfModifiers([
+          modifier: ModifierConfig.orderOfModifiers([
             OpacityWidgetModifier,
             PaddingWidgetModifier,
           ]),
@@ -124,13 +124,11 @@ void main() {
 
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: WidgetModifierConfig(modifiers: firstModifiers),
+          modifier: ModifierConfig(modifiers: firstModifiers),
         );
         final second = BoxMix(
           constraints: BoxConstraintsMix.height(200.0),
-          modifier: WidgetModifierConfig(
-            modifiers: secondModifiers,
-          ),
+          modifier: ModifierConfig(modifiers: secondModifiers),
         );
 
         final merged = first.merge(second);
@@ -181,7 +179,7 @@ void main() {
       test('handles null merge correctly', () {
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: WidgetModifierConfig.orderOfModifiers(const [
+          modifier: ModifierConfig.orderOfModifiers(const [
             OpacityWidgetModifier,
           ]),
           inherit: true,
@@ -197,14 +195,14 @@ void main() {
       test('merges orderOfModifiers correctly', () {
         final first = TextMix(
           maxLines: 2,
-          modifier: WidgetModifierConfig.orderOfModifiers(const [
+          modifier: ModifierConfig.orderOfModifiers(const [
             OpacityWidgetModifier,
             PaddingWidgetModifier,
           ]),
         );
         final second = TextMix(
           overflow: TextOverflow.ellipsis,
-          modifier: WidgetModifierConfig.orderOfModifiers(const [
+          modifier: ModifierConfig.orderOfModifiers(const [
             ClipOvalWidgetModifier,
             TransformWidgetModifier,
           ]),
@@ -231,14 +229,14 @@ void main() {
       test('merges orderOfModifiers correctly', () {
         final first = IconMix(
           size: 24.0,
-          modifier: WidgetModifierConfig.orderOfModifiers(const [
+          modifier: ModifierConfig.orderOfModifiers(const [
             OpacityWidgetModifier,
             PaddingWidgetModifier,
           ]),
         );
         final second = IconMix(
           color: Colors.red,
-          modifier: WidgetModifierConfig.orderOfModifiers(const [
+          modifier: ModifierConfig.orderOfModifiers(const [
             ClipOvalWidgetModifier,
             TransformWidgetModifier,
           ]),
@@ -265,14 +263,14 @@ void main() {
       test('merges orderOfModifiers correctly', () {
         final first = FlexMix(
           direction: Axis.horizontal,
-          modifier: WidgetModifierConfig.orderOfModifiers(const [
+          modifier: ModifierConfig.orderOfModifiers(const [
             OpacityWidgetModifier,
             PaddingWidgetModifier,
           ]),
         );
         final second = FlexMix(
           gap: 8.0,
-          modifier: WidgetModifierConfig.orderOfModifiers(const [
+          modifier: ModifierConfig.orderOfModifiers(const [
             ClipOvalWidgetModifier,
             TransformWidgetModifier,
           ]),
@@ -299,14 +297,14 @@ void main() {
       test('merges orderOfModifiers correctly', () {
         final first = ImageMix(
           width: 100.0,
-          modifier: WidgetModifierConfig.orderOfModifiers(const [
+          modifier: ModifierConfig.orderOfModifiers(const [
             OpacityWidgetModifier,
             PaddingWidgetModifier,
           ]),
         );
         final second = ImageMix(
           height: 200.0,
-          modifier: WidgetModifierConfig.orderOfModifiers(const [
+          modifier: ModifierConfig.orderOfModifiers(const [
             ClipOvalWidgetModifier,
             TransformWidgetModifier,
           ]),
@@ -333,14 +331,14 @@ void main() {
       test('merges orderOfModifiers correctly', () {
         final first = StackMix(
           alignment: Alignment.center,
-          modifier: WidgetModifierConfig.orderOfModifiers(const [
+          modifier: ModifierConfig.orderOfModifiers(const [
             OpacityWidgetModifier,
             PaddingWidgetModifier,
           ]),
         );
         final second = StackMix(
           fit: StackFit.expand,
-          modifier: WidgetModifierConfig.orderOfModifiers(const [
+          modifier: ModifierConfig.orderOfModifiers(const [
             ClipOvalWidgetModifier,
             TransformWidgetModifier,
           ]),
@@ -367,14 +365,14 @@ void main() {
       test('merges orderOfModifiers correctly', () {
         final first = FlexBoxMix(
           box: BoxMix.width(100),
-          modifier: WidgetModifierConfig.orderOfModifiers(const [
+          modifier: ModifierConfig.orderOfModifiers(const [
             OpacityWidgetModifier,
             PaddingWidgetModifier,
           ]),
         );
         final second = FlexBoxMix(
           flex: FlexMix.gap(8.0),
-          modifier: WidgetModifierConfig.orderOfModifiers(const [
+          modifier: ModifierConfig.orderOfModifiers(const [
             ClipOvalWidgetModifier,
             TransformWidgetModifier,
           ]),
@@ -401,14 +399,14 @@ void main() {
       test('merges orderOfModifiers correctly', () {
         final first = StackBoxMix(
           box: BoxMix.width(100),
-          modifier: WidgetModifierConfig.orderOfModifiers(const [
+          modifier: ModifierConfig.orderOfModifiers(const [
             OpacityWidgetModifier,
             PaddingWidgetModifier,
           ]),
         );
         final second = StackBoxMix(
           stack: StackMix.alignment(Alignment.center),
-          modifier: WidgetModifierConfig.orderOfModifiers(const [
+          modifier: ModifierConfig.orderOfModifiers(const [
             ClipOvalWidgetModifier,
             TransformWidgetModifier,
           ]),
@@ -438,21 +436,21 @@ void main() {
       test('chained merges preserve final values', () {
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: WidgetModifierConfig.orderOfModifiers(const [
+          modifier: ModifierConfig.orderOfModifiers(const [
             OpacityWidgetModifier,
           ]),
           inherit: true,
         );
         final second = BoxMix(
           constraints: BoxConstraintsMix.height(200.0),
-          modifier: WidgetModifierConfig.orderOfModifiers(const [
+          modifier: ModifierConfig.orderOfModifiers(const [
             PaddingWidgetModifier,
           ]),
           inherit: false,
         );
         final third = BoxMix(
           decoration: DecorationMix.color(Colors.blue),
-          modifier: WidgetModifierConfig.orderOfModifiers(const [
+          modifier: ModifierConfig.orderOfModifiers(const [
             ClipOvalWidgetModifier,
           ]),
           inherit: true,
@@ -471,13 +469,11 @@ void main() {
 
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: WidgetModifierConfig(modifiers: [firstOpacity]),
+          modifier: ModifierConfig(modifiers: [firstOpacity]),
         );
         final second = BoxMix(
           constraints: BoxConstraintsMix.height(200.0),
-          modifier: WidgetModifierConfig(
-            modifiers: [secondOpacity],
-          ),
+          modifier: ModifierConfig(modifiers: [secondOpacity]),
         );
 
         final merged = first.merge(second);
@@ -524,13 +520,13 @@ void main() {
       test('empty orderOfModifiers list behavior', () {
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: WidgetModifierConfig.orderOfModifiers(const [
+          modifier: ModifierConfig.orderOfModifiers(const [
             OpacityWidgetModifier,
           ]),
         );
         final second = BoxMix(
           constraints: BoxConstraintsMix.height(200.0),
-          modifier: WidgetModifierConfig.orderOfModifiers(const []),
+          modifier: ModifierConfig.orderOfModifiers(const []),
         );
 
         final merged = first.merge(second);
@@ -541,7 +537,7 @@ void main() {
       test('null vs empty list handling for modifiers', () {
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: WidgetModifierConfig(
+          modifier: ModifierConfig(
             modifiers: [OpacityWidgetModifierMix(opacity: 0.5)],
           ),
         );
@@ -585,7 +581,7 @@ void main() {
       test('merge with self returns same instance', () {
         final style = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: WidgetModifierConfig.orderOfModifiers(const [
+          modifier: ModifierConfig.orderOfModifiers(const [
             OpacityWidgetModifier,
           ]),
           inherit: true,
@@ -618,7 +614,7 @@ void main() {
       test('mixed null and non-null parameters', () {
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: WidgetModifierConfig.orderOfModifiers(const [
+          modifier: ModifierConfig.orderOfModifiers(const [
             OpacityWidgetModifier,
           ]),
           inherit: null,
@@ -626,7 +622,7 @@ void main() {
         );
         final second = BoxMix(
           constraints: BoxConstraintsMix.height(200.0),
-          modifier: WidgetModifierConfig.orderOfModifiers(const []),
+          modifier: ModifierConfig.orderOfModifiers(const []),
           inherit: true,
           animation: const CurveAnimationConfig(
             duration: Duration(milliseconds: 100),

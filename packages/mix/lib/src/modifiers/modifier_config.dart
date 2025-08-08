@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 
 import '../core/internal/compare_mixin.dart';
+import '../core/modifier.dart';
 import '../core/style.dart';
-import '../core/widget_modifier.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
 import '../properties/painting/border_radius_mix.dart';
 import '../properties/painting/shadow_mix.dart';
@@ -25,64 +25,65 @@ import 'sized_box_modifier.dart';
 import 'transform_modifier.dart';
 import 'visibility_modifier.dart';
 
-final class WidgetModifierConfig with Equatable {
+final class ModifierConfig with Equatable {
   final List<Type>? $orderOfModifiers;
   final List<WidgetModifierMix>? $modifiers;
 
-  const WidgetModifierConfig({
+  const ModifierConfig({
     List<WidgetModifierMix>? modifiers,
     List<Type>? orderOfModifiers,
   }) : $modifiers = modifiers,
        $orderOfModifiers = orderOfModifiers;
 
-  factory WidgetModifierConfig.modifier(WidgetModifierMix value) {
-    return WidgetModifierConfig(modifiers: [value]);
+  factory ModifierConfig.modifier(WidgetModifierMix value) {
+    return ModifierConfig(modifiers: [value]);
   }
 
-  factory WidgetModifierConfig.modifiers(List<WidgetModifierMix> value) {
-    return WidgetModifierConfig(modifiers: value);
+  factory ModifierConfig.modifiers(List<WidgetModifierMix> value) {
+    return ModifierConfig(modifiers: value);
   }
 
-  factory WidgetModifierConfig.orderOfModifiers(List<Type> value) {
-    return WidgetModifierConfig(orderOfModifiers: value);
+  factory ModifierConfig.orderOfModifiers(List<Type> value) {
+    return ModifierConfig(orderOfModifiers: value);
+  }
+  factory ModifierConfig.reset() {
+    return ModifierConfig.modifier(const ResetWidgetModifierMix());
   }
 
-  factory WidgetModifierConfig.opacity(double opacity) {
-    return WidgetModifierConfig.modifier(
-      OpacityWidgetModifierMix(opacity: opacity),
-    );
+  factory ModifierConfig.opacity(double opacity) {
+    return ModifierConfig.modifier(OpacityWidgetModifierMix(opacity: opacity));
   }
 
-  factory WidgetModifierConfig.aspectRatio(double aspectRatio) {
-    return WidgetModifierConfig.modifier(
+  factory ModifierConfig.aspectRatio(double aspectRatio) {
+    return ModifierConfig.modifier(
       AspectRatioWidgetModifierMix(aspectRatio: aspectRatio),
     );
   }
 
-  factory WidgetModifierConfig.clipOval({
+  factory ModifierConfig.clipOval({
     CustomClipper<Rect>? clipper,
     Clip? clipBehavior,
   }) {
-    return WidgetModifierConfig.modifier(
+    return ModifierConfig.modifier(
       ClipOvalWidgetModifierMix(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
-  factory WidgetModifierConfig.clipRect({
+  factory ModifierConfig.clipRect({
     CustomClipper<Rect>? clipper,
     Clip? clipBehavior,
   }) {
-    return WidgetModifierConfig.modifier(
+    return ModifierConfig.modifier(
       ClipRectWidgetModifierMix(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
-  factory WidgetModifierConfig.clipRRect({
+  factory ModifierConfig.clipRRect({
     BorderRadiusGeometryMix? borderRadius,
     CustomClipper<RRect>? clipper,
     Clip? clipBehavior,
   }) {
-    return WidgetModifierConfig.modifier(
+    return ModifierConfig.modifier(
       ClipRRectWidgetModifierMix(
         borderRadius: borderRadius,
         clipper: clipper,
@@ -91,53 +92,50 @@ final class WidgetModifierConfig with Equatable {
     );
   }
 
-  factory WidgetModifierConfig.clipPath({
+  factory ModifierConfig.clipPath({
     CustomClipper<Path>? clipper,
     Clip? clipBehavior,
   }) {
-    return WidgetModifierConfig.modifier(
+    return ModifierConfig.modifier(
       ClipPathWidgetModifierMix(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
-  factory WidgetModifierConfig.clipTriangle({Clip? clipBehavior}) {
-    return WidgetModifierConfig.modifier(
+  factory ModifierConfig.clipTriangle({Clip? clipBehavior}) {
+    return ModifierConfig.modifier(
       ClipTriangleWidgetModifierMix(clipBehavior: clipBehavior),
     );
   }
 
-  factory WidgetModifierConfig.transform({
-    Matrix4? transform,
-    Alignment? alignment,
-  }) {
-    return WidgetModifierConfig.modifier(
+  factory ModifierConfig.transform({Matrix4? transform, Alignment? alignment}) {
+    return ModifierConfig.modifier(
       TransformWidgetModifierMix(transform: transform, alignment: alignment),
     );
   }
 
   /// Scale using tarnsform
-  factory WidgetModifierConfig.scale(
+  factory ModifierConfig.scale(
     double scale, {
     Alignment alignment = Alignment.center,
   }) {
-    return WidgetModifierConfig.transform(
+    return ModifierConfig.transform(
       transform: Matrix4.diagonal3Values(scale, scale, 1.0),
       alignment: alignment,
     );
   }
 
-  factory WidgetModifierConfig.visibility(bool visible) {
-    return WidgetModifierConfig.modifier(
+  factory ModifierConfig.visibility(bool visible) {
+    return ModifierConfig.modifier(
       VisibilityWidgetModifierMix(visible: visible),
     );
   }
 
-  factory WidgetModifierConfig.align({
+  factory ModifierConfig.align({
     AlignmentGeometry? alignment,
     double? widthFactor,
     double? heightFactor,
   }) {
-    return WidgetModifierConfig.modifier(
+    return ModifierConfig.modifier(
       AlignWidgetModifierMix(
         alignment: alignment,
         widthFactor: widthFactor,
@@ -146,48 +144,42 @@ final class WidgetModifierConfig with Equatable {
     );
   }
 
-  factory WidgetModifierConfig.padding(EdgeInsetsGeometryMix? padding) {
-    return WidgetModifierConfig.modifier(
-      PaddingWidgetModifierMix(padding: padding),
-    );
+  factory ModifierConfig.padding(EdgeInsetsGeometryMix? padding) {
+    return ModifierConfig.modifier(PaddingWidgetModifierMix(padding: padding));
   }
 
-  factory WidgetModifierConfig.sizedBox({double? width, double? height}) {
-    return WidgetModifierConfig.modifier(
+  factory ModifierConfig.sizedBox({double? width, double? height}) {
+    return ModifierConfig.modifier(
       SizedBoxWidgetModifierMix(width: width, height: height),
     );
   }
 
-  factory WidgetModifierConfig.flexible({int? flex, FlexFit? fit}) {
-    return WidgetModifierConfig.modifier(
+  factory ModifierConfig.flexible({int? flex, FlexFit? fit}) {
+    return ModifierConfig.modifier(
       FlexibleWidgetModifierMix(flex: flex, fit: fit),
     );
   }
 
-  factory WidgetModifierConfig.rotatedBox(int quarterTurns) {
-    return WidgetModifierConfig.modifier(
+  factory ModifierConfig.rotatedBox(int quarterTurns) {
+    return ModifierConfig.modifier(
       RotatedBoxWidgetModifierMix(quarterTurns: quarterTurns),
     );
   }
 
-  factory WidgetModifierConfig.intrinsicHeight() {
-    return WidgetModifierConfig.modifier(
-      const IntrinsicHeightWidgetModifierMix(),
-    );
+  factory ModifierConfig.intrinsicHeight() {
+    return ModifierConfig.modifier(const IntrinsicHeightWidgetModifierMix());
   }
 
-  factory WidgetModifierConfig.intrinsicWidth() {
-    return WidgetModifierConfig.modifier(
-      const IntrinsicWidthWidgetModifierMix(),
-    );
+  factory ModifierConfig.intrinsicWidth() {
+    return ModifierConfig.modifier(const IntrinsicWidthWidgetModifierMix());
   }
 
-  factory WidgetModifierConfig.fractionallySizedBox({
+  factory ModifierConfig.fractionallySizedBox({
     double? widthFactor,
     double? heightFactor,
     AlignmentGeometry? alignment,
   }) {
-    return WidgetModifierConfig.modifier(
+    return ModifierConfig.modifier(
       FractionallySizedBoxWidgetModifierMix(
         widthFactor: widthFactor,
         heightFactor: heightFactor,
@@ -196,7 +188,7 @@ final class WidgetModifierConfig with Equatable {
     );
   }
 
-  factory WidgetModifierConfig.defaultTextStyle({
+  factory ModifierConfig.defaultTextStyle({
     TextStyleMix? style,
     TextAlign? textAlign,
     bool? softWrap,
@@ -205,7 +197,7 @@ final class WidgetModifierConfig with Equatable {
     TextWidthBasis? textWidthBasis,
     TextHeightBehaviorMix? textHeightBehavior,
   }) {
-    return WidgetModifierConfig.modifier(
+    return ModifierConfig.modifier(
       DefaultTextStyleWidgetModifierMix(
         style: style,
         textAlign: textAlign,
@@ -218,8 +210,8 @@ final class WidgetModifierConfig with Equatable {
     );
   }
 
-  factory WidgetModifierConfig.defaultText(TextMix textMix) {
-    return WidgetModifierConfig.modifier(
+  factory ModifierConfig.defaultText(TextMix textMix) {
+    return ModifierConfig.modifier(
       DefaultTextStyleWidgetModifierMix.create(
         style: textMix.$style,
         textAlign: textMix.$textAlign,
@@ -232,7 +224,7 @@ final class WidgetModifierConfig with Equatable {
     );
   }
 
-  factory WidgetModifierConfig.iconTheme({
+  factory ModifierConfig.iconTheme({
     Color? color,
     double? size,
     double? fill,
@@ -243,7 +235,7 @@ final class WidgetModifierConfig with Equatable {
     List<Shadow>? shadows,
     bool? applyTextScaling,
   }) {
-    return WidgetModifierConfig.modifier(
+    return ModifierConfig.modifier(
       IconThemeWidgetModifierMix(
         color: color,
         size: size,
@@ -256,6 +248,20 @@ final class WidgetModifierConfig with Equatable {
         applyTextScaling: applyTextScaling,
       ),
     );
+  }
+
+  void _mergeWithReset(
+    Map<Object, WidgetModifierMix> acc,
+    Iterable<WidgetModifierMix> list,
+  ) {
+    for (final m in list) {
+      final key = m.mergeKey;
+      if (key == ResetWidgetModifierMix().mergeKey) {
+        acc.clear();
+        continue;
+      }
+      acc[key] = acc[key]?.merge(m) ?? m;
+    }
   }
 
   /// Orders modifiers according to the specified order or default order
@@ -288,56 +294,41 @@ final class WidgetModifierConfig with Equatable {
     return orderedSpecs;
   }
 
-  WidgetModifierConfig scale(
-    double scale, {
-    Alignment alignment = Alignment.center,
-  }) {
-    return merge(WidgetModifierConfig.scale(scale, alignment: alignment));
+  ModifierConfig scale(double scale, {Alignment alignment = Alignment.center}) {
+    return merge(ModifierConfig.scale(scale, alignment: alignment));
   }
 
-  WidgetModifierConfig opacity(double value) {
-    return merge(WidgetModifierConfig.opacity(value));
+  ModifierConfig opacity(double value) {
+    return merge(ModifierConfig.opacity(value));
   }
 
-  WidgetModifierConfig aspectRatio(double value) {
-    return merge(WidgetModifierConfig.aspectRatio(value));
+  ModifierConfig aspectRatio(double value) {
+    return merge(ModifierConfig.aspectRatio(value));
   }
 
-  WidgetModifierConfig clipOval({
-    CustomClipper<Rect>? clipper,
-    Clip? clipBehavior,
-  }) {
+  ModifierConfig clipOval({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
     return merge(
-      WidgetModifierConfig.clipOval(
-        clipper: clipper,
-        clipBehavior: clipBehavior,
-      ),
+      ModifierConfig.clipOval(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
-  WidgetModifierConfig clipRect({
-    CustomClipper<Rect>? clipper,
-    Clip? clipBehavior,
-  }) {
+  ModifierConfig clipRect({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
     return merge(
-      WidgetModifierConfig.clipRect(
-        clipper: clipper,
-        clipBehavior: clipBehavior,
-      ),
+      ModifierConfig.clipRect(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
-  WidgetModifierConfig modifiers(List<WidgetModifierMix> value) {
-    return merge(WidgetModifierConfig.modifiers(value));
+  ModifierConfig modifiers(List<WidgetModifierMix> value) {
+    return merge(ModifierConfig.modifiers(value));
   }
 
-  WidgetModifierConfig clipRRect({
+  ModifierConfig clipRRect({
     BorderRadiusGeometryMix? borderRadius,
     CustomClipper<RRect>? clipper,
     Clip? clipBehavior,
   }) {
     return merge(
-      WidgetModifierConfig.clipRRect(
+      ModifierConfig.clipRRect(
         borderRadius: borderRadius,
         clipper: clipper,
         clipBehavior: clipBehavior,
@@ -345,44 +336,33 @@ final class WidgetModifierConfig with Equatable {
     );
   }
 
-  WidgetModifierConfig clipPath({
-    CustomClipper<Path>? clipper,
-    Clip? clipBehavior,
-  }) {
+  ModifierConfig clipPath({CustomClipper<Path>? clipper, Clip? clipBehavior}) {
     return merge(
-      WidgetModifierConfig.clipPath(
-        clipper: clipper,
-        clipBehavior: clipBehavior,
-      ),
+      ModifierConfig.clipPath(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
-  WidgetModifierConfig clipTriangle({Clip? clipBehavior}) {
+  ModifierConfig clipTriangle({Clip? clipBehavior}) {
+    return merge(ModifierConfig.clipTriangle(clipBehavior: clipBehavior));
+  }
+
+  ModifierConfig transform({Matrix4? transform, Alignment? alignment}) {
     return merge(
-      WidgetModifierConfig.clipTriangle(clipBehavior: clipBehavior),
+      ModifierConfig.transform(transform: transform, alignment: alignment),
     );
   }
 
-  WidgetModifierConfig transform({Matrix4? transform, Alignment? alignment}) {
-    return merge(
-      WidgetModifierConfig.transform(
-        transform: transform,
-        alignment: alignment,
-      ),
-    );
+  ModifierConfig visibility(bool visible) {
+    return merge(ModifierConfig.visibility(visible));
   }
 
-  WidgetModifierConfig visibility(bool visible) {
-    return merge(WidgetModifierConfig.visibility(visible));
-  }
-
-  WidgetModifierConfig align({
+  ModifierConfig align({
     AlignmentGeometry? alignment,
     double? widthFactor,
     double? heightFactor,
   }) {
     return merge(
-      WidgetModifierConfig.align(
+      ModifierConfig.align(
         alignment: alignment,
         widthFactor: widthFactor,
         heightFactor: heightFactor,
@@ -390,37 +370,37 @@ final class WidgetModifierConfig with Equatable {
     );
   }
 
-  WidgetModifierConfig padding(EdgeInsetsGeometryMix? padding) {
-    return merge(WidgetModifierConfig.padding(padding));
+  ModifierConfig padding(EdgeInsetsGeometryMix? padding) {
+    return merge(ModifierConfig.padding(padding));
   }
 
-  WidgetModifierConfig sizedBox({double? width, double? height}) {
-    return merge(WidgetModifierConfig.sizedBox(width: width, height: height));
+  ModifierConfig sizedBox({double? width, double? height}) {
+    return merge(ModifierConfig.sizedBox(width: width, height: height));
   }
 
-  WidgetModifierConfig flexible({int? flex, FlexFit? fit}) {
-    return merge(WidgetModifierConfig.flexible(flex: flex, fit: fit));
+  ModifierConfig flexible({int? flex, FlexFit? fit}) {
+    return merge(ModifierConfig.flexible(flex: flex, fit: fit));
   }
 
-  WidgetModifierConfig rotatedBox(int quarterTurns) {
-    return merge(WidgetModifierConfig.rotatedBox(quarterTurns));
+  ModifierConfig rotatedBox(int quarterTurns) {
+    return merge(ModifierConfig.rotatedBox(quarterTurns));
   }
 
-  WidgetModifierConfig intrinsicHeight() {
-    return merge(WidgetModifierConfig.intrinsicHeight());
+  ModifierConfig intrinsicHeight() {
+    return merge(ModifierConfig.intrinsicHeight());
   }
 
-  WidgetModifierConfig intrinsicWidth() {
-    return merge(WidgetModifierConfig.intrinsicWidth());
+  ModifierConfig intrinsicWidth() {
+    return merge(ModifierConfig.intrinsicWidth());
   }
 
-  WidgetModifierConfig fractionallySizedBox({
+  ModifierConfig fractionallySizedBox({
     double? widthFactor,
     double? heightFactor,
     AlignmentGeometry? alignment,
   }) {
     return merge(
-      WidgetModifierConfig.fractionallySizedBox(
+      ModifierConfig.fractionallySizedBox(
         widthFactor: widthFactor,
         heightFactor: heightFactor,
         alignment: alignment,
@@ -428,7 +408,7 @@ final class WidgetModifierConfig with Equatable {
     );
   }
 
-  WidgetModifierConfig defaultTextStyle({
+  ModifierConfig defaultTextStyle({
     TextStyleMix? style,
     TextAlign? textAlign,
     bool? softWrap,
@@ -438,7 +418,7 @@ final class WidgetModifierConfig with Equatable {
     TextHeightBehaviorMix? textHeightBehavior,
   }) {
     return merge(
-      WidgetModifierConfig.defaultTextStyle(
+      ModifierConfig.defaultTextStyle(
         style: style,
         textAlign: textAlign,
         softWrap: softWrap,
@@ -450,22 +430,22 @@ final class WidgetModifierConfig with Equatable {
     );
   }
 
-  WidgetModifierConfig defaultText(TextMix textMix) {
-    return merge(WidgetModifierConfig.defaultText(textMix));
+  ModifierConfig defaultText(TextMix textMix) {
+    return merge(ModifierConfig.defaultText(textMix));
   }
 
-  WidgetModifierConfig modifier(WidgetModifierMix value) {
-    return merge(WidgetModifierConfig.modifier(value));
+  ModifierConfig modifier(WidgetModifierMix value) {
+    return merge(ModifierConfig.modifier(value));
   }
 
-  WidgetModifierConfig orderOfModifiers(List<Type> value) {
-    return merge(WidgetModifierConfig.orderOfModifiers(value));
+  ModifierConfig orderOfModifiers(List<Type> value) {
+    return merge(ModifierConfig.orderOfModifiers(value));
   }
 
-  WidgetModifierConfig merge(WidgetModifierConfig? other) {
+  ModifierConfig merge(ModifierConfig? other) {
     if (other == null) return this;
 
-    return WidgetModifierConfig(
+    return ModifierConfig(
       modifiers: mergeModifierLists($modifiers, other.$modifiers),
       orderOfModifiers: (other.$orderOfModifiers?.isNotEmpty == true)
           ? other.$orderOfModifiers
@@ -484,40 +464,31 @@ final class WidgetModifierConfig with Equatable {
 
     final Map<Object, WidgetModifierMix> merged = {};
 
-    // Add current modifiers
-    for (final modifier in current) {
-      merged[modifier.mergeKey] = modifier;
-    }
-
-    // Merge or add other modifiers
-    for (final modifier in other) {
-      final key = modifier.mergeKey;
-
-      /// If the other modifiers is a reset, clear the merged map
-      if (key == ResetWidgetModifierMix().mergeKey) {
-        merged.clear();
-        continue;
-      }
-      final existing = merged[key];
-      merged[key] = existing != null ? existing.merge(modifier) : modifier;
-    }
+    _mergeWithReset(merged, current);
+    _mergeWithReset(merged, other);
 
     return merged.values.toList();
   }
 
   /// Resolves the modifiers into a properly ordered list ready for rendering.
   /// Its important to order the list before resolving to ensure the correct order of modifiers
-  List<WidgetModifier> resolve(BuildContext context) {
+  List<Modifier> resolve(BuildContext context) {
     if ($modifiers == null || $modifiers!.isEmpty) return [];
 
     // Resolve each modifier attribute to its corresponding modifier spec
     final resolvedModifiers = <WidgetModifier>[];
     for (final attribute in $modifiers!) {
       final resolved = attribute.resolve(context);
-      resolvedModifiers.add(resolved as WidgetModifier);
+      // Filter out reset specs so they never reach rendering
+      if (resolved is! ResetWidgetModifier) {
+        resolvedModifiers.add(resolved as WidgetModifier);
+      }
     }
 
-    return reorderModifiers(resolvedModifiers).cast();
+    final ordered = reorderModifiers(resolvedModifiers);
+
+    // Map legacy WidgetModifier to unified Modifier via adapter
+    return ordered.map<Modifier>((m) => LegacyModifierAdapter(m)).toList();
   }
 
   @override

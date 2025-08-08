@@ -6,8 +6,8 @@ import '../../core/directive.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
-import '../../modifiers/widget_modifier_config.dart';
-import '../../modifiers/widget_modifier_util.dart';
+import '../../modifiers/modifier_config.dart';
+import '../../modifiers/modifier_util.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../properties/typography/strut_style_mix.dart';
 import '../../properties/typography/text_height_behavior_mix.dart';
@@ -259,12 +259,12 @@ class TextMix extends Style<TextSpec>
   }
 
   /// Factory for widget modifier
-  factory TextMix.modifier(WidgetModifierConfig modifier) {
+  factory TextMix.modifier(ModifierConfig modifier) {
     return TextMix(modifier: modifier);
   }
 
   /// Factory for widget modifier
-  factory TextMix.wrap(WidgetModifierConfig value) {
+  factory TextMix.wrap(ModifierConfig value) {
     return TextMix(modifier: value);
   }
 
@@ -319,7 +319,7 @@ class TextMix extends Style<TextSpec>
     String? semanticsLabel,
     Locale? locale,
     AnimationConfig? animation,
-    WidgetModifierConfig? modifier,
+    ModifierConfig? modifier,
     List<VariantStyle<TextSpec>>? variants,
     bool? inherit,
   }) : this.create(
@@ -596,7 +596,7 @@ class TextMix extends Style<TextSpec>
     return merge(TextMix.animate(animation));
   }
 
-  TextMix modifier(WidgetModifierConfig value) {
+  TextMix modifier(ModifierConfig value) {
     return merge(TextMix(modifier: value));
   }
 
@@ -736,7 +736,7 @@ class TextMix extends Style<TextSpec>
   }
 
   @override
-  TextMix wrap(WidgetModifierConfig value) {
+  TextMix wrap(ModifierConfig value) {
     return modifier(value);
   }
 
