@@ -7,9 +7,9 @@ import '../../core/modifier.dart';
 
 /// Renders a widget with applied modifiers in the correct order.
 @internal
-class RenderWidgetModifiers extends StatelessWidget {
+class RenderModifiers extends StatelessWidget {
   /// Creates a widget that applies [widgetModifiers] to a [child] widget.
-  const RenderWidgetModifiers({
+  const RenderModifiers({
     required this.child,
     required this.widgetModifiers,
     super.key,
@@ -23,7 +23,7 @@ class RenderWidgetModifiers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _RenderWidgetModifiers(
+    return _RenderModifiers(
       modifiers: widgetModifiers.reversed,
       child: child,
     );
@@ -31,8 +31,8 @@ class RenderWidgetModifiers extends StatelessWidget {
 }
 
 /// Internal widget that iteratively applies modifiers to a child widget.
-class _RenderWidgetModifiers extends StatelessWidget {
-  const _RenderWidgetModifiers({required this.child, required this.modifiers});
+class _RenderModifiers extends StatelessWidget {
+  const _RenderModifiers({required this.child, required this.modifiers});
 
   /// Base widget to transform.
   final Widget child;

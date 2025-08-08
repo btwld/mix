@@ -8,42 +8,39 @@ import '../core/style.dart';
 import '../core/utility.dart';
 import '../theme/tokens/mix_token.dart';
 
-final class AspectRatioWidgetModifier
-    extends Modifier<AspectRatioWidgetModifier>
+final class AspectRatioModifier extends Modifier<AspectRatioModifier>
     with Diagnosticable {
   final double aspectRatio;
 
-  const AspectRatioWidgetModifier([double? aspectRatio])
+  const AspectRatioModifier([double? aspectRatio])
     : aspectRatio = aspectRatio ?? 1.0;
 
-  /// Creates a copy of this [AspectRatioWidgetModifier] but with the given fields
+  /// Creates a copy of this [AspectRatioModifier] but with the given fields
   /// replaced with the new values.
   @override
-  AspectRatioWidgetModifier copyWith({double? aspectRatio}) {
-    return AspectRatioWidgetModifier(aspectRatio ?? this.aspectRatio);
+  AspectRatioModifier copyWith({double? aspectRatio}) {
+    return AspectRatioModifier(aspectRatio ?? this.aspectRatio);
   }
 
-  /// Linearly interpolates between this [AspectRatioWidgetModifier] and another [AspectRatioWidgetModifier] based on the given parameter [t].
+  /// Linearly interpolates between this [AspectRatioModifier] and another [AspectRatioModifier] based on the given parameter [t].
   ///
   /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [AspectRatioWidgetModifier] is returned. When [t] is 1.0, the [other] [AspectRatioWidgetModifier] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [AspectRatioWidgetModifier] is returned.
+  /// When [t] is 0.0, the current [AspectRatioModifier] is returned. When [t] is 1.0, the [other] [AspectRatioModifier] is returned.
+  /// For values of [t] between 0.0 and 1.0, an interpolated [AspectRatioModifier] is returned.
   ///
-  /// If [other] is null, this method returns the current [AspectRatioWidgetModifier] instance.
+  /// If [other] is null, this method returns the current [AspectRatioModifier] instance.
   ///
-  /// The interpolation is performed on each property of the [AspectRatioWidgetModifier] using the appropriate
+  /// The interpolation is performed on each property of the [AspectRatioModifier] using the appropriate
   /// interpolation method:
   /// - [MixOps.lerp] for [aspectRatio].
 
   /// This method is typically used in animations to smoothly transition between
-  /// different [AspectRatioWidgetModifier] configurations.
+  /// different [AspectRatioModifier] configurations.
   @override
-  AspectRatioWidgetModifier lerp(AspectRatioWidgetModifier? other, double t) {
+  AspectRatioModifier lerp(AspectRatioModifier? other, double t) {
     if (other == null) return this;
 
-    return AspectRatioWidgetModifier(
-      MixOps.lerp(aspectRatio, other.aspectRatio, t)!,
-    );
+    return AspectRatioModifier(MixOps.lerp(aspectRatio, other.aspectRatio, t)!);
   }
 
   @override
@@ -54,10 +51,10 @@ final class AspectRatioWidgetModifier
     );
   }
 
-  /// The list of properties that constitute the state of this [AspectRatioWidgetModifier].
+  /// The list of properties that constitute the state of this [AspectRatioModifier].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [AspectRatioWidgetModifier] instances for equality.
+  /// compare two [AspectRatioModifier] instances for equality.
   @override
   List<Object?> get props => [aspectRatio];
 
@@ -67,49 +64,48 @@ final class AspectRatioWidgetModifier
   }
 }
 
-/// Represents the attributes of a [AspectRatioWidgetModifier].
+/// Represents the attributes of a [AspectRatioModifier].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [AspectRatioWidgetModifier].
+/// appearance of a [AspectRatioModifier].
 ///
-/// Use this class to configure the attributes of a [AspectRatioWidgetModifier] and pass it to
-/// the [AspectRatioWidgetModifier] constructor.
-class AspectRatioWidgetModifierMix
-    extends WidgetModifierMix<AspectRatioWidgetModifier>
+/// Use this class to configure the attributes of a [AspectRatioModifier] and pass it to
+/// the [AspectRatioModifier] constructor.
+class AspectRatioModifierMix extends ModifierMix<AspectRatioModifier>
     with Diagnosticable {
   final Prop<double>? aspectRatio;
 
-  const AspectRatioWidgetModifierMix.create({this.aspectRatio});
+  const AspectRatioModifierMix.create({this.aspectRatio});
 
-  AspectRatioWidgetModifierMix({double? aspectRatio})
+  AspectRatioModifierMix({double? aspectRatio})
     : this.create(aspectRatio: Prop.maybe(aspectRatio));
 
-  /// Resolves to [AspectRatioWidgetModifier] using the provided [BuildContext].
+  /// Resolves to [AspectRatioModifier] using the provided [BuildContext].
   ///
   /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final aspectRatioWidgetModifier = AspectRatioWidgetModifierMix(...).resolve(mix);
+  /// final aspectRatioModifier = AspectRatioModifierMix(...).resolve(mix);
   /// ```
   @override
-  AspectRatioWidgetModifier resolve(BuildContext context) {
-    return AspectRatioWidgetModifier(aspectRatio?.resolveProp(context));
+  AspectRatioModifier resolve(BuildContext context) {
+    return AspectRatioModifier(aspectRatio?.resolveProp(context));
   }
 
-  /// Merges the properties of this [AspectRatioWidgetModifierMix] with the properties of [other].
+  /// Merges the properties of this [AspectRatioModifierMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [AspectRatioWidgetModifierMix] with the properties of [other] taking precedence over
+  /// [AspectRatioModifierMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  AspectRatioWidgetModifierMix merge(AspectRatioWidgetModifierMix? other) {
+  AspectRatioModifierMix merge(AspectRatioModifierMix? other) {
     if (other == null) return this;
 
-    return AspectRatioWidgetModifierMix.create(
+    return AspectRatioModifierMix.create(
       aspectRatio: MixOps.merge(aspectRatio, other.aspectRatio),
     );
   }
@@ -125,24 +121,24 @@ class AspectRatioWidgetModifierMix
   /// The list of properties that constitute the state of this [AspectRatioWidgetModifierMix].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [AspectRatioWidgetModifierMix] instances for equality.
+  /// compare two [AspectRatioModifierMix] instances for equality.
   @override
   List<Object?> get props => [aspectRatio];
 }
 
-final class AspectRatioWidgetModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, AspectRatioWidgetModifierMix> {
-  const AspectRatioWidgetModifierUtility(super.builder);
+final class AspectRatioModifierUtility<T extends Style<Object?>>
+    extends MixUtility<T, AspectRatioModifierMix> {
+  const AspectRatioModifierUtility(super.builder);
 
   T call(double value) {
     return builder(
-      AspectRatioWidgetModifierMix.create(aspectRatio: Prop.value(value)),
+      AspectRatioModifierMix.create(aspectRatio: Prop.value(value)),
     );
   }
 
   T token(MixToken<double> token) {
     return builder(
-      AspectRatioWidgetModifierMix.create(aspectRatio: Prop.token(token)),
+      AspectRatioModifierMix.create(aspectRatio: Prop.token(token)),
     );
   }
 }

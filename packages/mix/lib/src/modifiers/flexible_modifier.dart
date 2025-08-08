@@ -8,43 +8,43 @@ import '../core/style.dart';
 import '../core/utility.dart';
 import '../theme/tokens/mix_token.dart';
 
-final class FlexibleWidgetModifier extends Modifier<FlexibleWidgetModifier>
+final class FlexibleModifier extends Modifier<FlexibleModifier>
     with Diagnosticable {
   final int? flex;
   final FlexFit? fit;
-  const FlexibleWidgetModifier({this.flex, this.fit});
+  const FlexibleModifier({this.flex, this.fit});
 
-  /// Creates a copy of this [FlexibleWidgetModifier] but with the given fields
+  /// Creates a copy of this [FlexibleModifier] but with the given fields
   /// replaced with the new values.
   @override
-  FlexibleWidgetModifier copyWith({int? flex, FlexFit? fit}) {
-    return FlexibleWidgetModifier(
+  FlexibleModifier copyWith({int? flex, FlexFit? fit}) {
+    return FlexibleModifier(
       flex: flex ?? this.flex,
       fit: fit ?? this.fit,
     );
   }
 
-  /// Linearly interpolates between this [FlexibleWidgetModifier] and another [FlexibleWidgetModifier] based on the given parameter [t].
+  /// Linearly interpolates between this [FlexibleModifier] and another [FlexibleModifier] based on the given parameter [t].
   ///
   /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [FlexibleWidgetModifier] is returned. When [t] is 1.0, the [other] [FlexibleWidgetModifier] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [FlexibleWidgetModifier] is returned.
+  /// When [t] is 0.0, the current [FlexibleModifier] is returned. When [t] is 1.0, the [other] [FlexibleModifier] is returned.
+  /// For values of [t] between 0.0 and 1.0, an interpolated [FlexibleModifier] is returned.
   ///
-  /// If [other] is null, this method returns the current [FlexibleWidgetModifier] instance.
+  /// If [other] is null, this method returns the current [FlexibleModifier] instance.
   ///
-  /// The interpolation is performed on each property of the [FlexibleWidgetModifier] using the appropriate
+  /// The interpolation is performed on each property of the [FlexibleModifier] using the appropriate
   /// interpolation method:
   /// For [flex] and [fit], the interpolation is performed using a step function.
-  /// If [t] is less than 0.5, the value from the current [FlexibleWidgetModifier] is used. Otherwise, the value
-  /// from the [other] [FlexibleWidgetModifier] is used.
+  /// If [t] is less than 0.5, the value from the current [FlexibleModifier] is used. Otherwise, the value
+  /// from the [other] [FlexibleModifier] is used.
   ///
   /// This method is typically used in animations to smoothly transition between
-  /// different [FlexibleWidgetModifier] configurations.
+  /// different [FlexibleModifier] configurations.
   @override
-  FlexibleWidgetModifier lerp(FlexibleWidgetModifier? other, double t) {
+  FlexibleModifier lerp(FlexibleModifier? other, double t) {
     if (other == null) return this;
 
-    return FlexibleWidgetModifier(
+    return FlexibleModifier(
       flex: MixOps.lerpSnap(flex, other.flex, t),
       fit: MixOps.lerpSnap(fit, other.fit, t),
     );
@@ -57,10 +57,10 @@ final class FlexibleWidgetModifier extends Modifier<FlexibleWidgetModifier>
     properties.add(DiagnosticsProperty('fit', fit, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [FlexibleWidgetModifier].
+  /// The list of properties that constitute the state of this [FlexibleModifier].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [FlexibleWidgetModifier] instances for equality.
+  /// compare two [FlexibleModifier] instances for equality.
   @override
   List<Object?> get props => [flex, fit];
 
@@ -70,53 +70,53 @@ final class FlexibleWidgetModifier extends Modifier<FlexibleWidgetModifier>
   }
 }
 
-/// Represents the attributes of a [FlexibleWidgetModifier].
+/// Represents the attributes of a [FlexibleModifier].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [FlexibleWidgetModifier].
+/// appearance of a [FlexibleModifier].
 ///
-/// Use this class to configure the attributes of a [FlexibleWidgetModifier] and pass it to
-/// the [FlexibleWidgetModifier] constructor.
-class FlexibleWidgetModifierMix
-    extends WidgetModifierMix<FlexibleWidgetModifier>
+/// Use this class to configure the attributes of a [FlexibleModifier] and pass it to
+/// the [FlexibleModifier] constructor.
+class FlexibleModifierMix
+    extends ModifierMix<FlexibleModifier>
     with Diagnosticable {
   final Prop<int>? flex;
   final Prop<FlexFit>? fit;
 
-  const FlexibleWidgetModifierMix.create({this.flex, this.fit});
+  const FlexibleModifierMix.create({this.flex, this.fit});
 
-  FlexibleWidgetModifierMix({int? flex, FlexFit? fit})
+  FlexibleModifierMix({int? flex, FlexFit? fit})
     : this.create(flex: Prop.maybe(flex), fit: Prop.maybe(fit));
 
-  /// Resolves to [FlexibleWidgetModifier] using the provided [BuildContext].
+  /// Resolves to [FlexibleModifier] using the provided [BuildContext].
   ///
   /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final flexibleWidgetModifier = FlexibleWidgetModifierMix(...).resolve(mix);
+  /// final flexibleModifier = FlexibleModifierMix(...).resolve(mix);
   /// ```
   @override
-  FlexibleWidgetModifier resolve(BuildContext context) {
-    return FlexibleWidgetModifier(
+  FlexibleModifier resolve(BuildContext context) {
+    return FlexibleModifier(
       flex: flex?.resolveProp(context),
       fit: fit?.resolveProp(context),
     );
   }
 
-  /// Merges the properties of this [FlexibleWidgetModifierMix] with the properties of [other].
+  /// Merges the properties of this [FlexibleModifierMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [FlexibleWidgetModifierMix] with the properties of [other] taking precedence over
+  /// [FlexibleModifierMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  FlexibleWidgetModifierMix merge(FlexibleWidgetModifierMix? other) {
+  FlexibleModifierMix merge(FlexibleModifierMix? other) {
     if (other == null) return this;
 
-    return FlexibleWidgetModifierMix.create(
+    return FlexibleModifierMix.create(
       flex: flex?.mergeProp(other.flex) ?? other.flex,
       fit: fit?.mergeProp(other.fit) ?? other.fit,
     );
@@ -129,30 +129,30 @@ class FlexibleWidgetModifierMix
     properties.add(DiagnosticsProperty('fit', fit, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [FlexibleWidgetModifierMix].
+  /// The list of properties that constitute the state of this [FlexibleModifierMix].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [FlexibleWidgetModifierMix] instances for equality.
+  /// compare two [FlexibleModifierMix] instances for equality.
   @override
   List<Object?> get props => [flex, fit];
 }
 
-final class FlexibleWidgetModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, FlexibleWidgetModifierMix> {
+final class FlexibleModifierUtility<T extends Style<Object?>>
+    extends MixUtility<T, FlexibleModifierMix> {
   late final fit = MixUtility<T, FlexFit>(
-    (prop) => builder(FlexibleWidgetModifierMix(fit: prop)),
+    (prop) => builder(FlexibleModifierMix(fit: prop)),
   );
-  FlexibleWidgetModifierUtility(super.builder);
-  T flex(int v) => builder(FlexibleWidgetModifierMix(flex: v));
+  FlexibleModifierUtility(super.builder);
+  T flex(int v) => builder(FlexibleModifierMix(flex: v));
   T tight({int? flex}) => builder(
-    FlexibleWidgetModifierMix.create(
+    FlexibleModifierMix.create(
       flex: Prop.maybe(flex),
       fit: Prop.value(FlexFit.tight),
     ),
   );
 
   T loose({int? flex}) => builder(
-    FlexibleWidgetModifierMix.create(
+    FlexibleModifierMix.create(
       flex: Prop.maybe(flex),
       fit: Prop.value(FlexFit.loose),
     ),
@@ -161,14 +161,14 @@ final class FlexibleWidgetModifierUtility<T extends Style<Object?>>
   T expanded({int? flex}) => tight(flex: flex);
 
   T call({int? flex, FlexFit? fit}) {
-    return builder(FlexibleWidgetModifierMix(flex: flex, fit: fit));
+    return builder(FlexibleModifierMix(flex: flex, fit: fit));
   }
 
   T flexToken(MixToken<int> token) {
-    return builder(FlexibleWidgetModifierMix.create(flex: Prop.token(token)));
+    return builder(FlexibleModifierMix.create(flex: Prop.token(token)));
   }
 
   T fitToken(MixToken<FlexFit> token) {
-    return builder(FlexibleWidgetModifierMix.create(fit: Prop.token(token)));
+    return builder(FlexibleModifierMix.create(fit: Prop.token(token)));
   }
 }

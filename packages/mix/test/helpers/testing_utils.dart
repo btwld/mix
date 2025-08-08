@@ -174,18 +174,18 @@ class _ResolvesToMatcher<T> extends Matcher {
 /// Mock BuildContext for testing Mix components
 class MockBuildContext extends BuildContext {
   final Set<TokenDefinition>? _tokens;
-  final List<Type>? _orderOfWidgetModifiers;
+  final List<Type>? _orderOfModifiers;
   MixScope? _mixScope;
   
   MockBuildContext({
     Set<TokenDefinition>? tokens,
-    List<Type>? orderOfWidgetModifiers,
+    List<Type>? orderOfModifiers,
   }) : _tokens = tokens,
-       _orderOfWidgetModifiers = orderOfWidgetModifiers {
+       _orderOfModifiers = orderOfModifiers {
     // Create MixScope instance once
     _mixScope = MixScope(
       tokens: _tokens,
-      orderOfWidgetModifiers: _orderOfWidgetModifiers,
+      orderOfModifiers: _orderOfModifiers,
       child: const SizedBox(),
     );
   }
@@ -450,7 +450,7 @@ extension WidgetTesterExtension on WidgetTester {
   Future<void> pumpWithMixScope(
     Widget widget, {
     Set<TokenDefinition>? tokens,
-    List<Type>? orderOfWidgetModifiers,
+    List<Type>? orderOfModifiers,
     bool withMaterial = false,
   }) async {
     await pumpWidget(
@@ -458,13 +458,13 @@ extension WidgetTesterExtension on WidgetTester {
         home: withMaterial
             ? MixScope.withMaterial(
                 tokens: tokens,
-                orderOfWidgetModifiers: orderOfWidgetModifiers,
+                orderOfModifiers: orderOfModifiers,
                 child: widget,
               )
-            : tokens != null || orderOfWidgetModifiers != null
+            : tokens != null || orderOfModifiers != null
             ? MixScope(
                 tokens: tokens,
-                orderOfWidgetModifiers: orderOfWidgetModifiers,
+                orderOfModifiers: orderOfModifiers,
                 child: widget,
               )
             : MixScope.empty(child: widget),

@@ -188,11 +188,11 @@ void main() {
             .alignment(Alignment.center)
             .wrap(
               ModifierConfig.modifiers([
-                OpacityWidgetModifierMix(opacity: 0.5),
-                PaddingWidgetModifierMix(
+                OpacityModifierMix(opacity: 0.5),
+                PaddingModifierMix(
                   padding: EdgeInsetsGeometryMix.all(10),
                 ),
-                ClipOvalWidgetModifierMix(),
+                ClipOvalModifierMix(),
               ]),
             );
 
@@ -238,12 +238,12 @@ void main() {
             .color(Colors.blue)
             .wrap(
               ModifierConfig.modifiers([
-                OpacityWidgetModifierMix(opacity: 0.5),
-                PaddingWidgetModifierMix(
+                OpacityModifierMix(opacity: 0.5),
+                PaddingModifierMix(
                   padding: EdgeInsetsGeometryMix.all(10),
                 ),
-                ClipOvalWidgetModifierMix(),
-                VisibilityWidgetModifierMix(visible: true),
+                ClipOvalModifierMix(),
+                VisibilityModifierMix(visible: true),
               ]),
             );
 
@@ -303,9 +303,9 @@ void main() {
 
       testWidgets('Custom modifier order is respected', (tester) async {
         const customOrder = [
-          OpacityWidgetModifier,
-          ClipOvalWidgetModifier,
-          PaddingWidgetModifier,
+          OpacityModifier,
+          ClipOvalModifier,
+          PaddingModifier,
         ];
 
         final boxAttribute = BoxMix.width(100)
@@ -313,11 +313,11 @@ void main() {
             .color(Colors.blue)
             .wrap(
               ModifierConfig.modifiers([
-                OpacityWidgetModifierMix(opacity: 0.5),
-                PaddingWidgetModifierMix(
+                OpacityModifierMix(opacity: 0.5),
+                PaddingModifierMix(
                   padding: EdgeInsetsGeometryMix.all(10),
                 ),
-                ClipOvalWidgetModifierMix(),
+                ClipOvalModifierMix(),
               ]).orderOfModifiers(customOrder),
             );
 
@@ -386,7 +386,7 @@ void main() {
         );
 
         // Verify no modifier widgets are present
-        expect(find.byType(RenderWidgetModifiers), findsNothing);
+        expect(find.byType(RenderModifiers), findsNothing);
       });
     });
   });

@@ -27,7 +27,7 @@ class StackSpecUtility extends StyleMutableBuilder<StackSpec> {
     (v) => mutable.variants([v]),
   );
 
-  late final wrap = WidgetModifierUtility(
+  late final wrap = ModifierUtility(
     (prop) => mutable.wrap(ModifierConfig(modifiers: [prop])),
   );
 

@@ -5,10 +5,10 @@ import 'package:mix/mix.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  group('AlignWidgetModifier', () {
+  group('AlignModifier', () {
     group('Constructor', () {
       test('creates with null values by default', () {
-        const modifier = AlignWidgetModifier();
+        const modifier = AlignModifier();
 
         expect(modifier.alignment, isNull);
         expect(modifier.widthFactor, isNull);
@@ -19,7 +19,7 @@ void main() {
         const alignment = Alignment.topLeft;
         const widthFactor = 0.8;
         const heightFactor = 0.6;
-        const modifier = AlignWidgetModifier(
+        const modifier = AlignModifier(
           alignment: alignment,
           widthFactor: widthFactor,
           heightFactor: heightFactor,
@@ -33,7 +33,7 @@ void main() {
 
     group('copyWith', () {
       test('returns new instance with updated values', () {
-        const original = AlignWidgetModifier(
+        const original = AlignModifier(
           alignment: Alignment.center,
           widthFactor: 1.0,
           heightFactor: 1.0,
@@ -52,7 +52,7 @@ void main() {
       });
 
       test('preserves original values when parameters are null', () {
-        const original = AlignWidgetModifier(
+        const original = AlignModifier(
           alignment: Alignment.center,
           widthFactor: 1.0,
           heightFactor: 1.0,
@@ -67,7 +67,7 @@ void main() {
       });
 
       test('allows partial updates', () {
-        const original = AlignWidgetModifier(
+        const original = AlignModifier(
           alignment: Alignment.center,
           widthFactor: 1.0,
           heightFactor: 1.0,
@@ -94,36 +94,36 @@ void main() {
 
     group('lerp', () {
       test('interpolates alignment correctly', () {
-        const start = AlignWidgetModifier(alignment: Alignment.topLeft);
-        const end = AlignWidgetModifier(alignment: Alignment.bottomRight);
+        const start = AlignModifier(alignment: Alignment.topLeft);
+        const end = AlignModifier(alignment: Alignment.bottomRight);
         final result = start.lerp(end, 0.5);
 
         expect(result.alignment, const Alignment(0.0, 0.0)); // Center point
       });
 
       test('interpolates widthFactor correctly', () {
-        const start = AlignWidgetModifier(widthFactor: 0.2);
-        const end = AlignWidgetModifier(widthFactor: 0.8);
+        const start = AlignModifier(widthFactor: 0.2);
+        const end = AlignModifier(widthFactor: 0.8);
         final result = start.lerp(end, 0.5);
 
         expect(result.widthFactor, 0.5);
       });
 
       test('interpolates heightFactor correctly', () {
-        const start = AlignWidgetModifier(heightFactor: 0.1);
-        const end = AlignWidgetModifier(heightFactor: 0.9);
+        const start = AlignModifier(heightFactor: 0.1);
+        const end = AlignModifier(heightFactor: 0.9);
         final result = start.lerp(end, 0.5);
 
         expect(result.heightFactor, 0.5);
       });
 
       test('interpolates all properties together', () {
-        const start = AlignWidgetModifier(
+        const start = AlignModifier(
           alignment: Alignment.topLeft,
           widthFactor: 0.0,
           heightFactor: 0.0,
         );
-        const end = AlignWidgetModifier(
+        const end = AlignModifier(
           alignment: Alignment.bottomRight,
           widthFactor: 1.0,
           heightFactor: 1.0,
@@ -136,7 +136,7 @@ void main() {
       });
 
       test('handles null other parameter', () {
-        const start = AlignWidgetModifier(
+        const start = AlignModifier(
           alignment: Alignment.center,
           widthFactor: 0.5,
           heightFactor: 0.5,
@@ -147,8 +147,8 @@ void main() {
       });
 
       test('handles null values in properties', () {
-        const start = AlignWidgetModifier(alignment: Alignment.center);
-        const end = AlignWidgetModifier(widthFactor: 1.0);
+        const start = AlignModifier(alignment: Alignment.center);
+        const end = AlignModifier(widthFactor: 1.0);
         final result = start.lerp(end, 0.5);
 
         expect(result.alignment, Alignment.center);
@@ -157,8 +157,8 @@ void main() {
       });
 
       test('handles extreme t values', () {
-        const start = AlignWidgetModifier(alignment: Alignment.topLeft);
-        const end = AlignWidgetModifier(alignment: Alignment.bottomRight);
+        const start = AlignModifier(alignment: Alignment.topLeft);
+        const end = AlignModifier(alignment: Alignment.bottomRight);
 
         final result0 = start.lerp(end, 0.0);
         expect(result0.alignment, Alignment.topLeft);
@@ -170,12 +170,12 @@ void main() {
 
     group('equality and hashCode', () {
       test('equal when all properties match', () {
-        const modifier1 = AlignWidgetModifier(
+        const modifier1 = AlignModifier(
           alignment: Alignment.center,
           widthFactor: 0.5,
           heightFactor: 0.8,
         );
-        const modifier2 = AlignWidgetModifier(
+        const modifier2 = AlignModifier(
           alignment: Alignment.center,
           widthFactor: 0.5,
           heightFactor: 0.8,
@@ -186,29 +186,29 @@ void main() {
       });
 
       test('not equal when alignment differs', () {
-        const modifier1 = AlignWidgetModifier(alignment: Alignment.center);
-        const modifier2 = AlignWidgetModifier(alignment: Alignment.topLeft);
+        const modifier1 = AlignModifier(alignment: Alignment.center);
+        const modifier2 = AlignModifier(alignment: Alignment.topLeft);
 
         expect(modifier1, isNot(equals(modifier2)));
       });
 
       test('not equal when widthFactor differs', () {
-        const modifier1 = AlignWidgetModifier(widthFactor: 0.5);
-        const modifier2 = AlignWidgetModifier(widthFactor: 0.8);
+        const modifier1 = AlignModifier(widthFactor: 0.5);
+        const modifier2 = AlignModifier(widthFactor: 0.8);
 
         expect(modifier1, isNot(equals(modifier2)));
       });
 
       test('not equal when heightFactor differs', () {
-        const modifier1 = AlignWidgetModifier(heightFactor: 0.5);
-        const modifier2 = AlignWidgetModifier(heightFactor: 0.8);
+        const modifier1 = AlignModifier(heightFactor: 0.5);
+        const modifier2 = AlignModifier(heightFactor: 0.8);
 
         expect(modifier1, isNot(equals(modifier2)));
       });
 
       test('equal when both have all null values', () {
-        const modifier1 = AlignWidgetModifier();
-        const modifier2 = AlignWidgetModifier();
+        const modifier1 = AlignModifier();
+        const modifier2 = AlignModifier();
 
         expect(modifier1, equals(modifier2));
       });
@@ -216,7 +216,7 @@ void main() {
 
     group('props', () {
       test('contains all properties', () {
-        const modifier = AlignWidgetModifier(
+        const modifier = AlignModifier(
           alignment: Alignment.center,
           widthFactor: 0.5,
           heightFactor: 0.8,
@@ -226,7 +226,7 @@ void main() {
       });
 
       test('contains null values', () {
-        const modifier = AlignWidgetModifier();
+        const modifier = AlignModifier();
 
         expect(modifier.props, [null, null, null]);
       });
@@ -236,7 +236,7 @@ void main() {
       testWidgets('creates Align widget with default center alignment', (
         WidgetTester tester,
       ) async {
-        const modifier = AlignWidgetModifier();
+        const modifier = AlignModifier();
         const child = SizedBox(width: 50, height: 50);
 
         await tester.pumpWidget(modifier.build(child));
@@ -251,7 +251,7 @@ void main() {
       testWidgets('creates Align widget with custom alignment', (
         WidgetTester tester,
       ) async {
-        const modifier = AlignWidgetModifier(alignment: Alignment.topRight);
+        const modifier = AlignModifier(alignment: Alignment.topRight);
         const child = SizedBox(width: 50, height: 50);
 
         await tester.pumpWidget(modifier.build(child));
@@ -264,7 +264,7 @@ void main() {
       testWidgets('creates Align widget with all parameters', (
         WidgetTester tester,
       ) async {
-        const modifier = AlignWidgetModifier(
+        const modifier = AlignModifier(
           alignment: Alignment.bottomLeft,
           widthFactor: 0.6,
           heightFactor: 0.4,
@@ -282,10 +282,10 @@ void main() {
     });
   });
 
-  group('AlignWidgetModifierMix', () {
+  group('AlignModifierMix', () {
     group('Constructor', () {
       test('creates with null values by default', () {
-        final attribute = AlignWidgetModifierMix();
+        final attribute = AlignModifierMix();
 
         expect(attribute.alignment, isNull);
         expect(attribute.widthFactor, isNull);
@@ -296,7 +296,7 @@ void main() {
         final alignment = Prop.value<AlignmentGeometry>(Alignment.center);
         final widthFactor = Prop.value(0.5);
         final heightFactor = Prop.value(0.8);
-        final attribute = AlignWidgetModifierMix.create(
+        final attribute = AlignModifierMix.create(
           alignment: alignment,
           widthFactor: widthFactor,
           heightFactor: heightFactor,
@@ -310,7 +310,7 @@ void main() {
 
     group('only constructor', () {
       test('creates Prop values from direct values', () {
-        final attribute = AlignWidgetModifierMix(
+        final attribute = AlignModifierMix(
           alignment: Alignment.topLeft,
           widthFactor: 0.3,
           heightFactor: 0.7,
@@ -322,7 +322,7 @@ void main() {
       });
 
       test('handles null values correctly', () {
-        final attribute = AlignWidgetModifierMix();
+        final attribute = AlignModifierMix();
 
         expect(attribute.alignment, isNull);
         expect(attribute.widthFactor, isNull);
@@ -330,12 +330,12 @@ void main() {
       });
 
       test('handles partial values', () {
-        final attribute1 = AlignWidgetModifierMix(alignment: Alignment.center);
+        final attribute1 = AlignModifierMix(alignment: Alignment.center);
         expectProp(attribute1.alignment, Alignment.center);
         expect(attribute1.widthFactor, isNull);
         expect(attribute1.heightFactor, isNull);
 
-        final attribute2 = AlignWidgetModifierMix(widthFactor: 0.5);
+        final attribute2 = AlignModifierMix(widthFactor: 0.5);
         expect(attribute2.alignment, isNull);
         expect(attribute2.widthFactor!, resolvesTo(0.5));
         expect(attribute2.heightFactor, isNull);
@@ -343,14 +343,14 @@ void main() {
     });
 
     group('resolve', () {
-      test('resolves to AlignWidgetModifier with resolved values', () {
-        final attribute = AlignWidgetModifierMix(
+      test('resolves to AlignModifier with resolved values', () {
+        final attribute = AlignModifierMix(
           alignment: Alignment.topRight,
           widthFactor: 0.4,
           heightFactor: 0.6,
         );
 
-        const expectedModifier = AlignWidgetModifier(
+        const expectedModifier = AlignModifier(
           alignment: Alignment.topRight,
           widthFactor: 0.4,
           heightFactor: 0.6,
@@ -360,21 +360,21 @@ void main() {
       });
 
       test('resolves with null values', () {
-        final attribute = AlignWidgetModifierMix();
+        final attribute = AlignModifierMix();
 
-        const expectedModifier = AlignWidgetModifier();
+        const expectedModifier = AlignModifier();
 
         expect(attribute, resolvesTo(expectedModifier));
       });
     });
 
     group('merge', () {
-      test('merges with other AlignWidgetModifierMix', () {
-        final attribute1 = AlignWidgetModifierMix(
+      test('merges with other AlignModifierMix', () {
+        final attribute1 = AlignModifierMix(
           alignment: Alignment.center,
           widthFactor: 0.5,
         );
-        final attribute2 = AlignWidgetModifierMix(
+        final attribute2 = AlignModifierMix(
           alignment: Alignment.topLeft,
           heightFactor: 0.8,
         );
@@ -387,7 +387,7 @@ void main() {
       });
 
       test('returns original when other is null', () {
-        final attribute = AlignWidgetModifierMix(alignment: Alignment.center);
+        final attribute = AlignModifierMix(alignment: Alignment.center);
 
         final merged = attribute.merge(null);
 
@@ -395,8 +395,8 @@ void main() {
       });
 
       test('merges with null values', () {
-        final attribute1 = AlignWidgetModifierMix();
-        final attribute2 = AlignWidgetModifierMix(
+        final attribute1 = AlignModifierMix();
+        final attribute2 = AlignModifierMix(
           alignment: Alignment.bottomRight,
         );
 
@@ -410,12 +410,12 @@ void main() {
 
     group('equality and props', () {
       test('equal when all Prop values match', () {
-        final attribute1 = AlignWidgetModifierMix(
+        final attribute1 = AlignModifierMix(
           alignment: Alignment.center,
           widthFactor: 0.5,
           heightFactor: 0.8,
         );
-        final attribute2 = AlignWidgetModifierMix(
+        final attribute2 = AlignModifierMix(
           alignment: Alignment.center,
           widthFactor: 0.5,
           heightFactor: 0.8,
@@ -425,14 +425,14 @@ void main() {
       });
 
       test('not equal when values differ', () {
-        final attribute1 = AlignWidgetModifierMix(alignment: Alignment.center);
-        final attribute2 = AlignWidgetModifierMix(alignment: Alignment.topLeft);
+        final attribute1 = AlignModifierMix(alignment: Alignment.center);
+        final attribute2 = AlignModifierMix(alignment: Alignment.topLeft);
 
         expect(attribute1, isNot(equals(attribute2)));
       });
 
       test('props contains all Prop values', () {
-        final attribute = AlignWidgetModifierMix(
+        final attribute = AlignModifierMix(
           alignment: Alignment.center,
           widthFactor: 0.5,
           heightFactor: 0.8,
@@ -448,10 +448,10 @@ void main() {
   });
 
   group('Integration tests', () {
-    testWidgets('AlignWidgetModifierMix resolves and builds correctly', (
+    testWidgets('AlignModifierMix resolves and builds correctly', (
       WidgetTester tester,
     ) async {
-      final attribute = AlignWidgetModifierMix(
+      final attribute = AlignModifierMix(
         alignment: Alignment.topRight,
         widthFactor: 0.7,
         heightFactor: 0.9,
@@ -470,18 +470,18 @@ void main() {
     });
 
     test('Complex merge scenario preserves and overrides correctly', () {
-      final base = AlignWidgetModifierMix(
+      final base = AlignModifierMix(
         alignment: Alignment.center,
         widthFactor: 0.5,
         heightFactor: 0.5,
       );
 
-      final override1 = AlignWidgetModifierMix(
+      final override1 = AlignModifierMix(
         alignment: Alignment.topLeft,
         widthFactor: 0.8,
       );
 
-      final override2 = AlignWidgetModifierMix(heightFactor: 0.9);
+      final override2 = AlignModifierMix(heightFactor: 0.9);
 
       final result = base.merge(override1).merge(override2);
 
@@ -491,12 +491,12 @@ void main() {
     });
 
     test('Lerp produces expected intermediate values', () {
-      const start = AlignWidgetModifier(
+      const start = AlignModifier(
         alignment: Alignment.topLeft,
         widthFactor: 0.0,
         heightFactor: 0.0,
       );
-      const end = AlignWidgetModifier(
+      const end = AlignModifier(
         alignment: Alignment.bottomRight,
         widthFactor: 1.0,
         heightFactor: 1.0,

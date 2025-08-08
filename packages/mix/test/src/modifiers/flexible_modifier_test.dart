@@ -5,10 +5,10 @@ import 'package:mix/mix.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  group('FlexibleWidgetModifier', () {
+  group('FlexibleModifier', () {
     group('Constructor', () {
       test('creates with null values by default', () {
-        const modifier = FlexibleWidgetModifier();
+        const modifier = FlexibleModifier();
 
         expect(modifier.flex, isNull);
         expect(modifier.fit, isNull);
@@ -17,7 +17,7 @@ void main() {
       test('assigns all parameters correctly', () {
         const flex = 2;
         const fit = FlexFit.tight;
-        const modifier = FlexibleWidgetModifier(flex: flex, fit: fit);
+        const modifier = FlexibleModifier(flex: flex, fit: fit);
 
         expect(modifier.flex, flex);
         expect(modifier.fit, fit);
@@ -26,7 +26,7 @@ void main() {
 
     group('copyWith', () {
       test('returns new instance with updated values', () {
-        const original = FlexibleWidgetModifier(flex: 1, fit: FlexFit.loose);
+        const original = FlexibleModifier(flex: 1, fit: FlexFit.loose);
 
         final updated = original.copyWith(flex: 3, fit: FlexFit.tight);
 
@@ -36,7 +36,7 @@ void main() {
       });
 
       test('preserves original values when parameters are null', () {
-        const original = FlexibleWidgetModifier(flex: 2, fit: FlexFit.tight);
+        const original = FlexibleModifier(flex: 2, fit: FlexFit.tight);
 
         final updated = original.copyWith();
 
@@ -46,7 +46,7 @@ void main() {
       });
 
       test('allows partial updates', () {
-        const original = FlexibleWidgetModifier(flex: 1, fit: FlexFit.loose);
+        const original = FlexibleModifier(flex: 1, fit: FlexFit.loose);
 
         final updatedFlex = original.copyWith(flex: 4);
         expect(updatedFlex.flex, 4);
@@ -60,8 +60,8 @@ void main() {
 
     group('lerp', () {
       test('uses step function for flex', () {
-        const start = FlexibleWidgetModifier(flex: 1);
-        const end = FlexibleWidgetModifier(flex: 3);
+        const start = FlexibleModifier(flex: 1);
+        const end = FlexibleModifier(flex: 3);
 
         expect(start.lerp(end, 0.0).flex, 1);
         expect(start.lerp(end, 0.49).flex, 1);
@@ -70,8 +70,8 @@ void main() {
       });
 
       test('uses step function for fit', () {
-        const start = FlexibleWidgetModifier(fit: FlexFit.loose);
-        const end = FlexibleWidgetModifier(fit: FlexFit.tight);
+        const start = FlexibleModifier(fit: FlexFit.loose);
+        const end = FlexibleModifier(fit: FlexFit.tight);
 
         expect(start.lerp(end, 0.0).fit, FlexFit.loose);
         expect(start.lerp(end, 0.49).fit, FlexFit.loose);
@@ -80,8 +80,8 @@ void main() {
       });
 
       test('interpolates all properties together', () {
-        const start = FlexibleWidgetModifier(flex: 1, fit: FlexFit.loose);
-        const end = FlexibleWidgetModifier(flex: 5, fit: FlexFit.tight);
+        const start = FlexibleModifier(flex: 1, fit: FlexFit.loose);
+        const end = FlexibleModifier(flex: 5, fit: FlexFit.tight);
 
         final result = start.lerp(end, 0.3);
         expect(result.flex, 1);
@@ -93,15 +93,15 @@ void main() {
       });
 
       test('handles null other parameter', () {
-        const start = FlexibleWidgetModifier(flex: 2, fit: FlexFit.tight);
+        const start = FlexibleModifier(flex: 2, fit: FlexFit.tight);
         final result = start.lerp(null, 0.5);
 
         expect(result, same(start));
       });
 
       test('handles null values in properties', () {
-        const start = FlexibleWidgetModifier(flex: 1);
-        const end = FlexibleWidgetModifier(fit: FlexFit.tight);
+        const start = FlexibleModifier(flex: 1);
+        const end = FlexibleModifier(fit: FlexFit.tight);
         final result = start.lerp(end, 0.5);
 
         expect(result.flex, isNull);
@@ -111,30 +111,30 @@ void main() {
 
     group('equality and hashCode', () {
       test('equal when all properties match', () {
-        const modifier1 = FlexibleWidgetModifier(flex: 2, fit: FlexFit.tight);
-        const modifier2 = FlexibleWidgetModifier(flex: 2, fit: FlexFit.tight);
+        const modifier1 = FlexibleModifier(flex: 2, fit: FlexFit.tight);
+        const modifier2 = FlexibleModifier(flex: 2, fit: FlexFit.tight);
 
         expect(modifier1, equals(modifier2));
         expect(modifier1.hashCode, equals(modifier2.hashCode));
       });
 
       test('not equal when flex differs', () {
-        const modifier1 = FlexibleWidgetModifier(flex: 1);
-        const modifier2 = FlexibleWidgetModifier(flex: 2);
+        const modifier1 = FlexibleModifier(flex: 1);
+        const modifier2 = FlexibleModifier(flex: 2);
 
         expect(modifier1, isNot(equals(modifier2)));
       });
 
       test('not equal when fit differs', () {
-        const modifier1 = FlexibleWidgetModifier(fit: FlexFit.loose);
-        const modifier2 = FlexibleWidgetModifier(fit: FlexFit.tight);
+        const modifier1 = FlexibleModifier(fit: FlexFit.loose);
+        const modifier2 = FlexibleModifier(fit: FlexFit.tight);
 
         expect(modifier1, isNot(equals(modifier2)));
       });
 
       test('equal when both have all null values', () {
-        const modifier1 = FlexibleWidgetModifier();
-        const modifier2 = FlexibleWidgetModifier();
+        const modifier1 = FlexibleModifier();
+        const modifier2 = FlexibleModifier();
 
         expect(modifier1, equals(modifier2));
         expect(modifier1.hashCode, equals(modifier2.hashCode));
@@ -143,13 +143,13 @@ void main() {
 
     group('props', () {
       test('contains all properties', () {
-        const modifier = FlexibleWidgetModifier(flex: 3, fit: FlexFit.tight);
+        const modifier = FlexibleModifier(flex: 3, fit: FlexFit.tight);
 
         expect(modifier.props, [3, FlexFit.tight]);
       });
 
       test('contains null values', () {
-        const modifier = FlexibleWidgetModifier();
+        const modifier = FlexibleModifier();
 
         expect(modifier.props, [null, null]);
       });
@@ -159,7 +159,7 @@ void main() {
       testWidgets('creates Flexible widget with default values', (
         WidgetTester tester,
       ) async {
-        const modifier = FlexibleWidgetModifier();
+        const modifier = FlexibleModifier();
         const child = SizedBox(width: 50, height: 50);
 
         await tester.pumpWidget(
@@ -178,7 +178,7 @@ void main() {
       testWidgets('creates Flexible widget with custom values', (
         WidgetTester tester,
       ) async {
-        const modifier = FlexibleWidgetModifier(flex: 3, fit: FlexFit.tight);
+        const modifier = FlexibleModifier(flex: 3, fit: FlexFit.tight);
         const child = SizedBox(width: 50, height: 50);
 
         await tester.pumpWidget(
@@ -196,10 +196,10 @@ void main() {
     });
   });
 
-  group('FlexibleWidgetModifierMix', () {
+  group('FlexibleModifierMix', () {
     group('Constructor', () {
       test('creates with null values by default', () {
-        final attribute = FlexibleWidgetModifierMix();
+        final attribute = FlexibleModifierMix();
 
         expect(attribute.flex, isNull);
         expect(attribute.fit, isNull);
@@ -208,7 +208,7 @@ void main() {
       test('creates with provided Prop values', () {
         final flex = Prop.value(2);
         final fit = Prop.value(FlexFit.tight);
-        final attribute = FlexibleWidgetModifierMix.create(flex: flex, fit: fit);
+        final attribute = FlexibleModifierMix.create(flex: flex, fit: fit);
 
         expect(attribute.flex, same(flex));
         expect(attribute.fit, same(fit));
@@ -217,7 +217,7 @@ void main() {
 
     group('only constructor', () {
       test('creates Prop values from direct values', () {
-        final attribute = FlexibleWidgetModifierMix(
+        final attribute = FlexibleModifierMix(
           flex: 3,
           fit: FlexFit.loose,
         );
@@ -227,26 +227,26 @@ void main() {
       });
 
       test('handles null values correctly', () {
-        final attribute = FlexibleWidgetModifierMix();
+        final attribute = FlexibleModifierMix();
 
         expect(attribute.flex, isNull);
         expect(attribute.fit, isNull);
       });
 
       test('handles partial values', () {
-        final attribute1 = FlexibleWidgetModifierMix(flex: 2);
+        final attribute1 = FlexibleModifierMix(flex: 2);
         expectProp(attribute1.flex, 2);
         expect(attribute1.fit, isNull);
 
-        final attribute2 = FlexibleWidgetModifierMix(fit: FlexFit.tight);
+        final attribute2 = FlexibleModifierMix(fit: FlexFit.tight);
         expect(attribute2.flex, isNull);
         expectProp(attribute2.fit, FlexFit.tight);
       });
     });
 
     group('resolve', () {
-      test('resolves to FlexibleWidgetModifier with resolved values', () {
-        final attribute = FlexibleWidgetModifierMix(
+      test('resolves to FlexibleModifier with resolved values', () {
+        final attribute = FlexibleModifierMix(
           flex: 4,
           fit: FlexFit.tight,
         );
@@ -254,25 +254,25 @@ void main() {
         expect(
           attribute,
           resolvesTo(
-            const FlexibleWidgetModifier(flex: 4, fit: FlexFit.tight),
+            const FlexibleModifier(flex: 4, fit: FlexFit.tight),
           ),
         );
       });
 
       test('resolves with null values', () {
-        final attribute = FlexibleWidgetModifierMix();
+        final attribute = FlexibleModifierMix();
 
-        expect(attribute, resolvesTo(const FlexibleWidgetModifier()));
+        expect(attribute, resolvesTo(const FlexibleModifier()));
       });
     });
 
     group('merge', () {
-      test('merges with other FlexibleWidgetModifierMix', () {
-        final attribute1 = FlexibleWidgetModifierMix(
+      test('merges with other FlexibleModifierMix', () {
+        final attribute1 = FlexibleModifierMix(
           flex: 1,
           fit: FlexFit.loose,
         );
-        final attribute2 = FlexibleWidgetModifierMix(
+        final attribute2 = FlexibleModifierMix(
           flex: 3,
           fit: FlexFit.tight,
         );
@@ -284,7 +284,7 @@ void main() {
       });
 
       test('returns original when other is null', () {
-        final attribute = FlexibleWidgetModifierMix(flex: 2);
+        final attribute = FlexibleModifierMix(flex: 2);
 
         final merged = attribute.merge(null);
 
@@ -292,8 +292,8 @@ void main() {
       });
 
       test('merges with null values', () {
-        final attribute1 = FlexibleWidgetModifierMix();
-        final attribute2 = FlexibleWidgetModifierMix(fit: FlexFit.tight);
+        final attribute1 = FlexibleModifierMix();
+        final attribute2 = FlexibleModifierMix(fit: FlexFit.tight);
 
         final merged = attribute1.merge(attribute2);
 
@@ -304,11 +304,11 @@ void main() {
 
     group('equality and props', () {
       test('equal when all Prop values match', () {
-        final attribute1 = FlexibleWidgetModifierMix(
+        final attribute1 = FlexibleModifierMix(
           flex: 2,
           fit: FlexFit.tight,
         );
-        final attribute2 = FlexibleWidgetModifierMix(
+        final attribute2 = FlexibleModifierMix(
           flex: 2,
           fit: FlexFit.tight,
         );
@@ -317,14 +317,14 @@ void main() {
       });
 
       test('not equal when values differ', () {
-        final attribute1 = FlexibleWidgetModifierMix(flex: 1);
-        final attribute2 = FlexibleWidgetModifierMix(flex: 2);
+        final attribute1 = FlexibleModifierMix(flex: 1);
+        final attribute2 = FlexibleModifierMix(flex: 2);
 
         expect(attribute1, isNot(equals(attribute2)));
       });
 
       test('props contains all Prop values', () {
-        final attribute = FlexibleWidgetModifierMix(
+        final attribute = FlexibleModifierMix(
           flex: 3,
           fit: FlexFit.tight,
         );
@@ -337,12 +337,12 @@ void main() {
     });
   });
 
-  group('FlexibleWidgetModifierUtility', () {
-    late FlexibleWidgetModifierUtility<MockStyle<FlexibleWidgetModifierMix>>
+  group('FlexibleModifierUtility', () {
+    late FlexibleModifierUtility<MockStyle<FlexibleModifierMix>>
     utility;
 
     setUp(() {
-      utility = FlexibleWidgetModifierUtility(
+      utility = FlexibleModifierUtility(
         (attribute) => MockStyle(attribute),
       );
     });
@@ -431,14 +431,14 @@ void main() {
   });
 
   group('Integration tests', () {
-    testWidgets('FlexibleWidgetModifierMix resolves and builds correctly', (
+    testWidgets('FlexibleModifierMix resolves and builds correctly', (
       WidgetTester tester,
     ) async {
-      final attribute = FlexibleWidgetModifierMix(flex: 2, fit: FlexFit.tight);
+      final attribute = FlexibleModifierMix(flex: 2, fit: FlexFit.tight);
 
       expect(
         attribute,
-        resolvesTo(const FlexibleWidgetModifier(flex: 2, fit: FlexFit.tight)),
+        resolvesTo(const FlexibleModifier(flex: 2, fit: FlexFit.tight)),
       );
 
       final modifier = attribute.resolve(MockBuildContext());
@@ -458,11 +458,11 @@ void main() {
     });
 
     test('Complex merge scenario preserves and overrides correctly', () {
-      final base = FlexibleWidgetModifierMix(flex: 1, fit: FlexFit.loose);
+      final base = FlexibleModifierMix(flex: 1, fit: FlexFit.loose);
 
-      final override1 = FlexibleWidgetModifierMix(flex: 3);
+      final override1 = FlexibleModifierMix(flex: 3);
 
-      final override2 = FlexibleWidgetModifierMix(fit: FlexFit.tight);
+      final override2 = FlexibleModifierMix(fit: FlexFit.tight);
 
       final result = base.merge(override1).merge(override2);
 
@@ -471,8 +471,8 @@ void main() {
     });
 
     test('Lerp with step function behavior', () {
-      const start = FlexibleWidgetModifier(flex: 1, fit: FlexFit.loose);
-      const end = FlexibleWidgetModifier(flex: 5, fit: FlexFit.tight);
+      const start = FlexibleModifier(flex: 1, fit: FlexFit.loose);
+      const end = FlexibleModifier(flex: 5, fit: FlexFit.tight);
 
       final quarter = start.lerp(end, 0.25);
       final half = start.lerp(end, 0.5);

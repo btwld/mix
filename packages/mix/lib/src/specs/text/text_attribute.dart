@@ -27,7 +27,7 @@ import 'text_widget.dart';
 class TextMix extends Style<TextSpec>
     with
         Diagnosticable,
-        StyleWidgetModifierMixin<TextMix, TextSpec>,
+        StyleModifierMixin<TextMix, TextSpec>,
         StyleVariantMixin<TextMix, TextSpec> {
   final Prop<TextOverflow>? $overflow;
   final MixProp<StrutStyle>? $strutStyle;

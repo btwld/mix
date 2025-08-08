@@ -32,7 +32,7 @@ import 'box_widget.dart';
 class BoxMix extends Style<BoxSpec>
     with
         Diagnosticable,
-        StyleWidgetModifierMixin<BoxMix, BoxSpec>,
+        StyleModifierMixin<BoxMix, BoxSpec>,
         StyleVariantMixin<BoxMix, BoxSpec>,
         BorderRadiusMixin<BoxMix> {
   final Prop<AlignmentGeometry>? $alignment;

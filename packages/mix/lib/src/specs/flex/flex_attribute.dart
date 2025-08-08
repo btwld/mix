@@ -22,7 +22,7 @@ import 'flex_spec.dart';
 class FlexMix extends Style<FlexSpec>
     with
         Diagnosticable,
-        StyleWidgetModifierMixin<FlexMix, FlexSpec>,
+        StyleModifierMixin<FlexMix, FlexSpec>,
         StyleVariantMixin<FlexMix, FlexSpec> {
   final Prop<Axis>? $direction;
   final Prop<MainAxisAlignment>? $mainAxisAlignment;

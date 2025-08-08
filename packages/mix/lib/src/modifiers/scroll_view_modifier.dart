@@ -8,15 +8,15 @@ import '../core/utility.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
 import '../properties/layout/edge_insets_geometry_util.dart';
 
-final class ScrollViewWidgetModifier
-    extends Modifier<ScrollViewWidgetModifier> {
+final class ScrollViewModifier
+    extends Modifier<ScrollViewModifier> {
   final Axis? scrollDirection;
   final bool? reverse;
   final EdgeInsetsGeometry? padding;
   final ScrollPhysics? physics;
   final Clip? clipBehavior;
 
-  const ScrollViewWidgetModifier({
+  const ScrollViewModifier({
     this.scrollDirection,
     this.reverse,
     this.padding,
@@ -25,14 +25,14 @@ final class ScrollViewWidgetModifier
   });
 
   @override
-  ScrollViewWidgetModifier copyWith({
+  ScrollViewModifier copyWith({
     Axis? scrollDirection,
     bool? reverse,
     EdgeInsetsGeometry? padding,
     ScrollPhysics? physics,
     Clip? clipBehavior,
   }) {
-    return ScrollViewWidgetModifier(
+    return ScrollViewModifier(
       scrollDirection: scrollDirection ?? this.scrollDirection,
       reverse: reverse ?? this.reverse,
       padding: padding ?? this.padding,
@@ -42,10 +42,10 @@ final class ScrollViewWidgetModifier
   }
 
   @override
-  ScrollViewWidgetModifier lerp(ScrollViewWidgetModifier? other, double t) {
+  ScrollViewModifier lerp(ScrollViewModifier? other, double t) {
     if (other == null) return this;
 
-    return ScrollViewWidgetModifier(
+    return ScrollViewModifier(
       scrollDirection: MixOps.lerpSnap(
         scrollDirection,
         other.scrollDirection,
@@ -80,8 +80,8 @@ final class ScrollViewWidgetModifier
   }
 }
 
-final class ScrollViewWidgetModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, ScrollViewWidgetModifierMix> {
+final class ScrollViewModifierUtility<T extends Style<Object?>>
+    extends MixUtility<T, ScrollViewModifierMix> {
   /// Set the padding of the scroll view.
   late final padding = EdgeInsetsGeometryUtility(
     (padding) => only(padding: padding),
@@ -92,7 +92,7 @@ final class ScrollViewWidgetModifierUtility<T extends Style<Object?>>
     (clip) => only(clipBehavior: clip),
   );
 
-  ScrollViewWidgetModifierUtility(super.builder);
+  ScrollViewModifierUtility(super.builder);
 
   /// Make the scroll view reverse or not.
   T reverse(bool v) => only(reverse: v);
@@ -126,7 +126,7 @@ final class ScrollViewWidgetModifierUtility<T extends Style<Object?>>
     ScrollPhysics? physics,
     Clip? clipBehavior,
   }) => builder(
-    ScrollViewWidgetModifierMix(
+    ScrollViewModifierMix(
       scrollDirection: scrollDirection,
       reverse: reverse,
       padding: padding,
@@ -152,15 +152,15 @@ final class ScrollViewWidgetModifierUtility<T extends Style<Object?>>
   }
 }
 
-class ScrollViewWidgetModifierMix
-    extends WidgetModifierMix<ScrollViewWidgetModifier> {
+class ScrollViewModifierMix
+    extends ModifierMix<ScrollViewModifier> {
   final Prop<Axis>? scrollDirection;
   final Prop<bool>? reverse;
   final MixProp<EdgeInsetsGeometry>? padding;
   final Prop<ScrollPhysics>? physics;
   final Prop<Clip>? clipBehavior;
 
-  const ScrollViewWidgetModifierMix.create({
+  const ScrollViewModifierMix.create({
     this.scrollDirection,
     this.reverse,
     this.padding,
@@ -168,7 +168,7 @@ class ScrollViewWidgetModifierMix
     this.clipBehavior,
   });
 
-  ScrollViewWidgetModifierMix({
+  ScrollViewModifierMix({
     Axis? scrollDirection,
     bool? reverse,
     EdgeInsetsGeometryMix? padding,
@@ -183,8 +183,8 @@ class ScrollViewWidgetModifierMix
        );
 
   @override
-  ScrollViewWidgetModifier resolve(BuildContext context) {
-    return ScrollViewWidgetModifier(
+  ScrollViewModifier resolve(BuildContext context) {
+    return ScrollViewModifier(
       scrollDirection: MixOps.resolve(context, scrollDirection),
       reverse: MixOps.resolve(context, reverse),
       padding: MixOps.resolve(context, padding),
@@ -194,10 +194,10 @@ class ScrollViewWidgetModifierMix
   }
 
   @override
-  ScrollViewWidgetModifierMix merge(ScrollViewWidgetModifierMix? other) {
+  ScrollViewModifierMix merge(ScrollViewModifierMix? other) {
     if (other == null) return this;
 
-    return ScrollViewWidgetModifierMix.create(
+    return ScrollViewModifierMix.create(
       scrollDirection: scrollDirection.tryMerge(other.scrollDirection),
       reverse: reverse.tryMerge(other.reverse),
       padding: padding.tryMerge(other.padding),

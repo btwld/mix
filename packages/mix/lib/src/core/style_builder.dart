@@ -17,13 +17,13 @@ import 'style.dart';
 class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
   const StyleBuilder({
     super.key,
-    this.style,
+    required this.style,
     required this.builder,
     this.controller,
   });
 
   /// The style element to resolve and apply.
-  final Style<S>? style;
+  final Style<S> style;
 
   /// Function that builds the widget with the resolved style.
   final Widget Function(BuildContext context, S? spec) builder;
@@ -57,7 +57,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
 
   @override
   Widget build(BuildContext context) {
-    final widgetStates = widget.style?.widgetStates ?? {};
+    final widgetStates = widget.style.widgetStates;
     // Calculate interactivity need early
     final needsToTrackWidgetState =
         widget.controller != null || widgetStates.isNotEmpty;
@@ -102,7 +102,7 @@ class ResolvedStyleBuilder<S extends Spec<S>> extends StatelessWidget {
     if (resolvedStyle.widgetModifiers != null &&
         resolvedStyle.widgetModifiers!.isNotEmpty) {
       // Apply modifiers if any
-      current = RenderWidgetModifiers(
+      current = RenderModifiers(
         widgetModifiers: resolvedStyle.widgetModifiers!,
         child: current,
       );

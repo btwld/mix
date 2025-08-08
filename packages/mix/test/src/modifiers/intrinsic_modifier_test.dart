@@ -5,23 +5,23 @@ import 'package:mix/mix.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  // IntrinsicHeightWidgetModifierSpec
-  group('IntrinsicHeightWidgetModifierSpec', () {
+  // IntrinsicHeightModifierSpec
+  group('IntrinsicHeightModifierSpec', () {
     test('lerp', () {
-      const spec = IntrinsicHeightWidgetModifier();
-      const other = IntrinsicHeightWidgetModifier();
+      const spec = IntrinsicHeightModifier();
+      const other = IntrinsicHeightModifier();
       final result = spec.lerp(other, 0.5);
       expect(result, spec);
     });
 
     test('copyWith', () {
-      const spec = IntrinsicHeightWidgetModifier();
+      const spec = IntrinsicHeightModifier();
       final result = spec.copyWith();
       expect(result, spec);
     });
 
     testWidgets('build', (tester) async {
-      const modifier = IntrinsicHeightWidgetModifier();
+      const modifier = IntrinsicHeightModifier();
 
       await tester.pumpMaterialApp(modifier.build(Container()));
 
@@ -36,58 +36,58 @@ void main() {
 
     // equality
     test('equality', () {
-      const spec = IntrinsicHeightWidgetModifier();
-      const other = IntrinsicHeightWidgetModifier();
+      const spec = IntrinsicHeightModifier();
+      const other = IntrinsicHeightModifier();
       expect(spec, other);
     });
   });
 
-  // IntrinsicHeightWidgetModifierMix
-  group('IntrinsicHeightWidgetModifierMix', () {
+  // IntrinsicHeightModifierMix
+  group('IntrinsicHeightModifierMix', () {
     test('merge', () {
-      const modifier = IntrinsicHeightWidgetModifierMix();
-      const other = IntrinsicHeightWidgetModifierMix();
+      const modifier = IntrinsicHeightModifierMix();
+      const other = IntrinsicHeightModifierMix();
       final result = modifier.merge(other);
       expect(result, modifier);
     });
 
     test('resolve', () {
-      const modifier = IntrinsicHeightWidgetModifierMix();
-      expect(modifier, resolvesTo(const IntrinsicHeightWidgetModifier()));
+      const modifier = IntrinsicHeightModifierMix();
+      expect(modifier, resolvesTo(const IntrinsicHeightModifier()));
     });
 
     // equality
     test('equality', () {
-      const modifier = IntrinsicHeightWidgetModifierMix();
-      const other = IntrinsicHeightWidgetModifierMix();
+      const modifier = IntrinsicHeightModifierMix();
+      const other = IntrinsicHeightModifierMix();
       expect(modifier, other);
     });
   });
 
-  // IntrinsicWidthWidgetModifierSpec
-  group('IntrinsicWidthWidgetModifierSpec', () {
+  // IntrinsicWidthModifierSpec
+  group('IntrinsicWidthModifierSpec', () {
     test('lerp', () {
-      const spec = IntrinsicWidthWidgetModifier();
-      const other = IntrinsicWidthWidgetModifier();
+      const spec = IntrinsicWidthModifier();
+      const other = IntrinsicWidthModifier();
       final result = spec.lerp(other, 0.5);
       expect(result, spec);
     });
 
     test('copyWith', () {
-      const spec = IntrinsicWidthWidgetModifier();
+      const spec = IntrinsicWidthModifier();
       final result = spec.copyWith();
       expect(result, spec);
     });
 
     // equality
     test('equality', () {
-      const spec = IntrinsicWidthWidgetModifier();
-      const other = IntrinsicWidthWidgetModifier();
+      const spec = IntrinsicWidthModifier();
+      const other = IntrinsicWidthModifier();
       expect(spec, other);
     });
 
     testWidgets('build', (tester) async {
-      const modifier = IntrinsicWidthWidgetModifier();
+      const modifier = IntrinsicWidthModifier();
 
       await tester.pumpMaterialApp(modifier.build(Container()));
 
@@ -101,24 +101,24 @@ void main() {
     });
   });
 
-  // IntrinsicWidthWidgetModifierMix
-  group('IntrinsicWidthWidgetModifierMix', () {
+  // IntrinsicWidthModifierMix
+  group('IntrinsicWidthModifierMix', () {
     test('merge', () {
-      const modifier = IntrinsicWidthWidgetModifierMix();
-      const other = IntrinsicWidthWidgetModifierMix();
+      const modifier = IntrinsicWidthModifierMix();
+      const other = IntrinsicWidthModifierMix();
       final result = modifier.merge(other);
       expect(result, modifier);
     });
 
     test('resolve', () {
-      const modifier = IntrinsicWidthWidgetModifierMix();
-      expect(modifier, resolvesTo(const IntrinsicWidthWidgetModifier()));
+      const modifier = IntrinsicWidthModifierMix();
+      expect(modifier, resolvesTo(const IntrinsicWidthModifier()));
     });
 
     // equality
     test('equality', () {
-      const modifier = IntrinsicWidthWidgetModifierMix();
-      const other = IntrinsicWidthWidgetModifierMix();
+      const modifier = IntrinsicWidthModifierMix();
+      const other = IntrinsicWidthModifierMix();
       expect(modifier, other);
     });
   });

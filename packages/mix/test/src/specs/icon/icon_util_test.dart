@@ -70,8 +70,8 @@ void main() {
         expect(util.on, isA<OnContextVariantUtility<IconSpec, IconMix>>());
       });
 
-      test('wrap utility is WidgetModifierUtility', () {
-        expect(util.wrap, isA<WidgetModifierUtility<IconMix>>());
+      test('wrap utility is ModifierUtility', () {
+        expect(util.wrap, isA<ModifierUtility<IconMix>>());
       });
     });
 
@@ -425,9 +425,7 @@ void main() {
     group('Token support', () {
       test('resolves tokens with context', () {
         const sizeToken = MixToken<double>('iconSize');
-        final context = MockBuildContext(
-          tokens: {sizeToken.defineValue(32.0)},
-        );
+        final context = MockBuildContext(tokens: {sizeToken.defineValue(32.0)});
 
         final testUtil = IconSpecUtility(
           IconMix.create(size: Prop.token(sizeToken)),

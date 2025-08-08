@@ -30,7 +30,7 @@ class IconSpecUtility extends StyleMutableBuilder<IconSpec> {
     (v) => mutable.variants([v]),
   );
 
-  late final wrap = WidgetModifierUtility(
+  late final wrap = ModifierUtility(
     (prop) => mutable.wrap(ModifierConfig(modifiers: [prop])),
   );
 

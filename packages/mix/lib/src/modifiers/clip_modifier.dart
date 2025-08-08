@@ -10,20 +10,20 @@ import '../properties/painting/border_radius_mix.dart';
 /// Modifier that clips its child to an oval shape.
 ///
 /// Wraps the child in a [ClipOval] widget with the specified clipper and clip behavior.
-final class ClipOvalWidgetModifier extends Modifier<ClipOvalWidgetModifier>
+final class ClipOvalModifier extends Modifier<ClipOvalModifier>
     with Diagnosticable {
   final CustomClipper<Rect>? clipper;
   final Clip? clipBehavior;
 
-  const ClipOvalWidgetModifier({this.clipper, this.clipBehavior});
+  const ClipOvalModifier({this.clipper, this.clipBehavior});
 
   /// Returns a copy with the specified fields replaced.
   @override
-  ClipOvalWidgetModifier copyWith({
+  ClipOvalModifier copyWith({
     CustomClipper<Rect>? clipper,
     Clip? clipBehavior,
   }) {
-    return ClipOvalWidgetModifier(
+    return ClipOvalModifier(
       clipper: clipper ?? this.clipper,
       clipBehavior: clipBehavior ?? this.clipBehavior,
     );
@@ -31,10 +31,10 @@ final class ClipOvalWidgetModifier extends Modifier<ClipOvalWidgetModifier>
 
   /// Linearly interpolates between this and [other] using step interpolation.
   @override
-  ClipOvalWidgetModifier lerp(ClipOvalWidgetModifier? other, double t) {
+  ClipOvalModifier lerp(ClipOvalModifier? other, double t) {
     if (other == null) return this;
 
-    return ClipOvalWidgetModifier(
+    return ClipOvalModifier(
       clipper: MixOps.lerpSnap(clipper, other.clipper, t),
       clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t),
     );
@@ -49,10 +49,10 @@ final class ClipOvalWidgetModifier extends Modifier<ClipOvalWidgetModifier>
     );
   }
 
-  /// The list of properties that constitute the state of this [ClipOvalWidgetModifier].
+  /// The list of properties that constitute the state of this [ClipOvalModifier].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [ClipOvalWidgetModifier] instances for equality.
+  /// compare two [ClipOvalModifier] instances for equality.
   @override
   List<Object?> get props => [clipper, clipBehavior];
 
@@ -66,42 +66,42 @@ final class ClipOvalWidgetModifier extends Modifier<ClipOvalWidgetModifier>
   }
 }
 
-/// Attribute class for [ClipOvalWidgetModifier] with resolvable properties.
-class ClipOvalWidgetModifierMix
-    extends WidgetModifierMix<ClipOvalWidgetModifier> {
+/// Attribute class for [ClipOvalModifier] with resolvable properties.
+class ClipOvalModifierMix
+    extends ModifierMix<ClipOvalModifier> {
   final Prop<CustomClipper<Rect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
-  const ClipOvalWidgetModifierMix.create({this.clipper, this.clipBehavior});
+  const ClipOvalModifierMix.create({this.clipper, this.clipBehavior});
 
-  ClipOvalWidgetModifierMix({CustomClipper<Rect>? clipper, Clip? clipBehavior})
+  ClipOvalModifierMix({CustomClipper<Rect>? clipper, Clip? clipBehavior})
     : this.create(
         clipper: Prop.maybe(clipper),
         clipBehavior: Prop.maybe(clipBehavior),
       );
 
-  /// Resolves to [ClipOvalWidgetModifier] using the provided [BuildContext].
+  /// Resolves to [ClipOvalModifier] using the provided [BuildContext].
   @override
-  ClipOvalWidgetModifier resolve(BuildContext context) {
-    return ClipOvalWidgetModifier(
+  ClipOvalModifier resolve(BuildContext context) {
+    return ClipOvalModifier(
       clipper: MixOps.resolve(context, clipper),
       clipBehavior: MixOps.resolve(context, clipBehavior),
     );
   }
 
-  /// Merges the properties of this [ClipOvalWidgetModifierMix] with the properties of [other].
+  /// Merges the properties of this [ClipOvalModifierMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [ClipOvalWidgetModifierMix] with the properties of [other] taking precedence over
+  /// [ClipOvalModifierMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  ClipOvalWidgetModifierMix merge(ClipOvalWidgetModifierMix? other) {
+  ClipOvalModifierMix merge(ClipOvalModifierMix? other) {
     if (other == null) return this;
 
-    return ClipOvalWidgetModifierMix.create(
+    return ClipOvalModifierMix.create(
       clipper: clipper.tryMerge(other.clipper),
       clipBehavior: clipBehavior.tryMerge(other.clipBehavior),
     );
@@ -114,20 +114,20 @@ class ClipOvalWidgetModifierMix
 /// Modifier that clips its child to a rectangular shape.
 ///
 /// Wraps the child in a [ClipRect] widget with the specified clipper and clip behavior.
-final class ClipRectWidgetModifier extends Modifier<ClipRectWidgetModifier>
+final class ClipRectModifier extends Modifier<ClipRectModifier>
     with Diagnosticable {
   final CustomClipper<Rect>? clipper;
   final Clip? clipBehavior;
 
-  const ClipRectWidgetModifier({this.clipper, this.clipBehavior});
+  const ClipRectModifier({this.clipper, this.clipBehavior});
 
   /// Returns a copy with the specified fields replaced.
   @override
-  ClipRectWidgetModifier copyWith({
+  ClipRectModifier copyWith({
     CustomClipper<Rect>? clipper,
     Clip? clipBehavior,
   }) {
-    return ClipRectWidgetModifier(
+    return ClipRectModifier(
       clipper: clipper ?? this.clipper,
       clipBehavior: clipBehavior ?? this.clipBehavior,
     );
@@ -135,10 +135,10 @@ final class ClipRectWidgetModifier extends Modifier<ClipRectWidgetModifier>
 
   /// Linearly interpolates between this and [other] using step interpolation.
   @override
-  ClipRectWidgetModifier lerp(ClipRectWidgetModifier? other, double t) {
+  ClipRectModifier lerp(ClipRectModifier? other, double t) {
     if (other == null) return this;
 
-    return ClipRectWidgetModifier(
+    return ClipRectModifier(
       clipper: MixOps.lerpSnap(clipper, other.clipper, t),
       clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t),
     );
@@ -167,49 +167,49 @@ final class ClipRectWidgetModifier extends Modifier<ClipRectWidgetModifier>
   }
 }
 
-/// Attribute class for [ClipRectWidgetModifier] with resolvable properties.
-class ClipRectWidgetModifierMix
-    extends WidgetModifierMix<ClipRectWidgetModifier> {
+/// Attribute class for [ClipRectModifier] with resolvable properties.
+class ClipRectModifierMix
+    extends ModifierMix<ClipRectModifier> {
   final Prop<CustomClipper<Rect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
-  const ClipRectWidgetModifierMix.create({this.clipper, this.clipBehavior});
+  const ClipRectModifierMix.create({this.clipper, this.clipBehavior});
 
-  ClipRectWidgetModifierMix({CustomClipper<Rect>? clipper, Clip? clipBehavior})
+  ClipRectModifierMix({CustomClipper<Rect>? clipper, Clip? clipBehavior})
     : this.create(
         clipper: Prop.maybe(clipper),
         clipBehavior: Prop.maybe(clipBehavior),
       );
 
-  /// Resolves to [ClipRectWidgetModifier] using the provided [BuildContext].
+  /// Resolves to [ClipRectModifier] using the provided [BuildContext].
   ///
   /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final clipRectWidgetModifier = ClipRectWidgetModifierMix(...).resolve(mix);
+  /// final clipRectModifier = ClipRectModifierMix(...).resolve(mix);
   /// ```
   @override
-  ClipRectWidgetModifier resolve(BuildContext context) {
-    return ClipRectWidgetModifier(
+  ClipRectModifier resolve(BuildContext context) {
+    return ClipRectModifier(
       clipper: MixOps.resolve(context, clipper),
       clipBehavior: MixOps.resolve(context, clipBehavior),
     );
   }
 
-  /// Merges the properties of this [ClipRectWidgetModifierMix] with the properties of [other].
+  /// Merges the properties of this [ClipRectModifierMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [ClipRectWidgetModifierMix] with the properties of [other] taking precedence over
+  /// [ClipRectModifierMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  ClipRectWidgetModifierMix merge(ClipRectWidgetModifierMix? other) {
+  ClipRectModifierMix merge(ClipRectModifierMix? other) {
     if (other == null) return this;
 
-    return ClipRectWidgetModifierMix.create(
+    return ClipRectModifierMix.create(
       clipper: clipper.tryMerge(other.clipper),
       clipBehavior: clipBehavior.tryMerge(other.clipBehavior),
     );
@@ -219,55 +219,55 @@ class ClipRectWidgetModifierMix
   List<Object?> get props => [clipper, clipBehavior];
 }
 
-final class ClipRRectWidgetModifier extends Modifier<ClipRRectWidgetModifier>
+final class ClipRRectModifier extends Modifier<ClipRRectModifier>
     with Diagnosticable {
   final BorderRadiusGeometry? borderRadius;
   final CustomClipper<RRect>? clipper;
   final Clip? clipBehavior;
 
-  const ClipRRectWidgetModifier({
+  const ClipRRectModifier({
     this.borderRadius,
     this.clipper,
     this.clipBehavior,
   });
 
-  /// Creates a copy of this [ClipRRectWidgetModifier] but with the given fields
+  /// Creates a copy of this [ClipRRectModifier] but with the given fields
   /// replaced with the new values.
   @override
-  ClipRRectWidgetModifier copyWith({
+  ClipRRectModifier copyWith({
     BorderRadiusGeometry? borderRadius,
     CustomClipper<RRect>? clipper,
     Clip? clipBehavior,
   }) {
-    return ClipRRectWidgetModifier(
+    return ClipRRectModifier(
       borderRadius: borderRadius ?? this.borderRadius,
       clipper: clipper ?? this.clipper,
       clipBehavior: clipBehavior ?? this.clipBehavior,
     );
   }
 
-  /// Linearly interpolates between this [ClipRRectWidgetModifier] and another [ClipRRectWidgetModifier] based on the given parameter [t].
+  /// Linearly interpolates between this [ClipRRectModifier] and another [ClipRRectModifier] based on the given parameter [t].
   ///
   /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [ClipRRectWidgetModifier] is returned. When [t] is 1.0, the [other] [ClipRRectWidgetModifier] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [ClipRRectWidgetModifier] is returned.
+  /// When [t] is 0.0, the current [ClipRRectModifier] is returned. When [t] is 1.0, the [other] [ClipRRectModifier] is returned.
+  /// For values of [t] between 0.0 and 1.0, an interpolated [ClipRRectModifier] is returned.
   ///
-  /// If [other] is null, this method returns the current [ClipRRectWidgetModifier] instance.
+  /// If [other] is null, this method returns the current [ClipRRectModifier] instance.
   ///
-  /// The interpolation is performed on each property of the [ClipRRectWidgetModifier] using the appropriate
+  /// The interpolation is performed on each property of the [ClipRRectModifier] using the appropriate
   /// interpolation method:
   /// - [BorderRadiusGeometry.lerp] for [borderRadius].
   /// For [clipper] and [clipBehavior], the interpolation is performed using a step function.
-  /// If [t] is less than 0.5, the value from the current [ClipRRectWidgetModifier] is used. Otherwise, the value
-  /// from the [other] [ClipRRectWidgetModifier] is used.
+  /// If [t] is less than 0.5, the value from the current [ClipRRectModifier] is used. Otherwise, the value
+  /// from the [other] [ClipRRectModifier] is used.
   ///
   /// This method is typically used in animations to smoothly transition between
-  /// different [ClipRRectWidgetModifier] configurations.
+  /// different [ClipRRectModifier] configurations.
   @override
-  ClipRRectWidgetModifier lerp(ClipRRectWidgetModifier? other, double t) {
+  ClipRRectModifier lerp(ClipRRectModifier? other, double t) {
     if (other == null) return this;
 
-    return ClipRRectWidgetModifier(
+    return ClipRRectModifier(
       borderRadius: MixOps.lerp(borderRadius, other.borderRadius, t),
       clipper: MixOps.lerpSnap(clipper, other.clipper, t),
       clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t),
@@ -286,10 +286,10 @@ final class ClipRRectWidgetModifier extends Modifier<ClipRRectWidgetModifier>
     );
   }
 
-  /// The list of properties that constitute the state of this [ClipRRectWidgetModifier].
+  /// The list of properties that constitute the state of this [ClipRRectModifier].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [ClipRRectWidgetModifier] instances for equality.
+  /// compare two [ClipRRectModifier] instances for equality.
   @override
   List<Object?> get props => [borderRadius, clipper, clipBehavior];
 
@@ -304,26 +304,26 @@ final class ClipRRectWidgetModifier extends Modifier<ClipRRectWidgetModifier>
   }
 }
 
-/// Represents the attributes of a [ClipRRectWidgetModifier].
+/// Represents the attributes of a [ClipRRectModifier].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [ClipRRectWidgetModifier].
+/// appearance of a [ClipRRectModifier].
 ///
-/// Use this class to configure the attributes of a [ClipRRectWidgetModifier] and pass it to
-/// the [ClipRRectWidgetModifier] constructor.
-class ClipRRectWidgetModifierMix
-    extends WidgetModifierMix<ClipRRectWidgetModifier> {
+/// Use this class to configure the attributes of a [ClipRRectModifier] and pass it to
+/// the [ClipRRectModifier] constructor.
+class ClipRRectModifierMix
+    extends ModifierMix<ClipRRectModifier> {
   final MixProp<BorderRadiusGeometry>? borderRadius;
   final Prop<CustomClipper<RRect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
-  const ClipRRectWidgetModifierMix.create({
+  const ClipRRectModifierMix.create({
     this.borderRadius,
     this.clipper,
     this.clipBehavior,
   });
 
-  ClipRRectWidgetModifierMix({
+  ClipRRectModifierMix({
     BorderRadiusGeometryMix? borderRadius,
     CustomClipper<RRect>? clipper,
     Clip? clipBehavior,
@@ -333,36 +333,36 @@ class ClipRRectWidgetModifierMix
          clipBehavior: Prop.maybe(clipBehavior),
        );
 
-  /// Resolves to [ClipRRectWidgetModifier] using the provided [BuildContext].
+  /// Resolves to [ClipRRectModifier] using the provided [BuildContext].
   ///
   /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final clipRRectWidgetModifier = ClipRRectWidgetModifierMix(...).resolve(mix);
+  /// final clipRRectModifier = ClipRRectModifierMix(...).resolve(mix);
   /// ```
   @override
-  ClipRRectWidgetModifier resolve(BuildContext context) {
-    return ClipRRectWidgetModifier(
+  ClipRRectModifier resolve(BuildContext context) {
+    return ClipRRectModifier(
       borderRadius: MixOps.resolve(context, borderRadius),
       clipper: MixOps.resolve(context, clipper),
       clipBehavior: MixOps.resolve(context, clipBehavior),
     );
   }
 
-  /// Merges the properties of this [ClipRRectWidgetModifierMix] with the properties of [other].
+  /// Merges the properties of this [ClipRRectModifierMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [ClipRRectWidgetModifierMix] with the properties of [other] taking precedence over
+  /// [ClipRRectModifierMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  ClipRRectWidgetModifierMix merge(ClipRRectWidgetModifierMix? other) {
+  ClipRRectModifierMix merge(ClipRRectModifierMix? other) {
     if (other == null) return this;
 
-    return ClipRRectWidgetModifierMix.create(
+    return ClipRRectModifierMix.create(
       borderRadius: borderRadius.tryMerge(other.borderRadius),
       clipper: clipper.tryMerge(other.clipper),
       clipBehavior: clipBehavior.tryMerge(other.clipBehavior),
@@ -373,47 +373,47 @@ class ClipRRectWidgetModifierMix
   List<Object?> get props => [borderRadius, clipper, clipBehavior];
 }
 
-final class ClipPathWidgetModifier extends Modifier<ClipPathWidgetModifier>
+final class ClipPathModifier extends Modifier<ClipPathModifier>
     with Diagnosticable {
   final CustomClipper<Path>? clipper;
   final Clip? clipBehavior;
 
-  const ClipPathWidgetModifier({this.clipper, this.clipBehavior});
+  const ClipPathModifier({this.clipper, this.clipBehavior});
 
-  /// Creates a copy of this [ClipPathWidgetModifier] but with the given fields
+  /// Creates a copy of this [ClipPathModifier] but with the given fields
   /// replaced with the new values.
   @override
-  ClipPathWidgetModifier copyWith({
+  ClipPathModifier copyWith({
     CustomClipper<Path>? clipper,
     Clip? clipBehavior,
   }) {
-    return ClipPathWidgetModifier(
+    return ClipPathModifier(
       clipper: clipper ?? this.clipper,
       clipBehavior: clipBehavior ?? this.clipBehavior,
     );
   }
 
-  /// Linearly interpolates between this [ClipPathWidgetModifier] and another [ClipPathWidgetModifier] based on the given parameter [t].
+  /// Linearly interpolates between this [ClipPathModifier] and another [ClipPathModifier] based on the given parameter [t].
   ///
   /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [ClipPathWidgetModifier] is returned. When [t] is 1.0, the [other] [ClipPathWidgetModifier] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [ClipPathWidgetModifier] is returned.
+  /// When [t] is 0.0, the current [ClipPathModifier] is returned. When [t] is 1.0, the [other] [ClipPathModifier] is returned.
+  /// For values of [t] between 0.0 and 1.0, an interpolated [ClipPathModifier] is returned.
   ///
-  /// If [other] is null, this method returns the current [ClipPathWidgetModifier] instance.
+  /// If [other] is null, this method returns the current [ClipPathModifier] instance.
   ///
-  /// The interpolation is performed on each property of the [ClipPathWidgetModifier] using the appropriate
+  /// The interpolation is performed on each property of the [ClipPathModifier] using the appropriate
   /// interpolation method:
   /// For [clipper] and [clipBehavior], the interpolation is performed using a step function.
-  /// If [t] is less than 0.5, the value from the current [ClipPathWidgetModifier] is used. Otherwise, the value
-  /// from the [other] [ClipPathWidgetModifier] is used.
+  /// If [t] is less than 0.5, the value from the current [ClipPathModifier] is used. Otherwise, the value
+  /// from the [other] [ClipPathModifier] is used.
   ///
   /// This method is typically used in animations to smoothly transition between
-  /// different [ClipPathWidgetModifier] configurations.
+  /// different [ClipPathModifier] configurations.
   @override
-  ClipPathWidgetModifier lerp(ClipPathWidgetModifier? other, double t) {
+  ClipPathModifier lerp(ClipPathModifier? other, double t) {
     if (other == null) return this;
 
-    return ClipPathWidgetModifier(
+    return ClipPathModifier(
       clipper: MixOps.lerpSnap(clipper, other.clipper, t),
       clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t),
     );
@@ -428,10 +428,10 @@ final class ClipPathWidgetModifier extends Modifier<ClipPathWidgetModifier>
     );
   }
 
-  /// The list of properties that constitute the state of this [ClipPathWidgetModifier].
+  /// The list of properties that constitute the state of this [ClipPathModifier].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [ClipPathWidgetModifier] instances for equality.
+  /// compare two [ClipPathModifier] instances for equality.
   @override
   List<Object?> get props => [clipper, clipBehavior];
 
@@ -445,55 +445,55 @@ final class ClipPathWidgetModifier extends Modifier<ClipPathWidgetModifier>
   }
 }
 
-/// Represents the attributes of a [ClipPathWidgetModifier].
+/// Represents the attributes of a [ClipPathModifier].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [ClipPathWidgetModifier].
+/// appearance of a [ClipPathModifier].
 ///
-/// Use this class to configure the attributes of a [ClipPathWidgetModifier] and pass it to
-/// the [ClipPathWidgetModifier] constructor.
-class ClipPathWidgetModifierMix
-    extends WidgetModifierMix<ClipPathWidgetModifier> {
+/// Use this class to configure the attributes of a [ClipPathModifier] and pass it to
+/// the [ClipPathModifier] constructor.
+class ClipPathModifierMix
+    extends ModifierMix<ClipPathModifier> {
   final Prop<CustomClipper<Path>>? clipper;
   final Prop<Clip>? clipBehavior;
 
-  const ClipPathWidgetModifierMix.create({this.clipper, this.clipBehavior});
+  const ClipPathModifierMix.create({this.clipper, this.clipBehavior});
 
-  ClipPathWidgetModifierMix({CustomClipper<Path>? clipper, Clip? clipBehavior})
+  ClipPathModifierMix({CustomClipper<Path>? clipper, Clip? clipBehavior})
     : this.create(
         clipper: Prop.maybe(clipper),
         clipBehavior: Prop.maybe(clipBehavior),
       );
 
-  /// Resolves to [ClipPathWidgetModifier] using the provided [BuildContext].
+  /// Resolves to [ClipPathModifier] using the provided [BuildContext].
   ///
   /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final clipPathWidgetModifier = ClipPathWidgetModifierMix(...).resolve(mix);
+  /// final clipPathModifier = ClipPathModifierMix(...).resolve(mix);
   /// ```
   @override
-  ClipPathWidgetModifier resolve(BuildContext context) {
-    return ClipPathWidgetModifier(
+  ClipPathModifier resolve(BuildContext context) {
+    return ClipPathModifier(
       clipper: MixOps.resolve(context, clipper),
       clipBehavior: MixOps.resolve(context, clipBehavior),
     );
   }
 
-  /// Merges the properties of this [ClipPathWidgetModifierMix] with the properties of [other].
+  /// Merges the properties of this [ClipPathModifierMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [ClipPathWidgetModifierMix] with the properties of [other] taking precedence over
+  /// [ClipPathModifierMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  ClipPathWidgetModifierMix merge(ClipPathWidgetModifierMix? other) {
+  ClipPathModifierMix merge(ClipPathModifierMix? other) {
     if (other == null) return this;
 
-    return ClipPathWidgetModifierMix.create(
+    return ClipPathModifierMix.create(
       clipper: clipper.tryMerge(other.clipper),
       clipBehavior: clipBehavior.tryMerge(other.clipBehavior),
     );
@@ -503,43 +503,43 @@ class ClipPathWidgetModifierMix
   List<Object?> get props => [clipper, clipBehavior];
 }
 
-final class ClipTriangleWidgetModifier
-    extends Modifier<ClipTriangleWidgetModifier>
+final class ClipTriangleModifier
+    extends Modifier<ClipTriangleModifier>
     with Diagnosticable {
   final Clip? clipBehavior;
 
-  const ClipTriangleWidgetModifier({this.clipBehavior});
+  const ClipTriangleModifier({this.clipBehavior});
 
-  /// Creates a copy of this [ClipTriangleWidgetModifier] but with the given fields
+  /// Creates a copy of this [ClipTriangleModifier] but with the given fields
   /// replaced with the new values.
   @override
-  ClipTriangleWidgetModifier copyWith({Clip? clipBehavior}) {
-    return ClipTriangleWidgetModifier(
+  ClipTriangleModifier copyWith({Clip? clipBehavior}) {
+    return ClipTriangleModifier(
       clipBehavior: clipBehavior ?? this.clipBehavior,
     );
   }
 
-  /// Linearly interpolates between this [ClipTriangleWidgetModifier] and another [ClipTriangleWidgetModifier] based on the given parameter [t].
+  /// Linearly interpolates between this [ClipTriangleModifier] and another [ClipTriangleModifier] based on the given parameter [t].
   ///
   /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [ClipTriangleWidgetModifier] is returned. When [t] is 1.0, the [other] [ClipTriangleWidgetModifier] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [ClipTriangleWidgetModifier] is returned.
+  /// When [t] is 0.0, the current [ClipTriangleModifier] is returned. When [t] is 1.0, the [other] [ClipTriangleModifier] is returned.
+  /// For values of [t] between 0.0 and 1.0, an interpolated [ClipTriangleModifier] is returned.
   ///
-  /// If [other] is null, this method returns the current [ClipTriangleWidgetModifier] instance.
+  /// If [other] is null, this method returns the current [ClipTriangleModifier] instance.
   ///
-  /// The interpolation is performed on each property of the [ClipTriangleWidgetModifier] using the appropriate
+  /// The interpolation is performed on each property of the [ClipTriangleModifier] using the appropriate
   /// interpolation method:
   /// For [clipBehavior], the interpolation is performed using a step function.
-  /// If [t] is less than 0.5, the value from the current [ClipTriangleWidgetModifier] is used. Otherwise, the value
-  /// from the [other] [ClipTriangleWidgetModifier] is used.
+  /// If [t] is less than 0.5, the value from the current [ClipTriangleModifier] is used. Otherwise, the value
+  /// from the [other] [ClipTriangleModifier] is used.
   ///
   /// This method is typically used in animations to smoothly transition between
-  /// different [ClipTriangleWidgetModifier] configurations.
+  /// different [ClipTriangleModifier] configurations.
   @override
-  ClipTriangleWidgetModifier lerp(ClipTriangleWidgetModifier? other, double t) {
+  ClipTriangleModifier lerp(ClipTriangleModifier? other, double t) {
     if (other == null) return this;
 
-    return ClipTriangleWidgetModifier(
+    return ClipTriangleModifier(
       clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t),
     );
   }
@@ -552,10 +552,10 @@ final class ClipTriangleWidgetModifier
     );
   }
 
-  /// The list of properties that constitute the state of this [ClipTriangleWidgetModifier].
+  /// The list of properties that constitute the state of this [ClipTriangleModifier].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [ClipTriangleWidgetModifier] instances for equality.
+  /// compare two [ClipTriangleModifier] instances for equality.
   @override
   List<Object?> get props => [clipBehavior];
 
@@ -569,50 +569,50 @@ final class ClipTriangleWidgetModifier
   }
 }
 
-/// Represents the attributes of a [ClipTriangleWidgetModifier].
+/// Represents the attributes of a [ClipTriangleModifier].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [ClipTriangleWidgetModifier].
+/// appearance of a [ClipTriangleModifier].
 ///
-/// Use this class to configure the attributes of a [ClipTriangleWidgetModifier] and pass it to
-/// the [ClipTriangleWidgetModifier] constructor.
-class ClipTriangleWidgetModifierMix
-    extends WidgetModifierMix<ClipTriangleWidgetModifier> {
+/// Use this class to configure the attributes of a [ClipTriangleModifier] and pass it to
+/// the [ClipTriangleModifier] constructor.
+class ClipTriangleModifierMix
+    extends ModifierMix<ClipTriangleModifier> {
   final Prop<Clip>? clipBehavior;
 
-  const ClipTriangleWidgetModifierMix.create({this.clipBehavior});
+  const ClipTriangleModifierMix.create({this.clipBehavior});
 
-  ClipTriangleWidgetModifierMix({Clip? clipBehavior})
+  ClipTriangleModifierMix({Clip? clipBehavior})
     : this.create(clipBehavior: Prop.maybe(clipBehavior));
 
-  /// Resolves to [ClipTriangleWidgetModifier] using the provided [BuildContext].
+  /// Resolves to [ClipTriangleModifier] using the provided [BuildContext].
   ///
   /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final clipTriangleWidgetModifier = ClipTriangleWidgetModifierMix(...).resolve(mix);
+  /// final clipTriangleModifier = ClipTriangleModifierMix(...).resolve(mix);
   /// ```
   @override
-  ClipTriangleWidgetModifier resolve(BuildContext context) {
-    return ClipTriangleWidgetModifier(
+  ClipTriangleModifier resolve(BuildContext context) {
+    return ClipTriangleModifier(
       clipBehavior: MixOps.resolve(context, clipBehavior),
     );
   }
 
-  /// Merges the properties of this [ClipTriangleWidgetModifierMix] with the properties of [other].
+  /// Merges the properties of this [ClipTriangleModifierMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [ClipTriangleWidgetModifierMix] with the properties of [other] taking precedence over
+  /// [ClipTriangleModifierMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  ClipTriangleWidgetModifierMix merge(ClipTriangleWidgetModifierMix? other) {
+  ClipTriangleModifierMix merge(ClipTriangleModifierMix? other) {
     if (other == null) return this;
 
-    return ClipTriangleWidgetModifierMix.create(
+    return ClipTriangleModifierMix.create(
       clipBehavior: clipBehavior.tryMerge(other.clipBehavior),
     );
   }

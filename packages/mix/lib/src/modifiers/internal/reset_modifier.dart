@@ -5,20 +5,19 @@ import '../../core/modifier.dart';
 import '../../core/style.dart';
 
 /// A modifier specification that resets the style context.
-final class ResetWidgetModifier extends Modifier<ResetWidgetModifier>
-    with Diagnosticable {
-  const ResetWidgetModifier();
+final class ResetModifier extends Modifier<ResetModifier> with Diagnosticable {
+  const ResetModifier();
 
   @override
-  ResetWidgetModifier copyWith() {
-    return const ResetWidgetModifier();
+  ResetModifier copyWith() {
+    return const ResetModifier();
   }
 
   @override
-  ResetWidgetModifier lerp(ResetWidgetModifier? other, double t) {
+  ResetModifier lerp(ResetModifier? other, double t) {
     if (other == null) return this;
 
-    return const ResetWidgetModifier();
+    return const ResetModifier();
   }
 
   @override
@@ -36,17 +35,16 @@ final class ResetWidgetModifier extends Modifier<ResetWidgetModifier>
 }
 
 /// An attribute that resets the modifier context.
-class ResetWidgetModifierMix extends WidgetModifierMix<ResetWidgetModifier>
-    with Diagnosticable {
-  const ResetWidgetModifierMix();
+class ResetModifierMix extends ModifierMix<ResetModifier> with Diagnosticable {
+  const ResetModifierMix();
 
   @override
-  ResetWidgetModifier resolve(BuildContext context) {
-    return const ResetWidgetModifier();
+  ResetModifier resolve(BuildContext context) {
+    return const ResetModifier();
   }
 
   @override
-  ResetWidgetModifierMix merge(ResetWidgetModifierMix? other) {
+  ResetModifierMix merge(ResetModifierMix? other) {
     if (other == null) return this;
 
     return other;

@@ -7,42 +7,42 @@ import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 
-final class SizedBoxWidgetModifier extends Modifier<SizedBoxWidgetModifier>
+final class SizedBoxModifier extends Modifier<SizedBoxModifier>
     with Diagnosticable {
   final double? width;
   final double? height;
 
-  const SizedBoxWidgetModifier({this.width, this.height});
+  const SizedBoxModifier({this.width, this.height});
 
-  /// Creates a copy of this [SizedBoxWidgetModifier] but with the given fields
+  /// Creates a copy of this [SizedBoxModifier] but with the given fields
   /// replaced with the new values.
   @override
-  SizedBoxWidgetModifier copyWith({double? width, double? height}) {
-    return SizedBoxWidgetModifier(
+  SizedBoxModifier copyWith({double? width, double? height}) {
+    return SizedBoxModifier(
       width: width ?? this.width,
       height: height ?? this.height,
     );
   }
 
-  /// Linearly interpolates between this [SizedBoxWidgetModifier] and another [SizedBoxWidgetModifier] based on the given parameter [t].
+  /// Linearly interpolates between this [SizedBoxModifier] and another [SizedBoxModifier] based on the given parameter [t].
   ///
   /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [SizedBoxWidgetModifier] is returned. When [t] is 1.0, the [other] [SizedBoxWidgetModifier] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [SizedBoxWidgetModifier] is returned.
+  /// When [t] is 0.0, the current [SizedBoxModifier] is returned. When [t] is 1.0, the [other] [SizedBoxModifier] is returned.
+  /// For values of [t] between 0.0 and 1.0, an interpolated [SizedBoxModifier] is returned.
   ///
-  /// If [other] is null, this method returns the current [SizedBoxWidgetModifier] instance.
+  /// If [other] is null, this method returns the current [SizedBoxModifier] instance.
   ///
-  /// The interpolation is performed on each property of the [SizedBoxWidgetModifier] using the appropriate
+  /// The interpolation is performed on each property of the [SizedBoxModifier] using the appropriate
   /// interpolation method:
   /// - [MixOps.lerp] for [width] and [height].
 
   /// This method is typically used in animations to smoothly transition between
-  /// different [SizedBoxWidgetModifier] configurations.
+  /// different [SizedBoxModifier] configurations.
   @override
-  SizedBoxWidgetModifier lerp(SizedBoxWidgetModifier? other, double t) {
+  SizedBoxModifier lerp(SizedBoxModifier? other, double t) {
     if (other == null) return this;
 
-    return SizedBoxWidgetModifier(
+    return SizedBoxModifier(
       width: MixOps.lerp(width, other.width, t),
       height: MixOps.lerp(height, other.height, t),
     );
@@ -55,10 +55,10 @@ final class SizedBoxWidgetModifier extends Modifier<SizedBoxWidgetModifier>
     properties.add(DiagnosticsProperty('height', height, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [SizedBoxWidgetModifier].
+  /// The list of properties that constitute the state of this [SizedBoxModifier].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [SizedBoxWidgetModifier] instances for equality.
+  /// compare two [SizedBoxModifier] instances for equality.
   @override
   List<Object?> get props => [width, height];
 
@@ -68,9 +68,9 @@ final class SizedBoxWidgetModifier extends Modifier<SizedBoxWidgetModifier>
   }
 }
 
-final class SizedBoxWidgetModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, SizedBoxWidgetModifierMix> {
-  const SizedBoxWidgetModifierUtility(super.builder);
+final class SizedBoxModifierUtility<T extends Style<Object?>>
+    extends MixUtility<T, SizedBoxModifierMix> {
+  const SizedBoxModifierUtility(super.builder);
 
   T width(double v) => only(width: v);
 
@@ -80,64 +80,64 @@ final class SizedBoxWidgetModifierUtility<T extends Style<Object?>>
   T square(double size) => only(width: size, height: size);
 
   T only({double? width, double? height}) =>
-      builder(SizedBoxWidgetModifierMix(width: width, height: height));
+      builder(SizedBoxModifierMix(width: width, height: height));
 
   T call({double? width, double? height}) {
     return only(width: width, height: height);
   }
 
-  /// Utility for defining [SizedBoxWidgetModifierMix.width] and [SizedBoxWidgetModifierMix.height]
+  /// Utility for defining [SizedBoxModifierMix.width] and [SizedBoxModifierMix.height]
   /// from [Size]
   T as(Size size) => call(width: size.width, height: size.height);
 }
 
-/// Represents the attributes of a [SizedBoxWidgetModifier].
+/// Represents the attributes of a [SizedBoxModifier].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [SizedBoxWidgetModifier].
+/// appearance of a [SizedBoxModifier].
 ///
-/// Use this class to configure the attributes of a [SizedBoxWidgetModifier] and pass it to
-/// the [SizedBoxWidgetModifier] constructor.
-class SizedBoxWidgetModifierMix
-    extends WidgetModifierMix<SizedBoxWidgetModifier>
+/// Use this class to configure the attributes of a [SizedBoxModifier] and pass it to
+/// the [SizedBoxModifier] constructor.
+class SizedBoxModifierMix
+    extends ModifierMix<SizedBoxModifier>
     with Diagnosticable {
   final Prop<double>? width;
   final Prop<double>? height;
 
-  const SizedBoxWidgetModifierMix.create({this.width, this.height});
+  const SizedBoxModifierMix.create({this.width, this.height});
 
-  SizedBoxWidgetModifierMix({double? width, double? height})
+  SizedBoxModifierMix({double? width, double? height})
     : this.create(width: Prop.maybe(width), height: Prop.maybe(height));
 
-  /// Resolves to [SizedBoxWidgetModifier] using the provided [BuildContext].
+  /// Resolves to [SizedBoxModifier] using the provided [BuildContext].
   ///
   /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final sizedBoxWidgetModifier = SizedBoxWidgetModifierMix(...).resolve(mix);
+  /// final sizedBoxModifier = SizedBoxModifierMix(...).resolve(mix);
   /// ```
   @override
-  SizedBoxWidgetModifier resolve(BuildContext context) {
-    return SizedBoxWidgetModifier(
+  SizedBoxModifier resolve(BuildContext context) {
+    return SizedBoxModifier(
       width: MixOps.resolve(context, width),
       height: MixOps.resolve(context, height),
     );
   }
 
-  /// Merges the properties of this [SizedBoxWidgetModifierMix] with the properties of [other].
+  /// Merges the properties of this [SizedBoxModifierMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [SizedBoxWidgetModifierMix] with the properties of [other] taking precedence over
+  /// [SizedBoxModifierMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  SizedBoxWidgetModifierMix merge(SizedBoxWidgetModifierMix? other) {
+  SizedBoxModifierMix merge(SizedBoxModifierMix? other) {
     if (other == null) return this;
 
-    return SizedBoxWidgetModifierMix.create(
+    return SizedBoxModifierMix.create(
       width: MixOps.merge(width, other.width),
       height: MixOps.merge(height, other.height),
     );
@@ -150,10 +150,10 @@ class SizedBoxWidgetModifierMix
     properties.add(DiagnosticsProperty('height', height, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [SizedBoxWidgetModifierMix].
+  /// The list of properties that constitute the state of this [SizedBoxModifierMix].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [SizedBoxWidgetModifierMix] instances for equality.
+  /// compare two [SizedBoxModifierMix] instances for equality.
   @override
   List<Object?> get props => [width, height];
 }

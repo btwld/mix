@@ -5,11 +5,11 @@ import 'package:mix/mix.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  group('IconThemeWidgetModifier', () {
+  group('IconThemeModifier', () {
     group('Constructor', () {
       test('assigns data correctly', () {
         const data = IconThemeData(color: Color(0xFF000000), size: 24.0);
-        const modifier = IconThemeWidgetModifier(data: data);
+        const modifier = IconThemeModifier(data: data);
 
         expect(modifier.data, data);
       });
@@ -22,7 +22,7 @@ void main() {
           size: 24.0,
         );
         const updatedData = IconThemeData(color: Color(0xFF0000FF), size: 32.0);
-        final original = IconThemeWidgetModifier(data: originalData);
+        final original = IconThemeModifier(data: originalData);
         final updated = original.copyWith(data: updatedData);
 
         expect(updated.data, updatedData);
@@ -34,7 +34,7 @@ void main() {
           color: Color(0xFF000000),
           size: 24.0,
         );
-        const original = IconThemeWidgetModifier(data: originalData);
+        const original = IconThemeModifier(data: originalData);
         final updated = original.copyWith();
 
         expect(updated.data, originalData);
@@ -46,8 +46,8 @@ void main() {
       test('interpolates data correctly', () {
         const startData = IconThemeData(color: Color(0xFF000000), size: 20.0);
         const endData = IconThemeData(color: Color(0xFFFFFFFF), size: 40.0);
-        const start = IconThemeWidgetModifier(data: startData);
-        const end = IconThemeWidgetModifier(data: endData);
+        const start = IconThemeModifier(data: startData);
+        const end = IconThemeModifier(data: endData);
         final result = start.lerp(end, 0.5);
 
         expect(result.data.size, 30.0);
@@ -60,7 +60,7 @@ void main() {
 
       test('handles null other parameter', () {
         const data = IconThemeData(color: Color(0xFF000000), size: 24.0);
-        const start = IconThemeWidgetModifier(data: data);
+        const start = IconThemeModifier(data: data);
         final result = start.lerp(null, 0.5);
 
         expect(result, same(start));
@@ -70,7 +70,7 @@ void main() {
     group('build', () {
       test('wraps child with IconTheme', () {
         const data = IconThemeData(color: Color(0xFF000000), size: 24.0);
-        const modifier = IconThemeWidgetModifier(data: data);
+        const modifier = IconThemeModifier(data: data);
         const child = SizedBox();
 
         final result = modifier.build(child);
@@ -83,13 +83,13 @@ void main() {
     });
   });
 
-  group('IconThemeWidgetModifierMix', () {
+  group('IconThemeModifierMix', () {
     group('Constructor', () {
       test('assigns properties correctly', () {
         const color = Color(0xFF000000);
         const size = 24.0;
         const opacity = 0.8;
-        final attribute = IconThemeWidgetModifierMix(
+        final attribute = IconThemeModifierMix(
           color: color,
           size: size,
           opacity: opacity,
@@ -102,11 +102,11 @@ void main() {
     });
 
     group('resolve', () {
-      test('creates IconThemeWidgetModifier with resolved values', () {
+      test('creates IconThemeModifier with resolved values', () {
         const color = Color(0xFF000000);
         const size = 24.0;
         const opacity = 0.8;
-        final attribute = IconThemeWidgetModifierMix(
+        final attribute = IconThemeModifierMix(
           color: color,
           size: size,
           opacity: opacity,
@@ -122,11 +122,11 @@ void main() {
 
     group('merge', () {
       test('merges properties correctly', () {
-        final first = IconThemeWidgetModifierMix(
+        final first = IconThemeModifierMix(
           color: const Color(0xFF000000),
           size: 24.0,
         );
-        final second = IconThemeWidgetModifierMix(
+        final second = IconThemeModifierMix(
           color: const Color(0xFF0000FF),
           opacity: 0.8,
         );
@@ -139,7 +139,7 @@ void main() {
       });
 
       test('handles null other parameter', () {
-        final attribute = IconThemeWidgetModifierMix(
+        final attribute = IconThemeModifierMix(
           color: const Color(0xFF000000),
           size: 24.0,
         );
@@ -151,11 +151,11 @@ void main() {
     });
   });
 
-  group('IconThemeWidgetModifierUtility', () {
-    late IconThemeWidgetModifierUtility<BoxMix> utility;
+  group('IconThemeModifierUtility', () {
+    late IconThemeModifierUtility<BoxMix> utility;
 
     setUp(() {
-      utility = IconThemeWidgetModifierUtility(
+      utility = IconThemeModifierUtility(
         (attr) => BoxMix(modifier: ModifierConfig.modifier(attr)),
       );
     });
@@ -169,10 +169,10 @@ void main() {
 
       expect(
         result.$modifier?.$modifiers?.first,
-        isA<IconThemeWidgetModifierMix>(),
+        isA<IconThemeModifierMix>(),
       );
       final attr =
-          result.$modifier!.$modifiers!.first as IconThemeWidgetModifierMix;
+          result.$modifier!.$modifiers!.first as IconThemeModifierMix;
       expect(attr.color?.$value, color);
       expect(attr.size?.$value, size);
       expect(attr.opacity?.$value, opacity);
@@ -184,10 +184,10 @@ void main() {
 
       expect(
         result.$modifier?.$modifiers?.first,
-        isA<IconThemeWidgetModifierMix>(),
+        isA<IconThemeModifierMix>(),
       );
       final attr =
-          result.$modifier!.$modifiers!.first as IconThemeWidgetModifierMix;
+          result.$modifier!.$modifiers!.first as IconThemeModifierMix;
       expect(attr.color?.$value, color);
     });
 
@@ -197,10 +197,10 @@ void main() {
 
       expect(
         result.$modifier?.$modifiers?.first,
-        isA<IconThemeWidgetModifierMix>(),
+        isA<IconThemeModifierMix>(),
       );
       final attr =
-          result.$modifier!.$modifiers!.first as IconThemeWidgetModifierMix;
+          result.$modifier!.$modifiers!.first as IconThemeModifierMix;
       expect(attr.size?.$value, size);
     });
 
@@ -210,17 +210,17 @@ void main() {
 
       expect(
         result.$modifier?.$modifiers?.first,
-        isA<IconThemeWidgetModifierMix>(),
+        isA<IconThemeModifierMix>(),
       );
       final attr =
-          result.$modifier!.$modifiers!.first as IconThemeWidgetModifierMix;
+          result.$modifier!.$modifiers!.first as IconThemeModifierMix;
       expect(attr.opacity?.$value, opacity);
     });
   });
 
   group('Integration', () {
     testWidgets('attribute resolves and builds correctly', (tester) async {
-      final attribute = IconThemeWidgetModifierMix(
+      final attribute = IconThemeModifierMix(
         color: const Color(0xFF0000FF),
         size: 32.0,
         opacity: 0.7,
@@ -228,7 +228,7 @@ void main() {
       expect(
         attribute,
         resolvesTo(
-          IconThemeWidgetModifier(
+          IconThemeModifier(
             data: const IconThemeData(
               color: Color(0xFF0000FF),
               size: 32.0,

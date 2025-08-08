@@ -12,30 +12,30 @@ import '../theme/tokens/mix_token.dart';
 ///
 /// Controls whether a child widget is visible or hidden while maintaining
 /// its space in the layout.
-final class VisibilityWidgetModifier extends Modifier<VisibilityWidgetModifier>
+final class VisibilityModifier extends Modifier<VisibilityModifier>
     with Diagnosticable {
   /// Whether the child widget should be visible.
   final bool visible;
-  const VisibilityWidgetModifier([bool? visible]) : visible = visible ?? true;
+  const VisibilityModifier([bool? visible]) : visible = visible ?? true;
 
-  /// Creates a copy of this [VisibilityWidgetModifier] with the given fields replaced.
+  /// Creates a copy of this [VisibilityModifier] with the given fields replaced.
   @override
-  VisibilityWidgetModifier copyWith({bool? visible}) {
-    return VisibilityWidgetModifier(visible ?? this.visible);
+  VisibilityModifier copyWith({bool? visible}) {
+    return VisibilityModifier(visible ?? this.visible);
   }
 
-  /// Linearly interpolates between this [VisibilityWidgetModifier] and [other].
+  /// Linearly interpolates between this [VisibilityModifier] and [other].
   ///
   /// Uses a step function for [visible] property - values below 0.5 use this
   /// instance's value, otherwise uses [other]'s value.
   ///
   /// This method is typically used in animations to transition between
-  /// different [VisibilityWidgetModifier] configurations.
+  /// different [VisibilityModifier] configurations.
   @override
-  VisibilityWidgetModifier lerp(VisibilityWidgetModifier? other, double t) {
+  VisibilityModifier lerp(VisibilityModifier? other, double t) {
     if (other == null) return this;
 
-    return VisibilityWidgetModifier(MixOps.lerpSnap(visible, other.visible, t));
+    return VisibilityModifier(MixOps.lerpSnap(visible, other.visible, t));
   }
 
   @override
@@ -44,7 +44,7 @@ final class VisibilityWidgetModifier extends Modifier<VisibilityWidgetModifier>
     properties.add(DiagnosticsProperty('visible', visible, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [VisibilityWidgetModifier].
+  /// The list of properties that constitute the state of this [VisibilityModifier].
   @override
   List<Object?> get props => [visible];
 
@@ -54,40 +54,39 @@ final class VisibilityWidgetModifier extends Modifier<VisibilityWidgetModifier>
   }
 }
 
-/// Represents the attributes of a [VisibilityWidgetModifier].
+/// Represents the attributes of a [VisibilityModifier].
 ///
 /// This class encapsulates properties defining the visibility behavior
-/// of a [VisibilityWidgetModifier].
-class VisibilityWidgetModifierMix
-    extends WidgetModifierMix<VisibilityWidgetModifier>
+/// of a [VisibilityModifier].
+class VisibilityModifierMix extends ModifierMix<VisibilityModifier>
     with Diagnosticable {
   /// Whether the child widget should be visible.
   final Prop<bool>? visible;
 
-  const VisibilityWidgetModifierMix.create({this.visible});
+  const VisibilityModifierMix.create({this.visible});
 
-  VisibilityWidgetModifierMix({bool? visible})
+  VisibilityModifierMix({bool? visible})
     : this.create(visible: Prop.maybe(visible));
 
-  /// Resolves to [VisibilityWidgetModifier] using the provided [BuildContext].
+  /// Resolves to [VisibilityModifier] using the provided [BuildContext].
   ///
   /// ```dart
-  /// final visibilityModifier = VisibilityWidgetModifierMix(...).resolve(context);
+  /// final visibilityModifier = VisibilityModifierMix(...).resolve(context);
   /// ```
   @override
-  VisibilityWidgetModifier resolve(BuildContext context) {
-    return VisibilityWidgetModifier(visible?.resolveProp(context));
+  VisibilityModifier resolve(BuildContext context) {
+    return VisibilityModifier(visible?.resolveProp(context));
   }
 
-  /// Merges the properties of this [VisibilityWidgetModifierMix] with [other].
+  /// Merges the properties of this [VisibilityModifierMix] with [other].
   ///
   /// Properties from [other] take precedence over the corresponding properties
   /// of this instance. Returns this instance unchanged if [other] is null.
   @override
-  VisibilityWidgetModifierMix merge(VisibilityWidgetModifierMix? other) {
+  VisibilityModifierMix merge(VisibilityModifierMix? other) {
     if (other == null) return this;
 
-    return VisibilityWidgetModifierMix.create(
+    return VisibilityModifierMix.create(
       visible: visible?.mergeProp(other.visible) ?? other.visible,
     );
   }
@@ -98,17 +97,17 @@ class VisibilityWidgetModifierMix
     properties.add(DiagnosticsProperty('visible', visible, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [VisibilityWidgetModifierMix].
+  /// The list of properties that constitute the state of this [VisibilityModifierMix].
   @override
   List<Object?> get props => [visible];
 }
 
-/// Utility class for configuring [VisibilityWidgetModifier] properties.
+/// Utility class for configuring [VisibilityModifier] properties.
 ///
-/// This class provides methods to set the visibility state of a [VisibilityWidgetModifier].
-final class VisibilityWidgetModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, VisibilityWidgetModifierMix> {
-  const VisibilityWidgetModifierUtility(super.builder);
+/// This class provides methods to set the visibility state of a [VisibilityModifier].
+final class VisibilityModifierUtility<T extends Style<Object?>>
+    extends MixUtility<T, VisibilityModifierMix> {
+  const VisibilityModifierUtility(super.builder);
 
   /// Sets the visibility to true.
   T on() => call(true);
@@ -116,11 +115,11 @@ final class VisibilityWidgetModifierUtility<T extends Style<Object?>>
   /// Sets the visibility to false.
   T off() => call(false);
 
-  /// Creates a [VisibilityWidgetModifierMix] with the specified visibility state.
+  /// Creates a [VisibilityModifierMix] with the specified visibility state.
   T call(bool value) =>
-      builder(VisibilityWidgetModifierMix.create(visible: Prop.value(value)));
+      builder(VisibilityModifierMix.create(visible: Prop.value(value)));
 
-  /// Creates a [VisibilityWidgetModifierMix] with the specified visibility token.
+  /// Creates a [VisibilityModifierMix] with the specified visibility token.
   T token(MixToken<bool> token) =>
-      builder(VisibilityWidgetModifierMix.create(visible: Prop.token(token)));
+      builder(VisibilityModifierMix.create(visible: Prop.token(token)));
 }

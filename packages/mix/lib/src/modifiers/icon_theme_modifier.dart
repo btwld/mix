@@ -13,31 +13,31 @@ import '../properties/painting/shadow_mix.dart';
 /// The [IconTheme] widget is used to provide default icon properties to descendant
 /// [Icon] widgets. This modifier allows setting default color, size, opacity, and
 /// other icon properties that will be inherited by child icons.
-final class IconThemeWidgetModifier extends Modifier<IconThemeWidgetModifier>
+final class IconThemeModifier extends Modifier<IconThemeModifier>
     with Diagnosticable {
   final IconThemeData data;
 
-  const IconThemeWidgetModifier({required this.data});
+  const IconThemeModifier({required this.data});
 
-  /// Creates a copy of this [IconThemeWidgetModifier] but with the given fields
+  /// Creates a copy of this [IconThemeModifier] but with the given fields
   /// replaced with the new values.
   @override
-  IconThemeWidgetModifier copyWith({IconThemeData? data}) {
-    return IconThemeWidgetModifier(data: data ?? this.data);
+  IconThemeModifier copyWith({IconThemeData? data}) {
+    return IconThemeModifier(data: data ?? this.data);
   }
 
-  /// Linearly interpolates between this [IconThemeWidgetModifier] and [other].
+  /// Linearly interpolates between this [IconThemeModifier] and [other].
   ///
   /// The interpolation is performed on each property individually using the
   /// appropriate lerp function for that property type.
   ///
   /// This method is typically used in animations to smoothly transition between
-  /// different [IconThemeWidgetModifier] configurations.
+  /// different [IconThemeModifier] configurations.
   @override
-  IconThemeWidgetModifier lerp(IconThemeWidgetModifier? other, double t) {
+  IconThemeModifier lerp(IconThemeModifier? other, double t) {
     if (other == null) return this;
 
-    return IconThemeWidgetModifier(
+    return IconThemeModifier(
       data: MixOps.lerp(data, other.data, t) ?? data,
     );
   }
@@ -48,10 +48,10 @@ final class IconThemeWidgetModifier extends Modifier<IconThemeWidgetModifier>
     properties.add(DiagnosticsProperty('data', data));
   }
 
-  /// The list of properties that constitute the state of this [IconThemeWidgetModifier].
+  /// The list of properties that constitute the state of this [IconThemeModifier].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [IconThemeWidgetModifier] instances for equality.
+  /// compare two [IconThemeModifier] instances for equality.
   @override
   List<Object?> get props => [data];
 
@@ -61,15 +61,15 @@ final class IconThemeWidgetModifier extends Modifier<IconThemeWidgetModifier>
   }
 }
 
-/// Represents the attributes of a [IconThemeWidgetModifier].
+/// Represents the attributes of a [IconThemeModifier].
 ///
 /// This class encapsulates properties defining the default icon theme
 /// properties that will be applied to descendant [Icon] widgets.
 ///
-/// Use this class to configure the attributes of a [IconThemeWidgetModifier] and pass it to
-/// the [IconThemeWidgetModifier] constructor.
-class IconThemeWidgetModifierMix
-    extends WidgetModifierMix<IconThemeWidgetModifier> {
+/// Use this class to configure the attributes of a [IconThemeModifier] and pass it to
+/// the [IconThemeModifier] constructor.
+class IconThemeModifierMix
+    extends ModifierMix<IconThemeModifier> {
   final Prop<Color>? color;
   final Prop<double>? size;
   final Prop<double>? fill;
@@ -80,7 +80,7 @@ class IconThemeWidgetModifierMix
   final List<MixProp<Shadow>>? shadows;
   final Prop<bool>? applyTextScaling;
 
-  const IconThemeWidgetModifierMix.create({
+  const IconThemeModifierMix.create({
     this.color,
     this.size,
     this.fill,
@@ -92,7 +92,7 @@ class IconThemeWidgetModifierMix
     this.applyTextScaling,
   });
 
-  IconThemeWidgetModifierMix({
+  IconThemeModifierMix({
     Color? color,
     double? size,
     double? fill,
@@ -114,17 +114,17 @@ class IconThemeWidgetModifierMix
          applyTextScaling: Prop.maybe(applyTextScaling),
        );
 
-  /// Resolves to [IconThemeWidgetModifier] using the provided [BuildContext].
+  /// Resolves to [IconThemeModifier] using the provided [BuildContext].
   ///
   /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final iconThemeWidgetModifier = IconThemeWidgetModifierMix(...).resolve(context);
+  /// final iconThemeModifier = IconThemeModifierMix(...).resolve(context);
   /// ```
   @override
-  IconThemeWidgetModifier resolve(BuildContext context) {
-    return IconThemeWidgetModifier(
+  IconThemeModifier resolve(BuildContext context) {
+    return IconThemeModifier(
       data: IconThemeData(
         size: MixOps.resolve(context, size),
         fill: MixOps.resolve(context, fill),
@@ -139,18 +139,18 @@ class IconThemeWidgetModifierMix
     );
   }
 
-  /// Merges the properties of this [IconThemeWidgetModifierMix] with the properties of [other].
+  /// Merges the properties of this [IconThemeModifierMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [IconThemeWidgetModifierMix] with the properties of [other] taking precedence over
+  /// [IconThemeModifierMix] with the properties of [other] taking precedence over
   /// the properties of this instance.
   ///
   /// This method is typically used when combining or overriding icon theme modifier attributes.
   @override
-  IconThemeWidgetModifierMix merge(IconThemeWidgetModifierMix? other) {
+  IconThemeModifierMix merge(IconThemeModifierMix? other) {
     if (other == null) return this;
 
-    return IconThemeWidgetModifierMix.create(
+    return IconThemeModifierMix.create(
       color: color.tryMerge(other.color),
       size: size.tryMerge(other.size),
       fill: fill.tryMerge(other.fill),
@@ -177,15 +177,15 @@ class IconThemeWidgetModifierMix
   ];
 }
 
-/// Utility class for configuring [IconThemeWidgetModifier] properties.
+/// Utility class for configuring [IconThemeModifier] properties.
 ///
-/// This class provides methods to set individual properties of a [IconThemeWidgetModifier].
-/// Use the methods of this class to configure specific properties of a [IconThemeWidgetModifier].
-final class IconThemeWidgetModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, IconThemeWidgetModifierMix> {
-  const IconThemeWidgetModifierUtility(super.builder);
+/// This class provides methods to set individual properties of a [IconThemeModifier].
+/// Use the methods of this class to configure specific properties of a [IconThemeModifier].
+final class IconThemeModifierUtility<T extends Style<Object?>>
+    extends MixUtility<T, IconThemeModifierMix> {
+  const IconThemeModifierUtility(super.builder);
 
-  /// Creates an [IconThemeWidgetModifierMix] with the specified properties.
+  /// Creates an [IconThemeModifierMix] with the specified properties.
   T call({
     Color? color,
     double? size,
@@ -198,7 +198,7 @@ final class IconThemeWidgetModifierUtility<T extends Style<Object?>>
     bool? applyTextScaling,
   }) {
     return builder(
-      IconThemeWidgetModifierMix(
+      IconThemeModifierMix(
         color: color,
         size: size,
         fill: fill,

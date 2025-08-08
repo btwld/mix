@@ -63,15 +63,15 @@ abstract class Style<S extends Spec<S>> extends Mix<S> implements StyleElement {
   }
 
   @protected
-  List<WidgetModifierMix>? mergeModifierLists(
-    List<WidgetModifierMix>? current,
-    List<WidgetModifierMix>? other,
+  List<ModifierMix>? mergeModifierLists(
+    List<ModifierMix>? current,
+    List<ModifierMix>? other,
   ) {
     if (current == null && other == null) return null;
     if (current == null) return List.of(other!);
     if (other == null) return List.of(current);
 
-    final Map<Object, WidgetModifierMix> merged = {};
+    final Map<Object, ModifierMix> merged = {};
 
     for (final modifier in current) {
       merged[modifier.mergeKey] = modifier;
@@ -183,12 +183,12 @@ abstract class Style<S extends Spec<S>> extends Mix<S> implements StyleElement {
   }
 }
 
-abstract class WidgetModifierMix<S extends Modifier<S>> extends Mix<S>
+abstract class ModifierMix<S extends Modifier<S>> extends Mix<S>
     implements StyleElement {
-  const WidgetModifierMix();
+  const ModifierMix();
 
   @override
-  WidgetModifierMix<S> merge(covariant WidgetModifierMix<S>? other);
+  ModifierMix<S> merge(covariant ModifierMix<S>? other);
 
   @override
   S resolve(BuildContext context);
@@ -239,14 +239,14 @@ class ResolvedStyle<V extends Spec<V>> with Equatable {
   final V? spec;
   final AnimationConfig? animation;
   final List<Modifier>? widgetModifiers;
-  final List<Type>? orderOfWidgetModifiers;
+  final List<Type>? orderOfModifiers;
   final bool? inherit;
 
   const ResolvedStyle({
     this.spec,
     this.animation,
     this.widgetModifiers,
-    this.orderOfWidgetModifiers,
+    this.orderOfModifiers,
     this.inherit,
   });
 
@@ -255,8 +255,14 @@ class ResolvedStyle<V extends Spec<V>> with Equatable {
     if (other == null || t == 0.0) return this;
     if (t == 1.0) return other;
 
-    // Lerp the spec if it's a Spec type
-    final lerpedSpec = (spec as Spec<V>).lerp(other.spec, t);
+    // Handle null specs - if either spec is null, we can't interpolate
+    V? lerpedSpec;
+    if (spec != null && other.spec != null) {
+      lerpedSpec = spec!.lerp(other.spec, t);
+    } else {
+      // Use step function when we can't interpolate
+      lerpedSpec = t < 0.5 ? spec : other.spec;
+    }
 
     // For modifiers and animation, use the target (end) values
     // We can't meaningfully interpolate these
@@ -272,7 +278,7 @@ class ResolvedStyle<V extends Spec<V>> with Equatable {
     spec,
     animation,
     widgetModifiers,
-    orderOfWidgetModifiers,
+    orderOfModifiers,
   ];
 }
 
@@ -346,7 +352,7 @@ class CompoundStyle extends Style<MultiSpec> {
   /// ```
   factory CompoundStyle.create(Iterable<StyleElement> elements) {
     final styleList = <Style>[];
-    final modifierList = <WidgetModifierMix>[];
+    final modifierList = <ModifierMix>[];
     final variants = <VariantStyle>[];
 
     AnimationConfig? animationConfig;
@@ -357,7 +363,7 @@ class CompoundStyle extends Style<MultiSpec> {
           variants.add(element);
           break;
 
-        case WidgetModifierMix():
+        case ModifierMix():
           modifierList.add(element);
         case Style():
           // Handle MultiMix by merging it later

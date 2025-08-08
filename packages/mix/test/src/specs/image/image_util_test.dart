@@ -90,8 +90,8 @@ void main() {
         expect(util.on, isA<OnContextVariantUtility<ImageSpec, ImageMix>>());
       });
 
-      test('wrap utility is WidgetModifierUtility', () {
-        expect(util.wrap, isA<WidgetModifierUtility<ImageMix>>());
+      test('wrap utility is ModifierUtility', () {
+        expect(util.wrap, isA<ModifierUtility<ImageMix>>());
       });
     });
 

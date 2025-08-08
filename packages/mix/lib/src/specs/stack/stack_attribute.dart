@@ -21,7 +21,7 @@ import 'stack_spec.dart';
 class StackMix extends Style<StackSpec>
     with
         Diagnosticable,
-        StyleWidgetModifierMixin<StackMix, StackSpec>,
+        StyleModifierMixin<StackMix, StackSpec>,
         StyleVariantMixin<StackMix, StackSpec> {
   final Prop<AlignmentGeometry>? $alignment;
   final Prop<StackFit>? $fit;

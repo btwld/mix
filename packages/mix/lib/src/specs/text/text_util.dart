@@ -43,7 +43,7 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
   late final on = OnContextVariantUtility<TextSpec, TextMix>(
     (v) => mutable.variants([v]),
   );
-  late final wrap = WidgetModifierUtility(
+  late final wrap = ModifierUtility(
     (prop) => mutable.wrap(ModifierConfig(modifiers: [prop])),
   );
 

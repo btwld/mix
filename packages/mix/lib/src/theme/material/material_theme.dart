@@ -71,7 +71,7 @@ final materialTokens = {
 /// This is a helper method that creates a MixScope with Material tokens.
 MixScope createMaterialMixScope({
   Set<TokenDefinition>? additionalTokens,
-  List<Type>? orderOfWidgetModifiers,
+  List<Type>? orderOfModifiers,
   required Widget child,
   Key? key,
 }) {
@@ -80,7 +80,7 @@ MixScope createMaterialMixScope({
   return MixScope(
     key: key,
     tokens: tokens,
-    orderOfWidgetModifiers: orderOfWidgetModifiers,
+    orderOfModifiers: orderOfModifiers,
     child: child,
   );
 }

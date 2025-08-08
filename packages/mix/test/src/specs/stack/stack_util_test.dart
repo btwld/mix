@@ -50,8 +50,8 @@ void main() {
         expect(util.on, isA<OnContextVariantUtility<StackSpec, StackMix>>());
       });
 
-      test('wrap utility is WidgetModifierUtility', () {
-        expect(util.wrap, isA<WidgetModifierUtility<StackMix>>());
+      test('wrap utility is ModifierUtility', () {
+        expect(util.wrap, isA<ModifierUtility<StackMix>>());
       });
     });
 

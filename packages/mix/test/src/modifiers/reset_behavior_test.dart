@@ -10,14 +10,14 @@ void main() {
       'merge clears when reset is encountered in other and reset is not included',
       () {
         final current = ModifierConfig.modifiers([
-          OpacityWidgetModifierMix(opacity: 0.2),
-          AlignWidgetModifierMix(alignment: Alignment.center),
+          OpacityModifierMix(opacity: 0.2),
+          AlignModifierMix(alignment: Alignment.center),
         ]);
 
         final other = ModifierConfig.modifiers([
-          const ResetWidgetModifierMix(),
-          PaddingWidgetModifierMix(padding: EdgeInsetsDirectionalMix(top: 8.0)),
-          OpacityWidgetModifierMix(opacity: 0.8),
+          const ResetModifierMix(),
+          PaddingModifierMix(padding: EdgeInsetsDirectionalMix(top: 8.0)),
+          OpacityModifierMix(opacity: 0.8),
         ]);
 
         final merged = current.merge(other);
@@ -25,25 +25,17 @@ void main() {
 
         // Ensure no reset present in resolved modifiers
         final hasReset = resolved.any(
-          (m) =>
-              m is LegacyModifierAdapter &&
-              m.props.first is ResetWidgetModifier,
+          (m) => m is ResetModifier,
         );
         expect(hasReset, isFalse);
 
         // Ensure previous modifiers are cleared and only post-reset ones remain
         // Expect to find Padding and Opacity (0.8), not the initial Align or Opacity (0.2)
-        final types = resolved
-            .map(
-              (m) => m is LegacyModifierAdapter
-                  ? m.props.first.runtimeType
-                  : m.runtimeType,
-            )
-            .toList();
+        final types = resolved.map((m) => m.runtimeType).toList();
 
-        expect(types.contains(PaddingWidgetModifier), isTrue);
-        expect(types.contains(OpacityWidgetModifier), isTrue);
-        expect(types.contains(AlignWidgetModifier), isFalse);
+        expect(types.contains(PaddingModifier), isTrue);
+        expect(types.contains(OpacityModifier), isTrue);
+        expect(types.contains(AlignModifier), isFalse);
       },
     );
 
@@ -51,13 +43,13 @@ void main() {
       'merge clears when reset is encountered in current list and continues',
       () {
         final current = ModifierConfig.modifiers([
-          OpacityWidgetModifierMix(opacity: 0.2),
-          const ResetWidgetModifierMix(),
-          AlignWidgetModifierMix(alignment: Alignment.centerRight),
+          OpacityModifierMix(opacity: 0.2),
+          const ResetModifierMix(),
+          AlignModifierMix(alignment: Alignment.centerRight),
         ]);
 
         final other = ModifierConfig.modifiers([
-          PaddingWidgetModifierMix(
+          PaddingModifierMix(
             padding: EdgeInsetsDirectionalMix(bottom: 4.0),
           ),
         ]);
@@ -67,30 +59,22 @@ void main() {
 
         // Ensure no reset present
         final hasReset = resolved.any(
-          (m) =>
-              m is LegacyModifierAdapter &&
-              m.props.first is ResetWidgetModifier,
+          (m) => m is ResetModifier,
         );
         expect(hasReset, isFalse);
 
         // After reset in current, Opacity (0.2) is cleared; Align (after reset) remains,
         // and Padding from other is merged in.
-        final types = resolved
-            .map(
-              (m) => m is LegacyModifierAdapter
-                  ? m.props.first.runtimeType
-                  : m.runtimeType,
-            )
-            .toList();
+        final types = resolved.map((m) => m.runtimeType).toList();
 
-        expect(types.contains(OpacityWidgetModifier), isFalse);
-        expect(types.contains(AlignWidgetModifier), isTrue);
-        expect(types.contains(PaddingWidgetModifier), isTrue);
+        expect(types.contains(OpacityModifier), isFalse);
+        expect(types.contains(AlignModifier), isTrue);
+        expect(types.contains(PaddingModifier), isTrue);
       },
     );
 
     test('resolve filters out reset when present alone', () {
-      final cfg = ModifierConfig.modifiers([const ResetWidgetModifierMix()]);
+      final cfg = ModifierConfig.modifiers([const ResetModifierMix()]);
 
       final resolved = cfg.resolve(MockBuildContext());
       expect(resolved, isEmpty);

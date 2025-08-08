@@ -6,23 +6,19 @@ import '../core/style.dart';
 /// Modifier that forces its child to be exactly as tall as its intrinsic height.
 ///
 /// Wraps the child in an [IntrinsicHeight] widget.
-final class IntrinsicHeightWidgetModifier
-    extends Modifier<IntrinsicHeightWidgetModifier> {
-  const IntrinsicHeightWidgetModifier();
+final class IntrinsicHeightModifier extends Modifier<IntrinsicHeightModifier> {
+  const IntrinsicHeightModifier();
 
   @override
-  IntrinsicHeightWidgetModifier copyWith() {
-    return const IntrinsicHeightWidgetModifier();
+  IntrinsicHeightModifier copyWith() {
+    return const IntrinsicHeightModifier();
   }
 
   @override
-  IntrinsicHeightWidgetModifier lerp(
-    IntrinsicHeightWidgetModifier? other,
-    double t,
-  ) {
+  IntrinsicHeightModifier lerp(IntrinsicHeightModifier? other, double t) {
     if (other == null) return this;
 
-    return const IntrinsicHeightWidgetModifier();
+    return const IntrinsicHeightModifier();
   }
 
   @override
@@ -37,23 +33,19 @@ final class IntrinsicHeightWidgetModifier
 /// Modifier that forces its child to be exactly as wide as its intrinsic width.
 ///
 /// Wraps the child in an [IntrinsicWidth] widget.
-final class IntrinsicWidthWidgetModifier
-    extends Modifier<IntrinsicWidthWidgetModifier> {
-  const IntrinsicWidthWidgetModifier();
+final class IntrinsicWidthModifier extends Modifier<IntrinsicWidthModifier> {
+  const IntrinsicWidthModifier();
 
   @override
-  IntrinsicWidthWidgetModifier copyWith() {
-    return const IntrinsicWidthWidgetModifier();
+  IntrinsicWidthModifier copyWith() {
+    return const IntrinsicWidthModifier();
   }
 
   @override
-  IntrinsicWidthWidgetModifier lerp(
-    IntrinsicWidthWidgetModifier? other,
-    double t,
-  ) {
+  IntrinsicWidthModifier lerp(IntrinsicWidthModifier? other, double t) {
     if (other == null) return this;
 
-    return const IntrinsicWidthWidgetModifier();
+    return const IntrinsicWidthModifier();
   }
 
   @override
@@ -65,100 +57,94 @@ final class IntrinsicWidthWidgetModifier
   }
 }
 
-/// Represents the attributes of a [IntrinsicHeightWidgetModifier].
+/// Represents the attributes of a [IntrinsicHeightModifier].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [IntrinsicHeightWidgetModifier].
+/// appearance of a [IntrinsicHeightModifier].
 ///
-/// Use this class to configure the attributes of a [IntrinsicHeightWidgetModifier] and pass it to
-/// the [IntrinsicHeightWidgetModifier] constructor.
-class IntrinsicHeightWidgetModifierMix
-    extends WidgetModifierMix<IntrinsicHeightWidgetModifier> {
-  const IntrinsicHeightWidgetModifierMix();
+/// Use this class to configure the attributes of a [IntrinsicHeightModifier] and pass it to
+/// the [IntrinsicHeightModifier] constructor.
+class IntrinsicHeightModifierMix extends ModifierMix<IntrinsicHeightModifier> {
+  const IntrinsicHeightModifierMix();
 
-  /// Resolves to [IntrinsicHeightWidgetModifier] using the provided [BuildContext].
+  /// Resolves to [IntrinsicHeightModifier] using the provided [BuildContext].
   ///
   /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final intrinsicHeightWidgetModifier = IntrinsicHeightWidgetModifierMix(...).resolve(mix);
+  /// final intrinsicHeightModifier = IntrinsicHeightModifierMix(...).resolve(mix);
   /// ```
   @override
-  IntrinsicHeightWidgetModifier resolve(BuildContext context) {
-    return const IntrinsicHeightWidgetModifier();
+  IntrinsicHeightModifier resolve(BuildContext context) {
+    return const IntrinsicHeightModifier();
   }
 
-  /// Merges the properties of this [IntrinsicHeightWidgetModifierMix] with the properties of [other].
+  /// Merges the properties of this [IntrinsicHeightModifierMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [IntrinsicHeightWidgetModifierMix] with the properties of [other] taking precedence over
+  /// [IntrinsicHeightModifierMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  IntrinsicHeightWidgetModifierMix merge(
-    IntrinsicHeightWidgetModifierMix? other,
-  ) {
+  IntrinsicHeightModifierMix merge(IntrinsicHeightModifierMix? other) {
     if (other == null) return this;
 
     return other;
   }
 
-  /// The list of properties that constitute the state of this [IntrinsicHeightWidgetModifierMix].
+  /// The list of properties that constitute the state of this [IntrinsicHeightModifierMix].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [IntrinsicHeightWidgetModifierMix] instances for equality.
+  /// compare two [IntrinsicHeightModifierMix] instances for equality.
   @override
   List<Object?> get props => [];
 }
 
-/// Represents the attributes of a [IntrinsicWidthWidgetModifier].
+/// Represents the attributes of a [IntrinsicWidthModifier].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [IntrinsicWidthWidgetModifier].
+/// appearance of a [IntrinsicWidthModifier].
 ///
-/// Use this class to configure the attributes of a [IntrinsicWidthWidgetModifier] and pass it to
-/// the [IntrinsicWidthWidgetModifier] constructor.
-class IntrinsicWidthWidgetModifierMix
-    extends WidgetModifierMix<IntrinsicWidthWidgetModifier> {
-  const IntrinsicWidthWidgetModifierMix();
+/// Use this class to configure the attributes of a [IntrinsicWidthModifier] and pass it to
+/// the [IntrinsicWidthModifier] constructor.
+class IntrinsicWidthModifierMix extends ModifierMix<IntrinsicWidthModifier> {
+  const IntrinsicWidthModifierMix();
 
-  /// Resolves to [IntrinsicWidthWidgetModifier] using the provided [BuildContext].
+  /// Resolves to [IntrinsicWidthModifier] using the provided [BuildContext].
   ///
   /// If a property is null in the [BuildContext], it falls back to the
   /// default value defined in the `defaultValue` for that property.
   ///
   /// ```dart
-  /// final intrinsicWidthWidgetModifier = IntrinsicWidthWidgetModifierMix(...).resolve(mix);
+  /// final intrinsicWidthModifier = IntrinsicWidthModifierMix(...).resolve(mix);
   /// ```
   @override
-  IntrinsicWidthWidgetModifier resolve(BuildContext context) {
-    return const IntrinsicWidthWidgetModifier();
+  IntrinsicWidthModifier resolve(BuildContext context) {
+    return const IntrinsicWidthModifier();
   }
 
-  /// Merges the properties of this [IntrinsicWidthWidgetModifierMix] with the properties of [other].
+  /// Merges the properties of this [IntrinsicWidthModifierMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [IntrinsicWidthWidgetModifierMix] with the properties of [other] taking precedence over
+  /// [IntrinsicWidthModifierMix] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  IntrinsicWidthWidgetModifierMix merge(
-    IntrinsicWidthWidgetModifierMix? other,
-  ) {
+  IntrinsicWidthModifierMix merge(IntrinsicWidthModifierMix? other) {
     if (other == null) return this;
 
     return other;
   }
 
-  /// The list of properties that constitute the state of this [IntrinsicWidthWidgetModifierMix].
+  /// The list of properties that constitute the state of this [IntrinsicWidthModifierMix].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [IntrinsicWidthWidgetModifierMix] instances for equality.
+  /// compare two [IntrinsicWidthModifierMix] instances for equality.
   @override
   List<Object?> get props => [];
 }

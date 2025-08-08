@@ -16,7 +16,7 @@ import 'icon_widget.dart';
 class IconMix extends Style<IconSpec>
     with
         Diagnosticable,
-        StyleWidgetModifierMixin<IconMix, IconSpec>,
+        StyleModifierMixin<IconMix, IconSpec>,
         StyleVariantMixin<IconMix, IconSpec> {
   final Prop<Color>? $color;
   final Prop<double>? $size;

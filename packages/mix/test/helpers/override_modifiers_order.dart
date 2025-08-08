@@ -10,12 +10,12 @@ Future<void> testOverrideModifiersOrder(
     BoxMix(
       modifier: ModifierConfig(
         modifiers: [
-          VisibilityWidgetModifierMix(visible: true),
-          OpacityWidgetModifierMix(opacity: 1.0),
-          TransformWidgetModifierMix(),
-          AspectRatioWidgetModifierMix(aspectRatio: 2.0),
-          AlignWidgetModifierMix(alignment: Alignment.center),
-          PaddingWidgetModifierMix(
+          VisibilityModifierMix(visible: true),
+          OpacityModifierMix(opacity: 1.0),
+          TransformModifierMix(),
+          AspectRatioModifierMix(aspectRatio: 2.0),
+          AlignModifierMix(alignment: Alignment.center),
+          PaddingModifierMix(
             padding: EdgeInsetsDirectionalMix(top: 10.0),
           ),
         ],
@@ -23,11 +23,11 @@ Future<void> testOverrideModifiersOrder(
     ),
   );
   const orderOfModifiersOnlySpecs = [
-    AlignWidgetModifier,
-    AspectRatioWidgetModifier,
-    TransformWidgetModifier,
-    OpacityWidgetModifier,
-    VisibilityWidgetModifier,
+    AlignModifier,
+    AspectRatioModifier,
+    TransformModifier,
+    OpacityModifier,
+    VisibilityModifier,
   ];
 
   // JUST SPECS
@@ -40,11 +40,11 @@ Future<void> testOverrideModifiersOrder(
 
   // SPECS + ATTRIBUTES
   const orderOfModifiersSpecsAndAttributes = [
-    AlignWidgetModifier,
-    AspectRatioWidgetModifierMix,
-    TransformWidgetModifierMix,
-    OpacityWidgetModifier,
-    VisibilityWidgetModifierMix,
+    AlignModifier,
+    AspectRatioModifierMix,
+    TransformModifierMix,
+    OpacityModifier,
+    VisibilityModifierMix,
   ];
   await verifyDescendants(
     widgetBuilder(style, orderOfModifiersSpecsAndAttributes),
@@ -55,11 +55,11 @@ Future<void> testOverrideModifiersOrder(
 
   // JUST ATTRIBUTES
   const orderOfModifiersOnlyAttributes = [
-    AlignWidgetModifierMix,
-    AspectRatioWidgetModifierMix,
-    TransformWidgetModifierMix,
-    OpacityWidgetModifierMix,
-    VisibilityWidgetModifierMix,
+    AlignModifierMix,
+    AspectRatioModifierMix,
+    TransformModifierMix,
+    OpacityModifierMix,
+    VisibilityModifierMix,
   ];
 
   await verifyDescendants(

@@ -5,10 +5,10 @@ import 'package:mix/mix.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  group('SizedBoxWidgetModifier', () {
+  group('SizedBoxModifier', () {
     group('Constructor', () {
       test('creates with null values by default', () {
-        const modifier = SizedBoxWidgetModifier();
+        const modifier = SizedBoxModifier();
 
         expect(modifier.width, isNull);
         expect(modifier.height, isNull);
@@ -17,7 +17,7 @@ void main() {
       test('assigns all parameters correctly', () {
         const width = 100.0;
         const height = 100.0;
-        const modifier = SizedBoxWidgetModifier(width: width, height: height);
+        const modifier = SizedBoxModifier(width: width, height: height);
 
         expect(modifier.width, width);
         expect(modifier.height, height);
@@ -26,7 +26,7 @@ void main() {
 
     group('copyWith', () {
       test('returns new instance with updated values', () {
-        const original = SizedBoxWidgetModifier(width: 100.0, height: 100.0);
+        const original = SizedBoxModifier(width: 100.0, height: 100.0);
 
         final updated = original.copyWith(width: 200.0, height: 150.0);
 
@@ -36,7 +36,7 @@ void main() {
       });
 
       test('preserves original values when parameters are null', () {
-        const original = SizedBoxWidgetModifier(width: 100.0, height: 100.0);
+        const original = SizedBoxModifier(width: 100.0, height: 100.0);
 
         final updated = original.copyWith();
 
@@ -46,7 +46,7 @@ void main() {
       });
 
       test('allows partial updates', () {
-        const original = SizedBoxWidgetModifier(width: 100.0, height: 100.0);
+        const original = SizedBoxModifier(width: 100.0, height: 100.0);
 
         final updatedWidth = original.copyWith(width: 200.0);
         expect(updatedWidth.width, 200.0);
@@ -60,24 +60,24 @@ void main() {
 
     group('lerp', () {
       test('interpolates width correctly', () {
-        const start = SizedBoxWidgetModifier(width: 100.0);
-        const end = SizedBoxWidgetModifier(width: 200.0);
+        const start = SizedBoxModifier(width: 100.0);
+        const end = SizedBoxModifier(width: 200.0);
         final result = start.lerp(end, 0.5);
 
         expect(result.width, 150.0);
       });
 
       test('interpolates height correctly', () {
-        const start = SizedBoxWidgetModifier(height: 100.0);
-        const end = SizedBoxWidgetModifier(height: 200.0);
+        const start = SizedBoxModifier(height: 100.0);
+        const end = SizedBoxModifier(height: 200.0);
         final result = start.lerp(end, 0.5);
 
         expect(result.height, 150.0);
       });
 
       test('interpolates all properties together', () {
-        const start = SizedBoxWidgetModifier(width: 100.0, height: 100.0);
-        const end = SizedBoxWidgetModifier(width: 200.0, height: 200.0);
+        const start = SizedBoxModifier(width: 100.0, height: 100.0);
+        const end = SizedBoxModifier(width: 200.0, height: 200.0);
         final result = start.lerp(end, 0.25);
 
         expect(result.width, 125.0);
@@ -85,15 +85,15 @@ void main() {
       });
 
       test('handles null other parameter', () {
-        const start = SizedBoxWidgetModifier(width: 100.0, height: 100.0);
+        const start = SizedBoxModifier(width: 100.0, height: 100.0);
         final result = start.lerp(null, 0.5);
 
         expect(result, same(start));
       });
 
       test('handles null values in properties', () {
-        const start = SizedBoxWidgetModifier(width: 100.0);
-        const end = SizedBoxWidgetModifier(height: 200.0);
+        const start = SizedBoxModifier(width: 100.0);
+        const end = SizedBoxModifier(height: 200.0);
         final result = start.lerp(end, 0.5);
 
         expect(result.width, 50.0); // 100.0 to 0.0 at t=0.5
@@ -101,8 +101,8 @@ void main() {
       });
 
       test('handles extreme t values', () {
-        const start = SizedBoxWidgetModifier(width: 100.0, height: 100.0);
-        const end = SizedBoxWidgetModifier(width: 200.0, height: 200.0);
+        const start = SizedBoxModifier(width: 100.0, height: 100.0);
+        const end = SizedBoxModifier(width: 200.0, height: 200.0);
 
         final result0 = start.lerp(end, 0.0);
         expect(result0.width, 100.0);
@@ -116,30 +116,30 @@ void main() {
 
     group('equality and hashCode', () {
       test('equal when all properties match', () {
-        const modifier1 = SizedBoxWidgetModifier(width: 100.0, height: 100.0);
-        const modifier2 = SizedBoxWidgetModifier(width: 100.0, height: 100.0);
+        const modifier1 = SizedBoxModifier(width: 100.0, height: 100.0);
+        const modifier2 = SizedBoxModifier(width: 100.0, height: 100.0);
 
         expect(modifier1, equals(modifier2));
         expect(modifier1.hashCode, equals(modifier2.hashCode));
       });
 
       test('not equal when width differs', () {
-        const modifier1 = SizedBoxWidgetModifier(width: 100.0);
-        const modifier2 = SizedBoxWidgetModifier(width: 200.0);
+        const modifier1 = SizedBoxModifier(width: 100.0);
+        const modifier2 = SizedBoxModifier(width: 200.0);
 
         expect(modifier1, isNot(equals(modifier2)));
       });
 
       test('not equal when height differs', () {
-        const modifier1 = SizedBoxWidgetModifier(height: 100.0);
-        const modifier2 = SizedBoxWidgetModifier(height: 200.0);
+        const modifier1 = SizedBoxModifier(height: 100.0);
+        const modifier2 = SizedBoxModifier(height: 200.0);
 
         expect(modifier1, isNot(equals(modifier2)));
       });
 
       test('equal when both have all null values', () {
-        const modifier1 = SizedBoxWidgetModifier();
-        const modifier2 = SizedBoxWidgetModifier();
+        const modifier1 = SizedBoxModifier();
+        const modifier2 = SizedBoxModifier();
 
         expect(modifier1, equals(modifier2));
         expect(modifier1.hashCode, equals(modifier2.hashCode));
@@ -148,13 +148,13 @@ void main() {
 
     group('props', () {
       test('contains all properties', () {
-        const modifier = SizedBoxWidgetModifier(width: 100.0, height: 200.0);
+        const modifier = SizedBoxModifier(width: 100.0, height: 200.0);
 
         expect(modifier.props, [100.0, 200.0]);
       });
 
       test('contains null values', () {
-        const modifier = SizedBoxWidgetModifier();
+        const modifier = SizedBoxModifier();
 
         expect(modifier.props, [null, null]);
       });
@@ -164,7 +164,7 @@ void main() {
       testWidgets('creates SizedBox widget with default values', (
         WidgetTester tester,
       ) async {
-        const modifier = SizedBoxWidgetModifier();
+        const modifier = SizedBoxModifier();
         const child = SizedBox(width: 50, height: 50);
 
         await tester.pumpWidget(modifier.build(child));
@@ -178,7 +178,7 @@ void main() {
       testWidgets('creates SizedBox widget with custom dimensions', (
         WidgetTester tester,
       ) async {
-        const modifier = SizedBoxWidgetModifier(width: 100.0, height: 200.0);
+        const modifier = SizedBoxModifier(width: 100.0, height: 200.0);
         const child = SizedBox(width: 50, height: 50);
 
         await tester.pumpWidget(modifier.build(child));
@@ -191,10 +191,10 @@ void main() {
     });
   });
 
-  group('SizedBoxWidgetModifierMix', () {
+  group('SizedBoxModifierMix', () {
     group('Constructor', () {
       test('creates with null values by default', () {
-        final attribute = SizedBoxWidgetModifierMix();
+        final attribute = SizedBoxModifierMix();
 
         expect(attribute.width, isNull);
         expect(attribute.height, isNull);
@@ -203,7 +203,7 @@ void main() {
       test('creates with provided Prop values', () {
         final width = Prop.value(100.0);
         final height = Prop.value(200.0);
-        final attribute = SizedBoxWidgetModifierMix.create(
+        final attribute = SizedBoxModifierMix.create(
           width: width,
           height: height,
         );
@@ -215,7 +215,7 @@ void main() {
 
     group('only constructor', () {
       test('creates Prop values from direct values', () {
-        final attribute = SizedBoxWidgetModifierMix(
+        final attribute = SizedBoxModifierMix(
           width: 100.0,
           height: 200.0,
         );
@@ -225,51 +225,51 @@ void main() {
       });
 
       test('handles null values correctly', () {
-        final attribute = SizedBoxWidgetModifierMix();
+        final attribute = SizedBoxModifierMix();
 
         expect(attribute.width, isNull);
         expect(attribute.height, isNull);
       });
 
       test('handles partial values', () {
-        final attribute1 = SizedBoxWidgetModifierMix(width: 100.0);
+        final attribute1 = SizedBoxModifierMix(width: 100.0);
         expect(attribute1.width!, resolvesTo(100.0));
         expect(attribute1.height, isNull);
 
-        final attribute2 = SizedBoxWidgetModifierMix(height: 200.0);
+        final attribute2 = SizedBoxModifierMix(height: 200.0);
         expect(attribute2.width, isNull);
         expect(attribute2.height!, resolvesTo(200.0));
       });
     });
 
     group('resolve', () {
-      test('resolves to SizedBoxWidgetModifier with resolved values', () {
-        final attribute = SizedBoxWidgetModifierMix(
+      test('resolves to SizedBoxModifier with resolved values', () {
+        final attribute = SizedBoxModifierMix(
           width: 100.0,
           height: 200.0,
         );
 
-        const expectedModifier = SizedBoxWidgetModifier(width: 100.0, height: 200.0);
+        const expectedModifier = SizedBoxModifier(width: 100.0, height: 200.0);
 
         expect(attribute, resolvesTo(expectedModifier));
       });
 
       test('resolves with null values', () {
-        final attribute = SizedBoxWidgetModifierMix();
+        final attribute = SizedBoxModifierMix();
 
-        const expectedModifier = SizedBoxWidgetModifier();
+        const expectedModifier = SizedBoxModifier();
 
         expect(attribute, resolvesTo(expectedModifier));
       });
     });
 
     group('merge', () {
-      test('merges with other SizedBoxWidgetModifierMix', () {
-        final attribute1 = SizedBoxWidgetModifierMix(
+      test('merges with other SizedBoxModifierMix', () {
+        final attribute1 = SizedBoxModifierMix(
           width: 100.0,
           height: 100.0,
         );
-        final attribute2 = SizedBoxWidgetModifierMix(
+        final attribute2 = SizedBoxModifierMix(
           width: 200.0,
           height: 200.0,
         );
@@ -281,7 +281,7 @@ void main() {
       });
 
       test('returns original when other is null', () {
-        final attribute = SizedBoxWidgetModifierMix(width: 100.0);
+        final attribute = SizedBoxModifierMix(width: 100.0);
 
         final merged = attribute.merge(null);
 
@@ -289,8 +289,8 @@ void main() {
       });
 
       test('merges with null values', () {
-        final attribute1 = SizedBoxWidgetModifierMix();
-        final attribute2 = SizedBoxWidgetModifierMix(
+        final attribute1 = SizedBoxModifierMix();
+        final attribute2 = SizedBoxModifierMix(
           width: 100.0,
           height: 200.0,
         );
@@ -304,11 +304,11 @@ void main() {
 
     group('equality and props', () {
       test('equal when all Prop values match', () {
-        final attribute1 = SizedBoxWidgetModifierMix(
+        final attribute1 = SizedBoxModifierMix(
           width: 100.0,
           height: 200.0,
         );
-        final attribute2 = SizedBoxWidgetModifierMix(
+        final attribute2 = SizedBoxModifierMix(
           width: 100.0,
           height: 200.0,
         );
@@ -317,14 +317,14 @@ void main() {
       });
 
       test('not equal when values differ', () {
-        final attribute1 = SizedBoxWidgetModifierMix(width: 100.0);
-        final attribute2 = SizedBoxWidgetModifierMix(width: 200.0);
+        final attribute1 = SizedBoxModifierMix(width: 100.0);
+        final attribute2 = SizedBoxModifierMix(width: 200.0);
 
         expect(attribute1, isNot(equals(attribute2)));
       });
 
       test('props contains all Prop values', () {
-        final attribute = SizedBoxWidgetModifierMix(
+        final attribute = SizedBoxModifierMix(
           width: 100.0,
           height: 200.0,
         );
@@ -338,10 +338,10 @@ void main() {
   });
 
   group('Integration tests', () {
-    testWidgets('SizedBoxWidgetModifierMix resolves and builds correctly', (
+    testWidgets('SizedBoxModifierMix resolves and builds correctly', (
       WidgetTester tester,
     ) async {
-      final attribute = SizedBoxWidgetModifierMix(width: 150.0, height: 250.0);
+      final attribute = SizedBoxModifierMix(width: 150.0, height: 250.0);
 
       final modifier = attribute.resolve(MockBuildContext());
       const child = SizedBox(width: 100, height: 100);
@@ -355,11 +355,11 @@ void main() {
     });
 
     test('Complex merge scenario preserves and overrides correctly', () {
-      final base = SizedBoxWidgetModifierMix(width: 100.0, height: 100.0);
+      final base = SizedBoxModifierMix(width: 100.0, height: 100.0);
 
-      final override1 = SizedBoxWidgetModifierMix(width: 200.0);
+      final override1 = SizedBoxModifierMix(width: 200.0);
 
-      final override2 = SizedBoxWidgetModifierMix(height: 300.0);
+      final override2 = SizedBoxModifierMix(height: 300.0);
 
       final result = base.merge(override1).merge(override2);
 
@@ -368,8 +368,8 @@ void main() {
     });
 
     test('Lerp produces expected intermediate values', () {
-      const start = SizedBoxWidgetModifier(width: 100.0, height: 100.0);
-      const end = SizedBoxWidgetModifier(width: 200.0, height: 200.0);
+      const start = SizedBoxModifier(width: 100.0, height: 100.0);
+      const end = SizedBoxModifier(width: 200.0, height: 200.0);
 
       final quarter = start.lerp(end, 0.25);
       final half = start.lerp(end, 0.5);

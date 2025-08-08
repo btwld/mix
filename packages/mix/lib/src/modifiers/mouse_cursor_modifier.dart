@@ -63,7 +63,7 @@ class MouseCursorModifier extends Modifier<MouseCursorModifier> {
 ///
 /// Use this class to configure the attributes of a [MouseCursorModifier] and pass it to
 /// the [MouseCursorModifier] constructor.
-class MouseCursorModifierMix extends WidgetModifierMix<MouseCursorModifier> {
+class MouseCursorModifierMix extends ModifierMix<MouseCursorModifier> {
   final Prop<MouseCursor>? mouseCursor;
 
   const MouseCursorModifierMix.create({this.mouseCursor});
@@ -111,9 +111,9 @@ class MouseCursorModifierMix extends WidgetModifierMix<MouseCursorModifier> {
   List<Object?> get props => [mouseCursor];
 }
 
-class MouseCursorWidgetModifierUtility<T extends Style<Object?>>
+class MouseCursorModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, MouseCursorModifierMix> {
-  const MouseCursorWidgetModifierUtility(super.builder);
+  const MouseCursorModifierUtility(super.builder);
   T call(MouseCursor? mouseCursor) {
     return builder(MouseCursorModifierMix(mouseCursor: mouseCursor));
   }

@@ -15,7 +15,7 @@ import 'image_widget.dart';
 class ImageMix extends Style<ImageSpec>
     with
         Diagnosticable,
-        StyleWidgetModifierMixin<ImageMix, ImageSpec>,
+        StyleModifierMixin<ImageMix, ImageSpec>,
         StyleVariantMixin<ImageMix, ImageSpec> {
   final Prop<ImageProvider<Object>>? $image;
   final Prop<double>? $width;

@@ -17,7 +17,7 @@ import 'tokens/mix_token.dart';
 class MixScope extends InheritedModel<String> {
   const MixScope._({
     required Map<MixToken, ValueBuilder>? tokens,
-    required this.orderOfWidgetModifiers,
+    required this.orderOfModifiers,
     required super.child,
     super.key,
   }) : _tokens = tokens;
@@ -25,12 +25,12 @@ class MixScope extends InheritedModel<String> {
   /// Creates an empty MixScope with no tokens or modifier ordering
   const MixScope.empty({required super.child, super.key})
     : _tokens = null,
-      orderOfWidgetModifiers = null;
+      orderOfModifiers = null;
 
   /// Creates a MixScope with the provided tokens and modifier ordering
   factory MixScope({
     Set<TokenDefinition>? tokens,
-    List<Type>? orderOfWidgetModifiers,
+    List<Type>? orderOfModifiers,
     required Widget child,
     Key? key,
   }) {
@@ -39,7 +39,7 @@ class MixScope extends InheritedModel<String> {
       tokens: tokens != null
           ? {for (final token in tokens) token.token: token.resolver}
           : null,
-      orderOfWidgetModifiers: orderOfWidgetModifiers,
+      orderOfModifiers: orderOfModifiers,
       child: child,
     );
   }
@@ -47,7 +47,7 @@ class MixScope extends InheritedModel<String> {
   /// Creates a MixScope with Material design tokens pre-configured
   factory MixScope.withMaterial({
     Set<TokenDefinition>? tokens,
-    List<Type>? orderOfWidgetModifiers,
+    List<Type>? orderOfModifiers,
     required Widget child,
     Key? key,
   }) {
@@ -57,7 +57,7 @@ class MixScope extends InheritedModel<String> {
     return MixScope(
       key: key,
       tokens: mergedTokens,
-      orderOfWidgetModifiers: orderOfWidgetModifiers,
+      orderOfModifiers: orderOfModifiers,
       child: child,
     );
   }
@@ -125,14 +125,14 @@ class MixScope extends InheritedModel<String> {
     return MixScope._(
       key: key,
       tokens: combined._tokens,
-      orderOfWidgetModifiers: combined.orderOfWidgetModifiers,
+      orderOfModifiers: combined.orderOfModifiers,
       child: child,
     );
   }
 
   final Map<MixToken, ValueBuilder>? _tokens;
 
-  final List<Type>? orderOfWidgetModifiers;
+  final List<Type>? orderOfModifiers;
 
   /// Getter for tokens map
   Map<MixToken, ValueBuilder>? get tokens => _tokens;
@@ -163,8 +163,8 @@ class MixScope extends InheritedModel<String> {
     return MixScope._(
       key: other.key,
       tokens: mergedTokens,
-      orderOfWidgetModifiers:
-          other.orderOfWidgetModifiers ?? orderOfWidgetModifiers,
+      orderOfModifiers:
+          other.orderOfModifiers ?? orderOfModifiers,
       child: other.child,
     );
   }
@@ -172,7 +172,7 @@ class MixScope extends InheritedModel<String> {
   @override
   bool updateShouldNotify(MixScope oldWidget) {
     return !mapEquals(_tokens, oldWidget._tokens) ||
-        !listEquals(orderOfWidgetModifiers, oldWidget.orderOfWidgetModifiers);
+        !listEquals(orderOfModifiers, oldWidget.orderOfModifiers);
   }
 
   @override
@@ -189,8 +189,8 @@ class MixScope extends InheritedModel<String> {
     // Check if modifier order changed and widget depends on it
     if (dependencies.contains('modifierOrder') &&
         !listEquals(
-          orderOfWidgetModifiers,
-          oldWidget.orderOfWidgetModifiers,
+          orderOfModifiers,
+          oldWidget.orderOfModifiers,
         )) {
       return true;
     }

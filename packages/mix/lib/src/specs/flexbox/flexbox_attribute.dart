@@ -30,7 +30,7 @@ import 'flexbox_spec.dart';
 class FlexBoxMix extends Style<FlexBoxSpec>
     with
         Diagnosticable,
-        StyleWidgetModifierMixin<FlexBoxMix, FlexBoxSpec>,
+        StyleModifierMixin<FlexBoxMix, FlexBoxSpec>,
         StyleVariantMixin<FlexBoxMix, FlexBoxSpec>,
         BorderRadiusMixin<FlexBoxMix> {
   final BoxMix? $box;

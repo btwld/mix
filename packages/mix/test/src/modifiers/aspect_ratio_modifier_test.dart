@@ -5,38 +5,38 @@ import 'package:mix/mix.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  group('AspectRatioWidgetModifier', () {
+  group('AspectRatioModifier', () {
     test('constructor assigns aspectRatio correctly', () {
       const aspectRatio = 2.0;
-      const modifier = AspectRatioWidgetModifier(aspectRatio);
+      const modifier = AspectRatioModifier(aspectRatio);
       expect(modifier.aspectRatio, aspectRatio);
     });
 
     test('copyWith returns new instance with updated value', () {
-      const original = AspectRatioWidgetModifier(1.0);
+      const original = AspectRatioModifier(1.0);
       final updated = original.copyWith(aspectRatio: 2.0);
       expect(updated.aspectRatio, 2.0);
       expect(updated, isNot(same(original)));
     });
 
     test('copyWith preserves original when null', () {
-      const original = AspectRatioWidgetModifier(1.0);
+      const original = AspectRatioModifier(1.0);
       final updated = original.copyWith();
       expect(updated.aspectRatio, 1.0);
       expect(updated, isNot(same(original)));
     });
 
     test('lerp interpolates correctly', () {
-      const start = AspectRatioWidgetModifier(1.0);
-      const end = AspectRatioWidgetModifier(3.0);
+      const start = AspectRatioModifier(1.0);
+      const end = AspectRatioModifier(3.0);
       final result = start.lerp(end, 0.5);
       expect(result.aspectRatio, 2.0);
     });
 
     test('equality and hashCode', () {
-      const modifier1 = AspectRatioWidgetModifier(1.0);
-      const modifier2 = AspectRatioWidgetModifier(1.0);
-      const modifier3 = AspectRatioWidgetModifier(2.0);
+      const modifier1 = AspectRatioModifier(1.0);
+      const modifier2 = AspectRatioModifier(1.0);
+      const modifier3 = AspectRatioModifier(2.0);
       expect(modifier1, modifier2);
       expect(modifier1.hashCode, modifier2.hashCode);
       expect(modifier1 == modifier3, false);
@@ -44,7 +44,7 @@ void main() {
     });
 
     test('props contains aspectRatio', () {
-      const modifier = AspectRatioWidgetModifier(2.0);
+      const modifier = AspectRatioModifier(2.0);
       expect(modifier.props, [2.0]);
     });
 
@@ -52,7 +52,7 @@ void main() {
       tester,
     ) async {
       const aspectRatio = 2.0;
-      const modifier = AspectRatioWidgetModifier(aspectRatio);
+      const modifier = AspectRatioModifier(aspectRatio);
       const child = SizedBox();
       await tester.pumpWithMixScope(modifier.build(child));
       final aspectRatioWidget = tester.widget<AspectRatio>(
@@ -63,19 +63,19 @@ void main() {
     });
   });
 
-  group('AspectRatioWidgetModifierMix', () {
+  group('AspectRatioModifierMix', () {
     test('constructor assigns aspectRatio', () {
-      final attribute = AspectRatioWidgetModifierMix.create(
+      final attribute = AspectRatioModifierMix.create(
         aspectRatio: Prop.value(1.5),
       );
       expectProp(attribute.aspectRatio, 1.5);
     });
 
     test('merge returns correct attribute', () {
-      final attr1 = AspectRatioWidgetModifierMix.create(
+      final attr1 = AspectRatioModifierMix.create(
         aspectRatio: Prop.value(1.0),
       );
-      final attr2 = AspectRatioWidgetModifierMix.create(
+      final attr2 = AspectRatioModifierMix.create(
         aspectRatio: Prop.value(2.0),
       );
       final merged = attr1.merge(attr2);
@@ -83,20 +83,20 @@ void main() {
     });
 
     test('resolve returns correct modifier', () {
-      final attribute = AspectRatioWidgetModifierMix.create(
+      final attribute = AspectRatioModifierMix.create(
         aspectRatio: Prop.value(1.5),
       );
-      expect(attribute, resolvesTo(const AspectRatioWidgetModifier(1.5)));
+      expect(attribute, resolvesTo(const AspectRatioModifier(1.5)));
     });
 
     test('equality', () {
-      final attr1 = AspectRatioWidgetModifierMix.create(
+      final attr1 = AspectRatioModifierMix.create(
         aspectRatio: Prop.value(1.0),
       );
-      final attr2 = AspectRatioWidgetModifierMix.create(
+      final attr2 = AspectRatioModifierMix.create(
         aspectRatio: Prop.value(1.0),
       );
-      final attr3 = AspectRatioWidgetModifierMix.create(
+      final attr3 = AspectRatioModifierMix.create(
         aspectRatio: Prop.value(2.0),
       );
       expect(attr1, equals(attr2));
@@ -106,10 +106,10 @@ void main() {
 
   group('Integration', () {
     testWidgets('attribute resolves and builds correctly', (tester) async {
-      final attribute = AspectRatioWidgetModifierMix.create(
+      final attribute = AspectRatioModifierMix.create(
         aspectRatio: Prop.value(2.5),
       );
-      expect(attribute, resolvesTo(const AspectRatioWidgetModifier(2.5)));
+      expect(attribute, resolvesTo(const AspectRatioModifier(2.5)));
 
       final modifier = attribute.resolve(MockBuildContext());
       const child = SizedBox();

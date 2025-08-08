@@ -13,28 +13,34 @@ import '../core/style.dart';
 ///
 /// Note: This provides resolved styles rather than unresolved ones, which enables
 /// proper interpolation for animations while still supporting style inheritance.
-final class StyleProviderWidgetModifier<S extends Spec<S>>
-    extends Modifier<StyleProviderWidgetModifier<S>>
+final class StyleProviderModifier<S extends Spec<S>>
+    extends Modifier<StyleProviderModifier<S>>
     with Diagnosticable {
   /// The resolved style to provide to descendants
   final ResolvedStyle<S> resolvedStyle;
 
-  const StyleProviderWidgetModifier(this.resolvedStyle);
+  const StyleProviderModifier(this.resolvedStyle);
 
   @override
-  StyleProviderWidgetModifier<S> copyWith({ResolvedStyle<S>? resolvedStyle}) {
-    return StyleProviderWidgetModifier(resolvedStyle ?? this.resolvedStyle);
+  StyleProviderModifier<S> copyWith({ResolvedStyle<S>? resolvedStyle}) {
+    return StyleProviderModifier(resolvedStyle ?? this.resolvedStyle);
   }
 
   @override
-  StyleProviderWidgetModifier<S> lerp(
-    StyleProviderWidgetModifier<S>? other,
+  StyleProviderModifier<S> lerp(
+    StyleProviderModifier<S>? other,
     double t,
   ) {
     if (other == null) return this;
+    
+    // Handle cases where specs might be null
+    // If either spec is null, we can't interpolate, so use step function
+    if (resolvedStyle.spec == null || other.resolvedStyle.spec == null) {
+      return t < 0.5 ? this : other;
+    }
 
     // Use the existing lerp implementation from ResolvedStyle
-    return StyleProviderWidgetModifier(
+    return StyleProviderModifier(
       resolvedStyle.lerp(other.resolvedStyle, t),
     );
   }
@@ -57,35 +63,39 @@ final class StyleProviderWidgetModifier<S extends Spec<S>>
 /// Mix attribute for StyleProvider.
 ///
 /// This class stores a Style<S> and resolves it during the resolve phase,
-/// creating a StyleProviderWidgetModifier with the resolved style.
+/// creating a StyleProviderModifier with the resolved style.
 ///
 /// The style is resolved at modifier resolution time, which ensures proper
 /// context access for token and variant resolution.
-class StyleProviderWidgetModifierMix<S extends Spec<S>>
-    extends WidgetModifierMix<StyleProviderWidgetModifier<S>>
+class StyleProviderModifierMix<S extends Spec<S>>
+    extends ModifierMix<StyleProviderModifier<S>>
     with Diagnosticable {
   /// The unresolved style that will be resolved during resolve()
   final Style<S> style;
 
-  const StyleProviderWidgetModifierMix(this.style);
+  const StyleProviderModifierMix(this.style);
 
   @override
-  StyleProviderWidgetModifier<S> resolve(BuildContext context) {
+  StyleProviderModifier<S> resolve(BuildContext context) {
     // Resolve the style at modifier resolution time
     // This ensures we have proper context for tokens and variants
     final resolvedStyle = style.build(context);
-
-    return StyleProviderWidgetModifier(resolvedStyle);
+    
+    // Note: style.build() always returns a ResolvedStyle object
+    // The spec field within it may be null if the style has no attributes
+    // This is valid and consumers should handle null specs appropriately
+    
+    return StyleProviderModifier(resolvedStyle);
   }
 
   @override
-  StyleProviderWidgetModifierMix<S> merge(
-    covariant StyleProviderWidgetModifierMix<S>? other,
+  StyleProviderModifierMix<S> merge(
+    covariant StyleProviderModifierMix<S>? other,
   ) {
     if (other == null) return this;
 
     // Merge the unresolved styles
-    return StyleProviderWidgetModifierMix(style.merge(other.style));
+    return StyleProviderModifierMix(style.merge(other.style));
   }
 
   @override

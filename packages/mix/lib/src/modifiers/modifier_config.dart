@@ -9,6 +9,7 @@ import '../properties/painting/border_radius_mix.dart';
 import '../properties/painting/shadow_mix.dart';
 import '../properties/typography/text_height_behavior_mix.dart';
 import '../properties/typography/text_style_mix.dart';
+import '../specs/icon/icon_attribute.dart';
 import '../specs/text/text_attribute.dart';
 import 'align_modifier.dart';
 import 'aspect_ratio_modifier.dart';
@@ -29,19 +30,19 @@ import 'visibility_modifier.dart';
 
 final class ModifierConfig with Equatable {
   final List<Type>? $orderOfModifiers;
-  final List<WidgetModifierMix>? $modifiers;
+  final List<ModifierMix>? $modifiers;
 
   const ModifierConfig({
-    List<WidgetModifierMix>? modifiers,
+    List<ModifierMix>? modifiers,
     List<Type>? orderOfModifiers,
   }) : $modifiers = modifiers,
        $orderOfModifiers = orderOfModifiers;
 
-  factory ModifierConfig.modifier(WidgetModifierMix value) {
+  factory ModifierConfig.modifier(ModifierMix value) {
     return ModifierConfig(modifiers: [value]);
   }
 
-  factory ModifierConfig.modifiers(List<WidgetModifierMix> value) {
+  factory ModifierConfig.modifiers(List<ModifierMix> value) {
     return ModifierConfig(modifiers: value);
   }
 
@@ -49,16 +50,16 @@ final class ModifierConfig with Equatable {
     return ModifierConfig(orderOfModifiers: value);
   }
   factory ModifierConfig.reset() {
-    return ModifierConfig.modifier(const ResetWidgetModifierMix());
+    return ModifierConfig.modifier(const ResetModifierMix());
   }
 
   factory ModifierConfig.opacity(double opacity) {
-    return ModifierConfig.modifier(OpacityWidgetModifierMix(opacity: opacity));
+    return ModifierConfig.modifier(OpacityModifierMix(opacity: opacity));
   }
 
   factory ModifierConfig.aspectRatio(double aspectRatio) {
     return ModifierConfig.modifier(
-      AspectRatioWidgetModifierMix(aspectRatio: aspectRatio),
+      AspectRatioModifierMix(aspectRatio: aspectRatio),
     );
   }
 
@@ -67,7 +68,7 @@ final class ModifierConfig with Equatable {
     Clip? clipBehavior,
   }) {
     return ModifierConfig.modifier(
-      ClipOvalWidgetModifierMix(clipper: clipper, clipBehavior: clipBehavior),
+      ClipOvalModifierMix(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
@@ -76,7 +77,7 @@ final class ModifierConfig with Equatable {
     Clip? clipBehavior,
   }) {
     return ModifierConfig.modifier(
-      ClipRectWidgetModifierMix(clipper: clipper, clipBehavior: clipBehavior),
+      ClipRectModifierMix(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
@@ -86,7 +87,7 @@ final class ModifierConfig with Equatable {
     Clip? clipBehavior,
   }) {
     return ModifierConfig.modifier(
-      ClipRRectWidgetModifierMix(
+      ClipRRectModifierMix(
         borderRadius: borderRadius,
         clipper: clipper,
         clipBehavior: clipBehavior,
@@ -99,19 +100,19 @@ final class ModifierConfig with Equatable {
     Clip? clipBehavior,
   }) {
     return ModifierConfig.modifier(
-      ClipPathWidgetModifierMix(clipper: clipper, clipBehavior: clipBehavior),
+      ClipPathModifierMix(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
   factory ModifierConfig.clipTriangle({Clip? clipBehavior}) {
     return ModifierConfig.modifier(
-      ClipTriangleWidgetModifierMix(clipBehavior: clipBehavior),
+      ClipTriangleModifierMix(clipBehavior: clipBehavior),
     );
   }
 
   factory ModifierConfig.transform({Matrix4? transform, Alignment? alignment}) {
     return ModifierConfig.modifier(
-      TransformWidgetModifierMix(transform: transform, alignment: alignment),
+      TransformModifierMix(transform: transform, alignment: alignment),
     );
   }
 
@@ -127,9 +128,7 @@ final class ModifierConfig with Equatable {
   }
 
   factory ModifierConfig.visibility(bool visible) {
-    return ModifierConfig.modifier(
-      VisibilityWidgetModifierMix(visible: visible),
-    );
+    return ModifierConfig.modifier(VisibilityModifierMix(visible: visible));
   }
 
   factory ModifierConfig.align({
@@ -138,7 +137,7 @@ final class ModifierConfig with Equatable {
     double? heightFactor,
   }) {
     return ModifierConfig.modifier(
-      AlignWidgetModifierMix(
+      AlignModifierMix(
         alignment: alignment,
         widthFactor: widthFactor,
         heightFactor: heightFactor,
@@ -147,33 +146,31 @@ final class ModifierConfig with Equatable {
   }
 
   factory ModifierConfig.padding(EdgeInsetsGeometryMix? padding) {
-    return ModifierConfig.modifier(PaddingWidgetModifierMix(padding: padding));
+    return ModifierConfig.modifier(PaddingModifierMix(padding: padding));
   }
 
   factory ModifierConfig.sizedBox({double? width, double? height}) {
     return ModifierConfig.modifier(
-      SizedBoxWidgetModifierMix(width: width, height: height),
+      SizedBoxModifierMix(width: width, height: height),
     );
   }
 
   factory ModifierConfig.flexible({int? flex, FlexFit? fit}) {
-    return ModifierConfig.modifier(
-      FlexibleWidgetModifierMix(flex: flex, fit: fit),
-    );
+    return ModifierConfig.modifier(FlexibleModifierMix(flex: flex, fit: fit));
   }
 
   factory ModifierConfig.rotatedBox(int quarterTurns) {
     return ModifierConfig.modifier(
-      RotatedBoxWidgetModifierMix(quarterTurns: quarterTurns),
+      RotatedBoxModifierMix(quarterTurns: quarterTurns),
     );
   }
 
   factory ModifierConfig.intrinsicHeight() {
-    return ModifierConfig.modifier(const IntrinsicHeightWidgetModifierMix());
+    return ModifierConfig.modifier(const IntrinsicHeightModifierMix());
   }
 
   factory ModifierConfig.intrinsicWidth() {
-    return ModifierConfig.modifier(const IntrinsicWidthWidgetModifierMix());
+    return ModifierConfig.modifier(const IntrinsicWidthModifierMix());
   }
 
   factory ModifierConfig.fractionallySizedBox({
@@ -182,7 +179,7 @@ final class ModifierConfig with Equatable {
     AlignmentGeometry? alignment,
   }) {
     return ModifierConfig.modifier(
-      FractionallySizedBoxWidgetModifierMix(
+      FractionallySizedBoxModifierMix(
         widthFactor: widthFactor,
         heightFactor: heightFactor,
         alignment: alignment,
@@ -200,7 +197,7 @@ final class ModifierConfig with Equatable {
     TextHeightBehaviorMix? textHeightBehavior,
   }) {
     return ModifierConfig.modifier(
-      DefaultTextStyleWidgetModifierMix(
+      DefaultTextStyleModifierMix(
         style: style,
         textAlign: textAlign,
         softWrap: softWrap,
@@ -214,7 +211,7 @@ final class ModifierConfig with Equatable {
 
   factory ModifierConfig.defaultText(TextMix textMix) {
     return ModifierConfig.modifier(
-      DefaultTextStyleWidgetModifierMix.create(
+      DefaultTextStyleModifierMix.create(
         style: textMix.$style,
         textAlign: textMix.$textAlign,
         softWrap: textMix.$softWrap,
@@ -222,6 +219,21 @@ final class ModifierConfig with Equatable {
         maxLines: textMix.$maxLines,
         textWidthBasis: textMix.$textWidthBasis,
         textHeightBehavior: textMix.$textHeightBehavior,
+      ),
+    );
+  }
+
+  factory ModifierConfig.defaultIcon(IconMix iconMix) {
+    return ModifierConfig.modifier(
+      IconThemeModifierMix.create(
+        color: iconMix.$color,
+        size: iconMix.$size,
+        fill: iconMix.$fill,
+        weight: iconMix.$weight,
+        grade: iconMix.$grade,
+        opticalSize: iconMix.$opticalSize,
+        shadows: iconMix.$shadows,
+        applyTextScaling: iconMix.$applyTextScaling,
       ),
     );
   }
@@ -238,7 +250,7 @@ final class ModifierConfig with Equatable {
     bool? applyTextScaling,
   }) {
     return ModifierConfig.modifier(
-      IconThemeWidgetModifierMix(
+      IconThemeModifierMix(
         color: color,
         size: size,
         fill: fill,
@@ -252,18 +264,18 @@ final class ModifierConfig with Equatable {
     );
   }
 
-  /// Static method for creating StyleProvider that works with any spec type
-  static ModifierConfig styleProvider<S extends Spec<S>>(Style<S> style) {
-    return ModifierConfig.modifier(StyleProviderWidgetModifierMix<S>(style));
+  /// Static method for creating a style provider modifier
+  static ModifierConfig style<S extends Spec<S>>(Style<S> value) {
+    return ModifierConfig.modifier(StyleProviderModifierMix<S>(value));
   }
 
   void _mergeWithReset(
-    Map<Object, WidgetModifierMix> acc,
-    Iterable<WidgetModifierMix> list,
+    Map<Object, ModifierMix> acc,
+    Iterable<ModifierMix> list,
   ) {
     for (final m in list) {
       final key = m.mergeKey;
-      if (key == ResetWidgetModifierMix().mergeKey) {
+      if (key == ResetModifierMix().mergeKey) {
         acc.clear();
         continue;
       }
@@ -325,7 +337,7 @@ final class ModifierConfig with Equatable {
     );
   }
 
-  ModifierConfig modifiers(List<WidgetModifierMix> value) {
+  ModifierConfig modifiers(List<ModifierMix> value) {
     return merge(ModifierConfig.modifiers(value));
   }
 
@@ -441,12 +453,12 @@ final class ModifierConfig with Equatable {
     return merge(ModifierConfig.defaultText(textMix));
   }
 
-  /// Generic instance method for StyleProvider (uses static method)
-  ModifierConfig styleProviderFor<S extends Spec<S>>(Style<S> style) {
-    return merge(ModifierConfig.styleProvider(style));
+  /// Instance method for providing a style to descendants
+  ModifierConfig withStyle<S extends Spec<S>>(Style<S> style) {
+    return merge(ModifierConfig.style(style));
   }
 
-  ModifierConfig modifier(WidgetModifierMix value) {
+  ModifierConfig modifier(ModifierMix value) {
     return merge(ModifierConfig.modifier(value));
   }
 
@@ -466,15 +478,15 @@ final class ModifierConfig with Equatable {
   }
 
   @protected
-  List<WidgetModifierMix>? mergeModifierLists(
-    List<WidgetModifierMix>? current,
-    List<WidgetModifierMix>? other,
+  List<ModifierMix>? mergeModifierLists(
+    List<ModifierMix>? current,
+    List<ModifierMix>? other,
   ) {
     if (current == null && other == null) return null;
     if (current == null) return List.of(other!);
     if (other == null) return List.of(current);
 
-    final Map<Object, WidgetModifierMix> merged = {};
+    final Map<Object, ModifierMix> merged = {};
 
     _mergeWithReset(merged, current);
     _mergeWithReset(merged, other);
@@ -492,7 +504,7 @@ final class ModifierConfig with Equatable {
     for (final attribute in $modifiers!) {
       final resolved = attribute.resolve(context);
       // Filter out reset specs so they never reach rendering
-      if (resolved is! ResetWidgetModifier) {
+      if (resolved is! ResetModifier) {
         resolvedModifiers.add(resolved as Modifier);
       }
     }
@@ -507,76 +519,76 @@ final class ModifierConfig with Equatable {
 const _defaultOrder = [
   // === PHASE 1: CONTEXT & BEHAVIOR SETUP ===
 
-  // 1. FlexibleWidgetModifier: Controls flex behavior when used inside Row, Column, or Flex widgets.
+  // 1. FlexibleModifier: Controls flex behavior when used inside Row, Column, or Flex widgets.
   // Applied first to establish how the widget participates in flex layouts.
-  FlexibleWidgetModifier,
+  FlexibleModifier,
 
-  // 2. VisibilityWidgetModifier: Controls overall visibility with early exit optimization.
+  // 2. VisibilityModifier: Controls overall visibility with early exit optimization.
   // If invisible, subsequent modifiers are skipped, improving performance.
-  VisibilityWidgetModifier,
+  VisibilityModifier,
 
-  // 3. IconThemeWidgetModifier: Provides default icon styling context to descendant Icon widgets.
+  // 3. IconThemeModifier: Provides default icon styling context to descendant Icon widgets.
   // Applied early to establish icon theme before any layout calculations.
-  IconThemeWidgetModifier,
+  IconThemeModifier,
 
-  // 4. DefaultTextStyleWidgetModifier: Provides default text styling context to descendant Text widgets.
+  // 4. DefaultTextStyleModifier: Provides default text styling context to descendant Text widgets.
   // Applied early alongside IconTheme to establish text theme context before layout.
-  DefaultTextStyleWidgetModifier,
+  DefaultTextStyleModifier,
 
   // === PHASE 2: SIZE ESTABLISHMENT ===
 
-  // 5. SizedBoxWidgetModifier: Explicitly sets widget dimensions with fixed constraints.
+  // 5. SizedBoxModifier: Explicitly sets widget dimensions with fixed constraints.
   // Applied early to establish concrete size before relative sizing adjustments.
-  SizedBoxWidgetModifier,
+  SizedBoxModifier,
 
-  // 6. FractionallySizedBoxWidgetModifier: Sets size relative to parent dimensions.
+  // 6. FractionallySizedBoxModifier: Sets size relative to parent dimensions.
   // Applied after explicit sizing to allow responsive scaling within constraints.
-  FractionallySizedBoxWidgetModifier,
+  FractionallySizedBoxModifier,
 
-  // 7. IntrinsicHeightWidgetModifier: Adjusts height based on child's intrinsic content height.
+  // 7. IntrinsicHeightModifier: Adjusts height based on child's intrinsic content height.
   // Applied to allow content-driven height calculations before aspect ratio constraints.
-  IntrinsicHeightWidgetModifier,
+  IntrinsicHeightModifier,
 
   // 8. IntrinsicWidthWidgetModifier: Adjusts width based on child's intrinsic content width.
   // Applied alongside intrinsic height for complete content-driven sizing.
-  IntrinsicWidthWidgetModifier,
+  IntrinsicWidthModifier,
 
   // 9. AspectRatioWidgetModifier: Maintains aspect ratio within established size constraints.
   // Applied after all other sizing to preserve aspect ratio in final dimensions.
-  AspectRatioWidgetModifier,
+  AspectRatioModifier,
 
   // === PHASE 3: LAYOUT MODIFICATIONS ===
 
   // 10. RotatedBoxWidgetModifier: Rotates widget and changes its layout dimensions.
   // CRITICAL: Must come before AlignWidgetModifier because it changes layout space
   // (e.g., 200×100 widget becomes 100×200, affecting alignment calculations).
-  RotatedBoxWidgetModifier,
+  RotatedBoxModifier,
 
-  // 11. AlignWidgetModifier: Positions widget within its allocated space.
+  // 11. AlignModifier: Positions widget within its allocated space.
   // Applied after RotatedBox to align based on final layout dimensions.
-  AlignWidgetModifier,
+  AlignModifier,
 
   // === PHASE 4: SPACING ===
 
   // 12. PaddingWidgetModifier: Adds spacing around the widget content.
   // Applied after layout positioning to add space without affecting layout calculations.
-  PaddingWidgetModifier,
+  PaddingModifier,
 
   // === PHASE 5: VISUAL-ONLY EFFECTS ===
 
   // 13. TransformWidgetModifier: Applies visual transformations (scale, rotate, translate).
   // IMPORTANT: Visual-only - doesn't affect layout space, unlike RotatedBoxWidgetModifier.
-  TransformWidgetModifier,
+  TransformModifier,
 
   // 14. Clip Modifiers: Applies visual clipping in various shapes.
   // Applied near the end to clip the widget's final visual appearance.
-  ClipOvalWidgetModifier,
-  ClipRRectWidgetModifier,
-  ClipPathWidgetModifier,
-  ClipTriangleWidgetModifier,
-  ClipRectWidgetModifier,
+  ClipOvalModifier,
+  ClipRRectModifier,
+  ClipPathModifier,
+  ClipTriangleModifier,
+  ClipRectModifier,
 
   // 15. OpacityWidgetModifier: Applies transparency as the final visual effect.
   // Always applied last to ensure optimal performance and correct visual layering.
-  OpacityWidgetModifier,
+  OpacityModifier,
 ];

@@ -10,25 +10,20 @@ import '../core/utility.dart';
 /// Modifier that aligns its child within the available space.
 ///
 /// Wraps the child in an [Align] widget with the specified alignment and size factors.
-final class AlignWidgetModifier extends Modifier<AlignWidgetModifier>
-    with Diagnosticable {
+final class AlignModifier extends Modifier<AlignModifier> with Diagnosticable {
   final AlignmentGeometry? alignment;
   final double? widthFactor;
   final double? heightFactor;
 
-  const AlignWidgetModifier({
-    this.alignment,
-    this.widthFactor,
-    this.heightFactor,
-  });
+  const AlignModifier({this.alignment, this.widthFactor, this.heightFactor});
 
   @override
-  AlignWidgetModifier copyWith({
+  AlignModifier copyWith({
     AlignmentGeometry? alignment,
     double? widthFactor,
     double? heightFactor,
   }) {
-    return AlignWidgetModifier(
+    return AlignModifier(
       alignment: alignment ?? this.alignment,
       widthFactor: widthFactor ?? this.widthFactor,
       heightFactor: heightFactor ?? this.heightFactor,
@@ -36,10 +31,10 @@ final class AlignWidgetModifier extends Modifier<AlignWidgetModifier>
   }
 
   @override
-  AlignWidgetModifier lerp(AlignWidgetModifier? other, double t) {
+  AlignModifier lerp(AlignModifier? other, double t) {
     if (other == null) return this;
 
-    return AlignWidgetModifier(
+    return AlignModifier(
       alignment: MixOps.lerp(alignment, other.alignment, t),
       widthFactor: MixOps.lerp(widthFactor, other.widthFactor, t),
       heightFactor: MixOps.lerp(heightFactor, other.heightFactor, t),
@@ -60,16 +55,16 @@ final class AlignWidgetModifier extends Modifier<AlignWidgetModifier>
   }
 }
 
-final class AlignWidgetModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, AlignWidgetModifierMix> {
-  const AlignWidgetModifierUtility(super.builder);
+final class AlignModifierUtility<T extends Style<Object?>>
+    extends MixUtility<T, AlignModifierMix> {
+  const AlignModifierUtility(super.builder);
   T call({
     AlignmentGeometry? alignment,
     double? widthFactor,
     double? heightFactor,
   }) {
     return builder(
-      AlignWidgetModifierMix(
+      AlignModifierMix(
         alignment: alignment,
         widthFactor: widthFactor,
         heightFactor: heightFactor,
@@ -78,18 +73,18 @@ final class AlignWidgetModifierUtility<T extends Style<Object?>>
   }
 }
 
-class AlignWidgetModifierMix extends WidgetModifierMix<AlignWidgetModifier> {
+class AlignModifierMix extends ModifierMix<AlignModifier> {
   final Prop<AlignmentGeometry>? alignment;
   final Prop<double>? widthFactor;
   final Prop<double>? heightFactor;
 
-  const AlignWidgetModifierMix.create({
+  const AlignModifierMix.create({
     this.alignment,
     this.widthFactor,
     this.heightFactor,
   });
 
-  AlignWidgetModifierMix({
+  AlignModifierMix({
     AlignmentGeometry? alignment,
     double? widthFactor,
     double? heightFactor,
@@ -100,8 +95,8 @@ class AlignWidgetModifierMix extends WidgetModifierMix<AlignWidgetModifier> {
        );
 
   @override
-  AlignWidgetModifier resolve(BuildContext context) {
-    return AlignWidgetModifier(
+  AlignModifier resolve(BuildContext context) {
+    return AlignModifier(
       alignment: MixOps.resolve(context, alignment),
       widthFactor: MixOps.resolve(context, widthFactor),
       heightFactor: MixOps.resolve(context, heightFactor),
@@ -109,10 +104,10 @@ class AlignWidgetModifierMix extends WidgetModifierMix<AlignWidgetModifier> {
   }
 
   @override
-  AlignWidgetModifierMix merge(AlignWidgetModifierMix? other) {
+  AlignModifierMix merge(AlignModifierMix? other) {
     if (other == null) return this;
 
-    return AlignWidgetModifierMix.create(
+    return AlignModifierMix.create(
       alignment: MixOps.merge(alignment, other.alignment),
       widthFactor: MixOps.merge(widthFactor, other.widthFactor),
       heightFactor: MixOps.merge(heightFactor, other.heightFactor),

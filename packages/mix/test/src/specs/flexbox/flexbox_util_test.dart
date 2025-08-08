@@ -55,8 +55,8 @@ void main() {
         );
       });
 
-      test('wrap utility is WidgetModifierUtility', () {
-        expect(util.wrap, isA<WidgetModifierUtility<FlexBoxMix>>());
+      test('wrap utility is ModifierUtility', () {
+        expect(util.wrap, isA<ModifierUtility<FlexBoxMix>>());
       });
     });
 

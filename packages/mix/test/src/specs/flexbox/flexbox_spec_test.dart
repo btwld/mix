@@ -243,8 +243,8 @@ void main() {
         final attribute = FlexBoxMix(
           modifier: ModifierConfig(
             modifiers: [
-              OpacityWidgetModifierMix(opacity: 0.5),
-              TransformWidgetModifierMix(
+              OpacityModifierMix(opacity: 0.5),
+              TransformModifierMix(
                 transform: Matrix4.identity(),
                 alignment: Alignment.center,
               ),
@@ -259,14 +259,14 @@ void main() {
       test('modifiers are merged correctly', () {
         final first = FlexBoxMix(
           modifier: ModifierConfig(
-            modifiers: [OpacityWidgetModifierMix(opacity: 0.5)],
+            modifiers: [OpacityModifierMix(opacity: 0.5)],
           ),
         );
 
         final second = FlexBoxMix(
           modifier: ModifierConfig(
             modifiers: [
-              TransformWidgetModifierMix(transform: Matrix4.identity()),
+              TransformModifierMix(transform: Matrix4.identity()),
             ],
           ),
         );

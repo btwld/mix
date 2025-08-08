@@ -64,6 +64,7 @@ export 'src/modifiers/padding_modifier.dart';
 export 'src/modifiers/rotated_box_modifier.dart';
 export 'src/modifiers/scroll_view_modifier.dart';
 export 'src/modifiers/sized_box_modifier.dart';
+export 'src/modifiers/style_provider_modifier.dart';
 export 'src/modifiers/transform_modifier.dart';
 export 'src/modifiers/visibility_modifier.dart';
 export 'src/properties/layout/constraints_mix.dart';
