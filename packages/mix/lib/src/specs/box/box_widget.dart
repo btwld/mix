@@ -4,7 +4,7 @@ import '../../core/style_widget.dart';
 import 'box_spec.dart';
 
 /// A styled container widget using Mix framework.
-/// 
+///
 /// Applies [BoxSpec] styling to create a customized [Container].
 class Box extends StyleWidget<BoxSpec> {
   const Box({super.style, super.key, this.child});

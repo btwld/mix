@@ -3,6 +3,8 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/style_widget.dart';
+import '../box/box_widget.dart';
+import '../flex/flex_spec.dart';
 import 'flexbox_attribute.dart';
 import 'flexbox_spec.dart';
 
@@ -22,34 +24,10 @@ class FlexBox extends StyleWidget<FlexBoxSpec> {
 
   @override
   Widget build(BuildContext context, FlexBoxSpec? spec) {
-    final boxSpec = spec?.box;
-    final flexSpec = spec?.flex;
-
-    return Container(
-      alignment: boxSpec?.alignment,
-      padding: boxSpec?.padding,
-      decoration: boxSpec?.decoration,
-      foregroundDecoration: boxSpec?.foregroundDecoration,
-      constraints: boxSpec?.constraints,
-      margin: boxSpec?.margin,
-      transform: boxSpec?.transform,
-      transformAlignment: boxSpec?.transformAlignment,
-      clipBehavior: boxSpec?.clipBehavior ?? Clip.none,
-      child: Flex(
-        direction: flexSpec?.direction ?? direction,
-        mainAxisAlignment:
-            flexSpec?.mainAxisAlignment ?? MainAxisAlignment.start,
-        mainAxisSize: flexSpec?.mainAxisSize ?? MainAxisSize.max,
-        crossAxisAlignment:
-            flexSpec?.crossAxisAlignment ?? CrossAxisAlignment.center,
-        textDirection: flexSpec?.textDirection,
-        verticalDirection:
-            flexSpec?.verticalDirection ?? VerticalDirection.down,
-        textBaseline: flexSpec?.textBaseline,
-        clipBehavior: flexSpec?.clipBehavior ?? Clip.none,
-        spacing: flexSpec?.gap ?? 0.0,
-        children: children,
-      ),
+    return createFlexBoxSpecWidget(
+      spec: spec,
+      direction: direction,
+      children: children,
     );
   }
 }
@@ -72,4 +50,62 @@ class HBox extends FlexBox {
 class VBox extends FlexBox {
   const VBox({super.style, super.key, super.children = const <Widget>[]})
     : super(direction: Axis.vertical);
+}
+
+/// Creates a [Flex] widget from a [FlexSpec] and required parameters.
+Flex createFlexSpecWidget({
+  required FlexSpec? spec,
+  required Axis direction,
+  List<Widget> children = const [],
+}) {
+  return Flex(
+    direction: spec?.direction ?? direction,
+    mainAxisAlignment: spec?.mainAxisAlignment ?? MainAxisAlignment.start,
+    mainAxisSize: spec?.mainAxisSize ?? MainAxisSize.max,
+    crossAxisAlignment: spec?.crossAxisAlignment ?? CrossAxisAlignment.center,
+    textDirection: spec?.textDirection,
+    verticalDirection: spec?.verticalDirection ?? VerticalDirection.down,
+    textBaseline: spec?.textBaseline,
+    clipBehavior: spec?.clipBehavior ?? Clip.none,
+    spacing: spec?.gap ?? 0.0,
+    children: children,
+  );
+}
+
+/// Extension to convert [FlexSpec] directly to a [Flex] widget.
+extension FlexSpecCallExt on FlexSpec {
+  Flex call({required Axis direction, List<Widget> children = const []}) {
+    return createFlexSpecWidget(
+      spec: this,
+      direction: direction,
+      children: children,
+    );
+  }
+}
+
+/// Creates a [Container] with [Flex] child from a [FlexBoxSpec].
+Widget createFlexBoxSpecWidget({
+  required FlexBoxSpec? spec,
+  required Axis direction,
+  List<Widget> children = const [],
+}) {
+  return createBoxSpecWidget(
+    spec: spec?.box,
+    child: createFlexSpecWidget(
+      spec: spec?.flex,
+      direction: direction,
+      children: children,
+    ),
+  );
+}
+
+/// Extension to convert [FlexBoxSpec] directly to a styled flex widget.
+extension FlexBoxSpecCallExt on FlexBoxSpec {
+  Widget call({required Axis direction, List<Widget> children = const []}) {
+    return createFlexBoxSpecWidget(
+      spec: this,
+      direction: direction,
+      children: children,
+    );
+  }
 }
