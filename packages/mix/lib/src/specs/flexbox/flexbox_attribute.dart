@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../animation/animation_config.dart';
-import '../../core/helpers.dart';
 import '../../core/style.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../modifiers/widget_modifier_util.dart';
@@ -445,10 +444,14 @@ class FlexBoxMix extends Style<FlexBoxSpec>
     return merge(FlexBoxMix.gap(value));
   }
 
+  FlexBoxMix modifier(WidgetModifierConfig value) {
+    return merge(FlexBoxMix(modifier: value));
+  }
+
   /// Modifier instance method
   @override
   FlexBoxMix wrap(WidgetModifierConfig value) {
-    return this.modifier(value);
+    return modifier(value);
   }
 
   @override
@@ -483,10 +486,6 @@ class FlexBoxMix extends Style<FlexBoxSpec>
     );
   }
 
-  FlexBoxMix modifier(WidgetModifierConfig value) {
-    return merge(FlexBoxMix(modifier: value));
-  }
-
   /// Merges the properties of this [FlexBoxMix] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
@@ -503,9 +502,7 @@ class FlexBoxMix extends Style<FlexBoxSpec>
       box: $box?.merge(other.$box) ?? other.$box,
       flex: $flex?.merge(other.$flex) ?? other.$flex,
       animation: other.$animation ?? $animation,
-      modifier: $modifier.tryMerge(
-        other.$modifier,
-      ),
+      modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
       variants: mergeVariantLists($variants, other.$variants),
       inherit: other.$inherit ?? $inherit,
     );

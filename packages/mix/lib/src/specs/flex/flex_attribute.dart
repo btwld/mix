@@ -165,6 +165,16 @@ class FlexMix extends Style<FlexSpec>
         gap: spec.gap,
       );
 
+  /// Factory for widget modifier
+  factory FlexMix.modifier(WidgetModifierConfig modifier) {
+    return FlexMix(modifier: modifier);
+  }
+
+  /// Factory for widget modifier
+  factory FlexMix.wrap(WidgetModifierConfig value) {
+    return FlexMix(modifier: value);
+  }
+
   /// Constructor that accepts a nullable [FlexSpec] value and extracts its properties.
   ///
   /// Returns null if the input is null, otherwise uses [FlexMix.value].
@@ -228,28 +238,18 @@ class FlexMix extends Style<FlexSpec>
   /// Convenience method for setting direction to vertical (column)
   FlexMix column() => direction(Axis.vertical);
 
-  /// Factory for widget modifier
-  factory FlexMix.modifier(WidgetModifierConfig modifier) {
-    return FlexMix(modifier: modifier);
-  }
-
-  /// Factory for widget modifier
-  factory FlexMix.wrap(WidgetModifierConfig value) {
-    return FlexMix(modifier: value);
-  }
-
   /// Convenience method for animating the FlexSpec
   FlexMix animate(AnimationConfig animation) {
     return merge(FlexMix.animate(animation));
   }
 
+  FlexMix modifier(WidgetModifierConfig value) {
+    return merge(FlexMix(modifier: value));
+  }
+
   @override
   FlexMix variants(List<VariantStyle<FlexSpec>> variants) {
     return merge(FlexMix(variants: variants));
-  }
-
-  FlexMix modifier(WidgetModifierConfig value) {
-    return merge(FlexMix(modifier: value));
   }
 
   /// Resolves to [FlexSpec] using the provided [BuildContext].
@@ -300,11 +300,9 @@ class FlexMix extends Style<FlexSpec>
       clipBehavior: $clipBehavior.tryMerge(other.$clipBehavior),
       gap: $gap.tryMerge(other.$gap),
       animation: other.$animation ?? $animation,
-      modifier: $modifier.tryMerge(
-        other.$modifier,
-      ),
+      modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
       variants: mergeVariantLists($variants, other.$variants),
-      inherit: other.$inherit ?? $inherit
+      inherit: other.$inherit ?? $inherit,
     );
   }
 
@@ -335,7 +333,7 @@ class FlexMix extends Style<FlexSpec>
 
   @override
   FlexMix wrap(WidgetModifierConfig value) {
-    return this.modifier(value);
+    return modifier(value);
   }
 
   @override

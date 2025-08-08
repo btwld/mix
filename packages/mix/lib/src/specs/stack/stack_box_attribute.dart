@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../animation/animation_config.dart';
-import '../../core/helpers.dart';
 import '../../core/style.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../variants/variant.dart';
@@ -129,9 +128,7 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
     return StackBoxMix(
       box: box?.merge(other.box) ?? other.box,
       stack: stack?.merge(other.stack) ?? other.stack,
-      modifier: $modifier.tryMerge(
-        other.$modifier,
-      ),
+      modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
       animation: other.$animation ?? $animation,
       variants: mergeVariantLists($variants, other.$variants),
 

@@ -327,9 +327,7 @@ class IconMix extends Style<IconSpec>
       blendMode: $blendMode.tryMerge(other.$blendMode),
       icon: $icon.tryMerge(other.$icon),
       animation: other.$animation ?? $animation,
-      modifier: $modifier.tryMerge(
-        other.$modifier,
-      ),
+      modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
       variants: mergeVariantLists($variants, other.$variants),
 
       inherit: other.$inherit ?? $inherit,
@@ -385,7 +383,7 @@ class IconMix extends Style<IconSpec>
 
   @override
   IconMix wrap(WidgetModifierConfig value) {
-    return this.modifier(value);
+    return modifier(value);
   }
 
   @override

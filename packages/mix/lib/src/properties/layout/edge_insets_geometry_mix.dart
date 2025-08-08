@@ -6,10 +6,9 @@ import '../../core/prop.dart';
 
 // Deprecated typedef moved to src/core/deprecated.dart
 
-/// Base class for Mix-compatible edge insets styling that wraps Flutter's [EdgeInsetsGeometry] types.
-///
-/// Provides common functionality for [EdgeInsetsMix] and [EdgeInsetsDirectionalMix] with
-/// factory methods for common padding/margin operations and type conversion between variants.
+/// Base class for Mix edge insets types.
+/// 
+/// Provides factory methods for padding/margin operations.
 @immutable
 sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
     extends Mix<T> {
@@ -32,10 +31,10 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
         as EdgeInsetsGeometryMix<T>;
   }
 
-  /// Creates insets where all the offsets are `value`.
+  /// All offsets equal to [value].
   static EdgeInsetsMix all(double value) => EdgeInsetsMix.all(value);
 
-  /// Creates [EdgeInsets] with only the given values non-zero.
+  /// Creates insets with only specified values.
   static EdgeInsetsMix only({
     double? left,
     double? right,
@@ -45,7 +44,7 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
     return EdgeInsetsMix(top: top, bottom: bottom, left: left, right: right);
   }
 
-  /// Creates [EdgeInsetsDirectional] with only the given values non-zero.
+  /// Creates directional insets with only specified values.
   static EdgeInsetsDirectionalMix directional({
     double? start,
     double? end,
@@ -58,18 +57,18 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
     end: end,
   );
 
-  /// Creates edge insets with equal left and right offsets.
+  /// Equal horizontal offsets.
   static EdgeInsetsMix horizontal(double value) =>
       EdgeInsetsMix.horizontal(value);
 
-  /// Creates edge insets with equal top and bottom offsets.
+  /// Equal vertical offsets.
   static EdgeInsetsMix vertical(double value) => EdgeInsetsMix.vertical(value);
 
-  /// Creates [EdgeInsets] with symmetrical vertical and horizontal offsets.
+  /// Symmetric vertical and horizontal offsets.
   static EdgeInsetsMix symmetric({double? vertical, double? horizontal}) =>
       EdgeInsetsMix.symmetric(vertical: vertical, horizontal: horizontal);
 
-  /// Creates [EdgeInsets] from offsets from the left, top, right, and bottom.
+  /// Creates from left, top, right, bottom.
   static EdgeInsetsMix fromLTRB(
     double left,
     double top,
@@ -77,8 +76,7 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
     double bottom,
   ) => EdgeInsetsMix.fromLTRB(left, top, right, bottom);
 
-  /// Creates [EdgeInsetsDirectional] from offsets from the start, top, end, and
-  /// bottom.
+  /// Creates from start, top, end, bottom.
   static EdgeInsetsDirectionalMix fromSTEB(
     double start,
     double top,
@@ -86,9 +84,7 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
     double bottom,
   ) => EdgeInsetsDirectionalMix.fromSTEB(start, top, end, bottom);
 
-  /// Creates the appropriate edge insets mix type from a nullable Flutter [EdgeInsetsGeometry].
-  ///
-  /// Returns null if the input is null.
+  /// Creates from nullable [EdgeInsetsGeometry].
   static EdgeInsetsGeometryMix<T>? maybeValue<T extends EdgeInsetsGeometry>(
     T? edgeInsetsGeometry,
   ) {
@@ -97,23 +93,23 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
         : EdgeInsetsGeometryMix.value(edgeInsetsGeometry);
   }
 
-  /// Creates edge insets with only the top offset specified.
+  /// Top offset only.
   static EdgeInsetsMix top(double value) => EdgeInsetsMix(top: value);
 
-  /// Creates edge insets with only the bottom offset specified.
+  /// Bottom offset only.
   static EdgeInsetsMix bottom(double value) => EdgeInsetsMix(bottom: value);
 
-  /// Creates edge insets with only the left offset specified.
+  /// Left offset only.
   static EdgeInsetsMix left(double value) => EdgeInsetsMix(left: value);
 
-  /// Creates edge insets with only the right offset specified.
+  /// Right offset only.
   static EdgeInsetsMix right(double value) => EdgeInsetsMix(right: value);
 
-  /// Creates directional edge insets with only the start offset specified.
+  /// Start offset only.
   static EdgeInsetsDirectionalMix start(double value) =>
       EdgeInsetsDirectionalMix(start: value);
 
-  /// Creates directional edge insets with only the end offset specified.
+  /// End offset only.
   static EdgeInsetsDirectionalMix end(double value) =>
       EdgeInsetsDirectionalMix(end: value);
 
@@ -157,10 +153,9 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
   EdgeInsetsGeometryMix<T> merge(covariant EdgeInsetsGeometryMix<T>? other);
 }
 
-/// Mix-compatible representation of Flutter's [EdgeInsets] with absolute positioning.
-///
-/// Provides methods for creating edge insets using left, top, right, and bottom offsets
-/// with token support and merging capabilities.
+/// Mix representation of [EdgeInsets].
+/// 
+/// Uses absolute positioning (left, right) with token support.
 final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
   final Prop<double>? $left;
   final Prop<double>? $right;
@@ -200,7 +195,7 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
   EdgeInsetsMix.fromLTRB(double left, double top, double right, double bottom)
     : this(top: top, bottom: bottom, left: left, right: right);
 
-  /// Creates an [EdgeInsetsMix] from an existing [EdgeInsets].
+  /// Creates from existing [EdgeInsets].
   EdgeInsetsMix.value(EdgeInsets edgeInsets)
     : this(
         top: edgeInsets.top,
@@ -211,45 +206,43 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
 
   EdgeInsetsMix.none() : this.all(0);
 
-  /// Creates an [EdgeInsetsMix] from a nullable [EdgeInsets].
-  ///
-  /// Returns null if the input is null.
+  /// Creates from nullable [EdgeInsets].
   static EdgeInsetsMix? maybeValue(EdgeInsets? edgeInsets) {
     return edgeInsets != null ? EdgeInsetsMix.value(edgeInsets) : null;
   }
 
-  /// Returns a copy with the specified top inset.
+  /// Copy with top inset.
   EdgeInsetsMix top(double value) {
     return merge(EdgeInsetsGeometryMix.top(value));
   }
 
-  /// Returns a copy with the specified bottom inset.
+  /// Copy with bottom inset.
   EdgeInsetsMix bottom(double value) {
     return merge(EdgeInsetsGeometryMix.bottom(value));
   }
 
-  /// Returns a copy with the specified left inset.
+  /// Copy with left inset.
   EdgeInsetsMix left(double value) {
     return merge(EdgeInsetsGeometryMix.left(value));
   }
 
-  /// Returns a copy with the specified right inset.
+  /// Copy with right inset.
   EdgeInsetsMix right(double value) {
     return merge(EdgeInsetsGeometryMix.right(value));
   }
 
-  /// Returns a copy with the specified vertical insets.
+  /// Copy with vertical insets.
   EdgeInsetsMix vertical(double value) {
     return merge(EdgeInsetsGeometryMix.vertical(value));
   }
 
-  /// Returns a copy with the specified horizontal insets.
+  /// Copy with horizontal insets.
   EdgeInsetsMix horizontal(double value) {
     return merge(EdgeInsetsGeometryMix.horizontal(value));
   }
 
 
-  /// Returns a copy with symmetric insets.
+  /// Copy with symmetric insets.
   EdgeInsetsMix symmetric({double? vertical, double? horizontal}) {
     return merge(EdgeInsetsGeometryMix.symmetric(
       vertical: vertical,
@@ -257,7 +250,7 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
     ));
   }
 
-  /// Returns a copy with only the specified insets.
+  /// Copy with only specified insets.
   EdgeInsetsMix only({
     double? left,
     double? right,
@@ -288,10 +281,10 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
     if (other == null) return this;
 
     return EdgeInsetsMix.create(
-      top: $top.tryMerge(other.$top),
-      bottom: $bottom.tryMerge(other.$bottom),
-      left: $left.tryMerge(other.$left),
-      right: $right.tryMerge(other.$right),
+      top: MixOps.merge($top, other.$top),
+      bottom: MixOps.merge($bottom, other.$bottom),
+      left: MixOps.merge($left, other.$left),
+      right: MixOps.merge($right, other.$right),
     );
   }
 
@@ -299,10 +292,9 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
   List<Object?> get props => [$top, $bottom, $left, $right];
 }
 
-/// Mix-compatible representation of Flutter's [EdgeInsetsDirectional] with directional positioning.
-///
-/// Provides methods for creating edge insets using start, top, end, and bottom offsets
-/// that respect text direction with token support and merging capabilities.
+/// Mix representation of [EdgeInsetsDirectional].
+/// 
+/// Uses directional positioning (start, end) with token support.
 final class EdgeInsetsDirectionalMix
     extends EdgeInsetsGeometryMix<EdgeInsetsDirectional> {
   final Prop<double>? $start;
@@ -348,7 +340,7 @@ final class EdgeInsetsDirectionalMix
   EdgeInsetsDirectionalMix.vertical(double value)
     : this.symmetric(vertical: value);
 
-  /// Creates an [EdgeInsetsDirectionalMix] from an existing [EdgeInsetsDirectional].
+  /// Creates from existing [EdgeInsetsDirectional].
   factory EdgeInsetsDirectionalMix.value(EdgeInsetsDirectional edgeInsets) {
     return EdgeInsetsDirectionalMix(
       top: edgeInsets.top,
@@ -360,9 +352,7 @@ final class EdgeInsetsDirectionalMix
 
   EdgeInsetsDirectionalMix.none() : this.all(0);
 
-  /// Creates an [EdgeInsetsDirectionalMix] from a nullable [EdgeInsetsDirectional].
-  ///
-  /// Returns null if the input is null.
+  /// Creates from nullable [EdgeInsetsDirectional].
   static EdgeInsetsDirectionalMix? maybeValue(
     EdgeInsetsDirectional? edgeInsets,
   ) {
@@ -371,28 +361,28 @@ final class EdgeInsetsDirectionalMix
         : null;
   }
 
-  /// Returns a copy with the specified top inset.
+  /// Copy with top inset.
   EdgeInsetsDirectionalMix top(double value) {
     return merge(EdgeInsetsDirectionalMix(top: value));
   }
 
-  /// Returns a copy with the specified bottom inset.
+  /// Copy with bottom inset.
   EdgeInsetsDirectionalMix bottom(double value) {
     return merge(EdgeInsetsDirectionalMix(bottom: value));
   }
 
-  /// Returns a copy with the specified start inset.
+  /// Copy with start inset.
   EdgeInsetsDirectionalMix start(double value) {
     return merge(EdgeInsetsGeometryMix.start(value));
   }
 
-  /// Returns a copy with the specified end inset.
+  /// Copy with end inset.
   EdgeInsetsDirectionalMix end(double value) {
     return merge(EdgeInsetsGeometryMix.end(value));
   }
 
 
-  /// Returns a copy with symmetric insets.
+  /// Copy with symmetric insets.
   EdgeInsetsDirectionalMix symmetric({double? vertical, double? horizontal}) {
     return merge(EdgeInsetsDirectionalMix.symmetric(
       vertical: vertical,
@@ -400,7 +390,7 @@ final class EdgeInsetsDirectionalMix
     ));
   }
 
-  /// Returns a copy with directional insets.
+  /// Copy with directional insets.
   EdgeInsetsDirectionalMix directional({
     double? start,
     double? end,
@@ -431,10 +421,10 @@ final class EdgeInsetsDirectionalMix
     if (other == null) return this;
 
     return EdgeInsetsDirectionalMix.create(
-      top: $top.tryMerge(other.$top),
-      bottom: $bottom.tryMerge(other.$bottom),
-      start: $start.tryMerge(other.$start),
-      end: $end.tryMerge(other.$end),
+      top: MixOps.merge($top, other.$top),
+      bottom: MixOps.merge($bottom, other.$bottom),
+      start: MixOps.merge($start, other.$start),
+      end: MixOps.merge($end, other.$end),
     );
   }
 

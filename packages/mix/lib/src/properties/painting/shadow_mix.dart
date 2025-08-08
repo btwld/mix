@@ -4,10 +4,9 @@ import '../../core/helpers.dart';
 import '../../core/mix_element.dart';
 import '../../core/prop.dart';
 
-/// Base class for shadow styling with common shadow properties.
+/// Base class for shadow styling.
 ///
-/// Provides color, offset, and blur radius properties that are shared between
-/// [ShadowMix] and [BoxShadowMix] implementations.
+/// Shared properties for [ShadowMix] and [BoxShadowMix].
 sealed class BaseShadowMix<T extends Shadow> extends Mix<T> {
   // Properties use MixableProperty for cleaner merging
   final Prop<Color>? $color;
@@ -23,10 +22,9 @@ sealed class BaseShadowMix<T extends Shadow> extends Mix<T> {
        $offset = offset;
 }
 
-/// Mix-compatible representation of Flutter's [Shadow] with token support.
+/// Mix representation of [Shadow].
 ///
-/// Provides shadow styling with color, offset, and blur radius properties
-/// that support resolvable tokens and merging capabilities.
+/// Supports shadow styling with tokens.
 class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
   ShadowMix({double? blurRadius, Color? color, Offset? offset})
     : this.create(
@@ -45,44 +43,42 @@ class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
         offset: shadow.offset,
       );
 
-  /// Creates a shadow with the specified color.
+  /// Creates with color.
   factory ShadowMix.color(Color value) {
     return ShadowMix(color: value);
   }
 
-  /// Creates a shadow with the specified offset.
+  /// Creates with offset.
   factory ShadowMix.offset(Offset value) {
     return ShadowMix(offset: value);
   }
 
-  /// Creates a shadow with the specified blur radius.
+  /// Creates with blur radius.
   factory ShadowMix.blurRadius(double value) {
     return ShadowMix(blurRadius: value);
   }
 
-  /// Creates a [ShadowMix] from a nullable [Shadow].
-  ///
-  /// Returns null if the input is null.
+  /// Creates from nullable [Shadow].
   static ShadowMix? maybeValue(Shadow? shadow) {
     return shadow != null ? ShadowMix.value(shadow) : null;
   }
 
-  /// Returns a copy with the specified color.
+  /// Copy with color.
   ShadowMix color(Color value) {
     return merge(ShadowMix.color(value));
   }
 
-  /// Returns a copy with the specified offset.
+  /// Copy with offset.
   ShadowMix offset(Offset value) {
     return merge(ShadowMix.offset(value));
   }
 
-  /// Returns a copy with the specified blur radius.
+  /// Copy with blur radius.
   ShadowMix blurRadius(double value) {
     return merge(ShadowMix.blurRadius(value));
   }
 
-  /// Resolves to [Shadow] using the provided [BuildContext].
+  /// Resolves to [Shadow].
   @override
   Shadow resolve(BuildContext context) {
     return Shadow(
@@ -93,15 +89,15 @@ class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
     );
   }
 
-  /// Merges this shadow with another, with other taking precedence.
+  /// Merges with another shadow.
   @override
   ShadowMix merge(ShadowMix? other) {
     if (other == null) return this;
 
     return ShadowMix.create(
-      blurRadius: $blurRadius.tryMerge(other.$blurRadius),
-      color: $color.tryMerge(other.$color),
-      offset: $offset.tryMerge(other.$offset),
+      blurRadius: MixOps.merge($blurRadius, other.$blurRadius),
+      color: MixOps.merge($color, other.$color),
+      offset: MixOps.merge($offset, other.$offset),
     );
   }
 
@@ -112,10 +108,9 @@ class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
   Shadow get defaultValue => const Shadow();
 }
 
-/// Mix-compatible representation of Flutter's [BoxShadow] with additional spread radius.
+/// Mix representation of [BoxShadow].
 ///
-/// Extends shadow styling with spread radius for box shadow effects, supporting
-/// resolvable tokens and merging capabilities.
+/// Extends [ShadowMix] with spread radius support.
 class BoxShadowMix extends BaseShadowMix<BoxShadow>
     with DefaultValue<BoxShadow> {
   final Prop<double>? $spreadRadius;
@@ -175,24 +170,24 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
     return boxShadow != null ? BoxShadowMix.value(boxShadow) : null;
   }
 
-  /// Creates a list of box shadows from Material Design elevation levels.
+  /// Creates shadows from elevation level.
   static List<BoxShadowMix> fromElevation(ElevationShadow value) {
     return kElevationToShadow[value.elevation]!
         .map(BoxShadowMix.value)
         .toList();
   }
 
-  /// Returns a copy with the specified color.
+  /// Copy with color.
   BoxShadowMix color(Color value) {
     return merge(BoxShadowMix.color(value));
   }
 
-  /// Returns a copy with the specified offset.
+  /// Copy with offset.
   BoxShadowMix offset(Offset value) {
     return merge(BoxShadowMix.offset(value));
   }
 
-  /// Returns a copy with the specified blur radius.
+  /// Copy with blur radius.
   BoxShadowMix blurRadius(double value) {
     return merge(BoxShadowMix.blurRadius(value));
   }
@@ -202,7 +197,7 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
     return merge(BoxShadowMix.spreadRadius(value));
   }
 
-  /// Resolves to [BoxShadow] using the provided [BuildContext].
+  /// Resolves to [BoxShadow].
   @override
   BoxShadow resolve(BuildContext context) {
     return BoxShadow(
@@ -215,16 +210,16 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
     );
   }
 
-  /// Merges this box shadow with another, with other taking precedence.
+  /// Merges with another box shadow.
   @override
   BoxShadowMix merge(BoxShadowMix? other) {
     if (other == null) return this;
 
     return BoxShadowMix.create(
-      color: $color.tryMerge(other.$color),
-      offset: $offset.tryMerge(other.$offset),
-      blurRadius: $blurRadius.tryMerge(other.$blurRadius),
-      spreadRadius: $spreadRadius.tryMerge(other.$spreadRadius),
+      color: MixOps.merge($color, other.$color),
+      offset: MixOps.merge($offset, other.$offset),
+      blurRadius: MixOps.merge($blurRadius, other.$blurRadius),
+      spreadRadius: MixOps.merge($spreadRadius, other.$spreadRadius),
     );
   }
 
@@ -235,9 +230,9 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
   BoxShadow get defaultValue => const BoxShadow();
 }
 
-/// Material Design elevation levels for generating appropriate box shadows.
+/// Material Design elevation levels.
 ///
-/// Provides predefined elevation values that correspond to Material Design shadow specifications.
+/// Predefined values for shadow generation.
 enum ElevationShadow {
   one(1),
   two(2),
@@ -250,7 +245,7 @@ enum ElevationShadow {
   sixteen(16),
   twentyFour(24);
 
-  /// The elevation value in logical pixels.
+  /// The elevation value.
   final int elevation;
 
   const ElevationShadow(this.elevation);

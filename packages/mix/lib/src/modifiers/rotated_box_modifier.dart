@@ -83,7 +83,7 @@ class RotatedBoxWidgetModifierMix
     if (other == null) return this;
 
     return RotatedBoxWidgetModifierMix.create(
-      quarterTurns: quarterTurns.tryMerge(other.quarterTurns),
+      quarterTurns: MixOps.merge(quarterTurns, other.quarterTurns),
     );
   }
 

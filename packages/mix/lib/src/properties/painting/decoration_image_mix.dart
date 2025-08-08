@@ -5,10 +5,9 @@ import '../../core/helpers.dart';
 import '../../core/mix_element.dart';
 import '../../core/prop.dart';
 
-/// Mix-compatible representation of Flutter's [DecorationImage] for background styling.
+/// Mix representation of [DecorationImage].
 ///
-/// Configures how images are displayed within decorations, including fit, alignment,
-/// repeat behavior, and quality settings with token support and merging capabilities.
+/// Controls image display with fit, alignment, and quality.
 final class DecorationImageMix extends Mix<DecorationImage>
     with Diagnosticable {
   final Prop<ImageProvider>? $image;
@@ -58,12 +57,7 @@ final class DecorationImageMix extends Mix<DecorationImage>
        $invertColors = invertColors,
        $isAntiAlias = isAntiAlias;
 
-  /// Creates a [DecorationImageMix] from an existing [DecorationImage].
-  ///
-  /// ```dart
-  /// const decorationImage = DecorationImage(image: AssetImage('assets/image.png'));
-  /// final dto = DecorationImageMix.value(decorationImage);
-  /// ```
+  /// Creates from [DecorationImage].
   DecorationImageMix.value(DecorationImage decorationImage)
     : this(
         image: decorationImage.image,
@@ -76,42 +70,42 @@ final class DecorationImageMix extends Mix<DecorationImage>
         isAntiAlias: decorationImage.isAntiAlias,
       );
 
-  /// Creates a decoration image with the specified image provider.
+  /// Creates with image provider.
   factory DecorationImageMix.image(ImageProvider value) {
     return DecorationImageMix(image: value);
   }
 
-  /// Creates a decoration image with the specified fit behavior.
+  /// Creates with fit behavior.
   factory DecorationImageMix.fit(BoxFit value) {
     return DecorationImageMix(fit: value);
   }
 
-  /// Creates a decoration image with the specified alignment.
+  /// Creates with alignment.
   factory DecorationImageMix.alignment(AlignmentGeometry value) {
     return DecorationImageMix(alignment: value);
   }
 
-  /// Creates a decoration image with the specified center slice for nine-patch scaling.
+  /// Creates with center slice.
   factory DecorationImageMix.centerSlice(Rect value) {
     return DecorationImageMix(centerSlice: value);
   }
 
-  /// Creates a decoration image with the specified repeat behavior.
+  /// Creates with repeat behavior.
   factory DecorationImageMix.repeat(ImageRepeat value) {
     return DecorationImageMix(repeat: value);
   }
 
-  /// Creates a decoration image with the specified filter quality.
+  /// Creates with filter quality.
   factory DecorationImageMix.filterQuality(FilterQuality value) {
     return DecorationImageMix(filterQuality: value);
   }
 
-  /// Creates a decoration image with color inversion enabled or disabled.
+  /// Creates with color inversion.
   factory DecorationImageMix.invertColors(bool value) {
     return DecorationImageMix(invertColors: value);
   }
 
-  /// Creates a decoration image with anti-aliasing enabled or disabled.
+  /// Creates with anti-aliasing.
   factory DecorationImageMix.isAntiAlias(bool value) {
     return DecorationImageMix(isAntiAlias: value);
   }
@@ -206,14 +200,14 @@ final class DecorationImageMix extends Mix<DecorationImage>
     if (other == null) return this;
 
     return DecorationImageMix.create(
-      image: $image.tryMerge(other.$image),
-      fit: $fit.tryMerge(other.$fit),
-      alignment: $alignment.tryMerge(other.$alignment),
-      centerSlice: $centerSlice.tryMerge(other.$centerSlice),
-      repeat: $repeat.tryMerge(other.$repeat),
-      filterQuality: $filterQuality.tryMerge(other.$filterQuality),
-      invertColors: $invertColors.tryMerge(other.$invertColors),
-      isAntiAlias: $isAntiAlias.tryMerge(other.$isAntiAlias),
+      image: MixOps.merge($image, other.$image),
+      fit: MixOps.merge($fit, other.$fit),
+      alignment: MixOps.merge($alignment, other.$alignment),
+      centerSlice: MixOps.merge($centerSlice, other.$centerSlice),
+      repeat: MixOps.merge($repeat, other.$repeat),
+      filterQuality: MixOps.merge($filterQuality, other.$filterQuality),
+      invertColors: MixOps.merge($invertColors, other.$invertColors),
+      isAntiAlias: MixOps.merge($isAntiAlias, other.$isAntiAlias),
     );
   }
 

@@ -161,17 +161,3 @@ class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
     clipBehavior,
   ];
 }
-
-class FrameSpec extends BoxSpec {
-  const FrameSpec({
-    super.alignment,
-    super.padding,
-    super.margin,
-    super.constraints,
-    ShapeDecoration? decoration,
-    ShapeDecoration? foregroundDecoration,
-    super.transform,
-    super.transformAlignment,
-    super.clipBehavior,
-  });
-}

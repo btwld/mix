@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../animation/animation_config.dart';
-import '../../core/helpers.dart';
 import '../../core/directive.dart';
+import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../modifiers/widget_modifier_config.dart';
@@ -596,13 +596,13 @@ class TextMix extends Style<TextSpec>
     return merge(TextMix.animate(animation));
   }
 
+  TextMix modifier(WidgetModifierConfig value) {
+    return merge(TextMix(modifier: value));
+  }
+
   @override
   TextMix variants(List<VariantStyle<TextSpec>> variants) {
     return merge(TextMix(variants: variants));
-  }
-
-  TextMix modifier(WidgetModifierConfig value) {
-    return merge(TextMix(modifier: value));
   }
 
   /// Resolves to [TextSpec] using the provided [BuildContext].
@@ -646,26 +646,25 @@ class TextMix extends Style<TextSpec>
     if (other == null) return this;
 
     return TextMix.create(
-      overflow: $overflow.tryMerge(other.$overflow),
-      strutStyle: $strutStyle.tryMerge(other.$strutStyle),
-      textAlign: $textAlign.tryMerge(other.$textAlign),
-      textScaler: $textScaler.tryMerge(other.$textScaler),
-      maxLines: $maxLines.tryMerge(other.$maxLines),
-      style: $style.tryMerge(other.$style),
-      textWidthBasis: $textWidthBasis.tryMerge(other.$textWidthBasis),
-      textHeightBehavior: $textHeightBehavior.tryMerge(
+      overflow: MixOps.merge($overflow, other.$overflow),
+      strutStyle: MixOps.merge($strutStyle, other.$strutStyle),
+      textAlign: MixOps.merge($textAlign, other.$textAlign),
+      textScaler: MixOps.merge($textScaler, other.$textScaler),
+      maxLines: MixOps.merge($maxLines, other.$maxLines),
+      style: MixOps.merge($style, other.$style),
+      textWidthBasis: MixOps.merge($textWidthBasis, other.$textWidthBasis),
+      textHeightBehavior: MixOps.merge(
+        $textHeightBehavior,
         other.$textHeightBehavior,
       ),
-      textDirection: $textDirection.tryMerge(other.$textDirection),
-      softWrap: $softWrap.tryMerge(other.$softWrap),
-      textDirectives: $textDirectives.tryMerge(other.$textDirectives),
-      selectionColor: $selectionColor.tryMerge(other.$selectionColor),
-      semanticsLabel: $semanticsLabel.tryMerge(other.$semanticsLabel),
-      locale: $locale.tryMerge(other.$locale),
+      textDirection: MixOps.merge($textDirection, other.$textDirection),
+      softWrap: MixOps.merge($softWrap, other.$softWrap),
+      textDirectives: MixOps.mergeList($textDirectives, other.$textDirectives),
+      selectionColor: MixOps.merge($selectionColor, other.$selectionColor),
+      semanticsLabel: MixOps.merge($semanticsLabel, other.$semanticsLabel),
+      locale: MixOps.merge($locale, other.$locale),
       animation: other.$animation ?? $animation,
-      modifier: $modifier.tryMerge(
-        other.$modifier,
-      ),
+      modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
       variants: mergeVariantLists($variants, other.$variants),
       inherit: other.$inherit ?? $inherit,
     );
@@ -738,7 +737,7 @@ class TextMix extends Style<TextSpec>
 
   @override
   TextMix wrap(WidgetModifierConfig value) {
-    return this.modifier(value);
+    return modifier(value);
   }
 
   /// This property is used by the [==] operator and the [hashCode] getter to

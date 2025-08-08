@@ -13,9 +13,9 @@ import 'gradient_mix.dart';
 import 'shadow_mix.dart';
 import 'shape_border_mix.dart';
 
-/// Base class for decoration styling that supports color, gradient, image, and shadow properties.
+/// Base class for decoration styling.
 ///
-/// Provides factory methods for common decoration types and merging capabilities.
+/// Supports color, gradient, image, and shadow properties.
 @immutable
 sealed class DecorationMix<T extends Decoration> extends Mix<T> {
   final Prop<Color>? $color;
@@ -33,7 +33,7 @@ sealed class DecorationMix<T extends Decoration> extends Mix<T> {
        $boxShadow = boxShadow,
        $image = image;
 
-  /// Creates the appropriate decoration mix type from a Flutter [Decoration].
+  /// Creates from [Decoration].
   factory DecorationMix.value(Decoration decoration) {
     return switch (decoration) {
           BoxDecoration d => BoxDecorationMix.value(d),
@@ -45,71 +45,65 @@ sealed class DecorationMix<T extends Decoration> extends Mix<T> {
         as DecorationMix<T>;
   }
 
-  /// Creates a box decoration with the specified color.
+  /// Creates with color.
   static BoxDecorationMix color(Color value) {
     return BoxDecorationMix(color: value);
   }
 
-  /// Creates a box decoration with the specified gradient.
+  /// Creates with gradient.
   static BoxDecorationMix gradient(GradientMix value) {
     return BoxDecorationMix(gradient: value);
   }
 
-  /// Creates a box decoration with the specified background image.
+  /// Creates with image.
   static BoxDecorationMix image(DecorationImageMix value) {
     return BoxDecorationMix(image: value);
   }
 
-  /// Creates a box decoration with the specified box shadows.
+  /// Creates with box shadows.
   static BoxDecorationMix boxShadow(List<BoxShadowMix> value) {
     return BoxDecorationMix(boxShadow: value);
   }
 
-  /// Creates a box decoration with the specified shape.
+  /// Creates with shape.
   static BoxDecorationMix shape(BoxShape value) {
     return BoxDecorationMix(shape: value);
   }
 
-  /// Creates a box decoration with the specified border.
+  /// Creates with border.
   static BoxDecorationMix border(BoxBorderMix value) {
     return BoxDecorationMix(border: value);
   }
 
-  /// Creates a box decoration with the specified border radius.
+  /// Creates with border radius.
   static BoxDecorationMix borderRadius(BorderRadiusGeometryMix value) {
     return BoxDecorationMix(borderRadius: value);
   }
 
-  /// Returns the provided shape decoration (identity function for consistency).
+  /// Identity function for shape decoration.
   static ShapeDecorationMix shapeDecoration(ShapeDecorationMix value) {
     return value;
   }
 
-  /// Creates the appropriate decoration mix type from a nullable Flutter [Decoration].
-  ///
-  /// Returns null if the input is null.
+  /// Creates from nullable [Decoration].
   static DecorationMix? maybeValue(Decoration? decoration) {
     return decoration != null ? DecorationMix.value(decoration) : null;
   }
 
-  /// Merges two DecorationMix instances.
-  ///
-  /// Delegates to [DecorationMerger.tryMerge] for all merge operations including
-  /// same-type and cross-type merging with proper validation.
+  /// Merges decoration instances.
   static DecorationMix? tryMerge(DecorationMix? a, DecorationMix? b) {
     return DecorationMerger().tryMerge(a, b);
   }
 
-  /// Returns true if this decoration can be merged with other decoration types.
+  /// True if mergeable with other types.
   bool get isMergeable;
 
-  /// Merges with another decoration of the same type.
-  /// This method is implemented by subclasses to handle type-specific merging.
+  /// Merges with another decoration.
   @override
   DecorationMix<T> merge(covariant DecorationMix<T>? other);
 }
 
-/// Mix-compatible representation of [BoxDecoration] for styling.
+/// Mix representation of [BoxDecoration].
 final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
   final MixProp<BoxBorder>? $border;
   final MixProp<BorderRadiusGeometry>? $borderRadius;
@@ -136,21 +130,21 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
          boxShadow: boxShadow?.map(MixProp<BoxShadow>.new).toList(),
        );
 
-  /// Creates a box decoration with only the border specified.
+  /// Creates with border only.
   BoxDecorationMix.border(BoxBorderMix border) : this(border: border);
 
-  /// Creates a box decoration with only the border radius specified.
+  /// Creates with border radius only.
   BoxDecorationMix.borderRadius(BorderRadiusGeometryMix borderRadius)
     : this(borderRadius: borderRadius);
 
-  /// Creates a box decoration with only the shape specified.
+  /// Creates with shape only.
   BoxDecorationMix.shape(BoxShape shape) : this(shape: shape);
 
-  /// Creates a box decoration with only the background blend mode specified.
+  /// Creates with blend mode only.
   BoxDecorationMix.backgroundBlendMode(BlendMode backgroundBlendMode)
     : this(backgroundBlendMode: backgroundBlendMode);
 
-  /// Creates a box decoration with only the color specified.
+  /// Creates with color only.
   BoxDecorationMix.color(Color color) : this(color: color);
 
   /// Creates a box decoration with only the background image specified.
@@ -260,16 +254,17 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
     if (other == null) return this;
 
     return BoxDecorationMix.create(
-      border: $border.tryMerge(other.$border),
-      borderRadius: $borderRadius.tryMerge(other.$borderRadius),
-      shape: $shape.tryMerge(other.$shape),
-      backgroundBlendMode: $backgroundBlendMode.tryMerge(
+      border: MixOps.merge($border, other.$border),
+      borderRadius: MixOps.merge($borderRadius, other.$borderRadius),
+      shape: MixOps.merge($shape, other.$shape),
+      backgroundBlendMode: MixOps.merge(
+        $backgroundBlendMode,
         other.$backgroundBlendMode,
       ),
-      color: $color.tryMerge(other.$color),
-      image: $image.tryMerge(other.$image),
-      gradient: $gradient.tryMerge(other.$gradient),
-      boxShadow: $boxShadow.tryMerge(other.$boxShadow),
+      color: MixOps.merge($color, other.$color),
+      image: MixOps.merge($image, other.$image),
+      gradient: MixOps.merge($gradient, other.$gradient),
+      boxShadow: MixOps.mergeList($boxShadow, other.$boxShadow),
     );
   }
 
@@ -364,11 +359,11 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
     if (other == null) return this;
 
     return ShapeDecorationMix.create(
-      shape: $shape.tryMerge(other.$shape),
-      color: $color.tryMerge(other.$color),
-      image: $image.tryMerge(other.$image),
-      gradient: $gradient.tryMerge(other.$gradient),
-      shadows: $boxShadow.tryMerge(other.$boxShadow),
+      shape: MixOps.merge($shape, other.$shape),
+      color: MixOps.merge($color, other.$color),
+      image: MixOps.merge($image, other.$image),
+      gradient: MixOps.merge($gradient, other.$gradient),
+      shadows: MixOps.mergeList($boxShadow, other.$boxShadow),
     );
   }
 

@@ -3,56 +3,43 @@ import 'package:flutter/widgets.dart';
 import '../../core/style_widget.dart';
 import 'box_spec.dart';
 
-/// A [Container] equivalent widget for applying styles using Mix.
-///
-/// `Box` is a concrete implementation of [StyleWidget] that applies custom styles
-/// to a single child widget using the styling capabilities inherited from
-/// [StyleWidget]. It wraps the child in a `BoxSpecWidget`, which is responsible for
-/// rendering the styled output.
-///
-/// The primary purpose of `Box` is to provide a flexible and reusable way to style
-/// widgets without the need to repeatedly define common style properties. It leverages
-/// the [Style] object to define the appearance and allows inheriting styles from
-/// ancestor [StyleWidget]s in the widget tree.
-///
-/// ## Inheriting Styles
-///
-/// If the [inherit] property is set to `true`, `Box` will merge its defined style with
-/// the style from the nearest [MixProvider] ancestor in the widget tree. This is
-/// useful for cascading styles down the widget tree.
-///
-/// ## Performance Considerations
-///
-/// While `Box` provides a convenient way to style widgets, be mindful of the
-/// performance implications of using complex styles and deep inheritance trees.
-/// Overuse of style inheritance can lead to increased widget rebuilds and might
-/// affect the performance of your application.
-///
-/// See also:
-/// * [Style], which defines the visual properties to be applied.
-/// * [BoxSpecWidget], which is used internally by `Box` to render the styled widget.
-/// * [Container], which is the Flutter equivalent widget.
+/// A styled container widget using Mix framework.
+/// 
+/// Applies [BoxSpec] styling to create a customized [Container].
 class Box extends StyleWidget<BoxSpec> {
   const Box({super.style, super.key, this.child});
 
-  /// The child widget that will receive the styles.
+  /// Child widget to display inside the box.
   final Widget? child;
 
   @override
   Widget build(BuildContext context, BoxSpec? spec) {
-    return Container(
-      alignment: spec?.alignment,
-      padding: spec?.padding,
-      decoration: spec?.decoration,
-      foregroundDecoration: spec?.foregroundDecoration,
-      constraints: spec?.constraints,
-      margin: spec?.margin,
-      transform: spec?.transform,
-      transformAlignment: spec?.transformAlignment,
-      clipBehavior: spec?.clipBehavior ?? Clip.none,
-      child: child,
-    );
+    return createBoxSpecWidget(spec: spec, child: child);
   }
 }
 
+/// Creates a [Container] widget from a [BoxSpec].
+Container createBoxSpecWidget({required BoxSpec? spec, Widget? child}) {
+  return Container(
+    alignment: spec?.alignment,
+    padding: spec?.padding,
+    decoration: spec?.decoration,
+    foregroundDecoration: spec?.foregroundDecoration,
+    constraints: spec?.constraints,
+    margin: spec?.margin,
+    transform: spec?.transform,
+    transformAlignment: spec?.transformAlignment,
+    clipBehavior: spec?.clipBehavior ?? Clip.none,
+    child: child,
+  );
+}
+
+/// Alias for [Box] widget for backward compatibility.
 typedef StyledContainer = Box;
+
+/// Extension to convert [BoxSpec] directly to widget.
+extension BoxSpecExt on BoxSpec {
+  Widget call({Widget? child}) {
+    return createBoxSpecWidget(spec: this, child: child);
+  }
+}

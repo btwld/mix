@@ -343,13 +343,13 @@ class ImageMix extends Style<ImageSpec>
     return merge(ImageMix.animate(animation));
   }
 
+  ImageMix modifier(WidgetModifierConfig value) {
+    return merge(ImageMix(modifier: value));
+  }
+
   @override
   ImageMix variants(List<VariantStyle<ImageSpec>> variants) {
     return merge(ImageMix(variants: variants));
-  }
-
-  ImageMix modifier(WidgetModifierConfig value) {
-    return merge(ImageMix(modifier: value));
   }
 
   @override
@@ -398,9 +398,7 @@ class ImageMix extends Style<ImageSpec>
         other.$matchTextDirection,
       ),
       animation: other.$animation ?? $animation,
-      modifier: $modifier.tryMerge(
-        other.$modifier,
-      ),
+      modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
       variants: mergeVariantLists($variants, other.$variants),
       inherit: other.$inherit ?? $inherit,
     );
@@ -467,7 +465,7 @@ class ImageMix extends Style<ImageSpec>
 
   @override
   ImageMix wrap(WidgetModifierConfig value) {
-    return this.modifier(value);
+    return modifier(value);
   }
 
   @override

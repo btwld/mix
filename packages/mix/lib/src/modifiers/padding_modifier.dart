@@ -103,7 +103,7 @@ class PaddingWidgetModifierMix
     if (other == null) return this;
 
     return PaddingWidgetModifierMix.create(
-      padding: padding.tryMerge(other.padding),
+      padding: MixOps.merge(padding, other.padding),
     );
   }
 

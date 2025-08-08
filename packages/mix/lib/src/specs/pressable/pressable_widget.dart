@@ -5,9 +5,9 @@ import '../../core/providers/widget_state_provider.dart';
 import '../box/box_attribute.dart';
 import '../box/box_widget.dart';
 
-/// A pressable widget that wraps content in a [Box] with gesture handling.
-///
-/// Provides press, long press, and focus interactions with customizable styling.
+/// Combines [Box] styling with gesture handling.
+/// 
+/// Provides press, long press, and focus interactions.
 class PressableBox extends StatelessWidget {
   const PressableBox({
     super.key,
@@ -24,21 +24,13 @@ class PressableBox extends StatelessWidget {
     this.enabled = true,
   });
 
-  /// Should gestures provide audible and/or haptic feedback
-  ///
-  /// On platforms like Android, enabling feedback will result in audible and tactile
-  /// responses to certain actions. For example, a tap may produce a clicking sound,
-  /// while a long-press may trigger a short vibration.
+  /// Enables audible/haptic feedback for gestures.
   final bool enableFeedback;
 
-  /// The callback that is called when the box is tapped or otherwise activated.
-  ///
-  /// If this callback and [onLongPress] are null, then it will be disabled automatically.
+  /// Called when the box is pressed.
   final VoidCallback? onPress;
 
-  /// The callback that is called when long-pressed.
-  ///
-  /// If this callback and [onPress] are null, then `PressableBox` will be disabled automatically.
+  /// Called when the box is long-pressed.
   final VoidCallback? onLongPress;
 
   final BoxMix? style;
@@ -67,10 +59,9 @@ class PressableBox extends StatelessWidget {
   }
 }
 
-/// A widget that handles press gestures and provides visual feedback.
-///
-/// Supports press detection, hover states, and focus management with
-/// configurable hit test behavior and feedback options.
+/// Base widget for handling press gestures and states.
+/// 
+/// Manages press, hover, and focus states with configurable behavior.
 class Pressable extends StatefulWidget {
   const Pressable({
     super.key,
@@ -106,27 +97,16 @@ class Pressable extends StatefulWidget {
 
   final bool canRequestFocus;
 
-  /// Should gestures provide audible and/or haptic feedback
-  ///
-  /// On platforms like Android, enabling feedback will result in audible and tactile
-  /// responses to certain actions. For example, a tap may produce a clicking sound,
-  /// while a long-press may trigger a short vibration.
+  /// Enables audible/haptic feedback for gestures.
   final bool enableFeedback;
 
-  /// The callback that is called when the box is tapped or otherwise activated.
-  ///
-  /// If this callback and [onLongPress] are null, then it will be disabled automatically.
+  /// Called when the box is pressed.
   final VoidCallback? onPress;
 
-  /// The callback that is called when long-pressed.
-  ///
-  /// If this callback and [onPress] are null, then `PressableBox` will be disabled automatically.
+  /// Called when the box is long-pressed.
   final VoidCallback? onLongPress;
 
-  /// Called when the focus state of the [Focus] changes.
-  ///
-  /// Called with true when the [Focus] node gains focus
-  /// and false when the [Focus] node loses focus.
+  /// Called when focus state changes.
   final ValueChanged<bool>? onFocusChange;
 
   /// {@macro flutter.widgets.Focus.autofocus}
@@ -144,7 +124,7 @@ class Pressable extends StatefulWidget {
   /// {@macro flutter.widgets.GestureDetector.hitTestBehavior}
   final HitTestBehavior hitTestBehavior;
 
-  /// Actions to be bound to the widget
+  /// Custom actions bound to the widget.
   final Map<Type, Action<Intent>>? actions;
 
   final WidgetStatesController? controller;
@@ -202,9 +182,7 @@ class PressableWidgetState extends State<Pressable> {
     return hasOnPress ? SystemMouseCursors.click : MouseCursor.defer;
   }
 
-  /// Binds the [ActivateIntent] from the Flutter SDK to the onPressed callback by default.
-  /// This enables SPACE and ENTER key activation on most platforms.
-  /// Additional actions can be provided externally to extend functionality.
+  /// Binds [ActivateIntent] for keyboard activation (SPACE/ENTER).
   Map<Type, Action<Intent>> get actions {
     return {
       ActivateIntent: CallbackAction<Intent>(

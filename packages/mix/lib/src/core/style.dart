@@ -27,9 +27,7 @@ sealed class StyleElement {
 /// Base class for style containers that can be resolved to specifications.
 ///
 /// Provides variant support, modifiers, and animation configuration for styled elements.
-abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
-    with Equatable, Resolvable<S>
-    implements StyleElement {
+abstract class Style<S extends Spec<S>> extends Mix<S> implements StyleElement {
   final List<VariantStyle<S>>? $variants;
 
   final WidgetModifierConfig? $modifier;
@@ -175,9 +173,7 @@ abstract class Style<S extends Spec<S>> extends Mixable<Style<S>>
 
     final resolvedSpec = styleData.resolve(context);
     final resolvedAnimation = styleData.$animation;
-    final resolvedModifiers = styleData.$modifier?.resolve(
-      context,
-    );
+    final resolvedModifiers = styleData.$modifier?.resolve(context);
 
     return ResolvedStyle(
       spec: resolvedSpec,
@@ -394,12 +390,7 @@ class CompoundStyle extends Style<MultiSpec> {
   }
 
   CompoundStyle.empty()
-    : this._(
-        attributes: [],
-        animation: null,
-        modifier: null,
-        variants: null,
-      );
+    : this._(attributes: [], animation: null, modifier: null, variants: null);
 
   WidgetModifierConfig? _mergeModifierConfigs(
     WidgetModifierConfig? a,
@@ -464,10 +455,7 @@ class CompoundStyle extends Style<MultiSpec> {
     return CompoundStyle._(
       attributes: mergedAttributes,
       animation: other.$animation ?? $animation,
-      modifier: _mergeModifierConfigs(
-        $modifier,
-        other.$modifier,
-      ),
+      modifier: _mergeModifierConfigs($modifier, other.$modifier),
       variants: mergeVariantLists($variants, other.$variants),
     );
   }

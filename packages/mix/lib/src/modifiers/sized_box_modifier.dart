@@ -139,8 +139,8 @@ class SizedBoxWidgetModifierMix
     if (other == null) return this;
 
     return SizedBoxWidgetModifierMix.create(
-      width: width.tryMerge(other.width),
-      height: height.tryMerge(other.height),
+      width: MixOps.merge(width, other.width),
+      height: MixOps.merge(height, other.height),
     );
   }
 

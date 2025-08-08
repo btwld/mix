@@ -6,15 +6,14 @@ import '../../core/prop.dart';
 import 'border_mix.dart';
 import 'border_radius_mix.dart';
 
-/// Base class for Mix-compatible shape border styling with token support.
+/// Base class for Mix shape border types.
 ///
-/// Provides factory methods for converting Flutter [ShapeBorder] types to their
-/// corresponding Mix representations with merging capabilities.
+/// Converts Flutter [ShapeBorder] types with merging.
 @immutable
 sealed class ShapeBorderMix<T extends ShapeBorder> extends Mix<T> {
   const ShapeBorderMix();
 
-  /// Creates the appropriate shape border mix type from a Flutter [ShapeBorder].
+  /// Creates from [ShapeBorder].
   static ShapeBorderMix value(ShapeBorder border) {
     return switch (border) {
       RoundedRectangleBorder b => RoundedRectangleBorderMix.value(b),
@@ -31,18 +30,12 @@ sealed class ShapeBorderMix<T extends ShapeBorder> extends Mix<T> {
     };
   }
 
-  /// Creates the appropriate shape border mix type from a nullable Flutter [ShapeBorder].
-  ///
-  /// Returns null if the input is null.
+  /// Creates from nullable [ShapeBorder].
   static ShapeBorderMix? maybeValue(ShapeBorder? border) {
     return border != null ? ShapeBorderMix.value(border) : null;
   }
 
-  /// Merges two ShapeBorderMix instances of the same type.
-  ///
-  /// Only handles same-type merging. Cross-type merging is handled by ShapeBorderMerger
-  /// when ShapeBorderMix instances are merged through MixProp accumulation.
-  /// If [other] is null, returns this instance.
+  /// Merges instances of the same type.
   @override
   ShapeBorderMix<T> merge(covariant ShapeBorderMix<T>? other) {
     if (other == null) return this;
@@ -72,10 +65,9 @@ sealed class ShapeBorderMix<T extends ShapeBorder> extends Mix<T> {
   }
 }
 
-/// Base class for outlined shape borders with border side styling.
+/// Base class for outlined shape borders.
 ///
-/// Provides common border side functionality for outlined border types like
-/// rounded rectangles, circles, and other outlined shapes.
+/// Common border side functionality for outlined shapes.
 @immutable
 abstract class OutlinedBorderMix<T extends OutlinedBorder>
     extends ShapeBorderMix<T> {
@@ -84,7 +76,7 @@ abstract class OutlinedBorderMix<T extends OutlinedBorder>
   const OutlinedBorderMix({MixProp<BorderSide>? side}) : $side = side;
 }
 
-/// Mix-compatible representation of Flutter's [RoundedRectangleBorder] with customizable radius and border side.
+/// Mix representation of [RoundedRectangleBorder].
 final class RoundedRectangleBorderMix
     extends OutlinedBorderMix<RoundedRectangleBorder> {
   final MixProp<BorderRadiusGeometry>? $borderRadius;
@@ -107,19 +99,19 @@ final class RoundedRectangleBorderMix
         side: BorderSideMix.maybeValue(border.side),
       );
 
-  /// Creates a rounded rectangle border with the specified border radius.
+  /// Creates with border radius.
   factory RoundedRectangleBorderMix.borderRadius(
     BorderRadiusGeometryMix value,
   ) {
     return RoundedRectangleBorderMix(borderRadius: value);
   }
 
-  /// Creates a rounded rectangle border with the specified border side.
+  /// Creates with border side.
   factory RoundedRectangleBorderMix.side(BorderSideMix value) {
     return RoundedRectangleBorderMix(side: value);
   }
 
-  /// Creates a rounded rectangle border with circular radius.
+  /// Creates with circular radius.
   factory RoundedRectangleBorderMix.circular(double radius) {
     return RoundedRectangleBorderMix(
       borderRadius: BorderRadiusMix.circular(radius),
@@ -130,12 +122,12 @@ final class RoundedRectangleBorderMix
     return border != null ? RoundedRectangleBorderMix.value(border) : null;
   }
 
-  /// Returns a copy with the specified border radius.
+  /// Copy with border radius.
   RoundedRectangleBorderMix borderRadius(BorderRadiusGeometryMix value) {
     return merge(RoundedRectangleBorderMix.borderRadius(value));
   }
 
-  /// Returns a copy with the specified border side.
+  /// Copy with border side.
   RoundedRectangleBorderMix side(BorderSideMix value) {
     return merge(RoundedRectangleBorderMix.side(value));
   }
@@ -153,8 +145,8 @@ final class RoundedRectangleBorderMix
     if (other == null) return this;
 
     return RoundedRectangleBorderMix.create(
-      borderRadius: $borderRadius.tryMerge(other.$borderRadius),
-      side: $side.tryMerge(other.$side),
+      borderRadius: MixOps.merge($borderRadius, other.$borderRadius),
+      side: MixOps.merge($side, other.$side),
     );
   }
 
@@ -203,12 +195,12 @@ final class RoundedSuperellipseBorderMix
     return border != null ? RoundedSuperellipseBorderMix.value(border) : null;
   }
 
-  /// Returns a copy with the specified border radius.
+  /// Copy with border radius.
   RoundedSuperellipseBorderMix borderRadius(BorderRadiusGeometryMix value) {
     return merge(RoundedSuperellipseBorderMix.borderRadius(value));
   }
 
-  /// Returns a copy with the specified border side.
+  /// Copy with border side.
   RoundedSuperellipseBorderMix side(BorderSideMix value) {
     return merge(RoundedSuperellipseBorderMix.side(value));
   }
@@ -226,8 +218,8 @@ final class RoundedSuperellipseBorderMix
     if (other == null) return this;
 
     return RoundedSuperellipseBorderMix.create(
-      borderRadius: $borderRadius.tryMerge(other.$borderRadius),
-      side: $side.tryMerge(other.$side),
+      borderRadius: MixOps.merge($borderRadius, other.$borderRadius),
+      side: MixOps.merge($side, other.$side),
     );
   }
 
@@ -275,12 +267,12 @@ final class BeveledRectangleBorderMix
     return border != null ? BeveledRectangleBorderMix.value(border) : null;
   }
 
-  /// Returns a copy with the specified border radius.
+  /// Copy with border radius.
   BeveledRectangleBorderMix borderRadius(BorderRadiusGeometryMix value) {
     return merge(BeveledRectangleBorderMix.borderRadius(value));
   }
 
-  /// Returns a copy with the specified border side.
+  /// Copy with border side.
   BeveledRectangleBorderMix side(BorderSideMix value) {
     return merge(BeveledRectangleBorderMix.side(value));
   }
@@ -298,8 +290,8 @@ final class BeveledRectangleBorderMix
     if (other == null) return this;
 
     return BeveledRectangleBorderMix.create(
-      borderRadius: $borderRadius.tryMerge(other.$borderRadius),
-      side: $side.tryMerge(other.$side),
+      borderRadius: MixOps.merge($borderRadius, other.$borderRadius),
+      side: MixOps.merge($side, other.$side),
     );
   }
 
@@ -349,12 +341,12 @@ final class ContinuousRectangleBorderMix
     return border != null ? ContinuousRectangleBorderMix.value(border) : null;
   }
 
-  /// Returns a copy with the specified border radius.
+  /// Copy with border radius.
   ContinuousRectangleBorderMix borderRadius(BorderRadiusGeometryMix value) {
     return merge(ContinuousRectangleBorderMix.borderRadius(value));
   }
 
-  /// Returns a copy with the specified border side.
+  /// Copy with border side.
   ContinuousRectangleBorderMix side(BorderSideMix value) {
     return merge(ContinuousRectangleBorderMix.side(value));
   }
@@ -372,8 +364,8 @@ final class ContinuousRectangleBorderMix
     if (other == null) return this;
 
     return ContinuousRectangleBorderMix.create(
-      borderRadius: $borderRadius.tryMerge(other.$borderRadius),
-      side: $side.tryMerge(other.$side),
+      borderRadius: MixOps.merge($borderRadius, other.$borderRadius),
+      side: MixOps.merge($side, other.$side),
     );
   }
 
@@ -381,7 +373,7 @@ final class ContinuousRectangleBorderMix
   List<Object?> get props => [$borderRadius, $side];
 }
 
-/// Mix-compatible representation of Flutter's [CircleBorder] with configurable eccentricity.
+/// Mix representation of [CircleBorder].
 final class CircleBorderMix extends OutlinedBorderMix<CircleBorder> {
   final Prop<double>? $eccentricity;
 
@@ -400,12 +392,12 @@ final class CircleBorderMix extends OutlinedBorderMix<CircleBorder> {
         eccentricity: border.eccentricity,
       );
 
-  /// Creates a circle border with the specified border side.
+  /// Creates with border side.
   factory CircleBorderMix.side(BorderSideMix value) {
     return CircleBorderMix(side: value);
   }
 
-  /// Creates a circle border with the specified eccentricity.
+  /// Creates with eccentricity.
   factory CircleBorderMix.eccentricity(double value) {
     return CircleBorderMix(eccentricity: value);
   }
@@ -414,12 +406,12 @@ final class CircleBorderMix extends OutlinedBorderMix<CircleBorder> {
     return border != null ? CircleBorderMix.value(border) : null;
   }
 
-  /// Returns a copy with the specified border side.
+  /// Copy with border side.
   CircleBorderMix side(BorderSideMix value) {
     return merge(CircleBorderMix.side(value));
   }
 
-  /// Returns a copy with the specified eccentricity.
+  /// Copy with eccentricity.
   CircleBorderMix eccentricity(double value) {
     return merge(CircleBorderMix.eccentricity(value));
   }
@@ -437,8 +429,8 @@ final class CircleBorderMix extends OutlinedBorderMix<CircleBorder> {
     if (other == null) return this;
 
     return CircleBorderMix.create(
-      side: $side.tryMerge(other.$side),
-      eccentricity: $eccentricity.tryMerge(other.$eccentricity),
+      side: MixOps.merge($side, other.$side),
+      eccentricity: MixOps.merge($eccentricity, other.$eccentricity),
     );
   }
 
@@ -446,7 +438,7 @@ final class CircleBorderMix extends OutlinedBorderMix<CircleBorder> {
   List<Object?> get props => [$side, $eccentricity];
 }
 
-/// Mix-compatible representation of Flutter's [StarBorder] with customizable star properties.
+/// Mix representation of [StarBorder].
 final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
   final Prop<double>? $points;
   final Prop<double>? $innerRadiusRatio;
@@ -499,22 +491,22 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
        $rotation = rotation,
        $squash = squash;
 
-  /// Creates a star border with the specified number of points.
+  /// Creates with points.
   factory StarBorderMix.points(double value) {
     return StarBorderMix(points: value);
   }
 
-  /// Creates a star border with the specified inner radius ratio.
+  /// Creates with inner radius ratio.
   factory StarBorderMix.innerRadiusRatio(double value) {
     return StarBorderMix(innerRadiusRatio: value);
   }
 
-  /// Creates a star border with the specified point rounding.
+  /// Creates with point rounding.
   factory StarBorderMix.pointRounding(double value) {
     return StarBorderMix(pointRounding: value);
   }
 
-  /// Creates a star border with the specified valley rounding.
+  /// Creates with valley rounding.
   factory StarBorderMix.valleyRounding(double value) {
     return StarBorderMix(valleyRounding: value);
   }
@@ -568,7 +560,7 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
     return merge(StarBorderMix.squash(value));
   }
 
-  /// Returns a copy with the specified border side.
+  /// Copy with border side.
   StarBorderMix side(BorderSideMix value) {
     return merge(StarBorderMix.side(value));
   }
@@ -591,13 +583,13 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
     if (other == null) return this;
 
     return StarBorderMix.create(
-      side: $side.tryMerge(other.$side),
-      points: $points.tryMerge(other.$points),
-      innerRadiusRatio: $innerRadiusRatio.tryMerge(other.$innerRadiusRatio),
-      pointRounding: $pointRounding.tryMerge(other.$pointRounding),
-      valleyRounding: $valleyRounding.tryMerge(other.$valleyRounding),
-      rotation: $rotation.tryMerge(other.$rotation),
-      squash: $squash.tryMerge(other.$squash),
+      side: MixOps.merge($side, other.$side),
+      points: MixOps.merge($points, other.$points),
+      innerRadiusRatio: MixOps.merge($innerRadiusRatio, other.$innerRadiusRatio),
+      pointRounding: MixOps.merge($pointRounding, other.$pointRounding),
+      valleyRounding: MixOps.merge($valleyRounding, other.$valleyRounding),
+      rotation: MixOps.merge($rotation, other.$rotation),
+      squash: MixOps.merge($squash, other.$squash),
     );
   }
 
@@ -702,7 +694,7 @@ final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
     return merge(LinearBorderMix.bottom(value));
   }
 
-  /// Returns a copy with the specified border side.
+  /// Copy with border side.
   LinearBorderMix side(BorderSideMix value) {
     return merge(LinearBorderMix.side(value));
   }
@@ -723,11 +715,11 @@ final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
     if (other == null) return this;
 
     return LinearBorderMix.create(
-      side: $side.tryMerge(other.$side),
-      start: $start.tryMerge(other.$start),
-      end: $end.tryMerge(other.$end),
-      top: $top.tryMerge(other.$top),
-      bottom: $bottom.tryMerge(other.$bottom),
+      side: MixOps.merge($side, other.$side),
+      start: MixOps.merge($start, other.$start),
+      end: MixOps.merge($end, other.$end),
+      top: MixOps.merge($top, other.$top),
+      bottom: MixOps.merge($bottom, other.$bottom),
     );
   }
 
@@ -785,8 +777,8 @@ final class LinearBorderEdgeMix extends Mix<LinearBorderEdge> {
     if (other == null) return this;
 
     return LinearBorderEdgeMix.create(
-      size: $size.tryMerge(other.$size),
-      alignment: $alignment.tryMerge(other.$alignment),
+      size: MixOps.merge($size, other.$size),
+      alignment: MixOps.merge($alignment, other.$alignment),
     );
   }
 
@@ -812,7 +804,7 @@ final class StadiumBorderMix extends OutlinedBorderMix<StadiumBorder> {
     return border != null ? StadiumBorderMix.value(border) : null;
   }
 
-  /// Returns a copy with the specified border side.
+  /// Copy with border side.
   StadiumBorderMix side(BorderSideMix value) {
     return merge(StadiumBorderMix.side(value));
   }
@@ -828,7 +820,7 @@ final class StadiumBorderMix extends OutlinedBorderMix<StadiumBorder> {
   StadiumBorderMix merge(StadiumBorderMix? other) {
     if (other == null) return this;
 
-    return StadiumBorderMix.create(side: $side.tryMerge(other.$side));
+    return StadiumBorderMix.create(side: MixOps.merge($side, other.$side));
   }
 
   @override

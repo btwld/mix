@@ -4,10 +4,9 @@ import '../../core/helpers.dart';
 import '../../core/mix_element.dart';
 import '../../core/prop.dart';
 
-/// Base class for Mix-compatible border styling that wraps Flutter's [BoxBorder] types.
+/// Base class for Mix border types.
 ///
-/// Provides common functionality for [BorderMix] and [BorderDirectionalMix] with
-/// merging support and type conversion between border variants.
+/// Common functionality with merging and type conversion.
 sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
   final MixProp<BorderSide>? $top;
   final MixProp<BorderSide>? $bottom;
@@ -40,12 +39,7 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
     return BorderMix(bottom: side);
   }
 
-  /// Creates a border with symmetric sides using vertical and horizontal borders.
-  ///
-  /// The [vertical] border is applied to left and right sides,
-  /// while [horizontal] border is applied to top and bottom sides.
-  ///
-  /// This matches Flutter's Border.symmetric convention.
+  /// Creates symmetric border with vertical/horizontal sides.
   static BorderMix symmetric({
     BorderSideMix? vertical,
     BorderSideMix? horizontal,
@@ -78,11 +72,7 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
     return BorderDirectionalMix(end: side);
   }
 
-  /// Merges two BoxBorderMix instances.
-  ///
-  /// If both are the same type, delegates to type-specific merge.
-  /// If different types, converts to the type of [b] and merges.
-  /// If [b] is null, returns [a]. If [a] is null, returns [b].
+  /// Merges border instances with type conversion.
   static BoxBorderMix? tryToMerge(BoxBorderMix? a, BoxBorderMix? b) {
     if (b == null) return a;
     if (a == null) return b;
@@ -149,8 +139,7 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
 
   bool get isUniform;
 
-  /// Gets any border side from a uniform border (since all sides are identical)
-  /// Returns null if borders are not uniform
+  /// Gets border side if uniform, null otherwise.
   MixProp<BorderSide>? get uniformBorderSide;
 
   bool get isDirectional => this is BorderDirectionalMix;
@@ -158,10 +147,9 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
   BoxBorderMix<T> merge(covariant BoxBorderMix<T>? other);
 }
 
-/// Mix-compatible representation of Flutter's [Border] with individual side control.
+/// Mix representation of [Border].
 ///
-/// Allows styling of top, bottom, left, and right border sides independently
-/// with token support and merging capabilities.
+/// Independent side control with tokens.
 final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
   final MixProp<BorderSide>? $left;
   final MixProp<BorderSide>? $right;
@@ -301,10 +289,10 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
     if (other == null) return this;
 
     return BorderMix.create(
-      top: $top.tryMerge(other.$top),
-      bottom: $bottom.tryMerge(other.$bottom),
-      left: $left.tryMerge(other.$left),
-      right: $right.tryMerge(other.$right),
+      top: MixOps.merge($top, other.$top),
+      bottom: MixOps.merge($bottom, other.$bottom),
+      left: MixOps.merge($left, other.$left),
+      right: MixOps.merge($right, other.$right),
     );
   }
 
@@ -469,10 +457,10 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
     if (other == null) return this;
 
     return BorderDirectionalMix.create(
-      top: $top.tryMerge(other.$top),
-      bottom: $bottom.tryMerge(other.$bottom),
-      start: $start.tryMerge(other.$start),
-      end: $end.tryMerge(other.$end),
+      top: MixOps.merge($top, other.$top),
+      bottom: MixOps.merge($bottom, other.$bottom),
+      start: MixOps.merge($start, other.$start),
+      end: MixOps.merge($end, other.$end),
     );
   }
 
@@ -624,10 +612,10 @@ final class BorderSideMix extends Mix<BorderSide>
     if (other == null) return this;
 
     return BorderSideMix.create(
-      color: $color.tryMerge(other.$color),
-      width: $width.tryMerge(other.$width),
-      style: $style.tryMerge(other.$style),
-      strokeAlign: $strokeAlign.tryMerge(other.$strokeAlign),
+      color: MixOps.merge($color, other.$color),
+      width: MixOps.merge($width, other.$width),
+      style: MixOps.merge($style, other.$style),
+      strokeAlign: MixOps.merge($strokeAlign, other.$strokeAlign),
     );
   }
 

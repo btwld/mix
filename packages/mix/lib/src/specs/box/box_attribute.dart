@@ -455,7 +455,7 @@ class BoxMix extends Style<BoxSpec>
   /// Mixin implementation
   @override
   BoxMix wrap(WidgetModifierConfig value) {
-    return this.modifier(value);
+    return modifier(value);
   }
 
   /// Border radius instance method
@@ -477,7 +477,6 @@ class BoxMix extends Style<BoxSpec>
 
   /// The list of properties that constitute the state of this [BoxMix].
   @override
-
   /// Resolves to [BoxSpec] using the provided [BuildContext].
   ///
   /// If a property is null in the context, it uses the default value
@@ -514,23 +513,23 @@ class BoxMix extends Style<BoxSpec>
     if (other == null) return this;
 
     return BoxMix.create(
-      alignment: $alignment.tryMerge(other.$alignment),
-      padding: $padding.tryMerge(other.$padding),
-      margin: $margin.tryMerge(other.$margin),
-      constraints: $constraints.tryMerge(other.$constraints),
-      decoration: $decoration.tryMerge(other.$decoration),
-      foregroundDecoration: $foregroundDecoration.tryMerge(
+      alignment: MixOps.merge($alignment, other.$alignment),
+      padding: MixOps.merge($padding, other.$padding),
+      margin: MixOps.merge($margin, other.$margin),
+      constraints: MixOps.merge($constraints, other.$constraints),
+      decoration: MixOps.merge($decoration, other.$decoration),
+      foregroundDecoration: MixOps.merge(
+        $foregroundDecoration,
         other.$foregroundDecoration,
       ),
-      transform: $transform.tryMerge(other.$transform),
-      transformAlignment: $transformAlignment.tryMerge(
+      transform: MixOps.merge($transform, other.$transform),
+      transformAlignment: MixOps.merge(
+        $transformAlignment,
         other.$transformAlignment,
       ),
-      clipBehavior: $clipBehavior.tryMerge(other.$clipBehavior),
+      clipBehavior: MixOps.merge($clipBehavior, other.$clipBehavior),
       variants: mergeVariantLists($variants, other.$variants),
-      modifier: $modifier.tryMerge(
-        other.$modifier,
-      ),
+      modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
       animation: other.$animation ?? $animation,
       inherit: other.$inherit ?? $inherit,
     );

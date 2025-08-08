@@ -113,9 +113,9 @@ class AlignWidgetModifierMix extends WidgetModifierMix<AlignWidgetModifier> {
     if (other == null) return this;
 
     return AlignWidgetModifierMix.create(
-      alignment: alignment.tryMerge(other.alignment),
-      widthFactor: widthFactor.tryMerge(other.widthFactor),
-      heightFactor: heightFactor.tryMerge(other.heightFactor),
+      alignment: MixOps.merge(alignment, other.alignment),
+      widthFactor: MixOps.merge(widthFactor, other.widthFactor),
+      heightFactor: MixOps.merge(heightFactor, other.heightFactor),
     );
   }
 

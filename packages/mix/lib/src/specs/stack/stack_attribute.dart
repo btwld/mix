@@ -155,13 +155,13 @@ class StackMix extends Style<StackSpec>
     return merge(StackMix.animate(animation));
   }
 
+  StackMix modifier(WidgetModifierConfig value) {
+    return merge(StackMix(modifier: value));
+  }
+
   @override
   StackMix variants(List<VariantStyle<StackSpec>> variants) {
     return merge(StackMix(variants: variants));
-  }
-
-  StackMix modifier(WidgetModifierConfig value) {
-    return merge(StackMix(modifier: value));
   }
 
   /// Resolves to [StackSpec] using the provided [BuildContext].
@@ -186,9 +186,7 @@ class StackMix extends Style<StackSpec>
       textDirection: $textDirection.tryMerge(other.$textDirection),
       clipBehavior: $clipBehavior.tryMerge(other.$clipBehavior),
       animation: other.$animation ?? $animation,
-      modifier: $modifier.tryMerge(
-        other.$modifier,
-      ),
+      modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
       variants: mergeVariantLists($variants, other.$variants),
 
       inherit: other.$inherit ?? $inherit,
@@ -217,7 +215,7 @@ class StackMix extends Style<StackSpec>
 
   @override
   StackMix wrap(WidgetModifierConfig value) {
-    return this.modifier(value);
+    return modifier(value);
   }
 
   @override

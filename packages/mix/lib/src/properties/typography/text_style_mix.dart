@@ -6,10 +6,9 @@ import '../../core/mix_element.dart';
 import '../../core/prop.dart';
 import '../painting/shadow_mix.dart';
 
-/// Mix-compatible representation of Flutter's [TextStyle] with comprehensive styling properties.
+/// Mix representation of [TextStyle].
 ///
-/// Provides text styling capabilities including font, color, decoration, spacing, and shadow
-/// properties with resolvable tokens and merging capabilities for flexible text appearance.
+/// Comprehensive text styling with tokens.
 @immutable
 class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
   // Simple properties use MixValue directly
@@ -40,47 +39,47 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
   // Lists of Mix types
   final List<MixProp<Shadow>>? $shadows;
 
-  /// Factory for text color
+  /// Creates with text color.
   factory TextStyleMix.color(Color value) {
     return TextStyleMix(color: value);
   }
 
-  /// Factory for background color
+  /// Creates with background color.
   factory TextStyleMix.backgroundColor(Color value) {
     return TextStyleMix(backgroundColor: value);
   }
 
-  /// Factory for font size
+  /// Creates with font size.
   factory TextStyleMix.fontSize(double value) {
     return TextStyleMix(fontSize: value);
   }
 
-  /// Factory for font weight
+  /// Creates with font weight.
   factory TextStyleMix.fontWeight(FontWeight value) {
     return TextStyleMix(fontWeight: value);
   }
 
-  /// Factory for font style
+  /// Creates with font style.
   factory TextStyleMix.fontStyle(FontStyle value) {
     return TextStyleMix(fontStyle: value);
   }
 
-  /// Factory for letter spacing
+  /// Creates with letter spacing.
   factory TextStyleMix.letterSpacing(double value) {
     return TextStyleMix(letterSpacing: value);
   }
 
-  /// Factory for debug label
+  /// Creates with debug label.
   factory TextStyleMix.debugLabel(String value) {
     return TextStyleMix(debugLabel: value);
   }
 
-  /// Factory for word spacing
+  /// Creates with word spacing.
   factory TextStyleMix.wordSpacing(double value) {
     return TextStyleMix(wordSpacing: value);
   }
 
-  /// Factory for text baseline
+  /// Creates with text baseline.
   factory TextStyleMix.textBaseline(TextBaseline value) {
     return TextStyleMix(textBaseline: value);
   }
@@ -427,33 +426,35 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
     if (other == null) return this;
 
     return TextStyleMix.create(
-      color: $color.tryMerge(other.$color),
-      backgroundColor: $backgroundColor.tryMerge(other.$backgroundColor),
-      fontSize: $fontSize.tryMerge(other.$fontSize),
-      fontWeight: $fontWeight.tryMerge(other.$fontWeight),
-      fontStyle: $fontStyle.tryMerge(other.$fontStyle),
-      letterSpacing: $letterSpacing.tryMerge(other.$letterSpacing),
-      debugLabel: $debugLabel.tryMerge(other.$debugLabel),
-      wordSpacing: $wordSpacing.tryMerge(other.$wordSpacing),
-      textBaseline: $textBaseline.tryMerge(other.$textBaseline),
+      color: MixOps.merge($color, other.$color),
+      backgroundColor: MixOps.merge($backgroundColor, other.$backgroundColor),
+      fontSize: MixOps.merge($fontSize, other.$fontSize),
+      fontWeight: MixOps.merge($fontWeight, other.$fontWeight),
+      fontStyle: MixOps.merge($fontStyle, other.$fontStyle),
+      letterSpacing: MixOps.merge($letterSpacing, other.$letterSpacing),
+      debugLabel: MixOps.merge($debugLabel, other.$debugLabel),
+      wordSpacing: MixOps.merge($wordSpacing, other.$wordSpacing),
+      textBaseline: MixOps.merge($textBaseline, other.$textBaseline),
       // Merge lists - default replace strategy (merge at index)
-      shadows: $shadows.tryMerge(other.$shadows),
-      fontFeatures: $fontFeatures.tryMerge(other.$fontFeatures),
-      decoration: $decoration.tryMerge(other.$decoration),
-      decorationColor: $decorationColor.tryMerge(other.$decorationColor),
-      decorationStyle: $decorationStyle.tryMerge(other.$decorationStyle),
-      fontVariations: $fontVariations.tryMerge(other.$fontVariations),
-      height: $height.tryMerge(other.$height),
-      foreground: $foreground.tryMerge(other.$foreground),
-      background: $background.tryMerge(other.$background),
-      decorationThickness: $decorationThickness.tryMerge(
+      shadows: MixOps.mergeList($shadows, other.$shadows),
+      fontFeatures: MixOps.mergeList($fontFeatures, other.$fontFeatures),
+      decoration: MixOps.merge($decoration, other.$decoration),
+      decorationColor: MixOps.merge($decorationColor, other.$decorationColor),
+      decorationStyle: MixOps.merge($decorationStyle, other.$decorationStyle),
+      fontVariations: MixOps.mergeList($fontVariations, other.$fontVariations),
+      height: MixOps.merge($height, other.$height),
+      foreground: MixOps.merge($foreground, other.$foreground),
+      background: MixOps.merge($background, other.$background),
+      decorationThickness: MixOps.merge(
+        $decorationThickness,
         other.$decorationThickness,
       ),
-      fontFamily: $fontFamily.tryMerge(other.$fontFamily),
-      fontFamilyFallback: $fontFamilyFallback.tryMerge(
+      fontFamily: MixOps.merge($fontFamily, other.$fontFamily),
+      fontFamilyFallback: MixOps.mergeList(
+        $fontFamilyFallback,
         other.$fontFamilyFallback,
       ),
-      inherit: $inherit.tryMerge(other.$inherit),
+      inherit: MixOps.merge($inherit, other.$inherit),
     );
   }
 

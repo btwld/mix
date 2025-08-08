@@ -109,7 +109,7 @@ class OpacityWidgetModifierMix
     if (other == null) return this;
 
     return OpacityWidgetModifierMix.create(
-      opacity: opacity.tryMerge(other.opacity),
+      opacity: MixOps.merge(opacity, other.opacity),
     );
   }
 

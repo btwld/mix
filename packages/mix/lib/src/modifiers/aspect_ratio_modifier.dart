@@ -110,7 +110,7 @@ class AspectRatioWidgetModifierMix
     if (other == null) return this;
 
     return AspectRatioWidgetModifierMix.create(
-      aspectRatio: aspectRatio.tryMerge(other.aspectRatio),
+      aspectRatio: MixOps.merge(aspectRatio, other.aspectRatio),
     );
   }
 

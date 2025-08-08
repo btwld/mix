@@ -41,8 +41,11 @@ class MixOps {
     return prop.resolveProp(context);
   }
 
-  static V? merge<V extends Mixable>(V? a, V? b) {
-    return (a?.merge(b) ?? b) as V?;
+  static P? merge<P extends PropBase<V>, V>(P? a, P? b) {
+    if (a == null) return b;
+    if (b == null) return a;
+
+    return a.mergeProp(b) as P;
   }
 
   static List<T>? _mergeList<T>(
@@ -395,15 +398,14 @@ enum ListMergeStrategy {
 }
 
 extension PropExt<T> on Prop<T>? {
+  @Deprecated('Use MixOps.merge() instead. Will be removed in v3.0.0')
   Prop<T>? tryMerge(Prop<T>? other) {
-    if (this == null) return other;
-    if (other == null) return this;
-
-    return this!.mergeProp(other);
+    return MixOps.merge(this, other);
   }
 }
 
 extension ListPropExt<T> on List<Prop<T>>? {
+  @Deprecated('Use MixOps.mergeList() instead. Will be removed in v3.0.0')
   List<Prop<T>>? tryMerge(List<Prop<T>>? other, {ListMergeStrategy? strategy}) {
     if (other == null) return this;
     if (this == null) return other;
@@ -413,15 +415,14 @@ extension ListPropExt<T> on List<Prop<T>>? {
 }
 
 extension MixPropExt<T> on MixProp<T>? {
+  @Deprecated('Use MixOps.merge() instead. Will be removed in v3.0.0')
   MixProp<T>? tryMerge(MixProp<T>? other) {
-    if (this == null) return other;
-    if (other == null) return this;
-
-    return this!.mergeProp(other);
+    return MixOps.merge(this, other);
   }
 }
 
 extension ListMixPropExt<T> on List<MixProp<T>>? {
+  @Deprecated('Use MixOps.mergeList() instead. Will be removed in v3.0.0')
   List<MixProp<T>>? tryMerge(
     List<MixProp<T>>? other, {
     ListMergeStrategy? strategy,
@@ -434,6 +435,7 @@ extension ListMixPropExt<T> on List<MixProp<T>>? {
 }
 
 extension ListDirectiveExt<T> on List<Directive<T>>? {
+  @Deprecated('Use MixOps.mergeList() instead. Will be removed in v3.0.0')
   List<Directive<T>>? tryMerge(List<Directive<T>>? other) {
     if (other == null) return this;
     if (this == null) return other;
@@ -443,6 +445,7 @@ extension ListDirectiveExt<T> on List<Directive<T>>? {
 }
 
 extension DirectiveConfigExt on WidgetModifierConfig? {
+  @Deprecated('Use direct merge() method instead. Will be removed in v3.0.0')
   WidgetModifierConfig? tryMerge(WidgetModifierConfig? other) {
     if (other == null) return this;
     if (this == null) return other;

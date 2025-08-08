@@ -4,26 +4,14 @@ import '../../core/directive.dart';
 import '../../core/style_widget.dart';
 import 'text_spec.dart';
 
-/// A styled text widget for displaying text with Mix styling.
-///
-/// Applies [TextSpec] styling to display text with custom appearance.
-/// Supports style inheritance from ancestor [StyleWidget]s.
-///
-/// Example:
-/// ```dart
-/// StyledText(
-///   'Hello World',
-///   style: Style(
-///     $text.color.red(),
-///     $text.fontSize(16),
-///   ),
-/// )
-/// ```
+/// Displays text with Mix styling.
+/// 
+/// Applies [TextSpec] for custom text appearance.
 class StyledText extends StyleWidget<TextSpec> {
-  /// Creates a styled text widget.
+  /// Creates a [StyledText] with required [text] and optional [style].
   const StyledText(this.text, {super.style, super.key});
 
-  /// Text content to display.
+  /// The text to display.
   final String text;
 
   @override

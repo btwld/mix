@@ -6,10 +6,9 @@ import '../../core/internal/diagnostic_properties_builder_ext.dart';
 import '../../core/mix_element.dart';
 import '../../core/prop.dart';
 
-/// Mix-compatible representation of Flutter's [StrutStyle] with token support.
+/// Mix representation of [StrutStyle].
 ///
-/// Provides strut styling properties for text layout including font family, size,
-/// weight, height, and spacing with resolvable tokens and merging capabilities.
+/// Text layout properties with tokens.
 @immutable
 class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
   // Properties use MixableProperty for cleaner merging
@@ -73,49 +72,47 @@ class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
         forceStrutHeight: strutStyle.forceStrutHeight,
       );
 
-  /// Creates a strut style with the specified font family.
+  /// Creates with font family.
   factory StrutStyleMix.fontFamily(String value) {
     return StrutStyleMix(fontFamily: value);
   }
 
-  /// Creates a strut style with the specified font family fallback list.
+  /// Creates with font family fallback.
   factory StrutStyleMix.fontFamilyFallback(List<String> value) {
     return StrutStyleMix(fontFamilyFallback: value);
   }
 
-  /// Creates a strut style with the specified font size.
+  /// Creates with font size.
   factory StrutStyleMix.fontSize(double value) {
     return StrutStyleMix(fontSize: value);
   }
 
-  /// Creates a strut style with the specified font weight.
+  /// Creates with font weight.
   factory StrutStyleMix.fontWeight(FontWeight value) {
     return StrutStyleMix(fontWeight: value);
   }
 
-  /// Creates a strut style with the specified font style.
+  /// Creates with font style.
   factory StrutStyleMix.fontStyle(FontStyle value) {
     return StrutStyleMix(fontStyle: value);
   }
 
-  /// Creates a strut style with the specified line height.
+  /// Creates with line height.
   factory StrutStyleMix.height(double value) {
     return StrutStyleMix(height: value);
   }
 
-  /// Creates a strut style with the specified leading space.
+  /// Creates with leading space.
   factory StrutStyleMix.leading(double value) {
     return StrutStyleMix(leading: value);
   }
 
-  /// Creates a strut style with forced strut height enabled or disabled.
+  /// Creates with forced strut height.
   factory StrutStyleMix.forceStrutHeight(bool value) {
     return StrutStyleMix(forceStrutHeight: value);
   }
 
-  /// Creates a [StrutStyleMix] from a nullable [StrutStyle].
-  ///
-  /// Returns null if the input is null.
+  /// Creates from nullable [StrutStyle].
   static StrutStyleMix? maybeValue(StrutStyle? strutStyle) {
     return strutStyle != null ? StrutStyleMix.value(strutStyle) : null;
   }
@@ -179,16 +176,17 @@ class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
     if (other == null) return this;
 
     return StrutStyleMix.create(
-      fontFamily: $fontFamily.tryMerge(other.$fontFamily),
-      fontFamilyFallback: $fontFamilyFallback.tryMerge(
+      fontFamily: MixOps.merge($fontFamily, other.$fontFamily),
+      fontFamilyFallback: MixOps.mergeList(
+        $fontFamilyFallback,
         other.$fontFamilyFallback,
       ),
-      fontSize: $fontSize.tryMerge(other.$fontSize),
-      fontWeight: $fontWeight.tryMerge(other.$fontWeight),
-      fontStyle: $fontStyle.tryMerge(other.$fontStyle),
-      height: $height.tryMerge(other.$height),
-      leading: $leading.tryMerge(other.$leading),
-      forceStrutHeight: $forceStrutHeight.tryMerge(other.$forceStrutHeight),
+      fontSize: MixOps.merge($fontSize, other.$fontSize),
+      fontWeight: MixOps.merge($fontWeight, other.$fontWeight),
+      fontStyle: MixOps.merge($fontStyle, other.$fontStyle),
+      height: MixOps.merge($height, other.$height),
+      leading: MixOps.merge($leading, other.$leading),
+      forceStrutHeight: MixOps.merge($forceStrutHeight, other.$forceStrutHeight),
     );
   }
 
