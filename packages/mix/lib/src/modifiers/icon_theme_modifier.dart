@@ -8,31 +8,20 @@ import '../core/style.dart';
 import '../core/utility.dart';
 import '../properties/painting/shadow_mix.dart';
 
-/// A modifier that wraps a widget with the [IconTheme] widget.
+/// Modifier that applies icon theme data to its descendants.
 ///
-/// The [IconTheme] widget is used to provide default icon properties to descendant
-/// [Icon] widgets. This modifier allows setting default color, size, opacity, and
-/// other icon properties that will be inherited by child icons.
+/// Wraps the child in an [IconTheme] widget with the specified theme data.
 final class IconThemeModifier extends Modifier<IconThemeModifier>
     with Diagnosticable {
   final IconThemeData data;
 
   const IconThemeModifier({required this.data});
 
-  /// Creates a copy of this [IconThemeModifier] but with the given fields
-  /// replaced with the new values.
   @override
   IconThemeModifier copyWith({IconThemeData? data}) {
     return IconThemeModifier(data: data ?? this.data);
   }
 
-  /// Linearly interpolates between this [IconThemeModifier] and [other].
-  ///
-  /// The interpolation is performed on each property individually using the
-  /// appropriate lerp function for that property type.
-  ///
-  /// This method is typically used in animations to smoothly transition between
-  /// different [IconThemeModifier] configurations.
   @override
   IconThemeModifier lerp(IconThemeModifier? other, double t) {
     if (other == null) return this;

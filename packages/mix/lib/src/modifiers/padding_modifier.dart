@@ -9,6 +9,9 @@ import '../core/utility.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
 import '../properties/layout/edge_insets_geometry_util.dart';
 
+/// Modifier that adds padding around its child.
+///
+/// Wraps the child in a [Padding] widget with the specified padding.
 final class PaddingModifier extends Modifier<PaddingModifier>
     with Diagnosticable {
   final EdgeInsetsGeometry padding;
@@ -16,27 +19,11 @@ final class PaddingModifier extends Modifier<PaddingModifier>
   const PaddingModifier([EdgeInsetsGeometry? padding])
     : padding = padding ?? EdgeInsets.zero;
 
-  /// Creates a copy of this [PaddingModifier] but with the given fields
-  /// replaced with the new values.
   @override
   PaddingModifier copyWith({EdgeInsetsGeometry? padding}) {
     return PaddingModifier(padding ?? this.padding);
   }
 
-  /// Linearly interpolates between this [PaddingModifier] and another [PaddingModifier] based on the given parameter [t].
-  ///
-  /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [PaddingModifier] is returned. When [t] is 1.0, the [other] [PaddingModifier] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [PaddingModifier] is returned.
-  ///
-  /// If [other] is null, this method returns the current [PaddingModifier] instance.
-  ///
-  /// The interpolation is performed on each property of the [PaddingModifier] using the appropriate
-  /// interpolation method:
-  /// - [EdgeInsetsGeometry.lerp] for [padding].
-
-  /// This method is typically used in animations to smoothly transition between
-  /// different [PaddingModifier] configurations.
   @override
   PaddingModifier lerp(PaddingModifier? other, double t) {
     if (other == null) return this;
@@ -50,10 +37,6 @@ final class PaddingModifier extends Modifier<PaddingModifier>
     properties.add(DiagnosticsProperty('padding', padding, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [PaddingModifier].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [PaddingModifier] instances for equality.
   @override
   List<Object?> get props => [padding];
 
@@ -63,9 +46,9 @@ final class PaddingModifier extends Modifier<PaddingModifier>
   }
 }
 
-/// Attribute class for configuring [PaddingModifier] properties.
+/// Mix class for applying padding modifications.
 ///
-/// Encapsulates padding values for widget spacing and layout.
+/// This class allows for mixing and resolving padding properties.
 class PaddingModifierMix extends ModifierMix<PaddingModifier>
     with Diagnosticable {
   final MixProp<EdgeInsetsGeometry>? padding;
@@ -75,27 +58,11 @@ class PaddingModifierMix extends ModifierMix<PaddingModifier>
   PaddingModifierMix({EdgeInsetsGeometryMix? padding})
     : this.create(padding: MixProp.maybe(padding));
 
-  /// Resolves to [PaddingModifier] using the provided [BuildContext].
-  ///
-  /// If a property is null in the [BuildContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
-  ///
-  /// ```dart
-  /// final paddingModifier = PaddingModifierMix(...).resolve(mix);
-  /// ```
   @override
   PaddingModifier resolve(BuildContext context) {
     return PaddingModifier(MixOps.resolve(context, padding));
   }
 
-  /// Merges the properties of this [PaddingModifierMix] with the properties of [other].
-  ///
-  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [PaddingModifierMix] with the properties of [other] taking precedence over
-  /// the corresponding properties of this instance.
-  ///
-  /// Properties from [other] that are null will fall back
-  /// to the values from this instance.
   @override
   PaddingModifierMix merge(PaddingModifierMix? other) {
     if (other == null) return this;
@@ -111,18 +78,13 @@ class PaddingModifierMix extends ModifierMix<PaddingModifier>
     properties.add(DiagnosticsProperty('padding', padding, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [PaddingModifierMix].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [PaddingModifierMix] instances for equality.
   @override
   List<Object?> get props => [padding];
 }
 
-/// Utility class for configuring [PaddingModifier] properties.
+/// Utility class for applying padding modifications.
 ///
-/// This class provides methods to set individual properties of a [PaddingModifier].
-/// Use the methods of this class to configure specific properties of a [PaddingModifier].
+/// Provides convenient methods for creating PaddingModifierMix instances.
 class PaddingModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, PaddingModifierMix> {
   /// Utility for defining [PaddingModifierMix.padding]
@@ -132,7 +94,6 @@ class PaddingModifierUtility<T extends Style<Object?>>
 
   PaddingModifierUtility(super.builder);
 
-  /// Returns a new [PaddingModifierMix] with the specified properties.
   T call({EdgeInsetsGeometryMix? padding}) {
     return builder(
       PaddingModifierMix.create(padding: MixProp.maybe(padding)),

@@ -6,14 +6,15 @@ import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 
+/// Modifier that rotates its child by quarter turns.
+///
+/// Wraps the child in a [RotatedBox] widget with the specified quarter turns.
 final class RotatedBoxModifier
     extends Modifier<RotatedBoxModifier> {
   final int quarterTurns;
   const RotatedBoxModifier([int? quarterTurns])
     : quarterTurns = quarterTurns ?? 0;
 
-  /// Creates a copy of this [RotatedBoxModifier] but with the given fields
-  /// replaced with the new values.
   @override
   RotatedBoxModifier copyWith({int? quarterTurns}) {
     return RotatedBoxModifier(quarterTurns ?? this.quarterTurns);
@@ -28,10 +29,6 @@ final class RotatedBoxModifier
     );
   }
 
-  /// The list of properties that constitute the state of this [RotatedBoxModifier].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [RotatedBoxModifier] instances for equality.
   @override
   List<Object?> get props => [quarterTurns];
 
@@ -41,13 +38,9 @@ final class RotatedBoxModifier
   }
 }
 
-/// Represents the attributes of a [RotatedBoxModifier].
+/// Mix class for applying rotated box modifications.
 ///
-/// This class encapsulates properties defining the layout and
-/// appearance of a [RotatedBoxModifier].
-///
-/// Use this class to configure the attributes of a [RotatedBoxModifier] and pass it to
-/// the [RotatedBoxModifier] constructor.
+/// This class allows for mixing and resolving rotated box properties.
 class RotatedBoxModifierMix
     extends ModifierMix<RotatedBoxModifier> {
   final Prop<int>? quarterTurns;

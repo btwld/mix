@@ -11,8 +11,9 @@ class SpecMetadata extends BaseMetadata {
 
   final int generatedComponents;
 
-  /// Whether this is a widget modifier spec
-  final bool isWidgetModifier;
+  /// Whether this is a modifier spec (deprecated - modifiers now extend Modifier class)
+  @Deprecated('Modifiers now extend Modifier class directly')
+  final bool isModifier;
 
   const SpecMetadata({
     required super.element,
@@ -24,7 +25,7 @@ class SpecMetadata extends BaseMetadata {
     required super.isAbstract,
     required this.generatedMethods,
     required this.generatedComponents,
-    required this.isWidgetModifier,
+    required this.isModifier,
   });
 
   /// Creates a SpecMetadata from a class element and its annotation
@@ -33,11 +34,11 @@ class SpecMetadata extends BaseMetadata {
     final constructor = findTargetConstructor(element);
     final parameters = ParameterMetadata.extractFromConstructor(element);
 
-    // Check for WidgetModifierSpec
-    bool isWidgetModifier = false;
+    // Check for Modifier base class (modifiers now extend Modifier, not a separate spec)
+    bool isModifier = false;
     for (var interface in element.allSupertypes) {
-      if (interface.element.name == 'WidgetModifierSpec') {
-        isWidgetModifier = true;
+      if (interface.element.name == 'Modifier') {
+        isModifier = true;
         break;
       }
     }
@@ -54,13 +55,12 @@ class SpecMetadata extends BaseMetadata {
       isAbstract: element.isAbstract,
       generatedMethods: mixableSpec.methods,
       generatedComponents: mixableSpec.components,
-      isWidgetModifier: isWidgetModifier,
+      isModifier: isModifier,
     );
   }
 
-  String get extendsAttributeOfType => isWidgetModifier
-      ? 'WidgetModifierSpecAttribute<$name>'
-      : 'SpecAttribute<$name>';
+  // All attributes now extend SpecAttribute since modifiers are specs
+  String get extendsAttributeOfType => 'SpecAttribute<$name>';
 
   String get attributeName => '${name}Attribute';
 

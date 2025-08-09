@@ -55,6 +55,9 @@ final class AlignModifier extends Modifier<AlignModifier> with Diagnosticable {
   }
 }
 
+/// Utility class for applying alignment modifications.
+///
+/// Provides convenient methods for creating AlignModifierMix instances.
 final class AlignModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, AlignModifierMix> {
   const AlignModifierUtility(super.builder);
@@ -73,6 +76,9 @@ final class AlignModifierUtility<T extends Style<Object?>>
   }
 }
 
+/// Mix class for applying alignment modifications.
+///
+/// This class allows for mixing and resolving alignment properties.
 class AlignModifierMix extends ModifierMix<AlignModifier> {
   final Prop<AlignmentGeometry>? alignment;
   final Prop<double>? widthFactor;

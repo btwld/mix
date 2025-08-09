@@ -7,6 +7,9 @@ import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 
+/// Modifier that sizes its child to a fraction of the available space.
+///
+/// Wraps the child in a [FractionallySizedBox] widget with the specified factors.
 final class FractionallySizedBoxModifier
     extends Modifier<FractionallySizedBoxModifier>
     with Diagnosticable {
@@ -20,8 +23,6 @@ final class FractionallySizedBoxModifier
     this.alignment,
   });
 
-  /// Creates a copy of this [FractionallySizedBoxModifier] but with the given fields
-  /// replaced with the new values.
   @override
   FractionallySizedBoxModifier copyWith({
     double? widthFactor,
@@ -35,21 +36,6 @@ final class FractionallySizedBoxModifier
     );
   }
 
-  /// Linearly interpolates between this [FractionallySizedBoxModifier] and another [FractionallySizedBoxModifier] based on the given parameter [t].
-  ///
-  /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [FractionallySizedBoxModifier] is returned. When [t] is 1.0, the [other] [FractionallySizedBoxModifier] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [FractionallySizedBoxModifier] is returned.
-  ///
-  /// If [other] is null, this method returns the current [FractionallySizedBoxModifier] instance.
-  ///
-  /// The interpolation is performed on each property of the [FractionallySizedBoxModifier] using the appropriate
-  /// interpolation method:
-  /// - [MixOps.lerp] for [widthFactor] and [heightFactor].
-  /// - [AlignmentGeometry.lerp] for [alignment].
-
-  /// This method is typically used in animations to smoothly transition between
-  /// different [FractionallySizedBoxModifier] configurations.
   @override
   FractionallySizedBoxModifier lerp(
     FractionallySizedBoxModifier? other,
@@ -78,10 +64,6 @@ final class FractionallySizedBoxModifier
     );
   }
 
-  /// The list of properties that constitute the state of this [FractionallySizedBoxModifier].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [FractionallySizedBoxModifier] instances for equality.
   @override
   List<Object?> get props => [widthFactor, heightFactor, alignment];
 
@@ -96,13 +78,9 @@ final class FractionallySizedBoxModifier
   }
 }
 
-/// Represents the attributes of a [FractionallySizedBoxModifier].
+/// Mix class for applying fractionally sized box modifications.
 ///
-/// This class encapsulates properties defining the layout and
-/// appearance of a [FractionallySizedBoxModifier].
-///
-/// Use this class to configure the attributes of a [FractionallySizedBoxModifier] and pass it to
-/// the [FractionallySizedBoxModifier] constructor.
+/// This class allows for mixing and resolving fractionally sized box properties.
 class FractionallySizedBoxModifierMix
     extends ModifierMix<FractionallySizedBoxModifier> {
   final Prop<double>? widthFactor;
@@ -125,14 +103,6 @@ class FractionallySizedBoxModifierMix
          alignment: Prop.maybe(alignment),
        );
 
-  /// Resolves to [FractionallySizedBoxModifier] using the provided [BuildContext].
-  ///
-  /// If a property is null in the [BuildContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
-  ///
-  /// ```dart
-  /// final fractionallySizedBoxModifier = FractionallySizedBoxModifierMix(...).resolve(mix);
-  /// ```
   @override
   FractionallySizedBoxModifier resolve(BuildContext context) {
     return FractionallySizedBoxModifier(
@@ -142,14 +112,6 @@ class FractionallySizedBoxModifierMix
     );
   }
 
-  /// Merges the properties of this [FractionallySizedBoxModifierMix] with the properties of [other].
-  ///
-  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [FractionallySizedBoxModifierMix] with the properties of [other] taking precedence over
-  /// the corresponding properties of this instance.
-  ///
-  /// Properties from [other] that are null will fall back
-  /// to the values from this instance.
   @override
   FractionallySizedBoxModifierMix merge(
     FractionallySizedBoxModifierMix? other,
@@ -167,6 +129,9 @@ class FractionallySizedBoxModifierMix
   List<Object?> get props => [widthFactor, heightFactor, alignment];
 }
 
+/// Utility class for applying fractionally sized box modifications.
+///
+/// Provides convenient methods for creating FractionallySizedBoxModifierMix instances.
 final class FractionallySizedBoxModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, FractionallySizedBoxModifierMix> {
   const FractionallySizedBoxModifierUtility(super.builder);

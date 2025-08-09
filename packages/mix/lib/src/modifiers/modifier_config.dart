@@ -549,18 +549,18 @@ const _defaultOrder = [
   // Applied to allow content-driven height calculations before aspect ratio constraints.
   IntrinsicHeightModifier,
 
-  // 8. IntrinsicWidthWidgetModifier: Adjusts width based on child's intrinsic content width.
+  // 8. IntrinsicWidthModifier: Adjusts width based on child's intrinsic content width.
   // Applied alongside intrinsic height for complete content-driven sizing.
   IntrinsicWidthModifier,
 
-  // 9. AspectRatioWidgetModifier: Maintains aspect ratio within established size constraints.
+  // 9. AspectRatioModifier: Maintains aspect ratio within established size constraints.
   // Applied after all other sizing to preserve aspect ratio in final dimensions.
   AspectRatioModifier,
 
   // === PHASE 3: LAYOUT MODIFICATIONS ===
 
-  // 10. RotatedBoxWidgetModifier: Rotates widget and changes its layout dimensions.
-  // CRITICAL: Must come before AlignWidgetModifier because it changes layout space
+  // 10. RotatedBoxModifier: Rotates widget and changes its layout dimensions.
+  // CRITICAL: Must come before AlignModifier because it changes layout space
   // (e.g., 200×100 widget becomes 100×200, affecting alignment calculations).
   RotatedBoxModifier,
 
@@ -570,14 +570,14 @@ const _defaultOrder = [
 
   // === PHASE 4: SPACING ===
 
-  // 12. PaddingWidgetModifier: Adds spacing around the widget content.
+  // 12. PaddingModifier: Adds spacing around the widget content.
   // Applied after layout positioning to add space without affecting layout calculations.
   PaddingModifier,
 
   // === PHASE 5: VISUAL-ONLY EFFECTS ===
 
-  // 13. TransformWidgetModifier: Applies visual transformations (scale, rotate, translate).
-  // IMPORTANT: Visual-only - doesn't affect layout space, unlike RotatedBoxWidgetModifier.
+  // 13. TransformModifier: Applies visual transformations (scale, rotate, translate).
+  // IMPORTANT: Visual-only - doesn't affect layout space, unlike RotatedBoxModifier.
   TransformModifier,
 
   // 14. Clip Modifiers: Applies visual clipping in various shapes.
@@ -588,7 +588,7 @@ const _defaultOrder = [
   ClipTriangleModifier,
   ClipRectModifier,
 
-  // 15. OpacityWidgetModifier: Applies transparency as the final visual effect.
+  // 15. OpacityModifier: Applies transparency as the final visual effect.
   // Always applied last to ensure optimal performance and correct visual layering.
   OpacityModifier,
 ];

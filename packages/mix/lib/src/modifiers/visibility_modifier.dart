@@ -8,29 +8,20 @@ import '../core/style.dart';
 import '../core/utility.dart';
 import '../theme/tokens/mix_token.dart';
 
-/// A modifier that wraps a widget with the [Visibility] widget.
+/// Modifier that controls the visibility of its child.
 ///
-/// Controls whether a child widget is visible or hidden while maintaining
-/// its space in the layout.
+/// Wraps the child in a [Visibility] widget to show or hide it while maintaining layout space.
 final class VisibilityModifier extends Modifier<VisibilityModifier>
     with Diagnosticable {
   /// Whether the child widget should be visible.
   final bool visible;
   const VisibilityModifier([bool? visible]) : visible = visible ?? true;
 
-  /// Creates a copy of this [VisibilityModifier] with the given fields replaced.
   @override
   VisibilityModifier copyWith({bool? visible}) {
     return VisibilityModifier(visible ?? this.visible);
   }
 
-  /// Linearly interpolates between this [VisibilityModifier] and [other].
-  ///
-  /// Uses a step function for [visible] property - values below 0.5 use this
-  /// instance's value, otherwise uses [other]'s value.
-  ///
-  /// This method is typically used in animations to transition between
-  /// different [VisibilityModifier] configurations.
   @override
   VisibilityModifier lerp(VisibilityModifier? other, double t) {
     if (other == null) return this;
@@ -44,7 +35,6 @@ final class VisibilityModifier extends Modifier<VisibilityModifier>
     properties.add(DiagnosticsProperty('visible', visible, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [VisibilityModifier].
   @override
   List<Object?> get props => [visible];
 
@@ -54,10 +44,9 @@ final class VisibilityModifier extends Modifier<VisibilityModifier>
   }
 }
 
-/// Represents the attributes of a [VisibilityModifier].
+/// Mix class for applying visibility modifications.
 ///
-/// This class encapsulates properties defining the visibility behavior
-/// of a [VisibilityModifier].
+/// This class allows for mixing and resolving visibility properties.
 class VisibilityModifierMix extends ModifierMix<VisibilityModifier>
     with Diagnosticable {
   /// Whether the child widget should be visible.
@@ -68,20 +57,11 @@ class VisibilityModifierMix extends ModifierMix<VisibilityModifier>
   VisibilityModifierMix({bool? visible})
     : this.create(visible: Prop.maybe(visible));
 
-  /// Resolves to [VisibilityModifier] using the provided [BuildContext].
-  ///
-  /// ```dart
-  /// final visibilityModifier = VisibilityModifierMix(...).resolve(context);
-  /// ```
   @override
   VisibilityModifier resolve(BuildContext context) {
     return VisibilityModifier(visible?.resolveProp(context));
   }
 
-  /// Merges the properties of this [VisibilityModifierMix] with [other].
-  ///
-  /// Properties from [other] take precedence over the corresponding properties
-  /// of this instance. Returns this instance unchanged if [other] is null.
   @override
   VisibilityModifierMix merge(VisibilityModifierMix? other) {
     if (other == null) return this;
@@ -97,14 +77,13 @@ class VisibilityModifierMix extends ModifierMix<VisibilityModifier>
     properties.add(DiagnosticsProperty('visible', visible, defaultValue: null));
   }
 
-  /// The list of properties that constitute the state of this [VisibilityModifierMix].
   @override
   List<Object?> get props => [visible];
 }
 
-/// Utility class for configuring [VisibilityModifier] properties.
+/// Utility class for applying visibility modifications.
 ///
-/// This class provides methods to set the visibility state of a [VisibilityModifier].
+/// Provides convenient methods for creating VisibilityModifierMix instances.
 final class VisibilityModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, VisibilityModifierMix> {
   const VisibilityModifierUtility(super.builder);

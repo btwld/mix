@@ -6,34 +6,19 @@ import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 
+/// Modifier that applies a mouse cursor to its child.
+///
+/// Wraps the child in a [MouseRegion] widget with the specified cursor.
 class MouseCursorModifier extends Modifier<MouseCursorModifier> {
   final MouseCursor? mouseCursor;
 
   const MouseCursorModifier({this.mouseCursor});
 
-  /// Creates a copy of this [MouseCursorModifier] but with the given fields
-  /// replaced with the new values.
   @override
   MouseCursorModifier copyWith({MouseCursor? mouseCursor}) {
     return MouseCursorModifier(mouseCursor: mouseCursor ?? this.mouseCursor);
   }
 
-  /// Linearly interpolates between this [MouseCursorModifier] and another [MouseCursorModifier] based on the given parameter [t].
-  ///
-  /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [MouseCursorModifier] is returned. When [t] is 1.0, the [other] [MouseCursorModifier] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [MouseCursorModifier] is returned.
-  ///
-  /// If [other] is null, this method returns the current [MouseCursorModifier] instance.
-  ///
-  /// The interpolation is performed on each property of the [MouseCursorModifier] using the appropriate
-  /// interpolation method:
-  /// For [mouseCursor], the interpolation is performed using a step function.
-  /// If [t] is less than 0.5, the value from the current [MouseCursorModifier] is used. Otherwise, the value
-  /// from the [other] [MouseCursorModifier] is used.
-  ///
-  /// This method is typically used in animations to smoothly transition between
-  /// different [MouseCursorModifier] configurations.
   @override
   MouseCursorModifier lerp(MouseCursorModifier? other, double t) {
     if (other == null) return this;
@@ -43,10 +28,6 @@ class MouseCursorModifier extends Modifier<MouseCursorModifier> {
     );
   }
 
-  /// The list of properties that constitute the state of this [MouseCursorModifier].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [MouseCursorModifier] instances for equality.
   @override
   List<Object?> get props => [mouseCursor];
 

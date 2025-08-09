@@ -8,6 +8,9 @@ import '../core/utility.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
 import '../properties/layout/edge_insets_geometry_util.dart';
 
+/// Modifier that applies scroll view properties to its child.
+///
+/// Wraps the child in a scrollable widget with the specified properties.
 final class ScrollViewModifier
     extends Modifier<ScrollViewModifier> {
   final Axis? scrollDirection;

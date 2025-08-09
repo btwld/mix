@@ -8,6 +8,9 @@ import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 
+/// Modifier that applies matrix transformations to its child.
+///
+/// Wraps the child in a [Transform] widget with the specified matrix and alignment.
 final class TransformModifier extends Modifier<TransformModifier> {
   final Matrix4? transform;
   final Alignment? alignment;
@@ -45,6 +48,9 @@ final class TransformModifier extends Modifier<TransformModifier> {
   }
 }
 
+/// Utility class for applying transform modifications.
+///
+/// Provides convenient methods for creating TransformModifierMix instances.
 final class TransformModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, TransformModifierMix> {
   late final rotate = TransformRotateModifierUtility(
@@ -98,6 +104,9 @@ final class TransformRotateModifierUtility<T extends Style<Object?>>
   T call(double value) => builder(Matrix4.rotationZ(value));
 }
 
+/// Mix class for applying transform modifications.
+///
+/// This class allows for mixing and resolving transform properties.
 class TransformModifierMix
     extends ModifierMix<TransformModifier> {
   final Prop<Matrix4>? transform;

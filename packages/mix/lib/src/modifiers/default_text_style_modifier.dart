@@ -9,6 +9,9 @@ import '../core/utility.dart';
 import '../properties/typography/text_height_behavior_mix.dart';
 import '../properties/typography/text_style_mix.dart';
 
+/// Modifier that applies default text styling to its descendants.
+///
+/// Wraps the child in a [DefaultTextStyle] widget with the specified text properties.
 final class DefaultTextStyleModifier
     extends Modifier<DefaultTextStyleModifier>
     with Diagnosticable {
@@ -30,8 +33,6 @@ final class DefaultTextStyleModifier
     this.textHeightBehavior,
   });
 
-  /// Creates a copy of this [DefaultTextStyleModifier] but with the given fields
-  /// replaced with the new values.
   @override
   DefaultTextStyleModifier copyWith({
     TextStyle? style,
@@ -53,23 +54,6 @@ final class DefaultTextStyleModifier
     );
   }
 
-  /// Linearly interpolates between this [DefaultTextStyleModifier] and another [DefaultTextStyleModifier] based on the given parameter [t].
-  ///
-  /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [DefaultTextStyleModifier] is returned. When [t] is 1.0, the [other] [DefaultTextStyleModifier] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [DefaultTextStyleModifier] is returned.
-  ///
-  /// If [other] is null, this method returns the current [DefaultTextStyleModifier] instance.
-  ///
-  /// The interpolation is performed on each property of the [DefaultTextStyleModifier] using the appropriate
-  /// interpolation method:
-  /// - [MixOps.lerp] for [style].
-  /// For [textAlign] and [softWrap] and [overflow] and [maxLines] and [textWidthBasis] and [textHeightBehavior], the interpolation is performed using a step function.
-  /// If [t] is less than 0.5, the value from the current [DefaultTextStyleModifier] is used. Otherwise, the value
-  /// from the [other] [DefaultTextStyleModifier] is used.
-  ///
-  /// This method is typically used in animations to smoothly transition between
-  /// different [DefaultTextStyleModifier] configurations.
   @override
   DefaultTextStyleModifier lerp(
     DefaultTextStyleModifier? other,
@@ -120,10 +104,6 @@ final class DefaultTextStyleModifier
     );
   }
 
-  /// The list of properties that constitute the state of this [DefaultTextStyleModifier].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [DefaultTextStyleModifier] instances for equality.
   @override
   List<Object?> get props => [
     style,
@@ -150,13 +130,9 @@ final class DefaultTextStyleModifier
   }
 }
 
-/// Represents the attributes of a [DefaultTextStyleModifier].
+/// Mix class for applying default text style modifications.
 ///
-/// This class encapsulates properties defining the layout and
-/// appearance of a [DefaultTextStyleModifier].
-///
-/// Use this class to configure the attributes of a [DefaultTextStyleModifier] and pass it to
-/// the [DefaultTextStyleModifier] constructor.
+/// This class allows for mixing and resolving default text style properties.
 class DefaultTextStyleModifierMix
     extends ModifierMix<DefaultTextStyleModifier> {
   final MixProp<TextStyle>? style;
@@ -195,14 +171,6 @@ class DefaultTextStyleModifierMix
          textHeightBehavior: MixProp.maybe(textHeightBehavior),
        );
 
-  /// Resolves to [DefaultTextStyleModifier] using the provided [BuildContext].
-  ///
-  /// If a property is null in the [BuildContext], it falls back to the
-  /// default value defined in the `defaultValue` for that property.
-  ///
-  /// ```dart
-  /// final defaultTextStyleModifier = DefaultTextStyleModifierMix(...).resolve(mix);
-  /// ```
   @override
   DefaultTextStyleModifier resolve(BuildContext context) {
     return DefaultTextStyleModifier(
@@ -216,14 +184,6 @@ class DefaultTextStyleModifierMix
     );
   }
 
-  /// Merges the properties of this [DefaultTextStyleModifierMix] with the properties of [other].
-  ///
-  /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [DefaultTextStyleModifierMix] with the properties of [other] taking precedence over
-  /// the corresponding properties of this instance.
-  ///
-  /// Properties from [other] that are null will fall back
-  /// to the values from this instance.
   @override
   DefaultTextStyleModifierMix merge(
     DefaultTextStyleModifierMix? other,
@@ -253,6 +213,9 @@ class DefaultTextStyleModifierMix
   ];
 }
 
+/// Utility class for applying default text style modifications.
+///
+/// Provides convenient methods for creating DefaultTextStyleModifierMix instances.
 final class DefaultTextStyleModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, DefaultTextStyleModifierMix> {
   const DefaultTextStyleModifierUtility(super.builder);
