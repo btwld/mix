@@ -26,7 +26,7 @@ class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
   final Style<S> style;
 
   /// Function that builds the widget with the resolved style.
-  final Widget Function(BuildContext context, S? spec) builder;
+  final Widget Function(BuildContext context, S spec) builder;
 
   /// Optional controller for managing widget state.
   final WidgetStatesController? controller;
@@ -82,13 +82,13 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
 }
 
 class ResolvedStyleBuilder<S extends Spec<S>> extends StatelessWidget {
-  const ResolvedStyleBuilder({super.key, required this.builder, this.style});
+  const ResolvedStyleBuilder({super.key, required this.builder, required this.style});
 
   /// The style to resolve.
-  final Style<S>? style;
+  final Style<S> style;
 
   /// The builder function that receives the resolved style.
-  final Widget Function(BuildContext context, S? spec) builder;
+  final Widget Function(BuildContext context, S spec) builder;
 
   Widget _widgetBuilder(BuildContext context, ResolvedStyle<S> resolvedStyle) {
     Widget current = builder(context, resolvedStyle.spec);
@@ -113,7 +113,7 @@ class ResolvedStyleBuilder<S extends Spec<S>> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final resolvedStyle = style?.build(context) ?? ResolvedStyle<S>();
+    final resolvedStyle = style.build(context);
 
     final animation = resolvedStyle.animation;
 

@@ -18,7 +18,7 @@ void main() {
             resolvedStyle: style,
             builder: (context, resolvedStyle) => Container(
               key: const Key('test-container'),
-              color: resolvedStyle.spec?.color,
+              color: resolvedStyle.spec.color,
             ),
           ),
         ),
@@ -40,7 +40,7 @@ void main() {
             animationConfig: animationConfig,
             resolvedStyle: style,
             builder: (context, resolvedStyle) =>
-                Container(key: ValueKey(resolvedStyle.spec?.color)),
+                Container(key: ValueKey(resolvedStyle.spec.color)),
           ),
         ),
       );
@@ -67,7 +67,7 @@ void main() {
             animationConfig: animationConfig,
             resolvedStyle: style1,
             builder: (context, resolvedStyle) =>
-                Container(key: ValueKey(resolvedStyle.spec?.color)),
+                Container(key: ValueKey(resolvedStyle.spec.color)),
           ),
         ),
       );
@@ -81,7 +81,7 @@ void main() {
             animationConfig: animationConfig,
             resolvedStyle: style2,
             builder: (context, resolvedStyle) =>
-                Container(key: ValueKey(resolvedStyle.spec?.color)),
+                Container(key: ValueKey(resolvedStyle.spec.color)),
           ),
         ),
       );
@@ -109,7 +109,7 @@ void main() {
             animationConfig: config1,
             resolvedStyle: style,
             builder: (context, resolvedStyle) =>
-                Container(color: resolvedStyle.spec?.color),
+                Container(color: resolvedStyle.spec.color),
           ),
         ),
       );
@@ -123,7 +123,7 @@ void main() {
             animationConfig: config2,
             resolvedStyle: style,
             builder: (context, resolvedStyle) =>
-                Container(color: resolvedStyle.spec?.color),
+                Container(color: resolvedStyle.spec.color),
           ),
         ),
       );
@@ -156,12 +156,13 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('handles null spec gracefully', (tester) async {
+    testWidgets('handles empty spec gracefully', (tester) async {
       const animationConfig = CurveAnimationConfig(
         duration: Duration(milliseconds: 100),
         curve: Curves.linear,
       );
-      final style = TestResolvedStyle(hasNullSpec: true);
+      // Create a style with an empty/default spec
+      final style = TestResolvedStyle(color: Colors.transparent);
 
       await tester.pumpWidget(
         MaterialApp(
@@ -174,7 +175,7 @@ void main() {
         ),
       );
 
-      // Should render container even with null spec
+      // Should render container even with empty/default spec
       expect(find.byKey(const Key('test-container')), findsOneWidget);
     });
   });
@@ -203,10 +204,9 @@ class TestSpec extends Spec<TestSpec> {
 
 class TestResolvedStyle extends ResolvedStyle<TestSpec> {
   final Color color;
-  final bool hasNullSpec;
 
-  TestResolvedStyle({this.color = Colors.black, this.hasNullSpec = false})
-    : super(spec: hasNullSpec ? null : TestSpec(color: color));
+  TestResolvedStyle({this.color = Colors.black})
+    : super(spec: TestSpec(color: color));
 
   @override
   ResolvedStyle<TestSpec> lerp(ResolvedStyle<TestSpec>? other, double t) {

@@ -16,21 +16,21 @@ void main() {
 
         final attribute = StackBoxMix(box: boxAttribute, stack: stackAttribute);
 
-        expect(attribute.box, boxAttribute);
-        expect(attribute.stack, stackAttribute);
+        expect(attribute.$box?.value, boxAttribute);
+        expect(attribute.$stack?.value, stackAttribute);
         expect(
-          attribute.box!.$constraints,
+          (attribute.$box?.value as BoxMix?)!.$constraints,
           resolvesTo(BoxConstraints.tightFor(width: 200.0, height: 200.0)),
         );
-        expect(attribute.stack!.$alignment, resolvesTo(Alignment.center));
-        expect(attribute.stack!.$fit, resolvesTo(StackFit.expand));
+        expect((attribute.$stack?.value as StackMix?)!.$alignment, resolvesTo(Alignment.center));
+        expect((attribute.$stack?.value as StackMix?)!.$fit, resolvesTo(StackFit.expand));
       });
 
       test('creates empty StackBoxMix', () {
         final attribute = StackBoxMix();
 
-        expect(attribute.box, isNull);
-        expect(attribute.stack, isNull);
+        expect(attribute.$box, isNull);
+        expect(attribute.$stack, isNull);
       });
     });
 
@@ -39,16 +39,16 @@ void main() {
         final boxMix = BoxMix.width(100.0);
         final stackBoxMix = StackBoxMix.box(boxMix);
 
-        expect(stackBoxMix.box, boxMix);
-        expect(stackBoxMix.stack, isNull);
+        expect(stackBoxMix.$box?.value, boxMix);
+        expect(stackBoxMix.$stack, isNull);
       });
 
       test('stack factory creates StackBoxMix with stack', () {
         final stackMix = StackMix.alignment(Alignment.center);
         final stackBoxMix = StackBoxMix.stack(stackMix);
 
-        expect(stackBoxMix.stack, stackMix);
-        expect(stackBoxMix.box, isNull);
+        expect(stackBoxMix.$stack?.value, stackMix);
+        expect(stackBoxMix.$box, isNull);
       });
 
       test('animation factory creates StackBoxMix with animation config', () {
@@ -79,14 +79,14 @@ void main() {
 
         final attribute = StackBoxMix.value(spec);
 
-        expect(attribute.box, isNotNull);
-        expect(attribute.stack, isNotNull);
+        expect(attribute.$box, isNotNull);
+        expect(attribute.$stack, isNotNull);
         expect(
-          attribute.box!.$constraints,
+          (attribute.$box?.value as BoxMix?)!.$constraints,
           resolvesTo(BoxConstraints.tightFor(width: 200.0, height: 100.0)),
         );
-        expect(attribute.stack!.$alignment, resolvesTo(Alignment.center));
-        expect(attribute.stack!.$fit, resolvesTo(StackFit.expand));
+        expect((attribute.$stack?.value as StackMix?)!.$alignment, resolvesTo(Alignment.center));
+        expect((attribute.$stack?.value as StackMix?)!.$fit, resolvesTo(StackFit.expand));
       });
 
       test('maybeValue returns null for null spec', () {
@@ -101,8 +101,8 @@ void main() {
         final attribute = StackBoxMix.maybeValue(spec);
 
         expect(attribute, isNotNull);
-        expect(attribute!.box, isNotNull);
-        expect(attribute.stack, isNotNull);
+        expect(attribute!.$box, isNotNull);
+        expect(attribute.$stack, isNotNull);
       });
     });
 
@@ -111,9 +111,9 @@ void main() {
         final boxMix = BoxMix.width(300.0);
         final attribute = StackBoxMix().withBox(boxMix);
 
-        expect(attribute.box, isNotNull);
+        expect(attribute.$box, isNotNull);
         expect(
-          attribute.box!.$constraints,
+          (attribute.$box?.value as BoxMix?)!.$constraints,
           resolvesTo(BoxConstraints.tightFor(width: 300.0)),
         );
       });
@@ -122,8 +122,8 @@ void main() {
         final stackMix = StackMix.alignment(Alignment.bottomRight);
         final attribute = StackBoxMix().withStack(stackMix);
 
-        expect(attribute.stack, isNotNull);
-        expect(attribute.stack!.$alignment, resolvesTo(Alignment.bottomRight));
+        expect(attribute.$stack, isNotNull);
+        expect((attribute.$stack?.value as StackMix?)!.$alignment, resolvesTo(Alignment.bottomRight));
       });
 
       test('animate method sets animation config', () {
@@ -201,11 +201,11 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.box, isNotNull);
-        expect(merged.stack, isNotNull);
+        expect(merged.$box, isNotNull);
+        expect(merged.$stack, isNotNull);
         // Box properties should be merged
-        expect(merged.box!.$constraints, isNotNull);
-        expect(merged.stack!.$alignment, resolvesTo(Alignment.center));
+        expect((merged.$box?.value as BoxMix?)!.$constraints, isNotNull);
+        expect((merged.$stack?.value as StackMix?)!.$alignment, resolvesTo(Alignment.center));
       });
 
       test('returns this when other is null', () {
@@ -246,8 +246,8 @@ void main() {
         final attribute = StackBoxMix(box: boxAttribute, stack: stackAttribute);
 
         expect(attribute.props.length, 2);
-        expect(attribute.props, contains(attribute.box));
-        expect(attribute.props, contains(attribute.stack));
+        expect(attribute.props, contains(attribute.$box));
+        expect(attribute.props, contains(attribute.$stack));
       });
     });
   });

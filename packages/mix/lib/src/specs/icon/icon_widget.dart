@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 
 import '../../core/style_widget.dart';
+import 'icon_attribute.dart';
 import 'icon_spec.dart';
 
 /// Displays an icon with Mix styling.
 ///
 /// Applies [IconSpec] for custom icon appearance.
 class StyledIcon extends StyleWidget<IconSpec> {
-  const StyledIcon({this.icon, this.semanticLabel, super.style, super.key});
+  const StyledIcon({
+    this.icon,
+    this.semanticLabel,
+    super.style = const IconMix.create(),
+    super.key,
+  });
 
   /// The icon to display.
   final IconData? icon;

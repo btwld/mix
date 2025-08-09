@@ -31,12 +31,12 @@ void main() {
               child: StyleBuilder<BoxSpec>(
                 style: style,
                 builder: (context, spec) {
-                  currentColor = (spec?.decoration as BoxDecoration?)?.color;
+                  currentColor = (spec.decoration as BoxDecoration?)?.color;
                   return Container(
                     key: const Key('test_container'),
-                    width: spec?.constraints?.minWidth,
-                    height: spec?.constraints?.minHeight,
-                    decoration: spec?.decoration,
+                    width: spec.constraints?.minWidth,
+                    height: spec.constraints?.minHeight,
+                    decoration: spec.decoration,
                   );
                 },
               ),

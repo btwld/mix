@@ -117,7 +117,7 @@ class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec> {
   late final MutableFlexBoxMix mutable;
 
   FlexBoxSpecUtility([FlexBoxMix? attribute]) {
-    mutable = MutableFlexBoxMix(attribute ?? const FlexBoxMix());
+    mutable = MutableFlexBoxMix(attribute ?? const FlexBoxMix.create());
   }
 
   FlexBoxMix gap(double v) => mutable.merge(FlexBoxMix.flex(FlexMix(gap: v)));

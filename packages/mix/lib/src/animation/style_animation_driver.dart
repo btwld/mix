@@ -27,8 +27,9 @@ class _SpecToResolvedStyleTween<S extends Spec<S>>
   _SpecToResolvedStyleTween(this._tweenSequence);
 
   @override
-  ResolvedStyle<S> lerp(double t) {
+  ResolvedStyle<S>? lerp(double t) {
     final spec = _tweenSequence.transform(t);
+    if (spec == null) return null;
 
     return ResolvedStyle(spec: spec);
   }

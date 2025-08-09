@@ -24,14 +24,14 @@ class Example extends StatelessWidget {
           .color(Colors.black.withValues(alpha: 0.2))
           .blurRadius(20)
         )
-        .text( 
+        .wrapDefaultTextStyle( 
           .fontSize(16)
           .fontWeight(.bold)
           .color(Colors.white)
+        )
           .wrap(
             .align(alignment: .center)
           )
-        )
         .animate(.spring(300.ms))
     );
 

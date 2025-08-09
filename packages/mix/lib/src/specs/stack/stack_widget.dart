@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../core/style_widget.dart';
 import '../box/box_widget.dart';
+import 'stack_box_attribute.dart';
 import 'stack_box_spec.dart';
 import 'stack_spec.dart';
 
@@ -9,7 +10,11 @@ import 'stack_spec.dart';
 ///
 /// Creates a stacked layout with box styling capabilities.
 class ZBox extends StyleWidget<ZBoxSpec> {
-  const ZBox({super.style, this.children = const <Widget>[], super.key});
+  const ZBox({
+    super.style = const StackBoxMix.create(),
+    this.children = const <Widget>[],
+    super.key,
+  });
 
   final List<Widget> children;
 

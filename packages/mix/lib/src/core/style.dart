@@ -236,14 +236,14 @@ final class VariantStyle<S extends Spec<S>> extends Mixable<S>
 /// Result of Style.resolve() containing fully resolved styling data
 /// Generic type parameter T for the resolved Mix
 class ResolvedStyle<V extends Spec<V>> with Equatable {
-  final V? spec;
+  final V spec;
   final AnimationConfig? animation;
   final List<Modifier>? widgetModifiers;
   final List<Type>? orderOfModifiers;
   final bool? inherit;
 
   const ResolvedStyle({
-    this.spec,
+    required this.spec,
     this.animation,
     this.widgetModifiers,
     this.orderOfModifiers,
@@ -255,14 +255,7 @@ class ResolvedStyle<V extends Spec<V>> with Equatable {
     if (other == null || t == 0.0) return this;
     if (t == 1.0) return other;
 
-    // Handle null specs - if either spec is null, we can't interpolate
-    V? lerpedSpec;
-    if (spec != null && other.spec != null) {
-      lerpedSpec = spec!.lerp(other.spec, t);
-    } else {
-      // Use step function when we can't interpolate
-      lerpedSpec = t < 0.5 ? spec : other.spec;
-    }
+    final lerpedSpec = spec.lerp(other.spec, t);
 
     // For modifiers and animation, use the target (end) values
     // We can't meaningfully interpolate these

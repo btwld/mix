@@ -14,13 +14,13 @@ void main() {
             home: StyleBuilder<BoxSpec>(
               style: boxAttribute,
               builder: (context, spec) {
-                expect(spec?.constraints?.minWidth, 100);
-                expect(spec?.constraints?.maxWidth, 100);
-                expect(spec?.constraints?.minHeight, 200);
-                expect(spec?.constraints?.maxHeight, 200);
+                expect(spec.constraints?.minWidth, 100);
+                expect(spec.constraints?.maxWidth, 100);
+                expect(spec.constraints?.minHeight, 200);
+                expect(spec.constraints?.maxHeight, 200);
                 return Container(
-                  decoration: spec?.decoration,
-                  constraints: spec?.constraints,
+                  decoration: spec.decoration,
+                  constraints: spec.constraints,
                 );
               },
             ),
@@ -59,8 +59,8 @@ void main() {
               style: boxAttribute,
               builder: (context, spec) {
                 return Container(
-                  decoration: spec?.decoration,
-                  constraints: spec?.constraints,
+                  decoration: spec.decoration,
+                  constraints: spec.constraints,
                 );
               },
             ),
@@ -82,8 +82,8 @@ void main() {
               style: boxAttribute,
               builder: (context, spec) {
                 return Container(
-                  decoration: spec?.decoration,
-                  constraints: spec?.constraints,
+                  decoration: spec.decoration,
+                  constraints: spec.constraints,
                 );
               },
             ),
@@ -120,8 +120,8 @@ void main() {
               builder: (context, spec) {
                 return Container(
                   key: const Key('animated_container'),
-                  decoration: spec?.decoration,
-                  constraints: spec?.constraints,
+                  decoration: spec.decoration,
+                  constraints: spec.constraints,
                 );
               },
             ),
@@ -147,8 +147,8 @@ void main() {
               builder: (context, spec) {
                 return Container(
                   key: const Key('animated_container'),
-                  decoration: spec?.decoration,
-                  constraints: spec?.constraints,
+                  decoration: spec.decoration,
+                  constraints: spec.constraints,
                 );
               },
             ),
@@ -202,9 +202,9 @@ void main() {
               style: boxAttribute,
               builder: (context, spec) {
                 return Container(
-                  decoration: spec?.decoration,
-                  constraints: spec?.constraints,
-                  alignment: spec?.alignment,
+                  decoration: spec.decoration,
+                  constraints: spec.constraints,
+                  alignment: spec.alignment,
                 );
               },
             ),
@@ -253,8 +253,8 @@ void main() {
               style: boxAttribute,
               builder: (context, spec) {
                 return Container(
-                  decoration: spec?.decoration,
-                  constraints: spec?.constraints,
+                  decoration: spec.decoration,
+                  constraints: spec.constraints,
                 );
               },
             ),
@@ -327,8 +327,8 @@ void main() {
               style: boxAttribute,
               builder: (context, spec) {
                 return Container(
-                  decoration: spec?.decoration,
-                  constraints: spec?.constraints,
+                  decoration: spec.decoration,
+                  constraints: spec.constraints,
                 );
               },
             ),
@@ -377,8 +377,8 @@ void main() {
               style: boxAttribute,
               builder: (context, spec) {
                 return Container(
-                  decoration: spec?.decoration,
-                  constraints: spec?.constraints,
+                  decoration: spec.decoration,
+                  constraints: spec.constraints,
                 );
               },
             ),

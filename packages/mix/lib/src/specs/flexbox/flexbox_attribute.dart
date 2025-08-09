@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../animation/animation_config.dart';
+import '../../core/helpers.dart';
+import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
@@ -17,7 +19,9 @@ import '../../properties/painting/shadow_mix.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import '../box/box_attribute.dart';
+import '../box/box_spec.dart';
 import '../flex/flex_attribute.dart';
+import '../flex/flex_spec.dart';
 import 'flexbox_spec.dart';
 
 /// Represents the attributes of a [FlexBoxSpec].
@@ -33,12 +37,23 @@ class FlexBoxMix extends Style<FlexBoxSpec>
         StyleModifierMixin<FlexBoxMix, FlexBoxSpec>,
         StyleVariantMixin<FlexBoxMix, FlexBoxSpec>,
         BorderRadiusMixin<FlexBoxMix> {
-  final BoxMix? $box;
-  final FlexMix? $flex;
+  final MixProp<BoxSpec>? $box;
+  final MixProp<FlexSpec>? $flex;
 
-  const FlexBoxMix({
+  FlexBoxMix({
     BoxMix? box,
     FlexMix? flex,
+    super.animation,
+    super.modifier,
+    super.variants,
+
+    super.inherit,
+  }) : $box = MixProp.maybe(box),
+       $flex = MixProp.maybe(flex);
+
+  const FlexBoxMix.create({
+    MixProp<BoxSpec>? box,
+    MixProp<FlexSpec>? flex,
     super.animation,
     super.modifier,
     super.variants,
@@ -480,9 +495,16 @@ class FlexBoxMix extends Style<FlexBoxSpec>
   /// ```
   @override
   FlexBoxSpec resolve(BuildContext context) {
+    final boxSpec = $box?.value is BoxMix 
+        ? ($box!.value as BoxMix).resolve(context) 
+        : null;
+    final flexSpec = $flex?.value is FlexMix 
+        ? ($flex!.value as FlexMix).resolve(context) 
+        : null;
+    
     return FlexBoxSpec(
-      box: $box?.resolve(context),
-      flex: $flex?.resolve(context),
+      box: boxSpec,
+      flex: flexSpec,
     );
   }
 
@@ -498,9 +520,9 @@ class FlexBoxMix extends Style<FlexBoxSpec>
   FlexBoxMix merge(FlexBoxMix? other) {
     if (other == null) return this;
 
-    return FlexBoxMix(
-      box: $box?.merge(other.$box) ?? other.$box,
-      flex: $flex?.merge(other.$flex) ?? other.$flex,
+    return FlexBoxMix.create(
+      box: MixOps.merge($box, other.$box),
+      flex: MixOps.merge($flex, other.$flex),
       animation: other.$animation ?? $animation,
       modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
       variants: mergeVariantLists($variants, other.$variants),

@@ -18,7 +18,9 @@ final chipButtonContainer = Style.box(
     .onHovered(.color(Colors.blue.shade700))
     .onSelected(.color(Colors.black))
     .alignment(.center)
-    .text(chipButtonLabel)
+    .wrap(
+      .defaultText(chipButtonLabel)
+    )
     .animate(.easeInOut(300.ms))
 );
 

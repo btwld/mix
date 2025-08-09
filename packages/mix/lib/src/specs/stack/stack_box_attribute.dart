@@ -2,12 +2,16 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../animation/animation_config.dart';
+import '../../core/helpers.dart';
+import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../variants/variant.dart';
 import '../box/box_attribute.dart';
+import '../box/box_spec.dart';
 import 'stack_attribute.dart';
 import 'stack_box_spec.dart';
+import 'stack_spec.dart';
 
 /// Represents the attributes of a [ZBoxSpec].
 ///
@@ -17,18 +21,30 @@ import 'stack_box_spec.dart';
 /// Use this class to configure the attributes of a [ZBoxSpec] and pass it to
 /// the [ZBoxSpec] constructor.
 class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
-  final BoxMix? box;
-  final StackMix? stack;
+  final MixProp<BoxSpec>? $box;
+  final MixProp<StackSpec>? $stack;
 
-  const StackBoxMix({
-    this.box,
-    this.stack,
+  StackBoxMix({
+    BoxMix? box,
+    StackMix? stack,
     super.modifier,
     super.animation,
     super.variants,
 
     super.inherit,
-  });
+  }) : $box = MixProp.maybe(box),
+       $stack = MixProp.maybe(stack);
+
+  const StackBoxMix.create({
+    MixProp<BoxSpec>? box,
+    MixProp<StackSpec>? stack,
+    super.modifier,
+    super.animation,
+    super.variants,
+
+    super.inherit,
+  }) : $box = box,
+       $stack = stack;
 
   /// Factory for box properties
   factory StackBoxMix.box(BoxMix value) {
@@ -110,7 +126,14 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
   /// ```
   @override
   ZBoxSpec resolve(BuildContext context) {
-    return ZBoxSpec(box: box?.resolve(context), stack: stack?.resolve(context));
+    final boxSpec = $box?.value is BoxMix 
+        ? ($box!.value as BoxMix).resolve(context) 
+        : null;
+    final stackSpec = $stack?.value is StackMix 
+        ? ($stack!.value as StackMix).resolve(context) 
+        : null;
+    
+    return ZBoxSpec(box: boxSpec, stack: stackSpec);
   }
 
   /// Merges the properties of this [StackBoxMix] with the properties of [other].
@@ -125,9 +148,9 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
   StackBoxMix merge(StackBoxMix? other) {
     if (other == null) return this;
 
-    return StackBoxMix(
-      box: box?.merge(other.box) ?? other.box,
-      stack: stack?.merge(other.stack) ?? other.stack,
+    return StackBoxMix.create(
+      box: MixOps.merge($box, other.$box),
+      stack: MixOps.merge($stack, other.$stack),
       modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
       animation: other.$animation ?? $animation,
       variants: mergeVariantLists($variants, other.$variants),
@@ -139,8 +162,8 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('box', box, defaultValue: null));
-    properties.add(DiagnosticsProperty('stack', stack, defaultValue: null));
+    properties.add(DiagnosticsProperty('box', $box, defaultValue: null));
+    properties.add(DiagnosticsProperty('stack', $stack, defaultValue: null));
   }
 
   /// The list of properties that constitute the state of this [StackBoxMix].
@@ -148,7 +171,7 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [StackBoxMix] instances for equality.
   @override
-  List<Object?> get props => [box, stack];
+  List<Object?> get props => [$box, $stack];
 }
 
 /// Utility class for configuring [ZBoxSpec] properties.

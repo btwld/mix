@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/style_widget.dart';
+import 'image_attribute.dart';
 import 'image_spec.dart';
 
 /// A styled image widget using Mix framework.
@@ -9,8 +10,7 @@ import 'image_spec.dart';
 class StyledImage extends StyleWidget<ImageSpec> {
   const StyledImage({
     super.key,
-    super.style,
-
+    super.style = const ImageMix.create(),
     this.frameBuilder,
     this.loadingBuilder,
     this.errorBuilder,

@@ -22,12 +22,12 @@ void main() {
         final attribute = FlexBoxMix(box: boxAttr, flex: flexAttr);
 
         // Verify properties are set
-        expect(attribute.$box, equals(boxAttr));
-        expect(attribute.$flex, equals(flexAttr));
+        expect(attribute.$box?.value, equals(boxAttr));
+        expect(attribute.$flex?.value, equals(flexAttr));
       });
 
       test('creates empty FlexBoxSpecAttribute', () {
-        const attribute = FlexBoxMix();
+        final attribute = FlexBoxMix();
 
         // Verify all properties are null in default state
         expect(attribute.$box, isNull);
@@ -281,7 +281,7 @@ void main() {
 
     group('Animation', () {
       test('animation config can be added to attribute', () {
-        const attribute = FlexBoxMix();
+        final attribute = FlexBoxMix();
         expect(attribute.$animation, isNull); // By default no animation
 
         final withAnimation = FlexBoxMix(
@@ -297,7 +297,7 @@ void main() {
 
     group('Variants', () {
       test('variants functionality exists', () {
-        const attribute = FlexBoxMix();
+        final attribute = FlexBoxMix();
         expect(attribute.$variants, isNull); // By default no variants
 
         final variant = ContextVariant('test', (context) => true);
@@ -357,8 +357,8 @@ void main() {
 
     group('Edge Cases', () {
       test('handles empty merge correctly', () {
-        const empty1 = FlexBoxMix();
-        const empty2 = FlexBoxMix();
+        final empty1 = FlexBoxMix();
+        final empty2 = FlexBoxMix();
 
         final merged = empty1.merge(empty2);
 
@@ -367,7 +367,7 @@ void main() {
       });
 
       test('handles resolution with all null properties', () {
-        const attribute = FlexBoxMix();
+        final attribute = FlexBoxMix();
 
         final context = MockBuildContext();
         final resolved = attribute.resolve(context);
@@ -409,7 +409,7 @@ void main() {
 
   group('FlexBoxSpec', () {
     test('creates FlexBoxSpec with default values', () {
-      const spec = FlexBoxSpec();
+      final spec = FlexBoxSpec();
 
       expect(spec.box, const BoxSpec());
       expect(spec.flex, const FlexSpec());

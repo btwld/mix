@@ -33,12 +33,6 @@ final class StyleProviderModifier<S extends Spec<S>>
   ) {
     if (other == null) return this;
     
-    // Handle cases where specs might be null
-    // If either spec is null, we can't interpolate, so use step function
-    if (resolvedStyle.spec == null || other.resolvedStyle.spec == null) {
-      return t < 0.5 ? this : other;
-    }
-
     // Use the existing lerp implementation from ResolvedStyle
     return StyleProviderModifier(
       resolvedStyle.lerp(other.resolvedStyle, t),

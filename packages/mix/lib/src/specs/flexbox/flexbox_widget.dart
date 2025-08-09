@@ -13,7 +13,7 @@ import 'flexbox_spec.dart';
 /// Applies both box and flex specifications for flexible layouts.
 class FlexBox extends StyleWidget<FlexBoxSpec> {
   const FlexBox({
-    super.style,
+    super.style = const FlexBoxMix.create(),
     super.key,
     required this.direction,
     this.children = const <Widget>[],
@@ -37,9 +37,8 @@ class FlexBox extends StyleWidget<FlexBoxSpec> {
 /// Shorthand for [FlexBox] with [Axis.horizontal].
 class HBox extends FlexBox {
   const HBox({
-    super.style = const FlexBoxMix(),
+    super.style = const FlexBoxMix.create(),
     super.key,
-
     super.children = const <Widget>[],
   }) : super(direction: Axis.horizontal);
 }
@@ -48,8 +47,11 @@ class HBox extends FlexBox {
 ///
 /// Shorthand for [FlexBox] with [Axis.vertical].
 class VBox extends FlexBox {
-  const VBox({super.style, super.key, super.children = const <Widget>[]})
-    : super(direction: Axis.vertical);
+  const VBox({
+    super.style = const FlexBoxMix.create(),
+    super.key,
+    super.children = const <Widget>[],
+  }) : super(direction: Axis.vertical);
 }
 
 /// Creates a [Flex] widget from a [FlexSpec] and required parameters.

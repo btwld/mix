@@ -54,7 +54,7 @@ class PressableBox extends StatelessWidget {
       autofocus: autofocus,
       focusNode: focusNode,
 
-      child: Box(style: style, child: child),
+      child: Box(style: style ?? const BoxMix.create(), child: child),
     );
   }
 }

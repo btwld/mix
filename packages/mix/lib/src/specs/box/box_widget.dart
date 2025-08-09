@@ -1,13 +1,14 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/style_widget.dart';
+import 'box_attribute.dart';
 import 'box_spec.dart';
 
 /// A styled container widget using Mix framework.
 ///
 /// Applies [BoxSpec] styling to create a customized [Container].
 class Box extends StyleWidget<BoxSpec> {
-  const Box({super.style, super.key, this.child});
+  const Box({super.style = const BoxMix.create(), super.key, this.child});
 
   /// Child widget to display inside the box.
   final Widget? child;
