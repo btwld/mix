@@ -27,6 +27,8 @@ export 'src/animation/style_animation_driver.dart';
 
 /// CORE
 export 'src/core/breakpoint.dart';
+export 'src/core/converter_registry.dart';
+export 'src/core/converter_registry_init.dart';
 export 'src/core/directive.dart';
 export 'src/core/extensions/extensions.dart';
 export 'src/core/helpers.dart';

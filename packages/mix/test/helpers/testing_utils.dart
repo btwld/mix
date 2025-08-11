@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-void expectProp<T>(PropBase<T>? prop, dynamic expected) {
+void expectProp<T>(Prop<T>? prop, dynamic expected) {
   if (expected == null || expected == isNull) {
     expect(prop, isNull);
     return;
   }
 
   if (prop == null) {
-    fail('Expected PropBase<$T> to exist, but was null');
+    fail('Expected Prop<$T> to exist, but was null');
   }
 
   // Handle MixProp (no accumulation anymore)
@@ -30,41 +30,31 @@ void expectProp<T>(PropBase<T>? prop, dynamic expected) {
   }
 
   // Handle Prop
-  if (prop is Prop<T>) {
-    final value = prop.$value;
-    final token = prop.$token;
+  final value = prop.$value;
+  final token = prop.$token;
 
-    if (value == null && token == null) {
-      expect(
-        isNull,
-        expected,
-        reason: 'Prop<$T> has no value or token defined',
-      );
-      return;
-    }
-
-    // Handle token expectations
-    if (expected is MixToken<T>) {
-      if (token != null) {
-        expect(
-          token,
-          expected,
-          reason: 'Prop<$T> token does not match expected',
-        );
-      } else {
-        fail('Expected token, but prop has value: $value');
-      }
-      return;
-    }
-
-    // Handle direct value expectations
-    if (token != null) {
-      fail('Expected value, but prop has token: $token');
-    }
-
-    expect(value, expected, reason: 'Prop<$T> value does not match expected');
+  if (value == null && token == null) {
+    expect(isNull, expected, reason: 'Prop<$T> has no value or token defined');
     return;
   }
+
+  // Handle token expectations
+  if (expected is MixToken<T>) {
+    if (token != null) {
+      expect(token, expected, reason: 'Prop<$T> token does not match expected');
+    } else {
+      fail('Expected token, but prop has value: $value');
+    }
+    return;
+  }
+
+  // Handle direct value expectations
+  if (token != null) {
+    fail('Expected value, but prop has token: $token');
+  }
+
+  expect(value, expected, reason: 'Prop<$T> value does not match expected');
+  return;
 
   fail('Unknown prop type: ${prop.runtimeType}');
 }
@@ -99,16 +89,16 @@ class _ResolvesToMatcher<T> extends Matcher {
   @override
   bool matches(dynamic item, Map matchState) {
     // Check if item implements Resolvable (any type)
-    if (item is! Resolvable && item is! PropBase) {
+    if (item is! Resolvable && item is! Prop) {
       matchState['error'] =
-          'Expected Resolvable or PropBase, but got ${item.runtimeType}';
+          'Expected Resolvable or Prop, but got ${item.runtimeType}';
       return false;
     }
 
     try {
       final ctx = context ?? MockBuildContext();
       dynamic resolved;
-      if (item is PropBase) {
+      if (item is Prop) {
         resolved = item.resolveProp(ctx);
       } else {
         resolved = item.resolve(ctx);
@@ -176,12 +166,10 @@ class MockBuildContext extends BuildContext {
   final Set<TokenDefinition>? _tokens;
   final List<Type>? _orderOfModifiers;
   MixScope? _mixScope;
-  
-  MockBuildContext({
-    Set<TokenDefinition>? tokens,
-    List<Type>? orderOfModifiers,
-  }) : _tokens = tokens,
-       _orderOfModifiers = orderOfModifiers {
+
+  MockBuildContext({Set<TokenDefinition>? tokens, List<Type>? orderOfModifiers})
+    : _tokens = tokens,
+      _orderOfModifiers = orderOfModifiers {
     // Create MixScope instance once
     _mixScope = MixScope(
       tokens: _tokens,
@@ -301,9 +289,9 @@ class MockStyle<T> extends Style<MockSpec<T>> {
   @override
   MockStyle<T> merge(covariant MockStyle<T>? other) {
     if (other == null) return this;
-    // For PropBase types (Prop<T> and MixProp<V>), use their merge method
-    if (value is PropBase && other.value is PropBase) {
-      final merged = (value as PropBase).mergeProp(other.value as PropBase);
+    // For Prop types (Prop<T> and MixProp<V>), use their merge method
+    if (value is Prop && other.value is Prop) {
+      final merged = (value as Prop).mergeProp(other.value as Prop);
       return MockStyle(merged as T);
     }
     // For other Mixable types

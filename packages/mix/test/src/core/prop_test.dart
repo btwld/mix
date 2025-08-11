@@ -105,4 +105,80 @@ void main() {
       expect(resolved, equals(42));
     });
   });
+
+  group('Prop no auto-conversion behavior', () {
+    test('Prop.value does NOT auto-convert to Mix', () {
+      // Register converter
+      MixConverterRegistry.instance.register(TextStyleConverter());
+      
+      // Create prop with regular value
+      final prop = Prop.value(const TextStyle(fontSize: 16));
+      
+      // Should be ValueSource, NOT MixSource
+      expect(prop.sources.first, isA<ValueSource<TextStyle>>());
+      expect(prop.sources.first, isNot(isA<MixSource<TextStyle>>()));
+    });
+
+    test('Prop.mix creates MixSource', () {
+      final mix = TextStyleMix(fontSize: 16);
+      final prop = Prop.mix(mix);
+      
+      expect(prop.sources.first, isA<MixSource<TextStyle>>());
+    });
+
+    test('Conversion happens during resolution with Mix values', () {
+      // Register converter
+      MixConverterRegistry.instance.register(TextStyleConverter());
+      
+      final prop1 = Prop.value(const TextStyle(fontSize: 16));
+      final prop2 = Prop.mix(TextStyleMix(color: Colors.red));
+      final merged = prop1.mergeProp(prop2);
+      
+      // Sources are not converted yet
+      expect(merged.sources[0], isA<ValueSource<TextStyle>>());
+      expect(merged.sources[1], isA<MixSource<TextStyle>>());
+      
+      // Conversion happens during resolution
+      final context = MockBuildContext();
+      final resolved = merged.resolveProp(context);
+      expect(resolved.fontSize, 16);
+      expect(resolved.color, Colors.red);
+    });
+    
+    test('No Mix values means no conversion', () {
+      final prop1 = Prop.value(Colors.red);
+      final prop2 = Prop.value(Colors.blue);
+      final merged = prop1.mergeProp(prop2);
+      
+      // No converter should be called
+      final context = MockBuildContext();
+      final resolved = merged.resolveProp(context);
+      expect(resolved, Colors.blue); // Last value wins
+    });
+    
+    test('Mixed regular and Mix values are properly converted and merged', () {
+      // Register converter
+      MixConverterRegistry.instance.register(EdgeInsetsConverter());
+      
+      // Create props with mixed types - simpler test case
+      final prop1 = Prop.value(const EdgeInsets.all(8.0));
+      final prop2 = Prop.mix(EdgeInsetsMix(left: 16.0, top: 20.0));
+      
+      // Merge props
+      final merged = prop1.mergeProp(prop2);
+      
+      // Resolution should convert regular values and merge with Mix
+      final context = MockBuildContext();
+      final resolved = merged.resolveProp(context);
+      
+      // The Mix values should take precedence where specified
+      // prop1 converted: all sides = 8.0
+      // prop2 Mix: left = 16.0, top = 20.0
+      // Merged result takes Mix values where specified
+      expect(resolved.left, 16.0); // from Mix
+      expect(resolved.top, 20.0); // from Mix
+      expect(resolved.right, 8.0); // from converted prop1 
+      expect(resolved.bottom, 8.0); // from converted prop1
+    });
+  });
 }

@@ -8,7 +8,6 @@ import 'package:flutter/widgets.dart' as w;
 import '../modifiers/modifier_config.dart';
 import '../properties/painting/decoration_mix.dart';
 import '../properties/painting/shape_border_mix.dart';
-import '../theme/mix_theme.dart';
 import 'decoration_merge.dart';
 import 'directive.dart';
 import 'internal/deep_collection_equality.dart';
@@ -35,13 +34,13 @@ class MixOps {
 
   const MixOps._();
 
-  static V? resolve<V>(BuildContext context, PropBase<V>? prop) {
+  static V? resolve<V>(BuildContext context, Prop<V>? prop) {
     if (prop == null) return null;
 
     return prop.resolveProp(context);
   }
 
-  static P? merge<P extends PropBase<V>, V>(P? a, P? b) {
+  static P? merge<P extends Prop<V>, V>(P? a, P? b) {
     if (a == null) return b;
     if (b == null) return a;
 
@@ -92,7 +91,7 @@ class MixOps {
     }
   }
 
-  static List<V>? _resolveList<T extends PropBase<V>, V>(
+  static List<V>? _resolveList<T extends Prop<V>, V>(
     BuildContext mix,
     List<T>? a,
   ) {
@@ -218,8 +217,7 @@ T? _lerpValue<T>(T? a, T? b, double t) {
 class PropOps {
   const PropOps._();
 
-  /// Applies directives to a resolved value (internal use)
-  @visibleForTesting
+  /// Applies directives to a resolved value
   static V applyDirectives<V>(V value, List<Directive<V>>? directives) {
     if (directives == null || directives.isEmpty) return value;
 
@@ -231,8 +229,7 @@ class PropOps {
     return result;
   }
 
-  /// Merges two directive lists (internal use)
-  @visibleForTesting
+  /// Merges two directive lists
   static List<Directive<V>>? mergeDirectives<V>(
     List<Directive<V>>? current,
     List<Directive<V>>? other,
@@ -245,89 +242,28 @@ class PropOps {
     };
   }
 
-  /// Merges two Prop instances using replacement strategy
+  /// Merges two Prop instances
   static Prop<V> merge<V>(Prop<V> current, Prop<V>? other) {
-    if (other == null) return current;
-
-    var value = current.$value;
-    var token = current.$token;
-
-    var otherValue = other.$value;
-    var otherToken = other.$token;
-
-    if (otherToken != null) {
-      value = null;
-      token = otherToken;
-    } else if (otherValue != null) {
-      value = otherValue;
-      token = null;
-    }
-
-    // Import Prop from prop.dart to access constructor
-    return Prop(
-      value: value,
-      token: token,
-      directives: mergeDirectives(current.$directives, other.$directives),
-      animation: other.$animation ?? current.$animation,
-    );
+    // Delegate to Prop's own mergeProp method
+    return current.mergeProp(other);
   }
 
   /// Resolves a Prop instance to its final value
   static V resolve<V>(Prop<V> prop, BuildContext context) {
-    if (prop.$token == null && prop.$value == null) {
-      throw FlutterError('Prop<$V> has no value or token defined');
-    }
-
-    V resolvedValue;
-
-    if (prop.$token != null) {
-      resolvedValue = MixScope.tokenOf(prop.$token!, context);
-    } else {
-      resolvedValue = prop.$value as V;
-    }
-
-    return applyDirectives(resolvedValue, prop.$directives);
+    // Delegate to Prop's own resolveProp method
+    return prop.resolveProp(context);
   }
 
-  /// Merges two MixProp instances using accumulation strategy
+  /// Merges two MixProp instances
   static MixProp<V> mergeMix<V>(MixProp<V> current, MixProp<V>? other) {
-    if (other == null) return current;
-
-    final accumulatedSources = [...current.sources, ...other.sources];
-    final mergedSources = consolidateSources(accumulatedSources);
-
-    return MixProp.create(
-      sources: mergedSources,
-      directives: mergeDirectives(current.$directives, other.$directives),
-      animation: other.$animation ?? current.$animation,
-    );
+    // Delegate to MixProp's own mergeProp method
+    return current.mergeProp(other);
   }
 
   /// Resolves a MixProp instance to its final value
   static V resolveMix<V>(MixProp<V> prop, BuildContext context) {
-    if (prop.sources.isEmpty) {
-      throw FlutterError('MixProp<$V> has no sources defined');
-    }
-
-    final mixValues = <Mix<V>>[];
-    for (final source in prop.sources) {
-      final mixValue = switch (source) {
-        MixValueSource<V>(:final value) => value,
-        MixTokenSource<V>(:final token, :final converter) => converter(
-          MixScope.tokenOf(token, context),
-        ),
-      };
-      mixValues.add(mixValue);
-    }
-
-    Mix<V> mergedMix = mixValues.first;
-    for (int i = 1; i < mixValues.length; i++) {
-      mergedMix = mergeMixes(mergedMix, mixValues[i]);
-    }
-
-    final resolvedValue = mergedMix.resolve(context);
-
-    return applyDirectives(resolvedValue, prop.$directives);
+    // Delegate to MixProp's own resolveProp method
+    return prop.resolveProp(context);
   }
 
   /// Merges two Mix instances using appropriate merger
@@ -352,33 +288,34 @@ class PropOps {
     return a.merge(b);
   }
 
-  /// Consolidates consecutive MixValueSource instances (internal use)
-  @visibleForTesting
-  static List<MixSource<V>> consolidateSources<V>(List<MixSource<V>> sources) {
+  /// Consolidates consecutive MixSource instances
+  static List<PropSource<V>> consolidateSources<V>(
+    List<PropSource<V>> sources,
+  ) {
     if (sources.length <= 1) return sources;
 
-    final consolidated = <MixSource<V>>[];
-    MixValueSource<V>? pendingValueSource;
+    final consolidated = <PropSource<V>>[];
+    MixSource<V>? pendingMixSource;
 
     for (final source in sources) {
-      if (source is MixValueSource<V>) {
-        if (pendingValueSource != null) {
-          final mergedMix = mergeMixes(pendingValueSource.value, source.value);
-          pendingValueSource = MixValueSource(mergedMix);
+      if (source is MixSource<V>) {
+        if (pendingMixSource != null) {
+          final mergedMix = mergeMixes(pendingMixSource.mix, source.mix);
+          pendingMixSource = MixSource(mergedMix);
         } else {
-          pendingValueSource = source;
+          pendingMixSource = source;
         }
       } else {
-        if (pendingValueSource != null) {
-          consolidated.add(pendingValueSource);
-          pendingValueSource = null;
+        if (pendingMixSource != null) {
+          consolidated.add(pendingMixSource);
+          pendingMixSource = null;
         }
         consolidated.add(source);
       }
     }
 
-    if (pendingValueSource != null) {
-      consolidated.add(pendingValueSource);
+    if (pendingMixSource != null) {
+      consolidated.add(pendingMixSource);
     }
 
     return consolidated;

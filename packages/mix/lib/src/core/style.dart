@@ -51,8 +51,8 @@ abstract class Style<S extends Spec<S>> extends Mix<S> implements StyleElement {
   static ImageMix image(ImageMix value) => value;
   static StackMix stack(StackMix value) => value;
   static FlexMix flex(FlexMix value) => value;
-  static FlexBoxMix flexBox(FlexBoxMix value) => value;
-  static StackBoxMix stackBox(StackBoxMix value) => value;
+  static FlexBoxMix flexbox(FlexBoxMix value) => value;
+  static StackBoxMix stackbox(StackBoxMix value) => value;
 
   @internal
   Set<WidgetState> get widgetStates {

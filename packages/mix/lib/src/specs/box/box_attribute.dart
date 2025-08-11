@@ -175,7 +175,6 @@ class BoxMix extends Style<BoxSpec>
     super.variants,
     super.modifier,
     super.animation,
-
     super.inherit,
   }) : $alignment = alignment,
        $padding = padding,
