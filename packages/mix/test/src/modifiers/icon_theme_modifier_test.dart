@@ -95,9 +95,9 @@ void main() {
           opacity: opacity,
         );
 
-        expect(attribute.color?.$value, color);
-        expect(attribute.size?.$value, size);
-        expect(attribute.opacity?.$value, opacity);
+        expect(attribute.color, resolvesTo(color));
+        expect(attribute.size, resolvesTo(size));
+        expect(attribute.opacity, resolvesTo(opacity));
       });
     });
 
@@ -133,9 +133,9 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.color?.$value, const Color(0xFF0000FF));
-        expect(merged.size?.$value, 24.0);
-        expect(merged.opacity?.$value, 0.8);
+        expect(merged.color, resolvesTo(const Color(0xFF0000FF)));
+        expect(merged.size, resolvesTo(24.0));
+        expect(merged.opacity, resolvesTo(0.8));
       });
 
       test('handles null other parameter', () {
@@ -173,9 +173,9 @@ void main() {
       );
       final attr =
           result.$modifier!.$modifiers!.first as IconThemeModifierMix;
-      expect(attr.color?.$value, color);
-      expect(attr.size?.$value, size);
-      expect(attr.opacity?.$value, opacity);
+      expect(attr.color, resolvesTo(color));
+      expect(attr.size, resolvesTo(size));
+      expect(attr.opacity, resolvesTo(opacity));
     });
 
     test('color convenience method works', () {
@@ -188,7 +188,7 @@ void main() {
       );
       final attr =
           result.$modifier!.$modifiers!.first as IconThemeModifierMix;
-      expect(attr.color?.$value, color);
+      expect(attr.color, resolvesTo(color));
     });
 
     test('size convenience method works', () {
@@ -201,7 +201,7 @@ void main() {
       );
       final attr =
           result.$modifier!.$modifiers!.first as IconThemeModifierMix;
-      expect(attr.size?.$value, size);
+      expect(attr.size, resolvesTo(size));
     });
 
     test('opacity convenience method works', () {
@@ -214,7 +214,7 @@ void main() {
       );
       final attr =
           result.$modifier!.$modifiers!.first as IconThemeModifierMix;
-      expect(attr.opacity?.$value, opacity);
+      expect(attr.opacity, resolvesTo(opacity));
     });
   });
 

@@ -21,8 +21,8 @@ void main() {
         );
 
         expect(attribute.$direction!, resolvesTo(Axis.horizontal));
-        expectProp(attribute.$mainAxisAlignment, MainAxisAlignment.center);
-        expectProp(attribute.$crossAxisAlignment, CrossAxisAlignment.stretch);
+        expect(attribute.$mainAxisAlignment, resolvesTo(MainAxisAlignment.center));
+        expect(attribute.$crossAxisAlignment, resolvesTo(CrossAxisAlignment.stretch));
         expect(attribute.$mainAxisSize!, resolvesTo(MainAxisSize.max));
         expect(
           attribute.$verticalDirection!,
@@ -64,8 +64,8 @@ void main() {
         );
 
         expect(attribute.$direction, resolvesTo(Axis.vertical));
-        expectProp(attribute.$mainAxisAlignment, MainAxisAlignment.spaceEvenly);
-        expectProp(attribute.$crossAxisAlignment, CrossAxisAlignment.center);
+        expect(attribute.$mainAxisAlignment, resolvesTo(MainAxisAlignment.spaceEvenly));
+        expect(attribute.$crossAxisAlignment, resolvesTo(CrossAxisAlignment.center));
         expect(attribute.$mainAxisSize, resolvesTo(MainAxisSize.min));
         expect(attribute.$verticalDirection, resolvesTo(VerticalDirection.up));
         expect(attribute.$textDirection, resolvesTo(TextDirection.rtl));
@@ -106,8 +106,8 @@ void main() {
         final attribute = FlexMix.value(spec);
 
         expect(attribute.$direction, resolvesTo(Axis.horizontal));
-        expectProp(attribute.$mainAxisAlignment, MainAxisAlignment.center);
-        expectProp(attribute.$crossAxisAlignment, CrossAxisAlignment.stretch);
+        expect(attribute.$mainAxisAlignment, resolvesTo(MainAxisAlignment.center));
+        expect(attribute.$crossAxisAlignment, resolvesTo(CrossAxisAlignment.stretch));
         expect(attribute.$mainAxisSize, resolvesTo(MainAxisSize.max));
         expect(
           attribute.$verticalDirection,
@@ -147,7 +147,7 @@ void main() {
           MainAxisAlignment.spaceAround,
         );
 
-        expectProp(attribute.$mainAxisAlignment, MainAxisAlignment.spaceAround);
+        expect(attribute.$mainAxisAlignment, resolvesTo(MainAxisAlignment.spaceAround));
       });
 
       test('crossAxisAlignment utility works correctly', () {
@@ -208,8 +208,8 @@ void main() {
 
         // All properties should be set when chaining
         expect(chained.$direction, resolvesTo(Axis.horizontal));
-        expectProp(chained.$mainAxisAlignment, MainAxisAlignment.spaceBetween);
-        expectProp(chained.$crossAxisAlignment, CrossAxisAlignment.center);
+        expect(chained.$mainAxisAlignment, resolvesTo(MainAxisAlignment.spaceBetween));
+        expect(chained.$crossAxisAlignment, resolvesTo(CrossAxisAlignment.center));
         expect(chained.$gap, resolvesTo(16.0));
       });
 
@@ -228,8 +228,8 @@ void main() {
         final combined = first.merge(second);
 
         expect(combined.$direction, resolvesTo(Axis.horizontal));
-        expectProp(combined.$mainAxisAlignment, MainAxisAlignment.start);
-        expectProp(combined.$crossAxisAlignment, CrossAxisAlignment.center);
+        expect(combined.$mainAxisAlignment, resolvesTo(MainAxisAlignment.start));
+        expect(combined.$crossAxisAlignment, resolvesTo(CrossAxisAlignment.center));
         expect(combined.$gap, resolvesTo(16.0));
       });
     });
@@ -341,13 +341,13 @@ void main() {
           merged.$direction,
           resolvesTo(Axis.vertical),
         ); // second overrides
-        expectProp(
+        expect(
           merged.$mainAxisAlignment,
-          MainAxisAlignment.start,
+          resolvesTo(MainAxisAlignment.start),
         ); // from first
-        expectProp(
+        expect(
           merged.$crossAxisAlignment,
-          CrossAxisAlignment.center,
+          resolvesTo(CrossAxisAlignment.center),
         ); // from second
         expect(
           merged.$mainAxisSize,
@@ -385,26 +385,26 @@ void main() {
           merged.$direction,
           resolvesTo(Axis.vertical),
         ); // second overrides
-        expectProp(
+        expect(
           merged.$mainAxisAlignment,
-          MainAxisAlignment.end,
+          resolvesTo(MainAxisAlignment.end),
         ); // second overrides
-        expectProp(
+        expect(
           merged.$crossAxisAlignment,
-          CrossAxisAlignment.start,
+          resolvesTo(CrossAxisAlignment.start),
         ); // from first
         expect(
           merged.$mainAxisSize,
           resolvesTo(MainAxisSize.max),
         ); // from first
-        expectProp(
+        expect(
           merged.$verticalDirection,
-          VerticalDirection.down,
+          resolvesTo(VerticalDirection.down),
         ); // from first
-        expectProp(merged.$textDirection, TextDirection.rtl); // from second
-        expectProp(
+        expect(merged.$textDirection, resolvesTo(TextDirection.rtl)); // from second
+        expect(
           merged.$textBaseline,
-          TextBaseline.ideographic,
+          resolvesTo(TextBaseline.ideographic),
         ); // from second
         expect(merged.$clipBehavior, resolvesTo(Clip.hardEdge)); // from second
         expect(merged.$gap, resolvesTo(20.0)); // from second

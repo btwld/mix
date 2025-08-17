@@ -16,37 +16,43 @@ void main() {
           stops: const [0.0, 1.0],
         );
 
-        expectProp(linearGradientMix.$begin, Alignment.topLeft);
-        expectProp(linearGradientMix.$end, Alignment.bottomRight);
-        expectProp(linearGradientMix.$tileMode, TileMode.repeated);
+        expect(linearGradientMix.$begin, resolvesTo(Alignment.topLeft));
+        expect(linearGradientMix.$end, resolvesTo(Alignment.bottomRight));
+        expect(linearGradientMix.$tileMode, resolvesTo(TileMode.repeated));
         expect(linearGradientMix.$colors, hasLength(2));
-        expectProp(linearGradientMix.$colors![0], Colors.red);
-        expectProp(linearGradientMix.$colors![1], Colors.blue);
+        expect(linearGradientMix.$colors![0], resolvesTo(Colors.red));
+        expect(linearGradientMix.$colors![1], resolvesTo(Colors.blue));
         expect(linearGradientMix.$stops, hasLength(2));
-        expectProp(linearGradientMix.$stops![0], 0.0);
-        expectProp(linearGradientMix.$stops![1], 1.0);
+        expect(linearGradientMix.$stops![0], resolvesTo(0.0));
+        expect(linearGradientMix.$stops![1], resolvesTo(1.0));
       });
 
-      test('value constructor extracts properties from LinearGradient', () {
+      test('value constructor extracts all properties from LinearGradient', () {
         const linearGradient = LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Colors.green, Colors.yellow],
-          stops: [0.2, 0.8],
+          colors: [Colors.green, Colors.yellow, Colors.red],
+          stops: [0.0, 0.5, 1.0],
           tileMode: TileMode.clamp,
+          transform: GradientRotation(0.25),
         );
 
         final linearGradientMix = LinearGradientMix.value(linearGradient);
 
-        expectProp(linearGradientMix.$begin, Alignment.topCenter);
-        expectProp(linearGradientMix.$end, Alignment.bottomCenter);
-        expectProp(linearGradientMix.$tileMode, TileMode.clamp);
-        expect(linearGradientMix.$colors, hasLength(2));
-        expectProp(linearGradientMix.$colors![0], Colors.green);
-        expectProp(linearGradientMix.$colors![1], Colors.yellow);
-        expect(linearGradientMix.$stops, hasLength(2));
-        expectProp(linearGradientMix.$stops![0], 0.2);
-        expectProp(linearGradientMix.$stops![1], 0.8);
+        expect(linearGradientMix.$begin, resolvesTo(Alignment.topCenter));
+        expect(linearGradientMix.$end, resolvesTo(Alignment.bottomCenter));
+        expect(linearGradientMix.$tileMode, resolvesTo(TileMode.clamp));
+        expect(linearGradientMix.$transform, resolvesTo(const GradientRotation(0.25)));
+        
+        expect(linearGradientMix.$colors, hasLength(3));
+        expect(linearGradientMix.$colors![0], resolvesTo(Colors.green));
+        expect(linearGradientMix.$colors![1], resolvesTo(Colors.yellow));
+        expect(linearGradientMix.$colors![2], resolvesTo(Colors.red));
+        
+        expect(linearGradientMix.$stops, hasLength(3));
+        expect(linearGradientMix.$stops![0], resolvesTo(0.0));
+        expect(linearGradientMix.$stops![1], resolvesTo(0.5));
+        expect(linearGradientMix.$stops![2], resolvesTo(1.0));
       });
 
       test('maybeValue returns null for null input', () {
@@ -69,7 +75,7 @@ void main() {
       test('begin factory creates LinearGradientMix with begin', () {
         final gradientMix = LinearGradientMix.begin(Alignment.centerLeft);
 
-        expectProp(gradientMix.$begin, Alignment.centerLeft);
+        expect(gradientMix.$begin, resolvesTo(Alignment.centerLeft));
         expect(gradientMix.$end, isNull);
         expect(gradientMix.$tileMode, isNull);
         expect(gradientMix.$transform, isNull);
@@ -80,7 +86,7 @@ void main() {
       test('end factory creates LinearGradientMix with end', () {
         final gradientMix = LinearGradientMix.end(Alignment.centerRight);
 
-        expectProp(gradientMix.$end, Alignment.centerRight);
+        expect(gradientMix.$end, resolvesTo(Alignment.centerRight));
         expect(gradientMix.$begin, isNull);
         expect(gradientMix.$tileMode, isNull);
         expect(gradientMix.$transform, isNull);
@@ -91,7 +97,7 @@ void main() {
       test('tileMode factory creates LinearGradientMix with tileMode', () {
         final gradientMix = LinearGradientMix.tileMode(TileMode.mirror);
 
-        expectProp(gradientMix.$tileMode, TileMode.mirror);
+        expect(gradientMix.$tileMode, resolvesTo(TileMode.mirror));
         expect(gradientMix.$begin, isNull);
         expect(gradientMix.$end, isNull);
         expect(gradientMix.$transform, isNull);
@@ -103,7 +109,7 @@ void main() {
         const transform = GradientRotation(1.0);
         final gradientMix = LinearGradientMix.transform(transform);
 
-        expectProp(gradientMix.$transform, transform);
+        expect(gradientMix.$transform, resolvesTo(transform));
         expect(gradientMix.$begin, isNull);
         expect(gradientMix.$end, isNull);
         expect(gradientMix.$tileMode, isNull);
@@ -140,26 +146,26 @@ void main() {
       test('begin utility works correctly', () {
         final gradientMix = LinearGradientMix().begin(Alignment.topLeft);
 
-        expectProp(gradientMix.$begin, Alignment.topLeft);
+        expect(gradientMix.$begin, resolvesTo(Alignment.topLeft));
       });
 
       test('end utility works correctly', () {
         final gradientMix = LinearGradientMix().end(Alignment.bottomRight);
 
-        expectProp(gradientMix.$end, Alignment.bottomRight);
+        expect(gradientMix.$end, resolvesTo(Alignment.bottomRight));
       });
 
       test('tileMode utility works correctly', () {
         final gradientMix = LinearGradientMix().tileMode(TileMode.repeated);
 
-        expectProp(gradientMix.$tileMode, TileMode.repeated);
+        expect(gradientMix.$tileMode, resolvesTo(TileMode.repeated));
       });
 
       test('transform utility works correctly', () {
         const transform = GradientRotation(0.25);
         final gradientMix = LinearGradientMix().transform(transform);
 
-        expectProp(gradientMix.$transform, transform);
+        expect(gradientMix.$transform, resolvesTo(transform));
       });
 
       test('colors utility works correctly', () {
@@ -236,12 +242,12 @@ void main() {
 
         final merged = first.merge(second);
 
-        expectProp(merged.$begin, Alignment.topLeft);
-        expectProp(merged.$end, Alignment.bottomRight);
-        expectProp(merged.$tileMode, TileMode.repeated);
+        expect(merged.$begin, resolvesTo(Alignment.topLeft));
+        expect(merged.$end, resolvesTo(Alignment.bottomRight));
+        expect(merged.$tileMode, resolvesTo(TileMode.repeated));
         expect(merged.$colors, hasLength(2));
-        expectProp(merged.$colors![0], Colors.green);
-        expectProp(merged.$colors![1], Colors.yellow);
+        expect(merged.$colors![0], resolvesTo(Colors.green));
+        expect(merged.$colors![1], resolvesTo(Colors.yellow));
       });
     });
 
@@ -313,27 +319,43 @@ void main() {
           stops: const [0.0, 1.0],
         );
 
-        expectProp(radialGradientMix.$center, Alignment.center);
-        expectProp(radialGradientMix.$radius, 0.5);
-        expectProp(radialGradientMix.$tileMode, TileMode.mirror);
+        expect(radialGradientMix.$center, resolvesTo(Alignment.center));
+        expect(radialGradientMix.$radius, resolvesTo(0.5));
+        expect(radialGradientMix.$tileMode, resolvesTo(TileMode.mirror));
         expect(radialGradientMix.$colors, hasLength(2));
         expect(radialGradientMix.$stops, hasLength(2));
       });
 
-      test('value constructor extracts properties from RadialGradient', () {
+      test('value constructor extracts all properties from RadialGradient', () {
         const radialGradient = RadialGradient(
           center: Alignment.topLeft,
           radius: 0.8,
-          colors: [Colors.purple, Colors.orange],
+          colors: [Colors.purple, Colors.orange, Colors.cyan],
+          stops: [0.1, 0.6, 0.9],
           tileMode: TileMode.repeated,
+          focal: Alignment.bottomRight,
+          focalRadius: 0.3,
+          transform: GradientRotation(1.5),
         );
 
         final radialGradientMix = RadialGradientMix.value(radialGradient);
 
-        expectProp(radialGradientMix.$center, Alignment.topLeft);
-        expectProp(radialGradientMix.$radius, 0.8);
-        expectProp(radialGradientMix.$tileMode, TileMode.repeated);
-        expect(radialGradientMix.$colors, hasLength(2));
+        expect(radialGradientMix.$center, resolvesTo(Alignment.topLeft));
+        expect(radialGradientMix.$radius, resolvesTo(0.8));
+        expect(radialGradientMix.$tileMode, resolvesTo(TileMode.repeated));
+        expect(radialGradientMix.$focal, resolvesTo(Alignment.bottomRight));
+        expect(radialGradientMix.$focalRadius, resolvesTo(0.3));
+        expect(radialGradientMix.$transform, resolvesTo(const GradientRotation(1.5)));
+        
+        expect(radialGradientMix.$colors, hasLength(3));
+        expect(radialGradientMix.$colors![0], resolvesTo(Colors.purple));
+        expect(radialGradientMix.$colors![1], resolvesTo(Colors.orange));
+        expect(radialGradientMix.$colors![2], resolvesTo(Colors.cyan));
+        
+        expect(radialGradientMix.$stops, hasLength(3));
+        expect(radialGradientMix.$stops![0], resolvesTo(0.1));
+        expect(radialGradientMix.$stops![1], resolvesTo(0.6));
+        expect(radialGradientMix.$stops![2], resolvesTo(0.9));
       });
 
       test('maybeValue returns null for null input', () {
@@ -356,7 +378,7 @@ void main() {
       test('center factory creates RadialGradientMix with center', () {
         final gradientMix = RadialGradientMix.center(Alignment.topLeft);
 
-        expectProp(gradientMix.$center, Alignment.topLeft);
+        expect(gradientMix.$center, resolvesTo(Alignment.topLeft));
         expect(gradientMix.$radius, isNull);
         expect(gradientMix.$tileMode, isNull);
         expect(gradientMix.$focal, isNull);
@@ -369,7 +391,7 @@ void main() {
       test('radius factory creates RadialGradientMix with radius', () {
         final gradientMix = RadialGradientMix.radius(0.8);
 
-        expectProp(gradientMix.$radius, 0.8);
+        expect(gradientMix.$radius, resolvesTo(0.8));
         expect(gradientMix.$center, isNull);
         expect(gradientMix.$tileMode, isNull);
         expect(gradientMix.$focal, isNull);
@@ -382,7 +404,7 @@ void main() {
       test('tileMode factory creates RadialGradientMix with tileMode', () {
         final gradientMix = RadialGradientMix.tileMode(TileMode.mirror);
 
-        expectProp(gradientMix.$tileMode, TileMode.mirror);
+        expect(gradientMix.$tileMode, resolvesTo(TileMode.mirror));
         expect(gradientMix.$center, isNull);
         expect(gradientMix.$radius, isNull);
         expect(gradientMix.$focal, isNull);
@@ -395,7 +417,7 @@ void main() {
       test('focal factory creates RadialGradientMix with focal', () {
         final gradientMix = RadialGradientMix.focal(Alignment.bottomRight);
 
-        expectProp(gradientMix.$focal, Alignment.bottomRight);
+        expect(gradientMix.$focal, resolvesTo(Alignment.bottomRight));
         expect(gradientMix.$center, isNull);
         expect(gradientMix.$radius, isNull);
         expect(gradientMix.$tileMode, isNull);
@@ -410,7 +432,7 @@ void main() {
         () {
           final gradientMix = RadialGradientMix.focalRadius(0.3);
 
-          expectProp(gradientMix.$focalRadius, 0.3);
+          expect(gradientMix.$focalRadius, resolvesTo(0.3));
           expect(gradientMix.$center, isNull);
           expect(gradientMix.$radius, isNull);
           expect(gradientMix.$tileMode, isNull);
@@ -425,7 +447,7 @@ void main() {
         const transform = GradientRotation(1.5);
         final gradientMix = RadialGradientMix.transform(transform);
 
-        expectProp(gradientMix.$transform, transform);
+        expect(gradientMix.$transform, resolvesTo(transform));
         expect(gradientMix.$center, isNull);
         expect(gradientMix.$radius, isNull);
         expect(gradientMix.$tileMode, isNull);
@@ -468,38 +490,38 @@ void main() {
       test('center utility works correctly', () {
         final gradientMix = RadialGradientMix().center(Alignment.topLeft);
 
-        expectProp(gradientMix.$center, Alignment.topLeft);
+        expect(gradientMix.$center, resolvesTo(Alignment.topLeft));
       });
 
       test('radius utility works correctly', () {
         final gradientMix = RadialGradientMix().radius(0.6);
 
-        expectProp(gradientMix.$radius, 0.6);
+        expect(gradientMix.$radius, resolvesTo(0.6));
       });
 
       test('tileMode utility works correctly', () {
         final gradientMix = RadialGradientMix().tileMode(TileMode.repeated);
 
-        expectProp(gradientMix.$tileMode, TileMode.repeated);
+        expect(gradientMix.$tileMode, resolvesTo(TileMode.repeated));
       });
 
       test('focal utility works correctly', () {
         final gradientMix = RadialGradientMix().focal(Alignment.centerRight);
 
-        expectProp(gradientMix.$focal, Alignment.centerRight);
+        expect(gradientMix.$focal, resolvesTo(Alignment.centerRight));
       });
 
       test('focalRadius utility works correctly', () {
         final gradientMix = RadialGradientMix().focalRadius(0.4);
 
-        expectProp(gradientMix.$focalRadius, 0.4);
+        expect(gradientMix.$focalRadius, resolvesTo(0.4));
       });
 
       test('transform utility works correctly', () {
         const transform = GradientRotation(0.75);
         final gradientMix = RadialGradientMix().transform(transform);
 
-        expectProp(gradientMix.$transform, transform);
+        expect(gradientMix.$transform, resolvesTo(transform));
       });
 
       test('colors utility works correctly', () {
@@ -549,11 +571,11 @@ void main() {
 
         final merged = first.merge(second);
 
-        expectProp(merged.$center, Alignment.center);
-        expectProp(merged.$radius, 0.8);
+        expect(merged.$center, resolvesTo(Alignment.center));
+        expect(merged.$radius, resolvesTo(0.8));
         expect(merged.$colors, hasLength(2));
-        expectProp(merged.$colors![0], Colors.green);
-        expectProp(merged.$colors![1], Colors.yellow);
+        expect(merged.$colors![0], resolvesTo(Colors.green));
+        expect(merged.$colors![1], resolvesTo(Colors.yellow));
       });
     });
 
@@ -602,27 +624,41 @@ void main() {
           colors: const [Colors.red, Colors.blue],
         );
 
-        expectProp(sweepGradientMix.$center, Alignment.center);
-        expectProp(sweepGradientMix.$startAngle, 0.0);
-        expectProp(sweepGradientMix.$endAngle, 3.14159);
-        expectProp(sweepGradientMix.$tileMode, TileMode.mirror);
+        expect(sweepGradientMix.$center, resolvesTo(Alignment.center));
+        expect(sweepGradientMix.$startAngle, resolvesTo(0.0));
+        expect(sweepGradientMix.$endAngle, resolvesTo(3.14159));
+        expect(sweepGradientMix.$tileMode, resolvesTo(TileMode.mirror));
         expect(sweepGradientMix.$colors, hasLength(2));
       });
 
-      test('value constructor extracts properties from SweepGradient', () {
+      test('value constructor extracts all properties from SweepGradient', () {
         const sweepGradient = SweepGradient(
           center: Alignment.topRight,
           startAngle: 1.0,
           endAngle: 2.0,
-          colors: [Colors.cyan, Colors.pink],
+          colors: [Colors.cyan, Colors.pink, Colors.lime],
+          stops: [0.2, 0.7, 1.0],
+          tileMode: TileMode.decal,
+          transform: GradientRotation(0.75),
         );
 
         final sweepGradientMix = SweepGradientMix.value(sweepGradient);
 
-        expectProp(sweepGradientMix.$center, Alignment.topRight);
-        expectProp(sweepGradientMix.$startAngle, 1.0);
-        expectProp(sweepGradientMix.$endAngle, 2.0);
-        expect(sweepGradientMix.$colors, hasLength(2));
+        expect(sweepGradientMix.$center, resolvesTo(Alignment.topRight));
+        expect(sweepGradientMix.$startAngle, resolvesTo(1.0));
+        expect(sweepGradientMix.$endAngle, resolvesTo(2.0));
+        expect(sweepGradientMix.$tileMode, resolvesTo(TileMode.decal));
+        expect(sweepGradientMix.$transform, resolvesTo(const GradientRotation(0.75)));
+        
+        expect(sweepGradientMix.$colors, hasLength(3));
+        expect(sweepGradientMix.$colors![0], resolvesTo(Colors.cyan));
+        expect(sweepGradientMix.$colors![1], resolvesTo(Colors.pink));
+        expect(sweepGradientMix.$colors![2], resolvesTo(Colors.lime));
+        
+        expect(sweepGradientMix.$stops, hasLength(3));
+        expect(sweepGradientMix.$stops![0], resolvesTo(0.2));
+        expect(sweepGradientMix.$stops![1], resolvesTo(0.7));
+        expect(sweepGradientMix.$stops![2], resolvesTo(1.0));
       });
 
       test('maybeValue returns null for null input', () {
@@ -643,7 +679,7 @@ void main() {
       test('center factory creates SweepGradientMix with center', () {
         final gradientMix = SweepGradientMix.center(Alignment.topLeft);
 
-        expectProp(gradientMix.$center, Alignment.topLeft);
+        expect(gradientMix.$center, resolvesTo(Alignment.topLeft));
         expect(gradientMix.$startAngle, isNull);
         expect(gradientMix.$endAngle, isNull);
         expect(gradientMix.$tileMode, isNull);
@@ -655,7 +691,7 @@ void main() {
       test('startAngle factory creates SweepGradientMix with startAngle', () {
         final gradientMix = SweepGradientMix.startAngle(1.5);
 
-        expectProp(gradientMix.$startAngle, 1.5);
+        expect(gradientMix.$startAngle, resolvesTo(1.5));
         expect(gradientMix.$center, isNull);
         expect(gradientMix.$endAngle, isNull);
         expect(gradientMix.$tileMode, isNull);
@@ -667,7 +703,7 @@ void main() {
       test('endAngle factory creates SweepGradientMix with endAngle', () {
         final gradientMix = SweepGradientMix.endAngle(2.5);
 
-        expectProp(gradientMix.$endAngle, 2.5);
+        expect(gradientMix.$endAngle, resolvesTo(2.5));
         expect(gradientMix.$center, isNull);
         expect(gradientMix.$startAngle, isNull);
         expect(gradientMix.$tileMode, isNull);
@@ -679,7 +715,7 @@ void main() {
       test('tileMode factory creates SweepGradientMix with tileMode', () {
         final gradientMix = SweepGradientMix.tileMode(TileMode.mirror);
 
-        expectProp(gradientMix.$tileMode, TileMode.mirror);
+        expect(gradientMix.$tileMode, resolvesTo(TileMode.mirror));
         expect(gradientMix.$center, isNull);
         expect(gradientMix.$startAngle, isNull);
         expect(gradientMix.$endAngle, isNull);
@@ -692,7 +728,7 @@ void main() {
         const transform = GradientRotation(2.0);
         final gradientMix = SweepGradientMix.transform(transform);
 
-        expectProp(gradientMix.$transform, transform);
+        expect(gradientMix.$transform, resolvesTo(transform));
         expect(gradientMix.$center, isNull);
         expect(gradientMix.$startAngle, isNull);
         expect(gradientMix.$endAngle, isNull);
@@ -732,32 +768,32 @@ void main() {
       test('center utility works correctly', () {
         final gradientMix = SweepGradientMix().center(Alignment.topLeft);
 
-        expectProp(gradientMix.$center, Alignment.topLeft);
+        expect(gradientMix.$center, resolvesTo(Alignment.topLeft));
       });
 
       test('startAngle utility works correctly', () {
         final gradientMix = SweepGradientMix().startAngle(0.5);
 
-        expectProp(gradientMix.$startAngle, 0.5);
+        expect(gradientMix.$startAngle, resolvesTo(0.5));
       });
 
       test('endAngle utility works correctly', () {
         final gradientMix = SweepGradientMix().endAngle(3.0);
 
-        expectProp(gradientMix.$endAngle, 3.0);
+        expect(gradientMix.$endAngle, resolvesTo(3.0));
       });
 
       test('tileMode utility works correctly', () {
         final gradientMix = SweepGradientMix().tileMode(TileMode.repeated);
 
-        expectProp(gradientMix.$tileMode, TileMode.repeated);
+        expect(gradientMix.$tileMode, resolvesTo(TileMode.repeated));
       });
 
       test('transform utility works correctly', () {
         const transform = GradientRotation(1.25);
         final gradientMix = SweepGradientMix().transform(transform);
 
-        expectProp(gradientMix.$transform, transform);
+        expect(gradientMix.$transform, resolvesTo(transform));
       });
 
       test('colors utility works correctly', () {
@@ -810,12 +846,12 @@ void main() {
 
         final merged = first.merge(second);
 
-        expectProp(merged.$center, Alignment.center);
-        expectProp(merged.$startAngle, 0.0);
-        expectProp(merged.$endAngle, 3.14159);
+        expect(merged.$center, resolvesTo(Alignment.center));
+        expect(merged.$startAngle, resolvesTo(0.0));
+        expect(merged.$endAngle, resolvesTo(3.14159));
         expect(merged.$colors, hasLength(2));
-        expectProp(merged.$colors![0], Colors.green);
-        expectProp(merged.$colors![1], Colors.yellow);
+        expect(merged.$colors![0], resolvesTo(Colors.green));
+        expect(merged.$colors![1], resolvesTo(Colors.yellow));
       });
     });
 

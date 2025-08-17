@@ -37,8 +37,8 @@ class FlexBoxMix extends Style<FlexBoxSpec>
         StyleModifierMixin<FlexBoxMix, FlexBoxSpec>,
         StyleVariantMixin<FlexBoxMix, FlexBoxSpec>,
         BorderRadiusMixin<FlexBoxMix> {
-  final MixProp<BoxSpec>? $box;
-  final MixProp<FlexSpec>? $flex;
+  final Prop<BoxSpec>? $box;
+  final Prop<FlexSpec>? $flex;
 
   FlexBoxMix({
     BoxMix? box,
@@ -48,12 +48,12 @@ class FlexBoxMix extends Style<FlexBoxSpec>
     super.variants,
 
     super.inherit,
-  }) : $box = MixProp.maybe(box),
-       $flex = MixProp.maybe(flex);
+  }) : $box = Prop.maybeMix(box),
+       $flex = Prop.maybeMix(flex);
 
   const FlexBoxMix.create({
-    MixProp<BoxSpec>? box,
-    MixProp<FlexSpec>? flex,
+    Prop<BoxSpec>? box,
+    Prop<FlexSpec>? flex,
     super.animation,
     super.modifier,
     super.variants,
@@ -495,17 +495,10 @@ class FlexBoxMix extends Style<FlexBoxSpec>
   /// ```
   @override
   FlexBoxSpec resolve(BuildContext context) {
-    final boxSpec = $box?.value is BoxMix 
-        ? ($box!.value as BoxMix).resolve(context) 
-        : null;
-    final flexSpec = $flex?.value is FlexMix 
-        ? ($flex!.value as FlexMix).resolve(context) 
-        : null;
-    
-    return FlexBoxSpec(
-      box: boxSpec,
-      flex: flexSpec,
-    );
+    final boxSpec = MixOps.resolve(context, $box);
+    final flexSpec = MixOps.resolve(context, $flex);
+
+    return FlexBoxSpec(box: boxSpec, flex: flexSpec);
   }
 
   /// Merges the properties of this [FlexBoxMix] with the properties of [other].

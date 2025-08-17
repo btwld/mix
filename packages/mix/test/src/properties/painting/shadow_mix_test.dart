@@ -14,9 +14,9 @@ void main() {
           offset: const Offset(5.0, 8.0),
         );
 
-        expectProp(shadowMix.$blurRadius, 10.0);
-        expectProp(shadowMix.$color, Colors.blue);
-        expectProp(shadowMix.$offset, const Offset(5.0, 8.0));
+        expect(shadowMix.$blurRadius, resolvesTo(10.0));
+        expect(shadowMix.$color, resolvesTo(Colors.blue));
+        expect(shadowMix.$offset, resolvesTo(const Offset(5.0, 8.0)));
       });
 
       test('creates empty ShadowMix', () {
@@ -32,7 +32,7 @@ void main() {
       test('color factory creates ShadowMix with color', () {
         final shadowMix = ShadowMix.color(Colors.red);
 
-        expectProp(shadowMix.$color, Colors.red);
+        expect(shadowMix.$color, resolvesTo(Colors.red));
         expect(shadowMix.$blurRadius, isNull);
         expect(shadowMix.$offset, isNull);
       });
@@ -40,7 +40,7 @@ void main() {
       test('offset factory creates ShadowMix with offset', () {
         final shadowMix = ShadowMix.offset(const Offset(3.0, 4.0));
 
-        expectProp(shadowMix.$offset, const Offset(3.0, 4.0));
+        expect(shadowMix.$offset, resolvesTo(const Offset(3.0, 4.0)));
         expect(shadowMix.$blurRadius, isNull);
         expect(shadowMix.$color, isNull);
       });
@@ -48,7 +48,7 @@ void main() {
       test('blurRadius factory creates ShadowMix with blurRadius', () {
         final shadowMix = ShadowMix.blurRadius(8.0);
 
-        expectProp(shadowMix.$blurRadius, 8.0);
+        expect(shadowMix.$blurRadius, resolvesTo(8.0));
         expect(shadowMix.$color, isNull);
         expect(shadowMix.$offset, isNull);
       });
@@ -64,9 +64,9 @@ void main() {
 
         final shadowMix = ShadowMix.value(shadow);
 
-        expectProp(shadowMix.$blurRadius, 15.0);
-        expectProp(shadowMix.$color, Colors.red);
-        expectProp(shadowMix.$offset, const Offset(3.0, 6.0));
+        expect(shadowMix.$blurRadius, resolvesTo(15.0));
+        expect(shadowMix.$color, resolvesTo(Colors.red));
+        expect(shadowMix.$offset, resolvesTo(const Offset(3.0, 6.0)));
       });
 
       test('maybeValue returns null for null shadow', () {
@@ -78,8 +78,8 @@ void main() {
         final shadowMix = ShadowMix.maybeValue(shadow);
 
         expect(shadowMix, isNotNull);
-        expectProp(shadowMix!.$blurRadius, 5.0);
-        expectProp(shadowMix.$color, Colors.green);
+        expect(shadowMix!.$blurRadius, resolvesTo(5.0));
+        expect(shadowMix.$color, resolvesTo(Colors.green));
       });
     });
 
@@ -87,19 +87,19 @@ void main() {
       test('color utility works correctly', () {
         final shadowMix = ShadowMix().color(Colors.purple);
 
-        expectProp(shadowMix.$color, Colors.purple);
+        expect(shadowMix.$color, resolvesTo(Colors.purple));
       });
 
       test('offset utility works correctly', () {
         final shadowMix = ShadowMix().offset(const Offset(2.0, 3.0));
 
-        expectProp(shadowMix.$offset, const Offset(2.0, 3.0));
+        expect(shadowMix.$offset, resolvesTo(const Offset(2.0, 3.0)));
       });
 
       test('blurRadius utility works correctly', () {
         final shadowMix = ShadowMix().blurRadius(12.0);
 
-        expectProp(shadowMix.$blurRadius, 12.0);
+        expect(shadowMix.$blurRadius, resolvesTo(12.0));
       });
     });
 
@@ -144,9 +144,9 @@ void main() {
 
         final merged = first.merge(second);
 
-        expectProp(merged.$blurRadius, 10.0); // from first
-        expectProp(merged.$color, Colors.red); // second overrides
-        expectProp(merged.$offset, const Offset(3.0, 3.0)); // from second
+        expect(merged.$blurRadius, resolvesTo(10.0)); // from first
+        expect(merged.$color, resolvesTo(Colors.red)); // second overrides
+        expect(merged.$offset, resolvesTo(const Offset(3.0, 3.0))); // from second
       });
 
       test('returns this when other is null', () {
@@ -208,10 +208,10 @@ void main() {
           spreadRadius: 2.0,
         );
 
-        expectProp(boxShadowMix.$blurRadius, 10.0);
-        expectProp(boxShadowMix.$color, Colors.blue);
-        expectProp(boxShadowMix.$offset, const Offset(5.0, 8.0));
-        expectProp(boxShadowMix.$spreadRadius, 2.0);
+        expect(boxShadowMix.$blurRadius, resolvesTo(10.0));
+        expect(boxShadowMix.$color, resolvesTo(Colors.blue));
+        expect(boxShadowMix.$offset, resolvesTo(const Offset(5.0, 8.0)));
+        expect(boxShadowMix.$spreadRadius, resolvesTo(2.0));
       });
 
       test('creates empty BoxShadowMix', () {
@@ -228,7 +228,7 @@ void main() {
       test('color factory creates BoxShadowMix with color', () {
         final boxShadowMix = BoxShadowMix.color(Colors.red);
 
-        expectProp(boxShadowMix.$color, Colors.red);
+        expect(boxShadowMix.$color, resolvesTo(Colors.red));
         expect(boxShadowMix.$blurRadius, isNull);
         expect(boxShadowMix.$offset, isNull);
         expect(boxShadowMix.$spreadRadius, isNull);
@@ -237,7 +237,7 @@ void main() {
       test('offset factory creates BoxShadowMix with offset', () {
         final boxShadowMix = BoxShadowMix.offset(const Offset(3.0, 4.0));
 
-        expectProp(boxShadowMix.$offset, const Offset(3.0, 4.0));
+        expect(boxShadowMix.$offset, resolvesTo(const Offset(3.0, 4.0)));
         expect(boxShadowMix.$blurRadius, isNull);
         expect(boxShadowMix.$color, isNull);
         expect(boxShadowMix.$spreadRadius, isNull);
@@ -246,7 +246,7 @@ void main() {
       test('blurRadius factory creates BoxShadowMix with blurRadius', () {
         final boxShadowMix = BoxShadowMix.blurRadius(8.0);
 
-        expectProp(boxShadowMix.$blurRadius, 8.0);
+        expect(boxShadowMix.$blurRadius, resolvesTo(8.0));
         expect(boxShadowMix.$color, isNull);
         expect(boxShadowMix.$offset, isNull);
         expect(boxShadowMix.$spreadRadius, isNull);
@@ -255,7 +255,7 @@ void main() {
       test('spreadRadius factory creates BoxShadowMix with spreadRadius', () {
         final boxShadowMix = BoxShadowMix.spreadRadius(3.0);
 
-        expectProp(boxShadowMix.$spreadRadius, 3.0);
+        expect(boxShadowMix.$spreadRadius, resolvesTo(3.0));
         expect(boxShadowMix.$blurRadius, isNull);
         expect(boxShadowMix.$color, isNull);
         expect(boxShadowMix.$offset, isNull);
@@ -283,10 +283,10 @@ void main() {
 
         final boxShadowMix = BoxShadowMix.value(boxShadow);
 
-        expectProp(boxShadowMix.$blurRadius, 15.0);
-        expectProp(boxShadowMix.$color, Colors.red);
-        expectProp(boxShadowMix.$offset, const Offset(3.0, 6.0));
-        expectProp(boxShadowMix.$spreadRadius, 4.0);
+        expect(boxShadowMix.$blurRadius, resolvesTo(15.0));
+        expect(boxShadowMix.$color, resolvesTo(Colors.red));
+        expect(boxShadowMix.$offset, resolvesTo(const Offset(3.0, 6.0)));
+        expect(boxShadowMix.$spreadRadius, resolvesTo(4.0));
       });
 
       test('maybeValue returns null for null boxShadow', () {
@@ -298,8 +298,8 @@ void main() {
         final boxShadowMix = BoxShadowMix.maybeValue(boxShadow);
 
         expect(boxShadowMix, isNotNull);
-        expectProp(boxShadowMix!.$blurRadius, 5.0);
-        expectProp(boxShadowMix.$spreadRadius, 1.0);
+        expect(boxShadowMix!.$blurRadius, resolvesTo(5.0));
+        expect(boxShadowMix.$spreadRadius, resolvesTo(1.0));
       });
     });
 
@@ -307,25 +307,25 @@ void main() {
       test('color utility works correctly', () {
         final boxShadowMix = BoxShadowMix().color(Colors.purple);
 
-        expectProp(boxShadowMix.$color, Colors.purple);
+        expect(boxShadowMix.$color, resolvesTo(Colors.purple));
       });
 
       test('offset utility works correctly', () {
         final boxShadowMix = BoxShadowMix().offset(const Offset(2.0, 3.0));
 
-        expectProp(boxShadowMix.$offset, const Offset(2.0, 3.0));
+        expect(boxShadowMix.$offset, resolvesTo(const Offset(2.0, 3.0)));
       });
 
       test('blurRadius utility works correctly', () {
         final boxShadowMix = BoxShadowMix().blurRadius(12.0);
 
-        expectProp(boxShadowMix.$blurRadius, 12.0);
+        expect(boxShadowMix.$blurRadius, resolvesTo(12.0));
       });
 
       test('spreadRadius utility works correctly', () {
         final boxShadowMix = BoxShadowMix().spreadRadius(4.0);
 
-        expectProp(boxShadowMix.$spreadRadius, 4.0);
+        expect(boxShadowMix.$spreadRadius, resolvesTo(4.0));
       });
     });
 
@@ -378,10 +378,10 @@ void main() {
 
         final merged = first.merge(second);
 
-        expectProp(merged.$blurRadius, 10.0); // from first
-        expectProp(merged.$color, Colors.red); // second overrides
-        expectProp(merged.$offset, const Offset(3.0, 3.0)); // from second
-        expectProp(merged.$spreadRadius, 2.0); // second overrides
+        expect(merged.$blurRadius, resolvesTo(10.0)); // from first
+        expect(merged.$color, resolvesTo(Colors.red)); // second overrides
+        expect(merged.$offset, resolvesTo(const Offset(3.0, 3.0))); // from second
+        expect(merged.$spreadRadius, resolvesTo(2.0)); // second overrides
       });
 
       test('returns this when other is null', () {

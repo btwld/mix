@@ -10,7 +10,8 @@ import 'flexbox_spec.dart';
 
 /// Combines [Container] and [Flex] with Mix styling.
 ///
-/// Applies both box and flex specifications for flexible layouts.
+/// Applies both box and flex specifications for flexible layouts,
+/// providing decoration, constraints, and flex layout in one widget.
 class FlexBox extends StyleWidget<FlexBoxSpec> {
   const FlexBox({
     super.style = const FlexBoxMix.create(),
@@ -19,7 +20,10 @@ class FlexBox extends StyleWidget<FlexBoxSpec> {
     this.children = const <Widget>[],
   });
 
+  /// Child widgets to be arranged in the flex layout.
   final List<Widget> children;
+  
+  /// The main axis direction for the flex layout.
   final Axis direction;
 
   @override
@@ -55,6 +59,9 @@ class VBox extends FlexBox {
 }
 
 /// Creates a [Flex] widget from a [FlexSpec] and required parameters.
+///
+/// Applies all flex layout properties with appropriate default values
+/// when specification properties are null.
 Flex createFlexSpecWidget({
   required FlexSpec? spec,
   required Axis direction,
@@ -75,6 +82,12 @@ Flex createFlexSpecWidget({
 }
 
 /// Extension to convert [FlexSpec] directly to a [Flex] widget.
+///
+/// Provides convenient syntax for creating flex widgets directly from specifications:
+/// ```dart
+/// final spec = FlexSpec(direction: Axis.horizontal, gap: 8.0);
+/// final widget = spec(direction: Axis.horizontal, children: [Text('Hello')]);
+/// ```
 extension FlexSpecCallExt on FlexSpec {
   Flex call({required Axis direction, List<Widget> children = const []}) {
     return createFlexSpecWidget(
@@ -86,6 +99,9 @@ extension FlexSpecCallExt on FlexSpec {
 }
 
 /// Creates a [Container] with [Flex] child from a [FlexBoxSpec].
+///
+/// Applies box styling as the outer container and flex layout as the inner
+/// child widget, combining both specifications effectively.
 Widget createFlexBoxSpecWidget({
   required FlexBoxSpec? spec,
   required Axis direction,
@@ -102,6 +118,15 @@ Widget createFlexBoxSpecWidget({
 }
 
 /// Extension to convert [FlexBoxSpec] directly to a styled flex widget.
+///
+/// Provides convenient syntax for creating styled flex widgets:
+/// ```dart
+/// final spec = FlexBoxSpec(
+///   box: BoxSpec(color: Colors.red),
+///   flex: FlexSpec(gap: 8.0)
+/// );
+/// final widget = spec(direction: Axis.horizontal, children: [Text('Hello')]);
+/// ```
 extension FlexBoxSpecCallExt on FlexBoxSpec {
   Widget call({required Axis direction, List<Widget> children = const []}) {
     return createFlexBoxSpecWidget(

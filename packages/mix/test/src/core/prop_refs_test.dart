@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/src/core/prop.dart';
 import 'package:mix/src/core/prop_refs.dart';
+import 'package:mix/src/core/prop_source.dart';
 import 'package:mix/src/theme/tokens/mix_token.dart';
+
+import '../../helpers/testing_utils.dart';
 
 void main() {
   group('Token References', () {
@@ -16,7 +19,7 @@ void main() {
         final token = MixToken<Color>('test-color');
         final ref = ColorProp(Prop.token(token));
 
-        expect(ref.$token, equals(token));
+        expect(ref, PropMatcher.isToken(token));
       });
 
       test('equality based on token', () {
@@ -72,7 +75,7 @@ void main() {
         final ref = ColorProp(Prop.token(token));
 
         expect(ref, isA<Color>());
-        expect(ref.$token, equals(token));
+        expect(ref, PropMatcher.isToken(token));
       });
 
       test('DurationProp implements Duration interface', () {
@@ -80,7 +83,7 @@ void main() {
         final ref = DurationProp(Prop.token(token));
 
         expect(ref, isA<Duration>());
-        expect(ref.$token, equals(token));
+        expect(ref, PropMatcher.isToken(token));
       });
 
       test('OffsetProp implements Offset interface', () {
@@ -88,7 +91,7 @@ void main() {
         final ref = OffsetProp(Prop.token(token));
 
         expect(ref, isA<Offset>());
-        expect(ref.$token, equals(token));
+        expect(ref, PropMatcher.isToken(token));
       });
 
       test('RadiusProp implements Radius interface', () {
@@ -96,7 +99,7 @@ void main() {
         final ref = RadiusProp(Prop.token(token));
 
         expect(ref, isA<Radius>());
-        expect(ref.$token, equals(token));
+        expect(ref, PropMatcher.isToken(token));
       });
     });
 
@@ -491,9 +494,9 @@ void main() {
         final durationProp = DurationProp(Prop.token(durationToken));
         final offsetProp = OffsetProp(Prop.token(offsetToken));
 
-        expect(colorRef.$token, equals(colorToken));
-        expect(durationProp.$token, equals(durationToken));
-        expect(offsetProp.$token, equals(offsetToken));
+        expect(colorRef, PropMatcher.isToken(colorToken));
+        expect(durationProp, PropMatcher.isToken(durationToken));
+        expect(offsetProp, PropMatcher.isToken(offsetToken));
       });
 
       test('returns token for extension type token references', () {
@@ -543,7 +546,10 @@ void main() {
         final stringRef = StringRef.token(stringToken);
 
         // Type-safe calls for class-based refs use $token
-        final MixToken<Color>? colorResult = colorRef.$token;
+        final MixToken<Color> colorResult = colorRef.sources
+            .whereType<TokenSource<Color>>()
+            .first
+            .token;
         final MixToken<double>? doubleResult = getTokenFromValue<double>(
           doubleRef,
         );
@@ -578,11 +584,11 @@ void main() {
         final alignmentRef = AlignmentProp(Prop.token(alignmentToken));
 
         // Both should work with their specific types
-        expect(alignmentGeometryRef.$token, equals(alignmentGeometryToken));
-        expect(alignmentRef.$token, equals(alignmentToken));
+        expect(alignmentGeometryRef, PropMatcher.isToken(alignmentGeometryToken));
+        expect(alignmentRef, PropMatcher.isToken(alignmentToken));
 
         // Both are class-based refs, so they use $token
-        expect(alignmentRef.$token, equals(alignmentToken));
+        expect(alignmentRef, PropMatcher.isToken(alignmentToken));
       });
 
       test('works correctly after registry clear', () {

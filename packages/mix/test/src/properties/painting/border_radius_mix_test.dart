@@ -16,10 +16,10 @@ void main() {
           bottomRight: const Radius.circular(20.0),
         );
 
-        expectProp(borderRadiusMix.$topLeft, const Radius.circular(8.0));
-        expectProp(borderRadiusMix.$topRight, const Radius.circular(12.0));
-        expectProp(borderRadiusMix.$bottomLeft, const Radius.circular(16.0));
-        expectProp(borderRadiusMix.$bottomRight, const Radius.circular(20.0));
+        expect(borderRadiusMix.$topLeft, resolvesTo(const Radius.circular(8.0)));
+        expect(borderRadiusMix.$topRight, resolvesTo(const Radius.circular(12.0)));
+        expect(borderRadiusMix.$bottomLeft, resolvesTo(const Radius.circular(16.0)));
+        expect(borderRadiusMix.$bottomRight, resolvesTo(const Radius.circular(20.0)));
       });
 
       test('value constructor extracts properties from BorderRadius', () {
@@ -32,10 +32,10 @@ void main() {
 
         final borderRadiusMix = BorderRadiusMix.value(borderRadius);
 
-        expectProp(borderRadiusMix.$topLeft, const Radius.circular(5.0));
-        expectProp(borderRadiusMix.$topRight, const Radius.circular(10.0));
-        expectProp(borderRadiusMix.$bottomLeft, const Radius.circular(15.0));
-        expectProp(borderRadiusMix.$bottomRight, const Radius.circular(20.0));
+        expect(borderRadiusMix.$topLeft, resolvesTo(const Radius.circular(5.0)));
+        expect(borderRadiusMix.$topRight, resolvesTo(const Radius.circular(10.0)));
+        expect(borderRadiusMix.$bottomLeft, resolvesTo(const Radius.circular(15.0)));
+        expect(borderRadiusMix.$bottomRight, resolvesTo(const Radius.circular(20.0)));
       });
 
       test('maybeValue returns null for null input', () {
@@ -48,10 +48,10 @@ void main() {
         final result = BorderRadiusMix.maybeValue(borderRadius);
 
         expect(result, isNotNull);
-        expectProp(result!.$topLeft, const Radius.circular(8.0));
-        expectProp(result.$topRight, const Radius.circular(8.0));
-        expectProp(result.$bottomLeft, const Radius.circular(8.0));
-        expectProp(result.$bottomRight, const Radius.circular(8.0));
+        expect(result!.$topLeft, resolvesTo(const Radius.circular(8.0)));
+        expect(result.$topRight, resolvesTo(const Radius.circular(8.0)));
+        expect(result.$bottomLeft, resolvesTo(const Radius.circular(8.0)));
+        expect(result.$bottomRight, resolvesTo(const Radius.circular(8.0)));
       });
     });
 
@@ -59,10 +59,10 @@ void main() {
       test('circular factory creates BorderRadiusMix with circular radius', () {
         final borderRadiusMix = BorderRadiusMix.circular(10.0);
 
-        expectProp(borderRadiusMix.$topLeft, const Radius.circular(10.0));
-        expectProp(borderRadiusMix.$topRight, const Radius.circular(10.0));
-        expectProp(borderRadiusMix.$bottomLeft, const Radius.circular(10.0));
-        expectProp(borderRadiusMix.$bottomRight, const Radius.circular(10.0));
+        expect(borderRadiusMix.$topLeft, resolvesTo(const Radius.circular(10.0)));
+        expect(borderRadiusMix.$topRight, resolvesTo(const Radius.circular(10.0)));
+        expect(borderRadiusMix.$bottomLeft, resolvesTo(const Radius.circular(10.0)));
+        expect(borderRadiusMix.$bottomRight, resolvesTo(const Radius.circular(10.0)));
       });
 
       test(
@@ -70,21 +70,21 @@ void main() {
         () {
           final borderRadiusMix = BorderRadiusMix.elliptical(8.0, 12.0);
 
-          expectProp(
+          expect(
             borderRadiusMix.$topLeft,
-            const Radius.elliptical(8.0, 12.0),
+            resolvesTo(const Radius.elliptical(8.0, 12.0)),
           );
-          expectProp(
+          expect(
             borderRadiusMix.$topRight,
-            const Radius.elliptical(8.0, 12.0),
+            resolvesTo(const Radius.elliptical(8.0, 12.0)),
           );
-          expectProp(
+          expect(
             borderRadiusMix.$bottomLeft,
-            const Radius.elliptical(8.0, 12.0),
+            resolvesTo(const Radius.elliptical(8.0, 12.0)),
           );
-          expectProp(
+          expect(
             borderRadiusMix.$bottomRight,
-            const Radius.elliptical(8.0, 12.0),
+            resolvesTo(const Radius.elliptical(8.0, 12.0)),
           );
         },
       );
@@ -94,7 +94,7 @@ void main() {
           const Radius.circular(5.0),
         );
 
-        expectProp(borderRadiusMix.$topLeft, const Radius.circular(5.0));
+        expect(borderRadiusMix.$topLeft, resolvesTo(const Radius.circular(5.0)));
         expect(borderRadiusMix.$topRight, isNull);
         expect(borderRadiusMix.$bottomLeft, isNull);
         expect(borderRadiusMix.$bottomRight, isNull);
@@ -105,7 +105,7 @@ void main() {
           const Radius.circular(6.0),
         );
 
-        expectProp(borderRadiusMix.$topRight, const Radius.circular(6.0));
+        expect(borderRadiusMix.$topRight, resolvesTo(const Radius.circular(6.0)));
         expect(borderRadiusMix.$topLeft, isNull);
         expect(borderRadiusMix.$bottomLeft, isNull);
         expect(borderRadiusMix.$bottomRight, isNull);
@@ -118,7 +118,7 @@ void main() {
             const Radius.circular(7.0),
           );
 
-          expectProp(borderRadiusMix.$bottomLeft, const Radius.circular(7.0));
+          expect(borderRadiusMix.$bottomLeft, resolvesTo(const Radius.circular(7.0)));
           expect(borderRadiusMix.$topLeft, isNull);
           expect(borderRadiusMix.$topRight, isNull);
           expect(borderRadiusMix.$bottomRight, isNull);
@@ -132,7 +132,7 @@ void main() {
             const Radius.circular(8.0),
           );
 
-          expectProp(borderRadiusMix.$bottomRight, const Radius.circular(8.0));
+          expect(borderRadiusMix.$bottomRight, resolvesTo(const Radius.circular(8.0)));
           expect(borderRadiusMix.$topLeft, isNull);
           expect(borderRadiusMix.$topRight, isNull);
           expect(borderRadiusMix.$bottomLeft, isNull);
@@ -146,10 +146,10 @@ void main() {
             const Radius.circular(15.0),
           );
 
-          expectProp(borderRadiusMix.$topLeft, const Radius.circular(15.0));
-          expectProp(borderRadiusMix.$topRight, const Radius.circular(15.0));
-          expectProp(borderRadiusMix.$bottomLeft, const Radius.circular(15.0));
-          expectProp(borderRadiusMix.$bottomRight, const Radius.circular(15.0));
+          expect(borderRadiusMix.$topLeft, resolvesTo(const Radius.circular(15.0)));
+          expect(borderRadiusMix.$topRight, resolvesTo(const Radius.circular(15.0)));
+          expect(borderRadiusMix.$bottomLeft, resolvesTo(const Radius.circular(15.0)));
+          expect(borderRadiusMix.$bottomRight, resolvesTo(const Radius.circular(15.0)));
         },
       );
     });
@@ -160,7 +160,7 @@ void main() {
           const Radius.circular(5.0),
         );
 
-        expectProp(borderRadiusMix.$topLeft, const Radius.circular(5.0));
+        expect(borderRadiusMix.$topLeft, resolvesTo(const Radius.circular(5.0)));
       });
 
       test('topRight utility works correctly', () {
@@ -168,7 +168,7 @@ void main() {
           const Radius.circular(6.0),
         );
 
-        expectProp(borderRadiusMix.$topRight, const Radius.circular(6.0));
+        expect(borderRadiusMix.$topRight, resolvesTo(const Radius.circular(6.0)));
       });
 
       test('bottomLeft utility works correctly', () {
@@ -176,7 +176,7 @@ void main() {
           const Radius.circular(7.0),
         );
 
-        expectProp(borderRadiusMix.$bottomLeft, const Radius.circular(7.0));
+        expect(borderRadiusMix.$bottomLeft, resolvesTo(const Radius.circular(7.0)));
       });
 
       test('bottomRight utility works correctly', () {
@@ -184,7 +184,7 @@ void main() {
           const Radius.circular(8.0),
         );
 
-        expectProp(borderRadiusMix.$bottomRight, const Radius.circular(8.0));
+        expect(borderRadiusMix.$bottomRight, resolvesTo(const Radius.circular(8.0)));
       });
 
     });
@@ -247,9 +247,9 @@ void main() {
 
         final merged = first.merge(second);
 
-        expectProp(merged.$topLeft, const Radius.circular(8.0));
-        expectProp(merged.$topRight, const Radius.circular(16.0));
-        expectProp(merged.$bottomLeft, const Radius.circular(20.0));
+        expect(merged.$topLeft, resolvesTo(const Radius.circular(8.0)));
+        expect(merged.$topRight, resolvesTo(const Radius.circular(16.0)));
+        expect(merged.$bottomLeft, resolvesTo(const Radius.circular(20.0)));
         expect(merged.$bottomRight, isNull);
       });
     });
@@ -310,21 +310,21 @@ void main() {
           bottomEnd: const Radius.circular(20.0),
         );
 
-        expectProp(
+        expect(
           borderRadiusDirectionalMix.$topStart,
-          const Radius.circular(8.0),
+          resolvesTo(const Radius.circular(8.0)),
         );
-        expectProp(
+        expect(
           borderRadiusDirectionalMix.$topEnd,
-          const Radius.circular(12.0),
+          resolvesTo(const Radius.circular(12.0)),
         );
-        expectProp(
+        expect(
           borderRadiusDirectionalMix.$bottomStart,
-          const Radius.circular(16.0),
+          resolvesTo(const Radius.circular(16.0)),
         );
-        expectProp(
+        expect(
           borderRadiusDirectionalMix.$bottomEnd,
-          const Radius.circular(20.0),
+          resolvesTo(const Radius.circular(20.0)),
         );
       });
 
@@ -342,21 +342,21 @@ void main() {
             borderRadius,
           );
 
-          expectProp(
+          expect(
             borderRadiusDirectionalMix.$topStart,
-            const Radius.circular(5.0),
+            resolvesTo(const Radius.circular(5.0)),
           );
-          expectProp(
+          expect(
             borderRadiusDirectionalMix.$topEnd,
-            const Radius.circular(10.0),
+            resolvesTo(const Radius.circular(10.0)),
           );
-          expectProp(
+          expect(
             borderRadiusDirectionalMix.$bottomStart,
-            const Radius.circular(15.0),
+            resolvesTo(const Radius.circular(15.0)),
           );
-          expectProp(
+          expect(
             borderRadiusDirectionalMix.$bottomEnd,
-            const Radius.circular(20.0),
+            resolvesTo(const Radius.circular(20.0)),
           );
         },
       );
@@ -373,7 +373,7 @@ void main() {
           final result = BorderRadiusDirectionalMix.maybeValue(borderRadius);
 
           expect(result, isNotNull);
-          expectProp(result!.$topStart, const Radius.circular(8.0));
+          expect(result!.$topStart, resolvesTo(const Radius.circular(8.0)));
         },
       );
     });
@@ -421,9 +421,9 @@ void main() {
 
         final merged = first.merge(second);
 
-        expectProp(merged.$topStart, const Radius.circular(8.0));
-        expectProp(merged.$topEnd, const Radius.circular(16.0));
-        expectProp(merged.$bottomStart, const Radius.circular(20.0));
+        expect(merged.$topStart, resolvesTo(const Radius.circular(8.0)));
+        expect(merged.$topEnd, resolvesTo(const Radius.circular(16.0)));
+        expect(merged.$bottomStart, resolvesTo(const Radius.circular(20.0)));
         expect(merged.$bottomEnd, isNull);
       });
     });
@@ -465,9 +465,9 @@ void main() {
           const Radius.circular(5.0),
         );
 
-        expectProp(
+        expect(
           borderRadiusDirectionalMix.$topStart,
-          const Radius.circular(5.0),
+          resolvesTo(const Radius.circular(5.0)),
         );
       });
 
@@ -476,9 +476,9 @@ void main() {
           const Radius.circular(6.0),
         );
 
-        expectProp(
+        expect(
           borderRadiusDirectionalMix.$topEnd,
-          const Radius.circular(6.0),
+          resolvesTo(const Radius.circular(6.0)),
         );
       });
 
@@ -488,9 +488,9 @@ void main() {
           const Radius.circular(7.0),
         );
 
-        expectProp(
+        expect(
           borderRadiusDirectionalMix.$bottomStart,
-          const Radius.circular(7.0),
+          resolvesTo(const Radius.circular(7.0)),
         );
       });
 
@@ -500,9 +500,9 @@ void main() {
           const Radius.circular(8.0),
         );
 
-        expectProp(
+        expect(
           borderRadiusDirectionalMix.$bottomEnd,
-          const Radius.circular(8.0),
+          resolvesTo(const Radius.circular(8.0)),
         );
       });
 

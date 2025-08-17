@@ -9,18 +9,18 @@ void main() {
     test('value constructor stores direct value', () {
       final prop = Prop.value(42);
 
-      expect(prop.hasValue, isTrue);
-      expect(prop.hasToken, isFalse);
-      expect(prop.$value, equals(42));
+      expect(prop, PropMatcher.hasValues);
+      expect(prop, isNot(PropMatcher.hasTokens));
+      expect(prop, resolvesTo(42));
     });
 
     test('token constructor stores token reference', () {
       final token = MixToken<Color>('primary');
       final prop = Prop.token(token);
 
-      expect(prop.hasValue, isFalse);
-      expect(prop.hasToken, isTrue);
-      expect(prop.$token, equals(token));
+      expect(prop, isNot(PropMatcher.hasValues));
+      expect(prop, PropMatcher.hasTokens);
+      expect(prop, PropMatcher.isToken(token));
     });
 
     test('merge replaces source with other source', () {
@@ -29,8 +29,8 @@ void main() {
 
       final merged = prop1.mergeProp(prop2);
 
-      expect(merged.hasValue, isTrue);
-      expect(merged.$value, equals(20));
+      expect(merged, PropMatcher.hasValues);
+      expect(merged, resolvesTo(20));
     });
 
     test('resolves direct values', () {
@@ -42,16 +42,21 @@ void main() {
       expect(resolved, equals(42));
     });
 
-    test('token overrides direct value on merge (replacement)', () {
+    test('merges value and token sources (universal accumulation)', () {
       final token = MixToken<int>('n');
       final p1 = Prop.value(1);
       final p2 = Prop.token(token);
 
       final merged = p1.mergeProp(p2);
 
-      expect(merged.hasToken, isTrue);
-      expect(merged.$token, token);
-      expect(merged.hasValue, isFalse);
+      // With universal accumulation, both sources are preserved
+      expect(merged, PropMatcher.hasValues);
+      expect(merged, PropMatcher.hasTokens);
+      expect(merged, PropMatcher.isToken(token));
+      
+      // But during resolution, token takes precedence
+      final context = MockBuildContext(tokens: {token.defineValue(42)});
+      expect(merged, resolvesTo(42, context: context));
     });
 
     test('merges directives and animation', () {
@@ -75,29 +80,29 @@ void main() {
     });
   });
 
-  group('MixProp', () {
+  group('Prop with Mix values', () {
     test('value constructor stores Mix value', () {
       final mixValue = MockMix<int>(42);
-      final prop = MixProp<int>(mixValue);
+      final prop = Prop.mix(mixValue);
 
-      expect(prop.value, equals(mixValue));
+      expect(prop, resolvesTo(42));
     });
 
     test('merge combines Mix values', () {
       final mix1 = MockMix<int>(10, merger: (a, b) => a + b);
       final mix2 = MockMix<int>(20, merger: (a, b) => a + b);
 
-      final prop1 = MixProp<int>(mix1);
-      final prop2 = MixProp<int>(mix2);
+      final prop1 = Prop.mix(mix1);
+      final prop2 = Prop.mix(mix2);
 
       final merged = prop1.mergeProp(prop2);
 
-      expect(merged.value?.resolve(MockBuildContext()), equals(30));
+      expect(merged, resolvesTo(30));
     });
 
     test('resolves Mix values', () {
       final mixValue = MockMix<int>(42);
-      final prop = MixProp<int>(mixValue);
+      final prop = Prop.mix(mixValue);
       final context = MockBuildContext();
 
       final resolved = prop.resolveProp(context);
@@ -115,15 +120,15 @@ void main() {
       final prop = Prop.value(const TextStyle(fontSize: 16));
       
       // Should be ValueSource, NOT MixSource
-      expect(prop.sources.first, isA<ValueSource<TextStyle>>());
-      expect(prop.sources.first, isNot(isA<MixSource<TextStyle>>()));
+      expect(prop, PropMatcher.hasValues);
+      expect(prop, isNot(PropMatcher.hasMixes));
     });
 
     test('Prop.mix creates MixSource', () {
       final mix = TextStyleMix(fontSize: 16);
       final prop = Prop.mix(mix);
       
-      expect(prop.sources.first, isA<MixSource<TextStyle>>());
+      expect(prop, PropMatcher.hasMixes);
     });
 
     test('Conversion happens during resolution with Mix values', () {
@@ -135,8 +140,8 @@ void main() {
       final merged = prop1.mergeProp(prop2);
       
       // Sources are not converted yet
-      expect(merged.sources[0], isA<ValueSource<TextStyle>>());
-      expect(merged.sources[1], isA<MixSource<TextStyle>>());
+      expect(merged, PropMatcher.hasValues);
+      expect(merged, PropMatcher.hasMixes);
       
       // Conversion happens during resolution
       final context = MockBuildContext();

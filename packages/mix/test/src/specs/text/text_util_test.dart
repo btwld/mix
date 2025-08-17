@@ -18,7 +18,7 @@ void main() {
         final utility = TextSpecUtility(textMix);
 
         expect(utility.value, equals(textMix));
-        expectProp(utility.value.$maxLines, 3);
+        expect(utility.value.$maxLines, resolvesTo(3));
       });
     });
 
@@ -183,48 +183,48 @@ void main() {
     group('Text property utilities', () {
       test('textOverflow utility creates correct TextMix', () {
         final result = util.textOverflow(TextOverflow.ellipsis);
-        expectProp(result.$overflow, TextOverflow.ellipsis);
+        expect(result.$overflow, resolvesTo(TextOverflow.ellipsis));
       });
 
       test('textAlign utility creates correct TextMix', () {
         final result = util.textAlign(TextAlign.center);
-        expectProp(result.$textAlign, TextAlign.center);
+        expect(result.$textAlign, resolvesTo(TextAlign.center));
       });
 
       test('maxLines utility creates correct TextMix', () {
         final result = util.maxLines(3);
-        expectProp(result.$maxLines, 3);
+        expect(result.$maxLines, resolvesTo(3));
       });
 
       test('textWidthBasis utility creates correct TextMix', () {
         final result = util.textWidthBasis(TextWidthBasis.longestLine);
-        expectProp(result.$textWidthBasis, TextWidthBasis.longestLine);
+        expect(result.$textWidthBasis, resolvesTo(TextWidthBasis.longestLine));
       });
 
       test('textDirection utility creates correct TextMix', () {
         final result = util.textDirection(TextDirection.rtl);
-        expectProp(result.$textDirection, TextDirection.rtl);
+        expect(result.$textDirection, resolvesTo(TextDirection.rtl));
       });
 
       test('softWrap utility creates correct TextMix', () {
         final result = util.softWrap(false);
-        expectProp(result.$softWrap, false);
+        expect(result.$softWrap, resolvesTo(false));
       });
 
       test('selectionColor utility creates correct TextMix', () {
         final result = util.selectionColor(Colors.blue);
-        expectProp(result.$selectionColor, Colors.blue);
+        expect(result.$selectionColor, resolvesTo(Colors.blue));
       });
 
       test('semanticsLabel utility creates correct TextMix', () {
         final result = TextSpecUtility().semanticsLabel('Custom label');
-        expectProp(result.$semanticsLabel, 'Custom label');
+        expect(result.$semanticsLabel, resolvesTo('Custom label'));
       });
 
       test('locale utility creates correct TextMix', () {
         const locale = Locale('en', 'US');
         final result = util.locale(locale);
-        expectProp(result.$locale, locale);
+        expect(result.$locale, resolvesTo(locale));
       });
     });
 
@@ -366,9 +366,9 @@ void main() {
         final result2 = util.textAlign(TextAlign.center);
         final result3 = util.softWrap(false);
 
-        expectProp(result1.$maxLines, 3);
-        expectProp(result2.$textAlign, TextAlign.center);
-        expectProp(result3.$softWrap, false);
+        expect(result1.$maxLines, resolvesTo(3));
+        expect(result2.$textAlign, resolvesTo(TextAlign.center));
+        expect(result3.$softWrap, resolvesTo(false));
       });
     });
 
@@ -538,9 +538,9 @@ void main() {
         final alignResult = util.textAlign(TextAlign.center);
         final wrapResult = util.softWrap(false);
 
-        expectProp(maxLinesResult.$maxLines, 3);
-        expectProp(alignResult.$textAlign, TextAlign.center);
-        expectProp(wrapResult.$softWrap, false);
+        expect(maxLinesResult.$maxLines, resolvesTo(3));
+        expect(alignResult.$textAlign, resolvesTo(TextAlign.center));
+        expect(wrapResult.$softWrap, resolvesTo(false));
       });
 
       test('handles multiple merges correctly', () {

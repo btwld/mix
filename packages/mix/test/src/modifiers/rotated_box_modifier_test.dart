@@ -170,7 +170,7 @@ void main() {
         final attribute = RotatedBoxModifierMix(quarterTurns: 3);
 
         expect(attribute.quarterTurns, isNotNull);
-        expectProp(attribute.quarterTurns, 3);
+        expect(attribute.quarterTurns, resolvesTo(3));
       });
 
       test('handles null quarter turns', () {
@@ -204,7 +204,7 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expectProp(merged.quarterTurns, 3); // Prop<int> uses replacement
+        expect(merged.quarterTurns, resolvesTo(3)); // Prop<int> uses replacement
       });
 
       test('returns original when other is null', () {
@@ -302,27 +302,24 @@ void main() {
 
     test('utility methods are convenience for call()', () {
       final d90Result = utility.d90();
-      final call1Result = utility.call(1);
 
       expect(
         d90Result.value.quarterTurns!,
-        resolvesTo(call1Result.value.quarterTurns!.$value),
+        resolvesTo(1),
       );
 
       final d180Result = utility.d180();
-      final call2Result = utility.call(2);
 
       expect(
         d180Result.value.quarterTurns!,
-        resolvesTo(call2Result.value.quarterTurns!.$value),
+        resolvesTo(2),
       );
 
       final d270Result = utility.d270();
-      final call3Result = utility.call(3);
 
       expect(
         d270Result.value.quarterTurns!,
-        resolvesTo(call3Result.value.quarterTurns!.$value),
+        resolvesTo(3),
       );
     });
   });

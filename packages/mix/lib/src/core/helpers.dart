@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' as r;
 import 'package:flutter/widgets.dart' as w;
 
-import '../modifiers/modifier_config.dart';
 import '../properties/painting/decoration_mix.dart';
 import '../properties/painting/shape_border_mix.dart';
 import 'decoration_merge.dart';
@@ -209,7 +208,7 @@ T? _lerpValue<T>(T? a, T? b, double t) {
   };
 }
 
-/// Operations for Prop and MixProp merge and resolution logic.
+/// Operations for Prop merge and resolution logic.
 ///
 /// Centralizes all prop-related operations to keep prop classes lean
 /// and focused on data storage while providing sophisticated merge
@@ -254,43 +253,33 @@ class PropOps {
     return prop.resolveProp(context);
   }
 
-  /// Merges two MixProp instances
-  static MixProp<V> mergeMix<V>(MixProp<V> current, MixProp<V>? other) {
-    // Delegate to MixProp's own mergeProp method
+  /// Merges two Prop instances containing Mix values
+  static Prop<V> mergeMix<V>(Prop<V> current, Prop<V>? other) {
+    // Delegate to Prop's own mergeProp method
     return current.mergeProp(other);
   }
 
-  /// Resolves a MixProp instance to its final value
-  static V resolveMix<V>(MixProp<V> prop, BuildContext context) {
-    // Delegate to MixProp's own resolveProp method
+  /// Resolves a Prop instance containing Mix values to its final value
+  static V resolveMix<V>(Prop<V> prop, BuildContext context) {
+    // Delegate to Prop's own resolveProp method
     return prop.resolveProp(context);
   }
 
-  /// Merges two Mix instances using appropriate merger
+  /// Merges two Mix instances using appropriate merger with BuildContext
 
-  static Mix<V> mergeMixes<V>(Mix<V> a, Mix<V> b) {
-    if (a is DecorationMix && b is DecorationMix) {
-      return DecorationMerger().tryMerge(
-            a as DecorationMix,
-            b as DecorationMix,
-          )!
-          as Mix<V>;
-    }
-
-    if (a is ShapeBorderMix && b is ShapeBorderMix) {
-      return ShapeBorderMerger.tryMerge(
-            a as ShapeBorderMix,
-            b as ShapeBorderMix,
-          )!
-          as Mix<V>;
-    }
-
-    return a.merge(b);
+  static Mix<V> mergeMixes<V>(BuildContext context, Mix<V> a, Mix<V> b) {
+    // Handle special cases that need BuildContext-aware merging
+    return switch ((a, b)) {
+      (DecorationMix a, DecorationMix b) => DecorationMerger().tryMerge(context, a, b)! as Mix<V>,
+      (ShapeBorderMix a, ShapeBorderMix b) => ShapeBorderMerger().tryMerge(context, a, b)! as Mix<V>,
+      _ => a.merge(b),
+    };
   }
 
   /// Consolidates consecutive MixSource instances
   static List<PropSource<V>> consolidateSources<V>(
     List<PropSource<V>> sources,
+    BuildContext context,
   ) {
     if (sources.length <= 1) return sources;
 
@@ -300,7 +289,7 @@ class PropOps {
     for (final source in sources) {
       if (source is MixSource<V>) {
         if (pendingMixSource != null) {
-          final mergedMix = mergeMixes(pendingMixSource.mix, source.mix);
+          final mergedMix = mergeMixes(context, pendingMixSource.mix, source.mix);
           pendingMixSource = MixSource(mergedMix);
         } else {
           pendingMixSource = source;
@@ -334,59 +323,6 @@ enum ListMergeStrategy {
   override,
 }
 
-extension PropExt<T> on Prop<T>? {
-  @Deprecated('Use MixOps.merge() instead. Will be removed in v3.0.0')
-  Prop<T>? tryMerge(Prop<T>? other) {
-    return MixOps.merge(this, other);
-  }
-}
 
-extension ListPropExt<T> on List<Prop<T>>? {
-  @Deprecated('Use MixOps.mergeList() instead. Will be removed in v3.0.0')
-  List<Prop<T>>? tryMerge(List<Prop<T>>? other, {ListMergeStrategy? strategy}) {
-    if (other == null) return this;
-    if (this == null) return other;
 
-    return MixOps.mergeList(this, other, strategy: strategy);
-  }
-}
 
-extension MixPropExt<T> on MixProp<T>? {
-  @Deprecated('Use MixOps.merge() instead. Will be removed in v3.0.0')
-  MixProp<T>? tryMerge(MixProp<T>? other) {
-    return MixOps.merge(this, other);
-  }
-}
-
-extension ListMixPropExt<T> on List<MixProp<T>>? {
-  @Deprecated('Use MixOps.mergeList() instead. Will be removed in v3.0.0')
-  List<MixProp<T>>? tryMerge(
-    List<MixProp<T>>? other, {
-    ListMergeStrategy? strategy,
-  }) {
-    if (other == null) return this;
-    if (this == null) return other;
-
-    return MixOps.mergeList(this, other, strategy: strategy);
-  }
-}
-
-extension ListDirectiveExt<T> on List<Directive<T>>? {
-  @Deprecated('Use MixOps.mergeList() instead. Will be removed in v3.0.0')
-  List<Directive<T>>? tryMerge(List<Directive<T>>? other) {
-    if (other == null) return this;
-    if (this == null) return other;
-
-    return MixOps.mergeList(this, other);
-  }
-}
-
-extension DirectiveConfigExt on ModifierConfig? {
-  @Deprecated('Use direct merge() method instead. Will be removed in v3.0.0')
-  ModifierConfig? tryMerge(ModifierConfig? other) {
-    if (other == null) return this;
-    if (this == null) return other;
-
-    return this!.merge(other);
-  }
-}

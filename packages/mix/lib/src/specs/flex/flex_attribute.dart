@@ -288,17 +288,17 @@ class FlexMix extends Style<FlexSpec>
     if (other == null) return this;
 
     return FlexMix.create(
-      direction: $direction.tryMerge(other.$direction),
-      mainAxisAlignment: $mainAxisAlignment.tryMerge(other.$mainAxisAlignment),
-      crossAxisAlignment: $crossAxisAlignment.tryMerge(
+      direction: MixOps.merge($direction, other.$direction),
+      mainAxisAlignment: MixOps.merge($mainAxisAlignment, other.$mainAxisAlignment),
+      crossAxisAlignment: MixOps.merge($crossAxisAlignment,
         other.$crossAxisAlignment,
       ),
-      mainAxisSize: $mainAxisSize.tryMerge(other.$mainAxisSize),
-      verticalDirection: $verticalDirection.tryMerge(other.$verticalDirection),
-      textDirection: $textDirection.tryMerge(other.$textDirection),
-      textBaseline: $textBaseline.tryMerge(other.$textBaseline),
-      clipBehavior: $clipBehavior.tryMerge(other.$clipBehavior),
-      gap: $gap.tryMerge(other.$gap),
+      mainAxisSize: MixOps.merge($mainAxisSize, other.$mainAxisSize),
+      verticalDirection: MixOps.merge($verticalDirection, other.$verticalDirection),
+      textDirection: MixOps.merge($textDirection, other.$textDirection),
+      textBaseline: MixOps.merge($textBaseline, other.$textBaseline),
+      clipBehavior: MixOps.merge($clipBehavior, other.$clipBehavior),
+      gap: MixOps.merge($gap, other.$gap),
       animation: other.$animation ?? $animation,
       modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
       variants: mergeVariantLists($variants, other.$variants),

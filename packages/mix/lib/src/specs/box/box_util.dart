@@ -20,19 +20,19 @@ import 'box_spec.dart';
 /// enabling fluid styling: `$box..color.red()..width(100)`.
 class BoxSpecUtility extends StyleMutableBuilder<BoxSpec> {
   late final padding = EdgeInsetsGeometryUtility<BoxMix>(
-    (prop) => mutable.merge(BoxMix.create(padding: MixProp(prop))),
+    (prop) => mutable.merge(BoxMix.create(padding: Prop.mix(prop))),
   );
 
   late final margin = EdgeInsetsGeometryUtility<BoxMix>(
-    (prop) => mutable.merge(BoxMix.create(margin: MixProp(prop))),
+    (prop) => mutable.merge(BoxMix.create(margin: Prop.mix(prop))),
   );
 
   late final constraints = BoxConstraintsUtility<BoxMix>(
-    (prop) => mutable.merge(BoxMix.create(constraints: MixProp(prop))),
+    (prop) => mutable.merge(BoxMix.create(constraints: Prop.mix(prop))),
   );
 
   late final decoration = DecorationUtility<BoxMix>(
-    (prop) => mutable.merge(BoxMix.create(decoration: MixProp(prop))),
+    (prop) => mutable.merge(BoxMix.create(decoration: Prop.mix(prop))),
   );
 
   late final on = OnContextVariantUtility<BoxSpec, BoxMix>(
@@ -43,23 +43,22 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec> {
     (prop) => mutable.wrap(ModifierConfig(modifiers: [prop])),
   );
 
-  // Convenience accessors for commonly used properties
+  /// Convenience accessors for commonly used decoration properties.
   late final border = decoration.box.border;
-
   late final borderRadius = decoration.box.borderRadius;
-
   late final color = decoration.box.color;
-
   late final gradient = decoration.box.gradient;
   late final shape = decoration.box.shape;
+
+  /// Convenience accessors for commonly used constraint properties.
   late final width = constraints.width;
   late final height = constraints.height;
   late final minWidth = constraints.minWidth;
-
   late final maxWidth = constraints.maxWidth;
   late final minHeight = constraints.minHeight;
   late final maxHeight = constraints.maxHeight;
 
+  /// Direct accessors for transformation and alignment properties.
   late final transform = MixUtility(mutable.transform);
   late final transformAlignment = MixUtility(mutable.transformAlignment);
   late final clipBehavior = MixUtility(mutable.clipBehavior);
@@ -101,6 +100,10 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec> {
   BoxMix get value => mutable.value;
 }
 
+/// Mutable implementation of [BoxMix] for efficient style accumulation.
+/// 
+/// Used internally by [BoxSpecUtility] to accumulate styling changes
+/// without creating new instances for each modification.
 class MutableBoxMix extends BoxMix with Mutable<BoxSpec, BoxMix> {
   MutableBoxMix(BoxMix style) {
     value = style;

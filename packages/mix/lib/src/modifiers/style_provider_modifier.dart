@@ -27,16 +27,11 @@ final class StyleProviderModifier<S extends Spec<S>>
   }
 
   @override
-  StyleProviderModifier<S> lerp(
-    StyleProviderModifier<S>? other,
-    double t,
-  ) {
+  StyleProviderModifier<S> lerp(StyleProviderModifier<S>? other, double t) {
     if (other == null) return this;
-    
+
     // Use the existing lerp implementation from ResolvedStyle
-    return StyleProviderModifier(
-      resolvedStyle.lerp(other.resolvedStyle, t),
-    );
+    return StyleProviderModifier(resolvedStyle.lerp(other.resolvedStyle, t));
   }
 
   @override
@@ -74,11 +69,11 @@ class StyleProviderModifierMix<S extends Spec<S>>
     // Resolve the style at modifier resolution time
     // This ensures we have proper context for tokens and variants
     final resolvedStyle = style.build(context);
-    
+
     // Note: style.build() always returns a ResolvedStyle object
     // The spec field within it may be null if the style has no attributes
     // This is valid and consumers should handle null specs appropriately
-    
+
     return StyleProviderModifier(resolvedStyle);
   }
 

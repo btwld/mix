@@ -119,9 +119,9 @@ class FractionallySizedBoxModifierMix
     if (other == null) return this;
 
     return FractionallySizedBoxModifierMix.create(
-      widthFactor: widthFactor.tryMerge(other.widthFactor),
-      heightFactor: heightFactor.tryMerge(other.heightFactor),
-      alignment: alignment.tryMerge(other.alignment),
+      widthFactor: MixOps.merge(widthFactor, other.widthFactor),
+      heightFactor: MixOps.merge(heightFactor, other.heightFactor),
+      alignment: MixOps.merge(alignment, other.alignment),
     );
   }
 

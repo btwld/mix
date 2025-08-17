@@ -5,11 +5,10 @@ import 'mix_element.dart';
 
 /// Represents the origin of a property value.
 ///
-/// A [PropSource] is a sealed class with four concrete implementations:
+/// A [PropSource] is a sealed class with three concrete implementations:
 /// - [ValueSource]: Holds a direct value
 /// - [TokenSource]: References a token to be resolved from context
 /// - [MixSource]: Contains a Mix value for accumulation merging
-/// - [MixTokenSource]: References a token with a converter function
 @immutable
 sealed class PropSource<V> {
   const PropSource();
@@ -87,36 +86,3 @@ class MixSource<V> extends PropSource<V> {
   int get hashCode => mix.hashCode;
 }
 
-/// A source that references a token with a converter function.
-///
-/// The token is resolved from context and then transformed using
-/// the [converter] function. This maintains backward compatibility
-/// with the legacy [MixProp.token] constructor.
-@immutable
-class MixTokenSource<V> extends PropSource<V> {
-  final MixToken<V> token;
-  final Mix<V> Function(V) converter;
-  
-  const MixTokenSource(this.token, this.converter);
-  
-  @override
-  String toString() => 'MixTokenSource($token)';
-  
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    
-    return other is MixTokenSource<V> &&
-        other.token == token &&
-        other.converter == converter;
-  }
-  
-  @override
-  int get hashCode => Object.hash(token, converter);
-}
-
-// Type aliases
-
-/// Alias maintained for backward compatibility.
-@Deprecated('Use MixSource instead. MixValueSource has been renamed.')
-typedef MixValueSource<V> = MixSource<V>;

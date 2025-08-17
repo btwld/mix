@@ -331,7 +331,7 @@ void main() {
 
       test('handles partial values', () {
         final attribute1 = AlignModifierMix(alignment: Alignment.center);
-        expectProp(attribute1.alignment, Alignment.center);
+        expect(attribute1.alignment, resolvesTo(Alignment.center));
         expect(attribute1.widthFactor, isNull);
         expect(attribute1.heightFactor, isNull);
 
@@ -402,7 +402,7 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expectProp(merged.alignment, Alignment.bottomRight);
+        expect(merged.alignment, resolvesTo(Alignment.bottomRight));
         expect(merged.widthFactor, isNull);
         expect(merged.heightFactor, isNull);
       });
@@ -485,9 +485,9 @@ void main() {
 
       final result = base.merge(override1).merge(override2);
 
-      expectProp(result.alignment, Alignment.topLeft);
-      expectProp(result.widthFactor, 0.8);
-      expectProp(result.heightFactor, 0.9);
+      expect(result.alignment, resolvesTo(Alignment.topLeft));
+      expect(result.widthFactor, resolvesTo(0.8));
+      expect(result.heightFactor, resolvesTo(0.9));
     });
 
     test('Lerp produces expected intermediate values', () {

@@ -80,7 +80,7 @@ class MouseCursorModifierMix extends ModifierMix<MouseCursorModifier> {
     if (other == null) return this;
 
     return MouseCursorModifierMix.create(
-      mouseCursor: mouseCursor.tryMerge(other.mouseCursor),
+      mouseCursor: MixOps.merge(mouseCursor, other.mouseCursor),
     );
   }
 

@@ -22,8 +22,8 @@ void main() {
         final attribute = FlexBoxMix(box: boxAttr, flex: flexAttr);
 
         // Verify properties are set
-        expect(attribute.$box?.value, equals(boxAttr));
-        expect(attribute.$flex?.value, equals(flexAttr));
+        expect(attribute.$box!.sources[0], isA<MixSource<Object?>>());
+        expect(attribute.$flex!.sources[0], isA<MixSource<Object?>>());
       });
 
       test('creates empty FlexBoxSpecAttribute', () {

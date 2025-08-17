@@ -6,10 +6,10 @@ import '../../../helpers/testing_utils.dart';
 
 void main() {
   group('TextStyleUtility', () {
-    late TextStyleUtility<MockStyle<MixProp<TextStyle>>> util;
+    late TextStyleUtility<MockStyle<Prop<TextStyle>>> util;
 
     setUp(() {
-      util = TextStyleUtility<MockStyle<MixProp<TextStyle>>>(
+      util = TextStyleUtility<MockStyle<Prop<TextStyle>>>(
         (prop) => MockStyle(prop),
       );
     });
@@ -64,98 +64,76 @@ void main() {
       test('color sets text color', () {
         final result = util.color(Colors.red);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle, const TextStyle(color: Colors.red));
+        expect(result.value, resolvesTo(const TextStyle(color: Colors.red)));
       });
 
       test('fontWeight sets font weight', () {
         final result = util.fontWeight(FontWeight.bold);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle, const TextStyle(fontWeight: FontWeight.bold));
+        expect(result.value, resolvesTo(const TextStyle(fontWeight: FontWeight.bold)));
       });
 
       test('fontStyle sets font style', () {
         final result = util.fontStyle(FontStyle.italic);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle, const TextStyle(fontStyle: FontStyle.italic));
+        expect(result.value, resolvesTo(const TextStyle(fontStyle: FontStyle.italic)));
       });
 
       test('decoration sets text decoration', () {
         final result = util.decoration(TextDecoration.underline);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
         expect(
-          textStyle,
-          const TextStyle(decoration: TextDecoration.underline),
+          result.value,
+          resolvesTo(const TextStyle(decoration: TextDecoration.underline)),
         );
       });
 
       test('fontSize sets font size', () {
         final result = util.fontSize(16.0);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle, const TextStyle(fontSize: 16.0));
+        expect(result.value, resolvesTo(const TextStyle(fontSize: 16.0)));
       });
 
       test('backgroundColor sets background color', () {
         final result = util.backgroundColor(Colors.yellow);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle, const TextStyle(backgroundColor: Colors.yellow));
+        expect(result.value, resolvesTo(const TextStyle(backgroundColor: Colors.yellow)));
       });
 
       test('decorationColor sets decoration color', () {
         final result = util.decorationColor(Colors.blue);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle, const TextStyle(decorationColor: Colors.blue));
+        expect(result.value, resolvesTo(const TextStyle(decorationColor: Colors.blue)));
       });
 
       test('decorationStyle sets decoration style', () {
         final result = util.decorationStyle(TextDecorationStyle.dashed);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
         expect(
-          textStyle,
-          const TextStyle(decorationStyle: TextDecorationStyle.dashed),
+          result.value,
+          resolvesTo(const TextStyle(decorationStyle: TextDecorationStyle.dashed)),
         );
       });
 
       test('textBaseline sets text baseline', () {
         final result = util.textBaseline(TextBaseline.ideographic);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
         expect(
-          textStyle,
-          const TextStyle(textBaseline: TextBaseline.ideographic),
+          result.value,
+          resolvesTo(const TextStyle(textBaseline: TextBaseline.ideographic)),
         );
       });
 
       test('fontFamily sets font family', () {
         final result = util.fontFamily('Roboto');
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle, const TextStyle(fontFamily: 'Roboto'));
+        expect(result.value, resolvesTo(const TextStyle(fontFamily: 'Roboto')));
       });
 
       test('inherit sets inherit property', () {
         final result = util.inherit(false);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle, const TextStyle(inherit: false));
+        expect(result.value, resolvesTo(const TextStyle(inherit: false)));
       });
     });
 
@@ -163,66 +141,50 @@ void main() {
       test('height sets line height', () {
         final result = util.height(1.5);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle, const TextStyle(height: 1.5));
+        expect(result.value, resolvesTo(const TextStyle(height: 1.5)));
       });
 
       test('wordSpacing sets word spacing', () {
         final result = util.wordSpacing(2.0);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle, const TextStyle(wordSpacing: 2.0));
+        expect(result.value, resolvesTo(const TextStyle(wordSpacing: 2.0)));
       });
 
       test('letterSpacing sets letter spacing', () {
         final result = util.letterSpacing(1.2);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle, const TextStyle(letterSpacing: 1.2));
+        expect(result.value, resolvesTo(const TextStyle(letterSpacing: 1.2)));
       });
 
       test('italic sets font style to italic', () {
         final result = util.italic();
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle, const TextStyle(fontStyle: FontStyle.italic));
+        expect(result.value, resolvesTo(const TextStyle(fontStyle: FontStyle.italic)));
       });
 
       test('bold sets font weight to bold', () {
         final result = util.bold();
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle, const TextStyle(fontWeight: FontWeight.bold));
+        expect(result.value, resolvesTo(const TextStyle(fontWeight: FontWeight.bold)));
       });
 
       test('decorationThickness sets decoration thickness', () {
         final result = util.decorationThickness(2.5);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle, const TextStyle(decorationThickness: 2.5));
+        expect(result.value, resolvesTo(const TextStyle(decorationThickness: 2.5)));
       });
 
       test('debugLabel sets debug label', () {
         final result = util.debugLabel('test-label');
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle, const TextStyle(debugLabel: 'test-label'));
+        expect(result.value, resolvesTo(const TextStyle(debugLabel: 'test-label')));
       });
 
       test('fontFamilyFallback sets font family fallback', () {
         final fallbacks = ['Arial', 'sans-serif'];
         final result = util.fontFamilyFallback(fallbacks);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle, TextStyle(fontFamilyFallback: fallbacks));
+        expect(result.value, resolvesTo(TextStyle(fontFamilyFallback: fallbacks)));
       });
     });
 
@@ -234,9 +196,7 @@ void main() {
         ];
         final result = util.shadows(shadows);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle, const TextStyle(shadows: shadows));
+        expect(result.value, resolvesTo(const TextStyle(shadows: shadows)));
       });
 
       test('fontFeatures sets font features', () {
@@ -246,9 +206,7 @@ void main() {
         ];
         final result = util.fontFeatures(features);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle, const TextStyle(fontFeatures: features));
+        expect(result.value, resolvesTo(const TextStyle(fontFeatures: features)));
       });
 
       test('fontVariations sets font variations', () {
@@ -258,27 +216,21 @@ void main() {
         ];
         final result = util.fontVariations(variations);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle, const TextStyle(fontVariations: variations));
+        expect(result.value, resolvesTo(const TextStyle(fontVariations: variations)));
       });
 
       test('fontVariation sets single font variation', () {
         const variation = FontVariation('wght', 600);
         final result = util.fontVariation(variation);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle, const TextStyle(fontVariations: [variation]));
+        expect(result.value, resolvesTo(const TextStyle(fontVariations: [variation])));
       });
 
       test('foreground sets foreground paint', () {
         final paint = Paint()..color = const Color(0xFFFF0000);
         final result = util.foreground(paint);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle.foreground?.color, const Color(0xFFFF0000));
+        expect(result.value, resolvesTo(TextStyle(foreground: paint)));
       });
 
       test('background sets background paint', () {
@@ -286,12 +238,7 @@ void main() {
         final paint = Paint()..color = expectedColor;
         final result = util.background(paint);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(
-          textStyle.background?.color.toARGB32(),
-          expectedColor.toARGB32(),
-        );
+        expect(result.value, resolvesTo(TextStyle(background: paint)));
       });
     });
 
@@ -315,11 +262,9 @@ void main() {
           inherit: false,
         );
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
         expect(
-          textStyle,
-          const TextStyle(
+          result.value,
+          resolvesTo(const TextStyle(
             color: Colors.red,
             backgroundColor: Colors.yellow,
             fontFamily: 'Arial',
@@ -335,7 +280,7 @@ void main() {
             decorationThickness: 1.5,
             textBaseline: TextBaseline.alphabetic,
             inherit: false,
-          ),
+          )),
         );
       });
 
@@ -346,24 +291,20 @@ void main() {
           color: Colors.green,
         );
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
         expect(
-          textStyle,
-          const TextStyle(
+          result.value,
+          resolvesTo(const TextStyle(
             fontFamily: 'Georgia',
             fontSize: 14.0,
             color: Colors.green,
-          ),
+          )),
         );
       });
 
       test('handles null values', () {
         final result = util();
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle, const TextStyle());
+        expect(result.value, resolvesTo(const TextStyle()));
       });
 
       test('sets advanced properties', () {
@@ -382,13 +323,16 @@ void main() {
           debugLabel: 'test-style',
         );
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle.shadows, shadows);
-        expect(textStyle.fontFeatures, fontFeatures);
-        expect(textStyle.fontVariations, fontVariations);
-        expect(textStyle.fontFamilyFallback, fallbacks);
-        expect(textStyle.debugLabel, 'test-style');
+        expect(
+          result.value,
+          resolvesTo(TextStyle(
+            shadows: shadows,
+            fontFeatures: fontFeatures,
+            fontVariations: fontVariations,
+            fontFamilyFallback: fallbacks,
+            debugLabel: 'test-style',
+          )),
+        );
       });
 
       test('sets paint properties', () {
@@ -400,10 +344,13 @@ void main() {
           background: backgroundPaint,
         );
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle.foreground?.color, foregroundPaint.color);
-        expect(textStyle.background?.color, backgroundPaint.color);
+        expect(
+          result.value,
+          resolvesTo(TextStyle(
+            foreground: foregroundPaint,
+            background: backgroundPaint,
+          )),
+        );
       });
     });
 
@@ -437,11 +384,9 @@ void main() {
           inherit: false,
         );
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
         expect(
-          textStyle,
-          TextStyle(
+          result.value,
+          resolvesTo(TextStyle(
             color: Colors.purple,
             backgroundColor: Colors.pink,
             fontFamily: 'Times New Roman',
@@ -461,7 +406,7 @@ void main() {
             fontVariations: fontVariations,
             debugLabel: 'call-test',
             inherit: false,
-          ),
+          )),
         );
       });
 
@@ -472,24 +417,20 @@ void main() {
           color: Colors.teal,
         );
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
         expect(
-          textStyle,
-          const TextStyle(
+          result.value,
+          resolvesTo(const TextStyle(
             fontWeight: FontWeight.w800,
             fontSize: 22.0,
             color: Colors.teal,
-          ),
+          )),
         );
       });
 
       test('handles empty parameters', () {
         final result = util();
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle, const TextStyle());
+        expect(result.value, resolvesTo(const TextStyle()));
       });
     });
 
@@ -526,35 +467,14 @@ void main() {
 
         final result = util.as(textStyle);
 
-        final resolved = result.value.value!.resolve(MockBuildContext());
-        expect(resolved.color, textStyle.color);
-        expect(resolved.backgroundColor, textStyle.backgroundColor);
-        expect(resolved.fontFamily, textStyle.fontFamily);
-        expect(resolved.fontFamilyFallback, textStyle.fontFamilyFallback);
-        expect(resolved.fontSize, textStyle.fontSize);
-        expect(resolved.fontWeight, textStyle.fontWeight);
-        expect(resolved.fontStyle, textStyle.fontStyle);
-        expect(resolved.letterSpacing, textStyle.letterSpacing);
-        expect(resolved.wordSpacing, textStyle.wordSpacing);
-        expect(resolved.textBaseline, textStyle.textBaseline);
-        expect(resolved.height, textStyle.height);
-        expect(resolved.decoration, textStyle.decoration);
-        expect(resolved.decorationColor, textStyle.decorationColor);
-        expect(resolved.decorationStyle, textStyle.decorationStyle);
-        expect(resolved.decorationThickness, textStyle.decorationThickness);
-        expect(resolved.shadows, textStyle.shadows);
-        expect(resolved.fontFeatures, textStyle.fontFeatures);
-        expect(resolved.fontVariations, textStyle.fontVariations);
-        expect(resolved.debugLabel, textStyle.debugLabel);
-        expect(resolved.inherit, textStyle.inherit);
+        expect(result.value, resolvesTo(textStyle));
       });
 
       test('accepts minimal TextStyle', () {
         const textStyle = TextStyle();
         final result = util.as(textStyle);
 
-        final resolved = result.value.value!.resolve(MockBuildContext());
-        expect(resolved, textStyle);
+        expect(result.value, resolvesTo(textStyle));
       });
 
       test('accepts TextStyle with paint properties', () {
@@ -567,10 +487,8 @@ void main() {
         );
 
         final result = util.as(textStyle);
-        final resolved = result.value.value!.resolve(MockBuildContext());
 
-        expect(resolved.foreground?.color, foregroundPaint.color);
-        expect(resolved.background?.color, backgroundPaint.color);
+        expect(result.value, resolvesTo(textStyle));
       });
     });
 
@@ -590,8 +508,7 @@ void main() {
 
         for (final weight in fontWeights) {
           final result = util.fontWeight(weight);
-          final textStyle = result.value.value!.resolve(MockBuildContext());
-          expect(textStyle.fontWeight, weight);
+          expect(result.value, resolvesTo(TextStyle(fontWeight: weight)));
         }
       });
 
@@ -599,11 +516,8 @@ void main() {
         final result1 = util.fontWeight(FontWeight.normal);
         final result2 = util.fontWeight(FontWeight.bold);
 
-        final textStyle1 = result1.value.value!.resolve(MockBuildContext());
-        final textStyle2 = result2.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle1.fontWeight, FontWeight.w400);
-        expect(textStyle2.fontWeight, FontWeight.w700);
+        expect(result1.value, resolvesTo(const TextStyle(fontWeight: FontWeight.w400)));
+        expect(result2.value, resolvesTo(const TextStyle(fontWeight: FontWeight.w700)));
       });
     });
 
@@ -618,8 +532,7 @@ void main() {
 
         for (final decoration in decorations) {
           final result = util.decoration(decoration);
-          final textStyle = result.value.value!.resolve(MockBuildContext());
-          expect(textStyle.decoration, decoration);
+          expect(result.value, resolvesTo(TextStyle(decoration: decoration)));
         }
       });
 
@@ -630,9 +543,8 @@ void main() {
         ]);
 
         final result = util.decoration(combined);
-        final textStyle = result.value.value!.resolve(MockBuildContext());
 
-        expect(textStyle.decoration, combined);
+        expect(result.value, resolvesTo(TextStyle(decoration: combined)));
       });
     });
 
@@ -648,8 +560,7 @@ void main() {
 
         for (final style in decorationStyles) {
           final result = util.decorationStyle(style);
-          final textStyle = result.value.value!.resolve(MockBuildContext());
-          expect(textStyle.decorationStyle, style);
+          expect(result.value, resolvesTo(TextStyle(decorationStyle: style)));
         }
       });
     });
@@ -660,8 +571,7 @@ void main() {
 
         for (final baseline in baselines) {
           final result = util.textBaseline(baseline);
-          final textStyle = result.value.value!.resolve(MockBuildContext());
-          expect(textStyle.textBaseline, baseline);
+          expect(result.value, resolvesTo(TextStyle(textBaseline: baseline)));
         }
       });
     });
@@ -670,22 +580,20 @@ void main() {
       test('color utility supports directives', () {
         final result = util.color.withOpacity(0.8);
 
-        expect(result.value, isA<MixProp<TextStyle>>());
+        expect(result.value, isA<Prop<TextStyle>>());
         // Color directives should be applied during resolution
       });
 
       test('color utility supports material colors', () {
         final result = util.color.red();
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle.color, Colors.red);
+        expect(result.value, resolvesTo(const TextStyle(color: Colors.red)));
       });
 
       test('backgroundColor utility supports directives', () {
         final result = util.backgroundColor.withAlpha(128);
 
-        expect(result.value, isA<MixProp<TextStyle>>());
+        expect(result.value, isA<Prop<TextStyle>>());
       });
 
       test('decorationColor utility supports tokens', () {
@@ -695,9 +603,8 @@ void main() {
         );
 
         final result = util.decorationColor.token(colorToken);
-        final textStyle = result.value.value!.resolve(context);
 
-        expect(textStyle.decorationColor, Colors.orange);
+        expect(result.value, resolvesTo(const TextStyle(decorationColor: Colors.orange), context: context));
       });
     });
 
@@ -705,88 +612,68 @@ void main() {
       test('handles extremely small font size', () {
         final result = util.fontSize(0.1);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle.fontSize, 0.1);
+        expect(result.value, resolvesTo(const TextStyle(fontSize: 0.1)));
       });
 
       test('handles large font size', () {
         final result = util.fontSize(200.0);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle.fontSize, 200.0);
+        expect(result.value, resolvesTo(const TextStyle(fontSize: 200.0)));
       });
 
       test('handles negative spacing values', () {
         final result = util.letterSpacing(-1.0);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle.letterSpacing, -1.0);
+        expect(result.value, resolvesTo(const TextStyle(letterSpacing: -1.0)));
       });
 
       test('handles zero spacing values', () {
         final result = util.wordSpacing(0.0);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle.wordSpacing, 0.0);
+        expect(result.value, resolvesTo(const TextStyle(wordSpacing: 0.0)));
       });
 
       test('handles extremely small height', () {
         final result = util.height(0.1);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle.height, 0.1);
+        expect(result.value, resolvesTo(const TextStyle(height: 0.1)));
       });
 
       test('handles large height', () {
         final result = util.height(5.0);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle.height, 5.0);
+        expect(result.value, resolvesTo(const TextStyle(height: 5.0)));
       });
 
       test('handles empty font family fallback list', () {
         final result = util.fontFamilyFallback([]);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle.fontFamilyFallback, isEmpty);
+        expect(result.value, resolvesTo(const TextStyle(fontFamilyFallback: [])));
       });
 
       test('handles empty shadow list', () {
         final result = util.shadows([]);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle.shadows, isEmpty);
+        expect(result.value, resolvesTo(const TextStyle(shadows: [])));
       });
 
       test('handles empty font features list', () {
         final result = util.fontFeatures([]);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle.fontFeatures, isEmpty);
+        expect(result.value, resolvesTo(const TextStyle(fontFeatures: [])));
       });
 
       test('handles empty font variations list', () {
         final result = util.fontVariations([]);
 
-        final textStyle = result.value.value!.resolve(MockBuildContext());
-
-        expect(textStyle.fontVariations, isEmpty);
+        expect(result.value, resolvesTo(const TextStyle(fontVariations: [])));
       });
     });
   });
 
   group('TextStyle integration tests', () {
     test('utility works with Mix context', () {
-      final util = TextStyleUtility<MockStyle<MixProp<TextStyle>>>(
+      final util = TextStyleUtility<MockStyle<Prop<TextStyle>>>(
         (prop) => MockStyle(prop),
       );
 
@@ -797,18 +684,21 @@ void main() {
         fontFamily: 'Roboto',
       );
 
-      expect(result.value, isA<MixProp<TextStyle>>());
+      expect(result.value, isA<Prop<TextStyle>>());
 
-      final resolved = result.value.value!.resolve(MockBuildContext());
-      expect(resolved, isA<TextStyle>());
-      expect(resolved.color, Colors.blue);
-      expect(resolved.fontSize, 16.0);
-      expect(resolved.fontWeight, FontWeight.w500);
-      expect(resolved.fontFamily, 'Roboto');
+      expect(
+        result.value,
+        resolvesTo(const TextStyle(
+          color: Colors.blue,
+          fontSize: 16.0,
+          fontWeight: FontWeight.w500,
+          fontFamily: 'Roboto',
+        )),
+      );
     });
 
     test('utility properties work independently', () {
-      final util = TextStyleUtility<MockStyle<MixProp<TextStyle>>>(
+      final util = TextStyleUtility<MockStyle<Prop<TextStyle>>>(
         (prop) => MockStyle(prop),
       );
 
@@ -817,44 +707,26 @@ void main() {
       final weightResult = util.fontWeight(FontWeight.bold);
       final familyResult = util.fontFamily('Arial');
 
-      expect(
-        colorResult.value.value!.resolve(MockBuildContext()).color,
-        Colors.red,
-      );
-      expect(
-        sizeResult.value.value!.resolve(MockBuildContext()).fontSize,
-        18.0,
-      );
-      expect(
-        weightResult.value.value!.resolve(MockBuildContext()).fontWeight,
-        FontWeight.bold,
-      );
-      expect(
-        familyResult.value.value!.resolve(MockBuildContext()).fontFamily,
-        'Arial',
-      );
+      expect(colorResult.value, resolvesTo(const TextStyle(color: Colors.red)));
+      expect(sizeResult.value, resolvesTo(const TextStyle(fontSize: 18.0)));
+      expect(weightResult.value, resolvesTo(const TextStyle(fontWeight: FontWeight.bold)));
+      expect(familyResult.value, resolvesTo(const TextStyle(fontFamily: 'Arial')));
     });
 
     test('convenience methods work correctly', () {
-      final util = TextStyleUtility<MockStyle<MixProp<TextStyle>>>(
+      final util = TextStyleUtility<MockStyle<Prop<TextStyle>>>(
         (prop) => MockStyle(prop),
       );
 
       final boldResult = util.bold();
       final italicResult = util.italic();
 
-      expect(
-        boldResult.value.value!.resolve(MockBuildContext()).fontWeight,
-        FontWeight.bold,
-      );
-      expect(
-        italicResult.value.value!.resolve(MockBuildContext()).fontStyle,
-        FontStyle.italic,
-      );
+      expect(boldResult.value, resolvesTo(const TextStyle(fontWeight: FontWeight.bold)));
+      expect(italicResult.value, resolvesTo(const TextStyle(fontStyle: FontStyle.italic)));
     });
 
     test('preserves Flutter TextStyle semantics', () {
-      final util = TextStyleUtility<MockStyle<MixProp<TextStyle>>>(
+      final util = TextStyleUtility<MockStyle<Prop<TextStyle>>>(
         (prop) => MockStyle(prop),
       );
 
@@ -867,13 +739,8 @@ void main() {
       );
 
       final mixResult = util.as(flutterStyle);
-      final mixResolved = mixResult.value.value!.resolve(MockBuildContext());
 
-      expect(mixResolved.color, flutterStyle.color);
-      expect(mixResolved.fontSize, flutterStyle.fontSize);
-      expect(mixResolved.fontWeight, flutterStyle.fontWeight);
-      expect(mixResolved.fontStyle, flutterStyle.fontStyle);
-      expect(mixResolved.decoration, flutterStyle.decoration);
+      expect(mixResult.value, resolvesTo(flutterStyle));
     });
   });
 }

@@ -23,14 +23,14 @@ void main() {
           isAntiAlias: false,
         );
 
-        expectProp(decorationImageMix.$image, imageProvider);
-        expectProp(decorationImageMix.$fit, BoxFit.cover);
-        expectProp(decorationImageMix.$alignment, Alignment.center);
-        expectProp(decorationImageMix.$centerSlice, centerSlice);
-        expectProp(decorationImageMix.$repeat, ImageRepeat.repeat);
-        expectProp(decorationImageMix.$filterQuality, FilterQuality.high);
-        expectProp(decorationImageMix.$invertColors, true);
-        expectProp(decorationImageMix.$isAntiAlias, false);
+        expect(decorationImageMix.$image, resolvesTo(imageProvider));
+        expect(decorationImageMix.$fit, resolvesTo(BoxFit.cover));
+        expect(decorationImageMix.$alignment, resolvesTo(Alignment.center));
+        expect(decorationImageMix.$centerSlice, resolvesTo(centerSlice));
+        expect(decorationImageMix.$repeat, resolvesTo(ImageRepeat.repeat));
+        expect(decorationImageMix.$filterQuality, resolvesTo(FilterQuality.high));
+        expect(decorationImageMix.$invertColors, resolvesTo(true));
+        expect(decorationImageMix.$isAntiAlias, resolvesTo(false));
       });
 
       test('value constructor extracts properties from DecorationImage', () {
@@ -45,11 +45,11 @@ void main() {
 
         final decorationImageMix = DecorationImageMix.value(decorationImage);
 
-        expectProp(decorationImageMix.$image, imageProvider);
-        expectProp(decorationImageMix.$fit, BoxFit.contain);
-        expectProp(decorationImageMix.$alignment, Alignment.topLeft);
-        expectProp(decorationImageMix.$repeat, ImageRepeat.noRepeat);
-        expectProp(decorationImageMix.$filterQuality, FilterQuality.medium);
+        expect(decorationImageMix.$image, resolvesTo(imageProvider));
+        expect(decorationImageMix.$fit, resolvesTo(BoxFit.contain));
+        expect(decorationImageMix.$alignment, resolvesTo(Alignment.topLeft));
+        expect(decorationImageMix.$repeat, resolvesTo(ImageRepeat.noRepeat));
+        expect(decorationImageMix.$filterQuality, resolvesTo(FilterQuality.medium));
       });
 
       test('maybeValue returns null for null input', () {
@@ -64,7 +64,7 @@ void main() {
         final result = DecorationImageMix.maybeValue(decorationImage);
 
         expect(result, isNotNull);
-        expectProp(result!.$image, const AssetImage('assets/test.png'));
+        expect(result!.$image, resolvesTo(const AssetImage('assets/test.png')));
       });
     });
 
@@ -73,7 +73,7 @@ void main() {
         const testImageProvider = AssetImage('test_image.png');
         final decorationImageMix = DecorationImageMix.image(testImageProvider);
 
-        expectProp(decorationImageMix.$image, testImageProvider);
+        expect(decorationImageMix.$image, resolvesTo(testImageProvider));
         expect(decorationImageMix.$fit, isNull);
         expect(decorationImageMix.$alignment, isNull);
         expect(decorationImageMix.$centerSlice, isNull);
@@ -86,7 +86,7 @@ void main() {
       test('fit factory creates DecorationImageMix with fit', () {
         final decorationImageMix = DecorationImageMix.fit(BoxFit.contain);
 
-        expectProp(decorationImageMix.$fit, BoxFit.contain);
+        expect(decorationImageMix.$fit, resolvesTo(BoxFit.contain));
         expect(decorationImageMix.$image, isNull);
         expect(decorationImageMix.$alignment, isNull);
         expect(decorationImageMix.$centerSlice, isNull);
@@ -101,7 +101,7 @@ void main() {
           Alignment.topLeft,
         );
 
-        expectProp(decorationImageMix.$alignment, Alignment.topLeft);
+        expect(decorationImageMix.$alignment, resolvesTo(Alignment.topLeft));
         expect(decorationImageMix.$image, isNull);
         expect(decorationImageMix.$fit, isNull);
         expect(decorationImageMix.$centerSlice, isNull);
@@ -117,7 +117,7 @@ void main() {
           const rect = Rect.fromLTWH(5, 5, 10, 10);
           final decorationImageMix = DecorationImageMix.centerSlice(rect);
 
-          expectProp(decorationImageMix.$centerSlice, rect);
+          expect(decorationImageMix.$centerSlice, resolvesTo(rect));
           expect(decorationImageMix.$image, isNull);
           expect(decorationImageMix.$fit, isNull);
           expect(decorationImageMix.$alignment, isNull);
@@ -133,7 +133,7 @@ void main() {
           ImageRepeat.repeatX,
         );
 
-        expectProp(decorationImageMix.$repeat, ImageRepeat.repeatX);
+        expect(decorationImageMix.$repeat, resolvesTo(ImageRepeat.repeatX));
         expect(decorationImageMix.$image, isNull);
         expect(decorationImageMix.$fit, isNull);
         expect(decorationImageMix.$alignment, isNull);
@@ -150,7 +150,7 @@ void main() {
             FilterQuality.low,
           );
 
-          expectProp(decorationImageMix.$filterQuality, FilterQuality.low);
+          expect(decorationImageMix.$filterQuality, resolvesTo(FilterQuality.low));
           expect(decorationImageMix.$image, isNull);
           expect(decorationImageMix.$fit, isNull);
           expect(decorationImageMix.$alignment, isNull);
@@ -166,7 +166,7 @@ void main() {
         () {
           final decorationImageMix = DecorationImageMix.invertColors(true);
 
-          expectProp(decorationImageMix.$invertColors, true);
+          expect(decorationImageMix.$invertColors, resolvesTo(true));
           expect(decorationImageMix.$image, isNull);
           expect(decorationImageMix.$fit, isNull);
           expect(decorationImageMix.$alignment, isNull);
@@ -182,7 +182,7 @@ void main() {
         () {
           final decorationImageMix = DecorationImageMix.isAntiAlias(true);
 
-          expectProp(decorationImageMix.$isAntiAlias, true);
+          expect(decorationImageMix.$isAntiAlias, resolvesTo(true));
           expect(decorationImageMix.$image, isNull);
           expect(decorationImageMix.$fit, isNull);
           expect(decorationImageMix.$alignment, isNull);
@@ -201,13 +201,13 @@ void main() {
           testImageProvider,
         );
 
-        expectProp(decorationImageMix.$image, testImageProvider);
+        expect(decorationImageMix.$image, resolvesTo(testImageProvider));
       });
 
       test('fit utility works correctly', () {
         final decorationImageMix = DecorationImageMix().fit(BoxFit.fitWidth);
 
-        expectProp(decorationImageMix.$fit, BoxFit.fitWidth);
+        expect(decorationImageMix.$fit, resolvesTo(BoxFit.fitWidth));
       });
 
       test('alignment utility works correctly', () {
@@ -215,14 +215,14 @@ void main() {
           Alignment.centerLeft,
         );
 
-        expectProp(decorationImageMix.$alignment, Alignment.centerLeft);
+        expect(decorationImageMix.$alignment, resolvesTo(Alignment.centerLeft));
       });
 
       test('centerSlice utility works correctly', () {
         const rect = Rect.fromLTWH(8, 8, 16, 16);
         final decorationImageMix = DecorationImageMix().centerSlice(rect);
 
-        expectProp(decorationImageMix.$centerSlice, rect);
+        expect(decorationImageMix.$centerSlice, resolvesTo(rect));
       });
 
       test('repeat utility works correctly', () {
@@ -230,7 +230,7 @@ void main() {
           ImageRepeat.noRepeat,
         );
 
-        expectProp(decorationImageMix.$repeat, ImageRepeat.noRepeat);
+        expect(decorationImageMix.$repeat, resolvesTo(ImageRepeat.noRepeat));
       });
 
       test('filterQuality utility works correctly', () {
@@ -238,19 +238,19 @@ void main() {
           FilterQuality.none,
         );
 
-        expectProp(decorationImageMix.$filterQuality, FilterQuality.none);
+        expect(decorationImageMix.$filterQuality, resolvesTo(FilterQuality.none));
       });
 
       test('invertColors utility works correctly', () {
         final decorationImageMix = DecorationImageMix().invertColors(false);
 
-        expectProp(decorationImageMix.$invertColors, false);
+        expect(decorationImageMix.$invertColors, resolvesTo(false));
       });
 
       test('isAntiAlias utility works correctly', () {
         final decorationImageMix = DecorationImageMix().isAntiAlias(false);
 
-        expectProp(decorationImageMix.$isAntiAlias, false);
+        expect(decorationImageMix.$isAntiAlias, resolvesTo(false));
       });
     });
 
@@ -329,11 +329,11 @@ void main() {
 
         final merged = first.merge(second);
 
-        expectProp(merged.$image, imageProvider2); // overridden
-        expectProp(merged.$fit, BoxFit.cover); // preserved
-        expectProp(merged.$alignment, Alignment.center); // preserved
-        expectProp(merged.$repeat, ImageRepeat.repeat); // new
-        expectProp(merged.$filterQuality, FilterQuality.high); // new
+        expect(merged.$image, resolvesTo(imageProvider2)); // overridden
+        expect(merged.$fit, resolvesTo(BoxFit.cover)); // preserved
+        expect(merged.$alignment, resolvesTo(Alignment.center)); // preserved
+        expect(merged.$repeat, resolvesTo(ImageRepeat.repeat)); // new
+        expect(merged.$filterQuality, resolvesTo(FilterQuality.high)); // new
       });
     });
 

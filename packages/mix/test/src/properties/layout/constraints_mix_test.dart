@@ -16,10 +16,10 @@ void main() {
           maxHeight: 200.0,
         );
 
-        expectProp(constraintsMix.$minWidth, 50.0);
-        expectProp(constraintsMix.$maxWidth, 150.0);
-        expectProp(constraintsMix.$minHeight, 100.0);
-        expectProp(constraintsMix.$maxHeight, 200.0);
+        expect(constraintsMix.$minWidth, resolvesTo(50.0));
+        expect(constraintsMix.$maxWidth, resolvesTo(150.0));
+        expect(constraintsMix.$minHeight, resolvesTo(100.0));
+        expect(constraintsMix.$maxHeight, resolvesTo(200.0));
       });
 
       test('value constructor extracts properties from BoxConstraints', () {
@@ -32,10 +32,10 @@ void main() {
 
         final constraintsMix = BoxConstraintsMix.value(constraints);
 
-        expectProp(constraintsMix.$minWidth, 25.0);
-        expectProp(constraintsMix.$maxWidth, 125.0);
-        expectProp(constraintsMix.$minHeight, 75.0);
-        expectProp(constraintsMix.$maxHeight, 175.0);
+        expect(constraintsMix.$minWidth, resolvesTo(25.0));
+        expect(constraintsMix.$maxWidth, resolvesTo(125.0));
+        expect(constraintsMix.$minHeight, resolvesTo(75.0));
+        expect(constraintsMix.$maxHeight, resolvesTo(175.0));
       });
 
       test('maybeValue returns null for null input', () {
@@ -48,24 +48,24 @@ void main() {
         final result = BoxConstraintsMix.maybeValue(constraints);
 
         expect(result, isNotNull);
-        expectProp(result!.$minWidth, 10.0);
+        expect(result!.$minWidth, resolvesTo(10.0));
       });
 
       test('named constructors work correctly', () {
         final minWidthMix = BoxConstraintsMix.minWidth(50.0);
-        expectProp(minWidthMix.$minWidth, 50.0);
+        expect(minWidthMix.$minWidth, resolvesTo(50.0));
         expect(minWidthMix.$maxWidth, isNull);
 
         final maxWidthMix = BoxConstraintsMix.maxWidth(150.0);
-        expectProp(maxWidthMix.$maxWidth, 150.0);
+        expect(maxWidthMix.$maxWidth, resolvesTo(150.0));
         expect(maxWidthMix.$minWidth, isNull);
 
         final minHeightMix = BoxConstraintsMix.minHeight(100.0);
-        expectProp(minHeightMix.$minHeight, 100.0);
+        expect(minHeightMix.$minHeight, resolvesTo(100.0));
         expect(minHeightMix.$maxHeight, isNull);
 
         final maxHeightMix = BoxConstraintsMix.maxHeight(200.0);
-        expectProp(maxHeightMix.$maxHeight, 200.0);
+        expect(maxHeightMix.$maxHeight, resolvesTo(200.0));
         expect(maxHeightMix.$minHeight, isNull);
       });
     });
@@ -74,7 +74,7 @@ void main() {
       test('minWidth factory creates BoxConstraintsMix with minWidth', () {
         final constraintsMix = BoxConstraintsMix.minWidth(100.0);
 
-        expectProp(constraintsMix.$minWidth, 100.0);
+        expect(constraintsMix.$minWidth, resolvesTo(100.0));
         expect(constraintsMix.$maxWidth, isNull);
         expect(constraintsMix.$minHeight, isNull);
         expect(constraintsMix.$maxHeight, isNull);
@@ -83,7 +83,7 @@ void main() {
       test('maxWidth factory creates BoxConstraintsMix with maxWidth', () {
         final constraintsMix = BoxConstraintsMix.maxWidth(200.0);
 
-        expectProp(constraintsMix.$maxWidth, 200.0);
+        expect(constraintsMix.$maxWidth, resolvesTo(200.0));
         expect(constraintsMix.$minWidth, isNull);
         expect(constraintsMix.$minHeight, isNull);
         expect(constraintsMix.$maxHeight, isNull);
@@ -92,7 +92,7 @@ void main() {
       test('minHeight factory creates BoxConstraintsMix with minHeight', () {
         final constraintsMix = BoxConstraintsMix.minHeight(150.0);
 
-        expectProp(constraintsMix.$minHeight, 150.0);
+        expect(constraintsMix.$minHeight, resolvesTo(150.0));
         expect(constraintsMix.$minWidth, isNull);
         expect(constraintsMix.$maxWidth, isNull);
         expect(constraintsMix.$maxHeight, isNull);
@@ -101,7 +101,7 @@ void main() {
       test('maxHeight factory creates BoxConstraintsMix with maxHeight', () {
         final constraintsMix = BoxConstraintsMix.maxHeight(250.0);
 
-        expectProp(constraintsMix.$maxHeight, 250.0);
+        expect(constraintsMix.$maxHeight, resolvesTo(250.0));
         expect(constraintsMix.$minWidth, isNull);
         expect(constraintsMix.$maxWidth, isNull);
         expect(constraintsMix.$minHeight, isNull);
@@ -110,8 +110,8 @@ void main() {
       test('width factory creates BoxConstraintsMix with fixed width', () {
         final constraintsMix = BoxConstraintsMix.width(120.0);
 
-        expectProp(constraintsMix.$minWidth, 120.0);
-        expectProp(constraintsMix.$maxWidth, 120.0);
+        expect(constraintsMix.$minWidth, resolvesTo(120.0));
+        expect(constraintsMix.$maxWidth, resolvesTo(120.0));
         expect(constraintsMix.$minHeight, isNull);
         expect(constraintsMix.$maxHeight, isNull);
       });
@@ -119,8 +119,8 @@ void main() {
       test('height factory creates BoxConstraintsMix with fixed height', () {
         final constraintsMix = BoxConstraintsMix.height(180.0);
 
-        expectProp(constraintsMix.$minHeight, 180.0);
-        expectProp(constraintsMix.$maxHeight, 180.0);
+        expect(constraintsMix.$minHeight, resolvesTo(180.0));
+        expect(constraintsMix.$maxHeight, resolvesTo(180.0));
         expect(constraintsMix.$minWidth, isNull);
         expect(constraintsMix.$maxWidth, isNull);
       });
@@ -128,10 +128,10 @@ void main() {
       test('size factory creates BoxConstraintsMix with fixed size', () {
         final constraintsMix = BoxConstraintsMix.size(const Size(100.0, 200.0));
 
-        expectProp(constraintsMix.$minWidth, 100.0);
-        expectProp(constraintsMix.$maxWidth, 100.0);
-        expectProp(constraintsMix.$minHeight, 200.0);
-        expectProp(constraintsMix.$maxHeight, 200.0);
+        expect(constraintsMix.$minWidth, resolvesTo(100.0));
+        expect(constraintsMix.$maxWidth, resolvesTo(100.0));
+        expect(constraintsMix.$minHeight, resolvesTo(200.0));
+        expect(constraintsMix.$maxHeight, resolvesTo(200.0));
       });
     });
 
@@ -139,59 +139,59 @@ void main() {
       test('minWidth utility works correctly', () {
         final constraintsMix = BoxConstraintsMix().minWidth(80.0);
 
-        expectProp(constraintsMix.$minWidth, 80.0);
+        expect(constraintsMix.$minWidth, resolvesTo(80.0));
       });
 
       test('maxWidth utility works correctly', () {
         final constraintsMix = BoxConstraintsMix().maxWidth(160.0);
 
-        expectProp(constraintsMix.$maxWidth, 160.0);
+        expect(constraintsMix.$maxWidth, resolvesTo(160.0));
       });
 
       test('minHeight utility works correctly', () {
         final constraintsMix = BoxConstraintsMix().minHeight(90.0);
 
-        expectProp(constraintsMix.$minHeight, 90.0);
+        expect(constraintsMix.$minHeight, resolvesTo(90.0));
       });
 
       test('maxHeight utility works correctly', () {
         final constraintsMix = BoxConstraintsMix().maxHeight(180.0);
 
-        expectProp(constraintsMix.$maxHeight, 180.0);
+        expect(constraintsMix.$maxHeight, resolvesTo(180.0));
       });
 
       test('width utility works correctly', () {
         final constraintsMix = BoxConstraintsMix().width(100.0);
 
-        expectProp(constraintsMix.$minWidth, 100.0);
-        expectProp(constraintsMix.$maxWidth, 100.0);
+        expect(constraintsMix.$minWidth, resolvesTo(100.0));
+        expect(constraintsMix.$maxWidth, resolvesTo(100.0));
       });
 
       test('height utility works correctly', () {
         final constraintsMix = BoxConstraintsMix().height(150.0);
 
-        expectProp(constraintsMix.$minHeight, 150.0);
-        expectProp(constraintsMix.$maxHeight, 150.0);
+        expect(constraintsMix.$minHeight, resolvesTo(150.0));
+        expect(constraintsMix.$maxHeight, resolvesTo(150.0));
       });
 
       test('width utility merges correctly with existing properties', () {
         final initial = BoxConstraintsMix(minHeight: 50.0, maxHeight: 100.0);
         final result = initial.width(75.0);
         
-        expectProp(result.$minWidth, 75.0);
-        expectProp(result.$maxWidth, 75.0);
-        expectProp(result.$minHeight, 50.0);  // Should preserve existing
-        expectProp(result.$maxHeight, 100.0); // Should preserve existing
+        expect(result.$minWidth, resolvesTo(75.0));
+        expect(result.$maxWidth, resolvesTo(75.0));
+        expect(result.$minHeight, resolvesTo(50.0));  // Should preserve existing
+        expect(result.$maxHeight, resolvesTo(100.0)); // Should preserve existing
       });
 
       test('height utility merges correctly with existing properties', () {
         final initial = BoxConstraintsMix(minWidth: 50.0, maxWidth: 100.0);
         final result = initial.height(75.0);
         
-        expectProp(result.$minHeight, 75.0);
-        expectProp(result.$maxHeight, 75.0);
-        expectProp(result.$minWidth, 50.0);  // Should preserve existing
-        expectProp(result.$maxWidth, 100.0); // Should preserve existing
+        expect(result.$minHeight, resolvesTo(75.0));
+        expect(result.$maxHeight, resolvesTo(75.0));
+        expect(result.$minWidth, resolvesTo(50.0));  // Should preserve existing
+        expect(result.$maxWidth, resolvesTo(100.0)); // Should preserve existing
       });
     });
 
@@ -268,10 +268,10 @@ void main() {
 
         final merged = first.merge(second);
 
-        expectProp(merged.$minWidth, 50.0);
-        expectProp(merged.$maxWidth, 200.0);
-        expectProp(merged.$minHeight, 100.0);
-        expectProp(merged.$maxHeight, 250.0);
+        expect(merged.$minWidth, resolvesTo(50.0));
+        expect(merged.$maxWidth, resolvesTo(200.0));
+        expect(merged.$minHeight, resolvesTo(100.0));
+        expect(merged.$maxHeight, resolvesTo(250.0));
       });
 
       test('merges named constructor results correctly', () {
@@ -279,8 +279,8 @@ void main() {
         final height = BoxConstraintsMix.maxHeight(200.0);
         final merged = width.merge(height);
 
-        expectProp(merged.$minWidth, 100.0);
-        expectProp(merged.$maxHeight, 200.0);
+        expect(merged.$minWidth, resolvesTo(100.0));
+        expect(merged.$maxHeight, resolvesTo(200.0));
         expect(merged.$maxWidth, isNull);
         expect(merged.$minHeight, isNull);
       });

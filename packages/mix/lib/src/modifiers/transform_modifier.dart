@@ -133,8 +133,8 @@ class TransformModifierMix
     if (other == null) return this;
 
     return TransformModifierMix.create(
-      transform: transform.tryMerge(other.transform),
-      alignment: alignment.tryMerge(other.alignment),
+      transform: MixOps.merge(transform, other.transform),
+      alignment: MixOps.merge(alignment, other.alignment),
     );
   }
 

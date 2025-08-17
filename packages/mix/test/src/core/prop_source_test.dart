@@ -5,28 +5,26 @@ import 'package:mix/mix.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  group('MixProp Token Support', () {
-    group('MixProp.token constructor', () {
-      test('creates MixProp with token source', () {
+  group('Prop Token Support', () {
+    group('Prop.token constructor', () {
+      test('creates Prop with token source', () {
         final token = MixToken<Shadow>('shadow.primary');
-        final mixProp = MixProp.token(token, ShadowMix.value);
+        final mixProp = Prop.token(token);
 
         expect(mixProp.sources, hasLength(1));
-        expect(mixProp.sources.first, isA<MixTokenSource<Shadow>>());
-        expect(
-          mixProp.value,
-          isNull,
-        ); // Cannot provide value for tokens without context
+        expect(mixProp.sources.first, isA<TokenSource<Shadow>>());
+        // TokenSource doesn't provide direct Mix value
+        final mixSource = mixProp.sources.whereType<MixSource<Shadow>>().firstOrNull;
+        expect(mixSource, isNull); // Cannot provide value for tokens without context
       });
 
-      test('stores token and converter correctly', () {
+      test('stores token correctly', () {
         final token = MixToken<BoxShadow>('shadow.box');
-        final mixProp = MixProp.token(token, BoxShadowMix.value);
+        final mixProp = Prop.token(token);
 
         expect(mixProp.sources, hasLength(1));
-        final source = mixProp.sources.first as MixTokenSource<BoxShadow>;
+        final source = mixProp.sources.first as TokenSource<BoxShadow>;
         expect(source.token, equals(token));
-        expect(source.converter, equals(BoxShadowMix.value));
       });
     });
 
@@ -39,7 +37,7 @@ void main() {
           blurRadius: 4.0,
         );
 
-        final mixProp = MixProp.token(token, ShadowMix.value);
+        final mixProp = Prop.token(token);
 
         final context = MockBuildContext(
           tokens: {token.defineValue(shadowValue)},
@@ -57,7 +55,7 @@ void main() {
           spreadRadius: 1.0,
         );
 
-        final mixProp = MixProp.token(token, BoxShadowMix.value);
+        final mixProp = Prop.token(token);
 
         final context = MockBuildContext(
           tokens: {token.defineValue(boxShadowValue)},
@@ -74,7 +72,7 @@ void main() {
           color: Colors.blue,
         );
 
-        final mixProp = MixProp.token(token, TextStyleMix.value);
+        final mixProp = Prop.token(token);
 
         final context = MockBuildContext(
           tokens: {token.defineValue(textStyleValue)},
@@ -94,15 +92,15 @@ void main() {
         );
         final directShadow = ShadowMix(color: Colors.red, blurRadius: 2.0);
 
-        final tokenProp = MixProp.token(token, ShadowMix.value);
-        final valueProp = MixProp(directShadow);
+        final tokenProp = Prop.token(token);
+        final valueProp = Prop.mix(directShadow);
 
         final merged = tokenProp.mergeProp(valueProp);
 
         // Both sources should be accumulated and resolved during resolution
         expect(merged.sources, hasLength(2));
-        expect(merged.sources[0], isA<MixTokenSource<Shadow>>());
-        expect(merged.sources[1], isA<MixValueSource<Shadow>>());
+        expect(merged.sources[0], isA<TokenSource<Shadow>>());
+        expect(merged.sources[1], isA<MixSource<Shadow>>());
 
         // Test resolution with token context
         final context = MockBuildContext(
@@ -118,32 +116,32 @@ void main() {
         final token = MixToken<Shadow>('shadow.primary');
         final directShadow = ShadowMix(color: Colors.red, blurRadius: 2.0);
 
-        final valueProp = MixProp(directShadow);
-        final tokenProp = MixProp.token(token, ShadowMix.value);
+        final valueProp = Prop.mix(directShadow);
+        final tokenProp = Prop.token(token);
 
         final merged = valueProp.mergeProp(tokenProp);
 
         // Both sources should be accumulated
         expect(merged.sources, hasLength(2));
-        expect(merged.sources[0], isA<MixValueSource<Shadow>>());
-        expect(merged.sources[1], isA<MixTokenSource<Shadow>>());
+        expect(merged.sources[0], isA<MixSource<Shadow>>());
+        expect(merged.sources[1], isA<TokenSource<Shadow>>());
       });
 
       test('token source + token source (accumulation strategy)', () {
         final token1 = MixToken<Shadow>('shadow.primary');
         final token2 = MixToken<Shadow>('shadow.secondary');
 
-        final prop1 = MixProp.token(token1, ShadowMix.value);
-        final prop2 = MixProp.token(token2, ShadowMix.value);
+        final prop1 = Prop.token(token1);
+        final prop2 = Prop.token(token2);
 
         final merged = prop1.mergeProp(prop2);
 
         // Both token sources should be accumulated
         expect(merged.sources, hasLength(2));
-        expect(merged.sources[0], isA<MixTokenSource<Shadow>>());
-        expect(merged.sources[1], isA<MixTokenSource<Shadow>>());
-        final source1 = merged.sources[0] as MixTokenSource<Shadow>;
-        final source2 = merged.sources[1] as MixTokenSource<Shadow>;
+        expect(merged.sources[0], isA<TokenSource<Shadow>>());
+        expect(merged.sources[1], isA<TokenSource<Shadow>>());
+        final source1 = merged.sources[0] as TokenSource<Shadow>;
+        final source2 = merged.sources[1] as TokenSource<Shadow>;
         expect(source1.token, equals(token1));
         expect(source2.token, equals(token2));
       });
@@ -156,9 +154,9 @@ void main() {
           curve: Curves.easeIn,
         );
 
-        final prop1 = MixProp<Shadow>.token(token, ShadowMix.value);
-        final prop2 = MixProp<Shadow>.directives([directive]);
-        final prop3 = MixProp<Shadow>.animation(animation);
+        final prop1 = Prop<Shadow>.token(token);
+        final prop2 = Prop<Shadow>.directives([directive]);
+        final prop3 = Prop<Shadow>.animation(animation);
 
         final merged = prop1.mergeProp(prop2).mergeProp(prop3);
 
@@ -168,8 +166,8 @@ void main() {
     });
 
     group('Edge cases', () {
-      test('throws when resolving MixProp with no sources', () {
-        const p = MixProp<int>.directives([]);
+      test('throws when resolving Prop with no sources', () {
+        const p = Prop<int>.directives([]);
         expect(
           () => p.resolveProp(MockBuildContext()),
           throwsA(isA<FlutterError>()),
@@ -177,7 +175,7 @@ void main() {
       });
       test('throws error when resolving without context token', () {
         final token = MixToken<Shadow>('shadow.missing');
-        final mixProp = MixProp.token(token, ShadowMix.value);
+        final mixProp = Prop.token(token);
 
         final context = MockBuildContext(); // No tokens defined
 
@@ -186,7 +184,7 @@ void main() {
 
       test('handles null merge correctly', () {
         final token = MixToken<Shadow>('shadow.primary');
-        final mixProp = MixProp.token(token, ShadowMix.value);
+        final mixProp = Prop.token(token);
 
         final merged = mixProp.mergeProp(null);
 
@@ -195,16 +193,16 @@ void main() {
 
       test('equality works correctly for token sources', () {
         final token = MixToken<Shadow>('shadow.primary');
-        final prop1 = MixProp.token(token, ShadowMix.value);
-        final prop2 = MixProp.token(token, ShadowMix.value);
+        final prop1 = Prop.token(token);
+        final prop2 = Prop.token(token);
 
         expect(prop1, equals(prop2));
       });
 
       test('hashCode works correctly for token sources', () {
         final token = MixToken<Shadow>('shadow.primary');
-        final prop1 = MixProp.token(token, ShadowMix.value);
-        final prop2 = MixProp.token(token, ShadowMix.value);
+        final prop1 = Prop.token(token);
+        final prop2 = Prop.token(token);
 
         expect(prop1.hashCode, equals(prop2.hashCode));
       });
@@ -213,16 +211,18 @@ void main() {
     group('Backward compatibility', () {
       test('value getter returns null for token sources', () {
         final token = MixToken<Shadow>('shadow.primary');
-        final mixProp = MixProp.token(token, ShadowMix.value);
+        final mixProp = Prop.token(token);
 
-        expect(mixProp.value, isNull);
+        // TokenSource doesn't provide direct Mix value
+        final mixSource = mixProp.sources.whereType<MixSource<Shadow>>().firstOrNull;
+        expect(mixSource, isNull);
       });
 
-      test('value getter returns Mix for value sources', () {
+      test('Mix source resolves correctly', () {
         final shadowMix = ShadowMix(color: Colors.red, blurRadius: 2.0);
-        final mixProp = MixProp(shadowMix);
+        final mixProp = Prop.mix(shadowMix);
 
-        expect(mixProp.value, equals(shadowMix));
+        expect(mixProp, resolvesTo(const Shadow(color: Colors.red, blurRadius: 2.0)));
       });
     });
   });

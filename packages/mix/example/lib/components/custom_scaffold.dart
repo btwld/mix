@@ -8,22 +8,15 @@ final scaffoldContainer = Style.flexbox(
     .color(Colors.white)
 );
 
-final appHeaderContainer = Style.box(
+final appHeaderContainer = BoxMix()
     .height(80)
     .color(Colors.black)
-    .padding(.all(16))
-    .alignment(.center)
-    .text(
-      .fontSize(20)
-      .fontWeight(.bold)
-      .color(Colors.white)
-    )
-);
+    .padding(EdgeInsetsMix.all(16))
+    .alignment(Alignment.center);
 
-final scaffoldBodyContainer = Style.box(
+final scaffoldBodyContainer = BoxMix()
     .color(Colors.grey.shade50)
-    .padding(.all(16))
-);
+    .padding(EdgeInsetsMix.all(16));
 
 class CustomScaffold extends StatelessWidget {
   const CustomScaffold({

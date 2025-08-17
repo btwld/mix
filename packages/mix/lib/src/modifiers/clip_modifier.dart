@@ -63,8 +63,7 @@ final class ClipOvalModifier extends Modifier<ClipOvalModifier>
 /// Mix class for applying clip oval modifications.
 ///
 /// This class allows for mixing and resolving clip oval properties.
-class ClipOvalModifierMix
-    extends ModifierMix<ClipOvalModifier> {
+class ClipOvalModifierMix extends ModifierMix<ClipOvalModifier> {
   final Prop<CustomClipper<Rect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
@@ -89,8 +88,8 @@ class ClipOvalModifierMix
     if (other == null) return this;
 
     return ClipOvalModifierMix.create(
-      clipper: clipper.tryMerge(other.clipper),
-      clipBehavior: clipBehavior.tryMerge(other.clipBehavior),
+      clipper: MixOps.merge(clipper, other.clipper),
+      clipBehavior: MixOps.merge(clipBehavior, other.clipBehavior),
     );
   }
 
@@ -154,8 +153,7 @@ final class ClipRectModifier extends Modifier<ClipRectModifier>
 /// Mix class for applying clip rect modifications.
 ///
 /// This class allows for mixing and resolving clip rect properties.
-class ClipRectModifierMix
-    extends ModifierMix<ClipRectModifier> {
+class ClipRectModifierMix extends ModifierMix<ClipRectModifier> {
   final Prop<CustomClipper<Rect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
@@ -180,8 +178,8 @@ class ClipRectModifierMix
     if (other == null) return this;
 
     return ClipRectModifierMix.create(
-      clipper: clipper.tryMerge(other.clipper),
-      clipBehavior: clipBehavior.tryMerge(other.clipBehavior),
+      clipper: MixOps.merge(clipper, other.clipper),
+      clipBehavior: MixOps.merge(clipBehavior, other.clipBehavior),
     );
   }
 
@@ -198,11 +196,7 @@ final class ClipRRectModifier extends Modifier<ClipRRectModifier>
   final CustomClipper<RRect>? clipper;
   final Clip? clipBehavior;
 
-  const ClipRRectModifier({
-    this.borderRadius,
-    this.clipper,
-    this.clipBehavior,
-  });
+  const ClipRRectModifier({this.borderRadius, this.clipper, this.clipBehavior});
 
   @override
   ClipRRectModifier copyWith({
@@ -257,9 +251,8 @@ final class ClipRRectModifier extends Modifier<ClipRRectModifier>
 /// Mix class for applying clip rounded rect modifications.
 ///
 /// This class allows for mixing and resolving clip rounded rect properties.
-class ClipRRectModifierMix
-    extends ModifierMix<ClipRRectModifier> {
-  final MixProp<BorderRadiusGeometry>? borderRadius;
+class ClipRRectModifierMix extends ModifierMix<ClipRRectModifier> {
+  final Prop<BorderRadiusGeometry>? borderRadius;
   final Prop<CustomClipper<RRect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
@@ -274,7 +267,7 @@ class ClipRRectModifierMix
     CustomClipper<RRect>? clipper,
     Clip? clipBehavior,
   }) : this.create(
-         borderRadius: MixProp.maybe(borderRadius),
+         borderRadius: Prop.maybeMix(borderRadius),
          clipper: Prop.maybe(clipper),
          clipBehavior: Prop.maybe(clipBehavior),
        );
@@ -293,9 +286,9 @@ class ClipRRectModifierMix
     if (other == null) return this;
 
     return ClipRRectModifierMix.create(
-      borderRadius: borderRadius.tryMerge(other.borderRadius),
-      clipper: clipper.tryMerge(other.clipper),
-      clipBehavior: clipBehavior.tryMerge(other.clipBehavior),
+      borderRadius: MixOps.merge(borderRadius, other.borderRadius),
+      clipper: MixOps.merge(clipper, other.clipper),
+      clipBehavior: MixOps.merge(clipBehavior, other.clipBehavior),
     );
   }
 
@@ -359,8 +352,7 @@ final class ClipPathModifier extends Modifier<ClipPathModifier>
 /// Mix class for applying clip path modifications.
 ///
 /// This class allows for mixing and resolving clip path properties.
-class ClipPathModifierMix
-    extends ModifierMix<ClipPathModifier> {
+class ClipPathModifierMix extends ModifierMix<ClipPathModifier> {
   final Prop<CustomClipper<Path>>? clipper;
   final Prop<Clip>? clipBehavior;
 
@@ -385,8 +377,8 @@ class ClipPathModifierMix
     if (other == null) return this;
 
     return ClipPathModifierMix.create(
-      clipper: clipper.tryMerge(other.clipper),
-      clipBehavior: clipBehavior.tryMerge(other.clipBehavior),
+      clipper: MixOps.merge(clipper, other.clipper),
+      clipBehavior: MixOps.merge(clipBehavior, other.clipBehavior),
     );
   }
 
@@ -397,8 +389,7 @@ class ClipPathModifierMix
 /// Modifier that clips its child to a triangle shape.
 ///
 /// Wraps the child in a [ClipPath] widget using a triangle clipper.
-final class ClipTriangleModifier
-    extends Modifier<ClipTriangleModifier>
+final class ClipTriangleModifier extends Modifier<ClipTriangleModifier>
     with Diagnosticable {
   final Clip? clipBehavior;
 
@@ -444,8 +435,7 @@ final class ClipTriangleModifier
 /// Mix class for applying clip triangle modifications.
 ///
 /// This class allows for mixing and resolving clip triangle properties.
-class ClipTriangleModifierMix
-    extends ModifierMix<ClipTriangleModifier> {
+class ClipTriangleModifierMix extends ModifierMix<ClipTriangleModifier> {
   final Prop<Clip>? clipBehavior;
 
   const ClipTriangleModifierMix.create({this.clipBehavior});
@@ -465,7 +455,7 @@ class ClipTriangleModifierMix
     if (other == null) return this;
 
     return ClipTriangleModifierMix.create(
-      clipBehavior: clipBehavior.tryMerge(other.clipBehavior),
+      clipBehavior: MixOps.merge(clipBehavior, other.clipBehavior),
     );
   }
 

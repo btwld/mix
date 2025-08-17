@@ -99,7 +99,7 @@ void main() {
         final boxMix = BoxMix.alignment(Alignment.center);
 
         expect(boxMix.$alignment, isNotNull);
-        expectProp(boxMix.$alignment, Alignment.center);
+        expect(boxMix.$alignment, resolvesTo(Alignment.center));
       });
 
       test('padding factory creates BoxMix with padding', () {
@@ -121,14 +121,14 @@ void main() {
         final boxMix = BoxMix.transform(transform);
 
         expect(boxMix.$transform, isNotNull);
-        expectProp(boxMix.$transform, transform);
+        expect(boxMix.$transform, resolvesTo(transform));
       });
 
       test('clipBehavior factory creates BoxMix with clip behavior', () {
         final boxMix = BoxMix.clipBehavior(Clip.antiAlias);
 
         expect(boxMix.$clipBehavior, isNotNull);
-        expectProp(boxMix.$clipBehavior, Clip.antiAlias);
+        expect(boxMix.$clipBehavior, resolvesTo(Clip.antiAlias));
       });
     });
 
@@ -168,11 +168,11 @@ void main() {
         final boxMix = BoxMix.value(spec);
 
         expect(boxMix.$alignment, isNotNull);
-        expectProp(boxMix.$alignment, Alignment.bottomRight);
+        expect(boxMix.$alignment, resolvesTo(Alignment.bottomRight));
         expect(boxMix.$padding, isNotNull);
         expect(boxMix.$margin, isNotNull);
         expect(boxMix.$clipBehavior, isNotNull);
-        expectProp(boxMix.$clipBehavior, Clip.antiAliasWithSaveLayer);
+        expect(boxMix.$clipBehavior, resolvesTo(Clip.antiAliasWithSaveLayer));
       });
 
       test('maybeValue returns null for null input', () {
@@ -224,40 +224,35 @@ void main() {
         final boxMix = BoxMix().rotate(1.5);
 
         expect(boxMix.$transform, isNotNull);
-        final transform = boxMix.$transform!.$value;
-        expect(transform, isA<Matrix4>());
+        expect(boxMix.$transform, resolvesTo(isA<Matrix4>()));
       });
 
       test('scale method sets scale transform', () {
         final boxMix = BoxMix().scale(2.0);
 
         expect(boxMix.$transform, isNotNull);
-        final transform = boxMix.$transform!.$value;
-        expect(transform, isA<Matrix4>());
+        expect(boxMix.$transform, resolvesTo(isA<Matrix4>()));
       });
 
       test('translate method sets translation transform', () {
         final boxMix = BoxMix().translate(10.0, 20.0, 5.0);
 
         expect(boxMix.$transform, isNotNull);
-        final transform = boxMix.$transform!.$value;
-        expect(transform, isA<Matrix4>());
+        expect(boxMix.$transform, resolvesTo(isA<Matrix4>()));
       });
 
       test('skew method sets skew transform', () {
         final boxMix = BoxMix().skew(0.1, 0.2);
 
         expect(boxMix.$transform, isNotNull);
-        final transform = boxMix.$transform!.$value;
-        expect(transform, isA<Matrix4>());
+        expect(boxMix.$transform, resolvesTo(isA<Matrix4>()));
       });
 
       test('transformReset method sets identity transform', () {
         final boxMix = BoxMix().transformReset();
 
         expect(boxMix.$transform, isNotNull);
-        final transform = boxMix.$transform!.$value;
-        expect(transform, Matrix4.identity());
+        expect(boxMix.$transform, resolvesTo(Matrix4.identity()));
       });
 
       test('size method sets both width and height', () {
@@ -313,9 +308,9 @@ void main() {
         final merged = boxMix1.merge(boxMix2);
 
         expect(merged.$alignment, isNotNull);
-        expectProp(
+        expect(
           merged.$alignment,
-          Alignment.center,
+          resolvesTo(Alignment.center),
         ); // boxMix2 takes precedence
         expect(merged.$padding, isNotNull); // from boxMix1
         expect(merged.$margin, isNotNull); // from boxMix2

@@ -157,8 +157,8 @@ void main() {
         expect(attribute.padding, isNull);
       });
 
-      test('creates with provided MixProp padding', () {
-        final padding = MixProp<EdgeInsetsGeometry>(EdgeInsetsMix.all(16.0));
+      test('creates with provided Prop<Mix> padding', () {
+        final padding = Prop.mix(EdgeInsetsMix.all(16.0));
         final attribute = PaddingModifierMix.create(padding: padding);
 
         expect(attribute.padding, same(padding));
@@ -166,11 +166,11 @@ void main() {
     });
 
     group('only constructor', () {
-      test('creates MixProp from EdgeInsetsMix', () {
+      test('creates Prop<Mix> from EdgeInsetsMix', () {
         final edgeInsetsMix = EdgeInsetsMix.all(16.0);
         final attribute = PaddingModifierMix(padding: edgeInsetsMix);
 
-        expectProp(attribute.padding, edgeInsetsMix);
+        expect(attribute.padding, resolvesTo(const EdgeInsets.all(16.0)));
       });
 
       test('handles null padding', () {
@@ -189,7 +189,7 @@ void main() {
         final attribute = PaddingModifierMix(padding: edgeInsetsMix);
 
         expect(attribute.padding, isNotNull);
-        expectProp(attribute.padding, isA<EdgeInsetsMix>());
+        expect(attribute.padding, resolvesTo(isA<EdgeInsets>()));
         expect(
           attribute,
           resolvesTo(
@@ -250,7 +250,7 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        // MixProp accumulates, but since both set all sides, second wins
+        // Prop<Mix> accumulates, but since both set all sides, second wins
         expect(merged.padding, isNotNull);
         expect(
           merged,
@@ -278,7 +278,7 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        // MixProp accumulates - properties from both attributes combine
+        // Prop<Mix> accumulates - properties from both attributes combine
         expect(merged.padding, isNotNull);
         expect(
           merged,
@@ -339,7 +339,7 @@ void main() {
       final result = utility.call(padding: edgeInsetsMix);
       final attribute = result.value;
 
-      expectProp(attribute.padding, edgeInsetsMix);
+      expect(attribute.padding, resolvesTo(const EdgeInsets.all(16.0)));
     });
 
     test('call() handles null padding', () {
@@ -354,7 +354,7 @@ void main() {
       final attribute = result.value;
 
       expect(attribute.padding, isNotNull);
-      expectProp(attribute.padding, isA<EdgeInsetsMix>());
+      expect(attribute.padding, resolvesTo(isA<EdgeInsets>()));
       expect(
         attribute,
         resolvesTo(const PaddingModifier(EdgeInsets.all(16.0))),
@@ -452,7 +452,7 @@ void main() {
 
       final result = base.merge(override1).merge(override2);
 
-      // MixProp accumulates: base -> override1 -> override2
+      // Prop<Mix> accumulates: base -> override1 -> override2
       // Final result: left/right from override1, top from override2, bottom from override1
       expect(
         result,

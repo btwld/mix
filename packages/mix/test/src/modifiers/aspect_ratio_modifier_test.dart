@@ -68,7 +68,7 @@ void main() {
       final attribute = AspectRatioModifierMix.create(
         aspectRatio: Prop.value(1.5),
       );
-      expectProp(attribute.aspectRatio, 1.5);
+      expect(attribute.aspectRatio, resolvesTo(1.5));
     });
 
     test('merge returns correct attribute', () {
@@ -79,7 +79,7 @@ void main() {
         aspectRatio: Prop.value(2.0),
       );
       final merged = attr1.merge(attr2);
-      expectProp(merged.aspectRatio, 2.0); // Prop uses replacement strategy
+      expect(merged.aspectRatio, resolvesTo(2.0)); // Prop uses replacement strategy
     });
 
     test('resolve returns correct modifier', () {

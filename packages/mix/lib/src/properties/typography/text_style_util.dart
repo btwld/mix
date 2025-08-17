@@ -10,7 +10,7 @@ import '../painting/shadow_mix.dart';
 import 'text_style_mix.dart';
 
 final class TextStyleUtility<T extends Style<Object?>>
-    extends MixUtility<T, MixProp<TextStyle>> {
+    extends MixUtility<T, Prop<TextStyle>> {
   late final color = ColorUtility<T>(
     (prop) => buildProp(TextStyleMix.create(color: prop)),
   );
@@ -49,7 +49,7 @@ final class TextStyleUtility<T extends Style<Object?>>
 
   T fontFamily(String value) => call(fontFamily: value);
   @protected
-  T buildProp(TextStyleMix value) => builder(MixProp(value));
+  T buildProp(TextStyleMix value) => builder(Prop.mix(value));
 
   T height(double v) => call(height: v);
 
@@ -130,7 +130,7 @@ final class TextStyleUtility<T extends Style<Object?>>
       ),
     );
 
-    return builder(MixProp(textStyle));
+    return builder(Prop.mix(textStyle));
   }
 
   T as(TextStyle value) => buildProp(TextStyleMix.value(value));

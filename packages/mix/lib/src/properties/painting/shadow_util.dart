@@ -84,13 +84,13 @@ final class BoxShadowUtility<T extends Style<Object?>>
   }
 }
 
-/// A utility class for building [Style] instances from elevation values that produces [MixProp<BoxShadow>] lists.
+/// A utility class for building [Style] instances from elevation values that produces [Prop<BoxShadow>] lists.
 ///
 /// This class extends [MixUtility] and provides methods to create [Style] instances
 /// based on predefined elevation values, which are mapped to corresponding lists of
-/// [MixProp<BoxShadow>] objects that can be directly used in DTOs.
-final class ElevationMixPropUtility<T extends Style<Object?>>
-    extends MixUtility<T, List<MixProp<BoxShadow>>> {
+/// [Prop<BoxShadow>] objects that can be directly used in DTOs.
+final class ElevationPropUtility<T extends Style<Object?>>
+    extends MixUtility<T, List<Prop<BoxShadow>>> {
   /// Creates an [T] instance with an elevation of 1.
   late final e1 = one;
 
@@ -121,7 +121,7 @@ final class ElevationMixPropUtility<T extends Style<Object?>>
   /// Creates an [T] instance with an elevation of 24.
   late final e24 = twentyFour;
 
-  ElevationMixPropUtility(super.builder);
+  ElevationPropUtility(super.builder);
 
   /// Creates an [T] instance with an elevation of 1.
   T get one => call(1);
@@ -156,7 +156,7 @@ final class ElevationMixPropUtility<T extends Style<Object?>>
   /// Creates an [Style] instance from an elevation value.
   ///
   /// Retrieves the corresponding list of [BoxShadow] objects from the [kElevationToShadow]
-  /// map, maps each [BoxShadow] to a [MixProp<BoxShadow>], and passes the resulting list to
+  /// map, maps each [BoxShadow] to a [Prop<BoxShadow>], and passes the resulting list to
   /// the [builder] function to create the [Style] instance.
   ///
   /// Throws an [AssertionError] if the provided [value] is not a valid elevation value.
@@ -174,7 +174,7 @@ final class ElevationMixPropUtility<T extends Style<Object?>>
     }
 
     final boxShadows = kElevationToShadow[value]!.map(
-      (e) => MixProp(
+      (e) => Prop.mix(
         BoxShadowMix.create(
           color: Prop.value(e.color),
           offset: Prop.value(e.offset),

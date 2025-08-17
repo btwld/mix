@@ -19,15 +19,15 @@ import 'shape_border_mix.dart';
 @immutable
 sealed class DecorationMix<T extends Decoration> extends Mix<T> {
   final Prop<Color>? $color;
-  final MixProp<Gradient>? $gradient;
-  final MixProp<DecorationImage>? $image;
-  final List<MixProp<BoxShadow>>? $boxShadow;
+  final Prop<Gradient>? $gradient;
+  final Prop<DecorationImage>? $image;
+  final List<Prop<BoxShadow>>? $boxShadow;
 
   const DecorationMix({
     Prop<Color>? color,
-    MixProp<Gradient>? gradient,
-    List<MixProp<BoxShadow>>? boxShadow,
-    MixProp<DecorationImage>? image,
+    Prop<Gradient>? gradient,
+    List<Prop<BoxShadow>>? boxShadow,
+    Prop<DecorationImage>? image,
   }) : $color = color,
        $gradient = gradient,
        $boxShadow = boxShadow,
@@ -91,8 +91,8 @@ sealed class DecorationMix<T extends Decoration> extends Mix<T> {
   }
 
   /// Merges decoration instances.
-  static DecorationMix? tryMerge(DecorationMix? a, DecorationMix? b) {
-    return DecorationMerger().tryMerge(a, b);
+  static DecorationMix? tryMerge(BuildContext context, DecorationMix? a, DecorationMix? b) {
+    return DecorationMerger().tryMerge(context, a, b);
   }
 
   /// True if mergeable with other types.
@@ -105,8 +105,8 @@ sealed class DecorationMix<T extends Decoration> extends Mix<T> {
 
 /// Mix representation of [BoxDecoration].
 final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
-  final MixProp<BoxBorder>? $border;
-  final MixProp<BorderRadiusGeometry>? $borderRadius;
+  final Prop<BoxBorder>? $border;
+  final Prop<BorderRadiusGeometry>? $borderRadius;
   final Prop<BoxShape>? $shape;
   final Prop<BlendMode>? $backgroundBlendMode;
 
@@ -120,14 +120,14 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
     GradientMix? gradient,
     List<BoxShadowMix>? boxShadow,
   }) : this.create(
-         border: MixProp.maybe(border),
-         borderRadius: MixProp.maybe(borderRadius),
+         border: Prop.maybeMix(border),
+         borderRadius: Prop.maybeMix(borderRadius),
          shape: Prop.maybe(shape),
          backgroundBlendMode: Prop.maybe(backgroundBlendMode),
          color: Prop.maybe(color),
-         image: MixProp.maybe(image),
-         gradient: MixProp.maybe(gradient),
-         boxShadow: boxShadow?.map(MixProp<BoxShadow>.new).toList(),
+         image: Prop.maybeMix(image),
+         gradient: Prop.maybeMix(gradient),
+         boxShadow: boxShadow?.map(Prop.mix).toList(),
        );
 
   /// Creates with border only.
@@ -173,8 +173,8 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
       );
 
   const BoxDecorationMix.create({
-    MixProp<BoxBorder>? border,
-    MixProp<BorderRadiusGeometry>? borderRadius,
+    Prop<BoxBorder>? border,
+    Prop<BorderRadiusGeometry>? borderRadius,
     Prop<BoxShape>? shape,
     Prop<BlendMode>? backgroundBlendMode,
     super.color,
@@ -297,7 +297,7 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
 /// with token support and merging capabilities.
 final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
     with DefaultValue<ShapeDecoration> {
-  final MixProp<ShapeBorder>? $shape;
+  final Prop<ShapeBorder>? $shape;
 
   ShapeDecorationMix({
     ShapeBorderMix? shape,
@@ -306,19 +306,19 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
     GradientMix? gradient,
     List<BoxShadowMix>? shadows,
   }) : this.create(
-         shape: MixProp.maybe(shape),
+         shape: Prop.maybeMix(shape),
          color: Prop.maybe(color),
-         image: MixProp.maybe(image),
-         gradient: MixProp.maybe(gradient),
-         shadows: shadows?.map(MixProp<BoxShadow>.new).toList(),
+         image: Prop.maybeMix(image),
+         gradient: Prop.maybeMix(gradient),
+         shadows: shadows?.map(Prop.mix).toList(),
        );
 
   const ShapeDecorationMix.create({
-    MixProp<ShapeBorder>? shape,
+    Prop<ShapeBorder>? shape,
     super.color,
     super.image,
     super.gradient,
-    List<MixProp<BoxShadow>>? shadows,
+    List<Prop<BoxShadow>>? shadows,
   }) : $shape = shape,
        super(boxShadow: shadows);
 
@@ -339,7 +339,7 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
     return decoration != null ? ShapeDecorationMix.value(decoration) : null;
   }
 
-  List<MixProp<BoxShadow>>? get $shadows => $boxShadow;
+  List<Prop<BoxShadow>>? get $shadows => $boxShadow;
 
   /// Resolves to [ShapeDecoration] using the provided [BuildContext].
   @override
@@ -373,13 +373,13 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
     if (shape == null) return true;
 
     // Check if it's a CircleBorderMix without eccentricity or RoundedRectangleBorderMix
-    if (shape is MixProp<CircleBorder>) {
+    if (shape is Prop<CircleBorder>) {
       // For now, we consider all CircleBorderMix as mergeable
       // In the future, we might need to check eccentricity
       return true;
     }
 
-    return shape is MixProp<RoundedRectangleBorder>;
+    return shape is Prop<RoundedRectangleBorder>;
   }
 
   @override

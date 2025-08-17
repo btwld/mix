@@ -36,11 +36,11 @@ class BoxMix extends Style<BoxSpec>
         StyleVariantMixin<BoxMix, BoxSpec>,
         BorderRadiusMixin<BoxMix> {
   final Prop<AlignmentGeometry>? $alignment;
-  final MixProp<EdgeInsetsGeometry>? $padding;
-  final MixProp<EdgeInsetsGeometry>? $margin;
-  final MixProp<BoxConstraints>? $constraints;
-  final MixProp<Decoration>? $decoration;
-  final MixProp<Decoration>? $foregroundDecoration;
+  final Prop<EdgeInsetsGeometry>? $padding;
+  final Prop<EdgeInsetsGeometry>? $margin;
+  final Prop<BoxConstraints>? $constraints;
+  final Prop<Decoration>? $decoration;
+  final Prop<Decoration>? $foregroundDecoration;
   final Prop<Matrix4>? $transform;
   final Prop<AlignmentGeometry>? $transformAlignment;
   final Prop<Clip>? $clipBehavior;
@@ -164,11 +164,11 @@ class BoxMix extends Style<BoxSpec>
 
   const BoxMix.create({
     Prop<AlignmentGeometry>? alignment,
-    MixProp<EdgeInsetsGeometry>? padding,
-    MixProp<EdgeInsetsGeometry>? margin,
-    MixProp<BoxConstraints>? constraints,
-    MixProp<Decoration>? decoration,
-    MixProp<Decoration>? foregroundDecoration,
+    Prop<EdgeInsetsGeometry>? padding,
+    Prop<EdgeInsetsGeometry>? margin,
+    Prop<BoxConstraints>? constraints,
+    Prop<Decoration>? decoration,
+    Prop<Decoration>? foregroundDecoration,
     Prop<Matrix4>? transform,
     Prop<AlignmentGeometry>? transformAlignment,
     Prop<Clip>? clipBehavior,
@@ -202,11 +202,11 @@ class BoxMix extends Style<BoxSpec>
     bool? inherit,
   }) : this.create(
          alignment: Prop.maybe(alignment),
-         padding: MixProp.maybe(padding),
-         margin: MixProp.maybe(margin),
-         constraints: MixProp.maybe(constraints),
-         decoration: MixProp.maybe(decoration),
-         foregroundDecoration: MixProp.maybe(foregroundDecoration),
+         padding: Prop.maybeMix(padding),
+         margin: Prop.maybeMix(margin),
+         constraints: Prop.maybeMix(constraints),
+         decoration: Prop.maybeMix(decoration),
+         foregroundDecoration: Prop.maybeMix(foregroundDecoration),
          transform: Prop.maybe(transform),
          transformAlignment: Prop.maybe(transformAlignment),
          clipBehavior: Prop.maybe(clipBehavior),

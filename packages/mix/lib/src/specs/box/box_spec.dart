@@ -35,8 +35,7 @@ class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
   /// Aligns the origin of the coordinate system for the [transform].
   final AlignmentGeometry? transformAlignment;
 
-  /// Defines the clip behavior for the box
-  /// when [BoxConstraints] has a negative minimum extent.
+  /// Defines the clip behavior for the box when content overflows.
   final Clip? clipBehavior;
 
   const BoxSpec({

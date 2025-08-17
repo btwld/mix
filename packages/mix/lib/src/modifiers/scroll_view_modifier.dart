@@ -11,8 +11,7 @@ import '../properties/layout/edge_insets_geometry_util.dart';
 /// Modifier that applies scroll view properties to its child.
 ///
 /// Wraps the child in a scrollable widget with the specified properties.
-final class ScrollViewModifier
-    extends Modifier<ScrollViewModifier> {
+final class ScrollViewModifier extends Modifier<ScrollViewModifier> {
   final Axis? scrollDirection;
   final bool? reverse;
   final EdgeInsetsGeometry? padding;
@@ -155,11 +154,10 @@ final class ScrollViewModifierUtility<T extends Style<Object?>>
   }
 }
 
-class ScrollViewModifierMix
-    extends ModifierMix<ScrollViewModifier> {
+class ScrollViewModifierMix extends ModifierMix<ScrollViewModifier> {
   final Prop<Axis>? scrollDirection;
   final Prop<bool>? reverse;
-  final MixProp<EdgeInsetsGeometry>? padding;
+  final Prop<EdgeInsetsGeometry>? padding;
   final Prop<ScrollPhysics>? physics;
   final Prop<Clip>? clipBehavior;
 
@@ -180,7 +178,7 @@ class ScrollViewModifierMix
   }) : this.create(
          scrollDirection: Prop.maybe(scrollDirection),
          reverse: Prop.maybe(reverse),
-         padding: MixProp.maybe(padding),
+         padding: Prop.maybeMix(padding),
          physics: Prop.maybe(physics),
          clipBehavior: Prop.maybe(clipBehavior),
        );
@@ -201,11 +199,11 @@ class ScrollViewModifierMix
     if (other == null) return this;
 
     return ScrollViewModifierMix.create(
-      scrollDirection: scrollDirection.tryMerge(other.scrollDirection),
-      reverse: reverse.tryMerge(other.reverse),
-      padding: padding.tryMerge(other.padding),
-      physics: physics.tryMerge(other.physics),
-      clipBehavior: clipBehavior.tryMerge(other.clipBehavior),
+      scrollDirection: MixOps.merge(scrollDirection, other.scrollDirection),
+      reverse: MixOps.merge(reverse, other.reverse),
+      padding: MixOps.merge(padding, other.padding),
+      physics: MixOps.merge(physics, other.physics),
+      clipBehavior: MixOps.merge(clipBehavior, other.clipBehavior),
     );
   }
 

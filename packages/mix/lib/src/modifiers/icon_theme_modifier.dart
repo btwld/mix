@@ -26,9 +26,7 @@ final class IconThemeModifier extends Modifier<IconThemeModifier>
   IconThemeModifier lerp(IconThemeModifier? other, double t) {
     if (other == null) return this;
 
-    return IconThemeModifier(
-      data: MixOps.lerp(data, other.data, t) ?? data,
-    );
+    return IconThemeModifier(data: MixOps.lerp(data, other.data, t) ?? data);
   }
 
   @override
@@ -57,8 +55,7 @@ final class IconThemeModifier extends Modifier<IconThemeModifier>
 ///
 /// Use this class to configure the attributes of a [IconThemeModifier] and pass it to
 /// the [IconThemeModifier] constructor.
-class IconThemeModifierMix
-    extends ModifierMix<IconThemeModifier> {
+class IconThemeModifierMix extends ModifierMix<IconThemeModifier> {
   final Prop<Color>? color;
   final Prop<double>? size;
   final Prop<double>? fill;
@@ -66,7 +63,7 @@ class IconThemeModifierMix
   final Prop<double>? grade;
   final Prop<double>? opticalSize;
   final Prop<double>? opacity;
-  final List<MixProp<Shadow>>? shadows;
+  final List<Prop<Shadow>>? shadows;
   final Prop<bool>? applyTextScaling;
 
   const IconThemeModifierMix.create({
@@ -99,7 +96,7 @@ class IconThemeModifierMix
          grade: Prop.maybe(grade),
          opticalSize: Prop.maybe(opticalSize),
          opacity: Prop.maybe(opacity),
-         shadows: shadows?.map(MixProp.new).toList(),
+         shadows: shadows?.map(Prop.mix).toList(),
          applyTextScaling: Prop.maybe(applyTextScaling),
        );
 
@@ -140,15 +137,15 @@ class IconThemeModifierMix
     if (other == null) return this;
 
     return IconThemeModifierMix.create(
-      color: color.tryMerge(other.color),
-      size: size.tryMerge(other.size),
-      fill: fill.tryMerge(other.fill),
-      weight: weight.tryMerge(other.weight),
-      grade: grade.tryMerge(other.grade),
-      opticalSize: opticalSize.tryMerge(other.opticalSize),
-      opacity: opacity.tryMerge(other.opacity),
-      shadows: shadows.tryMerge(other.shadows),
-      applyTextScaling: applyTextScaling.tryMerge(other.applyTextScaling),
+      color: MixOps.merge(color, other.color),
+      size: MixOps.merge(size, other.size),
+      fill: MixOps.merge(fill, other.fill),
+      weight: MixOps.merge(weight, other.weight),
+      grade: MixOps.merge(grade, other.grade),
+      opticalSize: MixOps.merge(opticalSize, other.opticalSize),
+      opacity: MixOps.merge(opacity, other.opacity),
+      shadows: MixOps.mergeList(shadows, other.shadows),
+      applyTextScaling: MixOps.merge(applyTextScaling, other.applyTextScaling),
     );
   }
 

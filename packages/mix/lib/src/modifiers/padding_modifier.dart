@@ -51,12 +51,12 @@ final class PaddingModifier extends Modifier<PaddingModifier>
 /// This class allows for mixing and resolving padding properties.
 class PaddingModifierMix extends ModifierMix<PaddingModifier>
     with Diagnosticable {
-  final MixProp<EdgeInsetsGeometry>? padding;
+  final Prop<EdgeInsetsGeometry>? padding;
 
   const PaddingModifierMix.create({this.padding});
 
   PaddingModifierMix({EdgeInsetsGeometryMix? padding})
-    : this.create(padding: MixProp.maybe(padding));
+    : this.create(padding: Prop.maybeMix(padding));
 
   @override
   PaddingModifier resolve(BuildContext context) {
@@ -95,8 +95,6 @@ class PaddingModifierUtility<T extends Style<Object?>>
   PaddingModifierUtility(super.builder);
 
   T call({EdgeInsetsGeometryMix? padding}) {
-    return builder(
-      PaddingModifierMix.create(padding: MixProp.maybe(padding)),
-    );
+    return builder(PaddingModifierMix.create(padding: Prop.maybeMix(padding)));
   }
 }

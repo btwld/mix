@@ -21,8 +21,8 @@ import 'stack_spec.dart';
 /// Use this class to configure the attributes of a [ZBoxSpec] and pass it to
 /// the [ZBoxSpec] constructor.
 class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
-  final MixProp<BoxSpec>? $box;
-  final MixProp<StackSpec>? $stack;
+  final Prop<BoxSpec>? $box;
+  final Prop<StackSpec>? $stack;
 
   StackBoxMix({
     BoxMix? box,
@@ -32,12 +32,12 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
     super.variants,
 
     super.inherit,
-  }) : $box = MixProp.maybe(box),
-       $stack = MixProp.maybe(stack);
+  }) : $box = Prop.maybeMix(box),
+       $stack = Prop.maybeMix(stack);
 
   const StackBoxMix.create({
-    MixProp<BoxSpec>? box,
-    MixProp<StackSpec>? stack,
+    Prop<BoxSpec>? box,
+    Prop<StackSpec>? stack,
     super.modifier,
     super.animation,
     super.variants,
@@ -126,12 +126,8 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
   /// ```
   @override
   ZBoxSpec resolve(BuildContext context) {
-    final boxSpec = $box?.value is BoxMix 
-        ? ($box!.value as BoxMix).resolve(context) 
-        : null;
-    final stackSpec = $stack?.value is StackMix 
-        ? ($stack!.value as StackMix).resolve(context) 
-        : null;
+    final boxSpec = MixOps.resolve(context, $box);
+    final stackSpec = MixOps.resolve(context, $stack);
     
     return ZBoxSpec(box: boxSpec, stack: stackSpec);
   }

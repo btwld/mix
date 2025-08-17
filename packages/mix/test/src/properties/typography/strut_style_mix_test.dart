@@ -21,18 +21,18 @@ void main() {
           forceStrutHeight: true,
         );
 
-        expectProp(strutStyleMix.$fontFamily, 'Roboto');
-        expectProp(strutStyleMix.$fontSize, 16.0);
-        expectProp(strutStyleMix.$fontWeight, FontWeight.bold);
-        expectProp(strutStyleMix.$fontStyle, FontStyle.italic);
-        expectProp(strutStyleMix.$height, 1.5);
-        expectProp(strutStyleMix.$leading, 2.0);
-        expectProp(strutStyleMix.$forceStrutHeight, true);
+        expect(strutStyleMix.$fontFamily, resolvesTo('Roboto'));
+        expect(strutStyleMix.$fontSize, resolvesTo(16.0));
+        expect(strutStyleMix.$fontWeight, resolvesTo(FontWeight.bold));
+        expect(strutStyleMix.$fontStyle, resolvesTo(FontStyle.italic));
+        expect(strutStyleMix.$height, resolvesTo(1.5));
+        expect(strutStyleMix.$leading, resolvesTo(2.0));
+        expect(strutStyleMix.$forceStrutHeight, resolvesTo(true));
 
         // Test fontFamilyFallback list
         expect(strutStyleMix.$fontFamilyFallback, hasLength(2));
-        expectProp(strutStyleMix.$fontFamilyFallback![0], 'Arial');
-        expectProp(strutStyleMix.$fontFamilyFallback![1], 'Helvetica');
+        expect(strutStyleMix.$fontFamilyFallback![0], resolvesTo('Arial'));
+        expect(strutStyleMix.$fontFamilyFallback![1], resolvesTo('Helvetica'));
       });
 
       test('value constructor extracts properties from StrutStyle', () {
@@ -49,16 +49,16 @@ void main() {
 
         final strutStyleMix = StrutStyleMix.value(strutStyle);
 
-        expectProp(strutStyleMix.$fontFamily, 'Roboto');
-        expectProp(strutStyleMix.$fontSize, 14.0);
-        expectProp(strutStyleMix.$fontWeight, FontWeight.w500);
-        expectProp(strutStyleMix.$fontStyle, FontStyle.normal);
-        expectProp(strutStyleMix.$height, 1.2);
-        expectProp(strutStyleMix.$leading, 1.0);
-        expectProp(strutStyleMix.$forceStrutHeight, false);
+        expect(strutStyleMix.$fontFamily, resolvesTo('Roboto'));
+        expect(strutStyleMix.$fontSize, resolvesTo(14.0));
+        expect(strutStyleMix.$fontWeight, resolvesTo(FontWeight.w500));
+        expect(strutStyleMix.$fontStyle, resolvesTo(FontStyle.normal));
+        expect(strutStyleMix.$height, resolvesTo(1.2));
+        expect(strutStyleMix.$leading, resolvesTo(1.0));
+        expect(strutStyleMix.$forceStrutHeight, resolvesTo(false));
 
         expect(strutStyleMix.$fontFamilyFallback, hasLength(1));
-        expectProp(strutStyleMix.$fontFamilyFallback![0], 'Arial');
+        expect(strutStyleMix.$fontFamilyFallback![0], resolvesTo('Arial'));
       });
 
       test('maybeValue returns null for null input', () {
@@ -71,7 +71,7 @@ void main() {
         final result = StrutStyleMix.maybeValue(strutStyle);
 
         expect(result, isNotNull);
-        expectProp(result!.$fontSize, 16.0);
+        expect(result!.$fontSize, resolvesTo(16.0));
       });
     });
 
@@ -79,7 +79,7 @@ void main() {
       test('fontFamily factory creates StrutStyleMix with fontFamily', () {
         final strutStyleMix = StrutStyleMix.fontFamily('Times');
 
-        expectProp(strutStyleMix.$fontFamily, 'Times');
+        expect(strutStyleMix.$fontFamily, resolvesTo('Times'));
         expect(strutStyleMix.$fontFamilyFallback, isNull);
         expect(strutStyleMix.$fontSize, isNull);
         expect(strutStyleMix.$height, isNull);
@@ -98,8 +98,8 @@ void main() {
           );
 
           expect(strutStyleMix.$fontFamilyFallback?.length, 2);
-          expectProp(strutStyleMix.$fontFamilyFallback![0], 'Georgia');
-          expectProp(strutStyleMix.$fontFamilyFallback![1], 'serif');
+          expect(strutStyleMix.$fontFamilyFallback![0], resolvesTo('Georgia'));
+          expect(strutStyleMix.$fontFamilyFallback![1], resolvesTo('serif'));
           expect(strutStyleMix.$fontFamily, isNull);
           expect(strutStyleMix.$fontSize, isNull);
           expect(strutStyleMix.$height, isNull);
@@ -113,7 +113,7 @@ void main() {
       test('fontSize factory creates StrutStyleMix with fontSize', () {
         final strutStyleMix = StrutStyleMix.fontSize(18.0);
 
-        expectProp(strutStyleMix.$fontSize, 18.0);
+        expect(strutStyleMix.$fontSize, resolvesTo(18.0));
         expect(strutStyleMix.$fontFamily, isNull);
         expect(strutStyleMix.$fontFamilyFallback, isNull);
         expect(strutStyleMix.$height, isNull);
@@ -126,7 +126,7 @@ void main() {
       test('height factory creates StrutStyleMix with height', () {
         final strutStyleMix = StrutStyleMix.height(1.8);
 
-        expectProp(strutStyleMix.$height, 1.8);
+        expect(strutStyleMix.$height, resolvesTo(1.8));
         expect(strutStyleMix.$fontFamily, isNull);
         expect(strutStyleMix.$fontFamilyFallback, isNull);
         expect(strutStyleMix.$fontSize, isNull);
@@ -139,7 +139,7 @@ void main() {
       test('leading factory creates StrutStyleMix with leading', () {
         final strutStyleMix = StrutStyleMix.leading(1.3);
 
-        expectProp(strutStyleMix.$leading, 1.3);
+        expect(strutStyleMix.$leading, resolvesTo(1.3));
         expect(strutStyleMix.$fontFamily, isNull);
         expect(strutStyleMix.$fontFamilyFallback, isNull);
         expect(strutStyleMix.$fontSize, isNull);
@@ -152,7 +152,7 @@ void main() {
       test('fontWeight factory creates StrutStyleMix with fontWeight', () {
         final strutStyleMix = StrutStyleMix.fontWeight(FontWeight.w600);
 
-        expectProp(strutStyleMix.$fontWeight, FontWeight.w600);
+        expect(strutStyleMix.$fontWeight, resolvesTo(FontWeight.w600));
         expect(strutStyleMix.$fontFamily, isNull);
         expect(strutStyleMix.$fontFamilyFallback, isNull);
         expect(strutStyleMix.$fontSize, isNull);
@@ -165,7 +165,7 @@ void main() {
       test('fontStyle factory creates StrutStyleMix with fontStyle', () {
         final strutStyleMix = StrutStyleMix.fontStyle(FontStyle.normal);
 
-        expectProp(strutStyleMix.$fontStyle, FontStyle.normal);
+        expect(strutStyleMix.$fontStyle, resolvesTo(FontStyle.normal));
         expect(strutStyleMix.$fontFamily, isNull);
         expect(strutStyleMix.$fontFamilyFallback, isNull);
         expect(strutStyleMix.$fontSize, isNull);
@@ -180,7 +180,7 @@ void main() {
         () {
           final strutStyleMix = StrutStyleMix.forceStrutHeight(false);
 
-          expectProp(strutStyleMix.$forceStrutHeight, false);
+          expect(strutStyleMix.$forceStrutHeight, resolvesTo(false));
           expect(strutStyleMix.$fontFamily, isNull);
           expect(strutStyleMix.$fontFamilyFallback, isNull);
           expect(strutStyleMix.$fontSize, isNull);
@@ -237,11 +237,11 @@ void main() {
 
         final merged = first.merge(second);
 
-        expectProp(merged.$fontFamily, 'Roboto');
-        expectProp(merged.$fontSize, 18.0);
-        expectProp(merged.$fontWeight, FontWeight.normal);
-        expectProp(merged.$fontStyle, FontStyle.italic);
-        expectProp(merged.$height, 1.5);
+        expect(merged.$fontFamily, resolvesTo('Roboto'));
+        expect(merged.$fontSize, resolvesTo(18.0));
+        expect(merged.$fontWeight, resolvesTo(FontWeight.normal));
+        expect(merged.$fontStyle, resolvesTo(FontStyle.italic));
+        expect(merged.$height, resolvesTo(1.5));
       });
 
       test('merges fontFamilyFallback lists by concatenating', () {
@@ -257,8 +257,8 @@ void main() {
 
         expect(merged.$fontFamilyFallback, hasLength(2));
 
-        expectProp(merged.$fontFamilyFallback![0], 'Times');
-        expectProp(merged.$fontFamilyFallback![1], 'Georgia');
+        expect(merged.$fontFamilyFallback![0], resolvesTo('Times'));
+        expect(merged.$fontFamilyFallback![1], resolvesTo('Georgia'));
       });
 
       test('preserves all properties in complex merge', () {
@@ -276,11 +276,11 @@ void main() {
 
         final merged = base.merge(override);
 
-        expectProp(merged.$fontFamily, 'Roboto'); // preserved
-        expectProp(merged.$fontSize, 16.0); // overridden
-        expectProp(merged.$fontWeight, FontWeight.bold); // added
+        expect(merged.$fontFamily, resolvesTo('Roboto')); // preserved
+        expect(merged.$fontSize, resolvesTo(16.0)); // overridden
+        expect(merged.$fontWeight, resolvesTo(FontWeight.bold)); // added
         expect(merged.$fontFamilyFallback, hasLength(1)); // concatenated
-        expectProp(merged.$fontFamilyFallback![0], 'Times');
+        expect(merged.$fontFamilyFallback![0], resolvesTo('Times'));
       });
     });
 
@@ -331,7 +331,7 @@ void main() {
       test('fontFamily utility works correctly', () {
         final strutStyleMix = StrutStyleMix().fontFamily('Courier');
 
-        expectProp(strutStyleMix.$fontFamily, 'Courier');
+        expect(strutStyleMix.$fontFamily, resolvesTo('Courier'));
       });
 
       test('fontFamilyFallback utility works correctly', () {
@@ -341,44 +341,44 @@ void main() {
         );
 
         expect(strutStyleMix.$fontFamilyFallback?.length, 2);
-        expectProp(strutStyleMix.$fontFamilyFallback![0], 'Verdana');
-        expectProp(strutStyleMix.$fontFamilyFallback![1], 'sans-serif');
+        expect(strutStyleMix.$fontFamilyFallback![0], resolvesTo('Verdana'));
+        expect(strutStyleMix.$fontFamilyFallback![1], resolvesTo('sans-serif'));
       });
 
       test('fontSize utility works correctly', () {
         final strutStyleMix = StrutStyleMix().fontSize(20.0);
 
-        expectProp(strutStyleMix.$fontSize, 20.0);
+        expect(strutStyleMix.$fontSize, resolvesTo(20.0));
       });
 
       test('height utility works correctly', () {
         final strutStyleMix = StrutStyleMix().height(2.0);
 
-        expectProp(strutStyleMix.$height, 2.0);
+        expect(strutStyleMix.$height, resolvesTo(2.0));
       });
 
       test('leading utility works correctly', () {
         final strutStyleMix = StrutStyleMix().leading(1.8);
 
-        expectProp(strutStyleMix.$leading, 1.8);
+        expect(strutStyleMix.$leading, resolvesTo(1.8));
       });
 
       test('fontWeight utility works correctly', () {
         final strutStyleMix = StrutStyleMix().fontWeight(FontWeight.w300);
 
-        expectProp(strutStyleMix.$fontWeight, FontWeight.w300);
+        expect(strutStyleMix.$fontWeight, resolvesTo(FontWeight.w300));
       });
 
       test('fontStyle utility works correctly', () {
         final strutStyleMix = StrutStyleMix().fontStyle(FontStyle.italic);
 
-        expectProp(strutStyleMix.$fontStyle, FontStyle.italic);
+        expect(strutStyleMix.$fontStyle, resolvesTo(FontStyle.italic));
       });
 
       test('forceStrutHeight utility works correctly', () {
         final strutStyleMix = StrutStyleMix().forceStrutHeight(true);
 
-        expectProp(strutStyleMix.$forceStrutHeight, true);
+        expect(strutStyleMix.$forceStrutHeight, resolvesTo(true));
       });
     });
 

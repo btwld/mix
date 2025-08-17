@@ -19,10 +19,7 @@ final class FlexibleModifier extends Modifier<FlexibleModifier>
 
   @override
   FlexibleModifier copyWith({int? flex, FlexFit? fit}) {
-    return FlexibleModifier(
-      flex: flex ?? this.flex,
-      fit: fit ?? this.fit,
-    );
+    return FlexibleModifier(flex: flex ?? this.flex, fit: fit ?? this.fit);
   }
 
   @override
@@ -54,8 +51,7 @@ final class FlexibleModifier extends Modifier<FlexibleModifier>
 /// Mix class for applying flexible modifications.
 ///
 /// This class allows for mixing and resolving flexible properties.
-class FlexibleModifierMix
-    extends ModifierMix<FlexibleModifier>
+class FlexibleModifierMix extends ModifierMix<FlexibleModifier>
     with Diagnosticable {
   final Prop<int>? flex;
   final Prop<FlexFit>? fit;

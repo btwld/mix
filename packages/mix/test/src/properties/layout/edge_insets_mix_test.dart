@@ -15,10 +15,10 @@ void main() {
           right: 20.0,
         );
 
-        expectProp(edgeInsetsMix.$top, 8.0);
-        expectProp(edgeInsetsMix.$bottom, 12.0);
-        expectProp(edgeInsetsMix.$left, 16.0);
-        expectProp(edgeInsetsMix.$right, 20.0);
+        expect(edgeInsetsMix.$top, resolvesTo(8.0));
+        expect(edgeInsetsMix.$bottom, resolvesTo(12.0));
+        expect(edgeInsetsMix.$left, resolvesTo(16.0));
+        expect(edgeInsetsMix.$right, resolvesTo(20.0));
       });
 
       test('value constructor extracts properties from EdgeInsets', () {
@@ -31,28 +31,28 @@ void main() {
 
         final edgeInsetsMix = EdgeInsetsMix.value(edgeInsets);
 
-        expectProp(edgeInsetsMix.$top, 5.0);
-        expectProp(edgeInsetsMix.$bottom, 10.0);
-        expectProp(edgeInsetsMix.$left, 15.0);
-        expectProp(edgeInsetsMix.$right, 20.0);
+        expect(edgeInsetsMix.$top, resolvesTo(5.0));
+        expect(edgeInsetsMix.$bottom, resolvesTo(10.0));
+        expect(edgeInsetsMix.$left, resolvesTo(15.0));
+        expect(edgeInsetsMix.$right, resolvesTo(20.0));
       });
 
       test('all constructor creates uniform insets', () {
         final edgeInsetsMix = EdgeInsetsMix.all(16.0);
 
-        expectProp(edgeInsetsMix.$top, 16.0);
-        expectProp(edgeInsetsMix.$bottom, 16.0);
-        expectProp(edgeInsetsMix.$left, 16.0);
-        expectProp(edgeInsetsMix.$right, 16.0);
+        expect(edgeInsetsMix.$top, resolvesTo(16.0));
+        expect(edgeInsetsMix.$bottom, resolvesTo(16.0));
+        expect(edgeInsetsMix.$left, resolvesTo(16.0));
+        expect(edgeInsetsMix.$right, resolvesTo(16.0));
       });
 
       test('none constructor creates zero insets', () {
         final edgeInsetsMix = EdgeInsetsMix.none();
 
-        expectProp(edgeInsetsMix.$top, 0.0);
-        expectProp(edgeInsetsMix.$bottom, 0.0);
-        expectProp(edgeInsetsMix.$left, 0.0);
-        expectProp(edgeInsetsMix.$right, 0.0);
+        expect(edgeInsetsMix.$top, resolvesTo(0.0));
+        expect(edgeInsetsMix.$bottom, resolvesTo(0.0));
+        expect(edgeInsetsMix.$left, resolvesTo(0.0));
+        expect(edgeInsetsMix.$right, resolvesTo(0.0));
       });
 
       test('maybeValue returns null for null input', () {
@@ -65,10 +65,10 @@ void main() {
         final result = EdgeInsetsMix.maybeValue(edgeInsets);
 
         expect(result, isNotNull);
-        expectProp(result!.$top, 8.0);
-        expectProp(result.$bottom, 8.0);
-        expectProp(result.$left, 8.0);
-        expectProp(result.$right, 8.0);
+        expect(result!.$top, resolvesTo(8.0));
+        expect(result.$bottom, resolvesTo(8.0));
+        expect(result.$left, resolvesTo(8.0));
+        expect(result.$right, resolvesTo(8.0));
       });
     });
 
@@ -79,10 +79,10 @@ void main() {
           horizontal: 20.0,
         );
 
-        expectProp(edgeInsetsMix.$top, 10.0);
-        expectProp(edgeInsetsMix.$bottom, 10.0);
-        expectProp(edgeInsetsMix.$left, 20.0);
-        expectProp(edgeInsetsMix.$right, 20.0);
+        expect(edgeInsetsMix.$top, resolvesTo(10.0));
+        expect(edgeInsetsMix.$bottom, resolvesTo(10.0));
+        expect(edgeInsetsMix.$left, resolvesTo(20.0));
+        expect(edgeInsetsMix.$right, resolvesTo(20.0));
       });
 
       test(
@@ -90,8 +90,8 @@ void main() {
         () {
           final edgeInsetsMix = EdgeInsetsMix.horizontal(15.0);
 
-          expectProp(edgeInsetsMix.$left, 15.0);
-          expectProp(edgeInsetsMix.$right, 15.0);
+          expect(edgeInsetsMix.$left, resolvesTo(15.0));
+          expect(edgeInsetsMix.$right, resolvesTo(15.0));
           expect(edgeInsetsMix.$top, isNull);
           expect(edgeInsetsMix.$bottom, isNull);
         },
@@ -100,8 +100,8 @@ void main() {
       test('vertical factory creates EdgeInsetsMix with vertical insets', () {
         final edgeInsetsMix = EdgeInsetsMix.vertical(12.0);
 
-        expectProp(edgeInsetsMix.$top, 12.0);
-        expectProp(edgeInsetsMix.$bottom, 12.0);
+        expect(edgeInsetsMix.$top, resolvesTo(12.0));
+        expect(edgeInsetsMix.$bottom, resolvesTo(12.0));
         expect(edgeInsetsMix.$left, isNull);
         expect(edgeInsetsMix.$right, isNull);
       });
@@ -109,10 +109,10 @@ void main() {
       test('fromLTRB factory creates EdgeInsetsMix with specific values', () {
         final edgeInsetsMix = EdgeInsetsMix.fromLTRB(5.0, 10.0, 15.0, 20.0);
 
-        expectProp(edgeInsetsMix.$left, 5.0);
-        expectProp(edgeInsetsMix.$top, 10.0);
-        expectProp(edgeInsetsMix.$right, 15.0);
-        expectProp(edgeInsetsMix.$bottom, 20.0);
+        expect(edgeInsetsMix.$left, resolvesTo(5.0));
+        expect(edgeInsetsMix.$top, resolvesTo(10.0));
+        expect(edgeInsetsMix.$right, resolvesTo(15.0));
+        expect(edgeInsetsMix.$bottom, resolvesTo(20.0));
       });
     });
 
@@ -120,34 +120,34 @@ void main() {
       test('top utility works correctly', () {
         final edgeInsetsMix = EdgeInsetsMix().top(10.0);
 
-        expectProp(edgeInsetsMix.$top, 10.0);
+        expect(edgeInsetsMix.$top, resolvesTo(10.0));
       });
 
       test('bottom utility works correctly', () {
         final edgeInsetsMix = EdgeInsetsMix().bottom(12.0);
 
-        expectProp(edgeInsetsMix.$bottom, 12.0);
+        expect(edgeInsetsMix.$bottom, resolvesTo(12.0));
       });
 
       test('left utility works correctly', () {
         final edgeInsetsMix = EdgeInsetsMix().left(8.0);
 
-        expectProp(edgeInsetsMix.$left, 8.0);
+        expect(edgeInsetsMix.$left, resolvesTo(8.0));
       });
 
       test('right utility works correctly', () {
         final edgeInsetsMix = EdgeInsetsMix().right(15.0);
 
-        expectProp(edgeInsetsMix.$right, 15.0);
+        expect(edgeInsetsMix.$right, resolvesTo(15.0));
       });
 
       test('all factory works correctly', () {
         final edgeInsetsMix = EdgeInsetsMix.all(16.0);
 
-        expectProp(edgeInsetsMix.$top, 16.0);
-        expectProp(edgeInsetsMix.$bottom, 16.0);
-        expectProp(edgeInsetsMix.$left, 16.0);
-        expectProp(edgeInsetsMix.$right, 16.0);
+        expect(edgeInsetsMix.$top, resolvesTo(16.0));
+        expect(edgeInsetsMix.$bottom, resolvesTo(16.0));
+        expect(edgeInsetsMix.$left, resolvesTo(16.0));
+        expect(edgeInsetsMix.$right, resolvesTo(16.0));
       });
 
       test('symmetric utility works correctly', () {
@@ -156,10 +156,10 @@ void main() {
           horizontal: 20.0,
         );
 
-        expectProp(edgeInsetsMix.$top, 10.0);
-        expectProp(edgeInsetsMix.$bottom, 10.0);
-        expectProp(edgeInsetsMix.$left, 20.0);
-        expectProp(edgeInsetsMix.$right, 20.0);
+        expect(edgeInsetsMix.$top, resolvesTo(10.0));
+        expect(edgeInsetsMix.$bottom, resolvesTo(10.0));
+        expect(edgeInsetsMix.$left, resolvesTo(20.0));
+        expect(edgeInsetsMix.$right, resolvesTo(20.0));
       });
 
       test('only utility works correctly', () {
@@ -170,19 +170,19 @@ void main() {
           bottom: 20.0,
         );
 
-        expectProp(edgeInsetsMix.$left, 5.0);
-        expectProp(edgeInsetsMix.$top, 10.0);
-        expectProp(edgeInsetsMix.$right, 15.0);
-        expectProp(edgeInsetsMix.$bottom, 20.0);
+        expect(edgeInsetsMix.$left, resolvesTo(5.0));
+        expect(edgeInsetsMix.$top, resolvesTo(10.0));
+        expect(edgeInsetsMix.$right, resolvesTo(15.0));
+        expect(edgeInsetsMix.$bottom, resolvesTo(20.0));
       });
 
       test('fromLTRB factory works correctly', () {
         final edgeInsetsMix = EdgeInsetsMix.fromLTRB(5.0, 10.0, 15.0, 20.0);
 
-        expectProp(edgeInsetsMix.$left, 5.0);
-        expectProp(edgeInsetsMix.$top, 10.0);
-        expectProp(edgeInsetsMix.$right, 15.0);
-        expectProp(edgeInsetsMix.$bottom, 20.0);
+        expect(edgeInsetsMix.$left, resolvesTo(5.0));
+        expect(edgeInsetsMix.$top, resolvesTo(10.0));
+        expect(edgeInsetsMix.$right, resolvesTo(15.0));
+        expect(edgeInsetsMix.$bottom, resolvesTo(20.0));
       });
     });
 
@@ -234,10 +234,10 @@ void main() {
 
         final merged = first.merge(second);
 
-        expectProp(merged.$top, 12.0);
+        expect(merged.$top, resolvesTo(12.0));
         expect(merged.$bottom, isNull);
-        expectProp(merged.$left, 16.0);
-        expectProp(merged.$right, 20.0);
+        expect(merged.$left, resolvesTo(16.0));
+        expect(merged.$right, resolvesTo(20.0));
       });
     });
 
@@ -287,10 +287,10 @@ void main() {
           end: 20.0,
         );
 
-        expectProp(edgeInsetsDirectionalMix.$top, 8.0);
-        expectProp(edgeInsetsDirectionalMix.$bottom, 12.0);
-        expectProp(edgeInsetsDirectionalMix.$start, 16.0);
-        expectProp(edgeInsetsDirectionalMix.$end, 20.0);
+        expect(edgeInsetsDirectionalMix.$top, resolvesTo(8.0));
+        expect(edgeInsetsDirectionalMix.$bottom, resolvesTo(12.0));
+        expect(edgeInsetsDirectionalMix.$start, resolvesTo(16.0));
+        expect(edgeInsetsDirectionalMix.$end, resolvesTo(20.0));
       });
 
       test(
@@ -307,29 +307,29 @@ void main() {
             edgeInsets,
           );
 
-          expectProp(edgeInsetsDirectionalMix.$top, 5.0);
-          expectProp(edgeInsetsDirectionalMix.$bottom, 10.0);
-          expectProp(edgeInsetsDirectionalMix.$start, 15.0);
-          expectProp(edgeInsetsDirectionalMix.$end, 20.0);
+          expect(edgeInsetsDirectionalMix.$top, resolvesTo(5.0));
+          expect(edgeInsetsDirectionalMix.$bottom, resolvesTo(10.0));
+          expect(edgeInsetsDirectionalMix.$start, resolvesTo(15.0));
+          expect(edgeInsetsDirectionalMix.$end, resolvesTo(20.0));
         },
       );
 
       test('all constructor creates uniform insets', () {
         final edgeInsetsDirectionalMix = EdgeInsetsDirectionalMix.all(16.0);
 
-        expectProp(edgeInsetsDirectionalMix.$top, 16.0);
-        expectProp(edgeInsetsDirectionalMix.$bottom, 16.0);
-        expectProp(edgeInsetsDirectionalMix.$start, 16.0);
-        expectProp(edgeInsetsDirectionalMix.$end, 16.0);
+        expect(edgeInsetsDirectionalMix.$top, resolvesTo(16.0));
+        expect(edgeInsetsDirectionalMix.$bottom, resolvesTo(16.0));
+        expect(edgeInsetsDirectionalMix.$start, resolvesTo(16.0));
+        expect(edgeInsetsDirectionalMix.$end, resolvesTo(16.0));
       });
 
       test('none constructor creates zero insets', () {
         final edgeInsetsDirectionalMix = EdgeInsetsDirectionalMix.none();
 
-        expectProp(edgeInsetsDirectionalMix.$top, 0.0);
-        expectProp(edgeInsetsDirectionalMix.$bottom, 0.0);
-        expectProp(edgeInsetsDirectionalMix.$start, 0.0);
-        expectProp(edgeInsetsDirectionalMix.$end, 0.0);
+        expect(edgeInsetsDirectionalMix.$top, resolvesTo(0.0));
+        expect(edgeInsetsDirectionalMix.$bottom, resolvesTo(0.0));
+        expect(edgeInsetsDirectionalMix.$start, resolvesTo(0.0));
+        expect(edgeInsetsDirectionalMix.$end, resolvesTo(0.0));
       });
 
       test('maybeValue returns null for null input', () {
@@ -344,7 +344,7 @@ void main() {
           final result = EdgeInsetsDirectionalMix.maybeValue(edgeInsets);
 
           expect(result, isNotNull);
-          expectProp(result!.$top, 8.0);
+          expect(result!.$top, resolvesTo(8.0));
         },
       );
     });
@@ -384,10 +384,10 @@ void main() {
 
         final merged = first.merge(second);
 
-        expectProp(merged.$top, 12.0);
+        expect(merged.$top, resolvesTo(12.0));
         expect(merged.$bottom, isNull);
-        expectProp(merged.$start, 16.0);
-        expectProp(merged.$end, 20.0);
+        expect(merged.$start, resolvesTo(16.0));
+        expect(merged.$end, resolvesTo(20.0));
       });
     });
 
@@ -395,10 +395,10 @@ void main() {
       test('all factory works correctly', () {
         final edgeInsetsDirectionalMix = EdgeInsetsDirectionalMix.all(16.0);
 
-        expectProp(edgeInsetsDirectionalMix.$top, 16.0);
-        expectProp(edgeInsetsDirectionalMix.$bottom, 16.0);
-        expectProp(edgeInsetsDirectionalMix.$start, 16.0);
-        expectProp(edgeInsetsDirectionalMix.$end, 16.0);
+        expect(edgeInsetsDirectionalMix.$top, resolvesTo(16.0));
+        expect(edgeInsetsDirectionalMix.$bottom, resolvesTo(16.0));
+        expect(edgeInsetsDirectionalMix.$start, resolvesTo(16.0));
+        expect(edgeInsetsDirectionalMix.$end, resolvesTo(16.0));
       });
 
       test('symmetric utility works correctly', () {
@@ -407,10 +407,10 @@ void main() {
           horizontal: 20.0,
         );
 
-        expectProp(edgeInsetsDirectionalMix.$top, 10.0);
-        expectProp(edgeInsetsDirectionalMix.$bottom, 10.0);
-        expectProp(edgeInsetsDirectionalMix.$start, 20.0);
-        expectProp(edgeInsetsDirectionalMix.$end, 20.0);
+        expect(edgeInsetsDirectionalMix.$top, resolvesTo(10.0));
+        expect(edgeInsetsDirectionalMix.$bottom, resolvesTo(10.0));
+        expect(edgeInsetsDirectionalMix.$start, resolvesTo(20.0));
+        expect(edgeInsetsDirectionalMix.$end, resolvesTo(20.0));
       });
 
       test('directional utility works correctly', () {
@@ -421,10 +421,10 @@ void main() {
           bottom: 20.0,
         );
 
-        expectProp(edgeInsetsDirectionalMix.$start, 5.0);
-        expectProp(edgeInsetsDirectionalMix.$top, 10.0);
-        expectProp(edgeInsetsDirectionalMix.$end, 15.0);
-        expectProp(edgeInsetsDirectionalMix.$bottom, 20.0);
+        expect(edgeInsetsDirectionalMix.$start, resolvesTo(5.0));
+        expect(edgeInsetsDirectionalMix.$top, resolvesTo(10.0));
+        expect(edgeInsetsDirectionalMix.$end, resolvesTo(15.0));
+        expect(edgeInsetsDirectionalMix.$bottom, resolvesTo(20.0));
       });
 
       test('fromSTEB factory works correctly', () {
@@ -435,10 +435,10 @@ void main() {
           20.0,
         );
 
-        expectProp(edgeInsetsDirectionalMix.$start, 5.0);
-        expectProp(edgeInsetsDirectionalMix.$top, 10.0);
-        expectProp(edgeInsetsDirectionalMix.$end, 15.0);
-        expectProp(edgeInsetsDirectionalMix.$bottom, 20.0);
+        expect(edgeInsetsDirectionalMix.$start, resolvesTo(5.0));
+        expect(edgeInsetsDirectionalMix.$top, resolvesTo(10.0));
+        expect(edgeInsetsDirectionalMix.$end, resolvesTo(15.0));
+        expect(edgeInsetsDirectionalMix.$bottom, resolvesTo(20.0));
       });
     });
 

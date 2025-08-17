@@ -38,15 +38,15 @@ void main() {
             gap: 16.0,
           );
 
-          expectProp(flexMix.$direction, Axis.horizontal);
-          expectProp(flexMix.$mainAxisAlignment, MainAxisAlignment.center);
-          expectProp(flexMix.$crossAxisAlignment, CrossAxisAlignment.start);
-          expectProp(flexMix.$mainAxisSize, MainAxisSize.min);
-          expectProp(flexMix.$verticalDirection, VerticalDirection.up);
-          expectProp(flexMix.$textDirection, TextDirection.rtl);
-          expectProp(flexMix.$textBaseline, TextBaseline.ideographic);
-          expectProp(flexMix.$clipBehavior, Clip.antiAlias);
-          expectProp(flexMix.$gap, 16.0);
+          expect(flexMix.$direction, resolvesTo(Axis.horizontal));
+          expect(flexMix.$mainAxisAlignment, resolvesTo(MainAxisAlignment.center));
+          expect(flexMix.$crossAxisAlignment, resolvesTo(CrossAxisAlignment.start));
+          expect(flexMix.$mainAxisSize, resolvesTo(MainAxisSize.min));
+          expect(flexMix.$verticalDirection, resolvesTo(VerticalDirection.up));
+          expect(flexMix.$textDirection, resolvesTo(TextDirection.rtl));
+          expect(flexMix.$textBaseline, resolvesTo(TextBaseline.ideographic));
+          expect(flexMix.$clipBehavior, resolvesTo(Clip.antiAlias));
+          expect(flexMix.$gap, resolvesTo(16.0));
         },
       );
 
@@ -59,9 +59,9 @@ void main() {
 
         final flexMix = FlexMix.value(spec);
 
-        expectProp(flexMix.$direction, Axis.vertical);
-        expectProp(flexMix.$mainAxisAlignment, MainAxisAlignment.end);
-        expectProp(flexMix.$gap, 8.0);
+        expect(flexMix.$direction, resolvesTo(Axis.vertical));
+        expect(flexMix.$mainAxisAlignment, resolvesTo(MainAxisAlignment.end));
+        expect(flexMix.$gap, resolvesTo(8.0));
       });
 
       test('maybeValue returns null for null input', () {
@@ -74,56 +74,56 @@ void main() {
         final result = FlexMix.maybeValue(spec);
 
         expect(result, isNotNull);
-        expectProp(result!.$direction, Axis.horizontal);
+        expect(result!.$direction, resolvesTo(Axis.horizontal));
       });
     });
 
     group('Factory constructors', () {
       test('direction factory creates correct FlexMix', () {
         final flexMix = FlexMix.direction(Axis.vertical);
-        expectProp(flexMix.$direction, Axis.vertical);
+        expect(flexMix.$direction, resolvesTo(Axis.vertical));
       });
 
       test('mainAxisAlignment factory creates correct FlexMix', () {
         final flexMix = FlexMix.mainAxisAlignment(
           MainAxisAlignment.spaceEvenly,
         );
-        expectProp(flexMix.$mainAxisAlignment, MainAxisAlignment.spaceEvenly);
+        expect(flexMix.$mainAxisAlignment, resolvesTo(MainAxisAlignment.spaceEvenly));
       });
 
       test('crossAxisAlignment factory creates correct FlexMix', () {
         final flexMix = FlexMix.crossAxisAlignment(CrossAxisAlignment.stretch);
-        expectProp(flexMix.$crossAxisAlignment, CrossAxisAlignment.stretch);
+        expect(flexMix.$crossAxisAlignment, resolvesTo(CrossAxisAlignment.stretch));
       });
 
       test('mainAxisSize factory creates correct FlexMix', () {
         final flexMix = FlexMix.mainAxisSize(MainAxisSize.max);
-        expectProp(flexMix.$mainAxisSize, MainAxisSize.max);
+        expect(flexMix.$mainAxisSize, resolvesTo(MainAxisSize.max));
       });
 
       test('verticalDirection factory creates correct FlexMix', () {
         final flexMix = FlexMix.verticalDirection(VerticalDirection.down);
-        expectProp(flexMix.$verticalDirection, VerticalDirection.down);
+        expect(flexMix.$verticalDirection, resolvesTo(VerticalDirection.down));
       });
 
       test('textDirection factory creates correct FlexMix', () {
         final flexMix = FlexMix.textDirection(TextDirection.ltr);
-        expectProp(flexMix.$textDirection, TextDirection.ltr);
+        expect(flexMix.$textDirection, resolvesTo(TextDirection.ltr));
       });
 
       test('textBaseline factory creates correct FlexMix', () {
         final flexMix = FlexMix.textBaseline(TextBaseline.alphabetic);
-        expectProp(flexMix.$textBaseline, TextBaseline.alphabetic);
+        expect(flexMix.$textBaseline, resolvesTo(TextBaseline.alphabetic));
       });
 
       test('clipBehavior factory creates correct FlexMix', () {
         final flexMix = FlexMix.clipBehavior(Clip.hardEdge);
-        expectProp(flexMix.$clipBehavior, Clip.hardEdge);
+        expect(flexMix.$clipBehavior, resolvesTo(Clip.hardEdge));
       });
 
       test('gap factory creates correct FlexMix', () {
         final flexMix = FlexMix.gap(12.0);
-        expectProp(flexMix.$gap, 12.0);
+        expect(flexMix.$gap, resolvesTo(12.0));
       });
     });
 
@@ -134,7 +134,7 @@ void main() {
 
         expect(identical(original, modified), isFalse);
         expect(original.$direction, isNull);
-        expectProp(modified.$direction, Axis.horizontal);
+        expect(modified.$direction, resolvesTo(Axis.horizontal));
       });
 
       test('mainAxisAlignment method creates new FlexMix', () {
@@ -142,7 +142,7 @@ void main() {
         final modified = original.mainAxisAlignment(MainAxisAlignment.center);
 
         expect(identical(original, modified), isFalse);
-        expectProp(modified.$mainAxisAlignment, MainAxisAlignment.center);
+        expect(modified.$mainAxisAlignment, resolvesTo(MainAxisAlignment.center));
       });
 
       test('crossAxisAlignment method creates new FlexMix', () {
@@ -150,7 +150,7 @@ void main() {
         final modified = original.crossAxisAlignment(CrossAxisAlignment.end);
 
         expect(identical(original, modified), isFalse);
-        expectProp(modified.$crossAxisAlignment, CrossAxisAlignment.end);
+        expect(modified.$crossAxisAlignment, resolvesTo(CrossAxisAlignment.end));
       });
 
       test('gap method creates new FlexMix with gap', () {
@@ -158,17 +158,17 @@ void main() {
         final modified = original.gap(20.0);
 
         expect(identical(original, modified), isFalse);
-        expectProp(modified.$gap, 20.0);
+        expect(modified.$gap, resolvesTo(20.0));
       });
 
       test('row convenience method sets horizontal direction', () {
         final flexMix = FlexMix().row();
-        expectProp(flexMix.$direction, Axis.horizontal);
+        expect(flexMix.$direction, resolvesTo(Axis.horizontal));
       });
 
       test('column convenience method sets vertical direction', () {
         final flexMix = FlexMix().column();
-        expectProp(flexMix.$direction, Axis.vertical);
+        expect(flexMix.$direction, resolvesTo(Axis.vertical));
       });
     });
 
@@ -189,9 +189,9 @@ void main() {
 
         final merged = first.merge(second);
 
-        expectProp(merged.$direction, Axis.horizontal);
-        expectProp(merged.$mainAxisAlignment, MainAxisAlignment.center);
-        expectProp(merged.$gap, 16.0); // second takes precedence
+        expect(merged.$direction, resolvesTo(Axis.horizontal));
+        expect(merged.$mainAxisAlignment, resolvesTo(MainAxisAlignment.center));
+        expect(merged.$gap, resolvesTo(16.0)); // second takes precedence
       });
 
       test('merge preserves null properties', () {
@@ -200,8 +200,8 @@ void main() {
 
         final merged = first.merge(second);
 
-        expectProp(merged.$direction, Axis.horizontal);
-        expectProp(merged.$gap, 8.0);
+        expect(merged.$direction, resolvesTo(Axis.horizontal));
+        expect(merged.$gap, resolvesTo(8.0));
         expect(merged.$mainAxisAlignment, isNull);
       });
     });

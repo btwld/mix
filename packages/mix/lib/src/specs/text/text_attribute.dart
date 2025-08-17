@@ -30,13 +30,13 @@ class TextMix extends Style<TextSpec>
         StyleModifierMixin<TextMix, TextSpec>,
         StyleVariantMixin<TextMix, TextSpec> {
   final Prop<TextOverflow>? $overflow;
-  final MixProp<StrutStyle>? $strutStyle;
+  final Prop<StrutStyle>? $strutStyle;
   final Prop<TextAlign>? $textAlign;
   final Prop<TextScaler>? $textScaler;
   final Prop<int>? $maxLines;
-  final MixProp<TextStyle>? $style;
+  final Prop<TextStyle>? $style;
   final Prop<TextWidthBasis>? $textWidthBasis;
-  final MixProp<TextHeightBehavior>? $textHeightBehavior;
+  final Prop<TextHeightBehavior>? $textHeightBehavior;
   final Prop<TextDirection>? $textDirection;
   final Prop<bool>? $softWrap;
   final List<Directive<String>>? $textDirectives;
@@ -270,13 +270,13 @@ class TextMix extends Style<TextSpec>
 
   const TextMix.create({
     Prop<TextOverflow>? overflow,
-    MixProp<StrutStyle>? strutStyle,
+    Prop<StrutStyle>? strutStyle,
     Prop<TextAlign>? textAlign,
     Prop<TextScaler>? textScaler,
     Prop<int>? maxLines,
-    MixProp<TextStyle>? style,
+    Prop<TextStyle>? style,
     Prop<TextWidthBasis>? textWidthBasis,
-    MixProp<TextHeightBehavior>? textHeightBehavior,
+    Prop<TextHeightBehavior>? textHeightBehavior,
     Prop<TextDirection>? textDirection,
     Prop<bool>? softWrap,
     List<Directive<String>>? textDirectives,
@@ -324,13 +324,13 @@ class TextMix extends Style<TextSpec>
     bool? inherit,
   }) : this.create(
          overflow: Prop.maybe(overflow),
-         strutStyle: MixProp.maybe(strutStyle),
+         strutStyle: Prop.maybeMix(strutStyle),
          textAlign: Prop.maybe(textAlign),
          textScaler: Prop.maybe(textScaler),
          maxLines: Prop.maybe(maxLines),
-         style: MixProp.maybe(style),
+         style: Prop.maybeMix(style),
          textWidthBasis: Prop.maybe(textWidthBasis),
-         textHeightBehavior: MixProp.maybe(textHeightBehavior),
+         textHeightBehavior: Prop.maybeMix(textHeightBehavior),
          textDirection: Prop.maybe(textDirection),
          softWrap: Prop.maybe(softWrap),
          textDirectives: textDirectives,

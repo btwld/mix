@@ -382,79 +382,79 @@ void main() {
     });
   });
 
-  group('ElevationMixPropUtility', () {
-    late ElevationMixPropUtility<MockStyle<List<MixProp<BoxShadow>>>> util;
+  group('ElevationPropUtility', () {
+    late ElevationPropUtility<MockStyle<List<Prop<BoxShadow>>>> util;
 
     setUp(() {
-      util = ElevationMixPropUtility<MockStyle<List<MixProp<BoxShadow>>>>(
+      util = ElevationPropUtility<MockStyle<List<Prop<BoxShadow>>>>(
         (mixProps) => MockStyle(mixProps),
       );
     });
 
     group('predefined elevation properties', () {
       test('has e1 property', () {
-        expect(util.e1, isA<MockStyle<List<MixProp<BoxShadow>>>>());
+        expect(util.e1, isA<MockStyle<List<Prop<BoxShadow>>>>());
       });
 
       test('has e2 property', () {
-        expect(util.e2, isA<MockStyle<List<MixProp<BoxShadow>>>>());
+        expect(util.e2, isA<MockStyle<List<Prop<BoxShadow>>>>());
       });
 
       test('has e3 property', () {
-        expect(util.e3, isA<MockStyle<List<MixProp<BoxShadow>>>>());
+        expect(util.e3, isA<MockStyle<List<Prop<BoxShadow>>>>());
       });
 
       test('has e4 property', () {
-        expect(util.e4, isA<MockStyle<List<MixProp<BoxShadow>>>>());
+        expect(util.e4, isA<MockStyle<List<Prop<BoxShadow>>>>());
       });
 
       test('has e6 property', () {
-        expect(util.e6, isA<MockStyle<List<MixProp<BoxShadow>>>>());
+        expect(util.e6, isA<MockStyle<List<Prop<BoxShadow>>>>());
       });
 
       test('has e8 property', () {
-        expect(util.e8, isA<MockStyle<List<MixProp<BoxShadow>>>>());
+        expect(util.e8, isA<MockStyle<List<Prop<BoxShadow>>>>());
       });
 
       test('has e9 property', () {
-        expect(util.e9, isA<MockStyle<List<MixProp<BoxShadow>>>>());
+        expect(util.e9, isA<MockStyle<List<Prop<BoxShadow>>>>());
       });
 
       test('has e12 property', () {
-        expect(util.e12, isA<MockStyle<List<MixProp<BoxShadow>>>>());
+        expect(util.e12, isA<MockStyle<List<Prop<BoxShadow>>>>());
       });
 
       test('has e16 property', () {
-        expect(util.e16, isA<MockStyle<List<MixProp<BoxShadow>>>>());
+        expect(util.e16, isA<MockStyle<List<Prop<BoxShadow>>>>());
       });
 
       test('has e24 property', () {
-        expect(util.e24, isA<MockStyle<List<MixProp<BoxShadow>>>>());
+        expect(util.e24, isA<MockStyle<List<Prop<BoxShadow>>>>());
       });
     });
 
     group('elevation getters', () {
       test('one creates elevation 1', () {
         final result = util.one;
-        expect(result, isA<MockStyle<List<MixProp<BoxShadow>>>>());
+        expect(result, isA<MockStyle<List<Prop<BoxShadow>>>>());
         expect(result.value.length, kElevationToShadow[1]!.length);
       });
 
       test('two creates elevation 2', () {
         final result = util.two;
-        expect(result, isA<MockStyle<List<MixProp<BoxShadow>>>>());
+        expect(result, isA<MockStyle<List<Prop<BoxShadow>>>>());
         expect(result.value.length, kElevationToShadow[2]!.length);
       });
 
       test('three creates elevation 3', () {
         final result = util.three;
-        expect(result, isA<MockStyle<List<MixProp<BoxShadow>>>>());
+        expect(result, isA<MockStyle<List<Prop<BoxShadow>>>>());
         expect(result.value.length, kElevationToShadow[3]!.length);
       });
 
       test('twentyFour creates elevation 24', () {
         final result = util.twentyFour;
-        expect(result, isA<MockStyle<List<MixProp<BoxShadow>>>>());
+        expect(result, isA<MockStyle<List<Prop<BoxShadow>>>>());
         expect(result.value.length, kElevationToShadow[24]!.length);
       });
     });
@@ -466,11 +466,11 @@ void main() {
 
         expect(result.value.length, kElevationToShadow[elevation]!.length);
 
-        // Verify that the MixProps contain the correct BoxShadowMix values
+        // Verify that the Props contain the correct BoxShadow values
         final expectedShadows = kElevationToShadow[elevation]!;
         for (int i = 0; i < expectedShadows.length; i++) {
           final mixProp = result.value[i];
-          expect(mixProp.value, isA<BoxShadowMix>());
+          expect(mixProp, resolvesTo(expectedShadows[i]));
         }
       });
 
@@ -527,11 +527,8 @@ void main() {
 
         for (int i = 0; i < expectedShadows.length; i++) {
           final mixProp = result.value[i];
-          final boxShadowMix = mixProp.value as BoxShadowMix;
-
-          // Note: We can't directly compare the resolved values without a context,
-          // but we can verify the structure is correct
-          expect(boxShadowMix, isA<BoxShadowMix>());
+          // Verify that each Prop resolves to the expected BoxShadow
+          expect(mixProp, resolvesTo(expectedShadows[i]));
         }
       });
     });
@@ -553,7 +550,7 @@ void main() {
 
       test('handles zero elevation', () {
         final result = util(0);
-        expect(result, isA<MockStyle<List<MixProp<BoxShadow>>>>());
+        expect(result, isA<MockStyle<List<Prop<BoxShadow>>>>());
         expect(result.value, isEmpty);
       });
     });

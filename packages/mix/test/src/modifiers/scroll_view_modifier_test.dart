@@ -370,7 +370,7 @@ void main() {
       test('creates with provided Prop values', () {
         final scrollDirection = Prop.value<Axis>(Axis.horizontal);
         final reverse = Prop.value<bool>(true);
-        final padding = MixProp<EdgeInsetsGeometry>(EdgeInsetsMix.all(16.0));
+        final padding = Prop.mix(EdgeInsetsMix.all(16.0));
         final physics = Prop.value<ScrollPhysics>(
           const BouncingScrollPhysics(),
         );
@@ -402,10 +402,10 @@ void main() {
           clipBehavior: Clip.antiAlias,
         );
 
-        expectProp(attribute.scrollDirection, Axis.horizontal);
-        expectProp(attribute.reverse, true);
-        expectProp(attribute.physics, isA<BouncingScrollPhysics>());
-        expectProp(attribute.clipBehavior, Clip.antiAlias);
+        expect(attribute.scrollDirection, resolvesTo(Axis.horizontal));
+        expect(attribute.reverse, resolvesTo(true));
+        expect(attribute.physics, resolvesTo(isA<BouncingScrollPhysics>()));
+        expect(attribute.clipBehavior, resolvesTo(Clip.antiAlias));
         expect(attribute.padding, isNotNull);
       });
 
@@ -424,8 +424,8 @@ void main() {
           scrollDirection: Axis.horizontal,
           reverse: true,
         );
-        expectProp(attribute1.scrollDirection, Axis.horizontal);
-        expectProp(attribute1.reverse, true);
+        expect(attribute1.scrollDirection, resolvesTo(Axis.horizontal));
+        expect(attribute1.reverse, resolvesTo(true));
         expect(attribute1.padding, isNull);
         expect(attribute1.physics, isNull);
         expect(attribute1.clipBehavior, isNull);
@@ -437,7 +437,7 @@ void main() {
         expect(attribute2.scrollDirection, isNull);
         expect(attribute2.reverse, isNull);
         expect(attribute2.padding, isNotNull);
-        expectProp(attribute2.physics, isA<ClampingScrollPhysics>());
+        expect(attribute2.physics, resolvesTo(isA<ClampingScrollPhysics>()));
         expect(attribute2.clipBehavior, isNull);
       });
     });
@@ -488,11 +488,11 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expectProp(merged.scrollDirection, Axis.horizontal); // overridden
-        expectProp(merged.reverse, false); // preserved
+        expect(merged.scrollDirection, resolvesTo(Axis.horizontal)); // overridden
+        expect(merged.reverse, resolvesTo(false)); // preserved
         expect(merged.padding, isNotNull); // preserved
-        expectProp(merged.physics, isA<BouncingScrollPhysics>()); // added
-        expectProp(merged.clipBehavior, Clip.antiAlias); // added
+        expect(merged.physics, resolvesTo(isA<BouncingScrollPhysics>())); // added
+        expect(merged.clipBehavior, resolvesTo(Clip.antiAlias)); // added
       });
 
       test('returns original when other is null', () {
@@ -514,8 +514,8 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expectProp(merged.scrollDirection, Axis.horizontal);
-        expectProp(merged.reverse, true);
+        expect(merged.scrollDirection, resolvesTo(Axis.horizontal));
+        expect(merged.reverse, resolvesTo(true));
         expect(merged.padding, isNull);
         expect(merged.physics, isNull);
         expect(merged.clipBehavior, isNull);
@@ -596,39 +596,39 @@ void main() {
       );
       final attribute = result.value;
 
-      expectProp(attribute.scrollDirection, Axis.horizontal);
-      expectProp(attribute.reverse, true);
+      expect(attribute.scrollDirection, resolvesTo(Axis.horizontal));
+      expect(attribute.reverse, resolvesTo(true));
       expect(attribute.padding, isNotNull);
-      expectProp(attribute.physics, isA<BouncingScrollPhysics>());
-      expectProp(attribute.clipBehavior, Clip.antiAlias);
+      expect(attribute.physics, resolvesTo(isA<BouncingScrollPhysics>()));
+      expect(attribute.clipBehavior, resolvesTo(Clip.antiAlias));
     });
 
     test('direction() creates attribute with specified axis', () {
       final result = utility.direction(Axis.horizontal);
       final attribute = result.value;
 
-      expectProp(attribute.scrollDirection, Axis.horizontal);
+      expect(attribute.scrollDirection, resolvesTo(Axis.horizontal));
     });
 
     test('horizontal() creates attribute with horizontal direction', () {
       final result = utility.horizontal();
       final attribute = result.value;
 
-      expectProp(attribute.scrollDirection, Axis.horizontal);
+      expect(attribute.scrollDirection, resolvesTo(Axis.horizontal));
     });
 
     test('vertical() creates attribute with vertical direction', () {
       final result = utility.vertical();
       final attribute = result.value;
 
-      expectProp(attribute.scrollDirection, Axis.vertical);
+      expect(attribute.scrollDirection, resolvesTo(Axis.vertical));
     });
 
     test('physics() creates attribute with specified physics', () {
       final result = utility.physics(const BouncingScrollPhysics());
       final attribute = result.value;
 
-      expectProp(attribute.physics, isA<BouncingScrollPhysics>());
+      expect(attribute.physics, resolvesTo(isA<BouncingScrollPhysics>()));
     });
 
     test(
@@ -637,7 +637,7 @@ void main() {
         final result = utility.neverScrollableScrollPhysics();
         final attribute = result.value;
 
-        expectProp(attribute.physics, isA<NeverScrollableScrollPhysics>());
+        expect(attribute.physics, resolvesTo(isA<NeverScrollableScrollPhysics>()));
       },
     );
 
@@ -645,21 +645,21 @@ void main() {
       final result = utility.bouncingScrollPhysics();
       final attribute = result.value;
 
-      expectProp(attribute.physics, isA<BouncingScrollPhysics>());
+      expect(attribute.physics, resolvesTo(isA<BouncingScrollPhysics>()));
     });
 
     test('clampingScrollPhysics() creates attribute with clamping physics', () {
       final result = utility.clampingScrollPhysics();
       final attribute = result.value;
 
-      expectProp(attribute.physics, isA<ClampingScrollPhysics>());
+      expect(attribute.physics, resolvesTo(isA<ClampingScrollPhysics>()));
     });
 
     test('reverse utility creates attribute with reverse', () {
       final result = utility.reverse(true);
       final attribute = result.value;
 
-      expectProp(attribute.reverse, true);
+      expect(attribute.reverse, resolvesTo(true));
     });
 
     test('padding utility creates attribute with padding', () {
@@ -676,7 +676,7 @@ void main() {
       final result = utility.clipBehavior(Clip.antiAlias);
       final attribute = result.value;
 
-      expectProp(attribute.clipBehavior, Clip.antiAlias);
+      expect(attribute.clipBehavior, resolvesTo(Clip.antiAlias));
     });
   });
 
@@ -749,11 +749,11 @@ void main() {
 
       final result = base.merge(override1).merge(override2);
 
-      expectProp(result.scrollDirection, Axis.horizontal);
-      expectProp(result.reverse, true);
+      expect(result.scrollDirection, resolvesTo(Axis.horizontal));
+      expect(result.reverse, resolvesTo(true));
       expect(result.padding, isNotNull);
-      expectProp(result.physics, isA<ClampingScrollPhysics>());
-      expectProp(result.clipBehavior, Clip.antiAlias);
+      expect(result.physics, resolvesTo(isA<ClampingScrollPhysics>()));
+      expect(result.clipBehavior, resolvesTo(Clip.antiAlias));
     });
 
     test('Lerp produces expected intermediate values', () {

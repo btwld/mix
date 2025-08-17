@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../properties/painting/border_mix.dart';
 import '../properties/painting/decoration_mix.dart';
 import '../properties/painting/shape_border_mix.dart';
+import 'helpers.dart';
 import 'prop.dart';
 
 /// Utility for merging DecorationMix instances with proper validation
@@ -10,7 +10,11 @@ class DecorationMerger {
   const DecorationMerger();
 
   /// Merges BoxDecorationMix with ShapeDecorationMix, preserving type when possible
-  DecorationMix _mergeBoxWithShape(BoxDecorationMix a, ShapeDecorationMix b) {
+  DecorationMix _mergeBoxWithShape(
+    BuildContext _,
+    BoxDecorationMix a,
+    ShapeDecorationMix b,
+  ) {
     final shape = b.$shape;
 
     if (shape == null) {
@@ -34,7 +38,11 @@ class DecorationMerger {
   }
 
   /// Merges ShapeDecorationMix with BoxDecorationMix, preserving type when possible
-  DecorationMix _mergeShapeWithBox(ShapeDecorationMix a, BoxDecorationMix b) {
+  DecorationMix _mergeShapeWithBox(
+    BuildContext context,
+    ShapeDecorationMix a,
+    BoxDecorationMix b,
+  ) {
     // Check if conversion is needed
     final needsConversion =
         b.$border != null ||
@@ -56,6 +64,7 @@ class DecorationMerger {
 
     // Convert BoxDecorationMix properties to ShapeBorder
     final shapeBorder = _createShapeBorderFromBoxBorder(
+      context: context,
       shape: b.$shape,
       border: b.$border,
       borderRadius: b.$borderRadius,
@@ -72,32 +81,35 @@ class DecorationMerger {
     );
   }
 
-  /// Creates a ShapeBorderMix from box decoration properties
-  /// Only accesses .value when safe to do so (non-token values)
-  MixProp<ShapeBorder>? _createShapeBorderFromBoxBorder({
+  /// Creates a ShapeBorderMix from box decoration properties using resolved values
+  Prop<ShapeBorder>? _createShapeBorderFromBoxBorder({
+    required BuildContext context,
     required Prop<BoxShape>? shape,
-    required MixProp<BoxBorder>? border,
-    required MixProp<BorderRadiusGeometry>? borderRadius,
+    required Prop<BoxBorder>? border,
+    required Prop<BorderRadiusGeometry>? borderRadius,
   }) {
-    // Extract border side if available and safe to access
-    MixProp<BorderSide>? side;
-    final borderValue = border?.value;
-    if (borderValue is BoxBorderMix) {
-      if (borderValue.isUniform) {
-        side = borderValue.uniformBorderSide;
+    // Extract border side using resolved values
+    Prop<BorderSide>? side;
+    if (border != null) {
+      final resolvedBorder = MixOps.resolve(context, border);
+      if (resolvedBorder is Border && resolvedBorder.isUniform) {
+        side = Prop.value(resolvedBorder.top); // All sides are the same
       }
     }
 
-    final propValue = shape?.$value;
+    // Resolve shape to determine type
+    final resolvedShape = MixOps.resolve(context, shape);
 
-    // Handle shape conversion - only if we have a direct value
-    if (propValue != null) {
-      switch (propValue) {
+    // Handle shape conversion with resolved values
+    if (resolvedShape != null) {
+      switch (resolvedShape) {
         case BoxShape.circle:
-          return side != null ? MixProp(CircleBorderMix.create(side: side)) : null;
+          return side != null
+              ? Prop.mix(CircleBorderMix.create(side: side))
+              : null;
         case BoxShape.rectangle:
           if (side != null || borderRadius != null) {
-            return MixProp(
+            return Prop.mix(
               RoundedRectangleBorderMix.create(
                 borderRadius: borderRadius,
                 side: side,
@@ -111,8 +123,11 @@ class DecorationMerger {
 
     // Default to rectangle shape if no specific shape
     if (side != null || borderRadius != null) {
-      return MixProp(
-        RoundedRectangleBorderMix.create(borderRadius: borderRadius, side: side),
+      return Prop.mix(
+        RoundedRectangleBorderMix.create(
+          borderRadius: borderRadius,
+          side: side,
+        ),
       );
     }
 
@@ -125,16 +140,28 @@ class DecorationMerger {
   /// - Same type: delegates to the standard merge method
   /// - Different types: validates compatibility and performs conversion
   ///
-  /// Returns the merged result or throws [ArgumentError] if merging would lose data.
-  DecorationMix? tryMerge(DecorationMix? a, DecorationMix? b) {
+  /// Uses BuildContext to resolve values for intelligent merge decisions.
+  DecorationMix? tryMerge(
+    BuildContext context,
+    DecorationMix? a,
+    DecorationMix? b,
+  ) {
     if (b == null) return a;
     if (a == null) return b;
 
     return switch ((a, b)) {
       (BoxDecorationMix a, BoxDecorationMix b) => a.merge(b),
       (ShapeDecorationMix a, ShapeDecorationMix b) => a.merge(b),
-      (BoxDecorationMix a, ShapeDecorationMix b) => _mergeBoxWithShape(a, b),
-      (ShapeDecorationMix a, BoxDecorationMix b) => _mergeShapeWithBox(a, b),
+      (BoxDecorationMix a, ShapeDecorationMix b) => _mergeBoxWithShape(
+        context,
+        a,
+        b,
+      ),
+      (ShapeDecorationMix a, BoxDecorationMix b) => _mergeShapeWithBox(
+        context,
+        a,
+        b,
+      ),
     };
   }
 }

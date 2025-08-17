@@ -163,8 +163,7 @@ class MixScope extends InheritedModel<String> {
     return MixScope._(
       key: other.key,
       tokens: mergedTokens,
-      orderOfModifiers:
-          other.orderOfModifiers ?? orderOfModifiers,
+      orderOfModifiers: other.orderOfModifiers ?? orderOfModifiers,
       child: other.child,
     );
   }
@@ -188,16 +187,12 @@ class MixScope extends InheritedModel<String> {
 
     // Check if modifier order changed and widget depends on it
     if (dependencies.contains('modifierOrder') &&
-        !listEquals(
-          orderOfModifiers,
-          oldWidget.orderOfModifiers,
-        )) {
+        !listEquals(orderOfModifiers, oldWidget.orderOfModifiers)) {
       return true;
     }
 
     return false;
   }
-
 }
 
 // Deprecated typedefs moved to src/core/deprecated.dart

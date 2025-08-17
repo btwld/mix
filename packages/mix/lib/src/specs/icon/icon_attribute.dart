@@ -23,7 +23,7 @@ class IconMix extends Style<IconSpec>
   final Prop<double>? $weight;
   final Prop<double>? $grade;
   final Prop<double>? $opticalSize;
-  final List<MixProp<Shadow>>? $shadows;
+  final List<Prop<Shadow>>? $shadows;
   final Prop<TextDirection>? $textDirection;
   final Prop<bool>? $applyTextScaling;
   final Prop<double>? $fill;
@@ -122,7 +122,7 @@ class IconMix extends Style<IconSpec>
     Prop<double>? weight,
     Prop<double>? grade,
     Prop<double>? opticalSize,
-    List<MixProp<Shadow>>? shadows,
+    List<Prop<Shadow>>? shadows,
     Prop<TextDirection>? textDirection,
     Prop<bool>? applyTextScaling,
     Prop<double>? fill,
@@ -170,7 +170,7 @@ class IconMix extends Style<IconSpec>
          weight: Prop.maybe(weight),
          grade: Prop.maybe(grade),
          opticalSize: Prop.maybe(opticalSize),
-         shadows: shadows?.map(MixProp.new).toList(),
+         shadows: shadows?.map(Prop.mix).toList(),
          textDirection: Prop.maybe(textDirection),
          applyTextScaling: Prop.maybe(applyTextScaling),
          fill: Prop.maybe(fill),
@@ -314,18 +314,18 @@ class IconMix extends Style<IconSpec>
     if (other == null) return this;
 
     return IconMix.create(
-      color: $color.tryMerge(other.$color),
-      size: $size.tryMerge(other.$size),
-      weight: $weight.tryMerge(other.$weight),
-      grade: $grade.tryMerge(other.$grade),
-      opticalSize: $opticalSize.tryMerge(other.$opticalSize),
-      shadows: $shadows.tryMerge(other.$shadows),
-      textDirection: $textDirection.tryMerge(other.$textDirection),
-      applyTextScaling: $applyTextScaling.tryMerge(other.$applyTextScaling),
-      fill: $fill.tryMerge(other.$fill),
-      semanticsLabel: $semanticsLabel.tryMerge(other.$semanticsLabel),
-      blendMode: $blendMode.tryMerge(other.$blendMode),
-      icon: $icon.tryMerge(other.$icon),
+      color: MixOps.merge($color, other.$color),
+      size: MixOps.merge($size, other.$size),
+      weight: MixOps.merge($weight, other.$weight),
+      grade: MixOps.merge($grade, other.$grade),
+      opticalSize: MixOps.merge($opticalSize, other.$opticalSize),
+      shadows: MixOps.mergeList($shadows, other.$shadows),
+      textDirection: MixOps.merge($textDirection, other.$textDirection),
+      applyTextScaling: MixOps.merge($applyTextScaling, other.$applyTextScaling),
+      fill: MixOps.merge($fill, other.$fill),
+      semanticsLabel: MixOps.merge($semanticsLabel, other.$semanticsLabel),
+      blendMode: MixOps.merge($blendMode, other.$blendMode),
+      icon: MixOps.merge($icon, other.$icon),
       animation: other.$animation ?? $animation,
       modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
       variants: mergeVariantLists($variants, other.$variants),

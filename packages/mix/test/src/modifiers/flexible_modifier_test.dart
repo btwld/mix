@@ -222,8 +222,8 @@ void main() {
           fit: FlexFit.loose,
         );
 
-        expectProp(attribute.flex, 3);
-        expectProp(attribute.fit, FlexFit.loose);
+        expect(attribute.flex, resolvesTo(3));
+        expect(attribute.fit, resolvesTo(FlexFit.loose));
       });
 
       test('handles null values correctly', () {
@@ -235,12 +235,12 @@ void main() {
 
       test('handles partial values', () {
         final attribute1 = FlexibleModifierMix(flex: 2);
-        expectProp(attribute1.flex, 2);
+        expect(attribute1.flex, resolvesTo(2));
         expect(attribute1.fit, isNull);
 
         final attribute2 = FlexibleModifierMix(fit: FlexFit.tight);
         expect(attribute2.flex, isNull);
-        expectProp(attribute2.fit, FlexFit.tight);
+        expect(attribute2.fit, resolvesTo(FlexFit.tight));
       });
     });
 
@@ -279,8 +279,8 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expectProp(merged.flex, 3); // overridden
-        expectProp(merged.fit, FlexFit.tight); // overridden
+        expect(merged.flex, resolvesTo(3)); // overridden
+        expect(merged.fit, resolvesTo(FlexFit.tight)); // overridden
       });
 
       test('returns original when other is null', () {
@@ -298,7 +298,7 @@ void main() {
         final merged = attribute1.merge(attribute2);
 
         expect(merged.flex, isNull);
-        expectProp(merged.fit, FlexFit.tight);
+        expect(merged.fit, resolvesTo(FlexFit.tight));
       });
     });
 
@@ -352,15 +352,15 @@ void main() {
       final attribute = result.value;
 
       expect(attribute.flex, isNull);
-      expectProp(attribute.fit, FlexFit.tight);
+      expect(attribute.fit, resolvesTo(FlexFit.tight));
     });
 
     test('tight() with flex creates attribute with tight fit and flex', () {
       final result = utility.tight(flex: 3);
       final attribute = result.value;
 
-      expectProp(attribute.flex, 3);
-      expectProp(attribute.fit, FlexFit.tight);
+      expect(attribute.flex, resolvesTo(3));
+      expect(attribute.fit, resolvesTo(FlexFit.tight));
     });
 
     test('loose() creates attribute with loose fit', () {
@@ -368,15 +368,15 @@ void main() {
       final attribute = result.value;
 
       expect(attribute.flex, isNull);
-      expectProp(attribute.fit, FlexFit.loose);
+      expect(attribute.fit, resolvesTo(FlexFit.loose));
     });
 
     test('loose() with flex creates attribute with loose fit and flex', () {
       final result = utility.loose(flex: 2);
       final attribute = result.value;
 
-      expectProp(attribute.flex, 2);
-      expectProp(attribute.fit, FlexFit.loose);
+      expect(attribute.flex, resolvesTo(2));
+      expect(attribute.fit, resolvesTo(FlexFit.loose));
     });
 
     test('expanded() is alias for tight()', () {
@@ -384,23 +384,23 @@ void main() {
       final expandedAttr = expanded.value;
 
       expect(expandedAttr.flex, isNull);
-      expectProp(expandedAttr.fit, FlexFit.tight);
+      expect(expandedAttr.fit, resolvesTo(FlexFit.tight));
     });
 
     test('expanded() with flex is alias for tight() with flex', () {
       final expanded = utility.expanded(flex: 4);
       final expandedAttr = expanded.value;
 
-      expectProp(expandedAttr.flex, 4);
-      expectProp(expandedAttr.fit, FlexFit.tight);
+      expect(expandedAttr.flex, resolvesTo(4));
+      expect(expandedAttr.fit, resolvesTo(FlexFit.tight));
     });
 
     test('call() creates attribute with specified values', () {
       final result = utility.call(flex: 5, fit: FlexFit.tight);
       final attribute = result.value;
 
-      expectProp(attribute.flex, 5);
-      expectProp(attribute.fit, FlexFit.tight);
+      expect(attribute.flex, resolvesTo(5));
+      expect(attribute.fit, resolvesTo(FlexFit.tight));
     });
 
     test('call() handles null values', () {
@@ -466,8 +466,8 @@ void main() {
 
       final result = base.merge(override1).merge(override2);
 
-      expectProp(result.flex, 3);
-      expectProp(result.fit, FlexFit.tight);
+      expect(result.flex, resolvesTo(3));
+      expect(result.fit, resolvesTo(FlexFit.tight));
     });
 
     test('Lerp with step function behavior', () {

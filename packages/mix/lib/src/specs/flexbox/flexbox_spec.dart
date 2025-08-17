@@ -4,8 +4,16 @@ import '../../core/spec.dart';
 import '../box/box_spec.dart';
 import '../flex/flex_spec.dart';
 
+/// Specification that combines box styling and flex layout properties.
+///
+/// Provides comprehensive styling for container widgets that need both
+/// box decoration and flex layout capabilities. Merges [BoxSpec] and
+/// [FlexSpec] into a unified specification.
 final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
+  /// Box styling properties for decoration, padding, constraints, etc.
   final BoxSpec box;
+  
+  /// Flex layout properties for direction, alignment, spacing, etc.
   final FlexSpec flex;
 
   const FlexBoxSpec({BoxSpec? box, FlexSpec? flex})

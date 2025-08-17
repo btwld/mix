@@ -255,7 +255,7 @@ void main() {
           mouseCursor: SystemMouseCursors.basic,
         );
 
-        expectProp(attribute.mouseCursor, SystemMouseCursors.basic);
+        expect(attribute.mouseCursor, resolvesTo(SystemMouseCursors.basic));
       });
 
       test('handles null value correctly', () {
@@ -297,7 +297,7 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expectProp(merged.mouseCursor, SystemMouseCursors.click); // overridden
+        expect(merged.mouseCursor, resolvesTo(SystemMouseCursors.click)); // overridden
       });
 
       test('returns original when other is null', () {
@@ -318,7 +318,7 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expectProp(merged.mouseCursor, SystemMouseCursors.click);
+        expect(merged.mouseCursor, resolvesTo(SystemMouseCursors.click));
       });
     });
 
@@ -405,7 +405,7 @@ void main() {
 
       final result = base.merge(override1).merge(override2);
 
-      expectProp(result.mouseCursor, SystemMouseCursors.grab);
+      expect(result.mouseCursor, resolvesTo(SystemMouseCursors.grab));
     });
 
     test('Lerp produces expected step function behavior', () {

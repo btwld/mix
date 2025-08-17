@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../theme/tokens/mix_token.dart';
 import 'prop.dart';
+import 'prop_source.dart';
 
 mixin ValueRef<T> on Prop<T> {
   @override
@@ -441,8 +442,8 @@ MixToken<T>? getTokenFromValue<T>(Object value) {
 /// Checks if a value is any type of token reference (class-based or extension type)
 bool isAnyTokenRef(Object value) {
   // Check if it's a class-based token reference (extends Prop with ValueRef mixin)
-  // We can check if it has the ValueRef mixin by checking if it has a token
-  if (value is Prop && value.$token != null) {
+  // We can check if it has the ValueRef mixin by checking if it has a token source
+  if (value is Prop && value.sources.whereType<TokenSource>().isNotEmpty) {
     // Additional check to ensure it's actually a token reference class
     final typeName = value.runtimeType.toString();
     if (typeName.endsWith('Ref') || typeName.endsWith('Prop')) {

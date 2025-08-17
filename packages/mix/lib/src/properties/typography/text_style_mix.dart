@@ -37,7 +37,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
   final List<Prop<FontVariation>>? $fontVariations;
 
   // Lists of Mix types
-  final List<MixProp<Shadow>>? $shadows;
+  final List<Prop<Shadow>>? $shadows;
 
   /// Creates with text color.
   factory TextStyleMix.color(Color value) {
@@ -182,7 +182,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
          debugLabel: Prop.maybe(debugLabel),
          wordSpacing: Prop.maybe(wordSpacing),
          textBaseline: Prop.maybe(textBaseline),
-         shadows: shadows?.map(MixProp<Shadow>.new).toList(),
+         shadows: shadows?.map(Prop.mix).toList(),
          fontFeatures: fontFeatures?.map(Prop.value).toList(),
          decoration: Prop.maybe(decoration),
          decorationColor: Prop.maybe(decorationColor),
@@ -207,7 +207,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
     Prop<String>? debugLabel,
     Prop<double>? wordSpacing,
     Prop<TextBaseline>? textBaseline,
-    List<MixProp<Shadow>>? shadows,
+    List<Prop<Shadow>>? shadows,
     List<Prop<FontFeature>>? fontFeatures,
     Prop<TextDecoration>? decoration,
     Prop<Color>? decorationColor,

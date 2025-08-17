@@ -5,60 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-void expectProp<T>(Prop<T>? prop, dynamic expected) {
-  if (expected == null || expected == isNull) {
-    expect(prop, isNull);
-    return;
-  }
-
-  if (prop == null) {
-    fail('Expected Prop<$T> to exist, but was null');
-  }
-
-  // Handle MixProp (no accumulation anymore)
-  if (prop is MixProp<T>) {
-    final value = prop.value;
-    if (value == null) {
-      fail('Expected MixProp<$T> to have a value, but value was null');
-    }
-    expect(
-      value,
-      expected,
-      reason: 'MixProp<$T> value does not match expected',
-    );
-    return;
-  }
-
-  // Handle Prop
-  final value = prop.$value;
-  final token = prop.$token;
-
-  if (value == null && token == null) {
-    expect(isNull, expected, reason: 'Prop<$T> has no value or token defined');
-    return;
-  }
-
-  // Handle token expectations
-  if (expected is MixToken<T>) {
-    if (token != null) {
-      expect(token, expected, reason: 'Prop<$T> token does not match expected');
-    } else {
-      fail('Expected token, but prop has value: $value');
-    }
-    return;
-  }
-
-  // Handle direct value expectations
-  if (token != null) {
-    fail('Expected value, but prop has token: $token');
-  }
-
-  expect(value, expected, reason: 'Prop<$T> value does not match expected');
-  return;
-
-  fail('Unknown prop type: ${prop.runtimeType}');
-}
-
 /// Creates a matcher that tests what a Resolvable resolves to
 ///
 /// Usage:
@@ -104,6 +50,16 @@ class _ResolvesToMatcher<T> extends Matcher {
         resolved = item.resolve(ctx);
       }
 
+      // Check if expected is a Matcher and use its matches() method
+      if (expected is Matcher) {
+        final matcher = expected as Matcher;
+        if (matcher.matches(resolved, matchState)) {
+          return true;
+        }
+        // matchState is already populated by the matcher
+        return false;
+      }
+
       // Let runtime comparison handle type compatibility
       // This allows Prop<AlignmentGeometry> to work with Alignment expectations
       if (resolved == expected) {
@@ -136,10 +92,25 @@ class _ResolvesToMatcher<T> extends Matcher {
       return mismatchDescription.add(matchState['error']);
     }
 
-    if (item is Resolvable<T>) {
+    if (item is Resolvable || item is Prop) {
       try {
         final ctx = context ?? MockBuildContext();
-        final resolved = item.resolve(ctx);
+        dynamic resolved;
+        if (item is Prop) {
+          resolved = item.resolveProp(ctx);
+        } else {
+          resolved = (item as Resolvable).resolve(ctx);
+        }
+        
+        // Handle Matcher expected values differently
+        if (expected is Matcher) {
+          return mismatchDescription
+              .add('resolved to ')
+              .addDescriptionOf(resolved)
+              .add(' which does not match ')
+              .addDescriptionOf(expected);
+        }
+        
         return mismatchDescription
             .add('resolved to ')
             .addDescriptionOf(resolved)
@@ -153,7 +124,7 @@ class _ResolvesToMatcher<T> extends Matcher {
     return mismatchDescription
         .add('was ')
         .addDescriptionOf(item)
-        .add(' which is not a Resolvable<$T>');
+        .add(' which is not a Resolvable or Prop');
   }
 }
 
@@ -259,7 +230,7 @@ class _MockInheritedElement extends InheritedElement {
 // ADDITIONAL TEST UTILITIES
 // =============================================================================
 
-/// Mock attribute for testing utilities - handles both `Prop<T>` and `MixProp<V>`
+/// Mock attribute for testing utilities - handles `Prop<T>` values
 ///
 /// This is a universal SpecMix that can wrap any prop type for testing purposes.
 /// Used with utilities that expect a SpecMix builder function.
@@ -289,7 +260,7 @@ class MockStyle<T> extends Style<MockSpec<T>> {
   @override
   MockStyle<T> merge(covariant MockStyle<T>? other) {
     if (other == null) return this;
-    // For Prop types (Prop<T> and MixProp<V>), use their merge method
+    // For Prop types, use their merge method
     if (value is Prop && other.value is Prop) {
       final merged = (value as Prop).mergeProp(other.value as Prop);
       return MockStyle(merged as T);
@@ -508,4 +479,367 @@ final blackPixelBytes = base64Decode(
 
 MemoryImage mockImageProvider() {
   return MemoryImage(blackPixelBytes);
+}
+
+// =============================================================================
+// PROP MATCHERS FOR CLEAN TESTING
+// =============================================================================
+
+/// Testing matchers for Prop properties
+/// 
+/// Provides clean, descriptive matchers for testing Prop contents without
+/// exposing internal source structure.
+class PropMatcher {
+  /// Matches a Prop that contains a specific value
+  static Matcher isValue<T>(T expected) => _PropValueMatcher<T>(expected);
+  
+  /// Matches a Prop that contains a specific token
+  static Matcher isToken<T>(MixToken<T> expected) => _PropTokenMatcher<T>(expected);
+  
+  /// Matches a Prop that contains a specific Mix
+  static Matcher isMix<T>(Mix<T> expected) => _PropMixMatcher<T>(expected);
+  
+  /// Matches a Prop that has any value sources
+  static Matcher get hasValues => const _PropHasValuesMatcher();
+  
+  /// Matches a Prop that has any token sources  
+  static Matcher get hasTokens => const _PropHasTokensMatcher();
+  
+  /// Matches a Prop that has any Mix sources
+  static Matcher get hasMixes => const _PropHasMixesMatcher();
+  
+  /// Matches a Prop that has directives
+  static Matcher get hasDirectives => const _PropHasDirectivesMatcher();
+  
+  /// Matches a Prop that has animation config
+  static Matcher get hasAnimation => const _PropHasAnimationMatcher();
+}
+
+/// Matcher for Prop values
+class _PropValueMatcher<T> extends Matcher {
+  final T expected;
+  
+  const _PropValueMatcher(this.expected);
+  
+  @override
+  bool matches(dynamic item, Map matchState) {
+    if (item is! Prop<T>) {
+      matchState['error'] = 'Expected Prop<$T>, got ${item.runtimeType}';
+      return false;
+    }
+    
+    final valueSource = item.sources.whereType<ValueSource<T>>().firstOrNull;
+    if (valueSource == null) {
+      matchState['error'] = 'Prop<$T> does not contain a ValueSource';
+      return false;
+    }
+    
+    return valueSource.value == expected;
+  }
+  
+  @override
+  Description describe(Description description) {
+    return description.add('Prop with value ').addDescriptionOf(expected);
+  }
+  
+  @override
+  Description describeMismatch(
+    dynamic item,
+    Description mismatchDescription,
+    Map matchState,
+    bool verbose,
+  ) {
+    if (matchState.containsKey('error')) {
+      return mismatchDescription.add(matchState['error']);
+    }
+    
+    if (item is Prop<T>) {
+      final valueSource = item.sources.whereType<ValueSource<T>>().firstOrNull;
+      if (valueSource != null) {
+        return mismatchDescription
+            .add('has value ')
+            .addDescriptionOf(valueSource.value)
+            .add(' instead of ')
+            .addDescriptionOf(expected);
+      }
+    }
+    
+    return mismatchDescription.add('is not a Prop with a value');
+  }
+}
+
+/// Matcher for Prop tokens
+class _PropTokenMatcher<T> extends Matcher {
+  final MixToken<T> expected;
+  
+  const _PropTokenMatcher(this.expected);
+  
+  @override
+  bool matches(dynamic item, Map matchState) {
+    if (item is! Prop<T>) {
+      matchState['error'] = 'Expected Prop<$T>, got ${item.runtimeType}';
+      return false;
+    }
+    
+    final tokenSource = item.sources.whereType<TokenSource<T>>().firstOrNull;
+    if (tokenSource == null) {
+      matchState['error'] = 'Prop<$T> does not contain a TokenSource';
+      return false;
+    }
+    
+    return tokenSource.token == expected;
+  }
+  
+  @override
+  Description describe(Description description) {
+    return description.add('Prop with token ').addDescriptionOf(expected);
+  }
+  
+  @override
+  Description describeMismatch(
+    dynamic item,
+    Description mismatchDescription,
+    Map matchState,
+    bool verbose,
+  ) {
+    if (matchState.containsKey('error')) {
+      return mismatchDescription.add(matchState['error']);
+    }
+    
+    if (item is Prop<T>) {
+      final tokenSource = item.sources.whereType<TokenSource<T>>().firstOrNull;
+      if (tokenSource != null) {
+        return mismatchDescription
+            .add('has token ')
+            .addDescriptionOf(tokenSource.token)
+            .add(' instead of ')
+            .addDescriptionOf(expected);
+      }
+    }
+    
+    return mismatchDescription.add('is not a Prop with a token');
+  }
+}
+
+/// Matcher for Prop Mix values
+class _PropMixMatcher<T> extends Matcher {
+  final Mix<T> expected;
+  
+  const _PropMixMatcher(this.expected);
+  
+  @override
+  bool matches(dynamic item, Map matchState) {
+    if (item is! Prop<T>) {
+      matchState['error'] = 'Expected Prop<$T>, got ${item.runtimeType}';
+      return false;
+    }
+    
+    final mixSource = item.sources.whereType<MixSource<T>>().firstOrNull;
+    if (mixSource == null) {
+      matchState['error'] = 'Prop<$T> does not contain a MixSource';
+      return false;
+    }
+    
+    return mixSource.mix == expected;
+  }
+  
+  @override
+  Description describe(Description description) {
+    return description.add('Prop with Mix ').addDescriptionOf(expected);
+  }
+  
+  @override
+  Description describeMismatch(
+    dynamic item,
+    Description mismatchDescription,
+    Map matchState,
+    bool verbose,
+  ) {
+    if (matchState.containsKey('error')) {
+      return mismatchDescription.add(matchState['error']);
+    }
+    
+    if (item is Prop<T>) {
+      final mixSource = item.sources.whereType<MixSource<T>>().firstOrNull;
+      if (mixSource != null) {
+        return mismatchDescription
+            .add('has Mix ')
+            .addDescriptionOf(mixSource.mix)
+            .add(' instead of ')
+            .addDescriptionOf(expected);
+      }
+    }
+    
+    return mismatchDescription.add('is not a Prop with a Mix');
+  }
+}
+
+/// Matcher for Prop that has any value sources
+class _PropHasValuesMatcher extends Matcher {
+  const _PropHasValuesMatcher();
+  
+  @override
+  bool matches(dynamic item, Map matchState) {
+    if (item is! Prop) {
+      matchState['error'] = 'Expected Prop, got ${item.runtimeType}';
+      return false;
+    }
+    
+    return item.sources.any((s) => s is ValueSource);
+  }
+  
+  @override
+  Description describe(Description description) {
+    return description.add('Prop with value sources');
+  }
+  
+  @override
+  Description describeMismatch(
+    dynamic item,
+    Description mismatchDescription,
+    Map matchState,
+    bool verbose,
+  ) {
+    if (matchState.containsKey('error')) {
+      return mismatchDescription.add(matchState['error']);
+    }
+    
+    return mismatchDescription.add('does not have any value sources');
+  }
+}
+
+/// Matcher for Prop that has any token sources
+class _PropHasTokensMatcher extends Matcher {
+  const _PropHasTokensMatcher();
+  
+  @override
+  bool matches(dynamic item, Map matchState) {
+    if (item is! Prop) {
+      matchState['error'] = 'Expected Prop, got ${item.runtimeType}';
+      return false;
+    }
+    
+    return item.sources.any((s) => s is TokenSource);
+  }
+  
+  @override
+  Description describe(Description description) {
+    return description.add('Prop with token sources');
+  }
+  
+  @override
+  Description describeMismatch(
+    dynamic item,
+    Description mismatchDescription,
+    Map matchState,
+    bool verbose,
+  ) {
+    if (matchState.containsKey('error')) {
+      return mismatchDescription.add(matchState['error']);
+    }
+    
+    return mismatchDescription.add('does not have any token sources');
+  }
+}
+
+/// Matcher for Prop that has any Mix sources
+class _PropHasMixesMatcher extends Matcher {
+  const _PropHasMixesMatcher();
+  
+  @override
+  bool matches(dynamic item, Map matchState) {
+    if (item is! Prop) {
+      matchState['error'] = 'Expected Prop, got ${item.runtimeType}';
+      return false;
+    }
+    
+    return item.sources.any((s) => s is MixSource);
+  }
+  
+  @override
+  Description describe(Description description) {
+    return description.add('Prop with Mix sources');
+  }
+  
+  @override
+  Description describeMismatch(
+    dynamic item,
+    Description mismatchDescription,
+    Map matchState,
+    bool verbose,
+  ) {
+    if (matchState.containsKey('error')) {
+      return mismatchDescription.add(matchState['error']);
+    }
+    
+    return mismatchDescription.add('does not have any Mix sources');
+  }
+}
+
+/// Matcher for Prop that has directives
+class _PropHasDirectivesMatcher extends Matcher {
+  const _PropHasDirectivesMatcher();
+  
+  @override
+  bool matches(dynamic item, Map matchState) {
+    if (item is! Prop) {
+      matchState['error'] = 'Expected Prop, got ${item.runtimeType}';
+      return false;
+    }
+    
+    return item.$directives != null && item.$directives!.isNotEmpty;
+  }
+  
+  @override
+  Description describe(Description description) {
+    return description.add('Prop with directives');
+  }
+  
+  @override
+  Description describeMismatch(
+    dynamic item,
+    Description mismatchDescription,
+    Map matchState,
+    bool verbose,
+  ) {
+    if (matchState.containsKey('error')) {
+      return mismatchDescription.add(matchState['error']);
+    }
+    
+    return mismatchDescription.add('does not have directives');
+  }
+}
+
+/// Matcher for Prop that has animation config
+class _PropHasAnimationMatcher extends Matcher {
+  const _PropHasAnimationMatcher();
+  
+  @override
+  bool matches(dynamic item, Map matchState) {
+    if (item is! Prop) {
+      matchState['error'] = 'Expected Prop, got ${item.runtimeType}';
+      return false;
+    }
+    
+    return item.$animation != null;
+  }
+  
+  @override
+  Description describe(Description description) {
+    return description.add('Prop with animation config');
+  }
+  
+  @override
+  Description describeMismatch(
+    dynamic item,
+    Description mismatchDescription,
+    Map matchState,
+    bool verbose,
+  ) {
+    if (matchState.containsKey('error')) {
+      return mismatchDescription.add(matchState['error']);
+    }
+    
+    return mismatchDescription.add('does not have animation config');
+  }
 }

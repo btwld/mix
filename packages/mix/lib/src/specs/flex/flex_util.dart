@@ -48,6 +48,7 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexSpec> {
     mutable = MutableFlexMix(attribute ?? FlexMix());
   }
 
+  /// Sets the gap between children in the flex layout.
   FlexMix gap(double v) => mutable.gap(v);
 
   /// Sets flex direction to horizontal (row layout).
@@ -83,6 +84,10 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexSpec> {
   FlexMix get value => mutable.value;
 }
 
+/// Mutable implementation of [FlexMix] for efficient style accumulation.
+/// 
+/// Used internally by [FlexSpecUtility] to accumulate styling changes
+/// without creating new instances for each modification.
 class MutableFlexMix extends FlexMix with Mutable<FlexSpec, FlexMix> {
   MutableFlexMix(FlexMix style) {
     value = style;

@@ -52,6 +52,13 @@ class MixConverterRegistry implements ConversionContext {
 
   MixConverterRegistry._();
 
+  void _ensureInitialized() {
+    if (!_initialized) {
+      _initialized = true;
+      initializeMixConverters();
+    }
+  }
+
   /// Registers a converter for type [T].
   ///
   /// The converter will be used when [tryConvert] or [convert] is called
@@ -101,13 +108,6 @@ class MixConverterRegistry implements ConversionContext {
     return _converters.containsKey(T);
   }
 
-  void _ensureInitialized() {
-    if (!_initialized) {
-      _initialized = true;
-      initializeMixConverters();
-    }
-  }
-  
   @override
   Mix<T>? tryConvert<T>(T value) {
     _ensureInitialized();

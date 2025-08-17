@@ -8,14 +8,14 @@ import '../../core/prop.dart';
 ///
 /// Common functionality with merging and type conversion.
 sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
-  final MixProp<BorderSide>? $top;
-  final MixProp<BorderSide>? $bottom;
+  final Prop<BorderSide>? $top;
+  final Prop<BorderSide>? $bottom;
 
   static BorderMix none = BorderMix.all(BorderSideMix.none);
 
   const BoxBorderMix.create({
-    MixProp<BorderSide>? top,
-    MixProp<BorderSide>? bottom,
+    Prop<BorderSide>? top,
+    Prop<BorderSide>? bottom,
   }) : $top = top,
        $bottom = bottom;
 
@@ -140,7 +140,7 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
   bool get isUniform;
 
   /// Gets border side if uniform, null otherwise.
-  MixProp<BorderSide>? get uniformBorderSide;
+  Prop<BorderSide>? get uniformBorderSide;
 
   bool get isDirectional => this is BorderDirectionalMix;
   @override
@@ -151,8 +151,8 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
 ///
 /// Independent side control with tokens.
 final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
-  final MixProp<BorderSide>? $left;
-  final MixProp<BorderSide>? $right;
+  final Prop<BorderSide>? $left;
+  final Prop<BorderSide>? $right;
 
   BorderMix({
     BorderSideMix? top,
@@ -160,17 +160,17 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
     BorderSideMix? left,
     BorderSideMix? right,
   }) : this.create(
-         top: MixProp.maybe(top),
-         bottom: MixProp.maybe(bottom),
-         left: MixProp.maybe(left),
-         right: MixProp.maybe(right),
+         top: Prop.maybeMix(top),
+         bottom: Prop.maybeMix(bottom),
+         left: Prop.maybeMix(left),
+         right: Prop.maybeMix(right),
        );
 
   const BorderMix.create({
     super.top,
     super.bottom,
-    MixProp<BorderSide>? left,
-    MixProp<BorderSide>? right,
+    Prop<BorderSide>? left,
+    Prop<BorderSide>? right,
   }) : $left = left,
        $right = right,
        super.create();
@@ -303,7 +303,7 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
   bool get isUniform => $top == $bottom && $bottom == $left && $left == $right;
 
   @override
-  MixProp<BorderSide>? get uniformBorderSide {
+  Prop<BorderSide>? get uniformBorderSide {
     if (!isUniform) return null;
 
     return $top ?? $right ?? $bottom ?? $left;
@@ -319,8 +319,8 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
 /// right-to-left layout handling and token support.
 final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
     with DefaultValue<BorderDirectional> {
-  final MixProp<BorderSide>? $start;
-  final MixProp<BorderSide>? $end;
+  final Prop<BorderSide>? $start;
+  final Prop<BorderSide>? $end;
   static final BorderDirectionalMix none = BorderDirectionalMix.all(
     BorderSideMix.none,
   );
@@ -331,17 +331,17 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
     BorderSideMix? start,
     BorderSideMix? end,
   }) : this.create(
-         top: MixProp.maybe(top),
-         bottom: MixProp.maybe(bottom),
-         start: MixProp.maybe(start),
-         end: MixProp.maybe(end),
+         top: Prop.maybeMix(top),
+         bottom: Prop.maybeMix(bottom),
+         start: Prop.maybeMix(start),
+         end: Prop.maybeMix(end),
        );
 
   const BorderDirectionalMix.create({
     super.top,
     super.bottom,
-    MixProp<BorderSide>? start,
-    MixProp<BorderSide>? end,
+    Prop<BorderSide>? start,
+    Prop<BorderSide>? end,
   }) : $start = start,
        $end = end,
        super.create();
@@ -471,7 +471,7 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
   bool get isUniform => $top == $bottom && $bottom == $start && $start == $end;
 
   @override
-  MixProp<BorderSide>? get uniformBorderSide {
+  Prop<BorderSide>? get uniformBorderSide {
     if (!isUniform) return null;
 
     return $top ?? $bottom ?? $start ?? $end;

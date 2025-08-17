@@ -71,25 +71,25 @@ sealed class ShapeBorderMix<T extends ShapeBorder> extends Mix<T> {
 @immutable
 abstract class OutlinedBorderMix<T extends OutlinedBorder>
     extends ShapeBorderMix<T> {
-  final MixProp<BorderSide>? $side;
+  final Prop<BorderSide>? $side;
 
-  const OutlinedBorderMix({MixProp<BorderSide>? side}) : $side = side;
+  const OutlinedBorderMix({Prop<BorderSide>? side}) : $side = side;
 }
 
 /// Mix representation of [RoundedRectangleBorder].
 final class RoundedRectangleBorderMix
     extends OutlinedBorderMix<RoundedRectangleBorder> {
-  final MixProp<BorderRadiusGeometry>? $borderRadius;
+  final Prop<BorderRadiusGeometry>? $borderRadius;
 
   RoundedRectangleBorderMix({
     BorderRadiusGeometryMix? borderRadius,
     BorderSideMix? side,
   }) : this.create(
-         borderRadius: MixProp.maybe(borderRadius),
-         side: MixProp.maybe(side),
+         borderRadius: Prop.maybeMix(borderRadius),
+         side: Prop.maybeMix(side),
        );
   const RoundedRectangleBorderMix.create({
-    MixProp<BorderRadiusGeometry>? borderRadius,
+    Prop<BorderRadiusGeometry>? borderRadius,
     super.side,
   }) : $borderRadius = borderRadius;
 
@@ -157,17 +157,17 @@ final class RoundedRectangleBorderMix
 /// Mix-compatible representation of Flutter's [RoundedSuperellipseBorder] with smoother corners.
 final class RoundedSuperellipseBorderMix
     extends OutlinedBorderMix<RoundedSuperellipseBorder> {
-  final MixProp<BorderRadiusGeometry>? $borderRadius;
+  final Prop<BorderRadiusGeometry>? $borderRadius;
 
   RoundedSuperellipseBorderMix({
     BorderRadiusGeometryMix? borderRadius,
     BorderSideMix? side,
   }) : this.create(
-         borderRadius: MixProp.maybe(borderRadius),
-         side: MixProp.maybe(side),
+         borderRadius: Prop.maybeMix(borderRadius),
+         side: Prop.maybeMix(side),
        );
   const RoundedSuperellipseBorderMix.create({
-    MixProp<BorderRadiusGeometry>? borderRadius,
+    Prop<BorderRadiusGeometry>? borderRadius,
     super.side,
   }) : $borderRadius = borderRadius;
 
@@ -230,18 +230,18 @@ final class RoundedSuperellipseBorderMix
 /// Mix-compatible representation of Flutter's [BeveledRectangleBorder] with beveled corners.
 final class BeveledRectangleBorderMix
     extends OutlinedBorderMix<BeveledRectangleBorder> {
-  final MixProp<BorderRadiusGeometry>? $borderRadius;
+  final Prop<BorderRadiusGeometry>? $borderRadius;
 
   BeveledRectangleBorderMix({
     BorderRadiusGeometryMix? borderRadius,
     BorderSideMix? side,
   }) : this.create(
-         borderRadius: MixProp.maybe(borderRadius),
-         side: MixProp.maybe(side),
+         borderRadius: Prop.maybeMix(borderRadius),
+         side: Prop.maybeMix(side),
        );
 
   const BeveledRectangleBorderMix.create({
-    MixProp<BorderRadiusGeometry>? borderRadius,
+    Prop<BorderRadiusGeometry>? borderRadius,
     super.side,
   }) : $borderRadius = borderRadius;
 
@@ -302,18 +302,18 @@ final class BeveledRectangleBorderMix
 /// Mix-compatible representation of Flutter's [ContinuousRectangleBorder] with smooth curved corners.
 final class ContinuousRectangleBorderMix
     extends OutlinedBorderMix<ContinuousRectangleBorder> {
-  final MixProp<BorderRadiusGeometry>? $borderRadius;
+  final Prop<BorderRadiusGeometry>? $borderRadius;
 
   ContinuousRectangleBorderMix({
     BorderRadiusGeometryMix? borderRadius,
     BorderSideMix? side,
   }) : this.create(
-         borderRadius: MixProp.maybe(borderRadius),
-         side: MixProp.maybe(side),
+         borderRadius: Prop.maybeMix(borderRadius),
+         side: Prop.maybeMix(side),
        );
 
   const ContinuousRectangleBorderMix.create({
-    MixProp<BorderRadiusGeometry>? borderRadius,
+    Prop<BorderRadiusGeometry>? borderRadius,
     super.side,
   }) : $borderRadius = borderRadius;
 
@@ -379,7 +379,7 @@ final class CircleBorderMix extends OutlinedBorderMix<CircleBorder> {
 
   CircleBorderMix({BorderSideMix? side, double? eccentricity})
     : this.create(
-        side: MixProp.maybe(side),
+        side: Prop.maybeMix(side),
         eccentricity: Prop.maybe(eccentricity),
       );
 
@@ -456,7 +456,7 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
     double? rotation,
     double? squash,
   }) : this.create(
-         side: MixProp.maybe(side),
+         side: Prop.maybeMix(side),
          points: Prop.maybe(points),
          innerRadiusRatio: Prop.maybe(innerRadiusRatio),
          pointRounding: Prop.maybe(pointRounding),
@@ -585,7 +585,10 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
     return StarBorderMix.create(
       side: MixOps.merge($side, other.$side),
       points: MixOps.merge($points, other.$points),
-      innerRadiusRatio: MixOps.merge($innerRadiusRatio, other.$innerRadiusRatio),
+      innerRadiusRatio: MixOps.merge(
+        $innerRadiusRatio,
+        other.$innerRadiusRatio,
+      ),
       pointRounding: MixOps.merge($pointRounding, other.$pointRounding),
       valleyRounding: MixOps.merge($valleyRounding, other.$valleyRounding),
       rotation: MixOps.merge($rotation, other.$rotation),
@@ -607,10 +610,10 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
 
 /// Mix-compatible representation of Flutter's [LinearBorder] with configurable edge styling.
 final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
-  final MixProp<LinearBorderEdge>? $start;
-  final MixProp<LinearBorderEdge>? $end;
-  final MixProp<LinearBorderEdge>? $top;
-  final MixProp<LinearBorderEdge>? $bottom;
+  final Prop<LinearBorderEdge>? $start;
+  final Prop<LinearBorderEdge>? $end;
+  final Prop<LinearBorderEdge>? $top;
+  final Prop<LinearBorderEdge>? $bottom;
 
   LinearBorderMix({
     BorderSideMix? side,
@@ -619,18 +622,18 @@ final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
     LinearBorderEdgeMix? top,
     LinearBorderEdgeMix? bottom,
   }) : this.create(
-         side: MixProp.maybe(side),
-         start: MixProp.maybe(start),
-         end: MixProp.maybe(end),
-         top: MixProp.maybe(top),
-         bottom: MixProp.maybe(bottom),
+         side: Prop.maybeMix(side),
+         start: Prop.maybeMix(start),
+         end: Prop.maybeMix(end),
+         top: Prop.maybeMix(top),
+         bottom: Prop.maybeMix(bottom),
        );
   const LinearBorderMix.create({
     super.side,
-    MixProp<LinearBorderEdge>? start,
-    MixProp<LinearBorderEdge>? end,
-    MixProp<LinearBorderEdge>? top,
-    MixProp<LinearBorderEdge>? bottom,
+    Prop<LinearBorderEdge>? start,
+    Prop<LinearBorderEdge>? end,
+    Prop<LinearBorderEdge>? top,
+    Prop<LinearBorderEdge>? bottom,
   }) : $start = start,
        $end = end,
        $top = top,
@@ -736,9 +739,11 @@ final class LinearBorderEdgeMix extends Mix<LinearBorderEdge> {
     : this.create(size: Prop.maybe(size), alignment: Prop.maybe(alignment));
   LinearBorderEdgeMix.value(LinearBorderEdge edge)
     : this(size: edge.size, alignment: edge.alignment);
-  const LinearBorderEdgeMix.create({Prop<double>? size, Prop<double>? alignment})
-    : $size = size,
-      $alignment = alignment;
+  const LinearBorderEdgeMix.create({
+    Prop<double>? size,
+    Prop<double>? alignment,
+  }) : $size = size,
+       $alignment = alignment;
 
   /// Creates a linear border edge with the specified size.
   factory LinearBorderEdgeMix.size(double value) {
@@ -788,7 +793,8 @@ final class LinearBorderEdgeMix extends Mix<LinearBorderEdge> {
 
 /// Mix-compatible representation of Flutter's [StadiumBorder] with rounded stadium shape.
 final class StadiumBorderMix extends OutlinedBorderMix<StadiumBorder> {
-  StadiumBorderMix({BorderSideMix? side}) : this.create(side: MixProp.maybe(side));
+  StadiumBorderMix({BorderSideMix? side})
+    : this.create(side: Prop.maybeMix(side));
 
   const StadiumBorderMix.create({super.side});
 

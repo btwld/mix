@@ -44,26 +44,22 @@ class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec> {
     (prop) => mutable.wrap(ModifierConfig(modifiers: [prop])),
   );
 
-  // Box decoration convenience accessors
+  /// Box decoration convenience accessors.
   late final border = decoration.box.border;
-
   late final borderRadius = decoration.box.borderRadius;
-
   late final color = decoration.box.color;
-
   late final gradient = decoration.box.gradient;
   late final shape = decoration.box.shape;
 
-  // Box constraint convenience accessors
+  /// Box constraint convenience accessors.
   late final width = constraints.width;
   late final height = constraints.height;
   late final minWidth = constraints.minWidth;
-
   late final maxWidth = constraints.maxWidth;
   late final minHeight = constraints.minHeight;
   late final maxHeight = constraints.maxHeight;
 
-  // Box transformation utilities
+  /// Box transformation utilities.
   late final transform = MixUtility<FlexBoxMix, Matrix4>(
     (prop) => mutable.merge(FlexBoxMix.box(BoxMix(transform: prop))),
   );
@@ -78,7 +74,7 @@ class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec> {
     (prop) => mutable.merge(FlexBoxMix.box(BoxMix(alignment: prop))),
   );
 
-  // Flex layout utilities
+  /// Flex layout utilities.
   late final direction = MixUtility<FlexBoxMix, Axis>(
     (prop) => mutable.merge(FlexBoxMix.flex(FlexMix(direction: prop))),
   );
@@ -120,6 +116,7 @@ class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec> {
     mutable = MutableFlexBoxMix(attribute ?? const FlexBoxMix.create());
   }
 
+  /// Sets the gap between children in the flex layout.
   FlexBoxMix gap(double v) => mutable.merge(FlexBoxMix.flex(FlexMix(gap: v)));
 
   /// Applies animation configuration to the flexbox styling.
@@ -149,6 +146,10 @@ class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec> {
   FlexBoxMix get value => mutable.value;
 }
 
+/// Mutable implementation of [FlexBoxMix] for efficient style accumulation.
+/// 
+/// Used internally by [FlexBoxSpecUtility] to accumulate styling changes
+/// without creating new instances for each modification.
 class MutableFlexBoxMix extends FlexBoxMix
     with Mutable<FlexBoxSpec, FlexBoxMix> {
   MutableFlexBoxMix(FlexBoxMix style) {

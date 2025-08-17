@@ -9,17 +9,40 @@ import '../../core/spec.dart';
 /// Provides comprehensive icon styling including color, size, weight, optical properties,
 /// text direction, scaling behavior, and shadow effects.
 final class IconSpec extends Spec<IconSpec> with Diagnosticable {
+  /// The color to use when drawing the icon.
   final Color? color;
+  
+  /// The size of the icon in logical pixels.
   final double? size;
+  
+  /// The font weight variant (100-900) for supported icon fonts.
   final double? weight;
+  
+  /// The grade variant (-25 to 200) for supported icon fonts.
   final double? grade;
+  
+  /// The optical size variant (20-48) for supported icon fonts.
   final double? opticalSize;
+  
+  /// The text direction to use for rendering the icon.
   final TextDirection? textDirection;
+  
+  /// Whether to scale the icon according to the textScaleFactor.
   final bool? applyTextScaling;
+  
+  /// A list of shadows to paint behind the icon.
   final List<Shadow>? shadows;
+  
+  /// The fill variant (0.0-1.0) for supported icon fonts.
   final double? fill;
+  
+  /// Semantic description for accessibility.
   final String? semanticsLabel;
+  
+  /// The blend mode to apply when drawing the icon.
   final BlendMode? blendMode;
+  
+  /// The icon data to display.
   final IconData? icon;
 
   const IconSpec({

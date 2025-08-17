@@ -12,8 +12,7 @@ import '../properties/typography/text_style_mix.dart';
 /// Modifier that applies default text styling to its descendants.
 ///
 /// Wraps the child in a [DefaultTextStyle] widget with the specified text properties.
-final class DefaultTextStyleModifier
-    extends Modifier<DefaultTextStyleModifier>
+final class DefaultTextStyleModifier extends Modifier<DefaultTextStyleModifier>
     with Diagnosticable {
   final TextStyle? style;
   final TextAlign? textAlign;
@@ -55,10 +54,7 @@ final class DefaultTextStyleModifier
   }
 
   @override
-  DefaultTextStyleModifier lerp(
-    DefaultTextStyleModifier? other,
-    double t,
-  ) {
+  DefaultTextStyleModifier lerp(DefaultTextStyleModifier? other, double t) {
     if (other == null) return this;
 
     return DefaultTextStyleModifier(
@@ -135,13 +131,13 @@ final class DefaultTextStyleModifier
 /// This class allows for mixing and resolving default text style properties.
 class DefaultTextStyleModifierMix
     extends ModifierMix<DefaultTextStyleModifier> {
-  final MixProp<TextStyle>? style;
+  final Prop<TextStyle>? style;
   final Prop<TextAlign>? textAlign;
   final Prop<bool>? softWrap;
   final Prop<TextOverflow>? overflow;
   final Prop<int>? maxLines;
   final Prop<TextWidthBasis>? textWidthBasis;
-  final MixProp<TextHeightBehavior>? textHeightBehavior;
+  final Prop<TextHeightBehavior>? textHeightBehavior;
 
   const DefaultTextStyleModifierMix.create({
     this.style,
@@ -162,13 +158,13 @@ class DefaultTextStyleModifierMix
     TextWidthBasis? textWidthBasis,
     TextHeightBehaviorMix? textHeightBehavior,
   }) : this.create(
-         style: MixProp.maybe(style),
+         style: Prop.maybeMix(style),
          textAlign: Prop.maybe(textAlign),
          softWrap: Prop.maybe(softWrap),
          overflow: Prop.maybe(overflow),
          maxLines: Prop.maybe(maxLines),
          textWidthBasis: Prop.maybe(textWidthBasis),
-         textHeightBehavior: MixProp.maybe(textHeightBehavior),
+         textHeightBehavior: Prop.maybeMix(textHeightBehavior),
        );
 
   @override
@@ -185,19 +181,17 @@ class DefaultTextStyleModifierMix
   }
 
   @override
-  DefaultTextStyleModifierMix merge(
-    DefaultTextStyleModifierMix? other,
-  ) {
+  DefaultTextStyleModifierMix merge(DefaultTextStyleModifierMix? other) {
     if (other == null) return this;
 
     return DefaultTextStyleModifierMix.create(
-      style: style.tryMerge(other.style),
-      textAlign: textAlign.tryMerge(other.textAlign),
-      softWrap: softWrap.tryMerge(other.softWrap),
-      overflow: overflow.tryMerge(other.overflow),
-      maxLines: maxLines.tryMerge(other.maxLines),
-      textWidthBasis: textWidthBasis.tryMerge(other.textWidthBasis),
-      textHeightBehavior: textHeightBehavior.tryMerge(other.textHeightBehavior),
+      style: MixOps.merge(style, other.style),
+      textAlign: MixOps.merge(textAlign, other.textAlign),
+      softWrap: MixOps.merge(softWrap, other.softWrap),
+      overflow: MixOps.merge(overflow, other.overflow),
+      maxLines: MixOps.merge(maxLines, other.maxLines),
+      textWidthBasis: MixOps.merge(textWidthBasis, other.textWidthBasis),
+      textHeightBehavior: MixOps.merge(textHeightBehavior, other.textHeightBehavior),
     );
   }
 
