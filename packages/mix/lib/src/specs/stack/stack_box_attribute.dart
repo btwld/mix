@@ -94,12 +94,12 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
   }
 
   /// Sets box properties
-  StackBoxMix withBox(BoxMix value) {
+  StackBoxMix box(BoxMix value) {
     return merge(StackBoxMix.box(value));
   }
 
   /// Sets stack properties
-  StackBoxMix withStack(StackMix value) {
+  StackBoxMix stack(StackMix value) {
     return merge(StackBoxMix.stack(value));
   }
 
@@ -126,13 +126,13 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
   /// ```
   @override
   ZBoxSpec resolve(BuildContext context) {
-    final boxSpec = $box?.value is BoxMix 
-        ? ($box!.value as BoxMix).resolve(context) 
+    final boxSpec = $box?.value is BoxMix
+        ? ($box!.value as BoxMix).resolve(context)
         : null;
-    final stackSpec = $stack?.value is StackMix 
-        ? ($stack!.value as StackMix).resolve(context) 
+    final stackSpec = $stack?.value is StackMix
+        ? ($stack!.value as StackMix).resolve(context)
         : null;
-    
+
     return ZBoxSpec(box: boxSpec, stack: stackSpec);
   }
 

@@ -148,6 +148,7 @@ class CurveAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     controller.duration = _config.duration;
 
     try {
+      await Future.delayed(_config.delay);
       await controller.forward(from: 0.0);
     } on TickerCanceled {
       // Animation was cancelled - this is normal
@@ -189,28 +190,32 @@ class SpringAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
 
 class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   final List<S> specs;
-  final List<CurveAnimationConfig> curvesAndDurations;
+  final List<CurveAnimationConfig> curveConfigs;
   final Listenable trigger;
+  final PhaseAnimationMode mode;
 
-  late final TweenSequence<S?> _tweenSequence = _createTweenSequence();
+  late final TweenSequence<S?> _tweenSequence;
 
   PhaseAnimationDriver({
     required super.vsync,
-    required this.curvesAndDurations,
+    required this.curveConfigs,
     required this.specs,
     required super.initialStyle,
     required this.trigger,
+    required this.mode,
   }) {
+    _tweenSequence = mode.createTweenSequence(specs, curveConfigs);
+
     // Override the animation to use TweenSequence wrapped in a tween
     _animation = controller.drive(_SpecToResolvedStyleTween(_tweenSequence));
 
     trigger.addListener(_onTriggerChanged);
 
     // Add status listener for onEnd callback
-    if (curvesAndDurations.last.onEnd != null) {
+    if (curveConfigs.last.onEnd != null) {
       _animation.addStatusListener((status) {
         if (status == AnimationStatus.completed) {
-          curvesAndDurations.last.onEnd!();
+          curveConfigs.last.onEnd!();
         }
       });
     }
@@ -220,31 +225,10 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     executeAnimation();
   }
 
-  TweenSequence<S?> _createTweenSequence() {
-    final items = <TweenSequenceItem<S?>>[];
-    for (int i = 0; i < specs.length; i++) {
-      final currentIndex = i % specs.length;
-      final nextIndex = (i + 1) % specs.length;
-
-      items.add(
-        TweenSequenceItem(
-          tween: SpecTween<S>(
-            begin: specs[currentIndex],
-            end: specs[nextIndex],
-          ).chain(CurveTween(curve: curvesAndDurations[currentIndex].curve)),
-          weight: curvesAndDurations[currentIndex].duration.inMilliseconds
-              .toDouble(),
-        ),
-      );
-    }
-
-    return TweenSequence(items);
-  }
-
   Duration get totalDuration {
-    return curvesAndDurations.fold(
+    return curveConfigs.fold(
       Duration.zero,
-      (acc, config) => acc + config.duration,
+      (acc, config) => acc + config.duration + config.delay,
     );
   }
 

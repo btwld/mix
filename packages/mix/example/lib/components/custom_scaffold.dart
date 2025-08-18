@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-final scaffoldContainer = Style.flexbox(
+final scaffoldContainer = Style.flexBox(
     .mainAxisSize(.max)
     .crossAxisAlignment(.stretch)
     .mainAxisAlignment(.start)
@@ -9,16 +9,29 @@ final scaffoldContainer = Style.flexbox(
 );
 
 final appHeaderContainer = Style.box(
+    BoxMix()
     .height(80)
     .color(Colors.black)
     .padding(.all(16))
     .alignment(.center)
-    .text(
-      .fontSize(20)
-      .fontWeight(.bold)
-      .color(Colors.white)
-    )
-);
+    .wrapDefaultTextStyle(
+      TextStyleMix()
+            .fontSize(20)
+            .fontWeight(.bold)
+            .color(Colors.white)
+      )
+    );
+    // .wrap(DefaultTextStyleMix(
+    //   style: TextMix()
+    //       .fontSize(20)
+    //       .fontWeight(.bold)
+    //       .color(Colors.white)
+    // ))
+    // .text(TextMix()
+    //   .fontSize(20)
+    //   .fontWeight(.bold)
+    //   .color(Colors.white)
+    // )
 
 final scaffoldBodyContainer = Style.box(
     .color(Colors.grey.shade50)

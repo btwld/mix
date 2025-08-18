@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../animation/animation_config.dart';
+import '../../animation/animation_mixin.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
@@ -22,7 +23,8 @@ class StackMix extends Style<StackSpec>
     with
         Diagnosticable,
         StyleModifierMixin<StackMix, StackSpec>,
-        StyleVariantMixin<StackMix, StackSpec> {
+        StyleVariantMixin<StackMix, StackSpec>,
+        StyleAnimationMixin<StackSpec, StackMix> {
   final Prop<AlignmentGeometry>? $alignment;
   final Prop<StackFit>? $fit;
   final Prop<TextDirection>? $textDirection;
@@ -151,6 +153,7 @@ class StackMix extends Style<StackSpec>
   }
 
   /// Convenience method for animating the StackSpec
+  @override
   StackMix animate(AnimationConfig animation) {
     return merge(StackMix.animate(animation));
   }
