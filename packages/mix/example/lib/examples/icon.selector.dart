@@ -36,25 +36,29 @@ class EmojiSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return FlexBox(
       direction: Axis.horizontal,
-      style: Style.flexbox()
-          .box(
-            BoxMix()
-                .padding(EdgeInsetsMix.symmetric(horizontal: 16, vertical: 10))
-                .color(Colors.white)
-                .borderRadius(BorderRadiusMix.circular(50))
-                .shadow(
-                  BoxShadowMix()
-                      .color(Colors.black12)
-                      .blurRadius(50)
-                      .offset(Offset(0, 0)),
-                ),
-          )
-          .flex(
-            FlexMix()
-                .gap(16)
-                .mainAxisAlignment(MainAxisAlignment.center)
-                .mainAxisSize(MainAxisSize.min),
-          ),
+      style: Style.flexBox(
+        FlexBoxMix()
+            .box(
+              BoxMix()
+                  .padding(
+                    EdgeInsetsMix.symmetric(horizontal: 16, vertical: 10),
+                  )
+                  .color(Colors.white)
+                  .borderRadius(BorderRadiusMix.circular(50))
+                  .shadow(
+                    BoxShadowMix()
+                        .color(Colors.black12)
+                        .blurRadius(50)
+                        .offset(Offset(0, 0)),
+                  ),
+            )
+            .flex(
+              FlexMix()
+                  .gap(16)
+                  .mainAxisAlignment(MainAxisAlignment.center)
+                  .mainAxisSize(MainAxisSize.min),
+            ),
+      ),
       children: [
         AnimatedEmoji(emoji: '❤️', delay: 0.ms),
         AnimatedEmoji(emoji: '🤑', delay: 100.ms),
@@ -125,19 +129,24 @@ class _AnimatedEmojiState extends State<AnimatedEmoji> {
   @override
   Widget build(BuildContext context) {
     return Box(
-      style: Style.box().phaseAnimation(
-        trigger: trigger,
-        phases: AnimationEmojiPhase.values,
-        mode: PhaseAnimationMode.oneShot,
-        styleBuilder: (phase, style) => style.transform(phase.matrix),
-        configBuilder: (phase) {
-          if (phase == AnimationEmojiPhase.vanish) {
-            return phase.config.copyWith(delay: widget.delay);
-          }
-          return phase.config;
-        },
+      style: Style.box(
+        BoxMix().phaseAnimation(
+          trigger: trigger,
+          phases: AnimationEmojiPhase.values,
+          mode: PhaseAnimationMode.oneShot,
+          styleBuilder: (phase, style) => style.transform(phase.matrix),
+          configBuilder: (phase) {
+            if (phase == AnimationEmojiPhase.vanish) {
+              return phase.config.copyWith(delay: widget.delay);
+            }
+            return phase.config;
+          },
+        ),
       ),
-      child: StyledText(widget.emoji, style: Style.text().fontSize(25)),
+      child: StyledText(
+        widget.emoji,
+        style: Style.text(TextMix().fontSize(25)),
+      ),
     );
   }
 }

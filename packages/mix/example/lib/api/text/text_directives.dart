@@ -18,7 +18,8 @@ class Example extends StatelessWidget {
     );
 
     return VBox(
-      style: Style.flexbox(
+      style: Style.flexBox(
+        FlexBoxMix()
         .gap(16)
         .mainAxisSize(.min)
       ),

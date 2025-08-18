@@ -425,35 +425,6 @@ class BoxMix extends Style<BoxSpec>
     return merge(BoxMix.animate(animation));
   }
 
-  /// Animation instance method
-  @override
-  BoxMix phaseAnimation<T>({
-    required Listenable trigger,
-    required List<T> phases,
-    required BoxMix Function(T phase, BoxMix style) styleBuilder,
-    required CurveAnimationConfig Function(T phase) configBuilder,
-    PhaseAnimationMode mode = PhaseAnimationMode.simpleLoop,
-  }) {
-    final styles = List<BoxMix>.empty(growable: true);
-    final configs = List<CurveAnimationConfig>.empty(growable: true);
-
-    for (final phase in phases) {
-      styles.add(styleBuilder(phase, this));
-      configs.add(configBuilder(phase));
-    }
-
-    return merge(
-      BoxMix(
-        animation: PhaseAnimationConfig<BoxSpec, BoxMix>(
-          styles: styles,
-          curveConfigs: configs,
-          trigger: trigger,
-          mode: mode,
-        ),
-      ),
-    );
-  }
-
   /// Mixin implementation
   @override
   BoxMix wrap(ModifierConfig value) {
@@ -461,7 +432,6 @@ class BoxMix extends Style<BoxSpec>
   }
 
   /// Border radius instance method
-
   @override
   BoxMix borderRadius(BorderRadiusGeometryMix value) {
     return merge(BoxMix(decoration: DecorationMix.borderRadius(value)));

@@ -194,7 +194,7 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   final Listenable trigger;
   final PhaseAnimationMode mode;
 
-  late TweenSequence<S?> _tweenSequence = _createTweenSequence();
+  late final TweenSequence<S?> _tweenSequence;
 
   PhaseAnimationDriver({
     required super.vsync,
@@ -204,6 +204,8 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     required this.trigger,
     required this.mode,
   }) {
+    _tweenSequence = mode.createTweenSequence(specs, curveConfigs);
+
     // Override the animation to use TweenSequence wrapped in a tween
     _animation = controller.drive(_SpecToResolvedStyleTween(_tweenSequence));
 
@@ -217,32 +219,10 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
         }
       });
     }
-
-    _tweenSequence = mode.createTweenSequence(specs, curveConfigs);
   }
 
   void _onTriggerChanged() {
     executeAnimation();
-  }
-
-  TweenSequence<S?> _createTweenSequence() {
-    final items = <TweenSequenceItem<S?>>[];
-    for (int i = 0; i < specs.length; i++) {
-      final currentIndex = i % specs.length;
-      final nextIndex = (i + 1) % specs.length;
-
-      items.add(
-        TweenSequenceItem(
-          tween: SpecTween<S>(
-            begin: specs[currentIndex],
-            end: specs[nextIndex],
-          ).chain(CurveTween(curve: curveConfigs[currentIndex].curve)),
-          weight: curveConfigs[currentIndex].duration.inMilliseconds.toDouble(),
-        ),
-      );
-    }
-
-    return TweenSequence(items);
   }
 
   Duration get totalDuration {
