@@ -592,3 +592,66 @@ const _defaultOrder = [
   // Always applied last to ensure optimal performance and correct visual layering.
   OpacityModifier,
 ];
+
+final defaultModifier = {
+  FlexibleModifier: FlexibleModifier(),
+  VisibilityModifier: VisibilityModifier(),
+  IconThemeModifier: IconThemeModifier(),
+  DefaultTextStyleModifier: DefaultTextStyleModifier(),
+  SizedBoxModifier: SizedBoxModifier(),
+  FractionallySizedBoxModifier: FractionallySizedBoxModifier(),
+  IntrinsicHeightModifier: IntrinsicHeightModifier(),
+  IntrinsicWidthModifier: IntrinsicWidthModifier(),
+  AspectRatioModifier: AspectRatioModifier(),
+  RotatedBoxModifier: RotatedBoxModifier(),
+  AlignModifier: AlignModifier(),
+  PaddingModifier: PaddingModifier(),
+  TransformModifier: TransformModifier(),
+  ClipOvalModifier: ClipOvalModifier(),
+  ClipRRectModifier: ClipRRectModifier(),
+  ClipPathModifier: ClipPathModifier(),
+  ClipTriangleModifier: ClipTriangleModifier(),
+  OpacityModifier: OpacityModifier(),
+};
+
+class ModifierListTween extends Tween<List<Modifier>?> {
+  ModifierListTween({super.begin, super.end});
+
+  @override
+  List<Modifier>? lerp(double t) {
+    List<Modifier>? lerpedModifiers;
+    if (end != null) {
+      final thisModifiers = begin!;
+      final otherModifiers = end!;
+
+      // Create a map of modifiers by runtime type from the other list
+      final thisModifierMap = <Type, Modifier>{};
+
+      for (final modifier in thisModifiers) {
+        thisModifierMap[modifier.runtimeType] = modifier;
+      }
+
+      // Lerp each modifier from this list with its matching type from other
+      lerpedModifiers = [];
+      for (final modifier in otherModifiers) {
+        Modifier? thisModifier = thisModifierMap[modifier.runtimeType];
+        thisModifier ??= defaultModifier[modifier.runtimeType] as Modifier?;
+
+        if (thisModifier != null) {
+          // Both have this modifier type, lerp them
+          // We need to use dynamic dispatch here since lerp is type-specific
+          final lerpedModifier = thisModifier.lerp(modifier, t) as Modifier;
+          lerpedModifiers.add(lerpedModifier);
+        } else {
+          // Only this has the modifier, fade it out if t > 0.5
+
+          if (t < 0.5) {
+            lerpedModifiers.add(modifier);
+          }
+        }
+      }
+    }
+
+    return lerpedModifiers;
+  }
+}
