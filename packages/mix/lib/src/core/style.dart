@@ -250,9 +250,6 @@ class ResolvedStyle<V extends Spec<V>> with Equatable {
     this.inherit,
   });
 
-  // this -> OpacityModifier
-  // other -> TransformModifier, OpacityModifier
-
   /// Linearly interpolate between two ResolvedStyles
   ResolvedStyle<V> lerp(ResolvedStyle<V>? other, double t) {
     if (other == null || t == 0.0) return this;
