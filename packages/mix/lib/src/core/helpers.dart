@@ -158,6 +158,7 @@ T? _lerpValue<T>(T? a, T? b, double t) {
       AlignmentGeometry.lerp(a, b, t) as T?,
 
     // EdgeInsets - handle specific types first
+    (Decoration? a, Decoration? b) => Decoration.lerp(a, b, t) as T?,
     (EdgeInsets? a, EdgeInsets? b) => EdgeInsets.lerp(a, b, t) as T?,
     (EdgeInsetsGeometry? a, EdgeInsetsGeometry? b) =>
       EdgeInsetsGeometry.lerp(a, b, t) as T?,
@@ -270,8 +271,10 @@ class PropOps {
   static Mix<V> mergeMixes<V>(BuildContext context, Mix<V> a, Mix<V> b) {
     // Handle special cases that need BuildContext-aware merging
     return switch ((a, b)) {
-      (DecorationMix a, DecorationMix b) => DecorationMerger().tryMerge(context, a, b)! as Mix<V>,
-      (ShapeBorderMix a, ShapeBorderMix b) => ShapeBorderMerger().tryMerge(context, a, b)! as Mix<V>,
+      (DecorationMix a, DecorationMix b) =>
+        DecorationMerger().tryMerge(context, a, b)! as Mix<V>,
+      (ShapeBorderMix a, ShapeBorderMix b) =>
+        ShapeBorderMerger().tryMerge(context, a, b)! as Mix<V>,
       _ => a.merge(b),
     };
   }
@@ -289,7 +292,11 @@ class PropOps {
     for (final source in sources) {
       if (source is MixSource<V>) {
         if (pendingMixSource != null) {
-          final mergedMix = mergeMixes(context, pendingMixSource.mix, source.mix);
+          final mergedMix = mergeMixes(
+            context,
+            pendingMixSource.mix,
+            source.mix,
+          );
           pendingMixSource = MixSource(mergedMix);
         } else {
           pendingMixSource = source;
@@ -322,7 +329,3 @@ enum ListMergeStrategy {
   /// Override entire list
   override,
 }
-
-
-
-
