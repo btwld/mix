@@ -11,7 +11,7 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final flexStyle = Style.flexBox(
+    final flexStyle = FlexBoxMix()
         .mainAxisSize(.min)
         .spacing(4)
         .crossAxisAlignment(.start)
@@ -35,19 +35,17 @@ class Example extends StatelessWidget {
         .shadow(
           .blurRadius(10)
           .color(Colors.black12)
-        )
     );
 
-    final iconStyle = Style.icon(
+    final iconStyle = IconMix()
         .icon(Icons.piano_outlined)
         .color(Colors.blueGrey.shade600)
-        .size(20)
-    );
-    final textStyle = Style.text(
+        .size(20);
+
+    final textStyle = TextMix()
         .fontSize(16)
         .fontWeight(FontWeight.w500)
-        .color(Colors.blueGrey.shade600)
-    );
+        .color(Colors.blueGrey.shade600);
 
     return VBox(
       style: flexStyle,
