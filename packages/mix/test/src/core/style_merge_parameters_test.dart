@@ -371,7 +371,7 @@ void main() {
           ]),
         );
         final second = FlexBoxMix(
-          flex: FlexMix.gap(8.0),
+          flex: FlexMix.spacing(8.0),
           modifier: ModifierConfig.orderOfModifiers(const [
             ClipOvalModifier,
             TransformModifier,
@@ -387,7 +387,7 @@ void main() {
 
       test('merges inherit correctly', () {
         final first = FlexBoxMix(box: BoxMix.width(100), inherit: true);
-        final second = FlexBoxMix(flex: FlexMix.gap(8.0), inherit: false);
+        final second = FlexBoxMix(flex: FlexMix.spacing(8.0), inherit: false);
 
         final merged = first.merge(second);
 

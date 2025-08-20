@@ -116,8 +116,16 @@ class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec> {
     mutable = MutableFlexBoxMix(attribute ?? const FlexBoxMix.create());
   }
 
+  /// Sets the spacing between children in the flex layout.
+  FlexBoxMix spacing(double v) => mutable.merge(FlexBoxMix.flex(FlexMix(spacing: v)));
+
   /// Sets the gap between children in the flex layout.
-  FlexBoxMix gap(double v) => mutable.merge(FlexBoxMix.flex(FlexMix(gap: v)));
+  /// @deprecated Use spacing instead.
+  @Deprecated(
+    'Use spacing instead. '
+    'This feature was deprecated after Mix v2.0.0.',
+  )
+  FlexBoxMix gap(double v) => mutable.merge(FlexBoxMix.flex(FlexMix(spacing: v)));
 
   /// Applies animation configuration to the flexbox styling.
   FlexBoxMix animate(AnimationConfig animation) => mutable.animate(animation);

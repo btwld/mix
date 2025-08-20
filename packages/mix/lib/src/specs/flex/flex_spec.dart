@@ -34,7 +34,14 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
   /// The content will be clipped (or not) according to this option.
   final Clip? clipBehavior;
 
+  /// The spacing between children.
+  final double? spacing;
+
   /// The gap between children.
+  @Deprecated(
+    'Use spacing instead. '
+    'This feature was deprecated after Mix v2.0.0.',
+  )
   final double? gap;
 
   /// Creates a [FlexSpec] with the provided properties.
@@ -47,8 +54,13 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
     this.textDirection,
     this.textBaseline,
     this.clipBehavior,
-    this.gap,
-  });
+    this.spacing,
+    @Deprecated(
+      'Use spacing instead. '
+      'This feature was deprecated after Mix v2.0.0.',
+    )
+    double? gap,
+  }) : gap = gap ?? spacing;
 
   void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties.add(EnumProperty('direction', direction));
@@ -59,7 +71,10 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
     properties.add(EnumProperty('textDirection', textDirection));
     properties.add(EnumProperty('textBaseline', textBaseline));
     properties.add(EnumProperty('clipBehavior', clipBehavior));
-    properties.add(DoubleProperty('gap', gap));
+    properties.add(DoubleProperty('spacing', spacing));
+    if (gap != null && gap != spacing) {
+      properties.add(DoubleProperty('gap (deprecated)', gap));
+    }
   }
 
   /// Creates a copy of this [FlexSpec] with the given properties replaced.
@@ -73,6 +88,11 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
     TextDirection? textDirection,
     TextBaseline? textBaseline,
     Clip? clipBehavior,
+    double? spacing,
+    @Deprecated(
+      'Use spacing instead. '
+      'This feature was deprecated after Mix v2.0.0.',
+    )
     double? gap,
   }) {
     return FlexSpec(
@@ -84,7 +104,7 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
       textDirection: textDirection ?? this.textDirection,
       textBaseline: textBaseline ?? this.textBaseline,
       clipBehavior: clipBehavior ?? this.clipBehavior,
-      gap: gap ?? this.gap,
+      spacing: spacing ?? gap ?? this.spacing,
     );
   }
 
@@ -114,7 +134,7 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
       textDirection: MixOps.lerpSnap(textDirection, other.textDirection, t),
       textBaseline: MixOps.lerpSnap(textBaseline, other.textBaseline, t),
       clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t),
-      gap: MixOps.lerp(gap, other.gap, t),
+      spacing: MixOps.lerp(spacing, other.spacing, t),
     );
   }
 
@@ -134,6 +154,6 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
     textDirection,
     textBaseline,
     clipBehavior,
-    gap,
+    spacing,
   ];
 }

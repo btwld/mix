@@ -17,7 +17,7 @@ void main() {
           textDirection: TextDirection.ltr,
           textBaseline: TextBaseline.alphabetic,
           clipBehavior: Clip.antiAlias,
-          gap: 16.0,
+          spacing: 16.0,
         );
 
         expect(attribute.$direction!, resolvesTo(Axis.horizontal));
@@ -31,7 +31,7 @@ void main() {
         expect(attribute.$textDirection!, resolvesTo(TextDirection.ltr));
         expect(attribute.$textBaseline!, resolvesTo(TextBaseline.alphabetic));
         expect(attribute.$clipBehavior!, resolvesTo(Clip.antiAlias));
-        expect(attribute.$gap!, resolvesTo(16.0));
+        expect(attribute.$spacing!, resolvesTo(16.0));
       });
 
       test('creates empty FlexSpecAttribute', () {
@@ -45,7 +45,7 @@ void main() {
         expect(attribute.$textDirection, isNull);
         expect(attribute.$textBaseline, isNull);
         expect(attribute.$clipBehavior, isNull);
-        expect(attribute.$gap, isNull);
+        expect(attribute.$spacing, isNull);
       });
     });
 
@@ -71,14 +71,14 @@ void main() {
         expect(attribute.$textDirection, resolvesTo(TextDirection.rtl));
         expect(attribute.$textBaseline, resolvesTo(TextBaseline.ideographic));
         expect(attribute.$clipBehavior, resolvesTo(Clip.hardEdge));
-        expect(attribute.$gap, resolvesTo(8.0));
+        expect(attribute.$spacing, resolvesTo(8.0));
       });
 
       test('creates partial FlexSpecAttribute with only constructor', () {
         final attribute = FlexMix(direction: Axis.horizontal, gap: 12.0);
 
         expect(attribute.$direction, resolvesTo(Axis.horizontal));
-        expect(attribute.$gap, resolvesTo(12.0));
+        expect(attribute.$spacing, resolvesTo(12.0));
         expect(attribute.$mainAxisAlignment, isNull);
         expect(attribute.$crossAxisAlignment, isNull);
         expect(attribute.$mainAxisSize, isNull);
@@ -100,7 +100,7 @@ void main() {
           textDirection: TextDirection.ltr,
           textBaseline: TextBaseline.alphabetic,
           clipBehavior: Clip.antiAlias,
-          gap: 16.0,
+          spacing: 16.0,
         );
 
         final attribute = FlexMix.value(spec);
@@ -116,7 +116,7 @@ void main() {
         expect(attribute.$textDirection, resolvesTo(TextDirection.ltr));
         expect(attribute.$textBaseline, resolvesTo(TextBaseline.alphabetic));
         expect(attribute.$clipBehavior, resolvesTo(Clip.antiAlias));
-        expect(attribute.$gap, resolvesTo(16.0));
+        expect(attribute.$spacing, resolvesTo(16.0));
       });
 
       test('maybeValue returns null for null spec', () {
@@ -129,7 +129,7 @@ void main() {
 
         expect(attribute, isNotNull);
         expect(attribute!.$direction, resolvesTo(Axis.vertical));
-        expect(attribute.$gap, resolvesTo(8.0));
+        expect(attribute.$spacing, resolvesTo(8.0));
       });
     });
 
@@ -193,9 +193,9 @@ void main() {
       });
 
       test('gap utility works correctly', () {
-        final attribute = FlexMix().gap(24.0);
+        final attribute = FlexMix().spacing(24.0);
 
-        expect(attribute.$gap, resolvesTo(24.0));
+        expect(attribute.$spacing, resolvesTo(24.0));
       });
 
       test('chaining utilities accumulates properties correctly', () {
@@ -204,13 +204,13 @@ void main() {
             .direction(Axis.horizontal)
             .mainAxisAlignment(MainAxisAlignment.spaceBetween)
             .crossAxisAlignment(CrossAxisAlignment.center)
-            .gap(16.0);
+            .spacing(16.0);
 
         // All properties should be set when chaining
         expect(chained.$direction, resolvesTo(Axis.horizontal));
         expect(chained.$mainAxisAlignment, resolvesTo(MainAxisAlignment.spaceBetween));
         expect(chained.$crossAxisAlignment, resolvesTo(CrossAxisAlignment.center));
-        expect(chained.$gap, resolvesTo(16.0));
+        expect(chained.$spacing, resolvesTo(16.0));
       });
 
       test('merge combines different attribute instances', () {
@@ -222,7 +222,7 @@ void main() {
 
         final second = FlexMix(
           crossAxisAlignment: CrossAxisAlignment.center,
-          gap: 16.0,
+          spacing: 16.0,
         );
 
         final combined = first.merge(second);
@@ -230,7 +230,7 @@ void main() {
         expect(combined.$direction, resolvesTo(Axis.horizontal));
         expect(combined.$mainAxisAlignment, resolvesTo(MainAxisAlignment.start));
         expect(combined.$crossAxisAlignment, resolvesTo(CrossAxisAlignment.center));
-        expect(combined.$gap, resolvesTo(16.0));
+        expect(combined.$spacing, resolvesTo(16.0));
       });
     });
 
@@ -284,7 +284,7 @@ void main() {
           textDirection: TextDirection.ltr,
           textBaseline: TextBaseline.alphabetic,
           clipBehavior: Clip.antiAlias,
-          gap: 16.0,
+          spacing: 16.0,
         );
 
         final context = MockBuildContext();
@@ -303,7 +303,7 @@ void main() {
       });
 
       test('resolves with null values correctly', () {
-        final attribute = FlexMix().direction(Axis.vertical).gap(12.0);
+        final attribute = FlexMix().direction(Axis.vertical).spacing(12.0);
 
         final context = MockBuildContext();
         final spec = attribute.resolve(context);
@@ -353,7 +353,7 @@ void main() {
           merged.$mainAxisSize,
           resolvesTo(MainAxisSize.min),
         ); // from second
-        expect(merged.$gap, resolvesTo(8.0)); // from first
+        expect(merged.$spacing, resolvesTo(8.0)); // from first
       });
 
       test('returns this when other is null', () {
@@ -377,7 +377,7 @@ void main() {
             .textDirection(TextDirection.rtl)
             .textBaseline(TextBaseline.ideographic)
             .clipBehavior(Clip.hardEdge)
-            .gap(20.0);
+            .spacing(20.0);
 
         final merged = first.merge(second);
 
@@ -407,7 +407,7 @@ void main() {
           resolvesTo(TextBaseline.ideographic),
         ); // from second
         expect(merged.$clipBehavior, resolvesTo(Clip.hardEdge)); // from second
-        expect(merged.$gap, resolvesTo(20.0)); // from second
+        expect(merged.$spacing, resolvesTo(20.0)); // from second
       });
     });
 
@@ -416,12 +416,12 @@ void main() {
         final attr1 = FlexMix()
             .direction(Axis.horizontal)
             .mainAxisAlignment(MainAxisAlignment.center)
-            .gap(16.0);
+            .spacing(16.0);
 
         final attr2 = FlexMix()
             .direction(Axis.horizontal)
             .mainAxisAlignment(MainAxisAlignment.center)
-            .gap(16.0);
+            .spacing(16.0);
 
         expect(attr1, equals(attr2));
         // Skip hashCode test due to infrastructure issue with list instances
@@ -437,8 +437,8 @@ void main() {
       });
 
       test('attributes with different gaps are not equal', () {
-        final attr1 = FlexMix().gap(8.0);
-        final attr2 = FlexMix().gap(16.0);
+        final attr1 = FlexMix().spacing(8.0);
+        final attr2 = FlexMix().spacing(16.0);
 
         expect(attr1, isNot(equals(attr2)));
       });
@@ -455,7 +455,7 @@ void main() {
           textDirection: TextDirection.ltr,
           textBaseline: TextBaseline.alphabetic,
           clipBehavior: Clip.antiAlias,
-          gap: 16.0,
+          spacing: 16.0,
         );
 
         expect(attribute.props.length, 12);
@@ -467,7 +467,7 @@ void main() {
         expect(attribute.props, contains(attribute.$textDirection));
         expect(attribute.props, contains(attribute.$textBaseline));
         expect(attribute.props, contains(attribute.$clipBehavior));
-        expect(attribute.props, contains(attribute.$gap));
+        expect(attribute.props, contains(attribute.$spacing));
       });
     });
 
@@ -551,7 +551,7 @@ void main() {
             .direction(Axis.horizontal)
             .merge(FlexMix().mainAxisAlignment(MainAxisAlignment.spaceBetween))
             .merge(FlexMix().crossAxisAlignment(CrossAxisAlignment.center))
-            .merge(FlexMix().gap(16.0));
+            .merge(FlexMix().spacing(16.0));
 
         final context = MockBuildContext();
         final spec = attribute.resolve(context);
@@ -569,7 +569,7 @@ void main() {
         final attribute = FlexMix()
             .direction(Axis.horizontal)
             .mainAxisAlignment(MainAxisAlignment.center)
-            .gap(16.0);
+            .spacing(16.0);
 
         // The presence of debugFillProperties is tested by the framework
         expect(attribute, isA<FlexMix>());

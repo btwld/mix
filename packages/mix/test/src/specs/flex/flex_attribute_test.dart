@@ -35,7 +35,7 @@ void main() {
             textDirection: TextDirection.rtl,
             textBaseline: TextBaseline.ideographic,
             clipBehavior: Clip.antiAlias,
-            gap: 16.0,
+            spacing: 16.0,
           );
 
           expect(flexMix.$direction, resolvesTo(Axis.horizontal));
@@ -46,7 +46,7 @@ void main() {
           expect(flexMix.$textDirection, resolvesTo(TextDirection.rtl));
           expect(flexMix.$textBaseline, resolvesTo(TextBaseline.ideographic));
           expect(flexMix.$clipBehavior, resolvesTo(Clip.antiAlias));
-          expect(flexMix.$gap, resolvesTo(16.0));
+          expect(flexMix.$spacing, resolvesTo(16.0));
         },
       );
 
@@ -54,14 +54,14 @@ void main() {
         const spec = FlexSpec(
           direction: Axis.vertical,
           mainAxisAlignment: MainAxisAlignment.end,
-          gap: 8.0,
+          spacing: 8.0,
         );
 
         final flexMix = FlexMix.value(spec);
 
         expect(flexMix.$direction, resolvesTo(Axis.vertical));
         expect(flexMix.$mainAxisAlignment, resolvesTo(MainAxisAlignment.end));
-        expect(flexMix.$gap, resolvesTo(8.0));
+        expect(flexMix.$spacing, resolvesTo(8.0));
       });
 
       test('maybeValue returns null for null input', () {
@@ -122,8 +122,13 @@ void main() {
       });
 
       test('gap factory creates correct FlexMix', () {
+        final flexMix = FlexMix.spacing(12.0);
+        expect(flexMix.$spacing, resolvesTo(12.0));
+      });
+
+      test('gap factory creates FlexMix with spacing (deprecated)', () {
         final flexMix = FlexMix.gap(12.0);
-        expect(flexMix.$gap, resolvesTo(12.0));
+        expect(flexMix.$spacing, resolvesTo(12.0));
       });
     });
 
@@ -153,12 +158,20 @@ void main() {
         expect(modified.$crossAxisAlignment, resolvesTo(CrossAxisAlignment.end));
       });
 
-      test('gap method creates new FlexMix with gap', () {
+      test('spacing method creates new FlexMix with spacing', () {
+        final original = FlexMix();
+        final modified = original.spacing(20.0);
+
+        expect(identical(original, modified), isFalse);
+        expect(modified.$spacing, resolvesTo(20.0));
+      });
+
+      test('gap method creates new FlexMix with spacing (deprecated)', () {
         final original = FlexMix();
         final modified = original.gap(20.0);
 
         expect(identical(original, modified), isFalse);
-        expect(modified.$gap, resolvesTo(20.0));
+        expect(modified.$spacing, resolvesTo(20.0));
       });
 
       test('row convenience method sets horizontal direction', () {
@@ -181,27 +194,27 @@ void main() {
       });
 
       test('merge combines properties correctly', () {
-        final first = FlexMix(direction: Axis.horizontal, gap: 8.0);
+        final first = FlexMix(direction: Axis.horizontal, spacing: 8.0);
         final second = FlexMix(
           mainAxisAlignment: MainAxisAlignment.center,
-          gap: 16.0,
+          spacing: 16.0,
         );
 
         final merged = first.merge(second);
 
         expect(merged.$direction, resolvesTo(Axis.horizontal));
         expect(merged.$mainAxisAlignment, resolvesTo(MainAxisAlignment.center));
-        expect(merged.$gap, resolvesTo(16.0)); // second takes precedence
+        expect(merged.$spacing, resolvesTo(16.0)); // second takes precedence
       });
 
       test('merge preserves null properties', () {
         final first = FlexMix(direction: Axis.horizontal);
-        final second = FlexMix(gap: 8.0);
+        final second = FlexMix(spacing: 8.0);
 
         final merged = first.merge(second);
 
         expect(merged.$direction, resolvesTo(Axis.horizontal));
-        expect(merged.$gap, resolvesTo(8.0));
+        expect(merged.$spacing, resolvesTo(8.0));
         expect(merged.$mainAxisAlignment, isNull);
       });
     });
@@ -211,14 +224,14 @@ void main() {
         final flexMix = FlexMix(
           direction: Axis.vertical,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          gap: 12.0,
+          spacing: 12.0,
         );
 
         final spec = flexMix.resolve(MockBuildContext());
 
         expect(spec.direction, Axis.vertical);
         expect(spec.mainAxisAlignment, MainAxisAlignment.spaceAround);
-        expect(spec.gap, 12.0);
+        expect(spec.spacing, 12.0);
       });
 
       test('resolve handles null properties', () {
@@ -227,14 +240,14 @@ void main() {
 
         expect(spec.direction, isNull);
         expect(spec.mainAxisAlignment, isNull);
-        expect(spec.gap, isNull);
+        expect(spec.spacing, isNull);
       });
     });
 
     group('Equality and props', () {
       test('equal FlexMix instances have same props', () {
-        final flexMix1 = FlexMix(direction: Axis.horizontal, gap: 8.0);
-        final flexMix2 = FlexMix(direction: Axis.horizontal, gap: 8.0);
+        final flexMix1 = FlexMix(direction: Axis.horizontal, spacing: 8.0);
+        final flexMix2 = FlexMix(direction: Axis.horizontal, spacing: 8.0);
 
         expect(flexMix1, equals(flexMix2));
         expect(flexMix1.props, equals(flexMix2.props));
@@ -252,14 +265,14 @@ void main() {
         final flexMix = FlexMix(
           direction: Axis.horizontal,
           mainAxisAlignment: MainAxisAlignment.center,
-          gap: 8.0,
+          spacing: 8.0,
         );
 
         final props = flexMix.props;
         expect(props.length, 12); // All properties including inherited ones
         expect(props, contains(flexMix.$direction));
         expect(props, contains(flexMix.$mainAxisAlignment));
-        expect(props, contains(flexMix.$gap));
+        expect(props, contains(flexMix.$spacing));
       });
     });
 
@@ -268,7 +281,7 @@ void main() {
         final flexMix = FlexMix(
           direction: Axis.horizontal,
           mainAxisAlignment: MainAxisAlignment.center,
-          gap: 8.0,
+          spacing: 8.0,
         );
 
         final builder = DiagnosticPropertiesBuilder();
@@ -277,7 +290,7 @@ void main() {
         final properties = builder.properties;
         expect(properties.any((p) => p.name == 'direction'), isTrue);
         expect(properties.any((p) => p.name == 'mainAxisAlignment'), isTrue);
-        expect(properties.any((p) => p.name == 'gap'), isTrue);
+        expect(properties.any((p) => p.name == 'spacing'), isTrue);
       });
     });
   });

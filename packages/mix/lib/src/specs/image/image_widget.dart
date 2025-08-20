@@ -18,6 +18,7 @@ class StyledImage extends StyleWidget<ImageSpec> {
     this.opacity,
   });
 
+
   /// The image to display.
   final ImageProvider<Object>? image;
 
@@ -34,7 +35,7 @@ class StyledImage extends StyleWidget<ImageSpec> {
   final Animation<double>? opacity;
 
   @override
-  Widget build(BuildContext context, ImageSpec? spec) {
+  Widget build(BuildContext context, ImageSpec spec) {
     return createImageSpecWidget(
       spec: spec,
       image: image,
@@ -48,7 +49,7 @@ class StyledImage extends StyleWidget<ImageSpec> {
 
 /// Creates an [Image] widget from an [ImageSpec] and optional overrides.
 Image createImageSpecWidget({
-  required ImageSpec? spec,
+  required ImageSpec spec,
   ImageProvider<Object>? image,
   ImageFrameBuilder? frameBuilder,
   ImageLoadingBuilder? loadingBuilder,
@@ -62,21 +63,21 @@ Image createImageSpecWidget({
     frameBuilder: frameBuilder,
     loadingBuilder: loadingBuilder,
     errorBuilder: errorBuilder,
-    semanticLabel: spec?.semanticLabel,
-    excludeFromSemantics: spec?.excludeFromSemantics ?? false,
-    width: spec?.width,
-    height: spec?.height,
-    color: spec?.color,
+    semanticLabel: spec.semanticLabel,
+    excludeFromSemantics: spec.excludeFromSemantics ?? false,
+    width: spec.width,
+    height: spec.height,
+    color: spec.color,
     opacity: opacity,
-    colorBlendMode: spec?.colorBlendMode,
-    fit: spec?.fit,
-    alignment: spec?.alignment ?? Alignment.center,
-    repeat: spec?.repeat ?? ImageRepeat.noRepeat,
-    centerSlice: spec?.centerSlice,
-    matchTextDirection: spec?.matchTextDirection ?? false,
-    gaplessPlayback: spec?.gaplessPlayback ?? false,
-    isAntiAlias: spec?.isAntiAlias ?? false,
-    filterQuality: spec?.filterQuality ?? FilterQuality.medium,
+    colorBlendMode: spec.colorBlendMode,
+    fit: spec.fit,
+    alignment: spec.alignment ?? Alignment.center,
+    repeat: spec.repeat ?? ImageRepeat.noRepeat,
+    centerSlice: spec.centerSlice,
+    matchTextDirection: spec.matchTextDirection ?? false,
+    gaplessPlayback: spec.gaplessPlayback ?? false,
+    isAntiAlias: spec.isAntiAlias ?? false,
+    filterQuality: spec.filterQuality ?? FilterQuality.medium,
   );
 }
 
@@ -84,9 +85,9 @@ Image createImageSpecWidget({
 /// Throws if no image provider is found.
 ImageProvider<Object> _resolveImage(
   ImageProvider<Object>? widgetImage,
-  ImageSpec? spec,
+  ImageSpec spec,
 ) {
-  final imageProvider = widgetImage ?? spec?.image;
+  final imageProvider = widgetImage ?? spec.image;
 
   if (imageProvider == null) {
     throw FlutterError.fromParts([
@@ -107,7 +108,7 @@ ImageProvider<Object> _resolveImage(
 }
 
 /// Extension to convert [ImageSpec] directly to an [Image] widget.
-extension ImageSpecExt on ImageSpec {
+extension ImageSpecWidget on ImageSpec {
   Image call({
     ImageProvider<Object>? image,
     ImageFrameBuilder? frameBuilder,

@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/style_widget.dart';
+import '../box/box_spec.dart';
 import '../box/box_widget.dart';
 import 'stack_box_attribute.dart';
 import 'stack_box_spec.dart';
@@ -16,49 +17,52 @@ class ZBox extends StyleWidget<ZBoxSpec> {
     super.key,
   });
 
+
   final List<Widget> children;
 
   @override
-  Widget build(BuildContext context, ZBoxSpec? spec) {
+  Widget build(BuildContext context, ZBoxSpec spec) {
     return createZBoxSpecWidget(spec: spec, children: children);
   }
 }
 
 /// Creates a [Stack] widget from a [StackSpec] and children.
 Stack createStackSpecWidget({
-  required StackSpec? spec,
+  required StackSpec spec,
   List<Widget> children = const [],
 }) {
   return Stack(
-    alignment: spec?.alignment ?? AlignmentDirectional.topStart,
-    textDirection: spec?.textDirection,
-    fit: spec?.fit ?? StackFit.loose,
-    clipBehavior: spec?.clipBehavior ?? Clip.hardEdge,
+    alignment: spec.alignment ?? AlignmentDirectional.topStart,
+    textDirection: spec.textDirection,
+    fit: spec.fit ?? StackFit.loose,
+    clipBehavior: spec.clipBehavior ?? Clip.hardEdge,
     children: children,
   );
 }
 
+
+/// Creates a [Container] with [Stack] child from a [ZBoxSpec].
+Widget createZBoxSpecWidget({
+  required ZBoxSpec spec,
+  List<Widget> children = const [],
+}) {
+  return createBoxSpecWidget(
+    spec: spec.box,
+    child: createStackSpecWidget(spec: spec.stack, children: children),
+  );
+}
+
 /// Extension to convert [StackSpec] directly to a [Stack] widget.
-extension StackSpecWidgetExt on StackSpec {
+extension StackSpecWidget on StackSpec {
   Stack call({List<Widget> children = const []}) {
     return createStackSpecWidget(spec: this, children: children);
   }
 }
 
-/// Creates a [Container] with [Stack] child from a [ZBoxSpec].
-Widget createZBoxSpecWidget({
-  required ZBoxSpec? spec,
-  List<Widget> children = const [],
-}) {
-  return createBoxSpecWidget(
-    spec: spec?.box,
-    child: createStackSpecWidget(spec: spec?.stack, children: children),
-  );
-}
-
 /// Extension to convert [ZBoxSpec] directly to a styled stack widget.
-extension ZBoxSpecWidgetExt on ZBoxSpec {
+extension ZBoxSpecWidget on ZBoxSpec {
   Widget call({List<Widget> children = const []}) {
     return createZBoxSpecWidget(spec: this, children: children);
   }
 }
+

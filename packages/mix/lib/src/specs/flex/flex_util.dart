@@ -13,7 +13,7 @@ import 'flex_spec.dart';
 /// Provides mutable utility for flex styling with cascade notation support.
 ///
 /// Supports the same API as [FlexMix] but maintains mutable internal state
-/// enabling fluid styling: `$flex..direction(Axis.horizontal)..gap(8)`.
+/// enabling fluid styling: `$flex..direction(Axis.horizontal)..spacing(8)`.
 class FlexSpecUtility extends StyleMutableBuilder<FlexSpec> {
   late final direction = MixUtility(mutable.direction);
 
@@ -48,8 +48,15 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexSpec> {
     mutable = MutableFlexMix(attribute ?? FlexMix());
   }
 
+  /// Sets the spacing between children in the flex layout.
+  FlexMix spacing(double v) => mutable.spacing(v);
+
   /// Sets the gap between children in the flex layout.
-  FlexMix gap(double v) => mutable.gap(v);
+  @Deprecated(
+    'Use spacing instead. '
+    'This feature was deprecated after Mix v2.0.0.',
+  )
+  FlexMix gap(double v) => mutable.spacing(v);
 
   /// Sets flex direction to horizontal (row layout).
   FlexMix row() => mutable.direction(Axis.horizontal);

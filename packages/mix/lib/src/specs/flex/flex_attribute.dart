@@ -32,6 +32,11 @@ class FlexMix extends Style<FlexSpec>
   final Prop<TextDirection>? $textDirection;
   final Prop<TextBaseline>? $textBaseline;
   final Prop<Clip>? $clipBehavior;
+  final Prop<double>? $spacing;
+  @Deprecated(
+    'Use \$spacing instead. '
+    'This feature was deprecated after Mix v2.0.0.',
+  )
   final Prop<double>? $gap;
 
   /// Factory for flex direction
@@ -74,9 +79,18 @@ class FlexMix extends Style<FlexSpec>
     return FlexMix(clipBehavior: value);
   }
 
+  /// Factory for spacing
+  factory FlexMix.spacing(double value) {
+    return FlexMix(spacing: value);
+  }
+
   /// Factory for gap
+  @Deprecated(
+    'Use FlexMix.spacing instead. '
+    'This feature was deprecated after Mix v2.0.0.',
+  )
   factory FlexMix.gap(double value) {
-    return FlexMix(gap: value);
+    return FlexMix(spacing: value);
   }
 
   /// Factory for animation
@@ -98,6 +112,11 @@ class FlexMix extends Style<FlexSpec>
     Prop<TextDirection>? textDirection,
     Prop<TextBaseline>? textBaseline,
     Prop<Clip>? clipBehavior,
+    Prop<double>? spacing,
+    @Deprecated(
+      'Use spacing instead. '
+      'This feature was deprecated after Mix v2.0.0.',
+    )
     Prop<double>? gap,
     super.animation,
     super.modifier,
@@ -112,6 +131,7 @@ class FlexMix extends Style<FlexSpec>
        $textDirection = textDirection,
        $textBaseline = textBaseline,
        $clipBehavior = clipBehavior,
+       $spacing = spacing ?? gap,
        $gap = gap;
 
   FlexMix({
@@ -123,6 +143,11 @@ class FlexMix extends Style<FlexSpec>
     TextDirection? textDirection,
     TextBaseline? textBaseline,
     Clip? clipBehavior,
+    double? spacing,
+    @Deprecated(
+      'Use spacing instead. '
+      'This feature was deprecated after Mix v2.0.0.',
+    )
     double? gap,
     AnimationConfig? animation,
     ModifierConfig? modifier,
@@ -137,7 +162,7 @@ class FlexMix extends Style<FlexSpec>
          textDirection: Prop.maybe(textDirection),
          textBaseline: Prop.maybe(textBaseline),
          clipBehavior: Prop.maybe(clipBehavior),
-         gap: Prop.maybe(gap),
+         spacing: Prop.maybe(spacing ?? gap),
          animation: animation,
          modifier: modifier,
          variants: variants,
@@ -162,7 +187,7 @@ class FlexMix extends Style<FlexSpec>
         textDirection: spec.textDirection,
         textBaseline: spec.textBaseline,
         clipBehavior: spec.clipBehavior,
-        gap: spec.gap,
+        spacing: spec.spacing,
       );
 
   /// Factory for widget modifier
@@ -227,9 +252,18 @@ class FlexMix extends Style<FlexSpec>
     return merge(FlexMix.clipBehavior(value));
   }
 
+  /// Sets spacing
+  FlexMix spacing(double value) {
+    return merge(FlexMix.spacing(value));
+  }
+
   /// Sets gap
+  @Deprecated(
+    'Use spacing instead. '
+    'This feature was deprecated after Mix v2.0.0.',
+  )
   FlexMix gap(double value) {
-    return merge(FlexMix.gap(value));
+    return merge(FlexMix.spacing(value));
   }
 
   /// Convenience method for setting direction to horizontal (row)
@@ -271,7 +305,7 @@ class FlexMix extends Style<FlexSpec>
       textDirection: MixOps.resolve(context, $textDirection),
       textBaseline: MixOps.resolve(context, $textBaseline),
       clipBehavior: MixOps.resolve(context, $clipBehavior),
-      gap: MixOps.resolve(context, $gap),
+      spacing: MixOps.resolve(context, $spacing),
     );
   }
 
@@ -298,7 +332,7 @@ class FlexMix extends Style<FlexSpec>
       textDirection: MixOps.merge($textDirection, other.$textDirection),
       textBaseline: MixOps.merge($textBaseline, other.$textBaseline),
       clipBehavior: MixOps.merge($clipBehavior, other.$clipBehavior),
-      gap: MixOps.merge($gap, other.$gap),
+      spacing: MixOps.merge($spacing, other.$spacing),
       animation: other.$animation ?? $animation,
       modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
       variants: mergeVariantLists($variants, other.$variants),
@@ -323,7 +357,7 @@ class FlexMix extends Style<FlexSpec>
     properties.add(DiagnosticsProperty('textDirection', $textDirection));
     properties.add(DiagnosticsProperty('textBaseline', $textBaseline));
     properties.add(DiagnosticsProperty('clipBehavior', $clipBehavior));
-    properties.add(DiagnosticsProperty('gap', $gap));
+    properties.add(DiagnosticsProperty('spacing', $spacing));
   }
 
   @override
@@ -348,7 +382,7 @@ class FlexMix extends Style<FlexSpec>
     $textDirection,
     $textBaseline,
     $clipBehavior,
-    $gap,
+    $spacing,
     $animation,
     $modifier,
     $variants,

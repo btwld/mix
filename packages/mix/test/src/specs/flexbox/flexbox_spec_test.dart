@@ -115,7 +115,7 @@ void main() {
           ),
 
           flex: FlexMix(
-            gap: 10.0,
+            spacing: 10.0,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
           ),
         );
@@ -387,7 +387,7 @@ void main() {
         utility.color.red();
         utility.direction(Axis.horizontal);
         utility.mainAxisAlignment(MainAxisAlignment.spaceBetween);
-        utility.gap(10.0);
+        utility.spacing(10.0);
 
         final context = MockBuildContext();
         final resolved = utility.resolve(context);
@@ -442,12 +442,12 @@ void main() {
     test('lerp interpolates between two FlexBoxSpec instances', () {
       const spec1 = FlexBoxSpec(
         box: BoxSpec(padding: EdgeInsets.all(10.0)),
-        flex: FlexSpec(gap: 10.0),
+        flex: FlexSpec(spacing: 10.0),
       );
 
       const spec2 = FlexBoxSpec(
         box: BoxSpec(padding: EdgeInsets.all(20.0)),
-        flex: FlexSpec(gap: 20.0),
+        flex: FlexSpec(spacing: 20.0),
       );
 
       final interpolated = spec1.lerp(spec2, 0.5);

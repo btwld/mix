@@ -22,12 +22,12 @@ class FlexBox extends StyleWidget<FlexBoxSpec> {
 
   /// Child widgets to be arranged in the flex layout.
   final List<Widget> children;
-  
+
   /// The main axis direction for the flex layout.
   final Axis direction;
 
   @override
-  Widget build(BuildContext context, FlexBoxSpec? spec) {
+  Widget build(BuildContext context, FlexBoxSpec spec) {
     return createFlexBoxSpecWidget(
       spec: spec,
       direction: direction,
@@ -63,32 +63,45 @@ class VBox extends FlexBox {
 /// Applies all flex layout properties with appropriate default values
 /// when specification properties are null.
 Flex createFlexSpecWidget({
-  required FlexSpec? spec,
+  required FlexSpec spec,
   required Axis direction,
   List<Widget> children = const [],
 }) {
   return Flex(
-    direction: spec?.direction ?? direction,
-    mainAxisAlignment: spec?.mainAxisAlignment ?? MainAxisAlignment.start,
-    mainAxisSize: spec?.mainAxisSize ?? MainAxisSize.max,
-    crossAxisAlignment: spec?.crossAxisAlignment ?? CrossAxisAlignment.center,
-    textDirection: spec?.textDirection,
-    verticalDirection: spec?.verticalDirection ?? VerticalDirection.down,
-    textBaseline: spec?.textBaseline,
-    clipBehavior: spec?.clipBehavior ?? Clip.none,
-    spacing: spec?.gap ?? 0.0,
+    direction: spec.direction ?? direction,
+    mainAxisAlignment: spec.mainAxisAlignment ?? MainAxisAlignment.start,
+    mainAxisSize: spec.mainAxisSize ?? MainAxisSize.max,
+    crossAxisAlignment: spec.crossAxisAlignment ?? CrossAxisAlignment.center,
+    textDirection: spec.textDirection,
+    verticalDirection: spec.verticalDirection ?? VerticalDirection.down,
+    textBaseline: spec.textBaseline,
+    clipBehavior: spec.clipBehavior ?? Clip.none,
+    spacing: spec.spacing ?? 0.0,
     children: children,
   );
 }
 
-/// Extension to convert [FlexSpec] directly to a [Flex] widget.
+/// Creates a [Container] with [Flex] child from a [FlexBoxSpec].
 ///
-/// Provides convenient syntax for creating flex widgets directly from specifications:
-/// ```dart
-/// final spec = FlexSpec(direction: Axis.horizontal, gap: 8.0);
-/// final widget = spec(direction: Axis.horizontal, children: [Text('Hello')]);
-/// ```
-extension FlexSpecCallExt on FlexSpec {
+/// Applies box styling as the outer container and flex layout as the inner
+/// child widget, combining both specifications effectively.
+Widget createFlexBoxSpecWidget({
+  required FlexBoxSpec spec,
+  required Axis direction,
+  List<Widget> children = const [],
+}) {
+  return createBoxSpecWidget(
+    spec: spec.box,
+    child: createFlexSpecWidget(
+      spec: spec.flex,
+      direction: direction,
+      children: children,
+    ),
+  );
+}
+
+/// Extension to convert [FlexSpec] directly to a [Flex] widget.
+extension FlexSpecWidget on FlexSpec {
   Flex call({required Axis direction, List<Widget> children = const []}) {
     return createFlexSpecWidget(
       spec: this,
@@ -98,36 +111,8 @@ extension FlexSpecCallExt on FlexSpec {
   }
 }
 
-/// Creates a [Container] with [Flex] child from a [FlexBoxSpec].
-///
-/// Applies box styling as the outer container and flex layout as the inner
-/// child widget, combining both specifications effectively.
-Widget createFlexBoxSpecWidget({
-  required FlexBoxSpec? spec,
-  required Axis direction,
-  List<Widget> children = const [],
-}) {
-  return createBoxSpecWidget(
-    spec: spec?.box,
-    child: createFlexSpecWidget(
-      spec: spec?.flex,
-      direction: direction,
-      children: children,
-    ),
-  );
-}
-
 /// Extension to convert [FlexBoxSpec] directly to a styled flex widget.
-///
-/// Provides convenient syntax for creating styled flex widgets:
-/// ```dart
-/// final spec = FlexBoxSpec(
-///   box: BoxSpec(color: Colors.red),
-///   flex: FlexSpec(gap: 8.0)
-/// );
-/// final widget = spec(direction: Axis.horizontal, children: [Text('Hello')]);
-/// ```
-extension FlexBoxSpecCallExt on FlexBoxSpec {
+extension FlexBoxSpecWidget on FlexBoxSpec {
   Widget call({required Axis direction, List<Widget> children = const []}) {
     return createFlexBoxSpecWidget(
       spec: this,

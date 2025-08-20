@@ -219,9 +219,18 @@ class FlexBoxMix extends Style<FlexBoxSpec>
     return FlexBoxMix(flex: FlexMix.textBaseline(value));
   }
 
+  /// Factory for spacing
+  factory FlexBoxMix.spacing(double value) {
+    return FlexBoxMix(flex: FlexMix.spacing(value));
+  }
+
   /// Factory for gap
+  @Deprecated(
+    'Use FlexBoxMix.spacing instead. '
+    'This feature was deprecated after Mix v2.0.0.',
+  )
   factory FlexBoxMix.gap(double value) {
-    return FlexBoxMix(flex: FlexMix.gap(value));
+    return FlexBoxMix(flex: FlexMix.spacing(value));
   }
 
   /// Constructor that accepts a [FlexBoxSpec] value and extracts its properties.
@@ -454,9 +463,18 @@ class FlexBoxMix extends Style<FlexBoxSpec>
     return merge(FlexBoxMix.textBaseline(value));
   }
 
+  /// Sets spacing
+  FlexBoxMix spacing(double value) {
+    return merge(FlexBoxMix.spacing(value));
+  }
+
   /// Sets gap
+  @Deprecated(
+    'Use spacing instead. '
+    'This feature was deprecated after Mix v2.0.0.',
+  )
   FlexBoxMix gap(double value) {
-    return merge(FlexBoxMix.gap(value));
+    return merge(FlexBoxMix.spacing(value));
   }
 
   FlexBoxMix modifier(ModifierConfig value) {

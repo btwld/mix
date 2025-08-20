@@ -19,7 +19,7 @@ class Example extends StatelessWidget {
 
     return VBox(
       style: Style.flexbox(
-        .gap(16)
+        .spacing(16)
         .mainAxisSize(.min)
       ),
       children: [

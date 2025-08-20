@@ -173,7 +173,7 @@ void main() {
       });
 
       test('gap utility creates correct FlexBoxMix', () {
-        final result = util.gap(16.0);
+        final result = util.spacing(16.0);
         expect(result, isA<FlexBoxMix>());
       });
     });
@@ -224,7 +224,7 @@ void main() {
       });
 
       test('merge with FlexBoxMix creates new instance', () {
-        final otherMix = FlexBoxMix(flex: FlexMix(gap: 8.0));
+        final otherMix = FlexBoxMix(flex: FlexMix(spacing: 8.0));
         final result = util.merge(otherMix);
 
         expect(result, isNot(same(util)));
@@ -245,7 +245,7 @@ void main() {
         final other = FlexBoxSpecUtility(
           FlexBoxMix(
             flex: FlexMix(
-              gap: 8.0,
+              spacing: 8.0,
               mainAxisAlignment: MainAxisAlignment.center,
             ),
           ),
@@ -256,7 +256,7 @@ void main() {
         final spec = result.resolve(context);
 
         expect(spec.flex.direction, Axis.horizontal);
-        expect(spec.flex.gap, 8.0);
+        expect(spec.flex.spacing, 8.0);
         expect(spec.flex.mainAxisAlignment, MainAxisAlignment.center);
       });
     });
@@ -268,7 +268,7 @@ void main() {
             flex: FlexMix(
               direction: Axis.vertical,
               mainAxisAlignment: MainAxisAlignment.center,
-              gap: 12.0,
+              spacing: 12.0,
             ),
           ),
         );
@@ -279,7 +279,7 @@ void main() {
         expect(spec, isA<FlexBoxSpec>());
         expect(spec.flex.direction, Axis.vertical);
         expect(spec.flex.mainAxisAlignment, MainAxisAlignment.center);
-        expect(spec.flex.gap, 12.0);
+        expect(spec.flex.spacing, 12.0);
       });
 
       test('resolve handles null properties', () {
@@ -288,7 +288,7 @@ void main() {
 
         expect(spec, isA<FlexBoxSpec>());
         expect(spec.flex.direction, isNull);
-        expect(spec.flex.gap, isNull);
+        expect(spec.flex.spacing, isNull);
         expect(spec.flex.mainAxisAlignment, isNull);
       });
     });
@@ -309,13 +309,13 @@ void main() {
       test('basic gap mutation test', () {
         final util = FlexBoxSpecUtility();
 
-        final result = util.gap(16.0);
+        final result = util.spacing(16.0);
         expect(result, isA<FlexBoxMix>());
 
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec.flex.gap, 16.0);
+        expect(spec.flex.spacing, 16.0);
       });
 
       test('chaining utility methods accumulates properties', () {
@@ -324,7 +324,7 @@ void main() {
         // Chain multiple method calls - these mutate internal state
         util.direction(Axis.vertical);
         util.mainAxisAlignment(MainAxisAlignment.center);
-        util.gap(16.0);
+        util.spacing(16.0);
 
         // Verify accumulated state through resolution
         final context = MockBuildContext();
@@ -332,21 +332,21 @@ void main() {
 
         expect(spec.flex.direction, Axis.vertical);
         expect(spec.flex.mainAxisAlignment, MainAxisAlignment.center);
-        expect(spec.flex.gap, 16.0);
+        expect(spec.flex.spacing, 16.0);
       });
 
       test('cascade notation works with utility methods', () {
         final util = FlexBoxSpecUtility()
           ..direction(Axis.vertical)
           ..mainAxisAlignment(MainAxisAlignment.center)
-          ..gap(16.0);
+          ..spacing(16.0);
 
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
         expect(spec.flex.direction, Axis.vertical);
         expect(spec.flex.mainAxisAlignment, MainAxisAlignment.center);
-        expect(spec.flex.gap, 16.0);
+        expect(spec.flex.spacing, 16.0);
       });
 
       test(
@@ -359,11 +359,11 @@ void main() {
           final alignmentResult = util.mainAxisAlignment(
             MainAxisAlignment.center,
           );
-          final gapResult = util.gap(16.0);
+          final spacingResult = util.spacing(16.0);
 
           expect(directionResult, isA<FlexBoxMix>());
           expect(alignmentResult, isA<FlexBoxMix>());
-          expect(gapResult, isA<FlexBoxMix>());
+          expect(spacingResult, isA<FlexBoxMix>());
 
           // But the utility itself should have accumulated all changes
           final context = MockBuildContext();
@@ -371,7 +371,7 @@ void main() {
 
           expect(spec.flex.direction, Axis.vertical);
           expect(spec.flex.mainAxisAlignment, MainAxisAlignment.center);
-          expect(spec.flex.gap, 16.0);
+          expect(spec.flex.spacing, 16.0);
         },
       );
     });
@@ -400,7 +400,7 @@ void main() {
 
         util.direction(Axis.vertical);
         util.mainAxisAlignment(MainAxisAlignment.center);
-        util.gap(16.0);
+        util.spacing(16.0);
 
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -408,7 +408,7 @@ void main() {
         // All properties should be present in the same instance
         expect(spec.flex.direction, Axis.vertical);
         expect(spec.flex.mainAxisAlignment, MainAxisAlignment.center);
-        expect(spec.flex.gap, 16.0);
+        expect(spec.flex.spacing, 16.0);
       });
 
       test('demonstrates difference from immutable builder pattern', () {
@@ -417,7 +417,7 @@ void main() {
         // In a builder pattern, this would create new instances
         // In mutable pattern, this modifies the same instance
         final result1 = util.direction(Axis.vertical);
-        final result2 = util.gap(16.0);
+        final result2 = util.spacing(16.0);
 
         // Both results are different FlexBoxMix instances
         expect(result1, isNot(same(result2)));
@@ -427,7 +427,7 @@ void main() {
         final spec = util.resolve(context);
 
         expect(spec.flex.direction, Axis.vertical);
-        expect(spec.flex.gap, 16.0);
+        expect(spec.flex.spacing, 16.0);
       });
     });
 
@@ -438,7 +438,7 @@ void main() {
             flex: FlexMix(
               direction: Axis.horizontal,
               mainAxisAlignment: MainAxisAlignment.center,
-              gap: 8.0,
+              spacing: 8.0,
             ),
           ),
         );
@@ -450,7 +450,7 @@ void main() {
               flex: FlexSpec(
                 direction: Axis.horizontal,
                 mainAxisAlignment: MainAxisAlignment.center,
-                gap: 8.0,
+                spacing: 8.0,
               ),
             ),
           ),
@@ -466,11 +466,11 @@ void main() {
         );
 
         final testUtil = FlexBoxSpecUtility(
-          FlexBoxMix(flex: FlexMix.create(gap: Prop.token(gapToken))),
+          FlexBoxMix(flex: FlexMix.create(spacing: Prop.token(gapToken))),
         );
         final spec = testUtil.resolve(context);
 
-        expect(spec.flex.gap, 24.0);
+        expect(spec.flex.spacing, 24.0);
       });
     });
 
@@ -481,18 +481,18 @@ void main() {
         final alignmentResult = util.mainAxisAlignment(
           MainAxisAlignment.spaceEvenly,
         );
-        final gapResult = util.gap(20.0);
+        final spacingResult = util.spacing(20.0);
 
         expect(directionResult, isA<FlexBoxMix>());
         expect(alignmentResult, isA<FlexBoxMix>());
-        expect(gapResult, isA<FlexBoxMix>());
+        expect(spacingResult, isA<FlexBoxMix>());
       });
 
       test('handles multiple merges correctly', () {
         final util1 = FlexBoxSpecUtility(
           FlexBoxMix(flex: FlexMix(direction: Axis.horizontal)),
         );
-        final util2 = FlexBoxSpecUtility(FlexBoxMix(flex: FlexMix(gap: 8.0)));
+        final util2 = FlexBoxSpecUtility(FlexBoxMix(flex: FlexMix(spacing: 8.0)));
         final util3 = FlexBoxSpecUtility(
           FlexBoxMix(
             flex: FlexMix(mainAxisAlignment: MainAxisAlignment.center),

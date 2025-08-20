@@ -10,27 +10,28 @@ import 'box_spec.dart';
 class Box extends StyleWidget<BoxSpec> {
   const Box({super.style = const BoxMix.create(), super.key, this.child});
 
+
   /// Child widget to display inside the box.
   final Widget? child;
 
   @override
-  Widget build(BuildContext context, BoxSpec? spec) {
+  Widget build(BuildContext context, BoxSpec spec) {
     return createBoxSpecWidget(spec: spec, child: child);
   }
 }
 
 /// Creates a [Container] widget from a [BoxSpec].
-Container createBoxSpecWidget({required BoxSpec? spec, Widget? child}) {
+Container createBoxSpecWidget({required BoxSpec spec, Widget? child}) {
   return Container(
-    alignment: spec?.alignment,
-    padding: spec?.padding,
-    decoration: spec?.decoration,
-    foregroundDecoration: spec?.foregroundDecoration,
-    constraints: spec?.constraints,
-    margin: spec?.margin,
-    transform: spec?.transform,
-    transformAlignment: spec?.transformAlignment,
-    clipBehavior: spec?.clipBehavior ?? Clip.none,
+    alignment: spec.alignment,
+    padding: spec.padding,
+    decoration: spec.decoration,
+    foregroundDecoration: spec.foregroundDecoration,
+    constraints: spec.constraints,
+    margin: spec.margin,
+    transform: spec.transform,
+    transformAlignment: spec.transformAlignment,
+    clipBehavior: spec.clipBehavior ?? Clip.none,
     child: child,
   );
 }
@@ -38,9 +39,9 @@ Container createBoxSpecWidget({required BoxSpec? spec, Widget? child}) {
 /// Alias for [Box] widget for backward compatibility.
 typedef StyledContainer = Box;
 
-/// Extension to convert [BoxSpec] directly to widget.
-extension BoxSpecExt on BoxSpec {
-  Widget call({Widget? child}) {
+/// Extension to convert [BoxSpec] directly to a [Container] widget.
+extension BoxSpecWidget on BoxSpec {
+  Container call({Widget? child}) {
     return createBoxSpecWidget(spec: this, child: child);
   }
 }

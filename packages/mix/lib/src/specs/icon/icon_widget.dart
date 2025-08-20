@@ -22,7 +22,7 @@ class StyledIcon extends StyleWidget<IconSpec> {
   final String? semanticLabel;
 
   @override
-  Widget build(BuildContext context, IconSpec? spec) {
+  Widget build(BuildContext context, IconSpec spec) {
     return createIconSpecWidget(
       spec: spec,
       icon: icon,
@@ -54,7 +54,7 @@ Icon createIconSpecWidget({
 }
 
 /// Extension to convert [IconSpec] directly to an [Icon] widget.
-extension IconSpecExt on IconSpec {
+extension IconSpecWidget on IconSpec {
   Icon call({IconData? icon, String? semanticLabel}) {
     return createIconSpecWidget(
       spec: this,

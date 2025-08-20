@@ -13,7 +13,7 @@ class Example extends StatelessWidget {
   Widget build(BuildContext context) {
     final flexStyle = Style.flexbox(
         .mainAxisSize(.min)
-        .gap(4)
+        .spacing(4)
         .color(Colors.cyan.shade50)
         .padding(
           .horizontal(10)
