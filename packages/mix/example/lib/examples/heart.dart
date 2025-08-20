@@ -81,9 +81,9 @@ class HeartAnimation extends StatelessWidget {
     return Box(
       style: Style.box(
         BoxMix()
-            .color(animate ? Colors.blue : Colors.green)
-            .transformAlignment(Alignment.center)
-            .animate(AnimationConfig.linear(1000.ms)),
+            .modifier(animate ? ModifierConfig.scale(2.0) : ModifierConfig())
+            .modifier(ModifierConfig.opacity(animate ? 1.0 : 0.5))
+            .animate(AnimationConfig.bounceIn(1000.ms)),
       ),
       child: ShaderMask(
         shaderCallback: (Rect bounds) {

@@ -250,6 +250,9 @@ class ResolvedStyle<V extends Spec<V>> with Equatable {
     this.inherit,
   });
 
+  // this -> OpacityModifier
+  // other -> TransformModifier, OpacityModifier
+
   /// Linearly interpolate between two ResolvedStyles
   ResolvedStyle<V> lerp(ResolvedStyle<V>? other, double t) {
     if (other == null || t == 0.0) return this;
@@ -257,12 +260,14 @@ class ResolvedStyle<V extends Spec<V>> with Equatable {
 
     final lerpedSpec = spec.lerp(other.spec, t);
 
-    // For modifiers and animation, use the target (end) values
-    // We can't meaningfully interpolate these
+    // For animation, interpolate between them if both exist
     return ResolvedStyle(
       spec: lerpedSpec,
       animation: other.animation ?? animation,
-      widgetModifiers: t < 0.5 ? widgetModifiers : other.widgetModifiers,
+      widgetModifiers: ModifierListTween(
+        begin: widgetModifiers,
+        end: other.widgetModifiers,
+      ).lerp(t),
     );
   }
 

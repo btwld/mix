@@ -11,11 +11,15 @@ import '../core/utility.dart';
 ///
 /// Wraps the child in an [Align] widget with the specified alignment and size factors.
 final class AlignModifier extends Modifier<AlignModifier> with Diagnosticable {
-  final AlignmentGeometry? alignment;
+  final AlignmentGeometry alignment;
   final double? widthFactor;
   final double? heightFactor;
 
-  const AlignModifier({this.alignment, this.widthFactor, this.heightFactor});
+  const AlignModifier({
+    AlignmentGeometry? alignment,
+    this.widthFactor,
+    this.heightFactor,
+  }) : alignment = alignment ?? Alignment.center;
 
   @override
   AlignModifier copyWith({
@@ -35,7 +39,7 @@ final class AlignModifier extends Modifier<AlignModifier> with Diagnosticable {
     if (other == null) return this;
 
     return AlignModifier(
-      alignment: MixOps.lerp(alignment, other.alignment, t),
+      alignment: MixOps.lerp(alignment, other.alignment, t)!,
       widthFactor: MixOps.lerp(widthFactor, other.widthFactor, t),
       heightFactor: MixOps.lerp(heightFactor, other.heightFactor, t),
     );
@@ -47,7 +51,7 @@ final class AlignModifier extends Modifier<AlignModifier> with Diagnosticable {
   @override
   Widget build(Widget child) {
     return Align(
-      alignment: alignment ?? Alignment.center,
+      alignment: alignment,
       widthFactor: widthFactor,
       heightFactor: heightFactor,
       child: child,

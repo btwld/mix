@@ -15,7 +15,7 @@ final class IconThemeModifier extends Modifier<IconThemeModifier>
     with Diagnosticable {
   final IconThemeData data;
 
-  const IconThemeModifier({required this.data});
+  const IconThemeModifier({this.data = const IconThemeData()});
 
   @override
   IconThemeModifier copyWith({IconThemeData? data}) {
