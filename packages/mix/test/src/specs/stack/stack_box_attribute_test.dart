@@ -111,7 +111,7 @@ void main() {
     group('Utility Methods', () {
       test('withBox utility works correctly', () {
         final boxMix = BoxMix.width(300.0);
-        final attribute = StackBoxMix().withBox(boxMix);
+        final attribute = StackBoxMix().box(boxMix);
 
         expect(attribute.$box, isNotNull);
         // Verify the box attribute contains the expected constraints
@@ -120,7 +120,7 @@ void main() {
 
       test('withStack utility works correctly', () {
         final stackMix = StackMix.alignment(Alignment.bottomRight);
-        final attribute = StackBoxMix().withStack(stackMix);
+        final attribute = StackBoxMix().stack(stackMix);
 
         expect(attribute.$stack, isNotNull);
         // Verify the stack attribute contains the expected alignment

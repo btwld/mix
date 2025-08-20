@@ -94,12 +94,12 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
   }
 
   /// Sets box properties
-  StackBoxMix withBox(BoxMix value) {
+  StackBoxMix box(BoxMix value) {
     return merge(StackBoxMix.box(value));
   }
 
   /// Sets stack properties
-  StackBoxMix withStack(StackMix value) {
+  StackBoxMix stack(StackMix value) {
     return merge(StackBoxMix.stack(value));
   }
 

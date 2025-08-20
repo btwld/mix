@@ -338,13 +338,13 @@ class ImageMix extends Style<ImageSpec>
     return merge(ImageMix.matchTextDirection(value));
   }
 
+  ImageMix modifier(ModifierConfig value) {
+    return merge(ImageMix(modifier: value));
+  }
+
   /// Convenience method for animating the ImageSpec
   ImageMix animate(AnimationConfig animation) {
     return merge(ImageMix.animate(animation));
-  }
-
-  ImageMix modifier(ModifierConfig value) {
-    return merge(ImageMix(modifier: value));
   }
 
   @override

@@ -13,7 +13,7 @@ class Example extends StatelessWidget {
   Widget build(BuildContext context) {
     final flexStyle = StackBoxMix.stack(
       StackMix.alignment(Alignment.bottomCenter),
-    ).withBox(BoxMix().height(100).width(100));
+    ).box(.height(100).width(100));
 
     final boxStyle = Style.box(
         .color(Colors.deepOrange)

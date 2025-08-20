@@ -135,14 +135,8 @@ void main() {
 
         expect(merged.$modifier, isNotNull);
         expect(merged.$modifier!.$modifiers!.length, 2);
-        expect(
-          merged.$modifier!.$modifiers![0],
-          isA<OpacityModifierMix>(),
-        );
-        expect(
-          merged.$modifier!.$modifiers![1],
-          isA<PaddingModifierMix>(),
-        );
+        expect(merged.$modifier!.$modifiers![0], isA<OpacityModifierMix>());
+        expect(merged.$modifier!.$modifiers![1], isA<PaddingModifierMix>());
       });
 
       test('merges variants correctly', () {
@@ -179,9 +173,7 @@ void main() {
       test('handles null merge correctly', () {
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: ModifierConfig.orderOfModifiers(const [
-            OpacityModifier,
-          ]),
+          modifier: ModifierConfig.orderOfModifiers(const [OpacityModifier]),
           inherit: true,
         );
 
@@ -436,23 +428,17 @@ void main() {
       test('chained merges preserve final values', () {
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: ModifierConfig.orderOfModifiers(const [
-            OpacityModifier,
-          ]),
+          modifier: ModifierConfig.orderOfModifiers(const [OpacityModifier]),
           inherit: true,
         );
         final second = BoxMix(
           constraints: BoxConstraintsMix.height(200.0),
-          modifier: ModifierConfig.orderOfModifiers(const [
-            PaddingModifier,
-          ]),
+          modifier: ModifierConfig.orderOfModifiers(const [PaddingModifier]),
           inherit: false,
         );
         final third = BoxMix(
           decoration: DecorationMix.color(Colors.blue),
-          modifier: ModifierConfig.orderOfModifiers(const [
-            ClipOvalModifier,
-          ]),
+          modifier: ModifierConfig.orderOfModifiers(const [ClipOvalModifier]),
           inherit: true,
         );
 
@@ -480,10 +466,7 @@ void main() {
 
         expect(merged.$modifier, isNotNull);
         expect(merged.$modifier!.$modifiers!.length, 1);
-        expect(
-          merged.$modifier!.$modifiers![0],
-          isA<OpacityModifierMix>(),
-        );
+        expect(merged.$modifier!.$modifiers![0], isA<OpacityModifierMix>());
 
         final mergedOpacity =
             merged.$modifier!.$modifiers![0] as OpacityModifierMix;
@@ -520,9 +503,7 @@ void main() {
       test('empty orderOfModifiers list behavior', () {
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: ModifierConfig.orderOfModifiers(const [
-            OpacityModifier,
-          ]),
+          modifier: ModifierConfig.orderOfModifiers(const [OpacityModifier]),
         );
         final second = BoxMix(
           constraints: BoxConstraintsMix.height(200.0),
@@ -549,10 +530,7 @@ void main() {
 
         expect(merged.$modifier, isNotNull);
         expect(merged.$modifier!.$modifiers!.length, 1);
-        expect(
-          merged.$modifier!.$modifiers![0],
-          isA<OpacityModifierMix>(),
-        );
+        expect(merged.$modifier!.$modifiers![0], isA<OpacityModifierMix>());
       });
 
       test('null vs empty list handling for variants', () {
@@ -581,9 +559,7 @@ void main() {
       test('merge with self returns same instance', () {
         final style = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: ModifierConfig.orderOfModifiers(const [
-            OpacityModifier,
-          ]),
+          modifier: ModifierConfig.orderOfModifiers(const [OpacityModifier]),
           inherit: true,
         );
 
@@ -614,9 +590,7 @@ void main() {
       test('mixed null and non-null parameters', () {
         final first = BoxMix(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: ModifierConfig.orderOfModifiers(const [
-            OpacityModifier,
-          ]),
+          modifier: ModifierConfig.orderOfModifiers(const [OpacityModifier]),
           inherit: null,
           animation: null,
         );

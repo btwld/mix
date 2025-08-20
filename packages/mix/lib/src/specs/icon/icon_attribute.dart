@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../animation/animation_config.dart';
+import '../../animation/animation_mixin.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
@@ -17,7 +18,8 @@ class IconMix extends Style<IconSpec>
     with
         Diagnosticable,
         StyleModifierMixin<IconMix, IconSpec>,
-        StyleVariantMixin<IconMix, IconSpec> {
+        StyleVariantMixin<IconMix, IconSpec>,
+        StyleAnimationMixin<IconSpec, IconMix> {
   final Prop<Color>? $color;
   final Prop<double>? $size;
   final Prop<double>? $weight;
@@ -278,17 +280,18 @@ class IconMix extends Style<IconSpec>
     return merge(IconMix.icon(value));
   }
 
-  /// Sets animation
-  IconMix animate(AnimationConfig animation) {
-    return merge(IconMix.animate(animation));
-  }
-
   StyledIcon call({IconData? icon, String? semanticLabel}) {
     return StyledIcon(icon: icon, semanticLabel: semanticLabel, style: this);
   }
 
   IconMix modifier(ModifierConfig value) {
     return merge(IconMix(modifier: value));
+  }
+
+  /// Sets animation
+  @override
+  IconMix animate(AnimationConfig animation) {
+    return merge(IconMix.animate(animation));
   }
 
   @override

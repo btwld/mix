@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../animation/animation_config.dart';
+import '../../animation/animation_mixin.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
@@ -23,7 +24,8 @@ class FlexMix extends Style<FlexSpec>
     with
         Diagnosticable,
         StyleModifierMixin<FlexMix, FlexSpec>,
-        StyleVariantMixin<FlexMix, FlexSpec> {
+        StyleVariantMixin<FlexMix, FlexSpec>,
+        StyleAnimationMixin<FlexSpec, FlexMix> {
   final Prop<Axis>? $direction;
   final Prop<MainAxisAlignment>? $mainAxisAlignment;
   final Prop<CrossAxisAlignment>? $crossAxisAlignment;
@@ -273,6 +275,7 @@ class FlexMix extends Style<FlexSpec>
   FlexMix column() => direction(Axis.vertical);
 
   /// Convenience method for animating the FlexSpec
+  @override
   FlexMix animate(AnimationConfig animation) {
     return merge(FlexMix.animate(animation));
   }

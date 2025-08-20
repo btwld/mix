@@ -7,10 +7,12 @@ environment:
   sdk: ">=3.9.0-196.1.beta <4.0.0"
   flutter: ">=3.34.0-0.1.pre <4.0.0"
 dependencies:
+  cupertino_icons: ^1.0.8
   flutter:
     sdk: flutter
   mix:
     path: ../
+
 
 dev_dependencies:
   flutter_test:
