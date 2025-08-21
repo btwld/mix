@@ -11,7 +11,7 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final flexStyle = Style.flexBox(
+    final flexStyle = Style.flexbox(
         .mainAxisSize(.min)
         .spacing(4)
         .crossAxisAlignment(.start)

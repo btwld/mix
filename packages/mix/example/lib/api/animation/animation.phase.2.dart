@@ -38,7 +38,7 @@ class _ExampleState extends State<Example> {
     return MouseRegion(
       onEnter: (event) => trigger.value++,
       child: HBox(
-        style: Style.flexBox(
+        style: Style.flexbox(
           FlexBoxMix()
               .box(
                 BoxMix()

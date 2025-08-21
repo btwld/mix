@@ -36,7 +36,7 @@ class EmojiSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return FlexBox(
       direction: Axis.horizontal,
-      style: Style.flexBox(
+      style: Style.flexbox(
         FlexBoxMix()
             .box(
               BoxMix()

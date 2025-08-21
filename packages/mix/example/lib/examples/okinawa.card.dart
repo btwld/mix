@@ -55,7 +55,7 @@ class OkinawaCard extends StatelessWidget {
           ),
     );
 
-    final vBoxStyle = Style.flexBox(
+    final vBoxStyle = Style.flexbox(
       FlexBoxMix()
           .box(
             BoxMix()
@@ -70,7 +70,7 @@ class OkinawaCard extends StatelessWidget {
           ),
     );
 
-    final zbox = Style.stackBox(
+    final zbox = Style.stackbox(
       StackBoxMix()
           .stack(StackMix().alignment(Alignment.bottomCenter))
           .box(
