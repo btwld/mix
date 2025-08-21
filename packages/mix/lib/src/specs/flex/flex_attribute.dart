@@ -189,7 +189,7 @@ class FlexMix extends Style<FlexSpec>
         textDirection: spec.textDirection,
         textBaseline: spec.textBaseline,
         clipBehavior: spec.clipBehavior,
-        spacing: spec.spacing,
+        spacing: spec.spacing ?? spec.gap,
       );
 
   /// Factory for widget modifier
@@ -274,14 +274,14 @@ class FlexMix extends Style<FlexSpec>
   /// Convenience method for setting direction to vertical (column)
   FlexMix column() => direction(Axis.vertical);
 
+  FlexMix modifier(ModifierConfig value) {
+    return merge(FlexMix(modifier: value));
+  }
+
   /// Convenience method for animating the FlexSpec
   @override
   FlexMix animate(AnimationConfig animation) {
     return merge(FlexMix.animate(animation));
-  }
-
-  FlexMix modifier(ModifierConfig value) {
-    return merge(FlexMix(modifier: value));
   }
 
   @override
@@ -309,6 +309,9 @@ class FlexMix extends Style<FlexSpec>
       textBaseline: MixOps.resolve(context, $textBaseline),
       clipBehavior: MixOps.resolve(context, $clipBehavior),
       spacing: MixOps.resolve(context, $spacing),
+      animation: $animation,
+      widgetModifiers: $modifier?.resolve(context),
+      inherit: $inherit,
     );
   }
 
@@ -326,12 +329,19 @@ class FlexMix extends Style<FlexSpec>
 
     return FlexMix.create(
       direction: MixOps.merge($direction, other.$direction),
-      mainAxisAlignment: MixOps.merge($mainAxisAlignment, other.$mainAxisAlignment),
-      crossAxisAlignment: MixOps.merge($crossAxisAlignment,
+      mainAxisAlignment: MixOps.merge(
+        $mainAxisAlignment,
+        other.$mainAxisAlignment,
+      ),
+      crossAxisAlignment: MixOps.merge(
+        $crossAxisAlignment,
         other.$crossAxisAlignment,
       ),
       mainAxisSize: MixOps.merge($mainAxisSize, other.$mainAxisSize),
-      verticalDirection: MixOps.merge($verticalDirection, other.$verticalDirection),
+      verticalDirection: MixOps.merge(
+        $verticalDirection,
+        other.$verticalDirection,
+      ),
       textDirection: MixOps.merge($textDirection, other.$textDirection),
       textBaseline: MixOps.merge($textBaseline, other.$textBaseline),
       clipBehavior: MixOps.merge($clipBehavior, other.$clipBehavior),
@@ -346,21 +356,16 @@ class FlexMix extends Style<FlexSpec>
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('direction', $direction));
-    properties.add(
-      DiagnosticsProperty('mainAxisAlignment', $mainAxisAlignment),
-    );
-    properties.add(
-      DiagnosticsProperty('crossAxisAlignment', $crossAxisAlignment),
-    );
-    properties.add(DiagnosticsProperty('mainAxisSize', $mainAxisSize));
-    properties.add(
-      DiagnosticsProperty('verticalDirection', $verticalDirection),
-    );
-    properties.add(DiagnosticsProperty('textDirection', $textDirection));
-    properties.add(DiagnosticsProperty('textBaseline', $textBaseline));
-    properties.add(DiagnosticsProperty('clipBehavior', $clipBehavior));
-    properties.add(DiagnosticsProperty('spacing', $spacing));
+    properties
+      ..add(DiagnosticsProperty('direction', $direction))
+      ..add(DiagnosticsProperty('mainAxisAlignment', $mainAxisAlignment))
+      ..add(DiagnosticsProperty('crossAxisAlignment', $crossAxisAlignment))
+      ..add(DiagnosticsProperty('mainAxisSize', $mainAxisSize))
+      ..add(DiagnosticsProperty('verticalDirection', $verticalDirection))
+      ..add(DiagnosticsProperty('textDirection', $textDirection))
+      ..add(DiagnosticsProperty('textBaseline', $textBaseline))
+      ..add(DiagnosticsProperty('clipBehavior', $clipBehavior))
+      ..add(DiagnosticsProperty('spacing', $spacing));
   }
 
   @override

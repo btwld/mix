@@ -9,15 +9,16 @@ import '../../core/style.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/layout/constraints_mix.dart';
+import '../../properties/layout/constraints_mixin.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
+import '../../properties/layout/spacing_mixin.dart';
+import '../../properties/transform_mixin.dart';
 import '../../properties/painting/border_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
 import '../../properties/painting/border_radius_util.dart';
-import '../../properties/painting/decoration_image_mix.dart';
 import '../../properties/painting/decoration_mix.dart';
+import '../../properties/painting/decoration_mixin.dart';
 import '../../properties/painting/gradient_mix.dart';
-import '../../properties/painting/shadow_mix.dart';
-import '../../properties/painting/shape_border_mix.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import '../text/text_attribute.dart';
@@ -36,6 +37,10 @@ class BoxMix extends Style<BoxSpec>
         StyleModifierMixin<BoxMix, BoxSpec>,
         StyleVariantMixin<BoxMix, BoxSpec>,
         BorderRadiusMixin<BoxMix>,
+        DecorationMixin<BoxMix>,
+        SpacingMixin<BoxMix>,
+        TransformMixin<BoxMix>,
+        ConstraintsMixin<BoxMix>,
         StyleAnimationMixin<BoxSpec, BoxMix> {
   final Prop<AlignmentGeometry>? $alignment;
   final Prop<EdgeInsetsGeometry>? $padding;
@@ -263,130 +268,16 @@ class BoxMix extends Style<BoxSpec>
     return merge(BoxMix.clipBehavior(value));
   }
 
-  /// Sets background color
-  BoxMix color(Color value) {
-    return decoration(DecorationMix.color(value));
-  }
 
-  /// Sets both min and max width to create a fixed width
-  BoxMix width(double value) {
-    return constraints(BoxConstraintsMix.width(value));
-  }
 
-  /// Sets both min and max height to create a fixed height
-  BoxMix height(double value) {
-    return constraints(BoxConstraintsMix.height(value));
-  }
-
-  /// Sets rotation transform
-  BoxMix rotate(double angle) {
-    return transform(Matrix4.rotationZ(angle));
-  }
-
-  /// Sets scale transform
-  BoxMix scale(double scale) {
-    return transform(Matrix4.diagonal3Values(scale, scale, 1.0));
-  }
-
-  /// Sets translation transform
-  BoxMix translate(double x, double y, [double z = 0.0]) {
-    return transform(Matrix4.translationValues(x, y, z));
-  }
-
-  /// Sets skew transform
-  BoxMix skew(double skewX, double skewY) {
-    final matrix = Matrix4.identity();
-    matrix.setEntry(0, 1, skewX);
-    matrix.setEntry(1, 0, skewY);
-
-    return transform(matrix);
-  }
-
-  /// Resets transform to identity (no effect)
-  BoxMix transformReset() {
-    return transform(Matrix4.identity());
-  }
-
-  /// Sets minimum width constraint
-  BoxMix minWidth(double value) {
-    return constraints(BoxConstraintsMix.minWidth(value));
-  }
-
-  /// Sets maximum width constraint
-  BoxMix maxWidth(double value) {
-    return constraints(BoxConstraintsMix.maxWidth(value));
-  }
-
-  /// Sets minimum height constraint
-  BoxMix minHeight(double value) {
-    return constraints(BoxConstraintsMix.minHeight(value));
-  }
-
-  /// Sets maximum height constraint
-  BoxMix maxHeight(double value) {
-    return constraints(BoxConstraintsMix.maxHeight(value));
-  }
-
-  /// Sets both width and height to specific values
-  BoxMix size(double width, double height) {
-    return constraints(
-      BoxConstraintsMix(
-        minWidth: width,
-        maxWidth: width,
-        minHeight: height,
-        maxHeight: height,
-      ),
-    );
-  }
-
-  /// Sets box shape
-  BoxMix shape(ShapeBorderMix value) {
-    return decoration(ShapeDecorationMix(shape: value));
-  }
 
   BoxMix alignment(AlignmentGeometry value) {
     return merge(BoxMix.alignment(value));
   }
 
-  /// Sets single shadow
-  BoxMix shadow(BoxShadowMix value) {
-    return decoration(BoxDecorationMix.boxShadow([value]));
-  }
-
-  /// Sets multiple shadows
-  BoxMix shadows(List<BoxShadowMix> value) {
-    return decoration(BoxDecorationMix.boxShadow(value));
-  }
-
-  /// Sets elevation shadow
-  BoxMix elevation(ElevationShadow value) {
-    return decoration(
-      BoxDecorationMix.boxShadow(BoxShadowMix.fromElevation(value)),
-    );
-  }
-
-  /// Border instance method
-  BoxMix border(BoxBorderMix value) {
-    return merge(BoxMix(decoration: DecorationMix.border(value)));
-  }
-
-  /// Padding instance method
-  BoxMix padding(EdgeInsetsGeometryMix value) {
-    return merge(BoxMix.padding(value));
-  }
-
-  /// Margin instance method
-  BoxMix margin(EdgeInsetsGeometryMix value) {
-    return merge(BoxMix.margin(value));
-  }
-
+  @override
   BoxMix transform(Matrix4 value) {
     return merge(BoxMix.transform(value));
-  }
-
-  /// Decoration instance method
-  BoxMix decoration(DecorationMix value) {
-    return merge(BoxMix.decoration(value));
   }
 
   /// Foreground decoration instance method
@@ -395,18 +286,9 @@ class BoxMix extends Style<BoxSpec>
   }
 
   /// Constraints instance method
+  @override
   BoxMix constraints(BoxConstraintsMix value) {
     return merge(BoxMix.constraints(value));
-  }
-
-  /// Sets gradient with any GradientMix type
-  BoxMix gradient(GradientMix value) {
-    return merge(BoxMix.gradient(value));
-  }
-
-  /// Sets image decoration
-  BoxMix image(DecorationImageMix value) {
-    return decoration(DecorationMix.image(value));
   }
 
   Box call({Widget? child}) {
@@ -416,6 +298,24 @@ class BoxMix extends Style<BoxSpec>
   /// Modifier instance method
   BoxMix modifier(ModifierConfig value) {
     return merge(BoxMix(modifier: value));
+  }
+
+  /// Padding instance method
+  @override
+  BoxMix padding(EdgeInsetsGeometryMix value) {
+    return merge(BoxMix.padding(value));
+  }
+
+  /// Margin instance method
+  @override
+  BoxMix margin(EdgeInsetsGeometryMix value) {
+    return merge(BoxMix.margin(value));
+  }
+
+  /// Decoration instance method
+  @override
+  BoxMix decoration(DecorationMix value) {
+    return merge(BoxMix.decoration(value));
   }
 
   /// Animation instance method
@@ -468,6 +368,9 @@ class BoxMix extends Style<BoxSpec>
       transform: MixOps.resolve(context, $transform),
       transformAlignment: MixOps.resolve(context, $transformAlignment),
       clipBehavior: MixOps.resolve(context, $clipBehavior),
+      animation: $animation,
+      widgetModifiers: $modifier?.resolve(context),
+      inherit: $inherit,
     );
   }
 
@@ -509,39 +412,16 @@ class BoxMix extends Style<BoxSpec>
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(
-      DiagnosticsProperty('alignment', $alignment, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('padding', $padding, defaultValue: null),
-    );
-    properties.add(DiagnosticsProperty('margin', $margin, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty('constraints', $constraints, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('decoration', $decoration, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty(
-        'foregroundDecoration',
-        $foregroundDecoration,
-        defaultValue: null,
-      ),
-    );
-    properties.add(
-      DiagnosticsProperty('transform', $transform, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty(
-        'transformAlignment',
-        $transformAlignment,
-        defaultValue: null,
-      ),
-    );
-    properties.add(
-      DiagnosticsProperty('clipBehavior', $clipBehavior, defaultValue: null),
-    );
+    properties
+      ..add(DiagnosticsProperty('alignment', $alignment))
+      ..add(DiagnosticsProperty('padding', $padding))
+      ..add(DiagnosticsProperty('margin', $margin))
+      ..add(DiagnosticsProperty('constraints', $constraints))
+      ..add(DiagnosticsProperty('decoration', $decoration))
+      ..add(DiagnosticsProperty('foregroundDecoration', $foregroundDecoration))
+      ..add(DiagnosticsProperty('transform', $transform))
+      ..add(DiagnosticsProperty('transformAlignment', $transformAlignment))
+      ..add(DiagnosticsProperty('clipBehavior', $clipBehavior));
   }
 
   /// This property is used by the [==] operator and the [hashCode] getter to

@@ -1,15 +1,17 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../core/helpers.dart';
+import '../../animation/animation_config.dart';
 import '../../core/directive.dart';
-import '../../core/spec.dart';
+import '../../core/helpers.dart';
+import '../../core/modifier.dart';
+import '../../core/widget_spec.dart';
 
 /// Specification for text styling and layout properties.
 ///
 /// Provides comprehensive text styling including overflow behavior, structure styling,
 /// alignment, line limits, text direction, and string directive support.
-final class TextSpec extends Spec<TextSpec> with Diagnosticable {
+final class TextSpec extends WidgetSpec<TextSpec> {
   final TextOverflow? overflow;
   final StrutStyle? strutStyle;
   final TextAlign? textAlign;
@@ -48,52 +50,11 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     this.selectionColor,
     this.semanticsLabel,
     this.locale,
+    AnimationConfig? super.animation,
+    List<Modifier>? super.widgetModifiers,
+    super.inherit,
   });
 
-  void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    properties.add(
-      DiagnosticsProperty('overflow', overflow, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('strutStyle', strutStyle, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('textAlign', textAlign, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('textScaler', textScaler, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('maxLines', maxLines, defaultValue: null),
-    );
-    properties.add(DiagnosticsProperty('style', style, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty('textWidthBasis', textWidthBasis, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty(
-        'textHeightBehavior',
-        textHeightBehavior,
-        defaultValue: null,
-      ),
-    );
-    properties.add(
-      DiagnosticsProperty('textDirection', textDirection, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('softWrap', softWrap, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('textDirectives', textDirectives, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('selectionColor', selectionColor, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('semanticsLabel', semanticsLabel, defaultValue: null),
-    );
-    properties.add(DiagnosticsProperty('locale', locale, defaultValue: null));
-  }
 
   /// Creates a copy of this [TextSpec] but with the given fields
   /// replaced with the new values.
@@ -113,6 +74,9 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     Color? selectionColor,
     String? semanticsLabel,
     Locale? locale,
+    AnimationConfig? animation,
+    List<Modifier>? widgetModifiers,
+    bool? inherit,
   }) {
     return TextSpec(
       overflow: overflow ?? this.overflow,
@@ -129,6 +93,9 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
       selectionColor: selectionColor ?? this.selectionColor,
       semanticsLabel: semanticsLabel ?? this.semanticsLabel,
       locale: locale ?? this.locale,
+      animation: animation ?? this.animation,
+      widgetModifiers: widgetModifiers ?? this.widgetModifiers,
+      inherit: inherit ?? this.inherit,
     );
   }
 
@@ -152,34 +119,50 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
   /// different [TextSpec] configurations.
   @override
   TextSpec lerp(TextSpec? other, double t) {
-    if (other == null) return this;
-
     return TextSpec(
-      overflow: MixOps.lerpSnap(overflow, other.overflow, t),
-      strutStyle: MixOps.lerp(strutStyle, other.strutStyle, t),
-      textAlign: MixOps.lerpSnap(textAlign, other.textAlign, t),
-      textScaler: MixOps.lerpSnap(textScaler, other.textScaler, t),
-      maxLines: MixOps.lerpSnap(maxLines, other.maxLines, t),
-      style: MixOps.lerp(style, other.style, t),
-      textWidthBasis: MixOps.lerpSnap(textWidthBasis, other.textWidthBasis, t),
+      overflow: MixOps.lerpSnap(overflow, other?.overflow, t),
+      strutStyle: MixOps.lerp(strutStyle, other?.strutStyle, t),
+      textAlign: MixOps.lerpSnap(textAlign, other?.textAlign, t),
+      textScaler: MixOps.lerpSnap(textScaler, other?.textScaler, t),
+      maxLines: MixOps.lerpSnap(maxLines, other?.maxLines, t),
+      style: MixOps.lerp(style, other?.style, t),
+      textWidthBasis: MixOps.lerpSnap(textWidthBasis, other?.textWidthBasis, t),
       textHeightBehavior: MixOps.lerpSnap(
         textHeightBehavior,
-        other.textHeightBehavior,
+        other?.textHeightBehavior,
         t,
       ),
-      textDirection: MixOps.lerpSnap(textDirection, other.textDirection, t),
-      softWrap: MixOps.lerpSnap(softWrap, other.softWrap, t),
-      textDirectives: MixOps.lerpSnap(textDirectives, other.textDirectives, t),
-      selectionColor: MixOps.lerp(selectionColor, other.selectionColor, t),
-      semanticsLabel: MixOps.lerpSnap(semanticsLabel, other.semanticsLabel, t),
-      locale: MixOps.lerpSnap(locale, other.locale, t),
+      textDirection: MixOps.lerpSnap(textDirection, other?.textDirection, t),
+      softWrap: MixOps.lerpSnap(softWrap, other?.softWrap, t),
+      textDirectives: MixOps.lerpSnap(textDirectives, other?.textDirectives, t),
+      selectionColor: MixOps.lerp(selectionColor, other?.selectionColor, t),
+      semanticsLabel: MixOps.lerpSnap(semanticsLabel, other?.semanticsLabel, t),
+      locale: MixOps.lerpSnap(locale, other?.locale, t),
+      // Meta fields: use confirmed policy other?.field ?? this.field
+      animation: other?.animation ?? animation,
+      widgetModifiers: other?.widgetModifiers ?? widgetModifiers,
+      inherit: other?.inherit ?? inherit,
     );
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    _debugFillProperties(properties);
+    properties
+      ..add(EnumProperty<TextOverflow>('overflow', overflow))
+      ..add(DiagnosticsProperty('strutStyle', strutStyle))
+      ..add(EnumProperty<TextAlign>('textAlign', textAlign))
+      ..add(DiagnosticsProperty('textScaler', textScaler))
+      ..add(IntProperty('maxLines', maxLines))
+      ..add(DiagnosticsProperty('style', style))
+      ..add(EnumProperty<TextWidthBasis>('textWidthBasis', textWidthBasis))
+      ..add(DiagnosticsProperty('textHeightBehavior', textHeightBehavior))
+      ..add(EnumProperty<TextDirection>('textDirection', textDirection))
+      ..add(FlagProperty('softWrap', value: softWrap, ifTrue: 'wrapping at word boundaries'))
+      ..add(IterableProperty<Directive<String>>('textDirectives', textDirectives))
+      ..add(ColorProperty('selectionColor', selectionColor))
+      ..add(StringProperty('semanticsLabel', semanticsLabel))
+      ..add(DiagnosticsProperty('locale', locale));
   }
 
   /// The list of properties that constitute the state of this [TextSpec].
@@ -188,6 +171,7 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
   /// compare two [TextSpec] instances for equality.
   @override
   List<Object?> get props => [
+    ...super.props,
     overflow,
     strutStyle,
     textAlign,

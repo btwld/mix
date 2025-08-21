@@ -175,6 +175,9 @@ class StackMix extends Style<StackSpec>
       fit: MixOps.resolve(context, $fit),
       textDirection: MixOps.resolve(context, $textDirection),
       clipBehavior: MixOps.resolve(context, $clipBehavior),
+      animation: $animation,
+      widgetModifiers: $modifier?.resolve(context),
+      inherit: $inherit,
     );
   }
 
@@ -199,16 +202,11 @@ class StackMix extends Style<StackSpec>
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(
-      DiagnosticsProperty('alignment', $alignment, defaultValue: null),
-    );
-    properties.add(DiagnosticsProperty('fit', $fit, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty('textDirection', $textDirection, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('clipBehavior', $clipBehavior, defaultValue: null),
-    );
+    properties
+      ..add(DiagnosticsProperty('alignment', $alignment))
+      ..add(DiagnosticsProperty('fit', $fit))
+      ..add(DiagnosticsProperty('textDirection', $textDirection))
+      ..add(DiagnosticsProperty('clipBehavior', $clipBehavior));
   }
 
   @override

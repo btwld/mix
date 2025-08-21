@@ -4,10 +4,11 @@
 /// utilities, and modifiers in the Mix framework.
 library;
 
-import '../core/spec.dart';
-import '../core/style.dart';
-import '../modifiers/modifier_util.dart';
-import '../variants/variant_util.dart';
+// These imports were for $on and $wrap utilities which are temporarily disabled
+// import '../core/spec.dart';
+// import '../core/style.dart';
+// import '../modifiers/modifier_util.dart';
+// import '../variants/variant_util.dart';
 import 'box/box_util.dart';
 import 'flex/flex_util.dart';
 import 'flexbox/flexbox_util.dart';
@@ -37,11 +38,15 @@ TextSpecUtility get $text => TextSpecUtility();
 /// Global accessor for stack specification utilities.
 StackSpecUtility get $stack => StackSpecUtility();
 
-/// Global accessor for context variant utilities.
-OnContextVariantUtility get $on =>
-    OnContextVariantUtility<MultiSpec, CompoundStyle>(
-      (v) => CompoundStyle.create([v]),
-    );
-
-/// Global accessor for modifier utilities.
-ModifierUtility get $wrap => ModifierUtility((v) => CompoundStyle.create([v]));
+// TODO: These global utilities need to be reimplemented after removing MultiSpec/CompoundStyle
+// The $on and $wrap utilities previously worked with MultiSpec but now need a different approach
+// since we work with specific spec types (BoxSpec, TextSpec, etc.)
+//
+// Potential solutions:
+// 1. Create spec-specific variants like $boxOn, $textOn, etc.
+// 2. Use a different pattern that doesn't require a generic spec type
+// 3. Restore a limited version of MultiSpec for these utilities only
+//
+// For now, these are commented out to fix compilation errors:
+// OnContextVariantUtility get $on => ...
+// ModifierUtility get $wrap => ...

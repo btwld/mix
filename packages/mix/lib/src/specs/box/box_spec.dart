@@ -2,15 +2,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
-import '../../core/spec.dart';
+import '../../core/modifier.dart';
+import '../../core/widget_spec.dart';
 
 /// Specification for box styling and layout properties.
 ///
 /// Provides comprehensive box styling including alignment, padding, margin, constraints,
 /// decoration, transformation, and clipping behavior. Used as the resolved form
 /// of [BoxMix] styling attributes.
-class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
+class BoxSpec extends WidgetSpec<BoxSpec> {
   /// Aligns the child within the box.
   final AlignmentGeometry? alignment;
 
@@ -48,41 +50,11 @@ class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
     this.transform,
     this.transformAlignment,
     this.clipBehavior,
+    super.animation,
+    super.widgetModifiers,
+    super.inherit,
   });
 
-  void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    properties.add(
-      DiagnosticsProperty('alignment', alignment, defaultValue: null),
-    );
-    properties.add(DiagnosticsProperty('padding', padding, defaultValue: null));
-    properties.add(DiagnosticsProperty('margin', margin, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty('constraints', constraints, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('decoration', decoration, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty(
-        'foregroundDecoration',
-        foregroundDecoration,
-        defaultValue: null,
-      ),
-    );
-    properties.add(
-      DiagnosticsProperty('transform', transform, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty(
-        'transformAlignment',
-        transformAlignment,
-        defaultValue: null,
-      ),
-    );
-    properties.add(
-      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
-    );
-  }
 
   /// Creates a copy of this [BoxSpec] but with the given fields
   /// replaced with the new values.
@@ -97,6 +69,9 @@ class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
     Matrix4? transform,
     AlignmentGeometry? transformAlignment,
     Clip? clipBehavior,
+    AnimationConfig? animation,
+    List<Modifier>? widgetModifiers,
+    bool? inherit,
   }) {
     return BoxSpec(
       alignment: alignment ?? this.alignment,
@@ -108,39 +83,53 @@ class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
       transform: transform ?? this.transform,
       transformAlignment: transformAlignment ?? this.transformAlignment,
       clipBehavior: clipBehavior ?? this.clipBehavior,
+      animation: animation ?? this.animation,
+      widgetModifiers: widgetModifiers ?? this.widgetModifiers,
+      inherit: inherit ?? this.inherit,
     );
   }
 
   /// Linearly interpolates between this and [other] BoxSpec.
   @override
   BoxSpec lerp(BoxSpec? other, double t) {
-    if (other == null) return this;
-
     return BoxSpec(
-      alignment: MixOps.lerp(alignment, other.alignment, t),
-      padding: MixOps.lerp(padding, other.padding, t),
-      margin: MixOps.lerp(margin, other.margin, t),
-      constraints: MixOps.lerp(constraints, other.constraints, t),
-      decoration: MixOps.lerp(decoration, other.decoration, t),
+      alignment: MixOps.lerp(alignment, other?.alignment, t),
+      padding: MixOps.lerp(padding, other?.padding, t),
+      margin: MixOps.lerp(margin, other?.margin, t),
+      constraints: MixOps.lerp(constraints, other?.constraints, t),
+      decoration: MixOps.lerp(decoration, other?.decoration, t),
       foregroundDecoration: MixOps.lerp(
         foregroundDecoration,
-        other.foregroundDecoration,
+        other?.foregroundDecoration,
         t,
       ),
-      transform: MixOps.lerp(transform, other.transform, t),
+      transform: MixOps.lerp(transform, other?.transform, t),
       transformAlignment: MixOps.lerp(
         transformAlignment,
-        other.transformAlignment,
+        other?.transformAlignment,
         t,
       ),
-      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t),
+      clipBehavior: MixOps.lerpSnap(clipBehavior, other?.clipBehavior, t),
+      // Meta fields: use confirmed policy other?.field ?? this.field
+      animation: other?.animation ?? animation,
+      widgetModifiers: other?.widgetModifiers ?? widgetModifiers,
+      inherit: other?.inherit ?? inherit,
     );
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    _debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('alignment', alignment))
+      ..add(DiagnosticsProperty('padding', padding))
+      ..add(DiagnosticsProperty('margin', margin))
+      ..add(DiagnosticsProperty('constraints', constraints))
+      ..add(DiagnosticsProperty('decoration', decoration))
+      ..add(DiagnosticsProperty('foregroundDecoration', foregroundDecoration))
+      ..add(DiagnosticsProperty('transform', transform))
+      ..add(DiagnosticsProperty('transformAlignment', transformAlignment))
+      ..add(EnumProperty<Clip>('clipBehavior', clipBehavior));
   }
 
   /// The list of properties that constitute the state of this [BoxSpec].
@@ -149,6 +138,7 @@ class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
   /// compare two [BoxSpec] instances for equality.
   @override
   List<Object?> get props => [
+    ...super.props,
     alignment,
     padding,
     margin,

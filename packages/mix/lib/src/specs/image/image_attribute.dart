@@ -370,6 +370,9 @@ class ImageMix extends Style<ImageSpec>
       gaplessPlayback: MixOps.resolve(context, $gaplessPlayback),
       isAntiAlias: MixOps.resolve(context, $isAntiAlias),
       matchTextDirection: MixOps.resolve(context, $matchTextDirection),
+      animation: $animation,
+      widgetModifiers: $modifier?.resolve(context),
+      inherit: $inherit,
     );
   }
 
@@ -407,55 +410,22 @@ class ImageMix extends Style<ImageSpec>
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('image', $image, defaultValue: null));
-    properties.add(DiagnosticsProperty('width', $width, defaultValue: null));
-    properties.add(DiagnosticsProperty('height', $height, defaultValue: null));
-    properties.add(DiagnosticsProperty('color', $color, defaultValue: null));
-    properties.add(DiagnosticsProperty('repeat', $repeat, defaultValue: null));
-    properties.add(DiagnosticsProperty('fit', $fit, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty('alignment', $alignment, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('centerSlice', $centerSlice, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('filterQuality', $filterQuality, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty(
-        'colorBlendMode',
-        $colorBlendMode,
-        defaultValue: null,
-      ),
-    );
-    properties.add(
-      DiagnosticsProperty('semanticLabel', $semanticLabel, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty(
-        'excludeFromSemantics',
-        $excludeFromSemantics,
-        defaultValue: null,
-      ),
-    );
-    properties.add(
-      DiagnosticsProperty(
-        'gaplessPlayback',
-        $gaplessPlayback,
-        defaultValue: null,
-      ),
-    );
-    properties.add(
-      DiagnosticsProperty('isAntiAlias', $isAntiAlias, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty(
-        'matchTextDirection',
-        $matchTextDirection,
-        defaultValue: null,
-      ),
-    );
+    properties
+      ..add(DiagnosticsProperty('image', $image))
+      ..add(DiagnosticsProperty('width', $width))
+      ..add(DiagnosticsProperty('height', $height))
+      ..add(DiagnosticsProperty('color', $color))
+      ..add(DiagnosticsProperty('repeat', $repeat))
+      ..add(DiagnosticsProperty('fit', $fit))
+      ..add(DiagnosticsProperty('alignment', $alignment))
+      ..add(DiagnosticsProperty('centerSlice', $centerSlice))
+      ..add(DiagnosticsProperty('filterQuality', $filterQuality))
+      ..add(DiagnosticsProperty('colorBlendMode', $colorBlendMode))
+      ..add(DiagnosticsProperty('semanticLabel', $semanticLabel))
+      ..add(DiagnosticsProperty('excludeFromSemantics', $excludeFromSemantics))
+      ..add(DiagnosticsProperty('gaplessPlayback', $gaplessPlayback))
+      ..add(DiagnosticsProperty('isAntiAlias', $isAntiAlias))
+      ..add(DiagnosticsProperty('matchTextDirection', $matchTextDirection));
   }
 
   @override

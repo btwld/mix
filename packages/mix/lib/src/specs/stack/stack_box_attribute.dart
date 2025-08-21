@@ -129,7 +129,13 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
     final boxSpec = MixOps.resolve(context, $box);
     final stackSpec = MixOps.resolve(context, $stack);
     
-    return ZBoxSpec(box: boxSpec, stack: stackSpec);
+    return ZBoxSpec(
+      box: boxSpec,
+      stack: stackSpec,
+      animation: $animation,
+      widgetModifiers: $modifier?.resolve(context),
+      inherit: $inherit,
+    );
   }
 
   /// Merges the properties of this [StackBoxMix] with the properties of [other].
@@ -158,8 +164,9 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('box', $box, defaultValue: null));
-    properties.add(DiagnosticsProperty('stack', $stack, defaultValue: null));
+    properties
+      ..add(DiagnosticsProperty('box', $box))
+      ..add(DiagnosticsProperty('stack', $stack));
   }
 
   /// The list of properties that constitute the state of this [StackBoxMix].
