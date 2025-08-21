@@ -127,12 +127,6 @@ class CurveAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     required CurveAnimationConfig config,
     required super.initialStyle,
   }) : _config = config {
-    // Override the animation with curve applied
-    _animation = CurvedAnimation(
-      parent: controller,
-      curve: _config.curve,
-    ).drive(_tween);
-
     // Add status listener for onEnd callback
     if (config.onEnd != null) {
       _animation.addStatusListener((status) {
@@ -143,12 +137,28 @@ class CurveAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     }
   }
 
+  TweenSequence<ResolvedStyle<S>?> _createTweenSequence() => TweenSequence([
+    if (_config.delay > Duration.zero)
+      TweenSequenceItem(
+        tween: ConstantTween(_tween.begin),
+        weight: _config.delay.inMilliseconds.toDouble(),
+      ),
+    TweenSequenceItem(
+      tween: _tween,
+      weight: _config.duration.inMilliseconds.toDouble(),
+    ),
+  ]);
+
   @override
   Future<void> executeAnimation() async {
-    controller.duration = _config.duration;
+    controller.duration = _config.totalDuration;
+
+    _animation = CurvedAnimation(
+      parent: controller,
+      curve: _config.curve,
+    ).drive(_createTweenSequence());
 
     try {
-      await Future.delayed(_config.delay);
       await controller.forward(from: 0.0);
     } on TickerCanceled {
       // Animation was cancelled - this is normal
@@ -228,7 +238,7 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   Duration get totalDuration {
     return curveConfigs.fold(
       Duration.zero,
-      (acc, config) => acc + config.duration + config.delay,
+      (acc, config) => acc + config.totalDuration,
     );
   }
 

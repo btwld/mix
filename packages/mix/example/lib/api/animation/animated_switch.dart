@@ -33,60 +33,66 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
         },
         child: Box(
           style: Style.box(
-              .color(
-                _trigger.value ? Colors.deepPurpleAccent : Colors.grey.shade300,
-              )
-              .height(30)
-              .width(65)
-              .borderRadius(.all(Radius.circular(40)))
-              .transformAlignment(.center)
-              .alignment(
-                _trigger.value ? .centerRight : .centerLeft,
-              )
-              .animate(.easeOut(300.ms))
+            BoxMix()
+                .color(
+                  _trigger.value
+                      ? Colors.deepPurpleAccent
+                      : Colors.grey.shade300,
+                )
+                .height(30)
+                .width(65)
+                .borderRadius(BorderRadiusMix.all(Radius.circular(40)))
+                .transformAlignment(Alignment.center)
+                .alignment(
+                  _trigger.value ? Alignment.centerRight : Alignment.centerLeft,
+                )
+                .animate(AnimationConfig.easeOut(300.ms, delay: 150.ms)),
           ),
           child: Box(
             style: Style.box(
-                .height(30)
-                .width(40)
-                .color(Colors.white)
-                .foregroundDecoration(
-                  .gradient(
-                    .radial(
-                      .focalRadius(1.1)
-                      .focal(.center)
-                      .colors([
-                        Colors.black.withValues(alpha: 0.2),
-                        Colors.transparent,
-                      ])
-                      .stops([0.3, 1])
-                    ),
-                  ).borderRadius(.circular(40)),
-                )
-                .borderRadius(.circular(40))
-                .transformAlignment(.center)
-                .scale(0.85)
-                .shadow(
-                  .blurRadius(4)
-                  .spreadRadius(3)
-                  .offset(Offset(2, 4))
-                  .color(
-                    Colors.black.withValues(alpha: 0.1),
+              BoxMix()
+                  .height(30)
+                  .width(40)
+                  .color(Colors.white)
+                  .foregroundDecoration(
+                    BoxDecorationMix()
+                        .gradient(
+                          GradientMix.radial(
+                            RadialGradientMix()
+                                .focalRadius(1.1)
+                                .focal(Alignment.center)
+                                .colors([
+                                  Colors.black.withValues(alpha: 0.2),
+                                  Colors.transparent,
+                                ])
+                                .stops([0.3, 1]),
+                          ),
+                        )
+                        .borderRadius(BorderRadiusMix.circular(40)),
                   )
-                )
-                .phaseAnimation(
-                  trigger: _trigger,
-                  phases: [false, true],
-                  styleBuilder: (phase, style) {
-                    return style
-                        .scale(phase ? 1.25 : 0.85)
-                        .color(Colors.white)
-                        .width(phase ? 45 : 40);
-                  },
-                  configBuilder: (phase) {
-                    return .decelerate(150.ms);
-                  },
-                )
+                  .borderRadius(BorderRadiusMix.circular(40))
+                  .transformAlignment(Alignment.center)
+                  .scale(0.85)
+                  .shadow(
+                    BoxShadowMix()
+                        .blurRadius(4)
+                        .spreadRadius(3)
+                        .offset(Offset(2, 4))
+                        .color(Colors.black.withValues(alpha: 0.1)),
+                  )
+                  .phaseAnimation(
+                    trigger: _trigger,
+                    phases: [false, true],
+                    styleBuilder: (phase, style) {
+                      return style
+                          .scale(phase ? 1.25 : 0.85)
+                          .color(Colors.white)
+                          .width(phase ? 45 : 40);
+                    },
+                    configBuilder: (phase) {
+                      return CurveAnimationConfig.easeOutCubic(300.ms);
+                    },
+                  ),
             ),
           ),
         ),

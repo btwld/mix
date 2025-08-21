@@ -28,7 +28,7 @@ class _DemoAppState extends State<DemoApp> {
   @override
   Widget build(BuildContext context) {
     final vboxStyle = FlexBoxMix()
-        .flex(FlexMix().mainAxisSize(MainAxisSize.min).gap(60))
+        .flex(FlexMix().mainAxisSize(MainAxisSize.min).spacing(60))
         .box(BoxMix().margin(EdgeInsetsMix.all(10)));
 
     final FlexBoxMix hboxStyle = FlexBoxMix()
@@ -81,9 +81,10 @@ class HeartAnimation extends StatelessWidget {
     return Box(
       style: Style.box(
         BoxMix()
-            .modifier(animate ? ModifierConfig.scale(2.0) : ModifierConfig())
+            .transformAlignment(Alignment.center)
+            .modifier(ModifierConfig.scale(animate ? 2.0 : 1.0))
             .modifier(ModifierConfig.opacity(animate ? 1.0 : 0.5))
-            .animate(AnimationConfig.bounceIn(1000.ms)),
+            .animate(AnimationConfig.linear(300.ms, delay: 1000.ms)),
       ),
       child: ShaderMask(
         shaderCallback: (Rect bounds) {

@@ -637,6 +637,8 @@ final class CurveAnimationConfig extends AnimationConfig {
     this.delay = Duration.zero,
   }) : curve = Curves.elasticInOut;
 
+  Duration get totalDuration => duration + delay;
+
   CurveAnimationConfig copyWith({
     Duration? duration,
     Curve? curve,
