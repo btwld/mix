@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../core/helpers.dart';
@@ -7,7 +8,8 @@ import '../../core/prop.dart';
 /// Mix representation of [TextHeightBehavior].
 ///
 /// Controls text height behavior with tokens.
-class TextHeightBehaviorMix extends Mix<TextHeightBehavior> {
+class TextHeightBehaviorMix extends Mix<TextHeightBehavior>
+    with Diagnosticable {
   final Prop<bool>? $applyHeightToFirstAscent;
   final Prop<bool>? $applyHeightToLastDescent;
   final Prop<TextLeadingDistribution>? $leadingDistribution;
@@ -108,6 +110,25 @@ class TextHeightBehaviorMix extends Mix<TextHeightBehavior> {
         other.$leadingDistribution,
       ),
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(
+        DiagnosticsProperty(
+          'applyHeightToFirstAscent',
+          $applyHeightToFirstAscent,
+        ),
+      )
+      ..add(
+        DiagnosticsProperty(
+          'applyHeightToLastDescent',
+          $applyHeightToLastDescent,
+        ),
+      )
+      ..add(DiagnosticsProperty('leadingDistribution', $leadingDistribution));
   }
 
   @override

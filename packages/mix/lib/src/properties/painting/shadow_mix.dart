@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/helpers.dart';
@@ -25,7 +26,8 @@ sealed class BaseShadowMix<T extends Shadow> extends Mix<T> {
 /// Mix representation of [Shadow].
 ///
 /// Supports shadow styling with tokens.
-class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
+class ShadowMix extends BaseShadowMix<Shadow>
+    with DefaultValue<Shadow>, Diagnosticable {
   ShadowMix({double? blurRadius, Color? color, Offset? offset})
     : this.create(
         blurRadius: Prop.maybe(blurRadius),
@@ -102,6 +104,15 @@ class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
   }
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('blurRadius', $blurRadius))
+      ..add(DiagnosticsProperty('color', $color))
+      ..add(DiagnosticsProperty('offset', $offset));
+  }
+
+  @override
   List<Object?> get props => [$blurRadius, $color, $offset];
 
   @override
@@ -112,7 +123,7 @@ class ShadowMix extends BaseShadowMix<Shadow> with DefaultValue<Shadow> {
 ///
 /// Extends [ShadowMix] with spread radius support.
 class BoxShadowMix extends BaseShadowMix<BoxShadow>
-    with DefaultValue<BoxShadow> {
+    with DefaultValue<BoxShadow>, Diagnosticable {
   final Prop<double>? $spreadRadius;
 
   BoxShadowMix({
@@ -221,6 +232,16 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
       blurRadius: MixOps.merge($blurRadius, other.$blurRadius),
       spreadRadius: MixOps.merge($spreadRadius, other.$spreadRadius),
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('color', $color))
+      ..add(DiagnosticsProperty('offset', $offset))
+      ..add(DiagnosticsProperty('blurRadius', $blurRadius))
+      ..add(DiagnosticsProperty('spreadRadius', $spreadRadius));
   }
 
   @override

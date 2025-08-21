@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/helpers.dart';
@@ -13,11 +14,9 @@ sealed class BoxBorderMix<T extends BoxBorder> extends Mix<T> {
 
   static BorderMix none = BorderMix.all(BorderSideMix.none);
 
-  const BoxBorderMix.create({
-    Prop<BorderSide>? top,
-    Prop<BorderSide>? bottom,
-  }) : $top = top,
-       $bottom = bottom;
+  const BoxBorderMix.create({Prop<BorderSide>? top, Prop<BorderSide>? bottom})
+    : $top = top,
+      $bottom = bottom;
 
   static BorderMix all(BorderSideMix side) {
     return BorderMix(top: side, bottom: side, left: side, right: side);
@@ -486,7 +485,7 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
 /// Configures color, width, style, and stroke alignment for a single border edge
 /// with token support and merging capabilities.
 final class BorderSideMix extends Mix<BorderSide>
-    with DefaultValue<BorderSide> {
+    with DefaultValue<BorderSide>, Diagnosticable {
   final Prop<Color>? $color;
   final Prop<double>? $width;
   final Prop<BorderStyle>? $style;
@@ -617,6 +616,16 @@ final class BorderSideMix extends Mix<BorderSide>
       style: MixOps.merge($style, other.$style),
       strokeAlign: MixOps.merge($strokeAlign, other.$strokeAlign),
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('color', $color))
+      ..add(DiagnosticsProperty('width', $width))
+      ..add(DiagnosticsProperty('style', $style))
+      ..add(DiagnosticsProperty('strokeAlign', $strokeAlign));
   }
 
   @override

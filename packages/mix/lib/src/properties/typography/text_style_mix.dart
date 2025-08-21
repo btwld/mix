@@ -461,92 +461,29 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('color', $color, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty(
-        'backgroundColor',
-        $backgroundColor,
-        defaultValue: null,
-      ),
-    );
-    properties.add(
-      DiagnosticsProperty('fontSize', $fontSize, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('fontWeight', $fontWeight, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('fontStyle', $fontStyle, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('letterSpacing', $letterSpacing, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('wordSpacing', $wordSpacing, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('textBaseline', $textBaseline, defaultValue: null),
-    );
-    properties.add(DiagnosticsProperty('height', $height, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty('decoration', $decoration, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty(
-        'decorationColor',
-        $decorationColor,
-        defaultValue: null,
-      ),
-    );
-    properties.add(
-      DiagnosticsProperty(
-        'decorationStyle',
-        $decorationStyle,
-        defaultValue: null,
-      ),
-    );
-    properties.add(
-      DiagnosticsProperty(
-        'decorationThickness',
-        $decorationThickness,
-        defaultValue: null,
-      ),
-    );
-    properties.add(
-      DiagnosticsProperty('fontFamily', $fontFamily, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty(
-        'fontFamilyFallback',
-        $fontFamilyFallback,
-        defaultValue: null,
-      ),
-    );
-    properties.add(
-      DiagnosticsProperty('shadows', $shadows, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('fontFeatures', $fontFeatures, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty(
-        'fontVariations',
-        $fontVariations,
-        defaultValue: null,
-      ),
-    );
-    properties.add(
-      DiagnosticsProperty('foreground', $foreground, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('background', $background, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('debugLabel', $debugLabel, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('inherit', $inherit, defaultValue: null),
-    );
+    properties
+      ..add(DiagnosticsProperty('color', $color))
+      ..add(DiagnosticsProperty('backgroundColor', $backgroundColor))
+      ..add(DiagnosticsProperty('fontSize', $fontSize))
+      ..add(DiagnosticsProperty('fontWeight', $fontWeight))
+      ..add(DiagnosticsProperty('fontStyle', $fontStyle))
+      ..add(DiagnosticsProperty('letterSpacing', $letterSpacing))
+      ..add(DiagnosticsProperty('wordSpacing', $wordSpacing))
+      ..add(DiagnosticsProperty('textBaseline', $textBaseline))
+      ..add(DiagnosticsProperty('height', $height))
+      ..add(DiagnosticsProperty('decoration', $decoration))
+      ..add(DiagnosticsProperty('decorationColor', $decorationColor))
+      ..add(DiagnosticsProperty('decorationStyle', $decorationStyle))
+      ..add(DiagnosticsProperty('decorationThickness', $decorationThickness))
+      ..add(DiagnosticsProperty('fontFamily', $fontFamily))
+      ..add(DiagnosticsProperty('fontFamilyFallback', $fontFamilyFallback))
+      ..add(DiagnosticsProperty('shadows', $shadows))
+      ..add(DiagnosticsProperty('fontFeatures', $fontFeatures))
+      ..add(DiagnosticsProperty('fontVariations', $fontVariations))
+      ..add(DiagnosticsProperty('foreground', $foreground))
+      ..add(DiagnosticsProperty('background', $background))
+      ..add(DiagnosticsProperty('debugLabel', $debugLabel))
+      ..add(DiagnosticsProperty('inherit', $inherit));
   }
 
   @override

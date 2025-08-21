@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../core/helpers.dart';
@@ -731,7 +732,8 @@ final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
 }
 
 /// Mix-compatible representation of [LinearBorderEdge] with size and alignment properties.
-final class LinearBorderEdgeMix extends Mix<LinearBorderEdge> {
+final class LinearBorderEdgeMix extends Mix<LinearBorderEdge>
+    with Diagnosticable {
   final Prop<double>? $size;
   final Prop<double>? $alignment;
 
@@ -785,6 +787,14 @@ final class LinearBorderEdgeMix extends Mix<LinearBorderEdge> {
       size: MixOps.merge($size, other.$size),
       alignment: MixOps.merge($alignment, other.$alignment),
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('size', $size))
+      ..add(DiagnosticsProperty('alignment', $alignment));
   }
 
   @override

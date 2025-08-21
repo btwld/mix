@@ -212,6 +212,20 @@ final class DecorationImageMix extends Mix<DecorationImage>
   }
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('image', $image))
+      ..add(DiagnosticsProperty('fit', $fit))
+      ..add(DiagnosticsProperty('alignment', $alignment))
+      ..add(DiagnosticsProperty('centerSlice', $centerSlice))
+      ..add(DiagnosticsProperty('repeat', $repeat))
+      ..add(DiagnosticsProperty('filterQuality', $filterQuality))
+      ..add(DiagnosticsProperty('invertColors', $invertColors))
+      ..add(DiagnosticsProperty('isAntiAlias', $isAntiAlias));
+  }
+
+  @override
   List<Object?> get props => [
     $image,
     $fit,

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../core/helpers.dart';
@@ -76,7 +77,8 @@ sealed class GradientMix<T extends Gradient> extends Mix<T>
 
 /// Mix representation of [LinearGradient].
 
-final class LinearGradientMix extends GradientMix<LinearGradient> {
+final class LinearGradientMix extends GradientMix<LinearGradient>
+    with Diagnosticable {
   final Prop<AlignmentGeometry>? $begin;
   final Prop<AlignmentGeometry>? $end;
   final Prop<TileMode>? $tileMode;
@@ -215,6 +217,18 @@ final class LinearGradientMix extends GradientMix<LinearGradient> {
   }
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('begin', $begin))
+      ..add(DiagnosticsProperty('end', $end))
+      ..add(DiagnosticsProperty('tileMode', $tileMode))
+      ..add(DiagnosticsProperty('transform', $transform))
+      ..add(DiagnosticsProperty('colors', $colors))
+      ..add(DiagnosticsProperty('stops', $stops));
+  }
+
+  @override
   List<Object?> get props => [
     $begin,
     $end,
@@ -229,7 +243,8 @@ final class LinearGradientMix extends GradientMix<LinearGradient> {
 }
 
 /// Mix representation of [RadialGradient].
-final class RadialGradientMix extends GradientMix<RadialGradient> {
+final class RadialGradientMix extends GradientMix<RadialGradient>
+    with Diagnosticable {
   final Prop<AlignmentGeometry>? $center;
   final Prop<double>? $radius;
   final Prop<TileMode>? $tileMode;
@@ -407,6 +422,20 @@ final class RadialGradientMix extends GradientMix<RadialGradient> {
   }
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('center', $center))
+      ..add(DiagnosticsProperty('radius', $radius))
+      ..add(DiagnosticsProperty('tileMode', $tileMode))
+      ..add(DiagnosticsProperty('focal', $focal))
+      ..add(DiagnosticsProperty('focalRadius', $focalRadius))
+      ..add(DiagnosticsProperty('transform', $transform))
+      ..add(DiagnosticsProperty('colors', $colors))
+      ..add(DiagnosticsProperty('stops', $stops));
+  }
+
+  @override
   List<Object?> get props => [
     $center,
     $radius,
@@ -424,7 +453,8 @@ final class RadialGradientMix extends GradientMix<RadialGradient> {
 
 /// Mix representation of [SweepGradient].
 
-final class SweepGradientMix extends GradientMix<SweepGradient> {
+final class SweepGradientMix extends GradientMix<SweepGradient>
+    with Diagnosticable {
   final Prop<AlignmentGeometry>? $center;
   final Prop<double>? $startAngle;
   final Prop<double>? $endAngle;
@@ -579,6 +609,19 @@ final class SweepGradientMix extends GradientMix<SweepGradient> {
       colors: commonProps['colors'],
       stops: commonProps['stops'],
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('center', $center))
+      ..add(DiagnosticsProperty('startAngle', $startAngle))
+      ..add(DiagnosticsProperty('endAngle', $endAngle))
+      ..add(DiagnosticsProperty('tileMode', $tileMode))
+      ..add(DiagnosticsProperty('transform', $transform))
+      ..add(DiagnosticsProperty('colors', $colors))
+      ..add(DiagnosticsProperty('stops', $stops));
   }
 
   @override

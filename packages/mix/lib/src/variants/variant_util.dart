@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 import '../core/breakpoint.dart';
-import '../core/spec.dart';
+import '../core/widget_spec.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 import 'variant.dart';
 
 /// Utility class for creating variant attributes with context-based variants
 @immutable
-class OnContextVariantUtility<S extends Spec<S>, T extends Style<S>>
+class OnContextVariantUtility<S extends WidgetSpec<S>, T extends Style<S>>
     extends MixUtility<T, VariantStyle<S>> {
   const OnContextVariantUtility(super.builder);
 
@@ -244,7 +244,7 @@ class OnContextVariantUtility<S extends Spec<S>, T extends Style<S>>
 /// [VariantStyle] instances with styling rules that apply
 /// when the variant condition is met.
 @immutable
-class VariantAttributeBuilder<T extends Spec<T>> {
+class VariantAttributeBuilder<T extends WidgetSpec<T>> {
   /// The variant condition that determines when styling should apply
   final Variant variant;
 
@@ -265,40 +265,8 @@ class VariantAttributeBuilder<T extends Spec<T>> {
   ///   $text.style.color.black(),
   /// );
   /// ```
-  VariantStyle<MultiSpec> call([
-    Style? p1,
-    Style? p2,
-    Style? p3,
-    Style? p4,
-    Style? p5,
-    Style? p6,
-    Style? p7,
-    Style? p8,
-    Style? p9,
-    Style? p10,
-  ]) {
-    final elements = [
-      p1,
-      p2,
-      p3,
-      p4,
-      p5,
-      p6,
-      p7,
-      p8,
-      p9,
-      p10,
-    ].whereType<Style>().toList();
-
-    if (elements.isEmpty) {
-      throw ArgumentError('At least one StyleAttribute must be provided');
-    }
-
-    // Create a Style to contain the elements
-    final style = CompoundStyle.create(elements);
-
-    return VariantStyle(variant, style);
-  }
+  // This method has been removed as part of the MultiSpec/CompoundStyle cleanup.
+  // Variants should now be applied directly to specific spec types.
 
   @override
   String toString() => 'VariantAttributeBuilder($variant)';
@@ -314,14 +282,14 @@ class VariantAttributeBuilder<T extends Spec<T>> {
   int get hashCode => variant.hashCode;
 }
 
-typedef VariantFactoryCallback<T extends Style<S>, S extends Spec<S>> =
+typedef VariantFactoryCallback<T extends Style<S>, S extends WidgetSpec<S>> =
     T Function(T style);
 
 /// Mixin that provides convenient variant methods for spec attributes.
 ///
 /// This mixin follows the same pattern as ModifierMixin, providing
 /// a fluent API for applying context variants to spec attributes.
-mixin StyleVariantMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
+mixin StyleVariantMixin<T extends Style<S>, S extends WidgetSpec<S>> on Style<S> {
   /// Must be implemented by the class using this mixin
   T variant(Variant variant, T style);
 
