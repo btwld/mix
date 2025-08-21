@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' as r;
 import 'package:flutter/widgets.dart' as w;
 
+import '../modifiers/modifier_config.dart';
 import '../properties/painting/decoration_mix.dart';
 import '../properties/painting/shape_border_mix.dart';
 import 'decoration_merge.dart';
 import 'directive.dart';
 import 'internal/deep_collection_equality.dart';
 import 'mix_element.dart';
+import 'modifier.dart';
 import 'prop.dart';
 import 'prop_source.dart';
 import 'shape_border_merge.dart';
@@ -131,6 +133,15 @@ T? _lerpSnap<T>(T? a, T? b, double t) {
   return t < 0.5 ? a : b;
 }
 
+/// Lerp modifier lists using ModifierListTween
+List<Modifier>? _lerpModifierList(
+  List<Modifier>? a,
+  List<Modifier>? b,
+  double t,
+) {
+  return ModifierListTween(begin: a, end: b).lerp(t);
+}
+
 T? _lerpValue<T>(T? a, T? b, double t) {
   return switch ((a, b)) {
     (Spec? a, Spec? b) => a?.lerp(b, t) as T?,
@@ -158,6 +169,7 @@ T? _lerpValue<T>(T? a, T? b, double t) {
       AlignmentGeometry.lerp(a, b, t) as T?,
 
     // EdgeInsets - handle specific types first
+    (Decoration? a, Decoration? b) => Decoration.lerp(a, b, t) as T?,
     (EdgeInsets? a, EdgeInsets? b) => EdgeInsets.lerp(a, b, t) as T?,
     (EdgeInsetsGeometry? a, EdgeInsetsGeometry? b) =>
       EdgeInsetsGeometry.lerp(a, b, t) as T?,
@@ -202,6 +214,10 @@ T? _lerpValue<T>(T? a, T? b, double t) {
 
     // Matrix4 - use proper tween instead of snap
     (Matrix4? a, Matrix4? b) => Matrix4Tween(begin: a, end: b).lerp(t) as T?,
+
+    // List of Modifiers - use ModifierListTween for proper lerping
+    (List<Modifier>? a, List<Modifier>? b) => 
+      _lerpModifierList(a, b, t) as T?,
 
     // Default snap behavior for non-lerpable types
     _ => t < 0.5 ? a : b,
@@ -270,8 +286,10 @@ class PropOps {
   static Mix<V> mergeMixes<V>(BuildContext context, Mix<V> a, Mix<V> b) {
     // Handle special cases that need BuildContext-aware merging
     return switch ((a, b)) {
-      (DecorationMix a, DecorationMix b) => DecorationMerger().tryMerge(context, a, b)! as Mix<V>,
-      (ShapeBorderMix a, ShapeBorderMix b) => ShapeBorderMerger().tryMerge(context, a, b)! as Mix<V>,
+      (DecorationMix a, DecorationMix b) =>
+        DecorationMerger().tryMerge(context, a, b)! as Mix<V>,
+      (ShapeBorderMix a, ShapeBorderMix b) =>
+        ShapeBorderMerger().tryMerge(context, a, b)! as Mix<V>,
       _ => a.merge(b),
     };
   }
@@ -289,7 +307,11 @@ class PropOps {
     for (final source in sources) {
       if (source is MixSource<V>) {
         if (pendingMixSource != null) {
-          final mergedMix = mergeMixes(context, pendingMixSource.mix, source.mix);
+          final mergedMix = mergeMixes(
+            context,
+            pendingMixSource.mix,
+            source.mix,
+          );
           pendingMixSource = MixSource(mergedMix);
         } else {
           pendingMixSource = source;
@@ -322,7 +344,3 @@ enum ListMergeStrategy {
   /// Override entire list
   override,
 }
-
-
-
-

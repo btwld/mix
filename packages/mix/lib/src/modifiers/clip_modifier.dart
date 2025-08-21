@@ -13,9 +13,10 @@ import '../properties/painting/border_radius_mix.dart';
 final class ClipOvalModifier extends Modifier<ClipOvalModifier>
     with Diagnosticable {
   final CustomClipper<Rect>? clipper;
-  final Clip? clipBehavior;
+  final Clip clipBehavior;
 
-  const ClipOvalModifier({this.clipper, this.clipBehavior});
+  const ClipOvalModifier({this.clipper, Clip? clipBehavior})
+    : clipBehavior = clipBehavior ?? Clip.antiAlias;
 
   @override
   ClipOvalModifier copyWith({
@@ -34,7 +35,7 @@ final class ClipOvalModifier extends Modifier<ClipOvalModifier>
 
     return ClipOvalModifier(
       clipper: MixOps.lerpSnap(clipper, other.clipper, t),
-      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t),
+      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t)!,
     );
   }
 
@@ -51,11 +52,7 @@ final class ClipOvalModifier extends Modifier<ClipOvalModifier>
 
   @override
   Widget build(Widget child) {
-    return ClipOval(
-      clipper: clipper,
-      clipBehavior: clipBehavior ?? Clip.antiAlias,
-      child: child,
-    );
+    return ClipOval(clipper: clipper, clipBehavior: clipBehavior, child: child);
   }
 }
 
@@ -102,9 +99,10 @@ class ClipOvalModifierMix extends ModifierMix<ClipOvalModifier> {
 final class ClipRectModifier extends Modifier<ClipRectModifier>
     with Diagnosticable {
   final CustomClipper<Rect>? clipper;
-  final Clip? clipBehavior;
+  final Clip clipBehavior;
 
-  const ClipRectModifier({this.clipper, this.clipBehavior});
+  const ClipRectModifier({this.clipper, Clip? clipBehavior})
+    : clipBehavior = clipBehavior ?? Clip.hardEdge;
 
   @override
   ClipRectModifier copyWith({
@@ -123,7 +121,7 @@ final class ClipRectModifier extends Modifier<ClipRectModifier>
 
     return ClipRectModifier(
       clipper: MixOps.lerpSnap(clipper, other.clipper, t),
-      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t),
+      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t)!,
     );
   }
 
@@ -140,11 +138,7 @@ final class ClipRectModifier extends Modifier<ClipRectModifier>
 
   @override
   Widget build(Widget child) {
-    return ClipRect(
-      clipper: clipper,
-      clipBehavior: clipBehavior ?? Clip.hardEdge,
-      child: child,
-    );
+    return ClipRect(clipper: clipper, clipBehavior: clipBehavior, child: child);
   }
 }
 
@@ -190,11 +184,16 @@ class ClipRectModifierMix extends ModifierMix<ClipRectModifier> {
 /// Wraps the child in a [ClipRRect] widget with the specified border radius.
 final class ClipRRectModifier extends Modifier<ClipRRectModifier>
     with Diagnosticable {
-  final BorderRadiusGeometry? borderRadius;
+  final BorderRadiusGeometry borderRadius;
   final CustomClipper<RRect>? clipper;
-  final Clip? clipBehavior;
+  final Clip clipBehavior;
 
-  const ClipRRectModifier({this.borderRadius, this.clipper, this.clipBehavior});
+  const ClipRRectModifier({
+    BorderRadiusGeometry? borderRadius,
+    this.clipper,
+    Clip? clipBehavior,
+  }) : borderRadius = borderRadius ?? BorderRadius.zero,
+       clipBehavior = clipBehavior ?? Clip.antiAlias;
 
   @override
   ClipRRectModifier copyWith({
@@ -214,9 +213,9 @@ final class ClipRRectModifier extends Modifier<ClipRRectModifier>
     if (other == null) return this;
 
     return ClipRRectModifier(
-      borderRadius: MixOps.lerp(borderRadius, other.borderRadius, t),
+      borderRadius: MixOps.lerp(borderRadius, other.borderRadius, t)!,
       clipper: MixOps.lerpSnap(clipper, other.clipper, t),
-      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t),
+      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t)!,
     );
   }
 
@@ -235,9 +234,9 @@ final class ClipRRectModifier extends Modifier<ClipRRectModifier>
   @override
   Widget build(Widget child) {
     return ClipRRect(
-      borderRadius: borderRadius ?? BorderRadius.zero,
+      borderRadius: borderRadius,
       clipper: clipper,
-      clipBehavior: clipBehavior ?? Clip.antiAlias,
+      clipBehavior: clipBehavior,
       child: child,
     );
   }
@@ -297,9 +296,10 @@ class ClipRRectModifierMix extends ModifierMix<ClipRRectModifier> {
 final class ClipPathModifier extends Modifier<ClipPathModifier>
     with Diagnosticable {
   final CustomClipper<Path>? clipper;
-  final Clip? clipBehavior;
+  final Clip clipBehavior;
 
-  const ClipPathModifier({this.clipper, this.clipBehavior});
+  const ClipPathModifier({this.clipper, Clip? clipBehavior})
+    : clipBehavior = clipBehavior ?? Clip.antiAlias;
 
   @override
   ClipPathModifier copyWith({
@@ -318,7 +318,7 @@ final class ClipPathModifier extends Modifier<ClipPathModifier>
 
     return ClipPathModifier(
       clipper: MixOps.lerpSnap(clipper, other.clipper, t),
-      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t),
+      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t)!,
     );
   }
 
@@ -335,11 +335,7 @@ final class ClipPathModifier extends Modifier<ClipPathModifier>
 
   @override
   Widget build(Widget child) {
-    return ClipPath(
-      clipper: clipper,
-      clipBehavior: clipBehavior ?? Clip.antiAlias,
-      child: child,
-    );
+    return ClipPath(clipper: clipper, clipBehavior: clipBehavior, child: child);
   }
 }
 
@@ -385,9 +381,10 @@ class ClipPathModifierMix extends ModifierMix<ClipPathModifier> {
 /// Wraps the child in a [ClipPath] widget using a triangle clipper.
 final class ClipTriangleModifier extends Modifier<ClipTriangleModifier>
     with Diagnosticable {
-  final Clip? clipBehavior;
+  final Clip clipBehavior;
 
-  const ClipTriangleModifier({this.clipBehavior});
+  const ClipTriangleModifier({Clip? clipBehavior})
+    : clipBehavior = clipBehavior ?? Clip.antiAlias;
 
   @override
   ClipTriangleModifier copyWith({Clip? clipBehavior}) {
@@ -401,7 +398,7 @@ final class ClipTriangleModifier extends Modifier<ClipTriangleModifier>
     if (other == null) return this;
 
     return ClipTriangleModifier(
-      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t),
+      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t)!,
     );
   }
 
@@ -418,7 +415,7 @@ final class ClipTriangleModifier extends Modifier<ClipTriangleModifier>
   Widget build(Widget child) {
     return ClipPath(
       clipper: const TriangleClipper(),
-      clipBehavior: clipBehavior ?? Clip.antiAlias,
+      clipBehavior: clipBehavior,
       child: child,
     );
   }

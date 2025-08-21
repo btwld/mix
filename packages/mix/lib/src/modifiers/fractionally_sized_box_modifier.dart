@@ -15,13 +15,13 @@ final class FractionallySizedBoxModifier
     with Diagnosticable {
   final double? widthFactor;
   final double? heightFactor;
-  final AlignmentGeometry? alignment;
+  final AlignmentGeometry alignment;
 
   const FractionallySizedBoxModifier({
     this.widthFactor,
     this.heightFactor,
-    this.alignment,
-  });
+    AlignmentGeometry? alignment,
+  }) : alignment = alignment ?? Alignment.center;
 
   @override
   FractionallySizedBoxModifier copyWith({
@@ -46,7 +46,7 @@ final class FractionallySizedBoxModifier
     return FractionallySizedBoxModifier(
       widthFactor: MixOps.lerp(widthFactor, other.widthFactor, t),
       heightFactor: MixOps.lerp(heightFactor, other.heightFactor, t),
-      alignment: MixOps.lerp(alignment, other.alignment, t),
+      alignment: MixOps.lerp(alignment, other.alignment, t)!,
     );
   }
 
@@ -65,7 +65,7 @@ final class FractionallySizedBoxModifier
   @override
   Widget build(Widget child) {
     return FractionallySizedBox(
-      alignment: alignment ?? Alignment.center,
+      alignment: alignment,
       widthFactor: widthFactor,
       heightFactor: heightFactor,
       child: child,

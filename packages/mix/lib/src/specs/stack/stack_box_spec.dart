@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../../animation/animation_config.dart';
+import '../../core/helpers.dart';
 import '../../core/modifier.dart';
 import '../../core/widget_spec.dart';
 import '../box/box_spec.dart';
@@ -73,7 +74,7 @@ final class ZBoxSpec extends WidgetSpec<ZBoxSpec> {
       stack: lerpedStack,
       // Meta fields: use confirmed policy other.field ?? this.field
       animation: other?.animation ?? animation,
-      widgetModifiers: other?.widgetModifiers ?? widgetModifiers,
+      widgetModifiers: MixOps.lerp(widgetModifiers, other?.widgetModifiers, t),
       inherit: other?.inherit ?? inherit,
     );
   }

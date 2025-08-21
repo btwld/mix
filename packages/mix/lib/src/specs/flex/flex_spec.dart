@@ -132,7 +132,7 @@ final class FlexSpec extends WidgetSpec<FlexSpec> {
       spacing: MixOps.lerp(spacing, other?.spacing, t),
       // Meta fields: use confirmed policy other.field ?? this.field
       animation: other?.animation ?? animation,
-      widgetModifiers: other?.widgetModifiers ?? widgetModifiers,
+      widgetModifiers: MixOps.lerp(widgetModifiers, other?.widgetModifiers, t),
       inherit: other?.inherit ?? inherit,
     );
   }

@@ -13,10 +13,11 @@ import '../core/utility.dart';
 ///
 /// Wraps the child in a [Transform] widget with the specified matrix and alignment.
 final class TransformModifier extends Modifier<TransformModifier> with Diagnosticable {
-  final Matrix4? transform;
+  final Matrix4 transform;
   final Alignment? alignment;
 
-  const TransformModifier({this.transform, this.alignment});
+  TransformModifier({Matrix4? transform, this.alignment = Alignment.center})
+      : transform = transform ?? Matrix4.identity();
 
   @override
   TransformModifier copyWith({Matrix4? transform, Alignment? alignment}) {
@@ -32,7 +33,7 @@ final class TransformModifier extends Modifier<TransformModifier> with Diagnosti
 
     return TransformModifier(
       transform: MixOps.lerp(transform, other.transform, t),
-      alignment: MixOps.lerp(alignment, other.alignment, t),
+      alignment: MixOps.lerp(alignment, other.alignment, t)!,
     );
   }
 
@@ -49,11 +50,7 @@ final class TransformModifier extends Modifier<TransformModifier> with Diagnosti
 
   @override
   Widget build(Widget child) {
-    return Transform(
-      transform: transform ?? Matrix4.identity(),
-      alignment: alignment ?? Alignment.center,
-      child: child,
-    );
+    return Transform(transform: transform, alignment: alignment, child: child);
   }
 }
 
@@ -133,7 +130,7 @@ class TransformModifierMix
   TransformModifier resolve(BuildContext context) {
     return TransformModifier(
       transform: MixOps.resolve(context, transform),
-      alignment: MixOps.resolve(context, alignment),
+      alignment: MixOps.resolve(context, alignment)!,
     );
   }
 

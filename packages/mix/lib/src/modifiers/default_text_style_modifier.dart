@@ -14,23 +14,26 @@ import '../properties/typography/text_style_mix.dart';
 /// Wraps the child in a [DefaultTextStyle] widget with the specified text properties.
 final class DefaultTextStyleModifier extends Modifier<DefaultTextStyleModifier>
     with Diagnosticable {
-  final TextStyle? style;
+  final TextStyle style;
   final TextAlign? textAlign;
-  final bool? softWrap;
-  final TextOverflow? overflow;
+  final bool softWrap;
+  final TextOverflow overflow;
   final int? maxLines;
-  final TextWidthBasis? textWidthBasis;
+  final TextWidthBasis textWidthBasis;
   final TextHeightBehavior? textHeightBehavior;
 
   const DefaultTextStyleModifier({
-    this.style,
+    TextStyle? style,
     this.textAlign,
-    this.softWrap,
-    this.overflow,
+    bool? softWrap,
+    TextOverflow? overflow,
     this.maxLines,
-    this.textWidthBasis,
+    TextWidthBasis? textWidthBasis,
     this.textHeightBehavior,
-  });
+  }) : style = style ?? const TextStyle(),
+       softWrap = softWrap ?? true,
+       overflow = overflow ?? TextOverflow.clip,
+       textWidthBasis = textWidthBasis ?? TextWidthBasis.parent;
 
   @override
   DefaultTextStyleModifier copyWith({
@@ -58,12 +61,12 @@ final class DefaultTextStyleModifier extends Modifier<DefaultTextStyleModifier>
     if (other == null) return this;
 
     return DefaultTextStyleModifier(
-      style: MixOps.lerp(style, other.style, t),
+      style: MixOps.lerp(style, other.style, t)!,
       textAlign: MixOps.lerpSnap(textAlign, other.textAlign, t),
-      softWrap: MixOps.lerpSnap(softWrap, other.softWrap, t),
-      overflow: MixOps.lerpSnap(overflow, other.overflow, t),
+      softWrap: MixOps.lerpSnap(softWrap, other.softWrap, t)!,
+      overflow: MixOps.lerpSnap(overflow, other.overflow, t)!,
       maxLines: MixOps.lerpSnap(maxLines, other.maxLines, t),
-      textWidthBasis: MixOps.lerpSnap(textWidthBasis, other.textWidthBasis, t),
+      textWidthBasis: MixOps.lerpSnap(textWidthBasis, other.textWidthBasis, t)!,
       textHeightBehavior: MixOps.lerpSnap(
         textHeightBehavior,
         other.textHeightBehavior,
@@ -99,12 +102,12 @@ final class DefaultTextStyleModifier extends Modifier<DefaultTextStyleModifier>
   @override
   Widget build(Widget child) {
     return DefaultTextStyle(
-      style: style ?? const TextStyle(),
+      style: style,
       textAlign: textAlign,
-      softWrap: softWrap ?? true,
-      overflow: overflow ?? TextOverflow.clip,
+      softWrap: softWrap,
+      overflow: overflow,
       maxLines: maxLines,
-      textWidthBasis: textWidthBasis ?? TextWidthBasis.parent,
+      textWidthBasis: textWidthBasis,
       textHeightBehavior: textHeightBehavior,
       child: child,
     );

@@ -55,31 +55,27 @@ class OkinawaCard extends StatelessWidget {
           ),
     );
 
-    final vBoxStyle = Style.flexbox(
-      FlexBoxMix()
-          .box(
-            BoxMix()
-                .padding(EdgeInsetsMix.all(8))
-                .width(double.infinity)
-                .color(Colors.black.withValues(alpha: 0.1)),
-          )
-          .flex(
-            FlexMix()
-                .mainAxisSize(MainAxisSize.min)
-                .crossAxisAlignment(CrossAxisAlignment.start),
-          ),
-    );
+    final vBoxStyle = FlexBoxMix()
+        .box(
+          BoxMix()
+              .padding(EdgeInsetsMix.all(8))
+              .width(double.infinity)
+              .color(Colors.black.withValues(alpha: 0.1)),
+        )
+        .flex(
+          FlexMix()
+              .mainAxisSize(MainAxisSize.min)
+              .crossAxisAlignment(CrossAxisAlignment.start),
+        );
 
-    final zbox = Style.stackbox(
-      StackBoxMix()
-          .stack(StackMix().alignment(Alignment.bottomCenter))
-          .box(
-            BoxMix()
-                .transformAlignment(Alignment.center)
-                .scale(1)
-                .onHovered(BoxMix().scale(1.05)),
-          ),
-    );
+    final zbox = StackBoxMix()
+        .stack(StackMix().alignment(Alignment.bottomCenter))
+        .box(
+          BoxMix()
+              .transformAlignment(Alignment.center)
+              .scale(1)
+              .onHovered(BoxMix().scale(1.05)),
+        );
 
     final titleStyle = Style.text(
       TextMix().color(Colors.white).fontWeight(FontWeight.bold).fontSize(16),

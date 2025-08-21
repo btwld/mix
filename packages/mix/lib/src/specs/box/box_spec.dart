@@ -112,7 +112,7 @@ class BoxSpec extends WidgetSpec<BoxSpec> {
       clipBehavior: MixOps.lerpSnap(clipBehavior, other?.clipBehavior, t),
       // Meta fields: use confirmed policy other?.field ?? this.field
       animation: other?.animation ?? animation,
-      widgetModifiers: other?.widgetModifiers ?? widgetModifiers,
+      widgetModifiers: MixOps.lerp(widgetModifiers, other?.widgetModifiers, t),
       inherit: other?.inherit ?? inherit,
     );
   }

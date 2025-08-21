@@ -57,9 +57,10 @@ class _ExampleState extends State<Example> {
                         BoxBorderMix.all(BorderSideMix.color(Colors.red)),
                       ),
                     ),
-              )
-              .flex(FlexMix().mainAxisSize(MainAxisSize.min).gap(8)),
-        ),
+                  ),
+            )
+            .flex(FlexMix().mainAxisSize(MainAxisSize.min).spacing(8)),
+
         children: [
           Text('Developer Preview'),
           ArrowIconButton(animationTrigger: trigger),

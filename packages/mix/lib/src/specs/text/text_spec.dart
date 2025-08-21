@@ -140,7 +140,7 @@ final class TextSpec extends WidgetSpec<TextSpec> {
       locale: MixOps.lerpSnap(locale, other?.locale, t),
       // Meta fields: use confirmed policy other?.field ?? this.field
       animation: other?.animation ?? animation,
-      widgetModifiers: other?.widgetModifiers ?? widgetModifiers,
+      widgetModifiers: MixOps.lerp(widgetModifiers, other?.widgetModifiers, t),
       inherit: other?.inherit ?? inherit,
     );
   }
