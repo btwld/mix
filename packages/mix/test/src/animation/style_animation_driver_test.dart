@@ -8,7 +8,7 @@ final class StyleAnimationDriverTest extends StyleAnimationDriver<MockSpec> {
   StyleAnimationDriverTest({
     required super.vsync,
     super.unbounded,
-    required super.initialStyle,
+    required super.initialSpec,
   });
   int executeAnimationCallCounter = 0;
 
@@ -25,7 +25,7 @@ void main() {
     setUp(() {
       driver = StyleAnimationDriverTest(
         vsync: const TestVSync(),
-        initialStyle: MockResolvedStyle(0),
+        initialSpec: MockSpec(0),
       );
     });
 
@@ -34,15 +34,15 @@ void main() {
     });
 
     test('reset should restore the driver to the begining', () {
-      driver.animateTo(MockResolvedStyle(0));
-      driver.animateTo(MockResolvedStyle(1));
+      driver.animateTo(MockSpec(0));
+      driver.animateTo(MockSpec(1));
 
-      expect(driver.animation.value, MockResolvedStyle(0));
+      expect(driver.animation.value, MockSpec(0));
 
       driver.reset();
 
       expect(driver.controller.value, 0.0);
-      expect(driver.animation.value, MockResolvedStyle(0));
+      expect(driver.animation.value, MockSpec(0));
     });
 
     testWidgets(
@@ -57,8 +57,8 @@ void main() {
           }
         });
 
-        await driver.animateTo(MockResolvedStyle(0));
-        final future = driver.animateTo(MockResolvedStyle(1));
+        await driver.animateTo(MockSpec(0));
+        final future = driver.animateTo(MockSpec(1));
 
         driver.controller.duration = 300.ms;
         driver.controller.forward(from: 0);
@@ -84,8 +84,8 @@ void main() {
         }
       });
 
-      await driver.animateTo(MockResolvedStyle(0));
-      final future = driver.animateTo(MockResolvedStyle(1));
+      await driver.animateTo(MockSpec(0));
+      final future = driver.animateTo(MockSpec(1));
 
       driver.controller.duration = 300.ms;
       driver.controller.forward(from: 0);
@@ -98,8 +98,8 @@ void main() {
 
     testWidgets('stop() should stop the animation ', (tester) async {
       driver.controller.duration = 300.ms;
-      await driver.animateTo(MockResolvedStyle(0));
-      driver.animateTo(MockResolvedStyle(1));
+      await driver.animateTo(MockSpec(0));
+      driver.animateTo(MockSpec(1));
 
       driver.controller.forward(from: 0);
 
@@ -121,7 +121,7 @@ void main() {
 
     testWidgets('disposes correctly', (tester) async {
       final driver = CurveAnimationDriver<MockSpec>(
-        initialStyle: MockResolvedStyle(0),
+        initialSpec: MockSpec(0),
         vsync: tester,
         config: const CurveAnimationConfig(
           duration: Duration(milliseconds: 100),
@@ -132,7 +132,7 @@ void main() {
       await tester.pumpWidget(Container());
 
       // Start an animation
-      driver.animateTo(MockResolvedStyle());
+      driver.animateTo(MockSpec());
       await tester.pump();
 
       // Dispose should not throw
@@ -143,7 +143,7 @@ void main() {
       test('with no progress', () {
         final driver = StyleAnimationDriverTest(
           vsync: const TestVSync(),
-          initialStyle: MockResolvedStyle(0),
+          initialSpec: MockSpec(0),
         );
         addTearDown(() {
           driver.dispose();
@@ -156,7 +156,7 @@ void main() {
       test('with non-unbounded controller', () {
         final driver = StyleAnimationDriverTest(
           vsync: const TestVSync(),
-          initialStyle: MockResolvedStyle(0),
+          initialSpec: MockSpec(0),
         );
         addTearDown(() {
           driver.dispose();
@@ -171,7 +171,7 @@ void main() {
       test('with unbounded controller when unbounded is true', () {
         final driver = StyleAnimationDriverTest(
           vsync: const TestVSync(),
-          initialStyle: MockResolvedStyle(0),
+          initialSpec: MockSpec(0),
           unbounded: true,
         );
         addTearDown(() {
@@ -190,7 +190,7 @@ void main() {
 
       setUp(() {
         driver = StyleAnimationDriverTest(
-          initialStyle: MockResolvedStyle(0),
+          initialSpec: MockSpec(0),
           vsync: const TestVSync(),
         );
       });
@@ -203,7 +203,7 @@ void main() {
         'skips animation when target is already set and not animating',
         (tester) async {
           // Call again with the same target
-          await driver.animateTo(MockResolvedStyle(0));
+          await driver.animateTo(MockSpec(0));
 
           // Verify executeAnimation was not called
           expect(driver.executeAnimationCallCounter, 0);
@@ -212,16 +212,16 @@ void main() {
 
       test('calls executeAnimation when target style changes', () async {
         // Initial call
-        await driver.animateTo(MockResolvedStyle(0));
+        await driver.animateTo(MockSpec(0));
         expect(driver.executeAnimationCallCounter, 0);
 
         // Call with same target style while not animating
-        await driver.animateTo(MockResolvedStyle(1));
+        await driver.animateTo(MockSpec(1));
         // Counter should not increase as it should skip animation
         expect(driver.executeAnimationCallCounter, 1);
 
         // Call with different target style
-        await driver.animateTo(MockResolvedStyle(2.0));
+        await driver.animateTo(MockSpec(2.0));
         expect(driver.executeAnimationCallCounter, 2);
       });
     });
@@ -234,7 +234,7 @@ void main() {
       int counter = 0;
 
       final driver = CurveAnimationDriver<MockSpec>(
-        initialStyle: MockResolvedStyle(0),
+        initialSpec: MockSpec(0),
         vsync: const TestVSync(),
         config: CurveAnimationConfig.decelerate(300.ms, onEnd: () => counter++),
       );
@@ -243,8 +243,8 @@ void main() {
         driver.dispose();
       });
 
-      final startStyle = MockResolvedStyle(0);
-      final endStyle = MockResolvedStyle(1);
+      final startStyle = MockSpec(0);
+      final endStyle = MockSpec(1);
 
       // Set up interpolation
       await driver.animateTo(startStyle);
@@ -260,7 +260,7 @@ void main() {
   group('SpringAnimationDriver', () {
     test('should create an unbounded animation controller', () {
       final driver = SpringAnimationDriver<MockSpec>(
-        initialStyle: MockResolvedStyle(0),
+        initialSpec: MockSpec(0),
         vsync: const TestVSync(),
         config: SpringAnimationConfig.standard(),
       );
@@ -280,7 +280,7 @@ void main() {
       int callbackCount = 0;
 
       final driver = SpringAnimationDriver<MockSpec>(
-        initialStyle: MockResolvedStyle(0),
+        initialSpec: MockSpec(0),
         vsync: tester,
         config: SpringAnimationConfig.standard(
           stiffness: 100.0,
@@ -296,8 +296,8 @@ void main() {
 
       await tester.pumpWidget(Container());
 
-      await driver.animateTo(MockResolvedStyle(0));
-      final future = driver.animateTo(MockResolvedStyle(1));
+      await driver.animateTo(MockSpec(0));
+      final future = driver.animateTo(MockSpec(1));
 
       // Let the animation run to completion
       await tester.pumpAndSettle();
@@ -328,7 +328,7 @@ void main() {
           ),
         ],
         specs: [MockSpec(0), MockSpec(1)],
-        initialStyle: MockResolvedStyle(0),
+        initialSpec: MockSpec(0),
         trigger: trigger,
       );
     });
@@ -388,29 +388,31 @@ void main() {
 }
 
 // Test helpers
-class MockSpec extends Spec<MockSpec> {
+class MockSpec extends WidgetSpec<MockSpec> {
   final double value;
 
-  const MockSpec([this.value = 0]);
+  const MockSpec([
+    this.value = 0,
+  ]) : super();
 
   @override
-  MockSpec copyWith() => this;
-
-  @override
-  MockSpec lerp(MockSpec? other, double t) {
-    return MockSpec(lerpDouble(value, other?.value, t)!);
+  MockSpec copyWith({
+    double? value,
+  }) {
+    return MockSpec(
+      value ?? this.value,
+    );
   }
 
   @override
-  List<Object?> get props => [];
-
-  Widget build(BuildContext context) => Container();
-}
-
-class MockResolvedStyle extends ResolvedStyle<MockSpec> {
-  final double value;
-  MockResolvedStyle([this.value = 0]) : super(spec: MockSpec(value));
+  MockSpec lerp(MockSpec? other, double t) {
+    return MockSpec(
+      lerpDouble(value, other?.value, t)!,
+    );
+  }
 
   @override
   List<Object?> get props => [value];
+
+  Widget build(BuildContext context) => Container();
 }

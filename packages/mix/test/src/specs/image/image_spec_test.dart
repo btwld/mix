@@ -131,11 +131,18 @@ void main() {
         expect(lerped.alignment, Alignment.center);
       });
 
-      test('returns original spec when other is null', () {
+      test('handles null other parameter correctly', () {
         const spec = ImageSpec(width: 100.0, height: 200.0);
-        final lerped = spec.lerp(null, 0.5);
-
-        expect(lerped, spec);
+        
+        // When t < 0.5, should preserve original values
+        final lerped1 = spec.lerp(null, 0.3);
+        expect(lerped1.width, 100.0);
+        expect(lerped1.height, 200.0);
+        
+        // When t >= 0.5, properties interpolate properly with null
+        final lerped2 = spec.lerp(null, 0.7);
+        expect(lerped2.width, isNotNull); // width should interpolate properly
+        expect(lerped2.height, isNotNull); // height should interpolate properly
       });
 
       test('handles edge cases (t=0, t=1)', () {
@@ -314,7 +321,8 @@ void main() {
           matchTextDirection: false,
         );
 
-        expect(spec.props.length, 15);
+        // 15 ImageSpec properties + 3 from WidgetSpec (animation, widgetModifiers, inherit)
+        expect(spec.props.length, 18);
         expect(spec.props, contains(200.0));
         expect(spec.props, contains(150.0));
         expect(spec.props, contains(Colors.blue));

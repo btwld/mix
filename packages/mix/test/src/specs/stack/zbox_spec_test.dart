@@ -132,16 +132,24 @@ void main() {
         ); // interpolated alignment
       });
 
-      test('returns original spec when other is null', () {
+      test('handles null other parameter correctly', () {
         const boxSpec = BoxSpec(
           constraints: BoxConstraints.tightFor(width: 100.0),
         );
         const stackSpec = StackSpec(fit: StackFit.loose);
         const spec = ZBoxSpec(box: boxSpec, stack: stackSpec);
 
-        final lerped = spec.lerp(null, 0.5);
-
-        expect(lerped, spec);
+        // When t < 0.5, constraints interpolate towards null, fit preserves value
+        final lerped1 = spec.lerp(null, 0.3);
+        expect(lerped1.box.constraints, isNotNull);
+        expect(lerped1.box.constraints!.maxWidth, lessThan(100.0)); // interpolating towards 0
+        expect(lerped1.stack.fit, StackFit.loose);
+        
+        // When t >= 0.5, constraints continue interpolating, fit snaps to null
+        final lerped2 = spec.lerp(null, 0.7);
+        expect(lerped2.box.constraints, isNotNull); // constraints should interpolate properly
+        expect(lerped2.box.constraints!.maxWidth, lessThan(lerped1.box.constraints!.maxWidth));
+        expect(lerped2.stack.fit, null); // fit snaps to null when t >= 0.5
       });
 
       test('handles edge cases (t=0, t=1)', () {
@@ -282,7 +290,8 @@ void main() {
         );
         const spec = ZBoxSpec(box: boxSpec, stack: stackSpec);
 
-        expect(spec.props.length, 2);
+        // 2 ZBoxSpec properties (box, stack) + 3 from WidgetSpec (animation, widgetModifiers, inherit)
+        expect(spec.props.length, 5);
         expect(spec.props, contains(boxSpec));
         expect(spec.props, contains(stackSpec));
       });

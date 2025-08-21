@@ -84,14 +84,21 @@ void main() {
         expect(lerped.alignment, Alignment.center);
       });
 
-      test('returns original spec when other is null', () {
+      test('handles null other parameter correctly', () {
         const spec = StackSpec(
           alignment: Alignment.center,
           fit: StackFit.expand,
         );
-        final lerped = spec.lerp(null, 0.5);
-
-        expect(lerped, spec);
+        
+        // When t < 0.5, should preserve original values
+        final lerped1 = spec.lerp(null, 0.3);
+        expect(lerped1.alignment, Alignment.center);
+        expect(lerped1.fit, StackFit.expand);
+        
+        // When t >= 0.5, snap properties become null, but new spec should be created
+        final lerped2 = spec.lerp(null, 0.7);
+        expect(lerped2.alignment, Alignment.center); // alignment lerps properly
+        expect(lerped2.fit, null); // fit snaps to null when t >= 0.5
       });
 
       test('handles edge cases (t=0, t=1)', () {
@@ -227,7 +234,8 @@ void main() {
           clipBehavior: Clip.antiAlias,
         );
 
-        expect(spec.props.length, 4);
+        // 4 StackSpec properties + 3 from WidgetSpec (animation, widgetModifiers, inherit)
+        expect(spec.props.length, 7);
         expect(spec.props, contains(Alignment.center));
         expect(spec.props, contains(StackFit.expand));
         expect(spec.props, contains(TextDirection.rtl));

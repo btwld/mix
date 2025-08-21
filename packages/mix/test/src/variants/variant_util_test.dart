@@ -605,86 +605,15 @@ void main() {
       });
     });
 
-    group('Call method functionality', () {
-      test('call method creates VariantSpecAttribute with single element', () {
-        const variant = NamedVariant('primary');
-        const builder = VariantAttributeBuilder<MockSpec>(variant);
-        final attribute = MockStyle<double>(100.0);
-
-        final result = builder.call(attribute);
-
-        expect(result, isA<VariantStyle<MultiSpec>>());
-        expect(result.variant, same(variant));
-        expect(result.value, isA<Style>());
-      });
-
-      test(
-        'call method creates VariantSpecAttribute with multiple elements',
-        () {
-          const variant = NamedVariant('primary');
-          const builder = VariantAttributeBuilder<MockSpec>(variant);
-          final attr1 = MockStyle<double>(100.0);
-          final attr2 = MockStyle<String>('test');
-
-          final result = builder.call(attr1, attr2);
-
-          expect(result, isA<VariantStyle<MultiSpec>>());
-          expect(result.variant, same(variant));
-          expect(result.value, isA<Style>());
-        },
-      );
-
-      test('call method works with utility-created builders', () {
-        final testUtility =
-            OnContextVariantUtility<MockSpec, MockStyle<String>>(
-              (variant) => MockStyle('test'),
-            );
-        final hoverBuilder = testUtility.hover;
-        final attribute = MockStyle<double>(200.0);
-
-        final result = hoverBuilder.call(attribute);
-
-        expect(result, isA<VariantStyle<MultiSpec>>());
-        expect(result.value, isA<Style>());
-      });
-
-      test('call method preserves variant information', () {
-        final contextVariant = ContextVariant('hover', (context) => true);
-        final builder = VariantAttributeBuilder<MockSpec>(contextVariant);
-        final attribute = MockStyle<String>('test');
-
-        final result = builder.call(attribute);
-
-        expect(result, isA<VariantStyle<MultiSpec>>());
-        expect(result.variant, same(contextVariant));
-        expect(result.value, isA<Style>());
-      });
-
-      test('call method throws error with no elements', () {
-        const variant = NamedVariant('test');
-        const builder = VariantAttributeBuilder<MockSpec>(variant);
-
-        expect(() => builder.call(), throwsA(isA<ArgumentError>()));
-      });
-
-      test('call method supports usage pattern like README examples', () {
-        final testUtility =
-            OnContextVariantUtility<MockSpec, MockStyle<String>>(
-              (variant) => MockStyle('test'),
-            );
-        final darkBuilder = testUtility.dark;
-
-        // Simulate: $on.dark($box.color.white(), $text.style.color.black())
-        final boxAttr = MockStyle<String>('white');
-        final textAttr = MockStyle<String>('black');
-
-        final result = darkBuilder.call(boxAttr, textAttr);
-
-        expect(result, isA<VariantStyle<MultiSpec>>());
-        expect(result.variant, equals(darkBuilder.variant));
-        expect(result.value, isA<Style>());
-      });
-    });
+    // TODO: These tests were disabled after removing MultiSpec/CompoundStyle
+    // The call() method in VariantAttributeBuilder was removed because it
+    // depended on the ability to create a generic MultiSpec from multiple
+    // different style types. With the new architecture, variants need to be
+    // applied to specific spec types.
+    //
+    // group('Call method functionality', () {
+    //   ... tests removed ...
+    // });
 
     group('Type safety', () {
       test('maintains type safety with different variant types', () {
@@ -713,18 +642,19 @@ void main() {
           ContextVariant.widgetState(WidgetState.disabled),
         );
 
-        expect(
-          VariantAttributeBuilder<MultiSpec>(namedVariant),
-          isA<VariantAttributeBuilder<MultiSpec>>(),
-        );
-        expect(
-          VariantAttributeBuilder<MultiSpec>(contextVariant),
-          isA<VariantAttributeBuilder<MultiSpec>>(),
-        );
-        expect(
-          VariantAttributeBuilder<MultiSpec>(notVariant),
-          isA<VariantAttributeBuilder<MultiSpec>>(),
-        );
+        // TODO: These tests were disabled after removing MultiSpec
+        // expect(
+        //   VariantAttributeBuilder<MultiSpec>(namedVariant),
+        //   isA<VariantAttributeBuilder<MultiSpec>>(),
+        // );
+        // expect(
+        //   VariantAttributeBuilder<MultiSpec>(contextVariant),
+        //   isA<VariantAttributeBuilder<MultiSpec>>(),
+        // );
+        // expect(
+        //   VariantAttributeBuilder<MultiSpec>(notVariant),
+        //   isA<VariantAttributeBuilder<MultiSpec>>(),
+        // );
       });
     });
   });

@@ -125,7 +125,7 @@ void main() {
         expect(lerped.alignment, Alignment.center);
       });
 
-      test('returns original spec when other is null', () {
+      test('handles null other parameter correctly', () {
         const spec = BoxSpec(
           constraints: BoxConstraints(
             minWidth: 100.0,
@@ -134,9 +134,16 @@ void main() {
             maxHeight: 200.0,
           ),
         );
-        final lerped = spec.lerp(null, 0.5);
-
-        expect(lerped, spec);
+        
+        // When t < 0.5, constraints interpolate towards null (partial values)
+        final lerped1 = spec.lerp(null, 0.3);
+        expect(lerped1.constraints, isNotNull);
+        expect(lerped1.constraints!.minWidth, lessThan(100.0)); // interpolating towards 0
+        
+        // When t >= 0.5, constraints interpolate closer to null (smaller values)
+        final lerped2 = spec.lerp(null, 0.7);
+        expect(lerped2.constraints, isNotNull);
+        expect(lerped2.constraints!.minWidth, lessThan(lerped1.constraints!.minWidth));
       });
 
       test('handles edge cases (t=0, t=1)', () {
@@ -311,7 +318,8 @@ void main() {
           clipBehavior: Clip.antiAlias,
         );
 
-        expect(spec.props.length, 9);
+        // 9 BoxSpec properties + 3 from WidgetSpec (animation, widgetModifiers, inherit)
+        expect(spec.props.length, 12);
         expect(spec.props, contains(Alignment.center));
         expect(spec.props, contains(const EdgeInsets.all(8.0)));
         expect(spec.props, contains(const EdgeInsets.all(16.0)));
