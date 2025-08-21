@@ -42,6 +42,15 @@ final class AlignModifier extends Modifier<AlignModifier> with Diagnosticable {
   }
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('alignment', alignment))
+      ..add(DoubleProperty('widthFactor', widthFactor))
+      ..add(DoubleProperty('heightFactor', heightFactor));
+  }
+
+  @override
   List<Object?> get props => [alignment, widthFactor, heightFactor];
 
   @override
@@ -79,7 +88,7 @@ final class AlignModifierUtility<T extends Style<Object?>>
 /// Mix class for applying alignment modifications.
 ///
 /// This class allows for mixing and resolving alignment properties.
-class AlignModifierMix extends ModifierMix<AlignModifier> {
+class AlignModifierMix extends ModifierMix<AlignModifier> with Diagnosticable {
   final Prop<AlignmentGeometry>? alignment;
   final Prop<double>? widthFactor;
   final Prop<double>? heightFactor;
@@ -118,6 +127,15 @@ class AlignModifierMix extends ModifierMix<AlignModifier> {
       widthFactor: MixOps.merge(widthFactor, other.widthFactor),
       heightFactor: MixOps.merge(heightFactor, other.heightFactor),
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('alignment', alignment))
+      ..add(DiagnosticsProperty('widthFactor', widthFactor))
+      ..add(DiagnosticsProperty('heightFactor', heightFactor));
   }
 
   @override

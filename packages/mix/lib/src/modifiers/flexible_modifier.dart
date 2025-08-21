@@ -35,8 +35,9 @@ final class FlexibleModifier extends Modifier<FlexibleModifier>
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('flex', flex, defaultValue: null));
-    properties.add(DiagnosticsProperty('fit', fit, defaultValue: null));
+    properties
+      ..add(IntProperty('flex', flex))
+      ..add(EnumProperty<FlexFit>('fit', fit));
   }
 
   @override
@@ -82,8 +83,9 @@ class FlexibleModifierMix extends ModifierMix<FlexibleModifier>
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('flex', flex, defaultValue: null));
-    properties.add(DiagnosticsProperty('fit', fit, defaultValue: null));
+    properties
+      ..add(DiagnosticsProperty('flex', flex))
+      ..add(DiagnosticsProperty('fit', fit));
   }
 
   @override

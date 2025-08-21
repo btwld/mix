@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../core/helpers.dart';
@@ -9,7 +10,7 @@ import '../core/utility.dart';
 /// Modifier that applies a mouse cursor to its child.
 ///
 /// Wraps the child in a [MouseRegion] widget with the specified cursor.
-class MouseCursorModifier extends Modifier<MouseCursorModifier> {
+class MouseCursorModifier extends Modifier<MouseCursorModifier> with Diagnosticable {
   final MouseCursor? mouseCursor;
 
   const MouseCursorModifier({this.mouseCursor});
@@ -29,6 +30,12 @@ class MouseCursorModifier extends Modifier<MouseCursorModifier> {
   }
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('mouseCursor', mouseCursor));
+  }
+
+  @override
   List<Object?> get props => [mouseCursor];
 
   @override
@@ -44,7 +51,7 @@ class MouseCursorModifier extends Modifier<MouseCursorModifier> {
 ///
 /// Use this class to configure the attributes of a [MouseCursorModifier] and pass it to
 /// the [MouseCursorModifier] constructor.
-class MouseCursorModifierMix extends ModifierMix<MouseCursorModifier> {
+class MouseCursorModifierMix extends ModifierMix<MouseCursorModifier> with Diagnosticable {
   final Prop<MouseCursor>? mouseCursor;
 
   const MouseCursorModifierMix.create({this.mouseCursor});
@@ -82,6 +89,12 @@ class MouseCursorModifierMix extends ModifierMix<MouseCursorModifier> {
     return MouseCursorModifierMix.create(
       mouseCursor: MixOps.merge(mouseCursor, other.mouseCursor),
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('mouseCursor', mouseCursor));
   }
 
   /// The list of properties that constitute the state of this [MouseCursorModifierMix].

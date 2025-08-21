@@ -53,15 +53,10 @@ final class FractionallySizedBoxModifier
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(
-      DiagnosticsProperty('widthFactor', widthFactor, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('heightFactor', heightFactor, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('alignment', alignment, defaultValue: null),
-    );
+    properties
+      ..add(DoubleProperty('widthFactor', widthFactor))
+      ..add(DoubleProperty('heightFactor', heightFactor))
+      ..add(DiagnosticsProperty('alignment', alignment));
   }
 
   @override

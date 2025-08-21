@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../core/internal/compare_mixin.dart';
 import '../core/modifier.dart';
-import '../core/spec.dart';
+import '../core/widget_spec.dart';
 import '../core/style.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
 import '../properties/painting/border_radius_mix.dart';
@@ -265,7 +265,7 @@ final class ModifierConfig with Equatable {
   }
 
   /// Static method for creating a style provider modifier
-  static ModifierConfig style<S extends Spec<S>>(Style<S> value) {
+  static ModifierConfig style<S extends WidgetSpec<S>>(Style<S> value) {
     return ModifierConfig.modifier(StyleProviderModifierMix<S>(value));
   }
 
@@ -454,7 +454,7 @@ final class ModifierConfig with Equatable {
   }
 
   /// Instance method for providing a style to descendants
-  ModifierConfig withStyle<S extends Spec<S>>(Style<S> style) {
+  ModifierConfig withStyle<S extends WidgetSpec<S>>(Style<S> style) {
     return merge(ModifierConfig.style(style));
   }
 

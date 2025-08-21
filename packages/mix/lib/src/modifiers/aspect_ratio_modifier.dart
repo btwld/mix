@@ -33,9 +33,7 @@ final class AspectRatioModifier extends Modifier<AspectRatioModifier>
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(
-      DiagnosticsProperty('aspectRatio', aspectRatio, defaultValue: null),
-    );
+    properties.add(DoubleProperty('aspectRatio', aspectRatio));
   }
 
   @override
@@ -76,9 +74,7 @@ class AspectRatioModifierMix extends ModifierMix<AspectRatioModifier>
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(
-      DiagnosticsProperty('aspectRatio', aspectRatio, defaultValue: null),
-    );
+    properties.add(DiagnosticsProperty('aspectRatio', aspectRatio));
   }
 
   @override

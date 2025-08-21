@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/helpers.dart';
@@ -11,7 +12,7 @@ import '../core/utility.dart';
 /// Modifier that applies matrix transformations to its child.
 ///
 /// Wraps the child in a [Transform] widget with the specified matrix and alignment.
-final class TransformModifier extends Modifier<TransformModifier> {
+final class TransformModifier extends Modifier<TransformModifier> with Diagnosticable {
   final Matrix4? transform;
   final Alignment? alignment;
 
@@ -33,6 +34,14 @@ final class TransformModifier extends Modifier<TransformModifier> {
       transform: MixOps.lerp(transform, other.transform, t),
       alignment: MixOps.lerp(alignment, other.alignment, t),
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('transform', transform))
+      ..add(DiagnosticsProperty('alignment', alignment));
   }
 
   @override
@@ -108,7 +117,7 @@ final class TransformRotateModifierUtility<T extends Style<Object?>>
 ///
 /// This class allows for mixing and resolving transform properties.
 class TransformModifierMix
-    extends ModifierMix<TransformModifier> {
+    extends ModifierMix<TransformModifier> with Diagnosticable {
   final Prop<Matrix4>? transform;
   final Prop<Alignment>? alignment;
 
@@ -136,6 +145,14 @@ class TransformModifierMix
       transform: MixOps.merge(transform, other.transform),
       alignment: MixOps.merge(alignment, other.alignment),
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('transform', transform))
+      ..add(DiagnosticsProperty('alignment', alignment));
   }
 
   @override

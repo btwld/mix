@@ -75,29 +75,14 @@ final class DefaultTextStyleModifier extends Modifier<DefaultTextStyleModifier>
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('style', style, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty('textAlign', textAlign, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('softWrap', softWrap, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('overflow', overflow, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('maxLines', maxLines, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('textWidthBasis', textWidthBasis, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty(
-        'textHeightBehavior',
-        textHeightBehavior,
-        defaultValue: null,
-      ),
-    );
+    properties
+      ..add(DiagnosticsProperty('style', style))
+      ..add(EnumProperty<TextAlign>('textAlign', textAlign))
+      ..add(FlagProperty('softWrap', value: softWrap, ifTrue: 'soft wrap'))
+      ..add(EnumProperty<TextOverflow>('overflow', overflow))
+      ..add(IntProperty('maxLines', maxLines))
+      ..add(EnumProperty<TextWidthBasis>('textWidthBasis', textWidthBasis))
+      ..add(DiagnosticsProperty('textHeightBehavior', textHeightBehavior));
   }
 
   @override
@@ -191,7 +176,10 @@ class DefaultTextStyleModifierMix
       overflow: MixOps.merge(overflow, other.overflow),
       maxLines: MixOps.merge(maxLines, other.maxLines),
       textWidthBasis: MixOps.merge(textWidthBasis, other.textWidthBasis),
-      textHeightBehavior: MixOps.merge(textHeightBehavior, other.textHeightBehavior),
+      textHeightBehavior: MixOps.merge(
+        textHeightBehavior,
+        other.textHeightBehavior,
+      ),
     );
   }
 

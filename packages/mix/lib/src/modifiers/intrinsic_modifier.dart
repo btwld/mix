@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/modifier.dart';
@@ -6,7 +7,7 @@ import '../core/style.dart';
 /// Modifier that forces its child to be exactly as tall as its intrinsic height.
 ///
 /// Wraps the child in an [IntrinsicHeight] widget.
-final class IntrinsicHeightModifier extends Modifier<IntrinsicHeightModifier> {
+final class IntrinsicHeightModifier extends Modifier<IntrinsicHeightModifier> with Diagnosticable {
   const IntrinsicHeightModifier();
 
   @override
@@ -22,6 +23,11 @@ final class IntrinsicHeightModifier extends Modifier<IntrinsicHeightModifier> {
   }
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+  }
+
+  @override
   List<Object?> get props => [];
 
   @override
@@ -33,7 +39,7 @@ final class IntrinsicHeightModifier extends Modifier<IntrinsicHeightModifier> {
 /// Modifier that forces its child to be exactly as wide as its intrinsic width.
 ///
 /// Wraps the child in an [IntrinsicWidth] widget.
-final class IntrinsicWidthModifier extends Modifier<IntrinsicWidthModifier> {
+final class IntrinsicWidthModifier extends Modifier<IntrinsicWidthModifier> with Diagnosticable {
   const IntrinsicWidthModifier();
 
   @override
@@ -46,6 +52,11 @@ final class IntrinsicWidthModifier extends Modifier<IntrinsicWidthModifier> {
     if (other == null) return this;
 
     return const IntrinsicWidthModifier();
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
   }
 
   @override
@@ -64,7 +75,7 @@ final class IntrinsicWidthModifier extends Modifier<IntrinsicWidthModifier> {
 ///
 /// Use this class to configure the attributes of a [IntrinsicHeightModifier] and pass it to
 /// the [IntrinsicHeightModifier] constructor.
-class IntrinsicHeightModifierMix extends ModifierMix<IntrinsicHeightModifier> {
+class IntrinsicHeightModifierMix extends ModifierMix<IntrinsicHeightModifier> with Diagnosticable {
   const IntrinsicHeightModifierMix();
 
   /// Resolves to [IntrinsicHeightModifier] using the provided [BuildContext].
@@ -100,6 +111,11 @@ class IntrinsicHeightModifierMix extends ModifierMix<IntrinsicHeightModifier> {
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [IntrinsicHeightModifierMix] instances for equality.
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+  }
+
+  @override
   List<Object?> get props => [];
 }
 
@@ -110,7 +126,7 @@ class IntrinsicHeightModifierMix extends ModifierMix<IntrinsicHeightModifier> {
 ///
 /// Use this class to configure the attributes of a [IntrinsicWidthModifier] and pass it to
 /// the [IntrinsicWidthModifier] constructor.
-class IntrinsicWidthModifierMix extends ModifierMix<IntrinsicWidthModifier> {
+class IntrinsicWidthModifierMix extends ModifierMix<IntrinsicWidthModifier> with Diagnosticable {
   const IntrinsicWidthModifierMix();
 
   /// Resolves to [IntrinsicWidthModifier] using the provided [BuildContext].
@@ -145,6 +161,11 @@ class IntrinsicWidthModifierMix extends ModifierMix<IntrinsicWidthModifier> {
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [IntrinsicWidthModifierMix] instances for equality.
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+  }
+
   @override
   List<Object?> get props => [];
 }
