@@ -8,7 +8,7 @@ final scaffoldContainer = FlexBoxMix()
     .color(Colors.white);
 
 final appHeaderContainer = 
-    BoxMix()
+    BoxStyle()
     .height(80)
     .color(Colors.black)
     .padding(.all(16))
@@ -31,7 +31,7 @@ final appHeaderContainer =
     //   .color(Colors.white)
     // )
 
-final scaffoldBodyContainer = BoxMix()
+final scaffoldBodyContainer = BoxStyle()
     .color(Colors.grey.shade50)
     .padding(EdgeInsetsMix.all(16));
 

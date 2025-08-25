@@ -209,7 +209,7 @@ void main() {
     group('VariantSpecAttribute integration', () {
       test('can be used in VariantSpecAttribute wrapper', () {
         const primaryVariant = NamedVariant('primary');
-        final style = BoxMix.width(100.0);
+        final style = BoxStyle.width(100.0);
         final variantAttr = VariantStyle(primaryVariant, style);
 
         expect(variantAttr.variant, primaryVariant);
@@ -221,11 +221,14 @@ void main() {
         const primaryVariant = NamedVariant('primary');
         const secondaryVariant = NamedVariant('secondary');
 
-        final primaryStyle = VariantStyle(primaryVariant, BoxMix.width(100.0));
+        final primaryStyle = VariantStyle(
+          primaryVariant,
+          BoxStyle.width(100.0),
+        );
 
         final secondaryStyle = VariantStyle(
           secondaryVariant,
-          BoxMix.width(150.0),
+          BoxStyle.width(150.0),
         );
 
         expect(primaryStyle.mergeKey, 'primary');
@@ -236,14 +239,14 @@ void main() {
       test('merges correctly when variants match', () {
         const primaryVariant = NamedVariant('primary');
 
-        final style1 = VariantStyle(primaryVariant, BoxMix.width(100.0));
+        final style1 = VariantStyle(primaryVariant, BoxStyle.width(100.0));
 
-        final style2 = VariantStyle(primaryVariant, BoxMix.height(200.0));
+        final style2 = VariantStyle(primaryVariant, BoxStyle.height(200.0));
 
         final merged = style1.merge(style2);
 
         expect(merged.variant, primaryVariant);
-        final mergedBox = merged.value as BoxMix;
+        final mergedBox = merged.value as BoxStyle;
         final context = MockBuildContext();
         final constraints = mergedBox.resolve(context).constraints;
         expect(constraints?.minWidth, 100.0);
@@ -256,17 +259,20 @@ void main() {
         const primaryVariant = NamedVariant('primary');
         const secondaryVariant = NamedVariant('secondary');
 
-        final primaryStyle = VariantStyle(primaryVariant, BoxMix.width(100.0));
+        final primaryStyle = VariantStyle(
+          primaryVariant,
+          BoxStyle.width(100.0),
+        );
 
         final secondaryStyle = VariantStyle(
           secondaryVariant,
-          BoxMix.height(200.0),
+          BoxStyle.height(200.0),
         );
 
         final merged = primaryStyle.merge(secondaryStyle);
 
         expect(merged, same(primaryStyle));
-        final mergedBox = merged.value as BoxMix;
+        final mergedBox = merged.value as BoxStyle;
         final context = MockBuildContext();
         final constraints = mergedBox.resolve(context).constraints;
         expect(constraints?.minWidth, 100.0);

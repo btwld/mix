@@ -21,11 +21,11 @@ import 'stack_spec.dart';
 /// Use this class to configure the attributes of a [ZBoxSpec] and pass it to
 /// the [ZBoxSpec] constructor.
 class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
-  final Prop<BoxSpec>? $box;
+  final Prop<BoxWidgetSpec>? $box;
   final Prop<StackSpec>? $stack;
 
   StackBoxMix({
-    BoxMix? box,
+    BoxStyle? box,
     StackMix? stack,
     super.modifier,
     super.animation,
@@ -36,7 +36,7 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
        $stack = Prop.maybeMix(stack);
 
   const StackBoxMix.create({
-    Prop<BoxSpec>? box,
+    Prop<BoxWidgetSpec>? box,
     Prop<StackSpec>? stack,
     super.modifier,
     super.animation,
@@ -47,7 +47,7 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
        $stack = stack;
 
   /// Factory for box properties
-  factory StackBoxMix.box(BoxMix value) {
+  factory StackBoxMix.box(BoxStyle value) {
     return StackBoxMix(box: value);
   }
 
@@ -76,7 +76,7 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
   /// ```
   static StackBoxMix value(ZBoxSpec spec) {
     return StackBoxMix(
-      box: BoxMix.maybeValue(spec.box),
+      box: BoxStyle.maybeValue(spec.box),
       stack: StackMix.maybeValue(spec.stack),
     );
   }
@@ -94,7 +94,7 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
   }
 
   /// Sets box properties
-  StackBoxMix box(BoxMix value) {
+  StackBoxMix box(BoxStyle value) {
     return merge(StackBoxMix.box(value));
   }
 
@@ -128,7 +128,7 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
   ZBoxSpec resolve(BuildContext context) {
     final boxSpec = MixOps.resolve(context, $box);
     final stackSpec = MixOps.resolve(context, $stack);
-    
+
     return ZBoxSpec(
       box: boxSpec,
       stack: stackSpec,
@@ -183,7 +183,7 @@ class StackBoxMix extends Style<ZBoxSpec> with Diagnosticable {
 /// Use the methods of this class to configure specific properties of a [ZBoxSpec].
 class StackBoxSpecUtility {
   /// Utility for defining [StackBoxMix.box]
-  final box = BoxMix();
+  final box = BoxStyle();
 
   /// Utility for defining [StackBoxMix.stack]
   final stack = StackMix();
@@ -194,7 +194,7 @@ class StackBoxSpecUtility {
 
   /// Returns a new [StackBoxMix] with the specified properties.
   StackBoxMix only({
-    BoxMix? box,
+    BoxStyle? box,
     StackMix? stack,
     ModifierConfig? modifier,
     AnimationConfig? animation,

@@ -38,30 +38,32 @@ class _ExampleState extends State<Example> {
     return MouseRegion(
       onEnter: (event) => trigger.value++,
       child: HBox(
-        style: Style.flexbox(
-          FlexBoxMix()
-              .container(
-                ContainerSpecMix()
-                    .color(Colors.white)
-                    .padding(
-                      EdgeInsetsMix.symmetric(horizontal: 16, vertical: 8),
-                    )
-                    .borderRadius(BorderRadiusMix.circular(10))
-                    .border(
-                      BoxBorderMix.all(
-                        BorderSideMix.color(Colors.grey.shade200),
-                      ),
+        style:
+            Style.flexbox(
+                  FlexBoxMix().container(
+                    ContainerSpecMix()
+                        .color(Colors.white)
+                        .padding(
+                          EdgeInsetsMix.symmetric(horizontal: 16, vertical: 8),
+                        )
+                        .borderRadius(BorderRadiusMix.circular(10))
+                        .border(
+                          BoxBorderMix.all(
+                            BorderSideMix.color(Colors.grey.shade200),
+                          ),
+                        ),
+                  ),
+                )
+                .flex(
+                  FlexPropertiesMix().mainAxisSize(MainAxisSize.min).spacing(8),
+                )
+                .onHovered(
+                  FlexBoxMix().container(
+                    ContainerSpecMix().border(
+                      BoxBorderMix.all(BorderSideMix.color(Colors.red)),
                     ),
                   ),
-            )
-            .flex(FlexPropertiesMix().mainAxisSize(MainAxisSize.min).spacing(8))
-            .onHovered(
-              FlexBoxMix().container(
-                ContainerSpecMix().border(
-                  BoxBorderMix.all(BorderSideMix.color(Colors.red)),
                 ),
-              ),
-            ),
 
         children: [
           Text('Developer Preview'),
@@ -103,7 +105,7 @@ class ArrowIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Box(
       style: Style.box(
-        BoxMix()
+        BoxStyle()
             .color(Colors.grey.shade200)
             .borderRadius(BorderRadiusMix.circular(10))
             .size(20, 20)
@@ -112,7 +114,7 @@ class ArrowIconButton extends StatelessWidget {
 
       child: Box(
         style: Style.box(
-          BoxMix().phaseAnimation(
+          BoxStyle().phaseAnimation(
             trigger: animationTrigger,
             phases: ArrowPhases.values,
             styleBuilder: (phase, style) =>

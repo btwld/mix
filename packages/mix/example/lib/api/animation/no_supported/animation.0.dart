@@ -51,8 +51,8 @@ class _DemoAppState extends State<DemoApp> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  BoxMix get _boxStyle => Style.box(
-    BoxMix()
+  BoxStyle get _boxStyle => Style.box(
+    BoxStyle()
         .color(Colors.blueAccent.shade400)
         .padding(EdgeInsetsMix.symmetric(horizontal: 16, vertical: 8))
         .borderRadius(BorderRadiusMix.circular(30))

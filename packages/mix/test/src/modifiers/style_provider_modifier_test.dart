@@ -5,7 +5,7 @@ import 'package:mix/mix.dart';
 void main() {
   group('StyleProviderModifier', () {
     test('can create modifier with widget spec', () {
-      const widgetSpec = BoxSpec();
+      const widgetSpec = BoxWidgetSpec();
 
       const modifier = StyleProviderModifier(widgetSpec);
 
@@ -13,27 +13,24 @@ void main() {
     });
 
     test('builds WidgetSpecProvider widget', () {
-      const widgetSpec = BoxSpec();
+      const widgetSpec = BoxWidgetSpec();
 
       const modifier = StyleProviderModifier(widgetSpec);
       final child = Container();
       final result = modifier.build(child);
 
-      expect(result, isA<WidgetSpecProvider<BoxSpec>>());
-      expect(
-        (result as WidgetSpecProvider).spec,
-        equals(widgetSpec),
-      );
+      expect(result, isA<WidgetSpecProvider<BoxWidgetSpec>>());
+      expect((result as WidgetSpecProvider).spec, equals(widgetSpec));
     });
 
     test('lerp interpolates when both specs are present', () {
-      final spec1 = const BoxSpec(alignment: Alignment.topLeft);
+      final spec1 = const BoxWidgetSpec(alignment: Alignment.topLeft);
 
-      final spec2 = const BoxSpec(alignment: Alignment.bottomRight);
+      final spec2 = const BoxWidgetSpec(alignment: Alignment.bottomRight);
 
-      final modifier1 = StyleProviderModifier<BoxSpec>(spec1);
+      final modifier1 = StyleProviderModifier<BoxWidgetSpec>(spec1);
 
-      final modifier2 = StyleProviderModifier<BoxSpec>(spec2);
+      final modifier2 = StyleProviderModifier<BoxWidgetSpec>(spec2);
 
       final result = modifier1.lerp(modifier2, 0.5);
 
@@ -43,8 +40,8 @@ void main() {
     });
 
     test('lerp interpolates properly when both specs exist', () {
-      final spec1 = const BoxSpec(alignment: Alignment.topLeft);
-      final spec2 = const BoxSpec(alignment: Alignment.bottomRight);
+      final spec1 = const BoxWidgetSpec(alignment: Alignment.topLeft);
+      final spec2 = const BoxWidgetSpec(alignment: Alignment.bottomRight);
 
       // Now specs have lerp built-in
       final style1 = spec1;
@@ -60,7 +57,7 @@ void main() {
 
   group('StyleProviderModifierMix', () {
     testWidgets('resolves style using context', (tester) async {
-      final style = BoxMix(
+      final style = BoxStyle(
         alignment: Alignment.center,
         padding: EdgeInsetsGeometryMix.all(16),
       );
@@ -72,12 +69,9 @@ void main() {
           builder: (context) {
             final resolved = mix.resolve(context);
 
-            expect(resolved, isA<StyleProviderModifier<BoxSpec>>());
+            expect(resolved, isA<StyleProviderModifier<BoxWidgetSpec>>());
             expect(resolved.spec, isNotNull);
-            expect(
-              resolved.spec.alignment,
-              equals(Alignment.center),
-            );
+            expect(resolved.spec.alignment, equals(Alignment.center));
 
             return Container();
           },
@@ -86,9 +80,9 @@ void main() {
     });
 
     test('merges styles correctly', () {
-      final style1 = BoxMix(alignment: Alignment.topLeft);
+      final style1 = BoxStyle(alignment: Alignment.topLeft);
 
-      final style2 = BoxMix(padding: EdgeInsetsGeometryMix.all(8));
+      final style2 = BoxStyle(padding: EdgeInsetsGeometryMix.all(8));
 
       final mix1 = StyleProviderModifierMix(style1);
       final mix2 = StyleProviderModifierMix(style2);
@@ -97,14 +91,14 @@ void main() {
 
       // The merged style should contain both alignment and padding
       // We can verify this by checking that it's a BoxMix with both properties
-      expect(merged.style, isA<BoxMix>());
-      final boxMix = merged.style as BoxMix;
+      expect(merged.style, isA<BoxStyle>());
+      final boxMix = merged.style as BoxStyle;
       expect(boxMix.$alignment, isNotNull);
       expect(boxMix.$padding, isNotNull);
     });
 
     test('handles null merge correctly', () {
-      final style = BoxMix(alignment: Alignment.center);
+      final style = BoxStyle(alignment: Alignment.center);
 
       final mix = StyleProviderModifierMix(style);
       final merged = mix.merge(null);
@@ -114,7 +108,7 @@ void main() {
 
     testWidgets('handles empty style resolution', (tester) async {
       // Create an empty style
-      final emptyStyle = BoxMix();
+      final emptyStyle = BoxStyle();
       final mix = StyleProviderModifierMix(emptyStyle);
 
       await tester.pumpWidget(
@@ -123,7 +117,7 @@ void main() {
             final resolved = mix.resolve(context);
 
             // Should still create a valid modifier even with empty style
-            expect(resolved, isA<StyleProviderModifier<BoxSpec>>());
+            expect(resolved, isA<StyleProviderModifier<BoxWidgetSpec>>());
             // The spec might be null or have all null properties
             expect(resolved.spec, isNotNull);
 

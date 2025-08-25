@@ -8,7 +8,7 @@ void main() {
   group('BoxSpec', () {
     group('Constructor', () {
       test('creates BoxSpec with all properties', () {
-        final spec = BoxSpec(
+        final spec = BoxWidgetSpec(
           alignment: Alignment.center,
           padding: EdgeInsets.all(8.0),
           margin: EdgeInsets.all(16.0),
@@ -35,7 +35,7 @@ void main() {
       });
 
       test('creates BoxSpec with default values', () {
-        const spec = BoxSpec();
+        const spec = BoxWidgetSpec();
 
         expect(spec.alignment, isNull);
         expect(spec.padding, isNull);
@@ -51,7 +51,7 @@ void main() {
 
     group('copyWith', () {
       test('creates new instance with updated properties', () {
-        const original = BoxSpec(alignment: Alignment.center);
+        const original = BoxWidgetSpec(alignment: Alignment.center);
 
         final updated = original.copyWith(
           alignment: Alignment.topLeft,
@@ -64,7 +64,7 @@ void main() {
       });
 
       test('preserves original properties when not specified', () {
-        const original = BoxSpec(
+        const original = BoxWidgetSpec(
           padding: EdgeInsets.all(8.0),
           margin: EdgeInsets.all(16.0),
           clipBehavior: Clip.antiAlias,
@@ -78,7 +78,7 @@ void main() {
       });
 
       test('handles null values correctly', () {
-        const original = BoxSpec(
+        const original = BoxWidgetSpec(
           constraints: BoxConstraints(
             minWidth: 100.0,
             maxWidth: 100.0,
@@ -97,7 +97,7 @@ void main() {
 
     group('lerp', () {
       test('interpolates between two BoxSpecs correctly', () {
-        const spec1 = BoxSpec(
+        const spec1 = BoxWidgetSpec(
           constraints: BoxConstraints(
             minWidth: 100.0,
             maxWidth: 100.0,
@@ -106,7 +106,7 @@ void main() {
           ),
           alignment: Alignment.topLeft,
         );
-        const spec2 = BoxSpec(
+        const spec2 = BoxWidgetSpec(
           constraints: BoxConstraints(
             minWidth: 200.0,
             maxWidth: 200.0,
@@ -126,7 +126,7 @@ void main() {
       });
 
       test('handles null other parameter correctly', () {
-        const spec = BoxSpec(
+        const spec = BoxWidgetSpec(
           constraints: BoxConstraints(
             minWidth: 100.0,
             maxWidth: 100.0,
@@ -134,23 +134,29 @@ void main() {
             maxHeight: 200.0,
           ),
         );
-        
+
         // When t < 0.5, constraints interpolate towards null (partial values)
         final lerped1 = spec.lerp(null, 0.3);
         expect(lerped1.constraints, isNotNull);
-        expect(lerped1.constraints!.minWidth, lessThan(100.0)); // interpolating towards 0
-        
+        expect(
+          lerped1.constraints!.minWidth,
+          lessThan(100.0),
+        ); // interpolating towards 0
+
         // When t >= 0.5, constraints interpolate closer to null (smaller values)
         final lerped2 = spec.lerp(null, 0.7);
         expect(lerped2.constraints, isNotNull);
-        expect(lerped2.constraints!.minWidth, lessThan(lerped1.constraints!.minWidth));
+        expect(
+          lerped2.constraints!.minWidth,
+          lessThan(lerped1.constraints!.minWidth),
+        );
       });
 
       test('handles edge cases (t=0, t=1)', () {
-        const spec1 = BoxSpec(
+        const spec1 = BoxWidgetSpec(
           constraints: BoxConstraints(minWidth: 100.0, maxWidth: 100.0),
         );
-        const spec2 = BoxSpec(
+        const spec2 = BoxWidgetSpec(
           constraints: BoxConstraints(minWidth: 200.0, maxWidth: 200.0),
         );
 
@@ -164,11 +170,11 @@ void main() {
       });
 
       test('interpolates padding and margin correctly', () {
-        const spec1 = BoxSpec(
+        const spec1 = BoxWidgetSpec(
           padding: EdgeInsets.all(8.0),
           margin: EdgeInsets.all(16.0),
         );
-        const spec2 = BoxSpec(
+        const spec2 = BoxWidgetSpec(
           padding: EdgeInsets.all(16.0),
           margin: EdgeInsets.all(32.0),
         );
@@ -180,10 +186,10 @@ void main() {
       });
 
       test('interpolates constraints correctly', () {
-        const spec1 = BoxSpec(
+        const spec1 = BoxWidgetSpec(
           constraints: BoxConstraints(maxWidth: 100, maxHeight: 200),
         );
-        const spec2 = BoxSpec(
+        const spec2 = BoxWidgetSpec(
           constraints: BoxConstraints(maxWidth: 200, maxHeight: 400),
         );
 
@@ -194,8 +200,8 @@ void main() {
       });
 
       test('uses step function for clipBehavior', () {
-        const spec1 = BoxSpec(clipBehavior: Clip.none);
-        const spec2 = BoxSpec(clipBehavior: Clip.antiAlias);
+        const spec1 = BoxWidgetSpec(clipBehavior: Clip.none);
+        const spec2 = BoxWidgetSpec(clipBehavior: Clip.antiAlias);
 
         final lerpedBefore = spec1.lerp(spec2, 0.4);
         final lerpedAfter = spec1.lerp(spec2, 0.6);
@@ -208,8 +214,8 @@ void main() {
         final transform1 = Matrix4.identity();
         final transform2 = Matrix4.identity()..scale(2.0);
 
-        final spec1 = BoxSpec(transform: transform1);
-        final spec2 = BoxSpec(transform: transform2);
+        final spec1 = BoxWidgetSpec(transform: transform1);
+        final spec2 = BoxWidgetSpec(transform: transform2);
 
         final lerped = spec1.lerp(spec2, 0.5);
 
@@ -220,7 +226,7 @@ void main() {
 
     group('equality', () {
       test('specs with same properties are equal', () {
-        const spec1 = BoxSpec(
+        const spec1 = BoxWidgetSpec(
           constraints: BoxConstraints(
             minWidth: 100.0,
             maxWidth: 100.0,
@@ -229,7 +235,7 @@ void main() {
           ),
           alignment: Alignment.center,
         );
-        const spec2 = BoxSpec(
+        const spec2 = BoxWidgetSpec(
           constraints: BoxConstraints(
             minWidth: 100.0,
             maxWidth: 100.0,
@@ -244,7 +250,7 @@ void main() {
       });
 
       test('specs with different properties are not equal', () {
-        const spec1 = BoxSpec(
+        const spec1 = BoxWidgetSpec(
           constraints: BoxConstraints(
             minWidth: 100.0,
             maxWidth: 100.0,
@@ -252,7 +258,7 @@ void main() {
             maxHeight: 200.0,
           ),
         );
-        const spec2 = BoxSpec(
+        const spec2 = BoxWidgetSpec(
           constraints: BoxConstraints(
             minWidth: 150.0,
             maxWidth: 150.0,
@@ -265,10 +271,10 @@ void main() {
       });
 
       test('specs with null vs non-null properties are not equal', () {
-        const spec1 = BoxSpec(
+        const spec1 = BoxWidgetSpec(
           constraints: BoxConstraints(minWidth: 100.0, maxWidth: 100.0),
         );
-        const spec2 = BoxSpec();
+        const spec2 = BoxWidgetSpec();
 
         expect(spec1, isNot(spec2));
       });
@@ -276,7 +282,7 @@ void main() {
 
     group('debugFillProperties', () {
       test('includes all properties in diagnostics', () {
-        final spec = BoxSpec(
+        final spec = BoxWidgetSpec(
           alignment: Alignment.center,
           padding: EdgeInsets.all(8.0),
           margin: EdgeInsets.all(16.0),
@@ -306,7 +312,7 @@ void main() {
 
     group('props', () {
       test('includes all properties in props list', () {
-        final spec = BoxSpec(
+        final spec = BoxWidgetSpec(
           alignment: Alignment.center,
           padding: EdgeInsets.all(8.0),
           margin: EdgeInsets.all(16.0),
@@ -334,7 +340,7 @@ void main() {
 
     group('Real-world scenarios', () {
       test('creates card-like container spec', () {
-        final cardSpec = BoxSpec(
+        final cardSpec = BoxWidgetSpec(
           padding: EdgeInsets.all(16.0),
           margin: EdgeInsets.all(8.0),
           decoration: BoxDecoration(
@@ -358,7 +364,7 @@ void main() {
       });
 
       test('creates responsive container spec', () {
-        const responsiveSpec = BoxSpec(
+        const responsiveSpec = BoxWidgetSpec(
           constraints: BoxConstraints(
             minWidth: 200,
             maxWidth: 800,
@@ -378,7 +384,7 @@ void main() {
           ..rotateZ(0.1)
           ..scale(1.2);
 
-        final transformedSpec = BoxSpec(
+        final transformedSpec = BoxWidgetSpec(
           transform: transformMatrix,
           transformAlignment: Alignment.center,
           constraints: BoxConstraints.tightFor(width: 150, height: 100),

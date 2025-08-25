@@ -80,7 +80,7 @@ class HeartAnimation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Box(
       style: Style.box(
-        BoxMix()
+        BoxStyle()
             .modifier(animate ? ModifierConfig.scale(2.0) : ModifierConfig())
             .modifier(ModifierConfig.opacity(animate ? 1.0 : 0.5))
             .animate(AnimationConfig.bounceIn(1000.ms)),

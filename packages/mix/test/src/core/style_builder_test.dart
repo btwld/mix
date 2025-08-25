@@ -7,11 +7,14 @@ void main() {
   group('StyleBuilder', () {
     group('Basic functionality', () {
       testWidgets('Build from SpecAttribute', (tester) async {
-        final boxAttribute = BoxMix().width(100).height(200).color(Colors.blue);
+        final boxAttribute = BoxStyle()
+            .width(100)
+            .height(200)
+            .color(Colors.blue);
 
         await tester.pumpWidget(
           MaterialApp(
-            home: StyleBuilder<BoxSpec>(
+            home: StyleBuilder<BoxWidgetSpec>(
               style: boxAttribute,
               builder: (context, spec) {
                 expect(spec.constraints?.minWidth, 100);
@@ -44,7 +47,7 @@ void main() {
           duration: const Duration(milliseconds: 300),
           curve: Curves.linear,
         );
-        final boxAttribute = BoxMix(
+        final boxAttribute = BoxStyle(
           constraints: BoxConstraintsMix().width(100).height(200),
           decoration: DecorationMix.color(Colors.blue),
           animation: animation,
@@ -55,7 +58,7 @@ void main() {
 
         await tester.pumpWidget(
           MaterialApp(
-            home: StyleBuilder<BoxSpec>(
+            home: StyleBuilder<BoxWidgetSpec>(
               style: boxAttribute,
               builder: (context, spec) {
                 return Container(
@@ -68,17 +71,23 @@ void main() {
         );
 
         // Verify that the animation wrapper is created
-        expect(find.byType(StyleAnimationBuilder<BoxSpec>), findsOneWidget);
+        expect(
+          find.byType(StyleAnimationBuilder<BoxWidgetSpec>),
+          findsOneWidget,
+        );
       });
 
       testWidgets('No animation driver when animation config is null', (
         tester,
       ) async {
-        final boxAttribute = BoxMix().width(100).height(200).color(Colors.blue);
+        final boxAttribute = BoxStyle()
+            .width(100)
+            .height(200)
+            .color(Colors.blue);
 
         await tester.pumpWidget(
           MaterialApp(
-            home: StyleBuilder<BoxSpec>(
+            home: StyleBuilder<BoxWidgetSpec>(
               style: boxAttribute,
               builder: (context, spec) {
                 return Container(
@@ -91,7 +100,7 @@ void main() {
         );
 
         // Verify that no animation wrapper is created
-        expect(find.byType(StyleAnimationBuilder<BoxSpec>), findsNothing);
+        expect(find.byType(StyleAnimationBuilder<BoxWidgetSpec>), findsNothing);
       });
 
       // TODO: This test needs to be revisited after the WidgetSpec migration
@@ -106,7 +115,7 @@ void main() {
           curve: Curves.linear,
         );
 
-        final startAttribute = BoxMix(
+        final startAttribute = BoxStyle(
           constraints: BoxConstraintsMix(
             minWidth: 100,
             maxWidth: 100,
@@ -119,7 +128,7 @@ void main() {
 
         await tester.pumpWidget(
           MaterialApp(
-            home: StyleBuilder<BoxSpec>(
+            home: StyleBuilder<BoxWidgetSpec>(
               style: startAttribute,
               builder: (context, spec) {
                 return Container(
@@ -133,7 +142,7 @@ void main() {
         );
 
         // Update to new style
-        final endAttribute = BoxMix(
+        final endAttribute = BoxStyle(
           constraints: BoxConstraintsMix(
             minWidth: 200,
             maxWidth: 200,
@@ -146,7 +155,7 @@ void main() {
 
         await tester.pumpWidget(
           MaterialApp(
-            home: StyleBuilder<BoxSpec>(
+            home: StyleBuilder<BoxWidgetSpec>(
               style: endAttribute,
               builder: (context, spec) {
                 return Container(
@@ -189,7 +198,7 @@ void main() {
 
     group('RenderModifiers', () {
       testWidgets('Modifiers are applied when present', (tester) async {
-        final boxAttribute = BoxMix()
+        final boxAttribute = BoxStyle()
             .width(100)
             .height(100)
             .alignment(Alignment.center)
@@ -203,7 +212,7 @@ void main() {
 
         await tester.pumpWidget(
           MaterialApp(
-            home: StyleBuilder<BoxSpec>(
+            home: StyleBuilder<BoxWidgetSpec>(
               style: boxAttribute,
               builder: (context, spec) {
                 return Container(
@@ -238,7 +247,7 @@ void main() {
       });
 
       testWidgets('Modifiers follow default order', (tester) async {
-        final boxAttribute = BoxMix.width(100)
+        final boxAttribute = BoxStyle.width(100)
             .height(100)
             .color(Colors.blue)
             .wrap(
@@ -252,7 +261,7 @@ void main() {
 
         await tester.pumpWidget(
           MaterialApp(
-            home: StyleBuilder<BoxSpec>(
+            home: StyleBuilder<BoxWidgetSpec>(
               style: boxAttribute,
               builder: (context, spec) {
                 return Container(
@@ -265,7 +274,7 @@ void main() {
         );
 
         // Find the StyleBuilder widget
-        final styleBuilder = find.byType(StyleBuilder<BoxSpec>);
+        final styleBuilder = find.byType(StyleBuilder<BoxWidgetSpec>);
 
         // Verify ordering: Visibility should wrap everything, then other modifiers in order
         // The default order has Visibility early, Padding after transformations, ClipOval near end, and Opacity last
@@ -311,7 +320,7 @@ void main() {
           PaddingModifier,
         ];
 
-        final boxAttribute = BoxMix.width(100)
+        final boxAttribute = BoxStyle.width(100)
             .height(100)
             .color(Colors.blue)
             .wrap(
@@ -324,7 +333,7 @@ void main() {
 
         await tester.pumpWidget(
           MaterialApp(
-            home: StyleBuilder<BoxSpec>(
+            home: StyleBuilder<BoxWidgetSpec>(
               style: boxAttribute,
               builder: (context, spec) {
                 return Container(
@@ -337,7 +346,7 @@ void main() {
         );
 
         // Find the StyleBuilder widget
-        final styleBuilder = find.byType(StyleBuilder<BoxSpec>);
+        final styleBuilder = find.byType(StyleBuilder<BoxWidgetSpec>);
 
         // Verify custom ordering: Opacity -> ClipOval -> Padding
         expect(
@@ -370,11 +379,14 @@ void main() {
       testWidgets('No RenderModifiers widget when no modifiers present', (
         tester,
       ) async {
-        final boxAttribute = BoxMix().width(100).height(100).color(Colors.blue);
+        final boxAttribute = BoxStyle()
+            .width(100)
+            .height(100)
+            .color(Colors.blue);
 
         await tester.pumpWidget(
           MaterialApp(
-            home: StyleBuilder<BoxSpec>(
+            home: StyleBuilder<BoxWidgetSpec>(
               style: boxAttribute,
               builder: (context, spec) {
                 return Container(

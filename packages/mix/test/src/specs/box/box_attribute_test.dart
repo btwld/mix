@@ -9,7 +9,7 @@ void main() {
   group('BoxMix', () {
     group('Factory Constructors', () {
       test('color factory creates BoxMix with color decoration', () {
-        final boxMix = BoxMix.color(Colors.red);
+        final boxMix = BoxStyle.color(Colors.red);
 
         expect(boxMix.$decoration, isNotNull);
         final decoration = boxMix.$decoration!.resolveProp(MockBuildContext());
@@ -19,19 +19,19 @@ void main() {
 
       test('gradient factory creates BoxMix with gradient decoration', () {
         final gradient = LinearGradientMix(colors: [Colors.red, Colors.blue]);
-        final boxMix = BoxMix.gradient(gradient);
+        final boxMix = BoxStyle.gradient(gradient);
 
         expect(boxMix.$decoration, isNotNull);
       });
 
       test('shape factory creates BoxMix with shape decoration', () {
-        final boxMix = BoxMix.shape(BoxShape.circle);
+        final boxMix = BoxStyle.shape(BoxShape.circle);
 
         expect(boxMix.$decoration, isNotNull);
       });
 
       test('height factory creates BoxMix with height constraints', () {
-        final boxMix = BoxMix.height(100.0);
+        final boxMix = BoxStyle.height(100.0);
 
         expect(boxMix.$constraints, isNotNull);
         final constraints = boxMix.$constraints!.resolveProp(
@@ -42,7 +42,7 @@ void main() {
       });
 
       test('width factory creates BoxMix with width constraints', () {
-        final boxMix = BoxMix.width(200.0);
+        final boxMix = BoxStyle.width(200.0);
 
         expect(boxMix.$constraints, isNotNull);
         final constraints = boxMix.$constraints!.resolveProp(
@@ -54,13 +54,13 @@ void main() {
 
       test('constraints factory creates BoxMix with constraints', () {
         final constraintsMix = BoxConstraintsMix.minWidth(50.0);
-        final boxMix = BoxMix.constraints(constraintsMix);
+        final boxMix = BoxStyle.constraints(constraintsMix);
 
         expect(boxMix.$constraints, isNotNull);
       });
 
       test('minWidth factory creates BoxMix with min width constraint', () {
-        final boxMix = BoxMix.minWidth(150.0);
+        final boxMix = BoxStyle.minWidth(150.0);
 
         expect(boxMix.$constraints, isNotNull);
         final constraints = boxMix.$constraints!.resolveProp(
@@ -70,7 +70,7 @@ void main() {
       });
 
       test('maxWidth factory creates BoxMix with max width constraint', () {
-        final boxMix = BoxMix.maxWidth(300.0);
+        final boxMix = BoxStyle.maxWidth(300.0);
 
         expect(boxMix.$constraints, isNotNull);
         final constraints = boxMix.$constraints!.resolveProp(
@@ -81,22 +81,22 @@ void main() {
 
       test('animation factory creates BoxMix with animation config', () {
         final animation = AnimationConfig.linear(Duration(seconds: 1));
-        final boxMix = BoxMix.animation(animation);
+        final boxMix = BoxStyle.animation(animation);
 
         expect(boxMix.$animation, animation);
       });
 
       test('variant factory creates BoxMix with variant', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = BoxMix.color(Colors.blue);
-        final boxMix = BoxMix.variant(variant, style);
+        final style = BoxStyle.color(Colors.blue);
+        final boxMix = BoxStyle.variant(variant, style);
 
         expect(boxMix.$variants, isNotNull);
         expect(boxMix.$variants!.length, 1);
       });
 
       test('alignment factory creates BoxMix with alignment', () {
-        final boxMix = BoxMix.alignment(Alignment.center);
+        final boxMix = BoxStyle.alignment(Alignment.center);
 
         expect(boxMix.$alignment, isNotNull);
         expect(boxMix.$alignment, resolvesTo(Alignment.center));
@@ -104,28 +104,28 @@ void main() {
 
       test('padding factory creates BoxMix with padding', () {
         final padding = EdgeInsetsGeometryMix.all(16.0);
-        final boxMix = BoxMix.padding(padding);
+        final boxMix = BoxStyle.padding(padding);
 
         expect(boxMix.$padding, isNotNull);
       });
 
       test('margin factory creates BoxMix with margin', () {
         final margin = EdgeInsetsGeometryMix.all(8.0);
-        final boxMix = BoxMix.margin(margin);
+        final boxMix = BoxStyle.margin(margin);
 
         expect(boxMix.$margin, isNotNull);
       });
 
       test('transform factory creates BoxMix with transform', () {
         final transform = Matrix4.rotationZ(0.5);
-        final boxMix = BoxMix.transform(transform);
+        final boxMix = BoxStyle.transform(transform);
 
         expect(boxMix.$transform, isNotNull);
         expect(boxMix.$transform, resolvesTo(transform));
       });
 
       test('clipBehavior factory creates BoxMix with clip behavior', () {
-        final boxMix = BoxMix.clipBehavior(Clip.antiAlias);
+        final boxMix = BoxStyle.clipBehavior(Clip.antiAlias);
 
         expect(boxMix.$clipBehavior, isNotNull);
         expect(boxMix.$clipBehavior, resolvesTo(Clip.antiAlias));
@@ -134,7 +134,7 @@ void main() {
 
     group('Constructor', () {
       test('default constructor creates BoxMix with all properties', () {
-        final boxMix = BoxMix(
+        final boxMix = BoxStyle(
           alignment: Alignment.topLeft,
           padding: EdgeInsetsGeometryMix.all(10.0),
           margin: EdgeInsetsGeometryMix.all(5.0),
@@ -158,14 +158,14 @@ void main() {
       });
 
       test('value constructor creates BoxMix from BoxSpec', () {
-        final spec = BoxSpec(
+        final spec = BoxWidgetSpec(
           alignment: Alignment.bottomRight,
           padding: EdgeInsets.all(12.0),
           margin: EdgeInsets.symmetric(horizontal: 8.0),
           clipBehavior: Clip.antiAliasWithSaveLayer,
         );
 
-        final boxMix = BoxMix.value(spec);
+        final boxMix = BoxStyle.value(spec);
 
         expect(boxMix.$alignment, isNotNull);
         expect(boxMix.$alignment, resolvesTo(Alignment.bottomRight));
@@ -176,13 +176,13 @@ void main() {
       });
 
       test('maybeValue returns null for null input', () {
-        final result = BoxMix.maybeValue(null);
+        final result = BoxStyle.maybeValue(null);
         expect(result, isNull);
       });
 
       test('maybeValue returns BoxMix for non-null input', () {
-        final spec = BoxSpec(alignment: Alignment.center);
-        final result = BoxMix.maybeValue(spec);
+        final spec = BoxWidgetSpec(alignment: Alignment.center);
+        final result = BoxStyle.maybeValue(spec);
 
         expect(result, isNotNull);
         expect(result!.$alignment, isNotNull);
@@ -191,7 +191,7 @@ void main() {
 
     group('Instance Methods', () {
       test('color method sets decoration color', () {
-        final boxMix = BoxMix().color(ColorValues.purple);
+        final boxMix = BoxStyle().color(ColorValues.purple);
 
         expect(boxMix.$decoration, isNotNull);
         final decoration = boxMix.$decoration!.resolveProp(MockBuildContext());
@@ -199,7 +199,7 @@ void main() {
       });
 
       test('width method sets fixed width constraints', () {
-        final boxMix = BoxMix().width(250.0);
+        final boxMix = BoxStyle().width(250.0);
 
         expect(boxMix.$constraints, isNotNull);
         final constraints = boxMix.$constraints!.resolveProp(
@@ -210,7 +210,7 @@ void main() {
       });
 
       test('height method sets fixed height constraints', () {
-        final boxMix = BoxMix().height(150.0);
+        final boxMix = BoxStyle().height(150.0);
 
         expect(boxMix.$constraints, isNotNull);
         final constraints = boxMix.$constraints!.resolveProp(
@@ -221,42 +221,42 @@ void main() {
       });
 
       test('rotate method sets rotation transform', () {
-        final boxMix = BoxMix().rotate(1.5);
+        final boxMix = BoxStyle().rotate(1.5);
 
         expect(boxMix.$transform, isNotNull);
         expect(boxMix.$transform, resolvesTo(isA<Matrix4>()));
       });
 
       test('scale method sets scale transform', () {
-        final boxMix = BoxMix().scale(2.0);
+        final boxMix = BoxStyle().scale(2.0);
 
         expect(boxMix.$transform, isNotNull);
         expect(boxMix.$transform, resolvesTo(isA<Matrix4>()));
       });
 
       test('translate method sets translation transform', () {
-        final boxMix = BoxMix().translate(10.0, 20.0, 5.0);
+        final boxMix = BoxStyle().translate(10.0, 20.0, 5.0);
 
         expect(boxMix.$transform, isNotNull);
         expect(boxMix.$transform, resolvesTo(isA<Matrix4>()));
       });
 
       test('skew method sets skew transform', () {
-        final boxMix = BoxMix().skew(0.1, 0.2);
+        final boxMix = BoxStyle().skew(0.1, 0.2);
 
         expect(boxMix.$transform, isNotNull);
         expect(boxMix.$transform, resolvesTo(isA<Matrix4>()));
       });
 
       test('transformReset method sets identity transform', () {
-        final boxMix = BoxMix().transformReset();
+        final boxMix = BoxStyle().transformReset();
 
         expect(boxMix.$transform, isNotNull);
         expect(boxMix.$transform, resolvesTo(Matrix4.identity()));
       });
 
       test('size method sets both width and height', () {
-        final boxMix = BoxMix().size(100.0, 200.0);
+        final boxMix = BoxStyle().size(100.0, 200.0);
 
         expect(boxMix.$constraints, isNotNull);
         final constraints = boxMix.$constraints!.resolveProp(
@@ -270,7 +270,7 @@ void main() {
 
       test('shadow method sets single shadow', () {
         final shadow = BoxShadowMix(color: Colors.black, blurRadius: 5.0);
-        final boxMix = BoxMix().shadow(shadow);
+        final boxMix = BoxStyle().shadow(shadow);
 
         expect(boxMix.$decoration, isNotNull);
       });
@@ -280,14 +280,14 @@ void main() {
           BoxShadowMix(color: Colors.black, blurRadius: 5.0),
           BoxShadowMix(color: Colors.grey, blurRadius: 10.0),
         ];
-        final boxMix = BoxMix().shadows(shadows);
+        final boxMix = BoxStyle().shadows(shadows);
 
         expect(boxMix.$decoration, isNotNull);
       });
 
       test('animate method sets animation config', () {
         final animation = AnimationConfig.linear(Duration(milliseconds: 500));
-        final boxMix = BoxMix().animate(animation);
+        final boxMix = BoxStyle().animate(animation);
 
         expect(boxMix.$animation, animation);
       });
@@ -295,12 +295,12 @@ void main() {
 
     group('Merge', () {
       test('merge combines properties correctly', () {
-        final boxMix1 = BoxMix(
+        final boxMix1 = BoxStyle(
           alignment: Alignment.topLeft,
           padding: EdgeInsetsGeometryMix.all(10.0),
         );
 
-        final boxMix2 = BoxMix(
+        final boxMix2 = BoxStyle(
           alignment: Alignment.center,
           margin: EdgeInsetsGeometryMix.all(5.0),
         );
@@ -317,7 +317,7 @@ void main() {
       });
 
       test('merge with null returns original', () {
-        final boxMix = BoxMix(alignment: Alignment.center);
+        final boxMix = BoxStyle(alignment: Alignment.center);
         final merged = boxMix.merge(null);
 
         expect(identical(boxMix, merged), isTrue);
@@ -326,7 +326,7 @@ void main() {
 
     group('Resolve', () {
       test('resolve creates BoxSpec with resolved properties', () {
-        final boxMix = BoxMix(
+        final boxMix = BoxStyle(
           alignment: Alignment.center,
           padding: EdgeInsetsGeometryMix.all(16.0),
           clipBehavior: Clip.antiAlias,
@@ -342,12 +342,12 @@ void main() {
 
     group('Equality and Props', () {
       test('equal BoxMix instances have same props', () {
-        final boxMix1 = BoxMix(
+        final boxMix1 = BoxStyle(
           alignment: Alignment.center,
           padding: EdgeInsetsGeometryMix.all(10.0),
         );
 
-        final boxMix2 = BoxMix(
+        final boxMix2 = BoxStyle(
           alignment: Alignment.center,
           padding: EdgeInsetsGeometryMix.all(10.0),
         );
@@ -356,8 +356,8 @@ void main() {
       });
 
       test('different BoxMix instances have different props', () {
-        final boxMix1 = BoxMix(alignment: Alignment.center);
-        final boxMix2 = BoxMix(alignment: Alignment.topLeft);
+        final boxMix1 = BoxStyle(alignment: Alignment.center);
+        final boxMix2 = BoxStyle(alignment: Alignment.topLeft);
 
         expect(boxMix1.props, isNot(equals(boxMix2.props)));
       });
@@ -366,7 +366,7 @@ void main() {
     group('BorderRadiusMixin', () {
       test('borderRadius method sets border radius decoration', () {
         final borderRadius = BorderRadiusGeometryMix.circular(8.0);
-        final boxMix = BoxMix().borderRadius(borderRadius);
+        final boxMix = BoxStyle().borderRadius(borderRadius);
 
         expect(boxMix.$decoration, isNotNull);
       });
@@ -375,8 +375,8 @@ void main() {
     group('Variant Methods', () {
       test('variant method adds variant to BoxMix', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = BoxMix.color(Colors.white);
-        final boxMix = BoxMix().variant(variant, style);
+        final style = BoxStyle.color(Colors.white);
+        final boxMix = BoxStyle().variant(variant, style);
 
         expect(boxMix.$variants, isNotNull);
         expect(boxMix.$variants!.length, 1);
@@ -386,14 +386,14 @@ void main() {
         final variants = [
           VariantStyle(
             ContextVariant.brightness(Brightness.dark),
-            BoxMix.color(Colors.white),
+            BoxStyle.color(Colors.white),
           ),
           VariantStyle(
             ContextVariant.brightness(Brightness.light),
-            BoxMix.color(Colors.black),
+            BoxStyle.color(Colors.black),
           ),
         ];
-        final boxMix = BoxMix().variants(variants);
+        final boxMix = BoxStyle().variants(variants);
 
         expect(boxMix.$variants, isNotNull);
         expect(boxMix.$variants!.length, 2);
@@ -403,14 +403,14 @@ void main() {
     group('Modifier Methods', () {
       test('modifier method sets modifier config', () {
         final modifier = ModifierConfig();
-        final boxMix = BoxMix().modifier(modifier);
+        final boxMix = BoxStyle().modifier(modifier);
 
         expect(boxMix.$modifier, modifier);
       });
 
       test('wrap method sets modifier config', () {
         final modifier = ModifierConfig();
-        final boxMix = BoxMix().wrap(modifier);
+        final boxMix = BoxStyle().wrap(modifier);
 
         expect(boxMix.$modifier, modifier);
       });

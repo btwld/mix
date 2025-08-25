@@ -7,7 +7,7 @@ Future<void> testOverrideModifiersOrder(
   required Widget Function(Style, List<Type>) widgetBuilder,
 }) async {
   final style = Style.box(
-    BoxMix(
+    BoxStyle(
       modifier: ModifierConfig(
         modifiers: [
           VisibilityModifierMix(visible: true),
@@ -15,9 +15,7 @@ Future<void> testOverrideModifiersOrder(
           TransformModifierMix(),
           AspectRatioModifierMix(aspectRatio: 2.0),
           AlignModifierMix(alignment: Alignment.center),
-          PaddingModifierMix(
-            padding: EdgeInsetsDirectionalMix(top: 10.0),
-          ),
+          PaddingModifierMix(padding: EdgeInsetsDirectionalMix(top: 10.0)),
         ],
       ),
     ),

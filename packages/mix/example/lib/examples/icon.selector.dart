@@ -126,7 +126,7 @@ class _AnimatedEmojiState extends State<AnimatedEmoji> {
   Widget build(BuildContext context) {
     return Box(
       style: Style.box(
-        BoxMix().phaseAnimation(
+        BoxStyle().phaseAnimation(
           trigger: trigger,
           phases: AnimationEmojiPhase.values,
           mode: PhaseAnimationMode.oneShot,

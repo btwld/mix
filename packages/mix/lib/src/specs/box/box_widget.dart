@@ -6,22 +6,21 @@ import 'box_spec.dart';
 
 /// A styled container widget using Mix framework.
 ///
-/// Applies [BoxSpec] styling to create a customized [Container].
-class Box extends StyleWidget<BoxSpec> {
-  const Box({super.style = const BoxMix.create(), super.key, this.child});
-
+/// Applies [BoxWidgetSpec] styling to create a customized [Container].
+class Box extends StyleWidget<BoxWidgetSpec> {
+  const Box({super.style = const BoxStyle.create(), super.key, this.child});
 
   /// Child widget to display inside the box.
   final Widget? child;
 
   @override
-  Widget build(BuildContext context, BoxSpec spec) {
+  Widget build(BuildContext context, BoxWidgetSpec spec) {
     return createBoxSpecWidget(spec: spec, child: child);
   }
 }
 
-/// Creates a [Container] widget from a [BoxSpec].
-Container createBoxSpecWidget({required BoxSpec spec, Widget? child}) {
+/// Creates a [Container] widget from a [BoxWidgetSpec].
+Container createBoxSpecWidget({required BoxWidgetSpec spec, Widget? child}) {
   return Container(
     alignment: spec.alignment,
     padding: spec.padding,
@@ -39,8 +38,8 @@ Container createBoxSpecWidget({required BoxSpec spec, Widget? child}) {
 /// Alias for [Box] widget for backward compatibility.
 typedef StyledContainer = Box;
 
-/// Extension to convert [BoxSpec] directly to a [Container] widget.
-extension BoxSpecWidget on BoxSpec {
+/// Extension to convert [BoxWidgetSpec] directly to a [Container] widget.
+extension BoxSpecWidget on BoxWidgetSpec {
   Container call({Widget? child}) {
     return createBoxSpecWidget(spec: this, child: child);
   }

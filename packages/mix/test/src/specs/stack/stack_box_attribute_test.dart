@@ -8,7 +8,7 @@ void main() {
   group('StackBoxMix', () {
     group('Constructor', () {
       test('creates StackBoxMix with all properties', () {
-        final boxAttribute = BoxMix.width(200.0).height(200.0);
+        final boxAttribute = BoxStyle.width(200.0).height(200.0);
         final stackAttribute = StackMix(
           alignment: Alignment.center,
           fit: StackFit.expand,
@@ -41,7 +41,7 @@ void main() {
 
     group('Factory Constructors', () {
       test('box factory creates StackBoxMix with box', () {
-        final boxMix = BoxMix.width(100.0);
+        final boxMix = BoxStyle.width(100.0);
         final stackBoxMix = StackBoxMix.box(boxMix);
 
         expect(stackBoxMix.$box!.sources[0], isA<MixSource<Object?>>());
@@ -65,7 +65,7 @@ void main() {
 
       test('variant factory creates StackBoxMix with variant', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = StackBoxMix.box(BoxMix.color(Colors.white));
+        final style = StackBoxMix.box(BoxStyle.color(Colors.white));
         final stackBoxMix = StackBoxMix.variant(variant, style);
 
         expect(stackBoxMix.$variants, isNotNull);
@@ -76,7 +76,7 @@ void main() {
     group('value constructor', () {
       test('creates StackBoxMix from ZBoxSpec', () {
         const spec = ZBoxSpec(
-          box: BoxSpec(
+          box: BoxWidgetSpec(
             constraints: BoxConstraints.tightFor(width: 200.0, height: 100.0),
           ),
           stack: StackSpec(alignment: Alignment.center, fit: StackFit.expand),
@@ -86,7 +86,7 @@ void main() {
 
         expect(attribute.$box, isNotNull);
         expect(attribute.$stack, isNotNull);
-        // Verify that the stored Mix objects contain the expected properties  
+        // Verify that the stored Mix objects contain the expected properties
         expect(attribute.$box, isNotNull);
         expect(attribute.$stack, isNotNull);
       });
@@ -97,7 +97,9 @@ void main() {
 
       test('maybeValue returns attribute for non-null spec', () {
         const spec = ZBoxSpec(
-          box: BoxSpec(constraints: BoxConstraints.tightFor(width: 150.0)),
+          box: BoxWidgetSpec(
+            constraints: BoxConstraints.tightFor(width: 150.0),
+          ),
           stack: StackSpec(alignment: Alignment.topLeft),
         );
         final attribute = StackBoxMix.maybeValue(spec);
@@ -110,7 +112,7 @@ void main() {
 
     group('Utility Methods', () {
       test('withBox utility works correctly', () {
-        final boxMix = BoxMix.width(300.0);
+        final boxMix = BoxStyle.width(300.0);
         final attribute = StackBoxMix().box(boxMix);
 
         expect(attribute.$box, isNotNull);
@@ -140,11 +142,11 @@ void main() {
         final variants = [
           VariantStyle(
             ContextVariant.brightness(Brightness.dark),
-            StackBoxMix.box(BoxMix.color(Colors.white)),
+            StackBoxMix.box(BoxStyle.color(Colors.white)),
           ),
           VariantStyle(
             ContextVariant.brightness(Brightness.light),
-            StackBoxMix.box(BoxMix.color(Colors.black)),
+            StackBoxMix.box(BoxStyle.color(Colors.black)),
           ),
         ];
         final stackBoxMix = StackBoxMix().variants(variants);
@@ -156,7 +158,7 @@ void main() {
 
     group('Resolution', () {
       test('resolves to ZBoxSpec with correct properties', () {
-        final boxAttribute = BoxMix.width(200.0).height(200.0);
+        final boxAttribute = BoxStyle.width(200.0).height(200.0);
         final stackAttribute = StackMix(
           alignment: Alignment.center,
           fit: StackFit.expand,
@@ -186,17 +188,17 @@ void main() {
 
         expect(spec, isNotNull);
         // ZBoxSpec constructor provides default values when null
-        expect(spec.box, const BoxSpec());
+        expect(spec.box, const BoxWidgetSpec());
         expect(spec.stack, const StackSpec());
       });
     });
 
     group('Merge', () {
       test('merges properties correctly', () {
-        final first = StackBoxMix(box: BoxMix.width(100.0));
+        final first = StackBoxMix(box: BoxStyle.width(100.0));
 
         final second = StackBoxMix(
-          box: BoxMix.height(200.0),
+          box: BoxStyle.height(200.0),
           stack: StackMix.alignment(Alignment.center),
         );
 
@@ -210,7 +212,7 @@ void main() {
       });
 
       test('returns this when other is null', () {
-        final attribute = StackBoxMix(box: BoxMix.width(100.0));
+        final attribute = StackBoxMix(box: BoxStyle.width(100.0));
         final merged = attribute.merge(null);
 
         expect(identical(attribute, merged), isTrue);
@@ -219,7 +221,7 @@ void main() {
 
     group('Equality', () {
       test('equal attributes have same hashCode', () {
-        final boxMix = BoxMix.width(100.0);
+        final boxMix = BoxStyle.width(100.0);
         final stackMix = StackMix.alignment(Alignment.center);
 
         final attr1 = StackBoxMix(box: boxMix, stack: stackMix);
@@ -232,8 +234,8 @@ void main() {
       });
 
       test('different attributes are not equal', () {
-        final attr1 = StackBoxMix(box: BoxMix.width(100.0));
-        final attr2 = StackBoxMix(box: BoxMix.width(200.0));
+        final attr1 = StackBoxMix(box: BoxStyle.width(100.0));
+        final attr2 = StackBoxMix(box: BoxStyle.width(200.0));
 
         expect(attr1, isNot(equals(attr2)));
       });
@@ -241,7 +243,7 @@ void main() {
 
     group('Props getter', () {
       test('props includes all properties', () {
-        final boxAttribute = BoxMix.width(200.0);
+        final boxAttribute = BoxStyle.width(200.0);
         final stackAttribute = StackMix.alignment(Alignment.center);
 
         final attribute = StackBoxMix(box: boxAttribute, stack: stackAttribute);

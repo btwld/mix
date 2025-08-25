@@ -26,7 +26,8 @@ sealed class StyleElement {
 /// Base class for style containers that can be resolved to specifications.
 ///
 /// Provides variant support, modifiers, and animation configuration for styled elements.
-abstract class Style<S extends WidgetSpec<S>> extends Mix<S> implements StyleElement {
+abstract class Style<S extends WidgetSpec<S>> extends Mix<S>
+    implements StyleElement {
   final List<VariantStyle<S>>? $variants;
 
   final ModifierConfig? $modifier;
@@ -44,7 +45,7 @@ abstract class Style<S extends WidgetSpec<S>> extends Mix<S> implements StyleEle
        $variants = variants,
        $inherit = inherit;
 
-  static BoxMix box(BoxMix value) => value;
+  static BoxStyle box(BoxStyle value) => value;
   static TextMix text(TextMix value) => value;
   static IconMix icon(IconMix value) => value;
   static ImageMix image(ImageMix value) => value;
@@ -163,10 +164,7 @@ abstract class Style<S extends WidgetSpec<S>> extends Mix<S> implements StyleEle
   /// Builds the style into a fully resolved spec with metadata.
   ///
   /// This method resolves the style, which now includes animation, modifiers, and inherit metadata.
-  S build(
-    BuildContext context, {
-    Set<NamedVariant> namedVariants = const {},
-  }) {
+  S build(BuildContext context, {Set<NamedVariant> namedVariants = const {}}) {
     final styleData = getAllStyleVariants(
       context,
       namedVariants: namedVariants,

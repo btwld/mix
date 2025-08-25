@@ -8,14 +8,14 @@ void main() {
   group('Style Merge Parameters', () {
     group('BoxMix merge', () {
       test('merges orderOfModifiers correctly', () {
-        final first = BoxMix(
+        final first = BoxStyle(
           constraints: BoxConstraintsMix.width(100.0),
           modifier: ModifierConfig.orderOfModifiers([
             OpacityModifier,
             PaddingModifier,
           ]),
         );
-        final second = BoxMix(
+        final second = BoxStyle(
           constraints: BoxConstraintsMix.height(200.0),
           modifier: ModifierConfig.orderOfModifiers([
             ClipOvalModifier,
@@ -31,14 +31,14 @@ void main() {
       });
 
       test('preserves first orderOfModifiers when second is empty', () {
-        final first = BoxMix(
+        final first = BoxStyle(
           constraints: BoxConstraintsMix.width(100.0),
           modifier: ModifierConfig.orderOfModifiers([
             OpacityModifier,
             PaddingModifier,
           ]),
         );
-        final second = BoxMix(constraints: BoxConstraintsMix.height(200.0));
+        final second = BoxStyle(constraints: BoxConstraintsMix.height(200.0));
 
         final merged = first.merge(second);
 
@@ -49,11 +49,11 @@ void main() {
       });
 
       test('merges inherit correctly', () {
-        final first = BoxMix(
+        final first = BoxStyle(
           constraints: BoxConstraintsMix.width(100.0),
           inherit: true,
         );
-        final second = BoxMix(
+        final second = BoxStyle(
           constraints: BoxConstraintsMix.height(200.0),
           inherit: false,
         );
@@ -64,11 +64,11 @@ void main() {
       });
 
       test('preserves first inherit when second is null', () {
-        final first = BoxMix(
+        final first = BoxStyle(
           constraints: BoxConstraintsMix.width(100.0),
           inherit: true,
         );
-        final second = BoxMix(constraints: BoxConstraintsMix.height(200.0));
+        final second = BoxStyle(constraints: BoxConstraintsMix.height(200.0));
 
         final merged = first.merge(second);
 
@@ -85,11 +85,11 @@ void main() {
           curve: Curves.easeOut,
         );
 
-        final first = BoxMix(
+        final first = BoxStyle(
           constraints: BoxConstraintsMix.width(100.0),
           animation: firstAnimation,
         );
-        final second = BoxMix(
+        final second = BoxStyle(
           constraints: BoxConstraintsMix.height(200.0),
           animation: secondAnimation,
         );
@@ -105,11 +105,11 @@ void main() {
           curve: Curves.easeIn,
         );
 
-        final first = BoxMix(
+        final first = BoxStyle(
           constraints: BoxConstraintsMix.width(100.0),
           animation: firstAnimation,
         );
-        final second = BoxMix(constraints: BoxConstraintsMix.height(200.0));
+        final second = BoxStyle(constraints: BoxConstraintsMix.height(200.0));
 
         final merged = first.merge(second);
 
@@ -122,11 +122,11 @@ void main() {
           PaddingModifierMix(padding: EdgeInsetsMix.all(10)),
         ];
 
-        final first = BoxMix(
+        final first = BoxStyle(
           constraints: BoxConstraintsMix.width(100.0),
           modifier: ModifierConfig(modifiers: firstModifiers),
         );
-        final second = BoxMix(
+        final second = BoxStyle(
           constraints: BoxConstraintsMix.height(200.0),
           modifier: ModifierConfig(modifiers: secondModifiers),
         );
@@ -143,21 +143,21 @@ void main() {
         final firstVariants = [
           VariantStyle(
             const NamedVariant('primary'),
-            BoxMix.color(Colors.blue),
+            BoxStyle.color(Colors.blue),
           ),
         ];
         final secondVariants = [
           VariantStyle(
             const NamedVariant('secondary'),
-            BoxMix.color(Colors.red),
+            BoxStyle.color(Colors.red),
           ),
         ];
 
-        final first = BoxMix(
+        final first = BoxStyle(
           constraints: BoxConstraintsMix.width(100.0),
           variants: firstVariants,
         );
-        final second = BoxMix(
+        final second = BoxStyle(
           constraints: BoxConstraintsMix.height(200.0),
           variants: secondVariants,
         );
@@ -171,7 +171,7 @@ void main() {
       });
 
       test('handles null merge correctly', () {
-        final first = BoxMix(
+        final first = BoxStyle(
           constraints: BoxConstraintsMix.width(100.0),
           modifier: ModifierConfig.orderOfModifiers(const [OpacityModifier]),
           inherit: true,
@@ -378,8 +378,14 @@ void main() {
       });
 
       test('merges inherit correctly', () {
-        final first = FlexBoxMix(container: ContainerSpecMix.constraints(BoxConstraintsMix.width(100)), inherit: true);
-        final second = FlexBoxMix(flex: FlexPropertiesMix.spacing(8.0), inherit: false);
+        final first = FlexBoxMix(
+          container: ContainerSpecMix.constraints(BoxConstraintsMix.width(100)),
+          inherit: true,
+        );
+        final second = FlexBoxMix(
+          flex: FlexPropertiesMix.spacing(8.0),
+          inherit: false,
+        );
 
         final merged = first.merge(second);
 
@@ -390,7 +396,7 @@ void main() {
     group('StackBoxMix merge', () {
       test('merges orderOfModifiers correctly', () {
         final first = StackBoxMix(
-          box: BoxMix.width(100),
+          box: BoxStyle.width(100),
           modifier: ModifierConfig.orderOfModifiers(const [
             OpacityModifier,
             PaddingModifier,
@@ -412,7 +418,7 @@ void main() {
       });
 
       test('merges inherit correctly', () {
-        final first = StackBoxMix(box: BoxMix.width(100), inherit: true);
+        final first = StackBoxMix(box: BoxStyle.width(100), inherit: true);
         final second = StackBoxMix(
           stack: StackMix.alignment(Alignment.center),
           inherit: false,
@@ -426,17 +432,17 @@ void main() {
 
     group('Complex merge scenarios', () {
       test('chained merges preserve final values', () {
-        final first = BoxMix(
+        final first = BoxStyle(
           constraints: BoxConstraintsMix.width(100.0),
           modifier: ModifierConfig.orderOfModifiers(const [OpacityModifier]),
           inherit: true,
         );
-        final second = BoxMix(
+        final second = BoxStyle(
           constraints: BoxConstraintsMix.height(200.0),
           modifier: ModifierConfig.orderOfModifiers(const [PaddingModifier]),
           inherit: false,
         );
-        final third = BoxMix(
+        final third = BoxStyle(
           decoration: DecorationMix.color(Colors.blue),
           modifier: ModifierConfig.orderOfModifiers(const [ClipOvalModifier]),
           inherit: true,
@@ -453,11 +459,11 @@ void main() {
         final firstOpacity = OpacityModifierMix(opacity: 0.3);
         final secondOpacity = OpacityModifierMix(opacity: 0.7);
 
-        final first = BoxMix(
+        final first = BoxStyle(
           constraints: BoxConstraintsMix.width(100.0),
           modifier: ModifierConfig(modifiers: [firstOpacity]),
         );
-        final second = BoxMix(
+        final second = BoxStyle(
           constraints: BoxConstraintsMix.height(200.0),
           modifier: ModifierConfig(modifiers: [secondOpacity]),
         );
@@ -475,14 +481,14 @@ void main() {
 
       test('merges with same variant types correctly', () {
         const variant = NamedVariant('primary');
-        final firstStyle = BoxMix.width(100.0);
-        final secondStyle = BoxMix.height(200.0);
+        final firstStyle = BoxStyle.width(100.0);
+        final secondStyle = BoxStyle.height(200.0);
 
-        final first = BoxMix(
+        final first = BoxStyle(
           decoration: DecorationMix.color(Colors.red),
           variants: [VariantStyle(variant, firstStyle)],
         );
-        final second = BoxMix(
+        final second = BoxStyle(
           padding: EdgeInsetsMix.all(10),
           variants: [VariantStyle(variant, secondStyle)],
         );
@@ -493,7 +499,7 @@ void main() {
         expect(merged.$variants!.length, 1);
         expect(merged.$variants![0].variant, variant);
 
-        final mergedVariantStyle = merged.$variants![0].value as BoxMix;
+        final mergedVariantStyle = merged.$variants![0].value as BoxStyle;
         final context = MockBuildContext();
         final spec = mergedVariantStyle.resolve(context);
         expect(spec.constraints?.minWidth, 100.0);
@@ -501,11 +507,11 @@ void main() {
       });
 
       test('empty orderOfModifiers list behavior', () {
-        final first = BoxMix(
+        final first = BoxStyle(
           constraints: BoxConstraintsMix.width(100.0),
           modifier: ModifierConfig.orderOfModifiers(const [OpacityModifier]),
         );
-        final second = BoxMix(
+        final second = BoxStyle(
           constraints: BoxConstraintsMix.height(200.0),
           modifier: ModifierConfig.orderOfModifiers(const []),
         );
@@ -516,13 +522,13 @@ void main() {
       });
 
       test('null vs empty list handling for modifiers', () {
-        final first = BoxMix(
+        final first = BoxStyle(
           constraints: BoxConstraintsMix.width(100.0),
           modifier: ModifierConfig(
             modifiers: [OpacityModifierMix(opacity: 0.5)],
           ),
         );
-        final second = BoxMix(
+        final second = BoxStyle(
           constraints: BoxConstraintsMix.height(200.0),
         ); // null modifiers
 
@@ -534,16 +540,16 @@ void main() {
       });
 
       test('null vs empty list handling for variants', () {
-        final first = BoxMix(
+        final first = BoxStyle(
           constraints: BoxConstraintsMix.width(100.0),
           variants: [
             VariantStyle(
               const NamedVariant('primary'),
-              BoxMix.color(Colors.blue),
+              BoxStyle.color(Colors.blue),
             ),
           ],
         );
-        final second = BoxMix(
+        final second = BoxStyle(
           constraints: BoxConstraintsMix.height(200.0),
         ); // null variants
 
@@ -557,7 +563,7 @@ void main() {
 
     group('Edge cases', () {
       test('merge with self returns same instance', () {
-        final style = BoxMix(
+        final style = BoxStyle(
           constraints: BoxConstraintsMix.width(100.0),
           modifier: ModifierConfig.orderOfModifiers(const [OpacityModifier]),
           inherit: true,
@@ -575,8 +581,8 @@ void main() {
       });
 
       test('all parameters null in both styles', () {
-        final first = BoxMix();
-        final second = BoxMix();
+        final first = BoxStyle();
+        final second = BoxStyle();
 
         final merged = first.merge(second);
 
@@ -588,13 +594,13 @@ void main() {
       });
 
       test('mixed null and non-null parameters', () {
-        final first = BoxMix(
+        final first = BoxStyle(
           constraints: BoxConstraintsMix.width(100.0),
           modifier: ModifierConfig.orderOfModifiers(const [OpacityModifier]),
           inherit: null,
           animation: null,
         );
-        final second = BoxMix(
+        final second = BoxStyle(
           constraints: BoxConstraintsMix.height(200.0),
           modifier: ModifierConfig.orderOfModifiers(const []),
           inherit: true,

@@ -8,23 +8,23 @@ import '../box/box_spec.dart';
 import 'stack_spec.dart';
 
 final class ZBoxSpec extends WidgetSpec<ZBoxSpec> {
-  final BoxSpec box;
+  final BoxWidgetSpec box;
   final StackSpec stack;
 
   const ZBoxSpec({
-    BoxSpec? box,
+    BoxWidgetSpec? box,
     StackSpec? stack,
     super.animation,
     super.widgetModifiers,
     super.inherit,
-  }) : box = box ?? const BoxSpec(),
+  }) : box = box ?? const BoxWidgetSpec(),
        stack = stack ?? const StackSpec();
 
   /// Creates a copy of this [ZBoxSpec] but with the given fields
   /// replaced with the new values.
   @override
   ZBoxSpec copyWith({
-    BoxSpec? box,
+    BoxWidgetSpec? box,
     StackSpec? stack,
     AnimationConfig? animation,
     List<Modifier>? widgetModifiers,
@@ -49,7 +49,7 @@ final class ZBoxSpec extends WidgetSpec<ZBoxSpec> {
   ///
   /// The interpolation is performed on each property of the [ZBoxSpec] using the appropriate
   /// interpolation method:
-  /// - [BoxSpec.lerp] for [box].
+  /// - [BoxWidgetSpec.lerp] for [box].
   /// - [StackSpec.lerp] for [stack].
   ///
   /// This method is typically used in animations to smoothly transition between
@@ -58,16 +58,12 @@ final class ZBoxSpec extends WidgetSpec<ZBoxSpec> {
   ZBoxSpec lerp(ZBoxSpec? other, double t) {
     // Create new BoxSpec and StackSpec WITHOUT their metadata
     // The metadata is handled at ZBoxSpec level
-    final lerpedBox = box.lerp(other?.box, t).copyWith(
-      animation: null,
-      widgetModifiers: null,
-      inherit: null,
-    );
-    final lerpedStack = stack.lerp(other?.stack, t).copyWith(
-      animation: null,
-      widgetModifiers: null,
-      inherit: null,
-    );
+    final lerpedBox = box
+        .lerp(other?.box, t)
+        .copyWith(animation: null, widgetModifiers: null, inherit: null);
+    final lerpedStack = stack
+        .lerp(other?.stack, t)
+        .copyWith(animation: null, widgetModifiers: null, inherit: null);
 
     return ZBoxSpec(
       box: lerpedBox,
@@ -83,8 +79,12 @@ final class ZBoxSpec extends WidgetSpec<ZBoxSpec> {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-      ..add(DiagnosticsProperty('box', box, defaultValue: const BoxSpec()))
-      ..add(DiagnosticsProperty('stack', stack, defaultValue: const StackSpec()));
+      ..add(
+        DiagnosticsProperty('box', box, defaultValue: const BoxWidgetSpec()),
+      )
+      ..add(
+        DiagnosticsProperty('stack', stack, defaultValue: const StackSpec()),
+      );
   }
 
   /// The list of properties that constitute the state of this [ZBoxSpec].

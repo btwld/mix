@@ -35,7 +35,7 @@ class OkinawaCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final boxStyle = Style.box(
-      BoxMix()
+      BoxStyle()
           .height(200)
           .width(200)
           .borderRadius(BorderRadiusMix.circular(10))
@@ -71,14 +71,12 @@ class OkinawaCard extends StatelessWidget {
     final zbox = StackBoxMix()
         .stack(StackMix().alignment(Alignment.bottomCenter))
         .box(
-          BoxMix()
+          BoxStyle()
               .transformAlignment(Alignment.center)
-              .modifier(ModifierConfig.scale(1))
+              .modifier(ModifierConfig.scale(1)),
         )
         .onHovered(
-          StackBoxMix().box(
-            BoxMix().modifier(ModifierConfig.scale(1.05)),
-          ),
+          StackBoxMix().box(BoxStyle().modifier(ModifierConfig.scale(1.05))),
         );
 
     final titleStyle = Style.text(
