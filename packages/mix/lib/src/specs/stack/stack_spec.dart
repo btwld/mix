@@ -6,13 +6,13 @@ import '../../core/helpers.dart';
 import '../../core/modifier.dart';
 import '../../core/widget_spec.dart';
 
-final class StackSpec extends WidgetSpec<StackSpec> {
+final class StackWidgetSpec extends WidgetSpec<StackWidgetSpec> {
   final AlignmentGeometry? alignment;
   final StackFit? fit;
   final TextDirection? textDirection;
   final Clip? clipBehavior;
 
-  const StackSpec({
+  const StackWidgetSpec({
     this.alignment,
     this.fit,
     this.textDirection,
@@ -22,11 +22,10 @@ final class StackSpec extends WidgetSpec<StackSpec> {
     super.inherit,
   });
 
-
-  /// Creates a copy of this [StackSpec] but with the given fields
+  /// Creates a copy of this [StackWidgetSpec] but with the given fields
   /// replaced with the new values.
   @override
-  StackSpec copyWith({
+  StackWidgetSpec copyWith({
     AlignmentGeometry? alignment,
     StackFit? fit,
     TextDirection? textDirection,
@@ -35,7 +34,7 @@ final class StackSpec extends WidgetSpec<StackSpec> {
     List<Modifier>? widgetModifiers,
     bool? inherit,
   }) {
-    return StackSpec(
+    return StackWidgetSpec(
       alignment: alignment ?? this.alignment,
       fit: fit ?? this.fit,
       textDirection: textDirection ?? this.textDirection,
@@ -46,10 +45,10 @@ final class StackSpec extends WidgetSpec<StackSpec> {
     );
   }
 
-  /// Linearly interpolates between this [StackSpec] and another [StackSpec] based on the given parameter [t].
+  /// Linearly interpolates between this [StackWidgetSpec] and another [StackWidgetSpec] based on the given parameter [t].
   @override
-  StackSpec lerp(StackSpec? other, double t) {
-    return StackSpec(
+  StackWidgetSpec lerp(StackWidgetSpec? other, double t) {
+    return StackWidgetSpec(
       alignment: MixOps.lerp(alignment, other?.alignment, t),
       fit: MixOps.lerpSnap(fit, other?.fit, t),
       textDirection: MixOps.lerpSnap(textDirection, other?.textDirection, t),
@@ -71,7 +70,7 @@ final class StackSpec extends WidgetSpec<StackSpec> {
       ..add(EnumProperty<Clip>('clipBehavior', clipBehavior));
   }
 
-  /// The list of properties that constitute the state of this [StackSpec].
+  /// The list of properties that constitute the state of this [StackWidgetSpec].
   @override
   List<Object?> get props => [
     ...super.props,

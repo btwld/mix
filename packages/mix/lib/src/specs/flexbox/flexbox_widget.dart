@@ -3,8 +3,8 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/style_widget.dart';
-import '../container/container_spec.dart';
 import '../../properties/flex_properties.dart';
+import '../container/container_spec.dart';
 import 'flexbox_attribute.dart';
 import 'flexbox_spec.dart';
 
@@ -12,7 +12,7 @@ import 'flexbox_spec.dart';
 ///
 /// Applies both container and flex specifications for flexible layouts,
 /// providing decoration, constraints, and flex layout in one widget.
-class FlexBox extends StyleWidget<FlexBoxSpec> {
+class FlexBox extends StyleWidget<FlexBoxWidgetSpec> {
   const FlexBox({
     super.style = const FlexBoxMix.create(),
     super.key,
@@ -27,7 +27,7 @@ class FlexBox extends StyleWidget<FlexBoxSpec> {
   final Axis direction;
 
   @override
-  Widget build(BuildContext context, FlexBoxSpec spec) {
+  Widget build(BuildContext context, FlexBoxWidgetSpec spec) {
     return createFlexBoxSpecWidget(
       spec: spec,
       direction: direction,
@@ -81,12 +81,12 @@ Flex createFlexSpecWidget({
   );
 }
 
-/// Creates a [Container] with [Flex] child from a [FlexBoxSpec].
+/// Creates a [Container] with [Flex] child from a [FlexBoxWidgetSpec].
 ///
 /// Applies container styling as the outer container and flex layout as the inner
 /// child widget, combining both specifications effectively.
 Widget createFlexBoxSpecWidget({
-  required FlexBoxSpec spec,
+  required FlexBoxWidgetSpec spec,
   required Axis direction,
   List<Widget> children = const [],
 }) {
@@ -114,8 +114,8 @@ extension FlexPropertiesWidget on FlexProperties {
   }
 }
 
-/// Extension to convert [FlexBoxSpec] directly to a styled flex widget.
-extension FlexBoxSpecWidget on FlexBoxSpec {
+/// Extension to convert [FlexBoxWidgetSpec] directly to a styled flex widget.
+extension FlexBoxSpecWidget on FlexBoxWidgetSpec {
   Widget call({required Axis direction, List<Widget> children = const []}) {
     return createFlexBoxSpecWidget(
       spec: this,

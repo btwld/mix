@@ -12,14 +12,14 @@ void main() {
           alignment: Alignment.center,
           padding: EdgeInsets.all(16.0),
         );
-        const stackSpec = StackSpec(
+        const stackSpec = StackWidgetSpec(
           alignment: Alignment.topLeft,
           fit: StackFit.expand,
           textDirection: TextDirection.ltr,
           clipBehavior: Clip.antiAlias,
         );
 
-        const spec = ZBoxSpec(box: boxSpec, stack: stackSpec);
+        const spec = ZBoxWidgetSpec(box: boxSpec, stack: stackSpec);
 
         expect(spec.box, boxSpec);
         expect(spec.stack, stackSpec);
@@ -36,10 +36,10 @@ void main() {
       });
 
       test('creates ZBoxSpec with default values', () {
-        const spec = ZBoxSpec();
+        const spec = ZBoxWidgetSpec();
 
         expect(spec.box, const BoxWidgetSpec());
-        expect(spec.stack, const StackSpec());
+        expect(spec.stack, const StackWidgetSpec());
         expect(spec.box.constraints, isNull);
         expect(spec.stack.alignment, isNull);
         expect(spec.stack.fit, isNull);
@@ -47,10 +47,10 @@ void main() {
 
       test('creates ZBoxSpec with partial properties', () {
         const boxSpec = BoxWidgetSpec(margin: EdgeInsets.all(8.0));
-        const spec = ZBoxSpec(box: boxSpec);
+        const spec = ZBoxWidgetSpec(box: boxSpec);
 
         expect(spec.box, boxSpec);
-        expect(spec.stack, const StackSpec());
+        expect(spec.stack, const StackWidgetSpec());
         expect(spec.box.margin, const EdgeInsets.all(8.0));
         expect(spec.stack.alignment, isNull);
       });
@@ -61,11 +61,11 @@ void main() {
         const originalBox = BoxWidgetSpec(
           constraints: BoxConstraints.tightFor(width: 100.0, height: 50.0),
         );
-        const originalStack = StackSpec(
+        const originalStack = StackWidgetSpec(
           alignment: Alignment.center,
           fit: StackFit.loose,
         );
-        const original = ZBoxSpec(box: originalBox, stack: originalStack);
+        const original = ZBoxWidgetSpec(box: originalBox, stack: originalStack);
 
         const newBox = BoxWidgetSpec(
           constraints: BoxConstraints.tightFor(width: 200.0, height: 100.0),
@@ -82,10 +82,10 @@ void main() {
 
       test('preserves original properties when not specified', () {
         const originalBox = BoxWidgetSpec(alignment: Alignment.topLeft);
-        const originalStack = StackSpec(fit: StackFit.expand);
-        const original = ZBoxSpec(box: originalBox, stack: originalStack);
+        const originalStack = StackWidgetSpec(fit: StackFit.expand);
+        const original = ZBoxWidgetSpec(box: originalBox, stack: originalStack);
 
-        const newStack = StackSpec(alignment: Alignment.bottomRight);
+        const newStack = StackWidgetSpec(alignment: Alignment.bottomRight);
         final updated = original.copyWith(stack: newStack);
 
         expect(updated.box, originalBox); // unchanged
@@ -98,8 +98,8 @@ void main() {
         const originalBox = BoxWidgetSpec(
           constraints: BoxConstraints.tightFor(width: 150.0),
         );
-        const originalStack = StackSpec(fit: StackFit.passthrough);
-        const original = ZBoxSpec(box: originalBox, stack: originalStack);
+        const originalStack = StackWidgetSpec(fit: StackFit.passthrough);
+        const original = ZBoxWidgetSpec(box: originalBox, stack: originalStack);
 
         final updated = original.copyWith();
 
@@ -113,14 +113,14 @@ void main() {
         const spec1Box = BoxWidgetSpec(
           constraints: BoxConstraints.tightFor(width: 100.0, height: 50.0),
         );
-        const spec1Stack = StackSpec(alignment: Alignment.topLeft);
-        const spec1 = ZBoxSpec(box: spec1Box, stack: spec1Stack);
+        const spec1Stack = StackWidgetSpec(alignment: Alignment.topLeft);
+        const spec1 = ZBoxWidgetSpec(box: spec1Box, stack: spec1Stack);
 
         const spec2Box = BoxWidgetSpec(
           constraints: BoxConstraints.tightFor(width: 200.0, height: 100.0),
         );
-        const spec2Stack = StackSpec(alignment: Alignment.bottomRight);
-        const spec2 = ZBoxSpec(box: spec2Box, stack: spec2Stack);
+        const spec2Stack = StackWidgetSpec(alignment: Alignment.bottomRight);
+        const spec2 = ZBoxWidgetSpec(box: spec2Box, stack: spec2Stack);
 
         final lerped = spec1.lerp(spec2, 0.5);
 
@@ -136,8 +136,8 @@ void main() {
         const boxSpec = BoxWidgetSpec(
           constraints: BoxConstraints.tightFor(width: 100.0),
         );
-        const stackSpec = StackSpec(fit: StackFit.loose);
-        const spec = ZBoxSpec(box: boxSpec, stack: stackSpec);
+        const stackSpec = StackWidgetSpec(fit: StackFit.loose);
+        const spec = ZBoxWidgetSpec(box: boxSpec, stack: stackSpec);
 
         // When t < 0.5, constraints interpolate towards null, fit preserves value
         final lerped1 = spec.lerp(null, 0.3);
@@ -165,14 +165,14 @@ void main() {
         const spec1Box = BoxWidgetSpec(
           constraints: BoxConstraints.tightFor(width: 100.0),
         );
-        const spec1Stack = StackSpec(fit: StackFit.loose);
-        const spec1 = ZBoxSpec(box: spec1Box, stack: spec1Stack);
+        const spec1Stack = StackWidgetSpec(fit: StackFit.loose);
+        const spec1 = ZBoxWidgetSpec(box: spec1Box, stack: spec1Stack);
 
         const spec2Box = BoxWidgetSpec(
           constraints: BoxConstraints.tightFor(width: 200.0),
         );
-        const spec2Stack = StackSpec(fit: StackFit.expand);
-        const spec2 = ZBoxSpec(box: spec2Box, stack: spec2Stack);
+        const spec2Stack = StackWidgetSpec(fit: StackFit.expand);
+        const spec2 = ZBoxWidgetSpec(box: spec2Box, stack: spec2Stack);
 
         final lerpedAt0 = spec1.lerp(spec2, 0.0);
         final lerpedAt1 = spec1.lerp(spec2, 1.0);
@@ -188,23 +188,23 @@ void main() {
           alignment: Alignment.topLeft,
           padding: EdgeInsets.all(8.0),
         );
-        const spec1Stack = StackSpec(
+        const spec1Stack = StackWidgetSpec(
           alignment: Alignment.topLeft,
           fit: StackFit.loose,
           textDirection: TextDirection.ltr,
         );
-        const spec1 = ZBoxSpec(box: spec1Box, stack: spec1Stack);
+        const spec1 = ZBoxWidgetSpec(box: spec1Box, stack: spec1Stack);
 
         const spec2Box = BoxWidgetSpec(
           alignment: Alignment.bottomRight,
           padding: EdgeInsets.all(16.0),
         );
-        const spec2Stack = StackSpec(
+        const spec2Stack = StackWidgetSpec(
           alignment: Alignment.bottomRight,
           fit: StackFit.expand,
           textDirection: TextDirection.rtl,
         );
-        const spec2 = ZBoxSpec(box: spec2Box, stack: spec2Stack);
+        const spec2 = ZBoxWidgetSpec(box: spec2Box, stack: spec2Stack);
 
         final lerped = spec1.lerp(spec2, 0.5);
 
@@ -222,12 +222,12 @@ void main() {
         const boxSpec = BoxWidgetSpec(
           constraints: BoxConstraints.tightFor(width: 100.0, height: 50.0),
         );
-        const stackSpec = StackSpec(
+        const stackSpec = StackWidgetSpec(
           alignment: Alignment.center,
           fit: StackFit.loose,
         );
-        const spec1 = ZBoxSpec(box: boxSpec, stack: stackSpec);
-        const spec2 = ZBoxSpec(box: boxSpec, stack: stackSpec);
+        const spec1 = ZBoxWidgetSpec(box: boxSpec, stack: stackSpec);
+        const spec2 = ZBoxWidgetSpec(box: boxSpec, stack: stackSpec);
 
         expect(spec1, spec2);
         expect(spec1.hashCode, spec2.hashCode);
@@ -240,9 +240,9 @@ void main() {
         const boxSpec2 = BoxWidgetSpec(
           constraints: BoxConstraints.tightFor(width: 200.0),
         );
-        const stackSpec = StackSpec(fit: StackFit.loose);
-        const spec1 = ZBoxSpec(box: boxSpec1, stack: stackSpec);
-        const spec2 = ZBoxSpec(box: boxSpec2, stack: stackSpec);
+        const stackSpec = StackWidgetSpec(fit: StackFit.loose);
+        const spec1 = ZBoxWidgetSpec(box: boxSpec1, stack: stackSpec);
+        const spec2 = ZBoxWidgetSpec(box: boxSpec2, stack: stackSpec);
 
         expect(spec1, isNot(spec2));
       });
@@ -251,17 +251,17 @@ void main() {
         const boxSpec = BoxWidgetSpec(
           constraints: BoxConstraints.tightFor(width: 100.0),
         );
-        const stackSpec1 = StackSpec(alignment: Alignment.topLeft);
-        const stackSpec2 = StackSpec(alignment: Alignment.bottomRight);
-        const spec1 = ZBoxSpec(box: boxSpec, stack: stackSpec1);
-        const spec2 = ZBoxSpec(box: boxSpec, stack: stackSpec2);
+        const stackSpec1 = StackWidgetSpec(alignment: Alignment.topLeft);
+        const stackSpec2 = StackWidgetSpec(alignment: Alignment.bottomRight);
+        const spec1 = ZBoxWidgetSpec(box: boxSpec, stack: stackSpec1);
+        const spec2 = ZBoxWidgetSpec(box: boxSpec, stack: stackSpec2);
 
         expect(spec1, isNot(spec2));
       });
 
       test('default specs are equal', () {
-        const spec1 = ZBoxSpec();
-        const spec2 = ZBoxSpec();
+        const spec1 = ZBoxWidgetSpec();
+        const spec2 = ZBoxWidgetSpec();
 
         expect(spec1, spec2);
         expect(spec1.hashCode, spec2.hashCode);
@@ -273,11 +273,11 @@ void main() {
         const boxSpec = BoxWidgetSpec(
           constraints: BoxConstraints.tightFor(width: 100.0, height: 50.0),
         );
-        const stackSpec = StackSpec(
+        const stackSpec = StackWidgetSpec(
           alignment: Alignment.center,
           fit: StackFit.loose,
         );
-        const spec = ZBoxSpec(box: boxSpec, stack: stackSpec);
+        const spec = ZBoxWidgetSpec(box: boxSpec, stack: stackSpec);
 
         final diagnostics = DiagnosticPropertiesBuilder();
         spec.debugFillProperties(diagnostics);
@@ -293,11 +293,11 @@ void main() {
         const boxSpec = BoxWidgetSpec(
           constraints: BoxConstraints.tightFor(width: 100.0, height: 50.0),
         );
-        const stackSpec = StackSpec(
+        const stackSpec = StackWidgetSpec(
           alignment: Alignment.center,
           fit: StackFit.loose,
         );
-        const spec = ZBoxSpec(box: boxSpec, stack: stackSpec);
+        const spec = ZBoxWidgetSpec(box: boxSpec, stack: stackSpec);
 
         // 2 ZBoxSpec properties (box, stack) + 3 from WidgetSpec (animation, widgetModifiers, inherit)
         expect(spec.props.length, 5);
@@ -308,7 +308,7 @@ void main() {
 
     group('Real-world scenarios', () {
       test('creates overlay container spec', () {
-        const overlaySpec = ZBoxSpec(
+        const overlaySpec = ZBoxWidgetSpec(
           box: BoxWidgetSpec(
             constraints: BoxConstraints.tightFor(
               width: double.infinity,
@@ -316,7 +316,10 @@ void main() {
             ),
             decoration: BoxDecoration(color: Colors.black54),
           ),
-          stack: StackSpec(alignment: Alignment.center, fit: StackFit.expand),
+          stack: StackWidgetSpec(
+            alignment: Alignment.center,
+            fit: StackFit.expand,
+          ),
         );
 
         expect(overlaySpec.box.constraints?.minWidth, double.infinity);
@@ -327,7 +330,7 @@ void main() {
       });
 
       test('creates positioned card spec', () {
-        final cardSpec = ZBoxSpec(
+        final cardSpec = ZBoxWidgetSpec(
           box: BoxWidgetSpec(
             constraints: BoxConstraints.tightFor(width: 300.0, height: 200.0),
             padding: EdgeInsets.all(16.0),
@@ -343,7 +346,7 @@ void main() {
               ],
             ),
           ),
-          stack: StackSpec(
+          stack: StackWidgetSpec(
             alignment: Alignment.topLeft,
             fit: StackFit.loose,
             clipBehavior: Clip.antiAlias,
@@ -360,7 +363,7 @@ void main() {
       });
 
       test('creates badge container spec', () {
-        final badgeSpec = ZBoxSpec(
+        final badgeSpec = ZBoxWidgetSpec(
           box: BoxWidgetSpec(
             constraints: BoxConstraints(minWidth: 20.0, minHeight: 20.0),
             padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
@@ -369,7 +372,10 @@ void main() {
               borderRadius: BorderRadius.circular(10.0),
             ),
           ),
-          stack: StackSpec(alignment: Alignment.center, fit: StackFit.loose),
+          stack: StackWidgetSpec(
+            alignment: Alignment.center,
+            fit: StackFit.loose,
+          ),
         );
 
         expect(
@@ -385,7 +391,7 @@ void main() {
       });
 
       test('creates floating action button spec', () {
-        const fabSpec = ZBoxSpec(
+        const fabSpec = ZBoxWidgetSpec(
           box: BoxWidgetSpec(
             constraints: BoxConstraints.tightFor(width: 56.0, height: 56.0),
             decoration: BoxDecoration(
@@ -400,7 +406,7 @@ void main() {
               ],
             ),
           ),
-          stack: StackSpec(
+          stack: StackWidgetSpec(
             alignment: Alignment.center,
             fit: StackFit.expand,
             clipBehavior: Clip.antiAlias,

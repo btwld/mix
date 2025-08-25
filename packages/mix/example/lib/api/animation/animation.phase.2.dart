@@ -40,7 +40,7 @@ class _ExampleState extends State<Example> {
       child: HBox(
         style:
             Style.flexbox(
-                  FlexBoxMix().container(
+                  FlexBoxStyle().container(
                     ContainerSpecMix()
                         .color(Colors.white)
                         .padding(
@@ -58,7 +58,7 @@ class _ExampleState extends State<Example> {
                   FlexPropertiesMix().mainAxisSize(MainAxisSize.min).spacing(8),
                 )
                 .onHovered(
-                  FlexBoxMix().container(
+                  FlexBoxStyle().container(
                     ContainerSpecMix().border(
                       BoxBorderMix.all(BorderSideMix.color(Colors.red)),
                     ),
@@ -127,7 +127,7 @@ class ArrowIconButton extends StatelessWidget {
         ),
         child: StyledIcon(
           icon: CupertinoIcons.arrow_up_right,
-          style: Style.icon(IconMix().color(Colors.grey.shade500).size(14)),
+          style: Style.icon(IconStyle().color(Colors.grey.shade500).size(14)),
         ),
       ),
     );

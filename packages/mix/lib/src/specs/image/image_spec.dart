@@ -6,7 +6,7 @@ import '../../core/helpers.dart';
 import '../../core/modifier.dart';
 import '../../core/widget_spec.dart';
 
-final class ImageSpec extends WidgetSpec<ImageSpec> {
+final class ImageWidgetSpec extends WidgetSpec<ImageWidgetSpec> {
   final ImageProvider<Object>? image;
   final double? width, height;
   final Color? color;
@@ -23,7 +23,7 @@ final class ImageSpec extends WidgetSpec<ImageSpec> {
   final bool? isAntiAlias;
   final bool? matchTextDirection;
 
-  const ImageSpec({
+  const ImageWidgetSpec({
     this.image,
     this.width,
     this.height,
@@ -44,9 +44,8 @@ final class ImageSpec extends WidgetSpec<ImageSpec> {
     super.inherit,
   });
 
-
   @override
-  ImageSpec copyWith({
+  ImageWidgetSpec copyWith({
     ImageProvider<Object>? image,
     double? width,
     double? height,
@@ -66,7 +65,7 @@ final class ImageSpec extends WidgetSpec<ImageSpec> {
     List<Modifier>? widgetModifiers,
     bool? inherit,
   }) {
-    return ImageSpec(
+    return ImageWidgetSpec(
       image: image ?? this.image,
       width: width ?? this.width,
       height: height ?? this.height,
@@ -89,8 +88,8 @@ final class ImageSpec extends WidgetSpec<ImageSpec> {
   }
 
   @override
-  ImageSpec lerp(ImageSpec? other, double t) {
-    return ImageSpec(
+  ImageWidgetSpec lerp(ImageWidgetSpec? other, double t) {
+    return ImageWidgetSpec(
       image: MixOps.lerpSnap(image, other?.image, t),
       width: MixOps.lerp(width, other?.width, t),
       height: MixOps.lerp(height, other?.height, t),
@@ -140,10 +139,30 @@ final class ImageSpec extends WidgetSpec<ImageSpec> {
       ..add(EnumProperty<FilterQuality>('filterQuality', filterQuality))
       ..add(EnumProperty<BlendMode>('colorBlendMode', colorBlendMode))
       ..add(StringProperty('semanticLabel', semanticLabel))
-      ..add(FlagProperty('excludeFromSemantics', value: excludeFromSemantics, ifTrue: 'excluded from semantics'))
-      ..add(FlagProperty('gaplessPlayback', value: gaplessPlayback, ifTrue: 'gapless playback'))
-      ..add(FlagProperty('isAntiAlias', value: isAntiAlias, ifTrue: 'anti-aliased'))
-      ..add(FlagProperty('matchTextDirection', value: matchTextDirection, ifTrue: 'matches text direction'));
+      ..add(
+        FlagProperty(
+          'excludeFromSemantics',
+          value: excludeFromSemantics,
+          ifTrue: 'excluded from semantics',
+        ),
+      )
+      ..add(
+        FlagProperty(
+          'gaplessPlayback',
+          value: gaplessPlayback,
+          ifTrue: 'gapless playback',
+        ),
+      )
+      ..add(
+        FlagProperty('isAntiAlias', value: isAntiAlias, ifTrue: 'anti-aliased'),
+      )
+      ..add(
+        FlagProperty(
+          'matchTextDirection',
+          value: matchTextDirection,
+          ifTrue: 'matches text direction',
+        ),
+      );
   }
 
   @override

@@ -19,7 +19,7 @@ void main() {
       });
 
       test('creates with provided StackMix attribute', () {
-        final stackMix = StackMix(alignment: Alignment.center);
+        final stackMix = StackStyle(alignment: Alignment.center);
         final utility = StackSpecUtility(stackMix);
         final context = MockBuildContext();
         final spec = utility.resolve(context);
@@ -31,27 +31,36 @@ void main() {
 
     group('Stack utility properties', () {
       test('alignment utility is MixUtility', () {
-        expect(util.alignment, isA<MixUtility<StackMix, AlignmentGeometry>>());
+        expect(
+          util.alignment,
+          isA<MixUtility<StackStyle, AlignmentGeometry>>(),
+        );
       });
 
       test('fit utility is MixUtility', () {
-        expect(util.fit, isA<MixUtility<StackMix, StackFit>>());
+        expect(util.fit, isA<MixUtility<StackStyle, StackFit>>());
       });
 
       test('textDirection utility is MixUtility', () {
-        expect(util.textDirection, isA<MixUtility<StackMix, TextDirection>>());
+        expect(
+          util.textDirection,
+          isA<MixUtility<StackStyle, TextDirection>>(),
+        );
       });
 
       test('clipBehavior utility is MixUtility', () {
-        expect(util.clipBehavior, isA<MixUtility<StackMix, Clip>>());
+        expect(util.clipBehavior, isA<MixUtility<StackStyle, Clip>>());
       });
 
       test('on utility is OnContextVariantUtility', () {
-        expect(util.on, isA<OnContextVariantUtility<StackSpec, StackMix>>());
+        expect(
+          util.on,
+          isA<OnContextVariantUtility<StackWidgetSpec, StackStyle>>(),
+        );
       });
 
       test('wrap utility is ModifierUtility', () {
-        expect(util.wrap, isA<ModifierUtility<StackMix>>());
+        expect(util.wrap, isA<ModifierUtility<StackStyle>>());
       });
     });
 
@@ -61,7 +70,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(result, isA<StackMix>());
+        expect(result, isA<StackStyle>());
         expect(spec.alignment, Alignment.topLeft);
       });
 
@@ -70,7 +79,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(result, isA<StackMix>());
+        expect(result, isA<StackStyle>());
         expect(spec.fit, StackFit.expand);
       });
 
@@ -79,7 +88,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(result, isA<StackMix>());
+        expect(result, isA<StackStyle>());
         expect(spec.textDirection, TextDirection.rtl);
       });
 
@@ -88,7 +97,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(result, isA<StackMix>());
+        expect(result, isA<StackStyle>());
         expect(spec.clipBehavior, Clip.antiAlias);
       });
     });
@@ -108,7 +117,7 @@ void main() {
       test('on utility creates VariantAttributeBuilder', () {
         final hoverBuilder = util.on.hover;
 
-        expect(hoverBuilder, isA<VariantAttributeBuilder<StackSpec>>());
+        expect(hoverBuilder, isA<VariantAttributeBuilder<StackWidgetSpec>>());
       });
     });
 
@@ -116,7 +125,7 @@ void main() {
       test('wrap utility creates modifier StackMix', () {
         final result = util.wrap.opacity(0.5);
 
-        expect(result, isA<StackMix>());
+        expect(result, isA<StackStyle>());
         expect(result.$modifier, isNotNull);
         expect(result.$modifier!.$modifiers!.length, 1);
       });
@@ -129,7 +138,7 @@ void main() {
       });
 
       test('merge with StackSpecUtility creates new instance', () {
-        final other = StackSpecUtility(StackMix(alignment: Alignment.center));
+        final other = StackSpecUtility(StackStyle(alignment: Alignment.center));
         final result = util.merge(other);
         final context = MockBuildContext();
         final spec = result.resolve(context);
@@ -140,7 +149,7 @@ void main() {
       });
 
       test('merge with StackMix creates new instance', () {
-        final otherMix = StackMix(fit: StackFit.expand);
+        final otherMix = StackStyle(fit: StackFit.expand);
         final result = util.merge(otherMix);
         final context = MockBuildContext();
         final spec = result.resolve(context);
@@ -152,17 +161,17 @@ void main() {
 
       test('merge throws error for unsupported type', () {
         expect(
-          () => util.merge('invalid_type' as Style<StackSpec>),
+          () => util.merge('invalid_type' as Style<StackWidgetSpec>),
           throwsA(isA<TypeError>()),
         );
       });
 
       test('merge combines properties correctly', () {
         final util1 = StackSpecUtility(
-          StackMix(alignment: Alignment.center, fit: StackFit.loose),
+          StackStyle(alignment: Alignment.center, fit: StackFit.loose),
         );
         final other = StackSpecUtility(
-          StackMix(fit: StackFit.expand, clipBehavior: Clip.antiAlias),
+          StackStyle(fit: StackFit.expand, clipBehavior: Clip.antiAlias),
         );
 
         final result = util1.merge(other);
@@ -178,7 +187,7 @@ void main() {
     group('Resolve functionality', () {
       test('resolve returns StackSpec with resolved properties', () {
         final testUtil = StackSpecUtility(
-          StackMix(
+          StackStyle(
             alignment: Alignment.center,
             fit: StackFit.expand,
             clipBehavior: Clip.antiAlias,
@@ -188,7 +197,7 @@ void main() {
         final context = MockBuildContext();
         final spec = testUtil.resolve(context);
 
-        expect(spec, isA<StackSpec>());
+        expect(spec, isA<StackWidgetSpec>());
         expect(spec.alignment, Alignment.center);
         expect(spec.fit, StackFit.expand);
         expect(spec.clipBehavior, Clip.antiAlias);
@@ -198,7 +207,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec, isA<StackSpec>());
+        expect(spec, isA<StackWidgetSpec>());
         expect(spec.alignment, isNull);
         expect(spec.fit, isNull);
         expect(spec.clipBehavior, isNull);
@@ -210,7 +219,7 @@ void main() {
         final util = StackSpecUtility();
 
         final result = util.alignment(Alignment.center);
-        expect(result, isA<StackMix>());
+        expect(result, isA<StackStyle>());
 
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -222,7 +231,7 @@ void main() {
         final util = StackSpecUtility();
 
         final result = util.fit(StackFit.expand);
-        expect(result, isA<StackMix>());
+        expect(result, isA<StackStyle>());
 
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -269,9 +278,9 @@ void main() {
         final fitResult = util.fit(StackFit.expand);
         final clipResult = util.clipBehavior(Clip.antiAlias);
 
-        expect(alignmentResult, isA<StackMix>());
-        expect(fitResult, isA<StackMix>());
-        expect(clipResult, isA<StackMix>());
+        expect(alignmentResult, isA<StackStyle>());
+        expect(fitResult, isA<StackStyle>());
+        expect(clipResult, isA<StackStyle>());
 
         // But the utility itself should have accumulated all changes
         final context = MockBuildContext();
@@ -341,7 +350,7 @@ void main() {
     group('Integration with resolvesTo matcher', () {
       test('utility resolves to correct StackSpec', () {
         final testUtil = StackSpecUtility(
-          StackMix(
+          StackStyle(
             alignment: Alignment.center,
             fit: StackFit.expand,
             clipBehavior: Clip.antiAlias,
@@ -351,7 +360,7 @@ void main() {
         expect(
           testUtil,
           resolvesTo(
-            const StackSpec(
+            const StackWidgetSpec(
               alignment: Alignment.center,
               fit: StackFit.expand,
               clipBehavior: Clip.antiAlias,
@@ -369,7 +378,7 @@ void main() {
         );
 
         final testUtil = StackSpecUtility(
-          StackMix.create(alignment: Prop.token(alignmentToken)),
+          StackStyle.create(alignment: Prop.token(alignmentToken)),
         );
         final spec = testUtil.resolve(context);
 
@@ -384,15 +393,17 @@ void main() {
         final fitResult = util.fit(StackFit.expand);
         final clipResult = util.clipBehavior(Clip.antiAlias);
 
-        expect(alignmentResult, isA<StackMix>());
-        expect(fitResult, isA<StackMix>());
-        expect(clipResult, isA<StackMix>());
+        expect(alignmentResult, isA<StackStyle>());
+        expect(fitResult, isA<StackStyle>());
+        expect(clipResult, isA<StackStyle>());
       });
 
       test('handles multiple merges correctly', () {
-        final util1 = StackSpecUtility(StackMix(alignment: Alignment.center));
-        final util2 = StackSpecUtility(StackMix(fit: StackFit.expand));
-        final util3 = StackSpecUtility(StackMix(clipBehavior: Clip.antiAlias));
+        final util1 = StackSpecUtility(StackStyle(alignment: Alignment.center));
+        final util2 = StackSpecUtility(StackStyle(fit: StackFit.expand));
+        final util3 = StackSpecUtility(
+          StackStyle(clipBehavior: Clip.antiAlias),
+        );
 
         final result = util1.merge(util2).merge(util3);
         final context = MockBuildContext();
@@ -417,7 +428,7 @@ void main() {
 
       test('merge with self returns new instance', () {
         final testUtil = StackSpecUtility(
-          StackMix(alignment: Alignment.center),
+          StackStyle(alignment: Alignment.center),
         );
         final result = testUtil.merge(testUtil);
         final context = MockBuildContext();

@@ -9,7 +9,7 @@ import 'stack_spec.dart';
 /// Combines [Container] and [Stack] with Mix styling.
 ///
 /// Creates a stacked layout with box styling capabilities.
-class ZBox extends StyleWidget<ZBoxSpec> {
+class ZBox extends StyleWidget<ZBoxWidgetSpec> {
   const ZBox({
     super.style = const StackBoxMix.create(),
     this.children = const <Widget>[],
@@ -19,14 +19,14 @@ class ZBox extends StyleWidget<ZBoxSpec> {
   final List<Widget> children;
 
   @override
-  Widget build(BuildContext context, ZBoxSpec spec) {
+  Widget build(BuildContext context, ZBoxWidgetSpec spec) {
     return createZBoxSpecWidget(spec: spec, children: children);
   }
 }
 
-/// Creates a [Stack] widget from a [StackSpec] and children.
+/// Creates a [Stack] widget from a [StackWidgetSpec] and children.
 Stack createStackSpecWidget({
-  required StackSpec spec,
+  required StackWidgetSpec spec,
   List<Widget> children = const [],
 }) {
   return Stack(
@@ -38,9 +38,9 @@ Stack createStackSpecWidget({
   );
 }
 
-/// Creates a [Container] with [Stack] child from a [ZBoxSpec].
+/// Creates a [Container] with [Stack] child from a [ZBoxWidgetSpec].
 Widget createZBoxSpecWidget({
-  required ZBoxSpec spec,
+  required ZBoxWidgetSpec spec,
   List<Widget> children = const [],
 }) {
   return createBoxSpecWidget(
@@ -49,15 +49,15 @@ Widget createZBoxSpecWidget({
   );
 }
 
-/// Extension to convert [StackSpec] directly to a [Stack] widget.
-extension StackSpecWidget on StackSpec {
+/// Extension to convert [StackWidgetSpec] directly to a [Stack] widget.
+extension StackSpecWidget on StackWidgetSpec {
   Stack call({List<Widget> children = const []}) {
     return createStackSpecWidget(spec: this, children: children);
   }
 }
 
-/// Extension to convert [ZBoxSpec] directly to a styled stack widget.
-extension ZBoxSpecWidget on ZBoxSpec {
+/// Extension to convert [ZBoxWidgetSpec] directly to a styled stack widget.
+extension ZBoxSpecWidget on ZBoxWidgetSpec {
   Widget call({List<Widget> children = const []}) {
     return createZBoxSpecWidget(spec: this, children: children);
   }

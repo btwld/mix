@@ -6,8 +6,8 @@ import 'image_spec.dart';
 
 /// A styled image widget using Mix framework.
 ///
-/// Applies [ImageSpec] styling to create a customized [Image].
-class StyledImage extends StyleWidget<ImageSpec> {
+/// Applies [ImageWidgetSpec] styling to create a customized [Image].
+class StyledImage extends StyleWidget<ImageWidgetSpec> {
   const StyledImage({
     super.key,
     super.style = const ImageMix.create(),
@@ -17,7 +17,6 @@ class StyledImage extends StyleWidget<ImageSpec> {
     this.image,
     this.opacity,
   });
-
 
   /// The image to display.
   final ImageProvider<Object>? image;
@@ -35,7 +34,7 @@ class StyledImage extends StyleWidget<ImageSpec> {
   final Animation<double>? opacity;
 
   @override
-  Widget build(BuildContext context, ImageSpec spec) {
+  Widget build(BuildContext context, ImageWidgetSpec spec) {
     return createImageSpecWidget(
       spec: spec,
       image: image,
@@ -47,9 +46,9 @@ class StyledImage extends StyleWidget<ImageSpec> {
   }
 }
 
-/// Creates an [Image] widget from an [ImageSpec] and optional overrides.
+/// Creates an [Image] widget from an [ImageWidgetSpec] and optional overrides.
 Image createImageSpecWidget({
-  required ImageSpec spec,
+  required ImageWidgetSpec spec,
   ImageProvider<Object>? image,
   ImageFrameBuilder? frameBuilder,
   ImageLoadingBuilder? loadingBuilder,
@@ -85,7 +84,7 @@ Image createImageSpecWidget({
 /// Throws if no image provider is found.
 ImageProvider<Object> _resolveImage(
   ImageProvider<Object>? widgetImage,
-  ImageSpec spec,
+  ImageWidgetSpec spec,
 ) {
   final imageProvider = widgetImage ?? spec.image;
 
@@ -107,8 +106,8 @@ ImageProvider<Object> _resolveImage(
   return imageProvider;
 }
 
-/// Extension to convert [ImageSpec] directly to an [Image] widget.
-extension ImageSpecWidget on ImageSpec {
+/// Extension to convert [ImageWidgetSpec] directly to an [Image] widget.
+extension ImageSpecWidget on ImageWidgetSpec {
   Image call({
     ImageProvider<Object>? image,
     ImageFrameBuilder? frameBuilder,

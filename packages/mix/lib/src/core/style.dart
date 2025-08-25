@@ -47,12 +47,12 @@ abstract class Style<S extends WidgetSpec<S>> extends Mix<S>
 
   static BoxStyle box(BoxStyle value) => value;
   static TextMix text(TextMix value) => value;
-  static IconMix icon(IconMix value) => value;
-  static ImageMix image(ImageMix value) => value;
-  static StackMix stack(StackMix value) => value;
+  static IconStyle icon(IconStyle value) => value;
+  static ImageStyle image(ImageStyle value) => value;
+  static StackStyle stack(StackStyle value) => value;
   static FlexStyle flex(FlexStyle value) => value;
-  static FlexBoxMix flexbox(FlexBoxMix value) => value;
-  static StackBoxMix stackbox(StackBoxMix value) => value;
+  static FlexBoxStyle flexbox(FlexBoxStyle value) => value;
+  static StackBoxStyle stackbox(StackBoxStyle value) => value;
 
   @internal
   Set<WidgetState> get widgetStates {

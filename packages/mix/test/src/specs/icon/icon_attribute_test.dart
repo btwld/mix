@@ -8,7 +8,7 @@ void main() {
   group('IconMix', () {
     group('Constructor', () {
       test('creates IconMix with all properties', () {
-        final attribute = IconMix(
+        final attribute = IconStyle(
           color: Colors.blue,
           size: 24.0,
           weight: 400.0,
@@ -32,7 +32,7 @@ void main() {
       });
 
       test('creates empty IconMix', () {
-        final attribute = IconMix();
+        final attribute = IconStyle();
 
         expect(attribute.$color, isNull);
         expect(attribute.$size, isNull);
@@ -48,34 +48,34 @@ void main() {
 
     group('Factory Constructors', () {
       test('color factory creates IconMix with color', () {
-        final iconMix = IconMix.color(Colors.red);
+        final iconMix = IconStyle.color(Colors.red);
 
         expect(iconMix.$color, resolvesTo(Colors.red));
       });
 
       test('size factory creates IconMix with size', () {
-        final iconMix = IconMix.size(32.0);
+        final iconMix = IconStyle.size(32.0);
 
         expect(iconMix.$size, resolvesTo(32.0));
       });
 
       test('weight factory creates IconMix with weight', () {
-        final iconMix = IconMix.weight(500.0);
+        final iconMix = IconStyle.weight(500.0);
 
         expect(iconMix.$weight, resolvesTo(500.0));
       });
 
       test('animation factory creates IconMix with animation config', () {
         final animation = AnimationConfig.linear(Duration(seconds: 1));
-        final iconMix = IconMix.animate(animation);
+        final iconMix = IconStyle.animate(animation);
 
         expect(iconMix.$animation, animation);
       });
 
       test('variant factory creates IconMix with variant', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = IconMix.color(Colors.white);
-        final iconMix = IconMix.variant(variant, style);
+        final style = IconStyle.color(Colors.white);
+        final iconMix = IconStyle.variant(variant, style);
 
         expect(iconMix.$variants, isNotNull);
         expect(iconMix.$variants!.length, 1);
@@ -84,9 +84,13 @@ void main() {
 
     group('value constructor', () {
       test('creates IconMix from IconSpec', () {
-        const spec = IconSpec(color: Colors.green, size: 28.0, weight: 600.0);
+        const spec = IconWidgetSpec(
+          color: Colors.green,
+          size: 28.0,
+          weight: 600.0,
+        );
 
-        final attribute = IconMix.value(spec);
+        final attribute = IconStyle.value(spec);
 
         expect(attribute.$color, resolvesTo(Colors.green));
         expect(attribute.$size, resolvesTo(28.0));
@@ -94,12 +98,12 @@ void main() {
       });
 
       test('maybeValue returns null for null spec', () {
-        expect(IconMix.maybeValue(null), isNull);
+        expect(IconStyle.maybeValue(null), isNull);
       });
 
       test('maybeValue returns attribute for non-null spec', () {
-        const spec = IconSpec(color: Colors.purple, size: 20.0);
-        final attribute = IconMix.maybeValue(spec);
+        const spec = IconWidgetSpec(color: Colors.purple, size: 20.0);
+        final attribute = IconStyle.maybeValue(spec);
 
         expect(attribute, isNotNull);
         expect(attribute!.$color, resolvesTo(Colors.purple));
@@ -109,56 +113,56 @@ void main() {
 
     group('Utility Methods', () {
       test('color utility works correctly', () {
-        final attribute = IconMix().color(Colors.orange);
+        final attribute = IconStyle().color(Colors.orange);
 
         expect(attribute.$color, resolvesTo(Colors.orange));
       });
 
       test('size utility works correctly', () {
-        final attribute = IconMix().size(36.0);
+        final attribute = IconStyle().size(36.0);
 
         expect(attribute.$size, resolvesTo(36.0));
       });
 
       test('weight utility works correctly', () {
-        final attribute = IconMix().weight(700.0);
+        final attribute = IconStyle().weight(700.0);
 
         expect(attribute.$weight, resolvesTo(700.0));
       });
 
       test('grade utility works correctly', () {
-        final attribute = IconMix().grade(25.0);
+        final attribute = IconStyle().grade(25.0);
 
         expect(attribute.$grade, resolvesTo(25.0));
       });
 
       test('opticalSize utility works correctly', () {
-        final attribute = IconMix().opticalSize(48.0);
+        final attribute = IconStyle().opticalSize(48.0);
 
         expect(attribute.$opticalSize, resolvesTo(48.0));
       });
 
       test('textDirection utility works correctly', () {
-        final attribute = IconMix().textDirection(TextDirection.rtl);
+        final attribute = IconStyle().textDirection(TextDirection.rtl);
 
         expect(attribute.$textDirection, resolvesTo(TextDirection.rtl));
       });
 
       test('applyTextScaling utility works correctly', () {
-        final attribute = IconMix().applyTextScaling(false);
+        final attribute = IconStyle().applyTextScaling(false);
 
         expect(attribute.$applyTextScaling, resolvesTo(false));
       });
 
       test('fill utility works correctly', () {
-        final attribute = IconMix().fill(0.5);
+        final attribute = IconStyle().fill(0.5);
 
         expect(attribute.$fill, resolvesTo(0.5));
       });
 
       test('animate method sets animation config', () {
         final animation = AnimationConfig.linear(Duration(milliseconds: 500));
-        final attribute = IconMix().animate(animation);
+        final attribute = IconStyle().animate(animation);
 
         expect(attribute.$animation, equals(animation));
       });
@@ -167,8 +171,8 @@ void main() {
     group('Variant Methods', () {
       test('variant method adds variant to IconMix', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = IconMix.color(Colors.white);
-        final iconMix = IconMix().variant(variant, style);
+        final style = IconStyle.color(Colors.white);
+        final iconMix = IconStyle().variant(variant, style);
 
         expect(iconMix.$variants, isNotNull);
         expect(iconMix.$variants!.length, 1);
@@ -178,14 +182,14 @@ void main() {
         final variants = [
           VariantStyle(
             ContextVariant.brightness(Brightness.dark),
-            IconMix.color(Colors.white),
+            IconStyle.color(Colors.white),
           ),
           VariantStyle(
             ContextVariant.brightness(Brightness.light),
-            IconMix.color(Colors.black),
+            IconStyle.color(Colors.black),
           ),
         ];
-        final iconMix = IconMix().variants(variants);
+        final iconMix = IconStyle().variants(variants);
 
         expect(iconMix.$variants, isNotNull);
         expect(iconMix.$variants!.length, 2);
@@ -194,7 +198,7 @@ void main() {
 
     group('Resolution', () {
       test('resolves to IconSpec with correct properties', () {
-        final attribute = IconMix(
+        final attribute = IconStyle(
           color: Colors.cyan,
           size: 36.0,
           weight: 700.0,
@@ -220,7 +224,7 @@ void main() {
       });
 
       test('resolves with null values correctly', () {
-        final attribute = IconMix().color(Colors.yellow).size(18.0);
+        final attribute = IconStyle().color(Colors.yellow).size(18.0);
 
         final context = MockBuildContext();
         final spec = attribute.resolve(context);

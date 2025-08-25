@@ -24,27 +24,29 @@ import '../container/container_attribute.dart';
 import '../container/container_spec.dart';
 import 'flexbox_spec.dart';
 
-/// Represents the attributes of a [FlexBoxSpec].
+typedef FlexBoxMix = FlexBoxStyle;
+
+/// Represents the attributes of a [FlexBoxWidgetSpec].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [FlexBoxSpec].
+/// appearance of a [FlexBoxWidgetSpec].
 ///
-/// Use this class to configure the attributes of a [FlexBoxSpec] and pass it to
-/// the [FlexBoxSpec] constructor.
-class FlexBoxMix extends Style<FlexBoxSpec>
+/// Use this class to configure the attributes of a [FlexBoxWidgetSpec] and pass it to
+/// the [FlexBoxWidgetSpec] constructor.
+class FlexBoxStyle extends Style<FlexBoxWidgetSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<FlexBoxMix, FlexBoxSpec>,
-        StyleVariantMixin<FlexBoxMix, FlexBoxSpec>,
-        BorderRadiusMixin<FlexBoxMix>,
-        DecorationMixin<FlexBoxMix>,
-        SpacingMixin<FlexBoxMix>,
-        TransformMixin<FlexBoxMix>,
-        ConstraintsMixin<FlexBoxMix> {
+        StyleModifierMixin<FlexBoxStyle, FlexBoxWidgetSpec>,
+        StyleVariantMixin<FlexBoxStyle, FlexBoxWidgetSpec>,
+        BorderRadiusMixin<FlexBoxStyle>,
+        DecorationMixin<FlexBoxStyle>,
+        SpacingMixin<FlexBoxStyle>,
+        TransformMixin<FlexBoxStyle>,
+        ConstraintsMixin<FlexBoxStyle> {
   final Prop<ContainerSpec>? $container;
   final Prop<FlexProperties>? $flex;
 
-  FlexBoxMix({
+  FlexBoxStyle({
     ContainerSpecMix? container,
     FlexPropertiesMix? flex,
     super.animation,
@@ -55,7 +57,7 @@ class FlexBoxMix extends Style<FlexBoxSpec>
   }) : $container = Prop.maybeMix(container),
        $flex = Prop.maybeMix(flex);
 
-  const FlexBoxMix.create({
+  const FlexBoxStyle.create({
     Prop<ContainerSpec>? container,
     Prop<FlexProperties>? flex,
     super.animation,
@@ -67,117 +69,119 @@ class FlexBoxMix extends Style<FlexBoxSpec>
        $flex = flex;
 
   /// Factory for container properties
-  factory FlexBoxMix.container(ContainerSpecMix value) {
-    return FlexBoxMix(container: value);
+  factory FlexBoxStyle.container(ContainerSpecMix value) {
+    return FlexBoxStyle(container: value);
   }
 
   /// Factory for flex properties
-  factory FlexBoxMix.flex(FlexPropertiesMix value) {
-    return FlexBoxMix(flex: value);
+  factory FlexBoxStyle.flex(FlexPropertiesMix value) {
+    return FlexBoxStyle(flex: value);
   }
 
   /// Factory for animation
-  factory FlexBoxMix.animate(AnimationConfig animation) {
-    return FlexBoxMix(animation: animation);
+  factory FlexBoxStyle.animate(AnimationConfig animation) {
+    return FlexBoxStyle(animation: animation);
   }
 
   /// Factory for variant
-  factory FlexBoxMix.variant(Variant variant, FlexBoxMix value) {
-    return FlexBoxMix(variants: [VariantStyle(variant, value)]);
+  factory FlexBoxStyle.variant(Variant variant, FlexBoxStyle value) {
+    return FlexBoxStyle(variants: [VariantStyle(variant, value)]);
   }
 
   /// Factory for widget modifier
-  factory FlexBoxMix.modifier(ModifierConfig modifier) {
-    return FlexBoxMix(modifier: modifier);
+  factory FlexBoxStyle.modifier(ModifierConfig modifier) {
+    return FlexBoxStyle(modifier: modifier);
   }
 
   /// Factory for widget modifier
-  factory FlexBoxMix.wrap(ModifierConfig value) {
-    return FlexBoxMix(modifier: value);
+  factory FlexBoxStyle.wrap(ModifierConfig value) {
+    return FlexBoxStyle(modifier: value);
   }
 
   // ContainerSpecMix factory methods
   /// Color factory
-  factory FlexBoxMix.color(Color value) {
-    return FlexBoxMix(container: ContainerSpecMix.color(value));
+  factory FlexBoxStyle.color(Color value) {
+    return FlexBoxStyle(container: ContainerSpecMix.color(value));
   }
 
-  factory FlexBoxMix.foregroundDecoration(DecorationMix value) {
-    return FlexBoxMix(container: ContainerSpecMix.foregroundDecoration(value));
+  factory FlexBoxStyle.foregroundDecoration(DecorationMix value) {
+    return FlexBoxStyle(
+      container: ContainerSpecMix.foregroundDecoration(value),
+    );
   }
 
-  factory FlexBoxMix.decoration(DecorationMix value) {
-    return FlexBoxMix(container: ContainerSpecMix.decoration(value));
+  factory FlexBoxStyle.decoration(DecorationMix value) {
+    return FlexBoxStyle(container: ContainerSpecMix.decoration(value));
   }
 
-  factory FlexBoxMix.alignment(AlignmentGeometry value) {
-    return FlexBoxMix(container: ContainerSpecMix.alignment(value));
+  factory FlexBoxStyle.alignment(AlignmentGeometry value) {
+    return FlexBoxStyle(container: ContainerSpecMix.alignment(value));
   }
 
-  factory FlexBoxMix.padding(EdgeInsetsGeometryMix value) {
-    return FlexBoxMix(container: ContainerSpecMix.padding(value));
+  factory FlexBoxStyle.padding(EdgeInsetsGeometryMix value) {
+    return FlexBoxStyle(container: ContainerSpecMix.padding(value));
   }
 
-  factory FlexBoxMix.margin(EdgeInsetsGeometryMix value) {
-    return FlexBoxMix(container: ContainerSpecMix.margin(value));
+  factory FlexBoxStyle.margin(EdgeInsetsGeometryMix value) {
+    return FlexBoxStyle(container: ContainerSpecMix.margin(value));
   }
 
-  factory FlexBoxMix.transform(Matrix4 value) {
-    return FlexBoxMix(container: ContainerSpecMix.transform(value));
+  factory FlexBoxStyle.transform(Matrix4 value) {
+    return FlexBoxStyle(container: ContainerSpecMix.transform(value));
   }
 
-  factory FlexBoxMix.transformAlignment(AlignmentGeometry value) {
-    return FlexBoxMix(container: ContainerSpecMix.transformAlignment(value));
+  factory FlexBoxStyle.transformAlignment(AlignmentGeometry value) {
+    return FlexBoxStyle(container: ContainerSpecMix.transformAlignment(value));
   }
 
-  factory FlexBoxMix.clipBehavior(Clip value) {
-    return FlexBoxMix(container: ContainerSpecMix.clipBehavior(value));
+  factory FlexBoxStyle.clipBehavior(Clip value) {
+    return FlexBoxStyle(container: ContainerSpecMix.clipBehavior(value));
   }
 
   /// constraints
-  factory FlexBoxMix.constraints(BoxConstraintsMix value) {
-    return FlexBoxMix(container: ContainerSpecMix.constraints(value));
+  factory FlexBoxStyle.constraints(BoxConstraintsMix value) {
+    return FlexBoxStyle(container: ContainerSpecMix.constraints(value));
   }
 
   // FlexPropertiesMix factory methods
   /// Factory for flex direction
-  factory FlexBoxMix.direction(Axis value) {
-    return FlexBoxMix(flex: FlexPropertiesMix(direction: value));
+  factory FlexBoxStyle.direction(Axis value) {
+    return FlexBoxStyle(flex: FlexPropertiesMix(direction: value));
   }
 
   /// Factory for main axis alignment
-  factory FlexBoxMix.mainAxisAlignment(MainAxisAlignment value) {
-    return FlexBoxMix(flex: FlexPropertiesMix(mainAxisAlignment: value));
+  factory FlexBoxStyle.mainAxisAlignment(MainAxisAlignment value) {
+    return FlexBoxStyle(flex: FlexPropertiesMix(mainAxisAlignment: value));
   }
 
   /// Factory for cross axis alignment
-  factory FlexBoxMix.crossAxisAlignment(CrossAxisAlignment value) {
-    return FlexBoxMix(flex: FlexPropertiesMix(crossAxisAlignment: value));
+  factory FlexBoxStyle.crossAxisAlignment(CrossAxisAlignment value) {
+    return FlexBoxStyle(flex: FlexPropertiesMix(crossAxisAlignment: value));
   }
 
   /// Factory for main axis size
-  factory FlexBoxMix.mainAxisSize(MainAxisSize value) {
-    return FlexBoxMix(flex: FlexPropertiesMix(mainAxisSize: value));
+  factory FlexBoxStyle.mainAxisSize(MainAxisSize value) {
+    return FlexBoxStyle(flex: FlexPropertiesMix(mainAxisSize: value));
   }
 
   /// Factory for vertical direction
-  factory FlexBoxMix.verticalDirection(VerticalDirection value) {
-    return FlexBoxMix(flex: FlexPropertiesMix(verticalDirection: value));
+  factory FlexBoxStyle.verticalDirection(VerticalDirection value) {
+    return FlexBoxStyle(flex: FlexPropertiesMix(verticalDirection: value));
   }
 
   /// Factory for text direction
-  factory FlexBoxMix.textDirection(TextDirection value) {
-    return FlexBoxMix(flex: FlexPropertiesMix(textDirection: value));
+  factory FlexBoxStyle.textDirection(TextDirection value) {
+    return FlexBoxStyle(flex: FlexPropertiesMix(textDirection: value));
   }
 
   /// Factory for text baseline
-  factory FlexBoxMix.textBaseline(TextBaseline value) {
-    return FlexBoxMix(flex: FlexPropertiesMix(textBaseline: value));
+  factory FlexBoxStyle.textBaseline(TextBaseline value) {
+    return FlexBoxStyle(flex: FlexPropertiesMix(textBaseline: value));
   }
 
   /// Factory for spacing
-  factory FlexBoxMix.spacing(double value) {
-    return FlexBoxMix(flex: FlexPropertiesMix(spacing: value));
+  factory FlexBoxStyle.spacing(double value) {
+    return FlexBoxStyle(flex: FlexPropertiesMix(spacing: value));
   }
 
   /// Factory for gap
@@ -185,110 +189,110 @@ class FlexBoxMix extends Style<FlexBoxSpec>
     'Use FlexBoxMix.spacing instead. '
     'This feature was deprecated after Mix v2.0.0.',
   )
-  factory FlexBoxMix.gap(double value) {
-    return FlexBoxMix(flex: FlexPropertiesMix(spacing: value));
+  factory FlexBoxStyle.gap(double value) {
+    return FlexBoxStyle(flex: FlexPropertiesMix(spacing: value));
   }
 
-  /// Constructor that accepts a [FlexBoxSpec] value and extracts its properties.
+  /// Constructor that accepts a [FlexBoxWidgetSpec] value and extracts its properties.
   ///
-  /// This is useful for converting existing [FlexBoxSpec] instances to [FlexBoxMix].
+  /// This is useful for converting existing [FlexBoxWidgetSpec] instances to [FlexBoxStyle].
   ///
   /// ```dart
   /// const spec = FlexBoxSpec(container: ContainerSpec(...), flex: FlexProperties(...));
   /// final attr = FlexBoxMix.value(spec);
   /// ```
-  static FlexBoxMix value(FlexBoxSpec spec) {
-    return FlexBoxMix(
+  static FlexBoxStyle value(FlexBoxWidgetSpec spec) {
+    return FlexBoxStyle(
       container: ContainerSpecMix.maybeValue(spec.container),
       flex: FlexPropertiesMix.maybeValue(spec.flex),
     );
   }
 
-  /// Constructor that accepts a nullable [FlexBoxSpec] value and extracts its properties.
+  /// Constructor that accepts a nullable [FlexBoxWidgetSpec] value and extracts its properties.
   ///
-  /// Returns null if the input is null, otherwise uses [FlexBoxMix.value].
+  /// Returns null if the input is null, otherwise uses [FlexBoxStyle.value].
   ///
   /// ```dart
   /// const FlexBoxSpec? spec = FlexBoxSpec(container: ContainerSpec(...), flex: FlexProperties(...));
   /// final attr = FlexBoxMix.maybeValue(spec); // Returns FlexBoxMix or null
   /// ```
-  static FlexBoxMix? maybeValue(FlexBoxSpec? spec) {
-    return spec != null ? FlexBoxMix.value(spec) : null;
+  static FlexBoxStyle? maybeValue(FlexBoxWidgetSpec? spec) {
+    return spec != null ? FlexBoxStyle.value(spec) : null;
   }
 
   /// Sets container properties
-  FlexBoxMix container(ContainerSpecMix value) {
-    return merge(FlexBoxMix.container(value));
+  FlexBoxStyle container(ContainerSpecMix value) {
+    return merge(FlexBoxStyle.container(value));
   }
 
   /// Sets flex properties
-  FlexBoxMix flex(FlexPropertiesMix value) {
-    return merge(FlexBoxMix.flex(value));
+  FlexBoxStyle flex(FlexPropertiesMix value) {
+    return merge(FlexBoxStyle.flex(value));
   }
 
   /// Sets animation
-  FlexBoxMix animate(AnimationConfig animation) {
-    return merge(FlexBoxMix.animate(animation));
+  FlexBoxStyle animate(AnimationConfig animation) {
+    return merge(FlexBoxStyle.animate(animation));
   }
 
   // ContainerSpecMix instance methods
 
-  FlexBoxMix alignment(AlignmentGeometry value) {
-    return merge(FlexBoxMix.alignment(value));
+  FlexBoxStyle alignment(AlignmentGeometry value) {
+    return merge(FlexBoxStyle.alignment(value));
   }
 
   /// Foreground decoration instance method
-  FlexBoxMix foregroundDecoration(DecorationMix value) {
-    return merge(FlexBoxMix.foregroundDecoration(value));
+  FlexBoxStyle foregroundDecoration(DecorationMix value) {
+    return merge(FlexBoxStyle.foregroundDecoration(value));
   }
 
-  FlexBoxMix transformAlignment(AlignmentGeometry value) {
-    return merge(FlexBoxMix.transformAlignment(value));
+  FlexBoxStyle transformAlignment(AlignmentGeometry value) {
+    return merge(FlexBoxStyle.transformAlignment(value));
   }
 
-  FlexBoxMix clipBehavior(Clip value) {
-    return merge(FlexBoxMix.clipBehavior(value));
+  FlexBoxStyle clipBehavior(Clip value) {
+    return merge(FlexBoxStyle.clipBehavior(value));
   }
 
   // FlexPropertiesMix instance methods
   /// Sets flex direction
-  FlexBoxMix direction(Axis value) {
-    return merge(FlexBoxMix.direction(value));
+  FlexBoxStyle direction(Axis value) {
+    return merge(FlexBoxStyle.direction(value));
   }
 
   /// Sets main axis alignment
-  FlexBoxMix mainAxisAlignment(MainAxisAlignment value) {
-    return merge(FlexBoxMix.mainAxisAlignment(value));
+  FlexBoxStyle mainAxisAlignment(MainAxisAlignment value) {
+    return merge(FlexBoxStyle.mainAxisAlignment(value));
   }
 
   /// Sets cross axis alignment
-  FlexBoxMix crossAxisAlignment(CrossAxisAlignment value) {
-    return merge(FlexBoxMix.crossAxisAlignment(value));
+  FlexBoxStyle crossAxisAlignment(CrossAxisAlignment value) {
+    return merge(FlexBoxStyle.crossAxisAlignment(value));
   }
 
   /// Sets main axis size
-  FlexBoxMix mainAxisSize(MainAxisSize value) {
-    return merge(FlexBoxMix.mainAxisSize(value));
+  FlexBoxStyle mainAxisSize(MainAxisSize value) {
+    return merge(FlexBoxStyle.mainAxisSize(value));
   }
 
   /// Sets vertical direction
-  FlexBoxMix verticalDirection(VerticalDirection value) {
-    return merge(FlexBoxMix.verticalDirection(value));
+  FlexBoxStyle verticalDirection(VerticalDirection value) {
+    return merge(FlexBoxStyle.verticalDirection(value));
   }
 
   /// Sets text direction
-  FlexBoxMix textDirection(TextDirection value) {
-    return merge(FlexBoxMix.textDirection(value));
+  FlexBoxStyle textDirection(TextDirection value) {
+    return merge(FlexBoxStyle.textDirection(value));
   }
 
   /// Sets text baseline
-  FlexBoxMix textBaseline(TextBaseline value) {
-    return merge(FlexBoxMix.textBaseline(value));
+  FlexBoxStyle textBaseline(TextBaseline value) {
+    return merge(FlexBoxStyle.textBaseline(value));
   }
 
   /// Sets spacing
-  FlexBoxMix spacing(double value) {
-    return merge(FlexBoxMix.spacing(value));
+  FlexBoxStyle spacing(double value) {
+    return merge(FlexBoxStyle.spacing(value));
   }
 
   /// Sets gap
@@ -296,64 +300,64 @@ class FlexBoxMix extends Style<FlexBoxSpec>
     'Use spacing instead. '
     'This feature was deprecated after Mix v2.0.0.',
   )
-  FlexBoxMix gap(double value) {
-    return merge(FlexBoxMix.spacing(value));
+  FlexBoxStyle gap(double value) {
+    return merge(FlexBoxStyle.spacing(value));
   }
 
-  FlexBoxMix modifier(ModifierConfig value) {
-    return merge(FlexBoxMix(modifier: value));
+  FlexBoxStyle modifier(ModifierConfig value) {
+    return merge(FlexBoxStyle(modifier: value));
   }
 
   /// Padding instance method
   @override
-  FlexBoxMix padding(EdgeInsetsGeometryMix value) {
-    return merge(FlexBoxMix.padding(value));
+  FlexBoxStyle padding(EdgeInsetsGeometryMix value) {
+    return merge(FlexBoxStyle.padding(value));
   }
 
   /// Margin instance method
   @override
-  FlexBoxMix margin(EdgeInsetsGeometryMix value) {
-    return merge(FlexBoxMix.margin(value));
+  FlexBoxStyle margin(EdgeInsetsGeometryMix value) {
+    return merge(FlexBoxStyle.margin(value));
   }
 
   @override
-  FlexBoxMix transform(Matrix4 value) {
-    return merge(FlexBoxMix.transform(value));
+  FlexBoxStyle transform(Matrix4 value) {
+    return merge(FlexBoxStyle.transform(value));
   }
 
   /// Decoration instance method - delegates to container
   @override
-  FlexBoxMix decoration(DecorationMix value) {
-    return merge(FlexBoxMix.decoration(value));
+  FlexBoxStyle decoration(DecorationMix value) {
+    return merge(FlexBoxStyle.decoration(value));
   }
 
   /// Constraints instance method
   @override
-  FlexBoxMix constraints(BoxConstraintsMix value) {
-    return merge(FlexBoxMix.constraints(value));
+  FlexBoxStyle constraints(BoxConstraintsMix value) {
+    return merge(FlexBoxStyle.constraints(value));
   }
 
   /// Modifier instance method
   @override
-  FlexBoxMix wrap(ModifierConfig value) {
+  FlexBoxStyle wrap(ModifierConfig value) {
     return modifier(value);
   }
 
   @override
-  FlexBoxMix variants(List<VariantStyle<FlexBoxSpec>> variants) {
-    return merge(FlexBoxMix(variants: variants));
+  FlexBoxStyle variants(List<VariantStyle<FlexBoxWidgetSpec>> variants) {
+    return merge(FlexBoxStyle(variants: variants));
   }
 
   @override
-  FlexBoxMix variant(Variant variant, FlexBoxMix style) {
-    return merge(FlexBoxMix(variants: [VariantStyle(variant, style)]));
+  FlexBoxStyle variant(Variant variant, FlexBoxStyle style) {
+    return merge(FlexBoxStyle(variants: [VariantStyle(variant, style)]));
   }
 
   /// Border radius instance method
   @override
-  FlexBoxMix borderRadius(BorderRadiusGeometryMix value) {
+  FlexBoxStyle borderRadius(BorderRadiusGeometryMix value) {
     return merge(
-      FlexBoxMix(
+      FlexBoxStyle(
         container: ContainerSpecMix(
           decoration: DecorationMix.borderRadius(value),
         ),
@@ -361,7 +365,7 @@ class FlexBoxMix extends Style<FlexBoxSpec>
     );
   }
 
-  /// Resolves to [FlexBoxSpec] using the provided [BuildContext].
+  /// Resolves to [FlexBoxWidgetSpec] using the provided [BuildContext].
   ///
   /// If a property is null in the context, it uses the default value
   /// defined in the property specification.
@@ -370,11 +374,11 @@ class FlexBoxMix extends Style<FlexBoxSpec>
   /// final flexBoxSpec = FlexBoxMix(...).resolve(context);
   /// ```
   @override
-  FlexBoxSpec resolve(BuildContext context) {
+  FlexBoxWidgetSpec resolve(BuildContext context) {
     final containerSpec = MixOps.resolve(context, $container);
     final flexSpec = MixOps.resolve(context, $flex);
 
-    return FlexBoxSpec(
+    return FlexBoxWidgetSpec(
       container: containerSpec,
       flex: flexSpec,
       animation: $animation,
@@ -383,19 +387,19 @@ class FlexBoxMix extends Style<FlexBoxSpec>
     );
   }
 
-  /// Merges the properties of this [FlexBoxMix] with the properties of [other].
+  /// Merges the properties of this [FlexBoxStyle] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [FlexBoxMix] with the properties of [other] taking precedence over
+  /// [FlexBoxStyle] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  FlexBoxMix merge(FlexBoxMix? other) {
+  FlexBoxStyle merge(FlexBoxStyle? other) {
     if (other == null) return this;
 
-    return FlexBoxMix.create(
+    return FlexBoxStyle.create(
       container: MixOps.merge($container, other.$container),
       flex: MixOps.merge($flex, other.$flex),
       animation: other.$animation ?? $animation,
@@ -413,10 +417,10 @@ class FlexBoxMix extends Style<FlexBoxSpec>
       ..add(DiagnosticsProperty('flex', $flex));
   }
 
-  /// The list of properties that constitute the state of this [FlexBoxMix].
+  /// The list of properties that constitute the state of this [FlexBoxStyle].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [FlexBoxMix] instances for equality.
+  /// compare two [FlexBoxStyle] instances for equality.
   @override
   List<Object?> get props => [$container, $flex];
 }

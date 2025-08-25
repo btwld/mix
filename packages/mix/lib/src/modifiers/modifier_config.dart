@@ -2,8 +2,8 @@ import 'package:flutter/widgets.dart';
 
 import '../core/internal/compare_mixin.dart';
 import '../core/modifier.dart';
-import '../core/widget_spec.dart';
 import '../core/style.dart';
+import '../core/widget_spec.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
 import '../properties/painting/border_radius_mix.dart';
 import '../properties/painting/shadow_mix.dart';
@@ -13,8 +13,8 @@ import '../specs/container/container_attribute.dart';
 import '../specs/icon/icon_attribute.dart';
 import '../specs/text/text_attribute.dart';
 import 'align_modifier.dart';
-import 'box_modifier.dart';
 import 'aspect_ratio_modifier.dart';
+import 'box_modifier.dart';
 import 'clip_modifier.dart';
 import 'default_text_style_modifier.dart';
 import 'flexible_modifier.dart';
@@ -225,7 +225,7 @@ final class ModifierConfig with Equatable {
     );
   }
 
-  factory ModifierConfig.defaultIcon(IconMix iconMix) {
+  factory ModifierConfig.defaultIcon(IconStyle iconMix) {
     return ModifierConfig.modifier(
       IconThemeModifierMix.create(
         color: iconMix.$color,

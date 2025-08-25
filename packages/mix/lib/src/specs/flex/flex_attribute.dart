@@ -12,8 +12,6 @@ import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'flex_spec.dart';
 
-typedef FlexMix = FlexStyle;
-
 /// Represents the attributes of a [FlexWidgetSpec].
 ///
 /// This class encapsulates properties defining the layout and

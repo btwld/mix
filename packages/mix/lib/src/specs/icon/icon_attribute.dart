@@ -14,12 +14,14 @@ import '../../variants/variant_util.dart';
 import 'icon_spec.dart';
 import 'icon_widget.dart';
 
-class IconMix extends Style<IconSpec>
+typedef IconMix = IconStyle;
+
+class IconStyle extends Style<IconWidgetSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<IconMix, IconSpec>,
-        StyleVariantMixin<IconMix, IconSpec>,
-        StyleAnimationMixin<IconSpec, IconMix> {
+        StyleModifierMixin<IconStyle, IconWidgetSpec>,
+        StyleVariantMixin<IconStyle, IconWidgetSpec>,
+        StyleAnimationMixin<IconWidgetSpec, IconStyle> {
   final Prop<Color>? $color;
   final Prop<double>? $size;
   final Prop<double>? $weight;
@@ -34,91 +36,91 @@ class IconMix extends Style<IconSpec>
   final Prop<IconData>? $icon;
 
   /// Factory for icon color
-  factory IconMix.color(Color value) {
-    return IconMix(color: value);
+  factory IconStyle.color(Color value) {
+    return IconStyle(color: value);
   }
 
   /// Factory for icon size
-  factory IconMix.size(double value) {
-    return IconMix(size: value);
+  factory IconStyle.size(double value) {
+    return IconStyle(size: value);
   }
 
   /// Factory for icon weight
-  factory IconMix.weight(double value) {
-    return IconMix(weight: value);
+  factory IconStyle.weight(double value) {
+    return IconStyle(weight: value);
   }
 
   /// Factory for icon grade
-  factory IconMix.grade(double value) {
-    return IconMix(grade: value);
+  factory IconStyle.grade(double value) {
+    return IconStyle(grade: value);
   }
 
   /// Factory for icon optical size
-  factory IconMix.opticalSize(double value) {
-    return IconMix(opticalSize: value);
+  factory IconStyle.opticalSize(double value) {
+    return IconStyle(opticalSize: value);
   }
 
   /// Factory for icon shadow
-  factory IconMix.shadow(ShadowMix value) {
-    return IconMix(shadows: [value]);
+  factory IconStyle.shadow(ShadowMix value) {
+    return IconStyle(shadows: [value]);
   }
 
   /// Factory for icon shadows
-  factory IconMix.shadows(List<ShadowMix> value) {
-    return IconMix(shadows: value);
+  factory IconStyle.shadows(List<ShadowMix> value) {
+    return IconStyle(shadows: value);
   }
 
   /// Factory for text direction
-  factory IconMix.textDirection(TextDirection value) {
-    return IconMix(textDirection: value);
+  factory IconStyle.textDirection(TextDirection value) {
+    return IconStyle(textDirection: value);
   }
 
   /// Factory for apply text scaling
-  factory IconMix.applyTextScaling(bool value) {
-    return IconMix(applyTextScaling: value);
+  factory IconStyle.applyTextScaling(bool value) {
+    return IconStyle(applyTextScaling: value);
   }
 
   /// Factory for icon fill
-  factory IconMix.fill(double value) {
-    return IconMix(fill: value);
+  factory IconStyle.fill(double value) {
+    return IconStyle(fill: value);
   }
 
   /// Factory for semantics label
-  factory IconMix.semanticsLabel(String value) {
-    return IconMix(semanticsLabel: value);
+  factory IconStyle.semanticsLabel(String value) {
+    return IconStyle(semanticsLabel: value);
   }
 
   /// Factory for blend mode
-  factory IconMix.blendMode(BlendMode value) {
-    return IconMix(blendMode: value);
+  factory IconStyle.blendMode(BlendMode value) {
+    return IconStyle(blendMode: value);
   }
 
   /// Factory for icon data
-  factory IconMix.icon(IconData value) {
-    return IconMix(icon: value);
+  factory IconStyle.icon(IconData value) {
+    return IconStyle(icon: value);
   }
 
   /// Factory for animation
-  factory IconMix.animate(AnimationConfig animation) {
-    return IconMix(animation: animation);
+  factory IconStyle.animate(AnimationConfig animation) {
+    return IconStyle(animation: animation);
   }
 
   /// Factory for variant
-  factory IconMix.variant(Variant variant, IconMix value) {
-    return IconMix(variants: [VariantStyle(variant, value)]);
+  factory IconStyle.variant(Variant variant, IconStyle value) {
+    return IconStyle(variants: [VariantStyle(variant, value)]);
   }
 
   /// Factory for widget modifier
-  factory IconMix.modifier(ModifierConfig modifier) {
-    return IconMix(modifier: modifier);
+  factory IconStyle.modifier(ModifierConfig modifier) {
+    return IconStyle(modifier: modifier);
   }
 
   /// Factory for widget modifier
-  factory IconMix.wrap(ModifierConfig value) {
-    return IconMix(modifier: value);
+  factory IconStyle.wrap(ModifierConfig value) {
+    return IconStyle(modifier: value);
   }
 
-  const IconMix.create({
+  const IconStyle.create({
     Prop<Color>? color,
     Prop<double>? size,
     Prop<double>? weight,
@@ -149,7 +151,7 @@ class IconMix extends Style<IconSpec>
        $blendMode = blendMode,
        $icon = icon;
 
-  IconMix({
+  IconStyle({
     Color? color,
     double? size,
     double? weight,
@@ -164,7 +166,7 @@ class IconMix extends Style<IconSpec>
     IconData? icon,
     AnimationConfig? animation,
     ModifierConfig? modifier,
-    List<VariantStyle<IconSpec>>? variants,
+    List<VariantStyle<IconWidgetSpec>>? variants,
     bool? inherit,
   }) : this.create(
          color: Prop.maybe(color),
@@ -186,8 +188,8 @@ class IconMix extends Style<IconSpec>
        );
 
   // Static factory to create from resolved Spec
-  static IconMix value(IconSpec spec) {
-    return IconMix(
+  static IconStyle value(IconWidgetSpec spec) {
+    return IconStyle(
       color: spec.color,
       size: spec.size,
       weight: spec.weight,
@@ -203,100 +205,100 @@ class IconMix extends Style<IconSpec>
     );
   }
 
-  /// Constructor that accepts a nullable [IconSpec] value and extracts its properties.
+  /// Constructor that accepts a nullable [IconWidgetSpec] value and extracts its properties.
   ///
-  /// Returns null if the input is null, otherwise uses [IconMix.value].
+  /// Returns null if the input is null, otherwise uses [IconStyle.value].
   ///
   /// ```dart
   /// const IconSpec? spec = IconSpec(color: Colors.blue, size: 24.0);
   /// final attr = IconMix.maybeValue(spec); // Returns IconMix or null
   /// ```
-  static IconMix? maybeValue(IconSpec? spec) {
-    return spec != null ? IconMix.value(spec) : null;
+  static IconStyle? maybeValue(IconWidgetSpec? spec) {
+    return spec != null ? IconStyle.value(spec) : null;
   }
 
   /// Sets icon color
-  IconMix color(Color value) {
-    return merge(IconMix.color(value));
+  IconStyle color(Color value) {
+    return merge(IconStyle.color(value));
   }
 
   /// Sets icon size
-  IconMix size(double value) {
-    return merge(IconMix.size(value));
+  IconStyle size(double value) {
+    return merge(IconStyle.size(value));
   }
 
   /// Sets icon weight
-  IconMix weight(double value) {
-    return merge(IconMix.weight(value));
+  IconStyle weight(double value) {
+    return merge(IconStyle.weight(value));
   }
 
   /// Sets icon grade
-  IconMix grade(double value) {
-    return merge(IconMix.grade(value));
+  IconStyle grade(double value) {
+    return merge(IconStyle.grade(value));
   }
 
   /// Sets icon optical size
-  IconMix opticalSize(double value) {
-    return merge(IconMix.opticalSize(value));
+  IconStyle opticalSize(double value) {
+    return merge(IconStyle.opticalSize(value));
   }
 
   /// Sets single icon shadow
-  IconMix shadow(ShadowMix value) {
-    return merge(IconMix.shadow(value));
+  IconStyle shadow(ShadowMix value) {
+    return merge(IconStyle.shadow(value));
   }
 
   /// Sets icon shadows
-  IconMix shadows(List<ShadowMix> value) {
-    return merge(IconMix.shadows(value));
+  IconStyle shadows(List<ShadowMix> value) {
+    return merge(IconStyle.shadows(value));
   }
 
   /// Sets text direction
-  IconMix textDirection(TextDirection value) {
-    return merge(IconMix.textDirection(value));
+  IconStyle textDirection(TextDirection value) {
+    return merge(IconStyle.textDirection(value));
   }
 
   /// Sets apply text scaling
-  IconMix applyTextScaling(bool value) {
-    return merge(IconMix.applyTextScaling(value));
+  IconStyle applyTextScaling(bool value) {
+    return merge(IconStyle.applyTextScaling(value));
   }
 
   /// Sets icon fill
-  IconMix fill(double value) {
-    return merge(IconMix.fill(value));
+  IconStyle fill(double value) {
+    return merge(IconStyle.fill(value));
   }
 
   /// Sets semantics label
-  IconMix semanticsLabel(String value) {
-    return merge(IconMix.semanticsLabel(value));
+  IconStyle semanticsLabel(String value) {
+    return merge(IconStyle.semanticsLabel(value));
   }
 
   /// Sets blend mode
-  IconMix blendMode(BlendMode value) {
-    return merge(IconMix.blendMode(value));
+  IconStyle blendMode(BlendMode value) {
+    return merge(IconStyle.blendMode(value));
   }
 
   /// Sets icon data
-  IconMix icon(IconData value) {
-    return merge(IconMix.icon(value));
+  IconStyle icon(IconData value) {
+    return merge(IconStyle.icon(value));
   }
 
   StyledIcon call({IconData? icon, String? semanticLabel}) {
     return StyledIcon(icon: icon, semanticLabel: semanticLabel, style: this);
   }
 
-  IconMix modifier(ModifierConfig value) {
-    return merge(IconMix(modifier: value));
+  IconStyle modifier(ModifierConfig value) {
+    return merge(IconStyle(modifier: value));
   }
 
   /// Sets animation
   @override
-  IconMix animate(AnimationConfig animation) {
-    return merge(IconMix.animate(animation));
+  IconStyle animate(AnimationConfig animation) {
+    return merge(IconStyle.animate(animation));
   }
 
   @override
-  IconSpec resolve(BuildContext context) {
-    return IconSpec(
+  IconWidgetSpec resolve(BuildContext context) {
+    return IconWidgetSpec(
       color: MixOps.resolve(context, $color),
       size: MixOps.resolve(context, $size),
       weight: MixOps.resolve(context, $weight),
@@ -316,10 +318,10 @@ class IconMix extends Style<IconSpec>
   }
 
   @override
-  IconMix merge(IconMix? other) {
+  IconStyle merge(IconStyle? other) {
     if (other == null) return this;
 
-    return IconMix.create(
+    return IconStyle.create(
       color: MixOps.merge($color, other.$color),
       size: MixOps.merge($size, other.$size),
       weight: MixOps.merge($weight, other.$weight),
@@ -327,7 +329,10 @@ class IconMix extends Style<IconSpec>
       opticalSize: MixOps.merge($opticalSize, other.$opticalSize),
       shadows: MixOps.mergeList($shadows, other.$shadows),
       textDirection: MixOps.merge($textDirection, other.$textDirection),
-      applyTextScaling: MixOps.merge($applyTextScaling, other.$applyTextScaling),
+      applyTextScaling: MixOps.merge(
+        $applyTextScaling,
+        other.$applyTextScaling,
+      ),
       fill: MixOps.merge($fill, other.$fill),
       semanticsLabel: MixOps.merge($semanticsLabel, other.$semanticsLabel),
       blendMode: MixOps.merge($blendMode, other.$blendMode),
@@ -359,17 +364,17 @@ class IconMix extends Style<IconSpec>
   }
 
   @override
-  IconMix variant(Variant variant, IconMix style) {
-    return merge(IconMix(variants: [VariantStyle(variant, style)]));
+  IconStyle variant(Variant variant, IconStyle style) {
+    return merge(IconStyle(variants: [VariantStyle(variant, style)]));
   }
 
   @override
-  IconMix variants(List<VariantStyle<IconSpec>> value) {
-    return merge(IconMix(variants: value));
+  IconStyle variants(List<VariantStyle<IconWidgetSpec>> value) {
+    return merge(IconStyle(variants: value));
   }
 
   @override
-  IconMix wrap(ModifierConfig value) {
+  IconStyle wrap(ModifierConfig value) {
     return modifier(value);
   }
 

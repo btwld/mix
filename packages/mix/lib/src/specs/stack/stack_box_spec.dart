@@ -7,30 +7,30 @@ import '../../core/widget_spec.dart';
 import '../box/box_spec.dart';
 import 'stack_spec.dart';
 
-final class ZBoxSpec extends WidgetSpec<ZBoxSpec> {
+final class ZBoxWidgetSpec extends WidgetSpec<ZBoxWidgetSpec> {
   final BoxWidgetSpec box;
-  final StackSpec stack;
+  final StackWidgetSpec stack;
 
-  const ZBoxSpec({
+  const ZBoxWidgetSpec({
     BoxWidgetSpec? box,
-    StackSpec? stack,
+    StackWidgetSpec? stack,
     super.animation,
     super.widgetModifiers,
     super.inherit,
   }) : box = box ?? const BoxWidgetSpec(),
-       stack = stack ?? const StackSpec();
+       stack = stack ?? const StackWidgetSpec();
 
-  /// Creates a copy of this [ZBoxSpec] but with the given fields
+  /// Creates a copy of this [ZBoxWidgetSpec] but with the given fields
   /// replaced with the new values.
   @override
-  ZBoxSpec copyWith({
+  ZBoxWidgetSpec copyWith({
     BoxWidgetSpec? box,
-    StackSpec? stack,
+    StackWidgetSpec? stack,
     AnimationConfig? animation,
     List<Modifier>? widgetModifiers,
     bool? inherit,
   }) {
-    return ZBoxSpec(
+    return ZBoxWidgetSpec(
       box: box ?? this.box,
       stack: stack ?? this.stack,
       animation: animation ?? this.animation,
@@ -39,23 +39,23 @@ final class ZBoxSpec extends WidgetSpec<ZBoxSpec> {
     );
   }
 
-  /// Linearly interpolates between this [ZBoxSpec] and another [ZBoxSpec] based on the given parameter [t].
+  /// Linearly interpolates between this [ZBoxWidgetSpec] and another [ZBoxWidgetSpec] based on the given parameter [t].
   ///
   /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [ZBoxSpec] is returned. When [t] is 1.0, the [other] [ZBoxSpec] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [ZBoxSpec] is returned.
+  /// When [t] is 0.0, the current [ZBoxWidgetSpec] is returned. When [t] is 1.0, the [other] [ZBoxWidgetSpec] is returned.
+  /// For values of [t] between 0.0 and 1.0, an interpolated [ZBoxWidgetSpec] is returned.
   ///
-  /// If [other] is null, this method returns the current [ZBoxSpec] instance.
+  /// If [other] is null, this method returns the current [ZBoxWidgetSpec] instance.
   ///
-  /// The interpolation is performed on each property of the [ZBoxSpec] using the appropriate
+  /// The interpolation is performed on each property of the [ZBoxWidgetSpec] using the appropriate
   /// interpolation method:
   /// - [BoxWidgetSpec.lerp] for [box].
-  /// - [StackSpec.lerp] for [stack].
+  /// - [StackWidgetSpec.lerp] for [stack].
   ///
   /// This method is typically used in animations to smoothly transition between
-  /// different [ZBoxSpec] configurations.
+  /// different [ZBoxWidgetSpec] configurations.
   @override
-  ZBoxSpec lerp(ZBoxSpec? other, double t) {
+  ZBoxWidgetSpec lerp(ZBoxWidgetSpec? other, double t) {
     // Create new BoxSpec and StackSpec WITHOUT their metadata
     // The metadata is handled at ZBoxSpec level
     final lerpedBox = box
@@ -65,7 +65,7 @@ final class ZBoxSpec extends WidgetSpec<ZBoxSpec> {
         .lerp(other?.stack, t)
         .copyWith(animation: null, widgetModifiers: null, inherit: null);
 
-    return ZBoxSpec(
+    return ZBoxWidgetSpec(
       box: lerpedBox,
       stack: lerpedStack,
       // Meta fields: use confirmed policy other.field ?? this.field
@@ -83,14 +83,18 @@ final class ZBoxSpec extends WidgetSpec<ZBoxSpec> {
         DiagnosticsProperty('box', box, defaultValue: const BoxWidgetSpec()),
       )
       ..add(
-        DiagnosticsProperty('stack', stack, defaultValue: const StackSpec()),
+        DiagnosticsProperty(
+          'stack',
+          stack,
+          defaultValue: const StackWidgetSpec(),
+        ),
       );
   }
 
-  /// The list of properties that constitute the state of this [ZBoxSpec].
+  /// The list of properties that constitute the state of this [ZBoxWidgetSpec].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [ZBoxSpec] instances for equality.
+  /// compare two [ZBoxWidgetSpec] instances for equality.
   @override
   List<Object?> get props => [...super.props, box, stack];
 }

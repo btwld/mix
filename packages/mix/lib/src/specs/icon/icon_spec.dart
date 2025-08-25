@@ -10,7 +10,7 @@ import '../../core/widget_spec.dart';
 ///
 /// Provides comprehensive icon styling including color, size, weight, optical properties,
 /// text direction, scaling behavior, and shadow effects.
-final class IconSpec extends WidgetSpec<IconSpec> {
+final class IconWidgetSpec extends WidgetSpec<IconWidgetSpec> {
   /// The color to use when drawing the icon.
   final Color? color;
 
@@ -47,7 +47,7 @@ final class IconSpec extends WidgetSpec<IconSpec> {
   /// The icon data to display.
   final IconData? icon;
 
-  const IconSpec({
+  const IconWidgetSpec({
     this.color,
     this.size,
     this.weight,
@@ -65,9 +65,8 @@ final class IconSpec extends WidgetSpec<IconSpec> {
     super.inherit,
   });
 
-
   @override
-  IconSpec copyWith({
+  IconWidgetSpec copyWith({
     Color? color,
     double? size,
     double? weight,
@@ -84,7 +83,7 @@ final class IconSpec extends WidgetSpec<IconSpec> {
     List<Modifier>? widgetModifiers,
     bool? inherit,
   }) {
-    return IconSpec(
+    return IconWidgetSpec(
       color: color ?? this.color,
       size: size ?? this.size,
       weight: weight ?? this.weight,
@@ -104,8 +103,8 @@ final class IconSpec extends WidgetSpec<IconSpec> {
   }
 
   @override
-  IconSpec lerp(IconSpec? other, double t) {
-    return IconSpec(
+  IconWidgetSpec lerp(IconWidgetSpec? other, double t) {
+    return IconWidgetSpec(
       color: MixOps.lerp(color, other?.color, t),
       size: MixOps.lerp(size, other?.size, t),
       weight: MixOps.lerp(weight, other?.weight, t),
@@ -140,7 +139,13 @@ final class IconSpec extends WidgetSpec<IconSpec> {
       ..add(DoubleProperty('opticalSize', opticalSize))
       ..add(IterableProperty<Shadow>('shadows', shadows))
       ..add(EnumProperty<TextDirection>('textDirection', textDirection))
-      ..add(FlagProperty('applyTextScaling', value: applyTextScaling, ifTrue: 'scales with text'))
+      ..add(
+        FlagProperty(
+          'applyTextScaling',
+          value: applyTextScaling,
+          ifTrue: 'scales with text',
+        ),
+      )
       ..add(DoubleProperty('fill', fill))
       ..add(StringProperty('semanticsLabel', semanticsLabel))
       ..add(EnumProperty<BlendMode>('blendMode', blendMode))

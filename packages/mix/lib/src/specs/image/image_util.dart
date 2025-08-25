@@ -12,11 +12,11 @@ import 'image_spec.dart';
 
 /// Provides mutable utility for image styling with cascade notation support.
 ///
-/// Supports the same API as [ImageMix] but maintains mutable internal state
+/// Supports the same API as [ImageStyle] but maintains mutable internal state
 /// enabling fluid styling: `$image..width(100)..height(100)..fit(BoxFit.cover)`.
-class ImageSpecUtility extends StyleMutableBuilder<ImageSpec> {
+class ImageSpecUtility extends StyleMutableBuilder<ImageWidgetSpec> {
   late final color = ColorUtility(
-    (prop) => mutable.merge(ImageMix.create(color: prop)),
+    (prop) => mutable.merge(ImageStyle.create(color: prop)),
   );
 
   late final repeat = MixUtility(mutable.repeat);
@@ -31,7 +31,7 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageSpec> {
 
   late final colorBlendMode = MixUtility(mutable.colorBlendMode);
 
-  late final on = OnContextVariantUtility<ImageSpec, ImageMix>(
+  late final on = OnContextVariantUtility<ImageWidgetSpec, ImageStyle>(
     (v) => mutable.variants([v]),
   );
 
@@ -59,18 +59,18 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageSpec> {
   late final matchTextDirection = mutable.matchTextDirection;
   late final animate = mutable.animate;
   late final variants = mutable.variants;
-  ImageSpecUtility([ImageMix? attribute]) {
-    mutable = MutableImageMix(attribute ?? ImageMix());
+  ImageSpecUtility([ImageStyle? attribute]) {
+    mutable = MutableImageMix(attribute ?? ImageStyle());
   }
 
   @override
-  ImageSpecUtility merge(Style<ImageSpec>? other) {
+  ImageSpecUtility merge(Style<ImageWidgetSpec>? other) {
     if (other == null) return this;
     // Always create new instance (StyleAttribute contract)
     if (other is ImageSpecUtility) {
       return ImageSpecUtility(mutable.merge(other.mutable.value));
     }
-    if (other is ImageMix) {
+    if (other is ImageStyle) {
       return ImageSpecUtility(mutable.merge(other));
     }
 
@@ -78,17 +78,18 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageSpec> {
   }
 
   @override
-  ImageSpec resolve(BuildContext context) {
+  ImageWidgetSpec resolve(BuildContext context) {
     return mutable.resolve(context);
   }
 
-  /// The accumulated [ImageMix] with all applied styling properties.
+  /// The accumulated [ImageStyle] with all applied styling properties.
   @override
-  ImageMix get value => mutable.value;
+  ImageStyle get value => mutable.value;
 }
 
-class MutableImageMix extends ImageMix with Mutable<ImageSpec, ImageMix> {
-  MutableImageMix(ImageMix style) {
+class MutableImageMix extends ImageStyle
+    with Mutable<ImageWidgetSpec, ImageStyle> {
+  MutableImageMix(ImageStyle style) {
     value = style;
   }
 }

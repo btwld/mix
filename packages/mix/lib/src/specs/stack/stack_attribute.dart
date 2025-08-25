@@ -12,64 +12,66 @@ import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'stack_spec.dart';
 
-/// Represents the attributes of a [StackSpec].
+typedef StackMix = StackStyle;
+
+/// Represents the attributes of a [StackWidgetSpec].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [StackSpec].
+/// appearance of a [StackWidgetSpec].
 ///
-/// Use this class to configure the attributes of a [StackSpec] and pass it to
-/// the [StackSpec] constructor.
-class StackMix extends Style<StackSpec>
+/// Use this class to configure the attributes of a [StackWidgetSpec] and pass it to
+/// the [StackWidgetSpec] constructor.
+class StackStyle extends Style<StackWidgetSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<StackMix, StackSpec>,
-        StyleVariantMixin<StackMix, StackSpec>,
-        StyleAnimationMixin<StackSpec, StackMix> {
+        StyleModifierMixin<StackStyle, StackWidgetSpec>,
+        StyleVariantMixin<StackStyle, StackWidgetSpec>,
+        StyleAnimationMixin<StackWidgetSpec, StackStyle> {
   final Prop<AlignmentGeometry>? $alignment;
   final Prop<StackFit>? $fit;
   final Prop<TextDirection>? $textDirection;
   final Prop<Clip>? $clipBehavior;
 
   /// Factory for stack alignment
-  factory StackMix.alignment(AlignmentGeometry value) {
-    return StackMix(alignment: value);
+  factory StackStyle.alignment(AlignmentGeometry value) {
+    return StackStyle(alignment: value);
   }
 
   /// Factory for stack fit
-  factory StackMix.fit(StackFit value) {
-    return StackMix(fit: value);
+  factory StackStyle.fit(StackFit value) {
+    return StackStyle(fit: value);
   }
 
   /// Factory for text direction
-  factory StackMix.textDirection(TextDirection value) {
-    return StackMix(textDirection: value);
+  factory StackStyle.textDirection(TextDirection value) {
+    return StackStyle(textDirection: value);
   }
 
   /// Factory for clip behavior
-  factory StackMix.clipBehavior(Clip value) {
-    return StackMix(clipBehavior: value);
+  factory StackStyle.clipBehavior(Clip value) {
+    return StackStyle(clipBehavior: value);
   }
 
   /// Factory for animation
-  factory StackMix.animate(AnimationConfig animation) {
-    return StackMix(animation: animation);
+  factory StackStyle.animate(AnimationConfig animation) {
+    return StackStyle(animation: animation);
   }
 
   /// Factory for variant
-  factory StackMix.variant(Variant variant, StackMix value) {
-    return StackMix(variants: [VariantStyle(variant, value)]);
+  factory StackStyle.variant(Variant variant, StackStyle value) {
+    return StackStyle(variants: [VariantStyle(variant, value)]);
   }
 
   /// Factory for widget modifier
-  factory StackMix.modifier(ModifierConfig modifier) {
-    return StackMix(modifier: modifier);
+  factory StackStyle.modifier(ModifierConfig modifier) {
+    return StackStyle(modifier: modifier);
   }
 
-  factory StackMix.wrap(ModifierConfig value) {
-    return StackMix(modifier: value);
+  factory StackStyle.wrap(ModifierConfig value) {
+    return StackStyle(modifier: value);
   }
 
-  const StackMix.create({
+  const StackStyle.create({
     Prop<AlignmentGeometry>? alignment,
     Prop<StackFit>? fit,
     Prop<TextDirection>? textDirection,
@@ -84,14 +86,14 @@ class StackMix extends Style<StackSpec>
        $textDirection = textDirection,
        $clipBehavior = clipBehavior;
 
-  StackMix({
+  StackStyle({
     AlignmentGeometry? alignment,
     StackFit? fit,
     TextDirection? textDirection,
     Clip? clipBehavior,
     AnimationConfig? animation,
     ModifierConfig? modifier,
-    List<VariantStyle<StackSpec>>? variants,
+    List<VariantStyle<StackWidgetSpec>>? variants,
     bool? inherit,
   }) : this.create(
          alignment: Prop.maybe(alignment),
@@ -104,15 +106,15 @@ class StackMix extends Style<StackSpec>
          inherit: inherit,
        );
 
-  /// Constructor that accepts a [StackSpec] value and extracts its properties.
+  /// Constructor that accepts a [StackWidgetSpec] value and extracts its properties.
   ///
-  /// This is useful for converting existing [StackSpec] instances to [StackMix].
+  /// This is useful for converting existing [StackWidgetSpec] instances to [StackStyle].
   ///
   /// ```dart
   /// const spec = StackSpec(alignment: AlignmentDirectional.topStart, fit: StackFit.loose);
   /// final attr = StackMix.value(spec);
   /// ```
-  StackMix.value(StackSpec spec)
+  StackStyle.value(StackWidgetSpec spec)
     : this(
         alignment: spec.alignment,
         fit: spec.fit,
@@ -120,7 +122,7 @@ class StackMix extends Style<StackSpec>
         clipBehavior: spec.clipBehavior,
       );
 
-  /// Constructor that accepts a nullable [StackSpec] value and extracts its properties.
+  /// Constructor that accepts a nullable [StackWidgetSpec] value and extracts its properties.
   ///
   /// Returns null if the input is null, otherwise uses [StackMix.value].
   ///
@@ -128,49 +130,49 @@ class StackMix extends Style<StackSpec>
   /// const StackSpec? spec = StackSpec(alignment: AlignmentDirectional.topStart, fit: StackFit.loose);
   /// final attr = StackMix.maybeValue(spec); // Returns StackMix or null
   /// ```
-  static StackMix? maybeValue(StackSpec? spec) {
-    return spec != null ? StackMix.value(spec) : null;
+  static StackStyle? maybeValue(StackWidgetSpec? spec) {
+    return spec != null ? StackStyle.value(spec) : null;
   }
 
   /// Sets stack alignment
-  StackMix alignment(AlignmentGeometry value) {
-    return merge(StackMix.alignment(value));
+  StackStyle alignment(AlignmentGeometry value) {
+    return merge(StackStyle.alignment(value));
   }
 
   /// Sets stack fit
-  StackMix fit(StackFit value) {
-    return merge(StackMix.fit(value));
+  StackStyle fit(StackFit value) {
+    return merge(StackStyle.fit(value));
   }
 
   /// Sets text direction
-  StackMix textDirection(TextDirection value) {
-    return merge(StackMix.textDirection(value));
+  StackStyle textDirection(TextDirection value) {
+    return merge(StackStyle.textDirection(value));
   }
 
   /// Sets clip behavior
-  StackMix clipBehavior(Clip value) {
-    return merge(StackMix.clipBehavior(value));
+  StackStyle clipBehavior(Clip value) {
+    return merge(StackStyle.clipBehavior(value));
+  }
+
+  StackStyle modifier(ModifierConfig value) {
+    return merge(StackStyle(modifier: value));
   }
 
   /// Convenience method for animating the StackSpec
   @override
-  StackMix animate(AnimationConfig animation) {
-    return merge(StackMix.animate(animation));
-  }
-
-  StackMix modifier(ModifierConfig value) {
-    return merge(StackMix(modifier: value));
+  StackStyle animate(AnimationConfig animation) {
+    return merge(StackStyle.animate(animation));
   }
 
   @override
-  StackMix variants(List<VariantStyle<StackSpec>> variants) {
-    return merge(StackMix(variants: variants));
+  StackStyle variants(List<VariantStyle<StackWidgetSpec>> variants) {
+    return merge(StackStyle(variants: variants));
   }
 
-  /// Resolves to [StackSpec] using the provided [BuildContext].
+  /// Resolves to [StackWidgetSpec] using the provided [BuildContext].
   @override
-  StackSpec resolve(BuildContext context) {
-    return StackSpec(
+  StackWidgetSpec resolve(BuildContext context) {
+    return StackWidgetSpec(
       alignment: MixOps.resolve(context, $alignment),
       fit: MixOps.resolve(context, $fit),
       textDirection: MixOps.resolve(context, $textDirection),
@@ -181,12 +183,12 @@ class StackMix extends Style<StackSpec>
     );
   }
 
-  /// Merges the properties of this [StackMix] with the properties of [other].
+  /// Merges the properties of this [StackStyle] with the properties of [other].
   @override
-  StackMix merge(StackMix? other) {
+  StackStyle merge(StackStyle? other) {
     if (other == null) return this;
 
-    return StackMix.create(
+    return StackStyle.create(
       alignment: MixOps.merge($alignment, other.$alignment),
       fit: MixOps.merge($fit, other.$fit),
       textDirection: MixOps.merge($textDirection, other.$textDirection),
@@ -210,12 +212,12 @@ class StackMix extends Style<StackSpec>
   }
 
   @override
-  StackMix variant(Variant variant, StackMix style) {
-    return merge(StackMix(variants: [VariantStyle(variant, style)]));
+  StackStyle variant(Variant variant, StackStyle style) {
+    return merge(StackStyle(variants: [VariantStyle(variant, style)]));
   }
 
   @override
-  StackMix wrap(ModifierConfig value) {
+  StackStyle wrap(ModifierConfig value) {
     return modifier(value);
   }
 

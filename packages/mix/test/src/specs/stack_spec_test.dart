@@ -8,7 +8,7 @@ void main() {
   group('StackSpec', () {
     group('Constructor', () {
       test('creates StackSpec with all properties', () {
-        const spec = StackSpec(
+        const spec = StackWidgetSpec(
           alignment: Alignment.center,
           fit: StackFit.expand,
           textDirection: TextDirection.rtl,
@@ -22,7 +22,7 @@ void main() {
       });
 
       test('creates StackSpec with default values', () {
-        const spec = StackSpec();
+        const spec = StackWidgetSpec();
 
         expect(spec.alignment, isNull);
         expect(spec.fit, isNull);
@@ -33,7 +33,7 @@ void main() {
 
     group('copyWith', () {
       test('creates new instance with updated properties', () {
-        const original = StackSpec(
+        const original = StackWidgetSpec(
           alignment: Alignment.topLeft,
           fit: StackFit.loose,
           textDirection: TextDirection.ltr,
@@ -51,7 +51,7 @@ void main() {
       });
 
       test('preserves original properties when not specified', () {
-        const original = StackSpec(
+        const original = StackWidgetSpec(
           fit: StackFit.expand,
           clipBehavior: Clip.none,
         );
@@ -63,7 +63,7 @@ void main() {
       });
 
       test('handles null values correctly', () {
-        const original = StackSpec(
+        const original = StackWidgetSpec(
           alignment: Alignment.center,
           fit: StackFit.loose,
         );
@@ -76,8 +76,8 @@ void main() {
 
     group('lerp', () {
       test('interpolates between two StackSpecs correctly', () {
-        const spec1 = StackSpec(alignment: Alignment.topLeft);
-        const spec2 = StackSpec(alignment: Alignment.bottomRight);
+        const spec1 = StackWidgetSpec(alignment: Alignment.topLeft);
+        const spec2 = StackWidgetSpec(alignment: Alignment.bottomRight);
 
         final lerped = spec1.lerp(spec2, 0.5);
 
@@ -85,16 +85,16 @@ void main() {
       });
 
       test('handles null other parameter correctly', () {
-        const spec = StackSpec(
+        const spec = StackWidgetSpec(
           alignment: Alignment.center,
           fit: StackFit.expand,
         );
-        
+
         // When t < 0.5, should preserve original values
         final lerped1 = spec.lerp(null, 0.3);
         expect(lerped1.alignment, Alignment.center);
         expect(lerped1.fit, StackFit.expand);
-        
+
         // When t >= 0.5, snap properties become null, but new spec should be created
         final lerped2 = spec.lerp(null, 0.7);
         expect(lerped2.alignment, Alignment.center); // alignment lerps properly
@@ -102,11 +102,11 @@ void main() {
       });
 
       test('handles edge cases (t=0, t=1)', () {
-        const spec1 = StackSpec(
+        const spec1 = StackWidgetSpec(
           alignment: Alignment.topLeft,
           fit: StackFit.loose,
         );
-        const spec2 = StackSpec(
+        const spec2 = StackWidgetSpec(
           alignment: Alignment.bottomRight,
           fit: StackFit.expand,
         );
@@ -121,12 +121,12 @@ void main() {
       });
 
       test('uses step function for discrete properties', () {
-        const spec1 = StackSpec(
+        const spec1 = StackWidgetSpec(
           fit: StackFit.loose,
           textDirection: TextDirection.ltr,
           clipBehavior: Clip.none,
         );
-        const spec2 = StackSpec(
+        const spec2 = StackWidgetSpec(
           fit: StackFit.expand,
           textDirection: TextDirection.rtl,
           clipBehavior: Clip.antiAlias,
@@ -147,8 +147,8 @@ void main() {
       });
 
       test('interpolates AlignmentGeometry correctly', () {
-        const spec1 = StackSpec(alignment: Alignment.topLeft);
-        const spec2 = StackSpec(alignment: Alignment.bottomRight);
+        const spec1 = StackWidgetSpec(alignment: Alignment.topLeft);
+        const spec2 = StackWidgetSpec(alignment: Alignment.bottomRight);
 
         final lerped = spec1.lerp(spec2, 0.5);
 
@@ -156,8 +156,8 @@ void main() {
       });
 
       test('handles null alignment interpolation', () {
-        const spec1 = StackSpec(alignment: Alignment.topLeft);
-        const spec2 = StackSpec();
+        const spec1 = StackWidgetSpec(alignment: Alignment.topLeft);
+        const spec2 = StackWidgetSpec();
 
         final lerped = spec1.lerp(spec2, 0.5);
 
@@ -167,13 +167,13 @@ void main() {
 
     group('equality', () {
       test('specs with same properties are equal', () {
-        const spec1 = StackSpec(
+        const spec1 = StackWidgetSpec(
           alignment: Alignment.center,
           fit: StackFit.expand,
           textDirection: TextDirection.ltr,
           clipBehavior: Clip.hardEdge,
         );
-        const spec2 = StackSpec(
+        const spec2 = StackWidgetSpec(
           alignment: Alignment.center,
           fit: StackFit.expand,
           textDirection: TextDirection.ltr,
@@ -185,11 +185,11 @@ void main() {
       });
 
       test('specs with different properties are not equal', () {
-        const spec1 = StackSpec(
+        const spec1 = StackWidgetSpec(
           alignment: Alignment.center,
           fit: StackFit.expand,
         );
-        const spec2 = StackSpec(
+        const spec2 = StackWidgetSpec(
           alignment: Alignment.topLeft,
           fit: StackFit.expand,
         );
@@ -198,8 +198,8 @@ void main() {
       });
 
       test('specs with null vs non-null properties are not equal', () {
-        const spec1 = StackSpec(alignment: Alignment.center);
-        const spec2 = StackSpec();
+        const spec1 = StackWidgetSpec(alignment: Alignment.center);
+        const spec2 = StackWidgetSpec();
 
         expect(spec1, isNot(spec2));
       });
@@ -207,7 +207,7 @@ void main() {
 
     group('debugFillProperties', () {
       test('includes all properties in diagnostics', () {
-        const spec = StackSpec(
+        const spec = StackWidgetSpec(
           alignment: Alignment.center,
           fit: StackFit.expand,
           textDirection: TextDirection.rtl,
@@ -227,7 +227,7 @@ void main() {
 
     group('props', () {
       test('includes all properties in props list', () {
-        const spec = StackSpec(
+        const spec = StackWidgetSpec(
           alignment: Alignment.center,
           fit: StackFit.expand,
           textDirection: TextDirection.rtl,
@@ -245,7 +245,7 @@ void main() {
 
     group('Real-world scenarios', () {
       test('creates overlay stack spec', () {
-        const overlaySpec = StackSpec(
+        const overlaySpec = StackWidgetSpec(
           alignment: Alignment.center,
           fit: StackFit.expand,
           clipBehavior: Clip.none,
@@ -257,7 +257,7 @@ void main() {
       });
 
       test('creates positioned stack spec', () {
-        const positionedSpec = StackSpec(
+        const positionedSpec = StackWidgetSpec(
           alignment: Alignment.topLeft,
           fit: StackFit.loose,
           textDirection: TextDirection.ltr,
@@ -269,7 +269,7 @@ void main() {
       });
 
       test('creates clipped stack spec', () {
-        const clippedSpec = StackSpec(
+        const clippedSpec = StackWidgetSpec(
           alignment: Alignment.center,
           fit: StackFit.passthrough,
           clipBehavior: Clip.antiAlias,
@@ -281,7 +281,7 @@ void main() {
       });
 
       test('creates RTL stack spec', () {
-        const rtlSpec = StackSpec(
+        const rtlSpec = StackWidgetSpec(
           alignment: AlignmentDirectional.topStart,
           textDirection: TextDirection.rtl,
           fit: StackFit.expand,

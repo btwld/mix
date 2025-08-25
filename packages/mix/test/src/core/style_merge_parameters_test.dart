@@ -219,14 +219,14 @@ void main() {
 
     group('IconMix merge', () {
       test('merges orderOfModifiers correctly', () {
-        final first = IconMix(
+        final first = IconStyle(
           size: 24.0,
           modifier: ModifierConfig.orderOfModifiers(const [
             OpacityModifier,
             PaddingModifier,
           ]),
         );
-        final second = IconMix(
+        final second = IconStyle(
           color: Colors.red,
           modifier: ModifierConfig.orderOfModifiers(const [
             ClipOvalModifier,
@@ -242,8 +242,8 @@ void main() {
       });
 
       test('merges inherit correctly', () {
-        final first = IconMix(size: 24.0, inherit: true);
-        final second = IconMix(color: Colors.red, inherit: false);
+        final first = IconStyle(size: 24.0, inherit: true);
+        final second = IconStyle(color: Colors.red, inherit: false);
 
         final merged = first.merge(second);
 
@@ -287,14 +287,14 @@ void main() {
 
     group('ImageMix merge', () {
       test('merges orderOfModifiers correctly', () {
-        final first = ImageMix(
+        final first = ImageStyle(
           width: 100.0,
           modifier: ModifierConfig.orderOfModifiers(const [
             OpacityModifier,
             PaddingModifier,
           ]),
         );
-        final second = ImageMix(
+        final second = ImageStyle(
           height: 200.0,
           modifier: ModifierConfig.orderOfModifiers(const [
             ClipOvalModifier,
@@ -310,8 +310,8 @@ void main() {
       });
 
       test('merges inherit correctly', () {
-        final first = ImageMix(width: 100.0, inherit: true);
-        final second = ImageMix(height: 200.0, inherit: false);
+        final first = ImageStyle(width: 100.0, inherit: true);
+        final second = ImageStyle(height: 200.0, inherit: false);
 
         final merged = first.merge(second);
 
@@ -321,14 +321,14 @@ void main() {
 
     group('StackMix merge', () {
       test('merges orderOfModifiers correctly', () {
-        final first = StackMix(
+        final first = StackStyle(
           alignment: Alignment.center,
           modifier: ModifierConfig.orderOfModifiers(const [
             OpacityModifier,
             PaddingModifier,
           ]),
         );
-        final second = StackMix(
+        final second = StackStyle(
           fit: StackFit.expand,
           modifier: ModifierConfig.orderOfModifiers(const [
             ClipOvalModifier,
@@ -344,8 +344,8 @@ void main() {
       });
 
       test('merges inherit correctly', () {
-        final first = StackMix(alignment: Alignment.center, inherit: true);
-        final second = StackMix(fit: StackFit.expand, inherit: false);
+        final first = StackStyle(alignment: Alignment.center, inherit: true);
+        final second = StackStyle(fit: StackFit.expand, inherit: false);
 
         final merged = first.merge(second);
 
@@ -355,14 +355,14 @@ void main() {
 
     group('FlexBoxMix merge', () {
       test('merges orderOfModifiers correctly', () {
-        final first = FlexBoxMix(
+        final first = FlexBoxStyle(
           container: ContainerSpecMix.constraints(BoxConstraintsMix.width(100)),
           modifier: ModifierConfig.orderOfModifiers(const [
             OpacityModifier,
             PaddingModifier,
           ]),
         );
-        final second = FlexBoxMix(
+        final second = FlexBoxStyle(
           flex: FlexPropertiesMix.spacing(8.0),
           modifier: ModifierConfig.orderOfModifiers(const [
             ClipOvalModifier,
@@ -378,11 +378,11 @@ void main() {
       });
 
       test('merges inherit correctly', () {
-        final first = FlexBoxMix(
+        final first = FlexBoxStyle(
           container: ContainerSpecMix.constraints(BoxConstraintsMix.width(100)),
           inherit: true,
         );
-        final second = FlexBoxMix(
+        final second = FlexBoxStyle(
           flex: FlexPropertiesMix.spacing(8.0),
           inherit: false,
         );
@@ -395,15 +395,15 @@ void main() {
 
     group('StackBoxMix merge', () {
       test('merges orderOfModifiers correctly', () {
-        final first = StackBoxMix(
+        final first = StackBoxStyle(
           box: BoxStyle.width(100),
           modifier: ModifierConfig.orderOfModifiers(const [
             OpacityModifier,
             PaddingModifier,
           ]),
         );
-        final second = StackBoxMix(
-          stack: StackMix.alignment(Alignment.center),
+        final second = StackBoxStyle(
+          stack: StackStyle.alignment(Alignment.center),
           modifier: ModifierConfig.orderOfModifiers(const [
             ClipOvalModifier,
             TransformModifier,
@@ -418,9 +418,9 @@ void main() {
       });
 
       test('merges inherit correctly', () {
-        final first = StackBoxMix(box: BoxStyle.width(100), inherit: true);
-        final second = StackBoxMix(
-          stack: StackMix.alignment(Alignment.center),
+        final first = StackBoxStyle(box: BoxStyle.width(100), inherit: true);
+        final second = StackBoxStyle(
+          stack: StackStyle.alignment(Alignment.center),
           inherit: false,
         );
 

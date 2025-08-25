@@ -12,9 +12,9 @@ import 'stack_spec.dart';
 
 /// Provides mutable utility for stack styling with cascade notation support.
 ///
-/// Supports the same API as [StackMix] but maintains mutable internal state
+/// Supports the same API as [StackStyle] but maintains mutable internal state
 /// enabling fluid styling: `$stack..alignment(Alignment.center)..fit(StackFit.expand)`.
-class StackSpecUtility extends StyleMutableBuilder<StackSpec> {
+class StackSpecUtility extends StyleMutableBuilder<StackWidgetSpec> {
   late final alignment = MixUtility(mutable.alignment);
 
   late final fit = MixUtility(mutable.fit);
@@ -23,7 +23,7 @@ class StackSpecUtility extends StyleMutableBuilder<StackSpec> {
 
   late final clipBehavior = MixUtility(mutable.clipBehavior);
 
-  late final on = OnContextVariantUtility<StackSpec, StackMix>(
+  late final on = OnContextVariantUtility<StackWidgetSpec, StackStyle>(
     (v) => mutable.variants([v]),
   );
 
@@ -36,21 +36,21 @@ class StackSpecUtility extends StyleMutableBuilder<StackSpec> {
   @protected
   late final MutableStackMix mutable;
 
-  StackSpecUtility([StackMix? attribute]) {
-    mutable = MutableStackMix(attribute ?? StackMix());
+  StackSpecUtility([StackStyle? attribute]) {
+    mutable = MutableStackMix(attribute ?? StackStyle());
   }
 
   /// Applies animation configuration to the stack styling.
-  StackMix animate(AnimationConfig animation) => mutable.animate(animation);
+  StackStyle animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
-  StackSpecUtility merge(Style<StackSpec>? other) {
+  StackSpecUtility merge(Style<StackWidgetSpec>? other) {
     if (other == null) return this;
     // Always create new instance (StyleAttribute contract)
     if (other is StackSpecUtility) {
       return StackSpecUtility(mutable.merge(other.mutable.value));
     }
-    if (other is StackMix) {
+    if (other is StackStyle) {
       return StackSpecUtility(mutable.merge(other));
     }
 
@@ -58,17 +58,18 @@ class StackSpecUtility extends StyleMutableBuilder<StackSpec> {
   }
 
   @override
-  StackSpec resolve(BuildContext context) {
+  StackWidgetSpec resolve(BuildContext context) {
     return mutable.resolve(context);
   }
 
-  /// The accumulated [StackMix] with all applied styling properties.
+  /// The accumulated [StackStyle] with all applied styling properties.
   @override
-  StackMix get value => mutable.value;
+  StackStyle get value => mutable.value;
 }
 
-class MutableStackMix extends StackMix with Mutable<StackSpec, StackMix> {
-  MutableStackMix(StackMix style) {
+class MutableStackMix extends StackStyle
+    with Mutable<StackWidgetSpec, StackStyle> {
+  MutableStackMix(StackStyle style) {
     value = style;
   }
 }

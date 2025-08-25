@@ -15,18 +15,18 @@ import 'icon_spec.dart';
 
 /// Provides mutable utility for icon styling with cascade notation support.
 ///
-/// Supports the same API as [IconMix] but maintains mutable internal state
+/// Supports the same API as [IconStyle] but maintains mutable internal state
 /// enabling fluid styling: `$icon..color(Colors.blue)..size(24)..weight(400)`.
-class IconSpecUtility extends StyleMutableBuilder<IconSpec> {
-  late final color = ColorUtility<IconMix>(
-    (prop) => mutable.merge(IconMix.create(color: prop)),
+class IconSpecUtility extends StyleMutableBuilder<IconWidgetSpec> {
+  late final color = ColorUtility<IconStyle>(
+    (prop) => mutable.merge(IconStyle.create(color: prop)),
   );
 
-  late final shadow = ShadowUtility<IconMix>((v) => mutable.shadows([v]));
+  late final shadow = ShadowUtility<IconStyle>((v) => mutable.shadows([v]));
 
   late final textDirection = MixUtility(mutable.textDirection);
 
-  late final on = OnContextVariantUtility<IconSpec, IconMix>(
+  late final on = OnContextVariantUtility<IconWidgetSpec, IconStyle>(
     (v) => mutable.variants([v]),
   );
 
@@ -39,36 +39,36 @@ class IconSpecUtility extends StyleMutableBuilder<IconSpec> {
   @protected
   late final MutableIconMix mutable;
 
-  IconSpecUtility([IconMix? attribute]) {
-    mutable = MutableIconMix(attribute ?? IconMix());
+  IconSpecUtility([IconStyle? attribute]) {
+    mutable = MutableIconMix(attribute ?? IconStyle());
   }
 
-  IconMix size(double v) => mutable.size(v);
+  IconStyle size(double v) => mutable.size(v);
 
-  IconMix weight(double v) => mutable.weight(v);
+  IconStyle weight(double v) => mutable.weight(v);
 
-  IconMix grade(double v) => mutable.grade(v);
+  IconStyle grade(double v) => mutable.grade(v);
 
-  IconMix opticalSize(double v) => mutable.opticalSize(v);
+  IconStyle opticalSize(double v) => mutable.opticalSize(v);
 
-  IconMix applyTextScaling(bool v) => mutable.applyTextScaling(v);
+  IconStyle applyTextScaling(bool v) => mutable.applyTextScaling(v);
 
-  IconMix fill(double v) => mutable.fill(v);
+  IconStyle fill(double v) => mutable.fill(v);
 
   /// Applies multiple shadows to the icon.
-  IconMix shadows(List<ShadowMix> value) => mutable.shadows(value);
+  IconStyle shadows(List<ShadowMix> value) => mutable.shadows(value);
 
   /// Applies animation configuration to the icon styling.
-  IconMix animate(AnimationConfig animation) => mutable.animate(animation);
+  IconStyle animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
-  IconSpecUtility merge(Style<IconSpec>? other) {
+  IconSpecUtility merge(Style<IconWidgetSpec>? other) {
     if (other == null) return this;
     // Always create new instance (StyleAttribute contract)
     if (other is IconSpecUtility) {
       return IconSpecUtility(mutable.merge(other.mutable.value));
     }
-    if (other is IconMix) {
+    if (other is IconStyle) {
       return IconSpecUtility(mutable.merge(other));
     }
 
@@ -76,17 +76,17 @@ class IconSpecUtility extends StyleMutableBuilder<IconSpec> {
   }
 
   @override
-  IconSpec resolve(BuildContext context) {
+  IconWidgetSpec resolve(BuildContext context) {
     return mutable.resolve(context);
   }
 
-  /// The accumulated [IconMix] with all applied styling properties.
+  /// The accumulated [IconStyle] with all applied styling properties.
   @override
-  IconMix get value => mutable.value;
+  IconStyle get value => mutable.value;
 }
 
-class MutableIconMix extends IconMix with Mutable<IconSpec, IconMix> {
-  MutableIconMix(IconMix style) {
+class MutableIconMix extends IconStyle with Mutable<IconWidgetSpec, IconStyle> {
+  MutableIconMix(IconStyle style) {
     value = style;
   }
 }

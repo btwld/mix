@@ -8,7 +8,7 @@ void main() {
   group('IconSpec', () {
     group('Constructor', () {
       test('creates IconSpec with all properties', () {
-        const spec = IconSpec(
+        const spec = IconWidgetSpec(
           color: Colors.blue,
           size: 24.0,
           weight: 400.0,
@@ -35,7 +35,7 @@ void main() {
       });
 
       test('creates IconSpec with default values', () {
-        const spec = IconSpec();
+        const spec = IconWidgetSpec();
 
         expect(spec.color, isNull);
         expect(spec.size, isNull);
@@ -51,7 +51,7 @@ void main() {
 
     group('copyWith', () {
       test('creates new instance with updated properties', () {
-        const original = IconSpec(
+        const original = IconWidgetSpec(
           color: Colors.red,
           size: 16.0,
           weight: 300.0,
@@ -74,7 +74,7 @@ void main() {
       });
 
       test('preserves original properties when not specified', () {
-        const original = IconSpec(
+        const original = IconWidgetSpec(
           opticalSize: 20.0,
           fill: 0.5,
           shadows: [Shadow(color: Colors.grey, offset: Offset(0, 1))],
@@ -88,7 +88,7 @@ void main() {
       });
 
       test('handles null values correctly', () {
-        const original = IconSpec(color: Colors.green, size: 18.0);
+        const original = IconWidgetSpec(color: Colors.green, size: 18.0);
         final updated = original.copyWith();
 
         expect(updated.color, Colors.green);
@@ -98,7 +98,7 @@ void main() {
 
     group('lerp', () {
       test('interpolates between two IconSpecs correctly', () {
-        const spec1 = IconSpec(
+        const spec1 = IconWidgetSpec(
           color: Colors.red,
           size: 16.0,
           weight: 300.0,
@@ -106,7 +106,7 @@ void main() {
           opticalSize: 16.0,
           fill: 0.0,
         );
-        const spec2 = IconSpec(
+        const spec2 = IconWidgetSpec(
           color: Colors.blue,
           size: 24.0,
           weight: 500.0,
@@ -126,13 +126,13 @@ void main() {
       });
 
       test('handles null other parameter correctly', () {
-        const spec = IconSpec(color: Colors.green, size: 20.0);
-        
+        const spec = IconWidgetSpec(color: Colors.green, size: 20.0);
+
         // When t < 0.5, should preserve original values
         final lerped1 = spec.lerp(null, 0.3);
         expect(lerped1.color, Colors.green);
         expect(lerped1.size, 20.0);
-        
+
         // When t >= 0.5, properties interpolate properly with null
         final lerped2 = spec.lerp(null, 0.7);
         expect(lerped2.color, isNotNull); // color should interpolate properly
@@ -140,8 +140,16 @@ void main() {
       });
 
       test('handles edge cases (t=0, t=1)', () {
-        const spec1 = IconSpec(color: Colors.red, size: 16.0, weight: 300.0);
-        const spec2 = IconSpec(color: Colors.blue, size: 24.0, weight: 500.0);
+        const spec1 = IconWidgetSpec(
+          color: Colors.red,
+          size: 16.0,
+          weight: 300.0,
+        );
+        const spec2 = IconWidgetSpec(
+          color: Colors.blue,
+          size: 24.0,
+          weight: 500.0,
+        );
 
         final lerpedAt0 = spec1.lerp(spec2, 0.0);
         final lerpedAt1 = spec1.lerp(spec2, 1.0);
@@ -155,11 +163,11 @@ void main() {
       });
 
       test('uses step function for discrete properties', () {
-        const spec1 = IconSpec(
+        const spec1 = IconWidgetSpec(
           textDirection: TextDirection.ltr,
           applyTextScaling: true,
         );
-        const spec2 = IconSpec(
+        const spec2 = IconWidgetSpec(
           textDirection: TextDirection.rtl,
           applyTextScaling: false,
         );
@@ -177,12 +185,12 @@ void main() {
       });
 
       test('interpolates shadows correctly', () {
-        const spec1 = IconSpec(
+        const spec1 = IconWidgetSpec(
           shadows: [
             Shadow(color: Colors.black, offset: Offset(0, 1), blurRadius: 1.0),
           ],
         );
-        const spec2 = IconSpec(
+        const spec2 = IconWidgetSpec(
           shadows: [
             Shadow(color: Colors.grey, offset: Offset(2, 3), blurRadius: 5.0),
           ],
@@ -196,10 +204,10 @@ void main() {
       });
 
       test('handles null shadow interpolation', () {
-        const spec1 = IconSpec(
+        const spec1 = IconWidgetSpec(
           shadows: [Shadow(color: Colors.black, offset: Offset(1, 1))],
         );
-        const spec2 = IconSpec();
+        const spec2 = IconWidgetSpec();
 
         final lerped = spec1.lerp(spec2, 0.5);
 
@@ -209,14 +217,14 @@ void main() {
 
     group('equality', () {
       test('specs with same properties are equal', () {
-        const spec1 = IconSpec(
+        const spec1 = IconWidgetSpec(
           color: Colors.blue,
           size: 24.0,
           weight: 400.0,
           grade: 0.0,
           textDirection: TextDirection.ltr,
         );
-        const spec2 = IconSpec(
+        const spec2 = IconWidgetSpec(
           color: Colors.blue,
           size: 24.0,
           weight: 400.0,
@@ -229,15 +237,15 @@ void main() {
       });
 
       test('specs with different properties are not equal', () {
-        const spec1 = IconSpec(color: Colors.blue, size: 24.0);
-        const spec2 = IconSpec(color: Colors.red, size: 24.0);
+        const spec1 = IconWidgetSpec(color: Colors.blue, size: 24.0);
+        const spec2 = IconWidgetSpec(color: Colors.red, size: 24.0);
 
         expect(spec1, isNot(spec2));
       });
 
       test('specs with null vs non-null properties are not equal', () {
-        const spec1 = IconSpec(color: Colors.blue);
-        const spec2 = IconSpec();
+        const spec1 = IconWidgetSpec(color: Colors.blue);
+        const spec2 = IconWidgetSpec();
 
         expect(spec1, isNot(spec2));
       });
@@ -245,7 +253,7 @@ void main() {
 
     group('debugFillProperties', () {
       test('includes all properties in diagnostics', () {
-        const spec = IconSpec(
+        const spec = IconWidgetSpec(
           color: Colors.blue,
           size: 24.0,
           weight: 400.0,
@@ -275,7 +283,7 @@ void main() {
 
     group('props', () {
       test('includes all properties in props list', () {
-        const spec = IconSpec(
+        const spec = IconWidgetSpec(
           color: Colors.blue,
           size: 24.0,
           weight: 400.0,
@@ -302,7 +310,7 @@ void main() {
 
     group('Real-world scenarios', () {
       test('creates material design icon spec', () {
-        const materialSpec = IconSpec(
+        const materialSpec = IconWidgetSpec(
           size: 24.0,
           color: Colors.black87,
           textDirection: TextDirection.ltr,
@@ -316,7 +324,7 @@ void main() {
       });
 
       test('creates variable font icon spec', () {
-        const variableSpec = IconSpec(
+        const variableSpec = IconWidgetSpec(
           size: 20.0,
           weight: 300.0,
           grade: 25.0,
@@ -332,7 +340,7 @@ void main() {
       });
 
       test('creates icon with shadow spec', () {
-        const shadowSpec = IconSpec(
+        const shadowSpec = IconWidgetSpec(
           size: 32.0,
           color: Colors.white,
           shadows: [
@@ -355,7 +363,7 @@ void main() {
       });
 
       test('creates RTL icon spec', () {
-        const rtlSpec = IconSpec(
+        const rtlSpec = IconWidgetSpec(
           size: 18.0,
           color: Colors.blue,
           textDirection: TextDirection.rtl,

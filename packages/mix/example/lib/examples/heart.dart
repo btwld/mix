@@ -27,11 +27,11 @@ class _DemoAppState extends State<DemoApp> {
 
   @override
   Widget build(BuildContext context) {
-    final vboxStyle = FlexBoxMix()
+    final vboxStyle = FlexBoxStyle()
         .flex(FlexPropertiesMix().mainAxisSize(MainAxisSize.min).spacing(60))
         .container(ContainerSpecMix().margin(EdgeInsetsMix.all(10)));
 
-    final FlexBoxMix hboxStyle = FlexBoxMix()
+    final FlexBoxStyle hboxStyle = FlexBoxStyle()
         .flex(
           FlexPropertiesMix()
               .mainAxisAlignment(MainAxisAlignment.spaceBetween)
@@ -95,7 +95,7 @@ class HeartAnimation extends StatelessWidget {
         },
         child: StyledIcon(
           icon: CupertinoIcons.heart_fill,
-          style: IconMix().size(100).color(Colors.white),
+          style: IconStyle().size(100).color(Colors.white),
         ),
       ),
     );

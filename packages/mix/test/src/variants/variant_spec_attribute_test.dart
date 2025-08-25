@@ -315,7 +315,7 @@ void main() {
 
       test('works with ImageSpecAttribute', () {
         const variant = NamedVariant('avatar');
-        final imageStyle = ImageMix(
+        final imageStyle = ImageStyle(
           width: 50.0,
           height: 50.0,
           fit: BoxFit.cover,
@@ -324,7 +324,7 @@ void main() {
 
         expect(variantAttr.variant, variant);
         expect(variantAttr.value, imageStyle);
-        final imageAttr = variantAttr.value as ImageMix;
+        final imageAttr = variantAttr.value as ImageStyle;
         expect(imageAttr.$width, resolvesTo(50.0));
         expect(imageAttr.$height, resolvesTo(50.0));
         expect(imageAttr.$fit, resolvesTo(BoxFit.cover));
