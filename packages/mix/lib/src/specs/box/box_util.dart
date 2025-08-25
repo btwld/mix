@@ -49,6 +49,7 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec> {
   late final color = decoration.box.color;
   late final gradient = decoration.box.gradient;
   late final shape = decoration.box.shape;
+  late final shadow = decoration.box.boxShadow;
 
   /// Convenience accessors for commonly used constraint properties.
   late final width = constraints.width;

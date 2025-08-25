@@ -50,6 +50,7 @@ export 'src/core/style_widget.dart';
 export 'src/core/utility.dart';
 export 'src/modifiers/align_modifier.dart';
 export 'src/modifiers/aspect_ratio_modifier.dart';
+export 'src/modifiers/box_modifier.dart';
 export 'src/modifiers/clip_modifier.dart';
 export 'src/modifiers/default_text_style_modifier.dart';
 export 'src/modifiers/flexible_modifier.dart';
@@ -100,6 +101,8 @@ export 'src/properties/typography/text_height_behavior_mix.dart';
 export 'src/properties/typography/text_height_behavior_util.dart';
 export 'src/properties/typography/text_style_mix.dart';
 export 'src/properties/typography/text_style_util.dart';
+export 'src/properties/flex_properties.dart';
+export 'src/properties/flex_properties_mix.dart';
 
 /// SPECS
 export 'src/specs/box/box_attribute.dart';
@@ -133,6 +136,8 @@ export 'src/specs/text/text_attribute.dart';
 export 'src/specs/text/text_spec.dart';
 export 'src/specs/text/text_util.dart';
 export 'src/specs/text/text_widget.dart';
+export 'src/specs/container/container_spec.dart';
+export 'src/specs/container/container_attribute.dart';
 
 /// THEME
 export 'src/theme/material/material_theme.dart';

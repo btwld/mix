@@ -28,17 +28,17 @@ class _DemoAppState extends State<DemoApp> {
   @override
   Widget build(BuildContext context) {
     final vboxStyle = FlexBoxMix()
-        .flex(FlexMix().mainAxisSize(MainAxisSize.min).gap(60))
-        .box(BoxMix().margin(EdgeInsetsMix.all(10)));
+        .flex(FlexPropertiesMix().mainAxisSize(MainAxisSize.min).spacing(60))
+        .container(ContainerSpecMix().margin(EdgeInsetsMix.all(10)));
 
     final FlexBoxMix hboxStyle = FlexBoxMix()
         .flex(
-          FlexMix()
+          FlexPropertiesMix()
               .mainAxisAlignment(MainAxisAlignment.spaceBetween)
               .crossAxisAlignment(CrossAxisAlignment.center),
         )
-        .box(
-          BoxMix()
+        .container(
+          ContainerSpecMix()
               .padding(EdgeInsetsMix.horizontal(16).vertical(8))
               .color(Colors.grey.shade200)
               .borderRadius(BorderRadiusMix.circular(10)),

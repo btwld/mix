@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/style_widget.dart';
-import '../box/box_spec.dart';
 import '../box/box_widget.dart';
 import 'stack_box_attribute.dart';
 import 'stack_box_spec.dart';
@@ -16,7 +15,6 @@ class ZBox extends StyleWidget<ZBoxSpec> {
     this.children = const <Widget>[],
     super.key,
   });
-
 
   final List<Widget> children;
 
@@ -39,7 +37,6 @@ Stack createStackSpecWidget({
     children: children,
   );
 }
-
 
 /// Creates a [Container] with [Stack] child from a [ZBoxSpec].
 Widget createZBoxSpecWidget({
@@ -65,4 +62,3 @@ extension ZBoxSpecWidget on ZBoxSpec {
     return createZBoxSpecWidget(spec: this, children: children);
   }
 }
-

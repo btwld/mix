@@ -9,9 +9,11 @@ import '../properties/painting/border_radius_mix.dart';
 import '../properties/painting/shadow_mix.dart';
 import '../properties/typography/text_height_behavior_mix.dart';
 import '../properties/typography/text_style_mix.dart';
+import '../specs/container/container_attribute.dart';
 import '../specs/icon/icon_attribute.dart';
 import '../specs/text/text_attribute.dart';
 import 'align_modifier.dart';
+import 'box_modifier.dart';
 import 'aspect_ratio_modifier.dart';
 import 'clip_modifier.dart';
 import 'default_text_style_modifier.dart';
@@ -262,6 +264,10 @@ final class ModifierConfig with Equatable {
         applyTextScaling: applyTextScaling,
       ),
     );
+  }
+
+  factory ModifierConfig.box(ContainerSpecMix spec) {
+    return ModifierConfig.modifier(BoxModifierMix(spec));
   }
 
   /// Static method for creating a style provider modifier

@@ -224,6 +224,8 @@ class FlexMix extends Style<FlexSpec>
     return merge(FlexMix.mainAxisAlignment(value));
   }
 
+  /// Sets spacing
+
   /// Sets cross axis alignment
   FlexMix crossAxisAlignment(CrossAxisAlignment value) {
     return merge(FlexMix.crossAxisAlignment(value));

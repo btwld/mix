@@ -56,14 +56,14 @@ class OkinawaCard extends StatelessWidget {
     );
 
     final vBoxStyle = FlexBoxMix()
-        .box(
-          BoxMix()
+        .container(
+          ContainerSpecMix()
               .padding(EdgeInsetsMix.all(8))
               .width(double.infinity)
               .color(Colors.black.withValues(alpha: 0.1)),
         )
         .flex(
-          FlexMix()
+          FlexPropertiesMix()
               .mainAxisSize(MainAxisSize.min)
               .crossAxisAlignment(CrossAxisAlignment.start),
         );
@@ -73,8 +73,12 @@ class OkinawaCard extends StatelessWidget {
         .box(
           BoxMix()
               .transformAlignment(Alignment.center)
-              .scale(1)
-              .onHovered(BoxMix().scale(1.05)),
+              .modifier(ModifierConfig.scale(1))
+        )
+        .onHovered(
+          StackBoxMix().box(
+            BoxMix().modifier(ModifierConfig.scale(1.05)),
+          ),
         );
 
     final titleStyle = Style.text(

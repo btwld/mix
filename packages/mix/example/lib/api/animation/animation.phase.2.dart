@@ -40,8 +40,8 @@ class _ExampleState extends State<Example> {
       child: HBox(
         style: Style.flexbox(
           FlexBoxMix()
-              .box(
-                BoxMix()
+              .container(
+                ContainerSpecMix()
                     .color(Colors.white)
                     .padding(
                       EdgeInsetsMix.symmetric(horizontal: 16, vertical: 8),
@@ -51,15 +51,17 @@ class _ExampleState extends State<Example> {
                       BoxBorderMix.all(
                         BorderSideMix.color(Colors.grey.shade200),
                       ),
-                    )
-                    .onHovered(
-                      BoxMix().border(
-                        BoxBorderMix.all(BorderSideMix.color(Colors.red)),
-                      ),
                     ),
                   ),
             )
-            .flex(FlexMix().mainAxisSize(MainAxisSize.min).spacing(8)),
+            .flex(FlexPropertiesMix().mainAxisSize(MainAxisSize.min).spacing(8))
+            .onHovered(
+              FlexBoxMix().container(
+                ContainerSpecMix().border(
+                  BoxBorderMix.all(BorderSideMix.color(Colors.red)),
+                ),
+              ),
+            ),
 
         children: [
           Text('Developer Preview'),

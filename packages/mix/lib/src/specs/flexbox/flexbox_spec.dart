@@ -4,43 +4,42 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/modifier.dart';
 import '../../core/widget_spec.dart';
-import '../box/box_spec.dart';
-import '../flex/flex_spec.dart';
+import '../container/container_spec.dart';
+import '../../properties/flex_properties.dart';
 
-/// Specification that combines box styling and flex layout properties.
+/// Specification that combines container styling and flex layout properties.
 ///
 /// Provides comprehensive styling for container widgets that need both
-/// box decoration and flex layout capabilities. Merges [BoxSpec] and
-/// [FlexSpec] into a unified specification.
+/// container decoration and flex layout capabilities. Merges [ContainerSpec] and
+/// [FlexProperties] into a unified specification.
 final class FlexBoxSpec extends WidgetSpec<FlexBoxSpec> {
-  /// Box styling properties for decoration, padding, constraints, etc.
-  final BoxSpec box;
+  /// Container styling properties for decoration, padding, constraints, etc.
+  final ContainerSpec? container;
   
   /// Flex layout properties for direction, alignment, spacing, etc.
-  final FlexSpec flex;
+  final FlexProperties? flex;
 
   const FlexBoxSpec({
-    BoxSpec? box,
-    FlexSpec? flex,
+    this.container,
+    this.flex,
     super.animation,
     super.widgetModifiers,
     super.inherit,
-  }) : box = box ?? const BoxSpec(),
-       flex = flex ?? const FlexSpec();
+  });
 
 
   /// Creates a copy of this [FlexBoxSpec] but with the given fields
   /// replaced with the new values.
   @override
   FlexBoxSpec copyWith({
-    BoxSpec? box,
-    FlexSpec? flex,
+    ContainerSpec? container,
+    FlexProperties? flex,
     AnimationConfig? animation,
     List<Modifier>? widgetModifiers,
     bool? inherit,
   }) {
     return FlexBoxSpec(
-      box: box ?? this.box,
+      container: container ?? this.container,
       flex: flex ?? this.flex,
       animation: animation ?? this.animation,
       widgetModifiers: widgetModifiers ?? this.widgetModifiers,
@@ -58,29 +57,16 @@ final class FlexBoxSpec extends WidgetSpec<FlexBoxSpec> {
   ///
   /// The interpolation is performed on each property of the [FlexBoxSpec] using the appropriate
   /// interpolation method:
-  /// - [BoxSpec.lerp] for [box].
-  /// - [FlexSpec.lerp] for [flex].
+  /// - [ContainerSpec.lerp] for [container].
+  /// - [FlexProperties.lerp] for [flex].
   ///
   /// This method is typically used in animations to smoothly transition between
   /// different [FlexBoxSpec] configurations.
   @override
   FlexBoxSpec lerp(FlexBoxSpec? other, double t) {
-    // Create new BoxSpec and FlexSpec WITHOUT their metadata
-    // The metadata is handled at FlexBoxSpec level
-    final lerpedBox = box.lerp(other?.box, t).copyWith(
-      animation: null,
-      widgetModifiers: null,
-      inherit: null,
-    );
-    final lerpedFlex = flex.lerp(other?.flex, t).copyWith(
-      animation: null,
-      widgetModifiers: null,
-      inherit: null,
-    );
-
     return FlexBoxSpec(
-      box: lerpedBox,
-      flex: lerpedFlex,
+      container: container?.lerp(other?.container, t),
+      flex: flex?.lerp(other?.flex, t),
       // Meta fields: use confirmed policy other.field ?? this.field
       animation: other?.animation ?? animation,
       widgetModifiers: MixOps.lerp(widgetModifiers, other?.widgetModifiers, t),
@@ -92,8 +78,8 @@ final class FlexBoxSpec extends WidgetSpec<FlexBoxSpec> {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-      ..add(DiagnosticsProperty('box', box, defaultValue: const BoxSpec()))
-      ..add(DiagnosticsProperty('flex', flex, defaultValue: const FlexSpec()));
+      ..add(DiagnosticsProperty('container', container))
+      ..add(DiagnosticsProperty('flex', flex));
   }
 
   /// The list of properties that constitute the state of this [FlexBoxSpec].
@@ -101,5 +87,5 @@ final class FlexBoxSpec extends WidgetSpec<FlexBoxSpec> {
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [FlexBoxSpec] instances for equality.
   @override
-  List<Object?> get props => [...super.props, box, flex];
+  List<Object?> get props => [...super.props, container, flex];
 }

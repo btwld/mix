@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 
 import '../animation/animation_config.dart';
 import '../modifiers/modifier_config.dart';
-import 'spec.dart';
 import 'style.dart';
 import 'widget_spec.dart';
 
