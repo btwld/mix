@@ -9,7 +9,7 @@ import '../properties/painting/border_radius_mix.dart';
 import '../properties/painting/shadow_mix.dart';
 import '../properties/typography/text_height_behavior_mix.dart';
 import '../properties/typography/text_style_mix.dart';
-import '../specs/container/container_attribute.dart';
+import '../properties/container/container_mix.dart';
 import '../specs/icon/icon_attribute.dart';
 import '../specs/text/text_attribute.dart';
 import 'align_modifier.dart';
@@ -266,7 +266,7 @@ final class ModifierConfig with Equatable {
     );
   }
 
-  factory ModifierConfig.box(ContainerSpecMix spec) {
+  factory ModifierConfig.box(ContainerMix spec) {
     return ModifierConfig.modifier(BoxModifierMix(spec));
   }
 

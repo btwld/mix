@@ -42,7 +42,7 @@ void main() {
 
   group('BoxModifierMix', () {
     testWidgets('resolves to BoxModifier correctly', (tester) async {
-      final spec = ContainerSpecMix(
+      final spec = ContainerMix(
         padding: EdgeInsetsGeometryMix.all(16),
         decoration: DecorationMix.color(Colors.blue),
       );
@@ -67,21 +67,21 @@ void main() {
     });
 
     test('merge combines specs correctly', () {
-      final spec1 = ContainerSpecMix(padding: EdgeInsetsGeometryMix.all(8));
-      final spec2 = ContainerSpecMix(decoration: DecorationMix.color(Colors.red));
+      final spec1 = ContainerMix(padding: EdgeInsetsGeometryMix.all(8));
+      final spec2 = ContainerMix(decoration: DecorationMix.color(Colors.red));
       final mix1 = BoxModifierMix(spec1);
       final mix2 = BoxModifierMix(spec2);
 
       final merged = mix1.merge(mix2);
 
       // The merged spec should contain both properties
-      expect(merged.spec, isA<ContainerSpecMix>());
+      expect(merged.spec, isA<ContainerMix>());
     });
   });
 
   group('ModifierConfig.box', () {
     test('creates BoxModifierMix correctly', () {
-      final spec = ContainerSpecMix.color(Colors.green);
+      final spec = ContainerMix.color(Colors.green);
       final config = ModifierConfig.box(spec);
 
       expect(config.$modifiers, hasLength(1));

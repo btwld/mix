@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:meta/meta.dart';
 
 import '../animation/animation_config.dart';
 import '../theme/mix_theme.dart';
@@ -93,6 +94,7 @@ class Prop<V> {
   ///
   /// This property has no value source and is used for applying
   /// animation when merged with other properties.
+  @internal
   const Prop.animation(AnimationConfig animation)
     : this._(sources: const [], directives: null, animation: animation);
 
@@ -173,6 +175,7 @@ class Prop<V> {
   }
 
   /// Returns a new property with the given animation configuration.
+  @internal
   Prop<V> animation(AnimationConfig animation) {
     return mergeProp(Prop.animation(animation));
   }

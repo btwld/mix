@@ -4,8 +4,8 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/modifier.dart';
 import '../../core/widget_spec.dart';
-import '../../properties/flex_layout_spec.dart';
-import '../container/container_spec.dart';
+import '../../properties/layout/flex_layout_spec.dart';
+import '../../properties/container/container_spec.dart';
 
 /// Specification that combines container styling and flex layout properties.
 ///

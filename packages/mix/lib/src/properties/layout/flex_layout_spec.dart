@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../core/helpers.dart';
-import '../core/spec.dart';
+import '../../core/helpers.dart';
+import '../../core/spec.dart';
 
 /// A property bag for Flex widget configuration.
 ///

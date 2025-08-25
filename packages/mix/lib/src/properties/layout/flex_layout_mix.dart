@@ -1,17 +1,17 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../core/helpers.dart';
-import '../core/mix_element.dart';
-import '../core/prop.dart';
+import '../../core/helpers.dart';
+import '../../core/mix_element.dart';
+import '../../core/prop.dart';
 import 'flex_layout_spec.dart';
-import 'layout/edge_insets_geometry_mix.dart';
-import 'painting/decoration_mix.dart';
+import 'edge_insets_geometry_mix.dart';
+import '../painting/decoration_mix.dart';
 
 /// Mix class for configuring [FlexLayoutSpec] properties.
 ///
 /// Encapsulates flex layout properties with support for proper Mix framework integration.
-final class FlexLayoutSpecMix extends Mix<FlexLayoutSpec> with Diagnosticable {
+final class FlexLayoutMix extends Mix<FlexLayoutSpec> with Diagnosticable {
   final Prop<Decoration>? $decoration;
   final Prop<EdgeInsetsGeometry>? $padding;
   final Prop<AlignmentGeometry>? $alignment;
@@ -27,7 +27,7 @@ final class FlexLayoutSpecMix extends Mix<FlexLayoutSpec> with Diagnosticable {
   final Prop<double>? $spacing;
 
   /// Main constructor with user-friendly Mix types
-  FlexLayoutSpecMix({
+  FlexLayoutMix({
     DecorationMix? decoration,
     EdgeInsetsGeometryMix? padding,
     AlignmentGeometry? alignment,
@@ -57,8 +57,8 @@ final class FlexLayoutSpecMix extends Mix<FlexLayoutSpec> with Diagnosticable {
          spacing: Prop.maybe(spacing),
        );
 
-  /// Create constructor with Prop<T> types for internal use
-  const FlexLayoutSpecMix.create({
+  /// Create constructor with `Prop<T>` types for internal use
+  const FlexLayoutMix.create({
     Prop<Decoration>? decoration,
     Prop<EdgeInsetsGeometry>? padding,
     Prop<AlignmentGeometry>? alignment,
@@ -87,7 +87,7 @@ final class FlexLayoutSpecMix extends Mix<FlexLayoutSpec> with Diagnosticable {
        $spacing = spacing;
 
   /// Constructor that accepts a [FlexLayoutSpec] value and extracts its properties.
-  FlexLayoutSpecMix.value(FlexLayoutSpec spec)
+  FlexLayoutMix.value(FlexLayoutSpec spec)
     : this(
         decoration: DecorationMix.maybeValue(spec.decoration),
         padding: EdgeInsetsGeometryMix.maybeValue(spec.padding),
@@ -107,85 +107,85 @@ final class FlexLayoutSpecMix extends Mix<FlexLayoutSpec> with Diagnosticable {
   // Factory constructors for common use cases
 
   /// Color factory
-  factory FlexLayoutSpecMix.color(Color value) {
-    return FlexLayoutSpecMix(decoration: DecorationMix.color(value));
+  factory FlexLayoutMix.color(Color value) {
+    return FlexLayoutMix(decoration: DecorationMix.color(value));
   }
 
   /// Decoration factory
-  factory FlexLayoutSpecMix.decoration(DecorationMix value) {
-    return FlexLayoutSpecMix(decoration: value);
+  factory FlexLayoutMix.decoration(DecorationMix value) {
+    return FlexLayoutMix(decoration: value);
   }
 
   /// Alignment factory
-  factory FlexLayoutSpecMix.alignment(AlignmentGeometry value) {
-    return FlexLayoutSpecMix(alignment: value);
+  factory FlexLayoutMix.alignment(AlignmentGeometry value) {
+    return FlexLayoutMix(alignment: value);
   }
 
   /// Padding factory
-  factory FlexLayoutSpecMix.padding(EdgeInsetsGeometryMix value) {
-    return FlexLayoutSpecMix(padding: value);
+  factory FlexLayoutMix.padding(EdgeInsetsGeometryMix value) {
+    return FlexLayoutMix(padding: value);
   }
 
   /// Direction factory
-  factory FlexLayoutSpecMix.direction(Axis value) {
-    return FlexLayoutSpecMix(direction: value);
+  factory FlexLayoutMix.direction(Axis value) {
+    return FlexLayoutMix(direction: value);
   }
 
   /// Gap factory
-  factory FlexLayoutSpecMix.gap(double value) {
-    return FlexLayoutSpecMix(gap: value);
+  factory FlexLayoutMix.gap(double value) {
+    return FlexLayoutMix(gap: value);
   }
 
   /// Main axis alignment factory
-  factory FlexLayoutSpecMix.mainAxisAlignment(MainAxisAlignment value) {
-    return FlexLayoutSpecMix(mainAxisAlignment: value);
+  factory FlexLayoutMix.mainAxisAlignment(MainAxisAlignment value) {
+    return FlexLayoutMix(mainAxisAlignment: value);
   }
 
   /// Cross axis alignment factory
-  factory FlexLayoutSpecMix.crossAxisAlignment(CrossAxisAlignment value) {
-    return FlexLayoutSpecMix(crossAxisAlignment: value);
+  factory FlexLayoutMix.crossAxisAlignment(CrossAxisAlignment value) {
+    return FlexLayoutMix(crossAxisAlignment: value);
   }
 
   /// Main axis size factory
-  factory FlexLayoutSpecMix.mainAxisSize(MainAxisSize value) {
-    return FlexLayoutSpecMix(mainAxisSize: value);
+  factory FlexLayoutMix.mainAxisSize(MainAxisSize value) {
+    return FlexLayoutMix(mainAxisSize: value);
   }
 
   /// Vertical direction factory
-  factory FlexLayoutSpecMix.verticalDirection(VerticalDirection value) {
-    return FlexLayoutSpecMix(verticalDirection: value);
+  factory FlexLayoutMix.verticalDirection(VerticalDirection value) {
+    return FlexLayoutMix(verticalDirection: value);
   }
 
   /// Text direction factory
-  factory FlexLayoutSpecMix.textDirection(TextDirection value) {
-    return FlexLayoutSpecMix(textDirection: value);
+  factory FlexLayoutMix.textDirection(TextDirection value) {
+    return FlexLayoutMix(textDirection: value);
   }
 
   /// Text baseline factory
-  factory FlexLayoutSpecMix.textBaseline(TextBaseline value) {
-    return FlexLayoutSpecMix(textBaseline: value);
+  factory FlexLayoutMix.textBaseline(TextBaseline value) {
+    return FlexLayoutMix(textBaseline: value);
   }
 
   /// Spacing factory (sets spacing internally for API consistency)
-  factory FlexLayoutSpecMix.spacing(double value) {
-    return FlexLayoutSpecMix(spacing: value);
+  factory FlexLayoutMix.spacing(double value) {
+    return FlexLayoutMix(spacing: value);
   }
 
   /// Clip behavior factory
-  factory FlexLayoutSpecMix.clipBehavior(Clip value) {
-    return FlexLayoutSpecMix(clipBehavior: value);
+  factory FlexLayoutMix.clipBehavior(Clip value) {
+    return FlexLayoutMix(clipBehavior: value);
   }
 
   // Flex-specific factories
 
   /// Horizontal flex factory
-  factory FlexLayoutSpecMix.horizontal({
+  factory FlexLayoutMix.horizontal({
     MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
     MainAxisSize mainAxisSize = MainAxisSize.max,
     double? gap,
   }) {
-    return FlexLayoutSpecMix(
+    return FlexLayoutMix(
       direction: Axis.horizontal,
       mainAxisAlignment: mainAxisAlignment,
       crossAxisAlignment: crossAxisAlignment,
@@ -195,13 +195,13 @@ final class FlexLayoutSpecMix extends Mix<FlexLayoutSpec> with Diagnosticable {
   }
 
   /// Vertical flex factory
-  factory FlexLayoutSpecMix.vertical({
+  factory FlexLayoutMix.vertical({
     MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
     MainAxisSize mainAxisSize = MainAxisSize.max,
     double? gap,
   }) {
-    return FlexLayoutSpecMix(
+    return FlexLayoutMix(
       direction: Axis.vertical,
       mainAxisAlignment: mainAxisAlignment,
       crossAxisAlignment: crossAxisAlignment,
@@ -211,13 +211,13 @@ final class FlexLayoutSpecMix extends Mix<FlexLayoutSpec> with Diagnosticable {
   }
 
   /// Row factory (horizontal shorthand)
-  factory FlexLayoutSpecMix.row({
+  factory FlexLayoutMix.row({
     MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
     MainAxisSize mainAxisSize = MainAxisSize.max,
     double? gap,
   }) {
-    return FlexLayoutSpecMix.horizontal(
+    return FlexLayoutMix.horizontal(
       mainAxisAlignment: mainAxisAlignment,
       crossAxisAlignment: crossAxisAlignment,
       mainAxisSize: mainAxisSize,
@@ -226,13 +226,13 @@ final class FlexLayoutSpecMix extends Mix<FlexLayoutSpec> with Diagnosticable {
   }
 
   /// Column factory (vertical shorthand)
-  factory FlexLayoutSpecMix.column({
+  factory FlexLayoutMix.column({
     MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
     MainAxisSize mainAxisSize = MainAxisSize.max,
     double? gap,
   }) {
-    return FlexLayoutSpecMix.vertical(
+    return FlexLayoutMix.vertical(
       mainAxisAlignment: mainAxisAlignment,
       crossAxisAlignment: crossAxisAlignment,
       mainAxisSize: mainAxisSize,
@@ -242,81 +242,81 @@ final class FlexLayoutSpecMix extends Mix<FlexLayoutSpec> with Diagnosticable {
 
   /// Constructor that accepts a nullable [FlexLayoutSpec] value.
   ///
-  /// Returns null if the input is null, otherwise uses [FlexLayoutSpecMix.value].
-  static FlexLayoutSpecMix? maybeValue(FlexLayoutSpec? spec) {
-    return spec != null ? FlexLayoutSpecMix.value(spec) : null;
+  /// Returns null if the input is null, otherwise uses [FlexLayoutMix.value].
+  static FlexLayoutMix? maybeValue(FlexLayoutSpec? spec) {
+    return spec != null ? FlexLayoutMix.value(spec) : null;
   }
 
   // Chainable instance methods
 
   /// Returns a copy with the specified color.
-  FlexLayoutSpecMix color(Color value) {
-    return merge(FlexLayoutSpecMix.color(value));
+  FlexLayoutMix color(Color value) {
+    return merge(FlexLayoutMix.color(value));
   }
 
   /// Returns a copy with the specified decoration.
-  FlexLayoutSpecMix decoration(DecorationMix value) {
-    return merge(FlexLayoutSpecMix.decoration(value));
+  FlexLayoutMix decoration(DecorationMix value) {
+    return merge(FlexLayoutMix.decoration(value));
   }
 
   /// Returns a copy with the specified alignment.
-  FlexLayoutSpecMix alignment(AlignmentGeometry value) {
-    return merge(FlexLayoutSpecMix.alignment(value));
+  FlexLayoutMix alignment(AlignmentGeometry value) {
+    return merge(FlexLayoutMix.alignment(value));
   }
 
   /// Returns a copy with the specified padding.
-  FlexLayoutSpecMix padding(EdgeInsetsGeometryMix value) {
-    return merge(FlexLayoutSpecMix.padding(value));
+  FlexLayoutMix padding(EdgeInsetsGeometryMix value) {
+    return merge(FlexLayoutMix.padding(value));
   }
 
   /// Returns a copy with the specified direction.
-  FlexLayoutSpecMix direction(Axis value) {
-    return merge(FlexLayoutSpecMix.direction(value));
+  FlexLayoutMix direction(Axis value) {
+    return merge(FlexLayoutMix.direction(value));
   }
 
   /// Returns a copy with the specified gap.
-  FlexLayoutSpecMix gap(double value) {
-    return merge(FlexLayoutSpecMix.gap(value));
+  FlexLayoutMix gap(double value) {
+    return merge(FlexLayoutMix.gap(value));
   }
 
   /// Returns a copy with the specified main axis alignment.
-  FlexLayoutSpecMix mainAxisAlignment(MainAxisAlignment value) {
-    return merge(FlexLayoutSpecMix(mainAxisAlignment: value));
+  FlexLayoutMix mainAxisAlignment(MainAxisAlignment value) {
+    return merge(FlexLayoutMix(mainAxisAlignment: value));
   }
 
   /// Returns a copy with the specified cross axis alignment.
-  FlexLayoutSpecMix crossAxisAlignment(CrossAxisAlignment value) {
-    return merge(FlexLayoutSpecMix(crossAxisAlignment: value));
+  FlexLayoutMix crossAxisAlignment(CrossAxisAlignment value) {
+    return merge(FlexLayoutMix(crossAxisAlignment: value));
   }
 
   /// Returns a copy with the specified main axis size.
-  FlexLayoutSpecMix mainAxisSize(MainAxisSize value) {
-    return merge(FlexLayoutSpecMix(mainAxisSize: value));
+  FlexLayoutMix mainAxisSize(MainAxisSize value) {
+    return merge(FlexLayoutMix(mainAxisSize: value));
   }
 
   /// Returns a copy with the specified vertical direction.
-  FlexLayoutSpecMix verticalDirection(VerticalDirection value) {
-    return merge(FlexLayoutSpecMix(verticalDirection: value));
+  FlexLayoutMix verticalDirection(VerticalDirection value) {
+    return merge(FlexLayoutMix(verticalDirection: value));
   }
 
   /// Returns a copy with the specified text direction.
-  FlexLayoutSpecMix textDirection(TextDirection value) {
-    return merge(FlexLayoutSpecMix(textDirection: value));
+  FlexLayoutMix textDirection(TextDirection value) {
+    return merge(FlexLayoutMix(textDirection: value));
   }
 
   /// Returns a copy with the specified text baseline.
-  FlexLayoutSpecMix textBaseline(TextBaseline value) {
-    return merge(FlexLayoutSpecMix(textBaseline: value));
+  FlexLayoutMix textBaseline(TextBaseline value) {
+    return merge(FlexLayoutMix(textBaseline: value));
   }
 
   /// Returns a copy with the specified spacing.
-  FlexLayoutSpecMix spacing(double value) {
-    return merge(FlexLayoutSpecMix(spacing: value));
+  FlexLayoutMix spacing(double value) {
+    return merge(FlexLayoutMix(spacing: value));
   }
 
   /// Returns a copy with the specified clip behavior.
-  FlexLayoutSpecMix clipBehavior(Clip value) {
-    return merge(FlexLayoutSpecMix(clipBehavior: value));
+  FlexLayoutMix clipBehavior(Clip value) {
+    return merge(FlexLayoutMix(clipBehavior: value));
   }
 
   /// Resolves to [FlexLayoutSpec] using the provided [BuildContext].
@@ -339,12 +339,12 @@ final class FlexLayoutSpecMix extends Mix<FlexLayoutSpec> with Diagnosticable {
     );
   }
 
-  /// Merges the properties of this [FlexLayoutSpecMix] with the properties of [other].
+  /// Merges the properties of this [FlexLayoutMix] with the properties of [other].
   @override
-  FlexLayoutSpecMix merge(FlexLayoutSpecMix? other) {
+  FlexLayoutMix merge(FlexLayoutMix? other) {
     if (other == null) return this;
 
-    return FlexLayoutSpecMix.create(
+    return FlexLayoutMix.create(
       decoration: MixOps.merge($decoration, other.$decoration),
       padding: MixOps.merge($padding, other.$padding),
       alignment: MixOps.merge($alignment, other.$alignment),

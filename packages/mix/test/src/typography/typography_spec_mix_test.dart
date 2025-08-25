@@ -3,9 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 void main() {
-  group('TypographySpecMix', () {
+  group('TypographyMix', () {
     test('should create with default values', () {
-      final mix = TypographySpecMix();
+      final mix = TypographyMix();
 
       expect(mix.$style, isNull);
       expect(mix.$textAlign, isNull);
@@ -18,16 +18,16 @@ void main() {
 
     test('should create with TextStyleMix', () {
       final styleMix = TextStyleMix(color: Colors.red);
-      final mix = TypographySpecMix(style: styleMix);
+      final mix = TypographyMix(style: styleMix);
 
       expect(mix.$style, isNotNull);
       expect(mix.$textAlign, isNull);
     });
 
     test('should create with factory constructors', () {
-      final mixFromStyle = TypographySpecMix.style(TextStyleMix(fontSize: 16));
-      final mixFromAlign = TypographySpecMix.textAlign(TextAlign.center);
-      final mixFromOverflow = TypographySpecMix.overflow(TextOverflow.ellipsis);
+      final mixFromStyle = TypographyMix.style(TextStyleMix(fontSize: 16));
+      final mixFromAlign = TypographyMix.textAlign(TextAlign.center);
+      final mixFromOverflow = TypographyMix.overflow(TextOverflow.ellipsis);
 
       expect(mixFromStyle.$style, isNotNull);
       expect(mixFromAlign.$textAlign, isNotNull);
@@ -41,7 +41,7 @@ void main() {
         maxLines: 2,
       );
 
-      final mix = TypographySpecMix.value(spec);
+      final mix = TypographyMix.value(spec);
 
       expect(mix.$style, isNotNull);
       expect(mix.$textAlign, isNotNull);
@@ -49,11 +49,11 @@ void main() {
     });
 
     test('should merge correctly', () {
-      final mix1 = TypographySpecMix(
+      final mix1 = TypographyMix(
         style: TextStyleMix(fontSize: 14),
         textAlign: TextAlign.left,
       );
-      final mix2 = TypographySpecMix(
+      final mix2 = TypographyMix(
         style: TextStyleMix(color: Colors.green),
         overflow: TextOverflow.fade,
       );
@@ -66,7 +66,7 @@ void main() {
     });
 
     test('should chain methods correctly', () {
-      final chained = TypographySpecMix()
+      final chained = TypographyMix()
           .fontSize(18)
           .color(Colors.purple)
           .textAlign(TextAlign.center)
@@ -78,7 +78,7 @@ void main() {
     });
 
     testWidgets('should resolve correctly', (tester) async {
-      final mix = TypographySpecMix(
+      final mix = TypographyMix(
         style: TextStyleMix(fontSize: 16, color: Colors.red),
         textAlign: TextAlign.center,
         maxLines: 2,
@@ -103,15 +103,15 @@ void main() {
     });
 
     test('should have correct equality', () {
-      final mix1 = TypographySpecMix(
+      final mix1 = TypographyMix(
         style: TextStyleMix(color: Colors.red),
         textAlign: TextAlign.center,
       );
-      final mix2 = TypographySpecMix(
+      final mix2 = TypographyMix(
         style: TextStyleMix(color: Colors.red),
         textAlign: TextAlign.center,
       );
-      final mix3 = TypographySpecMix(
+      final mix3 = TypographyMix(
         style: TextStyleMix(color: Colors.blue),
         textAlign: TextAlign.center,
       );
@@ -121,10 +121,10 @@ void main() {
     });
 
     test('maybeValue should handle nulls', () {
-      expect(TypographySpecMix.maybeValue(null), isNull);
+      expect(TypographyMix.maybeValue(null), isNull);
 
       const spec = TypographySpec(textAlign: TextAlign.justify);
-      final mix = TypographySpecMix.maybeValue(spec);
+      final mix = TypographyMix.maybeValue(spec);
       expect(mix, isNotNull);
       expect(mix!.$textAlign, isNotNull);
     });

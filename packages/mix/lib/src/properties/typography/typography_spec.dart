@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../core/helpers.dart';
-import '../core/spec.dart';
+import '../../core/helpers.dart';
+import '../../core/spec.dart';
 
 /// Specification for typography properties based on DefaultTextStyle.
 ///

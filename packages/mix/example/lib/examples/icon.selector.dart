@@ -38,7 +38,7 @@ class EmojiSelector extends StatelessWidget {
       direction: Axis.horizontal,
       style: FlexBoxStyle()
           .container(
-            ContainerSpecMix()
+            ContainerMix()
                 .padding(EdgeInsetsMix.symmetric(horizontal: 16, vertical: 10))
                 .color(Colors.white)
                 .borderRadius(BorderRadiusMix.circular(50))
@@ -50,7 +50,7 @@ class EmojiSelector extends StatelessWidget {
                 ),
           )
           .flex(
-            FlexLayoutSpecMix()
+            FlexLayoutMix()
                 .spacing(16)
                 .mainAxisAlignment(MainAxisAlignment.center)
                 .mainAxisSize(MainAxisSize.min),

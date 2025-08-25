@@ -6,12 +6,12 @@ import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
-import '../../properties/flex_layout_spec_mix.dart';
+import '../../properties/layout/flex_layout_mix.dart';
 import '../../properties/layout/constraints_util.dart';
 import '../../properties/layout/edge_insets_geometry_util.dart';
 import '../../properties/painting/decoration_util.dart';
 import '../../variants/variant_util.dart';
-import '../container/container_attribute.dart';
+import '../../properties/container/container_mix.dart';
 import 'flexbox_attribute.dart';
 import 'flexbox_spec.dart';
 
@@ -22,23 +22,23 @@ import 'flexbox_spec.dart';
 class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec> {
   late final padding = EdgeInsetsGeometryUtility<FlexBoxStyle>(
     (prop) =>
-        mutable.merge(FlexBoxStyle.container(ContainerSpecMix(padding: prop))),
+        mutable.merge(FlexBoxStyle.container(ContainerMix(padding: prop))),
   );
 
   late final margin = EdgeInsetsGeometryUtility<FlexBoxStyle>(
     (prop) =>
-        mutable.merge(FlexBoxStyle.container(ContainerSpecMix(margin: prop))),
+        mutable.merge(FlexBoxStyle.container(ContainerMix(margin: prop))),
   );
 
   late final constraints = BoxConstraintsUtility<FlexBoxStyle>(
     (prop) => mutable.merge(
-      FlexBoxStyle.container(ContainerSpecMix(constraints: prop)),
+      FlexBoxStyle.container(ContainerMix(constraints: prop)),
     ),
   );
 
   late final decoration = DecorationUtility<FlexBoxStyle>(
     (prop) => mutable.merge(
-      FlexBoxStyle.container(ContainerSpecMix(decoration: prop)),
+      FlexBoxStyle.container(ContainerMix(decoration: prop)),
     ),
   );
 
@@ -68,69 +68,69 @@ class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec> {
   /// Container transformation utilities.
   late final transform = MixUtility<FlexBoxStyle, Matrix4>(
     (prop) => mutable.merge(
-      FlexBoxStyle.container(ContainerSpecMix(transform: prop)),
+      FlexBoxStyle.container(ContainerMix(transform: prop)),
     ),
   );
   late final transformAlignment = MixUtility<FlexBoxStyle, AlignmentGeometry>(
     (prop) => mutable.merge(
-      FlexBoxStyle.container(ContainerSpecMix(transformAlignment: prop)),
+      FlexBoxStyle.container(ContainerMix(transformAlignment: prop)),
     ),
   );
   late final clipBehavior = MixUtility<FlexBoxStyle, Clip>(
     (prop) => mutable.merge(
-      FlexBoxStyle.container(ContainerSpecMix(clipBehavior: prop)),
+      FlexBoxStyle.container(ContainerMix(clipBehavior: prop)),
     ),
   );
 
   late final alignment = MixUtility<FlexBoxStyle, AlignmentGeometry>(
     (prop) => mutable.merge(
-      FlexBoxStyle.container(ContainerSpecMix(alignment: prop)),
+      FlexBoxStyle.container(ContainerMix(alignment: prop)),
     ),
   );
 
   /// Flex layout utilities.
   late final direction = MixUtility<FlexBoxStyle, Axis>(
     (prop) =>
-        mutable.merge(FlexBoxStyle.flex(FlexLayoutSpecMix(direction: prop))),
+        mutable.merge(FlexBoxStyle.flex(FlexLayoutMix(direction: prop))),
   );
 
   late final mainAxisAlignment = MixUtility<FlexBoxStyle, MainAxisAlignment>(
     (prop) => mutable.merge(
-      FlexBoxStyle.flex(FlexLayoutSpecMix(mainAxisAlignment: prop)),
+      FlexBoxStyle.flex(FlexLayoutMix(mainAxisAlignment: prop)),
     ),
   );
 
   late final crossAxisAlignment = MixUtility<FlexBoxStyle, CrossAxisAlignment>(
     (prop) => mutable.merge(
-      FlexBoxStyle.flex(FlexLayoutSpecMix(crossAxisAlignment: prop)),
+      FlexBoxStyle.flex(FlexLayoutMix(crossAxisAlignment: prop)),
     ),
   );
 
   late final mainAxisSize = MixUtility<FlexBoxStyle, MainAxisSize>(
     (prop) =>
-        mutable.merge(FlexBoxStyle.flex(FlexLayoutSpecMix(mainAxisSize: prop))),
+        mutable.merge(FlexBoxStyle.flex(FlexLayoutMix(mainAxisSize: prop))),
   );
 
   late final verticalDirection = MixUtility<FlexBoxStyle, VerticalDirection>(
     (prop) => mutable.merge(
-      FlexBoxStyle.flex(FlexLayoutSpecMix(verticalDirection: prop)),
+      FlexBoxStyle.flex(FlexLayoutMix(verticalDirection: prop)),
     ),
   );
 
   late final flexTextDirection = MixUtility<FlexBoxStyle, TextDirection>(
     (prop) => mutable.merge(
-      FlexBoxStyle.flex(FlexLayoutSpecMix(textDirection: prop)),
+      FlexBoxStyle.flex(FlexLayoutMix(textDirection: prop)),
     ),
   );
 
   late final textBaseline = MixUtility<FlexBoxStyle, TextBaseline>(
     (prop) =>
-        mutable.merge(FlexBoxStyle.flex(FlexLayoutSpecMix(textBaseline: prop))),
+        mutable.merge(FlexBoxStyle.flex(FlexLayoutMix(textBaseline: prop))),
   );
 
   late final flexClipBehavior = MixUtility<FlexBoxStyle, Clip>(
     (prop) =>
-        mutable.merge(FlexBoxStyle.flex(FlexLayoutSpecMix(clipBehavior: prop))),
+        mutable.merge(FlexBoxStyle.flex(FlexLayoutMix(clipBehavior: prop))),
   );
 
   /// Internal mutable state for accumulating flexbox styling properties.
@@ -144,7 +144,7 @@ class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec> {
 
   /// Sets the spacing between children in the flex layout.
   FlexBoxStyle spacing(double v) =>
-      mutable.merge(FlexBoxStyle.flex(FlexLayoutSpecMix(spacing: v)));
+      mutable.merge(FlexBoxStyle.flex(FlexLayoutMix(spacing: v)));
 
   /// Sets the gap between children in the flex layout.
   /// @deprecated Use spacing instead.
@@ -153,7 +153,7 @@ class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec> {
     'This feature was deprecated after Mix v2.0.0.',
   )
   FlexBoxStyle gap(double v) =>
-      mutable.merge(FlexBoxStyle.flex(FlexLayoutSpecMix(spacing: v)));
+      mutable.merge(FlexBoxStyle.flex(FlexLayoutMix(spacing: v)));
 
   /// Applies animation configuration to the flexbox styling.
   FlexBoxStyle animate(AnimationConfig animation) => mutable.animate(animation);

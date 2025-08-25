@@ -356,14 +356,14 @@ void main() {
     group('', () {
       test('merges orderOfModifiers correctly', () {
         final first = FlexBoxStyle(
-          container: ContainerSpecMix.constraints(BoxConstraintsMix.width(100)),
+          container: ContainerMix.constraints(BoxConstraintsMix.width(100)),
           modifier: ModifierConfig.orderOfModifiers(const [
             OpacityModifier,
             PaddingModifier,
           ]),
         );
         final second = FlexBoxStyle(
-          flex: FlexLayoutSpecMix.spacing(8.0),
+          flex: FlexLayoutMix.spacing(8.0),
           modifier: ModifierConfig.orderOfModifiers(const [
             ClipOvalModifier,
             TransformModifier,
@@ -379,11 +379,11 @@ void main() {
 
       test('merges inherit correctly', () {
         final first = FlexBoxStyle(
-          container: ContainerSpecMix.constraints(BoxConstraintsMix.width(100)),
+          container: ContainerMix.constraints(BoxConstraintsMix.width(100)),
           inherit: true,
         );
         final second = FlexBoxStyle(
-          flex: FlexLayoutSpecMix.spacing(8.0),
+          flex: FlexLayoutMix.spacing(8.0),
           inherit: false,
         );
 

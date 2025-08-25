@@ -8,12 +8,12 @@ void main() {
   group('FlexWidgetSpecUtility', () {
     group('Constructor', () {
       test('', () {
-        final containerAttr = ContainerSpecMix(
+        final containerAttr = ContainerMix(
           alignment: Alignment.center,
           padding: EdgeInsetsMix(top: 10.0, bottom: 20.0),
         );
 
-        final flexAttr = FlexLayoutSpecMix(
+        final flexAttr = FlexLayoutMix(
           direction: Axis.horizontal,
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,11 +76,11 @@ void main() {
     group('Resolution', () {
       test('', () {
         final attribute = FlexBoxStyle(
-          container: ContainerSpecMix(
+          container: ContainerMix(
             alignment: Alignment.center,
             padding: EdgeInsetsMix(top: 10.0, bottom: 20.0),
           ),
-          flex: FlexLayoutSpecMix(
+          flex: FlexLayoutMix(
             direction: Axis.horizontal,
             mainAxisAlignment: MainAxisAlignment.center,
           ),
@@ -101,7 +101,7 @@ void main() {
 
       test('resolves complex nested properties correctly', () {
         final attribute = FlexBoxStyle(
-          container: ContainerSpecMix(
+          container: ContainerMix(
             decoration: BoxDecorationMix(
               color: Colors.red,
               border: BoxBorderMix.all(
@@ -114,7 +114,7 @@ void main() {
             ),
           ),
 
-          flex: FlexLayoutSpecMix(
+          flex: FlexLayoutMix(
             spacing: 10.0,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
           ),
@@ -139,19 +139,19 @@ void main() {
     group('Merge', () {
       test('merges properties correctly', () {
         final first = FlexBoxStyle(
-          container: ContainerSpecMix(
+          container: ContainerMix(
             alignment: Alignment.center,
             padding: EdgeInsetsMix.all(10.0),
           ),
-          flex: FlexLayoutSpecMix(direction: Axis.horizontal),
+          flex: FlexLayoutMix(direction: Axis.horizontal),
         );
 
         final second = FlexBoxStyle(
-          container: ContainerSpecMix(
+          container: ContainerMix(
             alignment: Alignment.topLeft, // This should override
             margin: EdgeInsetsMix.all(20.0), // This should be added
           ),
-          flex: FlexLayoutSpecMix(
+          flex: FlexLayoutMix(
             mainAxisAlignment: MainAxisAlignment.center,
           ), // This should be added
         );
@@ -183,7 +183,7 @@ void main() {
 
       test('returns this when other is null', () {
         final attribute = FlexBoxStyle(
-          container: ContainerSpecMix(alignment: Alignment.center),
+          container: ContainerMix(alignment: Alignment.center),
         );
 
         final merged = attribute.merge(null);
@@ -193,13 +193,13 @@ void main() {
 
       test('merges nested box and flex attributes correctly', () {
         final first = FlexBoxStyle(
-          container: ContainerSpecMix(
+          container: ContainerMix(
             decoration: BoxDecorationMix(color: Colors.red),
           ),
         );
 
         final second = FlexBoxStyle(
-          container: ContainerSpecMix(
+          container: ContainerMix(
             decoration: BoxDecorationMix(
               border: BoxBorderMix.all(BorderSideMix(color: Colors.blue)),
             ),
@@ -221,13 +221,13 @@ void main() {
     group('Equality', () {
       test('equal attributes have same hashCode', () {
         final attr1 = FlexBoxStyle(
-          container: ContainerSpecMix(alignment: Alignment.center),
-          flex: FlexLayoutSpecMix(direction: Axis.horizontal),
+          container: ContainerMix(alignment: Alignment.center),
+          flex: FlexLayoutMix(direction: Axis.horizontal),
         );
 
         final attr2 = FlexBoxStyle(
-          container: ContainerSpecMix(alignment: Alignment.center),
-          flex: FlexLayoutSpecMix(direction: Axis.horizontal),
+          container: ContainerMix(alignment: Alignment.center),
+          flex: FlexLayoutMix(direction: Axis.horizontal),
         );
 
         expect(attr1, equals(attr2));
@@ -236,11 +236,11 @@ void main() {
 
       test('different attributes are not equal', () {
         final attr1 = FlexBoxStyle(
-          container: ContainerSpecMix(alignment: Alignment.center),
+          container: ContainerMix(alignment: Alignment.center),
         );
 
         final attr2 = FlexBoxStyle(
-          container: ContainerSpecMix(alignment: Alignment.topLeft),
+          container: ContainerMix(alignment: Alignment.topLeft),
         );
 
         expect(attr1, isNot(equals(attr2)));
@@ -248,11 +248,11 @@ void main() {
 
       test('attributes with different nested properties are not equal', () {
         final attr1 = FlexBoxStyle(
-          flex: FlexLayoutSpecMix(direction: Axis.horizontal),
+          flex: FlexLayoutMix(direction: Axis.horizontal),
         );
 
         final attr2 = FlexBoxStyle(
-          flex: FlexLayoutSpecMix(direction: Axis.vertical),
+          flex: FlexLayoutMix(direction: Axis.vertical),
         );
 
         expect(attr1, isNot(equals(attr2)));
@@ -325,7 +325,7 @@ void main() {
             VariantStyle(
               variant,
               FlexBoxStyle(
-                container: ContainerSpecMix(
+                container: ContainerMix(
                   decoration: BoxDecorationMix(color: Colors.green),
                 ),
               ),
@@ -341,11 +341,11 @@ void main() {
     group('Composite Behavior', () {
       test('box and flex attributes work independently', () {
         final boxOnly = FlexBoxStyle(
-          container: ContainerSpecMix(alignment: Alignment.center),
+          container: ContainerMix(alignment: Alignment.center),
         );
 
         final flexOnly = FlexBoxStyle(
-          flex: FlexLayoutSpecMix(direction: Axis.horizontal),
+          flex: FlexLayoutMix(direction: Axis.horizontal),
         );
 
         expect(boxOnly.$container, isNotNull);
@@ -357,12 +357,12 @@ void main() {
 
       test('partial updates preserve other attribute', () {
         final initial = FlexBoxStyle(
-          container: ContainerSpecMix(alignment: Alignment.center),
-          flex: FlexLayoutSpecMix(direction: Axis.horizontal),
+          container: ContainerMix(alignment: Alignment.center),
+          flex: FlexLayoutMix(direction: Axis.horizontal),
         );
 
         final updateBox = FlexBoxStyle(
-          container: ContainerSpecMix(padding: EdgeInsetsMix.all(10.0)),
+          container: ContainerMix(padding: EdgeInsetsMix.all(10.0)),
         );
 
         final merged = initial.merge(updateBox);

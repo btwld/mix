@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../core/helpers.dart';
-import '../core/mix_element.dart';
-import '../core/prop.dart';
-import '../properties/typography/text_style_mix.dart';
+import '../../core/helpers.dart';
+import '../../core/mix_element.dart';
+import '../../core/prop.dart';
+import 'text_style_mix.dart';
 import 'typography_spec.dart';
 
 /// Mix class for configuring [TypographySpec] properties.
@@ -12,7 +12,7 @@ import 'typography_spec.dart';
 /// Encapsulates typography properties with support for proper Mix framework integration.
 /// Based on Flutter's DefaultTextStyle properties but designed to work with Mix's
 /// token system, merging, and resolution pipeline.
-final class TypographySpecMix extends Mix<TypographySpec> with Diagnosticable {
+final class TypographyMix extends Mix<TypographySpec> with Diagnosticable {
   final Prop<TextStyle>? $style;
   final Prop<TextAlign>? $textAlign;
   final Prop<bool>? $softWrap;
@@ -22,7 +22,7 @@ final class TypographySpecMix extends Mix<TypographySpec> with Diagnosticable {
   final Prop<TextHeightBehavior>? $textHeightBehavior;
 
   /// Main constructor with user-friendly Mix types
-  TypographySpecMix({
+  TypographyMix({
     TextStyleMix? style,
     TextAlign? textAlign,
     bool? softWrap,
@@ -41,7 +41,7 @@ final class TypographySpecMix extends Mix<TypographySpec> with Diagnosticable {
        );
 
   /// Create constructor with Prop\<T\> types for internal use
-  const TypographySpecMix.create({
+  const TypographyMix.create({
     Prop<TextStyle>? style,
     Prop<TextAlign>? textAlign,
     Prop<bool>? softWrap,
@@ -58,7 +58,7 @@ final class TypographySpecMix extends Mix<TypographySpec> with Diagnosticable {
        $textHeightBehavior = textHeightBehavior;
 
   /// Constructor that accepts a [TypographySpec] value and extracts its properties.
-  TypographySpecMix.value(TypographySpec spec)
+  TypographyMix.value(TypographySpec spec)
     : this(
         style: TextStyleMix.maybeValue(spec.style),
         textAlign: spec.textAlign,
@@ -72,124 +72,124 @@ final class TypographySpecMix extends Mix<TypographySpec> with Diagnosticable {
   // Factory constructors for common use cases
 
   /// Style factory
-  factory TypographySpecMix.style(TextStyleMix value) {
-    return TypographySpecMix(style: value);
+  factory TypographyMix.style(TextStyleMix value) {
+    return TypographyMix(style: value);
   }
 
   /// Text align factory
-  factory TypographySpecMix.textAlign(TextAlign value) {
-    return TypographySpecMix(textAlign: value);
+  factory TypographyMix.textAlign(TextAlign value) {
+    return TypographyMix(textAlign: value);
   }
 
   /// Soft wrap factory
-  factory TypographySpecMix.softWrap(bool value) {
-    return TypographySpecMix(softWrap: value);
+  factory TypographyMix.softWrap(bool value) {
+    return TypographyMix(softWrap: value);
   }
 
   /// Overflow factory
-  factory TypographySpecMix.overflow(TextOverflow value) {
-    return TypographySpecMix(overflow: value);
+  factory TypographyMix.overflow(TextOverflow value) {
+    return TypographyMix(overflow: value);
   }
 
   /// Max lines factory
-  factory TypographySpecMix.maxLines(int value) {
-    return TypographySpecMix(maxLines: value);
+  factory TypographyMix.maxLines(int value) {
+    return TypographyMix(maxLines: value);
   }
 
   /// Text width basis factory
-  factory TypographySpecMix.textWidthBasis(TextWidthBasis value) {
-    return TypographySpecMix(textWidthBasis: value);
+  factory TypographyMix.textWidthBasis(TextWidthBasis value) {
+    return TypographyMix(textWidthBasis: value);
   }
 
   /// Text height behavior factory
-  factory TypographySpecMix.textHeightBehavior(TextHeightBehavior value) {
-    return TypographySpecMix(textHeightBehavior: value);
+  factory TypographyMix.textHeightBehavior(TextHeightBehavior value) {
+    return TypographyMix(textHeightBehavior: value);
   }
 
   // Common text style shortcuts
 
   /// Font size factory
-  factory TypographySpecMix.fontSize(double value) {
-    return TypographySpecMix(style: TextStyleMix(fontSize: value));
+  factory TypographyMix.fontSize(double value) {
+    return TypographyMix(style: TextStyleMix(fontSize: value));
   }
 
   /// Font weight factory
-  factory TypographySpecMix.fontWeight(FontWeight value) {
-    return TypographySpecMix(style: TextStyleMix(fontWeight: value));
+  factory TypographyMix.fontWeight(FontWeight value) {
+    return TypographyMix(style: TextStyleMix(fontWeight: value));
   }
 
   /// Color factory
-  factory TypographySpecMix.color(Color value) {
-    return TypographySpecMix(style: TextStyleMix(color: value));
+  factory TypographyMix.color(Color value) {
+    return TypographyMix(style: TextStyleMix(color: value));
   }
 
   /// Font family factory
-  factory TypographySpecMix.fontFamily(String value) {
-    return TypographySpecMix(style: TextStyleMix(fontFamily: value));
+  factory TypographyMix.fontFamily(String value) {
+    return TypographyMix(style: TextStyleMix(fontFamily: value));
   }
 
   /// Constructor that accepts a nullable [TypographySpec] value.
   ///
-  /// Returns null if the input is null, otherwise uses [TypographySpecMix.value].
-  static TypographySpecMix? maybeValue(TypographySpec? spec) {
-    return spec != null ? TypographySpecMix.value(spec) : null;
+  /// Returns null if the input is null, otherwise uses [TypographyMix.value].
+  static TypographyMix? maybeValue(TypographySpec? spec) {
+    return spec != null ? TypographyMix.value(spec) : null;
   }
 
   // Chainable instance methods
 
   /// Returns a copy with the specified style.
-  TypographySpecMix style(TextStyleMix value) {
-    return merge(TypographySpecMix.style(value));
+  TypographyMix style(TextStyleMix value) {
+    return merge(TypographyMix.style(value));
   }
 
   /// Returns a copy with the specified text align.
-  TypographySpecMix textAlign(TextAlign value) {
-    return merge(TypographySpecMix.textAlign(value));
+  TypographyMix textAlign(TextAlign value) {
+    return merge(TypographyMix.textAlign(value));
   }
 
   /// Returns a copy with the specified soft wrap.
-  TypographySpecMix softWrap(bool value) {
-    return merge(TypographySpecMix.softWrap(value));
+  TypographyMix softWrap(bool value) {
+    return merge(TypographyMix.softWrap(value));
   }
 
   /// Returns a copy with the specified overflow.
-  TypographySpecMix overflow(TextOverflow value) {
-    return merge(TypographySpecMix.overflow(value));
+  TypographyMix overflow(TextOverflow value) {
+    return merge(TypographyMix.overflow(value));
   }
 
   /// Returns a copy with the specified max lines.
-  TypographySpecMix maxLines(int value) {
-    return merge(TypographySpecMix.maxLines(value));
+  TypographyMix maxLines(int value) {
+    return merge(TypographyMix.maxLines(value));
   }
 
   /// Returns a copy with the specified text width basis.
-  TypographySpecMix textWidthBasis(TextWidthBasis value) {
-    return merge(TypographySpecMix.textWidthBasis(value));
+  TypographyMix textWidthBasis(TextWidthBasis value) {
+    return merge(TypographyMix.textWidthBasis(value));
   }
 
   /// Returns a copy with the specified text height behavior.
-  TypographySpecMix textHeightBehavior(TextHeightBehavior value) {
-    return merge(TypographySpecMix.textHeightBehavior(value));
+  TypographyMix textHeightBehavior(TextHeightBehavior value) {
+    return merge(TypographyMix.textHeightBehavior(value));
   }
 
   /// Returns a copy with the specified font size.
-  TypographySpecMix fontSize(double value) {
-    return merge(TypographySpecMix.fontSize(value));
+  TypographyMix fontSize(double value) {
+    return merge(TypographyMix.fontSize(value));
   }
 
   /// Returns a copy with the specified font weight.
-  TypographySpecMix fontWeight(FontWeight value) {
-    return merge(TypographySpecMix.fontWeight(value));
+  TypographyMix fontWeight(FontWeight value) {
+    return merge(TypographyMix.fontWeight(value));
   }
 
   /// Returns a copy with the specified color.
-  TypographySpecMix color(Color value) {
-    return merge(TypographySpecMix.color(value));
+  TypographyMix color(Color value) {
+    return merge(TypographyMix.color(value));
   }
 
   /// Returns a copy with the specified font family.
-  TypographySpecMix fontFamily(String value) {
-    return merge(TypographySpecMix.fontFamily(value));
+  TypographyMix fontFamily(String value) {
+    return merge(TypographyMix.fontFamily(value));
   }
 
   /// Resolves to [TypographySpec] using the provided [BuildContext].
@@ -206,12 +206,12 @@ final class TypographySpecMix extends Mix<TypographySpec> with Diagnosticable {
     );
   }
 
-  /// Merges the properties of this [TypographySpecMix] with the properties of [other].
+  /// Merges the properties of this [TypographyMix] with the properties of [other].
   @override
-  TypographySpecMix merge(TypographySpecMix? other) {
+  TypographyMix merge(TypographyMix? other) {
     if (other == null) return this;
 
-    return TypographySpecMix.create(
+    return TypographyMix.create(
       style: MixOps.merge($style, other.$style),
       textAlign: MixOps.merge($textAlign, other.$textAlign),
       softWrap: MixOps.merge($softWrap, other.$softWrap),

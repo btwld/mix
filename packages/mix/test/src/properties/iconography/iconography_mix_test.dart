@@ -3,9 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 void main() {
-  group('IconographySpecMix', () {
+  group('IconographyMix', () {
     test('should create with default values', () {
-      final mix = IconographySpecMix();
+      final mix = IconographyMix();
 
       expect(mix.$size, isNull);
       expect(mix.$fill, isNull);
@@ -20,7 +20,7 @@ void main() {
 
     test('should create with specific values', () {
       final shadows = [ShadowMix(color: Colors.black, blurRadius: 2.0)];
-      final mix = IconographySpecMix(
+      final mix = IconographyMix(
         size: 24.0,
         fill: 0.8,
         weight: 400.0,
@@ -36,12 +36,12 @@ void main() {
     });
 
     test('should create with factory constructors', () {
-      final mixFromSize = IconographySpecMix.size(24.0);
-      final mixFromColor = IconographySpecMix.color(Colors.red);
-      final mixFromOpacity = IconographySpecMix.opacity(0.8);
-      final mixFromSmall = IconographySpecMix.small();
-      final mixFromMedium = IconographySpecMix.medium();
-      final mixFromLarge = IconographySpecMix.large();
+      final mixFromSize = IconographyMix.size(24.0);
+      final mixFromColor = IconographyMix.color(Colors.red);
+      final mixFromOpacity = IconographyMix.opacity(0.8);
+      final mixFromSmall = IconographyMix.small();
+      final mixFromMedium = IconographyMix.medium();
+      final mixFromLarge = IconographyMix.large();
 
       expect(mixFromSize.$size, isNotNull);
       expect(mixFromColor.$color, isNotNull);
@@ -59,7 +59,7 @@ void main() {
         fill: 0.5,
       );
 
-      final mix = IconographySpecMix.value(spec);
+      final mix = IconographyMix.value(spec);
 
       expect(mix.$size, isNotNull);
       expect(mix.$color, isNotNull);
@@ -68,11 +68,11 @@ void main() {
     });
 
     test('should merge correctly', () {
-      final mix1 = IconographySpecMix(
+      final mix1 = IconographyMix(
         size: 16.0,
         color: Colors.red,
       );
-      final mix2 = IconographySpecMix(
+      final mix2 = IconographyMix(
         opacity: 0.8,
         fill: 0.6,
       );
@@ -86,7 +86,7 @@ void main() {
     });
 
     test('should chain methods correctly', () {
-      final chained = IconographySpecMix()
+      final chained = IconographyMix()
           .size(20.0)
           .color(Colors.purple)
           .opacity(0.9)
@@ -104,7 +104,7 @@ void main() {
 
     testWidgets('should resolve correctly', (tester) async {
       final shadows = [ShadowMix(color: Colors.black, blurRadius: 3.0)];
-      final mix = IconographySpecMix(
+      final mix = IconographyMix(
         size: 32.0,
         color: Colors.orange,
         opacity: 0.6,
@@ -141,15 +141,15 @@ void main() {
     });
 
     test('should have correct equality', () {
-      final mix1 = IconographySpecMix(
+      final mix1 = IconographyMix(
         size: 24.0,
         color: Colors.blue,
       );
-      final mix2 = IconographySpecMix(
+      final mix2 = IconographyMix(
         size: 24.0,
         color: Colors.blue,
       );
-      final mix3 = IconographySpecMix(
+      final mix3 = IconographyMix(
         size: 16.0,
         color: Colors.blue,
       );
@@ -159,10 +159,10 @@ void main() {
     });
 
     test('maybeValue should handle nulls', () {
-      expect(IconographySpecMix.maybeValue(null), isNull);
+      expect(IconographyMix.maybeValue(null), isNull);
 
       const spec = IconographySpec(size: 18.0, opacity: 0.5);
-      final mix = IconographySpecMix.maybeValue(spec);
+      final mix = IconographyMix.maybeValue(spec);
       expect(mix, isNotNull);
       expect(mix!.$size, isNotNull);
       expect(mix.$opacity, isNotNull);
@@ -172,15 +172,15 @@ void main() {
       final shadows1 = [ShadowMix(color: Colors.red, blurRadius: 1.0)];
       final shadows2 = [ShadowMix(color: Colors.blue, blurRadius: 2.0)];
       
-      final mix1 = IconographySpecMix(shadows: shadows1);
-      final mix2 = IconographySpecMix(shadows: shadows2);
+      final mix1 = IconographyMix(shadows: shadows1);
+      final mix2 = IconographyMix(shadows: shadows2);
       
       final merged = mix1.merge(mix2);
       expect(merged.$shadows, isNotNull);
     });
 
     test('should handle all font variation properties', () {
-      final mix = IconographySpecMix(
+      final mix = IconographyMix(
         weight: 700.0,
         grade: 25.0,
         opticalSize: 48.0,
@@ -194,9 +194,9 @@ void main() {
     });
 
     test('should support factory shortcuts', () {
-      final smallMix = IconographySpecMix.small();
-      final mediumMix = IconographySpecMix.medium();
-      final largeMix = IconographySpecMix.large();
+      final smallMix = IconographyMix.small();
+      final mediumMix = IconographyMix.medium();
+      final largeMix = IconographyMix.large();
 
       expect(smallMix.$size, isNotNull);
       expect(mediumMix.$size, isNotNull);

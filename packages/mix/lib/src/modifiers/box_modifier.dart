@@ -6,8 +6,8 @@ import '../core/modifier.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
-import '../specs/container/container_attribute.dart';
-import '../specs/container/container_spec.dart';
+import '../properties/container/container_mix.dart';
+import '../properties/container/container_spec.dart';
 
 /// Modifier that wraps its child in a styled Container.
 ///
@@ -50,7 +50,7 @@ final class BoxModifier extends Modifier<BoxModifier>
 /// This class allows for mixing and resolving box container properties.
 class BoxModifierMix extends ModifierMix<BoxModifier>
     with Diagnosticable {
-  final ContainerSpecMix spec;
+  final ContainerMix spec;
 
   const BoxModifierMix(this.spec);
 
@@ -83,19 +83,19 @@ class BoxModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, BoxModifierMix> {
   const BoxModifierUtility(super.builder);
 
-  T call(ContainerSpecMix spec) {
+  T call(ContainerMix spec) {
     return builder(BoxModifierMix(spec));
   }
 
   T color(Color value) {
-    return builder(BoxModifierMix(ContainerSpecMix.color(value)));
+    return builder(BoxModifierMix(ContainerMix.color(value)));
   }
 
   T padding(EdgeInsetsGeometryMix value) {
-    return builder(BoxModifierMix(ContainerSpecMix.padding(value)));
+    return builder(BoxModifierMix(ContainerMix.padding(value)));
   }
 
   T margin(EdgeInsetsGeometryMix value) {
-    return builder(BoxModifierMix(ContainerSpecMix.margin(value)));
+    return builder(BoxModifierMix(ContainerMix.margin(value)));
   }
 }

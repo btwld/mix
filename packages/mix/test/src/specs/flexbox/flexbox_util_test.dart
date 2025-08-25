@@ -20,7 +20,7 @@ void main() {
 
       test('', () {
         final flexBoxMix = FlexBoxStyle(
-          flex: FlexLayoutSpecMix(direction: Axis.horizontal),
+          flex: FlexLayoutMix(direction: Axis.horizontal),
         );
         final utility = FlexBoxSpecUtility(flexBoxMix);
         final context = MockBuildContext();
@@ -215,7 +215,7 @@ void main() {
 
       test('', () {
         final other = FlexBoxSpecUtility(
-          FlexBoxStyle(flex: FlexLayoutSpecMix(direction: Axis.horizontal)),
+          FlexBoxStyle(flex: FlexLayoutMix(direction: Axis.horizontal)),
         );
         final result = util.merge(other);
 
@@ -224,7 +224,7 @@ void main() {
       });
 
       test('', () {
-        final otherMix = FlexBoxStyle(flex: FlexLayoutSpecMix(spacing: 8.0));
+        final otherMix = FlexBoxStyle(flex: FlexLayoutMix(spacing: 8.0));
         final result = util.merge(otherMix);
 
         expect(result, isNot(same(util)));
@@ -240,11 +240,11 @@ void main() {
 
       test('merge combines properties correctly', () {
         final util1 = FlexBoxSpecUtility(
-          FlexBoxStyle(flex: FlexLayoutSpecMix(direction: Axis.horizontal)),
+          FlexBoxStyle(flex: FlexLayoutMix(direction: Axis.horizontal)),
         );
         final other = FlexBoxSpecUtility(
           FlexBoxStyle(
-            flex: FlexLayoutSpecMix(
+            flex: FlexLayoutMix(
               spacing: 8.0,
               mainAxisAlignment: MainAxisAlignment.center,
             ),
@@ -265,7 +265,7 @@ void main() {
       test('', () {
         final testUtil = FlexBoxSpecUtility(
           FlexBoxStyle(
-            flex: FlexLayoutSpecMix(
+            flex: FlexLayoutMix(
               direction: Axis.vertical,
               mainAxisAlignment: MainAxisAlignment.center,
               spacing: 12.0,
@@ -432,7 +432,7 @@ void main() {
       test('', () {
         final testUtil = FlexBoxSpecUtility(
           FlexBoxStyle(
-            flex: FlexLayoutSpecMix(
+            flex: FlexLayoutMix(
               direction: Axis.horizontal,
               mainAxisAlignment: MainAxisAlignment.center,
               spacing: 8.0,
@@ -462,7 +462,7 @@ void main() {
 
         final testUtil = FlexBoxSpecUtility(
           FlexBoxStyle(
-            flex: FlexLayoutSpecMix.create(spacing: Prop.token(gapToken)),
+            flex: FlexLayoutMix.create(spacing: Prop.token(gapToken)),
           ),
         );
         final spec = testUtil.resolve(context);
@@ -487,14 +487,14 @@ void main() {
 
       test('handles multiple merges correctly', () {
         final util1 = FlexBoxSpecUtility(
-          FlexBoxStyle(flex: FlexLayoutSpecMix(direction: Axis.horizontal)),
+          FlexBoxStyle(flex: FlexLayoutMix(direction: Axis.horizontal)),
         );
         final util2 = FlexBoxSpecUtility(
-          FlexBoxStyle(flex: FlexLayoutSpecMix(spacing: 8.0)),
+          FlexBoxStyle(flex: FlexLayoutMix(spacing: 8.0)),
         );
         final util3 = FlexBoxSpecUtility(
           FlexBoxStyle(
-            flex: FlexLayoutSpecMix(
+            flex: FlexLayoutMix(
               mainAxisAlignment: MainAxisAlignment.center,
             ),
           ),
@@ -519,7 +519,7 @@ void main() {
 
       test('merge with self returns new instance', () {
         final testUtil = FlexBoxSpecUtility(
-          FlexBoxStyle(flex: FlexLayoutSpecMix(direction: Axis.horizontal)),
+          FlexBoxStyle(flex: FlexLayoutMix(direction: Axis.horizontal)),
         );
         final result = testUtil.merge(testUtil);
         final context = MockBuildContext();

@@ -101,16 +101,16 @@ export 'src/properties/typography/text_height_behavior_mix.dart';
 export 'src/properties/typography/text_height_behavior_util.dart';
 export 'src/properties/typography/text_style_mix.dart';
 export 'src/properties/typography/text_style_util.dart';
-export 'src/properties/flex_layout_spec.dart';
-export 'src/properties/flex_layout_spec_mix.dart';
+export 'src/properties/layout/flex_layout_spec.dart';
+export 'src/properties/layout/flex_layout_mix.dart';
 
 /// TYPOGRAPHY
-export 'src/typography/typography_spec.dart';
-export 'src/typography/typography_spec_mix.dart';
+export 'src/properties/typography/typography_spec.dart';
+export 'src/properties/typography/typography_mix.dart';
 
 /// ICONOGRAPHY
-export 'src/iconography/iconography_spec.dart';
-export 'src/iconography/iconography_spec_mix.dart';
+export 'src/properties/iconography/iconography_spec.dart';
+export 'src/properties/iconography/iconography_mix.dart';
 
 /// SPECS
 export 'src/specs/box/box_attribute.dart';
@@ -120,6 +120,8 @@ export 'src/specs/box/box_widget.dart';
 export 'src/specs/flex/flex_attribute.dart';
 export 'src/specs/flex/flex_spec.dart';
 export 'src/specs/flex/flex_util.dart';
+export 'src/specs/flex_container/flex_container_mix.dart';
+export 'src/specs/flex_container/flex_container_spec.dart';
 export 'src/specs/flexbox/flexbox_attribute.dart';
 export 'src/specs/flexbox/flexbox_spec.dart';
 export 'src/specs/flexbox/flexbox_util.dart';
@@ -144,8 +146,8 @@ export 'src/specs/text/text_attribute.dart';
 export 'src/specs/text/text_spec.dart';
 export 'src/specs/text/text_util.dart';
 export 'src/specs/text/text_widget.dart';
-export 'src/specs/container/container_spec.dart';
-export 'src/specs/container/container_attribute.dart';
+export 'src/properties/container/container_spec.dart';
+export 'src/properties/container/container_mix.dart';
 
 /// THEME
 export 'src/theme/material/material_theme.dart';

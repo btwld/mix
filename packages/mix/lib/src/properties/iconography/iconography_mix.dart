@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../core/helpers.dart';
-import '../core/mix_element.dart';
-import '../core/prop.dart';
-import '../properties/painting/shadow_mix.dart';
+import '../../core/helpers.dart';
+import '../../core/mix_element.dart';
+import '../../core/prop.dart';
+import '../painting/shadow_mix.dart';
 import 'iconography_spec.dart';
 
 /// Mix class for configuring [IconographySpec] properties.
@@ -12,7 +12,7 @@ import 'iconography_spec.dart';
 /// Encapsulates iconography properties with support for proper Mix framework integration.
 /// Based on Flutter's IconTheme properties but designed to work with Mix's
 /// token system, merging, and resolution pipeline.
-final class IconographySpecMix extends Mix<IconographySpec> with Diagnosticable {
+final class IconographyMix extends Mix<IconographySpec> with Diagnosticable {
   final Prop<double>? $size;
   final Prop<double>? $fill;
   final Prop<double>? $weight;
@@ -24,7 +24,7 @@ final class IconographySpecMix extends Mix<IconographySpec> with Diagnosticable 
   final Prop<bool>? $applyTextScaling;
 
   /// Main constructor with user-friendly Mix types
-  IconographySpecMix({
+  IconographyMix({
     double? size,
     double? fill,
     double? weight,
@@ -46,8 +46,8 @@ final class IconographySpecMix extends Mix<IconographySpec> with Diagnosticable 
          applyTextScaling: Prop.maybe(applyTextScaling),
        );
 
-  /// Create constructor with Prop\\<T\\> types for internal use
-  const IconographySpecMix.create({
+  /// Create constructor with `Prop<T>` types for internal use
+  const IconographyMix.create({
     Prop<double>? size,
     Prop<double>? fill,
     Prop<double>? weight,
@@ -68,7 +68,7 @@ final class IconographySpecMix extends Mix<IconographySpec> with Diagnosticable 
        $applyTextScaling = applyTextScaling;
 
   /// Constructor that accepts an [IconographySpec] value and extracts its properties.
-  IconographySpecMix.value(IconographySpec spec)
+  IconographyMix.value(IconographySpec spec)
     : this(
         size: spec.size,
         fill: spec.fill,
@@ -84,119 +84,119 @@ final class IconographySpecMix extends Mix<IconographySpec> with Diagnosticable 
   // Factory constructors for common use cases
 
   /// Size factory
-  factory IconographySpecMix.size(double value) {
-    return IconographySpecMix(size: value);
+  factory IconographyMix.size(double value) {
+    return IconographyMix(size: value);
   }
 
   /// Fill factory
-  factory IconographySpecMix.fill(double value) {
-    return IconographySpecMix(fill: value);
+  factory IconographyMix.fill(double value) {
+    return IconographyMix(fill: value);
   }
 
   /// Weight factory
-  factory IconographySpecMix.weight(double value) {
-    return IconographySpecMix(weight: value);
+  factory IconographyMix.weight(double value) {
+    return IconographyMix(weight: value);
   }
 
   /// Grade factory
-  factory IconographySpecMix.grade(double value) {
-    return IconographySpecMix(grade: value);
+  factory IconographyMix.grade(double value) {
+    return IconographyMix(grade: value);
   }
 
   /// Optical size factory
-  factory IconographySpecMix.opticalSize(double value) {
-    return IconographySpecMix(opticalSize: value);
+  factory IconographyMix.opticalSize(double value) {
+    return IconographyMix(opticalSize: value);
   }
 
   /// Color factory
-  factory IconographySpecMix.color(Color value) {
-    return IconographySpecMix(color: value);
+  factory IconographyMix.color(Color value) {
+    return IconographyMix(color: value);
   }
 
   /// Opacity factory
-  factory IconographySpecMix.opacity(double value) {
-    return IconographySpecMix(opacity: value);
+  factory IconographyMix.opacity(double value) {
+    return IconographyMix(opacity: value);
   }
 
   /// Shadows factory
-  factory IconographySpecMix.shadows(List<ShadowMix> value) {
-    return IconographySpecMix(shadows: value);
+  factory IconographyMix.shadows(List<ShadowMix> value) {
+    return IconographyMix(shadows: value);
   }
 
   /// Apply text scaling factory
-  factory IconographySpecMix.applyTextScaling(bool value) {
-    return IconographySpecMix(applyTextScaling: value);
+  factory IconographyMix.applyTextScaling(bool value) {
+    return IconographyMix(applyTextScaling: value);
   }
 
   // Common shortcuts
 
   /// Small size factory (16.0)
-  factory IconographySpecMix.small() {
-    return IconographySpecMix.size(16.0);
+  factory IconographyMix.small() {
+    return IconographyMix.size(16.0);
   }
 
   /// Medium size factory (24.0)
-  factory IconographySpecMix.medium() {
-    return IconographySpecMix.size(24.0);
+  factory IconographyMix.medium() {
+    return IconographyMix.size(24.0);
   }
 
   /// Large size factory (32.0)
-  factory IconographySpecMix.large() {
-    return IconographySpecMix.size(32.0);
+  factory IconographyMix.large() {
+    return IconographyMix.size(32.0);
   }
 
   /// Constructor that accepts a nullable [IconographySpec] value.
   ///
-  /// Returns null if the input is null, otherwise uses [IconographySpecMix.value].
-  static IconographySpecMix? maybeValue(IconographySpec? spec) {
-    return spec != null ? IconographySpecMix.value(spec) : null;
+  /// Returns null if the input is null, otherwise uses [IconographyMix.value].
+  static IconographyMix? maybeValue(IconographySpec? spec) {
+    return spec != null ? IconographyMix.value(spec) : null;
   }
 
   // Chainable instance methods
 
   /// Returns a copy with the specified size.
-  IconographySpecMix size(double value) {
-    return merge(IconographySpecMix.size(value));
+  IconographyMix size(double value) {
+    return merge(IconographyMix.size(value));
   }
 
   /// Returns a copy with the specified fill.
-  IconographySpecMix fill(double value) {
-    return merge(IconographySpecMix.fill(value));
+  IconographyMix fill(double value) {
+    return merge(IconographyMix.fill(value));
   }
 
   /// Returns a copy with the specified weight.
-  IconographySpecMix weight(double value) {
-    return merge(IconographySpecMix.weight(value));
+  IconographyMix weight(double value) {
+    return merge(IconographyMix.weight(value));
   }
 
   /// Returns a copy with the specified grade.
-  IconographySpecMix grade(double value) {
-    return merge(IconographySpecMix.grade(value));
+  IconographyMix grade(double value) {
+    return merge(IconographyMix.grade(value));
   }
 
   /// Returns a copy with the specified optical size.
-  IconographySpecMix opticalSize(double value) {
-    return merge(IconographySpecMix.opticalSize(value));
+  IconographyMix opticalSize(double value) {
+    return merge(IconographyMix.opticalSize(value));
   }
 
   /// Returns a copy with the specified color.
-  IconographySpecMix color(Color value) {
-    return merge(IconographySpecMix.color(value));
+  IconographyMix color(Color value) {
+    return merge(IconographyMix.color(value));
   }
 
   /// Returns a copy with the specified opacity.
-  IconographySpecMix opacity(double value) {
-    return merge(IconographySpecMix.opacity(value));
+  IconographyMix opacity(double value) {
+    return merge(IconographyMix.opacity(value));
   }
 
   /// Returns a copy with the specified shadows.
-  IconographySpecMix shadows(List<ShadowMix> value) {
-    return merge(IconographySpecMix.shadows(value));
+  IconographyMix shadows(List<ShadowMix> value) {
+    return merge(IconographyMix.shadows(value));
   }
 
   /// Returns a copy with the specified apply text scaling.
-  IconographySpecMix applyTextScaling(bool value) {
-    return merge(IconographySpecMix.applyTextScaling(value));
+  IconographyMix applyTextScaling(bool value) {
+    return merge(IconographyMix.applyTextScaling(value));
   }
 
   /// Resolves to [IconographySpec] using the provided [BuildContext].
@@ -215,12 +215,12 @@ final class IconographySpecMix extends Mix<IconographySpec> with Diagnosticable 
     );
   }
 
-  /// Merges the properties of this [IconographySpecMix] with the properties of [other].
+  /// Merges the properties of this [IconographyMix] with the properties of [other].
   @override
-  IconographySpecMix merge(IconographySpecMix? other) {
+  IconographyMix merge(IconographyMix? other) {
     if (other == null) return this;
 
-    return IconographySpecMix.create(
+    return IconographyMix.create(
       size: MixOps.merge($size, other.$size),
       fill: MixOps.merge($fill, other.$fill),
       weight: MixOps.merge($weight, other.$weight),

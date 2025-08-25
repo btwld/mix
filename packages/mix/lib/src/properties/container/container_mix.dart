@@ -17,7 +17,7 @@ import 'container_spec.dart';
 /// Encapsulates alignment, padding, margin, constraints, decoration,
 /// and other styling properties for container layouts with support for
 /// proper Mix framework integration.
-final class ContainerSpecMix extends Mix<ContainerSpec> with Diagnosticable {
+final class ContainerMix extends Mix<ContainerSpec> with Diagnosticable {
   final Prop<Decoration>? $decoration;
   final Prop<Decoration>? $foregroundDecoration;
   final Prop<EdgeInsetsGeometry>? $padding;
@@ -29,7 +29,7 @@ final class ContainerSpecMix extends Mix<ContainerSpec> with Diagnosticable {
   final Prop<Clip>? $clipBehavior;
 
   /// Main constructor with user-friendly Mix types
-  ContainerSpecMix({
+  ContainerMix({
     DecorationMix? decoration,
     DecorationMix? foregroundDecoration,
     EdgeInsetsGeometryMix? padding,
@@ -52,7 +52,7 @@ final class ContainerSpecMix extends Mix<ContainerSpec> with Diagnosticable {
         );
 
   /// Create constructor with Prop`<T>` types for internal use
-  const ContainerSpecMix.create({
+  const ContainerMix.create({
     Prop<Decoration>? decoration,
     Prop<Decoration>? foregroundDecoration,
     Prop<EdgeInsetsGeometry>? padding,
@@ -73,7 +73,7 @@ final class ContainerSpecMix extends Mix<ContainerSpec> with Diagnosticable {
         $clipBehavior = clipBehavior;
 
   /// Constructor that accepts a [ContainerSpec] value and extracts its properties.
-  ContainerSpecMix.value(ContainerSpec spec)
+  ContainerMix.value(ContainerSpec spec)
       : this(
           decoration: DecorationMix.maybeValue(spec.decoration),
           foregroundDecoration:
@@ -90,163 +90,163 @@ final class ContainerSpecMix extends Mix<ContainerSpec> with Diagnosticable {
   // Factory constructors for common use cases
 
   /// Color factory
-  factory ContainerSpecMix.color(Color value) {
-    return ContainerSpecMix(decoration: DecorationMix.color(value));
+  factory ContainerMix.color(Color value) {
+    return ContainerMix(decoration: DecorationMix.color(value));
   }
 
   /// Decoration factory
-  factory ContainerSpecMix.decoration(DecorationMix value) {
-    return ContainerSpecMix(decoration: value);
+  factory ContainerMix.decoration(DecorationMix value) {
+    return ContainerMix(decoration: value);
   }
 
   /// Foreground decoration factory
-  factory ContainerSpecMix.foregroundDecoration(DecorationMix value) {
-    return ContainerSpecMix(foregroundDecoration: value);
+  factory ContainerMix.foregroundDecoration(DecorationMix value) {
+    return ContainerMix(foregroundDecoration: value);
   }
 
   /// Alignment factory
-  factory ContainerSpecMix.alignment(AlignmentGeometry value) {
-    return ContainerSpecMix(alignment: value);
+  factory ContainerMix.alignment(AlignmentGeometry value) {
+    return ContainerMix(alignment: value);
   }
 
   /// Padding factory
-  factory ContainerSpecMix.padding(EdgeInsetsGeometryMix value) {
-    return ContainerSpecMix(padding: value);
+  factory ContainerMix.padding(EdgeInsetsGeometryMix value) {
+    return ContainerMix(padding: value);
   }
 
   /// Margin factory
-  factory ContainerSpecMix.margin(EdgeInsetsGeometryMix value) {
-    return ContainerSpecMix(margin: value);
+  factory ContainerMix.margin(EdgeInsetsGeometryMix value) {
+    return ContainerMix(margin: value);
   }
 
   /// Transform factory
-  factory ContainerSpecMix.transform(Matrix4 value) {
-    return ContainerSpecMix(transform: value);
+  factory ContainerMix.transform(Matrix4 value) {
+    return ContainerMix(transform: value);
   }
 
   /// Transform alignment factory
-  factory ContainerSpecMix.transformAlignment(AlignmentGeometry value) {
-    return ContainerSpecMix(transformAlignment: value);
+  factory ContainerMix.transformAlignment(AlignmentGeometry value) {
+    return ContainerMix(transformAlignment: value);
   }
 
   /// Clip behavior factory
-  factory ContainerSpecMix.clipBehavior(Clip value) {
-    return ContainerSpecMix(clipBehavior: value);
+  factory ContainerMix.clipBehavior(Clip value) {
+    return ContainerMix(clipBehavior: value);
   }
 
   /// Constraints factory
-  factory ContainerSpecMix.constraints(BoxConstraintsMix value) {
-    return ContainerSpecMix(constraints: value);
+  factory ContainerMix.constraints(BoxConstraintsMix value) {
+    return ContainerMix(constraints: value);
   }
 
   /// Border factory
-  factory ContainerSpecMix.border(BoxBorderMix value) {
-    return ContainerSpecMix(decoration: DecorationMix.border(value));
+  factory ContainerMix.border(BoxBorderMix value) {
+    return ContainerMix(decoration: DecorationMix.border(value));
   }
 
   /// Border radius factory
-  factory ContainerSpecMix.borderRadius(BorderRadiusGeometryMix value) {
-    return ContainerSpecMix(decoration: DecorationMix.borderRadius(value));
+  factory ContainerMix.borderRadius(BorderRadiusGeometryMix value) {
+    return ContainerMix(decoration: DecorationMix.borderRadius(value));
   }
 
   /// Shadow factory
-  factory ContainerSpecMix.shadow(BoxShadowMix value) {
-    return ContainerSpecMix(decoration: DecorationMix.boxShadow([value]));
+  factory ContainerMix.shadow(BoxShadowMix value) {
+    return ContainerMix(decoration: DecorationMix.boxShadow([value]));
   }
 
   /// Width factory
-  factory ContainerSpecMix.width(double value) {
-    return ContainerSpecMix(constraints: BoxConstraintsMix.width(value));
+  factory ContainerMix.width(double value) {
+    return ContainerMix(constraints: BoxConstraintsMix.width(value));
   }
 
   /// Height factory
-  factory ContainerSpecMix.height(double value) {
-    return ContainerSpecMix(constraints: BoxConstraintsMix.height(value));
+  factory ContainerMix.height(double value) {
+    return ContainerMix(constraints: BoxConstraintsMix.height(value));
   }
 
 
   /// Constructor that accepts a nullable [ContainerSpec] value.
   ///
-  /// Returns null if the input is null, otherwise uses [ContainerSpecMix.value].
-  static ContainerSpecMix? maybeValue(ContainerSpec? spec) {
-    return spec != null ? ContainerSpecMix.value(spec) : null;
+  /// Returns null if the input is null, otherwise uses [ContainerMix.value].
+  static ContainerMix? maybeValue(ContainerSpec? spec) {
+    return spec != null ? ContainerMix.value(spec) : null;
   }
 
   // Chainable instance methods
 
   /// Returns a copy with the specified color.
-  ContainerSpecMix color(Color value) {
-    return merge(ContainerSpecMix.color(value));
+  ContainerMix color(Color value) {
+    return merge(ContainerMix.color(value));
   }
 
   /// Returns a copy with the specified decoration.
-  ContainerSpecMix decoration(DecorationMix value) {
-    return merge(ContainerSpecMix.decoration(value));
+  ContainerMix decoration(DecorationMix value) {
+    return merge(ContainerMix.decoration(value));
   }
 
   /// Returns a copy with the specified foreground decoration.
-  ContainerSpecMix foregroundDecoration(DecorationMix value) {
-    return merge(ContainerSpecMix.foregroundDecoration(value));
+  ContainerMix foregroundDecoration(DecorationMix value) {
+    return merge(ContainerMix.foregroundDecoration(value));
   }
 
   /// Returns a copy with the specified alignment.
-  ContainerSpecMix alignment(AlignmentGeometry value) {
-    return merge(ContainerSpecMix.alignment(value));
+  ContainerMix alignment(AlignmentGeometry value) {
+    return merge(ContainerMix.alignment(value));
   }
 
   /// Returns a copy with the specified padding.
-  ContainerSpecMix padding(EdgeInsetsGeometryMix value) {
-    return merge(ContainerSpecMix.padding(value));
+  ContainerMix padding(EdgeInsetsGeometryMix value) {
+    return merge(ContainerMix.padding(value));
   }
 
   /// Returns a copy with the specified margin.
-  ContainerSpecMix margin(EdgeInsetsGeometryMix value) {
-    return merge(ContainerSpecMix.margin(value));
+  ContainerMix margin(EdgeInsetsGeometryMix value) {
+    return merge(ContainerMix.margin(value));
   }
 
   /// Returns a copy with the specified transform.
-  ContainerSpecMix transform(Matrix4 value) {
-    return merge(ContainerSpecMix.transform(value));
+  ContainerMix transform(Matrix4 value) {
+    return merge(ContainerMix.transform(value));
   }
 
   /// Returns a copy with the specified transform alignment.
-  ContainerSpecMix transformAlignment(AlignmentGeometry value) {
-    return merge(ContainerSpecMix.transformAlignment(value));
+  ContainerMix transformAlignment(AlignmentGeometry value) {
+    return merge(ContainerMix.transformAlignment(value));
   }
 
   /// Returns a copy with the specified clip behavior.
-  ContainerSpecMix clipBehavior(Clip value) {
-    return merge(ContainerSpecMix.clipBehavior(value));
+  ContainerMix clipBehavior(Clip value) {
+    return merge(ContainerMix.clipBehavior(value));
   }
 
   /// Returns a copy with the specified constraints.
-  ContainerSpecMix constraints(BoxConstraintsMix value) {
-    return merge(ContainerSpecMix.constraints(value));
+  ContainerMix constraints(BoxConstraintsMix value) {
+    return merge(ContainerMix.constraints(value));
   }
 
   /// Returns a copy with the specified border.
-  ContainerSpecMix border(BoxBorderMix value) {
-    return merge(ContainerSpecMix.border(value));
+  ContainerMix border(BoxBorderMix value) {
+    return merge(ContainerMix.border(value));
   }
 
   /// Returns a copy with the specified border radius.
-  ContainerSpecMix borderRadius(BorderRadiusGeometryMix value) {
-    return merge(ContainerSpecMix.borderRadius(value));
+  ContainerMix borderRadius(BorderRadiusGeometryMix value) {
+    return merge(ContainerMix.borderRadius(value));
   }
 
   /// Returns a copy with the specified shadow.
-  ContainerSpecMix shadow(BoxShadowMix value) {
-    return merge(ContainerSpecMix.shadow(value));
+  ContainerMix shadow(BoxShadowMix value) {
+    return merge(ContainerMix.shadow(value));
   }
 
   /// Returns a copy with the specified width.
-  ContainerSpecMix width(double value) {
-    return merge(ContainerSpecMix.width(value));
+  ContainerMix width(double value) {
+    return merge(ContainerMix.width(value));
   }
 
   /// Returns a copy with the specified height.
-  ContainerSpecMix height(double value) {
-    return merge(ContainerSpecMix.height(value));
+  ContainerMix height(double value) {
+    return merge(ContainerMix.height(value));
   }
 
   /// Resolves to [ContainerSpec] using the provided [BuildContext].
@@ -265,12 +265,12 @@ final class ContainerSpecMix extends Mix<ContainerSpec> with Diagnosticable {
     );
   }
 
-  /// Merges the properties of this [ContainerSpecMix] with the properties of [other].
+  /// Merges the properties of this [ContainerMix] with the properties of [other].
   @override
-  ContainerSpecMix merge(ContainerSpecMix? other) {
+  ContainerMix merge(ContainerMix? other) {
     if (other == null) return this;
 
-    return ContainerSpecMix.create(
+    return ContainerMix.create(
       decoration: MixOps.merge($decoration, other.$decoration),
       foregroundDecoration:
           MixOps.merge($foregroundDecoration, other.$foregroundDecoration),
