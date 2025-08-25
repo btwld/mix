@@ -176,8 +176,8 @@ class FlexStyle extends Style<FlexWidgetSpec>
   /// This is useful for converting existing [FlexWidgetSpec] instances to [FlexStyle].
   ///
   /// ```dart
-  /// const spec = FlexSpec(direction: Axis.horizontal, gap: 8.0);
-  /// final attr = FlexMix.value(spec);
+  /// const spec = FlexWidgetSpec(direction: Axis.horizontal, spacing: 8.0);
+  /// final attr = FlexStyle.value(spec);
   /// ```
   FlexStyle.value(FlexWidgetSpec spec)
     : this(
@@ -204,11 +204,11 @@ class FlexStyle extends Style<FlexWidgetSpec>
 
   /// Constructor that accepts a nullable [FlexWidgetSpec] value and extracts its properties.
   ///
-  /// Returns null if the input is null, otherwise uses [FlexMix.value].
+  /// Returns null if the input is null, otherwise uses [FlexStyle.value].
   ///
   /// ```dart
-  /// const FlexSpec? spec = FlexSpec(direction: Axis.horizontal, gap: 8.0);
-  /// final attr = FlexMix.maybeValue(spec); // Returns FlexMix or null
+  /// const FlexWidgetSpec? spec = FlexWidgetSpec(direction: Axis.horizontal, spacing: 8.0);
+  /// final attr = FlexStyle.maybeValue(spec); // Returns FlexStyle or null
   /// ```
   static FlexStyle? maybeValue(FlexWidgetSpec? spec) {
     return spec != null ? FlexStyle.value(spec) : null;
@@ -280,7 +280,7 @@ class FlexStyle extends Style<FlexWidgetSpec>
     return merge(FlexStyle(modifier: value));
   }
 
-  /// Convenience method for animating the FlexSpec
+  /// Convenience method for animating the FlexWidgetSpec
   @override
   FlexStyle animate(AnimationConfig animation) {
     return merge(FlexStyle.animate(animation));
@@ -297,7 +297,7 @@ class FlexStyle extends Style<FlexWidgetSpec>
   /// defined in the property specification.
   ///
   /// ```dart
-  /// final flexSpec = FlexMix(...).resolve(mix);
+  /// final flexWidgetSpec = FlexStyle(...).resolve(context);
   /// ```
   @override
   FlexWidgetSpec resolve(BuildContext context) {

@@ -5,9 +5,9 @@ import 'package:mix/mix.dart';
 import 'package:mix/src/specs/stack/stack_spec.dart';
 
 void main() {
-  group('StackSpec', () {
+  group('StackStyle', () {
     group('Constructor', () {
-      test('creates StackSpec with all properties', () {
+      test('', () {
         const spec = StackWidgetSpec(
           alignment: Alignment.center,
           fit: StackFit.expand,
@@ -21,7 +21,7 @@ void main() {
         expect(spec.clipBehavior, Clip.antiAlias);
       });
 
-      test('creates StackSpec with default values', () {
+      test('', () {
         const spec = StackWidgetSpec();
 
         expect(spec.alignment, isNull);
@@ -75,7 +75,7 @@ void main() {
     });
 
     group('lerp', () {
-      test('interpolates between two StackSpecs correctly', () {
+      test('', () {
         const spec1 = StackWidgetSpec(alignment: Alignment.topLeft);
         const spec2 = StackWidgetSpec(alignment: Alignment.bottomRight);
 

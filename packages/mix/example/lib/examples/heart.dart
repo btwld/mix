@@ -28,12 +28,12 @@ class _DemoAppState extends State<DemoApp> {
   @override
   Widget build(BuildContext context) {
     final vboxStyle = FlexBoxStyle()
-        .flex(FlexPropertiesMix().mainAxisSize(MainAxisSize.min).spacing(60))
+        .flex(FlexLayoutSpecMix().mainAxisSize(MainAxisSize.min).spacing(60))
         .container(ContainerSpecMix().margin(EdgeInsetsMix.all(10)));
 
     final FlexBoxStyle hboxStyle = FlexBoxStyle()
         .flex(
-          FlexPropertiesMix()
+          FlexLayoutSpecMix()
               .mainAxisAlignment(MainAxisAlignment.spaceBetween)
               .crossAxisAlignment(CrossAxisAlignment.center),
         )

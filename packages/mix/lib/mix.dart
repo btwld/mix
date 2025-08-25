@@ -101,8 +101,16 @@ export 'src/properties/typography/text_height_behavior_mix.dart';
 export 'src/properties/typography/text_height_behavior_util.dart';
 export 'src/properties/typography/text_style_mix.dart';
 export 'src/properties/typography/text_style_util.dart';
-export 'src/properties/flex_properties.dart';
-export 'src/properties/flex_properties_mix.dart';
+export 'src/properties/flex_layout_spec.dart';
+export 'src/properties/flex_layout_spec_mix.dart';
+
+/// TYPOGRAPHY
+export 'src/typography/typography_spec.dart';
+export 'src/typography/typography_spec_mix.dart';
+
+/// ICONOGRAPHY
+export 'src/iconography/iconography_spec.dart';
+export 'src/iconography/iconography_spec_mix.dart';
 
 /// SPECS
 export 'src/specs/box/box_attribute.dart';

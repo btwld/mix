@@ -217,7 +217,7 @@ void main() {
       });
     });
 
-    group('IconMix merge', () {
+    group('', () {
       test('merges orderOfModifiers correctly', () {
         final first = IconStyle(
           size: 24.0,
@@ -251,7 +251,7 @@ void main() {
       });
     });
 
-    group('FlexMix merge', () {
+    group('', () {
       test('merges orderOfModifiers correctly', () {
         final first = FlexStyle(
           direction: Axis.horizontal,
@@ -285,7 +285,7 @@ void main() {
       });
     });
 
-    group('ImageMix merge', () {
+    group('', () {
       test('merges orderOfModifiers correctly', () {
         final first = ImageStyle(
           width: 100.0,
@@ -319,7 +319,7 @@ void main() {
       });
     });
 
-    group('StackMix merge', () {
+    group('', () {
       test('merges orderOfModifiers correctly', () {
         final first = StackStyle(
           alignment: Alignment.center,
@@ -353,7 +353,7 @@ void main() {
       });
     });
 
-    group('FlexBoxMix merge', () {
+    group('', () {
       test('merges orderOfModifiers correctly', () {
         final first = FlexBoxStyle(
           container: ContainerSpecMix.constraints(BoxConstraintsMix.width(100)),
@@ -363,7 +363,7 @@ void main() {
           ]),
         );
         final second = FlexBoxStyle(
-          flex: FlexPropertiesMix.spacing(8.0),
+          flex: FlexLayoutSpecMix.spacing(8.0),
           modifier: ModifierConfig.orderOfModifiers(const [
             ClipOvalModifier,
             TransformModifier,
@@ -383,7 +383,7 @@ void main() {
           inherit: true,
         );
         final second = FlexBoxStyle(
-          flex: FlexPropertiesMix.spacing(8.0),
+          flex: FlexLayoutSpecMix.spacing(8.0),
           inherit: false,
         );
 
@@ -393,7 +393,7 @@ void main() {
       });
     });
 
-    group('StackBoxMix merge', () {
+    group('', () {
       test('merges orderOfModifiers correctly', () {
         final first = StackBoxStyle(
           box: BoxStyle.width(100),

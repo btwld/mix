@@ -5,9 +5,9 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-  group('ImageMix', () {
+  group('FlexWidgetSpecUtility', () {
     group('Constructor', () {
-      test('creates ImageMix with all properties', () {
+      test('', () {
         final attribute = ImageStyle(
           width: 100.0,
           height: 200.0,
@@ -44,7 +44,7 @@ void main() {
         expect(attribute.$matchTextDirection, resolvesTo(true));
       });
 
-      test('creates empty ImageMix', () {
+      test('', () {
         final attribute = ImageStyle();
 
         expect(attribute.$width, isNull);
@@ -65,32 +65,32 @@ void main() {
     });
 
     group('Factory Constructors', () {
-      test('width factory creates ImageMix with width', () {
+      test('', () {
         final imageMix = ImageStyle.width(150.0);
 
         expect(imageMix.$width, resolvesTo(150.0));
       });
 
-      test('height factory creates ImageMix with height', () {
+      test('', () {
         final imageMix = ImageStyle.height(250.0);
 
         expect(imageMix.$height, resolvesTo(250.0));
       });
 
-      test('color factory creates ImageMix with color', () {
+      test('', () {
         final imageMix = ImageStyle.color(Colors.blue);
 
         expect(imageMix.$color, resolvesTo(Colors.blue));
       });
 
-      test('animation factory creates ImageMix with animation config', () {
+      test('', () {
         final animation = AnimationConfig.linear(Duration(seconds: 1));
         final imageMix = ImageStyle.animate(animation);
 
         expect(imageMix.$animation, animation);
       });
 
-      test('variant factory creates ImageMix with variant', () {
+      test('', () {
         final variant = ContextVariant.brightness(Brightness.dark);
         final style = ImageStyle.color(Colors.white);
         final imageMix = ImageStyle.variant(variant, style);
@@ -99,14 +99,14 @@ void main() {
         expect(imageMix.$variants!.length, 1);
       });
 
-      test('semanticLabel factory creates ImageMix with semanticLabel', () {
+      test('', () {
         final imageMix = ImageStyle.semanticLabel('My Image');
 
         expect(imageMix.$semanticLabel, resolvesTo('My Image'));
       });
 
       test(
-        'excludeFromSemantics factory creates ImageMix with excludeFromSemantics',
+        '',
         () {
           final imageMix = ImageStyle.excludeFromSemantics(true);
 
@@ -114,20 +114,20 @@ void main() {
         },
       );
 
-      test('gaplessPlayback factory creates ImageMix with gaplessPlayback', () {
+      test('', () {
         final imageMix = ImageStyle.gaplessPlayback(true);
 
         expect(imageMix.$gaplessPlayback, resolvesTo(true));
       });
 
-      test('isAntiAlias factory creates ImageMix with isAntiAlias', () {
+      test('', () {
         final imageMix = ImageStyle.isAntiAlias(false);
 
         expect(imageMix.$isAntiAlias, resolvesTo(false));
       });
 
       test(
-        'matchTextDirection factory creates ImageMix with matchTextDirection',
+        '',
         () {
           final imageMix = ImageStyle.matchTextDirection(true);
 
@@ -137,7 +137,7 @@ void main() {
     });
 
     group('value constructor', () {
-      test('creates ImageMix from ImageSpec', () {
+      test('', () {
         const spec = ImageWidgetSpec(
           width: 120.0,
           height: 180.0,
@@ -232,7 +232,7 @@ void main() {
     });
 
     group('Variant Methods', () {
-      test('variant method adds variant to ImageMix', () {
+      test('', () {
         final variant = ContextVariant.brightness(Brightness.dark);
         final style = ImageStyle.color(Colors.white);
         final imageMix = ImageStyle().variant(variant, style);
@@ -260,7 +260,7 @@ void main() {
     });
 
     group('Resolution', () {
-      test('resolves to ImageSpec with correct properties', () {
+      test('', () {
         final attribute = ImageStyle(
           width: 100.0,
           height: 200.0,

@@ -7,8 +7,8 @@ import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
-import '../../properties/flex_properties.dart';
-import '../../properties/flex_properties_mix.dart';
+import '../../properties/flex_layout_spec.dart';
+import '../../properties/flex_layout_spec_mix.dart';
 import '../../properties/layout/constraints_mix.dart';
 import '../../properties/layout/constraints_mixin.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
@@ -44,11 +44,11 @@ class FlexBoxStyle extends Style<FlexBoxWidgetSpec>
         TransformMixin<FlexBoxStyle>,
         ConstraintsMixin<FlexBoxStyle> {
   final Prop<ContainerSpec>? $container;
-  final Prop<FlexProperties>? $flex;
+  final Prop<FlexLayoutSpec>? $flex;
 
   FlexBoxStyle({
     ContainerSpecMix? container,
-    FlexPropertiesMix? flex,
+    FlexLayoutSpecMix? flex,
     super.animation,
     super.modifier,
     super.variants,
@@ -59,7 +59,7 @@ class FlexBoxStyle extends Style<FlexBoxWidgetSpec>
 
   const FlexBoxStyle.create({
     Prop<ContainerSpec>? container,
-    Prop<FlexProperties>? flex,
+    Prop<FlexLayoutSpec>? flex,
     super.animation,
     super.modifier,
     super.variants,
@@ -74,7 +74,7 @@ class FlexBoxStyle extends Style<FlexBoxWidgetSpec>
   }
 
   /// Factory for flex properties
-  factory FlexBoxStyle.flex(FlexPropertiesMix value) {
+  factory FlexBoxStyle.flex(FlexLayoutSpecMix value) {
     return FlexBoxStyle(flex: value);
   }
 
@@ -143,45 +143,45 @@ class FlexBoxStyle extends Style<FlexBoxWidgetSpec>
     return FlexBoxStyle(container: ContainerSpecMix.constraints(value));
   }
 
-  // FlexPropertiesMix factory methods
+  // FlexLayoutSpecMix factory methods
   /// Factory for flex direction
   factory FlexBoxStyle.direction(Axis value) {
-    return FlexBoxStyle(flex: FlexPropertiesMix(direction: value));
+    return FlexBoxStyle(flex: FlexLayoutSpecMix(direction: value));
   }
 
   /// Factory for main axis alignment
   factory FlexBoxStyle.mainAxisAlignment(MainAxisAlignment value) {
-    return FlexBoxStyle(flex: FlexPropertiesMix(mainAxisAlignment: value));
+    return FlexBoxStyle(flex: FlexLayoutSpecMix(mainAxisAlignment: value));
   }
 
   /// Factory for cross axis alignment
   factory FlexBoxStyle.crossAxisAlignment(CrossAxisAlignment value) {
-    return FlexBoxStyle(flex: FlexPropertiesMix(crossAxisAlignment: value));
+    return FlexBoxStyle(flex: FlexLayoutSpecMix(crossAxisAlignment: value));
   }
 
   /// Factory for main axis size
   factory FlexBoxStyle.mainAxisSize(MainAxisSize value) {
-    return FlexBoxStyle(flex: FlexPropertiesMix(mainAxisSize: value));
+    return FlexBoxStyle(flex: FlexLayoutSpecMix(mainAxisSize: value));
   }
 
   /// Factory for vertical direction
   factory FlexBoxStyle.verticalDirection(VerticalDirection value) {
-    return FlexBoxStyle(flex: FlexPropertiesMix(verticalDirection: value));
+    return FlexBoxStyle(flex: FlexLayoutSpecMix(verticalDirection: value));
   }
 
   /// Factory for text direction
   factory FlexBoxStyle.textDirection(TextDirection value) {
-    return FlexBoxStyle(flex: FlexPropertiesMix(textDirection: value));
+    return FlexBoxStyle(flex: FlexLayoutSpecMix(textDirection: value));
   }
 
   /// Factory for text baseline
   factory FlexBoxStyle.textBaseline(TextBaseline value) {
-    return FlexBoxStyle(flex: FlexPropertiesMix(textBaseline: value));
+    return FlexBoxStyle(flex: FlexLayoutSpecMix(textBaseline: value));
   }
 
   /// Factory for spacing
   factory FlexBoxStyle.spacing(double value) {
-    return FlexBoxStyle(flex: FlexPropertiesMix(spacing: value));
+    return FlexBoxStyle(flex: FlexLayoutSpecMix(spacing: value));
   }
 
   /// Factory for gap
@@ -190,7 +190,7 @@ class FlexBoxStyle extends Style<FlexBoxWidgetSpec>
     'This feature was deprecated after Mix v2.0.0.',
   )
   factory FlexBoxStyle.gap(double value) {
-    return FlexBoxStyle(flex: FlexPropertiesMix(spacing: value));
+    return FlexBoxStyle(flex: FlexLayoutSpecMix(spacing: value));
   }
 
   /// Constructor that accepts a [FlexBoxWidgetSpec] value and extracts its properties.
@@ -198,13 +198,13 @@ class FlexBoxStyle extends Style<FlexBoxWidgetSpec>
   /// This is useful for converting existing [FlexBoxWidgetSpec] instances to [FlexBoxStyle].
   ///
   /// ```dart
-  /// const spec = FlexBoxSpec(container: ContainerSpec(...), flex: FlexProperties(...));
-  /// final attr = FlexBoxMix.value(spec);
+  /// const spec = FlexBoxWidgetSpec(container: ContainerSpec(...), flex: FlexProperties(...));
+  /// final attr = FlexBoxStyle.value(spec);
   /// ```
   static FlexBoxStyle value(FlexBoxWidgetSpec spec) {
     return FlexBoxStyle(
       container: ContainerSpecMix.maybeValue(spec.container),
-      flex: FlexPropertiesMix.maybeValue(spec.flex),
+      flex: FlexLayoutSpecMix.maybeValue(spec.flex),
     );
   }
 
@@ -213,8 +213,8 @@ class FlexBoxStyle extends Style<FlexBoxWidgetSpec>
   /// Returns null if the input is null, otherwise uses [FlexBoxStyle.value].
   ///
   /// ```dart
-  /// const FlexBoxSpec? spec = FlexBoxSpec(container: ContainerSpec(...), flex: FlexProperties(...));
-  /// final attr = FlexBoxMix.maybeValue(spec); // Returns FlexBoxMix or null
+  /// const FlexBoxWidgetSpec? spec = FlexBoxWidgetSpec(container: ContainerSpec(...), flex: FlexProperties(...));
+  /// final attr = FlexBoxStyle.maybeValue(spec); // Returns FlexBoxStyle or null
   /// ```
   static FlexBoxStyle? maybeValue(FlexBoxWidgetSpec? spec) {
     return spec != null ? FlexBoxStyle.value(spec) : null;
@@ -226,7 +226,7 @@ class FlexBoxStyle extends Style<FlexBoxWidgetSpec>
   }
 
   /// Sets flex properties
-  FlexBoxStyle flex(FlexPropertiesMix value) {
+  FlexBoxStyle flex(FlexLayoutSpecMix value) {
     return merge(FlexBoxStyle.flex(value));
   }
 
@@ -254,7 +254,7 @@ class FlexBoxStyle extends Style<FlexBoxWidgetSpec>
     return merge(FlexBoxStyle.clipBehavior(value));
   }
 
-  // FlexPropertiesMix instance methods
+  // FlexLayoutSpecMix instance methods
   /// Sets flex direction
   FlexBoxStyle direction(Axis value) {
     return merge(FlexBoxStyle.direction(value));
@@ -371,7 +371,7 @@ class FlexBoxStyle extends Style<FlexBoxWidgetSpec>
   /// defined in the property specification.
   ///
   /// ```dart
-  /// final flexBoxSpec = FlexBoxMix(...).resolve(context);
+  /// final flexBoxWidgetSpec = FlexBoxStyle(...).resolve(context);
   /// ```
   @override
   FlexBoxWidgetSpec resolve(BuildContext context) {

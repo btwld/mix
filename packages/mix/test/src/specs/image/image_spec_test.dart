@@ -5,9 +5,9 @@ import 'package:mix/mix.dart';
 import 'package:mix/src/specs/image/image_spec.dart';
 
 void main() {
-  group('ImageSpec', () {
+  group('FlexWidgetSpecUtility', () {
     group('Constructor', () {
-      test('creates ImageSpec with all properties', () {
+      test('', () {
         const spec = ImageWidgetSpec(
           width: 200.0,
           height: 150.0,
@@ -41,7 +41,7 @@ void main() {
         expect(spec.matchTextDirection, true);
       });
 
-      test('creates ImageSpec with default values', () {
+      test('', () {
         const spec = ImageWidgetSpec();
 
         expect(spec.width, isNull);
@@ -107,7 +107,7 @@ void main() {
     });
 
     group('lerp', () {
-      test('interpolates between two ImageSpecs correctly', () {
+      test('', () {
         const spec1 = ImageWidgetSpec(
           width: 100.0,
           height: 200.0,
@@ -323,7 +323,7 @@ void main() {
           matchTextDirection: false,
         );
 
-        // 15 ImageSpec properties + 3 from WidgetSpec (animation, widgetModifiers, inherit)
+        // 15 ImageWidgetSpec properties + 3 from WidgetSpec (animation, widgetModifiers, inherit)
         expect(spec.props.length, 18);
         expect(spec.props, contains(200.0));
         expect(spec.props, contains(150.0));

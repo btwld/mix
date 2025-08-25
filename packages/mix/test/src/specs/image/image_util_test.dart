@@ -13,12 +13,12 @@ void main() {
     });
 
     group('Constructor', () {
-      test('creates with default ImageMix when no attribute provided', () {
+      test('', () {
         final utility = ImageSpecUtility();
         expect(utility, isA<ImageSpecUtility>());
       });
 
-      test('creates with provided ImageMix attribute', () {
+      test('', () {
         final imageMix = ImageStyle(width: 100.0);
         final utility = ImageSpecUtility(imageMix);
         final context = MockBuildContext();
@@ -105,7 +105,7 @@ void main() {
     });
 
     group('Image property utilities', () {
-      test('width utility creates correct ImageMix', () {
+      test('', () {
         final result = util.width(100.0);
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -114,7 +114,7 @@ void main() {
         expect(spec.width, 100.0);
       });
 
-      test('height utility creates correct ImageMix', () {
+      test('', () {
         final result = util.height(200.0);
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -123,7 +123,7 @@ void main() {
         expect(spec.height, 200.0);
       });
 
-      test('repeat utility creates correct ImageMix', () {
+      test('', () {
         final result = util.repeat(ImageRepeat.repeat);
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -132,7 +132,7 @@ void main() {
         expect(spec.repeat, ImageRepeat.repeat);
       });
 
-      test('fit utility creates correct ImageMix', () {
+      test('', () {
         final result = util.fit(BoxFit.cover);
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -141,7 +141,7 @@ void main() {
         expect(spec.fit, BoxFit.cover);
       });
 
-      test('alignment utility creates correct ImageMix', () {
+      test('', () {
         final result = util.alignment(Alignment.topLeft);
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -150,7 +150,7 @@ void main() {
         expect(spec.alignment, Alignment.topLeft);
       });
 
-      test('centerSlice utility creates correct ImageMix', () {
+      test('', () {
         const rect = Rect.fromLTWH(10, 10, 50, 50);
         final result = util.centerSlice(rect);
         final context = MockBuildContext();
@@ -160,7 +160,7 @@ void main() {
         expect(spec.centerSlice, rect);
       });
 
-      test('filterQuality utility creates correct ImageMix', () {
+      test('', () {
         final result = util.filterQuality(FilterQuality.high);
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -169,7 +169,7 @@ void main() {
         expect(spec.filterQuality, FilterQuality.high);
       });
 
-      test('colorBlendMode utility creates correct ImageMix', () {
+      test('', () {
         final result = util.colorBlendMode(BlendMode.multiply);
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -178,7 +178,7 @@ void main() {
         expect(spec.colorBlendMode, BlendMode.multiply);
       });
 
-      test('semanticLabel utility creates correct ImageMix', () {
+      test('', () {
         final result = util.semanticLabel('Test Image');
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -187,7 +187,7 @@ void main() {
         expect(spec.semanticLabel, 'Test Image');
       });
 
-      test('excludeFromSemantics utility creates correct ImageMix', () {
+      test('', () {
         final result = util.excludeFromSemantics(true);
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -196,7 +196,7 @@ void main() {
         expect(spec.excludeFromSemantics, true);
       });
 
-      test('gaplessPlayback utility creates correct ImageMix', () {
+      test('', () {
         final result = util.gaplessPlayback(true);
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -205,7 +205,7 @@ void main() {
         expect(spec.gaplessPlayback, true);
       });
 
-      test('isAntiAlias utility creates correct ImageMix', () {
+      test('', () {
         final result = util.isAntiAlias(true);
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -214,7 +214,7 @@ void main() {
         expect(spec.isAntiAlias, true);
       });
 
-      test('matchTextDirection utility creates correct ImageMix', () {
+      test('', () {
         final result = util.matchTextDirection(true);
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -225,7 +225,7 @@ void main() {
     });
 
     group('Color utilities', () {
-      test('color utility creates correct ImageMix', () {
+      test('', () {
         final result = util.color.red();
         expect(result, isA<ImageStyle>());
       });
@@ -266,7 +266,7 @@ void main() {
     });
 
     group('Modifier utilities', () {
-      test('wrap utility creates modifier ImageMix', () {
+      test('', () {
         final result = util.wrap.opacity(0.5);
 
         expect(result, isA<ImageStyle>());
@@ -281,7 +281,7 @@ void main() {
         expect(result, same(util));
       });
 
-      test('merge with ImageSpecUtility creates new instance', () {
+      test('', () {
         final other = ImageSpecUtility(ImageStyle(width: 150.0));
         final result = util.merge(other);
         final context = MockBuildContext();
@@ -292,7 +292,7 @@ void main() {
         expect(spec.width, 150.0);
       });
 
-      test('merge with ImageMix creates new instance', () {
+      test('', () {
         final otherMix = ImageStyle(height: 250.0);
         final result = util.merge(otherMix);
         final context = MockBuildContext();
@@ -327,7 +327,7 @@ void main() {
     });
 
     group('Resolve functionality', () {
-      test('resolve returns ImageSpec with resolved properties', () {
+      test('', () {
         final testUtil = ImageSpecUtility(
           ImageStyle(width: 100.0, height: 200.0, fit: BoxFit.cover),
         );
@@ -454,10 +454,10 @@ void main() {
         expect(spec.fit, BoxFit.cover);
       });
 
-      test('individual utility calls return ImageMix for further chaining', () {
+      test('', () {
         final util = ImageSpecUtility();
 
-        // Each utility call should return an ImageMix
+        // Each utility call should return an ImageStyle
         final widthResult = util.width(100.0);
         final heightResult = util.height(200.0);
         final fitResult = util.fit(BoxFit.cover);
@@ -519,7 +519,7 @@ void main() {
         final result1 = util.width(100.0);
         final result2 = util.height(200.0);
 
-        // Both results are different ImageMix instances
+        // Both results are different ImageStyle instances
         expect(result1, isNot(same(result2)));
 
         // But the utility itself has accumulated both changes
@@ -532,7 +532,7 @@ void main() {
     });
 
     group('Integration with resolvesTo matcher', () {
-      test('utility resolves to correct ImageSpec', () {
+      test('', () {
         final testUtil = ImageSpecUtility(
           ImageStyle(width: 100.0, height: 200.0, fit: BoxFit.cover),
         );

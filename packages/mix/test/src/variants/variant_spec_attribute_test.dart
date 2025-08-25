@@ -313,7 +313,7 @@ void main() {
         expect(textAttr.$maxLines, resolvesTo(2));
       });
 
-      test('works with ImageSpecAttribute', () {
+      test('', () {
         const variant = NamedVariant('avatar');
         final imageStyle = ImageStyle(
           width: 50.0,

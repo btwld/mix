@@ -4,20 +4,20 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/modifier.dart';
 import '../../core/widget_spec.dart';
-import '../../properties/flex_properties.dart';
+import '../../properties/flex_layout_spec.dart';
 import '../container/container_spec.dart';
 
 /// Specification that combines container styling and flex layout properties.
 ///
 /// Provides comprehensive styling for container widgets that need both
 /// container decoration and flex layout capabilities. Merges [ContainerSpec] and
-/// [FlexProperties] into a unified specification.
+/// [FlexLayoutSpec] into a unified specification.
 final class FlexBoxWidgetSpec extends WidgetSpec<FlexBoxWidgetSpec> {
   /// Container styling properties for decoration, padding, constraints, etc.
   final ContainerSpec? container;
 
   /// Flex layout properties for direction, alignment, spacing, etc.
-  final FlexProperties? flex;
+  final FlexLayoutSpec? flex;
 
   const FlexBoxWidgetSpec({
     this.container,
@@ -32,7 +32,7 @@ final class FlexBoxWidgetSpec extends WidgetSpec<FlexBoxWidgetSpec> {
   @override
   FlexBoxWidgetSpec copyWith({
     ContainerSpec? container,
-    FlexProperties? flex,
+    FlexLayoutSpec? flex,
     AnimationConfig? animation,
     List<Modifier>? widgetModifiers,
     bool? inherit,
@@ -57,7 +57,7 @@ final class FlexBoxWidgetSpec extends WidgetSpec<FlexBoxWidgetSpec> {
   /// The interpolation is performed on each property of the [FlexBoxWidgetSpec] using the appropriate
   /// interpolation method:
   /// - [ContainerSpec.lerp] for [container].
-  /// - [FlexProperties.lerp] for [flex].
+  /// - [FlexLayoutSpec.lerp] for [flex].
   ///
   /// This method is typically used in animations to smoothly transition between
   /// different [FlexBoxWidgetSpec] configurations.

@@ -1,15 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:mix/mix.dart';
+
+import '../core/helpers.dart';
+import '../core/spec.dart';
 
 /// A property bag for Flex widget configuration.
 ///
-/// This Spec provides resolved flex layout values that can be applied 
+/// This Spec provides resolved flex layout values that can be applied
 /// to Row, Column, or Flex widgets. It encapsulates flex-specific properties
 /// like direction, alignment, and spacing, as well as optional decoration
 /// properties that will wrap the Flex when present.
-class FlexProperties extends Spec<FlexProperties>
-    with Diagnosticable {
+class FlexLayoutSpec extends Spec<FlexLayoutSpec> with Diagnosticable {
   final Decoration? decoration;
   final EdgeInsetsGeometry? padding;
   final AlignmentGeometry? alignment;
@@ -24,7 +25,7 @@ class FlexProperties extends Spec<FlexProperties>
   final Clip? clipBehavior;
   final double? spacing;
 
-  const FlexProperties({
+  const FlexLayoutSpec({
     this.decoration,
     this.padding,
     this.alignment,
@@ -41,7 +42,7 @@ class FlexProperties extends Spec<FlexProperties>
   });
 
   @override
-  FlexProperties copyWith({
+  FlexLayoutSpec copyWith({
     Decoration? decoration,
     EdgeInsetsGeometry? padding,
     AlignmentGeometry? alignment,
@@ -56,7 +57,7 @@ class FlexProperties extends Spec<FlexProperties>
     Clip? clipBehavior,
     double? spacing,
   }) {
-    return FlexProperties(
+    return FlexLayoutSpec(
       decoration: decoration ?? this.decoration,
       padding: padding ?? this.padding,
       alignment: alignment ?? this.alignment,
@@ -74,18 +75,30 @@ class FlexProperties extends Spec<FlexProperties>
   }
 
   @override
-  FlexProperties lerp(FlexProperties? other, double t) {
+  FlexLayoutSpec lerp(FlexLayoutSpec? other, double t) {
     if (other == null) return this;
 
-    return FlexProperties(
+    return FlexLayoutSpec(
       decoration: MixOps.lerp(decoration, other.decoration, t),
       padding: MixOps.lerp(padding, other.padding, t),
       alignment: MixOps.lerp(alignment, other.alignment, t),
       direction: MixOps.lerpSnap(direction, other.direction, t),
-      mainAxisAlignment: MixOps.lerpSnap(mainAxisAlignment, other.mainAxisAlignment, t),
-      crossAxisAlignment: MixOps.lerpSnap(crossAxisAlignment, other.crossAxisAlignment, t),
+      mainAxisAlignment: MixOps.lerpSnap(
+        mainAxisAlignment,
+        other.mainAxisAlignment,
+        t,
+      ),
+      crossAxisAlignment: MixOps.lerpSnap(
+        crossAxisAlignment,
+        other.crossAxisAlignment,
+        t,
+      ),
       mainAxisSize: MixOps.lerpSnap(mainAxisSize, other.mainAxisSize, t),
-      verticalDirection: MixOps.lerpSnap(verticalDirection, other.verticalDirection, t),
+      verticalDirection: MixOps.lerpSnap(
+        verticalDirection,
+        other.verticalDirection,
+        t,
+      ),
       textDirection: MixOps.lerpSnap(textDirection, other.textDirection, t),
       textBaseline: MixOps.lerpSnap(textBaseline, other.textBaseline, t),
       gap: MixOps.lerp(gap, other.gap, t),
@@ -102,10 +115,19 @@ class FlexProperties extends Spec<FlexProperties>
       ..add(DiagnosticsProperty('padding', padding))
       ..add(DiagnosticsProperty('alignment', alignment))
       ..add(EnumProperty<Axis>('direction', direction))
-      ..add(EnumProperty<MainAxisAlignment>('mainAxisAlignment', mainAxisAlignment))
-      ..add(EnumProperty<CrossAxisAlignment>('crossAxisAlignment', crossAxisAlignment))
+      ..add(
+        EnumProperty<MainAxisAlignment>('mainAxisAlignment', mainAxisAlignment),
+      )
+      ..add(
+        EnumProperty<CrossAxisAlignment>(
+          'crossAxisAlignment',
+          crossAxisAlignment,
+        ),
+      )
       ..add(EnumProperty<MainAxisSize>('mainAxisSize', mainAxisSize))
-      ..add(EnumProperty<VerticalDirection>('verticalDirection', verticalDirection))
+      ..add(
+        EnumProperty<VerticalDirection>('verticalDirection', verticalDirection),
+      )
       ..add(EnumProperty<TextDirection>('textDirection', textDirection))
       ..add(EnumProperty<TextBaseline>('textBaseline', textBaseline))
       ..add(DoubleProperty('gap', gap))
@@ -115,40 +137,40 @@ class FlexProperties extends Spec<FlexProperties>
 
   @override
   List<Object?> get props => [
-        decoration,
-        padding,
-        alignment,
-        direction,
-        mainAxisAlignment,
-        crossAxisAlignment,
-        mainAxisSize,
-        verticalDirection,
-        textDirection,
-        textBaseline,
-        gap,
-        clipBehavior,
-        spacing,
-      ];
+    decoration,
+    padding,
+    alignment,
+    direction,
+    mainAxisAlignment,
+    crossAxisAlignment,
+    mainAxisSize,
+    verticalDirection,
+    textDirection,
+    textBaseline,
+    gap,
+    clipBehavior,
+    spacing,
+  ];
 }
 
-/// Extension to convert [FlexProperties] directly to a [Flex] widget.
-extension FlexPropertiesX on FlexProperties {
+/// Extension to convert [FlexLayoutSpec] directly to a [Flex] widget.
+extension FlexLayoutSpecX on FlexLayoutSpec {
   /// Backward compatible call operator to build a Flex widget.
   Widget call({required Axis direction, List<Widget> children = const []}) {
     return toFlex(direction: direction, children: children);
   }
 
   /// Explicitly build a Flex widget with the specified properties.
-  /// 
+  ///
   /// If decoration, padding, or alignment are set, the Flex will be wrapped
   /// with the appropriate wrapper widgets (DecoratedBox, Padding, Align).
-  /// 
+  ///
   /// Gap is handled by interleaving SizedBox widgets between children along
   /// the main axis.
   Widget toFlex({required Axis direction, List<Widget> children = const []}) {
     final resolvedDirection = this.direction ?? direction;
     final effectiveSpacing = spacing ?? gap ?? 0.0;
-    
+
     // Handle spacing/gap by interleaving SizedBox widgets or using Flex spacing when available
     List<Widget> childrenWithGaps = children;
     if (effectiveSpacing > 0 && children.length > 1) {
@@ -158,8 +180,12 @@ extension FlexPropertiesX on FlexProperties {
         if (i < children.length - 1) {
           childrenWithGaps.add(
             SizedBox(
-              width: resolvedDirection == Axis.horizontal ? effectiveSpacing : null,
-              height: resolvedDirection == Axis.vertical ? effectiveSpacing : null,
+              width: resolvedDirection == Axis.horizontal
+                  ? effectiveSpacing
+                  : null,
+              height: resolvedDirection == Axis.vertical
+                  ? effectiveSpacing
+                  : null,
             ),
           );
         }
@@ -181,24 +207,15 @@ extension FlexPropertiesX on FlexProperties {
 
     // Apply wrappers if needed
     if (padding != null) {
-      flex = Padding(
-        padding: padding!,
-        child: flex,
-      );
+      flex = Padding(padding: padding!, child: flex);
     }
 
     if (decoration != null) {
-      flex = DecoratedBox(
-        decoration: decoration!,
-        child: flex,
-      );
+      flex = DecoratedBox(decoration: decoration!, child: flex);
     }
 
     if (alignment != null) {
-      flex = Align(
-        alignment: alignment!,
-        child: flex,
-      );
+      flex = Align(alignment: alignment!, child: flex);
     }
 
     return flex;

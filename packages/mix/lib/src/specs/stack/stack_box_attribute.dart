@@ -7,6 +7,7 @@ import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../variants/variant.dart';
+import '../../variants/variant_util.dart';
 import '../box/box_attribute.dart';
 import '../box/box_spec.dart';
 import 'stack_attribute.dart';
@@ -22,7 +23,10 @@ typedef StackBoxMix = StackBoxStyle;
 ///
 /// Use this class to configure the attributes of a [ZBoxWidgetSpec] and pass it to
 /// the [ZBoxWidgetSpec] constructor.
-class StackBoxStyle extends Style<ZBoxWidgetSpec> with Diagnosticable {
+class StackBoxStyle extends Style<ZBoxWidgetSpec> 
+    with 
+        Diagnosticable,
+        StyleVariantMixin<StackBoxStyle, ZBoxWidgetSpec> {
   final Prop<BoxWidgetSpec>? $box;
   final Prop<StackWidgetSpec>? $stack;
 
@@ -73,8 +77,8 @@ class StackBoxStyle extends Style<ZBoxWidgetSpec> with Diagnosticable {
   /// This is useful for converting existing [ZBoxWidgetSpec] instances to [StackBoxStyle].
   ///
   /// ```dart
-  /// const spec = StackBoxSpec(box: BoxSpec(...), stack: StackSpec(...));
-  /// final attr = StackBoxMix.value(spec);
+  /// const spec = ZBoxWidgetSpec(box: BoxWidgetSpec(...), stack: StackWidgetSpec(...));
+  /// final attr = StackBoxStyle.value(spec);
   /// ```
   static StackBoxStyle value(ZBoxWidgetSpec spec) {
     return StackBoxStyle(
@@ -88,8 +92,8 @@ class StackBoxStyle extends Style<ZBoxWidgetSpec> with Diagnosticable {
   /// Returns null if the input is null, otherwise uses [StackBoxStyle.value].
   ///
   /// ```dart
-  /// const StackBoxSpec? spec = StackBoxSpec(box: BoxSpec(...), stack: StackSpec(...));
-  /// final attr = StackBoxMix.maybeValue(spec); // Returns StackBoxMix or null
+  /// const ZBoxWidgetSpec? spec = ZBoxWidgetSpec(box: BoxWidgetSpec(...), stack: StackWidgetSpec(...));
+  /// final attr = StackBoxStyle.maybeValue(spec); // Returns StackBoxStyle or null
   /// ```
   static StackBoxStyle? maybeValue(ZBoxWidgetSpec? spec) {
     return spec != null ? StackBoxStyle.value(spec) : null;
@@ -118,13 +122,18 @@ class StackBoxStyle extends Style<ZBoxWidgetSpec> with Diagnosticable {
     return merge(StackBoxStyle(variants: variants));
   }
 
+  @override
+  StackBoxStyle variant(Variant variant, StackBoxStyle style) {
+    return merge(StackBoxStyle(variants: [VariantStyle(variant, style)]));
+  }
+
   /// Resolves to [ZBoxWidgetSpec] using the provided [BuildContext].
   ///
   /// If a property is null in the context, it uses the default value
   /// defined in the property specification.
   ///
   /// ```dart
-  /// final ZBoxSpec = StackBoxMix(...).resolve(context);
+  /// final zBoxWidgetSpec = StackBoxStyle(...).resolve(context);
   /// ```
   @override
   ZBoxWidgetSpec resolve(BuildContext context) {

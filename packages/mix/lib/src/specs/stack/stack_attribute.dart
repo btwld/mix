@@ -111,8 +111,8 @@ class StackStyle extends Style<StackWidgetSpec>
   /// This is useful for converting existing [StackWidgetSpec] instances to [StackStyle].
   ///
   /// ```dart
-  /// const spec = StackSpec(alignment: AlignmentDirectional.topStart, fit: StackFit.loose);
-  /// final attr = StackMix.value(spec);
+  /// const spec = StackWidgetSpec(alignment: AlignmentDirectional.topStart, fit: StackFit.loose);
+  /// final attr = StackStyle.value(spec);
   /// ```
   StackStyle.value(StackWidgetSpec spec)
     : this(
@@ -124,11 +124,11 @@ class StackStyle extends Style<StackWidgetSpec>
 
   /// Constructor that accepts a nullable [StackWidgetSpec] value and extracts its properties.
   ///
-  /// Returns null if the input is null, otherwise uses [StackMix.value].
+  /// Returns null if the input is null, otherwise uses [StackStyle.value].
   ///
   /// ```dart
-  /// const StackSpec? spec = StackSpec(alignment: AlignmentDirectional.topStart, fit: StackFit.loose);
-  /// final attr = StackMix.maybeValue(spec); // Returns StackMix or null
+  /// const StackWidgetSpec? spec = StackWidgetSpec(alignment: AlignmentDirectional.topStart, fit: StackFit.loose);
+  /// final attr = StackStyle.maybeValue(spec); // Returns StackStyle or null
   /// ```
   static StackStyle? maybeValue(StackWidgetSpec? spec) {
     return spec != null ? StackStyle.value(spec) : null;
@@ -158,7 +158,7 @@ class StackStyle extends Style<StackWidgetSpec>
     return merge(StackStyle(modifier: value));
   }
 
-  /// Convenience method for animating the StackSpec
+  /// Convenience method for animating the StackWidgetSpec
   @override
   StackStyle animate(AnimationConfig animation) {
     return merge(StackStyle.animate(animation));

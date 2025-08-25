@@ -5,9 +5,9 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-  group('StackBoxMix', () {
+  group('FlexWidgetSpecUtility', () {
     group('Constructor', () {
-      test('creates StackBoxMix with all properties', () {
+      test('', () {
         final boxAttribute = BoxStyle.width(200.0).height(200.0);
         final stackAttribute = StackStyle(
           alignment: Alignment.center,
@@ -29,12 +29,12 @@ void main() {
           resolvedBoxSpec.constraints,
           const BoxConstraints.tightFor(width: 200.0, height: 200.0),
         );
-        final resolvedStackSpec = attribute.$stack!.resolveProp(context);
-        expect(resolvedStackSpec.alignment, Alignment.center);
-        expect(resolvedStackSpec.fit, StackFit.expand);
+        final resolvedStackWidgetSpec = attribute.$stack!.resolveProp(context);
+        expect(resolvedStackWidgetSpec.alignment, Alignment.center);
+        expect(resolvedStackWidgetSpec.fit, StackFit.expand);
       });
 
-      test('creates empty StackBoxMix', () {
+      test('', () {
         final attribute = StackBoxStyle();
 
         expect(attribute.$box, isNull);
@@ -43,7 +43,7 @@ void main() {
     });
 
     group('Factory Constructors', () {
-      test('box factory creates StackBoxMix with box', () {
+      test('', () {
         final boxMix = BoxStyle.width(100.0);
         final stackBoxMix = StackBoxStyle.box(boxMix);
 
@@ -51,7 +51,7 @@ void main() {
         expect(stackBoxMix.$stack, isNull);
       });
 
-      test('stack factory creates StackBoxMix with stack', () {
+      test('', () {
         final stackMix = StackStyle.alignment(Alignment.center);
         final stackBoxMix = StackBoxStyle.stack(stackMix);
 
@@ -59,14 +59,14 @@ void main() {
         expect(stackBoxMix.$box, isNull);
       });
 
-      test('animation factory creates StackBoxMix with animation config', () {
+      test('', () {
         final animation = AnimationConfig.linear(Duration(seconds: 1));
         final stackBoxMix = StackBoxStyle.animate(animation);
 
         expect(stackBoxMix.$animation, animation);
       });
 
-      test('variant factory creates StackBoxMix with variant', () {
+      test('', () {
         final variant = ContextVariant.brightness(Brightness.dark);
         final style = StackBoxStyle.box(BoxStyle.color(Colors.white));
         final stackBoxMix = StackBoxStyle.variant(variant, style);
@@ -77,7 +77,7 @@ void main() {
     });
 
     group('value constructor', () {
-      test('creates StackBoxMix from ZBoxSpec', () {
+      test('', () {
         const spec = ZBoxWidgetSpec(
           box: BoxWidgetSpec(
             constraints: BoxConstraints.tightFor(width: 200.0, height: 100.0),
@@ -163,7 +163,7 @@ void main() {
     });
 
     group('Resolution', () {
-      test('resolves to ZBoxSpec with correct properties', () {
+      test('', () {
         final boxAttribute = BoxStyle.width(200.0).height(200.0);
         final stackAttribute = StackStyle(
           alignment: Alignment.center,
@@ -196,7 +196,7 @@ void main() {
         final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        // ZBoxSpec constructor provides default values when null
+        // ZBoxWidgetSpec constructor provides default values when null
         expect(spec.box, const BoxWidgetSpec());
         expect(spec.stack, const StackWidgetSpec());
       });

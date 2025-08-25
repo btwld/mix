@@ -63,7 +63,7 @@ class OkinawaCard extends StatelessWidget {
               .color(Colors.black.withValues(alpha: 0.1)),
         )
         .flex(
-          FlexPropertiesMix()
+          FlexLayoutSpecMix()
               .mainAxisSize(MainAxisSize.min)
               .crossAxisAlignment(CrossAxisAlignment.start),
         );

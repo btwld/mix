@@ -4,9 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 void main() {
-  group('ZBoxSpec', () {
+  group('FlexWidgetSpecUtility', () {
     group('Constructor', () {
-      test('creates ZBoxSpec with all properties', () {
+      test('', () {
         const boxSpec = BoxWidgetSpec(
           constraints: BoxConstraints.tightFor(width: 200.0, height: 100.0),
           alignment: Alignment.center,
@@ -35,7 +35,7 @@ void main() {
         expect(spec.stack.clipBehavior, Clip.antiAlias);
       });
 
-      test('creates ZBoxSpec with default values', () {
+      test('', () {
         const spec = ZBoxWidgetSpec();
 
         expect(spec.box, const BoxWidgetSpec());
@@ -45,7 +45,7 @@ void main() {
         expect(spec.stack.fit, isNull);
       });
 
-      test('creates ZBoxSpec with partial properties', () {
+      test('', () {
         const boxSpec = BoxWidgetSpec(margin: EdgeInsets.all(8.0));
         const spec = ZBoxWidgetSpec(box: boxSpec);
 
@@ -109,7 +109,7 @@ void main() {
     });
 
     group('lerp', () {
-      test('interpolates between two ZBoxSpecs correctly', () {
+      test('', () {
         const spec1Box = BoxWidgetSpec(
           constraints: BoxConstraints.tightFor(width: 100.0, height: 50.0),
         );
@@ -299,7 +299,7 @@ void main() {
         );
         const spec = ZBoxWidgetSpec(box: boxSpec, stack: stackSpec);
 
-        // 2 ZBoxSpec properties (box, stack) + 3 from WidgetSpec (animation, widgetModifiers, inherit)
+        // 2 ZBoxWidgetSpec properties (box, stack) + 3 from WidgetSpec (animation, widgetModifiers, inherit)
         expect(spec.props.length, 5);
         expect(spec.props, contains(boxSpec));
         expect(spec.props, contains(stackSpec));

@@ -3,7 +3,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/style_widget.dart';
-import '../../properties/flex_properties.dart';
+import '../../properties/flex_layout_spec.dart';
 import '../container/container_spec.dart';
 import 'flexbox_attribute.dart';
 import 'flexbox_spec.dart';
@@ -58,12 +58,12 @@ class VBox extends FlexBox {
   }) : super(direction: Axis.vertical);
 }
 
-/// Creates a [Flex] widget from a [FlexProperties] and required parameters.
+/// Creates a [Flex] widget from a [FlexLayoutSpec] and required parameters.
 ///
 /// Applies all flex layout properties with appropriate default values
 /// when specification properties are null.
 Flex createFlexSpecWidget({
-  required FlexProperties? spec,
+  required FlexLayoutSpec? spec,
   required Axis direction,
   List<Widget> children = const [],
 }) {
@@ -103,8 +103,8 @@ Widget createFlexBoxSpecWidget({
   return flexWidget;
 }
 
-/// Extension to convert [FlexProperties] directly to a [Flex] widget.
-extension FlexPropertiesWidget on FlexProperties {
+/// Extension to convert [FlexLayoutSpec] directly to a [Flex] widget.
+extension FlexLayoutSpecWidget on FlexLayoutSpec {
   Flex call({required Axis direction, List<Widget> children = const []}) {
     return createFlexSpecWidget(
       spec: this,

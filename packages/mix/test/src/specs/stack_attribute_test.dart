@@ -5,9 +5,9 @@ import 'package:mix/mix.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  group('StackMix', () {
+  group('StackStyle', () {
     group('Constructor', () {
-      test('creates StackMix with all properties', () {
+      test('', () {
         final attribute = StackStyle(
           alignment: Alignment.center,
           fit: StackFit.expand,
@@ -21,7 +21,7 @@ void main() {
         expect(attribute.$clipBehavior, resolvesTo(Clip.antiAlias));
       });
 
-      test('creates empty StackMix', () {
+      test('', () {
         final attribute = StackStyle();
 
         expect(attribute.$alignment, isNull);
@@ -32,38 +32,38 @@ void main() {
     });
 
     group('Factory Constructors', () {
-      test('alignment factory creates StackMix with alignment', () {
+      test('', () {
         final stackMix = StackStyle.alignment(Alignment.topLeft);
 
         expect(stackMix.$alignment, resolvesTo(Alignment.topLeft));
       });
 
-      test('fit factory creates StackMix with fit', () {
+      test('', () {
         final stackMix = StackStyle.fit(StackFit.loose);
 
         expect(stackMix.$fit, resolvesTo(StackFit.loose));
       });
 
-      test('textDirection factory creates StackMix with textDirection', () {
+      test('', () {
         final stackMix = StackStyle.textDirection(TextDirection.rtl);
 
         expect(stackMix.$textDirection, resolvesTo(TextDirection.rtl));
       });
 
-      test('clipBehavior factory creates StackMix with clipBehavior', () {
+      test('', () {
         final stackMix = StackStyle.clipBehavior(Clip.hardEdge);
 
         expect(stackMix.$clipBehavior, resolvesTo(Clip.hardEdge));
       });
 
-      test('animation factory creates StackMix with animation config', () {
+      test('', () {
         final animation = AnimationConfig.linear(Duration(seconds: 1));
         final stackMix = StackStyle.animate(animation);
 
         expect(stackMix.$animation, animation);
       });
 
-      test('variant factory creates StackMix with variant', () {
+      test('', () {
         final variant = ContextVariant.brightness(Brightness.dark);
         final style = StackStyle.alignment(Alignment.center);
         final stackMix = StackStyle.variant(variant, style);
@@ -74,7 +74,7 @@ void main() {
     });
 
     group('value constructor', () {
-      test('creates StackMix from StackSpec', () {
+      test('', () {
         const spec = StackWidgetSpec(
           alignment: Alignment.bottomRight,
           fit: StackFit.passthrough,
@@ -146,7 +146,7 @@ void main() {
     });
 
     group('Variant Methods', () {
-      test('variant method adds variant to StackMix', () {
+      test('', () {
         final variant = ContextVariant.brightness(Brightness.dark);
         final style = StackStyle.alignment(Alignment.center);
         final stackMix = StackStyle().variant(variant, style);
@@ -174,7 +174,7 @@ void main() {
     });
 
     group('Resolution', () {
-      test('resolves to StackSpec with correct properties', () {
+      test('', () {
         final attribute = StackStyle(
           alignment: Alignment.center,
           fit: StackFit.expand,

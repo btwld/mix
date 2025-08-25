@@ -214,8 +214,8 @@ class ImageStyle extends Style<ImageWidgetSpec>
   /// This is useful for converting existing [ImageWidgetSpec] instances to [ImageStyle].
   ///
   /// ```dart
-  /// const spec = ImageSpec(width: 100, height: 100, fit: BoxFit.cover);
-  /// final attr = ImageMix.value(spec);
+  /// const spec = ImageWidgetSpec(width: 100, height: 100, fit: BoxFit.cover);
+  /// final attr = ImageStyle.value(spec);
   /// ```
   ImageStyle.value(ImageWidgetSpec spec)
     : this(
@@ -238,11 +238,11 @@ class ImageStyle extends Style<ImageWidgetSpec>
 
   /// Constructor that accepts a nullable [ImageWidgetSpec] value and extracts its properties.
   ///
-  /// Returns null if the input is null, otherwise uses [ImageMix.value].
+  /// Returns null if the input is null, otherwise uses [ImageStyle.value].
   ///
   /// ```dart
-  /// const ImageSpec? spec = ImageSpec(width: 100, height: 100, fit: BoxFit.cover);
-  /// final attr = ImageMix.maybeValue(spec); // Returns ImageMix or null
+  /// const ImageWidgetSpec? spec = ImageWidgetSpec(width: 100, height: 100, fit: BoxFit.cover);
+  /// final attr = ImageStyle.maybeValue(spec); // Returns ImageStyle or null
   /// ```
   static ImageStyle? maybeValue(ImageWidgetSpec? spec) {
     return spec != null ? ImageStyle.value(spec) : null;
@@ -344,7 +344,7 @@ class ImageStyle extends Style<ImageWidgetSpec>
     return merge(ImageStyle(modifier: value));
   }
 
-  /// Convenience method for animating the ImageSpec
+  /// Convenience method for animating the ImageWidgetSpec
   ImageStyle animate(AnimationConfig animation) {
     return merge(ImageStyle.animate(animation));
   }

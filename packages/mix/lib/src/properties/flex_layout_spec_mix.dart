@@ -1,14 +1,17 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:mix/mix.dart';
 
-import 'flex_properties.dart';
+import '../core/helpers.dart';
+import '../core/mix_element.dart';
+import '../core/prop.dart';
+import 'flex_layout_spec.dart';
+import 'layout/edge_insets_geometry_mix.dart';
+import 'painting/decoration_mix.dart';
 
-/// Mix class for configuring [FlexProperties] properties.
+/// Mix class for configuring [FlexLayoutSpec] properties.
 ///
 /// Encapsulates flex layout properties with support for proper Mix framework integration.
-final class FlexPropertiesMix extends Mix<FlexProperties>
-    with Diagnosticable {
+final class FlexLayoutSpecMix extends Mix<FlexLayoutSpec> with Diagnosticable {
   final Prop<Decoration>? $decoration;
   final Prop<EdgeInsetsGeometry>? $padding;
   final Prop<AlignmentGeometry>? $alignment;
@@ -24,7 +27,7 @@ final class FlexPropertiesMix extends Mix<FlexProperties>
   final Prop<double>? $spacing;
 
   /// Main constructor with user-friendly Mix types
-  FlexPropertiesMix({
+  FlexLayoutSpecMix({
     DecorationMix? decoration,
     EdgeInsetsGeometryMix? padding,
     AlignmentGeometry? alignment,
@@ -39,23 +42,23 @@ final class FlexPropertiesMix extends Mix<FlexProperties>
     Clip? clipBehavior,
     double? spacing,
   }) : this.create(
-          decoration: Prop.maybeMix(decoration),
-          padding: Prop.maybeMix(padding),
-          alignment: Prop.maybe(alignment),
-          direction: Prop.maybe(direction),
-          mainAxisAlignment: Prop.maybe(mainAxisAlignment),
-          crossAxisAlignment: Prop.maybe(crossAxisAlignment),
-          mainAxisSize: Prop.maybe(mainAxisSize),
-          verticalDirection: Prop.maybe(verticalDirection),
-          textDirection: Prop.maybe(textDirection),
-          textBaseline: Prop.maybe(textBaseline),
-          gap: Prop.maybe(gap),
-          clipBehavior: Prop.maybe(clipBehavior),
-          spacing: Prop.maybe(spacing),
-        );
+         decoration: Prop.maybeMix(decoration),
+         padding: Prop.maybeMix(padding),
+         alignment: Prop.maybe(alignment),
+         direction: Prop.maybe(direction),
+         mainAxisAlignment: Prop.maybe(mainAxisAlignment),
+         crossAxisAlignment: Prop.maybe(crossAxisAlignment),
+         mainAxisSize: Prop.maybe(mainAxisSize),
+         verticalDirection: Prop.maybe(verticalDirection),
+         textDirection: Prop.maybe(textDirection),
+         textBaseline: Prop.maybe(textBaseline),
+         gap: Prop.maybe(gap),
+         clipBehavior: Prop.maybe(clipBehavior),
+         spacing: Prop.maybe(spacing),
+       );
 
   /// Create constructor with Prop<T> types for internal use
-  const FlexPropertiesMix.create({
+  const FlexLayoutSpecMix.create({
     Prop<Decoration>? decoration,
     Prop<EdgeInsetsGeometry>? padding,
     Prop<AlignmentGeometry>? alignment,
@@ -69,120 +72,120 @@ final class FlexPropertiesMix extends Mix<FlexProperties>
     Prop<double>? gap,
     Prop<Clip>? clipBehavior,
     Prop<double>? spacing,
-  })  : $decoration = decoration,
-        $padding = padding,
-        $alignment = alignment,
-        $direction = direction,
-        $mainAxisAlignment = mainAxisAlignment,
-        $crossAxisAlignment = crossAxisAlignment,
-        $mainAxisSize = mainAxisSize,
-        $verticalDirection = verticalDirection,
-        $textDirection = textDirection,
-        $textBaseline = textBaseline,
-        $gap = gap,
-        $clipBehavior = clipBehavior,
-        $spacing = spacing;
+  }) : $decoration = decoration,
+       $padding = padding,
+       $alignment = alignment,
+       $direction = direction,
+       $mainAxisAlignment = mainAxisAlignment,
+       $crossAxisAlignment = crossAxisAlignment,
+       $mainAxisSize = mainAxisSize,
+       $verticalDirection = verticalDirection,
+       $textDirection = textDirection,
+       $textBaseline = textBaseline,
+       $gap = gap,
+       $clipBehavior = clipBehavior,
+       $spacing = spacing;
 
-  /// Constructor that accepts a [FlexProperties] value and extracts its properties.
-  FlexPropertiesMix.value(FlexProperties spec)
-      : this(
-          decoration: DecorationMix.maybeValue(spec.decoration),
-          padding: EdgeInsetsGeometryMix.maybeValue(spec.padding),
-          alignment: spec.alignment,
-          direction: spec.direction,
-          mainAxisAlignment: spec.mainAxisAlignment,
-          crossAxisAlignment: spec.crossAxisAlignment,
-          mainAxisSize: spec.mainAxisSize,
-          verticalDirection: spec.verticalDirection,
-          textDirection: spec.textDirection,
-          textBaseline: spec.textBaseline,
-          gap: spec.gap,
-          clipBehavior: spec.clipBehavior,
-          spacing: spec.spacing,
-        );
+  /// Constructor that accepts a [FlexLayoutSpec] value and extracts its properties.
+  FlexLayoutSpecMix.value(FlexLayoutSpec spec)
+    : this(
+        decoration: DecorationMix.maybeValue(spec.decoration),
+        padding: EdgeInsetsGeometryMix.maybeValue(spec.padding),
+        alignment: spec.alignment,
+        direction: spec.direction,
+        mainAxisAlignment: spec.mainAxisAlignment,
+        crossAxisAlignment: spec.crossAxisAlignment,
+        mainAxisSize: spec.mainAxisSize,
+        verticalDirection: spec.verticalDirection,
+        textDirection: spec.textDirection,
+        textBaseline: spec.textBaseline,
+        gap: spec.gap,
+        clipBehavior: spec.clipBehavior,
+        spacing: spec.spacing,
+      );
 
   // Factory constructors for common use cases
 
   /// Color factory
-  factory FlexPropertiesMix.color(Color value) {
-    return FlexPropertiesMix(decoration: DecorationMix.color(value));
+  factory FlexLayoutSpecMix.color(Color value) {
+    return FlexLayoutSpecMix(decoration: DecorationMix.color(value));
   }
 
   /// Decoration factory
-  factory FlexPropertiesMix.decoration(DecorationMix value) {
-    return FlexPropertiesMix(decoration: value);
+  factory FlexLayoutSpecMix.decoration(DecorationMix value) {
+    return FlexLayoutSpecMix(decoration: value);
   }
 
   /// Alignment factory
-  factory FlexPropertiesMix.alignment(AlignmentGeometry value) {
-    return FlexPropertiesMix(alignment: value);
+  factory FlexLayoutSpecMix.alignment(AlignmentGeometry value) {
+    return FlexLayoutSpecMix(alignment: value);
   }
 
   /// Padding factory
-  factory FlexPropertiesMix.padding(EdgeInsetsGeometryMix value) {
-    return FlexPropertiesMix(padding: value);
+  factory FlexLayoutSpecMix.padding(EdgeInsetsGeometryMix value) {
+    return FlexLayoutSpecMix(padding: value);
   }
 
   /// Direction factory
-  factory FlexPropertiesMix.direction(Axis value) {
-    return FlexPropertiesMix(direction: value);
+  factory FlexLayoutSpecMix.direction(Axis value) {
+    return FlexLayoutSpecMix(direction: value);
   }
 
   /// Gap factory
-  factory FlexPropertiesMix.gap(double value) {
-    return FlexPropertiesMix(gap: value);
+  factory FlexLayoutSpecMix.gap(double value) {
+    return FlexLayoutSpecMix(gap: value);
   }
 
   /// Main axis alignment factory
-  factory FlexPropertiesMix.mainAxisAlignment(MainAxisAlignment value) {
-    return FlexPropertiesMix(mainAxisAlignment: value);
+  factory FlexLayoutSpecMix.mainAxisAlignment(MainAxisAlignment value) {
+    return FlexLayoutSpecMix(mainAxisAlignment: value);
   }
 
   /// Cross axis alignment factory
-  factory FlexPropertiesMix.crossAxisAlignment(CrossAxisAlignment value) {
-    return FlexPropertiesMix(crossAxisAlignment: value);
+  factory FlexLayoutSpecMix.crossAxisAlignment(CrossAxisAlignment value) {
+    return FlexLayoutSpecMix(crossAxisAlignment: value);
   }
 
   /// Main axis size factory
-  factory FlexPropertiesMix.mainAxisSize(MainAxisSize value) {
-    return FlexPropertiesMix(mainAxisSize: value);
+  factory FlexLayoutSpecMix.mainAxisSize(MainAxisSize value) {
+    return FlexLayoutSpecMix(mainAxisSize: value);
   }
 
   /// Vertical direction factory
-  factory FlexPropertiesMix.verticalDirection(VerticalDirection value) {
-    return FlexPropertiesMix(verticalDirection: value);
+  factory FlexLayoutSpecMix.verticalDirection(VerticalDirection value) {
+    return FlexLayoutSpecMix(verticalDirection: value);
   }
 
   /// Text direction factory
-  factory FlexPropertiesMix.textDirection(TextDirection value) {
-    return FlexPropertiesMix(textDirection: value);
+  factory FlexLayoutSpecMix.textDirection(TextDirection value) {
+    return FlexLayoutSpecMix(textDirection: value);
   }
 
   /// Text baseline factory
-  factory FlexPropertiesMix.textBaseline(TextBaseline value) {
-    return FlexPropertiesMix(textBaseline: value);
+  factory FlexLayoutSpecMix.textBaseline(TextBaseline value) {
+    return FlexLayoutSpecMix(textBaseline: value);
   }
 
   /// Spacing factory (sets spacing internally for API consistency)
-  factory FlexPropertiesMix.spacing(double value) {
-    return FlexPropertiesMix(spacing: value);
+  factory FlexLayoutSpecMix.spacing(double value) {
+    return FlexLayoutSpecMix(spacing: value);
   }
 
   /// Clip behavior factory
-  factory FlexPropertiesMix.clipBehavior(Clip value) {
-    return FlexPropertiesMix(clipBehavior: value);
+  factory FlexLayoutSpecMix.clipBehavior(Clip value) {
+    return FlexLayoutSpecMix(clipBehavior: value);
   }
 
   // Flex-specific factories
 
   /// Horizontal flex factory
-  factory FlexPropertiesMix.horizontal({
+  factory FlexLayoutSpecMix.horizontal({
     MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
     MainAxisSize mainAxisSize = MainAxisSize.max,
     double? gap,
   }) {
-    return FlexPropertiesMix(
+    return FlexLayoutSpecMix(
       direction: Axis.horizontal,
       mainAxisAlignment: mainAxisAlignment,
       crossAxisAlignment: crossAxisAlignment,
@@ -192,13 +195,13 @@ final class FlexPropertiesMix extends Mix<FlexProperties>
   }
 
   /// Vertical flex factory
-  factory FlexPropertiesMix.vertical({
+  factory FlexLayoutSpecMix.vertical({
     MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
     MainAxisSize mainAxisSize = MainAxisSize.max,
     double? gap,
   }) {
-    return FlexPropertiesMix(
+    return FlexLayoutSpecMix(
       direction: Axis.vertical,
       mainAxisAlignment: mainAxisAlignment,
       crossAxisAlignment: crossAxisAlignment,
@@ -208,13 +211,13 @@ final class FlexPropertiesMix extends Mix<FlexProperties>
   }
 
   /// Row factory (horizontal shorthand)
-  factory FlexPropertiesMix.row({
+  factory FlexLayoutSpecMix.row({
     MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
     MainAxisSize mainAxisSize = MainAxisSize.max,
     double? gap,
   }) {
-    return FlexPropertiesMix.horizontal(
+    return FlexLayoutSpecMix.horizontal(
       mainAxisAlignment: mainAxisAlignment,
       crossAxisAlignment: crossAxisAlignment,
       mainAxisSize: mainAxisSize,
@@ -223,13 +226,13 @@ final class FlexPropertiesMix extends Mix<FlexProperties>
   }
 
   /// Column factory (vertical shorthand)
-  factory FlexPropertiesMix.column({
+  factory FlexLayoutSpecMix.column({
     MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.center,
     MainAxisSize mainAxisSize = MainAxisSize.max,
     double? gap,
   }) {
-    return FlexPropertiesMix.vertical(
+    return FlexLayoutSpecMix.vertical(
       mainAxisAlignment: mainAxisAlignment,
       crossAxisAlignment: crossAxisAlignment,
       mainAxisSize: mainAxisSize,
@@ -237,89 +240,89 @@ final class FlexPropertiesMix extends Mix<FlexProperties>
     );
   }
 
-  /// Constructor that accepts a nullable [FlexProperties] value.
+  /// Constructor that accepts a nullable [FlexLayoutSpec] value.
   ///
-  /// Returns null if the input is null, otherwise uses [FlexPropertiesMix.value].
-  static FlexPropertiesMix? maybeValue(FlexProperties? spec) {
-    return spec != null ? FlexPropertiesMix.value(spec) : null;
+  /// Returns null if the input is null, otherwise uses [FlexLayoutSpecMix.value].
+  static FlexLayoutSpecMix? maybeValue(FlexLayoutSpec? spec) {
+    return spec != null ? FlexLayoutSpecMix.value(spec) : null;
   }
 
   // Chainable instance methods
 
   /// Returns a copy with the specified color.
-  FlexPropertiesMix color(Color value) {
-    return merge(FlexPropertiesMix.color(value));
+  FlexLayoutSpecMix color(Color value) {
+    return merge(FlexLayoutSpecMix.color(value));
   }
 
   /// Returns a copy with the specified decoration.
-  FlexPropertiesMix decoration(DecorationMix value) {
-    return merge(FlexPropertiesMix.decoration(value));
+  FlexLayoutSpecMix decoration(DecorationMix value) {
+    return merge(FlexLayoutSpecMix.decoration(value));
   }
 
   /// Returns a copy with the specified alignment.
-  FlexPropertiesMix alignment(AlignmentGeometry value) {
-    return merge(FlexPropertiesMix.alignment(value));
+  FlexLayoutSpecMix alignment(AlignmentGeometry value) {
+    return merge(FlexLayoutSpecMix.alignment(value));
   }
 
   /// Returns a copy with the specified padding.
-  FlexPropertiesMix padding(EdgeInsetsGeometryMix value) {
-    return merge(FlexPropertiesMix.padding(value));
+  FlexLayoutSpecMix padding(EdgeInsetsGeometryMix value) {
+    return merge(FlexLayoutSpecMix.padding(value));
   }
 
   /// Returns a copy with the specified direction.
-  FlexPropertiesMix direction(Axis value) {
-    return merge(FlexPropertiesMix.direction(value));
+  FlexLayoutSpecMix direction(Axis value) {
+    return merge(FlexLayoutSpecMix.direction(value));
   }
 
   /// Returns a copy with the specified gap.
-  FlexPropertiesMix gap(double value) {
-    return merge(FlexPropertiesMix.gap(value));
+  FlexLayoutSpecMix gap(double value) {
+    return merge(FlexLayoutSpecMix.gap(value));
   }
 
   /// Returns a copy with the specified main axis alignment.
-  FlexPropertiesMix mainAxisAlignment(MainAxisAlignment value) {
-    return merge(FlexPropertiesMix(mainAxisAlignment: value));
+  FlexLayoutSpecMix mainAxisAlignment(MainAxisAlignment value) {
+    return merge(FlexLayoutSpecMix(mainAxisAlignment: value));
   }
 
   /// Returns a copy with the specified cross axis alignment.
-  FlexPropertiesMix crossAxisAlignment(CrossAxisAlignment value) {
-    return merge(FlexPropertiesMix(crossAxisAlignment: value));
+  FlexLayoutSpecMix crossAxisAlignment(CrossAxisAlignment value) {
+    return merge(FlexLayoutSpecMix(crossAxisAlignment: value));
   }
 
   /// Returns a copy with the specified main axis size.
-  FlexPropertiesMix mainAxisSize(MainAxisSize value) {
-    return merge(FlexPropertiesMix(mainAxisSize: value));
+  FlexLayoutSpecMix mainAxisSize(MainAxisSize value) {
+    return merge(FlexLayoutSpecMix(mainAxisSize: value));
   }
 
   /// Returns a copy with the specified vertical direction.
-  FlexPropertiesMix verticalDirection(VerticalDirection value) {
-    return merge(FlexPropertiesMix(verticalDirection: value));
+  FlexLayoutSpecMix verticalDirection(VerticalDirection value) {
+    return merge(FlexLayoutSpecMix(verticalDirection: value));
   }
 
   /// Returns a copy with the specified text direction.
-  FlexPropertiesMix textDirection(TextDirection value) {
-    return merge(FlexPropertiesMix(textDirection: value));
+  FlexLayoutSpecMix textDirection(TextDirection value) {
+    return merge(FlexLayoutSpecMix(textDirection: value));
   }
 
   /// Returns a copy with the specified text baseline.
-  FlexPropertiesMix textBaseline(TextBaseline value) {
-    return merge(FlexPropertiesMix(textBaseline: value));
+  FlexLayoutSpecMix textBaseline(TextBaseline value) {
+    return merge(FlexLayoutSpecMix(textBaseline: value));
   }
 
   /// Returns a copy with the specified spacing.
-  FlexPropertiesMix spacing(double value) {
-    return merge(FlexPropertiesMix(spacing: value));
+  FlexLayoutSpecMix spacing(double value) {
+    return merge(FlexLayoutSpecMix(spacing: value));
   }
 
   /// Returns a copy with the specified clip behavior.
-  FlexPropertiesMix clipBehavior(Clip value) {
-    return merge(FlexPropertiesMix(clipBehavior: value));
+  FlexLayoutSpecMix clipBehavior(Clip value) {
+    return merge(FlexLayoutSpecMix(clipBehavior: value));
   }
 
-  /// Resolves to [FlexProperties] using the provided [BuildContext].
+  /// Resolves to [FlexLayoutSpec] using the provided [BuildContext].
   @override
-  FlexProperties resolve(BuildContext context) {
-    return FlexProperties(
+  FlexLayoutSpec resolve(BuildContext context) {
+    return FlexLayoutSpec(
       decoration: MixOps.resolve(context, $decoration),
       padding: MixOps.resolve(context, $padding),
       alignment: MixOps.resolve(context, $alignment),
@@ -336,23 +339,29 @@ final class FlexPropertiesMix extends Mix<FlexProperties>
     );
   }
 
-  /// Merges the properties of this [FlexPropertiesMix] with the properties of [other].
+  /// Merges the properties of this [FlexLayoutSpecMix] with the properties of [other].
   @override
-  FlexPropertiesMix merge(FlexPropertiesMix? other) {
+  FlexLayoutSpecMix merge(FlexLayoutSpecMix? other) {
     if (other == null) return this;
 
-    return FlexPropertiesMix.create(
+    return FlexLayoutSpecMix.create(
       decoration: MixOps.merge($decoration, other.$decoration),
       padding: MixOps.merge($padding, other.$padding),
       alignment: MixOps.merge($alignment, other.$alignment),
       direction: MixOps.merge($direction, other.$direction),
-      mainAxisAlignment:
-          MixOps.merge($mainAxisAlignment, other.$mainAxisAlignment),
-      crossAxisAlignment:
-          MixOps.merge($crossAxisAlignment, other.$crossAxisAlignment),
+      mainAxisAlignment: MixOps.merge(
+        $mainAxisAlignment,
+        other.$mainAxisAlignment,
+      ),
+      crossAxisAlignment: MixOps.merge(
+        $crossAxisAlignment,
+        other.$crossAxisAlignment,
+      ),
       mainAxisSize: MixOps.merge($mainAxisSize, other.$mainAxisSize),
-      verticalDirection:
-          MixOps.merge($verticalDirection, other.$verticalDirection),
+      verticalDirection: MixOps.merge(
+        $verticalDirection,
+        other.$verticalDirection,
+      ),
       textDirection: MixOps.merge($textDirection, other.$textDirection),
       textBaseline: MixOps.merge($textBaseline, other.$textBaseline),
       gap: MixOps.merge($gap, other.$gap),
@@ -382,18 +391,18 @@ final class FlexPropertiesMix extends Mix<FlexProperties>
 
   @override
   List<Object?> get props => [
-        $decoration,
-        $padding,
-        $alignment,
-        $direction,
-        $mainAxisAlignment,
-        $crossAxisAlignment,
-        $mainAxisSize,
-        $verticalDirection,
-        $textDirection,
-        $textBaseline,
-        $gap,
-        $clipBehavior,
-        $spacing,
-      ];
+    $decoration,
+    $padding,
+    $alignment,
+    $direction,
+    $mainAxisAlignment,
+    $crossAxisAlignment,
+    $mainAxisSize,
+    $verticalDirection,
+    $textDirection,
+    $textBaseline,
+    $gap,
+    $clipBehavior,
+    $spacing,
+  ];
 }

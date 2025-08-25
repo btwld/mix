@@ -13,12 +13,12 @@ void main() {
     });
 
     group('Constructor', () {
-      test('creates with default StackMix when no attribute provided', () {
+      test('', () {
         final utility = StackSpecUtility();
         expect(utility, isA<StackSpecUtility>());
       });
 
-      test('creates with provided StackMix attribute', () {
+      test('', () {
         final stackMix = StackStyle(alignment: Alignment.center);
         final utility = StackSpecUtility(stackMix);
         final context = MockBuildContext();
@@ -65,7 +65,7 @@ void main() {
     });
 
     group('Stack property utilities', () {
-      test('alignment utility creates correct StackMix', () {
+      test('', () {
         final result = util.alignment(Alignment.topLeft);
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -74,7 +74,7 @@ void main() {
         expect(spec.alignment, Alignment.topLeft);
       });
 
-      test('fit utility creates correct StackMix', () {
+      test('', () {
         final result = util.fit(StackFit.expand);
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -83,7 +83,7 @@ void main() {
         expect(spec.fit, StackFit.expand);
       });
 
-      test('textDirection utility creates correct StackMix', () {
+      test('', () {
         final result = util.textDirection(TextDirection.rtl);
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -92,7 +92,7 @@ void main() {
         expect(spec.textDirection, TextDirection.rtl);
       });
 
-      test('clipBehavior utility creates correct StackMix', () {
+      test('', () {
         final result = util.clipBehavior(Clip.antiAlias);
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -122,7 +122,7 @@ void main() {
     });
 
     group('Modifier utilities', () {
-      test('wrap utility creates modifier StackMix', () {
+      test('', () {
         final result = util.wrap.opacity(0.5);
 
         expect(result, isA<StackStyle>());
@@ -137,7 +137,7 @@ void main() {
         expect(result, same(util));
       });
 
-      test('merge with StackSpecUtility creates new instance', () {
+      test('', () {
         final other = StackSpecUtility(StackStyle(alignment: Alignment.center));
         final result = util.merge(other);
         final context = MockBuildContext();
@@ -148,7 +148,7 @@ void main() {
         expect(spec.alignment, Alignment.center);
       });
 
-      test('merge with StackMix creates new instance', () {
+      test('', () {
         final otherMix = StackStyle(fit: StackFit.expand);
         final result = util.merge(otherMix);
         final context = MockBuildContext();
@@ -185,7 +185,7 @@ void main() {
     });
 
     group('Resolve functionality', () {
-      test('resolve returns StackSpec with resolved properties', () {
+      test('', () {
         final testUtil = StackSpecUtility(
           StackStyle(
             alignment: Alignment.center,
@@ -270,10 +270,10 @@ void main() {
         expect(spec.clipBehavior, Clip.antiAlias);
       });
 
-      test('individual utility calls return StackMix for further chaining', () {
+      test('', () {
         final util = StackSpecUtility();
 
-        // Each utility call should return a StackMix
+        // Each utility call should return a StackStyle
         final alignmentResult = util.alignment(Alignment.center);
         final fitResult = util.fit(StackFit.expand);
         final clipResult = util.clipBehavior(Clip.antiAlias);
@@ -335,7 +335,7 @@ void main() {
         final result1 = util.alignment(Alignment.center);
         final result2 = util.fit(StackFit.expand);
 
-        // Both results are different StackMix instances
+        // Both results are different StackStyle instances
         expect(result1, isNot(same(result2)));
 
         // But the utility itself has accumulated both changes
@@ -348,7 +348,7 @@ void main() {
     });
 
     group('Integration with resolvesTo matcher', () {
-      test('utility resolves to correct StackSpec', () {
+      test('', () {
         final testUtil = StackSpecUtility(
           StackStyle(
             alignment: Alignment.center,

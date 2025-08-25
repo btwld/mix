@@ -210,8 +210,8 @@ class IconStyle extends Style<IconWidgetSpec>
   /// Returns null if the input is null, otherwise uses [IconStyle.value].
   ///
   /// ```dart
-  /// const IconSpec? spec = IconSpec(color: Colors.blue, size: 24.0);
-  /// final attr = IconMix.maybeValue(spec); // Returns IconMix or null
+  /// const IconWidgetSpec? spec = IconWidgetSpec(color: Colors.blue, size: 24.0);
+  /// final attr = IconStyle.maybeValue(spec); // Returns IconStyle or null
   /// ```
   static IconStyle? maybeValue(IconWidgetSpec? spec) {
     return spec != null ? IconStyle.value(spec) : null;

@@ -5,9 +5,9 @@ import 'package:mix/mix.dart';
 import 'package:mix/src/specs/icon/icon_spec.dart';
 
 void main() {
-  group('IconSpec', () {
+  group('FlexWidgetSpecUtility', () {
     group('Constructor', () {
-      test('creates IconSpec with all properties', () {
+      test('', () {
         const spec = IconWidgetSpec(
           color: Colors.blue,
           size: 24.0,
@@ -34,7 +34,7 @@ void main() {
         expect(spec.fill, 1.0);
       });
 
-      test('creates IconSpec with default values', () {
+      test('', () {
         const spec = IconWidgetSpec();
 
         expect(spec.color, isNull);
@@ -97,7 +97,7 @@ void main() {
     });
 
     group('lerp', () {
-      test('interpolates between two IconSpecs correctly', () {
+      test('', () {
         const spec1 = IconWidgetSpec(
           color: Colors.red,
           size: 16.0,
@@ -295,7 +295,7 @@ void main() {
           fill: 1.0,
         );
 
-        // 12 IconSpec properties + 3 from WidgetSpec (animation, widgetModifiers, inherit)
+        // 12 IconWidgetSpec properties + 3 from WidgetSpec (animation, widgetModifiers, inherit)
         expect(spec.props.length, 15);
         expect(spec.props, contains(Colors.blue));
         expect(spec.props, contains(24.0));

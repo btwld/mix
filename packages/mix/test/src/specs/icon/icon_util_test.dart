@@ -13,12 +13,12 @@ void main() {
     });
 
     group('Constructor', () {
-      test('creates with default IconMix when no attribute provided', () {
+      test('', () {
         final utility = IconSpecUtility();
         expect(utility, isA<IconSpecUtility>());
       });
 
-      test('creates with provided IconMix attribute', () {
+      test('', () {
         final iconMix = IconStyle(size: 24.0);
         final utility = IconSpecUtility(iconMix);
         final context = MockBuildContext();
@@ -79,7 +79,7 @@ void main() {
     });
 
     group('Icon property utilities', () {
-      test('size utility creates correct IconMix', () {
+      test('', () {
         final result = util.size(24.0);
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -88,7 +88,7 @@ void main() {
         expect(spec.size, 24.0);
       });
 
-      test('weight utility creates correct IconMix', () {
+      test('', () {
         final result = util.weight(400.0);
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -97,7 +97,7 @@ void main() {
         expect(spec.weight, 400.0);
       });
 
-      test('grade utility creates correct IconMix', () {
+      test('', () {
         final result = util.grade(0.5);
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -106,7 +106,7 @@ void main() {
         expect(spec.grade, 0.5);
       });
 
-      test('opticalSize utility creates correct IconMix', () {
+      test('', () {
         final result = util.opticalSize(48.0);
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -115,7 +115,7 @@ void main() {
         expect(spec.opticalSize, 48.0);
       });
 
-      test('textDirection utility creates correct IconMix', () {
+      test('', () {
         final result = util.textDirection(TextDirection.rtl);
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -124,7 +124,7 @@ void main() {
         expect(spec.textDirection, TextDirection.rtl);
       });
 
-      test('applyTextScaling utility creates correct IconMix', () {
+      test('', () {
         final result = util.applyTextScaling(false);
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -133,7 +133,7 @@ void main() {
         expect(spec.applyTextScaling, false);
       });
 
-      test('fill utility creates correct IconMix', () {
+      test('', () {
         final result = util.fill(0.8);
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -144,7 +144,7 @@ void main() {
     });
 
     group('Color utilities', () {
-      test('color utility creates correct IconMix', () {
+      test('', () {
         final result = util.color.red();
         expect(result, isA<IconStyle>());
       });
@@ -156,7 +156,7 @@ void main() {
     });
 
     group('Shadow utilities', () {
-      test('shadow utility creates correct IconMix', () {
+      test('', () {
         final result = util.shadow(
           color: Colors.black,
           offset: const Offset(2, 2),
@@ -165,7 +165,7 @@ void main() {
         expect(result, isA<IconStyle>());
       });
 
-      test('shadows method creates correct IconMix', () {
+      test('', () {
         final shadows = [
           ShadowMix(color: Colors.black, blurRadius: 2.0),
           ShadowMix(color: Colors.grey, blurRadius: 4.0),
@@ -195,7 +195,7 @@ void main() {
     });
 
     group('Modifier utilities', () {
-      test('wrap utility creates modifier IconMix', () {
+      test('', () {
         final result = util.wrap.opacity(0.5);
 
         expect(result, isA<IconStyle>());
@@ -210,7 +210,7 @@ void main() {
         expect(result, same(util));
       });
 
-      test('merge with IconSpecUtility creates new instance', () {
+      test('', () {
         final other = IconSpecUtility(IconStyle(size: 32.0));
         final result = util.merge(other);
         final context = MockBuildContext();
@@ -221,7 +221,7 @@ void main() {
         expect(spec.size, 32.0);
       });
 
-      test('merge with IconMix creates new instance', () {
+      test('', () {
         final otherMix = IconStyle(weight: 600.0);
         final result = util.merge(otherMix);
         final context = MockBuildContext();
@@ -254,7 +254,7 @@ void main() {
     });
 
     group('Resolve functionality', () {
-      test('resolve returns IconSpec with resolved properties', () {
+      test('', () {
         final testUtil = IconSpecUtility(
           IconStyle(size: 24.0, weight: 400.0, fill: 0.8),
         );
@@ -335,10 +335,10 @@ void main() {
         expect(spec.fill, 0.8);
       });
 
-      test('individual utility calls return IconMix for further chaining', () {
+      test('', () {
         final util = IconSpecUtility();
 
-        // Each utility call should return an IconMix
+        // Each utility call should return an IconStyle
         final sizeResult = util.size(24.0);
         final weightResult = util.weight(400.0);
         final fillResult = util.fill(0.8);
@@ -400,7 +400,7 @@ void main() {
         final result1 = util.size(24.0);
         final result2 = util.weight(400.0);
 
-        // Both results are different IconMix instances
+        // Both results are different IconStyle instances
         expect(result1, isNot(same(result2)));
 
         // But the utility itself has accumulated both changes
@@ -413,7 +413,7 @@ void main() {
     });
 
     group('Integration with resolvesTo matcher', () {
-      test('utility resolves to correct IconSpec', () {
+      test('', () {
         final testUtil = IconSpecUtility(
           IconStyle(size: 24.0, weight: 400.0, fill: 0.8),
         );

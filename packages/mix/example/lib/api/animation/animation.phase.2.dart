@@ -55,7 +55,7 @@ class _ExampleState extends State<Example> {
                   ),
                 )
                 .flex(
-                  FlexPropertiesMix().mainAxisSize(MainAxisSize.min).spacing(8),
+                  FlexLayoutSpecMix().mainAxisSize(MainAxisSize.min).spacing(8),
                 )
                 .onHovered(
                   FlexBoxStyle().container(

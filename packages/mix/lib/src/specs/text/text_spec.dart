@@ -50,11 +50,10 @@ final class TextSpec extends WidgetSpec<TextSpec> {
     this.selectionColor,
     this.semanticsLabel,
     this.locale,
-    AnimationConfig? super.animation,
-    List<Modifier>? super.widgetModifiers,
+    super.animation,
+    super.widgetModifiers,
     super.inherit,
   });
-
 
   /// Creates a copy of this [TextSpec] but with the given fields
   /// replaced with the new values.
@@ -158,8 +157,16 @@ final class TextSpec extends WidgetSpec<TextSpec> {
       ..add(EnumProperty<TextWidthBasis>('textWidthBasis', textWidthBasis))
       ..add(DiagnosticsProperty('textHeightBehavior', textHeightBehavior))
       ..add(EnumProperty<TextDirection>('textDirection', textDirection))
-      ..add(FlagProperty('softWrap', value: softWrap, ifTrue: 'wrapping at word boundaries'))
-      ..add(IterableProperty<Directive<String>>('textDirectives', textDirectives))
+      ..add(
+        FlagProperty(
+          'softWrap',
+          value: softWrap,
+          ifTrue: 'wrapping at word boundaries',
+        ),
+      )
+      ..add(
+        IterableProperty<Directive<String>>('textDirectives', textDirectives),
+      )
       ..add(ColorProperty('selectionColor', selectionColor))
       ..add(StringProperty('semanticsLabel', semanticsLabel))
       ..add(DiagnosticsProperty('locale', locale));

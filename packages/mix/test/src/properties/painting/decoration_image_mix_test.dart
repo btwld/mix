@@ -6,7 +6,7 @@ import 'package:mix/src/properties/painting/decoration_image_mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-  group('DecorationImageMix', () {
+  group('', () {
     group('Constructor', () {
       test('only constructor creates instance with correct properties', () {
         const imageProvider = AssetImage('assets/test.png');
@@ -57,7 +57,7 @@ void main() {
         expect(result, isNull);
       });
 
-      test('maybeValue returns DecorationImageMix for non-null input', () {
+      test('', () {
         const decorationImage = DecorationImage(
           image: AssetImage('assets/test.png'),
         );
@@ -69,7 +69,7 @@ void main() {
     });
 
     group('Factory Constructors', () {
-      test('image factory creates DecorationImageMix with image', () {
+      test('', () {
         const testImageProvider = AssetImage('test_image.png');
         final decorationImageMix = DecorationImageMix.image(testImageProvider);
 
@@ -83,7 +83,7 @@ void main() {
         expect(decorationImageMix.$isAntiAlias, isNull);
       });
 
-      test('fit factory creates DecorationImageMix with fit', () {
+      test('', () {
         final decorationImageMix = DecorationImageMix.fit(BoxFit.contain);
 
         expect(decorationImageMix.$fit, resolvesTo(BoxFit.contain));
@@ -96,7 +96,7 @@ void main() {
         expect(decorationImageMix.$isAntiAlias, isNull);
       });
 
-      test('alignment factory creates DecorationImageMix with alignment', () {
+      test('', () {
         final decorationImageMix = DecorationImageMix.alignment(
           Alignment.topLeft,
         );
@@ -112,7 +112,7 @@ void main() {
       });
 
       test(
-        'centerSlice factory creates DecorationImageMix with centerSlice',
+        '',
         () {
           const rect = Rect.fromLTWH(5, 5, 10, 10);
           final decorationImageMix = DecorationImageMix.centerSlice(rect);
@@ -128,7 +128,7 @@ void main() {
         },
       );
 
-      test('repeat factory creates DecorationImageMix with repeat', () {
+      test('', () {
         final decorationImageMix = DecorationImageMix.repeat(
           ImageRepeat.repeatX,
         );
@@ -144,7 +144,7 @@ void main() {
       });
 
       test(
-        'filterQuality factory creates DecorationImageMix with filterQuality',
+        '',
         () {
           final decorationImageMix = DecorationImageMix.filterQuality(
             FilterQuality.low,
@@ -162,7 +162,7 @@ void main() {
       );
 
       test(
-        'invertColors factory creates DecorationImageMix with invertColors',
+        '',
         () {
           final decorationImageMix = DecorationImageMix.invertColors(true);
 
@@ -178,7 +178,7 @@ void main() {
       );
 
       test(
-        'isAntiAlias factory creates DecorationImageMix with isAntiAlias',
+        '',
         () {
           final decorationImageMix = DecorationImageMix.isAntiAlias(true);
 

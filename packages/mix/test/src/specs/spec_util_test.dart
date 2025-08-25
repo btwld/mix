@@ -10,24 +10,24 @@ void main() {
       expect($box, isNot(same($box)));
     });
 
-    test('\$flexbox returns FlexBoxSpecUtility instance', () {
+    test('', () {
       expect($flexbox, isA<FlexBoxSpecUtility>());
       expect($flexbox, isNot(same($flexbox))); // New instance each time
     });
 
-    test('\$flex returns FlexSpecUtility instance', () {
+    test('', () {
       expect($flex, isA<FlexSpecUtility>());
       // Each call returns a new instance
       expect($flex, isNot(same($flex)));
     });
 
-    test('\$image returns ImageSpecUtility instance', () {
+    test('', () {
       expect($image, isA<ImageSpecUtility>());
       // Each call returns a new instance
       expect($image, isNot(same($image)));
     });
 
-    test('\$icon returns IconSpecUtility instance', () {
+    test('', () {
       expect($icon, isA<IconSpecUtility>());
       // Each call returns a new instance
       expect($icon, isNot(same($icon)));
@@ -39,7 +39,7 @@ void main() {
       expect($text, isNot(same($text)));
     });
 
-    test('\$stack returns StackSpecUtility instance', () {
+    test('', () {
       expect($stack, isA<StackSpecUtility>());
       // Each call returns a new instance
       expect($stack, isNot(same($stack)));

@@ -50,7 +50,7 @@ class EmojiSelector extends StatelessWidget {
                 ),
           )
           .flex(
-            FlexPropertiesMix()
+            FlexLayoutSpecMix()
                 .spacing(16)
                 .mainAxisAlignment(MainAxisAlignment.center)
                 .mainAxisSize(MainAxisSize.min),

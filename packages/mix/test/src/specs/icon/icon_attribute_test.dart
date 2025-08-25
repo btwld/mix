@@ -5,9 +5,9 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-  group('IconMix', () {
+  group('FlexWidgetSpecUtility', () {
     group('Constructor', () {
-      test('creates IconMix with all properties', () {
+      test('', () {
         final attribute = IconStyle(
           color: Colors.blue,
           size: 24.0,
@@ -31,7 +31,7 @@ void main() {
         expect(attribute.$fill, resolvesTo(1.0));
       });
 
-      test('creates empty IconMix', () {
+      test('', () {
         final attribute = IconStyle();
 
         expect(attribute.$color, isNull);
@@ -47,32 +47,32 @@ void main() {
     });
 
     group('Factory Constructors', () {
-      test('color factory creates IconMix with color', () {
+      test('', () {
         final iconMix = IconStyle.color(Colors.red);
 
         expect(iconMix.$color, resolvesTo(Colors.red));
       });
 
-      test('size factory creates IconMix with size', () {
+      test('', () {
         final iconMix = IconStyle.size(32.0);
 
         expect(iconMix.$size, resolvesTo(32.0));
       });
 
-      test('weight factory creates IconMix with weight', () {
+      test('', () {
         final iconMix = IconStyle.weight(500.0);
 
         expect(iconMix.$weight, resolvesTo(500.0));
       });
 
-      test('animation factory creates IconMix with animation config', () {
+      test('', () {
         final animation = AnimationConfig.linear(Duration(seconds: 1));
         final iconMix = IconStyle.animate(animation);
 
         expect(iconMix.$animation, animation);
       });
 
-      test('variant factory creates IconMix with variant', () {
+      test('', () {
         final variant = ContextVariant.brightness(Brightness.dark);
         final style = IconStyle.color(Colors.white);
         final iconMix = IconStyle.variant(variant, style);
@@ -83,7 +83,7 @@ void main() {
     });
 
     group('value constructor', () {
-      test('creates IconMix from IconSpec', () {
+      test('', () {
         const spec = IconWidgetSpec(
           color: Colors.green,
           size: 28.0,
@@ -169,7 +169,7 @@ void main() {
     });
 
     group('Variant Methods', () {
-      test('variant method adds variant to IconMix', () {
+      test('', () {
         final variant = ContextVariant.brightness(Brightness.dark);
         final style = IconStyle.color(Colors.white);
         final iconMix = IconStyle().variant(variant, style);
@@ -197,7 +197,7 @@ void main() {
     });
 
     group('Resolution', () {
-      test('resolves to IconSpec with correct properties', () {
+      test('', () {
         final attribute = IconStyle(
           color: Colors.cyan,
           size: 36.0,
