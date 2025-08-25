@@ -37,33 +37,30 @@ void main() {
         expect(attribute.$flex, isNull);
       });
 
-      test(
-        '',
-        () {
-          const spec = FlexBoxWidgetSpec(
-            container: ContainerSpec(
-              alignment: Alignment.center,
-              padding: EdgeInsets.all(16.0),
-            ),
-            flex: FlexLayoutSpec(
-              direction: Axis.horizontal,
-              mainAxisAlignment: MainAxisAlignment.center,
-            ),
-          );
+      test('', () {
+        const spec = FlexBoxSpec(
+          container: ContainerSpec(
+            alignment: Alignment.center,
+            padding: EdgeInsets.all(16.0),
+          ),
+          flex: FlexLayoutSpec(
+            direction: Axis.horizontal,
+            mainAxisAlignment: MainAxisAlignment.center,
+          ),
+        );
 
-          final attribute = FlexBoxStyle.value(spec);
+        final attribute = FlexBoxStyle.value(spec);
 
-          expect(attribute.$container, isNotNull);
-          expect(attribute.$flex, isNotNull);
-        },
-      );
+        expect(attribute.$container, isNotNull);
+        expect(attribute.$flex, isNotNull);
+      });
 
       test('maybeValue returns null for null spec', () {
         expect(FlexBoxStyle.maybeValue(null), isNull);
       });
 
       test('maybeValue returns attribute for non-null spec', () {
-        const spec = FlexBoxWidgetSpec(
+        const spec = FlexBoxSpec(
           container: ContainerSpec(alignment: Alignment.center),
           flex: FlexLayoutSpec(direction: Axis.vertical),
         );
@@ -446,7 +443,7 @@ void main() {
 
   group('FlexWidgetSpecUtility', () {
     test('', () {
-      final spec = FlexBoxWidgetSpec();
+      final spec = FlexBoxSpec();
 
       expect(spec.container, null);
       expect(spec.flex, null);
@@ -455,14 +452,14 @@ void main() {
     test('', () {
       const boxSpec = ContainerSpec(alignment: Alignment.center);
       const flexSpec = FlexLayoutSpec(direction: Axis.vertical);
-      const spec = FlexBoxWidgetSpec(container: boxSpec, flex: flexSpec);
+      const spec = FlexBoxSpec(container: boxSpec, flex: flexSpec);
 
       expect(spec.container, boxSpec);
       expect(spec.flex, flexSpec);
     });
 
     test('copyWith creates new instance with updated values', () {
-      const original = FlexBoxWidgetSpec(
+      const original = FlexBoxSpec(
         container: ContainerSpec(alignment: Alignment.center),
         flex: FlexLayoutSpec(direction: Axis.horizontal),
       );
@@ -477,12 +474,12 @@ void main() {
     });
 
     test('', () {
-      const spec1 = FlexBoxWidgetSpec(
+      const spec1 = FlexBoxSpec(
         container: ContainerSpec(padding: EdgeInsets.all(10.0)),
         flex: FlexLayoutSpec(spacing: 10.0),
       );
 
-      const spec2 = FlexBoxWidgetSpec(
+      const spec2 = FlexBoxSpec(
         container: ContainerSpec(padding: EdgeInsets.all(20.0)),
         flex: FlexLayoutSpec(spacing: 20.0),
       );
@@ -494,7 +491,7 @@ void main() {
     });
 
     test('lerp returns this when other is null', () {
-      const spec = FlexBoxWidgetSpec(
+      const spec = FlexBoxSpec(
         container: ContainerSpec(alignment: Alignment.center),
       );
 
@@ -504,17 +501,17 @@ void main() {
     });
 
     test('equality and hashCode', () {
-      const spec1 = FlexBoxWidgetSpec(
+      const spec1 = FlexBoxSpec(
         container: ContainerSpec(alignment: Alignment.center),
         flex: FlexLayoutSpec(direction: Axis.horizontal),
       );
 
-      const spec2 = FlexBoxWidgetSpec(
+      const spec2 = FlexBoxSpec(
         container: ContainerSpec(alignment: Alignment.center),
         flex: FlexLayoutSpec(direction: Axis.horizontal),
       );
 
-      const spec3 = FlexBoxWidgetSpec(
+      const spec3 = FlexBoxSpec(
         container: ContainerSpec(alignment: Alignment.topLeft),
         flex: FlexLayoutSpec(direction: Axis.horizontal),
       );

@@ -26,18 +26,18 @@ import 'flexbox_spec.dart';
 
 typedef FlexBoxMix = FlexBoxStyle;
 
-/// Represents the attributes of a [FlexBoxWidgetSpec].
+/// Represents the attributes of a [FlexBoxSpec].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [FlexBoxWidgetSpec].
+/// appearance of a [FlexBoxSpec].
 ///
-/// Use this class to configure the attributes of a [FlexBoxWidgetSpec] and pass it to
-/// the [FlexBoxWidgetSpec] constructor.
-class FlexBoxStyle extends Style<FlexBoxWidgetSpec>
+/// Use this class to configure the attributes of a [FlexBoxSpec] and pass it to
+/// the [FlexBoxSpec] constructor.
+class FlexBoxStyle extends Style<FlexBoxSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<FlexBoxStyle, FlexBoxWidgetSpec>,
-        StyleVariantMixin<FlexBoxStyle, FlexBoxWidgetSpec>,
+        StyleModifierMixin<FlexBoxStyle, FlexBoxSpec>,
+        StyleVariantMixin<FlexBoxStyle, FlexBoxSpec>,
         BorderRadiusMixin<FlexBoxStyle>,
         DecorationMixin<FlexBoxStyle>,
         SpacingMixin<FlexBoxStyle>,
@@ -193,22 +193,22 @@ class FlexBoxStyle extends Style<FlexBoxWidgetSpec>
     return FlexBoxStyle(flex: FlexLayoutSpecMix(spacing: value));
   }
 
-  /// Constructor that accepts a [FlexBoxWidgetSpec] value and extracts its properties.
+  /// Constructor that accepts a [FlexBoxSpec] value and extracts its properties.
   ///
-  /// This is useful for converting existing [FlexBoxWidgetSpec] instances to [FlexBoxStyle].
+  /// This is useful for converting existing [FlexBoxSpec] instances to [FlexBoxStyle].
   ///
   /// ```dart
   /// const spec = FlexBoxWidgetSpec(container: ContainerSpec(...), flex: FlexProperties(...));
   /// final attr = FlexBoxStyle.value(spec);
   /// ```
-  static FlexBoxStyle value(FlexBoxWidgetSpec spec) {
+  static FlexBoxStyle value(FlexBoxSpec spec) {
     return FlexBoxStyle(
       container: ContainerSpecMix.maybeValue(spec.container),
       flex: FlexLayoutSpecMix.maybeValue(spec.flex),
     );
   }
 
-  /// Constructor that accepts a nullable [FlexBoxWidgetSpec] value and extracts its properties.
+  /// Constructor that accepts a nullable [FlexBoxSpec] value and extracts its properties.
   ///
   /// Returns null if the input is null, otherwise uses [FlexBoxStyle.value].
   ///
@@ -216,7 +216,7 @@ class FlexBoxStyle extends Style<FlexBoxWidgetSpec>
   /// const FlexBoxWidgetSpec? spec = FlexBoxWidgetSpec(container: ContainerSpec(...), flex: FlexProperties(...));
   /// final attr = FlexBoxStyle.maybeValue(spec); // Returns FlexBoxStyle or null
   /// ```
-  static FlexBoxStyle? maybeValue(FlexBoxWidgetSpec? spec) {
+  static FlexBoxStyle? maybeValue(FlexBoxSpec? spec) {
     return spec != null ? FlexBoxStyle.value(spec) : null;
   }
 
@@ -344,7 +344,7 @@ class FlexBoxStyle extends Style<FlexBoxWidgetSpec>
   }
 
   @override
-  FlexBoxStyle variants(List<VariantStyle<FlexBoxWidgetSpec>> variants) {
+  FlexBoxStyle variants(List<VariantStyle<FlexBoxSpec>> variants) {
     return merge(FlexBoxStyle(variants: variants));
   }
 
@@ -365,7 +365,7 @@ class FlexBoxStyle extends Style<FlexBoxWidgetSpec>
     );
   }
 
-  /// Resolves to [FlexBoxWidgetSpec] using the provided [BuildContext].
+  /// Resolves to [FlexBoxSpec] using the provided [BuildContext].
   ///
   /// If a property is null in the context, it uses the default value
   /// defined in the property specification.
@@ -374,11 +374,11 @@ class FlexBoxStyle extends Style<FlexBoxWidgetSpec>
   /// final flexBoxWidgetSpec = FlexBoxStyle(...).resolve(context);
   /// ```
   @override
-  FlexBoxWidgetSpec resolve(BuildContext context) {
+  FlexBoxSpec resolve(BuildContext context) {
     final containerSpec = MixOps.resolve(context, $container);
     final flexSpec = MixOps.resolve(context, $flex);
 
-    return FlexBoxWidgetSpec(
+    return FlexBoxSpec(
       container: containerSpec,
       flex: flexSpec,
       animation: $animation,

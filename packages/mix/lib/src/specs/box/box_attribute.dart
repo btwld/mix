@@ -28,22 +28,22 @@ import 'box_widget.dart';
 
 typedef BoxMix = BoxStyle;
 
-/// Style class for configuring [BoxWidgetSpec] properties.
+/// Style class for configuring [BoxSpec] properties.
 ///
 /// Encapsulates alignment, padding, margin, constraints, decoration,
 /// and other styling properties for box layouts with support for
 /// widget modifiers, variants, and animations.
-class BoxStyle extends Style<BoxWidgetSpec>
+class BoxStyle extends Style<BoxSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<BoxStyle, BoxWidgetSpec>,
-        StyleVariantMixin<BoxStyle, BoxWidgetSpec>,
+        StyleModifierMixin<BoxStyle, BoxSpec>,
+        StyleVariantMixin<BoxStyle, BoxSpec>,
         BorderRadiusMixin<BoxStyle>,
         DecorationMixin<BoxStyle>,
         SpacingMixin<BoxStyle>,
         TransformMixin<BoxStyle>,
         ConstraintsMixin<BoxStyle>,
-        StyleAnimationMixin<BoxWidgetSpec, BoxStyle> {
+        StyleAnimationMixin<BoxSpec, BoxStyle> {
   final Prop<AlignmentGeometry>? $alignment;
   final Prop<EdgeInsetsGeometry>? $padding;
   final Prop<EdgeInsetsGeometry>? $margin;
@@ -207,7 +207,7 @@ class BoxStyle extends Style<BoxWidgetSpec>
     Clip? clipBehavior,
     AnimationConfig? animation,
     ModifierConfig? modifier,
-    List<VariantStyle<BoxWidgetSpec>>? variants,
+    List<VariantStyle<BoxSpec>>? variants,
     bool? inherit,
   }) : this.create(
          alignment: Prop.maybe(alignment),
@@ -225,15 +225,15 @@ class BoxStyle extends Style<BoxWidgetSpec>
          inherit: inherit,
        );
 
-  /// Constructor that accepts a [BoxWidgetSpec] value and extracts its properties.
+  /// Constructor that accepts a [BoxSpec] value and extracts its properties.
   ///
-  /// This is useful for converting existing [BoxWidgetSpec] instances to [BoxStyle].
+  /// This is useful for converting existing [BoxSpec] instances to [BoxStyle].
   ///
   /// ```dart
   /// const spec = BoxSpec(alignment: Alignment.center, padding: EdgeInsets.all(8));
   /// final attr = BoxMix.value(spec);
   /// ```
-  BoxStyle.value(BoxWidgetSpec spec)
+  BoxStyle.value(BoxSpec spec)
     : this(
         alignment: spec.alignment,
         padding: EdgeInsetsGeometryMix.maybeValue(spec.padding),
@@ -248,7 +248,7 @@ class BoxStyle extends Style<BoxWidgetSpec>
         clipBehavior: spec.clipBehavior,
       );
 
-  /// Constructor that accepts a nullable [BoxWidgetSpec] value and extracts its properties.
+  /// Constructor that accepts a nullable [BoxSpec] value and extracts its properties.
   ///
   /// Returns null if the input is null, otherwise uses [BoxMix.value].
   ///
@@ -256,7 +256,7 @@ class BoxStyle extends Style<BoxWidgetSpec>
   /// const BoxSpec? spec = BoxSpec(alignment: Alignment.center, padding: EdgeInsets.all(8));
   /// final attr = BoxMix.maybeValue(spec); // Returns BoxMix or null
   /// ```
-  static BoxStyle? maybeValue(BoxWidgetSpec? spec) {
+  static BoxStyle? maybeValue(BoxSpec? spec) {
     return spec != null ? BoxStyle.value(spec) : null;
   }
 
@@ -336,7 +336,7 @@ class BoxStyle extends Style<BoxWidgetSpec>
   }
 
   @override
-  BoxStyle variants(List<VariantStyle<BoxWidgetSpec>> value) {
+  BoxStyle variants(List<VariantStyle<BoxSpec>> value) {
     return merge(BoxStyle(variants: value));
   }
 
@@ -347,7 +347,7 @@ class BoxStyle extends Style<BoxWidgetSpec>
 
   /// The list of properties that constitute the state of this [BoxMix].
   @override
-  /// Resolves to [BoxWidgetSpec] using the provided [BuildContext].
+  /// Resolves to [BoxSpec] using the provided [BuildContext].
   ///
   /// If a property is null in the context, it uses the default value
   /// defined in the property specification.
@@ -356,8 +356,8 @@ class BoxStyle extends Style<BoxWidgetSpec>
   /// final boxSpec = BoxMix(...).resolve(context);
   /// ```
   @override
-  BoxWidgetSpec resolve(BuildContext context) {
-    return BoxWidgetSpec(
+  BoxSpec resolve(BuildContext context) {
+    return BoxSpec(
       alignment: MixOps.resolve(context, $alignment),
       padding: MixOps.resolve(context, $padding),
       margin: MixOps.resolve(context, $margin),

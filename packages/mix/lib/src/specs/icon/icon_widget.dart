@@ -6,8 +6,8 @@ import 'icon_spec.dart';
 
 /// Displays an icon with Mix styling.
 ///
-/// Applies [IconWidgetSpec] for custom icon appearance.
-class StyledIcon extends StyleWidget<IconWidgetSpec> {
+/// Applies [IconSpec] for custom icon appearance.
+class StyledIcon extends StyleWidget<IconSpec> {
   const StyledIcon({
     this.icon,
     this.semanticLabel,
@@ -22,7 +22,7 @@ class StyledIcon extends StyleWidget<IconWidgetSpec> {
   final String? semanticLabel;
 
   @override
-  Widget build(BuildContext context, IconWidgetSpec spec) {
+  Widget build(BuildContext context, IconSpec spec) {
     return createIconSpecWidget(
       spec: spec,
       icon: icon,
@@ -31,9 +31,9 @@ class StyledIcon extends StyleWidget<IconWidgetSpec> {
   }
 }
 
-/// Creates an [Icon] widget from an [IconWidgetSpec] and optional overrides.
+/// Creates an [Icon] widget from an [IconSpec] and optional overrides.
 Icon createIconSpecWidget({
-  required IconWidgetSpec? spec,
+  required IconSpec? spec,
   IconData? icon,
   String? semanticLabel,
 }) {
@@ -53,8 +53,8 @@ Icon createIconSpecWidget({
   );
 }
 
-/// Extension to convert [IconWidgetSpec] directly to an [Icon] widget.
-extension IconSpecWidget on IconWidgetSpec {
+/// Extension to convert [IconSpec] directly to an [Icon] widget.
+extension IconSpecWidget on IconSpec {
   Icon call({IconData? icon, String? semanticLabel}) {
     return createIconSpecWidget(
       spec: this,

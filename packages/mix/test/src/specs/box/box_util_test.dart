@@ -20,7 +20,7 @@ void main() {
         final spec = utility.resolve(context);
 
         expect(utility, isA<BoxSpecUtility>());
-        expect(spec, BoxWidgetSpec(alignment: Alignment.center));
+        expect(spec, BoxSpec(alignment: Alignment.center));
       });
     });
 
@@ -42,10 +42,7 @@ void main() {
       });
 
       test('on utility is OnContextVariantUtility', () {
-        expect(
-          util.on,
-          isA<OnContextVariantUtility<BoxWidgetSpec, BoxStyle>>(),
-        );
+        expect(util.on, isA<OnContextVariantUtility<BoxSpec, BoxStyle>>());
       });
 
       test('wrap utility is ModifierUtility', () {
@@ -172,7 +169,7 @@ void main() {
       test('on utility creates VariantAttributeBuilder', () {
         final hoverBuilder = util.on.hover;
 
-        expect(hoverBuilder, isA<VariantAttributeBuilder<BoxWidgetSpec>>());
+        expect(hoverBuilder, isA<VariantAttributeBuilder<BoxSpec>>());
       });
     });
 
@@ -216,7 +213,7 @@ void main() {
 
       test('merge throws error for unsupported type', () {
         expect(
-          () => util.merge('invalid_type' as Style<BoxWidgetSpec>),
+          () => util.merge('invalid_type' as Style<BoxSpec>),
           throwsA(isA<TypeError>()),
         );
       });
@@ -247,7 +244,7 @@ void main() {
         final context = MockBuildContext();
         final spec = testUtil.resolve(context);
 
-        expect(spec, isA<BoxWidgetSpec>());
+        expect(spec, isA<BoxSpec>());
         expect(spec.alignment, Alignment.center);
         expect(spec.clipBehavior, Clip.antiAlias);
         expect(spec.transform, Matrix4.identity());
@@ -257,7 +254,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec, isA<BoxWidgetSpec>());
+        expect(spec, isA<BoxSpec>());
         expect(spec.alignment, isNull);
         expect(spec.clipBehavior, isNull);
         expect(spec.transform, isNull);
@@ -412,7 +409,7 @@ void main() {
         expect(
           testUtil,
           resolvesTo(
-            const BoxWidgetSpec(
+            const BoxSpec(
               alignment: Alignment.center,
               clipBehavior: Clip.antiAlias,
             ),

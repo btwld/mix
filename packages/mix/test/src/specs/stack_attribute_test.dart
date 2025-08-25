@@ -75,7 +75,7 @@ void main() {
 
     group('value constructor', () {
       test('', () {
-        const spec = StackWidgetSpec(
+        const spec = StackSpec(
           alignment: Alignment.bottomRight,
           fit: StackFit.passthrough,
           textDirection: TextDirection.ltr,
@@ -95,7 +95,7 @@ void main() {
       });
 
       test('maybeValue returns attribute for non-null spec', () {
-        const spec = StackWidgetSpec(
+        const spec = StackSpec(
           alignment: Alignment.topCenter,
           fit: StackFit.expand,
         );

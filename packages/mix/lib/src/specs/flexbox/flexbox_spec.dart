@@ -12,14 +12,14 @@ import '../container/container_spec.dart';
 /// Provides comprehensive styling for container widgets that need both
 /// container decoration and flex layout capabilities. Merges [ContainerSpec] and
 /// [FlexLayoutSpec] into a unified specification.
-final class FlexBoxWidgetSpec extends WidgetSpec<FlexBoxWidgetSpec> {
+final class FlexBoxSpec extends WidgetSpec<FlexBoxSpec> {
   /// Container styling properties for decoration, padding, constraints, etc.
   final ContainerSpec? container;
 
   /// Flex layout properties for direction, alignment, spacing, etc.
   final FlexLayoutSpec? flex;
 
-  const FlexBoxWidgetSpec({
+  const FlexBoxSpec({
     this.container,
     this.flex,
     super.animation,
@@ -27,17 +27,17 @@ final class FlexBoxWidgetSpec extends WidgetSpec<FlexBoxWidgetSpec> {
     super.inherit,
   });
 
-  /// Creates a copy of this [FlexBoxWidgetSpec] but with the given fields
+  /// Creates a copy of this [FlexBoxSpec] but with the given fields
   /// replaced with the new values.
   @override
-  FlexBoxWidgetSpec copyWith({
+  FlexBoxSpec copyWith({
     ContainerSpec? container,
     FlexLayoutSpec? flex,
     AnimationConfig? animation,
     List<Modifier>? widgetModifiers,
     bool? inherit,
   }) {
-    return FlexBoxWidgetSpec(
+    return FlexBoxSpec(
       container: container ?? this.container,
       flex: flex ?? this.flex,
       animation: animation ?? this.animation,
@@ -46,24 +46,24 @@ final class FlexBoxWidgetSpec extends WidgetSpec<FlexBoxWidgetSpec> {
     );
   }
 
-  /// Linearly interpolates between this [FlexBoxWidgetSpec] and another [FlexBoxWidgetSpec] based on the given parameter [t].
+  /// Linearly interpolates between this [FlexBoxSpec] and another [FlexBoxSpec] based on the given parameter [t].
   ///
   /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
-  /// When [t] is 0.0, the current [FlexBoxWidgetSpec] is returned. When [t] is 1.0, the [other] [FlexBoxWidgetSpec] is returned.
-  /// For values of [t] between 0.0 and 1.0, an interpolated [FlexBoxWidgetSpec] is returned.
+  /// When [t] is 0.0, the current [FlexBoxSpec] is returned. When [t] is 1.0, the [other] [FlexBoxSpec] is returned.
+  /// For values of [t] between 0.0 and 1.0, an interpolated [FlexBoxSpec] is returned.
   ///
-  /// If [other] is null, this method returns the current [FlexBoxWidgetSpec] instance.
+  /// If [other] is null, this method returns the current [FlexBoxSpec] instance.
   ///
-  /// The interpolation is performed on each property of the [FlexBoxWidgetSpec] using the appropriate
+  /// The interpolation is performed on each property of the [FlexBoxSpec] using the appropriate
   /// interpolation method:
   /// - [ContainerSpec.lerp] for [container].
   /// - [FlexLayoutSpec.lerp] for [flex].
   ///
   /// This method is typically used in animations to smoothly transition between
-  /// different [FlexBoxWidgetSpec] configurations.
+  /// different [FlexBoxSpec] configurations.
   @override
-  FlexBoxWidgetSpec lerp(FlexBoxWidgetSpec? other, double t) {
-    return FlexBoxWidgetSpec(
+  FlexBoxSpec lerp(FlexBoxSpec? other, double t) {
+    return FlexBoxSpec(
       container: container?.lerp(other?.container, t),
       flex: flex?.lerp(other?.flex, t),
       // Meta fields: use confirmed policy other.field ?? this.field
@@ -81,10 +81,10 @@ final class FlexBoxWidgetSpec extends WidgetSpec<FlexBoxWidgetSpec> {
       ..add(DiagnosticsProperty('flex', flex));
   }
 
-  /// The list of properties that constitute the state of this [FlexBoxWidgetSpec].
+  /// The list of properties that constitute the state of this [FlexBoxSpec].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [FlexBoxWidgetSpec] instances for equality.
+  /// compare two [FlexBoxSpec] instances for equality.
   @override
   List<Object?> get props => [...super.props, container, flex];
 }

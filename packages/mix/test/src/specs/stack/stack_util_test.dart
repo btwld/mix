@@ -53,10 +53,7 @@ void main() {
       });
 
       test('on utility is OnContextVariantUtility', () {
-        expect(
-          util.on,
-          isA<OnContextVariantUtility<StackWidgetSpec, StackStyle>>(),
-        );
+        expect(util.on, isA<OnContextVariantUtility<StackSpec, StackStyle>>());
       });
 
       test('wrap utility is ModifierUtility', () {
@@ -117,7 +114,7 @@ void main() {
       test('on utility creates VariantAttributeBuilder', () {
         final hoverBuilder = util.on.hover;
 
-        expect(hoverBuilder, isA<VariantAttributeBuilder<StackWidgetSpec>>());
+        expect(hoverBuilder, isA<VariantAttributeBuilder<StackSpec>>());
       });
     });
 
@@ -161,7 +158,7 @@ void main() {
 
       test('merge throws error for unsupported type', () {
         expect(
-          () => util.merge('invalid_type' as Style<StackWidgetSpec>),
+          () => util.merge('invalid_type' as Style<StackSpec>),
           throwsA(isA<TypeError>()),
         );
       });
@@ -197,7 +194,7 @@ void main() {
         final context = MockBuildContext();
         final spec = testUtil.resolve(context);
 
-        expect(spec, isA<StackWidgetSpec>());
+        expect(spec, isA<StackSpec>());
         expect(spec.alignment, Alignment.center);
         expect(spec.fit, StackFit.expand);
         expect(spec.clipBehavior, Clip.antiAlias);
@@ -207,7 +204,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec, isA<StackWidgetSpec>());
+        expect(spec, isA<StackSpec>());
         expect(spec.alignment, isNull);
         expect(spec.fit, isNull);
         expect(spec.clipBehavior, isNull);
@@ -360,7 +357,7 @@ void main() {
         expect(
           testUtil,
           resolvesTo(
-            const StackWidgetSpec(
+            const StackSpec(
               alignment: Alignment.center,
               fit: StackFit.expand,
               clipBehavior: Clip.antiAlias,

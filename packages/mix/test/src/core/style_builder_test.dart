@@ -14,7 +14,7 @@ void main() {
 
         await tester.pumpWidget(
           MaterialApp(
-            home: StyleBuilder<BoxWidgetSpec>(
+            home: StyleBuilder<BoxSpec>(
               style: boxAttribute,
               builder: (context, spec) {
                 expect(spec.constraints?.minWidth, 100);
@@ -58,7 +58,7 @@ void main() {
 
         await tester.pumpWidget(
           MaterialApp(
-            home: StyleBuilder<BoxWidgetSpec>(
+            home: StyleBuilder<BoxSpec>(
               style: boxAttribute,
               builder: (context, spec) {
                 return Container(
@@ -71,10 +71,7 @@ void main() {
         );
 
         // Verify that the animation wrapper is created
-        expect(
-          find.byType(StyleAnimationBuilder<BoxWidgetSpec>),
-          findsOneWidget,
-        );
+        expect(find.byType(StyleAnimationBuilder<BoxSpec>), findsOneWidget);
       });
 
       testWidgets('No animation driver when animation config is null', (
@@ -87,7 +84,7 @@ void main() {
 
         await tester.pumpWidget(
           MaterialApp(
-            home: StyleBuilder<BoxWidgetSpec>(
+            home: StyleBuilder<BoxSpec>(
               style: boxAttribute,
               builder: (context, spec) {
                 return Container(
@@ -100,7 +97,7 @@ void main() {
         );
 
         // Verify that no animation wrapper is created
-        expect(find.byType(StyleAnimationBuilder<BoxWidgetSpec>), findsNothing);
+        expect(find.byType(StyleAnimationBuilder<BoxSpec>), findsNothing);
       });
 
       // TODO: This test needs to be revisited after the WidgetSpec migration
@@ -128,7 +125,7 @@ void main() {
 
         await tester.pumpWidget(
           MaterialApp(
-            home: StyleBuilder<BoxWidgetSpec>(
+            home: StyleBuilder<BoxSpec>(
               style: startAttribute,
               builder: (context, spec) {
                 return Container(
@@ -155,7 +152,7 @@ void main() {
 
         await tester.pumpWidget(
           MaterialApp(
-            home: StyleBuilder<BoxWidgetSpec>(
+            home: StyleBuilder<BoxSpec>(
               style: endAttribute,
               builder: (context, spec) {
                 return Container(
@@ -212,7 +209,7 @@ void main() {
 
         await tester.pumpWidget(
           MaterialApp(
-            home: StyleBuilder<BoxWidgetSpec>(
+            home: StyleBuilder<BoxSpec>(
               style: boxAttribute,
               builder: (context, spec) {
                 return Container(
@@ -261,7 +258,7 @@ void main() {
 
         await tester.pumpWidget(
           MaterialApp(
-            home: StyleBuilder<BoxWidgetSpec>(
+            home: StyleBuilder<BoxSpec>(
               style: boxAttribute,
               builder: (context, spec) {
                 return Container(
@@ -274,7 +271,7 @@ void main() {
         );
 
         // Find the StyleBuilder widget
-        final styleBuilder = find.byType(StyleBuilder<BoxWidgetSpec>);
+        final styleBuilder = find.byType(StyleBuilder<BoxSpec>);
 
         // Verify ordering: Visibility should wrap everything, then other modifiers in order
         // The default order has Visibility early, Padding after transformations, ClipOval near end, and Opacity last
@@ -333,7 +330,7 @@ void main() {
 
         await tester.pumpWidget(
           MaterialApp(
-            home: StyleBuilder<BoxWidgetSpec>(
+            home: StyleBuilder<BoxSpec>(
               style: boxAttribute,
               builder: (context, spec) {
                 return Container(
@@ -346,7 +343,7 @@ void main() {
         );
 
         // Find the StyleBuilder widget
-        final styleBuilder = find.byType(StyleBuilder<BoxWidgetSpec>);
+        final styleBuilder = find.byType(StyleBuilder<BoxSpec>);
 
         // Verify custom ordering: Opacity -> ClipOval -> Padding
         expect(
@@ -386,7 +383,7 @@ void main() {
 
         await tester.pumpWidget(
           MaterialApp(
-            home: StyleBuilder<BoxWidgetSpec>(
+            home: StyleBuilder<BoxSpec>(
               style: boxAttribute,
               builder: (context, spec) {
                 return Container(

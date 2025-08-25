@@ -14,7 +14,7 @@ import 'stack_spec.dart';
 ///
 /// Supports the same API as [StackStyle] but maintains mutable internal state
 /// enabling fluid styling: `$stack..alignment(Alignment.center)..fit(StackFit.expand)`.
-class StackSpecUtility extends StyleMutableBuilder<StackWidgetSpec> {
+class StackSpecUtility extends StyleMutableBuilder<StackSpec> {
   late final alignment = MixUtility(mutable.alignment);
 
   late final fit = MixUtility(mutable.fit);
@@ -23,7 +23,7 @@ class StackSpecUtility extends StyleMutableBuilder<StackWidgetSpec> {
 
   late final clipBehavior = MixUtility(mutable.clipBehavior);
 
-  late final on = OnContextVariantUtility<StackWidgetSpec, StackStyle>(
+  late final on = OnContextVariantUtility<StackSpec, StackStyle>(
     (v) => mutable.variants([v]),
   );
 
@@ -44,7 +44,7 @@ class StackSpecUtility extends StyleMutableBuilder<StackWidgetSpec> {
   StackStyle animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
-  StackSpecUtility merge(Style<StackWidgetSpec>? other) {
+  StackSpecUtility merge(Style<StackSpec>? other) {
     if (other == null) return this;
     // Always create new instance (StyleAttribute contract)
     if (other is StackSpecUtility) {
@@ -58,7 +58,7 @@ class StackSpecUtility extends StyleMutableBuilder<StackWidgetSpec> {
   }
 
   @override
-  StackWidgetSpec resolve(BuildContext context) {
+  StackSpec resolve(BuildContext context) {
     return mutable.resolve(context);
   }
 
@@ -67,8 +67,7 @@ class StackSpecUtility extends StyleMutableBuilder<StackWidgetSpec> {
   StackStyle get value => mutable.value;
 }
 
-class MutableStackStyle extends StackStyle
-    with Mutable<StackWidgetSpec, StackStyle> {
+class MutableStackStyle extends StackStyle with Mutable<StackSpec, StackStyle> {
   MutableStackStyle(StackStyle style) {
     value = style;
   }

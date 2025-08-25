@@ -8,7 +8,7 @@ void main() {
   group('FlexWidgetSpecUtility', () {
     group('Constructor', () {
       test('', () {
-        const spec = ImageWidgetSpec(
+        const spec = ImageSpec(
           width: 200.0,
           height: 150.0,
           color: Colors.blue,
@@ -42,7 +42,7 @@ void main() {
       });
 
       test('', () {
-        const spec = ImageWidgetSpec();
+        const spec = ImageSpec();
 
         expect(spec.width, isNull);
         expect(spec.height, isNull);
@@ -63,7 +63,7 @@ void main() {
 
     group('copyWith', () {
       test('creates new instance with updated properties', () {
-        const original = ImageWidgetSpec(
+        const original = ImageSpec(
           width: 100.0,
           height: 100.0,
           fit: BoxFit.contain,
@@ -84,7 +84,7 @@ void main() {
       });
 
       test('preserves original properties when not specified', () {
-        const original = ImageWidgetSpec(
+        const original = ImageSpec(
           repeat: ImageRepeat.repeatX,
           filterQuality: FilterQuality.low,
           colorBlendMode: BlendMode.overlay,
@@ -98,7 +98,7 @@ void main() {
       });
 
       test('handles null values correctly', () {
-        const original = ImageWidgetSpec(width: 100.0, height: 200.0);
+        const original = ImageSpec(width: 100.0, height: 200.0);
         final updated = original.copyWith();
 
         expect(updated.width, 100.0);
@@ -108,13 +108,13 @@ void main() {
 
     group('lerp', () {
       test('', () {
-        const spec1 = ImageWidgetSpec(
+        const spec1 = ImageSpec(
           width: 100.0,
           height: 200.0,
           color: Colors.red, // Pure red
           alignment: Alignment.topLeft,
         );
-        const spec2 = ImageWidgetSpec(
+        const spec2 = ImageSpec(
           width: 200.0,
           height: 400.0,
           color: Colors.blue, // Pure blue
@@ -132,7 +132,7 @@ void main() {
       });
 
       test('handles null other parameter correctly', () {
-        const spec = ImageWidgetSpec(width: 100.0, height: 200.0);
+        const spec = ImageSpec(width: 100.0, height: 200.0);
 
         // When t < 0.5, should preserve original values
         final lerped1 = spec.lerp(null, 0.3);
@@ -146,8 +146,8 @@ void main() {
       });
 
       test('handles edge cases (t=0, t=1)', () {
-        const spec1 = ImageWidgetSpec(width: 100.0, color: Colors.red);
-        const spec2 = ImageWidgetSpec(width: 200.0, color: Colors.blue);
+        const spec1 = ImageSpec(width: 100.0, color: Colors.red);
+        const spec2 = ImageSpec(width: 200.0, color: Colors.blue);
 
         final lerpedAt0 = spec1.lerp(spec2, 0.0);
         final lerpedAt1 = spec1.lerp(spec2, 1.0);
@@ -159,7 +159,7 @@ void main() {
       });
 
       test('uses step function for discrete properties', () {
-        const spec1 = ImageWidgetSpec(
+        const spec1 = ImageSpec(
           repeat: ImageRepeat.noRepeat,
           fit: BoxFit.contain,
           filterQuality: FilterQuality.low,
@@ -170,7 +170,7 @@ void main() {
           isAntiAlias: true,
           matchTextDirection: false,
         );
-        const spec2 = ImageWidgetSpec(
+        const spec2 = ImageSpec(
           repeat: ImageRepeat.repeat,
           fit: BoxFit.cover,
           filterQuality: FilterQuality.high,
@@ -209,10 +209,8 @@ void main() {
       });
 
       test('interpolates Rect centerSlice correctly', () {
-        const spec1 = ImageWidgetSpec(centerSlice: Rect.fromLTWH(0, 0, 10, 10));
-        const spec2 = ImageWidgetSpec(
-          centerSlice: Rect.fromLTWH(10, 10, 30, 30),
-        );
+        const spec1 = ImageSpec(centerSlice: Rect.fromLTWH(0, 0, 10, 10));
+        const spec2 = ImageSpec(centerSlice: Rect.fromLTWH(10, 10, 30, 30));
 
         final lerped = spec1.lerp(spec2, 0.5);
 
@@ -220,8 +218,8 @@ void main() {
       });
 
       test('interpolates AlignmentGeometry correctly', () {
-        const spec1 = ImageWidgetSpec(alignment: Alignment.topLeft);
-        const spec2 = ImageWidgetSpec(alignment: Alignment.bottomRight);
+        const spec1 = ImageSpec(alignment: Alignment.topLeft);
+        const spec2 = ImageSpec(alignment: Alignment.bottomRight);
 
         final lerped = spec1.lerp(spec2, 0.5);
 
@@ -231,13 +229,13 @@ void main() {
 
     group('equality', () {
       test('specs with same properties are equal', () {
-        const spec1 = ImageWidgetSpec(
+        const spec1 = ImageSpec(
           width: 100.0,
           height: 200.0,
           color: Colors.blue,
           fit: BoxFit.cover,
         );
-        const spec2 = ImageWidgetSpec(
+        const spec2 = ImageSpec(
           width: 100.0,
           height: 200.0,
           color: Colors.blue,
@@ -249,15 +247,15 @@ void main() {
       });
 
       test('specs with different properties are not equal', () {
-        const spec1 = ImageWidgetSpec(width: 100.0, height: 200.0);
-        const spec2 = ImageWidgetSpec(width: 150.0, height: 200.0);
+        const spec1 = ImageSpec(width: 100.0, height: 200.0);
+        const spec2 = ImageSpec(width: 150.0, height: 200.0);
 
         expect(spec1, isNot(spec2));
       });
 
       test('specs with null vs non-null properties are not equal', () {
-        const spec1 = ImageWidgetSpec(width: 100.0);
-        const spec2 = ImageWidgetSpec();
+        const spec1 = ImageSpec(width: 100.0);
+        const spec2 = ImageSpec();
 
         expect(spec1, isNot(spec2));
       });
@@ -265,7 +263,7 @@ void main() {
 
     group('debugFillProperties', () {
       test('includes all properties in diagnostics', () {
-        const spec = ImageWidgetSpec(
+        const spec = ImageSpec(
           width: 200.0,
           height: 150.0,
           color: Colors.blue,
@@ -305,7 +303,7 @@ void main() {
 
     group('props', () {
       test('includes all properties in props list', () {
-        const spec = ImageWidgetSpec(
+        const spec = ImageSpec(
           width: 200.0,
           height: 150.0,
           color: Colors.blue,
@@ -343,7 +341,7 @@ void main() {
 
     group('Real-world scenarios', () {
       test('creates responsive image spec', () {
-        const responsiveSpec = ImageWidgetSpec(
+        const responsiveSpec = ImageSpec(
           fit: BoxFit.cover,
           alignment: Alignment.center,
           filterQuality: FilterQuality.medium,
@@ -355,7 +353,7 @@ void main() {
       });
 
       test('creates tinted image spec', () {
-        const tintedSpec = ImageWidgetSpec(
+        const tintedSpec = ImageSpec(
           color: Colors.blue,
           colorBlendMode: BlendMode.overlay,
           fit: BoxFit.contain,
@@ -367,7 +365,7 @@ void main() {
       });
 
       test('creates nine-patch image spec', () {
-        const ninePatchSpec = ImageWidgetSpec(
+        const ninePatchSpec = ImageSpec(
           centerSlice: Rect.fromLTWH(16, 16, 32, 32),
           repeat: ImageRepeat.noRepeat,
           fit: BoxFit.fill,
@@ -379,7 +377,7 @@ void main() {
       });
 
       test('creates fixed size image spec', () {
-        const fixedSizeSpec = ImageWidgetSpec(
+        const fixedSizeSpec = ImageSpec(
           width: 64.0,
           height: 64.0,
           fit: BoxFit.scaleDown,

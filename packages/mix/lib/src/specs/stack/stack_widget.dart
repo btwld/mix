@@ -24,9 +24,9 @@ class ZBox extends StyleWidget<ZBoxWidgetSpec> {
   }
 }
 
-/// Creates a [Stack] widget from a [StackWidgetSpec] and children.
+/// Creates a [Stack] widget from a [StackSpec] and children.
 Stack createStackSpecWidget({
-  required StackWidgetSpec spec,
+  required StackSpec spec,
   List<Widget> children = const [],
 }) {
   return Stack(
@@ -49,8 +49,8 @@ Widget createZBoxSpecWidget({
   );
 }
 
-/// Extension to convert [StackWidgetSpec] directly to a [Stack] widget.
-extension StackSpecWidget on StackWidgetSpec {
+/// Extension to convert [StackSpec] directly to a [Stack] widget.
+extension StackSpecWidget on StackSpec {
   Stack call({List<Widget> children = const []}) {
     return createStackSpecWidget(spec: this, children: children);
   }

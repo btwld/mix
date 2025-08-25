@@ -23,12 +23,10 @@ typedef StackBoxMix = StackBoxStyle;
 ///
 /// Use this class to configure the attributes of a [ZBoxWidgetSpec] and pass it to
 /// the [ZBoxWidgetSpec] constructor.
-class StackBoxStyle extends Style<ZBoxWidgetSpec> 
-    with 
-        Diagnosticable,
-        StyleVariantMixin<StackBoxStyle, ZBoxWidgetSpec> {
-  final Prop<BoxWidgetSpec>? $box;
-  final Prop<StackWidgetSpec>? $stack;
+class StackBoxStyle extends Style<ZBoxWidgetSpec>
+    with Diagnosticable, StyleVariantMixin<StackBoxStyle, ZBoxWidgetSpec> {
+  final Prop<BoxSpec>? $box;
+  final Prop<StackSpec>? $stack;
 
   StackBoxStyle({
     BoxStyle? box,
@@ -42,8 +40,8 @@ class StackBoxStyle extends Style<ZBoxWidgetSpec>
        $stack = Prop.maybeMix(stack);
 
   const StackBoxStyle.create({
-    Prop<BoxWidgetSpec>? box,
-    Prop<StackWidgetSpec>? stack,
+    Prop<BoxSpec>? box,
+    Prop<StackSpec>? stack,
     super.modifier,
     super.animation,
     super.variants,

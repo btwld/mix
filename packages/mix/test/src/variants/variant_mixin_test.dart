@@ -3,8 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 // Test implementation of VariantMixin
-class TestVariantAttribute extends Style<BoxWidgetSpec>
-    with StyleVariantMixin<TestVariantAttribute, BoxWidgetSpec> {
+class TestVariantAttribute extends Style<BoxSpec>
+    with StyleVariantMixin<TestVariantAttribute, BoxSpec> {
   const TestVariantAttribute({
     super.variants,
     super.modifier,
@@ -20,12 +20,12 @@ class TestVariantAttribute extends Style<BoxWidgetSpec>
   }
 
   @override
-  TestVariantAttribute variants(List<VariantStyle<BoxWidgetSpec>> value) {
+  TestVariantAttribute variants(List<VariantStyle<BoxSpec>> value) {
     return TestVariantAttribute(variants: value);
   }
 
   @override
-  BoxWidgetSpec resolve(BuildContext context) => const BoxWidgetSpec();
+  BoxSpec resolve(BuildContext context) => const BoxSpec();
 
   @override
   TestVariantAttribute merge(TestVariantAttribute? other) {

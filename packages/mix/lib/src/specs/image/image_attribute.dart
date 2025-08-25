@@ -14,11 +14,11 @@ import 'image_widget.dart';
 
 typedef ImageMix = ImageStyle;
 
-class ImageStyle extends Style<ImageWidgetSpec>
+class ImageStyle extends Style<ImageSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<ImageStyle, ImageWidgetSpec>,
-        StyleVariantMixin<ImageStyle, ImageWidgetSpec> {
+        StyleModifierMixin<ImageStyle, ImageSpec>,
+        StyleVariantMixin<ImageStyle, ImageSpec> {
   final Prop<ImageProvider<Object>>? $image;
   final Prop<double>? $width;
   final Prop<double>? $height;
@@ -185,7 +185,7 @@ class ImageStyle extends Style<ImageWidgetSpec>
     bool? matchTextDirection,
     AnimationConfig? animation,
     ModifierConfig? modifier,
-    List<VariantStyle<ImageWidgetSpec>>? variants,
+    List<VariantStyle<ImageSpec>>? variants,
     bool? inherit,
   }) : this.create(
          image: Prop.maybe(image),
@@ -209,15 +209,15 @@ class ImageStyle extends Style<ImageWidgetSpec>
          inherit: inherit,
        );
 
-  /// Constructor that accepts an [ImageWidgetSpec] value and extracts its properties.
+  /// Constructor that accepts an [ImageSpec] value and extracts its properties.
   ///
-  /// This is useful for converting existing [ImageWidgetSpec] instances to [ImageStyle].
+  /// This is useful for converting existing [ImageSpec] instances to [ImageStyle].
   ///
   /// ```dart
   /// const spec = ImageWidgetSpec(width: 100, height: 100, fit: BoxFit.cover);
   /// final attr = ImageStyle.value(spec);
   /// ```
-  ImageStyle.value(ImageWidgetSpec spec)
+  ImageStyle.value(ImageSpec spec)
     : this(
         image: spec.image,
         width: spec.width,
@@ -236,7 +236,7 @@ class ImageStyle extends Style<ImageWidgetSpec>
         matchTextDirection: spec.matchTextDirection,
       );
 
-  /// Constructor that accepts a nullable [ImageWidgetSpec] value and extracts its properties.
+  /// Constructor that accepts a nullable [ImageSpec] value and extracts its properties.
   ///
   /// Returns null if the input is null, otherwise uses [ImageStyle.value].
   ///
@@ -244,7 +244,7 @@ class ImageStyle extends Style<ImageWidgetSpec>
   /// const ImageWidgetSpec? spec = ImageWidgetSpec(width: 100, height: 100, fit: BoxFit.cover);
   /// final attr = ImageStyle.maybeValue(spec); // Returns ImageStyle or null
   /// ```
-  static ImageStyle? maybeValue(ImageWidgetSpec? spec) {
+  static ImageStyle? maybeValue(ImageSpec? spec) {
     return spec != null ? ImageStyle.value(spec) : null;
   }
 
@@ -350,13 +350,13 @@ class ImageStyle extends Style<ImageWidgetSpec>
   }
 
   @override
-  ImageStyle variants(List<VariantStyle<ImageWidgetSpec>> variants) {
+  ImageStyle variants(List<VariantStyle<ImageSpec>> variants) {
     return merge(ImageStyle(variants: variants));
   }
 
   @override
-  ImageWidgetSpec resolve(BuildContext context) {
-    return ImageWidgetSpec(
+  ImageSpec resolve(BuildContext context) {
+    return ImageSpec(
       image: MixOps.resolve(context, $image),
       width: MixOps.resolve(context, $width),
       height: MixOps.resolve(context, $height),

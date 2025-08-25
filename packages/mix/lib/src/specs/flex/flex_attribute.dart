@@ -12,20 +12,20 @@ import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'flex_spec.dart';
 
-/// Represents the attributes of a [FlexWidgetSpec].
+/// Represents the attributes of a [FlexSpec].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [FlexWidgetSpec].
+/// appearance of a [FlexSpec].
 ///
-/// Use this class to configure the attributes of a [FlexWidgetSpec] and pass it to
-/// the [FlexWidgetSpec] constructor.
-/// A style/attribute container for [FlexWidgetSpec], used to configure and compose flex layout properties.
-class FlexStyle extends Style<FlexWidgetSpec>
+/// Use this class to configure the attributes of a [FlexSpec] and pass it to
+/// the [FlexSpec] constructor.
+/// A style/attribute container for [FlexSpec], used to configure and compose flex layout properties.
+class FlexStyle extends Style<FlexSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<FlexStyle, FlexWidgetSpec>,
-        StyleVariantMixin<FlexStyle, FlexWidgetSpec>,
-        StyleAnimationMixin<FlexWidgetSpec, FlexStyle> {
+        StyleModifierMixin<FlexStyle, FlexSpec>,
+        StyleVariantMixin<FlexStyle, FlexSpec>,
+        StyleAnimationMixin<FlexSpec, FlexStyle> {
   final Prop<Axis>? $direction;
   final Prop<MainAxisAlignment>? $mainAxisAlignment;
   final Prop<CrossAxisAlignment>? $crossAxisAlignment;
@@ -153,7 +153,7 @@ class FlexStyle extends Style<FlexWidgetSpec>
     double? gap,
     AnimationConfig? animation,
     ModifierConfig? modifier,
-    List<VariantStyle<FlexWidgetSpec>>? variants,
+    List<VariantStyle<FlexSpec>>? variants,
     bool? inherit,
   }) : this.create(
          direction: Prop.maybe(direction),
@@ -171,15 +171,15 @@ class FlexStyle extends Style<FlexWidgetSpec>
          inherit: inherit,
        );
 
-  /// Constructor that accepts a [FlexWidgetSpec] value and extracts its properties.
+  /// Constructor that accepts a [FlexSpec] value and extracts its properties.
   ///
-  /// This is useful for converting existing [FlexWidgetSpec] instances to [FlexStyle].
+  /// This is useful for converting existing [FlexSpec] instances to [FlexStyle].
   ///
   /// ```dart
   /// const spec = FlexWidgetSpec(direction: Axis.horizontal, spacing: 8.0);
   /// final attr = FlexStyle.value(spec);
   /// ```
-  FlexStyle.value(FlexWidgetSpec spec)
+  FlexStyle.value(FlexSpec spec)
     : this(
         direction: spec.direction,
         mainAxisAlignment: spec.mainAxisAlignment,
@@ -202,7 +202,7 @@ class FlexStyle extends Style<FlexWidgetSpec>
     return FlexStyle(modifier: value);
   }
 
-  /// Constructor that accepts a nullable [FlexWidgetSpec] value and extracts its properties.
+  /// Constructor that accepts a nullable [FlexSpec] value and extracts its properties.
   ///
   /// Returns null if the input is null, otherwise uses [FlexStyle.value].
   ///
@@ -210,7 +210,7 @@ class FlexStyle extends Style<FlexWidgetSpec>
   /// const FlexWidgetSpec? spec = FlexWidgetSpec(direction: Axis.horizontal, spacing: 8.0);
   /// final attr = FlexStyle.maybeValue(spec); // Returns FlexStyle or null
   /// ```
-  static FlexStyle? maybeValue(FlexWidgetSpec? spec) {
+  static FlexStyle? maybeValue(FlexSpec? spec) {
     return spec != null ? FlexStyle.value(spec) : null;
   }
 
@@ -287,11 +287,11 @@ class FlexStyle extends Style<FlexWidgetSpec>
   }
 
   @override
-  FlexStyle variants(List<VariantStyle<FlexWidgetSpec>> variants) {
+  FlexStyle variants(List<VariantStyle<FlexSpec>> variants) {
     return merge(FlexStyle(variants: variants));
   }
 
-  /// Resolves to [FlexWidgetSpec] using the provided [BuildContext].
+  /// Resolves to [FlexSpec] using the provided [BuildContext].
   ///
   /// If a property is null in the context, it uses the default value
   /// defined in the property specification.
@@ -300,8 +300,8 @@ class FlexStyle extends Style<FlexWidgetSpec>
   /// final flexWidgetSpec = FlexStyle(...).resolve(context);
   /// ```
   @override
-  FlexWidgetSpec resolve(BuildContext context) {
-    return FlexWidgetSpec(
+  FlexSpec resolve(BuildContext context) {
+    return FlexSpec(
       direction: MixOps.resolve(context, $direction),
       mainAxisAlignment: MixOps.resolve(context, $mainAxisAlignment),
       crossAxisAlignment: MixOps.resolve(context, $crossAxisAlignment),

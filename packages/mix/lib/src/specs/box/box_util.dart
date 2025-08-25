@@ -18,7 +18,7 @@ import 'box_spec.dart';
 ///
 /// Supports the same API as [BoxStyle] but maintains mutable internal state
 /// enabling fluid styling: `$box..color.red()..width(100)`.
-class BoxSpecUtility extends StyleMutableBuilder<BoxWidgetSpec> {
+class BoxSpecUtility extends StyleMutableBuilder<BoxSpec> {
   late final padding = EdgeInsetsGeometryUtility<BoxStyle>(
     (prop) => mutable.merge(BoxStyle.create(padding: Prop.mix(prop))),
   );
@@ -35,7 +35,7 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxWidgetSpec> {
     (prop) => mutable.merge(BoxStyle.create(decoration: Prop.mix(prop))),
   );
 
-  late final on = OnContextVariantUtility<BoxWidgetSpec, BoxStyle>(
+  late final on = OnContextVariantUtility<BoxSpec, BoxStyle>(
     (v) => mutable.variants([v]),
   );
 
@@ -78,7 +78,7 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxWidgetSpec> {
   BoxStyle animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
-  BoxSpecUtility merge(Style<BoxWidgetSpec>? other) {
+  BoxSpecUtility merge(Style<BoxSpec>? other) {
     if (other == null) return this;
     // Always create new instance (StyleAttribute contract)
     if (other is BoxSpecUtility) {
@@ -92,7 +92,7 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxWidgetSpec> {
   }
 
   @override
-  BoxWidgetSpec resolve(BuildContext context) {
+  BoxSpec resolve(BuildContext context) {
     return mutable.resolve(context);
   }
 
@@ -105,7 +105,7 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxWidgetSpec> {
 ///
 /// Used internally by [BoxSpecUtility] to accumulate styling changes
 /// without creating new instances for each modification.
-class MutableBoxStyle extends BoxStyle with Mutable<BoxWidgetSpec, BoxStyle> {
+class MutableBoxStyle extends BoxStyle with Mutable<BoxSpec, BoxStyle> {
   MutableBoxStyle(BoxStyle style) {
     value = style;
   }

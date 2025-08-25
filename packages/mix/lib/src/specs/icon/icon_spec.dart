@@ -10,7 +10,7 @@ import '../../core/widget_spec.dart';
 ///
 /// Provides comprehensive icon styling including color, size, weight, optical properties,
 /// text direction, scaling behavior, and shadow effects.
-final class IconWidgetSpec extends WidgetSpec<IconWidgetSpec> {
+final class IconSpec extends WidgetSpec<IconSpec> {
   /// The color to use when drawing the icon.
   final Color? color;
 
@@ -47,7 +47,7 @@ final class IconWidgetSpec extends WidgetSpec<IconWidgetSpec> {
   /// The icon data to display.
   final IconData? icon;
 
-  const IconWidgetSpec({
+  const IconSpec({
     this.color,
     this.size,
     this.weight,
@@ -66,7 +66,7 @@ final class IconWidgetSpec extends WidgetSpec<IconWidgetSpec> {
   });
 
   @override
-  IconWidgetSpec copyWith({
+  IconSpec copyWith({
     Color? color,
     double? size,
     double? weight,
@@ -83,7 +83,7 @@ final class IconWidgetSpec extends WidgetSpec<IconWidgetSpec> {
     List<Modifier>? widgetModifiers,
     bool? inherit,
   }) {
-    return IconWidgetSpec(
+    return IconSpec(
       color: color ?? this.color,
       size: size ?? this.size,
       weight: weight ?? this.weight,
@@ -103,8 +103,8 @@ final class IconWidgetSpec extends WidgetSpec<IconWidgetSpec> {
   }
 
   @override
-  IconWidgetSpec lerp(IconWidgetSpec? other, double t) {
-    return IconWidgetSpec(
+  IconSpec lerp(IconSpec? other, double t) {
+    return IconSpec(
       color: MixOps.lerp(color, other?.color, t),
       size: MixOps.lerp(size, other?.size, t),
       weight: MixOps.lerp(weight, other?.weight, t),

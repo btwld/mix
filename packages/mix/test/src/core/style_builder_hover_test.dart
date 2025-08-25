@@ -28,7 +28,7 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: Center(
-              child: StyleBuilder<BoxWidgetSpec>(
+              child: StyleBuilder<BoxSpec>(
                 style: style,
                 builder: (context, spec) {
                   currentColor = (spec.decoration as BoxDecoration?)?.color;

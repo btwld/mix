@@ -57,7 +57,7 @@ void main() {
       );
 
       test('value constructor creates FlexStyle from FlexWidgetSpec', () {
-        const spec = FlexWidgetSpec(
+        const spec = FlexSpec(
           direction: Axis.vertical,
           mainAxisAlignment: MainAxisAlignment.end,
           spacing: 8.0,
@@ -76,7 +76,7 @@ void main() {
       });
 
       test('maybeValue returns FlexStyle for non-null input', () {
-        const spec = FlexWidgetSpec(direction: Axis.horizontal);
+        const spec = FlexSpec(direction: Axis.horizontal);
         final result = FlexStyle.maybeValue(spec);
 
         expect(result, isNotNull);

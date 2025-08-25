@@ -16,12 +16,12 @@ import 'icon_widget.dart';
 
 typedef IconMix = IconStyle;
 
-class IconStyle extends Style<IconWidgetSpec>
+class IconStyle extends Style<IconSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<IconStyle, IconWidgetSpec>,
-        StyleVariantMixin<IconStyle, IconWidgetSpec>,
-        StyleAnimationMixin<IconWidgetSpec, IconStyle> {
+        StyleModifierMixin<IconStyle, IconSpec>,
+        StyleVariantMixin<IconStyle, IconSpec>,
+        StyleAnimationMixin<IconSpec, IconStyle> {
   final Prop<Color>? $color;
   final Prop<double>? $size;
   final Prop<double>? $weight;
@@ -166,7 +166,7 @@ class IconStyle extends Style<IconWidgetSpec>
     IconData? icon,
     AnimationConfig? animation,
     ModifierConfig? modifier,
-    List<VariantStyle<IconWidgetSpec>>? variants,
+    List<VariantStyle<IconSpec>>? variants,
     bool? inherit,
   }) : this.create(
          color: Prop.maybe(color),
@@ -188,7 +188,7 @@ class IconStyle extends Style<IconWidgetSpec>
        );
 
   // Static factory to create from resolved Spec
-  static IconStyle value(IconWidgetSpec spec) {
+  static IconStyle value(IconSpec spec) {
     return IconStyle(
       color: spec.color,
       size: spec.size,
@@ -205,7 +205,7 @@ class IconStyle extends Style<IconWidgetSpec>
     );
   }
 
-  /// Constructor that accepts a nullable [IconWidgetSpec] value and extracts its properties.
+  /// Constructor that accepts a nullable [IconSpec] value and extracts its properties.
   ///
   /// Returns null if the input is null, otherwise uses [IconStyle.value].
   ///
@@ -213,7 +213,7 @@ class IconStyle extends Style<IconWidgetSpec>
   /// const IconWidgetSpec? spec = IconWidgetSpec(color: Colors.blue, size: 24.0);
   /// final attr = IconStyle.maybeValue(spec); // Returns IconStyle or null
   /// ```
-  static IconStyle? maybeValue(IconWidgetSpec? spec) {
+  static IconStyle? maybeValue(IconSpec? spec) {
     return spec != null ? IconStyle.value(spec) : null;
   }
 
@@ -297,8 +297,8 @@ class IconStyle extends Style<IconWidgetSpec>
   }
 
   @override
-  IconWidgetSpec resolve(BuildContext context) {
-    return IconWidgetSpec(
+  IconSpec resolve(BuildContext context) {
+    return IconSpec(
       color: MixOps.resolve(context, $color),
       size: MixOps.resolve(context, $size),
       weight: MixOps.resolve(context, $weight),
@@ -369,7 +369,7 @@ class IconStyle extends Style<IconWidgetSpec>
   }
 
   @override
-  IconStyle variants(List<VariantStyle<IconWidgetSpec>> value) {
+  IconStyle variants(List<VariantStyle<IconSpec>> value) {
     return merge(IconStyle(variants: value));
   }
 

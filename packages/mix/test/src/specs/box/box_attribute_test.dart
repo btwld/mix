@@ -158,7 +158,7 @@ void main() {
       });
 
       test('value constructor creates BoxMix from BoxSpec', () {
-        final spec = BoxWidgetSpec(
+        final spec = BoxSpec(
           alignment: Alignment.bottomRight,
           padding: EdgeInsets.all(12.0),
           margin: EdgeInsets.symmetric(horizontal: 8.0),
@@ -181,7 +181,7 @@ void main() {
       });
 
       test('maybeValue returns BoxMix for non-null input', () {
-        final spec = BoxWidgetSpec(alignment: Alignment.center);
+        final spec = BoxSpec(alignment: Alignment.center);
         final result = BoxStyle.maybeValue(spec);
 
         expect(result, isNotNull);

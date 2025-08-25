@@ -19,7 +19,7 @@ import 'flexbox_spec.dart';
 ///
 /// Combines container and flex styling capabilities. Supports the same API as [FlexBoxStyle]
 /// but maintains mutable internal state enabling fluid styling: `$flexbox..color.red()..width(100)`.
-class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxWidgetSpec> {
+class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec> {
   late final padding = EdgeInsetsGeometryUtility<FlexBoxStyle>(
     (prop) =>
         mutable.merge(FlexBoxStyle.container(ContainerSpecMix(padding: prop))),
@@ -42,7 +42,7 @@ class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxWidgetSpec> {
     ),
   );
 
-  late final on = OnContextVariantUtility<FlexBoxWidgetSpec, FlexBoxStyle>(
+  late final on = OnContextVariantUtility<FlexBoxSpec, FlexBoxStyle>(
     (v) => mutable.variants([v]),
   );
 
@@ -159,7 +159,7 @@ class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxWidgetSpec> {
   FlexBoxStyle animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
-  FlexBoxSpecUtility merge(Style<FlexBoxWidgetSpec>? other) {
+  FlexBoxSpecUtility merge(Style<FlexBoxSpec>? other) {
     if (other == null) return this;
     // Always create new instance (StyleAttribute contract)
     if (other is FlexBoxSpecUtility) {
@@ -173,7 +173,7 @@ class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxWidgetSpec> {
   }
 
   @override
-  FlexBoxWidgetSpec resolve(BuildContext context) {
+  FlexBoxSpec resolve(BuildContext context) {
     return mutable.resolve(context);
   }
 
@@ -187,7 +187,7 @@ class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxWidgetSpec> {
 /// Used internally by [FlexBoxSpecUtility] to accumulate styling changes
 /// without creating new instances for each modification.
 class MutableFlexBoxStyle extends FlexBoxStyle
-    with Mutable<FlexBoxWidgetSpec, FlexBoxStyle> {
+    with Mutable<FlexBoxSpec, FlexBoxStyle> {
   MutableFlexBoxStyle(FlexBoxStyle style) {
     value = style;
   }

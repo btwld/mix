@@ -17,7 +17,7 @@ import 'icon_spec.dart';
 ///
 /// Supports the same API as [IconStyle] but maintains mutable internal state
 /// enabling fluid styling: `$icon..color(Colors.blue)..size(24)..weight(400)`.
-class IconSpecUtility extends StyleMutableBuilder<IconWidgetSpec> {
+class IconSpecUtility extends StyleMutableBuilder<IconSpec> {
   late final color = ColorUtility<IconStyle>(
     (prop) => mutable.merge(IconStyle.create(color: prop)),
   );
@@ -26,7 +26,7 @@ class IconSpecUtility extends StyleMutableBuilder<IconWidgetSpec> {
 
   late final textDirection = MixUtility(mutable.textDirection);
 
-  late final on = OnContextVariantUtility<IconWidgetSpec, IconStyle>(
+  late final on = OnContextVariantUtility<IconSpec, IconStyle>(
     (v) => mutable.variants([v]),
   );
 
@@ -62,7 +62,7 @@ class IconSpecUtility extends StyleMutableBuilder<IconWidgetSpec> {
   IconStyle animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
-  IconSpecUtility merge(Style<IconWidgetSpec>? other) {
+  IconSpecUtility merge(Style<IconSpec>? other) {
     if (other == null) return this;
     // Always create new instance (StyleAttribute contract)
     if (other is IconSpecUtility) {
@@ -76,7 +76,7 @@ class IconSpecUtility extends StyleMutableBuilder<IconWidgetSpec> {
   }
 
   @override
-  IconWidgetSpec resolve(BuildContext context) {
+  IconSpec resolve(BuildContext context) {
     return mutable.resolve(context);
   }
 
@@ -85,8 +85,7 @@ class IconSpecUtility extends StyleMutableBuilder<IconWidgetSpec> {
   IconStyle get value => mutable.value;
 }
 
-class MutableIconStyle extends IconStyle
-    with Mutable<IconWidgetSpec, IconStyle> {
+class MutableIconStyle extends IconStyle with Mutable<IconSpec, IconStyle> {
   MutableIconStyle(IconStyle style) {
     value = style;
   }

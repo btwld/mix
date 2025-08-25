@@ -105,14 +105,11 @@ void main() {
         expect(imageMix.$semanticLabel, resolvesTo('My Image'));
       });
 
-      test(
-        '',
-        () {
-          final imageMix = ImageStyle.excludeFromSemantics(true);
+      test('', () {
+        final imageMix = ImageStyle.excludeFromSemantics(true);
 
-          expect(imageMix.$excludeFromSemantics, resolvesTo(true));
-        },
-      );
+        expect(imageMix.$excludeFromSemantics, resolvesTo(true));
+      });
 
       test('', () {
         final imageMix = ImageStyle.gaplessPlayback(true);
@@ -126,19 +123,16 @@ void main() {
         expect(imageMix.$isAntiAlias, resolvesTo(false));
       });
 
-      test(
-        '',
-        () {
-          final imageMix = ImageStyle.matchTextDirection(true);
+      test('', () {
+        final imageMix = ImageStyle.matchTextDirection(true);
 
-          expect(imageMix.$matchTextDirection, resolvesTo(true));
-        },
-      );
+        expect(imageMix.$matchTextDirection, resolvesTo(true));
+      });
     });
 
     group('value constructor', () {
       test('', () {
-        const spec = ImageWidgetSpec(
+        const spec = ImageSpec(
           width: 120.0,
           height: 180.0,
           color: Colors.green,
@@ -158,7 +152,7 @@ void main() {
       });
 
       test('maybeValue returns attribute for non-null spec', () {
-        const spec = ImageWidgetSpec(width: 80.0, height: 120.0);
+        const spec = ImageSpec(width: 80.0, height: 120.0);
         final attribute = ImageStyle.maybeValue(spec);
 
         expect(attribute, isNotNull);

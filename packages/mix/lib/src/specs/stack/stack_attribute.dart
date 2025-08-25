@@ -14,19 +14,19 @@ import 'stack_spec.dart';
 
 typedef StackMix = StackStyle;
 
-/// Represents the attributes of a [StackWidgetSpec].
+/// Represents the attributes of a [StackSpec].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [StackWidgetSpec].
+/// appearance of a [StackSpec].
 ///
-/// Use this class to configure the attributes of a [StackWidgetSpec] and pass it to
-/// the [StackWidgetSpec] constructor.
-class StackStyle extends Style<StackWidgetSpec>
+/// Use this class to configure the attributes of a [StackSpec] and pass it to
+/// the [StackSpec] constructor.
+class StackStyle extends Style<StackSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<StackStyle, StackWidgetSpec>,
-        StyleVariantMixin<StackStyle, StackWidgetSpec>,
-        StyleAnimationMixin<StackWidgetSpec, StackStyle> {
+        StyleModifierMixin<StackStyle, StackSpec>,
+        StyleVariantMixin<StackStyle, StackSpec>,
+        StyleAnimationMixin<StackSpec, StackStyle> {
   final Prop<AlignmentGeometry>? $alignment;
   final Prop<StackFit>? $fit;
   final Prop<TextDirection>? $textDirection;
@@ -93,7 +93,7 @@ class StackStyle extends Style<StackWidgetSpec>
     Clip? clipBehavior,
     AnimationConfig? animation,
     ModifierConfig? modifier,
-    List<VariantStyle<StackWidgetSpec>>? variants,
+    List<VariantStyle<StackSpec>>? variants,
     bool? inherit,
   }) : this.create(
          alignment: Prop.maybe(alignment),
@@ -106,15 +106,15 @@ class StackStyle extends Style<StackWidgetSpec>
          inherit: inherit,
        );
 
-  /// Constructor that accepts a [StackWidgetSpec] value and extracts its properties.
+  /// Constructor that accepts a [StackSpec] value and extracts its properties.
   ///
-  /// This is useful for converting existing [StackWidgetSpec] instances to [StackStyle].
+  /// This is useful for converting existing [StackSpec] instances to [StackStyle].
   ///
   /// ```dart
   /// const spec = StackWidgetSpec(alignment: AlignmentDirectional.topStart, fit: StackFit.loose);
   /// final attr = StackStyle.value(spec);
   /// ```
-  StackStyle.value(StackWidgetSpec spec)
+  StackStyle.value(StackSpec spec)
     : this(
         alignment: spec.alignment,
         fit: spec.fit,
@@ -122,7 +122,7 @@ class StackStyle extends Style<StackWidgetSpec>
         clipBehavior: spec.clipBehavior,
       );
 
-  /// Constructor that accepts a nullable [StackWidgetSpec] value and extracts its properties.
+  /// Constructor that accepts a nullable [StackSpec] value and extracts its properties.
   ///
   /// Returns null if the input is null, otherwise uses [StackStyle.value].
   ///
@@ -130,7 +130,7 @@ class StackStyle extends Style<StackWidgetSpec>
   /// const StackWidgetSpec? spec = StackWidgetSpec(alignment: AlignmentDirectional.topStart, fit: StackFit.loose);
   /// final attr = StackStyle.maybeValue(spec); // Returns StackStyle or null
   /// ```
-  static StackStyle? maybeValue(StackWidgetSpec? spec) {
+  static StackStyle? maybeValue(StackSpec? spec) {
     return spec != null ? StackStyle.value(spec) : null;
   }
 
@@ -165,14 +165,14 @@ class StackStyle extends Style<StackWidgetSpec>
   }
 
   @override
-  StackStyle variants(List<VariantStyle<StackWidgetSpec>> variants) {
+  StackStyle variants(List<VariantStyle<StackSpec>> variants) {
     return merge(StackStyle(variants: variants));
   }
 
-  /// Resolves to [StackWidgetSpec] using the provided [BuildContext].
+  /// Resolves to [StackSpec] using the provided [BuildContext].
   @override
-  StackWidgetSpec resolve(BuildContext context) {
-    return StackWidgetSpec(
+  StackSpec resolve(BuildContext context) {
+    return StackSpec(
       alignment: MixOps.resolve(context, $alignment),
       fit: MixOps.resolve(context, $fit),
       textDirection: MixOps.resolve(context, $textDirection),

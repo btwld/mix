@@ -14,7 +14,7 @@ import 'image_spec.dart';
 ///
 /// Supports the same API as [ImageStyle] but maintains mutable internal state
 /// enabling fluid styling: `$image..width(100)..height(100)..fit(BoxFit.cover)`.
-class ImageSpecUtility extends StyleMutableBuilder<ImageWidgetSpec> {
+class ImageSpecUtility extends StyleMutableBuilder<ImageSpec> {
   late final color = ColorUtility(
     (prop) => mutable.merge(ImageStyle.create(color: prop)),
   );
@@ -31,7 +31,7 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageWidgetSpec> {
 
   late final colorBlendMode = MixUtility(mutable.colorBlendMode);
 
-  late final on = OnContextVariantUtility<ImageWidgetSpec, ImageStyle>(
+  late final on = OnContextVariantUtility<ImageSpec, ImageStyle>(
     (v) => mutable.variants([v]),
   );
 
@@ -64,7 +64,7 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageWidgetSpec> {
   }
 
   @override
-  ImageSpecUtility merge(Style<ImageWidgetSpec>? other) {
+  ImageSpecUtility merge(Style<ImageSpec>? other) {
     if (other == null) return this;
     // Always create new instance (StyleAttribute contract)
     if (other is ImageSpecUtility) {
@@ -78,7 +78,7 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageWidgetSpec> {
   }
 
   @override
-  ImageWidgetSpec resolve(BuildContext context) {
+  ImageSpec resolve(BuildContext context) {
     return mutable.resolve(context);
   }
 
@@ -87,8 +87,7 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageWidgetSpec> {
   ImageStyle get value => mutable.value;
 }
 
-class MutableImageStyle extends ImageStyle
-    with Mutable<ImageWidgetSpec, ImageStyle> {
+class MutableImageStyle extends ImageStyle with Mutable<ImageSpec, ImageStyle> {
   MutableImageStyle(ImageStyle style) {
     value = style;
   }

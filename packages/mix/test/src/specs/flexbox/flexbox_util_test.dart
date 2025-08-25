@@ -51,7 +51,7 @@ void main() {
       test('on utility is OnContextVariantUtility', () {
         expect(
           util.on,
-          isA<OnContextVariantUtility<FlexBoxWidgetSpec, FlexBoxStyle>>(),
+          isA<OnContextVariantUtility<FlexBoxSpec, FlexBoxStyle>>(),
         );
       });
 
@@ -193,7 +193,7 @@ void main() {
       test('on utility creates VariantAttributeBuilder', () {
         final hoverBuilder = util.on.hover;
 
-        expect(hoverBuilder, isA<VariantAttributeBuilder<FlexBoxWidgetSpec>>());
+        expect(hoverBuilder, isA<VariantAttributeBuilder<FlexBoxSpec>>());
       });
     });
 
@@ -233,7 +233,7 @@ void main() {
 
       test('merge throws error for unsupported type', () {
         expect(
-          () => util.merge('invalid_type' as Style<FlexBoxWidgetSpec>),
+          () => util.merge('invalid_type' as Style<FlexBoxSpec>),
           throwsA(isA<TypeError>()),
         );
       });
@@ -276,7 +276,7 @@ void main() {
         final context = MockBuildContext();
         final spec = testUtil.resolve(context);
 
-        expect(spec, isA<FlexBoxWidgetSpec>());
+        expect(spec, isA<FlexBoxSpec>());
         expect(spec.flex?.direction, Axis.vertical);
         expect(spec.flex?.mainAxisAlignment, MainAxisAlignment.center);
         expect(spec.flex?.spacing, 12.0);
@@ -286,7 +286,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec, isA<FlexBoxWidgetSpec>());
+        expect(spec, isA<FlexBoxSpec>());
         expect(spec.flex?.direction, isNull);
         expect(spec.flex?.spacing, isNull);
         expect(spec.flex?.mainAxisAlignment, isNull);
@@ -349,31 +349,28 @@ void main() {
         expect(spec.flex?.spacing, 16.0);
       });
 
-      test(
-        '',
-        () {
-          final util = FlexBoxSpecUtility();
+      test('', () {
+        final util = FlexBoxSpecUtility();
 
-          // Each utility call should return a FlexBoxStyle
-          final directionResult = util.direction(Axis.vertical);
-          final alignmentResult = util.mainAxisAlignment(
-            MainAxisAlignment.center,
-          );
-          final spacingResult = util.spacing(16.0);
+        // Each utility call should return a FlexBoxStyle
+        final directionResult = util.direction(Axis.vertical);
+        final alignmentResult = util.mainAxisAlignment(
+          MainAxisAlignment.center,
+        );
+        final spacingResult = util.spacing(16.0);
 
-          expect(directionResult, isA<FlexBoxStyle>());
-          expect(alignmentResult, isA<FlexBoxStyle>());
-          expect(spacingResult, isA<FlexBoxStyle>());
+        expect(directionResult, isA<FlexBoxStyle>());
+        expect(alignmentResult, isA<FlexBoxStyle>());
+        expect(spacingResult, isA<FlexBoxStyle>());
 
-          // But the utility itself should have accumulated all changes
-          final context = MockBuildContext();
-          final spec = util.resolve(context);
+        // But the utility itself should have accumulated all changes
+        final context = MockBuildContext();
+        final spec = util.resolve(context);
 
-          expect(spec.flex?.direction, Axis.vertical);
-          expect(spec.flex?.mainAxisAlignment, MainAxisAlignment.center);
-          expect(spec.flex?.spacing, 16.0);
-        },
-      );
+        expect(spec.flex?.direction, Axis.vertical);
+        expect(spec.flex?.mainAxisAlignment, MainAxisAlignment.center);
+        expect(spec.flex?.spacing, 16.0);
+      });
     });
 
     group('Mutating behavior vs Builder pattern', () {
@@ -446,7 +443,7 @@ void main() {
         expect(
           testUtil,
           resolvesTo(
-            const FlexBoxWidgetSpec(
+            const FlexBoxSpec(
               flex: FlexLayoutSpec(
                 direction: Axis.horizontal,
                 mainAxisAlignment: MainAxisAlignment.center,

@@ -14,7 +14,7 @@ import 'flex_spec.dart';
 ///
 /// Supports the same API as [FlexStyle] but maintains mutable internal state
 /// enabling fluid styling: `$flex..direction(Axis.horizontal)..spacing(8)`.
-class FlexSpecUtility extends StyleMutableBuilder<FlexWidgetSpec> {
+class FlexSpecUtility extends StyleMutableBuilder<FlexSpec> {
   late final direction = MixUtility(mutable.direction);
 
   late final mainAxisAlignment = MixUtility(mutable.mainAxisAlignment);
@@ -31,7 +31,7 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexWidgetSpec> {
 
   late final clipBehavior = MixUtility(mutable.clipBehavior);
 
-  late final on = OnContextVariantUtility<FlexWidgetSpec, FlexStyle>(
+  late final on = OnContextVariantUtility<FlexSpec, FlexStyle>(
     (v) => mutable.variants([v]),
   );
 
@@ -68,7 +68,7 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexWidgetSpec> {
   FlexStyle animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
-  FlexSpecUtility merge(Style<FlexWidgetSpec>? other) {
+  FlexSpecUtility merge(Style<FlexSpec>? other) {
     if (other == null) return this;
     // Always create new instance (StyleAttribute contract)
     if (other is FlexSpecUtility) {
@@ -82,7 +82,7 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexWidgetSpec> {
   }
 
   @override
-  FlexWidgetSpec resolve(BuildContext context) {
+  FlexSpec resolve(BuildContext context) {
     return mutable.resolve(context);
   }
 
@@ -95,8 +95,7 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexWidgetSpec> {
 ///
 /// Used internally by [FlexSpecUtility] to accumulate styling changes
 /// without creating new instances for each modification.
-class MutableFlexStyle extends FlexStyle
-    with Mutable<FlexWidgetSpec, FlexStyle> {
+class MutableFlexStyle extends FlexStyle with Mutable<FlexSpec, FlexStyle> {
   MutableFlexStyle(FlexStyle style) {
     value = style;
   }

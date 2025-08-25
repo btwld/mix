@@ -67,10 +67,7 @@ void main() {
       });
 
       test('on utility is OnContextVariantUtility', () {
-        expect(
-          util.on,
-          isA<OnContextVariantUtility<IconWidgetSpec, IconStyle>>(),
-        );
+        expect(util.on, isA<OnContextVariantUtility<IconSpec, IconStyle>>());
       });
 
       test('wrap utility is ModifierUtility', () {
@@ -190,7 +187,7 @@ void main() {
       test('on utility creates VariantAttributeBuilder', () {
         final hoverBuilder = util.on.hover;
 
-        expect(hoverBuilder, isA<VariantAttributeBuilder<IconWidgetSpec>>());
+        expect(hoverBuilder, isA<VariantAttributeBuilder<IconSpec>>());
       });
     });
 
@@ -234,7 +231,7 @@ void main() {
 
       test('merge throws error for unsupported type', () {
         expect(
-          () => util.merge('invalid_type' as Style<IconWidgetSpec>),
+          () => util.merge('invalid_type' as Style<IconSpec>),
           throwsA(isA<TypeError>()),
         );
       });
@@ -262,7 +259,7 @@ void main() {
         final context = MockBuildContext();
         final spec = testUtil.resolve(context);
 
-        expect(spec, isA<IconWidgetSpec>());
+        expect(spec, isA<IconSpec>());
         expect(spec.size, 24.0);
         expect(spec.weight, 400.0);
         expect(spec.fill, 0.8);
@@ -272,7 +269,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec, isA<IconWidgetSpec>());
+        expect(spec, isA<IconSpec>());
         expect(spec.size, isNull);
         expect(spec.weight, isNull);
         expect(spec.fill, isNull);
@@ -420,9 +417,7 @@ void main() {
 
         expect(
           testUtil,
-          resolvesTo(
-            const IconWidgetSpec(size: 24.0, weight: 400.0, fill: 0.8),
-          ),
+          resolvesTo(const IconSpec(size: 24.0, weight: 400.0, fill: 0.8)),
         );
       });
     });

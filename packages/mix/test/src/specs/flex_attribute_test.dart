@@ -103,7 +103,7 @@ void main() {
 
     group('value constructor', () {
       test('', () {
-        const spec = FlexWidgetSpec(
+        const spec = FlexSpec(
           direction: Axis.horizontal,
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -142,7 +142,7 @@ void main() {
       });
 
       test('maybeValue returns attribute for non-null spec', () {
-        const spec = FlexWidgetSpec(direction: Axis.vertical, gap: 8.0);
+        const spec = FlexSpec(direction: Axis.vertical, gap: 8.0);
         final attribute = FlexStyle.maybeValue(spec);
 
         expect(attribute, isNotNull);

@@ -84,11 +84,7 @@ void main() {
 
     group('value constructor', () {
       test('', () {
-        const spec = IconWidgetSpec(
-          color: Colors.green,
-          size: 28.0,
-          weight: 600.0,
-        );
+        const spec = IconSpec(color: Colors.green, size: 28.0, weight: 600.0);
 
         final attribute = IconStyle.value(spec);
 
@@ -102,7 +98,7 @@ void main() {
       });
 
       test('maybeValue returns attribute for non-null spec', () {
-        const spec = IconWidgetSpec(color: Colors.purple, size: 20.0);
+        const spec = IconSpec(color: Colors.purple, size: 20.0);
         final attribute = IconStyle.maybeValue(spec);
 
         expect(attribute, isNotNull);

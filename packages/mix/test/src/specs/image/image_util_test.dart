@@ -93,10 +93,7 @@ void main() {
       });
 
       test('on utility is OnContextVariantUtility', () {
-        expect(
-          util.on,
-          isA<OnContextVariantUtility<ImageWidgetSpec, ImageStyle>>(),
-        );
+        expect(util.on, isA<OnContextVariantUtility<ImageSpec, ImageStyle>>());
       });
 
       test('wrap utility is ModifierUtility', () {
@@ -261,7 +258,7 @@ void main() {
       test('on utility creates VariantAttributeBuilder', () {
         final hoverBuilder = util.on.hover;
 
-        expect(hoverBuilder, isA<VariantAttributeBuilder<ImageWidgetSpec>>());
+        expect(hoverBuilder, isA<VariantAttributeBuilder<ImageSpec>>());
       });
     });
 
@@ -305,7 +302,7 @@ void main() {
 
       test('merge throws error for unsupported type', () {
         expect(
-          () => util.merge('invalid_type' as Style<ImageWidgetSpec>),
+          () => util.merge('invalid_type' as Style<ImageSpec>),
           throwsA(isA<TypeError>()),
         );
       });
@@ -335,7 +332,7 @@ void main() {
         final context = MockBuildContext();
         final spec = testUtil.resolve(context);
 
-        expect(spec, isA<ImageWidgetSpec>());
+        expect(spec, isA<ImageSpec>());
         expect(spec.width, 100.0);
         expect(spec.height, 200.0);
         expect(spec.fit, BoxFit.cover);
@@ -345,7 +342,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec, isA<ImageWidgetSpec>());
+        expect(spec, isA<ImageSpec>());
         expect(spec.width, isNull);
         expect(spec.height, isNull);
         expect(spec.fit, isNull);
@@ -377,7 +374,7 @@ void main() {
         expect(
           spec,
           equals(
-            const ImageWidgetSpec(
+            const ImageSpec(
               width: 100.0,
               height: 200.0,
               color: Colors.red,
@@ -540,11 +537,7 @@ void main() {
         expect(
           testUtil,
           resolvesTo(
-            const ImageWidgetSpec(
-              width: 100.0,
-              height: 200.0,
-              fit: BoxFit.cover,
-            ),
+            const ImageSpec(width: 100.0, height: 200.0, fit: BoxFit.cover),
           ),
         );
       });

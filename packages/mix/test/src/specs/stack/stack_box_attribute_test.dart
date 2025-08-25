@@ -79,13 +79,10 @@ void main() {
     group('value constructor', () {
       test('', () {
         const spec = ZBoxWidgetSpec(
-          box: BoxWidgetSpec(
+          box: BoxSpec(
             constraints: BoxConstraints.tightFor(width: 200.0, height: 100.0),
           ),
-          stack: StackWidgetSpec(
-            alignment: Alignment.center,
-            fit: StackFit.expand,
-          ),
+          stack: StackSpec(alignment: Alignment.center, fit: StackFit.expand),
         );
 
         final attribute = StackBoxStyle.value(spec);
@@ -103,10 +100,8 @@ void main() {
 
       test('maybeValue returns attribute for non-null spec', () {
         const spec = ZBoxWidgetSpec(
-          box: BoxWidgetSpec(
-            constraints: BoxConstraints.tightFor(width: 150.0),
-          ),
-          stack: StackWidgetSpec(alignment: Alignment.topLeft),
+          box: BoxSpec(constraints: BoxConstraints.tightFor(width: 150.0)),
+          stack: StackSpec(alignment: Alignment.topLeft),
         );
         final attribute = StackBoxStyle.maybeValue(spec);
 
@@ -197,8 +192,8 @@ void main() {
 
         expect(spec, isNotNull);
         // ZBoxWidgetSpec constructor provides default values when null
-        expect(spec.box, const BoxWidgetSpec());
-        expect(spec.stack, const StackWidgetSpec());
+        expect(spec.box, const BoxSpec());
+        expect(spec.stack, const StackSpec());
       });
     });
 

@@ -8,24 +8,24 @@ import '../box/box_spec.dart';
 import 'stack_spec.dart';
 
 final class ZBoxWidgetSpec extends WidgetSpec<ZBoxWidgetSpec> {
-  final BoxWidgetSpec box;
-  final StackWidgetSpec stack;
+  final BoxSpec box;
+  final StackSpec stack;
 
   const ZBoxWidgetSpec({
-    BoxWidgetSpec? box,
-    StackWidgetSpec? stack,
+    BoxSpec? box,
+    StackSpec? stack,
     super.animation,
     super.widgetModifiers,
     super.inherit,
-  }) : box = box ?? const BoxWidgetSpec(),
-       stack = stack ?? const StackWidgetSpec();
+  }) : box = box ?? const BoxSpec(),
+       stack = stack ?? const StackSpec();
 
   /// Creates a copy of this [ZBoxWidgetSpec] but with the given fields
   /// replaced with the new values.
   @override
   ZBoxWidgetSpec copyWith({
-    BoxWidgetSpec? box,
-    StackWidgetSpec? stack,
+    BoxSpec? box,
+    StackSpec? stack,
     AnimationConfig? animation,
     List<Modifier>? widgetModifiers,
     bool? inherit,
@@ -49,8 +49,8 @@ final class ZBoxWidgetSpec extends WidgetSpec<ZBoxWidgetSpec> {
   ///
   /// The interpolation is performed on each property of the [ZBoxWidgetSpec] using the appropriate
   /// interpolation method:
-  /// - [BoxWidgetSpec.lerp] for [box].
-  /// - [StackWidgetSpec.lerp] for [stack].
+  /// - [BoxSpec.lerp] for [box].
+  /// - [StackSpec.lerp] for [stack].
   ///
   /// This method is typically used in animations to smoothly transition between
   /// different [ZBoxWidgetSpec] configurations.
@@ -79,15 +79,9 @@ final class ZBoxWidgetSpec extends WidgetSpec<ZBoxWidgetSpec> {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
+      ..add(DiagnosticsProperty('box', box, defaultValue: const BoxSpec()))
       ..add(
-        DiagnosticsProperty('box', box, defaultValue: const BoxWidgetSpec()),
-      )
-      ..add(
-        DiagnosticsProperty(
-          'stack',
-          stack,
-          defaultValue: const StackWidgetSpec(),
-        ),
+        DiagnosticsProperty('stack', stack, defaultValue: const StackSpec()),
       );
   }
 

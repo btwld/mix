@@ -12,7 +12,7 @@ import '../../core/widget_spec.dart';
 /// Provides comprehensive box styling including alignment, padding, margin, constraints,
 /// decoration, transformation, and clipping behavior. Used as the resolved form
 /// of [BoxMix] styling attributes.
-class BoxWidgetSpec extends WidgetSpec<BoxWidgetSpec> {
+class BoxSpec extends WidgetSpec<BoxSpec> {
   /// Aligns the child within the box.
   final AlignmentGeometry? alignment;
 
@@ -40,7 +40,7 @@ class BoxWidgetSpec extends WidgetSpec<BoxWidgetSpec> {
   /// Defines the clip behavior for the box when content overflows.
   final Clip? clipBehavior;
 
-  const BoxWidgetSpec({
+  const BoxSpec({
     this.alignment,
     this.padding,
     this.margin,
@@ -55,10 +55,10 @@ class BoxWidgetSpec extends WidgetSpec<BoxWidgetSpec> {
     super.inherit,
   });
 
-  /// Creates a copy of this [BoxWidgetSpec] but with the given fields
+  /// Creates a copy of this [BoxSpec] but with the given fields
   /// replaced with the new values.
   @override
-  BoxWidgetSpec copyWith({
+  BoxSpec copyWith({
     AlignmentGeometry? alignment,
     EdgeInsetsGeometry? padding,
     EdgeInsetsGeometry? margin,
@@ -72,7 +72,7 @@ class BoxWidgetSpec extends WidgetSpec<BoxWidgetSpec> {
     List<Modifier>? widgetModifiers,
     bool? inherit,
   }) {
-    return BoxWidgetSpec(
+    return BoxSpec(
       alignment: alignment ?? this.alignment,
       padding: padding ?? this.padding,
       margin: margin ?? this.margin,
@@ -90,8 +90,8 @@ class BoxWidgetSpec extends WidgetSpec<BoxWidgetSpec> {
 
   /// Linearly interpolates between this and [other] BoxSpec.
   @override
-  BoxWidgetSpec lerp(BoxWidgetSpec? other, double t) {
-    return BoxWidgetSpec(
+  BoxSpec lerp(BoxSpec? other, double t) {
+    return BoxSpec(
       alignment: MixOps.lerp(alignment, other?.alignment, t),
       padding: MixOps.lerp(padding, other?.padding, t),
       margin: MixOps.lerp(margin, other?.margin, t),
@@ -131,10 +131,10 @@ class BoxWidgetSpec extends WidgetSpec<BoxWidgetSpec> {
       ..add(EnumProperty<Clip>('clipBehavior', clipBehavior));
   }
 
-  /// The list of properties that constitute the state of this [BoxWidgetSpec].
+  /// The list of properties that constitute the state of this [BoxSpec].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [BoxWidgetSpec] instances for equality.
+  /// compare two [BoxSpec] instances for equality.
   @override
   List<Object?> get props => [
     ...super.props,

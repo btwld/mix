@@ -11,7 +11,7 @@ import '../../core/widget_spec.dart';
 /// This class provides configuration for flex-specific properties such as
 /// direction, alignment, and spacing through the Mix framework.
 @immutable
-final class FlexWidgetSpec extends WidgetSpec<FlexWidgetSpec> {
+final class FlexSpec extends WidgetSpec<FlexSpec> {
   /// The direction to use as the main axis.
   final Axis? direction;
 
@@ -46,8 +46,8 @@ final class FlexWidgetSpec extends WidgetSpec<FlexWidgetSpec> {
   )
   final double? gap;
 
-  /// Creates a [FlexWidgetSpec] with the provided properties.
-  const FlexWidgetSpec({
+  /// Creates a [FlexSpec] with the provided properties.
+  const FlexSpec({
     this.direction,
     this.mainAxisAlignment,
     this.crossAxisAlignment,
@@ -67,9 +67,9 @@ final class FlexWidgetSpec extends WidgetSpec<FlexWidgetSpec> {
     super.inherit,
   }) : gap = gap ?? spacing;
 
-  /// Creates a copy of this [FlexWidgetSpec] with the given properties replaced.
+  /// Creates a copy of this [FlexSpec] with the given properties replaced.
   @override
-  FlexWidgetSpec copyWith({
+  FlexSpec copyWith({
     Axis? direction,
     MainAxisAlignment? mainAxisAlignment,
     CrossAxisAlignment? crossAxisAlignment,
@@ -88,7 +88,7 @@ final class FlexWidgetSpec extends WidgetSpec<FlexWidgetSpec> {
     List<Modifier>? widgetModifiers,
     bool? inherit,
   }) {
-    return FlexWidgetSpec(
+    return FlexSpec(
       direction: direction ?? this.direction,
       mainAxisAlignment: mainAxisAlignment ?? this.mainAxisAlignment,
       crossAxisAlignment: crossAxisAlignment ?? this.crossAxisAlignment,
@@ -104,10 +104,10 @@ final class FlexWidgetSpec extends WidgetSpec<FlexWidgetSpec> {
     );
   }
 
-  /// Linearly interpolates between this [FlexWidgetSpec] and another [FlexWidgetSpec].
+  /// Linearly interpolates between this [FlexSpec] and another [FlexSpec].
   @override
-  FlexWidgetSpec lerp(FlexWidgetSpec? other, double t) {
-    return FlexWidgetSpec(
+  FlexSpec lerp(FlexSpec? other, double t) {
+    return FlexSpec(
       direction: MixOps.lerpSnap(direction, other?.direction, t),
       mainAxisAlignment: MixOps.lerpSnap(
         mainAxisAlignment,
