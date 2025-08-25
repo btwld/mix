@@ -107,10 +107,12 @@ export 'src/properties/layout/flex_layout_mix.dart';
 /// TYPOGRAPHY
 export 'src/properties/typography/typography_spec.dart';
 export 'src/properties/typography/typography_mix.dart';
+export 'src/providers/typography_scope.dart';
 
 /// ICONOGRAPHY
 export 'src/properties/iconography/iconography_spec.dart';
 export 'src/properties/iconography/iconography_mix.dart';
+export 'src/providers/iconography_scope.dart';
 
 /// SPECS
 export 'src/specs/box/box_attribute.dart';
