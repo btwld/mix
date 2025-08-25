@@ -68,10 +68,10 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxWidgetSpec> {
   /// Internal mutable state for accumulating box styling properties.
   @override
   @protected
-  late final MutableBoxMix mutable;
+  late final MutableBoxStyle mutable;
 
   BoxSpecUtility([BoxStyle? attribute]) {
-    mutable = MutableBoxMix(attribute ?? BoxStyle());
+    mutable = MutableBoxStyle(attribute ?? BoxStyle());
   }
 
   /// Applies animation configuration to the box styling.
@@ -105,8 +105,8 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxWidgetSpec> {
 ///
 /// Used internally by [BoxSpecUtility] to accumulate styling changes
 /// without creating new instances for each modification.
-class MutableBoxMix extends BoxStyle with Mutable<BoxWidgetSpec, BoxStyle> {
-  MutableBoxMix(BoxStyle style) {
+class MutableBoxStyle extends BoxStyle with Mutable<BoxWidgetSpec, BoxStyle> {
+  MutableBoxStyle(BoxStyle style) {
     value = style;
   }
 }

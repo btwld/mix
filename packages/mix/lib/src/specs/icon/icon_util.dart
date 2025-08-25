@@ -37,10 +37,10 @@ class IconSpecUtility extends StyleMutableBuilder<IconWidgetSpec> {
   /// Internal mutable state for accumulating icon styling properties.
   @override
   @protected
-  late final MutableIconMix mutable;
+  late final MutableIconStyle mutable;
 
   IconSpecUtility([IconStyle? attribute]) {
-    mutable = MutableIconMix(attribute ?? IconStyle());
+    mutable = MutableIconStyle(attribute ?? IconStyle());
   }
 
   IconStyle size(double v) => mutable.size(v);
@@ -85,8 +85,9 @@ class IconSpecUtility extends StyleMutableBuilder<IconWidgetSpec> {
   IconStyle get value => mutable.value;
 }
 
-class MutableIconMix extends IconStyle with Mutable<IconWidgetSpec, IconStyle> {
-  MutableIconMix(IconStyle style) {
+class MutableIconStyle extends IconStyle
+    with Mutable<IconWidgetSpec, IconStyle> {
+  MutableIconStyle(IconStyle style) {
     value = style;
   }
 }

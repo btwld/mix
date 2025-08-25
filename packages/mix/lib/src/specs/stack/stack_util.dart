@@ -34,10 +34,10 @@ class StackSpecUtility extends StyleMutableBuilder<StackWidgetSpec> {
   /// Internal mutable state for accumulating stack styling properties.
   @override
   @protected
-  late final MutableStackMix mutable;
+  late final MutableStackStyle mutable;
 
   StackSpecUtility([StackStyle? attribute]) {
-    mutable = MutableStackMix(attribute ?? StackStyle());
+    mutable = MutableStackStyle(attribute ?? StackStyle());
   }
 
   /// Applies animation configuration to the stack styling.
@@ -67,9 +67,9 @@ class StackSpecUtility extends StyleMutableBuilder<StackWidgetSpec> {
   StackStyle get value => mutable.value;
 }
 
-class MutableStackMix extends StackStyle
+class MutableStackStyle extends StackStyle
     with Mutable<StackWidgetSpec, StackStyle> {
-  MutableStackMix(StackStyle style) {
+  MutableStackStyle(StackStyle style) {
     value = style;
   }
 }

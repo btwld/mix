@@ -42,7 +42,7 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageWidgetSpec> {
   /// Internal mutable state for accumulating image styling properties.
   @override
   @protected
-  late final MutableImageMix mutable;
+  late final MutableImageStyle mutable;
 
   late final image = mutable.image;
 
@@ -60,7 +60,7 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageWidgetSpec> {
   late final animate = mutable.animate;
   late final variants = mutable.variants;
   ImageSpecUtility([ImageStyle? attribute]) {
-    mutable = MutableImageMix(attribute ?? ImageStyle());
+    mutable = MutableImageStyle(attribute ?? ImageStyle());
   }
 
   @override
@@ -87,9 +87,9 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageWidgetSpec> {
   ImageStyle get value => mutable.value;
 }
 
-class MutableImageMix extends ImageStyle
+class MutableImageStyle extends ImageStyle
     with Mutable<ImageWidgetSpec, ImageStyle> {
-  MutableImageMix(ImageStyle style) {
+  MutableImageStyle(ImageStyle style) {
     value = style;
   }
 }

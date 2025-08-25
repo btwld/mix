@@ -42,10 +42,10 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexWidgetSpec> {
   /// Internal mutable state for accumulating flex styling properties.
   @override
   @protected
-  late final MutableFlexMix mutable;
+  late final MutableFlexStyle mutable;
 
   FlexSpecUtility([FlexStyle? attribute]) {
-    mutable = MutableFlexMix(attribute ?? FlexStyle());
+    mutable = MutableFlexStyle(attribute ?? FlexStyle());
   }
 
   /// Sets the spacing between children in the flex layout.
@@ -95,8 +95,9 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexWidgetSpec> {
 ///
 /// Used internally by [FlexSpecUtility] to accumulate styling changes
 /// without creating new instances for each modification.
-class MutableFlexMix extends FlexStyle with Mutable<FlexWidgetSpec, FlexStyle> {
-  MutableFlexMix(FlexStyle style) {
+class MutableFlexStyle extends FlexStyle
+    with Mutable<FlexWidgetSpec, FlexStyle> {
+  MutableFlexStyle(FlexStyle style) {
     value = style;
   }
 }
