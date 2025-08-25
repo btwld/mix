@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
+import '../../specs/text/text_widget.dart';
 
 /// Specification for typography properties based on DefaultTextStyle.
 ///
@@ -76,7 +77,7 @@ final class TypographySpec extends Spec<TypographySpec> with Diagnosticable {
   /// The interpolation is performed on each property of the [TypographySpec] using the appropriate
   /// interpolation method:
   /// - [MixOps.lerp] for [style].
-  /// For [textAlign], [softWrap], [overflow], [maxLines], [textWidthBasis], and [textHeightBehavior], 
+  /// For [textAlign], [softWrap], [overflow], [maxLines], [textWidthBasis], and [textHeightBehavior],
   /// the interpolation is performed using a step function.
   /// If [t] is less than 0.5, the value from the current [TypographySpec] is used. Otherwise, the value
   /// from the [other] [TypographySpec] is used.
@@ -94,7 +95,11 @@ final class TypographySpec extends Spec<TypographySpec> with Diagnosticable {
       overflow: MixOps.lerpSnap(overflow, other.overflow, t),
       maxLines: MixOps.lerpSnap(maxLines, other.maxLines, t),
       textWidthBasis: MixOps.lerpSnap(textWidthBasis, other.textWidthBasis, t),
-      textHeightBehavior: MixOps.lerpSnap(textHeightBehavior, other.textHeightBehavior, t),
+      textHeightBehavior: MixOps.lerpSnap(
+        textHeightBehavior,
+        other.textHeightBehavior,
+        t,
+      ),
     );
   }
 
@@ -104,11 +109,13 @@ final class TypographySpec extends Spec<TypographySpec> with Diagnosticable {
     properties
       ..add(DiagnosticsProperty('style', style))
       ..add(EnumProperty<TextAlign>('textAlign', textAlign))
-      ..add(FlagProperty(
-        'softWrap',
-        value: softWrap,
-        ifTrue: 'wrapping at word boundaries',
-      ))
+      ..add(
+        FlagProperty(
+          'softWrap',
+          value: softWrap,
+          ifTrue: 'wrapping at word boundaries',
+        ),
+      )
       ..add(EnumProperty<TextOverflow>('overflow', overflow))
       ..add(IntProperty('maxLines', maxLines))
       ..add(EnumProperty<TextWidthBasis>('textWidthBasis', textWidthBasis))
@@ -121,12 +128,36 @@ final class TypographySpec extends Spec<TypographySpec> with Diagnosticable {
   /// compare two [TypographySpec] instances for equality.
   @override
   List<Object?> get props => [
-        style,
-        textAlign,
-        softWrap,
-        overflow,
-        maxLines,
-        textWidthBasis,
-        textHeightBehavior,
-      ];
+    style,
+    textAlign,
+    softWrap,
+    overflow,
+    maxLines,
+    textWidthBasis,
+    textHeightBehavior,
+  ];
+}
+
+/// Creates a [DefaultTextStyle] widget from a [TypographySpec] with [StyledText] as child.
+DefaultTextStyle createTypographySpecWidget({
+  required TypographySpec spec,
+  required String text,
+}) {
+  return DefaultTextStyle(
+    style: spec.style ?? const TextStyle(),
+    textAlign: spec.textAlign,
+    softWrap: spec.softWrap ?? true,
+    overflow: spec.overflow ?? TextOverflow.clip,
+    maxLines: spec.maxLines,
+    textWidthBasis: spec.textWidthBasis ?? TextWidthBasis.parent,
+    textHeightBehavior: spec.textHeightBehavior,
+    child: StyledText(text),
+  );
+}
+
+/// Extension to convert [TypographySpec] directly to a [DefaultTextStyle] widget.
+extension TypographySpecWidget on TypographySpec {
+  DefaultTextStyle call(String text) {
+    return createTypographySpecWidget(spec: this, text: text);
+  }
 }

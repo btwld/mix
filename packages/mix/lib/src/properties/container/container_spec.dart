@@ -6,11 +6,10 @@ import '../../core/spec.dart';
 
 /// A property bag for Container widget configuration.
 ///
-/// This Spec provides resolved container styling values that can be applied 
+/// This Spec provides resolved container styling values that can be applied
 /// to Container widgets. It encapsulates common container properties like
 /// decoration, padding, alignment, and constraints.
-class ContainerSpec extends Spec<ContainerSpec>
-    with Diagnosticable {
+class ContainerSpec extends Spec<ContainerSpec> with Diagnosticable {
   final Decoration? decoration;
   final Decoration? foregroundDecoration;
   final EdgeInsetsGeometry? padding;
@@ -64,13 +63,21 @@ class ContainerSpec extends Spec<ContainerSpec>
 
     return ContainerSpec(
       decoration: MixOps.lerp(decoration, other.decoration, t),
-      foregroundDecoration: MixOps.lerp(foregroundDecoration, other.foregroundDecoration, t),
+      foregroundDecoration: MixOps.lerp(
+        foregroundDecoration,
+        other.foregroundDecoration,
+        t,
+      ),
       padding: MixOps.lerp(padding, other.padding, t),
       margin: MixOps.lerp(margin, other.margin, t),
       alignment: MixOps.lerp(alignment, other.alignment, t),
       constraints: MixOps.lerp(constraints, other.constraints, t),
       transform: MixOps.lerp(transform, other.transform, t),
-      transformAlignment: MixOps.lerp(transformAlignment, other.transformAlignment, t),
+      transformAlignment: MixOps.lerp(
+        transformAlignment,
+        other.transformAlignment,
+        t,
+      ),
       clipBehavior: t < 0.5 ? clipBehavior : other.clipBehavior,
     );
   }
@@ -92,38 +99,41 @@ class ContainerSpec extends Spec<ContainerSpec>
 
   @override
   List<Object?> get props => [
-        decoration,
-        foregroundDecoration,
-        padding,
-        margin,
-        alignment,
-        constraints,
-        transform,
-        transformAlignment,
-        clipBehavior,
-      ];
+    decoration,
+    foregroundDecoration,
+    padding,
+    margin,
+    alignment,
+    constraints,
+    transform,
+    transformAlignment,
+    clipBehavior,
+  ];
+}
+
+/// Creates a [Container] widget from a [ContainerSpec].
+Container createContainerSpecWidget({
+  required ContainerSpec spec,
+  Widget? child,
+}) {
+  return Container(
+    alignment: spec.alignment,
+    padding: spec.padding,
+    decoration: spec.decoration,
+    foregroundDecoration: spec.foregroundDecoration,
+    constraints: spec.constraints,
+    margin: spec.margin,
+    transform: spec.transform,
+    transformAlignment: spec.transformAlignment,
+    clipBehavior: spec.clipBehavior ?? Clip.none,
+    child: child,
+  );
 }
 
 /// Extension to convert [ContainerSpec] directly to a [Container] widget.
 extension ContainerSpecX on ContainerSpec {
-  /// Backward compatible call operator to build a Container widget.
+  /// Call operator to build a Container widget.
   Container call({Widget? child}) {
-    return toContainer(child: child);
-  }
-
-  /// Explicitly build a Container widget with the specified properties.
-  Container toContainer({Widget? child}) {
-    return Container(
-      alignment: alignment,
-      padding: padding,
-      decoration: decoration,
-      foregroundDecoration: foregroundDecoration,
-      constraints: constraints,
-      margin: margin,
-      transform: transform,
-      transformAlignment: transformAlignment,
-      clipBehavior: clipBehavior ?? Clip.none,
-      child: child,
-    );
+    return createContainerSpecWidget(spec: this, child: child);
   }
 }

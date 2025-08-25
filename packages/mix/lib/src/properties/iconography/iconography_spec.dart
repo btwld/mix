@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
+import '../../specs/icon/icon_widget.dart';
 
 /// Specification for iconography properties based on IconTheme.
 ///
@@ -107,7 +108,11 @@ final class IconographySpec extends Spec<IconographySpec> with Diagnosticable {
       color: MixOps.lerp(color, other.color, t),
       opacity: MixOps.lerp(opacity, other.opacity, t),
       shadows: MixOps.lerp(shadows, other.shadows, t),
-      applyTextScaling: MixOps.lerpSnap(applyTextScaling, other.applyTextScaling, t),
+      applyTextScaling: MixOps.lerpSnap(
+        applyTextScaling,
+        other.applyTextScaling,
+        t,
+      ),
     );
   }
 
@@ -123,11 +128,13 @@ final class IconographySpec extends Spec<IconographySpec> with Diagnosticable {
       ..add(ColorProperty('color', color))
       ..add(DoubleProperty('opacity', opacity))
       ..add(IterableProperty<Shadow>('shadows', shadows))
-      ..add(FlagProperty(
-        'applyTextScaling',
-        value: applyTextScaling,
-        ifTrue: 'scales with text',
-      ));
+      ..add(
+        FlagProperty(
+          'applyTextScaling',
+          value: applyTextScaling,
+          ifTrue: 'scales with text',
+        ),
+      );
   }
 
   /// The list of properties that constitute the state of this [IconographySpec].
@@ -136,14 +143,47 @@ final class IconographySpec extends Spec<IconographySpec> with Diagnosticable {
   /// compare two [IconographySpec] instances for equality.
   @override
   List<Object?> get props => [
-        size,
-        fill,
-        weight,
-        grade,
-        opticalSize,
-        color,
-        opacity,
-        shadows,
-        applyTextScaling,
-      ];
+    size,
+    fill,
+    weight,
+    grade,
+    opticalSize,
+    color,
+    opacity,
+    shadows,
+    applyTextScaling,
+  ];
+}
+
+/// Creates an [IconTheme] widget from an [IconographySpec] with [StyledIcon] as child.
+IconTheme createIconographySpecWidget({
+  required IconographySpec spec,
+  IconData? icon,
+  String? semanticLabel,
+}) {
+  return IconTheme(
+    data: IconThemeData(
+      size: spec.size,
+      fill: spec.fill,
+      weight: spec.weight,
+      grade: spec.grade,
+      opticalSize: spec.opticalSize,
+      color: spec.color,
+      opacity: spec.opacity,
+      shadows: spec.shadows,
+      applyTextScaling: spec.applyTextScaling,
+    ),
+    child: StyledIcon(icon: icon, semanticLabel: semanticLabel),
+  );
+}
+
+/// Extension to convert [IconographySpec] directly to an [IconTheme] widget.
+extension IconographySpecWidget on IconographySpec {
+  IconTheme call({IconData? icon, String? semanticLabel}) {
+    return createIconographySpecWidget(
+      spec: this,
+      icon: icon,
+      semanticLabel: semanticLabel,
+    );
+  }
 }
