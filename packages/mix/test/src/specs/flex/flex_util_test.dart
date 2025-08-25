@@ -17,7 +17,7 @@ void main() {
         util..direction(Axis.horizontal);
 
         final spec = util.resolve(MockBuildContext());
-        expect(spec, const FlexSpec(direction: Axis.horizontal));
+        expect(spec, const FlexWidgetSpec(direction: Axis.horizontal));
       });
 
       test('mainAxisAlignment utility modifies internal state', () {
@@ -26,7 +26,7 @@ void main() {
         final spec = util.resolve(MockBuildContext());
         expect(
           spec,
-          const FlexSpec(mainAxisAlignment: MainAxisAlignment.center),
+          const FlexWidgetSpec(mainAxisAlignment: MainAxisAlignment.center),
         );
       });
 
@@ -36,7 +36,7 @@ void main() {
         final spec = util.resolve(MockBuildContext());
         expect(
           spec,
-          const FlexSpec(crossAxisAlignment: CrossAxisAlignment.stretch),
+          const FlexWidgetSpec(crossAxisAlignment: CrossAxisAlignment.stretch),
         );
       });
 
@@ -44,42 +44,48 @@ void main() {
         util..mainAxisSize(MainAxisSize.min);
 
         final spec = util.resolve(MockBuildContext());
-        expect(spec, const FlexSpec(mainAxisSize: MainAxisSize.min));
+        expect(spec, const FlexWidgetSpec(mainAxisSize: MainAxisSize.min));
       });
 
       test('verticalDirection utility modifies internal state', () {
         util..verticalDirection(VerticalDirection.up);
 
         final spec = util.resolve(MockBuildContext());
-        expect(spec, const FlexSpec(verticalDirection: VerticalDirection.up));
+        expect(
+          spec,
+          const FlexWidgetSpec(verticalDirection: VerticalDirection.up),
+        );
       });
 
       test('textDirection utility modifies internal state', () {
         util..textDirection(TextDirection.rtl);
 
         final spec = util.resolve(MockBuildContext());
-        expect(spec, const FlexSpec(textDirection: TextDirection.rtl));
+        expect(spec, const FlexWidgetSpec(textDirection: TextDirection.rtl));
       });
 
       test('textBaseline utility modifies internal state', () {
         util..textBaseline(TextBaseline.ideographic);
 
         final spec = util.resolve(MockBuildContext());
-        expect(spec, const FlexSpec(textBaseline: TextBaseline.ideographic));
+        expect(
+          spec,
+          const FlexWidgetSpec(textBaseline: TextBaseline.ideographic),
+        );
       });
 
       test('clipBehavior utility modifies internal state', () {
         util..clipBehavior(Clip.antiAlias);
 
         final spec = util.resolve(MockBuildContext());
-        expect(spec, const FlexSpec(clipBehavior: Clip.antiAlias));
+        expect(spec, const FlexWidgetSpec(clipBehavior: Clip.antiAlias));
       });
 
       test('spacing utility modifies internal state', () {
         util.spacing(16.0);
 
         final spec = util.resolve(MockBuildContext());
-        expect(spec, const FlexSpec(spacing: 16.0));
+        expect(spec, const FlexWidgetSpec(spacing: 16.0));
       });
     });
 
@@ -90,7 +96,10 @@ void main() {
           ..spacing(8.0);
 
         final spec = util.resolve(MockBuildContext());
-        expect(spec, const FlexSpec(direction: Axis.horizontal, spacing: 8.0));
+        expect(
+          spec,
+          const FlexWidgetSpec(direction: Axis.horizontal, spacing: 8.0),
+        );
       });
 
       test('chains all properties together', () {
@@ -103,7 +112,7 @@ void main() {
         final spec = util.resolve(MockBuildContext());
         expect(
           spec,
-          const FlexSpec(
+          const FlexWidgetSpec(
             direction: Axis.vertical,
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -118,7 +127,7 @@ void main() {
           ..direction(Axis.vertical);
 
         final spec = util.resolve(MockBuildContext());
-        expect(spec, const FlexSpec(direction: Axis.vertical));
+        expect(spec, const FlexWidgetSpec(direction: Axis.vertical));
       });
     });
 
@@ -126,13 +135,13 @@ void main() {
       test('row() returns FlexMix with horizontal direction', () {
         final result = util.row();
 
-        expect(result, FlexMix(direction: Axis.horizontal));
+        expect(result, FlexStyle(direction: Axis.horizontal));
       });
 
       test('column() returns FlexMix with vertical direction', () {
         final result = util.column();
 
-        expect(result, FlexMix(direction: Axis.vertical));
+        expect(result, FlexStyle(direction: Axis.vertical));
       });
     });
 
@@ -143,17 +152,17 @@ void main() {
         );
         final result = util.animate(animationConfig);
 
-        expect(result, FlexMix(animation: animationConfig));
+        expect(result, FlexStyle(animation: animationConfig));
       });
     });
 
     group('utility construction', () {
       test('creates FlexSpecUtility with initial FlexMix', () {
-        final initialMix = FlexMix(direction: Axis.horizontal);
+        final initialMix = FlexStyle(direction: Axis.horizontal);
         final utility = FlexSpecUtility(initialMix);
 
         final spec = utility.resolve(MockBuildContext());
-        expect(spec, const FlexSpec(direction: Axis.horizontal));
+        expect(spec, const FlexWidgetSpec(direction: Axis.horizontal));
       });
 
       test('creates empty FlexSpecUtility', () {
@@ -172,33 +181,33 @@ void main() {
       });
 
       test('merge with another FlexSpecUtility creates new instance', () {
-        final other = FlexSpecUtility(FlexMix(direction: Axis.horizontal));
+        final other = FlexSpecUtility(FlexStyle(direction: Axis.horizontal));
         final result = util.merge(other);
 
         expect(result, isNot(same(util)));
         expect(result, isA<FlexSpecUtility>());
 
         final spec = result.resolve(MockBuildContext());
-        expect(spec, const FlexSpec(direction: Axis.horizontal));
+        expect(spec, const FlexWidgetSpec(direction: Axis.horizontal));
       });
 
       test('merge with FlexMix creates new instance', () {
-        final otherMix = FlexMix(spacing: 8.0);
+        final otherMix = FlexStyle(spacing: 8.0);
         final result = util.merge(otherMix);
 
         expect(result, isNot(same(util)));
         expect(result, isA<FlexSpecUtility>());
 
         final spec = result.resolve(MockBuildContext());
-        expect(spec, const FlexSpec(spacing: 8.0));
+        expect(spec, const FlexWidgetSpec(spacing: 8.0));
       });
 
       test('merge combines properties correctly', () {
         final util1 = FlexSpecUtility(
-          FlexMix(direction: Axis.horizontal, spacing: 4.0),
+          FlexStyle(direction: Axis.horizontal, spacing: 4.0),
         );
         final util2 = FlexSpecUtility(
-          FlexMix(spacing: 8.0, clipBehavior: Clip.hardEdge),
+          FlexStyle(spacing: 8.0, clipBehavior: Clip.hardEdge),
         );
 
         final result = util1.merge(util2);
@@ -206,7 +215,7 @@ void main() {
 
         expect(
           spec,
-          const FlexSpec(
+          const FlexWidgetSpec(
             direction: Axis.horizontal,
             spacing: 8.0,
             clipBehavior: Clip.hardEdge,
@@ -215,10 +224,10 @@ void main() {
       });
 
       test('handles multiple merges correctly', () {
-        final util1 = FlexSpecUtility(FlexMix(direction: Axis.horizontal));
-        final util2 = FlexSpecUtility(FlexMix(spacing: 8.0));
+        final util1 = FlexSpecUtility(FlexStyle(direction: Axis.horizontal));
+        final util2 = FlexSpecUtility(FlexStyle(spacing: 8.0));
         final util3 = FlexSpecUtility(
-          FlexMix(mainAxisAlignment: MainAxisAlignment.center),
+          FlexStyle(mainAxisAlignment: MainAxisAlignment.center),
         );
 
         final result = util1.merge(util2).merge(util3);
@@ -226,7 +235,7 @@ void main() {
 
         expect(
           spec,
-          const FlexSpec(
+          const FlexWidgetSpec(
             direction: Axis.horizontal,
             spacing: 8.0,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -254,7 +263,7 @@ void main() {
 
         expect(
           spec,
-          const FlexSpec(
+          const FlexWidgetSpec(
             direction: Axis.vertical,
             mainAxisAlignment: MainAxisAlignment.center,
             spacing: 12.0,
@@ -273,7 +282,7 @@ void main() {
         expect(
           util,
           resolvesTo(
-            const FlexSpec(
+            const FlexWidgetSpec(
               direction: Axis.horizontal,
               mainAxisAlignment: MainAxisAlignment.center,
               spacing: 8.0,
@@ -286,11 +295,11 @@ void main() {
     group('token support', () {
       test('resolves tokens with context', () {
         const gapToken = MixToken<double>('gap');
-        final context = MockBuildContext(
-          tokens: {gapToken.defineValue(24.0)},
-        );
+        final context = MockBuildContext(tokens: {gapToken.defineValue(24.0)});
 
-        final utility = FlexSpecUtility(FlexMix.create(spacing: Prop.token(gapToken)));
+        final utility = FlexSpecUtility(
+          FlexStyle.create(spacing: Prop.token(gapToken)),
+        );
         final spec = utility.resolve(context);
 
         expect(spec.gap, 24.0);
@@ -301,7 +310,7 @@ void main() {
       test('on utility creates VariantAttributeBuilder', () {
         final hoverBuilder = util.on.hover;
 
-        expect(hoverBuilder, isA<VariantAttributeBuilder<FlexSpec>>());
+        expect(hoverBuilder, isA<VariantAttributeBuilder<FlexWidgetSpec>>());
       });
     });
 
@@ -309,7 +318,7 @@ void main() {
       test('wrap utility creates modifier FlexMix', () {
         final result = util.wrap.opacity(0.5);
 
-        expect(result, isA<FlexMix>());
+        expect(result, isA<FlexStyle>());
         expect(result.$modifier, isNotNull);
         expect(result.$modifier!.$modifiers!.length, 1);
       });
@@ -328,7 +337,7 @@ void main() {
 
         expect(
           spec,
-          const FlexSpec(
+          const FlexWidgetSpec(
             direction: Axis.horizontal,
             spacing: 4.0,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -337,7 +346,7 @@ void main() {
       });
 
       test('chaining after construction with initial mix', () {
-        final utility = FlexSpecUtility(FlexMix(direction: Axis.horizontal))
+        final utility = FlexSpecUtility(FlexStyle(direction: Axis.horizontal))
           ..gap(8.0)
           ..mainAxisAlignment(MainAxisAlignment.center);
 
@@ -345,7 +354,7 @@ void main() {
 
         expect(
           spec,
-          const FlexSpec(
+          const FlexWidgetSpec(
             direction: Axis.horizontal,
             spacing: 8.0,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -363,12 +372,15 @@ void main() {
           ..spacing(8.0);
 
         final spec = util.resolve(MockBuildContext());
-        expect(spec, const FlexSpec(direction: Axis.vertical, spacing: 8.0));
+        expect(
+          spec,
+          const FlexWidgetSpec(direction: Axis.vertical, spacing: 8.0),
+        );
       });
 
       test('empty utility after chaining with null values', () {
         // This tests the behavior when properties are explicitly set to null
-        final utility = FlexSpecUtility(FlexMix(direction: Axis.horizontal));
+        final utility = FlexSpecUtility(FlexStyle(direction: Axis.horizontal));
         final spec = utility.resolve(MockBuildContext());
 
         expect(spec.direction, Axis.horizontal);

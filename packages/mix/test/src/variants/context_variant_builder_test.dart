@@ -22,12 +22,12 @@ void main() {
           (context) => BoxStyle().width(100.0),
         );
 
-        final flexBuilder = ContextVariantBuilder<FlexMix>(
-          (context) => FlexMix(),
+        final flexBuilder = ContextVariantBuilder<FlexStyle>(
+          (context) => FlexStyle(),
         );
 
         expect(boxBuilder, isA<ContextVariantBuilder<BoxStyle>>());
-        expect(flexBuilder, isA<ContextVariantBuilder<FlexMix>>());
+        expect(flexBuilder, isA<ContextVariantBuilder<FlexStyle>>());
       });
 
       test('stores function correctly', () {
@@ -193,8 +193,8 @@ void main() {
         final boxBuilder = ContextVariantBuilder<BoxStyle>(
           (context) => BoxStyle().width(100.0),
         );
-        final flexBuilder = ContextVariantBuilder<FlexMix>(
-          (context) => FlexMix(),
+        final flexBuilder = ContextVariantBuilder<FlexStyle>(
+          (context) => FlexStyle(),
         );
 
         final context = MockBuildContext();
@@ -202,7 +202,7 @@ void main() {
         final flexResult = flexBuilder.build(context);
 
         expect(boxResult, isA<BoxStyle>());
-        expect(flexResult, isA<FlexMix>());
+        expect(flexResult, isA<FlexStyle>());
       });
 
       test('function can access context properties', () {
@@ -252,8 +252,8 @@ void main() {
         final boxBuilder = ContextVariantBuilder<BoxStyle>(
           (context) => BoxStyle().width(100.0),
         );
-        final flexBuilder = ContextVariantBuilder<FlexMix>(
-          (context) => FlexMix(),
+        final flexBuilder = ContextVariantBuilder<FlexStyle>(
+          (context) => FlexStyle(),
         );
 
         expect(boxBuilder.runtimeType, isNot(equals(flexBuilder.runtimeType)));

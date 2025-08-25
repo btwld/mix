@@ -50,7 +50,7 @@ abstract class Style<S extends WidgetSpec<S>> extends Mix<S>
   static IconMix icon(IconMix value) => value;
   static ImageMix image(ImageMix value) => value;
   static StackMix stack(StackMix value) => value;
-  static FlexMix flex(FlexMix value) => value;
+  static FlexStyle flex(FlexStyle value) => value;
   static FlexBoxMix flexbox(FlexBoxMix value) => value;
   static StackBoxMix stackbox(StackBoxMix value) => value;
 

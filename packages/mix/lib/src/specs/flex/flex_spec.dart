@@ -11,7 +11,7 @@ import '../../core/widget_spec.dart';
 /// This class provides configuration for flex-specific properties such as
 /// direction, alignment, and spacing through the Mix framework.
 @immutable
-final class FlexSpec extends WidgetSpec<FlexSpec> {
+final class FlexWidgetSpec extends WidgetSpec<FlexWidgetSpec> {
   /// The direction to use as the main axis.
   final Axis? direction;
 
@@ -46,8 +46,8 @@ final class FlexSpec extends WidgetSpec<FlexSpec> {
   )
   final double? gap;
 
-  /// Creates a [FlexSpec] with the provided properties.
-  const FlexSpec({
+  /// Creates a [FlexWidgetSpec] with the provided properties.
+  const FlexWidgetSpec({
     this.direction,
     this.mainAxisAlignment,
     this.crossAxisAlignment,
@@ -67,10 +67,9 @@ final class FlexSpec extends WidgetSpec<FlexSpec> {
     super.inherit,
   }) : gap = gap ?? spacing;
 
-
-  /// Creates a copy of this [FlexSpec] with the given properties replaced.
+  /// Creates a copy of this [FlexWidgetSpec] with the given properties replaced.
   @override
-  FlexSpec copyWith({
+  FlexWidgetSpec copyWith({
     Axis? direction,
     MainAxisAlignment? mainAxisAlignment,
     CrossAxisAlignment? crossAxisAlignment,
@@ -89,7 +88,7 @@ final class FlexSpec extends WidgetSpec<FlexSpec> {
     List<Modifier>? widgetModifiers,
     bool? inherit,
   }) {
-    return FlexSpec(
+    return FlexWidgetSpec(
       direction: direction ?? this.direction,
       mainAxisAlignment: mainAxisAlignment ?? this.mainAxisAlignment,
       crossAxisAlignment: crossAxisAlignment ?? this.crossAxisAlignment,
@@ -105,10 +104,10 @@ final class FlexSpec extends WidgetSpec<FlexSpec> {
     );
   }
 
-  /// Linearly interpolates between this [FlexSpec] and another [FlexSpec].
+  /// Linearly interpolates between this [FlexWidgetSpec] and another [FlexWidgetSpec].
   @override
-  FlexSpec lerp(FlexSpec? other, double t) {
-    return FlexSpec(
+  FlexWidgetSpec lerp(FlexWidgetSpec? other, double t) {
+    return FlexWidgetSpec(
       direction: MixOps.lerpSnap(direction, other?.direction, t),
       mainAxisAlignment: MixOps.lerpSnap(
         mainAxisAlignment,
@@ -142,10 +141,19 @@ final class FlexSpec extends WidgetSpec<FlexSpec> {
     super.debugFillProperties(properties);
     properties
       ..add(EnumProperty<Axis>('direction', direction))
-      ..add(EnumProperty<MainAxisAlignment>('mainAxisAlignment', mainAxisAlignment))
-      ..add(EnumProperty<CrossAxisAlignment>('crossAxisAlignment', crossAxisAlignment))
+      ..add(
+        EnumProperty<MainAxisAlignment>('mainAxisAlignment', mainAxisAlignment),
+      )
+      ..add(
+        EnumProperty<CrossAxisAlignment>(
+          'crossAxisAlignment',
+          crossAxisAlignment,
+        ),
+      )
       ..add(EnumProperty<MainAxisSize>('mainAxisSize', mainAxisSize))
-      ..add(EnumProperty<VerticalDirection>('verticalDirection', verticalDirection))
+      ..add(
+        EnumProperty<VerticalDirection>('verticalDirection', verticalDirection),
+      )
       ..add(EnumProperty<TextDirection>('textDirection', textDirection))
       ..add(EnumProperty<TextBaseline>('textBaseline', textBaseline))
       ..add(EnumProperty<Clip>('clipBehavior', clipBehavior))

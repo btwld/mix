@@ -253,14 +253,14 @@ void main() {
 
     group('FlexMix merge', () {
       test('merges orderOfModifiers correctly', () {
-        final first = FlexMix(
+        final first = FlexStyle(
           direction: Axis.horizontal,
           modifier: ModifierConfig.orderOfModifiers(const [
             OpacityModifier,
             PaddingModifier,
           ]),
         );
-        final second = FlexMix(
+        final second = FlexStyle(
           gap: 8.0,
           modifier: ModifierConfig.orderOfModifiers(const [
             ClipOvalModifier,
@@ -276,8 +276,8 @@ void main() {
       });
 
       test('merges inherit correctly', () {
-        final first = FlexMix(direction: Axis.horizontal, inherit: true);
-        final second = FlexMix(gap: 8.0, inherit: false);
+        final first = FlexStyle(direction: Axis.horizontal, inherit: true);
+        final second = FlexStyle(gap: 8.0, inherit: false);
 
         final merged = first.merge(second);
 

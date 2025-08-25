@@ -10,7 +10,7 @@ void main() {
   group('FlexMix', () {
     group('Constructors', () {
       test('default constructor creates FlexMix with null properties', () {
-        final flexMix = FlexMix();
+        final flexMix = FlexStyle();
 
         expect(flexMix.$direction, isNull);
         expect(flexMix.$mainAxisAlignment, isNull);
@@ -26,7 +26,7 @@ void main() {
       test(
         'constructor with parameters creates FlexMix with correct properties',
         () {
-          final flexMix = FlexMix(
+          final flexMix = FlexStyle(
             direction: Axis.horizontal,
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,8 +39,14 @@ void main() {
           );
 
           expect(flexMix.$direction, resolvesTo(Axis.horizontal));
-          expect(flexMix.$mainAxisAlignment, resolvesTo(MainAxisAlignment.center));
-          expect(flexMix.$crossAxisAlignment, resolvesTo(CrossAxisAlignment.start));
+          expect(
+            flexMix.$mainAxisAlignment,
+            resolvesTo(MainAxisAlignment.center),
+          );
+          expect(
+            flexMix.$crossAxisAlignment,
+            resolvesTo(CrossAxisAlignment.start),
+          );
           expect(flexMix.$mainAxisSize, resolvesTo(MainAxisSize.min));
           expect(flexMix.$verticalDirection, resolvesTo(VerticalDirection.up));
           expect(flexMix.$textDirection, resolvesTo(TextDirection.rtl));
@@ -51,13 +57,13 @@ void main() {
       );
 
       test('value constructor creates FlexMix from FlexSpec', () {
-        const spec = FlexSpec(
+        const spec = FlexWidgetSpec(
           direction: Axis.vertical,
           mainAxisAlignment: MainAxisAlignment.end,
           spacing: 8.0,
         );
 
-        final flexMix = FlexMix.value(spec);
+        final flexMix = FlexStyle.value(spec);
 
         expect(flexMix.$direction, resolvesTo(Axis.vertical));
         expect(flexMix.$mainAxisAlignment, resolvesTo(MainAxisAlignment.end));
@@ -65,13 +71,13 @@ void main() {
       });
 
       test('maybeValue returns null for null input', () {
-        final result = FlexMix.maybeValue(null);
+        final result = FlexStyle.maybeValue(null);
         expect(result, isNull);
       });
 
       test('maybeValue returns FlexMix for non-null input', () {
-        const spec = FlexSpec(direction: Axis.horizontal);
-        final result = FlexMix.maybeValue(spec);
+        const spec = FlexWidgetSpec(direction: Axis.horizontal);
+        final result = FlexStyle.maybeValue(spec);
 
         expect(result, isNotNull);
         expect(result!.$direction, resolvesTo(Axis.horizontal));
@@ -80,61 +86,69 @@ void main() {
 
     group('Factory constructors', () {
       test('direction factory creates correct FlexMix', () {
-        final flexMix = FlexMix.direction(Axis.vertical);
+        final flexMix = FlexStyle.direction(Axis.vertical);
         expect(flexMix.$direction, resolvesTo(Axis.vertical));
       });
 
       test('mainAxisAlignment factory creates correct FlexMix', () {
-        final flexMix = FlexMix.mainAxisAlignment(
+        final flexMix = FlexStyle.mainAxisAlignment(
           MainAxisAlignment.spaceEvenly,
         );
-        expect(flexMix.$mainAxisAlignment, resolvesTo(MainAxisAlignment.spaceEvenly));
+        expect(
+          flexMix.$mainAxisAlignment,
+          resolvesTo(MainAxisAlignment.spaceEvenly),
+        );
       });
 
       test('crossAxisAlignment factory creates correct FlexMix', () {
-        final flexMix = FlexMix.crossAxisAlignment(CrossAxisAlignment.stretch);
-        expect(flexMix.$crossAxisAlignment, resolvesTo(CrossAxisAlignment.stretch));
+        final flexMix = FlexStyle.crossAxisAlignment(
+          CrossAxisAlignment.stretch,
+        );
+        expect(
+          flexMix.$crossAxisAlignment,
+          resolvesTo(CrossAxisAlignment.stretch),
+        );
       });
 
       test('mainAxisSize factory creates correct FlexMix', () {
-        final flexMix = FlexMix.mainAxisSize(MainAxisSize.max);
+        final flexMix = FlexStyle.mainAxisSize(MainAxisSize.max);
         expect(flexMix.$mainAxisSize, resolvesTo(MainAxisSize.max));
       });
 
       test('verticalDirection factory creates correct FlexMix', () {
-        final flexMix = FlexMix.verticalDirection(VerticalDirection.down);
+        final flexMix = FlexStyle.verticalDirection(VerticalDirection.down);
         expect(flexMix.$verticalDirection, resolvesTo(VerticalDirection.down));
       });
 
       test('textDirection factory creates correct FlexMix', () {
-        final flexMix = FlexMix.textDirection(TextDirection.ltr);
+        final flexMix = FlexStyle.textDirection(TextDirection.ltr);
         expect(flexMix.$textDirection, resolvesTo(TextDirection.ltr));
       });
 
       test('textBaseline factory creates correct FlexMix', () {
-        final flexMix = FlexMix.textBaseline(TextBaseline.alphabetic);
+        final flexMix = FlexStyle.textBaseline(TextBaseline.alphabetic);
         expect(flexMix.$textBaseline, resolvesTo(TextBaseline.alphabetic));
       });
 
       test('clipBehavior factory creates correct FlexMix', () {
-        final flexMix = FlexMix.clipBehavior(Clip.hardEdge);
+        final flexMix = FlexStyle.clipBehavior(Clip.hardEdge);
         expect(flexMix.$clipBehavior, resolvesTo(Clip.hardEdge));
       });
 
       test('gap factory creates correct FlexMix', () {
-        final flexMix = FlexMix.spacing(12.0);
+        final flexMix = FlexStyle.spacing(12.0);
         expect(flexMix.$spacing, resolvesTo(12.0));
       });
 
       test('gap factory creates FlexMix with spacing (deprecated)', () {
-        final flexMix = FlexMix.gap(12.0);
+        final flexMix = FlexStyle.gap(12.0);
         expect(flexMix.$spacing, resolvesTo(12.0));
       });
     });
 
     group('Builder methods', () {
       test('direction method creates new FlexMix with direction', () {
-        final original = FlexMix();
+        final original = FlexStyle();
         final modified = original.direction(Axis.horizontal);
 
         expect(identical(original, modified), isFalse);
@@ -143,23 +157,29 @@ void main() {
       });
 
       test('mainAxisAlignment method creates new FlexMix', () {
-        final original = FlexMix();
+        final original = FlexStyle();
         final modified = original.mainAxisAlignment(MainAxisAlignment.center);
 
         expect(identical(original, modified), isFalse);
-        expect(modified.$mainAxisAlignment, resolvesTo(MainAxisAlignment.center));
+        expect(
+          modified.$mainAxisAlignment,
+          resolvesTo(MainAxisAlignment.center),
+        );
       });
 
       test('crossAxisAlignment method creates new FlexMix', () {
-        final original = FlexMix();
+        final original = FlexStyle();
         final modified = original.crossAxisAlignment(CrossAxisAlignment.end);
 
         expect(identical(original, modified), isFalse);
-        expect(modified.$crossAxisAlignment, resolvesTo(CrossAxisAlignment.end));
+        expect(
+          modified.$crossAxisAlignment,
+          resolvesTo(CrossAxisAlignment.end),
+        );
       });
 
       test('spacing method creates new FlexMix with spacing', () {
-        final original = FlexMix();
+        final original = FlexStyle();
         final modified = original.spacing(20.0);
 
         expect(identical(original, modified), isFalse);
@@ -167,7 +187,7 @@ void main() {
       });
 
       test('gap method creates new FlexMix with spacing (deprecated)', () {
-        final original = FlexMix();
+        final original = FlexStyle();
         final modified = original.gap(20.0);
 
         expect(identical(original, modified), isFalse);
@@ -175,27 +195,27 @@ void main() {
       });
 
       test('row convenience method sets horizontal direction', () {
-        final flexMix = FlexMix().row();
+        final flexMix = FlexStyle().row();
         expect(flexMix.$direction, resolvesTo(Axis.horizontal));
       });
 
       test('column convenience method sets vertical direction', () {
-        final flexMix = FlexMix().column();
+        final flexMix = FlexStyle().column();
         expect(flexMix.$direction, resolvesTo(Axis.vertical));
       });
     });
 
     group('Merge functionality', () {
       test('merge with null returns original', () {
-        final original = FlexMix(direction: Axis.horizontal);
+        final original = FlexStyle(direction: Axis.horizontal);
         final result = original.merge(null);
 
         expect(identical(original, result), isTrue);
       });
 
       test('merge combines properties correctly', () {
-        final first = FlexMix(direction: Axis.horizontal, spacing: 8.0);
-        final second = FlexMix(
+        final first = FlexStyle(direction: Axis.horizontal, spacing: 8.0);
+        final second = FlexStyle(
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: 16.0,
         );
@@ -208,8 +228,8 @@ void main() {
       });
 
       test('merge preserves null properties', () {
-        final first = FlexMix(direction: Axis.horizontal);
-        final second = FlexMix(spacing: 8.0);
+        final first = FlexStyle(direction: Axis.horizontal);
+        final second = FlexStyle(spacing: 8.0);
 
         final merged = first.merge(second);
 
@@ -221,7 +241,7 @@ void main() {
 
     group('Resolve functionality', () {
       test('resolve creates FlexSpec with resolved properties', () {
-        final flexMix = FlexMix(
+        final flexMix = FlexStyle(
           direction: Axis.vertical,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           spacing: 12.0,
@@ -235,7 +255,7 @@ void main() {
       });
 
       test('resolve handles null properties', () {
-        final flexMix = FlexMix();
+        final flexMix = FlexStyle();
         final spec = flexMix.resolve(MockBuildContext());
 
         expect(spec.direction, isNull);
@@ -246,23 +266,23 @@ void main() {
 
     group('Equality and props', () {
       test('equal FlexMix instances have same props', () {
-        final flexMix1 = FlexMix(direction: Axis.horizontal, spacing: 8.0);
-        final flexMix2 = FlexMix(direction: Axis.horizontal, spacing: 8.0);
+        final flexMix1 = FlexStyle(direction: Axis.horizontal, spacing: 8.0);
+        final flexMix2 = FlexStyle(direction: Axis.horizontal, spacing: 8.0);
 
         expect(flexMix1, equals(flexMix2));
         expect(flexMix1.props, equals(flexMix2.props));
       });
 
       test('different FlexMix instances have different props', () {
-        final flexMix1 = FlexMix(direction: Axis.horizontal);
-        final flexMix2 = FlexMix(direction: Axis.vertical);
+        final flexMix1 = FlexStyle(direction: Axis.horizontal);
+        final flexMix2 = FlexStyle(direction: Axis.vertical);
 
         expect(flexMix1, isNot(equals(flexMix2)));
         expect(flexMix1.props, isNot(equals(flexMix2.props)));
       });
 
       test('props contains all properties', () {
-        final flexMix = FlexMix(
+        final flexMix = FlexStyle(
           direction: Axis.horizontal,
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: 8.0,
@@ -278,7 +298,7 @@ void main() {
 
     group('Diagnostics', () {
       test('debugFillProperties includes all properties', () {
-        final flexMix = FlexMix(
+        final flexMix = FlexStyle(
           direction: Axis.horizontal,
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: 8.0,

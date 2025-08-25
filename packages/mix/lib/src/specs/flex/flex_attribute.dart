@@ -12,20 +12,22 @@ import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'flex_spec.dart';
 
-/// Represents the attributes of a [FlexSpec].
+typedef FlexMix = FlexStyle;
+
+/// Represents the attributes of a [FlexWidgetSpec].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [FlexSpec].
+/// appearance of a [FlexWidgetSpec].
 ///
-/// Use this class to configure the attributes of a [FlexSpec] and pass it to
-/// the [FlexSpec] constructor.
-/// A style/attribute container for [FlexSpec], used to configure and compose flex layout properties.
-class FlexMix extends Style<FlexSpec>
+/// Use this class to configure the attributes of a [FlexWidgetSpec] and pass it to
+/// the [FlexWidgetSpec] constructor.
+/// A style/attribute container for [FlexWidgetSpec], used to configure and compose flex layout properties.
+class FlexStyle extends Style<FlexWidgetSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<FlexMix, FlexSpec>,
-        StyleVariantMixin<FlexMix, FlexSpec>,
-        StyleAnimationMixin<FlexSpec, FlexMix> {
+        StyleModifierMixin<FlexStyle, FlexWidgetSpec>,
+        StyleVariantMixin<FlexStyle, FlexWidgetSpec>,
+        StyleAnimationMixin<FlexWidgetSpec, FlexStyle> {
   final Prop<Axis>? $direction;
   final Prop<MainAxisAlignment>? $mainAxisAlignment;
   final Prop<CrossAxisAlignment>? $crossAxisAlignment;
@@ -42,48 +44,48 @@ class FlexMix extends Style<FlexSpec>
   final Prop<double>? $gap;
 
   /// Factory for flex direction
-  factory FlexMix.direction(Axis value) {
-    return FlexMix(direction: value);
+  factory FlexStyle.direction(Axis value) {
+    return FlexStyle(direction: value);
   }
 
   /// Factory for main axis alignment
-  factory FlexMix.mainAxisAlignment(MainAxisAlignment value) {
-    return FlexMix(mainAxisAlignment: value);
+  factory FlexStyle.mainAxisAlignment(MainAxisAlignment value) {
+    return FlexStyle(mainAxisAlignment: value);
   }
 
   /// Factory for cross axis alignment
-  factory FlexMix.crossAxisAlignment(CrossAxisAlignment value) {
-    return FlexMix(crossAxisAlignment: value);
+  factory FlexStyle.crossAxisAlignment(CrossAxisAlignment value) {
+    return FlexStyle(crossAxisAlignment: value);
   }
 
   /// Factory for main axis size
-  factory FlexMix.mainAxisSize(MainAxisSize value) {
-    return FlexMix(mainAxisSize: value);
+  factory FlexStyle.mainAxisSize(MainAxisSize value) {
+    return FlexStyle(mainAxisSize: value);
   }
 
   /// Factory for vertical direction
-  factory FlexMix.verticalDirection(VerticalDirection value) {
-    return FlexMix(verticalDirection: value);
+  factory FlexStyle.verticalDirection(VerticalDirection value) {
+    return FlexStyle(verticalDirection: value);
   }
 
   /// Factory for text direction
-  factory FlexMix.textDirection(TextDirection value) {
-    return FlexMix(textDirection: value);
+  factory FlexStyle.textDirection(TextDirection value) {
+    return FlexStyle(textDirection: value);
   }
 
   /// Factory for text baseline
-  factory FlexMix.textBaseline(TextBaseline value) {
-    return FlexMix(textBaseline: value);
+  factory FlexStyle.textBaseline(TextBaseline value) {
+    return FlexStyle(textBaseline: value);
   }
 
   /// Factory for clip behavior
-  factory FlexMix.clipBehavior(Clip value) {
-    return FlexMix(clipBehavior: value);
+  factory FlexStyle.clipBehavior(Clip value) {
+    return FlexStyle(clipBehavior: value);
   }
 
   /// Factory for spacing
-  factory FlexMix.spacing(double value) {
-    return FlexMix(spacing: value);
+  factory FlexStyle.spacing(double value) {
+    return FlexStyle(spacing: value);
   }
 
   /// Factory for gap
@@ -91,21 +93,21 @@ class FlexMix extends Style<FlexSpec>
     'Use FlexMix.spacing instead. '
     'This feature was deprecated after Mix v2.0.0.',
   )
-  factory FlexMix.gap(double value) {
-    return FlexMix(spacing: value);
+  factory FlexStyle.gap(double value) {
+    return FlexStyle(spacing: value);
   }
 
   /// Factory for animation
-  factory FlexMix.animate(AnimationConfig animation) {
-    return FlexMix(animation: animation);
+  factory FlexStyle.animate(AnimationConfig animation) {
+    return FlexStyle(animation: animation);
   }
 
   /// Factory for variant
-  factory FlexMix.variant(Variant variant, FlexMix value) {
-    return FlexMix(variants: [VariantStyle(variant, value)]);
+  factory FlexStyle.variant(Variant variant, FlexStyle value) {
+    return FlexStyle(variants: [VariantStyle(variant, value)]);
   }
 
-  const FlexMix.create({
+  const FlexStyle.create({
     Prop<Axis>? direction,
     Prop<MainAxisAlignment>? mainAxisAlignment,
     Prop<CrossAxisAlignment>? crossAxisAlignment,
@@ -136,7 +138,7 @@ class FlexMix extends Style<FlexSpec>
        $spacing = spacing ?? gap,
        $gap = gap;
 
-  FlexMix({
+  FlexStyle({
     Axis? direction,
     MainAxisAlignment? mainAxisAlignment,
     CrossAxisAlignment? crossAxisAlignment,
@@ -153,7 +155,7 @@ class FlexMix extends Style<FlexSpec>
     double? gap,
     AnimationConfig? animation,
     ModifierConfig? modifier,
-    List<VariantStyle<FlexSpec>>? variants,
+    List<VariantStyle<FlexWidgetSpec>>? variants,
     bool? inherit,
   }) : this.create(
          direction: Prop.maybe(direction),
@@ -171,15 +173,15 @@ class FlexMix extends Style<FlexSpec>
          inherit: inherit,
        );
 
-  /// Constructor that accepts a [FlexSpec] value and extracts its properties.
+  /// Constructor that accepts a [FlexWidgetSpec] value and extracts its properties.
   ///
-  /// This is useful for converting existing [FlexSpec] instances to [FlexMix].
+  /// This is useful for converting existing [FlexWidgetSpec] instances to [FlexStyle].
   ///
   /// ```dart
   /// const spec = FlexSpec(direction: Axis.horizontal, gap: 8.0);
   /// final attr = FlexMix.value(spec);
   /// ```
-  FlexMix.value(FlexSpec spec)
+  FlexStyle.value(FlexWidgetSpec spec)
     : this(
         direction: spec.direction,
         mainAxisAlignment: spec.mainAxisAlignment,
@@ -193,16 +195,16 @@ class FlexMix extends Style<FlexSpec>
       );
 
   /// Factory for widget modifier
-  factory FlexMix.modifier(ModifierConfig modifier) {
-    return FlexMix(modifier: modifier);
+  factory FlexStyle.modifier(ModifierConfig modifier) {
+    return FlexStyle(modifier: modifier);
   }
 
   /// Factory for widget modifier
-  factory FlexMix.wrap(ModifierConfig value) {
-    return FlexMix(modifier: value);
+  factory FlexStyle.wrap(ModifierConfig value) {
+    return FlexStyle(modifier: value);
   }
 
-  /// Constructor that accepts a nullable [FlexSpec] value and extracts its properties.
+  /// Constructor that accepts a nullable [FlexWidgetSpec] value and extracts its properties.
   ///
   /// Returns null if the input is null, otherwise uses [FlexMix.value].
   ///
@@ -210,55 +212,55 @@ class FlexMix extends Style<FlexSpec>
   /// const FlexSpec? spec = FlexSpec(direction: Axis.horizontal, gap: 8.0);
   /// final attr = FlexMix.maybeValue(spec); // Returns FlexMix or null
   /// ```
-  static FlexMix? maybeValue(FlexSpec? spec) {
-    return spec != null ? FlexMix.value(spec) : null;
+  static FlexStyle? maybeValue(FlexWidgetSpec? spec) {
+    return spec != null ? FlexStyle.value(spec) : null;
   }
 
   /// Sets flex direction
-  FlexMix direction(Axis value) {
-    return merge(FlexMix.direction(value));
+  FlexStyle direction(Axis value) {
+    return merge(FlexStyle.direction(value));
   }
 
   /// Sets main axis alignment
-  FlexMix mainAxisAlignment(MainAxisAlignment value) {
-    return merge(FlexMix.mainAxisAlignment(value));
+  FlexStyle mainAxisAlignment(MainAxisAlignment value) {
+    return merge(FlexStyle.mainAxisAlignment(value));
   }
 
   /// Sets spacing
 
   /// Sets cross axis alignment
-  FlexMix crossAxisAlignment(CrossAxisAlignment value) {
-    return merge(FlexMix.crossAxisAlignment(value));
+  FlexStyle crossAxisAlignment(CrossAxisAlignment value) {
+    return merge(FlexStyle.crossAxisAlignment(value));
   }
 
   /// Sets main axis size
-  FlexMix mainAxisSize(MainAxisSize value) {
-    return merge(FlexMix.mainAxisSize(value));
+  FlexStyle mainAxisSize(MainAxisSize value) {
+    return merge(FlexStyle.mainAxisSize(value));
   }
 
   /// Sets vertical direction
-  FlexMix verticalDirection(VerticalDirection value) {
-    return merge(FlexMix.verticalDirection(value));
+  FlexStyle verticalDirection(VerticalDirection value) {
+    return merge(FlexStyle.verticalDirection(value));
   }
 
   /// Sets text direction
-  FlexMix textDirection(TextDirection value) {
-    return merge(FlexMix.textDirection(value));
+  FlexStyle textDirection(TextDirection value) {
+    return merge(FlexStyle.textDirection(value));
   }
 
   /// Sets text baseline
-  FlexMix textBaseline(TextBaseline value) {
-    return merge(FlexMix.textBaseline(value));
+  FlexStyle textBaseline(TextBaseline value) {
+    return merge(FlexStyle.textBaseline(value));
   }
 
   /// Sets clip behavior
-  FlexMix clipBehavior(Clip value) {
-    return merge(FlexMix.clipBehavior(value));
+  FlexStyle clipBehavior(Clip value) {
+    return merge(FlexStyle.clipBehavior(value));
   }
 
   /// Sets spacing
-  FlexMix spacing(double value) {
-    return merge(FlexMix.spacing(value));
+  FlexStyle spacing(double value) {
+    return merge(FlexStyle.spacing(value));
   }
 
   /// Sets gap
@@ -266,32 +268,32 @@ class FlexMix extends Style<FlexSpec>
     'Use spacing instead. '
     'This feature was deprecated after Mix v2.0.0.',
   )
-  FlexMix gap(double value) {
-    return merge(FlexMix.spacing(value));
+  FlexStyle gap(double value) {
+    return merge(FlexStyle.spacing(value));
   }
 
   /// Convenience method for setting direction to horizontal (row)
-  FlexMix row() => direction(Axis.horizontal);
+  FlexStyle row() => direction(Axis.horizontal);
 
   /// Convenience method for setting direction to vertical (column)
-  FlexMix column() => direction(Axis.vertical);
+  FlexStyle column() => direction(Axis.vertical);
 
-  FlexMix modifier(ModifierConfig value) {
-    return merge(FlexMix(modifier: value));
+  FlexStyle modifier(ModifierConfig value) {
+    return merge(FlexStyle(modifier: value));
   }
 
   /// Convenience method for animating the FlexSpec
   @override
-  FlexMix animate(AnimationConfig animation) {
-    return merge(FlexMix.animate(animation));
+  FlexStyle animate(AnimationConfig animation) {
+    return merge(FlexStyle.animate(animation));
   }
 
   @override
-  FlexMix variants(List<VariantStyle<FlexSpec>> variants) {
-    return merge(FlexMix(variants: variants));
+  FlexStyle variants(List<VariantStyle<FlexWidgetSpec>> variants) {
+    return merge(FlexStyle(variants: variants));
   }
 
-  /// Resolves to [FlexSpec] using the provided [BuildContext].
+  /// Resolves to [FlexWidgetSpec] using the provided [BuildContext].
   ///
   /// If a property is null in the context, it uses the default value
   /// defined in the property specification.
@@ -300,8 +302,8 @@ class FlexMix extends Style<FlexSpec>
   /// final flexSpec = FlexMix(...).resolve(mix);
   /// ```
   @override
-  FlexSpec resolve(BuildContext context) {
-    return FlexSpec(
+  FlexWidgetSpec resolve(BuildContext context) {
+    return FlexWidgetSpec(
       direction: MixOps.resolve(context, $direction),
       mainAxisAlignment: MixOps.resolve(context, $mainAxisAlignment),
       crossAxisAlignment: MixOps.resolve(context, $crossAxisAlignment),
@@ -317,19 +319,19 @@ class FlexMix extends Style<FlexSpec>
     );
   }
 
-  /// Merges the properties of this [FlexMix] with the properties of [other].
+  /// Merges the properties of this [FlexStyle] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [FlexMix] with the properties of [other] taking precedence over
+  /// [FlexStyle] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  FlexMix merge(FlexMix? other) {
+  FlexStyle merge(FlexStyle? other) {
     if (other == null) return this;
 
-    return FlexMix.create(
+    return FlexStyle.create(
       direction: MixOps.merge($direction, other.$direction),
       mainAxisAlignment: MixOps.merge(
         $mainAxisAlignment,
@@ -371,12 +373,12 @@ class FlexMix extends Style<FlexSpec>
   }
 
   @override
-  FlexMix variant(Variant variant, FlexMix style) {
-    return merge(FlexMix(variants: [VariantStyle(variant, style)]));
+  FlexStyle variant(Variant variant, FlexStyle style) {
+    return merge(FlexStyle(variants: [VariantStyle(variant, style)]));
   }
 
   @override
-  FlexMix wrap(ModifierConfig value) {
+  FlexStyle wrap(ModifierConfig value) {
     return modifier(value);
   }
 
