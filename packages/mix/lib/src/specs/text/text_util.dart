@@ -12,7 +12,7 @@ import '../../properties/typography/strut_style_util.dart';
 import '../../properties/typography/text_height_behavior_util.dart';
 import '../../properties/typography/text_style_util.dart';
 import '../../variants/variant_util.dart';
-import 'text_attribute.dart';
+import 'text_style.dart';
 import 'text_spec.dart';
 
 /// Provides mutable utility for text styling with cascade notation support.

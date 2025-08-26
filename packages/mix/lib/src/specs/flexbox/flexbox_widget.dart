@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import '../../core/style_widget.dart';
 import '../../properties/container/container_spec.dart';
 import '../../properties/layout/flex_layout_spec.dart';
-import 'flexbox_attribute.dart';
+import 'flexbox_style.dart';
 import 'flexbox_spec.dart';
 
 /// Combines [Container] and [Flex] with Mix styling.

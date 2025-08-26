@@ -642,6 +642,11 @@ void main() {
           ContextVariant.widgetState(WidgetState.disabled),
         );
 
+        // Verify that variants can be created with different types
+        expect(namedVariant, isA<NamedVariant>());
+        expect(contextVariant, isA<ContextVariant>());
+        expect(notVariant, isA<ContextVariant>());
+
         // TODO: These tests were disabled after removing MultiSpec
         // expect(
         //   VariantAttributeBuilder<MultiSpec>(namedVariant),

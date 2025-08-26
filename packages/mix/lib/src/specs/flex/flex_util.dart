@@ -8,7 +8,7 @@ import '../../core/utility.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../variants/variant_util.dart';
-import 'flex_attribute.dart';
+import 'flex_style.dart';
 import 'flex_spec.dart';
 
 /// Provides mutable utility for flex styling with cascade notation support.

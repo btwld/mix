@@ -11,7 +11,7 @@ import '../../properties/painting/color_util.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../properties/painting/shadow_util.dart';
 import '../../variants/variant_util.dart';
-import 'icon_attribute.dart';
+import 'icon_style.dart';
 import 'icon_spec.dart';
 
 /// Provides mutable utility for icon styling with cascade notation support.

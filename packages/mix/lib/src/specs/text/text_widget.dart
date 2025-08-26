@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/directive.dart';
 import '../../core/style_widget.dart';
-import 'text_attribute.dart';
+import 'text_style.dart';
 import 'text_spec.dart';
 
 /// Displays text with Mix styling.

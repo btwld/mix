@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/style_widget.dart';
-import 'image_attribute.dart';
+import 'image_style.dart';
 import 'image_spec.dart';
 
 /// A styled image widget using Mix framework.

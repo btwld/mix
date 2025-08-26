@@ -22,7 +22,7 @@ import '../../properties/painting/gradient_mix.dart';
 import '../../properties/transform_mixin.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
-import '../text/text_attribute.dart';
+import '../text/text_style.dart';
 import 'box_spec.dart';
 import 'box_util.dart';
 import 'box_widget.dart';

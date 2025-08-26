@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/style_widget.dart';
-import 'box_attribute.dart';
+import 'box_style.dart';
 import 'box_spec.dart';
 
 /// A styled container widget using Mix framework.

@@ -8,7 +8,7 @@ import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/painting/color_util.dart';
 import '../../variants/variant_util.dart';
-import 'image_attribute.dart';
+import 'image_style.dart';
 import 'image_spec.dart';
 
 /// Provides mutable utility for image styling with cascade notation support.

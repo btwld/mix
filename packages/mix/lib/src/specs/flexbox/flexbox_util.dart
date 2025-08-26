@@ -13,7 +13,7 @@ import '../../properties/layout/edge_insets_geometry_util.dart';
 import '../../properties/painting/decoration_util.dart';
 import '../../variants/variant_util.dart';
 import '../../properties/container/container_mix.dart';
-import 'flexbox_attribute.dart';
+import 'flexbox_style.dart';
 import 'flexbox_spec.dart';
 
 /// Provides mutable utility for flexbox styling with cascade notation support.

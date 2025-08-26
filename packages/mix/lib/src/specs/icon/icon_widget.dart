@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/style_widget.dart';
-import 'icon_attribute.dart';
+import 'icon_style.dart';
 import 'icon_spec.dart';
 
 /// Displays an icon with Mix styling.

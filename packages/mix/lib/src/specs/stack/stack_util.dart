@@ -8,7 +8,7 @@ import '../../core/utility.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../variants/variant_util.dart';
-import 'stack_attribute.dart';
+import 'stack_style.dart';
 import 'stack_spec.dart';
 
 /// Provides mutable utility for stack styling with cascade notation support.

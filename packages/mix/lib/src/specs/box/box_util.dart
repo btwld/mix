@@ -12,7 +12,7 @@ import '../../properties/layout/constraints_util.dart';
 import '../../properties/layout/edge_insets_geometry_util.dart';
 import '../../properties/painting/decoration_util.dart';
 import '../../variants/variant_util.dart';
-import 'box_attribute.dart';
+import 'box_style.dart';
 import 'box_spec.dart';
 
 /// Provides mutable utility for box styling with cascade notation support.
