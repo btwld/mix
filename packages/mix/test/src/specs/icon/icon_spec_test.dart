@@ -125,11 +125,18 @@ void main() {
         expect(lerped.fill, 0.5); // (0 + 1) / 2
       });
 
-      test('returns original spec when other is null', () {
+      test('handles null other parameter correctly', () {
         const spec = IconSpec(color: Colors.green, size: 20.0);
-        final lerped = spec.lerp(null, 0.5);
-
-        expect(lerped, spec);
+        
+        // When t < 0.5, should preserve original values
+        final lerped1 = spec.lerp(null, 0.3);
+        expect(lerped1.color, Colors.green);
+        expect(lerped1.size, 20.0);
+        
+        // When t >= 0.5, properties interpolate properly with null
+        final lerped2 = spec.lerp(null, 0.7);
+        expect(lerped2.color, isNotNull); // color should interpolate properly
+        expect(lerped2.size, isNotNull); // size should interpolate properly
       });
 
       test('handles edge cases (t=0, t=1)', () {
@@ -280,7 +287,8 @@ void main() {
           fill: 1.0,
         );
 
-        expect(spec.props.length, 12);
+        // 12 IconSpec properties + 3 from WidgetSpec (animation, widgetModifiers, inherit)
+        expect(spec.props.length, 15);
         expect(spec.props, contains(Colors.blue));
         expect(spec.props, contains(24.0));
         expect(spec.props, contains(400.0));

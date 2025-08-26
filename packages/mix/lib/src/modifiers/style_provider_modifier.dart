@@ -2,61 +2,61 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/modifier.dart';
-import '../core/providers/resolved_style_provider.dart';
-import '../core/spec.dart';
+import '../core/providers/widget_spec_provider.dart';
 import '../core/style.dart';
+import '../core/widget_spec.dart';
 
-/// A modifier that provides a ResolvedStyle<S> to descendant widgets.
+/// A modifier that provides a WidgetSpec<S> to descendant widgets.
 ///
-/// This modifier wraps its child with a ResolvedStyleProvider, making the
-/// resolved style available to all descendants via ResolvedStyleProvider.of<S>(context).
+/// This modifier wraps its child with a WidgetSpecProvider, making the
+/// resolved spec available to all descendants via WidgetSpecProvider.of<S>(context).
 ///
-/// Note: This provides resolved styles rather than unresolved ones, which enables
+/// Note: This provides resolved specs rather than unresolved ones, which enables
 /// proper interpolation for animations while still supporting style inheritance.
-final class StyleProviderModifier<S extends Spec<S>>
+final class StyleProviderModifier<S extends WidgetSpec<S>>
     extends Modifier<StyleProviderModifier<S>>
     with Diagnosticable {
-  /// The resolved style to provide to descendants
-  final ResolvedStyle<S> resolvedStyle;
+  /// The resolved spec to provide to descendants
+  final S spec;
 
-  const StyleProviderModifier(this.resolvedStyle);
+  const StyleProviderModifier(this.spec);
 
   @override
-  StyleProviderModifier<S> copyWith({ResolvedStyle<S>? resolvedStyle}) {
-    return StyleProviderModifier(resolvedStyle ?? this.resolvedStyle);
+  StyleProviderModifier<S> copyWith({S? spec}) {
+    return StyleProviderModifier(spec ?? this.spec);
   }
 
   @override
   StyleProviderModifier<S> lerp(StyleProviderModifier<S>? other, double t) {
     if (other == null) return this;
 
-    // Use the existing lerp implementation from ResolvedStyle
-    return StyleProviderModifier(resolvedStyle.lerp(other.resolvedStyle, t));
+    // Use the existing lerp implementation from the spec
+    return StyleProviderModifier(spec.lerp(other.spec, t));
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('resolvedStyle', resolvedStyle));
+    properties.add(DiagnosticsProperty('spec', spec));
   }
 
   @override
-  List<Object?> get props => [resolvedStyle];
+  List<Object?> get props => [spec];
 
   @override
   Widget build(Widget child) {
-    return ResolvedStyleProvider<S>(resolvedStyle: resolvedStyle, child: child);
+    return WidgetSpecProvider<S>(spec: spec, child: child);
   }
 }
 
 /// Mix attribute for StyleProvider.
 ///
 /// This class stores a Style<S> and resolves it during the resolve phase,
-/// creating a StyleProviderModifier with the resolved style.
+/// creating a StyleProviderModifier with the resolved spec.
 ///
 /// The style is resolved at modifier resolution time, which ensures proper
 /// context access for token and variant resolution.
-class StyleProviderModifierMix<S extends Spec<S>>
+class StyleProviderModifierMix<S extends WidgetSpec<S>>
     extends ModifierMix<StyleProviderModifier<S>>
     with Diagnosticable {
   /// The unresolved style that will be resolved during resolve()
@@ -68,13 +68,12 @@ class StyleProviderModifierMix<S extends Spec<S>>
   StyleProviderModifier<S> resolve(BuildContext context) {
     // Resolve the style at modifier resolution time
     // This ensures we have proper context for tokens and variants
-    final resolvedStyle = style.build(context);
+    final spec = style.build(context);
 
-    // Note: style.build() always returns a ResolvedStyle object
-    // The spec field within it may be null if the style has no attributes
-    // This is valid and consumers should handle null specs appropriately
+    // Note: style.build() now returns a spec directly
+    // The spec includes animation, modifiers, and inherit metadata
 
-    return StyleProviderModifier(resolvedStyle);
+    return StyleProviderModifier(spec);
   }
 
   @override

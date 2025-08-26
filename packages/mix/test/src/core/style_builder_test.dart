@@ -94,6 +94,10 @@ void main() {
         expect(find.byType(StyleAnimationBuilder<BoxSpec>), findsNothing);
       });
 
+      // TODO: This test needs to be revisited after the WidgetSpec migration
+      // The animation architecture has changed - animation configs are now part of specs
+      // so changing styles with animations creates new animation widgets rather than
+      // animating between values.
       testWidgets('Animation interpolates between style changes', (
         tester,
       ) async {
@@ -155,6 +159,9 @@ void main() {
           ),
         );
 
+        // Give animation one frame to start
+        await tester.pump();
+
         // Pump halfway through animation
         await tester.pump(const Duration(milliseconds: 150));
 
@@ -189,9 +196,7 @@ void main() {
             .wrap(
               ModifierConfig.modifiers([
                 OpacityModifierMix(opacity: 0.5),
-                PaddingModifierMix(
-                  padding: EdgeInsetsGeometryMix.all(10),
-                ),
+                PaddingModifierMix(padding: EdgeInsetsGeometryMix.all(10)),
                 ClipOvalModifierMix(),
               ]),
             );
@@ -239,9 +244,7 @@ void main() {
             .wrap(
               ModifierConfig.modifiers([
                 OpacityModifierMix(opacity: 0.5),
-                PaddingModifierMix(
-                  padding: EdgeInsetsGeometryMix.all(10),
-                ),
+                PaddingModifierMix(padding: EdgeInsetsGeometryMix.all(10)),
                 ClipOvalModifierMix(),
                 VisibilityModifierMix(visible: true),
               ]),
@@ -314,9 +317,7 @@ void main() {
             .wrap(
               ModifierConfig.modifiers([
                 OpacityModifierMix(opacity: 0.5),
-                PaddingModifierMix(
-                  padding: EdgeInsetsGeometryMix.all(10),
-                ),
+                PaddingModifierMix(padding: EdgeInsetsGeometryMix.all(10)),
                 ClipOvalModifierMix(),
               ]).orderOfModifiers(customOrder),
             );

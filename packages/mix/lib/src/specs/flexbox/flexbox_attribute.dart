@@ -8,14 +8,16 @@ import '../../core/style.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/layout/constraints_mix.dart';
+import '../../properties/layout/constraints_mixin.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
+import '../../properties/layout/spacing_mixin.dart';
+import '../../properties/transform_mixin.dart';
 import '../../properties/painting/border_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
 import '../../properties/painting/border_radius_util.dart';
-import '../../properties/painting/decoration_image_mix.dart';
 import '../../properties/painting/decoration_mix.dart';
+import '../../properties/painting/decoration_mixin.dart';
 import '../../properties/painting/gradient_mix.dart';
-import '../../properties/painting/shadow_mix.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import '../box/box_attribute.dart';
@@ -36,7 +38,11 @@ class FlexBoxMix extends Style<FlexBoxSpec>
         Diagnosticable,
         StyleModifierMixin<FlexBoxMix, FlexBoxSpec>,
         StyleVariantMixin<FlexBoxMix, FlexBoxSpec>,
-        BorderRadiusMixin<FlexBoxMix> {
+        BorderRadiusMixin<FlexBoxMix>,
+        DecorationMixin<FlexBoxMix>,
+        SpacingMixin<FlexBoxMix>,
+        TransformMixin<FlexBoxMix>,
+        ConstraintsMixin<FlexBoxMix> {
   final Prop<BoxSpec>? $box;
   final Prop<FlexSpec>? $flex;
 
@@ -103,10 +109,6 @@ class FlexBoxMix extends Style<FlexBoxSpec>
     return FlexBoxMix(box: BoxMix.gradient(value));
   }
 
-  /// Shape factory
-  factory FlexBoxMix.shape(BoxShape value) {
-    return FlexBoxMix(box: BoxMix.shape(value));
-  }
 
   factory FlexBoxMix.height(double value) {
     return FlexBoxMix(box: BoxMix.height(value));
@@ -276,125 +278,35 @@ class FlexBoxMix extends Style<FlexBoxSpec>
   }
 
   // BoxMix instance methods
-  /// Sets background color
-  FlexBoxMix color(Color value) {
-    return merge(FlexBoxMix.color(value));
-  }
 
-  /// Sets both min and max width to create a fixed width
-  FlexBoxMix width(double value) {
-    return merge(FlexBoxMix.width(value));
-  }
 
-  /// Sets both min and max height to create a fixed height
-  FlexBoxMix height(double value) {
-    return merge(FlexBoxMix.height(value));
-  }
 
-  /// Sets rotation transform
-  FlexBoxMix rotate(double angle) {
-    return merge(FlexBoxMix(box: BoxMix.transform(Matrix4.rotationZ(angle))));
-  }
 
-  /// Sets scale transform
-  FlexBoxMix scale(double scale) {
-    return merge(
-      FlexBoxMix(
-        box: BoxMix.transform(Matrix4.diagonal3Values(scale, scale, 1.0)),
-      ),
-    );
-  }
-
-  /// Sets translation transform
-  FlexBoxMix translate(double x, double y, [double z = 0.0]) {
-    return merge(
-      FlexBoxMix(box: BoxMix.transform(Matrix4.translationValues(x, y, z))),
-    );
-  }
-
-  /// Sets skew transform
-  FlexBoxMix skew(double skewX, double skewY) {
-    final matrix = Matrix4.identity();
-    matrix.setEntry(0, 1, skewX);
-    matrix.setEntry(1, 0, skewY);
-
-    return merge(FlexBoxMix(box: BoxMix.transform(matrix)));
-  }
-
-  /// Resets transform to identity (no effect)
-  FlexBoxMix transformReset() {
-    return merge(FlexBoxMix(box: BoxMix.transform(Matrix4.identity())));
-  }
-
-  /// Sets minimum width constraint
-  FlexBoxMix minWidth(double value) {
-    return merge(FlexBoxMix.minWidth(value));
-  }
-
-  /// Sets maximum width constraint
-  FlexBoxMix maxWidth(double value) {
-    return merge(FlexBoxMix.maxWidth(value));
-  }
-
-  /// Sets minimum height constraint
-  FlexBoxMix minHeight(double value) {
-    return merge(FlexBoxMix.minHeight(value));
-  }
-
-  /// Sets maximum height constraint
-  FlexBoxMix maxHeight(double value) {
-    return merge(FlexBoxMix.maxHeight(value));
-  }
-
-  /// Sets both width and height to specific values
-  FlexBoxMix size(double width, double height) {
-    return merge(FlexBoxMix(box: BoxMix().size(width, height)));
-  }
-
-  /// Sets box shape
-  FlexBoxMix shape(BoxShape value) {
-    return merge(FlexBoxMix(box: BoxMix.shape(value)));
-  }
 
   FlexBoxMix alignment(AlignmentGeometry value) {
     return merge(FlexBoxMix.alignment(value));
   }
 
-  /// Sets single shadow
-  FlexBoxMix shadow(BoxShadowMix value) {
-    return merge(FlexBoxMix(box: BoxMix().shadow(value)));
-  }
-
-  /// Sets multiple shadows
-  FlexBoxMix shadows(List<BoxShadowMix> value) {
-    return merge(FlexBoxMix(box: BoxMix().shadows(value)));
-  }
-
-  /// Sets elevation shadow
-  FlexBoxMix elevation(ElevationShadow value) {
-    return merge(FlexBoxMix(box: BoxMix().elevation(value)));
-  }
-
-  /// Border instance method
-  FlexBoxMix border(BoxBorderMix value) {
-    return merge(FlexBoxMix.border(value));
-  }
 
   /// Padding instance method
+  @override
   FlexBoxMix padding(EdgeInsetsGeometryMix value) {
     return merge(FlexBoxMix.padding(value));
   }
 
   /// Margin instance method
+  @override
   FlexBoxMix margin(EdgeInsetsGeometryMix value) {
     return merge(FlexBoxMix.margin(value));
   }
 
+  @override
   FlexBoxMix transform(Matrix4 value) {
     return merge(FlexBoxMix.transform(value));
   }
 
-  /// Decoration instance method
+  /// Decoration instance method - delegates to box
+  @override
   FlexBoxMix decoration(DecorationMix value) {
     return merge(FlexBoxMix.decoration(value));
   }
@@ -405,19 +317,11 @@ class FlexBoxMix extends Style<FlexBoxSpec>
   }
 
   /// Constraints instance method
+  @override
   FlexBoxMix constraints(BoxConstraintsMix value) {
     return merge(FlexBoxMix.constraints(value));
   }
 
-  /// Sets gradient with any GradientMix type
-  FlexBoxMix gradient(GradientMix value) {
-    return merge(FlexBoxMix.gradient(value));
-  }
-
-  /// Sets image decoration
-  FlexBoxMix image(DecorationImageMix value) {
-    return merge(FlexBoxMix(box: BoxMix().image(value)));
-  }
 
   FlexBoxMix transformAlignment(AlignmentGeometry value) {
     return merge(FlexBoxMix.transformAlignment(value));
@@ -516,7 +420,13 @@ class FlexBoxMix extends Style<FlexBoxSpec>
     final boxSpec = MixOps.resolve(context, $box);
     final flexSpec = MixOps.resolve(context, $flex);
 
-    return FlexBoxSpec(box: boxSpec, flex: flexSpec);
+    return FlexBoxSpec(
+      box: boxSpec,
+      flex: flexSpec,
+      animation: $animation,
+      widgetModifiers: $modifier?.resolve(context),
+      inherit: $inherit,
+    );
   }
 
   /// Merges the properties of this [FlexBoxMix] with the properties of [other].
@@ -544,8 +454,9 @@ class FlexBoxMix extends Style<FlexBoxSpec>
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('box', $box, defaultValue: null));
-    properties.add(DiagnosticsProperty('flex', $flex, defaultValue: null));
+    properties
+      ..add(DiagnosticsProperty('box', $box))
+      ..add(DiagnosticsProperty('flex', $flex));
   }
 
   /// The list of properties that constitute the state of this [FlexBoxMix].

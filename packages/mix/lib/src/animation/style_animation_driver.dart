@@ -3,35 +3,18 @@ import 'package:flutter/physics.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/spec.dart';
-import '../core/style.dart';
+import '../core/widget_spec.dart';
 import 'animation_config.dart';
 
-/// Tween for ResolvedStyle interpolation.
-class ResolvedStyleTween<S extends Spec<S>> extends Tween<ResolvedStyle<S>?> {
-  ResolvedStyleTween({super.begin, super.end});
-
-  @override
-  ResolvedStyle<S>? lerp(double t) {
-    if (begin == null) return end;
-    if (end == null) return begin;
-
-    return begin!.lerp(end!, t);
-  }
-}
-
-/// Tween that converts Spec to ResolvedStyle for PhaseAnimationDriver.
-class _SpecToResolvedStyleTween<S extends Spec<S>>
-    extends Tween<ResolvedStyle<S>?> {
+/// Tween that uses TweenSequence for phased animations.
+class _PhasedSpecTween<S extends WidgetSpec<S>> extends Tween<S?> {
   final TweenSequence<S?> _tweenSequence;
 
-  _SpecToResolvedStyleTween(this._tweenSequence);
+  _PhasedSpecTween(this._tweenSequence);
 
   @override
-  ResolvedStyle<S>? lerp(double t) {
-    final spec = _tweenSequence.transform(t);
-    if (spec == null) return null;
-
-    return ResolvedStyle(spec: spec);
+  S? lerp(double t) {
+    return _tweenSequence.transform(t);
   }
 }
 
@@ -46,28 +29,28 @@ abstract class StyleAnimationDriver<S extends Spec<S>> {
   /// The animation controller managing the animation.
   late final AnimationController _controller;
 
-  final ResolvedStyle<S> _initialStyle;
+  final S _initialSpec;
 
-  /// Mutable tween for animating between styles.
+  /// Mutable tween for animating between specs.
   @protected
-  final _tween = ResolvedStyleTween<S>();
+  final _tween = SpecTween<S>();
 
-  /// The animation that drives style changes using Flutter's Tween system.
+  /// The animation that drives spec changes using Flutter's Tween system.
   @protected
-  late Animation<ResolvedStyle<S>?> _animation;
+  late Animation<S?> _animation;
 
   StyleAnimationDriver({
     required this.vsync,
-    required ResolvedStyle<S> initialStyle,
+    required S initialSpec,
     bool unbounded = false,
-  }) : _initialStyle = initialStyle {
+  }) : _initialSpec = initialSpec {
     _controller = unbounded
         ? AnimationController.unbounded(vsync: vsync)
         : AnimationController(vsync: vsync);
 
-    // Initialize tween with initial style
-    _tween.begin = initialStyle;
-    _tween.end = initialStyle;
+    // Initialize tween with initial spec
+    _tween.begin = initialSpec;
+    _tween.end = initialSpec;
 
     // Create the animation once - it will use the mutable tween
     _animation = _controller.drive(_tween);
@@ -79,23 +62,27 @@ abstract class StyleAnimationDriver<S extends Spec<S>> {
   @visibleForTesting
   AnimationController get controller => _controller;
 
-  /// Gets the animation that drives style changes.
-  Animation<ResolvedStyle<S>?> get animation => _animation;
+  /// Gets the animation that drives spec changes.
+  Animation<S?> get animation => _animation;
 
-  /// Animates to the given target style.
+  /// Animates to the given target spec.
   @nonVirtual
-  Future<void> animateTo(ResolvedStyle<S> targetStyle) async {
-    if (_tween.end == targetStyle && !_controller.isAnimating) return;
+  Future<void> animateTo(S targetSpec) async {
+    if (_tween.end == targetSpec && !_controller.isAnimating) return;
 
-    final currentValue = _animation.value ?? _initialStyle;
-    if (currentValue == targetStyle) {
-      _tween.end = targetStyle;
+    final currentValue = _animation.value ?? _initialSpec;
+    if (currentValue == targetSpec) {
+      _tween.end = targetSpec;
 
       return;
     }
 
+    // Reset controller to 0 before updating tween
+    _controller.reset();
+
     _tween.begin = currentValue;
-    _tween.end = targetStyle;
+    _tween.end = targetSpec;
+
     await executeAnimation();
   }
 
@@ -109,8 +96,8 @@ abstract class StyleAnimationDriver<S extends Spec<S>> {
   /// Resets the animation to the beginning.
   void reset() {
     _controller.reset();
-    _tween.begin = _initialStyle;
-    _tween.end = _initialStyle;
+    _tween.begin = _initialSpec;
+    _tween.end = _initialSpec;
   }
 
   void dispose() {
@@ -119,13 +106,14 @@ abstract class StyleAnimationDriver<S extends Spec<S>> {
 }
 
 /// A driver for curve-based animations with fixed duration.
-class CurveAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
+class CurveAnimationDriver<S extends WidgetSpec<S>>
+    extends StyleAnimationDriver<S> {
   final CurveAnimationConfig _config;
 
   CurveAnimationDriver({
     required super.vsync,
     required CurveAnimationConfig config,
-    required super.initialStyle,
+    required super.initialSpec,
   }) : _config = config {
     // Add status listener for onEnd callback
     if (config.onEnd != null) {
@@ -167,13 +155,14 @@ class CurveAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
 }
 
 /// A driver for spring-based physics animations.
-class SpringAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
+class SpringAnimationDriver<S extends WidgetSpec<S>>
+    extends StyleAnimationDriver<S> {
   final SpringAnimationConfig _config;
 
   SpringAnimationDriver({
     required super.vsync,
     required SpringAnimationConfig config,
-    required super.initialStyle,
+    required super.initialSpec,
   }) : _config = config,
        super(unbounded: true) {
     // Add status listener for onEnd callback
@@ -198,7 +187,8 @@ class SpringAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   }
 }
 
-class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
+class PhaseAnimationDriver<S extends WidgetSpec<S>>
+    extends StyleAnimationDriver<S> {
   final List<S> specs;
   final List<CurveAnimationConfig> curveConfigs;
   final Listenable trigger;
@@ -210,14 +200,14 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     required super.vsync,
     required this.curveConfigs,
     required this.specs,
-    required super.initialStyle,
+    required super.initialSpec,
     required this.trigger,
     required this.mode,
   }) {
     _tweenSequence = mode.createTweenSequence(specs, curveConfigs);
 
     // Override the animation to use TweenSequence wrapped in a tween
-    _animation = controller.drive(_SpecToResolvedStyleTween(_tweenSequence));
+    _animation = controller.drive(_PhasedSpecTween(_tweenSequence));
 
     trigger.addListener(_onTriggerChanged);
 

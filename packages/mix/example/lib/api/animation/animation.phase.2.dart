@@ -38,18 +38,24 @@ class _ExampleState extends State<Example> {
     return MouseRegion(
       onEnter: (event) => trigger.value++,
       child: HBox(
-        style: FlexBoxMix()
-            .box(
-              BoxMix()
-                  .color(Colors.white)
-                  .padding(EdgeInsetsMix.symmetric(horizontal: 16, vertical: 8))
-                  .borderRadius(BorderRadiusMix.circular(10))
-                  .border(
-                    BoxBorderMix.all(BorderSideMix.color(Colors.grey.shade200)),
-                  )
-                  .onHovered(
-                    BoxMix().border(
-                      BoxBorderMix.all(BorderSideMix.color(Colors.red)),
+        style: Style.flexbox(
+          FlexBoxMix()
+              .box(
+                BoxMix()
+                    .color(Colors.white)
+                    .padding(
+                      EdgeInsetsMix.symmetric(horizontal: 16, vertical: 8),
+                    )
+                    .borderRadius(BorderRadiusMix.circular(10))
+                    .border(
+                      BoxBorderMix.all(
+                        BorderSideMix.color(Colors.grey.shade200),
+                      ),
+                    )
+                    .onHovered(
+                      BoxMix().border(
+                        BoxBorderMix.all(BorderSideMix.color(Colors.red)),
+                      ),
                     ),
                   ),
             )

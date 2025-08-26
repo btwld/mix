@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/helpers.dart';
-import '../../core/internal/diagnostic_properties_builder_ext.dart';
 import '../../core/mix_element.dart';
 import '../../core/prop.dart';
 
@@ -193,14 +192,15 @@ class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.addUsingDefault('fontFamily', $fontFamily);
-    properties.addUsingDefault('fontFamilyFallback', $fontFamilyFallback);
-    properties.addUsingDefault('fontSize', $fontSize);
-    properties.addUsingDefault('fontWeight', $fontWeight);
-    properties.addUsingDefault('fontStyle', $fontStyle);
-    properties.addUsingDefault('height', $height);
-    properties.addUsingDefault('leading', $leading);
-    properties.addUsingDefault('forceStrutHeight', $forceStrutHeight);
+    properties
+      ..add(DiagnosticsProperty('fontFamily', $fontFamily))
+      ..add(DiagnosticsProperty('fontFamilyFallback', $fontFamilyFallback))
+      ..add(DiagnosticsProperty('fontSize', $fontSize))
+      ..add(DiagnosticsProperty('fontWeight', $fontWeight))
+      ..add(DiagnosticsProperty('fontStyle', $fontStyle))
+      ..add(DiagnosticsProperty('height', $height))
+      ..add(DiagnosticsProperty('leading', $leading))
+      ..add(DiagnosticsProperty('forceStrutHeight', $forceStrutHeight));
   }
 
   @override

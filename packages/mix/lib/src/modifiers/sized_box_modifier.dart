@@ -38,8 +38,9 @@ final class SizedBoxModifier extends Modifier<SizedBoxModifier>
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('width', width, defaultValue: null));
-    properties.add(DiagnosticsProperty('height', height, defaultValue: null));
+    properties
+      ..add(DoubleProperty('width', width))
+      ..add(DoubleProperty('height', height));
   }
 
   @override
@@ -112,8 +113,9 @@ class SizedBoxModifierMix
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('width', width, defaultValue: null));
-    properties.add(DiagnosticsProperty('height', height, defaultValue: null));
+    properties
+      ..add(DiagnosticsProperty('width', width))
+      ..add(DiagnosticsProperty('height', height));
   }
 
   @override

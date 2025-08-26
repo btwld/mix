@@ -4,25 +4,25 @@ import 'package:mix/mix.dart';
 
 void main() {
   group('StyleProviderModifier', () {
-    test('can create modifier with resolved style', () {
-      final resolvedStyle = ResolvedStyle<BoxSpec>(spec: const BoxSpec());
+    test('can create modifier with widget spec', () {
+      const widgetSpec = BoxSpec();
 
-      final modifier = StyleProviderModifier(resolvedStyle);
+      const modifier = StyleProviderModifier(widgetSpec);
 
-      expect(modifier.resolvedStyle, equals(resolvedStyle));
+      expect(modifier.spec, equals(widgetSpec));
     });
 
-    test('builds ResolvedStyleProvider widget', () {
-      final resolvedStyle = ResolvedStyle<BoxSpec>(spec: const BoxSpec());
+    test('builds WidgetSpecProvider widget', () {
+      const widgetSpec = BoxSpec();
 
-      final modifier = StyleProviderModifier(resolvedStyle);
+      const modifier = StyleProviderModifier(widgetSpec);
       final child = Container();
       final result = modifier.build(child);
 
-      expect(result, isA<ResolvedStyleProvider<BoxSpec>>());
+      expect(result, isA<WidgetSpecProvider<BoxSpec>>());
       expect(
-        (result as ResolvedStyleProvider).resolvedStyle,
-        equals(resolvedStyle),
+        (result as WidgetSpecProvider).spec,
+        equals(widgetSpec),
       );
     });
 
@@ -31,33 +31,30 @@ void main() {
 
       final spec2 = const BoxSpec(alignment: Alignment.bottomRight);
 
-      final modifier1 = StyleProviderModifier<BoxSpec>(
-        ResolvedStyle(spec: spec1),
-      );
+      final modifier1 = StyleProviderModifier<BoxSpec>(spec1);
 
-      final modifier2 = StyleProviderModifier<BoxSpec>(
-        ResolvedStyle(spec: spec2),
-      );
+      final modifier2 = StyleProviderModifier<BoxSpec>(spec2);
 
       final result = modifier1.lerp(modifier2, 0.5);
 
       // The lerped spec should be different from both originals
-      expect(result.resolvedStyle.spec, isNot(equals(spec1)));
-      expect(result.resolvedStyle.spec, isNot(equals(spec2)));
+      expect(result.spec, isNot(equals(spec1)));
+      expect(result.spec, isNot(equals(spec2)));
     });
 
     test('lerp interpolates properly when both specs exist', () {
       final spec1 = const BoxSpec(alignment: Alignment.topLeft);
       final spec2 = const BoxSpec(alignment: Alignment.bottomRight);
 
-      final style1 = ResolvedStyle<BoxSpec>(spec: spec1);
-      final style2 = ResolvedStyle<BoxSpec>(spec: spec2);
+      // Now specs have lerp built-in
+      final style1 = spec1;
+      final style2 = spec2;
 
       final result = style1.lerp(style2, 0.5);
 
       // Should have interpolated the alignment
-      expect(result.spec, isNotNull);
-      expect(result.spec.alignment, equals(Alignment.center));
+      expect(result, isNotNull);
+      expect(result.alignment, equals(Alignment.center));
     });
   });
 
@@ -76,9 +73,9 @@ void main() {
             final resolved = mix.resolve(context);
 
             expect(resolved, isA<StyleProviderModifier<BoxSpec>>());
-            expect(resolved.resolvedStyle.spec, isNotNull);
+            expect(resolved.spec, isNotNull);
             expect(
-              resolved.resolvedStyle.spec.alignment,
+              resolved.spec.alignment,
               equals(Alignment.center),
             );
 
@@ -128,7 +125,7 @@ void main() {
             // Should still create a valid modifier even with empty style
             expect(resolved, isA<StyleProviderModifier<BoxSpec>>());
             // The spec might be null or have all null properties
-            expect(resolved.resolvedStyle, isNotNull);
+            expect(resolved.spec, isNotNull);
 
             return Container();
           },

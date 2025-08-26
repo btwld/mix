@@ -276,7 +276,12 @@ class MockStyle<T> extends Style<MockSpec<T>> {
 
   @override
   MockSpec<T> resolve(BuildContext context) {
-    return MockSpec<T>(resolvedValue: value);
+    return MockSpec<T>(
+      resolvedValue: value,
+      animation: $animation,
+      widgetModifiers: $modifier?.resolve(context),
+      inherit: $inherit,
+    );
   }
 
   @override
@@ -287,25 +292,45 @@ class MockStyle<T> extends Style<MockSpec<T>> {
 ///
 /// A simple Spec implementation that holds a resolved value.
 /// Used as the target spec for mock attributes.
-final class MockSpec<T> extends Spec<MockSpec<T>> {
+final class MockSpec<T> extends WidgetSpec<MockSpec<T>> {
   final T? resolvedValue;
 
-  const MockSpec({this.resolvedValue});
+  const MockSpec({
+    this.resolvedValue,
+    super.animation,
+    super.widgetModifiers,
+    super.inherit,
+  });
 
   @override
   MockSpec<T> lerp(MockSpec<T>? other, double t) {
     if (other == null) return this;
     // Simple lerp - just return other for testing
-    return other;
+    return MockSpec<T>(
+      resolvedValue: other.resolvedValue,
+      animation: other.animation ?? animation,
+      widgetModifiers: other.widgetModifiers ?? widgetModifiers,
+      inherit: other.inherit ?? inherit,
+    );
   }
 
   @override
-  MockSpec<T> copyWith({T? resolvedValue}) {
-    return MockSpec(resolvedValue: resolvedValue ?? this.resolvedValue);
+  MockSpec<T> copyWith({
+    T? resolvedValue,
+    AnimationConfig? animation,
+    List<Modifier>? widgetModifiers,
+    bool? inherit,
+  }) {
+    return MockSpec<T>(
+      resolvedValue: resolvedValue ?? this.resolvedValue,
+      animation: animation ?? this.animation,
+      widgetModifiers: widgetModifiers ?? this.widgetModifiers,
+      inherit: inherit ?? this.inherit,
+    );
   }
 
   @override
-  List<Object?> get props => [resolvedValue];
+  List<Object?> get props => [resolvedValue, ...super.props];
 }
 
 // =============================================================================

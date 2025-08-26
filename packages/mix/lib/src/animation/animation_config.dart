@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import '../core/internal/constants.dart';
 import '../core/spec.dart';
 import '../core/style.dart';
+import '../core/widget_spec.dart';
 
 /// Configuration data for animated styles in the Mix framework.
 ///
@@ -831,7 +832,7 @@ class OneShotPhaseAnimationMode extends PhaseAnimationMode {
   }
 }
 
-class PhaseAnimationConfig<T extends Spec<T>, U extends Style<T>>
+class PhaseAnimationConfig<T extends WidgetSpec<T>, U extends Style<T>>
     extends AnimationConfig {
   final List<U> styles;
   final List<CurveAnimationConfig> curveConfigs;

@@ -633,6 +633,9 @@ class TextMix extends Style<TextSpec>
       selectionColor: MixOps.resolve(context, $selectionColor),
       semanticsLabel: MixOps.resolve(context, $semanticsLabel),
       locale: MixOps.resolve(context, $locale),
+      animation: $animation,
+      widgetModifiers: $modifier?.resolve(context),
+      inherit: $inherit,
     );
   }
 
@@ -676,61 +679,21 @@ class TextMix extends Style<TextSpec>
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(
-      DiagnosticsProperty('overflow', $overflow, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('strutStyle', $strutStyle, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('textAlign', $textAlign, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('textScaler', $textScaler, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('maxLines', $maxLines, defaultValue: null),
-    );
-    properties.add(DiagnosticsProperty('style', $style, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty(
-        'textWidthBasis',
-        $textWidthBasis,
-        defaultValue: null,
-      ),
-    );
-    properties.add(
-      DiagnosticsProperty(
-        'textHeightBehavior',
-        $textHeightBehavior,
-        defaultValue: null,
-      ),
-    );
-    properties.add(
-      DiagnosticsProperty('textDirection', $textDirection, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('softWrap', $softWrap, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty(
-        'selectionColor',
-        $selectionColor,
-        defaultValue: null,
-      ),
-    );
-    properties.add(
-      DiagnosticsProperty(
-        'semanticsLabel',
-        $semanticsLabel,
-        defaultValue: null,
-      ),
-    );
-    properties.add(DiagnosticsProperty('locale', $locale, defaultValue: null));
-
-    properties.add(
-      DiagnosticsProperty('directives', $textDirectives, defaultValue: null),
-    );
+    properties
+      ..add(DiagnosticsProperty('overflow', $overflow))
+      ..add(DiagnosticsProperty('strutStyle', $strutStyle))
+      ..add(DiagnosticsProperty('textAlign', $textAlign))
+      ..add(DiagnosticsProperty('textScaler', $textScaler))
+      ..add(DiagnosticsProperty('maxLines', $maxLines))
+      ..add(DiagnosticsProperty('style', $style))
+      ..add(DiagnosticsProperty('textWidthBasis', $textWidthBasis))
+      ..add(DiagnosticsProperty('textHeightBehavior', $textHeightBehavior))
+      ..add(DiagnosticsProperty('textDirection', $textDirection))
+      ..add(DiagnosticsProperty('softWrap', $softWrap))
+      ..add(DiagnosticsProperty('selectionColor', $selectionColor))
+      ..add(DiagnosticsProperty('semanticsLabel', $semanticsLabel))
+      ..add(DiagnosticsProperty('locale', $locale))
+      ..add(DiagnosticsProperty('directives', $textDirectives));
   }
 
   @override

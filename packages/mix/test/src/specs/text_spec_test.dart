@@ -124,11 +124,18 @@ void main() {
         expect(lerped.strutStyle?.fontSize, 16.0); // (12 + 20) / 2
       });
 
-      test('returns original spec when other is null', () {
+      test('handles null other parameter correctly', () {
         const spec = TextSpec(maxLines: 3, overflow: TextOverflow.ellipsis);
-        final lerped = spec.lerp(null, 0.5);
-
-        expect(lerped, spec);
+        
+        // When t < 0.5, should preserve original values
+        final lerped1 = spec.lerp(null, 0.3);
+        expect(lerped1.maxLines, 3);
+        expect(lerped1.overflow, TextOverflow.ellipsis);
+        
+        // When t >= 0.5, snap properties become null, but new spec should be created
+        final lerped2 = spec.lerp(null, 0.7);
+        expect(lerped2.maxLines, isNotNull); // maxLines should interpolate properly
+        expect(lerped2.overflow, null); // overflow snaps to null when t >= 0.5
       });
 
       test('handles edge cases (t=0, t=1)', () {
@@ -287,7 +294,8 @@ void main() {
           textDirectives: [],
         );
 
-        expect(spec.props.length, 14);
+        // 14 TextSpec properties + 3 from WidgetSpec (animation, widgetModifiers, inherit)
+        expect(spec.props.length, 17);
         expect(spec.props, contains(TextOverflow.ellipsis));
         expect(spec.props, contains(spec.strutStyle));
         expect(spec.props, contains(TextAlign.center));

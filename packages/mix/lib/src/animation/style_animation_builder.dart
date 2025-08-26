@@ -1,8 +1,7 @@
 import 'package:flutter/widgets.dart';
 
+import '../core/widget_spec.dart';
 import 'animation_config.dart';
-import '../core/spec.dart';
-import '../core/style.dart';
 import 'style_animation_driver.dart';
 
 /// A widget that handles animation of styles using an AnimationDriver.
@@ -10,30 +9,29 @@ import 'style_animation_driver.dart';
 /// This widget listens to changes in the driver and rebuilds when the
 /// animated style changes. It also manages the animation lifecycle,
 /// triggering animations when the style changes.
-class StyleAnimationBuilder<S extends Spec<S>> extends StatefulWidget {
+class StyleAnimationBuilder<S extends WidgetSpec<S>> extends StatefulWidget {
   const StyleAnimationBuilder({
     super.key,
     required this.animationConfig,
-    required this.resolvedStyle,
+    required this.spec,
     required this.builder,
   });
 
   /// The animation driver that controls the animation.
   final AnimationConfig animationConfig;
 
-  /// The target style to animate to.
-  final ResolvedStyle<S> resolvedStyle;
+  /// The target spec to animate to.
+  final S spec;
 
-  /// The builder function that creates the widget with the animated style.
-  final Widget Function(BuildContext context, ResolvedStyle<S> resolvedStyle)
-  builder;
+  /// The builder function that creates the widget with the animated spec.
+  final Widget Function(BuildContext context, S spec) builder;
 
   @override
   State<StyleAnimationBuilder<S>> createState() =>
       _StyleAnimationBuilderState<S>();
 }
 
-class _StyleAnimationBuilderState<S extends Spec<S>>
+class _StyleAnimationBuilderState<S extends WidgetSpec<S>>
     extends State<StyleAnimationBuilder<S>>
     with TickerProviderStateMixin {
   late final StyleAnimationDriver<S> animationDriver;
@@ -51,20 +49,20 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
       CurveAnimationConfig() => CurveAnimationDriver<S>(
         vsync: this,
         config: config,
-        initialStyle: widget.resolvedStyle,
+        initialSpec: widget.spec,
       ),
       // ignore: avoid-undisposed-instances
       SpringAnimationConfig() => SpringAnimationDriver<S>(
         vsync: this,
         config: config,
-        initialStyle: widget.resolvedStyle,
+        initialSpec: widget.spec,
       ),
       // ignore: avoid-undisposed-instances
       PhaseAnimationConfig() => PhaseAnimationDriver<S>(
         vsync: this,
         curveConfigs: config.curveConfigs,
         specs: config.styles.map((e) => e.resolve(context) as S).toList(),
-        initialStyle: widget.resolvedStyle,
+        initialSpec: widget.spec,
         trigger: config.trigger,
         mode: config.mode,
       ),
@@ -81,9 +79,9 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
   void didUpdateWidget(StyleAnimationBuilder<S> oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    // Animate to new style if changed
-    if (oldWidget.resolvedStyle != widget.resolvedStyle) {
-      animationDriver.animateTo(widget.resolvedStyle);
+    // Animate to new spec if changed
+    if (oldWidget.spec != widget.spec) {
+      animationDriver.animateTo(widget.spec);
     }
   }
 
@@ -92,10 +90,9 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
     return AnimatedBuilder(
       animation: animationDriver.animation,
       builder: (context, child) {
-        final currentResolved = animationDriver.animation.value ?? 
-                               widget.resolvedStyle;
-        
-        return widget.builder(context, currentResolved);
+        final currentSpec = animationDriver.animation.value ?? widget.spec;
+
+        return widget.builder(context, currentSpec);
       },
     );
   }

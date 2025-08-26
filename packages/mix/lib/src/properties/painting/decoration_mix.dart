@@ -1,5 +1,6 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../core/decoration_merge.dart';
@@ -91,7 +92,11 @@ sealed class DecorationMix<T extends Decoration> extends Mix<T> {
   }
 
   /// Merges decoration instances.
-  static DecorationMix? tryMerge(BuildContext context, DecorationMix? a, DecorationMix? b) {
+  static DecorationMix? tryMerge(
+    BuildContext context,
+    DecorationMix? a,
+    DecorationMix? b,
+  ) {
     return DecorationMerger().tryMerge(context, a, b);
   }
 
@@ -104,7 +109,8 @@ sealed class DecorationMix<T extends Decoration> extends Mix<T> {
 }
 
 /// Mix representation of [BoxDecoration].
-final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
+final class BoxDecorationMix extends DecorationMix<BoxDecoration>
+    with Diagnosticable {
   final Prop<BoxBorder>? $border;
   final Prop<BorderRadiusGeometry>? $borderRadius;
   final Prop<BoxShape>? $shape;
@@ -269,6 +275,20 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
   }
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('border', $border))
+      ..add(DiagnosticsProperty('borderRadius', $borderRadius))
+      ..add(DiagnosticsProperty('shape', $shape))
+      ..add(DiagnosticsProperty('backgroundBlendMode', $backgroundBlendMode))
+      ..add(DiagnosticsProperty('color', $color))
+      ..add(DiagnosticsProperty('image', $image))
+      ..add(DiagnosticsProperty('gradient', $gradient))
+      ..add(DiagnosticsProperty('boxShadow', $boxShadow));
+  }
+
+  @override
   bool get isMergeable {
     // Cannot merge if has backgroundBlendMode (ShapeDecoration doesn't support it)
     if ($backgroundBlendMode != null) return false;
@@ -296,7 +316,7 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration> {
 /// Allows decoration with custom shape borders, color, gradient, image, and shadows
 /// with token support and merging capabilities.
 final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
-    with DefaultValue<ShapeDecoration> {
+    with Diagnosticable, DefaultValue<ShapeDecoration> {
   final Prop<ShapeBorder>? $shape;
 
   ShapeDecorationMix({
@@ -365,6 +385,17 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
       gradient: MixOps.merge($gradient, other.$gradient),
       shadows: MixOps.mergeList($boxShadow, other.$boxShadow),
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('shape', $shape))
+      ..add(DiagnosticsProperty('color', $color))
+      ..add(DiagnosticsProperty('image', $image))
+      ..add(DiagnosticsProperty('gradient', $gradient))
+      ..add(DiagnosticsProperty('shadows', $shadows));
   }
 
   @override

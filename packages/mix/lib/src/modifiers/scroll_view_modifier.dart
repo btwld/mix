@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/helpers.dart';
@@ -11,7 +12,7 @@ import '../properties/layout/edge_insets_geometry_util.dart';
 /// Modifier that applies scroll view properties to its child.
 ///
 /// Wraps the child in a scrollable widget with the specified properties.
-final class ScrollViewModifier extends Modifier<ScrollViewModifier> {
+final class ScrollViewModifier extends Modifier<ScrollViewModifier> with Diagnosticable {
   final Axis? scrollDirection;
   final bool? reverse;
   final EdgeInsetsGeometry? padding;
@@ -58,6 +59,17 @@ final class ScrollViewModifier extends Modifier<ScrollViewModifier> {
       physics: MixOps.lerpSnap(physics, other.physics, t),
       clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t),
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(EnumProperty<Axis>('scrollDirection', scrollDirection))
+      ..add(FlagProperty('reverse', value: reverse, ifTrue: 'reversed'))
+      ..add(DiagnosticsProperty('padding', padding))
+      ..add(DiagnosticsProperty('physics', physics))
+      ..add(EnumProperty<Clip>('clipBehavior', clipBehavior));
   }
 
   @override
@@ -154,7 +166,7 @@ final class ScrollViewModifierUtility<T extends Style<Object?>>
   }
 }
 
-class ScrollViewModifierMix extends ModifierMix<ScrollViewModifier> {
+class ScrollViewModifierMix extends ModifierMix<ScrollViewModifier> with Diagnosticable {
   final Prop<Axis>? scrollDirection;
   final Prop<bool>? reverse;
   final Prop<EdgeInsetsGeometry>? padding;
@@ -205,6 +217,17 @@ class ScrollViewModifierMix extends ModifierMix<ScrollViewModifier> {
       physics: MixOps.merge(physics, other.physics),
       clipBehavior: MixOps.merge(clipBehavior, other.clipBehavior),
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('scrollDirection', scrollDirection))
+      ..add(DiagnosticsProperty('reverse', reverse))
+      ..add(DiagnosticsProperty('padding', padding))
+      ..add(DiagnosticsProperty('physics', physics))
+      ..add(DiagnosticsProperty('clipBehavior', clipBehavior));
   }
 
   @override

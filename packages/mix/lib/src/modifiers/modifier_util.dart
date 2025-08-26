@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../core/spec.dart';
+import '../core/widget_spec.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
@@ -121,13 +121,13 @@ final class ModifierUtility<T extends Style<Object?>>
   T reset() => builder(const ResetModifierMix());
 
   /// Provides a style to descendant widgets.
-  T style<S extends Spec<S>>(Style<S> style) {
+  T style<S extends WidgetSpec<S>>(Style<S> style) {
     return builder(StyleProviderModifierMix<S>(style));
   }
 }
 
 /// Provides convenient modifier methods for spec attributes.
-mixin StyleModifierMixin<T extends Style<S>, S extends Spec<S>>
+mixin StyleModifierMixin<T extends Style<S>, S extends WidgetSpec<S>>
     on Style<S> {
   /// Applies the given [value] modifier configuration.
   T wrap(ModifierConfig value);

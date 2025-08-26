@@ -32,7 +32,7 @@ final class VisibilityModifier extends Modifier<VisibilityModifier>
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('visible', visible, defaultValue: null));
+    properties.add(FlagProperty('visible', value: visible, ifTrue: 'visible', ifFalse: 'hidden'));
   }
 
   @override
@@ -74,7 +74,7 @@ class VisibilityModifierMix extends ModifierMix<VisibilityModifier>
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('visible', visible, defaultValue: null));
+    properties.add(DiagnosticsProperty('visible', visible));
   }
 
   @override

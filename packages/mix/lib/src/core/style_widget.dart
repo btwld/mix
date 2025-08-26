@@ -1,14 +1,14 @@
 import 'package:flutter/widgets.dart';
 
-import 'spec.dart';
 import 'style.dart';
 import 'style_builder.dart';
+import 'widget_spec.dart';
 
 /// Base widget for applying Mix styles to Flutter widgets.
 ///
 /// Provides style application and inheritance through the Mix framework.
 /// Type [S] must extend [Spec<S>] for type-safe styling.
-abstract class StyleWidget<S extends Spec<S>> extends StatefulWidget {
+abstract class StyleWidget<S extends WidgetSpec<S>> extends StatefulWidget {
   /// Creates a [StyleWidget] with optional [style].
   const StyleWidget({required this.style, super.key});
 
@@ -22,7 +22,7 @@ abstract class StyleWidget<S extends Spec<S>> extends StatefulWidget {
   Widget build(BuildContext context, S spec);
 }
 
-class _StyleWidgetState<S extends Spec<S>> extends State<StyleWidget<S>> {
+class _StyleWidgetState<S extends WidgetSpec<S>> extends State<StyleWidget<S>> {
   @override
   Widget build(BuildContext context) {
     return StyleBuilder<S>(style: widget.style, builder: widget.build);

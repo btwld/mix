@@ -1,6 +1,9 @@
 import 'package:flutter/foundation.dart';
 
-import '../../core/spec.dart';
+import '../../animation/animation_config.dart';
+import '../../core/helpers.dart';
+import '../../core/modifier.dart';
+import '../../core/widget_spec.dart';
 import '../box/box_spec.dart';
 import '../flex/flex_spec.dart';
 
@@ -9,27 +12,40 @@ import '../flex/flex_spec.dart';
 /// Provides comprehensive styling for container widgets that need both
 /// box decoration and flex layout capabilities. Merges [BoxSpec] and
 /// [FlexSpec] into a unified specification.
-final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
+final class FlexBoxSpec extends WidgetSpec<FlexBoxSpec> {
   /// Box styling properties for decoration, padding, constraints, etc.
   final BoxSpec box;
   
   /// Flex layout properties for direction, alignment, spacing, etc.
   final FlexSpec flex;
 
-  const FlexBoxSpec({BoxSpec? box, FlexSpec? flex})
-    : box = box ?? const BoxSpec(),
-      flex = flex ?? const FlexSpec();
+  const FlexBoxSpec({
+    BoxSpec? box,
+    FlexSpec? flex,
+    super.animation,
+    super.widgetModifiers,
+    super.inherit,
+  }) : box = box ?? const BoxSpec(),
+       flex = flex ?? const FlexSpec();
 
-  void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    properties.add(DiagnosticsProperty('box', box, defaultValue: null));
-    properties.add(DiagnosticsProperty('flex', flex, defaultValue: null));
-  }
 
   /// Creates a copy of this [FlexBoxSpec] but with the given fields
   /// replaced with the new values.
   @override
-  FlexBoxSpec copyWith({BoxSpec? box, FlexSpec? flex}) {
-    return FlexBoxSpec(box: box ?? this.box, flex: flex ?? this.flex);
+  FlexBoxSpec copyWith({
+    BoxSpec? box,
+    FlexSpec? flex,
+    AnimationConfig? animation,
+    List<Modifier>? widgetModifiers,
+    bool? inherit,
+  }) {
+    return FlexBoxSpec(
+      box: box ?? this.box,
+      flex: flex ?? this.flex,
+      animation: animation ?? this.animation,
+      widgetModifiers: widgetModifiers ?? this.widgetModifiers,
+      inherit: inherit ?? this.inherit,
+    );
   }
 
   /// Linearly interpolates between this [FlexBoxSpec] and another [FlexBoxSpec] based on the given parameter [t].
@@ -49,18 +65,35 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
   /// different [FlexBoxSpec] configurations.
   @override
   FlexBoxSpec lerp(FlexBoxSpec? other, double t) {
-    if (other == null) return this;
+    // Create new BoxSpec and FlexSpec WITHOUT their metadata
+    // The metadata is handled at FlexBoxSpec level
+    final lerpedBox = box.lerp(other?.box, t).copyWith(
+      animation: null,
+      widgetModifiers: null,
+      inherit: null,
+    );
+    final lerpedFlex = flex.lerp(other?.flex, t).copyWith(
+      animation: null,
+      widgetModifiers: null,
+      inherit: null,
+    );
 
     return FlexBoxSpec(
-      box: box.lerp(other.box, t),
-      flex: flex.lerp(other.flex, t),
+      box: lerpedBox,
+      flex: lerpedFlex,
+      // Meta fields: use confirmed policy other.field ?? this.field
+      animation: other?.animation ?? animation,
+      widgetModifiers: MixOps.lerp(widgetModifiers, other?.widgetModifiers, t),
+      inherit: other?.inherit ?? inherit,
     );
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    _debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('box', box, defaultValue: const BoxSpec()))
+      ..add(DiagnosticsProperty('flex', flex, defaultValue: const FlexSpec()));
   }
 
   /// The list of properties that constitute the state of this [FlexBoxSpec].
@@ -68,5 +101,5 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [FlexBoxSpec] instances for equality.
   @override
-  List<Object?> get props => [box, flex];
+  List<Object?> get props => [...super.props, box, flex];
 }

@@ -42,10 +42,9 @@ final class ClipOvalModifier extends Modifier<ClipOvalModifier>
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('clipper', clipper, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
-    );
+    properties
+      ..add(DiagnosticsProperty('clipper', clipper))
+      ..add(EnumProperty<Clip>('clipBehavior', clipBehavior));
   }
 
   @override
@@ -129,10 +128,9 @@ final class ClipRectModifier extends Modifier<ClipRectModifier>
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('clipper', clipper, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
-    );
+    properties
+      ..add(DiagnosticsProperty('clipper', clipper))
+      ..add(EnumProperty<Clip>('clipBehavior', clipBehavior));
   }
 
   @override
@@ -224,13 +222,10 @@ final class ClipRRectModifier extends Modifier<ClipRRectModifier>
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(
-      DiagnosticsProperty('borderRadius', borderRadius, defaultValue: null),
-    );
-    properties.add(DiagnosticsProperty('clipper', clipper, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
-    );
+    properties
+      ..add(DiagnosticsProperty('borderRadius', borderRadius))
+      ..add(DiagnosticsProperty('clipper', clipper))
+      ..add(EnumProperty<Clip>('clipBehavior', clipBehavior));
   }
 
   @override
@@ -330,10 +325,9 @@ final class ClipPathModifier extends Modifier<ClipPathModifier>
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('clipper', clipper, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
-    );
+    properties
+      ..add(DiagnosticsProperty('clipper', clipper))
+      ..add(EnumProperty<Clip>('clipBehavior', clipBehavior));
   }
 
   @override
@@ -411,9 +405,7 @@ final class ClipTriangleModifier extends Modifier<ClipTriangleModifier>
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(
-      DiagnosticsProperty('clipBehavior', clipBehavior, defaultValue: null),
-    );
+    properties.add(DiagnosticsProperty('clipBehavior', clipBehavior));
   }
 
   @override

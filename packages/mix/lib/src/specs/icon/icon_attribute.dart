@@ -309,6 +309,9 @@ class IconMix extends Style<IconSpec>
       semanticsLabel: MixOps.resolve(context, $semanticsLabel),
       blendMode: MixOps.resolve(context, $blendMode),
       icon: MixOps.resolve(context, $icon),
+      animation: $animation,
+      widgetModifiers: $modifier?.resolve(context),
+      inherit: $inherit,
     );
   }
 
@@ -340,38 +343,19 @@ class IconMix extends Style<IconSpec>
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('color', $color, defaultValue: null));
-    properties.add(DiagnosticsProperty('size', $size, defaultValue: null));
-    properties.add(DiagnosticsProperty('weight', $weight, defaultValue: null));
-    properties.add(DiagnosticsProperty('grade', $grade, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty('opticalSize', $opticalSize, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('shadows', $shadows, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('textDirection', $textDirection, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty(
-        'applyTextScaling',
-        $applyTextScaling,
-        defaultValue: null,
-      ),
-    );
-    properties.add(DiagnosticsProperty('fill', $fill, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty(
-        'semanticsLabel',
-        $semanticsLabel,
-        defaultValue: null,
-      ),
-    );
-    properties.add(
-      DiagnosticsProperty('blendMode', $blendMode, defaultValue: null),
-    );
-    properties.add(DiagnosticsProperty('icon', $icon, defaultValue: null));
+    properties
+      ..add(DiagnosticsProperty('color', $color))
+      ..add(DiagnosticsProperty('size', $size))
+      ..add(DiagnosticsProperty('weight', $weight))
+      ..add(DiagnosticsProperty('grade', $grade))
+      ..add(DiagnosticsProperty('opticalSize', $opticalSize))
+      ..add(DiagnosticsProperty('shadows', $shadows))
+      ..add(DiagnosticsProperty('textDirection', $textDirection))
+      ..add(DiagnosticsProperty('applyTextScaling', $applyTextScaling))
+      ..add(DiagnosticsProperty('fill', $fill))
+      ..add(DiagnosticsProperty('semanticsLabel', $semanticsLabel))
+      ..add(DiagnosticsProperty('blendMode', $blendMode))
+      ..add(DiagnosticsProperty('icon', $icon));
   }
 
   @override

@@ -728,7 +728,7 @@ void main() {
 }
 
 // Test helper class that implements SpecAttribute for testing
-class _MockSpecAttribute extends Style<MockSpec> {
+class _MockSpecAttribute extends Style<MockSpec<Map<String, dynamic>>> {
   final double width;
   final double? height;
 
@@ -743,8 +743,13 @@ class _MockSpecAttribute extends Style<MockSpec> {
   });
 
   @override
-  MockSpec resolve(BuildContext context) {
-    return MockSpec(resolvedValue: {'width': width, 'height': height});
+  MockSpec<Map<String, dynamic>> resolve(BuildContext context) {
+    return MockSpec<Map<String, dynamic>>(
+      resolvedValue: {'width': width, 'height': height},
+      animation: $animation,
+      widgetModifiers: $modifier?.resolve(context),
+      inherit: $inherit,
+    );
   }
 
   @override

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/helpers.dart';
@@ -10,7 +11,7 @@ import '../core/utility.dart';
 ///
 /// Wraps the child in a [RotatedBox] widget with the specified quarter turns.
 final class RotatedBoxModifier
-    extends Modifier<RotatedBoxModifier> {
+    extends Modifier<RotatedBoxModifier> with Diagnosticable {
   final int quarterTurns;
   const RotatedBoxModifier([int? quarterTurns])
     : quarterTurns = quarterTurns ?? 0;
@@ -30,6 +31,12 @@ final class RotatedBoxModifier
   }
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(IntProperty('quarterTurns', quarterTurns));
+  }
+
+  @override
   List<Object?> get props => [quarterTurns];
 
   @override
@@ -42,7 +49,7 @@ final class RotatedBoxModifier
 ///
 /// This class allows for mixing and resolving rotated box properties.
 class RotatedBoxModifierMix
-    extends ModifierMix<RotatedBoxModifier> {
+    extends ModifierMix<RotatedBoxModifier> with Diagnosticable {
   final Prop<int>? quarterTurns;
 
   const RotatedBoxModifierMix.create({this.quarterTurns});
@@ -78,6 +85,12 @@ class RotatedBoxModifierMix
     return RotatedBoxModifierMix.create(
       quarterTurns: MixOps.merge(quarterTurns, other.quarterTurns),
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty('quarterTurns', quarterTurns));
   }
 
   @override

@@ -34,7 +34,7 @@ final class PaddingModifier extends Modifier<PaddingModifier>
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('padding', padding, defaultValue: null));
+    properties.add(DiagnosticsProperty('padding', padding));
   }
 
   @override
@@ -75,7 +75,7 @@ class PaddingModifierMix extends ModifierMix<PaddingModifier>
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('padding', padding, defaultValue: null));
+    properties.add(DiagnosticsProperty('padding', padding));
   }
 
   @override

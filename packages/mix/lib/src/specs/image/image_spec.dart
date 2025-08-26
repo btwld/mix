@@ -1,10 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
-import '../../core/spec.dart';
+import '../../core/modifier.dart';
+import '../../core/widget_spec.dart';
 
-final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
+final class ImageSpec extends WidgetSpec<ImageSpec> {
   final ImageProvider<Object>? image;
   final double? width, height;
   final Color? color;
@@ -37,55 +39,11 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
     this.gaplessPlayback,
     this.isAntiAlias,
     this.matchTextDirection,
+    super.animation,
+    super.widgetModifiers,
+    super.inherit,
   });
 
-  void _debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    properties.add(DiagnosticsProperty('image', image, defaultValue: null));
-    properties.add(DiagnosticsProperty('width', width, defaultValue: null));
-    properties.add(DiagnosticsProperty('height', height, defaultValue: null));
-    properties.add(DiagnosticsProperty('color', color, defaultValue: null));
-    properties.add(DiagnosticsProperty('repeat', repeat, defaultValue: null));
-    properties.add(DiagnosticsProperty('fit', fit, defaultValue: null));
-    properties.add(
-      DiagnosticsProperty('alignment', alignment, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('centerSlice', centerSlice, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('filterQuality', filterQuality, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('colorBlendMode', colorBlendMode, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty('semanticLabel', semanticLabel, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty(
-        'excludeFromSemantics',
-        excludeFromSemantics,
-        defaultValue: null,
-      ),
-    );
-    properties.add(
-      DiagnosticsProperty(
-        'gaplessPlayback',
-        gaplessPlayback,
-        defaultValue: null,
-      ),
-    );
-    properties.add(
-      DiagnosticsProperty('isAntiAlias', isAntiAlias, defaultValue: null),
-    );
-    properties.add(
-      DiagnosticsProperty(
-        'matchTextDirection',
-        matchTextDirection,
-        defaultValue: null,
-      ),
-    );
-  }
 
   @override
   ImageSpec copyWith({
@@ -104,6 +62,9 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
     bool? gaplessPlayback,
     bool? isAntiAlias,
     bool? matchTextDirection,
+    AnimationConfig? animation,
+    List<Modifier>? widgetModifiers,
+    bool? inherit,
   }) {
     return ImageSpec(
       image: image ?? this.image,
@@ -121,48 +82,73 @@ final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
       gaplessPlayback: gaplessPlayback ?? this.gaplessPlayback,
       isAntiAlias: isAntiAlias ?? this.isAntiAlias,
       matchTextDirection: matchTextDirection ?? this.matchTextDirection,
+      animation: animation ?? this.animation,
+      widgetModifiers: widgetModifiers ?? this.widgetModifiers,
+      inherit: inherit ?? this.inherit,
     );
   }
 
   @override
   ImageSpec lerp(ImageSpec? other, double t) {
-    if (other == null) return this;
-
     return ImageSpec(
-      image: MixOps.lerpSnap(image, other.image, t),
-      width: MixOps.lerp(width, other.width, t),
-      height: MixOps.lerp(height, other.height, t),
-      color: MixOps.lerp(color, other.color, t),
-      repeat: MixOps.lerpSnap(repeat, other.repeat, t),
-      fit: MixOps.lerpSnap(fit, other.fit, t),
-      alignment: MixOps.lerp(alignment, other.alignment, t),
-      centerSlice: MixOps.lerp(centerSlice, other.centerSlice, t),
-      filterQuality: MixOps.lerpSnap(filterQuality, other.filterQuality, t),
-      colorBlendMode: MixOps.lerpSnap(colorBlendMode, other.colorBlendMode, t),
-      semanticLabel: MixOps.lerpSnap(semanticLabel, other.semanticLabel, t),
+      image: MixOps.lerpSnap(image, other?.image, t),
+      width: MixOps.lerp(width, other?.width, t),
+      height: MixOps.lerp(height, other?.height, t),
+      color: MixOps.lerp(color, other?.color, t),
+      repeat: MixOps.lerpSnap(repeat, other?.repeat, t),
+      fit: MixOps.lerpSnap(fit, other?.fit, t),
+      alignment: MixOps.lerp(alignment, other?.alignment, t),
+      centerSlice: MixOps.lerp(centerSlice, other?.centerSlice, t),
+      filterQuality: MixOps.lerpSnap(filterQuality, other?.filterQuality, t),
+      colorBlendMode: MixOps.lerpSnap(colorBlendMode, other?.colorBlendMode, t),
+      semanticLabel: MixOps.lerpSnap(semanticLabel, other?.semanticLabel, t),
       excludeFromSemantics: MixOps.lerpSnap(
         excludeFromSemantics,
-        other.excludeFromSemantics,
+        other?.excludeFromSemantics,
         t,
       ),
-      gaplessPlayback: MixOps.lerpSnap(gaplessPlayback, other.gaplessPlayback, t),
-      isAntiAlias: MixOps.lerpSnap(isAntiAlias, other.isAntiAlias, t),
+      gaplessPlayback: MixOps.lerpSnap(
+        gaplessPlayback,
+        other?.gaplessPlayback,
+        t,
+      ),
+      isAntiAlias: MixOps.lerpSnap(isAntiAlias, other?.isAntiAlias, t),
       matchTextDirection: MixOps.lerpSnap(
         matchTextDirection,
-        other.matchTextDirection,
+        other?.matchTextDirection,
         t,
       ),
+      // Meta fields: use confirmed policy other?.field ?? this.field
+      animation: other?.animation ?? animation,
+      widgetModifiers: MixOps.lerp(widgetModifiers, other?.widgetModifiers, t),
+      inherit: other?.inherit ?? inherit,
     );
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    _debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('image', image))
+      ..add(DoubleProperty('width', width))
+      ..add(DoubleProperty('height', height))
+      ..add(ColorProperty('color', color))
+      ..add(EnumProperty<ImageRepeat>('repeat', repeat))
+      ..add(EnumProperty<BoxFit>('fit', fit))
+      ..add(DiagnosticsProperty('alignment', alignment))
+      ..add(DiagnosticsProperty('centerSlice', centerSlice))
+      ..add(EnumProperty<FilterQuality>('filterQuality', filterQuality))
+      ..add(EnumProperty<BlendMode>('colorBlendMode', colorBlendMode))
+      ..add(StringProperty('semanticLabel', semanticLabel))
+      ..add(FlagProperty('excludeFromSemantics', value: excludeFromSemantics, ifTrue: 'excluded from semantics'))
+      ..add(FlagProperty('gaplessPlayback', value: gaplessPlayback, ifTrue: 'gapless playback'))
+      ..add(FlagProperty('isAntiAlias', value: isAntiAlias, ifTrue: 'anti-aliased'))
+      ..add(FlagProperty('matchTextDirection', value: matchTextDirection, ifTrue: 'matches text direction'));
   }
 
   @override
   List<Object?> get props => [
+    ...super.props,
     image,
     width,
     height,
