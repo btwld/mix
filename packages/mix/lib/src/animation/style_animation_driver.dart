@@ -125,14 +125,14 @@ class CurveAnimationDriver<S extends WidgetSpec<S>>
     }
   }
 
-  TweenSequence<ResolvedStyle<S>?> _createTweenSequence() => TweenSequence([
+  TweenSequence<S?> _createTweenSequence() => TweenSequence([
     if (_config.delay > Duration.zero)
       TweenSequenceItem(
         tween: ConstantTween(_tween.begin),
         weight: _config.delay.inMilliseconds.toDouble(),
       ),
     TweenSequenceItem(
-      tween: _tween,
+      tween: _tween.chain(CurveTween(curve: _config.curve)),
       weight: _config.duration.inMilliseconds.toDouble(),
     ),
   ]);
@@ -141,10 +141,7 @@ class CurveAnimationDriver<S extends WidgetSpec<S>>
   Future<void> executeAnimation() async {
     controller.duration = _config.totalDuration;
 
-    _animation = CurvedAnimation(
-      parent: controller,
-      curve: _config.curve,
-    ).drive(_createTweenSequence());
+    _animation = controller.drive(_createTweenSequence());
 
     try {
       await controller.forward(from: 0.0);

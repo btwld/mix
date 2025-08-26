@@ -5,6 +5,7 @@ import '../core/internal/constants.dart';
 import '../core/spec.dart';
 import '../core/style.dart';
 import '../core/widget_spec.dart';
+import 'curves.dart';
 
 /// Configuration data for animated styles in the Mix framework.
 ///
@@ -637,6 +638,67 @@ final class CurveAnimationConfig extends AnimationConfig {
     this.onEnd,
     this.delay = Duration.zero,
   }) : curve = Curves.elasticInOut;
+
+  factory CurveAnimationConfig.spring({
+    double mass = 1.0,
+    double stiffness = 180.0,
+    double damping = 12.0,
+    Duration delay = Duration.zero,
+    VoidCallback? onEnd,
+  }) {
+    final curve = SpringCurve(
+      mass: mass,
+      stiffness: stiffness,
+      damping: damping,
+    );
+
+    return CurveAnimationConfig(
+      duration: curve.settlingDuration,
+      curve: curve,
+      delay: delay,
+      onEnd: onEnd,
+    );
+  }
+
+  factory CurveAnimationConfig.springWithDampingRatio({
+    double mass = 1.0,
+    double stiffness = 180.0,
+    double dampingRatio = 0.8,
+    Duration delay = Duration.zero,
+    VoidCallback? onEnd,
+  }) {
+    final curve = SpringCurve.withDampingRatio(
+      mass: mass,
+      stiffness: stiffness,
+      dampingRatio: dampingRatio,
+    );
+
+    return CurveAnimationConfig(
+      duration: curve.settlingDuration,
+      curve: curve,
+      delay: delay,
+      onEnd: onEnd,
+    );
+  }
+
+  factory CurveAnimationConfig.springDurationBased({
+    Duration duration = const Duration(milliseconds: 500),
+    double bounce = 0.0,
+    Duration delay = Duration.zero,
+    VoidCallback? onEnd,
+  }) {
+    final curve = SpringCurve.withDurationAndBounce(
+      duration: duration,
+      bounce: bounce,
+    );
+
+    return CurveAnimationConfig(
+      duration: curve.settlingDuration,
+      curve: curve,
+      delay: delay,
+      onEnd: onEnd,
+    );
+  }
 
   Duration get totalDuration => duration + delay;
 

@@ -292,7 +292,11 @@ extension CurvePropUtilityExt<T extends Style<Object?>>
     double dampingRatio = 1.0,
     double mass = 1.0,
   }) => call(
-    SpringCurve(stiffness: stiffness, dampingRatio: dampingRatio, mass: mass),
+    SpringCurve.withDampingRatio(
+      mass: mass,
+      stiffness: stiffness,
+      dampingRatio: dampingRatio,
+    ),
   );
 
   /// Creates a [Style] instance with [Curves.linear] value.
