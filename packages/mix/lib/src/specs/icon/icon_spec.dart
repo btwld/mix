@@ -39,6 +39,9 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
   /// Semantic description for accessibility.
   final String? semanticsLabel;
 
+  /// The opacity to apply to the icon.
+  final double? opacity;
+
   /// The blend mode to apply when drawing the icon.
   final BlendMode? blendMode;
 
@@ -56,6 +59,7 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
     this.applyTextScaling,
     this.fill,
     this.semanticsLabel,
+    this.opacity,
     this.blendMode,
     this.icon,
   });
@@ -72,6 +76,7 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
     bool? applyTextScaling,
     double? fill,
     String? semanticsLabel,
+    double? opacity,
     BlendMode? blendMode,
     IconData? icon,
   }) {
@@ -86,6 +91,7 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
       applyTextScaling: applyTextScaling ?? this.applyTextScaling,
       fill: fill ?? this.fill,
       semanticsLabel: semanticsLabel ?? this.semanticsLabel,
+      opacity: opacity ?? this.opacity,
       blendMode: blendMode ?? this.blendMode,
       icon: icon ?? this.icon,
     );
@@ -108,6 +114,7 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
       ),
       fill: MixOps.lerp(fill, other?.fill, t),
       semanticsLabel: MixOps.lerpSnap(semanticsLabel, other?.semanticsLabel, t),
+      opacity: MixOps.lerp(opacity, other?.opacity, t),
       blendMode: MixOps.lerpSnap(blendMode, other?.blendMode, t),
       icon: MixOps.lerpSnap(icon, other?.icon, t),
     );
@@ -133,6 +140,7 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
       )
       ..add(DoubleProperty('fill', fill))
       ..add(StringProperty('semanticsLabel', semanticsLabel))
+      ..add(DoubleProperty('opacity', opacity))
       ..add(EnumProperty<BlendMode>('blendMode', blendMode))
       ..add(DiagnosticsProperty('icon', icon));
   }
@@ -149,6 +157,7 @@ final class IconSpec extends Spec<IconSpec> with Diagnosticable {
     applyTextScaling,
     fill,
     semanticsLabel,
+    opacity,
     blendMode,
     icon,
   ];

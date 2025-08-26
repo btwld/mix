@@ -28,12 +28,12 @@ class _DemoAppState extends State<DemoApp> {
   @override
   Widget build(BuildContext context) {
     final vboxStyle = FlexBoxStyle()
-        .flex(FlexLayoutMix().mainAxisSize(MainAxisSize.min).spacing(60))
+        .flex(FlexMix().mainAxisSize(MainAxisSize.min).spacing(60))
         .container(ContainerMix().margin(EdgeInsetsMix.all(10)));
 
     final FlexBoxStyle hboxStyle = FlexBoxStyle()
         .flex(
-          FlexLayoutMix()
+          FlexMix()
               .mainAxisAlignment(MainAxisAlignment.spaceBetween)
               .crossAxisAlignment(CrossAxisAlignment.center),
         )
@@ -54,7 +54,7 @@ class _DemoAppState extends State<DemoApp> {
             HBox(
               style: hboxStyle,
               children: [
-                StyledText('Animate', style: TextMix().fontSize(16)),
+                StyledText('Animate', style: TextStyling.fontSize(16)),
                 Switch.adaptive(
                   value: animate,
                   onChanged: (value) {

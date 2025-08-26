@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/style_widget.dart';
-import '../../properties/container/container_spec.dart';
+import '../box/box_spec.dart';
 import 'stack_box_style.dart';
 import 'stack_box_spec.dart';
 import 'stack_spec.dart';

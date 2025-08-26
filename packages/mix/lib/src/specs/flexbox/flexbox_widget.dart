@@ -3,8 +3,8 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/style_widget.dart';
-import '../../properties/container/container_spec.dart';
-import '../../properties/layout/flex_layout_spec.dart';
+import '../box/box_spec.dart';
+import '../flex/flex_spec.dart';
 import 'flexbox_style.dart';
 import 'flexbox_spec.dart';
 
@@ -14,7 +14,7 @@ import 'flexbox_spec.dart';
 /// providing decoration, constraints, and flex layout in one widget.
 class FlexBox extends StyleWidget<FlexBoxSpec> {
   const FlexBox({
-    super.style = const FlexBoxMix.create(),
+    super.style = const FlexBoxStyle.create(),
     super.key,
     required this.direction,
     this.children = const <Widget>[],
@@ -41,7 +41,7 @@ class FlexBox extends StyleWidget<FlexBoxSpec> {
 /// Shorthand for [FlexBox] with [Axis.horizontal].
 class HBox extends FlexBox {
   const HBox({
-    super.style = const FlexBoxMix.create(),
+    super.style = const FlexBoxStyle.create(),
     super.key,
     super.children = const <Widget>[],
   }) : super(direction: Axis.horizontal);
@@ -52,18 +52,18 @@ class HBox extends FlexBox {
 /// Shorthand for [FlexBox] with [Axis.vertical].
 class VBox extends FlexBox {
   const VBox({
-    super.style = const FlexBoxMix.create(),
+    super.style = const FlexBoxStyle.create(),
     super.key,
     super.children = const <Widget>[],
   }) : super(direction: Axis.vertical);
 }
 
-/// Creates a [Flex] widget from a [FlexLayoutSpec] and required parameters.
+/// Creates a [Flex] widget from a [FlexSpec] and required parameters.
 ///
 /// Applies all flex layout properties with appropriate default values
 /// when specification properties are null.
 Flex createFlexSpecWidget({
-  required FlexLayoutSpec? spec,
+  required FlexSpec? spec,
   required Axis direction,
   List<Widget> children = const [],
 }) {
@@ -103,8 +103,8 @@ Widget createFlexBoxSpecWidget({
   return flexWidget;
 }
 
-/// Extension to convert [FlexLayoutSpec] directly to a [Flex] widget.
-extension FlexLayoutSpecWidget on FlexLayoutSpec {
+/// Extension to convert [FlexSpec] directly to a [Flex] widget.
+extension FlexSpecWidget on FlexSpec {
   Flex call({required Axis direction, List<Widget> children = const []}) {
     return createFlexSpecWidget(
       spec: this,

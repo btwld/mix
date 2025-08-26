@@ -1,27 +1,27 @@
 import 'package:flutter/foundation.dart';
 
 import '../../core/spec.dart';
-import '../../properties/container/container_spec.dart';
-import '../../properties/layout/flex_layout_spec.dart';
+import '../box/box_spec.dart';
+import '../flex/flex_spec.dart';
 
 /// Specification that combines container styling and flex layout properties.
 ///
 /// Provides comprehensive styling for container widgets that need both
-/// container decoration and flex layout capabilities. Merges [ContainerSpec] and
-/// [FlexLayoutSpec] into a unified specification.
+/// container decoration and flex layout capabilities. Merges [BoxSpec] and
+/// [FlexSpec] into a unified specification.
 final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
   /// Container styling properties for decoration, padding, constraints, etc.
-  final ContainerSpec? container;
+  final BoxSpec? container;
 
   /// Flex layout properties for direction, alignment, spacing, etc.
-  final FlexLayoutSpec? flex;
+  final FlexSpec? flex;
 
   const FlexBoxSpec({this.container, this.flex});
 
   /// Creates a copy of this [FlexBoxSpec] but with the given fields
   /// replaced with the new values.
   @override
-  FlexBoxSpec copyWith({ContainerSpec? container, FlexLayoutSpec? flex}) {
+  FlexBoxSpec copyWith({BoxSpec? container, FlexSpec? flex}) {
     return FlexBoxSpec(
       container: container ?? this.container,
       flex: flex ?? this.flex,
@@ -38,8 +38,8 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
   ///
   /// The interpolation is performed on each property of the [FlexBoxSpec] using the appropriate
   /// interpolation method:
-  /// - [ContainerSpec.lerp] for [container].
-  /// - [FlexLayoutSpec.lerp] for [flex].
+  /// - [BoxSpec.lerp] for [container].
+  /// - [FlexSpec.lerp] for [flex].
   ///
   /// This method is typically used in animations to smoothly transition between
   /// different [FlexBoxSpec] configurations.

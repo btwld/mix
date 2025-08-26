@@ -289,8 +289,8 @@ void main() {
           fill: 1.0,
         );
 
-        // 12 IconSpec properties
-        expect(spec.props.length, 12);
+        // 13 IconSpec properties (including opacity)
+        expect(spec.props.length, 13);
         expect(spec.props, contains(Colors.blue));
         expect(spec.props, contains(24.0));
         expect(spec.props, contains(400.0));

@@ -7,8 +7,8 @@ import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/widget_spec.dart';
 import '../../modifiers/modifier_config.dart';
-import '../../properties/container/container_mix.dart';
-import '../../properties/container/container_spec.dart';
+import '../box/box_mix.dart';
+import '../box/box_spec.dart';
 import '../../properties/layout/stack_mix.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
@@ -26,11 +26,11 @@ typedef StackBoxMix = StackBoxStyle;
 /// the [ZBoxSpec] constructor.
 class StackBoxStyle extends Style<ZBoxSpec>
     with Diagnosticable, StyleVariantMixin<StackBoxStyle, ZBoxSpec> {
-  final Prop<ContainerSpec>? $box;
+  final Prop<BoxSpec>? $box;
   final Prop<StackSpec>? $stack;
 
   StackBoxStyle({
-    ContainerMix? box,
+    BoxMix? box,
     StackMix? stack,
     super.modifier,
     super.animation,
@@ -40,7 +40,7 @@ class StackBoxStyle extends Style<ZBoxSpec>
        $stack = Prop.maybeMix(stack);
 
   const StackBoxStyle.create({
-    Prop<ContainerSpec>? box,
+    Prop<BoxSpec>? box,
     Prop<StackSpec>? stack,
     super.modifier,
     super.animation,
@@ -50,8 +50,8 @@ class StackBoxStyle extends Style<ZBoxSpec>
   }) : $box = box,
        $stack = stack;
 
-  /// Factory for box properties (ContainerMix), parameter kept as `box` for API consistency
-  factory StackBoxStyle.box(ContainerMix value) => StackBoxStyle(box: value);
+  /// Factory for box properties (BoxMix), parameter kept as `box` for API consistency
+  factory StackBoxStyle.box(BoxMix value) => StackBoxStyle(box: value);
 
   /// Factory for stack properties
   factory StackBoxStyle.stack(StackMix value) => StackBoxStyle(stack: value);
@@ -71,7 +71,7 @@ class StackBoxStyle extends Style<ZBoxSpec>
   /// This is useful for converting existing [ZBoxSpec] instances to [StackBoxStyle].
   ///
   /// ```dart
-  /// const spec = ZBoxSpec(box: ContainerSpec(...), stack: StackSpec(...));
+  /// const spec = ZBoxSpec(box: BoxSpec(...), stack: StackSpec(...));
   /// final attr = StackBoxStyle.value(spec);
   /// ```
   static StackBoxStyle value(ZBoxSpec spec) {
@@ -86,15 +86,15 @@ class StackBoxStyle extends Style<ZBoxSpec>
   /// Returns null if the input is null, otherwise uses [StackBoxStyle.value].
   ///
   /// ```dart
-  /// const ZBoxSpec? spec = ZBoxSpec(box: ContainerSpec(...), stack: StackSpec(...));
+  /// const ZBoxSpec? spec = ZBoxSpec(box: BoxSpec(...), stack: StackSpec(...));
   /// final attr = StackBoxStyle.maybeValue(spec); // Returns StackBoxStyle or null
   /// ```
   static StackBoxStyle? maybeValue(ZBoxSpec? spec) {
     return spec != null ? StackBoxStyle.value(spec) : null;
   }
 
-  /// Sets box properties (ContainerMix)
-  StackBoxStyle box(ContainerMix value) {
+  /// Sets box properties (BoxMix)
+  StackBoxStyle box(BoxMix value) {
     return merge(StackBoxStyle.box(value));
   }
 
@@ -188,8 +188,8 @@ class StackBoxStyle extends Style<ZBoxSpec>
 /// This class provides methods to set individual properties of a [ZBoxSpec].
 /// Use the methods of this class to configure specific properties of a [ZBoxSpec].
 class StackBoxSpecUtility {
-  /// Utility for defining [StackBoxStyle.box] (ContainerMix)
-  final box = ContainerMix();
+  /// Utility for defining [StackBoxStyle.box] (BoxMix)
+  final box = BoxMix();
 
   /// Utility for defining [StackBoxStyle.stack]
   final stack = StackMix();
@@ -200,7 +200,7 @@ class StackBoxSpecUtility {
 
   /// Returns a new [StackBoxStyle] with the specified properties.
   StackBoxStyle only({
-    ContainerMix? box,
+    BoxMix? box,
     StackMix? stack,
     ModifierConfig? modifier,
     AnimationConfig? animation,

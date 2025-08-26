@@ -13,7 +13,7 @@ void main() {
           padding: EdgeInsetsMix(top: 10.0, bottom: 20.0),
         );
 
-        final flexAttr = FlexLayoutMix(
+        final flexAttr = FlexMix(
           direction: Axis.horizontal,
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,7 +43,7 @@ void main() {
             alignment: Alignment.center,
             padding: EdgeInsets.all(16.0),
           ),
-          flex: FlexLayoutSpec(
+          flex: FlexSpec(
             direction: Axis.horizontal,
             mainAxisAlignment: MainAxisAlignment.center,
           ),
@@ -62,7 +62,7 @@ void main() {
       test('maybeValue returns attribute for non-null spec', () {
         const spec = FlexBoxSpec(
           container: ContainerSpec(alignment: Alignment.center),
-          flex: FlexLayoutSpec(direction: Axis.vertical),
+          flex: FlexSpec(direction: Axis.vertical),
         );
 
         final attribute = FlexBoxStyle.maybeValue(spec);
@@ -80,7 +80,7 @@ void main() {
             alignment: Alignment.center,
             padding: EdgeInsetsMix(top: 10.0, bottom: 20.0),
           ),
-          flex: FlexLayoutMix(
+          flex: FlexMix(
             direction: Axis.horizontal,
             mainAxisAlignment: MainAxisAlignment.center,
           ),
@@ -114,7 +114,7 @@ void main() {
             ),
           ),
 
-          flex: FlexLayoutMix(
+          flex: FlexMix(
             spacing: 10.0,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
           ),
@@ -144,7 +144,7 @@ void main() {
             alignment: Alignment.center,
             padding: EdgeInsetsMix.all(10.0),
           ),
-          flex: FlexLayoutMix(direction: Axis.horizontal),
+          flex: FlexMix(direction: Axis.horizontal),
         );
 
         final second = FlexBoxStyle(
@@ -152,7 +152,7 @@ void main() {
             alignment: Alignment.topLeft, // This should override
             margin: EdgeInsetsMix.all(20.0), // This should be added
           ),
-          flex: FlexLayoutMix(
+          flex: FlexMix(
             mainAxisAlignment: MainAxisAlignment.center,
           ), // This should be added
         );
@@ -224,12 +224,12 @@ void main() {
       test('equal attributes have same hashCode', () {
         final attr1 = FlexBoxStyle(
           container: ContainerMix(alignment: Alignment.center),
-          flex: FlexLayoutMix(direction: Axis.horizontal),
+          flex: FlexMix(direction: Axis.horizontal),
         );
 
         final attr2 = FlexBoxStyle(
           container: ContainerMix(alignment: Alignment.center),
-          flex: FlexLayoutMix(direction: Axis.horizontal),
+          flex: FlexMix(direction: Axis.horizontal),
         );
 
         expect(attr1, equals(attr2));
@@ -250,11 +250,11 @@ void main() {
 
       test('attributes with different nested properties are not equal', () {
         final attr1 = FlexBoxStyle(
-          flex: FlexLayoutMix(direction: Axis.horizontal),
+          flex: FlexMix(direction: Axis.horizontal),
         );
 
         final attr2 = FlexBoxStyle(
-          flex: FlexLayoutMix(direction: Axis.vertical),
+          flex: FlexMix(direction: Axis.vertical),
         );
 
         expect(attr1, isNot(equals(attr2)));
@@ -347,7 +347,7 @@ void main() {
         );
 
         final flexOnly = FlexBoxStyle(
-          flex: FlexLayoutMix(direction: Axis.horizontal),
+          flex: FlexMix(direction: Axis.horizontal),
         );
 
         expect(boxOnly.$container, isNotNull);
@@ -360,7 +360,7 @@ void main() {
       test('partial updates preserve other attribute', () {
         final initial = FlexBoxStyle(
           container: ContainerMix(alignment: Alignment.center),
-          flex: FlexLayoutMix(direction: Axis.horizontal),
+          flex: FlexMix(direction: Axis.horizontal),
         );
 
         final updateBox = FlexBoxStyle(
@@ -453,7 +453,7 @@ void main() {
 
     test('', () {
       const boxSpec = ContainerSpec(alignment: Alignment.center);
-      const flexSpec = FlexLayoutSpec(direction: Axis.vertical);
+      const flexSpec = FlexSpec(direction: Axis.vertical);
       const spec = FlexBoxSpec(container: boxSpec, flex: flexSpec);
 
       expect(spec.container, boxSpec);
@@ -463,7 +463,7 @@ void main() {
     test('copyWith creates new instance with updated values', () {
       const original = FlexBoxSpec(
         container: ContainerSpec(alignment: Alignment.center),
-        flex: FlexLayoutSpec(direction: Axis.horizontal),
+        flex: FlexSpec(direction: Axis.horizontal),
       );
 
       final updated = original.copyWith(
@@ -478,12 +478,12 @@ void main() {
     test('', () {
       const spec1 = FlexBoxSpec(
         container: ContainerSpec(padding: EdgeInsets.all(10.0)),
-        flex: FlexLayoutSpec(spacing: 10.0),
+        flex: FlexSpec(spacing: 10.0),
       );
 
       const spec2 = FlexBoxSpec(
         container: ContainerSpec(padding: EdgeInsets.all(20.0)),
-        flex: FlexLayoutSpec(spacing: 20.0),
+        flex: FlexSpec(spacing: 20.0),
       );
 
       final interpolated = spec1.lerp(spec2, 0.5);
@@ -506,17 +506,17 @@ void main() {
     test('equality and hashCode', () {
       const spec1 = FlexBoxSpec(
         container: ContainerSpec(alignment: Alignment.center),
-        flex: FlexLayoutSpec(direction: Axis.horizontal),
+        flex: FlexSpec(direction: Axis.horizontal),
       );
 
       const spec2 = FlexBoxSpec(
         container: ContainerSpec(alignment: Alignment.center),
-        flex: FlexLayoutSpec(direction: Axis.horizontal),
+        flex: FlexSpec(direction: Axis.horizontal),
       );
 
       const spec3 = FlexBoxSpec(
         container: ContainerSpec(alignment: Alignment.topLeft),
-        flex: FlexLayoutSpec(direction: Axis.horizontal),
+        flex: FlexSpec(direction: Axis.horizontal),
       );
 
       expect(spec1, equals(spec2));

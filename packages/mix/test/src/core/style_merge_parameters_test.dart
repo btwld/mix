@@ -183,16 +183,16 @@ void main() {
       });
     });
 
-    group('TextMix merge', () {
+    group('TextStyling merge', () {
       test('merges orderOfModifiers correctly', () {
-        final first = TextMix(
+        final first = TextStyling(
           maxLines: 2,
           modifier: ModifierConfig.orderOfModifiers(const [
             OpacityModifier,
             PaddingModifier,
           ]),
         );
-        final second = TextMix(
+        final second = TextStyling(
           overflow: TextOverflow.ellipsis,
           modifier: ModifierConfig.orderOfModifiers(const [
             ClipOvalModifier,
@@ -208,8 +208,8 @@ void main() {
       });
 
       test('merges inherit correctly', () {
-        final first = TextMix(maxLines: 2, inherit: true);
-        final second = TextMix(overflow: TextOverflow.ellipsis, inherit: false);
+        final first = TextStyling(maxLines: 2, inherit: true);
+        final second = TextStyling(overflow: TextOverflow.ellipsis, inherit: false);
 
         final merged = first.merge(second);
 
@@ -363,7 +363,7 @@ void main() {
           ]),
         );
         final second = FlexBoxStyle(
-          flex: FlexLayoutMix.spacing(8.0),
+          flex: FlexMix.spacing(8.0),
           modifier: ModifierConfig.orderOfModifiers(const [
             ClipOvalModifier,
             TransformModifier,
@@ -383,7 +383,7 @@ void main() {
           inherit: true,
         );
         final second = FlexBoxStyle(
-          flex: FlexLayoutMix.spacing(8.0),
+          flex: FlexMix.spacing(8.0),
           inherit: false,
         );
 

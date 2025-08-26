@@ -12,10 +12,10 @@ import '../../modifiers/modifier_util.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
+import 'icon_mix.dart';
 import 'icon_spec.dart';
 import 'icon_widget.dart';
 
-typedef IconMix = IconStyle;
 
 class IconStyle extends Style<IconSpec>
     with
@@ -33,6 +33,7 @@ class IconStyle extends Style<IconSpec>
   final Prop<bool>? $applyTextScaling;
   final Prop<double>? $fill;
   final Prop<String>? $semanticsLabel;
+  final Prop<double>? $opacity;
   final Prop<BlendMode>? $blendMode;
   final Prop<IconData>? $icon;
 
@@ -96,6 +97,11 @@ class IconStyle extends Style<IconSpec>
     return IconStyle(blendMode: value);
   }
 
+  /// Factory for icon opacity
+  factory IconStyle.opacity(double value) {
+    return IconStyle(opacity: value);
+  }
+
   /// Factory for icon data
   factory IconStyle.icon(IconData value) {
     return IconStyle(icon: value);
@@ -132,6 +138,7 @@ class IconStyle extends Style<IconSpec>
     Prop<bool>? applyTextScaling,
     Prop<double>? fill,
     Prop<String>? semanticsLabel,
+    Prop<double>? opacity,
     Prop<BlendMode>? blendMode,
     Prop<IconData>? icon,
     super.animation,
@@ -149,6 +156,7 @@ class IconStyle extends Style<IconSpec>
        $applyTextScaling = applyTextScaling,
        $fill = fill,
        $semanticsLabel = semanticsLabel,
+       $opacity = opacity,
        $blendMode = blendMode,
        $icon = icon;
 
@@ -163,6 +171,7 @@ class IconStyle extends Style<IconSpec>
     bool? applyTextScaling,
     double? fill,
     String? semanticsLabel,
+    double? opacity,
     BlendMode? blendMode,
     IconData? icon,
     AnimationConfig? animation,
@@ -180,6 +189,7 @@ class IconStyle extends Style<IconSpec>
          applyTextScaling: Prop.maybe(applyTextScaling),
          fill: Prop.maybe(fill),
          semanticsLabel: Prop.maybe(semanticsLabel),
+         opacity: Prop.maybe(opacity),
          blendMode: Prop.maybe(blendMode),
          icon: Prop.maybe(icon),
          animation: animation,
@@ -201,6 +211,7 @@ class IconStyle extends Style<IconSpec>
       applyTextScaling: spec.applyTextScaling,
       fill: spec.fill,
       semanticsLabel: spec.semanticsLabel,
+      opacity: spec.opacity,
       blendMode: spec.blendMode,
       icon: spec.icon,
     );
@@ -216,6 +227,25 @@ class IconStyle extends Style<IconSpec>
   /// ```
   static IconStyle? maybeValue(IconSpec? spec) {
     return spec != null ? IconStyle.value(spec) : null;
+  }
+
+  /// Static factory to create from [IconMix]
+  static IconStyle from(IconMix mix) {
+    return IconStyle.create(
+      color: mix.$color,
+      size: mix.$size,
+      weight: mix.$weight,
+      grade: mix.$grade,
+      opticalSize: mix.$opticalSize,
+      shadows: mix.$shadows,
+      textDirection: mix.$textDirection,
+      applyTextScaling: mix.$applyTextScaling,
+      fill: mix.$fill,
+      semanticsLabel: mix.$semanticsLabel,
+      opacity: mix.$opacity,
+      blendMode: mix.$blendMode,
+      icon: mix.$icon,
+    );
   }
 
   /// Sets icon color
@@ -273,6 +303,11 @@ class IconStyle extends Style<IconSpec>
     return merge(IconStyle.semanticsLabel(value));
   }
 
+  /// Sets opacity
+  IconStyle opacity(double value) {
+    return merge(IconStyle.opacity(value));
+  }
+
   /// Sets blend mode
   IconStyle blendMode(BlendMode value) {
     return merge(IconStyle.blendMode(value));
@@ -310,6 +345,7 @@ class IconStyle extends Style<IconSpec>
       applyTextScaling: MixOps.resolve(context, $applyTextScaling),
       fill: MixOps.resolve(context, $fill),
       semanticsLabel: MixOps.resolve(context, $semanticsLabel),
+      opacity: MixOps.resolve(context, $opacity),
       blendMode: MixOps.resolve(context, $blendMode),
       icon: MixOps.resolve(context, $icon),
     );
@@ -340,6 +376,7 @@ class IconStyle extends Style<IconSpec>
       ),
       fill: MixOps.merge($fill, other.$fill),
       semanticsLabel: MixOps.merge($semanticsLabel, other.$semanticsLabel),
+      opacity: MixOps.merge($opacity, other.$opacity),
       blendMode: MixOps.merge($blendMode, other.$blendMode),
       icon: MixOps.merge($icon, other.$icon),
       animation: other.$animation ?? $animation,
@@ -364,6 +401,7 @@ class IconStyle extends Style<IconSpec>
       ..add(DiagnosticsProperty('applyTextScaling', $applyTextScaling))
       ..add(DiagnosticsProperty('fill', $fill))
       ..add(DiagnosticsProperty('semanticsLabel', $semanticsLabel))
+      ..add(DiagnosticsProperty('opacity', $opacity))
       ..add(DiagnosticsProperty('blendMode', $blendMode))
       ..add(DiagnosticsProperty('icon', $icon));
   }
@@ -395,6 +433,7 @@ class IconStyle extends Style<IconSpec>
     $applyTextScaling,
     $fill,
     $semanticsLabel,
+    $opacity,
     $blendMode,
     $icon,
     $animation,

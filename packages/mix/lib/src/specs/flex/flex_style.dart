@@ -13,6 +13,7 @@ import '../../modifiers/modifier_util.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'flex_spec.dart';
+import 'flex_mix.dart';
 
 /// Represents the attributes of a [FlexSpec].
 ///
@@ -204,6 +205,21 @@ class FlexStyle extends Style<FlexSpec>
     return FlexStyle(modifier: value);
   }
 
+  /// Factory constructor to create FlexStyle from FlexMix.
+  static FlexStyle from(FlexMix mix) {
+    return FlexStyle.create(
+      direction: mix.$direction,
+      mainAxisAlignment: mix.$mainAxisAlignment,
+      crossAxisAlignment: mix.$crossAxisAlignment,
+      mainAxisSize: mix.$mainAxisSize,
+      verticalDirection: mix.$verticalDirection,
+      textDirection: mix.$textDirection,
+      textBaseline: mix.$textBaseline,
+      clipBehavior: mix.$clipBehavior,
+      spacing: mix.$spacing,
+    );
+  }
+
   /// Constructor that accepts a nullable [FlexSpec] value and extracts its properties.
   ///
   /// Returns null if the input is null, otherwise uses [FlexStyle.value].
@@ -314,7 +330,7 @@ class FlexStyle extends Style<FlexSpec>
       clipBehavior: MixOps.resolve(context, $clipBehavior),
       spacing: MixOps.resolve(context, $spacing),
     );
-    
+
     return WidgetSpec(
       spec: flexSpec,
       animation: $animation,

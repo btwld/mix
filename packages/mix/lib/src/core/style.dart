@@ -47,7 +47,7 @@ abstract class Style<S extends Spec<S>> extends Mix<WidgetSpec<S>>
        $inherit = inherit;
 
   static BoxStyle box(BoxStyle value) => value;
-  static TextMix text(TextMix value) => value;
+  static TextStyling text(TextStyling value) => value;
   static IconStyle icon(IconStyle value) => value;
   static ImageStyle image(ImageStyle value) => value;
   static StackStyle stack(StackStyle value) => value;

@@ -22,12 +22,11 @@ import '../../properties/painting/gradient_mix.dart';
 import '../../properties/transform_mixin.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
-import '../text/text_style.dart';
+import '../text/text_mix.dart';
+import 'box_mix.dart';
 import 'box_spec.dart';
 import 'box_util.dart';
 import 'box_widget.dart';
-
-typedef BoxMix = BoxStyle;
 
 /// Style class for configuring [BoxSpec] properties.
 ///
@@ -249,6 +248,21 @@ class BoxStyle extends Style<BoxSpec>
         clipBehavior: spec.clipBehavior,
       );
 
+  /// Factory constructor to create BoxStyle from BoxMix.
+  static BoxStyle from(BoxMix mix) {
+    return BoxStyle.create(
+      alignment: mix.$alignment,
+      padding: mix.$padding,
+      margin: mix.$margin,
+      constraints: mix.$constraints,
+      decoration: mix.$decoration,
+      foregroundDecoration: mix.$foregroundDecoration,
+      transform: mix.$transform,
+      transformAlignment: mix.$transformAlignment,
+      clipBehavior: mix.$clipBehavior,
+    );
+  }
+
   /// Constructor that accepts a nullable [BoxSpec] value and extracts its properties.
   ///
   /// Returns null if the input is null, otherwise uses [BoxStyle.value].
@@ -368,7 +382,7 @@ class BoxStyle extends Style<BoxSpec>
       transformAlignment: MixOps.resolve(context, $transformAlignment),
       clipBehavior: MixOps.resolve(context, $clipBehavior),
     );
-    
+
     // Wrap with metadata
     return WidgetSpec(
       spec: boxSpec,

@@ -3,11 +3,13 @@ import 'package:flutter/scheduler.dart';
 import 'package:mix/mix.dart';
 
 
-final chipButtonLabel = Style.text(
-    .fontSize(12)
-    .fontWeight(.w500)
-    .textAlign(.center)
-    .color(Colors.white)
+final chipButtonLabel = TextMix(
+    style: TextStyleMix(
+      fontSize: 12,
+      fontWeight: FontWeight.w500,
+      color: Colors.white,
+    ),
+    textAlign: TextAlign.center,
 );
 
 final chipButtonContainer = Style.box(

@@ -42,7 +42,7 @@ class Example extends StatelessWidget {
         .color(Colors.blueGrey.shade600)
         .size(20);
 
-    final textStyle = TextMix()
+    final textStyle = TextStyling()
         .fontSize(16)
         .fontWeight(FontWeight.w500)
         .color(Colors.blueGrey.shade600);

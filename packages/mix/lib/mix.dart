@@ -70,20 +70,16 @@ export 'src/modifiers/scroll_view_modifier.dart';
 export 'src/modifiers/sized_box_modifier.dart';
 export 'src/modifiers/transform_modifier.dart';
 export 'src/modifiers/visibility_modifier.dart';
-export 'src/properties/container/container_mix.dart';
-export 'src/properties/container/container_spec.dart';
-export 'src/properties/iconography/iconography_mix.dart';
+export 'src/specs/box/box_mix.dart';
+export 'src/specs/icon/icon_mix.dart';
 
 /// ICONOGRAPHY
-export 'src/properties/iconography/iconography_spec.dart';
 export 'src/properties/layout/constraints_mix.dart';
 export 'src/properties/layout/constraints_util.dart';
 export 'src/properties/layout/edge_insets_geometry_mix.dart';
 export 'src/properties/layout/edge_insets_geometry_util.dart'
     hide createEdgeInsetsMix;
 export 'src/properties/layout/enum_util.dart';
-export 'src/properties/layout/flex_layout_mix.dart';
-export 'src/properties/layout/flex_layout_spec.dart';
 export 'src/properties/layout/scalar_util.dart';
 export 'src/properties/layout/stack_mix.dart';
 export 'src/properties/painting/border_mix.dart';
@@ -109,23 +105,22 @@ export 'src/properties/typography/text_height_behavior_mix.dart';
 export 'src/properties/typography/text_height_behavior_util.dart';
 export 'src/properties/typography/text_style_mix.dart';
 export 'src/properties/typography/text_style_util.dart';
-export 'src/properties/typography/typography_mix.dart';
+export 'src/specs/text/text_mix.dart';
 
 /// TYPOGRAPHY
-export 'src/properties/typography/typography_spec.dart';
-export 'src/providers/iconography_scope.dart';
-export 'src/providers/typography_scope.dart';
+export 'src/providers/icon_scope.dart';
+export 'src/providers/text_scope.dart';
 
 /// SPECS
 export 'src/specs/box/box_style.dart';
 export 'src/specs/box/box_spec.dart';
 export 'src/specs/box/box_util.dart';
 export 'src/specs/box/box_widget.dart';
+export 'src/specs/flex/flex_mix.dart';
 export 'src/specs/flex/flex_style.dart';
 export 'src/specs/flex/flex_spec.dart';
 export 'src/specs/flex/flex_util.dart';
-export 'src/specs/flex_container/flex_container_mix.dart';
-export 'src/specs/flex_container/flex_container_spec.dart';
+export 'src/specs/flexbox/flexbox_mix.dart';
 export 'src/specs/flexbox/flexbox_style.dart';
 export 'src/specs/flexbox/flexbox_spec.dart';
 export 'src/specs/flexbox/flexbox_util.dart';

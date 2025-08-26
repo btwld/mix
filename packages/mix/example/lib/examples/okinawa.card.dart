@@ -63,7 +63,7 @@ class OkinawaCard extends StatelessWidget {
               .color(Colors.black.withValues(alpha: 0.1)),
         )
         .flex(
-          FlexLayoutMix()
+          FlexMix()
               .mainAxisSize(MainAxisSize.min)
               .crossAxisAlignment(CrossAxisAlignment.start),
         );
@@ -86,11 +86,11 @@ class OkinawaCard extends StatelessWidget {
         );
 
     final titleStyle = Style.text(
-      TextMix().color(Colors.white).fontWeight(FontWeight.bold).fontSize(16),
+      TextStyling.color(Colors.white).fontWeight(FontWeight.bold).fontSize(16),
     );
 
     final subtitleStyle = Style.text(
-      TextMix().color(Colors.white70).fontSize(14),
+      TextStyling.color(Colors.white70).fontSize(14),
     );
 
     final imageStyle = Style.image(ImageStyle().fit(BoxFit.cover));

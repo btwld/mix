@@ -3,23 +3,23 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 void main() {
-  group('IconographyScope', () {
-    testWidgets('provides iconography data to descendants', (tester) async {
-      final iconography = IconographyMix(
+  group('IconScope', () {
+    testWidgets('provides icon data to descendants', (tester) async {
+      final icon = IconMix(
         size: 24.0,
         color: Colors.blue,
         weight: 400.0,
         fill: 1.0,
       );
 
-      late IconographyMix capturedScope;
+      late IconMix capturedScope;
 
       await tester.pumpWidget(
-        IconographyScope(
-          iconography: iconography,
+        IconScope(
+          icon: icon,
           child: Builder(
             builder: (context) {
-              capturedScope = IconographyScope.of(context);
+              capturedScope = IconScope.of(context);
               return const SizedBox();
             },
           ),
@@ -27,16 +27,16 @@ void main() {
       );
 
       expect(capturedScope, isNotNull);
-      expect(capturedScope, equals(iconography));
+      expect(capturedScope, equals(icon));
     });
 
     testWidgets('maybeOf returns null when no scope found', (tester) async {
-      IconographyMix? capturedScope;
+      IconMix? capturedScope;
 
       await tester.pumpWidget(
         Builder(
           builder: (context) {
-            capturedScope = IconographyScope.maybeOf(context);
+            capturedScope = IconScope.maybeOf(context);
             return const SizedBox();
           },
         ),
@@ -51,7 +51,7 @@ void main() {
       await tester.pumpWidget(
         Builder(
           builder: (context) {
-            expect(() => IconographyScope.of(context), throwsAssertionError);
+            expect(() => IconScope.of(context), throwsAssertionError);
             return const SizedBox();
           },
         ),
@@ -59,7 +59,7 @@ void main() {
     });
 
     testWidgets('wraps child with IconTheme', (tester) async {
-      final iconography = IconographyMix(
+      final icon = IconMix(
         size: 32.0,
         color: Colors.red,
         weight: 700.0,
@@ -72,8 +72,8 @@ void main() {
       );
 
       await tester.pumpWidget(
-        IconographyScope(
-          iconography: iconography,
+        IconScope(
+          icon: icon,
           child: Builder(
             builder: (context) {
               final iconTheme = IconTheme.of(context);
@@ -94,37 +94,37 @@ void main() {
       );
     });
 
-    testWidgets('updateShouldNotify returns true when iconography changes', (
+    testWidgets('updateShouldNotify returns true when icon changes', (
       tester,
     ) async {
-      final iconography1 = IconographyMix(size: 16.0);
-      final iconography2 = IconographyMix(size: 24.0);
+      final icon1 = IconMix(size: 16.0);
+      final icon2 = IconMix(size: 24.0);
 
       // Test through InheritedWidget implementation
-      expect(iconography1, isNot(equals(iconography2)));
+      expect(icon1, isNot(equals(icon2)));
     });
 
-    testWidgets('updateShouldNotify returns false when iconography is same', (
+    testWidgets('updateShouldNotify returns false when icon is same', (
       tester,
     ) async {
-      final iconography = IconographyMix(size: 16.0);
+      final icon = IconMix(size: 16.0);
 
       // Test through InheritedWidget implementation
-      expect(iconography, equals(iconography));
+      expect(icon, equals(icon));
     });
 
-    testWidgets('handles null iconography properties', (tester) async {
-      final iconography = IconographyMix();
+    testWidgets('handles null icon properties', (tester) async {
+      final icon = IconMix();
 
       await tester.pumpWidget(
         MaterialApp(
-          home: IconographyScope(
-            iconography: iconography,
+          home: IconScope(
+            icon: icon,
             child: Builder(
               builder: (context) {
                 final iconTheme = IconTheme.of(context);
                 // IconTheme.of(context) may have default values from MaterialApp
-                // Just verify that IconographyScope is providing the theme
+                // Just verify that IconScope is providing the theme
                 expect(iconTheme, isNotNull);
                 return const SizedBox();
               },

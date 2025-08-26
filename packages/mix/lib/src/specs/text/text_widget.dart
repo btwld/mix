@@ -10,7 +10,7 @@ import 'text_spec.dart';
 /// Applies [TextSpec] for custom text appearance.
 class StyledText extends StyleWidget<TextSpec> {
   /// Creates a [StyledText] with required [text] and optional [style].
-  const StyledText(this.text, {super.style = const TextMix.create(), super.key});
+  const StyledText(this.text, {super.style = const TextStyling.create(), super.key});
 
 
   /// The text to display.

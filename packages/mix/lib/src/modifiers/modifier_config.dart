@@ -3,18 +3,18 @@ import 'package:flutter/widgets.dart';
 import '../core/internal/compare_mixin.dart';
 import '../core/modifier.dart';
 import '../core/style.dart';
-import '../properties/container/container_mix.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
 import '../properties/painting/border_radius_mix.dart';
 import '../properties/painting/shadow_mix.dart';
 import '../properties/typography/text_height_behavior_mix.dart';
 import '../properties/typography/text_style_mix.dart';
+import '../specs/box/box_mix.dart';
 import '../specs/icon/icon_style.dart';
-import '../specs/text/text_style.dart';
+import '../specs/text/text_mix.dart';
 import 'align_modifier.dart';
 import 'aspect_ratio_modifier.dart';
-import 'container_modifier.dart';
 import 'clip_modifier.dart';
+import 'container_modifier.dart';
 import 'default_text_style_modifier.dart';
 import 'flexible_modifier.dart';
 import 'fractionally_sized_box_modifier.dart';
@@ -264,7 +264,7 @@ final class ModifierConfig with Equatable {
     );
   }
 
-  factory ModifierConfig.box(ContainerMix spec) {
+  factory ModifierConfig.box(BoxMix spec) {
     return ModifierConfig.modifier(ContainerModifierMix(spec));
   }
 

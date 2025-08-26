@@ -6,20 +6,21 @@ import '../core/modifier.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
-import '../properties/container/container_mix.dart';
-import '../properties/container/container_spec.dart';
+import '../specs/box/box_mix.dart';
+import '../specs/box/box_spec.dart';
+import '../specs/box/box_widget.dart';
 
 /// Modifier that wraps its child in a styled Container.
 ///
 /// Wraps the child in a [Container] widget with the specified container styling.
 final class ContainerModifier extends Modifier<ContainerModifier>
     with Diagnosticable {
-  final ContainerSpec spec;
+  final BoxSpec spec;
 
   const ContainerModifier(this.spec);
 
   @override
-  ContainerModifier copyWith({ContainerSpec? spec}) {
+  ContainerModifier copyWith({BoxSpec? spec}) {
     return ContainerModifier(spec ?? this.spec);
   }
 
@@ -41,7 +42,7 @@ final class ContainerModifier extends Modifier<ContainerModifier>
 
   @override
   Widget build(Widget child) {
-    return spec(child: child);
+    return createBoxSpecWidget(spec: spec, child: child);
   }
 }
 
@@ -50,7 +51,7 @@ final class ContainerModifier extends Modifier<ContainerModifier>
 /// This class allows for mixing and resolving container properties.
 class ContainerModifierMix extends ModifierMix<ContainerModifier>
     with Diagnosticable {
-  final ContainerMix spec;
+  final BoxMix spec;
 
   const ContainerModifierMix(this.spec);
 
@@ -83,19 +84,19 @@ class ContainerModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, ContainerModifierMix> {
   const ContainerModifierUtility(super.builder);
 
-  T call(ContainerMix spec) {
+  T call(BoxMix spec) {
     return builder(ContainerModifierMix(spec));
   }
 
   T color(Color value) {
-    return builder(ContainerModifierMix(ContainerMix.color(value)));
+    return builder(ContainerModifierMix(BoxMix.color(value)));
   }
 
   T padding(EdgeInsetsGeometryMix value) {
-    return builder(ContainerModifierMix(ContainerMix.padding(value)));
+    return builder(ContainerModifierMix(BoxMix.padding(value)));
   }
 
   T margin(EdgeInsetsGeometryMix value) {
-    return builder(ContainerModifierMix(ContainerMix.margin(value)));
+    return builder(ContainerModifierMix(BoxMix.margin(value)));
   }
 }

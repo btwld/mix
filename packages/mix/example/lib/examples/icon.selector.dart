@@ -50,7 +50,7 @@ class EmojiSelector extends StatelessWidget {
                 ),
           )
           .flex(
-            FlexLayoutMix()
+            FlexMix()
                 .spacing(16)
                 .mainAxisAlignment(MainAxisAlignment.center)
                 .mainAxisSize(MainAxisSize.min),
@@ -141,7 +141,7 @@ class _AnimatedEmojiState extends State<AnimatedEmoji> {
       ),
       child: StyledText(
         widget.emoji,
-        style: Style.text(TextMix().fontSize(25)),
+        style: Style.text(TextStyling.fontSize(25)),
       ),
     );
   }

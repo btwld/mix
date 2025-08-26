@@ -88,7 +88,7 @@ class _DemoAppState extends State<DemoApp> with TickerProviderStateMixin {
               child: StyledText(
                 'Update',
                 style: Style.text(
-                  TextMix().color(Colors.white).fontWeight(FontWeight.w500),
+                  TextStyling.color(Colors.white).fontWeight(FontWeight.w500),
                 ),
               ),
             );

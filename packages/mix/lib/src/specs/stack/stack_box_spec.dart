@@ -1,12 +1,12 @@
 import 'package:flutter/foundation.dart';
 
 import '../../core/spec.dart';
-import '../../properties/container/container_spec.dart';
+import '../box/box_spec.dart';
 import 'stack_spec.dart';
 
 final class ZBoxSpec extends Spec<ZBoxSpec> with Diagnosticable {
   /// Container styling for the outer box. Nullable to mirror FlexBoxSpec.
-  final ContainerSpec? box;
+  final BoxSpec? box;
   final StackSpec stack;
 
   const ZBoxSpec({this.box, StackSpec? stack})
@@ -15,7 +15,7 @@ final class ZBoxSpec extends Spec<ZBoxSpec> with Diagnosticable {
   /// Creates a copy of this [ZBoxSpec] but with the given fields
   /// replaced with the new values.
   @override
-  ZBoxSpec copyWith({ContainerSpec? box, StackSpec? stack}) {
+  ZBoxSpec copyWith({BoxSpec? box, StackSpec? stack}) {
     return ZBoxSpec(box: box ?? this.box, stack: stack ?? this.stack);
   }
 
@@ -29,7 +29,7 @@ final class ZBoxSpec extends Spec<ZBoxSpec> with Diagnosticable {
   ///
   /// The interpolation is performed on each property of the [ZBoxSpec] using the appropriate
   /// interpolation method:
-  /// - [ContainerSpec.lerp] for [box].
+  /// - [BoxSpec.lerp] for [box].
   /// - [StackSpec.lerp] for [stack].
   ///
   /// This method is typically used in animations to smoothly transition between
