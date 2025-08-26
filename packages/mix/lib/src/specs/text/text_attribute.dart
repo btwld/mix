@@ -7,6 +7,7 @@ import '../../core/directive.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
+import '../../core/wrapped_widget_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/painting/shadow_mix.dart';
@@ -617,8 +618,8 @@ class TextMix extends Style<TextSpec>
   /// final textSpec = TextMix(...).resolve(context);
   /// ```
   @override
-  TextSpec resolve(BuildContext context) {
-    return TextSpec(
+  WrappedWidgetSpec<TextSpec> resolve(BuildContext context) {
+    final textSpec = TextSpec(
       overflow: MixOps.resolve(context, $overflow),
       strutStyle: MixOps.resolve(context, $strutStyle),
       textAlign: MixOps.resolve(context, $textAlign),
@@ -633,6 +634,10 @@ class TextMix extends Style<TextSpec>
       selectionColor: MixOps.resolve(context, $selectionColor),
       semanticsLabel: MixOps.resolve(context, $semanticsLabel),
       locale: MixOps.resolve(context, $locale),
+    );
+    
+    return WrappedWidgetSpec(
+      spec: textSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),
       inherit: $inherit,

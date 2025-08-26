@@ -6,13 +6,12 @@ import '../../animation/animation_mixin.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
+import '../../core/wrapped_widget_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'stack_spec.dart';
-
-typedef StackMix = StackStyle;
 
 /// Represents the attributes of a [StackSpec].
 ///
@@ -171,12 +170,16 @@ class StackStyle extends Style<StackSpec>
 
   /// Resolves to [StackSpec] using the provided [BuildContext].
   @override
-  StackSpec resolve(BuildContext context) {
-    return StackSpec(
+  WrappedWidgetSpec<StackSpec> resolve(BuildContext context) {
+    final stackSpec = StackSpec(
       alignment: MixOps.resolve(context, $alignment),
       fit: MixOps.resolve(context, $fit),
       textDirection: MixOps.resolve(context, $textDirection),
       clipBehavior: MixOps.resolve(context, $clipBehavior),
+    );
+
+    return WrappedWidgetSpec(
+      spec: stackSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),
       inherit: $inherit,

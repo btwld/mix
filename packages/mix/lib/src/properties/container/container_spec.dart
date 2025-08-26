@@ -10,47 +10,65 @@ import '../../core/spec.dart';
 /// to Container widgets. It encapsulates common container properties like
 /// decoration, padding, alignment, and constraints.
 class ContainerSpec extends Spec<ContainerSpec> with Diagnosticable {
-  final Decoration? decoration;
-  final Decoration? foregroundDecoration;
-  final EdgeInsetsGeometry? padding;
-  final EdgeInsetsGeometry? margin;
+  /// Aligns the child within the container.
   final AlignmentGeometry? alignment;
+
+  /// Adds empty space inside the container.
+  final EdgeInsetsGeometry? padding;
+
+  /// Adds empty space around the container.
+  final EdgeInsetsGeometry? margin;
+
+  /// Applies additional constraints to the child.
   final BoxConstraints? constraints;
+
+  /// Paints a decoration behind the child.
+  final Decoration? decoration;
+
+  /// Paints a decoration in front of the child.
+  final Decoration? foregroundDecoration;
+
+  /// Applies a transformation matrix before painting the container.
   final Matrix4? transform;
+
+  /// Aligns the origin of the coordinate system for the [transform].
   final AlignmentGeometry? transformAlignment;
+
+  /// Defines the clip behavior for the container when content overflows.
   final Clip? clipBehavior;
 
   const ContainerSpec({
-    this.decoration,
-    this.foregroundDecoration,
+    this.alignment,
     this.padding,
     this.margin,
-    this.alignment,
     this.constraints,
+    this.decoration,
+    this.foregroundDecoration,
     this.transform,
     this.transformAlignment,
     this.clipBehavior,
   });
 
+
   @override
   ContainerSpec copyWith({
-    Decoration? decoration,
-    Decoration? foregroundDecoration,
+    AlignmentGeometry? alignment,
     EdgeInsetsGeometry? padding,
     EdgeInsetsGeometry? margin,
-    AlignmentGeometry? alignment,
     BoxConstraints? constraints,
+    Decoration? decoration,
+    Decoration? foregroundDecoration,
     Matrix4? transform,
     AlignmentGeometry? transformAlignment,
     Clip? clipBehavior,
   }) {
     return ContainerSpec(
-      decoration: decoration ?? this.decoration,
-      foregroundDecoration: foregroundDecoration ?? this.foregroundDecoration,
+      alignment: alignment ?? this.alignment,
       padding: padding ?? this.padding,
       margin: margin ?? this.margin,
-      alignment: alignment ?? this.alignment,
       constraints: constraints ?? this.constraints,
+      decoration: decoration ?? this.decoration,
+      foregroundDecoration: foregroundDecoration ?? this.foregroundDecoration,
       transform: transform ?? this.transform,
       transformAlignment: transformAlignment ?? this.transformAlignment,
       clipBehavior: clipBehavior ?? this.clipBehavior,
@@ -59,26 +77,24 @@ class ContainerSpec extends Spec<ContainerSpec> with Diagnosticable {
 
   @override
   ContainerSpec lerp(ContainerSpec? other, double t) {
-    if (other == null) return this;
-
     return ContainerSpec(
-      decoration: MixOps.lerp(decoration, other.decoration, t),
+      alignment: MixOps.lerp(alignment, other?.alignment, t),
+      padding: MixOps.lerp(padding, other?.padding, t),
+      margin: MixOps.lerp(margin, other?.margin, t),
+      constraints: MixOps.lerp(constraints, other?.constraints, t),
+      decoration: MixOps.lerp(decoration, other?.decoration, t),
       foregroundDecoration: MixOps.lerp(
         foregroundDecoration,
-        other.foregroundDecoration,
+        other?.foregroundDecoration,
         t,
       ),
-      padding: MixOps.lerp(padding, other.padding, t),
-      margin: MixOps.lerp(margin, other.margin, t),
-      alignment: MixOps.lerp(alignment, other.alignment, t),
-      constraints: MixOps.lerp(constraints, other.constraints, t),
-      transform: MixOps.lerp(transform, other.transform, t),
+      transform: MixOps.lerp(transform, other?.transform, t),
       transformAlignment: MixOps.lerp(
         transformAlignment,
-        other.transformAlignment,
+        other?.transformAlignment,
         t,
       ),
-      clipBehavior: t < 0.5 ? clipBehavior : other.clipBehavior,
+      clipBehavior: MixOps.lerpSnap(clipBehavior, other?.clipBehavior, t),
     );
   }
 
@@ -86,25 +102,29 @@ class ContainerSpec extends Spec<ContainerSpec> with Diagnosticable {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-      ..add(DiagnosticsProperty('decoration', decoration))
-      ..add(DiagnosticsProperty('foregroundDecoration', foregroundDecoration))
+      ..add(DiagnosticsProperty('alignment', alignment))
       ..add(DiagnosticsProperty('padding', padding))
       ..add(DiagnosticsProperty('margin', margin))
-      ..add(DiagnosticsProperty('alignment', alignment))
       ..add(DiagnosticsProperty('constraints', constraints))
+      ..add(DiagnosticsProperty('decoration', decoration))
+      ..add(DiagnosticsProperty('foregroundDecoration', foregroundDecoration))
       ..add(DiagnosticsProperty('transform', transform))
       ..add(DiagnosticsProperty('transformAlignment', transformAlignment))
       ..add(EnumProperty<Clip>('clipBehavior', clipBehavior));
   }
 
+  /// The list of properties that constitute the state of this [ContainerSpec].
+  ///
+  /// This property is used by the [==] operator and the [hashCode] getter to
+  /// compare two [ContainerSpec] instances for equality.
   @override
   List<Object?> get props => [
-    decoration,
-    foregroundDecoration,
+    alignment,
     padding,
     margin,
-    alignment,
     constraints,
+    decoration,
+    foregroundDecoration,
     transform,
     transformAlignment,
     clipBehavior,

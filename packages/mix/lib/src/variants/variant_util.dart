@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/breakpoint.dart';
+import '../core/spec.dart';
 import '../core/widget_spec.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
@@ -8,7 +9,7 @@ import 'variant.dart';
 
 /// Utility class for creating variant attributes with context-based variants
 @immutable
-class OnContextVariantUtility<S extends WidgetSpec<S>, T extends Style<S>>
+class OnContextVariantUtility<S extends Spec<S>, T extends Style<S>>
     extends MixUtility<T, VariantStyle<S>> {
   const OnContextVariantUtility(super.builder);
 
@@ -244,7 +245,7 @@ class OnContextVariantUtility<S extends WidgetSpec<S>, T extends Style<S>>
 /// [VariantStyle] instances with styling rules that apply
 /// when the variant condition is met.
 @immutable
-class VariantAttributeBuilder<T extends WidgetSpec<T>> {
+class VariantAttributeBuilder<T extends Spec<T>> {
   /// The variant condition that determines when styling should apply
   final Variant variant;
 
@@ -289,7 +290,7 @@ typedef VariantFactoryCallback<T extends Style<S>, S extends WidgetSpec<S>> =
 ///
 /// This mixin follows the same pattern as ModifierMixin, providing
 /// a fluent API for applying context variants to spec attributes.
-mixin StyleVariantMixin<T extends Style<S>, S extends WidgetSpec<S>> on Style<S> {
+mixin StyleVariantMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   /// Must be implemented by the class using this mixin
   T variant(Variant variant, T style);
 

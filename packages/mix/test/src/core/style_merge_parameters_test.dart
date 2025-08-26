@@ -396,14 +396,14 @@ void main() {
     group('', () {
       test('merges orderOfModifiers correctly', () {
         final first = StackBoxStyle(
-          box: BoxStyle.width(100),
+          box: ContainerMix.width(100),
           modifier: ModifierConfig.orderOfModifiers(const [
             OpacityModifier,
             PaddingModifier,
           ]),
         );
         final second = StackBoxStyle(
-          stack: StackStyle.alignment(Alignment.center),
+          stack: StackMix.alignment(Alignment.center),
           modifier: ModifierConfig.orderOfModifiers(const [
             ClipOvalModifier,
             TransformModifier,
@@ -418,9 +418,12 @@ void main() {
       });
 
       test('merges inherit correctly', () {
-        final first = StackBoxStyle(box: BoxStyle.width(100), inherit: true);
+        final first = StackBoxStyle(
+          box: ContainerMix.width(100),
+          inherit: true,
+        );
         final second = StackBoxStyle(
-          stack: StackStyle.alignment(Alignment.center),
+          stack: StackMix.alignment(Alignment.center),
           inherit: false,
         );
 

@@ -32,4 +32,3 @@ class SpecTween<T extends Spec<T>> extends Tween<T?> {
     return begin?.lerp(end, t);
   }
 }
-

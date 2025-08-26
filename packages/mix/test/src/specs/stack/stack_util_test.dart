@@ -25,7 +25,7 @@ void main() {
         final spec = utility.resolve(context);
 
         expect(utility, isA<StackSpecUtility>());
-        expect(spec.alignment, Alignment.center);
+        expect(spec.spec.alignment, Alignment.center);
       });
     });
 
@@ -68,7 +68,7 @@ void main() {
         final spec = util.resolve(context);
 
         expect(result, isA<StackStyle>());
-        expect(spec.alignment, Alignment.topLeft);
+        expect(spec.spec.alignment, Alignment.topLeft);
       });
 
       test('', () {
@@ -77,7 +77,7 @@ void main() {
         final spec = util.resolve(context);
 
         expect(result, isA<StackStyle>());
-        expect(spec.fit, StackFit.expand);
+        expect(spec.spec.fit, StackFit.expand);
       });
 
       test('', () {
@@ -86,7 +86,7 @@ void main() {
         final spec = util.resolve(context);
 
         expect(result, isA<StackStyle>());
-        expect(spec.textDirection, TextDirection.rtl);
+        expect(spec.spec.textDirection, TextDirection.rtl);
       });
 
       test('', () {
@@ -95,7 +95,7 @@ void main() {
         final spec = util.resolve(context);
 
         expect(result, isA<StackStyle>());
-        expect(spec.clipBehavior, Clip.antiAlias);
+        expect(spec.spec.clipBehavior, Clip.antiAlias);
       });
     });
 
@@ -142,7 +142,7 @@ void main() {
 
         expect(result, isNot(same(util)));
         expect(result, isA<StackSpecUtility>());
-        expect(spec.alignment, Alignment.center);
+        expect(spec.spec.alignment, Alignment.center);
       });
 
       test('', () {
@@ -153,7 +153,7 @@ void main() {
 
         expect(result, isNot(same(util)));
         expect(result, isA<StackSpecUtility>());
-        expect(spec.fit, StackFit.expand);
+        expect(spec.spec.fit, StackFit.expand);
       });
 
       test('merge throws error for unsupported type', () {
@@ -175,9 +175,9 @@ void main() {
         final context = MockBuildContext();
         final spec = result.resolve(context);
 
-        expect(spec.alignment, Alignment.center);
-        expect(spec.fit, StackFit.expand); // other takes precedence
-        expect(spec.clipBehavior, Clip.antiAlias);
+        expect(spec.spec.alignment, Alignment.center);
+        expect(spec.spec.fit, StackFit.expand); // other takes precedence
+        expect(spec.spec.clipBehavior, Clip.antiAlias);
       });
     });
 
@@ -194,20 +194,20 @@ void main() {
         final context = MockBuildContext();
         final spec = testUtil.resolve(context);
 
-        expect(spec, isA<StackSpec>());
-        expect(spec.alignment, Alignment.center);
-        expect(spec.fit, StackFit.expand);
-        expect(spec.clipBehavior, Clip.antiAlias);
+        expect(spec, isA<WrappedWidgetSpec<StackSpec>>());
+        expect(spec.spec.alignment, Alignment.center);
+        expect(spec.spec.fit, StackFit.expand);
+        expect(spec.spec.clipBehavior, Clip.antiAlias);
       });
 
       test('resolve handles null properties', () {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec, isA<StackSpec>());
-        expect(spec.alignment, isNull);
-        expect(spec.fit, isNull);
-        expect(spec.clipBehavior, isNull);
+        expect(spec, isA<WrappedWidgetSpec<StackSpec>>());
+        expect(spec.spec.alignment, isNull);
+        expect(spec.spec.fit, isNull);
+        expect(spec.spec.clipBehavior, isNull);
       });
     });
 
@@ -221,7 +221,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec.alignment, Alignment.center);
+        expect(spec.spec.alignment, Alignment.center);
       });
 
       test('basic fit mutation test', () {
@@ -233,7 +233,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec.fit, StackFit.expand);
+        expect(spec.spec.fit, StackFit.expand);
       });
 
       test('chaining utility methods accumulates properties', () {
@@ -248,9 +248,9 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec.alignment, Alignment.center);
-        expect(spec.fit, StackFit.expand);
-        expect(spec.clipBehavior, Clip.antiAlias);
+        expect(spec.spec.alignment, Alignment.center);
+        expect(spec.spec.fit, StackFit.expand);
+        expect(spec.spec.clipBehavior, Clip.antiAlias);
       });
 
       test('cascade notation works with utility methods', () {
@@ -262,9 +262,9 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec.alignment, Alignment.center);
-        expect(spec.fit, StackFit.expand);
-        expect(spec.clipBehavior, Clip.antiAlias);
+        expect(spec.spec.alignment, Alignment.center);
+        expect(spec.spec.fit, StackFit.expand);
+        expect(spec.spec.clipBehavior, Clip.antiAlias);
       });
 
       test('', () {
@@ -283,9 +283,9 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec.alignment, Alignment.center);
-        expect(spec.fit, StackFit.expand);
-        expect(spec.clipBehavior, Clip.antiAlias);
+        expect(spec.spec.alignment, Alignment.center);
+        expect(spec.spec.fit, StackFit.expand);
+        expect(spec.spec.clipBehavior, Clip.antiAlias);
       });
     });
 
@@ -319,9 +319,9 @@ void main() {
         final spec = util.resolve(context);
 
         // All properties should be present in the same instance
-        expect(spec.alignment, Alignment.center);
-        expect(spec.fit, StackFit.expand);
-        expect(spec.clipBehavior, Clip.antiAlias);
+        expect(spec.spec.alignment, Alignment.center);
+        expect(spec.spec.fit, StackFit.expand);
+        expect(spec.spec.clipBehavior, Clip.antiAlias);
       });
 
       test('demonstrates difference from immutable builder pattern', () {
@@ -339,8 +339,8 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec.alignment, Alignment.center);
-        expect(spec.fit, StackFit.expand);
+        expect(spec.spec.alignment, Alignment.center);
+        expect(spec.spec.fit, StackFit.expand);
       });
     });
 
@@ -357,10 +357,12 @@ void main() {
         expect(
           testUtil,
           resolvesTo(
-            const StackSpec(
-              alignment: Alignment.center,
-              fit: StackFit.expand,
-              clipBehavior: Clip.antiAlias,
+            const WrappedWidgetSpec(
+              spec: StackSpec(
+                alignment: Alignment.center,
+                fit: StackFit.expand,
+                clipBehavior: Clip.antiAlias,
+              ),
             ),
           ),
         );
@@ -379,7 +381,7 @@ void main() {
         );
         final spec = testUtil.resolve(context);
 
-        expect(spec.alignment, Alignment.topLeft);
+        expect(spec.spec.alignment, Alignment.topLeft);
       });
     });
 
@@ -406,9 +408,9 @@ void main() {
         final context = MockBuildContext();
         final spec = result.resolve(context);
 
-        expect(spec.alignment, Alignment.center);
-        expect(spec.fit, StackFit.expand);
-        expect(spec.clipBehavior, Clip.antiAlias);
+        expect(spec.spec.alignment, Alignment.center);
+        expect(spec.spec.fit, StackFit.expand);
+        expect(spec.spec.clipBehavior, Clip.antiAlias);
       });
     });
 
@@ -418,9 +420,9 @@ void main() {
         final context = MockBuildContext();
         final spec = emptyUtil.resolve(context);
 
-        expect(spec.alignment, isNull);
-        expect(spec.fit, isNull);
-        expect(spec.clipBehavior, isNull);
+        expect(spec.spec.alignment, isNull);
+        expect(spec.spec.fit, isNull);
+        expect(spec.spec.clipBehavior, isNull);
       });
 
       test('merge with self returns new instance', () {
@@ -432,7 +434,7 @@ void main() {
         final spec = result.resolve(context);
 
         expect(result, isNot(same(testUtil)));
-        expect(spec.alignment, Alignment.center);
+        expect(spec.spec.alignment, Alignment.center);
       });
     });
   });

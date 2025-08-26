@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_relative_imports
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -101,7 +102,7 @@ class _ResolvesToMatcher<T> extends Matcher {
         } else {
           resolved = (item as Resolvable).resolve(ctx);
         }
-        
+
         // Handle Matcher expected values differently
         if (expected is Matcher) {
           return mismatchDescription
@@ -110,7 +111,7 @@ class _ResolvesToMatcher<T> extends Matcher {
               .add(' which does not match ')
               .addDescriptionOf(expected);
         }
-        
+
         return mismatchDescription
             .add('resolved to ')
             .addDescriptionOf(resolved)
@@ -275,9 +276,11 @@ class MockStyle<T> extends Style<MockSpec<T>> {
   }
 
   @override
-  MockSpec<T> resolve(BuildContext context) {
-    return MockSpec<T>(
-      resolvedValue: value,
+  WrappedWidgetSpec<MockSpec<T>> resolve(BuildContext context) {
+    final mockSpec = MockSpec<T>(resolvedValue: value);
+
+    return WrappedWidgetSpec(
+      spec: mockSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),
       inherit: $inherit,
@@ -292,45 +295,30 @@ class MockStyle<T> extends Style<MockSpec<T>> {
 ///
 /// A simple Spec implementation that holds a resolved value.
 /// Used as the target spec for mock attributes.
-final class MockSpec<T> extends WidgetSpec<MockSpec<T>> {
+final class MockSpec<T> extends Spec<MockSpec<T>> with Diagnosticable {
   final T? resolvedValue;
 
-  const MockSpec({
-    this.resolvedValue,
-    super.animation,
-    super.widgetModifiers,
-    super.inherit,
-  });
+  const MockSpec({this.resolvedValue});
 
   @override
   MockSpec<T> lerp(MockSpec<T>? other, double t) {
     if (other == null) return this;
     // Simple lerp - just return other for testing
-    return MockSpec<T>(
-      resolvedValue: other.resolvedValue,
-      animation: other.animation ?? animation,
-      widgetModifiers: other.widgetModifiers ?? widgetModifiers,
-      inherit: other.inherit ?? inherit,
-    );
+    return MockSpec<T>(resolvedValue: other.resolvedValue);
   }
 
   @override
-  MockSpec<T> copyWith({
-    T? resolvedValue,
-    AnimationConfig? animation,
-    List<Modifier>? widgetModifiers,
-    bool? inherit,
-  }) {
-    return MockSpec<T>(
-      resolvedValue: resolvedValue ?? this.resolvedValue,
-      animation: animation ?? this.animation,
-      widgetModifiers: widgetModifiers ?? this.widgetModifiers,
-      inherit: inherit ?? this.inherit,
-    );
+  MockSpec<T> copyWith({T? resolvedValue}) {
+    return MockSpec<T>(resolvedValue: resolvedValue ?? this.resolvedValue);
   }
 
   @override
-  List<Object?> get props => [resolvedValue, ...super.props];
+  List<Object?> get props => [resolvedValue];
+}
+
+// Test-only extension to simplify access to MockSpec.resolvedValue when wrapped
+extension WrappedMockResolvedValue<T> on WrappedWidgetSpec<MockSpec<T>> {
+  T? get resolvedValue => spec.resolvedValue;
 }
 
 // =============================================================================
@@ -511,31 +499,32 @@ MemoryImage mockImageProvider() {
 // =============================================================================
 
 /// Testing matchers for Prop properties
-/// 
+///
 /// Provides clean, descriptive matchers for testing Prop contents without
 /// exposing internal source structure.
 class PropMatcher {
   /// Matches a Prop that contains a specific value
   static Matcher isValue<T>(T expected) => _PropValueMatcher<T>(expected);
-  
+
   /// Matches a Prop that contains a specific token
-  static Matcher isToken<T>(MixToken<T> expected) => _PropTokenMatcher<T>(expected);
-  
+  static Matcher isToken<T>(MixToken<T> expected) =>
+      _PropTokenMatcher<T>(expected);
+
   /// Matches a Prop that contains a specific Mix
   static Matcher isMix<T>(Mix<T> expected) => _PropMixMatcher<T>(expected);
-  
+
   /// Matches a Prop that has any value sources
   static Matcher get hasValues => const _PropHasValuesMatcher();
-  
-  /// Matches a Prop that has any token sources  
+
+  /// Matches a Prop that has any token sources
   static Matcher get hasTokens => const _PropHasTokensMatcher();
-  
+
   /// Matches a Prop that has any Mix sources
   static Matcher get hasMixes => const _PropHasMixesMatcher();
-  
+
   /// Matches a Prop that has directives
   static Matcher get hasDirectives => const _PropHasDirectivesMatcher();
-  
+
   /// Matches a Prop that has animation config
   static Matcher get hasAnimation => const _PropHasAnimationMatcher();
 }
@@ -543,30 +532,30 @@ class PropMatcher {
 /// Matcher for Prop values
 class _PropValueMatcher<T> extends Matcher {
   final T expected;
-  
+
   const _PropValueMatcher(this.expected);
-  
+
   @override
   bool matches(dynamic item, Map matchState) {
     if (item is! Prop<T>) {
       matchState['error'] = 'Expected Prop<$T>, got ${item.runtimeType}';
       return false;
     }
-    
+
     final valueSource = item.sources.whereType<ValueSource<T>>().firstOrNull;
     if (valueSource == null) {
       matchState['error'] = 'Prop<$T> does not contain a ValueSource';
       return false;
     }
-    
+
     return valueSource.value == expected;
   }
-  
+
   @override
   Description describe(Description description) {
     return description.add('Prop with value ').addDescriptionOf(expected);
   }
-  
+
   @override
   Description describeMismatch(
     dynamic item,
@@ -577,7 +566,7 @@ class _PropValueMatcher<T> extends Matcher {
     if (matchState.containsKey('error')) {
       return mismatchDescription.add(matchState['error']);
     }
-    
+
     if (item is Prop<T>) {
       final valueSource = item.sources.whereType<ValueSource<T>>().firstOrNull;
       if (valueSource != null) {
@@ -588,7 +577,7 @@ class _PropValueMatcher<T> extends Matcher {
             .addDescriptionOf(expected);
       }
     }
-    
+
     return mismatchDescription.add('is not a Prop with a value');
   }
 }
@@ -596,30 +585,30 @@ class _PropValueMatcher<T> extends Matcher {
 /// Matcher for Prop tokens
 class _PropTokenMatcher<T> extends Matcher {
   final MixToken<T> expected;
-  
+
   const _PropTokenMatcher(this.expected);
-  
+
   @override
   bool matches(dynamic item, Map matchState) {
     if (item is! Prop<T>) {
       matchState['error'] = 'Expected Prop<$T>, got ${item.runtimeType}';
       return false;
     }
-    
+
     final tokenSource = item.sources.whereType<TokenSource<T>>().firstOrNull;
     if (tokenSource == null) {
       matchState['error'] = 'Prop<$T> does not contain a TokenSource';
       return false;
     }
-    
+
     return tokenSource.token == expected;
   }
-  
+
   @override
   Description describe(Description description) {
     return description.add('Prop with token ').addDescriptionOf(expected);
   }
-  
+
   @override
   Description describeMismatch(
     dynamic item,
@@ -630,7 +619,7 @@ class _PropTokenMatcher<T> extends Matcher {
     if (matchState.containsKey('error')) {
       return mismatchDescription.add(matchState['error']);
     }
-    
+
     if (item is Prop<T>) {
       final tokenSource = item.sources.whereType<TokenSource<T>>().firstOrNull;
       if (tokenSource != null) {
@@ -641,7 +630,7 @@ class _PropTokenMatcher<T> extends Matcher {
             .addDescriptionOf(expected);
       }
     }
-    
+
     return mismatchDescription.add('is not a Prop with a token');
   }
 }
@@ -649,30 +638,30 @@ class _PropTokenMatcher<T> extends Matcher {
 /// Matcher for Prop Mix values
 class _PropMixMatcher<T> extends Matcher {
   final Mix<T> expected;
-  
+
   const _PropMixMatcher(this.expected);
-  
+
   @override
   bool matches(dynamic item, Map matchState) {
     if (item is! Prop<T>) {
       matchState['error'] = 'Expected Prop<$T>, got ${item.runtimeType}';
       return false;
     }
-    
+
     final mixSource = item.sources.whereType<MixSource<T>>().firstOrNull;
     if (mixSource == null) {
       matchState['error'] = 'Prop<$T> does not contain a MixSource';
       return false;
     }
-    
+
     return mixSource.mix == expected;
   }
-  
+
   @override
   Description describe(Description description) {
     return description.add('Prop with Mix ').addDescriptionOf(expected);
   }
-  
+
   @override
   Description describeMismatch(
     dynamic item,
@@ -683,7 +672,7 @@ class _PropMixMatcher<T> extends Matcher {
     if (matchState.containsKey('error')) {
       return mismatchDescription.add(matchState['error']);
     }
-    
+
     if (item is Prop<T>) {
       final mixSource = item.sources.whereType<MixSource<T>>().firstOrNull;
       if (mixSource != null) {
@@ -694,7 +683,7 @@ class _PropMixMatcher<T> extends Matcher {
             .addDescriptionOf(expected);
       }
     }
-    
+
     return mismatchDescription.add('is not a Prop with a Mix');
   }
 }
@@ -702,22 +691,22 @@ class _PropMixMatcher<T> extends Matcher {
 /// Matcher for Prop that has any value sources
 class _PropHasValuesMatcher extends Matcher {
   const _PropHasValuesMatcher();
-  
+
   @override
   bool matches(dynamic item, Map matchState) {
     if (item is! Prop) {
       matchState['error'] = 'Expected Prop, got ${item.runtimeType}';
       return false;
     }
-    
+
     return item.sources.any((s) => s is ValueSource);
   }
-  
+
   @override
   Description describe(Description description) {
     return description.add('Prop with value sources');
   }
-  
+
   @override
   Description describeMismatch(
     dynamic item,
@@ -728,7 +717,7 @@ class _PropHasValuesMatcher extends Matcher {
     if (matchState.containsKey('error')) {
       return mismatchDescription.add(matchState['error']);
     }
-    
+
     return mismatchDescription.add('does not have any value sources');
   }
 }
@@ -736,22 +725,22 @@ class _PropHasValuesMatcher extends Matcher {
 /// Matcher for Prop that has any token sources
 class _PropHasTokensMatcher extends Matcher {
   const _PropHasTokensMatcher();
-  
+
   @override
   bool matches(dynamic item, Map matchState) {
     if (item is! Prop) {
       matchState['error'] = 'Expected Prop, got ${item.runtimeType}';
       return false;
     }
-    
+
     return item.sources.any((s) => s is TokenSource);
   }
-  
+
   @override
   Description describe(Description description) {
     return description.add('Prop with token sources');
   }
-  
+
   @override
   Description describeMismatch(
     dynamic item,
@@ -762,30 +751,53 @@ class _PropHasTokensMatcher extends Matcher {
     if (matchState.containsKey('error')) {
       return mismatchDescription.add(matchState['error']);
     }
-    
+
     return mismatchDescription.add('does not have any token sources');
   }
+}
+
+// Test-only helper extensions to access underlying spec fields on WrappedWidgetSpec
+extension WrappedBoxSpecAccess on WrappedWidgetSpec<BoxSpec> {
+  BoxConstraints? get constraints => spec.constraints;
+}
+
+extension WrappedFlexBoxSpecAccess on WrappedWidgetSpec<FlexBoxSpec> {
+  FlexLayoutSpec? get flex => spec.flex;
+  ContainerSpec? get container => spec.container;
+}
+
+extension WrappedIconSpecAccess on WrappedWidgetSpec<IconSpec> {
+  double? get size => spec.size;
+}
+
+extension WrappedStackSpecAccess on WrappedWidgetSpec<StackSpec> {
+  AlignmentGeometry? get alignment => spec.alignment;
+}
+
+extension WrappedZBoxSpecAccess on WrappedWidgetSpec<ZBoxSpec> {
+  ContainerSpec? get box => spec.box;
+  StackSpec get stack => spec.stack;
 }
 
 /// Matcher for Prop that has any Mix sources
 class _PropHasMixesMatcher extends Matcher {
   const _PropHasMixesMatcher();
-  
+
   @override
   bool matches(dynamic item, Map matchState) {
     if (item is! Prop) {
       matchState['error'] = 'Expected Prop, got ${item.runtimeType}';
       return false;
     }
-    
+
     return item.sources.any((s) => s is MixSource);
   }
-  
+
   @override
   Description describe(Description description) {
     return description.add('Prop with Mix sources');
   }
-  
+
   @override
   Description describeMismatch(
     dynamic item,
@@ -796,7 +808,7 @@ class _PropHasMixesMatcher extends Matcher {
     if (matchState.containsKey('error')) {
       return mismatchDescription.add(matchState['error']);
     }
-    
+
     return mismatchDescription.add('does not have any Mix sources');
   }
 }
@@ -804,22 +816,22 @@ class _PropHasMixesMatcher extends Matcher {
 /// Matcher for Prop that has directives
 class _PropHasDirectivesMatcher extends Matcher {
   const _PropHasDirectivesMatcher();
-  
+
   @override
   bool matches(dynamic item, Map matchState) {
     if (item is! Prop) {
       matchState['error'] = 'Expected Prop, got ${item.runtimeType}';
       return false;
     }
-    
+
     return item.$directives != null && item.$directives!.isNotEmpty;
   }
-  
+
   @override
   Description describe(Description description) {
     return description.add('Prop with directives');
   }
-  
+
   @override
   Description describeMismatch(
     dynamic item,
@@ -830,7 +842,7 @@ class _PropHasDirectivesMatcher extends Matcher {
     if (matchState.containsKey('error')) {
       return mismatchDescription.add(matchState['error']);
     }
-    
+
     return mismatchDescription.add('does not have directives');
   }
 }
@@ -838,22 +850,22 @@ class _PropHasDirectivesMatcher extends Matcher {
 /// Matcher for Prop that has animation config
 class _PropHasAnimationMatcher extends Matcher {
   const _PropHasAnimationMatcher();
-  
+
   @override
   bool matches(dynamic item, Map matchState) {
     if (item is! Prop) {
       matchState['error'] = 'Expected Prop, got ${item.runtimeType}';
       return false;
     }
-    
+
     return item.$animation != null;
   }
-  
+
   @override
   Description describe(Description description) {
     return description.add('Prop with animation config');
   }
-  
+
   @override
   Description describeMismatch(
     dynamic item,
@@ -864,7 +876,7 @@ class _PropHasAnimationMatcher extends Matcher {
     if (matchState.containsKey('error')) {
       return mismatchDescription.add(matchState['error']);
     }
-    
+
     return mismatchDescription.add('does not have animation config');
   }
 }

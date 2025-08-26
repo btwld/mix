@@ -25,7 +25,7 @@ void main() {
         final spec = utility.resolve(context);
 
         expect(utility, isA<IconSpecUtility>());
-        expect(spec.size, 24.0);
+        expect(spec.spec.size, 24.0);
       });
     });
 
@@ -82,7 +82,7 @@ void main() {
         final spec = util.resolve(context);
 
         expect(result, isA<IconStyle>());
-        expect(spec.size, 24.0);
+        expect(spec.spec.size, 24.0);
       });
 
       test('', () {
@@ -91,7 +91,7 @@ void main() {
         final spec = util.resolve(context);
 
         expect(result, isA<IconStyle>());
-        expect(spec.weight, 400.0);
+        expect(spec.spec.weight, 400.0);
       });
 
       test('', () {
@@ -100,7 +100,7 @@ void main() {
         final spec = util.resolve(context);
 
         expect(result, isA<IconStyle>());
-        expect(spec.grade, 0.5);
+        expect(spec.spec.grade, 0.5);
       });
 
       test('', () {
@@ -109,7 +109,7 @@ void main() {
         final spec = util.resolve(context);
 
         expect(result, isA<IconStyle>());
-        expect(spec.opticalSize, 48.0);
+        expect(spec.spec.opticalSize, 48.0);
       });
 
       test('', () {
@@ -118,7 +118,7 @@ void main() {
         final spec = util.resolve(context);
 
         expect(result, isA<IconStyle>());
-        expect(spec.textDirection, TextDirection.rtl);
+        expect(spec.spec.textDirection, TextDirection.rtl);
       });
 
       test('', () {
@@ -127,7 +127,7 @@ void main() {
         final spec = util.resolve(context);
 
         expect(result, isA<IconStyle>());
-        expect(spec.applyTextScaling, false);
+        expect(spec.spec.applyTextScaling, false);
       });
 
       test('', () {
@@ -136,7 +136,7 @@ void main() {
         final spec = util.resolve(context);
 
         expect(result, isA<IconStyle>());
-        expect(spec.fill, 0.8);
+        expect(spec.spec.fill, 0.8);
       });
     });
 
@@ -215,7 +215,7 @@ void main() {
 
         expect(result, isNot(same(util)));
         expect(result, isA<IconSpecUtility>());
-        expect(spec.size, 32.0);
+        expect(spec.spec.size, 32.0);
       });
 
       test('', () {
@@ -226,7 +226,7 @@ void main() {
 
         expect(result, isNot(same(util)));
         expect(result, isA<IconSpecUtility>());
-        expect(spec.weight, 600.0);
+        expect(spec.spec.weight, 600.0);
       });
 
       test('merge throws error for unsupported type', () {
@@ -244,9 +244,9 @@ void main() {
         final context = MockBuildContext();
         final spec = result.resolve(context);
 
-        expect(spec.size, 24.0);
-        expect(spec.weight, 600.0); // other takes precedence
-        expect(spec.fill, 0.8);
+        expect(spec.spec.size, 24.0);
+        expect(spec.spec.weight, 600.0); // other takes precedence
+        expect(spec.spec.fill, 0.8);
       });
     });
 
@@ -259,20 +259,20 @@ void main() {
         final context = MockBuildContext();
         final spec = testUtil.resolve(context);
 
-        expect(spec, isA<IconSpec>());
-        expect(spec.size, 24.0);
-        expect(spec.weight, 400.0);
-        expect(spec.fill, 0.8);
+        expect(spec, isA<WrappedWidgetSpec<IconSpec>>());
+        expect(spec.spec.size, 24.0);
+        expect(spec.spec.weight, 400.0);
+        expect(spec.spec.fill, 0.8);
       });
 
       test('resolve handles null properties', () {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec, isA<IconSpec>());
-        expect(spec.size, isNull);
-        expect(spec.weight, isNull);
-        expect(spec.fill, isNull);
+        expect(spec, isA<WrappedWidgetSpec<IconSpec>>());
+        expect(spec.spec.size, isNull);
+        expect(spec.spec.weight, isNull);
+        expect(spec.spec.fill, isNull);
       });
     });
 
@@ -286,7 +286,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec.size, 24.0);
+        expect(spec.spec.size, 24.0);
       });
 
       test('basic weight mutation test', () {
@@ -298,7 +298,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec.weight, 400.0);
+        expect(spec.spec.weight, 400.0);
       });
 
       test('chaining utility methods accumulates properties', () {
@@ -313,9 +313,9 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec.size, 24.0);
-        expect(spec.weight, 400.0);
-        expect(spec.fill, 0.8);
+        expect(spec.spec.size, 24.0);
+        expect(spec.spec.weight, 400.0);
+        expect(spec.spec.fill, 0.8);
       });
 
       test('cascade notation works with utility methods', () {
@@ -327,9 +327,9 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec.size, 24.0);
-        expect(spec.weight, 400.0);
-        expect(spec.fill, 0.8);
+        expect(spec.spec.size, 24.0);
+        expect(spec.spec.weight, 400.0);
+        expect(spec.spec.fill, 0.8);
       });
 
       test('', () {
@@ -348,9 +348,9 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec.size, 24.0);
-        expect(spec.weight, 400.0);
-        expect(spec.fill, 0.8);
+        expect(spec.spec.size, 24.0);
+        expect(spec.spec.weight, 400.0);
+        expect(spec.spec.fill, 0.8);
       });
     });
 
@@ -384,9 +384,9 @@ void main() {
         final spec = util.resolve(context);
 
         // All properties should be present in the same instance
-        expect(spec.size, 24.0);
-        expect(spec.weight, 400.0);
-        expect(spec.fill, 0.8);
+        expect(spec.spec.size, 24.0);
+        expect(spec.spec.weight, 400.0);
+        expect(spec.spec.fill, 0.8);
       });
 
       test('demonstrates difference from immutable builder pattern', () {
@@ -404,8 +404,8 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec.size, 24.0);
-        expect(spec.weight, 400.0);
+        expect(spec.spec.size, 24.0);
+        expect(spec.spec.weight, 400.0);
       });
     });
 
@@ -417,7 +417,7 @@ void main() {
 
         expect(
           testUtil,
-          resolvesTo(const IconSpec(size: 24.0, weight: 400.0, fill: 0.8)),
+          resolvesTo(WrappedWidgetSpec(spec: const IconSpec(size: 24.0, weight: 400.0, fill: 0.8))),
         );
       });
     });
@@ -432,7 +432,7 @@ void main() {
         );
         final spec = testUtil.resolve(context);
 
-        expect(spec.size, 32.0);
+        expect(spec.spec.size, 32.0);
       });
     });
 
@@ -457,9 +457,9 @@ void main() {
         final context = MockBuildContext();
         final spec = result.resolve(context);
 
-        expect(spec.size, 24.0);
-        expect(spec.weight, 400.0);
-        expect(spec.fill, 0.8);
+        expect(spec.spec.size, 24.0);
+        expect(spec.spec.weight, 400.0);
+        expect(spec.spec.fill, 0.8);
       });
     });
 
@@ -469,9 +469,9 @@ void main() {
         final context = MockBuildContext();
         final spec = emptyUtil.resolve(context);
 
-        expect(spec.size, isNull);
-        expect(spec.weight, isNull);
-        expect(spec.fill, isNull);
+        expect(spec.spec.size, isNull);
+        expect(spec.spec.weight, isNull);
+        expect(spec.spec.fill, isNull);
       });
 
       test('merge with self returns new instance', () {
@@ -481,7 +481,7 @@ void main() {
         final spec = result.resolve(context);
 
         expect(result, isNot(same(testUtil)));
-        expect(spec.size, 24.0);
+        expect(spec.spec.size, 24.0);
       });
     });
   });

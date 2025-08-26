@@ -6,6 +6,7 @@ import '../../animation/animation_mixin.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
+import '../../core/wrapped_widget_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/layout/constraints_mix.dart';
@@ -347,17 +348,18 @@ class BoxStyle extends Style<BoxSpec>
 
   /// The list of properties that constitute the state of this [BoxMix].
   @override
-  /// Resolves to [BoxSpec] using the provided [BuildContext].
+  /// Resolves to [WrappedWidgetSpec<BoxSpec>] using the provided [BuildContext].
   ///
   /// If a property is null in the context, it uses the default value
   /// defined in the property specification.
   ///
   /// ```dart
-  /// final boxSpec = BoxMix(...).resolve(context);
+  /// final wrappedSpec = BoxMix(...).resolve(context);
   /// ```
   @override
-  BoxSpec resolve(BuildContext context) {
-    return BoxSpec(
+  WrappedWidgetSpec<BoxSpec> resolve(BuildContext context) {
+    // Build the pure BoxSpec
+    final boxSpec = BoxSpec(
       alignment: MixOps.resolve(context, $alignment),
       padding: MixOps.resolve(context, $padding),
       margin: MixOps.resolve(context, $margin),
@@ -367,6 +369,11 @@ class BoxStyle extends Style<BoxSpec>
       transform: MixOps.resolve(context, $transform),
       transformAlignment: MixOps.resolve(context, $transformAlignment),
       clipBehavior: MixOps.resolve(context, $clipBehavior),
+    );
+    
+    // Wrap with metadata
+    return WrappedWidgetSpec(
+      spec: boxSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),
       inherit: $inherit,

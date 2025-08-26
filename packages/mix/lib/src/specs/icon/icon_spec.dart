@@ -1,16 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
-import '../../core/modifier.dart';
-import '../../core/widget_spec.dart';
+import '../../core/spec.dart';
 
 /// Specification for icon styling properties.
 ///
 /// Provides comprehensive icon styling including color, size, weight, optical properties,
 /// text direction, scaling behavior, and shadow effects.
-final class IconSpec extends WidgetSpec<IconSpec> {
+final class IconSpec extends Spec<IconSpec> with Diagnosticable {
   /// The color to use when drawing the icon.
   final Color? color;
 
@@ -60,9 +58,6 @@ final class IconSpec extends WidgetSpec<IconSpec> {
     this.semanticsLabel,
     this.blendMode,
     this.icon,
-    super.animation,
-    super.widgetModifiers,
-    super.inherit,
   });
 
   @override
@@ -79,9 +74,6 @@ final class IconSpec extends WidgetSpec<IconSpec> {
     String? semanticsLabel,
     BlendMode? blendMode,
     IconData? icon,
-    AnimationConfig? animation,
-    List<Modifier>? widgetModifiers,
-    bool? inherit,
   }) {
     return IconSpec(
       color: color ?? this.color,
@@ -96,9 +88,6 @@ final class IconSpec extends WidgetSpec<IconSpec> {
       semanticsLabel: semanticsLabel ?? this.semanticsLabel,
       blendMode: blendMode ?? this.blendMode,
       icon: icon ?? this.icon,
-      animation: animation ?? this.animation,
-      widgetModifiers: widgetModifiers ?? this.widgetModifiers,
-      inherit: inherit ?? this.inherit,
     );
   }
 
@@ -121,10 +110,6 @@ final class IconSpec extends WidgetSpec<IconSpec> {
       semanticsLabel: MixOps.lerpSnap(semanticsLabel, other?.semanticsLabel, t),
       blendMode: MixOps.lerpSnap(blendMode, other?.blendMode, t),
       icon: MixOps.lerpSnap(icon, other?.icon, t),
-      // Meta fields: use confirmed policy other?.field ?? this.field
-      animation: other?.animation ?? animation,
-      widgetModifiers: MixOps.lerp(widgetModifiers, other?.widgetModifiers, t),
-      inherit: other?.inherit ?? inherit,
     );
   }
 
@@ -154,7 +139,6 @@ final class IconSpec extends WidgetSpec<IconSpec> {
 
   @override
   List<Object?> get props => [
-    ...super.props,
     color,
     size,
     weight,

@@ -44,10 +44,11 @@ export 'src/core/providers/widget_state_provider.dart';
 export 'src/core/spec.dart';
 export 'src/core/spec_utility.dart';
 export 'src/core/style.dart' hide StyleElement;
-export 'src/core/widget_spec.dart';
 export 'src/core/style_builder.dart';
 export 'src/core/style_widget.dart';
 export 'src/core/utility.dart';
+export 'src/core/widget_spec.dart';
+export 'src/core/wrapped_widget_spec.dart';
 export 'src/modifiers/align_modifier.dart';
 export 'src/modifiers/aspect_ratio_modifier.dart';
 export 'src/modifiers/box_modifier.dart';
@@ -68,16 +69,24 @@ export 'src/modifiers/padding_modifier.dart';
 export 'src/modifiers/rotated_box_modifier.dart';
 export 'src/modifiers/scroll_view_modifier.dart';
 export 'src/modifiers/sized_box_modifier.dart';
-export 'src/modifiers/style_provider_modifier.dart';
 export 'src/modifiers/transform_modifier.dart';
 export 'src/modifiers/visibility_modifier.dart';
+export 'src/properties/container/container_mix.dart';
+export 'src/properties/container/container_spec.dart';
+export 'src/properties/iconography/iconography_mix.dart';
+
+/// ICONOGRAPHY
+export 'src/properties/iconography/iconography_spec.dart';
 export 'src/properties/layout/constraints_mix.dart';
 export 'src/properties/layout/constraints_util.dart';
 export 'src/properties/layout/edge_insets_geometry_mix.dart';
 export 'src/properties/layout/edge_insets_geometry_util.dart'
     hide createEdgeInsetsMix;
 export 'src/properties/layout/enum_util.dart';
+export 'src/properties/layout/flex_layout_mix.dart';
+export 'src/properties/layout/flex_layout_spec.dart';
 export 'src/properties/layout/scalar_util.dart';
+export 'src/properties/layout/stack_mix.dart';
 export 'src/properties/painting/border_mix.dart';
 export 'src/properties/painting/border_radius_mix.dart';
 export 'src/properties/painting/border_radius_util.dart';
@@ -101,18 +110,12 @@ export 'src/properties/typography/text_height_behavior_mix.dart';
 export 'src/properties/typography/text_height_behavior_util.dart';
 export 'src/properties/typography/text_style_mix.dart';
 export 'src/properties/typography/text_style_util.dart';
-export 'src/properties/layout/flex_layout_spec.dart';
-export 'src/properties/layout/flex_layout_mix.dart';
+export 'src/properties/typography/typography_mix.dart';
 
 /// TYPOGRAPHY
 export 'src/properties/typography/typography_spec.dart';
-export 'src/properties/typography/typography_mix.dart';
-export 'src/providers/typography_scope.dart';
-
-/// ICONOGRAPHY
-export 'src/properties/iconography/iconography_spec.dart';
-export 'src/properties/iconography/iconography_mix.dart';
 export 'src/providers/iconography_scope.dart';
+export 'src/providers/typography_scope.dart';
 
 /// SPECS
 export 'src/specs/box/box_attribute.dart';
@@ -148,8 +151,6 @@ export 'src/specs/text/text_attribute.dart';
 export 'src/specs/text/text_spec.dart';
 export 'src/specs/text/text_util.dart';
 export 'src/specs/text/text_widget.dart';
-export 'src/properties/container/container_spec.dart';
-export 'src/properties/container/container_mix.dart';
 
 /// THEME
 export 'src/theme/material/material_theme.dart';

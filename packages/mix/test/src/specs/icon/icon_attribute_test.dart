@@ -209,14 +209,14 @@ void main() {
         final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec.color, Colors.cyan);
-        expect(spec.size, 36.0);
-        expect(spec.weight, 700.0);
-        expect(spec.grade, 50.0);
-        expect(spec.opticalSize, 36.0);
-        expect(spec.textDirection, TextDirection.ltr);
-        expect(spec.applyTextScaling, true);
-        expect(spec.fill, 1.0);
+        expect(spec.spec.color, Colors.cyan);
+        expect(spec.spec.size, 36.0);
+        expect(spec.spec.weight, 700.0);
+        expect(spec.spec.grade, 50.0);
+        expect(spec.spec.opticalSize, 36.0);
+        expect(spec.spec.textDirection, TextDirection.ltr);
+        expect(spec.spec.applyTextScaling, true);
+        expect(spec.spec.fill, 1.0);
       });
 
       test('resolves with null values correctly', () {
@@ -226,15 +226,15 @@ void main() {
         final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec.color, Colors.yellow);
-        expect(spec.size, 18.0);
-        expect(spec.weight, isNull);
-        expect(spec.grade, isNull);
-        expect(spec.opticalSize, isNull);
-        expect(spec.shadows, isNull);
-        expect(spec.textDirection, isNull);
-        expect(spec.applyTextScaling, isNull);
-        expect(spec.fill, isNull);
+        expect(spec.spec.color, Colors.yellow);
+        expect(spec.spec.size, 18.0);
+        expect(spec.spec.weight, isNull);
+        expect(spec.spec.grade, isNull);
+        expect(spec.spec.opticalSize, isNull);
+        expect(spec.spec.shadows, isNull);
+        expect(spec.spec.textDirection, isNull);
+        expect(spec.spec.applyTextScaling, isNull);
+        expect(spec.spec.fill, isNull);
       });
     });
   });

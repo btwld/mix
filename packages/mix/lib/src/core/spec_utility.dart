@@ -3,14 +3,15 @@ import 'package:flutter/widgets.dart';
 
 import '../animation/animation_config.dart';
 import '../modifiers/modifier_config.dart';
+import 'spec.dart';
 import 'style.dart';
-import 'widget_spec.dart';
+import 'wrapped_widget_spec.dart';
 
 /// Mutable builder for StyleAttribute with cascade notation support.
 ///
 /// Provides mutable internal state where utilities can update the internal
 /// StyleAttribute and return the same instance for cascade notation.
-abstract class StyleAttributeBuilder<S extends WidgetSpec<S>> extends Style<S>
+abstract class StyleAttributeBuilder<S extends Spec<S>> extends Style<S>
     with Diagnosticable {
   const StyleAttributeBuilder({
     super.animation,
@@ -24,7 +25,7 @@ abstract class StyleAttributeBuilder<S extends WidgetSpec<S>> extends Style<S>
   Style<S> get style;
 
   @override
-  S resolve(BuildContext context) => style.resolve(context);
+  WrappedWidgetSpec<S> resolve(BuildContext context) => style.resolve(context);
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -47,7 +48,7 @@ abstract class StyleAttributeBuilder<S extends WidgetSpec<S>> extends Style<S>
   List<Object?> get props => [style];
 }
 
-abstract class StyleMutableBuilder<S extends WidgetSpec<S>> extends Style<S>
+abstract class StyleMutableBuilder<S extends Spec<S>> extends Style<S>
     with Diagnosticable {
   const StyleMutableBuilder({
     super.animation,
@@ -65,7 +66,7 @@ abstract class StyleMutableBuilder<S extends WidgetSpec<S>> extends Style<S>
   Style<S> get value => mutable.value;
 
   @override
-  S resolve(BuildContext context) => value.resolve(context);
+  WrappedWidgetSpec<S> resolve(BuildContext context) => value.resolve(context);
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -88,7 +89,7 @@ abstract class StyleMutableBuilder<S extends WidgetSpec<S>> extends Style<S>
   List<Object?> get props => [mutable];
 }
 
-mixin Mutable<S extends WidgetSpec<S>, T extends Style<S>> on Style<S> {
+mixin Mutable<S extends Spec<S>, T extends Style<S>> on Style<S> {
   late T value;
 
   // Intercept merge calls
@@ -114,7 +115,7 @@ mixin Mutable<S extends WidgetSpec<S>, T extends Style<S>> on Style<S> {
   }
 
   @override
-  S resolve(BuildContext context) {
+  WrappedWidgetSpec<S> resolve(BuildContext context) {
     return value.resolve(context);
   }
 }

@@ -7,7 +7,7 @@ import '../../core/prop.dart';
 // Deprecated typedef moved to src/core/deprecated.dart
 
 /// Base class for Mix edge insets types.
-/// 
+///
 /// Provides factory methods for padding/margin operations.
 @immutable
 sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
@@ -154,11 +154,14 @@ sealed class EdgeInsetsGeometryMix<T extends EdgeInsetsGeometry>
 }
 
 /// Mix representation of [EdgeInsets].
-/// 
+///
 /// Uses absolute positioning (left, right) with token support.
 final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
   final Prop<double>? $left;
   final Prop<double>? $right;
+
+  /// Zero padding.
+  static EdgeInsetsMix zero = EdgeInsetsMix.all(0);
 
   const EdgeInsetsMix.create({
     super.top,
@@ -241,13 +244,14 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
     return merge(EdgeInsetsGeometryMix.horizontal(value));
   }
 
-
   /// Copy with symmetric insets.
   EdgeInsetsMix symmetric({double? vertical, double? horizontal}) {
-    return merge(EdgeInsetsGeometryMix.symmetric(
-      vertical: vertical,
-      horizontal: horizontal,
-    ));
+    return merge(
+      EdgeInsetsGeometryMix.symmetric(
+        vertical: vertical,
+        horizontal: horizontal,
+      ),
+    );
   }
 
   /// Copy with only specified insets.
@@ -257,14 +261,15 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
     double? top,
     double? bottom,
   }) {
-    return merge(EdgeInsetsGeometryMix.only(
-      left: left,
-      right: right,
-      top: top,
-      bottom: bottom,
-    ));
+    return merge(
+      EdgeInsetsGeometryMix.only(
+        left: left,
+        right: right,
+        top: top,
+        bottom: bottom,
+      ),
+    );
   }
-
 
   @override
   EdgeInsets resolve(BuildContext context) {
@@ -293,12 +298,14 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
 }
 
 /// Mix representation of [EdgeInsetsDirectional].
-/// 
+///
 /// Uses directional positioning (start, end) with token support.
 final class EdgeInsetsDirectionalMix
     extends EdgeInsetsGeometryMix<EdgeInsetsDirectional> {
   final Prop<double>? $start;
   final Prop<double>? $end;
+
+  static EdgeInsetsDirectionalMix zero = EdgeInsetsDirectionalMix.all(0);
 
   const EdgeInsetsDirectionalMix.create({
     super.top,
@@ -381,13 +388,14 @@ final class EdgeInsetsDirectionalMix
     return merge(EdgeInsetsGeometryMix.end(value));
   }
 
-
   /// Copy with symmetric insets.
   EdgeInsetsDirectionalMix symmetric({double? vertical, double? horizontal}) {
-    return merge(EdgeInsetsDirectionalMix.symmetric(
-      vertical: vertical,
-      horizontal: horizontal,
-    ));
+    return merge(
+      EdgeInsetsDirectionalMix.symmetric(
+        vertical: vertical,
+        horizontal: horizontal,
+      ),
+    );
   }
 
   /// Copy with directional insets.
@@ -397,14 +405,15 @@ final class EdgeInsetsDirectionalMix
     double? top,
     double? bottom,
   }) {
-    return merge(EdgeInsetsDirectionalMix(
-      top: top,
-      bottom: bottom,
-      start: start,
-      end: end,
-    ));
+    return merge(
+      EdgeInsetsDirectionalMix(
+        top: top,
+        bottom: bottom,
+        start: start,
+        end: end,
+      ),
+    );
   }
-
 
   @override
   EdgeInsetsDirectional resolve(BuildContext context) {

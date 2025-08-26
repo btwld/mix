@@ -14,7 +14,14 @@ void main() {
           home: Scaffold(
             body: Column(
               children: [
-                ZBox(key: zBoxKey, children: const []),
+                ZBox(
+                  key: zBoxKey,
+                  style: StackBoxStyle(
+                    box:
+                        ContainerMix(), // Provide a non-null container to match test expectations
+                  ),
+                  children: const [],
+                ),
                 Container(
                   key: containerKey,
                   child: Stack(key: stackKey, children: const []),

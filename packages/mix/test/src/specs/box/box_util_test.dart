@@ -20,7 +20,7 @@ void main() {
         final spec = utility.resolve(context);
 
         expect(utility, isA<BoxSpecUtility>());
-        expect(spec, BoxSpec(alignment: Alignment.center));
+        expect(spec, WrappedWidgetSpec(spec: const BoxSpec(alignment: Alignment.center)));
       });
     });
 
@@ -120,7 +120,7 @@ void main() {
         final spec = util.resolve(context);
 
         expect(result, isA<BoxStyle>());
-        expect(spec.transform, matrix);
+        expect(spec.spec.transform, matrix);
       });
 
       test('transformAlignment utility creates correct BoxMix', () {
@@ -130,7 +130,7 @@ void main() {
         final spec = util.resolve(context);
 
         expect(result, isA<BoxStyle>());
-        expect(spec.transformAlignment, alignment);
+        expect(spec.spec.transformAlignment, alignment);
       });
 
       test('clipBehavior utility creates correct BoxMix', () {
@@ -140,7 +140,7 @@ void main() {
         final spec = util.resolve(context);
 
         expect(result, isA<BoxStyle>());
-        expect(spec.clipBehavior, clipBehavior);
+        expect(spec.spec.clipBehavior, clipBehavior);
       });
 
       test('alignment utility creates correct BoxMix', () {
@@ -150,7 +150,7 @@ void main() {
         final spec = util.resolve(context);
 
         expect(result, isA<BoxStyle>());
-        expect(spec.alignment, alignment);
+        expect(spec.spec.alignment, alignment);
       });
     });
 
@@ -197,7 +197,7 @@ void main() {
 
         expect(result, isNot(same(util)));
         expect(result, isA<BoxSpecUtility>());
-        expect(spec.alignment, Alignment.center);
+        expect(spec.spec.alignment, Alignment.center);
       });
 
       test('merge with BoxMix creates new instance', () {
@@ -208,7 +208,7 @@ void main() {
 
         expect(result, isNot(same(util)));
         expect(result, isA<BoxSpecUtility>());
-        expect(spec.alignment, Alignment.topRight);
+        expect(spec.spec.alignment, Alignment.topRight);
       });
 
       test('merge throws error for unsupported type', () {
@@ -226,8 +226,8 @@ void main() {
         final context = MockBuildContext();
         final spec = result.resolve(context);
 
-        expect(spec.alignment, Alignment.center);
-        expect(spec.clipBehavior, Clip.antiAlias);
+        expect(spec.spec.alignment, Alignment.center);
+        expect(spec.spec.clipBehavior, Clip.antiAlias);
       });
     });
 
@@ -244,20 +244,20 @@ void main() {
         final context = MockBuildContext();
         final spec = testUtil.resolve(context);
 
-        expect(spec, isA<BoxSpec>());
-        expect(spec.alignment, Alignment.center);
-        expect(spec.clipBehavior, Clip.antiAlias);
-        expect(spec.transform, Matrix4.identity());
+        expect(spec, isA<WrappedWidgetSpec<BoxSpec>>());
+        expect(spec.spec.alignment, Alignment.center);
+        expect(spec.spec.clipBehavior, Clip.antiAlias);
+        expect(spec.spec.transform, Matrix4.identity());
       });
 
       test('resolve handles null properties', () {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec, isA<BoxSpec>());
-        expect(spec.alignment, isNull);
-        expect(spec.clipBehavior, isNull);
-        expect(spec.transform, isNull);
+        expect(spec, isA<WrappedWidgetSpec<BoxSpec>>());
+        expect(spec.spec.alignment, isNull);
+        expect(spec.spec.clipBehavior, isNull);
+        expect(spec.spec.transform, isNull);
       });
     });
 
@@ -271,7 +271,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec.alignment, Alignment.center);
+        expect(spec.spec.alignment, Alignment.center);
       });
 
       test('basic transform mutation test', () {
@@ -284,7 +284,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec.transform, matrix);
+        expect(spec.spec.transform, matrix);
       });
 
       test('chaining utility methods accumulates properties', () {
@@ -300,9 +300,9 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec.alignment, Alignment.center);
-        expect(spec.transform, matrix);
-        expect(spec.clipBehavior, Clip.antiAlias);
+        expect(spec.spec.alignment, Alignment.center);
+        expect(spec.spec.transform, matrix);
+        expect(spec.spec.clipBehavior, Clip.antiAlias);
       });
 
       test('cascade notation works with utility methods', () {
@@ -315,9 +315,9 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec.alignment, Alignment.center);
-        expect(spec.transform, matrix);
-        expect(spec.clipBehavior, Clip.antiAlias);
+        expect(spec.spec.alignment, Alignment.center);
+        expect(spec.spec.transform, matrix);
+        expect(spec.spec.clipBehavior, Clip.antiAlias);
       });
 
       test('individual utility calls return BoxMix for further chaining', () {
@@ -337,9 +337,9 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec.alignment, Alignment.center);
-        expect(spec.transform, matrix);
-        expect(spec.clipBehavior, Clip.antiAlias);
+        expect(spec.spec.alignment, Alignment.center);
+        expect(spec.spec.transform, matrix);
+        expect(spec.spec.clipBehavior, Clip.antiAlias);
       });
     });
 
@@ -350,14 +350,14 @@ void main() {
         // Store initial resolution
         final context = MockBuildContext();
         final initialSpec = util.resolve(context);
-        expect(initialSpec.alignment, isNull);
+        expect(initialSpec.spec.alignment, isNull);
 
         // Mutate the utility
         util.alignment(Alignment.center);
 
         // Same utility instance should now resolve with the alignment
         final mutatedSpec = util.resolve(context);
-        expect(mutatedSpec.alignment, Alignment.center);
+        expect(mutatedSpec.spec.alignment, Alignment.center);
 
         // This proves it's mutating, not building new instances
       });
@@ -374,9 +374,9 @@ void main() {
         final spec = util.resolve(context);
 
         // All properties should be present in the same instance
-        expect(spec.alignment, Alignment.center);
-        expect(spec.transform, matrix);
-        expect(spec.clipBehavior, Clip.antiAlias);
+        expect(spec.spec.alignment, Alignment.center);
+        expect(spec.spec.transform, matrix);
+        expect(spec.spec.clipBehavior, Clip.antiAlias);
       });
 
       test('demonstrates difference from immutable builder pattern', () {
@@ -395,8 +395,8 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec.alignment, Alignment.center);
-        expect(spec.transform, matrix);
+        expect(spec.spec.alignment, Alignment.center);
+        expect(spec.spec.transform, matrix);
       });
     });
 
@@ -409,9 +409,11 @@ void main() {
         expect(
           testUtil,
           resolvesTo(
-            const BoxSpec(
-              alignment: Alignment.center,
-              clipBehavior: Clip.antiAlias,
+            const WrappedWidgetSpec(
+              spec: BoxSpec(
+                alignment: Alignment.center,
+                clipBehavior: Clip.antiAlias,
+              ),
             ),
           ),
         );
@@ -441,9 +443,9 @@ void main() {
         final context = MockBuildContext();
         final spec = result.resolve(context);
 
-        expect(spec.alignment, Alignment.center);
-        expect(spec.clipBehavior, Clip.antiAlias);
-        expect(spec.transform, Matrix4.identity());
+        expect(spec.spec.alignment, Alignment.center);
+        expect(spec.spec.clipBehavior, Clip.antiAlias);
+        expect(spec.spec.transform, Matrix4.identity());
       });
     });
 
@@ -453,9 +455,9 @@ void main() {
         final context = MockBuildContext();
         final spec = emptyUtil.resolve(context);
 
-        expect(spec.alignment, isNull);
-        expect(spec.clipBehavior, isNull);
-        expect(spec.transform, isNull);
+        expect(spec.spec.alignment, isNull);
+        expect(spec.spec.clipBehavior, isNull);
+        expect(spec.spec.transform, isNull);
       });
 
       test('merge with self returns new instance', () {
@@ -465,7 +467,7 @@ void main() {
         final spec = result.resolve(context);
 
         expect(result, isNot(same(testUtil)));
-        expect(spec.alignment, Alignment.center);
+        expect(spec.spec.alignment, Alignment.center);
       });
     });
   });

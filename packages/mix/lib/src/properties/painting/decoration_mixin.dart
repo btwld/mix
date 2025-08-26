@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/style.dart';
+import '../../core/mix_element.dart';
 import 'border_mix.dart';
 import 'decoration_image_mix.dart';
 import 'decoration_mix.dart';
@@ -9,7 +9,7 @@ import 'shadow_mix.dart';
 import 'shape_border_mix.dart';
 
 /// Mixin that provides convenient decoration methods for styles
-mixin DecorationMixin<T extends Style<Object?>> {
+mixin DecorationMixin<T extends Mix<Object?>> {
   /// Must be implemented by the class using this mixin
   T decoration(DecorationMix value);
 
@@ -54,5 +54,4 @@ mixin DecorationMixin<T extends Style<Object?>> {
   T shape(ShapeBorderMix value) {
     return decoration(ShapeDecorationMix(shape: value));
   }
-
 }

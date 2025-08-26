@@ -6,11 +6,12 @@ import '../../core/spec.dart';
 
 /// A unified specification combining container and flex layout properties.
 ///
-/// This spec provides combined container styling and flex layout values 
+/// This spec provides combined container styling and flex layout values
 /// that can be applied to create flexible layouts with decoration capabilities.
-/// It merges properties from both ContainerSpec and FlexLayoutSpec into a 
+/// It merges properties from both ContainerSpec and FlexLayoutSpec into a
 /// single flat structure for simplified usage.
-final class FlexContainerSpec extends Spec<FlexContainerSpec> with Diagnosticable {
+final class FlexContainerSpec extends Spec<FlexContainerSpec>
+    with Diagnosticable {
   // Container properties
   final Decoration? decoration;
   final Decoration? foregroundDecoration;
@@ -97,26 +98,44 @@ final class FlexContainerSpec extends Spec<FlexContainerSpec> with Diagnosticabl
 
   @override
   FlexContainerSpec lerp(FlexContainerSpec? other, double t) {
-    if (other == null) return this;
-
     return FlexContainerSpec(
-      decoration: MixOps.lerp(decoration, other.decoration, t),
-      foregroundDecoration: MixOps.lerp(foregroundDecoration, other.foregroundDecoration, t),
-      padding: MixOps.lerp(padding, other.padding, t),
-      margin: MixOps.lerp(margin, other.margin, t),
-      alignment: MixOps.lerp(alignment, other.alignment, t),
-      constraints: MixOps.lerp(constraints, other.constraints, t),
-      transform: MixOps.lerp(transform, other.transform, t),
-      transformAlignment: MixOps.lerp(transformAlignment, other.transformAlignment, t),
-      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t),
-      direction: MixOps.lerpSnap(direction, other.direction, t),
-      mainAxisAlignment: MixOps.lerpSnap(mainAxisAlignment, other.mainAxisAlignment, t),
-      crossAxisAlignment: MixOps.lerpSnap(crossAxisAlignment, other.crossAxisAlignment, t),
-      mainAxisSize: MixOps.lerpSnap(mainAxisSize, other.mainAxisSize, t),
-      verticalDirection: MixOps.lerpSnap(verticalDirection, other.verticalDirection, t),
-      textDirection: MixOps.lerpSnap(textDirection, other.textDirection, t),
-      textBaseline: MixOps.lerpSnap(textBaseline, other.textBaseline, t),
-      spacing: MixOps.lerp(spacing, other.spacing, t),
+      decoration: MixOps.lerp(decoration, other?.decoration, t),
+      foregroundDecoration: MixOps.lerp(
+        foregroundDecoration,
+        other?.foregroundDecoration,
+        t,
+      ),
+      padding: MixOps.lerp(padding, other?.padding, t),
+      margin: MixOps.lerp(margin, other?.margin, t),
+      alignment: MixOps.lerp(alignment, other?.alignment, t),
+      constraints: MixOps.lerp(constraints, other?.constraints, t),
+      transform: MixOps.lerp(transform, other?.transform, t),
+      transformAlignment: MixOps.lerp(
+        transformAlignment,
+        other?.transformAlignment,
+        t,
+      ),
+      clipBehavior: MixOps.lerpSnap(clipBehavior, other?.clipBehavior, t),
+      direction: MixOps.lerpSnap(direction, other?.direction, t),
+      mainAxisAlignment: MixOps.lerpSnap(
+        mainAxisAlignment,
+        other?.mainAxisAlignment,
+        t,
+      ),
+      crossAxisAlignment: MixOps.lerpSnap(
+        crossAxisAlignment,
+        other?.crossAxisAlignment,
+        t,
+      ),
+      mainAxisSize: MixOps.lerpSnap(mainAxisSize, other?.mainAxisSize, t),
+      verticalDirection: MixOps.lerpSnap(
+        verticalDirection,
+        other?.verticalDirection,
+        t,
+      ),
+      textDirection: MixOps.lerpSnap(textDirection, other?.textDirection, t),
+      textBaseline: MixOps.lerpSnap(textBaseline, other?.textBaseline, t),
+      spacing: MixOps.lerp(spacing, other?.spacing, t),
     );
   }
 
@@ -136,10 +155,19 @@ final class FlexContainerSpec extends Spec<FlexContainerSpec> with Diagnosticabl
       ..add(EnumProperty<Clip>('clipBehavior', clipBehavior))
       // Flex properties
       ..add(EnumProperty<Axis>('direction', direction))
-      ..add(EnumProperty<MainAxisAlignment>('mainAxisAlignment', mainAxisAlignment))
-      ..add(EnumProperty<CrossAxisAlignment>('crossAxisAlignment', crossAxisAlignment))
+      ..add(
+        EnumProperty<MainAxisAlignment>('mainAxisAlignment', mainAxisAlignment),
+      )
+      ..add(
+        EnumProperty<CrossAxisAlignment>(
+          'crossAxisAlignment',
+          crossAxisAlignment,
+        ),
+      )
       ..add(EnumProperty<MainAxisSize>('mainAxisSize', mainAxisSize))
-      ..add(EnumProperty<VerticalDirection>('verticalDirection', verticalDirection))
+      ..add(
+        EnumProperty<VerticalDirection>('verticalDirection', verticalDirection),
+      )
       ..add(EnumProperty<TextDirection>('textDirection', textDirection))
       ..add(EnumProperty<TextBaseline>('textBaseline', textBaseline))
       ..add(DoubleProperty('spacing', spacing));
@@ -173,10 +201,7 @@ extension FlexContainerSpecX on FlexContainerSpec {
   ///
   /// Creates a Container with Flex as child, applying container properties
   /// to the outer container and flex properties to the inner flex widget.
-  Widget toWidget({
-    required Axis direction,
-    List<Widget> children = const [],
-  }) {
+  Widget call({required Axis direction, List<Widget> children = const []}) {
     final resolvedDirection = this.direction ?? direction;
     final effectiveSpacing = spacing ?? 0.0;
 
@@ -189,8 +214,12 @@ extension FlexContainerSpecX on FlexContainerSpec {
         if (i < children.length - 1) {
           childrenWithGaps.add(
             SizedBox(
-              width: resolvedDirection == Axis.horizontal ? effectiveSpacing : null,
-              height: resolvedDirection == Axis.vertical ? effectiveSpacing : null,
+              width: resolvedDirection == Axis.horizontal
+                  ? effectiveSpacing
+                  : null,
+              height: resolvedDirection == Axis.vertical
+                  ? effectiveSpacing
+                  : null,
             ),
           );
         }
@@ -221,10 +250,5 @@ extension FlexContainerSpecX on FlexContainerSpec {
       clipBehavior: clipBehavior ?? Clip.none,
       child: flex,
     );
-  }
-
-  /// Backward compatible call operator to build a widget.
-  Widget call({required Axis direction, List<Widget> children = const []}) {
-    return toWidget(direction: direction, children: children);
   }
 }

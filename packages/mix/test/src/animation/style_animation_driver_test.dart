@@ -388,12 +388,12 @@ void main() {
 }
 
 // Test helpers
-class MockSpec extends WidgetSpec<MockSpec> {
+class MockSpec extends Spec<MockSpec> {
   final double value;
 
   const MockSpec([
     this.value = 0,
-  ]) : super();
+  ]);
 
   @override
   MockSpec copyWith({
@@ -413,6 +413,4 @@ class MockSpec extends WidgetSpec<MockSpec> {
 
   @override
   List<Object?> get props => [value];
-
-  Widget build(BuildContext context) => Container();
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
 
-import '../core/style.dart';
+import '../core/mix_element.dart';
 
 /// Mixin that provides convenient transform methods for styles
-mixin TransformMixin<T extends Style<Object?>> {
+mixin TransformMixin<T extends Mix<Object?>> {
   /// Must be implemented by the class using this mixin
   T transform(Matrix4 value);
 
@@ -27,7 +27,7 @@ mixin TransformMixin<T extends Style<Object?>> {
     final matrix = Matrix4.identity();
     matrix.setEntry(0, 1, skewX);
     matrix.setEntry(1, 0, skewY);
-    
+
     return transform(matrix);
   }
 

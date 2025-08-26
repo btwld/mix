@@ -276,7 +276,7 @@ void main() {
         final context = MockBuildContext();
         final spec = testUtil.resolve(context);
 
-        expect(spec, isA<FlexBoxSpec>());
+        expect(spec, isA<WrappedWidgetSpec<FlexBoxSpec>>());
         expect(spec.flex?.direction, Axis.vertical);
         expect(spec.flex?.mainAxisAlignment, MainAxisAlignment.center);
         expect(spec.flex?.spacing, 12.0);
@@ -286,7 +286,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec, isA<FlexBoxSpec>());
+        expect(spec, isA<WrappedWidgetSpec<FlexBoxSpec>>());
         expect(spec.flex?.direction, isNull);
         expect(spec.flex?.spacing, isNull);
         expect(spec.flex?.mainAxisAlignment, isNull);
@@ -443,11 +443,15 @@ void main() {
         expect(
           testUtil,
           resolvesTo(
-            const FlexBoxSpec(
-              flex: FlexLayoutSpec(
-                direction: Axis.horizontal,
-                mainAxisAlignment: MainAxisAlignment.center,
-                spacing: 8.0,
+            isA<WrappedWidgetSpec<FlexBoxSpec>>().having(
+              (w) => w.spec,
+              'spec',
+              const FlexBoxSpec(
+                flex: FlexLayoutSpec(
+                  direction: Axis.horizontal,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: 8.0,
+                ),
               ),
             ),
           ),
@@ -467,7 +471,7 @@ void main() {
         );
         final spec = testUtil.resolve(context);
 
-        expect(spec.flex?.spacing, 24.0);
+        expect(spec.spec.flex?.spacing, 24.0);
       });
     });
 
@@ -494,9 +498,7 @@ void main() {
         );
         final util3 = FlexBoxSpecUtility(
           FlexBoxStyle(
-            flex: FlexLayoutMix(
-              mainAxisAlignment: MainAxisAlignment.center,
-            ),
+            flex: FlexLayoutMix(mainAxisAlignment: MainAxisAlignment.center),
           ),
         );
 

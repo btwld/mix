@@ -3,8 +3,8 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/style_widget.dart';
-import '../../properties/layout/flex_layout_spec.dart';
 import '../../properties/container/container_spec.dart';
+import '../../properties/layout/flex_layout_spec.dart';
 import 'flexbox_attribute.dart';
 import 'flexbox_spec.dart';
 
@@ -97,7 +97,7 @@ Widget createFlexBoxSpecWidget({
   );
 
   if (spec.container != null) {
-    return spec.container!.toContainer(child: flexWidget);
+    return spec.container!(child: flexWidget);
   }
 
   return flexWidget;

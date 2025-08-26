@@ -271,15 +271,15 @@ void main() {
         final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec.width, 100.0);
-        expect(spec.height, 200.0);
-        expect(spec.color, Colors.red);
-        expect(spec.repeat, ImageRepeat.repeat);
-        expect(spec.fit, BoxFit.cover);
-        expect(spec.alignment, Alignment.center);
-        expect(spec.centerSlice, Rect.fromLTWH(10, 10, 20, 20));
-        expect(spec.filterQuality, FilterQuality.high);
-        expect(spec.colorBlendMode, BlendMode.multiply);
+        expect(spec.spec.width, 100.0);
+        expect(spec.spec.height, 200.0);
+        expect(spec.spec.color, Colors.red);
+        expect(spec.spec.repeat, ImageRepeat.repeat);
+        expect(spec.spec.fit, BoxFit.cover);
+        expect(spec.spec.alignment, Alignment.center);
+        expect(spec.spec.centerSlice, Rect.fromLTWH(10, 10, 20, 20));
+        expect(spec.spec.filterQuality, FilterQuality.high);
+        expect(spec.spec.colorBlendMode, BlendMode.multiply);
       });
 
       test('resolves with null values correctly', () {
@@ -289,15 +289,15 @@ void main() {
         final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec.width, 150.0);
-        expect(spec.height, 250.0);
-        expect(spec.color, isNull);
-        expect(spec.repeat, isNull);
-        expect(spec.fit, isNull);
-        expect(spec.alignment, isNull);
-        expect(spec.centerSlice, isNull);
-        expect(spec.filterQuality, isNull);
-        expect(spec.colorBlendMode, isNull);
+        expect(spec.spec.width, 150.0);
+        expect(spec.spec.height, 250.0);
+        expect(spec.spec.color, isNull);
+        expect(spec.spec.repeat, isNull);
+        expect(spec.spec.fit, isNull);
+        expect(spec.spec.alignment, isNull);
+        expect(spec.spec.centerSlice, isNull);
+        expect(spec.spec.filterQuality, isNull);
+        expect(spec.spec.colorBlendMode, isNull);
       });
     });
 

@@ -5,6 +5,7 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
+import '../../core/wrapped_widget_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/layout/flex_layout_spec.dart';
@@ -105,9 +106,7 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
   }
 
   factory FlexBoxStyle.foregroundDecoration(DecorationMix value) {
-    return FlexBoxStyle(
-      container: ContainerMix.foregroundDecoration(value),
-    );
+    return FlexBoxStyle(container: ContainerMix.foregroundDecoration(value));
   }
 
   factory FlexBoxStyle.decoration(DecorationMix value) {
@@ -358,9 +357,7 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
   FlexBoxStyle borderRadius(BorderRadiusGeometryMix value) {
     return merge(
       FlexBoxStyle(
-        container: ContainerMix(
-          decoration: DecorationMix.borderRadius(value),
-        ),
+        container: ContainerMix(decoration: DecorationMix.borderRadius(value)),
       ),
     );
   }
@@ -374,13 +371,14 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
   /// final flexBoxWidgetSpec = FlexBoxStyle(...).resolve(context);
   /// ```
   @override
-  FlexBoxSpec resolve(BuildContext context) {
+  WrappedWidgetSpec<FlexBoxSpec> resolve(BuildContext context) {
     final containerSpec = MixOps.resolve(context, $container);
     final flexSpec = MixOps.resolve(context, $flex);
 
-    return FlexBoxSpec(
-      container: containerSpec,
-      flex: flexSpec,
+    final flexBoxSpec = FlexBoxSpec(container: containerSpec, flex: flexSpec);
+
+    return WrappedWidgetSpec(
+      spec: flexBoxSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),
       inherit: $inherit,

@@ -2,14 +2,20 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/helpers.dart';
-import '../../core/prop.dart';
 import '../../core/mix_element.dart';
+import '../../core/prop.dart';
 import '../../properties/layout/constraints_mix.dart';
+import '../../properties/layout/constraints_mixin.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
-import '../../properties/painting/border_radius_mix.dart';
+import '../../properties/layout/spacing_mixin.dart';
 import '../../properties/painting/border_mix.dart';
+import '../../properties/painting/border_radius_mix.dart';
+import '../../properties/painting/border_radius_util.dart';
 import '../../properties/painting/decoration_mix.dart';
+import '../../properties/painting/gradient_mix.dart';
 import '../../properties/painting/shadow_mix.dart';
+import '../../properties/transform_mixin.dart';
+import '../painting/decoration_mixin.dart';
 import 'container_spec.dart';
 
 /// Mix class for configuring [ContainerSpec] properties.
@@ -17,7 +23,14 @@ import 'container_spec.dart';
 /// Encapsulates alignment, padding, margin, constraints, decoration,
 /// and other styling properties for container layouts with support for
 /// proper Mix framework integration.
-final class ContainerMix extends Mix<ContainerSpec> with Diagnosticable {
+final class ContainerMix extends Mix<ContainerSpec>
+    with
+        DecorationMixin,
+        SpacingMixin,
+        ConstraintsMixin,
+        TransformMixin,
+        BorderRadiusMixin,
+        Diagnosticable {
   final Prop<Decoration>? $decoration;
   final Prop<Decoration>? $foregroundDecoration;
   final Prop<EdgeInsetsGeometry>? $padding;
@@ -40,16 +53,16 @@ final class ContainerMix extends Mix<ContainerSpec> with Diagnosticable {
     AlignmentGeometry? transformAlignment,
     Clip? clipBehavior,
   }) : this.create(
-          decoration: Prop.maybeMix(decoration),
-          foregroundDecoration: Prop.maybeMix(foregroundDecoration),
-          padding: Prop.maybeMix(padding),
-          margin: Prop.maybeMix(margin),
-          alignment: Prop.maybe(alignment),
-          constraints: Prop.maybeMix(constraints),
-          transform: Prop.maybe(transform),
-          transformAlignment: Prop.maybe(transformAlignment),
-          clipBehavior: Prop.maybe(clipBehavior),
-        );
+         decoration: Prop.maybeMix(decoration),
+         foregroundDecoration: Prop.maybeMix(foregroundDecoration),
+         padding: Prop.maybeMix(padding),
+         margin: Prop.maybeMix(margin),
+         alignment: Prop.maybe(alignment),
+         constraints: Prop.maybeMix(constraints),
+         transform: Prop.maybe(transform),
+         transformAlignment: Prop.maybe(transformAlignment),
+         clipBehavior: Prop.maybe(clipBehavior),
+       );
 
   /// Create constructor with Prop`<T>` types for internal use
   const ContainerMix.create({
@@ -62,32 +75,38 @@ final class ContainerMix extends Mix<ContainerSpec> with Diagnosticable {
     Prop<Matrix4>? transform,
     Prop<AlignmentGeometry>? transformAlignment,
     Prop<Clip>? clipBehavior,
-  })  : $decoration = decoration,
-        $foregroundDecoration = foregroundDecoration,
-        $padding = padding,
-        $margin = margin,
-        $alignment = alignment,
-        $constraints = constraints,
-        $transform = transform,
-        $transformAlignment = transformAlignment,
-        $clipBehavior = clipBehavior;
+  }) : $decoration = decoration,
+       $foregroundDecoration = foregroundDecoration,
+       $padding = padding,
+       $margin = margin,
+       $alignment = alignment,
+       $constraints = constraints,
+       $transform = transform,
+       $transformAlignment = transformAlignment,
+       $clipBehavior = clipBehavior;
 
   /// Constructor that accepts a [ContainerSpec] value and extracts its properties.
   ContainerMix.value(ContainerSpec spec)
-      : this(
-          decoration: DecorationMix.maybeValue(spec.decoration),
-          foregroundDecoration:
-              DecorationMix.maybeValue(spec.foregroundDecoration),
-          padding: EdgeInsetsGeometryMix.maybeValue(spec.padding),
-          margin: EdgeInsetsGeometryMix.maybeValue(spec.margin),
-          alignment: spec.alignment,
-          constraints: BoxConstraintsMix.maybeValue(spec.constraints),
-          transform: spec.transform,
-          transformAlignment: spec.transformAlignment,
-          clipBehavior: spec.clipBehavior,
-        );
+    : this(
+        decoration: DecorationMix.maybeValue(spec.decoration),
+        foregroundDecoration: DecorationMix.maybeValue(
+          spec.foregroundDecoration,
+        ),
+        padding: EdgeInsetsGeometryMix.maybeValue(spec.padding),
+        margin: EdgeInsetsGeometryMix.maybeValue(spec.margin),
+        alignment: spec.alignment,
+        constraints: BoxConstraintsMix.maybeValue(spec.constraints),
+        transform: spec.transform,
+        transformAlignment: spec.transformAlignment,
+        clipBehavior: spec.clipBehavior,
+      );
 
   // Factory constructors for common use cases
+
+  /// Gradient factory
+  factory ContainerMix.gradient(GradientMix value) {
+    return ContainerMix(decoration: DecorationMix.gradient(value));
+  }
 
   /// Color factory
   factory ContainerMix.color(Color value) {
@@ -164,24 +183,31 @@ final class ContainerMix extends Mix<ContainerSpec> with Diagnosticable {
     return ContainerMix(constraints: BoxConstraintsMix.height(value));
   }
 
+  /// minWidth factory
+  factory ContainerMix.minWidth(double value) {
+    return ContainerMix(constraints: BoxConstraintsMix.minWidth(value));
+  }
+
+  /// maxWidth factory
+  factory ContainerMix.maxWidth(double value) {
+    return ContainerMix(constraints: BoxConstraintsMix.maxWidth(value));
+  }
+
+  /// minHeight factory
+  factory ContainerMix.minHeight(double value) {
+    return ContainerMix(constraints: BoxConstraintsMix.minHeight(value));
+  }
+
+  /// maxHeight factory
+  factory ContainerMix.maxHeight(double value) {
+    return ContainerMix(constraints: BoxConstraintsMix.maxHeight(value));
+  }
 
   /// Constructor that accepts a nullable [ContainerSpec] value.
   ///
   /// Returns null if the input is null, otherwise uses [ContainerMix.value].
   static ContainerMix? maybeValue(ContainerSpec? spec) {
     return spec != null ? ContainerMix.value(spec) : null;
-  }
-
-  // Chainable instance methods
-
-  /// Returns a copy with the specified color.
-  ContainerMix color(Color value) {
-    return merge(ContainerMix.color(value));
-  }
-
-  /// Returns a copy with the specified decoration.
-  ContainerMix decoration(DecorationMix value) {
-    return merge(ContainerMix.decoration(value));
   }
 
   /// Returns a copy with the specified foreground decoration.
@@ -194,21 +220,6 @@ final class ContainerMix extends Mix<ContainerSpec> with Diagnosticable {
     return merge(ContainerMix.alignment(value));
   }
 
-  /// Returns a copy with the specified padding.
-  ContainerMix padding(EdgeInsetsGeometryMix value) {
-    return merge(ContainerMix.padding(value));
-  }
-
-  /// Returns a copy with the specified margin.
-  ContainerMix margin(EdgeInsetsGeometryMix value) {
-    return merge(ContainerMix.margin(value));
-  }
-
-  /// Returns a copy with the specified transform.
-  ContainerMix transform(Matrix4 value) {
-    return merge(ContainerMix.transform(value));
-  }
-
   /// Returns a copy with the specified transform alignment.
   ContainerMix transformAlignment(AlignmentGeometry value) {
     return merge(ContainerMix.transformAlignment(value));
@@ -219,46 +230,88 @@ final class ContainerMix extends Mix<ContainerSpec> with Diagnosticable {
     return merge(ContainerMix.clipBehavior(value));
   }
 
-  /// Returns a copy with the specified constraints.
-  ContainerMix constraints(BoxConstraintsMix value) {
-    return merge(ContainerMix.constraints(value));
-  }
-
-  /// Returns a copy with the specified border.
-  ContainerMix border(BoxBorderMix value) {
-    return merge(ContainerMix.border(value));
-  }
-
   /// Returns a copy with the specified border radius.
+  @override
   ContainerMix borderRadius(BorderRadiusGeometryMix value) {
     return merge(ContainerMix.borderRadius(value));
   }
 
-  /// Returns a copy with the specified shadow.
-  ContainerMix shadow(BoxShadowMix value) {
-    return merge(ContainerMix.shadow(value));
+  /// Returns a copy with the specified padding.
+  @override
+  ContainerMix padding(EdgeInsetsGeometryMix value) {
+    return merge(ContainerMix.padding(value));
+  }
+
+  /// Returns a copy with the specified margin.
+  @override
+  ContainerMix margin(EdgeInsetsGeometryMix value) {
+    return merge(ContainerMix.margin(value));
+  }
+
+  /// Returns a copy with the specified transform.
+  @override
+  ContainerMix transform(Matrix4 value) {
+    return merge(ContainerMix.transform(value));
+  }
+
+  /// Returns a copy with the specified constraints.
+  @override
+  ContainerMix constraints(BoxConstraintsMix value) {
+    return merge(ContainerMix.constraints(value));
   }
 
   /// Returns a copy with the specified width.
+  @override
   ContainerMix width(double value) {
     return merge(ContainerMix.width(value));
   }
 
   /// Returns a copy with the specified height.
+  @override
   ContainerMix height(double value) {
     return merge(ContainerMix.height(value));
+  }
+
+  /// Returns a copy with the specified minimum width.
+  @override
+  ContainerMix minWidth(double value) {
+    return merge(ContainerMix.minWidth(value));
+  }
+
+  /// Returns a copy with the specified maximum width.
+  @override
+  ContainerMix maxWidth(double value) {
+    return merge(ContainerMix.maxWidth(value));
+  }
+
+  /// Returns a copy with the specified minimum height.
+  @override
+  ContainerMix minHeight(double value) {
+    return merge(ContainerMix.minHeight(value));
+  }
+
+  /// Returns a copy with the specified maximum height.
+  @override
+  ContainerMix maxHeight(double value) {
+    return merge(ContainerMix.maxHeight(value));
+  }
+
+  /// Returns a copy with the specified decoration.
+  @override
+  ContainerMix decoration(DecorationMix value) {
+    return merge(ContainerMix.decoration(value));
   }
 
   /// Resolves to [ContainerSpec] using the provided [BuildContext].
   @override
   ContainerSpec resolve(BuildContext context) {
     return ContainerSpec(
-      decoration: MixOps.resolve(context, $decoration),
-      foregroundDecoration: MixOps.resolve(context, $foregroundDecoration),
+      alignment: MixOps.resolve(context, $alignment),
       padding: MixOps.resolve(context, $padding),
       margin: MixOps.resolve(context, $margin),
-      alignment: MixOps.resolve(context, $alignment),
       constraints: MixOps.resolve(context, $constraints),
+      decoration: MixOps.resolve(context, $decoration),
+      foregroundDecoration: MixOps.resolve(context, $foregroundDecoration),
       transform: MixOps.resolve(context, $transform),
       transformAlignment: MixOps.resolve(context, $transformAlignment),
       clipBehavior: MixOps.resolve(context, $clipBehavior),
@@ -272,15 +325,19 @@ final class ContainerMix extends Mix<ContainerSpec> with Diagnosticable {
 
     return ContainerMix.create(
       decoration: MixOps.merge($decoration, other.$decoration),
-      foregroundDecoration:
-          MixOps.merge($foregroundDecoration, other.$foregroundDecoration),
+      foregroundDecoration: MixOps.merge(
+        $foregroundDecoration,
+        other.$foregroundDecoration,
+      ),
       padding: MixOps.merge($padding, other.$padding),
       margin: MixOps.merge($margin, other.$margin),
       alignment: MixOps.merge($alignment, other.$alignment),
       constraints: MixOps.merge($constraints, other.$constraints),
       transform: MixOps.merge($transform, other.$transform),
-      transformAlignment:
-          MixOps.merge($transformAlignment, other.$transformAlignment),
+      transformAlignment: MixOps.merge(
+        $transformAlignment,
+        other.$transformAlignment,
+      ),
       clipBehavior: MixOps.merge($clipBehavior, other.$clipBehavior),
     );
   }
@@ -302,14 +359,14 @@ final class ContainerMix extends Mix<ContainerSpec> with Diagnosticable {
 
   @override
   List<Object?> get props => [
-        $decoration,
-        $foregroundDecoration,
-        $padding,
-        $margin,
-        $alignment,
-        $constraints,
-        $transform,
-        $transformAlignment,
-        $clipBehavior,
-      ];
+    $decoration,
+    $foregroundDecoration,
+    $padding,
+    $margin,
+    $alignment,
+    $constraints,
+    $transform,
+    $transformAlignment,
+    $clipBehavior,
+  ];
 }

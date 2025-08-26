@@ -6,15 +6,16 @@ import 'internal/mix_hoverable_region.dart';
 import 'providers/style_provider.dart';
 import 'providers/widget_spec_provider.dart';
 import 'providers/widget_state_provider.dart';
+import 'spec.dart';
 import 'style.dart';
-import 'widget_spec.dart';
+import 'wrapped_widget_spec.dart';
 
 /// Builds widgets with Mix styling.
 ///
 /// StyleBuilder handles the resolution of [Style] into a resolved spec
 /// and provides it to the builder function. It also manages style inheritance,
 /// variant application, and modifier rendering.
-class StyleBuilder<S extends WidgetSpec<S>> extends StatefulWidget {
+class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
   const StyleBuilder({
     super.key,
     required this.style,
@@ -35,7 +36,7 @@ class StyleBuilder<S extends WidgetSpec<S>> extends StatefulWidget {
   State<StyleBuilder<S>> createState() => _StyleBuilderState<S>();
 }
 
-class _StyleBuilderState<S extends WidgetSpec<S>> extends State<StyleBuilder<S>>
+class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
     with TickerProviderStateMixin {
   late final WidgetStatesController _controller;
 
@@ -81,7 +82,7 @@ class _StyleBuilderState<S extends WidgetSpec<S>> extends State<StyleBuilder<S>>
   }
 }
 
-class WidgetSpecBuilder<S extends WidgetSpec<S>> extends StatelessWidget {
+class WidgetSpecBuilder<S extends Spec<S>> extends StatelessWidget {
   const WidgetSpecBuilder({
     super.key,
     required this.builder,
@@ -96,40 +97,42 @@ class WidgetSpecBuilder<S extends WidgetSpec<S>> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final spec = style.build(context);
-    final animationConfig = spec.animation;
+    // style.build returns WrappedWidgetSpec<S>
+    final wrappedSpec = style.build(context);
+    final animationConfig = wrappedSpec.animation;
 
-    Widget current = builder(context, spec);
+    // Pass the inner spec to the builder
+    Widget current = builder(context, wrappedSpec.spec);
 
     // Always wrap with WidgetSpecProvider first
-    current = WidgetSpecProvider<S>(spec: spec, child: current);
+    current = WidgetSpecProvider<WrappedWidgetSpec<S>>(spec: wrappedSpec, child: current);
 
-    if (spec.widgetModifiers != null && spec.widgetModifiers!.isNotEmpty) {
+    if (wrappedSpec.widgetModifiers != null && wrappedSpec.widgetModifiers!.isNotEmpty) {
       // Apply modifiers if any
       current = RenderModifiers(
-        widgetModifiers: spec.widgetModifiers!,
+        widgetModifiers: wrappedSpec.widgetModifiers!,
         child: current,
       );
     }
 
     if (animationConfig != null) {
-      return StyleAnimationBuilder<S>(
-        spec: spec,
+      return StyleAnimationBuilder<WrappedWidgetSpec<S>>(
+        spec: wrappedSpec,
         animationConfig: animationConfig,
-        builder: (context, animatedSpec) {
-          Widget animatedChild = builder(context, animatedSpec);
+        builder: (context, animatedWrappedSpec) {
+          Widget animatedChild = builder(context, animatedWrappedSpec.spec);
 
           // Always wrap with WidgetSpecProvider first
-          animatedChild = WidgetSpecProvider<S>(
-            spec: animatedSpec,
+          animatedChild = WidgetSpecProvider<WrappedWidgetSpec<S>>(
+            spec: animatedWrappedSpec,
             child: animatedChild,
           );
 
-          if (animatedSpec.widgetModifiers != null &&
-              animatedSpec.widgetModifiers!.isNotEmpty) {
+          if (animatedWrappedSpec.widgetModifiers != null &&
+              animatedWrappedSpec.widgetModifiers!.isNotEmpty) {
             // Apply modifiers if any
             animatedChild = RenderModifiers(
-              widgetModifiers: animatedSpec.widgetModifiers!,
+              widgetModifiers: animatedWrappedSpec.widgetModifiers!,
               child: animatedChild,
             );
           }

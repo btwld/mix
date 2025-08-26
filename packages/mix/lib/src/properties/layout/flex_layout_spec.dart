@@ -76,34 +76,32 @@ class FlexLayoutSpec extends Spec<FlexLayoutSpec> with Diagnosticable {
 
   @override
   FlexLayoutSpec lerp(FlexLayoutSpec? other, double t) {
-    if (other == null) return this;
-
     return FlexLayoutSpec(
-      decoration: MixOps.lerp(decoration, other.decoration, t),
-      padding: MixOps.lerp(padding, other.padding, t),
-      alignment: MixOps.lerp(alignment, other.alignment, t),
-      direction: MixOps.lerpSnap(direction, other.direction, t),
+      decoration: MixOps.lerp(decoration, other?.decoration, t),
+      padding: MixOps.lerp(padding, other?.padding, t),
+      alignment: MixOps.lerp(alignment, other?.alignment, t),
+      direction: MixOps.lerpSnap(direction, other?.direction, t),
       mainAxisAlignment: MixOps.lerpSnap(
         mainAxisAlignment,
-        other.mainAxisAlignment,
+        other?.mainAxisAlignment,
         t,
       ),
       crossAxisAlignment: MixOps.lerpSnap(
         crossAxisAlignment,
-        other.crossAxisAlignment,
+        other?.crossAxisAlignment,
         t,
       ),
-      mainAxisSize: MixOps.lerpSnap(mainAxisSize, other.mainAxisSize, t),
+      mainAxisSize: MixOps.lerpSnap(mainAxisSize, other?.mainAxisSize, t),
       verticalDirection: MixOps.lerpSnap(
         verticalDirection,
-        other.verticalDirection,
+        other?.verticalDirection,
         t,
       ),
-      textDirection: MixOps.lerpSnap(textDirection, other.textDirection, t),
-      textBaseline: MixOps.lerpSnap(textBaseline, other.textBaseline, t),
-      gap: MixOps.lerp(gap, other.gap, t),
-      clipBehavior: MixOps.lerpSnap(clipBehavior, other.clipBehavior, t),
-      spacing: MixOps.lerp(spacing, other.spacing, t),
+      textDirection: MixOps.lerpSnap(textDirection, other?.textDirection, t),
+      textBaseline: MixOps.lerpSnap(textBaseline, other?.textBaseline, t),
+      gap: MixOps.lerp(gap, other?.gap, t),
+      clipBehavior: MixOps.lerpSnap(clipBehavior, other?.clipBehavior, t),
+      spacing: MixOps.lerp(spacing, other?.spacing, t),
     );
   }
 
@@ -153,71 +151,4 @@ class FlexLayoutSpec extends Spec<FlexLayoutSpec> with Diagnosticable {
   ];
 }
 
-/// Extension to convert [FlexLayoutSpec] directly to a [Flex] widget.
-extension FlexLayoutSpecX on FlexLayoutSpec {
-  /// Backward compatible call operator to build a Flex widget.
-  Widget call({required Axis direction, List<Widget> children = const []}) {
-    return toFlex(direction: direction, children: children);
-  }
-
-  /// Explicitly build a Flex widget with the specified properties.
-  ///
-  /// If decoration, padding, or alignment are set, the Flex will be wrapped
-  /// with the appropriate wrapper widgets (DecoratedBox, Padding, Align).
-  ///
-  /// Gap is handled by interleaving SizedBox widgets between children along
-  /// the main axis.
-  Widget toFlex({required Axis direction, List<Widget> children = const []}) {
-    final resolvedDirection = this.direction ?? direction;
-    final effectiveSpacing = spacing ?? gap ?? 0.0;
-
-    // Handle spacing/gap by interleaving SizedBox widgets or using Flex spacing when available
-    List<Widget> childrenWithGaps = children;
-    if (effectiveSpacing > 0 && children.length > 1) {
-      childrenWithGaps = [];
-      for (int i = 0; i < children.length; i++) {
-        childrenWithGaps.add(children[i]);
-        if (i < children.length - 1) {
-          childrenWithGaps.add(
-            SizedBox(
-              width: resolvedDirection == Axis.horizontal
-                  ? effectiveSpacing
-                  : null,
-              height: resolvedDirection == Axis.vertical
-                  ? effectiveSpacing
-                  : null,
-            ),
-          );
-        }
-      }
-    }
-
-    Widget flex = Flex(
-      direction: resolvedDirection,
-      mainAxisAlignment: mainAxisAlignment ?? MainAxisAlignment.start,
-      mainAxisSize: mainAxisSize ?? MainAxisSize.max,
-      crossAxisAlignment: crossAxisAlignment ?? CrossAxisAlignment.center,
-      textDirection: textDirection,
-      verticalDirection: verticalDirection ?? VerticalDirection.down,
-      textBaseline: textBaseline,
-      clipBehavior: clipBehavior ?? Clip.none,
-      spacing: effectiveSpacing,
-      children: childrenWithGaps,
-    );
-
-    // Apply wrappers if needed
-    if (padding != null) {
-      flex = Padding(padding: padding!, child: flex);
-    }
-
-    if (decoration != null) {
-      flex = DecoratedBox(decoration: decoration!, child: flex);
-    }
-
-    if (alignment != null) {
-      flex = Align(alignment: alignment!, child: flex);
-    }
-
-    return flex;
-  }
-}
+/// Extension to

@@ -7,10 +7,10 @@ import '../../helpers/testing_utils.dart';
 void main() {
   group('AlignModifier', () {
     group('Constructor', () {
-      test('creates with null values by default', () {
+      test('creates with default alignment and null factors', () {
         const modifier = AlignModifier();
 
-        expect(modifier.alignment, isNull);
+        expect(modifier.alignment, Alignment.center);
         expect(modifier.widthFactor, isNull);
         expect(modifier.heightFactor, isNull);
       });
@@ -225,10 +225,10 @@ void main() {
         expect(modifier.props, [Alignment.center, 0.5, 0.8]);
       });
 
-      test('contains null values', () {
+      test('contains default alignment and null factors', () {
         const modifier = AlignModifier();
 
-        expect(modifier.props, [null, null, null]);
+        expect(modifier.props, [Alignment.center, null, null]);
       });
     });
 
@@ -396,9 +396,7 @@ void main() {
 
       test('merges with null values', () {
         final attribute1 = AlignModifierMix();
-        final attribute2 = AlignModifierMix(
-          alignment: Alignment.bottomRight,
-        );
+        final attribute2 = AlignModifierMix(alignment: Alignment.bottomRight);
 
         final merged = attribute1.merge(attribute2);
 

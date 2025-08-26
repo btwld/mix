@@ -17,7 +17,7 @@ void main() {
         util.direction(Axis.horizontal);
 
         final spec = util.resolve(MockBuildContext());
-        expect(spec, const FlexSpec(direction: Axis.horizontal));
+        expect(spec.spec, const FlexSpec(direction: Axis.horizontal));
       });
 
       test('mainAxisAlignment utility modifies internal state', () {
@@ -25,7 +25,7 @@ void main() {
 
         final spec = util.resolve(MockBuildContext());
         expect(
-          spec,
+          spec.spec,
           const FlexSpec(mainAxisAlignment: MainAxisAlignment.center),
         );
       });
@@ -35,7 +35,7 @@ void main() {
 
         final spec = util.resolve(MockBuildContext());
         expect(
-          spec,
+          spec.spec,
           const FlexSpec(crossAxisAlignment: CrossAxisAlignment.stretch),
         );
       });
@@ -44,42 +44,48 @@ void main() {
         util.mainAxisSize(MainAxisSize.min);
 
         final spec = util.resolve(MockBuildContext());
-        expect(spec, const FlexSpec(mainAxisSize: MainAxisSize.min));
+        expect(spec.spec, const FlexSpec(mainAxisSize: MainAxisSize.min));
       });
 
       test('verticalDirection utility modifies internal state', () {
         util.verticalDirection(VerticalDirection.up);
 
         final spec = util.resolve(MockBuildContext());
-        expect(spec, const FlexSpec(verticalDirection: VerticalDirection.up));
+        expect(
+          spec.spec,
+          const FlexSpec(verticalDirection: VerticalDirection.up),
+        );
       });
 
       test('textDirection utility modifies internal state', () {
         util.textDirection(TextDirection.rtl);
 
         final spec = util.resolve(MockBuildContext());
-        expect(spec, const FlexSpec(textDirection: TextDirection.rtl));
+        expect(spec.spec, const FlexSpec(textDirection: TextDirection.rtl));
       });
 
       test('textBaseline utility modifies internal state', () {
         util.textBaseline(TextBaseline.ideographic);
 
         final spec = util.resolve(MockBuildContext());
-        expect(spec, const FlexSpec(textBaseline: TextBaseline.ideographic));
+        expect(
+          spec.spec,
+          const FlexSpec(textBaseline: TextBaseline.ideographic),
+        );
       });
 
       test('clipBehavior utility modifies internal state', () {
         util.clipBehavior(Clip.antiAlias);
 
         final spec = util.resolve(MockBuildContext());
-        expect(spec, const FlexSpec(clipBehavior: Clip.antiAlias));
+        expect(spec.spec, const FlexSpec(clipBehavior: Clip.antiAlias));
       });
 
       test('spacing utility modifies internal state', () {
         util.spacing(16.0);
 
         final spec = util.resolve(MockBuildContext());
-        expect(spec, const FlexSpec(spacing: 16.0));
+        expect(spec.spec, const FlexSpec(spacing: 16.0));
       });
     });
 
@@ -90,7 +96,10 @@ void main() {
           ..spacing(8.0);
 
         final spec = util.resolve(MockBuildContext());
-        expect(spec, const FlexSpec(direction: Axis.horizontal, spacing: 8.0));
+        expect(
+          spec.spec,
+          const FlexSpec(direction: Axis.horizontal, spacing: 8.0),
+        );
       });
 
       test('chains all properties together', () {
@@ -102,7 +111,7 @@ void main() {
 
         final spec = util.resolve(MockBuildContext());
         expect(
-          spec,
+          spec.spec,
           const FlexSpec(
             direction: Axis.vertical,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -118,7 +127,7 @@ void main() {
           ..direction(Axis.vertical);
 
         final spec = util.resolve(MockBuildContext());
-        expect(spec, const FlexSpec(direction: Axis.vertical));
+        expect(spec.spec, const FlexSpec(direction: Axis.vertical));
       });
     });
 
@@ -153,15 +162,15 @@ void main() {
         final utility = FlexSpecUtility(initialMix);
 
         final spec = utility.resolve(MockBuildContext());
-        expect(spec, const FlexSpec(direction: Axis.horizontal));
+        expect(spec.spec, const FlexSpec(direction: Axis.horizontal));
       });
 
       test('', () {
         final utility = FlexSpecUtility();
 
         final spec = utility.resolve(MockBuildContext());
-        expect(spec.direction, isNull);
-        expect(spec.spacing, isNull);
+        expect(spec.spec.direction, isNull);
+        expect(spec.spec.spacing, isNull);
       });
     });
 
@@ -179,7 +188,7 @@ void main() {
         expect(result, isA<FlexSpecUtility>());
 
         final spec = result.resolve(MockBuildContext());
-        expect(spec, const FlexSpec(direction: Axis.horizontal));
+        expect(spec.spec, const FlexSpec(direction: Axis.horizontal));
       });
 
       test('', () {
@@ -190,7 +199,7 @@ void main() {
         expect(result, isA<FlexSpecUtility>());
 
         final spec = result.resolve(MockBuildContext());
-        expect(spec, const FlexSpec(spacing: 8.0));
+        expect(spec.spec, const FlexSpec(spacing: 8.0));
       });
 
       test('merge combines properties correctly', () {
@@ -205,7 +214,7 @@ void main() {
         final spec = result.resolve(MockBuildContext());
 
         expect(
-          spec,
+          spec.spec,
           const FlexSpec(
             direction: Axis.horizontal,
             spacing: 8.0,
@@ -225,7 +234,7 @@ void main() {
         final spec = result.resolve(MockBuildContext());
 
         expect(
-          spec,
+          spec.spec,
           const FlexSpec(
             direction: Axis.horizontal,
             spacing: 8.0,
@@ -239,9 +248,9 @@ void main() {
       test('', () {
         final spec = util.resolve(MockBuildContext());
 
-        expect(spec.direction, isNull);
-        expect(spec.mainAxisAlignment, isNull);
-        expect(spec.spacing, isNull);
+        expect(spec.spec.direction, isNull);
+        expect(spec.spec.mainAxisAlignment, isNull);
+        expect(spec.spec.spacing, isNull);
       });
 
       test('', () {
@@ -253,7 +262,7 @@ void main() {
         final spec = util.resolve(MockBuildContext());
 
         expect(
-          spec,
+          spec.spec,
           const FlexSpec(
             direction: Axis.vertical,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -273,10 +282,14 @@ void main() {
         expect(
           util,
           resolvesTo(
-            const FlexSpec(
-              direction: Axis.horizontal,
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 8.0,
+            isA<WrappedWidgetSpec<FlexSpec>>().having(
+              (w) => w.spec,
+              'spec',
+              const FlexSpec(
+                direction: Axis.horizontal,
+                mainAxisAlignment: MainAxisAlignment.center,
+                spacing: 8.0,
+              ),
             ),
           ),
         );
@@ -293,7 +306,7 @@ void main() {
         );
         final spec = utility.resolve(context);
 
-        expect(spec.gap, 24.0);
+        expect(spec.spec.gap, 24.0);
       });
     });
 
@@ -327,7 +340,7 @@ void main() {
         final spec = result.resolve(MockBuildContext());
 
         expect(
-          spec,
+          spec.spec,
           const FlexSpec(
             direction: Axis.horizontal,
             spacing: 4.0,
@@ -344,7 +357,7 @@ void main() {
         final spec = utility.resolve(MockBuildContext());
 
         expect(
-          spec,
+          spec.spec,
           const FlexSpec(
             direction: Axis.horizontal,
             spacing: 8.0,
@@ -363,7 +376,10 @@ void main() {
           ..spacing(8.0);
 
         final spec = util.resolve(MockBuildContext());
-        expect(spec, const FlexSpec(direction: Axis.vertical, spacing: 8.0));
+        expect(
+          spec.spec,
+          const FlexSpec(direction: Axis.vertical, spacing: 8.0),
+        );
       });
 
       test('empty utility after chaining with null values', () {
@@ -371,8 +387,8 @@ void main() {
         final utility = FlexSpecUtility(FlexStyle(direction: Axis.horizontal));
         final spec = utility.resolve(MockBuildContext());
 
-        expect(spec.direction, Axis.horizontal);
-        expect(spec.spacing, isNull);
+        expect(spec.spec.direction, Axis.horizontal);
+        expect(spec.spec.spacing, isNull);
       });
     });
   });

@@ -41,7 +41,7 @@ final class BoxModifier extends Modifier<BoxModifier>
 
   @override
   Widget build(Widget child) {
-    return spec.toContainer(child: child);
+    return spec(child: child);
   }
 }
 

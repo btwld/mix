@@ -5,12 +5,22 @@ import '../../core/helpers.dart';
 import '../../core/spec.dart';
 import '../../specs/icon/icon_widget.dart';
 
-/// Specification for iconography properties based on IconTheme.
+/// Iconography defaults for descendant icons.
 ///
-/// Provides iconography configuration that can be applied to establish
-/// default icon styling context, similar to Flutter's IconTheme widget.
-/// Unlike IconWidgetSpec which extends WidgetSpec, this extends Spec directly
-/// for use in contexts where widget-level metadata is not needed.
+/// This specification models the same concepts as Flutter's [IconTheme] by
+/// describing default visual properties (such as size, color, and weight)
+/// that are applied to descendant [Icon] widgets. Use it to establish an
+/// app- or subtree-level icon style in a way that integrates with Mix's
+/// token system, merging, and resolution pipeline.
+///
+/// Unlike the per-icon [IconSpec] (which configures a single icon's paint
+/// properties), [IconographySpec] is intended to be used as ambient defaults
+/// for multiple icons in a subtree.
+///
+/// See also:
+/// - [IconTheme], the Flutter widget that provides ambient icon styling.
+/// - [StyledIcon], which renders an icon using a resolved [IconSpec].
+/// - [IconographyMix], a Mix-friendly builder for [IconographySpec].
 final class IconographySpec extends Spec<IconographySpec> with Diagnosticable {
   /// The size of icons in logical pixels.
   final double? size;

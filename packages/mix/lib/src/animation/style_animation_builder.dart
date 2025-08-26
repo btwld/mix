@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../core/widget_spec.dart';
+import '../core/spec.dart';
 import 'animation_config.dart';
 import 'style_animation_driver.dart';
 
@@ -9,7 +9,7 @@ import 'style_animation_driver.dart';
 /// This widget listens to changes in the driver and rebuilds when the
 /// animated style changes. It also manages the animation lifecycle,
 /// triggering animations when the style changes.
-class StyleAnimationBuilder<S extends WidgetSpec<S>> extends StatefulWidget {
+class StyleAnimationBuilder<S extends Spec<S>> extends StatefulWidget {
   const StyleAnimationBuilder({
     super.key,
     required this.animationConfig,
@@ -31,7 +31,7 @@ class StyleAnimationBuilder<S extends WidgetSpec<S>> extends StatefulWidget {
       _StyleAnimationBuilderState<S>();
 }
 
-class _StyleAnimationBuilderState<S extends WidgetSpec<S>>
+class _StyleAnimationBuilderState<S extends Spec<S>>
     extends State<StyleAnimationBuilder<S>>
     with TickerProviderStateMixin {
   late final StyleAnimationDriver<S> animationDriver;

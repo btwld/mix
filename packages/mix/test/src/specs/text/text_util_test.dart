@@ -283,7 +283,7 @@ void main() {
 
         expect(result, isNot(same(util)));
         expect(result, isA<TextSpecUtility>());
-        expect(spec.maxLines, 5);
+        expect(spec.spec.maxLines, 5);
       });
 
       test('merge with TextMix creates new instance', () {
@@ -294,7 +294,7 @@ void main() {
 
         expect(result, isNot(same(util)));
         expect(result, isA<TextSpecUtility>());
-        expect(spec.textAlign, TextAlign.center);
+        expect(spec.spec.textAlign, TextAlign.center);
       });
 
       test('merge throws error for unsupported type', () {
@@ -316,9 +316,9 @@ void main() {
         final context = MockBuildContext();
         final spec = result.resolve(context);
 
-        expect(spec.maxLines, 3);
-        expect(spec.textAlign, TextAlign.center); // other takes precedence
-        expect(spec.softWrap, false);
+        expect(spec.spec.maxLines, 3);
+        expect(spec.spec.textAlign, TextAlign.center); // other takes precedence
+        expect(spec.spec.softWrap, false);
       });
     });
 
@@ -347,7 +347,7 @@ void main() {
           locale: Locale('fr', 'FR'),
         );
 
-        expect(spec, equals(expectedSpec));
+        expect(spec, equals(WrappedWidgetSpec(spec: expectedSpec)));
       });
 
       test('resolve handles null properties', () {
@@ -356,7 +356,7 @@ void main() {
 
         const expectedSpec = TextSpec();
 
-        expect(spec, equals(expectedSpec));
+        expect(spec, equals(WrappedWidgetSpec(spec: expectedSpec)));
       });
     });
 
@@ -381,10 +381,12 @@ void main() {
         expect(
           testUtil,
           resolvesTo(
-            const TextSpec(
-              maxLines: 3,
-              textAlign: TextAlign.center,
-              softWrap: false,
+            WrappedWidgetSpec(
+              spec: const TextSpec(
+                maxLines: 3,
+                textAlign: TextAlign.center,
+                softWrap: false,
+              ),
             ),
           ),
         );
@@ -403,7 +405,7 @@ void main() {
         );
         final spec = testUtil.resolve(context);
 
-        expect(spec.maxLines, 5);
+        expect(spec.spec.maxLines, 5);
       });
 
       test('resolves textAlign token with context', () {
@@ -417,7 +419,7 @@ void main() {
         );
         final spec = testUtil.resolve(context);
 
-        expect(spec.textAlign, TextAlign.center);
+        expect(spec.spec.textAlign, TextAlign.center);
       });
 
       test('resolves softWrap token with context', () {
@@ -431,7 +433,7 @@ void main() {
         );
         final spec = testUtil.resolve(context);
 
-        expect(spec.softWrap, false);
+        expect(spec.spec.softWrap, false);
       });
 
       test('resolves selectionColor token with context', () {
@@ -445,7 +447,7 @@ void main() {
         );
         final spec = testUtil.resolve(context);
 
-        expect(spec.selectionColor, Colors.red);
+        expect(spec.spec.selectionColor, Colors.red);
       });
 
       test('resolves textDirection token with context', () {
@@ -459,7 +461,7 @@ void main() {
         );
         final spec = testUtil.resolve(context);
 
-        expect(spec.textDirection, TextDirection.rtl);
+        expect(spec.spec.textDirection, TextDirection.rtl);
       });
 
       test('resolves semanticsLabel token with context', () {
@@ -473,7 +475,7 @@ void main() {
         );
         final spec = testUtil.resolve(context);
 
-        expect(spec.semanticsLabel, 'Custom label');
+        expect(spec.spec.semanticsLabel, 'Custom label');
       });
 
       test('resolves locale token with context', () {
@@ -488,7 +490,7 @@ void main() {
         );
         final spec = testUtil.resolve(context);
 
-        expect(spec.locale, locale);
+        expect(spec.spec.locale, locale);
       });
 
       test('resolves multiple tokens with context', () {
@@ -527,7 +529,7 @@ void main() {
           locale: Locale('es', 'ES'),
         );
 
-        expect(spec, equals(expectedSpec));
+        expect(spec, equals(WrappedWidgetSpec(spec: expectedSpec)));
       });
     });
 
@@ -552,9 +554,9 @@ void main() {
         final context = MockBuildContext();
         final spec = result.resolve(context);
 
-        expect(spec.maxLines, 3);
-        expect(spec.textAlign, TextAlign.center);
-        expect(spec.softWrap, false);
+        expect(spec.spec.maxLines, 3);
+        expect(spec.spec.textAlign, TextAlign.center);
+        expect(spec.spec.softWrap, false);
       });
     });
 
@@ -564,9 +566,9 @@ void main() {
         final context = MockBuildContext();
         final spec = emptyUtil.resolve(context);
 
-        expect(spec.maxLines, isNull);
-        expect(spec.textAlign, isNull);
-        expect(spec.softWrap, isNull);
+        expect(spec.spec.maxLines, isNull);
+        expect(spec.spec.textAlign, isNull);
+        expect(spec.spec.softWrap, isNull);
       });
 
       test('merge with self returns new instance', () {
@@ -576,7 +578,7 @@ void main() {
         final spec = result.resolve(context);
 
         expect(result, isNot(same(testUtil)));
-        expect(spec.maxLines, 3);
+        expect(spec.spec.maxLines, 3);
       });
     });
 
@@ -590,7 +592,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec.maxLines, 5);
+        expect(spec.spec.maxLines, 5);
       });
 
       test('basic color mutation test', () {
@@ -602,7 +604,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec.style?.color, Colors.red);
+        expect(spec.spec.style?.color, Colors.red);
       });
 
       test('chaining utility methods accumulates properties', () {
@@ -617,9 +619,9 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec.style?.color, Colors.red);
-        expect(spec.style?.fontSize, 16);
-        expect(spec.maxLines, 3);
+        expect(spec.spec.style?.color, Colors.red);
+        expect(spec.spec.style?.fontSize, 16);
+        expect(spec.spec.maxLines, 3);
       });
 
       test('cascade notation works with utility methods', () {
@@ -631,9 +633,9 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec.style?.color, Colors.red);
-        expect(spec.style?.fontSize, 16);
-        expect(spec.maxLines, 3);
+        expect(spec.spec.style?.color, Colors.red);
+        expect(spec.spec.style?.fontSize, 16);
+        expect(spec.spec.maxLines, 3);
       });
 
       test('individual utility calls return TextMix for further chaining', () {
@@ -652,9 +654,9 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec.style?.color, Colors.red);
-        expect(spec.style?.fontSize, 16);
-        expect(spec.maxLines, 3);
+        expect(spec.spec.style?.color, Colors.red);
+        expect(spec.spec.style?.fontSize, 16);
+        expect(spec.spec.maxLines, 3);
       });
     });
 
@@ -665,14 +667,14 @@ void main() {
         // Store initial resolution
         final context = MockBuildContext();
         final initialSpec = util.resolve(context);
-        expect(initialSpec.style?.color, isNull);
+        expect(initialSpec.spec.style?.color, isNull);
 
         // Mutate the utility
         util.color.red();
 
         // Same utility instance should now resolve with the color
         final mutatedSpec = util.resolve(context);
-        expect(mutatedSpec.style?.color, Colors.red);
+        expect(mutatedSpec.spec.style?.color, Colors.red);
 
         // This proves it's mutating, not building new instances
       });
@@ -688,9 +690,9 @@ void main() {
         final spec = util.resolve(context);
 
         // All properties should be present in the same instance
-        expect(spec.style?.color, Colors.red);
-        expect(spec.style?.fontSize, 16);
-        expect(spec.maxLines, 3);
+        expect(spec.spec.style?.color, Colors.red);
+        expect(spec.spec.style?.fontSize, 16);
+        expect(spec.spec.maxLines, 3);
       });
 
       test('demonstrates difference from immutable builder pattern', () {
@@ -708,8 +710,8 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec.style?.color, Colors.red);
-        expect(spec.style?.fontSize, 16);
+        expect(spec.spec.style?.color, Colors.red);
+        expect(spec.spec.style?.fontSize, 16);
       });
     });
   });

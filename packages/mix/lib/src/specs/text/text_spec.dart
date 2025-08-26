@@ -1,17 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../animation/animation_config.dart';
 import '../../core/directive.dart';
 import '../../core/helpers.dart';
-import '../../core/modifier.dart';
-import '../../core/widget_spec.dart';
+import '../../core/spec.dart';
 
 /// Specification for text styling and layout properties.
 ///
 /// Provides comprehensive text styling including overflow behavior, structure styling,
 /// alignment, line limits, text direction, and string directive support.
-final class TextSpec extends WidgetSpec<TextSpec> {
+final class TextSpec extends Spec<TextSpec> with Diagnosticable {
   final TextOverflow? overflow;
   final StrutStyle? strutStyle;
   final TextAlign? textAlign;
@@ -50,9 +48,6 @@ final class TextSpec extends WidgetSpec<TextSpec> {
     this.selectionColor,
     this.semanticsLabel,
     this.locale,
-    super.animation,
-    super.widgetModifiers,
-    super.inherit,
   });
 
   /// Creates a copy of this [TextSpec] but with the given fields
@@ -73,9 +68,6 @@ final class TextSpec extends WidgetSpec<TextSpec> {
     Color? selectionColor,
     String? semanticsLabel,
     Locale? locale,
-    AnimationConfig? animation,
-    List<Modifier>? widgetModifiers,
-    bool? inherit,
   }) {
     return TextSpec(
       overflow: overflow ?? this.overflow,
@@ -92,9 +84,6 @@ final class TextSpec extends WidgetSpec<TextSpec> {
       selectionColor: selectionColor ?? this.selectionColor,
       semanticsLabel: semanticsLabel ?? this.semanticsLabel,
       locale: locale ?? this.locale,
-      animation: animation ?? this.animation,
-      widgetModifiers: widgetModifiers ?? this.widgetModifiers,
-      inherit: inherit ?? this.inherit,
     );
   }
 
@@ -137,10 +126,6 @@ final class TextSpec extends WidgetSpec<TextSpec> {
       selectionColor: MixOps.lerp(selectionColor, other?.selectionColor, t),
       semanticsLabel: MixOps.lerpSnap(semanticsLabel, other?.semanticsLabel, t),
       locale: MixOps.lerpSnap(locale, other?.locale, t),
-      // Meta fields: use confirmed policy other?.field ?? this.field
-      animation: other?.animation ?? animation,
-      widgetModifiers: MixOps.lerp(widgetModifiers, other?.widgetModifiers, t),
-      inherit: other?.inherit ?? inherit,
     );
   }
 
@@ -178,7 +163,6 @@ final class TextSpec extends WidgetSpec<TextSpec> {
   /// compare two [TextSpec] instances for equality.
   @override
   List<Object?> get props => [
-    ...super.props,
     overflow,
     strutStyle,
     textAlign,

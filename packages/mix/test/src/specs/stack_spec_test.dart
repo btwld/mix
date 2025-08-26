@@ -234,8 +234,8 @@ void main() {
           clipBehavior: Clip.antiAlias,
         );
 
-        // 4 StackSpec properties + 3 from WidgetSpec (animation, widgetModifiers, inherit)
-        expect(spec.props.length, 7);
+        // 4 StackSpec properties
+        expect(spec.props.length, 4);
         expect(spec.props, contains(Alignment.center));
         expect(spec.props, contains(StackFit.expand));
         expect(spec.props, contains(TextDirection.rtl));

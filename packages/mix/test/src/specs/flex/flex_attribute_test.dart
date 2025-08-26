@@ -249,18 +249,18 @@ void main() {
 
         final spec = flexMix.resolve(MockBuildContext());
 
-        expect(spec.direction, Axis.vertical);
-        expect(spec.mainAxisAlignment, MainAxisAlignment.spaceAround);
-        expect(spec.spacing, 12.0);
+        expect(spec.spec.direction, Axis.vertical);
+        expect(spec.spec.mainAxisAlignment, MainAxisAlignment.spaceAround);
+        expect(spec.spec.spacing, 12.0);
       });
 
       test('resolve handles null properties', () {
         final flexMix = FlexStyle();
         final spec = flexMix.resolve(MockBuildContext());
 
-        expect(spec.direction, isNull);
-        expect(spec.mainAxisAlignment, isNull);
-        expect(spec.spacing, isNull);
+        expect(spec.spec.direction, isNull);
+        expect(spec.spec.mainAxisAlignment, isNull);
+        expect(spec.spec.spacing, isNull);
       });
     });
 

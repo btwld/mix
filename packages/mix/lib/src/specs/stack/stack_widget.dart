@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/style_widget.dart';
-import '../box/box_widget.dart';
+import '../../properties/container/container_spec.dart';
 import 'stack_box_attribute.dart';
 import 'stack_box_spec.dart';
 import 'stack_spec.dart';
@@ -9,7 +9,7 @@ import 'stack_spec.dart';
 /// Combines [Container] and [Stack] with Mix styling.
 ///
 /// Creates a stacked layout with box styling capabilities.
-class ZBox extends StyleWidget<ZBoxWidgetSpec> {
+class ZBox extends StyleWidget<ZBoxSpec> {
   const ZBox({
     super.style = const StackBoxMix.create(),
     this.children = const <Widget>[],
@@ -19,7 +19,7 @@ class ZBox extends StyleWidget<ZBoxWidgetSpec> {
   final List<Widget> children;
 
   @override
-  Widget build(BuildContext context, ZBoxWidgetSpec spec) {
+  Widget build(BuildContext context, ZBoxSpec spec) {
     return createZBoxSpecWidget(spec: spec, children: children);
   }
 }
@@ -38,15 +38,19 @@ Stack createStackSpecWidget({
   );
 }
 
-/// Creates a [Container] with [Stack] child from a [ZBoxWidgetSpec].
+/// Creates a [Container] with [Stack] child from a [ZBoxSpec].
 Widget createZBoxSpecWidget({
-  required ZBoxWidgetSpec spec,
+  required ZBoxSpec spec,
   List<Widget> children = const [],
 }) {
-  return createBoxSpecWidget(
-    spec: spec.box,
-    child: createStackSpecWidget(spec: spec.stack, children: children),
-  );
+  final containerSpec = spec.box;
+  final stack = createStackSpecWidget(spec: spec.stack, children: children);
+
+  if (containerSpec != null) {
+    return containerSpec(child: stack);
+  }
+
+  return stack;
 }
 
 /// Extension to convert [StackSpec] directly to a [Stack] widget.
@@ -56,8 +60,8 @@ extension StackSpecWidget on StackSpec {
   }
 }
 
-/// Extension to convert [ZBoxWidgetSpec] directly to a styled stack widget.
-extension ZBoxSpecWidget on ZBoxWidgetSpec {
+/// Extension to convert [ZBoxSpec] directly to a styled stack widget.
+extension ZBoxSpecWidget on ZBoxSpec {
   Widget call({List<Widget> children = const []}) {
     return createZBoxSpecWidget(spec: this, children: children);
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
+import '../../core/wrapped_widget_spec.dart';
 import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
 import '../../modifiers/modifier_config.dart';
@@ -58,7 +59,7 @@ class StackSpecUtility extends StyleMutableBuilder<StackSpec> {
   }
 
   @override
-  StackSpec resolve(BuildContext context) {
+  WrappedWidgetSpec<StackSpec> resolve(BuildContext context) {
     return mutable.resolve(context);
   }
 

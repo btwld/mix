@@ -1,5 +1,6 @@
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 import 'package:mix/src/specs/box/box_spec.dart';
@@ -118,10 +119,11 @@ void main() {
 
         final lerped = spec1.lerp(spec2, 0.5);
 
-        expect(lerped.constraints?.minWidth, 150.0);
-        expect(lerped.constraints?.maxWidth, 150.0);
-        expect(lerped.constraints?.minHeight, 300.0);
-        expect(lerped.constraints?.maxHeight, 300.0);
+        expect(lerped.constraints, BoxConstraints.lerp(
+          const BoxConstraints(minWidth: 100.0, maxWidth: 100.0, minHeight: 200.0, maxHeight: 200.0),
+          const BoxConstraints(minWidth: 200.0, maxWidth: 200.0, minHeight: 400.0, maxHeight: 400.0),
+          0.5,
+        ));
         expect(lerped.alignment, Alignment.center);
       });
 
@@ -137,19 +139,21 @@ void main() {
 
         // When t < 0.5, constraints interpolate towards null (partial values)
         final lerped1 = spec.lerp(null, 0.3);
-        expect(lerped1.constraints, isNotNull);
-        expect(
-          lerped1.constraints!.minWidth,
-          lessThan(100.0),
-        ); // interpolating towards 0
+        final expectedConstraints1 = BoxConstraints.lerp(
+          const BoxConstraints(minWidth: 100.0, maxWidth: 100.0, minHeight: 200.0, maxHeight: 200.0),
+          null,
+          0.3,
+        );
+        expect(lerped1.constraints, expectedConstraints1);
 
         // When t >= 0.5, constraints interpolate closer to null (smaller values)
         final lerped2 = spec.lerp(null, 0.7);
-        expect(lerped2.constraints, isNotNull);
-        expect(
-          lerped2.constraints!.minWidth,
-          lessThan(lerped1.constraints!.minWidth),
+        final expectedConstraints2 = BoxConstraints.lerp(
+          const BoxConstraints(minWidth: 100.0, maxWidth: 100.0, minHeight: 200.0, maxHeight: 200.0),
+          null,
+          0.7,
         );
+        expect(lerped2.constraints, expectedConstraints2);
       });
 
       test('handles edge cases (t=0, t=1)', () {
@@ -163,10 +167,18 @@ void main() {
         final lerpedAt0 = spec1.lerp(spec2, 0.0);
         final lerpedAt1 = spec1.lerp(spec2, 1.0);
 
-        expect(lerpedAt0.constraints?.minWidth, 100.0);
-        expect(lerpedAt0.constraints?.maxWidth, 100.0);
-        expect(lerpedAt1.constraints?.minWidth, 200.0);
-        expect(lerpedAt1.constraints?.maxWidth, 200.0);
+        final expectedConstraints0 = BoxConstraints.lerp(
+          const BoxConstraints(minWidth: 100.0, maxWidth: 100.0),
+          const BoxConstraints(minWidth: 200.0, maxWidth: 200.0),
+          0.0,
+        );
+        final expectedConstraints1 = BoxConstraints.lerp(
+          const BoxConstraints(minWidth: 100.0, maxWidth: 100.0),
+          const BoxConstraints(minWidth: 200.0, maxWidth: 200.0),
+          1.0,
+        );
+        expect(lerpedAt0.constraints, expectedConstraints0);
+        expect(lerpedAt1.constraints, expectedConstraints1);
       });
 
       test('interpolates padding and margin correctly', () {
@@ -324,8 +336,8 @@ void main() {
           clipBehavior: Clip.antiAlias,
         );
 
-        // 9 BoxSpec properties + 3 from WidgetSpec (animation, widgetModifiers, inherit)
-        expect(spec.props.length, 12);
+        // 9 BoxSpec properties
+        expect(spec.props.length, 9);
         expect(spec.props, contains(Alignment.center));
         expect(spec.props, contains(const EdgeInsets.all(8.0)));
         expect(spec.props, contains(const EdgeInsets.all(16.0)));

@@ -186,10 +186,10 @@ void main() {
         final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec.alignment, Alignment.center);
-        expect(spec.fit, StackFit.expand);
-        expect(spec.textDirection, TextDirection.ltr);
-        expect(spec.clipBehavior, Clip.antiAlias);
+        expect(spec.spec.alignment, Alignment.center);
+        expect(spec.spec.fit, StackFit.expand);
+        expect(spec.spec.textDirection, TextDirection.ltr);
+        expect(spec.spec.clipBehavior, Clip.antiAlias);
       });
 
       test('resolves with null values correctly', () {
@@ -201,10 +201,10 @@ void main() {
         final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec.alignment, Alignment.topLeft);
-        expect(spec.fit, StackFit.loose);
-        expect(spec.textDirection, isNull);
-        expect(spec.clipBehavior, isNull);
+        expect(spec.spec.alignment, Alignment.topLeft);
+        expect(spec.spec.fit, StackFit.loose);
+        expect(spec.spec.textDirection, isNull);
+        expect(spec.spec.clipBehavior, isNull);
       });
     });
 

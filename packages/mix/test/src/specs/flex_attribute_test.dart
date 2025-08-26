@@ -326,15 +326,15 @@ void main() {
         final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec.direction, Axis.horizontal);
-        expect(spec.mainAxisAlignment, MainAxisAlignment.center);
-        expect(spec.crossAxisAlignment, CrossAxisAlignment.stretch);
-        expect(spec.mainAxisSize, MainAxisSize.max);
-        expect(spec.verticalDirection, VerticalDirection.down);
-        expect(spec.textDirection, TextDirection.ltr);
-        expect(spec.textBaseline, TextBaseline.alphabetic);
-        expect(spec.clipBehavior, Clip.antiAlias);
-        expect(spec.gap, 16.0);
+        expect(spec.spec.direction, Axis.horizontal);
+        expect(spec.spec.mainAxisAlignment, MainAxisAlignment.center);
+        expect(spec.spec.crossAxisAlignment, CrossAxisAlignment.stretch);
+        expect(spec.spec.mainAxisSize, MainAxisSize.max);
+        expect(spec.spec.verticalDirection, VerticalDirection.down);
+        expect(spec.spec.textDirection, TextDirection.ltr);
+        expect(spec.spec.textBaseline, TextBaseline.alphabetic);
+        expect(spec.spec.clipBehavior, Clip.antiAlias);
+        expect(spec.spec.gap, 16.0);
       });
 
       test('resolves with null values correctly', () {
@@ -344,15 +344,15 @@ void main() {
         final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec.direction, Axis.vertical);
-        expect(spec.gap, 12.0);
-        expect(spec.mainAxisAlignment, isNull);
-        expect(spec.crossAxisAlignment, isNull);
-        expect(spec.mainAxisSize, isNull);
-        expect(spec.verticalDirection, isNull);
-        expect(spec.textDirection, isNull);
-        expect(spec.textBaseline, isNull);
-        expect(spec.clipBehavior, isNull);
+        expect(spec.spec.direction, Axis.vertical);
+        expect(spec.spec.gap, 12.0);
+        expect(spec.spec.mainAxisAlignment, isNull);
+        expect(spec.spec.crossAxisAlignment, isNull);
+        expect(spec.spec.mainAxisSize, isNull);
+        expect(spec.spec.verticalDirection, isNull);
+        expect(spec.spec.textDirection, isNull);
+        expect(spec.spec.textBaseline, isNull);
+        expect(spec.spec.clipBehavior, isNull);
       });
     });
 
@@ -594,10 +594,10 @@ void main() {
         final context = MockBuildContext();
         final spec = attribute.resolve(context);
 
-        expect(spec.direction, Axis.horizontal);
-        expect(spec.mainAxisAlignment, MainAxisAlignment.spaceBetween);
-        expect(spec.crossAxisAlignment, CrossAxisAlignment.center);
-        expect(spec.gap, 16.0);
+        expect(spec.spec.direction, Axis.horizontal);
+        expect(spec.spec.mainAxisAlignment, MainAxisAlignment.spaceBetween);
+        expect(spec.spec.crossAxisAlignment, CrossAxisAlignment.center);
+        expect(spec.spec.gap, 16.0);
       });
     });
 

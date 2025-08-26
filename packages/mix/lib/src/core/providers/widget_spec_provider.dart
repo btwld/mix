@@ -1,9 +1,10 @@
 import 'package:flutter/widgets.dart';
 
+import '../spec.dart';
 import '../widget_spec.dart';
 
 /// Provides a resolved WidgetSpec<S> to descendant widgets.
-class WidgetSpecProvider<S extends WidgetSpec<S>> extends InheritedWidget {
+class WidgetSpecProvider<S extends Spec<S>> extends InheritedWidget {
   const WidgetSpecProvider({
     super.key,
     required this.spec,

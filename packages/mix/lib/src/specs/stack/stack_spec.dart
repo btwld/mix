@@ -1,12 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
-import '../../core/modifier.dart';
-import '../../core/widget_spec.dart';
+import '../../core/spec.dart';
 
-final class StackSpec extends WidgetSpec<StackSpec> {
+final class StackSpec extends Spec<StackSpec> with Diagnosticable {
   final AlignmentGeometry? alignment;
   final StackFit? fit;
   final TextDirection? textDirection;
@@ -17,9 +15,6 @@ final class StackSpec extends WidgetSpec<StackSpec> {
     this.fit,
     this.textDirection,
     this.clipBehavior,
-    super.animation,
-    super.widgetModifiers,
-    super.inherit,
   });
 
   /// Creates a copy of this [StackSpec] but with the given fields
@@ -30,18 +25,12 @@ final class StackSpec extends WidgetSpec<StackSpec> {
     StackFit? fit,
     TextDirection? textDirection,
     Clip? clipBehavior,
-    AnimationConfig? animation,
-    List<Modifier>? widgetModifiers,
-    bool? inherit,
   }) {
     return StackSpec(
       alignment: alignment ?? this.alignment,
       fit: fit ?? this.fit,
       textDirection: textDirection ?? this.textDirection,
       clipBehavior: clipBehavior ?? this.clipBehavior,
-      animation: animation ?? this.animation,
-      widgetModifiers: widgetModifiers ?? this.widgetModifiers,
-      inherit: inherit ?? this.inherit,
     );
   }
 
@@ -53,10 +42,6 @@ final class StackSpec extends WidgetSpec<StackSpec> {
       fit: MixOps.lerpSnap(fit, other?.fit, t),
       textDirection: MixOps.lerpSnap(textDirection, other?.textDirection, t),
       clipBehavior: MixOps.lerpSnap(clipBehavior, other?.clipBehavior, t),
-      // Meta fields: use confirmed policy other.field ?? this.field
-      animation: other?.animation ?? animation,
-      widgetModifiers: MixOps.lerp(widgetModifiers, other?.widgetModifiers, t),
-      inherit: other?.inherit ?? inherit,
     );
   }
 
@@ -72,11 +57,5 @@ final class StackSpec extends WidgetSpec<StackSpec> {
 
   /// The list of properties that constitute the state of this [StackSpec].
   @override
-  List<Object?> get props => [
-    ...super.props,
-    alignment,
-    fit,
-    textDirection,
-    clipBehavior,
-  ];
+  List<Object?> get props => [alignment, fit, textDirection, clipBehavior];
 }

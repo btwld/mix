@@ -581,11 +581,11 @@ void main() {
         final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec.overflow, TextOverflow.ellipsis);
-        expect(spec.textAlign, TextAlign.center);
-        expect(spec.maxLines, 3);
-        expect(spec.style, isNotNull);
-        expect(spec.softWrap, true);
+        expect(spec.spec.overflow, TextOverflow.ellipsis);
+        expect(spec.spec.textAlign, TextAlign.center);
+        expect(spec.spec.maxLines, 3);
+        expect(spec.spec.style, isNotNull);
+        expect(spec.spec.softWrap, true);
       });
 
       test('resolves with null values correctly', () {
@@ -595,15 +595,15 @@ void main() {
         final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec.overflow, TextOverflow.fade);
-        expect(spec.maxLines, 2);
-        expect(spec.textAlign, isNull);
-        expect(spec.strutStyle, isNull);
-        expect(spec.textScaler, isNull);
-        expect(spec.textWidthBasis, isNull);
-        expect(spec.textHeightBehavior, isNull);
-        expect(spec.textDirection, isNull);
-        expect(spec.softWrap, isNull);
+        expect(spec.spec.overflow, TextOverflow.fade);
+        expect(spec.spec.maxLines, 2);
+        expect(spec.spec.textAlign, isNull);
+        expect(spec.spec.strutStyle, isNull);
+        expect(spec.spec.textScaler, isNull);
+        expect(spec.spec.textWidthBasis, isNull);
+        expect(spec.spec.textHeightBehavior, isNull);
+        expect(spec.spec.textDirection, isNull);
+        expect(spec.spec.softWrap, isNull);
       });
     });
 

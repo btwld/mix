@@ -334,9 +334,9 @@ void main() {
 
         final spec = boxMix.resolve(MockBuildContext());
 
-        expect(spec.alignment, Alignment.center);
-        expect(spec.padding, EdgeInsets.all(16.0));
-        expect(spec.clipBehavior, Clip.antiAlias);
+        expect(spec.spec.alignment, Alignment.center);
+        expect(spec.spec.padding, EdgeInsets.all(16.0));
+        expect(spec.spec.clipBehavior, Clip.antiAlias);
       });
     });
 

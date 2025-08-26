@@ -1,12 +1,13 @@
 import 'package:flutter/widgets.dart';
 
+import '../../core/mix_element.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
 import '../layout/scalar_util.dart';
 import 'border_radius_mix.dart';
 
 /// Mixin that provides convenient border radius methods
-mixin BorderRadiusMixin<T extends Style<Object?>> {
+mixin BorderRadiusMixin<T extends Mix<Object?>> {
   /// Must be implemented by the class using this mixin
   T borderRadius(BorderRadiusGeometryMix value);
 

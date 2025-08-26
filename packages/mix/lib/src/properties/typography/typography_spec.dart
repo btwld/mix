@@ -5,12 +5,22 @@ import '../../core/helpers.dart';
 import '../../core/spec.dart';
 import '../../specs/text/text_widget.dart';
 
-/// Specification for typography properties based on DefaultTextStyle.
+/// Typography defaults for descendant text.
 ///
-/// Provides typography configuration that can be applied to establish
-/// default text styling context, similar to Flutter's DefaultTextStyle widget.
-/// Unlike TextSpec which extends WidgetSpec, this extends Spec directly
-/// for use in contexts where widget-level metadata is not needed.
+/// This specification models the same concepts as Flutter's [DefaultTextStyle]
+/// by describing default text properties (such as [TextStyle], alignment, and
+/// overflow) that are applied to descendant [Text] widgets. Use it to
+/// establish an app- or subtree-level text style in a way that integrates with
+/// Mix's token system, merging, and resolution pipeline.
+///
+/// Unlike the per-text [TextSpec] (which configures a single text widget's
+/// properties), [TypographySpec] is intended to be used as ambient defaults
+/// for multiple text widgets in a subtree.
+///
+/// See also:
+/// - [DefaultTextStyle], the Flutter widget that provides ambient text styling.
+/// - [StyledText], which renders text using a resolved [TextSpec].
+/// - [TypographyMix], a Mix-friendly builder for [TypographySpec].
 final class TypographySpec extends Spec<TypographySpec> with Diagnosticable {
   /// The text style to apply to descendant Text widgets.
   final TextStyle? style;

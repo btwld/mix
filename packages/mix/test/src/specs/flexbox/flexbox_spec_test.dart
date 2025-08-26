@@ -90,13 +90,13 @@ void main() {
         final resolved = attribute.resolve(context);
 
         expect(resolved, isNotNull);
-        expect(resolved.container?.alignment, Alignment.center);
+        expect(resolved.spec.container?.alignment, Alignment.center);
         expect(
-          resolved.container?.padding,
+          resolved.spec.container?.padding,
           const EdgeInsets.only(top: 10.0, bottom: 20.0),
         );
-        expect(resolved.flex?.direction, Axis.horizontal);
-        expect(resolved.flex?.mainAxisAlignment, MainAxisAlignment.center);
+        expect(resolved.spec.flex?.direction, Axis.horizontal);
+        expect(resolved.spec.flex?.mainAxisAlignment, MainAxisAlignment.center);
       });
 
       test('resolves complex nested properties correctly', () {
@@ -124,13 +124,14 @@ void main() {
         final resolved = attribute.resolve(context);
 
         expect(resolved, isNotNull);
-        final decoration = resolved.container?.decoration as BoxDecoration?;
+        final decoration =
+            resolved.spec.container?.decoration as BoxDecoration?;
         expect(decoration?.color, Colors.red);
         expect(decoration?.border, isNotNull);
         expect(decoration?.borderRadius, isNotNull);
-        expect(resolved.flex?.spacing, 10.0);
+        expect(resolved.spec.flex?.spacing, 10.0);
         expect(
-          resolved.flex?.mainAxisAlignment,
+          resolved.spec.flex?.mainAxisAlignment,
           MainAxisAlignment.spaceBetween,
         );
       });
@@ -163,20 +164,20 @@ void main() {
         final resolved = merged.resolve(context);
 
         expect(
-          resolved.container?.alignment,
+          resolved.spec.container?.alignment,
           Alignment.topLeft,
         ); // second overrides first
         expect(
-          resolved.container?.padding,
+          resolved.spec.container?.padding,
           const EdgeInsets.all(10.0),
         ); // from first
         expect(
-          resolved.container?.margin,
+          resolved.spec.container?.margin,
           const EdgeInsets.all(20.0),
         ); // from second
-        expect(resolved.flex?.direction, Axis.horizontal); // from first
+        expect(resolved.spec.flex?.direction, Axis.horizontal); // from first
         expect(
-          resolved.flex?.mainAxisAlignment,
+          resolved.spec.flex?.mainAxisAlignment,
           MainAxisAlignment.center,
         ); // from second
       });
@@ -211,7 +212,8 @@ void main() {
         // Resolve to check merged decoration
         final context = MockBuildContext();
         final resolved = merged.resolve(context);
-        final decoration = resolved.container?.decoration as BoxDecoration?;
+        final decoration =
+            resolved.spec.container?.decoration as BoxDecoration?;
 
         expect(decoration?.color, Colors.red); // from first
         expect(decoration?.border, isNotNull); // from second
@@ -371,13 +373,13 @@ void main() {
         final context = MockBuildContext();
         final resolved = merged.resolve(context);
 
-        expect(resolved.flex?.direction, Axis.horizontal); // preserved
+        expect(resolved.spec.flex?.direction, Axis.horizontal); // preserved
         expect(
-          resolved.container?.padding,
+          resolved.spec.container?.padding,
           const EdgeInsets.all(10.0),
         ); // updated
         expect(
-          resolved.container?.alignment,
+          resolved.spec.container?.alignment,
           Alignment.center,
         ); // preserved from initial container
       });
@@ -401,8 +403,8 @@ void main() {
         final resolved = attribute.resolve(context);
 
         expect(resolved, isNotNull);
-        expect(resolved.container, null);
-        expect(resolved.flex, null);
+        expect(resolved.spec.container, null);
+        expect(resolved.spec.flex, null);
       });
 
       test('handles complex nested chaining', () {
@@ -421,22 +423,22 @@ void main() {
         final resolved = utility.resolve(context);
 
         // Verify all properties are resolved correctly
-        expect(resolved.container?.alignment, Alignment.center);
-        expect(resolved.container?.padding, const EdgeInsets.all(10.0));
+        expect(resolved.spec.container?.alignment, Alignment.center);
+        expect(resolved.spec.container?.padding, const EdgeInsets.all(10.0));
         expect(
-          resolved.container?.margin,
+          resolved.spec.container?.margin,
           const EdgeInsets.symmetric(horizontal: 20.0),
         );
         expect(
-          (resolved.container?.decoration as BoxDecoration?)?.color,
+          (resolved.spec.container?.decoration as BoxDecoration?)?.color,
           Colors.red,
         );
-        expect(resolved.flex?.direction, Axis.horizontal);
+        expect(resolved.spec.flex?.direction, Axis.horizontal);
         expect(
-          resolved.flex?.mainAxisAlignment,
+          resolved.spec.flex?.mainAxisAlignment,
           MainAxisAlignment.spaceBetween,
         );
-        expect(resolved.flex?.spacing, 10.0);
+        expect(resolved.spec.flex?.spacing, 10.0);
       });
     });
   });
@@ -490,14 +492,15 @@ void main() {
       expect(interpolated.flex?.spacing, 15.0);
     });
 
-    test('lerp returns this when other is null', () {
+    test('lerp interpolates properly when other is null', () {
       const spec = FlexBoxSpec(
         container: ContainerSpec(alignment: Alignment.center),
       );
 
       final result = spec.lerp(null, 0.5);
 
-      expect(result, equals(spec));
+      // Properties should interpolate according to their lerp behavior
+      expect(result.container?.alignment, Alignment.lerp(Alignment.center, null, 0.5));
     });
 
     test('equality and hashCode', () {

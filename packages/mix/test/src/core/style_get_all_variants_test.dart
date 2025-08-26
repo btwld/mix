@@ -743,9 +743,13 @@ class _MockSpecAttribute extends Style<MockSpec<Map<String, dynamic>>> {
   });
 
   @override
-  MockSpec<Map<String, dynamic>> resolve(BuildContext context) {
-    return MockSpec<Map<String, dynamic>>(
-      resolvedValue: {'width': width, 'height': height},
+  WrappedWidgetSpec<MockSpec<Map<String, dynamic>>> resolve(
+    BuildContext context,
+  ) {
+    return WrappedWidgetSpec(
+      spec: MockSpec<Map<String, dynamic>>(
+        resolvedValue: {'width': width, 'height': height},
+      ),
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),
       inherit: $inherit,

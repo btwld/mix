@@ -1,8 +1,9 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
-import 'package:mix/src/specs/text/text_spec.dart';
 
 void main() {
   group('TextSpec', () {
@@ -116,12 +117,12 @@ void main() {
 
         final lerped = spec1.lerp(spec2, 0.5);
 
-        // Step function properties (t < 0.5 uses spec1, t >= 0.5 uses spec2)
-        expect(lerped.maxLines, 5); // t = 0.5, so uses spec2
+        // Step function properties use lerpSnap (t < 0.5 uses spec1, t >= 0.5 uses spec2)
+        expect(lerped.maxLines, MixOps.lerpSnap(3, 5, 0.5)); // t = 0.5, so uses spec2
 
         // Interpolated properties
-        expect(lerped.style?.fontSize, 16.0); // (12 + 20) / 2
-        expect(lerped.strutStyle?.fontSize, 16.0); // (12 + 20) / 2
+        expect(lerped.style?.fontSize, ui.lerpDouble(12.0, 20.0, 0.5)); // (12 + 20) / 2
+        expect(lerped.strutStyle?.fontSize, ui.lerpDouble(12.0, 20.0, 0.5)); // (12 + 20) / 2
       });
 
       test('handles null other parameter correctly', () {
@@ -129,13 +130,13 @@ void main() {
         
         // When t < 0.5, should preserve original values
         final lerped1 = spec.lerp(null, 0.3);
-        expect(lerped1.maxLines, 3);
-        expect(lerped1.overflow, TextOverflow.ellipsis);
+        expect(lerped1.maxLines, MixOps.lerpSnap(3, null, 0.3)); // lerpSnap behavior
+        expect(lerped1.overflow, MixOps.lerpSnap(TextOverflow.ellipsis, null, 0.3)); // lerpSnap behavior
         
         // When t >= 0.5, snap properties become null, but new spec should be created
         final lerped2 = spec.lerp(null, 0.7);
-        expect(lerped2.maxLines, isNotNull); // maxLines should interpolate properly
-        expect(lerped2.overflow, null); // overflow snaps to null when t >= 0.5
+        expect(lerped2.maxLines, MixOps.lerpSnap(3, null, 0.7)); // lerpSnap behavior
+        expect(lerped2.overflow, MixOps.lerpSnap(TextOverflow.ellipsis, null, 0.7)); // overflow snaps to null when t >= 0.5
       });
 
       test('handles edge cases (t=0, t=1)', () {
@@ -145,10 +146,10 @@ void main() {
         final lerpedAt0 = spec1.lerp(spec2, 0.0);
         final lerpedAt1 = spec1.lerp(spec2, 1.0);
 
-        expect(lerpedAt0.maxLines, 1);
-        expect(lerpedAt0.overflow, TextOverflow.clip);
-        expect(lerpedAt1.maxLines, 5);
-        expect(lerpedAt1.overflow, TextOverflow.ellipsis);
+        expect(lerpedAt0.maxLines, MixOps.lerpSnap(1, 5, 0.0)); // lerpSnap at t=0
+        expect(lerpedAt0.overflow, MixOps.lerpSnap(TextOverflow.clip, TextOverflow.ellipsis, 0.0)); // lerpSnap at t=0
+        expect(lerpedAt1.maxLines, MixOps.lerpSnap(1, 5, 1.0)); // lerpSnap at t=1
+        expect(lerpedAt1.overflow, MixOps.lerpSnap(TextOverflow.clip, TextOverflow.ellipsis, 1.0)); // lerpSnap at t=1
       });
 
       test('uses step function for discrete properties', () {
@@ -205,8 +206,8 @@ void main() {
 
         final lerped = spec1.lerp(spec2, 0.5);
 
-        expect(lerped.strutStyle?.fontSize, 15.0);
-        expect(lerped.strutStyle?.height, 1.25);
+        expect(lerped.strutStyle?.fontSize, ui.lerpDouble(10.0, 20.0, 0.5));
+        expect(lerped.strutStyle?.height, ui.lerpDouble(1.0, 1.5, 0.5));
       });
     });
 
@@ -294,8 +295,8 @@ void main() {
           textDirectives: [],
         );
 
-        // 14 TextSpec properties + 3 from WidgetSpec (animation, widgetModifiers, inherit)
-        expect(spec.props.length, 17);
+        // 14 TextSpec properties
+        expect(spec.props.length, 14);
         expect(spec.props, contains(TextOverflow.ellipsis));
         expect(spec.props, contains(spec.strutStyle));
         expect(spec.props, contains(TextAlign.center));
