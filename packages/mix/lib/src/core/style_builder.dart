@@ -8,7 +8,7 @@ import 'providers/widget_spec_provider.dart';
 import 'providers/widget_state_provider.dart';
 import 'spec.dart';
 import 'style.dart';
-import 'wrapped_widget_spec.dart';
+import 'widget_spec.dart';
 
 /// Builds widgets with Mix styling.
 ///
@@ -97,7 +97,7 @@ class WidgetSpecBuilder<S extends Spec<S>> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // style.build returns WrappedWidgetSpec<S>
+    // style.build returns WidgetSpec<S>
     final wrappedSpec = style.build(context);
     final animationConfig = wrappedSpec.animation;
 
@@ -105,7 +105,7 @@ class WidgetSpecBuilder<S extends Spec<S>> extends StatelessWidget {
     Widget current = builder(context, wrappedSpec.spec);
 
     // Always wrap with WidgetSpecProvider first
-    current = WidgetSpecProvider<WrappedWidgetSpec<S>>(spec: wrappedSpec, child: current);
+    current = WidgetSpecProvider<WidgetSpec<S>, S>(spec: wrappedSpec, child: current);
 
     if (wrappedSpec.widgetModifiers != null && wrappedSpec.widgetModifiers!.isNotEmpty) {
       // Apply modifiers if any
@@ -116,14 +116,14 @@ class WidgetSpecBuilder<S extends Spec<S>> extends StatelessWidget {
     }
 
     if (animationConfig != null) {
-      return StyleAnimationBuilder<WrappedWidgetSpec<S>>(
+      return StyleAnimationBuilder<WidgetSpec<S>>(
         spec: wrappedSpec,
         animationConfig: animationConfig,
         builder: (context, animatedWrappedSpec) {
           Widget animatedChild = builder(context, animatedWrappedSpec.spec);
 
           // Always wrap with WidgetSpecProvider first
-          animatedChild = WidgetSpecProvider<WrappedWidgetSpec<S>>(
+          animatedChild = WidgetSpecProvider<WidgetSpec<S>, S>(
             spec: animatedWrappedSpec,
             child: animatedChild,
           );

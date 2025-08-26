@@ -7,7 +7,7 @@ import '../../animation/animation_mixin.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
-import '../../core/wrapped_widget_spec.dart';
+import '../../core/widget_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../variants/variant.dart';
@@ -302,7 +302,7 @@ class FlexStyle extends Style<FlexSpec>
   /// final flexWidgetSpec = FlexStyle(...).resolve(context);
   /// ```
   @override
-  WrappedWidgetSpec<FlexSpec> resolve(BuildContext context) {
+  WidgetSpec<FlexSpec> resolve(BuildContext context) {
     final flexSpec = FlexSpec(
       direction: MixOps.resolve(context, $direction),
       mainAxisAlignment: MixOps.resolve(context, $mainAxisAlignment),
@@ -315,7 +315,7 @@ class FlexStyle extends Style<FlexSpec>
       spacing: MixOps.resolve(context, $spacing),
     );
     
-    return WrappedWidgetSpec(
+    return WidgetSpec(
       spec: flexSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),

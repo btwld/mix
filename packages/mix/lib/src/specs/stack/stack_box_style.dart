@@ -5,7 +5,7 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
-import '../../core/wrapped_widget_spec.dart';
+import '../../core/widget_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../properties/container/container_mix.dart';
 import '../../properties/container/container_spec.dart';
@@ -131,13 +131,13 @@ class StackBoxStyle extends Style<ZBoxSpec>
   /// final zBoxSpec = StackBoxStyle(...).resolve(context);
   /// ```
   @override
-  WrappedWidgetSpec<ZBoxSpec> resolve(BuildContext context) {
+  WidgetSpec<ZBoxSpec> resolve(BuildContext context) {
     final containerSpec = MixOps.resolve(context, $box);
     final stackSpec = MixOps.resolve(context, $stack);
 
     final zBoxSpec = ZBoxSpec(box: containerSpec, stack: stackSpec);
 
-    return WrappedWidgetSpec(
+    return WidgetSpec(
       spec: zBoxSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),

@@ -259,7 +259,7 @@ void main() {
         final context = MockBuildContext();
         final spec = testUtil.resolve(context);
 
-        expect(spec, isA<WrappedWidgetSpec<IconSpec>>());
+        expect(spec, isA<WidgetSpec<IconSpec>>());
         expect(spec.spec.size, 24.0);
         expect(spec.spec.weight, 400.0);
         expect(spec.spec.fill, 0.8);
@@ -269,7 +269,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec, isA<WrappedWidgetSpec<IconSpec>>());
+        expect(spec, isA<WidgetSpec<IconSpec>>());
         expect(spec.spec.size, isNull);
         expect(spec.spec.weight, isNull);
         expect(spec.spec.fill, isNull);
@@ -417,7 +417,7 @@ void main() {
 
         expect(
           testUtil,
-          resolvesTo(WrappedWidgetSpec(spec: const IconSpec(size: 24.0, weight: 400.0, fill: 0.8))),
+          resolvesTo(WidgetSpec(spec: const IconSpec(size: 24.0, weight: 400.0, fill: 0.8))),
         );
       });
     });

@@ -5,7 +5,7 @@ import '../../core/prop.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
 import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
-import '../../core/wrapped_widget_spec.dart';
+import '../../core/widget_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/layout/constraints_util.dart';
@@ -93,7 +93,7 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec> {
   }
 
   @override
-  WrappedWidgetSpec<BoxSpec> resolve(BuildContext context) {
+  WidgetSpec<BoxSpec> resolve(BuildContext context) {
     return mutable.resolve(context);
   }
 

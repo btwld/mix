@@ -276,7 +276,7 @@ void main() {
         final context = MockBuildContext();
         final spec = testUtil.resolve(context);
 
-        expect(spec, isA<WrappedWidgetSpec<FlexBoxSpec>>());
+        expect(spec, isA<WidgetSpec<FlexBoxSpec>>());
         expect(spec.flex?.direction, Axis.vertical);
         expect(spec.flex?.mainAxisAlignment, MainAxisAlignment.center);
         expect(spec.flex?.spacing, 12.0);
@@ -286,7 +286,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec, isA<WrappedWidgetSpec<FlexBoxSpec>>());
+        expect(spec, isA<WidgetSpec<FlexBoxSpec>>());
         expect(spec.flex?.direction, isNull);
         expect(spec.flex?.spacing, isNull);
         expect(spec.flex?.mainAxisAlignment, isNull);
@@ -443,7 +443,7 @@ void main() {
         expect(
           testUtil,
           resolvesTo(
-            isA<WrappedWidgetSpec<FlexBoxSpec>>().having(
+            isA<WidgetSpec<FlexBoxSpec>>().having(
               (w) => w.spec,
               'spec',
               const FlexBoxSpec(

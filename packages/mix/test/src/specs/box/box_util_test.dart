@@ -20,7 +20,7 @@ void main() {
         final spec = utility.resolve(context);
 
         expect(utility, isA<BoxSpecUtility>());
-        expect(spec, WrappedWidgetSpec(spec: const BoxSpec(alignment: Alignment.center)));
+        expect(spec, WidgetSpec(spec: const BoxSpec(alignment: Alignment.center)));
       });
     });
 
@@ -244,7 +244,7 @@ void main() {
         final context = MockBuildContext();
         final spec = testUtil.resolve(context);
 
-        expect(spec, isA<WrappedWidgetSpec<BoxSpec>>());
+        expect(spec, isA<WidgetSpec<BoxSpec>>());
         expect(spec.spec.alignment, Alignment.center);
         expect(spec.spec.clipBehavior, Clip.antiAlias);
         expect(spec.spec.transform, Matrix4.identity());
@@ -254,7 +254,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec, isA<WrappedWidgetSpec<BoxSpec>>());
+        expect(spec, isA<WidgetSpec<BoxSpec>>());
         expect(spec.spec.alignment, isNull);
         expect(spec.spec.clipBehavior, isNull);
         expect(spec.spec.transform, isNull);
@@ -409,7 +409,7 @@ void main() {
         expect(
           testUtil,
           resolvesTo(
-            const WrappedWidgetSpec(
+            const WidgetSpec(
               spec: BoxSpec(
                 alignment: Alignment.center,
                 clipBehavior: Clip.antiAlias,

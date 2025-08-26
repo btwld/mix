@@ -5,7 +5,7 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
-import '../../core/wrapped_widget_spec.dart';
+import '../../core/widget_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/layout/flex_layout_spec.dart';
@@ -371,13 +371,13 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
   /// final flexBoxWidgetSpec = FlexBoxStyle(...).resolve(context);
   /// ```
   @override
-  WrappedWidgetSpec<FlexBoxSpec> resolve(BuildContext context) {
+  WidgetSpec<FlexBoxSpec> resolve(BuildContext context) {
     final containerSpec = MixOps.resolve(context, $container);
     final flexSpec = MixOps.resolve(context, $flex);
 
     final flexBoxSpec = FlexBoxSpec(container: containerSpec, flex: flexSpec);
 
-    return WrappedWidgetSpec(
+    return WidgetSpec(
       spec: flexBoxSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),

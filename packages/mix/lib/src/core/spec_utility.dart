@@ -5,7 +5,7 @@ import '../animation/animation_config.dart';
 import '../modifiers/modifier_config.dart';
 import 'spec.dart';
 import 'style.dart';
-import 'wrapped_widget_spec.dart';
+import 'widget_spec.dart';
 
 /// Mutable builder for StyleAttribute with cascade notation support.
 ///
@@ -25,7 +25,7 @@ abstract class StyleAttributeBuilder<S extends Spec<S>> extends Style<S>
   Style<S> get style;
 
   @override
-  WrappedWidgetSpec<S> resolve(BuildContext context) => style.resolve(context);
+  WidgetSpec<S> resolve(BuildContext context) => style.resolve(context);
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -66,7 +66,7 @@ abstract class StyleMutableBuilder<S extends Spec<S>> extends Style<S>
   Style<S> get value => mutable.value;
 
   @override
-  WrappedWidgetSpec<S> resolve(BuildContext context) => value.resolve(context);
+  WidgetSpec<S> resolve(BuildContext context) => value.resolve(context);
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -115,7 +115,7 @@ mixin Mutable<S extends Spec<S>, T extends Style<S>> on Style<S> {
   }
 
   @override
-  WrappedWidgetSpec<S> resolve(BuildContext context) {
+  WidgetSpec<S> resolve(BuildContext context) {
     return value.resolve(context);
   }
 }

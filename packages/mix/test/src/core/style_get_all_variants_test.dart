@@ -743,10 +743,10 @@ class _MockSpecAttribute extends Style<MockSpec<Map<String, dynamic>>> {
   });
 
   @override
-  WrappedWidgetSpec<MockSpec<Map<String, dynamic>>> resolve(
+  WidgetSpec<MockSpec<Map<String, dynamic>>> resolve(
     BuildContext context,
   ) {
-    return WrappedWidgetSpec(
+    return WidgetSpec(
       spec: MockSpec<Map<String, dynamic>>(
         resolvedValue: {'width': width, 'height': height},
       ),

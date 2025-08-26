@@ -6,7 +6,7 @@ import '../../animation/animation_mixin.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
-import '../../core/wrapped_widget_spec.dart';
+import '../../core/widget_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/layout/constraints_mix.dart';
@@ -346,7 +346,7 @@ class BoxStyle extends Style<BoxSpec>
     return merge(BoxStyle(variants: [VariantStyle(variant, style)]));
   }
 
-  /// Resolves to [WrappedWidgetSpec<BoxSpec>] using the provided [BuildContext].
+  /// Resolves to [WidgetSpec<BoxSpec>] using the provided [BuildContext].
   ///
   /// If a property is null in the context, it uses the default value
   /// defined in the property specification.
@@ -355,7 +355,7 @@ class BoxStyle extends Style<BoxSpec>
   /// final wrappedSpec = BoxStyle(...).resolve(context);
   /// ```
   @override
-  WrappedWidgetSpec<BoxSpec> resolve(BuildContext context) {
+  WidgetSpec<BoxSpec> resolve(BuildContext context) {
     // Build the pure BoxSpec
     final boxSpec = BoxSpec(
       alignment: MixOps.resolve(context, $alignment),
@@ -370,7 +370,7 @@ class BoxStyle extends Style<BoxSpec>
     );
     
     // Wrap with metadata
-    return WrappedWidgetSpec(
+    return WidgetSpec(
       spec: boxSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),

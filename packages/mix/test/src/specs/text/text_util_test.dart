@@ -347,7 +347,7 @@ void main() {
           locale: Locale('fr', 'FR'),
         );
 
-        expect(spec, equals(WrappedWidgetSpec(spec: expectedSpec)));
+        expect(spec, equals(WidgetSpec(spec: expectedSpec)));
       });
 
       test('resolve handles null properties', () {
@@ -356,7 +356,7 @@ void main() {
 
         const expectedSpec = TextSpec();
 
-        expect(spec, equals(WrappedWidgetSpec(spec: expectedSpec)));
+        expect(spec, equals(WidgetSpec(spec: expectedSpec)));
       });
     });
 
@@ -381,7 +381,7 @@ void main() {
         expect(
           testUtil,
           resolvesTo(
-            WrappedWidgetSpec(
+            WidgetSpec(
               spec: const TextSpec(
                 maxLines: 3,
                 textAlign: TextAlign.center,
@@ -529,7 +529,7 @@ void main() {
           locale: Locale('es', 'ES'),
         );
 
-        expect(spec, equals(WrappedWidgetSpec(spec: expectedSpec)));
+        expect(spec, equals(WidgetSpec(spec: expectedSpec)));
       });
     });
 

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../core/breakpoint.dart';
 import '../core/spec.dart';
-import '../core/widget_spec.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 import 'variant.dart';
@@ -283,7 +282,7 @@ class VariantAttributeBuilder<T extends Spec<T>> {
   int get hashCode => variant.hashCode;
 }
 
-typedef VariantFactoryCallback<T extends Style<S>, S extends WidgetSpec<S>> =
+typedef VariantFactoryCallback<T extends Style<S>, S extends Spec<S>> =
     T Function(T style);
 
 /// Mixin that provides convenient variant methods for spec attributes.

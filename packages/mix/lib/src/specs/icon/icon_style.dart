@@ -6,7 +6,7 @@ import '../../animation/animation_mixin.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
-import '../../core/wrapped_widget_spec.dart';
+import '../../core/widget_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/painting/shadow_mix.dart';
@@ -298,7 +298,7 @@ class IconStyle extends Style<IconSpec>
   }
 
   @override
-  WrappedWidgetSpec<IconSpec> resolve(BuildContext context) {
+  WidgetSpec<IconSpec> resolve(BuildContext context) {
     final iconSpec = IconSpec(
       color: MixOps.resolve(context, $color),
       size: MixOps.resolve(context, $size),
@@ -314,7 +314,7 @@ class IconStyle extends Style<IconSpec>
       icon: MixOps.resolve(context, $icon),
     );
     
-    return WrappedWidgetSpec(
+    return WidgetSpec(
       spec: iconSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),

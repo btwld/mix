@@ -25,8 +25,8 @@ class TestVariantAttribute extends Style<BoxSpec>
   }
 
   @override
-  WrappedWidgetSpec<BoxSpec> resolve(BuildContext context) =>
-      const WrappedWidgetSpec(spec: BoxSpec());
+  WidgetSpec<BoxSpec> resolve(BuildContext context) =>
+      const WidgetSpec(spec: BoxSpec());
 
   @override
   TestVariantAttribute merge(TestVariantAttribute? other) {

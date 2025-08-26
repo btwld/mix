@@ -5,7 +5,7 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
-import '../../core/wrapped_widget_spec.dart';
+import '../../core/widget_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../variants/variant.dart';
@@ -356,7 +356,7 @@ class ImageStyle extends Style<ImageSpec>
   }
 
   @override
-  WrappedWidgetSpec<ImageSpec> resolve(BuildContext context) {
+  WidgetSpec<ImageSpec> resolve(BuildContext context) {
     final imageSpec = ImageSpec(
       image: MixOps.resolve(context, $image),
       width: MixOps.resolve(context, $width),
@@ -375,7 +375,7 @@ class ImageStyle extends Style<ImageSpec>
       matchTextDirection: MixOps.resolve(context, $matchTextDirection),
     );
     
-    return WrappedWidgetSpec(
+    return WidgetSpec(
       spec: imageSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),

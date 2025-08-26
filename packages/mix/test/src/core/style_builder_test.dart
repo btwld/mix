@@ -72,7 +72,7 @@ void main() {
 
         // Verify that the animation wrapper is created
         expect(
-          find.byType(StyleAnimationBuilder<WrappedWidgetSpec<BoxSpec>>),
+          find.byType(StyleAnimationBuilder<WidgetSpec<BoxSpec>>),
           findsOneWidget,
         );
       });
@@ -101,7 +101,7 @@ void main() {
 
         // Verify that no animation wrapper is created
         expect(
-          find.byType(StyleAnimationBuilder<WrappedWidgetSpec<BoxSpec>>),
+          find.byType(StyleAnimationBuilder<WidgetSpec<BoxSpec>>),
           findsNothing,
         );
       });
@@ -173,7 +173,7 @@ void main() {
           // Pump halfway through animation
           await tester.pump(const Duration(milliseconds: 150));
 
-          // With WrappedWidgetSpec animation, switching styles replaces the animation widget
+          // With WidgetSpec animation, switching styles replaces the animation widget
           // rather than interpolating between values in-place. So we only assert final value.
           final midContainer = tester.widget<Container>(
             find.byKey(const Key('animated_container')),

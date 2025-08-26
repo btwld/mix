@@ -16,7 +16,7 @@ import 'internal/compare_mixin.dart';
 import 'mix_element.dart';
 import 'modifier.dart';
 import 'spec.dart';
-import 'wrapped_widget_spec.dart';
+import 'widget_spec.dart';
 
 /// This is used just to pass all the values into one place if needed
 @internal
@@ -27,7 +27,7 @@ sealed class StyleElement {
 /// Base class for style containers that can be resolved to specifications.
 ///
 /// Provides variant support, modifiers, and animation configuration for styled elements.
-abstract class Style<S extends Spec<S>> extends Mix<WrappedWidgetSpec<S>>
+abstract class Style<S extends Spec<S>> extends Mix<WidgetSpec<S>>
     implements StyleElement {
   final List<VariantStyle<S>>? $variants;
 
@@ -152,7 +152,7 @@ abstract class Style<S extends Spec<S>> extends Mix<WrappedWidgetSpec<S>>
 
   /// Resolves this attribute to its concrete value using the provided [BuildContext].
   @override
-  WrappedWidgetSpec<S> resolve(BuildContext context);
+  WidgetSpec<S> resolve(BuildContext context);
 
   /// Merges this attribute with another attribute of the same type.
   @override
@@ -165,7 +165,7 @@ abstract class Style<S extends Spec<S>> extends Mix<WrappedWidgetSpec<S>>
   /// Builds the style into a fully resolved spec with metadata.
   ///
   /// This method resolves the style, which now includes animation, modifiers, and inherit metadata.
-  WrappedWidgetSpec<S> build(BuildContext context, {Set<NamedVariant> namedVariants = const {}}) {
+  WidgetSpec<S> build(BuildContext context, {Set<NamedVariant> namedVariants = const {}}) {
     final styleData = getAllStyleVariants(
       context,
       namedVariants: namedVariants,
@@ -190,7 +190,7 @@ abstract class ModifierMix<S extends Modifier<S>> extends Mix<S>
 }
 
 /// Variant wrapper for conditional styling
-final class VariantStyle<S extends Spec<S>> extends Mixable<WrappedWidgetSpec<S>>
+final class VariantStyle<S extends Spec<S>> extends Mixable<WidgetSpec<S>>
     with Equatable
     implements StyleElement {
   final Variant variant;

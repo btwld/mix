@@ -48,7 +48,6 @@ export 'src/core/style_builder.dart';
 export 'src/core/style_widget.dart';
 export 'src/core/utility.dart';
 export 'src/core/widget_spec.dart';
-export 'src/core/wrapped_widget_spec.dart';
 export 'src/modifiers/align_modifier.dart';
 export 'src/modifiers/aspect_ratio_modifier.dart';
 export 'src/modifiers/container_modifier.dart';

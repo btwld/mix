@@ -276,10 +276,10 @@ class MockStyle<T> extends Style<MockSpec<T>> {
   }
 
   @override
-  WrappedWidgetSpec<MockSpec<T>> resolve(BuildContext context) {
+  WidgetSpec<MockSpec<T>> resolve(BuildContext context) {
     final mockSpec = MockSpec<T>(resolvedValue: value);
 
-    return WrappedWidgetSpec(
+    return WidgetSpec(
       spec: mockSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),
@@ -317,7 +317,7 @@ final class MockSpec<T> extends Spec<MockSpec<T>> with Diagnosticable {
 }
 
 // Test-only extension to simplify access to MockSpec.resolvedValue when wrapped
-extension WrappedMockResolvedValue<T> on WrappedWidgetSpec<MockSpec<T>> {
+extension WrappedMockResolvedValue<T> on WidgetSpec<MockSpec<T>> {
   T? get resolvedValue => spec.resolvedValue;
 }
 
@@ -756,25 +756,25 @@ class _PropHasTokensMatcher extends Matcher {
   }
 }
 
-// Test-only helper extensions to access underlying spec fields on WrappedWidgetSpec
-extension WrappedBoxSpecAccess on WrappedWidgetSpec<BoxSpec> {
+// Test-only helper extensions to access underlying spec fields on WidgetSpec
+extension WrappedBoxSpecAccess on WidgetSpec<BoxSpec> {
   BoxConstraints? get constraints => spec.constraints;
 }
 
-extension WrappedFlexBoxSpecAccess on WrappedWidgetSpec<FlexBoxSpec> {
+extension WrappedFlexBoxSpecAccess on WidgetSpec<FlexBoxSpec> {
   FlexLayoutSpec? get flex => spec.flex;
   ContainerSpec? get container => spec.container;
 }
 
-extension WrappedIconSpecAccess on WrappedWidgetSpec<IconSpec> {
+extension WrappedIconSpecAccess on WidgetSpec<IconSpec> {
   double? get size => spec.size;
 }
 
-extension WrappedStackSpecAccess on WrappedWidgetSpec<StackSpec> {
+extension WrappedStackSpecAccess on WidgetSpec<StackSpec> {
   AlignmentGeometry? get alignment => spec.alignment;
 }
 
-extension WrappedZBoxSpecAccess on WrappedWidgetSpec<ZBoxSpec> {
+extension WrappedZBoxSpecAccess on WidgetSpec<ZBoxSpec> {
   ContainerSpec? get box => spec.box;
   StackSpec get stack => spec.stack;
 }

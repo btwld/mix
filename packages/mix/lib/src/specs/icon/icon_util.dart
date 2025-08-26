@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
-import '../../core/wrapped_widget_spec.dart';
+import '../../core/widget_spec.dart';
 import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
 import '../../modifiers/modifier_config.dart';
@@ -77,7 +77,7 @@ class IconSpecUtility extends StyleMutableBuilder<IconSpec> {
   }
 
   @override
-  WrappedWidgetSpec<IconSpec> resolve(BuildContext context) {
+  WidgetSpec<IconSpec> resolve(BuildContext context) {
     return mutable.resolve(context);
   }
 
