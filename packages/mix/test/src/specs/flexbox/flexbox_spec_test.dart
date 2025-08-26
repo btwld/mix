@@ -471,7 +471,7 @@ void main() {
       );
 
       expect(updated.container?.alignment, Alignment.topLeft);
-      expect(updated.flex?.direction, Axis.horizontal); // unchanged
+      expect(updated.flex?.direction, Axis.horizontal);
       expect(identical(original, updated), isFalse);
     });
 

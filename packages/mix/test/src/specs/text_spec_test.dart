@@ -73,7 +73,7 @@ void main() {
         );
 
         expect(updated.overflow, TextOverflow.ellipsis);
-        expect(updated.textAlign, TextAlign.left); // unchanged
+        expect(updated.textAlign, TextAlign.left);
         expect(updated.maxLines, 5);
         expect(updated.style?.fontSize, 16.0);
         expect(updated.style?.color, Colors.red);
@@ -89,8 +89,8 @@ void main() {
         final updated = original.copyWith(textAlign: TextAlign.right);
 
         expect(updated.textAlign, TextAlign.right);
-        expect(updated.softWrap, true); // unchanged
-        expect(updated.textDirection, TextDirection.ltr); // unchanged
+        expect(updated.softWrap, true);
+        expect(updated.textDirection, TextDirection.ltr);
       });
 
       test('handles null values correctly', () {

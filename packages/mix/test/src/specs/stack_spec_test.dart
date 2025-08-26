@@ -45,8 +45,8 @@ void main() {
         );
 
         expect(updated.alignment, Alignment.bottomRight);
-        expect(updated.fit, StackFit.loose); // unchanged
-        expect(updated.textDirection, TextDirection.ltr); // unchanged
+        expect(updated.fit, StackFit.loose);
+        expect(updated.textDirection, TextDirection.ltr);
         expect(updated.clipBehavior, Clip.hardEdge);
       });
 
@@ -59,7 +59,7 @@ void main() {
         final updated = original.copyWith(fit: StackFit.passthrough);
 
         expect(updated.fit, StackFit.passthrough);
-        expect(updated.clipBehavior, Clip.none); // unchanged
+        expect(updated.clipBehavior, Clip.none);
       });
 
       test('handles null values correctly', () {

@@ -25,11 +25,11 @@ import 'container_spec.dart';
 /// proper Mix framework integration.
 final class ContainerMix extends Mix<ContainerSpec>
     with
-        DecorationMixin,
-        SpacingMixin,
-        ConstraintsMixin,
-        TransformMixin,
-        BorderRadiusMixin,
+        DecorationMixin<ContainerMix>,
+        SpacingMixin<ContainerMix>,
+        ConstraintsMixin<ContainerMix>,
+        TransformMixin<ContainerMix>,
+        BorderRadiusMixin<ContainerMix>,
         Diagnosticable {
   final Prop<Decoration>? $decoration;
   final Prop<Decoration>? $foregroundDecoration;
@@ -258,42 +258,6 @@ final class ContainerMix extends Mix<ContainerSpec>
   @override
   ContainerMix constraints(BoxConstraintsMix value) {
     return merge(ContainerMix.constraints(value));
-  }
-
-  /// Returns a copy with the specified width.
-  @override
-  ContainerMix width(double value) {
-    return merge(ContainerMix.width(value));
-  }
-
-  /// Returns a copy with the specified height.
-  @override
-  ContainerMix height(double value) {
-    return merge(ContainerMix.height(value));
-  }
-
-  /// Returns a copy with the specified minimum width.
-  @override
-  ContainerMix minWidth(double value) {
-    return merge(ContainerMix.minWidth(value));
-  }
-
-  /// Returns a copy with the specified maximum width.
-  @override
-  ContainerMix maxWidth(double value) {
-    return merge(ContainerMix.maxWidth(value));
-  }
-
-  /// Returns a copy with the specified minimum height.
-  @override
-  ContainerMix minHeight(double value) {
-    return merge(ContainerMix.minHeight(value));
-  }
-
-  /// Returns a copy with the specified maximum height.
-  @override
-  ContainerMix maxHeight(double value) {
-    return merge(ContainerMix.maxHeight(value));
   }
 
   /// Returns a copy with the specified decoration.

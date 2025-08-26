@@ -69,9 +69,9 @@ void main() {
 
         expect(updated.color, Colors.blue);
         expect(updated.size, 24.0);
-        expect(updated.weight, 300.0); // unchanged
+        expect(updated.weight, 300.0);
         expect(updated.grade, 100.0);
-        expect(updated.textDirection, TextDirection.ltr); // unchanged
+        expect(updated.textDirection, TextDirection.ltr);
         expect(updated.applyTextScaling, false);
       });
 
@@ -85,8 +85,8 @@ void main() {
         final updated = original.copyWith(opticalSize: 24.0);
 
         expect(updated.opticalSize, 24.0);
-        expect(updated.fill, 0.5); // unchanged
-        expect(updated.shadows, isA<List<Shadow>>()); // unchanged
+        expect(updated.fill, 0.5);
+        expect(updated.shadows, isA<List<Shadow>>());
       });
 
       test('handles null values correctly', () {

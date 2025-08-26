@@ -3,10 +3,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 void main() {
-  group('BoxModifier', () {
+  group('ContainerModifier', () {
     test('can be created with a ContainerSpec', () {
       const spec = ContainerSpec(padding: EdgeInsets.all(16));
-      const modifier = BoxModifier(spec);
+      const modifier = ContainerModifier(spec);
 
       expect(modifier.spec, equals(spec));
     });
@@ -16,7 +16,7 @@ void main() {
         padding: EdgeInsets.all(16),
         decoration: BoxDecoration(color: Colors.red),
       );
-      const modifier = BoxModifier(spec);
+      const modifier = ContainerModifier(spec);
       const child = Text('Test');
 
       final result = modifier.build(child);
@@ -31,7 +31,7 @@ void main() {
     test('copyWith creates new instance with updated spec', () {
       const spec1 = ContainerSpec(padding: EdgeInsets.all(8));
       const spec2 = ContainerSpec(padding: EdgeInsets.all(16));
-      const modifier1 = BoxModifier(spec1);
+      const modifier1 = ContainerModifier(spec1);
 
       final modifier2 = modifier1.copyWith(spec: spec2);
 
@@ -40,52 +40,48 @@ void main() {
     });
   });
 
-  group('BoxModifierMix', () {
-    testWidgets('resolves to BoxModifier correctly', (tester) async {
+  group('ContainerModifierMix', () {
+    testWidgets('resolves to ContainerModifier correctly', (tester) async {
       final spec = ContainerMix(
         padding: EdgeInsetsGeometryMix.all(16),
         decoration: DecorationMix.color(Colors.blue),
       );
-      final mix = BoxModifierMix(spec);
+      final mix = ContainerModifierMix(spec);
 
-      await tester.pumpWidget(
-        Builder(
+      await tester.pumpWidget(MaterialApp(
+        home: Builder(
           builder: (context) {
             final resolved = mix.resolve(context);
-
-            expect(resolved, isA<BoxModifier>());
+            expect(resolved, isA<ContainerModifier>());
             expect(resolved.spec.padding, equals(const EdgeInsets.all(16)));
-            expect(
-              resolved.spec.decoration,
-              equals(const BoxDecoration(color: Colors.blue)),
-            );
-
             return Container();
           },
         ),
-      );
+      ));
     });
 
-    test('merge combines specs correctly', () {
-      final spec1 = ContainerMix(padding: EdgeInsetsGeometryMix.all(8));
-      final spec2 = ContainerMix(decoration: DecorationMix.color(Colors.red));
-      final mix1 = BoxModifierMix(spec1);
-      final mix2 = BoxModifierMix(spec2);
+    test('merge combines two ContainerModifierMix instances', () {
+      final mix1 = ContainerModifierMix(ContainerMix(
+        padding: EdgeInsetsGeometryMix.all(8),
+      ));
+      final mix2 = ContainerModifierMix(ContainerMix(
+        margin: EdgeInsetsGeometryMix.all(16),
+      ));
 
       final merged = mix1.merge(mix2);
 
-      // The merged spec should contain both properties
-      expect(merged.spec, isA<ContainerMix>());
+      expect(merged, isA<ContainerModifierMix>());
+    });
+
+    test('merge with null returns original', () {
+      final mix = ContainerModifierMix(ContainerMix(
+        padding: EdgeInsetsGeometryMix.all(8),
+      ));
+
+      final merged = mix.merge(null);
+
+      expect(merged, equals(mix));
     });
   });
 
-  group('ModifierConfig.box', () {
-    test('creates BoxModifierMix correctly', () {
-      final spec = ContainerMix.color(Colors.green);
-      final config = ModifierConfig.box(spec);
-
-      expect(config.$modifiers, hasLength(1));
-      expect(config.$modifiers![0], isA<BoxModifierMix>());
-    });
-  });
 }

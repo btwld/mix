@@ -641,7 +641,7 @@ void main() {
       test('individual utility calls return TextMix for further chaining', () {
         final util = TextSpecUtility();
 
-        // Each utility call should return a TextMix
+        // Each utility call should return a TextStyle
         final colorResult = util.color.red();
         final fontResult = util.fontSize(16);
         final linesResult = util.maxLines(3);
@@ -703,7 +703,7 @@ void main() {
         final result1 = util.color.red();
         final result2 = util.fontSize(16);
 
-        // Both results are different TextMix instances
+        // Both results are different TextStyle instances
         expect(result1, isNot(same(result2)));
 
         // But the utility itself has accumulated both changes

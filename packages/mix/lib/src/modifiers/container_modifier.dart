@@ -12,22 +12,22 @@ import '../properties/container/container_spec.dart';
 /// Modifier that wraps its child in a styled Container.
 ///
 /// Wraps the child in a [Container] widget with the specified container styling.
-final class BoxModifier extends Modifier<BoxModifier>
+final class ContainerModifier extends Modifier<ContainerModifier>
     with Diagnosticable {
   final ContainerSpec spec;
 
-  const BoxModifier(this.spec);
+  const ContainerModifier(this.spec);
 
   @override
-  BoxModifier copyWith({ContainerSpec? spec}) {
-    return BoxModifier(spec ?? this.spec);
+  ContainerModifier copyWith({ContainerSpec? spec}) {
+    return ContainerModifier(spec ?? this.spec);
   }
 
   @override
-  BoxModifier lerp(BoxModifier? other, double t) {
+  ContainerModifier lerp(ContainerModifier? other, double t) {
     if (other == null) return this;
 
-    return BoxModifier(MixOps.lerp(spec, other.spec, t)!);
+    return ContainerModifier(MixOps.lerp(spec, other.spec, t)!);
   }
 
   @override
@@ -45,25 +45,25 @@ final class BoxModifier extends Modifier<BoxModifier>
   }
 }
 
-/// Mix class for applying box modifications.
+/// Mix class for applying container modifications.
 ///
-/// This class allows for mixing and resolving box container properties.
-class BoxModifierMix extends ModifierMix<BoxModifier>
+/// This class allows for mixing and resolving container properties.
+class ContainerModifierMix extends ModifierMix<ContainerModifier>
     with Diagnosticable {
   final ContainerMix spec;
 
-  const BoxModifierMix(this.spec);
+  const ContainerModifierMix(this.spec);
 
   @override
-  BoxModifier resolve(BuildContext context) {
-    return BoxModifier(spec.resolve(context));
+  ContainerModifier resolve(BuildContext context) {
+    return ContainerModifier(spec.resolve(context));
   }
 
   @override
-  BoxModifierMix merge(BoxModifierMix? other) {
+  ContainerModifierMix merge(ContainerModifierMix? other) {
     if (other == null) return this;
 
-    return BoxModifierMix(spec.merge(other.spec));
+    return ContainerModifierMix(spec.merge(other.spec));
   }
 
   @override
@@ -76,26 +76,26 @@ class BoxModifierMix extends ModifierMix<BoxModifier>
   List<Object?> get props => [spec];
 }
 
-/// Utility class for applying box modifications.
+/// Utility class for applying container modifications.
 ///
-/// Provides convenient methods for creating BoxModifierMix instances.
-class BoxModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, BoxModifierMix> {
-  const BoxModifierUtility(super.builder);
+/// Provides convenient methods for creating ContainerModifierMix instances.
+class ContainerModifierUtility<T extends Style<Object?>>
+    extends MixUtility<T, ContainerModifierMix> {
+  const ContainerModifierUtility(super.builder);
 
   T call(ContainerMix spec) {
-    return builder(BoxModifierMix(spec));
+    return builder(ContainerModifierMix(spec));
   }
 
   T color(Color value) {
-    return builder(BoxModifierMix(ContainerMix.color(value)));
+    return builder(ContainerModifierMix(ContainerMix.color(value)));
   }
 
   T padding(EdgeInsetsGeometryMix value) {
-    return builder(BoxModifierMix(ContainerMix.padding(value)));
+    return builder(ContainerModifierMix(ContainerMix.padding(value)));
   }
 
   T margin(EdgeInsetsGeometryMix value) {
-    return builder(BoxModifierMix(ContainerMix.margin(value)));
+    return builder(ContainerModifierMix(ContainerMix.margin(value)));
   }
 }

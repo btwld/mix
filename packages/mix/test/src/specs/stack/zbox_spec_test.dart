@@ -73,7 +73,7 @@ void main() {
         final updated = original.copyWith(box: newBox);
 
         expect(updated.box, newBox);
-        expect(updated.stack, originalStack); // unchanged
+        expect(updated.stack, originalStack);
         expect(updated.box?.constraints?.minWidth, 200.0);
         expect(updated.box?.constraints?.maxHeight, 100.0);
         expect(updated.stack.alignment, Alignment.center);
@@ -88,7 +88,7 @@ void main() {
         const newStack = StackSpec(alignment: Alignment.bottomRight);
         final updated = original.copyWith(stack: newStack);
 
-        expect(updated.box, originalBox); // unchanged
+        expect(updated.box, originalBox);
         expect(updated.stack, newStack);
         expect(updated.box?.alignment, Alignment.topLeft);
         expect(updated.stack.alignment, Alignment.bottomRight);

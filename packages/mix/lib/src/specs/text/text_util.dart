@@ -17,7 +17,7 @@ import 'text_spec.dart';
 
 /// Provides mutable utility for text styling with cascade notation support.
 ///
-/// Supports the same API as [TextMix] but maintains mutable internal state
+/// Supports the same API as [TextStyle] but maintains mutable internal state
 /// enabling fluid styling: `$text..color.red()..fontSize(16)`.
 class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
   late final textOverflow = MixUtility(mutable.overflow);
@@ -111,7 +111,7 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
     return mutable.resolve(context);
   }
 
-  /// The accumulated [TextMix] with all applied styling properties.
+  /// The accumulated [TextStyle] with all applied styling properties.
   @override
   TextMix get value => mutable.value;
 }

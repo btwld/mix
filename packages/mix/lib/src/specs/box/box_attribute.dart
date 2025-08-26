@@ -232,7 +232,7 @@ class BoxStyle extends Style<BoxSpec>
   ///
   /// ```dart
   /// const spec = BoxSpec(alignment: Alignment.center, padding: EdgeInsets.all(8));
-  /// final attr = BoxMix.value(spec);
+  /// final attr = BoxStyle.value(spec);
   /// ```
   BoxStyle.value(BoxSpec spec)
     : this(
@@ -251,11 +251,11 @@ class BoxStyle extends Style<BoxSpec>
 
   /// Constructor that accepts a nullable [BoxSpec] value and extracts its properties.
   ///
-  /// Returns null if the input is null, otherwise uses [BoxMix.value].
+  /// Returns null if the input is null, otherwise uses [BoxStyle.value].
   ///
   /// ```dart
   /// const BoxSpec? spec = BoxSpec(alignment: Alignment.center, padding: EdgeInsets.all(8));
-  /// final attr = BoxMix.maybeValue(spec); // Returns BoxMix or null
+  /// final attr = BoxStyle.maybeValue(spec); // Returns BoxStyle or null
   /// ```
   static BoxStyle? maybeValue(BoxSpec? spec) {
     return spec != null ? BoxStyle.value(spec) : null;
@@ -346,15 +346,13 @@ class BoxStyle extends Style<BoxSpec>
     return merge(BoxStyle(variants: [VariantStyle(variant, style)]));
   }
 
-  /// The list of properties that constitute the state of this [BoxMix].
-  @override
   /// Resolves to [WrappedWidgetSpec<BoxSpec>] using the provided [BuildContext].
   ///
   /// If a property is null in the context, it uses the default value
   /// defined in the property specification.
   ///
   /// ```dart
-  /// final wrappedSpec = BoxMix(...).resolve(context);
+  /// final wrappedSpec = BoxStyle(...).resolve(context);
   /// ```
   @override
   WrappedWidgetSpec<BoxSpec> resolve(BuildContext context) {

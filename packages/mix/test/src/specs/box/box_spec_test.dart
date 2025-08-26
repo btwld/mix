@@ -74,8 +74,8 @@ void main() {
         final updated = original.copyWith(padding: EdgeInsets.all(12.0));
 
         expect(updated.padding, const EdgeInsets.all(12.0));
-        expect(updated.margin, const EdgeInsets.all(16.0)); // unchanged
-        expect(updated.clipBehavior, Clip.antiAlias); // unchanged
+        expect(updated.margin, const EdgeInsets.all(16.0));
+        expect(updated.clipBehavior, Clip.antiAlias);
       });
 
       test('handles null values correctly', () {

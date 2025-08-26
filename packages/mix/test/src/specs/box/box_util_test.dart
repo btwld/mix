@@ -324,7 +324,7 @@ void main() {
         final util = BoxSpecUtility();
         final matrix = Matrix4.identity();
 
-        // Each utility call should return a BoxMix
+        // Each utility call should return a BoxStyle
         final alignmentResult = util.alignment(Alignment.center);
         final transformResult = util.transform(matrix);
         final clipResult = util.clipBehavior(Clip.antiAlias);
@@ -388,7 +388,7 @@ void main() {
         final result1 = util.alignment(Alignment.center);
         final result2 = util.transform(matrix);
 
-        // Both results are different BoxMix instances
+        // Both results are different BoxStyle instances
         expect(result1, isNot(same(result2)));
 
         // But the utility itself has accumulated both changes

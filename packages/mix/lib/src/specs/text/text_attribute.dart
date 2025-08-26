@@ -348,11 +348,11 @@ class TextMix extends Style<TextSpec>
 
   /// Constructor that accepts a [TextSpec] value and extracts its properties.
   ///
-  /// This is useful for converting existing [TextSpec] instances to [TextMix].
+  /// This is useful for converting existing [TextSpec] instances to [TextStyle].
   ///
   /// ```dart
   /// const spec = TextSpec(overflow: TextOverflow.ellipsis, maxLines: 2);
-  /// final attr = TextMix.value(spec);
+  /// final attr = TextStyle.value(spec);
   /// ```
   TextMix.value(TextSpec spec)
     : this(
@@ -376,11 +376,11 @@ class TextMix extends Style<TextSpec>
 
   /// Constructor that accepts a nullable [TextSpec] value and extracts its properties.
   ///
-  /// Returns null if the input is null, otherwise uses [TextMix.value].
+  /// Returns null if the input is null, otherwise uses [TextStyle.value].
   ///
   /// ```dart
   /// const TextSpec? spec = TextSpec(overflow: TextOverflow.ellipsis, maxLines: 2);
-  /// final attr = TextMix.maybeValue(spec); // Returns TextMix or null
+  /// final attr = TextStyle.maybeValue(spec); // Returns TextStyle or null
   /// ```
   static TextMix? maybeValue(TextSpec? spec) {
     return spec != null ? TextMix.value(spec) : null;
@@ -615,7 +615,7 @@ class TextMix extends Style<TextSpec>
   /// defined in the property specification.
   ///
   /// ```dart
-  /// final textSpec = TextMix(...).resolve(context);
+  /// final textSpec = TextStyle(...).resolve(context);
   /// ```
   @override
   WrappedWidgetSpec<TextSpec> resolve(BuildContext context) {
@@ -644,10 +644,10 @@ class TextMix extends Style<TextSpec>
     );
   }
 
-  /// Merges the properties of this [TextMix] with the properties of [other].
+  /// Merges the properties of this [TextStyle] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [TextMix] with the properties of [other] taking precedence over
+  /// [TextStyle] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
@@ -712,7 +712,7 @@ class TextMix extends Style<TextSpec>
   }
 
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [TextMix] instances for equality.
+  /// compare two [TextStyle] instances for equality.
   @override
   List<Object?> get props => [
     $overflow,

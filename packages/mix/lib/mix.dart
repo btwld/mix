@@ -51,7 +51,7 @@ export 'src/core/widget_spec.dart';
 export 'src/core/wrapped_widget_spec.dart';
 export 'src/modifiers/align_modifier.dart';
 export 'src/modifiers/aspect_ratio_modifier.dart';
-export 'src/modifiers/box_modifier.dart';
+export 'src/modifiers/container_modifier.dart';
 export 'src/modifiers/clip_modifier.dart';
 export 'src/modifiers/default_text_style_modifier.dart';
 export 'src/modifiers/flexible_modifier.dart';

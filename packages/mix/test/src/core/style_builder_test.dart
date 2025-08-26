@@ -106,10 +106,6 @@ void main() {
         );
       });
 
-      // TODO: This test needs to be revisited after the WidgetSpec migration
-      // The animation architecture has changed - animation configs are now part of specs
-      // so changing styles with animations creates new animation widgets rather than
-      // animating between values.
       testWidgets(
         'Animation creates new animated build rather than interpolating between style changes',
         (tester) async {

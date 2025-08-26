@@ -79,9 +79,9 @@ void main() {
         );
 
         expect(updated.width, 200.0);
-        expect(updated.height, 100.0); // unchanged
+        expect(updated.height, 100.0);
         expect(updated.fit, BoxFit.cover);
-        expect(updated.color, Colors.red); // unchanged
+        expect(updated.color, Colors.red);
         expect(updated.alignment, Alignment.topLeft);
       });
 
@@ -95,8 +95,8 @@ void main() {
         final updated = original.copyWith(repeat: ImageRepeat.repeatY);
 
         expect(updated.repeat, ImageRepeat.repeatY);
-        expect(updated.filterQuality, FilterQuality.low); // unchanged
-        expect(updated.colorBlendMode, BlendMode.overlay); // unchanged
+        expect(updated.filterQuality, FilterQuality.low);
+        expect(updated.colorBlendMode, BlendMode.overlay);
       });
 
       test('handles null values correctly', () {

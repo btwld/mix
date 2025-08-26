@@ -86,8 +86,8 @@ void main() {
       );
 
       expect(updated.decoration, const BoxDecoration(color: Colors.blue));
-      expect(updated.direction, Axis.vertical); // unchanged
-      expect(updated.spacing, 5.0); // unchanged
+      expect(updated.direction, Axis.vertical);
+      expect(updated.spacing, 5.0);
       expect(updated.mainAxisAlignment, MainAxisAlignment.end); // new
     });
 
