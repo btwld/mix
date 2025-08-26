@@ -242,3 +242,90 @@ class PhaseAnimationDriver<S extends WidgetSpec<S>>
     await controller.forward(from: 0.0);
   }
 }
+
+extension<T> on KeyframeTrack<T> {
+  /// Calculates the total duration of this track.
+  Duration get totalDuration {
+    return segments.fold(
+      Duration.zero,
+      (total, segment) => total + segment.duration,
+    );
+  }
+}
+
+/// A driver for keyframe-based animations with complex timeline control.
+class KeyframeAnimationDriver<S extends WidgetSpec<S>>
+    extends StyleAnimationDriver<S> {
+  final BuildContext context;
+
+  final KeyframeAnimationConfig<S> _config;
+  late final Map<String, TweenSequence> _sequenceMap;
+
+  KeyframeAnimationDriver({
+    required super.vsync,
+    required KeyframeAnimationConfig<S> config,
+    required super.initialSpec,
+    required this.context,
+  }) : _config = config {
+    _sequenceMap = {
+      for (final track in _config.timeline)
+        track.key: track.createSequenceTween(),
+    };
+
+    _animation = controller.drive(
+      _KeyframeAnimatable(_sequenceMap, _config, context),
+    );
+
+    // Listen to the trigger
+    _config.trigger.addListener(_onTriggerChanged);
+  }
+
+  void _onTriggerChanged() {
+    executeAnimation();
+  }
+
+  Duration get duration {
+    if (_config.timeline.isEmpty) return Duration.zero;
+
+    return _config.timeline.fold(
+      Duration.zero,
+      (max, t) => t.totalDuration > max ? t.totalDuration : max,
+    );
+  }
+
+  @override
+  void dispose() {
+    _config.trigger.removeListener(_onTriggerChanged);
+    super.dispose();
+  }
+
+  @override
+  Future<void> executeAnimation() async {
+    controller.duration = duration;
+
+    try {
+      await controller.forward(from: 0.0);
+    } on TickerCanceled {
+      // Animation was cancelled - this is normal
+    }
+  }
+}
+
+class _KeyframeAnimatable<S extends WidgetSpec<S>> extends Animatable<S?> {
+  final Map<String, TweenSequence> _sequenceMap;
+  final KeyframeAnimationConfig<S> _config;
+  final BuildContext _context;
+
+  const _KeyframeAnimatable(this._sequenceMap, this._config, this._context);
+
+  @override
+  S transform(double t) {
+    Map<String, Object> result = {};
+    for (final entry in _sequenceMap.entries) {
+      final value = entry.value.transform(t);
+      result[entry.key] = value;
+    }
+
+    return _config.styleBuilder(result, _config.initialStyle).resolve(_context);
+  }
+}

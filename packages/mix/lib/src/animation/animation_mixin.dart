@@ -4,9 +4,25 @@ import '../core/style.dart';
 import '../core/widget_spec.dart';
 import 'animation_config.dart';
 
-mixin StyleAnimationMixin<S extends WidgetSpec<S>, T extends Style<S>> on Style<S> {
+mixin StyleAnimationMixin<S extends WidgetSpec<S>, T extends Style<S>>
+    on Style<S> {
   @protected
   T animate(AnimationConfig config);
+
+  T keyframes({
+    required Listenable trigger,
+    required List<KeyframeTrack> timeline,
+    required KeyframeStyleBuilder<S, Style<S>> styleBuilder,
+  }) {
+    return animate(
+      KeyframeAnimationConfig<S>(
+        trigger: trigger,
+        timeline: timeline,
+        styleBuilder: styleBuilder,
+        initialStyle: this,
+      ),
+    );
+  }
 
   T phaseAnimation<P>({
     required Listenable trigger,

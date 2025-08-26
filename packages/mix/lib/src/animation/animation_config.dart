@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import '../core/internal/compare_mixin.dart';
 import '../core/internal/constants.dart';
 import '../core/spec.dart';
 import '../core/style.dart';
@@ -922,4 +923,107 @@ class PhaseAnimationConfig<T extends WidgetSpec<T>, U extends Style<T>>
 
   @override
   int get hashCode => Object.hash(styles, trigger, curveConfigs);
+}
+
+// final kScale = Key<double>('scale');
+// final kColor = Key<Color>('color');
+
+// BoxMix()
+//   .height(30)
+//   .width(40)
+//   .color(Colors.white)
+//   .keyframes(
+//     trigger: _trigger,
+//     timeline: [
+//       KeyframeTrack(kScale,[
+//         KeyframeSegment(100.ms, 0),
+//         KeyframeSegment(250.ms, 1, curve: Curves.easeOut),
+//         KeyframeSegment(100.ms, 0.3, curve: SpringCurve(stiffness: 180, damping: 18)),
+//       ]),
+//       KeyframeTrack(kColor, tweenBuilder: ColorTween.new, [
+//         KeyframeSegment(1000.ms, Colors.white),
+//         KeyframeSegment(250.ms, Colors.red, curve: Curves.easeOut),
+//         KeyframeSegment(100.ms, Colors.green, curve: SpringCurve(stiffness: 180, damping: 18)),
+//       ])
+//     ],
+//     styleBuilder: (t, s) => s
+//       .scale(t[kScale])
+//       .color(t[kColor]),
+//   )
+
+class KeyframeSegment<T> with Equatable {
+  final Duration duration;
+  final T value;
+  final Curve curve;
+
+  const KeyframeSegment(
+    this.duration,
+    this.value, {
+    this.curve = Curves.linear,
+  });
+
+  @override
+  List<Object?> get props => [duration, value, curve];
+}
+
+typedef TweenBuilder<T> = Tween<T> Function({T? begin, T? end});
+
+class KeyframeTrack<T> with Equatable {
+  final String key;
+  final List<KeyframeSegment<T>> segments;
+  final T initialValue;
+  final TweenBuilder<T> tweenBuilder;
+
+  KeyframeTrack(
+    this.key,
+    this.segments, {
+    required this.initialValue,
+    TweenBuilder<T>? tweenBuilder,
+  }) : tweenBuilder = tweenBuilder ?? Tween<T>.new;
+
+  /// Creates a tween for interpolating between two values.
+  /// Uses the custom tweenBuilder if provided, otherwise falls back to default behavior.
+  TweenSequence<T> createSequenceTween() {
+    final items = <TweenSequenceItem<T>>[];
+    T current = initialValue;
+
+    for (final segment in segments) {
+      final end = segment.value;
+      final tween = tweenBuilder(begin: current, end: end);
+
+      items.add(
+        TweenSequenceItem(
+          tween: tween.chain(CurveTween(curve: segment.curve)),
+          weight: segment.duration.inMilliseconds.toDouble(),
+        ),
+      );
+      current = end;
+    }
+
+    return TweenSequence(items);
+  }
+
+  @override
+  List<Object?> get props => [key, segments, tweenBuilder];
+}
+
+typedef KeyframeStyleBuilder<T extends WidgetSpec<T>, U extends Style<T>> =
+    U Function(Map<String, Object> result, U style);
+
+class KeyframeAnimationConfig<S extends WidgetSpec<S>> extends AnimationConfig
+    with Equatable {
+  final Listenable trigger;
+  final List<KeyframeTrack> timeline;
+  final KeyframeStyleBuilder<S, Style<S>> styleBuilder;
+  final Style<S> initialStyle;
+
+  const KeyframeAnimationConfig({
+    required this.trigger,
+    required this.timeline,
+    required this.styleBuilder,
+    required this.initialStyle,
+  });
+
+  @override
+  List<Object?> get props => [trigger, timeline, styleBuilder];
 }

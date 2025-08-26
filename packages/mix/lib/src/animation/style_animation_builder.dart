@@ -66,6 +66,13 @@ class _StyleAnimationBuilderState<S extends WidgetSpec<S>>
         trigger: config.trigger,
         mode: config.mode,
       ),
+      // ignore: avoid-undisposed-instances
+      KeyframeAnimationConfig() => KeyframeAnimationDriver<S>(
+        vsync: this,
+        config: config as KeyframeAnimationConfig<S>,
+        initialSpec: widget.spec,
+        context: context,
+      ),
     };
   }
 
@@ -75,15 +82,15 @@ class _StyleAnimationBuilderState<S extends WidgetSpec<S>>
     super.dispose();
   }
 
-  @override
-  void didUpdateWidget(StyleAnimationBuilder<S> oldWidget) {
-    super.didUpdateWidget(oldWidget);
+  // @override
+  // void didUpdateWidget(StyleAnimationBuilder<S> oldWidget) {
+  //   super.didUpdateWidget(oldWidget);
 
-    // Animate to new spec if changed
-    if (oldWidget.spec != widget.spec) {
-      animationDriver.animateTo(widget.spec);
-    }
-  }
+  //   // Animate to spec if changed
+  //   if (oldWidget.spec != widget.spec) {
+  //     animationDriver.animateTo(widget.spec);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
