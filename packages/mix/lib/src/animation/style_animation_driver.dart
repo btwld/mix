@@ -65,6 +65,9 @@ abstract class StyleAnimationDriver<S extends Spec<S>> {
   /// Gets the animation that drives spec changes.
   Animation<S?> get animation => _animation;
 
+  /// Whether the animation should automatically animate to the new spec when the spec changes.
+  bool get autoAnimateOnUpdate;
+
   /// Animates to the given target spec.
   @nonVirtual
   Future<void> animateTo(S targetSpec) async {
@@ -149,6 +152,9 @@ class CurveAnimationDriver<S extends WidgetSpec<S>>
       // Animation was cancelled - this is normal
     }
   }
+
+  @override
+  bool get autoAnimateOnUpdate => true;
 }
 
 /// A driver for spring-based physics animations.
@@ -182,6 +188,9 @@ class SpringAnimationDriver<S extends WidgetSpec<S>>
       // Animation was cancelled - this is normal
     }
   }
+
+  @override
+  bool get autoAnimateOnUpdate => true;
 }
 
 class PhaseAnimationDriver<S extends WidgetSpec<S>>
@@ -241,16 +250,9 @@ class PhaseAnimationDriver<S extends WidgetSpec<S>>
 
     await controller.forward(from: 0.0);
   }
-}
 
-extension<T> on KeyframeTrack<T> {
-  /// Calculates the total duration of this track.
-  Duration get totalDuration {
-    return segments.fold(
-      Duration.zero,
-      (total, segment) => total + segment.duration,
-    );
-  }
+  @override
+  bool get autoAnimateOnUpdate => false;
 }
 
 /// A driver for keyframe-based animations with complex timeline control.
@@ -259,7 +261,7 @@ class KeyframeAnimationDriver<S extends WidgetSpec<S>>
   final BuildContext context;
 
   final KeyframeAnimationConfig<S> _config;
-  late final Map<String, TweenSequence> _sequenceMap;
+  late final Map<String, Animatable> _sequenceMap;
 
   KeyframeAnimationDriver({
     required super.vsync,
@@ -269,11 +271,11 @@ class KeyframeAnimationDriver<S extends WidgetSpec<S>>
   }) : _config = config {
     _sequenceMap = {
       for (final track in _config.timeline)
-        track.key: track.createSequenceTween(),
+        track.id: track.createSequenceTween(duration),
     };
 
     _animation = controller.drive(
-      _KeyframeAnimatable(_sequenceMap, _config, context),
+      _KeyframeAnimatable<S>(_sequenceMap, _config, context),
     );
 
     // Listen to the trigger
@@ -309,10 +311,13 @@ class KeyframeAnimationDriver<S extends WidgetSpec<S>>
       // Animation was cancelled - this is normal
     }
   }
+
+  @override
+  bool get autoAnimateOnUpdate => false;
 }
 
 class _KeyframeAnimatable<S extends WidgetSpec<S>> extends Animatable<S?> {
-  final Map<String, TweenSequence> _sequenceMap;
+  final Map<String, Animatable> _sequenceMap;
   final KeyframeAnimationConfig<S> _config;
   final BuildContext _context;
 
@@ -326,6 +331,8 @@ class _KeyframeAnimatable<S extends WidgetSpec<S>> extends Animatable<S?> {
       result[entry.key] = value;
     }
 
-    return _config.styleBuilder(result, _config.initialStyle).resolve(_context);
+    return _config
+        .styleBuilder(KeyframeAnimationResult(result), _config.initialStyle)
+        .resolve(_context);
   }
 }

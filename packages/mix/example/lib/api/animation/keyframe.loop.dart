@@ -24,30 +24,22 @@ class DemoApp extends StatefulWidget {
   State<DemoApp> createState() => _DemoAppState();
 }
 
-class _DemoAppState extends State<DemoApp> with TickerProviderStateMixin {
-  late final AnimationController _controller;
-  late final CurvedAnimation _animatedCurve;
-  final Tween<double> _tween = Tween<double>(begin: -1, end: 1);
+class _DemoAppState extends State<DemoApp> {
+  final trigger = ValueNotifier(0);
   Timer? _timer;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(duration: 1500.ms, vsync: this);
-    _animatedCurve = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    );
 
-    _timer = Timer.periodic(3.s, (timer) {
-      _controller.forward(from: 0);
+    _timer = Timer.periodic(5.s, (timer) {
+      trigger.value++;
     });
   }
 
   @override
   void dispose() {
     _timer?.cancel();
-    _controller.dispose();
     super.dispose();
   }
 
@@ -66,12 +58,25 @@ class _DemoAppState extends State<DemoApp> with TickerProviderStateMixin {
                   Colors.white.withValues(alpha: 0),
                 ])
                 .stops([0.0, 0.3, 0.4, 1])
-                .tileMode(TileMode.clamp)
-                .transform(
-                  _SlidingGradientTransform(
-                    slidePercent: _tween.animate(_animatedCurve).value,
+                .tileMode(TileMode.clamp),
+          ),
+        )
+        .keyframes(
+          trigger: trigger,
+          timeline: [
+            KeyframeTrack<double>('progress', initial: -1, [
+              Keyframe.ease(1, 2000.ms),
+            ]),
+          ],
+          styleBuilder: (values, style) => style.foregroundDecoration(
+            BoxDecorationMix.gradient(
+              LinearGradientMix() //
+                  .transform(
+                    _SlidingGradientTransform(
+                      slidePercent: values.get('progress'),
+                    ),
                   ),
-                ),
+            ),
           ),
         ),
   );
@@ -80,19 +85,16 @@ class _DemoAppState extends State<DemoApp> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: AnimatedBuilder(
-          animation: _animatedCurve,
-          builder: (context, child) {
-            return Box(
-              style: _boxStyle,
-              child: StyledText(
-                'Update',
-                style: Style.text(
-                  TextMix().color(Colors.white).fontWeight(FontWeight.w500),
-                ),
-              ),
-            );
-          },
+        child: Box(
+          style: _boxStyle,
+          child: StyledText(
+            'Update',
+            style: Style.text(
+              TextMix() //
+                  .color(Colors.white)
+                  .fontWeight(FontWeight.w500),
+            ),
+          ),
         ),
       ),
     );

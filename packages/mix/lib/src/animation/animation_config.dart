@@ -925,42 +925,132 @@ class PhaseAnimationConfig<T extends WidgetSpec<T>, U extends Style<T>>
   int get hashCode => Object.hash(styles, trigger, curveConfigs);
 }
 
-// final kScale = Key<double>('scale');
-// final kColor = Key<Color>('color');
-
-// BoxMix()
-//   .height(30)
-//   .width(40)
-//   .color(Colors.white)
-//   .keyframes(
-//     trigger: _trigger,
-//     timeline: [
-//       KeyframeTrack(kScale,[
-//         KeyframeSegment(100.ms, 0),
-//         KeyframeSegment(250.ms, 1, curve: Curves.easeOut),
-//         KeyframeSegment(100.ms, 0.3, curve: SpringCurve(stiffness: 180, damping: 18)),
-//       ]),
-//       KeyframeTrack(kColor, tweenBuilder: ColorTween.new, [
-//         KeyframeSegment(1000.ms, Colors.white),
-//         KeyframeSegment(250.ms, Colors.red, curve: Curves.easeOut),
-//         KeyframeSegment(100.ms, Colors.green, curve: SpringCurve(stiffness: 180, damping: 18)),
-//       ])
-//     ],
-//     styleBuilder: (t, s) => s
-//       .scale(t[kScale])
-//       .color(t[kColor]),
-//   )
-
-class KeyframeSegment<T> with Equatable {
+class Keyframe<T> with Equatable {
   final Duration duration;
   final T value;
   final Curve curve;
 
-  const KeyframeSegment(
-    this.duration,
-    this.value, {
-    this.curve = Curves.linear,
-  });
+  const Keyframe(this.value, this.duration, {required this.curve});
+
+  const Keyframe.linear(T value, Duration duration)
+    : this(value, duration, curve: Curves.linear);
+
+  const Keyframe.decelerate(T value, Duration duration)
+    : this(value, duration, curve: Curves.decelerate);
+
+  const Keyframe.ease(T value, Duration duration)
+    : this(value, duration, curve: Curves.ease);
+
+  const Keyframe.easeIn(T value, Duration duration)
+    : this(value, duration, curve: Curves.easeIn);
+
+  const Keyframe.easeInToLinear(T value, Duration duration)
+    : this(value, duration, curve: Curves.easeInToLinear);
+
+  const Keyframe.easeInSine(T value, Duration duration)
+    : this(value, duration, curve: Curves.easeInSine);
+
+  const Keyframe.easeInQuad(T value, Duration duration)
+    : this(value, duration, curve: Curves.easeInQuad);
+
+  const Keyframe.easeInCubic(T value, Duration duration)
+    : this(value, duration, curve: Curves.easeInCubic);
+
+  const Keyframe.easeInQuart(T value, Duration duration)
+    : this(value, duration, curve: Curves.easeInQuart);
+
+  const Keyframe.easeInQuint(T value, Duration duration)
+    : this(value, duration, curve: Curves.easeInQuint);
+
+  const Keyframe.easeInExpo(T value, Duration duration)
+    : this(value, duration, curve: Curves.easeInExpo);
+
+  const Keyframe.easeInCirc(T value, Duration duration)
+    : this(value, duration, curve: Curves.easeInCirc);
+
+  const Keyframe.easeInBack(T value, Duration duration)
+    : this(value, duration, curve: Curves.easeInBack);
+
+  const Keyframe.easeOut(T value, Duration duration)
+    : this(value, duration, curve: Curves.easeOut);
+
+  const Keyframe.linearToEaseOut(T value, Duration duration)
+    : this(value, duration, curve: Curves.linearToEaseOut);
+
+  const Keyframe.easeOutSine(T value, Duration duration)
+    : this(value, duration, curve: Curves.easeOutSine);
+
+  const Keyframe.easeOutQuad(T value, Duration duration)
+    : this(value, duration, curve: Curves.easeOutQuad);
+
+  const Keyframe.easeOutCubic(T value, Duration duration)
+    : this(value, duration, curve: Curves.easeOutCubic);
+
+  const Keyframe.easeOutQuart(T value, Duration duration)
+    : this(value, duration, curve: Curves.easeOutQuart);
+
+  const Keyframe.easeOutQuint(T value, Duration duration)
+    : this(value, duration, curve: Curves.easeOutQuint);
+
+  const Keyframe.easeOutExpo(T value, Duration duration)
+    : this(value, duration, curve: Curves.easeOutExpo);
+
+  const Keyframe.easeOutCirc(T value, Duration duration)
+    : this(value, duration, curve: Curves.easeOutCirc);
+
+  const Keyframe.easeOutBack(T value, Duration duration)
+    : this(value, duration, curve: Curves.easeOutBack);
+
+  const Keyframe.easeInOut(T value, Duration duration)
+    : this(value, duration, curve: Curves.easeInOut);
+
+  const Keyframe.easeInOutSine(T value, Duration duration)
+    : this(value, duration, curve: Curves.easeInOutSine);
+
+  const Keyframe.easeInOutQuad(T value, Duration duration)
+    : this(value, duration, curve: Curves.easeInOutQuad);
+
+  const Keyframe.easeInOutCubic(T value, Duration duration)
+    : this(value, duration, curve: Curves.easeInOutCubic);
+
+  const Keyframe.easeInOutQuart(T value, Duration duration)
+    : this(value, duration, curve: Curves.easeInOutQuart);
+
+  const Keyframe.easeInOutQuint(T value, Duration duration)
+    : this(value, duration, curve: Curves.easeInOutQuint);
+
+  const Keyframe.easeInOutExpo(T value, Duration duration)
+    : this(value, duration, curve: Curves.easeInOutExpo);
+
+  const Keyframe.easeInOutCirc(T value, Duration duration)
+    : this(value, duration, curve: Curves.easeInOutCirc);
+
+  const Keyframe.easeInOutBack(T value, Duration duration)
+    : this(value, duration, curve: Curves.easeInOutBack);
+
+  const Keyframe.fastOutSlowIn(T value, Duration duration)
+    : this(value, duration, curve: Curves.fastOutSlowIn);
+
+  const Keyframe.slowMiddle(T value, Duration duration)
+    : this(value, duration, curve: Curves.slowMiddle);
+
+  const Keyframe.bounceIn(T value, Duration duration)
+    : this(value, duration, curve: Curves.bounceIn);
+
+  const Keyframe.bounceOut(T value, Duration duration)
+    : this(value, duration, curve: Curves.bounceOut);
+
+  const Keyframe.bounceInOut(T value, Duration duration)
+    : this(value, duration, curve: Curves.bounceInOut);
+
+  const Keyframe.elasticIn(T value, Duration duration)
+    : this(value, duration, curve: Curves.elasticIn);
+
+  const Keyframe.elasticOut(T value, Duration duration)
+    : this(value, duration, curve: Curves.elasticOut);
+
+  const Keyframe.elasticInOut(T value, Duration duration)
+    : this(value, duration, curve: Curves.elasticInOut);
 
   @override
   List<Object?> get props => [duration, value, curve];
@@ -969,23 +1059,30 @@ class KeyframeSegment<T> with Equatable {
 typedef TweenBuilder<T> = Tween<T> Function({T? begin, T? end});
 
 class KeyframeTrack<T> with Equatable {
-  final String key;
-  final List<KeyframeSegment<T>> segments;
-  final T initialValue;
-  final TweenBuilder<T> tweenBuilder;
+  final String id;
+  final List<Keyframe<T>> segments;
+  final T initial;
+  final TweenBuilder<T?> tweenBuilder;
 
   KeyframeTrack(
-    this.key,
+    this.id,
     this.segments, {
-    required this.initialValue,
-    TweenBuilder<T>? tweenBuilder,
+    required this.initial,
+    TweenBuilder<T?>? tweenBuilder,
   }) : tweenBuilder = tweenBuilder ?? Tween<T>.new;
+
+  Duration get totalDuration {
+    return segments.fold(
+      Duration.zero,
+      (total, segment) => total + segment.duration,
+    );
+  }
 
   /// Creates a tween for interpolating between two values.
   /// Uses the custom tweenBuilder if provided, otherwise falls back to default behavior.
-  TweenSequence<T> createSequenceTween() {
-    final items = <TweenSequenceItem<T>>[];
-    T current = initialValue;
+  Animatable<T?> createSequenceTween(Duration timelineDuration) {
+    final items = <TweenSequenceItem<T?>>[];
+    T current = initial;
 
     for (final segment in segments) {
       final end = segment.value;
@@ -1000,15 +1097,44 @@ class KeyframeTrack<T> with Equatable {
       current = end;
     }
 
-    return TweenSequence(items);
+    return TweenSequence(items).chain(
+      CurveTween(
+        curve: Interval(
+          0.0,
+          totalDuration.inMilliseconds.toDouble() /
+              timelineDuration.inMilliseconds,
+        ),
+      ),
+    );
   }
 
   @override
-  List<Object?> get props => [key, segments, tweenBuilder];
+  List<Object?> get props => [id, segments, tweenBuilder];
 }
 
 typedef KeyframeStyleBuilder<T extends WidgetSpec<T>, U extends Style<T>> =
-    U Function(Map<String, Object> result, U style);
+    U Function(KeyframeAnimationResult result, U style);
+
+class KeyframeAnimationResult {
+  final Map<String, Object> _result;
+
+  const KeyframeAnimationResult(this._result);
+
+  T get<T>(String key) {
+    if (!_result.containsKey(key)) {
+      throw ArgumentError('Key "$key" not found in KeyframeAnimationResult.');
+    }
+    final value = _result[key];
+    if (value is! T) {
+      throw StateError(
+        'Value for key "$key" is not of expected type $T. '
+        'Actual type: ${value.runtimeType}',
+      );
+    }
+
+    return value;
+  }
+}
 
 class KeyframeAnimationConfig<S extends WidgetSpec<S>> extends AnimationConfig
     with Equatable {

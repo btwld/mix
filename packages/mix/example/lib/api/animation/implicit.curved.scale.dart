@@ -37,7 +37,7 @@ class _ExampleState extends State<Example> {
         .transformAlignment(.center)
         .translate(appear ? 0 : -50, 0)
         .scale(appear ? 1 : 0.1)
-        .animate(.easeInOut(1.s))
+        .animate(.spring(1.s))
     );
 
     return Box(style: style);

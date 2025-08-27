@@ -12,13 +12,13 @@ mixin StyleAnimationMixin<S extends WidgetSpec<S>, T extends Style<S>>
   T keyframes({
     required Listenable trigger,
     required List<KeyframeTrack> timeline,
-    required KeyframeStyleBuilder<S, Style<S>> styleBuilder,
+    required KeyframeStyleBuilder<S, T> styleBuilder,
   }) {
     return animate(
       KeyframeAnimationConfig<S>(
         trigger: trigger,
         timeline: timeline,
-        styleBuilder: styleBuilder,
+        styleBuilder: (values, style) => styleBuilder(values, style as T),
         initialStyle: this,
       ),
     );
