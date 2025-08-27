@@ -18,9 +18,9 @@ import 'flexbox_style.dart';
 
 /// Mix class for configuring [FlexBoxSpec] properties using composition.
 ///
-/// Combines BoxMix (container properties) and FlexMix (flex layout properties)
+/// Combines BoxMix (box properties) and FlexMix (flex layout properties)
 /// in a unified Mix class, providing clean separation of concerns while maintaining
-/// the full feature set for flex container styling.
+/// the full feature set for flex box styling.
 final class FlexBoxMix extends Mix<FlexBoxSpec>
     with
         DecorationMixin<FlexBoxMix>,
@@ -29,62 +29,60 @@ final class FlexBoxMix extends Mix<FlexBoxSpec>
         TransformMixin<FlexBoxMix>,
         BorderRadiusMixin<FlexBoxMix>,
         Diagnosticable {
-  final BoxMix? container;
+  final BoxMix? box;
   final FlexMix? flex;
 
   /// Main constructor with Mix composition
-  const FlexBoxMix({this.container, this.flex});
+  const FlexBoxMix({this.box, this.flex});
 
   // Container properties delegation
   factory FlexBoxMix.color(Color value) {
-    return FlexBoxMix(container: BoxMix.color(value));
+    return FlexBoxMix(box: BoxMix.color(value));
   }
 
   factory FlexBoxMix.decoration(DecorationMix value) {
-    return FlexBoxMix(container: BoxMix.decoration(value));
+    return FlexBoxMix(box: BoxMix.decoration(value));
   }
 
   factory FlexBoxMix.foregroundDecoration(DecorationMix value) {
-    return FlexBoxMix(container: BoxMix.foregroundDecoration(value));
+    return FlexBoxMix(box: BoxMix.foregroundDecoration(value));
   }
 
   factory FlexBoxMix.alignment(AlignmentGeometry value) {
-    return FlexBoxMix(container: BoxMix.alignment(value));
+    return FlexBoxMix(box: BoxMix.alignment(value));
   }
 
   factory FlexBoxMix.padding(EdgeInsetsGeometryMix value) {
-    return FlexBoxMix(container: BoxMix.padding(value));
+    return FlexBoxMix(box: BoxMix.padding(value));
   }
 
   factory FlexBoxMix.margin(EdgeInsetsGeometryMix value) {
-    return FlexBoxMix(container: BoxMix.margin(value));
+    return FlexBoxMix(box: BoxMix.margin(value));
   }
 
   factory FlexBoxMix.transform(Matrix4 value) {
-    return FlexBoxMix(container: BoxMix.transform(value));
+    return FlexBoxMix(box: BoxMix.transform(value));
   }
 
   factory FlexBoxMix.transformAlignment(AlignmentGeometry value) {
-    return FlexBoxMix(container: BoxMix.transformAlignment(value));
+    return FlexBoxMix(box: BoxMix.transformAlignment(value));
   }
 
   factory FlexBoxMix.clipBehavior(Clip value) {
-    return FlexBoxMix(container: BoxMix.clipBehavior(value));
+    return FlexBoxMix(box: BoxMix.clipBehavior(value));
   }
 
   factory FlexBoxMix.constraints(BoxConstraintsMix value) {
-    return FlexBoxMix(container: BoxMix.constraints(value));
+    return FlexBoxMix(box: BoxMix.constraints(value));
   }
 
   factory FlexBoxMix.width(double value) {
-    return FlexBoxMix(
-      container: BoxMix(constraints: BoxConstraintsMix.width(value)),
-    );
+    return FlexBoxMix(box: BoxMix(constraints: BoxConstraintsMix.width(value)));
   }
 
   factory FlexBoxMix.height(double value) {
     return FlexBoxMix(
-      container: BoxMix(constraints: BoxConstraintsMix.height(value)),
+      box: BoxMix(constraints: BoxConstraintsMix.height(value)),
     );
   }
 
@@ -191,7 +189,7 @@ final class FlexBoxMix extends Mix<FlexBoxSpec>
   /// Factory constructor to create FlexBoxMix from FlexBoxSpec.
   static FlexBoxMix value(FlexBoxSpec spec) {
     return FlexBoxMix(
-      container: spec.container != null ? BoxMix.value(spec.container!) : null,
+      box: spec.box != null ? BoxMix.value(spec.box!) : null,
       flex: spec.flex != null ? FlexMix.value(spec.flex!) : null,
     );
   }
@@ -222,7 +220,7 @@ final class FlexBoxMix extends Mix<FlexBoxSpec>
 
   @override
   FlexBoxMix borderRadius(BorderRadiusGeometryMix value) {
-    return merge(FlexBoxMix(container: BoxMix.borderRadius(value)));
+    return merge(FlexBoxMix(box: BoxMix.borderRadius(value)));
   }
 
   @override
@@ -253,7 +251,7 @@ final class FlexBoxMix extends Mix<FlexBoxSpec>
   @override
   FlexBoxSpec resolve(BuildContext context) {
     return FlexBoxSpec(
-      container: container?.resolve(context),
+      box: box?.resolve(context),
       flex: flex?.resolve(context),
     );
   }
@@ -263,7 +261,7 @@ final class FlexBoxMix extends Mix<FlexBoxSpec>
     if (other == null) return this;
 
     return FlexBoxMix(
-      container: container?.merge(other.container) ?? other.container,
+      box: box?.merge(other.box) ?? other.box,
       flex: flex?.merge(other.flex) ?? other.flex,
     );
   }
@@ -272,19 +270,15 @@ final class FlexBoxMix extends Mix<FlexBoxSpec>
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-      ..add(DiagnosticsProperty('container', container))
+      ..add(DiagnosticsProperty('box', box))
       ..add(DiagnosticsProperty('flex', flex));
   }
 
   @override
-  List<Object?> get props => [container, flex];
+  List<Object?> get props => [box, flex];
 }
 
 extension FlexBoxMixToStyle on FlexBoxMix {
   /// Converts this FlexBoxMix to a FlexBoxStyle
   FlexBoxStyle toStyle() => FlexBoxStyle.from(this);
 }
-
-/// Legacy alias for FlexBoxMix to maintain backward compatibility.
-/// @deprecated Use FlexBoxMix directly instead.
-typedef FlexContainerMix = FlexBoxMix;

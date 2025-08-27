@@ -7,7 +7,7 @@ void main() {
   group('FlexBoxMix', () {
     test('should create instance with container and flex', () {
       final mix = FlexBoxMix(
-        container: BoxMix(
+        box: BoxMix(
           decoration: DecorationMix.color(Colors.red),
           padding: EdgeInsetsGeometryMix.all(10),
         ),
@@ -19,7 +19,7 @@ void main() {
       );
 
       expect(mix, isA<FlexBoxMix>());
-      expect(mix.container, isNotNull);
+      expect(mix.box, isNotNull);
       expect(mix.flex, isNotNull);
     });
 
@@ -27,34 +27,29 @@ void main() {
       final mix = FlexBoxMix();
 
       expect(mix, isA<FlexBoxMix>());
-      expect(mix.container, isNull);
+      expect(mix.box, isNull);
       expect(mix.flex, isNull);
     });
 
     test('should merge two instances correctly', () {
       final mix1 = FlexBoxMix(
-        container: BoxMix(decoration: DecorationMix.color(Colors.red)),
+        box: BoxMix(decoration: DecorationMix.color(Colors.red)),
       );
-      final mix2 = FlexBoxMix(
-        flex: FlexMix(direction: Axis.horizontal),
-      );
+      final mix2 = FlexBoxMix(flex: FlexMix(direction: Axis.horizontal));
 
       final merged = mix1.merge(mix2);
 
-      expect(merged.container, isNotNull);
+      expect(merged.box, isNotNull);
       expect(merged.flex, isNotNull);
     });
 
     test('should resolve to FlexBoxSpec correctly', () {
       final mix = FlexBoxMix(
-        container: BoxMix(
+        box: BoxMix(
           decoration: DecorationMix.color(Colors.red),
           padding: EdgeInsetsGeometryMix.all(10),
         ),
-        flex: FlexMix(
-          direction: Axis.horizontal,
-          spacing: 8.0,
-        ),
+        flex: FlexMix(direction: Axis.horizontal, spacing: 8.0),
       );
 
       final context = MockBuildContext();
@@ -65,11 +60,11 @@ void main() {
 
     test('equality should work correctly', () {
       final mix1 = FlexBoxMix(
-        container: BoxMix(decoration: DecorationMix.color(Colors.red)),
+        box: BoxMix(decoration: DecorationMix.color(Colors.red)),
         flex: FlexMix(direction: Axis.horizontal),
       );
       final mix2 = FlexBoxMix(
-        container: BoxMix(decoration: DecorationMix.color(Colors.red)),
+        box: BoxMix(decoration: DecorationMix.color(Colors.red)),
         flex: FlexMix(direction: Axis.horizontal),
       );
 
@@ -78,7 +73,7 @@ void main() {
 
     test('hashCode should be consistent', () {
       final mix = FlexBoxMix(
-        container: BoxMix(decoration: DecorationMix.color(Colors.red)),
+        box: BoxMix(decoration: DecorationMix.color(Colors.red)),
         flex: FlexMix(direction: Axis.horizontal),
       );
 
@@ -88,24 +83,20 @@ void main() {
     group('merge behavior', () {
       test('should merge container properties', () {
         final mix1 = FlexBoxMix(
-          container: BoxMix(decoration: DecorationMix.color(Colors.red)),
+          box: BoxMix(decoration: DecorationMix.color(Colors.red)),
         );
         final mix2 = FlexBoxMix(
-          container: BoxMix(padding: EdgeInsetsGeometryMix.all(10)),
+          box: BoxMix(padding: EdgeInsetsGeometryMix.all(10)),
         );
 
         final merged = mix1.merge(mix2);
 
-        expect(merged.container, isNotNull);
+        expect(merged.box, isNotNull);
       });
 
       test('should merge flex properties', () {
-        final mix1 = FlexBoxMix(
-          flex: FlexMix(direction: Axis.horizontal),
-        );
-        final mix2 = FlexBoxMix(
-          flex: FlexMix(spacing: 10.0),
-        );
+        final mix1 = FlexBoxMix(flex: FlexMix(direction: Axis.horizontal));
+        final mix2 = FlexBoxMix(flex: FlexMix(spacing: 10.0));
 
         final merged = mix1.merge(mix2);
 
@@ -113,12 +104,8 @@ void main() {
       });
 
       test('should override properties when merging', () {
-        final mix1 = FlexBoxMix(
-          flex: FlexMix(direction: Axis.horizontal),
-        );
-        final mix2 = FlexBoxMix(
-          flex: FlexMix(direction: Axis.vertical),
-        );
+        final mix1 = FlexBoxMix(flex: FlexMix(direction: Axis.horizontal));
+        final mix2 = FlexBoxMix(flex: FlexMix(direction: Axis.vertical));
 
         final merged = mix1.merge(mix2);
 
@@ -129,12 +116,12 @@ void main() {
     group('props', () {
       test('should include container and flex in props', () {
         final mix = FlexBoxMix(
-          container: BoxMix(decoration: DecorationMix.color(Colors.red)),
+          box: BoxMix(decoration: DecorationMix.color(Colors.red)),
           flex: FlexMix(direction: Axis.horizontal),
         );
 
         expect(mix.props.length, equals(2));
-        expect(mix.props, contains(mix.container));
+        expect(mix.props, contains(mix.box));
         expect(mix.props, contains(mix.flex));
       });
     });
@@ -142,7 +129,7 @@ void main() {
     group('debugFillProperties', () {
       test('should add container and flex to diagnostics', () {
         final mix = FlexBoxMix(
-          container: BoxMix(decoration: DecorationMix.color(Colors.red)),
+          box: BoxMix(decoration: DecorationMix.color(Colors.red)),
           flex: FlexMix(direction: Axis.horizontal),
         );
 
@@ -160,26 +147,32 @@ class MockBuildContext implements BuildContext {
   bool get debugDoingBuild => false;
 
   @override
-  InheritedWidget dependOnInheritedElement(InheritedElement ancestor,
-      {Object? aspect}) {
+  InheritedWidget dependOnInheritedElement(
+    InheritedElement ancestor, {
+    Object? aspect,
+  }) {
     throw UnimplementedError();
   }
 
   @override
-  T? dependOnInheritedWidgetOfExactType<T extends InheritedWidget>(
-      {Object? aspect}) {
+  T? dependOnInheritedWidgetOfExactType<T extends InheritedWidget>({
+    Object? aspect,
+  }) {
     return null;
   }
 
   @override
-  DiagnosticsNode describeElement(String name,
-      {DiagnosticsTreeStyle style = DiagnosticsTreeStyle.errorProperty}) {
+  DiagnosticsNode describeElement(
+    String name, {
+    DiagnosticsTreeStyle style = DiagnosticsTreeStyle.errorProperty,
+  }) {
     throw UnimplementedError();
   }
 
   @override
-  List<DiagnosticsNode> describeMissingAncestor(
-      {required Type expectedAncestorType}) {
+  List<DiagnosticsNode> describeMissingAncestor({
+    required Type expectedAncestorType,
+  }) {
     throw UnimplementedError();
   }
 
@@ -189,8 +182,10 @@ class MockBuildContext implements BuildContext {
   }
 
   @override
-  DiagnosticsNode describeWidget(String name,
-      {DiagnosticsTreeStyle style = DiagnosticsTreeStyle.errorProperty}) {
+  DiagnosticsNode describeWidget(
+    String name, {
+    DiagnosticsTreeStyle style = DiagnosticsTreeStyle.errorProperty,
+  }) {
     throw UnimplementedError();
   }
 
@@ -224,7 +219,7 @@ class MockBuildContext implements BuildContext {
 
   @override
   InheritedElement?
-      getElementForInheritedWidgetOfExactType<T extends InheritedWidget>() {
+  getElementForInheritedWidgetOfExactType<T extends InheritedWidget>() {
     return null;
   }
 

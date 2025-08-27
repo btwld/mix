@@ -8,8 +8,8 @@ import '../specs/flex/flex_style.dart';
 import '../specs/flexbox/flexbox_style.dart';
 import '../specs/icon/icon_style.dart';
 import '../specs/image/image_style.dart';
-import '../specs/stack/stack_style.dart';
 import '../specs/stack/stack_box_style.dart';
+import '../specs/stack/stack_style.dart';
 import '../specs/text/text_style.dart';
 import '../variants/variant.dart';
 import 'internal/compare_mixin.dart';
@@ -24,7 +24,7 @@ sealed class StyleElement {
   const StyleElement();
 }
 
-/// Base class for style containers that can be resolved to specifications.
+/// Base class for style classes that can be resolved to specifications.
 ///
 /// Provides variant support, modifiers, and animation configuration for styled elements.
 abstract class Style<S extends Spec<S>> extends Mix<WidgetSpec<S>>
@@ -165,7 +165,10 @@ abstract class Style<S extends Spec<S>> extends Mix<WidgetSpec<S>>
   /// Builds the style into a fully resolved spec with metadata.
   ///
   /// This method resolves the style, which now includes animation, modifiers, and inherit metadata.
-  WidgetSpec<S> build(BuildContext context, {Set<NamedVariant> namedVariants = const {}}) {
+  WidgetSpec<S> build(
+    BuildContext context, {
+    Set<NamedVariant> namedVariants = const {},
+  }) {
     final styleData = getAllStyleVariants(
       context,
       namedVariants: namedVariants,

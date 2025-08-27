@@ -4,28 +4,25 @@ import '../../core/spec.dart';
 import '../box/box_spec.dart';
 import '../flex/flex_spec.dart';
 
-/// Specification that combines container styling and flex layout properties.
+/// Specification that combines box styling and flex layout properties.
 ///
-/// Provides comprehensive styling for container widgets that need both
-/// container decoration and flex layout capabilities. Merges [BoxSpec] and
+/// Provides comprehensive styling for widgets that need both
+/// box decoration and flex layout capabilities. Merges [BoxSpec] and
 /// [FlexSpec] into a unified specification.
 final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
-  /// Container styling properties for decoration, padding, constraints, etc.
-  final BoxSpec? container;
+  /// Box styling properties for decoration, padding, constraints, etc.
+  final BoxSpec? box;
 
   /// Flex layout properties for direction, alignment, spacing, etc.
   final FlexSpec? flex;
 
-  const FlexBoxSpec({this.container, this.flex});
+  const FlexBoxSpec({this.box, this.flex});
 
   /// Creates a copy of this [FlexBoxSpec] but with the given fields
   /// replaced with the new values.
   @override
-  FlexBoxSpec copyWith({BoxSpec? container, FlexSpec? flex}) {
-    return FlexBoxSpec(
-      container: container ?? this.container,
-      flex: flex ?? this.flex,
-    );
+  FlexBoxSpec copyWith({BoxSpec? box, FlexSpec? flex}) {
+    return FlexBoxSpec(box: box ?? this.box, flex: flex ?? this.flex);
   }
 
   /// Linearly interpolates between this [FlexBoxSpec] and another [FlexBoxSpec] based on the given parameter [t].
@@ -38,7 +35,7 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
   ///
   /// The interpolation is performed on each property of the [FlexBoxSpec] using the appropriate
   /// interpolation method:
-  /// - [BoxSpec.lerp] for [container].
+  /// - [BoxSpec.lerp] for [box].
   /// - [FlexSpec.lerp] for [flex].
   ///
   /// This method is typically used in animations to smoothly transition between
@@ -46,7 +43,7 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
   @override
   FlexBoxSpec lerp(FlexBoxSpec? other, double t) {
     return FlexBoxSpec(
-      container: container?.lerp(other?.container, t),
+      box: box?.lerp(other?.box, t),
       flex: flex?.lerp(other?.flex, t),
     );
   }
@@ -55,7 +52,7 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-      ..add(DiagnosticsProperty('container', container))
+      ..add(DiagnosticsProperty('box', box))
       ..add(DiagnosticsProperty('flex', flex));
   }
 
@@ -64,5 +61,5 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [FlexBoxSpec] instances for equality.
   @override
-  List<Object?> get props => [container, flex];
+  List<Object?> get props => [box, flex];
 }

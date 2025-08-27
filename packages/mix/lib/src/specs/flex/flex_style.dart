@@ -22,7 +22,7 @@ import 'flex_spec.dart';
 ///
 /// Use this class to configure the attributes of a [FlexSpec] and pass it to
 /// the [FlexSpec] constructor.
-/// A style/attribute container for [FlexSpec], used to configure and compose flex layout properties.
+/// A style/attribute class for [FlexSpec], used to configure and compose flex layout properties.
 class FlexStyle extends Style<FlexSpec>
     with
         Diagnosticable,

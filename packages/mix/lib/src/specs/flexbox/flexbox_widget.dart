@@ -10,7 +10,7 @@ import 'flexbox_style.dart';
 
 /// Combines [Container] and [Flex] with Mix styling.
 ///
-/// Applies both container and flex specifications for flexible layouts,
+/// Applies both box and flex specifications for flexible layouts,
 /// providing decoration, constraints, and flex layout in one widget.
 class FlexBox extends StyleWidget<FlexBoxSpec> {
   const FlexBox({
@@ -36,7 +36,7 @@ class FlexBox extends StyleWidget<FlexBoxSpec> {
   }
 }
 
-/// Horizontal flex container with Mix styling.
+/// Horizontal flex box with Mix styling.
 ///
 /// Shorthand for [FlexBox] with [Axis.horizontal].
 class HBox extends FlexBox {
@@ -47,7 +47,7 @@ class HBox extends FlexBox {
   }) : super(direction: Axis.horizontal);
 }
 
-/// Vertical flex container with Mix styling.
+/// Vertical flex box with Mix styling.
 ///
 /// Shorthand for [FlexBox] with [Axis.vertical].
 class VBox extends FlexBox {
@@ -64,11 +64,11 @@ class VBox extends FlexBox {
 /// when specification properties are null.
 Flex createFlexSpecWidget({
   required FlexSpec? spec,
-  required Axis direction,
+  Axis? direction,
   List<Widget> children = const [],
 }) {
   return Flex(
-    direction: spec?.direction ?? direction,
+    direction: spec?.direction ?? direction ?? Axis.horizontal,
     mainAxisAlignment: spec?.mainAxisAlignment ?? MainAxisAlignment.start,
     mainAxisSize: spec?.mainAxisSize ?? MainAxisSize.max,
     crossAxisAlignment: spec?.crossAxisAlignment ?? CrossAxisAlignment.center,
@@ -81,9 +81,9 @@ Flex createFlexSpecWidget({
   );
 }
 
-/// Creates a [Container] with [Flex] child from a [FlexBoxSpec].
+/// Creates a Box-styled container with [Flex] child from a [FlexBoxSpec].
 ///
-/// Applies container styling as the outer container and flex layout as the inner
+/// Applies box styling as the outer container and flex layout as the inner
 /// child widget, combining both specifications effectively.
 Widget createFlexBoxSpecWidget({
   required FlexBoxSpec spec,
@@ -96,8 +96,8 @@ Widget createFlexBoxSpecWidget({
     children: children,
   );
 
-  if (spec.container != null) {
-    return createBoxSpecWidget(spec: spec.container!, child: flexWidget);
+  if (spec.box != null) {
+    return createBoxSpecWidget(spec: spec.box!, child: flexWidget);
   }
 
   return flexWidget;
@@ -105,7 +105,7 @@ Widget createFlexBoxSpecWidget({
 
 /// Extension to convert [FlexSpec] directly to a [Flex] widget.
 extension FlexSpecWidget on FlexSpec {
-  Flex call({required Axis direction, List<Widget> children = const []}) {
+  Flex call({Axis? direction, List<Widget> children = const []}) {
     return createFlexSpecWidget(
       spec: this,
       direction: direction,

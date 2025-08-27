@@ -1,10 +1,10 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/style_widget.dart';
-import 'box_style.dart';
 import 'box_spec.dart';
+import 'box_style.dart';
 
-/// A styled container widget using Mix framework.
+/// A styled box widget using Mix framework.
 ///
 /// Applies [BoxSpec] styling to create a customized [Container].
 class Box extends StyleWidget<BoxSpec> {

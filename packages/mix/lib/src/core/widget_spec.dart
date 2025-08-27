@@ -14,11 +14,11 @@ import 'spec.dart';
 /// Example:
 /// ```dart
 /// // Pure data spec
-/// final containerSpec = BoxSpec(padding: EdgeInsets.all(16));
+/// final boxSpec = BoxSpec(padding: EdgeInsets.all(16));
 ///
 /// // Wrapped with metadata
 /// final wrappedSpec = WidgetSpec(
-///   spec: containerSpec,
+///   spec: boxSpec,
 ///   animation: AnimationConfig.curve(),
 /// );
 /// ```

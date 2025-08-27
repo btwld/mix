@@ -7,11 +7,11 @@ import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/widget_spec.dart';
 import '../../modifiers/modifier_config.dart';
-import '../box/box_mix.dart';
-import '../box/box_spec.dart';
 import '../../properties/layout/stack_mix.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
+import '../box/box_mix.dart';
+import '../box/box_spec.dart';
 import 'stack_box_spec.dart';
 import 'stack_spec.dart';
 
@@ -132,10 +132,10 @@ class StackBoxStyle extends Style<ZBoxSpec>
   /// ```
   @override
   WidgetSpec<ZBoxSpec> resolve(BuildContext context) {
-    final containerSpec = MixOps.resolve(context, $box);
+    final boxSpec = MixOps.resolve(context, $box);
     final stackSpec = MixOps.resolve(context, $stack);
 
-    final zBoxSpec = ZBoxSpec(box: containerSpec, stack: stackSpec);
+    final zBoxSpec = ZBoxSpec(box: boxSpec, stack: stackSpec);
 
     return WidgetSpec(
       spec: zBoxSpec,

@@ -763,7 +763,7 @@ extension WrappedBoxSpecAccess on WidgetSpec<BoxSpec> {
 
 extension WrappedFlexBoxSpecAccess on WidgetSpec<FlexBoxSpec> {
   FlexSpec? get flex => spec.flex;
-  BoxSpec? get container => spec.container;
+  BoxSpec? get container => spec.box;
 }
 
 extension WrappedIconSpecAccess on WidgetSpec<IconSpec> {

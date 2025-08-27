@@ -22,7 +22,7 @@ import 'box_style.dart';
 /// Mix class for configuring [BoxSpec] properties.
 ///
 /// Encapsulates alignment, padding, margin, constraints, decoration,
-/// and other styling properties for container layouts with support for
+/// and other styling properties for box layouts with support for
 /// proper Mix framework integration.
 final class BoxMix extends Mix<BoxSpec>
     with

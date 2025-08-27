@@ -13,8 +13,8 @@ import '../specs/icon/icon_style.dart';
 import '../specs/text/text_mix.dart';
 import 'align_modifier.dart';
 import 'aspect_ratio_modifier.dart';
+import 'box_modifier.dart';
 import 'clip_modifier.dart';
-import 'container_modifier.dart';
 import 'default_text_style_modifier.dart';
 import 'flexible_modifier.dart';
 import 'fractionally_sized_box_modifier.dart';
@@ -265,7 +265,7 @@ final class ModifierConfig with Equatable {
   }
 
   factory ModifierConfig.box(BoxMix spec) {
-    return ModifierConfig.modifier(ContainerModifierMix(spec));
+    return ModifierConfig.modifier(BoxModifierMix(spec));
   }
 
   void _mergeWithReset(

@@ -43,34 +43,34 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
         SpacingMixin<FlexBoxStyle>,
         TransformMixin<FlexBoxStyle>,
         ConstraintsMixin<FlexBoxStyle> {
-  final Prop<BoxSpec>? $container;
+  final Prop<BoxSpec>? $box;
   final Prop<FlexSpec>? $flex;
 
   FlexBoxStyle({
-    BoxMix? container,
+    BoxMix? box,
     FlexMix? flex,
     super.animation,
     super.modifier,
     super.variants,
 
     super.inherit,
-  }) : $container = Prop.maybeMix(container),
+  }) : $box = Prop.maybeMix(box),
        $flex = Prop.maybeMix(flex);
 
   const FlexBoxStyle.create({
-    Prop<BoxSpec>? container,
+    Prop<BoxSpec>? box,
     Prop<FlexSpec>? flex,
     super.animation,
     super.modifier,
     super.variants,
 
     super.inherit,
-  }) : $container = container,
+  }) : $box = box,
        $flex = flex;
 
-  /// Factory for container properties
-  factory FlexBoxStyle.container(BoxMix value) {
-    return FlexBoxStyle(container: value);
+  /// Factory for box properties
+  factory FlexBoxStyle.box(BoxMix value) {
+    return FlexBoxStyle(box: value);
   }
 
   /// Factory for flex properties
@@ -101,44 +101,44 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
   // BoxMix factory methods
   /// Color factory
   factory FlexBoxStyle.color(Color value) {
-    return FlexBoxStyle(container: BoxMix.color(value));
+    return FlexBoxStyle(box: BoxMix.color(value));
   }
 
   factory FlexBoxStyle.foregroundDecoration(DecorationMix value) {
-    return FlexBoxStyle(container: BoxMix.foregroundDecoration(value));
+    return FlexBoxStyle(box: BoxMix.foregroundDecoration(value));
   }
 
   factory FlexBoxStyle.decoration(DecorationMix value) {
-    return FlexBoxStyle(container: BoxMix.decoration(value));
+    return FlexBoxStyle(box: BoxMix.decoration(value));
   }
 
   factory FlexBoxStyle.alignment(AlignmentGeometry value) {
-    return FlexBoxStyle(container: BoxMix.alignment(value));
+    return FlexBoxStyle(box: BoxMix.alignment(value));
   }
 
   factory FlexBoxStyle.padding(EdgeInsetsGeometryMix value) {
-    return FlexBoxStyle(container: BoxMix.padding(value));
+    return FlexBoxStyle(box: BoxMix.padding(value));
   }
 
   factory FlexBoxStyle.margin(EdgeInsetsGeometryMix value) {
-    return FlexBoxStyle(container: BoxMix.margin(value));
+    return FlexBoxStyle(box: BoxMix.margin(value));
   }
 
   factory FlexBoxStyle.transform(Matrix4 value) {
-    return FlexBoxStyle(container: BoxMix.transform(value));
+    return FlexBoxStyle(box: BoxMix.transform(value));
   }
 
   factory FlexBoxStyle.transformAlignment(AlignmentGeometry value) {
-    return FlexBoxStyle(container: BoxMix.transformAlignment(value));
+    return FlexBoxStyle(box: BoxMix.transformAlignment(value));
   }
 
   factory FlexBoxStyle.clipBehavior(Clip value) {
-    return FlexBoxStyle(container: BoxMix.clipBehavior(value));
+    return FlexBoxStyle(box: BoxMix.clipBehavior(value));
   }
 
   /// constraints
   factory FlexBoxStyle.constraints(BoxConstraintsMix value) {
-    return FlexBoxStyle(container: BoxMix.constraints(value));
+    return FlexBoxStyle(box: BoxMix.constraints(value));
   }
 
   // FlexMix factory methods
@@ -193,7 +193,7 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
 
   /// Factory constructor to create FlexBoxStyle from FlexBoxMix.
   static FlexBoxStyle from(FlexBoxMix mix) {
-    return FlexBoxStyle(container: mix.container, flex: mix.flex);
+    return FlexBoxStyle(box: mix.box, flex: mix.flex);
   }
 
   /// Constructor that accepts a [FlexBoxSpec] value and extracts its properties.
@@ -201,12 +201,12 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
   /// This is useful for converting existing [FlexBoxSpec] instances to [FlexBoxStyle].
   ///
   /// ```dart
-  /// const spec = FlexBoxWidgetSpec(container: BoxSpec(...), flex: FlexProperties(...));
+  /// const spec = FlexBoxWidgetSpec(box: BoxSpec(...), flex: FlexProperties(...));
   /// final attr = FlexBoxStyle.value(spec);
   /// ```
   static FlexBoxStyle value(FlexBoxSpec spec) {
     return FlexBoxStyle(
-      container: BoxMix.maybeValue(spec.container),
+      box: BoxMix.maybeValue(spec.box),
       flex: FlexMix.maybeValue(spec.flex),
     );
   }
@@ -216,16 +216,16 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
   /// Returns null if the input is null, otherwise uses [FlexBoxStyle.value].
   ///
   /// ```dart
-  /// const FlexBoxWidgetSpec? spec = FlexBoxWidgetSpec(container: BoxSpec(...), flex: FlexProperties(...));
+  /// const FlexBoxWidgetSpec? spec = FlexBoxWidgetSpec(box: BoxSpec(...), flex: FlexProperties(...));
   /// final attr = FlexBoxStyle.maybeValue(spec); // Returns FlexBoxStyle or null
   /// ```
   static FlexBoxStyle? maybeValue(FlexBoxSpec? spec) {
     return spec != null ? FlexBoxStyle.value(spec) : null;
   }
 
-  /// Sets container properties
-  FlexBoxStyle container(BoxMix value) {
-    return merge(FlexBoxStyle.container(value));
+  /// Sets box properties
+  FlexBoxStyle box(BoxMix value) {
+    return merge(FlexBoxStyle.box(value));
   }
 
   /// Sets flex properties
@@ -328,7 +328,7 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
     return merge(FlexBoxStyle.transform(value));
   }
 
-  /// Decoration instance method - delegates to container
+  /// Decoration instance method - delegates to box
   @override
   FlexBoxStyle decoration(DecorationMix value) {
     return merge(FlexBoxStyle.decoration(value));
@@ -360,9 +360,7 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
   @override
   FlexBoxStyle borderRadius(BorderRadiusGeometryMix value) {
     return merge(
-      FlexBoxStyle(
-        container: BoxMix(decoration: DecorationMix.borderRadius(value)),
-      ),
+      FlexBoxStyle(box: BoxMix(decoration: DecorationMix.borderRadius(value))),
     );
   }
 
@@ -376,10 +374,10 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
   /// ```
   @override
   WidgetSpec<FlexBoxSpec> resolve(BuildContext context) {
-    final containerSpec = MixOps.resolve(context, $container);
+    final boxSpec = MixOps.resolve(context, $box);
     final flexSpec = MixOps.resolve(context, $flex);
 
-    final flexBoxSpec = FlexBoxSpec(container: containerSpec, flex: flexSpec);
+    final flexBoxSpec = FlexBoxSpec(box: boxSpec, flex: flexSpec);
 
     return WidgetSpec(
       spec: flexBoxSpec,
@@ -402,7 +400,7 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
     if (other == null) return this;
 
     return FlexBoxStyle.create(
-      container: MixOps.merge($container, other.$container),
+      box: MixOps.merge($box, other.$box),
       flex: MixOps.merge($flex, other.$flex),
       animation: other.$animation ?? $animation,
       modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
@@ -415,7 +413,7 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-      ..add(DiagnosticsProperty('container', $container))
+      ..add(DiagnosticsProperty('box', $box))
       ..add(DiagnosticsProperty('flex', $flex));
   }
 
@@ -424,5 +422,5 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [FlexBoxStyle] instances for equality.
   @override
-  List<Object?> get props => [$container, $flex];
+  List<Object?> get props => [$box, $flex];
 }

@@ -43,11 +43,11 @@ Widget createZBoxSpecWidget({
   required ZBoxSpec spec,
   List<Widget> children = const [],
 }) {
-  final containerSpec = spec.box;
+  final boxSpec = spec.box;
   final stack = createStackSpecWidget(spec: spec.stack, children: children);
 
-  if (containerSpec != null) {
-    return createBoxSpecWidget(spec: containerSpec, child: stack);
+  if (boxSpec != null) {
+    return createBoxSpecWidget(spec: boxSpec, child: stack);
   }
 
   return stack;

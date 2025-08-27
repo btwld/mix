@@ -3,10 +3,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 void main() {
-  group('ContainerModifier', () {
+  group('BoxModifier', () {
     test('can be created with a BoxSpec', () {
       const spec = BoxSpec(padding: EdgeInsets.all(16));
-      const modifier = ContainerModifier(spec);
+      const modifier = BoxModifier(spec);
 
       expect(modifier.spec, equals(spec));
     });
@@ -16,7 +16,7 @@ void main() {
         padding: EdgeInsets.all(16),
         decoration: BoxDecoration(color: Colors.red),
       );
-      const modifier = ContainerModifier(spec);
+      const modifier = BoxModifier(spec);
       const child = Text('Test');
 
       final result = modifier.build(child);
@@ -34,7 +34,7 @@ void main() {
     test('copyWith creates new instance with updated spec', () {
       const spec1 = BoxSpec(padding: EdgeInsets.all(8));
       const spec2 = BoxSpec(padding: EdgeInsets.all(16));
-      const modifier1 = ContainerModifier(spec1);
+      const modifier1 = BoxModifier(spec1);
 
       final modifier2 = modifier1.copyWith(spec: spec2);
 
@@ -43,20 +43,20 @@ void main() {
     });
   });
 
-  group('ContainerModifierMix', () {
-    testWidgets('resolves to ContainerModifier correctly', (tester) async {
+  group('BoxModifierMix', () {
+    testWidgets('resolves to BoxModifier correctly', (tester) async {
       final spec = BoxMix(
         padding: EdgeInsetsGeometryMix.all(16),
         decoration: DecorationMix.color(Colors.blue),
       );
-      final mix = ContainerModifierMix(spec);
+      final mix = BoxModifierMix(spec);
 
       await tester.pumpWidget(
         MaterialApp(
           home: Builder(
             builder: (context) {
               final resolved = mix.resolve(context);
-              expect(resolved, isA<ContainerModifier>());
+              expect(resolved, isA<BoxModifier>());
               expect(resolved.spec.padding, equals(const EdgeInsets.all(16)));
               return Container();
             },
@@ -65,23 +65,17 @@ void main() {
       );
     });
 
-    test('merge combines two ContainerModifierMix instances', () {
-      final mix1 = ContainerModifierMix(
-        BoxMix(padding: EdgeInsetsGeometryMix.all(8)),
-      );
-      final mix2 = ContainerModifierMix(
-        BoxMix(margin: EdgeInsetsGeometryMix.all(16)),
-      );
+    test('merge combines two BoxModifierMix instances', () {
+      final mix1 = BoxModifierMix(BoxMix(padding: EdgeInsetsGeometryMix.all(8)));
+      final mix2 = BoxModifierMix(BoxMix(margin: EdgeInsetsGeometryMix.all(16)));
 
       final merged = mix1.merge(mix2);
 
-      expect(merged, isA<ContainerModifierMix>());
+      expect(merged, isA<BoxModifierMix>());
     });
 
     test('merge with null returns original', () {
-      final mix = ContainerModifierMix(
-        BoxMix(padding: EdgeInsetsGeometryMix.all(8)),
-      );
+      final mix = BoxModifierMix(BoxMix(padding: EdgeInsetsGeometryMix.all(8)));
 
       final merged = mix.merge(null);
 
@@ -89,3 +83,4 @@ void main() {
     });
   });
 }
+

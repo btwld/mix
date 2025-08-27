@@ -40,7 +40,7 @@ class _ExampleState extends State<Example> {
       child: HBox(
         style:
             Style.flexbox(
-                  FlexBoxStyle().container(
+                  FlexBoxStyle().box(
                     BoxMix()
                         .color(Colors.white)
                         .padding(
@@ -56,7 +56,7 @@ class _ExampleState extends State<Example> {
                 )
                 .flex(FlexMix(mainAxisSize: MainAxisSize.min, spacing: 8))
                 .onHovered(
-                  FlexBoxStyle().container(
+                  FlexBoxStyle().box(
                     BoxMix().border(
                       BoxBorderMix.all(BorderSideMix.color(Colors.red)),
                     ),

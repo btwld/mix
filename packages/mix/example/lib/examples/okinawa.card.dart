@@ -56,7 +56,7 @@ class OkinawaCard extends StatelessWidget {
     );
 
     final vBoxStyle = FlexBoxStyle()
-        .container(
+        .box(
           BoxMix()
               .padding(EdgeInsetsMix.all(8))
               .width(double.infinity)
