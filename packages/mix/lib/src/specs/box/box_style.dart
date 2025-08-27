@@ -13,16 +13,13 @@ import '../../properties/layout/constraints_mix.dart';
 import '../../properties/layout/constraints_mixin.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/layout/spacing_mixin.dart';
-import '../../properties/painting/border_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
 import '../../properties/painting/border_radius_util.dart';
 import '../../properties/painting/decoration_mix.dart';
 import '../../properties/painting/decoration_mixin.dart';
-import '../../properties/painting/gradient_mix.dart';
 import '../../properties/transform_mixin.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
-import '../text/text_mix.dart';
 import 'box_mix.dart';
 import 'box_spec.dart';
 import 'box_util.dart';
@@ -53,123 +50,6 @@ class BoxStyle extends Style<BoxSpec>
   final Prop<Matrix4>? $transform;
   final Prop<AlignmentGeometry>? $transformAlignment;
   final Prop<Clip>? $clipBehavior;
-
-  /// Color factory
-  factory BoxStyle.color(Color value) {
-    return BoxStyle(decoration: DecorationMix.color(value));
-  }
-
-  /// Gradient factory
-  factory BoxStyle.gradient(GradientMix value) {
-    return BoxStyle(decoration: DecorationMix.gradient(value));
-  }
-
-  /// Shape factory
-  factory BoxStyle.shape(BoxShape value) {
-    return BoxStyle(decoration: DecorationMix.shape(value));
-  }
-
-  factory BoxStyle.height(double value) {
-    return BoxStyle.constraints(BoxConstraintsMix.height(value));
-  }
-
-  factory BoxStyle.width(double value) {
-    return BoxStyle.constraints(BoxConstraintsMix.width(value));
-  }
-
-  /// constraints
-  factory BoxStyle.constraints(BoxConstraintsMix value) {
-    return BoxStyle(constraints: value);
-  }
-
-  /// minWidth
-  factory BoxStyle.minWidth(double value) {
-    return BoxStyle.constraints(BoxConstraintsMix.minWidth(value));
-  }
-
-  /// maxWidth
-  factory BoxStyle.maxWidth(double value) {
-    return BoxStyle(constraints: BoxConstraintsMix.maxWidth(value));
-  }
-
-  /// Animation factory
-  factory BoxStyle.animation(AnimationConfig value) {
-    return BoxStyle(animation: value);
-  }
-
-  /// Variant
-  factory BoxStyle.variant(Variant variant, BoxStyle value) {
-    return BoxStyle(variants: [VariantStyle(variant, value)]);
-  }
-
-  /// minHeight
-  factory BoxStyle.minHeight(double value) {
-    return BoxStyle.constraints(BoxConstraintsMix.minHeight(value));
-  }
-
-  /// maxHeight
-  factory BoxStyle.maxHeight(double value) {
-    return BoxStyle(constraints: BoxConstraintsMix.maxHeight(value));
-  }
-
-  factory BoxStyle.foregroundDecoration(DecorationMix value) {
-    return BoxStyle(foregroundDecoration: value);
-  }
-
-  factory BoxStyle.decoration(DecorationMix value) {
-    return BoxStyle(decoration: value);
-  }
-
-  factory BoxStyle.alignment(AlignmentGeometry value) {
-    return BoxStyle(alignment: value);
-  }
-
-  factory BoxStyle.padding(EdgeInsetsGeometryMix value) {
-    return BoxStyle(padding: value);
-  }
-
-  factory BoxStyle.margin(EdgeInsetsGeometryMix value) {
-    return BoxStyle(margin: value);
-  }
-
-  factory BoxStyle.text(TextMix value) {
-    return BoxStyle.modifier(ModifierConfig.defaultText(value));
-  }
-
-  factory BoxStyle.transform(Matrix4 value) {
-    return BoxStyle(transform: value);
-  }
-
-  factory BoxStyle.modifier(ModifierConfig modifier) {
-    return BoxStyle(modifier: modifier);
-  }
-
-  factory BoxStyle.wrap(ModifierConfig value) {
-    return BoxStyle(modifier: value);
-  }
-
-  /// Animation factory (alternative)
-  factory BoxStyle.animate(AnimationConfig animation) {
-    return BoxStyle(animation: animation);
-  }
-
-  factory BoxStyle.transformAlignment(AlignmentGeometry value) {
-    return BoxStyle(transformAlignment: value);
-  }
-
-  factory BoxStyle.clipBehavior(Clip value) {
-    return BoxStyle(clipBehavior: value);
-  }
-
-  /// border
-  factory BoxStyle.border(BoxBorderMix value) {
-    return BoxStyle(decoration: DecorationMix.border(value));
-  }
-
-  /// Border radius
-  factory BoxStyle.borderRadius(BorderRadiusGeometryMix value) {
-    return BoxStyle(decoration: DecorationMix.borderRadius(value));
-  }
 
   const BoxStyle.create({
     Prop<AlignmentGeometry>? alignment,
@@ -278,20 +158,20 @@ class BoxStyle extends Style<BoxSpec>
   BoxSpecUtility get builder => BoxSpecUtility(this);
 
   BoxStyle transformAlignment(AlignmentGeometry value) {
-    return merge(BoxStyle.transformAlignment(value));
+    return merge(BoxStyle(transformAlignment: value));
   }
 
   BoxStyle clipBehavior(Clip value) {
-    return merge(BoxStyle.clipBehavior(value));
+    return merge(BoxStyle(clipBehavior: value));
   }
 
   BoxStyle alignment(AlignmentGeometry value) {
-    return merge(BoxStyle.alignment(value));
+    return merge(BoxStyle(alignment: value));
   }
 
   /// Foreground decoration instance method
   BoxStyle foregroundDecoration(DecorationMix value) {
-    return merge(BoxStyle.foregroundDecoration(value));
+    return merge(BoxStyle(foregroundDecoration: value));
   }
 
   Box call({Widget? child}) {
@@ -305,37 +185,37 @@ class BoxStyle extends Style<BoxSpec>
 
   @override
   BoxStyle transform(Matrix4 value) {
-    return merge(BoxStyle.transform(value));
+    return merge(BoxStyle(transform: value));
   }
 
   /// Constraints instance method
   @override
   BoxStyle constraints(BoxConstraintsMix value) {
-    return merge(BoxStyle.constraints(value));
+    return merge(BoxStyle(constraints: value));
   }
 
   /// Padding instance method
   @override
   BoxStyle padding(EdgeInsetsGeometryMix value) {
-    return merge(BoxStyle.padding(value));
+    return merge(BoxStyle(padding: value));
   }
 
   /// Margin instance method
   @override
   BoxStyle margin(EdgeInsetsGeometryMix value) {
-    return merge(BoxStyle.margin(value));
+    return merge(BoxStyle(margin: value));
   }
 
   /// Decoration instance method
   @override
   BoxStyle decoration(DecorationMix value) {
-    return merge(BoxStyle.decoration(value));
+    return merge(BoxStyle(decoration: value));
   }
 
   /// Animation instance method
   @override
   BoxStyle animate(AnimationConfig animation) {
-    return merge(BoxStyle.animate(animation));
+    return merge(BoxStyle(animation: animation));
   }
 
   /// Mixin implementation

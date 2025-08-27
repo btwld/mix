@@ -48,229 +48,7 @@ class TextStyling extends Style<TextSpec>
   final Prop<String>? $semanticsLabel;
   final Prop<Locale>? $locale;
 
-  /// Factory for text color
-  factory TextStyling.color(Color value) {
-    return TextStyling(style: TextStyleMix(color: value));
-  }
 
-  /// Factory for font family
-  factory TextStyling.fontFamily(String value) {
-    return TextStyling(style: TextStyleMix(fontFamily: value));
-  }
-
-  /// Factory for font weight
-  factory TextStyling.fontWeight(FontWeight value) {
-    return TextStyling(style: TextStyleMix(fontWeight: value));
-  }
-
-  /// Factory for font style
-  factory TextStyling.fontStyle(FontStyle value) {
-    return TextStyling(style: TextStyleMix(fontStyle: value));
-  }
-
-  /// Factory for font size
-  factory TextStyling.fontSize(double value) {
-    return TextStyling(style: TextStyleMix(fontSize: value));
-  }
-
-  /// Factory for letter spacing
-  factory TextStyling.letterSpacing(double value) {
-    return TextStyling(style: TextStyleMix(letterSpacing: value));
-  }
-
-  /// Factory for word spacing
-  factory TextStyling.wordSpacing(double value) {
-    return TextStyling(style: TextStyleMix(wordSpacing: value));
-  }
-
-  /// Factory for text baseline
-  factory TextStyling.textBaseline(TextBaseline value) {
-    return TextStyling(style: TextStyleMix(textBaseline: value));
-  }
-
-  /// Factory for background color
-  factory TextStyling.backgroundColor(Color value) {
-    return TextStyling(style: TextStyleMix(backgroundColor: value));
-  }
-
-  /// Factory for text shadows
-  factory TextStyling.shadows(List<ShadowMix> value) {
-    return TextStyling(style: TextStyleMix(shadows: value));
-  }
-
-  /// Factory for font features
-  factory TextStyling.fontFeatures(List<FontFeature> value) {
-    return TextStyling(style: TextStyleMix(fontFeatures: value));
-  }
-
-  /// Factory for font variations
-  factory TextStyling.fontVariations(List<FontVariation> value) {
-    return TextStyling(style: TextStyleMix(fontVariations: value));
-  }
-
-  /// Factory for text decoration
-  factory TextStyling.decoration(TextDecoration value) {
-    return TextStyling(style: TextStyleMix(decoration: value));
-  }
-
-  /// Factory for decoration color
-  factory TextStyling.decorationColor(Color value) {
-    return TextStyling(style: TextStyleMix(decorationColor: value));
-  }
-
-  /// Factory for decoration style
-  factory TextStyling.decorationStyle(TextDecorationStyle value) {
-    return TextStyling(style: TextStyleMix(decorationStyle: value));
-  }
-
-  /// Factory for debug label
-  factory TextStyling.debugLabel(String value) {
-    return TextStyling(style: TextStyleMix(debugLabel: value));
-  }
-
-  /// Factory for line height
-  factory TextStyling.height(double value) {
-    return TextStyling(style: TextStyleMix(height: value));
-  }
-
-  /// Factory for foreground paint
-  factory TextStyling.foreground(Paint value) {
-    return TextStyling(style: TextStyleMix(foreground: value));
-  }
-
-  /// Factory for background paint
-  factory TextStyling.background(Paint value) {
-    return TextStyling(style: TextStyleMix(background: value));
-  }
-
-  /// Factory for decoration thickness
-  factory TextStyling.decorationThickness(double value) {
-    return TextStyling(style: TextStyleMix(decorationThickness: value));
-  }
-
-  /// Factory for font family fallback
-  factory TextStyling.fontFamilyFallback(List<String> value) {
-    return TextStyling(style: TextStyleMix(fontFamilyFallback: value));
-  }
-
-  /// Factory for text overflow
-  factory TextStyling.overflow(TextOverflow value) {
-    return TextStyling(overflow: value);
-  }
-
-  /// Factory for strut style
-  factory TextStyling.strutStyle(StrutStyleMix value) {
-    return TextStyling(strutStyle: value);
-  }
-
-  /// Factory for text alignment
-  factory TextStyling.textAlign(TextAlign value) {
-    return TextStyling(textAlign: value);
-  }
-
-  /// Factory for text scaler
-  factory TextStyling.textScaler(TextScaler value) {
-    return TextStyling(textScaler: value);
-  }
-
-  /// Factory for maximum lines
-  factory TextStyling.maxLines(int value) {
-    return TextStyling(maxLines: value);
-  }
-
-  /// Factory for text width basis
-  factory TextStyling.textWidthBasis(TextWidthBasis value) {
-    return TextStyling(textWidthBasis: value);
-  }
-
-  /// Factory for text height behavior
-  factory TextStyling.textHeightBehavior(TextHeightBehaviorMix value) {
-    return TextStyling(textHeightBehavior: value);
-  }
-
-  /// Factory for text direction
-  factory TextStyling.textDirection(TextDirection value) {
-    return TextStyling(textDirection: value);
-  }
-
-  /// Factory for soft wrap
-  factory TextStyling.softWrap(bool value) {
-    return TextStyling(softWrap: value);
-  }
-
-  /// Factory for text directive
-  factory TextStyling.textDirectives(Directive<String> value) {
-    return TextStyling(textDirectives: [value]);
-  }
-
-  /// Factory for uppercase directive
-  factory TextStyling.uppercase() {
-    return TextStyling.textDirectives(const UppercaseStringDirective());
-  }
-
-  /// Factory for lowercase directive
-  factory TextStyling.lowercase() {
-    return TextStyling.textDirectives(const LowercaseStringDirective());
-  }
-
-  /// Factory for capitalize directive
-  factory TextStyling.capitalize() {
-    return TextStyling.textDirectives(const CapitalizeStringDirective());
-  }
-
-  /// Factory for title case directive
-  factory TextStyling.titleCase() {
-    return TextStyling.textDirectives(const TitleCaseStringDirective());
-  }
-
-  /// Factory for sentence case directive
-  factory TextStyling.sentenceCase() {
-    return TextStyling.textDirectives(const SentenceCaseStringDirective());
-  }
-
-  /// Factory for selection color
-  factory TextStyling.selectionColor(Color value) {
-    return TextStyling(selectionColor: value);
-  }
-
-  /// Factory for semantics label
-  factory TextStyling.semanticsLabel(String value) {
-    return TextStyling(semanticsLabel: value);
-  }
-
-  /// Factory for locale
-  factory TextStyling.locale(Locale value) {
-    return TextStyling(locale: value);
-  }
-
-  /// Factory for text style
-  factory TextStyling.style(TextStyleMix value) {
-    return TextStyling(style: value);
-  }
-
-  /// Factory for animation
-  factory TextStyling.animate(AnimationConfig animation) {
-    return TextStyling(animation: animation);
-  }
-
-  /// Factory for variant
-  factory TextStyling.variant(Variant variant, TextStyling value) {
-    return TextStyling(variants: [VariantStyle(variant, value)]);
-  }
-
-  factory TextStyling.textDirective(Directive<String> value) {
-    return TextStyling(textDirectives: [value]);
-  }
-
-  /// Factory for widget modifier
-  factory TextStyling.modifier(ModifierConfig modifier) {
-    return TextStyling(modifier: modifier);
-  }
-
-  /// Factory for widget modifier
-  factory TextStyling.wrap(ModifierConfig value) {
-    return TextStyling(modifier: value);
-  }
 
   const TextStyling.create({
     Prop<TextOverflow>? overflow,
@@ -412,32 +190,32 @@ class TextStyling extends Style<TextSpec>
   }
 
   TextStyling textDirective(Directive<String> value) {
-    return merge(TextStyling.textDirectives(value));
+    return merge(TextStyling(textDirectives: [value]));
   }
 
   /// Sets text overflow behavior
   TextStyling overflow(TextOverflow value) {
-    return merge(TextStyling.overflow(value));
+    return merge(TextStyling(overflow: value));
   }
 
   /// Sets strut style
   TextStyling strutStyle(StrutStyleMix value) {
-    return merge(TextStyling.strutStyle(value));
+    return merge(TextStyling(strutStyle: value));
   }
 
   /// Sets text alignment
   TextStyling textAlign(TextAlign value) {
-    return merge(TextStyling.textAlign(value));
+    return merge(TextStyling(textAlign: value));
   }
 
   /// Sets text scaler
   TextStyling textScaler(TextScaler value) {
-    return merge(TextStyling.textScaler(value));
+    return merge(TextStyling(textScaler: value));
   }
 
   /// Sets maximum number of lines
   TextStyling maxLines(int value) {
-    return merge(TextStyling.maxLines(value));
+    return merge(TextStyling(maxLines: value));
   }
 
   /// Sets text style
@@ -447,172 +225,172 @@ class TextStyling extends Style<TextSpec>
 
   /// Sets text width basis
   TextStyling textWidthBasis(TextWidthBasis value) {
-    return merge(TextStyling.textWidthBasis(value));
+    return merge(TextStyling(textWidthBasis: value));
   }
 
   /// Sets text height behavior
   TextStyling textHeightBehavior(TextHeightBehaviorMix value) {
-    return merge(TextStyling.textHeightBehavior(value));
+    return merge(TextStyling(textHeightBehavior: value));
   }
 
   /// Sets text direction
   TextStyling textDirection(TextDirection value) {
-    return merge(TextStyling.textDirection(value));
+    return merge(TextStyling(textDirection: value));
   }
 
   /// Sets soft wrap behavior
   TextStyling softWrap(bool value) {
-    return merge(TextStyling.softWrap(value));
+    return merge(TextStyling(softWrap: value));
   }
 
   /// Adds a text directive
   TextStyling directive(Directive<String> value) {
-    return merge(TextStyling.textDirectives(value));
+    return merge(TextStyling(textDirectives: [value]));
   }
 
   /// Sets text color
   TextStyling color(Color value) {
-    return merge(TextStyling.color(value));
+    return merge(TextStyling(style: TextStyleMix(color: value)));
   }
 
   /// Sets font family
   TextStyling fontFamily(String value) {
-    return merge(TextStyling.fontFamily(value));
+    return merge(TextStyling(style: TextStyleMix(fontFamily: value)));
   }
 
   /// Sets font weight
   TextStyling fontWeight(FontWeight value) {
-    return merge(TextStyling.fontWeight(value));
+    return merge(TextStyling(style: TextStyleMix(fontWeight: value)));
   }
 
   /// Sets font style
   TextStyling fontStyle(FontStyle value) {
-    return merge(TextStyling.fontStyle(value));
+    return merge(TextStyling(style: TextStyleMix(fontStyle: value)));
   }
 
   /// Sets font size
   TextStyling fontSize(double value) {
-    return merge(TextStyling.fontSize(value));
+    return merge(TextStyling(style: TextStyleMix(fontSize: value)));
   }
 
   /// Sets letter spacing
   TextStyling letterSpacing(double value) {
-    return merge(TextStyling.letterSpacing(value));
+    return merge(TextStyling(style: TextStyleMix(letterSpacing: value)));
   }
 
   /// Sets word spacing
   TextStyling wordSpacing(double value) {
-    return merge(TextStyling.wordSpacing(value));
+    return merge(TextStyling(style: TextStyleMix(wordSpacing: value)));
   }
 
   /// Sets text baseline
   TextStyling textBaseline(TextBaseline value) {
-    return merge(TextStyling.textBaseline(value));
+    return merge(TextStyling(style: TextStyleMix(textBaseline: value)));
   }
 
   /// Sets background color
   TextStyling backgroundColor(Color value) {
-    return merge(TextStyling.backgroundColor(value));
+    return merge(TextStyling(style: TextStyleMix(backgroundColor: value)));
   }
 
   /// Sets text shadows
   TextStyling shadows(List<ShadowMix> value) {
-    return merge(TextStyling.shadows(value));
+    return merge(TextStyling(style: TextStyleMix(shadows: value)));
   }
 
   /// Sets font features
   TextStyling fontFeatures(List<FontFeature> value) {
-    return merge(TextStyling.fontFeatures(value));
+    return merge(TextStyling(style: TextStyleMix(fontFeatures: value)));
   }
 
   /// Sets font variations
   TextStyling fontVariations(List<FontVariation> value) {
-    return merge(TextStyling.fontVariations(value));
+    return merge(TextStyling(style: TextStyleMix(fontVariations: value)));
   }
 
   /// Sets text decoration
   TextStyling decoration(TextDecoration value) {
-    return merge(TextStyling.decoration(value));
+    return merge(TextStyling(style: TextStyleMix(decoration: value)));
   }
 
   /// Sets decoration color
   TextStyling decorationColor(Color value) {
-    return merge(TextStyling.decorationColor(value));
+    return merge(TextStyling(style: TextStyleMix(decorationColor: value)));
   }
 
   /// Sets decoration style
   TextStyling decorationStyle(TextDecorationStyle value) {
-    return merge(TextStyling.decorationStyle(value));
+    return merge(TextStyling(style: TextStyleMix(decorationStyle: value)));
   }
 
   /// Sets debug label
   TextStyling debugLabel(String value) {
-    return merge(TextStyling.debugLabel(value));
+    return merge(TextStyling(style: TextStyleMix(debugLabel: value)));
   }
 
   /// Sets line height
   TextStyling height(double value) {
-    return merge(TextStyling.height(value));
+    return merge(TextStyling(style: TextStyleMix(height: value)));
   }
 
   /// Sets foreground paint
   TextStyling foreground(Paint value) {
-    return merge(TextStyling.foreground(value));
+    return merge(TextStyling(style: TextStyleMix(foreground: value)));
   }
 
   /// Sets background paint
   TextStyling background(Paint value) {
-    return merge(TextStyling.background(value));
+    return merge(TextStyling(style: TextStyleMix(background: value)));
   }
 
   /// Sets selection color
   TextStyling selectionColor(Color value) {
-    return merge(TextStyling.selectionColor(value));
+    return merge(TextStyling(selectionColor: value));
   }
 
   /// Sets semantics label
   TextStyling semanticsLabel(String value) {
-    return merge(TextStyling.semanticsLabel(value));
+    return merge(TextStyling(semanticsLabel: value));
   }
 
   /// Sets locale
   TextStyling locale(Locale value) {
-    return merge(TextStyling.locale(value));
+    return merge(TextStyling(locale: value));
   }
 
   /// Sets decoration thickness
   TextStyling decorationThickness(double value) {
-    return merge(TextStyling.decorationThickness(value));
+    return merge(TextStyling(style: TextStyleMix(decorationThickness: value)));
   }
 
   /// Sets font family fallback
   TextStyling fontFamilyFallback(List<String> value) {
-    return merge(TextStyling.fontFamilyFallback(value));
+    return merge(TextStyling(style: TextStyleMix(fontFamilyFallback: value)));
   }
 
   /// Applies uppercase directive
   TextStyling uppercase() {
-    return merge(TextStyling.uppercase());
+    return merge(TextStyling(textDirectives: [const UppercaseStringDirective()]));
   }
 
   /// Applies lowercase directive
   TextStyling lowercase() {
-    return merge(TextStyling.lowercase());
+    return merge(TextStyling(textDirectives: [const LowercaseStringDirective()]));
   }
 
   /// Applies capitalize directive
   TextStyling capitalize() {
-    return merge(TextStyling.capitalize());
+    return merge(TextStyling(textDirectives: [const CapitalizeStringDirective()]));
   }
 
   /// Applies title case directive
   TextStyling titleCase() {
-    return merge(TextStyling.titleCase());
+    return merge(TextStyling(textDirectives: [const TitleCaseStringDirective()]));
   }
 
   /// Applies sentence case directive
   TextStyling sentenceCase() {
-    return merge(TextStyling.sentenceCase());
+    return merge(TextStyling(textDirectives: [const SentenceCaseStringDirective()]));
   }
 
   TextStyling modifier(ModifierConfig value) {
@@ -622,7 +400,7 @@ class TextStyling extends Style<TextSpec>
   /// Convenience method for animating the TextSpec
   @override
   TextStyling animate(AnimationConfig animation) {
-    return merge(TextStyling.animate(animation));
+    return merge(TextStyling(animation: animation));
   }
 
   @override

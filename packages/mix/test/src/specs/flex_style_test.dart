@@ -5,9 +5,9 @@ import 'package:mix/mix.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  group('', () {
+  group('FlexStyle', () {
     group('Constructor', () {
-      test('', () {
+      test('creates with all properties', () {
         final attribute = FlexStyle(
           direction: Axis.horizontal,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -40,7 +40,7 @@ void main() {
         expect(attribute.$spacing!, resolvesTo(16.0));
       });
 
-      test('', () {
+      test('creates with default null values', () {
         final attribute = FlexStyle();
 
         expect(attribute.$direction, isNull);
@@ -56,7 +56,7 @@ void main() {
     });
 
     group('only constructor', () {
-      test('', () {
+      test('creates with mixed properties', () {
         final attribute = FlexStyle(
           direction: Axis.vertical,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -86,7 +86,7 @@ void main() {
         expect(attribute.$spacing, resolvesTo(8.0));
       });
 
-      test('', () {
+      test('creates with partial properties', () {
         final attribute = FlexStyle(direction: Axis.horizontal, gap: 12.0);
 
         expect(attribute.$direction, resolvesTo(Axis.horizontal));
@@ -102,7 +102,7 @@ void main() {
     });
 
     group('value constructor', () {
-      test('', () {
+      test('creates from spec value', () {
         const spec = FlexSpec(
           direction: Axis.horizontal,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -270,14 +270,14 @@ void main() {
     });
 
     group('Factory Constructors', () {
-      test('', () {
+      test('animate factory creates with animation config', () {
         final animation = AnimationConfig.linear(Duration(seconds: 1));
         final flexMix = FlexStyle.animate(animation);
 
         expect(flexMix.$animation, animation);
       });
 
-      test('', () {
+      test('variant factory creates with variant', () {
         final variant = ContextVariant.brightness(Brightness.dark);
         final style = FlexStyle.direction(Axis.horizontal);
         final flexMix = FlexStyle.variant(variant, style);
@@ -309,7 +309,7 @@ void main() {
     });
 
     group('Resolution', () {
-      test('', () {
+      test('resolves to FlexSpec correctly', () {
         final attribute = FlexStyle(
           direction: Axis.horizontal,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -545,7 +545,7 @@ void main() {
     });
 
     group('Variant Methods', () {
-      test('', () {
+      test('variant method sets single variant', () {
         final variant = ContextVariant.brightness(Brightness.dark);
         final style = FlexStyle.direction(Axis.horizontal);
         final flexMix = FlexStyle().variant(variant, style);

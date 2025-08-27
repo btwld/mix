@@ -97,50 +97,26 @@ final class ImageMix extends Mix<ImageSpec> with Diagnosticable {
        $isAntiAlias = isAntiAlias,
        $matchTextDirection = matchTextDirection;
 
-  /// Construct from a concrete spec.
-  ImageMix.value(ImageSpec spec)
-    : this(
-        image: spec.image,
-        width: spec.width,
-        height: spec.height,
-        color: spec.color,
-        repeat: spec.repeat,
-        fit: spec.fit,
-        alignment: spec.alignment,
-        centerSlice: spec.centerSlice,
-        filterQuality: spec.filterQuality,
-        colorBlendMode: spec.colorBlendMode,
-        semanticLabel: spec.semanticLabel,
-        excludeFromSemantics: spec.excludeFromSemantics,
-        gaplessPlayback: spec.gaplessPlayback,
-        isAntiAlias: spec.isAntiAlias,
-        matchTextDirection: spec.matchTextDirection,
-      );
-
-  // Factory helpers
-  factory ImageMix.image(ImageProvider<Object> value) => ImageMix(image: value);
-
-  factory ImageMix.width(double value) => ImageMix(width: value);
-  factory ImageMix.height(double value) => ImageMix(height: value);
-  factory ImageMix.color(Color value) => ImageMix(color: value);
-  factory ImageMix.repeat(ImageRepeat value) => ImageMix(repeat: value);
-  factory ImageMix.fit(BoxFit value) => ImageMix(fit: value);
-  factory ImageMix.alignment(AlignmentGeometry value) =>
-      ImageMix(alignment: value);
-  factory ImageMix.centerSlice(Rect value) => ImageMix(centerSlice: value);
-  factory ImageMix.filterQuality(FilterQuality value) =>
-      ImageMix(filterQuality: value);
-  factory ImageMix.colorBlendMode(BlendMode value) =>
-      ImageMix(colorBlendMode: value);
-  factory ImageMix.semanticLabel(String value) =>
-      ImageMix(semanticLabel: value);
-  factory ImageMix.excludeFromSemantics(bool value) =>
-      ImageMix(excludeFromSemantics: value);
-  factory ImageMix.gaplessPlayback(bool value) =>
-      ImageMix(gaplessPlayback: value);
-  factory ImageMix.isAntiAlias(bool value) => ImageMix(isAntiAlias: value);
-  factory ImageMix.matchTextDirection(bool value) =>
-      ImageMix(matchTextDirection: value);
+  /// Factory constructor to create ImageMix from ImageSpec.
+  static ImageMix value(ImageSpec spec) {
+    return ImageMix(
+      image: spec.image,
+      width: spec.width,
+      height: spec.height,
+      color: spec.color,
+      repeat: spec.repeat,
+      fit: spec.fit,
+      alignment: spec.alignment,
+      centerSlice: spec.centerSlice,
+      filterQuality: spec.filterQuality,
+      colorBlendMode: spec.colorBlendMode,
+      semanticLabel: spec.semanticLabel,
+      excludeFromSemantics: spec.excludeFromSemantics,
+      gaplessPlayback: spec.gaplessPlayback,
+      isAntiAlias: spec.isAntiAlias,
+      matchTextDirection: spec.matchTextDirection,
+    );
+  }
 
   /// Nullable convenience.
   static ImageMix? maybeValue(ImageSpec? spec) {
@@ -148,27 +124,27 @@ final class ImageMix extends Mix<ImageSpec> with Diagnosticable {
   }
 
   // Chainable instance methods
-  ImageMix image(ImageProvider<Object> value) => merge(ImageMix.image(value));
-  ImageMix width(double value) => merge(ImageMix.width(value));
-  ImageMix height(double value) => merge(ImageMix.height(value));
-  ImageMix color(Color value) => merge(ImageMix.color(value));
-  ImageMix repeat(ImageRepeat value) => merge(ImageMix.repeat(value));
-  ImageMix fit(BoxFit value) => merge(ImageMix.fit(value));
+  ImageMix image(ImageProvider<Object> value) => merge(ImageMix(image: value));
+  ImageMix width(double value) => merge(ImageMix(width: value));
+  ImageMix height(double value) => merge(ImageMix(height: value));
+  ImageMix color(Color value) => merge(ImageMix(color: value));
+  ImageMix repeat(ImageRepeat value) => merge(ImageMix(repeat: value));
+  ImageMix fit(BoxFit value) => merge(ImageMix(fit: value));
   ImageMix alignment(AlignmentGeometry value) =>
-      merge(ImageMix.alignment(value));
-  ImageMix centerSlice(Rect value) => merge(ImageMix.centerSlice(value));
+      merge(ImageMix(alignment: value));
+  ImageMix centerSlice(Rect value) => merge(ImageMix(centerSlice: value));
   ImageMix filterQuality(FilterQuality value) =>
-      merge(ImageMix.filterQuality(value));
+      merge(ImageMix(filterQuality: value));
   ImageMix colorBlendMode(BlendMode value) =>
-      merge(ImageMix.colorBlendMode(value));
-  ImageMix semanticLabel(String value) => merge(ImageMix.semanticLabel(value));
+      merge(ImageMix(colorBlendMode: value));
+  ImageMix semanticLabel(String value) => merge(ImageMix(semanticLabel: value));
   ImageMix excludeFromSemantics(bool value) =>
-      merge(ImageMix.excludeFromSemantics(value));
+      merge(ImageMix(excludeFromSemantics: value));
   ImageMix gaplessPlayback(bool value) =>
-      merge(ImageMix.gaplessPlayback(value));
-  ImageMix isAntiAlias(bool value) => merge(ImageMix.isAntiAlias(value));
+      merge(ImageMix(gaplessPlayback: value));
+  ImageMix isAntiAlias(bool value) => merge(ImageMix(isAntiAlias: value));
   ImageMix matchTextDirection(bool value) =>
-      merge(ImageMix.matchTextDirection(value));
+      merge(ImageMix(matchTextDirection: value));
 
   /// Builds a StyledImage using this mix converted to a Style.
   StyledImage call({

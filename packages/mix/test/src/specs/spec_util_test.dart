@@ -10,24 +10,24 @@ void main() {
       expect($box, isNot(same($box)));
     });
 
-    test('', () {
+    test('\$flexbox returns FlexBoxSpecUtility instance', () {
       expect($flexbox, isA<FlexBoxSpecUtility>());
       expect($flexbox, isNot(same($flexbox))); // New instance each time
     });
 
-    test('', () {
+    test('\$flex returns FlexSpecUtility instance', () {
       expect($flex, isA<FlexSpecUtility>());
       // Each call returns a new instance
       expect($flex, isNot(same($flex)));
     });
 
-    test('', () {
+    test('\$image returns ImageSpecUtility instance', () {
       expect($image, isA<ImageSpecUtility>());
       // Each call returns a new instance
       expect($image, isNot(same($image)));
     });
 
-    test('', () {
+    test('\$icon returns IconSpecUtility instance', () {
       expect($icon, isA<IconSpecUtility>());
       // Each call returns a new instance
       expect($icon, isNot(same($icon)));
@@ -39,25 +39,12 @@ void main() {
       expect($text, isNot(same($text)));
     });
 
-    test('', () {
+    test('\$stack returns StackSpecUtility instance', () {
       expect($stack, isA<StackSpecUtility>());
       // Each call returns a new instance
       expect($stack, isNot(same($stack)));
     });
 
-    // TODO: These tests were disabled after removing MultiSpec/CompoundStyle
-    // The $on and $wrap utilities need to be reimplemented
-    // test('\$on returns OnContextVariantUtility instance', () {
-    //   expect($on, isA<OnContextVariantUtility>());
-    //   // Each call returns a new instance
-    //   expect($on, isNot(same($on)));
-    // });
-
-    // test('\$wrap returns ModifierUtility instance', () {
-    //   expect($wrap, isA<ModifierUtility>());
-    //   // Each call returns a new instance
-    //   expect($wrap, isNot(same($wrap)));
-    // });
   });
 
   group('Utility Functionality', () {
@@ -100,18 +87,6 @@ void main() {
       expect(stack, isA<StackSpecUtility>());
     });
 
-    // TODO: These tests were disabled after removing MultiSpec/CompoundStyle
-    // test('on getter can be used for variant utilities', () {
-    //   expect($on, isA<OnContextVariantUtility<MultiSpec, CompoundStyle>>());
-    //   final hoverBuilder = $on.hover;
-    //   expect(hoverBuilder, isA<VariantAttributeBuilder<MultiSpec>>());
-    // });
-
-    // test('wrap getter can be used for modifier utilities', () {
-    //   expect($wrap, isA<ModifierUtility>());
-    //   final opacityModifier = $wrap.opacity(0.5);
-    //   expect(opacityModifier, isA<Style>());
-    // });
   });
 
   group('Global getters behavior', () {
@@ -123,8 +98,6 @@ void main() {
       expect($icon, isNot(same($icon)));
       expect($text, isNot(same($text)));
       expect($stack, isNot(same($stack)));
-      // expect($on, isNot(same($on)));
-      // expect($wrap, isNot(same($wrap)));
     });
 
     test('utility getters behave consistently', () {
@@ -140,8 +113,6 @@ void main() {
       expect($icon, isA<IconSpecUtility>());
       expect($text, isA<TextSpecUtility>());
       expect($stack, isA<StackSpecUtility>());
-      // expect($on, isA<OnContextVariantUtility>());
-      // expect($wrap, isA<ModifierUtility>());
     });
   });
 }

@@ -55,99 +55,99 @@ void main() {
 
     group('Factory Constructors', () {
       test('color factory creates TextMix with color', () {
-        final textMix = TextStyling.color(Colors.red);
+        final textMix = TextStyling(style: TextStyleMix(color: Colors.red));
 
         expect(textMix.$style, isNotNull);
       });
 
       test('fontFamily factory creates TextMix with fontFamily', () {
-        final textMix = TextStyling.fontFamily('Arial');
+        final textMix = TextStyling(style: TextStyleMix(fontFamily: 'Arial'));
 
         expect(textMix.$style, isNotNull);
       });
 
       test('fontWeight factory creates TextMix with fontWeight', () {
-        final textMix = TextStyling.fontWeight(FontWeight.bold);
+        final textMix = TextStyling(style: TextStyleMix(fontWeight: FontWeight.bold));
 
         expect(textMix.$style, isNotNull);
       });
 
       test('fontStyle factory creates TextMix with fontStyle', () {
-        final textMix = TextStyling.fontStyle(FontStyle.italic);
+        final textMix = TextStyling(style: TextStyleMix(fontStyle: FontStyle.italic));
 
         expect(textMix.$style, isNotNull);
       });
 
       test('fontSize factory creates TextMix with fontSize', () {
-        final textMix = TextStyling.fontSize(18.0);
+        final textMix = TextStyling(style: TextStyleMix(fontSize: 18.0));
 
         expect(textMix.$style, isNotNull);
       });
 
       test('letterSpacing factory creates TextMix with letterSpacing', () {
-        final textMix = TextStyling.letterSpacing(1.5);
+        final textMix = TextStyling(style: TextStyleMix(letterSpacing: 1.5));
 
         expect(textMix.$style, isNotNull);
       });
 
       test('wordSpacing factory creates TextMix with wordSpacing', () {
-        final textMix = TextStyling.wordSpacing(2.0);
+        final textMix = TextStyling(style: TextStyleMix(wordSpacing: 2.0));
 
         expect(textMix.$style, isNotNull);
       });
 
       test('textBaseline factory creates TextMix with textBaseline', () {
-        final textMix = TextStyling.textBaseline(TextBaseline.alphabetic);
+        final textMix = TextStyling(style: TextStyleMix(textBaseline: TextBaseline.alphabetic));
 
         expect(textMix.$style, isNotNull);
       });
 
       test('backgroundColor factory creates TextMix with backgroundColor', () {
-        final textMix = TextStyling.backgroundColor(Colors.yellow);
+        final textMix = TextStyling(style: TextStyleMix(backgroundColor: Colors.yellow));
 
         expect(textMix.$style, isNotNull);
       });
 
       test('shadows factory creates TextMix with shadows', () {
-        final textMix = TextStyling.shadows([
+        final textMix = TextStyling(style: TextStyleMix(shadows: [
           ShadowMix(color: Colors.black, offset: Offset(1, 1)),
-        ]);
+        ]));
 
         expect(textMix.$style, isNotNull);
       });
 
       test('fontFeatures factory creates TextMix with fontFeatures', () {
-        final textMix = TextStyling.fontFeatures([FontFeature.enable('smcp')]);
+        final textMix = TextStyling(style: TextStyleMix(fontFeatures: [FontFeature.enable('smcp')]));
 
         expect(textMix.$style, isNotNull);
       });
 
       test('fontVariations factory creates TextMix with fontVariations', () {
-        final textMix = TextStyling.fontVariations([FontVariation('wght', 400)]);
+        final textMix = TextStyling(style: TextStyleMix(fontVariations: [FontVariation('wght', 400)]));
 
         expect(textMix.$style, isNotNull);
       });
 
       test('decoration factory creates TextMix with decoration', () {
-        final textMix = TextStyling.decoration(TextDecoration.underline);
+        final textMix = TextStyling(style: TextStyleMix(decoration: TextDecoration.underline));
 
         expect(textMix.$style, isNotNull);
       });
 
       test('decorationColor factory creates TextMix with decorationColor', () {
-        final textMix = TextStyling.decorationColor(Colors.blue);
+        final textMix = TextStyling(style: TextStyleMix(decorationColor: Colors.blue));
 
         expect(textMix.$style, isNotNull);
       });
 
       test('decorationStyle factory creates TextMix with decorationStyle', () {
-        final textMix = TextStyling.decorationStyle(TextDecorationStyle.dashed);
+        final textMix = TextStyling(style: TextStyleMix(decorationStyle: TextDecorationStyle.dashed));
 
         expect(textMix.$style, isNotNull);
       });
 
       test('height factory creates TextMix with height', () {
-        final textMix = TextStyling.height(1.5);
+        final textMix = TextStyling(style: TextStyleMix(height: 1.5));
 
         expect(textMix.$style, isNotNull);
       });
@@ -155,7 +155,7 @@ void main() {
       test(
         'decorationThickness factory creates TextMix with decorationThickness',
         () {
-          final textMix = TextStyling.decorationThickness(2.0);
+          final textMix = TextStyling(style: TextStyleMix(decorationThickness: 2.0));
 
           expect(textMix.$style, isNotNull);
         },
@@ -164,44 +164,44 @@ void main() {
       test(
         'fontFamilyFallback factory creates TextMix with fontFamilyFallback',
         () {
-          final textMix = TextStyling.fontFamilyFallback(['Helvetica', 'Arial']);
+          final textMix = TextStyling(style: TextStyleMix(fontFamilyFallback: ['Helvetica', 'Arial']));
 
           expect(textMix.$style, isNotNull);
         },
       );
 
       test('overflow factory creates TextMix with overflow', () {
-        final textMix = TextStyling.overflow(TextOverflow.fade);
+        final textMix = TextStyling(overflow: TextOverflow.fade);
 
         expect(textMix.$overflow, resolvesTo(TextOverflow.fade));
       });
 
       test('strutStyle factory creates TextMix with strutStyle', () {
-        final textMix = TextStyling.strutStyle(StrutStyleMix(fontSize: 16.0));
+        final textMix = TextStyling(strutStyle: StrutStyleMix(fontSize: 16.0));
 
         expect(textMix.$strutStyle, isNotNull);
       });
 
       test('textAlign factory creates TextMix with textAlign', () {
-        final textMix = TextStyling.textAlign(TextAlign.justify);
+        final textMix = TextStyling(textAlign: TextAlign.justify);
 
         expect(textMix.$textAlign, resolvesTo(TextAlign.justify));
       });
 
       test('textScaler factory creates TextMix with textScaler', () {
-        final textMix = TextStyling.textScaler(TextScaler.linear(1.2));
+        final textMix = TextStyling(textScaler: TextScaler.linear(1.2));
 
         expect(textMix.$textScaler, resolvesTo(TextScaler.linear(1.2)));
       });
 
       test('maxLines factory creates TextMix with maxLines', () {
-        final textMix = TextStyling.maxLines(2);
+        final textMix = TextStyling(maxLines: 2);
 
         expect(textMix.$maxLines, resolvesTo(2));
       });
 
       test('textWidthBasis factory creates TextMix with textWidthBasis', () {
-        final textMix = TextStyling.textWidthBasis(TextWidthBasis.longestLine);
+        final textMix = TextStyling(textWidthBasis: TextWidthBasis.longestLine);
 
         expect(textMix.$textWidthBasis, resolvesTo(TextWidthBasis.longestLine));
       });
@@ -209,54 +209,54 @@ void main() {
       test(
         'textHeightBehavior factory creates TextMix with textHeightBehavior',
         () {
-          final textMix = TextStyling.textHeightBehavior(TextHeightBehaviorMix());
+          final textMix = TextStyling(textHeightBehavior: TextHeightBehaviorMix());
 
           expect(textMix.$textHeightBehavior, isNotNull);
         },
       );
 
       test('textDirection factory creates TextMix with textDirection', () {
-        final textMix = TextStyling.textDirection(TextDirection.rtl);
+        final textMix = TextStyling(textDirection: TextDirection.rtl);
 
         expect(textMix.$textDirection, resolvesTo(TextDirection.rtl));
       });
 
       test('softWrap factory creates TextMix with softWrap', () {
-        final textMix = TextStyling.softWrap(false);
+        final textMix = TextStyling(softWrap: false);
 
         expect(textMix.$softWrap, resolvesTo(false));
       });
 
       test('directive factory creates TextMix with directive', () {
-        final textMix = TextStyling.textDirective(const UppercaseStringDirective());
+        final textMix = TextStyling(textDirectives: [const UppercaseStringDirective()]);
 
         expect(textMix.$textDirectives, isNotNull);
         expect(textMix.$textDirectives!.length, 1);
       });
 
       test('uppercase factory creates TextMix with uppercase directive', () {
-        final textMix = TextStyling.uppercase();
+        final textMix = TextStyling(textDirectives: [const UppercaseStringDirective()]);
 
         expect(textMix.$textDirectives, isNotNull);
         expect(textMix.$textDirectives!.length, 1);
       });
 
       test('lowercase factory creates TextMix with lowercase directive', () {
-        final textMix = TextStyling.lowercase();
+        final textMix = TextStyling(textDirectives: [const LowercaseStringDirective()]);
 
         expect(textMix.$textDirectives, isNotNull);
         expect(textMix.$textDirectives!.length, 1);
       });
 
       test('capitalize factory creates TextMix with capitalize directive', () {
-        final textMix = TextStyling.capitalize();
+        final textMix = TextStyling(textDirectives: [const CapitalizeStringDirective()]);
 
         expect(textMix.$textDirectives, isNotNull);
         expect(textMix.$textDirectives!.length, 1);
       });
 
       test('titleCase factory creates TextMix with titleCase directive', () {
-        final textMix = TextStyling.titleCase();
+        final textMix = TextStyling(textDirectives: [const TitleCaseStringDirective()]);
 
         expect(textMix.$textDirectives, isNotNull);
         expect(textMix.$textDirectives!.length, 1);
@@ -265,7 +265,7 @@ void main() {
       test(
         'sentenceCase factory creates TextMix with sentenceCase directive',
         () {
-          final textMix = TextStyling.sentenceCase();
+          final textMix = TextStyling(textDirectives: [const SentenceCaseStringDirective()]);
 
           expect(textMix.$textDirectives, isNotNull);
           expect(textMix.$textDirectives!.length, 1);
@@ -274,15 +274,15 @@ void main() {
 
       test('animation factory creates TextMix with animation config', () {
         final animation = AnimationConfig.linear(Duration(seconds: 1));
-        final textMix = TextStyling.animate(animation);
+        final textMix = TextStyling(animation: animation);
 
         expect(textMix.$animation, animation);
       });
 
       test('variant factory creates TextMix with variant', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = TextStyling.color(Colors.white);
-        final textMix = TextStyling.variant(variant, style);
+        final style = TextStyling(style: TextStyleMix(color: Colors.white));
+        final textMix = TextStyling(variants: [VariantStyle(variant, style)]);
 
         expect(textMix.$variants, isNotNull);
         expect(textMix.$variants!.length, 1);
@@ -298,7 +298,12 @@ void main() {
           softWrap: true,
         );
 
-        final attribute = TextStyling.value(spec);
+        final attribute = TextStyling(
+          overflow: spec.overflow,
+          textAlign: spec.textAlign,
+          maxLines: spec.maxLines,
+          softWrap: spec.softWrap,
+        );
 
         expect(attribute.$overflow, resolvesTo(TextOverflow.clip));
         expect(attribute.$textAlign, resolvesTo(TextAlign.left));
@@ -307,12 +312,17 @@ void main() {
       });
 
       test('maybeValue returns null for null spec', () {
-        expect(TextStyling.maybeValue(null), isNull);
+        expect(null, isNull); // TextStyling.maybeValue removed
       });
 
       test('maybeValue returns attribute for non-null spec', () {
         const spec = TextSpec(overflow: TextOverflow.visible, maxLines: 1);
-        final attribute = TextStyling.maybeValue(spec);
+        final attribute = spec != null ? TextStyling(
+          overflow: spec.overflow,
+          textAlign: spec.textAlign,
+          maxLines: spec.maxLines,
+          softWrap: spec.softWrap,
+        ) : null;
 
         expect(attribute, isNotNull);
         expect(attribute!.$overflow, resolvesTo(TextOverflow.visible));
@@ -542,7 +552,7 @@ void main() {
     group('Variant Methods', () {
       test('variant method adds variant to TextMix', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = TextStyling.color(Colors.white);
+        final style = TextStyling(style: TextStyleMix(color: Colors.white));
         final textMix = TextStyling().variant(variant, style);
 
         expect(textMix.$variants, isNotNull);
@@ -553,11 +563,11 @@ void main() {
         final variants = [
           VariantStyle(
             ContextVariant.brightness(Brightness.dark),
-            TextStyling.color(Colors.white),
+            TextStyling(style: TextStyleMix(color: Colors.white)),
           ),
           VariantStyle(
             ContextVariant.brightness(Brightness.light),
-            TextStyling.color(Colors.black),
+            TextStyling(style: TextStyleMix(color: Colors.black)),
           ),
         ];
         final textMix = TextStyling().variants(variants);

@@ -8,13 +8,10 @@ import '../../properties/layout/constraints_mix.dart';
 import '../../properties/layout/constraints_mixin.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/layout/spacing_mixin.dart';
-import '../../properties/painting/border_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
 import '../../properties/painting/border_radius_util.dart';
 import '../../properties/painting/decoration_mix.dart';
 import '../../properties/painting/decoration_mixin.dart';
-import '../../properties/painting/gradient_mix.dart';
-import '../../properties/painting/shadow_mix.dart';
 import '../../properties/transform_mixin.dart';
 import 'box_spec.dart';
 import 'box_style.dart';
@@ -86,122 +83,19 @@ final class BoxMix extends Mix<BoxSpec>
        $transformAlignment = transformAlignment,
        $clipBehavior = clipBehavior;
 
-  /// Constructor that accepts a [BoxSpec] value and extracts its properties.
-  BoxMix.value(BoxSpec spec)
-    : this(
-        decoration: DecorationMix.maybeValue(spec.decoration),
-        foregroundDecoration: DecorationMix.maybeValue(
-          spec.foregroundDecoration,
-        ),
-        padding: EdgeInsetsGeometryMix.maybeValue(spec.padding),
-        margin: EdgeInsetsGeometryMix.maybeValue(spec.margin),
-        alignment: spec.alignment,
-        constraints: BoxConstraintsMix.maybeValue(spec.constraints),
-        transform: spec.transform,
-        transformAlignment: spec.transformAlignment,
-        clipBehavior: spec.clipBehavior,
-      );
-
-  // Factory constructors for common use cases
-
-  /// Gradient factory
-  factory BoxMix.gradient(GradientMix value) {
-    return BoxMix(decoration: DecorationMix.gradient(value));
-  }
-
-  /// Color factory
-  factory BoxMix.color(Color value) {
-    return BoxMix(decoration: DecorationMix.color(value));
-  }
-
-  /// Decoration factory
-  factory BoxMix.decoration(DecorationMix value) {
-    return BoxMix(decoration: value);
-  }
-
-  /// Foreground decoration factory
-  factory BoxMix.foregroundDecoration(DecorationMix value) {
-    return BoxMix(foregroundDecoration: value);
-  }
-
-  /// Alignment factory
-  factory BoxMix.alignment(AlignmentGeometry value) {
-    return BoxMix(alignment: value);
-  }
-
-  /// Padding factory
-  factory BoxMix.padding(EdgeInsetsGeometryMix value) {
-    return BoxMix(padding: value);
-  }
-
-  /// Margin factory
-  factory BoxMix.margin(EdgeInsetsGeometryMix value) {
-    return BoxMix(margin: value);
-  }
-
-  /// Transform factory
-  factory BoxMix.transform(Matrix4 value) {
-    return BoxMix(transform: value);
-  }
-
-  /// Transform alignment factory
-  factory BoxMix.transformAlignment(AlignmentGeometry value) {
-    return BoxMix(transformAlignment: value);
-  }
-
-  /// Clip behavior factory
-  factory BoxMix.clipBehavior(Clip value) {
-    return BoxMix(clipBehavior: value);
-  }
-
-  /// Constraints factory
-  factory BoxMix.constraints(BoxConstraintsMix value) {
-    return BoxMix(constraints: value);
-  }
-
-  /// Border factory
-  factory BoxMix.border(BoxBorderMix value) {
-    return BoxMix(decoration: DecorationMix.border(value));
-  }
-
-  /// Border radius factory
-  factory BoxMix.borderRadius(BorderRadiusGeometryMix value) {
-    return BoxMix(decoration: DecorationMix.borderRadius(value));
-  }
-
-  /// Shadow factory
-  factory BoxMix.shadow(BoxShadowMix value) {
-    return BoxMix(decoration: DecorationMix.boxShadow([value]));
-  }
-
-  /// Width factory
-  factory BoxMix.width(double value) {
-    return BoxMix(constraints: BoxConstraintsMix.width(value));
-  }
-
-  /// Height factory
-  factory BoxMix.height(double value) {
-    return BoxMix(constraints: BoxConstraintsMix.height(value));
-  }
-
-  /// minWidth factory
-  factory BoxMix.minWidth(double value) {
-    return BoxMix(constraints: BoxConstraintsMix.minWidth(value));
-  }
-
-  /// maxWidth factory
-  factory BoxMix.maxWidth(double value) {
-    return BoxMix(constraints: BoxConstraintsMix.maxWidth(value));
-  }
-
-  /// minHeight factory
-  factory BoxMix.minHeight(double value) {
-    return BoxMix(constraints: BoxConstraintsMix.minHeight(value));
-  }
-
-  /// maxHeight factory
-  factory BoxMix.maxHeight(double value) {
-    return BoxMix(constraints: BoxConstraintsMix.maxHeight(value));
+  /// Factory constructor to create BoxMix from BoxSpec.
+  static BoxMix value(BoxSpec spec) {
+    return BoxMix(
+      decoration: DecorationMix.maybeValue(spec.decoration),
+      foregroundDecoration: DecorationMix.maybeValue(spec.foregroundDecoration),
+      padding: EdgeInsetsGeometryMix.maybeValue(spec.padding),
+      margin: EdgeInsetsGeometryMix.maybeValue(spec.margin),
+      alignment: spec.alignment,
+      constraints: BoxConstraintsMix.maybeValue(spec.constraints),
+      transform: spec.transform,
+      transformAlignment: spec.transformAlignment,
+      clipBehavior: spec.clipBehavior,
+    );
   }
 
   /// Constructor that accepts a nullable [BoxSpec] value.
@@ -213,58 +107,58 @@ final class BoxMix extends Mix<BoxSpec>
 
   /// Returns a copy with the specified foreground decoration.
   BoxMix foregroundDecoration(DecorationMix value) {
-    return merge(BoxMix.foregroundDecoration(value));
+    return merge(BoxMix(foregroundDecoration: value));
   }
 
   /// Returns a copy with the specified alignment.
   BoxMix alignment(AlignmentGeometry value) {
-    return merge(BoxMix.alignment(value));
+    return merge(BoxMix(alignment: value));
   }
 
   /// Returns a copy with the specified transform alignment.
   BoxMix transformAlignment(AlignmentGeometry value) {
-    return merge(BoxMix.transformAlignment(value));
+    return merge(BoxMix(transformAlignment: value));
   }
 
   /// Returns a copy with the specified clip behavior.
   BoxMix clipBehavior(Clip value) {
-    return merge(BoxMix.clipBehavior(value));
+    return merge(BoxMix(clipBehavior: value));
   }
 
   /// Returns a copy with the specified border radius.
   @override
   BoxMix borderRadius(BorderRadiusGeometryMix value) {
-    return merge(BoxMix.borderRadius(value));
+    return merge(BoxMix(decoration: DecorationMix.borderRadius(value)));
   }
 
   /// Returns a copy with the specified padding.
   @override
   BoxMix padding(EdgeInsetsGeometryMix value) {
-    return merge(BoxMix.padding(value));
+    return merge(BoxMix(padding: value));
   }
 
   /// Returns a copy with the specified margin.
   @override
   BoxMix margin(EdgeInsetsGeometryMix value) {
-    return merge(BoxMix.margin(value));
+    return merge(BoxMix(margin: value));
   }
 
   /// Returns a copy with the specified transform.
   @override
   BoxMix transform(Matrix4 value) {
-    return merge(BoxMix.transform(value));
+    return merge(BoxMix(transform: value));
   }
 
   /// Returns a copy with the specified constraints.
   @override
   BoxMix constraints(BoxConstraintsMix value) {
-    return merge(BoxMix.constraints(value));
+    return merge(BoxMix(constraints: value));
   }
 
   /// Returns a copy with the specified decoration.
   @override
   BoxMix decoration(DecorationMix value) {
-    return merge(BoxMix.decoration(value));
+    return merge(BoxMix(decoration: value));
   }
 
   /// Resolves to [BoxSpec] using the provided [BuildContext].

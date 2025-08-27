@@ -6,6 +6,7 @@ import '../core/modifier.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
+import '../properties/painting/decoration_mix.dart';
 import '../specs/box/box_mix.dart';
 import '../specs/box/box_spec.dart';
 import '../specs/box/box_widget.dart';
@@ -87,14 +88,14 @@ class BoxModifierUtility<T extends Style<Object?>>
   }
 
   T color(Color value) {
-    return builder(BoxModifierMix(BoxMix.color(value)));
+    return builder(BoxModifierMix(BoxMix(decoration: DecorationMix.color(value))));
   }
 
   T padding(EdgeInsetsGeometryMix value) {
-    return builder(BoxModifierMix(BoxMix.padding(value)));
+    return builder(BoxModifierMix(BoxMix(padding: value)));
   }
 
   T margin(EdgeInsetsGeometryMix value) {
-    return builder(BoxModifierMix(BoxMix.margin(value)));
+    return builder(BoxModifierMix(BoxMix(margin: value)));
   }
 }

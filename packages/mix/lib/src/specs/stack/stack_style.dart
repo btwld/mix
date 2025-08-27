@@ -31,44 +31,6 @@ class StackStyle extends Style<StackSpec>
   final Prop<TextDirection>? $textDirection;
   final Prop<Clip>? $clipBehavior;
 
-  /// Factory for stack alignment
-  factory StackStyle.alignment(AlignmentGeometry value) {
-    return StackStyle(alignment: value);
-  }
-
-  /// Factory for stack fit
-  factory StackStyle.fit(StackFit value) {
-    return StackStyle(fit: value);
-  }
-
-  /// Factory for text direction
-  factory StackStyle.textDirection(TextDirection value) {
-    return StackStyle(textDirection: value);
-  }
-
-  /// Factory for clip behavior
-  factory StackStyle.clipBehavior(Clip value) {
-    return StackStyle(clipBehavior: value);
-  }
-
-  /// Factory for animation
-  factory StackStyle.animate(AnimationConfig animation) {
-    return StackStyle(animation: animation);
-  }
-
-  /// Factory for variant
-  factory StackStyle.variant(Variant variant, StackStyle value) {
-    return StackStyle(variants: [VariantStyle(variant, value)]);
-  }
-
-  /// Factory for widget modifier
-  factory StackStyle.modifier(ModifierConfig modifier) {
-    return StackStyle(modifier: modifier);
-  }
-
-  factory StackStyle.wrap(ModifierConfig value) {
-    return StackStyle(modifier: value);
-  }
 
   const StackStyle.create({
     Prop<AlignmentGeometry>? alignment,
@@ -135,22 +97,22 @@ class StackStyle extends Style<StackSpec>
 
   /// Sets stack alignment
   StackStyle alignment(AlignmentGeometry value) {
-    return merge(StackStyle.alignment(value));
+    return merge(StackStyle(alignment: value));
   }
 
   /// Sets stack fit
   StackStyle fit(StackFit value) {
-    return merge(StackStyle.fit(value));
+    return merge(StackStyle(fit: value));
   }
 
   /// Sets text direction
   StackStyle textDirection(TextDirection value) {
-    return merge(StackStyle.textDirection(value));
+    return merge(StackStyle(textDirection: value));
   }
 
   /// Sets clip behavior
   StackStyle clipBehavior(Clip value) {
-    return merge(StackStyle.clipBehavior(value));
+    return merge(StackStyle(clipBehavior: value));
   }
 
   StackStyle modifier(ModifierConfig value) {
@@ -160,7 +122,7 @@ class StackStyle extends Style<StackSpec>
   /// Convenience method for animating the StackWidgetSpec
   @override
   StackStyle animate(AnimationConfig animation) {
-    return merge(StackStyle.animate(animation));
+    return merge(StackStyle(animation: animation));
   }
 
   @override

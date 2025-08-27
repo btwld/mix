@@ -95,95 +95,24 @@ final class TextMix extends Mix<TextSpec> with Diagnosticable {
        $semanticsLabel = semanticsLabel,
        $locale = locale;
 
-  /// Constructor that accepts a [TextSpec] value and extracts its properties.
-  TextMix.value(TextSpec spec)
-    : this(
-        overflow: spec.overflow,
-        strutStyle: StrutStyleMix.maybeValue(spec.strutStyle),
-        textAlign: spec.textAlign,
-        textScaler: spec.textScaler,
-        maxLines: spec.maxLines,
-        style: TextStyleMix.maybeValue(spec.style),
-        textWidthBasis: spec.textWidthBasis,
-        textHeightBehavior: TextHeightBehaviorMix.maybeValue(spec.textHeightBehavior),
-        textDirection: spec.textDirection,
-        softWrap: spec.softWrap,
-        textDirectives: spec.textDirectives,
-        selectionColor: spec.selectionColor,
-        semanticsLabel: spec.semanticsLabel,
-        locale: spec.locale,
-      );
-
-  // Factory constructors for common use cases
-
-  /// Overflow factory
-  factory TextMix.overflow(TextOverflow value) {
-    return TextMix(overflow: value);
-  }
-
-  /// Strut style factory
-  factory TextMix.strutStyle(StrutStyleMix value) {
-    return TextMix(strutStyle: value);
-  }
-
-  /// Text align factory
-  factory TextMix.textAlign(TextAlign value) {
-    return TextMix(textAlign: value);
-  }
-
-  /// Text scaler factory
-  factory TextMix.textScaler(TextScaler value) {
-    return TextMix(textScaler: value);
-  }
-
-  /// Max lines factory
-  factory TextMix.maxLines(int value) {
-    return TextMix(maxLines: value);
-  }
-
-  /// Style factory
-  factory TextMix.style(TextStyleMix value) {
-    return TextMix(style: value);
-  }
-
-  /// Text width basis factory
-  factory TextMix.textWidthBasis(TextWidthBasis value) {
-    return TextMix(textWidthBasis: value);
-  }
-
-  /// Text height behavior factory
-  factory TextMix.textHeightBehavior(TextHeightBehaviorMix value) {
-    return TextMix(textHeightBehavior: value);
-  }
-
-  /// Text direction factory
-  factory TextMix.textDirection(TextDirection value) {
-    return TextMix(textDirection: value);
-  }
-
-  /// Soft wrap factory
-  factory TextMix.softWrap(bool value) {
-    return TextMix(softWrap: value);
-  }
-
-  /// Text directives factory
-  factory TextMix.textDirectives(List<Directive<String>> value) {
-    return TextMix(textDirectives: value);
-  }
-
-  /// Selection color factory
-  factory TextMix.selectionColor(Color value) {
-    return TextMix(selectionColor: value);
-  }
-
-  /// Semantics label factory
-  factory TextMix.semanticsLabel(String value) {
-    return TextMix(semanticsLabel: value);
-  }
-
-  /// Locale factory
-  factory TextMix.locale(Locale value) {
-    return TextMix(locale: value);
+  /// Factory constructor to create TextMix from TextSpec.
+  static TextMix value(TextSpec spec) {
+    return TextMix(
+      overflow: spec.overflow,
+      strutStyle: StrutStyleMix.maybeValue(spec.strutStyle),
+      textAlign: spec.textAlign,
+      textScaler: spec.textScaler,
+      maxLines: spec.maxLines,
+      style: TextStyleMix.maybeValue(spec.style),
+      textWidthBasis: spec.textWidthBasis,
+      textHeightBehavior: TextHeightBehaviorMix.maybeValue(spec.textHeightBehavior),
+      textDirection: spec.textDirection,
+      softWrap: spec.softWrap,
+      textDirectives: spec.textDirectives,
+      selectionColor: spec.selectionColor,
+      semanticsLabel: spec.semanticsLabel,
+      locale: spec.locale,
+    );
   }
 
   /// Constructor that accepts a nullable [TextSpec] value.
@@ -197,72 +126,72 @@ final class TextMix extends Mix<TextSpec> with Diagnosticable {
 
   /// Returns a copy with the specified overflow.
   TextMix overflow(TextOverflow value) {
-    return merge(TextMix.overflow(value));
+    return merge(TextMix(overflow: value));
   }
 
   /// Returns a copy with the specified strut style.
   TextMix strutStyle(StrutStyleMix value) {
-    return merge(TextMix.strutStyle(value));
+    return merge(TextMix(strutStyle: value));
   }
 
   /// Returns a copy with the specified text align.
   TextMix textAlign(TextAlign value) {
-    return merge(TextMix.textAlign(value));
+    return merge(TextMix(textAlign: value));
   }
 
   /// Returns a copy with the specified text scaler.
   TextMix textScaler(TextScaler value) {
-    return merge(TextMix.textScaler(value));
+    return merge(TextMix(textScaler: value));
   }
 
   /// Returns a copy with the specified max lines.
   TextMix maxLines(int value) {
-    return merge(TextMix.maxLines(value));
+    return merge(TextMix(maxLines: value));
   }
 
   /// Returns a copy with the specified style.
   TextMix style(TextStyleMix value) {
-    return merge(TextMix.style(value));
+    return merge(TextMix(style: value));
   }
 
   /// Returns a copy with the specified text width basis.
   TextMix textWidthBasis(TextWidthBasis value) {
-    return merge(TextMix.textWidthBasis(value));
+    return merge(TextMix(textWidthBasis: value));
   }
 
   /// Returns a copy with the specified text height behavior.
   TextMix textHeightBehavior(TextHeightBehaviorMix value) {
-    return merge(TextMix.textHeightBehavior(value));
+    return merge(TextMix(textHeightBehavior: value));
   }
 
   /// Returns a copy with the specified text direction.
   TextMix textDirection(TextDirection value) {
-    return merge(TextMix.textDirection(value));
+    return merge(TextMix(textDirection: value));
   }
 
   /// Returns a copy with the specified soft wrap.
   TextMix softWrap(bool value) {
-    return merge(TextMix.softWrap(value));
+    return merge(TextMix(softWrap: value));
   }
 
   /// Returns a copy with the specified text directives.
   TextMix textDirectives(List<Directive<String>> value) {
-    return merge(TextMix.textDirectives(value));
+    return merge(TextMix(textDirectives: value));
   }
 
   /// Returns a copy with the specified selection color.
   TextMix selectionColor(Color value) {
-    return merge(TextMix.selectionColor(value));
+    return merge(TextMix(selectionColor: value));
   }
 
   /// Returns a copy with the specified semantics label.
   TextMix semanticsLabel(String value) {
-    return merge(TextMix.semanticsLabel(value));
+    return merge(TextMix(semanticsLabel: value));
   }
 
   /// Returns a copy with the specified locale.
   TextMix locale(Locale value) {
-    return merge(TextMix.locale(value));
+    return merge(TextMix(locale: value));
   }
 
   /// Resolves to [TextSpec] using the provided [BuildContext].

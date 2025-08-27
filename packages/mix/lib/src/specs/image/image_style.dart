@@ -36,100 +36,6 @@ class ImageStyle extends Style<ImageSpec>
   final Prop<bool>? $isAntiAlias;
   final Prop<bool>? $matchTextDirection;
 
-  /// Factory for image provider
-  factory ImageStyle.image(ImageProvider<Object> value) {
-    return ImageStyle(image: value);
-  }
-
-  /// Factory for image width
-  factory ImageStyle.width(double value) {
-    return ImageStyle(width: value);
-  }
-
-  /// Factory for image height
-  factory ImageStyle.height(double value) {
-    return ImageStyle(height: value);
-  }
-
-  /// Factory for image color
-  factory ImageStyle.color(Color value) {
-    return ImageStyle(color: value);
-  }
-
-  /// Factory for image repeat
-  factory ImageStyle.repeat(ImageRepeat value) {
-    return ImageStyle(repeat: value);
-  }
-
-  /// Factory for image fit
-  factory ImageStyle.fit(BoxFit value) {
-    return ImageStyle(fit: value);
-  }
-
-  /// Factory for image alignment
-  factory ImageStyle.alignment(AlignmentGeometry value) {
-    return ImageStyle(alignment: value);
-  }
-
-  /// Factory for center slice
-  factory ImageStyle.centerSlice(Rect value) {
-    return ImageStyle(centerSlice: value);
-  }
-
-  /// Factory for filter quality
-  factory ImageStyle.filterQuality(FilterQuality value) {
-    return ImageStyle(filterQuality: value);
-  }
-
-  /// Factory for color blend mode
-  factory ImageStyle.colorBlendMode(BlendMode value) {
-    return ImageStyle(colorBlendMode: value);
-  }
-
-  /// Factory for semantic label
-  factory ImageStyle.semanticLabel(String value) {
-    return ImageStyle(semanticLabel: value);
-  }
-
-  /// Factory for exclude from semantics
-  factory ImageStyle.excludeFromSemantics(bool value) {
-    return ImageStyle(excludeFromSemantics: value);
-  }
-
-  /// Factory for gapless playback
-  factory ImageStyle.gaplessPlayback(bool value) {
-    return ImageStyle(gaplessPlayback: value);
-  }
-
-  /// Factory for is anti alias
-  factory ImageStyle.isAntiAlias(bool value) {
-    return ImageStyle(isAntiAlias: value);
-  }
-
-  /// Factory for match text direction
-  factory ImageStyle.matchTextDirection(bool value) {
-    return ImageStyle(matchTextDirection: value);
-  }
-
-  /// Factory for animation
-  factory ImageStyle.animate(AnimationConfig animation) {
-    return ImageStyle(animation: animation);
-  }
-
-  /// Factory for variant
-  factory ImageStyle.variant(Variant variant, ImageStyle value) {
-    return ImageStyle(variants: [VariantStyle(variant, value)]);
-  }
-
-  /// Factory for widget modifier
-  factory ImageStyle.modifier(ModifierConfig modifier) {
-    return ImageStyle(modifier: modifier);
-  }
-
-  /// Factory for widget modifier
-  factory ImageStyle.wrap(ModifierConfig value) {
-    return ImageStyle(modifier: value);
-  }
 
   const ImageStyle.create({
     Prop<ImageProvider<Object>>? image,
@@ -251,37 +157,37 @@ class ImageStyle extends Style<ImageSpec>
 
   /// Sets image provider
   ImageStyle image(ImageProvider<Object> value) {
-    return merge(ImageStyle.image(value));
+    return merge(ImageStyle(image: value));
   }
 
   /// Sets image width
   ImageStyle width(double value) {
-    return merge(ImageStyle.width(value));
+    return merge(ImageStyle(width: value));
   }
 
   /// Sets image height
   ImageStyle height(double value) {
-    return merge(ImageStyle.height(value));
+    return merge(ImageStyle(height: value));
   }
 
   /// Sets image color
   ImageStyle color(Color value) {
-    return merge(ImageStyle.color(value));
+    return merge(ImageStyle(color: value));
   }
 
   /// Sets image repeat
   ImageStyle repeat(ImageRepeat value) {
-    return merge(ImageStyle.repeat(value));
+    return merge(ImageStyle(repeat: value));
   }
 
   /// Sets image fit
   ImageStyle fit(BoxFit value) {
-    return merge(ImageStyle.fit(value));
+    return merge(ImageStyle(fit: value));
   }
 
   /// Sets image alignment
   ImageStyle alignment(AlignmentGeometry value) {
-    return merge(ImageStyle.alignment(value));
+    return merge(ImageStyle(alignment: value));
   }
 
   StyledImage call({
@@ -303,42 +209,42 @@ class ImageStyle extends Style<ImageSpec>
 
   /// Sets center slice
   ImageStyle centerSlice(Rect value) {
-    return merge(ImageStyle.centerSlice(value));
+    return merge(ImageStyle(centerSlice: value));
   }
 
   /// Sets filter quality
   ImageStyle filterQuality(FilterQuality value) {
-    return merge(ImageStyle.filterQuality(value));
+    return merge(ImageStyle(filterQuality: value));
   }
 
   /// Sets color blend mode
   ImageStyle colorBlendMode(BlendMode value) {
-    return merge(ImageStyle.colorBlendMode(value));
+    return merge(ImageStyle(colorBlendMode: value));
   }
 
   /// Sets semantic label
   ImageStyle semanticLabel(String value) {
-    return merge(ImageStyle.semanticLabel(value));
+    return merge(ImageStyle(semanticLabel: value));
   }
 
   /// Sets exclude from semantics
   ImageStyle excludeFromSemantics(bool value) {
-    return merge(ImageStyle.excludeFromSemantics(value));
+    return merge(ImageStyle(excludeFromSemantics: value));
   }
 
   /// Sets gapless playback
   ImageStyle gaplessPlayback(bool value) {
-    return merge(ImageStyle.gaplessPlayback(value));
+    return merge(ImageStyle(gaplessPlayback: value));
   }
 
   /// Sets is anti alias
   ImageStyle isAntiAlias(bool value) {
-    return merge(ImageStyle.isAntiAlias(value));
+    return merge(ImageStyle(isAntiAlias: value));
   }
 
   /// Sets match text direction
   ImageStyle matchTextDirection(bool value) {
-    return merge(ImageStyle.matchTextDirection(value));
+    return merge(ImageStyle(matchTextDirection: value));
   }
 
   ImageStyle modifier(ModifierConfig value) {
@@ -347,7 +253,7 @@ class ImageStyle extends Style<ImageSpec>
 
   /// Convenience method for animating the ImageWidgetSpec
   ImageStyle animate(AnimationConfig animation) {
-    return merge(ImageStyle.animate(animation));
+    return merge(ImageStyle(animation: animation));
   }
 
   @override

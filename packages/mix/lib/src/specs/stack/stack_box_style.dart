@@ -50,21 +50,6 @@ class StackBoxStyle extends Style<ZBoxSpec>
   }) : $box = box,
        $stack = stack;
 
-  /// Factory for box properties (BoxMix), parameter kept as `box` for API consistency
-  factory StackBoxStyle.box(BoxMix value) => StackBoxStyle(box: value);
-
-  /// Factory for stack properties
-  factory StackBoxStyle.stack(StackMix value) => StackBoxStyle(stack: value);
-
-  /// Factory for animation
-  factory StackBoxStyle.animate(AnimationConfig animation) {
-    return StackBoxStyle(animation: animation);
-  }
-
-  /// Factory for variant
-  factory StackBoxStyle.variant(Variant variant, StackBoxStyle value) {
-    return StackBoxStyle(variants: [VariantStyle(variant, value)]);
-  }
 
   /// Constructor that accepts a [ZBoxSpec] value and extracts its properties.
   ///
@@ -95,17 +80,17 @@ class StackBoxStyle extends Style<ZBoxSpec>
 
   /// Sets box properties (BoxMix)
   StackBoxStyle box(BoxMix value) {
-    return merge(StackBoxStyle.box(value));
+    return merge(StackBoxStyle(box: value));
   }
 
   /// Sets stack properties
   StackBoxStyle stack(StackMix value) {
-    return merge(StackBoxStyle.stack(value));
+    return merge(StackBoxStyle(stack: value));
   }
 
   /// Sets animation
   StackBoxStyle animate(AnimationConfig animation) {
-    return merge(StackBoxStyle.animate(animation));
+    return merge(StackBoxStyle(animation: animation));
   }
 
   StackBoxStyle modifier(ModifierConfig value) {

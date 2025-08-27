@@ -605,15 +605,6 @@ void main() {
       });
     });
 
-    // TODO: These tests were disabled after removing MultiSpec/CompoundStyle
-    // The call() method in VariantAttributeBuilder was removed because it
-    // depended on the ability to create a generic MultiSpec from multiple
-    // different style types. With the new architecture, variants need to be
-    // applied to specific spec types.
-    //
-    // group('Call method functionality', () {
-    //   ... tests removed ...
-    // });
 
     group('Type safety', () {
       test('maintains type safety with different variant types', () {
@@ -647,19 +638,6 @@ void main() {
         expect(contextVariant, isA<ContextVariant>());
         expect(notVariant, isA<ContextVariant>());
 
-        // TODO: These tests were disabled after removing MultiSpec
-        // expect(
-        //   VariantAttributeBuilder<MultiSpec>(namedVariant),
-        //   isA<VariantAttributeBuilder<MultiSpec>>(),
-        // );
-        // expect(
-        //   VariantAttributeBuilder<MultiSpec>(contextVariant),
-        //   isA<VariantAttributeBuilder<MultiSpec>>(),
-        // );
-        // expect(
-        //   VariantAttributeBuilder<MultiSpec>(notVariant),
-        //   isA<VariantAttributeBuilder<MultiSpec>>(),
-        // );
       });
     });
   });

@@ -87,106 +87,23 @@ final class IconMix extends Mix<IconSpec> with Diagnosticable {
        $blendMode = blendMode,
        $icon = icon;
 
-  /// Constructor that accepts an [IconSpec] value and extracts its properties.
-  IconMix.value(IconSpec spec)
-    : this(
-        color: spec.color,
-        size: spec.size,
-        weight: spec.weight,
-        grade: spec.grade,
-        opticalSize: spec.opticalSize,
-        shadows: spec.shadows?.map((s) => ShadowMix.value(s)).toList(),
-        textDirection: spec.textDirection,
-        applyTextScaling: spec.applyTextScaling,
-        fill: spec.fill,
-        semanticsLabel: spec.semanticsLabel,
-        opacity: spec.opacity,
-        blendMode: spec.blendMode,
-        icon: spec.icon,
-      );
-
-  // Factory constructors for common use cases
-
-  /// Color factory
-  factory IconMix.color(Color value) {
-    return IconMix(color: value);
-  }
-
-  /// Size factory
-  factory IconMix.size(double value) {
-    return IconMix(size: value);
-  }
-
-  /// Weight factory
-  factory IconMix.weight(double value) {
-    return IconMix(weight: value);
-  }
-
-  /// Grade factory
-  factory IconMix.grade(double value) {
-    return IconMix(grade: value);
-  }
-
-  /// Optical size factory
-  factory IconMix.opticalSize(double value) {
-    return IconMix(opticalSize: value);
-  }
-
-  /// Shadows factory
-  factory IconMix.shadows(List<ShadowMix> value) {
-    return IconMix(shadows: value);
-  }
-
-  /// Text direction factory
-  factory IconMix.textDirection(TextDirection value) {
-    return IconMix(textDirection: value);
-  }
-
-  /// Apply text scaling factory
-  factory IconMix.applyTextScaling(bool value) {
-    return IconMix(applyTextScaling: value);
-  }
-
-  /// Fill factory
-  factory IconMix.fill(double value) {
-    return IconMix(fill: value);
-  }
-
-  /// Semantics label factory
-  factory IconMix.semanticsLabel(String value) {
-    return IconMix(semanticsLabel: value);
-  }
-
-  /// Opacity factory
-  factory IconMix.opacity(double value) {
-    return IconMix(opacity: value);
-  }
-
-  /// Blend mode factory
-  factory IconMix.blendMode(BlendMode value) {
-    return IconMix(blendMode: value);
-  }
-
-  /// Icon data factory
-  factory IconMix.icon(IconData value) {
-    return IconMix(icon: value);
-  }
-
-  // Common shortcuts
-
-  /// Small size factory (16.0)
-  factory IconMix.small() {
-    return IconMix.size(16.0);
-  }
-
-  /// Medium size factory (24.0)
-  factory IconMix.medium() {
-    return IconMix.size(24.0);
-  }
-
-  /// Large size factory (32.0)
-  factory IconMix.large() {
-    return IconMix.size(32.0);
+  /// Factory constructor to create IconMix from IconSpec.
+  static IconMix value(IconSpec spec) {
+    return IconMix(
+      color: spec.color,
+      size: spec.size,
+      weight: spec.weight,
+      grade: spec.grade,
+      opticalSize: spec.opticalSize,
+      shadows: spec.shadows?.map((s) => ShadowMix.value(s)).toList(),
+      textDirection: spec.textDirection,
+      applyTextScaling: spec.applyTextScaling,
+      fill: spec.fill,
+      semanticsLabel: spec.semanticsLabel,
+      opacity: spec.opacity,
+      blendMode: spec.blendMode,
+      icon: spec.icon,
+    );
   }
 
   /// Constructor that accepts a nullable [IconSpec] value.
@@ -200,67 +117,67 @@ final class IconMix extends Mix<IconSpec> with Diagnosticable {
 
   /// Returns a copy with the specified color.
   IconMix color(Color value) {
-    return merge(IconMix.color(value));
+    return merge(IconMix(color: value));
   }
 
   /// Returns a copy with the specified size.
   IconMix size(double value) {
-    return merge(IconMix.size(value));
+    return merge(IconMix(size: value));
   }
 
   /// Returns a copy with the specified weight.
   IconMix weight(double value) {
-    return merge(IconMix.weight(value));
+    return merge(IconMix(weight: value));
   }
 
   /// Returns a copy with the specified grade.
   IconMix grade(double value) {
-    return merge(IconMix.grade(value));
+    return merge(IconMix(grade: value));
   }
 
   /// Returns a copy with the specified optical size.
   IconMix opticalSize(double value) {
-    return merge(IconMix.opticalSize(value));
+    return merge(IconMix(opticalSize: value));
   }
 
   /// Returns a copy with the specified shadows.
   IconMix shadows(List<ShadowMix> value) {
-    return merge(IconMix.shadows(value));
+    return merge(IconMix(shadows: value));
   }
 
   /// Returns a copy with the specified text direction.
   IconMix textDirection(TextDirection value) {
-    return merge(IconMix.textDirection(value));
+    return merge(IconMix(textDirection: value));
   }
 
   /// Returns a copy with the specified apply text scaling.
   IconMix applyTextScaling(bool value) {
-    return merge(IconMix.applyTextScaling(value));
+    return merge(IconMix(applyTextScaling: value));
   }
 
   /// Returns a copy with the specified fill.
   IconMix fill(double value) {
-    return merge(IconMix.fill(value));
+    return merge(IconMix(fill: value));
   }
 
   /// Returns a copy with the specified semantics label.
   IconMix semanticsLabel(String value) {
-    return merge(IconMix.semanticsLabel(value));
+    return merge(IconMix(semanticsLabel: value));
   }
 
   /// Returns a copy with the specified opacity.
   IconMix opacity(double value) {
-    return merge(IconMix.opacity(value));
+    return merge(IconMix(opacity: value));
   }
 
   /// Returns a copy with the specified blend mode.
   IconMix blendMode(BlendMode value) {
-    return merge(IconMix.blendMode(value));
+    return merge(IconMix(blendMode: value));
   }
 
   /// Returns a copy with the specified icon data.
   IconMix icon(IconData value) {
-    return merge(IconMix.icon(value));
+    return merge(IconMix(icon: value));
   }
 
   /// Resolves to [IconSpec] using the provided [BuildContext].

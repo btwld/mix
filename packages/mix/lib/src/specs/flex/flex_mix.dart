@@ -66,30 +66,6 @@ final class FlexMix extends Mix<FlexSpec> with Diagnosticable {
        $clipBehavior = clipBehavior,
        $spacing = spacing;
 
-  // Factory constructors for common properties
-  factory FlexMix.direction(Axis value) => FlexMix(direction: value);
-  factory FlexMix.mainAxisAlignment(MainAxisAlignment value) =>
-      FlexMix(mainAxisAlignment: value);
-  factory FlexMix.crossAxisAlignment(CrossAxisAlignment value) =>
-      FlexMix(crossAxisAlignment: value);
-  factory FlexMix.mainAxisSize(MainAxisSize value) =>
-      FlexMix(mainAxisSize: value);
-  factory FlexMix.verticalDirection(VerticalDirection value) =>
-      FlexMix(verticalDirection: value);
-  factory FlexMix.textDirection(TextDirection value) =>
-      FlexMix(textDirection: value);
-  factory FlexMix.textBaseline(TextBaseline value) =>
-      FlexMix(textBaseline: value);
-  factory FlexMix.clipBehavior(Clip value) => FlexMix(clipBehavior: value);
-  factory FlexMix.spacing(double value) => FlexMix(spacing: value);
-
-  /// Factory for gap (deprecated)
-  @Deprecated(
-    'Use FlexMix.spacing instead. '
-    'This feature was deprecated after Mix v2.0.0.',
-  )
-  factory FlexMix.gap(double value) => FlexMix(spacing: value);
-
   /// Factory constructor to create FlexMix from FlexSpec.
   static FlexMix value(FlexSpec spec) {
     return FlexMix.create(
@@ -114,47 +90,47 @@ final class FlexMix extends Mix<FlexSpec> with Diagnosticable {
 
   /// Sets flex direction
   FlexMix direction(Axis value) {
-    return merge(FlexMix.direction(value));
+    return merge(FlexMix(direction: value));
   }
 
   /// Sets main axis alignment
   FlexMix mainAxisAlignment(MainAxisAlignment value) {
-    return merge(FlexMix.mainAxisAlignment(value));
+    return merge(FlexMix(mainAxisAlignment: value));
   }
 
   /// Sets cross axis alignment
   FlexMix crossAxisAlignment(CrossAxisAlignment value) {
-    return merge(FlexMix.crossAxisAlignment(value));
+    return merge(FlexMix(crossAxisAlignment: value));
   }
 
   /// Sets main axis size
   FlexMix mainAxisSize(MainAxisSize value) {
-    return merge(FlexMix.mainAxisSize(value));
+    return merge(FlexMix(mainAxisSize: value));
   }
 
   /// Sets vertical direction
   FlexMix verticalDirection(VerticalDirection value) {
-    return merge(FlexMix.verticalDirection(value));
+    return merge(FlexMix(verticalDirection: value));
   }
 
   /// Sets text direction
   FlexMix textDirection(TextDirection value) {
-    return merge(FlexMix.textDirection(value));
+    return merge(FlexMix(textDirection: value));
   }
 
   /// Sets text baseline
   FlexMix textBaseline(TextBaseline value) {
-    return merge(FlexMix.textBaseline(value));
+    return merge(FlexMix(textBaseline: value));
   }
 
   /// Sets clip behavior
   FlexMix clipBehavior(Clip value) {
-    return merge(FlexMix.clipBehavior(value));
+    return merge(FlexMix(clipBehavior: value));
   }
 
   /// Sets spacing
   FlexMix spacing(double value) {
-    return merge(FlexMix.spacing(value));
+    return merge(FlexMix(spacing: value));
   }
 
   /// Sets gap (deprecated)
@@ -163,7 +139,7 @@ final class FlexMix extends Mix<FlexSpec> with Diagnosticable {
     'This feature was deprecated after Mix v2.0.0.',
   )
   FlexMix gap(double value) {
-    return merge(FlexMix.spacing(value));
+    return merge(FlexMix(spacing: value));
   }
 
   /// Convenience method for setting direction to horizontal (row)

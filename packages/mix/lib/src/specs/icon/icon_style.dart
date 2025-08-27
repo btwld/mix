@@ -37,95 +37,6 @@ class IconStyle extends Style<IconSpec>
   final Prop<BlendMode>? $blendMode;
   final Prop<IconData>? $icon;
 
-  /// Factory for icon color
-  factory IconStyle.color(Color value) {
-    return IconStyle(color: value);
-  }
-
-  /// Factory for icon size
-  factory IconStyle.size(double value) {
-    return IconStyle(size: value);
-  }
-
-  /// Factory for icon weight
-  factory IconStyle.weight(double value) {
-    return IconStyle(weight: value);
-  }
-
-  /// Factory for icon grade
-  factory IconStyle.grade(double value) {
-    return IconStyle(grade: value);
-  }
-
-  /// Factory for icon optical size
-  factory IconStyle.opticalSize(double value) {
-    return IconStyle(opticalSize: value);
-  }
-
-  /// Factory for icon shadow
-  factory IconStyle.shadow(ShadowMix value) {
-    return IconStyle(shadows: [value]);
-  }
-
-  /// Factory for icon shadows
-  factory IconStyle.shadows(List<ShadowMix> value) {
-    return IconStyle(shadows: value);
-  }
-
-  /// Factory for text direction
-  factory IconStyle.textDirection(TextDirection value) {
-    return IconStyle(textDirection: value);
-  }
-
-  /// Factory for apply text scaling
-  factory IconStyle.applyTextScaling(bool value) {
-    return IconStyle(applyTextScaling: value);
-  }
-
-  /// Factory for icon fill
-  factory IconStyle.fill(double value) {
-    return IconStyle(fill: value);
-  }
-
-  /// Factory for semantics label
-  factory IconStyle.semanticsLabel(String value) {
-    return IconStyle(semanticsLabel: value);
-  }
-
-  /// Factory for blend mode
-  factory IconStyle.blendMode(BlendMode value) {
-    return IconStyle(blendMode: value);
-  }
-
-  /// Factory for icon opacity
-  factory IconStyle.opacity(double value) {
-    return IconStyle(opacity: value);
-  }
-
-  /// Factory for icon data
-  factory IconStyle.icon(IconData value) {
-    return IconStyle(icon: value);
-  }
-
-  /// Factory for animation
-  factory IconStyle.animate(AnimationConfig animation) {
-    return IconStyle(animation: animation);
-  }
-
-  /// Factory for variant
-  factory IconStyle.variant(Variant variant, IconStyle value) {
-    return IconStyle(variants: [VariantStyle(variant, value)]);
-  }
-
-  /// Factory for widget modifier
-  factory IconStyle.modifier(ModifierConfig modifier) {
-    return IconStyle(modifier: modifier);
-  }
-
-  /// Factory for widget modifier
-  factory IconStyle.wrap(ModifierConfig value) {
-    return IconStyle(modifier: value);
-  }
 
   const IconStyle.create({
     Prop<Color>? color,
@@ -250,72 +161,72 @@ class IconStyle extends Style<IconSpec>
 
   /// Sets icon color
   IconStyle color(Color value) {
-    return merge(IconStyle.color(value));
+    return merge(IconStyle(color: value));
   }
 
   /// Sets icon size
   IconStyle size(double value) {
-    return merge(IconStyle.size(value));
+    return merge(IconStyle(size: value));
   }
 
   /// Sets icon weight
   IconStyle weight(double value) {
-    return merge(IconStyle.weight(value));
+    return merge(IconStyle(weight: value));
   }
 
   /// Sets icon grade
   IconStyle grade(double value) {
-    return merge(IconStyle.grade(value));
+    return merge(IconStyle(grade: value));
   }
 
   /// Sets icon optical size
   IconStyle opticalSize(double value) {
-    return merge(IconStyle.opticalSize(value));
+    return merge(IconStyle(opticalSize: value));
   }
 
   /// Sets single icon shadow
   IconStyle shadow(ShadowMix value) {
-    return merge(IconStyle.shadow(value));
+    return merge(IconStyle(shadows: [value]));
   }
 
   /// Sets icon shadows
   IconStyle shadows(List<ShadowMix> value) {
-    return merge(IconStyle.shadows(value));
+    return merge(IconStyle(shadows: value));
   }
 
   /// Sets text direction
   IconStyle textDirection(TextDirection value) {
-    return merge(IconStyle.textDirection(value));
+    return merge(IconStyle(textDirection: value));
   }
 
   /// Sets apply text scaling
   IconStyle applyTextScaling(bool value) {
-    return merge(IconStyle.applyTextScaling(value));
+    return merge(IconStyle(applyTextScaling: value));
   }
 
   /// Sets icon fill
   IconStyle fill(double value) {
-    return merge(IconStyle.fill(value));
+    return merge(IconStyle(fill: value));
   }
 
   /// Sets semantics label
   IconStyle semanticsLabel(String value) {
-    return merge(IconStyle.semanticsLabel(value));
+    return merge(IconStyle(semanticsLabel: value));
   }
 
   /// Sets opacity
   IconStyle opacity(double value) {
-    return merge(IconStyle.opacity(value));
+    return merge(IconStyle(opacity: value));
   }
 
   /// Sets blend mode
   IconStyle blendMode(BlendMode value) {
-    return merge(IconStyle.blendMode(value));
+    return merge(IconStyle(blendMode: value));
   }
 
   /// Sets icon data
   IconStyle icon(IconData value) {
-    return merge(IconStyle.icon(value));
+    return merge(IconStyle(icon: value));
   }
 
   StyledIcon call({IconData? icon, String? semanticLabel}) {
@@ -329,7 +240,7 @@ class IconStyle extends Style<IconSpec>
   /// Sets animation
   @override
   IconStyle animate(AnimationConfig animation) {
-    return merge(IconStyle.animate(animation));
+    return merge(IconStyle(animation: animation));
   }
 
   @override
