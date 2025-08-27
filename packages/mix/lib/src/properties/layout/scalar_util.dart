@@ -5,7 +5,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/widgets.dart';
 
-import '../../animation/curves.dart';
+import '../../animation/spring_curves.dart';
 import '../../core/directive.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
@@ -287,17 +287,14 @@ extension CurvePropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, Curve> {
   T call(Curve value) => builder(value);
 
-  T spring({
-    double stiffness = 3.5,
-    double dampingRatio = 1.0,
-    double mass = 1.0,
-  }) => call(
-    SpringCurve.withDampingRatio(
-      mass: mass,
-      stiffness: stiffness,
-      dampingRatio: dampingRatio,
-    ),
-  );
+  T spring({double stiffness = 3.5, double ratio = 1.0, double mass = 1.0}) =>
+      call(
+        SpringCurve.withDampingRatio(
+          mass: mass,
+          stiffness: stiffness,
+          ratio: ratio,
+        ),
+      );
 
   /// Creates a [Style] instance with [Curves.linear] value.
   T linear() => call(Curves.linear);

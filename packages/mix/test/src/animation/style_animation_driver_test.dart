@@ -16,6 +16,9 @@ final class StyleAnimationDriverTest extends StyleAnimationDriver<MockSpec> {
   Future<void> executeAnimation() async {
     executeAnimationCallCounter += 1;
   }
+
+  @override
+  bool get autoAnimateOnUpdate => true;
 }
 
 void main() {
@@ -316,7 +319,6 @@ void main() {
       trigger = ValueNotifier(false);
       driver = PhaseAnimationDriver<MockSpec>(
         vsync: const TestVSync(),
-        mode: PhaseAnimationMode.simpleLoop,
         curveConfigs: [
           CurveAnimationConfig(
             duration: Duration(milliseconds: 300),
@@ -391,24 +393,16 @@ void main() {
 class MockSpec extends WidgetSpec<MockSpec> {
   final double value;
 
-  const MockSpec([
-    this.value = 0,
-  ]) : super();
+  const MockSpec([this.value = 0]) : super();
 
   @override
-  MockSpec copyWith({
-    double? value,
-  }) {
-    return MockSpec(
-      value ?? this.value,
-    );
+  MockSpec copyWith({double? value}) {
+    return MockSpec(value ?? this.value);
   }
 
   @override
   MockSpec lerp(MockSpec? other, double t) {
-    return MockSpec(
-      lerpDouble(value, other?.value, t)!,
-    );
+    return MockSpec(lerpDouble(value, other?.value, t)!);
   }
 
   @override

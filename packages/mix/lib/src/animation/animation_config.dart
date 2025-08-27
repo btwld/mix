@@ -5,7 +5,7 @@ import '../core/internal/compare_mixin.dart';
 import '../core/internal/constants.dart';
 import '../core/style.dart';
 import '../core/widget_spec.dart';
-import 'curves.dart';
+import 'spring_curves.dart';
 
 /// Configuration data for animated styles in the Mix framework.
 ///
@@ -664,7 +664,7 @@ final class CurveAnimationConfig extends AnimationConfig {
   factory CurveAnimationConfig.springWithDampingRatio({
     double mass = 1.0,
     double stiffness = 180.0,
-    double dampingRatio = 0.8,
+    double ratio = 0.8,
     Duration delay = Duration.zero,
     Duration duration = const Duration(milliseconds: 500),
     VoidCallback? onEnd,
@@ -672,7 +672,7 @@ final class CurveAnimationConfig extends AnimationConfig {
     final curve = SpringCurve.withDampingRatio(
       mass: mass,
       stiffness: stiffness,
-      dampingRatio: dampingRatio,
+      ratio: ratio,
     );
 
     return CurveAnimationConfig(
@@ -967,14 +967,14 @@ class Keyframe<T> with Equatable {
     Duration duration, {
     double mass = 1.0,
     double stiffness = 180.0,
-    double dampingRatio = 0.8,
+    double ratio = 1.0,
   }) : this(
          value,
          duration,
          curve: SpringCurve.withDampingRatio(
            mass: mass,
            stiffness: stiffness,
-           dampingRatio: dampingRatio,
+           ratio: ratio,
          ),
        );
 

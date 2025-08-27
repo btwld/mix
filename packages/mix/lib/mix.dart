@@ -21,7 +21,7 @@ library;
 /// ANIMATION
 export 'src/animation/animation_config.dart';
 export 'src/animation/animation_util.dart';
-export 'src/animation/curves.dart';
+export 'src/animation/spring_curves.dart';
 export 'src/animation/style_animation_builder.dart';
 export 'src/animation/style_animation_driver.dart';
 
@@ -44,10 +44,10 @@ export 'src/core/providers/widget_state_provider.dart';
 export 'src/core/spec.dart';
 export 'src/core/spec_utility.dart';
 export 'src/core/style.dart' hide StyleElement;
-export 'src/core/widget_spec.dart';
 export 'src/core/style_builder.dart';
 export 'src/core/style_widget.dart';
 export 'src/core/utility.dart';
+export 'src/core/widget_spec.dart';
 export 'src/modifiers/align_modifier.dart';
 export 'src/modifiers/aspect_ratio_modifier.dart';
 export 'src/modifiers/clip_modifier.dart';
