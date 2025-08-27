@@ -29,7 +29,6 @@ mixin StyleAnimationMixin<S extends WidgetSpec<S>, T extends Style<S>>
     required List<P> phases,
     required T Function(P phase, T style) styleBuilder,
     required CurveAnimationConfig Function(P phase) configBuilder,
-    PhaseAnimationMode mode = PhaseAnimationMode.simpleLoop,
   }) {
     final styles = <T>[];
     final configs = <CurveAnimationConfig>[];
@@ -44,7 +43,6 @@ mixin StyleAnimationMixin<S extends WidgetSpec<S>, T extends Style<S>>
         styles: styles,
         curveConfigs: configs,
         trigger: trigger,
-        mode: mode,
       ),
     );
   }

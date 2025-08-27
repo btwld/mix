@@ -49,31 +49,6 @@ class SpringCurve extends Curve {
     return SpringCurve(mass: mass, stiffness: stiffness, damping: damping);
   }
 
-  Duration get settlingDuration {
-    final tolerance = this.tolerance.distance;
-    assert(mass > 0 && stiffness > 0 && damping >= 0, 'Invalid spring params');
-    assert(tolerance > 0 && tolerance < 1, 'tolerance must be (0,1)');
-
-    final wn = math.sqrt(stiffness / mass); // ω_n
-    final zeta = damping / (2.0 * math.sqrt(mass * stiffness)); // ζ
-
-    double seconds;
-    if (zeta < 1.0) {
-      // underdamped
-      seconds = -math.log(tolerance) / (zeta * wn);
-    } else if ((zeta - 1.0).abs() < 1e-6) {
-      // critically damped (approx for 2% band)
-      // If you change tolerance, you can replace 4.0 with -ln(tol) * ~1.02 … but 4/wn is standard.
-      seconds = 4.0 / wn;
-    } else {
-      // overdamped: use slow pole
-      final slow = wn * (zeta - math.sqrt(zeta * zeta - 1.0)); // positive rate
-      seconds = -math.log(tolerance) / slow;
-    }
-
-    return Duration(microseconds: (seconds * 1e6).round());
-  }
-
   @override
   double transform(double t) => _sim.x(t);
 }

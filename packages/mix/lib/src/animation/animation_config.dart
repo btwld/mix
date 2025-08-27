@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 
 import '../core/internal/compare_mixin.dart';
 import '../core/internal/constants.dart';
-import '../core/spec.dart';
 import '../core/style.dart';
 import '../core/widget_spec.dart';
 import 'curves.dart';
@@ -645,6 +644,7 @@ final class CurveAnimationConfig extends AnimationConfig {
     double stiffness = 180.0,
     double damping = 12.0,
     Duration delay = Duration.zero,
+    Duration duration = const Duration(milliseconds: 500),
     VoidCallback? onEnd,
   }) {
     final curve = SpringCurve(
@@ -654,7 +654,7 @@ final class CurveAnimationConfig extends AnimationConfig {
     );
 
     return CurveAnimationConfig(
-      duration: curve.settlingDuration,
+      duration: duration,
       curve: curve,
       delay: delay,
       onEnd: onEnd,
@@ -666,6 +666,7 @@ final class CurveAnimationConfig extends AnimationConfig {
     double stiffness = 180.0,
     double dampingRatio = 0.8,
     Duration delay = Duration.zero,
+    Duration duration = const Duration(milliseconds: 500),
     VoidCallback? onEnd,
   }) {
     final curve = SpringCurve.withDampingRatio(
@@ -675,7 +676,7 @@ final class CurveAnimationConfig extends AnimationConfig {
     );
 
     return CurveAnimationConfig(
-      duration: curve.settlingDuration,
+      duration: duration,
       curve: curve,
       delay: delay,
       onEnd: onEnd,
@@ -688,14 +689,12 @@ final class CurveAnimationConfig extends AnimationConfig {
     Duration delay = Duration.zero,
     VoidCallback? onEnd,
   }) {
-    final curve = SpringCurve.withDurationAndBounce(
-      duration: duration,
-      bounce: bounce,
-    );
-
     return CurveAnimationConfig(
-      duration: curve.settlingDuration,
-      curve: curve,
+      duration: duration,
+      curve: SpringCurve.withDurationAndBounce(
+        duration: duration,
+        bounce: bounce,
+      ),
       delay: delay,
       onEnd: onEnd,
     );
@@ -798,117 +797,18 @@ final class SpringAnimationConfig extends AnimationConfig {
       Object.hash(spring.mass, spring.stiffness, spring.damping);
 }
 
-sealed class PhaseAnimationMode {
-  /// The animation will start from the first style go through all the styles and end with the first style.
-  static const simpleLoop = SimpleLoopPhaseAnimationMode();
-
-  /// The animation will start from the first style and end with the last style.
-  static const oneShot = OneShotPhaseAnimationMode();
-
-  const PhaseAnimationMode();
-
-  TweenSequence<S?> createTweenSequence<S extends Spec<S>>(
-    List<S> specs,
-    List<CurveAnimationConfig> configs,
-  );
-
-  TweenSequenceItem<S?> createTweenSequenceItem<S extends Spec<S>>({
-    required S begin,
-    required S end,
-    required CurveAnimationConfig config,
-  }) {
-    final tween = SpecTween<S>(begin: begin, end: end);
-
-    return TweenSequenceItem(
-      tween: tween.chain(CurveTween(curve: config.curve)),
-      weight: config.duration.inMilliseconds.toDouble(),
-    );
-  }
-}
-
-class SimpleLoopPhaseAnimationMode extends PhaseAnimationMode {
-  const SimpleLoopPhaseAnimationMode();
-
-  @override
-  TweenSequence<S?> createTweenSequence<S extends Spec<S>>(
-    List<S> specs,
-    List<CurveAnimationConfig> configs,
-  ) {
-    final items = <TweenSequenceItem<S?>>[];
-    for (int i = 0; i < specs.length; i++) {
-      final currentIndex = i % specs.length;
-      final nextIndex = (i + 1) % specs.length;
-
-      if (configs[currentIndex].delay > Duration.zero) {
-        items.add(
-          TweenSequenceItem(
-            tween: ConstantTween(specs[currentIndex]),
-            weight: configs[currentIndex].delay.inMilliseconds.toDouble(),
-          ),
-        );
-      }
-
-      items.add(
-        createTweenSequenceItem(
-          begin: specs[currentIndex],
-          end: specs[nextIndex],
-          config: configs[currentIndex],
-        ),
-      );
-    }
-
-    return TweenSequence(items);
-  }
-}
-
-class OneShotPhaseAnimationMode extends PhaseAnimationMode {
-  const OneShotPhaseAnimationMode();
-
-  @override
-  TweenSequence<S?> createTweenSequence<S extends Spec<S>>(
-    List<S> specs,
-    List<CurveAnimationConfig> configs,
-  ) {
-    final items = <TweenSequenceItem<S?>>[];
-    for (int i = 0; i < specs.length - 1; i++) {
-      final tween = SpecTween<S>(begin: specs[i], end: specs[i + 1]);
-      final weight = configs[i].duration.inMilliseconds.toDouble();
-
-      if (configs[i].delay > Duration.zero) {
-        items.add(
-          TweenSequenceItem(
-            tween: ConstantTween(specs[i]),
-            weight: configs[i].delay.inMilliseconds.toDouble(),
-          ),
-        );
-      }
-
-      items.add(
-        TweenSequenceItem(
-          tween: tween.chain(CurveTween(curve: configs[i].curve)),
-          weight: weight,
-        ),
-      );
-    }
-
-    return TweenSequence(items);
-  }
-}
-
 class PhaseAnimationConfig<T extends WidgetSpec<T>, U extends Style<T>>
     extends AnimationConfig {
   final List<U> styles;
   final List<CurveAnimationConfig> curveConfigs;
   final Listenable trigger;
   final VoidCallback? onEnd;
-  final PhaseAnimationMode mode;
 
   const PhaseAnimationConfig({
     required this.styles,
     required this.curveConfigs,
     required this.trigger,
     this.onEnd,
-    this.mode = PhaseAnimationMode.simpleLoop,
   });
 
   @override
@@ -1051,6 +951,44 @@ class Keyframe<T> with Equatable {
 
   const Keyframe.elasticInOut(T value, Duration duration)
     : this(value, duration, curve: Curves.elasticInOut);
+
+  Keyframe.springWithBounce(T value, Duration duration, {double bounce = 0.0})
+    : this(
+        value,
+        duration,
+        curve: SpringCurve.withDurationAndBounce(
+          duration: duration,
+          bounce: bounce,
+        ),
+      );
+
+  Keyframe.springWithDampingRatio(
+    T value,
+    Duration duration, {
+    double mass = 1.0,
+    double stiffness = 180.0,
+    double dampingRatio = 0.8,
+  }) : this(
+         value,
+         duration,
+         curve: SpringCurve.withDampingRatio(
+           mass: mass,
+           stiffness: stiffness,
+           dampingRatio: dampingRatio,
+         ),
+       );
+
+  Keyframe.spring(
+    T value,
+    Duration duration, {
+    double mass = 1.0,
+    double stiffness = 180.0,
+    double damping = 12.0,
+  }) : this(
+         value,
+         duration,
+         curve: SpringCurve(mass: mass, stiffness: stiffness, damping: damping),
+       );
 
   @override
   List<Object?> get props => [duration, value, curve];

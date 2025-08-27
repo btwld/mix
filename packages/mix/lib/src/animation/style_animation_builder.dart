@@ -64,7 +64,6 @@ class _StyleAnimationBuilderState<S extends WidgetSpec<S>>
         specs: config.styles.map((e) => e.resolve(context) as S).toList(),
         initialSpec: widget.spec,
         trigger: config.trigger,
-        mode: config.mode,
       ),
       // ignore: avoid-undisposed-instances
       KeyframeAnimationConfig() => KeyframeAnimationDriver<S>(
