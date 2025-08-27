@@ -17,7 +17,7 @@ void main() {
                 FlexBox(
                   direction: Axis.horizontal,
                   key: flexBoxKey,
-                  style: FlexBoxStyle(container: ContainerMix()),
+                  style: FlexBoxStyle(container: BoxMix()),
                 ),
                 Container(
                   key: containerKey,

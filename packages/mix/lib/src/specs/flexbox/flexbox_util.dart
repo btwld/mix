@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
-import '../../core/widget_spec.dart';
 import '../../core/style.dart' show Style;
 import '../../core/utility.dart';
+import '../../core/widget_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
-import '../flex/flex_mix.dart';
 import '../../properties/layout/constraints_util.dart';
 import '../../properties/layout/edge_insets_geometry_util.dart';
 import '../../properties/painting/decoration_util.dart';
 import '../../variants/variant_util.dart';
 import '../box/box_mix.dart';
-import 'flexbox_style.dart';
+import '../flex/flex_mix.dart';
 import 'flexbox_spec.dart';
+import 'flexbox_style.dart';
 
 /// Provides mutable utility for flexbox styling with cascade notation support.
 ///

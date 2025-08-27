@@ -18,7 +18,7 @@ void main() {
                   key: zBoxKey,
                   style: StackBoxStyle(
                     box:
-                        ContainerMix(), // Provide a non-null container to match test expectations
+                        BoxMix(), // Provide a non-null container to match test expectations
                   ),
                   children: const [],
                 ),

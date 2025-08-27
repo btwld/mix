@@ -12,8 +12,8 @@ import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
-import 'flex_spec.dart';
 import 'flex_mix.dart';
+import 'flex_spec.dart';
 
 /// Represents the attributes of a [FlexSpec].
 ///

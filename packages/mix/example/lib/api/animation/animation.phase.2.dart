@@ -41,7 +41,7 @@ class _ExampleState extends State<Example> {
         style:
             Style.flexbox(
                   FlexBoxStyle().container(
-                    ContainerMix()
+                    BoxMix()
                         .color(Colors.white)
                         .padding(
                           EdgeInsetsMix.symmetric(horizontal: 16, vertical: 8),
@@ -54,15 +54,10 @@ class _ExampleState extends State<Example> {
                         ),
                   ),
                 )
-                .flex(
-                  FlexMix(
-                    mainAxisSize: MainAxisSize.min,
-                    spacing: 8,
-                  ),
-                )
+                .flex(FlexMix(mainAxisSize: MainAxisSize.min, spacing: 8))
                 .onHovered(
                   FlexBoxStyle().container(
-                    ContainerMix().border(
+                    BoxMix().border(
                       BoxBorderMix.all(BorderSideMix.color(Colors.red)),
                     ),
                   ),

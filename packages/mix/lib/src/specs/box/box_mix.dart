@@ -12,10 +12,10 @@ import '../../properties/painting/border_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
 import '../../properties/painting/border_radius_util.dart';
 import '../../properties/painting/decoration_mix.dart';
+import '../../properties/painting/decoration_mixin.dart';
 import '../../properties/painting/gradient_mix.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../properties/transform_mixin.dart';
-import '../../properties/painting/decoration_mixin.dart';
 import 'box_spec.dart';
 import 'box_style.dart';
 
@@ -340,8 +340,3 @@ extension BoxMixToStyle on BoxMix {
   /// Converts this BoxMix to a BoxStyle
   BoxStyle toStyle() => BoxStyle.from(this);
 }
-
-/// Legacy alias for BoxMix to maintain backward compatibility.
-///
-/// @deprecated Use BoxMix directly instead.
-typedef ContainerMix = BoxMix;

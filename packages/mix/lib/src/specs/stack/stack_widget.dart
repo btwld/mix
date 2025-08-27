@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/style_widget.dart';
-import '../box/box_spec.dart';
-import 'stack_box_style.dart';
+import '../box/box_widget.dart';
 import 'stack_box_spec.dart';
+import 'stack_box_style.dart';
 import 'stack_spec.dart';
 
 /// Combines [Container] and [Stack] with Mix styling.
@@ -47,7 +47,7 @@ Widget createZBoxSpecWidget({
   final stack = createStackSpecWidget(spec: spec.stack, children: children);
 
   if (containerSpec != null) {
-    return containerSpec(child: stack);
+    return createBoxSpecWidget(spec: containerSpec, child: stack);
   }
 
   return stack;

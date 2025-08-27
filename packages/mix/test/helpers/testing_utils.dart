@@ -775,7 +775,7 @@ extension WrappedStackSpecAccess on WidgetSpec<StackSpec> {
 }
 
 extension WrappedZBoxSpecAccess on WidgetSpec<ZBoxSpec> {
-  ContainerSpec? get box => spec.box;
+  BoxSpec? get box => spec.box;
   StackSpec get stack => spec.stack;
 }
 

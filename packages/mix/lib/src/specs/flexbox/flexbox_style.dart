@@ -21,10 +21,10 @@ import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import '../box/box_mix.dart';
 import '../box/box_spec.dart';
-import 'flexbox_spec.dart';
-import 'flexbox_mix.dart';
-import '../flex/flex_spec.dart';
 import '../flex/flex_mix.dart';
+import '../flex/flex_spec.dart';
+import 'flexbox_mix.dart';
+import 'flexbox_spec.dart';
 
 /// Represents the attributes of a [FlexBoxSpec].
 ///
@@ -98,7 +98,7 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
     return FlexBoxStyle(modifier: value);
   }
 
-  // ContainerMix factory methods
+  // BoxMix factory methods
   /// Color factory
   factory FlexBoxStyle.color(Color value) {
     return FlexBoxStyle(container: BoxMix.color(value));
@@ -201,7 +201,7 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
   /// This is useful for converting existing [FlexBoxSpec] instances to [FlexBoxStyle].
   ///
   /// ```dart
-  /// const spec = FlexBoxWidgetSpec(container: ContainerSpec(...), flex: FlexProperties(...));
+  /// const spec = FlexBoxWidgetSpec(container: BoxSpec(...), flex: FlexProperties(...));
   /// final attr = FlexBoxStyle.value(spec);
   /// ```
   static FlexBoxStyle value(FlexBoxSpec spec) {
@@ -216,7 +216,7 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
   /// Returns null if the input is null, otherwise uses [FlexBoxStyle.value].
   ///
   /// ```dart
-  /// const FlexBoxWidgetSpec? spec = FlexBoxWidgetSpec(container: ContainerSpec(...), flex: FlexProperties(...));
+  /// const FlexBoxWidgetSpec? spec = FlexBoxWidgetSpec(container: BoxSpec(...), flex: FlexProperties(...));
   /// final attr = FlexBoxStyle.maybeValue(spec); // Returns FlexBoxStyle or null
   /// ```
   static FlexBoxStyle? maybeValue(FlexBoxSpec? spec) {
@@ -238,7 +238,7 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
     return merge(FlexBoxStyle.animate(animation));
   }
 
-  // ContainerMix instance methods
+  // BoxMix instance methods
 
   FlexBoxStyle alignment(AlignmentGeometry value) {
     return merge(FlexBoxStyle.alignment(value));

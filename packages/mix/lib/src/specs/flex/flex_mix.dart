@@ -68,14 +68,27 @@ final class FlexMix extends Mix<FlexSpec> with Diagnosticable {
 
   // Factory constructors for common properties
   factory FlexMix.direction(Axis value) => FlexMix(direction: value);
-  factory FlexMix.mainAxisAlignment(MainAxisAlignment value) => FlexMix(mainAxisAlignment: value);
-  factory FlexMix.crossAxisAlignment(CrossAxisAlignment value) => FlexMix(crossAxisAlignment: value);
-  factory FlexMix.mainAxisSize(MainAxisSize value) => FlexMix(mainAxisSize: value);
-  factory FlexMix.verticalDirection(VerticalDirection value) => FlexMix(verticalDirection: value);
-  factory FlexMix.textDirection(TextDirection value) => FlexMix(textDirection: value);
-  factory FlexMix.textBaseline(TextBaseline value) => FlexMix(textBaseline: value);
+  factory FlexMix.mainAxisAlignment(MainAxisAlignment value) =>
+      FlexMix(mainAxisAlignment: value);
+  factory FlexMix.crossAxisAlignment(CrossAxisAlignment value) =>
+      FlexMix(crossAxisAlignment: value);
+  factory FlexMix.mainAxisSize(MainAxisSize value) =>
+      FlexMix(mainAxisSize: value);
+  factory FlexMix.verticalDirection(VerticalDirection value) =>
+      FlexMix(verticalDirection: value);
+  factory FlexMix.textDirection(TextDirection value) =>
+      FlexMix(textDirection: value);
+  factory FlexMix.textBaseline(TextBaseline value) =>
+      FlexMix(textBaseline: value);
   factory FlexMix.clipBehavior(Clip value) => FlexMix(clipBehavior: value);
   factory FlexMix.spacing(double value) => FlexMix(spacing: value);
+
+  /// Factory for gap (deprecated)
+  @Deprecated(
+    'Use FlexMix.spacing instead. '
+    'This feature was deprecated after Mix v2.0.0.',
+  )
+  factory FlexMix.gap(double value) => FlexMix(spacing: value);
 
   /// Factory constructor to create FlexMix from FlexSpec.
   static FlexMix value(FlexSpec spec) {
@@ -96,6 +109,68 @@ final class FlexMix extends Mix<FlexSpec> with Diagnosticable {
   static FlexMix? maybeValue(FlexSpec? spec) {
     return spec != null ? FlexMix.value(spec) : null;
   }
+
+  // Instance methods for chaining (like FlexStyle but without animation/variant/modifier)
+
+  /// Sets flex direction
+  FlexMix direction(Axis value) {
+    return merge(FlexMix.direction(value));
+  }
+
+  /// Sets main axis alignment
+  FlexMix mainAxisAlignment(MainAxisAlignment value) {
+    return merge(FlexMix.mainAxisAlignment(value));
+  }
+
+  /// Sets cross axis alignment
+  FlexMix crossAxisAlignment(CrossAxisAlignment value) {
+    return merge(FlexMix.crossAxisAlignment(value));
+  }
+
+  /// Sets main axis size
+  FlexMix mainAxisSize(MainAxisSize value) {
+    return merge(FlexMix.mainAxisSize(value));
+  }
+
+  /// Sets vertical direction
+  FlexMix verticalDirection(VerticalDirection value) {
+    return merge(FlexMix.verticalDirection(value));
+  }
+
+  /// Sets text direction
+  FlexMix textDirection(TextDirection value) {
+    return merge(FlexMix.textDirection(value));
+  }
+
+  /// Sets text baseline
+  FlexMix textBaseline(TextBaseline value) {
+    return merge(FlexMix.textBaseline(value));
+  }
+
+  /// Sets clip behavior
+  FlexMix clipBehavior(Clip value) {
+    return merge(FlexMix.clipBehavior(value));
+  }
+
+  /// Sets spacing
+  FlexMix spacing(double value) {
+    return merge(FlexMix.spacing(value));
+  }
+
+  /// Sets gap (deprecated)
+  @Deprecated(
+    'Use spacing instead. '
+    'This feature was deprecated after Mix v2.0.0.',
+  )
+  FlexMix gap(double value) {
+    return merge(FlexMix.spacing(value));
+  }
+
+  /// Convenience method for setting direction to horizontal (row)
+  FlexMix row() => direction(Axis.horizontal);
+
+  /// Convenience method for setting direction to vertical (column)
+  FlexMix column() => direction(Axis.vertical);
 
   @override
   FlexSpec resolve(BuildContext context) {
@@ -118,10 +193,19 @@ final class FlexMix extends Mix<FlexSpec> with Diagnosticable {
 
     return FlexMix.create(
       direction: MixOps.merge($direction, other.$direction),
-      mainAxisAlignment: MixOps.merge($mainAxisAlignment, other.$mainAxisAlignment),
-      crossAxisAlignment: MixOps.merge($crossAxisAlignment, other.$crossAxisAlignment),
+      mainAxisAlignment: MixOps.merge(
+        $mainAxisAlignment,
+        other.$mainAxisAlignment,
+      ),
+      crossAxisAlignment: MixOps.merge(
+        $crossAxisAlignment,
+        other.$crossAxisAlignment,
+      ),
       mainAxisSize: MixOps.merge($mainAxisSize, other.$mainAxisSize),
-      verticalDirection: MixOps.merge($verticalDirection, other.$verticalDirection),
+      verticalDirection: MixOps.merge(
+        $verticalDirection,
+        other.$verticalDirection,
+      ),
       textDirection: MixOps.merge($textDirection, other.$textDirection),
       textBaseline: MixOps.merge($textBaseline, other.$textBaseline),
       clipBehavior: MixOps.merge($clipBehavior, other.$clipBehavior),
@@ -159,6 +243,6 @@ final class FlexMix extends Mix<FlexSpec> with Diagnosticable {
 }
 
 extension FlexMixToStyle on FlexMix {
-  /// Converts this FlexMix to a FlexStyle
+  /// Converts this FlexMix to a FlexStyling
   FlexStyle toStyle() => FlexStyle.from(this);
 }

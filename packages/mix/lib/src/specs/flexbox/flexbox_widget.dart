@@ -3,10 +3,10 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/style_widget.dart';
-import '../box/box_spec.dart';
+import '../box/box_widget.dart';
 import '../flex/flex_spec.dart';
-import 'flexbox_style.dart';
 import 'flexbox_spec.dart';
+import 'flexbox_style.dart';
 
 /// Combines [Container] and [Flex] with Mix styling.
 ///
@@ -97,7 +97,7 @@ Widget createFlexBoxSpecWidget({
   );
 
   if (spec.container != null) {
-    return spec.container!(child: flexWidget);
+    return createBoxSpecWidget(spec: spec.container!, child: flexWidget);
   }
 
   return flexWidget;

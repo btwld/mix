@@ -29,7 +29,7 @@ class _DemoAppState extends State<DemoApp> {
   Widget build(BuildContext context) {
     final vboxStyle = FlexBoxStyle()
         .flex(FlexMix().mainAxisSize(MainAxisSize.min).spacing(60))
-        .container(ContainerMix().margin(EdgeInsetsMix.all(10)));
+        .container(BoxMix().margin(EdgeInsetsMix.all(10)));
 
     final FlexBoxStyle hboxStyle = FlexBoxStyle()
         .flex(
@@ -38,7 +38,7 @@ class _DemoAppState extends State<DemoApp> {
               .crossAxisAlignment(CrossAxisAlignment.center),
         )
         .container(
-          ContainerMix()
+          BoxMix()
               .padding(EdgeInsetsMix.horizontal(16).vertical(8))
               .color(Colors.grey.shade200)
               .borderRadius(BorderRadiusMix.circular(10)),

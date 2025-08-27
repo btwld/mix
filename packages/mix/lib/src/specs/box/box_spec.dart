@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
-import 'box_widget.dart';
 
 /// Specification for box styling and layout properties.
 ///
@@ -135,16 +134,3 @@ class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
   ];
 }
 
-
-/// Extension to convert [BoxSpec] directly to a [Container] widget.
-extension BoxSpecX on BoxSpec {
-  /// Call operator to build a Container widget.
-  Container call({Widget? child}) {
-    return createBoxSpecWidget(spec: this, child: child);
-  }
-}
-
-/// Legacy alias for BoxSpec to maintain backward compatibility.
-///
-/// @deprecated Use BoxSpec directly instead.
-typedef ContainerSpec = BoxSpec;

@@ -209,7 +209,10 @@ void main() {
 
       test('merges inherit correctly', () {
         final first = TextStyling(maxLines: 2, inherit: true);
-        final second = TextStyling(overflow: TextOverflow.ellipsis, inherit: false);
+        final second = TextStyling(
+          overflow: TextOverflow.ellipsis,
+          inherit: false,
+        );
 
         final merged = first.merge(second);
 
@@ -356,7 +359,7 @@ void main() {
     group('', () {
       test('merges orderOfModifiers correctly', () {
         final first = FlexBoxStyle(
-          container: ContainerMix.constraints(BoxConstraintsMix.width(100)),
+          container: BoxMix.constraints(BoxConstraintsMix.width(100)),
           modifier: ModifierConfig.orderOfModifiers(const [
             OpacityModifier,
             PaddingModifier,
@@ -379,13 +382,10 @@ void main() {
 
       test('merges inherit correctly', () {
         final first = FlexBoxStyle(
-          container: ContainerMix.constraints(BoxConstraintsMix.width(100)),
+          container: BoxMix.constraints(BoxConstraintsMix.width(100)),
           inherit: true,
         );
-        final second = FlexBoxStyle(
-          flex: FlexMix.spacing(8.0),
-          inherit: false,
-        );
+        final second = FlexBoxStyle(flex: FlexMix.spacing(8.0), inherit: false);
 
         final merged = first.merge(second);
 
@@ -396,7 +396,7 @@ void main() {
     group('', () {
       test('merges orderOfModifiers correctly', () {
         final first = StackBoxStyle(
-          box: ContainerMix.width(100),
+          box: BoxMix.width(100),
           modifier: ModifierConfig.orderOfModifiers(const [
             OpacityModifier,
             PaddingModifier,
@@ -418,10 +418,7 @@ void main() {
       });
 
       test('merges inherit correctly', () {
-        final first = StackBoxStyle(
-          box: ContainerMix.width(100),
-          inherit: true,
-        );
+        final first = StackBoxStyle(box: BoxMix.width(100), inherit: true);
         final second = StackBoxStyle(
           stack: StackMix.alignment(Alignment.center),
           inherit: false,

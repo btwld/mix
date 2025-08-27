@@ -14,7 +14,7 @@ import 'spec.dart';
 /// Example:
 /// ```dart
 /// // Pure data spec
-/// final containerSpec = ContainerSpec(padding: EdgeInsets.all(16));
+/// final containerSpec = BoxSpec(padding: EdgeInsets.all(16));
 ///
 /// // Wrapped with metadata
 /// final wrappedSpec = WidgetSpec(
