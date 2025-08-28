@@ -14,22 +14,12 @@ final appHeaderContainer =
     .padding(.all(16))
     .alignment(.center)
     .wrapDefaultTextStyle(
-      TextStyleMix()
+       TextStyleMix()
             .fontSize(20)
-            .fontWeight(.bold)
-            .color(Colors.white)
-      );
-    // .wrap(DefaultTextStyleMix(
-    //   style: TextMix()
-    //       .fontSize(20)
-    //       .fontWeight(.bold)
-    //       .color(Colors.white)
-    // ))
-    // .text(TextMix()
-    //   .fontSize(20)
-    //   .fontWeight(.bold)
-    //   .color(Colors.white)
-    // )
+            .fontWeight(FontWeight.bold)
+            .color(Colors.white),
+      
+    );
 
 final scaffoldBodyContainer = BoxStyle()
     .color(Colors.grey.shade50)

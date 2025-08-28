@@ -130,37 +130,6 @@ void main() {
       });
     });
 
-    group('value constructor', () {
-      test('', () {
-        const spec = ImageSpec(
-          width: 120.0,
-          height: 180.0,
-          color: Colors.green,
-          fit: BoxFit.contain,
-        );
-
-        final attribute = ImageStyle.value(spec);
-
-        expect(attribute.$width, resolvesTo(120.0));
-        expect(attribute.$height, resolvesTo(180.0));
-        expect(attribute.$color, resolvesTo(Colors.green));
-        expect(attribute.$fit, resolvesTo(BoxFit.contain));
-      });
-
-      test('maybeValue returns null for null spec', () {
-        expect(ImageStyle.maybeValue(null), isNull);
-      });
-
-      test('maybeValue returns attribute for non-null spec', () {
-        const spec = ImageSpec(width: 80.0, height: 120.0);
-        final attribute = ImageStyle.maybeValue(spec);
-
-        expect(attribute, isNotNull);
-        expect(attribute!.$width, resolvesTo(80.0));
-        expect(attribute.$height, resolvesTo(120.0));
-      });
-    });
-
     group('Utility Methods', () {
       test('width utility works correctly', () {
         final attribute = ImageStyle().width(200.0);

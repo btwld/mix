@@ -66,10 +66,17 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
     final alreadyHasWidgetStateScope = WidgetStateProvider.of(context) != null;
 
     final inheritedStyle = StyleProvider.maybeOf<S>(context);
+    final mergedStyle = inheritedStyle?.merge(widget.style) ?? widget.style;
 
-    Widget current = WidgetSpecBuilder(
-      builder: widget.builder,
-      style: inheritedStyle?.merge(widget.style) ?? widget.style,
+    Widget current = Builder(
+      builder: (context) {
+        final wrappedSpec = mergedStyle.build(context);
+
+        return WidgetSpecBuilder(
+          builder: widget.builder,
+          wrappedSpec: wrappedSpec,
+        );
+      },
     );
 
     if (needsToTrackWidgetState && !alreadyHasWidgetStateScope) {
@@ -86,11 +93,11 @@ class WidgetSpecBuilder<S extends Spec<S>> extends StatelessWidget {
   const WidgetSpecBuilder({
     super.key,
     required this.builder,
-    required this.style,
+    required this.wrappedSpec,
   });
 
   /// The style to resolve.
-  final Style<S> style;
+  final WidgetSpec<S> wrappedSpec;
 
   /// The builder function that receives the resolved style.
   final Widget Function(BuildContext context, S spec) builder;
@@ -98,16 +105,20 @@ class WidgetSpecBuilder<S extends Spec<S>> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // style.build returns WidgetSpec<S>
-    final wrappedSpec = style.build(context);
+
     final animationConfig = wrappedSpec.animation;
 
     // Pass the inner spec to the builder
     Widget current = builder(context, wrappedSpec.spec);
 
     // Always wrap with WidgetSpecProvider first
-    current = WidgetSpecProvider<WidgetSpec<S>, S>(spec: wrappedSpec, child: current);
+    current = WidgetSpecProvider<WidgetSpec<S>, S>(
+      spec: wrappedSpec,
+      child: current,
+    );
 
-    if (wrappedSpec.widgetModifiers != null && wrappedSpec.widgetModifiers!.isNotEmpty) {
+    if (wrappedSpec.widgetModifiers != null &&
+        wrappedSpec.widgetModifiers!.isNotEmpty) {
       // Apply modifiers if any
       current = RenderModifiers(
         widgetModifiers: wrappedSpec.widgetModifiers!,

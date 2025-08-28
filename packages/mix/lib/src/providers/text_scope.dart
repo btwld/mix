@@ -1,31 +1,32 @@
 import 'package:flutter/material.dart';
 
-import '../specs/text/text_mix.dart';
+import '../specs/text/text_style.dart';
 
 class TextScope extends StatelessWidget {
   const TextScope({required this.text, required this.child, super.key});
 
-  static TextMix? maybeOf(BuildContext context) {
+  static TextStyling? maybeOf(BuildContext context) {
     final inheritedWidget = context
         .dependOnInheritedWidgetOfExactType<_TextInheritedWidget>();
 
     return inheritedWidget?.text;
   }
 
-  static TextMix of(BuildContext context) {
-    final TextMix? result = maybeOf(context);
+  static TextStyling of(BuildContext context) {
+    final TextStyling? result = maybeOf(context);
     assert(result != null, 'No TextScope found in context');
 
     return result!;
   }
 
-  final TextMix text;
+  final TextStyling text;
 
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    final spec = text.resolve(context);
+    final widgetSpec = text.resolve(context);
+    final spec = widgetSpec.spec;
 
     return _TextInheritedWidget(
       text: text,
@@ -46,7 +47,7 @@ class TextScope extends StatelessWidget {
 class _TextInheritedWidget extends InheritedWidget {
   const _TextInheritedWidget({required this.text, required super.child});
 
-  final TextMix text;
+  final TextStyling text;
 
   @override
   bool updateShouldNotify(_TextInheritedWidget oldWidget) {

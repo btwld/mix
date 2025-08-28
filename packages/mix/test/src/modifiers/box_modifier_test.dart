@@ -45,7 +45,7 @@ void main() {
 
   group('BoxModifierMix', () {
     testWidgets('resolves to BoxModifier correctly', (tester) async {
-      final spec = BoxMix(
+      final spec = BoxStyle(
         padding: EdgeInsetsGeometryMix.all(16),
         decoration: DecorationMix.color(Colors.blue),
       );
@@ -66,8 +66,8 @@ void main() {
     });
 
     test('merge combines two BoxModifierMix instances', () {
-      final mix1 = BoxModifierMix(BoxMix(padding: EdgeInsetsGeometryMix.all(8)));
-      final mix2 = BoxModifierMix(BoxMix(margin: EdgeInsetsGeometryMix.all(16)));
+      final mix1 = BoxModifierMix(BoxStyle(padding: EdgeInsetsGeometryMix.all(8)));
+      final mix2 = BoxModifierMix(BoxStyle(margin: EdgeInsetsGeometryMix.all(16)));
 
       final merged = mix1.merge(mix2);
 
@@ -75,7 +75,7 @@ void main() {
     });
 
     test('merge with null returns original', () {
-      final mix = BoxModifierMix(BoxMix(padding: EdgeInsetsGeometryMix.all(8)));
+      final mix = BoxModifierMix(BoxStyle(padding: EdgeInsetsGeometryMix.all(8)));
 
       final merged = mix.merge(null);
 

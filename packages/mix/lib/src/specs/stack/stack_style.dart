@@ -13,6 +13,8 @@ import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'stack_spec.dart';
 
+typedef StackMix = StackStyle;
+
 /// Represents the attributes of a [StackSpec].
 ///
 /// This class encapsulates properties defining the layout and
@@ -30,7 +32,6 @@ class StackStyle extends Style<StackSpec>
   final Prop<StackFit>? $fit;
   final Prop<TextDirection>? $textDirection;
   final Prop<Clip>? $clipBehavior;
-
 
   const StackStyle.create({
     Prop<AlignmentGeometry>? alignment,
@@ -66,34 +67,6 @@ class StackStyle extends Style<StackSpec>
          variants: variants,
          inherit: inherit,
        );
-
-  /// Constructor that accepts a [StackSpec] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [StackSpec] instances to [StackStyle].
-  ///
-  /// ```dart
-  /// const spec = StackWidgetSpec(alignment: AlignmentDirectional.topStart, fit: StackFit.loose);
-  /// final attr = StackStyle.value(spec);
-  /// ```
-  StackStyle.value(StackSpec spec)
-    : this(
-        alignment: spec.alignment,
-        fit: spec.fit,
-        textDirection: spec.textDirection,
-        clipBehavior: spec.clipBehavior,
-      );
-
-  /// Constructor that accepts a nullable [StackSpec] value and extracts its properties.
-  ///
-  /// Returns null if the input is null, otherwise uses [StackStyle.value].
-  ///
-  /// ```dart
-  /// const StackWidgetSpec? spec = StackWidgetSpec(alignment: AlignmentDirectional.topStart, fit: StackFit.loose);
-  /// final attr = StackStyle.maybeValue(spec); // Returns StackStyle or null
-  /// ```
-  static StackStyle? maybeValue(StackSpec? spec) {
-    return spec != null ? StackStyle.value(spec) : null;
-  }
 
   /// Sets stack alignment
   StackStyle alignment(AlignmentGeometry value) {

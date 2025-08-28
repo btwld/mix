@@ -16,10 +16,7 @@ void main() {
               children: [
                 ZBox(
                   key: zBoxKey,
-                  style: StackBoxStyle(
-                    box:
-                        BoxMix(), // Provide a non-null container to match test expectations
-                  ),
+                  style: StackBoxStyle(), // Use default empty StackBoxStyle
                   children: const [],
                 ),
                 Container(

@@ -37,13 +37,6 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
   /// The spacing between children.
   final double? spacing;
 
-  /// The gap between children.
-  @Deprecated(
-    'Use spacing instead. '
-    'This feature was deprecated after Mix v2.0.0.',
-  )
-  final double? gap;
-
   /// Creates a [FlexSpec] with the provided properties.
   const FlexSpec({
     this.direction,
@@ -54,13 +47,20 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
     this.textDirection,
     this.textBaseline,
     this.clipBehavior,
-    this.spacing,
+    double? spacing,
     @Deprecated(
       'Use spacing instead. '
       'This feature was deprecated after Mix v2.0.0.',
     )
     double? gap,
-  }) : gap = gap ?? spacing;
+  }) : spacing = spacing ?? gap;
+
+  /// The gap between children.
+  @Deprecated(
+    'Use spacing instead. '
+    'This feature was deprecated after Mix v2.0.0.',
+  )
+  double? get gap => spacing;
 
   /// Creates a copy of this [FlexSpec] with the given properties replaced.
   @override
@@ -143,9 +143,6 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
       ..add(EnumProperty<TextBaseline>('textBaseline', textBaseline))
       ..add(EnumProperty<Clip>('clipBehavior', clipBehavior))
       ..add(DoubleProperty('spacing', spacing));
-    if (gap != null && gap != spacing) {
-      properties.add(DoubleProperty('gap (deprecated)', gap));
-    }
   }
 
   @override

@@ -19,12 +19,13 @@ import '../../properties/painting/decoration_mixin.dart';
 import '../../properties/transform_mixin.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
-import '../box/box_mix.dart';
 import '../box/box_spec.dart';
-import '../flex/flex_mix.dart';
+import '../box/box_style.dart';
 import '../flex/flex_spec.dart';
-import 'flexbox_mix.dart';
+import '../flex/flex_style.dart';
 import 'flexbox_spec.dart';
+
+typedef FlexBoxMix = FlexBoxStyle;
 
 /// Represents the attributes of a [FlexBoxSpec].
 ///
@@ -43,8 +44,8 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
         SpacingMixin<FlexBoxStyle>,
         TransformMixin<FlexBoxStyle>,
         ConstraintsMixin<FlexBoxStyle> {
-  final Prop<BoxSpec>? $box;
-  final Prop<FlexSpec>? $flex;
+  final Prop<WidgetSpec<BoxSpec>>? $box;
+  final Prop<WidgetSpec<FlexSpec>>? $flex;
 
   /// Main constructor with individual property parameters
   FlexBoxStyle({
@@ -75,20 +76,20 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
     bool? inherit,
   }) : this.create(
          box: Prop.maybeMix(
-           BoxMix(
-             decoration: decoration,
-             foregroundDecoration: foregroundDecoration,
+           BoxStyle(
+             alignment: alignment,
              padding: padding,
              margin: margin,
-             alignment: alignment,
              constraints: constraints,
+             decoration: decoration,
+             foregroundDecoration: foregroundDecoration,
              transform: transform,
              transformAlignment: transformAlignment,
              clipBehavior: clipBehavior,
            ),
          ),
          flex: Prop.maybeMix(
-           FlexMix(
+           FlexStyle(
              direction: direction,
              mainAxisAlignment: mainAxisAlignment,
              crossAxisAlignment: crossAxisAlignment,
@@ -108,45 +109,14 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
 
   /// Create constructor with Prop`<T>` types for internal use
   const FlexBoxStyle.create({
-    Prop<BoxSpec>? box,
-    Prop<FlexSpec>? flex,
+    Prop<WidgetSpec<BoxSpec>>? box,
+    Prop<WidgetSpec<FlexSpec>>? flex,
     super.animation,
     super.modifier,
     super.variants,
     super.inherit,
   }) : $box = box,
        $flex = flex;
-
-  /// Named constructor that accepts a [FlexBoxSpec] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [FlexBoxSpec] instances to [FlexBoxStyle].
-  ///
-  /// ```dart
-  /// const spec = FlexBoxWidgetSpec(box: BoxSpec(...), flex: FlexProperties(...));
-  /// final attr = FlexBoxStyle.value(spec);
-  /// ```
-  FlexBoxStyle.value(FlexBoxSpec spec)
-    : this.create(
-        box: Prop.maybeMix(BoxMix.maybeValue(spec.box)),
-        flex: Prop.maybeMix(FlexMix.maybeValue(spec.flex)),
-      );
-
-  /// Factory constructor to create FlexBoxStyle from FlexBoxMix.
-  static FlexBoxStyle from(FlexBoxMix mix) {
-    return FlexBoxStyle.create(box: mix.$box, flex: mix.$flex);
-  }
-
-  /// Constructor that accepts a nullable [FlexBoxSpec] value and extracts its properties.
-  ///
-  /// Returns null if the input is null, otherwise uses [FlexBoxStyle.value].
-  ///
-  /// ```dart
-  /// const FlexBoxWidgetSpec? spec = FlexBoxWidgetSpec(box: BoxSpec(...), flex: FlexProperties(...));
-  /// final attr = FlexBoxStyle.maybeValue(spec); // Returns FlexBoxStyle or null
-  /// ```
-  static FlexBoxStyle? maybeValue(FlexBoxSpec? spec) {
-    return spec != null ? FlexBoxStyle.value(spec) : null;
-  }
 
   /// Sets animation
   FlexBoxStyle animate(AnimationConfig animation) {
@@ -274,9 +244,7 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
   /// Border radius instance method
   @override
   FlexBoxStyle borderRadius(BorderRadiusGeometryMix value) {
-    return merge(
-      FlexBoxStyle(decoration: DecorationMix.borderRadius(value)),
-    );
+    return merge(FlexBoxStyle(decoration: DecorationMix.borderRadius(value)));
   }
 
   /// Resolves to [FlexBoxSpec] using the provided [BuildContext].

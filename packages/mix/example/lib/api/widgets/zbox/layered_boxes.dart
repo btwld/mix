@@ -12,8 +12,8 @@ class Example extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final flexStyle = StackBoxStyle(
-      stack: StackMix.alignment(Alignment.bottomCenter),
-      box: BoxMix().height(100).width(100),
+      stackAlignment: Alignment.bottomCenter,
+      constraints: BoxConstraintsMix.height(100).width(100),
     );
 
     final boxStyle = BoxStyle()

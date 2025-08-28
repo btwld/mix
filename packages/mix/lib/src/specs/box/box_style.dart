@@ -20,10 +20,11 @@ import '../../properties/painting/decoration_mixin.dart';
 import '../../properties/transform_mixin.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
-import 'box_mix.dart';
 import 'box_spec.dart';
 import 'box_util.dart';
 import 'box_widget.dart';
+
+typedef BoxMix = BoxStyle;
 
 /// Style class for configuring [BoxSpec] properties.
 ///
@@ -105,50 +106,7 @@ class BoxStyle extends Style<BoxSpec>
          inherit: inherit,
        );
 
-  /// Constructor that accepts a [BoxSpec] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [BoxSpec] instances to [BoxStyle].
-  ///
-  /// ```dart
-  /// const spec = BoxSpec(alignment: Alignment.center, padding: EdgeInsets.all(8));
-  /// final attr = BoxStyle.value(spec);
-  /// ```
-  BoxStyle.value(BoxSpec spec)
-    : this(
-        alignment: spec.alignment,
-        padding: EdgeInsetsGeometryMix.maybeValue(spec.padding),
-        margin: EdgeInsetsGeometryMix.maybeValue(spec.margin),
-        constraints: BoxConstraintsMix.maybeValue(spec.constraints),
-        decoration: DecorationMix.maybeValue(spec.decoration),
-        foregroundDecoration: DecorationMix.maybeValue(
-          spec.foregroundDecoration,
-        ),
-        transform: spec.transform,
-        transformAlignment: spec.transformAlignment,
-        clipBehavior: spec.clipBehavior,
-      );
-
-  /// Static method to create BoxStyle from nullable BoxSpec.
-  static BoxStyle? maybeValue(BoxSpec? spec) {
-    return spec != null ? BoxStyle.value(spec) : null;
-  }
-
-  /// Factory constructor to create BoxStyle from BoxMix.
-  static BoxStyle from(BoxMix mix) {
-    return BoxStyle.create(
-      alignment: mix.$alignment,
-      padding: mix.$padding,
-      margin: mix.$margin,
-      constraints: mix.$constraints,
-      decoration: mix.$decoration,
-      foregroundDecoration: mix.$foregroundDecoration,
-      transform: mix.$transform,
-      transformAlignment: mix.$transformAlignment,
-      clipBehavior: mix.$clipBehavior,
-    );
-  }
-
-  BoxSpecUtility get builder => BoxSpecUtility(this);
+  BoxSpecUtility get chain => BoxSpecUtility(this);
 
   BoxStyle transformAlignment(AlignmentGeometry value) {
     return merge(BoxStyle(transformAlignment: value));

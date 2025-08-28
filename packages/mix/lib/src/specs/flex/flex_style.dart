@@ -12,8 +12,9 @@ import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
-import 'flex_mix.dart';
 import 'flex_spec.dart';
+
+typedef FlexMix = FlexStyle;
 
 /// Represents the attributes of a [FlexSpec].
 ///
@@ -38,11 +39,6 @@ class FlexStyle extends Style<FlexSpec>
   final Prop<TextBaseline>? $textBaseline;
   final Prop<Clip>? $clipBehavior;
   final Prop<double>? $spacing;
-  @Deprecated(
-    'Use \$spacing instead. '
-    'This feature was deprecated after Mix v2.0.0.',
-  )
-  final Prop<double>? $gap;
 
   const FlexStyle.create({
     Prop<Axis>? direction,
@@ -72,8 +68,7 @@ class FlexStyle extends Style<FlexSpec>
        $textDirection = textDirection,
        $textBaseline = textBaseline,
        $clipBehavior = clipBehavior,
-       $spacing = spacing ?? gap,
-       $gap = gap;
+       $spacing = spacing ?? gap;
 
   FlexStyle({
     Axis? direction,
@@ -110,53 +105,12 @@ class FlexStyle extends Style<FlexSpec>
          inherit: inherit,
        );
 
-  /// Constructor that accepts a [FlexSpec] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [FlexSpec] instances to [FlexStyle].
-  ///
-  /// ```dart
-  /// const spec = FlexWidgetSpec(direction: Axis.horizontal, spacing: 8.0);
-  /// final attr = FlexStyle.value(spec);
-  /// ```
-  FlexStyle.value(FlexSpec spec)
-    : this(
-        direction: spec.direction,
-        mainAxisAlignment: spec.mainAxisAlignment,
-        crossAxisAlignment: spec.crossAxisAlignment,
-        mainAxisSize: spec.mainAxisSize,
-        verticalDirection: spec.verticalDirection,
-        textDirection: spec.textDirection,
-        textBaseline: spec.textBaseline,
-        clipBehavior: spec.clipBehavior,
-        spacing: spec.spacing ?? spec.gap,
-      );
-
-  /// Factory constructor to create FlexStyle from FlexMix.
-  static FlexStyle from(FlexMix mix) {
-    return FlexStyle.create(
-      direction: mix.$direction,
-      mainAxisAlignment: mix.$mainAxisAlignment,
-      crossAxisAlignment: mix.$crossAxisAlignment,
-      mainAxisSize: mix.$mainAxisSize,
-      verticalDirection: mix.$verticalDirection,
-      textDirection: mix.$textDirection,
-      textBaseline: mix.$textBaseline,
-      clipBehavior: mix.$clipBehavior,
-      spacing: mix.$spacing,
-    );
-  }
-
-  /// Constructor that accepts a nullable [FlexSpec] value and extracts its properties.
-  ///
-  /// Returns null if the input is null, otherwise uses [FlexStyle.value].
-  ///
-  /// ```dart
-  /// const FlexWidgetSpec? spec = FlexWidgetSpec(direction: Axis.horizontal, spacing: 8.0);
-  /// final attr = FlexStyle.maybeValue(spec); // Returns FlexStyle or null
-  /// ```
-  static FlexStyle? maybeValue(FlexSpec? spec) {
-    return spec != null ? FlexStyle.value(spec) : null;
-  }
+  /// The gap between children.
+  @Deprecated(
+    'Use \$spacing instead. '
+    'This feature was deprecated after Mix v2.0.0.',
+  )
+  Prop<double>? get $gap => $spacing;
 
   /// Sets flex direction
   FlexStyle direction(Axis value) {

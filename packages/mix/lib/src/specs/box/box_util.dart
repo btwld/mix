@@ -5,6 +5,7 @@ import '../../core/prop.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
 import '../../core/style.dart' show Style, VariantStyle;
 import '../../core/utility.dart';
+import '../../core/utility_variant_mixin.dart';
 import '../../core/widget_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
@@ -13,14 +14,15 @@ import '../../properties/layout/edge_insets_geometry_util.dart';
 import '../../properties/painting/decoration_util.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
-import 'box_style.dart';
 import 'box_spec.dart';
+import 'box_style.dart';
 
 /// Provides mutable utility for box styling with cascade notation support.
 ///
 /// Supports the same API as [BoxStyle] but maintains mutable internal state
 /// enabling fluid styling: `$box..color.red()..width(100)`.
-class BoxSpecUtility extends StyleMutableBuilder<BoxSpec> {
+class BoxSpecUtility extends StyleMutableBuilder<BoxSpec>
+    with UtilityVariantMixin<BoxSpec, BoxStyle> {
   late final padding = EdgeInsetsGeometryUtility<BoxStyle>(
     (prop) => mutable.merge(BoxStyle.create(padding: Prop.mix(prop))),
   );
@@ -37,7 +39,10 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec> {
     (prop) => mutable.merge(BoxStyle.create(decoration: Prop.mix(prop))),
   );
 
-  @Deprecated('Use direct methods like onHovered() instead of on.hover()')
+  @Deprecated(
+    'Use direct methods like \$box.onHovered() instead. '
+    'Note: Returns BoxStyle for consistency with other utility methods like animate().',
+  )
   late final on = OnContextVariantUtility<BoxSpec, BoxStyle>(
     (v) => mutable.variants([v]),
   );
@@ -68,44 +73,6 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec> {
   late final clipBehavior = MixUtility(mutable.clipBehavior);
   late final alignment = MixUtility(mutable.alignment);
 
-  /// Direct variant methods for applying conditional styling.
-  BoxStyle onHovered(BoxStyle style) {
-    return mutable.variant(
-      ContextVariant.widgetState(WidgetState.hovered),
-      style,
-    );
-  }
-
-  BoxStyle onPressed(BoxStyle style) {
-    return mutable.variant(
-      ContextVariant.widgetState(WidgetState.pressed),
-      style,
-    );
-  }
-
-  BoxStyle onDark(BoxStyle style) {
-    return mutable.variant(
-      ContextVariant.brightness(Brightness.dark),
-      style,
-    );
-  }
-
-  BoxStyle onLight(BoxStyle style) {
-    return mutable.variant(
-      ContextVariant.brightness(Brightness.light),
-      style,
-    );
-  }
-
-  BoxStyle builder(BoxStyle Function(BuildContext context) fn) {
-    return mutable.variants([
-      VariantStyle<BoxSpec>(
-        ContextVariantBuilder<BoxStyle>(fn),
-        mutable.value,
-      ),
-    ]);
-  }
-
   /// Internal mutable state for accumulating box styling properties.
   @override
   @protected
@@ -117,6 +84,16 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec> {
 
   /// Applies animation configuration to the box styling.
   BoxStyle animate(AnimationConfig animation) => mutable.animate(animation);
+
+  @override
+  BoxStyle withVariant(Variant variant, BoxStyle style) {
+    return mutable.variant(variant, style);
+  }
+
+  @override
+  BoxStyle withVariants(List<VariantStyle<BoxSpec>> variants) {
+    return mutable.variants(variants);
+  }
 
   @override
   BoxSpecUtility merge(Style<BoxSpec>? other) {
@@ -136,6 +113,9 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec> {
   WidgetSpec<BoxSpec> resolve(BuildContext context) {
     return mutable.resolve(context);
   }
+
+  @override
+  BoxStyle get currentValue => mutable.value;
 
   /// The accumulated [BoxStyle] with all applied styling properties.
   @override

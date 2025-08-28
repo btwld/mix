@@ -2,20 +2,24 @@ import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
-import '../../core/widget_spec.dart';
 import '../../core/style.dart' show Style;
+import '../../core/style.dart' show VariantStyle;
 import '../../core/utility.dart';
+import '../../core/utility_variant_mixin.dart';
+import '../../core/widget_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
+import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
-import 'stack_style.dart';
 import 'stack_spec.dart';
+import 'stack_style.dart';
 
 /// Provides mutable utility for stack styling with cascade notation support.
 ///
 /// Supports the same API as [StackStyle] but maintains mutable internal state
 /// enabling fluid styling: `$stack..alignment(Alignment.center)..fit(StackFit.expand)`.
-class StackSpecUtility extends StyleMutableBuilder<StackSpec> {
+class StackSpecUtility extends StyleMutableBuilder<StackSpec>
+    with UtilityVariantMixin<StackSpec, StackStyle> {
   late final alignment = MixUtility(mutable.alignment);
 
   late final fit = MixUtility(mutable.fit);
@@ -24,6 +28,10 @@ class StackSpecUtility extends StyleMutableBuilder<StackSpec> {
 
   late final clipBehavior = MixUtility(mutable.clipBehavior);
 
+  @Deprecated(
+    'Use direct methods like \$stack.onHovered() instead. '
+    'Note: Returns StackStyle for consistency with other utility methods like animate().',
+  )
   late final on = OnContextVariantUtility<StackSpec, StackStyle>(
     (v) => mutable.variants([v]),
   );
@@ -45,6 +53,16 @@ class StackSpecUtility extends StyleMutableBuilder<StackSpec> {
   StackStyle animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
+  StackStyle withVariant(Variant variant, StackStyle style) {
+    return mutable.variant(variant, style);
+  }
+
+  @override
+  StackStyle withVariants(List<VariantStyle<StackSpec>> variants) {
+    return mutable.variants(variants);
+  }
+
+  @override
   StackSpecUtility merge(Style<StackSpec>? other) {
     if (other == null) return this;
     // Always create new instance (StyleAttribute contract)
@@ -62,6 +80,9 @@ class StackSpecUtility extends StyleMutableBuilder<StackSpec> {
   WidgetSpec<StackSpec> resolve(BuildContext context) {
     return mutable.resolve(context);
   }
+
+  @override
+  StackStyle get currentValue => mutable.value;
 
   /// The accumulated [StackStyle] with all applied styling properties.
   @override

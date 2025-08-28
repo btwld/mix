@@ -3,6 +3,8 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/style_widget.dart';
+import '../../core/widget_spec.dart';
+import '../../core/style_builder.dart';
 import '../box/box_widget.dart';
 import '../flex/flex_spec.dart';
 import 'flexbox_spec.dart';
@@ -91,13 +93,13 @@ Widget createFlexBoxSpecWidget({
   List<Widget> children = const [],
 }) {
   final flexWidget = createFlexSpecWidget(
-    spec: spec.flex,
+    spec: spec.flex?.spec,
     direction: direction,
     children: children,
   );
 
   if (spec.box != null) {
-    return createBoxSpecWidget(spec: spec.box!, child: flexWidget);
+    return createBoxSpecWidget(spec: spec.box!.spec, child: flexWidget);
   }
 
   return flexWidget;
@@ -121,6 +123,36 @@ extension FlexBoxSpecWidget on FlexBoxSpec {
       spec: this,
       direction: direction,
       children: children,
+    );
+  }
+}
+
+extension FlexSpecWrappedWidget on WidgetSpec<FlexSpec> {
+  Widget call({Axis? direction, List<Widget> children = const []}) {
+    return WidgetSpecBuilder(
+      builder: (context, spec) {
+        return createFlexSpecWidget(
+          spec: spec,
+          direction: direction,
+          children: children,
+        );
+      },
+      wrappedSpec: this,
+    );
+  }
+}
+
+extension FlexBoxSpecWrappedWidget on WidgetSpec<FlexBoxSpec> {
+  Widget call({required Axis direction, List<Widget> children = const []}) {
+    return WidgetSpecBuilder(
+      builder: (context, spec) {
+        return createFlexBoxSpecWidget(
+          spec: spec,
+          direction: direction,
+          children: children,
+        );
+      },
+      wrappedSpec: this,
     );
   }
 }

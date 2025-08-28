@@ -62,16 +62,15 @@ class OkinawaCard extends StatelessWidget {
     );
 
     final zbox = StackBoxStyle(
-      stack: StackMix().alignment(Alignment.bottomCenter),
-      box: BoxMix()
-          .transformAlignment(Alignment.center)
-          .clipBehavior(Clip.antiAlias)
-          .constraints(BoxConstraintsMix.square(0))
-          .transform(Matrix4.identity())
-          .alignment(Alignment.center)
-          .margin(EdgeInsetsMix.zero)
-          .padding(EdgeInsetsMix.zero),
-    ).onHovered(StackBoxStyle(box: BoxMix().transform(Matrix4.identity())));
+      stackAlignment: Alignment.bottomCenter,
+      transformAlignment: Alignment.center,
+      clipBehavior: Clip.antiAlias,
+      constraints: BoxConstraintsMix.square(0),
+      transform: Matrix4.identity(),
+      alignment: Alignment.center,
+      margin: EdgeInsetsMix.zero,
+      padding: EdgeInsetsMix.zero,
+    ).onHovered(StackBoxStyle(transform: Matrix4.identity()));
 
     final titleStyle = TextStyling()
         .color(Colors.white)

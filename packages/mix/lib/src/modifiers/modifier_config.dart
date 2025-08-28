@@ -8,9 +8,9 @@ import '../properties/painting/border_radius_mix.dart';
 import '../properties/painting/shadow_mix.dart';
 import '../properties/typography/text_height_behavior_mix.dart';
 import '../properties/typography/text_style_mix.dart';
-import '../specs/box/box_mix.dart';
+import '../specs/box/box_style.dart';
 import '../specs/icon/icon_style.dart';
-import '../specs/text/text_mix.dart';
+import '../specs/text/text_style.dart';
 import 'align_modifier.dart';
 import 'aspect_ratio_modifier.dart';
 import 'box_modifier.dart';
@@ -209,7 +209,7 @@ final class ModifierConfig with Equatable {
     );
   }
 
-  factory ModifierConfig.defaultText(TextMix textMix) {
+  factory ModifierConfig.defaultText(TextStyling textMix) {
     return ModifierConfig.modifier(
       DefaultTextStyleModifierMix.create(
         style: textMix.$style,
@@ -264,7 +264,7 @@ final class ModifierConfig with Equatable {
     );
   }
 
-  factory ModifierConfig.box(BoxMix spec) {
+  factory ModifierConfig.box(BoxStyle spec) {
     return ModifierConfig.modifier(BoxModifierMix(spec));
   }
 
@@ -448,7 +448,7 @@ final class ModifierConfig with Equatable {
     );
   }
 
-  ModifierConfig defaultText(TextMix textMix) {
+  ModifierConfig defaultText(TextStyling textMix) {
     return merge(ModifierConfig.defaultText(textMix));
   }
 

@@ -73,39 +73,6 @@ void main() {
       });
     });
 
-    group('value constructor', () {
-      test('', () {
-        const spec = StackSpec(
-          alignment: Alignment.bottomRight,
-          fit: StackFit.passthrough,
-          textDirection: TextDirection.ltr,
-          clipBehavior: Clip.none,
-        );
-
-        final attribute = StackStyle.value(spec);
-
-        expect(attribute.$alignment, resolvesTo(Alignment.bottomRight));
-        expect(attribute.$fit, resolvesTo(StackFit.passthrough));
-        expect(attribute.$textDirection, resolvesTo(TextDirection.ltr));
-        expect(attribute.$clipBehavior, resolvesTo(Clip.none));
-      });
-
-      test('maybeValue returns null for null spec', () {
-        expect(StackStyle.maybeValue(null), isNull);
-      });
-
-      test('maybeValue returns attribute for non-null spec', () {
-        const spec = StackSpec(
-          alignment: Alignment.topCenter,
-          fit: StackFit.expand,
-        );
-        final attribute = StackStyle.maybeValue(spec);
-
-        expect(attribute, isNotNull);
-        expect(attribute!.$alignment, resolvesTo(Alignment.topCenter));
-        expect(attribute.$fit, resolvesTo(StackFit.expand));
-      });
-    });
 
     group('Utility Methods', () {
       test('alignment utility works correctly', () {

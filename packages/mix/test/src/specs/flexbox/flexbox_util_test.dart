@@ -440,13 +440,13 @@ void main() {
             isA<WidgetSpec<FlexBoxSpec>>().having(
               (w) => w.spec,
               'spec',
-              const FlexBoxSpec(
-                box: BoxSpec(), // Empty BoxSpec instead of null
-                flex: FlexSpec(
+              FlexBoxSpec(
+                box: WidgetSpec(spec: BoxSpec()), // Empty BoxSpec instead of null
+                flex: WidgetSpec(spec: FlexSpec(
                   direction: Axis.horizontal,
                   mainAxisAlignment: MainAxisAlignment.center,
                   spacing: 8.0,
-                ),
+                )),
               ),
             ),
           ),
@@ -461,12 +461,13 @@ void main() {
 
         final testUtil = FlexBoxSpecUtility(
           FlexBoxStyle.create(
-            flex: Prop.maybeMix(FlexMix.create(spacing: Prop.token(gapToken))),
+            flex: Prop.maybeMix(FlexStyle.create(spacing: Prop.token(gapToken))),
           ),
         );
         final spec = testUtil.resolve(context);
+        final flexSpec = spec.spec.flex?.spec;
 
-        expect(spec.spec.flex?.spacing, 24.0);
+        expect(flexSpec?.spacing, 24.0);
       });
     });
 

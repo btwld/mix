@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../core/style_widget.dart';
+import '../../core/widget_spec.dart';
+import '../../core/style_builder.dart';
 import 'icon_style.dart';
 import 'icon_spec.dart';
 
@@ -60,6 +62,21 @@ extension IconSpecWidget on IconSpec {
       spec: this,
       icon: icon,
       semanticLabel: semanticLabel,
+    );
+  }
+}
+
+extension IconSpecWrappedWidget on WidgetSpec<IconSpec> {
+  Widget call({IconData? icon, String? semanticLabel}) {
+    return WidgetSpecBuilder(
+      builder: (context, spec) {
+        return createIconSpecWidget(
+          spec: spec,
+          icon: icon,
+          semanticLabel: semanticLabel,
+        );
+      },
+      wrappedSpec: this,
     );
   }
 }

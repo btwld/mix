@@ -2,20 +2,23 @@ import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
-import '../../core/widget_spec.dart';
-import '../../core/style.dart' show Style;
+import '../../core/style.dart' show Style, VariantStyle;
 import '../../core/utility.dart';
+import '../../core/utility_variant_mixin.dart';
+import '../../core/widget_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
+import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
-import 'flex_style.dart';
 import 'flex_spec.dart';
+import 'flex_style.dart';
 
 /// Provides mutable utility for flex styling with cascade notation support.
 ///
 /// Supports the same API as [FlexStyle] but maintains mutable internal state
 /// enabling fluid styling: `$flex..direction(Axis.horizontal)..spacing(8)`.
-class FlexSpecUtility extends StyleMutableBuilder<FlexSpec> {
+class FlexSpecUtility extends StyleMutableBuilder<FlexSpec>
+    with UtilityVariantMixin<FlexSpec, FlexStyle> {
   late final direction = MixUtility(mutable.direction);
 
   late final mainAxisAlignment = MixUtility(mutable.mainAxisAlignment);
@@ -32,6 +35,10 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexSpec> {
 
   late final clipBehavior = MixUtility(mutable.clipBehavior);
 
+  @Deprecated(
+    'Use direct methods like \$flex.onHovered() instead. '
+    'Note: Returns FlexStyle for consistency with other utility methods like animate().',
+  )
   late final on = OnContextVariantUtility<FlexSpec, FlexStyle>(
     (v) => mutable.variants([v]),
   );
@@ -69,6 +76,16 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexSpec> {
   FlexStyle animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
+  FlexStyle withVariant(Variant variant, FlexStyle style) {
+    return mutable.variant(variant, style);
+  }
+
+  @override
+  FlexStyle withVariants(List<VariantStyle<FlexSpec>> variants) {
+    return mutable.variants(variants);
+  }
+
+  @override
   FlexSpecUtility merge(Style<FlexSpec>? other) {
     if (other == null) return this;
     // Always create new instance (StyleAttribute contract)
@@ -86,6 +103,9 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexSpec> {
   WidgetSpec<FlexSpec> resolve(BuildContext context) {
     return mutable.resolve(context);
   }
+
+  @override
+  FlexStyle get currentValue => mutable.value;
 
   /// The accumulated [FlexStyle] with all applied styling properties.
   @override

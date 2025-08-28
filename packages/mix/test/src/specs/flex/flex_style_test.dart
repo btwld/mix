@@ -56,35 +56,6 @@ void main() {
         },
       );
 
-      test('value constructor creates FlexStyle from FlexWidgetSpec', () {
-        const spec = FlexSpec(
-          direction: Axis.vertical,
-          mainAxisAlignment: MainAxisAlignment.end,
-          spacing: 8.0,
-        );
-
-        final flexMix = FlexStyle.value(spec);
-
-        expect(flexMix.$direction, resolvesTo(Axis.vertical));
-        expect(flexMix.$mainAxisAlignment, resolvesTo(MainAxisAlignment.end));
-        expect(flexMix.$spacing, resolvesTo(8.0));
-      });
-
-      test('maybeValue returns null for null input', () {
-        final result = FlexStyle.maybeValue(null);
-        expect(result, isNull);
-      });
-
-      test('maybeValue returns FlexStyle for non-null input', () {
-        const spec = FlexSpec(direction: Axis.horizontal);
-        final result = FlexStyle.maybeValue(spec);
-
-        expect(result, isNotNull);
-        expect(result!.$direction, resolvesTo(Axis.horizontal));
-      });
-    });
-
-    group('Factory constructors', () {
       test('direction factory creates correct FlexStyle', () {
         final flexMix = FlexStyle().direction(Axis.vertical);
         expect(flexMix.$direction, resolvesTo(Axis.vertical));

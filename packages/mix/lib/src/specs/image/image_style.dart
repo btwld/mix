@@ -116,44 +116,7 @@ class ImageStyle extends Style<ImageSpec>
          inherit: inherit,
        );
 
-  /// Constructor that accepts an [ImageSpec] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [ImageSpec] instances to [ImageStyle].
-  ///
-  /// ```dart
-  /// const spec = ImageWidgetSpec(width: 100, height: 100, fit: BoxFit.cover);
-  /// final attr = ImageStyle.value(spec);
-  /// ```
-  ImageStyle.value(ImageSpec spec)
-    : this(
-        image: spec.image,
-        width: spec.width,
-        height: spec.height,
-        color: spec.color,
-        repeat: spec.repeat,
-        fit: spec.fit,
-        alignment: spec.alignment,
-        centerSlice: spec.centerSlice,
-        filterQuality: spec.filterQuality,
-        colorBlendMode: spec.colorBlendMode,
-        semanticLabel: spec.semanticLabel,
-        excludeFromSemantics: spec.excludeFromSemantics,
-        gaplessPlayback: spec.gaplessPlayback,
-        isAntiAlias: spec.isAntiAlias,
-        matchTextDirection: spec.matchTextDirection,
-      );
 
-  /// Constructor that accepts a nullable [ImageSpec] value and extracts its properties.
-  ///
-  /// Returns null if the input is null, otherwise uses [ImageStyle.value].
-  ///
-  /// ```dart
-  /// const ImageWidgetSpec? spec = ImageWidgetSpec(width: 100, height: 100, fit: BoxFit.cover);
-  /// final attr = ImageStyle.maybeValue(spec); // Returns ImageStyle or null
-  /// ```
-  static ImageStyle? maybeValue(ImageSpec? spec) {
-    return spec != null ? ImageStyle.value(spec) : null;
-  }
 
   /// Sets image provider
   ImageStyle image(ImageProvider<Object> value) {

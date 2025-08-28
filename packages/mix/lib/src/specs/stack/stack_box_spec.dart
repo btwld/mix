@@ -1,21 +1,22 @@
 import 'package:flutter/foundation.dart';
 
+import '../../core/helpers.dart';
 import '../../core/spec.dart';
+import '../../core/widget_spec.dart';
 import '../box/box_spec.dart';
 import 'stack_spec.dart';
 
 final class ZBoxSpec extends Spec<ZBoxSpec> with Diagnosticable {
   /// Container styling for the outer box. Nullable to mirror FlexBoxSpec.
-  final BoxSpec? box;
-  final StackSpec stack;
+  final WidgetSpec<BoxSpec>? box;
+  final WidgetSpec<StackSpec>? stack;
 
-  const ZBoxSpec({this.box, StackSpec? stack})
-    : stack = stack ?? const StackSpec();
+  const ZBoxSpec({this.box, this.stack});
 
   /// Creates a copy of this [ZBoxSpec] but with the given fields
   /// replaced with the new values.
   @override
-  ZBoxSpec copyWith({BoxSpec? box, StackSpec? stack}) {
+  ZBoxSpec copyWith({WidgetSpec<BoxSpec>? box, WidgetSpec<StackSpec>? stack}) {
     return ZBoxSpec(box: box ?? this.box, stack: stack ?? this.stack);
   }
 
@@ -29,16 +30,16 @@ final class ZBoxSpec extends Spec<ZBoxSpec> with Diagnosticable {
   ///
   /// The interpolation is performed on each property of the [ZBoxSpec] using the appropriate
   /// interpolation method:
-  /// - [BoxSpec.lerp] for [box].
-  /// - [StackSpec.lerp] for [stack].
+  /// - [WidgetSpec.lerp] for [box].
+  /// - [WidgetSpec.lerp] for [stack].
   ///
   /// This method is typically used in animations to smoothly transition between
   /// different [ZBoxSpec] configurations.
   @override
   ZBoxSpec lerp(ZBoxSpec? other, double t) {
     return ZBoxSpec(
-      box: box?.lerp(other?.box, t),
-      stack: stack.lerp(other?.stack, t),
+      box: MixOps.lerp(box, other?.box, t),
+      stack: MixOps.lerp(stack, other?.stack, t),
     );
   }
 
@@ -47,9 +48,7 @@ final class ZBoxSpec extends Spec<ZBoxSpec> with Diagnosticable {
     super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('box', box))
-      ..add(
-        DiagnosticsProperty('stack', stack, defaultValue: const StackSpec()),
-      );
+      ..add(DiagnosticsProperty('stack', stack));
   }
 
   /// The list of properties that constitute the state of this [ZBoxSpec].

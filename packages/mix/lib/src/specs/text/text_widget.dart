@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../core/directive.dart';
 import '../../core/style_widget.dart';
+import '../../core/widget_spec.dart';
+import '../../core/style_builder.dart';
 import 'text_style.dart';
 import 'text_spec.dart';
 
@@ -46,5 +48,16 @@ Text createTextSpecWidget({required TextSpec spec, required String text}) {
 extension TextSpecWidget on TextSpec {
   Text call(String text) {
     return createTextSpecWidget(spec: this, text: text);
+  }
+}
+
+extension TextSpecWrappedWidget on WidgetSpec<TextSpec> {
+  Widget call(String text) {
+    return WidgetSpecBuilder(
+      builder: (context, spec) {
+        return createTextSpecWidget(spec: spec, text: text);
+      },
+      wrappedSpec: this,
+    );
   }
 }

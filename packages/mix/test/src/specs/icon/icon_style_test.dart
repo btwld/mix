@@ -81,161 +81,136 @@ void main() {
         expect(iconMix.$variants!.length, 1);
       });
     });
+  });
 
-    group('value constructor', () {
-      test('', () {
-        const spec = IconSpec(color: Colors.green, size: 28.0, weight: 600.0);
+  group('Utility Methods', () {
+    test('color utility works correctly', () {
+      final attribute = IconStyle().color(Colors.orange);
 
-        final attribute = IconStyle.value(spec);
-
-        expect(attribute.$color, resolvesTo(Colors.green));
-        expect(attribute.$size, resolvesTo(28.0));
-        expect(attribute.$weight, resolvesTo(600.0));
-      });
-
-      test('maybeValue returns null for null spec', () {
-        expect(IconStyle.maybeValue(null), isNull);
-      });
-
-      test('maybeValue returns attribute for non-null spec', () {
-        const spec = IconSpec(color: Colors.purple, size: 20.0);
-        final attribute = IconStyle.maybeValue(spec);
-
-        expect(attribute, isNotNull);
-        expect(attribute!.$color, resolvesTo(Colors.purple));
-        expect(attribute.$size, resolvesTo(20.0));
-      });
+      expect(attribute.$color, resolvesTo(Colors.orange));
     });
 
-    group('Utility Methods', () {
-      test('color utility works correctly', () {
-        final attribute = IconStyle().color(Colors.orange);
+    test('size utility works correctly', () {
+      final attribute = IconStyle().size(36.0);
 
-        expect(attribute.$color, resolvesTo(Colors.orange));
-      });
-
-      test('size utility works correctly', () {
-        final attribute = IconStyle().size(36.0);
-
-        expect(attribute.$size, resolvesTo(36.0));
-      });
-
-      test('weight utility works correctly', () {
-        final attribute = IconStyle().weight(700.0);
-
-        expect(attribute.$weight, resolvesTo(700.0));
-      });
-
-      test('grade utility works correctly', () {
-        final attribute = IconStyle().grade(25.0);
-
-        expect(attribute.$grade, resolvesTo(25.0));
-      });
-
-      test('opticalSize utility works correctly', () {
-        final attribute = IconStyle().opticalSize(48.0);
-
-        expect(attribute.$opticalSize, resolvesTo(48.0));
-      });
-
-      test('textDirection utility works correctly', () {
-        final attribute = IconStyle().textDirection(TextDirection.rtl);
-
-        expect(attribute.$textDirection, resolvesTo(TextDirection.rtl));
-      });
-
-      test('applyTextScaling utility works correctly', () {
-        final attribute = IconStyle().applyTextScaling(false);
-
-        expect(attribute.$applyTextScaling, resolvesTo(false));
-      });
-
-      test('fill utility works correctly', () {
-        final attribute = IconStyle().fill(0.5);
-
-        expect(attribute.$fill, resolvesTo(0.5));
-      });
-
-      test('animate method sets animation config', () {
-        final animation = AnimationConfig.linear(Duration(milliseconds: 500));
-        final attribute = IconStyle().animate(animation);
-
-        expect(attribute.$animation, equals(animation));
-      });
+      expect(attribute.$size, resolvesTo(36.0));
     });
 
-    group('Variant Methods', () {
-      test('', () {
-        final variant = ContextVariant.brightness(Brightness.dark);
-        final style = IconStyle().color(Colors.white);
-        final iconMix = IconStyle().variant(variant, style);
+    test('weight utility works correctly', () {
+      final attribute = IconStyle().weight(700.0);
 
-        expect(iconMix.$variants, isNotNull);
-        expect(iconMix.$variants!.length, 1);
-      });
-
-      test('variants method sets multiple variants', () {
-        final variants = [
-          VariantStyle(
-            ContextVariant.brightness(Brightness.dark),
-            IconStyle().color(Colors.white),
-          ),
-          VariantStyle(
-            ContextVariant.brightness(Brightness.light),
-            IconStyle().color(Colors.black),
-          ),
-        ];
-        final iconMix = IconStyle().variants(variants);
-
-        expect(iconMix.$variants, isNotNull);
-        expect(iconMix.$variants!.length, 2);
-      });
+      expect(attribute.$weight, resolvesTo(700.0));
     });
 
-    group('Resolution', () {
-      test('', () {
-        final attribute = IconStyle(
-          color: Colors.cyan,
-          size: 36.0,
-          weight: 700.0,
-          grade: 50.0,
-          opticalSize: 36.0,
-          textDirection: TextDirection.ltr,
-          applyTextScaling: true,
-          fill: 1.0,
-        );
+    test('grade utility works correctly', () {
+      final attribute = IconStyle().grade(25.0);
 
-        final context = MockBuildContext();
-        final spec = attribute.resolve(context);
+      expect(attribute.$grade, resolvesTo(25.0));
+    });
 
-        expect(spec, isNotNull);
-        expect(spec.spec.color, Colors.cyan);
-        expect(spec.spec.size, 36.0);
-        expect(spec.spec.weight, 700.0);
-        expect(spec.spec.grade, 50.0);
-        expect(spec.spec.opticalSize, 36.0);
-        expect(spec.spec.textDirection, TextDirection.ltr);
-        expect(spec.spec.applyTextScaling, true);
-        expect(spec.spec.fill, 1.0);
-      });
+    test('opticalSize utility works correctly', () {
+      final attribute = IconStyle().opticalSize(48.0);
 
-      test('resolves with null values correctly', () {
-        final attribute = IconStyle().color(Colors.yellow).size(18.0);
+      expect(attribute.$opticalSize, resolvesTo(48.0));
+    });
 
-        final context = MockBuildContext();
-        final spec = attribute.resolve(context);
+    test('textDirection utility works correctly', () {
+      final attribute = IconStyle().textDirection(TextDirection.rtl);
 
-        expect(spec, isNotNull);
-        expect(spec.spec.color, Colors.yellow);
-        expect(spec.spec.size, 18.0);
-        expect(spec.spec.weight, isNull);
-        expect(spec.spec.grade, isNull);
-        expect(spec.spec.opticalSize, isNull);
-        expect(spec.spec.shadows, isNull);
-        expect(spec.spec.textDirection, isNull);
-        expect(spec.spec.applyTextScaling, isNull);
-        expect(spec.spec.fill, isNull);
-      });
+      expect(attribute.$textDirection, resolvesTo(TextDirection.rtl));
+    });
+
+    test('applyTextScaling utility works correctly', () {
+      final attribute = IconStyle().applyTextScaling(false);
+
+      expect(attribute.$applyTextScaling, resolvesTo(false));
+    });
+
+    test('fill utility works correctly', () {
+      final attribute = IconStyle().fill(0.5);
+
+      expect(attribute.$fill, resolvesTo(0.5));
+    });
+
+    test('animate method sets animation config', () {
+      final animation = AnimationConfig.linear(Duration(milliseconds: 500));
+      final attribute = IconStyle().animate(animation);
+
+      expect(attribute.$animation, equals(animation));
+    });
+  });
+
+  group('Variant Methods', () {
+    test('', () {
+      final variant = ContextVariant.brightness(Brightness.dark);
+      final style = IconStyle().color(Colors.white);
+      final iconMix = IconStyle().variant(variant, style);
+
+      expect(iconMix.$variants, isNotNull);
+      expect(iconMix.$variants!.length, 1);
+    });
+
+    test('variants method sets multiple variants', () {
+      final variants = [
+        VariantStyle(
+          ContextVariant.brightness(Brightness.dark),
+          IconStyle().color(Colors.white),
+        ),
+        VariantStyle(
+          ContextVariant.brightness(Brightness.light),
+          IconStyle().color(Colors.black),
+        ),
+      ];
+      final iconMix = IconStyle().variants(variants);
+
+      expect(iconMix.$variants, isNotNull);
+      expect(iconMix.$variants!.length, 2);
+    });
+  });
+
+  group('Resolution', () {
+    test('', () {
+      final attribute = IconStyle(
+        color: Colors.cyan,
+        size: 36.0,
+        weight: 700.0,
+        grade: 50.0,
+        opticalSize: 36.0,
+        textDirection: TextDirection.ltr,
+        applyTextScaling: true,
+        fill: 1.0,
+      );
+
+      final context = MockBuildContext();
+      final spec = attribute.resolve(context);
+
+      expect(spec, isNotNull);
+      expect(spec.spec.color, Colors.cyan);
+      expect(spec.spec.size, 36.0);
+      expect(spec.spec.weight, 700.0);
+      expect(spec.spec.grade, 50.0);
+      expect(spec.spec.opticalSize, 36.0);
+      expect(spec.spec.textDirection, TextDirection.ltr);
+      expect(spec.spec.applyTextScaling, true);
+      expect(spec.spec.fill, 1.0);
+    });
+
+    test('resolves with null values correctly', () {
+      final attribute = IconStyle().color(Colors.yellow).size(18.0);
+
+      final context = MockBuildContext();
+      final spec = attribute.resolve(context);
+
+      expect(spec, isNotNull);
+      expect(spec.spec.color, Colors.yellow);
+      expect(spec.spec.size, 18.0);
+      expect(spec.spec.weight, isNull);
+      expect(spec.spec.grade, isNull);
+      expect(spec.spec.opticalSize, isNull);
+      expect(spec.spec.shadows, isNull);
+      expect(spec.spec.textDirection, isNull);
+      expect(spec.spec.applyTextScaling, isNull);
+      expect(spec.spec.fill, isNull);
     });
   });
 }

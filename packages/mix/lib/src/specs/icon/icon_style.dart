@@ -12,10 +12,10 @@ import '../../modifiers/modifier_util.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
-import 'icon_mix.dart';
 import 'icon_spec.dart';
 import 'icon_widget.dart';
 
+typedef IconMix = IconStyle;
 
 class IconStyle extends Style<IconSpec>
     with
@@ -36,7 +36,6 @@ class IconStyle extends Style<IconSpec>
   final Prop<double>? $opacity;
   final Prop<BlendMode>? $blendMode;
   final Prop<IconData>? $icon;
-
 
   const IconStyle.create({
     Prop<Color>? color,
@@ -108,55 +107,6 @@ class IconStyle extends Style<IconSpec>
          variants: variants,
          inherit: inherit,
        );
-
-  // Named constructor to create from resolved Spec
-  IconStyle.value(IconSpec spec)
-      : this(
-          color: spec.color,
-          size: spec.size,
-          weight: spec.weight,
-          grade: spec.grade,
-          opticalSize: spec.opticalSize,
-          shadows: spec.shadows?.map((shadow) => ShadowMix.value(shadow)).toList(),
-          textDirection: spec.textDirection,
-          applyTextScaling: spec.applyTextScaling,
-          fill: spec.fill,
-          semanticsLabel: spec.semanticsLabel,
-          opacity: spec.opacity,
-          blendMode: spec.blendMode,
-          icon: spec.icon,
-        );
-
-  /// Constructor that accepts a nullable [IconSpec] value and extracts its properties.
-  ///
-  /// Returns null if the input is null, otherwise uses [IconStyle.value].
-  ///
-  /// ```dart
-  /// const IconWidgetSpec? spec = IconWidgetSpec(color: Colors.blue, size: 24.0);
-  /// final attr = IconStyle.maybeValue(spec); // Returns IconStyle or null
-  /// ```
-  static IconStyle? maybeValue(IconSpec? spec) {
-    return spec != null ? IconStyle.value(spec) : null;
-  }
-
-  /// Static factory to create from [IconMix]
-  static IconStyle from(IconMix mix) {
-    return IconStyle.create(
-      color: mix.$color,
-      size: mix.$size,
-      weight: mix.$weight,
-      grade: mix.$grade,
-      opticalSize: mix.$opticalSize,
-      shadows: mix.$shadows,
-      textDirection: mix.$textDirection,
-      applyTextScaling: mix.$applyTextScaling,
-      fill: mix.$fill,
-      semanticsLabel: mix.$semanticsLabel,
-      opacity: mix.$opacity,
-      blendMode: mix.$blendMode,
-      icon: mix.$icon,
-    );
-  }
 
   /// Sets icon color
   IconStyle color(Color value) {
@@ -259,7 +209,7 @@ class IconStyle extends Style<IconSpec>
       blendMode: MixOps.resolve(context, $blendMode),
       icon: MixOps.resolve(context, $icon),
     );
-    
+
     return WidgetSpec(
       spec: iconSpec,
       animation: $animation,

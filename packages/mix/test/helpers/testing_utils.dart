@@ -762,8 +762,8 @@ extension WrappedBoxSpecAccess on WidgetSpec<BoxSpec> {
 }
 
 extension WrappedFlexBoxSpecAccess on WidgetSpec<FlexBoxSpec> {
-  FlexSpec? get flex => spec.flex;
-  BoxSpec? get container => spec.box;
+  FlexSpec? get flex => spec.flex?.spec;
+  BoxSpec? get container => spec.box?.spec;
 }
 
 extension WrappedIconSpecAccess on WidgetSpec<IconSpec> {
@@ -775,8 +775,8 @@ extension WrappedStackSpecAccess on WidgetSpec<StackSpec> {
 }
 
 extension WrappedZBoxSpecAccess on WidgetSpec<ZBoxSpec> {
-  BoxSpec? get box => spec.box;
-  StackSpec get stack => spec.stack;
+  BoxSpec? get box => spec.box?.spec;
+  StackSpec? get stack => spec.stack?.spec;
 }
 
 /// Matcher for Prop that has any Mix sources

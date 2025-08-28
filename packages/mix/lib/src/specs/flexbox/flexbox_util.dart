@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
 import '../../core/style.dart' show Style;
+import '../../core/style.dart' show VariantStyle;
 import '../../core/utility.dart';
+import '../../core/utility_variant_mixin.dart';
 import '../../core/widget_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/layout/constraints_util.dart';
 import '../../properties/layout/edge_insets_geometry_util.dart';
 import '../../properties/painting/decoration_util.dart';
+import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'flexbox_spec.dart';
 import 'flexbox_style.dart';
@@ -18,7 +21,8 @@ import 'flexbox_style.dart';
 ///
 /// Combines box and flex styling capabilities. Supports the same API as [FlexBoxStyle]
 /// but maintains mutable internal state enabling fluid styling: `$flexbox..color.red()..width(100)`.
-class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec> {
+class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec>
+    with UtilityVariantMixin<FlexBoxSpec, FlexBoxStyle> {
   late final padding = EdgeInsetsGeometryUtility<FlexBoxStyle>(
     (prop) => mutable.merge(FlexBoxStyle(padding: prop)),
   );
@@ -35,6 +39,10 @@ class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec> {
     (prop) => mutable.merge(FlexBoxStyle(decoration: prop)),
   );
 
+  @Deprecated(
+    'Use direct methods like \$flexbox.onHovered() instead. '
+    'Note: Returns FlexBoxStyle for consistency with other utility methods like animate().',
+  )
   late final on = OnContextVariantUtility<FlexBoxSpec, FlexBoxStyle>(
     (v) => mutable.variants([v]),
   );
@@ -79,13 +87,11 @@ class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec> {
   );
 
   late final mainAxisAlignment = MixUtility<FlexBoxStyle, MainAxisAlignment>(
-    (prop) =>
-        mutable.merge(FlexBoxStyle(mainAxisAlignment: prop)),
+    (prop) => mutable.merge(FlexBoxStyle(mainAxisAlignment: prop)),
   );
 
   late final crossAxisAlignment = MixUtility<FlexBoxStyle, CrossAxisAlignment>(
-    (prop) =>
-        mutable.merge(FlexBoxStyle(crossAxisAlignment: prop)),
+    (prop) => mutable.merge(FlexBoxStyle(crossAxisAlignment: prop)),
   );
 
   late final mainAxisSize = MixUtility<FlexBoxStyle, MainAxisSize>(
@@ -93,8 +99,7 @@ class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec> {
   );
 
   late final verticalDirection = MixUtility<FlexBoxStyle, VerticalDirection>(
-    (prop) =>
-        mutable.merge(FlexBoxStyle(verticalDirection: prop)),
+    (prop) => mutable.merge(FlexBoxStyle(verticalDirection: prop)),
   );
 
   late final flexTextDirection = MixUtility<FlexBoxStyle, TextDirection>(
@@ -119,8 +124,7 @@ class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec> {
   }
 
   /// Sets the spacing between children in the flex layout.
-  FlexBoxStyle spacing(double v) =>
-      mutable.merge(FlexBoxStyle(spacing: v));
+  FlexBoxStyle spacing(double v) => mutable.merge(FlexBoxStyle(spacing: v));
 
   /// Sets the gap between children in the flex layout.
   /// @deprecated Use spacing instead.
@@ -128,11 +132,20 @@ class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec> {
     'Use spacing instead. '
     'This feature was deprecated after Mix v2.0.0.',
   )
-  FlexBoxStyle gap(double v) =>
-      mutable.merge(FlexBoxStyle(spacing: v));
+  FlexBoxStyle gap(double v) => mutable.merge(FlexBoxStyle(spacing: v));
 
   /// Applies animation configuration to the flexbox styling.
   FlexBoxStyle animate(AnimationConfig animation) => mutable.animate(animation);
+
+  @override
+  FlexBoxStyle withVariant(Variant variant, FlexBoxStyle style) {
+    return mutable.variant(variant, style);
+  }
+
+  @override
+  FlexBoxStyle withVariants(List<VariantStyle<FlexBoxSpec>> variants) {
+    return mutable.variants(variants);
+  }
 
   @override
   FlexBoxSpecUtility merge(Style<FlexBoxSpec>? other) {
@@ -152,6 +165,9 @@ class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec> {
   WidgetSpec<FlexBoxSpec> resolve(BuildContext context) {
     return mutable.resolve(context);
   }
+
+  @override
+  FlexBoxStyle get currentValue => mutable.value;
 
   /// The accumulated [FlexBoxStyle] with all applied styling properties.
   @override

@@ -16,9 +16,10 @@ import '../../properties/typography/text_height_behavior_mix.dart';
 import '../../properties/typography/text_style_mix.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
-import 'text_mix.dart';
 import 'text_spec.dart';
 import 'text_widget.dart';
+
+typedef TextMix = TextStyling;
 
 /// Represents the attributes of a [TextSpec].
 ///
@@ -47,8 +48,6 @@ class TextStyling extends Style<TextSpec>
   final Prop<Color>? $selectionColor;
   final Prop<String>? $semanticsLabel;
   final Prop<Locale>? $locale;
-
-
 
   const TextStyling.create({
     Prop<TextOverflow>? overflow,
@@ -124,66 +123,6 @@ class TextStyling extends Style<TextSpec>
          variants: variants,
          inherit: inherit,
        );
-
-  /// Named constructor to create TextStyling from TextSpec.
-  ///
-  /// This is useful for converting existing [TextSpec] instances to [TextStyling].
-  ///
-  /// ```dart
-  /// const spec = TextSpec(overflow: TextOverflow.ellipsis, maxLines: 2);
-  /// final attr = TextStyling.value(spec);
-  /// ```
-  TextStyling.value(TextSpec spec)
-      : this(
-          overflow: spec.overflow,
-          strutStyle: StrutStyleMix.maybeValue(spec.strutStyle),
-          textAlign: spec.textAlign,
-          textScaler: spec.textScaler,
-          maxLines: spec.maxLines,
-          style: TextStyleMix.maybeValue(spec.style),
-          textWidthBasis: spec.textWidthBasis,
-          textHeightBehavior: TextHeightBehaviorMix.maybeValue(
-            spec.textHeightBehavior,
-          ),
-          textDirection: spec.textDirection,
-          softWrap: spec.softWrap,
-          textDirectives: spec.textDirectives,
-          selectionColor: spec.selectionColor,
-          semanticsLabel: spec.semanticsLabel,
-          locale: spec.locale,
-        );
-
-  /// Constructor that accepts a nullable [TextSpec] value and extracts its properties.
-  ///
-  /// Returns null if the input is null, otherwise uses [TextStyle.value].
-  ///
-  /// ```dart
-  /// const TextSpec? spec = TextSpec(overflow: TextOverflow.ellipsis, maxLines: 2);
-  /// final attr = TextStyle.maybeValue(spec); // Returns TextStyle or null
-  /// ```
-  static TextStyling? maybeValue(TextSpec? spec) {
-    return spec != null ? TextStyling.value(spec) : null;
-  }
-
-  /// Static factory to create from [TextMix]
-  static TextStyling from(TextMix mix) {
-    return TextStyling.create(
-      overflow: mix.$overflow,
-      strutStyle: mix.$strutStyle,
-      textAlign: mix.$textAlign,
-      textScaler: mix.$textScaler,
-      maxLines: mix.$maxLines,
-      style: mix.$style,
-      textWidthBasis: mix.$textWidthBasis,
-      textHeightBehavior: mix.$textHeightBehavior,
-      textDirection: mix.$textDirection,
-      softWrap: mix.$softWrap,
-      textDirectives: mix.$textDirectives,
-      selectionColor: mix.$selectionColor,
-      semanticsLabel: mix.$semanticsLabel,
-      locale: mix.$locale,
-    );
-  }
 
   StyledText call(String text) {
     return StyledText(text, style: this);
@@ -370,27 +309,37 @@ class TextStyling extends Style<TextSpec>
 
   /// Applies uppercase directive
   TextStyling uppercase() {
-    return merge(TextStyling(textDirectives: [const UppercaseStringDirective()]));
+    return merge(
+      TextStyling(textDirectives: [const UppercaseStringDirective()]),
+    );
   }
 
   /// Applies lowercase directive
   TextStyling lowercase() {
-    return merge(TextStyling(textDirectives: [const LowercaseStringDirective()]));
+    return merge(
+      TextStyling(textDirectives: [const LowercaseStringDirective()]),
+    );
   }
 
   /// Applies capitalize directive
   TextStyling capitalize() {
-    return merge(TextStyling(textDirectives: [const CapitalizeStringDirective()]));
+    return merge(
+      TextStyling(textDirectives: [const CapitalizeStringDirective()]),
+    );
   }
 
   /// Applies title case directive
   TextStyling titleCase() {
-    return merge(TextStyling(textDirectives: [const TitleCaseStringDirective()]));
+    return merge(
+      TextStyling(textDirectives: [const TitleCaseStringDirective()]),
+    );
   }
 
   /// Applies sentence case directive
   TextStyling sentenceCase() {
-    return merge(TextStyling(textDirectives: [const SentenceCaseStringDirective()]));
+    return merge(
+      TextStyling(textDirectives: [const SentenceCaseStringDirective()]),
+    );
   }
 
   TextStyling modifier(ModifierConfig value) {
@@ -434,7 +383,7 @@ class TextStyling extends Style<TextSpec>
       semanticsLabel: MixOps.resolve(context, $semanticsLabel),
       locale: MixOps.resolve(context, $locale),
     );
-    
+
     return WidgetSpec(
       spec: textSpec,
       animation: $animation,

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -5,271 +6,210 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-  group('FlexWidgetSpecUtility', () {
+  group('StackBoxStyle', () {
     group('Constructor', () {
-      test('', () {
-        final boxAttribute = BoxMix().size(200.0, 200.0);
-        final stackAttribute = StackMix(
-          alignment: Alignment.center,
+      test('creates StackBoxStyle with box and stack properties', () {
+        final attribute = StackBoxStyle(
+          // Box properties
+          constraints: BoxConstraintsMix(minWidth: 200.0, maxWidth: 200.0, minHeight: 200.0, maxHeight: 200.0),
+          padding: EdgeInsetsMix.all(16.0),
+          // Stack properties
+          stackAlignment: Alignment.center,
           fit: StackFit.expand,
         );
 
-        final attribute = StackBoxStyle(
-          box: boxAttribute,
-          stack: stackAttribute,
-        );
-
-        // Verify the Mix objects are stored correctly
-        expect(attribute.$box!.sources[0], isA<MixSource<Object?>>());
-        expect(attribute.$stack!.sources[0], isA<MixSource<Object?>>());
+        // Verify the properties are stored correctly
+        expect(attribute.$box, isNotNull);
+        expect(attribute.$stack, isNotNull);
+        
         // Verify the properties resolve correctly
         final context = MockBuildContext();
-        final resolvedBoxSpec = attribute.$box!.resolveProp(context);
-        expect(
-          resolvedBoxSpec.constraints,
-          const BoxConstraints.tightFor(width: 200.0, height: 200.0),
-        );
-        final resolvedStackSpec = attribute.$stack!.resolveProp(context);
-        expect(resolvedStackSpec.alignment, Alignment.center);
-        expect(resolvedStackSpec.fit, StackFit.expand);
+        final resolved = attribute.resolve(context);
+        final spec = resolved.spec;
+        
+        expect(spec.box?.spec.constraints, 
+               const BoxConstraints(minWidth: 200.0, maxWidth: 200.0, minHeight: 200.0, maxHeight: 200.0));
+        expect(spec.box?.spec.padding, const EdgeInsets.all(16.0));
+        expect(spec.stack?.spec.alignment, Alignment.center);
+        expect(spec.stack?.spec.fit, StackFit.expand);
       });
 
-      test('', () {
+      test('creates StackBoxStyle with default values', () {
         final attribute = StackBoxStyle();
 
-        expect(attribute.$box, isNull);
-        expect(attribute.$stack, isNull);
+        expect(attribute.$box, isNotNull);
+        expect(attribute.$stack, isNotNull);
       });
     });
 
-    group('Factory Constructors', () {
-      test('', () {
-        final boxMix = BoxMix().width(100.0);
-        final stackBoxMix = StackBoxStyle(box: boxMix);
+    group('Individual property constructors', () {
+      test('creates StackBoxStyle with only box properties', () {
+        final stackBoxStyle = StackBoxStyle(
+          constraints: BoxConstraintsMix.width(100.0),
+        );
 
-        expect(stackBoxMix.$box!.sources[0], isA<MixSource<Object?>>());
-        expect(stackBoxMix.$stack, isNull);
+        expect(stackBoxStyle.$box, isNotNull);
+        expect(stackBoxStyle.$stack, isNotNull);
       });
 
-      test('', () {
-        final stackMix = StackMix.alignment(Alignment.center);
-        final stackBoxMix = StackBoxStyle(stack: stackMix);
+      test('creates StackBoxStyle with only stack properties', () {
+        final stackBoxStyle = StackBoxStyle(
+          stackAlignment: Alignment.center,
+        );
 
-        expect(stackBoxMix.$stack!.sources[0], isA<MixSource<Object?>>());
-        expect(stackBoxMix.$box, isNull);
+        expect(stackBoxStyle.$stack, isNotNull);
+        expect(stackBoxStyle.$box, isNotNull);
       });
 
-      test('', () {
+      test('creates StackBoxStyle with animation', () {
         final animation = AnimationConfig.linear(Duration(seconds: 1));
-        final stackBoxMix = StackBoxStyle(animation: animation);
+        final stackBoxStyle = StackBoxStyle(animation: animation);
 
-        expect(stackBoxMix.$animation, animation);
+        expect(stackBoxStyle.$animation, animation);
       });
 
-      test('', () {
+      test('creates StackBoxStyle with variants', () {
         final variant = ContextVariant.brightness(Brightness.dark);
         final style = StackBoxStyle(
-          box: BoxMix(decoration: DecorationMix.color(Colors.white)),
+          decoration: DecorationMix.color(Colors.white),
         );
-        final stackBoxMix = StackBoxStyle(
+        final stackBoxStyle = StackBoxStyle(
           variants: [VariantStyle(variant, style)],
         );
 
-        expect(stackBoxMix.$variants, isNotNull);
-        expect(stackBoxMix.$variants!.length, 1);
+        expect(stackBoxStyle.$variants, isNotNull);
+        expect(stackBoxStyle.$variants!.length, 1);
       });
     });
 
-    group('value constructor', () {
-      test('', () {
-        const spec = ZBoxSpec(
-          box: BoxSpec(
-            constraints: BoxConstraints.tightFor(width: 200.0, height: 100.0),
-          ),
-          stack: StackSpec(alignment: Alignment.center, fit: StackFit.expand),
-        );
+    group('Property methods', () {
+      test('padding method creates new instance', () {
+        final first = StackBoxStyle(constraints: BoxConstraintsMix.width(100.0));
+        final second = first.padding(EdgeInsetsMix.all(16.0));
 
-        final attribute = StackBoxStyle(
-          box: BoxMix.maybeValue(spec.box),
-          stack: StackMix.maybeValue(spec.stack),
-        );
-
-        expect(attribute.$box, isNotNull);
-        expect(attribute.$stack, isNotNull);
-        // Verify that the stored Mix objects contain the expected properties
-        expect(attribute.$box, isNotNull);
-        expect(attribute.$stack, isNotNull);
-      });
-
-      test('maybeValue returns null for null spec', () {
-        expect(null, isNull); // StackBoxStyle.maybeValue removed
-      });
-
-      test('maybeValue returns attribute for non-null spec', () {
-        const spec = ZBoxSpec(
-          box: BoxSpec(constraints: BoxConstraints.tightFor(width: 150.0)),
-          stack: StackSpec(alignment: Alignment.topLeft),
-        );
-        final attribute = StackBoxStyle(
-          box: BoxMix.maybeValue(spec.box),
-          stack: StackMix.maybeValue(spec.stack),
-        );
-
-        expect(attribute, isNotNull);
-        expect(attribute.$box, isNotNull);
-        expect(attribute.$stack, isNotNull);
-      });
-    });
-
-    group('Utility Methods', () {
-      test('withBox utility works correctly', () {
-        final boxMix = BoxMix().width(300.0);
-        final attribute = StackBoxStyle(box: boxMix);
-
-        expect(attribute.$box, isNotNull);
-        // Verify the box attribute contains the expected constraints
-        expect(attribute.$box, isNotNull);
-      });
-
-      test('withStack utility works correctly', () {
-        final stackMix = StackMix.alignment(Alignment.bottomRight);
-        final attribute = StackBoxStyle(stack: stackMix);
-
-        expect(attribute.$stack, isNotNull);
-        // Verify the stack attribute contains the expected alignment
-        expect(attribute.$stack, isNotNull);
-      });
-
-      test('animate method sets animation config', () {
-        final animation = AnimationConfig.linear(Duration(milliseconds: 500));
-        final attribute = StackBoxStyle().animate(animation);
-
-        expect(attribute.$animation, equals(animation));
-      });
-    });
-
-    group('Variant Methods', () {
-      test('variants method sets multiple variants', () {
-        final variants = [
-          VariantStyle<ZBoxSpec>(
-            ContextVariant.brightness(Brightness.dark),
-            StackBoxStyle(
-              box: BoxMix(decoration: DecorationMix.color(Colors.white)),
-            ),
-          ),
-          VariantStyle<ZBoxSpec>(
-            ContextVariant.brightness(Brightness.light),
-            StackBoxStyle(
-              box: BoxMix(decoration: DecorationMix.color(Colors.black)),
-            ),
-          ),
-        ];
-        final stackBoxMix = StackBoxStyle().variants(variants);
-
-        expect(stackBoxMix.$variants, isNotNull);
-        expect(stackBoxMix.$variants!.length, 2);
-      });
-    });
-
-    group('Resolution', () {
-      test('', () {
-        final boxAttribute = BoxMix().size(200.0, 200.0);
-        final stackAttribute = StackMix(
-          alignment: Alignment.center,
-          fit: StackFit.expand,
-        );
-
-        final attribute = StackBoxStyle(
-          box: boxAttribute,
-          stack: stackAttribute,
-        );
-
+        expect(first, isNot(second));
+        expect(second.$box, isNotNull);
+        
         final context = MockBuildContext();
-        final spec = attribute.resolve(context);
-
-        expect(spec, isNotNull);
-        expect(spec.box, isNotNull);
-        expect(spec.stack, isNotNull);
-        expect(
-          spec.box!.constraints,
-          BoxConstraints.tightFor(width: 200.0, height: 200.0),
-        );
-        expect(spec.stack.alignment, Alignment.center);
-        expect(spec.stack.fit, StackFit.expand);
+        final resolved = second.resolve(context);
+        expect(resolved.spec.box?.spec.padding, const EdgeInsets.all(16.0));
       });
 
-      test('resolves with null values correctly', () {
-        final attribute = StackBoxStyle();
+      test('margin method creates new instance', () {
+        final first = StackBoxStyle(constraints: BoxConstraintsMix.width(100.0));
+        final second = first.margin(EdgeInsetsMix.all(8.0));
 
+        expect(first, isNot(second));
+        expect(second.$box, isNotNull);
+        
         final context = MockBuildContext();
-        final spec = attribute.resolve(context);
+        final resolved = second.resolve(context);
+        expect(resolved.spec.box?.spec.margin, const EdgeInsets.all(8.0));
+      });
 
-        expect(spec, isNotNull);
-        // ZBoxWidgetSpec constructor provides default values when null
-        expect(spec.box, isNull);
-        expect(spec.stack, const StackSpec());
+      test('decoration method creates new instance', () {
+        final attribute = StackBoxStyle(constraints: BoxConstraintsMix.width(100.0));
+        final decorated = attribute.decoration(DecorationMix.color(Colors.blue));
+
+        expect(attribute, isNot(decorated));
+        expect(decorated.$box, isNotNull);
+        
+        final context = MockBuildContext();
+        final resolved = decorated.resolve(context);
+        final decoration = resolved.spec.box?.spec.decoration as BoxDecoration?;
+        expect(decoration?.color, Colors.blue);
       });
     });
 
     group('Merge', () {
-      test('merges properties correctly', () {
-        final first = StackBoxStyle(box: BoxMix().width(100.0));
-
+      test('merges two StackBoxStyles correctly', () {
+        final first = StackBoxStyle(constraints: BoxConstraintsMix.width(100.0));
         final second = StackBoxStyle(
-          box: BoxMix().height(200.0),
-          stack: StackMix.alignment(Alignment.center),
+          constraints: BoxConstraintsMix.height(200.0),
+          stackAlignment: Alignment.center,
         );
 
         final merged = first.merge(second);
+        final context = MockBuildContext();
+        final resolved = merged.resolve(context);
+        final spec = resolved.spec;
 
-        expect(merged.$box, isNotNull);
-        expect(merged.$stack, isNotNull);
-        // Box properties should be merged
-        expect(merged.$box, isNotNull);
-        expect(merged.$stack, isNotNull);
+        // Should have both width and height from merged constraints
+        expect(spec.box?.spec.constraints?.maxWidth, 100.0);
+        expect(spec.box?.spec.constraints?.maxHeight, 200.0);
+        expect(spec.stack?.spec.alignment, Alignment.center);
       });
 
-      test('returns this when other is null', () {
-        final attribute = StackBoxStyle(box: BoxMix().width(100.0));
+      test('null merge returns original', () {
+        final attribute = StackBoxStyle(constraints: BoxConstraintsMix.width(100.0));
         final merged = attribute.merge(null);
 
-        expect(identical(attribute, merged), isTrue);
+        expect(merged, attribute);
       });
     });
 
     group('Equality', () {
-      test('equal attributes have same hashCode', () {
-        final boxMix = BoxMix().width(100.0);
-        final stackMix = StackMix.alignment(Alignment.center);
+      test('equal StackBoxStyles have same properties', () {
+        final constraints = BoxConstraintsMix.width(100.0);
+        final alignment = Alignment.center;
+        
+        final attr1 = StackBoxStyle(
+          constraints: constraints,
+          stackAlignment: alignment,
+        );
+        final attr2 = StackBoxStyle(
+          constraints: constraints,
+          stackAlignment: alignment,
+        );
 
-        final attr1 = StackBoxStyle(box: boxMix, stack: stackMix);
-        final attr2 = StackBoxStyle(box: boxMix, stack: stackMix);
-
-        expect(attr1, equals(attr2));
-        expect(attr1.hashCode, equals(attr2.hashCode));
+        expect(attr1, attr2);
+        expect(attr1.hashCode, attr2.hashCode);
       });
 
-      test('different attributes are not equal', () {
-        final attr1 = StackBoxStyle(box: BoxMix().width(100.0));
-        final attr2 = StackBoxStyle(box: BoxMix().width(200.0));
+      test('different StackBoxStyles are not equal', () {
+        final attr1 = StackBoxStyle(constraints: BoxConstraintsMix.width(100.0));
+        final attr2 = StackBoxStyle(constraints: BoxConstraintsMix.width(200.0));
 
-        expect(attr1, isNot(equals(attr2)));
+        expect(attr1, isNot(attr2));
       });
     });
 
-    group('Props getter', () {
-      test('props includes all properties', () {
-        final boxAttribute = BoxMix().width(200.0);
-        final stackAttribute = StackMix.alignment(Alignment.center);
-
+    group('Debug', () {
+      test('debugFillProperties includes all properties', () {
         final attribute = StackBoxStyle(
-          box: boxAttribute,
-          stack: stackAttribute,
+          constraints: BoxConstraintsMix.width(100.0),
+          stackAlignment: Alignment.center,
         );
 
-        expect(attribute.props.length, 2);
-        expect(attribute.props, contains(attribute.$box));
-        expect(attribute.props, contains(attribute.$stack));
+        final properties = DiagnosticPropertiesBuilder();
+        attribute.debugFillProperties(properties);
+
+        expect(properties.properties.any((p) => p.name == 'box'), isTrue);
+        expect(properties.properties.any((p) => p.name == 'stack'), isTrue);
+      });
+    });
+
+    group('Real-world usage', () {
+      test('creates complete styled box', () {
+        final style = StackBoxStyle(
+          // Box styling
+          padding: EdgeInsetsMix.all(16.0),
+          decoration: DecorationMix.color(Colors.white)
+              .borderRadius(BorderRadiusMix.circular(8.0)),
+          constraints: BoxConstraintsMix.minWidth(200.0),
+          // Stack layout
+          stackAlignment: Alignment.center,
+          fit: StackFit.expand,
+        );
+
+        final context = MockBuildContext();
+        final resolved = style.resolve(context);
+        final spec = resolved.spec;
+        
+        expect(spec.box?.spec.padding, const EdgeInsets.all(16.0));
+        expect(spec.box?.spec.constraints?.minWidth, 200.0);
+        expect(spec.stack?.spec.alignment, Alignment.center);
+        expect(spec.stack?.spec.fit, StackFit.expand);
       });
     });
   });

@@ -1,6 +1,8 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/style_widget.dart';
+import '../../core/widget_spec.dart';
+import '../../core/style_builder.dart';
 import '../box/box_widget.dart';
 import 'stack_box_spec.dart';
 import 'stack_box_style.dart';
@@ -43,11 +45,13 @@ Widget createZBoxSpecWidget({
   required ZBoxSpec spec,
   List<Widget> children = const [],
 }) {
-  final boxSpec = spec.box;
-  final stack = createStackSpecWidget(spec: spec.stack, children: children);
+  final boxWidgetSpec = spec.box;
+  final stackWidgetSpec = spec.stack;
+  final stackSpec = stackWidgetSpec?.spec ?? const StackSpec();
+  final stack = createStackSpecWidget(spec: stackSpec, children: children);
 
-  if (boxSpec != null) {
-    return createBoxSpecWidget(spec: boxSpec, child: stack);
+  if (boxWidgetSpec != null) {
+    return createBoxSpecWidget(spec: boxWidgetSpec.spec, child: stack);
   }
 
   return stack;
@@ -64,5 +68,27 @@ extension StackSpecWidget on StackSpec {
 extension ZBoxSpecWidget on ZBoxSpec {
   Widget call({List<Widget> children = const []}) {
     return createZBoxSpecWidget(spec: this, children: children);
+  }
+}
+
+extension StackSpecWrappedWidget on WidgetSpec<StackSpec> {
+  Widget call({List<Widget> children = const []}) {
+    return WidgetSpecBuilder(
+      builder: (context, spec) {
+        return createStackSpecWidget(spec: spec, children: children);
+      },
+      wrappedSpec: this,
+    );
+  }
+}
+
+extension ZBoxSpecWrappedWidget on WidgetSpec<ZBoxSpec> {
+  Widget call({List<Widget> children = const []}) {
+    return WidgetSpecBuilder(
+      builder: (context, spec) {
+        return createZBoxSpecWidget(spec: spec, children: children);
+      },
+      wrappedSpec: this,
+    );
   }
 }

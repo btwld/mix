@@ -2,23 +2,26 @@ import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
-import '../../core/widget_spec.dart';
-import '../../core/style.dart' show Style;
+import '../../core/style.dart' show Style, VariantStyle;
 import '../../core/utility.dart';
+import '../../core/utility_variant_mixin.dart';
+import '../../core/widget_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/painting/color_util.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../properties/painting/shadow_util.dart';
+import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
-import 'icon_style.dart';
 import 'icon_spec.dart';
+import 'icon_style.dart';
 
 /// Provides mutable utility for icon styling with cascade notation support.
 ///
 /// Supports the same API as [IconStyle] but maintains mutable internal state
 /// enabling fluid styling: `$icon..color(Colors.blue)..size(24)..weight(400)`.
-class IconSpecUtility extends StyleMutableBuilder<IconSpec> {
+class IconSpecUtility extends StyleMutableBuilder<IconSpec>
+    with UtilityVariantMixin<IconSpec, IconStyle> {
   late final color = ColorUtility<IconStyle>(
     (prop) => mutable.merge(IconStyle.create(color: prop)),
   );
@@ -27,6 +30,10 @@ class IconSpecUtility extends StyleMutableBuilder<IconSpec> {
 
   late final textDirection = MixUtility(mutable.textDirection);
 
+  @Deprecated(
+    'Use direct methods like \$icon.onHovered() instead. '
+    'Note: Returns IconStyle for consistency with other utility methods like animate().',
+  )
   late final on = OnContextVariantUtility<IconSpec, IconStyle>(
     (v) => mutable.variants([v]),
   );
@@ -63,6 +70,16 @@ class IconSpecUtility extends StyleMutableBuilder<IconSpec> {
   IconStyle animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
+  IconStyle withVariant(Variant variant, IconStyle style) {
+    return mutable.variant(variant, style);
+  }
+
+  @override
+  IconStyle withVariants(List<VariantStyle<IconSpec>> variants) {
+    return mutable.variants(variants);
+  }
+
+  @override
   IconSpecUtility merge(Style<IconSpec>? other) {
     if (other == null) return this;
     // Always create new instance (StyleAttribute contract)
@@ -80,6 +97,9 @@ class IconSpecUtility extends StyleMutableBuilder<IconSpec> {
   WidgetSpec<IconSpec> resolve(BuildContext context) {
     return mutable.resolve(context);
   }
+
+  @override
+  IconStyle get currentValue => mutable.value;
 
   /// The accumulated [IconStyle] with all applied styling properties.
   @override

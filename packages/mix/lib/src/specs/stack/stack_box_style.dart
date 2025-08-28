@@ -11,7 +11,6 @@ import '../../properties/layout/constraints_mix.dart';
 import '../../properties/layout/constraints_mixin.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/layout/spacing_mixin.dart';
-import '../../properties/layout/stack_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
 import '../../properties/painting/border_radius_util.dart';
 import '../../properties/painting/decoration_mix.dart';
@@ -19,10 +18,11 @@ import '../../properties/painting/decoration_mixin.dart';
 import '../../properties/transform_mixin.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
-import '../box/box_mix.dart';
 import '../box/box_spec.dart';
+import '../box/box_style.dart';
 import 'stack_box_spec.dart';
 import 'stack_spec.dart';
+import 'stack_style.dart';
 
 typedef StackBoxMix = StackBoxStyle;
 
@@ -42,22 +42,53 @@ class StackBoxStyle extends Style<ZBoxSpec>
         SpacingMixin<StackBoxStyle>,
         TransformMixin<StackBoxStyle>,
         ConstraintsMixin<StackBoxStyle> {
-  final Prop<BoxSpec>? $box;
-  final Prop<StackSpec>? $stack;
+  final Prop<WidgetSpec<BoxSpec>>? $box;
+  final Prop<WidgetSpec<StackSpec>>? $stack;
 
   StackBoxStyle({
-    BoxMix? box,
-    StackMix? stack,
+    // Box properties
+    DecorationMix? decoration,
+    DecorationMix? foregroundDecoration,
+    EdgeInsetsGeometryMix? padding,
+    EdgeInsetsGeometryMix? margin,
+    AlignmentGeometry? alignment,
+    BoxConstraintsMix? constraints,
+    Matrix4? transform,
+    AlignmentGeometry? transformAlignment,
+    Clip? clipBehavior,
+    // Stack properties
+    AlignmentGeometry? stackAlignment,
+    StackFit? fit,
+    Clip? stackClipBehavior,
+    // Style properties
     super.modifier,
     super.animation,
     super.variants,
     super.inherit,
-  }) : $box = Prop.maybeMix(box),
-       $stack = Prop.maybeMix(stack);
+  }) : $box = Prop.maybeMix(
+         BoxStyle(
+           alignment: alignment,
+           padding: padding,
+           margin: margin,
+           constraints: constraints,
+           decoration: decoration,
+           foregroundDecoration: foregroundDecoration,
+           transform: transform,
+           transformAlignment: transformAlignment,
+           clipBehavior: clipBehavior,
+         ),
+       ),
+       $stack = Prop.maybeMix(
+         StackStyle(
+           alignment: stackAlignment,
+           fit: fit,
+           clipBehavior: stackClipBehavior,
+         ),
+       );
 
   const StackBoxStyle.create({
-    Prop<BoxSpec>? box,
-    Prop<StackSpec>? stack,
+    Prop<WidgetSpec<BoxSpec>>? box,
+    Prop<WidgetSpec<StackSpec>>? stack,
     super.modifier,
     super.animation,
     super.variants,
@@ -65,29 +96,6 @@ class StackBoxStyle extends Style<ZBoxSpec>
     super.inherit,
   }) : $box = box,
        $stack = stack;
-
-  /// Named constructor that accepts a [ZBoxSpec] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [ZBoxSpec] instances to [StackBoxStyle].
-  ///
-  /// ```dart
-  /// const spec = ZBoxSpec(box: BoxSpec(...), stack: StackSpec(...));
-  /// final attr = StackBoxStyle.value(spec);
-  /// ```
-  StackBoxStyle.value(ZBoxSpec spec)
-    : this.create(box: Prop.maybe(spec.box), stack: Prop.value(spec.stack));
-
-  /// Constructor that accepts a nullable [ZBoxSpec] value and extracts its properties.
-  ///
-  /// Returns null if the input is null, otherwise uses [StackBoxStyle.value].
-  ///
-  /// ```dart
-  /// const ZBoxSpec? spec = ZBoxSpec(box: BoxSpec(...), stack: StackSpec(...));
-  /// final attr = StackBoxStyle.maybeValue(spec); // Returns StackBoxStyle or null
-  /// ```
-  static StackBoxStyle? maybeValue(ZBoxSpec? spec) {
-    return spec != null ? StackBoxStyle.value(spec) : null;
-  }
 
   /// Sets animation
   StackBoxStyle animate(AnimationConfig animation) {
@@ -113,39 +121,37 @@ class StackBoxStyle extends Style<ZBoxSpec>
   /// Padding instance method - delegates to box
   @override
   StackBoxStyle padding(EdgeInsetsGeometryMix value) {
-    return merge(StackBoxStyle(box: BoxMix(padding: value)));
+    return merge(StackBoxStyle(padding: value));
   }
 
   /// Margin instance method - delegates to box
   @override
   StackBoxStyle margin(EdgeInsetsGeometryMix value) {
-    return merge(StackBoxStyle(box: BoxMix(margin: value)));
+    return merge(StackBoxStyle(margin: value));
   }
 
   /// Transform instance method - delegates to box
   @override
   StackBoxStyle transform(Matrix4 value) {
-    return merge(StackBoxStyle(box: BoxMix(transform: value)));
+    return merge(StackBoxStyle(transform: value));
   }
 
   /// Decoration instance method - delegates to box
   @override
   StackBoxStyle decoration(DecorationMix value) {
-    return merge(StackBoxStyle(box: BoxMix(decoration: value)));
+    return merge(StackBoxStyle(decoration: value));
   }
 
   /// Constraints instance method - delegates to box
   @override
   StackBoxStyle constraints(BoxConstraintsMix value) {
-    return merge(StackBoxStyle(box: BoxMix(constraints: value)));
+    return merge(StackBoxStyle(constraints: value));
   }
 
   /// Border radius instance method - delegates to box
   @override
   StackBoxStyle borderRadius(BorderRadiusGeometryMix value) {
-    return merge(
-      StackBoxStyle(box: BoxMix(decoration: DecorationMix.borderRadius(value))),
-    );
+    return merge(StackBoxStyle(decoration: DecorationMix.borderRadius(value)));
   }
 
   /// Resolves to [ZBoxSpec] using the provided [BuildContext].
@@ -214,11 +220,11 @@ class StackBoxStyle extends Style<ZBoxSpec>
 /// This class provides methods to set individual properties of a [ZBoxSpec].
 /// Use the methods of this class to configure specific properties of a [ZBoxSpec].
 class StackBoxSpecUtility {
-  /// Utility for defining [StackBoxStyle.box] (BoxMix)
-  final box = BoxMix();
+  /// Utility for defining [StackBoxStyle] box properties
+  final box = BoxStyle();
 
   /// Utility for defining [StackBoxStyle.stack]
-  final stack = StackMix();
+  final stack = StackStyle();
 
   StackBoxSpecUtility();
 
@@ -226,15 +232,36 @@ class StackBoxSpecUtility {
 
   /// Returns a new [StackBoxStyle] with the specified properties.
   StackBoxStyle only({
-    BoxMix? box,
-    StackMix? stack,
+    // Box properties
+    DecorationMix? decoration,
+    EdgeInsetsGeometryMix? padding,
+    EdgeInsetsGeometryMix? margin,
+    BoxConstraintsMix? constraints,
+    AlignmentGeometry? alignment,
+    Matrix4? transform,
+    AlignmentGeometry? transformAlignment,
+    Clip? clipBehavior,
+    // Stack properties
+    AlignmentGeometry? stackAlignment,
+    StackFit? fit,
+    Clip? stackClipBehavior,
+    // Style properties
     ModifierConfig? modifier,
     AnimationConfig? animation,
     List<VariantStyle<ZBoxSpec>>? variants,
   }) {
     return StackBoxStyle(
-      box: box,
-      stack: stack,
+      decoration: decoration,
+      padding: padding,
+      margin: margin,
+      alignment: alignment,
+      constraints: constraints,
+      transform: transform,
+      transformAlignment: transformAlignment,
+      clipBehavior: clipBehavior,
+      stackAlignment: stackAlignment,
+      fit: fit,
+      stackClipBehavior: stackClipBehavior,
       modifier: modifier,
       animation: animation,
       variants: variants,

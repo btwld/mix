@@ -1,8 +1,10 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/style_widget.dart';
-import 'box_spec.dart';
+import '../../core/widget_spec.dart';
+import '../../core/style_builder.dart';
 import 'box_style.dart';
+import 'box_spec.dart';
 
 /// A styled box widget using Mix framework.
 ///
@@ -42,5 +44,16 @@ typedef StyledContainer = Box;
 extension BoxSpecWidget on BoxSpec {
   Container call({Widget? child}) {
     return createBoxSpecWidget(spec: this, child: child);
+  }
+}
+
+extension BoxSpecWrappedWidget on WidgetSpec<BoxSpec> {
+  Widget call({Widget? child}) {
+    return WidgetSpecBuilder(
+      builder: (context, spec) {
+        return createBoxSpecWidget(spec: spec, child: child);
+      },
+      wrappedSpec: this,
+    );
   }
 }

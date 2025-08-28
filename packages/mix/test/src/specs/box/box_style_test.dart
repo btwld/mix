@@ -161,36 +161,8 @@ void main() {
         expect(boxMix.$clipBehavior, isNotNull);
       });
 
-      test('value constructor creates BoxMix from BoxSpec', () {
-        final spec = BoxSpec(
-          alignment: Alignment.bottomRight,
-          padding: EdgeInsets.all(12.0),
-          margin: EdgeInsets.symmetric(horizontal: 8.0),
-          clipBehavior: Clip.antiAliasWithSaveLayer,
-        );
 
-        final boxMix = BoxStyle.value(spec);
 
-        expect(boxMix.$alignment, isNotNull);
-        expect(boxMix.$alignment, resolvesTo(Alignment.bottomRight));
-        expect(boxMix.$padding, isNotNull);
-        expect(boxMix.$margin, isNotNull);
-        expect(boxMix.$clipBehavior, isNotNull);
-        expect(boxMix.$clipBehavior, resolvesTo(Clip.antiAliasWithSaveLayer));
-      });
-
-      test('maybeValue returns null for null input', () {
-        final result = BoxStyle.maybeValue(null);
-        expect(result, isNull);
-      });
-
-      test('maybeValue returns BoxMix for non-null input', () {
-        final spec = BoxSpec(alignment: Alignment.center);
-        final result = BoxStyle.maybeValue(spec);
-
-        expect(result, isNotNull);
-        expect(result!.$alignment, isNotNull);
-      });
     });
 
     group('Instance Methods', () {

@@ -2,24 +2,27 @@ import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
-import '../../core/widget_spec.dart';
-import '../../core/style.dart' show Style;
+import '../../core/style.dart' show Style, VariantStyle;
 import '../../core/utility.dart';
+import '../../core/utility_variant_mixin.dart';
+import '../../core/widget_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/painting/color_util.dart';
 import '../../properties/typography/strut_style_util.dart';
 import '../../properties/typography/text_height_behavior_util.dart';
 import '../../properties/typography/text_style_util.dart';
+import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
-import 'text_style.dart';
 import 'text_spec.dart';
+import 'text_style.dart';
 
 /// Provides mutable utility for text styling with cascade notation support.
 ///
 /// Supports the same API as [TextStyle] but maintains mutable internal state
 /// enabling fluid styling: `$text..color.red()..fontSize(16)`.
-class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
+class TextSpecUtility extends StyleMutableBuilder<TextSpec>
+    with UtilityVariantMixin<TextSpec, TextStyling> {
   late final textOverflow = MixUtility(mutable.overflow);
 
   late final strutStyle = StrutStyleUtility(mutable.strutStyle);
@@ -41,6 +44,10 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
     (prop) => mutable.merge(TextStyling.create(selectionColor: prop)),
   );
   late final locale = MixUtility(mutable.locale);
+  @Deprecated(
+    'Use direct methods like \$text.onHovered() instead. '
+    'Note: Returns TextStyling for consistency with other utility methods like animate().',
+  )
   late final on = OnContextVariantUtility<TextSpec, TextStyling>(
     (v) => mutable.variants([v]),
   );
@@ -80,7 +87,9 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
   }
 
   TextStyling maxLines(int v) => mutable.maxLines(v);
+
   TextStyling softWrap(bool v) => mutable.softWrap(v);
+
   TextStyling semanticsLabel(String v) => mutable.semanticsLabel(v);
 
   /// Makes the text bold by setting font weight to bold.
@@ -91,6 +100,16 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
 
   /// Applies animation configuration to the text styling.
   TextStyling animate(AnimationConfig animation) => mutable.animate(animation);
+
+  @override
+  TextStyling withVariant(Variant variant, TextStyling style) {
+    return mutable.variant(variant, style);
+  }
+
+  @override
+  TextStyling withVariants(List<VariantStyle<TextSpec>> variants) {
+    return mutable.variants(variants);
+  }
 
   @override
   TextSpecUtility merge(Style<TextSpec>? other) {
@@ -110,6 +129,9 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
   WidgetSpec<TextSpec> resolve(BuildContext context) {
     return mutable.resolve(context);
   }
+
+  @override
+  TextStyling get currentValue => mutable.value;
 
   /// The accumulated [TextStyle] with all applied styling properties.
   @override

@@ -1,31 +1,32 @@
 import 'package:flutter/material.dart';
 
-import '../specs/icon/icon_mix.dart';
+import '../specs/icon/icon_style.dart';
 
 class IconScope extends StatelessWidget {
   const IconScope({required this.icon, required this.child, super.key});
 
-  static IconMix? maybeOf(BuildContext context) {
+  static IconStyle? maybeOf(BuildContext context) {
     final inheritedWidget = context
         .dependOnInheritedWidgetOfExactType<_IconInheritedWidget>();
 
     return inheritedWidget?.icon;
   }
 
-  static IconMix of(BuildContext context) {
-    final IconMix? result = maybeOf(context);
+  static IconStyle of(BuildContext context) {
+    final IconStyle? result = maybeOf(context);
     assert(result != null, 'No IconScope found in context');
 
     return result!;
   }
 
-  final IconMix icon;
+  final IconStyle icon;
 
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    final spec = icon.resolve(context);
+    final widgetSpec = icon.resolve(context);
+    final spec = widgetSpec.spec;
 
     return _IconInheritedWidget(
       icon: icon,
@@ -50,7 +51,7 @@ class IconScope extends StatelessWidget {
 class _IconInheritedWidget extends InheritedWidget {
   const _IconInheritedWidget({required this.icon, required super.child});
 
-  final IconMix icon;
+  final IconStyle icon;
 
   @override
   bool updateShouldNotify(_IconInheritedWidget oldWidget) {

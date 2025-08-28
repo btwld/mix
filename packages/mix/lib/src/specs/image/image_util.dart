@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
 
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
-import '../../core/widget_spec.dart';
 import '../../core/style.dart' show Style;
+import '../../core/style.dart' show VariantStyle;
 import '../../core/utility.dart';
+import '../../core/utility_variant_mixin.dart';
+import '../../core/widget_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/painting/color_util.dart';
+import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
-import 'image_style.dart';
 import 'image_spec.dart';
+import 'image_style.dart';
 
 /// Provides mutable utility for image styling with cascade notation support.
 ///
 /// Supports the same API as [ImageStyle] but maintains mutable internal state
 /// enabling fluid styling: `$image..width(100)..height(100)..fit(BoxFit.cover)`.
-class ImageSpecUtility extends StyleMutableBuilder<ImageSpec> {
+class ImageSpecUtility extends StyleMutableBuilder<ImageSpec>
+    with UtilityVariantMixin<ImageSpec, ImageStyle> {
   late final color = ColorUtility(
     (prop) => mutable.merge(ImageStyle.create(color: prop)),
   );
@@ -32,6 +36,10 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageSpec> {
 
   late final colorBlendMode = MixUtility(mutable.colorBlendMode);
 
+  @Deprecated(
+    'Use direct methods like \$image.onHovered() instead. '
+    'Note: Returns ImageStyle for consistency with other utility methods like animate().',
+  )
   late final on = OnContextVariantUtility<ImageSpec, ImageStyle>(
     (v) => mutable.variants([v]),
   );
@@ -65,6 +73,16 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageSpec> {
   }
 
   @override
+  ImageStyle withVariant(Variant variant, ImageStyle style) {
+    return mutable.variant(variant, style);
+  }
+
+  @override
+  ImageStyle withVariants(List<VariantStyle<ImageSpec>> variants) {
+    return mutable.variants(variants);
+  }
+
+  @override
   ImageSpecUtility merge(Style<ImageSpec>? other) {
     if (other == null) return this;
     // Always create new instance (StyleAttribute contract)
@@ -82,6 +100,9 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageSpec> {
   WidgetSpec<ImageSpec> resolve(BuildContext context) {
     return mutable.resolve(context);
   }
+
+  @override
+  ImageStyle get currentValue => mutable.value;
 
   /// The accumulated [ImageStyle] with all applied styling properties.
   @override
