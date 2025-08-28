@@ -12,19 +12,16 @@ final chipButtonLabel = TextMix(
     textAlign: TextAlign.center,
 );
 
-final chipButtonContainer = Style.box(
+final chipButtonContainer = BoxStyle()
     .height(40)
     .width(120)
     .color(Colors.blue)
     .borderRadius(.circular(20))
-    .onHovered(.color(Colors.blue.shade700))
-    .onSelected(.color(Colors.black))
+    .onHovered(BoxStyle().color(Colors.blue.shade700))
+    .onSelected(BoxStyle().color(Colors.black))
     .alignment(.center)
-    .wrap(
-      .defaultText(chipButtonLabel)
-    )
-    .animate(.easeInOut(300.ms))
-);
+    .wrap(.defaultText(chipButtonLabel))
+    .animate(.easeInOut(300.ms));
 
  
 

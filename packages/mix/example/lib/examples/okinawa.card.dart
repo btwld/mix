@@ -34,64 +34,53 @@ class OkinawaCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final boxStyle = Style.box(
-      BoxStyle()
-          .height(200)
-          .width(200)
-          .borderRadius(BorderRadiusMix.circular(10))
-          .border(
-            BoxBorderMix.all(
-              BorderSideMix.color(
-                Colors.white,
-              ).width(6).strokeAlign(BorderSide.strokeAlignOutside),
-            ),
-          )
-          .clipBehavior(Clip.antiAlias)
-          .color(Colors.blueGrey.shade50)
-          .shadow(
-            BoxShadowMix.color(
-              Colors.black.withValues(alpha: 0.15),
-            ).blurRadius(100).offset(const Offset(0, 0)),
+    final boxStyle = BoxStyle()
+        .height(200)
+        .width(200)
+        .borderRadius(BorderRadiusMix.circular(10))
+        .border(
+          BoxBorderMix.all(
+            BorderSideMix.color(
+              Colors.white,
+            ).width(6).strokeAlign(BorderSide.strokeAlignOutside),
           ),
-    );
-
-    final vBoxStyle = FlexBoxStyle()
-        .box(
-          BoxMix()
-              .padding(EdgeInsetsMix.all(8))
-              .width(double.infinity)
-              .color(Colors.black.withValues(alpha: 0.1)),
         )
-        .flex(
-          FlexMix()
-              .mainAxisSize(MainAxisSize.min)
-              .crossAxisAlignment(CrossAxisAlignment.start),
+        .clipBehavior(Clip.antiAlias)
+        .color(Colors.blueGrey.shade50)
+        .shadow(
+          BoxShadowMix.color(
+            Colors.black.withValues(alpha: 0.15),
+          ).blurRadius(100).offset(const Offset(0, 0)),
         );
 
-    final zbox = StackBoxStyle()
-        .stack(StackMix().alignment(Alignment.bottomCenter))
-        .box(
-          BoxMix()
-              .transformAlignment(Alignment.center)
-              .clipBehavior(Clip.antiAlias)
-              .constraints(BoxConstraintsMix.square(0))
-              .merge(BoxMix())
-              .transform(Matrix4.identity())
-              .alignment(Alignment.center)
-              .margin(EdgeInsetsMix.zero)
-              .padding(EdgeInsetsMix.zero),
-        )
-        .onHovered(StackBoxStyle().box(BoxMix().transform(Matrix4.identity())));
-
-    final titleStyle = Style.text(
-      TextStyling.color(Colors.white).fontWeight(FontWeight.bold).fontSize(16),
+    final vBoxStyle = FlexBoxStyle(
+      padding: EdgeInsetsMix.all(8),
+      constraints: BoxConstraintsMix.width(double.infinity),
+      decoration: BoxDecorationMix.color(Colors.black.withValues(alpha: 0.1)),
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
     );
 
-    final subtitleStyle = Style.text(
-      TextStyling.color(Colors.white70).fontSize(14),
-    );
+    final zbox = StackBoxStyle(
+      stack: StackMix().alignment(Alignment.bottomCenter),
+      box: BoxMix()
+          .transformAlignment(Alignment.center)
+          .clipBehavior(Clip.antiAlias)
+          .constraints(BoxConstraintsMix.square(0))
+          .transform(Matrix4.identity())
+          .alignment(Alignment.center)
+          .margin(EdgeInsetsMix.zero)
+          .padding(EdgeInsetsMix.zero),
+    ).onHovered(StackBoxStyle(box: BoxMix().transform(Matrix4.identity())));
 
-    final imageStyle = Style.image(ImageStyle().fit(BoxFit.cover));
+    final titleStyle = TextStyling()
+        .color(Colors.white)
+        .fontWeight(FontWeight.bold)
+        .fontSize(16);
+
+    final subtitleStyle = TextStyling().color(Colors.white70).fontSize(14);
+
+    final imageStyle = ImageStyle().fit(BoxFit.cover);
 
     return Box(
       style: boxStyle,
