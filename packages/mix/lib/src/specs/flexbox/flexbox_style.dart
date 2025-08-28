@@ -19,7 +19,6 @@ import '../../properties/painting/decoration_mixin.dart';
 import '../../properties/transform_mixin.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
-import '../../core/prop_source.dart';
 import '../box/box_mix.dart';
 import '../box/box_spec.dart';
 import '../flex/flex_mix.dart';
@@ -47,41 +46,78 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
   final Prop<BoxSpec>? $box;
   final Prop<FlexSpec>? $flex;
 
+  /// Main constructor with individual property parameters
   FlexBoxStyle({
-    BoxMix? box,
-    FlexMix? flex,
-    super.animation,
-    super.modifier,
-    super.variants,
+    // Box properties
+    DecorationMix? decoration,
+    DecorationMix? foregroundDecoration,
+    EdgeInsetsGeometryMix? padding,
+    EdgeInsetsGeometryMix? margin,
+    AlignmentGeometry? alignment,
+    BoxConstraintsMix? constraints,
+    Matrix4? transform,
+    AlignmentGeometry? transformAlignment,
+    Clip? clipBehavior,
+    // Flex properties
+    Axis? direction,
+    MainAxisAlignment? mainAxisAlignment,
+    CrossAxisAlignment? crossAxisAlignment,
+    MainAxisSize? mainAxisSize,
+    VerticalDirection? verticalDirection,
+    TextDirection? textDirection,
+    TextBaseline? textBaseline,
+    Clip? flexClipBehavior,
+    double? spacing,
+    // Style properties
+    AnimationConfig? animation,
+    ModifierConfig? modifier,
+    List<VariantStyle<FlexBoxSpec>>? variants,
+    bool? inherit,
+  }) : this.create(
+         box: Prop.maybeMix(
+           BoxMix(
+             decoration: decoration,
+             foregroundDecoration: foregroundDecoration,
+             padding: padding,
+             margin: margin,
+             alignment: alignment,
+             constraints: constraints,
+             transform: transform,
+             transformAlignment: transformAlignment,
+             clipBehavior: clipBehavior,
+           ),
+         ),
+         flex: Prop.maybeMix(
+           FlexMix(
+             direction: direction,
+             mainAxisAlignment: mainAxisAlignment,
+             crossAxisAlignment: crossAxisAlignment,
+             mainAxisSize: mainAxisSize,
+             verticalDirection: verticalDirection,
+             textDirection: textDirection,
+             textBaseline: textBaseline,
+             clipBehavior: flexClipBehavior,
+             spacing: spacing,
+           ),
+         ),
+         animation: animation,
+         modifier: modifier,
+         variants: variants,
+         inherit: inherit,
+       );
 
-    super.inherit,
-  }) : $box = Prop.maybeMix(box),
-       $flex = Prop.maybeMix(flex);
-
+  /// Create constructor with Prop`<T>` types for internal use
   const FlexBoxStyle.create({
     Prop<BoxSpec>? box,
     Prop<FlexSpec>? flex,
     super.animation,
     super.modifier,
     super.variants,
-
     super.inherit,
   }) : $box = box,
        $flex = flex;
 
-
-  /// Factory constructor to create FlexBoxStyle from FlexBoxMix.
-  static FlexBoxStyle from(FlexBoxMix mix) {
-    final boxMixSource = mix.$box?.sources.whereType<MixSource<BoxSpec>>().firstOrNull;
-    final flexMixSource = mix.$flex?.sources.whereType<MixSource<FlexSpec>>().firstOrNull;
-    
-    return FlexBoxStyle(
-      box: boxMixSource?.mix as BoxMix?,
-      flex: flexMixSource?.mix as FlexMix?,
-    );
-  }
-
-  /// Constructor that accepts a [FlexBoxSpec] value and extracts its properties.
+  /// Named constructor that accepts a [FlexBoxSpec] value and extracts its properties.
   ///
   /// This is useful for converting existing [FlexBoxSpec] instances to [FlexBoxStyle].
   ///
@@ -89,11 +125,15 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
   /// const spec = FlexBoxWidgetSpec(box: BoxSpec(...), flex: FlexProperties(...));
   /// final attr = FlexBoxStyle.value(spec);
   /// ```
-  static FlexBoxStyle value(FlexBoxSpec spec) {
-    return FlexBoxStyle(
-      box: BoxMix.maybeValue(spec.box),
-      flex: FlexMix.maybeValue(spec.flex),
-    );
+  FlexBoxStyle.value(FlexBoxSpec spec)
+    : this.create(
+        box: Prop.maybeMix(BoxMix.maybeValue(spec.box)),
+        flex: Prop.maybeMix(FlexMix.maybeValue(spec.flex)),
+      );
+
+  /// Factory constructor to create FlexBoxStyle from FlexBoxMix.
+  static FlexBoxStyle from(FlexBoxMix mix) {
+    return FlexBoxStyle.create(box: mix.$box, flex: mix.$flex);
   }
 
   /// Constructor that accepts a nullable [FlexBoxSpec] value and extracts its properties.
@@ -108,16 +148,6 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
     return spec != null ? FlexBoxStyle.value(spec) : null;
   }
 
-  /// Sets box properties
-  FlexBoxStyle box(BoxMix value) {
-    return merge(FlexBoxStyle(box: value));
-  }
-
-  /// Sets flex properties
-  FlexBoxStyle flex(FlexMix value) {
-    return merge(FlexBoxStyle(flex: value));
-  }
-
   /// Sets animation
   FlexBoxStyle animate(AnimationConfig animation) {
     return merge(FlexBoxStyle(animation: animation));
@@ -126,61 +156,61 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
   // BoxMix instance methods
 
   FlexBoxStyle alignment(AlignmentGeometry value) {
-    return merge(FlexBoxStyle(box: BoxMix(alignment: value)));
+    return merge(FlexBoxStyle(alignment: value));
   }
 
   /// Foreground decoration instance method
   FlexBoxStyle foregroundDecoration(DecorationMix value) {
-    return merge(FlexBoxStyle(box: BoxMix(foregroundDecoration: value)));
+    return merge(FlexBoxStyle(foregroundDecoration: value));
   }
 
   FlexBoxStyle transformAlignment(AlignmentGeometry value) {
-    return merge(FlexBoxStyle(box: BoxMix(transformAlignment: value)));
+    return merge(FlexBoxStyle(transformAlignment: value));
   }
 
   FlexBoxStyle clipBehavior(Clip value) {
-    return merge(FlexBoxStyle(box: BoxMix(clipBehavior: value)));
+    return merge(FlexBoxStyle(clipBehavior: value));
   }
 
   // FlexMix instance methods
   /// Sets flex direction
   FlexBoxStyle direction(Axis value) {
-    return merge(FlexBoxStyle(flex: FlexMix(direction: value)));
+    return merge(FlexBoxStyle(direction: value));
   }
 
   /// Sets main axis alignment
   FlexBoxStyle mainAxisAlignment(MainAxisAlignment value) {
-    return merge(FlexBoxStyle(flex: FlexMix(mainAxisAlignment: value)));
+    return merge(FlexBoxStyle(mainAxisAlignment: value));
   }
 
   /// Sets cross axis alignment
   FlexBoxStyle crossAxisAlignment(CrossAxisAlignment value) {
-    return merge(FlexBoxStyle(flex: FlexMix(crossAxisAlignment: value)));
+    return merge(FlexBoxStyle(crossAxisAlignment: value));
   }
 
   /// Sets main axis size
   FlexBoxStyle mainAxisSize(MainAxisSize value) {
-    return merge(FlexBoxStyle(flex: FlexMix(mainAxisSize: value)));
+    return merge(FlexBoxStyle(mainAxisSize: value));
   }
 
   /// Sets vertical direction
   FlexBoxStyle verticalDirection(VerticalDirection value) {
-    return merge(FlexBoxStyle(flex: FlexMix(verticalDirection: value)));
+    return merge(FlexBoxStyle(verticalDirection: value));
   }
 
   /// Sets text direction
   FlexBoxStyle textDirection(TextDirection value) {
-    return merge(FlexBoxStyle(flex: FlexMix(textDirection: value)));
+    return merge(FlexBoxStyle(textDirection: value));
   }
 
   /// Sets text baseline
   FlexBoxStyle textBaseline(TextBaseline value) {
-    return merge(FlexBoxStyle(flex: FlexMix(textBaseline: value)));
+    return merge(FlexBoxStyle(textBaseline: value));
   }
 
   /// Sets spacing
   FlexBoxStyle spacing(double value) {
-    return merge(FlexBoxStyle(flex: FlexMix(spacing: value)));
+    return merge(FlexBoxStyle(spacing: value));
   }
 
   /// Sets gap
@@ -189,7 +219,7 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
     'This feature was deprecated after Mix v2.0.0.',
   )
   FlexBoxStyle gap(double value) {
-    return merge(FlexBoxStyle(flex: FlexMix(spacing: value)));
+    return merge(FlexBoxStyle(spacing: value));
   }
 
   FlexBoxStyle modifier(ModifierConfig value) {
@@ -199,30 +229,30 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
   /// Padding instance method
   @override
   FlexBoxStyle padding(EdgeInsetsGeometryMix value) {
-    return merge(FlexBoxStyle(box: BoxMix(padding: value)));
+    return merge(FlexBoxStyle(padding: value));
   }
 
   /// Margin instance method
   @override
   FlexBoxStyle margin(EdgeInsetsGeometryMix value) {
-    return merge(FlexBoxStyle(box: BoxMix(margin: value)));
+    return merge(FlexBoxStyle(margin: value));
   }
 
   @override
   FlexBoxStyle transform(Matrix4 value) {
-    return merge(FlexBoxStyle(box: BoxMix(transform: value)));
+    return merge(FlexBoxStyle(transform: value));
   }
 
   /// Decoration instance method - delegates to box
   @override
   FlexBoxStyle decoration(DecorationMix value) {
-    return merge(FlexBoxStyle(box: BoxMix(decoration: value)));
+    return merge(FlexBoxStyle(decoration: value));
   }
 
   /// Constraints instance method
   @override
   FlexBoxStyle constraints(BoxConstraintsMix value) {
-    return merge(FlexBoxStyle(box: BoxMix(constraints: value)));
+    return merge(FlexBoxStyle(constraints: value));
   }
 
   /// Modifier instance method
@@ -245,7 +275,7 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
   @override
   FlexBoxStyle borderRadius(BorderRadiusGeometryMix value) {
     return merge(
-      FlexBoxStyle(box: BoxMix(decoration: DecorationMix.borderRadius(value))),
+      FlexBoxStyle(decoration: DecorationMix.borderRadius(value)),
     );
   }
 

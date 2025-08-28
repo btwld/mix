@@ -20,7 +20,7 @@ void main() {
 
       test('', () {
         final flexBoxMix = FlexBoxStyle(
-          flex: FlexMix(direction: Axis.horizontal),
+          direction: Axis.horizontal,
         );
         final utility = FlexBoxSpecUtility(flexBoxMix);
         final context = MockBuildContext();
@@ -215,7 +215,7 @@ void main() {
 
       test('', () {
         final other = FlexBoxSpecUtility(
-          FlexBoxStyle(flex: FlexMix(direction: Axis.horizontal)),
+          FlexBoxStyle(direction: Axis.horizontal),
         );
         final result = util.merge(other);
 
@@ -224,7 +224,7 @@ void main() {
       });
 
       test('', () {
-        final otherMix = FlexBoxStyle(flex: FlexMix(spacing: 8.0));
+        final otherMix = FlexBoxStyle(spacing: 8.0);
         final result = util.merge(otherMix);
 
         expect(result, isNot(same(util)));
@@ -240,14 +240,12 @@ void main() {
 
       test('merge combines properties correctly', () {
         final util1 = FlexBoxSpecUtility(
-          FlexBoxStyle(flex: FlexMix(direction: Axis.horizontal)),
+          FlexBoxStyle(direction: Axis.horizontal),
         );
         final other = FlexBoxSpecUtility(
           FlexBoxStyle(
-            flex: FlexMix(
-              spacing: 8.0,
-              mainAxisAlignment: MainAxisAlignment.center,
-            ),
+            spacing: 8.0,
+            mainAxisAlignment: MainAxisAlignment.center,
           ),
         );
 
@@ -265,11 +263,9 @@ void main() {
       test('', () {
         final testUtil = FlexBoxSpecUtility(
           FlexBoxStyle(
-            flex: FlexMix(
-              direction: Axis.vertical,
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 12.0,
-            ),
+            direction: Axis.vertical,
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 12.0,
           ),
         );
 
@@ -432,11 +428,9 @@ void main() {
       test('', () {
         final testUtil = FlexBoxSpecUtility(
           FlexBoxStyle(
-            flex: FlexMix(
-              direction: Axis.horizontal,
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 8.0,
-            ),
+            direction: Axis.horizontal,
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 8.0,
           ),
         );
 
@@ -447,6 +441,7 @@ void main() {
               (w) => w.spec,
               'spec',
               const FlexBoxSpec(
+                box: BoxSpec(), // Empty BoxSpec instead of null
                 flex: FlexSpec(
                   direction: Axis.horizontal,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -465,8 +460,8 @@ void main() {
         final context = MockBuildContext(tokens: {gapToken.defineValue(24.0)});
 
         final testUtil = FlexBoxSpecUtility(
-          FlexBoxStyle(
-            flex: FlexMix.create(spacing: Prop.token(gapToken)),
+          FlexBoxStyle.create(
+            flex: Prop.maybeMix(FlexMix.create(spacing: Prop.token(gapToken))),
           ),
         );
         final spec = testUtil.resolve(context);
@@ -491,14 +486,14 @@ void main() {
 
       test('handles multiple merges correctly', () {
         final util1 = FlexBoxSpecUtility(
-          FlexBoxStyle(flex: FlexMix(direction: Axis.horizontal)),
+          FlexBoxStyle(direction: Axis.horizontal),
         );
         final util2 = FlexBoxSpecUtility(
-          FlexBoxStyle(flex: FlexMix(spacing: 8.0)),
+          FlexBoxStyle(spacing: 8.0),
         );
         final util3 = FlexBoxSpecUtility(
           FlexBoxStyle(
-            flex: FlexMix(mainAxisAlignment: MainAxisAlignment.center),
+            mainAxisAlignment: MainAxisAlignment.center,
           ),
         );
 
@@ -521,7 +516,7 @@ void main() {
 
       test('merge with self returns new instance', () {
         final testUtil = FlexBoxSpecUtility(
-          FlexBoxStyle(flex: FlexMix(direction: Axis.horizontal)),
+          FlexBoxStyle(direction: Axis.horizontal),
         );
         final result = testUtil.merge(testUtil);
         final context = MockBuildContext();

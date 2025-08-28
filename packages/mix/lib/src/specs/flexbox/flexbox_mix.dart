@@ -38,25 +38,65 @@ final class FlexBoxMix extends Mix<FlexBoxSpec>
 
   /// Main constructor with Mix composition
   FlexBoxMix({
-    BoxMix? box,
-    FlexMix? flex,
+    // Box properties
+    DecorationMix? decoration,
+    DecorationMix? foregroundDecoration,
+    EdgeInsetsGeometryMix? padding,
+    EdgeInsetsGeometryMix? margin,
+    AlignmentGeometry? alignment,
+    BoxConstraintsMix? constraints,
+    Matrix4? transform,
+    AlignmentGeometry? transformAlignment,
+    Clip? clipBehavior,
+    // Flex properties
+    Axis? direction,
+    MainAxisAlignment? mainAxisAlignment,
+    CrossAxisAlignment? crossAxisAlignment,
+    MainAxisSize? mainAxisSize,
+    VerticalDirection? verticalDirection,
+    TextDirection? textDirection,
+    TextBaseline? textBaseline,
+    Clip? flexClipBehavior,
+    double? spacing,
   }) : this.create(
-         box: Prop.maybeMix(box),
-         flex: Prop.maybeMix(flex),
+         box: Prop.maybeMix(
+           BoxMix(
+             decoration: decoration,
+             foregroundDecoration: foregroundDecoration,
+             padding: padding,
+             margin: margin,
+             alignment: alignment,
+             constraints: constraints,
+             transform: transform,
+             transformAlignment: transformAlignment,
+             clipBehavior: clipBehavior,
+           ),
+         ),
+         flex: Prop.maybeMix(
+           FlexMix(
+             direction: direction,
+             mainAxisAlignment: mainAxisAlignment,
+             crossAxisAlignment: crossAxisAlignment,
+             mainAxisSize: mainAxisSize,
+             verticalDirection: verticalDirection,
+             textDirection: textDirection,
+             textBaseline: textBaseline,
+             clipBehavior: flexClipBehavior,
+             spacing: spacing,
+           ),
+         ),
        );
 
   /// Create constructor with Prop`<T>` types for internal use
-  const FlexBoxMix.create({
-    Prop<BoxSpec>? box,
-    Prop<FlexSpec>? flex,
-  }) : $box = box,
-       $flex = flex;
+  const FlexBoxMix.create({Prop<BoxSpec>? box, Prop<FlexSpec>? flex})
+    : $box = box,
+      $flex = flex;
 
   /// Factory constructor to create FlexBoxMix from FlexBoxSpec.
   static FlexBoxMix value(FlexBoxSpec spec) {
-    return FlexBoxMix(
-      box: BoxMix.maybeValue(spec.box),
-      flex: FlexMix.maybeValue(spec.flex),
+    return FlexBoxMix.create(
+      box: Prop.maybeMix(BoxMix.maybeValue(spec.box)),
+      flex: Prop.maybeMix(FlexMix.maybeValue(spec.flex)),
     );
   }
 
@@ -69,49 +109,49 @@ final class FlexBoxMix extends Mix<FlexBoxSpec>
 
   // Container/Box instance methods (from BoxMix)
   FlexBoxMix alignment(AlignmentGeometry value) {
-    return merge(FlexBoxMix(box: BoxMix(alignment: value)));
+    return merge(FlexBoxMix(alignment: value));
   }
 
   FlexBoxMix foregroundDecoration(DecorationMix value) {
-    return merge(FlexBoxMix(box: BoxMix(foregroundDecoration: value)));
+    return merge(FlexBoxMix(foregroundDecoration: value));
   }
 
   FlexBoxMix transformAlignment(AlignmentGeometry value) {
-    return merge(FlexBoxMix(box: BoxMix(transformAlignment: value)));
+    return merge(FlexBoxMix(transformAlignment: value));
   }
 
   FlexBoxMix clipBehavior(Clip value) {
-    return merge(FlexBoxMix(box: BoxMix(clipBehavior: value)));
+    return merge(FlexBoxMix(clipBehavior: value));
   }
 
   @override
   FlexBoxMix borderRadius(BorderRadiusGeometryMix value) {
-    return merge(FlexBoxMix(box: BoxMix(decoration: DecorationMix.borderRadius(value))));
+    return merge(FlexBoxMix(decoration: DecorationMix.borderRadius(value)));
   }
 
   @override
   FlexBoxMix padding(EdgeInsetsGeometryMix value) {
-    return merge(FlexBoxMix(box: BoxMix(padding: value)));
+    return merge(FlexBoxMix(padding: value));
   }
 
   @override
   FlexBoxMix margin(EdgeInsetsGeometryMix value) {
-    return merge(FlexBoxMix(box: BoxMix(margin: value)));
+    return merge(FlexBoxMix(margin: value));
   }
 
   @override
   FlexBoxMix transform(Matrix4 value) {
-    return merge(FlexBoxMix(box: BoxMix(transform: value)));
+    return merge(FlexBoxMix(transform: value));
   }
 
   @override
   FlexBoxMix constraints(BoxConstraintsMix value) {
-    return merge(FlexBoxMix(box: BoxMix(constraints: value)));
+    return merge(FlexBoxMix(constraints: value));
   }
 
   @override
   FlexBoxMix decoration(DecorationMix value) {
-    return merge(FlexBoxMix(box: BoxMix(decoration: value)));
+    return merge(FlexBoxMix(decoration: value));
   }
 
   @override
