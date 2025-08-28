@@ -13,27 +13,25 @@ class Example extends StatelessWidget {
   Widget build(BuildContext context) {
 
 
-    final style = Style.box(
+    final style = BoxStyle()
         .width(100)
         .height(100)
-        .color(Colors.blue.shade400 )
-        .onBreakpoint(.xs, .color(Colors.green))
-
+        .color(Colors.blue.shade400)
+        .onBreakpoint(.xs, BoxStyle().color(Colors.green))
         .borderRadius(.circular(16))
         .shadow(
           .color(Colors.black.withValues(alpha: 0.2))
           .blurRadius(20)
         )
-        .wrapDefaultTextStyle( 
+        .wrapDefaultTextStyle(
           .fontSize(16)
           .fontWeight(.bold)
           .color(Colors.white)
         )
-          .wrap(
-            .align(alignment: .center)
-          )
-        .animate(.spring(300.ms))
-    );
+        .wrap(
+          .align(alignment: .center)
+        )
+        .animate(.spring(300.ms));
 
     return Center(
       child: Box(

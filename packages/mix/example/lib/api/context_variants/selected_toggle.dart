@@ -24,7 +24,7 @@ class _ExampleState extends State<Example> {
 
   @override
   Widget build(BuildContext context) {
-    final style = Style.box(
+    final style = BoxStyle()
         .height(60)
         .width(120)
         .borderRadius(.circular(30))
@@ -32,22 +32,21 @@ class _ExampleState extends State<Example> {
         .border(.all(.color(Colors.grey.shade300).width(2)))
         .animate(.spring(300.ms))
         .onSelected(
-          .color(Colors.blue.shade500)
-          .border(.all(.color(Colors.blue.shade600).width(2)))
-          .shadow(
-            .color(Colors.blue.shade200)
-            .blurRadius(10)
-            .spreadRadius(2)
-          )
-        )
-    );
+          BoxStyle()
+            .color(Colors.blue.shade500)
+            .border(.all(.color(Colors.blue.shade600).width(2)))
+            .shadow(
+              .color(Colors.blue.shade200)
+              .blurRadius(10)
+              .spreadRadius(2),
+          ),
+        );
 
-    final textStyle = Style.text(
+    final textStyle = TextStyling()
         .fontSize(16)
         .fontWeight(.w600)
         .color(Colors.grey.shade700)
-        .onSelected(.color(Colors.white))
-    );
+        .onSelected(.color(Colors.white));
 
     return Pressable(
       controller: controller,

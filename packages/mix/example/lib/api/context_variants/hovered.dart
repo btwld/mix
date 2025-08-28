@@ -11,13 +11,12 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = Style.box(
+    final style = BoxStyle()
         .color(Colors.red)
         .height(100)
         .width(100)
         .borderRadius(.all(.circular(10)))
-        .onHovered(.color(Colors.blue))
-    );
+        .onHovered(BoxStyle().color(Colors.blue));
 
     return Box(style: style);
   }
