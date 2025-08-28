@@ -7,7 +7,16 @@ import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/widget_spec.dart';
 import '../../modifiers/modifier_config.dart';
+import '../../properties/layout/constraints_mix.dart';
+import '../../properties/layout/constraints_mixin.dart';
+import '../../properties/layout/edge_insets_geometry_mix.dart';
+import '../../properties/layout/spacing_mixin.dart';
 import '../../properties/layout/stack_mix.dart';
+import '../../properties/painting/border_radius_mix.dart';
+import '../../properties/painting/border_radius_util.dart';
+import '../../properties/painting/decoration_mix.dart';
+import '../../properties/painting/decoration_mixin.dart';
+import '../../properties/transform_mixin.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import '../box/box_mix.dart';
@@ -25,7 +34,14 @@ typedef StackBoxMix = StackBoxStyle;
 /// Use this class to configure the attributes of a [ZBoxSpec] and pass it to
 /// the [ZBoxSpec] constructor.
 class StackBoxStyle extends Style<ZBoxSpec>
-    with Diagnosticable, StyleVariantMixin<StackBoxStyle, ZBoxSpec> {
+    with
+        Diagnosticable,
+        StyleVariantMixin<StackBoxStyle, ZBoxSpec>,
+        BorderRadiusMixin<StackBoxStyle>,
+        DecorationMixin<StackBoxStyle>,
+        SpacingMixin<StackBoxStyle>,
+        TransformMixin<StackBoxStyle>,
+        ConstraintsMixin<StackBoxStyle> {
   final Prop<BoxSpec>? $box;
   final Prop<StackSpec>? $stack;
 
@@ -50,8 +66,7 @@ class StackBoxStyle extends Style<ZBoxSpec>
   }) : $box = box,
        $stack = stack;
 
-
-  /// Constructor that accepts a [ZBoxSpec] value and extracts its properties.
+  /// Named constructor that accepts a [ZBoxSpec] value and extracts its properties.
   ///
   /// This is useful for converting existing [ZBoxSpec] instances to [StackBoxStyle].
   ///
@@ -59,12 +74,8 @@ class StackBoxStyle extends Style<ZBoxSpec>
   /// const spec = ZBoxSpec(box: BoxSpec(...), stack: StackSpec(...));
   /// final attr = StackBoxStyle.value(spec);
   /// ```
-  static StackBoxStyle value(ZBoxSpec spec) {
-    return StackBoxStyle.create(
-      box: Prop.maybe(spec.box),
-      stack: Prop.value(spec.stack),
-    );
-  }
+  StackBoxStyle.value(ZBoxSpec spec)
+    : this.create(box: Prop.maybe(spec.box), stack: Prop.value(spec.stack));
 
   /// Constructor that accepts a nullable [ZBoxSpec] value and extracts its properties.
   ///
@@ -76,16 +87,6 @@ class StackBoxStyle extends Style<ZBoxSpec>
   /// ```
   static StackBoxStyle? maybeValue(ZBoxSpec? spec) {
     return spec != null ? StackBoxStyle.value(spec) : null;
-  }
-
-  /// Sets box properties (BoxMix)
-  StackBoxStyle box(BoxMix value) {
-    return merge(StackBoxStyle(box: value));
-  }
-
-  /// Sets stack properties
-  StackBoxStyle stack(StackMix value) {
-    return merge(StackBoxStyle(stack: value));
   }
 
   /// Sets animation
@@ -105,6 +106,46 @@ class StackBoxStyle extends Style<ZBoxSpec>
   @override
   StackBoxStyle variant(Variant variant, StackBoxStyle style) {
     return merge(StackBoxStyle(variants: [VariantStyle(variant, style)]));
+  }
+
+  // Mixin implementations - delegate to BoxMix
+
+  /// Padding instance method - delegates to box
+  @override
+  StackBoxStyle padding(EdgeInsetsGeometryMix value) {
+    return merge(StackBoxStyle(box: BoxMix(padding: value)));
+  }
+
+  /// Margin instance method - delegates to box
+  @override
+  StackBoxStyle margin(EdgeInsetsGeometryMix value) {
+    return merge(StackBoxStyle(box: BoxMix(margin: value)));
+  }
+
+  /// Transform instance method - delegates to box
+  @override
+  StackBoxStyle transform(Matrix4 value) {
+    return merge(StackBoxStyle(box: BoxMix(transform: value)));
+  }
+
+  /// Decoration instance method - delegates to box
+  @override
+  StackBoxStyle decoration(DecorationMix value) {
+    return merge(StackBoxStyle(box: BoxMix(decoration: value)));
+  }
+
+  /// Constraints instance method - delegates to box
+  @override
+  StackBoxStyle constraints(BoxConstraintsMix value) {
+    return merge(StackBoxStyle(box: BoxMix(constraints: value)));
+  }
+
+  /// Border radius instance method - delegates to box
+  @override
+  StackBoxStyle borderRadius(BorderRadiusGeometryMix value) {
+    return merge(
+      StackBoxStyle(box: BoxMix(decoration: DecorationMix.borderRadius(value))),
+    );
   }
 
   /// Resolves to [ZBoxSpec] using the provided [BuildContext].

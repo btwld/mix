@@ -19,19 +19,23 @@ void main() {
 
       test('gradient factory creates BoxMix with gradient decoration', () {
         final gradient = LinearGradientMix(colors: [Colors.red, Colors.blue]);
-        final boxMix = BoxStyle(decoration: BoxDecorationMix(gradient: gradient));
+        final boxMix = BoxStyle(
+          decoration: BoxDecorationMix(gradient: gradient),
+        );
 
         expect(boxMix.$decoration, isNotNull);
       });
 
       test('shape factory creates BoxMix with shape decoration', () {
-        final boxMix = BoxStyle(decoration: BoxDecorationMix(shape: BoxShape.circle));
+        final boxMix = BoxStyle(
+          decoration: BoxDecorationMix(shape: BoxShape.circle),
+        );
 
         expect(boxMix.$decoration, isNotNull);
       });
 
       test('height factory creates BoxMix with height constraints', () {
-        final boxMix = BoxStyle(constraints: BoxConstraintsMix.height(100.0));
+        final boxMix = BoxStyle().height(100.0);
 
         expect(boxMix.$constraints, isNotNull);
         final constraints = boxMix.$constraints!.resolveProp(
@@ -42,7 +46,7 @@ void main() {
       });
 
       test('width factory creates BoxMix with width constraints', () {
-        final boxMix = BoxStyle(constraints: BoxConstraintsMix.width(200.0));
+        final boxMix = BoxStyle().width(200.0);
 
         expect(boxMix.$constraints, isNotNull);
         final constraints = boxMix.$constraints!.resolveProp(
@@ -165,12 +169,7 @@ void main() {
           clipBehavior: Clip.antiAliasWithSaveLayer,
         );
 
-        final boxMix = BoxStyle(
-          alignment: spec.alignment,
-          padding: EdgeInsetsGeometryMix.maybeValue(spec.padding),
-          margin: EdgeInsetsGeometryMix.maybeValue(spec.margin),
-          constraints: BoxConstraintsMix.maybeValue(spec.constraints),
-        );
+        final boxMix = BoxStyle.value(spec);
 
         expect(boxMix.$alignment, isNotNull);
         expect(boxMix.$alignment, resolvesTo(Alignment.bottomRight));
@@ -181,18 +180,13 @@ void main() {
       });
 
       test('maybeValue returns null for null input', () {
-        final result = null; // BoxStyle.maybeValue removed
+        final result = BoxStyle.maybeValue(null);
         expect(result, isNull);
       });
 
       test('maybeValue returns BoxMix for non-null input', () {
         final spec = BoxSpec(alignment: Alignment.center);
-        final result = spec != null ? BoxStyle(
-          alignment: spec.alignment,
-          padding: EdgeInsetsGeometryMix.maybeValue(spec.padding),
-          margin: EdgeInsetsGeometryMix.maybeValue(spec.margin),
-          constraints: BoxConstraintsMix.maybeValue(spec.constraints),
-        ) : null;
+        final result = BoxStyle.maybeValue(spec);
 
         expect(result, isNotNull);
         expect(result!.$alignment, isNotNull);

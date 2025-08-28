@@ -128,6 +128,11 @@ class BoxStyle extends Style<BoxSpec>
         clipBehavior: spec.clipBehavior,
       );
 
+  /// Static method to create BoxStyle from nullable BoxSpec.
+  static BoxStyle? maybeValue(BoxSpec? spec) {
+    return spec != null ? BoxStyle.value(spec) : null;
+  }
+
   /// Factory constructor to create BoxStyle from BoxMix.
   static BoxStyle from(BoxMix mix) {
     return BoxStyle.create(
@@ -141,18 +146,6 @@ class BoxStyle extends Style<BoxSpec>
       transformAlignment: mix.$transformAlignment,
       clipBehavior: mix.$clipBehavior,
     );
-  }
-
-  /// Constructor that accepts a nullable [BoxSpec] value and extracts its properties.
-  ///
-  /// Returns null if the input is null, otherwise uses [BoxStyle.value].
-  ///
-  /// ```dart
-  /// const BoxSpec? spec = BoxSpec(alignment: Alignment.center, padding: EdgeInsets.all(8));
-  /// final attr = BoxStyle.maybeValue(spec); // Returns BoxStyle or null
-  /// ```
-  static BoxStyle? maybeValue(BoxSpec? spec) {
-    return spec != null ? BoxStyle.value(spec) : null;
   }
 
   BoxSpecUtility get builder => BoxSpecUtility(this);

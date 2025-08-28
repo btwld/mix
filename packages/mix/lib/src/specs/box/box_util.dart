@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../animation/animation_config.dart';
 import '../../core/prop.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
-import '../../core/style.dart' show Style;
+import '../../core/style.dart' show Style, VariantStyle;
 import '../../core/utility.dart';
 import '../../core/widget_spec.dart';
 import '../../modifiers/modifier_config.dart';
@@ -11,6 +11,7 @@ import '../../modifiers/modifier_util.dart';
 import '../../properties/layout/constraints_util.dart';
 import '../../properties/layout/edge_insets_geometry_util.dart';
 import '../../properties/painting/decoration_util.dart';
+import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'box_style.dart';
 import 'box_spec.dart';
@@ -36,6 +37,7 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec> {
     (prop) => mutable.merge(BoxStyle.create(decoration: Prop.mix(prop))),
   );
 
+  @Deprecated('Use direct methods like onHovered() instead of on.hover()')
   late final on = OnContextVariantUtility<BoxSpec, BoxStyle>(
     (v) => mutable.variants([v]),
   );
@@ -65,6 +67,44 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec> {
   late final transformAlignment = MixUtility(mutable.transformAlignment);
   late final clipBehavior = MixUtility(mutable.clipBehavior);
   late final alignment = MixUtility(mutable.alignment);
+
+  /// Direct variant methods for applying conditional styling.
+  BoxStyle onHovered(BoxStyle style) {
+    return mutable.variant(
+      ContextVariant.widgetState(WidgetState.hovered),
+      style,
+    );
+  }
+
+  BoxStyle onPressed(BoxStyle style) {
+    return mutable.variant(
+      ContextVariant.widgetState(WidgetState.pressed),
+      style,
+    );
+  }
+
+  BoxStyle onDark(BoxStyle style) {
+    return mutable.variant(
+      ContextVariant.brightness(Brightness.dark),
+      style,
+    );
+  }
+
+  BoxStyle onLight(BoxStyle style) {
+    return mutable.variant(
+      ContextVariant.brightness(Brightness.light),
+      style,
+    );
+  }
+
+  BoxStyle builder(BoxStyle Function(BuildContext context) fn) {
+    return mutable.variants([
+      VariantStyle<BoxSpec>(
+        ContextVariantBuilder<BoxStyle>(fn),
+        mutable.value,
+      ),
+    ]);
+  }
 
   /// Internal mutable state for accumulating box styling properties.
   @override
