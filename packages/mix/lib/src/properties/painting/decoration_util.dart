@@ -19,14 +19,14 @@ import 'shape_border_util.dart';
 
 class DecorationUtility<T extends Style<Object?>>
     extends MixUtility<T, DecorationMix> {
-  late final box = BoxDecorationUtility<T>(builder);
+  late final box = BoxDecorationUtility<T>(utilityBuilder);
 
-  late final shape = ShapeDecorationUtility<T>(builder);
+  late final shape = ShapeDecorationUtility<T>(utilityBuilder);
 
-  DecorationUtility(super.builder);
+  DecorationUtility(super.utilityBuilder);
 
   T as(Decoration value) {
-    return builder(DecorationMix.value(value));
+    return utilityBuilder(DecorationMix.value(value));
   }
 }
 
@@ -57,7 +57,7 @@ final class BoxDecorationUtility<T extends Style<Object?>>
 
   /// Utility for defining [BoxDecorationMix.color]
   late final color = ColorUtility<T>(
-    (prop) => builder(BoxDecorationMix.create(color: prop)),
+    (prop) => utilityBuilder(BoxDecorationMix.create(color: prop)),
   );
 
   /// Utility for defining [BoxDecorationMix.gradient]
@@ -80,7 +80,7 @@ final class BoxDecorationUtility<T extends Style<Object?>>
 
   late final _boxBorder = BoxBorderUtility<T>((v) => only(border: v));
 
-  BoxDecorationUtility(super.builder);
+  BoxDecorationUtility(super.utilityBuilder);
 
   /// Utility for defining [BoxDecorationMix.boxShadow] from a list of BoxShadow
 
@@ -98,7 +98,7 @@ final class BoxDecorationUtility<T extends Style<Object?>>
     BlendMode? backgroundBlendMode,
     BoxShape? shape,
   }) {
-    return builder(
+    return utilityBuilder(
       BoxDecorationMix(
         border: border,
         borderRadius: borderRadius,
@@ -135,7 +135,7 @@ final class BoxDecorationUtility<T extends Style<Object?>>
   }
 
   T as(BoxDecoration value) {
-    return builder(BoxDecorationMix.value(value));
+    return utilityBuilder(BoxDecorationMix.value(value));
   }
 }
 
@@ -151,7 +151,7 @@ final class ShapeDecorationUtility<T extends Style<Object?>>
 
   /// Utility for defining [ShapeDecorationMix.color]
   late final color = ColorUtility<T>(
-    (prop) => builder(ShapeDecorationMix.create(color: prop)),
+    (prop) => utilityBuilder(ShapeDecorationMix.create(color: prop)),
   );
 
   /// Utility for defining [ShapeDecorationMix.image]
@@ -165,7 +165,7 @@ final class ShapeDecorationUtility<T extends Style<Object?>>
     (prop) => only(shadows: prop),
   );
 
-  ShapeDecorationUtility(super.builder);
+  ShapeDecorationUtility(super.utilityBuilder);
 
   T only({
     Color? color,
@@ -174,7 +174,7 @@ final class ShapeDecorationUtility<T extends Style<Object?>>
     List<BoxShadowMix>? shadows,
     ShapeBorderMix? shape,
   }) {
-    return builder(
+    return utilityBuilder(
       ShapeDecorationMix(
         shape: shape,
         color: color,
@@ -202,6 +202,6 @@ final class ShapeDecorationUtility<T extends Style<Object?>>
   }
 
   T as(ShapeDecoration value) {
-    return builder(ShapeDecorationMix.value(value));
+    return utilityBuilder(ShapeDecorationMix.value(value));
   }
 }

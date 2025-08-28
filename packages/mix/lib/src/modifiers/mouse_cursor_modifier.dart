@@ -10,7 +10,8 @@ import '../core/utility.dart';
 /// Modifier that applies a mouse cursor to its child.
 ///
 /// Wraps the child in a [MouseRegion] widget with the specified cursor.
-class MouseCursorModifier extends Modifier<MouseCursorModifier> with Diagnosticable {
+class MouseCursorModifier extends Modifier<MouseCursorModifier>
+    with Diagnosticable {
   final MouseCursor? mouseCursor;
 
   const MouseCursorModifier({this.mouseCursor});
@@ -51,7 +52,8 @@ class MouseCursorModifier extends Modifier<MouseCursorModifier> with Diagnostica
 ///
 /// Use this class to configure the attributes of a [MouseCursorModifier] and pass it to
 /// the [MouseCursorModifier] constructor.
-class MouseCursorModifierMix extends ModifierMix<MouseCursorModifier> with Diagnosticable {
+class MouseCursorModifierMix extends ModifierMix<MouseCursorModifier>
+    with Diagnosticable {
   final Prop<MouseCursor>? mouseCursor;
 
   const MouseCursorModifierMix.create({this.mouseCursor});
@@ -107,9 +109,9 @@ class MouseCursorModifierMix extends ModifierMix<MouseCursorModifier> with Diagn
 
 class MouseCursorModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, MouseCursorModifierMix> {
-  const MouseCursorModifierUtility(super.builder);
+  const MouseCursorModifierUtility(super.utilityBuilder);
   T call(MouseCursor? mouseCursor) {
-    return builder(MouseCursorModifierMix(mouseCursor: mouseCursor));
+    return utilityBuilder(MouseCursorModifierMix(mouseCursor: mouseCursor));
   }
 
   T defer() => call(MouseCursor.defer);

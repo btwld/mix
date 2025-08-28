@@ -129,14 +129,14 @@ class FractionallySizedBoxModifierMix
 /// Provides convenient methods for creating FractionallySizedBoxModifierMix instances.
 final class FractionallySizedBoxModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, FractionallySizedBoxModifierMix> {
-  const FractionallySizedBoxModifierUtility(super.builder);
+  const FractionallySizedBoxModifierUtility(super.utilityBuilder);
 
   T call({
     AlignmentGeometry? alignment,
     double? widthFactor,
     double? heightFactor,
   }) {
-    return builder(
+    return utilityBuilder(
       FractionallySizedBoxModifierMix(
         widthFactor: widthFactor,
         heightFactor: heightFactor,

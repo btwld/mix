@@ -36,8 +36,7 @@ final class DecorationImageUtility<T extends Style<Object?>>
     (prop) => call(filterQuality: prop),
   );
 
-
-  DecorationImageUtility(super.builder);
+  DecorationImageUtility(super.utilityBuilder);
 
   /// Utility for defining [DecorationImageMix.isAntiAlias]
   T isAntiAlias(bool v) => call(isAntiAlias: v);
@@ -55,7 +54,7 @@ final class DecorationImageUtility<T extends Style<Object?>>
     bool? invertColors,
     bool? isAntiAlias,
   }) {
-    return builder(
+    return utilityBuilder(
       DecorationImageMix(
         image: image,
         fit: fit,
@@ -69,8 +68,7 @@ final class DecorationImageUtility<T extends Style<Object?>>
     );
   }
 
-
   T as(DecorationImage value) {
-    return builder(DecorationImageMix.value(value));
+    return utilityBuilder(DecorationImageMix.value(value));
   }
 }

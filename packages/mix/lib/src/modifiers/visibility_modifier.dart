@@ -32,7 +32,14 @@ final class VisibilityModifier extends Modifier<VisibilityModifier>
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(FlagProperty('visible', value: visible, ifTrue: 'visible', ifFalse: 'hidden'));
+    properties.add(
+      FlagProperty(
+        'visible',
+        value: visible,
+        ifTrue: 'visible',
+        ifFalse: 'hidden',
+      ),
+    );
   }
 
   @override
@@ -86,7 +93,7 @@ class VisibilityModifierMix extends ModifierMix<VisibilityModifier>
 /// Provides convenient methods for creating VisibilityModifierMix instances.
 final class VisibilityModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, VisibilityModifierMix> {
-  const VisibilityModifierUtility(super.builder);
+  const VisibilityModifierUtility(super.utilityBuilder);
 
   /// Sets the visibility to true.
   T on() => call(true);
@@ -96,9 +103,9 @@ final class VisibilityModifierUtility<T extends Style<Object?>>
 
   /// Creates a [VisibilityModifierMix] with the specified visibility state.
   T call(bool value) =>
-      builder(VisibilityModifierMix.create(visible: Prop.value(value)));
+      utilityBuilder(VisibilityModifierMix.create(visible: Prop.value(value)));
 
   /// Creates a [VisibilityModifierMix] with the specified visibility token.
   T token(MixToken<bool> token) =>
-      builder(VisibilityModifierMix.create(visible: Prop.token(token)));
+      utilityBuilder(VisibilityModifierMix.create(visible: Prop.token(token)));
 }

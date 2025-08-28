@@ -14,7 +14,7 @@ import 'material_colors_util.dart';
 mixin ColorDirectiveMixin<T extends Style<Object?>>
     on MixUtility<T, Prop<Color>> {
   T directive(Directive<Color> directive) {
-    return builder(Prop.directives([directive]));
+    return utilityBuilder(Prop.directives([directive]));
   }
 
   /// Applies the specified opacity to the color (0.0 to 1.0).
@@ -51,7 +51,7 @@ class FoundationColorUtility<T extends Style<Object?>>
     extends MixUtility<T, Prop<Color>>
     with ColorDirectiveMixin<T> {
   final Color color;
-  const FoundationColorUtility(super.builder, this.color);
+  const FoundationColorUtility(super.utilityBuilder, this.color);
 }
 
 /// Color utility that can be called as a function or used with directive methods.
@@ -97,7 +97,8 @@ class CallableColorUtility<T extends Style<Object?>> {
   T tint(int amount) => builder(Prop.directives([TintColorDirective(amount)]));
 
   /// Mixes the color with black by the specified percentage (0 to 100).
-  T shade(int amount) => builder(Prop.directives([ShadeColorDirective(amount)]));
+  T shade(int amount) =>
+      builder(Prop.directives([ShadeColorDirective(amount)]));
 
   /// Increases the color brightness by the specified percentage (0 to 100).
   T brighten(int amount) =>
@@ -108,10 +109,8 @@ class CallableColorUtility<T extends Style<Object?>> {
 @immutable
 final class ColorUtility<T extends Style<Object?>>
     extends MixUtility<T, Prop<Color>>
-    with ColorDirectiveMixin<T>, 
-         ColorsUtilityMixin<T>,
-         BasicColorsMixin<T> {
-  ColorUtility(super.builder);
+    with ColorDirectiveMixin<T>, ColorsUtilityMixin<T>, BasicColorsMixin<T> {
+  ColorUtility(super.utilityBuilder);
 
   /// @deprecated Use [token] instead
   ///
@@ -125,9 +124,9 @@ final class ColorUtility<T extends Style<Object?>>
   /// ```
   T ref(MixToken<Color> ref) => token(ref);
 
-  T token(MixToken<Color> token) => builder(Prop.token(token));
+  T token(MixToken<Color> token) => utilityBuilder(Prop.token(token));
 
-  T call(Color color) => builder(Prop.value(color));
+  T call(Color color) => utilityBuilder(Prop.value(color));
 }
 
 /// Provides access to basic black, white, and transparent colors with opacity variants.
@@ -136,45 +135,48 @@ final class ColorUtility<T extends Style<Object?>>
 /// and color transformation methods.
 mixin BasicColorsMixin<T extends Style<Object?>> on MixUtility<T, Prop<Color>> {
   /// Fully transparent color utility.
-  late final transparent = CallableColorUtility(builder, Colors.transparent);
+  late final transparent = CallableColorUtility(
+    utilityBuilder,
+    Colors.transparent,
+  );
 
   /// Pure black color utility.
-  late final black = CallableColorUtility(builder, Colors.black);
+  late final black = CallableColorUtility(utilityBuilder, Colors.black);
 
   /// Black with 87% opacity for primary text.
-  late final black87 = CallableColorUtility(builder, Colors.black87);
+  late final black87 = CallableColorUtility(utilityBuilder, Colors.black87);
 
   /// Black with 54% opacity for secondary text.
-  late final black54 = CallableColorUtility(builder, Colors.black54);
+  late final black54 = CallableColorUtility(utilityBuilder, Colors.black54);
 
-  late final black45 = CallableColorUtility(builder, Colors.black45);
+  late final black45 = CallableColorUtility(utilityBuilder, Colors.black45);
 
   /// Black with 38% opacity for disabled text.
-  late final black38 = CallableColorUtility(builder, Colors.black38);
+  late final black38 = CallableColorUtility(utilityBuilder, Colors.black38);
 
-  late final black26 = CallableColorUtility(builder, Colors.black26);
+  late final black26 = CallableColorUtility(utilityBuilder, Colors.black26);
 
-  late final black12 = CallableColorUtility(builder, Colors.black12);
+  late final black12 = CallableColorUtility(utilityBuilder, Colors.black12);
 
   /// Pure white color utility.
-  late final white = CallableColorUtility(builder, Colors.white);
+  late final white = CallableColorUtility(utilityBuilder, Colors.white);
 
   /// White with 70% opacity for text on dark backgrounds.
-  late final white70 = CallableColorUtility(builder, Colors.white70);
+  late final white70 = CallableColorUtility(utilityBuilder, Colors.white70);
 
-  late final white60 = CallableColorUtility(builder, Colors.white60);
+  late final white60 = CallableColorUtility(utilityBuilder, Colors.white60);
 
   /// White with 54% opacity for secondary text on dark backgrounds.
-  late final white54 = CallableColorUtility(builder, Colors.white54);
+  late final white54 = CallableColorUtility(utilityBuilder, Colors.white54);
 
   /// White with 38% opacity for disabled text on dark backgrounds.
-  late final white38 = CallableColorUtility(builder, Colors.white38);
+  late final white38 = CallableColorUtility(utilityBuilder, Colors.white38);
 
-  late final white30 = CallableColorUtility(builder, Colors.white30);
+  late final white30 = CallableColorUtility(utilityBuilder, Colors.white30);
 
-  late final white24 = CallableColorUtility(builder, Colors.white24);
+  late final white24 = CallableColorUtility(utilityBuilder, Colors.white24);
 
-  late final white12 = CallableColorUtility(builder, Colors.white12);
+  late final white12 = CallableColorUtility(utilityBuilder, Colors.white12);
 
-  late final white10 = CallableColorUtility(builder, Colors.white10);
+  late final white10 = CallableColorUtility(utilityBuilder, Colors.white10);
 }

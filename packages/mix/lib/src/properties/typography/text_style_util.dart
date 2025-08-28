@@ -43,13 +43,13 @@ final class TextStyleUtility<T extends Style<Object?>>
     (prop) => call(textBaseline: prop),
   );
 
-  TextStyleUtility(super.builder);
+  TextStyleUtility(super.utilityBuilder);
 
   T fontSize(double value) => call(fontSize: value);
 
   T fontFamily(String value) => call(fontFamily: value);
   @protected
-  T buildProp(TextStyleMix value) => builder(Prop.mix(value));
+  T buildProp(TextStyleMix value) => utilityBuilder(Prop.mix(value));
 
   T height(double v) => call(height: v);
 
@@ -130,7 +130,7 @@ final class TextStyleUtility<T extends Style<Object?>>
       ),
     );
 
-    return builder(Prop.mix(textStyle));
+    return utilityBuilder(Prop.mix(textStyle));
   }
 
   T as(TextStyle value) => buildProp(TextStyleMix.value(value));

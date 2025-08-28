@@ -89,12 +89,14 @@ class PaddingModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, PaddingModifierMix> {
   /// Utility for defining [PaddingModifierMix.padding]
   late final padding = EdgeInsetsGeometryUtility(
-    (v) => builder(PaddingModifierMix(padding: v)),
+    (v) => utilityBuilder(PaddingModifierMix(padding: v)),
   );
 
-  PaddingModifierUtility(super.builder);
+  PaddingModifierUtility(super.utilityBuilder);
 
   T call({EdgeInsetsGeometryMix? padding}) {
-    return builder(PaddingModifierMix.create(padding: Prop.maybeMix(padding)));
+    return utilityBuilder(
+      PaddingModifierMix.create(padding: Prop.maybeMix(padding)),
+    );
   }
 }

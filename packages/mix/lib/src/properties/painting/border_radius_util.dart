@@ -196,17 +196,17 @@ final class BorderRadiusGeometryUtility<T extends Style<Object?>>
     extends MixUtility<T, BorderRadiusGeometryMix> {
   /// Returns a directional utility for creating and manipulating attributes with [BorderRadiusDirectional]
   late final borderRadiusDirectional = BorderRadiusDirectionalUtility<T>(
-    builder,
+    utilityBuilder,
   );
 
-  late final borderRadius = BorderRadiusUtility<T>(builder);
+  late final borderRadius = BorderRadiusUtility<T>(utilityBuilder);
 
-  BorderRadiusGeometryUtility(super.builder);
+  BorderRadiusGeometryUtility(super.utilityBuilder);
   @Deprecated('Use borderRadius.circular instead')
-  T call(double value) => builder(BorderRadiusMix.circular(value));
+  T call(double value) => utilityBuilder(BorderRadiusMix.circular(value));
 
   T as(BorderRadiusGeometry value) {
-    return builder(BorderRadiusGeometryMix.value(value));
+    return utilityBuilder(BorderRadiusGeometryMix.value(value));
   }
 }
 
@@ -264,7 +264,7 @@ final class BorderRadiusUtility<T extends Style<Object?>>
     (radius) => only(topRight: radius, bottomRight: radius),
   );
 
-  BorderRadiusUtility(super.builder);
+  BorderRadiusUtility(super.utilityBuilder);
 
   /// Sets a circular [Radius] for all corners.
   T circular(double radius) => all.circular(radius);
@@ -276,7 +276,7 @@ final class BorderRadiusUtility<T extends Style<Object?>>
   T zero() => all.zero();
 
   @Deprecated('Use borderRadius.circular instead')
-  T call(double value) => builder(BorderRadiusMix.circular(value));
+  T call(double value) => utilityBuilder(BorderRadiusMix.circular(value));
 
   T only({
     Radius? topLeft,
@@ -284,7 +284,7 @@ final class BorderRadiusUtility<T extends Style<Object?>>
     Radius? bottomLeft,
     Radius? bottomRight,
   }) {
-    return builder(
+    return utilityBuilder(
       BorderRadiusMix(
         topLeft: topLeft,
         topRight: topRight,
@@ -295,7 +295,7 @@ final class BorderRadiusUtility<T extends Style<Object?>>
   }
 
   T as(BorderRadius value) {
-    return builder(BorderRadiusMix.value(value));
+    return utilityBuilder(BorderRadiusMix.value(value));
   }
 }
 
@@ -349,7 +349,7 @@ final class BorderRadiusDirectionalUtility<T extends Style<Object?>>
     ),
   );
 
-  BorderRadiusDirectionalUtility(super.builder);
+  BorderRadiusDirectionalUtility(super.utilityBuilder);
 
   /// Sets a circular [Radius] for all corners.
   T circular(double radius) => all.circular(radius);
@@ -366,7 +366,7 @@ final class BorderRadiusDirectionalUtility<T extends Style<Object?>>
     Radius? bottomStart,
     Radius? bottomEnd,
   }) {
-    return builder(
+    return utilityBuilder(
       BorderRadiusDirectionalMix(
         topStart: topStart,
         topEnd: topEnd,
@@ -377,9 +377,10 @@ final class BorderRadiusDirectionalUtility<T extends Style<Object?>>
   }
 
   @Deprecated('Use borderRadiusDirectional.circular instead')
-  T call(double value) => builder(BorderRadiusDirectionalMix.circular(value));
+  T call(double value) =>
+      utilityBuilder(BorderRadiusDirectionalMix.circular(value));
 
   T as(BorderRadiusDirectional value) {
-    return builder(BorderRadiusDirectionalMix.value(value));
+    return utilityBuilder(BorderRadiusDirectionalMix.value(value));
   }
 }

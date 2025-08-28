@@ -98,18 +98,18 @@ class FlexibleModifierMix extends ModifierMix<FlexibleModifier>
 final class FlexibleModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, FlexibleModifierMix> {
   late final fit = MixUtility<T, FlexFit>(
-    (prop) => builder(FlexibleModifierMix(fit: prop)),
+    (prop) => utilityBuilder(FlexibleModifierMix(fit: prop)),
   );
-  FlexibleModifierUtility(super.builder);
-  T flex(int v) => builder(FlexibleModifierMix(flex: v));
-  T tight({int? flex}) => builder(
+  FlexibleModifierUtility(super.utilityBuilder);
+  T flex(int v) => utilityBuilder(FlexibleModifierMix(flex: v));
+  T tight({int? flex}) => utilityBuilder(
     FlexibleModifierMix.create(
       flex: Prop.maybe(flex),
       fit: Prop.value(FlexFit.tight),
     ),
   );
 
-  T loose({int? flex}) => builder(
+  T loose({int? flex}) => utilityBuilder(
     FlexibleModifierMix.create(
       flex: Prop.maybe(flex),
       fit: Prop.value(FlexFit.loose),
@@ -119,14 +119,14 @@ final class FlexibleModifierUtility<T extends Style<Object?>>
   T expanded({int? flex}) => tight(flex: flex);
 
   T call({int? flex, FlexFit? fit}) {
-    return builder(FlexibleModifierMix(flex: flex, fit: fit));
+    return utilityBuilder(FlexibleModifierMix(flex: flex, fit: fit));
   }
 
   T flexToken(MixToken<int> token) {
-    return builder(FlexibleModifierMix.create(flex: Prop.token(token)));
+    return utilityBuilder(FlexibleModifierMix.create(flex: Prop.token(token)));
   }
 
   T fitToken(MixToken<FlexFit> token) {
-    return builder(FlexibleModifierMix.create(fit: Prop.token(token)));
+    return utilityBuilder(FlexibleModifierMix.create(fit: Prop.token(token)));
   }
 }

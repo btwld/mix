@@ -8,7 +8,7 @@ import '../../core/utility.dart';
 /// Extension for creating [VerticalDirection] values with predefined options.
 extension VerticalDirectionPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, VerticalDirection> {
-  T call(VerticalDirection value) => builder(value);
+  T call(VerticalDirection value) => utilityBuilder(value);
 
   @Deprecated('Use call(VerticalDirection.up) instead')
   /// Creates a style with [VerticalDirection.up] value.
@@ -22,7 +22,7 @@ extension VerticalDirectionPropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [BorderStyle] values with predefined options.
 extension BorderStylePropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, BorderStyle> {
-  T call(BorderStyle value) => builder(value);
+  T call(BorderStyle value) => utilityBuilder(value);
 
   @Deprecated('Use call(BorderStyle.none) instead')
   /// Creates a style with [BorderStyle.none] value.
@@ -35,7 +35,7 @@ extension BorderStylePropUtilityExt<T extends Style<Object?>>
 
 /// Extension for creating [Clip] values with predefined options.
 extension ClipPropUtilityExt<T extends Style<Object?>> on MixUtility<T, Clip> {
-  T call(Clip value) => builder(value);
+  T call(Clip value) => utilityBuilder(value);
 
   @Deprecated('Use call(Clip.none) instead')
   /// Creates a [Style] instance with [Clip.none] value.
@@ -56,7 +56,7 @@ extension ClipPropUtilityExt<T extends Style<Object?>> on MixUtility<T, Clip> {
 
 /// Extension for creating [Axis] values with predefined options.
 extension AxisPropUtilityExt<T extends Style<Object?>> on MixUtility<T, Axis> {
-  T call(Axis value) => builder(value);
+  T call(Axis value) => utilityBuilder(value);
 
   @Deprecated('Use call(Axis.horizontal) instead')
   /// Creates a [Style] instance with [Axis.horizontal] value.
@@ -70,7 +70,7 @@ extension AxisPropUtilityExt<T extends Style<Object?>> on MixUtility<T, Axis> {
 /// Extension for creating [FlexFit] values with predefined options.
 extension FlexFitPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, FlexFit> {
-  T call(FlexFit value) => builder(value);
+  T call(FlexFit value) => utilityBuilder(value);
 
   @Deprecated('Use call(FlexFit.tight) instead')
   /// Creates a [Style] instance with [FlexFit.tight] value.
@@ -84,7 +84,7 @@ extension FlexFitPropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [StackFit] values with predefined options.
 extension StackFitPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, StackFit> {
-  T call(StackFit value) => builder(value);
+  T call(StackFit value) => utilityBuilder(value);
 
   @Deprecated('Use call(StackFit.loose) instead')
   /// Creates a [Style] instance with [StackFit.loose] value.
@@ -102,7 +102,7 @@ extension StackFitPropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [ImageRepeat] values with predefined options.
 extension ImageRepeatPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, ImageRepeat> {
-  T call(ImageRepeat value) => builder(value);
+  T call(ImageRepeat value) => utilityBuilder(value);
 
   @Deprecated('Use call(ImageRepeat.repeat) instead')
   /// Creates a [Style] instance with [ImageRepeat.repeat] value.
@@ -124,7 +124,7 @@ extension ImageRepeatPropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [TextDirection] values with predefined options.
 extension TextDirectionPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, TextDirection> {
-  T call(TextDirection value) => builder(value);
+  T call(TextDirection value) => utilityBuilder(value);
 
   @Deprecated('Use call(TextDirection.rtl) instead')
   /// Creates a [Style] instance with [TextDirection.rtl] value.
@@ -138,7 +138,7 @@ extension TextDirectionPropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [TextLeadingDistribution] values with predefined options.
 extension TextLeadingDistributionPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, TextLeadingDistribution> {
-  T call(TextLeadingDistribution value) => builder(value);
+  T call(TextLeadingDistribution value) => utilityBuilder(value);
 
   @Deprecated('Use call(TextLeadingDistribution.proportional) instead')
   /// Creates a [Style] instance with [TextLeadingDistribution.proportional] value.
@@ -152,7 +152,7 @@ extension TextLeadingDistributionPropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [TileMode] values with predefined options.
 extension TileModePropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, TileMode> {
-  T call(TileMode value) => builder(value);
+  T call(TileMode value) => utilityBuilder(value);
 
   @Deprecated('Use call(TileMode.clamp) instead')
   /// Creates a [Style] instance with [TileMode.clamp] value.
@@ -174,7 +174,7 @@ extension TileModePropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [MainAxisAlignment] values with predefined options.
 extension MainAxisAlignmentPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, MainAxisAlignment> {
-  T call(MainAxisAlignment value) => builder(value);
+  T call(MainAxisAlignment value) => utilityBuilder(value);
 
   @Deprecated('Use call(MainAxisAlignment.start) instead')
   /// Creates a [Style] instance with [MainAxisAlignment.start] value.
@@ -204,7 +204,7 @@ extension MainAxisAlignmentPropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [CrossAxisAlignment] values with predefined options.
 extension CrossAxisAlignmentPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, CrossAxisAlignment> {
-  T call(CrossAxisAlignment value) => builder(value);
+  T call(CrossAxisAlignment value) => utilityBuilder(value);
 
   @Deprecated('Use call(CrossAxisAlignment.start) instead')
   /// Creates a [Style] instance with [CrossAxisAlignment.start] value.
@@ -230,7 +230,7 @@ extension CrossAxisAlignmentPropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [MainAxisSize] values with predefined options.
 extension MainAxisSizePropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, MainAxisSize> {
-  T call(MainAxisSize value) => builder(value);
+  T call(MainAxisSize value) => utilityBuilder(value);
 
   @Deprecated('Use call(MainAxisSize.min) instead')
   /// Creates a [Style] instance with [MainAxisSize.min] value.
@@ -244,7 +244,7 @@ extension MainAxisSizePropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [BoxFit] values with predefined options.
 extension BoxFitPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, BoxFit> {
-  T call(BoxFit value) => builder(value);
+  T call(BoxFit value) => utilityBuilder(value);
 
   @Deprecated('Use call(BoxFit.fill) instead')
   /// Creates a [Style] instance with [BoxFit.fill] value.
@@ -278,7 +278,7 @@ extension BoxFitPropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [BlendMode] values with predefined options.
 extension BlendModePropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, BlendMode> {
-  T call(BlendMode value) => builder(value);
+  T call(BlendMode value) => utilityBuilder(value);
 
   @Deprecated('Use call(BlendMode.clear) instead')
   /// Creates a [Style] instance with [BlendMode.clear] value.
@@ -400,7 +400,7 @@ extension BlendModePropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [BoxShape] values with predefined options.
 extension BoxShapePropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, BoxShape> {
-  T call(BoxShape value) => builder(value);
+  T call(BoxShape value) => utilityBuilder(value);
 
   @Deprecated('Use call(BoxShape.rectangle) instead')
   /// Creates a [Style] instance with [BoxShape.rectangle] value.
@@ -414,7 +414,7 @@ extension BoxShapePropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [FontStyle] values with predefined options.
 extension FontStylePropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, FontStyle> {
-  T call(FontStyle value) => builder(value);
+  T call(FontStyle value) => utilityBuilder(value);
 
   @Deprecated('Use call(FontStyle.normal) instead')
   /// Creates a [Style] instance with [FontStyle.normal] value.
@@ -428,7 +428,7 @@ extension FontStylePropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [TextDecorationStyle] values with predefined options.
 extension TextDecorationStylePropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, TextDecorationStyle> {
-  T call(TextDecorationStyle value) => builder(value);
+  T call(TextDecorationStyle value) => utilityBuilder(value);
 
   @Deprecated('Use call(TextDecorationStyle.solid) instead')
   /// Creates a [Style] instance with [TextDecorationStyle.solid] value.
@@ -454,7 +454,7 @@ extension TextDecorationStylePropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [TextBaseline] values with predefined options.
 extension TextBaselinePropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, TextBaseline> {
-  T call(TextBaseline value) => builder(value);
+  T call(TextBaseline value) => utilityBuilder(value);
 
   @Deprecated('Use call(TextBaseline.alphabetic) instead')
   /// Creates a [Style] instance with [TextBaseline.alphabetic] value.
@@ -468,7 +468,7 @@ extension TextBaselinePropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [TextOverflow] values with predefined options.
 extension TextOverflowPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, TextOverflow> {
-  T call(TextOverflow value) => builder(value);
+  T call(TextOverflow value) => utilityBuilder(value);
 
   @Deprecated('Use call(TextOverflow.clip) instead')
   /// Creates a [Style] instance with [TextOverflow.clip] value.
@@ -490,7 +490,7 @@ extension TextOverflowPropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [TextWidthBasis] values with predefined options.
 extension TextWidthBasisPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, TextWidthBasis> {
-  T call(TextWidthBasis value) => builder(value);
+  T call(TextWidthBasis value) => utilityBuilder(value);
 
   @Deprecated('Use call(TextWidthBasis.parent) instead')
   /// Creates a [Style] instance with [TextWidthBasis.parent] value.
@@ -504,7 +504,7 @@ extension TextWidthBasisPropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [TextAlign] values with predefined options.
 extension TextAlignPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, TextAlign> {
-  T call(TextAlign value) => builder(value);
+  T call(TextAlign value) => utilityBuilder(value);
 
   @Deprecated('Use call(TextAlign.left) instead')
   /// Creates a [Style] instance with [TextAlign.left] value.
@@ -534,7 +534,7 @@ extension TextAlignPropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [FilterQuality] values with predefined options.
 extension FilterQualityPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, FilterQuality> {
-  T call(FilterQuality value) => builder(value);
+  T call(FilterQuality value) => utilityBuilder(value);
 
   @Deprecated('Use call(FilterQuality.none) instead')
   /// Creates a [Style] instance with [FilterQuality.none] value.
@@ -556,7 +556,7 @@ extension FilterQualityPropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [WrapAlignment] values with predefined options.
 extension WrapAlignmentPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, WrapAlignment> {
-  T call(WrapAlignment value) => builder(value);
+  T call(WrapAlignment value) => utilityBuilder(value);
 
   @Deprecated('Use call(WrapAlignment.start) instead')
   /// Creates a [Style] instance with [WrapAlignment.start] value.
@@ -586,7 +586,7 @@ extension WrapAlignmentPropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [TableCellVerticalAlignment] values with predefined options.
 extension TableCellVerticalAlignmentPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, TableCellVerticalAlignment> {
-  T call(TableCellVerticalAlignment value) => builder(value);
+  T call(TableCellVerticalAlignment value) => utilityBuilder(value);
 
   @Deprecated('Use call(TableCellVerticalAlignment.top) instead')
   /// Creates a [Style] instance with [TableCellVerticalAlignment.top] value.

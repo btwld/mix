@@ -14,15 +14,15 @@ import '../painting/shadow_mix.dart';
 @immutable
 class SpacingSideUtility<T extends Style<Object?>>
     extends MixUtility<T, double> {
-  const SpacingSideUtility(super.builder);
+  const SpacingSideUtility(super.utilityBuilder);
 
-  T call(double value) => builder(value);
+  T call(double value) => utilityBuilder(value);
 }
 
 /// Extension for creating [AlignmentGeometry] values with both absolute and directional alignments.
 extension AlignmentPropUtilityExt<S extends Style<Object?>>
     on MixUtility<S, AlignmentGeometry> {
-  S call(AlignmentGeometry value) => builder(value);
+  S call(AlignmentGeometry value) => utilityBuilder(value);
 
   /// Creates a [StyleBase] instance with a custom [Alignment] or [AlignmentDirectional] value.
   ///
@@ -71,7 +71,7 @@ extension AlignmentPropUtilityExt<S extends Style<Object?>>
 /// Extension for creating [AlignmentDirectional] values that respect text direction.
 extension AlignmentDirectionalPropUtilityExt<S extends Style<Object?>>
     on MixUtility<S, AlignmentDirectional> {
-  S call(AlignmentDirectional value) => builder(value);
+  S call(AlignmentDirectional value) => utilityBuilder(value);
 
   S only({double? y, double? start}) {
     return call(AlignmentDirectional(start ?? 0, y ?? 0));
@@ -108,7 +108,7 @@ extension AlignmentDirectionalPropUtilityExt<S extends Style<Object?>>
 /// Extension for creating [FontFeature] values with predefined OpenType features.
 extension FontFeaturePropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, FontFeature> {
-  T call(FontFeature value) => builder(value);
+  T call(FontFeature value) => utilityBuilder(value);
 
   /// Creates a [Style] instance using the [FontFeature.enable] constructor.
   T enable(String feature) => call(FontFeature.enable(feature));
@@ -198,7 +198,7 @@ extension FontFeaturePropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [Duration] values with time unit methods.
 extension DurationPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, Duration> {
-  T call(Duration value) => builder(value);
+  T call(Duration value) => utilityBuilder(value);
 
   T microseconds(int microseconds) =>
       call(Duration(microseconds: microseconds));
@@ -217,13 +217,13 @@ extension DurationPropUtilityExt<T extends Style<Object?>>
 /// Extension for creating double values with predefined options.
 extension DoublePropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, double> {
-  T call(double value) => builder(value);
+  T call(double value) => utilityBuilder(value);
 }
 
 /// Extension for creating [FontWeight] values with predefined weights.
 extension FontWeightPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, FontWeight> {
-  T call(FontWeight value) => builder(value);
+  T call(FontWeight value) => utilityBuilder(value);
 
   /// Creates a [Style] instance with [FontWeight.w100] value.
   T w100() => call(FontWeight.w100);
@@ -262,7 +262,7 @@ extension FontWeightPropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [TextDecoration] values with predefined decorations.
 extension TextDecorationPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, TextDecoration> {
-  T call(TextDecoration value) => builder(value);
+  T call(TextDecoration value) => utilityBuilder(value);
 
   /// Creates a [Style] instance with [TextDecoration.none] value.
   T none() => call(TextDecoration.none);
@@ -285,7 +285,7 @@ extension TextDecorationPropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [Curve] values with predefined animation curves.
 extension CurvePropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, Curve> {
-  T call(Curve value) => builder(value);
+  T call(Curve value) => utilityBuilder(value);
 
   T spring({
     double stiffness = 3.5,
@@ -428,7 +428,7 @@ extension CurvePropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [Offset] values with predefined positions.
 extension OffsetPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, Offset> {
-  T call(Offset value) => builder(value);
+  T call(Offset value) => utilityBuilder(value);
 
   /// Creates a [Style] instance with [Offset.zero] value.
   T zero() => call(Offset.zero);
@@ -445,7 +445,7 @@ extension OffsetPropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [Radius] values with predefined radius shapes.
 extension RadiusPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, Radius> {
-  T call(Radius value) => builder(value);
+  T call(Radius value) => utilityBuilder(value);
 
   /// Creates a [Style] instance with [Radius.zero] value.
   T zero() => call(Radius.zero);
@@ -459,7 +459,7 @@ extension RadiusPropUtilityExt<T extends Style<Object?>>
 
 /// Extension for creating [Rect] values with predefined rectangles and constructors.
 extension RectPropUtilityExt<T extends Style<Object?>> on MixUtility<T, Rect> {
-  T call(Rect value) => builder(value);
+  T call(Rect value) => utilityBuilder(value);
 
   /// Creates a [Style] instance with [Rect.zero] value.
   T zero() => call(Rect.zero);
@@ -498,7 +498,7 @@ extension RectPropUtilityExt<T extends Style<Object?>> on MixUtility<T, Rect> {
 /// Extension for creating [Paint] values for custom drawing operations.
 extension PaintPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, Paint> {
-  T call(Paint value) => builder(value);
+  T call(Paint value) => utilityBuilder(value);
 
   // No predefined paint values - this extension provides type consistency
 }
@@ -506,7 +506,7 @@ extension PaintPropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [Locale] values for internationalization.
 extension LocalePropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, Locale> {
-  T call(Locale value) => builder(value);
+  T call(Locale value) => utilityBuilder(value);
 
   // No predefined locale values - this extension provides type consistency
 }
@@ -514,7 +514,7 @@ extension LocalePropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [ImageProvider] values with different image sources.
 extension ImageProviderPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, ImageProvider> {
-  T call(ImageProvider value) => builder(value);
+  T call(ImageProvider value) => utilityBuilder(value);
 
   /// Creates an [Style] instance with [ImageProvider.network].
   /// @param url The URL of the image.
@@ -527,7 +527,7 @@ extension ImageProviderPropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [GradientTransform] values for gradient transformations.
 extension GradientTransformPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, GradientTransform> {
-  T call(GradientTransform value) => builder(value);
+  T call(GradientTransform value) => utilityBuilder(value);
 
   /// Creates an [Style] instance with a [GradientRotation] value.
   T rotate(double radians) => call(GradientRotation(radians));
@@ -536,7 +536,7 @@ extension GradientTransformPropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [Matrix4] values for 3D transformations.
 extension Matrix4PropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, Matrix4> {
-  T call(Matrix4 value) => builder(value);
+  T call(Matrix4 value) => utilityBuilder(value);
 
   /// Creates a [Style] instance using the [Matrix4.fromList] constructor.
   T fromList(List<double> values) => call(Matrix4.fromList(values));
@@ -584,7 +584,7 @@ extension Matrix4PropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [TextScaler] values for text scaling.
 extension TextScalerPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, TextScaler> {
-  T call(TextScaler value) => builder(value);
+  T call(TextScaler value) => utilityBuilder(value);
 
   /// Creates a [Style] instance with [TextScaler.noScaling] value.
   T noScaling() => call(TextScaler.noScaling);
@@ -596,7 +596,7 @@ extension TextScalerPropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [TableColumnWidth] values for table column sizing.
 extension TableColumnWidthPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, TableColumnWidth> {
-  T call(TableColumnWidth value) => builder(value);
+  T call(TableColumnWidth value) => utilityBuilder(value);
 
   // No predefined table column width values - this extension provides type consistency
 }
@@ -604,7 +604,7 @@ extension TableColumnWidthPropUtilityExt<T extends Style<Object?>>
 /// Utility for creating [TableBorder] values with predefined border styles.
 extension TableBorderUtility<T extends Style<Object?>>
     on MixUtility<T, TableBorder> {
-  T call(TableBorder value) => builder(value);
+  T call(TableBorder value) => utilityBuilder(value);
 
   /// Creates a [Style] instance using the [TableBorder.all] constructor.
   T all({
@@ -642,13 +642,13 @@ extension TableBorderUtility<T extends Style<Object?>>
 /// Extension for creating list values with MixUtility
 extension ListMixUtilityExt<T extends Style<Object?>, V>
     on MixUtility<T, List<V>> {
-  T call(List<V> value) => builder(value);
+  T call(List<V> value) => utilityBuilder(value);
 }
 
 /// Extension for creating [ElevationShadow] values with predefined elevation levels.
 extension ElevationShadowPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, ElevationShadow> {
-  T call(ElevationShadow value) => builder(value);
+  T call(ElevationShadow value) => utilityBuilder(value);
 
   /// Creates a [Style] instance with [ElevationShadow.one] value.
   T one() => call(ElevationShadow.one);
@@ -684,7 +684,7 @@ extension ElevationShadowPropUtilityExt<T extends Style<Object?>>
 /// Extension for creating [Directive<String>] values with text transformations.
 extension DirectiveStringPropUtilityExt<T extends Style<Object?>>
     on MixUtility<T, Directive<String>> {
-  T call(Directive<String> value) => builder(value);
+  T call(Directive<String> value) => utilityBuilder(value);
 
   T capitalize() => call(CapitalizeStringDirective());
   T uppercase() => call(UppercaseStringDirective());

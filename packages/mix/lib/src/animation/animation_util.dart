@@ -6,10 +6,12 @@ import 'animation_config.dart';
 
 class AnimationConfigUtility<T extends Style<Object?>>
     extends MixUtility<T, AnimationConfig> {
-  const AnimationConfigUtility(super.builder);
+  const AnimationConfigUtility(super.utilityBuilder);
 
   T implicit({required Duration duration, Curve curve = Curves.linear}) {
-    return builder(CurveAnimationConfig(duration: duration, curve: curve));
+    return utilityBuilder(
+      CurveAnimationConfig(duration: duration, curve: curve),
+    );
   }
 
   T call({required Duration duration, Curve curve = Curves.linear}) {

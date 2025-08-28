@@ -7,11 +7,13 @@ import '../core/utility.dart';
 import 'variant.dart';
 
 /// Utility class for creating variant attributes with context-based variants
-@Deprecated('Use direct methods like \$box.onHovered() instead of \$box.on.hover()')
+@Deprecated(
+  'Use direct methods like \$box.onHovered() instead of \$box.on.hover()',
+)
 @immutable
 class OnContextVariantUtility<S extends Spec<S>, T extends Style<S>>
     extends MixUtility<T, VariantStyle<S>> {
-  const OnContextVariantUtility(super.builder);
+  const OnContextVariantUtility(super.utilityBuilder);
 
   /// Creates a variant attribute for the hover state
   VariantAttributeBuilder<S> get hover {
@@ -244,7 +246,9 @@ class OnContextVariantUtility<S extends Spec<S>, T extends Style<S>>
 /// This class wraps a [Variant] and provides methods to create
 /// [VariantStyle] instances with styling rules that apply
 /// when the variant condition is met.
-@Deprecated('Use direct methods like \$box.onHovered() instead of \$box.on.hover()')
+@Deprecated(
+  'Use direct methods like \$box.onHovered() instead of \$box.on.hover()',
+)
 @immutable
 class VariantAttributeBuilder<T extends Spec<T>> {
   /// The variant condition that determines when styling should apply
@@ -254,7 +258,7 @@ class VariantAttributeBuilder<T extends Spec<T>> {
   const VariantAttributeBuilder(this.variant);
 
   /// Temporary call method to make the builder functional during deprecation period.
-  /// 
+  ///
   /// This allows the existing `.on` pattern to work while users migrate to direct methods.
   /// Usage: `$box.on.hover($box.color.red())` becomes `$box.on.hover()($box.color.red())`
   @Deprecated('Use direct methods like \$box.onHovered() instead')
@@ -340,9 +344,7 @@ mixin StyleVariantMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   T withContext(T Function(BuildContext context) fn) {
     // Create a VariantStyle with ContextVariantBuilder that will be resolved at runtime
     // Use this style as a placeholder; the actual style comes from the builder function
-    return variants([
-      VariantStyle<S>(ContextVariantBuilder<T>(fn), this),
-    ]);
+    return variants([VariantStyle<S>(ContextVariantBuilder<T>(fn), this)]);
   }
 
   /// Creates a variant for pressed state

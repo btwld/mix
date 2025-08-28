@@ -12,12 +12,13 @@ import '../core/utility.dart';
 /// Modifier that applies matrix transformations to its child.
 ///
 /// Wraps the child in a [Transform] widget with the specified matrix and alignment.
-final class TransformModifier extends Modifier<TransformModifier> with Diagnosticable {
+final class TransformModifier extends Modifier<TransformModifier>
+    with Diagnosticable {
   final Matrix4 transform;
   final Alignment? alignment;
 
   TransformModifier({Matrix4? transform, this.alignment = Alignment.center})
-      : transform = transform ?? Matrix4.identity();
+    : transform = transform ?? Matrix4.identity();
 
   @override
   TransformModifier copyWith({Matrix4? transform, Alignment? alignment}) {
@@ -60,7 +61,7 @@ final class TransformModifier extends Modifier<TransformModifier> with Diagnosti
 final class TransformModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, TransformModifierMix> {
   late final rotate = TransformRotateModifierUtility(
-    (value) => builder(
+    (value) => utilityBuilder(
       TransformModifierMix.create(
         transform: Prop.maybe(value),
         alignment: Prop.value(Alignment.center),
@@ -68,9 +69,9 @@ final class TransformModifierUtility<T extends Style<Object?>>
     ),
   );
 
-  TransformModifierUtility(super.builder);
+  TransformModifierUtility(super.utilityBuilder);
 
-  T _flip(bool x, bool y) => builder(
+  T _flip(bool x, bool y) => utilityBuilder(
     TransformModifierMix.create(
       transform: Prop.value(
         Matrix4.diagonal3Values(x ? -1.0 : 1.0, y ? -1.0 : 1.0, 1.0),
@@ -83,16 +84,16 @@ final class TransformModifierUtility<T extends Style<Object?>>
   T flipY() => _flip(false, true);
 
   T call(Matrix4 value) =>
-      builder(TransformModifierMix.create(transform: Prop.value(value)));
+      utilityBuilder(TransformModifierMix.create(transform: Prop.value(value)));
 
-  T scale(double value) => builder(
+  T scale(double value) => utilityBuilder(
     TransformModifierMix.create(
       transform: Prop.value(Matrix4.diagonal3Values(value, value, 1.0)),
       alignment: Prop.value(Alignment.center),
     ),
   );
 
-  T translate(double x, double y) => builder(
+  T translate(double x, double y) => utilityBuilder(
     TransformModifierMix.create(
       transform: Prop.value(Matrix4.translationValues(x, y, 0.0)),
       alignment: Prop.value(Alignment.center),
@@ -102,19 +103,19 @@ final class TransformModifierUtility<T extends Style<Object?>>
 
 final class TransformRotateModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, Matrix4> {
-  const TransformRotateModifierUtility(super.builder);
+  const TransformRotateModifierUtility(super.utilityBuilder);
   T d90() => call(math.pi / 2);
   T d180() => call(math.pi);
   T d270() => call(3 * math.pi / 2);
 
-  T call(double value) => builder(Matrix4.rotationZ(value));
+  T call(double value) => utilityBuilder(Matrix4.rotationZ(value));
 }
 
 /// Mix class for applying transform modifications.
 ///
 /// This class allows for mixing and resolving transform properties.
-class TransformModifierMix
-    extends ModifierMix<TransformModifier> with Diagnosticable {
+class TransformModifierMix extends ModifierMix<TransformModifier>
+    with Diagnosticable {
   final Prop<Matrix4>? transform;
   final Prop<Alignment>? alignment;
 

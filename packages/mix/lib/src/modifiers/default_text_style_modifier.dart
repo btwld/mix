@@ -203,7 +203,7 @@ class DefaultTextStyleModifierMix
 /// Provides convenient methods for creating DefaultTextStyleModifierMix instances.
 final class DefaultTextStyleModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, DefaultTextStyleModifierMix> {
-  const DefaultTextStyleModifierUtility(super.builder);
+  const DefaultTextStyleModifierUtility(super.utilityBuilder);
   T call({
     TextStyle? style,
     TextAlign? textAlign,
@@ -213,7 +213,7 @@ final class DefaultTextStyleModifierUtility<T extends Style<Object?>>
     TextWidthBasis? textWidthBasis,
     TextHeightBehavior? textHeightBehavior,
   }) {
-    return builder(
+    return utilityBuilder(
       DefaultTextStyleModifierMix(
         style: TextStyleMix.maybeValue(style),
         textAlign: textAlign,

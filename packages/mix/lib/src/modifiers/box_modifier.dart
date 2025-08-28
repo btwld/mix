@@ -81,21 +81,23 @@ class BoxModifierMix extends ModifierMix<BoxModifier> with Diagnosticable {
 /// Provides convenient methods for creating BoxModifierMix instances.
 class BoxModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, BoxModifierMix> {
-  const BoxModifierUtility(super.builder);
+  const BoxModifierUtility(super.utilityBuilder);
 
   T call(BoxMix spec) {
-    return builder(BoxModifierMix(spec));
+    return utilityBuilder(BoxModifierMix(spec));
   }
 
   T color(Color value) {
-    return builder(BoxModifierMix(BoxMix(decoration: DecorationMix.color(value))));
+    return utilityBuilder(
+      BoxModifierMix(BoxMix(decoration: DecorationMix.color(value))),
+    );
   }
 
   T padding(EdgeInsetsGeometryMix value) {
-    return builder(BoxModifierMix(BoxMix(padding: value)));
+    return utilityBuilder(BoxModifierMix(BoxMix(padding: value)));
   }
 
   T margin(EdgeInsetsGeometryMix value) {
-    return builder(BoxModifierMix(BoxMix(margin: value)));
+    return utilityBuilder(BoxModifierMix(BoxMix(margin: value)));
   }
 }

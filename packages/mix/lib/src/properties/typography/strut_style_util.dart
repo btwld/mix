@@ -14,8 +14,7 @@ final class StrutStyleUtility<T extends Style<Object?>>
     (prop) => call(fontStyle: prop),
   );
 
-
-  StrutStyleUtility(super.builder);
+  StrutStyleUtility(super.utilityBuilder);
 
   T fontSize(double value) => call(fontSize: value);
 
@@ -37,7 +36,7 @@ final class StrutStyleUtility<T extends Style<Object?>>
     double? leading,
     bool? forceStrutHeight,
   }) {
-    return builder(
+    return utilityBuilder(
       StrutStyleMix(
         fontFamily: fontFamily,
         fontFamilyFallback: fontFamilyFallback,
@@ -52,6 +51,6 @@ final class StrutStyleUtility<T extends Style<Object?>>
   }
 
   T as(StrutStyle value) {
-    return builder(StrutStyleMix.value(value));
+    return utilityBuilder(StrutStyleMix.value(value));
   }
 }
