@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/widgets.dart';
 
 import 'internal/internal_extensions.dart';
@@ -36,6 +38,53 @@ class OpacityColorDirective extends Directive<Color> {
 
   @override
   int get hashCode => opacity.hashCode;
+}
+
+/// Directive tha tapplies withValues to a color
+class WithValuesColorDirective extends Directive<Color> {
+  final double? alpha;
+  final double? red;
+  final double? green;
+  final double? blue;
+  final ColorSpace? colorSpace;
+
+  const WithValuesColorDirective({
+    this.alpha,
+    this.red,
+    this.green,
+    this.blue,
+    this.colorSpace,
+  });
+
+  @override
+  Color apply(Color color) => color.withValues(
+    alpha: alpha,
+    red: red,
+    green: green,
+    blue: blue,
+    colorSpace: colorSpace,
+  );
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is WithValuesColorDirective &&
+          alpha == other.alpha &&
+          red == other.red &&
+          green == other.green &&
+          blue == other.blue &&
+          colorSpace == other.colorSpace;
+
+  @override
+  String get key => 'color_with_values';
+
+  @override
+  int get hashCode =>
+      alpha.hashCode ^
+      red.hashCode ^
+      green.hashCode ^
+      blue.hashCode ^
+      colorSpace.hashCode;
 }
 
 /// Directive that applies alpha to a color.
