@@ -209,7 +209,7 @@ void main() {
     group('VariantSpecAttribute integration', () {
       test('can be used in VariantSpecAttribute wrapper', () {
         const primaryVariant = NamedVariant('primary');
-        final style = BoxStyle(constraints: BoxConstraintsMix.width(100.0));
+        final style = BoxStyle().width(100.0);
         final variantAttr = VariantStyle(primaryVariant, style);
 
         expect(variantAttr.variant, primaryVariant);
@@ -223,12 +223,12 @@ void main() {
 
         final primaryStyle = VariantStyle(
           primaryVariant,
-          BoxStyle(constraints: BoxConstraintsMix.width(100.0)),
+          BoxStyle().width(100.0),
         );
 
         final secondaryStyle = VariantStyle(
           secondaryVariant,
-          BoxStyle(constraints: BoxConstraintsMix.width(150.0)),
+          BoxStyle().width(150.0),
         );
 
         expect(primaryStyle.mergeKey, 'primary');
@@ -239,9 +239,9 @@ void main() {
       test('merges correctly when variants match', () {
         const primaryVariant = NamedVariant('primary');
 
-        final style1 = VariantStyle(primaryVariant, BoxStyle(constraints: BoxConstraintsMix.width(100.0)));
+        final style1 = VariantStyle(primaryVariant, BoxStyle().width(100.0));
 
-        final style2 = VariantStyle(primaryVariant, BoxStyle(constraints: BoxConstraintsMix.height(200.0)));
+        final style2 = VariantStyle(primaryVariant, BoxStyle().height(200.0));
 
         final merged = style1.merge(style2);
 
@@ -261,12 +261,12 @@ void main() {
 
         final primaryStyle = VariantStyle(
           primaryVariant,
-          BoxStyle(constraints: BoxConstraintsMix.width(100.0)),
+          BoxStyle().width(100.0),
         );
 
         final secondaryStyle = VariantStyle(
           secondaryVariant,
-          BoxStyle(constraints: BoxConstraintsMix.height(200.0)),
+          BoxStyle().height(200.0),
         );
 
         final merged = primaryStyle.merge(secondaryStyle);

@@ -7,6 +7,7 @@ import '../core/utility.dart';
 import 'variant.dart';
 
 /// Utility class for creating variant attributes with context-based variants
+@Deprecated('Use direct methods like \$box.onHovered() instead of \$box.on.hover()')
 @immutable
 class OnContextVariantUtility<S extends Spec<S>, T extends Style<S>>
     extends MixUtility<T, VariantStyle<S>> {
@@ -243,6 +244,7 @@ class OnContextVariantUtility<S extends Spec<S>, T extends Style<S>>
 /// This class wraps a [Variant] and provides methods to create
 /// [VariantStyle] instances with styling rules that apply
 /// when the variant condition is met.
+@Deprecated('Use direct methods like \$box.onHovered() instead of \$box.on.hover()')
 @immutable
 class VariantAttributeBuilder<T extends Spec<T>> {
   /// The variant condition that determines when styling should apply
@@ -250,6 +252,15 @@ class VariantAttributeBuilder<T extends Spec<T>> {
 
   /// Creates a new [VariantAttributeBuilder] with the given [variant]
   const VariantAttributeBuilder(this.variant);
+
+  /// Temporary call method to make the builder functional during deprecation period.
+  /// 
+  /// This allows the existing `.on` pattern to work while users migrate to direct methods.
+  /// Usage: `$box.on.hover($box.color.red())` becomes `$box.on.hover()($box.color.red())`
+  @Deprecated('Use direct methods like \$box.onHovered() instead')
+  VariantStyle<T> call<S extends Style<T>>(S style) {
+    return VariantStyle<T>(variant, style);
+  }
 
   /// Creates a [VariantStyle] that applies the given styling elements
   /// when this variant's condition is met.
@@ -313,10 +324,26 @@ mixin StyleVariantMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   T onHovered(T style) {
     return variant(ContextVariant.widgetState(WidgetState.hovered), style);
   }
-  // TODO: Implement onContext()
-  // T onContext(T Function(BuildContext context) builder) {
-  //   return variants(ContextVariantBuilder(builder));
-  // }
+
+  /// Creates a variant that applies styling based on the build context.
+  ///
+  /// The provided builder function receives a [BuildContext] and should return
+  /// a style that will be applied when this variant is active.
+  ///
+  /// Example:
+  /// ```dart
+  /// BoxStyle().withContext((context) {
+  ///   final theme = Theme.of(context);
+  ///   return BoxStyle().decoration.color(theme.primaryColor);
+  /// })
+  /// ```
+  T withContext(T Function(BuildContext context) fn) {
+    // Create a VariantStyle with ContextVariantBuilder that will be resolved at runtime
+    // Use this style as a placeholder; the actual style comes from the builder function
+    return variants([
+      VariantStyle<S>(ContextVariantBuilder<T>(fn), this),
+    ]);
+  }
 
   /// Creates a variant for pressed state
   T onPressed(T style) {
