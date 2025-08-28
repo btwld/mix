@@ -247,7 +247,8 @@ void main() {
       });
 
       testWidgets('Modifiers follow default order', (tester) async {
-        final boxAttribute = BoxStyle.width(100)
+        final boxAttribute = BoxStyle()
+            .width(100)
             .height(100)
             .color(Colors.blue)
             .wrap(
@@ -320,7 +321,8 @@ void main() {
           PaddingModifier,
         ];
 
-        final boxAttribute = BoxStyle.width(100)
+        final boxAttribute = BoxStyle()
+            .width(100)
             .height(100)
             .color(Colors.blue)
             .wrap(

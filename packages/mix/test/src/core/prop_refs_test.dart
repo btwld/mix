@@ -52,7 +52,7 @@ void main() {
         expect(ref1.hashCode, equals(ref2.hashCode));
       });
 
-      test('noSuchMethod throws UnimplementedError', () {
+      test('noSuchMethod throws UnimplementedError with detailed message', () {
         final token = MixToken<Color>('test-color');
         final ref = ColorProp(Prop.token(token));
 
@@ -62,7 +62,13 @@ void main() {
             isA<UnimplementedError>().having(
               (e) => e.message,
               'message',
-              contains('This is a Token reference for Color'),
+              allOf([
+                contains("Cannot access 'nonExistentMethod' on a Color token reference"),
+                contains('This is a context-dependent Color token'),
+                contains('Token references can only be passed directly to Mix styling utilities'),
+                contains('Pass it to Mix utilities'),
+                contains('Or resolve it first'),
+              ]),
             ),
           ),
         );

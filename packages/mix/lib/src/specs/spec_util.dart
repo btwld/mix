@@ -4,11 +4,9 @@
 /// utilities, and modifiers in the Mix framework.
 library;
 
-// These imports were for $on and $wrap utilities which are temporarily disabled
-// import '../core/spec.dart';
-// import '../core/style.dart';
-// import '../modifiers/modifier_util.dart';
-// import '../variants/variant_util.dart';
+// Global utilities for $on and $wrap functionality are now available via spec-specific utilities:
+// - $box.on.hover(), $box.wrap.opacity(), etc.
+// - $text.on.dark(), $text.wrap.padding(), etc.
 import 'box/box_util.dart';
 import 'flex/flex_util.dart';
 import 'flexbox/flexbox_util.dart';
@@ -38,15 +36,9 @@ TextSpecUtility get $text => TextSpecUtility();
 /// Global accessor for stack specification utilities.
 StackSpecUtility get $stack => StackSpecUtility();
 
-// TODO: These global utilities need to be reimplemented after removing MultiSpec/CompoundStyle
-// The $on and $wrap utilities previously worked with MultiSpec but now need a different approach
-// since we work with specific spec types (BoxSpec, TextSpec, etc.)
+// Global $on and $wrap utilities have been replaced by spec-specific utilities:
 //
-// Potential solutions:
-// 1. Create spec-specific variants like $boxOn, $textOn, etc.
-// 2. Use a different pattern that doesn't require a generic spec type
-// 3. Restore a limited version of MultiSpec for these utilities only
+// Instead of: $on.hover($box.color.red(), $text.style.color.white())
+// Use: $box.on.hover($box.color.red()) and $text.on.hover($text.style.color.white())
 //
-// For now, these are commented out to fix compilation errors:
-// OnContextVariantUtility get $on => ...
-// ModifierUtility get $wrap => ...
+// This provides better type safety and eliminates the need for MultiSpec.

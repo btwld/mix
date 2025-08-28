@@ -272,15 +272,15 @@ void main() {
     group('Factory Constructors', () {
       test('animate factory creates with animation config', () {
         final animation = AnimationConfig.linear(Duration(seconds: 1));
-        final flexMix = FlexStyle.animate(animation);
+        final flexMix = FlexStyle().animate(animation);
 
         expect(flexMix.$animation, animation);
       });
 
       test('variant factory creates with variant', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = FlexStyle.direction(Axis.horizontal);
-        final flexMix = FlexStyle.variant(variant, style);
+        final style = FlexStyle(direction: Axis.horizontal);
+        final flexMix = FlexStyle().variant(variant, style);
 
         expect(flexMix.$variants, isNotNull);
         expect(flexMix.$variants!.length, 1);
@@ -462,9 +462,7 @@ void main() {
             .spacing(16.0);
 
         expect(attr1, equals(attr2));
-        // Skip hashCode test due to infrastructure issue with list instances
-        // TODO: Fix hashCode contract violation in Mix 2.0
-        // expect(attr1.hashCode, equals(attr2.hashCode));
+        expect(attr1.hashCode, equals(attr2.hashCode));
       });
 
       test('different attributes are not equal', () {
@@ -547,7 +545,7 @@ void main() {
     group('Variant Methods', () {
       test('variant method sets single variant', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = FlexStyle.direction(Axis.horizontal);
+        final style = FlexStyle(direction: Axis.horizontal);
         final flexMix = FlexStyle().variant(variant, style);
 
         expect(flexMix.$variants, isNotNull);
@@ -558,11 +556,11 @@ void main() {
         final variants = [
           VariantStyle(
             ContextVariant.brightness(Brightness.dark),
-            FlexStyle.direction(Axis.horizontal),
+            FlexStyle(direction: Axis.horizontal),
           ),
           VariantStyle(
             ContextVariant.brightness(Brightness.light),
-            FlexStyle.direction(Axis.vertical),
+            FlexStyle(direction: Axis.vertical),
           ),
         ];
         final flexMix = FlexStyle().variants(variants);

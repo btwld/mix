@@ -86,12 +86,12 @@ void main() {
 
     group('Factory constructors', () {
       test('direction factory creates correct FlexStyle', () {
-        final flexMix = FlexStyle.direction(Axis.vertical);
+        final flexMix = FlexStyle().direction(Axis.vertical);
         expect(flexMix.$direction, resolvesTo(Axis.vertical));
       });
 
       test('mainAxisAlignment factory creates correct FlexStyle', () {
-        final flexMix = FlexStyle.mainAxisAlignment(
+        final flexMix = FlexStyle().mainAxisAlignment(
           MainAxisAlignment.spaceEvenly,
         );
         expect(
@@ -101,7 +101,7 @@ void main() {
       });
 
       test('crossAxisAlignment factory creates correct FlexStyle', () {
-        final flexMix = FlexStyle.crossAxisAlignment(
+        final flexMix = FlexStyle().crossAxisAlignment(
           CrossAxisAlignment.stretch,
         );
         expect(
@@ -111,37 +111,37 @@ void main() {
       });
 
       test('mainAxisSize factory creates correct FlexStyle', () {
-        final flexMix = FlexStyle.mainAxisSize(MainAxisSize.max);
+        final flexMix = FlexStyle().mainAxisSize(MainAxisSize.max);
         expect(flexMix.$mainAxisSize, resolvesTo(MainAxisSize.max));
       });
 
       test('verticalDirection factory creates correct FlexStyle', () {
-        final flexMix = FlexStyle.verticalDirection(VerticalDirection.down);
+        final flexMix = FlexStyle().verticalDirection(VerticalDirection.down);
         expect(flexMix.$verticalDirection, resolvesTo(VerticalDirection.down));
       });
 
       test('textDirection factory creates correct FlexStyle', () {
-        final flexMix = FlexStyle.textDirection(TextDirection.ltr);
+        final flexMix = FlexStyle().textDirection(TextDirection.ltr);
         expect(flexMix.$textDirection, resolvesTo(TextDirection.ltr));
       });
 
       test('textBaseline factory creates correct FlexStyle', () {
-        final flexMix = FlexStyle.textBaseline(TextBaseline.alphabetic);
+        final flexMix = FlexStyle().textBaseline(TextBaseline.alphabetic);
         expect(flexMix.$textBaseline, resolvesTo(TextBaseline.alphabetic));
       });
 
       test('clipBehavior factory creates correct FlexStyle', () {
-        final flexMix = FlexStyle.clipBehavior(Clip.hardEdge);
+        final flexMix = FlexStyle().clipBehavior(Clip.hardEdge);
         expect(flexMix.$clipBehavior, resolvesTo(Clip.hardEdge));
       });
 
       test('spacing factory creates correct FlexStyle', () {
-        final flexMix = FlexStyle.spacing(12.0);
+        final flexMix = FlexStyle().spacing(12.0);
         expect(flexMix.$spacing, resolvesTo(12.0));
       });
 
       test('gap factory creates correct FlexStyle', () {
-        final flexMix = FlexStyle.gap(12.0);
+        final flexMix = FlexStyle().gap(12.0);
         expect(flexMix.$spacing, resolvesTo(12.0));
       });
     });

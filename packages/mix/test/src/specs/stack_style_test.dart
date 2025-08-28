@@ -33,40 +33,40 @@ void main() {
 
     group('Factory Constructors', () {
       test('', () {
-        final stackMix = StackStyle.alignment(Alignment.topLeft);
+        final stackMix = StackStyle().alignment(Alignment.topLeft);
 
         expect(stackMix.$alignment, resolvesTo(Alignment.topLeft));
       });
 
       test('', () {
-        final stackMix = StackStyle.fit(StackFit.loose);
+        final stackMix = StackStyle().fit(StackFit.loose);
 
         expect(stackMix.$fit, resolvesTo(StackFit.loose));
       });
 
       test('', () {
-        final stackMix = StackStyle.textDirection(TextDirection.rtl);
+        final stackMix = StackStyle().textDirection(TextDirection.rtl);
 
         expect(stackMix.$textDirection, resolvesTo(TextDirection.rtl));
       });
 
       test('', () {
-        final stackMix = StackStyle.clipBehavior(Clip.hardEdge);
+        final stackMix = StackStyle().clipBehavior(Clip.hardEdge);
 
         expect(stackMix.$clipBehavior, resolvesTo(Clip.hardEdge));
       });
 
       test('', () {
         final animation = AnimationConfig.linear(Duration(seconds: 1));
-        final stackMix = StackStyle.animate(animation);
+        final stackMix = StackStyle().animate(animation);
 
         expect(stackMix.$animation, animation);
       });
 
       test('', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = StackStyle.alignment(Alignment.center);
-        final stackMix = StackStyle.variant(variant, style);
+        final style = StackStyle().alignment(Alignment.center);
+        final stackMix = StackStyle().variant(variant, style);
 
         expect(stackMix.$variants, isNotNull);
         expect(stackMix.$variants!.length, 1);
@@ -148,7 +148,7 @@ void main() {
     group('Variant Methods', () {
       test('', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = StackStyle.alignment(Alignment.center);
+        final style = StackStyle().alignment(Alignment.center);
         final stackMix = StackStyle().variant(variant, style);
 
         expect(stackMix.$variants, isNotNull);
@@ -159,11 +159,11 @@ void main() {
         final variants = [
           VariantStyle(
             ContextVariant.brightness(Brightness.dark),
-            StackStyle.alignment(Alignment.topLeft),
+            StackStyle().alignment(Alignment.topLeft),
           ),
           VariantStyle(
             ContextVariant.brightness(Brightness.light),
-            StackStyle.alignment(Alignment.bottomRight),
+            StackStyle().alignment(Alignment.bottomRight),
           ),
         ];
         final stackMix = StackStyle().variants(variants);
