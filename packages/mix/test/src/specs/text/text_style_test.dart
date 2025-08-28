@@ -67,13 +67,17 @@ void main() {
       });
 
       test('fontWeight factory creates TextMix with fontWeight', () {
-        final textMix = TextStyling(style: TextStyleMix(fontWeight: FontWeight.bold));
+        final textMix = TextStyling(
+          style: TextStyleMix(fontWeight: FontWeight.bold),
+        );
 
         expect(textMix.$style, isNotNull);
       });
 
       test('fontStyle factory creates TextMix with fontStyle', () {
-        final textMix = TextStyling(style: TextStyleMix(fontStyle: FontStyle.italic));
+        final textMix = TextStyling(
+          style: TextStyleMix(fontStyle: FontStyle.italic),
+        );
 
         expect(textMix.$style, isNotNull);
       });
@@ -97,51 +101,67 @@ void main() {
       });
 
       test('textBaseline factory creates TextMix with textBaseline', () {
-        final textMix = TextStyling(style: TextStyleMix(textBaseline: TextBaseline.alphabetic));
+        final textMix = TextStyling(
+          style: TextStyleMix(textBaseline: TextBaseline.alphabetic),
+        );
 
         expect(textMix.$style, isNotNull);
       });
 
       test('backgroundColor factory creates TextMix with backgroundColor', () {
-        final textMix = TextStyling(style: TextStyleMix(backgroundColor: Colors.yellow));
+        final textMix = TextStyling(
+          style: TextStyleMix(backgroundColor: Colors.yellow),
+        );
 
         expect(textMix.$style, isNotNull);
       });
 
       test('shadows factory creates TextMix with shadows', () {
-        final textMix = TextStyling(style: TextStyleMix(shadows: [
-          ShadowMix(color: Colors.black, offset: Offset(1, 1)),
-        ]));
+        final textMix = TextStyling(
+          style: TextStyleMix(
+            shadows: [ShadowMix(color: Colors.black, offset: Offset(1, 1))],
+          ),
+        );
 
         expect(textMix.$style, isNotNull);
       });
 
       test('fontFeatures factory creates TextMix with fontFeatures', () {
-        final textMix = TextStyling(style: TextStyleMix(fontFeatures: [FontFeature.enable('smcp')]));
+        final textMix = TextStyling(
+          style: TextStyleMix(fontFeatures: [FontFeature.enable('smcp')]),
+        );
 
         expect(textMix.$style, isNotNull);
       });
 
       test('fontVariations factory creates TextMix with fontVariations', () {
-        final textMix = TextStyling(style: TextStyleMix(fontVariations: [FontVariation('wght', 400)]));
+        final textMix = TextStyling(
+          style: TextStyleMix(fontVariations: [FontVariation('wght', 400)]),
+        );
 
         expect(textMix.$style, isNotNull);
       });
 
       test('decoration factory creates TextMix with decoration', () {
-        final textMix = TextStyling(style: TextStyleMix(decoration: TextDecoration.underline));
+        final textMix = TextStyling(
+          style: TextStyleMix(decoration: TextDecoration.underline),
+        );
 
         expect(textMix.$style, isNotNull);
       });
 
       test('decorationColor factory creates TextMix with decorationColor', () {
-        final textMix = TextStyling(style: TextStyleMix(decorationColor: Colors.blue));
+        final textMix = TextStyling(
+          style: TextStyleMix(decorationColor: Colors.blue),
+        );
 
         expect(textMix.$style, isNotNull);
       });
 
       test('decorationStyle factory creates TextMix with decorationStyle', () {
-        final textMix = TextStyling(style: TextStyleMix(decorationStyle: TextDecorationStyle.dashed));
+        final textMix = TextStyling(
+          style: TextStyleMix(decorationStyle: TextDecorationStyle.dashed),
+        );
 
         expect(textMix.$style, isNotNull);
       });
@@ -155,7 +175,9 @@ void main() {
       test(
         'decorationThickness factory creates TextMix with decorationThickness',
         () {
-          final textMix = TextStyling(style: TextStyleMix(decorationThickness: 2.0));
+          final textMix = TextStyling(
+            style: TextStyleMix(decorationThickness: 2.0),
+          );
 
           expect(textMix.$style, isNotNull);
         },
@@ -164,7 +186,9 @@ void main() {
       test(
         'fontFamilyFallback factory creates TextMix with fontFamilyFallback',
         () {
-          final textMix = TextStyling(style: TextStyleMix(fontFamilyFallback: ['Helvetica', 'Arial']));
+          final textMix = TextStyling(
+            style: TextStyleMix(fontFamilyFallback: ['Helvetica', 'Arial']),
+          );
 
           expect(textMix.$style, isNotNull);
         },
@@ -209,7 +233,9 @@ void main() {
       test(
         'textHeightBehavior factory creates TextMix with textHeightBehavior',
         () {
-          final textMix = TextStyling(textHeightBehavior: TextHeightBehaviorMix());
+          final textMix = TextStyling(
+            textHeightBehavior: TextHeightBehaviorMix(),
+          );
 
           expect(textMix.$textHeightBehavior, isNotNull);
         },
@@ -228,35 +254,45 @@ void main() {
       });
 
       test('directive factory creates TextMix with directive', () {
-        final textMix = TextStyling(textDirectives: [const UppercaseStringDirective()]);
+        final textMix = TextStyling(
+          textDirectives: [const UppercaseStringDirective()],
+        );
 
         expect(textMix.$textDirectives, isNotNull);
         expect(textMix.$textDirectives!.length, 1);
       });
 
       test('uppercase factory creates TextMix with uppercase directive', () {
-        final textMix = TextStyling(textDirectives: [const UppercaseStringDirective()]);
+        final textMix = TextStyling(
+          textDirectives: [const UppercaseStringDirective()],
+        );
 
         expect(textMix.$textDirectives, isNotNull);
         expect(textMix.$textDirectives!.length, 1);
       });
 
       test('lowercase factory creates TextMix with lowercase directive', () {
-        final textMix = TextStyling(textDirectives: [const LowercaseStringDirective()]);
+        final textMix = TextStyling(
+          textDirectives: [const LowercaseStringDirective()],
+        );
 
         expect(textMix.$textDirectives, isNotNull);
         expect(textMix.$textDirectives!.length, 1);
       });
 
       test('capitalize factory creates TextMix with capitalize directive', () {
-        final textMix = TextStyling(textDirectives: [const CapitalizeStringDirective()]);
+        final textMix = TextStyling(
+          textDirectives: [const CapitalizeStringDirective()],
+        );
 
         expect(textMix.$textDirectives, isNotNull);
         expect(textMix.$textDirectives!.length, 1);
       });
 
       test('titleCase factory creates TextMix with titleCase directive', () {
-        final textMix = TextStyling(textDirectives: [const TitleCaseStringDirective()]);
+        final textMix = TextStyling(
+          textDirectives: [const TitleCaseStringDirective()],
+        );
 
         expect(textMix.$textDirectives, isNotNull);
         expect(textMix.$textDirectives!.length, 1);
@@ -265,7 +301,9 @@ void main() {
       test(
         'sentenceCase factory creates TextMix with sentenceCase directive',
         () {
-          final textMix = TextStyling(textDirectives: [const SentenceCaseStringDirective()]);
+          final textMix = TextStyling(
+            textDirectives: [const SentenceCaseStringDirective()],
+          );
 
           expect(textMix.$textDirectives, isNotNull);
           expect(textMix.$textDirectives!.length, 1);
@@ -317,15 +355,15 @@ void main() {
 
       test('maybeValue returns attribute for non-null spec', () {
         const spec = TextSpec(overflow: TextOverflow.visible, maxLines: 1);
-        final attribute = spec != null ? TextStyling(
+        final attribute = TextStyling(
           overflow: spec.overflow,
           textAlign: spec.textAlign,
           maxLines: spec.maxLines,
           softWrap: spec.softWrap,
-        ) : null;
+        );
 
         expect(attribute, isNotNull);
-        expect(attribute!.$overflow, resolvesTo(TextOverflow.visible));
+        expect(attribute.$overflow, resolvesTo(TextOverflow.visible));
         expect(attribute.$maxLines, resolvesTo(1));
       });
     });
@@ -463,7 +501,9 @@ void main() {
       });
 
       test('fontFeatures utility works correctly', () {
-        final attribute = TextStyling().fontFeatures([FontFeature.enable('liga')]);
+        final attribute = TextStyling().fontFeatures([
+          FontFeature.enable('liga'),
+        ]);
 
         expect(attribute.$style, isNotNull);
       });
@@ -489,7 +529,9 @@ void main() {
       });
 
       test('decorationStyle utility works correctly', () {
-        final attribute = TextStyling().decorationStyle(TextDecorationStyle.dotted);
+        final attribute = TextStyling().decorationStyle(
+          TextDecorationStyle.dotted,
+        );
 
         expect(attribute.$style, isNotNull);
       });
@@ -659,9 +701,7 @@ void main() {
             .textAlign(TextAlign.center);
 
         expect(attr1, equals(attr2));
-        // Skip hashCode test due to infrastructure issue with list instances
-        // TODO: Fix hashCode contract violation in Mix 2.0
-        // expect(attr1.hashCode, equals(attr2.hashCode));
+        expect(attr1.hashCode, equals(attr2.hashCode));
       });
 
       test('different attributes are not equal', () {

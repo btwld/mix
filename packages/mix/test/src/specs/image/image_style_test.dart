@@ -66,65 +66,65 @@ void main() {
 
     group('Factory Constructors', () {
       test('', () {
-        final imageMix = ImageStyle.width(150.0);
+        final imageMix = ImageStyle().width(150.0);
 
         expect(imageMix.$width, resolvesTo(150.0));
       });
 
       test('', () {
-        final imageMix = ImageStyle.height(250.0);
+        final imageMix = ImageStyle().height(250.0);
 
         expect(imageMix.$height, resolvesTo(250.0));
       });
 
       test('', () {
-        final imageMix = ImageStyle.color(Colors.blue);
+        final imageMix = ImageStyle().color(Colors.blue);
 
         expect(imageMix.$color, resolvesTo(Colors.blue));
       });
 
       test('', () {
         final animation = AnimationConfig.linear(Duration(seconds: 1));
-        final imageMix = ImageStyle.animate(animation);
+        final imageMix = ImageStyle().animate(animation);
 
         expect(imageMix.$animation, animation);
       });
 
       test('', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = ImageStyle.color(Colors.white);
-        final imageMix = ImageStyle.variant(variant, style);
+        final style = ImageStyle().color(Colors.white);
+        final imageMix = ImageStyle().variant(variant, style);
 
         expect(imageMix.$variants, isNotNull);
         expect(imageMix.$variants!.length, 1);
       });
 
       test('', () {
-        final imageMix = ImageStyle.semanticLabel('My Image');
+        final imageMix = ImageStyle().semanticLabel('My Image');
 
         expect(imageMix.$semanticLabel, resolvesTo('My Image'));
       });
 
       test('', () {
-        final imageMix = ImageStyle.excludeFromSemantics(true);
+        final imageMix = ImageStyle().excludeFromSemantics(true);
 
         expect(imageMix.$excludeFromSemantics, resolvesTo(true));
       });
 
       test('', () {
-        final imageMix = ImageStyle.gaplessPlayback(true);
+        final imageMix = ImageStyle().gaplessPlayback(true);
 
         expect(imageMix.$gaplessPlayback, resolvesTo(true));
       });
 
       test('', () {
-        final imageMix = ImageStyle.isAntiAlias(false);
+        final imageMix = ImageStyle().isAntiAlias(false);
 
         expect(imageMix.$isAntiAlias, resolvesTo(false));
       });
 
       test('', () {
-        final imageMix = ImageStyle.matchTextDirection(true);
+        final imageMix = ImageStyle().matchTextDirection(true);
 
         expect(imageMix.$matchTextDirection, resolvesTo(true));
       });
@@ -228,7 +228,7 @@ void main() {
     group('Variant Methods', () {
       test('', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = ImageStyle.color(Colors.white);
+        final style = ImageStyle().color(Colors.white);
         final imageMix = ImageStyle().variant(variant, style);
 
         expect(imageMix.$variants, isNotNull);
@@ -239,11 +239,11 @@ void main() {
         final variants = [
           VariantStyle(
             ContextVariant.brightness(Brightness.dark),
-            ImageStyle.color(Colors.white),
+            ImageStyle().color(Colors.white),
           ),
           VariantStyle(
             ContextVariant.brightness(Brightness.light),
-            ImageStyle.color(Colors.black),
+            ImageStyle().color(Colors.black),
           ),
         ];
         final imageMix = ImageStyle().variants(variants);
@@ -345,9 +345,7 @@ void main() {
             .color(Colors.blue);
 
         expect(attr1, equals(attr2));
-        // Skip hashCode test due to infrastructure issue with list instances
-        // TODO: Fix hashCode contract violation in Mix 2.0
-        // expect(attr1.hashCode, equals(attr2.hashCode));
+        expect(attr1.hashCode, equals(attr2.hashCode));
       });
 
       test('different attributes are not equal', () {

@@ -109,24 +109,23 @@ class IconStyle extends Style<IconSpec>
          inherit: inherit,
        );
 
-  // Static factory to create from resolved Spec
-  static IconStyle value(IconSpec spec) {
-    return IconStyle(
-      color: spec.color,
-      size: spec.size,
-      weight: spec.weight,
-      grade: spec.grade,
-      opticalSize: spec.opticalSize,
-      shadows: spec.shadows?.map((shadow) => ShadowMix.value(shadow)).toList(),
-      textDirection: spec.textDirection,
-      applyTextScaling: spec.applyTextScaling,
-      fill: spec.fill,
-      semanticsLabel: spec.semanticsLabel,
-      opacity: spec.opacity,
-      blendMode: spec.blendMode,
-      icon: spec.icon,
-    );
-  }
+  // Named constructor to create from resolved Spec
+  IconStyle.value(IconSpec spec)
+      : this(
+          color: spec.color,
+          size: spec.size,
+          weight: spec.weight,
+          grade: spec.grade,
+          opticalSize: spec.opticalSize,
+          shadows: spec.shadows?.map((shadow) => ShadowMix.value(shadow)).toList(),
+          textDirection: spec.textDirection,
+          applyTextScaling: spec.applyTextScaling,
+          fill: spec.fill,
+          semanticsLabel: spec.semanticsLabel,
+          opacity: spec.opacity,
+          blendMode: spec.blendMode,
+          icon: spec.icon,
+        );
 
   /// Constructor that accepts a nullable [IconSpec] value and extracts its properties.
   ///

@@ -48,34 +48,34 @@ void main() {
 
     group('Factory Constructors', () {
       test('', () {
-        final iconMix = IconStyle.color(Colors.red);
+        final iconMix = IconStyle().color(Colors.red);
 
         expect(iconMix.$color, resolvesTo(Colors.red));
       });
 
       test('', () {
-        final iconMix = IconStyle.size(32.0);
+        final iconMix = IconStyle().size(32.0);
 
         expect(iconMix.$size, resolvesTo(32.0));
       });
 
       test('', () {
-        final iconMix = IconStyle.weight(500.0);
+        final iconMix = IconStyle().weight(500.0);
 
         expect(iconMix.$weight, resolvesTo(500.0));
       });
 
       test('', () {
         final animation = AnimationConfig.linear(Duration(seconds: 1));
-        final iconMix = IconStyle.animate(animation);
+        final iconMix = IconStyle().animate(animation);
 
         expect(iconMix.$animation, animation);
       });
 
       test('', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = IconStyle.color(Colors.white);
-        final iconMix = IconStyle.variant(variant, style);
+        final style = IconStyle().color(Colors.white);
+        final iconMix = IconStyle().variant(variant, style);
 
         expect(iconMix.$variants, isNotNull);
         expect(iconMix.$variants!.length, 1);
@@ -167,7 +167,7 @@ void main() {
     group('Variant Methods', () {
       test('', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = IconStyle.color(Colors.white);
+        final style = IconStyle().color(Colors.white);
         final iconMix = IconStyle().variant(variant, style);
 
         expect(iconMix.$variants, isNotNull);
@@ -178,11 +178,11 @@ void main() {
         final variants = [
           VariantStyle(
             ContextVariant.brightness(Brightness.dark),
-            IconStyle.color(Colors.white),
+            IconStyle().color(Colors.white),
           ),
           VariantStyle(
             ContextVariant.brightness(Brightness.light),
-            IconStyle.color(Colors.black),
+            IconStyle().color(Colors.black),
           ),
         ];
         final iconMix = IconStyle().variants(variants);

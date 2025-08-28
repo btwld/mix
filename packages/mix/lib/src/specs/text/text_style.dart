@@ -125,33 +125,33 @@ class TextStyling extends Style<TextSpec>
          inherit: inherit,
        );
 
-  /// Constructor that accepts a [TextSpec] value and extracts its properties.
+  /// Named constructor to create TextStyling from TextSpec.
   ///
-  /// This is useful for converting existing [TextSpec] instances to [TextStyle].
+  /// This is useful for converting existing [TextSpec] instances to [TextStyling].
   ///
   /// ```dart
   /// const spec = TextSpec(overflow: TextOverflow.ellipsis, maxLines: 2);
-  /// final attr = TextStyle.value(spec);
+  /// final attr = TextStyling.value(spec);
   /// ```
   TextStyling.value(TextSpec spec)
-    : this(
-        overflow: spec.overflow,
-        strutStyle: StrutStyleMix.maybeValue(spec.strutStyle),
-        textAlign: spec.textAlign,
-        textScaler: spec.textScaler,
-        maxLines: spec.maxLines,
-        style: TextStyleMix.maybeValue(spec.style),
-        textWidthBasis: spec.textWidthBasis,
-        textHeightBehavior: TextHeightBehaviorMix.maybeValue(
-          spec.textHeightBehavior,
-        ),
-        textDirection: spec.textDirection,
-        softWrap: spec.softWrap,
-        textDirectives: spec.textDirectives,
-        selectionColor: spec.selectionColor,
-        semanticsLabel: spec.semanticsLabel,
-        locale: spec.locale,
-      );
+      : this(
+          overflow: spec.overflow,
+          strutStyle: StrutStyleMix.maybeValue(spec.strutStyle),
+          textAlign: spec.textAlign,
+          textScaler: spec.textScaler,
+          maxLines: spec.maxLines,
+          style: TextStyleMix.maybeValue(spec.style),
+          textWidthBasis: spec.textWidthBasis,
+          textHeightBehavior: TextHeightBehaviorMix.maybeValue(
+            spec.textHeightBehavior,
+          ),
+          textDirection: spec.textDirection,
+          softWrap: spec.softWrap,
+          textDirectives: spec.textDirectives,
+          selectionColor: spec.selectionColor,
+          semanticsLabel: spec.semanticsLabel,
+          locale: spec.locale,
+        );
 
   /// Constructor that accepts a nullable [TextSpec] value and extracts its properties.
   ///
