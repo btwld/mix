@@ -11,7 +11,7 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = Style.box(
+    final style = BoxStyle()
         .height(100)
         .width(200)
         .borderRadius(.circular(16))
@@ -28,9 +28,8 @@ class Example extends StatelessWidget {
               Colors.purple.shade400,
               Colors.pink.shade300
             ])
-        )
-      
-    ));
+          ),
+        );
 
     return Box(style: style);
   }

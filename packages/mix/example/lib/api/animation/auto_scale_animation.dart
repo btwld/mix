@@ -29,7 +29,7 @@ class _ExampleState extends State<Example> {
 
   @override
   Widget build(BuildContext context) {
-    final style = Style.box(
+    final style = BoxStyle()
         .color(Colors.black)
         .height(100)
         .width(100)
@@ -37,8 +37,7 @@ class _ExampleState extends State<Example> {
         .transformAlignment(.center)
         .translate(appear ? 0 : -50, 0)
         .scale(appear ? 1 : 0.1)
-        .animate(.easeInOut(1.s))
-    );
+        .animate(.easeInOut(1.s));
 
     return Box(style: style);
   }

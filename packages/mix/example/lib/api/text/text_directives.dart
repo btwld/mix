@@ -11,17 +11,15 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final baseStyle = Style.text(
+    final baseStyle = TextStyling()
         .fontSize(18)
         .fontWeight(.w600)
-        .color(Colors.blue.shade700)
-    );
+        .color(Colors.blue.shade700);
 
     return VBox(
-      style: Style.flexbox(
+      style: FlexBoxStyle()
         .spacing(16)
-        .mainAxisSize(.min)
-      ),
+        .mainAxisSize(.min),
       children: [
         StyledText('hello world', style: baseStyle.uppercase()),
         StyledText('HELLO WORLD', style: baseStyle.lowercase()),

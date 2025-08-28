@@ -32,7 +32,7 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
           });
         },
         child: Box(
-          style: Style.box(
+          style: BoxStyle()
               .color(
                 _trigger.value ? Colors.deepPurpleAccent : Colors.grey.shade300,
               )
@@ -43,10 +43,9 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
               .alignment(
                 _trigger.value ? .centerRight : .centerLeft,
               )
-              .animate(.easeOut(300.ms))
-          ),
+              .animate(.easeOut(300.ms)),
           child: Box(
-            style: Style.box(
+            style: BoxStyle()
                 .height(30)
                 .width(40)
                 .color(Colors.white)
@@ -90,7 +89,7 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
             ),
           ),
         ),
-      ),
+    
     );
   }
 }

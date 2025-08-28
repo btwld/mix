@@ -44,12 +44,11 @@ class _Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = Style.box(
+    final style = BoxStyle()
         .borderRadius(.topLeft($pill()))
         .color($primaryColor())
         .height(100)
-        .width(100)
-    );
+        .width(100);
 
     return Box(style: style);
   }

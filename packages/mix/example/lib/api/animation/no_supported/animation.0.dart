@@ -51,30 +51,28 @@ class _DemoAppState extends State<DemoApp> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  BoxStyle get _boxStyle => Style.box(
-    BoxStyle()
-        .color(Colors.blueAccent.shade400)
-        .padding(EdgeInsetsMix.symmetric(horizontal: 16, vertical: 8))
-        .borderRadius(BorderRadiusMix.circular(30))
-        .foregroundDecoration(
-          BoxDecorationMix.gradient(
-            LinearGradientMix()
-                .colors([
-                  Colors.white.withValues(alpha: 0),
-                  Colors.white.withValues(alpha: 0.2),
-                  Colors.white.withValues(alpha: 0.2),
-                  Colors.white.withValues(alpha: 0),
-                ])
-                .stops([0.0, 0.3, 0.4, 1])
-                .tileMode(TileMode.clamp)
-                .transform(
-                  _SlidingGradientTransform(
-                    slidePercent: _tween.animate(_animatedCurve).value,
-                  ),
+  BoxStyle get _boxStyle => BoxStyle()
+      .color(Colors.blueAccent.shade400)
+      .padding(EdgeInsetsMix.symmetric(horizontal: 16, vertical: 8))
+      .borderRadius(BorderRadiusMix.circular(30))
+      .foregroundDecoration(
+        BoxDecorationMix.gradient(
+          LinearGradientMix()
+              .colors([
+                Colors.white.withValues(alpha: 0),
+                Colors.white.withValues(alpha: 0.2),
+                Colors.white.withValues(alpha: 0.2),
+                Colors.white.withValues(alpha: 0),
+              ])
+              .stops([0.0, 0.3, 0.4, 1])
+              .tileMode(TileMode.clamp)
+              .transform(
+                _SlidingGradientTransform(
+                  slidePercent: _tween.animate(_animatedCurve).value,
                 ),
-          ),
+              ),
         ),
-  );
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -87,9 +85,9 @@ class _DemoAppState extends State<DemoApp> with TickerProviderStateMixin {
               style: _boxStyle,
               child: StyledText(
                 'Update',
-                style: Style.text(
-                  TextStyling.color(Colors.white).fontWeight(FontWeight.w500),
-                ),
+                style: TextStyling()
+                    .color(Colors.white)
+                    .fontWeight(FontWeight.w500),
               ),
             );
           },

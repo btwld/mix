@@ -40,28 +40,25 @@ class _ExampleState extends State<Example> {
       child: HBox(
         style:
             Style.flexbox(
-                  FlexBoxStyle().box(
-                    BoxMix()
-                        .color(Colors.white)
-                        .padding(
-                          EdgeInsetsMix.symmetric(horizontal: 16, vertical: 8),
-                        )
-                        .borderRadius(BorderRadiusMix.circular(10))
-                        .border(
-                          BoxBorderMix.all(
-                            BorderSideMix.color(Colors.grey.shade200),
-                          ),
-                        ),
-                  ),
-                )
-                .flex(FlexMix(mainAxisSize: MainAxisSize.min, spacing: 8))
-                .onHovered(
-                  FlexBoxStyle().box(
-                    BoxMix().border(
-                      BoxBorderMix.all(BorderSideMix.color(Colors.red)),
+              FlexBoxStyle(
+                decoration: BoxDecorationMix.color(Colors.white)
+                    .borderRadius(BorderRadiusMix.circular(10))
+                    .border(
+                      BoxBorderMix.all(
+                        BorderSideMix.color(Colors.grey.shade200),
+                      ),
                     ),
-                  ),
+                padding: EdgeInsetsMix.symmetric(horizontal: 16, vertical: 8),
+                mainAxisSize: MainAxisSize.min,
+                spacing: 8,
+              ),
+            ).onHovered(
+              FlexBoxStyle(
+                decoration: BoxDecorationMix().border(
+                  BoxBorderMix.all(BorderSideMix.color(Colors.red)),
                 ),
+              ),
+            ),
 
         children: [
           Text('Developer Preview'),
@@ -102,30 +99,26 @@ class ArrowIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Box(
-      style: Style.box(
-        BoxStyle()
-            .color(Colors.grey.shade200)
-            .borderRadius(BorderRadiusMix.circular(10))
-            .size(20, 20)
-            .clipBehavior(Clip.hardEdge),
-      ),
+      style: BoxStyle()
+          .color(Colors.grey.shade200)
+          .borderRadius(BorderRadiusMix.circular(10))
+          .size(20, 20)
+          .clipBehavior(Clip.hardEdge),
 
       child: Box(
-        style: Style.box(
-          BoxStyle().phaseAnimation(
-            trigger: animationTrigger,
-            phases: ArrowPhases.values,
-            styleBuilder: (phase, style) =>
-                style.translate(phase.offset.dx, phase.offset.dy),
-            configBuilder: (phase) => CurveAnimationConfig(
-              duration: phase.duration,
-              curve: phase.curve,
-            ),
+        style: BoxStyle().phaseAnimation(
+          trigger: animationTrigger,
+          phases: ArrowPhases.values,
+          styleBuilder: (phase, style) =>
+              style.translate(phase.offset.dx, phase.offset.dy),
+          configBuilder: (phase) => CurveAnimationConfig(
+            duration: phase.duration,
+            curve: phase.curve,
           ),
         ),
         child: StyledIcon(
           icon: CupertinoIcons.arrow_up_right,
-          style: Style.icon(IconStyle().color(Colors.grey.shade500).size(14)),
+          style: IconStyle().color(Colors.grey.shade500).size(14),
         ),
       ),
     );
