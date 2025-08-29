@@ -16,7 +16,7 @@ import 'internal/compare_mixin.dart';
 import 'mix_element.dart';
 import 'modifier.dart';
 import 'spec.dart';
-import 'widget_spec.dart';
+import 'style_spec.dart';
 
 /// This is used just to pass all the values into one place if needed
 @internal

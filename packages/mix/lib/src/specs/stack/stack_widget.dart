@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/style_builder.dart';
+import '../../core/style_spec.dart';
 import '../../core/style_widget.dart';
-import '../../core/widget_spec.dart';
 import '../box/box_widget.dart';
 import 'stack_box_spec.dart';
 import 'stack_box_style.dart';

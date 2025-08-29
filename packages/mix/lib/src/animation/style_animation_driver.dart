@@ -3,7 +3,7 @@ import 'package:flutter/physics.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/spec.dart';
-import '../core/widget_spec.dart';
+import '../core/style_spec.dart';
 import 'animation_config.dart';
 
 /// Tween that uses TweenSequence for phased animations.
@@ -344,8 +344,7 @@ class KeyframeAnimationDriver<S extends Spec<S>>
   bool get autoAnimateOnUpdate => false;
 }
 
-class _KeyframeAnimatable<S extends Spec<S>>
-    extends Animatable<StyleSpec<S>?> {
+class _KeyframeAnimatable<S extends Spec<S>> extends Animatable<StyleSpec<S>?> {
   final Map<String, Animatable> _sequenceMap;
   final KeyframeAnimationConfig<S> _config;
   final BuildContext _context;

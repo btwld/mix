@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import 'internal/compare_mixin.dart';
-import 'widget_spec.dart';
+import 'style_spec.dart';
 
 /// Base class for all resolved specifications that define widget properties.
 ///

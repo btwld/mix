@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../core/spec.dart';
-import '../core/widget_spec.dart';
+import '../core/style_spec.dart';
 import 'animation_config.dart';
 import 'style_animation_driver.dart';
 

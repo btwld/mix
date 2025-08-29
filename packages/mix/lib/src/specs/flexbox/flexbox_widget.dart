@@ -3,8 +3,8 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/style_builder.dart';
+import '../../core/style_spec.dart';
 import '../../core/style_widget.dart';
-import '../../core/widget_spec.dart';
 import '../box/box_widget.dart';
 import '../flex/flex_spec.dart';
 import 'flexbox_spec.dart';

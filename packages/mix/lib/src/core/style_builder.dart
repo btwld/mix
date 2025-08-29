@@ -4,11 +4,11 @@ import '../animation/style_animation_builder.dart';
 import '../modifiers/internal/render_modifier.dart';
 import 'internal/mix_interaction_detector.dart';
 import 'providers/style_provider.dart';
-import 'providers/widget_spec_provider.dart';
+import 'providers/style_spec_provider.dart';
 import 'providers/widget_state_provider.dart';
 import 'spec.dart';
 import 'style.dart';
-import 'widget_spec.dart';
+import 'style_spec.dart';
 
 /// Builds widgets with Mix styling.
 ///

@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../../core/spec.dart';
-import '../../core/widget_spec.dart';
+import '../../core/style_spec.dart';
 import '../box/box_spec.dart';
 import '../flex/flex_spec.dart';
 

@@ -5,7 +5,7 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
-import '../../core/widget_spec.dart';
+import '../../core/style_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../properties/layout/constraints_mix.dart';
 import '../../properties/layout/constraints_mixin.dart';
@@ -91,7 +91,6 @@ class StackBoxStyle extends Style<ZBoxSpec>
     super.modifier,
     super.animation,
     super.variants,
-
   }) : $box = box,
        $stack = stack;
 

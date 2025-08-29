@@ -5,7 +5,7 @@ import '../animation/animation_config.dart';
 import '../modifiers/modifier_config.dart';
 import 'spec.dart';
 import 'style.dart';
-import 'widget_spec.dart';
+import 'style_spec.dart';
 
 /// Mutable builder for StyleAttribute with cascade notation support.
 ///

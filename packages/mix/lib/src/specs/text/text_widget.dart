@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../core/directive.dart';
 import '../../core/style_builder.dart';
+import '../../core/style_spec.dart';
 import '../../core/style_widget.dart';
-import '../../core/widget_spec.dart';
 import 'text_spec.dart';
 import 'text_style.dart';
 
