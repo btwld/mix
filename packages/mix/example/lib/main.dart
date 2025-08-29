@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'components/custom_scaffold.dart';
 import 'components/chip_button.dart';
-import 'api/animation/hover_scale_animation.dart' as hover_scale;
-import 'api/animation/auto_scale_animation.dart' as auto_scale;
-import 'api/animation/tap_phase_animation.dart' as tap_phase;
-import 'api/animation/animated_switch.dart' as animated_switch;
-import 'api/animation/spring_animation.dart' as spring_anim;
+import 'api/animation/implicit.curved.hover.dart' as hover_scale;
+import 'api/animation/implicit.curved.scale.dart' as auto_scale;
+import 'api/animation/phase.compress.dart' as tap_phase;
+import 'api/animation/keyframe.switch.dart' as animated_switch;
+import 'api/animation/implicit.spring.translate.dart' as spring_anim;
 import 'api/context_variants/disabled.dart' as disabled;
 import 'api/context_variants/focused.dart' as focused;
 import 'api/context_variants/hovered.dart' as hovered;

@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import 'internal/compare_mixin.dart';
+import 'widget_spec.dart';
 
 /// Base class for all resolved specifications that define widget properties.
 ///
@@ -26,6 +27,18 @@ class SpecTween<T extends Spec<T>> extends Tween<T?> {
 
   @override
   T? lerp(double t) {
+    if (begin == null) return end;
+    if (end == null) return begin;
+
+    return begin?.lerp(end, t);
+  }
+}
+
+class WidgeSpecTween<S extends Spec<S>> extends Tween<WidgetSpec<S>?> {
+  WidgeSpecTween({super.begin, super.end});
+
+  @override
+  WidgetSpec<S>? lerp(double t) {
     if (begin == null) return end;
     if (end == null) return begin;
 

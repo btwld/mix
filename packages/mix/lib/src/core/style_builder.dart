@@ -112,10 +112,7 @@ class WidgetSpecBuilder<S extends Spec<S>> extends StatelessWidget {
     Widget current = builder(context, wrappedSpec.spec);
 
     // Always wrap with WidgetSpecProvider first
-    current = WidgetSpecProvider<WidgetSpec<S>, S>(
-      spec: wrappedSpec,
-      child: current,
-    );
+    current = WidgetSpecProvider<S>(spec: wrappedSpec, child: current);
 
     if (wrappedSpec.widgetModifiers != null &&
         wrappedSpec.widgetModifiers!.isNotEmpty) {
@@ -127,14 +124,14 @@ class WidgetSpecBuilder<S extends Spec<S>> extends StatelessWidget {
     }
 
     if (animationConfig != null) {
-      return StyleAnimationBuilder<WidgetSpec<S>>(
+      return StyleAnimationBuilder<S>(
         spec: wrappedSpec,
         animationConfig: animationConfig,
         builder: (context, animatedWrappedSpec) {
           Widget animatedChild = builder(context, animatedWrappedSpec.spec);
 
           // Always wrap with WidgetSpecProvider first
-          animatedChild = WidgetSpecProvider<WidgetSpec<S>, S>(
+          animatedChild = WidgetSpecProvider<S>(
             spec: animatedWrappedSpec,
             child: animatedChild,
           );

@@ -3,16 +3,17 @@ import 'package:flutter/physics.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/spec.dart';
+import '../core/widget_spec.dart';
 import 'animation_config.dart';
 
 /// Tween that uses TweenSequence for phased animations.
-class _PhasedSpecTween<S extends Spec<S>> extends Tween<S?> {
-  final TweenSequence<S?> _tweenSequence;
+class _PhasedSpecTween<S extends Spec<S>> extends Tween<WidgetSpec<S>?> {
+  final TweenSequence<WidgetSpec<S>?> _tweenSequence;
 
   _PhasedSpecTween(this._tweenSequence);
 
   @override
-  S? lerp(double t) {
+  WidgetSpec<S>? lerp(double t) {
     return _tweenSequence.transform(t);
   }
 }
@@ -28,19 +29,19 @@ abstract class StyleAnimationDriver<S extends Spec<S>> {
   /// The animation controller managing the animation.
   late final AnimationController _controller;
 
-  final S _initialSpec;
+  final WidgetSpec<S> _initialSpec;
 
   /// Mutable tween for animating between specs.
   @protected
-  final _tween = SpecTween<S>();
+  final _tween = SpecTween<WidgetSpec<S>>();
 
   /// The animation that drives spec changes using Flutter's Tween system.
   @protected
-  late Animation<S?> _animation;
+  late Animation<WidgetSpec<S>?> _animation;
 
   StyleAnimationDriver({
     required this.vsync,
-    required S initialSpec,
+    required WidgetSpec<S> initialSpec,
     bool unbounded = false,
   }) : _initialSpec = initialSpec {
     _controller = unbounded
@@ -62,11 +63,14 @@ abstract class StyleAnimationDriver<S extends Spec<S>> {
   AnimationController get controller => _controller;
 
   /// Gets the animation that drives spec changes.
-  Animation<S?> get animation => _animation;
+  Animation<WidgetSpec<S>?> get animation => _animation;
+
+  /// Whether the animation should automatically animate to the new spec when the spec changes.
+  bool get autoAnimateOnUpdate;
 
   /// Animates to the given target spec.
   @nonVirtual
-  Future<void> animateTo(S targetSpec) async {
+  Future<void> animateTo(WidgetSpec<S> targetSpec) async {
     if (_tween.end == targetSpec && !_controller.isAnimating) return;
 
     final currentValue = _animation.value ?? _initialSpec;
@@ -113,12 +117,6 @@ class CurveAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     required CurveAnimationConfig config,
     required super.initialSpec,
   }) : _config = config {
-    // Override the animation with curve applied
-    _animation = CurvedAnimation(
-      parent: controller,
-      curve: _config.curve,
-    ).drive(_tween);
-
     // Add status listener for onEnd callback
     if (config.onEnd != null) {
       _animation.addStatusListener((status) {
@@ -129,17 +127,33 @@ class CurveAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     }
   }
 
+  TweenSequence<WidgetSpec<S>?> _createTweenSequence() => TweenSequence([
+    if (_config.delay > Duration.zero)
+      TweenSequenceItem(
+        tween: ConstantTween(_tween.begin),
+        weight: _config.delay.inMilliseconds.toDouble(),
+      ),
+    TweenSequenceItem(
+      tween: _tween.chain(CurveTween(curve: _config.curve)),
+      weight: _config.duration.inMilliseconds.toDouble(),
+    ),
+  ]);
+
   @override
   Future<void> executeAnimation() async {
-    controller.duration = _config.duration;
+    controller.duration = _config.totalDuration;
+
+    _animation = controller.drive(_createTweenSequence());
 
     try {
-      await Future.delayed(_config.delay);
       await controller.forward(from: 0.0);
     } on TickerCanceled {
       // Animation was cancelled - this is normal
     }
   }
+
+  @override
+  bool get autoAnimateOnUpdate => true;
 }
 
 /// A driver for spring-based physics animations.
@@ -172,15 +186,17 @@ class SpringAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
       // Animation was cancelled - this is normal
     }
   }
+
+  @override
+  bool get autoAnimateOnUpdate => true;
 }
 
 class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
-  final List<S> specs;
+  final List<WidgetSpec<S>> specs;
   final List<CurveAnimationConfig> curveConfigs;
   final Listenable trigger;
-  final PhaseAnimationMode mode;
 
-  late final TweenSequence<S?> _tweenSequence;
+  late final TweenSequence<WidgetSpec<S>?> _tweenSequence;
 
   PhaseAnimationDriver({
     required super.vsync,
@@ -188,9 +204,8 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     required this.specs,
     required super.initialSpec,
     required this.trigger,
-    required this.mode,
   }) {
-    _tweenSequence = mode.createTweenSequence(specs, curveConfigs);
+    _tweenSequence = _createTweenSequence(specs, curveConfigs);
 
     // Override the animation to use TweenSequence wrapped in a tween
     _animation = controller.drive(_PhasedSpecTween(_tweenSequence));
@@ -211,10 +226,43 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     executeAnimation();
   }
 
+  TweenSequence<WidgetSpec<S>?> _createTweenSequence(
+    List<WidgetSpec<S>> specs,
+    List<CurveAnimationConfig> configs,
+  ) {
+    final items = <TweenSequenceItem<WidgetSpec<S>?>>[];
+    for (int i = 0; i < specs.length; i++) {
+      final currentIndex = i % specs.length;
+      final nextIndex = (i + 1) % specs.length;
+
+      if (configs[currentIndex].delay > Duration.zero) {
+        items.add(
+          TweenSequenceItem(
+            tween: ConstantTween(specs[currentIndex]),
+            weight: configs[currentIndex].delay.inMilliseconds.toDouble(),
+          ),
+        );
+      }
+
+      final tween = SpecTween<WidgetSpec<S>>(
+        begin: specs[currentIndex],
+        end: specs[nextIndex],
+      );
+      final item = TweenSequenceItem(
+        tween: tween.chain(CurveTween(curve: configs[currentIndex].curve)),
+        weight: configs[currentIndex].duration.inMilliseconds.toDouble(),
+      );
+
+      items.add(item);
+    }
+
+    return TweenSequence(items);
+  }
+
   Duration get totalDuration {
     return curveConfigs.fold(
       Duration.zero,
-      (acc, config) => acc + config.duration + config.delay,
+      (acc, config) => acc + config.totalDuration,
     );
   }
 
@@ -229,5 +277,91 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     controller.duration = totalDuration;
 
     await controller.forward(from: 0.0);
+  }
+
+  @override
+  bool get autoAnimateOnUpdate => false;
+}
+
+/// A driver for keyframe-based animations with complex timeline control.
+class KeyframeAnimationDriver<S extends Spec<S>>
+    extends StyleAnimationDriver<S> {
+  final BuildContext context;
+
+  final KeyframeAnimationConfig<S> _config;
+  late final Map<String, Animatable> _sequenceMap;
+
+  KeyframeAnimationDriver({
+    required super.vsync,
+    required KeyframeAnimationConfig<S> config,
+    required super.initialSpec,
+    required this.context,
+  }) : _config = config {
+    _sequenceMap = {
+      for (final track in _config.timeline)
+        track.id: track.createSequenceTween(duration),
+    };
+
+    _animation = controller.drive(
+      _KeyframeAnimatable(_sequenceMap, _config, context),
+    );
+
+    // Listen to the trigger
+    _config.trigger.addListener(_onTriggerChanged);
+  }
+
+  void _onTriggerChanged() {
+    executeAnimation();
+  }
+
+  Duration get duration {
+    if (_config.timeline.isEmpty) return Duration.zero;
+
+    return _config.timeline.fold(
+      Duration.zero,
+      (max, t) => t.totalDuration > max ? t.totalDuration : max,
+    );
+  }
+
+  @override
+  void dispose() {
+    _config.trigger.removeListener(_onTriggerChanged);
+    super.dispose();
+  }
+
+  @override
+  Future<void> executeAnimation() async {
+    controller.duration = duration;
+
+    try {
+      await controller.forward(from: 0.0);
+    } on TickerCanceled {
+      // Animation was cancelled - this is normal
+    }
+  }
+
+  @override
+  bool get autoAnimateOnUpdate => false;
+}
+
+class _KeyframeAnimatable<S extends Spec<S>>
+    extends Animatable<WidgetSpec<S>?> {
+  final Map<String, Animatable> _sequenceMap;
+  final KeyframeAnimationConfig<S> _config;
+  final BuildContext _context;
+
+  const _KeyframeAnimatable(this._sequenceMap, this._config, this._context);
+
+  @override
+  WidgetSpec<S> transform(double t) {
+    Map<String, Object> result = {};
+    for (final entry in _sequenceMap.entries) {
+      final value = entry.value.transform(t);
+      result[entry.key] = value;
+    }
+
+    return _config
+        .styleBuilder(KeyframeAnimationResult(result), _config.initialStyle)
+        .resolve(_context);
   }
 }

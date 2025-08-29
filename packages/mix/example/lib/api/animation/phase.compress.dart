@@ -41,9 +41,6 @@ class _BlockAnimationState extends State<BlockAnimation> {
   @override
   Widget build(BuildContext context) {
 
-
-
-
     final style = $box 
         .color(Colors.deepPurple)
         .height(100)

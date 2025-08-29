@@ -8,12 +8,26 @@ mixin StyleAnimationMixin<S extends Spec<S>, T extends Style<S>> on Style<S> {
   @protected
   T animate(AnimationConfig config);
 
+  T keyframes({
+    required Listenable trigger,
+    required List<KeyframeTrack> timeline,
+    required KeyframeStyleBuilder<S, T> styleBuilder,
+  }) {
+    return animate(
+      KeyframeAnimationConfig<S>(
+        trigger: trigger,
+        timeline: timeline,
+        styleBuilder: (values, style) => styleBuilder(values, style as T),
+        initialStyle: this,
+      ),
+    );
+  }
+
   T phaseAnimation<P>({
     required Listenable trigger,
     required List<P> phases,
     required T Function(P phase, T style) styleBuilder,
     required CurveAnimationConfig Function(P phase) configBuilder,
-    PhaseAnimationMode mode = PhaseAnimationMode.simpleLoop,
   }) {
     final styles = <T>[];
     final configs = <CurveAnimationConfig>[];
@@ -28,7 +42,6 @@ mixin StyleAnimationMixin<S extends Spec<S>, T extends Style<S>> on Style<S> {
         styles: styles,
         curveConfigs: configs,
         trigger: trigger,
-        mode: mode,
       ),
     );
   }

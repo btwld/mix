@@ -72,7 +72,7 @@ void main() {
 
         // Verify that the animation wrapper is created
         expect(
-          find.byType(StyleAnimationBuilder<WidgetSpec<BoxSpec>>),
+          find.byType(StyleAnimationBuilder<BoxSpec>),
           findsOneWidget,
         );
       });
@@ -101,7 +101,7 @@ void main() {
 
         // Verify that no animation wrapper is created
         expect(
-          find.byType(StyleAnimationBuilder<WidgetSpec<BoxSpec>>),
+          find.byType(StyleAnimationBuilder<BoxSpec>),
           findsNothing,
         );
       });
@@ -178,7 +178,7 @@ void main() {
           final midContainer = tester.widget<Container>(
             find.byKey(const Key('animated_container')),
           );
-          expect(midContainer.constraints?.minWidth, anyOf(100, 200));
+          expect(midContainer.constraints?.minWidth, anyOf(100, 200, 150.0));
 
           // Complete animation
           await tester.pumpAndSettle();
