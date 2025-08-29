@@ -135,13 +135,13 @@ void main() {
       test('', () {
         final result = util.row();
 
-        expect(result, FlexStyle(direction: Axis.horizontal));
+        expect(result, FlexStyler(direction: Axis.horizontal));
       });
 
       test('', () {
         final result = util.column();
 
-        expect(result, FlexStyle(direction: Axis.vertical));
+        expect(result, FlexStyler(direction: Axis.vertical));
       });
     });
 
@@ -152,13 +152,13 @@ void main() {
         );
         final result = util.animate(animationConfig);
 
-        expect(result, FlexStyle(animation: animationConfig));
+        expect(result, FlexStyler(animation: animationConfig));
       });
     });
 
     group('utility construction', () {
       test('', () {
-        final initialMix = FlexStyle(direction: Axis.horizontal);
+        final initialMix = FlexStyler(direction: Axis.horizontal);
         final utility = FlexSpecUtility(initialMix);
 
         final spec = utility.resolve(MockBuildContext());
@@ -181,7 +181,7 @@ void main() {
       });
 
       test('', () {
-        final other = FlexSpecUtility(FlexStyle(direction: Axis.horizontal));
+        final other = FlexSpecUtility(FlexStyler(direction: Axis.horizontal));
         final result = util.merge(other);
 
         expect(result, isNot(same(util)));
@@ -192,7 +192,7 @@ void main() {
       });
 
       test('', () {
-        final otherMix = FlexStyle(spacing: 8.0);
+        final otherMix = FlexStyler(spacing: 8.0);
         final result = util.merge(otherMix);
 
         expect(result, isNot(same(util)));
@@ -204,10 +204,10 @@ void main() {
 
       test('merge combines properties correctly', () {
         final util1 = FlexSpecUtility(
-          FlexStyle(direction: Axis.horizontal, spacing: 4.0),
+          FlexStyler(direction: Axis.horizontal, spacing: 4.0),
         );
         final util2 = FlexSpecUtility(
-          FlexStyle(spacing: 8.0, clipBehavior: Clip.hardEdge),
+          FlexStyler(spacing: 8.0, clipBehavior: Clip.hardEdge),
         );
 
         final result = util1.merge(util2);
@@ -224,10 +224,10 @@ void main() {
       });
 
       test('handles multiple merges correctly', () {
-        final util1 = FlexSpecUtility(FlexStyle(direction: Axis.horizontal));
-        final util2 = FlexSpecUtility(FlexStyle(spacing: 8.0));
+        final util1 = FlexSpecUtility(FlexStyler(direction: Axis.horizontal));
+        final util2 = FlexSpecUtility(FlexStyler(spacing: 8.0));
         final util3 = FlexSpecUtility(
-          FlexStyle(mainAxisAlignment: MainAxisAlignment.center),
+          FlexStyler(mainAxisAlignment: MainAxisAlignment.center),
         );
 
         final result = util1.merge(util2).merge(util3);
@@ -302,7 +302,7 @@ void main() {
         final context = MockBuildContext(tokens: {gapToken.defineValue(24.0)});
 
         final utility = FlexSpecUtility(
-          FlexStyle.create(spacing: Prop.token(gapToken)),
+          FlexStyler.create(spacing: Prop.token(gapToken)),
         );
         final spec = utility.resolve(context);
 
@@ -322,7 +322,7 @@ void main() {
       test('', () {
         final result = util.wrap.opacity(0.5);
 
-        expect(result, isA<FlexStyle>());
+        expect(result, isA<FlexStyler>());
         expect(result.$modifier, isNotNull);
         expect(result.$modifier!.$modifiers!.length, 1);
       });
@@ -350,7 +350,7 @@ void main() {
       });
 
       test('chaining after construction with initial mix', () {
-        final utility = FlexSpecUtility(FlexStyle(direction: Axis.horizontal))
+        final utility = FlexSpecUtility(FlexStyler(direction: Axis.horizontal))
           ..gap(8.0)
           ..mainAxisAlignment(MainAxisAlignment.center);
 
@@ -384,7 +384,7 @@ void main() {
 
       test('empty utility after chaining with null values', () {
         // This tests the behavior when properties are explicitly set to null
-        final utility = FlexSpecUtility(FlexStyle(direction: Axis.horizontal));
+        final utility = FlexSpecUtility(FlexStyler(direction: Axis.horizontal));
         final spec = utility.resolve(MockBuildContext());
 
         expect(spec.spec.direction, Axis.horizontal);

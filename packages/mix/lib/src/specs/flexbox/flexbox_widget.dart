@@ -16,7 +16,7 @@ import 'flexbox_style.dart';
 /// providing decoration, constraints, and flex layout in one widget.
 class FlexBox extends StyleWidget<FlexBoxSpec> {
   const FlexBox({
-    super.style = const FlexBoxStyle.create(),
+    super.style = const FlexBoxStyler.create(),
     super.key,
     required this.direction,
     this.children = const <Widget>[],
@@ -43,7 +43,7 @@ class FlexBox extends StyleWidget<FlexBoxSpec> {
 /// Shorthand for [FlexBox] with [Axis.horizontal].
 class HBox extends FlexBox {
   const HBox({
-    super.style = const FlexBoxStyle.create(),
+    super.style = const FlexBoxStyler.create(),
     super.key,
     super.children = const <Widget>[],
   }) : super(direction: Axis.horizontal);
@@ -54,7 +54,7 @@ class HBox extends FlexBox {
 /// Shorthand for [FlexBox] with [Axis.vertical].
 class VBox extends FlexBox {
   const VBox({
-    super.style = const FlexBoxStyle.create(),
+    super.style = const FlexBoxStyler.create(),
     super.key,
     super.children = const <Widget>[],
   }) : super(direction: Axis.vertical);

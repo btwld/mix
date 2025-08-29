@@ -26,7 +26,7 @@ import '../flex/flex_style.dart';
 import 'flexbox_spec.dart';
 import 'flexbox_util.dart';
 
-typedef FlexBoxMix = FlexBoxStyle;
+typedef FlexBoxMix = FlexBoxStyler;
 
 /// Represents the attributes of a [FlexBoxSpec].
 ///
@@ -35,21 +35,21 @@ typedef FlexBoxMix = FlexBoxStyle;
 ///
 /// Use this class to configure the attributes of a [FlexBoxSpec] and pass it to
 /// the [FlexBoxSpec] constructor.
-class FlexBoxStyle extends Style<FlexBoxSpec>
+class FlexBoxStyler extends Style<FlexBoxSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<FlexBoxStyle, FlexBoxSpec>,
-        StyleVariantMixin<FlexBoxStyle, FlexBoxSpec>,
-        BorderRadiusMixin<FlexBoxStyle>,
-        DecorationMixin<FlexBoxStyle>,
-        SpacingMixin<FlexBoxStyle>,
-        TransformMixin<FlexBoxStyle>,
-        ConstraintsMixin<FlexBoxStyle> {
+        StyleModifierMixin<FlexBoxStyler, FlexBoxSpec>,
+        StyleVariantMixin<FlexBoxStyler, FlexBoxSpec>,
+        BorderRadiusMixin<FlexBoxStyler>,
+        DecorationMixin<FlexBoxStyler>,
+        SpacingMixin<FlexBoxStyler>,
+        TransformMixin<FlexBoxStyler>,
+        ConstraintsMixin<FlexBoxStyler> {
   final Prop<StyleSpec<BoxSpec>>? $box;
   final Prop<StyleSpec<FlexSpec>>? $flex;
 
   /// Main constructor with individual property parameters
-  FlexBoxStyle({
+  FlexBoxStyler({
     // Box properties
     DecorationMix? decoration,
     DecorationMix? foregroundDecoration,
@@ -89,7 +89,7 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
            ),
          ),
          flex: Prop.maybeMix(
-           FlexStyle(
+           FlexStyler(
              direction: direction,
              mainAxisAlignment: mainAxisAlignment,
              crossAxisAlignment: crossAxisAlignment,
@@ -107,7 +107,7 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
        );
 
   /// Create constructor with Prop`<T>` types for internal use
-  const FlexBoxStyle.create({
+  const FlexBoxStyler.create({
     Prop<StyleSpec<BoxSpec>>? box,
     Prop<StyleSpec<FlexSpec>>? flex,
     super.animation,
@@ -116,75 +116,75 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
   }) : $box = box,
        $flex = flex;
 
-  factory FlexBoxStyle.builder(FlexBoxStyle Function(BuildContext) fn) {
-    return FlexBoxStyle().builder(fn);
+  factory FlexBoxStyler.builder(FlexBoxStyler Function(BuildContext) fn) {
+    return FlexBoxStyler().builder(fn);
   }
 
-  static FlexBoxSpecUtility get chain => FlexBoxSpecUtility(FlexBoxStyle());
+  static FlexBoxSpecUtility get chain => FlexBoxSpecUtility(FlexBoxStyler());
 
   /// Sets animation
-  FlexBoxStyle animate(AnimationConfig animation) {
-    return merge(FlexBoxStyle(animation: animation));
+  FlexBoxStyler animate(AnimationConfig animation) {
+    return merge(FlexBoxStyler(animation: animation));
   }
 
   // BoxMix instance methods
 
-  FlexBoxStyle alignment(AlignmentGeometry value) {
-    return merge(FlexBoxStyle(alignment: value));
+  FlexBoxStyler alignment(AlignmentGeometry value) {
+    return merge(FlexBoxStyler(alignment: value));
   }
 
   /// Foreground decoration instance method
-  FlexBoxStyle foregroundDecoration(DecorationMix value) {
-    return merge(FlexBoxStyle(foregroundDecoration: value));
+  FlexBoxStyler foregroundDecoration(DecorationMix value) {
+    return merge(FlexBoxStyler(foregroundDecoration: value));
   }
 
-  FlexBoxStyle transformAlignment(AlignmentGeometry value) {
-    return merge(FlexBoxStyle(transformAlignment: value));
+  FlexBoxStyler transformAlignment(AlignmentGeometry value) {
+    return merge(FlexBoxStyler(transformAlignment: value));
   }
 
-  FlexBoxStyle clipBehavior(Clip value) {
-    return merge(FlexBoxStyle(clipBehavior: value));
+  FlexBoxStyler clipBehavior(Clip value) {
+    return merge(FlexBoxStyler(clipBehavior: value));
   }
 
   // FlexMix instance methods
   /// Sets flex direction
-  FlexBoxStyle direction(Axis value) {
-    return merge(FlexBoxStyle(direction: value));
+  FlexBoxStyler direction(Axis value) {
+    return merge(FlexBoxStyler(direction: value));
   }
 
   /// Sets main axis alignment
-  FlexBoxStyle mainAxisAlignment(MainAxisAlignment value) {
-    return merge(FlexBoxStyle(mainAxisAlignment: value));
+  FlexBoxStyler mainAxisAlignment(MainAxisAlignment value) {
+    return merge(FlexBoxStyler(mainAxisAlignment: value));
   }
 
   /// Sets cross axis alignment
-  FlexBoxStyle crossAxisAlignment(CrossAxisAlignment value) {
-    return merge(FlexBoxStyle(crossAxisAlignment: value));
+  FlexBoxStyler crossAxisAlignment(CrossAxisAlignment value) {
+    return merge(FlexBoxStyler(crossAxisAlignment: value));
   }
 
   /// Sets main axis size
-  FlexBoxStyle mainAxisSize(MainAxisSize value) {
-    return merge(FlexBoxStyle(mainAxisSize: value));
+  FlexBoxStyler mainAxisSize(MainAxisSize value) {
+    return merge(FlexBoxStyler(mainAxisSize: value));
   }
 
   /// Sets vertical direction
-  FlexBoxStyle verticalDirection(VerticalDirection value) {
-    return merge(FlexBoxStyle(verticalDirection: value));
+  FlexBoxStyler verticalDirection(VerticalDirection value) {
+    return merge(FlexBoxStyler(verticalDirection: value));
   }
 
   /// Sets text direction
-  FlexBoxStyle textDirection(TextDirection value) {
-    return merge(FlexBoxStyle(textDirection: value));
+  FlexBoxStyler textDirection(TextDirection value) {
+    return merge(FlexBoxStyler(textDirection: value));
   }
 
   /// Sets text baseline
-  FlexBoxStyle textBaseline(TextBaseline value) {
-    return merge(FlexBoxStyle(textBaseline: value));
+  FlexBoxStyler textBaseline(TextBaseline value) {
+    return merge(FlexBoxStyler(textBaseline: value));
   }
 
   /// Sets spacing
-  FlexBoxStyle spacing(double value) {
-    return merge(FlexBoxStyle(spacing: value));
+  FlexBoxStyler spacing(double value) {
+    return merge(FlexBoxStyler(spacing: value));
   }
 
   /// Sets gap
@@ -192,63 +192,63 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
     'Use spacing instead. '
     'This feature was deprecated after Mix v2.0.0.',
   )
-  FlexBoxStyle gap(double value) {
-    return merge(FlexBoxStyle(spacing: value));
+  FlexBoxStyler gap(double value) {
+    return merge(FlexBoxStyler(spacing: value));
   }
 
-  FlexBoxStyle modifier(ModifierConfig value) {
-    return merge(FlexBoxStyle(modifier: value));
+  FlexBoxStyler modifier(ModifierConfig value) {
+    return merge(FlexBoxStyler(modifier: value));
   }
 
   /// Padding instance method
   @override
-  FlexBoxStyle padding(EdgeInsetsGeometryMix value) {
-    return merge(FlexBoxStyle(padding: value));
+  FlexBoxStyler padding(EdgeInsetsGeometryMix value) {
+    return merge(FlexBoxStyler(padding: value));
   }
 
   /// Margin instance method
   @override
-  FlexBoxStyle margin(EdgeInsetsGeometryMix value) {
-    return merge(FlexBoxStyle(margin: value));
+  FlexBoxStyler margin(EdgeInsetsGeometryMix value) {
+    return merge(FlexBoxStyler(margin: value));
   }
 
   @override
-  FlexBoxStyle transform(Matrix4 value) {
-    return merge(FlexBoxStyle(transform: value));
+  FlexBoxStyler transform(Matrix4 value) {
+    return merge(FlexBoxStyler(transform: value));
   }
 
   /// Decoration instance method - delegates to box
   @override
-  FlexBoxStyle decoration(DecorationMix value) {
-    return merge(FlexBoxStyle(decoration: value));
+  FlexBoxStyler decoration(DecorationMix value) {
+    return merge(FlexBoxStyler(decoration: value));
   }
 
   /// Constraints instance method
   @override
-  FlexBoxStyle constraints(BoxConstraintsMix value) {
-    return merge(FlexBoxStyle(constraints: value));
+  FlexBoxStyler constraints(BoxConstraintsMix value) {
+    return merge(FlexBoxStyler(constraints: value));
   }
 
   /// Modifier instance method
   @override
-  FlexBoxStyle wrap(ModifierConfig value) {
+  FlexBoxStyler wrap(ModifierConfig value) {
     return modifier(value);
   }
 
   @override
-  FlexBoxStyle variants(List<VariantStyle<FlexBoxSpec>> variants) {
-    return merge(FlexBoxStyle(variants: variants));
+  FlexBoxStyler variants(List<VariantStyle<FlexBoxSpec>> variants) {
+    return merge(FlexBoxStyler(variants: variants));
   }
 
   @override
-  FlexBoxStyle variant(Variant variant, FlexBoxStyle style) {
-    return merge(FlexBoxStyle(variants: [VariantStyle(variant, style)]));
+  FlexBoxStyler variant(Variant variant, FlexBoxStyler style) {
+    return merge(FlexBoxStyler(variants: [VariantStyle(variant, style)]));
   }
 
   /// Border radius instance method
   @override
-  FlexBoxStyle borderRadius(BorderRadiusGeometryMix value) {
-    return merge(FlexBoxStyle(decoration: DecorationMix.borderRadius(value)));
+  FlexBoxStyler borderRadius(BorderRadiusGeometryMix value) {
+    return merge(FlexBoxStyler(decoration: DecorationMix.borderRadius(value)));
   }
 
   /// Resolves to [FlexBoxSpec] using the provided [BuildContext].
@@ -273,19 +273,19 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
     );
   }
 
-  /// Merges the properties of this [FlexBoxStyle] with the properties of [other].
+  /// Merges the properties of this [FlexBoxStyler] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [FlexBoxStyle] with the properties of [other] taking precedence over
+  /// [FlexBoxStyler] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  FlexBoxStyle merge(FlexBoxStyle? other) {
+  FlexBoxStyler merge(FlexBoxStyler? other) {
     if (other == null) return this;
 
-    return FlexBoxStyle.create(
+    return FlexBoxStyler.create(
       box: MixOps.merge($box, other.$box),
       flex: MixOps.merge($flex, other.$flex),
       animation: other.$animation ?? $animation,
@@ -302,10 +302,10 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
       ..add(DiagnosticsProperty('flex', $flex));
   }
 
-  /// The list of properties that constitute the state of this [FlexBoxStyle].
+  /// The list of properties that constitute the state of this [FlexBoxStyler].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [FlexBoxStyle] instances for equality.
+  /// compare two [FlexBoxStyler] instances for equality.
   @override
   List<Object?> get props => [$box, $flex];
 }

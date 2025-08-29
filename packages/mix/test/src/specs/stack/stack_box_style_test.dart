@@ -9,9 +9,14 @@ void main() {
   group('StackBoxStyle', () {
     group('Constructor', () {
       test('creates StackBoxStyle with box and stack properties', () {
-        final attribute = StackBoxStyle(
+        final attribute = StackBoxStyler(
           // Box properties
-          constraints: BoxConstraintsMix(minWidth: 200.0, maxWidth: 200.0, minHeight: 200.0, maxHeight: 200.0),
+          constraints: BoxConstraintsMix(
+            minWidth: 200.0,
+            maxWidth: 200.0,
+            minHeight: 200.0,
+            maxHeight: 200.0,
+          ),
           padding: EdgeInsetsMix.all(16.0),
           // Stack properties
           stackAlignment: Alignment.center,
@@ -21,21 +26,28 @@ void main() {
         // Verify the properties are stored correctly
         expect(attribute.$box, isNotNull);
         expect(attribute.$stack, isNotNull);
-        
+
         // Verify the properties resolve correctly
         final context = MockBuildContext();
         final resolved = attribute.resolve(context);
         final spec = resolved.spec;
-        
-        expect(spec.box?.spec.constraints, 
-               const BoxConstraints(minWidth: 200.0, maxWidth: 200.0, minHeight: 200.0, maxHeight: 200.0));
+
+        expect(
+          spec.box?.spec.constraints,
+          const BoxConstraints(
+            minWidth: 200.0,
+            maxWidth: 200.0,
+            minHeight: 200.0,
+            maxHeight: 200.0,
+          ),
+        );
         expect(spec.box?.spec.padding, const EdgeInsets.all(16.0));
         expect(spec.stack?.spec.alignment, Alignment.center);
         expect(spec.stack?.spec.fit, StackFit.expand);
       });
 
       test('creates StackBoxStyle with default values', () {
-        final attribute = StackBoxStyle();
+        final attribute = StackBoxStyler();
 
         expect(attribute.$box, isNotNull);
         expect(attribute.$stack, isNotNull);
@@ -44,7 +56,7 @@ void main() {
 
     group('Individual property constructors', () {
       test('creates StackBoxStyle with only box properties', () {
-        final stackBoxStyle = StackBoxStyle(
+        final stackBoxStyle = StackBoxStyler(
           constraints: BoxConstraintsMix.width(100.0),
         );
 
@@ -53,9 +65,7 @@ void main() {
       });
 
       test('creates StackBoxStyle with only stack properties', () {
-        final stackBoxStyle = StackBoxStyle(
-          stackAlignment: Alignment.center,
-        );
+        final stackBoxStyle = StackBoxStyler(stackAlignment: Alignment.center);
 
         expect(stackBoxStyle.$stack, isNotNull);
         expect(stackBoxStyle.$box, isNotNull);
@@ -63,17 +73,17 @@ void main() {
 
       test('creates StackBoxStyle with animation', () {
         final animation = AnimationConfig.linear(Duration(seconds: 1));
-        final stackBoxStyle = StackBoxStyle(animation: animation);
+        final stackBoxStyle = StackBoxStyler(animation: animation);
 
         expect(stackBoxStyle.$animation, animation);
       });
 
       test('creates StackBoxStyle with variants', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = StackBoxStyle(
+        final style = StackBoxStyler(
           decoration: DecorationMix.color(Colors.white),
         );
-        final stackBoxStyle = StackBoxStyle(
+        final stackBoxStyle = StackBoxStyler(
           variants: [VariantStyle(variant, style)],
         );
 
@@ -84,36 +94,44 @@ void main() {
 
     group('Property methods', () {
       test('padding method creates new instance', () {
-        final first = StackBoxStyle(constraints: BoxConstraintsMix.width(100.0));
+        final first = StackBoxStyler(
+          constraints: BoxConstraintsMix.width(100.0),
+        );
         final second = first.padding(EdgeInsetsMix.all(16.0));
 
         expect(first, isNot(second));
         expect(second.$box, isNotNull);
-        
+
         final context = MockBuildContext();
         final resolved = second.resolve(context);
         expect(resolved.spec.box?.spec.padding, const EdgeInsets.all(16.0));
       });
 
       test('margin method creates new instance', () {
-        final first = StackBoxStyle(constraints: BoxConstraintsMix.width(100.0));
+        final first = StackBoxStyler(
+          constraints: BoxConstraintsMix.width(100.0),
+        );
         final second = first.margin(EdgeInsetsMix.all(8.0));
 
         expect(first, isNot(second));
         expect(second.$box, isNotNull);
-        
+
         final context = MockBuildContext();
         final resolved = second.resolve(context);
         expect(resolved.spec.box?.spec.margin, const EdgeInsets.all(8.0));
       });
 
       test('decoration method creates new instance', () {
-        final attribute = StackBoxStyle(constraints: BoxConstraintsMix.width(100.0));
-        final decorated = attribute.decoration(DecorationMix.color(Colors.blue));
+        final attribute = StackBoxStyler(
+          constraints: BoxConstraintsMix.width(100.0),
+        );
+        final decorated = attribute.decoration(
+          DecorationMix.color(Colors.blue),
+        );
 
         expect(attribute, isNot(decorated));
         expect(decorated.$box, isNotNull);
-        
+
         final context = MockBuildContext();
         final resolved = decorated.resolve(context);
         final decoration = resolved.spec.box?.spec.decoration as BoxDecoration?;
@@ -123,8 +141,10 @@ void main() {
 
     group('Merge', () {
       test('merges two StackBoxStyles correctly', () {
-        final first = StackBoxStyle(constraints: BoxConstraintsMix.width(100.0));
-        final second = StackBoxStyle(
+        final first = StackBoxStyler(
+          constraints: BoxConstraintsMix.width(100.0),
+        );
+        final second = StackBoxStyler(
           constraints: BoxConstraintsMix.height(200.0),
           stackAlignment: Alignment.center,
         );
@@ -141,7 +161,9 @@ void main() {
       });
 
       test('null merge returns original', () {
-        final attribute = StackBoxStyle(constraints: BoxConstraintsMix.width(100.0));
+        final attribute = StackBoxStyler(
+          constraints: BoxConstraintsMix.width(100.0),
+        );
         final merged = attribute.merge(null);
 
         expect(merged, attribute);
@@ -152,12 +174,12 @@ void main() {
       test('equal StackBoxStyles have same properties', () {
         final constraints = BoxConstraintsMix.width(100.0);
         final alignment = Alignment.center;
-        
-        final attr1 = StackBoxStyle(
+
+        final attr1 = StackBoxStyler(
           constraints: constraints,
           stackAlignment: alignment,
         );
-        final attr2 = StackBoxStyle(
+        final attr2 = StackBoxStyler(
           constraints: constraints,
           stackAlignment: alignment,
         );
@@ -167,8 +189,12 @@ void main() {
       });
 
       test('different StackBoxStyles are not equal', () {
-        final attr1 = StackBoxStyle(constraints: BoxConstraintsMix.width(100.0));
-        final attr2 = StackBoxStyle(constraints: BoxConstraintsMix.width(200.0));
+        final attr1 = StackBoxStyler(
+          constraints: BoxConstraintsMix.width(100.0),
+        );
+        final attr2 = StackBoxStyler(
+          constraints: BoxConstraintsMix.width(200.0),
+        );
 
         expect(attr1, isNot(attr2));
       });
@@ -176,7 +202,7 @@ void main() {
 
     group('Debug', () {
       test('debugFillProperties includes all properties', () {
-        final attribute = StackBoxStyle(
+        final attribute = StackBoxStyler(
           constraints: BoxConstraintsMix.width(100.0),
           stackAlignment: Alignment.center,
         );
@@ -191,11 +217,12 @@ void main() {
 
     group('Real-world usage', () {
       test('creates complete styled box', () {
-        final style = StackBoxStyle(
+        final style = StackBoxStyler(
           // Box styling
           padding: EdgeInsetsMix.all(16.0),
-          decoration: DecorationMix.color(Colors.white)
-              .borderRadius(BorderRadiusMix.circular(8.0)),
+          decoration: DecorationMix.color(
+            Colors.white,
+          ).borderRadius(BorderRadiusMix.circular(8.0)),
           constraints: BoxConstraintsMix.minWidth(200.0),
           // Stack layout
           stackAlignment: Alignment.center,
@@ -205,7 +232,7 @@ void main() {
         final context = MockBuildContext();
         final resolved = style.resolve(context);
         final spec = resolved.spec;
-        
+
         expect(spec.box?.spec.padding, const EdgeInsets.all(16.0));
         expect(spec.box?.spec.constraints?.minWidth, 200.0);
         expect(spec.stack?.spec.alignment, Alignment.center);

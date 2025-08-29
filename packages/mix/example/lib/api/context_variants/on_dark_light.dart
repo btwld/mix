@@ -33,7 +33,7 @@ class _ExampleState extends State<Example> {
         );
 
     // Icon style that adapts to dark/light mode
-    final iconStyle = IconStyle()
+    final iconStyle = IconStyler()
         .color(Colors.grey.shade800)
         .size(28)
         .icon(Icons.dark_mode)

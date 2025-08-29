@@ -47,7 +47,7 @@ class _ExampleState extends State<Example> {
                 BoxBorderMix.all(BorderSideMix.color(Colors.grey.shade200)),
               )
               .onHovered(
-                FlexBoxStyle().border(
+                FlexBoxStyler().border(
                   BoxBorderMix.all(BorderSideMix.color(Colors.red)),
                 ),
               )

@@ -15,10 +15,10 @@ import 'flex_style.dart';
 
 /// Provides mutable utility for flex styling with cascade notation support.
 ///
-/// Supports the same API as [FlexStyle] but maintains mutable internal state
+/// Supports the same API as [FlexStyler] but maintains mutable internal state
 /// enabling fluid styling: `$flex..direction(Axis.horizontal)..spacing(8)`.
 class FlexSpecUtility extends StyleMutableBuilder<FlexSpec>
-    with UtilityVariantMixin<FlexSpec, FlexStyle> {
+    with UtilityVariantMixin<FlexSpec, FlexStyler> {
   late final direction = MixUtility(mutable.direction);
 
   late final mainAxisAlignment = MixUtility(mutable.mainAxisAlignment);
@@ -39,7 +39,7 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexSpec>
     'Use direct methods like \$flex.onHovered() instead. '
     'Note: Returns FlexStyle for consistency with other utility methods like animate().',
   )
-  late final on = OnContextVariantUtility<FlexSpec, FlexStyle>(
+  late final on = OnContextVariantUtility<FlexSpec, FlexStyler>(
     (v) => mutable.variants([v]),
   );
 
@@ -52,36 +52,36 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexSpec>
   @protected
   late final MutableFlexStyle mutable;
 
-  FlexSpecUtility([FlexStyle? attribute]) {
-    mutable = MutableFlexStyle(attribute ?? FlexStyle());
+  FlexSpecUtility([FlexStyler? attribute]) {
+    mutable = MutableFlexStyle(attribute ?? FlexStyler());
   }
 
   /// Sets the spacing between children in the flex layout.
-  FlexStyle spacing(double v) => mutable.spacing(v);
+  FlexStyler spacing(double v) => mutable.spacing(v);
 
   /// Sets the gap between children in the flex layout.
   @Deprecated(
     'Use spacing instead. '
     'This feature was deprecated after Mix v2.0.0.',
   )
-  FlexStyle gap(double v) => mutable.spacing(v);
+  FlexStyler gap(double v) => mutable.spacing(v);
 
   /// Sets flex direction to horizontal (row layout).
-  FlexStyle row() => mutable.direction(Axis.horizontal);
+  FlexStyler row() => mutable.direction(Axis.horizontal);
 
   /// Sets flex direction to vertical (column layout).
-  FlexStyle column() => mutable.direction(Axis.vertical);
+  FlexStyler column() => mutable.direction(Axis.vertical);
 
   /// Applies animation configuration to the flex styling.
-  FlexStyle animate(AnimationConfig animation) => mutable.animate(animation);
+  FlexStyler animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
-  FlexStyle withVariant(Variant variant, FlexStyle style) {
+  FlexStyler withVariant(Variant variant, FlexStyler style) {
     return mutable.variant(variant, style);
   }
 
   @override
-  FlexStyle withVariants(List<VariantStyle<FlexSpec>> variants) {
+  FlexStyler withVariants(List<VariantStyle<FlexSpec>> variants) {
     return mutable.variants(variants);
   }
 
@@ -92,7 +92,7 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexSpec>
     if (other is FlexSpecUtility) {
       return FlexSpecUtility(mutable.merge(other.mutable.value));
     }
-    if (other is FlexStyle) {
+    if (other is FlexStyler) {
       return FlexSpecUtility(mutable.merge(other));
     }
 
@@ -105,19 +105,19 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexSpec>
   }
 
   @override
-  FlexStyle get currentValue => mutable.value;
+  FlexStyler get currentValue => mutable.value;
 
-  /// The accumulated [FlexStyle] with all applied styling properties.
+  /// The accumulated [FlexStyler] with all applied styling properties.
   @override
-  FlexStyle get value => mutable.value;
+  FlexStyler get value => mutable.value;
 }
 
-/// Mutable implementation of [FlexStyle] for efficient style accumulation.
+/// Mutable implementation of [FlexStyler] for efficient style accumulation.
 ///
 /// Used internally by [FlexSpecUtility] to accumulate styling changes
 /// without creating new instances for each modification.
-class MutableFlexStyle extends FlexStyle with Mutable<FlexSpec, FlexStyle> {
-  MutableFlexStyle(FlexStyle style) {
+class MutableFlexStyle extends FlexStyler with Mutable<FlexSpec, FlexStyler> {
+  MutableFlexStyle(FlexStyler style) {
     value = style;
   }
 }

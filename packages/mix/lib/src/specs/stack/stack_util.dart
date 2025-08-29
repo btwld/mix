@@ -16,10 +16,10 @@ import 'stack_style.dart';
 
 /// Provides mutable utility for stack styling with cascade notation support.
 ///
-/// Supports the same API as [StackStyle] but maintains mutable internal state
+/// Supports the same API as [StackStyler] but maintains mutable internal state
 /// enabling fluid styling: `$stack..alignment(Alignment.center)..fit(StackFit.expand)`.
 class StackSpecUtility extends StyleMutableBuilder<StackSpec>
-    with UtilityVariantMixin<StackSpec, StackStyle> {
+    with UtilityVariantMixin<StackSpec, StackStyler> {
   late final alignment = MixUtility(mutable.alignment);
 
   late final fit = MixUtility(mutable.fit);
@@ -32,7 +32,7 @@ class StackSpecUtility extends StyleMutableBuilder<StackSpec>
     'Use direct methods like \$stack.onHovered() instead. '
     'Note: Returns StackStyle for consistency with other utility methods like animate().',
   )
-  late final on = OnContextVariantUtility<StackSpec, StackStyle>(
+  late final on = OnContextVariantUtility<StackSpec, StackStyler>(
     (v) => mutable.variants([v]),
   );
 
@@ -45,20 +45,20 @@ class StackSpecUtility extends StyleMutableBuilder<StackSpec>
   @protected
   late final MutableStackStyle mutable;
 
-  StackSpecUtility([StackStyle? attribute]) {
-    mutable = MutableStackStyle(attribute ?? StackStyle());
+  StackSpecUtility([StackStyler? attribute]) {
+    mutable = MutableStackStyle(attribute ?? StackStyler());
   }
 
   /// Applies animation configuration to the stack styling.
-  StackStyle animate(AnimationConfig animation) => mutable.animate(animation);
+  StackStyler animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
-  StackStyle withVariant(Variant variant, StackStyle style) {
+  StackStyler withVariant(Variant variant, StackStyler style) {
     return mutable.variant(variant, style);
   }
 
   @override
-  StackStyle withVariants(List<VariantStyle<StackSpec>> variants) {
+  StackStyler withVariants(List<VariantStyle<StackSpec>> variants) {
     return mutable.variants(variants);
   }
 
@@ -69,7 +69,7 @@ class StackSpecUtility extends StyleMutableBuilder<StackSpec>
     if (other is StackSpecUtility) {
       return StackSpecUtility(mutable.merge(other.mutable.value));
     }
-    if (other is StackStyle) {
+    if (other is StackStyler) {
       return StackSpecUtility(mutable.merge(other));
     }
 
@@ -82,15 +82,16 @@ class StackSpecUtility extends StyleMutableBuilder<StackSpec>
   }
 
   @override
-  StackStyle get currentValue => mutable.value;
+  StackStyler get currentValue => mutable.value;
 
-  /// The accumulated [StackStyle] with all applied styling properties.
+  /// The accumulated [StackStyler] with all applied styling properties.
   @override
-  StackStyle get value => mutable.value;
+  StackStyler get value => mutable.value;
 }
 
-class MutableStackStyle extends StackStyle with Mutable<StackSpec, StackStyle> {
-  MutableStackStyle(StackStyle style) {
+class MutableStackStyle extends StackStyler
+    with Mutable<StackSpec, StackStyler> {
+  MutableStackStyle(StackStyler style) {
     value = style;
   }
 }

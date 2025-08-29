@@ -303,19 +303,19 @@ void main() {
     group('Different SpecAttribute Types', () {
       test('works with TextSpecAttribute', () {
         const variant = NamedVariant('large');
-        final textStyle = TextStyling(textAlign: TextAlign.center, maxLines: 2);
+        final textStyle = TextStyler(textAlign: TextAlign.center, maxLines: 2);
         final variantAttr = VariantStyle(variant, textStyle);
 
         expect(variantAttr.variant, variant);
         expect(variantAttr.value, textStyle);
-        final textAttr = variantAttr.value as TextStyling;
+        final textAttr = variantAttr.value as TextStyler;
         expect(textAttr.$textAlign, resolvesTo(TextAlign.center));
         expect(textAttr.$maxLines, resolvesTo(2));
       });
 
       test('', () {
         const variant = NamedVariant('avatar');
-        final imageStyle = ImageStyle(
+        final imageStyle = ImageStyler(
           width: 50.0,
           height: 50.0,
           fit: BoxFit.cover,
@@ -324,7 +324,7 @@ void main() {
 
         expect(variantAttr.variant, variant);
         expect(variantAttr.value, imageStyle);
-        final imageAttr = variantAttr.value as ImageStyle;
+        final imageAttr = variantAttr.value as ImageStyler;
         expect(imageAttr.$width, resolvesTo(50.0));
         expect(imageAttr.$height, resolvesTo(50.0));
         expect(imageAttr.$fit, resolvesTo(BoxFit.cover));

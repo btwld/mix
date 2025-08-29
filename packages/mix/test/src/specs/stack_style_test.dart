@@ -8,7 +8,7 @@ void main() {
   group('StackStyle', () {
     group('Constructor', () {
       test('', () {
-        final attribute = StackStyle(
+        final attribute = StackStyler(
           alignment: Alignment.center,
           fit: StackFit.expand,
           textDirection: TextDirection.ltr,
@@ -22,7 +22,7 @@ void main() {
       });
 
       test('', () {
-        final attribute = StackStyle();
+        final attribute = StackStyler();
 
         expect(attribute.$alignment, isNull);
         expect(attribute.$fit, isNull);
@@ -33,68 +33,67 @@ void main() {
 
     group('Factory Constructors', () {
       test('', () {
-        final stackMix = StackStyle().alignment(Alignment.topLeft);
+        final stackMix = StackStyler().alignment(Alignment.topLeft);
 
         expect(stackMix.$alignment, resolvesTo(Alignment.topLeft));
       });
 
       test('', () {
-        final stackMix = StackStyle().fit(StackFit.loose);
+        final stackMix = StackStyler().fit(StackFit.loose);
 
         expect(stackMix.$fit, resolvesTo(StackFit.loose));
       });
 
       test('', () {
-        final stackMix = StackStyle().textDirection(TextDirection.rtl);
+        final stackMix = StackStyler().textDirection(TextDirection.rtl);
 
         expect(stackMix.$textDirection, resolvesTo(TextDirection.rtl));
       });
 
       test('', () {
-        final stackMix = StackStyle().clipBehavior(Clip.hardEdge);
+        final stackMix = StackStyler().clipBehavior(Clip.hardEdge);
 
         expect(stackMix.$clipBehavior, resolvesTo(Clip.hardEdge));
       });
 
       test('', () {
         final animation = AnimationConfig.linear(Duration(seconds: 1));
-        final stackMix = StackStyle().animate(animation);
+        final stackMix = StackStyler().animate(animation);
 
         expect(stackMix.$animation, animation);
       });
 
       test('', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = StackStyle().alignment(Alignment.center);
-        final stackMix = StackStyle().variant(variant, style);
+        final style = StackStyler().alignment(Alignment.center);
+        final stackMix = StackStyler().variant(variant, style);
 
         expect(stackMix.$variants, isNotNull);
         expect(stackMix.$variants!.length, 1);
       });
     });
 
-
     group('Utility Methods', () {
       test('alignment utility works correctly', () {
-        final attribute = StackStyle().alignment(Alignment.bottomLeft);
+        final attribute = StackStyler().alignment(Alignment.bottomLeft);
 
         expect(attribute.$alignment, resolvesTo(Alignment.bottomLeft));
       });
 
       test('fit utility works correctly', () {
-        final attribute = StackStyle().fit(StackFit.expand);
+        final attribute = StackStyler().fit(StackFit.expand);
 
         expect(attribute.$fit, resolvesTo(StackFit.expand));
       });
 
       test('textDirection utility works correctly', () {
-        final attribute = StackStyle().textDirection(TextDirection.rtl);
+        final attribute = StackStyler().textDirection(TextDirection.rtl);
 
         expect(attribute.$textDirection, resolvesTo(TextDirection.rtl));
       });
 
       test('clipBehavior utility works correctly', () {
-        final attribute = StackStyle().clipBehavior(
+        final attribute = StackStyler().clipBehavior(
           Clip.antiAliasWithSaveLayer,
         );
 
@@ -106,7 +105,7 @@ void main() {
 
       test('animate method sets animation config', () {
         final animation = AnimationConfig.linear(Duration(milliseconds: 500));
-        final attribute = StackStyle().animate(animation);
+        final attribute = StackStyler().animate(animation);
 
         expect(attribute.$animation, equals(animation));
       });
@@ -115,8 +114,8 @@ void main() {
     group('Variant Methods', () {
       test('', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = StackStyle().alignment(Alignment.center);
-        final stackMix = StackStyle().variant(variant, style);
+        final style = StackStyler().alignment(Alignment.center);
+        final stackMix = StackStyler().variant(variant, style);
 
         expect(stackMix.$variants, isNotNull);
         expect(stackMix.$variants!.length, 1);
@@ -126,14 +125,14 @@ void main() {
         final variants = [
           VariantStyle(
             ContextVariant.brightness(Brightness.dark),
-            StackStyle().alignment(Alignment.topLeft),
+            StackStyler().alignment(Alignment.topLeft),
           ),
           VariantStyle(
             ContextVariant.brightness(Brightness.light),
-            StackStyle().alignment(Alignment.bottomRight),
+            StackStyler().alignment(Alignment.bottomRight),
           ),
         ];
-        final stackMix = StackStyle().variants(variants);
+        final stackMix = StackStyler().variants(variants);
 
         expect(stackMix.$variants, isNotNull);
         expect(stackMix.$variants!.length, 2);
@@ -142,7 +141,7 @@ void main() {
 
     group('Resolution', () {
       test('', () {
-        final attribute = StackStyle(
+        final attribute = StackStyler(
           alignment: Alignment.center,
           fit: StackFit.expand,
           textDirection: TextDirection.ltr,
@@ -160,7 +159,7 @@ void main() {
       });
 
       test('resolves with null values correctly', () {
-        final attribute = StackStyle()
+        final attribute = StackStyler()
             .alignment(Alignment.topLeft)
             .fit(StackFit.loose);
 
@@ -177,12 +176,12 @@ void main() {
 
     group('Merge', () {
       test('merges properties correctly', () {
-        final first = StackStyle(
+        final first = StackStyler(
           alignment: Alignment.topLeft,
           fit: StackFit.loose,
         );
 
-        final second = StackStyle(
+        final second = StackStyler(
           alignment: Alignment.bottomRight,
           textDirection: TextDirection.rtl,
           clipBehavior: Clip.hardEdge,
@@ -203,7 +202,7 @@ void main() {
       });
 
       test('returns this when other is null', () {
-        final attribute = StackStyle().alignment(Alignment.center);
+        final attribute = StackStyler().alignment(Alignment.center);
         final merged = attribute.merge(null);
 
         expect(identical(attribute, merged), isTrue);
@@ -212,13 +211,13 @@ void main() {
 
     group('Equality', () {
       test('equal attributes have same hashCode', () {
-        final attr1 = StackStyle()
+        final attr1 = StackStyler()
             .alignment(Alignment.center)
             .fit(StackFit.loose)
             .textDirection(TextDirection.ltr)
             .clipBehavior(Clip.antiAlias);
 
-        final attr2 = StackStyle()
+        final attr2 = StackStyler()
             .alignment(Alignment.center)
             .fit(StackFit.loose)
             .textDirection(TextDirection.ltr)
@@ -228,8 +227,8 @@ void main() {
       });
 
       test('different attributes are not equal', () {
-        final attr1 = StackStyle().alignment(Alignment.topLeft);
-        final attr2 = StackStyle().alignment(Alignment.bottomRight);
+        final attr1 = StackStyler().alignment(Alignment.topLeft);
+        final attr2 = StackStyler().alignment(Alignment.bottomRight);
 
         expect(attr1, isNot(equals(attr2)));
       });
@@ -237,7 +236,7 @@ void main() {
 
     group('Props getter', () {
       test('props includes all properties', () {
-        final attribute = StackStyle(
+        final attribute = StackStyler(
           alignment: Alignment.center,
           fit: StackFit.expand,
           textDirection: TextDirection.ltr,

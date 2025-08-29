@@ -11,7 +11,7 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = TextStyling()
+    final style = TextStyler()
         .fontSize(20)
         .fontWeight(FontWeight.w700)
         .uppercase()

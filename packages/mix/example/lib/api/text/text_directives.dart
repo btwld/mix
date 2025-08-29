@@ -11,13 +11,13 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final baseStyle = TextStyling()
+    final baseStyle = TextStyler()
         .fontSize(18)
         .fontWeight(.w600)
         .color(Colors.blue.shade700);
 
     return VBox(
-      style: FlexBoxStyle()
+      style: FlexBoxStyler()
         .spacing(16)
         .mainAxisSize(.min),
       children: [

@@ -5,21 +5,21 @@ import '../specs/icon/icon_style.dart';
 class IconScope extends StatelessWidget {
   const IconScope({required this.icon, required this.child, super.key});
 
-  static IconStyle? maybeOf(BuildContext context) {
+  static IconStyler? maybeOf(BuildContext context) {
     final inheritedWidget = context
         .dependOnInheritedWidgetOfExactType<_IconInheritedWidget>();
 
     return inheritedWidget?.icon;
   }
 
-  static IconStyle of(BuildContext context) {
-    final IconStyle? result = maybeOf(context);
+  static IconStyler of(BuildContext context) {
+    final IconStyler? result = maybeOf(context);
     assert(result != null, 'No IconScope found in context');
 
     return result!;
   }
 
-  final IconStyle icon;
+  final IconStyler icon;
 
   final Widget child;
 
@@ -51,7 +51,7 @@ class IconScope extends StatelessWidget {
 class _IconInheritedWidget extends InheritedWidget {
   const _IconInheritedWidget({required this.icon, required super.child});
 
-  final IconStyle icon;
+  final IconStyler icon;
 
   @override
   bool updateShouldNotify(_IconInheritedWidget oldWidget) {

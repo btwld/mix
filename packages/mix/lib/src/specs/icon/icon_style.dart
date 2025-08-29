@@ -16,14 +16,14 @@ import 'icon_spec.dart';
 import 'icon_util.dart';
 import 'icon_widget.dart';
 
-typedef IconMix = IconStyle;
+typedef IconMix = IconStyler;
 
-class IconStyle extends Style<IconSpec>
+class IconStyler extends Style<IconSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<IconStyle, IconSpec>,
-        StyleVariantMixin<IconStyle, IconSpec>,
-        StyleAnimationMixin<IconSpec, IconStyle> {
+        StyleModifierMixin<IconStyler, IconSpec>,
+        StyleVariantMixin<IconStyler, IconSpec>,
+        StyleAnimationMixin<IconSpec, IconStyler> {
   final Prop<Color>? $color;
   final Prop<double>? $size;
   final Prop<double>? $weight;
@@ -38,7 +38,7 @@ class IconStyle extends Style<IconSpec>
   final Prop<BlendMode>? $blendMode;
   final Prop<IconData>? $icon;
 
-  const IconStyle.create({
+  const IconStyler.create({
     Prop<Color>? color,
     Prop<double>? size,
     Prop<double>? weight,
@@ -69,7 +69,7 @@ class IconStyle extends Style<IconSpec>
        $blendMode = blendMode,
        $icon = icon;
 
-  IconStyle({
+  IconStyler({
     Color? color,
     double? size,
     double? weight,
@@ -105,94 +105,94 @@ class IconStyle extends Style<IconSpec>
          variants: variants,
        );
 
-  factory IconStyle.builder(IconStyle Function(BuildContext) fn) {
-    return IconStyle().builder(fn);
+  factory IconStyler.builder(IconStyler Function(BuildContext) fn) {
+    return IconStyler().builder(fn);
   }
 
-  static IconSpecUtility get chain => IconSpecUtility(IconStyle());
+  static IconSpecUtility get chain => IconSpecUtility(IconStyler());
 
   /// Sets icon color
-  IconStyle color(Color value) {
-    return merge(IconStyle(color: value));
+  IconStyler color(Color value) {
+    return merge(IconStyler(color: value));
   }
 
   /// Sets icon size
-  IconStyle size(double value) {
-    return merge(IconStyle(size: value));
+  IconStyler size(double value) {
+    return merge(IconStyler(size: value));
   }
 
   /// Sets icon weight
-  IconStyle weight(double value) {
-    return merge(IconStyle(weight: value));
+  IconStyler weight(double value) {
+    return merge(IconStyler(weight: value));
   }
 
   /// Sets icon grade
-  IconStyle grade(double value) {
-    return merge(IconStyle(grade: value));
+  IconStyler grade(double value) {
+    return merge(IconStyler(grade: value));
   }
 
   /// Sets icon optical size
-  IconStyle opticalSize(double value) {
-    return merge(IconStyle(opticalSize: value));
+  IconStyler opticalSize(double value) {
+    return merge(IconStyler(opticalSize: value));
   }
 
   /// Sets single icon shadow
-  IconStyle shadow(ShadowMix value) {
-    return merge(IconStyle(shadows: [value]));
+  IconStyler shadow(ShadowMix value) {
+    return merge(IconStyler(shadows: [value]));
   }
 
   /// Sets icon shadows
-  IconStyle shadows(List<ShadowMix> value) {
-    return merge(IconStyle(shadows: value));
+  IconStyler shadows(List<ShadowMix> value) {
+    return merge(IconStyler(shadows: value));
   }
 
   /// Sets text direction
-  IconStyle textDirection(TextDirection value) {
-    return merge(IconStyle(textDirection: value));
+  IconStyler textDirection(TextDirection value) {
+    return merge(IconStyler(textDirection: value));
   }
 
   /// Sets apply text scaling
-  IconStyle applyTextScaling(bool value) {
-    return merge(IconStyle(applyTextScaling: value));
+  IconStyler applyTextScaling(bool value) {
+    return merge(IconStyler(applyTextScaling: value));
   }
 
   /// Sets icon fill
-  IconStyle fill(double value) {
-    return merge(IconStyle(fill: value));
+  IconStyler fill(double value) {
+    return merge(IconStyler(fill: value));
   }
 
   /// Sets semantics label
-  IconStyle semanticsLabel(String value) {
-    return merge(IconStyle(semanticsLabel: value));
+  IconStyler semanticsLabel(String value) {
+    return merge(IconStyler(semanticsLabel: value));
   }
 
   /// Sets opacity
-  IconStyle opacity(double value) {
-    return merge(IconStyle(opacity: value));
+  IconStyler opacity(double value) {
+    return merge(IconStyler(opacity: value));
   }
 
   /// Sets blend mode
-  IconStyle blendMode(BlendMode value) {
-    return merge(IconStyle(blendMode: value));
+  IconStyler blendMode(BlendMode value) {
+    return merge(IconStyler(blendMode: value));
   }
 
   /// Sets icon data
-  IconStyle icon(IconData value) {
-    return merge(IconStyle(icon: value));
+  IconStyler icon(IconData value) {
+    return merge(IconStyler(icon: value));
   }
 
   StyledIcon call({IconData? icon, String? semanticLabel}) {
     return StyledIcon(icon: icon, semanticLabel: semanticLabel, style: this);
   }
 
-  IconStyle modifier(ModifierConfig value) {
-    return merge(IconStyle(modifier: value));
+  IconStyler modifier(ModifierConfig value) {
+    return merge(IconStyler(modifier: value));
   }
 
   /// Sets animation
   @override
-  IconStyle animate(AnimationConfig animation) {
-    return merge(IconStyle(animation: animation));
+  IconStyler animate(AnimationConfig animation) {
+    return merge(IconStyler(animation: animation));
   }
 
   @override
@@ -221,10 +221,10 @@ class IconStyle extends Style<IconSpec>
   }
 
   @override
-  IconStyle merge(IconStyle? other) {
+  IconStyler merge(IconStyler? other) {
     if (other == null) return this;
 
-    return IconStyle.create(
+    return IconStyler.create(
       color: MixOps.merge($color, other.$color),
       size: MixOps.merge($size, other.$size),
       weight: MixOps.merge($weight, other.$weight),
@@ -267,17 +267,17 @@ class IconStyle extends Style<IconSpec>
   }
 
   @override
-  IconStyle variant(Variant variant, IconStyle style) {
-    return merge(IconStyle(variants: [VariantStyle(variant, style)]));
+  IconStyler variant(Variant variant, IconStyler style) {
+    return merge(IconStyler(variants: [VariantStyle(variant, style)]));
   }
 
   @override
-  IconStyle variants(List<VariantStyle<IconSpec>> value) {
-    return merge(IconStyle(variants: value));
+  IconStyler variants(List<VariantStyle<IconSpec>> value) {
+    return merge(IconStyler(variants: value));
   }
 
   @override
-  IconStyle wrap(ModifierConfig value) {
+  IconStyler wrap(ModifierConfig value) {
     return modifier(value);
   }
 

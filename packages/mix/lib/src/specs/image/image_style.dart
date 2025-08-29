@@ -14,13 +14,13 @@ import 'image_spec.dart';
 import 'image_util.dart';
 import 'image_widget.dart';
 
-typedef ImageMix = ImageStyle;
+typedef ImageMix = ImageStyler;
 
-class ImageStyle extends Style<ImageSpec>
+class ImageStyler extends Style<ImageSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<ImageStyle, ImageSpec>,
-        StyleVariantMixin<ImageStyle, ImageSpec> {
+        StyleModifierMixin<ImageStyler, ImageSpec>,
+        StyleVariantMixin<ImageStyler, ImageSpec> {
   final Prop<ImageProvider<Object>>? $image;
   final Prop<double>? $width;
   final Prop<double>? $height;
@@ -37,7 +37,7 @@ class ImageStyle extends Style<ImageSpec>
   final Prop<bool>? $isAntiAlias;
   final Prop<bool>? $matchTextDirection;
 
-  const ImageStyle.create({
+  const ImageStyler.create({
     Prop<ImageProvider<Object>>? image,
     Prop<double>? width,
     Prop<double>? height,
@@ -72,7 +72,7 @@ class ImageStyle extends Style<ImageSpec>
        $isAntiAlias = isAntiAlias,
        $matchTextDirection = matchTextDirection;
 
-  ImageStyle({
+  ImageStyler({
     ImageProvider<Object>? image,
     double? width,
     double? height,
@@ -112,45 +112,45 @@ class ImageStyle extends Style<ImageSpec>
          variants: variants,
        );
 
-  factory ImageStyle.builder(ImageStyle Function(BuildContext) fn) {
-    return ImageStyle().builder(fn);
+  factory ImageStyler.builder(ImageStyler Function(BuildContext) fn) {
+    return ImageStyler().builder(fn);
   }
 
-  static ImageSpecUtility get chain => ImageSpecUtility(ImageStyle());
+  static ImageSpecUtility get chain => ImageSpecUtility(ImageStyler());
 
   /// Sets image provider
-  ImageStyle image(ImageProvider<Object> value) {
-    return merge(ImageStyle(image: value));
+  ImageStyler image(ImageProvider<Object> value) {
+    return merge(ImageStyler(image: value));
   }
 
   /// Sets image width
-  ImageStyle width(double value) {
-    return merge(ImageStyle(width: value));
+  ImageStyler width(double value) {
+    return merge(ImageStyler(width: value));
   }
 
   /// Sets image height
-  ImageStyle height(double value) {
-    return merge(ImageStyle(height: value));
+  ImageStyler height(double value) {
+    return merge(ImageStyler(height: value));
   }
 
   /// Sets image color
-  ImageStyle color(Color value) {
-    return merge(ImageStyle(color: value));
+  ImageStyler color(Color value) {
+    return merge(ImageStyler(color: value));
   }
 
   /// Sets image repeat
-  ImageStyle repeat(ImageRepeat value) {
-    return merge(ImageStyle(repeat: value));
+  ImageStyler repeat(ImageRepeat value) {
+    return merge(ImageStyler(repeat: value));
   }
 
   /// Sets image fit
-  ImageStyle fit(BoxFit value) {
-    return merge(ImageStyle(fit: value));
+  ImageStyler fit(BoxFit value) {
+    return merge(ImageStyler(fit: value));
   }
 
   /// Sets image alignment
-  ImageStyle alignment(AlignmentGeometry value) {
-    return merge(ImageStyle(alignment: value));
+  ImageStyler alignment(AlignmentGeometry value) {
+    return merge(ImageStyler(alignment: value));
   }
 
   StyledImage call({
@@ -171,57 +171,57 @@ class ImageStyle extends Style<ImageSpec>
   }
 
   /// Sets center slice
-  ImageStyle centerSlice(Rect value) {
-    return merge(ImageStyle(centerSlice: value));
+  ImageStyler centerSlice(Rect value) {
+    return merge(ImageStyler(centerSlice: value));
   }
 
   /// Sets filter quality
-  ImageStyle filterQuality(FilterQuality value) {
-    return merge(ImageStyle(filterQuality: value));
+  ImageStyler filterQuality(FilterQuality value) {
+    return merge(ImageStyler(filterQuality: value));
   }
 
   /// Sets color blend mode
-  ImageStyle colorBlendMode(BlendMode value) {
-    return merge(ImageStyle(colorBlendMode: value));
+  ImageStyler colorBlendMode(BlendMode value) {
+    return merge(ImageStyler(colorBlendMode: value));
   }
 
   /// Sets semantic label
-  ImageStyle semanticLabel(String value) {
-    return merge(ImageStyle(semanticLabel: value));
+  ImageStyler semanticLabel(String value) {
+    return merge(ImageStyler(semanticLabel: value));
   }
 
   /// Sets exclude from semantics
-  ImageStyle excludeFromSemantics(bool value) {
-    return merge(ImageStyle(excludeFromSemantics: value));
+  ImageStyler excludeFromSemantics(bool value) {
+    return merge(ImageStyler(excludeFromSemantics: value));
   }
 
   /// Sets gapless playback
-  ImageStyle gaplessPlayback(bool value) {
-    return merge(ImageStyle(gaplessPlayback: value));
+  ImageStyler gaplessPlayback(bool value) {
+    return merge(ImageStyler(gaplessPlayback: value));
   }
 
   /// Sets is anti alias
-  ImageStyle isAntiAlias(bool value) {
-    return merge(ImageStyle(isAntiAlias: value));
+  ImageStyler isAntiAlias(bool value) {
+    return merge(ImageStyler(isAntiAlias: value));
   }
 
   /// Sets match text direction
-  ImageStyle matchTextDirection(bool value) {
-    return merge(ImageStyle(matchTextDirection: value));
+  ImageStyler matchTextDirection(bool value) {
+    return merge(ImageStyler(matchTextDirection: value));
   }
 
-  ImageStyle modifier(ModifierConfig value) {
-    return merge(ImageStyle(modifier: value));
+  ImageStyler modifier(ModifierConfig value) {
+    return merge(ImageStyler(modifier: value));
   }
 
   /// Convenience method for animating the ImageStyleSpec
-  ImageStyle animate(AnimationConfig animation) {
-    return merge(ImageStyle(animation: animation));
+  ImageStyler animate(AnimationConfig animation) {
+    return merge(ImageStyler(animation: animation));
   }
 
   @override
-  ImageStyle variants(List<VariantStyle<ImageSpec>> variants) {
-    return merge(ImageStyle(variants: variants));
+  ImageStyler variants(List<VariantStyle<ImageSpec>> variants) {
+    return merge(ImageStyler(variants: variants));
   }
 
   @override
@@ -252,10 +252,10 @@ class ImageStyle extends Style<ImageSpec>
   }
 
   @override
-  ImageStyle merge(ImageStyle? other) {
+  ImageStyler merge(ImageStyler? other) {
     if (other == null) return this;
 
-    return ImageStyle.create(
+    return ImageStyler.create(
       image: MixOps.merge($image, other.$image),
       width: MixOps.merge($width, other.$width),
       height: MixOps.merge($height, other.$height),
@@ -305,12 +305,12 @@ class ImageStyle extends Style<ImageSpec>
   }
 
   @override
-  ImageStyle variant(Variant variant, ImageStyle style) {
-    return merge(ImageStyle(variants: [VariantStyle(variant, style)]));
+  ImageStyler variant(Variant variant, ImageStyler style) {
+    return merge(ImageStyler(variants: [VariantStyle(variant, style)]));
   }
 
   @override
-  ImageStyle wrap(ModifierConfig value) {
+  ImageStyler wrap(ModifierConfig value) {
     return modifier(value);
   }
 

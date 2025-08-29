@@ -18,15 +18,15 @@ import 'icon_style.dart';
 
 /// Provides mutable utility for icon styling with cascade notation support.
 ///
-/// Supports the same API as [IconStyle] but maintains mutable internal state
+/// Supports the same API as [IconStyler] but maintains mutable internal state
 /// enabling fluid styling: `$icon..color(Colors.blue)..size(24)..weight(400)`.
 class IconSpecUtility extends StyleMutableBuilder<IconSpec>
-    with UtilityVariantMixin<IconSpec, IconStyle> {
-  late final color = ColorUtility<IconStyle>(
-    (prop) => mutable.merge(IconStyle.create(color: prop)),
+    with UtilityVariantMixin<IconSpec, IconStyler> {
+  late final color = ColorUtility<IconStyler>(
+    (prop) => mutable.merge(IconStyler.create(color: prop)),
   );
 
-  late final shadow = ShadowUtility<IconStyle>((v) => mutable.shadows([v]));
+  late final shadow = ShadowUtility<IconStyler>((v) => mutable.shadows([v]));
 
   late final textDirection = MixUtility(mutable.textDirection);
 
@@ -34,7 +34,7 @@ class IconSpecUtility extends StyleMutableBuilder<IconSpec>
     'Use direct methods like \$icon.onHovered() instead. '
     'Note: Returns IconStyle for consistency with other utility methods like animate().',
   )
-  late final on = OnContextVariantUtility<IconSpec, IconStyle>(
+  late final on = OnContextVariantUtility<IconSpec, IconStyler>(
     (v) => mutable.variants([v]),
   );
 
@@ -47,35 +47,35 @@ class IconSpecUtility extends StyleMutableBuilder<IconSpec>
   @protected
   late final MutableIconStyle mutable;
 
-  IconSpecUtility([IconStyle? attribute]) {
-    mutable = MutableIconStyle(attribute ?? IconStyle());
+  IconSpecUtility([IconStyler? attribute]) {
+    mutable = MutableIconStyle(attribute ?? IconStyler());
   }
 
-  IconStyle size(double v) => mutable.size(v);
+  IconStyler size(double v) => mutable.size(v);
 
-  IconStyle weight(double v) => mutable.weight(v);
+  IconStyler weight(double v) => mutable.weight(v);
 
-  IconStyle grade(double v) => mutable.grade(v);
+  IconStyler grade(double v) => mutable.grade(v);
 
-  IconStyle opticalSize(double v) => mutable.opticalSize(v);
+  IconStyler opticalSize(double v) => mutable.opticalSize(v);
 
-  IconStyle applyTextScaling(bool v) => mutable.applyTextScaling(v);
+  IconStyler applyTextScaling(bool v) => mutable.applyTextScaling(v);
 
-  IconStyle fill(double v) => mutable.fill(v);
+  IconStyler fill(double v) => mutable.fill(v);
 
   /// Applies multiple shadows to the icon.
-  IconStyle shadows(List<ShadowMix> value) => mutable.shadows(value);
+  IconStyler shadows(List<ShadowMix> value) => mutable.shadows(value);
 
   /// Applies animation configuration to the icon styling.
-  IconStyle animate(AnimationConfig animation) => mutable.animate(animation);
+  IconStyler animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
-  IconStyle withVariant(Variant variant, IconStyle style) {
+  IconStyler withVariant(Variant variant, IconStyler style) {
     return mutable.variant(variant, style);
   }
 
   @override
-  IconStyle withVariants(List<VariantStyle<IconSpec>> variants) {
+  IconStyler withVariants(List<VariantStyle<IconSpec>> variants) {
     return mutable.variants(variants);
   }
 
@@ -86,7 +86,7 @@ class IconSpecUtility extends StyleMutableBuilder<IconSpec>
     if (other is IconSpecUtility) {
       return IconSpecUtility(mutable.merge(other.mutable.value));
     }
-    if (other is IconStyle) {
+    if (other is IconStyler) {
       return IconSpecUtility(mutable.merge(other));
     }
 
@@ -99,15 +99,15 @@ class IconSpecUtility extends StyleMutableBuilder<IconSpec>
   }
 
   @override
-  IconStyle get currentValue => mutable.value;
+  IconStyler get currentValue => mutable.value;
 
-  /// The accumulated [IconStyle] with all applied styling properties.
+  /// The accumulated [IconStyler] with all applied styling properties.
   @override
-  IconStyle get value => mutable.value;
+  IconStyler get value => mutable.value;
 }
 
-class MutableIconStyle extends IconStyle with Mutable<IconSpec, IconStyle> {
-  MutableIconStyle(IconStyle style) {
+class MutableIconStyle extends IconStyler with Mutable<IconSpec, IconStyler> {
+  MutableIconStyle(IconStyler style) {
     value = style;
   }
 }

@@ -24,7 +24,7 @@ import 'stack_box_spec.dart';
 import 'stack_spec.dart';
 import 'stack_style.dart';
 
-typedef StackBoxMix = StackBoxStyle;
+typedef StackBoxMix = StackBoxStyler;
 
 /// Represents the attributes of a [ZBoxSpec].
 ///
@@ -33,19 +33,19 @@ typedef StackBoxMix = StackBoxStyle;
 ///
 /// Use this class to configure the attributes of a [ZBoxSpec] and pass it to
 /// the [ZBoxSpec] constructor.
-class StackBoxStyle extends Style<ZBoxSpec>
+class StackBoxStyler extends Style<ZBoxSpec>
     with
         Diagnosticable,
-        StyleVariantMixin<StackBoxStyle, ZBoxSpec>,
-        BorderRadiusMixin<StackBoxStyle>,
-        DecorationMixin<StackBoxStyle>,
-        SpacingMixin<StackBoxStyle>,
-        TransformMixin<StackBoxStyle>,
-        ConstraintsMixin<StackBoxStyle> {
+        StyleVariantMixin<StackBoxStyler, ZBoxSpec>,
+        BorderRadiusMixin<StackBoxStyler>,
+        DecorationMixin<StackBoxStyler>,
+        SpacingMixin<StackBoxStyler>,
+        TransformMixin<StackBoxStyler>,
+        ConstraintsMixin<StackBoxStyler> {
   final Prop<StyleSpec<BoxSpec>>? $box;
   final Prop<StyleSpec<StackSpec>>? $stack;
 
-  StackBoxStyle({
+  StackBoxStyler({
     // Box properties
     DecorationMix? decoration,
     DecorationMix? foregroundDecoration,
@@ -78,14 +78,14 @@ class StackBoxStyle extends Style<ZBoxSpec>
          ),
        ),
        $stack = Prop.maybeMix(
-         StackStyle(
+         StackStyler(
            alignment: stackAlignment,
            fit: fit,
            clipBehavior: stackClipBehavior,
          ),
        );
 
-  const StackBoxStyle.create({
+  const StackBoxStyler.create({
     Prop<StyleSpec<BoxSpec>>? box,
     Prop<StyleSpec<StackSpec>>? stack,
     super.modifier,
@@ -94,67 +94,67 @@ class StackBoxStyle extends Style<ZBoxSpec>
   }) : $box = box,
        $stack = stack;
 
-  factory StackBoxStyle.builder(StackBoxStyle Function(BuildContext) fn) {
-    return StackBoxStyle().builder(fn);
+  factory StackBoxStyler.builder(StackBoxStyler Function(BuildContext) fn) {
+    return StackBoxStyler().builder(fn);
   }
 
   static StackBoxSpecUtility get chain => StackBoxSpecUtility.self;
 
   /// Sets animation
-  StackBoxStyle animate(AnimationConfig animation) {
-    return merge(StackBoxStyle(animation: animation));
+  StackBoxStyler animate(AnimationConfig animation) {
+    return merge(StackBoxStyler(animation: animation));
   }
 
-  StackBoxStyle modifier(ModifierConfig value) {
-    return merge(StackBoxStyle(modifier: value));
-  }
-
-  @override
-  StackBoxStyle variants(List<VariantStyle<ZBoxSpec>> variants) {
-    return merge(StackBoxStyle(variants: variants));
+  StackBoxStyler modifier(ModifierConfig value) {
+    return merge(StackBoxStyler(modifier: value));
   }
 
   @override
-  StackBoxStyle variant(Variant variant, StackBoxStyle style) {
-    return merge(StackBoxStyle(variants: [VariantStyle(variant, style)]));
+  StackBoxStyler variants(List<VariantStyle<ZBoxSpec>> variants) {
+    return merge(StackBoxStyler(variants: variants));
+  }
+
+  @override
+  StackBoxStyler variant(Variant variant, StackBoxStyler style) {
+    return merge(StackBoxStyler(variants: [VariantStyle(variant, style)]));
   }
 
   // Mixin implementations - delegate to BoxMix
 
   /// Padding instance method - delegates to box
   @override
-  StackBoxStyle padding(EdgeInsetsGeometryMix value) {
-    return merge(StackBoxStyle(padding: value));
+  StackBoxStyler padding(EdgeInsetsGeometryMix value) {
+    return merge(StackBoxStyler(padding: value));
   }
 
   /// Margin instance method - delegates to box
   @override
-  StackBoxStyle margin(EdgeInsetsGeometryMix value) {
-    return merge(StackBoxStyle(margin: value));
+  StackBoxStyler margin(EdgeInsetsGeometryMix value) {
+    return merge(StackBoxStyler(margin: value));
   }
 
   /// Transform instance method - delegates to box
   @override
-  StackBoxStyle transform(Matrix4 value) {
-    return merge(StackBoxStyle(transform: value));
+  StackBoxStyler transform(Matrix4 value) {
+    return merge(StackBoxStyler(transform: value));
   }
 
   /// Decoration instance method - delegates to box
   @override
-  StackBoxStyle decoration(DecorationMix value) {
-    return merge(StackBoxStyle(decoration: value));
+  StackBoxStyler decoration(DecorationMix value) {
+    return merge(StackBoxStyler(decoration: value));
   }
 
   /// Constraints instance method - delegates to box
   @override
-  StackBoxStyle constraints(BoxConstraintsMix value) {
-    return merge(StackBoxStyle(constraints: value));
+  StackBoxStyler constraints(BoxConstraintsMix value) {
+    return merge(StackBoxStyler(constraints: value));
   }
 
   /// Border radius instance method - delegates to box
   @override
-  StackBoxStyle borderRadius(BorderRadiusGeometryMix value) {
-    return merge(StackBoxStyle(decoration: DecorationMix.borderRadius(value)));
+  StackBoxStyler borderRadius(BorderRadiusGeometryMix value) {
+    return merge(StackBoxStyler(decoration: DecorationMix.borderRadius(value)));
   }
 
   /// Resolves to [ZBoxSpec] using the provided [BuildContext].
@@ -179,19 +179,19 @@ class StackBoxStyle extends Style<ZBoxSpec>
     );
   }
 
-  /// Merges the properties of this [StackBoxStyle] with the properties of [other].
+  /// Merges the properties of this [StackBoxStyler] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [StackBoxStyle] with the properties of [other] taking precedence over
+  /// [StackBoxStyler] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  StackBoxStyle merge(StackBoxStyle? other) {
+  StackBoxStyler merge(StackBoxStyler? other) {
     if (other == null) return this;
 
-    return StackBoxStyle.create(
+    return StackBoxStyler.create(
       box: MixOps.merge($box, other.$box),
       stack: MixOps.merge($stack, other.$stack),
       modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
@@ -208,10 +208,10 @@ class StackBoxStyle extends Style<ZBoxSpec>
       ..add(DiagnosticsProperty('stack', $stack));
   }
 
-  /// The list of properties that constitute the state of this [StackBoxStyle].
+  /// The list of properties that constitute the state of this [StackBoxStyler].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [StackBoxStyle] instances for equality.
+  /// compare two [StackBoxStyler] instances for equality.
   @override
   List<Object?> get props => [$box, $stack];
 }
@@ -221,18 +221,18 @@ class StackBoxStyle extends Style<ZBoxSpec>
 /// This class provides methods to set individual properties of a [ZBoxSpec].
 /// Use the methods of this class to configure specific properties of a [ZBoxSpec].
 class StackBoxSpecUtility {
-  /// Utility for defining [StackBoxStyle] box properties
+  /// Utility for defining [StackBoxStyler] box properties
   final box = BoxStyler();
 
-  /// Utility for defining [StackBoxStyle.stack]
-  final stack = StackStyle();
+  /// Utility for defining [StackBoxStyler.stack]
+  final stack = StackStyler();
 
   StackBoxSpecUtility();
 
   static StackBoxSpecUtility get self => StackBoxSpecUtility();
 
-  /// Returns a new [StackBoxStyle] with the specified properties.
-  StackBoxStyle only({
+  /// Returns a new [StackBoxStyler] with the specified properties.
+  StackBoxStyler only({
     // Box properties
     DecorationMix? decoration,
     EdgeInsetsGeometryMix? padding,
@@ -251,7 +251,7 @@ class StackBoxSpecUtility {
     AnimationConfig? animation,
     List<VariantStyle<ZBoxSpec>>? variants,
   }) {
-    return StackBoxStyle(
+    return StackBoxStyler(
       decoration: decoration,
       padding: padding,
       margin: margin,

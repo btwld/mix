@@ -209,7 +209,7 @@ final class ModifierConfig with Equatable {
     );
   }
 
-  factory ModifierConfig.defaultText(TextStyling textMix) {
+  factory ModifierConfig.defaultText(TextStyler textMix) {
     return ModifierConfig.modifier(
       DefaultTextStyleModifierMix.create(
         style: textMix.$style,
@@ -223,7 +223,7 @@ final class ModifierConfig with Equatable {
     );
   }
 
-  factory ModifierConfig.defaultIcon(IconStyle iconMix) {
+  factory ModifierConfig.defaultIcon(IconStyler iconMix) {
     return ModifierConfig.modifier(
       IconThemeModifierMix.create(
         color: iconMix.$color,
@@ -448,7 +448,7 @@ final class ModifierConfig with Equatable {
     );
   }
 
-  ModifierConfig defaultText(TextStyling textMix) {
+  ModifierConfig defaultText(TextStyler textMix) {
     return merge(ModifierConfig.defaultText(textMix));
   }
 

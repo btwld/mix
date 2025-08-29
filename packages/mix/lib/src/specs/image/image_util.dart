@@ -16,12 +16,12 @@ import 'image_style.dart';
 
 /// Provides mutable utility for image styling with cascade notation support.
 ///
-/// Supports the same API as [ImageStyle] but maintains mutable internal state
+/// Supports the same API as [ImageStyler] but maintains mutable internal state
 /// enabling fluid styling: `$image..width(100)..height(100)..fit(BoxFit.cover)`.
 class ImageSpecUtility extends StyleMutableBuilder<ImageSpec>
-    with UtilityVariantMixin<ImageSpec, ImageStyle> {
+    with UtilityVariantMixin<ImageSpec, ImageStyler> {
   late final color = ColorUtility(
-    (prop) => mutable.merge(ImageStyle.create(color: prop)),
+    (prop) => mutable.merge(ImageStyler.create(color: prop)),
   );
 
   late final repeat = MixUtility(mutable.repeat);
@@ -40,7 +40,7 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageSpec>
     'Use direct methods like \$image.onHovered() instead. '
     'Note: Returns ImageStyle for consistency with other utility methods like animate().',
   )
-  late final on = OnContextVariantUtility<ImageSpec, ImageStyle>(
+  late final on = OnContextVariantUtility<ImageSpec, ImageStyler>(
     (v) => mutable.variants([v]),
   );
 
@@ -68,17 +68,17 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageSpec>
   late final matchTextDirection = mutable.matchTextDirection;
   late final animate = mutable.animate;
   late final variants = mutable.variants;
-  ImageSpecUtility([ImageStyle? attribute]) {
-    mutable = MutableImageStyle(attribute ?? ImageStyle());
+  ImageSpecUtility([ImageStyler? attribute]) {
+    mutable = MutableImageStyle(attribute ?? ImageStyler());
   }
 
   @override
-  ImageStyle withVariant(Variant variant, ImageStyle style) {
+  ImageStyler withVariant(Variant variant, ImageStyler style) {
     return mutable.variant(variant, style);
   }
 
   @override
-  ImageStyle withVariants(List<VariantStyle<ImageSpec>> variants) {
+  ImageStyler withVariants(List<VariantStyle<ImageSpec>> variants) {
     return mutable.variants(variants);
   }
 
@@ -89,7 +89,7 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageSpec>
     if (other is ImageSpecUtility) {
       return ImageSpecUtility(mutable.merge(other.mutable.value));
     }
-    if (other is ImageStyle) {
+    if (other is ImageStyler) {
       return ImageSpecUtility(mutable.merge(other));
     }
 
@@ -102,15 +102,16 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageSpec>
   }
 
   @override
-  ImageStyle get currentValue => mutable.value;
+  ImageStyler get currentValue => mutable.value;
 
-  /// The accumulated [ImageStyle] with all applied styling properties.
+  /// The accumulated [ImageStyler] with all applied styling properties.
   @override
-  ImageStyle get value => mutable.value;
+  ImageStyler get value => mutable.value;
 }
 
-class MutableImageStyle extends ImageStyle with Mutable<ImageSpec, ImageStyle> {
-  MutableImageStyle(ImageStyle style) {
+class MutableImageStyle extends ImageStyler
+    with Mutable<ImageSpec, ImageStyler> {
+  MutableImageStyle(ImageStyler style) {
     value = style;
   }
 }

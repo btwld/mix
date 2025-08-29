@@ -19,7 +19,7 @@ void main() {
       });
 
       test('', () {
-        final iconMix = IconStyle(size: 24.0);
+        final iconMix = IconStyler(size: 24.0);
         final utility = IconSpecUtility(iconMix);
         final context = MockBuildContext();
         final spec = utility.resolve(context);
@@ -31,7 +31,7 @@ void main() {
 
     group('Icon utility properties', () {
       test('color utility is ColorUtility', () {
-        expect(util.color, isA<ColorUtility<IconStyle>>());
+        expect(util.color, isA<ColorUtility<IconStyler>>());
       });
 
       test('size is now a method', () {
@@ -51,11 +51,14 @@ void main() {
       });
 
       test('shadow utility is ShadowUtility', () {
-        expect(util.shadow, isA<ShadowUtility<IconStyle>>());
+        expect(util.shadow, isA<ShadowUtility<IconStyler>>());
       });
 
       test('textDirection utility is MixUtility', () {
-        expect(util.textDirection, isA<MixUtility<IconStyle, TextDirection>>());
+        expect(
+          util.textDirection,
+          isA<MixUtility<IconStyler, TextDirection>>(),
+        );
       });
 
       test('applyTextScaling is now a method', () {
@@ -67,11 +70,11 @@ void main() {
       });
 
       test('on utility is OnContextVariantUtility', () {
-        expect(util.on, isA<OnContextVariantUtility<IconSpec, IconStyle>>());
+        expect(util.on, isA<OnContextVariantUtility<IconSpec, IconStyler>>());
       });
 
       test('wrap utility is ModifierUtility', () {
-        expect(util.wrap, isA<ModifierUtility<IconStyle>>());
+        expect(util.wrap, isA<ModifierUtility<IconStyler>>());
       });
     });
 
@@ -81,7 +84,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(result, isA<IconStyle>());
+        expect(result, isA<IconStyler>());
         expect(spec.spec.size, 24.0);
       });
 
@@ -90,7 +93,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(result, isA<IconStyle>());
+        expect(result, isA<IconStyler>());
         expect(spec.spec.weight, 400.0);
       });
 
@@ -99,7 +102,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(result, isA<IconStyle>());
+        expect(result, isA<IconStyler>());
         expect(spec.spec.grade, 0.5);
       });
 
@@ -108,7 +111,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(result, isA<IconStyle>());
+        expect(result, isA<IconStyler>());
         expect(spec.spec.opticalSize, 48.0);
       });
 
@@ -117,7 +120,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(result, isA<IconStyle>());
+        expect(result, isA<IconStyler>());
         expect(spec.spec.textDirection, TextDirection.rtl);
       });
 
@@ -126,7 +129,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(result, isA<IconStyle>());
+        expect(result, isA<IconStyler>());
         expect(spec.spec.applyTextScaling, false);
       });
 
@@ -135,7 +138,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(result, isA<IconStyle>());
+        expect(result, isA<IconStyler>());
         expect(spec.spec.fill, 0.8);
       });
     });
@@ -143,12 +146,12 @@ void main() {
     group('Color utilities', () {
       test('', () {
         final result = util.color.red();
-        expect(result, isA<IconStyle>());
+        expect(result, isA<IconStyler>());
       });
 
       test('color utility with specific color', () {
         final result = util.color(Colors.blue);
-        expect(result, isA<IconStyle>());
+        expect(result, isA<IconStyler>());
       });
     });
 
@@ -159,7 +162,7 @@ void main() {
           offset: const Offset(2, 2),
           blurRadius: 4.0,
         );
-        expect(result, isA<IconStyle>());
+        expect(result, isA<IconStyler>());
       });
 
       test('', () {
@@ -168,7 +171,7 @@ void main() {
           ShadowMix(color: Colors.grey, blurRadius: 4.0),
         ];
         final result = util.shadows(shadows);
-        expect(result, isA<IconStyle>());
+        expect(result, isA<IconStyler>());
       });
     });
 
@@ -195,7 +198,7 @@ void main() {
       test('', () {
         final result = util.wrap.opacity(0.5);
 
-        expect(result, isA<IconStyle>());
+        expect(result, isA<IconStyler>());
         expect(result.$modifier, isNotNull);
         expect(result.$modifier!.$modifiers!.length, 1);
       });
@@ -208,7 +211,7 @@ void main() {
       });
 
       test('', () {
-        final other = IconSpecUtility(IconStyle(size: 32.0));
+        final other = IconSpecUtility(IconStyler(size: 32.0));
         final result = util.merge(other);
         final context = MockBuildContext();
         final spec = result.resolve(context);
@@ -219,7 +222,7 @@ void main() {
       });
 
       test('', () {
-        final otherMix = IconStyle(weight: 600.0);
+        final otherMix = IconStyler(weight: 600.0);
         final result = util.merge(otherMix);
         final context = MockBuildContext();
         final spec = result.resolve(context);
@@ -237,8 +240,8 @@ void main() {
       });
 
       test('merge combines properties correctly', () {
-        final util1 = IconSpecUtility(IconStyle(size: 24.0, weight: 400.0));
-        final other = IconSpecUtility(IconStyle(weight: 600.0, fill: 0.8));
+        final util1 = IconSpecUtility(IconStyler(size: 24.0, weight: 400.0));
+        final other = IconSpecUtility(IconStyler(weight: 600.0, fill: 0.8));
 
         final result = util1.merge(other);
         final context = MockBuildContext();
@@ -253,7 +256,7 @@ void main() {
     group('Resolve functionality', () {
       test('', () {
         final testUtil = IconSpecUtility(
-          IconStyle(size: 24.0, weight: 400.0, fill: 0.8),
+          IconStyler(size: 24.0, weight: 400.0, fill: 0.8),
         );
 
         final context = MockBuildContext();
@@ -281,7 +284,7 @@ void main() {
         final util = IconSpecUtility();
 
         final result = util.size(24.0);
-        expect(result, isA<IconStyle>());
+        expect(result, isA<IconStyler>());
 
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -293,7 +296,7 @@ void main() {
         final util = IconSpecUtility();
 
         final result = util.weight(400.0);
-        expect(result, isA<IconStyle>());
+        expect(result, isA<IconStyler>());
 
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -340,9 +343,9 @@ void main() {
         final weightResult = util.weight(400.0);
         final fillResult = util.fill(0.8);
 
-        expect(sizeResult, isA<IconStyle>());
-        expect(weightResult, isA<IconStyle>());
-        expect(fillResult, isA<IconStyle>());
+        expect(sizeResult, isA<IconStyler>());
+        expect(weightResult, isA<IconStyler>());
+        expect(fillResult, isA<IconStyler>());
 
         // But the utility itself should have accumulated all changes
         final context = MockBuildContext();
@@ -412,7 +415,7 @@ void main() {
     group('Integration with resolvesTo matcher', () {
       test('', () {
         final testUtil = IconSpecUtility(
-          IconStyle(size: 24.0, weight: 400.0, fill: 0.8),
+          IconStyler(size: 24.0, weight: 400.0, fill: 0.8),
         );
 
         expect(
@@ -432,7 +435,7 @@ void main() {
         final context = MockBuildContext(tokens: {sizeToken.defineValue(32.0)});
 
         final testUtil = IconSpecUtility(
-          IconStyle.create(size: Prop.token(sizeToken)),
+          IconStyler.create(size: Prop.token(sizeToken)),
         );
         final spec = testUtil.resolve(context);
 
@@ -447,15 +450,15 @@ void main() {
         final weightResult = util.weight(400.0);
         final fillResult = util.fill(0.8);
 
-        expect(sizeResult, isA<IconStyle>());
-        expect(weightResult, isA<IconStyle>());
-        expect(fillResult, isA<IconStyle>());
+        expect(sizeResult, isA<IconStyler>());
+        expect(weightResult, isA<IconStyler>());
+        expect(fillResult, isA<IconStyler>());
       });
 
       test('handles multiple merges correctly', () {
-        final util1 = IconSpecUtility(IconStyle(size: 24.0));
-        final util2 = IconSpecUtility(IconStyle(weight: 400.0));
-        final util3 = IconSpecUtility(IconStyle(fill: 0.8));
+        final util1 = IconSpecUtility(IconStyler(size: 24.0));
+        final util2 = IconSpecUtility(IconStyler(weight: 400.0));
+        final util3 = IconSpecUtility(IconStyler(fill: 0.8));
 
         final result = util1.merge(util2).merge(util3);
         final context = MockBuildContext();
@@ -479,7 +482,7 @@ void main() {
       });
 
       test('merge with self returns new instance', () {
-        final testUtil = IconSpecUtility(IconStyle(size: 24.0));
+        final testUtil = IconSpecUtility(IconStyler(size: 24.0));
         final result = testUtil.merge(testUtil);
         final context = MockBuildContext();
         final spec = result.resolve(context);

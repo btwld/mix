@@ -157,14 +157,14 @@ void main() {
 
     group('TextStyling merge', () {
       test('merges orderOfModifiers correctly', () {
-        final first = TextStyling(
+        final first = TextStyler(
           maxLines: 2,
           modifier: ModifierConfig.orderOfModifiers(const [
             OpacityModifier,
             PaddingModifier,
           ]),
         );
-        final second = TextStyling(
+        final second = TextStyler(
           overflow: TextOverflow.ellipsis,
           modifier: ModifierConfig.orderOfModifiers(const [
             ClipOvalModifier,
@@ -182,14 +182,14 @@ void main() {
 
     group('IconStyle merge', () {
       test('merges orderOfModifiers correctly', () {
-        final first = IconStyle(
+        final first = IconStyler(
           size: 24.0,
           modifier: ModifierConfig.orderOfModifiers(const [
             OpacityModifier,
             PaddingModifier,
           ]),
         );
-        final second = IconStyle(
+        final second = IconStyler(
           color: Colors.red,
           modifier: ModifierConfig.orderOfModifiers(const [
             ClipOvalModifier,
@@ -207,14 +207,14 @@ void main() {
 
     group('FlexStyle merge', () {
       test('merges orderOfModifiers correctly', () {
-        final first = FlexStyle(
+        final first = FlexStyler(
           direction: Axis.horizontal,
           modifier: ModifierConfig.orderOfModifiers(const [
             OpacityModifier,
             PaddingModifier,
           ]),
         );
-        final second = FlexStyle(
+        final second = FlexStyler(
           spacing: 8.0,
           modifier: ModifierConfig.orderOfModifiers(const [
             ClipOvalModifier,
@@ -232,14 +232,14 @@ void main() {
 
     group('ImageStyle merge', () {
       test('merges orderOfModifiers correctly', () {
-        final first = ImageStyle(
+        final first = ImageStyler(
           width: 100.0,
           modifier: ModifierConfig.orderOfModifiers(const [
             OpacityModifier,
             PaddingModifier,
           ]),
         );
-        final second = ImageStyle(
+        final second = ImageStyler(
           height: 200.0,
           modifier: ModifierConfig.orderOfModifiers(const [
             ClipOvalModifier,
@@ -257,14 +257,14 @@ void main() {
 
     group('StackStyle merge', () {
       test('merges orderOfModifiers correctly', () {
-        final first = StackStyle(
+        final first = StackStyler(
           alignment: Alignment.center,
           modifier: ModifierConfig.orderOfModifiers(const [
             OpacityModifier,
             PaddingModifier,
           ]),
         );
-        final second = StackStyle(
+        final second = StackStyler(
           fit: StackFit.expand,
           modifier: ModifierConfig.orderOfModifiers(const [
             ClipOvalModifier,
@@ -282,14 +282,14 @@ void main() {
 
     group('FlexBoxStyle merge', () {
       test('merges orderOfModifiers correctly', () {
-        final first = FlexBoxStyle(
+        final first = FlexBoxStyler(
           constraints: BoxConstraintsMix.width(100),
           modifier: ModifierConfig.orderOfModifiers(const [
             OpacityModifier,
             PaddingModifier,
           ]),
         );
-        final second = FlexBoxStyle(
+        final second = FlexBoxStyler(
           spacing: 8.0,
           modifier: ModifierConfig.orderOfModifiers(const [
             ClipOvalModifier,
@@ -307,14 +307,14 @@ void main() {
 
     group('StackBoxStyle merge', () {
       test('merges orderOfModifiers correctly', () {
-        final first = StackBoxStyle(
+        final first = StackBoxStyler(
           constraints: BoxConstraintsMix.width(100),
           modifier: ModifierConfig.orderOfModifiers(const [
             OpacityModifier,
             PaddingModifier,
           ]),
         );
-        final second = StackBoxStyle(
+        final second = StackBoxStyler(
           stackAlignment: Alignment.center,
           modifier: ModifierConfig.orderOfModifiers(const [
             ClipOvalModifier,

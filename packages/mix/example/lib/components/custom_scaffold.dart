@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
-final scaffoldContainer = FlexBoxStyle()
+final scaffoldContainer = FlexBoxStyler()
     .mainAxisSize(.max)
     .crossAxisAlignment(.stretch)
     .mainAxisAlignment(.start)

@@ -5,13 +5,13 @@ import 'package:mix/mix.dart';
 void main() {
   group('TextScope', () {
     testWidgets('provides text data to descendants', (tester) async {
-      final text = TextStyling(
+      final text = TextStyler(
         textAlign: TextAlign.center,
         overflow: TextOverflow.ellipsis,
         maxLines: 2,
       );
 
-      late TextStyling capturedScope;
+      late TextStyler capturedScope;
 
       await tester.pumpWidget(
         TextScope(
@@ -30,7 +30,7 @@ void main() {
     });
 
     testWidgets('maybeOf returns null when no scope found', (tester) async {
-      TextStyling? capturedScope;
+      TextStyler? capturedScope;
 
       await tester.pumpWidget(
         Builder(
@@ -58,7 +58,7 @@ void main() {
     });
 
     testWidgets('wraps child with DefaultTextStyle', (tester) async {
-      final text = TextStyling(
+      final text = TextStyler(
         textAlign: TextAlign.center,
         overflow: TextOverflow.ellipsis,
         maxLines: 3,
@@ -85,8 +85,8 @@ void main() {
     testWidgets('updateShouldNotify returns true when text changes', (
       tester,
     ) async {
-      final text1 = TextStyling(maxLines: 1);
-      final text2 = TextStyling(maxLines: 2);
+      final text1 = TextStyler(maxLines: 1);
+      final text2 = TextStyler(maxLines: 2);
 
       // Test through InheritedWidget implementation
       expect(text1, isNot(equals(text2)));
@@ -95,14 +95,14 @@ void main() {
     testWidgets('updateShouldNotify returns false when text is same', (
       tester,
     ) async {
-      final text = TextStyling(maxLines: 1);
+      final text = TextStyler(maxLines: 1);
 
       // Test through InheritedWidget implementation
       expect(text, equals(text));
     });
 
     testWidgets('handles null text properties', (tester) async {
-      final text = TextStyling();
+      final text = TextStyler();
 
       await tester.pumpWidget(
         MaterialApp(

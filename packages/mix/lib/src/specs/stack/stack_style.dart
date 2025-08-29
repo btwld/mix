@@ -14,7 +14,7 @@ import '../../variants/variant_util.dart';
 import 'stack_spec.dart';
 import 'stack_util.dart';
 
-typedef StackMix = StackStyle;
+typedef StackMix = StackStyler;
 
 /// Represents the attributes of a [StackSpec].
 ///
@@ -23,18 +23,18 @@ typedef StackMix = StackStyle;
 ///
 /// Use this class to configure the attributes of a [StackSpec] and pass it to
 /// the [StackSpec] constructor.
-class StackStyle extends Style<StackSpec>
+class StackStyler extends Style<StackSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<StackStyle, StackSpec>,
-        StyleVariantMixin<StackStyle, StackSpec>,
-        StyleAnimationMixin<StackSpec, StackStyle> {
+        StyleModifierMixin<StackStyler, StackSpec>,
+        StyleVariantMixin<StackStyler, StackSpec>,
+        StyleAnimationMixin<StackSpec, StackStyler> {
   final Prop<AlignmentGeometry>? $alignment;
   final Prop<StackFit>? $fit;
   final Prop<TextDirection>? $textDirection;
   final Prop<Clip>? $clipBehavior;
 
-  const StackStyle.create({
+  const StackStyler.create({
     Prop<AlignmentGeometry>? alignment,
     Prop<StackFit>? fit,
     Prop<TextDirection>? textDirection,
@@ -47,7 +47,7 @@ class StackStyle extends Style<StackSpec>
        $textDirection = textDirection,
        $clipBehavior = clipBehavior;
 
-  StackStyle({
+  StackStyler({
     AlignmentGeometry? alignment,
     StackFit? fit,
     TextDirection? textDirection,
@@ -65,45 +65,45 @@ class StackStyle extends Style<StackSpec>
          variants: variants,
        );
 
-  factory StackStyle.builder(StackStyle Function(BuildContext) fn) {
-    return StackStyle().builder(fn);
+  factory StackStyler.builder(StackStyler Function(BuildContext) fn) {
+    return StackStyler().builder(fn);
   }
 
-  static StackSpecUtility get chain => StackSpecUtility(StackStyle());
+  static StackSpecUtility get chain => StackSpecUtility(StackStyler());
 
   /// Sets stack alignment
-  StackStyle alignment(AlignmentGeometry value) {
-    return merge(StackStyle(alignment: value));
+  StackStyler alignment(AlignmentGeometry value) {
+    return merge(StackStyler(alignment: value));
   }
 
   /// Sets stack fit
-  StackStyle fit(StackFit value) {
-    return merge(StackStyle(fit: value));
+  StackStyler fit(StackFit value) {
+    return merge(StackStyler(fit: value));
   }
 
   /// Sets text direction
-  StackStyle textDirection(TextDirection value) {
-    return merge(StackStyle(textDirection: value));
+  StackStyler textDirection(TextDirection value) {
+    return merge(StackStyler(textDirection: value));
   }
 
   /// Sets clip behavior
-  StackStyle clipBehavior(Clip value) {
-    return merge(StackStyle(clipBehavior: value));
+  StackStyler clipBehavior(Clip value) {
+    return merge(StackStyler(clipBehavior: value));
   }
 
-  StackStyle modifier(ModifierConfig value) {
-    return merge(StackStyle(modifier: value));
+  StackStyler modifier(ModifierConfig value) {
+    return merge(StackStyler(modifier: value));
   }
 
   /// Convenience method for animating the StackStyleSpec
   @override
-  StackStyle animate(AnimationConfig animation) {
-    return merge(StackStyle(animation: animation));
+  StackStyler animate(AnimationConfig animation) {
+    return merge(StackStyler(animation: animation));
   }
 
   @override
-  StackStyle variants(List<VariantStyle<StackSpec>> variants) {
-    return merge(StackStyle(variants: variants));
+  StackStyler variants(List<VariantStyle<StackSpec>> variants) {
+    return merge(StackStyler(variants: variants));
   }
 
   /// Resolves to [StackSpec] using the provided [BuildContext].
@@ -123,12 +123,12 @@ class StackStyle extends Style<StackSpec>
     );
   }
 
-  /// Merges the properties of this [StackStyle] with the properties of [other].
+  /// Merges the properties of this [StackStyler] with the properties of [other].
   @override
-  StackStyle merge(StackStyle? other) {
+  StackStyler merge(StackStyler? other) {
     if (other == null) return this;
 
-    return StackStyle.create(
+    return StackStyler.create(
       alignment: MixOps.merge($alignment, other.$alignment),
       fit: MixOps.merge($fit, other.$fit),
       textDirection: MixOps.merge($textDirection, other.$textDirection),
@@ -150,12 +150,12 @@ class StackStyle extends Style<StackSpec>
   }
 
   @override
-  StackStyle variant(Variant variant, StackStyle style) {
-    return merge(StackStyle(variants: [VariantStyle(variant, style)]));
+  StackStyler variant(Variant variant, StackStyler style) {
+    return merge(StackStyler(variants: [VariantStyle(variant, style)]));
   }
 
   @override
-  StackStyle wrap(ModifierConfig value) {
+  StackStyler wrap(ModifierConfig value) {
     return modifier(value);
   }
 

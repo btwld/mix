@@ -5,21 +5,21 @@ import '../specs/text/text_style.dart';
 class TextScope extends StatelessWidget {
   const TextScope({required this.text, required this.child, super.key});
 
-  static TextStyling? maybeOf(BuildContext context) {
+  static TextStyler? maybeOf(BuildContext context) {
     final inheritedWidget = context
         .dependOnInheritedWidgetOfExactType<_TextInheritedWidget>();
 
     return inheritedWidget?.text;
   }
 
-  static TextStyling of(BuildContext context) {
-    final TextStyling? result = maybeOf(context);
+  static TextStyler of(BuildContext context) {
+    final TextStyler? result = maybeOf(context);
     assert(result != null, 'No TextScope found in context');
 
     return result!;
   }
 
-  final TextStyling text;
+  final TextStyler text;
 
   final Widget child;
 
@@ -47,7 +47,7 @@ class TextScope extends StatelessWidget {
 class _TextInheritedWidget extends InheritedWidget {
   const _TextInheritedWidget({required this.text, required super.child});
 
-  final TextStyling text;
+  final TextStyler text;
 
   @override
   bool updateShouldNotify(_TextInheritedWidget oldWidget) {

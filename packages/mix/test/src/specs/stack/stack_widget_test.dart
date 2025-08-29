@@ -16,7 +16,7 @@ void main() {
               children: [
                 ZBox(
                   key: zBoxKey,
-                  style: StackBoxStyle(), // Use default empty StackBoxStyle
+                  style: StackBoxStyler(), // Use default empty StackBoxStyle
                   children: const [],
                 ),
                 Container(

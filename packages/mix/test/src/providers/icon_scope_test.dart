@@ -5,14 +5,14 @@ import 'package:mix/mix.dart';
 void main() {
   group('IconScope', () {
     testWidgets('provides icon data to descendants', (tester) async {
-      final icon = IconStyle(
+      final icon = IconStyler(
         size: 24.0,
         color: Colors.blue,
         weight: 400.0,
         fill: 1.0,
       );
 
-      late IconStyle capturedScope;
+      late IconStyler capturedScope;
 
       await tester.pumpWidget(
         IconScope(
@@ -31,7 +31,7 @@ void main() {
     });
 
     testWidgets('maybeOf returns null when no scope found', (tester) async {
-      IconStyle? capturedScope;
+      IconStyler? capturedScope;
 
       await tester.pumpWidget(
         Builder(
@@ -59,7 +59,7 @@ void main() {
     });
 
     testWidgets('wraps child with IconTheme', (tester) async {
-      final icon = IconStyle(
+      final icon = IconStyler(
         size: 32.0,
         color: Colors.red,
         weight: 700.0,
@@ -97,8 +97,8 @@ void main() {
     testWidgets('updateShouldNotify returns true when icon changes', (
       tester,
     ) async {
-      final icon1 = IconStyle(size: 16.0);
-      final icon2 = IconStyle(size: 24.0);
+      final icon1 = IconStyler(size: 16.0);
+      final icon2 = IconStyler(size: 24.0);
 
       // Test through InheritedWidget implementation
       expect(icon1, isNot(equals(icon2)));
@@ -107,14 +107,14 @@ void main() {
     testWidgets('updateShouldNotify returns false when icon is same', (
       tester,
     ) async {
-      final icon = IconStyle(size: 16.0);
+      final icon = IconStyler(size: 16.0);
 
       // Test through InheritedWidget implementation
       expect(icon, equals(icon));
     });
 
     testWidgets('handles null icon properties', (tester) async {
-      final icon = IconStyle();
+      final icon = IconStyler();
 
       await tester.pumpWidget(
         MaterialApp(

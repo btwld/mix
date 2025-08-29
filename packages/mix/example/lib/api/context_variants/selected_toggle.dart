@@ -42,7 +42,7 @@ class _ExampleState extends State<Example> {
           ),
         );
 
-    final textStyle = TextStyling()
+    final textStyle = TextStyler()
         .fontSize(16)
         .fontWeight(.w600)
         .color(Colors.grey.shade700)

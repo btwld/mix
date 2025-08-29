@@ -43,13 +43,13 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
        $variants = variants;
 
   static BoxStyler box(BoxStyler value) => value;
-  static TextStyling text(TextStyling value) => value;
-  static IconStyle icon(IconStyle value) => value;
-  static ImageStyle image(ImageStyle value) => value;
-  static StackStyle stack(StackStyle value) => value;
-  static FlexStyle flex(FlexStyle value) => value;
-  static FlexBoxStyle flexbox(FlexBoxStyle value) => value;
-  static StackBoxStyle stackbox(StackBoxStyle value) => value;
+  static TextStyler text(TextStyler value) => value;
+  static IconStyler icon(IconStyler value) => value;
+  static ImageStyler image(ImageStyler value) => value;
+  static StackStyler stack(StackStyler value) => value;
+  static FlexStyler flex(FlexStyler value) => value;
+  static FlexBoxStyler flexbox(FlexBoxStyler value) => value;
+  static StackBoxStyler stackbox(StackBoxStyler value) => value;
 
   @internal
   Set<WidgetState> get widgetStates {

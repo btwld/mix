@@ -15,7 +15,7 @@ import '../../variants/variant_util.dart';
 import 'flex_spec.dart';
 import 'flex_util.dart';
 
-typedef FlexMix = FlexStyle;
+typedef FlexMix = FlexStyler;
 
 /// Represents the attributes of a [FlexSpec].
 ///
@@ -25,12 +25,12 @@ typedef FlexMix = FlexStyle;
 /// Use this class to configure the attributes of a [FlexSpec] and pass it to
 /// the [FlexSpec] constructor.
 /// A style/attribute class for [FlexSpec], used to configure and compose flex layout properties.
-class FlexStyle extends Style<FlexSpec>
+class FlexStyler extends Style<FlexSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<FlexStyle, FlexSpec>,
-        StyleVariantMixin<FlexStyle, FlexSpec>,
-        StyleAnimationMixin<FlexSpec, FlexStyle> {
+        StyleModifierMixin<FlexStyler, FlexSpec>,
+        StyleVariantMixin<FlexStyler, FlexSpec>,
+        StyleAnimationMixin<FlexSpec, FlexStyler> {
   final Prop<Axis>? $direction;
   final Prop<MainAxisAlignment>? $mainAxisAlignment;
   final Prop<CrossAxisAlignment>? $crossAxisAlignment;
@@ -41,7 +41,7 @@ class FlexStyle extends Style<FlexSpec>
   final Prop<Clip>? $clipBehavior;
   final Prop<double>? $spacing;
 
-  const FlexStyle.create({
+  const FlexStyler.create({
     Prop<Axis>? direction,
     Prop<MainAxisAlignment>? mainAxisAlignment,
     Prop<CrossAxisAlignment>? crossAxisAlignment,
@@ -69,7 +69,7 @@ class FlexStyle extends Style<FlexSpec>
        $clipBehavior = clipBehavior,
        $spacing = spacing ?? gap;
 
-  FlexStyle({
+  FlexStyler({
     Axis? direction,
     MainAxisAlignment? mainAxisAlignment,
     CrossAxisAlignment? crossAxisAlignment,
@@ -102,11 +102,11 @@ class FlexStyle extends Style<FlexSpec>
          variants: variants,
        );
 
-  factory FlexStyle.builder(FlexStyle Function(BuildContext) fn) {
-    return FlexStyle().builder(fn);
+  factory FlexStyler.builder(FlexStyler Function(BuildContext) fn) {
+    return FlexStyler().builder(fn);
   }
 
-  static FlexSpecUtility get chain => FlexSpecUtility(FlexStyle());
+  static FlexSpecUtility get chain => FlexSpecUtility(FlexStyler());
 
   /// The gap between children.
   @Deprecated(
@@ -116,50 +116,50 @@ class FlexStyle extends Style<FlexSpec>
   Prop<double>? get $gap => $spacing;
 
   /// Sets flex direction
-  FlexStyle direction(Axis value) {
-    return merge(FlexStyle(direction: value));
+  FlexStyler direction(Axis value) {
+    return merge(FlexStyler(direction: value));
   }
 
   /// Sets main axis alignment
-  FlexStyle mainAxisAlignment(MainAxisAlignment value) {
-    return merge(FlexStyle(mainAxisAlignment: value));
+  FlexStyler mainAxisAlignment(MainAxisAlignment value) {
+    return merge(FlexStyler(mainAxisAlignment: value));
   }
 
   /// Sets spacing
 
   /// Sets cross axis alignment
-  FlexStyle crossAxisAlignment(CrossAxisAlignment value) {
-    return merge(FlexStyle(crossAxisAlignment: value));
+  FlexStyler crossAxisAlignment(CrossAxisAlignment value) {
+    return merge(FlexStyler(crossAxisAlignment: value));
   }
 
   /// Sets main axis size
-  FlexStyle mainAxisSize(MainAxisSize value) {
-    return merge(FlexStyle(mainAxisSize: value));
+  FlexStyler mainAxisSize(MainAxisSize value) {
+    return merge(FlexStyler(mainAxisSize: value));
   }
 
   /// Sets vertical direction
-  FlexStyle verticalDirection(VerticalDirection value) {
-    return merge(FlexStyle(verticalDirection: value));
+  FlexStyler verticalDirection(VerticalDirection value) {
+    return merge(FlexStyler(verticalDirection: value));
   }
 
   /// Sets text direction
-  FlexStyle textDirection(TextDirection value) {
-    return merge(FlexStyle(textDirection: value));
+  FlexStyler textDirection(TextDirection value) {
+    return merge(FlexStyler(textDirection: value));
   }
 
   /// Sets text baseline
-  FlexStyle textBaseline(TextBaseline value) {
-    return merge(FlexStyle(textBaseline: value));
+  FlexStyler textBaseline(TextBaseline value) {
+    return merge(FlexStyler(textBaseline: value));
   }
 
   /// Sets clip behavior
-  FlexStyle clipBehavior(Clip value) {
-    return merge(FlexStyle(clipBehavior: value));
+  FlexStyler clipBehavior(Clip value) {
+    return merge(FlexStyler(clipBehavior: value));
   }
 
   /// Sets spacing
-  FlexStyle spacing(double value) {
-    return merge(FlexStyle(spacing: value));
+  FlexStyler spacing(double value) {
+    return merge(FlexStyler(spacing: value));
   }
 
   /// Sets gap
@@ -167,29 +167,29 @@ class FlexStyle extends Style<FlexSpec>
     'Use spacing instead. '
     'This feature was deprecated after Mix v2.0.0.',
   )
-  FlexStyle gap(double value) {
-    return merge(FlexStyle(spacing: value));
+  FlexStyler gap(double value) {
+    return merge(FlexStyler(spacing: value));
   }
 
   /// Convenience method for setting direction to horizontal (row)
-  FlexStyle row() => direction(Axis.horizontal);
+  FlexStyler row() => direction(Axis.horizontal);
 
   /// Convenience method for setting direction to vertical (column)
-  FlexStyle column() => direction(Axis.vertical);
+  FlexStyler column() => direction(Axis.vertical);
 
-  FlexStyle modifier(ModifierConfig value) {
-    return merge(FlexStyle(modifier: value));
+  FlexStyler modifier(ModifierConfig value) {
+    return merge(FlexStyler(modifier: value));
   }
 
   /// Convenience method for animating the FlexStyleSpec
   @override
-  FlexStyle animate(AnimationConfig animation) {
-    return merge(FlexStyle(animation: animation));
+  FlexStyler animate(AnimationConfig animation) {
+    return merge(FlexStyler(animation: animation));
   }
 
   @override
-  FlexStyle variants(List<VariantStyle<FlexSpec>> variants) {
-    return merge(FlexStyle(variants: variants));
+  FlexStyler variants(List<VariantStyle<FlexSpec>> variants) {
+    return merge(FlexStyler(variants: variants));
   }
 
   /// Resolves to [FlexSpec] using the provided [BuildContext].
@@ -221,19 +221,19 @@ class FlexStyle extends Style<FlexSpec>
     );
   }
 
-  /// Merges the properties of this [FlexStyle] with the properties of [other].
+  /// Merges the properties of this [FlexStyler] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [FlexStyle] with the properties of [other] taking precedence over
+  /// [FlexStyler] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  FlexStyle merge(FlexStyle? other) {
+  FlexStyler merge(FlexStyler? other) {
     if (other == null) return this;
 
-    return FlexStyle.create(
+    return FlexStyler.create(
       direction: MixOps.merge($direction, other.$direction),
       mainAxisAlignment: MixOps.merge(
         $mainAxisAlignment,
@@ -274,12 +274,12 @@ class FlexStyle extends Style<FlexSpec>
   }
 
   @override
-  FlexStyle variant(Variant variant, FlexStyle style) {
-    return merge(FlexStyle(variants: [VariantStyle(variant, style)]));
+  FlexStyler variant(Variant variant, FlexStyler style) {
+    return merge(FlexStyler(variants: [VariantStyle(variant, style)]));
   }
 
   @override
-  FlexStyle wrap(ModifierConfig value) {
+  FlexStyler wrap(ModifierConfig value) {
     return modifier(value);
   }
 

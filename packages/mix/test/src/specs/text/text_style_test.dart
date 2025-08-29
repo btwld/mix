@@ -8,7 +8,7 @@ void main() {
   group('TextStyling', () {
     group('Constructor', () {
       test('creates TextStyling with all properties', () {
-        final attribute = TextStyling(
+        final attribute = TextStyler(
           overflow: TextOverflow.ellipsis,
           strutStyle: StrutStyleMix(fontSize: 16.0),
           textAlign: TextAlign.center,
@@ -37,7 +37,7 @@ void main() {
       });
 
       test('creates empty TextStyling', () {
-        final attribute = TextStyling();
+        final attribute = TextStyler();
 
         expect(attribute.$overflow, isNull);
         expect(attribute.$strutStyle, isNull);
@@ -55,19 +55,19 @@ void main() {
 
     group('Factory Constructors', () {
       test('color factory creates TextStyling with color', () {
-        final textMix = TextStyling(style: TextStyleMix(color: Colors.red));
+        final textMix = TextStyler(style: TextStyleMix(color: Colors.red));
 
         expect(textMix.$style, isNotNull);
       });
 
       test('fontFamily factory creates TextStyling with fontFamily', () {
-        final textMix = TextStyling(style: TextStyleMix(fontFamily: 'Arial'));
+        final textMix = TextStyler(style: TextStyleMix(fontFamily: 'Arial'));
 
         expect(textMix.$style, isNotNull);
       });
 
       test('fontWeight factory creates TextStyling with fontWeight', () {
-        final textMix = TextStyling(
+        final textMix = TextStyler(
           style: TextStyleMix(fontWeight: FontWeight.bold),
         );
 
@@ -75,7 +75,7 @@ void main() {
       });
 
       test('fontStyle factory creates TextStyling with fontStyle', () {
-        final textMix = TextStyling(
+        final textMix = TextStyler(
           style: TextStyleMix(fontStyle: FontStyle.italic),
         );
 
@@ -83,25 +83,25 @@ void main() {
       });
 
       test('fontSize factory creates TextStyling with fontSize', () {
-        final textMix = TextStyling(style: TextStyleMix(fontSize: 18.0));
+        final textMix = TextStyler(style: TextStyleMix(fontSize: 18.0));
 
         expect(textMix.$style, isNotNull);
       });
 
       test('letterSpacing factory creates TextStyling with letterSpacing', () {
-        final textMix = TextStyling(style: TextStyleMix(letterSpacing: 1.5));
+        final textMix = TextStyler(style: TextStyleMix(letterSpacing: 1.5));
 
         expect(textMix.$style, isNotNull);
       });
 
       test('wordSpacing factory creates TextStyling with wordSpacing', () {
-        final textMix = TextStyling(style: TextStyleMix(wordSpacing: 2.0));
+        final textMix = TextStyler(style: TextStyleMix(wordSpacing: 2.0));
 
         expect(textMix.$style, isNotNull);
       });
 
       test('textBaseline factory creates TextStyling with textBaseline', () {
-        final textMix = TextStyling(
+        final textMix = TextStyler(
           style: TextStyleMix(textBaseline: TextBaseline.alphabetic),
         );
 
@@ -109,7 +109,7 @@ void main() {
       });
 
       test('backgroundColor factory creates TextStyling with backgroundColor', () {
-        final textMix = TextStyling(
+        final textMix = TextStyler(
           style: TextStyleMix(backgroundColor: Colors.yellow),
         );
 
@@ -117,7 +117,7 @@ void main() {
       });
 
       test('shadows factory creates TextStyling with shadows', () {
-        final textMix = TextStyling(
+        final textMix = TextStyler(
           style: TextStyleMix(
             shadows: [ShadowMix(color: Colors.black, offset: Offset(1, 1))],
           ),
@@ -127,7 +127,7 @@ void main() {
       });
 
       test('fontFeatures factory creates TextStyling with fontFeatures', () {
-        final textMix = TextStyling(
+        final textMix = TextStyler(
           style: TextStyleMix(fontFeatures: [FontFeature.enable('smcp')]),
         );
 
@@ -135,7 +135,7 @@ void main() {
       });
 
       test('fontVariations factory creates TextStyling with fontVariations', () {
-        final textMix = TextStyling(
+        final textMix = TextStyler(
           style: TextStyleMix(fontVariations: [FontVariation('wght', 400)]),
         );
 
@@ -143,7 +143,7 @@ void main() {
       });
 
       test('decoration factory creates TextStyling with decoration', () {
-        final textMix = TextStyling(
+        final textMix = TextStyler(
           style: TextStyleMix(decoration: TextDecoration.underline),
         );
 
@@ -151,7 +151,7 @@ void main() {
       });
 
       test('decorationColor factory creates TextStyling with decorationColor', () {
-        final textMix = TextStyling(
+        final textMix = TextStyler(
           style: TextStyleMix(decorationColor: Colors.blue),
         );
 
@@ -159,7 +159,7 @@ void main() {
       });
 
       test('decorationStyle factory creates TextStyling with decorationStyle', () {
-        final textMix = TextStyling(
+        final textMix = TextStyler(
           style: TextStyleMix(decorationStyle: TextDecorationStyle.dashed),
         );
 
@@ -167,7 +167,7 @@ void main() {
       });
 
       test('height factory creates TextStyling with height', () {
-        final textMix = TextStyling(style: TextStyleMix(height: 1.5));
+        final textMix = TextStyler(style: TextStyleMix(height: 1.5));
 
         expect(textMix.$style, isNotNull);
       });
@@ -175,7 +175,7 @@ void main() {
       test(
         'decorationThickness factory creates TextStyling with decorationThickness',
         () {
-          final textMix = TextStyling(
+          final textMix = TextStyler(
             style: TextStyleMix(decorationThickness: 2.0),
           );
 
@@ -186,7 +186,7 @@ void main() {
       test(
         'fontFamilyFallback factory creates TextStyling with fontFamilyFallback',
         () {
-          final textMix = TextStyling(
+          final textMix = TextStyler(
             style: TextStyleMix(fontFamilyFallback: ['Helvetica', 'Arial']),
           );
 
@@ -195,37 +195,37 @@ void main() {
       );
 
       test('overflow factory creates TextStyling with overflow', () {
-        final textMix = TextStyling(overflow: TextOverflow.fade);
+        final textMix = TextStyler(overflow: TextOverflow.fade);
 
         expect(textMix.$overflow, resolvesTo(TextOverflow.fade));
       });
 
       test('strutStyle factory creates TextStyling with strutStyle', () {
-        final textMix = TextStyling(strutStyle: StrutStyleMix(fontSize: 16.0));
+        final textMix = TextStyler(strutStyle: StrutStyleMix(fontSize: 16.0));
 
         expect(textMix.$strutStyle, isNotNull);
       });
 
       test('textAlign factory creates TextStyling with textAlign', () {
-        final textMix = TextStyling(textAlign: TextAlign.justify);
+        final textMix = TextStyler(textAlign: TextAlign.justify);
 
         expect(textMix.$textAlign, resolvesTo(TextAlign.justify));
       });
 
       test('textScaler factory creates TextStyling with textScaler', () {
-        final textMix = TextStyling(textScaler: TextScaler.linear(1.2));
+        final textMix = TextStyler(textScaler: TextScaler.linear(1.2));
 
         expect(textMix.$textScaler, resolvesTo(TextScaler.linear(1.2)));
       });
 
       test('maxLines factory creates TextStyling with maxLines', () {
-        final textMix = TextStyling(maxLines: 2);
+        final textMix = TextStyler(maxLines: 2);
 
         expect(textMix.$maxLines, resolvesTo(2));
       });
 
       test('textWidthBasis factory creates TextStyling with textWidthBasis', () {
-        final textMix = TextStyling(textWidthBasis: TextWidthBasis.longestLine);
+        final textMix = TextStyler(textWidthBasis: TextWidthBasis.longestLine);
 
         expect(textMix.$textWidthBasis, resolvesTo(TextWidthBasis.longestLine));
       });
@@ -233,7 +233,7 @@ void main() {
       test(
         'textHeightBehavior factory creates TextStyling with textHeightBehavior',
         () {
-          final textMix = TextStyling(
+          final textMix = TextStyler(
             textHeightBehavior: TextHeightBehaviorMix(),
           );
 
@@ -242,19 +242,19 @@ void main() {
       );
 
       test('textDirection factory creates TextStyling with textDirection', () {
-        final textMix = TextStyling(textDirection: TextDirection.rtl);
+        final textMix = TextStyler(textDirection: TextDirection.rtl);
 
         expect(textMix.$textDirection, resolvesTo(TextDirection.rtl));
       });
 
       test('softWrap factory creates TextStyling with softWrap', () {
-        final textMix = TextStyling(softWrap: false);
+        final textMix = TextStyler(softWrap: false);
 
         expect(textMix.$softWrap, resolvesTo(false));
       });
 
       test('directive factory creates TextStyling with directive', () {
-        final textMix = TextStyling(
+        final textMix = TextStyler(
           textDirectives: [const UppercaseStringDirective()],
         );
 
@@ -263,7 +263,7 @@ void main() {
       });
 
       test('uppercase factory creates TextStyling with uppercase directive', () {
-        final textMix = TextStyling(
+        final textMix = TextStyler(
           textDirectives: [const UppercaseStringDirective()],
         );
 
@@ -272,7 +272,7 @@ void main() {
       });
 
       test('lowercase factory creates TextStyling with lowercase directive', () {
-        final textMix = TextStyling(
+        final textMix = TextStyler(
           textDirectives: [const LowercaseStringDirective()],
         );
 
@@ -281,7 +281,7 @@ void main() {
       });
 
       test('capitalize factory creates TextStyling with capitalize directive', () {
-        final textMix = TextStyling(
+        final textMix = TextStyler(
           textDirectives: [const CapitalizeStringDirective()],
         );
 
@@ -290,7 +290,7 @@ void main() {
       });
 
       test('titleCase factory creates TextStyling with titleCase directive', () {
-        final textMix = TextStyling(
+        final textMix = TextStyler(
           textDirectives: [const TitleCaseStringDirective()],
         );
 
@@ -301,7 +301,7 @@ void main() {
       test(
         'sentenceCase factory creates TextStyling with sentenceCase directive',
         () {
-          final textMix = TextStyling(
+          final textMix = TextStyler(
             textDirectives: [const SentenceCaseStringDirective()],
           );
 
@@ -312,15 +312,15 @@ void main() {
 
       test('animation factory creates TextStyling with animation config', () {
         final animation = AnimationConfig.linear(Duration(seconds: 1));
-        final textMix = TextStyling(animation: animation);
+        final textMix = TextStyler(animation: animation);
 
         expect(textMix.$animation, animation);
       });
 
       test('variant factory creates TextStyling with variant', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = TextStyling(style: TextStyleMix(color: Colors.white));
-        final textMix = TextStyling(variants: [VariantStyle(variant, style)]);
+        final style = TextStyler(style: TextStyleMix(color: Colors.white));
+        final textMix = TextStyler(variants: [VariantStyle(variant, style)]);
 
         expect(textMix.$variants, isNotNull);
         expect(textMix.$variants!.length, 1);
@@ -336,7 +336,7 @@ void main() {
           softWrap: true,
         );
 
-        final attribute = TextStyling(
+        final attribute = TextStyler(
           overflow: spec.overflow,
           textAlign: spec.textAlign,
           maxLines: spec.maxLines,
@@ -355,7 +355,7 @@ void main() {
 
       test('maybeValue returns attribute for non-null spec', () {
         const spec = TextSpec(overflow: TextOverflow.visible, maxLines: 1);
-        final attribute = TextStyling(
+        final attribute = TextStyler(
           overflow: spec.overflow,
           textAlign: spec.textAlign,
           maxLines: spec.maxLines,
@@ -370,61 +370,61 @@ void main() {
 
     group('Utility Methods', () {
       test('overflow utility works correctly', () {
-        final attribute = TextStyling().overflow(TextOverflow.ellipsis);
+        final attribute = TextStyler().overflow(TextOverflow.ellipsis);
 
         expect(attribute.$overflow, resolvesTo(TextOverflow.ellipsis));
       });
 
       test('strutStyle utility works correctly', () {
-        final attribute = TextStyling().strutStyle(StrutStyleMix(fontSize: 14.0));
+        final attribute = TextStyler().strutStyle(StrutStyleMix(fontSize: 14.0));
 
         expect(attribute.$strutStyle, isNotNull);
       });
 
       test('textAlign utility works correctly', () {
-        final attribute = TextStyling().textAlign(TextAlign.center);
+        final attribute = TextStyler().textAlign(TextAlign.center);
 
         expect(attribute.$textAlign, resolvesTo(TextAlign.center));
       });
 
       test('textScaler utility works correctly', () {
-        final attribute = TextStyling().textScaler(TextScaler.linear(1.5));
+        final attribute = TextStyler().textScaler(TextScaler.linear(1.5));
 
         expect(attribute.$textScaler, resolvesTo(TextScaler.linear(1.5)));
       });
 
       test('maxLines utility works correctly', () {
-        final attribute = TextStyling().maxLines(4);
+        final attribute = TextStyler().maxLines(4);
 
         expect(attribute.$maxLines, resolvesTo(4));
       });
 
       test('textWidthBasis utility works correctly', () {
-        final attribute = TextStyling().textWidthBasis(TextWidthBasis.parent);
+        final attribute = TextStyler().textWidthBasis(TextWidthBasis.parent);
 
         expect(attribute.$textWidthBasis, resolvesTo(TextWidthBasis.parent));
       });
 
       test('textHeightBehavior utility works correctly', () {
-        final attribute = TextStyling().textHeightBehavior(TextHeightBehaviorMix());
+        final attribute = TextStyler().textHeightBehavior(TextHeightBehaviorMix());
 
         expect(attribute.$textHeightBehavior, isNotNull);
       });
 
       test('textDirection utility works correctly', () {
-        final attribute = TextStyling().textDirection(TextDirection.ltr);
+        final attribute = TextStyler().textDirection(TextDirection.ltr);
 
         expect(attribute.$textDirection, resolvesTo(TextDirection.ltr));
       });
 
       test('softWrap utility works correctly', () {
-        final attribute = TextStyling().softWrap(false);
+        final attribute = TextStyler().softWrap(false);
 
         expect(attribute.$softWrap, resolvesTo(false));
       });
 
       test('directive utility works correctly', () {
-        final attribute = TextStyling().directive(
+        final attribute = TextStyler().directive(
           const UppercaseStringDirective(),
         );
 
@@ -433,67 +433,67 @@ void main() {
       });
 
       test('color utility works correctly', () {
-        final attribute = TextStyling().color(Colors.blue);
+        final attribute = TextStyler().color(Colors.blue);
 
         expect(attribute.$style, isNotNull);
       });
 
       test('fontFamily utility works correctly', () {
-        final attribute = TextStyling().fontFamily('Arial');
+        final attribute = TextStyler().fontFamily('Arial');
 
         expect(attribute.$style, isNotNull);
       });
 
       test('fontWeight utility works correctly', () {
-        final attribute = TextStyling().fontWeight(FontWeight.w600);
+        final attribute = TextStyler().fontWeight(FontWeight.w600);
 
         expect(attribute.$style, isNotNull);
       });
 
       test('fontStyle utility works correctly', () {
-        final attribute = TextStyling().fontStyle(FontStyle.italic);
+        final attribute = TextStyler().fontStyle(FontStyle.italic);
 
         expect(attribute.$style, isNotNull);
       });
 
       test('fontSize utility works correctly', () {
-        final attribute = TextStyling().fontSize(20.0);
+        final attribute = TextStyler().fontSize(20.0);
 
         expect(attribute.$style, isNotNull);
       });
 
       test('letterSpacing utility works correctly', () {
-        final attribute = TextStyling().letterSpacing(1.2);
+        final attribute = TextStyler().letterSpacing(1.2);
 
         expect(attribute.$style, isNotNull);
       });
 
       test('wordSpacing utility works correctly', () {
-        final attribute = TextStyling().wordSpacing(2.5);
+        final attribute = TextStyler().wordSpacing(2.5);
 
         expect(attribute.$style, isNotNull);
       });
 
       test('textBaseline utility works correctly', () {
-        final attribute = TextStyling().textBaseline(TextBaseline.ideographic);
+        final attribute = TextStyler().textBaseline(TextBaseline.ideographic);
 
         expect(attribute.$style, isNotNull);
       });
 
       test('height utility works correctly', () {
-        final attribute = TextStyling().height(1.8);
+        final attribute = TextStyler().height(1.8);
 
         expect(attribute.$style, isNotNull);
       });
 
       test('backgroundColor utility works correctly', () {
-        final attribute = TextStyling().backgroundColor(Colors.yellow);
+        final attribute = TextStyler().backgroundColor(Colors.yellow);
 
         expect(attribute.$style, isNotNull);
       });
 
       test('shadows utility works correctly', () {
-        final attribute = TextStyling().shadows([
+        final attribute = TextStyler().shadows([
           ShadowMix(color: Colors.black, offset: Offset(2, 2)),
         ]);
 
@@ -501,7 +501,7 @@ void main() {
       });
 
       test('fontFeatures utility works correctly', () {
-        final attribute = TextStyling().fontFeatures([
+        final attribute = TextStyler().fontFeatures([
           FontFeature.enable('liga'),
         ]);
 
@@ -509,7 +509,7 @@ void main() {
       });
 
       test('fontVariations utility works correctly', () {
-        final attribute = TextStyling().fontVariations([
+        final attribute = TextStyler().fontVariations([
           FontVariation('wght', 500),
         ]);
 
@@ -517,19 +517,19 @@ void main() {
       });
 
       test('decoration utility works correctly', () {
-        final attribute = TextStyling().decoration(TextDecoration.lineThrough);
+        final attribute = TextStyler().decoration(TextDecoration.lineThrough);
 
         expect(attribute.$style, isNotNull);
       });
 
       test('decorationColor utility works correctly', () {
-        final attribute = TextStyling().decorationColor(Colors.red);
+        final attribute = TextStyler().decorationColor(Colors.red);
 
         expect(attribute.$style, isNotNull);
       });
 
       test('decorationStyle utility works correctly', () {
-        final attribute = TextStyling().decorationStyle(
+        final attribute = TextStyler().decorationStyle(
           TextDecorationStyle.dotted,
         );
 
@@ -537,47 +537,47 @@ void main() {
       });
 
       test('decorationThickness utility works correctly', () {
-        final attribute = TextStyling().decorationThickness(3.0);
+        final attribute = TextStyler().decorationThickness(3.0);
 
         expect(attribute.$style, isNotNull);
       });
 
       test('fontFamilyFallback utility works correctly', () {
-        final attribute = TextStyling().fontFamilyFallback(['Roboto', 'Arial']);
+        final attribute = TextStyler().fontFamilyFallback(['Roboto', 'Arial']);
 
         expect(attribute.$style, isNotNull);
       });
 
       test('uppercase utility works correctly', () {
-        final attribute = TextStyling().uppercase();
+        final attribute = TextStyler().uppercase();
 
         expect(attribute.$textDirectives, isNotNull);
         expect(attribute.$textDirectives!.length, 1);
       });
 
       test('lowercase utility works correctly', () {
-        final attribute = TextStyling().lowercase();
+        final attribute = TextStyler().lowercase();
 
         expect(attribute.$textDirectives, isNotNull);
         expect(attribute.$textDirectives!.length, 1);
       });
 
       test('capitalize utility works correctly', () {
-        final attribute = TextStyling().capitalize();
+        final attribute = TextStyler().capitalize();
 
         expect(attribute.$textDirectives, isNotNull);
         expect(attribute.$textDirectives!.length, 1);
       });
 
       test('titleCase utility works correctly', () {
-        final attribute = TextStyling().titleCase();
+        final attribute = TextStyler().titleCase();
 
         expect(attribute.$textDirectives, isNotNull);
         expect(attribute.$textDirectives!.length, 1);
       });
 
       test('sentenceCase utility works correctly', () {
-        final attribute = TextStyling().sentenceCase();
+        final attribute = TextStyler().sentenceCase();
 
         expect(attribute.$textDirectives, isNotNull);
         expect(attribute.$textDirectives!.length, 1);
@@ -585,7 +585,7 @@ void main() {
 
       test('animate method sets animation config', () {
         final animation = AnimationConfig.linear(Duration(milliseconds: 500));
-        final attribute = TextStyling().animate(animation);
+        final attribute = TextStyler().animate(animation);
 
         expect(attribute.$animation, equals(animation));
       });
@@ -594,8 +594,8 @@ void main() {
     group('Variant Methods', () {
       test('variant method adds variant to TextStyling', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = TextStyling(style: TextStyleMix(color: Colors.white));
-        final textMix = TextStyling().variant(variant, style);
+        final style = TextStyler(style: TextStyleMix(color: Colors.white));
+        final textMix = TextStyler().variant(variant, style);
 
         expect(textMix.$variants, isNotNull);
         expect(textMix.$variants!.length, 1);
@@ -605,14 +605,14 @@ void main() {
         final variants = [
           VariantStyle(
             ContextVariant.brightness(Brightness.dark),
-            TextStyling(style: TextStyleMix(color: Colors.white)),
+            TextStyler(style: TextStyleMix(color: Colors.white)),
           ),
           VariantStyle(
             ContextVariant.brightness(Brightness.light),
-            TextStyling(style: TextStyleMix(color: Colors.black)),
+            TextStyler(style: TextStyleMix(color: Colors.black)),
           ),
         ];
-        final textMix = TextStyling().variants(variants);
+        final textMix = TextStyler().variants(variants);
 
         expect(textMix.$variants, isNotNull);
         expect(textMix.$variants!.length, 2);
@@ -621,7 +621,7 @@ void main() {
 
     group('Resolution', () {
       test('resolves to TextSpec with correct properties', () {
-        final attribute = TextStyling(
+        final attribute = TextStyler(
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
           maxLines: 3,
@@ -642,7 +642,7 @@ void main() {
       });
 
       test('resolves with null values correctly', () {
-        final attribute = TextStyling().overflow(TextOverflow.fade).maxLines(2);
+        final attribute = TextStyler().overflow(TextOverflow.fade).maxLines(2);
 
         final context = MockBuildContext();
         final spec = attribute.resolve(context);
@@ -663,9 +663,9 @@ void main() {
 
     group('Merge', () {
       test('merges properties correctly', () {
-        final first = TextStyling(overflow: TextOverflow.clip, maxLines: 2);
+        final first = TextStyler(overflow: TextOverflow.clip, maxLines: 2);
 
-        final second = TextStyling(
+        final second = TextStyler(
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
           softWrap: false,
@@ -683,7 +683,7 @@ void main() {
       });
 
       test('returns this when other is null', () {
-        final attribute = TextStyling().overflow(TextOverflow.ellipsis);
+        final attribute = TextStyler().overflow(TextOverflow.ellipsis);
         final merged = attribute.merge(null);
 
         expect(identical(attribute, merged), isTrue);
@@ -692,12 +692,12 @@ void main() {
 
     group('Equality', () {
       test('equal attributes have same hashCode', () {
-        final attr1 = TextStyling()
+        final attr1 = TextStyler()
             .overflow(TextOverflow.ellipsis)
             .maxLines(2)
             .textAlign(TextAlign.center);
 
-        final attr2 = TextStyling()
+        final attr2 = TextStyler()
             .overflow(TextOverflow.ellipsis)
             .maxLines(2)
             .textAlign(TextAlign.center);
@@ -707,8 +707,8 @@ void main() {
       });
 
       test('different attributes are not equal', () {
-        final attr1 = TextStyling().overflow(TextOverflow.ellipsis);
-        final attr2 = TextStyling().overflow(TextOverflow.fade);
+        final attr1 = TextStyler().overflow(TextOverflow.ellipsis);
+        final attr2 = TextStyler().overflow(TextOverflow.fade);
 
         expect(attr1, isNot(equals(attr2)));
       });
@@ -716,7 +716,7 @@ void main() {
 
     group('Props getter', () {
       test('props includes all properties', () {
-        final attribute = TextStyling(
+        final attribute = TextStyler(
           overflow: TextOverflow.ellipsis,
           strutStyle: StrutStyleMix(fontSize: 16.0),
           textAlign: TextAlign.center,

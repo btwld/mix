@@ -3,7 +3,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:mix/mix.dart';
 
 
-final chipButtonLabel = TextStyling(
+final chipButtonLabel = TextStyler(
       style: TextStyleMix(
         fontSize: 12,
         fontWeight: FontWeight.w500,

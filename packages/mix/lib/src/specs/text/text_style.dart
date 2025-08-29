@@ -20,7 +20,7 @@ import 'text_spec.dart';
 import 'text_util.dart';
 import 'text_widget.dart';
 
-typedef TextMix = TextStyling;
+typedef TextMix = TextStyler;
 
 /// Represents the attributes of a [TextSpec].
 ///
@@ -29,12 +29,12 @@ typedef TextMix = TextStyling;
 ///
 /// Use this class to configure the attributes of a [TextSpec] and pass it to
 /// the [TextSpec] constructor.
-class TextStyling extends Style<TextSpec>
+class TextStyler extends Style<TextSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<TextStyling, TextSpec>,
-        StyleVariantMixin<TextStyling, TextSpec>,
-        StyleAnimationMixin<TextSpec, TextStyling> {
+        StyleModifierMixin<TextStyler, TextSpec>,
+        StyleVariantMixin<TextStyler, TextSpec>,
+        StyleAnimationMixin<TextSpec, TextStyler> {
   final Prop<TextOverflow>? $overflow;
   final Prop<StrutStyle>? $strutStyle;
   final Prop<TextAlign>? $textAlign;
@@ -50,7 +50,7 @@ class TextStyling extends Style<TextSpec>
   final Prop<String>? $semanticsLabel;
   final Prop<Locale>? $locale;
 
-  const TextStyling.create({
+  const TextStyler.create({
     Prop<TextOverflow>? overflow,
     Prop<StrutStyle>? strutStyle,
     Prop<TextAlign>? textAlign,
@@ -83,7 +83,7 @@ class TextStyling extends Style<TextSpec>
        $semanticsLabel = semanticsLabel,
        $locale = locale;
 
-  TextStyling({
+  TextStyler({
     TextOverflow? overflow,
     StrutStyleMix? strutStyle,
     TextAlign? textAlign,
@@ -121,243 +121,243 @@ class TextStyling extends Style<TextSpec>
          variants: variants,
        );
 
-  factory TextStyling.builder(TextStyling Function(BuildContext) fn) {
-    return TextStyling().builder(fn);
+  factory TextStyler.builder(TextStyler Function(BuildContext) fn) {
+    return TextStyler().builder(fn);
   }
 
-  static TextSpecUtility get chain => TextSpecUtility(TextStyling());
+  static TextSpecUtility get chain => TextSpecUtility(TextStyler());
 
   StyledText call(String text) {
     return StyledText(text, style: this);
   }
 
-  TextStyling textDirective(Directive<String> value) {
-    return merge(TextStyling(textDirectives: [value]));
+  TextStyler textDirective(Directive<String> value) {
+    return merge(TextStyler(textDirectives: [value]));
   }
 
   /// Sets text overflow behavior
-  TextStyling overflow(TextOverflow value) {
-    return merge(TextStyling(overflow: value));
+  TextStyler overflow(TextOverflow value) {
+    return merge(TextStyler(overflow: value));
   }
 
   /// Sets strut style
-  TextStyling strutStyle(StrutStyleMix value) {
-    return merge(TextStyling(strutStyle: value));
+  TextStyler strutStyle(StrutStyleMix value) {
+    return merge(TextStyler(strutStyle: value));
   }
 
   /// Sets text alignment
-  TextStyling textAlign(TextAlign value) {
-    return merge(TextStyling(textAlign: value));
+  TextStyler textAlign(TextAlign value) {
+    return merge(TextStyler(textAlign: value));
   }
 
   /// Sets text scaler
-  TextStyling textScaler(TextScaler value) {
-    return merge(TextStyling(textScaler: value));
+  TextStyler textScaler(TextScaler value) {
+    return merge(TextStyler(textScaler: value));
   }
 
   /// Sets maximum number of lines
-  TextStyling maxLines(int value) {
-    return merge(TextStyling(maxLines: value));
+  TextStyler maxLines(int value) {
+    return merge(TextStyler(maxLines: value));
   }
 
   /// Sets text style
-  TextStyling style(TextStyleMix value) {
-    return merge(TextStyling(style: value));
+  TextStyler style(TextStyleMix value) {
+    return merge(TextStyler(style: value));
   }
 
   /// Sets text width basis
-  TextStyling textWidthBasis(TextWidthBasis value) {
-    return merge(TextStyling(textWidthBasis: value));
+  TextStyler textWidthBasis(TextWidthBasis value) {
+    return merge(TextStyler(textWidthBasis: value));
   }
 
   /// Sets text height behavior
-  TextStyling textHeightBehavior(TextHeightBehaviorMix value) {
-    return merge(TextStyling(textHeightBehavior: value));
+  TextStyler textHeightBehavior(TextHeightBehaviorMix value) {
+    return merge(TextStyler(textHeightBehavior: value));
   }
 
   /// Sets text direction
-  TextStyling textDirection(TextDirection value) {
-    return merge(TextStyling(textDirection: value));
+  TextStyler textDirection(TextDirection value) {
+    return merge(TextStyler(textDirection: value));
   }
 
   /// Sets soft wrap behavior
-  TextStyling softWrap(bool value) {
-    return merge(TextStyling(softWrap: value));
+  TextStyler softWrap(bool value) {
+    return merge(TextStyler(softWrap: value));
   }
 
   /// Adds a text directive
-  TextStyling directive(Directive<String> value) {
-    return merge(TextStyling(textDirectives: [value]));
+  TextStyler directive(Directive<String> value) {
+    return merge(TextStyler(textDirectives: [value]));
   }
 
   /// Sets text color
-  TextStyling color(Color value) {
-    return merge(TextStyling(style: TextStyleMix(color: value)));
+  TextStyler color(Color value) {
+    return merge(TextStyler(style: TextStyleMix(color: value)));
   }
 
   /// Sets font family
-  TextStyling fontFamily(String value) {
-    return merge(TextStyling(style: TextStyleMix(fontFamily: value)));
+  TextStyler fontFamily(String value) {
+    return merge(TextStyler(style: TextStyleMix(fontFamily: value)));
   }
 
   /// Sets font weight
-  TextStyling fontWeight(FontWeight value) {
-    return merge(TextStyling(style: TextStyleMix(fontWeight: value)));
+  TextStyler fontWeight(FontWeight value) {
+    return merge(TextStyler(style: TextStyleMix(fontWeight: value)));
   }
 
   /// Sets font style
-  TextStyling fontStyle(FontStyle value) {
-    return merge(TextStyling(style: TextStyleMix(fontStyle: value)));
+  TextStyler fontStyle(FontStyle value) {
+    return merge(TextStyler(style: TextStyleMix(fontStyle: value)));
   }
 
   /// Sets font size
-  TextStyling fontSize(double value) {
-    return merge(TextStyling(style: TextStyleMix(fontSize: value)));
+  TextStyler fontSize(double value) {
+    return merge(TextStyler(style: TextStyleMix(fontSize: value)));
   }
 
   /// Sets letter spacing
-  TextStyling letterSpacing(double value) {
-    return merge(TextStyling(style: TextStyleMix(letterSpacing: value)));
+  TextStyler letterSpacing(double value) {
+    return merge(TextStyler(style: TextStyleMix(letterSpacing: value)));
   }
 
   /// Sets word spacing
-  TextStyling wordSpacing(double value) {
-    return merge(TextStyling(style: TextStyleMix(wordSpacing: value)));
+  TextStyler wordSpacing(double value) {
+    return merge(TextStyler(style: TextStyleMix(wordSpacing: value)));
   }
 
   /// Sets text baseline
-  TextStyling textBaseline(TextBaseline value) {
-    return merge(TextStyling(style: TextStyleMix(textBaseline: value)));
+  TextStyler textBaseline(TextBaseline value) {
+    return merge(TextStyler(style: TextStyleMix(textBaseline: value)));
   }
 
   /// Sets background color
-  TextStyling backgroundColor(Color value) {
-    return merge(TextStyling(style: TextStyleMix(backgroundColor: value)));
+  TextStyler backgroundColor(Color value) {
+    return merge(TextStyler(style: TextStyleMix(backgroundColor: value)));
   }
 
   /// Sets text shadows
-  TextStyling shadows(List<ShadowMix> value) {
-    return merge(TextStyling(style: TextStyleMix(shadows: value)));
+  TextStyler shadows(List<ShadowMix> value) {
+    return merge(TextStyler(style: TextStyleMix(shadows: value)));
   }
 
   /// Sets font features
-  TextStyling fontFeatures(List<FontFeature> value) {
-    return merge(TextStyling(style: TextStyleMix(fontFeatures: value)));
+  TextStyler fontFeatures(List<FontFeature> value) {
+    return merge(TextStyler(style: TextStyleMix(fontFeatures: value)));
   }
 
   /// Sets font variations
-  TextStyling fontVariations(List<FontVariation> value) {
-    return merge(TextStyling(style: TextStyleMix(fontVariations: value)));
+  TextStyler fontVariations(List<FontVariation> value) {
+    return merge(TextStyler(style: TextStyleMix(fontVariations: value)));
   }
 
   /// Sets text decoration
-  TextStyling decoration(TextDecoration value) {
-    return merge(TextStyling(style: TextStyleMix(decoration: value)));
+  TextStyler decoration(TextDecoration value) {
+    return merge(TextStyler(style: TextStyleMix(decoration: value)));
   }
 
   /// Sets decoration color
-  TextStyling decorationColor(Color value) {
-    return merge(TextStyling(style: TextStyleMix(decorationColor: value)));
+  TextStyler decorationColor(Color value) {
+    return merge(TextStyler(style: TextStyleMix(decorationColor: value)));
   }
 
   /// Sets decoration style
-  TextStyling decorationStyle(TextDecorationStyle value) {
-    return merge(TextStyling(style: TextStyleMix(decorationStyle: value)));
+  TextStyler decorationStyle(TextDecorationStyle value) {
+    return merge(TextStyler(style: TextStyleMix(decorationStyle: value)));
   }
 
   /// Sets debug label
-  TextStyling debugLabel(String value) {
-    return merge(TextStyling(style: TextStyleMix(debugLabel: value)));
+  TextStyler debugLabel(String value) {
+    return merge(TextStyler(style: TextStyleMix(debugLabel: value)));
   }
 
   /// Sets line height
-  TextStyling height(double value) {
-    return merge(TextStyling(style: TextStyleMix(height: value)));
+  TextStyler height(double value) {
+    return merge(TextStyler(style: TextStyleMix(height: value)));
   }
 
   /// Sets foreground paint
-  TextStyling foreground(Paint value) {
-    return merge(TextStyling(style: TextStyleMix(foreground: value)));
+  TextStyler foreground(Paint value) {
+    return merge(TextStyler(style: TextStyleMix(foreground: value)));
   }
 
   /// Sets background paint
-  TextStyling background(Paint value) {
-    return merge(TextStyling(style: TextStyleMix(background: value)));
+  TextStyler background(Paint value) {
+    return merge(TextStyler(style: TextStyleMix(background: value)));
   }
 
   /// Sets selection color
-  TextStyling selectionColor(Color value) {
-    return merge(TextStyling(selectionColor: value));
+  TextStyler selectionColor(Color value) {
+    return merge(TextStyler(selectionColor: value));
   }
 
   /// Sets semantics label
-  TextStyling semanticsLabel(String value) {
-    return merge(TextStyling(semanticsLabel: value));
+  TextStyler semanticsLabel(String value) {
+    return merge(TextStyler(semanticsLabel: value));
   }
 
   /// Sets locale
-  TextStyling locale(Locale value) {
-    return merge(TextStyling(locale: value));
+  TextStyler locale(Locale value) {
+    return merge(TextStyler(locale: value));
   }
 
   /// Sets decoration thickness
-  TextStyling decorationThickness(double value) {
-    return merge(TextStyling(style: TextStyleMix(decorationThickness: value)));
+  TextStyler decorationThickness(double value) {
+    return merge(TextStyler(style: TextStyleMix(decorationThickness: value)));
   }
 
   /// Sets font family fallback
-  TextStyling fontFamilyFallback(List<String> value) {
-    return merge(TextStyling(style: TextStyleMix(fontFamilyFallback: value)));
+  TextStyler fontFamilyFallback(List<String> value) {
+    return merge(TextStyler(style: TextStyleMix(fontFamilyFallback: value)));
   }
 
   /// Applies uppercase directive
-  TextStyling uppercase() {
+  TextStyler uppercase() {
     return merge(
-      TextStyling(textDirectives: [const UppercaseStringDirective()]),
+      TextStyler(textDirectives: [const UppercaseStringDirective()]),
     );
   }
 
   /// Applies lowercase directive
-  TextStyling lowercase() {
+  TextStyler lowercase() {
     return merge(
-      TextStyling(textDirectives: [const LowercaseStringDirective()]),
+      TextStyler(textDirectives: [const LowercaseStringDirective()]),
     );
   }
 
   /// Applies capitalize directive
-  TextStyling capitalize() {
+  TextStyler capitalize() {
     return merge(
-      TextStyling(textDirectives: [const CapitalizeStringDirective()]),
+      TextStyler(textDirectives: [const CapitalizeStringDirective()]),
     );
   }
 
   /// Applies title case directive
-  TextStyling titleCase() {
+  TextStyler titleCase() {
     return merge(
-      TextStyling(textDirectives: [const TitleCaseStringDirective()]),
+      TextStyler(textDirectives: [const TitleCaseStringDirective()]),
     );
   }
 
   /// Applies sentence case directive
-  TextStyling sentenceCase() {
+  TextStyler sentenceCase() {
     return merge(
-      TextStyling(textDirectives: [const SentenceCaseStringDirective()]),
+      TextStyler(textDirectives: [const SentenceCaseStringDirective()]),
     );
   }
 
-  TextStyling modifier(ModifierConfig value) {
-    return merge(TextStyling(modifier: value));
+  TextStyler modifier(ModifierConfig value) {
+    return merge(TextStyler(modifier: value));
   }
 
   /// Convenience method for animating the TextSpec
   @override
-  TextStyling animate(AnimationConfig animation) {
-    return merge(TextStyling(animation: animation));
+  TextStyler animate(AnimationConfig animation) {
+    return merge(TextStyler(animation: animation));
   }
 
   @override
-  TextStyling variants(List<VariantStyle<TextSpec>> variants) {
-    return merge(TextStyling(variants: variants));
+  TextStyler variants(List<VariantStyle<TextSpec>> variants) {
+    return merge(TextStyler(variants: variants));
   }
 
   /// Resolves to [TextSpec] using the provided [BuildContext].
@@ -403,10 +403,10 @@ class TextStyling extends Style<TextSpec>
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  TextStyling merge(TextStyling? other) {
+  TextStyler merge(TextStyler? other) {
     if (other == null) return this;
 
-    return TextStyling.create(
+    return TextStyler.create(
       overflow: MixOps.merge($overflow, other.$overflow),
       strutStyle: MixOps.merge($strutStyle, other.$strutStyle),
       textAlign: MixOps.merge($textAlign, other.$textAlign),
@@ -451,12 +451,12 @@ class TextStyling extends Style<TextSpec>
   }
 
   @override
-  TextStyling variant(Variant variant, TextStyling style) {
-    return merge(TextStyling(variants: [VariantStyle(variant, style)]));
+  TextStyler variant(Variant variant, TextStyler style) {
+    return merge(TextStyler(variants: [VariantStyle(variant, style)]));
   }
 
   @override
-  TextStyling wrap(ModifierConfig value) {
+  TextStyler wrap(ModifierConfig value) {
     return modifier(value);
   }
 

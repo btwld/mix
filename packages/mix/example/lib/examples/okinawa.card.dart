@@ -53,7 +53,7 @@ class OkinawaCard extends StatelessWidget {
           .offset(const Offset(0, 0)),
         );
 
-    final vBoxStyle = FlexBoxStyle(
+    final vBoxStyle = FlexBoxStyler(
       padding: EdgeInsetsMix.all(8),
       constraints: BoxConstraintsMix.width(double.infinity),
       decoration: BoxDecorationMix.color(Colors.black.withValues(alpha: 0.1)),
@@ -61,7 +61,7 @@ class OkinawaCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
     );
 
-    final zbox = StackBoxStyle(
+    final zbox = StackBoxStyler(
       stackAlignment: Alignment.bottomCenter,
       transformAlignment: Alignment.center,
       clipBehavior: Clip.antiAlias,
@@ -70,16 +70,16 @@ class OkinawaCard extends StatelessWidget {
       alignment: Alignment.center,
       margin: EdgeInsetsMix.zero,
       padding: EdgeInsetsMix.zero,
-    ).onHovered(StackBoxStyle(transform: Matrix4.identity()));
+    ).onHovered(StackBoxStyler(transform: Matrix4.identity()));
 
-    final titleStyle = TextStyling()
+    final titleStyle = TextStyler()
         .color(Colors.white)
         .fontWeight(FontWeight.bold)
         .fontSize(16);
 
-    final subtitleStyle = TextStyling().color(Colors.white70).fontSize(14);
+    final subtitleStyle = TextStyler().color(Colors.white70).fontSize(14);
 
-    final imageStyle = ImageStyle().fit(BoxFit.cover);
+    final imageStyle = ImageStyler().fit(BoxFit.cover);
 
     return Box(
       style: boxStyle,
