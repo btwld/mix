@@ -173,7 +173,7 @@ void main() {
           // Pump halfway through animation
           await tester.pump(const Duration(milliseconds: 150));
 
-          // With WidgetSpec animation, switching styles replaces the animation widget
+          // With StyleSpec animation, switching styles replaces the animation widget
           // rather than interpolating between values in-place. So we only assert final value.
           final midContainer = tester.widget<Container>(
             find.byKey(const Key('animated_container')),

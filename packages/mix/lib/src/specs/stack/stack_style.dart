@@ -95,7 +95,7 @@ class StackStyle extends Style<StackSpec>
     return merge(StackStyle(modifier: value));
   }
 
-  /// Convenience method for animating the StackWidgetSpec
+  /// Convenience method for animating the StackStyleSpec
   @override
   StackStyle animate(AnimationConfig animation) {
     return merge(StackStyle(animation: animation));

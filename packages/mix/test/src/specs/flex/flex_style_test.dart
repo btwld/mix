@@ -211,7 +211,7 @@ void main() {
     });
 
     group('Resolve functionality', () {
-      test('resolve creates FlexWidgetSpec with resolved properties', () {
+      test('resolve creates FlexStyleSpec with resolved properties', () {
         final flexMix = FlexStyle(
           direction: Axis.vertical,
           mainAxisAlignment: MainAxisAlignment.spaceAround,

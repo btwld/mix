@@ -59,7 +59,6 @@ class FlexStyle extends Style<FlexSpec>
     super.animation,
     super.modifier,
     super.variants,
-
   }) : $direction = direction,
        $mainAxisAlignment = mainAxisAlignment,
        $crossAxisAlignment = crossAxisAlignment,
@@ -182,7 +181,7 @@ class FlexStyle extends Style<FlexSpec>
     return merge(FlexStyle(modifier: value));
   }
 
-  /// Convenience method for animating the FlexWidgetSpec
+  /// Convenience method for animating the FlexStyleSpec
   @override
   FlexStyle animate(AnimationConfig animation) {
     return merge(FlexStyle(animation: animation));
@@ -199,7 +198,7 @@ class FlexStyle extends Style<FlexSpec>
   /// defined in the property specification.
   ///
   /// ```dart
-  /// final flexWidgetSpec = FlexStyle(...).resolve(context);
+  /// final flexStyleSpec = FlexStyle(...).resolve(context);
   /// ```
   @override
   StyleSpec<FlexSpec> resolve(BuildContext context) {

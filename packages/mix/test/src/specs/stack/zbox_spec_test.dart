@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-// Helper functions to create WidgetSpec wrappers for testing
+// Helper functions to create StyleSpec wrappers for testing
 StyleSpec<BoxSpec> wrapBoxSpec(BoxSpec spec) => StyleSpec(spec: spec);
 StyleSpec<StackSpec> wrapStackSpec(StackSpec spec) => StyleSpec(spec: spec);
 

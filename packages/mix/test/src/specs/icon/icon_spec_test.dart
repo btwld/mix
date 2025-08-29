@@ -7,7 +7,7 @@ import 'package:mix/mix.dart';
 import 'package:mix/src/specs/icon/icon_spec.dart';
 
 void main() {
-  group('FlexWidgetSpecUtility', () {
+  group('FlexStyleSpecUtility', () {
     group('Constructor', () {
       test('', () {
         const spec = IconSpec(
@@ -137,8 +137,14 @@ void main() {
 
         // When t >= 0.5, properties interpolate properly with null
         final lerped2 = spec.lerp(null, 0.7);
-        expect(lerped2.color, Color.lerp(Colors.green, null, 0.7)); // color should interpolate properly
-        expect(lerped2.size, ui.lerpDouble(20.0, null, 0.7)); // size should interpolate properly
+        expect(
+          lerped2.color,
+          Color.lerp(Colors.green, null, 0.7),
+        ); // color should interpolate properly
+        expect(
+          lerped2.size,
+          ui.lerpDouble(20.0, null, 0.7),
+        ); // size should interpolate properly
       });
 
       test('handles edge cases (t=0, t=1)', () {

@@ -257,7 +257,7 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
   /// defined in the property specification.
   ///
   /// ```dart
-  /// final flexBoxWidgetSpec = FlexBoxStyle(...).resolve(context);
+  /// final flexBoxStyleSpec = FlexBoxStyle(...).resolve(context);
   /// ```
   @override
   StyleSpec<FlexBoxSpec> resolve(BuildContext context) {

@@ -31,7 +31,7 @@ void main() {
     setUp(() {
       driver = StyleAnimationDriverTest(
         vsync: const TestVSync(),
-        initialSpec: MockSpec(resolvedValue: .0).toWidgetSpec(),
+        initialSpec: MockSpec(resolvedValue: .0).toStyleSpec(),
       );
     });
 
@@ -40,8 +40,8 @@ void main() {
     });
 
     test('reset should restore the driver to the begining', () {
-      driver.animateTo(MockSpec(resolvedValue: .0).toWidgetSpec());
-      driver.animateTo(MockSpec(resolvedValue: 1.0).toWidgetSpec());
+      driver.animateTo(MockSpec(resolvedValue: .0).toStyleSpec());
+      driver.animateTo(MockSpec(resolvedValue: 1.0).toStyleSpec());
 
       expect(driver.animation.value?.spec, MockSpec(resolvedValue: .0));
 
@@ -63,8 +63,10 @@ void main() {
           }
         });
 
-        await driver.animateTo(MockSpec(resolvedValue: 0.0).toWidgetSpec());
-        final future = driver.animateTo(MockSpec(resolvedValue: 1.0).toWidgetSpec());
+        await driver.animateTo(MockSpec(resolvedValue: 0.0).toStyleSpec());
+        final future = driver.animateTo(
+          MockSpec(resolvedValue: 1.0).toStyleSpec(),
+        );
 
         driver.controller.duration = 300.ms;
         driver.controller.forward(from: 0);
@@ -90,8 +92,10 @@ void main() {
         }
       });
 
-      await driver.animateTo(MockSpec(resolvedValue: 0.0).toWidgetSpec());
-      final future = driver.animateTo(MockSpec(resolvedValue: 1.0).toWidgetSpec());
+      await driver.animateTo(MockSpec(resolvedValue: 0.0).toStyleSpec());
+      final future = driver.animateTo(
+        MockSpec(resolvedValue: 1.0).toStyleSpec(),
+      );
 
       driver.controller.duration = 300.ms;
       driver.controller.forward(from: 0);
@@ -104,8 +108,8 @@ void main() {
 
     testWidgets('stop() should stop the animation ', (tester) async {
       driver.controller.duration = 300.ms;
-      await driver.animateTo(MockSpec(resolvedValue: 0.0).toWidgetSpec());
-      driver.animateTo(MockSpec(resolvedValue: 1.0).toWidgetSpec());
+      await driver.animateTo(MockSpec(resolvedValue: 0.0).toStyleSpec());
+      driver.animateTo(MockSpec(resolvedValue: 1.0).toStyleSpec());
 
       driver.controller.forward(from: 0);
 
@@ -127,7 +131,7 @@ void main() {
 
     testWidgets('disposes correctly', (tester) async {
       final driver = CurveAnimationDriver<MockSpec>(
-        initialSpec: MockSpec(resolvedValue: 0.0).toWidgetSpec(),
+        initialSpec: MockSpec(resolvedValue: 0.0).toStyleSpec(),
         vsync: tester,
         config: const CurveAnimationConfig(
           duration: Duration(milliseconds: 100),
@@ -138,7 +142,7 @@ void main() {
       await tester.pumpWidget(Container());
 
       // Start an animation
-      driver.animateTo(MockSpec(resolvedValue: 0.0).toWidgetSpec());
+      driver.animateTo(MockSpec(resolvedValue: 0.0).toStyleSpec());
       await tester.pump();
 
       // Dispose should not throw
@@ -149,7 +153,7 @@ void main() {
       test('with no progress', () {
         final driver = StyleAnimationDriverTest(
           vsync: const TestVSync(),
-          initialSpec: MockSpec(resolvedValue: 0.0).toWidgetSpec(),
+          initialSpec: MockSpec(resolvedValue: 0.0).toStyleSpec(),
         );
         addTearDown(() {
           driver.dispose();
@@ -162,7 +166,7 @@ void main() {
       test('with non-unbounded controller', () {
         final driver = StyleAnimationDriverTest(
           vsync: const TestVSync(),
-          initialSpec: MockSpec(resolvedValue: 0.0).toWidgetSpec(),
+          initialSpec: MockSpec(resolvedValue: 0.0).toStyleSpec(),
         );
         addTearDown(() {
           driver.dispose();
@@ -177,7 +181,7 @@ void main() {
       test('with unbounded controller when unbounded is true', () {
         final driver = StyleAnimationDriverTest(
           vsync: const TestVSync(),
-          initialSpec: MockSpec(resolvedValue: 0.0).toWidgetSpec(),
+          initialSpec: MockSpec(resolvedValue: 0.0).toStyleSpec(),
           unbounded: true,
         );
         addTearDown(() {
@@ -196,7 +200,7 @@ void main() {
 
       setUp(() {
         driver = StyleAnimationDriverTest(
-          initialSpec: MockSpec(resolvedValue: 0.0).toWidgetSpec(),
+          initialSpec: MockSpec(resolvedValue: 0.0).toStyleSpec(),
           vsync: const TestVSync(),
         );
       });
@@ -209,7 +213,7 @@ void main() {
         'skips animation when target is already set and not animating',
         (tester) async {
           // Call again with the same target
-          await driver.animateTo(MockSpec(resolvedValue: 0.0).toWidgetSpec());
+          await driver.animateTo(MockSpec(resolvedValue: 0.0).toStyleSpec());
 
           // Verify executeAnimation was not called
           expect(driver.executeAnimationCallCounter, 0);
@@ -218,16 +222,16 @@ void main() {
 
       test('calls executeAnimation when target style changes', () async {
         // Initial call
-        await driver.animateTo(MockSpec(resolvedValue: 0.0).toWidgetSpec());
+        await driver.animateTo(MockSpec(resolvedValue: 0.0).toStyleSpec());
         expect(driver.executeAnimationCallCounter, 0);
 
         // Call with same target style while not animating
-        await driver.animateTo(MockSpec(resolvedValue: 1.0).toWidgetSpec());
+        await driver.animateTo(MockSpec(resolvedValue: 1.0).toStyleSpec());
         // Counter should not increase as it should skip animation
         expect(driver.executeAnimationCallCounter, 1);
 
         // Call with different target style
-        await driver.animateTo(MockSpec(resolvedValue: 2.0).toWidgetSpec());
+        await driver.animateTo(MockSpec(resolvedValue: 2.0).toStyleSpec());
         expect(driver.executeAnimationCallCounter, 2);
       });
     });
@@ -240,7 +244,7 @@ void main() {
       int counter = 0;
 
       final driver = CurveAnimationDriver<MockSpec<double>>(
-        initialSpec: MockSpec(resolvedValue: 0.0).toWidgetSpec(),
+        initialSpec: MockSpec(resolvedValue: 0.0).toStyleSpec(),
         vsync: const TestVSync(),
         config: CurveAnimationConfig.decelerate(300.ms, onEnd: () => counter++),
       );
@@ -253,8 +257,8 @@ void main() {
       final endStyle = MockSpec(resolvedValue: 1.0);
 
       // Set up interpolation
-      await driver.animateTo(startStyle.toWidgetSpec());
-      final future = driver.animateTo(endStyle.toWidgetSpec());
+      await driver.animateTo(startStyle.toStyleSpec());
+      final future = driver.animateTo(endStyle.toStyleSpec());
 
       await tester.pumpAndSettle();
       await future;
@@ -266,7 +270,7 @@ void main() {
   group('SpringAnimationDriver', () {
     test('should create an unbounded animation controller', () {
       final driver = SpringAnimationDriver<MockSpec>(
-        initialSpec: MockSpec(resolvedValue: 0.0).toWidgetSpec(),
+        initialSpec: MockSpec(resolvedValue: 0.0).toStyleSpec(),
         vsync: const TestVSync(),
         config: SpringAnimationConfig.standard(),
       );
@@ -286,7 +290,7 @@ void main() {
       int callbackCount = 0;
 
       final driver = SpringAnimationDriver<MockSpec>(
-        initialSpec: MockSpec(resolvedValue: 0.0).toWidgetSpec(),
+        initialSpec: MockSpec(resolvedValue: 0.0).toStyleSpec(),
         vsync: tester,
         config: SpringAnimationConfig.standard(
           stiffness: 100.0,
@@ -302,8 +306,10 @@ void main() {
 
       await tester.pumpWidget(Container());
 
-      await driver.animateTo(MockSpec(resolvedValue: 0.0).toWidgetSpec());
-      final future = driver.animateTo(MockSpec(resolvedValue: 1.0).toWidgetSpec());
+      await driver.animateTo(MockSpec(resolvedValue: 0.0).toStyleSpec());
+      final future = driver.animateTo(
+        MockSpec(resolvedValue: 1.0).toStyleSpec(),
+      );
 
       // Let the animation run to completion
       await tester.pumpAndSettle();
@@ -332,8 +338,11 @@ void main() {
             curve: Curves.easeInOut,
           ),
         ],
-        specs: [MockSpec(resolvedValue: 0.0).toWidgetSpec(), MockSpec(resolvedValue: 1.0).toWidgetSpec()],
-        initialSpec: MockSpec(resolvedValue: 0.0).toWidgetSpec(),
+        specs: [
+          MockSpec(resolvedValue: 0.0).toStyleSpec(),
+          MockSpec(resolvedValue: 1.0).toStyleSpec(),
+        ],
+        initialSpec: MockSpec(resolvedValue: 0.0).toStyleSpec(),
         trigger: trigger,
       );
     });
@@ -421,7 +430,7 @@ void main() {
       driver = KeyframeAnimationDriver<MockSpec<double>>(
         vsync: const TestVSync(),
         config: config,
-        initialSpec: MockSpec(resolvedValue: 0.0).toWidgetSpec(),
+        initialSpec: MockSpec(resolvedValue: 0.0).toStyleSpec(),
         context: mockContext,
       );
     });
@@ -438,7 +447,7 @@ void main() {
         driver = KeyframeAnimationDriver<MockSpec>(
           vsync: const TestVSync(),
           config: config,
-          initialSpec: MockSpec(resolvedValue: 0.0).toWidgetSpec(),
+          initialSpec: MockSpec(resolvedValue: 0.0).toStyleSpec(),
           context: mockContext,
         );
       }
@@ -462,7 +471,7 @@ void main() {
               ], initial: 0.0),
             ],
             styleBuilder: (result, style) => style,
-            initialStyle: MockStyle(MockSpec(resolvedValue: 0.0).toWidgetSpec()),
+            initialStyle: MockStyle(MockSpec(resolvedValue: 0.0).toStyleSpec()),
           ),
         );
         expect(driver.duration, Duration(milliseconds: 400));
@@ -474,7 +483,7 @@ void main() {
             trigger: ValueNotifier(false),
             timeline: [],
             styleBuilder: (result, style) => style,
-            initialStyle: MockStyle(MockSpec(resolvedValue: 0.0).toWidgetSpec()),
+            initialStyle: MockStyle(MockSpec(resolvedValue: 0.0).toStyleSpec()),
           ),
         );
         expect(driver.duration, Duration.zero);
@@ -499,7 +508,7 @@ void main() {
               ], initial: 0.0),
             ],
             styleBuilder: (result, style) => style,
-            initialStyle: MockStyle(MockSpec(resolvedValue: 0.0).toWidgetSpec()),
+            initialStyle: MockStyle(MockSpec(resolvedValue: 0.0).toStyleSpec()),
           ),
         );
         expect(driver.duration, Duration(milliseconds: 800));
@@ -610,7 +619,7 @@ void main() {
           () => KeyframeAnimationDriver<MockSpec>(
             vsync: const TestVSync(),
             config: config,
-            initialSpec: MockSpec(resolvedValue: 0.0).toWidgetSpec(),
+            initialSpec: MockSpec(resolvedValue: 0.0).toStyleSpec(),
             context: mockContext,
           ),
           returnsNormally,

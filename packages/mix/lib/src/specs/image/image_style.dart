@@ -37,7 +37,6 @@ class ImageStyle extends Style<ImageSpec>
   final Prop<bool>? $isAntiAlias;
   final Prop<bool>? $matchTextDirection;
 
-
   const ImageStyle.create({
     Prop<ImageProvider<Object>>? image,
     Prop<double>? width,
@@ -57,7 +56,6 @@ class ImageStyle extends Style<ImageSpec>
     super.animation,
     super.modifier,
     super.variants,
-
   }) : $image = image,
        $width = width,
        $height = height,
@@ -119,8 +117,6 @@ class ImageStyle extends Style<ImageSpec>
   }
 
   static ImageSpecUtility get chain => ImageSpecUtility(ImageStyle());
-
-
 
   /// Sets image provider
   ImageStyle image(ImageProvider<Object> value) {
@@ -218,7 +214,7 @@ class ImageStyle extends Style<ImageSpec>
     return merge(ImageStyle(modifier: value));
   }
 
-  /// Convenience method for animating the ImageWidgetSpec
+  /// Convenience method for animating the ImageStyleSpec
   ImageStyle animate(AnimationConfig animation) {
     return merge(ImageStyle(animation: animation));
   }
@@ -247,7 +243,7 @@ class ImageStyle extends Style<ImageSpec>
       isAntiAlias: MixOps.resolve(context, $isAntiAlias),
       matchTextDirection: MixOps.resolve(context, $matchTextDirection),
     );
-    
+
     return StyleSpec(
       spec: imageSpec,
       animation: $animation,

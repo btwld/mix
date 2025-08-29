@@ -7,7 +7,7 @@ import 'package:mix/mix.dart';
 import 'package:mix/src/specs/image/image_spec.dart';
 
 void main() {
-  group('FlexWidgetSpecUtility', () {
+  group('FlexStyleSpecUtility', () {
     group('Constructor', () {
       test('', () {
         const spec = ImageSpec(
@@ -143,8 +143,14 @@ void main() {
 
         // When t >= 0.5, properties interpolate properly with null
         final lerped2 = spec.lerp(null, 0.7);
-        expect(lerped2.width, ui.lerpDouble(100.0, null, 0.7)); // width should interpolate properly
-        expect(lerped2.height, ui.lerpDouble(200.0, null, 0.7)); // height should interpolate properly
+        expect(
+          lerped2.width,
+          ui.lerpDouble(100.0, null, 0.7),
+        ); // width should interpolate properly
+        expect(
+          lerped2.height,
+          ui.lerpDouble(200.0, null, 0.7),
+        ); // height should interpolate properly
       });
 
       test('handles edge cases (t=0, t=1)', () {

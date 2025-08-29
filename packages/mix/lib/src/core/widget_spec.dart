@@ -8,7 +8,7 @@ import 'spec.dart';
 /// A widget specification that wraps a pure Spec with widget metadata.
 ///
 /// This class provides a way to add widget-level metadata (animation, modifiers)
-/// to any Spec without requiring the Spec to extend WidgetSpec directly.
+/// to any Spec without requiring the Spec to extend StyleSpec directly.
 /// This promotes clean separation between data specs and widget metadata.
 ///
 /// Example:
@@ -17,7 +17,7 @@ import 'spec.dart';
 /// final boxSpec = BoxSpec(padding: EdgeInsets.all(16));
 ///
 /// // Wrapped with metadata
-/// final wrappedSpec = WidgetSpec(
+/// final wrappedSpec = StyleSpec(
 ///   spec: boxSpec,
 ///   animation: AnimationConfig.curve(),
 /// );
@@ -33,13 +33,8 @@ class StyleSpec<T extends Spec<T>> extends Spec<StyleSpec<T>>
   /// Widget-level modifiers to apply around the built widget.
   final List<Modifier>? widgetModifiers;
 
-
   /// Creates a [StyleSpec] with the provided spec and optional metadata.
-  const StyleSpec({
-    required this.spec,
-    this.animation,
-    this.widgetModifiers,
-  });
+  const StyleSpec({required this.spec, this.animation, this.widgetModifiers});
 
   /// Creates a copy of this [StyleSpec] with the given fields
   /// replaced by the new values.

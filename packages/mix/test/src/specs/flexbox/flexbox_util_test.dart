@@ -510,7 +510,7 @@ void main() {
         final context = MockBuildContext();
         final spec = emptyUtil.resolve(context);
 
-        // FlexBoxWidgetSpec with empty utility has null specs
+        // FlexBoxStyleSpec with empty utility has null specs
         expect(spec.flex, isNull);
         expect(spec.container, isNull);
       });

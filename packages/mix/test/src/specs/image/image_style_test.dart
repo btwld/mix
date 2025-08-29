@@ -5,7 +5,7 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-  group('FlexWidgetSpecUtility', () {
+  group('FlexStyleSpecUtility', () {
     group('Constructor', () {
       test('', () {
         final attribute = ImageStyle(

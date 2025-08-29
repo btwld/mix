@@ -192,7 +192,7 @@ class BoxStyle extends Style<BoxSpec>
     return merge(BoxStyle(variants: [VariantStyle(variant, style)]));
   }
 
-  /// Resolves to [WidgetSpec<BoxSpec>] using the provided [BuildContext].
+  /// Resolves to [StyleSpec<BoxSpec>] using the provided [BuildContext].
   ///
   /// If a property is null in the context, it uses the default value
   /// defined in the property specification.

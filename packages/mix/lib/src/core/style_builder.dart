@@ -104,14 +104,14 @@ class StyleSpecBuilder<S extends Spec<S>> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // style.build returns WidgetSpec<S>
+    // style.build returns StyleSpec<S>
 
     final animationConfig = wrappedSpec.animation;
 
     // Pass the inner spec to the builder
     Widget current = builder(context, wrappedSpec.spec);
 
-    // Always wrap with WidgetSpecProvider first
+    // Always wrap with StyleSpecProvider first
     current = StyleSpecProvider<S>(spec: wrappedSpec, child: current);
 
     if (wrappedSpec.widgetModifiers != null &&
@@ -130,7 +130,7 @@ class StyleSpecBuilder<S extends Spec<S>> extends StatelessWidget {
         builder: (context, animatedWrappedSpec) {
           Widget animatedChild = builder(context, animatedWrappedSpec.spec);
 
-          // Always wrap with WidgetSpecProvider first
+          // Always wrap with StyleSpecProvider first
           animatedChild = StyleSpecProvider<S>(
             spec: animatedWrappedSpec,
             child: animatedChild,

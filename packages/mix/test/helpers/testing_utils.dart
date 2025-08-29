@@ -312,7 +312,7 @@ final class MockSpec<T> extends Spec<MockSpec<T>> with Diagnosticable {
   @override
   List<Object?> get props => [resolvedValue];
 
-  StyleSpec<MockSpec<T>> toWidgetSpec() {
+  StyleSpec<MockSpec<T>> toStyleSpec() {
     return StyleSpec(spec: this);
   }
 }
@@ -754,7 +754,7 @@ class _PropHasTokensMatcher extends Matcher {
   }
 }
 
-// Test-only helper extensions to access underlying spec fields on WidgetSpec
+// Test-only helper extensions to access underlying spec fields on StyleSpec
 extension WrappedBoxSpecAccess on StyleSpec<BoxSpec> {
   BoxConstraints? get constraints => spec.constraints;
 }

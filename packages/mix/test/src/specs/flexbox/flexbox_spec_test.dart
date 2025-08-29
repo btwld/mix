@@ -5,7 +5,7 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-  group('FlexWidgetSpecUtility', () {
+  group('FlexStyleSpecUtility', () {
     group('Constructor', () {
       test('', () {
         final containerAttr = BoxStyle(
@@ -379,7 +379,7 @@ void main() {
     });
   });
 
-  group('FlexWidgetSpecUtility', () {
+  group('FlexStyleSpecUtility', () {
     test('', () {
       final spec = FlexBoxSpec();
 
@@ -390,9 +390,9 @@ void main() {
     test('', () {
       const boxSpec = BoxSpec(alignment: Alignment.center);
       const flexSpec = FlexSpec(direction: Axis.vertical);
-      final boxWidgetSpec = StyleSpec(spec: boxSpec);
-      final flexWidgetSpec = StyleSpec(spec: flexSpec);
-      final spec = FlexBoxSpec(box: boxWidgetSpec, flex: flexWidgetSpec);
+      final boxStyleSpec = StyleSpec(spec: boxSpec);
+      final flexStyleSpec = StyleSpec(spec: flexSpec);
+      final spec = FlexBoxSpec(box: boxStyleSpec, flex: flexStyleSpec);
 
       expect(spec.box?.spec, boxSpec);
       expect(spec.flex?.spec, flexSpec);

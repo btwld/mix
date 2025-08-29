@@ -45,13 +45,13 @@ Widget createZBoxSpecWidget({
   required ZBoxSpec spec,
   List<Widget> children = const [],
 }) {
-  final boxWidgetSpec = spec.box;
-  final stackWidgetSpec = spec.stack;
-  final stackSpec = stackWidgetSpec?.spec ?? const StackSpec();
+  final boxStyleSpec = spec.box;
+  final stackStyleSpec = spec.stack;
+  final stackSpec = stackStyleSpec?.spec ?? const StackSpec();
   final stack = createStackSpecWidget(spec: stackSpec, children: children);
 
-  if (boxWidgetSpec != null) {
-    return createBoxSpecWidget(spec: boxWidgetSpec.spec, child: stack);
+  if (boxStyleSpec != null) {
+    return createBoxSpecWidget(spec: boxStyleSpec.spec, child: stack);
   }
 
   return stack;
