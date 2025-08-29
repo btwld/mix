@@ -13,7 +13,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: StyleAnimationBuilder<WidgetSpec<TestSpec>>(
+          home: StyleAnimationBuilder<TestSpec>(
             animationConfig: animationConfig,
             spec: spec,
             builder: (context, spec) => Container(
@@ -36,7 +36,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: StyleAnimationBuilder<WidgetSpec<TestSpec>>(
+          home: StyleAnimationBuilder<TestSpec>(
             animationConfig: animationConfig,
             spec: spec,
             builder: (context, spec) =>
@@ -63,7 +63,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: StyleAnimationBuilder<WidgetSpec<TestSpec>>(
+          home: StyleAnimationBuilder<TestSpec>(
             animationConfig: animationConfig,
             spec: spec1,
             builder: (context, spec) =>
@@ -77,7 +77,7 @@ void main() {
       // Update style
       await tester.pumpWidget(
         MaterialApp(
-          home: StyleAnimationBuilder<WidgetSpec<TestSpec>>(
+          home: StyleAnimationBuilder<TestSpec>(
             animationConfig: animationConfig,
             spec: spec2,
             builder: (context, spec) =>
@@ -105,11 +105,10 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: StyleAnimationBuilder<WidgetSpec<TestSpec>>(
+          home: StyleAnimationBuilder<TestSpec>(
             animationConfig: config1,
             spec: spec,
-            builder: (context, spec) =>
-                Container(color: spec.spec.color),
+            builder: (context, spec) => Container(color: spec.spec.color),
           ),
         ),
       );
@@ -119,11 +118,10 @@ void main() {
       // Change config
       await tester.pumpWidget(
         MaterialApp(
-          home: StyleAnimationBuilder<WidgetSpec<TestSpec>>(
+          home: StyleAnimationBuilder<TestSpec>(
             animationConfig: config2,
             spec: spec,
-            builder: (context, spec) =>
-                Container(color: spec.spec.color),
+            builder: (context, spec) => Container(color: spec.spec.color),
           ),
         ),
       );
@@ -141,7 +139,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: StyleAnimationBuilder<WidgetSpec<TestSpec>>(
+          home: StyleAnimationBuilder<TestSpec>(
             animationConfig: animationConfig,
             spec: spec,
             builder: (context, resolvedStyle) => Container(),
@@ -162,11 +160,13 @@ void main() {
         curve: Curves.linear,
       );
       // Create a style with an empty/default spec
-      const spec = WidgetSpec<TestSpec>(spec: TestSpec(color: Colors.transparent));
+      const spec = WidgetSpec<TestSpec>(
+        spec: TestSpec(color: Colors.transparent),
+      );
 
       await tester.pumpWidget(
         MaterialApp(
-          home: StyleAnimationBuilder<WidgetSpec<TestSpec>>(
+          home: StyleAnimationBuilder<TestSpec>(
             animationConfig: animationConfig,
             spec: spec,
             builder: (context, spec) =>
@@ -185,25 +185,17 @@ void main() {
 class TestSpec extends Spec<TestSpec> {
   final Color color;
 
-  const TestSpec({
-    this.color = Colors.black,
-  });
+  const TestSpec({this.color = Colors.black});
 
   @override
-  TestSpec copyWith({
-    Color? color,
-  }) {
-    return TestSpec(
-      color: color ?? this.color,
-    );
+  TestSpec copyWith({Color? color}) {
+    return TestSpec(color: color ?? this.color);
   }
 
   @override
   TestSpec lerp(TestSpec? other, double t) {
     if (other == null) return this;
-    return TestSpec(
-      color: Color.lerp(color, other.color, t) ?? color,
-    );
+    return TestSpec(color: Color.lerp(color, other.color, t) ?? color);
   }
 
   @override

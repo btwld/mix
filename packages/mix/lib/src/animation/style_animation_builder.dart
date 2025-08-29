@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../core/spec.dart';
+import '../core/widget_spec.dart';
 import 'animation_config.dart';
 import 'style_animation_driver.dart';
 
@@ -21,10 +22,10 @@ class StyleAnimationBuilder<S extends Spec<S>> extends StatefulWidget {
   final AnimationConfig animationConfig;
 
   /// The target spec to animate to.
-  final S spec;
+  final WidgetSpec<S> spec;
 
   /// The builder function that creates the widget with the animated spec.
-  final Widget Function(BuildContext context, S spec) builder;
+  final Widget Function(BuildContext context, WidgetSpec<S> spec) builder;
 
   @override
   State<StyleAnimationBuilder<S>> createState() =>
@@ -61,7 +62,9 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
       PhaseAnimationConfig() => PhaseAnimationDriver<S>(
         vsync: this,
         curveConfigs: config.curveConfigs,
-        specs: config.styles.map((e) => e.resolve(context) as S).toList(),
+        specs: config.styles
+            .map((e) => e.resolve(context) as WidgetSpec<S>)
+            .toList(),
         initialSpec: widget.spec,
         trigger: config.trigger,
       ),

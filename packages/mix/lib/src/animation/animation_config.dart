@@ -3,8 +3,8 @@ import 'package:flutter/widgets.dart';
 
 import '../core/internal/compare_mixin.dart';
 import '../core/internal/constants.dart';
+import '../core/spec.dart';
 import '../core/style.dart';
-import '../core/widget_spec.dart';
 import 'spring_curves.dart';
 
 /// Configuration data for animated styles in the Mix framework.
@@ -797,7 +797,7 @@ final class SpringAnimationConfig extends AnimationConfig {
       Object.hash(spring.mass, spring.stiffness, spring.damping);
 }
 
-class PhaseAnimationConfig<T extends WidgetSpec<T>, U extends Style<T>>
+class PhaseAnimationConfig<T extends Spec<T>, U extends Style<T>>
     extends AnimationConfig {
   final List<U> styles;
   final List<CurveAnimationConfig> curveConfigs;
@@ -1050,7 +1050,7 @@ class KeyframeTrack<T> with Equatable {
   List<Object?> get props => [id, segments, tweenBuilder];
 }
 
-typedef KeyframeStyleBuilder<T extends WidgetSpec<T>, U extends Style<T>> =
+typedef KeyframeStyleBuilder<T extends Spec<T>, U extends Style<T>> =
     U Function(KeyframeAnimationResult result, U style);
 
 class KeyframeAnimationResult {
@@ -1074,7 +1074,7 @@ class KeyframeAnimationResult {
   }
 }
 
-class KeyframeAnimationConfig<S extends WidgetSpec<S>> extends AnimationConfig
+class KeyframeAnimationConfig<S extends Spec<S>> extends AnimationConfig
     with Equatable {
   final Listenable trigger;
   final List<KeyframeTrack> timeline;

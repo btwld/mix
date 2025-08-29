@@ -1,6 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 
 import '../pointer_position.dart';
 import '../providers/widget_state_provider.dart';
