@@ -30,7 +30,7 @@ class FlexBox extends StyleWidget<FlexBoxSpec> {
 
   @override
   Widget build(BuildContext context, FlexBoxSpec spec) {
-    return createFlexBoxSpecWidget(
+    return _createFlexBoxSpecWidget(
       spec: spec,
       direction: direction,
       children: children,
@@ -64,7 +64,7 @@ class VBox extends FlexBox {
 ///
 /// Applies all flex layout properties with appropriate default values
 /// when specification properties are null.
-Flex createFlexSpecWidget({
+Flex _createFlexSpecWidget({
   required FlexSpec? spec,
   Axis? direction,
   List<Widget> children = const [],
@@ -87,19 +87,19 @@ Flex createFlexSpecWidget({
 ///
 /// Applies box styling as the outer container and flex layout as the inner
 /// child widget, combining both specifications effectively.
-Widget createFlexBoxSpecWidget({
+Widget _createFlexBoxSpecWidget({
   required FlexBoxSpec spec,
   required Axis direction,
   List<Widget> children = const [],
 }) {
-  final flexWidget = createFlexSpecWidget(
+  final flexWidget = _createFlexSpecWidget(
     spec: spec.flex?.spec,
     direction: direction,
     children: children,
   );
 
   if (spec.box != null) {
-    return createBoxSpecWidget(spec: spec.box!.spec, child: flexWidget);
+    return spec.box!.spec(child: flexWidget);
   }
 
   return flexWidget;
@@ -108,7 +108,7 @@ Widget createFlexBoxSpecWidget({
 /// Extension to convert [FlexSpec] directly to a [Flex] widget.
 extension FlexSpecWidget on FlexSpec {
   Flex call({Axis? direction, List<Widget> children = const []}) {
-    return createFlexSpecWidget(
+    return _createFlexSpecWidget(
       spec: this,
       direction: direction,
       children: children,
@@ -119,7 +119,7 @@ extension FlexSpecWidget on FlexSpec {
 /// Extension to convert [FlexBoxSpec] directly to a styled flex widget.
 extension FlexBoxSpecWidget on FlexBoxSpec {
   Widget call({required Axis direction, List<Widget> children = const []}) {
-    return createFlexBoxSpecWidget(
+    return _createFlexBoxSpecWidget(
       spec: this,
       direction: direction,
       children: children,
@@ -131,7 +131,7 @@ extension FlexSpecWrappedWidget on StyleSpec<FlexSpec> {
   Widget call({Axis? direction, List<Widget> children = const []}) {
     return StyleSpecBuilder(
       builder: (context, spec) {
-        return createFlexSpecWidget(
+        return _createFlexSpecWidget(
           spec: spec,
           direction: direction,
           children: children,
@@ -146,7 +146,7 @@ extension FlexBoxSpecWrappedWidget on StyleSpec<FlexBoxSpec> {
   Widget call({required Axis direction, List<Widget> children = const []}) {
     return StyleSpecBuilder(
       builder: (context, spec) {
-        return createFlexBoxSpecWidget(
+        return _createFlexBoxSpecWidget(
           spec: spec,
           direction: direction,
           children: children,

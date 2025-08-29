@@ -23,12 +23,12 @@ class StyledText extends StyleWidget<TextSpec> {
 
   @override
   Widget build(BuildContext context, TextSpec spec) {
-    return createTextSpecWidget(spec: spec, text: text);
+    return _createTextSpecWidget(spec: spec, text: text);
   }
 }
 
 /// Creates a [Text] widget from a [TextSpec] and text content.
-Text createTextSpecWidget({required TextSpec spec, required String text}) {
+Text _createTextSpecWidget({required TextSpec spec, required String text}) {
   return Text(
     spec.textDirectives?.apply(text) ?? text,
     style: spec.style,
@@ -50,7 +50,7 @@ Text createTextSpecWidget({required TextSpec spec, required String text}) {
 /// Extension to convert [TextSpec] directly to a [Text] widget.
 extension TextSpecWidget on TextSpec {
   Text call(String text) {
-    return createTextSpecWidget(spec: this, text: text);
+    return _createTextSpecWidget(spec: this, text: text);
   }
 }
 
@@ -58,7 +58,7 @@ extension TextSpecWrappedWidget on StyleSpec<TextSpec> {
   Widget call(String text) {
     return StyleSpecBuilder(
       builder: (context, spec) {
-        return createTextSpecWidget(spec: spec, text: text);
+        return _createTextSpecWidget(spec: spec, text: text);
       },
       wrappedSpec: this,
     );

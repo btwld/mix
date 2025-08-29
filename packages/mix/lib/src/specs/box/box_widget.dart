@@ -17,12 +17,12 @@ class Box extends StyleWidget<BoxSpec> {
 
   @override
   Widget build(BuildContext context, BoxSpec spec) {
-    return createBoxSpecWidget(spec: spec, child: child);
+    return _createBoxSpecWidget(spec: spec, child: child);
   }
 }
 
 /// Creates a [Container] widget from a [BoxSpec].
-Container createBoxSpecWidget({required BoxSpec spec, Widget? child}) {
+Container _createBoxSpecWidget({required BoxSpec spec, Widget? child}) {
   return Container(
     alignment: spec.alignment,
     padding: spec.padding,
@@ -43,7 +43,7 @@ typedef StyledContainer = Box;
 /// Extension to convert [BoxSpec] directly to a [Container] widget.
 extension BoxSpecWidget on BoxSpec {
   Container call({Widget? child}) {
-    return createBoxSpecWidget(spec: this, child: child);
+    return _createBoxSpecWidget(spec: this, child: child);
   }
 }
 
@@ -51,7 +51,7 @@ extension BoxSpecWrappedWidget on StyleSpec<BoxSpec> {
   Widget call({Widget? child}) {
     return StyleSpecBuilder(
       builder: (context, spec) {
-        return createBoxSpecWidget(spec: spec, child: child);
+        return _createBoxSpecWidget(spec: spec, child: child);
       },
       wrappedSpec: this,
     );

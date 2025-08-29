@@ -37,7 +37,7 @@ class StyledImage extends StyleWidget<ImageSpec> {
 
   @override
   Widget build(BuildContext context, ImageSpec spec) {
-    return createImageSpecWidget(
+    return _createImageSpecWidget(
       spec: spec,
       image: image,
       frameBuilder: frameBuilder,
@@ -49,7 +49,7 @@ class StyledImage extends StyleWidget<ImageSpec> {
 }
 
 /// Creates an [Image] widget from an [ImageSpec] and optional overrides.
-Image createImageSpecWidget({
+Image _createImageSpecWidget({
   required ImageSpec spec,
   ImageProvider<Object>? image,
   ImageFrameBuilder? frameBuilder,
@@ -117,7 +117,7 @@ extension ImageSpecWidget on ImageSpec {
     ImageErrorWidgetBuilder? errorBuilder,
     Animation<double>? opacity,
   }) {
-    return createImageSpecWidget(
+    return _createImageSpecWidget(
       spec: this,
       image: image,
       frameBuilder: frameBuilder,
@@ -138,7 +138,7 @@ extension ImageSpecWrappedWidget on StyleSpec<ImageSpec> {
   }) {
     return StyleSpecBuilder(
       builder: (context, spec) {
-        return createImageSpecWidget(
+        return _createImageSpecWidget(
           spec: spec,
           image: image,
           frameBuilder: frameBuilder,
