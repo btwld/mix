@@ -41,16 +41,13 @@ class Prop<V> {
   /// Directives are applied after resolution but before the value is returned.
   final List<Directive<V>>? $directives;
 
-
   // Constructors
 
   /// Creates a property with the given sources and directives.
   ///
   /// This constructor is private and used internally by factory methods.
-  const Prop._({
-    required this.sources,
-    List<Directive<V>>? directives,
-  }) : $directives = directives;
+  const Prop._({required this.sources, List<Directive<V>>? directives})
+    : $directives = directives;
 
   /// Creates a new property by copying all fields from another property.
   ///
@@ -63,24 +60,16 @@ class Prop<V> {
   ///
   /// The token will be resolved from [MixScope] during resolution.
   /// Optionally accepts [directives] configuration.
-  factory Prop.token(
-    MixToken<V> token, {
-    List<Directive<V>>? directives,
-  }) {
-    return Prop._(
-      sources: [TokenSource(token)],
-      directives: directives,
-    );
+  factory Prop.token(MixToken<V> token, {List<Directive<V>>? directives}) {
+    return Prop._(sources: [TokenSource(token)], directives: directives);
   }
 
   /// Creates a property with only directives.
   ///
   /// This property has no value source and is used for applying
   /// transformations when merged with other properties.
-  const Prop.directives(
-    List<Directive<V>> directives,
-  ) : this._(sources: const [], directives: directives);
-
+  const Prop.directives(List<Directive<V>> directives)
+    : this._(sources: const [], directives: directives);
 
   // Factory methods
 
@@ -168,7 +157,6 @@ class Prop<V> {
   Prop<V> directives(List<Directive<V>> directives) {
     return mergeProp(Prop.directives(directives));
   }
-
 
   /// Merges this property with another property.
   ///
@@ -294,6 +282,5 @@ class Prop<V> {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(Object.hashAll(sources), $directives);
+  int get hashCode => Object.hash(Object.hashAll(sources), $directives);
 }

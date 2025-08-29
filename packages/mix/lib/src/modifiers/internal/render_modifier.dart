@@ -23,10 +23,7 @@ class RenderModifiers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _RenderModifiers(
-      modifiers: widgetModifiers.reversed,
-      child: child,
-    );
+    return _RenderModifiers(modifiers: widgetModifiers.reversed, child: child);
   }
 }
 
