@@ -12,6 +12,7 @@ import '../../modifiers/modifier_util.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'stack_spec.dart';
+import 'stack_util.dart';
 
 typedef StackMix = StackStyle;
 
@@ -64,6 +65,12 @@ class StackStyle extends Style<StackSpec>
          modifier: modifier,
          variants: variants,
        );
+
+  factory StackStyle.builder(StackStyle Function(BuildContext) fn) {
+    return StackStyle().builder(fn);
+  }
+
+  static StackSpecUtility get chain => StackSpecUtility(StackStyle());
 
   /// Sets stack alignment
   StackStyle alignment(AlignmentGeometry value) {

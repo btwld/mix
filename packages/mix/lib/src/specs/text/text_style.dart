@@ -17,6 +17,7 @@ import '../../properties/typography/text_style_mix.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'text_spec.dart';
+import 'text_util.dart';
 import 'text_widget.dart';
 
 typedef TextMix = TextStyling;
@@ -120,6 +121,12 @@ class TextStyling extends Style<TextSpec>
          modifier: modifier,
          variants: variants,
        );
+
+  factory TextStyling.builder(TextStyling Function(BuildContext) fn) {
+    return TextStyling().builder(fn);
+  }
+
+  static TextSpecUtility get chain => TextSpecUtility(TextStyling());
 
   StyledText call(String text) {
     return StyledText(text, style: this);

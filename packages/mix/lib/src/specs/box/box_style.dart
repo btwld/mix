@@ -103,7 +103,11 @@ class BoxStyle extends Style<BoxSpec>
          animation: animation,
        );
 
-  BoxSpecUtility get chain => BoxSpecUtility(this);
+  factory BoxStyle.builder(BoxStyle Function(BuildContext) fn) {
+    return BoxStyle().builder(fn);
+  }
+
+  static BoxSpecUtility get chain => BoxSpecUtility(BoxStyle());
 
   BoxStyle transformAlignment(AlignmentGeometry value) {
     return merge(BoxStyle(transformAlignment: value));

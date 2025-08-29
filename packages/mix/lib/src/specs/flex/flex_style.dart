@@ -13,6 +13,7 @@ import '../../modifiers/modifier_util.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'flex_spec.dart';
+import 'flex_util.dart';
 
 typedef FlexMix = FlexStyle;
 
@@ -101,6 +102,12 @@ class FlexStyle extends Style<FlexSpec>
          modifier: modifier,
          variants: variants,
        );
+
+  factory FlexStyle.builder(FlexStyle Function(BuildContext) fn) {
+    return FlexStyle().builder(fn);
+  }
+
+  static FlexSpecUtility get chain => FlexSpecUtility(FlexStyle());
 
   /// The gap between children.
   @Deprecated(

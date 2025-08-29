@@ -11,6 +11,7 @@ import '../../modifiers/modifier_util.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'image_spec.dart';
+import 'image_util.dart';
 import 'image_widget.dart';
 
 typedef ImageMix = ImageStyle;
@@ -112,6 +113,12 @@ class ImageStyle extends Style<ImageSpec>
          modifier: modifier,
          variants: variants,
        );
+
+  factory ImageStyle.builder(ImageStyle Function(BuildContext) fn) {
+    return ImageStyle().builder(fn);
+  }
+
+  static ImageSpecUtility get chain => ImageSpecUtility(ImageStyle());
 
 
 

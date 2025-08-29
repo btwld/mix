@@ -24,6 +24,7 @@ import '../box/box_style.dart';
 import '../flex/flex_spec.dart';
 import '../flex/flex_style.dart';
 import 'flexbox_spec.dart';
+import 'flexbox_util.dart';
 
 typedef FlexBoxMix = FlexBoxStyle;
 
@@ -114,6 +115,12 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
     super.variants,
   }) : $box = box,
        $flex = flex;
+
+  factory FlexBoxStyle.builder(FlexBoxStyle Function(BuildContext) fn) {
+    return FlexBoxStyle().builder(fn);
+  }
+
+  static FlexBoxSpecUtility get chain => FlexBoxSpecUtility(FlexBoxStyle());
 
   /// Sets animation
   FlexBoxStyle animate(AnimationConfig animation) {

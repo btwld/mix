@@ -13,6 +13,7 @@ import '../../properties/painting/shadow_mix.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'icon_spec.dart';
+import 'icon_util.dart';
 import 'icon_widget.dart';
 
 typedef IconMix = IconStyle;
@@ -104,6 +105,12 @@ class IconStyle extends Style<IconSpec>
          modifier: modifier,
          variants: variants,
        );
+
+  factory IconStyle.builder(IconStyle Function(BuildContext) fn) {
+    return IconStyle().builder(fn);
+  }
+
+  static IconSpecUtility get chain => IconSpecUtility(IconStyle());
 
   /// Sets icon color
   IconStyle color(Color value) {
