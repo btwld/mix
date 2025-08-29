@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../animation/animation_config.dart';
 import '../theme/mix_theme.dart';
 import '../theme/tokens/mix_token.dart';
 import 'converter_registry.dart';
@@ -42,42 +41,35 @@ class Prop<V> {
   /// Directives are applied after resolution but before the value is returned.
   final List<Directive<V>>? $directives;
 
-  /// Optional animation configuration for animating property changes.
-  final AnimationConfig? $animation;
 
   // Constructors
 
-  /// Creates a property with the given sources, directives, and animation.
+  /// Creates a property with the given sources and directives.
   ///
   /// This constructor is private and used internally by factory methods.
   const Prop._({
     required this.sources,
     List<Directive<V>>? directives,
-    AnimationConfig? animation,
-  }) : $directives = directives,
-       $animation = animation;
+  }) : $directives = directives;
 
   /// Creates a new property by copying all fields from another property.
   ///
   /// Used by subclasses that need to wrap existing properties.
   Prop.fromProp(Prop<V> other)
     : sources = other.sources,
-      $directives = other.$directives,
-      $animation = other.$animation;
+      $directives = other.$directives;
 
   /// Creates a property that references a token.
   ///
   /// The token will be resolved from [MixScope] during resolution.
-  /// Optionally accepts [directives] and [animation] configuration.
+  /// Optionally accepts [directives] configuration.
   factory Prop.token(
     MixToken<V> token, {
     List<Directive<V>>? directives,
-    AnimationConfig? animation,
   }) {
     return Prop._(
       sources: [TokenSource(token)],
       directives: directives,
-      animation: animation,
     );
   }
 
@@ -86,17 +78,9 @@ class Prop<V> {
   /// This property has no value source and is used for applying
   /// transformations when merged with other properties.
   const Prop.directives(
-    List<Directive<V>> directives, {
-    AnimationConfig? animation,
-  }) : this._(sources: const [], directives: directives, animation: animation);
+    List<Directive<V>> directives,
+  ) : this._(sources: const [], directives: directives);
 
-  /// Creates a property with only animation configuration.
-  ///
-  /// This property has no value source and is used for applying
-  /// animation when merged with other properties.
-  @internal
-  const Prop.animation(AnimationConfig animation)
-    : this._(sources: const [], directives: null, animation: animation);
 
   // Factory methods
 
@@ -185,11 +169,6 @@ class Prop<V> {
     return mergeProp(Prop.directives(directives));
   }
 
-  /// Returns a new property with the given animation configuration.
-  @internal
-  Prop<V> animation(AnimationConfig animation) {
-    return mergeProp(Prop.animation(animation));
-  }
 
   /// Merges this property with another property.
   ///
@@ -198,7 +177,7 @@ class Prop<V> {
   /// - Mix sources: merged using accumulation strategy
   /// - Regular values: last value wins during resolution
   ///
-  /// Directives are merged and animation from [other] takes precedence.
+  /// Directives are merged from both properties.
   Prop<V> mergeProp(covariant Prop<V>? other) {
     if (other == null) return this;
 
@@ -206,7 +185,6 @@ class Prop<V> {
     return Prop._(
       sources: [...sources, ...other.sources],
       directives: PropOps.mergeDirectives($directives, other.$directives),
-      animation: other.$animation ?? $animation,
     );
   }
 
@@ -299,8 +277,7 @@ class Prop<V> {
 
     return other is Prop<V> &&
         listEquals(other.sources, sources) &&
-        listEquals(other.$directives, $directives) &&
-        other.$animation == $animation;
+        listEquals(other.$directives, $directives);
   }
 
   @override
@@ -312,14 +289,11 @@ class Prop<V> {
     if ($directives != null && $directives!.isNotEmpty) {
       parts.add('directives: ${$directives!.length}');
     }
-    if ($animation != null) {
-      parts.add('animated');
-    }
 
     return '$runtimeType(${parts.join(', ')})';
   }
 
   @override
   int get hashCode =>
-      Object.hash(Object.hashAll(sources), $directives, $animation);
+      Object.hash(Object.hashAll(sources), $directives);
 }

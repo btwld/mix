@@ -523,8 +523,6 @@ class PropMatcher {
   /// Matches a Prop that has directives
   static Matcher get hasDirectives => const _PropHasDirectivesMatcher();
 
-  /// Matches a Prop that has animation config
-  static Matcher get hasAnimation => const _PropHasAnimationMatcher();
 }
 
 /// Matcher for Prop values
@@ -845,36 +843,3 @@ class _PropHasDirectivesMatcher extends Matcher {
   }
 }
 
-/// Matcher for Prop that has animation config
-class _PropHasAnimationMatcher extends Matcher {
-  const _PropHasAnimationMatcher();
-
-  @override
-  bool matches(dynamic item, Map matchState) {
-    if (item is! Prop) {
-      matchState['error'] = 'Expected Prop, got ${item.runtimeType}';
-      return false;
-    }
-
-    return item.$animation != null;
-  }
-
-  @override
-  Description describe(Description description) {
-    return description.add('Prop with animation config');
-  }
-
-  @override
-  Description describeMismatch(
-    dynamic item,
-    Description mismatchDescription,
-    Map matchState,
-    bool verbose,
-  ) {
-    if (matchState.containsKey('error')) {
-      return mismatchDescription.add(matchState['error']);
-    }
-
-    return mismatchDescription.add('does not have animation config');
-  }
-}
