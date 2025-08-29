@@ -4,7 +4,7 @@
     "source.fixAll": "explicit",
     "source.dcm.fixAll": "explicit"
   },
-  "dart.flutterSdkPath": ".fvm/versions/beta",
+  "dart.flutterSdkPath": ".fvm/versions/stable",
   "search.exclude": {
     "**/.fvm": true
   },
