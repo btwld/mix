@@ -222,28 +222,26 @@ class IconStyler extends Style<IconSpec>
 
   @override
   IconStyler merge(IconStyler? other) {
-    if (other == null) return this;
-
     return IconStyler.create(
-      color: MixOps.merge($color, other.$color),
-      size: MixOps.merge($size, other.$size),
-      weight: MixOps.merge($weight, other.$weight),
-      grade: MixOps.merge($grade, other.$grade),
-      opticalSize: MixOps.merge($opticalSize, other.$opticalSize),
-      shadows: MixOps.mergeList($shadows, other.$shadows),
-      textDirection: MixOps.merge($textDirection, other.$textDirection),
+      color: MixOps.merge($color, other?.$color),
+      size: MixOps.merge($size, other?.$size),
+      weight: MixOps.merge($weight, other?.$weight),
+      grade: MixOps.merge($grade, other?.$grade),
+      opticalSize: MixOps.merge($opticalSize, other?.$opticalSize),
+      shadows: MixOps.mergeList($shadows, other?.$shadows),
+      textDirection: MixOps.merge($textDirection, other?.$textDirection),
       applyTextScaling: MixOps.merge(
         $applyTextScaling,
-        other.$applyTextScaling,
+        other?.$applyTextScaling,
       ),
-      fill: MixOps.merge($fill, other.$fill),
-      semanticsLabel: MixOps.merge($semanticsLabel, other.$semanticsLabel),
-      opacity: MixOps.merge($opacity, other.$opacity),
-      blendMode: MixOps.merge($blendMode, other.$blendMode),
-      icon: MixOps.merge($icon, other.$icon),
-      animation: other.$animation ?? $animation,
-      modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
-      variants: mergeVariantLists($variants, other.$variants),
+      fill: MixOps.merge($fill, other?.$fill),
+      semanticsLabel: MixOps.merge($semanticsLabel, other?.$semanticsLabel),
+      opacity: MixOps.merge($opacity, other?.$opacity),
+      blendMode: MixOps.merge($blendMode, other?.$blendMode),
+      icon: MixOps.merge($icon, other?.$icon),
+      animation: other?.$animation ?? $animation,
+      modifier: $modifier?.merge(other?.$modifier) ?? other?.$modifier,
+      variants: mergeVariantLists($variants, other?.$variants),
     );
   }
 

@@ -235,14 +235,12 @@ class StackBoxStyler extends Style<ZBoxSpec>
   /// to the values from this instance.
   @override
   StackBoxStyler merge(StackBoxStyler? other) {
-    if (other == null) return this;
-
     return StackBoxStyler.create(
-      box: MixOps.merge($box, other.$box),
-      stack: MixOps.merge($stack, other.$stack),
-      modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
-      animation: other.$animation ?? $animation,
-      variants: mergeVariantLists($variants, other.$variants),
+      box: MixOps.merge($box, other?.$box),
+      stack: MixOps.merge($stack, other?.$stack),
+      modifier: $modifier?.merge(other?.$modifier) ?? other?.$modifier,
+      animation: other?.$animation ?? $animation,
+      variants: mergeVariantLists($variants, other?.$variants),
     );
   }
 

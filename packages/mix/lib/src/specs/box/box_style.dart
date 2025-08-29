@@ -233,29 +233,28 @@ class BoxStyler extends Style<BoxSpec>
   /// to the values from this instance.
   @override
   BoxStyler merge(BoxStyler? other) {
-    if (other == null) return this;
-
     return BoxStyler.create(
-      alignment: MixOps.merge($alignment, other.$alignment),
-      padding: MixOps.merge($padding, other.$padding),
-      margin: MixOps.merge($margin, other.$margin),
-      constraints: MixOps.merge($constraints, other.$constraints),
-      decoration: MixOps.merge($decoration, other.$decoration),
+      alignment: MixOps.merge($alignment, other?.$alignment),
+      padding: MixOps.merge($padding, other?.$padding),
+      margin: MixOps.merge($margin, other?.$margin),
+      constraints: MixOps.merge($constraints, other?.$constraints),
+      decoration: MixOps.merge($decoration, other?.$decoration),
       foregroundDecoration: MixOps.merge(
         $foregroundDecoration,
-        other.$foregroundDecoration,
+        other?.$foregroundDecoration,
       ),
-      transform: MixOps.merge($transform, other.$transform),
+      transform: MixOps.merge($transform, other?.$transform),
       transformAlignment: MixOps.merge(
         $transformAlignment,
-        other.$transformAlignment,
+        other?.$transformAlignment,
       ),
-      clipBehavior: MixOps.merge($clipBehavior, other.$clipBehavior),
-      variants: mergeVariantLists($variants, other.$variants),
-      modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
-      animation: other.$animation ?? $animation,
+      clipBehavior: MixOps.merge($clipBehavior, other?.$clipBehavior),
+      variants: mergeVariantLists($variants, other?.$variants),
+      modifier: $modifier?.merge(other?.$modifier) ?? other?.$modifier,
+      animation: other?.$animation ?? $animation,
     );
   }
+
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {

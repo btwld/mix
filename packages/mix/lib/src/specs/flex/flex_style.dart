@@ -231,32 +231,31 @@ class FlexStyler extends Style<FlexSpec>
   /// to the values from this instance.
   @override
   FlexStyler merge(FlexStyler? other) {
-    if (other == null) return this;
-
     return FlexStyler.create(
-      direction: MixOps.merge($direction, other.$direction),
+      direction: MixOps.merge($direction, other?.$direction),
       mainAxisAlignment: MixOps.merge(
         $mainAxisAlignment,
-        other.$mainAxisAlignment,
+        other?.$mainAxisAlignment,
       ),
       crossAxisAlignment: MixOps.merge(
         $crossAxisAlignment,
-        other.$crossAxisAlignment,
+        other?.$crossAxisAlignment,
       ),
-      mainAxisSize: MixOps.merge($mainAxisSize, other.$mainAxisSize),
+      mainAxisSize: MixOps.merge($mainAxisSize, other?.$mainAxisSize),
       verticalDirection: MixOps.merge(
         $verticalDirection,
-        other.$verticalDirection,
+        other?.$verticalDirection,
       ),
-      textDirection: MixOps.merge($textDirection, other.$textDirection),
-      textBaseline: MixOps.merge($textBaseline, other.$textBaseline),
-      clipBehavior: MixOps.merge($clipBehavior, other.$clipBehavior),
-      spacing: MixOps.merge($spacing, other.$spacing),
-      animation: other.$animation ?? $animation,
-      modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
-      variants: mergeVariantLists($variants, other.$variants),
+      textDirection: MixOps.merge($textDirection, other?.$textDirection),
+      textBaseline: MixOps.merge($textBaseline, other?.$textBaseline),
+      clipBehavior: MixOps.merge($clipBehavior, other?.$clipBehavior),
+      spacing: MixOps.merge($spacing, other?.$spacing),
+      animation: other?.$animation ?? $animation,
+      modifier: $modifier?.merge(other?.$modifier) ?? other?.$modifier,
+      variants: mergeVariantLists($variants, other?.$variants),
     );
   }
+
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {

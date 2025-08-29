@@ -43,6 +43,7 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
        $variants = variants;
 
   static BoxStyler box(BoxStyler value) => value;
+
   static TextStyler text(TextStyler value) => value;
   static IconStyler icon(IconStyler value) => value;
   static ImageStyler image(ImageStyler value) => value;

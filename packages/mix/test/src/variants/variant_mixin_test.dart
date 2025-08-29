@@ -242,6 +242,7 @@ void main() {
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 2);
+
       expect(result.$variants!.first.value, equals(darkStyle));
       expect(result.$variants!.last.value, equals(hoverStyle));
     });

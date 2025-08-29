@@ -253,33 +253,31 @@ class ImageStyler extends Style<ImageSpec>
 
   @override
   ImageStyler merge(ImageStyler? other) {
-    if (other == null) return this;
-
     return ImageStyler.create(
-      image: MixOps.merge($image, other.$image),
-      width: MixOps.merge($width, other.$width),
-      height: MixOps.merge($height, other.$height),
-      color: MixOps.merge($color, other.$color),
-      repeat: MixOps.merge($repeat, other.$repeat),
-      fit: MixOps.merge($fit, other.$fit),
-      alignment: MixOps.merge($alignment, other.$alignment),
-      centerSlice: MixOps.merge($centerSlice, other.$centerSlice),
-      filterQuality: MixOps.merge($filterQuality, other.$filterQuality),
-      colorBlendMode: MixOps.merge($colorBlendMode, other.$colorBlendMode),
-      semanticLabel: MixOps.merge($semanticLabel, other.$semanticLabel),
+      image: MixOps.merge($image, other?.$image),
+      width: MixOps.merge($width, other?.$width),
+      height: MixOps.merge($height, other?.$height),
+      color: MixOps.merge($color, other?.$color),
+      repeat: MixOps.merge($repeat, other?.$repeat),
+      fit: MixOps.merge($fit, other?.$fit),
+      alignment: MixOps.merge($alignment, other?.$alignment),
+      centerSlice: MixOps.merge($centerSlice, other?.$centerSlice),
+      filterQuality: MixOps.merge($filterQuality, other?.$filterQuality),
+      colorBlendMode: MixOps.merge($colorBlendMode, other?.$colorBlendMode),
+      semanticLabel: MixOps.merge($semanticLabel, other?.$semanticLabel),
       excludeFromSemantics: MixOps.merge(
         $excludeFromSemantics,
-        other.$excludeFromSemantics,
+        other?.$excludeFromSemantics,
       ),
-      gaplessPlayback: MixOps.merge($gaplessPlayback, other.$gaplessPlayback),
-      isAntiAlias: MixOps.merge($isAntiAlias, other.$isAntiAlias),
+      gaplessPlayback: MixOps.merge($gaplessPlayback, other?.$gaplessPlayback),
+      isAntiAlias: MixOps.merge($isAntiAlias, other?.$isAntiAlias),
       matchTextDirection: MixOps.merge(
         $matchTextDirection,
-        other.$matchTextDirection,
+        other?.$matchTextDirection,
       ),
-      animation: other.$animation ?? $animation,
-      modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
-      variants: mergeVariantLists($variants, other.$variants),
+      animation: other?.$animation ?? $animation,
+      modifier: $modifier?.merge(other?.$modifier) ?? other?.$modifier,
+      variants: mergeVariantLists($variants, other?.$variants),
     );
   }
 

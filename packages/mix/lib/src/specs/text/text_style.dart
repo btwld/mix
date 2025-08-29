@@ -404,31 +404,30 @@ class TextStyler extends Style<TextSpec>
   /// to the values from this instance.
   @override
   TextStyler merge(TextStyler? other) {
-    if (other == null) return this;
-
     return TextStyler.create(
-      overflow: MixOps.merge($overflow, other.$overflow),
-      strutStyle: MixOps.merge($strutStyle, other.$strutStyle),
-      textAlign: MixOps.merge($textAlign, other.$textAlign),
-      textScaler: MixOps.merge($textScaler, other.$textScaler),
-      maxLines: MixOps.merge($maxLines, other.$maxLines),
-      style: MixOps.merge($style, other.$style),
-      textWidthBasis: MixOps.merge($textWidthBasis, other.$textWidthBasis),
+      overflow: MixOps.merge($overflow, other?.$overflow),
+      strutStyle: MixOps.merge($strutStyle, other?.$strutStyle),
+      textAlign: MixOps.merge($textAlign, other?.$textAlign),
+      textScaler: MixOps.merge($textScaler, other?.$textScaler),
+      maxLines: MixOps.merge($maxLines, other?.$maxLines),
+      style: MixOps.merge($style, other?.$style),
+      textWidthBasis: MixOps.merge($textWidthBasis, other?.$textWidthBasis),
       textHeightBehavior: MixOps.merge(
         $textHeightBehavior,
-        other.$textHeightBehavior,
+        other?.$textHeightBehavior,
       ),
-      textDirection: MixOps.merge($textDirection, other.$textDirection),
-      softWrap: MixOps.merge($softWrap, other.$softWrap),
-      textDirectives: MixOps.mergeList($textDirectives, other.$textDirectives),
-      selectionColor: MixOps.merge($selectionColor, other.$selectionColor),
-      semanticsLabel: MixOps.merge($semanticsLabel, other.$semanticsLabel),
-      locale: MixOps.merge($locale, other.$locale),
-      animation: other.$animation ?? $animation,
-      modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
-      variants: mergeVariantLists($variants, other.$variants),
+      textDirection: MixOps.merge($textDirection, other?.$textDirection),
+      softWrap: MixOps.merge($softWrap, other?.$softWrap),
+      textDirectives: MixOps.mergeList($textDirectives, other?.$textDirectives),
+      selectionColor: MixOps.merge($selectionColor, other?.$selectionColor),
+      semanticsLabel: MixOps.merge($semanticsLabel, other?.$semanticsLabel),
+      locale: MixOps.merge($locale, other?.$locale),
+      animation: other?.$animation ?? $animation,
+      modifier: $modifier?.merge(other?.$modifier) ?? other?.$modifier,
+      variants: mergeVariantLists($variants, other?.$variants),
     );
   }
+
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {

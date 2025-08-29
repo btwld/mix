@@ -283,16 +283,15 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
   /// to the values from this instance.
   @override
   FlexBoxStyler merge(FlexBoxStyler? other) {
-    if (other == null) return this;
-
     return FlexBoxStyler.create(
-      box: MixOps.merge($box, other.$box),
-      flex: MixOps.merge($flex, other.$flex),
-      animation: other.$animation ?? $animation,
-      modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
-      variants: mergeVariantLists($variants, other.$variants),
+      box: MixOps.merge($box, other?.$box),
+      flex: MixOps.merge($flex, other?.$flex),
+      animation: other?.$animation ?? $animation,
+      modifier: $modifier?.merge(other?.$modifier) ?? other?.$modifier,
+      variants: mergeVariantLists($variants, other?.$variants),
     );
   }
+
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {

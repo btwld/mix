@@ -126,16 +126,14 @@ class StackStyler extends Style<StackSpec>
   /// Merges the properties of this [StackStyler] with the properties of [other].
   @override
   StackStyler merge(StackStyler? other) {
-    if (other == null) return this;
-
     return StackStyler.create(
-      alignment: MixOps.merge($alignment, other.$alignment),
-      fit: MixOps.merge($fit, other.$fit),
-      textDirection: MixOps.merge($textDirection, other.$textDirection),
-      clipBehavior: MixOps.merge($clipBehavior, other.$clipBehavior),
-      animation: other.$animation ?? $animation,
-      modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
-      variants: mergeVariantLists($variants, other.$variants),
+      alignment: MixOps.merge($alignment, other?.$alignment),
+      fit: MixOps.merge($fit, other?.$fit),
+      textDirection: MixOps.merge($textDirection, other?.$textDirection),
+      clipBehavior: MixOps.merge($clipBehavior, other?.$clipBehavior),
+      animation: other?.$animation ?? $animation,
+      modifier: $modifier?.merge(other?.$modifier) ?? other?.$modifier,
+      variants: mergeVariantLists($variants, other?.$variants),
     );
   }
 
