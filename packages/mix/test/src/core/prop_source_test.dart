@@ -146,22 +146,16 @@ void main() {
         expect(source2.token, equals(token2));
       });
 
-      test('preserves directives and animation during merge', () {
+      test('preserves directives during merge', () {
         final token = MixToken<Shadow>('shadow.primary');
         final directive = MockDirective<Shadow>('test');
-        final animation = AnimationConfig.curve(
-          duration: Duration(milliseconds: 300),
-          curve: Curves.easeIn,
-        );
 
         final prop1 = Prop<Shadow>.token(token);
         final prop2 = Prop<Shadow>.directives([directive]);
-        final prop3 = Prop<Shadow>.animation(animation);
 
-        final merged = prop1.mergeProp(prop2).mergeProp(prop3);
+        final merged = prop1.mergeProp(prop2);
 
         expect(merged.$directives, contains(directive));
-        expect(merged.$animation, equals(animation));
       });
     });
 

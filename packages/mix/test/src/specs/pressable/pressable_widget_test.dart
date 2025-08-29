@@ -367,7 +367,7 @@ void main() {
     });
 
     testWidgets('applies style to Box', (tester) async {
-      final style = BoxMix().width(200.0).height(100.0).color(Colors.red);
+      final style = BoxStyle().width(200.0).height(100.0).color(Colors.red);
 
       await tester.pumpWidget(
         MaterialApp(

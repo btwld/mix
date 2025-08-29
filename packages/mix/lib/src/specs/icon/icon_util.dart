@@ -2,31 +2,39 @@ import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
-import '../../core/style.dart' show Style;
+import '../../core/style.dart' show Style, VariantStyle;
 import '../../core/utility.dart';
+import '../../core/utility_variant_mixin.dart';
+import '../../core/widget_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/painting/color_util.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../properties/painting/shadow_util.dart';
+import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
-import 'icon_attribute.dart';
 import 'icon_spec.dart';
+import 'icon_style.dart';
 
 /// Provides mutable utility for icon styling with cascade notation support.
 ///
-/// Supports the same API as [IconMix] but maintains mutable internal state
+/// Supports the same API as [IconStyle] but maintains mutable internal state
 /// enabling fluid styling: `$icon..color(Colors.blue)..size(24)..weight(400)`.
-class IconSpecUtility extends StyleMutableBuilder<IconSpec> {
-  late final color = ColorUtility<IconMix>(
-    (prop) => mutable.merge(IconMix.create(color: prop)),
+class IconSpecUtility extends StyleMutableBuilder<IconSpec>
+    with UtilityVariantMixin<IconSpec, IconStyle> {
+  late final color = ColorUtility<IconStyle>(
+    (prop) => mutable.merge(IconStyle.create(color: prop)),
   );
 
-  late final shadow = ShadowUtility<IconMix>((v) => mutable.shadows([v]));
+  late final shadow = ShadowUtility<IconStyle>((v) => mutable.shadows([v]));
 
   late final textDirection = MixUtility(mutable.textDirection);
 
-  late final on = OnContextVariantUtility<IconSpec, IconMix>(
+  @Deprecated(
+    'Use direct methods like \$icon.onHovered() instead. '
+    'Note: Returns IconStyle for consistency with other utility methods like animate().',
+  )
+  late final on = OnContextVariantUtility<IconSpec, IconStyle>(
     (v) => mutable.variants([v]),
   );
 
@@ -37,29 +45,39 @@ class IconSpecUtility extends StyleMutableBuilder<IconSpec> {
   /// Internal mutable state for accumulating icon styling properties.
   @override
   @protected
-  late final MutableIconMix mutable;
+  late final MutableIconStyle mutable;
 
-  IconSpecUtility([IconMix? attribute]) {
-    mutable = MutableIconMix(attribute ?? IconMix());
+  IconSpecUtility([IconStyle? attribute]) {
+    mutable = MutableIconStyle(attribute ?? IconStyle());
   }
 
-  IconMix size(double v) => mutable.size(v);
+  IconStyle size(double v) => mutable.size(v);
 
-  IconMix weight(double v) => mutable.weight(v);
+  IconStyle weight(double v) => mutable.weight(v);
 
-  IconMix grade(double v) => mutable.grade(v);
+  IconStyle grade(double v) => mutable.grade(v);
 
-  IconMix opticalSize(double v) => mutable.opticalSize(v);
+  IconStyle opticalSize(double v) => mutable.opticalSize(v);
 
-  IconMix applyTextScaling(bool v) => mutable.applyTextScaling(v);
+  IconStyle applyTextScaling(bool v) => mutable.applyTextScaling(v);
 
-  IconMix fill(double v) => mutable.fill(v);
+  IconStyle fill(double v) => mutable.fill(v);
 
   /// Applies multiple shadows to the icon.
-  IconMix shadows(List<ShadowMix> value) => mutable.shadows(value);
+  IconStyle shadows(List<ShadowMix> value) => mutable.shadows(value);
 
   /// Applies animation configuration to the icon styling.
-  IconMix animate(AnimationConfig animation) => mutable.animate(animation);
+  IconStyle animate(AnimationConfig animation) => mutable.animate(animation);
+
+  @override
+  IconStyle withVariant(Variant variant, IconStyle style) {
+    return mutable.variant(variant, style);
+  }
+
+  @override
+  IconStyle withVariants(List<VariantStyle<IconSpec>> variants) {
+    return mutable.variants(variants);
+  }
 
   @override
   IconSpecUtility merge(Style<IconSpec>? other) {
@@ -68,7 +86,7 @@ class IconSpecUtility extends StyleMutableBuilder<IconSpec> {
     if (other is IconSpecUtility) {
       return IconSpecUtility(mutable.merge(other.mutable.value));
     }
-    if (other is IconMix) {
+    if (other is IconStyle) {
       return IconSpecUtility(mutable.merge(other));
     }
 
@@ -76,17 +94,20 @@ class IconSpecUtility extends StyleMutableBuilder<IconSpec> {
   }
 
   @override
-  IconSpec resolve(BuildContext context) {
+  WidgetSpec<IconSpec> resolve(BuildContext context) {
     return mutable.resolve(context);
   }
 
-  /// The accumulated [IconMix] with all applied styling properties.
   @override
-  IconMix get value => mutable.value;
+  IconStyle get currentValue => mutable.value;
+
+  /// The accumulated [IconStyle] with all applied styling properties.
+  @override
+  IconStyle get value => mutable.value;
 }
 
-class MutableIconMix extends IconMix with Mutable<IconSpec, IconMix> {
-  MutableIconMix(IconMix style) {
+class MutableIconStyle extends IconStyle with Mutable<IconSpec, IconStyle> {
+  MutableIconStyle(IconStyle style) {
     value = style;
   }
 }

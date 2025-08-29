@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../core/widget_spec.dart';
+import '../core/spec.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
@@ -20,7 +20,6 @@ import 'opacity_modifier.dart';
 import 'padding_modifier.dart';
 import 'rotated_box_modifier.dart';
 import 'sized_box_modifier.dart';
-import 'style_provider_modifier.dart';
 import 'transform_modifier.dart';
 import 'visibility_modifier.dart';
 
@@ -28,41 +27,41 @@ import 'visibility_modifier.dart';
 final class ModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, ModifierMix> {
   /// Opacity modifier utility.
-  late final opacity = OpacityModifierUtility<T>(builder);
+  late final opacity = OpacityModifierUtility<T>(utilityBuilder);
 
   /// Transform modifier utility.
-  late final transform = TransformModifierUtility<T>(builder);
+  late final transform = TransformModifierUtility<T>(utilityBuilder);
 
   /// Visibility modifier utility.
-  late final visibility = VisibilityModifierUtility<T>(builder);
+  late final visibility = VisibilityModifierUtility<T>(utilityBuilder);
 
   /// Aspect ratio modifier utility.
-  late final aspectRatio = AspectRatioModifierUtility<T>(builder);
+  late final aspectRatio = AspectRatioModifierUtility<T>(utilityBuilder);
 
   /// Align modifier utility.
-  late final align = AlignModifierUtility<T>(builder);
+  late final align = AlignModifierUtility<T>(utilityBuilder);
 
   /// Padding modifier utility.
-  late final padding = PaddingModifierUtility<T>(builder);
+  late final padding = PaddingModifierUtility<T>(utilityBuilder);
 
   /// Sized box modifier utility.
-  late final sizedBox = SizedBoxModifierUtility<T>(builder);
+  late final sizedBox = SizedBoxModifierUtility<T>(utilityBuilder);
 
   /// Flexible modifier utility.
-  late final flexible = FlexibleModifierUtility<T>(builder);
+  late final flexible = FlexibleModifierUtility<T>(utilityBuilder);
 
   /// Fractionally sized box modifier utility.
   late final fractionallySizedBox = FractionallySizedBoxModifierUtility<T>(
-    builder,
+    utilityBuilder,
   );
 
   /// Rotated box modifier utility.
-  late final rotatedBox = RotatedBoxModifierUtility<T>(builder);
+  late final rotatedBox = RotatedBoxModifierUtility<T>(utilityBuilder);
 
   /// Icon theme modifier utility.
-  late final iconTheme = IconThemeModifierUtility<T>(builder);
+  late final iconTheme = IconThemeModifierUtility<T>(utilityBuilder);
 
-  ModifierUtility(super.builder);
+  ModifierUtility(super.utilityBuilder);
 
   /// Scales the widget by the given [value].
   T scale(double value) => transform.scale(value);
@@ -71,14 +70,14 @@ final class ModifierUtility<T extends Style<Object?>>
   T rotate(double value) => transform.rotate(value);
 
   /// Makes the widget take up only its intrinsic width.
-  T intrinsicWidth() => builder(const IntrinsicWidthModifierMix());
+  T intrinsicWidth() => utilityBuilder(const IntrinsicWidthModifierMix());
 
   /// Makes the widget take up only its intrinsic height.
-  T intrinsicHeight() => builder(const IntrinsicHeightModifierMix());
+  T intrinsicHeight() => utilityBuilder(const IntrinsicHeightModifierMix());
 
   /// Clips the widget to an oval shape.
   T clipOval({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
-    return builder(
+    return utilityBuilder(
       ClipOvalModifierMix(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
@@ -89,7 +88,7 @@ final class ModifierUtility<T extends Style<Object?>>
     CustomClipper<RRect>? clipper,
     Clip? clipBehavior,
   }) {
-    return builder(
+    return utilityBuilder(
       ClipRRectModifierMix(
         borderRadius: BorderRadiusMix.maybeValue(borderRadius),
         clipper: clipper,
@@ -100,35 +99,29 @@ final class ModifierUtility<T extends Style<Object?>>
 
   /// Clips the widget to a rectangle.
   T clipRect({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
-    return builder(
+    return utilityBuilder(
       ClipRectModifierMix(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
   /// Clips the widget to a triangle shape.
   T clipTriangle({Clip? clipBehavior}) {
-    return builder(ClipTriangleModifierMix(clipBehavior: clipBehavior));
+    return utilityBuilder(ClipTriangleModifierMix(clipBehavior: clipBehavior));
   }
 
   /// Clips the widget to a custom path.
   T clipPath({CustomClipper<Path>? clipper, Clip? clipBehavior}) {
-    return builder(
+    return utilityBuilder(
       ClipPathModifierMix(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
   /// Resets all modifiers.
-  T reset() => builder(const ResetModifierMix());
-
-  /// Provides a style to descendant widgets.
-  T style<S extends WidgetSpec<S>>(Style<S> style) {
-    return builder(StyleProviderModifierMix<S>(style));
-  }
+  T reset() => utilityBuilder(const ResetModifierMix());
 }
 
 /// Provides convenient modifier methods for spec attributes.
-mixin StyleModifierMixin<T extends Style<S>, S extends WidgetSpec<S>>
-    on Style<S> {
+mixin StyleModifierMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   /// Applies the given [value] modifier configuration.
   T wrap(ModifierConfig value);
 

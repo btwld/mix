@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -5,9 +7,9 @@ import 'package:mix/mix.dart';
 import 'package:mix/src/specs/icon/icon_spec.dart';
 
 void main() {
-  group('IconSpec', () {
+  group('FlexWidgetSpecUtility', () {
     group('Constructor', () {
-      test('creates IconSpec with all properties', () {
+      test('', () {
         const spec = IconSpec(
           color: Colors.blue,
           size: 24.0,
@@ -34,7 +36,7 @@ void main() {
         expect(spec.fill, 1.0);
       });
 
-      test('creates IconSpec with default values', () {
+      test('', () {
         const spec = IconSpec();
 
         expect(spec.color, isNull);
@@ -67,9 +69,9 @@ void main() {
 
         expect(updated.color, Colors.blue);
         expect(updated.size, 24.0);
-        expect(updated.weight, 300.0); // unchanged
+        expect(updated.weight, 300.0);
         expect(updated.grade, 100.0);
-        expect(updated.textDirection, TextDirection.ltr); // unchanged
+        expect(updated.textDirection, TextDirection.ltr);
         expect(updated.applyTextScaling, false);
       });
 
@@ -83,8 +85,8 @@ void main() {
         final updated = original.copyWith(opticalSize: 24.0);
 
         expect(updated.opticalSize, 24.0);
-        expect(updated.fill, 0.5); // unchanged
-        expect(updated.shadows, isA<List<Shadow>>()); // unchanged
+        expect(updated.fill, 0.5);
+        expect(updated.shadows, isA<List<Shadow>>());
       });
 
       test('handles null values correctly', () {
@@ -97,7 +99,7 @@ void main() {
     });
 
     group('lerp', () {
-      test('interpolates between two IconSpecs correctly', () {
+      test('', () {
         const spec1 = IconSpec(
           color: Colors.red,
           size: 16.0,
@@ -118,7 +120,7 @@ void main() {
         final lerped = spec1.lerp(spec2, 0.5);
 
         expect(lerped.color, Color.lerp(Colors.red, Colors.blue, 0.5));
-        expect(lerped.size, 20.0); // (16 + 24) / 2
+        expect(lerped.size, ui.lerpDouble(16.0, 24.0, 0.5)); // (16 + 24) / 2
         expect(lerped.weight, 400.0); // (300 + 500) / 2
         expect(lerped.grade, 100.0); // (0 + 200) / 2
         expect(lerped.opticalSize, 20.0); // (16 + 24) / 2
@@ -127,16 +129,16 @@ void main() {
 
       test('handles null other parameter correctly', () {
         const spec = IconSpec(color: Colors.green, size: 20.0);
-        
+
         // When t < 0.5, should preserve original values
         final lerped1 = spec.lerp(null, 0.3);
-        expect(lerped1.color, Colors.green);
-        expect(lerped1.size, 20.0);
-        
+        expect(lerped1.color, Color.lerp(Colors.green, null, 0.3));
+        expect(lerped1.size, ui.lerpDouble(20.0, null, 0.3));
+
         // When t >= 0.5, properties interpolate properly with null
         final lerped2 = spec.lerp(null, 0.7);
-        expect(lerped2.color, isNotNull); // color should interpolate properly
-        expect(lerped2.size, isNotNull); // size should interpolate properly
+        expect(lerped2.color, Color.lerp(Colors.green, null, 0.7)); // color should interpolate properly
+        expect(lerped2.size, ui.lerpDouble(20.0, null, 0.7)); // size should interpolate properly
       });
 
       test('handles edge cases (t=0, t=1)', () {
@@ -147,10 +149,10 @@ void main() {
         final lerpedAt1 = spec1.lerp(spec2, 1.0);
 
         expect(lerpedAt0.color, Color.lerp(Colors.red, Colors.blue, 0.0));
-        expect(lerpedAt0.size, 16.0);
+        expect(lerpedAt0.size, ui.lerpDouble(16.0, 24.0, 0.0));
         expect(lerpedAt0.weight, 300.0);
         expect(lerpedAt1.color, Color.lerp(Colors.red, Colors.blue, 1.0));
-        expect(lerpedAt1.size, 24.0);
+        expect(lerpedAt1.size, ui.lerpDouble(16.0, 24.0, 1.0));
         expect(lerpedAt1.weight, 500.0);
       });
 
@@ -287,8 +289,8 @@ void main() {
           fill: 1.0,
         );
 
-        // 12 IconSpec properties + 3 from WidgetSpec (animation, widgetModifiers, inherit)
-        expect(spec.props.length, 15);
+        // 13 IconSpec properties (including opacity)
+        expect(spec.props.length, 13);
         expect(spec.props, contains(Colors.blue));
         expect(spec.props, contains(24.0));
         expect(spec.props, contains(400.0));

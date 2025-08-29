@@ -274,18 +274,18 @@ mixin BorderMixin<T extends Style<Object?>> {
 /// Provides access to border and directional border utilities for flexible border styling.
 final class BoxBorderUtility<T extends Style<Object?>>
     extends MixUtility<T, BoxBorderMix> {
-  late final border = BorderUtility<T>(builder);
+  late final border = BorderUtility<T>(utilityBuilder);
 
-  late final borderDirectional = BorderDirectionalUtility<T>(builder);
+  late final borderDirectional = BorderDirectionalUtility<T>(utilityBuilder);
 
-  BoxBorderUtility(super.builder);
+  BoxBorderUtility(super.utilityBuilder);
 
   T call(BoxBorderMix value) {
-    return builder(value);
+    return utilityBuilder(value);
   }
 
   T as(BoxBorder value) {
-    return builder(BoxBorderMix.value(value));
+    return utilityBuilder(BoxBorderMix.value(value));
   }
 }
 
@@ -318,7 +318,7 @@ final class BorderUtility<T extends Style<Object?>>
 
   late final strokeAlign = all.strokeAlign;
 
-  BorderUtility(super.builder);
+  BorderUtility(super.utilityBuilder);
 
   T none() => only(
     top: BorderSideMix.none,
@@ -333,7 +333,7 @@ final class BorderUtility<T extends Style<Object?>>
     BorderSideMix? left,
     BorderSideMix? right,
   }) {
-    return builder(
+    return utilityBuilder(
       BorderMix(top: top, bottom: bottom, left: left, right: right),
     );
   }
@@ -355,7 +355,7 @@ final class BorderUtility<T extends Style<Object?>>
   }
 
   T as(Border value) {
-    return builder(BorderMix.value(value));
+    return utilityBuilder(BorderMix.value(value));
   }
 }
 
@@ -388,7 +388,7 @@ final class BorderDirectionalUtility<T extends Style<Object?>>
 
   late final strokeAlign = all.strokeAlign;
 
-  BorderDirectionalUtility(super.builder);
+  BorderDirectionalUtility(super.utilityBuilder);
 
   T none() => only(
     top: BorderSideMix.none,
@@ -403,7 +403,7 @@ final class BorderDirectionalUtility<T extends Style<Object?>>
     BorderSideMix? start,
     BorderSideMix? end,
   }) {
-    return builder(
+    return utilityBuilder(
       BorderDirectionalMix(top: top, bottom: bottom, start: start, end: end),
     );
   }
@@ -425,7 +425,7 @@ final class BorderDirectionalUtility<T extends Style<Object?>>
   }
 
   T as(BorderDirectional value) {
-    return builder(BorderDirectionalMix.value(value));
+    return utilityBuilder(BorderDirectionalMix.value(value));
   }
 }
 
@@ -437,14 +437,13 @@ final class BorderSideUtility<T extends Style<Object?>>
     extends MixUtility<T, BorderSideMix> {
   /// Utility for defining [BorderSideMix.color]
   late final color = ColorUtility<T>(
-    (prop) => builder(BorderSideMix.create(color: prop)),
+    (prop) => utilityBuilder(BorderSideMix.create(color: prop)),
   );
 
   /// Utility for defining [BorderSideMix.style]
   late final style = MixUtility<T, BorderStyle>((prop) => call(style: prop));
 
-
-  BorderSideUtility(super.builder);
+  BorderSideUtility(super.utilityBuilder);
 
   /// Utility for defining [BorderSideMix.strokeAlign]
   T strokeAlign(double v) => call(strokeAlign: v);
@@ -453,7 +452,7 @@ final class BorderSideUtility<T extends Style<Object?>>
   T width(double v) => call(width: v);
 
   /// Creates a [Style] instance using the [BorderSideMix.none] constructor.
-  T none() => builder(BorderSideMix.none);
+  T none() => utilityBuilder(BorderSideMix.none);
 
   T call({
     Color? color,
@@ -461,7 +460,7 @@ final class BorderSideUtility<T extends Style<Object?>>
     BorderStyle? style,
     double? strokeAlign,
   }) {
-    return builder(
+    return utilityBuilder(
       BorderSideMix(
         color: color,
         strokeAlign: strokeAlign,
@@ -472,6 +471,6 @@ final class BorderSideUtility<T extends Style<Object?>>
   }
 
   T as(BorderSide value) {
-    return builder(BorderSideMix.value(value));
+    return utilityBuilder(BorderSideMix.value(value));
   }
 }

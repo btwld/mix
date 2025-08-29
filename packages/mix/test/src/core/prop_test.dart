@@ -59,15 +59,13 @@ void main() {
       expect(merged, resolvesTo(42, context: context));
     });
 
-    test('merges directives and animation', () {
+    test('merges directives', () {
       // Intentionally pass an empty directives list to 'a' and verify it is preserved
       final a = Prop.value(1).directives(<Directive<int>>[]);
-      final anim = AnimationConfig.linear(const Duration(milliseconds: 100));
-      final b = Prop.value(2).animation(anim);
+      final b = Prop.value(2);
 
       final merged = a.mergeProp(b);
 
-      expect(merged.$animation, anim);
       expect(merged.$directives, a.$directives); // preserved from a
     });
 

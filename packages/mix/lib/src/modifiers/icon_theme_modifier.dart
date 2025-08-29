@@ -169,7 +169,7 @@ class IconThemeModifierMix extends ModifierMix<IconThemeModifier> {
 /// Use the methods of this class to configure specific properties of a [IconThemeModifier].
 final class IconThemeModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, IconThemeModifierMix> {
-  const IconThemeModifierUtility(super.builder);
+  const IconThemeModifierUtility(super.utilityBuilder);
 
   /// Creates an [IconThemeModifierMix] with the specified properties.
   T call({
@@ -183,7 +183,7 @@ final class IconThemeModifierUtility<T extends Style<Object?>>
     List<ShadowMix>? shadows,
     bool? applyTextScaling,
   }) {
-    return builder(
+    return utilityBuilder(
       IconThemeModifierMix(
         color: color,
         size: size,

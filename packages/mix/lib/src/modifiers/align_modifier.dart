@@ -73,13 +73,13 @@ final class AlignModifier extends Modifier<AlignModifier> with Diagnosticable {
 /// Provides convenient methods for creating AlignModifierMix instances.
 final class AlignModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, AlignModifierMix> {
-  const AlignModifierUtility(super.builder);
+  const AlignModifierUtility(super.utilityBuilder);
   T call({
     AlignmentGeometry? alignment,
     double? widthFactor,
     double? heightFactor,
   }) {
-    return builder(
+    return utilityBuilder(
       AlignModifierMix(
         alignment: alignment,
         widthFactor: widthFactor,

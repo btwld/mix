@@ -1,15 +1,31 @@
+import 'dart:ui';
+
 import 'package:flutter/widgets.dart';
 
 import '../theme/tokens/mix_token.dart';
+import 'directive.dart';
 import 'prop.dart';
 import 'prop_source.dart';
 
 mixin ValueRef<T> on Prop<T> {
+  /// Generates a detailed error message for token reference misuse.
+  String _buildTokenReferenceError(Symbol memberName) {
+    final typeName = T.toString();
+    final memberNameStr = memberName.toString().replaceFirst('Symbol("', '').replaceFirst('")', '');
+    
+    return '''Cannot access '$memberNameStr' on a $typeName token reference.
+
+This is a context-dependent $typeName token that needs to be resolved through BuildContext before use.
+Token references can only be passed directly to Mix styling utilities (e.g., \$box.color).
+
+To use as an actual $typeName value:
+- Pass it to Mix utilities: \$box.color.token(myColorToken)  
+- Or resolve it first: myColorToken.resolve(context)''';
+  }
+  
   @override
   Never noSuchMethod(Invocation invocation) {
-    throw UnimplementedError(
-      'This is a Token reference for $T, so it does not implement ${invocation.memberName}.',
-    );
+    throw UnimplementedError(_buildTokenReferenceError(invocation.memberName));
   }
 }
 
@@ -17,6 +33,29 @@ final class ColorProp extends Prop<Color>
     with ValueRef<Color>
     implements Color {
   ColorProp(super.prop) : super.fromProp();
+
+  @override
+  ColorProp withValues({
+    double? alpha,
+    double? red,
+    double? green,
+    double? blue,
+    ColorSpace? colorSpace,
+  }) {
+    return ColorProp(
+      mergeProp(
+        Prop.directives([
+          WithValuesColorDirective(
+            alpha: alpha,
+            red: red,
+            green: green,
+            blue: blue,
+            colorSpace: colorSpace,
+          ),
+        ]),
+      ),
+    );
+  }
 }
 
 /// Token reference for [AlignmentGeometry] values
@@ -331,7 +370,10 @@ final Map<Object, MixToken> _tokenRegistry = <Object, MixToken>{};
 extension type const DoubleRef(double _value) implements double {
   /// Creates a DoubleRef using token hashCode and registers it with a token
   static DoubleRef token(MixToken<double> token) {
-    final ref = DoubleRef(token.hashCode.toDouble());
+    // Use negative nano-values: -0.0001 to -0.000001
+    // Negative values clearly indicate "this is a reference, not a real value"
+    final hash = token.hashCode.abs() % 100000;
+    final ref = DoubleRef(-(0.000001 + hash * 0.000001));
     _tokenRegistry[ref] = token;
 
     return ref;
@@ -342,7 +384,10 @@ extension type const DoubleRef(double _value) implements double {
 extension type const IntRef(int _value) implements int {
   /// Creates an IntRef using token hashCode and registers it with a token
   static IntRef token(MixToken<int> token) {
-    final ref = IntRef(token.hashCode);
+    // Use negative small values for token references
+    // Negative values clearly indicate "this is a reference, not a real value"
+    final hash = token.hashCode.abs() % 100000;
+    final ref = IntRef(-(1 + hash));
     _tokenRegistry[ref] = token;
 
     return ref;
@@ -443,7 +488,7 @@ MixToken<T>? getTokenFromValue<T>(Object value) {
 bool isAnyTokenRef(Object value) {
   // Check if it's a class-based token reference (extends Prop with ValueRef mixin)
   // We can check if it has the ValueRef mixin by checking if it has a token source
-  if (value is Prop && value.sources.whereType<TokenSource>().isNotEmpty) {
+  if (value is Prop && value.sources.any((s) => s is TokenSource)) {
     // Additional check to ensure it's actually a token reference class
     final typeName = value.runtimeType.toString();
     if (typeName.endsWith('Ref') || typeName.endsWith('Prop')) {

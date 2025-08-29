@@ -5,10 +5,10 @@ import 'package:mix/mix.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  group('StackMix', () {
+  group('StackStyle', () {
     group('Constructor', () {
-      test('creates StackMix with all properties', () {
-        final attribute = StackMix(
+      test('', () {
+        final attribute = StackStyle(
           alignment: Alignment.center,
           fit: StackFit.expand,
           textDirection: TextDirection.ltr,
@@ -21,8 +21,8 @@ void main() {
         expect(attribute.$clipBehavior, resolvesTo(Clip.antiAlias));
       });
 
-      test('creates empty StackMix', () {
-        final attribute = StackMix();
+      test('', () {
+        final attribute = StackStyle();
 
         expect(attribute.$alignment, isNull);
         expect(attribute.$fit, isNull);
@@ -32,102 +32,71 @@ void main() {
     });
 
     group('Factory Constructors', () {
-      test('alignment factory creates StackMix with alignment', () {
-        final stackMix = StackMix.alignment(Alignment.topLeft);
+      test('', () {
+        final stackMix = StackStyle().alignment(Alignment.topLeft);
 
         expect(stackMix.$alignment, resolvesTo(Alignment.topLeft));
       });
 
-      test('fit factory creates StackMix with fit', () {
-        final stackMix = StackMix.fit(StackFit.loose);
+      test('', () {
+        final stackMix = StackStyle().fit(StackFit.loose);
 
         expect(stackMix.$fit, resolvesTo(StackFit.loose));
       });
 
-      test('textDirection factory creates StackMix with textDirection', () {
-        final stackMix = StackMix.textDirection(TextDirection.rtl);
+      test('', () {
+        final stackMix = StackStyle().textDirection(TextDirection.rtl);
 
         expect(stackMix.$textDirection, resolvesTo(TextDirection.rtl));
       });
 
-      test('clipBehavior factory creates StackMix with clipBehavior', () {
-        final stackMix = StackMix.clipBehavior(Clip.hardEdge);
+      test('', () {
+        final stackMix = StackStyle().clipBehavior(Clip.hardEdge);
 
         expect(stackMix.$clipBehavior, resolvesTo(Clip.hardEdge));
       });
 
-      test('animation factory creates StackMix with animation config', () {
+      test('', () {
         final animation = AnimationConfig.linear(Duration(seconds: 1));
-        final stackMix = StackMix.animate(animation);
+        final stackMix = StackStyle().animate(animation);
 
         expect(stackMix.$animation, animation);
       });
 
-      test('variant factory creates StackMix with variant', () {
+      test('', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = StackMix.alignment(Alignment.center);
-        final stackMix = StackMix.variant(variant, style);
+        final style = StackStyle().alignment(Alignment.center);
+        final stackMix = StackStyle().variant(variant, style);
 
         expect(stackMix.$variants, isNotNull);
         expect(stackMix.$variants!.length, 1);
       });
     });
 
-    group('value constructor', () {
-      test('creates StackMix from StackSpec', () {
-        const spec = StackSpec(
-          alignment: Alignment.bottomRight,
-          fit: StackFit.passthrough,
-          textDirection: TextDirection.ltr,
-          clipBehavior: Clip.none,
-        );
-
-        final attribute = StackMix.value(spec);
-
-        expect(attribute.$alignment, resolvesTo(Alignment.bottomRight));
-        expect(attribute.$fit, resolvesTo(StackFit.passthrough));
-        expect(attribute.$textDirection, resolvesTo(TextDirection.ltr));
-        expect(attribute.$clipBehavior, resolvesTo(Clip.none));
-      });
-
-      test('maybeValue returns null for null spec', () {
-        expect(StackMix.maybeValue(null), isNull);
-      });
-
-      test('maybeValue returns attribute for non-null spec', () {
-        const spec = StackSpec(
-          alignment: Alignment.topCenter,
-          fit: StackFit.expand,
-        );
-        final attribute = StackMix.maybeValue(spec);
-
-        expect(attribute, isNotNull);
-        expect(attribute!.$alignment, resolvesTo(Alignment.topCenter));
-        expect(attribute.$fit, resolvesTo(StackFit.expand));
-      });
-    });
 
     group('Utility Methods', () {
       test('alignment utility works correctly', () {
-        final attribute = StackMix().alignment(Alignment.bottomLeft);
+        final attribute = StackStyle().alignment(Alignment.bottomLeft);
 
         expect(attribute.$alignment, resolvesTo(Alignment.bottomLeft));
       });
 
       test('fit utility works correctly', () {
-        final attribute = StackMix().fit(StackFit.expand);
+        final attribute = StackStyle().fit(StackFit.expand);
 
         expect(attribute.$fit, resolvesTo(StackFit.expand));
       });
 
       test('textDirection utility works correctly', () {
-        final attribute = StackMix().textDirection(TextDirection.rtl);
+        final attribute = StackStyle().textDirection(TextDirection.rtl);
 
         expect(attribute.$textDirection, resolvesTo(TextDirection.rtl));
       });
 
       test('clipBehavior utility works correctly', () {
-        final attribute = StackMix().clipBehavior(Clip.antiAliasWithSaveLayer);
+        final attribute = StackStyle().clipBehavior(
+          Clip.antiAliasWithSaveLayer,
+        );
 
         expect(
           attribute.$clipBehavior,
@@ -137,17 +106,17 @@ void main() {
 
       test('animate method sets animation config', () {
         final animation = AnimationConfig.linear(Duration(milliseconds: 500));
-        final attribute = StackMix().animate(animation);
+        final attribute = StackStyle().animate(animation);
 
         expect(attribute.$animation, equals(animation));
       });
     });
 
     group('Variant Methods', () {
-      test('variant method adds variant to StackMix', () {
+      test('', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = StackMix.alignment(Alignment.center);
-        final stackMix = StackMix().variant(variant, style);
+        final style = StackStyle().alignment(Alignment.center);
+        final stackMix = StackStyle().variant(variant, style);
 
         expect(stackMix.$variants, isNotNull);
         expect(stackMix.$variants!.length, 1);
@@ -157,14 +126,14 @@ void main() {
         final variants = [
           VariantStyle(
             ContextVariant.brightness(Brightness.dark),
-            StackMix.alignment(Alignment.topLeft),
+            StackStyle().alignment(Alignment.topLeft),
           ),
           VariantStyle(
             ContextVariant.brightness(Brightness.light),
-            StackMix.alignment(Alignment.bottomRight),
+            StackStyle().alignment(Alignment.bottomRight),
           ),
         ];
-        final stackMix = StackMix().variants(variants);
+        final stackMix = StackStyle().variants(variants);
 
         expect(stackMix.$variants, isNotNull);
         expect(stackMix.$variants!.length, 2);
@@ -172,8 +141,8 @@ void main() {
     });
 
     group('Resolution', () {
-      test('resolves to StackSpec with correct properties', () {
-        final attribute = StackMix(
+      test('', () {
+        final attribute = StackStyle(
           alignment: Alignment.center,
           fit: StackFit.expand,
           textDirection: TextDirection.ltr,
@@ -184,14 +153,14 @@ void main() {
         final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec.alignment, Alignment.center);
-        expect(spec.fit, StackFit.expand);
-        expect(spec.textDirection, TextDirection.ltr);
-        expect(spec.clipBehavior, Clip.antiAlias);
+        expect(spec.spec.alignment, Alignment.center);
+        expect(spec.spec.fit, StackFit.expand);
+        expect(spec.spec.textDirection, TextDirection.ltr);
+        expect(spec.spec.clipBehavior, Clip.antiAlias);
       });
 
       test('resolves with null values correctly', () {
-        final attribute = StackMix()
+        final attribute = StackStyle()
             .alignment(Alignment.topLeft)
             .fit(StackFit.loose);
 
@@ -199,21 +168,21 @@ void main() {
         final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec.alignment, Alignment.topLeft);
-        expect(spec.fit, StackFit.loose);
-        expect(spec.textDirection, isNull);
-        expect(spec.clipBehavior, isNull);
+        expect(spec.spec.alignment, Alignment.topLeft);
+        expect(spec.spec.fit, StackFit.loose);
+        expect(spec.spec.textDirection, isNull);
+        expect(spec.spec.clipBehavior, isNull);
       });
     });
 
     group('Merge', () {
       test('merges properties correctly', () {
-        final first = StackMix(
+        final first = StackStyle(
           alignment: Alignment.topLeft,
           fit: StackFit.loose,
         );
 
-        final second = StackMix(
+        final second = StackStyle(
           alignment: Alignment.bottomRight,
           textDirection: TextDirection.rtl,
           clipBehavior: Clip.hardEdge,
@@ -234,7 +203,7 @@ void main() {
       });
 
       test('returns this when other is null', () {
-        final attribute = StackMix().alignment(Alignment.center);
+        final attribute = StackStyle().alignment(Alignment.center);
         final merged = attribute.merge(null);
 
         expect(identical(attribute, merged), isTrue);
@@ -243,13 +212,13 @@ void main() {
 
     group('Equality', () {
       test('equal attributes have same hashCode', () {
-        final attr1 = StackMix()
+        final attr1 = StackStyle()
             .alignment(Alignment.center)
             .fit(StackFit.loose)
             .textDirection(TextDirection.ltr)
             .clipBehavior(Clip.antiAlias);
 
-        final attr2 = StackMix()
+        final attr2 = StackStyle()
             .alignment(Alignment.center)
             .fit(StackFit.loose)
             .textDirection(TextDirection.ltr)
@@ -259,8 +228,8 @@ void main() {
       });
 
       test('different attributes are not equal', () {
-        final attr1 = StackMix().alignment(Alignment.topLeft);
-        final attr2 = StackMix().alignment(Alignment.bottomRight);
+        final attr1 = StackStyle().alignment(Alignment.topLeft);
+        final attr2 = StackStyle().alignment(Alignment.bottomRight);
 
         expect(attr1, isNot(equals(attr2)));
       });
@@ -268,7 +237,7 @@ void main() {
 
     group('Props getter', () {
       test('props includes all properties', () {
-        final attribute = StackMix(
+        final attribute = StackStyle(
           alignment: Alignment.center,
           fit: StackFit.expand,
           textDirection: TextDirection.ltr,

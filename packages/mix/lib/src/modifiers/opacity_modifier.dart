@@ -85,11 +85,11 @@ class OpacityModifierMix extends ModifierMix<OpacityModifier>
 /// Provides convenient methods for creating OpacityModifierMix instances.
 final class OpacityModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, OpacityModifierMix> {
-  const OpacityModifierUtility(super.builder);
+  const OpacityModifierUtility(super.utilityBuilder);
 
   T call(double value) =>
-      builder(OpacityModifierMix.create(opacity: Prop.value(value)));
+      utilityBuilder(OpacityModifierMix.create(opacity: Prop.value(value)));
 
   T token(MixToken<double> token) =>
-      builder(OpacityModifierMix.create(opacity: Prop.token(token)));
+      utilityBuilder(OpacityModifierMix.create(opacity: Prop.token(token)));
 }

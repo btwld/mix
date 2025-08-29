@@ -7,12 +7,12 @@ import '../../helpers/testing_utils.dart';
 void main() {
   group('FractionallySizedBoxModifier', () {
     group('Constructor', () {
-      test('creates with null values by default', () {
+      test('creates with default alignment and null factors', () {
         const modifier = FractionallySizedBoxModifier();
 
         expect(modifier.widthFactor, isNull);
         expect(modifier.heightFactor, isNull);
-        expect(modifier.alignment, isNull);
+        expect(modifier.alignment, Alignment.center);
       });
 
       test('assigns all parameters correctly', () {
@@ -157,7 +157,7 @@ void main() {
 
         expect(result.widthFactor, 0.25); // 0.5 to null (0) at t=0.5
         expect(result.heightFactor, 0.25); // null (0) to 0.5 at t=0.5
-        expect(result.alignment, isNull);
+        expect(result.alignment, Alignment.center);
       });
 
       test('handles extreme t values', () {
@@ -198,12 +198,8 @@ void main() {
       });
 
       test('not equal when widthFactor differs', () {
-        const modifier1 = FractionallySizedBoxModifier(
-          widthFactor: 0.5,
-        );
-        const modifier2 = FractionallySizedBoxModifier(
-          widthFactor: 0.8,
-        );
+        const modifier1 = FractionallySizedBoxModifier(widthFactor: 0.5);
+        const modifier2 = FractionallySizedBoxModifier(widthFactor: 0.8);
 
         expect(modifier1, isNot(equals(modifier2)));
         // Hash codes might be equal due to hash collisions, so we only test inequality
@@ -211,12 +207,8 @@ void main() {
       });
 
       test('not equal when heightFactor differs', () {
-        const modifier1 = FractionallySizedBoxModifier(
-          heightFactor: 0.5,
-        );
-        const modifier2 = FractionallySizedBoxModifier(
-          heightFactor: 0.8,
-        );
+        const modifier1 = FractionallySizedBoxModifier(heightFactor: 0.5);
+        const modifier2 = FractionallySizedBoxModifier(heightFactor: 0.8);
 
         expect(modifier1, isNot(equals(modifier2)));
         // Hash codes might be equal due to hash collisions, so we only test inequality
@@ -256,10 +248,10 @@ void main() {
         expect(modifier.props, [0.5, 0.8, Alignment.center]);
       });
 
-      test('contains null values', () {
+      test('contains default alignment and null factors', () {
         const modifier = FractionallySizedBoxModifier();
 
-        expect(modifier.props, [null, null, null]);
+        expect(modifier.props, [null, null, Alignment.center]);
       });
     });
 
@@ -353,16 +345,12 @@ void main() {
       });
 
       test('handles partial values', () {
-        final attribute1 = FractionallySizedBoxModifierMix(
-          widthFactor: 0.5,
-        );
+        final attribute1 = FractionallySizedBoxModifierMix(widthFactor: 0.5);
         expect(attribute1.widthFactor, resolvesTo(0.5));
         expect(attribute1.heightFactor, isNull);
         expect(attribute1.alignment, isNull);
 
-        final attribute2 = FractionallySizedBoxModifierMix(
-          heightFactor: 0.7,
-        );
+        final attribute2 = FractionallySizedBoxModifierMix(heightFactor: 0.7);
         expect(attribute2.widthFactor, isNull);
         expect(attribute2.heightFactor, resolvesTo(0.7));
         expect(attribute2.alignment, isNull);
@@ -377,23 +365,20 @@ void main() {
     });
 
     group('resolve', () {
-      test(
-        'resolves to FractionallySizedBoxModifier with resolved values',
-        () {
-          final attribute = FractionallySizedBoxModifierMix(
-            widthFactor: 0.4,
-            heightFactor: 0.6,
-            alignment: Alignment.topRight,
-          );
+      test('resolves to FractionallySizedBoxModifier with resolved values', () {
+        final attribute = FractionallySizedBoxModifierMix(
+          widthFactor: 0.4,
+          heightFactor: 0.6,
+          alignment: Alignment.topRight,
+        );
 
-          const expectedModifier = FractionallySizedBoxModifier(
-            widthFactor: 0.4,
-            heightFactor: 0.6,
-            alignment: Alignment.topRight,
-          );
-          expect(attribute, resolvesTo(expectedModifier));
-        },
-      );
+        const expectedModifier = FractionallySizedBoxModifier(
+          widthFactor: 0.4,
+          heightFactor: 0.6,
+          alignment: Alignment.topRight,
+        );
+        expect(attribute, resolvesTo(expectedModifier));
+      });
 
       test('resolves with null values', () {
         final attribute = FractionallySizedBoxModifierMix();
@@ -422,9 +407,7 @@ void main() {
       });
 
       test('returns original when other is null', () {
-        final attribute = FractionallySizedBoxModifierMix(
-          widthFactor: 0.5,
-        );
+        final attribute = FractionallySizedBoxModifierMix(widthFactor: 0.5);
 
         final merged = attribute.merge(null);
 
@@ -462,12 +445,8 @@ void main() {
       });
 
       test('not equal when values differ', () {
-        final attribute1 = FractionallySizedBoxModifierMix(
-          widthFactor: 0.5,
-        );
-        final attribute2 = FractionallySizedBoxModifierMix(
-          widthFactor: 0.8,
-        );
+        final attribute1 = FractionallySizedBoxModifierMix(widthFactor: 0.5);
+        final attribute2 = FractionallySizedBoxModifierMix(widthFactor: 0.8);
 
         expect(attribute1, isNot(equals(attribute2)));
       });

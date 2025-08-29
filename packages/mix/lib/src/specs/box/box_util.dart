@@ -3,39 +3,47 @@ import 'package:flutter/material.dart';
 import '../../animation/animation_config.dart';
 import '../../core/prop.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
-import '../../core/style.dart' show Style;
+import '../../core/style.dart' show Style, VariantStyle;
 import '../../core/utility.dart';
+import '../../core/utility_variant_mixin.dart';
+import '../../core/widget_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/layout/constraints_util.dart';
 import '../../properties/layout/edge_insets_geometry_util.dart';
 import '../../properties/painting/decoration_util.dart';
+import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
-import 'box_attribute.dart';
 import 'box_spec.dart';
+import 'box_style.dart';
 
 /// Provides mutable utility for box styling with cascade notation support.
 ///
-/// Supports the same API as [BoxMix] but maintains mutable internal state
+/// Supports the same API as [BoxStyle] but maintains mutable internal state
 /// enabling fluid styling: `$box..color.red()..width(100)`.
-class BoxSpecUtility extends StyleMutableBuilder<BoxSpec> {
-  late final padding = EdgeInsetsGeometryUtility<BoxMix>(
-    (prop) => mutable.merge(BoxMix.create(padding: Prop.mix(prop))),
+class BoxSpecUtility extends StyleMutableBuilder<BoxSpec>
+    with UtilityVariantMixin<BoxSpec, BoxStyle> {
+  late final padding = EdgeInsetsGeometryUtility<BoxStyle>(
+    (prop) => mutable.merge(BoxStyle.create(padding: Prop.mix(prop))),
   );
 
-  late final margin = EdgeInsetsGeometryUtility<BoxMix>(
-    (prop) => mutable.merge(BoxMix.create(margin: Prop.mix(prop))),
+  late final margin = EdgeInsetsGeometryUtility<BoxStyle>(
+    (prop) => mutable.merge(BoxStyle.create(margin: Prop.mix(prop))),
   );
 
-  late final constraints = BoxConstraintsUtility<BoxMix>(
-    (prop) => mutable.merge(BoxMix.create(constraints: Prop.mix(prop))),
+  late final constraints = BoxConstraintsUtility<BoxStyle>(
+    (prop) => mutable.merge(BoxStyle.create(constraints: Prop.mix(prop))),
   );
 
-  late final decoration = DecorationUtility<BoxMix>(
-    (prop) => mutable.merge(BoxMix.create(decoration: Prop.mix(prop))),
+  late final decoration = DecorationUtility<BoxStyle>(
+    (prop) => mutable.merge(BoxStyle.create(decoration: Prop.mix(prop))),
   );
 
-  late final on = OnContextVariantUtility<BoxSpec, BoxMix>(
+  @Deprecated(
+    'Use direct methods like \$box.onHovered() instead. '
+    'Note: Returns BoxStyle for consistency with other utility methods like animate().',
+  )
+  late final on = OnContextVariantUtility<BoxSpec, BoxStyle>(
     (v) => mutable.variants([v]),
   );
 
@@ -49,6 +57,7 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec> {
   late final color = decoration.box.color;
   late final gradient = decoration.box.gradient;
   late final shape = decoration.box.shape;
+  late final shadow = decoration.box.boxShadow;
 
   /// Convenience accessors for commonly used constraint properties.
   late final width = constraints.width;
@@ -67,14 +76,24 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec> {
   /// Internal mutable state for accumulating box styling properties.
   @override
   @protected
-  late final MutableBoxMix mutable;
+  late final MutableBoxStyle mutable;
 
-  BoxSpecUtility([BoxMix? attribute]) {
-    mutable = MutableBoxMix(attribute ?? BoxMix());
+  BoxSpecUtility([BoxStyle? attribute]) {
+    mutable = MutableBoxStyle(attribute ?? BoxStyle());
   }
 
   /// Applies animation configuration to the box styling.
-  BoxMix animate(AnimationConfig animation) => mutable.animate(animation);
+  BoxStyle animate(AnimationConfig animation) => mutable.animate(animation);
+
+  @override
+  BoxStyle withVariant(Variant variant, BoxStyle style) {
+    return mutable.variant(variant, style);
+  }
+
+  @override
+  BoxStyle withVariants(List<VariantStyle<BoxSpec>> variants) {
+    return mutable.variants(variants);
+  }
 
   @override
   BoxSpecUtility merge(Style<BoxSpec>? other) {
@@ -83,7 +102,7 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec> {
     if (other is BoxSpecUtility) {
       return BoxSpecUtility(mutable.merge(other.mutable.value));
     }
-    if (other is BoxMix) {
+    if (other is BoxStyle) {
       return BoxSpecUtility(mutable.merge(other));
     }
 
@@ -91,21 +110,24 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec> {
   }
 
   @override
-  BoxSpec resolve(BuildContext context) {
+  WidgetSpec<BoxSpec> resolve(BuildContext context) {
     return mutable.resolve(context);
   }
 
-  /// The accumulated [BoxMix] with all applied styling properties.
   @override
-  BoxMix get value => mutable.value;
+  BoxStyle get currentValue => mutable.value;
+
+  /// The accumulated [BoxStyle] with all applied styling properties.
+  @override
+  BoxStyle get value => mutable.value;
 }
 
-/// Mutable implementation of [BoxMix] for efficient style accumulation.
-/// 
+/// Mutable implementation of [BoxStyle] for efficient style accumulation.
+///
 /// Used internally by [BoxSpecUtility] to accumulate styling changes
 /// without creating new instances for each modification.
-class MutableBoxMix extends BoxMix with Mutable<BoxSpec, BoxMix> {
-  MutableBoxMix(BoxMix style) {
+class MutableBoxStyle extends BoxStyle with Mutable<BoxSpec, BoxStyle> {
+  MutableBoxStyle(BoxStyle style) {
     value = style;
   }
 }

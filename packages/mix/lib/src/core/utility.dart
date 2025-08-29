@@ -4,8 +4,9 @@ import 'style.dart';
 ///
 /// Utilities provide a fluent API for building styled elements from various value types.
 class MixUtility<S extends Style<Object?>, Value> {
-  /// The builder function that converts values to styled elements.
-  final S Function(Value) builder;
+  /// The utilityBuilder function that converts values to styled elements.
 
-  const MixUtility(this.builder);
+  final S Function(Value) utilityBuilder;
+
+  const MixUtility(this.utilityBuilder);
 }

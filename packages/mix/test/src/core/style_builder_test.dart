@@ -7,7 +7,10 @@ void main() {
   group('StyleBuilder', () {
     group('Basic functionality', () {
       testWidgets('Build from SpecAttribute', (tester) async {
-        final boxAttribute = BoxMix().width(100).height(200).color(Colors.blue);
+        final boxAttribute = BoxStyle()
+            .width(100)
+            .height(200)
+            .color(Colors.blue);
 
         await tester.pumpWidget(
           MaterialApp(
@@ -44,7 +47,7 @@ void main() {
           duration: const Duration(milliseconds: 300),
           curve: Curves.linear,
         );
-        final boxAttribute = BoxMix(
+        final boxAttribute = BoxStyle(
           constraints: BoxConstraintsMix().width(100).height(200),
           decoration: DecorationMix.color(Colors.blue),
           animation: animation,
@@ -68,13 +71,19 @@ void main() {
         );
 
         // Verify that the animation wrapper is created
-        expect(find.byType(StyleAnimationBuilder<BoxSpec>), findsOneWidget);
+        expect(
+          find.byType(StyleAnimationBuilder<WidgetSpec<BoxSpec>>),
+          findsOneWidget,
+        );
       });
 
       testWidgets('No animation driver when animation config is null', (
         tester,
       ) async {
-        final boxAttribute = BoxMix().width(100).height(200).color(Colors.blue);
+        final boxAttribute = BoxStyle()
+            .width(100)
+            .height(200)
+            .color(Colors.blue);
 
         await tester.pumpWidget(
           MaterialApp(
@@ -91,105 +100,105 @@ void main() {
         );
 
         // Verify that no animation wrapper is created
-        expect(find.byType(StyleAnimationBuilder<BoxSpec>), findsNothing);
-      });
-
-      // TODO: This test needs to be revisited after the WidgetSpec migration
-      // The animation architecture has changed - animation configs are now part of specs
-      // so changing styles with animations creates new animation widgets rather than
-      // animating between values.
-      testWidgets('Animation interpolates between style changes', (
-        tester,
-      ) async {
-        final animation = AnimationConfig.curve(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.linear,
-        );
-
-        final startAttribute = BoxMix(
-          constraints: BoxConstraintsMix(
-            minWidth: 100,
-            maxWidth: 100,
-            minHeight: 100,
-            maxHeight: 100,
-          ),
-          decoration: BoxDecorationMix(color: Colors.blue),
-          animation: animation,
-        );
-
-        await tester.pumpWidget(
-          MaterialApp(
-            home: StyleBuilder<BoxSpec>(
-              style: startAttribute,
-              builder: (context, spec) {
-                return Container(
-                  key: const Key('animated_container'),
-                  decoration: spec.decoration,
-                  constraints: spec.constraints,
-                );
-              },
-            ),
-          ),
-        );
-
-        // Update to new style
-        final endAttribute = BoxMix(
-          constraints: BoxConstraintsMix(
-            minWidth: 200,
-            maxWidth: 200,
-            minHeight: 200,
-            maxHeight: 200,
-          ),
-          decoration: BoxDecorationMix(color: Colors.red),
-          animation: animation,
-        );
-
-        await tester.pumpWidget(
-          MaterialApp(
-            home: StyleBuilder<BoxSpec>(
-              style: endAttribute,
-              builder: (context, spec) {
-                return Container(
-                  key: const Key('animated_container'),
-                  decoration: spec.decoration,
-                  constraints: spec.constraints,
-                );
-              },
-            ),
-          ),
-        );
-
-        // Give animation one frame to start
-        await tester.pump();
-
-        // Pump halfway through animation
-        await tester.pump(const Duration(milliseconds: 150));
-
-        // The container should be somewhere between start and end values
-        final container = tester.widget<Container>(
-          find.byKey(const Key('animated_container')),
-        );
-        expect(container.constraints?.minWidth, isNot(100));
-        expect(container.constraints?.minWidth, isNot(200));
-
-        // Complete animation
-        await tester.pumpAndSettle();
-
-        final finalContainer = tester.widget<Container>(
-          find.byKey(const Key('animated_container')),
-        );
-        expect(finalContainer.constraints?.minWidth, 200);
-        expect(finalContainer.constraints?.minHeight, 200);
         expect(
-          (finalContainer.decoration as BoxDecoration?)?.color,
-          Colors.red,
+          find.byType(StyleAnimationBuilder<WidgetSpec<BoxSpec>>),
+          findsNothing,
         );
       });
+
+      testWidgets(
+        'Animation creates new animated build rather than interpolating between style changes',
+        (tester) async {
+          final animation = AnimationConfig.curve(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.linear,
+          );
+
+          final startAttribute = BoxStyle(
+            constraints: BoxConstraintsMix(
+              minWidth: 100,
+              maxWidth: 100,
+              minHeight: 100,
+              maxHeight: 100,
+            ),
+            decoration: BoxDecorationMix(color: Colors.blue),
+            animation: animation,
+          );
+
+          await tester.pumpWidget(
+            MaterialApp(
+              home: StyleBuilder<BoxSpec>(
+                style: startAttribute,
+                builder: (context, spec) {
+                  return Container(
+                    key: const Key('animated_container'),
+                    decoration: spec.decoration,
+                    constraints: spec.constraints,
+                  );
+                },
+              ),
+            ),
+          );
+
+          // Update to new style
+          final endAttribute = BoxStyle(
+            constraints: BoxConstraintsMix(
+              minWidth: 200,
+              maxWidth: 200,
+              minHeight: 200,
+              maxHeight: 200,
+            ),
+            decoration: BoxDecorationMix(color: Colors.red),
+            animation: animation,
+          );
+
+          await tester.pumpWidget(
+            MaterialApp(
+              home: StyleBuilder<BoxSpec>(
+                style: endAttribute,
+                builder: (context, spec) {
+                  return Container(
+                    key: const Key('animated_container'),
+                    decoration: spec.decoration,
+                    constraints: spec.constraints,
+                  );
+                },
+              ),
+            ),
+          );
+
+          // Give animation one frame to start
+          await tester.pump();
+
+          // Pump halfway through animation
+          await tester.pump(const Duration(milliseconds: 150));
+
+          // With WidgetSpec animation, switching styles replaces the animation widget
+          // rather than interpolating between values in-place. So we only assert final value.
+          final midContainer = tester.widget<Container>(
+            find.byKey(const Key('animated_container')),
+          );
+          expect(midContainer.constraints?.minWidth, anyOf(100, 200));
+
+          // Complete animation
+          await tester.pumpAndSettle();
+
+          final finalContainer = tester.widget<Container>(
+            find.byKey(const Key('animated_container')),
+          );
+          expect(finalContainer.constraints?.minWidth, 200);
+          expect(finalContainer.constraints?.minHeight, 200);
+          expect(
+            (finalContainer.decoration as BoxDecoration?)?.color,
+            Colors.red,
+          );
+        },
+      );
     });
 
     group('RenderModifiers', () {
       testWidgets('Modifiers are applied when present', (tester) async {
-        final boxAttribute = BoxMix()
+        final boxAttribute = BoxStyle()
             .width(100)
             .height(100)
             .alignment(Alignment.center)
@@ -238,7 +247,8 @@ void main() {
       });
 
       testWidgets('Modifiers follow default order', (tester) async {
-        final boxAttribute = BoxMix.width(100)
+        final boxAttribute = BoxStyle()
+            .width(100)
             .height(100)
             .color(Colors.blue)
             .wrap(
@@ -311,7 +321,8 @@ void main() {
           PaddingModifier,
         ];
 
-        final boxAttribute = BoxMix.width(100)
+        final boxAttribute = BoxStyle()
+            .width(100)
             .height(100)
             .color(Colors.blue)
             .wrap(
@@ -370,7 +381,10 @@ void main() {
       testWidgets('No RenderModifiers widget when no modifiers present', (
         tester,
       ) async {
-        final boxAttribute = BoxMix().width(100).height(100).color(Colors.blue);
+        final boxAttribute = BoxStyle()
+            .width(100)
+            .height(100)
+            .color(Colors.blue);
 
         await tester.pumpWidget(
           MaterialApp(

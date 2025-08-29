@@ -14,7 +14,11 @@ void main() {
           home: Scaffold(
             body: Column(
               children: [
-                FlexBox(direction: Axis.horizontal, key: flexBoxKey),
+                FlexBox(
+                  direction: Axis.horizontal,
+                  key: flexBoxKey,
+                  style: FlexBoxStyle(),
+                ),
                 Container(
                   key: containerKey,
                   child: Flex(

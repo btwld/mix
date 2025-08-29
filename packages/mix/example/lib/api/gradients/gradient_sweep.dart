@@ -1,7 +1,8 @@
+import 'dart:math' as math;
+
 import 'package:example/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
-import 'dart:math' as math;
 
 void main() {
   runMixApp(Example());
@@ -12,7 +13,7 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = Style.box(
+    final style = BoxStyle()
         .height(120)
         .width(120)
         .borderRadius(.circular(60))
@@ -33,8 +34,8 @@ class Example extends StatelessWidget {
               Colors.orange.shade400,
               Colors.blue.shade400,
             ])
-        )
-    ));
+          ),
+    );
 
     return Box(style: style);
   }

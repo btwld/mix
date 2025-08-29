@@ -10,8 +10,7 @@ final class TextHeightBehaviorUtility<T extends Style<Object?>>
     (prop) => call(leadingDistribution: prop),
   );
 
-
-  TextHeightBehaviorUtility(super.builder);
+  TextHeightBehaviorUtility(super.utilityBuilder);
 
   T heightToFirstAscent(bool v) => call(applyHeightToFirstAscent: v);
 
@@ -22,7 +21,7 @@ final class TextHeightBehaviorUtility<T extends Style<Object?>>
     bool? applyHeightToLastDescent,
     TextLeadingDistribution? leadingDistribution,
   }) {
-    return builder(
+    return utilityBuilder(
       TextHeightBehaviorMix(
         applyHeightToFirstAscent: applyHeightToFirstAscent,
         applyHeightToLastDescent: applyHeightToLastDescent,
@@ -32,6 +31,6 @@ final class TextHeightBehaviorUtility<T extends Style<Object?>>
   }
 
   T as(TextHeightBehavior value) {
-    return builder(TextHeightBehaviorMix.value(value));
+    return utilityBuilder(TextHeightBehaviorMix.value(value));
   }
 }

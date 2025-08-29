@@ -15,18 +15,6 @@ import 'tokens/mix_token.dart';
 /// - 'tokens': Rebuilds when token values change
 /// - 'modifierOrder': Rebuilds when modifier ordering changes
 class MixScope extends InheritedModel<String> {
-  const MixScope._({
-    required Map<MixToken, ValueBuilder>? tokens,
-    required this.orderOfModifiers,
-    required super.child,
-    super.key,
-  }) : _tokens = tokens;
-
-  /// Creates an empty MixScope with no tokens or modifier ordering
-  const MixScope.empty({required super.child, super.key})
-    : _tokens = null,
-      orderOfModifiers = null;
-
   /// Creates a MixScope with the provided tokens and modifier ordering
   factory MixScope({
     Set<TokenDefinition>? tokens,
@@ -43,6 +31,18 @@ class MixScope extends InheritedModel<String> {
       child: child,
     );
   }
+
+  const MixScope._({
+    required Map<MixToken, ValueBuilder>? tokens,
+    required this.orderOfModifiers,
+    required super.child,
+    super.key,
+  }) : _tokens = tokens;
+
+  /// Creates an empty MixScope with no tokens or modifier ordering
+  const MixScope.empty({required super.child, super.key})
+    : _tokens = null,
+      orderOfModifiers = null;
 
   /// Creates a MixScope with Material design tokens pre-configured
   factory MixScope.withMaterial({

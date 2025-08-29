@@ -1,13 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../animation/animation_config.dart';
 import '../theme/mix_theme.dart';
 import '../theme/tokens/mix_token.dart';
 import 'converter_registry.dart';
 import 'directive.dart';
 import 'helpers.dart';
 import 'mix_element.dart';
+import 'prop_refs.dart';
 import 'prop_source.dart';
 
 /// A property that can hold values, tokens, or Mix types.
@@ -41,74 +41,60 @@ class Prop<V> {
   /// Directives are applied after resolution but before the value is returned.
   final List<Directive<V>>? $directives;
 
-  /// Optional animation configuration for animating property changes.
-  final AnimationConfig? $animation;
-
   // Constructors
 
-  /// Creates a property with the given sources, directives, and animation.
+  /// Creates a property with the given sources and directives.
   ///
   /// This constructor is private and used internally by factory methods.
-  const Prop._({
-    required this.sources,
-    List<Directive<V>>? directives,
-    AnimationConfig? animation,
-  }) : $directives = directives,
-       $animation = animation;
+  const Prop._({required this.sources, List<Directive<V>>? directives})
+    : $directives = directives;
 
   /// Creates a new property by copying all fields from another property.
   ///
   /// Used by subclasses that need to wrap existing properties.
   Prop.fromProp(Prop<V> other)
     : sources = other.sources,
-      $directives = other.$directives,
-      $animation = other.$animation;
+      $directives = other.$directives;
 
   /// Creates a property that references a token.
   ///
   /// The token will be resolved from [MixScope] during resolution.
-  /// Optionally accepts [directives] and [animation] configuration.
-  factory Prop.token(
-    MixToken<V> token, {
-    List<Directive<V>>? directives,
-    AnimationConfig? animation,
-  }) {
-    return Prop._(
-      sources: [TokenSource(token)],
-      directives: directives,
-      animation: animation,
-    );
+  /// Optionally accepts [directives] configuration.
+  factory Prop.token(MixToken<V> token, {List<Directive<V>>? directives}) {
+    return Prop._(sources: [TokenSource(token)], directives: directives);
   }
 
   /// Creates a property with only directives.
   ///
   /// This property has no value source and is used for applying
   /// transformations when merged with other properties.
-  const Prop.directives(
-    List<Directive<V>> directives, {
-    AnimationConfig? animation,
-  }) : this._(sources: const [], directives: directives, animation: animation);
-
-  /// Creates a property with only animation configuration.
-  ///
-  /// This property has no value source and is used for applying
-  /// animation when merged with other properties.
-  const Prop.animation(AnimationConfig animation)
-    : this._(sources: const [], directives: null, animation: animation);
+  const Prop.directives(List<Directive<V>> directives)
+    : this._(sources: const [], directives: directives);
 
   // Factory methods
 
   /// Creates a property from a direct value.
   ///
   /// If [value] is already a [Prop], returns it unchanged.
-  /// Otherwise, wraps the value in a [ValueSource].
+  /// Otherwise, checks if it's a token reference and handles accordingly.
   ///
   /// This method does NOT auto-convert values to Mix types.
   /// Use [Prop.mix] for explicit Mix values.
   static Prop<V> value<V>(V value) {
+    // If it's already a Prop, return unchanged
     if (value is Prop<V>) return value;
 
-    // Always create ValueSource - no conversion!
+    // Check if this is a token reference (DoubleRef, IntRef, StringRef)
+    // Only for primitive extension types, not for class-based Props
+    if (isAnyTokenRef(value as Object)) {
+      final token = getTokenFromValue(value as Object) as MixToken<V>?;
+      if (token != null) {
+        // This is a token reference - store as TokenSource
+        return Prop._(sources: [TokenSource(token)]);
+      }
+    }
+
+    // Regular value - store as ValueSource
     return Prop._(sources: [ValueSource(value)]);
   }
 
@@ -172,11 +158,6 @@ class Prop<V> {
     return mergeProp(Prop.directives(directives));
   }
 
-  /// Returns a new property with the given animation configuration.
-  Prop<V> animation(AnimationConfig animation) {
-    return mergeProp(Prop.animation(animation));
-  }
-
   /// Merges this property with another property.
   ///
   /// Always accumulates all sources from both properties.
@@ -184,7 +165,7 @@ class Prop<V> {
   /// - Mix sources: merged using accumulation strategy
   /// - Regular values: last value wins during resolution
   ///
-  /// Directives are merged and animation from [other] takes precedence.
+  /// Directives are merged from both properties.
   Prop<V> mergeProp(covariant Prop<V>? other) {
     if (other == null) return this;
 
@@ -192,7 +173,6 @@ class Prop<V> {
     return Prop._(
       sources: [...sources, ...other.sources],
       directives: PropOps.mergeDirectives($directives, other.$directives),
-      animation: other.$animation ?? $animation,
     );
   }
 
@@ -285,8 +265,7 @@ class Prop<V> {
 
     return other is Prop<V> &&
         listEquals(other.sources, sources) &&
-        listEquals(other.$directives, $directives) &&
-        other.$animation == $animation;
+        listEquals(other.$directives, $directives);
   }
 
   @override
@@ -298,14 +277,10 @@ class Prop<V> {
     if ($directives != null && $directives!.isNotEmpty) {
       parts.add('directives: ${$directives!.length}');
     }
-    if ($animation != null) {
-      parts.add('animated');
-    }
 
     return '$runtimeType(${parts.join(', ')})';
   }
 
   @override
-  int get hashCode =>
-      Object.hash(Object.hashAll(sources), $directives, $animation);
+  int get hashCode => Object.hash(Object.hashAll(sources), $directives);
 }

@@ -3,26 +3,25 @@ import 'package:flutter/scheduler.dart';
 import 'package:mix/mix.dart';
 
 
-final chipButtonLabel = Style.text(
-    .fontSize(12)
-    .fontWeight(.w500)
-    .textAlign(.center)
-    .color(Colors.white)
+final chipButtonLabel = TextStyling(
+      style: TextStyleMix(
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+        color: Colors.white,
+      ),
+      textAlign: TextAlign.center,
 );
 
-final chipButtonContainer = Style.box(
+final chipButtonContainer = BoxStyle()
     .height(40)
     .width(120)
     .color(Colors.blue)
     .borderRadius(.circular(20))
-    .onHovered(.color(Colors.blue.shade700))
-    .onSelected(.color(Colors.black))
+    .onHovered(BoxStyle().color(Colors.blue.shade700))
+    .onSelected(BoxStyle().color(Colors.black))
     .alignment(.center)
-    .wrap(
-      .defaultText(chipButtonLabel)
-    )
-    .animate(.easeInOut(300.ms))
-);
+    .wrap(.defaultText(chipButtonLabel))
+    .animate(.easeInOut(300.ms));
 
  
 

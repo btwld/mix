@@ -10,7 +10,7 @@ import 'constraints_mix.dart';
 /// Use the methods of this class to configure specific properties of a [BoxConstraints].
 final class BoxConstraintsUtility<T extends Style<Object?>>
     extends MixUtility<T, BoxConstraintsMix> {
-  const BoxConstraintsUtility(super.builder);
+  const BoxConstraintsUtility(super.utilityBuilder);
 
   /// Utility for defining [BoxConstraintsMix.minWidth]
   T minWidth(double v) => call(minWidth: v);
@@ -37,7 +37,7 @@ final class BoxConstraintsUtility<T extends Style<Object?>>
     double? minHeight,
     double? maxHeight,
   }) {
-    return builder(
+    return utilityBuilder(
       BoxConstraintsMix(
         minWidth: minWidth,
         maxWidth: maxWidth,
@@ -48,6 +48,6 @@ final class BoxConstraintsUtility<T extends Style<Object?>>
   }
 
   T as(BoxConstraints value) {
-    return builder(BoxConstraintsMix.value(value));
+    return utilityBuilder(BoxConstraintsMix.value(value));
   }
 }

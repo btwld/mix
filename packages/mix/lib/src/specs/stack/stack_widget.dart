@@ -1,10 +1,11 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/style_widget.dart';
-import '../box/box_spec.dart';
+import '../../core/widget_spec.dart';
+import '../../core/style_builder.dart';
 import '../box/box_widget.dart';
-import 'stack_box_attribute.dart';
 import 'stack_box_spec.dart';
+import 'stack_box_style.dart';
 import 'stack_spec.dart';
 
 /// Combines [Container] and [Stack] with Mix styling.
@@ -16,7 +17,6 @@ class ZBox extends StyleWidget<ZBoxSpec> {
     this.children = const <Widget>[],
     super.key,
   });
-
 
   final List<Widget> children;
 
@@ -40,16 +40,21 @@ Stack createStackSpecWidget({
   );
 }
 
-
 /// Creates a [Container] with [Stack] child from a [ZBoxSpec].
 Widget createZBoxSpecWidget({
   required ZBoxSpec spec,
   List<Widget> children = const [],
 }) {
-  return createBoxSpecWidget(
-    spec: spec.box,
-    child: createStackSpecWidget(spec: spec.stack, children: children),
-  );
+  final boxWidgetSpec = spec.box;
+  final stackWidgetSpec = spec.stack;
+  final stackSpec = stackWidgetSpec?.spec ?? const StackSpec();
+  final stack = createStackSpecWidget(spec: stackSpec, children: children);
+
+  if (boxWidgetSpec != null) {
+    return createBoxSpecWidget(spec: boxWidgetSpec.spec, child: stack);
+  }
+
+  return stack;
 }
 
 /// Extension to convert [StackSpec] directly to a [Stack] widget.
@@ -66,3 +71,24 @@ extension ZBoxSpecWidget on ZBoxSpec {
   }
 }
 
+extension StackSpecWrappedWidget on WidgetSpec<StackSpec> {
+  Widget call({List<Widget> children = const []}) {
+    return WidgetSpecBuilder(
+      builder: (context, spec) {
+        return createStackSpecWidget(spec: spec, children: children);
+      },
+      wrappedSpec: this,
+    );
+  }
+}
+
+extension ZBoxSpecWrappedWidget on WidgetSpec<ZBoxSpec> {
+  Widget call({List<Widget> children = const []}) {
+    return WidgetSpecBuilder(
+      builder: (context, spec) {
+        return createZBoxSpecWidget(spec: spec, children: children);
+      },
+      wrappedSpec: this,
+    );
+  }
+}

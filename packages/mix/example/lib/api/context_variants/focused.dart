@@ -33,21 +33,21 @@ class _ExampleState extends State<Example> {
 
   @override
   Widget build(BuildContext context) {
-    final style = Style.box(
+    final style = BoxStyle()
         .color(Colors.red)
         .height(100)
         .width(100)
         .borderRadius(.circular(10))
         .onFocused(
-          .color(Colors.blue)
-          .border(
-            .all(
-              .color(Colors.blue.shade700)
-              .width(3)
-            )
-          )
-        )
-    );
+          BoxStyle()
+            .color(Colors.blue)
+            .border(
+              .all(
+                .color(Colors.blue.shade700)
+                .width(3)
+              ),
+            ),
+        );
 
     return Column(
       mainAxisSize: MainAxisSize.min,

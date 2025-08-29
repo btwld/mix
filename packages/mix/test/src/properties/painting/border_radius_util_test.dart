@@ -4,285 +4,7 @@ import 'package:mix/mix.dart';
 
 import '../../../helpers/testing_utils.dart';
 
-// Test class that extends MockStyle and uses BorderRadiusMixin
-class TestBorderRadiusStyle extends MockStyle<BorderRadiusGeometryMix>
-    with BorderRadiusMixin<TestBorderRadiusStyle> {
-  TestBorderRadiusStyle([BorderRadiusGeometryMix? value])
-    : super(value ?? BorderRadiusMix());
-
-  @override
-  TestBorderRadiusStyle borderRadius(BorderRadiusGeometryMix value) {
-    return TestBorderRadiusStyle(value);
-  }
-}
-
 void main() {
-  group('BorderRadiusMixin', () {
-    late TestBorderRadiusStyle style;
-
-    setUp(() {
-      style = TestBorderRadiusStyle();
-    });
-
-    group('corners method', () {
-      test('sets all corners with all parameter', () {
-        final result = style.corners(all: const Radius.circular(10.0));
-
-        final borderRadius = result.value.resolve(MockBuildContext());
-
-        expect(borderRadius, BorderRadius.circular(10.0));
-      });
-
-      test('sets horizontal corners', () {
-        final result = style.corners(horizontal: const Radius.circular(8.0));
-
-        final borderRadius = result.value.resolve(MockBuildContext());
-
-        expect(borderRadius, BorderRadius.circular(8.0));
-      });
-
-      test('sets vertical corners', () {
-        final result = style.corners(vertical: const Radius.circular(12.0));
-
-        final borderRadius = result.value.resolve(MockBuildContext());
-
-        expect(borderRadius, BorderRadius.circular(12.0));
-      });
-
-      test('sets top edge corners', () {
-        final result = style.corners(top: const Radius.circular(5.0));
-
-        final borderRadius = result.value.resolve(MockBuildContext());
-
-        expect(
-          borderRadius,
-          const BorderRadius.vertical(top: Radius.circular(5.0)),
-        );
-      });
-
-      test('sets bottom edge corners', () {
-        final result = style.corners(bottom: const Radius.circular(15.0));
-
-        final borderRadius = result.value.resolve(MockBuildContext());
-
-        expect(
-          borderRadius,
-          const BorderRadius.vertical(bottom: Radius.circular(15.0)),
-        );
-      });
-
-      test('sets left side corners (physical)', () {
-        final result = style.corners(left: const Radius.circular(7.0));
-
-        final borderRadius = result.value.resolve(MockBuildContext());
-
-        expect(
-          borderRadius,
-          const BorderRadius.horizontal(left: Radius.circular(7.0)),
-        );
-      });
-
-      test('sets right side corners (physical)', () {
-        final result = style.corners(right: const Radius.circular(9.0));
-
-        final borderRadius = result.value.resolve(MockBuildContext());
-
-        expect(
-          borderRadius,
-          const BorderRadius.horizontal(right: Radius.circular(9.0)),
-        );
-      });
-
-      test('sets start side corners (logical)', () {
-        final result = style.corners(start: const Radius.circular(6.0));
-
-        final borderRadius = result.value.resolve(MockBuildContext());
-
-        expect(
-          borderRadius,
-          const BorderRadius.horizontal(left: Radius.circular(6.0)),
-        );
-      });
-
-      test('sets end side corners (logical)', () {
-        final result = style.corners(end: const Radius.circular(11.0));
-
-        final borderRadius = result.value.resolve(MockBuildContext());
-
-        expect(
-          borderRadius,
-          const BorderRadius.horizontal(right: Radius.circular(11.0)),
-        );
-      });
-
-      test('sets individual physical corners', () {
-        final result = style.corners(
-          topLeft: const Radius.circular(1.0),
-          topRight: const Radius.circular(2.0),
-          bottomLeft: const Radius.circular(3.0),
-          bottomRight: const Radius.circular(4.0),
-        );
-
-        final borderRadius = result.value.resolve(MockBuildContext());
-
-        expect(
-          borderRadius,
-          const BorderRadius.only(
-            topLeft: Radius.circular(1.0),
-            topRight: Radius.circular(2.0),
-            bottomLeft: Radius.circular(3.0),
-            bottomRight: Radius.circular(4.0),
-          ),
-        );
-      });
-
-      test('sets individual logical corners', () {
-        final result = style.corners(
-          topStart: const Radius.circular(1.0),
-          topEnd: const Radius.circular(2.0),
-          bottomStart: const Radius.circular(3.0),
-          bottomEnd: const Radius.circular(4.0),
-        );
-
-        final borderRadius = result.value.resolve(MockBuildContext());
-
-        expect(
-          borderRadius,
-          const BorderRadius.only(
-            topLeft: Radius.circular(1.0),
-            topRight: Radius.circular(2.0),
-            bottomLeft: Radius.circular(3.0),
-            bottomRight: Radius.circular(4.0),
-          ),
-        );
-      });
-
-      test('priority order: specific corners override edges', () {
-        final result = style.corners(
-          all: const Radius.circular(10.0),
-          top: const Radius.circular(20.0),
-          topLeft: const Radius.circular(30.0),
-        );
-
-        final borderRadius = result.value.resolve(MockBuildContext());
-
-        expect(
-          borderRadius,
-          const BorderRadius.only(
-            topLeft: Radius.circular(30.0),
-            topRight: Radius.circular(20.0),
-            bottomLeft: Radius.circular(10.0),
-            bottomRight: Radius.circular(10.0),
-          ),
-        );
-      });
-
-      test('priority order: horizontal/vertical override all', () {
-        final result = style.corners(
-          all: const Radius.circular(5.0),
-          horizontal: const Radius.circular(10.0),
-          vertical: const Radius.circular(15.0),
-        );
-
-        final borderRadius = result.value.resolve(MockBuildContext());
-
-        // vertical applied last, so it wins
-        expect(borderRadius, BorderRadius.circular(15.0));
-      });
-
-      test('throws error when mixing physical and logical sides', () {
-        expect(
-          () => style.corners(
-            left: const Radius.circular(5.0),
-            start: const Radius.circular(10.0),
-          ),
-          throwsArgumentError,
-        );
-      });
-
-      test('throws error when mixing physical and logical corners', () {
-        expect(
-          () => style.corners(
-            topLeft: const Radius.circular(5.0),
-            topStart: const Radius.circular(10.0),
-          ),
-          throwsArgumentError,
-        );
-      });
-
-      test('allows physical sides with physical corners', () {
-        expect(
-          () => style.corners(
-            left: const Radius.circular(5.0),
-            topLeft: const Radius.circular(10.0),
-          ),
-          returnsNormally,
-        );
-      });
-
-      test('allows logical sides with logical corners', () {
-        expect(
-          () => style.corners(
-            start: const Radius.circular(5.0),
-            topStart: const Radius.circular(10.0),
-          ),
-          returnsNormally,
-        );
-      });
-    });
-
-    group('rounded method', () {
-      test('sets all corners with circular radius', () {
-        final result = style.rounded(all: 10.0);
-
-        final borderRadius = result.value.resolve(MockBuildContext());
-
-        expect(borderRadius, BorderRadius.circular(10.0));
-      });
-
-      test('converts double values to Radius.circular', () {
-        final result = style.rounded(
-          topLeft: 1.0,
-          topRight: 2.0,
-          bottomLeft: 3.0,
-          bottomRight: 4.0,
-        );
-
-        final borderRadius = result.value.resolve(MockBuildContext());
-
-        expect(
-          borderRadius,
-          const BorderRadius.only(
-            topLeft: Radius.circular(1.0),
-            topRight: Radius.circular(2.0),
-            bottomLeft: Radius.circular(3.0),
-            bottomRight: Radius.circular(4.0),
-          ),
-        );
-      });
-
-      test('delegates to corners method', () {
-        final result = style.rounded(
-          horizontal: 8.0,
-          vertical: 12.0,
-          top: 16.0,
-        );
-
-        final borderRadius = result.value.resolve(MockBuildContext());
-
-        // top overrides vertical for top corners
-        expect(
-          borderRadius,
-          const BorderRadius.only(
-            topLeft: Radius.circular(16.0),
-            topRight: Radius.circular(16.0),
-            bottomLeft: Radius.circular(12.0),
-            bottomRight: Radius.circular(12.0),
-          ),
-        );
-      });
-    });
-  });
 
   group('BorderRadiusGeometryUtility', () {
     late BorderRadiusGeometryUtility<MockStyle<BorderRadiusGeometryMix>> util;
@@ -304,8 +26,8 @@ void main() {
       expect(util.borderRadius, isA<BorderRadiusUtility>());
     });
 
-    test('call method creates circular BorderRadiusMix', () {
-      final result = util(10.0);
+    test('borderRadius.circular creates circular BorderRadiusMix', () {
+      final result = util.borderRadius.circular(10.0);
       final borderRadius = result.value as BorderRadiusMix;
       final resolved = borderRadius.resolve(MockBuildContext());
 
@@ -476,7 +198,7 @@ void main() {
         );
       });
 
-      test('call method delegates to only', () {
+      test('only method sets specified corners', () {
         final result = util.only(
           topRight: const Radius.circular(8.0),
           bottomLeft: const Radius.circular(12.0),
@@ -682,7 +404,7 @@ void main() {
         );
       });
 
-      test('call method delegates to only', () {
+      test('only method sets specified corners', () {
         final result = util.only(
           topEnd: const Radius.circular(8.0),
           bottomStart: const Radius.circular(12.0),

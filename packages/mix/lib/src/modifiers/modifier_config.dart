@@ -2,17 +2,18 @@ import 'package:flutter/widgets.dart';
 
 import '../core/internal/compare_mixin.dart';
 import '../core/modifier.dart';
-import '../core/widget_spec.dart';
 import '../core/style.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
 import '../properties/painting/border_radius_mix.dart';
 import '../properties/painting/shadow_mix.dart';
 import '../properties/typography/text_height_behavior_mix.dart';
 import '../properties/typography/text_style_mix.dart';
-import '../specs/icon/icon_attribute.dart';
-import '../specs/text/text_attribute.dart';
+import '../specs/box/box_style.dart';
+import '../specs/icon/icon_style.dart';
+import '../specs/text/text_style.dart';
 import 'align_modifier.dart';
 import 'aspect_ratio_modifier.dart';
+import 'box_modifier.dart';
 import 'clip_modifier.dart';
 import 'default_text_style_modifier.dart';
 import 'flexible_modifier.dart';
@@ -24,7 +25,6 @@ import 'opacity_modifier.dart';
 import 'padding_modifier.dart';
 import 'rotated_box_modifier.dart';
 import 'sized_box_modifier.dart';
-import 'style_provider_modifier.dart';
 import 'transform_modifier.dart';
 import 'visibility_modifier.dart';
 
@@ -209,7 +209,7 @@ final class ModifierConfig with Equatable {
     );
   }
 
-  factory ModifierConfig.defaultText(TextMix textMix) {
+  factory ModifierConfig.defaultText(TextStyling textMix) {
     return ModifierConfig.modifier(
       DefaultTextStyleModifierMix.create(
         style: textMix.$style,
@@ -223,7 +223,7 @@ final class ModifierConfig with Equatable {
     );
   }
 
-  factory ModifierConfig.defaultIcon(IconMix iconMix) {
+  factory ModifierConfig.defaultIcon(IconStyle iconMix) {
     return ModifierConfig.modifier(
       IconThemeModifierMix.create(
         color: iconMix.$color,
@@ -264,9 +264,8 @@ final class ModifierConfig with Equatable {
     );
   }
 
-  /// Static method for creating a style provider modifier
-  static ModifierConfig style<S extends WidgetSpec<S>>(Style<S> value) {
-    return ModifierConfig.modifier(StyleProviderModifierMix<S>(value));
+  factory ModifierConfig.box(BoxStyle spec) {
+    return ModifierConfig.modifier(BoxModifierMix(spec));
   }
 
   void _mergeWithReset(
@@ -449,13 +448,8 @@ final class ModifierConfig with Equatable {
     );
   }
 
-  ModifierConfig defaultText(TextMix textMix) {
+  ModifierConfig defaultText(TextStyling textMix) {
     return merge(ModifierConfig.defaultText(textMix));
-  }
-
-  /// Instance method for providing a style to descendants
-  ModifierConfig withStyle<S extends WidgetSpec<S>>(Style<S> style) {
-    return merge(ModifierConfig.style(style));
   }
 
   ModifierConfig modifier(ModifierMix value) {

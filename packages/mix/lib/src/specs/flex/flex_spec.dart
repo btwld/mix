@@ -1,17 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
-import '../../core/modifier.dart';
-import '../../core/widget_spec.dart';
+import '../../core/spec.dart';
 
 /// Defines the styling for a Flex widget.
 ///
 /// This class provides configuration for flex-specific properties such as
 /// direction, alignment, and spacing through the Mix framework.
 @immutable
-final class FlexSpec extends WidgetSpec<FlexSpec> {
+final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
   /// The direction to use as the main axis.
   final Axis? direction;
 
@@ -39,13 +37,6 @@ final class FlexSpec extends WidgetSpec<FlexSpec> {
   /// The spacing between children.
   final double? spacing;
 
-  /// The gap between children.
-  @Deprecated(
-    'Use spacing instead. '
-    'This feature was deprecated after Mix v2.0.0.',
-  )
-  final double? gap;
-
   /// Creates a [FlexSpec] with the provided properties.
   const FlexSpec({
     this.direction,
@@ -56,17 +47,20 @@ final class FlexSpec extends WidgetSpec<FlexSpec> {
     this.textDirection,
     this.textBaseline,
     this.clipBehavior,
-    this.spacing,
+    double? spacing,
     @Deprecated(
       'Use spacing instead. '
       'This feature was deprecated after Mix v2.0.0.',
     )
     double? gap,
-    super.animation,
-    super.widgetModifiers,
-    super.inherit,
-  }) : gap = gap ?? spacing;
+  }) : spacing = spacing ?? gap;
 
+  /// The gap between children.
+  @Deprecated(
+    'Use spacing instead. '
+    'This feature was deprecated after Mix v2.0.0.',
+  )
+  double? get gap => spacing;
 
   /// Creates a copy of this [FlexSpec] with the given properties replaced.
   @override
@@ -85,9 +79,6 @@ final class FlexSpec extends WidgetSpec<FlexSpec> {
       'This feature was deprecated after Mix v2.0.0.',
     )
     double? gap,
-    AnimationConfig? animation,
-    List<Modifier>? widgetModifiers,
-    bool? inherit,
   }) {
     return FlexSpec(
       direction: direction ?? this.direction,
@@ -99,9 +90,6 @@ final class FlexSpec extends WidgetSpec<FlexSpec> {
       textBaseline: textBaseline ?? this.textBaseline,
       clipBehavior: clipBehavior ?? this.clipBehavior,
       spacing: spacing ?? gap ?? this.spacing,
-      animation: animation ?? this.animation,
-      widgetModifiers: widgetModifiers ?? this.widgetModifiers,
-      inherit: inherit ?? this.inherit,
     );
   }
 
@@ -130,10 +118,6 @@ final class FlexSpec extends WidgetSpec<FlexSpec> {
       textBaseline: MixOps.lerpSnap(textBaseline, other?.textBaseline, t),
       clipBehavior: MixOps.lerpSnap(clipBehavior, other?.clipBehavior, t),
       spacing: MixOps.lerp(spacing, other?.spacing, t),
-      // Meta fields: use confirmed policy other.field ?? this.field
-      animation: other?.animation ?? animation,
-      widgetModifiers: MixOps.lerp(widgetModifiers, other?.widgetModifiers, t),
-      inherit: other?.inherit ?? inherit,
     );
   }
 
@@ -142,22 +126,27 @@ final class FlexSpec extends WidgetSpec<FlexSpec> {
     super.debugFillProperties(properties);
     properties
       ..add(EnumProperty<Axis>('direction', direction))
-      ..add(EnumProperty<MainAxisAlignment>('mainAxisAlignment', mainAxisAlignment))
-      ..add(EnumProperty<CrossAxisAlignment>('crossAxisAlignment', crossAxisAlignment))
+      ..add(
+        EnumProperty<MainAxisAlignment>('mainAxisAlignment', mainAxisAlignment),
+      )
+      ..add(
+        EnumProperty<CrossAxisAlignment>(
+          'crossAxisAlignment',
+          crossAxisAlignment,
+        ),
+      )
       ..add(EnumProperty<MainAxisSize>('mainAxisSize', mainAxisSize))
-      ..add(EnumProperty<VerticalDirection>('verticalDirection', verticalDirection))
+      ..add(
+        EnumProperty<VerticalDirection>('verticalDirection', verticalDirection),
+      )
       ..add(EnumProperty<TextDirection>('textDirection', textDirection))
       ..add(EnumProperty<TextBaseline>('textBaseline', textBaseline))
       ..add(EnumProperty<Clip>('clipBehavior', clipBehavior))
       ..add(DoubleProperty('spacing', spacing));
-    if (gap != null && gap != spacing) {
-      properties.add(DoubleProperty('gap (deprecated)', gap));
-    }
   }
 
   @override
   List<Object?> get props => [
-    ...super.props,
     direction,
     mainAxisAlignment,
     crossAxisAlignment,

@@ -2,17 +2,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
-import '../../core/modifier.dart';
-import '../../core/widget_spec.dart';
+import '../../core/spec.dart';
 
 /// Specification for box styling and layout properties.
 ///
 /// Provides comprehensive box styling including alignment, padding, margin, constraints,
 /// decoration, transformation, and clipping behavior. Used as the resolved form
-/// of [BoxMix] styling attributes.
-class BoxSpec extends WidgetSpec<BoxSpec> {
+/// of [BoxStyle] styling attributes.
+class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
   /// Aligns the child within the box.
   final AlignmentGeometry? alignment;
 
@@ -50,11 +48,7 @@ class BoxSpec extends WidgetSpec<BoxSpec> {
     this.transform,
     this.transformAlignment,
     this.clipBehavior,
-    super.animation,
-    super.widgetModifiers,
-    super.inherit,
   });
-
 
   /// Creates a copy of this [BoxSpec] but with the given fields
   /// replaced with the new values.
@@ -69,9 +63,6 @@ class BoxSpec extends WidgetSpec<BoxSpec> {
     Matrix4? transform,
     AlignmentGeometry? transformAlignment,
     Clip? clipBehavior,
-    AnimationConfig? animation,
-    List<Modifier>? widgetModifiers,
-    bool? inherit,
   }) {
     return BoxSpec(
       alignment: alignment ?? this.alignment,
@@ -83,9 +74,6 @@ class BoxSpec extends WidgetSpec<BoxSpec> {
       transform: transform ?? this.transform,
       transformAlignment: transformAlignment ?? this.transformAlignment,
       clipBehavior: clipBehavior ?? this.clipBehavior,
-      animation: animation ?? this.animation,
-      widgetModifiers: widgetModifiers ?? this.widgetModifiers,
-      inherit: inherit ?? this.inherit,
     );
   }
 
@@ -110,10 +98,6 @@ class BoxSpec extends WidgetSpec<BoxSpec> {
         t,
       ),
       clipBehavior: MixOps.lerpSnap(clipBehavior, other?.clipBehavior, t),
-      // Meta fields: use confirmed policy other?.field ?? this.field
-      animation: other?.animation ?? animation,
-      widgetModifiers: MixOps.lerp(widgetModifiers, other?.widgetModifiers, t),
-      inherit: other?.inherit ?? inherit,
     );
   }
 
@@ -138,7 +122,6 @@ class BoxSpec extends WidgetSpec<BoxSpec> {
   /// compare two [BoxSpec] instances for equality.
   @override
   List<Object?> get props => [
-    ...super.props,
     alignment,
     padding,
     margin,
@@ -150,3 +133,4 @@ class BoxSpec extends WidgetSpec<BoxSpec> {
     clipBehavior,
   ];
 }
+

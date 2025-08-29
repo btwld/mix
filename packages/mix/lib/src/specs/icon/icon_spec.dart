@@ -1,16 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
-import '../../core/modifier.dart';
-import '../../core/widget_spec.dart';
+import '../../core/spec.dart';
 
 /// Specification for icon styling properties.
 ///
 /// Provides comprehensive icon styling including color, size, weight, optical properties,
 /// text direction, scaling behavior, and shadow effects.
-final class IconSpec extends WidgetSpec<IconSpec> {
+final class IconSpec extends Spec<IconSpec> with Diagnosticable {
   /// The color to use when drawing the icon.
   final Color? color;
 
@@ -41,6 +39,9 @@ final class IconSpec extends WidgetSpec<IconSpec> {
   /// Semantic description for accessibility.
   final String? semanticsLabel;
 
+  /// The opacity to apply to the icon.
+  final double? opacity;
+
   /// The blend mode to apply when drawing the icon.
   final BlendMode? blendMode;
 
@@ -58,13 +59,10 @@ final class IconSpec extends WidgetSpec<IconSpec> {
     this.applyTextScaling,
     this.fill,
     this.semanticsLabel,
+    this.opacity,
     this.blendMode,
     this.icon,
-    super.animation,
-    super.widgetModifiers,
-    super.inherit,
   });
-
 
   @override
   IconSpec copyWith({
@@ -78,11 +76,9 @@ final class IconSpec extends WidgetSpec<IconSpec> {
     bool? applyTextScaling,
     double? fill,
     String? semanticsLabel,
+    double? opacity,
     BlendMode? blendMode,
     IconData? icon,
-    AnimationConfig? animation,
-    List<Modifier>? widgetModifiers,
-    bool? inherit,
   }) {
     return IconSpec(
       color: color ?? this.color,
@@ -95,11 +91,9 @@ final class IconSpec extends WidgetSpec<IconSpec> {
       applyTextScaling: applyTextScaling ?? this.applyTextScaling,
       fill: fill ?? this.fill,
       semanticsLabel: semanticsLabel ?? this.semanticsLabel,
+      opacity: opacity ?? this.opacity,
       blendMode: blendMode ?? this.blendMode,
       icon: icon ?? this.icon,
-      animation: animation ?? this.animation,
-      widgetModifiers: widgetModifiers ?? this.widgetModifiers,
-      inherit: inherit ?? this.inherit,
     );
   }
 
@@ -120,12 +114,9 @@ final class IconSpec extends WidgetSpec<IconSpec> {
       ),
       fill: MixOps.lerp(fill, other?.fill, t),
       semanticsLabel: MixOps.lerpSnap(semanticsLabel, other?.semanticsLabel, t),
+      opacity: MixOps.lerp(opacity, other?.opacity, t),
       blendMode: MixOps.lerpSnap(blendMode, other?.blendMode, t),
       icon: MixOps.lerpSnap(icon, other?.icon, t),
-      // Meta fields: use confirmed policy other?.field ?? this.field
-      animation: other?.animation ?? animation,
-      widgetModifiers: MixOps.lerp(widgetModifiers, other?.widgetModifiers, t),
-      inherit: other?.inherit ?? inherit,
     );
   }
 
@@ -140,16 +131,22 @@ final class IconSpec extends WidgetSpec<IconSpec> {
       ..add(DoubleProperty('opticalSize', opticalSize))
       ..add(IterableProperty<Shadow>('shadows', shadows))
       ..add(EnumProperty<TextDirection>('textDirection', textDirection))
-      ..add(FlagProperty('applyTextScaling', value: applyTextScaling, ifTrue: 'scales with text'))
+      ..add(
+        FlagProperty(
+          'applyTextScaling',
+          value: applyTextScaling,
+          ifTrue: 'scales with text',
+        ),
+      )
       ..add(DoubleProperty('fill', fill))
       ..add(StringProperty('semanticsLabel', semanticsLabel))
+      ..add(DoubleProperty('opacity', opacity))
       ..add(EnumProperty<BlendMode>('blendMode', blendMode))
       ..add(DiagnosticsProperty('icon', icon));
   }
 
   @override
   List<Object?> get props => [
-    ...super.props,
     color,
     size,
     weight,
@@ -160,6 +157,7 @@ final class IconSpec extends WidgetSpec<IconSpec> {
     applyTextScaling,
     fill,
     semanticsLabel,
+    opacity,
     blendMode,
     icon,
   ];

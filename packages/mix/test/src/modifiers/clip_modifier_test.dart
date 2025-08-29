@@ -12,11 +12,11 @@ void main() {
     const clipBehavior2 = Clip.antiAliasWithSaveLayer;
 
     group('Constructor', () {
-      test('creates with null values by default', () {
+      test('creates with null clipper and default clip behavior', () {
         const modifier = ClipPathModifier();
 
         expect(modifier.clipper, isNull);
-        expect(modifier.clipBehavior, isNull);
+        expect(modifier.clipBehavior, Clip.antiAlias);
       });
 
       test('assigns all parameters correctly', () {
@@ -155,10 +155,10 @@ void main() {
         expect(modifier.props, [clipper, clipBehavior]);
       });
 
-      test('contains null values', () {
+      test('contains null clipper and default clip behavior value', () {
         const modifier = ClipPathModifier();
 
-        expect(modifier.props, [null, null]);
+        expect(modifier.props, [null, Clip.antiAlias]);
       });
     });
 
@@ -234,9 +234,7 @@ void main() {
         expect(attribute1.clipper, resolvesTo(clipper));
         expect(attribute1.clipBehavior, isNull);
 
-        final attribute2 = ClipPathModifierMix(
-          clipBehavior: clipBehavior,
-        );
+        final attribute2 = ClipPathModifierMix(clipBehavior: clipBehavior);
         expect(attribute2.clipper, isNull);
         expect(attribute2.clipBehavior, resolvesTo(clipBehavior));
       });
@@ -346,7 +344,7 @@ void main() {
       test('creates with default clip behavior', () {
         const modifier = ClipTriangleModifier();
 
-        expect(modifier.clipBehavior, isNull);
+        expect(modifier.clipBehavior, Clip.antiAlias);
       });
 
       test('assigns clipBehavior correctly', () {
@@ -423,9 +421,7 @@ void main() {
 
     group('only constructor', () {
       test('creates from direct value', () {
-        final attribute = ClipTriangleModifierMix(
-          clipBehavior: clipBehavior,
-        );
+        final attribute = ClipTriangleModifierMix(clipBehavior: clipBehavior);
 
         expect(attribute.clipBehavior, resolvesTo(clipBehavior));
       });
@@ -439,9 +435,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to ClipTriangleModifier with resolved values', () {
-        final attribute = ClipTriangleModifierMix(
-          clipBehavior: clipBehavior,
-        );
+        final attribute = ClipTriangleModifierMix(clipBehavior: clipBehavior);
 
         const expectedModifier = ClipTriangleModifier(
           clipBehavior: clipBehavior,
@@ -452,12 +446,8 @@ void main() {
 
     group('merge', () {
       test('merges with other ClipTriangleModifierMix', () {
-        final attribute1 = ClipTriangleModifierMix(
-          clipBehavior: clipBehavior,
-        );
-        final attribute2 = ClipTriangleModifierMix(
-          clipBehavior: clipBehavior2,
-        );
+        final attribute1 = ClipTriangleModifierMix(clipBehavior: clipBehavior);
+        final attribute2 = ClipTriangleModifierMix(clipBehavior: clipBehavior2);
 
         final merged = attribute1.merge(attribute2);
 
@@ -465,9 +455,7 @@ void main() {
       });
 
       test('returns original when other is null', () {
-        final attribute = ClipTriangleModifierMix(
-          clipBehavior: clipBehavior,
-        );
+        final attribute = ClipTriangleModifierMix(clipBehavior: clipBehavior);
 
         final merged = attribute.merge(null);
 
@@ -477,20 +465,14 @@ void main() {
 
     group('equality and props', () {
       test('equal when all values match', () {
-        final attribute1 = ClipTriangleModifierMix(
-          clipBehavior: clipBehavior,
-        );
-        final attribute2 = ClipTriangleModifierMix(
-          clipBehavior: clipBehavior,
-        );
+        final attribute1 = ClipTriangleModifierMix(clipBehavior: clipBehavior);
+        final attribute2 = ClipTriangleModifierMix(clipBehavior: clipBehavior);
 
         expect(attribute1, equals(attribute2));
       });
 
       test('props contains clipBehavior', () {
-        final attribute = ClipTriangleModifierMix(
-          clipBehavior: clipBehavior,
-        );
+        final attribute = ClipTriangleModifierMix(clipBehavior: clipBehavior);
 
         final props = attribute.props;
         expect(props.length, 1);

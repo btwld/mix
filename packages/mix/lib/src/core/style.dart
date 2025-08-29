@@ -1,20 +1,21 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:meta/meta.dart';
 
 import '../animation/animation_config.dart';
 import '../modifiers/modifier_config.dart';
-import '../specs/box/box_attribute.dart';
-import '../specs/flex/flex_attribute.dart';
-import '../specs/flexbox/flexbox_attribute.dart';
-import '../specs/icon/icon_attribute.dart';
-import '../specs/image/image_attribute.dart';
-import '../specs/stack/stack_attribute.dart';
-import '../specs/stack/stack_box_attribute.dart';
-import '../specs/text/text_attribute.dart';
+import '../specs/box/box_style.dart';
+import '../specs/flex/flex_style.dart';
+import '../specs/flexbox/flexbox_style.dart';
+import '../specs/icon/icon_style.dart';
+import '../specs/image/image_style.dart';
+import '../specs/stack/stack_box_style.dart';
+import '../specs/stack/stack_style.dart';
+import '../specs/text/text_style.dart';
 import '../variants/variant.dart';
 import 'internal/compare_mixin.dart';
 import 'mix_element.dart';
 import 'modifier.dart';
+import 'spec.dart';
 import 'widget_spec.dart';
 
 /// This is used just to pass all the values into one place if needed
@@ -23,35 +24,32 @@ sealed class StyleElement {
   const StyleElement();
 }
 
-/// Base class for style containers that can be resolved to specifications.
+/// Base class for style classes that can be resolved to specifications.
 ///
 /// Provides variant support, modifiers, and animation configuration for styled elements.
-abstract class Style<S extends WidgetSpec<S>> extends Mix<S> implements StyleElement {
+abstract class Style<S extends Spec<S>> extends Mix<WidgetSpec<S>>
+    implements StyleElement {
   final List<VariantStyle<S>>? $variants;
 
   final ModifierConfig? $modifier;
   final AnimationConfig? $animation;
 
-  final bool? $inherit;
-
   const Style({
     required List<VariantStyle<S>>? variants,
     required ModifierConfig? modifier,
     required AnimationConfig? animation,
-    required bool? inherit,
   }) : $modifier = modifier,
        $animation = animation,
-       $variants = variants,
-       $inherit = inherit;
+       $variants = variants;
 
-  static BoxMix box(BoxMix value) => value;
-  static TextMix text(TextMix value) => value;
-  static IconMix icon(IconMix value) => value;
-  static ImageMix image(ImageMix value) => value;
-  static StackMix stack(StackMix value) => value;
-  static FlexMix flex(FlexMix value) => value;
-  static FlexBoxMix flexbox(FlexBoxMix value) => value;
-  static StackBoxMix stackbox(StackBoxMix value) => value;
+  static BoxStyle box(BoxStyle value) => value;
+  static TextStyling text(TextStyling value) => value;
+  static IconStyle icon(IconStyle value) => value;
+  static ImageStyle image(ImageStyle value) => value;
+  static StackStyle stack(StackStyle value) => value;
+  static FlexStyle flex(FlexStyle value) => value;
+  static FlexBoxStyle flexbox(FlexBoxStyle value) => value;
+  static StackBoxStyle stackbox(StackBoxStyle value) => value;
 
   @internal
   Set<WidgetState> get widgetStates {
@@ -150,7 +148,7 @@ abstract class Style<S extends WidgetSpec<S>> extends Mix<S> implements StyleEle
 
   /// Resolves this attribute to its concrete value using the provided [BuildContext].
   @override
-  S resolve(BuildContext context);
+  WidgetSpec<S> resolve(BuildContext context);
 
   /// Merges this attribute with another attribute of the same type.
   @override
@@ -162,8 +160,8 @@ abstract class Style<S extends WidgetSpec<S>> extends Mix<S> implements StyleEle
 
   /// Builds the style into a fully resolved spec with metadata.
   ///
-  /// This method resolves the style, which now includes animation, modifiers, and inherit metadata.
-  S build(
+  /// This method resolves the style, which now includes animation and modifiers metadata.
+  WidgetSpec<S> build(
     BuildContext context, {
     Set<NamedVariant> namedVariants = const {},
   }) {
@@ -191,7 +189,7 @@ abstract class ModifierMix<S extends Modifier<S>> extends Mix<S>
 }
 
 /// Variant wrapper for conditional styling
-final class VariantStyle<S extends WidgetSpec<S>> extends Mixable<S>
+final class VariantStyle<S extends Spec<S>> extends Mixable<WidgetSpec<S>>
     with Equatable
     implements StyleElement {
   final Variant variant;

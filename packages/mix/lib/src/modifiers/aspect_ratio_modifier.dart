@@ -86,16 +86,16 @@ class AspectRatioModifierMix extends ModifierMix<AspectRatioModifier>
 /// Provides convenient methods for creating AspectRatioModifierMix instances.
 final class AspectRatioModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, AspectRatioModifierMix> {
-  const AspectRatioModifierUtility(super.builder);
+  const AspectRatioModifierUtility(super.utilityBuilder);
 
   T call(double value) {
-    return builder(
+    return utilityBuilder(
       AspectRatioModifierMix.create(aspectRatio: Prop.value(value)),
     );
   }
 
   T token(MixToken<double> token) {
-    return builder(
+    return utilityBuilder(
       AspectRatioModifierMix.create(aspectRatio: Prop.token(token)),
     );
   }

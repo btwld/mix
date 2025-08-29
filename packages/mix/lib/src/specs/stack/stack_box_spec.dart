@@ -1,42 +1,23 @@
 import 'package:flutter/foundation.dart';
 
-import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
-import '../../core/modifier.dart';
+import '../../core/spec.dart';
 import '../../core/widget_spec.dart';
 import '../box/box_spec.dart';
 import 'stack_spec.dart';
 
-final class ZBoxSpec extends WidgetSpec<ZBoxSpec> {
-  final BoxSpec box;
-  final StackSpec stack;
+final class ZBoxSpec extends Spec<ZBoxSpec> with Diagnosticable {
+  /// Container styling for the outer box. Nullable to mirror FlexBoxSpec.
+  final WidgetSpec<BoxSpec>? box;
+  final WidgetSpec<StackSpec>? stack;
 
-  const ZBoxSpec({
-    BoxSpec? box,
-    StackSpec? stack,
-    super.animation,
-    super.widgetModifiers,
-    super.inherit,
-  }) : box = box ?? const BoxSpec(),
-       stack = stack ?? const StackSpec();
+  const ZBoxSpec({this.box, this.stack});
 
   /// Creates a copy of this [ZBoxSpec] but with the given fields
   /// replaced with the new values.
   @override
-  ZBoxSpec copyWith({
-    BoxSpec? box,
-    StackSpec? stack,
-    AnimationConfig? animation,
-    List<Modifier>? widgetModifiers,
-    bool? inherit,
-  }) {
-    return ZBoxSpec(
-      box: box ?? this.box,
-      stack: stack ?? this.stack,
-      animation: animation ?? this.animation,
-      widgetModifiers: widgetModifiers ?? this.widgetModifiers,
-      inherit: inherit ?? this.inherit,
-    );
+  ZBoxSpec copyWith({WidgetSpec<BoxSpec>? box, WidgetSpec<StackSpec>? stack}) {
+    return ZBoxSpec(box: box ?? this.box, stack: stack ?? this.stack);
   }
 
   /// Linearly interpolates between this [ZBoxSpec] and another [ZBoxSpec] based on the given parameter [t].
@@ -49,33 +30,16 @@ final class ZBoxSpec extends WidgetSpec<ZBoxSpec> {
   ///
   /// The interpolation is performed on each property of the [ZBoxSpec] using the appropriate
   /// interpolation method:
-  /// - [BoxSpec.lerp] for [box].
-  /// - [StackSpec.lerp] for [stack].
+  /// - [WidgetSpec.lerp] for [box].
+  /// - [WidgetSpec.lerp] for [stack].
   ///
   /// This method is typically used in animations to smoothly transition between
   /// different [ZBoxSpec] configurations.
   @override
   ZBoxSpec lerp(ZBoxSpec? other, double t) {
-    // Create new BoxSpec and StackSpec WITHOUT their metadata
-    // The metadata is handled at ZBoxSpec level
-    final lerpedBox = box.lerp(other?.box, t).copyWith(
-      animation: null,
-      widgetModifiers: null,
-      inherit: null,
-    );
-    final lerpedStack = stack.lerp(other?.stack, t).copyWith(
-      animation: null,
-      widgetModifiers: null,
-      inherit: null,
-    );
-
     return ZBoxSpec(
-      box: lerpedBox,
-      stack: lerpedStack,
-      // Meta fields: use confirmed policy other.field ?? this.field
-      animation: other?.animation ?? animation,
-      widgetModifiers: MixOps.lerp(widgetModifiers, other?.widgetModifiers, t),
-      inherit: other?.inherit ?? inherit,
+      box: MixOps.lerp(box, other?.box, t),
+      stack: MixOps.lerp(stack, other?.stack, t),
     );
   }
 
@@ -83,8 +47,8 @@ final class ZBoxSpec extends WidgetSpec<ZBoxSpec> {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-      ..add(DiagnosticsProperty('box', box, defaultValue: const BoxSpec()))
-      ..add(DiagnosticsProperty('stack', stack, defaultValue: const StackSpec()));
+      ..add(DiagnosticsProperty('box', box))
+      ..add(DiagnosticsProperty('stack', stack));
   }
 
   /// The list of properties that constitute the state of this [ZBoxSpec].
@@ -92,5 +56,5 @@ final class ZBoxSpec extends WidgetSpec<ZBoxSpec> {
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [ZBoxSpec] instances for equality.
   @override
-  List<Object?> get props => [...super.props, box, stack];
+  List<Object?> get props => [box, stack];
 }

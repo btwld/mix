@@ -5,7 +5,7 @@
 /// styled container.
 /// 
 /// Key concepts:
-/// - Using Style.box() to create box styles
+/// - Using BoxStyle() to create box styles
 /// - Setting color, width, and height properties
 /// - Applying border radius with BorderRadiusMix
 // ignore_for_file: unused_local_variable
@@ -50,12 +50,10 @@ class Example extends StatelessWidget {
               ..width(100)
               ..borderRadius.circular(10);
 
-            final boxStyle = Style.box(
+            final boxStyle = BoxStyle()
                 .color(Colors.red)
-                .height(100)
-                .width(100)
-                .borderRadius(.circular(10))
-            );
+                .size(100, 100)
+                .borderRadius(.circular(10));
 
             return Box(style: boxStyle);
             // or

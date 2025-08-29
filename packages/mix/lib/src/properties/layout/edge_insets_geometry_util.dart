@@ -1,5 +1,5 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:meta/meta.dart';
 
 import '../../core/style.dart';
 import '../../core/utility.dart';
@@ -11,19 +11,19 @@ import 'scalar_util.dart';
 @immutable
 final class EdgeInsetsGeometryUtility<U extends Style<Object?>>
     extends MixUtility<U, EdgeInsetsGeometryMix> {
-    late final directional = EdgeInsetsDirectionalUtility(builder);
+  late final directional = EdgeInsetsDirectionalUtility(utilityBuilder);
 
-    late final horizontal = SpacingSideUtility<U>((v) => only(left: v, right: v));
-    late final vertical = SpacingSideUtility<U>((v) => only(top: v, bottom: v));
-    late final all = SpacingSideUtility<U>(
+  late final horizontal = SpacingSideUtility<U>((v) => only(left: v, right: v));
+  late final vertical = SpacingSideUtility<U>((v) => only(top: v, bottom: v));
+  late final all = SpacingSideUtility<U>(
     (v) => only(top: v, bottom: v, left: v, right: v),
   );
-    late final top = SpacingSideUtility<U>((v) => only(top: v));
-    late final bottom = SpacingSideUtility<U>((v) => only(bottom: v));
-    late final left = SpacingSideUtility<U>((v) => only(left: v));
-    late final right = SpacingSideUtility<U>((v) => only(right: v));
+  late final top = SpacingSideUtility<U>((v) => only(top: v));
+  late final bottom = SpacingSideUtility<U>((v) => only(bottom: v));
+  late final left = SpacingSideUtility<U>((v) => only(left: v));
+  late final right = SpacingSideUtility<U>((v) => only(right: v));
 
-  EdgeInsetsGeometryUtility(super.builder);
+  EdgeInsetsGeometryUtility(super.utilityBuilder);
 
   U only({
     double? top,
@@ -50,7 +50,7 @@ final class EdgeInsetsGeometryUtility<U extends Style<Object?>>
       );
     }
 
-    return builder(edgeInsets);
+    return utilityBuilder(edgeInsets);
   }
 
   U call(double p1, [double? p2, double? p3, double? p4]) {
@@ -61,31 +61,31 @@ final class EdgeInsetsGeometryUtility<U extends Style<Object?>>
       right: p2 ?? p1,
     );
 
-    return builder(edgeInsets);
+    return utilityBuilder(edgeInsets);
   }
 
-    U as(EdgeInsetsGeometry value) {
-    return builder(EdgeInsetsGeometryMix.value(value));
+  U as(EdgeInsetsGeometry value) {
+    return utilityBuilder(EdgeInsetsGeometryMix.value(value));
   }
 }
 
 @immutable
 final class EdgeInsetsDirectionalUtility<U extends Style<Object?>>
     extends MixUtility<U, EdgeInsetsDirectionalMix> {
-    late final all = SpacingSideUtility<U>(
+  late final all = SpacingSideUtility<U>(
     (v) => only(top: v, bottom: v, start: v, end: v),
   );
-    late final start = SpacingSideUtility<U>((v) => only(start: v));
-    late final end = SpacingSideUtility<U>((v) => only(end: v));
-    late final top = SpacingSideUtility<U>((v) => only(top: v));
-    late final bottom = SpacingSideUtility<U>((v) => only(bottom: v));
-    late final vertical = SpacingSideUtility<U>((v) => only(top: v, bottom: v));
-    late final horizontal = SpacingSideUtility<U>((v) => only(start: v, end: v));
+  late final start = SpacingSideUtility<U>((v) => only(start: v));
+  late final end = SpacingSideUtility<U>((v) => only(end: v));
+  late final top = SpacingSideUtility<U>((v) => only(top: v));
+  late final bottom = SpacingSideUtility<U>((v) => only(bottom: v));
+  late final vertical = SpacingSideUtility<U>((v) => only(top: v, bottom: v));
+  late final horizontal = SpacingSideUtility<U>((v) => only(start: v, end: v));
 
-  EdgeInsetsDirectionalUtility(super.builder);
+  EdgeInsetsDirectionalUtility(super.utilityBuilder);
 
   U only({double? top, double? bottom, double? start, double? end}) {
-    return builder(
+    return utilityBuilder(
       EdgeInsetsDirectionalMix(
         top: top,
         bottom: bottom,
@@ -104,8 +104,8 @@ final class EdgeInsetsDirectionalUtility<U extends Style<Object?>>
     );
   }
 
-    U as(EdgeInsetsDirectional value) {
-    return builder(EdgeInsetsDirectionalMix.value(value));
+  U as(EdgeInsetsDirectional value) {
+    return utilityBuilder(EdgeInsetsDirectionalMix.value(value));
   }
 }
 

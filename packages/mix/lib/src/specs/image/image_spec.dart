@@ -1,12 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
-import '../../core/modifier.dart';
-import '../../core/widget_spec.dart';
+import '../../core/spec.dart';
 
-final class ImageSpec extends WidgetSpec<ImageSpec> {
+final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
   final ImageProvider<Object>? image;
   final double? width, height;
   final Color? color;
@@ -39,11 +37,7 @@ final class ImageSpec extends WidgetSpec<ImageSpec> {
     this.gaplessPlayback,
     this.isAntiAlias,
     this.matchTextDirection,
-    super.animation,
-    super.widgetModifiers,
-    super.inherit,
   });
-
 
   @override
   ImageSpec copyWith({
@@ -62,9 +56,6 @@ final class ImageSpec extends WidgetSpec<ImageSpec> {
     bool? gaplessPlayback,
     bool? isAntiAlias,
     bool? matchTextDirection,
-    AnimationConfig? animation,
-    List<Modifier>? widgetModifiers,
-    bool? inherit,
   }) {
     return ImageSpec(
       image: image ?? this.image,
@@ -82,9 +73,6 @@ final class ImageSpec extends WidgetSpec<ImageSpec> {
       gaplessPlayback: gaplessPlayback ?? this.gaplessPlayback,
       isAntiAlias: isAntiAlias ?? this.isAntiAlias,
       matchTextDirection: matchTextDirection ?? this.matchTextDirection,
-      animation: animation ?? this.animation,
-      widgetModifiers: widgetModifiers ?? this.widgetModifiers,
-      inherit: inherit ?? this.inherit,
     );
   }
 
@@ -118,10 +106,6 @@ final class ImageSpec extends WidgetSpec<ImageSpec> {
         other?.matchTextDirection,
         t,
       ),
-      // Meta fields: use confirmed policy other?.field ?? this.field
-      animation: other?.animation ?? animation,
-      widgetModifiers: MixOps.lerp(widgetModifiers, other?.widgetModifiers, t),
-      inherit: other?.inherit ?? inherit,
     );
   }
 
@@ -140,15 +124,34 @@ final class ImageSpec extends WidgetSpec<ImageSpec> {
       ..add(EnumProperty<FilterQuality>('filterQuality', filterQuality))
       ..add(EnumProperty<BlendMode>('colorBlendMode', colorBlendMode))
       ..add(StringProperty('semanticLabel', semanticLabel))
-      ..add(FlagProperty('excludeFromSemantics', value: excludeFromSemantics, ifTrue: 'excluded from semantics'))
-      ..add(FlagProperty('gaplessPlayback', value: gaplessPlayback, ifTrue: 'gapless playback'))
-      ..add(FlagProperty('isAntiAlias', value: isAntiAlias, ifTrue: 'anti-aliased'))
-      ..add(FlagProperty('matchTextDirection', value: matchTextDirection, ifTrue: 'matches text direction'));
+      ..add(
+        FlagProperty(
+          'excludeFromSemantics',
+          value: excludeFromSemantics,
+          ifTrue: 'excluded from semantics',
+        ),
+      )
+      ..add(
+        FlagProperty(
+          'gaplessPlayback',
+          value: gaplessPlayback,
+          ifTrue: 'gapless playback',
+        ),
+      )
+      ..add(
+        FlagProperty('isAntiAlias', value: isAntiAlias, ifTrue: 'anti-aliased'),
+      )
+      ..add(
+        FlagProperty(
+          'matchTextDirection',
+          value: matchTextDirection,
+          ifTrue: 'matches text direction',
+        ),
+      );
   }
 
   @override
   List<Object?> get props => [
-    ...super.props,
     image,
     width,
     height,

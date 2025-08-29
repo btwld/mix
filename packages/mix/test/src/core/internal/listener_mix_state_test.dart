@@ -1,13 +1,13 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/src/core/internal/mix_hoverable_region.dart';
+import 'package:mix/src/core/internal/mix_interaction_detector.dart';
 import 'package:mix/src/core/pointer_position.dart';
 
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-  group('MixHoverableRegion pointer position tracking', () {
+  group('MixInteractionDetector pointer position tracking', () {
     testWidgets(
       'automatically tracks pointer position when widgets are listening',
       (WidgetTester tester) async {
@@ -15,7 +15,7 @@ void main() {
         PointerPosition? capturedPosition;
 
         await tester.pumpMaterialApp(
-          MixHoverableRegion(
+          MixInteractionDetector(
             child: Builder(
               builder: (context) {
                 capturedPosition = PointerPosition.of(context);
@@ -39,7 +39,7 @@ void main() {
 
         // Force rebuild to capture position
         await tester.pumpMaterialApp(
-          MixHoverableRegion(
+          MixInteractionDetector(
             child: Builder(
               builder: (context) {
                 capturedPosition = PointerPosition.of(context);
@@ -64,7 +64,7 @@ void main() {
         late PointerPositionNotifier notifier;
 
         await tester.pumpMaterialApp(
-          MixHoverableRegion(
+          MixInteractionDetector(
             child: Builder(
               builder: (context) {
                 // Get access to the notifier without creating a dependency

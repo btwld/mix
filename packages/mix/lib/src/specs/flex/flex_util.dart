@@ -2,19 +2,23 @@ import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
-import '../../core/style.dart' show Style;
+import '../../core/style.dart' show Style, VariantStyle;
 import '../../core/utility.dart';
+import '../../core/utility_variant_mixin.dart';
+import '../../core/widget_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
+import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
-import 'flex_attribute.dart';
 import 'flex_spec.dart';
+import 'flex_style.dart';
 
 /// Provides mutable utility for flex styling with cascade notation support.
 ///
-/// Supports the same API as [FlexMix] but maintains mutable internal state
+/// Supports the same API as [FlexStyle] but maintains mutable internal state
 /// enabling fluid styling: `$flex..direction(Axis.horizontal)..spacing(8)`.
-class FlexSpecUtility extends StyleMutableBuilder<FlexSpec> {
+class FlexSpecUtility extends StyleMutableBuilder<FlexSpec>
+    with UtilityVariantMixin<FlexSpec, FlexStyle> {
   late final direction = MixUtility(mutable.direction);
 
   late final mainAxisAlignment = MixUtility(mutable.mainAxisAlignment);
@@ -31,7 +35,11 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexSpec> {
 
   late final clipBehavior = MixUtility(mutable.clipBehavior);
 
-  late final on = OnContextVariantUtility<FlexSpec, FlexMix>(
+  @Deprecated(
+    'Use direct methods like \$flex.onHovered() instead. '
+    'Note: Returns FlexStyle for consistency with other utility methods like animate().',
+  )
+  late final on = OnContextVariantUtility<FlexSpec, FlexStyle>(
     (v) => mutable.variants([v]),
   );
 
@@ -42,30 +50,40 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexSpec> {
   /// Internal mutable state for accumulating flex styling properties.
   @override
   @protected
-  late final MutableFlexMix mutable;
+  late final MutableFlexStyle mutable;
 
-  FlexSpecUtility([FlexMix? attribute]) {
-    mutable = MutableFlexMix(attribute ?? FlexMix());
+  FlexSpecUtility([FlexStyle? attribute]) {
+    mutable = MutableFlexStyle(attribute ?? FlexStyle());
   }
 
   /// Sets the spacing between children in the flex layout.
-  FlexMix spacing(double v) => mutable.spacing(v);
+  FlexStyle spacing(double v) => mutable.spacing(v);
 
   /// Sets the gap between children in the flex layout.
   @Deprecated(
     'Use spacing instead. '
     'This feature was deprecated after Mix v2.0.0.',
   )
-  FlexMix gap(double v) => mutable.spacing(v);
+  FlexStyle gap(double v) => mutable.spacing(v);
 
   /// Sets flex direction to horizontal (row layout).
-  FlexMix row() => mutable.direction(Axis.horizontal);
+  FlexStyle row() => mutable.direction(Axis.horizontal);
 
   /// Sets flex direction to vertical (column layout).
-  FlexMix column() => mutable.direction(Axis.vertical);
+  FlexStyle column() => mutable.direction(Axis.vertical);
 
   /// Applies animation configuration to the flex styling.
-  FlexMix animate(AnimationConfig animation) => mutable.animate(animation);
+  FlexStyle animate(AnimationConfig animation) => mutable.animate(animation);
+
+  @override
+  FlexStyle withVariant(Variant variant, FlexStyle style) {
+    return mutable.variant(variant, style);
+  }
+
+  @override
+  FlexStyle withVariants(List<VariantStyle<FlexSpec>> variants) {
+    return mutable.variants(variants);
+  }
 
   @override
   FlexSpecUtility merge(Style<FlexSpec>? other) {
@@ -74,7 +92,7 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexSpec> {
     if (other is FlexSpecUtility) {
       return FlexSpecUtility(mutable.merge(other.mutable.value));
     }
-    if (other is FlexMix) {
+    if (other is FlexStyle) {
       return FlexSpecUtility(mutable.merge(other));
     }
 
@@ -82,21 +100,24 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexSpec> {
   }
 
   @override
-  FlexSpec resolve(BuildContext context) {
+  WidgetSpec<FlexSpec> resolve(BuildContext context) {
     return mutable.resolve(context);
   }
 
-  /// The accumulated [FlexMix] with all applied styling properties.
   @override
-  FlexMix get value => mutable.value;
+  FlexStyle get currentValue => mutable.value;
+
+  /// The accumulated [FlexStyle] with all applied styling properties.
+  @override
+  FlexStyle get value => mutable.value;
 }
 
-/// Mutable implementation of [FlexMix] for efficient style accumulation.
-/// 
+/// Mutable implementation of [FlexStyle] for efficient style accumulation.
+///
 /// Used internally by [FlexSpecUtility] to accumulate styling changes
 /// without creating new instances for each modification.
-class MutableFlexMix extends FlexMix with Mutable<FlexSpec, FlexMix> {
-  MutableFlexMix(FlexMix style) {
+class MutableFlexStyle extends FlexStyle with Mutable<FlexSpec, FlexStyle> {
+  MutableFlexStyle(FlexStyle style) {
     value = style;
   }
 }

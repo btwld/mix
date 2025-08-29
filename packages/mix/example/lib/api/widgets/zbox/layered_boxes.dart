@@ -11,37 +11,35 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final flexStyle = StackBoxMix.stack(
-      StackMix.alignment(Alignment.bottomCenter),
-    ).box(.height(100).width(100));
+    final flexStyle = StackBoxStyle(
+      stackAlignment: Alignment.bottomCenter,
+      constraints: BoxConstraintsMix.height(100).width(100),
+    );
 
-    final boxStyle = Style.box(
+    final boxStyle = BoxStyle()
         .color(Colors.deepOrange)
         .height(100)
-        .width(100)
-    );
+        .width(100);
 
     return ZBox(
       style: flexStyle,
       children: [
         Box(style: boxStyle),
         Box(
-          style: Style.box(
+          style: BoxStyle()
             .color(Colors.grey.shade300)
             .height(50)
-            .width(100)
-          ),
+            .width(100),
         ),
         Box(
-          style: Style.box(
+          style: BoxStyle()
             .color(Colors.black)
             .height(15)
             .width(100)
-            .wrapAlign(Alignment.center)
-          ),
+            .wrapAlign(Alignment.center),
         ),
         Box(
-          style: Style.box(
+          style: BoxStyle()
             .color(Colors.grey.shade100)
             .height(100)
             .width(100)
@@ -51,8 +49,7 @@ class Example extends StatelessWidget {
                 .width(20)
               )
             )
-            .wrapScale(0.50)
-          ),
+            .wrapScale(0.50),
         ),
       ],
     );

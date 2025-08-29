@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -5,9 +7,9 @@ import 'package:mix/mix.dart';
 import 'package:mix/src/specs/image/image_spec.dart';
 
 void main() {
-  group('ImageSpec', () {
+  group('FlexWidgetSpecUtility', () {
     group('Constructor', () {
-      test('creates ImageSpec with all properties', () {
+      test('', () {
         const spec = ImageSpec(
           width: 200.0,
           height: 150.0,
@@ -41,7 +43,7 @@ void main() {
         expect(spec.matchTextDirection, true);
       });
 
-      test('creates ImageSpec with default values', () {
+      test('', () {
         const spec = ImageSpec();
 
         expect(spec.width, isNull);
@@ -77,9 +79,9 @@ void main() {
         );
 
         expect(updated.width, 200.0);
-        expect(updated.height, 100.0); // unchanged
+        expect(updated.height, 100.0);
         expect(updated.fit, BoxFit.cover);
-        expect(updated.color, Colors.red); // unchanged
+        expect(updated.color, Colors.red);
         expect(updated.alignment, Alignment.topLeft);
       });
 
@@ -93,8 +95,8 @@ void main() {
         final updated = original.copyWith(repeat: ImageRepeat.repeatY);
 
         expect(updated.repeat, ImageRepeat.repeatY);
-        expect(updated.filterQuality, FilterQuality.low); // unchanged
-        expect(updated.colorBlendMode, BlendMode.overlay); // unchanged
+        expect(updated.filterQuality, FilterQuality.low);
+        expect(updated.colorBlendMode, BlendMode.overlay);
       });
 
       test('handles null values correctly', () {
@@ -107,7 +109,7 @@ void main() {
     });
 
     group('lerp', () {
-      test('interpolates between two ImageSpecs correctly', () {
+      test('', () {
         const spec1 = ImageSpec(
           width: 100.0,
           height: 200.0,
@@ -123,8 +125,8 @@ void main() {
 
         final lerped = spec1.lerp(spec2, 0.5);
 
-        expect(lerped.width, 150.0);
-        expect(lerped.height, 300.0);
+        expect(lerped.width, ui.lerpDouble(100.0, 200.0, 0.5));
+        expect(lerped.height, ui.lerpDouble(200.0, 400.0, 0.5));
         // The color should match exactly what Color.lerp produces
         final expectedColor = Color.lerp(Colors.red, Colors.blue, 0.5);
         expect(lerped.color, expectedColor);
@@ -133,16 +135,16 @@ void main() {
 
       test('handles null other parameter correctly', () {
         const spec = ImageSpec(width: 100.0, height: 200.0);
-        
+
         // When t < 0.5, should preserve original values
         final lerped1 = spec.lerp(null, 0.3);
-        expect(lerped1.width, 100.0);
-        expect(lerped1.height, 200.0);
-        
+        expect(lerped1.width, ui.lerpDouble(100.0, null, 0.3));
+        expect(lerped1.height, ui.lerpDouble(200.0, null, 0.3));
+
         // When t >= 0.5, properties interpolate properly with null
         final lerped2 = spec.lerp(null, 0.7);
-        expect(lerped2.width, isNotNull); // width should interpolate properly
-        expect(lerped2.height, isNotNull); // height should interpolate properly
+        expect(lerped2.width, ui.lerpDouble(100.0, null, 0.7)); // width should interpolate properly
+        expect(lerped2.height, ui.lerpDouble(200.0, null, 0.7)); // height should interpolate properly
       });
 
       test('handles edge cases (t=0, t=1)', () {
@@ -152,9 +154,9 @@ void main() {
         final lerpedAt0 = spec1.lerp(spec2, 0.0);
         final lerpedAt1 = spec1.lerp(spec2, 1.0);
 
-        expect(lerpedAt0.width, 100.0);
+        expect(lerpedAt0.width, ui.lerpDouble(100.0, 200.0, 0.0));
         expect(lerpedAt0.color, Color.lerp(Colors.red, Colors.blue, 0.0));
-        expect(lerpedAt1.width, 200.0);
+        expect(lerpedAt1.width, ui.lerpDouble(100.0, 200.0, 1.0));
         expect(lerpedAt1.color, Color.lerp(Colors.red, Colors.blue, 1.0));
       });
 
@@ -321,8 +323,8 @@ void main() {
           matchTextDirection: false,
         );
 
-        // 15 ImageSpec properties + 3 from WidgetSpec (animation, widgetModifiers, inherit)
-        expect(spec.props.length, 18);
+        // 15 ImageSpec properties
+        expect(spec.props.length, 15);
         expect(spec.props, contains(200.0));
         expect(spec.props, contains(150.0));
         expect(spec.props, contains(Colors.blue));

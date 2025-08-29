@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 
 import '../core/breakpoint.dart';
-import '../core/widget_spec.dart';
+import '../core/spec.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 import 'variant.dart';
 
 /// Utility class for creating variant attributes with context-based variants
+@Deprecated(
+  'Use direct methods like \$box.onHovered() instead of \$box.on.hover()',
+)
 @immutable
-class OnContextVariantUtility<S extends WidgetSpec<S>, T extends Style<S>>
+class OnContextVariantUtility<S extends Spec<S>, T extends Style<S>>
     extends MixUtility<T, VariantStyle<S>> {
-  const OnContextVariantUtility(super.builder);
+  const OnContextVariantUtility(super.utilityBuilder);
 
   /// Creates a variant attribute for the hover state
   VariantAttributeBuilder<S> get hover {
@@ -243,13 +246,25 @@ class OnContextVariantUtility<S extends WidgetSpec<S>, T extends Style<S>>
 /// This class wraps a [Variant] and provides methods to create
 /// [VariantStyle] instances with styling rules that apply
 /// when the variant condition is met.
+@Deprecated(
+  'Use direct methods like \$box.onHovered() instead of \$box.on.hover()',
+)
 @immutable
-class VariantAttributeBuilder<T extends WidgetSpec<T>> {
+class VariantAttributeBuilder<T extends Spec<T>> {
   /// The variant condition that determines when styling should apply
   final Variant variant;
 
   /// Creates a new [VariantAttributeBuilder] with the given [variant]
   const VariantAttributeBuilder(this.variant);
+
+  /// Temporary call method to make the builder functional during deprecation period.
+  ///
+  /// This allows the existing `.on` pattern to work while users migrate to direct methods.
+  /// Usage: `$box.on.hover($box.color.red())` becomes `$box.on.hover()($box.color.red())`
+  @Deprecated('Use direct methods like \$box.onHovered() instead')
+  VariantStyle<T> call<S extends Style<T>>(S style) {
+    return VariantStyle<T>(variant, style);
+  }
 
   /// Creates a [VariantStyle] that applies the given styling elements
   /// when this variant's condition is met.
@@ -282,14 +297,14 @@ class VariantAttributeBuilder<T extends WidgetSpec<T>> {
   int get hashCode => variant.hashCode;
 }
 
-typedef VariantFactoryCallback<T extends Style<S>, S extends WidgetSpec<S>> =
+typedef VariantFactoryCallback<T extends Style<S>, S extends Spec<S>> =
     T Function(T style);
 
 /// Mixin that provides convenient variant methods for spec attributes.
 ///
 /// This mixin follows the same pattern as ModifierMixin, providing
 /// a fluent API for applying context variants to spec attributes.
-mixin StyleVariantMixin<T extends Style<S>, S extends WidgetSpec<S>> on Style<S> {
+mixin StyleVariantMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   /// Must be implemented by the class using this mixin
   T variant(Variant variant, T style);
 
@@ -313,10 +328,24 @@ mixin StyleVariantMixin<T extends Style<S>, S extends WidgetSpec<S>> on Style<S>
   T onHovered(T style) {
     return variant(ContextVariant.widgetState(WidgetState.hovered), style);
   }
-  // TODO: Implement onContext()
-  // T onContext(T Function(BuildContext context) builder) {
-  //   return variants(ContextVariantBuilder(builder));
-  // }
+
+  /// Creates a variant that applies styling based on the build context.
+  ///
+  /// The provided builder function receives a [BuildContext] and should return
+  /// a style that will be applied when this variant is active.
+  ///
+  /// Example:
+  /// ```dart
+  /// BoxStyle().builder((context) {
+  ///   final theme = Theme.of(context);
+  ///   return BoxStyle().decoration.color(theme.primaryColor);
+  /// })
+  /// ```
+  T builder(T Function(BuildContext context) fn) {
+    // Create a VariantStyle with ContextVariantBuilder that will be resolved at runtime
+    // Use this style as a placeholder; the actual style comes from the builder function
+    return variants([VariantStyle<S>(ContextVariantBuilder<T>(fn), this)]);
+  }
 
   /// Creates a variant for pressed state
   T onPressed(T style) {

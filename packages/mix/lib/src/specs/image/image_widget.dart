@@ -1,7 +1,9 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/style_widget.dart';
-import 'image_attribute.dart';
+import '../../core/widget_spec.dart';
+import '../../core/style_builder.dart';
+import 'image_style.dart';
 import 'image_spec.dart';
 
 /// A styled image widget using Mix framework.
@@ -17,7 +19,6 @@ class StyledImage extends StyleWidget<ImageSpec> {
     this.image,
     this.opacity,
   });
-
 
   /// The image to display.
   final ImageProvider<Object>? image;
@@ -123,6 +124,30 @@ extension ImageSpecWidget on ImageSpec {
       loadingBuilder: loadingBuilder,
       errorBuilder: errorBuilder,
       opacity: opacity,
+    );
+  }
+}
+
+extension ImageSpecWrappedWidget on WidgetSpec<ImageSpec> {
+  Widget call({
+    ImageProvider<Object>? image,
+    ImageFrameBuilder? frameBuilder,
+    ImageLoadingBuilder? loadingBuilder,
+    ImageErrorWidgetBuilder? errorBuilder,
+    Animation<double>? opacity,
+  }) {
+    return WidgetSpecBuilder(
+      builder: (context, spec) {
+        return createImageSpecWidget(
+          spec: spec,
+          image: image,
+          frameBuilder: frameBuilder,
+          loadingBuilder: loadingBuilder,
+          errorBuilder: errorBuilder,
+          opacity: opacity,
+        );
+      },
+      wrappedSpec: this,
     );
   }
 }

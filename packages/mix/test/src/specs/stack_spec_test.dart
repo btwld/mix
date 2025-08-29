@@ -5,9 +5,9 @@ import 'package:mix/mix.dart';
 import 'package:mix/src/specs/stack/stack_spec.dart';
 
 void main() {
-  group('StackSpec', () {
+  group('StackStyle', () {
     group('Constructor', () {
-      test('creates StackSpec with all properties', () {
+      test('', () {
         const spec = StackSpec(
           alignment: Alignment.center,
           fit: StackFit.expand,
@@ -21,7 +21,7 @@ void main() {
         expect(spec.clipBehavior, Clip.antiAlias);
       });
 
-      test('creates StackSpec with default values', () {
+      test('', () {
         const spec = StackSpec();
 
         expect(spec.alignment, isNull);
@@ -45,8 +45,8 @@ void main() {
         );
 
         expect(updated.alignment, Alignment.bottomRight);
-        expect(updated.fit, StackFit.loose); // unchanged
-        expect(updated.textDirection, TextDirection.ltr); // unchanged
+        expect(updated.fit, StackFit.loose);
+        expect(updated.textDirection, TextDirection.ltr);
         expect(updated.clipBehavior, Clip.hardEdge);
       });
 
@@ -59,7 +59,7 @@ void main() {
         final updated = original.copyWith(fit: StackFit.passthrough);
 
         expect(updated.fit, StackFit.passthrough);
-        expect(updated.clipBehavior, Clip.none); // unchanged
+        expect(updated.clipBehavior, Clip.none);
       });
 
       test('handles null values correctly', () {
@@ -75,7 +75,7 @@ void main() {
     });
 
     group('lerp', () {
-      test('interpolates between two StackSpecs correctly', () {
+      test('', () {
         const spec1 = StackSpec(alignment: Alignment.topLeft);
         const spec2 = StackSpec(alignment: Alignment.bottomRight);
 
@@ -89,12 +89,12 @@ void main() {
           alignment: Alignment.center,
           fit: StackFit.expand,
         );
-        
+
         // When t < 0.5, should preserve original values
         final lerped1 = spec.lerp(null, 0.3);
         expect(lerped1.alignment, Alignment.center);
         expect(lerped1.fit, StackFit.expand);
-        
+
         // When t >= 0.5, snap properties become null, but new spec should be created
         final lerped2 = spec.lerp(null, 0.7);
         expect(lerped2.alignment, Alignment.center); // alignment lerps properly
@@ -234,8 +234,8 @@ void main() {
           clipBehavior: Clip.antiAlias,
         );
 
-        // 4 StackSpec properties + 3 from WidgetSpec (animation, widgetModifiers, inherit)
-        expect(spec.props.length, 7);
+        // 4 StackSpec properties
+        expect(spec.props.length, 4);
         expect(spec.props, contains(Alignment.center));
         expect(spec.props, contains(StackFit.expand));
         expect(spec.props, contains(TextDirection.rtl));

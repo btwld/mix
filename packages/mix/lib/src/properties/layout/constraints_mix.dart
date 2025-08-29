@@ -6,7 +6,7 @@ import '../../core/mix_element.dart';
 import '../../core/prop.dart';
 
 /// Base class for Mix constraint types.
-/// 
+///
 /// Provides factory methods for common sizing operations.
 sealed class ConstraintsMix<T extends Constraints> extends Mix<T> {
   const ConstraintsMix.create();
@@ -54,7 +54,7 @@ sealed class ConstraintsMix<T extends Constraints> extends Mix<T> {
 }
 
 /// Mix representation of [BoxConstraints].
-/// 
+///
 /// Supports tokens and merging for constraint values.
 final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
     with DefaultValue<BoxConstraints> {
@@ -94,6 +94,16 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
   /// Fixed width constraint.
   factory BoxConstraintsMix.width(double value) {
     return BoxConstraintsMix(minWidth: value, maxWidth: value);
+  }
+
+  /// Fixed square constraint.
+  factory BoxConstraintsMix.square(double value) {
+    return BoxConstraintsMix(
+      minWidth: value,
+      maxWidth: value,
+      minHeight: value,
+      maxHeight: value,
+    );
   }
 
   /// Fixed size constraint.
@@ -158,6 +168,16 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
   /// Copy with maximum width.
   BoxConstraintsMix maxWidth(double value) {
     return merge(BoxConstraintsMix.maxWidth(value));
+  }
+
+  /// Copy with fixed size.
+  BoxConstraintsMix size(Size value) {
+    return merge(BoxConstraintsMix.size(value));
+  }
+
+  /// Copy with fixed square size.
+  BoxConstraintsMix square(double value) {
+    return merge(BoxConstraintsMix.square(value));
   }
 
   /// Copy with minimum height.

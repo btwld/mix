@@ -255,8 +255,8 @@ void main() {
     group('VariantSpecAttribute integration', () {
       test('can be wrapped in VariantSpecAttribute', () {
         final contextVariant = ContextVariant('test', (context) => true);
-        final style = BoxMix.width(100.0);
-        final variantAttr = VariantStyle(contextVariant, style);
+        final style = BoxStyle().width(100.0);
+        final variantAttr = VariantStyle<BoxSpec>(contextVariant, style);
 
         expect(variantAttr.variant, contextVariant);
         expect(variantAttr.value, style);
@@ -267,8 +267,11 @@ void main() {
         final variant1 = ContextVariant('context1', (context) => true);
         final variant2 = ContextVariant('context2', (context) => false);
 
-        final style1 = VariantStyle(variant1, BoxMix.width(100.0));
-        final style2 = VariantStyle(variant2, BoxMix.height(200.0));
+        final style1 = VariantStyle<BoxSpec>(variant1, BoxStyle().width(100.0));
+        final style2 = VariantStyle<BoxSpec>(
+          variant2,
+          BoxStyle().height(200.0),
+        );
 
         expect(style1.mergeKey, 'context1');
         expect(style2.mergeKey, 'context2');

@@ -50,6 +50,7 @@ export 'src/core/utility.dart';
 export 'src/core/widget_spec.dart';
 export 'src/modifiers/align_modifier.dart';
 export 'src/modifiers/aspect_ratio_modifier.dart';
+export 'src/modifiers/box_modifier.dart' hide BoxModifierUtility;
 export 'src/modifiers/clip_modifier.dart';
 export 'src/modifiers/default_text_style_modifier.dart';
 export 'src/modifiers/flexible_modifier.dart';
@@ -67,9 +68,10 @@ export 'src/modifiers/padding_modifier.dart';
 export 'src/modifiers/rotated_box_modifier.dart';
 export 'src/modifiers/scroll_view_modifier.dart';
 export 'src/modifiers/sized_box_modifier.dart';
-export 'src/modifiers/style_provider_modifier.dart';
 export 'src/modifiers/transform_modifier.dart';
 export 'src/modifiers/visibility_modifier.dart';
+
+/// ICONOGRAPHY
 export 'src/properties/layout/constraints_mix.dart';
 export 'src/properties/layout/constraints_util.dart';
 export 'src/properties/layout/edge_insets_geometry_mix.dart';
@@ -77,6 +79,7 @@ export 'src/properties/layout/edge_insets_geometry_util.dart'
     hide createEdgeInsetsMix;
 export 'src/properties/layout/enum_util.dart';
 export 'src/properties/layout/scalar_util.dart';
+export 'src/properties/layout/stack_mix.dart';
 export 'src/properties/painting/border_mix.dart';
 export 'src/properties/painting/border_radius_mix.dart';
 export 'src/properties/painting/border_radius_util.dart';
@@ -101,36 +104,40 @@ export 'src/properties/typography/text_height_behavior_util.dart';
 export 'src/properties/typography/text_style_mix.dart';
 export 'src/properties/typography/text_style_util.dart';
 
-/// SPECS
-export 'src/specs/box/box_attribute.dart';
+/// TYPOGRAPHY
+export 'src/providers/icon_scope.dart';
+export 'src/providers/text_scope.dart';
 export 'src/specs/box/box_spec.dart';
+
+/// SPECS
+export 'src/specs/box/box_style.dart';
 export 'src/specs/box/box_util.dart';
 export 'src/specs/box/box_widget.dart';
-export 'src/specs/flex/flex_attribute.dart';
 export 'src/specs/flex/flex_spec.dart';
+export 'src/specs/flex/flex_style.dart';
 export 'src/specs/flex/flex_util.dart';
-export 'src/specs/flexbox/flexbox_attribute.dart';
 export 'src/specs/flexbox/flexbox_spec.dart';
+export 'src/specs/flexbox/flexbox_style.dart';
 export 'src/specs/flexbox/flexbox_util.dart';
 export 'src/specs/flexbox/flexbox_widget.dart';
-export 'src/specs/icon/icon_attribute.dart';
 export 'src/specs/icon/icon_spec.dart';
+export 'src/specs/icon/icon_style.dart';
 export 'src/specs/icon/icon_util.dart';
 export 'src/specs/icon/icon_widget.dart';
-export 'src/specs/image/image_attribute.dart';
 export 'src/specs/image/image_spec.dart';
+export 'src/specs/image/image_style.dart' hide ImageMix;
 export 'src/specs/image/image_util.dart';
 export 'src/specs/image/image_widget.dart';
 export 'src/specs/pressable/pressable_widget.dart';
 export 'src/specs/spec_util.dart';
-export 'src/specs/stack/stack_attribute.dart';
-export 'src/specs/stack/stack_box_attribute.dart';
 export 'src/specs/stack/stack_box_spec.dart';
+export 'src/specs/stack/stack_box_style.dart';
 export 'src/specs/stack/stack_spec.dart';
+export 'src/specs/stack/stack_style.dart' hide StackMix;
 export 'src/specs/stack/stack_util.dart';
 export 'src/specs/stack/stack_widget.dart';
-export 'src/specs/text/text_attribute.dart';
 export 'src/specs/text/text_spec.dart';
+export 'src/specs/text/text_style.dart';
 export 'src/specs/text/text_util.dart';
 export 'src/specs/text/text_widget.dart';
 

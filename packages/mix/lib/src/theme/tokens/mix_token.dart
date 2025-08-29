@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../core/prop_refs.dart';
+import '../mix_theme.dart';
 
 typedef ValueBuilder<T> = T Function(BuildContext context);
 
@@ -31,6 +32,10 @@ class MixToken<T> {
 
   TokenDefinition<T> defineBuilder(ValueBuilder<T> resolver) {
     return TokenDefinition(this, resolver);
+  }
+
+  T resolve(BuildContext context) {
+    return MixScope.tokenOf(this, context);
   }
 
   @override

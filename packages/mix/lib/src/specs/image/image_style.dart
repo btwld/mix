@@ -5,18 +5,22 @@ import '../../animation/animation_config.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
+import '../../core/widget_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'image_spec.dart';
+import 'image_util.dart';
 import 'image_widget.dart';
 
-class ImageMix extends Style<ImageSpec>
+typedef ImageMix = ImageStyle;
+
+class ImageStyle extends Style<ImageSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<ImageMix, ImageSpec>,
-        StyleVariantMixin<ImageMix, ImageSpec> {
+        StyleModifierMixin<ImageStyle, ImageSpec>,
+        StyleVariantMixin<ImageStyle, ImageSpec> {
   final Prop<ImageProvider<Object>>? $image;
   final Prop<double>? $width;
   final Prop<double>? $height;
@@ -33,102 +37,8 @@ class ImageMix extends Style<ImageSpec>
   final Prop<bool>? $isAntiAlias;
   final Prop<bool>? $matchTextDirection;
 
-  /// Factory for image provider
-  factory ImageMix.image(ImageProvider<Object> value) {
-    return ImageMix(image: value);
-  }
 
-  /// Factory for image width
-  factory ImageMix.width(double value) {
-    return ImageMix(width: value);
-  }
-
-  /// Factory for image height
-  factory ImageMix.height(double value) {
-    return ImageMix(height: value);
-  }
-
-  /// Factory for image color
-  factory ImageMix.color(Color value) {
-    return ImageMix(color: value);
-  }
-
-  /// Factory for image repeat
-  factory ImageMix.repeat(ImageRepeat value) {
-    return ImageMix(repeat: value);
-  }
-
-  /// Factory for image fit
-  factory ImageMix.fit(BoxFit value) {
-    return ImageMix(fit: value);
-  }
-
-  /// Factory for image alignment
-  factory ImageMix.alignment(AlignmentGeometry value) {
-    return ImageMix(alignment: value);
-  }
-
-  /// Factory for center slice
-  factory ImageMix.centerSlice(Rect value) {
-    return ImageMix(centerSlice: value);
-  }
-
-  /// Factory for filter quality
-  factory ImageMix.filterQuality(FilterQuality value) {
-    return ImageMix(filterQuality: value);
-  }
-
-  /// Factory for color blend mode
-  factory ImageMix.colorBlendMode(BlendMode value) {
-    return ImageMix(colorBlendMode: value);
-  }
-
-  /// Factory for semantic label
-  factory ImageMix.semanticLabel(String value) {
-    return ImageMix(semanticLabel: value);
-  }
-
-  /// Factory for exclude from semantics
-  factory ImageMix.excludeFromSemantics(bool value) {
-    return ImageMix(excludeFromSemantics: value);
-  }
-
-  /// Factory for gapless playback
-  factory ImageMix.gaplessPlayback(bool value) {
-    return ImageMix(gaplessPlayback: value);
-  }
-
-  /// Factory for is anti alias
-  factory ImageMix.isAntiAlias(bool value) {
-    return ImageMix(isAntiAlias: value);
-  }
-
-  /// Factory for match text direction
-  factory ImageMix.matchTextDirection(bool value) {
-    return ImageMix(matchTextDirection: value);
-  }
-
-  /// Factory for animation
-  factory ImageMix.animate(AnimationConfig animation) {
-    return ImageMix(animation: animation);
-  }
-
-  /// Factory for variant
-  factory ImageMix.variant(Variant variant, ImageMix value) {
-    return ImageMix(variants: [VariantStyle(variant, value)]);
-  }
-
-  /// Factory for widget modifier
-  factory ImageMix.modifier(ModifierConfig modifier) {
-    return ImageMix(modifier: modifier);
-  }
-
-  /// Factory for widget modifier
-  factory ImageMix.wrap(ModifierConfig value) {
-    return ImageMix(modifier: value);
-  }
-
-  const ImageMix.create({
+  const ImageStyle.create({
     Prop<ImageProvider<Object>>? image,
     Prop<double>? width,
     Prop<double>? height,
@@ -148,7 +58,6 @@ class ImageMix extends Style<ImageSpec>
     super.modifier,
     super.variants,
 
-    super.inherit,
   }) : $image = image,
        $width = width,
        $height = height,
@@ -165,7 +74,7 @@ class ImageMix extends Style<ImageSpec>
        $isAntiAlias = isAntiAlias,
        $matchTextDirection = matchTextDirection;
 
-  ImageMix({
+  ImageStyle({
     ImageProvider<Object>? image,
     double? width,
     double? height,
@@ -184,7 +93,6 @@ class ImageMix extends Style<ImageSpec>
     AnimationConfig? animation,
     ModifierConfig? modifier,
     List<VariantStyle<ImageSpec>>? variants,
-    bool? inherit,
   }) : this.create(
          image: Prop.maybe(image),
          width: Prop.maybe(width),
@@ -204,81 +112,49 @@ class ImageMix extends Style<ImageSpec>
          animation: animation,
          modifier: modifier,
          variants: variants,
-         inherit: inherit,
        );
 
-  /// Constructor that accepts an [ImageSpec] value and extracts its properties.
-  ///
-  /// This is useful for converting existing [ImageSpec] instances to [ImageMix].
-  ///
-  /// ```dart
-  /// const spec = ImageSpec(width: 100, height: 100, fit: BoxFit.cover);
-  /// final attr = ImageMix.value(spec);
-  /// ```
-  ImageMix.value(ImageSpec spec)
-    : this(
-        image: spec.image,
-        width: spec.width,
-        height: spec.height,
-        color: spec.color,
-        repeat: spec.repeat,
-        fit: spec.fit,
-        alignment: spec.alignment,
-        centerSlice: spec.centerSlice,
-        filterQuality: spec.filterQuality,
-        colorBlendMode: spec.colorBlendMode,
-        semanticLabel: spec.semanticLabel,
-        excludeFromSemantics: spec.excludeFromSemantics,
-        gaplessPlayback: spec.gaplessPlayback,
-        isAntiAlias: spec.isAntiAlias,
-        matchTextDirection: spec.matchTextDirection,
-      );
-
-  /// Constructor that accepts a nullable [ImageSpec] value and extracts its properties.
-  ///
-  /// Returns null if the input is null, otherwise uses [ImageMix.value].
-  ///
-  /// ```dart
-  /// const ImageSpec? spec = ImageSpec(width: 100, height: 100, fit: BoxFit.cover);
-  /// final attr = ImageMix.maybeValue(spec); // Returns ImageMix or null
-  /// ```
-  static ImageMix? maybeValue(ImageSpec? spec) {
-    return spec != null ? ImageMix.value(spec) : null;
+  factory ImageStyle.builder(ImageStyle Function(BuildContext) fn) {
+    return ImageStyle().builder(fn);
   }
 
+  static ImageSpecUtility get chain => ImageSpecUtility(ImageStyle());
+
+
+
   /// Sets image provider
-  ImageMix image(ImageProvider<Object> value) {
-    return merge(ImageMix.image(value));
+  ImageStyle image(ImageProvider<Object> value) {
+    return merge(ImageStyle(image: value));
   }
 
   /// Sets image width
-  ImageMix width(double value) {
-    return merge(ImageMix.width(value));
+  ImageStyle width(double value) {
+    return merge(ImageStyle(width: value));
   }
 
   /// Sets image height
-  ImageMix height(double value) {
-    return merge(ImageMix.height(value));
+  ImageStyle height(double value) {
+    return merge(ImageStyle(height: value));
   }
 
   /// Sets image color
-  ImageMix color(Color value) {
-    return merge(ImageMix.color(value));
+  ImageStyle color(Color value) {
+    return merge(ImageStyle(color: value));
   }
 
   /// Sets image repeat
-  ImageMix repeat(ImageRepeat value) {
-    return merge(ImageMix.repeat(value));
+  ImageStyle repeat(ImageRepeat value) {
+    return merge(ImageStyle(repeat: value));
   }
 
   /// Sets image fit
-  ImageMix fit(BoxFit value) {
-    return merge(ImageMix.fit(value));
+  ImageStyle fit(BoxFit value) {
+    return merge(ImageStyle(fit: value));
   }
 
   /// Sets image alignment
-  ImageMix alignment(AlignmentGeometry value) {
-    return merge(ImageMix.alignment(value));
+  ImageStyle alignment(AlignmentGeometry value) {
+    return merge(ImageStyle(alignment: value));
   }
 
   StyledImage call({
@@ -299,62 +175,62 @@ class ImageMix extends Style<ImageSpec>
   }
 
   /// Sets center slice
-  ImageMix centerSlice(Rect value) {
-    return merge(ImageMix.centerSlice(value));
+  ImageStyle centerSlice(Rect value) {
+    return merge(ImageStyle(centerSlice: value));
   }
 
   /// Sets filter quality
-  ImageMix filterQuality(FilterQuality value) {
-    return merge(ImageMix.filterQuality(value));
+  ImageStyle filterQuality(FilterQuality value) {
+    return merge(ImageStyle(filterQuality: value));
   }
 
   /// Sets color blend mode
-  ImageMix colorBlendMode(BlendMode value) {
-    return merge(ImageMix.colorBlendMode(value));
+  ImageStyle colorBlendMode(BlendMode value) {
+    return merge(ImageStyle(colorBlendMode: value));
   }
 
   /// Sets semantic label
-  ImageMix semanticLabel(String value) {
-    return merge(ImageMix.semanticLabel(value));
+  ImageStyle semanticLabel(String value) {
+    return merge(ImageStyle(semanticLabel: value));
   }
 
   /// Sets exclude from semantics
-  ImageMix excludeFromSemantics(bool value) {
-    return merge(ImageMix.excludeFromSemantics(value));
+  ImageStyle excludeFromSemantics(bool value) {
+    return merge(ImageStyle(excludeFromSemantics: value));
   }
 
   /// Sets gapless playback
-  ImageMix gaplessPlayback(bool value) {
-    return merge(ImageMix.gaplessPlayback(value));
+  ImageStyle gaplessPlayback(bool value) {
+    return merge(ImageStyle(gaplessPlayback: value));
   }
 
   /// Sets is anti alias
-  ImageMix isAntiAlias(bool value) {
-    return merge(ImageMix.isAntiAlias(value));
+  ImageStyle isAntiAlias(bool value) {
+    return merge(ImageStyle(isAntiAlias: value));
   }
 
   /// Sets match text direction
-  ImageMix matchTextDirection(bool value) {
-    return merge(ImageMix.matchTextDirection(value));
+  ImageStyle matchTextDirection(bool value) {
+    return merge(ImageStyle(matchTextDirection: value));
   }
 
-  ImageMix modifier(ModifierConfig value) {
-    return merge(ImageMix(modifier: value));
+  ImageStyle modifier(ModifierConfig value) {
+    return merge(ImageStyle(modifier: value));
   }
 
-  /// Convenience method for animating the ImageSpec
-  ImageMix animate(AnimationConfig animation) {
-    return merge(ImageMix.animate(animation));
-  }
-
-  @override
-  ImageMix variants(List<VariantStyle<ImageSpec>> variants) {
-    return merge(ImageMix(variants: variants));
+  /// Convenience method for animating the ImageWidgetSpec
+  ImageStyle animate(AnimationConfig animation) {
+    return merge(ImageStyle(animation: animation));
   }
 
   @override
-  ImageSpec resolve(BuildContext context) {
-    return ImageSpec(
+  ImageStyle variants(List<VariantStyle<ImageSpec>> variants) {
+    return merge(ImageStyle(variants: variants));
+  }
+
+  @override
+  WidgetSpec<ImageSpec> resolve(BuildContext context) {
+    final imageSpec = ImageSpec(
       image: MixOps.resolve(context, $image),
       width: MixOps.resolve(context, $width),
       height: MixOps.resolve(context, $height),
@@ -370,17 +246,20 @@ class ImageMix extends Style<ImageSpec>
       gaplessPlayback: MixOps.resolve(context, $gaplessPlayback),
       isAntiAlias: MixOps.resolve(context, $isAntiAlias),
       matchTextDirection: MixOps.resolve(context, $matchTextDirection),
+    );
+    
+    return WidgetSpec(
+      spec: imageSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),
-      inherit: $inherit,
     );
   }
 
   @override
-  ImageMix merge(ImageMix? other) {
+  ImageStyle merge(ImageStyle? other) {
     if (other == null) return this;
 
-    return ImageMix.create(
+    return ImageStyle.create(
       image: MixOps.merge($image, other.$image),
       width: MixOps.merge($width, other.$width),
       height: MixOps.merge($height, other.$height),
@@ -392,18 +271,19 @@ class ImageMix extends Style<ImageSpec>
       filterQuality: MixOps.merge($filterQuality, other.$filterQuality),
       colorBlendMode: MixOps.merge($colorBlendMode, other.$colorBlendMode),
       semanticLabel: MixOps.merge($semanticLabel, other.$semanticLabel),
-      excludeFromSemantics: MixOps.merge($excludeFromSemantics,
+      excludeFromSemantics: MixOps.merge(
+        $excludeFromSemantics,
         other.$excludeFromSemantics,
       ),
       gaplessPlayback: MixOps.merge($gaplessPlayback, other.$gaplessPlayback),
       isAntiAlias: MixOps.merge($isAntiAlias, other.$isAntiAlias),
-      matchTextDirection: MixOps.merge($matchTextDirection,
+      matchTextDirection: MixOps.merge(
+        $matchTextDirection,
         other.$matchTextDirection,
       ),
       animation: other.$animation ?? $animation,
       modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
       variants: mergeVariantLists($variants, other.$variants),
-      inherit: other.$inherit ?? $inherit,
     );
   }
 
@@ -429,12 +309,12 @@ class ImageMix extends Style<ImageSpec>
   }
 
   @override
-  ImageMix variant(Variant variant, ImageMix style) {
-    return merge(ImageMix(variants: [VariantStyle(variant, style)]));
+  ImageStyle variant(Variant variant, ImageStyle style) {
+    return merge(ImageStyle(variants: [VariantStyle(variant, style)]));
   }
 
   @override
-  ImageMix wrap(ModifierConfig value) {
+  ImageStyle wrap(ModifierConfig value) {
     return modifier(value);
   }
 

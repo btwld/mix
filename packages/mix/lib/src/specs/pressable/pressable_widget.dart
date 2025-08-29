@@ -1,12 +1,12 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/internal/mix_hoverable_region.dart';
+import '../../core/internal/mix_interaction_detector.dart';
 import '../../core/providers/widget_state_provider.dart';
-import '../box/box_attribute.dart';
+import '../box/box_style.dart';
 import '../box/box_widget.dart';
 
 /// Combines [Box] styling with gesture handling.
-/// 
+///
 /// Provides press, long press, and focus interactions.
 class PressableBox extends StatelessWidget {
   const PressableBox({
@@ -33,7 +33,7 @@ class PressableBox extends StatelessWidget {
   /// Called when the box is long-pressed.
   final VoidCallback? onLongPress;
 
-  final BoxMix? style;
+  final BoxStyle? style;
   final Widget child;
   final bool enabled;
   final FocusNode? focusNode;
@@ -54,13 +54,13 @@ class PressableBox extends StatelessWidget {
       autofocus: autofocus,
       focusNode: focusNode,
 
-      child: Box(style: style ?? const BoxMix.create(), child: child),
+      child: Box(style: style ?? const BoxStyle.create(), child: child),
     );
   }
 }
 
 /// Base widget for handling press gestures and states.
-/// 
+///
 /// Manages press, hover, and focus states with configurable behavior.
 class Pressable extends StatefulWidget {
   const Pressable({
@@ -214,7 +214,7 @@ class PressableWidgetState extends State<Pressable> {
             onFocusChange: _onFocusChange,
             onKeyEvent: widget.onKeyEvent ?? widget.onKey,
             canRequestFocus: widget.canRequestFocus && widget.enabled,
-            child: MixHoverableRegion(
+            child: MixInteractionDetector(
               controller: _controller,
               enabled: widget.enabled,
               child: widget.child,

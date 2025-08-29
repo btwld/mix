@@ -209,8 +209,8 @@ void main() {
         final attr = MockStyle(Prop.value<Color>(Colors.blue));
         final resolved = attr.resolve(MockBuildContext());
 
-        expect(resolved, isA<MockSpec>());
-        expect(resolved.resolvedValue, resolvesTo(Colors.blue));
+        expect(resolved, isA<WidgetSpec<MockSpec>>());
+        expect(resolved.spec.resolvedValue, resolvesTo(Colors.blue));
       });
 
       test('merges Prop values correctly', () {

@@ -9,7 +9,6 @@ class TestVariantAttribute extends Style<BoxSpec>
     super.variants,
     super.modifier,
     super.animation,
-    super.inherit,
   });
 
   @override
@@ -25,7 +24,8 @@ class TestVariantAttribute extends Style<BoxSpec>
   }
 
   @override
-  BoxSpec resolve(BuildContext context) => const BoxSpec();
+  WidgetSpec<BoxSpec> resolve(BuildContext context) =>
+      const WidgetSpec(spec: BoxSpec());
 
   @override
   TestVariantAttribute merge(TestVariantAttribute? other) {

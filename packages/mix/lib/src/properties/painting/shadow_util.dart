@@ -15,25 +15,25 @@ final class ShadowUtility<T extends Style<Object?>>
     extends MixUtility<T, ShadowMix> {
   /// Utility for defining [ShadowMix.color].
   late final color = ColorUtility<T>(
-    (prop) => builder(ShadowMix.create(color: prop)),
+    (prop) => utilityBuilder(ShadowMix.create(color: prop)),
   );
 
   /// Utility for defining [ShadowMix.offset].
   late final offset = MixUtility<T, Offset>((prop) => call(offset: prop));
 
-  ShadowUtility(super.builder);
+  ShadowUtility(super.utilityBuilder);
 
   /// Utility for defining [ShadowMix.blurRadius].
   T blurRadius(double v) => call(blurRadius: v);
 
   T call({double? blurRadius, Color? color, Offset? offset}) {
-    return builder(
+    return utilityBuilder(
       ShadowMix(blurRadius: blurRadius, color: color, offset: offset),
     );
   }
 
   T as(Shadow value) {
-    return builder(ShadowMix.value(value));
+    return utilityBuilder(ShadowMix.value(value));
   }
 }
 
@@ -45,13 +45,13 @@ final class BoxShadowUtility<T extends Style<Object?>>
     extends MixUtility<T, BoxShadowMix> {
   /// Utility for defining [BoxShadowMix.color].
   late final color = ColorUtility<T>(
-    (prop) => builder(BoxShadowMix.create(color: prop)),
+    (prop) => utilityBuilder(BoxShadowMix.create(color: prop)),
   );
 
   /// Utility for defining [BoxShadowMix.offset].
   late final offset = MixUtility<T, Offset>((prop) => call(offset: prop));
 
-  BoxShadowUtility(super.builder);
+  BoxShadowUtility(super.utilityBuilder);
 
   /// Utility for defining [BoxShadowMix.blurRadius].
   T blurRadius(double v) => call(blurRadius: v);
@@ -76,11 +76,11 @@ final class BoxShadowUtility<T extends Style<Object?>>
       ),
     );
 
-    return builder(boxShadow);
+    return utilityBuilder(boxShadow);
   }
 
   T as(BoxShadow value) {
-    return builder(BoxShadowMix.value(value));
+    return utilityBuilder(BoxShadowMix.value(value));
   }
 }
 
@@ -121,7 +121,7 @@ final class ElevationPropUtility<T extends Style<Object?>>
   /// Creates an [T] instance with an elevation of 24.
   late final e24 = twentyFour;
 
-  ElevationPropUtility(super.builder);
+  ElevationPropUtility(super.utilityBuilder);
 
   /// Creates an [T] instance with an elevation of 1.
   T get one => call(1);
@@ -157,7 +157,7 @@ final class ElevationPropUtility<T extends Style<Object?>>
   ///
   /// Retrieves the corresponding list of [BoxShadow] objects from the [kElevationToShadow]
   /// map, maps each [BoxShadow] to a [Prop<BoxShadow>], and passes the resulting list to
-  /// the [builder] function to create the [Style] instance.
+  /// the [utilityBuilder] function to create the [Style] instance.
   ///
   /// Throws an [AssertionError] if the provided [value] is not a valid elevation value.
   T call(int value) {
@@ -184,6 +184,6 @@ final class ElevationPropUtility<T extends Style<Object?>>
       ),
     );
 
-    return builder(boxShadows.toList());
+    return utilityBuilder(boxShadows.toList());
   }
 }

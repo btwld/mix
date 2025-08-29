@@ -57,7 +57,7 @@ final class SizedBoxModifier extends Modifier<SizedBoxModifier>
 /// Provides convenient methods for creating SizedBoxModifierMix instances.
 final class SizedBoxModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, SizedBoxModifierMix> {
-  const SizedBoxModifierUtility(super.builder);
+  const SizedBoxModifierUtility(super.utilityBuilder);
 
   T width(double v) => only(width: v);
 
@@ -67,7 +67,7 @@ final class SizedBoxModifierUtility<T extends Style<Object?>>
   T square(double size) => only(width: size, height: size);
 
   T only({double? width, double? height}) =>
-      builder(SizedBoxModifierMix(width: width, height: height));
+      utilityBuilder(SizedBoxModifierMix(width: width, height: height));
 
   T call({double? width, double? height}) {
     return only(width: width, height: height);
@@ -81,8 +81,7 @@ final class SizedBoxModifierUtility<T extends Style<Object?>>
 /// Mix class for applying sized box modifications.
 ///
 /// This class allows for mixing and resolving sized box properties.
-class SizedBoxModifierMix
-    extends ModifierMix<SizedBoxModifier>
+class SizedBoxModifierMix extends ModifierMix<SizedBoxModifier>
     with Diagnosticable {
   final Prop<double>? width;
   final Prop<double>? height;

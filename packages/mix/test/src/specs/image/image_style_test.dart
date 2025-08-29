@@ -5,10 +5,10 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-  group('ImageMix', () {
+  group('FlexWidgetSpecUtility', () {
     group('Constructor', () {
-      test('creates ImageMix with all properties', () {
-        final attribute = ImageMix(
+      test('', () {
+        final attribute = ImageStyle(
           width: 100.0,
           height: 200.0,
           color: Colors.red,
@@ -44,8 +44,8 @@ void main() {
         expect(attribute.$matchTextDirection, resolvesTo(true));
       });
 
-      test('creates empty ImageMix', () {
-        final attribute = ImageMix();
+      test('', () {
+        final attribute = ImageStyle();
 
         expect(attribute.$width, isNull);
         expect(attribute.$height, isNull);
@@ -65,177 +65,140 @@ void main() {
     });
 
     group('Factory Constructors', () {
-      test('width factory creates ImageMix with width', () {
-        final imageMix = ImageMix.width(150.0);
+      test('', () {
+        final imageMix = ImageStyle().width(150.0);
 
         expect(imageMix.$width, resolvesTo(150.0));
       });
 
-      test('height factory creates ImageMix with height', () {
-        final imageMix = ImageMix.height(250.0);
+      test('', () {
+        final imageMix = ImageStyle().height(250.0);
 
         expect(imageMix.$height, resolvesTo(250.0));
       });
 
-      test('color factory creates ImageMix with color', () {
-        final imageMix = ImageMix.color(Colors.blue);
+      test('', () {
+        final imageMix = ImageStyle().color(Colors.blue);
 
         expect(imageMix.$color, resolvesTo(Colors.blue));
       });
 
-      test('animation factory creates ImageMix with animation config', () {
+      test('', () {
         final animation = AnimationConfig.linear(Duration(seconds: 1));
-        final imageMix = ImageMix.animate(animation);
+        final imageMix = ImageStyle().animate(animation);
 
         expect(imageMix.$animation, animation);
       });
 
-      test('variant factory creates ImageMix with variant', () {
+      test('', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = ImageMix.color(Colors.white);
-        final imageMix = ImageMix.variant(variant, style);
+        final style = ImageStyle().color(Colors.white);
+        final imageMix = ImageStyle().variant(variant, style);
 
         expect(imageMix.$variants, isNotNull);
         expect(imageMix.$variants!.length, 1);
       });
 
-      test('semanticLabel factory creates ImageMix with semanticLabel', () {
-        final imageMix = ImageMix.semanticLabel('My Image');
+      test('', () {
+        final imageMix = ImageStyle().semanticLabel('My Image');
 
         expect(imageMix.$semanticLabel, resolvesTo('My Image'));
       });
 
-      test(
-        'excludeFromSemantics factory creates ImageMix with excludeFromSemantics',
-        () {
-          final imageMix = ImageMix.excludeFromSemantics(true);
+      test('', () {
+        final imageMix = ImageStyle().excludeFromSemantics(true);
 
-          expect(imageMix.$excludeFromSemantics, resolvesTo(true));
-        },
-      );
+        expect(imageMix.$excludeFromSemantics, resolvesTo(true));
+      });
 
-      test('gaplessPlayback factory creates ImageMix with gaplessPlayback', () {
-        final imageMix = ImageMix.gaplessPlayback(true);
+      test('', () {
+        final imageMix = ImageStyle().gaplessPlayback(true);
 
         expect(imageMix.$gaplessPlayback, resolvesTo(true));
       });
 
-      test('isAntiAlias factory creates ImageMix with isAntiAlias', () {
-        final imageMix = ImageMix.isAntiAlias(false);
+      test('', () {
+        final imageMix = ImageStyle().isAntiAlias(false);
 
         expect(imageMix.$isAntiAlias, resolvesTo(false));
       });
 
-      test(
-        'matchTextDirection factory creates ImageMix with matchTextDirection',
-        () {
-          final imageMix = ImageMix.matchTextDirection(true);
+      test('', () {
+        final imageMix = ImageStyle().matchTextDirection(true);
 
-          expect(imageMix.$matchTextDirection, resolvesTo(true));
-        },
-      );
-    });
-
-    group('value constructor', () {
-      test('creates ImageMix from ImageSpec', () {
-        const spec = ImageSpec(
-          width: 120.0,
-          height: 180.0,
-          color: Colors.green,
-          fit: BoxFit.contain,
-        );
-
-        final attribute = ImageMix.value(spec);
-
-        expect(attribute.$width, resolvesTo(120.0));
-        expect(attribute.$height, resolvesTo(180.0));
-        expect(attribute.$color, resolvesTo(Colors.green));
-        expect(attribute.$fit, resolvesTo(BoxFit.contain));
-      });
-
-      test('maybeValue returns null for null spec', () {
-        expect(ImageMix.maybeValue(null), isNull);
-      });
-
-      test('maybeValue returns attribute for non-null spec', () {
-        const spec = ImageSpec(width: 80.0, height: 120.0);
-        final attribute = ImageMix.maybeValue(spec);
-
-        expect(attribute, isNotNull);
-        expect(attribute!.$width, resolvesTo(80.0));
-        expect(attribute.$height, resolvesTo(120.0));
+        expect(imageMix.$matchTextDirection, resolvesTo(true));
       });
     });
 
     group('Utility Methods', () {
       test('width utility works correctly', () {
-        final attribute = ImageMix().width(200.0);
+        final attribute = ImageStyle().width(200.0);
 
         expect(attribute.$width, resolvesTo(200.0));
       });
 
       test('height utility works correctly', () {
-        final attribute = ImageMix().height(300.0);
+        final attribute = ImageStyle().height(300.0);
 
         expect(attribute.$height, resolvesTo(300.0));
       });
 
       test('color utility works correctly', () {
-        final attribute = ImageMix().color(Colors.purple);
+        final attribute = ImageStyle().color(Colors.purple);
 
         expect(attribute.$color, resolvesTo(Colors.purple));
       });
 
       test('repeat utility works correctly', () {
-        final attribute = ImageMix().repeat(ImageRepeat.repeatX);
+        final attribute = ImageStyle().repeat(ImageRepeat.repeatX);
 
         expect(attribute.$repeat, resolvesTo(ImageRepeat.repeatX));
       });
 
       test('fit utility works correctly', () {
-        final attribute = ImageMix().fit(BoxFit.fill);
+        final attribute = ImageStyle().fit(BoxFit.fill);
 
         expect(attribute.$fit, resolvesTo(BoxFit.fill));
       });
 
       test('alignment utility works correctly', () {
-        final attribute = ImageMix().alignment(Alignment.topLeft);
+        final attribute = ImageStyle().alignment(Alignment.topLeft);
 
         expect(attribute.$alignment, resolvesTo(Alignment.topLeft));
       });
 
       test('centerSlice utility works correctly', () {
         final rect = Rect.fromLTWH(5, 5, 10, 10);
-        final attribute = ImageMix().centerSlice(rect);
+        final attribute = ImageStyle().centerSlice(rect);
 
         expect(attribute.$centerSlice, resolvesTo(rect));
       });
 
       test('filterQuality utility works correctly', () {
-        final attribute = ImageMix().filterQuality(FilterQuality.medium);
+        final attribute = ImageStyle().filterQuality(FilterQuality.medium);
 
         expect(attribute.$filterQuality, resolvesTo(FilterQuality.medium));
       });
 
       test('colorBlendMode utility works correctly', () {
-        final attribute = ImageMix().colorBlendMode(BlendMode.overlay);
+        final attribute = ImageStyle().colorBlendMode(BlendMode.overlay);
 
         expect(attribute.$colorBlendMode, resolvesTo(BlendMode.overlay));
       });
 
       test('animate method sets animation config', () {
         final animation = AnimationConfig.linear(Duration(milliseconds: 500));
-        final attribute = ImageMix().animate(animation);
+        final attribute = ImageStyle().animate(animation);
 
         expect(attribute.$animation, equals(animation));
       });
     });
 
     group('Variant Methods', () {
-      test('variant method adds variant to ImageMix', () {
+      test('', () {
         final variant = ContextVariant.brightness(Brightness.dark);
-        final style = ImageMix.color(Colors.white);
-        final imageMix = ImageMix().variant(variant, style);
+        final style = ImageStyle().color(Colors.white);
+        final imageMix = ImageStyle().variant(variant, style);
 
         expect(imageMix.$variants, isNotNull);
         expect(imageMix.$variants!.length, 1);
@@ -245,14 +208,14 @@ void main() {
         final variants = [
           VariantStyle(
             ContextVariant.brightness(Brightness.dark),
-            ImageMix.color(Colors.white),
+            ImageStyle().color(Colors.white),
           ),
           VariantStyle(
             ContextVariant.brightness(Brightness.light),
-            ImageMix.color(Colors.black),
+            ImageStyle().color(Colors.black),
           ),
         ];
-        final imageMix = ImageMix().variants(variants);
+        final imageMix = ImageStyle().variants(variants);
 
         expect(imageMix.$variants, isNotNull);
         expect(imageMix.$variants!.length, 2);
@@ -260,8 +223,8 @@ void main() {
     });
 
     group('Resolution', () {
-      test('resolves to ImageSpec with correct properties', () {
-        final attribute = ImageMix(
+      test('', () {
+        final attribute = ImageStyle(
           width: 100.0,
           height: 200.0,
           color: Colors.red,
@@ -277,41 +240,45 @@ void main() {
         final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec.width, 100.0);
-        expect(spec.height, 200.0);
-        expect(spec.color, Colors.red);
-        expect(spec.repeat, ImageRepeat.repeat);
-        expect(spec.fit, BoxFit.cover);
-        expect(spec.alignment, Alignment.center);
-        expect(spec.centerSlice, Rect.fromLTWH(10, 10, 20, 20));
-        expect(spec.filterQuality, FilterQuality.high);
-        expect(spec.colorBlendMode, BlendMode.multiply);
+        expect(spec.spec.width, 100.0);
+        expect(spec.spec.height, 200.0);
+        expect(spec.spec.color, Colors.red);
+        expect(spec.spec.repeat, ImageRepeat.repeat);
+        expect(spec.spec.fit, BoxFit.cover);
+        expect(spec.spec.alignment, Alignment.center);
+        expect(spec.spec.centerSlice, Rect.fromLTWH(10, 10, 20, 20));
+        expect(spec.spec.filterQuality, FilterQuality.high);
+        expect(spec.spec.colorBlendMode, BlendMode.multiply);
       });
 
       test('resolves with null values correctly', () {
-        final attribute = ImageMix().width(150.0).height(250.0);
+        final attribute = ImageStyle().width(150.0).height(250.0);
 
         final context = MockBuildContext();
         final spec = attribute.resolve(context);
 
         expect(spec, isNotNull);
-        expect(spec.width, 150.0);
-        expect(spec.height, 250.0);
-        expect(spec.color, isNull);
-        expect(spec.repeat, isNull);
-        expect(spec.fit, isNull);
-        expect(spec.alignment, isNull);
-        expect(spec.centerSlice, isNull);
-        expect(spec.filterQuality, isNull);
-        expect(spec.colorBlendMode, isNull);
+        expect(spec.spec.width, 150.0);
+        expect(spec.spec.height, 250.0);
+        expect(spec.spec.color, isNull);
+        expect(spec.spec.repeat, isNull);
+        expect(spec.spec.fit, isNull);
+        expect(spec.spec.alignment, isNull);
+        expect(spec.spec.centerSlice, isNull);
+        expect(spec.spec.filterQuality, isNull);
+        expect(spec.spec.colorBlendMode, isNull);
       });
     });
 
     group('Merge', () {
       test('merges properties correctly', () {
-        final first = ImageMix(width: 100.0, height: 200.0, color: Colors.red);
+        final first = ImageStyle(
+          width: 100.0,
+          height: 200.0,
+          color: Colors.red,
+        );
 
-        final second = ImageMix(
+        final second = ImageStyle(
           width: 150.0,
           fit: BoxFit.cover,
           alignment: Alignment.center,
@@ -327,7 +294,7 @@ void main() {
       });
 
       test('returns this when other is null', () {
-        final attribute = ImageMix().width(100.0);
+        final attribute = ImageStyle().width(100.0);
         final merged = attribute.merge(null);
 
         expect(identical(attribute, merged), isTrue);
@@ -336,19 +303,23 @@ void main() {
 
     group('Equality', () {
       test('equal attributes have same hashCode', () {
-        final attr1 = ImageMix().width(100.0).height(200.0).color(Colors.blue);
+        final attr1 = ImageStyle()
+            .width(100.0)
+            .height(200.0)
+            .color(Colors.blue);
 
-        final attr2 = ImageMix().width(100.0).height(200.0).color(Colors.blue);
+        final attr2 = ImageStyle()
+            .width(100.0)
+            .height(200.0)
+            .color(Colors.blue);
 
         expect(attr1, equals(attr2));
-        // Skip hashCode test due to infrastructure issue with list instances
-        // TODO: Fix hashCode contract violation in Mix 2.0
-        // expect(attr1.hashCode, equals(attr2.hashCode));
+        expect(attr1.hashCode, equals(attr2.hashCode));
       });
 
       test('different attributes are not equal', () {
-        final attr1 = ImageMix().width(100.0);
-        final attr2 = ImageMix().width(200.0);
+        final attr1 = ImageStyle().width(100.0);
+        final attr2 = ImageStyle().width(200.0);
 
         expect(attr1, isNot(equals(attr2)));
       });
@@ -356,7 +327,7 @@ void main() {
 
     group('Props getter', () {
       test('props includes all properties', () {
-        final attribute = ImageMix(
+        final attribute = ImageStyle(
           width: 100.0,
           height: 200.0,
           color: Colors.red,

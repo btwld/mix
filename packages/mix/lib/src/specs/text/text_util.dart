@@ -2,23 +2,27 @@ import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
-import '../../core/style.dart' show Style;
+import '../../core/style.dart' show Style, VariantStyle;
 import '../../core/utility.dart';
+import '../../core/utility_variant_mixin.dart';
+import '../../core/widget_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/painting/color_util.dart';
 import '../../properties/typography/strut_style_util.dart';
 import '../../properties/typography/text_height_behavior_util.dart';
 import '../../properties/typography/text_style_util.dart';
+import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
-import 'text_attribute.dart';
 import 'text_spec.dart';
+import 'text_style.dart';
 
 /// Provides mutable utility for text styling with cascade notation support.
 ///
-/// Supports the same API as [TextMix] but maintains mutable internal state
+/// Supports the same API as [TextStyle] but maintains mutable internal state
 /// enabling fluid styling: `$text..color.red()..fontSize(16)`.
-class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
+class TextSpecUtility extends StyleMutableBuilder<TextSpec>
+    with UtilityVariantMixin<TextSpec, TextStyling> {
   late final textOverflow = MixUtility(mutable.overflow);
 
   late final strutStyle = StrutStyleUtility(mutable.strutStyle);
@@ -28,19 +32,23 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
   late final textScaler = MixUtility(mutable.textScaler);
 
   late final style = TextStyleUtility(
-    (prop) => mutable.merge(TextMix.create(style: prop)),
+    (prop) => mutable.merge(TextStyling.create(style: prop)),
   );
   late final textWidthBasis = MixUtility(mutable.textWidthBasis);
-  late final textHeightBehavior = TextHeightBehaviorUtility<TextMix>(
+  late final textHeightBehavior = TextHeightBehaviorUtility<TextStyling>(
     mutable.textHeightBehavior,
   );
   late final textDirection = MixUtility(mutable.textDirection);
   late final directives = MixUtility(mutable.textDirective);
-  late final selectionColor = ColorUtility<TextMix>(
-    (prop) => mutable.merge(TextMix.create(selectionColor: prop)),
+  late final selectionColor = ColorUtility<TextStyling>(
+    (prop) => mutable.merge(TextStyling.create(selectionColor: prop)),
   );
   late final locale = MixUtility(mutable.locale);
-  late final on = OnContextVariantUtility<TextSpec, TextMix>(
+  @Deprecated(
+    'Use direct methods like \$text.onHovered() instead. '
+    'Note: Returns TextStyling for consistency with other utility methods like animate().',
+  )
+  late final on = OnContextVariantUtility<TextSpec, TextStyling>(
     (v) => mutable.variants([v]),
   );
   late final wrap = ModifierUtility(
@@ -74,22 +82,34 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
   @override
   @protected
   late final MutableTextMix mutable;
-  TextSpecUtility([TextMix? attribute]) {
-    mutable = MutableTextMix(attribute ?? TextMix());
+  TextSpecUtility([TextStyling? attribute]) {
+    mutable = MutableTextMix(attribute ?? TextStyling());
   }
 
-  TextMix maxLines(int v) => mutable.maxLines(v);
-  TextMix softWrap(bool v) => mutable.softWrap(v);
-  TextMix semanticsLabel(String v) => mutable.semanticsLabel(v);
+  TextStyling maxLines(int v) => mutable.maxLines(v);
+
+  TextStyling softWrap(bool v) => mutable.softWrap(v);
+
+  TextStyling semanticsLabel(String v) => mutable.semanticsLabel(v);
 
   /// Makes the text bold by setting font weight to bold.
-  TextMix bold() => style.bold();
+  TextStyling bold() => style.bold();
 
   /// Makes the text italic by setting font style to italic.
-  TextMix italic() => style.italic();
+  TextStyling italic() => style.italic();
 
   /// Applies animation configuration to the text styling.
-  TextMix animate(AnimationConfig animation) => mutable.animate(animation);
+  TextStyling animate(AnimationConfig animation) => mutable.animate(animation);
+
+  @override
+  TextStyling withVariant(Variant variant, TextStyling style) {
+    return mutable.variant(variant, style);
+  }
+
+  @override
+  TextStyling withVariants(List<VariantStyle<TextSpec>> variants) {
+    return mutable.variants(variants);
+  }
 
   @override
   TextSpecUtility merge(Style<TextSpec>? other) {
@@ -98,7 +118,7 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
     if (other is TextSpecUtility) {
       return TextSpecUtility(mutable.value.merge(other.mutable.value));
     }
-    if (other is TextMix) {
+    if (other is TextStyling) {
       return TextSpecUtility(mutable.value.merge(other));
     }
 
@@ -106,17 +126,20 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec> {
   }
 
   @override
-  TextSpec resolve(BuildContext context) {
+  WidgetSpec<TextSpec> resolve(BuildContext context) {
     return mutable.resolve(context);
   }
 
-  /// The accumulated [TextMix] with all applied styling properties.
   @override
-  TextMix get value => mutable.value;
+  TextStyling get currentValue => mutable.value;
+
+  /// The accumulated [TextStyle] with all applied styling properties.
+  @override
+  TextStyling get value => mutable.value;
 }
 
-class MutableTextMix extends TextMix with Mutable<TextSpec, TextMix> {
-  MutableTextMix(TextMix style) {
+class MutableTextMix extends TextStyling with Mutable<TextSpec, TextStyling> {
+  MutableTextMix(TextStyling style) {
     value = style;
   }
 }

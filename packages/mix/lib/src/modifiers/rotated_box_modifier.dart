@@ -10,8 +10,8 @@ import '../core/utility.dart';
 /// Modifier that rotates its child by quarter turns.
 ///
 /// Wraps the child in a [RotatedBox] widget with the specified quarter turns.
-final class RotatedBoxModifier
-    extends Modifier<RotatedBoxModifier> with Diagnosticable {
+final class RotatedBoxModifier extends Modifier<RotatedBoxModifier>
+    with Diagnosticable {
   final int quarterTurns;
   const RotatedBoxModifier([int? quarterTurns])
     : quarterTurns = quarterTurns ?? 0;
@@ -25,9 +25,7 @@ final class RotatedBoxModifier
   RotatedBoxModifier lerp(RotatedBoxModifier? other, double t) {
     if (other == null) return this;
 
-    return RotatedBoxModifier(
-      MixOps.lerp(quarterTurns, other.quarterTurns, t),
-    );
+    return RotatedBoxModifier(MixOps.lerp(quarterTurns, other.quarterTurns, t));
   }
 
   @override
@@ -48,8 +46,8 @@ final class RotatedBoxModifier
 /// Mix class for applying rotated box modifications.
 ///
 /// This class allows for mixing and resolving rotated box properties.
-class RotatedBoxModifierMix
-    extends ModifierMix<RotatedBoxModifier> with Diagnosticable {
+class RotatedBoxModifierMix extends ModifierMix<RotatedBoxModifier>
+    with Diagnosticable {
   final Prop<int>? quarterTurns;
 
   const RotatedBoxModifierMix.create({this.quarterTurns});
@@ -99,12 +97,12 @@ class RotatedBoxModifierMix
 
 final class RotatedBoxModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, RotatedBoxModifierMix> {
-  const RotatedBoxModifierUtility(super.builder);
+  const RotatedBoxModifierUtility(super.utilityBuilder);
   T d90() => call(1);
   T d180() => call(2);
   T d270() => call(3);
 
-  T call(int value) => builder(
+  T call(int value) => utilityBuilder(
     RotatedBoxModifierMix.create(quarterTurns: Prop.value(value)),
   );
 }

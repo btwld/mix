@@ -3,11 +3,10 @@ import 'package:flutter/physics.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/spec.dart';
-import '../core/widget_spec.dart';
 import 'animation_config.dart';
 
 /// Tween that uses TweenSequence for phased animations.
-class _PhasedSpecTween<S extends WidgetSpec<S>> extends Tween<S?> {
+class _PhasedSpecTween<S extends Spec<S>> extends Tween<S?> {
   final TweenSequence<S?> _tweenSequence;
 
   _PhasedSpecTween(this._tweenSequence);
@@ -109,8 +108,7 @@ abstract class StyleAnimationDriver<S extends Spec<S>> {
 }
 
 /// A driver for curve-based animations with fixed duration.
-class CurveAnimationDriver<S extends WidgetSpec<S>>
-    extends StyleAnimationDriver<S> {
+class CurveAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   final CurveAnimationConfig _config;
 
   CurveAnimationDriver({
@@ -158,8 +156,7 @@ class CurveAnimationDriver<S extends WidgetSpec<S>>
 }
 
 /// A driver for spring-based physics animations.
-class SpringAnimationDriver<S extends WidgetSpec<S>>
-    extends StyleAnimationDriver<S> {
+class SpringAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   final SpringAnimationConfig _config;
 
   SpringAnimationDriver({
@@ -193,8 +190,7 @@ class SpringAnimationDriver<S extends WidgetSpec<S>>
   bool get autoAnimateOnUpdate => true;
 }
 
-class PhaseAnimationDriver<S extends WidgetSpec<S>>
-    extends StyleAnimationDriver<S> {
+class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   final List<S> specs;
   final List<CurveAnimationConfig> curveConfigs;
   final Listenable trigger;

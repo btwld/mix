@@ -326,8 +326,8 @@ void main() {
     group('VariantSpecAttribute integration', () {
       test('can be used in VariantSpecAttribute wrapper', () {
         final hoverVariant = WidgetStateVariant(WidgetState.hovered);
-        final style = BoxMix.width(100.0);
-        final variantAttr = VariantStyle(hoverVariant, style);
+        final style = BoxStyle().width(100.0);
+        final variantAttr = VariantStyle<BoxSpec>(hoverVariant, style);
 
         expect(variantAttr.variant, hoverVariant);
         expect(variantAttr.value, style);
@@ -337,14 +337,14 @@ void main() {
       test(
         'different widget states create different VariantSpecAttribute mergeKeys',
         () {
-          final hoverStyle = VariantStyle(
+          final hoverStyle = VariantStyle<BoxSpec>(
             WidgetStateVariant(WidgetState.hovered),
-            BoxMix.width(100.0),
+            BoxStyle().width(100.0),
           );
 
-          final pressStyle = VariantStyle(
+          final pressStyle = VariantStyle<BoxSpec>(
             WidgetStateVariant(WidgetState.pressed),
-            BoxMix.width(150.0),
+            BoxStyle().width(150.0),
           );
 
           expect(hoverStyle.mergeKey, isNot(equals(pressStyle.mergeKey)));
@@ -356,14 +356,20 @@ void main() {
       test('merges correctly when variants match', () {
         final hoverVariant = WidgetStateVariant(WidgetState.hovered);
 
-        final style1 = VariantStyle(hoverVariant, BoxMix.width(100.0));
+        final style1 = VariantStyle<BoxSpec>(
+          hoverVariant,
+          BoxStyle().width(100.0),
+        );
 
-        final style2 = VariantStyle(hoverVariant, BoxMix.height(200.0));
+        final style2 = VariantStyle<BoxSpec>(
+          hoverVariant,
+          BoxStyle().height(200.0),
+        );
 
         final merged = style1.merge(style2);
 
         expect(merged.variant, hoverVariant);
-        final mergedBox = merged.value as BoxMix;
+        final mergedBox = merged.value as BoxStyle;
         final context = MockBuildContext();
         final constraints = mergedBox.resolve(context).constraints;
         expect(constraints?.minWidth, 100.0);

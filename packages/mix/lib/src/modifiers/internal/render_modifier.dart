@@ -1,7 +1,7 @@
 // ignore_for_file: avoid-dynamic
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 import '../../core/modifier.dart';
 
@@ -23,10 +23,7 @@ class RenderModifiers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _RenderModifiers(
-      modifiers: widgetModifiers.reversed,
-      child: child,
-    );
+    return _RenderModifiers(modifiers: widgetModifiers.reversed, child: child);
   }
 }
 
