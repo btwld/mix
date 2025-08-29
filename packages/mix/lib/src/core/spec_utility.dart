@@ -24,7 +24,7 @@ abstract class StyleAttributeBuilder<S extends Spec<S>> extends Style<S>
   Style<S> get style;
 
   @override
-  WidgetSpec<S> resolve(BuildContext context) => style.resolve(context);
+  StyleSpec<S> resolve(BuildContext context) => style.resolve(context);
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -49,11 +49,7 @@ abstract class StyleAttributeBuilder<S extends Spec<S>> extends Style<S>
 
 abstract class StyleMutableBuilder<S extends Spec<S>> extends Style<S>
     with Diagnosticable {
-  const StyleMutableBuilder({
-    super.animation,
-    super.modifier,
-    super.variants,
-  });
+  const StyleMutableBuilder({super.animation, super.modifier, super.variants});
 
   /// Internal mutable wrapper
   @protected
@@ -64,7 +60,7 @@ abstract class StyleMutableBuilder<S extends Spec<S>> extends Style<S>
   Style<S> get value => mutable.value;
 
   @override
-  WidgetSpec<S> resolve(BuildContext context) => value.resolve(context);
+  StyleSpec<S> resolve(BuildContext context) => value.resolve(context);
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -113,7 +109,7 @@ mixin Mutable<S extends Spec<S>, T extends Style<S>> on Style<S> {
   }
 
   @override
-  WidgetSpec<S> resolve(BuildContext context) {
+  StyleSpec<S> resolve(BuildContext context) {
     return value.resolve(context);
   }
 }

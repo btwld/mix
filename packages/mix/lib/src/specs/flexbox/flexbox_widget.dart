@@ -127,9 +127,9 @@ extension FlexBoxSpecWidget on FlexBoxSpec {
   }
 }
 
-extension FlexSpecWrappedWidget on WidgetSpec<FlexSpec> {
+extension FlexSpecWrappedWidget on StyleSpec<FlexSpec> {
   Widget call({Axis? direction, List<Widget> children = const []}) {
-    return WidgetSpecBuilder(
+    return StyleSpecBuilder(
       builder: (context, spec) {
         return createFlexSpecWidget(
           spec: spec,
@@ -142,9 +142,9 @@ extension FlexSpecWrappedWidget on WidgetSpec<FlexSpec> {
   }
 }
 
-extension FlexBoxSpecWrappedWidget on WidgetSpec<FlexBoxSpec> {
+extension FlexBoxSpecWrappedWidget on StyleSpec<FlexBoxSpec> {
   Widget call({required Axis direction, List<Widget> children = const []}) {
-    return WidgetSpecBuilder(
+    return StyleSpecBuilder(
       builder: (context, spec) {
         return createFlexBoxSpecWidget(
           spec: spec,

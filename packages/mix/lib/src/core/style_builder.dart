@@ -72,7 +72,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
       builder: (context) {
         final wrappedSpec = mergedStyle.build(context);
 
-        return WidgetSpecBuilder(
+        return StyleSpecBuilder(
           builder: widget.builder,
           wrappedSpec: wrappedSpec,
         );
@@ -89,15 +89,15 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
   }
 }
 
-class WidgetSpecBuilder<S extends Spec<S>> extends StatelessWidget {
-  const WidgetSpecBuilder({
+class StyleSpecBuilder<S extends Spec<S>> extends StatelessWidget {
+  const StyleSpecBuilder({
     super.key,
     required this.builder,
     required this.wrappedSpec,
   });
 
   /// The style to resolve.
-  final WidgetSpec<S> wrappedSpec;
+  final StyleSpec<S> wrappedSpec;
 
   /// The builder function that receives the resolved style.
   final Widget Function(BuildContext context, S spec) builder;
@@ -112,7 +112,7 @@ class WidgetSpecBuilder<S extends Spec<S>> extends StatelessWidget {
     Widget current = builder(context, wrappedSpec.spec);
 
     // Always wrap with WidgetSpecProvider first
-    current = WidgetSpecProvider<S>(spec: wrappedSpec, child: current);
+    current = StyleSpecProvider<S>(spec: wrappedSpec, child: current);
 
     if (wrappedSpec.widgetModifiers != null &&
         wrappedSpec.widgetModifiers!.isNotEmpty) {
@@ -131,7 +131,7 @@ class WidgetSpecBuilder<S extends Spec<S>> extends StatelessWidget {
           Widget animatedChild = builder(context, animatedWrappedSpec.spec);
 
           // Always wrap with WidgetSpecProvider first
-          animatedChild = WidgetSpecProvider<S>(
+          animatedChild = StyleSpecProvider<S>(
             spec: animatedWrappedSpec,
             child: animatedChild,
           );

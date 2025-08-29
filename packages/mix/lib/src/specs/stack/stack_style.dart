@@ -42,7 +42,6 @@ class StackStyle extends Style<StackSpec>
     super.animation,
     super.modifier,
     super.variants,
-
   }) : $alignment = alignment,
        $fit = fit,
        $textDirection = textDirection,
@@ -109,7 +108,7 @@ class StackStyle extends Style<StackSpec>
 
   /// Resolves to [StackSpec] using the provided [BuildContext].
   @override
-  WidgetSpec<StackSpec> resolve(BuildContext context) {
+  StyleSpec<StackSpec> resolve(BuildContext context) {
     final stackSpec = StackSpec(
       alignment: MixOps.resolve(context, $alignment),
       fit: MixOps.resolve(context, $fit),
@@ -117,7 +116,7 @@ class StackStyle extends Style<StackSpec>
       clipBehavior: MixOps.resolve(context, $clipBehavior),
     );
 
-    return WidgetSpec(
+    return StyleSpec(
       spec: stackSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),
@@ -137,7 +136,6 @@ class StackStyle extends Style<StackSpec>
       animation: other.$animation ?? $animation,
       modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
       variants: mergeVariantLists($variants, other.$variants),
-
     );
   }
 

@@ -274,10 +274,10 @@ class MockStyle<T> extends Style<MockSpec<T>> {
   }
 
   @override
-  WidgetSpec<MockSpec<T>> resolve(BuildContext context) {
+  StyleSpec<MockSpec<T>> resolve(BuildContext context) {
     final mockSpec = MockSpec<T>(resolvedValue: value);
 
-    return WidgetSpec(
+    return StyleSpec(
       spec: mockSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),
@@ -312,13 +312,13 @@ final class MockSpec<T> extends Spec<MockSpec<T>> with Diagnosticable {
   @override
   List<Object?> get props => [resolvedValue];
 
-  WidgetSpec<MockSpec<T>> toWidgetSpec() {
-    return WidgetSpec(spec: this);
+  StyleSpec<MockSpec<T>> toWidgetSpec() {
+    return StyleSpec(spec: this);
   }
 }
 
 // Test-only extension to simplify access to MockSpec.resolvedValue when wrapped
-extension WrappedMockResolvedValue<T> on WidgetSpec<MockSpec<T>> {
+extension WrappedMockResolvedValue<T> on StyleSpec<MockSpec<T>> {
   T? get resolvedValue => spec.resolvedValue;
 }
 
@@ -755,24 +755,24 @@ class _PropHasTokensMatcher extends Matcher {
 }
 
 // Test-only helper extensions to access underlying spec fields on WidgetSpec
-extension WrappedBoxSpecAccess on WidgetSpec<BoxSpec> {
+extension WrappedBoxSpecAccess on StyleSpec<BoxSpec> {
   BoxConstraints? get constraints => spec.constraints;
 }
 
-extension WrappedFlexBoxSpecAccess on WidgetSpec<FlexBoxSpec> {
+extension WrappedFlexBoxSpecAccess on StyleSpec<FlexBoxSpec> {
   FlexSpec? get flex => spec.flex?.spec;
   BoxSpec? get container => spec.box?.spec;
 }
 
-extension WrappedIconSpecAccess on WidgetSpec<IconSpec> {
+extension WrappedIconSpecAccess on StyleSpec<IconSpec> {
   double? get size => spec.size;
 }
 
-extension WrappedStackSpecAccess on WidgetSpec<StackSpec> {
+extension WrappedStackSpecAccess on StyleSpec<StackSpec> {
   AlignmentGeometry? get alignment => spec.alignment;
 }
 
-extension WrappedZBoxSpecAccess on WidgetSpec<ZBoxSpec> {
+extension WrappedZBoxSpecAccess on StyleSpec<ZBoxSpec> {
   BoxSpec? get box => spec.box?.spec;
   StackSpec? get stack => spec.stack?.spec;
 }

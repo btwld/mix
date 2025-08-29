@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 
+import '../../core/style_builder.dart';
 import '../../core/style_widget.dart';
 import '../../core/widget_spec.dart';
-import '../../core/style_builder.dart';
 import '../box/box_widget.dart';
 import 'stack_box_spec.dart';
 import 'stack_box_style.dart';
@@ -71,9 +71,9 @@ extension ZBoxSpecWidget on ZBoxSpec {
   }
 }
 
-extension StackSpecWrappedWidget on WidgetSpec<StackSpec> {
+extension StackSpecWrappedWidget on StyleSpec<StackSpec> {
   Widget call({List<Widget> children = const []}) {
-    return WidgetSpecBuilder(
+    return StyleSpecBuilder(
       builder: (context, spec) {
         return createStackSpecWidget(spec: spec, children: children);
       },
@@ -82,9 +82,9 @@ extension StackSpecWrappedWidget on WidgetSpec<StackSpec> {
   }
 }
 
-extension ZBoxSpecWrappedWidget on WidgetSpec<ZBoxSpec> {
+extension ZBoxSpecWrappedWidget on StyleSpec<ZBoxSpec> {
   Widget call({List<Widget> children = const []}) {
-    return WidgetSpecBuilder(
+    return StyleSpecBuilder(
       builder: (context, spec) {
         return createZBoxSpecWidget(spec: spec, children: children);
       },

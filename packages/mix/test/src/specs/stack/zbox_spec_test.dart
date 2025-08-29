@@ -4,8 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 // Helper functions to create WidgetSpec wrappers for testing
-WidgetSpec<BoxSpec> wrapBoxSpec(BoxSpec spec) => WidgetSpec(spec: spec);
-WidgetSpec<StackSpec> wrapStackSpec(StackSpec spec) => WidgetSpec(spec: spec);
+StyleSpec<BoxSpec> wrapBoxSpec(BoxSpec spec) => StyleSpec(spec: spec);
+StyleSpec<StackSpec> wrapStackSpec(StackSpec spec) => StyleSpec(spec: spec);
 
 void main() {
   group('ZBoxSpec', () {
@@ -23,13 +23,19 @@ void main() {
           clipBehavior: Clip.antiAlias,
         );
 
-        final spec = ZBoxSpec(box: wrapBoxSpec(boxSpec), stack: wrapStackSpec(stackSpec));
+        final spec = ZBoxSpec(
+          box: wrapBoxSpec(boxSpec),
+          stack: wrapStackSpec(stackSpec),
+        );
         final actualBoxSpec = spec.box?.spec;
         final actualStackSpec = spec.stack?.spec;
 
         expect(actualBoxSpec, boxSpec);
         expect(actualStackSpec, stackSpec);
-        expect(actualBoxSpec?.constraints, BoxConstraints.tightFor(width: 200.0, height: 100.0));
+        expect(
+          actualBoxSpec?.constraints,
+          BoxConstraints.tightFor(width: 200.0, height: 100.0),
+        );
         expect(actualBoxSpec?.alignment, Alignment.center);
         expect(actualBoxSpec?.padding, const EdgeInsets.all(16.0));
         expect(actualStackSpec?.alignment, Alignment.topLeft);
@@ -68,7 +74,10 @@ void main() {
           alignment: Alignment.center,
           fit: StackFit.loose,
         );
-        final original = ZBoxSpec(box: wrapBoxSpec(originalBox), stack: wrapStackSpec(originalStack));
+        final original = ZBoxSpec(
+          box: wrapBoxSpec(originalBox),
+          stack: wrapStackSpec(originalStack),
+        );
 
         const newBox = BoxSpec(
           constraints: BoxConstraints.tightFor(width: 200.0, height: 100.0),
@@ -88,7 +97,10 @@ void main() {
       test('updates stack and preserves box', () {
         const originalBox = BoxSpec(alignment: Alignment.topLeft);
         const originalStack = StackSpec(alignment: Alignment.center);
-        final original = ZBoxSpec(box: wrapBoxSpec(originalBox), stack: wrapStackSpec(originalStack));
+        final original = ZBoxSpec(
+          box: wrapBoxSpec(originalBox),
+          stack: wrapStackSpec(originalStack),
+        );
 
         const newStack = StackSpec(alignment: Alignment.bottomRight);
         final updated = original.copyWith(stack: wrapStackSpec(newStack));
@@ -102,7 +114,10 @@ void main() {
       test('handles null values correctly', () {
         const originalBox = BoxSpec(alignment: Alignment.center);
         const originalStack = StackSpec(fit: StackFit.expand);
-        final original = ZBoxSpec(box: wrapBoxSpec(originalBox), stack: wrapStackSpec(originalStack));
+        final original = ZBoxSpec(
+          box: wrapBoxSpec(originalBox),
+          stack: wrapStackSpec(originalStack),
+        );
 
         final updated = original.copyWith();
         final updatedBoxSpec = updated.box?.spec;
@@ -123,7 +138,10 @@ void main() {
           alignment: Alignment.topLeft,
           fit: StackFit.loose,
         );
-        final spec1 = ZBoxSpec(box: wrapBoxSpec(spec1Box), stack: wrapStackSpec(spec1Stack));
+        final spec1 = ZBoxSpec(
+          box: wrapBoxSpec(spec1Box),
+          stack: wrapStackSpec(spec1Stack),
+        );
 
         const spec2Box = BoxSpec(
           constraints: BoxConstraints.tightFor(width: 200.0, height: 200.0),
@@ -133,7 +151,10 @@ void main() {
           alignment: Alignment.bottomRight,
           fit: StackFit.expand,
         );
-        final spec2 = ZBoxSpec(box: wrapBoxSpec(spec2Box), stack: wrapStackSpec(spec2Stack));
+        final spec2 = ZBoxSpec(
+          box: wrapBoxSpec(spec2Box),
+          stack: wrapStackSpec(spec2Stack),
+        );
 
         final lerped = spec1.lerp(spec2, 0.5);
         final lerpedBoxSpec = lerped.box?.spec;
@@ -151,7 +172,10 @@ void main() {
           constraints: BoxConstraints.tightFor(width: 100.0, height: 100.0),
         );
         const spec1Stack = StackSpec(alignment: Alignment.topLeft);
-        final spec1 = ZBoxSpec(box: wrapBoxSpec(spec1Box), stack: wrapStackSpec(spec1Stack));
+        final spec1 = ZBoxSpec(
+          box: wrapBoxSpec(spec1Box),
+          stack: wrapStackSpec(spec1Stack),
+        );
 
         final lerped = spec1.lerp(null, 0.5);
         final lerpedBoxSpec = lerped.box?.spec;
@@ -159,7 +183,10 @@ void main() {
 
         expect(lerpedBoxSpec?.constraints?.minWidth, 50.0);
         expect(lerpedBoxSpec?.constraints?.minHeight, 50.0);
-        expect(lerpedStackSpec?.alignment, Alignment(-0.5, -0.5)); // lerped from topLeft to null at t=0.5
+        expect(
+          lerpedStackSpec?.alignment,
+          Alignment(-0.5, -0.5),
+        ); // lerped from topLeft to null at t=0.5
       });
     });
 
@@ -167,8 +194,14 @@ void main() {
       test('specs with same properties are equal', () {
         const boxSpec = BoxSpec(alignment: Alignment.center);
         const stackSpec = StackSpec(fit: StackFit.expand);
-        final spec1 = ZBoxSpec(box: wrapBoxSpec(boxSpec), stack: wrapStackSpec(stackSpec));
-        final spec2 = ZBoxSpec(box: wrapBoxSpec(boxSpec), stack: wrapStackSpec(stackSpec));
+        final spec1 = ZBoxSpec(
+          box: wrapBoxSpec(boxSpec),
+          stack: wrapStackSpec(stackSpec),
+        );
+        final spec2 = ZBoxSpec(
+          box: wrapBoxSpec(boxSpec),
+          stack: wrapStackSpec(stackSpec),
+        );
 
         expect(spec1, spec2);
         expect(spec1.hashCode, spec2.hashCode);
@@ -178,8 +211,14 @@ void main() {
         const boxSpec1 = BoxSpec(alignment: Alignment.center);
         const boxSpec2 = BoxSpec(alignment: Alignment.topLeft);
         const stackSpec = StackSpec(fit: StackFit.expand);
-        final spec1 = ZBoxSpec(box: wrapBoxSpec(boxSpec1), stack: wrapStackSpec(stackSpec));
-        final spec2 = ZBoxSpec(box: wrapBoxSpec(boxSpec2), stack: wrapStackSpec(stackSpec));
+        final spec1 = ZBoxSpec(
+          box: wrapBoxSpec(boxSpec1),
+          stack: wrapStackSpec(stackSpec),
+        );
+        final spec2 = ZBoxSpec(
+          box: wrapBoxSpec(boxSpec2),
+          stack: wrapStackSpec(stackSpec),
+        );
 
         expect(spec1, isNot(spec2));
       });
@@ -188,8 +227,14 @@ void main() {
         const boxSpec = BoxSpec(alignment: Alignment.center);
         const stackSpec1 = StackSpec(fit: StackFit.expand);
         const stackSpec2 = StackSpec(fit: StackFit.loose);
-        final spec1 = ZBoxSpec(box: wrapBoxSpec(boxSpec), stack: wrapStackSpec(stackSpec1));
-        final spec2 = ZBoxSpec(box: wrapBoxSpec(boxSpec), stack: wrapStackSpec(stackSpec2));
+        final spec1 = ZBoxSpec(
+          box: wrapBoxSpec(boxSpec),
+          stack: wrapStackSpec(stackSpec1),
+        );
+        final spec2 = ZBoxSpec(
+          box: wrapBoxSpec(boxSpec),
+          stack: wrapStackSpec(stackSpec2),
+        );
 
         expect(spec1, isNot(spec2));
       });
@@ -207,7 +252,10 @@ void main() {
       test('includes all properties in diagnostics', () {
         const boxSpec = BoxSpec(alignment: Alignment.center);
         const stackSpec = StackSpec(fit: StackFit.expand);
-        final spec = ZBoxSpec(box: wrapBoxSpec(boxSpec), stack: wrapStackSpec(stackSpec));
+        final spec = ZBoxSpec(
+          box: wrapBoxSpec(boxSpec),
+          stack: wrapStackSpec(stackSpec),
+        );
 
         final diagnostics = DiagnosticPropertiesBuilder();
         spec.debugFillProperties(diagnostics);
@@ -222,7 +270,10 @@ void main() {
       test('includes all properties in props list', () {
         const boxSpec = BoxSpec(alignment: Alignment.center);
         const stackSpec = StackSpec(fit: StackFit.expand);
-        final spec = ZBoxSpec(box: wrapBoxSpec(boxSpec), stack: wrapStackSpec(stackSpec));
+        final spec = ZBoxSpec(
+          box: wrapBoxSpec(boxSpec),
+          stack: wrapStackSpec(stackSpec),
+        );
 
         expect(spec.props.length, 2);
         expect(spec.props, contains(spec.box));
@@ -233,67 +284,75 @@ void main() {
     group('Real-world scenarios', () {
       test('creates overlay spec', () {
         final overlaySpec = ZBoxSpec(
-          box: wrapBoxSpec(const BoxSpec(
-            constraints: BoxConstraints.expand(),
-            decoration: BoxDecoration(color: Colors.black54),
-          )),
-          stack: wrapStackSpec(const StackSpec(
-            alignment: Alignment.center,
-            fit: StackFit.expand,
-          )),
+          box: wrapBoxSpec(
+            const BoxSpec(
+              constraints: BoxConstraints.expand(),
+              decoration: BoxDecoration(color: Colors.black54),
+            ),
+          ),
+          stack: wrapStackSpec(
+            const StackSpec(alignment: Alignment.center, fit: StackFit.expand),
+          ),
         );
 
         final overlayBoxSpec = overlaySpec.box?.spec;
         final overlayStackSpec = overlaySpec.stack?.spec;
 
         expect(overlayBoxSpec?.constraints, const BoxConstraints.expand());
-        expect((overlayBoxSpec?.decoration as BoxDecoration?)?.color, Colors.black54);
+        expect(
+          (overlayBoxSpec?.decoration as BoxDecoration?)?.color,
+          Colors.black54,
+        );
         expect(overlayStackSpec?.alignment, Alignment.center);
         expect(overlayStackSpec?.fit, StackFit.expand);
       });
 
       test('creates card with floating action button spec', () {
         final cardSpec = ZBoxSpec(
-          box: wrapBoxSpec(BoxSpec(
-            padding: const EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8.0),
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 4.0,
-                  offset: Offset(0, 2),
-                ),
-              ],
+          box: wrapBoxSpec(
+            BoxSpec(
+              padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8.0),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 4.0,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
             ),
-          )),
-          stack: wrapStackSpec(const StackSpec(
-            alignment: Alignment.topRight,
-          )),
+          ),
+          stack: wrapStackSpec(const StackSpec(alignment: Alignment.topRight)),
         );
 
         final cardBoxSpec = cardSpec.box?.spec;
         final cardStackSpec = cardSpec.stack?.spec;
 
         expect(cardBoxSpec?.padding, const EdgeInsets.all(16.0));
-        expect((cardBoxSpec?.decoration as BoxDecoration?)?.color, Colors.white);
+        expect(
+          (cardBoxSpec?.decoration as BoxDecoration?)?.color,
+          Colors.white,
+        );
         expect(cardStackSpec?.alignment, Alignment.topRight);
       });
 
       test('creates badge spec', () {
         final badgeSpec = ZBoxSpec(
-          box: wrapBoxSpec(const BoxSpec(
-            constraints: BoxConstraints.tightFor(width: 24.0, height: 24.0),
-            decoration: BoxDecoration(
-              color: Colors.red,
-              shape: BoxShape.circle,
+          box: wrapBoxSpec(
+            const BoxSpec(
+              constraints: BoxConstraints.tightFor(width: 24.0, height: 24.0),
+              decoration: BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.circle,
+              ),
             ),
-          )),
-          stack: wrapStackSpec(const StackSpec(
-            alignment: Alignment.center,
-            fit: StackFit.loose,
-          )),
+          ),
+          stack: wrapStackSpec(
+            const StackSpec(alignment: Alignment.center, fit: StackFit.loose),
+          ),
         );
 
         final badgeBoxSpec = badgeSpec.box?.spec;
@@ -302,32 +361,39 @@ void main() {
         expect(badgeBoxSpec?.constraints?.minWidth, 24.0);
         expect(badgeBoxSpec?.constraints?.minHeight, 24.0);
         expect((badgeBoxSpec?.decoration as BoxDecoration?)?.color, Colors.red);
-        expect((badgeBoxSpec?.decoration as BoxDecoration?)?.shape, BoxShape.circle);
+        expect(
+          (badgeBoxSpec?.decoration as BoxDecoration?)?.shape,
+          BoxShape.circle,
+        );
         expect(badgeStackSpec?.alignment, Alignment.center);
         expect(badgeStackSpec?.fit, StackFit.loose);
       });
 
       test('creates floating action button spec', () {
         final fabSpec = ZBoxSpec(
-          box: wrapBoxSpec(BoxSpec(
-            constraints: BoxConstraints.tightFor(width: 56.0, height: 56.0),
-            decoration: BoxDecoration(
-              color: Colors.blue,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 6.0,
-                  offset: Offset(0, 3),
-                ),
-              ],
+          box: wrapBoxSpec(
+            BoxSpec(
+              constraints: BoxConstraints.tightFor(width: 56.0, height: 56.0),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 6.0,
+                    offset: Offset(0, 3),
+                  ),
+                ],
+              ),
             ),
-          )),
-          stack: wrapStackSpec(StackSpec(
-            alignment: Alignment.center,
-            fit: StackFit.expand,
-            clipBehavior: Clip.antiAlias,
-          )),
+          ),
+          stack: wrapStackSpec(
+            StackSpec(
+              alignment: Alignment.center,
+              fit: StackFit.expand,
+              clipBehavior: Clip.antiAlias,
+            ),
+          ),
         );
 
         final fabBoxSpec = fabSpec.box?.spec;

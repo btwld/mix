@@ -5,11 +5,7 @@ import 'package:mix/mix.dart';
 // Test implementation of VariantMixin
 class TestVariantAttribute extends Style<BoxSpec>
     with StyleVariantMixin<TestVariantAttribute, BoxSpec> {
-  const TestVariantAttribute({
-    super.variants,
-    super.modifier,
-    super.animation,
-  });
+  const TestVariantAttribute({super.variants, super.modifier, super.animation});
 
   @override
   TestVariantAttribute variant(Variant variant, TestVariantAttribute style) {
@@ -24,8 +20,8 @@ class TestVariantAttribute extends Style<BoxSpec>
   }
 
   @override
-  WidgetSpec<BoxSpec> resolve(BuildContext context) =>
-      const WidgetSpec(spec: BoxSpec());
+  StyleSpec<BoxSpec> resolve(BuildContext context) =>
+      const StyleSpec(spec: BoxSpec());
 
   @override
   TestVariantAttribute merge(TestVariantAttribute? other) {

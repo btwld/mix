@@ -19,7 +19,10 @@ void main() {
           crossAxisAlignment: CrossAxisAlignment.start,
         );
 
-        final attribute = FlexBoxStyle.create(box: Prop.maybeMix(containerAttr), flex: Prop.maybeMix(flexAttr));
+        final attribute = FlexBoxStyle.create(
+          box: Prop.maybeMix(containerAttr),
+          flex: Prop.maybeMix(flexAttr),
+        );
 
         // Verify properties are set
         expect(attribute.$box!.sources[0], isA<MixSource<Object?>>());
@@ -33,7 +36,6 @@ void main() {
         expect(attribute.$box, isNotNull);
         expect(attribute.$flex, isNotNull);
       });
-
     });
 
     group('Resolution', () {
@@ -55,7 +57,10 @@ void main() {
           const EdgeInsets.only(top: 10.0, bottom: 20.0),
         );
         expect(resolved.spec.flex?.spec.direction, Axis.horizontal);
-        expect(resolved.spec.flex?.spec.mainAxisAlignment, MainAxisAlignment.center);
+        expect(
+          resolved.spec.flex?.spec.mainAxisAlignment,
+          MainAxisAlignment.center,
+        );
       });
 
       test('resolves complex nested properties correctly', () {
@@ -111,19 +116,13 @@ void main() {
         final resolved = merged.resolve(context);
         final boxSpec = resolved.spec.box?.spec;
 
+        expect(boxSpec?.alignment, Alignment.topLeft); // second overrides first
+        expect(boxSpec?.padding, const EdgeInsets.all(10.0)); // from first
+        expect(boxSpec?.margin, const EdgeInsets.all(20.0)); // from second
         expect(
-          boxSpec?.alignment,
-          Alignment.topLeft,
-        ); // second overrides first
-        expect(
-          boxSpec?.padding,
-          const EdgeInsets.all(10.0),
+          resolved.spec.flex?.spec.direction,
+          Axis.horizontal,
         ); // from first
-        expect(
-          boxSpec?.margin,
-          const EdgeInsets.all(20.0),
-        ); // from second
-        expect(resolved.spec.flex?.spec.direction, Axis.horizontal); // from first
         expect(
           resolved.spec.flex?.spec.mainAxisAlignment,
           MainAxisAlignment.center,
@@ -131,9 +130,7 @@ void main() {
       });
 
       test('returns this when other is null', () {
-        final attribute = FlexBoxStyle(
-          alignment: Alignment.center,
-        );
+        final attribute = FlexBoxStyle(alignment: Alignment.center);
 
         final merged = attribute.merge(null);
 
@@ -261,9 +258,7 @@ void main() {
           variants: [
             VariantStyle(
               variant,
-              FlexBoxStyle(
-                decoration: BoxDecorationMix(color: Colors.green),
-              ),
+              FlexBoxStyle(decoration: BoxDecorationMix(color: Colors.green)),
             ),
           ],
         );
@@ -277,14 +272,18 @@ void main() {
       test('box and flex attributes work independently', () {
         final boxOnly = FlexBoxStyle(alignment: Alignment.center);
 
-        final flexOnly = FlexBoxStyle(
-          direction: Axis.horizontal,
-        );
+        final flexOnly = FlexBoxStyle(direction: Axis.horizontal);
 
         expect(boxOnly.$box, isNotNull);
-        expect(boxOnly.$flex, isNotNull); // Now creates empty flex even for box-only
+        expect(
+          boxOnly.$flex,
+          isNotNull,
+        ); // Now creates empty flex even for box-only
 
-        expect(flexOnly.$box, isNotNull); // Now creates empty box even for flex-only
+        expect(
+          flexOnly.$box,
+          isNotNull,
+        ); // Now creates empty box even for flex-only
         expect(flexOnly.$flex, isNotNull);
       });
 
@@ -294,9 +293,7 @@ void main() {
           direction: Axis.horizontal,
         );
 
-        final updateBox = FlexBoxStyle(
-          padding: EdgeInsetsMix.all(10.0),
-        );
+        final updateBox = FlexBoxStyle(padding: EdgeInsetsMix.all(10.0));
 
         final merged = initial.merge(updateBox);
 
@@ -304,7 +301,10 @@ void main() {
         final context = MockBuildContext();
         final resolved = merged.resolve(context);
 
-        expect(resolved.spec.flex?.spec.direction, Axis.horizontal); // preserved
+        expect(
+          resolved.spec.flex?.spec.direction,
+          Axis.horizontal,
+        ); // preserved
         expect(
           resolved.spec.box?.spec.padding,
           const EdgeInsets.all(10.0),
@@ -324,7 +324,10 @@ void main() {
 
         final merged = empty1.merge(empty2);
 
-        expect(merged.$box, isNotNull); // Empty FlexBoxStyle creates empty specs
+        expect(
+          merged.$box,
+          isNotNull,
+        ); // Empty FlexBoxStyle creates empty specs
         expect(merged.$flex, isNotNull);
       });
 
@@ -335,8 +338,14 @@ void main() {
         final resolved = attribute.resolve(context);
 
         expect(resolved, isNotNull);
-        expect(resolved.spec.box, isNotNull); // Empty FlexBoxStyle resolves to empty BoxSpec
-        expect(resolved.spec.flex, isNotNull); // Empty FlexBoxStyle resolves to empty FlexSpec
+        expect(
+          resolved.spec.box,
+          isNotNull,
+        ); // Empty FlexBoxStyle resolves to empty BoxSpec
+        expect(
+          resolved.spec.flex,
+          isNotNull,
+        ); // Empty FlexBoxStyle resolves to empty FlexSpec
       });
 
       test('handles complex nested chaining', () {
@@ -358,14 +367,8 @@ void main() {
         // Verify all properties are resolved correctly
         expect(boxSpec?.alignment, Alignment.center);
         expect(boxSpec?.padding, const EdgeInsets.all(10.0));
-        expect(
-          boxSpec?.margin,
-          const EdgeInsets.symmetric(horizontal: 20.0),
-        );
-        expect(
-          (boxSpec?.decoration as BoxDecoration?)?.color,
-          Colors.red,
-        );
+        expect(boxSpec?.margin, const EdgeInsets.symmetric(horizontal: 20.0));
+        expect((boxSpec?.decoration as BoxDecoration?)?.color, Colors.red);
         expect(resolved.spec.flex?.spec.direction, Axis.horizontal);
         expect(
           resolved.spec.flex?.spec.mainAxisAlignment,
@@ -387,8 +390,8 @@ void main() {
     test('', () {
       const boxSpec = BoxSpec(alignment: Alignment.center);
       const flexSpec = FlexSpec(direction: Axis.vertical);
-      final boxWidgetSpec = WidgetSpec(spec: boxSpec);
-      final flexWidgetSpec = WidgetSpec(spec: flexSpec);
+      final boxWidgetSpec = StyleSpec(spec: boxSpec);
+      final flexWidgetSpec = StyleSpec(spec: flexSpec);
       final spec = FlexBoxSpec(box: boxWidgetSpec, flex: flexWidgetSpec);
 
       expect(spec.box?.spec, boxSpec);
@@ -397,12 +400,12 @@ void main() {
 
     test('copyWith creates new instance with updated values', () {
       final original = FlexBoxSpec(
-        box: WidgetSpec(spec: BoxSpec(alignment: Alignment.center)),
-        flex: WidgetSpec(spec: FlexSpec(direction: Axis.horizontal)),
+        box: StyleSpec(spec: BoxSpec(alignment: Alignment.center)),
+        flex: StyleSpec(spec: FlexSpec(direction: Axis.horizontal)),
       );
 
       final updated = original.copyWith(
-        box: WidgetSpec(spec: BoxSpec(alignment: Alignment.topLeft)),
+        box: StyleSpec(spec: BoxSpec(alignment: Alignment.topLeft)),
       );
 
       expect(updated.box?.spec.alignment, Alignment.topLeft);
@@ -412,13 +415,13 @@ void main() {
 
     test('', () {
       final spec1 = FlexBoxSpec(
-        box: WidgetSpec(spec: BoxSpec(padding: EdgeInsets.all(10.0))),
-        flex: WidgetSpec(spec: FlexSpec(spacing: 10.0)),
+        box: StyleSpec(spec: BoxSpec(padding: EdgeInsets.all(10.0))),
+        flex: StyleSpec(spec: FlexSpec(spacing: 10.0)),
       );
 
       final spec2 = FlexBoxSpec(
-        box: WidgetSpec(spec: BoxSpec(padding: EdgeInsets.all(20.0))),
-        flex: WidgetSpec(spec: FlexSpec(spacing: 20.0)),
+        box: StyleSpec(spec: BoxSpec(padding: EdgeInsets.all(20.0))),
+        flex: StyleSpec(spec: FlexSpec(spacing: 20.0)),
       );
 
       final interpolated = spec1.lerp(spec2, 0.5);
@@ -430,32 +433,31 @@ void main() {
     });
 
     test('lerp interpolates properly when other is null', () {
-      final spec = FlexBoxSpec(box: WidgetSpec(spec: BoxSpec(alignment: Alignment.center)));
+      final spec = FlexBoxSpec(
+        box: StyleSpec(spec: BoxSpec(alignment: Alignment.center)),
+      );
 
       final result = spec.lerp(null, 0.5);
       final boxSpec = result.box?.spec;
 
       // Properties should interpolate according to their lerp behavior
-      expect(
-        boxSpec?.alignment,
-        Alignment.lerp(Alignment.center, null, 0.5),
-      );
+      expect(boxSpec?.alignment, Alignment.lerp(Alignment.center, null, 0.5));
     });
 
     test('equality and hashCode', () {
       final spec1 = FlexBoxSpec(
-        box: WidgetSpec(spec: BoxSpec(alignment: Alignment.center)),
-        flex: WidgetSpec(spec: FlexSpec(direction: Axis.horizontal)),
+        box: StyleSpec(spec: BoxSpec(alignment: Alignment.center)),
+        flex: StyleSpec(spec: FlexSpec(direction: Axis.horizontal)),
       );
 
       final spec2 = FlexBoxSpec(
-        box: WidgetSpec(spec: BoxSpec(alignment: Alignment.center)),
-        flex: WidgetSpec(spec: FlexSpec(direction: Axis.horizontal)),
+        box: StyleSpec(spec: BoxSpec(alignment: Alignment.center)),
+        flex: StyleSpec(spec: FlexSpec(direction: Axis.horizontal)),
       );
 
       final spec3 = FlexBoxSpec(
-        box: WidgetSpec(spec: BoxSpec(alignment: Alignment.topLeft)),
-        flex: WidgetSpec(spec: FlexSpec(direction: Axis.horizontal)),
+        box: StyleSpec(spec: BoxSpec(alignment: Alignment.topLeft)),
+        flex: StyleSpec(spec: FlexSpec(direction: Axis.horizontal)),
       );
 
       expect(spec1, equals(spec2));

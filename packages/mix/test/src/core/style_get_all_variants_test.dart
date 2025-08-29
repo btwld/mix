@@ -738,14 +738,11 @@ class _MockSpecAttribute extends Style<MockSpec<Map<String, dynamic>>> {
     super.variants,
     super.modifier,
     super.animation,
-
   });
 
   @override
-  WidgetSpec<MockSpec<Map<String, dynamic>>> resolve(
-    BuildContext context,
-  ) {
-    return WidgetSpec(
+  StyleSpec<MockSpec<Map<String, dynamic>>> resolve(BuildContext context) {
+    return StyleSpec(
       spec: MockSpec<Map<String, dynamic>>(
         resolvedValue: {'width': width, 'height': height},
       ),

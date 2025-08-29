@@ -332,7 +332,7 @@ void main() {
         final context = MockBuildContext();
         final spec = testUtil.resolve(context);
 
-        expect(spec, isA<WidgetSpec<ImageSpec>>());
+        expect(spec, isA<StyleSpec<ImageSpec>>());
         expect(spec.spec.width, 100.0);
         expect(spec.spec.height, 200.0);
         expect(spec.spec.fit, BoxFit.cover);
@@ -342,7 +342,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec, isA<WidgetSpec<ImageSpec>>());
+        expect(spec, isA<StyleSpec<ImageSpec>>());
         expect(spec.spec.width, isNull);
         expect(spec.spec.height, isNull);
         expect(spec.spec.fit, isNull);
@@ -374,7 +374,7 @@ void main() {
         expect(
           spec,
           equals(
-            WidgetSpec(
+            StyleSpec(
               spec: const ImageSpec(
                 width: 100.0,
                 height: 200.0,
@@ -539,8 +539,12 @@ void main() {
         expect(
           testUtil,
           resolvesTo(
-            WidgetSpec(
-              spec: const ImageSpec(width: 100.0, height: 200.0, fit: BoxFit.cover),
+            StyleSpec(
+              spec: const ImageSpec(
+                width: 100.0,
+                height: 200.0,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
         );

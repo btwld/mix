@@ -12,17 +12,17 @@ import '../flex/flex_spec.dart';
 /// [FlexSpec] into a unified specification.
 final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
   /// Box styling properties for decoration, padding, constraints, etc.
-  final WidgetSpec<BoxSpec>? box;
+  final StyleSpec<BoxSpec>? box;
 
   /// Flex layout properties for direction, alignment, spacing, etc.
-  final WidgetSpec<FlexSpec>? flex;
+  final StyleSpec<FlexSpec>? flex;
 
   const FlexBoxSpec({this.box, this.flex});
 
   /// Creates a copy of this [FlexBoxSpec] but with the given fields
   /// replaced with the new values.
   @override
-  FlexBoxSpec copyWith({WidgetSpec<BoxSpec>? box, WidgetSpec<FlexSpec>? flex}) {
+  FlexBoxSpec copyWith({StyleSpec<BoxSpec>? box, StyleSpec<FlexSpec>? flex}) {
     return FlexBoxSpec(box: box ?? this.box, flex: flex ?? this.flex);
   }
 
@@ -36,8 +36,8 @@ final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
   ///
   /// The interpolation is performed on each property of the [FlexBoxSpec] using the appropriate
   /// interpolation method:
-  /// - [WidgetSpec.lerp] for [box].
-  /// - [WidgetSpec.lerp] for [flex].
+  /// - [StyleSpec.lerp] for [box].
+  /// - [StyleSpec.lerp] for [flex].
   ///
   /// This method is typically used in animations to smoothly transition between
   /// different [FlexBoxSpec] configurations.

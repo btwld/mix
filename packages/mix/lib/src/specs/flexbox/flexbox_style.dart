@@ -45,8 +45,8 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
         SpacingMixin<FlexBoxStyle>,
         TransformMixin<FlexBoxStyle>,
         ConstraintsMixin<FlexBoxStyle> {
-  final Prop<WidgetSpec<BoxSpec>>? $box;
-  final Prop<WidgetSpec<FlexSpec>>? $flex;
+  final Prop<StyleSpec<BoxSpec>>? $box;
+  final Prop<StyleSpec<FlexSpec>>? $flex;
 
   /// Main constructor with individual property parameters
   FlexBoxStyle({
@@ -108,8 +108,8 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
 
   /// Create constructor with Prop`<T>` types for internal use
   const FlexBoxStyle.create({
-    Prop<WidgetSpec<BoxSpec>>? box,
-    Prop<WidgetSpec<FlexSpec>>? flex,
+    Prop<StyleSpec<BoxSpec>>? box,
+    Prop<StyleSpec<FlexSpec>>? flex,
     super.animation,
     super.modifier,
     super.variants,
@@ -260,13 +260,13 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
   /// final flexBoxWidgetSpec = FlexBoxStyle(...).resolve(context);
   /// ```
   @override
-  WidgetSpec<FlexBoxSpec> resolve(BuildContext context) {
+  StyleSpec<FlexBoxSpec> resolve(BuildContext context) {
     final boxSpec = MixOps.resolve(context, $box);
     final flexSpec = MixOps.resolve(context, $flex);
 
     final flexBoxSpec = FlexBoxSpec(box: boxSpec, flex: flexSpec);
 
-    return WidgetSpec(
+    return StyleSpec(
       spec: flexBoxSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),

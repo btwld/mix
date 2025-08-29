@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 
 import '../../core/directive.dart';
+import '../../core/style_builder.dart';
 import '../../core/style_widget.dart';
 import '../../core/widget_spec.dart';
-import '../../core/style_builder.dart';
-import 'text_style.dart';
 import 'text_spec.dart';
+import 'text_style.dart';
 
 /// Displays text with Mix styling.
 ///
 /// Applies [TextSpec] for custom text appearance.
 class StyledText extends StyleWidget<TextSpec> {
   /// Creates a [StyledText] with required [text] and optional [style].
-  const StyledText(this.text, {super.style = const TextStyling.create(), super.key});
-
+  const StyledText(
+    this.text, {
+    super.style = const TextStyling.create(),
+    super.key,
+  });
 
   /// The text to display.
   final String text;
@@ -51,9 +54,9 @@ extension TextSpecWidget on TextSpec {
   }
 }
 
-extension TextSpecWrappedWidget on WidgetSpec<TextSpec> {
+extension TextSpecWrappedWidget on StyleSpec<TextSpec> {
   Widget call(String text) {
-    return WidgetSpecBuilder(
+    return StyleSpecBuilder(
       builder: (context, spec) {
         return createTextSpecWidget(spec: spec, text: text);
       },

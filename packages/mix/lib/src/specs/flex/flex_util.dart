@@ -100,7 +100,7 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexSpec>
   }
 
   @override
-  WidgetSpec<FlexSpec> resolve(BuildContext context) {
+  StyleSpec<FlexSpec> resolve(BuildContext context) {
     return mutable.resolve(context);
   }
 

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../core/style_builder.dart';
 import '../../core/style_widget.dart';
 import '../../core/widget_spec.dart';
-import '../../core/style_builder.dart';
-import 'icon_style.dart';
 import 'icon_spec.dart';
+import 'icon_style.dart';
 
 /// Displays an icon with Mix styling.
 ///
@@ -66,9 +66,9 @@ extension IconSpecWidget on IconSpec {
   }
 }
 
-extension IconSpecWrappedWidget on WidgetSpec<IconSpec> {
+extension IconSpecWrappedWidget on StyleSpec<IconSpec> {
   Widget call({IconData? icon, String? semanticLabel}) {
-    return WidgetSpecBuilder(
+    return StyleSpecBuilder(
       builder: (context, spec) {
         return createIconSpecWidget(
           spec: spec,

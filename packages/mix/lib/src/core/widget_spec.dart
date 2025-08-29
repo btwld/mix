@@ -22,7 +22,7 @@ import 'spec.dart';
 ///   animation: AnimationConfig.curve(),
 /// );
 /// ```
-class WidgetSpec<T extends Spec<T>> extends Spec<WidgetSpec<T>>
+class StyleSpec<T extends Spec<T>> extends Spec<StyleSpec<T>>
     with Diagnosticable {
   /// The underlying specification that holds the actual data.
   final T spec;
@@ -34,37 +34,37 @@ class WidgetSpec<T extends Spec<T>> extends Spec<WidgetSpec<T>>
   final List<Modifier>? widgetModifiers;
 
 
-  /// Creates a [WidgetSpec] with the provided spec and optional metadata.
-  const WidgetSpec({
+  /// Creates a [StyleSpec] with the provided spec and optional metadata.
+  const StyleSpec({
     required this.spec,
     this.animation,
     this.widgetModifiers,
   });
 
-  /// Creates a copy of this [WidgetSpec] with the given fields
+  /// Creates a copy of this [StyleSpec] with the given fields
   /// replaced by the new values.
   @override
-  WidgetSpec<T> copyWith({
+  StyleSpec<T> copyWith({
     T? spec,
     AnimationConfig? animation,
     List<Modifier>? widgetModifiers,
   }) {
-    return WidgetSpec(
+    return StyleSpec(
       spec: spec ?? this.spec,
       animation: animation ?? this.animation,
       widgetModifiers: widgetModifiers ?? this.widgetModifiers,
     );
   }
 
-  /// Linearly interpolates between this [WidgetSpec] and another.
+  /// Linearly interpolates between this [StyleSpec] and another.
   ///
   /// The interpolation is performed on:
   /// - The wrapped spec using its lerp method
   /// - Widget modifiers using standard lerp
   /// - Animation follows the standard policy (other?.field ?? this.field)
   @override
-  WidgetSpec<T> lerp(WidgetSpec<T>? other, double t) {
-    return WidgetSpec(
+  StyleSpec<T> lerp(StyleSpec<T>? other, double t) {
+    return StyleSpec(
       spec: spec.lerp(other?.spec, t),
       animation: other?.animation ?? animation,
       widgetModifiers: MixOps.lerp(widgetModifiers, other?.widgetModifiers, t),
@@ -80,10 +80,10 @@ class WidgetSpec<T extends Spec<T>> extends Spec<WidgetSpec<T>>
       ..add(DiagnosticsProperty<T>('spec', spec));
   }
 
-  /// The list of properties that constitute the state of this [WidgetSpec].
+  /// The list of properties that constitute the state of this [StyleSpec].
   ///
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [WidgetSpec] instances for equality.
+  /// compare two [StyleSpec] instances for equality.
   @override
   List<Object?> get props => [animation, widgetModifiers, spec];
 }

@@ -8,15 +8,15 @@ import 'stack_spec.dart';
 
 final class ZBoxSpec extends Spec<ZBoxSpec> with Diagnosticable {
   /// Container styling for the outer box. Nullable to mirror FlexBoxSpec.
-  final WidgetSpec<BoxSpec>? box;
-  final WidgetSpec<StackSpec>? stack;
+  final StyleSpec<BoxSpec>? box;
+  final StyleSpec<StackSpec>? stack;
 
   const ZBoxSpec({this.box, this.stack});
 
   /// Creates a copy of this [ZBoxSpec] but with the given fields
   /// replaced with the new values.
   @override
-  ZBoxSpec copyWith({WidgetSpec<BoxSpec>? box, WidgetSpec<StackSpec>? stack}) {
+  ZBoxSpec copyWith({StyleSpec<BoxSpec>? box, StyleSpec<StackSpec>? stack}) {
     return ZBoxSpec(box: box ?? this.box, stack: stack ?? this.stack);
   }
 
@@ -30,8 +30,8 @@ final class ZBoxSpec extends Spec<ZBoxSpec> with Diagnosticable {
   ///
   /// The interpolation is performed on each property of the [ZBoxSpec] using the appropriate
   /// interpolation method:
-  /// - [WidgetSpec.lerp] for [box].
-  /// - [WidgetSpec.lerp] for [stack].
+  /// - [StyleSpec.lerp] for [box].
+  /// - [StyleSpec.lerp] for [stack].
   ///
   /// This method is typically used in animations to smoothly transition between
   /// different [ZBoxSpec] configurations.

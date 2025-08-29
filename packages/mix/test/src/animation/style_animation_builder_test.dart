@@ -9,7 +9,7 @@ void main() {
         duration: Duration(milliseconds: 100),
         curve: Curves.linear,
       );
-      const spec = WidgetSpec<TestSpec>(spec: TestSpec());
+      const spec = StyleSpec<TestSpec>(spec: TestSpec());
 
       await tester.pumpWidget(
         MaterialApp(
@@ -32,7 +32,7 @@ void main() {
         duration: Duration(milliseconds: 100),
         curve: Curves.linear,
       );
-      const spec = WidgetSpec<TestSpec>(spec: TestSpec());
+      const spec = StyleSpec<TestSpec>(spec: TestSpec());
 
       await tester.pumpWidget(
         MaterialApp(
@@ -58,8 +58,8 @@ void main() {
         duration: Duration(milliseconds: 100),
         curve: Curves.linear,
       );
-      const spec1 = WidgetSpec<TestSpec>(spec: TestSpec(color: Colors.red));
-      const spec2 = WidgetSpec<TestSpec>(spec: TestSpec(color: Colors.blue));
+      const spec1 = StyleSpec<TestSpec>(spec: TestSpec(color: Colors.red));
+      const spec2 = StyleSpec<TestSpec>(spec: TestSpec(color: Colors.blue));
 
       await tester.pumpWidget(
         MaterialApp(
@@ -101,7 +101,7 @@ void main() {
         duration: Duration(milliseconds: 200),
         curve: Curves.easeIn,
       );
-      const spec = WidgetSpec<TestSpec>(spec: TestSpec(color: Colors.red));
+      const spec = StyleSpec<TestSpec>(spec: TestSpec(color: Colors.red));
 
       await tester.pumpWidget(
         MaterialApp(
@@ -135,7 +135,7 @@ void main() {
         duration: Duration(milliseconds: 100),
         curve: Curves.linear,
       );
-      const spec = WidgetSpec<TestSpec>(spec: TestSpec());
+      const spec = StyleSpec<TestSpec>(spec: TestSpec());
 
       await tester.pumpWidget(
         MaterialApp(
@@ -160,7 +160,7 @@ void main() {
         curve: Curves.linear,
       );
       // Create a style with an empty/default spec
-      const spec = WidgetSpec<TestSpec>(
+      const spec = StyleSpec<TestSpec>(
         spec: TestSpec(color: Colors.transparent),
       );
 

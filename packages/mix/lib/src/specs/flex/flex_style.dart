@@ -202,7 +202,7 @@ class FlexStyle extends Style<FlexSpec>
   /// final flexWidgetSpec = FlexStyle(...).resolve(context);
   /// ```
   @override
-  WidgetSpec<FlexSpec> resolve(BuildContext context) {
+  StyleSpec<FlexSpec> resolve(BuildContext context) {
     final flexSpec = FlexSpec(
       direction: MixOps.resolve(context, $direction),
       mainAxisAlignment: MixOps.resolve(context, $mainAxisAlignment),
@@ -215,7 +215,7 @@ class FlexStyle extends Style<FlexSpec>
       spacing: MixOps.resolve(context, $spacing),
     );
 
-    return WidgetSpec(
+    return StyleSpec(
       spec: flexSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),

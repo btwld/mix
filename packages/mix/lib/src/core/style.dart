@@ -27,7 +27,7 @@ sealed class StyleElement {
 /// Base class for style classes that can be resolved to specifications.
 ///
 /// Provides variant support, modifiers, and animation configuration for styled elements.
-abstract class Style<S extends Spec<S>> extends Mix<WidgetSpec<S>>
+abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     implements StyleElement {
   final List<VariantStyle<S>>? $variants;
 
@@ -148,7 +148,7 @@ abstract class Style<S extends Spec<S>> extends Mix<WidgetSpec<S>>
 
   /// Resolves this attribute to its concrete value using the provided [BuildContext].
   @override
-  WidgetSpec<S> resolve(BuildContext context);
+  StyleSpec<S> resolve(BuildContext context);
 
   /// Merges this attribute with another attribute of the same type.
   @override
@@ -161,7 +161,7 @@ abstract class Style<S extends Spec<S>> extends Mix<WidgetSpec<S>>
   /// Builds the style into a fully resolved spec with metadata.
   ///
   /// This method resolves the style, which now includes animation and modifiers metadata.
-  WidgetSpec<S> build(
+  StyleSpec<S> build(
     BuildContext context, {
     Set<NamedVariant> namedVariants = const {},
   }) {
@@ -189,7 +189,7 @@ abstract class ModifierMix<S extends Modifier<S>> extends Mix<S>
 }
 
 /// Variant wrapper for conditional styling
-final class VariantStyle<S extends Spec<S>> extends Mixable<WidgetSpec<S>>
+final class VariantStyle<S extends Spec<S>> extends Mixable<StyleSpec<S>>
     with Equatable
     implements StyleElement {
   final Variant variant;

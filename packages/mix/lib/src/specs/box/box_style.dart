@@ -201,7 +201,7 @@ class BoxStyle extends Style<BoxSpec>
   /// final wrappedSpec = BoxStyle(...).resolve(context);
   /// ```
   @override
-  WidgetSpec<BoxSpec> resolve(BuildContext context) {
+  StyleSpec<BoxSpec> resolve(BuildContext context) {
     // Build the pure BoxSpec
     final boxSpec = BoxSpec(
       alignment: MixOps.resolve(context, $alignment),
@@ -216,7 +216,7 @@ class BoxStyle extends Style<BoxSpec>
     );
 
     // Wrap with metadata
-    return WidgetSpec(
+    return StyleSpec(
       spec: boxSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),

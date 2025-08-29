@@ -19,9 +19,7 @@ void main() {
       });
 
       test('', () {
-        final flexBoxMix = FlexBoxStyle(
-          direction: Axis.horizontal,
-        );
+        final flexBoxMix = FlexBoxStyle(direction: Axis.horizontal);
         final utility = FlexBoxSpecUtility(flexBoxMix);
         final context = MockBuildContext();
         final spec = utility.resolve(context);
@@ -272,7 +270,7 @@ void main() {
         final context = MockBuildContext();
         final spec = testUtil.resolve(context);
 
-        expect(spec, isA<WidgetSpec<FlexBoxSpec>>());
+        expect(spec, isA<StyleSpec<FlexBoxSpec>>());
         expect(spec.flex?.direction, Axis.vertical);
         expect(spec.flex?.mainAxisAlignment, MainAxisAlignment.center);
         expect(spec.flex?.spacing, 12.0);
@@ -282,7 +280,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec, isA<WidgetSpec<FlexBoxSpec>>());
+        expect(spec, isA<StyleSpec<FlexBoxSpec>>());
         expect(spec.flex?.direction, isNull);
         expect(spec.flex?.spacing, isNull);
         expect(spec.flex?.mainAxisAlignment, isNull);
@@ -437,16 +435,20 @@ void main() {
         expect(
           testUtil,
           resolvesTo(
-            isA<WidgetSpec<FlexBoxSpec>>().having(
+            isA<StyleSpec<FlexBoxSpec>>().having(
               (w) => w.spec,
               'spec',
               FlexBoxSpec(
-                box: WidgetSpec(spec: BoxSpec()), // Empty BoxSpec instead of null
-                flex: WidgetSpec(spec: FlexSpec(
-                  direction: Axis.horizontal,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  spacing: 8.0,
-                )),
+                box: StyleSpec(
+                  spec: BoxSpec(),
+                ), // Empty BoxSpec instead of null
+                flex: StyleSpec(
+                  spec: FlexSpec(
+                    direction: Axis.horizontal,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    spacing: 8.0,
+                  ),
+                ),
               ),
             ),
           ),
@@ -461,7 +463,9 @@ void main() {
 
         final testUtil = FlexBoxSpecUtility(
           FlexBoxStyle.create(
-            flex: Prop.maybeMix(FlexStyle.create(spacing: Prop.token(gapToken))),
+            flex: Prop.maybeMix(
+              FlexStyle.create(spacing: Prop.token(gapToken)),
+            ),
           ),
         );
         final spec = testUtil.resolve(context);
@@ -489,13 +493,9 @@ void main() {
         final util1 = FlexBoxSpecUtility(
           FlexBoxStyle(direction: Axis.horizontal),
         );
-        final util2 = FlexBoxSpecUtility(
-          FlexBoxStyle(spacing: 8.0),
-        );
+        final util2 = FlexBoxSpecUtility(FlexBoxStyle(spacing: 8.0));
         final util3 = FlexBoxSpecUtility(
-          FlexBoxStyle(
-            mainAxisAlignment: MainAxisAlignment.center,
-          ),
+          FlexBoxStyle(mainAxisAlignment: MainAxisAlignment.center),
         );
 
         final result = util1.merge(util2).merge(util3);

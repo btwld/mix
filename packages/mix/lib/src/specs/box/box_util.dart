@@ -110,7 +110,7 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec>
   }
 
   @override
-  WidgetSpec<BoxSpec> resolve(BuildContext context) {
+  StyleSpec<BoxSpec> resolve(BuildContext context) {
     return mutable.resolve(context);
   }
 

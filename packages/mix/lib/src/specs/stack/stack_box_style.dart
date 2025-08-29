@@ -42,8 +42,8 @@ class StackBoxStyle extends Style<ZBoxSpec>
         SpacingMixin<StackBoxStyle>,
         TransformMixin<StackBoxStyle>,
         ConstraintsMixin<StackBoxStyle> {
-  final Prop<WidgetSpec<BoxSpec>>? $box;
-  final Prop<WidgetSpec<StackSpec>>? $stack;
+  final Prop<StyleSpec<BoxSpec>>? $box;
+  final Prop<StyleSpec<StackSpec>>? $stack;
 
   StackBoxStyle({
     // Box properties
@@ -86,8 +86,8 @@ class StackBoxStyle extends Style<ZBoxSpec>
        );
 
   const StackBoxStyle.create({
-    Prop<WidgetSpec<BoxSpec>>? box,
-    Prop<WidgetSpec<StackSpec>>? stack,
+    Prop<StyleSpec<BoxSpec>>? box,
+    Prop<StyleSpec<StackSpec>>? stack,
     super.modifier,
     super.animation,
     super.variants,
@@ -167,13 +167,13 @@ class StackBoxStyle extends Style<ZBoxSpec>
   /// final zBoxSpec = StackBoxStyle(...).resolve(context);
   /// ```
   @override
-  WidgetSpec<ZBoxSpec> resolve(BuildContext context) {
+  StyleSpec<ZBoxSpec> resolve(BuildContext context) {
     final boxSpec = MixOps.resolve(context, $box);
     final stackSpec = MixOps.resolve(context, $stack);
 
     final zBoxSpec = ZBoxSpec(box: boxSpec, stack: stackSpec);
 
-    return WidgetSpec(
+    return StyleSpec(
       spec: zBoxSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),

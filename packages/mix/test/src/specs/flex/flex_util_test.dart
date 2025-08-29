@@ -282,7 +282,7 @@ void main() {
         expect(
           util,
           resolvesTo(
-            isA<WidgetSpec<FlexSpec>>().having(
+            isA<StyleSpec<FlexSpec>>().having(
               (w) => w.spec,
               'spec',
               const FlexSpec(

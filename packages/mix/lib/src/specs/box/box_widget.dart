@@ -47,9 +47,9 @@ extension BoxSpecWidget on BoxSpec {
   }
 }
 
-extension BoxSpecWrappedWidget on WidgetSpec<BoxSpec> {
+extension BoxSpecWrappedWidget on StyleSpec<BoxSpec> {
   Widget call({Widget? child}) {
-    return WidgetSpecBuilder(
+    return StyleSpecBuilder(
       builder: (context, spec) {
         return createBoxSpecWidget(spec: spec, child: child);
       },

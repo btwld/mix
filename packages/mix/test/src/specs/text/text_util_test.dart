@@ -48,7 +48,10 @@ void main() {
       });
 
       test('textWidthBasis utility is MixUtility', () {
-        expect(util.textWidthBasis, isA<MixUtility<TextStyling, TextWidthBasis>>());
+        expect(
+          util.textWidthBasis,
+          isA<MixUtility<TextStyling, TextWidthBasis>>(),
+        );
       });
 
       test('textHeightBehavior utility is TextHeightBehaviorUtility', () {
@@ -59,7 +62,10 @@ void main() {
       });
 
       test('textDirection utility is MixUtility', () {
-        expect(util.textDirection, isA<MixUtility<TextStyling, TextDirection>>());
+        expect(
+          util.textDirection,
+          isA<MixUtility<TextStyling, TextDirection>>(),
+        );
       });
 
       test('softWrap utility is function', () {
@@ -67,7 +73,10 @@ void main() {
       });
 
       test('directives utility is MixUtility', () {
-        expect(util.directives, isA<MixUtility<TextStyling, Directive<String>>>());
+        expect(
+          util.directives,
+          isA<MixUtility<TextStyling, Directive<String>>>(),
+        );
       });
 
       test('selectionColor utility is ColorUtility', () {
@@ -347,7 +356,7 @@ void main() {
           locale: Locale('fr', 'FR'),
         );
 
-        expect(spec, equals(WidgetSpec(spec: expectedSpec)));
+        expect(spec, equals(StyleSpec(spec: expectedSpec)));
       });
 
       test('resolve handles null properties', () {
@@ -356,7 +365,7 @@ void main() {
 
         const expectedSpec = TextSpec();
 
-        expect(spec, equals(WidgetSpec(spec: expectedSpec)));
+        expect(spec, equals(StyleSpec(spec: expectedSpec)));
       });
     });
 
@@ -375,13 +384,17 @@ void main() {
     group('Integration with resolvesTo matcher', () {
       test('utility resolves to correct TextSpec', () {
         final testUtil = TextSpecUtility(
-          TextStyling(maxLines: 3, textAlign: TextAlign.center, softWrap: false),
+          TextStyling(
+            maxLines: 3,
+            textAlign: TextAlign.center,
+            softWrap: false,
+          ),
         );
 
         expect(
           testUtil,
           resolvesTo(
-            WidgetSpec(
+            StyleSpec(
               spec: const TextSpec(
                 maxLines: 3,
                 textAlign: TextAlign.center,
@@ -529,7 +542,7 @@ void main() {
           locale: Locale('es', 'ES'),
         );
 
-        expect(spec, equals(WidgetSpec(spec: expectedSpec)));
+        expect(spec, equals(StyleSpec(spec: expectedSpec)));
       });
     });
 
@@ -638,26 +651,29 @@ void main() {
         expect(spec.spec.maxLines, 3);
       });
 
-      test('individual utility calls return TextStyling for further chaining', () {
-        final util = TextSpecUtility();
+      test(
+        'individual utility calls return TextStyling for further chaining',
+        () {
+          final util = TextSpecUtility();
 
-        // Each utility call should return a TextStyle
-        final colorResult = util.color.red();
-        final fontResult = util.fontSize(16);
-        final linesResult = util.maxLines(3);
+          // Each utility call should return a TextStyle
+          final colorResult = util.color.red();
+          final fontResult = util.fontSize(16);
+          final linesResult = util.maxLines(3);
 
-        expect(colorResult, isA<TextStyling>());
-        expect(fontResult, isA<TextStyling>());
-        expect(linesResult, isA<TextStyling>());
+          expect(colorResult, isA<TextStyling>());
+          expect(fontResult, isA<TextStyling>());
+          expect(linesResult, isA<TextStyling>());
 
-        // But the utility itself should have accumulated all changes
-        final context = MockBuildContext();
-        final spec = util.resolve(context);
+          // But the utility itself should have accumulated all changes
+          final context = MockBuildContext();
+          final spec = util.resolve(context);
 
-        expect(spec.spec.style?.color, Colors.red);
-        expect(spec.spec.style?.fontSize, 16);
-        expect(spec.spec.maxLines, 3);
-      });
+          expect(spec.spec.style?.color, Colors.red);
+          expect(spec.spec.style?.fontSize, 16);
+          expect(spec.spec.maxLines, 3);
+        },
+      );
     });
 
     group('Mutating behavior vs Builder pattern', () {

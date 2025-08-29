@@ -229,7 +229,7 @@ class ImageStyle extends Style<ImageSpec>
   }
 
   @override
-  WidgetSpec<ImageSpec> resolve(BuildContext context) {
+  StyleSpec<ImageSpec> resolve(BuildContext context) {
     final imageSpec = ImageSpec(
       image: MixOps.resolve(context, $image),
       width: MixOps.resolve(context, $width),
@@ -248,7 +248,7 @@ class ImageStyle extends Style<ImageSpec>
       matchTextDirection: MixOps.resolve(context, $matchTextDirection),
     );
     
-    return WidgetSpec(
+    return StyleSpec(
       spec: imageSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),

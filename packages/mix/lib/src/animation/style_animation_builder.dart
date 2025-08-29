@@ -22,10 +22,10 @@ class StyleAnimationBuilder<S extends Spec<S>> extends StatefulWidget {
   final AnimationConfig animationConfig;
 
   /// The target spec to animate to.
-  final WidgetSpec<S> spec;
+  final StyleSpec<S> spec;
 
   /// The builder function that creates the widget with the animated spec.
-  final Widget Function(BuildContext context, WidgetSpec<S> spec) builder;
+  final Widget Function(BuildContext context, StyleSpec<S> spec) builder;
 
   @override
   State<StyleAnimationBuilder<S>> createState() =>
@@ -63,7 +63,7 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
         vsync: this,
         curveConfigs: config.curveConfigs,
         specs: config.styles
-            .map((e) => e.resolve(context) as WidgetSpec<S>)
+            .map((e) => e.resolve(context) as StyleSpec<S>)
             .toList(),
         initialSpec: widget.spec,
         trigger: config.trigger,

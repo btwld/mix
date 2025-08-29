@@ -55,7 +55,6 @@ class IconStyle extends Style<IconSpec>
     super.animation,
     super.modifier,
     super.variants,
-
   }) : $color = color,
        $size = size,
        $weight = weight,
@@ -197,7 +196,7 @@ class IconStyle extends Style<IconSpec>
   }
 
   @override
-  WidgetSpec<IconSpec> resolve(BuildContext context) {
+  StyleSpec<IconSpec> resolve(BuildContext context) {
     final iconSpec = IconSpec(
       color: MixOps.resolve(context, $color),
       size: MixOps.resolve(context, $size),
@@ -214,7 +213,7 @@ class IconStyle extends Style<IconSpec>
       icon: MixOps.resolve(context, $icon),
     );
 
-    return WidgetSpec(
+    return StyleSpec(
       spec: iconSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),
@@ -245,7 +244,6 @@ class IconStyle extends Style<IconSpec>
       animation: other.$animation ?? $animation,
       modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
       variants: mergeVariantLists($variants, other.$variants),
-
     );
   }
 

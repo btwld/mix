@@ -94,7 +94,7 @@ class IconSpecUtility extends StyleMutableBuilder<IconSpec>
   }
 
   @override
-  WidgetSpec<IconSpec> resolve(BuildContext context) {
+  StyleSpec<IconSpec> resolve(BuildContext context) {
     return mutable.resolve(context);
   }
 

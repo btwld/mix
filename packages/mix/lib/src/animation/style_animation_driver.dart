@@ -7,13 +7,13 @@ import '../core/widget_spec.dart';
 import 'animation_config.dart';
 
 /// Tween that uses TweenSequence for phased animations.
-class _PhasedSpecTween<S extends Spec<S>> extends Tween<WidgetSpec<S>?> {
-  final TweenSequence<WidgetSpec<S>?> _tweenSequence;
+class _PhasedSpecTween<S extends Spec<S>> extends Tween<StyleSpec<S>?> {
+  final TweenSequence<StyleSpec<S>?> _tweenSequence;
 
   _PhasedSpecTween(this._tweenSequence);
 
   @override
-  WidgetSpec<S>? lerp(double t) {
+  StyleSpec<S>? lerp(double t) {
     return _tweenSequence.transform(t);
   }
 }
@@ -29,19 +29,19 @@ abstract class StyleAnimationDriver<S extends Spec<S>> {
   /// The animation controller managing the animation.
   late final AnimationController _controller;
 
-  final WidgetSpec<S> _initialSpec;
+  final StyleSpec<S> _initialSpec;
 
   /// Mutable tween for animating between specs.
   @protected
-  final _tween = SpecTween<WidgetSpec<S>>();
+  final _tween = SpecTween<StyleSpec<S>>();
 
   /// The animation that drives spec changes using Flutter's Tween system.
   @protected
-  late Animation<WidgetSpec<S>?> _animation;
+  late Animation<StyleSpec<S>?> _animation;
 
   StyleAnimationDriver({
     required this.vsync,
-    required WidgetSpec<S> initialSpec,
+    required StyleSpec<S> initialSpec,
     bool unbounded = false,
   }) : _initialSpec = initialSpec {
     _controller = unbounded
@@ -63,14 +63,14 @@ abstract class StyleAnimationDriver<S extends Spec<S>> {
   AnimationController get controller => _controller;
 
   /// Gets the animation that drives spec changes.
-  Animation<WidgetSpec<S>?> get animation => _animation;
+  Animation<StyleSpec<S>?> get animation => _animation;
 
   /// Whether the animation should automatically animate to the new spec when the spec changes.
   bool get autoAnimateOnUpdate;
 
   /// Animates to the given target spec.
   @nonVirtual
-  Future<void> animateTo(WidgetSpec<S> targetSpec) async {
+  Future<void> animateTo(StyleSpec<S> targetSpec) async {
     if (_tween.end == targetSpec && !_controller.isAnimating) return;
 
     final currentValue = _animation.value ?? _initialSpec;
@@ -127,7 +127,7 @@ class CurveAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     }
   }
 
-  TweenSequence<WidgetSpec<S>?> _createTweenSequence() => TweenSequence([
+  TweenSequence<StyleSpec<S>?> _createTweenSequence() => TweenSequence([
     if (_config.delay > Duration.zero)
       TweenSequenceItem(
         tween: ConstantTween(_tween.begin),
@@ -192,11 +192,11 @@ class SpringAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
 }
 
 class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
-  final List<WidgetSpec<S>> specs;
+  final List<StyleSpec<S>> specs;
   final List<CurveAnimationConfig> curveConfigs;
   final Listenable trigger;
 
-  late final TweenSequence<WidgetSpec<S>?> _tweenSequence;
+  late final TweenSequence<StyleSpec<S>?> _tweenSequence;
 
   PhaseAnimationDriver({
     required super.vsync,
@@ -226,11 +226,11 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     executeAnimation();
   }
 
-  TweenSequence<WidgetSpec<S>?> _createTweenSequence(
-    List<WidgetSpec<S>> specs,
+  TweenSequence<StyleSpec<S>?> _createTweenSequence(
+    List<StyleSpec<S>> specs,
     List<CurveAnimationConfig> configs,
   ) {
-    final items = <TweenSequenceItem<WidgetSpec<S>?>>[];
+    final items = <TweenSequenceItem<StyleSpec<S>?>>[];
     for (int i = 0; i < specs.length; i++) {
       final currentIndex = i % specs.length;
       final nextIndex = (i + 1) % specs.length;
@@ -244,7 +244,7 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
         );
       }
 
-      final tween = SpecTween<WidgetSpec<S>>(
+      final tween = SpecTween<StyleSpec<S>>(
         begin: specs[currentIndex],
         end: specs[nextIndex],
       );
@@ -345,7 +345,7 @@ class KeyframeAnimationDriver<S extends Spec<S>>
 }
 
 class _KeyframeAnimatable<S extends Spec<S>>
-    extends Animatable<WidgetSpec<S>?> {
+    extends Animatable<StyleSpec<S>?> {
   final Map<String, Animatable> _sequenceMap;
   final KeyframeAnimationConfig<S> _config;
   final BuildContext _context;
@@ -353,7 +353,7 @@ class _KeyframeAnimatable<S extends Spec<S>>
   const _KeyframeAnimatable(this._sequenceMap, this._config, this._context);
 
   @override
-  WidgetSpec<S> transform(double t) {
+  StyleSpec<S> transform(double t) {
     Map<String, Object> result = {};
     for (final entry in _sequenceMap.entries) {
       final value = entry.value.transform(t);

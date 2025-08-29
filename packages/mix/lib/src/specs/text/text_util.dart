@@ -126,7 +126,7 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec>
   }
 
   @override
-  WidgetSpec<TextSpec> resolve(BuildContext context) {
+  StyleSpec<TextSpec> resolve(BuildContext context) {
     return mutable.resolve(context);
   }
 

@@ -77,7 +77,7 @@ class StackSpecUtility extends StyleMutableBuilder<StackSpec>
   }
 
   @override
-  WidgetSpec<StackSpec> resolve(BuildContext context) {
+  StyleSpec<StackSpec> resolve(BuildContext context) {
     return mutable.resolve(context);
   }
 

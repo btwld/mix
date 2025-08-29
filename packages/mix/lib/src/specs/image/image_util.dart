@@ -97,7 +97,7 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageSpec>
   }
 
   @override
-  WidgetSpec<ImageSpec> resolve(BuildContext context) {
+  StyleSpec<ImageSpec> resolve(BuildContext context) {
     return mutable.resolve(context);
   }
 

@@ -68,7 +68,6 @@ class TextStyling extends Style<TextSpec>
     super.animation,
     super.modifier,
     super.variants,
-
   }) : $overflow = overflow,
        $strutStyle = strutStyle,
        $textAlign = textAlign,
@@ -370,7 +369,7 @@ class TextStyling extends Style<TextSpec>
   /// final textSpec = TextStyle(...).resolve(context);
   /// ```
   @override
-  WidgetSpec<TextSpec> resolve(BuildContext context) {
+  StyleSpec<TextSpec> resolve(BuildContext context) {
     final textSpec = TextSpec(
       overflow: MixOps.resolve(context, $overflow),
       strutStyle: MixOps.resolve(context, $strutStyle),
@@ -388,7 +387,7 @@ class TextStyling extends Style<TextSpec>
       locale: MixOps.resolve(context, $locale),
     );
 
-    return WidgetSpec(
+    return StyleSpec(
       spec: textSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),

@@ -194,7 +194,7 @@ void main() {
         final context = MockBuildContext();
         final spec = testUtil.resolve(context);
 
-        expect(spec, isA<WidgetSpec<StackSpec>>());
+        expect(spec, isA<StyleSpec<StackSpec>>());
         expect(spec.spec.alignment, Alignment.center);
         expect(spec.spec.fit, StackFit.expand);
         expect(spec.spec.clipBehavior, Clip.antiAlias);
@@ -204,7 +204,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(spec, isA<WidgetSpec<StackSpec>>());
+        expect(spec, isA<StyleSpec<StackSpec>>());
         expect(spec.spec.alignment, isNull);
         expect(spec.spec.fit, isNull);
         expect(spec.spec.clipBehavior, isNull);
@@ -357,7 +357,7 @@ void main() {
         expect(
           testUtil,
           resolvesTo(
-            const WidgetSpec(
+            const StyleSpec(
               spec: StackSpec(
                 alignment: Alignment.center,
                 fit: StackFit.expand,

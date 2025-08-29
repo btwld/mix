@@ -46,14 +46,17 @@ void main() {
         expect(spacingProp, PropMatcher.hasTokens);
       });
 
-      test('resolvesTo matches value from merged props (replacement strategy)', () {
-        final prop1 = Prop.value(Colors.red);
-        final prop2 = Prop.value(Colors.blue);
-        final merged = prop1.mergeProp(prop2);
+      test(
+        'resolvesTo matches value from merged props (replacement strategy)',
+        () {
+          final prop1 = Prop.value(Colors.red);
+          final prop2 = Prop.value(Colors.blue);
+          final merged = prop1.mergeProp(prop2);
 
-        // Prop uses replacement strategy - second value wins during resolution
-        expect(merged, resolvesTo(Colors.blue));
-      });
+          // Prop uses replacement strategy - second value wins during resolution
+          expect(merged, resolvesTo(Colors.blue));
+        },
+      );
 
       test('merged props preserve all sources (universal accumulation)', () {
         // Test without tokens to avoid resolution issues
@@ -65,16 +68,13 @@ void main() {
 
         // Prop uses replacement strategy - last value wins during resolution
         expect(merged, resolvesTo(Colors.blue));
-        
-        // Test that the prop contains all sources 
+
+        // Test that the prop contains all sources
         expect(merged, PropMatcher.hasValues);
       });
 
       test('resolvesTo fails when prop is null', () {
-        expect(
-          null,
-          isNot(resolvesTo(Colors.red)),
-        );
+        expect(null, isNot(resolvesTo(Colors.red)));
       });
 
       test('PropMatcher distinguishes between token and value', () {
@@ -209,7 +209,7 @@ void main() {
         final attr = MockStyle(Prop.value<Color>(Colors.blue));
         final resolved = attr.resolve(MockBuildContext());
 
-        expect(resolved, isA<WidgetSpec<MockSpec>>());
+        expect(resolved, isA<StyleSpec<MockSpec>>());
         expect(resolved.spec.resolvedValue, resolvesTo(Colors.blue));
       });
 

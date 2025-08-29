@@ -162,7 +162,7 @@ class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec>
   }
 
   @override
-  WidgetSpec<FlexBoxSpec> resolve(BuildContext context) {
+  StyleSpec<FlexBoxSpec> resolve(BuildContext context) {
     return mutable.resolve(context);
   }
 
