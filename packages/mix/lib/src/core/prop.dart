@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:meta/meta.dart';
 
 import '../animation/animation_config.dart';
 import '../theme/mix_theme.dart';
@@ -9,6 +8,7 @@ import 'converter_registry.dart';
 import 'directive.dart';
 import 'helpers.dart';
 import 'mix_element.dart';
+import 'prop_refs.dart';
 import 'prop_source.dart';
 
 /// A property that can hold values, tokens, or Mix types.
@@ -103,14 +103,25 @@ class Prop<V> {
   /// Creates a property from a direct value.
   ///
   /// If [value] is already a [Prop], returns it unchanged.
-  /// Otherwise, wraps the value in a [ValueSource].
+  /// Otherwise, checks if it's a token reference and handles accordingly.
   ///
   /// This method does NOT auto-convert values to Mix types.
   /// Use [Prop.mix] for explicit Mix values.
   static Prop<V> value<V>(V value) {
+    // If it's already a Prop, return unchanged
     if (value is Prop<V>) return value;
 
-    // Always create ValueSource - no conversion!
+    // Check if this is a token reference (DoubleRef, IntRef, StringRef)
+    // Only for primitive extension types, not for class-based Props
+    if (isAnyTokenRef(value as Object)) {
+      final token = getTokenFromValue(value as Object) as MixToken<V>?;
+      if (token != null) {
+        // This is a token reference - store as TokenSource
+        return Prop._(sources: [TokenSource(token)]);
+      }
+    }
+
+    // Regular value - store as ValueSource
     return Prop._(sources: [ValueSource(value)]);
   }
 

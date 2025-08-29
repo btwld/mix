@@ -370,7 +370,10 @@ final Map<Object, MixToken> _tokenRegistry = <Object, MixToken>{};
 extension type const DoubleRef(double _value) implements double {
   /// Creates a DoubleRef using token hashCode and registers it with a token
   static DoubleRef token(MixToken<double> token) {
-    final ref = DoubleRef(token.hashCode.toDouble());
+    // Use negative nano-values: -0.0001 to -0.000001
+    // Negative values clearly indicate "this is a reference, not a real value"
+    final hash = token.hashCode.abs() % 100000;
+    final ref = DoubleRef(-(0.000001 + hash * 0.000001));
     _tokenRegistry[ref] = token;
 
     return ref;
@@ -381,7 +384,10 @@ extension type const DoubleRef(double _value) implements double {
 extension type const IntRef(int _value) implements int {
   /// Creates an IntRef using token hashCode and registers it with a token
   static IntRef token(MixToken<int> token) {
-    final ref = IntRef(token.hashCode);
+    // Use negative small values for token references
+    // Negative values clearly indicate "this is a reference, not a real value"
+    final hash = token.hashCode.abs() % 100000;
+    final ref = IntRef(-(1 + hash));
     _tokenRegistry[ref] = token;
 
     return ref;

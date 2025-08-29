@@ -57,7 +57,6 @@ class ImageStyle extends Style<ImageSpec>
     super.modifier,
     super.variants,
 
-    super.inherit,
   }) : $image = image,
        $width = width,
        $height = height,
@@ -93,7 +92,6 @@ class ImageStyle extends Style<ImageSpec>
     AnimationConfig? animation,
     ModifierConfig? modifier,
     List<VariantStyle<ImageSpec>>? variants,
-    bool? inherit,
   }) : this.create(
          image: Prop.maybe(image),
          width: Prop.maybe(width),
@@ -113,7 +111,6 @@ class ImageStyle extends Style<ImageSpec>
          animation: animation,
          modifier: modifier,
          variants: variants,
-         inherit: inherit,
        );
 
 
@@ -248,7 +245,6 @@ class ImageStyle extends Style<ImageSpec>
       spec: imageSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),
-      inherit: $inherit,
     );
   }
 
@@ -281,7 +277,6 @@ class ImageStyle extends Style<ImageSpec>
       animation: other.$animation ?? $animation,
       modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
       variants: mergeVariantLists($variants, other.$variants),
-      inherit: other.$inherit ?? $inherit,
     );
   }
 

@@ -64,7 +64,6 @@ class StackBoxStyle extends Style<ZBoxSpec>
     super.modifier,
     super.animation,
     super.variants,
-    super.inherit,
   }) : $box = Prop.maybeMix(
          BoxStyle(
            alignment: alignment,
@@ -93,7 +92,6 @@ class StackBoxStyle extends Style<ZBoxSpec>
     super.animation,
     super.variants,
 
-    super.inherit,
   }) : $box = box,
        $stack = stack;
 
@@ -173,7 +171,6 @@ class StackBoxStyle extends Style<ZBoxSpec>
       spec: zBoxSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),
-      inherit: $inherit,
     );
   }
 
@@ -195,7 +192,6 @@ class StackBoxStyle extends Style<ZBoxSpec>
       modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
       animation: other.$animation ?? $animation,
       variants: mergeVariantLists($variants, other.$variants),
-      inherit: other.$inherit ?? $inherit,
     );
   }
 

@@ -255,7 +255,6 @@ class MockStyle<T> extends Style<MockSpec<T>> {
     super.modifier,
     super.animation,
 
-    super.inherit,
   });
 
   @override
@@ -283,7 +282,6 @@ class MockStyle<T> extends Style<MockSpec<T>> {
       spec: mockSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),
-      inherit: $inherit,
     );
   }
 

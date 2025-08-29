@@ -739,7 +739,6 @@ class _MockSpecAttribute extends Style<MockSpec<Map<String, dynamic>>> {
     super.modifier,
     super.animation,
 
-    super.inherit,
   });
 
   @override
@@ -752,7 +751,6 @@ class _MockSpecAttribute extends Style<MockSpec<Map<String, dynamic>>> {
       ),
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),
-      inherit: $inherit,
     );
   }
 

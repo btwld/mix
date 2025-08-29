@@ -59,7 +59,6 @@ class FlexStyle extends Style<FlexSpec>
     super.modifier,
     super.variants,
 
-    super.inherit,
   }) : $direction = direction,
        $mainAxisAlignment = mainAxisAlignment,
        $crossAxisAlignment = crossAxisAlignment,
@@ -88,7 +87,6 @@ class FlexStyle extends Style<FlexSpec>
     AnimationConfig? animation,
     ModifierConfig? modifier,
     List<VariantStyle<FlexSpec>>? variants,
-    bool? inherit,
   }) : this.create(
          direction: Prop.maybe(direction),
          mainAxisAlignment: Prop.maybe(mainAxisAlignment),
@@ -102,7 +100,6 @@ class FlexStyle extends Style<FlexSpec>
          animation: animation,
          modifier: modifier,
          variants: variants,
-         inherit: inherit,
        );
 
   /// The gap between children.
@@ -215,7 +212,6 @@ class FlexStyle extends Style<FlexSpec>
       spec: flexSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),
-      inherit: $inherit,
     );
   }
 
@@ -253,7 +249,6 @@ class FlexStyle extends Style<FlexSpec>
       animation: other.$animation ?? $animation,
       modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
       variants: mergeVariantLists($variants, other.$variants),
-      inherit: other.$inherit ?? $inherit,
     );
   }
 

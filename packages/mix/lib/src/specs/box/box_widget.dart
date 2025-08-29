@@ -1,10 +1,10 @@
 import 'package:flutter/widgets.dart';
 
+import '../../core/style_builder.dart';
 import '../../core/style_widget.dart';
 import '../../core/widget_spec.dart';
-import '../../core/style_builder.dart';
-import 'box_style.dart';
 import 'box_spec.dart';
+import 'box_style.dart';
 
 /// A styled box widget using Mix framework.
 ///

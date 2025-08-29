@@ -55,7 +55,6 @@ class IconStyle extends Style<IconSpec>
     super.modifier,
     super.variants,
 
-    super.inherit,
   }) : $color = color,
        $size = size,
        $weight = weight,
@@ -87,7 +86,6 @@ class IconStyle extends Style<IconSpec>
     AnimationConfig? animation,
     ModifierConfig? modifier,
     List<VariantStyle<IconSpec>>? variants,
-    bool? inherit,
   }) : this.create(
          color: Prop.maybe(color),
          size: Prop.maybe(size),
@@ -105,7 +103,6 @@ class IconStyle extends Style<IconSpec>
          animation: animation,
          modifier: modifier,
          variants: variants,
-         inherit: inherit,
        );
 
   /// Sets icon color
@@ -214,7 +211,6 @@ class IconStyle extends Style<IconSpec>
       spec: iconSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),
-      inherit: $inherit,
     );
   }
 
@@ -243,7 +239,6 @@ class IconStyle extends Style<IconSpec>
       modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
       variants: mergeVariantLists($variants, other.$variants),
 
-      inherit: other.$inherit ?? $inherit,
     );
   }
 

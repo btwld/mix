@@ -42,7 +42,6 @@ class StackStyle extends Style<StackSpec>
     super.modifier,
     super.variants,
 
-    super.inherit,
   }) : $alignment = alignment,
        $fit = fit,
        $textDirection = textDirection,
@@ -56,7 +55,6 @@ class StackStyle extends Style<StackSpec>
     AnimationConfig? animation,
     ModifierConfig? modifier,
     List<VariantStyle<StackSpec>>? variants,
-    bool? inherit,
   }) : this.create(
          alignment: Prop.maybe(alignment),
          fit: Prop.maybe(fit),
@@ -65,7 +63,6 @@ class StackStyle extends Style<StackSpec>
          animation: animation,
          modifier: modifier,
          variants: variants,
-         inherit: inherit,
        );
 
   /// Sets stack alignment
@@ -117,7 +114,6 @@ class StackStyle extends Style<StackSpec>
       spec: stackSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),
-      inherit: $inherit,
     );
   }
 
@@ -135,7 +131,6 @@ class StackStyle extends Style<StackSpec>
       modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
       variants: mergeVariantLists($variants, other.$variants),
 
-      inherit: other.$inherit ?? $inherit,
     );
   }
 

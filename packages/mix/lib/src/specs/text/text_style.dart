@@ -68,7 +68,6 @@ class TextStyling extends Style<TextSpec>
     super.modifier,
     super.variants,
 
-    super.inherit,
   }) : $overflow = overflow,
        $strutStyle = strutStyle,
        $textAlign = textAlign,
@@ -102,7 +101,6 @@ class TextStyling extends Style<TextSpec>
     AnimationConfig? animation,
     ModifierConfig? modifier,
     List<VariantStyle<TextSpec>>? variants,
-    bool? inherit,
   }) : this.create(
          overflow: Prop.maybe(overflow),
          strutStyle: Prop.maybeMix(strutStyle),
@@ -121,7 +119,6 @@ class TextStyling extends Style<TextSpec>
          animation: animation,
          modifier: modifier,
          variants: variants,
-         inherit: inherit,
        );
 
   StyledText call(String text) {
@@ -388,7 +385,6 @@ class TextStyling extends Style<TextSpec>
       spec: textSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),
-      inherit: $inherit,
     );
   }
 
@@ -425,7 +421,6 @@ class TextStyling extends Style<TextSpec>
       animation: other.$animation ?? $animation,
       modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
       variants: mergeVariantLists($variants, other.$variants),
-      inherit: other.$inherit ?? $inherit,
     );
   }
 

@@ -65,7 +65,6 @@ class BoxStyle extends Style<BoxSpec>
     super.variants,
     super.modifier,
     super.animation,
-    super.inherit,
   }) : $alignment = alignment,
        $padding = padding,
        $margin = margin,
@@ -89,7 +88,6 @@ class BoxStyle extends Style<BoxSpec>
     AnimationConfig? animation,
     ModifierConfig? modifier,
     List<VariantStyle<BoxSpec>>? variants,
-    bool? inherit,
   }) : this.create(
          alignment: Prop.maybe(alignment),
          padding: Prop.maybeMix(padding),
@@ -103,7 +101,6 @@ class BoxStyle extends Style<BoxSpec>
          variants: variants,
          modifier: modifier,
          animation: animation,
-         inherit: inherit,
        );
 
   BoxSpecUtility get chain => BoxSpecUtility(this);
@@ -219,7 +216,6 @@ class BoxStyle extends Style<BoxSpec>
       spec: boxSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),
-      inherit: $inherit,
     );
   }
 
@@ -254,7 +250,6 @@ class BoxStyle extends Style<BoxSpec>
       variants: mergeVariantLists($variants, other.$variants),
       modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
       animation: other.$animation ?? $animation,
-      inherit: other.$inherit ?? $inherit,
     );
   }
 
@@ -289,6 +284,5 @@ class BoxStyle extends Style<BoxSpec>
     $animation,
     $modifier,
     $variants,
-    $inherit,
   ];
 }

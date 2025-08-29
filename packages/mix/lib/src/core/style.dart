@@ -34,17 +34,13 @@ abstract class Style<S extends Spec<S>> extends Mix<WidgetSpec<S>>
   final ModifierConfig? $modifier;
   final AnimationConfig? $animation;
 
-  final bool? $inherit;
-
   const Style({
     required List<VariantStyle<S>>? variants,
     required ModifierConfig? modifier,
     required AnimationConfig? animation,
-    required bool? inherit,
   }) : $modifier = modifier,
        $animation = animation,
-       $variants = variants,
-       $inherit = inherit;
+       $variants = variants;
 
   static BoxStyle box(BoxStyle value) => value;
   static TextStyling text(TextStyling value) => value;
@@ -164,7 +160,7 @@ abstract class Style<S extends Spec<S>> extends Mix<WidgetSpec<S>>
 
   /// Builds the style into a fully resolved spec with metadata.
   ///
-  /// This method resolves the style, which now includes animation, modifiers, and inherit metadata.
+  /// This method resolves the style, which now includes animation and modifiers metadata.
   WidgetSpec<S> build(
     BuildContext context, {
     Set<NamedVariant> namedVariants = const {},

@@ -39,18 +39,18 @@ class OkinawaCard extends StatelessWidget {
         .width(200)
         .borderRadius(BorderRadiusMix.circular(10))
         .border(
-          BoxBorderMix.all(
-            BorderSideMix.color(
-              Colors.white,
-            ).width(6).strokeAlign(BorderSide.strokeAlignOutside),
+          .all(
+            .color(Colors.white)
+            .width(6)
+            .strokeAlign(BorderSide.strokeAlignOutside),
           ),
         )
         .clipBehavior(Clip.antiAlias)
         .color(Colors.blueGrey.shade50)
         .shadow(
-          BoxShadowMix.color(
-            Colors.black.withValues(alpha: 0.15),
-          ).blurRadius(100).offset(const Offset(0, 0)),
+          .color(Colors.black.withValues(alpha: 0.15))
+          .blurRadius(100)
+          .offset(const Offset(0, 0)),
         );
 
     final vBoxStyle = FlexBoxStyle(

@@ -17,7 +17,6 @@ abstract class StyleAttributeBuilder<S extends Spec<S>> extends Style<S>
     super.animation,
     super.modifier,
     super.variants,
-    super.inherit,
   });
 
   /// Access to the internal mutable StyleAttribute
@@ -54,7 +53,6 @@ abstract class StyleMutableBuilder<S extends Spec<S>> extends Style<S>
     super.animation,
     super.modifier,
     super.variants,
-    super.inherit,
   });
 
   /// Internal mutable wrapper

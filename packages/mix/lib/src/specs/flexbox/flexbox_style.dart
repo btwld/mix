@@ -73,7 +73,6 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
     AnimationConfig? animation,
     ModifierConfig? modifier,
     List<VariantStyle<FlexBoxSpec>>? variants,
-    bool? inherit,
   }) : this.create(
          box: Prop.maybeMix(
            BoxStyle(
@@ -104,7 +103,6 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
          animation: animation,
          modifier: modifier,
          variants: variants,
-         inherit: inherit,
        );
 
   /// Create constructor with Prop`<T>` types for internal use
@@ -114,7 +112,6 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
     super.animation,
     super.modifier,
     super.variants,
-    super.inherit,
   }) : $box = box,
        $flex = flex;
 
@@ -266,7 +263,6 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
       spec: flexBoxSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),
-      inherit: $inherit,
     );
   }
 
@@ -288,7 +284,6 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
       animation: other.$animation ?? $animation,
       modifier: $modifier?.merge(other.$modifier) ?? other.$modifier,
       variants: mergeVariantLists($variants, other.$variants),
-      inherit: other.$inherit ?? $inherit,
     );
   }
 
