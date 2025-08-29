@@ -264,7 +264,7 @@ final class ModifierConfig with Equatable {
     );
   }
 
-  factory ModifierConfig.box(BoxStyle spec) {
+  factory ModifierConfig.box(BoxStyler spec) {
     return ModifierConfig.modifier(BoxModifierMix(spec));
   }
 

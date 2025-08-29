@@ -23,14 +23,14 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BoxStyle()
+    final style = BoxStyler()
         .color(Colors.black)
         .height(100)
         .width(100)
         .borderRadius(.circular(10))
         .transform(.identity())
         .transformAlignment(.center)
-        .onHovered(BoxStyle().color(Colors.blue).scale(1.5))
+        .onHovered(BoxStyler().color(Colors.blue).scale(1.5))
         .animate(.easeInOut(300.ms));
 
     return Box(style: style);

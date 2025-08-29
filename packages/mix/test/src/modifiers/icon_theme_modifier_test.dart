@@ -152,11 +152,11 @@ void main() {
   });
 
   group('IconThemeModifierUtility', () {
-    late IconThemeModifierUtility<BoxStyle> utility;
+    late IconThemeModifierUtility<BoxStyler> utility;
 
     setUp(() {
       utility = IconThemeModifierUtility(
-        (attr) => BoxStyle(modifier: ModifierConfig.modifier(attr)),
+        (attr) => BoxStyler(modifier: ModifierConfig.modifier(attr)),
       );
     });
 

@@ -76,7 +76,7 @@ class FlexBoxStyle extends Style<FlexBoxSpec>
     List<VariantStyle<FlexBoxSpec>>? variants,
   }) : this.create(
          box: Prop.maybeMix(
-           BoxStyle(
+           BoxStyler(
              alignment: alignment,
              padding: padding,
              margin: margin,

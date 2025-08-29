@@ -9,7 +9,7 @@ void main() {
     group('Constructor', () {
       test('creates VariantSpecAttribute with variant and style', () {
         const variant = NamedVariant('primary');
-        final style = BoxStyle().width(100.0);
+        final style = BoxStyler().width(100.0);
         final variantAttr = VariantStyle(variant, style);
 
         expect(variantAttr.variant, variant);
@@ -19,7 +19,7 @@ void main() {
 
       test('creates VariantSpecAttribute with ContextVariant', () {
         final variant = ContextVariant.widgetState(WidgetState.hovered);
-        final style = BoxStyle().height(200.0);
+        final style = BoxStyler().height(200.0);
         final variantAttr = VariantStyle(variant, style);
 
         expect(variantAttr.variant, variant);
@@ -29,7 +29,7 @@ void main() {
 
       test('creates VariantSpecAttribute with ContextVariant', () {
         final variant = ContextVariant.widgetState(WidgetState.hovered);
-        final style = BoxStyle().width(150.0);
+        final style = BoxStyler().width(150.0);
         final variantAttr = VariantStyle(variant, style);
 
         expect(variantAttr.variant, variant);
@@ -41,7 +41,7 @@ void main() {
     group('matches method', () {
       test('matches when variant is in the provided list', () {
         const variant = NamedVariant('primary');
-        final style = BoxStyle().width(100.0);
+        final style = BoxStyler().width(100.0);
         final variantAttr = VariantStyle(variant, style);
 
         const variants = [NamedVariant('primary'), NamedVariant('secondary')];
@@ -50,7 +50,7 @@ void main() {
 
       test('does not match when variant is not in the provided list', () {
         const variant = NamedVariant('tertiary');
-        final style = BoxStyle().width(100.0);
+        final style = BoxStyler().width(100.0);
         final variantAttr = VariantStyle(variant, style);
 
         const variants = [NamedVariant('primary'), NamedVariant('secondary')];
@@ -59,7 +59,7 @@ void main() {
 
       test('matches empty list returns false', () {
         const variant = NamedVariant('primary');
-        final style = BoxStyle().width(100.0);
+        final style = BoxStyler().width(100.0);
         final variantAttr = VariantStyle(variant, style);
 
         expect(variantAttr.matches([]), isFalse);
@@ -67,7 +67,7 @@ void main() {
 
       test('matches with ContextVariant', () {
         final variant = ContextVariant('test', (context) => true);
-        final style = BoxStyle().width(100.0);
+        final style = BoxStyler().width(100.0);
         final variantAttr = VariantStyle(variant, style);
 
         // The exact variant must be in the list to match
@@ -83,7 +83,7 @@ void main() {
     group('removeVariants method', () {
       test('returns null when removing the only variant', () {
         const variant = NamedVariant('primary');
-        final style = BoxStyle().width(100.0);
+        final style = BoxStyler().width(100.0);
         final variantAttr = VariantStyle(variant, style);
 
         const variantsToRemove = [NamedVariant('primary')];
@@ -94,7 +94,7 @@ void main() {
 
       test('returns same instance when variant not in removal list', () {
         const variant = NamedVariant('primary');
-        final style = BoxStyle().width(100.0);
+        final style = BoxStyler().width(100.0);
         final variantAttr = VariantStyle(variant, style);
 
         const variantsToRemove = [NamedVariant('secondary')];
@@ -105,7 +105,7 @@ void main() {
 
       test('handles variant removal correctly', () {
         const variant = NamedVariant('primary');
-        final style = BoxStyle().width(100.0);
+        final style = BoxStyler().width(100.0);
         final variantAttr = VariantStyle(variant, style);
 
         const variantsToRemove = [NamedVariant('primary')];
@@ -116,7 +116,7 @@ void main() {
 
       test('returns attribute when variant not in removal list', () {
         const variant = NamedVariant('primary');
-        final style = BoxStyle().width(100.0);
+        final style = BoxStyler().width(100.0);
         final variantAttr = VariantStyle(variant, style);
 
         const variantsToRemove = [NamedVariant('secondary')];
@@ -128,7 +128,7 @@ void main() {
 
       test('returns null when variant is removed', () {
         const variant = NamedVariant('primary');
-        final style = BoxStyle().width(100.0);
+        final style = BoxStyler().width(100.0);
         final variantAttr = VariantStyle(variant, style);
 
         const variantsToRemove = [NamedVariant('primary')];
@@ -139,7 +139,7 @@ void main() {
 
       test('preserves context variant when removal doesnt match', () {
         final variant = ContextVariant('test', (context) => true);
-        final style = BoxStyle().width(100.0);
+        final style = BoxStyler().width(100.0);
         final variantAttr = VariantStyle(variant, style);
 
         const variantsToRemove = [NamedVariant('other')];
@@ -153,8 +153,8 @@ void main() {
     group('merge method', () {
       test('merges styles when variants match', () {
         const variant = NamedVariant('primary');
-        final style1 = BoxStyle().width(100.0);
-        final style2 = BoxStyle().height(200.0);
+        final style1 = BoxStyler().width(100.0);
+        final style2 = BoxStyler().height(200.0);
 
         final variantAttr1 = VariantStyle(variant, style1);
         final variantAttr2 = VariantStyle(variant, style2);
@@ -162,7 +162,7 @@ void main() {
         final merged = variantAttr1.merge(variantAttr2);
 
         expect(merged.variant, variant);
-        final mergedBox = merged.value as BoxStyle;
+        final mergedBox = merged.value as BoxStyler;
         final context = MockBuildContext();
         final constraints = mergedBox.resolve(context).constraints;
         expect(constraints?.minWidth, 100.0);
@@ -174,8 +174,8 @@ void main() {
       test('returns this when variants do not match', () {
         const variant1 = NamedVariant('primary');
         const variant2 = NamedVariant('secondary');
-        final style1 = BoxStyle().width(100.0);
-        final style2 = BoxStyle().height(200.0);
+        final style1 = BoxStyler().width(100.0);
+        final style2 = BoxStyler().height(200.0);
 
         final variantAttr1 = VariantStyle(variant1, style1);
         final variantAttr2 = VariantStyle(variant2, style2);
@@ -183,7 +183,7 @@ void main() {
         final merged = variantAttr1.merge(variantAttr2);
 
         expect(merged, same(variantAttr1));
-        final mergedBox = merged.value as BoxStyle;
+        final mergedBox = merged.value as BoxStyler;
         final context = MockBuildContext();
         final constraints = mergedBox.resolve(context).constraints;
         expect(constraints?.minWidth, 100.0);
@@ -194,7 +194,7 @@ void main() {
 
       test('returns this when other is null', () {
         const variant = NamedVariant('primary');
-        final style = BoxStyle().width(100.0);
+        final style = BoxStyler().width(100.0);
         final variantAttr = VariantStyle(variant, style);
 
         final merged = variantAttr.merge(null);
@@ -204,7 +204,7 @@ void main() {
 
       test('merges with overlapping properties - other takes precedence', () {
         const variant = NamedVariant('primary');
-        final style1 = BoxStyle(
+        final style1 = BoxStyler(
           constraints: BoxConstraintsMix(
             minWidth: 100.0,
             maxWidth: 100.0,
@@ -212,7 +212,7 @@ void main() {
             maxHeight: 150.0,
           ),
         );
-        final style2 = BoxStyle().width(200.0);
+        final style2 = BoxStyler().width(200.0);
 
         final variantAttr1 = VariantStyle(variant, style1);
         final variantAttr2 = VariantStyle(variant, style2);
@@ -220,7 +220,7 @@ void main() {
         final merged = variantAttr1.merge(variantAttr2);
 
         expect(merged.variant, variant);
-        final mergedBox = merged.value as BoxStyle;
+        final mergedBox = merged.value as BoxStyler;
         final context = MockBuildContext();
         final constraints = mergedBox.resolve(context).constraints;
         expect(constraints?.minWidth, 200.0); // other overrides
@@ -233,7 +233,7 @@ void main() {
     group('Equality', () {
       test('equal VariantSpecAttributes have same hashCode', () {
         const variant = NamedVariant('primary');
-        final style = BoxStyle().width(100.0);
+        final style = BoxStyler().width(100.0);
 
         final variantAttr1 = VariantStyle(variant, style);
         final variantAttr2 = VariantStyle(variant, style);
@@ -245,7 +245,7 @@ void main() {
       test('different variants are not equal', () {
         const variant1 = NamedVariant('primary');
         const variant2 = NamedVariant('secondary');
-        final style = BoxStyle().width(100.0);
+        final style = BoxStyler().width(100.0);
 
         final variantAttr1 = VariantStyle(variant1, style);
         final variantAttr2 = VariantStyle(variant2, style);
@@ -255,8 +255,8 @@ void main() {
 
       test('different styles are not equal', () {
         const variant = NamedVariant('primary');
-        final style1 = BoxStyle().width(100.0);
-        final style2 = BoxStyle().width(200.0);
+        final style1 = BoxStyler().width(100.0);
+        final style2 = BoxStyler().width(200.0);
 
         final variantAttr1 = VariantStyle(variant, style1);
         final variantAttr2 = VariantStyle(variant, style2);
@@ -266,7 +266,7 @@ void main() {
 
       test('identical instances are equal', () {
         const variant = NamedVariant('primary');
-        final style = BoxStyle().width(100.0);
+        final style = BoxStyler().width(100.0);
         final variantAttr = VariantStyle(variant, style);
 
         expect(variantAttr, equals(variantAttr));
@@ -277,7 +277,7 @@ void main() {
     group('mergeKey property', () {
       test('uses variant key as merge key', () {
         const variant = NamedVariant('primary');
-        final style = BoxStyle().width(100.0);
+        final style = BoxStyler().width(100.0);
         final variantAttr = VariantStyle(variant, style);
 
         expect(variantAttr.mergeKey, 'primary');
@@ -285,7 +285,7 @@ void main() {
 
       test('uses ContextVariant key as merge key', () {
         final variant = ContextVariant.widgetState(WidgetState.hovered);
-        final style = BoxStyle().width(100.0);
+        final style = BoxStyler().width(100.0);
         final variantAttr = VariantStyle(variant, style);
 
         expect(variantAttr.mergeKey, 'widget_state_hovered');
@@ -293,7 +293,7 @@ void main() {
 
       test('uses variant key as merge key', () {
         const variant = NamedVariant('primary');
-        final style = BoxStyle().width(100.0);
+        final style = BoxStyler().width(100.0);
         final variantAttr = VariantStyle(variant, style);
 
         expect(variantAttr.mergeKey, 'primary');
@@ -336,7 +336,7 @@ void main() {
         final variant1 = ContextVariant.widgetState(WidgetState.hovered);
         final variant2 = ContextVariant.brightness(Brightness.dark);
 
-        final style = BoxStyle().width(100.0);
+        final style = BoxStyler().width(100.0);
         final variantAttr1 = VariantStyle(variant1, style);
         final variantAttr2 = VariantStyle(variant2, style);
 
@@ -348,7 +348,7 @@ void main() {
 
       test('removing variants from different variant types', () {
         final variant = ContextVariant.widgetState(WidgetState.hovered);
-        final style = BoxStyle().width(100.0);
+        final style = BoxStyler().width(100.0);
         final variantAttr = VariantStyle(variant, style);
 
         // Try to remove a NamedVariant - should not affect ContextVariant

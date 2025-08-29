@@ -33,13 +33,13 @@ class _ExampleState extends State<Example> {
 
   @override
   Widget build(BuildContext context) {
-    final style = BoxStyle()
+    final style = BoxStyler()
         .color(Colors.red)
         .height(100)
         .width(100)
         .borderRadius(.circular(10))
         .onFocused(
-          BoxStyle()
+          BoxStyler()
             .color(Colors.blue)
             .border(
               .all(

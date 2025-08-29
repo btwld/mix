@@ -209,7 +209,7 @@ void main() {
     group('VariantSpecAttribute integration', () {
       test('can be used in VariantSpecAttribute wrapper', () {
         const primaryVariant = NamedVariant('primary');
-        final style = BoxStyle().width(100.0);
+        final style = BoxStyler().width(100.0);
         final variantAttr = VariantStyle(primaryVariant, style);
 
         expect(variantAttr.variant, primaryVariant);
@@ -223,12 +223,12 @@ void main() {
 
         final primaryStyle = VariantStyle(
           primaryVariant,
-          BoxStyle().width(100.0),
+          BoxStyler().width(100.0),
         );
 
         final secondaryStyle = VariantStyle(
           secondaryVariant,
-          BoxStyle().width(150.0),
+          BoxStyler().width(150.0),
         );
 
         expect(primaryStyle.mergeKey, 'primary');
@@ -239,14 +239,14 @@ void main() {
       test('merges correctly when variants match', () {
         const primaryVariant = NamedVariant('primary');
 
-        final style1 = VariantStyle(primaryVariant, BoxStyle().width(100.0));
+        final style1 = VariantStyle(primaryVariant, BoxStyler().width(100.0));
 
-        final style2 = VariantStyle(primaryVariant, BoxStyle().height(200.0));
+        final style2 = VariantStyle(primaryVariant, BoxStyler().height(200.0));
 
         final merged = style1.merge(style2);
 
         expect(merged.variant, primaryVariant);
-        final mergedBox = merged.value as BoxStyle;
+        final mergedBox = merged.value as BoxStyler;
         final context = MockBuildContext();
         final constraints = mergedBox.resolve(context).constraints;
         expect(constraints?.minWidth, 100.0);
@@ -261,18 +261,18 @@ void main() {
 
         final primaryStyle = VariantStyle(
           primaryVariant,
-          BoxStyle().width(100.0),
+          BoxStyler().width(100.0),
         );
 
         final secondaryStyle = VariantStyle(
           secondaryVariant,
-          BoxStyle().height(200.0),
+          BoxStyler().height(200.0),
         );
 
         final merged = primaryStyle.merge(secondaryStyle);
 
         expect(merged, same(primaryStyle));
-        final mergedBox = merged.value as BoxStyle;
+        final mergedBox = merged.value as BoxStyler;
         final context = MockBuildContext();
         final constraints = mergedBox.resolve(context).constraints;
         expect(constraints?.minWidth, 100.0);

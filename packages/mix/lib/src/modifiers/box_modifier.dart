@@ -50,7 +50,7 @@ final class BoxModifier extends Modifier<BoxModifier> with Diagnosticable {
 ///
 /// This class allows for mixing and resolving BoxSpec-based properties.
 class BoxModifierMix extends ModifierMix<BoxModifier> with Diagnosticable {
-  final BoxStyle spec;
+  final BoxStyler spec;
 
   const BoxModifierMix(this.spec);
 
@@ -85,21 +85,21 @@ class BoxModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, BoxModifierMix> {
   const BoxModifierUtility(super.utilityBuilder);
 
-  T call(BoxStyle spec) {
+  T call(BoxStyler spec) {
     return utilityBuilder(BoxModifierMix(spec));
   }
 
   T color(Color value) {
     return utilityBuilder(
-      BoxModifierMix(BoxStyle(decoration: DecorationMix.color(value))),
+      BoxModifierMix(BoxStyler(decoration: DecorationMix.color(value))),
     );
   }
 
   T padding(EdgeInsetsGeometryMix value) {
-    return utilityBuilder(BoxModifierMix(BoxStyle(padding: value)));
+    return utilityBuilder(BoxModifierMix(BoxStyler(padding: value)));
   }
 
   T margin(EdgeInsetsGeometryMix value) {
-    return utilityBuilder(BoxModifierMix(BoxStyle(margin: value)));
+    return utilityBuilder(BoxModifierMix(BoxStyler(margin: value)));
   }
 }

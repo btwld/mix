@@ -33,7 +33,7 @@ class PressableBox extends StatelessWidget {
   /// Called when the box is long-pressed.
   final VoidCallback? onLongPress;
 
-  final BoxStyle? style;
+  final BoxStyler? style;
   final Widget child;
   final bool enabled;
   final FocusNode? focusNode;
@@ -54,7 +54,7 @@ class PressableBox extends StatelessWidget {
       autofocus: autofocus,
       focusNode: focusNode,
 
-      child: Box(style: style ?? const BoxStyle.create(), child: child),
+      child: Box(style: style ?? const BoxStyler.create(), child: child),
     );
   }
 }

@@ -12,13 +12,13 @@ final chipButtonLabel = TextStyling(
       textAlign: TextAlign.center,
 );
 
-final chipButtonContainer = BoxStyle()
+final chipButtonContainer = BoxStyler()
     .height(40)
     .width(120)
     .color(Colors.blue)
     .borderRadius(.circular(20))
-    .onHovered(BoxStyle().color(Colors.blue.shade700))
-    .onSelected(BoxStyle().color(Colors.black))
+    .onHovered(BoxStyler().color(Colors.blue.shade700))
+    .onSelected(BoxStyler().color(Colors.black))
     .alignment(.center)
     .wrap(.defaultText(chipButtonLabel))
     .animate(.easeInOut(300.ms));

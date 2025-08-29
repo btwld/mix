@@ -24,12 +24,12 @@ class _ExampleState extends State<Example> {
 
   @override
   Widget build(BuildContext context) {
-    final style = BoxStyle()
+    final style = BoxStyler()
         .color(Colors.red)
         .height(100)
         .width(100)
         .borderRadius(BorderRadiusMix.all(Radius.circular(10)))
-        .onSelected(BoxStyle().color(Colors.blue));
+        .onSelected(BoxStyler().color(Colors.blue));
 
     return Pressable(
       controller: controller,

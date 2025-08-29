@@ -7,7 +7,7 @@ void main() {
   group('StyleBuilder', () {
     group('Basic functionality', () {
       testWidgets('Build from SpecAttribute', (tester) async {
-        final boxAttribute = BoxStyle()
+        final boxAttribute = BoxStyler()
             .width(100)
             .height(200)
             .color(Colors.blue);
@@ -47,7 +47,7 @@ void main() {
           duration: const Duration(milliseconds: 300),
           curve: Curves.linear,
         );
-        final boxAttribute = BoxStyle(
+        final boxAttribute = BoxStyler(
           constraints: BoxConstraintsMix().width(100).height(200),
           decoration: DecorationMix.color(Colors.blue),
           animation: animation,
@@ -71,16 +71,13 @@ void main() {
         );
 
         // Verify that the animation wrapper is created
-        expect(
-          find.byType(StyleAnimationBuilder<BoxSpec>),
-          findsOneWidget,
-        );
+        expect(find.byType(StyleAnimationBuilder<BoxSpec>), findsOneWidget);
       });
 
       testWidgets('No animation driver when animation config is null', (
         tester,
       ) async {
-        final boxAttribute = BoxStyle()
+        final boxAttribute = BoxStyler()
             .width(100)
             .height(200)
             .color(Colors.blue);
@@ -100,10 +97,7 @@ void main() {
         );
 
         // Verify that no animation wrapper is created
-        expect(
-          find.byType(StyleAnimationBuilder<BoxSpec>),
-          findsNothing,
-        );
+        expect(find.byType(StyleAnimationBuilder<BoxSpec>), findsNothing);
       });
 
       testWidgets(
@@ -114,7 +108,7 @@ void main() {
             curve: Curves.linear,
           );
 
-          final startAttribute = BoxStyle(
+          final startAttribute = BoxStyler(
             constraints: BoxConstraintsMix(
               minWidth: 100,
               maxWidth: 100,
@@ -141,7 +135,7 @@ void main() {
           );
 
           // Update to new style
-          final endAttribute = BoxStyle(
+          final endAttribute = BoxStyler(
             constraints: BoxConstraintsMix(
               minWidth: 200,
               maxWidth: 200,
@@ -198,7 +192,7 @@ void main() {
 
     group('RenderModifiers', () {
       testWidgets('Modifiers are applied when present', (tester) async {
-        final boxAttribute = BoxStyle()
+        final boxAttribute = BoxStyler()
             .width(100)
             .height(100)
             .alignment(Alignment.center)
@@ -247,7 +241,7 @@ void main() {
       });
 
       testWidgets('Modifiers follow default order', (tester) async {
-        final boxAttribute = BoxStyle()
+        final boxAttribute = BoxStyler()
             .width(100)
             .height(100)
             .color(Colors.blue)
@@ -321,7 +315,7 @@ void main() {
           PaddingModifier,
         ];
 
-        final boxAttribute = BoxStyle()
+        final boxAttribute = BoxStyler()
             .width(100)
             .height(100)
             .color(Colors.blue)
@@ -381,7 +375,7 @@ void main() {
       testWidgets('No RenderModifiers widget when no modifiers present', (
         tester,
       ) async {
-        final boxAttribute = BoxStyle()
+        final boxAttribute = BoxStyler()
             .width(100)
             .height(100)
             .color(Colors.blue);

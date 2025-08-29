@@ -19,31 +19,31 @@ import 'box_style.dart';
 
 /// Provides mutable utility for box styling with cascade notation support.
 ///
-/// Supports the same API as [BoxStyle] but maintains mutable internal state
+/// Supports the same API as [BoxStyler] but maintains mutable internal state
 /// enabling fluid styling: `$box..color.red()..width(100)`.
 class BoxSpecUtility extends StyleMutableBuilder<BoxSpec>
-    with UtilityVariantMixin<BoxSpec, BoxStyle> {
-  late final padding = EdgeInsetsGeometryUtility<BoxStyle>(
-    (prop) => mutable.merge(BoxStyle.create(padding: Prop.mix(prop))),
+    with UtilityVariantMixin<BoxSpec, BoxStyler> {
+  late final padding = EdgeInsetsGeometryUtility<BoxStyler>(
+    (prop) => mutable.merge(BoxStyler.create(padding: Prop.mix(prop))),
   );
 
-  late final margin = EdgeInsetsGeometryUtility<BoxStyle>(
-    (prop) => mutable.merge(BoxStyle.create(margin: Prop.mix(prop))),
+  late final margin = EdgeInsetsGeometryUtility<BoxStyler>(
+    (prop) => mutable.merge(BoxStyler.create(margin: Prop.mix(prop))),
   );
 
-  late final constraints = BoxConstraintsUtility<BoxStyle>(
-    (prop) => mutable.merge(BoxStyle.create(constraints: Prop.mix(prop))),
+  late final constraints = BoxConstraintsUtility<BoxStyler>(
+    (prop) => mutable.merge(BoxStyler.create(constraints: Prop.mix(prop))),
   );
 
-  late final decoration = DecorationUtility<BoxStyle>(
-    (prop) => mutable.merge(BoxStyle.create(decoration: Prop.mix(prop))),
+  late final decoration = DecorationUtility<BoxStyler>(
+    (prop) => mutable.merge(BoxStyler.create(decoration: Prop.mix(prop))),
   );
 
   @Deprecated(
     'Use direct methods like \$box.onHovered() instead. '
     'Note: Returns BoxStyle for consistency with other utility methods like animate().',
   )
-  late final on = OnContextVariantUtility<BoxSpec, BoxStyle>(
+  late final on = OnContextVariantUtility<BoxSpec, BoxStyler>(
     (v) => mutable.variants([v]),
   );
 
@@ -78,20 +78,20 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec>
   @protected
   late final MutableBoxStyle mutable;
 
-  BoxSpecUtility([BoxStyle? attribute]) {
-    mutable = MutableBoxStyle(attribute ?? BoxStyle());
+  BoxSpecUtility([BoxStyler? attribute]) {
+    mutable = MutableBoxStyle(attribute ?? BoxStyler());
   }
 
   /// Applies animation configuration to the box styling.
-  BoxStyle animate(AnimationConfig animation) => mutable.animate(animation);
+  BoxStyler animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
-  BoxStyle withVariant(Variant variant, BoxStyle style) {
+  BoxStyler withVariant(Variant variant, BoxStyler style) {
     return mutable.variant(variant, style);
   }
 
   @override
-  BoxStyle withVariants(List<VariantStyle<BoxSpec>> variants) {
+  BoxStyler withVariants(List<VariantStyle<BoxSpec>> variants) {
     return mutable.variants(variants);
   }
 
@@ -102,7 +102,7 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec>
     if (other is BoxSpecUtility) {
       return BoxSpecUtility(mutable.merge(other.mutable.value));
     }
-    if (other is BoxStyle) {
+    if (other is BoxStyler) {
       return BoxSpecUtility(mutable.merge(other));
     }
 
@@ -115,19 +115,19 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec>
   }
 
   @override
-  BoxStyle get currentValue => mutable.value;
+  BoxStyler get currentValue => mutable.value;
 
-  /// The accumulated [BoxStyle] with all applied styling properties.
+  /// The accumulated [BoxStyler] with all applied styling properties.
   @override
-  BoxStyle get value => mutable.value;
+  BoxStyler get value => mutable.value;
 }
 
-/// Mutable implementation of [BoxStyle] for efficient style accumulation.
+/// Mutable implementation of [BoxStyler] for efficient style accumulation.
 ///
 /// Used internally by [BoxSpecUtility] to accumulate styling changes
 /// without creating new instances for each modification.
-class MutableBoxStyle extends BoxStyle with Mutable<BoxSpec, BoxStyle> {
-  MutableBoxStyle(BoxStyle style) {
+class MutableBoxStyle extends BoxStyler with Mutable<BoxSpec, BoxStyler> {
+  MutableBoxStyle(BoxStyler style) {
     value = style;
   }
 }

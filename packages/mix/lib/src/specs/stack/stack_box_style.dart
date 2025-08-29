@@ -65,7 +65,7 @@ class StackBoxStyle extends Style<ZBoxSpec>
     super.animation,
     super.variants,
   }) : $box = Prop.maybeMix(
-         BoxStyle(
+         BoxStyler(
            alignment: alignment,
            padding: padding,
            margin: margin,
@@ -222,7 +222,7 @@ class StackBoxStyle extends Style<ZBoxSpec>
 /// Use the methods of this class to configure specific properties of a [ZBoxSpec].
 class StackBoxSpecUtility {
   /// Utility for defining [StackBoxStyle] box properties
-  final box = BoxStyle();
+  final box = BoxStyler();
 
   /// Utility for defining [StackBoxStyle.stack]
   final stack = StackStyle();

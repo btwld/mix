@@ -44,7 +44,7 @@ class _Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = BoxStyle()
+    final style = BoxStyler()
         .borderRadius(.topLeft($pill()))
         .color($primaryColor())
         .height(100)

@@ -16,7 +16,7 @@ class Example extends StatelessWidget {
       constraints: BoxConstraintsMix.height(100).width(100),
     );
 
-    final boxStyle = BoxStyle()
+    final boxStyle = BoxStyler()
         .color(Colors.deepOrange)
         .height(100)
         .width(100);
@@ -26,20 +26,20 @@ class Example extends StatelessWidget {
       children: [
         Box(style: boxStyle),
         Box(
-          style: BoxStyle()
+          style: BoxStyler()
             .color(Colors.grey.shade300)
             .height(50)
             .width(100),
         ),
         Box(
-          style: BoxStyle()
+          style: BoxStyler()
             .color(Colors.black)
             .height(15)
             .width(100)
             .wrapAlign(Alignment.center),
         ),
         Box(
-          style: BoxStyle()
+          style: BoxStyler()
             .color(Colors.grey.shade100)
             .height(100)
             .width(100)

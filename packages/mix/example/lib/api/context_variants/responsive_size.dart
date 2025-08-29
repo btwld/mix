@@ -13,11 +13,11 @@ class Example extends StatelessWidget {
   Widget build(BuildContext context) {
 
 
-    final style = BoxStyle()
+    final style = BoxStyler()
         .width(100)
         .height(100)
         .color(Colors.blue.shade400)
-        .onBreakpoint(.xs, BoxStyle().color(Colors.green))
+        .onBreakpoint(.xs, BoxStyler().color(Colors.green))
         .borderRadius(.circular(16))
         .shadow(
           .color(Colors.black.withValues(alpha: 0.2))

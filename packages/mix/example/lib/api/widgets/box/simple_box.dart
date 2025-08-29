@@ -50,7 +50,7 @@ class Example extends StatelessWidget {
               ..width(100)
               ..borderRadius.circular(10);
 
-            final boxStyle = BoxStyle()
+            final boxStyle = BoxStyler()
                 .color(Colors.red)
                 .size(100, 100)
                 .borderRadius(.circular(10));

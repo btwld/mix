@@ -8,7 +8,7 @@ void main() {
   group('FlexStyleSpecUtility', () {
     group('Constructor', () {
       test('', () {
-        final containerAttr = BoxStyle(
+        final containerAttr = BoxStyler(
           alignment: Alignment.center,
           padding: EdgeInsetsMix(top: 10.0, bottom: 20.0),
         );

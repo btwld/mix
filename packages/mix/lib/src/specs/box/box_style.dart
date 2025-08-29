@@ -24,24 +24,24 @@ import 'box_spec.dart';
 import 'box_util.dart';
 import 'box_widget.dart';
 
-typedef BoxMix = BoxStyle;
+typedef BoxMix = BoxStyler;
 
 /// Style class for configuring [BoxSpec] properties.
 ///
 /// Encapsulates alignment, padding, margin, constraints, decoration,
 /// and other styling properties for box layouts with support for
 /// widget modifiers, variants, and animations.
-class BoxStyle extends Style<BoxSpec>
+class BoxStyler extends Style<BoxSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<BoxStyle, BoxSpec>,
-        StyleVariantMixin<BoxStyle, BoxSpec>,
-        BorderRadiusMixin<BoxStyle>,
-        DecorationMixin<BoxStyle>,
-        SpacingMixin<BoxStyle>,
-        TransformMixin<BoxStyle>,
-        ConstraintsMixin<BoxStyle>,
-        StyleAnimationMixin<BoxSpec, BoxStyle> {
+        StyleModifierMixin<BoxStyler, BoxSpec>,
+        StyleVariantMixin<BoxStyler, BoxSpec>,
+        BorderRadiusMixin<BoxStyler>,
+        DecorationMixin<BoxStyler>,
+        SpacingMixin<BoxStyler>,
+        TransformMixin<BoxStyler>,
+        ConstraintsMixin<BoxStyler>,
+        StyleAnimationMixin<BoxSpec, BoxStyler> {
   final Prop<AlignmentGeometry>? $alignment;
   final Prop<EdgeInsetsGeometry>? $padding;
   final Prop<EdgeInsetsGeometry>? $margin;
@@ -52,7 +52,7 @@ class BoxStyle extends Style<BoxSpec>
   final Prop<AlignmentGeometry>? $transformAlignment;
   final Prop<Clip>? $clipBehavior;
 
-  const BoxStyle.create({
+  const BoxStyler.create({
     Prop<AlignmentGeometry>? alignment,
     Prop<EdgeInsetsGeometry>? padding,
     Prop<EdgeInsetsGeometry>? margin,
@@ -75,7 +75,7 @@ class BoxStyle extends Style<BoxSpec>
        $transformAlignment = transformAlignment,
        $clipBehavior = clipBehavior;
 
-  BoxStyle({
+  BoxStyler({
     AlignmentGeometry? alignment,
     EdgeInsetsGeometryMix? padding,
     EdgeInsetsGeometryMix? margin,
@@ -103,27 +103,27 @@ class BoxStyle extends Style<BoxSpec>
          animation: animation,
        );
 
-  factory BoxStyle.builder(BoxStyle Function(BuildContext) fn) {
-    return BoxStyle().builder(fn);
+  factory BoxStyler.builder(BoxStyler Function(BuildContext) fn) {
+    return BoxStyler().builder(fn);
   }
 
-  static BoxSpecUtility get chain => BoxSpecUtility(BoxStyle());
+  static BoxSpecUtility get chain => BoxSpecUtility(BoxStyler());
 
-  BoxStyle transformAlignment(AlignmentGeometry value) {
-    return merge(BoxStyle(transformAlignment: value));
+  BoxStyler transformAlignment(AlignmentGeometry value) {
+    return merge(BoxStyler(transformAlignment: value));
   }
 
-  BoxStyle clipBehavior(Clip value) {
-    return merge(BoxStyle(clipBehavior: value));
+  BoxStyler clipBehavior(Clip value) {
+    return merge(BoxStyler(clipBehavior: value));
   }
 
-  BoxStyle alignment(AlignmentGeometry value) {
-    return merge(BoxStyle(alignment: value));
+  BoxStyler alignment(AlignmentGeometry value) {
+    return merge(BoxStyler(alignment: value));
   }
 
   /// Foreground decoration instance method
-  BoxStyle foregroundDecoration(DecorationMix value) {
-    return merge(BoxStyle(foregroundDecoration: value));
+  BoxStyler foregroundDecoration(DecorationMix value) {
+    return merge(BoxStyler(foregroundDecoration: value));
   }
 
   Box call({Widget? child}) {
@@ -131,65 +131,65 @@ class BoxStyle extends Style<BoxSpec>
   }
 
   /// Modifier instance method
-  BoxStyle modifier(ModifierConfig value) {
-    return merge(BoxStyle(modifier: value));
+  BoxStyler modifier(ModifierConfig value) {
+    return merge(BoxStyler(modifier: value));
   }
 
   @override
-  BoxStyle transform(Matrix4 value) {
-    return merge(BoxStyle(transform: value));
+  BoxStyler transform(Matrix4 value) {
+    return merge(BoxStyler(transform: value));
   }
 
   /// Constraints instance method
   @override
-  BoxStyle constraints(BoxConstraintsMix value) {
-    return merge(BoxStyle(constraints: value));
+  BoxStyler constraints(BoxConstraintsMix value) {
+    return merge(BoxStyler(constraints: value));
   }
 
   /// Padding instance method
   @override
-  BoxStyle padding(EdgeInsetsGeometryMix value) {
-    return merge(BoxStyle(padding: value));
+  BoxStyler padding(EdgeInsetsGeometryMix value) {
+    return merge(BoxStyler(padding: value));
   }
 
   /// Margin instance method
   @override
-  BoxStyle margin(EdgeInsetsGeometryMix value) {
-    return merge(BoxStyle(margin: value));
+  BoxStyler margin(EdgeInsetsGeometryMix value) {
+    return merge(BoxStyler(margin: value));
   }
 
   /// Decoration instance method
   @override
-  BoxStyle decoration(DecorationMix value) {
-    return merge(BoxStyle(decoration: value));
+  BoxStyler decoration(DecorationMix value) {
+    return merge(BoxStyler(decoration: value));
   }
 
   /// Animation instance method
   @override
-  BoxStyle animate(AnimationConfig animation) {
-    return merge(BoxStyle(animation: animation));
+  BoxStyler animate(AnimationConfig animation) {
+    return merge(BoxStyler(animation: animation));
   }
 
   /// Mixin implementation
   @override
-  BoxStyle wrap(ModifierConfig value) {
+  BoxStyler wrap(ModifierConfig value) {
     return modifier(value);
   }
 
   /// Border radius instance method
   @override
-  BoxStyle borderRadius(BorderRadiusGeometryMix value) {
-    return merge(BoxStyle(decoration: DecorationMix.borderRadius(value)));
+  BoxStyler borderRadius(BorderRadiusGeometryMix value) {
+    return merge(BoxStyler(decoration: DecorationMix.borderRadius(value)));
   }
 
   @override
-  BoxStyle variants(List<VariantStyle<BoxSpec>> value) {
-    return merge(BoxStyle(variants: value));
+  BoxStyler variants(List<VariantStyle<BoxSpec>> value) {
+    return merge(BoxStyler(variants: value));
   }
 
   @override
-  BoxStyle variant(Variant variant, BoxStyle style) {
-    return merge(BoxStyle(variants: [VariantStyle(variant, style)]));
+  BoxStyler variant(Variant variant, BoxStyler style) {
+    return merge(BoxStyler(variants: [VariantStyle(variant, style)]));
   }
 
   /// Resolves to [StyleSpec<BoxSpec>] using the provided [BuildContext].
@@ -223,19 +223,19 @@ class BoxStyle extends Style<BoxSpec>
     );
   }
 
-  /// Merges the properties of this [BoxStyle] with the properties of [other].
+  /// Merges the properties of this [BoxStyler] with the properties of [other].
   ///
   /// If [other] is null, returns this instance unchanged. Otherwise, returns a new
-  /// [BoxStyle] with the properties of [other] taking precedence over
+  /// [BoxStyler] with the properties of [other] taking precedence over
   /// the corresponding properties of this instance.
   ///
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  BoxStyle merge(BoxStyle? other) {
+  BoxStyler merge(BoxStyler? other) {
     if (other == null) return this;
 
-    return BoxStyle.create(
+    return BoxStyler.create(
       alignment: MixOps.merge($alignment, other.$alignment),
       padding: MixOps.merge($padding, other.$padding),
       margin: MixOps.merge($margin, other.$margin),
@@ -273,7 +273,7 @@ class BoxStyle extends Style<BoxSpec>
   }
 
   /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [BoxStyle] instances for equality.
+  /// compare two [BoxStyler] instances for equality.
   @override
   List<Object?> get props => [
     $alignment,

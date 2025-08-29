@@ -24,7 +24,7 @@ class _ExampleState extends State<Example> {
 
   @override
   Widget build(BuildContext context) {
-    final style = BoxStyle()
+    final style = BoxStyler()
         .height(60)
         .width(120)
         .borderRadius(.circular(30))
@@ -32,7 +32,7 @@ class _ExampleState extends State<Example> {
         .border(.all(.color(Colors.grey.shade300).width(2)))
         .animate(.spring(300.ms))
         .onSelected(
-          BoxStyle()
+          BoxStyler()
             .color(Colors.blue.shade500)
             .border(.all(.color(Colors.blue.shade600).width(2)))
             .shadow(

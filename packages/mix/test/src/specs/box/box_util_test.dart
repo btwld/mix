@@ -14,7 +14,7 @@ void main() {
 
     group('Constructor', () {
       test('creates with provided BoxMix attribute', () {
-        final boxMix = BoxStyle(alignment: Alignment.center);
+        final boxMix = BoxStyler(alignment: Alignment.center);
         final utility = BoxSpecUtility(boxMix);
         final context = MockBuildContext();
         final spec = utility.resolve(context);
@@ -29,27 +29,27 @@ void main() {
 
     group('Box utility properties', () {
       test('padding utility is EdgeInsetsGeometryUtility', () {
-        expect(util.padding, isA<EdgeInsetsGeometryUtility<BoxStyle>>());
+        expect(util.padding, isA<EdgeInsetsGeometryUtility<BoxStyler>>());
       });
 
       test('margin utility is EdgeInsetsGeometryUtility', () {
-        expect(util.margin, isA<EdgeInsetsGeometryUtility<BoxStyle>>());
+        expect(util.margin, isA<EdgeInsetsGeometryUtility<BoxStyler>>());
       });
 
       test('constraints utility is BoxConstraintsUtility', () {
-        expect(util.constraints, isA<BoxConstraintsUtility<BoxStyle>>());
+        expect(util.constraints, isA<BoxConstraintsUtility<BoxStyler>>());
       });
 
       test('decoration utility is DecorationUtility', () {
-        expect(util.decoration, isA<DecorationUtility<BoxStyle>>());
+        expect(util.decoration, isA<DecorationUtility<BoxStyler>>());
       });
 
       test('on utility is OnContextVariantUtility', () {
-        expect(util.on, isA<OnContextVariantUtility<BoxSpec, BoxStyle>>());
+        expect(util.on, isA<OnContextVariantUtility<BoxSpec, BoxStyler>>());
       });
 
       test('wrap utility is ModifierUtility', () {
-        expect(util.wrap, isA<ModifierUtility<BoxStyle>>());
+        expect(util.wrap, isA<ModifierUtility<BoxStyler>>());
       });
     });
 
@@ -122,7 +122,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(result, isA<BoxStyle>());
+        expect(result, isA<BoxStyler>());
         expect(spec.spec.transform, matrix);
       });
 
@@ -132,7 +132,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(result, isA<BoxStyle>());
+        expect(result, isA<BoxStyler>());
         expect(spec.spec.transformAlignment, alignment);
       });
 
@@ -142,7 +142,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(result, isA<BoxStyle>());
+        expect(result, isA<BoxStyler>());
         expect(spec.spec.clipBehavior, clipBehavior);
       });
 
@@ -152,7 +152,7 @@ void main() {
         final context = MockBuildContext();
         final spec = util.resolve(context);
 
-        expect(result, isA<BoxStyle>());
+        expect(result, isA<BoxStyler>());
         expect(spec.spec.alignment, alignment);
       });
     });
@@ -180,7 +180,7 @@ void main() {
       test('wrap utility creates modifier BoxMix', () {
         final result = util.wrap.opacity(0.5);
 
-        expect(result, isA<BoxStyle>());
+        expect(result, isA<BoxStyler>());
         expect(result.$modifier, isNotNull);
         expect(result.$modifier!.$modifiers!.length, 1);
       });
@@ -193,7 +193,7 @@ void main() {
       });
 
       test('merge with BoxSpecUtility creates new instance', () {
-        final other = BoxSpecUtility(BoxStyle(alignment: Alignment.center));
+        final other = BoxSpecUtility(BoxStyler(alignment: Alignment.center));
         final result = util.merge(other);
         final context = MockBuildContext();
         final spec = result.resolve(context);
@@ -204,7 +204,7 @@ void main() {
       });
 
       test('merge with BoxMix creates new instance', () {
-        final otherMix = BoxStyle(alignment: Alignment.topRight);
+        final otherMix = BoxStyler(alignment: Alignment.topRight);
         final result = util.merge(otherMix);
         final context = MockBuildContext();
         final spec = result.resolve(context);
@@ -222,8 +222,8 @@ void main() {
       });
 
       test('merge combines properties correctly', () {
-        final util1 = BoxSpecUtility(BoxStyle(alignment: Alignment.center));
-        final other = BoxSpecUtility(BoxStyle(clipBehavior: Clip.antiAlias));
+        final util1 = BoxSpecUtility(BoxStyler(alignment: Alignment.center));
+        final other = BoxSpecUtility(BoxStyler(clipBehavior: Clip.antiAlias));
 
         final result = util1.merge(other);
         final context = MockBuildContext();
@@ -237,7 +237,7 @@ void main() {
     group('Resolve functionality', () {
       test('resolve returns BoxSpec with resolved properties', () {
         final testUtil = BoxSpecUtility(
-          BoxStyle(
+          BoxStyler(
             alignment: Alignment.center,
             clipBehavior: Clip.antiAlias,
             transform: Matrix4.identity(),
@@ -269,7 +269,7 @@ void main() {
         final util = BoxSpecUtility();
 
         final result = util.alignment(Alignment.center);
-        expect(result, isA<BoxStyle>());
+        expect(result, isA<BoxStyler>());
 
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -282,7 +282,7 @@ void main() {
         final matrix = Matrix4.identity();
 
         final result = util.transform(matrix);
-        expect(result, isA<BoxStyle>());
+        expect(result, isA<BoxStyler>());
 
         final context = MockBuildContext();
         final spec = util.resolve(context);
@@ -332,9 +332,9 @@ void main() {
         final transformResult = util.transform(matrix);
         final clipResult = util.clipBehavior(Clip.antiAlias);
 
-        expect(alignmentResult, isA<BoxStyle>());
-        expect(transformResult, isA<BoxStyle>());
-        expect(clipResult, isA<BoxStyle>());
+        expect(alignmentResult, isA<BoxStyler>());
+        expect(transformResult, isA<BoxStyler>());
+        expect(clipResult, isA<BoxStyler>());
 
         // But the utility itself should have accumulated all changes
         final context = MockBuildContext();
@@ -406,7 +406,7 @@ void main() {
     group('Integration with resolvesTo matcher', () {
       test('utility resolves to correct BoxSpec', () {
         final testUtil = BoxSpecUtility(
-          BoxStyle(alignment: Alignment.center, clipBehavior: Clip.antiAlias),
+          BoxStyler(alignment: Alignment.center, clipBehavior: Clip.antiAlias),
         );
 
         expect(
@@ -432,15 +432,15 @@ void main() {
         final transformResult = util.transform(matrix);
         final clipResult = util.clipBehavior(Clip.antiAlias);
 
-        expect(alignmentResult, isA<BoxStyle>());
-        expect(transformResult, isA<BoxStyle>());
-        expect(clipResult, isA<BoxStyle>());
+        expect(alignmentResult, isA<BoxStyler>());
+        expect(transformResult, isA<BoxStyler>());
+        expect(clipResult, isA<BoxStyler>());
       });
 
       test('handles multiple merges correctly', () {
-        final util1 = BoxSpecUtility(BoxStyle(alignment: Alignment.center));
-        final util2 = BoxSpecUtility(BoxStyle(clipBehavior: Clip.antiAlias));
-        final util3 = BoxSpecUtility(BoxStyle(transform: Matrix4.identity()));
+        final util1 = BoxSpecUtility(BoxStyler(alignment: Alignment.center));
+        final util2 = BoxSpecUtility(BoxStyler(clipBehavior: Clip.antiAlias));
+        final util3 = BoxSpecUtility(BoxStyler(transform: Matrix4.identity()));
 
         final result = util1.merge(util2).merge(util3);
         final context = MockBuildContext();
@@ -464,7 +464,7 @@ void main() {
       });
 
       test('merge with self returns new instance', () {
-        final testUtil = BoxSpecUtility(BoxStyle(alignment: Alignment.center));
+        final testUtil = BoxSpecUtility(BoxStyler(alignment: Alignment.center));
         final result = testUtil.merge(testUtil);
         final context = MockBuildContext();
         final spec = result.resolve(context);

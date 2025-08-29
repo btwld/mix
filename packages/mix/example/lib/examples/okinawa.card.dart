@@ -34,7 +34,7 @@ class OkinawaCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final boxStyle = BoxStyle()
+    final boxStyle = BoxStyler()
         .height(200)
         .width(200)
         .borderRadius(BorderRadiusMix.circular(10))
