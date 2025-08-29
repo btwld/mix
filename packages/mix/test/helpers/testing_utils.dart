@@ -254,7 +254,6 @@ class MockStyle<T> extends Style<MockSpec<T>> {
     super.variants,
     super.modifier,
     super.animation,
-
   });
 
   @override
@@ -312,6 +311,10 @@ final class MockSpec<T> extends Spec<MockSpec<T>> with Diagnosticable {
 
   @override
   List<Object?> get props => [resolvedValue];
+
+  WidgetSpec<MockSpec<T>> toWidgetSpec() {
+    return WidgetSpec(spec: this);
+  }
 }
 
 // Test-only extension to simplify access to MockSpec.resolvedValue when wrapped
@@ -522,7 +525,6 @@ class PropMatcher {
 
   /// Matches a Prop that has directives
   static Matcher get hasDirectives => const _PropHasDirectivesMatcher();
-
 }
 
 /// Matcher for Prop values
@@ -842,4 +844,3 @@ class _PropHasDirectivesMatcher extends Matcher {
     return mismatchDescription.add('does not have directives');
   }
 }
-

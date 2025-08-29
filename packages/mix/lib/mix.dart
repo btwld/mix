@@ -21,7 +21,7 @@ library;
 /// ANIMATION
 export 'src/animation/animation_config.dart';
 export 'src/animation/animation_util.dart';
-export 'src/animation/curves.dart';
+export 'src/animation/spring_curves.dart';
 export 'src/animation/style_animation_builder.dart';
 export 'src/animation/style_animation_driver.dart';
 
