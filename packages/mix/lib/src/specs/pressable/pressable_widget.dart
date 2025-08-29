@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/internal/mix_hoverable_region.dart';
+import '../../core/internal/mix_interaction_detector.dart';
 import '../../core/providers/widget_state_provider.dart';
 import '../box/box_style.dart';
 import '../box/box_widget.dart';
@@ -214,7 +214,7 @@ class PressableWidgetState extends State<Pressable> {
             onFocusChange: _onFocusChange,
             onKeyEvent: widget.onKeyEvent ?? widget.onKey,
             canRequestFocus: widget.canRequestFocus && widget.enabled,
-            child: MixHoverableRegion(
+            child: MixInteractionDetector(
               controller: _controller,
               enabled: widget.enabled,
               child: widget.child,

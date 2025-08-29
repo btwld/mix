@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
-import 'package:mix/src/core/internal/mix_hoverable_region.dart';
+import 'package:mix/src/core/internal/mix_interaction_detector.dart';
 
 void main() {
   group('Selective Rebuild Optimization', () {
@@ -102,7 +102,7 @@ void main() {
       );
     });
 
-    testWidgets('MixHoverableRegion child should not rebuild on state changes', (
+    testWidgets('MixInteractionDetector child should not rebuild on state changes', (
       WidgetTester tester,
     ) async {
       int childBuildCount = 0;
@@ -111,7 +111,7 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: Center(
-              child: MixHoverableRegion(
+              child: MixInteractionDetector(
                 child: Builder(
                   builder: (context) {
                     childBuildCount++;
@@ -138,14 +138,14 @@ void main() {
       await gesture.addPointer(location: Offset.zero);
       addTearDown(gesture.removePointer);
       await tester.pump();
-      await gesture.moveTo(tester.getCenter(find.byType(MixHoverableRegion)));
+      await gesture.moveTo(tester.getCenter(find.byType(MixInteractionDetector)));
       await tester.pump();
 
       // Child should NOT rebuild on hover
       expect(
         childBuildCount,
         1,
-        reason: 'MixHoverableRegion child should not rebuild on hover state change',
+        reason: 'MixInteractionDetector child should not rebuild on hover state change',
       );
     });
   });

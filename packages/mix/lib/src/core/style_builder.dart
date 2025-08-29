@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../animation/style_animation_builder.dart';
 import '../modifiers/internal/render_modifier.dart';
-import 'internal/mix_hoverable_region.dart';
+import 'internal/mix_interaction_detector.dart';
 import 'providers/style_provider.dart';
 import 'providers/widget_spec_provider.dart';
 import 'providers/widget_state_provider.dart';
@@ -61,7 +61,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
     final widgetStates = widget.style.widgetStates;
     // Calculate interactivity need early
     final needsToTrackWidgetState =
-        widget.controller != null || widgetStates.isNotEmpty;
+        widget.controller == null && widgetStates.isNotEmpty;
 
     final alreadyHasWidgetStateScope = WidgetStateProvider.of(context) != null;
 
@@ -81,8 +81,8 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
 
     if (needsToTrackWidgetState && !alreadyHasWidgetStateScope) {
       // If we need interactivity and no MixWidgetStateModel is present,
-      // wrap in MixHoverableRegion
-      current = MixHoverableRegion(controller: _controller, child: current);
+      // wrap in MixInteractionDetector
+      current = MixInteractionDetector(controller: _controller, child: current);
     }
 
     return current;
