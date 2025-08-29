@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +12,7 @@ import '../providers/widget_state_provider.dart';
 ///
 /// This widget respects [enabled]: when false it sets [WidgetState.disabled],
 /// gates interactions, and clears transient hover/press states. When true, it tracks these.
+@internal
 class MixInteractionDetector extends StatefulWidget {
   const MixInteractionDetector({
     super.key,
