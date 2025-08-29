@@ -39,21 +39,21 @@ class _ExampleState extends State<Example> {
       onEnter: (event) => trigger.value++,
       child: HBox(
         style: Style.flexbox(
-          FlexBoxMix().box(
-            BoxMix()
-                .color(Colors.white)
-                .padding(EdgeInsetsMix.symmetric(horizontal: 16, vertical: 8))
-                .borderRadius(BorderRadiusMix.circular(10))
-                .border(
-                  BoxBorderMix.all(BorderSideMix.color(Colors.grey.shade200)),
-                )
-                .onHovered(
-                  BoxMix().border(
-                    BoxBorderMix.all(BorderSideMix.color(Colors.red)),
-                  ),
+          FlexBoxMix()
+              .color(Colors.white)
+              .padding(EdgeInsetsMix.symmetric(horizontal: 16, vertical: 8))
+              .borderRadius(BorderRadiusMix.circular(10))
+              .border(
+                BoxBorderMix.all(BorderSideMix.color(Colors.grey.shade200)),
+              )
+              .onHovered(
+                FlexBoxStyle().border(
+                  BoxBorderMix.all(BorderSideMix.color(Colors.red)),
                 ),
-          ),
-        ).flex(FlexMix().mainAxisSize(MainAxisSize.min).spacing(8)),
+              )
+              .mainAxisSize(MainAxisSize.min)
+              .spacing(8),
+        ),
 
         children: [
           Text('Developer Preview'),

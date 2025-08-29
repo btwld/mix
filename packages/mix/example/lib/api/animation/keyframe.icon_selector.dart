@@ -39,24 +39,19 @@ class EmojiSelector extends StatelessWidget {
     return FlexBox(
       direction: Axis.horizontal,
       style: FlexBoxMix()
-          .box(
-            BoxMix()
-                .padding(EdgeInsetsMix.symmetric(horizontal: 16, vertical: 10))
-                .color(Colors.white)
-                .borderRadius(BorderRadiusMix.circular(50))
-                .shadow(
-                  BoxShadowMix()
-                      .color(Colors.black12)
-                      .blurRadius(50)
-                      .offset(Offset(0, 0)),
-                ),
+          .padding(EdgeInsetsMix.symmetric(horizontal: 16, vertical: 10))
+          .color(Colors.white)
+          .borderRadius(BorderRadiusMix.circular(50))
+          .shadow(
+            BoxShadowMix()
+                .color(Colors.black12)
+                .blurRadius(50)
+                .offset(Offset(0, 0)),
           )
-          .flex(
-            FlexMix()
-                .spacing(16)
-                .mainAxisAlignment(MainAxisAlignment.center)
-                .mainAxisSize(MainAxisSize.min),
-          ),
+          .spacing(16)
+          .mainAxisAlignment(MainAxisAlignment.center)
+          .mainAxisSize(MainAxisSize.min),
+
       children: [
         PopUpAnimation(child: emoji('❤️')),
         PopUpAnimation(delay: 100.ms, child: emoji('🤑')),
