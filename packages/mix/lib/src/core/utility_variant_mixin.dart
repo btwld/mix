@@ -12,10 +12,10 @@ import 'style.dart';
 mixin UtilityVariantMixin<S extends Spec<S>, T extends Style<S>> {
   /// Must be implemented by utilities to apply a variant to a style.
   T withVariant(Variant variant, T style);
-  
+
   /// Must be implemented by utilities to apply multiple variants to a style.
   T withVariants(List<VariantStyle<S>> variants);
-  
+
   /// Gets the current utility value as a style.
   T get currentValue;
 
@@ -72,6 +72,8 @@ mixin UtilityVariantMixin<S extends Spec<S>, T extends Style<S>> {
   /// })
   /// ```
   T builder(T Function(BuildContext context) fn) {
-    return withVariants([VariantStyle<S>(ContextVariantBuilder<T>(fn), currentValue)]);
+    return withVariants([
+      VariantStyle<S>(ContextVariantBuilder<T>(fn), currentValue),
+    ]);
   }
 }

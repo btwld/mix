@@ -13,7 +13,13 @@ void main() {
           .color(Colors.blue)
           .width(100)
           .height(100)
-          .onHovered(BoxStyler().color(Colors.red).width(100).height(100));
+          .onHovered(
+            (s) => s
+                .color(Colors.red)
+                .width(100)
+                .height(100)
+                .alignment(Alignment.center),
+          );
 
       Color? currentColor;
 
@@ -82,7 +88,7 @@ void main() {
                     .color(Colors.green)
                     .width(150)
                     .height(150)
-                    .onHovered(BoxStyler().color(Colors.orange)),
+                    .onHovered((s) => s.color(Colors.orange)),
                 child: const Text('Hover me'),
               ),
             ),

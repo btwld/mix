@@ -59,6 +59,7 @@ class StackBoxStyler extends Style<ZBoxSpec>
     // Stack properties
     AlignmentGeometry? stackAlignment,
     StackFit? fit,
+    TextDirection? textDirection,
     Clip? stackClipBehavior,
     // Style properties
     super.modifier,
@@ -81,6 +82,7 @@ class StackBoxStyler extends Style<ZBoxSpec>
          StackStyler(
            alignment: stackAlignment,
            fit: fit,
+           textDirection: textDirection,
            clipBehavior: stackClipBehavior,
          ),
        );
@@ -107,6 +109,50 @@ class StackBoxStyler extends Style<ZBoxSpec>
 
   StackBoxStyler modifier(ModifierConfig value) {
     return merge(StackBoxStyler(modifier: value));
+  }
+
+  // Stack property convenience methods
+
+  /// Sets stack alignment
+  StackBoxStyler stackAlignment(AlignmentGeometry value) {
+    return merge(StackBoxStyler(stackAlignment: value));
+  }
+
+  /// Sets stack fit
+  StackBoxStyler fit(StackFit value) {
+    return merge(StackBoxStyler(fit: value));
+  }
+
+  /// Sets text direction
+  StackBoxStyler textDirection(TextDirection value) {
+    return merge(StackBoxStyler(textDirection: value));
+  }
+
+  /// Sets stack clip behavior
+  StackBoxStyler stackClipBehavior(Clip value) {
+    return merge(StackBoxStyler(stackClipBehavior: value));
+  }
+
+  // Box property convenience methods
+
+  /// Sets box alignment
+  StackBoxStyler alignment(AlignmentGeometry value) {
+    return merge(StackBoxStyler(alignment: value));
+  }
+
+  /// Sets transform alignment
+  StackBoxStyler transformAlignment(AlignmentGeometry value) {
+    return merge(StackBoxStyler(transformAlignment: value));
+  }
+
+  /// Sets box clip behavior
+  StackBoxStyler clipBehavior(Clip value) {
+    return merge(StackBoxStyler(clipBehavior: value));
+  }
+
+  /// Sets foreground decoration
+  StackBoxStyler foregroundDecoration(DecorationMix value) {
+    return merge(StackBoxStyler(foregroundDecoration: value));
   }
 
   @override
@@ -245,6 +291,7 @@ class StackBoxSpecUtility {
     // Stack properties
     AlignmentGeometry? stackAlignment,
     StackFit? fit,
+    TextDirection? textDirection,
     Clip? stackClipBehavior,
     // Style properties
     ModifierConfig? modifier,
@@ -262,6 +309,7 @@ class StackBoxSpecUtility {
       clipBehavior: clipBehavior,
       stackAlignment: stackAlignment,
       fit: fit,
+      textDirection: textDirection,
       stackClipBehavior: stackClipBehavior,
       modifier: modifier,
       animation: animation,

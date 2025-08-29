@@ -1,5 +1,5 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:meta/meta.dart';
 
 import '../../core/style.dart';
 import '../../core/utility.dart';

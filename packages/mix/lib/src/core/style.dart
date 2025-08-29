@@ -1,5 +1,5 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:meta/meta.dart';
 
 import '../animation/animation_config.dart';
 import '../modifiers/modifier_config.dart';
@@ -212,9 +212,7 @@ final class VariantStyle<S extends Spec<S>> extends Mixable<StyleSpec<S>>
 
   @override
   VariantStyle<S> merge(covariant VariantStyle<S>? other) {
-    if (other == null || other.variant != variant) return this;
-
-    return VariantStyle(variant, _style.merge(other._style));
+    return VariantStyle(variant, _style.merge(other?._style));
   }
 
   @override

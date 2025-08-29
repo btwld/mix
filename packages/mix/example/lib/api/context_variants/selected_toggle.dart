@@ -31,22 +31,21 @@ class _ExampleState extends State<Example> {
         .color(Colors.grey.shade200)
         .border(.all(.color(Colors.grey.shade300).width(2)))
         .animate(.spring(300.ms))
-        .onSelected(
-          BoxStyler()
-            .color(Colors.blue.shade500)
-            .border(.all(.color(Colors.blue.shade600).width(2)))
-            .shadow(
-              .color(Colors.blue.shade200)
-              .blurRadius(10)
-              .spreadRadius(2),
-          ),
+        .onSelected((s) => s
+          .color(Colors.blue.shade500)
+          .border(.all(.color(Colors.blue.shade600).width(2)))
+          .shadow(
+            .color(Colors.blue.shade200)
+            .blurRadius(10)
+            .spreadRadius(2),
+          )
         );
 
     final textStyle = TextStyler()
         .fontSize(16)
         .fontWeight(.w600)
         .color(Colors.grey.shade700)
-        .onSelected(.color(Colors.white));
+        .onSelected((s) => s.color(Colors.white));
 
     return Pressable(
       controller: controller,

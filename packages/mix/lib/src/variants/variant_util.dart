@@ -309,25 +309,33 @@ mixin StyleVariantMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   T variant(Variant variant, T style);
 
   T variants(List<VariantStyle<S>> value);
-  
 
   /// Creates a variant for dark mode
-  T onDark(T style) {
-    return variant(ContextVariant.brightness(Brightness.dark), style);
+  T onDark(VariantFactoryCallback<T, S> builder) {
+    return variant(
+      ContextVariant.brightness(Brightness.dark),
+      builder(this as T),
+    );
   }
 
-  T onNot(ContextVariant contextVariant, T style) {
-    return variant(ContextVariant.not(contextVariant), style);
+  T onNot(ContextVariant contextVariant, VariantFactoryCallback<T, S> builder) {
+    return variant(ContextVariant.not(contextVariant), builder(this as T));
   }
 
   /// Creates a variant for light mode
-  T onLight(T style) {
-    return variant(ContextVariant.brightness(Brightness.light), style);
+  T onLight(VariantFactoryCallback<T, S> builder) {
+    return variant(
+      ContextVariant.brightness(Brightness.light),
+      builder(this as T),
+    );
   }
 
   /// Creates a variant for hover state
-  T onHovered(T style) {
-    return variant(ContextVariant.widgetState(WidgetState.hovered), style);
+  T onHovered(VariantFactoryCallback<T, S> builder) {
+    return variant(
+      ContextVariant.widgetState(WidgetState.hovered),
+      builder(this as T),
+    );
   }
 
   /// Creates a variant that applies styling based on the build context.
@@ -349,122 +357,170 @@ mixin StyleVariantMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   }
 
   /// Creates a variant for pressed state
-  T onPressed(T style) {
-    return variant(ContextVariant.widgetState(WidgetState.pressed), style);
+  T onPressed(VariantFactoryCallback<T, S> builder) {
+    return variant(
+      ContextVariant.widgetState(WidgetState.pressed),
+      builder(this as T),
+    );
   }
 
   /// Creates a variant for focus state
-  T onFocused(T style) {
-    return variant(ContextVariant.widgetState(WidgetState.focused), style);
+  T onFocused(VariantFactoryCallback<T, S> builder) {
+    return variant(
+      ContextVariant.widgetState(WidgetState.focused),
+      builder(this as T),
+    );
   }
 
   /// Creates a variant for disabled state
-  T onDisabled(T style) {
-    return variant(ContextVariant.widgetState(WidgetState.disabled), style);
+  T onDisabled(VariantFactoryCallback<T, S> builder) {
+    return variant(
+      ContextVariant.widgetState(WidgetState.disabled),
+      builder(this as T),
+    );
   }
 
   /// Creates a variant for selected state
-  T onSelected(T style) {
-    return variant(ContextVariant.widgetState(WidgetState.selected), style);
+  T onSelected(VariantFactoryCallback<T, S> builder) {
+    return variant(
+      ContextVariant.widgetState(WidgetState.selected),
+      builder(this as T),
+    );
   }
 
   /// Creates a variant for error state
-  T onError(T style) {
-    return variant(ContextVariant.widgetState(WidgetState.error), style);
+  T onError(VariantFactoryCallback<T, S> builder) {
+    return variant(
+      ContextVariant.widgetState(WidgetState.error),
+      builder(this as T),
+    );
   }
 
   /// Creates a variant for scrolled under state
-  T onScrolledUnder(T style) {
+  T onScrolledUnder(VariantFactoryCallback<T, S> builder) {
     return variant(
       ContextVariant.widgetState(WidgetState.scrolledUnder),
-      style,
+      builder(this as T),
     );
   }
 
   /// Creates a variant for dragged state
-  T onDragged(T style) {
-    return variant(ContextVariant.widgetState(WidgetState.dragged), style);
+  T onDragged(VariantFactoryCallback<T, S> builder) {
+    return variant(
+      ContextVariant.widgetState(WidgetState.dragged),
+      builder(this as T),
+    );
   }
 
   /// Creates a variant for enabled state (opposite of disabled)
-  T onEnabled(T style) {
+  T onEnabled(VariantFactoryCallback<T, S> builder) {
     return variant(
       ContextVariant.not(ContextVariant.widgetState(WidgetState.disabled)),
-      style,
+      builder(this as T),
     );
   }
 
   /// Creates a variant for portrait orientation
-  T onPortrait(T style) {
-    return variant(ContextVariant.orientation(Orientation.portrait), style);
+  T onPortrait(VariantFactoryCallback<T, S> builder) {
+    return variant(
+      ContextVariant.orientation(Orientation.portrait),
+      builder(this as T),
+    );
   }
 
   /// Creates a variant for landscape orientation
-  T onLandscape(T style) {
-    return variant(ContextVariant.orientation(Orientation.landscape), style);
+  T onLandscape(VariantFactoryCallback<T, S> builder) {
+    return variant(
+      ContextVariant.orientation(Orientation.landscape),
+      builder(this as T),
+    );
   }
 
   /// Creates a variant for mobile breakpoint
-  T onMobile(T style) {
-    return variant(ContextVariant.mobile(), style);
+  T onMobile(VariantFactoryCallback<T, S> builder) {
+    return variant(ContextVariant.mobile(), builder(this as T));
   }
 
   /// Creates a variant for tablet breakpoint
-  T onTablet(T style) {
-    return variant(ContextVariant.tablet(), style);
+  T onTablet(VariantFactoryCallback<T, S> builder) {
+    return variant(ContextVariant.tablet(), builder(this as T));
   }
 
   /// Creates a variant for desktop breakpoint
-  T onDesktop(T style) {
-    return variant(ContextVariant.desktop(), style);
+  T onDesktop(VariantFactoryCallback<T, S> builder) {
+    return variant(ContextVariant.desktop(), builder(this as T));
   }
 
   /// Creates a variant for left-to-right text direction
-  T onLtr(T style) {
-    return variant(ContextVariant.directionality(TextDirection.ltr), style);
+  T onLtr(VariantFactoryCallback<T, S> builder) {
+    return variant(
+      ContextVariant.directionality(TextDirection.ltr),
+      builder(this as T),
+    );
   }
 
   /// Creates a variant for right-to-left text direction
-  T onRtl(T style) {
-    return variant(ContextVariant.directionality(TextDirection.rtl), style);
+  T onRtl(VariantFactoryCallback<T, S> builder) {
+    return variant(
+      ContextVariant.directionality(TextDirection.rtl),
+      builder(this as T),
+    );
   }
 
   /// Creates a variant for iOS platform
-  T onIos(T style) {
-    return variant(ContextVariant.platform(TargetPlatform.iOS), style);
+  T onIos(VariantFactoryCallback<T, S> builder) {
+    return variant(
+      ContextVariant.platform(TargetPlatform.iOS),
+      builder(this as T),
+    );
   }
 
   /// Creates a variant for Android platform
-  T onAndroid(T style) {
-    return variant(ContextVariant.platform(TargetPlatform.android), style);
+  T onAndroid(VariantFactoryCallback<T, S> builder) {
+    return variant(
+      ContextVariant.platform(TargetPlatform.android),
+      builder(this as T),
+    );
   }
 
   /// Creates a variant for macOS platform
-  T onMacos(T style) {
-    return variant(ContextVariant.platform(TargetPlatform.macOS), style);
+  T onMacos(VariantFactoryCallback<T, S> builder) {
+    return variant(
+      ContextVariant.platform(TargetPlatform.macOS),
+      builder(this as T),
+    );
   }
 
   /// Creates a variant for Windows platform
-  T onWindows(T style) {
-    return variant(ContextVariant.platform(TargetPlatform.windows), style);
+  T onWindows(VariantFactoryCallback<T, S> builder) {
+    return variant(
+      ContextVariant.platform(TargetPlatform.windows),
+      builder(this as T),
+    );
   }
 
   /// Creates a variant for Linux platform
-  T onLinux(T style) {
-    return variant(ContextVariant.platform(TargetPlatform.linux), style);
+  T onLinux(VariantFactoryCallback<T, S> builder) {
+    return variant(
+      ContextVariant.platform(TargetPlatform.linux),
+      builder(this as T),
+    );
   }
 
   /// Creates a variant for Fuchsia platform
-  T onFuchsia(T style) {
-    return variant(ContextVariant.platform(TargetPlatform.fuchsia), style);
+  T onFuchsia(VariantFactoryCallback<T, S> builder) {
+    return variant(
+      ContextVariant.platform(TargetPlatform.fuchsia),
+      builder(this as T),
+    );
   }
 
   /// Creates a variant for web platform
-  T onWeb(T style) {
-    return variant(ContextVariant.web(), style);
+  T onWeb(VariantFactoryCallback<T, S> builder) {
+    return variant(ContextVariant.web(), builder(this as T));
   }
 
-  T onBreakpoint(Breakpoint breakpoint, T style) {
-    return variant(ContextVariant.breakpoint(breakpoint), style);
+  T onBreakpoint(Breakpoint breakpoint, VariantFactoryCallback<T, S> builder) {
+    return variant(ContextVariant.breakpoint(breakpoint), builder(this as T));
   }
 }

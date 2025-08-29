@@ -25,11 +25,11 @@ class _ExampleState extends State<Example> {
         .borderRadius(.circular(30))
         .color(Colors.grey.shade200)
         .animate(.easeInOut(600.ms))
-        .onDark(BoxStyler().color(Colors.grey.shade800))
+        .onDark((s) => s.color(Colors.grey.shade800))
         .shadow(
           .color(Colors.black.withValues(alpha: 0.1))
           .blurRadius(10)
-          .offset(Offset(0, 4))
+          .offset(Offset(0, 4)),
         );
 
     // Icon style that adapts to dark/light mode
@@ -38,11 +38,10 @@ class _ExampleState extends State<Example> {
         .size(28)
         .icon(Icons.dark_mode)
         .animate(.easeInOut(200.ms))
-        .onDark(
+        .onDark((s) => s
           .icon(Icons.light_mode)
           .color(Colors.yellow)
-        
-    );
+        );
 
     return MediaQuery(
         data: MediaQuery.of(context).copyWith(
