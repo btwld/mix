@@ -163,7 +163,7 @@ class StackBoxStyler extends Style<ZBoxSpec>
   /// defined in the property specification.
   ///
   /// ```dart
-  /// final zBoxSpec = StackBoxStyle(...).resolve(context);
+  /// final zBoxSpec = StackBoxStyler(...).resolve(context);
   /// ```
   @override
   StyleSpec<ZBoxSpec> resolve(BuildContext context) {

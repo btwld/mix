@@ -198,7 +198,7 @@ class FlexStyler extends Style<FlexSpec>
   /// defined in the property specification.
   ///
   /// ```dart
-  /// final flexStyleSpec = FlexStyle(...).resolve(context);
+  /// final flexStyleSpec = FlexStyler(...).resolve(context);
   /// ```
   @override
   StyleSpec<FlexSpec> resolve(BuildContext context) {

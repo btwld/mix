@@ -309,6 +309,7 @@ mixin StyleVariantMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   T variant(Variant variant, T style);
 
   T variants(List<VariantStyle<S>> value);
+  
 
   /// Creates a variant for dark mode
   T onDark(T style) {
