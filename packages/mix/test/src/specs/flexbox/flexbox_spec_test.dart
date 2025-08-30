@@ -134,7 +134,8 @@ void main() {
 
         final merged = attribute.merge(null);
 
-        expect(identical(attribute, merged), isTrue);
+        expect(identical(attribute, merged), isFalse);
+        expect(merged, equals(attribute));
       });
 
       test('merges nested box and flex attributes correctly', () {

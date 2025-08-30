@@ -297,7 +297,8 @@ void main() {
         final boxMix = BoxStyler(alignment: Alignment.center);
         final merged = boxMix.merge(null);
 
-        expect(identical(boxMix, merged), isTrue);
+        expect(identical(boxMix, merged), isFalse);
+        expect(merged, equals(boxMix));
       });
     });
 

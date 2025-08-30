@@ -271,7 +271,7 @@ void main() {
 
         final merged = primaryStyle.merge(secondaryStyle);
 
-        expect(merged, same(primaryStyle));
+        expect(merged, equals(primaryStyle));
         final mergedBox = merged.value as BoxStyler;
         final context = MockBuildContext();
         final constraints = mergedBox.resolve(context).constraints;

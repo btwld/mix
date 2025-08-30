@@ -297,7 +297,8 @@ void main() {
         final attribute = ImageStyler().width(100.0);
         final merged = attribute.merge(null);
 
-        expect(identical(attribute, merged), isTrue);
+        expect(identical(attribute, merged), isFalse);
+        expect(merged, equals(attribute));
       });
     });
 

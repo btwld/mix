@@ -329,7 +329,8 @@ void main() {
       final attribute = FlexStyler().direction(Axis.horizontal);
       final merged = attribute.merge(null);
 
-      expect(identical(attribute, merged), isTrue);
+      expect(identical(attribute, merged), isFalse);
+      expect(merged, equals(attribute));
     });
 
     test('merges all properties when both have values', () {

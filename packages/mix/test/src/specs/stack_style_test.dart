@@ -205,7 +205,8 @@ void main() {
         final attribute = StackStyler().alignment(Alignment.center);
         final merged = attribute.merge(null);
 
-        expect(identical(attribute, merged), isTrue);
+        expect(identical(attribute, merged), isFalse);
+        expect(merged, equals(attribute));
       });
     });
 

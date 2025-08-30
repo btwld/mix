@@ -182,7 +182,7 @@ void main() {
 
         final merged = variantAttr1.merge(variantAttr2);
 
-        expect(merged, same(variantAttr1));
+        expect(merged, equals(variantAttr1));
         final mergedBox = merged.value as BoxStyler;
         final context = MockBuildContext();
         final constraints = mergedBox.resolve(context).constraints;
@@ -199,7 +199,7 @@ void main() {
 
         final merged = variantAttr.merge(null);
 
-        expect(merged, same(variantAttr));
+        expect(merged, equals(variantAttr));
       });
 
       test('merges with overlapping properties - other takes precedence', () {

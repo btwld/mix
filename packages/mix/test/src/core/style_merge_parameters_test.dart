@@ -151,7 +151,7 @@ void main() {
 
         final merged = first.merge(null);
 
-        expect(merged, same(first));
+        expect(merged, equals(first));
       });
     });
 

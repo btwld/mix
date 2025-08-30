@@ -686,7 +686,8 @@ void main() {
         final attribute = TextStyler().overflow(TextOverflow.ellipsis);
         final merged = attribute.merge(null);
 
-        expect(identical(attribute, merged), isTrue);
+        expect(identical(attribute, merged), isFalse);
+        expect(merged, equals(attribute));
       });
     });
 

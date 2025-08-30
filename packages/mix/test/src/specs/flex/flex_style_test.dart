@@ -181,7 +181,8 @@ void main() {
         final original = FlexStyler(direction: Axis.horizontal);
         final result = original.merge(null);
 
-        expect(identical(original, result), isTrue);
+        expect(identical(original, result), isFalse);
+        expect(result, equals(original));
       });
 
       test('merge combines properties correctly', () {
