@@ -171,7 +171,7 @@ void main() {
         expect(constraints?.maxHeight, 200.0);
       });
 
-      test('returns this when variants do not match', () {
+      test('throws when variants do not match', () {
         const variant1 = NamedVariant('primary');
         const variant2 = NamedVariant('secondary');
         final style1 = BoxStyler().width(100.0);
@@ -180,16 +180,14 @@ void main() {
         final variantAttr1 = VariantStyle(variant1, style1);
         final variantAttr2 = VariantStyle(variant2, style2);
 
-        final merged = variantAttr1.merge(variantAttr2);
-
-        expect(merged, equals(variantAttr1));
-        final mergedBox = merged.value as BoxStyler;
-        final context = MockBuildContext();
-        final constraints = mergedBox.resolve(context).constraints;
-        expect(constraints?.minWidth, 100.0);
-        expect(constraints?.maxWidth, 100.0);
-        expect(constraints?.minHeight, 0.0);
-        expect(constraints?.maxHeight, double.infinity);
+        expect(
+          () => variantAttr1.merge(variantAttr2),
+          throwsA(isA<ArgumentError>().having(
+            (e) => e.message,
+            'message',
+            contains('Cannot merge VariantStyle with different variants'),
+          )),
+        );
       });
 
       test('returns this when other is null', () {

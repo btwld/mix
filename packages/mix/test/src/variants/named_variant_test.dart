@@ -255,7 +255,7 @@ void main() {
         expect(constraints?.maxHeight, 200.0);
       });
 
-      test('does not merge when variants differ', () {
+      test('throws when merging with different variants', () {
         const primaryVariant = NamedVariant('primary');
         const secondaryVariant = NamedVariant('secondary');
 
@@ -269,16 +269,14 @@ void main() {
           BoxStyler().height(200.0),
         );
 
-        final merged = primaryStyle.merge(secondaryStyle);
-
-        expect(merged, equals(primaryStyle));
-        final mergedBox = merged.value as BoxStyler;
-        final context = MockBuildContext();
-        final constraints = mergedBox.resolve(context).constraints;
-        expect(constraints?.minWidth, 100.0);
-        expect(constraints?.maxWidth, 100.0);
-        expect(constraints?.minHeight, 0.0);
-        expect(constraints?.maxHeight, double.infinity);
+        expect(
+          () => primaryStyle.merge(secondaryStyle),
+          throwsA(isA<ArgumentError>().having(
+            (e) => e.message,
+            'message',
+            contains('Cannot merge VariantStyle with different variants'),
+          )),
+        );
       });
     });
 

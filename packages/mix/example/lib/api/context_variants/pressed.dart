@@ -16,7 +16,7 @@ class Example extends StatelessWidget {
         .height(100)
         .width(100)
         .borderRadius(.all(.circular(10)))
-        .onPressed((s) => s.color(Colors.blue));
+        .onPressed(BoxStyler().color(Colors.blue));
 
     return Pressable(
       onPress: () {

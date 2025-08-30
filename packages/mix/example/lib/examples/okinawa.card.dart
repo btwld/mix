@@ -70,7 +70,7 @@ class OkinawaCard extends StatelessWidget {
       alignment: Alignment.center,
       margin: EdgeInsetsMix.zero,
       padding: EdgeInsetsMix.zero,
-    ).onHovered((s) => s.transform(Matrix4.identity()));
+    ).onHovered(StackBoxStyler().transform(Matrix4.identity()));
 
     final titleStyle = TextStyler()
         .color(Colors.white)

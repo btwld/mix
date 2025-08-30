@@ -38,12 +38,14 @@ class _ExampleState extends State<Example> {
         .height(100)
         .width(100)
         .borderRadius(.circular(10))
-        .onFocused((s) => s
+        .onFocused(BoxStyler()
             .color(Colors.blue)
             .border(
-              .all(
-                .color(Colors.blue.shade700)
-                .width(3)
+              BorderMix.all(
+                BorderSideMix(
+                  color: Colors.blue.shade700,
+                  width: 3,
+                ),
               ),
             )
         );

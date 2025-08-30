@@ -213,7 +213,18 @@ final class VariantStyle<S extends Spec<S>> extends Mixable<StyleSpec<S>>
 
   @override
   VariantStyle<S> merge(covariant VariantStyle<S>? other) {
-    return VariantStyle(variant, _style.merge(other?._style));
+    if (other == null) {
+      return VariantStyle(variant, _style);
+    }
+    
+    if (variant != other.variant) {
+      throw ArgumentError(
+        'Cannot merge VariantStyle with different variants. '
+        'Attempted to merge variant "${variant.key}" with "${other.variant.key}".',
+      );
+    }
+    
+    return VariantStyle(variant, _style.merge(other._style));
   }
 
   @override

@@ -29,7 +29,7 @@ class _ExampleState extends State<Example> {
         .height(100)
         .width(100)
         .borderRadius(.all(.circular(10)))
-        .onSelected((s) => s.color(Colors.blue));
+        .onSelected(BoxStyler().color(Colors.blue));
 
     return Pressable(
       controller: controller,

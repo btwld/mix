@@ -25,7 +25,7 @@ class _ExampleState extends State<Example> {
         .borderRadius(.circular(30))
         .color(Colors.grey.shade200)
         .animate(.easeInOut(600.ms))
-        .onDark((s) => s.color(Colors.grey.shade800))
+        .onDark(BoxStyler().color(Colors.grey.shade800))
         .shadow(
           .color(Colors.black.withValues(alpha: 0.1))
           .blurRadius(10)
@@ -38,7 +38,7 @@ class _ExampleState extends State<Example> {
         .size(28)
         .icon(Icons.dark_mode)
         .animate(.easeInOut(200.ms))
-        .onDark((s) => s
+        .onDark(IconStyler()
           .icon(Icons.light_mode)
           .color(Colors.yellow)
         );
