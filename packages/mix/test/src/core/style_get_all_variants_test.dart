@@ -758,7 +758,7 @@ class _MockSpecAttribute extends Style<MockSpec<Map<String, dynamic>>> {
     return _MockSpecAttribute(
       width: other.width != 0.0 ? other.width : width,
       height: other.height ?? height,
-      variants: mergeVariantLists($variants, other.$variants),
+      variants: MixOps.mergeVariants($variants, other.$variants),
     );
   }
 

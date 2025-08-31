@@ -239,9 +239,9 @@ class IconStyler extends Style<IconSpec>
       opacity: MixOps.merge($opacity, other?.$opacity),
       blendMode: MixOps.merge($blendMode, other?.$blendMode),
       icon: MixOps.merge($icon, other?.$icon),
-      animation: other?.$animation ?? $animation,
-      modifier: $modifier?.merge(other?.$modifier) ?? other?.$modifier,
-      variants: mergeVariantLists($variants, other?.$variants),
+      animation: MixOps.mergeAnimation($animation, other?.$animation),
+      modifier: MixOps.mergeModifier($modifier, other?.$modifier),
+      variants: MixOps.mergeVariants($variants, other?.$variants),
     );
   }
 

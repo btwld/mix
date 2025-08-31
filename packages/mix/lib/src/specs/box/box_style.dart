@@ -249,9 +249,9 @@ class BoxStyler extends Style<BoxSpec>
         other?.$transformAlignment,
       ),
       clipBehavior: MixOps.merge($clipBehavior, other?.$clipBehavior),
-      variants: mergeVariantLists($variants, other?.$variants),
-      modifier: $modifier?.merge(other?.$modifier) ?? other?.$modifier,
-      animation: other?.$animation ?? $animation,
+      variants: MixOps.mergeVariants($variants, other?.$variants),
+      modifier: MixOps.mergeModifier($modifier, other?.$modifier),
+      animation: MixOps.mergeAnimation($animation, other?.$animation),
     );
   }
 

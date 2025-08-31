@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' as r;
 import 'package:flutter/widgets.dart' as w;
 
+import '../animation/animation_config.dart';
 import '../modifiers/modifier_config.dart';
 import '../properties/painting/decoration_mix.dart';
 import '../properties/painting/shape_border_mix.dart';
@@ -14,6 +15,7 @@ import 'internal/deep_collection_equality.dart';
 import 'mix_element.dart';
 import 'modifier.dart';
 import 'prop.dart';
+import 'style.dart';
 import 'prop_source.dart';
 import 'shape_border_merge.dart';
 import 'spec.dart';
@@ -46,6 +48,43 @@ class MixOps {
     if (b == null) return a;
 
     return a.mergeProp(b) as P;
+  }
+
+  static AnimationConfig? mergeAnimation(
+    AnimationConfig? current,
+    AnimationConfig? other,
+  ) {
+    return other ?? current;
+  }
+
+  static ModifierConfig? mergeModifier(
+    ModifierConfig? current,
+    ModifierConfig? other,
+  ) {
+    return current?.merge(other) ?? other;
+  }
+
+  static List<VariantStyle<S>>? mergeVariants<S extends Spec<S>>(
+    List<VariantStyle<S>>? current,
+    List<VariantStyle<S>>? other,
+  ) {
+    if (current == null && other == null) return null;
+    if (current == null) return List<VariantStyle<S>>.of(other!);
+    if (other == null) return List<VariantStyle<S>>.of(current);
+
+    final Map<Object, VariantStyle<S>> merged = {};
+    
+    for (final variant in current) {
+      merged[variant.mergeKey] = variant;
+    }
+    
+    for (final variant in other) {
+      final key = variant.mergeKey;
+      final existing = merged[key];
+      merged[key] = existing != null ? existing.merge(variant) : variant;
+    }
+    
+    return merged.values.toList();
   }
 
   static List<T>? _mergeList<T>(

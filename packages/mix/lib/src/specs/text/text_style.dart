@@ -422,9 +422,9 @@ class TextStyler extends Style<TextSpec>
       selectionColor: MixOps.merge($selectionColor, other?.$selectionColor),
       semanticsLabel: MixOps.merge($semanticsLabel, other?.$semanticsLabel),
       locale: MixOps.merge($locale, other?.$locale),
-      animation: other?.$animation ?? $animation,
-      modifier: $modifier?.merge(other?.$modifier) ?? other?.$modifier,
-      variants: mergeVariantLists($variants, other?.$variants),
+      animation: MixOps.mergeAnimation($animation, other?.$animation),
+      modifier: MixOps.mergeModifier($modifier, other?.$modifier),
+      variants: MixOps.mergeVariants($variants, other?.$variants),
     );
   }
 

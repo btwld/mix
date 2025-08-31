@@ -238,9 +238,9 @@ class StackBoxStyler extends Style<ZBoxSpec>
     return StackBoxStyler.create(
       box: MixOps.merge($box, other?.$box),
       stack: MixOps.merge($stack, other?.$stack),
-      modifier: $modifier?.merge(other?.$modifier) ?? other?.$modifier,
-      animation: other?.$animation ?? $animation,
-      variants: mergeVariantLists($variants, other?.$variants),
+      modifier: MixOps.mergeModifier($modifier, other?.$modifier),
+      animation: MixOps.mergeAnimation($animation, other?.$animation),
+      variants: MixOps.mergeVariants($variants, other?.$variants),
     );
   }
 

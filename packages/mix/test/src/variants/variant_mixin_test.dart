@@ -26,7 +26,7 @@ class TestVariantAttribute extends Style<BoxSpec>
   @override
   TestVariantAttribute merge(TestVariantAttribute? other) {
     return TestVariantAttribute(
-      variants: mergeVariantLists($variants, other?.$variants),
+      variants: MixOps.mergeVariants($variants, other?.$variants),
       modifier: $modifier?.merge(other?.$modifier) ?? other?.$modifier,
       animation: other?.$animation ?? $animation,
     );

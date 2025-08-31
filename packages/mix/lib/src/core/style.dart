@@ -60,29 +60,6 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
         .toSet();
   }
 
-  @protected
-  List<ModifierMix>? mergeModifierLists(
-    List<ModifierMix>? current,
-    List<ModifierMix>? other,
-  ) {
-    if (current == null && other == null) return null;
-    if (current == null) return List.of(other!);
-    if (other == null) return List.of(current);
-
-    final Map<Object, ModifierMix> merged = {};
-
-    for (final modifier in current) {
-      merged[modifier.mergeKey] = modifier;
-    }
-
-    for (final modifier in other) {
-      final key = modifier.mergeKey;
-      final existing = merged[key];
-      merged[key] = existing != null ? existing.merge(modifier) : modifier;
-    }
-
-    return merged.values.toList();
-  }
 
   @visibleForTesting
   Style<S> getAllStyleVariants(
@@ -123,29 +100,6 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     return styleData;
   }
 
-  @protected
-  List<VariantStyle<S>>? mergeVariantLists(
-    List<VariantStyle<S>>? current,
-    List<VariantStyle<S>>? other,
-  ) {
-    if (current == null && other == null) return null;
-    if (current == null) return List<VariantStyle<S>>.of(other!);
-    if (other == null) return List<VariantStyle<S>>.of(current);
-
-    final Map<Object, VariantStyle<S>> merged = {};
-
-    for (final variant in current) {
-      merged[variant.mergeKey] = variant;
-    }
-
-    for (final variant in other) {
-      final key = variant.mergeKey;
-      final existing = merged[key];
-      merged[key] = existing != null ? existing.merge(variant) : variant;
-    }
-
-    return merged.values.toList();
-  }
 
   /// Resolves this attribute to its concrete value using the provided [BuildContext].
   @override

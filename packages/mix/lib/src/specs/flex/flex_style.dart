@@ -250,9 +250,9 @@ class FlexStyler extends Style<FlexSpec>
       textBaseline: MixOps.merge($textBaseline, other?.$textBaseline),
       clipBehavior: MixOps.merge($clipBehavior, other?.$clipBehavior),
       spacing: MixOps.merge($spacing, other?.$spacing),
-      animation: other?.$animation ?? $animation,
-      modifier: $modifier?.merge(other?.$modifier) ?? other?.$modifier,
-      variants: mergeVariantLists($variants, other?.$variants),
+      animation: MixOps.mergeAnimation($animation, other?.$animation),
+      modifier: MixOps.mergeModifier($modifier, other?.$modifier),
+      variants: MixOps.mergeVariants($variants, other?.$variants),
     );
   }
 

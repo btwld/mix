@@ -275,9 +275,9 @@ class ImageStyler extends Style<ImageSpec>
         $matchTextDirection,
         other?.$matchTextDirection,
       ),
-      animation: other?.$animation ?? $animation,
-      modifier: $modifier?.merge(other?.$modifier) ?? other?.$modifier,
-      variants: mergeVariantLists($variants, other?.$variants),
+      animation: MixOps.mergeAnimation($animation, other?.$animation),
+      modifier: MixOps.mergeModifier($modifier, other?.$modifier),
+      variants: MixOps.mergeVariants($variants, other?.$variants),
     );
   }
 
