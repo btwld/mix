@@ -84,7 +84,7 @@ void main() {
       expect(lastHoverState, isFalse);
 
       // Try to tap - should not respond. Tap the detector itself to avoid hit-test warnings when disabled.
-      await tester.tap(find.byType(MixInteractionDetector));
+      await tester.tap(find.byType(MixInteractionDetector), warnIfMissed: false);
       await tester.pump();
 
       // Should still be false (no hover events should get through)
@@ -467,7 +467,7 @@ void main() {
       expect(lastHoverValue, isFalse); // Should still be false
       
       // Try to tap - should be blocked. Tap the detector to avoid hit-test warnings when disabled.
-      await tester.tap(find.byType(MixInteractionDetector));
+      await tester.tap(find.byType(MixInteractionDetector), warnIfMissed: false);
       await tester.pump();
       
       expect(controller.has(WidgetState.pressed), isFalse);
