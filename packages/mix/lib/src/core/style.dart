@@ -61,12 +61,23 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   }
 
 
+  /// Merges all active variants with their nested variants recursively.
+  ///
+  /// This method evaluates which variants should be active based on the current
+  /// context and named variants, then recursively processes nested variants
+  /// within each active variant's style. The result is a fully merged style
+  /// with all applicable variants applied.
+  ///
+  /// Variant priority order (lowest to highest):
+  /// 1. ContextVariant and NamedVariant (applied first)
+  /// 2. WidgetStateVariant (applied last, highest priority)
   @visibleForTesting
-  Style<S> getAllStyleVariants(
+  Style<S> mergeActiveVariants(
     BuildContext context, {
     required Set<NamedVariant> namedVariants,
   }) {
-    final variants = ($variants ?? [])
+    // Filter variants that should be active in this context
+    final activeVariants = ($variants ?? [])
         .where(
           (variantAttr) => switch (variantAttr.variant) {
             (ContextVariant variant) => variant.when(context),
@@ -76,28 +87,36 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
         )
         .toList();
 
-    // Sort by priority: WidgetStateVariant gets applied last
-    variants.sort(
+    // Sort by priority: WidgetStateVariant gets applied last (highest priority)
+    activeVariants.sort(
       (a, b) => Comparable.compare(
         a.variant is WidgetStateVariant ? 1 : 0,
         b.variant is WidgetStateVariant ? 1 : 0,
       ),
     );
 
-    final variantStyles = variants.map((variantAttr) {
+    // Extract the style from each active variant
+    final stylesToMerge = activeVariants.map((variantAttr) {
       return switch (variantAttr.variant) {
         ContextVariantBuilder variant => variant.build(context) as Style<S>,
         (ContextVariant() || NamedVariant()) => variantAttr.value,
       };
     }).toList();
 
-    Style<S> styleData = this;
+    // Start with current style as base
+    Style<S> mergedStyle = this;
 
-    for (final style in variantStyles) {
-      styleData = styleData.merge(style);
+    // Merge each variant style, recursively resolving nested variants
+    for (final variantStyle in stylesToMerge) {
+      // Recursively resolve any nested variants within this variant's style
+      final fullyResolvedStyle = variantStyle.mergeActiveVariants(
+        context,
+        namedVariants: namedVariants,
+      );
+      mergedStyle = mergedStyle.merge(fullyResolvedStyle);
     }
 
-    return styleData;
+    return mergedStyle;
   }
 
 
@@ -120,7 +139,7 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     BuildContext context, {
     Set<NamedVariant> namedVariants = const {},
   }) {
-    final styleData = getAllStyleVariants(
+    final styleData = mergeActiveVariants(
       context,
       namedVariants: namedVariants,
     );

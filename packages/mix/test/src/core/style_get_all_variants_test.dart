@@ -19,7 +19,7 @@ void main() {
           states: activeStates,
           child: Builder(
             builder: (context) {
-              final result = testAttribute.getAllStyleVariants(
+              final result = testAttribute.mergeActiveVariants(
                 context,
                 namedVariants: namedVariants,
               );
@@ -33,7 +33,7 @@ void main() {
     );
   }
 
-  group('Style.getAllStyleVariants', () {
+  group('Style.mergeActiveVariants', () {
     group('Variant priority system', () {
       testWidgets('WidgetStateVariant gets sorted last (highest priority)', (
         tester,
@@ -75,7 +75,7 @@ void main() {
               states: const {WidgetState.hovered}, // Enable hovered state
               child: Builder(
                 builder: (context) {
-                  final result = testAttribute.getAllStyleVariants(
+                  final result = testAttribute.mergeActiveVariants(
                     context,
                     namedVariants: {namedVariant},
                   );
@@ -129,7 +129,7 @@ void main() {
               },
               child: Builder(
                 builder: (context) {
-                  final result = testAttribute.getAllStyleVariants(
+                  final result = testAttribute.mergeActiveVariants(
                     context,
                     namedVariants: {},
                   );
@@ -210,7 +210,7 @@ void main() {
         );
 
         final context = MockBuildContext();
-        final result = testAttribute.getAllStyleVariants(
+        final result = testAttribute.mergeActiveVariants(
           context,
           namedVariants: {namedVariant1, namedVariant2},
         );
@@ -251,7 +251,7 @@ void main() {
 
         // MockBuildContext has size (800, 600) which is > 768
         final context = MockBuildContext();
-        final result = testAttribute.getAllStyleVariants(
+        final result = testAttribute.mergeActiveVariants(
           context,
           namedVariants: {},
         );
@@ -285,7 +285,7 @@ void main() {
         );
 
         final context = MockBuildContext();
-        final result = testAttribute.getAllStyleVariants(
+        final result = testAttribute.mergeActiveVariants(
           context,
           namedVariants: {primaryVariant, secondaryVariant},
         );
@@ -311,7 +311,7 @@ void main() {
         );
 
         final context = MockBuildContext();
-        final result = testAttribute.getAllStyleVariants(
+        final result = testAttribute.mergeActiveVariants(
           context,
           namedVariants: {},
         );
@@ -340,7 +340,7 @@ void main() {
         );
 
         final context = MockBuildContext();
-        final result = testAttribute.getAllStyleVariants(
+        final result = testAttribute.mergeActiveVariants(
           context,
           namedVariants: {const NamedVariant('other')},
         );
@@ -377,7 +377,7 @@ void main() {
               states: const {WidgetState.hovered}, // Enable hovered state
               child: Builder(
                 builder: (context) {
-                  final result = testAttribute.getAllStyleVariants(
+                  final result = testAttribute.mergeActiveVariants(
                     context,
                     namedVariants: {},
                   );
@@ -399,7 +399,7 @@ void main() {
         final testAttribute = _MockSpecAttribute(width: 100.0, variants: []);
 
         final context = MockBuildContext();
-        final result = testAttribute.getAllStyleVariants(
+        final result = testAttribute.mergeActiveVariants(
           context,
           namedVariants: {},
         );
@@ -414,7 +414,7 @@ void main() {
         final testAttribute = _MockSpecAttribute(width: 100.0, variants: null);
 
         final context = MockBuildContext();
-        final result = testAttribute.getAllStyleVariants(
+        final result = testAttribute.mergeActiveVariants(
           context,
           namedVariants: {},
         );
@@ -461,7 +461,7 @@ void main() {
               states: const {WidgetState.hovered}, // Enable hovered state
               child: Builder(
                 builder: (context) {
-                  final result = testAttribute.getAllStyleVariants(
+                  final result = testAttribute.mergeActiveVariants(
                     context,
                     namedVariants: {
                       namedVariant,
@@ -528,7 +528,7 @@ void main() {
               },
               child: Builder(
                 builder: (context) {
-                  final result = testAttribute.getAllStyleVariants(
+                  final result = testAttribute.mergeActiveVariants(
                     context,
                     namedVariants: {},
                   );
@@ -561,7 +561,7 @@ void main() {
         );
 
         final context = MockBuildContext();
-        final result = testAttribute.getAllStyleVariants(
+        final result = testAttribute.mergeActiveVariants(
           context,
           namedVariants: {},
         );
@@ -589,7 +589,7 @@ void main() {
         );
 
         final context = MockBuildContext();
-        final result = testAttribute.getAllStyleVariants(
+        final result = testAttribute.mergeActiveVariants(
           context,
           namedVariants: {}, // No named variants provided
         );
@@ -626,7 +626,7 @@ void main() {
         );
 
         final context = MockBuildContext();
-        final result = testAttribute.getAllStyleVariants(
+        final result = testAttribute.mergeActiveVariants(
           context,
           namedVariants: {
             const NamedVariant('named1'),
@@ -664,7 +664,7 @@ void main() {
               states: const {WidgetState.hovered, WidgetState.pressed},
               child: Builder(
                 builder: (context) {
-                  final result = testAttribute.getAllStyleVariants(
+                  final result = testAttribute.mergeActiveVariants(
                     context,
                     namedVariants: {},
                   );
@@ -707,7 +707,7 @@ void main() {
               states: const {WidgetState.hovered, WidgetState.pressed},
               child: Builder(
                 builder: (context) {
-                  final result = testAttribute.getAllStyleVariants(
+                  final result = testAttribute.mergeActiveVariants(
                     context,
                     namedVariants: {},
                   );
