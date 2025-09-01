@@ -37,19 +37,20 @@ class _ExampleState extends State<Example> {
   Widget build(BuildContext context) {
     return MouseRegion(
       onEnter: (event) => trigger.value++,
-      child: HBox(
+      child: RowBox(
         style: Style.flexbox()
             .color(Colors.white)
-            .padding(EdgeInsetsMix.symmetric(horizontal: 16, vertical: 8))
-            .borderRadius(BorderRadiusMix.circular(10))
+            .paddingSymmetric(horizontal: 16, vertical: 8)
+            .borderRadiusCircular(10)
             .border(BoxBorderMix.all(BorderSideMix.color(Colors.grey.shade200)))
+            .mainAxisSize(MainAxisSize.min)
+            .spacing(8)
             .onHovered(
-              FlexBoxStyler().border(
-                BoxBorderMix.all(BorderSideMix.color(Colors.red)),
+              Style.flexbox().border(
+                BoxBorderMix.all(BorderSideMix.color(Colors.grey.shade300)),
               ),
             )
-            .mainAxisSize(MainAxisSize.min)
-            .spacing(8),
+            .animate(.easeInOut(150.ms)),
 
         children: [
           Text('Developer Preview'),
@@ -72,14 +73,14 @@ enum ArrowPhases {
   };
 
   Duration get duration => switch (this) {
-    identity => 200.ms,
-    topRight => 1.ms,
-    bottomLeft => 700.ms,
+    identity => 500.ms,
+    topRight => 200.ms,
+    bottomLeft => 1.ms,
   };
 
   Curve get curve => switch (this) {
-    identity => Curves.easeOut,
-    topRight || bottomLeft => Curves.elasticOut,
+    identity => SpringCurve.withDampingRatio(ratio: 0.4),
+    topRight || bottomLeft => Curves.easeOut,
   };
 }
 

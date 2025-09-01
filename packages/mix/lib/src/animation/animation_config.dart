@@ -639,12 +639,12 @@ final class CurveAnimationConfig extends AnimationConfig {
     this.delay = Duration.zero,
   }) : curve = Curves.elasticInOut;
 
-  factory CurveAnimationConfig.spring({
+  factory CurveAnimationConfig.spring(
+    Duration duration, {
     double mass = 1.0,
     double stiffness = 180.0,
     double damping = 12.0,
     Duration delay = Duration.zero,
-    Duration duration = const Duration(milliseconds: 500),
     VoidCallback? onEnd,
   }) {
     final curve = SpringCurve(
@@ -661,12 +661,12 @@ final class CurveAnimationConfig extends AnimationConfig {
     );
   }
 
-  factory CurveAnimationConfig.springWithDampingRatio({
+  factory CurveAnimationConfig.springWithDampingRatio(
+    Duration duration, {
     double mass = 1.0,
     double stiffness = 180.0,
     double ratio = 0.8,
     Duration delay = Duration.zero,
-    Duration duration = const Duration(milliseconds: 500),
     VoidCallback? onEnd,
   }) {
     final curve = SpringCurve.withDampingRatio(
@@ -683,8 +683,8 @@ final class CurveAnimationConfig extends AnimationConfig {
     );
   }
 
-  factory CurveAnimationConfig.springDurationBased({
-    Duration duration = const Duration(milliseconds: 500),
+  factory CurveAnimationConfig.springDurationBased(
+    Duration duration, {
     double bounce = 0.0,
     Duration delay = Duration.zero,
     VoidCallback? onEnd,
@@ -1016,9 +1016,7 @@ class KeyframeTrack<T> with Equatable {
     );
   }
 
-  /// Creates a tween for interpolating between two values.
-  /// Uses the custom tweenBuilder if provided, otherwise falls back to default behavior.
-  Animatable<T?> createSequenceTween(Duration timelineDuration) {
+  List<TweenSequenceItem<T?>> createSequenceItems() {
     final items = <TweenSequenceItem<T?>>[];
     T current = initial;
 
@@ -1035,7 +1033,15 @@ class KeyframeTrack<T> with Equatable {
       current = end;
     }
 
-    return TweenSequence(items).chain(
+    return items;
+  }
+
+  /// Creates a tween for interpolating between two values.
+  /// Uses the custom tweenBuilder if provided, otherwise falls back to default behavior.
+  Animatable<T?> createAnimatable(Duration timelineDuration) {
+    final sequence = TweenSequence(createSequenceItems());
+
+    return sequence.chain(
       CurveTween(
         curve: Interval(
           0.0,

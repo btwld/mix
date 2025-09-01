@@ -60,7 +60,7 @@ class _DemoAppState extends State<DemoApp> {
               .tileMode(TileMode.clamp),
         ),
       )
-      .keyframes(
+      .keyframeAnimation(
         trigger: trigger,
         timeline: [
           KeyframeTrack<double>('progress', initial: -1, [

@@ -39,7 +39,6 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
               .height(30)
               .width(65)
               .borderRadius(BorderRadiusMix.all(Radius.circular(40)))
-              .transformAlignment(Alignment.center)
               .alignment(
                 _trigger.value ? Alignment.centerRight : Alignment.centerLeft,
               )
@@ -66,7 +65,6 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
                       .borderRadius(BorderRadiusMix.circular(40)),
                 )
                 .borderRadius(BorderRadiusMix.circular(40))
-                .transformAlignment(Alignment.center)
                 .scale(0.85)
                 .shadow(
                   BoxShadowMix()
@@ -75,7 +73,7 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
                       .offset(Offset(2, 4))
                       .color(Colors.black.withValues(alpha: 0.1)),
                 )
-                .keyframes(
+                .keyframeAnimation(
                   trigger: _trigger,
                   timeline: [
                     KeyframeTrack<double>('scale', initial: 0.85, [

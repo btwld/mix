@@ -239,7 +239,7 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
         items.add(
           TweenSequenceItem(
             tween: ConstantTween(specs[currentIndex]),
-            weight: configs[currentIndex].delay.inMilliseconds.toDouble(),
+            weight: configs[nextIndex].delay.inMilliseconds.toDouble(),
           ),
         );
       }
@@ -248,9 +248,10 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
         begin: specs[currentIndex],
         end: specs[nextIndex],
       );
+
       final item = TweenSequenceItem(
-        tween: tween.chain(CurveTween(curve: configs[currentIndex].curve)),
-        weight: configs[currentIndex].duration.inMilliseconds.toDouble(),
+        tween: tween.chain(CurveTween(curve: configs[nextIndex].curve)),
+        weight: configs[nextIndex].duration.inMilliseconds.toDouble(),
       );
 
       items.add(item);
@@ -299,7 +300,7 @@ class KeyframeAnimationDriver<S extends Spec<S>>
   }) : _config = config {
     _sequenceMap = {
       for (final track in _config.timeline)
-        track.id: track.createSequenceTween(duration),
+        track.id: track.createAnimatable(duration),
     };
 
     _animation = controller.drive(

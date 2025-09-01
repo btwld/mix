@@ -34,7 +34,6 @@ class _ExampleState extends State<Example> {
         .height(100)
         .width(100)
         .borderRadius(.all(.circular(10)))
-        .transformAlignment(.center)
         .translate(appear ? 0 : -50, 0)
         .scale(appear ? 1 : 0.1)
         .animate(.easeInOut(1.s));

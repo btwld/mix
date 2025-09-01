@@ -69,7 +69,6 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec>
 
   /// Direct accessors for transformation and alignment properties.
   late final transform = MixUtility(mutable.transform);
-  late final transformAlignment = MixUtility(mutable.transformAlignment);
   late final clipBehavior = MixUtility(mutable.clipBehavior);
   late final alignment = MixUtility(mutable.alignment);
 

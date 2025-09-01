@@ -10,6 +10,11 @@ import 'border_radius_mix.dart';
 mixin BorderRadiusMixin<T extends Mix<Object?>> {
   /// Must be implemented by the class using this mixin
   T borderRadius(BorderRadiusGeometryMix value);
+
+  /// Helper method for circular border radius
+  T borderRadiusCircular(double radius) {
+    return borderRadius(BorderRadiusMix.circular(radius));
+  }
 }
 
 /// Utility class for creating and manipulating attributes with [BorderRadiusGeometry]

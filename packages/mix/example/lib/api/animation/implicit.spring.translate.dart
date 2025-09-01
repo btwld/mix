@@ -24,7 +24,6 @@ class _ExampleState extends State<Example> {
         .width(100)
         .borderRadius(.all(.circular(10)))
         .transform(.identity())
-        .transformAlignment(.center)
         .translate(0, _translated ? 100 : -100)
         .animate(.spring(300.ms, bounce: 0.6));
 

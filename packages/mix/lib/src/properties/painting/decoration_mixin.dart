@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../core/mix_element.dart';
 import 'border_mix.dart';
+import 'border_radius_mix.dart';
 import 'decoration_image_mix.dart';
 import 'decoration_mix.dart';
 import 'gradient_mix.dart';
@@ -53,5 +54,94 @@ mixin DecorationMixin<T extends Mix<Object?>> {
   /// Sets box shape
   T shape(ShapeBorderMix value) {
     return decoration(ShapeDecorationMix(shape: value));
+  }
+
+  /// Sets a circular shape (CircleBorder)
+  T shapeCircle({BorderSideMix? side}) {
+    return shape(CircleBorderMix(side: side));
+  }
+
+  /// Sets a stadium shape (StadiumBorder)
+  T shapeStadium({BorderSideMix? side}) {
+    return shape(StadiumBorderMix(side: side));
+  }
+
+  /// Sets a rounded rectangle shape (RoundedRectangleBorder)
+  T shapeRoundedRectangle({
+    BorderSideMix? side,
+    BorderRadiusMix? borderRadius,
+  }) {
+    return shape(
+      RoundedRectangleBorderMix(borderRadius: borderRadius, side: side),
+    );
+  }
+
+  /// Sets a beveled rectangle shape (BeveledRectangleBorder)
+  T shapeBeveledRectangle({
+    BorderSideMix? side,
+    BorderRadiusMix? borderRadius,
+  }) {
+    return shape(
+      BeveledRectangleBorderMix(borderRadius: borderRadius, side: side),
+    );
+  }
+
+  /// Sets a continuous rectangle shape (ContinuousRectangleBorder)
+  T shapeContinuousRectangle({
+    BorderSideMix? side,
+    BorderRadiusMix? borderRadius,
+  }) {
+    return shape(
+      ContinuousRectangleBorderMix(borderRadius: borderRadius, side: side),
+    );
+  }
+
+  /// Sets a star shape (StarBorder)
+  T shapeStar({
+    BorderSideMix? side,
+    double? points,
+    double? innerRadiusRatio,
+    double? pointRounding,
+    double? valleyRounding,
+    double? rotation,
+    double? squash,
+  }) {
+    return shape(
+      StarBorderMix(
+        side: side,
+        points: points,
+        innerRadiusRatio: innerRadiusRatio,
+        pointRounding: pointRounding,
+        valleyRounding: valleyRounding,
+        rotation: rotation,
+        squash: squash,
+      ),
+    );
+  }
+
+  /// Sets a linear border shape (LinearBorder)
+  T shapeLinear({
+    BorderSideMix? side,
+    LinearBorderEdgeMix? start,
+    LinearBorderEdgeMix? end,
+    LinearBorderEdgeMix? top,
+    LinearBorderEdgeMix? bottom,
+  }) {
+    return shape(
+      LinearBorderMix(
+        side: side,
+        start: start,
+        end: end,
+        top: top,
+        bottom: bottom,
+      ),
+    );
+  }
+
+  /// Sets a superellipse shape (RoundedSuperellipseBorder)
+  T shapeSuperellipse({BorderSideMix? side, BorderRadiusMix? borderRadius}) {
+    return shape(
+      RoundedSuperellipseBorderMix(borderRadius: borderRadius, side: side),
+    );
   }
 }

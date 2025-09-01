@@ -102,10 +102,6 @@ void main() {
         expect(util.transform, isNotNull);
       });
 
-      test('transformAlignment utility provides transformAlignment access', () {
-        expect(util.transformAlignment, isNotNull);
-      });
-
       test('clipBehavior utility provides clipBehavior access', () {
         expect(util.clipBehavior, isNotNull);
       });
@@ -124,16 +120,6 @@ void main() {
 
         expect(result, isA<BoxStyler>());
         expect(spec.spec.transform, matrix);
-      });
-
-      test('transformAlignment utility creates correct BoxMix', () {
-        const alignment = Alignment.topLeft;
-        final result = util.transformAlignment(alignment);
-        final context = MockBuildContext();
-        final spec = util.resolve(context);
-
-        expect(result, isA<BoxStyler>());
-        expect(spec.spec.transformAlignment, alignment);
       });
 
       test('clipBehavior utility creates correct BoxMix', () {
