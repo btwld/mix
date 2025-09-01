@@ -110,7 +110,10 @@ final class ModifierConfig with Equatable {
     );
   }
 
-  factory ModifierConfig.transform({Matrix4? transform, Alignment? alignment}) {
+  factory ModifierConfig.transform({
+    Matrix4? transform,
+    Alignment alignment = Alignment.center,
+  }) {
     return ModifierConfig.modifier(
       TransformModifierMix(transform: transform, alignment: alignment),
     );
@@ -364,7 +367,10 @@ final class ModifierConfig with Equatable {
     return merge(ModifierConfig.clipTriangle(clipBehavior: clipBehavior));
   }
 
-  ModifierConfig transform({Matrix4? transform, Alignment? alignment}) {
+  ModifierConfig transform({
+    Matrix4? transform,
+    Alignment alignment = Alignment.center,
+  }) {
     return merge(
       ModifierConfig.transform(transform: transform, alignment: alignment),
     );

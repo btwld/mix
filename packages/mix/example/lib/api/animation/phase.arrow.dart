@@ -50,7 +50,7 @@ class _ExampleState extends State<Example> {
                 BoxBorderMix.all(BorderSideMix.color(Colors.grey.shade300)),
               ),
             )
-            .animate(.easeInOut(150.ms)),
+            .animate(AnimationConfig.easeInOut(150.ms)),
 
         children: [
           Text('Developer Preview'),
@@ -90,29 +90,26 @@ class ArrowIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Box(
-      style: Style.box()
-          .color(Colors.grey.shade200)
-          .borderRadius(BorderRadiusMix.circular(10))
-          .size(20, 20)
-          .clipBehavior(Clip.hardEdge),
+    final boxContainer = Style.box()
+        .color(Colors.grey.shade200)
+        .borderRadius(BorderRadiusMix.circular(10))
+        .size(20, 20)
+        .clipBehavior(Clip.hardEdge);
 
-      child: Box(
-        style: Style.box().phaseAnimation(
+    final icon = Style.icon()
+        .color(Colors.grey.shade500)
+        .size(14)
+        .phaseAnimation(
           trigger: animationTrigger,
           phases: ArrowPhases.values,
           styleBuilder: (phase, style) =>
-              style.translate(phase.offset.dx, phase.offset.dy),
+              style.wrapTranslate(phase.offset.dx, phase.offset.dy),
           configBuilder: (phase) => CurveAnimationConfig(
             duration: phase.duration,
             curve: phase.curve,
           ),
-        ),
-        child: StyledIcon(
-          icon: CupertinoIcons.arrow_up_right,
-          style: Style.icon().color(Colors.grey.shade500).size(14),
-        ),
-      ),
-    );
+        );
+
+    return boxContainer(child: icon(icon: CupertinoIcons.arrow_up_right));
   }
 }
