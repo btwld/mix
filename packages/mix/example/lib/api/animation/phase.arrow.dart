@@ -38,21 +38,18 @@ class _ExampleState extends State<Example> {
     return MouseRegion(
       onEnter: (event) => trigger.value++,
       child: HBox(
-        style: Style.flexbox(
-          FlexBoxMix()
-              .color(Colors.white)
-              .padding(EdgeInsetsMix.symmetric(horizontal: 16, vertical: 8))
-              .borderRadius(BorderRadiusMix.circular(10))
-              .border(
-                BoxBorderMix.all(BorderSideMix.color(Colors.grey.shade200)),
-              )
-              .onHovered(
-                FlexBoxStyler()
-                    .border(BoxBorderMix.all(BorderSideMix.color(Colors.red))),
-              )
-              .mainAxisSize(MainAxisSize.min)
-              .spacing(8),
-        ),
+        style: Style.flexbox()
+            .color(Colors.white)
+            .padding(EdgeInsetsMix.symmetric(horizontal: 16, vertical: 8))
+            .borderRadius(BorderRadiusMix.circular(10))
+            .border(BoxBorderMix.all(BorderSideMix.color(Colors.grey.shade200)))
+            .onHovered(
+              FlexBoxStyler().border(
+                BoxBorderMix.all(BorderSideMix.color(Colors.red)),
+              ),
+            )
+            .mainAxisSize(MainAxisSize.min)
+            .spacing(8),
 
         children: [
           Text('Developer Preview'),
@@ -93,31 +90,26 @@ class ArrowIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Box(
-      style: Style.box(
-        BoxMix()
-            .color(Colors.grey.shade200)
-            .borderRadius(BorderRadiusMix.circular(10))
-            .size(20, 20)
-            .clipBehavior(Clip.hardEdge),
-      ),
+      style: Style.box()
+          .color(Colors.grey.shade200)
+          .borderRadius(BorderRadiusMix.circular(10))
+          .size(20, 20)
+          .clipBehavior(Clip.hardEdge),
 
       child: Box(
-        style: Style.box(
-          BoxMix() //
-              .phaseAnimation(
-                trigger: animationTrigger,
-                phases: ArrowPhases.values,
-                styleBuilder: (phase, style) =>
-                    style.translate(phase.offset.dx, phase.offset.dy),
-                configBuilder: (phase) => CurveAnimationConfig(
-                  duration: phase.duration,
-                  curve: phase.curve,
-                ),
-              ),
+        style: Style.box().phaseAnimation(
+          trigger: animationTrigger,
+          phases: ArrowPhases.values,
+          styleBuilder: (phase, style) =>
+              style.translate(phase.offset.dx, phase.offset.dy),
+          configBuilder: (phase) => CurveAnimationConfig(
+            duration: phase.duration,
+            curve: phase.curve,
+          ),
         ),
         child: StyledIcon(
           icon: CupertinoIcons.arrow_up_right,
-          style: Style.icon(IconMix().color(Colors.grey.shade500).size(14)),
+          style: Style.icon().color(Colors.grey.shade500).size(14),
         ),
       ),
     );
