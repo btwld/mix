@@ -11,10 +11,10 @@ import 'flexbox_spec.dart';
 import 'flexbox_style.dart';
 
 @Deprecated('Use ColumnBox instead')
-typedef HBox = ColumnBox;
+typedef VBox = ColumnBox;
 
 @Deprecated('Use RowBox instead')
-typedef VBox = RowBox;
+typedef HBox = RowBox;
 
 /// Combines [Container] and [Flex] with Mix styling.
 ///

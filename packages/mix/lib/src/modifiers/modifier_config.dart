@@ -24,6 +24,7 @@ import 'intrinsic_modifier.dart';
 import 'opacity_modifier.dart';
 import 'padding_modifier.dart';
 import 'rotated_box_modifier.dart';
+import 'shader_mask_modifier.dart';
 import 'sized_box_modifier.dart';
 import 'transform_modifier.dart';
 import 'visibility_modifier.dart';
@@ -116,6 +117,18 @@ final class ModifierConfig with Equatable {
   }) {
     return ModifierConfig.modifier(
       TransformModifierMix(transform: transform, alignment: alignment),
+    );
+  }
+
+  factory ModifierConfig.shaderMask({
+    required ShaderCallbackBuilder shaderCallback,
+    BlendMode blendMode = BlendMode.modulate,
+  }) {
+    return ModifierConfig.modifier(
+      ShaderMaskModifierMix(
+        shaderCallback: shaderCallback.callback,
+        blendMode: blendMode,
+      ),
     );
   }
 
@@ -313,6 +326,18 @@ final class ModifierConfig with Equatable {
     }
 
     return orderedSpecs;
+  }
+
+  ModifierConfig shaderMask({
+    required ShaderCallbackBuilder shaderCallback,
+    BlendMode blendMode = BlendMode.modulate,
+  }) {
+    return merge(
+      ModifierConfig.shaderMask(
+        shaderCallback: shaderCallback,
+        blendMode: blendMode,
+      ),
+    );
   }
 
   ModifierConfig scale(double scale, {Alignment alignment = Alignment.center}) {
@@ -591,6 +616,10 @@ const _defaultOrder = [
   // 15. OpacityModifier: Applies transparency as the final visual effect.
   // Always applied last to ensure optimal performance and correct visual layering.
   OpacityModifier,
+
+  // 16. ShaderMaskModifier: Applies a shader mask to the widget.
+  // Applied last to ensure the shader mask is applied to the widget.
+  ShaderMaskModifier,
 ];
 
 final defaultModifier = {

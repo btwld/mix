@@ -37,40 +37,38 @@ class OkinawaCard extends StatelessWidget {
     final boxStyle = BoxStyler()
         .height(200)
         .width(200)
+        .paddingAll(8)
+        .alignment(Alignment.bottomCenter)
         .borderRadius(BorderRadiusMix.circular(10))
-        .border(
-          .all(
-            .color(Colors.white)
-            .width(6)
-            .strokeAlign(BorderSide.strokeAlignOutside),
+        .decoration(
+          DecorationMix.image(
+            DecorationImageMix.image(
+              NetworkImage(
+                'https://images.pexels.com/photos/5472603/pexels-photo-5472603.jpeg',
+              ),
+            ).fit(BoxFit.cover),
           ),
         )
-        .clipBehavior(Clip.antiAlias)
+        .border(
+          BoxBorderMix.all(
+            BorderSideMix.color(
+              Colors.white,
+            ).width(6).strokeAlign(BorderSide.strokeAlignOutside),
+          ),
+        )
         .color(Colors.blueGrey.shade50)
         .shadow(
-          .color(Colors.black.withValues(alpha: 0.15))
-          .blurRadius(100)
-          .offset(const Offset(0, 0)),
+          BoxShadowMix.color(
+            Colors.black.withValues(alpha: 0.35),
+          ).blurRadius(100).offset(const Offset(0, 0)),
         );
 
-    final vBoxStyle = FlexBoxStyler(
-      padding: EdgeInsetsMix.all(8),
-      constraints: BoxConstraintsMix.width(double.infinity),
-      decoration: BoxDecorationMix.color(Colors.black.withValues(alpha: 0.1)),
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-    );
-
-    final zboxStyle = StackBoxStyler(
-      stackAlignment: Alignment.bottomCenter,
-      transformAlignment: Alignment.center,
-      clipBehavior: Clip.antiAlias,
-      constraints: BoxConstraintsMix.square(0),
-      transform: Matrix4.identity(),
-      alignment: Alignment.center,
-      margin: EdgeInsetsMix.zero,
-      padding: EdgeInsetsMix.zero,
-    ).onHovered(StackBoxStyler().transform(Matrix4.identity()));
+    final columnBoxStyle = Style.flexbox()
+        .paddingAll(8)
+        .width(double.infinity)
+        .color(Colors.black.withValues(alpha: 0.1))
+        .mainAxisSize(MainAxisSize.min)
+        .crossAxisAlignment(CrossAxisAlignment.start);
 
     final titleStyle = TextStyler()
         .color(Colors.white)
@@ -79,38 +77,17 @@ class OkinawaCard extends StatelessWidget {
 
     final subtitleStyle = TextStyler().color(Colors.white70).fontSize(14);
 
-    final imageStyle = ImageStyler().fit(BoxFit.cover);
-
     return Box(
       style: boxStyle,
-      child: ZBox(
-        style: zboxStyle,
-        children: [
-          Positioned.fill(
-            child: StyledImage(
-              image: const NetworkImage(
-                'https://images.pexels.com/photos/5472603/pexels-photo-5472603.jpeg',
-              ),
-              style: imageStyle,
-            ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+          child: ColumnBox(
+            style: columnBoxStyle,
+            children: [titleStyle('Okinawa'), subtitleStyle('Japan')],
           ),
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
-                child: VBox(
-                  style: vBoxStyle,
-                  children: [
-                    StyledText('Okinawa', style: titleStyle),
-                    StyledText('Japan', style: subtitleStyle),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
