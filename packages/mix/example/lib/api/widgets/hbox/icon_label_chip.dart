@@ -19,12 +19,10 @@ class Example extends StatelessWidget {
           .horizontal(10)
           .vertical(4),
         )
-        .borderRadius(.circular(99))
-        .border(
-          .all(
-            .color(Colors.cyan.shade600)
-            .width(2),
-          ),
+        .rounded(99)
+        .borderAll(
+          color: Colors.cyan.shade600,
+          width: 2,
         );
 
     final iconStyle = IconStyler()

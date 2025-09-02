@@ -19,9 +19,9 @@ class Example extends StatelessWidget {
         .color(Colors.blue.shade400)
         .onBreakpoint(Breakpoint.xs, BoxStyler().color(Colors.green))
         .borderRadius(.circular(16))
-        .shadow(
-          .color(Colors.black.withValues(alpha: 0.2))
-          .blurRadius(20)
+        .boxShadow(
+          color: Colors.black.withValues(alpha: 0.2),
+          blurRadius: 20,
         )
         .wrapDefaultTextStyle(
           .fontSize(16)

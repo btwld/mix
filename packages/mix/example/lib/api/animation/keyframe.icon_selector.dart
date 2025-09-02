@@ -41,12 +41,11 @@ class EmojiSelector extends StatelessWidget {
       style: FlexBoxMix()
           .padding(EdgeInsetsMix.symmetric(horizontal: 16, vertical: 10))
           .color(Colors.white)
-          .borderRadius(BorderRadiusMix.circular(50))
-          .shadow(
-            BoxShadowMix()
-                .color(Colors.black12)
-                .blurRadius(50)
-                .offset(Offset(0, 0)),
+          .rounded(50)
+          .boxShadow(
+            color: Colors.black12,
+            blurRadius: 50,
+            offset: Offset(0, 0),
           )
           .spacing(16)
           .mainAxisAlignment(MainAxisAlignment.center)
