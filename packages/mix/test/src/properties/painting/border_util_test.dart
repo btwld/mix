@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
+import 'package:mix/src/properties/painting/decoration_mixin.dart';
 
 import '../../../helpers/testing_utils.dart';
 
 // Test class that extends MockStyle and uses BorderMixin
 class TestBorderStyle extends MockStyle<DecorationMix>
-    with BorderMixin<TestBorderStyle> {
+    with BorderMixin<TestBorderStyle>, DecorationMixin<TestBorderStyle> {
   TestBorderStyle([DecorationMix? value]) : super(value ?? BoxDecorationMix());
 
   @override
@@ -78,7 +79,8 @@ void main() {
           style: BorderStyle.solid,
         );
 
-        final decoration = result.value.resolve(MockBuildContext()) as BoxDecoration;
+        final decoration =
+            result.value.resolve(MockBuildContext()) as BoxDecoration;
         final border = decoration.border as Border;
 
         expect(
@@ -98,7 +100,8 @@ void main() {
           style: BorderStyle.solid,
         );
 
-        final decoration = result.value.resolve(MockBuildContext()) as BoxDecoration;
+        final decoration =
+            result.value.resolve(MockBuildContext()) as BoxDecoration;
         final border = decoration.border as Border;
 
         expect(
@@ -118,7 +121,8 @@ void main() {
           style: BorderStyle.solid,
         );
 
-        final decoration = result.value.resolve(MockBuildContext()) as BoxDecoration;
+        final decoration =
+            result.value.resolve(MockBuildContext()) as BoxDecoration;
         final border = decoration.border as Border;
 
         expect(
@@ -138,7 +142,8 @@ void main() {
           style: BorderStyle.solid,
         );
 
-        final decoration = result.value.resolve(MockBuildContext()) as BoxDecoration;
+        final decoration =
+            result.value.resolve(MockBuildContext()) as BoxDecoration;
         final border = decoration.border as Border;
 
         expect(
@@ -158,7 +163,8 @@ void main() {
           style: BorderStyle.solid,
         );
 
-        final decoration = result.value.resolve(MockBuildContext()) as BoxDecoration;
+        final decoration =
+            result.value.resolve(MockBuildContext()) as BoxDecoration;
         final border = decoration.border as BorderDirectional;
 
         expect(
@@ -178,7 +184,8 @@ void main() {
           style: BorderStyle.solid,
         );
 
-        final decoration = result.value.resolve(MockBuildContext()) as BoxDecoration;
+        final decoration =
+            result.value.resolve(MockBuildContext()) as BoxDecoration;
         final border = decoration.border as BorderDirectional;
 
         expect(
@@ -200,7 +207,8 @@ void main() {
           style: BorderStyle.solid,
         );
 
-        final decoration = result.value.resolve(MockBuildContext()) as BoxDecoration;
+        final decoration =
+            result.value.resolve(MockBuildContext()) as BoxDecoration;
         final border = decoration.border as Border;
 
         expect(
@@ -228,7 +236,8 @@ void main() {
           style: BorderStyle.solid,
         );
 
-        final decoration = result.value.resolve(MockBuildContext()) as BoxDecoration;
+        final decoration =
+            result.value.resolve(MockBuildContext()) as BoxDecoration;
         final border = decoration.border as Border;
 
         expect(
@@ -257,7 +266,8 @@ void main() {
           strokeAlign: 0.5,
         );
 
-        final decoration = result.value.resolve(MockBuildContext()) as BoxDecoration;
+        final decoration =
+            result.value.resolve(MockBuildContext()) as BoxDecoration;
         final border = decoration.border as Border;
 
         const expectedSide = BorderSide(
@@ -282,17 +292,12 @@ void main() {
         );
         final result = style.border(borderMix);
 
-        final decoration = result.value.resolve(MockBuildContext()) as BoxDecoration;
+        final decoration =
+            result.value.resolve(MockBuildContext()) as BoxDecoration;
         final border = decoration.border as Border;
 
-        expect(
-          border.top,
-          const BorderSide(color: Colors.red, width: 2.0),
-        );
-        expect(
-          border.bottom,
-          const BorderSide(color: Colors.blue, width: 3.0),
-        );
+        expect(border.top, const BorderSide(color: Colors.red, width: 2.0));
+        expect(border.bottom, const BorderSide(color: Colors.blue, width: 3.0));
       });
 
       test('accepts BorderDirectionalMix', () {
@@ -302,17 +307,12 @@ void main() {
         );
         final result = style.border(borderMix);
 
-        final decoration = result.value.resolve(MockBuildContext()) as BoxDecoration;
+        final decoration =
+            result.value.resolve(MockBuildContext()) as BoxDecoration;
         final border = decoration.border as BorderDirectional;
 
-        expect(
-          border.start,
-          const BorderSide(color: Colors.green, width: 1.0),
-        );
-        expect(
-          border.end,
-          const BorderSide(color: Colors.yellow, width: 2.0),
-        );
+        expect(border.start, const BorderSide(color: Colors.green, width: 1.0));
+        expect(border.end, const BorderSide(color: Colors.yellow, width: 2.0));
       });
     });
   });
