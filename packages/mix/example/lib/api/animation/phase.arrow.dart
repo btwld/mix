@@ -37,22 +37,20 @@ class _ExampleState extends State<Example> {
   Widget build(BuildContext context) {
     return MouseRegion(
       onEnter: (event) => trigger.value++,
-      child: HBox(
-        style: Style.flexbox(
-          FlexBoxMix()
-              .color(Colors.white)
-              .padding(EdgeInsetsMix.symmetric(horizontal: 16, vertical: 8))
-              .borderRadius(BorderRadiusMix.circular(10))
-              .border(
-                BoxBorderMix.all(BorderSideMix.color(Colors.grey.shade200)),
-              )
-              .onHovered(
-                FlexBoxStyler()
-                    .border(BoxBorderMix.all(BorderSideMix.color(Colors.red))),
-              )
-              .mainAxisSize(MainAxisSize.min)
-              .spacing(8),
-        ),
+      child: RowBox(
+        style: Style.flexbox()
+            .color(Colors.white)
+            .paddingSymmetric(horizontal: 16, vertical: 8)
+            .borderRadiusCircular(10)
+            .border(BoxBorderMix.all(BorderSideMix.color(Colors.grey.shade200)))
+            .mainAxisSize(MainAxisSize.min)
+            .spacing(8)
+            .onHovered(
+              Style.flexbox().border(
+                BoxBorderMix.all(BorderSideMix.color(Colors.grey.shade300)),
+              ),
+            )
+            .animate(AnimationConfig.easeInOut(150.ms)),
 
         children: [
           Text('Developer Preview'),
@@ -75,14 +73,14 @@ enum ArrowPhases {
   };
 
   Duration get duration => switch (this) {
-    identity => 200.ms,
-    topRight => 1.ms,
-    bottomLeft => 700.ms,
+    identity => 500.ms,
+    topRight => 200.ms,
+    bottomLeft => 1.ms,
   };
 
   Curve get curve => switch (this) {
-    identity => Curves.easeOut,
-    topRight || bottomLeft => Curves.elasticOut,
+    identity => SpringCurve.withDampingRatio(ratio: 0.4),
+    topRight || bottomLeft => Curves.easeOut,
   };
 }
 
@@ -92,34 +90,26 @@ class ArrowIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Box(
-      style: Style.box(
-        BoxMix()
-            .color(Colors.grey.shade200)
-            .borderRadius(BorderRadiusMix.circular(10))
-            .size(20, 20)
-            .clipBehavior(Clip.hardEdge),
-      ),
+    final boxContainer = Style.box()
+        .color(Colors.grey.shade200)
+        .borderRadius(BorderRadiusMix.circular(10))
+        .size(20, 20)
+        .clipBehavior(Clip.hardEdge);
 
-      child: Box(
-        style: Style.box(
-          BoxMix() //
-              .phaseAnimation(
-                trigger: animationTrigger,
-                phases: ArrowPhases.values,
-                styleBuilder: (phase, style) =>
-                    style.translate(phase.offset.dx, phase.offset.dy),
-                configBuilder: (phase) => CurveAnimationConfig(
-                  duration: phase.duration,
-                  curve: phase.curve,
-                ),
-              ),
-        ),
-        child: StyledIcon(
-          icon: CupertinoIcons.arrow_up_right,
-          style: Style.icon(IconMix().color(Colors.grey.shade500).size(14)),
-        ),
-      ),
-    );
+    final icon = Style.icon()
+        .color(Colors.grey.shade500)
+        .size(14)
+        .phaseAnimation(
+          trigger: animationTrigger,
+          phases: ArrowPhases.values,
+          styleBuilder: (phase, style) =>
+              style.wrapTranslate(phase.offset.dx, phase.offset.dy),
+          configBuilder: (phase) => CurveAnimationConfig(
+            duration: phase.duration,
+            curve: phase.curve,
+          ),
+        );
+
+    return boxContainer(child: icon(icon: CupertinoIcons.arrow_up_right));
   }
 }

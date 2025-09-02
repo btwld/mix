@@ -43,43 +43,41 @@ class _DemoAppState extends State<DemoApp> {
     super.dispose();
   }
 
-  BoxMix get _boxStyle => Style.box(
-    BoxMix()
-        .color(Colors.blueAccent.shade400)
-        .padding(EdgeInsetsMix.symmetric(horizontal: 16, vertical: 8))
-        .borderRadius(BorderRadiusMix.circular(30))
-        .foregroundDecoration(
+  BoxMix get _boxStyle => Style.box()
+      .color(Colors.blueAccent.shade400)
+      .padding(EdgeInsetsMix.symmetric(horizontal: 16, vertical: 8))
+      .borderRadius(BorderRadiusMix.circular(30))
+      .foregroundDecoration(
+        BoxDecorationMix.gradient(
+          LinearGradientMix()
+              .colors([
+                Colors.white.withValues(alpha: 0),
+                Colors.white.withValues(alpha: 0.2),
+                Colors.white.withValues(alpha: 0.2),
+                Colors.white.withValues(alpha: 0),
+              ])
+              .stops([0.0, 0.3, 0.4, 1])
+              .tileMode(TileMode.clamp),
+        ),
+      )
+      .keyframeAnimation(
+        trigger: trigger,
+        timeline: [
+          KeyframeTrack<double>('progress', initial: -1, [
+            Keyframe.ease(1, 2000.ms),
+          ]),
+        ],
+        styleBuilder: (values, style) => style.foregroundDecoration(
           BoxDecorationMix.gradient(
-            LinearGradientMix()
-                .colors([
-                  Colors.white.withValues(alpha: 0),
-                  Colors.white.withValues(alpha: 0.2),
-                  Colors.white.withValues(alpha: 0.2),
-                  Colors.white.withValues(alpha: 0),
-                ])
-                .stops([0.0, 0.3, 0.4, 1])
-                .tileMode(TileMode.clamp),
-          ),
-        )
-        .keyframes(
-          trigger: trigger,
-          timeline: [
-            KeyframeTrack<double>('progress', initial: -1, [
-              Keyframe.ease(1, 2000.ms),
-            ]),
-          ],
-          styleBuilder: (values, style) => style.foregroundDecoration(
-            BoxDecorationMix.gradient(
-              LinearGradientMix() //
-                  .transform(
-                    _SlidingGradientTransform(
-                      slidePercent: values.get('progress'),
-                    ),
+            LinearGradientMix() //
+                .transform(
+                  _SlidingGradientTransform(
+                    slidePercent: values.get('progress'),
                   ),
-            ),
+                ),
           ),
         ),
-  );
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -89,11 +87,10 @@ class _DemoAppState extends State<DemoApp> {
           style: _boxStyle,
           child: StyledText(
             'Update',
-            style: Style.text(
-              TextMix() //
-                  .color(Colors.white)
-                  .fontWeight(FontWeight.w500),
-            ),
+            style: Style.text()
+                //
+                .color(Colors.white)
+                .fontWeight(FontWeight.w500),
           ),
         ),
       ),

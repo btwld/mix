@@ -114,10 +114,6 @@ class BoxStyler extends Style<BoxSpec>
 
   static BoxSpecUtility get chain => BoxSpecUtility(BoxStyler());
 
-  BoxStyler transformAlignment(AlignmentGeometry value) {
-    return merge(BoxStyler(transformAlignment: value));
-  }
-
   BoxStyler clipBehavior(Clip value) {
     return merge(BoxStyler(clipBehavior: value));
   }
@@ -141,8 +137,11 @@ class BoxStyler extends Style<BoxSpec>
   }
 
   @override
-  BoxStyler transform(Matrix4 value) {
-    return merge(BoxStyler(transform: value));
+  BoxStyler transform(
+    Matrix4 value, {
+    AlignmentGeometry alignment = Alignment.center,
+  }) {
+    return merge(BoxStyler(transform: value, transformAlignment: alignment));
   }
 
   /// Constraints instance method
@@ -265,7 +264,6 @@ class BoxStyler extends Style<BoxSpec>
       animation: MixOps.mergeAnimation($animation, other?.$animation),
     );
   }
-
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {

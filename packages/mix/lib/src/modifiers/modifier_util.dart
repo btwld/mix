@@ -6,6 +6,7 @@ import '../core/utility.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
 import '../properties/painting/border_radius_mix.dart';
 import '../properties/typography/text_style_mix.dart';
+import '../specs/box/box_style.dart';
 import 'align_modifier.dart';
 import 'aspect_ratio_modifier.dart';
 import 'clip_modifier.dart';
@@ -19,6 +20,7 @@ import 'mouse_cursor_modifier.dart';
 import 'opacity_modifier.dart';
 import 'padding_modifier.dart';
 import 'rotated_box_modifier.dart';
+import 'shader_mask_modifier.dart';
 import 'sized_box_modifier.dart';
 import 'transform_modifier.dart';
 import 'visibility_modifier.dart';
@@ -217,14 +219,14 @@ mixin StyleModifierMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   }
 
   /// Wraps the widget with a translate transform modifier.
-  T wrapTranslate({double x = 0, double y = 0}) {
+  T wrapTranslate(double x, double y, [double z = 0.0]) {
     return wrap(
-      ModifierConfig.transform(transform: Matrix4.translationValues(x, y, 0)),
+      ModifierConfig.transform(transform: Matrix4.translationValues(x, y, z)),
     );
   }
 
   /// Wraps the widget with a transform modifier.
-  T wrapTransform(Matrix4 transform, {Alignment? alignment}) {
+  T wrapTransform(Matrix4 transform, {Alignment alignment = Alignment.center}) {
     return wrap(
       ModifierConfig.transform(transform: transform, alignment: alignment),
     );
@@ -314,5 +316,23 @@ mixin StyleModifierMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
         applyTextScaling: data.applyTextScaling,
       ),
     );
+  }
+
+  /// Wraps the widget with a shader mask modifier.
+  T wrapShaderMask({
+    required ShaderCallbackBuilder shaderCallback,
+    BlendMode blendMode = BlendMode.modulate,
+  }) {
+    return wrap(
+      ModifierConfig.shaderMask(
+        shaderCallback: shaderCallback,
+        blendMode: blendMode,
+      ),
+    );
+  }
+
+  /// Wraps the widget with a box modifier.
+  T wrapBox(BoxStyler spec) {
+    return wrap(ModifierConfig.box(spec));
   }
 }

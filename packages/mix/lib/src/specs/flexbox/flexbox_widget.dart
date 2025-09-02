@@ -10,6 +10,12 @@ import '../flex/flex_spec.dart';
 import 'flexbox_spec.dart';
 import 'flexbox_style.dart';
 
+@Deprecated('Use ColumnBox instead')
+typedef VBox = ColumnBox;
+
+@Deprecated('Use RowBox instead')
+typedef HBox = RowBox;
+
 /// Combines [Container] and [Flex] with Mix styling.
 ///
 /// Applies both box and flex specifications for flexible layouts,
@@ -41,8 +47,8 @@ class FlexBox extends StyleWidget<FlexBoxSpec> {
 /// Horizontal flex box with Mix styling.
 ///
 /// Shorthand for [FlexBox] with [Axis.horizontal].
-class HBox extends FlexBox {
-  const HBox({
+class RowBox extends FlexBox {
+  const RowBox({
     super.style = const FlexBoxStyler.create(),
     super.key,
     super.children = const <Widget>[],
@@ -52,8 +58,8 @@ class HBox extends FlexBox {
 /// Vertical flex box with Mix styling.
 ///
 /// Shorthand for [FlexBox] with [Axis.vertical].
-class VBox extends FlexBox {
-  const VBox({
+class ColumnBox extends FlexBox {
+  const ColumnBox({
     super.style = const FlexBoxStyler.create(),
     super.key,
     super.children = const <Widget>[],

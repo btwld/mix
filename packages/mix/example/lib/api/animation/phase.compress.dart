@@ -1,8 +1,8 @@
 /// Tap Phase Animation Example
-/// 
+///
 /// Demonstrates multi-phase animations that respond to user taps. The animation
 /// progresses through three distinct phases: initial, compress, and expanded.
-/// 
+///
 /// Key concepts:
 /// - Using .phaseAnimation() for complex state-based animations
 /// - Defining animation phases with enums
@@ -29,7 +29,6 @@ class BlockAnimation extends StatefulWidget {
 }
 
 class _BlockAnimationState extends State<BlockAnimation> {
-  
   final _isExpanded = ValueNotifier(false);
 
   @override
@@ -40,32 +39,31 @@ class _BlockAnimationState extends State<BlockAnimation> {
 
   @override
   Widget build(BuildContext context) {
-
-    final style = $box 
+    final style = $box
         .color(Colors.deepPurple)
         .height(100)
         .width(100)
-        .borderRadius(.circular(40))
-        .transformAlignment(.center)
+        .borderRadiusCircular(40)
         .phaseAnimation(
           trigger: _isExpanded,
           phases: AnimationPhases.values,
           styleBuilder: (phase, style) => switch (phase) {
-            .initial => style.scale(1),
-            .compress => style
-                .scale(0.75)
-                .color(Colors.blue),
-            .expanded => style
-                .scale(1.25)
-                .borderRadius(.circular(20))
-                .color(Colors.red)
+            AnimationPhases.initial => style.scale(1),
+            AnimationPhases.compress =>
+              style.scale(0.75).color(Colors.deepPurple.shade800),
+            AnimationPhases.expanded =>
+              style
+                  .scale(1.25)
+                  .borderRadiusCircular(20)
+                  .color(Colors.deepPurple.shade300),
           },
           configBuilder: (phase) => switch (phase) {
-            .initial => .decelerate(200.ms),
-            .compress => .decelerate(100.ms),
-            .expanded => .bounceOut(800.ms),
-          },  
-    );
+            AnimationPhases.initial =>
+              CurveAnimationConfig.springWithDampingRatio(800.ms, ratio: 0.3),
+            AnimationPhases.compress => CurveAnimationConfig.decelerate(200.ms),
+            AnimationPhases.expanded => CurveAnimationConfig.decelerate(100.ms),
+          },
+        );
 
     return GestureDetector(
       onTap: () {

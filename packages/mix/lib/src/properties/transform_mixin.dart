@@ -5,16 +5,19 @@ import '../core/mix_element.dart';
 /// Mixin that provides convenient transform methods for styles
 mixin TransformMixin<T extends Mix<Object?>> {
   /// Must be implemented by the class using this mixin
-  T transform(Matrix4 value);
+  T transform(Matrix4 value, {AlignmentGeometry alignment = Alignment.center});
 
   /// Sets rotation transform
-  T rotate(double angle) {
-    return transform(Matrix4.rotationZ(angle));
+  T rotate(double angle, {Alignment alignment = Alignment.center}) {
+    return transform(Matrix4.rotationZ(angle), alignment: alignment);
   }
 
   /// Sets scale transform
-  T scale(double scale) {
-    return transform(Matrix4.diagonal3Values(scale, scale, 1.0));
+  T scale(double scale, {Alignment alignment = Alignment.center}) {
+    return transform(
+      Matrix4.diagonal3Values(scale, scale, 1.0),
+      alignment: alignment,
+    );
   }
 
   /// Sets translation transform

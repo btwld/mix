@@ -181,8 +181,13 @@ class StackBoxStyler extends Style<ZBoxSpec>
 
   /// Transform instance method - delegates to box
   @override
-  StackBoxStyler transform(Matrix4 value) {
-    return merge(StackBoxStyler(transform: value));
+  StackBoxStyler transform(
+    Matrix4 value, {
+    AlignmentGeometry alignment = Alignment.center,
+  }) {
+    return merge(
+      StackBoxStyler(transform: value, transformAlignment: alignment),
+    );
   }
 
   /// Decoration instance method - delegates to box

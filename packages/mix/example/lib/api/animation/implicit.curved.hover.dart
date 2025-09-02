@@ -29,7 +29,6 @@ class Example extends StatelessWidget {
         .width(100)
         .borderRadius(.circular(10))
         .transform(.identity())
-        .transformAlignment(.center)
         .onHovered(BoxStyler().color(Colors.blue).scale(1.5))
         .animate(.easeInOut(300.ms));
 

@@ -34,6 +34,15 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   final ModifierConfig? $modifier;
   final AnimationConfig? $animation;
 
+  static final box = BoxStyler.new;
+  static final text = TextStyler.new;
+  static final icon = IconStyler.new;
+  static final image = ImageStyler.new;
+  static final stack = StackStyler.new;
+  static final flex = FlexStyler.new;
+  static final flexbox = FlexBoxStyler.new;
+  static final stackbox = StackBoxStyler.new;
+
   const Style({
     required List<VariantStyle<S>>? variants,
     required ModifierConfig? modifier,
@@ -42,16 +51,6 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
        $animation = animation,
        $variants = variants;
 
-  static BoxStyler box(BoxStyler value) => value;
-
-  static TextStyler text(TextStyler value) => value;
-  static IconStyler icon(IconStyler value) => value;
-  static ImageStyler image(ImageStyler value) => value;
-  static StackStyler stack(StackStyler value) => value;
-  static FlexStyler flex(FlexStyler value) => value;
-  static FlexBoxStyler flexbox(FlexBoxStyler value) => value;
-  static StackBoxStyler stackbox(StackBoxStyler value) => value;
-
   @internal
   Set<WidgetState> get widgetStates {
     return ($variants ?? [])
@@ -59,7 +58,6 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
         .map((v) => (v.variant as WidgetStateVariant).state)
         .toSet();
   }
-
 
   /// Merges all active variants with their nested variants recursively.
   ///
@@ -118,7 +116,6 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
 
     return mergedStyle;
   }
-
 
   /// Resolves this attribute to its concrete value using the provided [BuildContext].
   @override
@@ -189,14 +186,14 @@ final class VariantStyle<S extends Spec<S>> extends Mixable<StyleSpec<S>>
     if (other == null) {
       return VariantStyle(variant, _style);
     }
-    
+
     if (variant != other.variant) {
       throw ArgumentError(
         'Cannot merge VariantStyle with different variants. '
         'Attempted to merge variant "${variant.key}" with "${other.variant.key}".',
       );
     }
-    
+
     return VariantStyle(variant, _style.merge(other._style));
   }
 

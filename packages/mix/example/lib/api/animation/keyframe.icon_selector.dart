@@ -33,7 +33,7 @@ class EmojiSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget emoji(String emoji) {
-      return StyledText(emoji, style: Style.text(TextMix().fontSize(25)));
+      return StyledText(emoji, style: Style.text().fontSize(25));
     }
 
     return FlexBox(
@@ -95,37 +95,33 @@ class _PopUpAnimationState extends State<PopUpAnimation> {
   @override
   Widget build(BuildContext context) {
     return Box(
-      style: Style.box(
-        BoxMix()
-            .transformAlignment(Alignment.center)
-            .keyframes(
-              trigger: trigger,
-              timeline: [
-                KeyframeTrack<double>('scale', initial: 0, [
-                  Keyframe.ease(0.2, 200.ms),
-                  Keyframe.elasticOut(1.0, 1000.ms),
-                ]),
-                KeyframeTrack<double>('y', initial: -100, [
-                  Keyframe.elasticOut(0, 800.ms),
-                ]),
-                KeyframeTrack<double>('opacity', initial: 0, [
-                  Keyframe.easeIn(1.0, 500.ms),
-                ]),
-              ],
-              styleBuilder: (values, style) {
-                final scale = values.get('scale');
-                final y = values.get('y');
-                final opacity = values.get('opacity');
+      style: Style.box().keyframeAnimation(
+        trigger: trigger,
+        timeline: [
+          KeyframeTrack<double>('scale', initial: 0, [
+            Keyframe.ease(0.2, 200.ms),
+            Keyframe.elasticOut(1.0, 1000.ms),
+          ]),
+          KeyframeTrack<double>('y', initial: -100, [
+            Keyframe.elasticOut(0, 800.ms),
+          ]),
+          KeyframeTrack<double>('opacity', initial: 0, [
+            Keyframe.easeIn(1.0, 500.ms),
+          ]),
+        ],
+        styleBuilder: (values, style) {
+          final scale = values.get('scale');
+          final y = values.get('y');
+          final opacity = values.get('opacity');
 
-                return style
-                    .transform(
-                      Matrix4.identity()
-                        ..scaleByDouble(scale, scale, 1, 1)
-                        ..translateByDouble(0.0, y, 0, 1),
-                    )
-                    .wrapOpacity(opacity);
-              },
-            ),
+          return style
+              .transform(
+                Matrix4.identity()
+                  ..scaleByDouble(scale, scale, 1, 1)
+                  ..translateByDouble(0.0, y, 0, 1),
+              )
+              .wrapOpacity(opacity);
+        },
       ),
       child: widget.child,
     );

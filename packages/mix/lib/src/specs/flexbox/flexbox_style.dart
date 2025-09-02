@@ -185,8 +185,13 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
   }
 
   @override
-  FlexBoxStyler transform(Matrix4 value) {
-    return merge(FlexBoxStyler(transform: value));
+  FlexBoxStyler transform(
+    Matrix4 value, {
+    AlignmentGeometry alignment = Alignment.center,
+  }) {
+    return merge(
+      FlexBoxStyler(transform: value, transformAlignment: alignment),
+    );
   }
 
   /// Decoration instance method - delegates to box

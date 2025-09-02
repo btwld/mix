@@ -8,7 +8,7 @@ mixin StyleAnimationMixin<S extends Spec<S>, T extends Style<S>> on Style<S> {
   @protected
   T animate(AnimationConfig config);
 
-  T keyframes({
+  T keyframeAnimation({
     required Listenable trigger,
     required List<KeyframeTrack> timeline,
     required KeyframeStyleBuilder<S, T> styleBuilder,
