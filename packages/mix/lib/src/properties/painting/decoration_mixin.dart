@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../core/mix_element.dart';
 import 'border_mix.dart';
+import 'border_radius_mix.dart';
 import 'decoration_image_mix.dart';
 import 'decoration_mix.dart';
 import 'gradient_mix.dart';
@@ -26,6 +27,11 @@ mixin DecorationMixin<T extends Mix<Object?>> {
   /// Sets border
   T border(BoxBorderMix value) {
     return decoration(DecorationMix.border(value));
+  }
+
+  /// Sets border radius
+  T borderRadius(BorderRadiusGeometryMix value) {
+    return decoration(DecorationMix.borderRadius(value));
   }
 
   /// Sets single shadow

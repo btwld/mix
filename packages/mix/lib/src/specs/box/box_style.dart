@@ -13,8 +13,11 @@ import '../../properties/layout/constraints_mix.dart';
 import '../../properties/layout/constraints_mixin.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/layout/spacing_mixin.dart';
+import '../../properties/painting/border_mix.dart';
+import '../../properties/painting/border_util.dart';
 import '../../properties/painting/border_radius_mix.dart';
 import '../../properties/painting/border_radius_util.dart';
+import '../../properties/painting/box_shadow_mixin.dart';
 import '../../properties/painting/decoration_mix.dart';
 import '../../properties/painting/decoration_mixin.dart';
 import '../../properties/transform_mixin.dart';
@@ -36,7 +39,9 @@ class BoxStyler extends Style<BoxSpec>
         Diagnosticable,
         StyleModifierMixin<BoxStyler, BoxSpec>,
         StyleVariantMixin<BoxStyler, BoxSpec>,
+        BorderMixin<BoxStyler>,
         BorderRadiusMixin<BoxStyler>,
+        BoxShadowMixin<BoxStyler>,
         DecorationMixin<BoxStyler>,
         SpacingMixin<BoxStyler>,
         TransformMixin<BoxStyler>,
@@ -180,6 +185,12 @@ class BoxStyler extends Style<BoxSpec>
   @override
   BoxStyler borderRadius(BorderRadiusGeometryMix value) {
     return merge(BoxStyler(decoration: DecorationMix.borderRadius(value)));
+  }
+
+  /// Border instance method
+  @override
+  BoxStyler border(BoxBorderMix value) {
+    return merge(BoxStyler(decoration: DecorationMix.border(value)));
   }
 
   @override

@@ -5,11 +5,142 @@ import '../../core/style.dart';
 import '../../core/utility.dart';
 import '../layout/scalar_util.dart';
 import 'border_radius_mix.dart';
+import 'decoration_mixin.dart';
 
 /// Mixin that provides convenient border radius methods
-mixin BorderRadiusMixin<T extends Mix<Object?>> {
-  /// Must be implemented by the class using this mixin
-  T borderRadius(BorderRadiusGeometryMix value);
+mixin BorderRadiusMixin<T extends Mix<Object?>> implements DecorationMixin<T> {
+  // Methods accepting Radius values (using existing factory constructors)
+
+  T borderRadiusAll(Radius radius) {
+    return borderRadius(BorderRadiusGeometryMix.all(radius));
+  }
+
+  T borderRadiusTop(Radius radius) {
+    return borderRadius(BorderRadiusGeometryMix.top(radius));
+  }
+
+  T borderRadiusBottom(Radius radius) {
+    return borderRadius(BorderRadiusGeometryMix.bottom(radius));
+  }
+
+  T borderRadiusLeft(Radius radius) {
+    return borderRadius(BorderRadiusGeometryMix.left(radius));
+  }
+
+  T borderRadiusRight(Radius radius) {
+    return borderRadius(BorderRadiusGeometryMix.right(radius));
+  }
+
+  T borderRadiusTopLeft(Radius radius) {
+    return borderRadius(BorderRadiusGeometryMix.topLeft(radius));
+  }
+
+  T borderRadiusTopRight(Radius radius) {
+    return borderRadius(BorderRadiusGeometryMix.topRight(radius));
+  }
+
+  T borderRadiusBottomLeft(Radius radius) {
+    return borderRadius(BorderRadiusGeometryMix.bottomLeft(radius));
+  }
+
+  T borderRadiusBottomRight(Radius radius) {
+    return borderRadius(BorderRadiusGeometryMix.bottomRight(radius));
+  }
+
+  // Directional methods (RTL-aware)
+
+  T borderRadiusTopStart(Radius radius) {
+    return borderRadius(BorderRadiusGeometryMix.topStart(radius));
+  }
+
+  T borderRadiusTopEnd(Radius radius) {
+    return borderRadius(BorderRadiusGeometryMix.topEnd(radius));
+  }
+
+  T borderRadiusBottomStart(Radius radius) {
+    return borderRadius(BorderRadiusGeometryMix.bottomStart(radius));
+  }
+
+  T borderRadiusBottomEnd(Radius radius) {
+    return borderRadius(BorderRadiusGeometryMix.bottomEnd(radius));
+  }
+
+  // Rounded shortcuts - ALL corners
+  T rounded(double radius) {
+    return borderRadius(BorderRadiusGeometryMix.circular(radius));
+  }
+
+  // Rounded shortcuts - GROUPED corners
+
+  T roundedTop(double radius) {
+    return borderRadius(BorderRadiusGeometryMix.top(Radius.circular(radius)));
+  }
+
+  T roundedBottom(double radius) {
+    return borderRadius(
+      BorderRadiusGeometryMix.bottom(Radius.circular(radius)),
+    );
+  }
+
+  T roundedLeft(double radius) {
+    return borderRadius(BorderRadiusGeometryMix.left(Radius.circular(radius)));
+  }
+
+  T roundedRight(double radius) {
+    return borderRadius(BorderRadiusGeometryMix.right(Radius.circular(radius)));
+  }
+
+  // Rounded shortcuts - SINGLE corners
+
+  T roundedTopLeft(double radius) {
+    return borderRadius(
+      BorderRadiusGeometryMix.topLeft(Radius.circular(radius)),
+    );
+  }
+
+  T roundedTopRight(double radius) {
+    return borderRadius(
+      BorderRadiusGeometryMix.topRight(Radius.circular(radius)),
+    );
+  }
+
+  T roundedBottomLeft(double radius) {
+    return borderRadius(
+      BorderRadiusGeometryMix.bottomLeft(Radius.circular(radius)),
+    );
+  }
+
+  T roundedBottomRight(double radius) {
+    return borderRadius(
+      BorderRadiusGeometryMix.bottomRight(Radius.circular(radius)),
+    );
+  }
+
+  // Rounded shortcuts - DIRECTIONAL (RTL-aware)
+
+  T roundedTopStart(double radius) {
+    return borderRadius(
+      BorderRadiusGeometryMix.topStart(Radius.circular(radius)),
+    );
+  }
+
+  T roundedTopEnd(double radius) {
+    return borderRadius(
+      BorderRadiusGeometryMix.topEnd(Radius.circular(radius)),
+    );
+  }
+
+  T roundedBottomStart(double radius) {
+    return borderRadius(
+      BorderRadiusGeometryMix.bottomStart(Radius.circular(radius)),
+    );
+  }
+
+  T roundedBottomEnd(double radius) {
+    return borderRadius(
+      BorderRadiusGeometryMix.bottomEnd(Radius.circular(radius)),
+    );
+  }
 }
 
 /// Utility class for creating and manipulating attributes with [BorderRadiusGeometry]

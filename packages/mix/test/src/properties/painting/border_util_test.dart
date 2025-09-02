@@ -5,13 +5,60 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 // Test class that extends MockStyle and uses BorderMixin
-class TestBorderStyle extends MockStyle<BoxBorderMix>
+class TestBorderStyle extends MockStyle<DecorationMix>
     with BorderMixin<TestBorderStyle> {
-  TestBorderStyle([BoxBorderMix? value]) : super(value ?? BorderMix());
+  TestBorderStyle([DecorationMix? value]) : super(value ?? BoxDecorationMix());
+
+  @override
+  TestBorderStyle decoration(DecorationMix value) {
+    return TestBorderStyle(value);
+  }
 
   @override
   TestBorderStyle border(BoxBorderMix value) {
-    return TestBorderStyle(value);
+    return decoration(DecorationMix.border(value));
+  }
+
+  @override
+  TestBorderStyle borderRadius(BorderRadiusGeometryMix value) {
+    return decoration(DecorationMix.borderRadius(value));
+  }
+
+  @override
+  TestBorderStyle color(Color value) {
+    return decoration(DecorationMix.color(value));
+  }
+
+  @override
+  TestBorderStyle gradient(GradientMix value) {
+    return decoration(DecorationMix.gradient(value));
+  }
+
+  @override
+  TestBorderStyle shadow(BoxShadowMix value) {
+    return decoration(BoxDecorationMix.boxShadow([value]));
+  }
+
+  @override
+  TestBorderStyle shadows(List<BoxShadowMix> value) {
+    return decoration(BoxDecorationMix.boxShadow(value));
+  }
+
+  @override
+  TestBorderStyle elevation(ElevationShadow value) {
+    return decoration(
+      BoxDecorationMix.boxShadow(BoxShadowMix.fromElevation(value)),
+    );
+  }
+
+  @override
+  TestBorderStyle image(DecorationImageMix value) {
+    return decoration(DecorationMix.image(value));
+  }
+
+  @override
+  TestBorderStyle shape(ShapeBorderMix value) {
+    return decoration(ShapeDecorationMix(shape: value));
   }
 }
 
@@ -23,293 +70,248 @@ void main() {
       style = TestBorderStyle();
     });
 
-    group('borderWidth method', () {
-      test('sets all border widths with all parameter', () {
-        final result = style.borderWidth(all: 2.0);
-
-        final border = result.value.resolve(MockBuildContext());
-
-        expect(border, Border.all(width: 2.0));
-      });
-
-      test('sets horizontal border widths', () {
-        final result = style.borderWidth(horizontal: 3.0);
-
-        final border = result.value.resolve(MockBuildContext());
-
-        expect(
-          border,
-          const Border.symmetric(horizontal: BorderSide(width: 3.0)),
-        );
-      });
-
-      test('sets vertical border widths', () {
-        final result = style.borderWidth(vertical: 4.0);
-
-        final border = result.value.resolve(MockBuildContext());
-
-        expect(
-          border,
-          const Border.symmetric(vertical: BorderSide(width: 4.0)),
-        );
-      });
-
-      test('sets specific border widths', () {
-        final result = style.borderWidth(
-          top: 1.0,
-          bottom: 2.0,
-          left: 3.0,
-          right: 4.0,
+    group('individual border methods', () {
+      test('borderTop sets top border', () {
+        final result = style.borderTop(
+          color: Colors.red,
+          width: 2.0,
+          style: BorderStyle.solid,
         );
 
-        final border = result.value.resolve(MockBuildContext());
+        final decoration = result.value.resolve(MockBuildContext()) as BoxDecoration;
+        final border = decoration.border as Border;
 
         expect(
-          border,
-          Border(
-            top: BorderSide(width: 1.0),
-            bottom: BorderSide(width: 2.0),
-            left: BorderSide(width: 3.0),
-            right: BorderSide(width: 4.0),
+          border.top,
+          const BorderSide(
+            color: Colors.red,
+            width: 2.0,
+            style: BorderStyle.solid,
           ),
         );
       });
 
-      test('sets logical border widths', () {
-        final result = style.borderWidth(start: 2.0, end: 3.0);
+      test('borderBottom sets bottom border', () {
+        final result = style.borderBottom(
+          color: Colors.blue,
+          width: 3.0,
+          style: BorderStyle.solid,
+        );
 
-        final border = result.value.resolve(MockBuildContext());
+        final decoration = result.value.resolve(MockBuildContext()) as BoxDecoration;
+        final border = decoration.border as Border;
 
         expect(
-          border,
-          BorderDirectional(
-            start: BorderSide(width: 2.0),
-            end: BorderSide(width: 3.0),
+          border.bottom,
+          const BorderSide(
+            color: Colors.blue,
+            width: 3.0,
+            style: BorderStyle.solid,
           ),
         );
       });
 
-      test('priority order: specific sides override horizontal/vertical', () {
-        final result = style.borderWidth(all: 1.0, horizontal: 2.0, left: 3.0);
-        final border = result.value.resolve(MockBuildContext());
+      test('borderLeft sets left border', () {
+        final result = style.borderLeft(
+          color: Colors.green,
+          width: 1.0,
+          style: BorderStyle.solid,
+        );
+
+        final decoration = result.value.resolve(MockBuildContext()) as BoxDecoration;
+        final border = decoration.border as Border;
 
         expect(
-          border,
-          Border(
-            top: BorderSide(width: 2.0),
-            bottom: BorderSide(width: 2.0),
-            left: BorderSide(width: 3.0),
-            right: BorderSide(width: 1.0),
+          border.left,
+          const BorderSide(
+            color: Colors.green,
+            width: 1.0,
+            style: BorderStyle.solid,
           ),
         );
       });
 
-      test('priority order: horizontal/vertical sets all sides', () {
-        final result = style.borderWidth(horizontal: 2.0, vertical: 3.0);
+      test('borderRight sets right border', () {
+        final result = style.borderRight(
+          color: Colors.yellow,
+          width: 4.0,
+          style: BorderStyle.solid,
+        );
 
-        final border = result.value.resolve(MockBuildContext());
+        final decoration = result.value.resolve(MockBuildContext()) as BoxDecoration;
+        final border = decoration.border as Border;
 
         expect(
-          border,
-          const Border.symmetric(
-            horizontal: BorderSide(width: 2.0),
-            vertical: BorderSide(width: 3.0),
+          border.right,
+          const BorderSide(
+            color: Colors.yellow,
+            width: 4.0,
+            style: BorderStyle.solid,
           ),
         );
       });
 
-      test('throws error when mixing physical and logical properties', () {
+      test('borderStart sets start border', () {
+        final result = style.borderStart(
+          color: Colors.orange,
+          width: 2.0,
+          style: BorderStyle.solid,
+        );
+
+        final decoration = result.value.resolve(MockBuildContext()) as BoxDecoration;
+        final border = decoration.border as BorderDirectional;
+
         expect(
-          () => style.borderWidth(left: 1.0, start: 2.0),
-          throwsArgumentError,
+          border.start,
+          const BorderSide(
+            color: Colors.orange,
+            width: 2.0,
+            style: BorderStyle.solid,
+          ),
         );
       });
 
-      test('throws error when mixing right and end properties', () {
+      test('borderEnd sets end border', () {
+        final result = style.borderEnd(
+          color: Colors.purple,
+          width: 3.0,
+          style: BorderStyle.solid,
+        );
+
+        final decoration = result.value.resolve(MockBuildContext()) as BoxDecoration;
+        final border = decoration.border as BorderDirectional;
+
         expect(
-          () => style.borderWidth(right: 1.0, end: 2.0),
-          throwsArgumentError,
+          border.end,
+          const BorderSide(
+            color: Colors.purple,
+            width: 3.0,
+            style: BorderStyle.solid,
+          ),
         );
       });
     });
 
-    group('borderColor method', () {
-      test('sets all border colors with all parameter', () {
-        final result = style.borderColor(all: Colors.red);
-
-        final border = result.value.resolve(MockBuildContext());
-
-        expect(border, Border.all(color: Colors.red));
-      });
-
-      test('sets horizontal border colors', () {
-        final result = style.borderColor(horizontal: Colors.blue);
-
-        final border = result.value.resolve(MockBuildContext());
-
-        expect(
-          border,
-          const Border.symmetric(horizontal: BorderSide(color: Colors.blue)),
-        );
-      });
-
-      test('sets vertical border colors', () {
-        final result = style.borderColor(vertical: Colors.green);
-
-        final border = result.value.resolve(MockBuildContext());
-
-        expect(
-          border,
-          const Border.symmetric(vertical: BorderSide(color: Colors.green)),
-        );
-      });
-
-      test('sets specific border colors', () {
-        final result = style.borderColor(
-          top: Colors.red,
-          bottom: Colors.blue,
-          left: Colors.green,
-          right: Colors.yellow,
+    group('grouped border methods', () {
+      test('borderVertical sets left and right borders', () {
+        final result = style.borderVertical(
+          color: Colors.red,
+          width: 2.0,
+          style: BorderStyle.solid,
         );
 
-        final border = result.value.resolve(MockBuildContext());
+        final decoration = result.value.resolve(MockBuildContext()) as BoxDecoration;
+        final border = decoration.border as Border;
 
         expect(
-          border,
-          const Border(
-            top: BorderSide(color: Colors.red),
-            bottom: BorderSide(color: Colors.blue),
-            left: BorderSide(color: Colors.green),
-            right: BorderSide(color: Colors.yellow),
+          border.left,
+          const BorderSide(
+            color: Colors.red,
+            width: 2.0,
+            style: BorderStyle.solid,
+          ),
+        );
+        expect(
+          border.right,
+          const BorderSide(
+            color: Colors.red,
+            width: 2.0,
+            style: BorderStyle.solid,
           ),
         );
       });
 
-      test('sets logical border colors', () {
-        final result = style.borderColor(
-          start: Colors.orange,
-          end: Colors.purple,
+      test('borderHorizontal sets top and bottom borders', () {
+        final result = style.borderHorizontal(
+          color: Colors.blue,
+          width: 3.0,
+          style: BorderStyle.solid,
         );
 
-        final border = result.value.resolve(MockBuildContext());
+        final decoration = result.value.resolve(MockBuildContext()) as BoxDecoration;
+        final border = decoration.border as Border;
 
         expect(
-          border,
-          const BorderDirectional(
-            start: BorderSide(color: Colors.orange),
-            end: BorderSide(color: Colors.purple),
+          border.top,
+          const BorderSide(
+            color: Colors.blue,
+            width: 3.0,
+            style: BorderStyle.solid,
+          ),
+        );
+        expect(
+          border.bottom,
+          const BorderSide(
+            color: Colors.blue,
+            width: 3.0,
+            style: BorderStyle.solid,
           ),
         );
       });
 
-      test('priority order works correctly', () {
-        final result = style.borderColor(
-          all: Colors.black,
-          vertical: Colors.white,
-          top: Colors.red,
+      test('borderAll sets all borders', () {
+        final result = style.borderAll(
+          color: Colors.green,
+          width: 1.5,
+          style: BorderStyle.solid,
+          strokeAlign: 0.5,
         );
 
-        final border = result.value.resolve(MockBuildContext());
+        final decoration = result.value.resolve(MockBuildContext()) as BoxDecoration;
+        final border = decoration.border as Border;
 
-        expect(
-          border,
-          const Border(
-            top: BorderSide(color: Colors.red),
-            bottom: BorderSide(color: Colors.black),
-            left: BorderSide(color: Colors.white),
-            right: BorderSide(color: Colors.white),
-          ),
+        const expectedSide = BorderSide(
+          color: Colors.green,
+          width: 1.5,
+          style: BorderStyle.solid,
+          strokeAlign: 0.5,
         );
-      });
 
-      test('throws error when mixing physical and logical properties', () {
-        expect(
-          () => style.borderColor(left: Colors.red, start: Colors.blue),
-          throwsArgumentError,
-        );
+        expect(border.top, expectedSide);
+        expect(border.bottom, expectedSide);
+        expect(border.left, expectedSide);
+        expect(border.right, expectedSide);
       });
     });
 
-    group('borderStyle method', () {
-      test('sets all border styles with all parameter', () {
-        final result = style.borderStyle(all: BorderStyle.solid);
-
-        final border = result.value.resolve(MockBuildContext());
-
-        expect(border, Border.all(style: BorderStyle.solid));
-      });
-
-      test('sets horizontal border styles', () {
-        final result = style.borderStyle(horizontal: BorderStyle.none);
-
-        final border = result.value.resolve(MockBuildContext());
-
-        expect(
-          border,
-          const Border.symmetric(
-            horizontal: BorderSide(style: BorderStyle.none),
-          ),
+    group('border method with BorderMix', () {
+      test('accepts BorderMix directly', () {
+        final borderMix = BorderMix(
+          top: BorderSideMix(color: Colors.red, width: 2.0),
+          bottom: BorderSideMix(color: Colors.blue, width: 3.0),
         );
-      });
+        final result = style.border(borderMix);
 
-      test('sets vertical border styles', () {
-        final result = style.borderStyle(vertical: BorderStyle.solid);
-
-        final border = result.value.resolve(MockBuildContext());
+        final decoration = result.value.resolve(MockBuildContext()) as BoxDecoration;
+        final border = decoration.border as Border;
 
         expect(
-          border,
-          const Border.symmetric(
-            vertical: BorderSide(style: BorderStyle.solid),
-          ),
+          border.top,
+          const BorderSide(color: Colors.red, width: 2.0),
+        );
+        expect(
+          border.bottom,
+          const BorderSide(color: Colors.blue, width: 3.0),
         );
       });
 
-      test('sets specific border styles', () {
-        final result = style.borderStyle(
-          top: BorderStyle.solid,
-          bottom: BorderStyle.none,
-          left: BorderStyle.solid,
-          right: BorderStyle.none,
+      test('accepts BorderDirectionalMix', () {
+        final borderMix = BorderDirectionalMix(
+          start: BorderSideMix(color: Colors.green, width: 1.0),
+          end: BorderSideMix(color: Colors.yellow, width: 2.0),
         );
+        final result = style.border(borderMix);
 
-        final border = result.value.resolve(MockBuildContext());
+        final decoration = result.value.resolve(MockBuildContext()) as BoxDecoration;
+        final border = decoration.border as BorderDirectional;
 
         expect(
-          border,
-          const Border(
-            top: BorderSide(style: BorderStyle.solid),
-            bottom: BorderSide(style: BorderStyle.none),
-            left: BorderSide(style: BorderStyle.solid),
-            right: BorderSide(style: BorderStyle.none),
-          ),
+          border.start,
+          const BorderSide(color: Colors.green, width: 1.0),
         );
-      });
-
-      test('sets logical border styles', () {
-        final result = style.borderStyle(
-          start: BorderStyle.solid,
-          end: BorderStyle.none,
-        );
-
-        final border = result.value.resolve(MockBuildContext());
-
         expect(
-          border,
-          const BorderDirectional(
-            start: BorderSide(style: BorderStyle.solid),
-            end: BorderSide(style: BorderStyle.none),
-          ),
-        );
-      });
-
-      test('throws error when mixing physical and logical properties', () {
-        expect(
-          () => style.borderStyle(
-            left: BorderStyle.solid,
-            start: BorderStyle.none,
-          ),
-          throwsArgumentError,
+          border.end,
+          const BorderSide(color: Colors.yellow, width: 2.0),
         );
       });
     });

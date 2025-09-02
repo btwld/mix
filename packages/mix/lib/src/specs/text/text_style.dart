@@ -10,10 +10,10 @@ import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
-import '../../properties/painting/shadow_mix.dart';
 import '../../properties/typography/strut_style_mix.dart';
 import '../../properties/typography/text_height_behavior_mix.dart';
 import '../../properties/typography/text_style_mix.dart';
+import '../../properties/typography/text_style_mixin.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'text_spec.dart';
@@ -34,6 +34,7 @@ class TextStyler extends Style<TextSpec>
         Diagnosticable,
         StyleModifierMixin<TextStyler, TextSpec>,
         StyleVariantMixin<TextStyler, TextSpec>,
+        TextStyleMixin<TextStyler>,
         StyleAnimationMixin<TextSpec, TextStyler> {
   final Prop<TextOverflow>? $overflow;
   final Prop<StrutStyle>? $strutStyle;
@@ -160,11 +161,6 @@ class TextStyler extends Style<TextSpec>
     return merge(TextStyler(maxLines: value));
   }
 
-  /// Sets text style
-  TextStyler style(TextStyleMix value) {
-    return merge(TextStyler(style: value));
-  }
-
   /// Sets text width basis
   TextStyler textWidthBasis(TextWidthBasis value) {
     return merge(TextStyler(textWidthBasis: value));
@@ -190,101 +186,6 @@ class TextStyler extends Style<TextSpec>
     return merge(TextStyler(textDirectives: [value]));
   }
 
-  /// Sets text color
-  TextStyler color(Color value) {
-    return merge(TextStyler(style: TextStyleMix(color: value)));
-  }
-
-  /// Sets font family
-  TextStyler fontFamily(String value) {
-    return merge(TextStyler(style: TextStyleMix(fontFamily: value)));
-  }
-
-  /// Sets font weight
-  TextStyler fontWeight(FontWeight value) {
-    return merge(TextStyler(style: TextStyleMix(fontWeight: value)));
-  }
-
-  /// Sets font style
-  TextStyler fontStyle(FontStyle value) {
-    return merge(TextStyler(style: TextStyleMix(fontStyle: value)));
-  }
-
-  /// Sets font size
-  TextStyler fontSize(double value) {
-    return merge(TextStyler(style: TextStyleMix(fontSize: value)));
-  }
-
-  /// Sets letter spacing
-  TextStyler letterSpacing(double value) {
-    return merge(TextStyler(style: TextStyleMix(letterSpacing: value)));
-  }
-
-  /// Sets word spacing
-  TextStyler wordSpacing(double value) {
-    return merge(TextStyler(style: TextStyleMix(wordSpacing: value)));
-  }
-
-  /// Sets text baseline
-  TextStyler textBaseline(TextBaseline value) {
-    return merge(TextStyler(style: TextStyleMix(textBaseline: value)));
-  }
-
-  /// Sets background color
-  TextStyler backgroundColor(Color value) {
-    return merge(TextStyler(style: TextStyleMix(backgroundColor: value)));
-  }
-
-  /// Sets text shadows
-  TextStyler shadows(List<ShadowMix> value) {
-    return merge(TextStyler(style: TextStyleMix(shadows: value)));
-  }
-
-  /// Sets font features
-  TextStyler fontFeatures(List<FontFeature> value) {
-    return merge(TextStyler(style: TextStyleMix(fontFeatures: value)));
-  }
-
-  /// Sets font variations
-  TextStyler fontVariations(List<FontVariation> value) {
-    return merge(TextStyler(style: TextStyleMix(fontVariations: value)));
-  }
-
-  /// Sets text decoration
-  TextStyler decoration(TextDecoration value) {
-    return merge(TextStyler(style: TextStyleMix(decoration: value)));
-  }
-
-  /// Sets decoration color
-  TextStyler decorationColor(Color value) {
-    return merge(TextStyler(style: TextStyleMix(decorationColor: value)));
-  }
-
-  /// Sets decoration style
-  TextStyler decorationStyle(TextDecorationStyle value) {
-    return merge(TextStyler(style: TextStyleMix(decorationStyle: value)));
-  }
-
-  /// Sets debug label
-  TextStyler debugLabel(String value) {
-    return merge(TextStyler(style: TextStyleMix(debugLabel: value)));
-  }
-
-  /// Sets line height
-  TextStyler height(double value) {
-    return merge(TextStyler(style: TextStyleMix(height: value)));
-  }
-
-  /// Sets foreground paint
-  TextStyler foreground(Paint value) {
-    return merge(TextStyler(style: TextStyleMix(foreground: value)));
-  }
-
-  /// Sets background paint
-  TextStyler background(Paint value) {
-    return merge(TextStyler(style: TextStyleMix(background: value)));
-  }
-
   /// Sets selection color
   TextStyler selectionColor(Color value) {
     return merge(TextStyler(selectionColor: value));
@@ -298,16 +199,6 @@ class TextStyler extends Style<TextSpec>
   /// Sets locale
   TextStyler locale(Locale value) {
     return merge(TextStyler(locale: value));
-  }
-
-  /// Sets decoration thickness
-  TextStyler decorationThickness(double value) {
-    return merge(TextStyler(style: TextStyleMix(decorationThickness: value)));
-  }
-
-  /// Sets font family fallback
-  TextStyler fontFamilyFallback(List<String> value) {
-    return merge(TextStyler(style: TextStyleMix(fontFamilyFallback: value)));
   }
 
   /// Applies uppercase directive
@@ -347,6 +238,12 @@ class TextStyler extends Style<TextSpec>
 
   TextStyler modifier(ModifierConfig value) {
     return merge(TextStyler(modifier: value));
+  }
+
+  /// Mixin implementation for text styling
+  @override
+  TextStyler style(TextStyleMix value) {
+    return merge(TextStyler(style: value));
   }
 
   /// Convenience method for animating the TextSpec
@@ -427,7 +324,6 @@ class TextStyler extends Style<TextSpec>
       variants: MixOps.mergeVariants($variants, other?.$variants),
     );
   }
-
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
