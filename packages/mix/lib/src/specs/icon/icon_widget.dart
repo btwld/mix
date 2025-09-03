@@ -76,7 +76,7 @@ extension IconSpecWrappedWidget on StyleSpec<IconSpec> {
           semanticLabel: semanticLabel,
         );
       },
-      wrappedSpec: this,
+      styleSpec: this,
     );
   }
 }

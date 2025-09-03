@@ -147,7 +147,7 @@ extension ImageSpecWrappedWidget on StyleSpec<ImageSpec> {
           opacity: opacity,
         );
       },
-      wrappedSpec: this,
+      styleSpec: this,
     );
   }
 }

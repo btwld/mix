@@ -77,7 +77,7 @@ extension StackSpecWrappedWidget on StyleSpec<StackSpec> {
       builder: (context, spec) {
         return _createStackSpecWidget(spec: spec, children: children);
       },
-      wrappedSpec: this,
+      styleSpec: this,
     );
   }
 }
@@ -88,7 +88,7 @@ extension ZBoxSpecWrappedWidget on StyleSpec<ZBoxSpec> {
       builder: (context, spec) {
         return _createZBoxSpecWidget(spec: spec, children: children);
       },
-      wrappedSpec: this,
+      styleSpec: this,
     );
   }
 }

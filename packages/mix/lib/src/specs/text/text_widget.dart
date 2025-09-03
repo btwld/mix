@@ -60,7 +60,7 @@ extension TextSpecWrappedWidget on StyleSpec<TextSpec> {
       builder: (context, spec) {
         return _createTextSpecWidget(spec: spec, text: text);
       },
-      wrappedSpec: this,
+      styleSpec: this,
     );
   }
 }

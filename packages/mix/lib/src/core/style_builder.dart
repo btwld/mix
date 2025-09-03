@@ -74,7 +74,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
 
         return StyleSpecBuilder(
           builder: widget.builder,
-          wrappedSpec: wrappedSpec,
+          styleSpec: wrappedSpec,
         );
       },
     );
@@ -93,11 +93,11 @@ class StyleSpecBuilder<S extends Spec<S>> extends StatelessWidget {
   const StyleSpecBuilder({
     super.key,
     required this.builder,
-    required this.wrappedSpec,
+    required this.styleSpec,
   });
 
   /// The style to resolve.
-  final StyleSpec<S> wrappedSpec;
+  final StyleSpec<S> styleSpec;
 
   /// The builder function that receives the resolved style.
   final Widget Function(BuildContext context, S spec) builder;
@@ -106,26 +106,26 @@ class StyleSpecBuilder<S extends Spec<S>> extends StatelessWidget {
   Widget build(BuildContext context) {
     // style.build returns StyleSpec<S>
 
-    final animationConfig = wrappedSpec.animation;
+    final animationConfig = styleSpec.animation;
 
     // Pass the inner spec to the builder
-    Widget current = builder(context, wrappedSpec.spec);
+    Widget current = builder(context, styleSpec.spec);
 
     // Always wrap with StyleSpecProvider first
-    current = StyleSpecProvider<S>(spec: wrappedSpec, child: current);
+    current = StyleSpecProvider<S>(spec: styleSpec, child: current);
 
-    if (wrappedSpec.widgetModifiers != null &&
-        wrappedSpec.widgetModifiers!.isNotEmpty) {
+    if (styleSpec.widgetModifiers != null &&
+        styleSpec.widgetModifiers!.isNotEmpty) {
       // Apply modifiers if any
       current = RenderModifiers(
-        widgetModifiers: wrappedSpec.widgetModifiers!,
+        widgetModifiers: styleSpec.widgetModifiers!,
         child: current,
       );
     }
 
     if (animationConfig != null) {
       return StyleAnimationBuilder<S>(
-        spec: wrappedSpec,
+        spec: styleSpec,
         animationConfig: animationConfig,
         builder: (context, animatedWrappedSpec) {
           Widget animatedChild = builder(context, animatedWrappedSpec.spec);

@@ -143,7 +143,7 @@ extension FlexSpecWrappedWidget on StyleSpec<FlexSpec> {
           children: children,
         );
       },
-      wrappedSpec: this,
+      styleSpec: this,
     );
   }
 }
@@ -158,7 +158,7 @@ extension FlexBoxSpecWrappedWidget on StyleSpec<FlexBoxSpec> {
           children: children,
         );
       },
-      wrappedSpec: this,
+      styleSpec: this,
     );
   }
 }

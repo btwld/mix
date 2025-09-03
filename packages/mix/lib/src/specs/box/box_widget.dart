@@ -53,7 +53,7 @@ extension BoxSpecWrappedWidget on StyleSpec<BoxSpec> {
       builder: (context, spec) {
         return _createBoxSpecWidget(spec: spec, child: child);
       },
-      wrappedSpec: this,
+      styleSpec: this,
     );
   }
 }
