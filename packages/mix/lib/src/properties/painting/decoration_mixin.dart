@@ -29,6 +29,11 @@ mixin DecorationMixin<T extends Mix<Object?>> {
     return decoration(DecorationMix.border(value));
   }
 
+  /// Sets border radius
+  T borderRadius(BorderRadiusGeometryMix value) {
+    return decoration(DecorationMix.borderRadius(value));
+  }
+
   /// Sets single shadow
   T shadow(BoxShadowMix value) {
     return decoration(BoxDecorationMix.boxShadow([value]));

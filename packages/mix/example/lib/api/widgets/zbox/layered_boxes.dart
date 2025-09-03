@@ -43,11 +43,9 @@ class Example extends StatelessWidget {
             .color(Colors.grey.shade100)
             .height(100)
             .width(100)
-            .border(
-              .all(
-                .color(Colors.black)
-                .width(20),
-              ),
+            .borderAll(
+              color: Colors.black,
+              width: 20,
             )
             .wrapScale(0.50),
         ),

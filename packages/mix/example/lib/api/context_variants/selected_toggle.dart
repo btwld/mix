@@ -27,21 +27,17 @@ class _ExampleState extends State<Example> {
     final style = BoxStyler()
         .height(60)
         .width(120)
-        .borderRadius(.circular(30))
+        .rounded(30)
         .color(Colors.grey.shade200)
-        .border(.all(.color(Colors.grey.shade300).width(2)))
+        .borderAll(color: Colors.grey.shade300, width: 2)
         .animate(.spring(300.ms))
         .onSelected(BoxStyler()
           .color(Colors.blue.shade500)
-          .border(BorderMix.all(
-            BorderSideMix(color: Colors.blue.shade600, width: 2)
-          ))
-          .shadow(
-            BoxShadowMix(
-              color: Colors.blue.shade200,
-              blurRadius: 10,
-              spreadRadius: 2,
-            ),
+          .borderAll(color: Colors.blue.shade600, width: 2)
+          .boxShadow(
+            color: Colors.blue.shade200,
+            blurRadius: 10,
+            spreadRadius: 2,
           )
         );
 

@@ -40,13 +40,9 @@ class _ExampleState extends State<Example> {
         .borderRadius(.circular(10))
         .onFocused(BoxStyler()
             .color(Colors.blue)
-            .border(
-              BorderMix.all(
-                BorderSideMix(
-                  color: Colors.blue.shade700,
-                  width: 3,
-                ),
-              ),
+            .borderAll(
+              color: Colors.blue.shade700,
+              width: 3,
             )
         );
 

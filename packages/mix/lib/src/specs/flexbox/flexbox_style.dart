@@ -11,9 +11,13 @@ import '../../modifiers/modifier_util.dart';
 import '../../properties/layout/constraints_mix.dart';
 import '../../properties/layout/constraints_mixin.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
+import '../../properties/layout/flex_mixin.dart';
 import '../../properties/layout/spacing_mixin.dart';
+import '../../properties/painting/border_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
 import '../../properties/painting/border_radius_util.dart';
+import '../../properties/painting/border_util.dart';
+import '../../properties/painting/box_shadow_mixin.dart';
 import '../../properties/painting/decoration_mix.dart';
 import '../../properties/painting/decoration_mixin.dart';
 import '../../properties/transform_mixin.dart';
@@ -40,11 +44,14 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
         Diagnosticable,
         StyleModifierMixin<FlexBoxStyler, FlexBoxSpec>,
         StyleVariantMixin<FlexBoxStyler, FlexBoxSpec>,
+        BorderMixin<FlexBoxStyler>,
         BorderRadiusMixin<FlexBoxStyler>,
+        BoxShadowMixin<FlexBoxStyler>,
         DecorationMixin<FlexBoxStyler>,
         SpacingMixin<FlexBoxStyler>,
         TransformMixin<FlexBoxStyler>,
-        ConstraintsMixin<FlexBoxStyler> {
+        ConstraintsMixin<FlexBoxStyler>,
+        FlexMixin<FlexBoxStyler> {
   final Prop<StyleSpec<BoxSpec>>? $box;
   final Prop<StyleSpec<FlexSpec>>? $flex;
 
@@ -146,47 +153,6 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
     return merge(FlexBoxStyler(clipBehavior: value));
   }
 
-  // FlexMix instance methods
-  /// Sets flex direction
-  FlexBoxStyler direction(Axis value) {
-    return merge(FlexBoxStyler(direction: value));
-  }
-
-  /// Sets main axis alignment
-  FlexBoxStyler mainAxisAlignment(MainAxisAlignment value) {
-    return merge(FlexBoxStyler(mainAxisAlignment: value));
-  }
-
-  /// Sets cross axis alignment
-  FlexBoxStyler crossAxisAlignment(CrossAxisAlignment value) {
-    return merge(FlexBoxStyler(crossAxisAlignment: value));
-  }
-
-  /// Sets main axis size
-  FlexBoxStyler mainAxisSize(MainAxisSize value) {
-    return merge(FlexBoxStyler(mainAxisSize: value));
-  }
-
-  /// Sets vertical direction
-  FlexBoxStyler verticalDirection(VerticalDirection value) {
-    return merge(FlexBoxStyler(verticalDirection: value));
-  }
-
-  /// Sets text direction
-  FlexBoxStyler textDirection(TextDirection value) {
-    return merge(FlexBoxStyler(textDirection: value));
-  }
-
-  /// Sets text baseline
-  FlexBoxStyler textBaseline(TextBaseline value) {
-    return merge(FlexBoxStyler(textBaseline: value));
-  }
-
-  /// Sets spacing
-  FlexBoxStyler spacing(double value) {
-    return merge(FlexBoxStyler(spacing: value));
-  }
-
   /// Sets gap
   @Deprecated(
     'Use spacing instead. '
@@ -198,6 +164,12 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
 
   FlexBoxStyler modifier(ModifierConfig value) {
     return merge(FlexBoxStyler(modifier: value));
+  }
+
+  // FlexMixin implementation
+  @override
+  FlexBoxStyler flex(FlexStyler value) {
+    return merge(FlexBoxStyler.create(flex: Prop.maybeMix(value)));
   }
 
   /// Padding instance method
@@ -254,6 +226,12 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
   @override
   FlexBoxStyler borderRadius(BorderRadiusGeometryMix value) {
     return merge(FlexBoxStyler(decoration: DecorationMix.borderRadius(value)));
+  }
+
+  /// Border instance method
+  @override
+  FlexBoxStyler border(BoxBorderMix value) {
+    return merge(FlexBoxStyler(decoration: DecorationMix.border(value)));
   }
 
   /// Resolves to [FlexBoxSpec] using the provided [BuildContext].

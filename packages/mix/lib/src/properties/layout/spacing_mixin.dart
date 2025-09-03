@@ -9,86 +9,25 @@ mixin SpacingMixin<T extends Mix<Object?>> {
   /// Must be implemented by the class using this mixin
   T margin(EdgeInsetsGeometryMix value);
 
-  T paddingHorizontal(double value) {
-    return padding(EdgeInsetsGeometryMix.symmetric(horizontal: value));
-  }
+  // Padding convenience methods
+  T paddingTop(double value) => padding(EdgeInsetsGeometryMix.top(value));
+  T paddingBottom(double value) => padding(EdgeInsetsGeometryMix.bottom(value));
+  T paddingLeft(double value) => padding(EdgeInsetsGeometryMix.left(value));
+  T paddingRight(double value) => padding(EdgeInsetsGeometryMix.right(value));
+  T paddingHorizontal(double value) => padding(EdgeInsetsGeometryMix.horizontal(value));
+  T paddingVertical(double value) => padding(EdgeInsetsGeometryMix.vertical(value));
+  T paddingAll(double value) => padding(EdgeInsetsGeometryMix.all(value));
+  T paddingStart(double value) => padding(EdgeInsetsGeometryMix.start(value));
+  T paddingEnd(double value) => padding(EdgeInsetsGeometryMix.end(value));
 
-  /// Helper method for vertical padding (top and bottom)
-  T paddingVertical(double value) {
-    return padding(EdgeInsetsGeometryMix.symmetric(vertical: value));
-  }
-
-  /// Helper method for symmetric padding (horizontal and vertical)
-  T paddingSymmetric({double horizontal = 0.0, double vertical = 0.0}) {
-    return padding(
-      EdgeInsetsGeometryMix.symmetric(
-        vertical: vertical,
-        horizontal: horizontal,
-      ),
-    );
-  }
-
-  /// Helper method for only specific sides
-  T paddingOnly({
-    double left = 0.0,
-    double top = 0.0,
-    double right = 0.0,
-    double bottom = 0.0,
-  }) {
-    return padding(
-      EdgeInsetsGeometryMix.only(
-        left: left,
-        right: right,
-        top: top,
-        bottom: bottom,
-      ),
-    );
-  }
-
-  /// Helper method for all sides
-  T paddingAll(double value) {
-    return padding(EdgeInsetsGeometryMix.all(value));
-  }
-
-  /// Helper method for horizontal margin (left and right)
-  T marginHorizontal(double value) {
-    return margin(EdgeInsetsGeometryMix.symmetric(horizontal: value));
-  }
-
-  /// Helper method for vertical margin (top and bottom)
-  T marginVertical(double value) {
-    return margin(EdgeInsetsGeometryMix.symmetric(vertical: value));
-  }
-
-  /// Helper method for symmetric margin (horizontal and vertical)
-  T marginSymmetric({double horizontal = 0.0, double vertical = 0.0}) {
-    return margin(
-      EdgeInsetsGeometryMix.symmetric(
-        vertical: vertical,
-        horizontal: horizontal,
-      ),
-    );
-  }
-
-  /// Helper method for only specific sides
-  T marginOnly({
-    double left = 0.0,
-    double top = 0.0,
-    double right = 0.0,
-    double bottom = 0.0,
-  }) {
-    return margin(
-      EdgeInsetsGeometryMix.only(
-        left: left,
-        right: right,
-        top: top,
-        bottom: bottom,
-      ),
-    );
-  }
-
-  /// Helper method for all sides
-  T marginAll(double value) {
-    return margin(EdgeInsetsGeometryMix.all(value));
-  }
+  // Margin convenience methods
+  T marginTop(double value) => margin(EdgeInsetsGeometryMix.top(value));
+  T marginBottom(double value) => margin(EdgeInsetsGeometryMix.bottom(value));
+  T marginLeft(double value) => margin(EdgeInsetsGeometryMix.left(value));
+  T marginRight(double value) => margin(EdgeInsetsGeometryMix.right(value));
+  T marginHorizontal(double value) => margin(EdgeInsetsGeometryMix.horizontal(value));
+  T marginVertical(double value) => margin(EdgeInsetsGeometryMix.vertical(value));
+  T marginAll(double value) => margin(EdgeInsetsGeometryMix.all(value));
+  T marginStart(double value) => margin(EdgeInsetsGeometryMix.start(value));
+  T marginEnd(double value) => margin(EdgeInsetsGeometryMix.end(value));
 }

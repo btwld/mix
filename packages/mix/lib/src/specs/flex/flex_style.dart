@@ -10,6 +10,7 @@ import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
+import '../../properties/layout/flex_mixin.dart';
 import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'flex_spec.dart';
@@ -30,6 +31,7 @@ class FlexStyler extends Style<FlexSpec>
         Diagnosticable,
         StyleModifierMixin<FlexStyler, FlexSpec>,
         StyleVariantMixin<FlexStyler, FlexSpec>,
+        FlexMixin<FlexStyler>,
         StyleAnimationMixin<FlexSpec, FlexStyler> {
   final Prop<Axis>? $direction;
   final Prop<MainAxisAlignment>? $mainAxisAlignment;
@@ -115,51 +117,9 @@ class FlexStyler extends Style<FlexSpec>
   )
   Prop<double>? get $gap => $spacing;
 
-  /// Sets flex direction
-  FlexStyler direction(Axis value) {
-    return merge(FlexStyler(direction: value));
-  }
-
-  /// Sets main axis alignment
-  FlexStyler mainAxisAlignment(MainAxisAlignment value) {
-    return merge(FlexStyler(mainAxisAlignment: value));
-  }
-
-  /// Sets spacing
-
-  /// Sets cross axis alignment
-  FlexStyler crossAxisAlignment(CrossAxisAlignment value) {
-    return merge(FlexStyler(crossAxisAlignment: value));
-  }
-
-  /// Sets main axis size
-  FlexStyler mainAxisSize(MainAxisSize value) {
-    return merge(FlexStyler(mainAxisSize: value));
-  }
-
-  /// Sets vertical direction
-  FlexStyler verticalDirection(VerticalDirection value) {
-    return merge(FlexStyler(verticalDirection: value));
-  }
-
-  /// Sets text direction
-  FlexStyler textDirection(TextDirection value) {
-    return merge(FlexStyler(textDirection: value));
-  }
-
-  /// Sets text baseline
-  FlexStyler textBaseline(TextBaseline value) {
-    return merge(FlexStyler(textBaseline: value));
-  }
-
   /// Sets clip behavior
   FlexStyler clipBehavior(Clip value) {
     return merge(FlexStyler(clipBehavior: value));
-  }
-
-  /// Sets spacing
-  FlexStyler spacing(double value) {
-    return merge(FlexStyler(spacing: value));
   }
 
   /// Sets gap
@@ -171,14 +131,14 @@ class FlexStyler extends Style<FlexSpec>
     return merge(FlexStyler(spacing: value));
   }
 
-  /// Convenience method for setting direction to horizontal (row)
-  FlexStyler row() => direction(Axis.horizontal);
-
-  /// Convenience method for setting direction to vertical (column)
-  FlexStyler column() => direction(Axis.vertical);
-
   FlexStyler modifier(ModifierConfig value) {
     return merge(FlexStyler(modifier: value));
+  }
+
+  // FlexMixin implementation
+  @override
+  FlexStyler flex(FlexStyler value) {
+    return merge(value);
   }
 
   /// Convenience method for animating the FlexStyleSpec
@@ -255,7 +215,6 @@ class FlexStyler extends Style<FlexSpec>
       variants: MixOps.mergeVariants($variants, other?.$variants),
     );
   }
-
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {

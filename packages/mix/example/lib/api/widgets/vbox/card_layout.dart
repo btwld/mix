@@ -24,18 +24,16 @@ class Example extends StatelessWidget {
           ),
         )
         .borderRadius(.circular(10))
-        .border(
-          .all(
-            .color(Colors.blueGrey.shade400)
-            .width(1),
-          ),
+        .borderAll(
+          color: Colors.blueGrey.shade400,
+          width: 1,
         )
         .height(150)
         .width(120)
-        .shadow(
-          .blurRadius(10)
-          .color(Colors.black12)
-    );
+        .boxShadow(
+          blurRadius: 10,
+          color: Colors.black12,
+        );
 
     final iconStyle = IconStyler()
         .icon(Icons.piano_outlined)

@@ -15,10 +15,10 @@ class Example extends StatelessWidget {
         .height(100)
         .width(200)
         .borderRadius(.circular(16))
-        .shadow(
-          .color(Colors.purple.shade200)
-          .blurRadius(20)
-          .offset(Offset(0, 8))
+        .boxShadow(
+          color: Colors.purple.shade200,
+          blurRadius: 20,
+          offset: Offset(0, 8),
         )
         .gradient(
           .linear(
