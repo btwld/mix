@@ -15,7 +15,7 @@ void main() {
             body: Column(
               children: [
                 FlexBox(
-                  direction: Axis.horizontal,
+                  lockedDirection: Axis.horizontal,
                   key: flexBoxKey,
                   style: FlexBoxStyler(),
                 ),
@@ -85,7 +85,7 @@ void main() {
           home: Scaffold(
             body: Column(
               children: [
-                HBox(key: hBoxKey),
+                RowBox(key: hBoxKey),
                 Row(key: rowKey, children: const []),
               ],
             ),
@@ -125,7 +125,7 @@ void main() {
           home: Scaffold(
             body: Row(
               children: [
-                VBox(key: vBoxKey),
+                ColumnBox(key: vBoxKey),
                 Column(key: columnKey, children: const []),
               ],
             ),
@@ -165,7 +165,7 @@ void main() {
           home: Scaffold(
             body: Column(
               children: [
-                FlexBox(direction: Axis.horizontal, key: flexBoxKey),
+                FlexBox(lockedDirection: Axis.horizontal, key: flexBoxKey),
                 Flex(
                   direction: Axis.horizontal,
                   key: flexKey,
@@ -309,7 +309,7 @@ void main() {
           home: Scaffold(
             body: FlexBox(
               key: flexBoxKey,
-              direction: Axis.horizontal,
+              lockedDirection: Axis.horizontal,
               style: Style.flexbox().direction(Axis.horizontal),
             ),
           ),

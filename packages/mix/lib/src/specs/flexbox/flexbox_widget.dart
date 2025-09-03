@@ -24,21 +24,22 @@ class FlexBox extends StyleWidget<FlexBoxSpec> {
   const FlexBox({
     super.style = const FlexBoxStyler.create(),
     super.key,
-    this.direction,
+    this.lockedDirection,
     this.children = const <Widget>[],
   });
 
   /// Child widgets to be arranged in the flex layout.
   final List<Widget> children;
 
-  /// The main axis direction for the flex layout.
-  final Axis? direction;
+  /// Constrains the flex direction for RowBox/ColumnBox.
+  /// When specified, prevents conflicting direction in style specs.
+  final Axis? lockedDirection;
 
   @override
   Widget build(BuildContext context, FlexBoxSpec spec) {
     return _createFlexBoxSpecWidget(
       spec: spec,
-      direction: direction,
+      lockedDirection: lockedDirection,
       children: children,
     );
   }
@@ -52,7 +53,7 @@ class RowBox extends FlexBox {
     super.style = const FlexBoxStyler.create(),
     super.key,
     super.children = const <Widget>[],
-  }) : super(direction: Axis.horizontal);
+  }) : super(lockedDirection: Axis.horizontal);
 }
 
 /// Vertical flex box with Mix styling.
@@ -63,7 +64,7 @@ class ColumnBox extends FlexBox {
     super.style = const FlexBoxStyler.create(),
     super.key,
     super.children = const <Widget>[],
-  }) : super(direction: Axis.vertical);
+  }) : super(lockedDirection: Axis.vertical);
 }
 
 /// Creates a [Flex] widget from a [FlexSpec] and required parameters.
@@ -72,21 +73,20 @@ class ColumnBox extends FlexBox {
 /// when specification properties are null.
 Flex _createFlexSpecWidget({
   required FlexSpec? spec,
-  Axis? direction,
+  Axis? lockedDirection,
   List<Widget> children = const [],
 }) {
   final hasDirectionFromBothSources =
-      direction != null && spec?.direction != null;
-  final hasDirectionsConflict = direction != spec?.direction;
+      lockedDirection != null && spec?.direction != null;
+  final hasDirectionsConflict = lockedDirection != spec?.direction;
 
-  if (hasDirectionFromBothSources && hasDirectionsConflict) {
-    throw Exception(
-      'Direction cannot be specified in the spec for RowBox (horizontal) or ColumnBox (vertical). Use FlexBox if you need dynamic direction control.',
-    );
-  }
+  assert(
+    !(hasDirectionFromBothSources && hasDirectionsConflict),
+    'Direction cannot be specified in the spec for RowBox (horizontal) or ColumnBox (vertical). Use FlexBox if you need dynamic direction control.',
+  );
 
   return Flex(
-    direction: spec?.direction ?? direction ?? Axis.horizontal,
+    direction: spec?.direction ?? lockedDirection ?? Axis.horizontal,
     mainAxisAlignment: spec?.mainAxisAlignment ?? MainAxisAlignment.start,
     mainAxisSize: spec?.mainAxisSize ?? MainAxisSize.max,
     crossAxisAlignment: spec?.crossAxisAlignment ?? CrossAxisAlignment.center,
@@ -105,12 +105,12 @@ Flex _createFlexSpecWidget({
 /// child widget, combining both specifications effectively.
 Widget _createFlexBoxSpecWidget({
   required FlexBoxSpec spec,
-  required Axis? direction,
+  required Axis? lockedDirection,
   List<Widget> children = const [],
 }) {
   final flexWidget = _createFlexSpecWidget(
     spec: spec.flex?.spec,
-    direction: direction,
+    lockedDirection: lockedDirection,
     children: children,
   );
 
@@ -126,7 +126,7 @@ extension FlexSpecWidget on FlexSpec {
   Flex call({Axis? direction, List<Widget> children = const []}) {
     return _createFlexSpecWidget(
       spec: this,
-      direction: direction,
+      lockedDirection: direction,
       children: children,
     );
   }
@@ -137,7 +137,7 @@ extension FlexBoxSpecWidget on FlexBoxSpec {
   Widget call({required Axis direction, List<Widget> children = const []}) {
     return _createFlexBoxSpecWidget(
       spec: this,
-      direction: direction,
+      lockedDirection: direction,
       children: children,
     );
   }
@@ -149,7 +149,7 @@ extension FlexSpecWrappedWidget on StyleSpec<FlexSpec> {
       builder: (context, spec) {
         return _createFlexSpecWidget(
           spec: spec,
-          direction: direction,
+          lockedDirection: direction,
           children: children,
         );
       },
@@ -164,7 +164,7 @@ extension FlexBoxSpecWrappedWidget on StyleSpec<FlexBoxSpec> {
       builder: (context, spec) {
         return _createFlexBoxSpecWidget(
           spec: spec,
-          direction: direction,
+          lockedDirection: direction,
           children: children,
         );
       },
