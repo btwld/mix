@@ -9,7 +9,6 @@
 ![Pub Points](https://img.shields.io/pub/points/mix?label=Pub%20Points&style=for-the-badge) [![MIT Licence](https://img.shields.io/github/license/leoafarias/mix?style=for-the-badge&longCache=true)](https://opensource.org/licenses/mit-license.php) [![Awesome Flutter](https://img.shields.io/badge/awesome-flutter-purple?longCache=true&style=for-the-badge)](https://github.com/Solido/awesome-flutter)
 
 Mix is a simple and intuitive styling system for Flutter, enabling the creation of beautiful and consistent UIs with ease.
-
 Mix brings industry-proven design system concepts to Flutter. It separates style semantics from widgets while maintaining an easy-to-understand and manageable relationship between them.
 
 -  Easily compose, merge, and apply styles across widgets.
