@@ -61,6 +61,12 @@ class TestBorderStyle extends MockStyle<DecorationMix>
   TestBorderStyle shape(ShapeBorderMix value) {
     return decoration(ShapeDecorationMix(shape: value));
   }
+
+  @override
+  TestBorderStyle foregroundDecoration(DecorationMix value) {
+    // For testing purposes, just return a new instance
+    return TestBorderStyle(value);
+  }
 }
 
 void main() {

@@ -17,23 +17,17 @@ class Example extends StatelessWidget {
         .crossAxisAlignment(.start)
         .mainAxisAlignment(.spaceBetween)
         .color(Colors.grey.shade50)
-        .padding(
-          .symmetric(
-            horizontal: 12,
-            vertical: 10,
-          ),
-        )
-        .borderRadius(.circular(10))
+        .paddingX(12)
+        .paddingY(10)
+        .borderRounded(10)
         .borderAll(
           color: Colors.blueGrey.shade400,
           width: 1,
         )
         .height(150)
         .width(120)
-        .boxShadow(
-          blurRadius: 10,
-          color: Colors.black12,
-        );
+        .shadowColor(Colors.black12)
+        .shadowBlurRadius(10);
 
     final iconStyle = IconStyler()
         .icon(Icons.piano_outlined)

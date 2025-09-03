@@ -14,8 +14,8 @@ mixin SpacingMixin<T extends Mix<Object?>> {
   T paddingBottom(double value) => padding(EdgeInsetsGeometryMix.bottom(value));
   T paddingLeft(double value) => padding(EdgeInsetsGeometryMix.left(value));
   T paddingRight(double value) => padding(EdgeInsetsGeometryMix.right(value));
-  T paddingHorizontal(double value) => padding(EdgeInsetsGeometryMix.horizontal(value));
-  T paddingVertical(double value) => padding(EdgeInsetsGeometryMix.vertical(value));
+  T paddingX(double value) => padding(EdgeInsetsGeometryMix.horizontal(value));
+  T paddingY(double value) => padding(EdgeInsetsGeometryMix.vertical(value));
   T paddingAll(double value) => padding(EdgeInsetsGeometryMix.all(value));
   T paddingStart(double value) => padding(EdgeInsetsGeometryMix.start(value));
   T paddingEnd(double value) => padding(EdgeInsetsGeometryMix.end(value));
@@ -25,8 +25,8 @@ mixin SpacingMixin<T extends Mix<Object?>> {
   T marginBottom(double value) => margin(EdgeInsetsGeometryMix.bottom(value));
   T marginLeft(double value) => margin(EdgeInsetsGeometryMix.left(value));
   T marginRight(double value) => margin(EdgeInsetsGeometryMix.right(value));
-  T marginHorizontal(double value) => margin(EdgeInsetsGeometryMix.horizontal(value));
-  T marginVertical(double value) => margin(EdgeInsetsGeometryMix.vertical(value));
+  T marginX(double value) => margin(EdgeInsetsGeometryMix.horizontal(value));
+  T marginY(double value) => margin(EdgeInsetsGeometryMix.vertical(value));
   T marginAll(double value) => margin(EdgeInsetsGeometryMix.all(value));
   T marginStart(double value) => margin(EdgeInsetsGeometryMix.start(value));
   T marginEnd(double value) => margin(EdgeInsetsGeometryMix.end(value));

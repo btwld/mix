@@ -16,26 +16,22 @@ class Example extends StatelessWidget {
     final style = BoxStyler()
         .height(120)
         .width(120)
-        .borderRadius(.circular(60))
-        .boxShadow(
-          color: Colors.purple.shade300,
-          blurRadius: 25,
-          spreadRadius: 2,
-        )
-        .gradient(
-          .sweep(
-            .center(.center)
-            .startAngle(0)
-            .endAngle(math.pi * 2)
-            .colors([
-              Colors.blue.shade400,
-              Colors.purple.shade400,
-              Colors.pink.shade400,
-              Colors.orange.shade400,
-              Colors.blue.shade400,
-            ])
-          ),
-    );
+        .borderRounded(60)
+        .shadowColor(Colors.purple.shade300)
+        .shadowBlurRadius(25)
+        .shadowSpreadRadius(2)
+        .sweepGradient(
+          center: Alignment.center,
+          startAngle: 0,
+          endAngle: math.pi * 2,
+          colors: [
+            Colors.blue.shade400,
+            Colors.purple.shade400,
+            Colors.pink.shade400,
+            Colors.orange.shade400,
+            Colors.blue.shade400,
+          ],
+        );
 
     return Box(style: style);
   }

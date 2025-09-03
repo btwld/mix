@@ -61,6 +61,9 @@ mixin DecorationMixin<T extends Mix<Object?>> {
     return decoration(ShapeDecorationMix(shape: value));
   }
 
+  /// Must be implemented by the class using this mixin for foreground decorations
+  T foregroundDecoration(DecorationMix value);
+
   /// Sets a circular shape (CircleBorder)
   T shapeCircle({BorderSideMix? side}) {
     return shape(CircleBorderMix(side: side));
@@ -147,6 +150,197 @@ mixin DecorationMixin<T extends Mix<Object?>> {
   T shapeSuperellipse({BorderSideMix? side, BorderRadiusMix? borderRadius}) {
     return shape(
       RoundedSuperellipseBorderMix(borderRadius: borderRadius, side: side),
+    );
+  }
+
+  // Background image utilities
+
+  /// Sets a background image from an ImageProvider
+  T backgroundImage(
+    ImageProvider image, {
+    BoxFit? fit,
+    AlignmentGeometry? alignment,
+    ImageRepeat repeat = ImageRepeat.noRepeat,
+  }) {
+    return decoration(
+      DecorationMix.image(
+        DecorationImageMix.image(image)
+            .fit(fit ?? BoxFit.cover)
+            .alignment(alignment ?? Alignment.center)
+            .repeat(repeat),
+      ),
+    );
+  }
+
+  /// Sets a background image from a network URL
+  T backgroundImageUrl(
+    String url, {
+    BoxFit? fit,
+    AlignmentGeometry? alignment,
+    ImageRepeat repeat = ImageRepeat.noRepeat,
+  }) {
+    return backgroundImage(
+      NetworkImage(url),
+      fit: fit,
+      alignment: alignment,
+      repeat: repeat,
+    );
+  }
+
+  /// Sets a background image from an asset path
+  T backgroundImageAsset(
+    String path, {
+    BoxFit? fit,
+    AlignmentGeometry? alignment,
+    ImageRepeat repeat = ImageRepeat.noRepeat,
+  }) {
+    return backgroundImage(
+      AssetImage(path),
+      fit: fit,
+      alignment: alignment,
+      repeat: repeat,
+    );
+  }
+
+  // Foreground gradient utilities
+
+  /// Sets a foreground linear gradient
+  T foregroundLinearGradient({
+    required List<Color> colors,
+    List<double>? stops,
+    AlignmentGeometry? begin,
+    AlignmentGeometry? end,
+    TileMode? tileMode,
+  }) {
+    return foregroundDecoration(
+      BoxDecorationMix.gradient(
+        LinearGradientMix(
+          begin: begin,
+          end: end,
+          tileMode: tileMode,
+          colors: colors,
+          stops: stops,
+        ),
+      ),
+    );
+  }
+
+  /// Sets a foreground radial gradient
+  T foregroundRadialGradient({
+    required List<Color> colors,
+    List<double>? stops,
+    AlignmentGeometry? center,
+    double? radius,
+    AlignmentGeometry? focal,
+    double? focalRadius,
+    TileMode? tileMode,
+  }) {
+    return foregroundDecoration(
+      BoxDecorationMix.gradient(
+        RadialGradientMix(
+          center: center,
+          radius: radius,
+          tileMode: tileMode,
+          focal: focal,
+          focalRadius: focalRadius,
+          colors: colors,
+          stops: stops,
+        ),
+      ),
+    );
+  }
+
+  /// Sets a foreground sweep gradient
+  T foregroundSweepGradient({
+    required List<Color> colors,
+    List<double>? stops,
+    AlignmentGeometry? center,
+    double? startAngle,
+    double? endAngle,
+    TileMode? tileMode,
+  }) {
+    return foregroundDecoration(
+      BoxDecorationMix.gradient(
+        SweepGradientMix(
+          center: center,
+          startAngle: startAngle,
+          endAngle: endAngle,
+          tileMode: tileMode,
+          colors: colors,
+          stops: stops,
+        ),
+      ),
+    );
+  }
+
+  // Background gradient utilities
+
+  /// Sets a background linear gradient
+  T linearGradient({
+    required List<Color> colors,
+    List<double>? stops,
+    AlignmentGeometry? begin,
+    AlignmentGeometry? end,
+    TileMode? tileMode,
+  }) {
+    return decoration(
+      BoxDecorationMix.gradient(
+        LinearGradientMix(
+          begin: begin,
+          end: end,
+          tileMode: tileMode,
+          colors: colors,
+          stops: stops,
+        ),
+      ),
+    );
+  }
+
+  /// Sets a background radial gradient
+  T radialGradient({
+    required List<Color> colors,
+    List<double>? stops,
+    AlignmentGeometry? center,
+    double? radius,
+    AlignmentGeometry? focal,
+    double? focalRadius,
+    TileMode? tileMode,
+  }) {
+    return decoration(
+      BoxDecorationMix.gradient(
+        RadialGradientMix(
+          center: center,
+          radius: radius,
+          tileMode: tileMode,
+          focal: focal,
+          focalRadius: focalRadius,
+          colors: colors,
+          stops: stops,
+        ),
+      ),
+    );
+  }
+
+  /// Sets a background sweep gradient
+  T sweepGradient({
+    required List<Color> colors,
+    List<double>? stops,
+    AlignmentGeometry? center,
+    double? startAngle,
+    double? endAngle,
+    TileMode? tileMode,
+  }) {
+    return decoration(
+      BoxDecorationMix.gradient(
+        SweepGradientMix(
+          center: center,
+          startAngle: startAngle,
+          endAngle: endAngle,
+          tileMode: tileMode,
+          colors: colors,
+          stops: stops,
+        ),
+      ),
     );
   }
 }

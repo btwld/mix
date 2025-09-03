@@ -122,11 +122,6 @@ class BoxStyler extends Style<BoxSpec>
     return merge(BoxStyler(alignment: value));
   }
 
-  /// Foreground decoration instance method
-  BoxStyler foregroundDecoration(DecorationMix value) {
-    return merge(BoxStyler(foregroundDecoration: value));
-  }
-
   Box call({Widget? child}) {
     return Box(style: this, child: child);
   }
@@ -134,6 +129,12 @@ class BoxStyler extends Style<BoxSpec>
   /// Modifier instance method
   BoxStyler modifier(ModifierConfig value) {
     return merge(BoxStyler(modifier: value));
+  }
+
+  /// Foreground decoration instance method
+  @override
+  BoxStyler foregroundDecoration(DecorationMix value) {
+    return merge(BoxStyler(foregroundDecoration: value));
   }
 
   @override

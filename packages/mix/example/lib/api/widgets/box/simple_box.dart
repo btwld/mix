@@ -41,7 +41,7 @@ class Example extends StatelessWidget {
               .color(Colors.red)
               .height(100)
               .width(100)
-              .rounded(10);
+              .borderRounded(10);
 
             /// Builder Pattern Syntax for backwards compatibility
             final builderStyle = $box
@@ -53,7 +53,7 @@ class Example extends StatelessWidget {
             final boxStyle = BoxStyler()
                 .color(Colors.red)
                 .size(100, 100)
-                .rounded(10);
+                .borderRounded(10);
 
             return Box(style: boxStyle);
             // or

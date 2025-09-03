@@ -38,7 +38,7 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
               )
               .height(30)
               .width(65)
-              .borderRadius(BorderRadiusMix.all(Radius.circular(40)))
+              .borderRadiusAll(Radius.circular(40))
               .alignment(
                 _trigger.value ? Alignment.centerRight : Alignment.centerLeft,
               )
@@ -48,31 +48,21 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
                 .height(30)
                 .width(40)
                 .color(Colors.white)
-                .foregroundDecoration(
-                  BoxDecorationMix()
-                      .gradient(
-                        GradientMix.radial(
-                          RadialGradientMix()
-                              .focalRadius(1.1)
-                              .focal(Alignment.center)
-                              .colors([
-                                Colors.black.withValues(alpha: 0.2),
-                                Colors.transparent,
-                              ])
-                              .stops([0.3, 1]),
-                        ),
-                      )
-                      .borderRadius(BorderRadiusMix.circular(40)),
+                .foregroundRadialGradient(
+                  colors: [
+                    Colors.black.withValues(alpha: 0.2),
+                    Colors.transparent,
+                  ],
+                  stops: [0.3, 1],
+                  focalRadius: 1.1,
+                  focal: Alignment.center,
                 )
-                .borderRadius(BorderRadiusMix.circular(40))
+                .borderRounded(40)
                 .scale(0.85)
-                .shadow(
-                  BoxShadowMix()
-                      .blurRadius(4)
-                      .spreadRadius(3)
-                      .offset(Offset(2, 4))
-                      .color(Colors.black.withValues(alpha: 0.1)),
-                )
+                .shadowColor(Colors.black.withValues(alpha: 0.1))
+                .shadowBlurRadius(4)
+                .shadowSpreadRadius(3)
+                .shadowOffset(Offset(2, 4))
                 .keyframeAnimation(
                   trigger: _trigger,
                   timeline: [

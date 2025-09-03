@@ -15,11 +15,9 @@ class Example extends StatelessWidget {
         .mainAxisSize(.min)
         .spacing(4)
         .color(Colors.cyan.shade50)
-        .padding(
-          .horizontal(10)
-          .vertical(4),
-        )
-        .rounded(99)
+        .paddingX(10)
+        .paddingY(4)
+        .borderRounded(99)
         .borderAll(
           color: Colors.cyan.shade600,
           width: 2,

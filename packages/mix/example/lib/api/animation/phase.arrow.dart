@@ -40,8 +40,9 @@ class _ExampleState extends State<Example> {
       child: RowBox(
         style: Style.flexbox()
             .color(Colors.white)
-            .paddingSymmetric(horizontal: 16, vertical: 8)
-            .borderRadiusCircular(10)
+            .paddingX(16)
+            .paddingY(8)
+            .borderRounded(10)
             .border(BoxBorderMix.all(BorderSideMix.color(Colors.grey.shade200)))
             .mainAxisSize(MainAxisSize.min)
             .spacing(8)

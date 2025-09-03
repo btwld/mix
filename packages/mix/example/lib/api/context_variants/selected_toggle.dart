@@ -27,18 +27,16 @@ class _ExampleState extends State<Example> {
     final style = BoxStyler()
         .height(60)
         .width(120)
-        .rounded(30)
+        .borderRounded(30)
         .color(Colors.grey.shade200)
         .borderAll(color: Colors.grey.shade300, width: 2)
         .animate(.spring(300.ms))
         .onSelected(BoxStyler()
           .color(Colors.blue.shade500)
           .borderAll(color: Colors.blue.shade600, width: 2)
-          .boxShadow(
-            color: Colors.blue.shade200,
-            blurRadius: 10,
-            spreadRadius: 2,
-          )
+          .shadowColor(Colors.blue.shade200)
+          .shadowBlurRadius(10)
+          .shadowSpreadRadius(2)
         );
 
     final textStyle = TextStyler()

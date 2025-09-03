@@ -140,11 +140,6 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
     return merge(FlexBoxStyler(alignment: value));
   }
 
-  /// Foreground decoration instance method
-  FlexBoxStyler foregroundDecoration(DecorationMix value) {
-    return merge(FlexBoxStyler(foregroundDecoration: value));
-  }
-
   FlexBoxStyler transformAlignment(AlignmentGeometry value) {
     return merge(FlexBoxStyler(transformAlignment: value));
   }
@@ -164,6 +159,12 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
 
   FlexBoxStyler modifier(ModifierConfig value) {
     return merge(FlexBoxStyler(modifier: value));
+  }
+
+  /// Foreground decoration instance method
+  @override
+  FlexBoxStyler foregroundDecoration(DecorationMix value) {
+    return merge(FlexBoxStyler(foregroundDecoration: value));
   }
 
   // FlexMixin implementation

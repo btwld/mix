@@ -151,6 +151,7 @@ class StackBoxStyler extends Style<ZBoxSpec>
   }
 
   /// Sets foreground decoration
+  @override
   StackBoxStyler foregroundDecoration(DecorationMix value) {
     return merge(StackBoxStyler(foregroundDecoration: value));
   }

@@ -14,24 +14,20 @@ class Example extends StatelessWidget {
     final style = BoxStyler()
         .height(150)
         .width(150)
-        .borderRadius(.circular(75))
-        .boxShadow(
-          color: Colors.orange.shade400,
-          blurRadius: 30,
-          spreadRadius: 5,
-        )
-        .gradient(
-          .radial(
-            .center(Alignment(-0.3, -0.3))
-            .focal(Alignment(-0.1, -0.1))
-            .focalRadius(0.1)
-            .radius(1.2)
-            .colors([
-              Colors.orange.shade300,
-              Colors.deepOrange.shade600
-            ])
-          ),
-    );
+        .borderRounded(75)
+        .shadowColor(Colors.orange.shade400)
+        .shadowBlurRadius(30)
+        .shadowSpreadRadius(5)
+        .radialGradient(
+          center: Alignment(-0.3, -0.3),
+          focal: Alignment(-0.1, -0.1),
+          focalRadius: 0.1,
+          radius: 1.2,
+          colors: [
+            Colors.orange.shade300,
+            Colors.deepOrange.shade600
+          ],
+        );
 
     return Box(style: style);
   }

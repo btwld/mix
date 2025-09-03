@@ -22,15 +22,13 @@ class _ExampleState extends State<Example> {
     final buttonStyle = BoxStyler()
         .height(60)
         .width(60)
-        .borderRadius(.circular(30))
+        .borderRounded(30)
         .color(Colors.grey.shade200)
         .animate(.easeInOut(600.ms))
         .onDark(BoxStyler().color(Colors.grey.shade800))
-        .boxShadow(
-          color: Colors.black.withValues(alpha: 0.1),
-          blurRadius: 10,
-          offset: Offset(0, 4),
-        );
+        .shadowColor(Colors.black.withValues(alpha: 0.1))
+        .shadowBlurRadius(10)
+        .shadowOffset(Offset(0, 4));
 
     // Icon style that adapts to dark/light mode
     final iconStyle = IconStyler()

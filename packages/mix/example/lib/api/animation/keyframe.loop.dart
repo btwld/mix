@@ -45,20 +45,18 @@ class _DemoAppState extends State<DemoApp> {
 
   BoxMix get _boxStyle => Style.box()
       .color(Colors.blueAccent.shade400)
-      .padding(EdgeInsetsMix.symmetric(horizontal: 16, vertical: 8))
-      .borderRadius(BorderRadiusMix.circular(30))
-      .foregroundDecoration(
-        BoxDecorationMix.gradient(
-          LinearGradientMix()
-              .colors([
-                Colors.white.withValues(alpha: 0),
-                Colors.white.withValues(alpha: 0.2),
-                Colors.white.withValues(alpha: 0.2),
-                Colors.white.withValues(alpha: 0),
-              ])
-              .stops([0.0, 0.3, 0.4, 1])
-              .tileMode(TileMode.clamp),
-        ),
+      .paddingX(16)
+      .paddingY(8)
+      .borderRounded(30)
+      .foregroundLinearGradient(
+        colors: [
+          Colors.white.withValues(alpha: 0),
+          Colors.white.withValues(alpha: 0.2),
+          Colors.white.withValues(alpha: 0.2),
+          Colors.white.withValues(alpha: 0),
+        ],
+        stops: [0.0, 0.3, 0.4, 1],
+        tileMode: TileMode.clamp,
       )
       .keyframeAnimation(
         trigger: trigger,
@@ -69,12 +67,11 @@ class _DemoAppState extends State<DemoApp> {
         ],
         styleBuilder: (values, style) => style.foregroundDecoration(
           BoxDecorationMix.gradient(
-            LinearGradientMix() //
-                .transform(
-                  _SlidingGradientTransform(
-                    slidePercent: values.get('progress'),
-                  ),
-                ),
+            LinearGradientMix(
+              transform: _SlidingGradientTransform(
+                slidePercent: values.get('progress'),
+              ),
+            ),
           ),
         ),
       );

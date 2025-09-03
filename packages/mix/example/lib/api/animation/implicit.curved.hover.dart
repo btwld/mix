@@ -27,7 +27,7 @@ class Example extends StatelessWidget {
         .color(Colors.black)
         .height(100)
         .width(100)
-        .borderRadius(.circular(10))
+        .borderRounded(10)
         .transform(.identity())
         .onHovered(BoxStyler().color(Colors.blue).scale(1.5))
         .animate(.easeInOut(300.ms));
