@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../core/style_builder.dart';
@@ -41,12 +42,14 @@ Container _createBoxSpecWidget({required BoxSpec spec, Widget? child}) {
 typedef StyledContainer = Box;
 
 /// Extension to convert [BoxSpec] directly to a [Container] widget.
+@internal
 extension BoxSpecWidget on BoxSpec {
   Container call({Widget? child}) {
     return _createBoxSpecWidget(spec: this, child: child);
   }
 }
 
+@internal
 extension BoxSpecWrappedWidget on StyleSpec<BoxSpec> {
   Widget call({Widget? child}) {
     return StyleSpecBuilder(

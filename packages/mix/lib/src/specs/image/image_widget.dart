@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../core/style_builder.dart';
@@ -109,6 +110,7 @@ ImageProvider<Object> _resolveImage(
 }
 
 /// Extension to convert [ImageSpec] directly to an [Image] widget.
+@internal
 extension ImageSpecWidget on ImageSpec {
   Image call({
     ImageProvider<Object>? image,
@@ -128,6 +130,7 @@ extension ImageSpecWidget on ImageSpec {
   }
 }
 
+@internal
 extension ImageSpecWrappedWidget on StyleSpec<ImageSpec> {
   Widget call({
     ImageProvider<Object>? image,

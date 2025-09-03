@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/style_builder.dart';
@@ -56,6 +57,7 @@ Icon _createIconSpecWidget({
 }
 
 /// Extension to convert [IconSpec] directly to an [Icon] widget.
+@internal
 extension IconSpecWidget on IconSpec {
   Icon call({IconData? icon, String? semanticLabel}) {
     return _createIconSpecWidget(
@@ -66,6 +68,7 @@ extension IconSpecWidget on IconSpec {
   }
 }
 
+@internal
 extension IconSpecWrappedWidget on StyleSpec<IconSpec> {
   Widget call({IconData? icon, String? semanticLabel}) {
     return StyleSpecBuilder(

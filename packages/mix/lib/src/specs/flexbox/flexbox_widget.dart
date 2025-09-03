@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../core/style_builder.dart';
@@ -122,6 +123,7 @@ Widget _createFlexBoxSpecWidget({
 }
 
 /// Extension to convert [FlexSpec] directly to a [Flex] widget.
+@internal
 extension FlexSpecWidget on FlexSpec {
   Flex call({Axis? direction, List<Widget> children = const []}) {
     return _createFlexSpecWidget(
@@ -133,6 +135,7 @@ extension FlexSpecWidget on FlexSpec {
 }
 
 /// Extension to convert [FlexBoxSpec] directly to a styled flex widget.
+@internal
 extension FlexBoxSpecWidget on FlexBoxSpec {
   Widget call({required Axis direction, List<Widget> children = const []}) {
     return _createFlexBoxSpecWidget(
@@ -143,6 +146,7 @@ extension FlexBoxSpecWidget on FlexBoxSpec {
   }
 }
 
+@internal
 extension FlexSpecWrappedWidget on StyleSpec<FlexSpec> {
   Widget call({Axis? direction, List<Widget> children = const []}) {
     return StyleSpecBuilder(
@@ -158,6 +162,7 @@ extension FlexSpecWrappedWidget on StyleSpec<FlexSpec> {
   }
 }
 
+@internal
 extension FlexBoxSpecWrappedWidget on StyleSpec<FlexBoxSpec> {
   Widget call({required Axis direction, List<Widget> children = const []}) {
     return StyleSpecBuilder(

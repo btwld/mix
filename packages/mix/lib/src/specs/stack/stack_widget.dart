@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../core/style_builder.dart';
@@ -58,6 +59,7 @@ Widget _createZBoxSpecWidget({
 }
 
 /// Extension to convert [StackSpec] directly to a [Stack] widget.
+@internal
 extension StackSpecWidget on StackSpec {
   Stack call({List<Widget> children = const []}) {
     return _createStackSpecWidget(spec: this, children: children);
@@ -65,12 +67,14 @@ extension StackSpecWidget on StackSpec {
 }
 
 /// Extension to convert [ZBoxSpec] directly to a styled stack widget.
+@internal
 extension ZBoxSpecWidget on ZBoxSpec {
   Widget call({List<Widget> children = const []}) {
     return _createZBoxSpecWidget(spec: this, children: children);
   }
 }
 
+@internal
 extension StackSpecWrappedWidget on StyleSpec<StackSpec> {
   Widget call({List<Widget> children = const []}) {
     return StyleSpecBuilder(
@@ -82,6 +86,7 @@ extension StackSpecWrappedWidget on StyleSpec<StackSpec> {
   }
 }
 
+@internal
 extension ZBoxSpecWrappedWidget on StyleSpec<ZBoxSpec> {
   Widget call({List<Widget> children = const []}) {
     return StyleSpecBuilder(

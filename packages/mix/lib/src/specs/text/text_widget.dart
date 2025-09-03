@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/directive.dart';
@@ -48,12 +49,14 @@ Text _createTextSpecWidget({required TextSpec spec, required String text}) {
 }
 
 /// Extension to convert [TextSpec] directly to a [Text] widget.
+@internal
 extension TextSpecWidget on TextSpec {
   Text call(String text) {
     return _createTextSpecWidget(spec: this, text: text);
   }
 }
 
+@internal
 extension TextSpecWrappedWidget on StyleSpec<TextSpec> {
   Widget call(String text) {
     return StyleSpecBuilder(
