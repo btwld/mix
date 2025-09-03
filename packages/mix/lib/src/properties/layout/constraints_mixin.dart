@@ -47,4 +47,29 @@ mixin ConstraintsMixin<T extends Mix<Object?>> {
       ),
     );
   }
+
+  /// Creates constraints with only specified values, supporting priority resolution
+  T constraintsOnly({
+    double? width,
+    double? height,
+    double? minWidth,
+    double? maxWidth,
+    double? minHeight,
+    double? maxHeight,
+  }) {
+    // Width sets both min and max unless overridden
+    final resolvedMinWidth = minWidth ?? width;
+    final resolvedMaxWidth = maxWidth ?? width;
+
+    // Height sets both min and max unless overridden
+    final resolvedMinHeight = minHeight ?? height;
+    final resolvedMaxHeight = maxHeight ?? height;
+
+    return constraints(BoxConstraintsMix(
+      minWidth: resolvedMinWidth,
+      maxWidth: resolvedMaxWidth,
+      minHeight: resolvedMinHeight,
+      maxHeight: resolvedMaxHeight,
+    ));
+  }
 }

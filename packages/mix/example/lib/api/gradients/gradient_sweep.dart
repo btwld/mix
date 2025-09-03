@@ -17,9 +17,11 @@ class Example extends StatelessWidget {
         .height(120)
         .width(120)
         .borderRounded(60)
-        .shadowColor(Colors.purple.shade300)
-        .shadowBlurRadius(25)
-        .shadowSpreadRadius(2)
+        .shadowOnly(
+          color: Colors.purple.shade300,
+          blurRadius: 25,
+          spreadRadius: 2,
+        )
         .sweepGradient(
           center: Alignment.center,
           startAngle: 0,

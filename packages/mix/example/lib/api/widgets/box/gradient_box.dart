@@ -23,9 +23,11 @@ class Example extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         )
-        .shadowColor(Colors.deepPurple.shade700)
-        .shadowBlurRadius(10)
-        .shadowOffset(Offset(0, 4));
+        .shadowOnly(
+          color: Colors.deepPurple.shade700,
+          blurRadius: 10,
+          offset: Offset(0, 4),
+        );
 
     return Box(style: style);
   }

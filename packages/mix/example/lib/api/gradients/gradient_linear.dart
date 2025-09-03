@@ -15,9 +15,11 @@ class Example extends StatelessWidget {
         .height(100)
         .width(200)
         .borderRounded(16)
-        .shadowColor(Colors.purple.shade200)
-        .shadowBlurRadius(20)
-        .shadowOffset(Offset(0, 8))
+        .shadowOnly(
+          color: Colors.purple.shade200,
+          blurRadius: 20,
+          offset: Offset(0, 8),
+        )
         .linearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,

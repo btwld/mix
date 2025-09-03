@@ -50,8 +50,10 @@ class OkinawaCard extends StatelessWidget {
           strokeAlign: BorderSide.strokeAlignOutside,
         )
         .color(Colors.blueGrey.shade50)
-        .shadowColor(Colors.black.withValues(alpha: 0.35))
-        .shadowBlurRadius(100);
+        .shadowOnly(
+          color: Colors.black.withValues(alpha: 0.35),
+          blurRadius: 100,
+        );
 
     final columnBoxStyle = Style.flexbox()
         .paddingAll(8)

@@ -59,10 +59,12 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
                 )
                 .borderRounded(40)
                 .scale(0.85)
-                .shadowColor(Colors.black.withValues(alpha: 0.1))
-                .shadowBlurRadius(4)
-                .shadowSpreadRadius(3)
-                .shadowOffset(Offset(2, 4))
+                .shadowOnly(
+                  color: Colors.black.withValues(alpha: 0.1),
+                  blurRadius: 4,
+                  spreadRadius: 3,
+                  offset: Offset(2, 4),
+                )
                 .keyframeAnimation(
                   trigger: _trigger,
                   timeline: [

@@ -43,8 +43,10 @@ class EmojiSelector extends StatelessWidget {
           .paddingY(10)
           .color(Colors.white)
           .borderRounded(50)
-          .shadowColor(Colors.black12)
-          .shadowBlurRadius(50)
+          .shadowOnly(
+            color: Colors.black12,
+            blurRadius: 50,
+          )
           .spacing(16)
           .mainAxisAlignment(MainAxisAlignment.center)
           .mainAxisSize(MainAxisSize.min),

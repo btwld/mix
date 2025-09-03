@@ -10,7 +10,7 @@ mixin BoxShadowMixin<T extends Mix<Object?>> {
   T decoration(DecorationMix value);
 
   /// Creates a single box shadow with named parameters
-  T boxShadow({
+  T shadowOnly({
     Color? color,
     Offset? offset,
     double? blurRadius,
@@ -38,25 +38,4 @@ mixin BoxShadowMixin<T extends Mix<Object?>> {
     );
   }
 
-  // Individual shadow property methods
-
-  /// Sets the shadow color
-  T shadowColor(Color value) {
-    return decoration(BoxDecorationMix.boxShadow([BoxShadowMix(color: value)]));
-  }
-
-  /// Sets the shadow blur radius
-  T shadowBlurRadius(double value) {
-    return decoration(BoxDecorationMix.boxShadow([BoxShadowMix(blurRadius: value)]));
-  }
-
-  /// Sets the shadow spread radius
-  T shadowSpreadRadius(double value) {
-    return decoration(BoxDecorationMix.boxShadow([BoxShadowMix(spreadRadius: value)]));
-  }
-
-  /// Sets the shadow offset
-  T shadowOffset(Offset value) {
-    return decoration(BoxDecorationMix.boxShadow([BoxShadowMix(offset: value)]));
-  }
 }

@@ -15,9 +15,11 @@ class Example extends StatelessWidget {
         .height(150)
         .width(150)
         .borderRounded(75)
-        .shadowColor(Colors.orange.shade400)
-        .shadowBlurRadius(30)
-        .shadowSpreadRadius(5)
+        .shadowOnly(
+          color: Colors.orange.shade400,
+          blurRadius: 30,
+          spreadRadius: 5,
+        )
         .radialGradient(
           center: Alignment(-0.3, -0.3),
           focal: Alignment(-0.1, -0.1),

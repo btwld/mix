@@ -34,9 +34,11 @@ class _ExampleState extends State<Example> {
         .onSelected(BoxStyler()
           .color(Colors.blue.shade500)
           .borderAll(color: Colors.blue.shade600, width: 2)
-          .shadowColor(Colors.blue.shade200)
-          .shadowBlurRadius(10)
-          .shadowSpreadRadius(2)
+          .shadowOnly(
+            color: Colors.blue.shade200,
+            blurRadius: 10,
+            spreadRadius: 2,
+          )
         );
 
     final textStyle = TextStyler()
