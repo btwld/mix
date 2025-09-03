@@ -43,7 +43,7 @@ class _BlockAnimationState extends State<BlockAnimation> {
         .color(Colors.deepPurple)
         .height(100)
         .width(100)
-        .borderRadiusCircular(40)
+        .borderRadius(BorderRadiusMix.circular(40))
         .phaseAnimation(
           trigger: _isExpanded,
           phases: AnimationPhases.values,
@@ -54,7 +54,7 @@ class _BlockAnimationState extends State<BlockAnimation> {
             AnimationPhases.expanded =>
               style
                   .scale(1.25)
-                  .borderRadiusCircular(20)
+                  .borderRadius(BorderRadiusMix.circular(20))
                   .color(Colors.deepPurple.shade300),
           },
           configBuilder: (phase) => switch (phase) {
