@@ -24,7 +24,7 @@ class FlexBox extends StyleWidget<FlexBoxSpec> {
   const FlexBox({
     super.style = const FlexBoxStyler.create(),
     super.key,
-    required this.direction,
+    this.direction,
     this.children = const <Widget>[],
   });
 
@@ -32,7 +32,7 @@ class FlexBox extends StyleWidget<FlexBoxSpec> {
   final List<Widget> children;
 
   /// The main axis direction for the flex layout.
-  final Axis direction;
+  final Axis? direction;
 
   @override
   Widget build(BuildContext context, FlexBoxSpec spec) {
@@ -75,6 +75,16 @@ Flex _createFlexSpecWidget({
   Axis? direction,
   List<Widget> children = const [],
 }) {
+  final hasDirectionFromBothSources =
+      direction != null && spec?.direction != null;
+  final hasDirectionsConflict = direction != spec?.direction;
+
+  if (hasDirectionFromBothSources && hasDirectionsConflict) {
+    throw Exception(
+      'Direction cannot be specified in the spec for RowBox (horizontal) or ColumnBox (vertical). Use FlexBox if you need dynamic direction control.',
+    );
+  }
+
   return Flex(
     direction: spec?.direction ?? direction ?? Axis.horizontal,
     mainAxisAlignment: spec?.mainAxisAlignment ?? MainAxisAlignment.start,
@@ -95,7 +105,7 @@ Flex _createFlexSpecWidget({
 /// child widget, combining both specifications effectively.
 Widget _createFlexBoxSpecWidget({
   required FlexBoxSpec spec,
-  required Axis direction,
+  required Axis? direction,
   List<Widget> children = const [],
 }) {
   final flexWidget = _createFlexSpecWidget(

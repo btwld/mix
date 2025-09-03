@@ -244,4 +244,84 @@ void main() {
       );
     });
   });
+
+  testWidgets(
+    'ColumnBox throws an exception when direction is specified in the style',
+    (tester) async {
+      const flexBoxKey = Key('flexbox');
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: ColumnBox(
+              key: flexBoxKey,
+              style: Style.flexbox().direction(Axis.horizontal),
+            ),
+          ),
+        ),
+      );
+
+      final exception = tester.takeException();
+      expect(exception, isNotNull);
+      expect(
+        exception.toString(),
+        contains(
+          'Direction cannot be specified in the spec for RowBox (horizontal) or ColumnBox (vertical)',
+        ),
+      );
+    },
+  );
+
+  testWidgets(
+    'RowBox throws an exception when direction is specified in the style',
+    (tester) async {
+      const flexBoxKey = Key('flexbox');
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: RowBox(
+              key: flexBoxKey,
+              style: Style.flexbox().direction(Axis.vertical),
+            ),
+          ),
+        ),
+      );
+
+      final exception = tester.takeException();
+      expect(exception, isNotNull);
+      expect(
+        exception.toString(),
+        contains(
+          'Direction cannot be specified in the spec for RowBox (horizontal) or ColumnBox (vertical)',
+        ),
+      );
+    },
+  );
+
+  testWidgets(
+    'FlexBox does NOT throw when direction is specified in the style',
+    (tester) async {
+      const flexBoxKey = Key('flexbox');
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: FlexBox(
+              key: flexBoxKey,
+              direction: Axis.horizontal,
+              style: Style.flexbox().direction(Axis.horizontal),
+            ),
+          ),
+        ),
+      );
+
+      final exception = tester.takeException();
+      expect(
+        exception,
+        isNull,
+        reason: 'FlexBox should allow direction in the style',
+      );
+    },
+  );
 }
