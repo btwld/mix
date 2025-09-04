@@ -1,7 +1,7 @@
 
 # Building a Design System Widget
 
-When creating a design system in Flutter, building reusable components that maintain consistency and adhere to predefined design principles is crucial. In this guide, we'll explore the process of creating a button component for a design system, which will hopefully showcase the differences between building an individual widget.
+When creating a design system in Flutter, building reusable components that maintain consistency and adhere to predefined design principles is crucial. In this guide, we'll explore the process of creating a button component for a design system, which will hopefully showcase the differences between building an individual widget. 
 
 ![Button Example](./images/button-example.png)
 
