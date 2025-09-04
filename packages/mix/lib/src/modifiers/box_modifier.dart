@@ -42,7 +42,7 @@ final class BoxModifier extends Modifier<BoxModifier> with Diagnosticable {
 
   @override
   Widget build(Widget child) {
-    return spec(child: child);
+    return spec.createWidget(child: child);
   }
 }
 

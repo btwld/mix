@@ -57,17 +57,24 @@ Icon _createIconSpecWidget({
 
 /// Extension to convert [IconSpec] directly to an [Icon] widget.
 extension IconSpecWidget on IconSpec {
-  Icon call({IconData? icon, String? semanticLabel}) {
+  /// Creates an [Icon] widget from this [IconSpec].
+  Icon createWidget({IconData? icon, String? semanticLabel}) {
     return _createIconSpecWidget(
       spec: this,
       icon: icon,
       semanticLabel: semanticLabel,
     );
   }
+
+  @Deprecated('Use .createWidget() instead')
+  Icon call({IconData? icon, String? semanticLabel}) {
+    return createWidget(icon: icon, semanticLabel: semanticLabel);
+  }
 }
 
 extension IconSpecWrappedWidget on StyleSpec<IconSpec> {
-  Widget call({IconData? icon, String? semanticLabel}) {
+  /// Creates a widget that resolves this [StyleSpec<IconSpec>] with context.
+  Widget createWidget({IconData? icon, String? semanticLabel}) {
     return StyleSpecBuilder(
       builder: (context, spec) {
         return _createIconSpecWidget(
@@ -78,5 +85,10 @@ extension IconSpecWrappedWidget on StyleSpec<IconSpec> {
       },
       styleSpec: this,
     );
+  }
+
+  @Deprecated('Use .createWidget() instead')
+  Widget call({IconData? icon, String? semanticLabel}) {
+    return createWidget(icon: icon, semanticLabel: semanticLabel);
   }
 }

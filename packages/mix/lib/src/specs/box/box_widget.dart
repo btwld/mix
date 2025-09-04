@@ -42,18 +42,30 @@ typedef StyledContainer = Box;
 
 /// Extension to convert [BoxSpec] directly to a [Container] widget.
 extension BoxSpecWidget on BoxSpec {
-  Container call({Widget? child}) {
+  /// Creates a [Container] widget from this [BoxSpec].
+  Container createWidget({Widget? child}) {
     return _createBoxSpecWidget(spec: this, child: child);
+  }
+
+  @Deprecated('Use .createWidget() instead')
+  Container call({Widget? child}) {
+    return createWidget(child: child);
   }
 }
 
 extension BoxSpecWrappedWidget on StyleSpec<BoxSpec> {
-  Widget call({Widget? child}) {
+  /// Creates a widget that resolves this [StyleSpec<BoxSpec>] with context.
+  Widget createWidget({Widget? child}) {
     return StyleSpecBuilder(
       builder: (context, spec) {
         return _createBoxSpecWidget(spec: spec, child: child);
       },
       styleSpec: this,
     );
+  }
+
+  @Deprecated('Use .createWidget() instead')
+  Widget call({Widget? child}) {
+    return createWidget(child: child);
   }
 }

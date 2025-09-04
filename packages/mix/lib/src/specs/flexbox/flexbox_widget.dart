@@ -105,7 +105,7 @@ Widget _createFlexBoxSpecWidget({
   );
 
   if (spec.box != null) {
-    return spec.box!.spec(child: flexWidget);
+    return spec.box!.createWidget(child: flexWidget);
   }
 
   return flexWidget;
@@ -113,28 +113,41 @@ Widget _createFlexBoxSpecWidget({
 
 /// Extension to convert [FlexSpec] directly to a [Flex] widget.
 extension FlexSpecWidget on FlexSpec {
-  Flex call({Axis? direction, List<Widget> children = const []}) {
+  /// Creates a [Flex] widget from this [FlexSpec].
+  Flex createWidget({Axis? direction, List<Widget> children = const []}) {
     return _createFlexSpecWidget(
       spec: this,
       direction: direction,
       children: children,
     );
   }
+
+  @Deprecated('Use .createWidget() instead')
+  Flex call({Axis? direction, List<Widget> children = const []}) {
+    return createWidget(direction: direction, children: children);
+  }
 }
 
 /// Extension to convert [FlexBoxSpec] directly to a styled flex widget.
 extension FlexBoxSpecWidget on FlexBoxSpec {
-  Widget call({required Axis direction, List<Widget> children = const []}) {
+  /// Creates a widget from this [FlexBoxSpec].
+  Widget createWidget({required Axis direction, List<Widget> children = const []}) {
     return _createFlexBoxSpecWidget(
       spec: this,
       direction: direction,
       children: children,
     );
   }
+
+  @Deprecated('Use .createWidget() instead')
+  Widget call({required Axis direction, List<Widget> children = const []}) {
+    return createWidget(direction: direction, children: children);
+  }
 }
 
 extension FlexSpecWrappedWidget on StyleSpec<FlexSpec> {
-  Widget call({Axis? direction, List<Widget> children = const []}) {
+  /// Creates a widget that resolves this [StyleSpec<FlexSpec>] with context.
+  Widget createWidget({Axis? direction, List<Widget> children = const []}) {
     return StyleSpecBuilder(
       builder: (context, spec) {
         return _createFlexSpecWidget(
@@ -146,10 +159,16 @@ extension FlexSpecWrappedWidget on StyleSpec<FlexSpec> {
       styleSpec: this,
     );
   }
+
+  @Deprecated('Use .createWidget() instead')
+  Widget call({Axis? direction, List<Widget> children = const []}) {
+    return createWidget(direction: direction, children: children);
+  }
 }
 
 extension FlexBoxSpecWrappedWidget on StyleSpec<FlexBoxSpec> {
-  Widget call({required Axis direction, List<Widget> children = const []}) {
+  /// Creates a widget that resolves this [StyleSpec<FlexBoxSpec>] with context.
+  Widget createWidget({required Axis direction, List<Widget> children = const []}) {
     return StyleSpecBuilder(
       builder: (context, spec) {
         return _createFlexBoxSpecWidget(
@@ -160,5 +179,10 @@ extension FlexBoxSpecWrappedWidget on StyleSpec<FlexBoxSpec> {
       },
       styleSpec: this,
     );
+  }
+
+  @Deprecated('Use .createWidget() instead')
+  Widget call({required Axis direction, List<Widget> children = const []}) {
+    return createWidget(direction: direction, children: children);
   }
 }

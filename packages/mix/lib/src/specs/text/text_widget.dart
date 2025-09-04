@@ -49,18 +49,30 @@ Text _createTextSpecWidget({required TextSpec spec, required String text}) {
 
 /// Extension to convert [TextSpec] directly to a [Text] widget.
 extension TextSpecWidget on TextSpec {
-  Text call(String text) {
+  /// Creates a [Text] widget from this [TextSpec].
+  Text createWidget(String text) {
     return _createTextSpecWidget(spec: this, text: text);
+  }
+
+  @Deprecated('Use .createWidget() instead')
+  Text call(String text) {
+    return createWidget(text);
   }
 }
 
 extension TextSpecWrappedWidget on StyleSpec<TextSpec> {
-  Widget call(String text) {
+  /// Creates a widget that resolves this [StyleSpec<TextSpec>] with context.
+  Widget createWidget(String text) {
     return StyleSpecBuilder(
       builder: (context, spec) {
         return _createTextSpecWidget(spec: spec, text: text);
       },
       styleSpec: this,
     );
+  }
+
+  @Deprecated('Use .createWidget() instead')
+  Widget call(String text) {
+    return createWidget(text);
   }
 }

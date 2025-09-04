@@ -110,7 +110,8 @@ ImageProvider<Object> _resolveImage(
 
 /// Extension to convert [ImageSpec] directly to an [Image] widget.
 extension ImageSpecWidget on ImageSpec {
-  Image call({
+  /// Creates an [Image] widget from this [ImageSpec].
+  Image createWidget({
     ImageProvider<Object>? image,
     ImageFrameBuilder? frameBuilder,
     ImageLoadingBuilder? loadingBuilder,
@@ -126,10 +127,28 @@ extension ImageSpecWidget on ImageSpec {
       opacity: opacity,
     );
   }
+
+  @Deprecated('Use .createWidget() instead')
+  Image call({
+    ImageProvider<Object>? image,
+    ImageFrameBuilder? frameBuilder,
+    ImageLoadingBuilder? loadingBuilder,
+    ImageErrorWidgetBuilder? errorBuilder,
+    Animation<double>? opacity,
+  }) {
+    return createWidget(
+      image: image,
+      frameBuilder: frameBuilder,
+      loadingBuilder: loadingBuilder,
+      errorBuilder: errorBuilder,
+      opacity: opacity,
+    );
+  }
 }
 
 extension ImageSpecWrappedWidget on StyleSpec<ImageSpec> {
-  Widget call({
+  /// Creates a widget that resolves this [StyleSpec<ImageSpec>] with context.
+  Widget createWidget({
     ImageProvider<Object>? image,
     ImageFrameBuilder? frameBuilder,
     ImageLoadingBuilder? loadingBuilder,
@@ -148,6 +167,23 @@ extension ImageSpecWrappedWidget on StyleSpec<ImageSpec> {
         );
       },
       styleSpec: this,
+    );
+  }
+
+  @Deprecated('Use .createWidget() instead')
+  Widget call({
+    ImageProvider<Object>? image,
+    ImageFrameBuilder? frameBuilder,
+    ImageLoadingBuilder? loadingBuilder,
+    ImageErrorWidgetBuilder? errorBuilder,
+    Animation<double>? opacity,
+  }) {
+    return createWidget(
+      image: image,
+      frameBuilder: frameBuilder,
+      loadingBuilder: loadingBuilder,
+      errorBuilder: errorBuilder,
+      opacity: opacity,
     );
   }
 }
