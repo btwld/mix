@@ -24,21 +24,21 @@ class FlexBox extends StyleWidget<FlexBoxSpec> {
   const FlexBox({
     super.style = const FlexBoxStyler.create(),
     super.key,
-    required this.direction,
     this.children = const <Widget>[],
   });
 
   /// Child widgets to be arranged in the flex layout.
   final List<Widget> children;
 
-  /// The main axis direction for the flex layout.
-  final Axis direction;
+  /// Constrains the flex direction for RowBox/ColumnBox.
+  /// When specified, prevents conflicting direction in style specs.
+  Axis? get _forcedDirection => null;
 
   @override
   Widget build(BuildContext context, FlexBoxSpec spec) {
     return _createFlexBoxSpecWidget(
       spec: spec,
-      direction: direction,
+      forcedDirection: _forcedDirection,
       children: children,
     );
   }
@@ -52,7 +52,10 @@ class RowBox extends FlexBox {
     super.style = const FlexBoxStyler.create(),
     super.key,
     super.children = const <Widget>[],
-  }) : super(direction: Axis.horizontal);
+  });
+
+  @override
+  Axis get _forcedDirection => Axis.horizontal;
 }
 
 /// Vertical flex box with Mix styling.
@@ -63,7 +66,10 @@ class ColumnBox extends FlexBox {
     super.style = const FlexBoxStyler.create(),
     super.key,
     super.children = const <Widget>[],
-  }) : super(direction: Axis.vertical);
+  });
+
+  @override
+  Axis get _forcedDirection => Axis.vertical;
 }
 
 /// Creates a [Flex] widget from a [FlexSpec] and required parameters.
@@ -72,11 +78,20 @@ class ColumnBox extends FlexBox {
 /// when specification properties are null.
 Flex _createFlexSpecWidget({
   required FlexSpec? spec,
-  Axis? direction,
+  Axis? forcedDirection,
   List<Widget> children = const [],
 }) {
+  final hasDirectionFromBothSources =
+      forcedDirection != null && spec?.direction != null;
+  final hasDirectionsConflict = forcedDirection != spec?.direction;
+
+  assert(
+    !(hasDirectionFromBothSources && hasDirectionsConflict),
+    'Direction cannot be specified in the spec for RowBox (horizontal) or ColumnBox (vertical). Use FlexBox if you need dynamic direction control.',
+  );
+
   return Flex(
-    direction: spec?.direction ?? direction ?? Axis.horizontal,
+    direction: spec?.direction ?? forcedDirection ?? Axis.horizontal,
     mainAxisAlignment: spec?.mainAxisAlignment ?? MainAxisAlignment.start,
     mainAxisSize: spec?.mainAxisSize ?? MainAxisSize.max,
     crossAxisAlignment: spec?.crossAxisAlignment ?? CrossAxisAlignment.center,
@@ -95,12 +110,12 @@ Flex _createFlexSpecWidget({
 /// child widget, combining both specifications effectively.
 Widget _createFlexBoxSpecWidget({
   required FlexBoxSpec spec,
-  required Axis direction,
+  required Axis? forcedDirection,
   List<Widget> children = const [],
 }) {
   final flexWidget = _createFlexSpecWidget(
     spec: spec.flex?.spec,
-    direction: direction,
+    forcedDirection: forcedDirection,
     children: children,
   );
 
@@ -117,7 +132,7 @@ extension FlexSpecWidget on FlexSpec {
   Flex createWidget({Axis? direction, List<Widget> children = const []}) {
     return _createFlexSpecWidget(
       spec: this,
-      direction: direction,
+      forcedDirection: direction,
       children: children,
     );
   }
@@ -134,7 +149,7 @@ extension FlexBoxSpecWidget on FlexBoxSpec {
   Widget createWidget({required Axis direction, List<Widget> children = const []}) {
     return _createFlexBoxSpecWidget(
       spec: this,
-      direction: direction,
+      forcedDirection: direction,
       children: children,
     );
   }
@@ -152,7 +167,7 @@ extension FlexSpecWrappedWidget on StyleSpec<FlexSpec> {
       builder: (context, spec) {
         return _createFlexSpecWidget(
           spec: spec,
-          direction: direction,
+          forcedDirection: direction,
           children: children,
         );
       },
@@ -173,7 +188,7 @@ extension FlexBoxSpecWrappedWidget on StyleSpec<FlexBoxSpec> {
       builder: (context, spec) {
         return _createFlexBoxSpecWidget(
           spec: spec,
-          direction: direction,
+          forcedDirection: direction,
           children: children,
         );
       },

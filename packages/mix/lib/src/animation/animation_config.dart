@@ -369,7 +369,7 @@ sealed class AnimationConfig {
 ///
 /// This configuration provides duration, curve, and optional completion callback
 /// for animations that follow a specific curve over a fixed time period.
-final class CurveAnimationConfig extends AnimationConfig {
+final class CurveAnimationConfig extends AnimationConfig with Equatable {
   final Duration duration;
   final Curve curve;
   final Duration delay;
@@ -722,6 +722,9 @@ final class CurveAnimationConfig extends AnimationConfig {
         other.duration == duration &&
         other.curve == curve;
   }
+
+  @override
+  List<Object?> get props => [duration, curve, delay, onEnd];
 
   @override
   int get hashCode => Object.hash(duration, curve);

@@ -87,9 +87,16 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
   @override
   void didUpdateWidget(StyleAnimationBuilder<S> oldWidget) {
     super.didUpdateWidget(oldWidget);
+    print('didUpdateWidget');
+
+    if (oldWidget.spec.animation != widget.spec.animation) {
+      animationDriver.dispose();
+      animationDriver = _createAnimationDriver(widget.animationConfig);
+    }
 
     // Animate to spec if changed
     if (oldWidget.spec != widget.spec && animationDriver.autoAnimateOnUpdate) {
+      print('animateTo');
       animationDriver.animateTo(widget.spec);
     }
   }

@@ -14,11 +14,7 @@ void main() {
           home: Scaffold(
             body: Column(
               children: [
-                FlexBox(
-                  direction: Axis.horizontal,
-                  key: flexBoxKey,
-                  style: FlexBoxStyler(),
-                ),
+                FlexBox(key: flexBoxKey, style: FlexBoxStyler()),
                 Container(
                   key: containerKey,
                   child: Flex(
@@ -85,7 +81,7 @@ void main() {
           home: Scaffold(
             body: Column(
               children: [
-                HBox(key: hBoxKey),
+                RowBox(key: hBoxKey),
                 Row(key: rowKey, children: const []),
               ],
             ),
@@ -125,7 +121,7 @@ void main() {
           home: Scaffold(
             body: Row(
               children: [
-                VBox(key: vBoxKey),
+                ColumnBox(key: vBoxKey),
                 Column(key: columnKey, children: const []),
               ],
             ),
@@ -165,7 +161,7 @@ void main() {
           home: Scaffold(
             body: Column(
               children: [
-                FlexBox(direction: Axis.horizontal, key: flexBoxKey),
+                FlexBox(key: flexBoxKey),
                 Flex(
                   direction: Axis.horizontal,
                   key: flexKey,
@@ -244,4 +240,83 @@ void main() {
       );
     });
   });
+
+  testWidgets(
+    'ColumnBox throws an exception when direction is specified in the style',
+    (tester) async {
+      const flexBoxKey = Key('flexbox');
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: ColumnBox(
+              key: flexBoxKey,
+              style: Style.flexbox().direction(Axis.horizontal),
+            ),
+          ),
+        ),
+      );
+
+      final exception = tester.takeException();
+      expect(exception, isNotNull);
+      expect(
+        exception.toString(),
+        contains(
+          'Direction cannot be specified in the spec for RowBox (horizontal) or ColumnBox (vertical)',
+        ),
+      );
+    },
+  );
+
+  testWidgets(
+    'RowBox throws an exception when direction is specified in the style',
+    (tester) async {
+      const flexBoxKey = Key('flexbox');
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: RowBox(
+              key: flexBoxKey,
+              style: Style.flexbox().direction(Axis.vertical),
+            ),
+          ),
+        ),
+      );
+
+      final exception = tester.takeException();
+      expect(exception, isNotNull);
+      expect(
+        exception.toString(),
+        contains(
+          'Direction cannot be specified in the spec for RowBox (horizontal) or ColumnBox (vertical)',
+        ),
+      );
+    },
+  );
+
+  testWidgets(
+    'FlexBox does NOT throw when direction is specified in the style',
+    (tester) async {
+      const flexBoxKey = Key('flexbox');
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: FlexBox(
+              key: flexBoxKey,
+              style: Style.flexbox().direction(Axis.horizontal),
+            ),
+          ),
+        ),
+      );
+
+      final exception = tester.takeException();
+      expect(
+        exception,
+        isNull,
+        reason: 'FlexBox should allow direction in the style',
+      );
+    },
+  );
 }
