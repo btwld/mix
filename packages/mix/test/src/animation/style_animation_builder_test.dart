@@ -9,12 +9,14 @@ void main() {
         duration: Duration(milliseconds: 100),
         curve: Curves.linear,
       );
-      const spec = StyleSpec<TestSpec>(spec: TestSpec());
+      const spec = StyleSpec<TestSpec>(
+        spec: TestSpec(),
+        animation: animationConfig,
+      );
 
       await tester.pumpWidget(
         MaterialApp(
           home: StyleAnimationBuilder<TestSpec>(
-            animationConfig: animationConfig,
             spec: spec,
             builder: (context, spec) => Container(
               key: const Key('test-container'),
@@ -32,12 +34,14 @@ void main() {
         duration: Duration(milliseconds: 100),
         curve: Curves.linear,
       );
-      const spec = StyleSpec<TestSpec>(spec: TestSpec());
+      const spec = StyleSpec<TestSpec>(
+        spec: TestSpec(),
+        animation: animationConfig,
+      );
 
       await tester.pumpWidget(
         MaterialApp(
           home: StyleAnimationBuilder<TestSpec>(
-            animationConfig: animationConfig,
             spec: spec,
             builder: (context, spec) =>
                 Container(key: ValueKey(spec.spec.color)),
@@ -58,13 +62,18 @@ void main() {
         duration: Duration(milliseconds: 100),
         curve: Curves.linear,
       );
-      const spec1 = StyleSpec<TestSpec>(spec: TestSpec(color: Colors.red));
-      const spec2 = StyleSpec<TestSpec>(spec: TestSpec(color: Colors.blue));
+      const spec1 = StyleSpec<TestSpec>(
+        spec: TestSpec(color: Colors.red),
+        animation: animationConfig,
+      );
+      const spec2 = StyleSpec<TestSpec>(
+        spec: TestSpec(color: Colors.blue),
+        animation: animationConfig,
+      );
 
       await tester.pumpWidget(
         MaterialApp(
           home: StyleAnimationBuilder<TestSpec>(
-            animationConfig: animationConfig,
             spec: spec1,
             builder: (context, spec) =>
                 Container(key: ValueKey(spec.spec.color)),
@@ -78,7 +87,6 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: StyleAnimationBuilder<TestSpec>(
-            animationConfig: animationConfig,
             spec: spec2,
             builder: (context, spec) =>
                 Container(key: ValueKey(spec.spec.color)),
@@ -101,13 +109,19 @@ void main() {
         duration: Duration(milliseconds: 200),
         curve: Curves.easeIn,
       );
-      const spec = StyleSpec<TestSpec>(spec: TestSpec(color: Colors.red));
+      const spec1 = StyleSpec<TestSpec>(
+        spec: TestSpec(color: Colors.red),
+        animation: config1,
+      );
+      const spec2 = StyleSpec<TestSpec>(
+        spec: TestSpec(color: Colors.red),
+        animation: config2,
+      );
 
       await tester.pumpWidget(
         MaterialApp(
           home: StyleAnimationBuilder<TestSpec>(
-            animationConfig: config1,
-            spec: spec,
+            spec: spec1,
             builder: (context, spec) => Container(color: spec.spec.color),
           ),
         ),
@@ -119,8 +133,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: StyleAnimationBuilder<TestSpec>(
-            animationConfig: config2,
-            spec: spec,
+            spec: spec2,
             builder: (context, spec) => Container(color: spec.spec.color),
           ),
         ),
@@ -135,12 +148,14 @@ void main() {
         duration: Duration(milliseconds: 100),
         curve: Curves.linear,
       );
-      const spec = StyleSpec<TestSpec>(spec: TestSpec());
+      const spec = StyleSpec<TestSpec>(
+        spec: TestSpec(),
+        animation: animationConfig,
+      );
 
       await tester.pumpWidget(
         MaterialApp(
           home: StyleAnimationBuilder<TestSpec>(
-            animationConfig: animationConfig,
             spec: spec,
             builder: (context, resolvedStyle) => Container(),
           ),
@@ -162,12 +177,12 @@ void main() {
       // Create a style with an empty/default spec
       const spec = StyleSpec<TestSpec>(
         spec: TestSpec(color: Colors.transparent),
+        animation: animationConfig,
       );
 
       await tester.pumpWidget(
         MaterialApp(
           home: StyleAnimationBuilder<TestSpec>(
-            animationConfig: animationConfig,
             spec: spec,
             builder: (context, spec) =>
                 Container(key: const Key('test-container')),

@@ -59,6 +59,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
   @override
   Widget build(BuildContext context) {
     final widgetStates = widget.style.widgetStates;
+
     // Calculate interactivity need early
     final needsToTrackWidgetState =
         widget.controller == null && widgetStates.isNotEmpty;
@@ -106,8 +107,6 @@ class StyleSpecBuilder<S extends Spec<S>> extends StatelessWidget {
   Widget build(BuildContext context) {
     // style.build returns StyleSpec<S>
 
-    final animationConfig = styleSpec.animation;
-
     // Pass the inner spec to the builder
     Widget current = builder(context, styleSpec.spec);
 
@@ -123,33 +122,29 @@ class StyleSpecBuilder<S extends Spec<S>> extends StatelessWidget {
       );
     }
 
-    if (animationConfig != null) {
-      return StyleAnimationBuilder<S>(
-        spec: styleSpec,
-        animationConfig: animationConfig,
-        builder: (context, animatedWrappedSpec) {
-          Widget animatedChild = builder(context, animatedWrappedSpec.spec);
+    return StyleAnimationBuilder<S>(
+      spec: styleSpec,
 
-          // Always wrap with StyleSpecProvider first
-          animatedChild = StyleSpecProvider<S>(
-            spec: animatedWrappedSpec,
+      builder: (context, animatedWrappedSpec) {
+        Widget animatedChild = builder(context, animatedWrappedSpec.spec);
+
+        // Always wrap with StyleSpecProvider first
+        animatedChild = StyleSpecProvider<S>(
+          spec: animatedWrappedSpec,
+          child: animatedChild,
+        );
+
+        if (animatedWrappedSpec.widgetModifiers != null &&
+            animatedWrappedSpec.widgetModifiers!.isNotEmpty) {
+          // Apply modifiers if any
+          animatedChild = RenderModifiers(
+            widgetModifiers: animatedWrappedSpec.widgetModifiers!,
             child: animatedChild,
           );
+        }
 
-          if (animatedWrappedSpec.widgetModifiers != null &&
-              animatedWrappedSpec.widgetModifiers!.isNotEmpty) {
-            // Apply modifiers if any
-            animatedChild = RenderModifiers(
-              widgetModifiers: animatedWrappedSpec.widgetModifiers!,
-              child: animatedChild,
-            );
-          }
-
-          return animatedChild;
-        },
-      );
-    }
-
-    return current;
+        return animatedChild;
+      },
+    );
   }
 }

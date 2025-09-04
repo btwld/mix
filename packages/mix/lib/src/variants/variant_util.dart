@@ -297,15 +297,16 @@ class VariantAttributeBuilder<T extends Spec<T>> {
   int get hashCode => variant.hashCode;
 }
 
-
 /// Mixin that provides convenient variant methods for spec attributes.
 ///
 /// This mixin follows the same pattern as ModifierMixin, providing
 /// a fluent API for applying context variants to spec attributes.
 mixin StyleVariantMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
-  /// Must be implemented by the class using this mixin
-  T variant(Variant variant, T style);
+  T variant(Variant variant, T style) {
+    return variants([VariantStyle<S>(variant, style)]);
+  }
 
+  /// Must be implemented by the class using this mixin
   T variants(List<VariantStyle<S>> value);
 
   /// Creates a variant for dark mode
@@ -372,7 +373,10 @@ mixin StyleVariantMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
 
   /// Creates a variant for scrolled under state
   T onScrolledUnder(T style) {
-    return variant(ContextVariant.widgetState(WidgetState.scrolledUnder), style);
+    return variant(
+      ContextVariant.widgetState(WidgetState.scrolledUnder),
+      style,
+    );
   }
 
   /// Creates a variant for dragged state

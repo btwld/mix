@@ -320,6 +320,11 @@ sealed class AnimationConfig {
     );
   }
 
+  /// No Animation
+  static AnimationConfig none() {
+    return const NoAnimationConfig();
+  }
+
   /// Creates a spring animation configuration with standard spring physics.
   static SpringAnimationConfig springDescription({
     double mass = 1.0,
@@ -363,6 +368,17 @@ sealed class AnimationConfig {
     ),
     onEnd: onEnd,
   );
+}
+
+/// No animation configuration that bypasses all animation.
+///
+/// This configuration is used when no animation should occur,
+/// providing immediate spec changes without any interpolation.
+final class NoAnimationConfig extends AnimationConfig with Equatable {
+  const NoAnimationConfig();
+
+  @override
+  List<Object?> get props => [];
 }
 
 /// Curve-based animation configuration with fixed duration.

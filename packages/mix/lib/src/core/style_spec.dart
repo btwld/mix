@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 
 import '../animation/animation_config.dart';
 import 'helpers.dart';
 import 'modifier.dart';
 import 'spec.dart';
+import 'style_builder.dart';
 
 /// A widget specification that wraps a pure Spec with widget metadata.
 ///
@@ -81,4 +83,26 @@ class StyleSpec<T extends Spec<T>> extends Spec<StyleSpec<T>>
   /// compare two [StyleSpec] instances for equality.
   @override
   List<Object?> get props => [animation, widgetModifiers, spec];
+}
+
+/// Extension to create widgets from [StyleSpec] using custom builder functions.
+extension StyleSpecWidgetBuilder<T extends Spec<T>> on StyleSpec<T> {
+  /// Creates a widget using a custom builder function that receives the resolved spec.
+  ///
+  /// The [builder] function receives the BuildContext and the resolved spec instance,
+  /// allowing custom widget creation logic while still benefiting from context-aware
+  /// resolution provided by StyleSpecBuilder.
+  ///
+  /// Example:
+  /// ```dart
+  /// styleSpec.createBuilder((context, spec) {
+  ///   return Container(
+  ///     color: spec.color,
+  ///     padding: spec.padding,
+  ///   );
+  /// });
+  /// ```
+  Widget createBuilder(Widget Function(BuildContext context, T spec) builder) {
+    return StyleSpecBuilder<T>(builder: builder, styleSpec: this);
+  }
 }

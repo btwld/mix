@@ -54,8 +54,6 @@ abstract class StyleAnimationDriver<S extends Spec<S>> {
 
     // Create the animation once - it will use the mutable tween
     _animation = _controller.drive(_tween);
-
-    // Create the animation - no need for listeners since we expose it directly
   }
 
   /// Gets the current animation controller.
@@ -70,10 +68,17 @@ abstract class StyleAnimationDriver<S extends Spec<S>> {
 
   /// Animates to the given target spec.
   @nonVirtual
-  Future<void> animateTo(StyleSpec<S> targetSpec) async {
-    if (_tween.end == targetSpec && !_controller.isAnimating) return;
+  Future<void> animateTo(
+    StyleSpec<S> targetSpec, {
+    StyleSpec<S>? fromSpec,
+  }) async {
+    if (_tween.end == targetSpec &&
+        !_controller.isAnimating &&
+        fromSpec == null) {
+      return;
+    }
 
-    final currentValue = _animation.value ?? _initialSpec;
+    final currentValue = fromSpec ?? _animation.value ?? _initialSpec;
     if (currentValue == targetSpec) {
       _tween.end = targetSpec;
 
@@ -364,4 +369,22 @@ class _KeyframeAnimatable<S extends Spec<S>> extends Animatable<StyleSpec<S>?> {
         .styleBuilder(KeyframeAnimationResult(result), _config.initialStyle)
         .resolve(_context);
   }
+}
+
+/// A driver that bypasses all animation and immediately applies spec changes.
+///
+/// This driver provides instant spec updates without any interpolation,
+/// timers, or animation lifecycle. Useful for testing or when animations
+/// should be disabled (e.g., for accessibility).
+class NoAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
+  NoAnimationDriver({required super.vsync, required super.initialSpec});
+
+  @override
+  Future<void> executeAnimation() async {
+    // Immediately complete the animation without any delay
+    _controller.value = 1.0;
+  }
+
+  @override
+  bool get autoAnimateOnUpdate => true;
 }
