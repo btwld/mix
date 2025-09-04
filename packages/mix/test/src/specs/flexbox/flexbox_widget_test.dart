@@ -14,11 +14,7 @@ void main() {
           home: Scaffold(
             body: Column(
               children: [
-                FlexBox(
-                  lockedDirection: Axis.horizontal,
-                  key: flexBoxKey,
-                  style: FlexBoxStyler(),
-                ),
+                FlexBox(key: flexBoxKey, style: FlexBoxStyler()),
                 Container(
                   key: containerKey,
                   child: Flex(
@@ -165,7 +161,7 @@ void main() {
           home: Scaffold(
             body: Column(
               children: [
-                FlexBox(lockedDirection: Axis.horizontal, key: flexBoxKey),
+                FlexBox(key: flexBoxKey),
                 Flex(
                   direction: Axis.horizontal,
                   key: flexKey,
@@ -309,7 +305,6 @@ void main() {
           home: Scaffold(
             body: FlexBox(
               key: flexBoxKey,
-              lockedDirection: Axis.horizontal,
               style: Style.flexbox().direction(Axis.horizontal),
             ),
           ),

@@ -1,8 +1,8 @@
 /// Hover Scale Animation Example
-/// 
+///
 /// This example shows how to create smooth animations that respond to hover
 /// interactions. The box scales up when the mouse hovers over it.
-/// 
+///
 /// Key concepts:
 /// - Using .onHovered() variant for hover states
 /// - Applying .scale() transformation
@@ -27,10 +27,14 @@ class Example extends StatelessWidget {
         .color(Colors.black)
         .height(100)
         .width(100)
-        .borderRadius(.circular(10))
-        .transform(.identity())
-        .onHovered(BoxStyler().color(Colors.blue).scale(1.5))
-        .animate(.easeInOut(300.ms));
+        .rounded(10)
+        .transform(Matrix4.identity())
+        .onHovered(
+          BoxStyler()
+              .color(Colors.blue)
+              .scale(1.5)
+              .animate(AnimationConfig.easeInOut(100.ms)),
+        );
 
     return Box(style: style);
   }
