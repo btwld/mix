@@ -11,7 +11,6 @@ import '../../core/style_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/layout/flex_mixin.dart';
-import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'flex_spec.dart';
 import 'flex_util.dart';
@@ -231,10 +230,6 @@ class FlexStyler extends Style<FlexSpec>
       ..add(DiagnosticsProperty('spacing', $spacing));
   }
 
-  @override
-  FlexStyler variant(Variant variant, FlexStyler style) {
-    return merge(FlexStyler(variants: [VariantStyle(variant, style)]));
-  }
 
   @override
   FlexStyler wrap(ModifierConfig value) {

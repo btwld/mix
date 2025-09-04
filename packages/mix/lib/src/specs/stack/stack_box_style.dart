@@ -16,7 +16,6 @@ import '../../properties/painting/border_radius_util.dart';
 import '../../properties/painting/decoration_mix.dart';
 import '../../properties/painting/decoration_mixin.dart';
 import '../../properties/transform_mixin.dart';
-import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import '../box/box_spec.dart';
 import '../box/box_style.dart';
@@ -161,10 +160,6 @@ class StackBoxStyler extends Style<ZBoxSpec>
     return merge(StackBoxStyler(variants: variants));
   }
 
-  @override
-  StackBoxStyler variant(Variant variant, StackBoxStyler style) {
-    return merge(StackBoxStyler(variants: [VariantStyle(variant, style)]));
-  }
 
   // Mixin implementations - delegate to BoxMix
 

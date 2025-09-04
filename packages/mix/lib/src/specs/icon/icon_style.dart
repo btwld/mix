@@ -10,7 +10,6 @@ import '../../core/style_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/painting/shadow_mix.dart';
-import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'icon_spec.dart';
 import 'icon_util.dart';
@@ -264,10 +263,6 @@ class IconStyler extends Style<IconSpec>
       ..add(DiagnosticsProperty('icon', $icon));
   }
 
-  @override
-  IconStyler variant(Variant variant, IconStyler style) {
-    return merge(IconStyler(variants: [VariantStyle(variant, style)]));
-  }
 
   @override
   IconStyler variants(List<VariantStyle<IconSpec>> value) {

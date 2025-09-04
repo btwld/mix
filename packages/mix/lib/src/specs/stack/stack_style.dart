@@ -9,7 +9,6 @@ import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
-import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'stack_spec.dart';
 import 'stack_util.dart';
@@ -147,10 +146,6 @@ class StackStyler extends Style<StackSpec>
       ..add(DiagnosticsProperty('clipBehavior', $clipBehavior));
   }
 
-  @override
-  StackStyler variant(Variant variant, StackStyler style) {
-    return merge(StackStyler(variants: [VariantStyle(variant, style)]));
-  }
 
   @override
   StackStyler wrap(ModifierConfig value) {

@@ -14,14 +14,13 @@ import '../../properties/layout/constraints_mixin.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/layout/spacing_mixin.dart';
 import '../../properties/painting/border_mix.dart';
-import '../../properties/painting/border_util.dart';
 import '../../properties/painting/border_radius_mix.dart';
 import '../../properties/painting/border_radius_util.dart';
+import '../../properties/painting/border_util.dart';
 import '../../properties/painting/box_shadow_mixin.dart';
 import '../../properties/painting/decoration_mix.dart';
 import '../../properties/painting/decoration_mixin.dart';
 import '../../properties/transform_mixin.dart';
-import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'box_spec.dart';
 import 'box_util.dart';
@@ -198,10 +197,6 @@ class BoxStyler extends Style<BoxSpec>
     return merge(BoxStyler(variants: value));
   }
 
-  @override
-  BoxStyler variant(Variant variant, BoxStyler style) {
-    return merge(BoxStyler(variants: [VariantStyle(variant, style)]));
-  }
 
   /// Resolves to [StyleSpec<BoxSpec>] using the provided [BuildContext].
   ///

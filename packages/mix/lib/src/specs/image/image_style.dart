@@ -8,7 +8,6 @@ import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
-import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'image_spec.dart';
 import 'image_util.dart';
@@ -302,10 +301,6 @@ class ImageStyler extends Style<ImageSpec>
       ..add(DiagnosticsProperty('matchTextDirection', $matchTextDirection));
   }
 
-  @override
-  ImageStyler variant(Variant variant, ImageStyler style) {
-    return merge(ImageStyler(variants: [VariantStyle(variant, style)]));
-  }
 
   @override
   ImageStyler wrap(ModifierConfig value) {

@@ -14,7 +14,6 @@ import '../../properties/typography/strut_style_mix.dart';
 import '../../properties/typography/text_height_behavior_mix.dart';
 import '../../properties/typography/text_style_mix.dart';
 import '../../properties/typography/text_style_mixin.dart';
-import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import 'text_spec.dart';
 import 'text_util.dart';
@@ -345,10 +344,6 @@ class TextStyler extends Style<TextSpec>
       ..add(DiagnosticsProperty('directives', $textDirectives));
   }
 
-  @override
-  TextStyler variant(Variant variant, TextStyler style) {
-    return merge(TextStyler(variants: [VariantStyle(variant, style)]));
-  }
 
   @override
   TextStyler wrap(ModifierConfig value) {

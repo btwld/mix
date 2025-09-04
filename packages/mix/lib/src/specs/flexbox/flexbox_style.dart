@@ -21,7 +21,6 @@ import '../../properties/painting/box_shadow_mixin.dart';
 import '../../properties/painting/decoration_mix.dart';
 import '../../properties/painting/decoration_mixin.dart';
 import '../../properties/transform_mixin.dart';
-import '../../variants/variant.dart';
 import '../../variants/variant_util.dart';
 import '../box/box_spec.dart';
 import '../box/box_style.dart';
@@ -218,10 +217,6 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
     return merge(FlexBoxStyler(variants: variants));
   }
 
-  @override
-  FlexBoxStyler variant(Variant variant, FlexBoxStyler style) {
-    return merge(FlexBoxStyler(variants: [VariantStyle(variant, style)]));
-  }
 
   /// Border radius instance method
   @override
