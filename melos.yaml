@@ -9,12 +9,11 @@ packages:
   - packages/*/demo
 
 sdkPath: .fvm/flutter_sdk
-
 command:
   bootstrap:
     environment:
-      sdk: ">=3.9.0-196.1.beta <4.0.0"
-      flutter: ">= 3.34.0-0.1.pre <4.0.0"
+      sdk: ">=3.9.0 <4.0.0"
+      flutter: ">=3.35.2 <4.0.0"
     dependencies:
       meta: ^1.15.0
     dev_dependencies:
