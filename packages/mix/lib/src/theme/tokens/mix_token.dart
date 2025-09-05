@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import '../../core/prop_refs.dart';
 import '../mix_theme.dart';
@@ -11,6 +10,41 @@ class TokenDefinition<T> {
   final ValueBuilder<T> resolver;
 
   const TokenDefinition(this.token, this.resolver);
+}
+
+/// A token definition that automatically switches between light and dark values
+/// based on the current theme brightness.
+class BrightnessTokenDefinition<T> extends TokenDefinition<T> {
+  /// The resolver for light theme values
+  final ValueBuilder<T> lightResolver;
+  
+  /// The resolver for dark theme values
+  final ValueBuilder<T> darkResolver;
+  
+  /// Creates a brightness-aware token definition that automatically switches
+  /// between light and dark resolvers based on theme brightness.
+  BrightnessTokenDefinition(
+    MixToken<T> token, {
+    required this.lightResolver,
+    required this.darkResolver,
+  }) : super(token, (context) {
+    final brightness = Theme.of(context).brightness;
+    
+    return brightness == Brightness.light
+        ? lightResolver(context)
+        : darkResolver(context);
+  });
+  
+  /// Creates a brightness-aware token definition with static values.
+  BrightnessTokenDefinition.values(
+    MixToken<T> token, {
+    required T lightValue,
+    required T darkValue,
+  }) : this(
+    token,
+    lightResolver: (_) => lightValue,
+    darkResolver: (_) => darkValue,
+  );
 }
 
 /// A design token that can be resolved to a value within a Mix theme.
@@ -52,4 +86,49 @@ class MixToken<T> {
 
   @override
   int get hashCode => Object.hash(name, T);
+}
+
+/// Extension methods for MixToken to easily create brightness-aware tokens.
+extension MixTokenBrightnessExt<T> on MixToken<T> {
+  /// Creates a token definition that automatically adapts between light and dark values.
+  /// 
+  /// Example:
+  /// ```dart
+  /// final primaryColor = MixToken<Color>('primary');
+  /// final definition = primaryColor.defineAdaptive(
+  ///   light: Colors.blue,
+  ///   dark: Colors.lightBlue,
+  /// );
+  /// ```
+  TokenDefinition<T> defineAdaptive({
+    required T light,
+    required T dark,
+  }) {
+    return BrightnessTokenDefinition.values(
+      this,
+      lightValue: light,
+      darkValue: dark,
+    );
+  }
+  
+  /// Creates a token definition that automatically adapts between light and dark builders.
+  /// 
+  /// Example:
+  /// ```dart
+  /// final primaryColor = MixToken<Color>('primary');
+  /// final definition = primaryColor.defineAdaptiveBuilder(
+  ///   light: (context) => Theme.of(context).primaryColor,
+  ///   dark: (context) => Theme.of(context).primaryColorDark,
+  /// );
+  /// ```
+  TokenDefinition<T> defineAdaptiveBuilder({
+    required ValueBuilder<T> light,
+    required ValueBuilder<T> dark,
+  }) {
+    return BrightnessTokenDefinition(
+      this,
+      lightResolver: light,
+      darkResolver: dark,
+    );
+  }
 }

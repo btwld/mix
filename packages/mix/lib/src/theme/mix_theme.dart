@@ -44,19 +44,34 @@ class MixScope extends InheritedModel<String> {
     : _tokens = null,
       orderOfModifiers = null;
 
+
   /// Creates a MixScope with Material design tokens pre-configured
+  ///
+  /// Material Design tokens automatically adapt to light and dark themes
+  /// through Flutter's built-in theming system.
+  ///
+  /// Example:
+  /// ```dart
+  /// MixScope.withMaterial(
+  ///   tokens: {
+  ///     // Add custom adaptive tokens alongside material ones
+  ///     myCustomColor.defineAdaptive(
+  ///       light: Colors.blue,
+  ///       dark: Colors.lightBlue,
+  ///     ),
+  ///   },
+  ///   child: MyApp(),
+  /// )
+  /// ```
   factory MixScope.withMaterial({
     Set<TokenDefinition>? tokens,
     List<Type>? orderOfModifiers,
     required Widget child,
     Key? key,
   }) {
-    // Merge material tokens with custom tokens
-    final mergedTokens = {...materialTokens, ...?tokens};
-
-    return MixScope(
+    return createMaterialMixScope(
       key: key,
-      tokens: mergedTokens,
+      additionalTokens: tokens,
       orderOfModifiers: orderOfModifiers,
       child: child,
     );

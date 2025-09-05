@@ -137,11 +137,16 @@ class _ResolvesToMatcher<T> extends Matcher {
 class MockBuildContext extends BuildContext {
   final Set<TokenDefinition>? _tokens;
   final List<Type>? _orderOfModifiers;
+  final ThemeData? _themeData;
   MixScope? _mixScope;
 
-  MockBuildContext({Set<TokenDefinition>? tokens, List<Type>? orderOfModifiers})
-    : _tokens = tokens,
-      _orderOfModifiers = orderOfModifiers {
+  MockBuildContext({
+    Set<TokenDefinition>? tokens, 
+    List<Type>? orderOfModifiers,
+    ThemeData? themeData,
+  }) : _tokens = tokens,
+       _orderOfModifiers = orderOfModifiers,
+       _themeData = themeData {
     // Create MixScope instance once
     _mixScope = MixScope(
       tokens: _tokens,
@@ -164,6 +169,9 @@ class MockBuildContext extends BuildContext {
     if (T == MixScope) {
       return _mixScope as T?;
     }
+    if (T == Theme && _themeData != null) {
+      return Theme(data: _themeData, child: const SizedBox()) as T?;
+    }
     return null;
   }
 
@@ -181,6 +189,9 @@ class MockBuildContext extends BuildContext {
   T? getInheritedWidgetOfExactType<T extends InheritedWidget>() {
     if (T == MixScope) {
       return _mixScope as T?;
+    }
+    if (T == Theme && _themeData != null) {
+      return Theme(data: _themeData, child: const SizedBox()) as T?;
     }
     return null;
   }
