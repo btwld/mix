@@ -5,10 +5,10 @@ import '../../core/style.dart';
 import '../../core/utility.dart';
 import '../layout/scalar_util.dart';
 import 'border_radius_mix.dart';
-import 'decoration_mixin.dart';
+import '../../style/mixins/decoration_style_mixin.dart';
 
 /// Mixin that provides convenient border radius methods
-mixin BorderRadiusMixin<T extends Mix<Object?>> implements DecorationMixin<T> {
+mixin BorderRadiusMixin<T extends Mix<Object?>> implements DecorationStyleMixin<T> {
   // Methods accepting Radius values (using existing factory constructors)
 
   T borderRadiusAll(Radius radius) {

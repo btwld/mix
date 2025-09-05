@@ -48,6 +48,7 @@ export 'src/core/style_builder.dart';
 export 'src/core/style_spec.dart';
 export 'src/core/style_widget.dart';
 export 'src/core/utility.dart';
+export 'src/core/utility_variant_mixin.dart';
 export 'src/modifiers/align_modifier.dart';
 export 'src/modifiers/aspect_ratio_modifier.dart';
 export 'src/modifiers/box_modifier.dart' hide BoxModifierUtility;
@@ -141,6 +142,20 @@ export 'src/specs/text/text_spec.dart';
 export 'src/specs/text/text_style.dart';
 export 'src/specs/text/text_util.dart';
 export 'src/specs/text/text_widget.dart';
+
+/// STYLE MIXINS
+export 'src/style/mixins/animation_style_mixin.dart';
+export 'src/style/mixins/border_radius_style_mixin.dart';
+export 'src/style/mixins/border_style_mixin.dart';
+export 'src/style/mixins/constraint_style_mixin.dart';
+export 'src/style/mixins/decoration_style_mixin.dart';
+export 'src/style/mixins/flex_style_mixin.dart';
+export 'src/style/mixins/modifier_style_mixin.dart';
+export 'src/style/mixins/shadow_style_mixin.dart';
+export 'src/style/mixins/spacing_style_mixin.dart';
+export 'src/style/mixins/text_style_mixin.dart';
+export 'src/style/mixins/transform_style_mixin.dart';
+export 'src/style/mixins/variant_style_mixin.dart';
 
 /// THEME
 export 'src/theme/material/material_theme.dart';

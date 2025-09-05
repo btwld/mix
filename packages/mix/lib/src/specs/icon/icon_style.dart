@@ -2,15 +2,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../animation/animation_config.dart';
-import '../../animation/animation_mixin.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/modifier_config.dart';
-import '../../modifiers/modifier_util.dart';
 import '../../properties/painting/shadow_mix.dart';
-import '../../variants/variant_util.dart';
+import '../../style/mixins/animation_style_mixin.dart';
+import '../../style/mixins/modifier_style_mixin.dart';
+import '../../style/mixins/variant_style_mixin.dart';
 import 'icon_spec.dart';
 import 'icon_util.dart';
 import 'icon_widget.dart';
@@ -20,9 +20,9 @@ typedef IconMix = IconStyler;
 class IconStyler extends Style<IconSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<IconStyler, IconSpec>,
-        StyleVariantMixin<IconStyler, IconSpec>,
-        StyleAnimationMixin<IconSpec, IconStyler> {
+        ModifierStyleMixin<IconStyler, IconSpec>,
+        VariantStyleMixin<IconStyler, IconSpec>,
+        AnimationStyleMixin<IconSpec, IconStyler> {
   final Prop<Color>? $color;
   final Prop<double>? $size;
   final Prop<double>? $weight;

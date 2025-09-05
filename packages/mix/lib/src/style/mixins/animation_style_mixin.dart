@@ -1,10 +1,10 @@
 import 'package:flutter/widgets.dart';
 
-import '../core/spec.dart';
-import '../core/style.dart';
-import 'animation_config.dart';
+import '../../animation/animation_config.dart';
+import '../../core/spec.dart';
+import '../../core/style.dart';
 
-mixin StyleAnimationMixin<S extends Spec<S>, T extends Style<S>> on Style<S> {
+mixin AnimationStyleMixin<S extends Spec<S>, T extends Style<S>> on Style<S> {
   @protected
   T animate(AnimationConfig config);
 

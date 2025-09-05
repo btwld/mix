@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../animation/animation_config.dart';
-import '../../animation/animation_mixin.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/modifier_config.dart';
-import '../../modifiers/modifier_util.dart';
-import '../../properties/layout/flex_mixin.dart';
-import '../../variants/variant_util.dart';
+import '../../style/mixins/animation_style_mixin.dart';
+import '../../style/mixins/flex_style_mixin.dart';
+import '../../style/mixins/modifier_style_mixin.dart';
+import '../../style/mixins/variant_style_mixin.dart';
 import 'flex_spec.dart';
 import 'flex_util.dart';
 
@@ -28,10 +28,10 @@ typedef FlexMix = FlexStyler;
 class FlexStyler extends Style<FlexSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<FlexStyler, FlexSpec>,
-        StyleVariantMixin<FlexStyler, FlexSpec>,
-        FlexMixin<FlexStyler>,
-        StyleAnimationMixin<FlexSpec, FlexStyler> {
+        ModifierStyleMixin<FlexStyler, FlexSpec>,
+        VariantStyleMixin<FlexStyler, FlexSpec>,
+        FlexStyleMixin<FlexStyler>,
+        AnimationStyleMixin<FlexSpec, FlexStyler> {
   final Prop<Axis>? $direction;
   final Prop<MainAxisAlignment>? $mainAxisAlignment;
   final Prop<CrossAxisAlignment>? $crossAxisAlignment;

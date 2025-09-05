@@ -2,19 +2,19 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../animation/animation_config.dart';
-import '../../animation/animation_mixin.dart';
 import '../../core/directive.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/modifier_config.dart';
-import '../../modifiers/modifier_util.dart';
 import '../../properties/typography/strut_style_mix.dart';
 import '../../properties/typography/text_height_behavior_mix.dart';
 import '../../properties/typography/text_style_mix.dart';
-import '../../properties/typography/text_style_mixin.dart';
-import '../../variants/variant_util.dart';
+import '../../style/mixins/animation_style_mixin.dart';
+import '../../style/mixins/modifier_style_mixin.dart';
+import '../../style/mixins/text_style_mixin.dart';
+import '../../style/mixins/variant_style_mixin.dart';
 import 'text_spec.dart';
 import 'text_util.dart';
 import 'text_widget.dart';
@@ -31,10 +31,10 @@ typedef TextMix = TextStyler;
 class TextStyler extends Style<TextSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<TextStyler, TextSpec>,
-        StyleVariantMixin<TextStyler, TextSpec>,
+        ModifierStyleMixin<TextStyler, TextSpec>,
+        VariantStyleMixin<TextStyler, TextSpec>,
         TextStyleMixin<TextStyler>,
-        StyleAnimationMixin<TextSpec, TextStyler> {
+        AnimationStyleMixin<TextSpec, TextStyler> {
   final Prop<TextOverflow>? $overflow;
   final Prop<StrutStyle>? $strutStyle;
   final Prop<TextAlign>? $textAlign;

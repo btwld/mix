@@ -24,14 +24,15 @@ class Example extends StatelessWidget {
           blurRadius: 20,
         )
         .wrapDefaultTextStyle(
-          .fontSize(16)
-          .fontWeight(.bold)
-          .color(Colors.white)
+          TextStyleMix()
+            .fontSize(16)
+            .fontWeight(FontWeight.bold)
+            .color(Colors.white)
         )
         .wrap(
-          .align(alignment: .center)
+          ModifierConfig.align(alignment: Alignment.center)
         )
-        .animate(.spring(300.ms));
+        .animate(AnimationConfig.spring(const Duration(milliseconds: 300)));
 
     return Center(
       child: Box(

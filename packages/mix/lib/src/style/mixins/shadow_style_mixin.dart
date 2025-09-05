@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../core/mix_element.dart';
-import 'decoration_mix.dart';
-import 'shadow_mix.dart';
+import '../../properties/painting/decoration_mix.dart';
+import '../../properties/painting/shadow_mix.dart';
 
-/// Mixin that provides convenient box shadow methods
-mixin BoxShadowMixin<T extends Mix<Object?>> {
+/// Mixin that provides convenient shadow styling methods
+mixin ShadowStyleMixin<T extends Mix<Object?>> {
   /// Must be implemented by the class using this mixin
   T decoration(DecorationMix value);
 
@@ -37,5 +37,4 @@ mixin BoxShadowMixin<T extends Mix<Object?>> {
       BoxDecorationMix.boxShadow(BoxShadowMix.fromElevation(value)),
     );
   }
-
 }

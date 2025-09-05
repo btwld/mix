@@ -5,10 +5,10 @@ import '../../core/style.dart';
 import '../../core/utility.dart';
 import 'border_mix.dart';
 import 'color_util.dart';
-import 'decoration_mixin.dart';
+import '../../style/mixins/decoration_style_mixin.dart';
 
 /// Mixin that provides convenient border methods
-mixin BorderMixin<T extends Mix<Object?>> implements DecorationMixin<T> {
+mixin BorderMixin<T extends Mix<Object?>> implements DecorationStyleMixin<T> {
   // Individual border side methods with full BorderSide property support
   T borderTop({
     Color? color,

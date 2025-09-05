@@ -7,21 +7,21 @@ import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/modifier_config.dart';
-import '../../modifiers/modifier_util.dart';
 import '../../properties/layout/constraints_mix.dart';
-import '../../properties/layout/constraints_mixin.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
-import '../../properties/layout/flex_mixin.dart';
-import '../../properties/layout/spacing_mixin.dart';
 import '../../properties/painting/border_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
-import '../../properties/painting/border_radius_util.dart';
-import '../../properties/painting/border_util.dart';
-import '../../properties/painting/box_shadow_mixin.dart';
 import '../../properties/painting/decoration_mix.dart';
-import '../../properties/painting/decoration_mixin.dart';
-import '../../properties/transform_mixin.dart';
-import '../../variants/variant_util.dart';
+import '../../style/mixins/border_radius_style_mixin.dart';
+import '../../style/mixins/border_style_mixin.dart';
+import '../../style/mixins/constraint_style_mixin.dart';
+import '../../style/mixins/decoration_style_mixin.dart';
+import '../../style/mixins/flex_style_mixin.dart';
+import '../../style/mixins/modifier_style_mixin.dart';
+import '../../style/mixins/shadow_style_mixin.dart';
+import '../../style/mixins/spacing_style_mixin.dart';
+import '../../style/mixins/transform_style_mixin.dart';
+import '../../style/mixins/variant_style_mixin.dart';
 import '../box/box_spec.dart';
 import '../box/box_style.dart';
 import '../flex/flex_spec.dart';
@@ -41,16 +41,16 @@ typedef FlexBoxMix = FlexBoxStyler;
 class FlexBoxStyler extends Style<FlexBoxSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<FlexBoxStyler, FlexBoxSpec>,
-        StyleVariantMixin<FlexBoxStyler, FlexBoxSpec>,
-        BorderMixin<FlexBoxStyler>,
-        BorderRadiusMixin<FlexBoxStyler>,
-        BoxShadowMixin<FlexBoxStyler>,
-        DecorationMixin<FlexBoxStyler>,
-        SpacingMixin<FlexBoxStyler>,
-        TransformMixin<FlexBoxStyler>,
-        ConstraintsMixin<FlexBoxStyler>,
-        FlexMixin<FlexBoxStyler> {
+        ModifierStyleMixin<FlexBoxStyler, FlexBoxSpec>,
+        VariantStyleMixin<FlexBoxStyler, FlexBoxSpec>,
+        BorderStyleMixin<FlexBoxStyler>,
+        BorderRadiusStyleMixin<FlexBoxStyler>,
+        ShadowStyleMixin<FlexBoxStyler>,
+        DecorationStyleMixin<FlexBoxStyler>,
+        SpacingStyleMixin<FlexBoxStyler>,
+        TransformStyleMixin<FlexBoxStyler>,
+        ConstraintStyleMixin<FlexBoxStyler>,
+        FlexStyleMixin<FlexBoxStyler> {
   final Prop<StyleSpec<BoxSpec>>? $box;
   final Prop<StyleSpec<FlexSpec>>? $flex;
 

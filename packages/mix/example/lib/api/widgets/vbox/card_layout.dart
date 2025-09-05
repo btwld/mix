@@ -41,7 +41,7 @@ class Example extends StatelessWidget {
         .fontWeight(FontWeight.w500)
         .color(Colors.blueGrey.shade600);
 
-    return VBox(
+    return ColumnBox(
       style: flexStyle,
       children: [
         StyledIcon( style: iconStyle),

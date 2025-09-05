@@ -2,26 +2,26 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
-import '../../animation/animation_mixin.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/modifier_config.dart';
-import '../../modifiers/modifier_util.dart';
 import '../../properties/layout/constraints_mix.dart';
-import '../../properties/layout/constraints_mixin.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
-import '../../properties/layout/spacing_mixin.dart';
 import '../../properties/painting/border_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
-import '../../properties/painting/border_radius_util.dart';
-import '../../properties/painting/border_util.dart';
-import '../../properties/painting/box_shadow_mixin.dart';
 import '../../properties/painting/decoration_mix.dart';
-import '../../properties/painting/decoration_mixin.dart';
-import '../../properties/transform_mixin.dart';
-import '../../variants/variant_util.dart';
+import '../../style/mixins/animation_style_mixin.dart';
+import '../../style/mixins/border_radius_style_mixin.dart';
+import '../../style/mixins/border_style_mixin.dart';
+import '../../style/mixins/constraint_style_mixin.dart';
+import '../../style/mixins/decoration_style_mixin.dart';
+import '../../style/mixins/modifier_style_mixin.dart';
+import '../../style/mixins/shadow_style_mixin.dart';
+import '../../style/mixins/spacing_style_mixin.dart';
+import '../../style/mixins/transform_style_mixin.dart';
+import '../../style/mixins/variant_style_mixin.dart';
 import 'box_spec.dart';
 import 'box_util.dart';
 import 'box_widget.dart';
@@ -36,16 +36,16 @@ typedef BoxMix = BoxStyler;
 class BoxStyler extends Style<BoxSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<BoxStyler, BoxSpec>,
-        StyleVariantMixin<BoxStyler, BoxSpec>,
-        BorderMixin<BoxStyler>,
-        BorderRadiusMixin<BoxStyler>,
-        BoxShadowMixin<BoxStyler>,
-        DecorationMixin<BoxStyler>,
-        SpacingMixin<BoxStyler>,
-        TransformMixin<BoxStyler>,
-        ConstraintsMixin<BoxStyler>,
-        StyleAnimationMixin<BoxSpec, BoxStyler> {
+        ModifierStyleMixin<BoxStyler, BoxSpec>,
+        VariantStyleMixin<BoxStyler, BoxSpec>,
+        BorderStyleMixin<BoxStyler>,
+        BorderRadiusStyleMixin<BoxStyler>,
+        ShadowStyleMixin<BoxStyler>,
+        DecorationStyleMixin<BoxStyler>,
+        SpacingStyleMixin<BoxStyler>,
+        TransformStyleMixin<BoxStyler>,
+        ConstraintStyleMixin<BoxStyler>,
+        AnimationStyleMixin<BoxSpec, BoxStyler> {
   final Prop<AlignmentGeometry>? $alignment;
   final Prop<EdgeInsetsGeometry>? $padding;
   final Prop<EdgeInsetsGeometry>? $margin;

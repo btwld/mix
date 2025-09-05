@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
 
-import '../core/mix_element.dart';
+import '../../core/mix_element.dart';
 
-/// Mixin that provides convenient transform methods for styles
-mixin TransformMixin<T extends Mix<Object?>> {
+/// Mixin that provides convenient transform styling methods for styles
+mixin TransformStyleMixin<T extends Mix<Object?>> {
   /// Must be implemented by the class using this mixin
   T transform(Matrix4 value, {AlignmentGeometry alignment = Alignment.center});
 

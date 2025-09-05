@@ -8,15 +8,15 @@ import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/modifier_config.dart';
 import '../../properties/layout/constraints_mix.dart';
-import '../../properties/layout/constraints_mixin.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
-import '../../properties/layout/spacing_mixin.dart';
 import '../../properties/painting/border_radius_mix.dart';
-import '../../properties/painting/border_radius_util.dart';
 import '../../properties/painting/decoration_mix.dart';
-import '../../properties/painting/decoration_mixin.dart';
-import '../../properties/transform_mixin.dart';
-import '../../variants/variant_util.dart';
+import '../../style/mixins/border_radius_style_mixin.dart';
+import '../../style/mixins/constraint_style_mixin.dart';
+import '../../style/mixins/decoration_style_mixin.dart';
+import '../../style/mixins/spacing_style_mixin.dart';
+import '../../style/mixins/transform_style_mixin.dart';
+import '../../style/mixins/variant_style_mixin.dart';
 import '../box/box_spec.dart';
 import '../box/box_style.dart';
 import 'stack_box_spec.dart';
@@ -35,12 +35,12 @@ typedef StackBoxMix = StackBoxStyler;
 class StackBoxStyler extends Style<ZBoxSpec>
     with
         Diagnosticable,
-        StyleVariantMixin<StackBoxStyler, ZBoxSpec>,
-        BorderRadiusMixin<StackBoxStyler>,
-        DecorationMixin<StackBoxStyler>,
-        SpacingMixin<StackBoxStyler>,
-        TransformMixin<StackBoxStyler>,
-        ConstraintsMixin<StackBoxStyler> {
+        VariantStyleMixin<StackBoxStyler, ZBoxSpec>,
+        BorderRadiusStyleMixin<StackBoxStyler>,
+        DecorationStyleMixin<StackBoxStyler>,
+        SpacingStyleMixin<StackBoxStyler>,
+        TransformStyleMixin<StackBoxStyler>,
+        ConstraintStyleMixin<StackBoxStyler> {
   final Prop<StyleSpec<BoxSpec>>? $box;
   final Prop<StyleSpec<StackSpec>>? $stack;
 

@@ -10,7 +10,7 @@ import 'api/animation/implicit.spring.translate.dart' as spring_anim;
 import 'api/context_variants/disabled.dart' as disabled;
 import 'api/context_variants/focused.dart' as focused;
 import 'api/context_variants/hovered.dart' as hovered;
-import 'api/context_variants/on_dark_light.dart' as darkLight;
+import 'api/context_variants/on_dark_light.dart' as dark_light;
 import 'api/context_variants/pressed.dart' as pressed;
 import 'api/context_variants/selected.dart' as selected;
 import 'api/context_variants/selected_toggle.dart' as selected_toggle;
@@ -153,7 +153,7 @@ class _ExampleNavigatorState extends State<ExampleNavigator> {
       title: 'Dark/Light Theme',
       description: 'Boxes that adapt to theme changes',
       category: 'Context Variants',
-      widget: const darkLight.Example(),
+      widget: const dark_light.Example(),
     ),
     ExampleItem(
       title: 'Selected Toggle',

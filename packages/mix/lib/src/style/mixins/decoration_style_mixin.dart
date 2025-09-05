@@ -1,16 +1,16 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/mix_element.dart';
-import 'border_mix.dart';
-import 'border_radius_mix.dart';
-import 'decoration_image_mix.dart';
-import 'decoration_mix.dart';
-import 'gradient_mix.dart';
-import 'shadow_mix.dart';
-import 'shape_border_mix.dart';
+import '../../properties/painting/border_mix.dart';
+import '../../properties/painting/border_radius_mix.dart';
+import '../../properties/painting/decoration_image_mix.dart';
+import '../../properties/painting/decoration_mix.dart';
+import '../../properties/painting/gradient_mix.dart';
+import '../../properties/painting/shadow_mix.dart';
+import '../../properties/painting/shape_border_mix.dart';
 
-/// Mixin that provides convenient decoration methods for styles
-mixin DecorationMixin<T extends Mix<Object?>> {
+/// Mixin that provides convenient decoration styling methods
+mixin DecorationStyleMixin<T extends Mix<Object?>> {
   /// Must be implemented by the class using this mixin
   T decoration(DecorationMix value);
 

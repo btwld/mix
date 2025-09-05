@@ -1,8 +1,8 @@
 import '../../core/mix_element.dart';
-import 'constraints_mix.dart';
+import '../../properties/layout/constraints_mix.dart';
 
-/// Mixin that provides convenient constraint methods for styles
-mixin ConstraintsMixin<T extends Mix<Object?>> {
+/// Mixin that provides convenient constraint styling methods for styles
+mixin ConstraintStyleMixin<T extends Mix<Object?>> {
   /// Must be implemented by the class using this mixin
   T constraints(BoxConstraintsMix value);
 

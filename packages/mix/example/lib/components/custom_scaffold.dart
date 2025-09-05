@@ -37,7 +37,7 @@ class CustomScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return VBox(
+    return ColumnBox(
       style: scaffoldContainer,
       children: [
         if (appBar != null) appBar!,

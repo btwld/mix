@@ -32,7 +32,7 @@ class Example extends StatelessWidget {
         .fontWeight(FontWeight.w500)
         .color(Colors.cyan.shade700);
 
-    return HBox(
+    return RowBox(
       style: flexStyle,
       children: [
         StyledIcon(style: iconStyle),

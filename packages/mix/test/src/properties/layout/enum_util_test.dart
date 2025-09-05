@@ -12,12 +12,12 @@ void main() {
       );
 
       test('none() creates BorderStyle.none', () {
-        final attr = utility.none();
+        final attr = utility(BorderStyle.none);
         expect(attr.value, BorderStyle.none);
       });
 
       test('solid() creates BorderStyle.solid', () {
-        final attr = utility.solid();
+        final attr = utility(BorderStyle.solid);
         expect(attr.value, BorderStyle.solid);
       });
 
@@ -31,12 +31,12 @@ void main() {
       final utility = MixUtility<MockStyle<Axis>, Axis>(MockStyle.new);
 
       test('horizontal() creates Axis.horizontal', () {
-        final attr = utility.horizontal();
+        final attr = utility(Axis.horizontal);
         expect(attr.value, Axis.horizontal);
       });
 
       test('vertical() creates Axis.vertical', () {
-        final attr = utility.vertical();
+        final attr = utility(Axis.vertical);
         expect(attr.value, Axis.vertical);
       });
     });
@@ -45,7 +45,7 @@ void main() {
       final utility = MixUtility<MockStyle<StackFit>, StackFit>(MockStyle.new);
 
       test('loose() creates StackFit.loose', () {
-        final attr = utility.loose();
+        final attr = utility(StackFit.loose);
         expect(attr.value, StackFit.loose);
       });
 
@@ -147,7 +147,7 @@ void main() {
       });
 
       test('none() creates BoxFit.none', () {
-        final attr = utility.none();
+        final attr = utility(BoxFit.none);
         expect(attr.value, BoxFit.none);
       });
 

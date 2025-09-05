@@ -63,7 +63,7 @@ final class TextStyleUtility<T extends Style<Object?>>
 
   T shadows(List<Shadow> v) => call(shadows: v.map(ShadowMix.value).toList());
 
-  T italic() => fontStyle.italic();
+  T italic() => fontStyle(FontStyle.italic);
 
   T bold() => fontWeight.bold();
 

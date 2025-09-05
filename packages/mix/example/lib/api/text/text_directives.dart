@@ -13,13 +13,13 @@ class Example extends StatelessWidget {
   Widget build(BuildContext context) {
     final baseStyle = TextStyler()
         .fontSize(18)
-        .fontWeight(.w600)
+        .fontWeight(FontWeight.w600)
         .color(Colors.blue.shade700);
 
-    return VBox(
+    return ColumnBox(
       style: FlexBoxStyler()
         .spacing(16)
-        .mainAxisSize(.min),
+        .mainAxisSize(MainAxisSize.min),
       children: [
         StyledText('hello world', style: baseStyle.uppercase()),
         StyledText('HELLO WORLD', style: baseStyle.lowercase()),

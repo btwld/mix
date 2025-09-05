@@ -2,14 +2,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../animation/animation_config.dart';
-import '../../animation/animation_mixin.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/modifier_config.dart';
-import '../../modifiers/modifier_util.dart';
-import '../../variants/variant_util.dart';
+import '../../style/mixins/animation_style_mixin.dart';
+import '../../style/mixins/modifier_style_mixin.dart';
+import '../../style/mixins/variant_style_mixin.dart';
 import 'stack_spec.dart';
 import 'stack_util.dart';
 
@@ -25,9 +25,9 @@ typedef StackMix = StackStyler;
 class StackStyler extends Style<StackSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<StackStyler, StackSpec>,
-        StyleVariantMixin<StackStyler, StackSpec>,
-        StyleAnimationMixin<StackSpec, StackStyler> {
+        ModifierStyleMixin<StackStyler, StackSpec>,
+        VariantStyleMixin<StackStyler, StackSpec>,
+        AnimationStyleMixin<StackSpec, StackStyler> {
   final Prop<AlignmentGeometry>? $alignment;
   final Prop<StackFit>? $fit;
   final Prop<TextDirection>? $textDirection;

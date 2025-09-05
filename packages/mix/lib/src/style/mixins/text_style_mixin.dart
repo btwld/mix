@@ -1,10 +1,10 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/mix_element.dart';
-import '../painting/shadow_mix.dart';
-import 'text_style_mix.dart';
+import '../../properties/painting/shadow_mix.dart';
+import '../../properties/typography/text_style_mix.dart';
 
-/// Mixin that provides convenient text styling methods
+/// Provides convenient text styling methods for spec attributes.
 mixin TextStyleMixin<T extends Mix<Object?>> {
   /// Must be implemented by the class using this mixin
   T style(TextStyleMix value);
