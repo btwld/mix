@@ -66,9 +66,12 @@ final materialTokens = {
   _md.textTheme.overline.defineBuilder((c) => c.textTheme.labelSmall!),
 };
 
+
 /// Creates a MixScope with Material Design tokens pre-configured.
 ///
 /// This is a helper method that creates a MixScope with Material tokens.
+/// Material Design tokens automatically adapt to light and dark themes
+/// through Flutter's built-in theming system.
 MixScope createMaterialMixScope({
   Set<TokenDefinition>? additionalTokens,
   List<Type>? orderOfModifiers,
