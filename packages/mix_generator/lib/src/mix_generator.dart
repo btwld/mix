@@ -22,7 +22,6 @@ import 'core/dependency_graph.dart';
 import 'core/metadata/base_metadata.dart';
 import 'core/metadata/property_metadata.dart';
 import 'core/metadata/spec_metadata.dart';
-import 'core/metadata/tokens_metadata.dart';
 import 'core/metadata/utility_metadata.dart';
 import 'core/property/property_extension_builder.dart';
 import 'core/property/property_mixin_builder.dart';
@@ -36,7 +35,6 @@ import 'core/utils/annotation_utils.dart';
 import 'core/utils/dart_type_utils.dart';
 import 'core/utils/extensions.dart';
 import 'core/utils/utility_code_generator.dart';
-import 'generators/mixable_tokens_generator.dart';
 
 /// A consolidated generator that processes all Mix annotations
 /// (MixableSpec, MixableType, MixableUtility, MixableToken)
@@ -50,8 +48,6 @@ class MixGenerator extends Generator {
       const TypeChecker.fromRuntime(MixableType);
   final TypeChecker _utilityChecker =
       const TypeChecker.fromRuntime(MixableUtility);
-  final TypeChecker _tokensChecker =
-      const TypeChecker.fromRuntime(MixableToken);
 
   // Map to store types discovered during the generation phase
   final Map<String, String> _discoveredTypes = {};
@@ -95,21 +91,12 @@ class MixGenerator extends Generator {
     }).toList();
   }
 
-  List<TokensMetadata> _createTokenMetadata(List<ClassElement> elements) {
-    return elements.map((element) {
-      final annotation = readMixableToken(element);
-
-      return TokensMetadata.fromAnnotation(element, annotation);
-    }).toList();
-  }
-
   // Dependency analysis
 
   DependencyGraph _buildDependencyGraph(
     List<SpecMetadata> specMetadata,
     List<MixableTypeMetadata> propertyMetadata,
     List<UtilityMetadata> utilityMetadata,
-    List<TokensMetadata> tokenMetadata,
   ) {
     final graph = DependencyGraph();
 
@@ -118,7 +105,6 @@ class MixGenerator extends Generator {
       ...specMetadata,
       ...propertyMetadata,
       ...utilityMetadata,
-      ...tokenMetadata,
     ]) {
       graph.addNode(metadata);
     }
@@ -127,7 +113,6 @@ class MixGenerator extends Generator {
     _addSpecDependencies(graph, specMetadata);
     _addPropertyDependencies(graph, propertyMetadata);
     _addUtilityDependencies(graph, utilityMetadata);
-    // Tokens generally don't have dependencies
 
     return graph;
   }
@@ -231,8 +216,7 @@ class MixGenerator extends Generator {
 
     return _specChecker.hasAnnotationOfExact(element) ||
         _propertyChecker.hasAnnotationOfExact(element) ||
-        _utilityChecker.hasAnnotationOfExact(element) ||
-        _tokensChecker.hasAnnotationOfExact(element);
+        _utilityChecker.hasAnnotationOfExact(element);
   }
 
   BaseMetadata? _findMetadataForType(DartType type, DependencyGraph graph) {
@@ -402,19 +386,6 @@ class MixGenerator extends Generator {
     // Use the utility code generator
     final code = UtilityCodeGenerator.generateUtilityMixin(metadata);
     buffer.writeln(code);
-    buffer.writeln();
-  }
-
-  void _generateTokenCode(TokensMetadata metadata, StringBuffer buffer) {
-    // Generate token struct and methods
-    // This is a placeholder - the actual implementation would depend on your token generation logic
-    buffer.writeln("// Token code for ${metadata.name}");
-
-    buffer.writeln(MixableTokensGenerator.generateTokenCode(metadata));
-
-    // Logic to generate token classes and extensions would go here
-    // This would likely involve extracting code from MixableTokensGenerator
-
     buffer.writeln();
   }
 
@@ -603,18 +574,16 @@ class MixGenerator extends Generator {
       final specElements = _getAnnotatedElements(library, _specChecker);
       final propertyElements = _getAnnotatedElements(library, _propertyChecker);
       final utilityElements = _getAnnotatedElements(library, _utilityChecker);
-      final tokenElements = _getAnnotatedElements(library, _tokensChecker);
 
       _logger.info(
         'Generate: Found ${specElements.length} spec elements, ${propertyElements.length} property elements, '
-        '${utilityElements.length} utility elements, ${tokenElements.length} token elements',
+        '${utilityElements.length} utility elements',
       );
 
       // Quick exit if no annotations
       if (specElements.isEmpty &&
           propertyElements.isEmpty &&
-          utilityElements.isEmpty &&
-          tokenElements.isEmpty) {
+          utilityElements.isEmpty) {
         return '';
       }
 
@@ -622,11 +591,10 @@ class MixGenerator extends Generator {
       final specMetadata = _createSpecMetadata(specElements);
       final propertyMetadata = _createPropertyMetadata(propertyElements);
       final utilityMetadata = _createUtilityMetadata(utilityElements);
-      final tokenMetadata = _createTokenMetadata(tokenElements);
 
       _logger.info(
         'Generated metadata: ${specMetadata.length} specs, ${propertyMetadata.length} properties, '
-        '${utilityMetadata.length} utilities, ${tokenMetadata.length} tokens',
+        '${utilityMetadata.length} utilities',
       );
 
       final sourceOrderedElements = library
@@ -635,7 +603,6 @@ class MixGenerator extends Generator {
               _specChecker,
               _propertyChecker,
               _utilityChecker,
-              _tokensChecker,
             ]),
           )
           .map((annotated) => annotated.element)
@@ -657,7 +624,6 @@ class MixGenerator extends Generator {
         specMetadata,
         propertyMetadata,
         utilityMetadata,
-        tokenMetadata,
       );
 
       _logger.info(
@@ -691,7 +657,6 @@ class MixGenerator extends Generator {
         ...specMetadata,
         ...propertyMetadata,
         ...utilityMetadata,
-        ...tokenMetadata,
       ]) {
         metadataMap[metadata.element] = metadata;
         _logger.info(
@@ -710,8 +675,6 @@ class MixGenerator extends Generator {
           _generatePropertyCode(metadata, buffer);
         } else if (metadata is UtilityMetadata) {
           _generateUtilityCode(metadata, buffer);
-        } else if (metadata is TokensMetadata) {
-          _generateTokenCode(metadata, buffer);
         }
       }
 

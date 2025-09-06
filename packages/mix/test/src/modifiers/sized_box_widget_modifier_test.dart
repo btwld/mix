@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/src/core/utility.dart';
 import 'package:mix/src/modifiers/sized_box_widget_modifier.dart';
 
+import '../../helpers/custom_matchers.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
@@ -139,10 +140,9 @@ void main() {
       const attribute =
           SizedBoxModifierSpecAttribute(width: 100.0, height: 100.0);
 
-      final result = attribute.resolve(EmptyMixData);
-
-      expect(result.width, 100.0);
-      expect(result.height, 100.0);
+      expect(attribute, resolvesTo(
+        const SizedBoxModifierSpec(width: 100.0, height: 100.0),
+      ));
     });
 
     test('Equality and hashcode test', () {

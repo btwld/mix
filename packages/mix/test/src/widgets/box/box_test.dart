@@ -15,7 +15,7 @@ void main() {
             style: Style($icon.color.black()),
             child: Box(
               child: WidgetWithTestableBuild((context) {
-                final inheritedStyle = Mix.maybeOf(context);
+                final inheritedStyle = MixProvider.maybeOf(context);
 
                 expect(inheritedStyle?.attributes.length, 0);
               }),
@@ -33,15 +33,17 @@ void main() {
             style: Style($icon.color.black()),
             child: Box(
               inherit: true,
-              child: Builder(builder: (context) {
-                final inheritedStyle = Mix.maybeOf(context)!;
-                final iconSpec = IconSpec.from(inheritedStyle);
+              child: Builder(
+                builder: (context) {
+                  final inheritedStyle = MixProvider.maybeOf(context)!;
+                  final iconSpec = IconSpec.from(inheritedStyle);
 
-                expect(inheritedStyle.attributes.length, 1);
-                expect(iconSpec.color, Colors.black);
+                  expect(inheritedStyle.attributes.length, 1);
+                  expect(iconSpec.color, Colors.black);
 
-                return const SizedBox();
-              }),
+                  return const SizedBox();
+                },
+              ),
             ),
           ),
         );
@@ -57,18 +59,20 @@ void main() {
             child: Box(
               style: Style($box.height(100), $box.width(100)),
               inherit: true,
-              child: Builder(builder: (context) {
-                final inheritedStyle = Mix.maybeOf(context)!;
-                final iconSpec = IconSpec.from(inheritedStyle);
-                final boxSpec = BoxSpec.from(inheritedStyle);
+              child: Builder(
+                builder: (context) {
+                  final inheritedStyle = MixProvider.maybeOf(context)!;
+                  final iconSpec = IconSpec.from(inheritedStyle);
+                  final boxSpec = BoxSpec.from(inheritedStyle);
 
-                expect(inheritedStyle.attributes.length, 2);
-                expect(iconSpec.color, Colors.black);
-                expect(boxSpec.height, 100);
-                expect(boxSpec.width, 100);
+                  expect(inheritedStyle.attributes.length, 2);
+                  expect(iconSpec.color, Colors.black);
+                  expect(boxSpec.height, 100);
+                  expect(boxSpec.width, 100);
 
-                return const SizedBox();
-              }),
+                  return const SizedBox();
+                },
+              ),
             ),
           ),
         );
@@ -84,18 +88,20 @@ void main() {
             child: Box(
               style: Style($box.height(100), $box.width(100)),
               inherit: true,
-              child: Builder(builder: (context) {
-                final inheritedStyle = Mix.maybeOf(context)!;
-                final iconSpec = IconSpec.from(inheritedStyle);
-                final boxSpec = BoxSpec.from(inheritedStyle);
+              child: Builder(
+                builder: (context) {
+                  final inheritedStyle = MixProvider.maybeOf(context)!;
+                  final iconSpec = IconSpec.from(inheritedStyle);
+                  final boxSpec = BoxSpec.from(inheritedStyle);
 
-                expect(inheritedStyle.attributes.length, 2);
-                expect(iconSpec.color, Colors.black);
-                expect(boxSpec.height, 100);
-                expect(boxSpec.width, 100);
+                  expect(inheritedStyle.attributes.length, 2);
+                  expect(iconSpec.color, Colors.black);
+                  expect(boxSpec.height, 100);
+                  expect(boxSpec.width, 100);
 
-                return const SizedBox();
-              }),
+                  return const SizedBox();
+                },
+              ),
             ),
           ),
         );
@@ -111,16 +117,18 @@ void main() {
             child: Box(
               style: Style($box.width(100)),
               inherit: true,
-              child: Builder(builder: (context) {
-                final inheritedStyle = Mix.maybeOf(context)!;
-                final boxSpec = BoxSpec.from(inheritedStyle);
+              child: Builder(
+                builder: (context) {
+                  final inheritedStyle = MixProvider.maybeOf(context)!;
+                  final boxSpec = BoxSpec.from(inheritedStyle);
 
-                expect(inheritedStyle.attributes.length, 1);
-                expect(boxSpec.height, 100);
-                expect(boxSpec.width, 100);
+                  expect(inheritedStyle.attributes.length, 1);
+                  expect(boxSpec.height, 100);
+                  expect(boxSpec.width, 100);
 
-                return const SizedBox();
-              }),
+                  return const SizedBox();
+                },
+              ),
             ),
           ),
         );
@@ -164,10 +172,7 @@ void main() {
         );
 
         expect(
-          find.descendant(
-            of: find.byKey(key),
-            matching: find.byType(Opacity),
-          ),
+          find.descendant(of: find.byKey(key), matching: find.byType(Opacity)),
           findsOneWidget,
         );
 

@@ -5,13 +5,9 @@ import 'package:flutter/widgets.dart';
 import '../../internal/iterable_ext.dart';
 
 @immutable
-abstract class MixToken<T> {
+class MixableToken<T> {
   final String name;
-  const MixToken(this.name);
-
-  T call();
-
-  T resolve(BuildContext context);
+  const MixableToken(this.name);
 
   @override
   operator ==(Object other) {
@@ -19,14 +15,23 @@ abstract class MixToken<T> {
 
     if (runtimeType != other.runtimeType) return false;
 
-    return other is MixToken && other.name == name;
+    return other is MixableToken && other.name == name;
   }
 
   @override
-  int get hashCode => Object.hash(name, runtimeType);
+  String toString() => 'MixableToken<$T>($name)';
+
+  @override
+  int get hashCode => Object.hash(name, T);
 }
 
-mixin TokenRef<T extends MixToken> {
+/// Mixin that provides call() and resolve() methods for MixToken implementations
+mixin MixTokenCallable<T> on MixableToken<T> {
+  T call();
+  T resolve(BuildContext context);
+}
+
+mixin TokenRef<T extends MixableToken> {
   T get token;
 }
 
@@ -36,7 +41,7 @@ mixin WithTokenResolver<V> {
 
 typedef BuildContextResolver<T> = T Function(BuildContext context);
 
-class StyledTokens<T extends MixToken<V>, V> {
+class StyledTokens<T extends MixableToken<V>, V> {
   final Map<T, V> _map;
 
   const StyledTokens(this._map);
@@ -49,11 +54,17 @@ class StyledTokens<T extends MixToken<V>, V> {
   // Looks for the token the value set within the MixToken
   // TODO: Needs to be optimized, but this is a temporary solution
   T? findByRef(V value) {
-    return _map.keys.firstWhereOrNull((token) => token() == value);
+    return _map.keys.firstWhereOrNull((token) {
+      if (token is MixTokenCallable<V>) {
+        return token() == value;
+      }
+
+      return false;
+    });
   }
 
   StyledTokens<T, V> merge(StyledTokens<T, V> other) {
-    final newMap = Map<T, V>.from(_map);
+    final newMap = Map<T, V>.of(_map);
 
     newMap.addAll(other._map);
 

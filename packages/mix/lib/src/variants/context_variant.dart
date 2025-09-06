@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import '../core/element.dart';
 import '../core/factory/style_mix.dart';
+import '../core/mix_element.dart';
 import '../core/variant.dart';
 import 'variant_attribute.dart';
 
@@ -62,7 +62,7 @@ final class ContextVariantBuilder extends VariantAttribute<ContextVariant> {
   final Style Function(BuildContext context) fn;
 
   const ContextVariantBuilder(this.fn, ContextVariant variant)
-      : super(variant, const Style.empty());
+    : super(variant, const Style.empty());
 
   Style Function(BuildContext context) mergeFn(
     Style Function(BuildContext context) other,
@@ -82,19 +82,17 @@ final class ContextVariantBuilder extends VariantAttribute<ContextVariant> {
 
   @override
   @protected
-  Style get value => throw FlutterError.fromParts(
-        [
-          ErrorSummary(
-            'Attempted to access value of ContextVariantBuilder directly.',
-          ),
-          ErrorDescription(
-            'This is a ContextVariantBuilder and requires a BuildContext to resolve.',
-          ),
-          ErrorHint(
-            'Use the build(context) method instead of accessing value directly.',
-          ),
-        ],
-      );
+  Style get value => throw FlutterError.fromParts([
+    ErrorSummary(
+      'Attempted to access value of ContextVariantBuilder directly.',
+    ),
+    ErrorDescription(
+      'This is a ContextVariantBuilder and requires a BuildContext to resolve.',
+    ),
+    ErrorHint(
+      'Use the build(context) method instead of accessing value directly.',
+    ),
+  ]);
 
   @override
   Object get mergeKey => '$runtimeType.${variant.mergeKey}';

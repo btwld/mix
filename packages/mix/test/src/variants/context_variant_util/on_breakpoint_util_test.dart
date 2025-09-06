@@ -5,11 +5,46 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 // Act as an expert in dart and someone with deep understanding of effective dart documentation guidelines. You have been tasked to create comments in the code that help document it for other developers and users when they look at the code. Your comments should be detailed complete, but still concise.
+
+// Helper function to create a theme with breakpoint tokens
+MixScopeData createBreakpointTheme() {
+  return MixScopeData.static(
+    tokens: {
+      BreakpointTokens.xsmall: const Breakpoint(minWidth: 0, maxWidth: 479),
+      BreakpointTokens.small: const Breakpoint(minWidth: 480, maxWidth: 767),
+      BreakpointTokens.medium: const Breakpoint(minWidth: 768, maxWidth: 1279),
+      BreakpointTokens.large: const Breakpoint(
+        minWidth: 1280,
+        maxWidth: double.infinity,
+      ),
+    },
+  );
+}
+
+// Helper function to create a MediaQuery with MixScope for breakpoint testing
+Widget createMediaQueryWithBreakpoints({required Size size}) {
+  return MediaQuery(
+    data: MediaQueryData(size: size),
+    child: MixScope(
+      data: createBreakpointTheme(),
+      child: MaterialApp(
+        home: Scaffold(
+          body: Builder(
+            builder: (BuildContext context) {
+              return Container();
+            },
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
 void main() {
-  const onXSmall = OnBreakpointTokenVariant(BreakpointToken.xsmall);
-  const onSmall = OnBreakpointTokenVariant(BreakpointToken.small);
-  const onMedium = OnBreakpointTokenVariant(BreakpointToken.medium);
-  const onLarge = OnBreakpointTokenVariant(BreakpointToken.large);
+  const onXSmall = OnBreakpointTokenVariant(BreakpointTokens.xsmall);
+  const onSmall = OnBreakpointTokenVariant(BreakpointTokens.small);
+  const onMedium = OnBreakpointTokenVariant(BreakpointTokens.medium);
+  const onLarge = OnBreakpointTokenVariant(BreakpointTokens.large);
 
   group('OnBreakpointToken Utils', () {
     const xSmallScreenWidth = Size(320, 480);
@@ -17,7 +52,9 @@ void main() {
     const mediumScreenWidth = Size(1240, 768);
     const largeScreenWidth = Size(1440, 900);
     testWidgets('xSmall screen context variant', (tester) async {
-      await tester.pumpWidget(createMediaQuery(size: xSmallScreenWidth));
+      await tester.pumpWidget(
+        createMediaQueryWithBreakpoints(size: xSmallScreenWidth),
+      );
       var context = tester.element(find.byType(Container));
 
       expect(onXSmall.when(context), true, reason: 'xsmall');
@@ -27,14 +64,14 @@ void main() {
     });
 
     test('Check equality', () {
-      const xsmall1 = OnBreakpointTokenVariant(BreakpointToken.xsmall);
-      const xsmall2 = OnBreakpointTokenVariant(BreakpointToken.xsmall);
-      const small1 = OnBreakpointTokenVariant(BreakpointToken.small);
-      const small2 = OnBreakpointTokenVariant(BreakpointToken.small);
-      const medium1 = OnBreakpointTokenVariant(BreakpointToken.medium);
-      const medium2 = OnBreakpointTokenVariant(BreakpointToken.medium);
-      const large1 = OnBreakpointTokenVariant(BreakpointToken.large);
-      const large2 = OnBreakpointTokenVariant(BreakpointToken.large);
+      const xsmall1 = OnBreakpointTokenVariant(BreakpointTokens.xsmall);
+      const xsmall2 = OnBreakpointTokenVariant(BreakpointTokens.xsmall);
+      const small1 = OnBreakpointTokenVariant(BreakpointTokens.small);
+      const small2 = OnBreakpointTokenVariant(BreakpointTokens.small);
+      const medium1 = OnBreakpointTokenVariant(BreakpointTokens.medium);
+      const medium2 = OnBreakpointTokenVariant(BreakpointTokens.medium);
+      const large1 = OnBreakpointTokenVariant(BreakpointTokens.large);
+      const large2 = OnBreakpointTokenVariant(BreakpointTokens.large);
 
       expect(xsmall1, equals(xsmall2));
       expect(xsmall1, isNot(equals(small1)));
@@ -59,7 +96,9 @@ void main() {
 
     testWidgets('small screen context variant', (tester) async {
       tester.view.physicalSize = smallScreenWidth;
-      await tester.pumpWidget(createMediaQuery(size: smallScreenWidth));
+      await tester.pumpWidget(
+        createMediaQueryWithBreakpoints(size: smallScreenWidth),
+      );
       var context = tester.element(find.byType(Container));
 
       expect(onXSmall.when(context), false, reason: 'xsmall');
@@ -72,7 +111,9 @@ void main() {
 
     testWidgets('medium screen context variant', (tester) async {
       tester.view.physicalSize = mediumScreenWidth;
-      await tester.pumpWidget(createMediaQuery(size: mediumScreenWidth));
+      await tester.pumpWidget(
+        createMediaQueryWithBreakpoints(size: mediumScreenWidth),
+      );
       var context = tester.element(find.byType(Container));
 
       expect(onXSmall.when(context), false, reason: 'xsmall');
@@ -83,7 +124,9 @@ void main() {
 
     testWidgets('large screen context variant', (tester) async {
       tester.view.physicalSize = largeScreenWidth;
-      await tester.pumpWidget(createMediaQuery(size: largeScreenWidth));
+      await tester.pumpWidget(
+        createMediaQueryWithBreakpoints(size: largeScreenWidth),
+      );
       var context = tester.element(find.byType(Container));
 
       expect(onXSmall.when(context), false, reason: 'xsmall');
@@ -98,11 +141,11 @@ void main() {
     test('OnBreakpointTokenVariant mergeKey', () {
       final style = Style(
         VariantAttribute<OnBreakpointTokenVariant>(
-          const OnBreakpointTokenVariant(BreakpointToken.small),
+          const OnBreakpointTokenVariant(BreakpointTokens.small),
           Style(),
         ),
         VariantAttribute<OnBreakpointTokenVariant>(
-          const OnBreakpointTokenVariant(BreakpointToken.medium),
+          const OnBreakpointTokenVariant(BreakpointTokens.medium),
           Style(),
         ),
       );
@@ -175,15 +218,11 @@ void main() {
     test('OnBreakPointVariant mergeKey', () {
       final style = Style(
         VariantAttribute<OnBreakPointVariant>(
-          const OnBreakPointVariant(
-            Breakpoint(maxWidth: 100, minWidth: 50),
-          ),
+          const OnBreakPointVariant(Breakpoint(maxWidth: 100, minWidth: 50)),
           Style(),
         ),
         VariantAttribute<OnBreakPointVariant>(
-          const OnBreakPointVariant(
-            Breakpoint(maxWidth: 200, minWidth: 50),
-          ),
+          const OnBreakPointVariant(Breakpoint(maxWidth: 200, minWidth: 50)),
           Style(),
         ),
       );

@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../theme/tokens/breakpoints_token.dart';
 import '../widget_state_variant.dart';
 import 'on_breakpoint_util.dart';
 import 'on_brightness_util.dart';
@@ -21,10 +20,10 @@ class OnContextVariantUtility {
   final web = const OnWebVariant();
 
   // Breakpoint variants
-  final small = const OnBreakpointTokenVariant(BreakpointToken.small);
-  final xsmall = const OnBreakpointTokenVariant(BreakpointToken.xsmall);
-  final medium = const OnBreakpointTokenVariant(BreakpointToken.medium);
-  final large = const OnBreakpointTokenVariant(BreakpointToken.large);
+  final small = const OnBreakpointTokenVariant(BreakpointTokens.small);
+  final xsmall = const OnBreakpointTokenVariant(BreakpointTokens.xsmall);
+  final medium = const OnBreakpointTokenVariant(BreakpointTokens.medium);
+  final large = const OnBreakpointTokenVariant(BreakpointTokens.large);
   final breakpoint = OnBreakPointVariant.new;
   final breakpointToken = OnBreakpointTokenVariant.new;
 

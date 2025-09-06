@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/element.dart';
+import '../../core/mix_element.dart';
+import '../../core/utility.dart';
 import '../scalars/scalar_util.dart';
 import 'border_radius_dto.dart';
 
@@ -52,7 +53,27 @@ final class BorderRadiusGeometryUtility<T extends StyleElement>
   late final _bordeRadius = BorderRadiusUtility(builder);
 
   BorderRadiusGeometryUtility(super.builder)
-      : super(valueToDto: (v) => v.toDto());
+    : super(
+        valueToDto: (v) {
+          return switch (v) {
+            BorderRadius() => BorderRadiusDto(
+              topLeft: v.topLeft,
+              topRight: v.topRight,
+              bottomLeft: v.bottomLeft,
+              bottomRight: v.bottomRight,
+            ),
+            BorderRadiusDirectional() => BorderRadiusDirectionalDto(
+              topStart: v.topStart,
+              topEnd: v.topEnd,
+              bottomStart: v.bottomStart,
+              bottomEnd: v.bottomEnd,
+            ),
+            _ => throw ArgumentError(
+              'Unsupported BorderRadiusGeometry type: ${v.runtimeType}',
+            ),
+          };
+        },
+      );
 
   T call(double p1, [double? p2, double? p3, double? p4]) {
     return _bordeRadius(p1, p2, p3, p4);
@@ -94,12 +115,14 @@ final class BorderRadiusUtility<T extends StyleElement>
   late final topRight = RadiusUtility((radius) => only(topRight: radius));
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for all corners.
-  late final all = RadiusUtility((radius) => only(
-        topLeft: radius,
-        topRight: radius,
-        bottomLeft: radius,
-        bottomRight: radius,
-      ));
+  late final all = RadiusUtility(
+    (radius) => only(
+      topLeft: radius,
+      topRight: radius,
+      bottomLeft: radius,
+      bottomRight: radius,
+    ),
+  );
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for topLeft and topRight corner.
   late final top = RadiusUtility(
@@ -129,7 +152,15 @@ final class BorderRadiusUtility<T extends StyleElement>
 
   /// Sets a zero [Radius] for all corners.
   late final zero = all.zero;
-  BorderRadiusUtility(super.builder) : super(valueToDto: (v) => v.toDto());
+  BorderRadiusUtility(super.builder)
+    : super(
+        valueToDto: (v) => BorderRadiusDto(
+          topLeft: v.topLeft,
+          topRight: v.topRight,
+          bottomLeft: v.bottomLeft,
+          bottomRight: v.bottomRight,
+        ),
+      );
 
   T call(double p1, [double? p2, double? p3, double? p4]) {
     double topLeft = p1;
@@ -186,16 +217,25 @@ final class BorderRadiusUtility<T extends StyleElement>
 final class BorderRadiusDirectionalUtility<T extends StyleElement>
     extends DtoUtility<T, BorderRadiusDirectionalDto, BorderRadiusDirectional> {
   BorderRadiusDirectionalUtility(super.builder)
-      : super(valueToDto: (value) => value.toDto());
+    : super(
+        valueToDto: (v) => BorderRadiusDirectionalDto(
+          topStart: v.topStart,
+          topEnd: v.topEnd,
+          bottomStart: v.bottomStart,
+          bottomEnd: v.bottomEnd,
+        ),
+      );
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for all corners.
   RadiusUtility<T> get all {
-    return RadiusUtility((radius) => only(
-          topStart: radius,
-          topEnd: radius,
-          bottomStart: radius,
-          bottomEnd: radius,
-        ));
+    return RadiusUtility(
+      (radius) => only(
+        topStart: radius,
+        topEnd: radius,
+        bottomStart: radius,
+        bottomEnd: radius,
+      ),
+    );
   }
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for topStart and topEnd corner.
@@ -219,9 +259,7 @@ final class BorderRadiusDirectionalUtility<T extends StyleElement>
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for topEnd and bottomEnd corner.
   RadiusUtility<T> get end {
-    return RadiusUtility(
-      (radius) => only(topEnd: radius, bottomEnd: radius),
-    );
+    return RadiusUtility((radius) => only(topEnd: radius, bottomEnd: radius));
   }
 
   /// Returns a [RadiusUtility] to manipulate [Radius] for topStart corner.

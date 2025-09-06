@@ -158,7 +158,7 @@ class RenderAnimatedModifiers extends StatelessWidget {
         mix,
         modifiers,
         orderOfModifiers,
-        defaultOrder: MixTheme.maybeOf(context)?.defaultOrderOfModifiers,
+        defaultOrder: MixScope.maybeOf(context)?.defaultOrderOfModifiers,
       ).reversed.toList(),
       duration: duration,
       curve: curve,

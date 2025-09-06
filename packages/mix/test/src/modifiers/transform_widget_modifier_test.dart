@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../helpers/custom_matchers.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
@@ -68,9 +69,9 @@ void main() {
       test('resolve', () {
         final modifier =
             TransformModifierSpecAttribute(transform: Matrix4.rotationX(0.5));
-        final result = modifier.resolve(EmptyMixData);
-        expect(result, isA<TransformModifierSpec>());
-        expect(result.transform, Matrix4.rotationX(0.5));
+        expect(modifier, resolvesTo(
+          TransformModifierSpec(transform: Matrix4.rotationX(0.5)),
+        ));
       });
 
       // equality
@@ -143,8 +144,12 @@ void main() {
       expect(result.transform, Matrix4.rotationZ(math.pi / 2));
       expect(result.alignment, Alignment.center);
 
-      final spec = result.resolve(EmptyMixData);
-      expect(spec.transform, Matrix4.rotationZ(math.pi / 2));
+      expect(result, resolvesTo(
+        TransformModifierSpec(
+          transform: Matrix4.rotationZ(math.pi / 2),
+          alignment: Alignment.center,
+        ),
+      ));
     });
 
     test('translate', () {
@@ -157,9 +162,12 @@ void main() {
       expect(result.transform, Matrix4.translationValues(10, 20, 0));
       expect(result.alignment, Alignment.center);
 
-      final spec = result.resolve(EmptyMixData);
-
-      expect(spec.transform, Matrix4.translationValues(10, 20, 0));
+      expect(result, resolvesTo(
+        TransformModifierSpec(
+          transform: Matrix4.translationValues(10, 20, 0),
+          alignment: Alignment.center,
+        ),
+      ));
     });
   });
 

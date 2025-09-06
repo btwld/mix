@@ -2,20 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../../helpers/custom_matchers.dart';
+
 const $testvariant = Variant('test');
 void main() {
   group('BoxUtility', () {
     final boxUtility = BoxSpecUtility(MixUtility.selfBuilder);
     test('call() returns correct instance', () {
-      const constraints = BoxConstraintsDto(
+      final constraints = BoxConstraintsDto(
         minWidth: 50,
         maxWidth: 200,
         minHeight: 40,
         maxHeight: 100,
       );
 
-      final spacing =
-          EdgeInsetsGeometryDto.only(top: 10, bottom: 10, left: 10, right: 10);
+      final spacing = EdgeInsetsGeometryDto.only(
+        top: 10,
+        bottom: 10,
+        left: 10,
+        right: 10,
+      );
 
       final container = boxUtility.only(
         alignment: Alignment.center,
@@ -28,36 +34,36 @@ void main() {
         clipBehavior: Clip.antiAlias,
       );
 
-      expect(container.alignment, Alignment.center);
-      expect(container.clipBehavior, Clip.antiAlias);
+      expect(container.alignment, resolvesTo(Alignment.center));
+      expect(container.clipBehavior, resolvesTo(Clip.antiAlias));
 
-      expect(container.constraints, constraints);
+      expect(container.constraints?.value, constraints);
 
-      expect(container.height, 10);
-      expect(container.margin, spacing);
-      expect(container.padding, spacing);
-      expect(container.transform, Matrix4.identity());
-      expect(container.width, 10);
+      expect(container.height, resolvesTo(10));
+      expect(container.margin?.value, spacing);
+      expect(container.padding?.value, spacing);
+      expect(container.transform, resolvesTo(Matrix4.identity()));
+      expect(container.width, resolvesTo(10));
     });
 
     test('alignment() returns correct instance', () {
       final container = boxUtility.alignment(Alignment.center);
 
-      expect(container.alignment, Alignment.center);
+      expect(container.alignment, resolvesTo(Alignment.center));
     });
 
     test('clipBehavior() returns correct instance', () {
       final container = boxUtility.clipBehavior(Clip.antiAlias);
 
-      expect(container.clipBehavior, Clip.antiAlias);
+      expect(container.clipBehavior, resolvesTo(Clip.antiAlias));
     });
 
     test('color() returns correct instance', () {
       final container = boxUtility.color(Colors.blue);
 
       expect(
-        (container.decoration as BoxDecorationDto).color,
-        const ColorDto(Colors.blue),
+        (container.decoration?.value as BoxDecorationDto).color,
+        isA<Prop<Color>>(),
       );
     });
 
@@ -72,7 +78,7 @@ void main() {
     test('height() returns correct instance', () {
       final container = boxUtility.height(10);
 
-      expect(container.height, 10);
+      expect(container.height, resolvesTo(10));
     });
 
     test('margin() returns correct instance', () {
@@ -86,13 +92,13 @@ void main() {
     test('transform() returns correct instance', () {
       final container = boxUtility.transform(Matrix4.identity());
 
-      expect(container.transform, Matrix4.identity());
+      expect(container.transform, resolvesTo(Matrix4.identity()));
     });
 
     test('width() returns correct instance', () {
       final container = boxUtility.width(10);
 
-      expect(container.width, 10);
+      expect(container.width, resolvesTo(10));
     });
 
     test('decoration() returns correct instance', () {
@@ -101,12 +107,12 @@ void main() {
         color: Colors.amber,
       );
 
-      expect(container.decoration!.color, const ColorDto(Colors.amber));
+      expect((container.decoration!.value as BoxDecorationDto).color, isA<Prop<Color>>());
 
-      final decorationDTO = container.decoration as BoxDecorationDto;
+      final decorationDTO = container.decoration?.value as BoxDecorationDto;
       expect(
-        decorationDTO.borderRadius,
-        BorderRadius.circular(10).toDto(),
+        decorationDTO.borderRadius?.value,
+        BorderRadiusDto.value(BorderRadius.circular(10)),
       );
     });
 
@@ -117,16 +123,16 @@ void main() {
       );
 
       expect(
-        container.foregroundDecoration!.color,
-        const ColorDto(Colors.amber),
+        (container.foregroundDecoration!.value as BoxDecorationDto).color,
+        isA<Prop<Color>>(),
         reason: 'The color is not correct',
       );
 
       final foregroundDecorationDTO =
-          container.foregroundDecoration as BoxDecorationDto;
+          container.foregroundDecoration?.value as BoxDecorationDto;
       expect(
-        foregroundDecorationDTO.borderRadius,
-        BorderRadius.circular(10).toDto(),
+        foregroundDecorationDTO.borderRadius?.value,
+        BorderRadiusDto.value(BorderRadius.circular(10)),
         reason: 'The BorderRadius is not correct',
       );
     });

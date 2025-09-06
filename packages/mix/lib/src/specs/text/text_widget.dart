@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../core/spec_widget.dart';
 import '../../core/animated_spec_widget.dart';
+import '../../core/spec_widget.dart';
 import '../../core/styled_widget.dart';
 import '../../modifiers/internal/render_widget_modifier.dart';
 import 'text_spec.dart';
@@ -87,11 +87,7 @@ class TextSpecWidget extends SpecWidget<TextSpec> {
         locale: locale,
         softWrap: spec?.softWrap,
         overflow: spec?.overflow,
-        textScaler: spec?.textScaler ??
-            (spec?.textScaleFactor != null
-                // ignore: deprecated_member_use, deprecated_member_use_from_same_package
-                ? TextScaler.linear(spec!.textScaleFactor!)
-                : null),
+        textScaler: spec?.textScaler,
         maxLines: spec?.maxLines,
         semanticsLabel: semanticsLabel,
         textWidthBasis: spec?.textWidthBasis,

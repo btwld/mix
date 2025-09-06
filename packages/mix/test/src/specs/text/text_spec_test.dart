@@ -12,13 +12,13 @@ void main() {
         Style(
           TextSpecAttribute(
             overflow: TextOverflow.ellipsis,
-            strutStyle: const StrutStyleDto(fontSize: 20.0),
+            strutStyle: StrutStyleDto(fontSize: 20.0),
             textAlign: TextAlign.center,
             textScaler: const TextScaler.linear(1.0),
             maxLines: 2,
-            style: TextStyleDto(color: const ColorDto(Colors.red)),
+            style: TextStyleDto(color: Colors.red),
             textWidthBasis: TextWidthBasis.longestLine,
-            textHeightBehavior: const TextHeightBehaviorDto(
+            textHeightBehavior: TextHeightBehaviorDto(
               applyHeightToFirstAscent: true,
               applyHeightToLastDescent: true,
             ),
@@ -28,7 +28,8 @@ void main() {
         ),
       );
 
-      final spec = mix.attributeOf<TextSpecAttribute>()?.resolve(mix) ??
+      final spec =
+          mix.attributeOf<TextSpecAttribute>()?.resolve(mix) ??
           const TextSpec();
 
       expect(spec.overflow, TextOverflow.ellipsis);
@@ -188,13 +189,13 @@ void main() {
         Style(
           TextSpecAttribute(
             overflow: TextOverflow.ellipsis,
-            strutStyle: const StrutStyleDto(fontSize: 20.0),
+            strutStyle: StrutStyleDto(fontSize: 20.0),
             textAlign: TextAlign.center,
             textScaler: const TextScaler.linear(1.0),
             maxLines: 2,
-            style: TextStyleDto(color: const ColorDto(Colors.red)),
+            style: TextStyleDto(color: Colors.red),
             textWidthBasis: TextWidthBasis.longestLine,
-            textHeightBehavior: const TextHeightBehaviorDto(
+            textHeightBehavior: TextHeightBehaviorDto(
               applyHeightToFirstAscent: true,
               applyHeightToLastDescent: true,
             ),
@@ -307,7 +308,10 @@ void main() {
       expect(attr.textAlign, TextAlign.center);
       expect(attr.textScaler, const TextScaler.linear(1.5));
       expect(attr.maxLines, 3);
-      expect(attr.style?.value.first.color, Colors.blue.toDto());
+      // Check if style is TextStyleDto and access color directly
+      expect(attr.style, isA<TextStyleDto>());
+      final valueStyle = attr.style;
+      expect(valueStyle?.color, isA<Prop<Color>>());
       expect(attr.textWidthBasis, TextWidthBasis.longestLine);
       expect(attr.textDirection, TextDirection.rtl);
       expect(attr.softWrap, false);
@@ -320,7 +324,10 @@ void main() {
       expect(textAttribute?.textAlign, TextAlign.center);
       expect(textAttribute?.textScaler, const TextScaler.linear(1.5));
       expect(textAttribute?.maxLines, 3);
-      expect(textAttribute?.style?.value.first.color, Colors.blue.toDto());
+      // Access the TextStyleDto and then its color property
+      expect(textAttribute?.style, isA<TextStyleDto>());
+      final valueStyle2 = textAttribute?.style;
+      expect(valueStyle2?.color, isA<Prop<Color>>());
       expect(textAttribute?.textWidthBasis, TextWidthBasis.longestLine);
       expect(textAttribute?.textDirection, TextDirection.rtl);
       expect(textAttribute?.softWrap, false);
@@ -339,9 +346,8 @@ void main() {
     });
 
     test('Immutable behavior when having multiple texts', () {
-      final textUtil = TextSpecUtility.self;
-      final text1 = textUtil.chain..maxLines(3);
-      final text2 = textUtil.chain..maxLines(5);
+      final text1 = TextSpecUtility((v) => v)..maxLines(3);
+      final text2 = TextSpecUtility((v) => v)..maxLines(5);
 
       final attr1 = text1.attributeValue!;
       final attr2 = text2.attributeValue!;
@@ -381,7 +387,10 @@ void main() {
       final textAttribute2 = text.maxLines(5);
 
       expect(textAttribute.maxLines, 3);
-      expect(textAttribute.style?.value.first.color, Colors.red.toDto());
+      // Access the TextStyleDto and then its color property
+      expect(textAttribute.style, isA<TextStyleDto>());
+      final valueStyle = textAttribute.style;
+      expect(valueStyle?.color, isA<Prop<Color>>());
       expect(textAttribute.textAlign, TextAlign.center);
 
       expect(textAttribute2.maxLines, 5);

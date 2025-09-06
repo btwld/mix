@@ -1,5 +1,5 @@
 import '../../core/directive.dart';
-import '../../core/element.dart';
+import '../../core/mix_element.dart';
 import '../../core/utility.dart';
 import '../../internal/string_ext.dart';
 

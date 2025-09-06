@@ -42,8 +42,8 @@ class MixableTypeMethods {
     final params = buildParameters(fields, (field) {
       final fieldName = useInternalRef ? field.asInternalRef : field.name;
 
-      // Special handling for AnimatedDataDto
-      if (field.resolvable?.type == 'AnimatedDataDto') {
+      // Special handling for AnimationConfigDto
+      if (field.resolvable?.type == 'AnimationConfigDto') {
         return '$fieldName?.resolve(mix) ?? mix.animation';
       }
 

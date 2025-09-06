@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../helpers/custom_matchers.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
@@ -68,8 +69,9 @@ void main() {
     test('resolve', () {
       const modifier =
           FlexibleModifierSpecAttribute(flex: 1, fit: FlexFit.tight);
-      final result = modifier.resolve(EmptyMixData);
-      expect(result, isA<FlexibleModifierSpec>());
+      expect(modifier, resolvesTo(
+        const FlexibleModifierSpec(flex: 1, fit: FlexFit.tight),
+      ));
     });
 
     // equality

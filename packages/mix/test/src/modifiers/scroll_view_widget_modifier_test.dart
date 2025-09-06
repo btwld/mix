@@ -15,7 +15,7 @@ void main() {
         const clip = Clip.antiAlias;
         const physics = AlwaysScrollableScrollPhysics();
 
-        final modifier = ScrollViewModifierSpec(
+        const modifier = ScrollViewModifierSpec(
           scrollDirection: axis,
           reverse: reverse,
           padding: padding,
@@ -42,10 +42,8 @@ void main() {
     testWidgets(
       'ScrollViewModifierSpec and SingleChildScrollView default values are equal',
       (tester) async {
-        final modifier = ScrollViewModifierSpec();
-        final scrollView = SingleChildScrollView(
-          child: Container(),
-        );
+        const modifier = ScrollViewModifierSpec();
+        final scrollView = SingleChildScrollView(child: Container());
 
         await tester.pumpMaterialApp(modifier.build(Container()));
 
@@ -60,10 +58,14 @@ void main() {
         expect(scrollViewWidget.clipBehavior, scrollView.clipBehavior);
         expect(scrollViewWidget.physics, scrollView.physics);
         expect(
-            scrollViewWidget.dragStartBehavior, scrollView.dragStartBehavior);
+          scrollViewWidget.dragStartBehavior,
+          scrollView.dragStartBehavior,
+        );
         expect(scrollViewWidget.restorationId, scrollView.restorationId);
-        expect(scrollViewWidget.keyboardDismissBehavior,
-            scrollView.keyboardDismissBehavior);
+        expect(
+          scrollViewWidget.keyboardDismissBehavior,
+          scrollView.keyboardDismissBehavior,
+        );
         expect(scrollViewWidget.controller, scrollView.controller);
       },
     );
@@ -75,7 +77,7 @@ void main() {
       () {
         const axis = Axis.horizontal;
         const reverse = true;
-        const padding = EdgeInsetsDto.all(8.0);
+        final padding = EdgeInsetsDto.all(8.0);
         const clip = Clip.antiAlias;
         const physics = AlwaysScrollableScrollPhysics();
 
@@ -97,7 +99,7 @@ void main() {
 
     test('Spec utility methods sets correct values', () {
       const axis = Axis.horizontal;
-      const padding = EdgeInsetsDto.all(8.0);
+      final padding = EdgeInsetsDto.all(8.0);
       const clip = Clip.antiAlias;
       const physics = AlwaysScrollableScrollPhysics();
 

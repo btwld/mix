@@ -2,24 +2,22 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:mix/mix.dart';
-import 'package:mix_annotations/mix_annotations.dart';
-
-import '../../internal/constants.dart';
-import '../../internal/mix_error.dart';
-
-part 'gradient_dto.g.dart';
 
 /// Represents a base Data transfer object of [Gradient]
 ///
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a `[Gradient]
 @immutable
-sealed class GradientDto<T extends Gradient> extends Mixable<T>
+sealed class GradientDto<T extends Gradient> extends Mix<T>
     with HasDefaultValue<T> {
-  final List<double>? stops;
-  final List<ColorDto>? colors;
-  final GradientTransform? transform;
-  const GradientDto({this.stops, this.colors, this.transform});
+  final Prop<List<double>>? stops;
+  final Prop<List<Color>>? colors;
+  final Prop<GradientTransform>? transform;
+  const GradientDto({
+    required this.stops,
+    required this.colors,
+    required this.transform,
+  });
 
   static B _exhaustiveMerge<A extends GradientDto, B extends GradientDto>(
     A a,
@@ -34,6 +32,21 @@ sealed class GradientDto<T extends Gradient> extends Mixable<T>
     };
   }
 
+  static GradientDto<T> value<T extends Gradient>(T value) {
+    return switch (value) {
+      (LinearGradient v) => LinearGradientDto.value(v) as GradientDto<T>,
+      (RadialGradient v) => RadialGradientDto.value(v) as GradientDto<T>,
+      (SweepGradient v) => SweepGradientDto.value(v) as GradientDto<T>,
+      _ => throw ArgumentError(
+        'Unsupported Gradient type: ${value.runtimeType}',
+      ),
+    };
+  }
+
+  static GradientDto<T>? maybeValue<T extends Gradient>(T? value) {
+    return value != null ? GradientDto.value(value) : null;
+  }
+
   static GradientDto? tryToMerge(GradientDto? a, GradientDto? b) {
     if (b == null) return a;
     if (a == null) return b;
@@ -41,24 +54,39 @@ sealed class GradientDto<T extends Gradient> extends Mixable<T>
     return a.runtimeType == b.runtimeType ? a.merge(b) : _exhaustiveMerge(a, b);
   }
 
+  @protected
   LinearGradientDto asLinearGradient() {
-    return LinearGradientDto(
+    return LinearGradientDto.props(
+      begin: null,
+      end: null,
+      tileMode: null,
       transform: transform,
       colors: colors,
       stops: stops,
     );
   }
 
+  @protected
   RadialGradientDto asRadialGradient() {
-    return RadialGradientDto(
+    return RadialGradientDto.props(
+      center: null,
+      radius: null,
+      tileMode: null,
+      focal: null,
+      focalRadius: null,
       transform: transform,
       colors: colors,
       stops: stops,
     );
   }
 
+  @protected
   SweepGradientDto asSweepGradient() {
-    return SweepGradientDto(
+    return SweepGradientDto.props(
+      center: null,
+      startAngle: null,
+      endAngle: null,
+      tileMode: null,
       transform: transform,
       colors: colors,
       stops: stops,
@@ -74,53 +102,224 @@ sealed class GradientDto<T extends Gradient> extends Mixable<T>
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a `[LinearGradient]
 
-@MixableType()
-final class LinearGradientDto extends GradientDto<LinearGradient>
-    with _$LinearGradientDto {
-  final AlignmentGeometry? begin;
-  final AlignmentGeometry? end;
-  final TileMode? tileMode;
+final class LinearGradientDto extends GradientDto<LinearGradient> {
+  final Prop<AlignmentGeometry>? begin;
+  final Prop<AlignmentGeometry>? end;
+  final Prop<TileMode>? tileMode;
 
-  const LinearGradientDto({
-    this.begin,
-    this.end,
-    this.tileMode,
-    super.transform,
-    super.colors,
-    super.stops,
+  factory LinearGradientDto({
+    AlignmentGeometry? begin,
+    AlignmentGeometry? end,
+    TileMode? tileMode,
+    GradientTransform? transform,
+    List<Color>? colors,
+    List<double>? stops,
+  }) {
+    return LinearGradientDto.props(
+      begin: Prop.maybeValue(begin),
+      end: Prop.maybeValue(end),
+      tileMode: Prop.maybeValue(tileMode),
+      transform: Prop.maybeValue(transform),
+      colors: Prop.maybeValue(colors),
+      stops: Prop.maybeValue(stops),
+    );
+  }
+
+  /// Constructor that accepts a [LinearGradient] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [LinearGradient] instances to [LinearGradientDto].
+  ///
+  /// ```dart
+  /// const gradient = LinearGradient(colors: [Colors.red, Colors.blue]);
+  /// final dto = LinearGradientDto.value(gradient);
+  /// ```
+  factory LinearGradientDto.value(LinearGradient gradient) {
+    return LinearGradientDto(
+      begin: gradient.begin,
+      end: gradient.end,
+      tileMode: gradient.tileMode,
+      transform: gradient.transform,
+      colors: gradient.colors,
+      stops: gradient.stops,
+    );
+  }
+
+  const LinearGradientDto.props({
+    required this.begin,
+    required this.end,
+    required this.tileMode,
+    required super.transform,
+    required super.colors,
+    required super.stops,
   });
+
+  /// Constructor that accepts a nullable [LinearGradient] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [LinearGradientDto.value].
+  ///
+  /// ```dart
+  /// const LinearGradient? gradient = LinearGradient(colors: [Colors.red, Colors.blue]);
+  /// final dto = LinearGradientDto.maybeValue(gradient); // Returns LinearGradientDto or null
+  /// ```
+  static LinearGradientDto? maybeValue(LinearGradient? gradient) {
+    return gradient != null ? LinearGradientDto.value(gradient) : null;
+  }
+
+  @override
+  LinearGradient resolve(MixContext context) {
+    return LinearGradient(
+      begin: resolveProp(context, begin) ?? defaultValue.begin,
+      end: resolveProp(context, end) ?? defaultValue.end,
+      colors: resolveProp(context, colors) ?? defaultValue.colors,
+      stops: resolveProp(context, stops) ?? defaultValue.stops,
+      tileMode: resolveProp(context, tileMode) ?? defaultValue.tileMode,
+      transform: resolveProp(context, transform) ?? defaultValue.transform,
+    );
+  }
+
+  @override
+  LinearGradientDto merge(LinearGradientDto? other) {
+    if (other == null) return this;
+
+    return LinearGradientDto.props(
+      begin: mergeProp(begin, other.begin),
+      end: mergeProp(end, other.end),
+      tileMode: mergeProp(tileMode, other.tileMode),
+      transform: mergeProp(transform, other.transform),
+      colors: mergeProp(colors, other.colors),
+      stops: mergeProp(stops, other.stops),
+    );
+  }
+
   @override
   LinearGradient get defaultValue => const LinearGradient(colors: []);
+
+  @override
+  List<Object?> get props => [begin, end, tileMode, transform, colors, stops];
 }
 
 /// Represents a Data transfer object of [RadialGradient]
 ///
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a `[RadialGradient]
-@MixableType()
-final class RadialGradientDto extends GradientDto<RadialGradient>
-    with _$RadialGradientDto {
-  final AlignmentGeometry? center;
-  final double? radius;
+final class RadialGradientDto extends GradientDto<RadialGradient> {
+  final Prop<AlignmentGeometry>? center;
+  final Prop<double>? radius;
+  final Prop<TileMode>? tileMode;
+  final Prop<AlignmentGeometry>? focal;
+  final Prop<double>? focalRadius;
 
-  // focalRadius
-  final TileMode? tileMode;
-  final AlignmentGeometry? focal;
+  factory RadialGradientDto({
+    AlignmentGeometry? center,
+    double? radius,
+    TileMode? tileMode,
+    AlignmentGeometry? focal,
+    double? focalRadius,
+    GradientTransform? transform,
+    List<Color>? colors,
+    List<double>? stops,
+  }) {
+    return RadialGradientDto.props(
+      center: Prop.maybeValue(center),
+      radius: Prop.maybeValue(radius),
+      tileMode: Prop.maybeValue(tileMode),
+      focal: Prop.maybeValue(focal),
+      focalRadius: Prop.maybeValue(focalRadius),
+      transform: Prop.maybeValue(transform),
+      colors: Prop.maybeValue(colors),
+      stops: Prop.maybeValue(stops),
+    );
+  }
 
-  final double? focalRadius;
+  /// Constructor that accepts a [RadialGradient] value and extracts its properties.
+  ///
+  /// This is useful for converting existing [RadialGradient] instances to [RadialGradientDto].
+  ///
+  /// ```dart
+  /// const gradient = RadialGradient(colors: [Colors.red, Colors.blue]);
+  /// final dto = RadialGradientDto.value(gradient);
+  /// ```
+  factory RadialGradientDto.value(RadialGradient gradient) {
+    return RadialGradientDto(
+      center: gradient.center,
+      radius: gradient.radius,
+      tileMode: gradient.tileMode,
+      focal: gradient.focal,
+      focalRadius: gradient.focalRadius,
+      transform: gradient.transform,
+      colors: gradient.colors,
+      stops: gradient.stops,
+    );
+  }
 
-  const RadialGradientDto({
-    this.center,
-    this.radius,
-    this.tileMode,
-    this.focal,
-    this.focalRadius,
-    super.transform,
-    super.colors,
-    super.stops,
+  const RadialGradientDto.props({
+    required this.center,
+    required this.radius,
+    required this.tileMode,
+    required this.focal,
+    required this.focalRadius,
+    required super.transform,
+    required super.colors,
+    required super.stops,
   });
+
+  /// Constructor that accepts a nullable [RadialGradient] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [RadialGradientDto.value].
+  ///
+  /// ```dart
+  /// const RadialGradient? gradient = RadialGradient(colors: [Colors.red, Colors.blue]);
+  /// final dto = RadialGradientDto.maybeValue(gradient); // Returns RadialGradientDto or null
+  /// ```
+  static RadialGradientDto? maybeValue(RadialGradient? gradient) {
+    return gradient != null ? RadialGradientDto.value(gradient) : null;
+  }
+
+  @override
+  RadialGradient resolve(MixContext context) {
+    return RadialGradient(
+      center: resolveProp(context, center) ?? defaultValue.center,
+      radius: resolveProp(context, radius) ?? defaultValue.radius,
+      colors: resolveProp(context, colors) ?? defaultValue.colors,
+      stops: resolveProp(context, stops) ?? defaultValue.stops,
+      tileMode: resolveProp(context, tileMode) ?? defaultValue.tileMode,
+      focal: resolveProp(context, focal) ?? defaultValue.focal,
+      focalRadius:
+          resolveProp(context, focalRadius) ?? defaultValue.focalRadius,
+      transform: resolveProp(context, transform) ?? defaultValue.transform,
+    );
+  }
+
+  @override
+  RadialGradientDto merge(RadialGradientDto? other) {
+    if (other == null) return this;
+
+    return RadialGradientDto.props(
+      center: mergeProp(center, other.center),
+      radius: mergeProp(radius, other.radius),
+      tileMode: mergeProp(tileMode, other.tileMode),
+      focal: mergeProp(focal, other.focal),
+      focalRadius: mergeProp(focalRadius, other.focalRadius),
+      transform: mergeProp(transform, other.transform),
+      colors: mergeProp(colors, other.colors),
+      stops: mergeProp(stops, other.stops),
+    );
+  }
+
   @override
   RadialGradient get defaultValue => const RadialGradient(colors: []);
+
+  @override
+  List<Object?> get props => [
+    center,
+    radius,
+    tileMode,
+    focal,
+    focalRadius,
+    transform,
+    colors,
+    stops,
+  ];
 }
 
 /// Represents a Data transfer object of [SweepGradient]
@@ -128,81 +327,113 @@ final class RadialGradientDto extends GradientDto<RadialGradient>
 /// This is used to allow for resolvable value tokens, and also the correct
 /// merge and combining behavior. It allows to be merged, and resolved to a `[SweepGradient]
 
-@MixableType()
-final class SweepGradientDto extends GradientDto<SweepGradient>
-    with _$SweepGradientDto {
-  final AlignmentGeometry? center;
-  final double? startAngle;
-  final double? endAngle;
+final class SweepGradientDto extends GradientDto<SweepGradient> {
+  final Prop<AlignmentGeometry>? center;
+  final Prop<double>? startAngle;
+  final Prop<double>? endAngle;
+  final Prop<TileMode>? tileMode;
 
-  final TileMode? tileMode;
-
-  const SweepGradientDto({
-    this.center,
-    this.startAngle,
-    this.endAngle,
-    this.tileMode,
-    super.transform,
-    super.colors,
-    super.stops,
-  });
-  @override
-  SweepGradient get defaultValue => const SweepGradient(colors: []);
-}
-
-extension GradientExt on Gradient {
-  // toDto
-  GradientDto toDto() {
-    final self = this;
-    if (self is LinearGradient) return (self).toDto();
-    if (self is RadialGradient) return (self).toDto();
-    if (self is SweepGradient) return (self).toDto();
-
-    throw MixError.unsupportedTypeInDto(
-      Gradient,
-      ['LinearGradient', 'RadialGradient', 'SweepGradient'],
+  factory SweepGradientDto({
+    AlignmentGeometry? center,
+    double? startAngle,
+    double? endAngle,
+    TileMode? tileMode,
+    GradientTransform? transform,
+    List<Color>? colors,
+    List<double>? stops,
+  }) {
+    return SweepGradientDto.props(
+      center: Prop.maybeValue(center),
+      startAngle: Prop.maybeValue(startAngle),
+      endAngle: Prop.maybeValue(endAngle),
+      tileMode: Prop.maybeValue(tileMode),
+      transform: Prop.maybeValue(transform),
+      colors: Prop.maybeValue(colors),
+      stops: Prop.maybeValue(stops),
     );
   }
-}
 
-/// A utility class for working with gradients.
-///
-/// This class provides convenient methods for creating different types of gradients,
-/// such as radial gradients, linear gradients, and sweep gradients.
-/// It also provides a method for converting a generic [Gradient] object to a specific type [T].
-///
-/// Accepts a [builder] function that takes a [GradientDto] and returns an object of type [T].
-final class GradientUtility<T extends StyleElement>
-    extends MixUtility<T, GradientDto> {
-  late final radial = RadialGradientUtility(builder);
-  late final linear = LinearGradientUtility(builder);
-  late final sweep = SweepGradientUtility(builder);
-
-  GradientUtility(super.builder);
-
-  /// Converts a [Gradient] object to the specific type [T].
+  /// Constructor that accepts a [SweepGradient] value and extracts its properties.
   ///
-  /// Throws an [UnimplementedError] if the given gradient type is not supported.
-  T as(Gradient gradient) {
-    switch (gradient) {
-      case RadialGradient():
-        return radial.as(gradient);
-      case LinearGradient():
-        return linear.as(gradient);
-      case SweepGradient():
-        return sweep.as(gradient);
-    }
-
-    throw FlutterError.fromParts([
-      ErrorSummary('Mix does not support custom gradient implementations.'),
-      ErrorDescription(
-        'The provided gradient of type ${gradient.runtimeType} is not supported.',
-      ),
-      ErrorHint(
-        'If you believe this gradient type should be supported, please open an issue at '
-        '$mixIssuesUrl with details about your implementation '
-        'and its use case.',
-      ),
-    ]);
+  /// This is useful for converting existing [SweepGradient] instances to [SweepGradientDto].
+  ///
+  /// ```dart
+  /// const gradient = SweepGradient(colors: [Colors.red, Colors.blue]);
+  /// final dto = SweepGradientDto.value(gradient);
+  /// ```
+  factory SweepGradientDto.value(SweepGradient gradient) {
+    return SweepGradientDto(
+      center: gradient.center,
+      startAngle: gradient.startAngle,
+      endAngle: gradient.endAngle,
+      tileMode: gradient.tileMode,
+      transform: gradient.transform,
+      colors: gradient.colors,
+      stops: gradient.stops,
+    );
   }
+
+  const SweepGradientDto.props({
+    required this.center,
+    required this.startAngle,
+    required this.endAngle,
+    required this.tileMode,
+    required super.transform,
+    required super.colors,
+    required super.stops,
+  });
+
+  /// Constructor that accepts a nullable [SweepGradient] value and extracts its properties.
+  ///
+  /// Returns null if the input is null, otherwise uses [SweepGradientDto.value].
+  ///
+  /// ```dart
+  /// const SweepGradient? gradient = SweepGradient(colors: [Colors.red, Colors.blue]);
+  /// final dto = SweepGradientDto.maybeValue(gradient); // Returns SweepGradientDto or null
+  /// ```
+  static SweepGradientDto? maybeValue(SweepGradient? gradient) {
+    return gradient != null ? SweepGradientDto.value(gradient) : null;
+  }
+
+  @override
+  SweepGradient resolve(MixContext context) {
+    return SweepGradient(
+      center: resolveProp(context, center) ?? defaultValue.center,
+      startAngle: resolveProp(context, startAngle) ?? defaultValue.startAngle,
+      endAngle: resolveProp(context, endAngle) ?? defaultValue.endAngle,
+      colors: resolveProp(context, colors) ?? defaultValue.colors,
+      stops: resolveProp(context, stops) ?? defaultValue.stops,
+      tileMode: resolveProp(context, tileMode) ?? defaultValue.tileMode,
+      transform: resolveProp(context, transform) ?? defaultValue.transform,
+    );
+  }
+
+  @override
+  SweepGradientDto merge(SweepGradientDto? other) {
+    if (other == null) return this;
+
+    return SweepGradientDto.props(
+      center: mergeProp(center, other.center),
+      startAngle: mergeProp(startAngle, other.startAngle),
+      endAngle: mergeProp(endAngle, other.endAngle),
+      tileMode: mergeProp(tileMode, other.tileMode),
+      transform: mergeProp(transform, other.transform),
+      colors: mergeProp(colors, other.colors),
+      stops: mergeProp(stops, other.stops),
+    );
+  }
+
+  @override
+  SweepGradient get defaultValue => const SweepGradient(colors: []);
+
+  @override
+  List<Object?> get props => [
+    center,
+    startAngle,
+    endAngle,
+    tileMode,
+    transform,
+    colors,
+    stops,
+  ];
 }

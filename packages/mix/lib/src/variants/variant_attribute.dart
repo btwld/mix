@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
-import '../core/element.dart';
 import '../core/factory/style_mix.dart';
+import '../core/mix_element.dart';
 import '../core/variant.dart';
 
 @immutable

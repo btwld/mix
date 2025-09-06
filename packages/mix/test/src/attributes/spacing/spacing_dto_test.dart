@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../../helpers/testing_utils.dart';
+import '../../../helpers/custom_matchers.dart';
 
 void main() {
   group('SpacingDto', () {
@@ -15,8 +15,8 @@ void main() {
       );
 
       expect(
-        spacingDto.resolve(EmptyMixData),
-        const EdgeInsets.only(left: 30, top: 10, right: 40, bottom: 20),
+        spacingDto,
+        resolvesTo(const EdgeInsets.only(left: 30, top: 10, right: 40, bottom: 20)),
       );
     });
 

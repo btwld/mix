@@ -8,8 +8,9 @@ import '../../helpers/testing_utils.dart';
 
 void main() {
   group('Modifiers: ', () {
-    const aspectRatio =
-        AspectRatioModifierSpecUtility(UtilityTestAttribute.new);
+    const aspectRatio = AspectRatioModifierSpecUtility(
+      UtilityTestAttribute.new,
+    );
     const flexible = FlexibleModifierSpecUtility(UtilityTestAttribute.new);
     const visibility = VisibilityModifierSpecUtility(UtilityTestAttribute.new);
     final transform = TransformModifierSpecUtility(UtilityTestAttribute.new);
@@ -20,15 +21,19 @@ void main() {
     const clipRRect = ClipRRectModifierSpecUtility(UtilityTestAttribute.new);
     const clipOval = ClipOvalModifierSpecUtility(UtilityTestAttribute.new);
     const clipRect = ClipRectModifierSpecUtility(UtilityTestAttribute.new);
-    const clipTriangle =
-        ClipTriangleModifierSpecUtility(UtilityTestAttribute.new);
+    const clipTriangle = ClipTriangleModifierSpecUtility(
+      UtilityTestAttribute.new,
+    );
     final sizedBox = SizedBoxModifierSpecUtility(UtilityTestAttribute.new);
-    const fractionallySizedBox =
-        FractionallySizedBoxModifierSpecUtility(UtilityTestAttribute.new);
-    const intrinsicHeight =
-        IntrinsicHeightModifierSpecUtility(UtilityTestAttribute.new);
-    const intrinsicWidth =
-        IntrinsicWidthModifierSpecUtility(UtilityTestAttribute.new);
+    const fractionallySizedBox = FractionallySizedBoxModifierSpecUtility(
+      UtilityTestAttribute.new,
+    );
+    const intrinsicHeight = IntrinsicHeightModifierSpecUtility(
+      UtilityTestAttribute.new,
+    );
+    const intrinsicWidth = IntrinsicWidthModifierSpecUtility(
+      UtilityTestAttribute.new,
+    );
     const align = AlignModifierSpecUtility(UtilityTestAttribute.new);
 
     test('aspectRatio creates AspectRatioModifier correctly', () {
@@ -46,9 +51,8 @@ void main() {
 
     test('default flexible creates FlexibleModifierUtility correctly', () {
       final flexibleModifier = flexible();
-      final widget = flexibleModifier.value
-          .resolve(EmptyMixData)
-          .build(const Empty()) as Flexible;
+      final resolved = flexibleModifier.value.resolve(EmptyMixData);
+      final widget = resolved.build(const Empty()) as Flexible;
 
       expect(flexibleModifier.value.fit, null);
       expect(widget, isA<Flexible>());
@@ -87,55 +91,49 @@ void main() {
     });
 
     test('clipRRect creates ClipRRectModifier correctly', () {
-      final clipRRectModifier =
-          clipRRect(borderRadius: BorderRadius.circular(10.0));
+      final clipRRectModifier = clipRRect(
+        borderRadius: BorderRadius.circular(10.0),
+      );
 
       final modifier = clipRRectModifier.value;
 
-      expect(modifier.borderRadius, BorderRadius.circular(10.0).toDto());
+      expect(
+        modifier.borderRadius,
+        BorderRadiusDto.value(BorderRadius.circular(10.0)),
+      );
     });
 
     test('clipOval creates ClipOvalModifier correctly', () {
       final clipOvalModifier = clipOval();
 
-      expect(
-        clipOvalModifier.value.resolve(EmptyMixData).build(const Empty()),
-        isA<ClipOval>(),
-      );
+      final resolved = clipOvalModifier.value.resolve(EmptyMixData);
+      expect(resolved.build(const Empty()), isA<ClipOval>());
     });
     test('clipPath creates ClipPathModifier correctly', () {
       final clipPathModifier = clipPath();
 
-      expect(
-        clipPathModifier.value.resolve(EmptyMixData).build(const Empty()),
-        isA<ClipPath>(),
-      );
+      final resolved = clipPathModifier.value.resolve(EmptyMixData);
+      expect(resolved.build(const Empty()), isA<ClipPath>());
     });
 
     // clipTriangle
     test('clipTriangle creates ClipTriangleModifier correctly', () {
       final clipTriangleModifier = clipTriangle();
 
-      expect(
-        clipTriangleModifier.value.resolve(EmptyMixData).build(const Empty()),
-        isA<ClipPath>(),
-      );
+      final resolved = clipTriangleModifier.value.resolve(EmptyMixData);
+      expect(resolved.build(const Empty()), isA<ClipPath>());
     });
 
     test('intrinsicHeight creates IntrinsicHeightModifier correctly', () {
-      final widget = intrinsicHeight()
-          .value
-          .resolve(EmptyMixData)
-          .build(const Empty()) as IntrinsicHeight;
+      final resolved = intrinsicHeight().value.resolve(EmptyMixData);
+      final widget = resolved.build(const Empty()) as IntrinsicHeight;
 
       expect(widget, isA<IntrinsicHeight>());
     });
 
     test('intrinsicWidth creates IntrinsicWidthModifier correctly', () {
-      final widget = intrinsicWidth()
-          .value
-          .resolve(EmptyMixData)
-          .build(const Empty()) as IntrinsicWidth;
+      final resolved = intrinsicWidth().value.resolve(EmptyMixData);
+      final widget = resolved.build(const Empty()) as IntrinsicWidth;
 
       expect(widget, isA<IntrinsicWidth>());
     });
@@ -143,10 +141,8 @@ void main() {
     test('clipRect creates ClipRectModifier correctly', () {
       final clipRectModifier = clipRect();
 
-      expect(
-        clipRectModifier.value.resolve(EmptyMixData).build(const Empty()),
-        isA<ClipRect>(),
-      );
+      final resolved = clipRectModifier.value.resolve(EmptyMixData);
+      expect(resolved.build(const Empty()), isA<ClipRect>());
     });
 
     test('visibility creates VisibilityModifier correctly', () {
@@ -162,9 +158,8 @@ void main() {
     test('sizedBox creates SizedBoxModifier correctly', () {
       final sizedBoxModifier = sizedBox(height: 100, width: 100);
 
-      final widget = sizedBoxModifier.value
-          .resolve(EmptyMixData)
-          .build(const Empty()) as SizedBox;
+      final resolved = sizedBoxModifier.value.resolve(EmptyMixData);
+      final widget = resolved.build(const Empty()) as SizedBox;
 
       expect(widget.width, 100);
       expect(widget.height, 100);
@@ -178,9 +173,10 @@ void main() {
           widthFactor: 0.5,
         );
 
-        final widget = fractionallySizedBoxModifier.value
-            .resolve(EmptyMixData)
-            .build(const Empty()) as FractionallySizedBox;
+        final resolved = fractionallySizedBoxModifier.value.resolve(
+          EmptyMixData,
+        );
+        final widget = resolved.build(const Empty()) as FractionallySizedBox;
 
         expect(widget.widthFactor, 0.5);
         expect(widget.heightFactor, 0.5);
@@ -191,9 +187,8 @@ void main() {
     test('align creates AlignModifier correctly', () {
       final alignModifier = align(alignment: Alignment.center);
 
-      final widget = alignModifier.value
-          .resolve(EmptyMixData)
-          .build(const Empty()) as Align;
+      final resolved = alignModifier.value.resolve(EmptyMixData);
+      final widget = resolved.build(const Empty()) as Align;
 
       expect(widget.alignment, Alignment.center);
     });
@@ -203,116 +198,70 @@ void main() {
       'Applying an intrinsicHeight must add an IntrinsicHeight in widget tree',
       (tester) async {
         await tester.pumpWidget(
-          _TestableRenderModifier(
-            Style(
-              $with.intrinsicHeight(),
-            ),
-          ),
+          _TestableRenderModifier(Style($with.intrinsicHeight())),
         );
 
         _expectOneWidgetOfType<IntrinsicHeight>();
       },
     );
 
-    testWidgets(
-      'Applying a scale must add a ScaleTransition in widget tree',
-      (tester) async {
-        await tester.pumpWidget(
-          _TestableRenderModifier(
-            Style(
-              $with.scale(2.0),
-            ),
-          ),
-        );
+    testWidgets('Applying a scale must add a ScaleTransition in widget tree', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_TestableRenderModifier(Style($with.scale(2.0))));
 
-        _expectOneWidgetOfType<Transform>();
-      },
-    );
+      _expectOneWidgetOfType<Transform>();
+    });
 
-    testWidgets(
-      'Applying an opacity must add an Opacity in widget tree',
-      (tester) async {
-        await tester.pumpWidget(
-          _TestableRenderModifier(
-            Style(
-              $with.opacity(0.5),
-            ),
-          ),
-        );
+    testWidgets('Applying an opacity must add an Opacity in widget tree', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _TestableRenderModifier(Style($with.opacity(0.5))),
+      );
 
-        _expectOneWidgetOfType<Opacity>();
-      },
-    );
+      _expectOneWidgetOfType<Opacity>();
+    });
 
-    testWidgets(
-      'Applying a clipPath must add a ClipPath in widget tree',
-      (tester) async {
-        await tester.pumpWidget(
-          _TestableRenderModifier(
-            Style(
-              $with.clipPath(),
-            ),
-          ),
-        );
+    testWidgets('Applying a clipPath must add a ClipPath in widget tree', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_TestableRenderModifier(Style($with.clipPath())));
 
-        _expectOneWidgetOfType<ClipPath>();
-      },
-    );
+      _expectOneWidgetOfType<ClipPath>();
+    });
 
-    testWidgets(
-      'Applying a clipRRect must add a ClipRRect in widget tree',
-      (tester) async {
-        await tester.pumpWidget(
-          _TestableRenderModifier(
-            Style(
-              $with.clipRRect(),
-            ),
-          ),
-        );
+    testWidgets('Applying a clipRRect must add a ClipRRect in widget tree', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _TestableRenderModifier(Style($with.clipRRect())),
+      );
 
-        _expectOneWidgetOfType<ClipRRect>();
-      },
-    );
+      _expectOneWidgetOfType<ClipRRect>();
+    });
 
-    testWidgets(
-      'Applying a clipOval must add a ClipOval in widget tree',
-      (tester) async {
-        await tester.pumpWidget(
-          _TestableRenderModifier(
-            Style(
-              $with.clipOval(),
-            ),
-          ),
-        );
+    testWidgets('Applying a clipOval must add a ClipOval in widget tree', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_TestableRenderModifier(Style($with.clipOval())));
 
-        _expectOneWidgetOfType<ClipOval>();
-      },
-    );
+      _expectOneWidgetOfType<ClipOval>();
+    });
 
-    testWidgets(
-      'Applying a clipRect must add a ClipRect in widget tree',
-      (tester) async {
-        await tester.pumpWidget(
-          _TestableRenderModifier(
-            Style(
-              $with.clipRect(),
-            ),
-          ),
-        );
+    testWidgets('Applying a clipRect must add a ClipRect in widget tree', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_TestableRenderModifier(Style($with.clipRect())));
 
-        _expectOneWidgetOfType<ClipRect>();
-      },
-    );
+      _expectOneWidgetOfType<ClipRect>();
+    });
 
     testWidgets(
       'Applying a visibility must add a Visibility widget in the widget tree',
       (tester) async {
         await tester.pumpWidget(
-          _TestableRenderModifier(
-            Style(
-              $with.visibility.off(),
-            ),
-          ),
+          _TestableRenderModifier(Style($with.visibility.off())),
         );
 
         _expectOneWidgetOfType<Visibility>();
@@ -323,11 +272,7 @@ void main() {
       'Applying an aspectRatio must add an AspectRatio widget in the widget tree',
       (tester) async {
         await tester.pumpWidget(
-          _TestableRenderModifier(
-            Style(
-              $with.aspectRatio(2),
-            ),
-          ),
+          _TestableRenderModifier(Style($with.aspectRatio(2))),
         );
 
         _expectOneWidgetOfType<AspectRatio>();
@@ -338,15 +283,7 @@ void main() {
       'Applying a flexible must add a Flexible widget in the widget tree',
       (tester) async {
         await tester.pumpWidget(
-          Column(
-            children: [
-              _TestableRenderModifier(
-                Style(
-                  $with.flexible(),
-                ),
-              ),
-            ],
-          ),
+          Column(children: [_TestableRenderModifier(Style($with.flexible()))]),
         );
 
         _expectOneWidgetOfType<Flexible>();
@@ -357,11 +294,7 @@ void main() {
       'Applying a transform must add a Transform widget in the widget tree',
       (tester) async {
         await tester.pumpWidget(
-          _TestableRenderModifier(
-            Style(
-              $with.transform(Matrix4.identity()),
-            ),
-          ),
+          _TestableRenderModifier(Style($with.transform(Matrix4.identity()))),
         );
 
         _expectOneWidgetOfType<Transform>();
@@ -371,13 +304,7 @@ void main() {
     testWidgets(
       'Applying an align must add an Align widget in the widget tree',
       (tester) async {
-        await tester.pumpWidget(
-          _TestableRenderModifier(
-            Style(
-              $with.align(),
-            ),
-          ),
-        );
+        await tester.pumpWidget(_TestableRenderModifier(Style($with.align())));
 
         _expectOneWidgetOfType<Align>();
       },
@@ -387,11 +314,7 @@ void main() {
       'Applying a fractionallySizedBox must add a FractionallySizedBox widget in the widget tree',
       (tester) async {
         await tester.pumpWidget(
-          _TestableRenderModifier(
-            Style(
-              $with.fractionallySizedBox(),
-            ),
-          ),
+          _TestableRenderModifier(Style($with.fractionallySizedBox())),
         );
 
         _expectOneWidgetOfType<FractionallySizedBox>();
@@ -402,11 +325,7 @@ void main() {
       'Applying a sizedBox must add a SizedBox widget in the widget tree',
       (tester) async {
         await tester.pumpWidget(
-          _TestableRenderModifier(
-            Style(
-              $with.sizedBox(),
-            ),
-          ),
+          _TestableRenderModifier(Style($with.sizedBox())),
         );
 
         _expectOneWidgetOfType<SizedBox>();

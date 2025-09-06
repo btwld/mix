@@ -2,31 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../../helpers/testing_utils.dart';
+import '../../../helpers/custom_matchers.dart';
 
 void main() {
   group('IconSpecAttribute', () {
     test('resolve should return an instance of IconSpec', () {
-      const attribute = IconSpecAttribute();
-      final resolvedSpec = attribute.resolve(EmptyMixData);
-      expect(resolvedSpec, isA<IconSpec>());
+      final attribute = IconSpecAttribute();
+      expect(attribute, resolvesTo(const IconSpec()));
     });
 
     test('merge should return a new instance of IconSpecAttribute', () {
-      const shadows = [
-        ShadowDto(
-          color: ColorDto(
-            Colors.black,
-          ),
-        ),
-        ShadowDto(
-          color: ColorDto(Colors.black),
-        ),
+      final shadows = [
+        ShadowDto(color: Colors.black),
+        ShadowDto(color: Colors.black),
       ];
 
-      const attribute1 = IconSpecAttribute(
+      final attribute1 = IconSpecAttribute(
         size: 24,
-        color: ColorDto(Colors.black),
+        color: Colors.black,
         weight: 24,
         grade: 24,
         opticalSize: 24,
@@ -36,21 +29,15 @@ void main() {
         applyTextScaling: true,
       );
 
-      const attribute2 = IconSpecAttribute(
+      final attribute2 = IconSpecAttribute(
         size: 32,
-        color: ColorDto(Colors.white),
+        color: Colors.white,
         weight: 32,
         grade: 32,
         opticalSize: 32,
         shadows: [
-          ShadowDto(
-            color: ColorDto(
-              Colors.black,
-            ),
-          ),
-          ShadowDto(
-            color: ColorDto(Colors.white),
-          ),
+          ShadowDto(color: Colors.black),
+          ShadowDto(color: Colors.white),
         ],
         fill: 32,
         textDirection: TextDirection.rtl,
@@ -59,53 +46,38 @@ void main() {
 
       final mergedAttribute = attribute1.merge(attribute2);
       expect(mergedAttribute, isA<IconSpecAttribute>());
-      expect(mergedAttribute.size, equals(32));
-      expect(mergedAttribute.weight, equals(32));
-
-      expect(mergedAttribute.color, equals(const ColorDto(Colors.white)));
-      expect(mergedAttribute.grade, equals(32));
-      expect(mergedAttribute.opticalSize, equals(32));
-      expect(mergedAttribute.fill, equals(32));
+      expect(mergedAttribute.size, resolvesTo(32));
+      expect(mergedAttribute.weight, resolvesTo(32));
+      expect(mergedAttribute.color, resolvesTo(Colors.white));
+      expect(mergedAttribute.grade, resolvesTo(32));
+      expect(mergedAttribute.opticalSize, resolvesTo(32));
+      expect(mergedAttribute.fill, resolvesTo(32));
       expect(mergedAttribute.textDirection, equals(TextDirection.rtl));
       expect(mergedAttribute.applyTextScaling, equals(true));
       expect(
         mergedAttribute.shadows,
-        equals(
-          [
-            const ShadowDto(
-              color: ColorDto(
-                Colors.black,
-              ),
-            ),
-            const ShadowDto(
-              color: ColorDto(Colors.white),
-            ),
-          ],
-        ),
+        equals([
+          MixProp<Shadow, ShadowDto>.value(ShadowDto(color: Colors.black)),
+          MixProp<Shadow, ShadowDto>.value(ShadowDto(color: Colors.white)),
+        ]),
       );
     });
 
     test('props should return a list of size and color', () {
       const size = 24.0;
-      const color = ColorDto(Colors.black);
+      const color = Colors.black;
       const applyTextScaling = true;
       const fill = 2.0;
       const grade = 2.0;
       const opticalSize = 2.0;
-      const shadows = [
-        ShadowDto(
-          color: ColorDto(
-            Colors.black,
-          ),
-        ),
-        ShadowDto(
-          color: ColorDto(Colors.black),
-        ),
+      final shadows = [
+        ShadowDto(color: Colors.black),
+        ShadowDto(color: Colors.black),
       ];
       const textDirection = TextDirection.ltr;
       const weight = 2.0;
 
-      const attribute = IconSpecAttribute(
+      final attribute = IconSpecAttribute(
         size: size,
         color: color,
         applyTextScaling: applyTextScaling,
@@ -117,15 +89,21 @@ void main() {
         weight: weight,
       );
 
-      expect(attribute.size, equals(size));
-      expect(attribute.color, equals(color));
+      expect(attribute.size, resolvesTo(size));
+      expect(attribute.color, resolvesTo(color));
       expect(attribute.applyTextScaling, equals(applyTextScaling));
-      expect(attribute.fill, equals(fill));
-      expect(attribute.grade, equals(grade));
-      expect(attribute.opticalSize, equals(opticalSize));
-      expect(attribute.shadows, equals(shadows));
+      expect(attribute.fill, resolvesTo(fill));
+      expect(attribute.grade, resolvesTo(grade));
+      expect(attribute.opticalSize, resolvesTo(opticalSize));
+      expect(
+        attribute.shadows,
+        equals([
+          MixProp<Shadow, ShadowDto>.value(ShadowDto(color: Colors.black)),
+          MixProp<Shadow, ShadowDto>.value(ShadowDto(color: Colors.black)),
+        ]),
+      );
       expect(attribute.textDirection, equals(textDirection));
-      expect(attribute.weight, equals(weight));
+      expect(attribute.weight, resolvesTo(weight));
     });
   });
 }
