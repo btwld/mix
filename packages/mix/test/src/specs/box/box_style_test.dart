@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
-import 'package:mix/src/core/internal/color_values.dart';
 
 import '../../../helpers/testing_utils.dart';
 
@@ -168,11 +167,11 @@ void main() {
 
     group('Instance Methods', () {
       test('color method sets decoration color', () {
-        final boxMix = BoxStyler().color(ColorValues.purple);
+        final boxMix = BoxStyler().color(MixColors.purple);
 
         expect(boxMix.$decoration, isNotNull);
         final decoration = boxMix.$decoration!.resolveProp(MockBuildContext());
-        expect((decoration as BoxDecoration).color, ColorValues.purple);
+        expect((decoration as BoxDecoration).color, MixColors.purple);
       });
 
       test('width method sets fixed width constraints', () {

@@ -160,6 +160,7 @@ export 'src/style/mixins/variant_style_mixin.dart';
 /// THEME
 export 'src/theme/material/material_theme.dart';
 export 'src/theme/material/material_tokens.dart';
+export 'src/theme/mix_colors.dart';
 export 'src/theme/mix_theme.dart';
 export 'src/theme/tokens/mix_token.dart';
 

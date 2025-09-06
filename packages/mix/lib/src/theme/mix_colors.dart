@@ -1,38 +1,50 @@
+// ABOUTME: This file defines MixColors, a comprehensive collection of color constants and swatches
+// ABOUTME: similar to Flutter's Colors class but specifically for the Mix framework
 import 'package:flutter/widgets.dart';
 
-class ColorValues {
+/// A class that defines a comprehensive set of colors and color swatches for the Mix framework.
+///
+/// Similar to Flutter's [Colors] class, [MixColors] provides a wide range of Material Design
+/// color swatches along with basic colors like [transparent], [black], and [white] with opacity variants.
+///
+/// Example usage:
+/// ```dart
+/// Style(
+///   $box.color(MixColors.blue),
+///   $text.style.color(MixColors.red),
+/// )
+/// ```
+///
+/// For accessing specific shades:
+/// ```dart
+/// MixColors.blueSwatch[300]  // Light blue
+/// MixColors.redSwatch[700]   // Dark red
+/// ```
+class MixColors {
+  // Basic colors
   static const transparent = Color(0x00000000);
   static const black = Color(0xFF000000);
-
   static const white = Color(0xFFFFFFFF);
 
   // Black variants
   static const black87 = Color(0xDD000000);
-
   static const black54 = Color(0x8A000000);
-
   static const black45 = Color(0x73000000);
-
   static const black38 = Color(0x61000000);
-
   static const black26 = Color(0x42000000);
-
   static const black12 = Color(0x1F000000);
 
   // White variants
   static const white70 = Color(0xB3FFFFFF);
-
   static const white60 = Color(0x99FFFFFF);
-
   static const white54 = Color(0x8AFFFFFF);
-
   static const white38 = Color(0x62FFFFFF);
-
   static const white30 = Color(0x4DFFFFFF);
   static const white24 = Color(0x3DFFFFFF);
   static const white12 = Color(0x1FFFFFFF);
+  static const white10 = Color(0x1AFFFFFF);
 
-  static const white10 = Color(0x1AFFFFFF); // Color swatches - Primary colors
+  // Color swatches - Primary colors
   static const redSwatch = ColorSwatch<int>(0xFFF44336, {
     50: Color(0xFFFFEBEE),
     100: Color(0xFFFFCDD2),
@@ -45,6 +57,7 @@ class ColorValues {
     800: Color(0xFFC62828),
     900: Color(0xFFB71C1C),
   });
+
   static const pinkSwatch = ColorSwatch<int>(0xFFE91E63, {
     50: Color(0xFFFCE4EC),
     100: Color(0xFFF8BBD0),
@@ -57,6 +70,7 @@ class ColorValues {
     800: Color(0xFFAD1457),
     900: Color(0xFF880E4F),
   });
+
   static const purpleSwatch = ColorSwatch<int>(0xFF9C27B0, {
     50: Color(0xFFF3E5F5),
     100: Color(0xFFE1BEE7),
@@ -69,6 +83,7 @@ class ColorValues {
     800: Color(0xFF6A1B9A),
     900: Color(0xFF4A148C),
   });
+
   static const deepPurpleSwatch = ColorSwatch<int>(0xFF673AB7, {
     50: Color(0xFFEDE7F6),
     100: Color(0xFFD1C4E9),
@@ -81,6 +96,7 @@ class ColorValues {
     800: Color(0xFF4527A0),
     900: Color(0xFF311B92),
   });
+
   static const indigoSwatch = ColorSwatch<int>(0xFF3F51B5, {
     50: Color(0xFFE8EAF6),
     100: Color(0xFFC5CAE9),
@@ -106,6 +122,7 @@ class ColorValues {
     800: Color(0xFF1565C0),
     900: Color(0xFF0D47A1),
   });
+
   static const lightBlueSwatch = ColorSwatch<int>(0xFF03A9F4, {
     50: Color(0xFFE1F5FE),
     100: Color(0xFFB3E5FC),
@@ -118,6 +135,7 @@ class ColorValues {
     800: Color(0xFF0277BD),
     900: Color(0xFF01579B),
   });
+
   static const cyanSwatch = ColorSwatch<int>(0xFF00BCD4, {
     50: Color(0xFFE0F7FA),
     100: Color(0xFFB2EBF2),
@@ -130,6 +148,7 @@ class ColorValues {
     800: Color(0xFF00838F),
     900: Color(0xFF006064),
   });
+
   static const tealSwatch = ColorSwatch<int>(0xFF009688, {
     50: Color(0xFFE0F2F1),
     100: Color(0xFFB2DFDB),
@@ -142,6 +161,7 @@ class ColorValues {
     800: Color(0xFF00695C),
     900: Color(0xFF004D40),
   });
+
   static const greenSwatch = ColorSwatch<int>(0xFF4CAF50, {
     50: Color(0xFFE8F5E9),
     100: Color(0xFFC8E6C9),
@@ -154,6 +174,7 @@ class ColorValues {
     800: Color(0xFF2E7D32),
     900: Color(0xFF1B5E20),
   });
+
   static const lightGreenSwatch = ColorSwatch<int>(0xFF8BC34A, {
     50: Color(0xFFF1F8E9),
     100: Color(0xFFDCEDC8),
@@ -166,6 +187,7 @@ class ColorValues {
     800: Color(0xFF558B2F),
     900: Color(0xFF33691E),
   });
+
   static const limeSwatch = ColorSwatch<int>(0xFFCDDC39, {
     50: Color(0xFFF9FBE7),
     100: Color(0xFFF0F4C3),
@@ -178,6 +200,7 @@ class ColorValues {
     800: Color(0xFF9E9D24),
     900: Color(0xFF827717),
   });
+
   static const yellowSwatch = ColorSwatch<int>(0xFFFFEB3B, {
     50: Color(0xFFFFFDE7),
     100: Color(0xFFFFF9C4),
@@ -384,8 +407,8 @@ class ColorValues {
     700: Color(0xFFDD2C00),
   });
 
+  // Color aliases that point to the main swatch color (500 shade)
   static final red = redSwatch;
-
   static final pink = pinkSwatch;
   static final purple = purpleSwatch;
   static final deepPurple = deepPurpleSwatch;
@@ -404,8 +427,9 @@ class ColorValues {
   static final brown = brownSwatch;
   static final grey = greySwatch;
   static final blueGrey = blueGreySwatch;
-  static final redAccent = redAccentSwatch;
 
+  // Accent color aliases
+  static final redAccent = redAccentSwatch;
   static final pinkAccent = pinkAccentSwatch;
   static final purpleAccent = purpleAccentSwatch;
   static final deepPurpleAccent = deepPurpleAccentSwatch;
@@ -421,5 +445,7 @@ class ColorValues {
   static final amberAccent = amberAccentSwatch;
   static final orangeAccent = orangeAccentSwatch;
   static final deepOrangeAccent = deepOrangeAccentSwatch;
-  const ColorValues._();
+
+  // Private constructor to prevent instantiation
+  const MixColors._();
 }

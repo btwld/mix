@@ -5,6 +5,9 @@ import 'package:flutter/widgets.dart';
 import 'material/material_theme.dart';
 import 'tokens/mix_token.dart';
 
+@Deprecated('Use MixScope instead')
+typedef MixTheme = MixScope;
+
 /// Inherited widget that provides Mix theme data and token resolution to its descendants.
 ///
 /// The [MixScope] is the root of the Mix theming system, providing access to design tokens,
@@ -43,7 +46,6 @@ class MixScope extends InheritedModel<String> {
   const MixScope.empty({required super.child, super.key})
     : _tokens = null,
       orderOfModifiers = null;
-
 
   /// Creates a MixScope with Material design tokens pre-configured
   ///
