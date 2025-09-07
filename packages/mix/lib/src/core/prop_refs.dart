@@ -29,6 +29,7 @@ To use as an actual $typeName value:
   }
 }
 
+/// Token reference for [Color] values with directive support.
 final class ColorProp extends Prop<Color>
     with ValueRef<Color>
     implements Color {
@@ -260,18 +261,21 @@ final class GradientProp extends Prop<Gradient>
   GradientProp(super.prop) : super.fromProp();
 }
 
+/// Token reference for [LinearGradient] values.
 final class LinearGradientProp extends Prop<LinearGradient>
     with ValueRef<LinearGradient>
     implements LinearGradient {
   LinearGradientProp(super.prop) : super.fromProp();
 }
 
+/// Token reference for [RadialGradient] values.
 final class RadialGradientProp extends Prop<RadialGradient>
     with ValueRef<RadialGradient>
     implements RadialGradient {
   RadialGradientProp(super.prop) : super.fromProp();
 }
 
+/// Token reference for [SweepGradient] values.
 final class SweepGradientProp extends Prop<SweepGradient>
     with ValueRef<SweepGradient>
     implements SweepGradient {
@@ -311,6 +315,7 @@ final class BoxDecorationProp extends Prop<BoxDecoration>
   }
 }
 
+/// Token reference for [BorderSide] values.
 final class BorderSideProp extends Prop<BorderSide>
     with ValueRef<BorderSide>
     implements BorderSide {
@@ -412,6 +417,9 @@ void clearTokenRegistry() {
   _tokenRegistry.clear();
 }
 
+/// Asserts that the given type is not a token reference type.
+///
+/// Used in testing to ensure proper type usage in generics.
 @visibleForTesting
 void assertIsRealType(Type value) {
   // Only check if the value is a TokenRef type that should be replaced
@@ -480,11 +488,18 @@ void assertIsRealType(Type value) {
   );
 }
 
+/// Gets the token associated with a token reference value.
+///
+/// Returns the [MixToken] if the value is a registered token reference,
+/// or null if it's not a token reference.
 MixToken<T>? getTokenFromValue<T>(Object value) {
   return _tokenRegistry[value] as MixToken<T>?;
 }
 
-/// Checks if a value is any type of token reference (class-based or extension type)
+/// Checks if a value is any type of token reference.
+///
+/// Returns true for both class-based token references (Prop with ValueRef)
+/// and extension type token references registered in the token registry.
 bool isAnyTokenRef(Object value) {
   // Check if it's a class-based token reference (extends Prop with ValueRef mixin)
   // We can check if it has the ValueRef mixin by checking if it has a token source
@@ -500,6 +515,10 @@ bool isAnyTokenRef(Object value) {
   return _tokenRegistry.containsKey(value);
 }
 
+/// Creates the appropriate token reference type for the given token.
+///
+/// Returns a token reference that implements the target type T,
+/// allowing the token to be used wherever T is expected.
 T getReferenceValue<T>(MixToken<T> token) {
   final prop = Prop.token(token);
   if (T == Color) {

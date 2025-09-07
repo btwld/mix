@@ -18,7 +18,7 @@ import 'modifier.dart';
 import 'spec.dart';
 import 'style_spec.dart';
 
-/// This is used just to pass all the values into one place if needed
+/// Marker interface for style-related elements.
 @internal
 sealed class StyleElement {
   const StyleElement();

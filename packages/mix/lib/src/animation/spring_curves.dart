@@ -10,9 +10,9 @@ class SpringCurve extends Curve {
   SpringCurve({
     double mass = 1.0,
     double stiffness = 180.0,
-    double damping = 0.8,
+    double damping = 12.0,
   }) : _sim = SpringSimulation(
-         SpringDescription(mass: 1.0, stiffness: 180.0, damping: 0.8),
+         SpringDescription(mass: mass, stiffness: stiffness, damping: damping),
          0.0,
          1.0,
          0.0,

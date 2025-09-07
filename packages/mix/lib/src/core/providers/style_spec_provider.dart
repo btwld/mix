@@ -11,6 +11,9 @@ class StyleSpecProvider<T extends Spec<T>> extends InheritedWidget {
     required super.child,
   });
 
+  /// Gets the closest [StyleSpec] from the widget tree.
+  ///
+  /// Creates a dependency on the provider, causing rebuilds when the spec changes.
   static StyleSpec<T>? of<T extends Spec<T>>(BuildContext context) {
     final provider = context
         .dependOnInheritedWidgetOfExactType<StyleSpecProvider<T>>();
@@ -18,6 +21,7 @@ class StyleSpecProvider<T extends Spec<T>> extends InheritedWidget {
     return provider?.spec;
   }
 
+  /// The resolved style spec provided to descendant widgets.
   final StyleSpec<T> spec;
 
   @override

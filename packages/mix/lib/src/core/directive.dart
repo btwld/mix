@@ -40,7 +40,7 @@ class OpacityColorDirective extends Directive<Color> {
   int get hashCode => opacity.hashCode;
 }
 
-/// Directive tha tapplies withValues to a color
+/// Directive that applies withValues to a color.
 class WithValuesColorDirective extends Directive<Color> {
   final double? alpha;
   final double? red;
