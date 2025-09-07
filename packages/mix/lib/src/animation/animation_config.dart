@@ -11,7 +11,7 @@ import 'spring_curves.dart';
 ///
 /// This sealed class provides different types of animation configurations
 /// for use with animated widgets and style transitions.
-sealed class AnimationConfig {
+sealed class AnimationConfig with Equatable {
   factory AnimationConfig.curve({
     required Duration duration,
     required Curve curve,
@@ -320,11 +320,6 @@ sealed class AnimationConfig {
     );
   }
 
-  /// No Animation
-  static AnimationConfig none() {
-    return const NoAnimationConfig();
-  }
-
   /// Creates a spring animation configuration with standard spring physics.
   static SpringAnimationConfig springDescription({
     double mass = 1.0,
@@ -370,22 +365,11 @@ sealed class AnimationConfig {
   );
 }
 
-/// No animation configuration that bypasses all animation.
-///
-/// This configuration is used when no animation should occur,
-/// providing immediate spec changes without any interpolation.
-final class NoAnimationConfig extends AnimationConfig with Equatable {
-  const NoAnimationConfig();
-
-  @override
-  List<Object?> get props => [];
-}
-
 /// Curve-based animation configuration with fixed duration.
 ///
 /// This configuration provides duration, curve, and optional completion callback
 /// for animations that follow a specific curve over a fixed time period.
-final class CurveAnimationConfig extends AnimationConfig with Equatable {
+final class CurveAnimationConfig extends AnimationConfig {
   final Duration duration;
   final Curve curve;
   final Duration delay;
@@ -731,19 +715,7 @@ final class CurveAnimationConfig extends AnimationConfig with Equatable {
   );
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is CurveAnimationConfig &&
-        other.duration == duration &&
-        other.curve == curve;
-  }
-
-  @override
-  List<Object?> get props => [duration, curve, delay, onEnd];
-
-  @override
-  int get hashCode => Object.hash(duration, curve);
+  List<Object?> get props => [duration, curve, delay];
 }
 
 /// Spring-based animation configuration for physics-based animations.
@@ -814,6 +786,9 @@ final class SpringAnimationConfig extends AnimationConfig {
   @override
   int get hashCode =>
       Object.hash(spring.mass, spring.stiffness, spring.damping);
+
+  @override
+  List<Object?> get props => [spring];
 }
 
 class PhaseAnimationConfig<T extends Spec<T>, U extends Style<T>>
@@ -842,6 +817,9 @@ class PhaseAnimationConfig<T extends Spec<T>, U extends Style<T>>
 
   @override
   int get hashCode => Object.hash(styles, trigger, curveConfigs);
+
+  @override
+  List<Object?> get props => [styles, trigger, curveConfigs];
 }
 
 class Keyframe<T> with Equatable {
@@ -1099,8 +1077,7 @@ class KeyframeAnimationResult {
   }
 }
 
-class KeyframeAnimationConfig<S extends Spec<S>> extends AnimationConfig
-    with Equatable {
+class KeyframeAnimationConfig<S extends Spec<S>> extends AnimationConfig {
   final Listenable trigger;
   final List<KeyframeTrack> timeline;
   final KeyframeStyleBuilder<S, Style<S>> styleBuilder;
@@ -1114,5 +1091,5 @@ class KeyframeAnimationConfig<S extends Spec<S>> extends AnimationConfig
   });
 
   @override
-  List<Object?> get props => [trigger, timeline, styleBuilder];
+  List<Object?> get props => [trigger, timeline, styleBuilder, initialStyle];
 }

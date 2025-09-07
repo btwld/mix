@@ -37,30 +37,27 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
   @override
   void initState() {
     super.initState();
-
-    animationDriver = _createAnimationDriver(widget.spec);
+    final spec = widget.spec;
+    final config = spec.animation;
+    animationDriver = _createAnimationDriver(config: config, initialSpec: spec);
   }
 
-  StyleAnimationDriver<S> _createAnimationDriver(StyleSpec<S> spec) {
-    final config = spec.animation ?? AnimationConfig.none();
-
+  StyleAnimationDriver<S> _createAnimationDriver({
+    required AnimationConfig? config,
+    required StyleSpec<S> initialSpec,
+  }) {
     return switch (config) {
-      // ignore: avoid-undisposed-instances
-      NoAnimationConfig() => NoAnimationDriver<S>(
-        vsync: this,
-        initialSpec: spec,
-      ),
       // ignore: avoid-undisposed-instances
       CurveAnimationConfig() => CurveAnimationDriver<S>(
         vsync: this,
         config: config,
-        initialSpec: spec,
+        initialSpec: initialSpec,
       ),
       // ignore: avoid-undisposed-instances
       SpringAnimationConfig() => SpringAnimationDriver<S>(
         vsync: this,
         config: config,
-        initialSpec: spec,
+        initialSpec: initialSpec,
       ),
       // ignore: avoid-undisposed-instances
       PhaseAnimationConfig() => PhaseAnimationDriver<S>(
@@ -69,16 +66,18 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
         specs: config.styles
             .map((e) => e.resolve(context) as StyleSpec<S>)
             .toList(),
-        initialSpec: spec,
+        initialSpec: initialSpec,
         trigger: config.trigger,
       ),
       // ignore: avoid-undisposed-instances
       KeyframeAnimationConfig() => KeyframeAnimationDriver<S>(
         vsync: this,
         config: config as KeyframeAnimationConfig<S>,
-        initialSpec: spec,
+        initialSpec: initialSpec,
         context: context,
       ),
+      // ignore: avoid-undisposed-instances
+      null => NoAnimationDriver<S>(vsync: this, initialSpec: initialSpec),
     };
   }
 
@@ -92,14 +91,21 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
   void didUpdateWidget(StyleAnimationBuilder<S> oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (widget.spec.animation != oldWidget.spec.animation) {
+    final config = widget.spec.animation;
+    final oldConfig = oldWidget.spec.animation;
+
+    if ((oldConfig.runtimeType == config.runtimeType) && config != null) {
+      animationDriver.updateDriver(config);
+    } else {
       animationDriver.dispose();
-      animationDriver = _createAnimationDriver(widget.spec);
+      animationDriver = _createAnimationDriver(
+        config: config,
+        initialSpec: oldWidget.spec,
+      );
     }
 
-    // Animate to spec if changed
-    if (oldWidget.spec != widget.spec && animationDriver.autoAnimateOnUpdate) {
-      animationDriver.animateTo(widget.spec, fromSpec: oldWidget.spec);
+    if (oldWidget.spec != widget.spec) {
+      animationDriver.didUpdateSpec(oldWidget.spec, widget.spec);
     }
   }
 

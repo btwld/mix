@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter/widgets.dart';
 
@@ -31,10 +30,6 @@ abstract class StyleAnimationDriver<S extends Spec<S>> {
 
   final StyleSpec<S> _initialSpec;
 
-  /// Mutable tween for animating between specs.
-  @protected
-  final _tween = SpecTween<StyleSpec<S>>();
-
   /// The animation that drives spec changes using Flutter's Tween system.
   @protected
   late Animation<StyleSpec<S>?> _animation;
@@ -47,13 +42,6 @@ abstract class StyleAnimationDriver<S extends Spec<S>> {
     _controller = unbounded
         ? AnimationController.unbounded(vsync: vsync)
         : AnimationController(vsync: vsync);
-
-    // Initialize tween with initial spec
-    _tween.begin = initialSpec;
-    _tween.end = initialSpec;
-
-    // Create the animation once - it will use the mutable tween
-    _animation = _controller.drive(_tween);
   }
 
   /// Gets the current animation controller.
@@ -63,36 +51,9 @@ abstract class StyleAnimationDriver<S extends Spec<S>> {
   /// Gets the animation that drives spec changes.
   Animation<StyleSpec<S>?> get animation => _animation;
 
-  /// Whether the animation should automatically animate to the new spec when the spec changes.
-  bool get autoAnimateOnUpdate;
-
-  /// Animates to the given target spec.
-  @nonVirtual
-  Future<void> animateTo(
-    StyleSpec<S> targetSpec, {
-    StyleSpec<S>? fromSpec,
-  }) async {
-    if (_tween.end == targetSpec &&
-        !_controller.isAnimating &&
-        fromSpec == null) {
-      return;
-    }
-
-    final currentValue = fromSpec ?? _animation.value ?? _initialSpec;
-    if (currentValue == targetSpec) {
-      _tween.end = targetSpec;
-
-      return;
-    }
-
-    // Reset controller to 0 before updating tween
-    _controller.reset();
-
-    _tween.begin = currentValue;
-    _tween.end = targetSpec;
-
-    await executeAnimation();
-  }
+  // ignore: no-empty-block
+  void didUpdateSpec(StyleSpec<S> oldSpec, StyleSpec<S> newSpec) {}
+  void updateDriver(AnimationConfig config);
 
   /// Execute the animation (curve vs spring).
   @protected
@@ -104,8 +65,6 @@ abstract class StyleAnimationDriver<S extends Spec<S>> {
   /// Resets the animation to the beginning.
   void reset() {
     _controller.reset();
-    _tween.begin = _initialSpec;
-    _tween.end = _initialSpec;
   }
 
   void dispose() {
@@ -113,42 +72,114 @@ abstract class StyleAnimationDriver<S extends Spec<S>> {
   }
 }
 
-/// A driver for curve-based animations with fixed duration.
-class CurveAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
-  final CurveAnimationConfig _config;
+abstract class ImplicitAnimationDriver<
+  S extends Spec<S>,
+  C extends AnimationConfig
+>
+    extends StyleAnimationDriver<S> {
+  C config;
 
-  CurveAnimationDriver({
+  /// Mutable tween for animating between specs.
+  @protected
+  final _tween = SpecTween<StyleSpec<S>>();
+
+  ImplicitAnimationDriver({
     required super.vsync,
-    required CurveAnimationConfig config,
+    required this.config,
     required super.initialSpec,
-  }) : _config = config {
-    // Add status listener for onEnd callback
-    if (config.onEnd != null) {
-      _animation.addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          config.onEnd!();
-        }
-      });
+    super.unbounded,
+  }) {
+    _tween.begin = _initialSpec;
+    _tween.end = _initialSpec;
+
+    _animation = _controller.drive(_tween);
+
+    _animation.addStatusListener(_onAnimationComplete);
+  }
+
+  /// Animates to the given target spec.
+  Future<void> _animateTo(StyleSpec<S> targetSpec) async {
+    final currentValue = _animation.value ?? _initialSpec;
+
+    _tween.begin = currentValue;
+    _tween.end = targetSpec;
+
+    await executeAnimation();
+  }
+
+  void _onAnimationComplete(AnimationStatus status) {
+    if (status == AnimationStatus.completed) {
+      onCompleteAnimation();
     }
   }
 
+  void onCompleteAnimation();
+
+  @override
+  void dispose() {
+    _animation.removeStatusListener(_onAnimationComplete);
+    super.dispose();
+  }
+
+  @override
+  void reset() {
+    _controller.reset();
+    _tween.begin = _initialSpec;
+    _tween.end = _initialSpec;
+  }
+
+  @override
+  void updateDriver(covariant C config) {
+    this.config = config;
+  }
+
+  @override
+  void didUpdateSpec(StyleSpec<S> oldSpec, StyleSpec<S> newSpec) {
+    super.didUpdateSpec(oldSpec, newSpec);
+
+    _animateTo(newSpec);
+  }
+}
+
+/// A driver for curve-based animations with fixed duration.
+class CurveAnimationDriver<S extends Spec<S>>
+    extends ImplicitAnimationDriver<S, CurveAnimationConfig> {
+  CurveAnimationDriver({
+    required super.vsync,
+    required super.config,
+    required super.initialSpec,
+  }) : super(unbounded: false) {
+    _tween.begin = _initialSpec;
+    _tween.end = _initialSpec;
+
+    _animation = _controller.drive(_tween);
+  }
+
   TweenSequence<StyleSpec<S>?> _createTweenSequence() => TweenSequence([
-    if (_config.delay > Duration.zero)
+    if (config.delay > Duration.zero)
       TweenSequenceItem(
-        tween: ConstantTween(_tween.begin),
-        weight: _config.delay.inMilliseconds.toDouble(),
+        tween: ConstantTween(_initialSpec),
+        weight: config.delay.inMilliseconds.toDouble(),
       ),
     TweenSequenceItem(
-      tween: _tween.chain(CurveTween(curve: _config.curve)),
-      weight: _config.duration.inMilliseconds.toDouble(),
+      tween: _tween.chain(CurveTween(curve: config.curve)),
+      weight: config.duration.inMilliseconds.toDouble(),
     ),
   ]);
 
   @override
-  Future<void> executeAnimation() async {
-    controller.duration = _config.totalDuration;
+  void onCompleteAnimation() {
+    if (config.onEnd case final onEnd?) {
+      onEnd();
+    }
+  }
 
-    _animation = controller.drive(_createTweenSequence());
+  @override
+  Future<void> executeAnimation() async {
+    controller.duration = config.totalDuration;
+    final tweenSequence = _createTweenSequence();
+
+    _animation = controller.drive(tweenSequence);
 
     try {
       await controller.forward(from: 0.0);
@@ -156,34 +187,25 @@ class CurveAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
       // Animation was cancelled - this is normal
     }
   }
-
-  @override
-  bool get autoAnimateOnUpdate => true;
 }
 
 /// A driver for spring-based physics animations.
-class SpringAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
-  final SpringAnimationConfig _config;
-
+class SpringAnimationDriver<S extends Spec<S>>
+    extends ImplicitAnimationDriver<S, SpringAnimationConfig> {
   SpringAnimationDriver({
     required super.vsync,
-    required SpringAnimationConfig config,
+    required super.config,
     required super.initialSpec,
-  }) : _config = config,
-       super(unbounded: true) {
-    // Add status listener for onEnd callback
-    if (config.onEnd != null) {
-      _animation.addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          config.onEnd!();
-        }
-      });
-    }
+  }) : super(unbounded: true) {
+    _tween.begin = _initialSpec;
+    _tween.end = _initialSpec;
+
+    _animation = _controller.drive(_tween);
   }
 
   @override
   Future<void> executeAnimation() async {
-    final simulation = SpringSimulation(_config.spring, 0.0, 1.0, 0.0);
+    final simulation = SpringSimulation(config.spring, 0.0, 1.0, 0.0);
 
     try {
       await controller.animateWith(simulation);
@@ -193,7 +215,11 @@ class SpringAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   }
 
   @override
-  bool get autoAnimateOnUpdate => true;
+  void onCompleteAnimation() {
+    if (config.onEnd case final onEnd?) {
+      onEnd();
+    }
+  }
 }
 
 class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
@@ -286,7 +312,8 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   }
 
   @override
-  bool get autoAnimateOnUpdate => false;
+  // ignore: no-empty-block
+  void updateDriver(covariant PhaseAnimationConfig config) {}
 }
 
 /// A driver for keyframe-based animations with complex timeline control.
@@ -294,8 +321,8 @@ class KeyframeAnimationDriver<S extends Spec<S>>
     extends StyleAnimationDriver<S> {
   final BuildContext context;
 
-  final KeyframeAnimationConfig<S> _config;
-  late final Map<String, Animatable> _sequenceMap;
+  KeyframeAnimationConfig<S> _config;
+  late Map<String, Animatable> _sequenceMap;
 
   KeyframeAnimationDriver({
     required super.vsync,
@@ -303,6 +330,14 @@ class KeyframeAnimationDriver<S extends Spec<S>>
     required super.initialSpec,
     required this.context,
   }) : _config = config {
+    _setUpAnimation();
+  }
+
+  void _onTriggerChanged() {
+    executeAnimation();
+  }
+
+  void _setUpAnimation() {
     _sequenceMap = {
       for (final track in _config.timeline)
         track.id: track.createAnimatable(duration),
@@ -312,12 +347,7 @@ class KeyframeAnimationDriver<S extends Spec<S>>
       _KeyframeAnimatable(_sequenceMap, _config, context),
     );
 
-    // Listen to the trigger
     _config.trigger.addListener(_onTriggerChanged);
-  }
-
-  void _onTriggerChanged() {
-    executeAnimation();
   }
 
   Duration get duration {
@@ -347,7 +377,11 @@ class KeyframeAnimationDriver<S extends Spec<S>>
   }
 
   @override
-  bool get autoAnimateOnUpdate => false;
+  void updateDriver(covariant KeyframeAnimationConfig<S> config) {
+    _config.trigger.removeListener(_onTriggerChanged);
+    _config = config;
+    _setUpAnimation();
+  }
 }
 
 class _KeyframeAnimatable<S extends Spec<S>> extends Animatable<StyleSpec<S>?> {
@@ -377,7 +411,9 @@ class _KeyframeAnimatable<S extends Spec<S>> extends Animatable<StyleSpec<S>?> {
 /// timers, or animation lifecycle. Useful for testing or when animations
 /// should be disabled (e.g., for accessibility).
 class NoAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
-  NoAnimationDriver({required super.vsync, required super.initialSpec});
+  NoAnimationDriver({required super.vsync, required super.initialSpec}) {
+    _animation = AlwaysStoppedAnimation<StyleSpec<S>?>(_initialSpec);
+  }
 
   @override
   Future<void> executeAnimation() async {
@@ -386,5 +422,12 @@ class NoAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   }
 
   @override
-  bool get autoAnimateOnUpdate => true;
+  void didUpdateSpec(StyleSpec<S> oldSpec, StyleSpec<S> newSpec) {
+    // Update the animation value to the new spec.
+    _animation = AlwaysStoppedAnimation<StyleSpec<S>?>(newSpec);
+  }
+
+  @override
+  // ignore: no-empty-block
+  void updateDriver(AnimationConfig config) {}
 }
