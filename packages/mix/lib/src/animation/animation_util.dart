@@ -18,9 +18,7 @@ class AnimationConfigUtility<T extends Style<Object?>>
     );
   }
 
-  /// Creates an [AnimationConfig] with the given [duration] and [curve].
-  ///
-  /// This is used for implicit animations.
+  /// Alias for [implicit] method for convenient function syntax.
   T call({required Duration duration, Curve curve = Curves.linear}) {
     return implicit(duration: duration, curve: curve);
   }

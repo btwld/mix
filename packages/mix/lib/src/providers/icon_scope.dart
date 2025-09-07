@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 
 import '../specs/icon/icon_style.dart';
 
+/// Provides icon styling context to descendant widgets.
+///
+/// Wraps its child in an [IconTheme] with the resolved icon styling
+/// and makes the icon style available through inheritance.
 class IconScope extends StatelessWidget {
   const IconScope({required this.icon, required this.child, super.key});
 
+  /// Gets the closest [IconStyler] from the widget tree, or null if not found.
   static IconStyler? maybeOf(BuildContext context) {
     final inheritedWidget = context
         .dependOnInheritedWidgetOfExactType<_IconInheritedWidget>();
@@ -12,6 +17,9 @@ class IconScope extends StatelessWidget {
     return inheritedWidget?.icon;
   }
 
+  /// Gets the closest [IconStyler] from the widget tree.
+  ///
+  /// Throws an assertion error if no IconScope is found.
   static IconStyler of(BuildContext context) {
     final IconStyler? result = maybeOf(context);
     assert(result != null, 'No IconScope found in context');
@@ -19,8 +27,10 @@ class IconScope extends StatelessWidget {
     return result!;
   }
 
+  /// The icon style to provide to descendant widgets.
   final IconStyler icon;
 
+  /// The widget below this widget in the tree.
   final Widget child;
 
   @override

@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 
 import '../specs/text/text_style.dart';
 
+/// Provides text styling context to descendant widgets.
+///
+/// Wraps its child in a [DefaultTextStyle] with the resolved text styling
+/// and makes the text style available through inheritance.
 class TextScope extends StatelessWidget {
   const TextScope({required this.text, required this.child, super.key});
 
+  /// Gets the closest [TextStyler] from the widget tree, or null if not found.
   static TextStyler? maybeOf(BuildContext context) {
     final inheritedWidget = context
         .dependOnInheritedWidgetOfExactType<_TextInheritedWidget>();
@@ -12,6 +17,9 @@ class TextScope extends StatelessWidget {
     return inheritedWidget?.text;
   }
 
+  /// Gets the closest [TextStyler] from the widget tree.
+  ///
+  /// Throws an assertion error if no TextScope is found.
   static TextStyler of(BuildContext context) {
     final TextStyler? result = maybeOf(context);
     assert(result != null, 'No TextScope found in context');
@@ -19,8 +27,10 @@ class TextScope extends StatelessWidget {
     return result!;
   }
 
+  /// The text style to provide to descendant widgets.
   final TextStyler text;
 
+  /// The widget below this widget in the tree.
   final Widget child;
 
   @override

@@ -17,7 +17,7 @@ abstract class Spec<T extends Spec<T>> with Equatable {
   /// replaced by the non-null parameter values.
   T copyWith();
 
-  /// Linearly interpolate with another [Spec] object.
+  /// Linearly interpolates with another [Spec] object.
   T lerp(covariant T? other, double t);
 }
 

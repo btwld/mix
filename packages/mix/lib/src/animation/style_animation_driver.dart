@@ -108,6 +108,7 @@ abstract class StyleAnimationDriver<S extends Spec<S>> {
     _tween.end = _initialSpec;
   }
 
+  /// Disposes of the animation controller and resources.
   void dispose() {
     _controller.dispose();
   }
@@ -196,6 +197,10 @@ class SpringAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   bool get autoAnimateOnUpdate => true;
 }
 
+/// A driver for multi-phase animations that cycle through multiple specs.
+///
+/// This driver animates through a sequence of styles based on curve configurations
+/// and responds to trigger events to start the animation sequence.
 class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   final List<StyleSpec<S>> specs;
   final List<CurveAnimationConfig> curveConfigs;
@@ -265,6 +270,7 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     return TweenSequence(items);
   }
 
+  /// Gets the total duration of all animation phases combined.
   Duration get totalDuration {
     return curveConfigs.fold(
       Duration.zero,
@@ -320,6 +326,7 @@ class KeyframeAnimationDriver<S extends Spec<S>>
     executeAnimation();
   }
 
+  /// Gets the duration of the longest keyframe track in the timeline.
   Duration get duration {
     if (_config.timeline.isEmpty) return Duration.zero;
 

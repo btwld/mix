@@ -121,7 +121,7 @@ mixin Equatable {
   }
 }
 
-Map<String, String?> compareObjects(Object? obj1, Object? obj2) {
+/// Compares two objects and returns a map of differences.\n///\n/// Returns an empty map if the objects are equal, otherwise returns\n/// a map describing the differences between the objects.\nMap<String, String?> compareObjects(Object? obj1, Object? obj2) {
   final Map<String, String?> differences = {};
 
   if (obj1 == obj2) return differences;

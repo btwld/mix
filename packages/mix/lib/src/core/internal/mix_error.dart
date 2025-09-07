@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-abstract class MixError {
+/// Utility class for creating standardized Mix framework errors.\nabstract class MixError {
   static FlutterError unsupportedTypeInMix(
     Type type,
     List<String> supportedTypes,
