@@ -369,7 +369,7 @@ sealed class AnimationConfig with Equatable {
 ///
 /// This configuration provides duration, curve, and optional completion callback
 /// for animations that follow a specific curve over a fixed time period.
-final class CurveAnimationConfig extends AnimationConfig {
+class CurveAnimationConfig extends AnimationConfig {
   final Duration duration;
   final Curve curve;
   final Duration delay;

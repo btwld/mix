@@ -62,12 +62,9 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
       // ignore: avoid-undisposed-instances
       PhaseAnimationConfig() => PhaseAnimationDriver<S>(
         vsync: this,
-        curveConfigs: config.curveConfigs,
-        specs: config.styles
-            .map((e) => e.resolve(context) as StyleSpec<S>)
-            .toList(),
+        config: config,
         initialSpec: initialSpec,
-        trigger: config.trigger,
+        context: context,
       ),
       // ignore: avoid-undisposed-instances
       KeyframeAnimationConfig() => KeyframeAnimationDriver<S>(

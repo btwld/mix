@@ -223,31 +223,37 @@ class SpringAnimationDriver<S extends Spec<S>>
 }
 
 class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
-  final List<StyleSpec<S>> specs;
-  final List<CurveAnimationConfig> curveConfigs;
-  final Listenable trigger;
+  PhaseAnimationConfig config;
+  final BuildContext context;
 
-  late final TweenSequence<StyleSpec<S>?> _tweenSequence;
+  late TweenSequence<StyleSpec<S>?> _tweenSequence;
 
   PhaseAnimationDriver({
     required super.vsync,
-    required this.curveConfigs,
-    required this.specs,
+    required this.config,
     required super.initialSpec,
-    required this.trigger,
+    required this.context,
   }) {
-    _tweenSequence = _createTweenSequence(specs, curveConfigs);
+    _setUpAnimation();
+  }
+
+  void _setUpAnimation() {
+    final specs = config.styles
+        .map((e) => e.resolve(context) as StyleSpec<S>)
+        .toList();
+
+    _tweenSequence = _createTweenSequence(specs, config.curveConfigs);
 
     // Override the animation to use TweenSequence wrapped in a tween
     _animation = controller.drive(_PhasedSpecTween(_tweenSequence));
 
-    trigger.addListener(_onTriggerChanged);
+    config.trigger.addListener(_onTriggerChanged);
 
     // Add status listener for onEnd callback
-    if (curveConfigs.last.onEnd != null) {
+    if (config.curveConfigs.last.onEnd != null) {
       _animation.addStatusListener((status) {
         if (status == AnimationStatus.completed) {
-          curveConfigs.last.onEnd!();
+          config.curveConfigs.last.onEnd!();
         }
       });
     }
@@ -292,7 +298,7 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   }
 
   Duration get totalDuration {
-    return curveConfigs.fold(
+    return config.curveConfigs.fold(
       Duration.zero,
       (acc, config) => acc + config.totalDuration,
     );
@@ -300,7 +306,7 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
 
   @override
   void dispose() {
-    trigger.removeListener(_onTriggerChanged);
+    config.trigger.removeListener(_onTriggerChanged);
     super.dispose();
   }
 
@@ -312,8 +318,11 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   }
 
   @override
-  // ignore: no-empty-block
-  void updateDriver(covariant PhaseAnimationConfig config) {}
+  void updateDriver(covariant PhaseAnimationConfig config) {
+    config.trigger.removeListener(_onTriggerChanged);
+    this.config = config;
+    _setUpAnimation();
+  }
 }
 
 /// A driver for keyframe-based animations with complex timeline control.
