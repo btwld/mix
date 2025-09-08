@@ -5,7 +5,7 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-  group('FlexStyleSpecUtility', () {
+  group('FlexBoxMutableStyler', () {
     group('Constructor', () {
       test('', () {
         final containerAttr = BoxStyler(
@@ -350,7 +350,7 @@ void main() {
       });
 
       test('handles complex nested chaining', () {
-        final utility = FlexBoxSpecUtility();
+        final utility = FlexBoxMutableStyler();
 
         // Build complex nested structure using mutable utilities
         utility.alignment(Alignment.center);
@@ -380,7 +380,7 @@ void main() {
     });
   });
 
-  group('FlexStyleSpecUtility', () {
+  group('FlexBoxMutableStyler', () {
     test('', () {
       final spec = FlexBoxSpec();
 

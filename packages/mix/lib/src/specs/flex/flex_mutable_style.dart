@@ -16,7 +16,7 @@ import 'flex_style.dart';
 ///
 /// Supports the same API as [FlexStyler] but maintains mutable internal state
 /// enabling fluid styling: `$flex..direction(Axis.horizontal)..spacing(8)`.
-class FlexSpecUtility extends StyleMutableBuilder<FlexSpec>
+class FlexMutableStyler extends StyleMutableBuilder<FlexSpec>
     with UtilityVariantMixin<FlexSpec, FlexStyler> {
   late final direction = MixUtility(mutable.direction);
 
@@ -49,10 +49,10 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexSpec>
   /// Internal mutable state for accumulating flex styling properties.
   @override
   @protected
-  late final MutableFlexStyle mutable;
+  late final FlexMutableState mutable;
 
-  FlexSpecUtility([FlexStyler? attribute]) {
-    mutable = MutableFlexStyle(attribute ?? FlexStyler());
+  FlexMutableStyler([FlexStyler? attribute]) {
+    mutable = FlexMutableState(attribute ?? FlexStyler());
   }
 
   /// Sets the spacing between children in the flex layout.
@@ -85,14 +85,14 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexSpec>
   }
 
   @override
-  FlexSpecUtility merge(Style<FlexSpec>? other) {
+  FlexMutableStyler merge(Style<FlexSpec>? other) {
     if (other == null) return this;
     // Always create new instance (StyleAttribute contract)
-    if (other is FlexSpecUtility) {
-      return FlexSpecUtility(mutable.merge(other.mutable.value));
+    if (other is FlexMutableStyler) {
+      return FlexMutableStyler(mutable.merge(other.mutable.value));
     }
     if (other is FlexStyler) {
-      return FlexSpecUtility(mutable.merge(other));
+      return FlexMutableStyler(mutable.merge(other));
     }
 
     throw FlutterError('Unsupported merge type: ${other.runtimeType}');
@@ -113,10 +113,10 @@ class FlexSpecUtility extends StyleMutableBuilder<FlexSpec>
 
 /// Mutable implementation of [FlexStyler] for efficient style accumulation.
 ///
-/// Used internally by [FlexSpecUtility] to accumulate styling changes
+/// Used internally by [FlexMutableStyler] to accumulate styling changes
 /// without creating new instances for each modification.
-class MutableFlexStyle extends FlexStyler with Mutable<FlexSpec, FlexStyler> {
-  MutableFlexStyle(FlexStyler style) {
+class FlexMutableState extends FlexStyler with Mutable<FlexSpec, FlexStyler> {
+  FlexMutableState(FlexStyler style) {
     value = style;
   }
 }

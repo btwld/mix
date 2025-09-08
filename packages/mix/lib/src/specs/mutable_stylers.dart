@@ -7,34 +7,34 @@ library;
 // Global utilities for $on and $wrap functionality are now available via spec-specific utilities:
 // - $box.on.hover(), $box.wrap.opacity(), etc.
 // - $text.on.dark(), $text.wrap.padding(), etc.
-import 'box/box_util.dart';
-import 'flex/flex_util.dart';
-import 'flexbox/flexbox_util.dart';
-import 'icon/icon_util.dart';
-import 'image/image_util.dart';
-import 'stack/stack_util.dart';
-import 'text/text_util.dart';
+import 'box/box_mutable_style.dart';
+import 'flex/flex_mutable_style.dart';
+import 'flexbox/flexbox_mutable_style.dart';
+import 'icon/icon_mutable_style.dart';
+import 'image/image_mutable_style.dart';
+import 'stack/stack_mutable_style.dart';
+import 'text/text_mutable_style.dart';
 
 /// Global accessor for box specification utilities.
-BoxSpecUtility get $box => BoxSpecUtility();
+BoxMutableStyler get $box => BoxMutableStyler();
 
 /// Global accessor for flex specification utilities.
-FlexSpecUtility get $flex => FlexSpecUtility();
+FlexMutableStyler get $flex => FlexMutableStyler();
 
 /// Global accessor for flexbox specification utilities.
-FlexBoxSpecUtility get $flexbox => FlexBoxSpecUtility();
+FlexBoxMutableStyler get $flexbox => FlexBoxMutableStyler();
 
 /// Global accessor for image specification utilities.
-ImageSpecUtility get $image => ImageSpecUtility();
+ImageMutableStyler get $image => ImageMutableStyler();
 
 /// Global accessor for icon specification utilities.
-IconSpecUtility get $icon => IconSpecUtility();
+IconMutableStyler get $icon => IconMutableStyler();
 
 /// Global accessor for text specification utilities.
-TextSpecUtility get $text => TextSpecUtility();
+TextMutableStyler get $text => TextMutableStyler();
 
 /// Global accessor for stack specification utilities.
-StackSpecUtility get $stack => StackSpecUtility();
+StackMutableStyler get $stack => StackMutableStyler();
 
 // Global $on and $wrap utilities have been replaced by spec-specific utilities:
 //

@@ -17,7 +17,7 @@ import 'image_style.dart';
 ///
 /// Supports the same API as [ImageStyler] but maintains mutable internal state
 /// enabling fluid styling: `$image..width(100)..height(100)..fit(BoxFit.cover)`.
-class ImageSpecUtility extends StyleMutableBuilder<ImageSpec>
+class ImageMutableStyler extends StyleMutableBuilder<ImageSpec>
     with UtilityVariantMixin<ImageSpec, ImageStyler> {
   late final color = ColorUtility(
     (prop) => mutable.merge(ImageStyler.create(color: prop)),
@@ -50,7 +50,7 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageSpec>
   /// Internal mutable state for accumulating image styling properties.
   @override
   @protected
-  late final MutableImageStyle mutable;
+  late final ImageMutableState mutable;
 
   late final image = mutable.image;
 
@@ -67,8 +67,8 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageSpec>
   late final matchTextDirection = mutable.matchTextDirection;
   late final animate = mutable.animate;
   late final variants = mutable.variants;
-  ImageSpecUtility([ImageStyler? attribute]) {
-    mutable = MutableImageStyle(attribute ?? ImageStyler());
+  ImageMutableStyler([ImageStyler? attribute]) {
+    mutable = ImageMutableState(attribute ?? ImageStyler());
   }
 
   @override
@@ -82,14 +82,14 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageSpec>
   }
 
   @override
-  ImageSpecUtility merge(Style<ImageSpec>? other) {
+  ImageMutableStyler merge(Style<ImageSpec>? other) {
     if (other == null) return this;
     // Always create new instance (StyleAttribute contract)
-    if (other is ImageSpecUtility) {
-      return ImageSpecUtility(mutable.merge(other.mutable.value));
+    if (other is ImageMutableStyler) {
+      return ImageMutableStyler(mutable.merge(other.mutable.value));
     }
     if (other is ImageStyler) {
-      return ImageSpecUtility(mutable.merge(other));
+      return ImageMutableStyler(mutable.merge(other));
     }
 
     throw FlutterError('Unsupported merge type: ${other.runtimeType}');
@@ -108,9 +108,9 @@ class ImageSpecUtility extends StyleMutableBuilder<ImageSpec>
   ImageStyler get value => mutable.value;
 }
 
-class MutableImageStyle extends ImageStyler
+class ImageMutableState extends ImageStyler
     with Mutable<ImageSpec, ImageStyler> {
-  MutableImageStyle(ImageStyler style) {
+  ImageMutableState(ImageStyler style) {
     value = style;
   }
 }

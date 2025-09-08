@@ -5,7 +5,7 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-  group('FlexStyleSpecUtility', () {
+  group('IconMutableStyler', () {
     group('Constructor', () {
       test('', () {
         final attribute = IconStyler(

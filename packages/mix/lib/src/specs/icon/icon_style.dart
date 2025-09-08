@@ -12,7 +12,7 @@ import '../../style/mixins/animation_style_mixin.dart';
 import '../../style/mixins/modifier_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
 import 'icon_spec.dart';
-import 'icon_util.dart';
+import 'icon_mutable_style.dart';
 import 'icon_widget.dart';
 
 typedef IconMix = IconStyler;
@@ -108,7 +108,7 @@ class IconStyler extends Style<IconSpec>
     return IconStyler().builder(fn);
   }
 
-  static IconSpecUtility get chain => IconSpecUtility(IconStyler());
+  static IconMutableStyler get chain => IconMutableStyler(IconStyler());
 
   /// Sets icon color
   IconStyler color(Color value) {

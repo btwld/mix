@@ -5,26 +5,26 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-  group('IconSpecUtility', () {
-    late IconSpecUtility util;
+  group('IconMutableStyler', () {
+    late IconMutableStyler util;
 
     setUp(() {
-      util = IconSpecUtility();
+      util = IconMutableStyler();
     });
 
     group('Constructor', () {
       test('', () {
-        final utility = IconSpecUtility();
-        expect(utility, isA<IconSpecUtility>());
+        final utility = IconMutableStyler();
+        expect(utility, isA<IconMutableStyler>());
       });
 
       test('', () {
         final iconMix = IconStyler(size: 24.0);
-        final utility = IconSpecUtility(iconMix);
+        final utility = IconMutableStyler(iconMix);
         final context = MockBuildContext();
         final spec = utility.resolve(context);
 
-        expect(utility, isA<IconSpecUtility>());
+        expect(utility, isA<IconMutableStyler>());
         expect(spec.spec.size, 24.0);
       });
     });
@@ -211,13 +211,13 @@ void main() {
       });
 
       test('', () {
-        final other = IconSpecUtility(IconStyler(size: 32.0));
+        final other = IconMutableStyler(IconStyler(size: 32.0));
         final result = util.merge(other);
         final context = MockBuildContext();
         final spec = result.resolve(context);
 
         expect(result, isNot(same(util)));
-        expect(result, isA<IconSpecUtility>());
+        expect(result, isA<IconMutableStyler>());
         expect(spec.spec.size, 32.0);
       });
 
@@ -228,7 +228,7 @@ void main() {
         final spec = result.resolve(context);
 
         expect(result, isNot(same(util)));
-        expect(result, isA<IconSpecUtility>());
+        expect(result, isA<IconMutableStyler>());
         expect(spec.spec.weight, 600.0);
       });
 
@@ -240,8 +240,8 @@ void main() {
       });
 
       test('merge combines properties correctly', () {
-        final util1 = IconSpecUtility(IconStyler(size: 24.0, weight: 400.0));
-        final other = IconSpecUtility(IconStyler(weight: 600.0, fill: 0.8));
+        final util1 = IconMutableStyler(IconStyler(size: 24.0, weight: 400.0));
+        final other = IconMutableStyler(IconStyler(weight: 600.0, fill: 0.8));
 
         final result = util1.merge(other);
         final context = MockBuildContext();
@@ -255,7 +255,7 @@ void main() {
 
     group('Resolve functionality', () {
       test('', () {
-        final testUtil = IconSpecUtility(
+        final testUtil = IconMutableStyler(
           IconStyler(size: 24.0, weight: 400.0, fill: 0.8),
         );
 
@@ -281,7 +281,7 @@ void main() {
 
     group('Chaining methods', () {
       test('basic size mutation test', () {
-        final util = IconSpecUtility();
+        final util = IconMutableStyler();
 
         final result = util.size(24.0);
         expect(result, isA<IconStyler>());
@@ -293,7 +293,7 @@ void main() {
       });
 
       test('basic weight mutation test', () {
-        final util = IconSpecUtility();
+        final util = IconMutableStyler();
 
         final result = util.weight(400.0);
         expect(result, isA<IconStyler>());
@@ -305,7 +305,7 @@ void main() {
       });
 
       test('chaining utility methods accumulates properties', () {
-        final util = IconSpecUtility();
+        final util = IconMutableStyler();
 
         // Chain multiple method calls - these mutate internal state
         util.size(24.0);
@@ -322,7 +322,7 @@ void main() {
       });
 
       test('cascade notation works with utility methods', () {
-        final util = IconSpecUtility()
+        final util = IconMutableStyler()
           ..size(24.0)
           ..weight(400.0)
           ..fill(0.8);
@@ -336,7 +336,7 @@ void main() {
       });
 
       test('', () {
-        final util = IconSpecUtility();
+        final util = IconMutableStyler();
 
         // Each utility call should return an IconStyle
         final sizeResult = util.size(24.0);
@@ -359,7 +359,7 @@ void main() {
 
     group('Mutating behavior vs Builder pattern', () {
       test('utility mutates internal state (not builder pattern)', () {
-        final util = IconSpecUtility();
+        final util = IconMutableStyler();
 
         // Store initial resolution
         final context = MockBuildContext();
@@ -377,7 +377,7 @@ void main() {
       });
 
       test('multiple calls accumulate on same instance', () {
-        final util = IconSpecUtility();
+        final util = IconMutableStyler();
 
         util.size(24.0);
         util.weight(400.0);
@@ -393,7 +393,7 @@ void main() {
       });
 
       test('demonstrates difference from immutable builder pattern', () {
-        final util = IconSpecUtility();
+        final util = IconMutableStyler();
 
         // In a builder pattern, this would create new instances
         // In mutable pattern, this modifies the same instance
@@ -414,7 +414,7 @@ void main() {
 
     group('Integration with resolvesTo matcher', () {
       test('', () {
-        final testUtil = IconSpecUtility(
+        final testUtil = IconMutableStyler(
           IconStyler(size: 24.0, weight: 400.0, fill: 0.8),
         );
 
@@ -434,7 +434,7 @@ void main() {
         const sizeToken = MixToken<double>('iconSize');
         final context = MockBuildContext(tokens: {sizeToken.defineValue(32.0)});
 
-        final testUtil = IconSpecUtility(
+        final testUtil = IconMutableStyler(
           IconStyler.create(size: Prop.token(sizeToken)),
         );
         final spec = testUtil.resolve(context);
@@ -456,9 +456,9 @@ void main() {
       });
 
       test('handles multiple merges correctly', () {
-        final util1 = IconSpecUtility(IconStyler(size: 24.0));
-        final util2 = IconSpecUtility(IconStyler(weight: 400.0));
-        final util3 = IconSpecUtility(IconStyler(fill: 0.8));
+        final util1 = IconMutableStyler(IconStyler(size: 24.0));
+        final util2 = IconMutableStyler(IconStyler(weight: 400.0));
+        final util3 = IconMutableStyler(IconStyler(fill: 0.8));
 
         final result = util1.merge(util2).merge(util3);
         final context = MockBuildContext();
@@ -472,7 +472,7 @@ void main() {
 
     group('Edge cases', () {
       test('handles empty utility', () {
-        final emptyUtil = IconSpecUtility();
+        final emptyUtil = IconMutableStyler();
         final context = MockBuildContext();
         final spec = emptyUtil.resolve(context);
 
@@ -482,7 +482,7 @@ void main() {
       });
 
       test('merge with self returns new instance', () {
-        final testUtil = IconSpecUtility(IconStyler(size: 24.0));
+        final testUtil = IconMutableStyler(IconStyler(size: 24.0));
         final result = testUtil.merge(testUtil);
         final context = MockBuildContext();
         final spec = result.resolve(context);

@@ -5,17 +5,17 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-  group('TextSpecUtility', () {
-    late TextSpecUtility util;
+  group('TextMutableStyler', () {
+    late TextMutableStyler util;
 
     setUp(() {
-      util = TextSpecUtility();
+      util = TextMutableStyler();
     });
 
     group('Constructor', () {
       test('creates with provided TextStyling attribute', () {
         final textMix = TextStyler(maxLines: 3);
-        final utility = TextSpecUtility(textMix);
+        final utility = TextMutableStyler(textMix);
 
         expect(utility.value, equals(textMix));
         expect(utility.value.$maxLines, resolvesTo(3));
@@ -226,7 +226,7 @@ void main() {
       });
 
       test('semanticsLabel utility creates correct TextStyling', () {
-        final result = TextSpecUtility().semanticsLabel('Custom label');
+        final result = TextMutableStyler().semanticsLabel('Custom label');
         expect(result.$semanticsLabel, resolvesTo('Custom label'));
       });
 
@@ -284,14 +284,14 @@ void main() {
         expect(result, same(util));
       });
 
-      test('merge with TextSpecUtility creates new instance', () {
-        final other = TextSpecUtility(TextStyler(maxLines: 5));
+      test('merge with TextMutableStyler creates new instance', () {
+        final other = TextMutableStyler(TextStyler(maxLines: 5));
         final result = util.merge(other);
         final context = MockBuildContext();
         final spec = result.resolve(context);
 
         expect(result, isNot(same(util)));
-        expect(result, isA<TextSpecUtility>());
+        expect(result, isA<TextMutableStyler>());
         expect(spec.spec.maxLines, 5);
       });
 
@@ -302,7 +302,7 @@ void main() {
         final spec = result.resolve(context);
 
         expect(result, isNot(same(util)));
-        expect(result, isA<TextSpecUtility>());
+        expect(result, isA<TextMutableStyler>());
         expect(spec.spec.textAlign, TextAlign.center);
       });
 
@@ -314,10 +314,10 @@ void main() {
       });
 
       test('merge combines properties correctly', () {
-        final util1 = TextSpecUtility(
+        final util1 = TextMutableStyler(
           TextStyler(maxLines: 3, textAlign: TextAlign.left),
         );
-        final other = TextSpecUtility(
+        final other = TextMutableStyler(
           TextStyler(textAlign: TextAlign.center, softWrap: false),
         );
 
@@ -333,7 +333,7 @@ void main() {
 
     group('Resolve functionality', () {
       test('resolve returns TextSpec with resolved properties', () {
-        final testUtil = TextSpecUtility(
+        final testUtil = TextMutableStyler(
           TextStyler(
             maxLines: 3,
             textAlign: TextAlign.center,
@@ -383,7 +383,7 @@ void main() {
 
     group('Integration with resolvesTo matcher', () {
       test('utility resolves to correct TextSpec', () {
-        final testUtil = TextSpecUtility(
+        final testUtil = TextMutableStyler(
           TextStyler(maxLines: 3, textAlign: TextAlign.center, softWrap: false),
         );
 
@@ -409,7 +409,7 @@ void main() {
           tokens: {maxLinesToken.defineValue(5)},
         );
 
-        final testUtil = TextSpecUtility(
+        final testUtil = TextMutableStyler(
           TextStyler.create(maxLines: Prop.token(maxLinesToken)),
         );
         final spec = testUtil.resolve(context);
@@ -423,7 +423,7 @@ void main() {
           tokens: {textAlignToken.defineValue(TextAlign.center)},
         );
 
-        final testUtil = TextSpecUtility(
+        final testUtil = TextMutableStyler(
           TextStyler.create(textAlign: Prop.token(textAlignToken)),
         );
         final spec = testUtil.resolve(context);
@@ -437,7 +437,7 @@ void main() {
           tokens: {softWrapToken.defineValue(false)},
         );
 
-        final testUtil = TextSpecUtility(
+        final testUtil = TextMutableStyler(
           TextStyler.create(softWrap: Prop.token(softWrapToken)),
         );
         final spec = testUtil.resolve(context);
@@ -451,7 +451,7 @@ void main() {
           tokens: {selectionColorToken.defineValue(Colors.red)},
         );
 
-        final testUtil = TextSpecUtility(
+        final testUtil = TextMutableStyler(
           TextStyler.create(selectionColor: Prop.token(selectionColorToken)),
         );
         final spec = testUtil.resolve(context);
@@ -465,7 +465,7 @@ void main() {
           tokens: {textDirectionToken.defineValue(TextDirection.rtl)},
         );
 
-        final testUtil = TextSpecUtility(
+        final testUtil = TextMutableStyler(
           TextStyler.create(textDirection: Prop.token(textDirectionToken)),
         );
         final spec = testUtil.resolve(context);
@@ -479,7 +479,7 @@ void main() {
           tokens: {semanticsLabelToken.defineValue('Custom label')},
         );
 
-        final testUtil = TextSpecUtility(
+        final testUtil = TextMutableStyler(
           TextStyler.create(semanticsLabel: Prop.token(semanticsLabelToken)),
         );
         final spec = testUtil.resolve(context);
@@ -494,7 +494,7 @@ void main() {
           tokens: {localeToken.defineValue(locale)},
         );
 
-        final testUtil = TextSpecUtility(
+        final testUtil = TextMutableStyler(
           TextStyler.create(locale: Prop.token(localeToken)),
         );
         final spec = testUtil.resolve(context);
@@ -519,7 +519,7 @@ void main() {
           },
         );
 
-        final testUtil = TextSpecUtility(
+        final testUtil = TextMutableStyler(
           TextStyler.create(
             maxLines: Prop.token(maxLinesToken),
             textAlign: Prop.token(textAlignToken),
@@ -555,9 +555,9 @@ void main() {
       });
 
       test('handles multiple merges correctly', () {
-        final util1 = TextSpecUtility(TextStyler(maxLines: 3));
-        final util2 = TextSpecUtility(TextStyler(textAlign: TextAlign.center));
-        final util3 = TextSpecUtility(TextStyler(softWrap: false));
+        final util1 = TextMutableStyler(TextStyler(maxLines: 3));
+        final util2 = TextMutableStyler(TextStyler(textAlign: TextAlign.center));
+        final util3 = TextMutableStyler(TextStyler(softWrap: false));
 
         final result = util1.merge(util2).merge(util3);
         final context = MockBuildContext();
@@ -571,7 +571,7 @@ void main() {
 
     group('Edge cases', () {
       test('handles empty utility', () {
-        final emptyUtil = TextSpecUtility();
+        final emptyUtil = TextMutableStyler();
         final context = MockBuildContext();
         final spec = emptyUtil.resolve(context);
 
@@ -581,7 +581,7 @@ void main() {
       });
 
       test('merge with self returns new instance', () {
-        final testUtil = TextSpecUtility(TextStyler(maxLines: 3));
+        final testUtil = TextMutableStyler(TextStyler(maxLines: 3));
         final result = testUtil.merge(testUtil);
         final context = MockBuildContext();
         final spec = result.resolve(context);
@@ -593,7 +593,7 @@ void main() {
 
     group('Chaining methods', () {
       test('basic maxLines mutation test', () {
-        final util = TextSpecUtility();
+        final util = TextMutableStyler();
 
         final result = util.maxLines(5);
         expect(result, isA<TextStyler>());
@@ -605,7 +605,7 @@ void main() {
       });
 
       test('basic color mutation test', () {
-        final util = TextSpecUtility();
+        final util = TextMutableStyler();
 
         final result = util.color.red();
         expect(result, isA<TextStyler>());
@@ -617,7 +617,7 @@ void main() {
       });
 
       test('chaining utility methods accumulates properties', () {
-        final util = TextSpecUtility();
+        final util = TextMutableStyler();
 
         // Chain multiple method calls - these mutate internal state
         util.color.red();
@@ -634,7 +634,7 @@ void main() {
       });
 
       test('cascade notation works with utility methods', () {
-        final util = TextSpecUtility()
+        final util = TextMutableStyler()
           ..color.red()
           ..fontSize(16)
           ..maxLines(3);
@@ -650,7 +650,7 @@ void main() {
       test(
         'individual utility calls return TextStyling for further chaining',
         () {
-          final util = TextSpecUtility();
+          final util = TextMutableStyler();
 
           // Each utility call should return a TextStyle
           final colorResult = util.color.red();
@@ -674,7 +674,7 @@ void main() {
 
     group('Mutating behavior vs Builder pattern', () {
       test('utility mutates internal state (not builder pattern)', () {
-        final util = TextSpecUtility();
+        final util = TextMutableStyler();
 
         // Store initial resolution
         final context = MockBuildContext();
@@ -692,7 +692,7 @@ void main() {
       });
 
       test('multiple calls accumulate on same instance', () {
-        final util = TextSpecUtility();
+        final util = TextMutableStyler();
 
         util.color.red();
         util.fontSize(16);
@@ -708,7 +708,7 @@ void main() {
       });
 
       test('demonstrates difference from immutable builder pattern', () {
-        final util = TextSpecUtility();
+        final util = TextMutableStyler();
 
         // In a builder pattern, this would create new instances
         // In mutable pattern, this modifies the same instance

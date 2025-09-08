@@ -7,7 +7,7 @@ import 'package:mix/mix.dart';
 import 'package:mix/src/specs/image/image_spec.dart';
 
 void main() {
-  group('FlexStyleSpecUtility', () {
+  group('ImageMutableStyler', () {
     group('Constructor', () {
       test('', () {
         const spec = ImageSpec(

@@ -5,11 +5,11 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-  group('FlexSpecUtility', () {
-    late FlexSpecUtility util;
+  group('FlexMutableStyler', () {
+    late FlexMutableStyler util;
 
     setUp(() {
-      util = FlexSpecUtility();
+      util = FlexMutableStyler();
     });
 
     group('individual utility methods', () {
@@ -159,14 +159,14 @@ void main() {
     group('utility construction', () {
       test('', () {
         final initialMix = FlexStyler(direction: Axis.horizontal);
-        final utility = FlexSpecUtility(initialMix);
+        final utility = FlexMutableStyler(initialMix);
 
         final spec = utility.resolve(MockBuildContext());
         expect(spec.spec, const FlexSpec(direction: Axis.horizontal));
       });
 
       test('', () {
-        final utility = FlexSpecUtility();
+        final utility = FlexMutableStyler();
 
         final spec = utility.resolve(MockBuildContext());
         expect(spec.spec.direction, isNull);
@@ -181,11 +181,11 @@ void main() {
       });
 
       test('', () {
-        final other = FlexSpecUtility(FlexStyler(direction: Axis.horizontal));
+        final other = FlexMutableStyler(FlexStyler(direction: Axis.horizontal));
         final result = util.merge(other);
 
         expect(result, isNot(same(util)));
-        expect(result, isA<FlexSpecUtility>());
+        expect(result, isA<FlexMutableStyler>());
 
         final spec = result.resolve(MockBuildContext());
         expect(spec.spec, const FlexSpec(direction: Axis.horizontal));
@@ -196,17 +196,17 @@ void main() {
         final result = util.merge(otherMix);
 
         expect(result, isNot(same(util)));
-        expect(result, isA<FlexSpecUtility>());
+        expect(result, isA<FlexMutableStyler>());
 
         final spec = result.resolve(MockBuildContext());
         expect(spec.spec, const FlexSpec(spacing: 8.0));
       });
 
       test('merge combines properties correctly', () {
-        final util1 = FlexSpecUtility(
+        final util1 = FlexMutableStyler(
           FlexStyler(direction: Axis.horizontal, spacing: 4.0),
         );
-        final util2 = FlexSpecUtility(
+        final util2 = FlexMutableStyler(
           FlexStyler(spacing: 8.0, clipBehavior: Clip.hardEdge),
         );
 
@@ -224,9 +224,9 @@ void main() {
       });
 
       test('handles multiple merges correctly', () {
-        final util1 = FlexSpecUtility(FlexStyler(direction: Axis.horizontal));
-        final util2 = FlexSpecUtility(FlexStyler(spacing: 8.0));
-        final util3 = FlexSpecUtility(
+        final util1 = FlexMutableStyler(FlexStyler(direction: Axis.horizontal));
+        final util2 = FlexMutableStyler(FlexStyler(spacing: 8.0));
+        final util3 = FlexMutableStyler(
           FlexStyler(mainAxisAlignment: MainAxisAlignment.center),
         );
 
@@ -301,7 +301,7 @@ void main() {
         const gapToken = MixToken<double>('gap');
         final context = MockBuildContext(tokens: {gapToken.defineValue(24.0)});
 
-        final utility = FlexSpecUtility(
+        final utility = FlexMutableStyler(
           FlexStyler.create(spacing: Prop.token(gapToken)),
         );
         final spec = utility.resolve(context);
@@ -330,10 +330,10 @@ void main() {
 
     group('complex scenarios', () {
       test('combines chaining with merge', () {
-        final util1 = FlexSpecUtility()
+        final util1 = FlexMutableStyler()
           ..direction(Axis.horizontal)
           ..spacing(4.0);
-        final util2 = FlexSpecUtility()
+        final util2 = FlexMutableStyler()
           ..mainAxisAlignment(MainAxisAlignment.center);
 
         final result = util1.merge(util2);
@@ -350,7 +350,7 @@ void main() {
       });
 
       test('chaining after construction with initial mix', () {
-        final utility = FlexSpecUtility(FlexStyler(direction: Axis.horizontal))
+        final utility = FlexMutableStyler(FlexStyler(direction: Axis.horizontal))
           ..gap(8.0)
           ..mainAxisAlignment(MainAxisAlignment.center);
 
@@ -384,7 +384,7 @@ void main() {
 
       test('empty utility after chaining with null values', () {
         // This tests the behavior when properties are explicitly set to null
-        final utility = FlexSpecUtility(FlexStyler(direction: Axis.horizontal));
+        final utility = FlexMutableStyler(FlexStyler(direction: Axis.horizontal));
         final spec = utility.resolve(MockBuildContext());
 
         expect(spec.spec.direction, Axis.horizontal);

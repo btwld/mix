@@ -27,7 +27,7 @@ import '../box/box_style.dart';
 import '../flex/flex_spec.dart';
 import '../flex/flex_style.dart';
 import 'flexbox_spec.dart';
-import 'flexbox_util.dart';
+import 'flexbox_mutable_style.dart';
 
 typedef FlexBoxMix = FlexBoxStyler;
 
@@ -126,7 +126,7 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
     return FlexBoxStyler().builder(fn);
   }
 
-  static FlexBoxSpecUtility get chain => FlexBoxSpecUtility(FlexBoxStyler());
+  static FlexBoxMutableStyler get chain => FlexBoxMutableStyler(FlexBoxStyler());
 
   /// Sets animation
   FlexBoxStyler animate(AnimationConfig animation) {

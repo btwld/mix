@@ -99,7 +99,7 @@ class StackBoxStyler extends Style<ZBoxSpec>
     return StackBoxStyler().builder(fn);
   }
 
-  static StackBoxSpecUtility get chain => StackBoxSpecUtility.self;
+  static StackBoxMutableStyler get chain => StackBoxMutableStyler.self;
 
   /// Sets animation
   StackBoxStyler animate(AnimationConfig animation) {
@@ -267,16 +267,16 @@ class StackBoxStyler extends Style<ZBoxSpec>
 ///
 /// This class provides methods to set individual properties of a [ZBoxSpec].
 /// Use the methods of this class to configure specific properties of a [ZBoxSpec].
-class StackBoxSpecUtility {
+class StackBoxMutableStyler {
   /// Utility for defining [StackBoxStyler] box properties
   final box = BoxStyler();
 
   /// Utility for defining [StackBoxStyler.stack]
   final stack = StackStyler();
 
-  StackBoxSpecUtility();
+  StackBoxMutableStyler();
 
-  static StackBoxSpecUtility get self => StackBoxSpecUtility();
+  static StackBoxMutableStyler get self => StackBoxMutableStyler();
 
   /// Returns a new [StackBoxStyler] with the specified properties.
   StackBoxStyler only({

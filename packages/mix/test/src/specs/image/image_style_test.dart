@@ -5,7 +5,7 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-  group('FlexStyleSpecUtility', () {
+  group('ImageMutableStyler', () {
     group('Constructor', () {
       test('', () {
         final attribute = ImageStyler(

@@ -113,34 +113,34 @@ export 'src/specs/box/box_spec.dart';
 
 /// SPECS
 export 'src/specs/box/box_style.dart';
-export 'src/specs/box/box_util.dart';
+export 'src/specs/box/box_mutable_style.dart';
 export 'src/specs/box/box_widget.dart';
 export 'src/specs/flex/flex_spec.dart';
 export 'src/specs/flex/flex_style.dart';
-export 'src/specs/flex/flex_util.dart';
+export 'src/specs/flex/flex_mutable_style.dart';
 export 'src/specs/flexbox/flexbox_spec.dart';
 export 'src/specs/flexbox/flexbox_style.dart';
-export 'src/specs/flexbox/flexbox_util.dart';
+export 'src/specs/flexbox/flexbox_mutable_style.dart';
 export 'src/specs/flexbox/flexbox_widget.dart';
 export 'src/specs/icon/icon_spec.dart';
 export 'src/specs/icon/icon_style.dart';
-export 'src/specs/icon/icon_util.dart';
+export 'src/specs/icon/icon_mutable_style.dart';
 export 'src/specs/icon/icon_widget.dart';
 export 'src/specs/image/image_spec.dart';
 export 'src/specs/image/image_style.dart' hide ImageMix;
-export 'src/specs/image/image_util.dart';
+export 'src/specs/image/image_mutable_style.dart';
 export 'src/specs/image/image_widget.dart';
 export 'src/specs/pressable/pressable_widget.dart';
-export 'src/specs/spec_util.dart';
+export 'src/specs/mutable_stylers.dart';
 export 'src/specs/stack/stack_box_spec.dart';
 export 'src/specs/stack/stack_box_style.dart';
 export 'src/specs/stack/stack_spec.dart';
 export 'src/specs/stack/stack_style.dart' hide StackMix;
-export 'src/specs/stack/stack_util.dart';
+export 'src/specs/stack/stack_mutable_style.dart';
 export 'src/specs/stack/stack_widget.dart';
 export 'src/specs/text/text_spec.dart';
 export 'src/specs/text/text_style.dart';
-export 'src/specs/text/text_util.dart';
+export 'src/specs/text/text_mutable_style.dart';
 export 'src/specs/text/text_widget.dart';
 
 /// STYLE MIXINS
