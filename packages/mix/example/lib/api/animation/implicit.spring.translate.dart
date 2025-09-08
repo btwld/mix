@@ -1,4 +1,4 @@
-import 'package:example/helpers.dart';
+import '../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
@@ -28,8 +28,8 @@ class _ExampleState extends State<Example> {
         .animate(AnimationConfig.spring(300.ms, bounce: 0.6));
 
     return Row(
-      spacing: 20,
       mainAxisAlignment: MainAxisAlignment.center,
+      spacing: 20,
       children: [
         Box(style: style),
         TextButton(
