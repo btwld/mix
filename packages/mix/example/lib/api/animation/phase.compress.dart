@@ -11,7 +11,7 @@
 /// - Transform alignment and scaling
 library;
 
-import 'package:example/helpers.dart';
+import '../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
@@ -50,12 +50,9 @@ class _BlockAnimationState extends State<BlockAnimation> {
           styleBuilder: (phase, style) => switch (phase) {
             AnimationPhases.initial => style.scale(1),
             AnimationPhases.compress =>
-              style.scale(0.75).color(Colors.deepPurple.shade800),
+              style.scale(0.75).color(Colors.red.shade800),
             AnimationPhases.expanded =>
-              style
-                  .scale(1.25)
-                  .borderRounded(20)
-                  .color(Colors.deepPurple.shade300),
+              style.scale(1.25).borderRounded(20).color(Colors.yellow.shade300),
           },
           configBuilder: (phase) => switch (phase) {
             AnimationPhases.initial =>

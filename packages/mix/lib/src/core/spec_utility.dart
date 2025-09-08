@@ -47,6 +47,10 @@ abstract class StyleAttributeBuilder<S extends Spec<S>> extends Style<S>
   List<Object?> get props => [style];
 }
 
+/// Mutable builder for Style with accumulation support.
+///
+/// Provides mutable internal state where utilities can accumulate
+/// multiple style operations into a single internal style instance.
 abstract class StyleMutableBuilder<S extends Spec<S>> extends Style<S>
     with Diagnosticable {
   const StyleMutableBuilder({super.animation, super.modifier, super.variants});
@@ -83,6 +87,10 @@ abstract class StyleMutableBuilder<S extends Spec<S>> extends Style<S>
   List<Object?> get props => [mutable];
 }
 
+/// Mixin that provides mutable behavior for style accumulation.
+///
+/// Enables styles to accumulate merge operations into an internal value,
+/// providing error handling and type safety for merge operations.
 mixin Mutable<S extends Spec<S>, T extends Style<S>> on Style<S> {
   late T value;
 

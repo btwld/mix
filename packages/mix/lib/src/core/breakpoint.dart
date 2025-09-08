@@ -29,6 +29,7 @@ class Breakpoint {
   /// If null, there is no maximum height constraint.
   final double? maxHeight;
 
+  /// Extra small devices (portrait phones, up to 575px)
   static const xs = Breakpoint.maxWidth(575);
 
   /// Small devices (landscape phones, 576px and up)

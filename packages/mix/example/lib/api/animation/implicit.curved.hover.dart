@@ -10,7 +10,7 @@
 /// - Transform alignment with .transformAlignment()
 library;
 
-import 'package:example/helpers.dart';
+import '../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
@@ -33,8 +33,9 @@ class Example extends StatelessWidget {
           BoxStyler()
               .color(Colors.blue)
               .scale(1.5)
-              .animate(AnimationConfig.easeInOut(100.ms)),
-        );
+              .animate(AnimationConfig.easeInOut(1000.ms)),
+        )
+        .animate(AnimationConfig.spring(300.ms, bounce: 0.4));
 
     return Box(style: style);
   }

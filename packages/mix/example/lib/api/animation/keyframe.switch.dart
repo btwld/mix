@@ -1,4 +1,4 @@
-import 'package:example/helpers.dart';
+import '../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
@@ -54,33 +54,33 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
                     Colors.transparent,
                   ],
                   stops: [0.3, 1],
-                  focalRadius: 1.1,
                   focal: Alignment.center,
+                  focalRadius: 1.1,
                 )
                 .borderRounded(40)
                 .scale(0.85)
                 .shadowOnly(
                   color: Colors.black.withValues(alpha: 0.1),
+                  offset: Offset(2, 4),
                   blurRadius: 4,
                   spreadRadius: 3,
-                  offset: Offset(2, 4),
                 )
                 .keyframeAnimation(
                   trigger: _trigger,
                   timeline: [
-                    KeyframeTrack<double>('scale', initial: 0.85, [
+                    KeyframeTrack<double>('scale', [
                       Keyframe.easeOutSine(1.25, 200.ms),
                       Keyframe.elasticOut(0.85, 500.ms),
-                    ]),
+                    ], initial: 0.85),
                     KeyframeTrack<double>(
                       'width',
-                      tweenBuilder: Tween.new,
-                      initial: 40,
                       [
                         Keyframe.decelerate(50, 100.ms),
                         Keyframe.linear(50, 100.ms),
                         Keyframe.elasticOut(40, 500.ms),
                       ],
+                      initial: 40,
+                      tweenBuilder: Tween.new,
                     ),
                   ],
                   styleBuilder: (values, style) => style

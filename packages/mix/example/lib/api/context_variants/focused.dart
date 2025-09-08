@@ -1,4 +1,4 @@
-import 'package:example/helpers.dart';
+import '../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
@@ -16,14 +16,14 @@ class Example extends StatefulWidget {
 class _ExampleState extends State<Example> {
   late FocusNode focusNode1;
   late FocusNode focusNode2;
-  
+
   @override
   void initState() {
     super.initState();
     focusNode1 = FocusNode();
     focusNode2 = FocusNode();
   }
-  
+
   @override
   void dispose() {
     focusNode1.dispose();
@@ -38,12 +38,10 @@ class _ExampleState extends State<Example> {
         .height(100)
         .width(100)
         .borderRounded(10)
-        .onFocused(BoxStyler()
-            .color(Colors.blue)
-            .borderAll(
-              color: Colors.blue.shade700,
-              width: 3,
-            )
+        .onFocused(
+          BoxStyler()
+              .color(Colors.blue)
+              .borderAll(color: Colors.blue.shade700, width: 3),
         );
 
     return Column(
@@ -55,26 +53,26 @@ class _ExampleState extends State<Example> {
           spacing: 8,
           children: [
             Pressable(
-              focusNode: focusNode1,
               onPress: () {
                 // Request focus when pressed
                 focusNode1.requestFocus();
               },
+              focusNode: focusNode1,
               child: Box(style: style),
             ),
             Pressable(
-              focusNode: focusNode2,
               onPress: () {
                 // Request focus when pressed
                 focusNode2.requestFocus();
               },
+              focusNode: focusNode2,
               child: Box(style: style),
             ),
           ],
         ),
         Text(
           'Click a box to focus it, or use Tab key to navigate',
-          style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+          style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
         ),
       ],
     );

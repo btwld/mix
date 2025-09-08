@@ -90,6 +90,10 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
   }
 }
 
+/// Builds widgets with resolved style specifications.
+///
+/// Applies resolved style specs, widget modifiers, and animation support
+/// to the builder function while providing the spec through StyleSpecProvider.
 class StyleSpecBuilder<S extends Spec<S>> extends StatelessWidget {
   const StyleSpecBuilder({
     super.key,
