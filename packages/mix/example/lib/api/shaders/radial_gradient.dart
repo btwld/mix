@@ -30,9 +30,12 @@ class LinearGradientIconExample extends StatelessWidget {
           .wrap(
             ModifierConfig.shaderMask(
               shaderCallback: ShaderCallbackBuilder.radialGradient(
-                colors: [Colors.blueAccent.shade100, Colors.blueAccent.shade700],
                 center: Alignment.centerLeft,
                 radius: 0.7,
+                colors: [
+                  Colors.blueAccent.shade100,
+                  Colors.blueAccent.shade700,
+                ],
               ),
             ),
           ),

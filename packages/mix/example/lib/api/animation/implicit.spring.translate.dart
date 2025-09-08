@@ -1,4 +1,4 @@
-import 'package:example/helpers.dart';
+import '../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
@@ -22,14 +22,14 @@ class _ExampleState extends State<Example> {
         .color(Colors.black)
         .height(100)
         .width(100)
-        .borderRadius(.all(.circular(10)))
-        .transform(.identity())
+        .borderRounded(10)
+        .transform(Matrix4.identity())
         .translate(0, _translated ? 100 : -100)
-        .animate(.spring(300.ms, bounce: 0.6));
+        .animate(AnimationConfig.spring(300.ms, bounce: 0.6));
 
     return Row(
-      spacing: 20,
       mainAxisAlignment: MainAxisAlignment.center,
+      spacing: 20,
       children: [
         Box(style: style),
         TextButton(

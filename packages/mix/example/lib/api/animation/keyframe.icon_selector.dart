@@ -38,13 +38,10 @@ class EmojiSelector extends StatelessWidget {
 
     return FlexBox(
       style: Style.flexbox()
-          .padding(EdgeInsetsMix.symmetric(horizontal: 16, vertical: 10))
+          .padding(EdgeInsetsMix.symmetric(vertical: 10, horizontal: 16))
           .color(Colors.white)
           .borderRounded(50)
-          .shadowOnly(
-            color: Colors.black12,
-            blurRadius: 50,
-          )
+          .shadowOnly(color: Colors.black12, blurRadius: 50)
           .spacing(16)
           .mainAxisAlignment(MainAxisAlignment.center)
           .mainAxisSize(MainAxisSize.min),
@@ -95,16 +92,16 @@ class _PopUpAnimationState extends State<PopUpAnimation> {
       style: Style.box().keyframeAnimation(
         trigger: trigger,
         timeline: [
-          KeyframeTrack<double>('scale', initial: 0, [
+          KeyframeTrack<double>('scale', [
             Keyframe.ease(0.2, 200.ms),
             Keyframe.elasticOut(1.0, 1000.ms),
-          ]),
-          KeyframeTrack<double>('y', initial: -100, [
+          ], initial: 0),
+          KeyframeTrack<double>('y', [
             Keyframe.elasticOut(0, 800.ms),
-          ]),
-          KeyframeTrack<double>('opacity', initial: 0, [
+          ], initial: -100),
+          KeyframeTrack<double>('opacity', [
             Keyframe.easeIn(1.0, 500.ms),
-          ]),
+          ], initial: 0),
         ],
         styleBuilder: (values, style) {
           final scale = values.get('scale');

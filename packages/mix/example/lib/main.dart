@@ -42,16 +42,16 @@ class MixExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WidgetsApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Mix Examples',
-      color: const Color(0xFF2196F3),
-      home: const ExampleNavigator(),
       pageRouteBuilder:
           <T extends Object?>(RouteSettings settings, WidgetBuilder builder) =>
               PageRouteBuilder<T>(
                 settings: settings,
                 pageBuilder: (context, animation, _) => builder(context),
               ),
+      home: const ExampleNavigator(),
+      title: 'Mix Examples',
+      color: const Color(0xFF2196F3),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -228,6 +228,32 @@ class _ExampleNavigatorState extends State<ExampleNavigator> {
     ),
   ];
 
+  Widget _buildExampleCard(ExampleItem example) {
+    return Padding(
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            example.title,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 2,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            example.description,
+            style: const TextStyle(color: Colors.grey, fontSize: 12),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 2,
+          ),
+          const SizedBox(height: 12),
+          Expanded(child: Center(child: example.widget)),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final categories = ['All', ..._examples.map((e) => e.category).toSet()];
@@ -246,6 +272,7 @@ class _ExampleNavigatorState extends State<ExampleNavigator> {
               spacing: 8,
               children: categories.map((category) {
                 final isSelected = _selectedCategory == category;
+
                 return FilterChipButton(
                   label: category,
                   selected: isSelected,
@@ -264,43 +291,18 @@ class _ExampleNavigatorState extends State<ExampleNavigator> {
               padding: const EdgeInsets.all(16),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: MediaQuery.of(context).size.width > 800 ? 3 : 2,
-                crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
                 childAspectRatio: 0.9,
               ),
-              itemCount: filteredExamples.length,
               itemBuilder: (context, index) {
                 final example = filteredExamples[index];
+
                 return _buildExampleCard(example);
               },
+              itemCount: filteredExamples.length,
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildExampleCard(ExampleItem example) {
-    return Padding(
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            example.title,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            example.description,
-            style: const TextStyle(fontSize: 12, color: Colors.grey),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 12),
-          Expanded(child: Center(child: example.widget)),
         ],
       ),
     );
