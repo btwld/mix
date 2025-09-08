@@ -6,7 +6,6 @@ import '../../core/style.dart' show Style, VariantStyle;
 import '../../core/style_spec.dart';
 import '../../core/utility.dart';
 import '../../core/utility_variant_mixin.dart';
-import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/painting/color_util.dart';
 import '../../properties/painting/shadow_mix.dart';
@@ -39,7 +38,7 @@ class IconSpecUtility extends StyleMutableBuilder<IconSpec>
   );
 
   late final wrap = ModifierUtility(
-    (prop) => mutable.wrap(ModifierConfig(modifiers: [prop])),
+    (prop) => mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
   );
 
   /// Internal mutable state for accumulating icon styling properties.

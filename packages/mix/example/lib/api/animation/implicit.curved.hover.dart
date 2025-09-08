@@ -10,7 +10,7 @@
 /// - Transform alignment with .transformAlignment()
 library;
 
-import 'package:example/helpers.dart';
+import '../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 

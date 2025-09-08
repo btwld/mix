@@ -11,7 +11,7 @@ import '../theme/tokens/mix_token.dart';
 /// Modifier that constrains its child to a specific aspect ratio.
 ///
 /// Wraps the child in an [AspectRatio] widget with the specified ratio.
-final class AspectRatioModifier extends Modifier<AspectRatioModifier>
+final class AspectRatioModifier extends WidgetModifier<AspectRatioModifier>
     with Diagnosticable {
   final double aspectRatio;
 
@@ -48,7 +48,7 @@ final class AspectRatioModifier extends Modifier<AspectRatioModifier>
 /// Mix class for applying aspect ratio modifications.
 ///
 /// This class allows for mixing and resolving aspect ratio properties.
-class AspectRatioModifierMix extends ModifierMix<AspectRatioModifier>
+class AspectRatioModifierMix extends WidgetModifierMix<AspectRatioModifier>
     with Diagnosticable {
   final Prop<double>? aspectRatio;
 

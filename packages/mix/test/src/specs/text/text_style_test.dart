@@ -746,7 +746,7 @@ void main() {
         expect(attribute.props, contains(attribute.$semanticsLabel));
         expect(attribute.props, contains(attribute.$locale));
         expect(attribute.props, contains(attribute.$animation));
-        expect(attribute.props, contains(attribute.$modifier));
+        expect(attribute.props, contains(attribute.$widgetModifier));
         expect(attribute.props, contains(attribute.$variants));
       });
     });

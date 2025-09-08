@@ -11,7 +11,7 @@ import '../theme/tokens/mix_token.dart';
 /// Modifier that controls the visibility of its child.
 ///
 /// Wraps the child in a [Visibility] widget to show or hide it while maintaining layout space.
-final class VisibilityModifier extends Modifier<VisibilityModifier>
+final class VisibilityModifier extends WidgetModifier<VisibilityModifier>
     with Diagnosticable {
   /// Whether the child widget should be visible.
   final bool visible;
@@ -54,7 +54,7 @@ final class VisibilityModifier extends Modifier<VisibilityModifier>
 /// Mix class for applying visibility modifications.
 ///
 /// This class allows for mixing and resolving visibility properties.
-class VisibilityModifierMix extends ModifierMix<VisibilityModifier>
+class VisibilityModifierMix extends WidgetModifierMix<VisibilityModifier>
     with Diagnosticable {
   /// Whether the child widget should be visible.
   final Prop<bool>? visible;

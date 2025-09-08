@@ -66,7 +66,7 @@ class TextStyler extends Style<TextSpec>
     Prop<String>? semanticsLabel,
     Prop<Locale>? locale,
     super.animation,
-    super.modifier,
+    super.widgetModifier,
     super.variants,
   }) : $overflow = overflow,
        $strutStyle = strutStyle,
@@ -99,9 +99,10 @@ class TextStyler extends Style<TextSpec>
     String? semanticsLabel,
     Locale? locale,
     AnimationConfig? animation,
-    ModifierConfig? modifier,
+    WidgetModifierConfig? widgetModifier,
     List<VariantStyle<TextSpec>>? variants,
   }) : this.create(
+         widgetModifier: widgetModifier,
          overflow: Prop.maybe(overflow),
          strutStyle: Prop.maybeMix(strutStyle),
          textAlign: Prop.maybe(textAlign),
@@ -117,7 +118,6 @@ class TextStyler extends Style<TextSpec>
          semanticsLabel: Prop.maybe(semanticsLabel),
          locale: Prop.maybe(locale),
          animation: animation,
-         modifier: modifier,
          variants: variants,
        );
 
@@ -235,8 +235,8 @@ class TextStyler extends Style<TextSpec>
     );
   }
 
-  TextStyler modifier(ModifierConfig value) {
-    return merge(TextStyler(modifier: value));
+  TextStyler modifier(WidgetModifierConfig value) {
+    return merge(TextStyler(widgetModifier: value));
   }
 
   /// Mixin implementation for text styling
@@ -286,7 +286,7 @@ class TextStyler extends Style<TextSpec>
     return StyleSpec(
       spec: textSpec,
       animation: $animation,
-      widgetModifiers: $modifier?.resolve(context),
+      widgetModifiers: $widgetModifier?.resolve(context),
     );
   }
 
@@ -301,6 +301,10 @@ class TextStyler extends Style<TextSpec>
   @override
   TextStyler merge(TextStyler? other) {
     return TextStyler.create(
+      widgetModifier: MixOps.mergeWidgetModifier(
+        $widgetModifier,
+        other?.$widgetModifier,
+      ),
       overflow: MixOps.merge($overflow, other?.$overflow),
       strutStyle: MixOps.merge($strutStyle, other?.$strutStyle),
       textAlign: MixOps.merge($textAlign, other?.$textAlign),
@@ -319,7 +323,6 @@ class TextStyler extends Style<TextSpec>
       semanticsLabel: MixOps.merge($semanticsLabel, other?.$semanticsLabel),
       locale: MixOps.merge($locale, other?.$locale),
       animation: MixOps.mergeAnimation($animation, other?.$animation),
-      modifier: MixOps.mergeModifier($modifier, other?.$modifier),
       variants: MixOps.mergeVariants($variants, other?.$variants),
     );
   }
@@ -344,9 +347,8 @@ class TextStyler extends Style<TextSpec>
       ..add(DiagnosticsProperty('directives', $textDirectives));
   }
 
-
   @override
-  TextStyler wrap(ModifierConfig value) {
+  TextStyler wrap(WidgetModifierConfig value) {
     return modifier(value);
   }
 
@@ -369,7 +371,7 @@ class TextStyler extends Style<TextSpec>
     $semanticsLabel,
     $locale,
     $animation,
-    $modifier,
+    $widgetModifier,
     $variants,
   ];
 }

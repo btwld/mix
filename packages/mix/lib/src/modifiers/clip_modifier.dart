@@ -10,7 +10,7 @@ import '../properties/painting/border_radius_mix.dart';
 /// Modifier that clips its child to an oval shape.
 ///
 /// Wraps the child in a [ClipOval] widget with the specified clipper and clip behavior.
-final class ClipOvalModifier extends Modifier<ClipOvalModifier>
+final class ClipOvalModifier extends WidgetModifier<ClipOvalModifier>
     with Diagnosticable {
   final CustomClipper<Rect>? clipper;
   final Clip clipBehavior;
@@ -59,7 +59,7 @@ final class ClipOvalModifier extends Modifier<ClipOvalModifier>
 /// Mix class for applying clip oval modifications.
 ///
 /// This class allows for mixing and resolving clip oval properties.
-class ClipOvalModifierMix extends ModifierMix<ClipOvalModifier> {
+class ClipOvalModifierMix extends WidgetModifierMix<ClipOvalModifier> {
   final Prop<CustomClipper<Rect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
@@ -96,7 +96,7 @@ class ClipOvalModifierMix extends ModifierMix<ClipOvalModifier> {
 /// Modifier that clips its child to a rectangular shape.
 ///
 /// Wraps the child in a [ClipRect] widget with the specified clipper and clip behavior.
-final class ClipRectModifier extends Modifier<ClipRectModifier>
+final class ClipRectModifier extends WidgetModifier<ClipRectModifier>
     with Diagnosticable {
   final CustomClipper<Rect>? clipper;
   final Clip clipBehavior;
@@ -145,7 +145,7 @@ final class ClipRectModifier extends Modifier<ClipRectModifier>
 /// Mix class for applying clip rect modifications.
 ///
 /// This class allows for mixing and resolving clip rect properties.
-class ClipRectModifierMix extends ModifierMix<ClipRectModifier> {
+class ClipRectModifierMix extends WidgetModifierMix<ClipRectModifier> {
   final Prop<CustomClipper<Rect>>? clipper;
   final Prop<Clip>? clipBehavior;
 
@@ -182,7 +182,7 @@ class ClipRectModifierMix extends ModifierMix<ClipRectModifier> {
 /// Modifier that clips its child to a rounded rectangular shape.
 ///
 /// Wraps the child in a [ClipRRect] widget with the specified border radius.
-final class ClipRRectModifier extends Modifier<ClipRRectModifier>
+final class ClipRRectModifier extends WidgetModifier<ClipRRectModifier>
     with Diagnosticable {
   final BorderRadiusGeometry borderRadius;
   final CustomClipper<RRect>? clipper;
@@ -245,7 +245,7 @@ final class ClipRRectModifier extends Modifier<ClipRRectModifier>
 /// Mix class for applying clip rounded rect modifications.
 ///
 /// This class allows for mixing and resolving clip rounded rect properties.
-class ClipRRectModifierMix extends ModifierMix<ClipRRectModifier> {
+class ClipRRectModifierMix extends WidgetModifierMix<ClipRRectModifier> {
   final Prop<BorderRadiusGeometry>? borderRadius;
   final Prop<CustomClipper<RRect>>? clipper;
   final Prop<Clip>? clipBehavior;
@@ -254,7 +254,7 @@ class ClipRRectModifierMix extends ModifierMix<ClipRRectModifier> {
     this.borderRadius,
     this.clipper,
     this.clipBehavior,
-  });
+  }) : super();
 
   ClipRRectModifierMix({
     BorderRadiusGeometryMix? borderRadius,
@@ -293,7 +293,7 @@ class ClipRRectModifierMix extends ModifierMix<ClipRRectModifier> {
 /// Modifier that clips its child using a custom path.
 ///
 /// Wraps the child in a [ClipPath] widget with the specified clipper.
-final class ClipPathModifier extends Modifier<ClipPathModifier>
+final class ClipPathModifier extends WidgetModifier<ClipPathModifier>
     with Diagnosticable {
   final CustomClipper<Path>? clipper;
   final Clip clipBehavior;
@@ -342,7 +342,7 @@ final class ClipPathModifier extends Modifier<ClipPathModifier>
 /// Mix class for applying clip path modifications.
 ///
 /// This class allows for mixing and resolving clip path properties.
-class ClipPathModifierMix extends ModifierMix<ClipPathModifier> {
+class ClipPathModifierMix extends WidgetModifierMix<ClipPathModifier> {
   final Prop<CustomClipper<Path>>? clipper;
   final Prop<Clip>? clipBehavior;
 
@@ -379,7 +379,7 @@ class ClipPathModifierMix extends ModifierMix<ClipPathModifier> {
 /// Modifier that clips its child to a triangle shape.
 ///
 /// Wraps the child in a [ClipPath] widget using a triangle clipper.
-final class ClipTriangleModifier extends Modifier<ClipTriangleModifier>
+final class ClipTriangleModifier extends WidgetModifier<ClipTriangleModifier>
     with Diagnosticable {
   final Clip clipBehavior;
 
@@ -424,7 +424,7 @@ final class ClipTriangleModifier extends Modifier<ClipTriangleModifier>
 /// Mix class for applying clip triangle modifications.
 ///
 /// This class allows for mixing and resolving clip triangle properties.
-class ClipTriangleModifierMix extends ModifierMix<ClipTriangleModifier> {
+class ClipTriangleModifierMix extends WidgetModifierMix<ClipTriangleModifier> {
   final Prop<Clip>? clipBehavior;
 
   const ClipTriangleModifierMix.create({this.clipBehavior});

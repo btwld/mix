@@ -156,7 +156,7 @@ void main() {
 
     setUp(() {
       utility = IconThemeModifierUtility(
-        (attr) => BoxStyler(modifier: ModifierConfig.modifier(attr)),
+        (attr) => BoxStyler(widgetModifier: WidgetModifierConfig.widgetModifier(attr)),
       );
     });
 
@@ -167,8 +167,8 @@ void main() {
 
       final result = utility.call(color: color, size: size, opacity: opacity);
 
-      expect(result.$modifier?.$modifiers?.first, isA<IconThemeModifierMix>());
-      final attr = result.$modifier!.$modifiers!.first as IconThemeModifierMix;
+      expect(result.$widgetModifier?.$widgetModifiers?.first, isA<IconThemeModifierMix>());
+      final attr = result.$widgetModifier!.$widgetModifiers!.first as IconThemeModifierMix;
       expect(attr.color, resolvesTo(color));
       expect(attr.size, resolvesTo(size));
       expect(attr.opacity, resolvesTo(opacity));
@@ -178,8 +178,8 @@ void main() {
       const color = Color(0xFF000000);
       final result = utility.color(color);
 
-      expect(result.$modifier?.$modifiers?.first, isA<IconThemeModifierMix>());
-      final attr = result.$modifier!.$modifiers!.first as IconThemeModifierMix;
+      expect(result.$widgetModifier?.$widgetModifiers?.first, isA<IconThemeModifierMix>());
+      final attr = result.$widgetModifier!.$widgetModifiers!.first as IconThemeModifierMix;
       expect(attr.color, resolvesTo(color));
     });
 
@@ -187,8 +187,8 @@ void main() {
       const size = 24.0;
       final result = utility.size(size);
 
-      expect(result.$modifier?.$modifiers?.first, isA<IconThemeModifierMix>());
-      final attr = result.$modifier!.$modifiers!.first as IconThemeModifierMix;
+      expect(result.$widgetModifier?.$widgetModifiers?.first, isA<IconThemeModifierMix>());
+      final attr = result.$widgetModifier!.$widgetModifiers!.first as IconThemeModifierMix;
       expect(attr.size, resolvesTo(size));
     });
 
@@ -196,8 +196,8 @@ void main() {
       const opacity = 0.8;
       final result = utility.opacity(opacity);
 
-      expect(result.$modifier?.$modifiers?.first, isA<IconThemeModifierMix>());
-      final attr = result.$modifier!.$modifiers!.first as IconThemeModifierMix;
+      expect(result.$widgetModifier?.$widgetModifiers?.first, isA<IconThemeModifierMix>());
+      final attr = result.$widgetModifier!.$widgetModifiers!.first as IconThemeModifierMix;
       expect(attr.opacity, resolvesTo(opacity));
     });
   });

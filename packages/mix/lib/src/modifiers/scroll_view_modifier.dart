@@ -12,7 +12,7 @@ import '../properties/layout/edge_insets_geometry_util.dart';
 /// Modifier that applies scroll view properties to its child.
 ///
 /// Wraps the child in a scrollable widget with the specified properties.
-final class ScrollViewModifier extends Modifier<ScrollViewModifier>
+final class ScrollViewModifier extends WidgetModifier<ScrollViewModifier>
     with Diagnosticable {
   final Axis? scrollDirection;
   final bool? reverse;
@@ -26,7 +26,7 @@ final class ScrollViewModifier extends Modifier<ScrollViewModifier>
     this.padding,
     this.physics,
     this.clipBehavior,
-  });
+  }) : super();
 
   @override
   ScrollViewModifier copyWith({
@@ -167,7 +167,7 @@ final class ScrollViewModifierUtility<T extends Style<Object?>>
   }
 }
 
-class ScrollViewModifierMix extends ModifierMix<ScrollViewModifier>
+class ScrollViewModifierMix extends WidgetModifierMix<ScrollViewModifier>
     with Diagnosticable {
   final Prop<Axis>? scrollDirection;
   final Prop<bool>? reverse;
@@ -181,7 +181,7 @@ class ScrollViewModifierMix extends ModifierMix<ScrollViewModifier>
     this.padding,
     this.physics,
     this.clipBehavior,
-  });
+  }) : super();
 
   ScrollViewModifierMix({
     Axis? scrollDirection,

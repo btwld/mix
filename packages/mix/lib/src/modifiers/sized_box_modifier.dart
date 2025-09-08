@@ -10,7 +10,7 @@ import '../core/utility.dart';
 /// Modifier that constrains its child to a specific size.
 ///
 /// Wraps the child in a [SizedBox] widget with the specified width and height.
-final class SizedBoxModifier extends Modifier<SizedBoxModifier>
+final class SizedBoxModifier extends WidgetModifier<SizedBoxModifier>
     with Diagnosticable {
   final double? width;
   final double? height;
@@ -81,7 +81,7 @@ final class SizedBoxModifierUtility<T extends Style<Object?>>
 /// Mix class for applying sized box modifications.
 ///
 /// This class allows for mixing and resolving sized box properties.
-class SizedBoxModifierMix extends ModifierMix<SizedBoxModifier>
+class SizedBoxModifierMix extends WidgetModifierMix<SizedBoxModifier>
     with Diagnosticable {
   final Prop<double>? width;
   final Prop<double>? height;

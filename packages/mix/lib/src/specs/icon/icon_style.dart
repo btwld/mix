@@ -52,7 +52,7 @@ class IconStyler extends Style<IconSpec>
     Prop<BlendMode>? blendMode,
     Prop<IconData>? icon,
     super.animation,
-    super.modifier,
+    super.widgetModifier,
     super.variants,
   }) : $color = color,
        $size = size,
@@ -83,9 +83,10 @@ class IconStyler extends Style<IconSpec>
     BlendMode? blendMode,
     IconData? icon,
     AnimationConfig? animation,
-    ModifierConfig? modifier,
+    WidgetModifierConfig? widgetModifier,
     List<VariantStyle<IconSpec>>? variants,
   }) : this.create(
+         widgetModifier: widgetModifier,
          color: Prop.maybe(color),
          size: Prop.maybe(size),
          weight: Prop.maybe(weight),
@@ -100,7 +101,6 @@ class IconStyler extends Style<IconSpec>
          blendMode: Prop.maybe(blendMode),
          icon: Prop.maybe(icon),
          animation: animation,
-         modifier: modifier,
          variants: variants,
        );
 
@@ -184,8 +184,8 @@ class IconStyler extends Style<IconSpec>
     return StyledIcon(icon: icon, semanticLabel: semanticLabel, style: this);
   }
 
-  IconStyler modifier(ModifierConfig value) {
-    return merge(IconStyler(modifier: value));
+  IconStyler modifier(WidgetModifierConfig value) {
+    return merge(IconStyler(widgetModifier: value));
   }
 
   /// Sets animation
@@ -215,13 +215,17 @@ class IconStyler extends Style<IconSpec>
     return StyleSpec(
       spec: iconSpec,
       animation: $animation,
-      widgetModifiers: $modifier?.resolve(context),
+      widgetModifiers: $widgetModifier?.resolve(context),
     );
   }
 
   @override
   IconStyler merge(IconStyler? other) {
     return IconStyler.create(
+      widgetModifier: MixOps.mergeWidgetModifier(
+        $widgetModifier,
+        other?.$widgetModifier,
+      ),
       color: MixOps.merge($color, other?.$color),
       size: MixOps.merge($size, other?.$size),
       weight: MixOps.merge($weight, other?.$weight),
@@ -239,7 +243,6 @@ class IconStyler extends Style<IconSpec>
       blendMode: MixOps.merge($blendMode, other?.$blendMode),
       icon: MixOps.merge($icon, other?.$icon),
       animation: MixOps.mergeAnimation($animation, other?.$animation),
-      modifier: MixOps.mergeModifier($modifier, other?.$modifier),
       variants: MixOps.mergeVariants($variants, other?.$variants),
     );
   }
@@ -263,14 +266,13 @@ class IconStyler extends Style<IconSpec>
       ..add(DiagnosticsProperty('icon', $icon));
   }
 
-
   @override
   IconStyler variants(List<VariantStyle<IconSpec>> value) {
     return merge(IconStyler(variants: value));
   }
 
   @override
-  IconStyler wrap(ModifierConfig value) {
+  IconStyler wrap(WidgetModifierConfig value) {
     return modifier(value);
   }
 
@@ -290,7 +292,7 @@ class IconStyler extends Style<IconSpec>
     $blendMode,
     $icon,
     $animation,
-    $modifier,
+    $widgetModifier,
     $variants,
   ];
 }

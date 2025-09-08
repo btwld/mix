@@ -11,7 +11,7 @@ import '../core/utility.dart';
 ///
 /// Wraps the child in a [FractionallySizedBox] widget with the specified factors.
 final class FractionallySizedBoxModifier
-    extends Modifier<FractionallySizedBoxModifier>
+    extends WidgetModifier<FractionallySizedBoxModifier>
     with Diagnosticable {
   final double? widthFactor;
   final double? heightFactor;
@@ -77,7 +77,7 @@ final class FractionallySizedBoxModifier
 ///
 /// This class allows for mixing and resolving fractionally sized box properties.
 class FractionallySizedBoxModifierMix
-    extends ModifierMix<FractionallySizedBoxModifier> {
+    extends WidgetModifierMix<FractionallySizedBoxModifier> {
   final Prop<double>? widthFactor;
   final Prop<double>? heightFactor;
   final Prop<AlignmentGeometry>? alignment;
@@ -86,7 +86,7 @@ class FractionallySizedBoxModifierMix
     this.widthFactor,
     this.heightFactor,
     this.alignment,
-  });
+  }) : super();
 
   FractionallySizedBoxModifierMix({
     double? widthFactor,

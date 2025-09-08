@@ -67,7 +67,7 @@ class BoxStyler extends Style<BoxSpec>
     Prop<AlignmentGeometry>? transformAlignment,
     Prop<Clip>? clipBehavior,
     super.variants,
-    super.modifier,
+    super.widgetModifier,
     super.animation,
   }) : $alignment = alignment,
        $padding = padding,
@@ -90,9 +90,10 @@ class BoxStyler extends Style<BoxSpec>
     AlignmentGeometry? transformAlignment,
     Clip? clipBehavior,
     AnimationConfig? animation,
-    ModifierConfig? modifier,
+    WidgetModifierConfig? widgetModifier,
     List<VariantStyle<BoxSpec>>? variants,
   }) : this.create(
+         widgetModifier: widgetModifier,
          alignment: Prop.maybe(alignment),
          padding: Prop.maybeMix(padding),
          margin: Prop.maybeMix(margin),
@@ -103,7 +104,6 @@ class BoxStyler extends Style<BoxSpec>
          transformAlignment: Prop.maybe(transformAlignment),
          clipBehavior: Prop.maybe(clipBehavior),
          variants: variants,
-         modifier: modifier,
          animation: animation,
        );
 
@@ -126,8 +126,8 @@ class BoxStyler extends Style<BoxSpec>
   }
 
   /// Modifier instance method
-  BoxStyler modifier(ModifierConfig value) {
-    return merge(BoxStyler(modifier: value));
+  BoxStyler modifier(WidgetModifierConfig value) {
+    return merge(BoxStyler(widgetModifier: value));
   }
 
   /// Foreground decoration instance method
@@ -176,7 +176,7 @@ class BoxStyler extends Style<BoxSpec>
 
   /// Mixin implementation
   @override
-  BoxStyler wrap(ModifierConfig value) {
+  BoxStyler wrap(WidgetModifierConfig value) {
     return modifier(value);
   }
 
@@ -196,7 +196,6 @@ class BoxStyler extends Style<BoxSpec>
   BoxStyler variants(List<VariantStyle<BoxSpec>> value) {
     return merge(BoxStyler(variants: value));
   }
-
 
   /// Resolves to [StyleSpec<BoxSpec>] using the provided [BuildContext].
   ///
@@ -225,7 +224,7 @@ class BoxStyler extends Style<BoxSpec>
     return StyleSpec(
       spec: boxSpec,
       animation: $animation,
-      widgetModifiers: $modifier?.resolve(context),
+      widgetModifiers: $widgetModifier?.resolve(context),
     );
   }
 
@@ -240,6 +239,10 @@ class BoxStyler extends Style<BoxSpec>
   @override
   BoxStyler merge(BoxStyler? other) {
     return BoxStyler.create(
+      widgetModifier: MixOps.mergeWidgetModifier(
+        $widgetModifier,
+        other?.$widgetModifier,
+      ),
       alignment: MixOps.merge($alignment, other?.$alignment),
       padding: MixOps.merge($padding, other?.$padding),
       margin: MixOps.merge($margin, other?.$margin),
@@ -256,7 +259,6 @@ class BoxStyler extends Style<BoxSpec>
       ),
       clipBehavior: MixOps.merge($clipBehavior, other?.$clipBehavior),
       variants: MixOps.mergeVariants($variants, other?.$variants),
-      modifier: MixOps.mergeModifier($modifier, other?.$modifier),
       animation: MixOps.mergeAnimation($animation, other?.$animation),
     );
   }
@@ -290,7 +292,7 @@ class BoxStyler extends Style<BoxSpec>
     $transformAlignment,
     $clipBehavior,
     $animation,
-    $modifier,
+    $widgetModifier,
     $variants,
   ];
 }

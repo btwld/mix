@@ -439,33 +439,33 @@ void main() {
   group('Modifiers', () {
     test('modifiers can be added to attribute', () {
       final attribute = FlexStyler(
-        modifier: ModifierConfig(
-          modifiers: [
+        widgetModifier: WidgetModifierConfig(
+          widgetModifiers: [
             OpacityModifierMix(opacity: 0.5),
             PaddingModifierMix(padding: EdgeInsetsMix.all(8.0)),
           ],
         ),
       );
 
-      expect(attribute.$modifier, isNotNull);
-      expect(attribute.$modifier!.$modifiers!.length, 2);
+      expect(attribute.$widgetModifier, isNotNull);
+      expect(attribute.$widgetModifier!.$widgetModifiers!.length, 2);
     });
 
     test('modifiers merge correctly', () {
       final first = FlexStyler(
-        modifier: ModifierConfig(modifiers: [OpacityModifierMix(opacity: 0.5)]),
+        widgetModifier: WidgetModifierConfig(widgetModifiers: [OpacityModifierMix(opacity: 0.5)]),
       );
 
       final second = FlexStyler(
-        modifier: ModifierConfig(
-          modifiers: [PaddingModifierMix(padding: EdgeInsetsMix.all(8.0))],
+        widgetModifier: WidgetModifierConfig(
+          widgetModifiers: [PaddingModifierMix(padding: EdgeInsetsMix.all(8.0))],
         ),
       );
 
       final merged = first.merge(second);
 
       // Note: The actual merge behavior depends on the parent class implementation
-      expect(merged.$modifier, isNotNull);
+      expect(merged.$widgetModifier, isNotNull);
     });
   });
 

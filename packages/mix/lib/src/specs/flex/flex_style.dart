@@ -58,7 +58,7 @@ class FlexStyler extends Style<FlexSpec>
     )
     Prop<double>? gap,
     super.animation,
-    super.modifier,
+    super.widgetModifier,
     super.variants,
   }) : $direction = direction,
        $mainAxisAlignment = mainAxisAlignment,
@@ -86,9 +86,10 @@ class FlexStyler extends Style<FlexSpec>
     )
     double? gap,
     AnimationConfig? animation,
-    ModifierConfig? modifier,
+    WidgetModifierConfig? widgetModifier,
     List<VariantStyle<FlexSpec>>? variants,
   }) : this.create(
+         widgetModifier: widgetModifier,
          direction: Prop.maybe(direction),
          mainAxisAlignment: Prop.maybe(mainAxisAlignment),
          crossAxisAlignment: Prop.maybe(crossAxisAlignment),
@@ -99,7 +100,6 @@ class FlexStyler extends Style<FlexSpec>
          clipBehavior: Prop.maybe(clipBehavior),
          spacing: Prop.maybe(spacing ?? gap),
          animation: animation,
-         modifier: modifier,
          variants: variants,
        );
 
@@ -130,8 +130,8 @@ class FlexStyler extends Style<FlexSpec>
     return merge(FlexStyler(spacing: value));
   }
 
-  FlexStyler modifier(ModifierConfig value) {
-    return merge(FlexStyler(modifier: value));
+  FlexStyler modifier(WidgetModifierConfig value) {
+    return merge(FlexStyler(widgetModifier: value));
   }
 
   // FlexMixin implementation
@@ -176,7 +176,7 @@ class FlexStyler extends Style<FlexSpec>
     return StyleSpec(
       spec: flexSpec,
       animation: $animation,
-      widgetModifiers: $modifier?.resolve(context),
+      widgetModifiers: $widgetModifier?.resolve(context),
     );
   }
 
@@ -191,6 +191,10 @@ class FlexStyler extends Style<FlexSpec>
   @override
   FlexStyler merge(FlexStyler? other) {
     return FlexStyler.create(
+      widgetModifier: MixOps.mergeWidgetModifier(
+        $widgetModifier,
+        other?.$widgetModifier,
+      ),
       direction: MixOps.merge($direction, other?.$direction),
       mainAxisAlignment: MixOps.merge(
         $mainAxisAlignment,
@@ -210,7 +214,6 @@ class FlexStyler extends Style<FlexSpec>
       clipBehavior: MixOps.merge($clipBehavior, other?.$clipBehavior),
       spacing: MixOps.merge($spacing, other?.$spacing),
       animation: MixOps.mergeAnimation($animation, other?.$animation),
-      modifier: MixOps.mergeModifier($modifier, other?.$modifier),
       variants: MixOps.mergeVariants($variants, other?.$variants),
     );
   }
@@ -230,9 +233,8 @@ class FlexStyler extends Style<FlexSpec>
       ..add(DiagnosticsProperty('spacing', $spacing));
   }
 
-
   @override
-  FlexStyler wrap(ModifierConfig value) {
+  FlexStyler wrap(WidgetModifierConfig value) {
     return modifier(value);
   }
 
@@ -250,7 +252,7 @@ class FlexStyler extends Style<FlexSpec>
     $clipBehavior,
     $spacing,
     $animation,
-    $modifier,
+    $widgetModifier,
     $variants,
   ];
 }

@@ -78,9 +78,10 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
     double? spacing,
     // Style properties
     AnimationConfig? animation,
-    ModifierConfig? modifier,
+    WidgetModifierConfig? widgetModifier,
     List<VariantStyle<FlexBoxSpec>>? variants,
   }) : this.create(
+         widgetModifier: widgetModifier,
          box: Prop.maybeMix(
            BoxStyler(
              alignment: alignment,
@@ -108,7 +109,6 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
            ),
          ),
          animation: animation,
-         modifier: modifier,
          variants: variants,
        );
 
@@ -117,7 +117,7 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
     Prop<StyleSpec<BoxSpec>>? box,
     Prop<StyleSpec<FlexSpec>>? flex,
     super.animation,
-    super.modifier,
+    super.widgetModifier,
     super.variants,
   }) : $box = box,
        $flex = flex;
@@ -156,8 +156,8 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
     return merge(FlexBoxStyler(spacing: value));
   }
 
-  FlexBoxStyler modifier(ModifierConfig value) {
-    return merge(FlexBoxStyler(modifier: value));
+  FlexBoxStyler modifier(WidgetModifierConfig value) {
+    return merge(FlexBoxStyler(widgetModifier: value));
   }
 
   /// Foreground decoration instance method
@@ -208,7 +208,7 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
 
   /// Modifier instance method
   @override
-  FlexBoxStyler wrap(ModifierConfig value) {
+  FlexBoxStyler wrap(WidgetModifierConfig value) {
     return modifier(value);
   }
 
@@ -216,7 +216,6 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
   FlexBoxStyler variants(List<VariantStyle<FlexBoxSpec>> variants) {
     return merge(FlexBoxStyler(variants: variants));
   }
-
 
   /// Border radius instance method
   @override
@@ -248,7 +247,7 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
     return StyleSpec(
       spec: flexBoxSpec,
       animation: $animation,
-      widgetModifiers: $modifier?.resolve(context),
+      widgetModifiers: $widgetModifier?.resolve(context),
     );
   }
 
@@ -263,10 +262,13 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
   @override
   FlexBoxStyler merge(FlexBoxStyler? other) {
     return FlexBoxStyler.create(
+      widgetModifier: MixOps.mergeWidgetModifier(
+        $widgetModifier,
+        other?.$widgetModifier,
+      ),
       box: MixOps.merge($box, other?.$box),
       flex: MixOps.merge($flex, other?.$flex),
       animation: MixOps.mergeAnimation($animation, other?.$animation),
-      modifier: MixOps.mergeModifier($modifier, other?.$modifier),
       variants: MixOps.mergeVariants($variants, other?.$variants),
     );
   }

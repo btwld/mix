@@ -11,7 +11,7 @@ import '../properties/painting/shadow_mix.dart';
 /// Modifier that applies icon theme data to its descendants.
 ///
 /// Wraps the child in an [IconTheme] widget with the specified theme data.
-final class IconThemeModifier extends Modifier<IconThemeModifier>
+final class IconThemeModifier extends WidgetModifier<IconThemeModifier>
     with Diagnosticable {
   final IconThemeData data;
 
@@ -55,7 +55,7 @@ final class IconThemeModifier extends Modifier<IconThemeModifier>
 ///
 /// Use this class to configure the attributes of a [IconThemeModifier] and pass it to
 /// the [IconThemeModifier] constructor.
-class IconThemeModifierMix extends ModifierMix<IconThemeModifier> {
+class IconThemeModifierMix extends WidgetModifierMix<IconThemeModifier> {
   final Prop<Color>? color;
   final Prop<double>? size;
   final Prop<double>? fill;
@@ -76,7 +76,7 @@ class IconThemeModifierMix extends ModifierMix<IconThemeModifier> {
     this.opacity,
     this.shadows,
     this.applyTextScaling,
-  });
+  }) : super();
 
   IconThemeModifierMix({
     Color? color,

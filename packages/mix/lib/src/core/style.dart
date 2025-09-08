@@ -31,7 +31,7 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     implements StyleElement {
   final List<VariantStyle<S>>? $variants;
 
-  final ModifierConfig? $modifier;
+  final WidgetModifierConfig? $widgetModifier;
   final AnimationConfig? $animation;
 
   static final box = BoxStyler.new;
@@ -45,9 +45,9 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
 
   const Style({
     required List<VariantStyle<S>>? variants,
-    required ModifierConfig? modifier,
+    required WidgetModifierConfig? widgetModifier,
     required AnimationConfig? animation,
-  }) : $modifier = modifier,
+  }) : $widgetModifier = widgetModifier,
        $animation = animation,
        $variants = variants;
 
@@ -145,12 +145,12 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   }
 }
 
-abstract class ModifierMix<S extends Modifier<S>> extends Mix<S>
+abstract class WidgetModifierMix<S extends WidgetModifier<S>> extends Mix<S>
     implements StyleElement {
-  const ModifierMix();
+  const WidgetModifierMix();
 
   @override
-  ModifierMix<S> merge(covariant ModifierMix<S>? other);
+  WidgetModifierMix<S> merge(covariant WidgetModifierMix<S>? other);
 
   @override
   S resolve(BuildContext context);

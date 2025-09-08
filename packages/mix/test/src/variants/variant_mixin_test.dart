@@ -27,13 +27,13 @@ class TestVariantAttribute extends Style<BoxSpec>
   TestVariantAttribute merge(TestVariantAttribute? other) {
     return TestVariantAttribute(
       variants: MixOps.mergeVariants($variants, other?.$variants),
-      modifier: $modifier?.merge(other?.$modifier) ?? other?.$modifier,
+      widgetModifier: $widgetModifier?.merge(other?.$widgetModifier) ?? other?.$widgetModifier,
       animation: other?.$animation ?? $animation,
     );
   }
 
   @override
-  List<Object?> get props => [$variants, $modifier, $animation];
+  List<Object?> get props => [$variants, $widgetModifier, $animation];
 }
 
 

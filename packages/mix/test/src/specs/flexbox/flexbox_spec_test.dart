@@ -197,8 +197,8 @@ void main() {
     group('Modifiers', () {
       test('modifiers can be added to attribute', () {
         final attribute = FlexBoxStyler(
-          modifier: ModifierConfig(
-            modifiers: [
+          widgetModifier: WidgetModifierConfig(
+            widgetModifiers: [
               OpacityModifierMix(opacity: 0.5),
               TransformModifierMix(
                 transform: Matrix4.identity(),
@@ -208,28 +208,28 @@ void main() {
           ),
         );
 
-        expect(attribute.$modifier, isNotNull);
-        expect(attribute.$modifier!.$modifiers!.length, 2);
+        expect(attribute.$widgetModifier, isNotNull);
+        expect(attribute.$widgetModifier!.$widgetModifiers!.length, 2);
       });
 
       test('modifiers are merged correctly', () {
         final first = FlexBoxStyler(
-          modifier: ModifierConfig(
-            modifiers: [OpacityModifierMix(opacity: 0.5)],
+          widgetModifier: WidgetModifierConfig(
+            widgetModifiers: [OpacityModifierMix(opacity: 0.5)],
           ),
         );
 
         final second = FlexBoxStyler(
-          modifier: ModifierConfig(
-            modifiers: [TransformModifierMix(transform: Matrix4.identity())],
+          widgetModifier: WidgetModifierConfig(
+            widgetModifiers: [TransformModifierMix(transform: Matrix4.identity())],
           ),
         );
 
         final merged = first.merge(second);
 
         // Modifiers are combined when merging
-        expect(merged.$modifier, isNotNull);
-        expect(merged.$modifier!.$modifiers!.length, 2);
+        expect(merged.$widgetModifier, isNotNull);
+        expect(merged.$widgetModifier!.$widgetModifiers!.length, 2);
       });
     });
 

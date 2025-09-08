@@ -28,8 +28,8 @@ class _DemoAppState extends State<DemoApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: Center(child: HeartAnimation()),
+      backgroundColor: Colors.white,
     );
   }
 }
@@ -57,26 +57,26 @@ class _HeartAnimationState extends State<HeartAnimation> {
           timeline: [
             KeyframeTrack<Color>(
               'color',
-              tweenBuilder: ColorTween.new,
-              initial: Colors.red.shade100,
               [
                 Keyframe.linear(Colors.blue.shade100, 100.ms),
                 Keyframe.elasticOut(Colors.blue.shade400, 800.ms),
                 Keyframe.elasticOut(Colors.green.shade100, 800.ms),
               ],
+              initial: Colors.red.shade100,
+              tweenBuilder: ColorTween.new,
             ),
-            KeyframeTrack<double>('scale', initial: 1.0, [
+            KeyframeTrack<double>('scale', [
               Keyframe.linear(1.0, 360.ms),
               Keyframe.elasticOut(1.5, 800.ms),
               Keyframe.elasticOut(1.0, 800.ms),
-            ]),
-            KeyframeTrack<double>('verticalOffset', initial: 0.0, [
+            ], initial: 1.0),
+            KeyframeTrack<double>('verticalOffset', [
               Keyframe.linear(0.0, 100.ms),
               Keyframe.easeIn(20.0, 150.ms),
               Keyframe.elasticOut(-60.0, 1000.ms),
               Keyframe.elasticOut(0.0, 800.ms),
-            ]),
-            KeyframeTrack<double>('verticalStretch', initial: 1.0, [
+            ], initial: 0.0),
+            KeyframeTrack<double>('verticalStretch', [
               Keyframe.ease(1.0, 100.ms),
               Keyframe.ease(0.6, 150.ms),
               Keyframe.ease(1.5, 100.ms),
@@ -85,14 +85,14 @@ class _HeartAnimationState extends State<HeartAnimation> {
               Keyframe.ease(0.8, 100.ms),
               Keyframe.ease(1.04, 400.ms),
               Keyframe.ease(1.0, 220.ms),
-            ]),
-            KeyframeTrack<double>('angle', initial: 0.0, [
+            ], initial: 1.0),
+            KeyframeTrack<double>('angle', [
               Keyframe.easeIn(0.0, 580.ms),
               Keyframe.easeIn(16.0 * (pi / 180), 125.ms),
               Keyframe.easeIn(-16.0 * (pi / 180), 125.ms),
               Keyframe.easeIn(16.0 * (pi / 180), 125.ms),
               Keyframe.easeIn(0.0, 125.ms),
-            ]),
+            ], initial: 0.0),
           ],
           styleBuilder: (values, style) {
             final scale = values.get('scale');
@@ -112,9 +112,9 @@ class _HeartAnimationState extends State<HeartAnimation> {
         child: ShaderMask(
           shaderCallback: (Rect bounds) {
             return LinearGradient(
-              colors: [Colors.redAccent.shade100, Colors.redAccent.shade400],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
+              colors: [Colors.redAccent.shade100, Colors.redAccent.shade400],
             ).createShader(bounds);
           },
           child: StyledIcon(

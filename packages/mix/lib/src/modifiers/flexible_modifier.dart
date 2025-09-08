@@ -11,7 +11,7 @@ import '../theme/tokens/mix_token.dart';
 /// Modifier that makes its child flexible within a flex layout.
 ///
 /// Wraps the child in a [Flexible] widget with the specified flex and fit properties.
-final class FlexibleModifier extends Modifier<FlexibleModifier>
+final class FlexibleModifier extends WidgetModifier<FlexibleModifier>
     with Diagnosticable {
   final int? flex;
   final FlexFit? fit;
@@ -52,7 +52,7 @@ final class FlexibleModifier extends Modifier<FlexibleModifier>
 /// Mix class for applying flexible modifications.
 ///
 /// This class allows for mixing and resolving flexible properties.
-class FlexibleModifierMix extends ModifierMix<FlexibleModifier>
+class FlexibleModifierMix extends WidgetModifierMix<FlexibleModifier>
     with Diagnosticable {
   final Prop<int>? flex;
   final Prop<FlexFit>? fit;

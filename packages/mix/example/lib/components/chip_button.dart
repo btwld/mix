@@ -20,7 +20,7 @@ final chipButtonContainer = BoxStyler()
     .onHovered(BoxStyler().color(Colors.blue.shade700))
     .onSelected(BoxStyler().color(Colors.black))
     .alignment(.center)
-    .wrap(.defaultText(chipButtonLabel))
+    .wrap(WidgetModifierConfig.defaultText(chipButtonLabel))
     .animate(.easeInOut(300.ms));
 
  

@@ -10,7 +10,7 @@ import '../core/utility.dart';
 /// Modifier that applies a shader mask to its child.
 ///
 /// Wraps the child in a [ShaderMask] widget with the specified shader callback and blend mode.
-final class ShaderMaskModifier extends Modifier<ShaderMaskModifier>
+final class ShaderMaskModifier extends WidgetModifier<ShaderMaskModifier>
     with Diagnosticable {
   final ShaderCallback shaderCallback;
   final BlendMode blendMode;
@@ -18,7 +18,7 @@ final class ShaderMaskModifier extends Modifier<ShaderMaskModifier>
   const ShaderMaskModifier({
     required this.shaderCallback,
     this.blendMode = BlendMode.modulate,
-  });
+  }) : super();
 
   @override
   ShaderMaskModifier copyWith({
@@ -73,7 +73,7 @@ final class ShaderMaskModifier extends Modifier<ShaderMaskModifier>
 /// Mix class for applying shader mask modifications.
 ///
 /// This class allows for mixing and resolving shader mask properties.
-class ShaderMaskModifierMix extends ModifierMix<ShaderMaskModifier>
+class ShaderMaskModifierMix extends WidgetModifierMix<ShaderMaskModifier>
     with Diagnosticable {
   final Prop<Shader Function(Rect)>? shaderCallback;
   final Prop<BlendMode>? blendMode;

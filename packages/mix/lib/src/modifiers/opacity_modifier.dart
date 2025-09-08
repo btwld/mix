@@ -11,7 +11,7 @@ import '../theme/tokens/mix_token.dart';
 /// Modifier that applies opacity to its child.
 ///
 /// Wraps the child in an [Opacity] widget with the specified opacity value.
-final class OpacityModifier extends Modifier<OpacityModifier>
+final class OpacityModifier extends WidgetModifier<OpacityModifier>
     with Diagnosticable {
   /// Opacity value between 0.0 and 1.0 (inclusive).
   final double opacity;
@@ -47,7 +47,7 @@ final class OpacityModifier extends Modifier<OpacityModifier>
 /// Mix class for applying opacity modifications.
 ///
 /// This class allows for mixing and resolving opacity properties.
-class OpacityModifierMix extends ModifierMix<OpacityModifier>
+class OpacityModifierMix extends WidgetModifierMix<OpacityModifier>
     with Diagnosticable {
   final Prop<double>? opacity;
 

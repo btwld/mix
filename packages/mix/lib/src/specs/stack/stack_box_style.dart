@@ -61,7 +61,7 @@ class StackBoxStyler extends Style<ZBoxSpec>
     TextDirection? textDirection,
     Clip? stackClipBehavior,
     // Style properties
-    super.modifier,
+    super.widgetModifier,
     super.animation,
     super.variants,
   }) : $box = Prop.maybeMix(
@@ -89,7 +89,7 @@ class StackBoxStyler extends Style<ZBoxSpec>
   const StackBoxStyler.create({
     Prop<StyleSpec<BoxSpec>>? box,
     Prop<StyleSpec<StackSpec>>? stack,
-    super.modifier,
+    super.widgetModifier,
     super.animation,
     super.variants,
   }) : $box = box,
@@ -106,8 +106,8 @@ class StackBoxStyler extends Style<ZBoxSpec>
     return merge(StackBoxStyler(animation: animation));
   }
 
-  StackBoxStyler modifier(ModifierConfig value) {
-    return merge(StackBoxStyler(modifier: value));
+  StackBoxStyler modifier(WidgetModifierConfig value) {
+    return merge(StackBoxStyler(widgetModifier: value));
   }
 
   // Stack property convenience methods
@@ -159,7 +159,6 @@ class StackBoxStyler extends Style<ZBoxSpec>
   StackBoxStyler variants(List<VariantStyle<ZBoxSpec>> variants) {
     return merge(StackBoxStyler(variants: variants));
   }
-
 
   // Mixin implementations - delegate to BoxMix
 
@@ -222,7 +221,7 @@ class StackBoxStyler extends Style<ZBoxSpec>
     return StyleSpec(
       spec: zBoxSpec,
       animation: $animation,
-      widgetModifiers: $modifier?.resolve(context),
+      widgetModifiers: $widgetModifier?.resolve(context),
     );
   }
 
@@ -237,9 +236,12 @@ class StackBoxStyler extends Style<ZBoxSpec>
   @override
   StackBoxStyler merge(StackBoxStyler? other) {
     return StackBoxStyler.create(
+      widgetModifier: MixOps.mergeWidgetModifier(
+        $widgetModifier,
+        other?.$widgetModifier,
+      ),
       box: MixOps.merge($box, other?.$box),
       stack: MixOps.merge($stack, other?.$stack),
-      modifier: MixOps.mergeModifier($modifier, other?.$modifier),
       animation: MixOps.mergeAnimation($animation, other?.$animation),
       variants: MixOps.mergeVariants($variants, other?.$variants),
     );
@@ -293,11 +295,12 @@ class StackBoxSpecUtility {
     TextDirection? textDirection,
     Clip? stackClipBehavior,
     // Style properties
-    ModifierConfig? modifier,
+    WidgetModifierConfig? widgetModifier,
     AnimationConfig? animation,
     List<VariantStyle<ZBoxSpec>>? variants,
   }) {
     return StackBoxStyler(
+      widgetModifier: widgetModifier,
       decoration: decoration,
       padding: padding,
       margin: margin,
@@ -310,7 +313,6 @@ class StackBoxSpecUtility {
       fit: fit,
       textDirection: textDirection,
       stackClipBehavior: stackClipBehavior,
-      modifier: modifier,
       animation: animation,
       variants: variants,
     );

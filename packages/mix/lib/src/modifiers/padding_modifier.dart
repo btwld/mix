@@ -12,7 +12,7 @@ import '../properties/layout/edge_insets_geometry_util.dart';
 /// Modifier that adds padding around its child.
 ///
 /// Wraps the child in a [Padding] widget with the specified padding.
-final class PaddingModifier extends Modifier<PaddingModifier>
+final class PaddingModifier extends WidgetModifier<PaddingModifier>
     with Diagnosticable {
   final EdgeInsetsGeometry padding;
 
@@ -49,7 +49,7 @@ final class PaddingModifier extends Modifier<PaddingModifier>
 /// Mix class for applying padding modifications.
 ///
 /// This class allows for mixing and resolving padding properties.
-class PaddingModifierMix extends ModifierMix<PaddingModifier>
+class PaddingModifierMix extends WidgetModifierMix<PaddingModifier>
     with Diagnosticable {
   final Prop<EdgeInsetsGeometry>? padding;
 

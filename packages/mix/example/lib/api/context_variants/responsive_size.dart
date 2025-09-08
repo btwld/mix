@@ -1,4 +1,4 @@
-import 'package:example/helpers.dart';
+import '../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
@@ -30,7 +30,7 @@ class Example extends StatelessWidget {
             .color(Colors.white)
         )
         .wrap(
-          ModifierConfig.align(alignment: Alignment.center)
+          WidgetModifierConfig.align(alignment: Alignment.center)
         )
         .animate(AnimationConfig.spring(const Duration(milliseconds: 300)));
 

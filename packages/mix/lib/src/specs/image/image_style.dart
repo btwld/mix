@@ -53,7 +53,7 @@ class ImageStyler extends Style<ImageSpec>
     Prop<bool>? isAntiAlias,
     Prop<bool>? matchTextDirection,
     super.animation,
-    super.modifier,
+    super.widgetModifier,
     super.variants,
   }) : $image = image,
        $width = width,
@@ -88,9 +88,10 @@ class ImageStyler extends Style<ImageSpec>
     bool? isAntiAlias,
     bool? matchTextDirection,
     AnimationConfig? animation,
-    ModifierConfig? modifier,
+    WidgetModifierConfig? widgetModifier,
     List<VariantStyle<ImageSpec>>? variants,
   }) : this.create(
+         widgetModifier: widgetModifier,
          image: Prop.maybe(image),
          width: Prop.maybe(width),
          height: Prop.maybe(height),
@@ -107,7 +108,6 @@ class ImageStyler extends Style<ImageSpec>
          isAntiAlias: Prop.maybe(isAntiAlias),
          matchTextDirection: Prop.maybe(matchTextDirection),
          animation: animation,
-         modifier: modifier,
          variants: variants,
        );
 
@@ -209,8 +209,8 @@ class ImageStyler extends Style<ImageSpec>
     return merge(ImageStyler(matchTextDirection: value));
   }
 
-  ImageStyler modifier(ModifierConfig value) {
-    return merge(ImageStyler(modifier: value));
+  ImageStyler modifier(WidgetModifierConfig value) {
+    return merge(ImageStyler(widgetModifier: value));
   }
 
   /// Convenience method for animating the ImageStyleSpec
@@ -246,13 +246,17 @@ class ImageStyler extends Style<ImageSpec>
     return StyleSpec(
       spec: imageSpec,
       animation: $animation,
-      widgetModifiers: $modifier?.resolve(context),
+      widgetModifiers: $widgetModifier?.resolve(context),
     );
   }
 
   @override
   ImageStyler merge(ImageStyler? other) {
     return ImageStyler.create(
+      widgetModifier: MixOps.mergeWidgetModifier(
+        $widgetModifier,
+        other?.$widgetModifier,
+      ),
       image: MixOps.merge($image, other?.$image),
       width: MixOps.merge($width, other?.$width),
       height: MixOps.merge($height, other?.$height),
@@ -275,7 +279,6 @@ class ImageStyler extends Style<ImageSpec>
         other?.$matchTextDirection,
       ),
       animation: MixOps.mergeAnimation($animation, other?.$animation),
-      modifier: MixOps.mergeModifier($modifier, other?.$modifier),
       variants: MixOps.mergeVariants($variants, other?.$variants),
     );
   }
@@ -301,9 +304,8 @@ class ImageStyler extends Style<ImageSpec>
       ..add(DiagnosticsProperty('matchTextDirection', $matchTextDirection));
   }
 
-
   @override
-  ImageStyler wrap(ModifierConfig value) {
+  ImageStyler wrap(WidgetModifierConfig value) {
     return modifier(value);
   }
 
@@ -325,7 +327,7 @@ class ImageStyler extends Style<ImageSpec>
     $isAntiAlias,
     $matchTextDirection,
     $animation,
-    $modifier,
+    $widgetModifier,
     $variants,
   ];
 }

@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:example/helpers.dart';
+import '../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
@@ -23,9 +23,6 @@ class Example extends StatelessWidget {
           spreadRadius: 2,
         )
         .sweepGradient(
-          center: Alignment.center,
-          startAngle: 0,
-          endAngle: math.pi * 2,
           colors: [
             Colors.blue.shade400,
             Colors.purple.shade400,
@@ -33,6 +30,9 @@ class Example extends StatelessWidget {
             Colors.orange.shade400,
             Colors.blue.shade400,
           ],
+          center: Alignment.center,
+          startAngle: 0,
+          endAngle: math.pi * 2,
         );
 
     return Box(style: style);

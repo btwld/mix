@@ -291,7 +291,7 @@ class MockStyle<T> extends Style<MockSpec<T>> {
     return StyleSpec(
       spec: mockSpec,
       animation: $animation,
-      widgetModifiers: $modifier?.resolve(context),
+      widgetModifiers: $widgetModifier?.resolve(context),
     );
   }
 

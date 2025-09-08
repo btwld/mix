@@ -736,7 +736,6 @@ class _MockSpecAttribute extends Style<MockSpec<Map<String, dynamic>>> {
     required this.width,
     this.height,
     super.variants,
-    super.modifier,
     super.animation,
   });
 
@@ -747,7 +746,7 @@ class _MockSpecAttribute extends Style<MockSpec<Map<String, dynamic>>> {
         resolvedValue: {'width': width, 'height': height},
       ),
       animation: $animation,
-      widgetModifiers: $modifier?.resolve(context),
+      widgetModifiers: $widgetModifier?.resolve(context),
     );
   }
 

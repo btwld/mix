@@ -201,7 +201,7 @@ void main() {
             .height(100)
             .alignment(Alignment.center)
             .wrap(
-              ModifierConfig.modifiers([
+              WidgetModifierConfig.widgetModifiers([
                 OpacityModifierMix(opacity: 0.5),
                 PaddingModifierMix(padding: EdgeInsetsGeometryMix.all(10)),
                 ClipOvalModifierMix(),
@@ -250,7 +250,7 @@ void main() {
             .height(100)
             .color(Colors.blue)
             .wrap(
-              ModifierConfig.modifiers([
+              WidgetModifierConfig.widgetModifiers([
                 OpacityModifierMix(opacity: 0.5),
                 PaddingModifierMix(padding: EdgeInsetsGeometryMix.all(10)),
                 ClipOvalModifierMix(),
@@ -324,11 +324,11 @@ void main() {
             .height(100)
             .color(Colors.blue)
             .wrap(
-              ModifierConfig.modifiers([
+              WidgetModifierConfig.widgetModifiers([
                 OpacityModifierMix(opacity: 0.5),
                 PaddingModifierMix(padding: EdgeInsetsGeometryMix.all(10)),
                 ClipOvalModifierMix(),
-              ]).orderOfModifiers(customOrder),
+              ]).orderOfWidgetModifiers(customOrder),
             );
 
         await tester.pumpWidget(

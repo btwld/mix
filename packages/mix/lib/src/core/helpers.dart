@@ -57,9 +57,9 @@ class MixOps {
     return other ?? current;
   }
 
-  static ModifierConfig? mergeModifier(
-    ModifierConfig? current,
-    ModifierConfig? other,
+  static WidgetModifierConfig? mergeWidgetModifier(
+    WidgetModifierConfig? current,
+    WidgetModifierConfig? other,
   ) {
     return current?.merge(other) ?? other;
   }
@@ -172,13 +172,13 @@ T? _lerpSnap<T>(T? a, T? b, double t) {
   return t < 0.5 ? a : b;
 }
 
-/// Lerp modifier lists using ModifierListTween
-List<Modifier>? _lerpModifierList(
-  List<Modifier>? a,
-  List<Modifier>? b,
+/// Lerp widget modifier lists using WidgetModifierListTween
+List<WidgetModifier>? _lerpWidgetModifierList(
+  List<WidgetModifier>? a,
+  List<WidgetModifier>? b,
   double t,
 ) {
-  return ModifierListTween(begin: a, end: b).lerp(t);
+  return WidgetModifierListTween(begin: a, end: b).lerp(t);
 }
 
 T? _lerpValue<T>(T? a, T? b, double t) {
@@ -254,9 +254,9 @@ T? _lerpValue<T>(T? a, T? b, double t) {
     // Matrix4 - use proper tween instead of snap
     (Matrix4? a, Matrix4? b) => Matrix4Tween(begin: a, end: b).lerp(t) as T?,
 
-    // List of Modifiers - use ModifierListTween for proper lerping
-    (List<Modifier>? a, List<Modifier>? b) => 
-      _lerpModifierList(a, b, t) as T?,
+    // List of Widget Modifiers - use WidgetModifierListTween for proper lerping
+    (List<WidgetModifier>? a, List<WidgetModifier>? b) => 
+      _lerpWidgetModifierList(a, b, t) as T?,
 
     // Default snap behavior for non-lerpable types
     _ => t < 0.5 ? a : b,

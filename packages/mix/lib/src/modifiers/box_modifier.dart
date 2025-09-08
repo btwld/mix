@@ -14,7 +14,7 @@ import '../specs/box/box_widget.dart';
 /// Modifier that wraps its child in a styled Container using BoxSpec styling.
 ///
 /// Wraps the child in a [Container] widget with the specified box styling.
-final class BoxModifier extends Modifier<BoxModifier> with Diagnosticable {
+final class BoxModifier extends WidgetModifier<BoxModifier> with Diagnosticable {
   final BoxSpec spec;
 
   const BoxModifier(this.spec);
@@ -49,7 +49,7 @@ final class BoxModifier extends Modifier<BoxModifier> with Diagnosticable {
 /// Mix class for applying box (Container) modifications.
 ///
 /// This class allows for mixing and resolving BoxSpec-based properties.
-class BoxModifierMix extends ModifierMix<BoxModifier> with Diagnosticable {
+class BoxModifierMix extends WidgetModifierMix<BoxModifier> with Diagnosticable {
   final BoxStyler spec;
 
   const BoxModifierMix(this.spec);

@@ -19,7 +19,7 @@ class RenderModifiers extends StatelessWidget {
   final Widget child;
 
   /// List of modifiers to apply to the [child].
-  final List<Modifier> widgetModifiers;
+  final List<WidgetModifier> widgetModifiers;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,7 @@ class _RenderModifiers extends StatelessWidget {
   final Widget child;
 
   /// Modifiers to apply in sequence.
-  final Iterable<Modifier> modifiers;
+  final Iterable<WidgetModifier> modifiers;
 
   @override
   Widget build(BuildContext context) {

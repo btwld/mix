@@ -39,7 +39,7 @@ class StackStyler extends Style<StackSpec>
     Prop<TextDirection>? textDirection,
     Prop<Clip>? clipBehavior,
     super.animation,
-    super.modifier,
+    super.widgetModifier,
     super.variants,
   }) : $alignment = alignment,
        $fit = fit,
@@ -52,15 +52,15 @@ class StackStyler extends Style<StackSpec>
     TextDirection? textDirection,
     Clip? clipBehavior,
     AnimationConfig? animation,
-    ModifierConfig? modifier,
+    WidgetModifierConfig? widgetModifier,
     List<VariantStyle<StackSpec>>? variants,
   }) : this.create(
+         widgetModifier: widgetModifier,
          alignment: Prop.maybe(alignment),
          fit: Prop.maybe(fit),
          textDirection: Prop.maybe(textDirection),
          clipBehavior: Prop.maybe(clipBehavior),
          animation: animation,
-         modifier: modifier,
          variants: variants,
        );
 
@@ -90,8 +90,8 @@ class StackStyler extends Style<StackSpec>
     return merge(StackStyler(clipBehavior: value));
   }
 
-  StackStyler modifier(ModifierConfig value) {
-    return merge(StackStyler(modifier: value));
+  StackStyler modifier(WidgetModifierConfig value) {
+    return merge(StackStyler(widgetModifier: value));
   }
 
   /// Convenience method for animating the StackStyleSpec
@@ -118,7 +118,7 @@ class StackStyler extends Style<StackSpec>
     return StyleSpec(
       spec: stackSpec,
       animation: $animation,
-      widgetModifiers: $modifier?.resolve(context),
+      widgetModifiers: $widgetModifier?.resolve(context),
     );
   }
 
@@ -126,12 +126,15 @@ class StackStyler extends Style<StackSpec>
   @override
   StackStyler merge(StackStyler? other) {
     return StackStyler.create(
+      widgetModifier: MixOps.mergeWidgetModifier(
+        $widgetModifier,
+        other?.$widgetModifier,
+      ),
       alignment: MixOps.merge($alignment, other?.$alignment),
       fit: MixOps.merge($fit, other?.$fit),
       textDirection: MixOps.merge($textDirection, other?.$textDirection),
       clipBehavior: MixOps.merge($clipBehavior, other?.$clipBehavior),
       animation: MixOps.mergeAnimation($animation, other?.$animation),
-      modifier: MixOps.mergeModifier($modifier, other?.$modifier),
       variants: MixOps.mergeVariants($variants, other?.$variants),
     );
   }
@@ -146,9 +149,8 @@ class StackStyler extends Style<StackSpec>
       ..add(DiagnosticsProperty('clipBehavior', $clipBehavior));
   }
 
-
   @override
-  StackStyler wrap(ModifierConfig value) {
+  StackStyler wrap(WidgetModifierConfig value) {
     return modifier(value);
   }
 
@@ -159,7 +161,7 @@ class StackStyler extends Style<StackSpec>
     $textDirection,
     $clipBehavior,
     $animation,
-    $modifier,
+    $widgetModifier,
     $variants,
   ];
 }

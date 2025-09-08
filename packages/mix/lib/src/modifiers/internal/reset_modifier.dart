@@ -5,7 +5,7 @@ import '../../core/modifier.dart';
 import '../../core/style.dart';
 
 /// A modifier specification that resets the style context.
-final class ResetModifier extends Modifier<ResetModifier> with Diagnosticable {
+final class ResetModifier extends WidgetModifier<ResetModifier> with Diagnosticable {
   const ResetModifier();
 
   @override
@@ -35,7 +35,7 @@ final class ResetModifier extends Modifier<ResetModifier> with Diagnosticable {
 }
 
 /// An attribute that resets the modifier context.
-class ResetModifierMix extends ModifierMix<ResetModifier> with Diagnosticable {
+class ResetModifierMix extends WidgetModifierMix<ResetModifier> with Diagnosticable {
   const ResetModifierMix();
 
   @override

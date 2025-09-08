@@ -10,7 +10,7 @@ import '../core/utility.dart';
 /// Modifier that aligns its child within the available space.
 ///
 /// Wraps the child in an [Align] widget with the specified alignment and size factors.
-final class AlignModifier extends Modifier<AlignModifier> with Diagnosticable {
+final class AlignModifier extends WidgetModifier<AlignModifier> with Diagnosticable {
   final AlignmentGeometry alignment;
   final double? widthFactor;
   final double? heightFactor;
@@ -92,7 +92,7 @@ final class AlignModifierUtility<T extends Style<Object?>>
 /// Mix class for applying alignment modifications.
 ///
 /// This class allows for mixing and resolving alignment properties.
-class AlignModifierMix extends ModifierMix<AlignModifier> with Diagnosticable {
+class AlignModifierMix extends WidgetModifierMix<AlignModifier> with Diagnosticable {
   final Prop<AlignmentGeometry>? alignment;
   final Prop<double>? widthFactor;
   final Prop<double>? heightFactor;
@@ -101,7 +101,7 @@ class AlignModifierMix extends ModifierMix<AlignModifier> with Diagnosticable {
     this.alignment,
     this.widthFactor,
     this.heightFactor,
-  });
+  }) : super();
 
   AlignModifierMix({
     AlignmentGeometry? alignment,

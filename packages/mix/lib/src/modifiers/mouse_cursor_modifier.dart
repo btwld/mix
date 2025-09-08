@@ -10,7 +10,7 @@ import '../core/utility.dart';
 /// Modifier that applies a mouse cursor to its child.
 ///
 /// Wraps the child in a [MouseRegion] widget with the specified cursor.
-class MouseCursorModifier extends Modifier<MouseCursorModifier>
+class MouseCursorModifier extends WidgetModifier<MouseCursorModifier>
     with Diagnosticable {
   final MouseCursor? mouseCursor;
 
@@ -52,7 +52,7 @@ class MouseCursorModifier extends Modifier<MouseCursorModifier>
 ///
 /// Use this class to configure the attributes of a [MouseCursorModifier] and pass it to
 /// the [MouseCursorModifier] constructor.
-class MouseCursorModifierMix extends ModifierMix<MouseCursorModifier>
+class MouseCursorModifierMix extends WidgetModifierMix<MouseCursorModifier>
     with Diagnosticable {
   final Prop<MouseCursor>? mouseCursor;
 

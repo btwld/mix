@@ -7,7 +7,7 @@ import '../core/style.dart';
 /// Modifier that forces its child to be exactly as tall as its intrinsic height.
 ///
 /// Wraps the child in an [IntrinsicHeight] widget.
-final class IntrinsicHeightModifier extends Modifier<IntrinsicHeightModifier> with Diagnosticable {
+final class IntrinsicHeightModifier extends WidgetModifier<IntrinsicHeightModifier> with Diagnosticable {
   const IntrinsicHeightModifier();
 
   @override
@@ -39,7 +39,7 @@ final class IntrinsicHeightModifier extends Modifier<IntrinsicHeightModifier> wi
 /// Modifier that forces its child to be exactly as wide as its intrinsic width.
 ///
 /// Wraps the child in an [IntrinsicWidth] widget.
-final class IntrinsicWidthModifier extends Modifier<IntrinsicWidthModifier> with Diagnosticable {
+final class IntrinsicWidthModifier extends WidgetModifier<IntrinsicWidthModifier> with Diagnosticable {
   const IntrinsicWidthModifier();
 
   @override
@@ -75,7 +75,7 @@ final class IntrinsicWidthModifier extends Modifier<IntrinsicWidthModifier> with
 ///
 /// Use this class to configure the attributes of a [IntrinsicHeightModifier] and pass it to
 /// the [IntrinsicHeightModifier] constructor.
-class IntrinsicHeightModifierMix extends ModifierMix<IntrinsicHeightModifier> with Diagnosticable {
+class IntrinsicHeightModifierMix extends WidgetModifierMix<IntrinsicHeightModifier> with Diagnosticable {
   const IntrinsicHeightModifierMix();
 
   /// Resolves to [IntrinsicHeightModifier] using the provided [BuildContext].
@@ -126,7 +126,7 @@ class IntrinsicHeightModifierMix extends ModifierMix<IntrinsicHeightModifier> wi
 ///
 /// Use this class to configure the attributes of a [IntrinsicWidthModifier] and pass it to
 /// the [IntrinsicWidthModifier] constructor.
-class IntrinsicWidthModifierMix extends ModifierMix<IntrinsicWidthModifier> with Diagnosticable {
+class IntrinsicWidthModifierMix extends WidgetModifierMix<IntrinsicWidthModifier> with Diagnosticable {
   const IntrinsicWidthModifierMix();
 
   /// Resolves to [IntrinsicWidthModifier] using the provided [BuildContext].

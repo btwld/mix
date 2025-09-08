@@ -267,8 +267,8 @@ void main() {
         final result = util.wrap.opacity(0.5);
 
         expect(result, isA<ImageStyler>());
-        expect(result.$modifier, isNotNull);
-        expect(result.$modifier!.$modifiers!.length, 1);
+        expect(result.$widgetModifier, isNotNull);
+        expect(result.$widgetModifier!.$widgetModifiers!.length, 1);
       });
     });
 

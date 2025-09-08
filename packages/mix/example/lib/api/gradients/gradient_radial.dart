@@ -1,4 +1,4 @@
-import 'package:example/helpers.dart';
+import '../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
@@ -21,14 +21,11 @@ class Example extends StatelessWidget {
           spreadRadius: 5,
         )
         .radialGradient(
+          colors: [Colors.orange.shade300, Colors.deepOrange.shade600],
           center: Alignment(-0.3, -0.3),
+          radius: 1.2,
           focal: Alignment(-0.1, -0.1),
           focalRadius: 0.1,
-          radius: 1.2,
-          colors: [
-            Colors.orange.shade300,
-            Colors.deepOrange.shade600
-          ],
         );
 
     return Box(style: style);

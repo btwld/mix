@@ -15,7 +15,7 @@ abstract class StyleAttributeBuilder<S extends Spec<S>> extends Style<S>
     with Diagnosticable {
   const StyleAttributeBuilder({
     super.animation,
-    super.modifier,
+    super.widgetModifier,
     super.variants,
   });
 
@@ -37,7 +37,7 @@ abstract class StyleAttributeBuilder<S extends Spec<S>> extends Style<S>
   AnimationConfig? get $animation => style.$animation;
 
   @override
-  ModifierConfig? get $modifier => style.$modifier;
+  WidgetModifierConfig? get $widgetModifier => style.$widgetModifier;
 
   /// Mutable variants from internal attribute
   @override
@@ -53,7 +53,7 @@ abstract class StyleAttributeBuilder<S extends Spec<S>> extends Style<S>
 /// multiple style operations into a single internal style instance.
 abstract class StyleMutableBuilder<S extends Spec<S>> extends Style<S>
     with Diagnosticable {
-  const StyleMutableBuilder({super.animation, super.modifier, super.variants});
+  const StyleMutableBuilder({super.animation, super.widgetModifier, super.variants});
 
   /// Internal mutable wrapper
   @protected
@@ -77,7 +77,7 @@ abstract class StyleMutableBuilder<S extends Spec<S>> extends Style<S>
   AnimationConfig? get $animation => value.$animation;
 
   @override
-  ModifierConfig? get $modifier => value.$modifier;
+  WidgetModifierConfig? get $widgetModifier => value.$widgetModifier;
 
   /// Mutable variants from internal attribute
   @override
