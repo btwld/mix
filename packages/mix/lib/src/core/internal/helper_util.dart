@@ -1,3 +1,4 @@
+/// Function signature for functions that take a list of parameters and return a value.
 typedef FunctionWithParams<ParamT, ReturnT> =
     ReturnT Function(List<ParamT> params);
 

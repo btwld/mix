@@ -4,43 +4,43 @@ import 'package:mix/mix.dart';
 
 void main() {
   group('Spec Utilities Global Getters', () {
-    test('\$box returns BoxSpecUtility instance', () {
-      expect($box, isA<BoxSpecUtility>());
+    test('\$box returns BoxMutableStyler instance', () {
+      expect($box, isA<BoxMutableStyler>());
       // Each call returns a new instance
       expect($box, isNot(same($box)));
     });
 
-    test('\$flexbox returns FlexBoxSpecUtility instance', () {
-      expect($flexbox, isA<FlexBoxSpecUtility>());
+    test('\$flexbox returns FlexBoxMutableStyler instance', () {
+      expect($flexbox, isA<FlexBoxMutableStyler>());
       expect($flexbox, isNot(same($flexbox))); // New instance each time
     });
 
-    test('\$flex returns FlexSpecUtility instance', () {
-      expect($flex, isA<FlexSpecUtility>());
+    test('\$flex returns FlexMutableStyler instance', () {
+      expect($flex, isA<FlexMutableStyler>());
       // Each call returns a new instance
       expect($flex, isNot(same($flex)));
     });
 
-    test('\$image returns ImageSpecUtility instance', () {
-      expect($image, isA<ImageSpecUtility>());
+    test('\$image returns ImageMutableStyler instance', () {
+      expect($image, isA<ImageMutableStyler>());
       // Each call returns a new instance
       expect($image, isNot(same($image)));
     });
 
-    test('\$icon returns IconSpecUtility instance', () {
-      expect($icon, isA<IconSpecUtility>());
+    test('\$icon returns IconMutableStyler instance', () {
+      expect($icon, isA<IconMutableStyler>());
       // Each call returns a new instance
       expect($icon, isNot(same($icon)));
     });
 
-    test('\$text returns TextSpecUtility instance', () {
-      expect($text, isA<TextSpecUtility>());
+    test('\$text returns TextMutableStyler instance', () {
+      expect($text, isA<TextMutableStyler>());
       // Each call returns a new instance
       expect($text, isNot(same($text)));
     });
 
-    test('\$stack returns StackSpecUtility instance', () {
-      expect($stack, isA<StackSpecUtility>());
+    test('\$stack returns StackMutableStyler instance', () {
+      expect($stack, isA<StackMutableStyler>());
       // Each call returns a new instance
       expect($stack, isNot(same($stack)));
     });
@@ -52,39 +52,39 @@ void main() {
       final box = $box
         ..width(100)
         ..height(200);
-      expect(box, isA<BoxSpecUtility>());
+      expect(box, isA<BoxMutableStyler>());
     });
 
     test('flex getter can be used to create attributes', () {
       final flex = $flex..direction(Axis.horizontal);
-      expect(flex, isA<FlexSpecUtility>());
+      expect(flex, isA<FlexMutableStyler>());
     });
 
     test('flexbox getter provides utility methods', () {
-      expect($flexbox, isA<FlexBoxSpecUtility>());
+      expect($flexbox, isA<FlexBoxMutableStyler>());
       // Verify it can be used to create attributes
       final flexbox = $flexbox..direction(Axis.vertical);
-      expect(flexbox, isA<FlexBoxSpecUtility>());
+      expect(flexbox, isA<FlexBoxMutableStyler>());
     });
 
     test('image getter can be used to create attributes', () {
       final image = $image..fit(BoxFit.cover);
-      expect(image, isA<ImageSpecUtility>());
+      expect(image, isA<ImageMutableStyler>());
     });
 
     test('icon getter can be used to create attributes', () {
       final icon = $icon..size(24);
-      expect(icon, isA<IconSpecUtility>());
+      expect(icon, isA<IconMutableStyler>());
     });
 
     test('text getter can be used to create attributes', () {
       final text = $text..style.fontSize(16);
-      expect(text, isA<TextSpecUtility>());
+      expect(text, isA<TextMutableStyler>());
     });
 
     test('stack getter can be used to create attributes', () {
       final stack = $stack..alignment(Alignment.center);
-      expect(stack, isA<StackSpecUtility>());
+      expect(stack, isA<StackMutableStyler>());
     });
 
   });
@@ -106,13 +106,13 @@ void main() {
     });
 
     test('all getters return correct types', () {
-      expect($box, isA<BoxSpecUtility>());
-      expect($flex, isA<FlexSpecUtility>());
-      expect($flexbox, isA<FlexBoxSpecUtility>());
-      expect($image, isA<ImageSpecUtility>());
-      expect($icon, isA<IconSpecUtility>());
-      expect($text, isA<TextSpecUtility>());
-      expect($stack, isA<StackSpecUtility>());
+      expect($box, isA<BoxMutableStyler>());
+      expect($flex, isA<FlexMutableStyler>());
+      expect($flexbox, isA<FlexBoxMutableStyler>());
+      expect($image, isA<ImageMutableStyler>());
+      expect($icon, isA<IconMutableStyler>());
+      expect($text, isA<TextMutableStyler>());
+      expect($stack, isA<StackMutableStyler>());
     });
   });
 }

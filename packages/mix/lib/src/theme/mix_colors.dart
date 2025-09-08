@@ -1,5 +1,3 @@
-// ABOUTME: This file defines MixColors, a comprehensive collection of color constants and swatches
-// ABOUTME: similar to Flutter's Colors class but specifically for the Mix framework
 import 'package:flutter/widgets.dart';
 
 /// A class that defines a comprehensive set of colors and color swatches for the Mix framework.

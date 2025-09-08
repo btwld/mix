@@ -16,7 +16,7 @@ import '../../style/mixins/modifier_style_mixin.dart';
 import '../../style/mixins/text_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
 import 'text_spec.dart';
-import 'text_util.dart';
+import 'text_mutable_style.dart';
 import 'text_widget.dart';
 
 typedef TextMix = TextStyler;
@@ -125,7 +125,7 @@ class TextStyler extends Style<TextSpec>
     return TextStyler().builder(fn);
   }
 
-  static TextSpecUtility get chain => TextSpecUtility(TextStyler());
+  static TextMutableStyler get chain => TextMutableStyler(TextStyler());
 
   StyledText call(String text) {
     return StyledText(text, style: this);

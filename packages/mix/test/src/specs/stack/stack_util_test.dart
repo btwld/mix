@@ -5,26 +5,26 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-  group('StackSpecUtility', () {
-    late StackSpecUtility util;
+  group('StackMutableStyler', () {
+    late StackMutableStyler util;
 
     setUp(() {
-      util = StackSpecUtility();
+      util = StackMutableStyler();
     });
 
     group('Constructor', () {
       test('', () {
-        final utility = StackSpecUtility();
-        expect(utility, isA<StackSpecUtility>());
+        final utility = StackMutableStyler();
+        expect(utility, isA<StackMutableStyler>());
       });
 
       test('', () {
         final stackMix = StackStyler(alignment: Alignment.center);
-        final utility = StackSpecUtility(stackMix);
+        final utility = StackMutableStyler(stackMix);
         final context = MockBuildContext();
         final spec = utility.resolve(context);
 
-        expect(utility, isA<StackSpecUtility>());
+        expect(utility, isA<StackMutableStyler>());
         expect(spec.spec.alignment, Alignment.center);
       });
     });
@@ -135,7 +135,7 @@ void main() {
       });
 
       test('', () {
-        final other = StackSpecUtility(
+        final other = StackMutableStyler(
           StackStyler(alignment: Alignment.center),
         );
         final result = util.merge(other);
@@ -143,7 +143,7 @@ void main() {
         final spec = result.resolve(context);
 
         expect(result, isNot(same(util)));
-        expect(result, isA<StackSpecUtility>());
+        expect(result, isA<StackMutableStyler>());
         expect(spec.spec.alignment, Alignment.center);
       });
 
@@ -154,7 +154,7 @@ void main() {
         final spec = result.resolve(context);
 
         expect(result, isNot(same(util)));
-        expect(result, isA<StackSpecUtility>());
+        expect(result, isA<StackMutableStyler>());
         expect(spec.spec.fit, StackFit.expand);
       });
 
@@ -166,10 +166,10 @@ void main() {
       });
 
       test('merge combines properties correctly', () {
-        final util1 = StackSpecUtility(
+        final util1 = StackMutableStyler(
           StackStyler(alignment: Alignment.center, fit: StackFit.loose),
         );
-        final other = StackSpecUtility(
+        final other = StackMutableStyler(
           StackStyler(fit: StackFit.expand, clipBehavior: Clip.antiAlias),
         );
 
@@ -185,7 +185,7 @@ void main() {
 
     group('Resolve functionality', () {
       test('', () {
-        final testUtil = StackSpecUtility(
+        final testUtil = StackMutableStyler(
           StackStyler(
             alignment: Alignment.center,
             fit: StackFit.expand,
@@ -215,7 +215,7 @@ void main() {
 
     group('Chaining methods', () {
       test('basic alignment mutation test', () {
-        final util = StackSpecUtility();
+        final util = StackMutableStyler();
 
         final result = util.alignment(Alignment.center);
         expect(result, isA<StackStyler>());
@@ -227,7 +227,7 @@ void main() {
       });
 
       test('basic fit mutation test', () {
-        final util = StackSpecUtility();
+        final util = StackMutableStyler();
 
         final result = util.fit(StackFit.expand);
         expect(result, isA<StackStyler>());
@@ -239,7 +239,7 @@ void main() {
       });
 
       test('chaining utility methods accumulates properties', () {
-        final util = StackSpecUtility();
+        final util = StackMutableStyler();
 
         // Chain multiple method calls - these mutate internal state
         util.alignment(Alignment.center);
@@ -256,7 +256,7 @@ void main() {
       });
 
       test('cascade notation works with utility methods', () {
-        final util = StackSpecUtility()
+        final util = StackMutableStyler()
           ..alignment(Alignment.center)
           ..fit(StackFit.expand)
           ..clipBehavior(Clip.antiAlias);
@@ -270,7 +270,7 @@ void main() {
       });
 
       test('', () {
-        final util = StackSpecUtility();
+        final util = StackMutableStyler();
 
         // Each utility call should return a StackStyle
         final alignmentResult = util.alignment(Alignment.center);
@@ -293,7 +293,7 @@ void main() {
 
     group('Mutating behavior vs Builder pattern', () {
       test('utility mutates internal state (not builder pattern)', () {
-        final util = StackSpecUtility();
+        final util = StackMutableStyler();
 
         // Store initial resolution
         final context = MockBuildContext();
@@ -311,7 +311,7 @@ void main() {
       });
 
       test('multiple calls accumulate on same instance', () {
-        final util = StackSpecUtility();
+        final util = StackMutableStyler();
 
         util.alignment(Alignment.center);
         util.fit(StackFit.expand);
@@ -327,7 +327,7 @@ void main() {
       });
 
       test('demonstrates difference from immutable builder pattern', () {
-        final util = StackSpecUtility();
+        final util = StackMutableStyler();
 
         // In a builder pattern, this would create new instances
         // In mutable pattern, this modifies the same instance
@@ -348,7 +348,7 @@ void main() {
 
     group('Integration with resolvesTo matcher', () {
       test('', () {
-        final testUtil = StackSpecUtility(
+        final testUtil = StackMutableStyler(
           StackStyler(
             alignment: Alignment.center,
             fit: StackFit.expand,
@@ -378,7 +378,7 @@ void main() {
           tokens: {alignmentToken.defineValue(Alignment.topLeft)},
         );
 
-        final testUtil = StackSpecUtility(
+        final testUtil = StackMutableStyler(
           StackStyler.create(alignment: Prop.token(alignmentToken)),
         );
         final spec = testUtil.resolve(context);
@@ -400,11 +400,11 @@ void main() {
       });
 
       test('handles multiple merges correctly', () {
-        final util1 = StackSpecUtility(
+        final util1 = StackMutableStyler(
           StackStyler(alignment: Alignment.center),
         );
-        final util2 = StackSpecUtility(StackStyler(fit: StackFit.expand));
-        final util3 = StackSpecUtility(
+        final util2 = StackMutableStyler(StackStyler(fit: StackFit.expand));
+        final util3 = StackMutableStyler(
           StackStyler(clipBehavior: Clip.antiAlias),
         );
 
@@ -420,7 +420,7 @@ void main() {
 
     group('Edge cases', () {
       test('handles empty utility', () {
-        final emptyUtil = StackSpecUtility();
+        final emptyUtil = StackMutableStyler();
         final context = MockBuildContext();
         final spec = emptyUtil.resolve(context);
 
@@ -430,7 +430,7 @@ void main() {
       });
 
       test('merge with self returns new instance', () {
-        final testUtil = StackSpecUtility(
+        final testUtil = StackMutableStyler(
           StackStyler(alignment: Alignment.center),
         );
         final result = testUtil.merge(testUtil);

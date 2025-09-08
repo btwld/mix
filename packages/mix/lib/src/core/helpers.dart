@@ -271,7 +271,9 @@ T? _lerpValue<T>(T? a, T? b, double t) {
 class PropOps {
   const PropOps._();
 
-  /// Applies directives to a resolved value
+  /// Applies directives to a resolved value.
+  ///
+  /// Returns the original value if no directives are provided.
   static V applyDirectives<V>(V value, List<Directive<V>>? directives) {
     if (directives == null || directives.isEmpty) return value;
 
@@ -283,7 +285,10 @@ class PropOps {
     return result;
   }
 
-  /// Merges two directive lists
+  /// Merges two directive lists.
+  ///
+  /// Returns a new list containing all directives from both lists,
+  /// or null if both lists are null.
   static List<Directive<V>>? mergeDirectives<V>(
     List<Directive<V>>? current,
     List<Directive<V>>? other,
@@ -296,32 +301,42 @@ class PropOps {
     };
   }
 
-  /// Merges two Prop instances
+  /// Merges two Prop instances.
+  ///
+  /// Delegates to the current prop's mergeProp method.
   static Prop<V> merge<V>(Prop<V> current, Prop<V>? other) {
     // Delegate to Prop's own mergeProp method
     return current.mergeProp(other);
   }
 
-  /// Resolves a Prop instance to its final value
+  /// Resolves a Prop instance to its final value.
+  ///
+  /// Delegates to the prop's resolveProp method with the given context.
   static V resolve<V>(Prop<V> prop, BuildContext context) {
     // Delegate to Prop's own resolveProp method
     return prop.resolveProp(context);
   }
 
-  /// Merges two Prop instances containing Mix values
+  /// Merges two Prop instances containing Mix values.
+  ///
+  /// Delegates to the current prop's mergeProp method.
   static Prop<V> mergeMix<V>(Prop<V> current, Prop<V>? other) {
     // Delegate to Prop's own mergeProp method
     return current.mergeProp(other);
   }
 
-  /// Resolves a Prop instance containing Mix values to its final value
+  /// Resolves a Prop instance containing Mix values to its final value.
+  ///
+  /// Delegates to the prop's resolveProp method with the given context.
   static V resolveMix<V>(Prop<V> prop, BuildContext context) {
     // Delegate to Prop's own resolveProp method
     return prop.resolveProp(context);
   }
 
-  /// Merges two Mix instances using appropriate merger with BuildContext
-
+  /// Merges two Mix instances using appropriate merger with BuildContext.
+  ///
+  /// Uses specialized mergers for [DecorationMix] and [ShapeBorderMix]
+  /// that require BuildContext for intelligent merging decisions.
   static Mix<V> mergeMixes<V>(BuildContext context, Mix<V> a, Mix<V> b) {
     // Handle special cases that need BuildContext-aware merging
     return switch ((a, b)) {
@@ -333,7 +348,10 @@ class PropOps {
     };
   }
 
-  /// Consolidates consecutive MixSource instances
+  /// Consolidates consecutive MixSource instances.
+  ///
+  /// Merges consecutive [MixSource] instances in the list to optimize
+  /// the prop source chain and reduce unnecessary operations.
   static List<PropSource<V>> consolidateSources<V>(
     List<PropSource<V>> sources,
     BuildContext context,

@@ -5,21 +5,21 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-  group('BoxSpecUtility', () {
-    late BoxSpecUtility util;
+  group('BoxMutableStyler', () {
+    late BoxMutableStyler util;
 
     setUp(() {
-      util = BoxSpecUtility();
+      util = BoxMutableStyler();
     });
 
     group('Constructor', () {
       test('creates with provided BoxMix attribute', () {
         final boxMix = BoxStyler(alignment: Alignment.center);
-        final utility = BoxSpecUtility(boxMix);
+        final utility = BoxMutableStyler(boxMix);
         final context = MockBuildContext();
         final spec = utility.resolve(context);
 
-        expect(utility, isA<BoxSpecUtility>());
+        expect(utility, isA<BoxMutableStyler>());
         expect(
           spec,
           StyleSpec(spec: const BoxSpec(alignment: Alignment.center)),
@@ -178,14 +178,14 @@ void main() {
         expect(result, same(util));
       });
 
-      test('merge with BoxSpecUtility creates new instance', () {
-        final other = BoxSpecUtility(BoxStyler(alignment: Alignment.center));
+      test('merge with BoxMutableStyler creates new instance', () {
+        final other = BoxMutableStyler(BoxStyler(alignment: Alignment.center));
         final result = util.merge(other);
         final context = MockBuildContext();
         final spec = result.resolve(context);
 
         expect(result, isNot(same(util)));
-        expect(result, isA<BoxSpecUtility>());
+        expect(result, isA<BoxMutableStyler>());
         expect(spec.spec.alignment, Alignment.center);
       });
 
@@ -196,7 +196,7 @@ void main() {
         final spec = result.resolve(context);
 
         expect(result, isNot(same(util)));
-        expect(result, isA<BoxSpecUtility>());
+        expect(result, isA<BoxMutableStyler>());
         expect(spec.spec.alignment, Alignment.topRight);
       });
 
@@ -208,8 +208,8 @@ void main() {
       });
 
       test('merge combines properties correctly', () {
-        final util1 = BoxSpecUtility(BoxStyler(alignment: Alignment.center));
-        final other = BoxSpecUtility(BoxStyler(clipBehavior: Clip.antiAlias));
+        final util1 = BoxMutableStyler(BoxStyler(alignment: Alignment.center));
+        final other = BoxMutableStyler(BoxStyler(clipBehavior: Clip.antiAlias));
 
         final result = util1.merge(other);
         final context = MockBuildContext();
@@ -222,7 +222,7 @@ void main() {
 
     group('Resolve functionality', () {
       test('resolve returns BoxSpec with resolved properties', () {
-        final testUtil = BoxSpecUtility(
+        final testUtil = BoxMutableStyler(
           BoxStyler(
             alignment: Alignment.center,
             clipBehavior: Clip.antiAlias,
@@ -252,7 +252,7 @@ void main() {
 
     group('Chaining methods', () {
       test('basic alignment mutation test', () {
-        final util = BoxSpecUtility();
+        final util = BoxMutableStyler();
 
         final result = util.alignment(Alignment.center);
         expect(result, isA<BoxStyler>());
@@ -264,7 +264,7 @@ void main() {
       });
 
       test('basic transform mutation test', () {
-        final util = BoxSpecUtility();
+        final util = BoxMutableStyler();
         final matrix = Matrix4.identity();
 
         final result = util.transform(matrix);
@@ -277,7 +277,7 @@ void main() {
       });
 
       test('chaining utility methods accumulates properties', () {
-        final util = BoxSpecUtility();
+        final util = BoxMutableStyler();
         final matrix = Matrix4.identity();
 
         // Chain multiple method calls - these mutate internal state
@@ -296,7 +296,7 @@ void main() {
 
       test('cascade notation works with utility methods', () {
         final matrix = Matrix4.identity();
-        final util = BoxSpecUtility()
+        final util = BoxMutableStyler()
           ..alignment(Alignment.center)
           ..transform(matrix)
           ..clipBehavior(Clip.antiAlias);
@@ -310,7 +310,7 @@ void main() {
       });
 
       test('individual utility calls return BoxMix for further chaining', () {
-        final util = BoxSpecUtility();
+        final util = BoxMutableStyler();
         final matrix = Matrix4.identity();
 
         // Each utility call should return a BoxStyle
@@ -334,7 +334,7 @@ void main() {
 
     group('Mutating behavior vs Builder pattern', () {
       test('utility mutates internal state (not builder pattern)', () {
-        final util = BoxSpecUtility();
+        final util = BoxMutableStyler();
 
         // Store initial resolution
         final context = MockBuildContext();
@@ -352,7 +352,7 @@ void main() {
       });
 
       test('multiple calls accumulate on same instance', () {
-        final util = BoxSpecUtility();
+        final util = BoxMutableStyler();
         final matrix = Matrix4.identity();
 
         util.alignment(Alignment.center);
@@ -369,7 +369,7 @@ void main() {
       });
 
       test('demonstrates difference from immutable builder pattern', () {
-        final util = BoxSpecUtility();
+        final util = BoxMutableStyler();
         final matrix = Matrix4.identity();
 
         // In a builder pattern, this would create new instances
@@ -391,7 +391,7 @@ void main() {
 
     group('Integration with resolvesTo matcher', () {
       test('utility resolves to correct BoxSpec', () {
-        final testUtil = BoxSpecUtility(
+        final testUtil = BoxMutableStyler(
           BoxStyler(alignment: Alignment.center, clipBehavior: Clip.antiAlias),
         );
 
@@ -424,9 +424,9 @@ void main() {
       });
 
       test('handles multiple merges correctly', () {
-        final util1 = BoxSpecUtility(BoxStyler(alignment: Alignment.center));
-        final util2 = BoxSpecUtility(BoxStyler(clipBehavior: Clip.antiAlias));
-        final util3 = BoxSpecUtility(BoxStyler(transform: Matrix4.identity()));
+        final util1 = BoxMutableStyler(BoxStyler(alignment: Alignment.center));
+        final util2 = BoxMutableStyler(BoxStyler(clipBehavior: Clip.antiAlias));
+        final util3 = BoxMutableStyler(BoxStyler(transform: Matrix4.identity()));
 
         final result = util1.merge(util2).merge(util3);
         final context = MockBuildContext();
@@ -440,7 +440,7 @@ void main() {
 
     group('Edge cases', () {
       test('handles empty utility', () {
-        final emptyUtil = BoxSpecUtility();
+        final emptyUtil = BoxMutableStyler();
         final context = MockBuildContext();
         final spec = emptyUtil.resolve(context);
 
@@ -450,7 +450,7 @@ void main() {
       });
 
       test('merge with self returns new instance', () {
-        final testUtil = BoxSpecUtility(BoxStyler(alignment: Alignment.center));
+        final testUtil = BoxMutableStyler(BoxStyler(alignment: Alignment.center));
         final result = testUtil.merge(testUtil);
         final context = MockBuildContext();
         final spec = result.resolve(context);

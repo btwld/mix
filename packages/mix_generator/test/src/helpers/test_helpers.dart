@@ -192,8 +192,8 @@ mixin Diagnosticable {
 }
 
 /// Utility class for Specs
-class SpecUtility {
-  const SpecUtility();
+class MutableStyler {
+  const MutableStyler();
 }
 
 /// Mix data container

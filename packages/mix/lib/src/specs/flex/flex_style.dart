@@ -13,7 +13,7 @@ import '../../style/mixins/flex_style_mixin.dart';
 import '../../style/mixins/modifier_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
 import 'flex_spec.dart';
-import 'flex_util.dart';
+import 'flex_mutable_style.dart';
 
 typedef FlexMix = FlexStyler;
 
@@ -107,7 +107,7 @@ class FlexStyler extends Style<FlexSpec>
     return FlexStyler().builder(fn);
   }
 
-  static FlexSpecUtility get chain => FlexSpecUtility(FlexStyler());
+  static FlexMutableStyler get chain => FlexMutableStyler(FlexStyler());
 
   /// The gap between children.
   @Deprecated(

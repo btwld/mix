@@ -10,7 +10,7 @@ import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../variants/variant_util.dart';
 import 'image_spec.dart';
-import 'image_util.dart';
+import 'image_mutable_style.dart';
 import 'image_widget.dart';
 
 typedef ImageMix = ImageStyler;
@@ -115,7 +115,7 @@ class ImageStyler extends Style<ImageSpec>
     return ImageStyler().builder(fn);
   }
 
-  static ImageSpecUtility get chain => ImageSpecUtility(ImageStyler());
+  static ImageMutableStyler get chain => ImageMutableStyler(ImageStyler());
 
   /// Sets image provider
   ImageStyler image(ImageProvider<Object> value) {
