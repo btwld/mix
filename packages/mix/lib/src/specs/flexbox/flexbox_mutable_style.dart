@@ -21,7 +21,7 @@ import 'flexbox_style.dart';
 ///
 /// Combines box and flex styling capabilities. Supports the same API as [FlexBoxStyler]
 /// but maintains mutable internal state enabling fluid styling: `$flexbox..color.red()..width(100)`.
-class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec>
+class FlexBoxMutableStyler extends StyleMutableBuilder<FlexBoxSpec>
     with UtilityVariantMixin<FlexBoxSpec, FlexBoxStyler> {
   late final padding = EdgeInsetsGeometryUtility<FlexBoxStyler>(
     (prop) => mutable.merge(FlexBoxStyler(padding: prop)),
@@ -117,10 +117,10 @@ class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec>
   /// Internal mutable state for accumulating flexbox styling properties.
   @override
   @protected
-  late final MutableFlexBoxStyle mutable;
+  late final FlexBoxMutableState mutable;
 
-  FlexBoxSpecUtility([FlexBoxStyler? attribute]) {
-    mutable = MutableFlexBoxStyle(attribute ?? const FlexBoxStyler.create());
+  FlexBoxMutableStyler([FlexBoxStyler? attribute]) {
+    mutable = FlexBoxMutableState(attribute ?? const FlexBoxStyler.create());
   }
 
   /// Sets the spacing between children in the flex layout.
@@ -149,14 +149,14 @@ class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec>
   }
 
   @override
-  FlexBoxSpecUtility merge(Style<FlexBoxSpec>? other) {
+  FlexBoxMutableStyler merge(Style<FlexBoxSpec>? other) {
     if (other == null) return this;
     // Always create new instance (StyleAttribute contract)
-    if (other is FlexBoxSpecUtility) {
-      return FlexBoxSpecUtility(mutable.merge(other.mutable.value));
+    if (other is FlexBoxMutableStyler) {
+      return FlexBoxMutableStyler(mutable.merge(other.mutable.value));
     }
     if (other is FlexBoxStyler) {
-      return FlexBoxSpecUtility(mutable.merge(other));
+      return FlexBoxMutableStyler(mutable.merge(other));
     }
 
     throw FlutterError('Unsupported merge type: ${other.runtimeType}');
@@ -177,11 +177,11 @@ class FlexBoxSpecUtility extends StyleMutableBuilder<FlexBoxSpec>
 
 /// Mutable implementation of [FlexBoxStyler] for efficient style accumulation.
 ///
-/// Used internally by [FlexBoxSpecUtility] to accumulate styling changes
+/// Used internally by [FlexBoxMutableStyler] to accumulate styling changes
 /// without creating new instances for each modification.
-class MutableFlexBoxStyle extends FlexBoxStyler
+class FlexBoxMutableState extends FlexBoxStyler
     with Mutable<FlexBoxSpec, FlexBoxStyler> {
-  MutableFlexBoxStyle(FlexBoxStyler style) {
+  FlexBoxMutableState(FlexBoxStyler style) {
     value = style;
   }
 }

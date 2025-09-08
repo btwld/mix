@@ -23,7 +23,7 @@ import '../../style/mixins/spacing_style_mixin.dart';
 import '../../style/mixins/transform_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
 import 'box_spec.dart';
-import 'box_util.dart';
+import 'box_mutable_style.dart';
 import 'box_widget.dart';
 
 typedef BoxMix = BoxStyler;
@@ -111,7 +111,7 @@ class BoxStyler extends Style<BoxSpec>
     return BoxStyler().builder(fn);
   }
 
-  static BoxSpecUtility get chain => BoxSpecUtility(BoxStyler());
+  static BoxMutableStyler get chain => BoxMutableStyler(BoxStyler());
 
   BoxStyler clipBehavior(Clip value) {
     return merge(BoxStyler(clipBehavior: value));

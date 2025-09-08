@@ -149,7 +149,7 @@ Additionally, you will find the following generated classes:
 
 - `ButtonSpecAttribute`: It is similar to `ButtonSpec`, but it has attribute equivalents, which allow values to be passed within Mix and merged before resolving to the spec.
 - `ButtonSpecTween`: It is generated so you can use it for animations involving `ButtonSpec` instances.
-- `ButtonSpecUtility`: This is the API utility class that you will be using to interact with your button. It provides convenient methods for applying the button's styling.
+- `ButtonMutableStyler`: This is the API utility class that you will be using to interact with your button. It provides convenient methods for applying the button's styling.
 
 Make sure to run the build runner whenever you make changes to the `ButtonSpec` class or any other classes with Mix annotations to keep the generated code up to date.
 
@@ -258,7 +258,7 @@ Create a new file called `button_styles.dart`.
 You can use the utility that was generated and create references for each part of the button like so:
 
 ```dart
-final _util = ButtonSpecUtility.self;
+final _util = ButtonMutableStyler.self;
 final _label = _util.label;
 final _container = _util.container;
 final _flex = _util.flex;

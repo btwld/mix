@@ -5,26 +5,26 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-  group('FlexBoxSpecUtility', () {
-    late FlexBoxSpecUtility util;
+  group('FlexBoxMutableStyler', () {
+    late FlexBoxMutableStyler util;
 
     setUp(() {
-      util = FlexBoxSpecUtility();
+      util = FlexBoxMutableStyler();
     });
 
     group('Constructor', () {
       test('', () {
-        final utility = FlexBoxSpecUtility();
-        expect(utility, isA<FlexBoxSpecUtility>());
+        final utility = FlexBoxMutableStyler();
+        expect(utility, isA<FlexBoxMutableStyler>());
       });
 
       test('', () {
         final flexBoxMix = FlexBoxStyler(direction: Axis.horizontal);
-        final utility = FlexBoxSpecUtility(flexBoxMix);
+        final utility = FlexBoxMutableStyler(flexBoxMix);
         final context = MockBuildContext();
         final spec = utility.resolve(context);
 
-        expect(utility, isA<FlexBoxSpecUtility>());
+        expect(utility, isA<FlexBoxMutableStyler>());
         expect(spec.flex?.direction, Axis.horizontal);
       });
     });
@@ -212,13 +212,13 @@ void main() {
       });
 
       test('', () {
-        final other = FlexBoxSpecUtility(
+        final other = FlexBoxMutableStyler(
           FlexBoxStyler(direction: Axis.horizontal),
         );
         final result = util.merge(other);
 
         expect(result, isNot(same(util)));
-        expect(result, isA<FlexBoxSpecUtility>());
+        expect(result, isA<FlexBoxMutableStyler>());
       });
 
       test('', () {
@@ -226,7 +226,7 @@ void main() {
         final result = util.merge(otherMix);
 
         expect(result, isNot(same(util)));
-        expect(result, isA<FlexBoxSpecUtility>());
+        expect(result, isA<FlexBoxMutableStyler>());
       });
 
       test('merge throws error for unsupported type', () {
@@ -237,10 +237,10 @@ void main() {
       });
 
       test('merge combines properties correctly', () {
-        final util1 = FlexBoxSpecUtility(
+        final util1 = FlexBoxMutableStyler(
           FlexBoxStyler(direction: Axis.horizontal),
         );
-        final other = FlexBoxSpecUtility(
+        final other = FlexBoxMutableStyler(
           FlexBoxStyler(
             spacing: 8.0,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -259,7 +259,7 @@ void main() {
 
     group('Resolve functionality', () {
       test('', () {
-        final testUtil = FlexBoxSpecUtility(
+        final testUtil = FlexBoxMutableStyler(
           FlexBoxStyler(
             direction: Axis.vertical,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -289,7 +289,7 @@ void main() {
 
     group('Chaining methods', () {
       test('basic direction mutation test', () {
-        final util = FlexBoxSpecUtility();
+        final util = FlexBoxMutableStyler();
 
         final result = util.direction(Axis.vertical);
         expect(result, isA<FlexBoxStyler>());
@@ -301,7 +301,7 @@ void main() {
       });
 
       test('basic gap mutation test', () {
-        final util = FlexBoxSpecUtility();
+        final util = FlexBoxMutableStyler();
 
         final result = util.spacing(16.0);
         expect(result, isA<FlexBoxStyler>());
@@ -313,7 +313,7 @@ void main() {
       });
 
       test('chaining utility methods accumulates properties', () {
-        final util = FlexBoxSpecUtility();
+        final util = FlexBoxMutableStyler();
 
         // Chain multiple method calls - these mutate internal state
         util.direction(Axis.vertical);
@@ -330,7 +330,7 @@ void main() {
       });
 
       test('cascade notation works with utility methods', () {
-        final util = FlexBoxSpecUtility()
+        final util = FlexBoxMutableStyler()
           ..direction(Axis.vertical)
           ..mainAxisAlignment(MainAxisAlignment.center)
           ..spacing(16.0);
@@ -344,7 +344,7 @@ void main() {
       });
 
       test('', () {
-        final util = FlexBoxSpecUtility();
+        final util = FlexBoxMutableStyler();
 
         // Each utility call should return a FlexBoxStyle
         final directionResult = util.direction(Axis.vertical);
@@ -369,7 +369,7 @@ void main() {
 
     group('Mutating behavior vs Builder pattern', () {
       test('utility mutates internal state (not builder pattern)', () {
-        final util = FlexBoxSpecUtility();
+        final util = FlexBoxMutableStyler();
 
         // Store initial resolution
         final context = MockBuildContext();
@@ -387,7 +387,7 @@ void main() {
       });
 
       test('multiple calls accumulate on same instance', () {
-        final util = FlexBoxSpecUtility();
+        final util = FlexBoxMutableStyler();
 
         util.direction(Axis.vertical);
         util.mainAxisAlignment(MainAxisAlignment.center);
@@ -403,7 +403,7 @@ void main() {
       });
 
       test('demonstrates difference from immutable builder pattern', () {
-        final util = FlexBoxSpecUtility();
+        final util = FlexBoxMutableStyler();
 
         // In a builder pattern, this would create new instances
         // In mutable pattern, this modifies the same instance
@@ -424,7 +424,7 @@ void main() {
 
     group('Integration with resolvesTo matcher', () {
       test('', () {
-        final testUtil = FlexBoxSpecUtility(
+        final testUtil = FlexBoxMutableStyler(
           FlexBoxStyler(
             direction: Axis.horizontal,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -461,7 +461,7 @@ void main() {
         const gapToken = MixToken<double>('gap');
         final context = MockBuildContext(tokens: {gapToken.defineValue(24.0)});
 
-        final testUtil = FlexBoxSpecUtility(
+        final testUtil = FlexBoxMutableStyler(
           FlexBoxStyler.create(
             flex: Prop.maybeMix(
               FlexStyler.create(spacing: Prop.token(gapToken)),
@@ -490,23 +490,23 @@ void main() {
       });
 
       test('handles multiple merges correctly', () {
-        final util1 = FlexBoxSpecUtility(
+        final util1 = FlexBoxMutableStyler(
           FlexBoxStyler(direction: Axis.horizontal),
         );
-        final util2 = FlexBoxSpecUtility(FlexBoxStyler(spacing: 8.0));
-        final util3 = FlexBoxSpecUtility(
+        final util2 = FlexBoxMutableStyler(FlexBoxStyler(spacing: 8.0));
+        final util3 = FlexBoxMutableStyler(
           FlexBoxStyler(mainAxisAlignment: MainAxisAlignment.center),
         );
 
         final result = util1.merge(util2).merge(util3);
 
-        expect(result, isA<FlexBoxSpecUtility>());
+        expect(result, isA<FlexBoxMutableStyler>());
       });
     });
 
     group('Edge cases', () {
       test('handles empty utility', () {
-        final emptyUtil = FlexBoxSpecUtility();
+        final emptyUtil = FlexBoxMutableStyler();
         final context = MockBuildContext();
         final spec = emptyUtil.resolve(context);
 
@@ -516,7 +516,7 @@ void main() {
       });
 
       test('merge with self returns new instance', () {
-        final testUtil = FlexBoxSpecUtility(
+        final testUtil = FlexBoxMutableStyler(
           FlexBoxStyler(direction: Axis.horizontal),
         );
         final result = testUtil.merge(testUtil);

@@ -19,9 +19,9 @@ import 'text_style.dart';
 
 /// Provides mutable utility for text styling with cascade notation support.
 ///
-/// Supports the same API as [TextStyle] but maintains mutable internal state
+/// Supports the same API as [TextStyler] but maintains mutable internal state
 /// enabling fluid styling: `$text..color.red()..fontSize(16)`.
-class TextSpecUtility extends StyleMutableBuilder<TextSpec>
+class TextMutableStyler extends StyleMutableBuilder<TextSpec>
     with UtilityVariantMixin<TextSpec, TextStyler> {
   late final textOverflow = MixUtility(mutable.overflow);
 
@@ -81,9 +81,9 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec>
   /// Internal mutable state for accumulating text styling properties.
   @override
   @protected
-  late final MutableTextMix mutable;
-  TextSpecUtility([TextStyler? attribute]) {
-    mutable = MutableTextMix(attribute ?? TextStyler());
+  late final TextMutableState mutable;
+  TextMutableStyler([TextStyler? attribute]) {
+    mutable = TextMutableState(attribute ?? TextStyler());
   }
 
   TextStyler maxLines(int v) => mutable.maxLines(v);
@@ -112,14 +112,14 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec>
   }
 
   @override
-  TextSpecUtility merge(Style<TextSpec>? other) {
+  TextMutableStyler merge(Style<TextSpec>? other) {
     if (other == null) return this;
     // Always create new instance (StyleAttribute contract)
-    if (other is TextSpecUtility) {
-      return TextSpecUtility(mutable.value.merge(other.mutable.value));
+    if (other is TextMutableStyler) {
+      return TextMutableStyler(mutable.value.merge(other.mutable.value));
     }
     if (other is TextStyler) {
-      return TextSpecUtility(mutable.value.merge(other));
+      return TextMutableStyler(mutable.value.merge(other));
     }
 
     throw FlutterError('Unsupported merge type: ${other.runtimeType}');
@@ -133,13 +133,13 @@ class TextSpecUtility extends StyleMutableBuilder<TextSpec>
   @override
   TextStyler get currentValue => mutable.value;
 
-  /// The accumulated [TextStyle] with all applied styling properties.
+  /// The accumulated [TextStyler] with all applied styling properties.
   @override
   TextStyler get value => mutable.value;
 }
 
-class MutableTextMix extends TextStyler with Mutable<TextSpec, TextStyler> {
-  MutableTextMix(TextStyler style) {
+class TextMutableState extends TextStyler with Mutable<TextSpec, TextStyler> {
+  TextMutableState(TextStyler style) {
     value = style;
   }
 }
