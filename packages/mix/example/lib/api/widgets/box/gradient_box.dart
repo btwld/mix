@@ -1,4 +1,4 @@
-import 'package:example/helpers.dart';
+import '../../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
@@ -16,17 +16,14 @@ class Example extends StatelessWidget {
         .width(100)
         .borderRounded(10)
         .linearGradient(
-          colors: [
-            Colors.deepPurple.shade700,
-            Colors.deepPurple.shade200
-          ],
+          colors: [Colors.deepPurple.shade700, Colors.deepPurple.shade200],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         )
         .shadowOnly(
           color: Colors.deepPurple.shade700,
-          blurRadius: 10,
           offset: Offset(0, 4),
+          blurRadius: 10,
         );
 
     return Box(style: style);

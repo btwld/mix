@@ -61,9 +61,9 @@ class _DemoAppState extends State<DemoApp> {
       .keyframeAnimation(
         trigger: trigger,
         timeline: [
-          KeyframeTrack<double>('progress', initial: -1, [
+          KeyframeTrack<double>('progress', [
             Keyframe.ease(1, 2000.ms),
-          ]),
+          ], initial: -1),
         ],
         styleBuilder: (values, style) => style.foregroundDecoration(
           BoxDecorationMix.gradient(
@@ -96,9 +96,9 @@ class _DemoAppState extends State<DemoApp> {
 }
 
 class _SlidingGradientTransform extends GradientTransform {
-  const _SlidingGradientTransform({required this.slidePercent});
-
   final double slidePercent;
+
+  const _SlidingGradientTransform({required this.slidePercent});
 
   @override
   Matrix4? transform(Rect bounds, {TextDirection? textDirection}) {

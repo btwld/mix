@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/internal/compare_mixin.dart';
@@ -11,7 +10,7 @@ import 'spring_curves.dart';
 ///
 /// This sealed class provides different types of animation configurations
 /// for use with animated widgets and style transitions.
-sealed class AnimationConfig with Equatable {
+sealed class AnimationConfig {
   factory AnimationConfig.curve({
     required Duration duration,
     required Curve curve,
@@ -369,7 +368,7 @@ sealed class AnimationConfig with Equatable {
 ///
 /// This configuration provides duration, curve, and optional completion callback
 /// for animations that follow a specific curve over a fixed time period.
-class CurveAnimationConfig extends AnimationConfig {
+class CurveAnimationConfig extends AnimationConfig with Equatable {
   final Duration duration;
   final Curve curve;
   final Duration delay;
@@ -722,7 +721,7 @@ class CurveAnimationConfig extends AnimationConfig {
 ///
 /// This configuration provides spring physics parameters for animations
 /// that follow natural physics behavior rather than fixed curves.
-final class SpringAnimationConfig extends AnimationConfig {
+final class SpringAnimationConfig extends AnimationConfig with Equatable {
   final SpringDescription spring;
   final VoidCallback? onEnd;
 
@@ -773,26 +772,14 @@ final class SpringAnimationConfig extends AnimationConfig {
          ratio: ratio,
        );
 
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
 
-    return other is SpringAnimationConfig &&
-        other.spring.mass == spring.mass &&
-        other.spring.stiffness == spring.stiffness &&
-        other.spring.damping == spring.damping;
-  }
 
   @override
-  int get hashCode =>
-      Object.hash(spring.mass, spring.stiffness, spring.damping);
-
-  @override
-  List<Object?> get props => [spring];
+  List<Object?> get props => [spring.mass, spring.stiffness, spring.damping];
 }
 
 class PhaseAnimationConfig<T extends Spec<T>, U extends Style<T>>
-    extends AnimationConfig {
+    extends AnimationConfig with Equatable {
   final List<U> styles;
   final List<CurveAnimationConfig> curveConfigs;
   final Listenable trigger;
@@ -805,18 +792,7 @@ class PhaseAnimationConfig<T extends Spec<T>, U extends Style<T>>
     this.onEnd,
   });
 
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
 
-    return other is PhaseAnimationConfig &&
-        trigger == other.trigger &&
-        listEquals(styles, other.styles) &&
-        listEquals(curveConfigs, other.curveConfigs);
-  }
-
-  @override
-  int get hashCode => Object.hash(styles, trigger, curveConfigs);
 
   @override
   List<Object?> get props => [styles, trigger, curveConfigs];
@@ -1077,7 +1053,7 @@ class KeyframeAnimationResult {
   }
 }
 
-class KeyframeAnimationConfig<S extends Spec<S>> extends AnimationConfig {
+class KeyframeAnimationConfig<S extends Spec<S>> extends AnimationConfig with Equatable {
   final Listenable trigger;
   final List<KeyframeTrack> timeline;
   final KeyframeStyleBuilder<S, Style<S>> styleBuilder;
