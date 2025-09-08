@@ -29,6 +29,11 @@ import 'sized_box_modifier.dart';
 import 'transform_modifier.dart';
 import 'visibility_modifier.dart';
 
+/// Configuration for widget modifiers in the Mix framework.
+///
+/// Provides factory methods for creating and combining modifiers that can be
+/// applied to widgets. Modifiers are applied in a specific order and can be
+/// merged together using the Mix framework's accumulation strategy.
 final class ModifierConfig with Equatable {
   final List<Type>? $orderOfModifiers;
   final List<ModifierMix>? $modifiers;
@@ -132,7 +137,7 @@ final class ModifierConfig with Equatable {
     );
   }
 
-  /// Scale using tarnsform
+  /// Scale using transform.
   factory ModifierConfig.scale(
     double scale, {
     Alignment alignment = Alignment.center,
@@ -298,8 +303,7 @@ final class ModifierConfig with Equatable {
     }
   }
 
-  /// Orders modifiers according to the specified order or default order
-  ///
+  /// Orders modifiers according to the specified order or default order.
   @visibleForTesting
   List<Modifier> reorderModifiers(List<Modifier> modifiers) {
     if (modifiers.isEmpty) return modifiers;
@@ -520,7 +524,8 @@ final class ModifierConfig with Equatable {
   }
 
   /// Resolves the modifiers into a properly ordered list ready for rendering.
-  /// Its important to order the list before resolving to ensure the correct order of modifiers
+  ///
+  /// It's important to order the list before resolving to ensure the correct order of modifiers.
   List<Modifier> resolve(BuildContext context) {
     if ($modifiers == null || $modifiers!.isEmpty) return [];
 

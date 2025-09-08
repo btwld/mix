@@ -117,6 +117,7 @@ class DecorationConverter implements MixConverter<Decoration> {
   }
 }
 
+/// Converts [BorderSide] to [BorderSideMix].
 class BorderSideConverter implements MixConverter<BorderSide> {
   const BorderSideConverter();
 
@@ -127,6 +128,7 @@ class BorderSideConverter implements MixConverter<BorderSide> {
   }
 }
 
+/// Converts [Border] to [BorderMix].
 class BorderConverter implements MixConverter<Border> {
   const BorderConverter();
 
@@ -137,6 +139,7 @@ class BorderConverter implements MixConverter<Border> {
   }
 }
 
+/// Converts [BorderRadius] to [BorderRadiusMix].
 class BorderRadiusConverter implements MixConverter<BorderRadius> {
   const BorderRadiusConverter();
 
@@ -147,6 +150,10 @@ class BorderRadiusConverter implements MixConverter<BorderRadius> {
   }
 }
 
+/// Converts [BorderRadiusGeometry] to [BorderRadiusMix].
+///
+/// Currently supports [BorderRadius]. Other BorderRadiusGeometry types
+/// will throw [UnimplementedError].
 class BorderRadiusGeometryConverter
     implements MixConverter<BorderRadiusGeometry> {
   const BorderRadiusGeometryConverter();
@@ -172,6 +179,10 @@ class BorderRadiusGeometryConverter
   }
 }
 
+/// Converts [ShapeBorder] to its corresponding Mix type.
+///
+/// Currently throws [UnimplementedError] for all types as
+/// ShapeBorder has many subtypes that need specific handling.
 class ShapeBorderConverter implements MixConverter<ShapeBorder> {
   const ShapeBorderConverter();
 
@@ -185,6 +196,10 @@ class ShapeBorderConverter implements MixConverter<ShapeBorder> {
   }
 }
 
+/// Converts [Gradient] to its corresponding Mix type.
+///
+/// Supports [LinearGradient], [RadialGradient], and [SweepGradient].
+/// Other gradient types will throw [UnimplementedError].
 class GradientConverter implements MixConverter<Gradient> {
   const GradientConverter();
 
@@ -216,6 +231,7 @@ class GradientConverter implements MixConverter<Gradient> {
   }
 }
 
+/// Converts [LinearGradient] to [LinearGradientMix].
 class LinearGradientConverter implements MixConverter<LinearGradient> {
   const LinearGradientConverter();
 
@@ -226,6 +242,7 @@ class LinearGradientConverter implements MixConverter<LinearGradient> {
   }
 }
 
+/// Converts [RadialGradient] to [RadialGradientMix].
 class RadialGradientConverter implements MixConverter<RadialGradient> {
   const RadialGradientConverter();
 
@@ -236,6 +253,7 @@ class RadialGradientConverter implements MixConverter<RadialGradient> {
   }
 }
 
+/// Converts [SweepGradient] to [SweepGradientMix].
 class SweepGradientConverter implements MixConverter<SweepGradient> {
   const SweepGradientConverter();
 
@@ -247,6 +265,7 @@ class SweepGradientConverter implements MixConverter<SweepGradient> {
 }
 
 
+/// Converts [BoxConstraints] to [BoxConstraintsMix].
 class BoxConstraintsConverter implements MixConverter<BoxConstraints> {
   const BoxConstraintsConverter();
 
@@ -257,6 +276,10 @@ class BoxConstraintsConverter implements MixConverter<BoxConstraints> {
   }
 }
 
+/// Converts [EdgeInsetsGeometry] to its corresponding Mix type.
+///
+/// Supports [EdgeInsets] and [EdgeInsetsDirectional]. Other EdgeInsetsGeometry
+/// types will throw [ArgumentError].
 class EdgeInsetsGeometryConverter implements MixConverter<EdgeInsetsGeometry> {
   const EdgeInsetsGeometryConverter();
 

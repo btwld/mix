@@ -117,12 +117,15 @@ extension StringExt on String {
   }
 }
 
+/// Extension on [double] to provide radius conversion.
 extension DoubleExt on double {
+  /// Converts this double to a circular [Radius].
   Radius toRadius() => Radius.circular(this);
 }
 
+/// Extension on [Matrix4] to provide merge functionality.
 extension Matrix4Ext on Matrix4 {
-  /// Merge [other] into this matrix.
+  /// Merges [other] into this matrix.
   Matrix4 merge(Matrix4? other) {
     if (other == null || other == this) return this;
 
@@ -139,7 +142,7 @@ extension ListStringExt on List<String> {
   List<String> get uppercase => map((e) => e.toUpperCase()).toList();
 }
 
-// @nodoc
+/// @nodoc
 extension IterableExt<T> on Iterable<T> {
   T? get firstMaybeNull => isEmpty ? null : first;
 
@@ -167,7 +170,9 @@ extension IterableExt<T> on Iterable<T> {
   }
 }
 
+/// Extension on [List] to provide merge functionality.
 extension ListExt<T> on List<T> {
+  /// Merges this list with [other], using values from [other] when available.
   List<T> merge(List<T>? other) {
     if (other == null) return this;
     if (isEmpty) return other;
@@ -270,18 +275,15 @@ extension ColorExtensions on Color {
 /// Clamps a value between 0.0 and 1.0.
 double _clamp(double val) => math.min(1.0, math.max(0.0, val));
 
+/// Extension on [BuildContext] to provide convenient access to common values.
 extension BuildContextExt on BuildContext {
-  /// MEDIA QUERY EXTENSION METHODS
-
-  /// Directionality of context.
+  /// Gets the directionality of the context.
   TextDirection get directionality => Directionality.of(this);
 
-  /// Orientation of the device.
-
+  /// Gets the orientation of the device.
   Orientation get orientation => MediaQuery.of(this).orientation;
 
-  /// Screen size.
-
+  /// Gets the screen size.
   Size get screenSize => MediaQuery.of(this).size;
 
   // Theme Context Extensions.

@@ -309,8 +309,6 @@ sealed class AnimationConfig {
 
   const AnimationConfig();
 
-  /// Creates a spring animation configuration with the specified parameters.
-
   /// Creates animation data with default settings.
   static CurveAnimationConfig withDefaults() {
     return const CurveAnimationConfig(
@@ -318,7 +316,7 @@ sealed class AnimationConfig {
       curve: Curves.linear,
     );
   }
-
+  
   /// Creates a spring animation configuration with standard spring physics.
   static SpringAnimationConfig springDescription({
     double mass = 1.0,
