@@ -5,26 +5,26 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-  group('ImageSpecUtility', () {
-    late ImageSpecUtility util;
+  group('ImageMutableStyler', () {
+    late ImageMutableStyler util;
 
     setUp(() {
-      util = ImageSpecUtility();
+      util = ImageMutableStyler();
     });
 
     group('Constructor', () {
       test('', () {
-        final utility = ImageSpecUtility();
-        expect(utility, isA<ImageSpecUtility>());
+        final utility = ImageMutableStyler();
+        expect(utility, isA<ImageMutableStyler>());
       });
 
       test('', () {
         final imageMix = ImageStyler(width: 100.0);
-        final utility = ImageSpecUtility(imageMix);
+        final utility = ImageMutableStyler(imageMix);
         final context = MockBuildContext();
         final spec = utility.resolve(context);
 
-        expect(utility, isA<ImageSpecUtility>());
+        expect(utility, isA<ImageMutableStyler>());
         expect(spec.spec.width, 100.0);
       });
     });
@@ -279,13 +279,13 @@ void main() {
       });
 
       test('', () {
-        final other = ImageSpecUtility(ImageStyler(width: 150.0));
+        final other = ImageMutableStyler(ImageStyler(width: 150.0));
         final result = util.merge(other);
         final context = MockBuildContext();
         final spec = result.resolve(context);
 
         expect(result, isNot(same(util)));
-        expect(result, isA<ImageSpecUtility>());
+        expect(result, isA<ImageMutableStyler>());
         expect(spec.spec.width, 150.0);
       });
 
@@ -296,7 +296,7 @@ void main() {
         final spec = result.resolve(context);
 
         expect(result, isNot(same(util)));
-        expect(result, isA<ImageSpecUtility>());
+        expect(result, isA<ImageMutableStyler>());
         expect(spec.spec.height, 250.0);
       });
 
@@ -308,10 +308,10 @@ void main() {
       });
 
       test('merge combines properties correctly', () {
-        final util1 = ImageSpecUtility(
+        final util1 = ImageMutableStyler(
           ImageStyler(width: 100.0, height: 200.0),
         );
-        final other = ImageSpecUtility(
+        final other = ImageMutableStyler(
           ImageStyler(height: 300.0, fit: BoxFit.cover),
         );
 
@@ -327,7 +327,7 @@ void main() {
 
     group('Resolve functionality', () {
       test('', () {
-        final testUtil = ImageSpecUtility(
+        final testUtil = ImageMutableStyler(
           ImageStyler(width: 100.0, height: 200.0, fit: BoxFit.cover),
         );
 
@@ -351,7 +351,7 @@ void main() {
       });
 
       test('resolve handles all properties correctly', () {
-        final testUtil = ImageSpecUtility(
+        final testUtil = ImageMutableStyler(
           ImageStyler(
             width: 100.0,
             height: 200.0,
@@ -401,7 +401,7 @@ void main() {
 
     group('Chaining methods', () {
       test('basic width mutation test', () {
-        final util = ImageSpecUtility();
+        final util = ImageMutableStyler();
 
         final result = util.width(100.0);
         expect(result, isA<ImageStyler>());
@@ -413,7 +413,7 @@ void main() {
       });
 
       test('basic height mutation test', () {
-        final util = ImageSpecUtility();
+        final util = ImageMutableStyler();
 
         final result = util.height(200.0);
         expect(result, isA<ImageStyler>());
@@ -425,7 +425,7 @@ void main() {
       });
 
       test('chaining utility methods accumulates properties', () {
-        final util = ImageSpecUtility();
+        final util = ImageMutableStyler();
 
         // Chain multiple method calls - these mutate internal state
         util.width(100.0);
@@ -442,7 +442,7 @@ void main() {
       });
 
       test('cascade notation works with utility methods', () {
-        final util = ImageSpecUtility()
+        final util = ImageMutableStyler()
           ..width(100.0)
           ..height(200.0)
           ..fit(BoxFit.cover);
@@ -456,7 +456,7 @@ void main() {
       });
 
       test('', () {
-        final util = ImageSpecUtility();
+        final util = ImageMutableStyler();
 
         // Each utility call should return an ImageStyle
         final widthResult = util.width(100.0);
@@ -479,7 +479,7 @@ void main() {
 
     group('Mutating behavior vs Builder pattern', () {
       test('utility mutates internal state (not builder pattern)', () {
-        final util = ImageSpecUtility();
+        final util = ImageMutableStyler();
 
         // Store initial resolution
         final context = MockBuildContext();
@@ -497,7 +497,7 @@ void main() {
       });
 
       test('multiple calls accumulate on same instance', () {
-        final util = ImageSpecUtility();
+        final util = ImageMutableStyler();
 
         util.width(100.0);
         util.height(200.0);
@@ -513,7 +513,7 @@ void main() {
       });
 
       test('demonstrates difference from immutable builder pattern', () {
-        final util = ImageSpecUtility();
+        final util = ImageMutableStyler();
 
         // In a builder pattern, this would create new instances
         // In mutable pattern, this modifies the same instance
@@ -534,7 +534,7 @@ void main() {
 
     group('Integration with resolvesTo matcher', () {
       test('', () {
-        final testUtil = ImageSpecUtility(
+        final testUtil = ImageMutableStyler(
           ImageStyler(width: 100.0, height: 200.0, fit: BoxFit.cover),
         );
 
@@ -560,7 +560,7 @@ void main() {
           tokens: {widthToken.defineValue(150.0)},
         );
 
-        final testUtil = ImageSpecUtility(
+        final testUtil = ImageMutableStyler(
           ImageStyler.create(width: Prop.token(widthToken)),
         );
         final spec = testUtil.resolve(context);
@@ -581,7 +581,7 @@ void main() {
           },
         );
 
-        final testUtil = ImageSpecUtility(
+        final testUtil = ImageMutableStyler(
           ImageStyler.create(
             width: Prop.token(widthToken),
             height: Prop.token(heightToken),
@@ -610,7 +610,7 @@ void main() {
           },
         );
 
-        final testUtil = ImageSpecUtility(
+        final testUtil = ImageMutableStyler(
           ImageStyler.create(
             fit: Prop.token(fitToken),
             repeat: Prop.token(repeatToken),
@@ -637,7 +637,7 @@ void main() {
           },
         );
 
-        final testUtil = ImageSpecUtility(
+        final testUtil = ImageMutableStyler(
           ImageStyler.create(
             semanticLabel: Prop.token(labelToken),
             excludeFromSemantics: Prop.token(excludeToken),
@@ -665,9 +665,9 @@ void main() {
       });
 
       test('handles multiple merges correctly', () {
-        final util1 = ImageSpecUtility(ImageStyler(width: 100.0));
-        final util2 = ImageSpecUtility(ImageStyler(height: 200.0));
-        final util3 = ImageSpecUtility(ImageStyler(fit: BoxFit.cover));
+        final util1 = ImageMutableStyler(ImageStyler(width: 100.0));
+        final util2 = ImageMutableStyler(ImageStyler(height: 200.0));
+        final util3 = ImageMutableStyler(ImageStyler(fit: BoxFit.cover));
 
         final result = util1.merge(util2).merge(util3);
         final context = MockBuildContext();
@@ -681,7 +681,7 @@ void main() {
 
     group('Edge cases', () {
       test('handles empty utility', () {
-        final emptyUtil = ImageSpecUtility();
+        final emptyUtil = ImageMutableStyler();
         final context = MockBuildContext();
         final spec = emptyUtil.resolve(context);
 
@@ -691,7 +691,7 @@ void main() {
       });
 
       test('merge with self returns new instance', () {
-        final testUtil = ImageSpecUtility(ImageStyler(width: 100.0));
+        final testUtil = ImageMutableStyler(ImageStyler(width: 100.0));
         final result = testUtil.merge(testUtil);
         final context = MockBuildContext();
         final spec = result.resolve(context);

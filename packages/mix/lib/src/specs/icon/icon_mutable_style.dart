@@ -20,7 +20,7 @@ import 'icon_style.dart';
 ///
 /// Supports the same API as [IconStyler] but maintains mutable internal state
 /// enabling fluid styling: `$icon..color(Colors.blue)..size(24)..weight(400)`.
-class IconSpecUtility extends StyleMutableBuilder<IconSpec>
+class IconMutableStyler extends StyleMutableBuilder<IconSpec>
     with UtilityVariantMixin<IconSpec, IconStyler> {
   late final color = ColorUtility<IconStyler>(
     (prop) => mutable.merge(IconStyler.create(color: prop)),
@@ -45,10 +45,10 @@ class IconSpecUtility extends StyleMutableBuilder<IconSpec>
   /// Internal mutable state for accumulating icon styling properties.
   @override
   @protected
-  late final MutableIconStyle mutable;
+  late final IconMutableState mutable;
 
-  IconSpecUtility([IconStyler? attribute]) {
-    mutable = MutableIconStyle(attribute ?? IconStyler());
+  IconMutableStyler([IconStyler? attribute]) {
+    mutable = IconMutableState(attribute ?? IconStyler());
   }
 
   IconStyler size(double v) => mutable.size(v);
@@ -80,14 +80,14 @@ class IconSpecUtility extends StyleMutableBuilder<IconSpec>
   }
 
   @override
-  IconSpecUtility merge(Style<IconSpec>? other) {
+  IconMutableStyler merge(Style<IconSpec>? other) {
     if (other == null) return this;
     // Always create new instance (StyleAttribute contract)
-    if (other is IconSpecUtility) {
-      return IconSpecUtility(mutable.merge(other.mutable.value));
+    if (other is IconMutableStyler) {
+      return IconMutableStyler(mutable.merge(other.mutable.value));
     }
     if (other is IconStyler) {
-      return IconSpecUtility(mutable.merge(other));
+      return IconMutableStyler(mutable.merge(other));
     }
 
     throw FlutterError('Unsupported merge type: ${other.runtimeType}');
@@ -106,8 +106,8 @@ class IconSpecUtility extends StyleMutableBuilder<IconSpec>
   IconStyler get value => mutable.value;
 }
 
-class MutableIconStyle extends IconStyler with Mutable<IconSpec, IconStyler> {
-  MutableIconStyle(IconStyler style) {
+class IconMutableState extends IconStyler with Mutable<IconSpec, IconStyler> {
+  IconMutableState(IconStyler style) {
     value = style;
   }
 }

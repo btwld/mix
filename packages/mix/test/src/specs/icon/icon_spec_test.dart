@@ -7,7 +7,7 @@ import 'package:mix/mix.dart';
 import 'package:mix/src/specs/icon/icon_spec.dart';
 
 void main() {
-  group('FlexStyleSpecUtility', () {
+  group('IconMutableStyler', () {
     group('Constructor', () {
       test('', () {
         const spec = IconSpec(

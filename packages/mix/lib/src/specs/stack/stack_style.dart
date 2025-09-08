@@ -11,7 +11,7 @@ import '../../style/mixins/animation_style_mixin.dart';
 import '../../style/mixins/modifier_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
 import 'stack_spec.dart';
-import 'stack_util.dart';
+import 'stack_mutable_style.dart';
 
 typedef StackMix = StackStyler;
 
@@ -68,7 +68,7 @@ class StackStyler extends Style<StackSpec>
     return StackStyler().builder(fn);
   }
 
-  static StackSpecUtility get chain => StackSpecUtility(StackStyler());
+  static StackMutableStyler get chain => StackMutableStyler(StackStyler());
 
   /// Sets stack alignment
   StackStyler alignment(AlignmentGeometry value) {

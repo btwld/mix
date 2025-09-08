@@ -18,7 +18,7 @@ import 'stack_style.dart';
 ///
 /// Supports the same API as [StackStyler] but maintains mutable internal state
 /// enabling fluid styling: `$stack..alignment(Alignment.center)..fit(StackFit.expand)`.
-class StackSpecUtility extends StyleMutableBuilder<StackSpec>
+class StackMutableStyler extends StyleMutableBuilder<StackSpec>
     with UtilityVariantMixin<StackSpec, StackStyler> {
   late final alignment = MixUtility(mutable.alignment);
 
@@ -43,10 +43,10 @@ class StackSpecUtility extends StyleMutableBuilder<StackSpec>
   /// Internal mutable state for accumulating stack styling properties.
   @override
   @protected
-  late final MutableStackStyle mutable;
+  late final StackMutableState mutable;
 
-  StackSpecUtility([StackStyler? attribute]) {
-    mutable = MutableStackStyle(attribute ?? StackStyler());
+  StackMutableStyler([StackStyler? attribute]) {
+    mutable = StackMutableState(attribute ?? StackStyler());
   }
 
   /// Applies animation configuration to the stack styling.
@@ -63,14 +63,14 @@ class StackSpecUtility extends StyleMutableBuilder<StackSpec>
   }
 
   @override
-  StackSpecUtility merge(Style<StackSpec>? other) {
+  StackMutableStyler merge(Style<StackSpec>? other) {
     if (other == null) return this;
     // Always create new instance (StyleAttribute contract)
-    if (other is StackSpecUtility) {
-      return StackSpecUtility(mutable.merge(other.mutable.value));
+    if (other is StackMutableStyler) {
+      return StackMutableStyler(mutable.merge(other.mutable.value));
     }
     if (other is StackStyler) {
-      return StackSpecUtility(mutable.merge(other));
+      return StackMutableStyler(mutable.merge(other));
     }
 
     throw FlutterError('Unsupported merge type: ${other.runtimeType}');
@@ -89,9 +89,9 @@ class StackSpecUtility extends StyleMutableBuilder<StackSpec>
   StackStyler get value => mutable.value;
 }
 
-class MutableStackStyle extends StackStyler
+class StackMutableState extends StackStyler
     with Mutable<StackSpec, StackStyler> {
-  MutableStackStyle(StackStyler style) {
+  StackMutableState(StackStyler style) {
     value = style;
   }
 }

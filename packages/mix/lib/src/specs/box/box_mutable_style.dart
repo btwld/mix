@@ -21,7 +21,7 @@ import 'box_style.dart';
 ///
 /// Supports the same API as [BoxStyler] but maintains mutable internal state
 /// enabling fluid styling: `$box..color.red()..width(100)`.
-class BoxSpecUtility extends StyleMutableBuilder<BoxSpec>
+class BoxMutableStyler extends StyleMutableBuilder<BoxSpec>
     with UtilityVariantMixin<BoxSpec, BoxStyler> {
   late final padding = EdgeInsetsGeometryUtility<BoxStyler>(
     (prop) => mutable.merge(BoxStyler.create(padding: Prop.mix(prop))),
@@ -75,10 +75,10 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec>
   /// Internal mutable state for accumulating box styling properties.
   @override
   @protected
-  late final MutableBoxStyle mutable;
+  late final BoxMutableState mutable;
 
-  BoxSpecUtility([BoxStyler? attribute]) {
-    mutable = MutableBoxStyle(attribute ?? BoxStyler());
+  BoxMutableStyler([BoxStyler? attribute]) {
+    mutable = BoxMutableState(attribute ?? BoxStyler());
   }
 
   /// Applies animation configuration to the box styling.
@@ -95,14 +95,14 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec>
   }
 
   @override
-  BoxSpecUtility merge(Style<BoxSpec>? other) {
+  BoxMutableStyler merge(Style<BoxSpec>? other) {
     if (other == null) return this;
     // Always create new instance (StyleAttribute contract)
-    if (other is BoxSpecUtility) {
-      return BoxSpecUtility(mutable.merge(other.mutable.value));
+    if (other is BoxMutableStyler) {
+      return BoxMutableStyler(mutable.merge(other.mutable.value));
     }
     if (other is BoxStyler) {
-      return BoxSpecUtility(mutable.merge(other));
+      return BoxMutableStyler(mutable.merge(other));
     }
 
     throw FlutterError('Unsupported merge type: ${other.runtimeType}');
@@ -123,10 +123,10 @@ class BoxSpecUtility extends StyleMutableBuilder<BoxSpec>
 
 /// Mutable implementation of [BoxStyler] for efficient style accumulation.
 ///
-/// Used internally by [BoxSpecUtility] to accumulate styling changes
+/// Used internally by [BoxMutableStyler] to accumulate styling changes
 /// without creating new instances for each modification.
-class MutableBoxStyle extends BoxStyler with Mutable<BoxSpec, BoxStyler> {
-  MutableBoxStyle(BoxStyler style) {
+class BoxMutableState extends BoxStyler with Mutable<BoxSpec, BoxStyler> {
+  BoxMutableState(BoxStyler style) {
     value = style;
   }
 }
