@@ -17,10 +17,10 @@ class TokenDefinition<T> {
 class BrightnessTokenDefinition<T> extends TokenDefinition<T> {
   /// The resolver for light theme values
   final ValueBuilder<T> lightResolver;
-  
+
   /// The resolver for dark theme values
   final ValueBuilder<T> darkResolver;
-  
+
   /// Creates a brightness-aware token definition that automatically switches
   /// between light and dark resolvers based on theme brightness.
   BrightnessTokenDefinition(
@@ -28,23 +28,23 @@ class BrightnessTokenDefinition<T> extends TokenDefinition<T> {
     required this.lightResolver,
     required this.darkResolver,
   }) : super(token, (context) {
-    final brightness = Theme.of(context).brightness;
-    
-    return brightness == Brightness.light
-        ? lightResolver(context)
-        : darkResolver(context);
-  });
-  
+         final brightness = Theme.of(context).brightness;
+
+         return brightness == Brightness.light
+             ? lightResolver(context)
+             : darkResolver(context);
+       });
+
   /// Creates a brightness-aware token definition with static values.
   BrightnessTokenDefinition.values(
     MixToken<T> token, {
     required T lightValue,
     required T darkValue,
   }) : this(
-    token,
-    lightResolver: (_) => lightValue,
-    darkResolver: (_) => darkValue,
-  );
+         token,
+         lightResolver: (_) => lightValue,
+         darkResolver: (_) => darkValue,
+       );
 }
 
 /// A design token that can be resolved to a value within a Mix theme.
@@ -91,7 +91,7 @@ class MixToken<T> {
 /// Extension methods for MixToken to easily create brightness-aware tokens.
 extension MixTokenBrightnessExt<T> on MixToken<T> {
   /// Creates a token definition that automatically adapts between light and dark values.
-  /// 
+  ///
   /// Example:
   /// ```dart
   /// final primaryColor = MixToken<Color>('primary');
@@ -100,19 +100,16 @@ extension MixTokenBrightnessExt<T> on MixToken<T> {
   ///   dark: Colors.lightBlue,
   /// );
   /// ```
-  TokenDefinition<T> defineAdaptive({
-    required T light,
-    required T dark,
-  }) {
+  TokenDefinition<T> defineAdaptive({required T light, required T dark}) {
     return BrightnessTokenDefinition.values(
       this,
       lightValue: light,
       darkValue: dark,
     );
   }
-  
+
   /// Creates a token definition that automatically adapts between light and dark builders.
-  /// 
+  ///
   /// Example:
   /// ```dart
   /// final primaryColor = MixToken<Color>('primary');

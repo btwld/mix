@@ -408,43 +408,43 @@ class MixColors {
   });
 
   // Color aliases that point to the main swatch color (500 shade)
-  static final red = redSwatch;
-  static final pink = pinkSwatch;
-  static final purple = purpleSwatch;
-  static final deepPurple = deepPurpleSwatch;
-  static final indigo = indigoSwatch;
-  static final blue = blueSwatch;
-  static final lightBlue = lightBlueSwatch;
-  static final cyan = cyanSwatch;
-  static final teal = tealSwatch;
-  static final green = greenSwatch;
-  static final lightGreen = lightGreenSwatch;
-  static final lime = limeSwatch;
-  static final yellow = yellowSwatch;
-  static final amber = amberSwatch;
-  static final orange = orangeSwatch;
-  static final deepOrange = deepOrangeSwatch;
-  static final brown = brownSwatch;
-  static final grey = greySwatch;
-  static final blueGrey = blueGreySwatch;
+  static const red = redSwatch;
+  static const pink = pinkSwatch;
+  static const purple = purpleSwatch;
+  static const deepPurple = deepPurpleSwatch;
+  static const indigo = indigoSwatch;
+  static const blue = blueSwatch;
+  static const lightBlue = lightBlueSwatch;
+  static const cyan = cyanSwatch;
+  static const teal = tealSwatch;
+  static const green = greenSwatch;
+  static const lightGreen = lightGreenSwatch;
+  static const lime = limeSwatch;
+  static const yellow = yellowSwatch;
+  static const amber = amberSwatch;
+  static const orange = orangeSwatch;
+  static const deepOrange = deepOrangeSwatch;
+  static const brown = brownSwatch;
+  static const grey = greySwatch;
+  static const blueGrey = blueGreySwatch;
 
   // Accent color aliases
-  static final redAccent = redAccentSwatch;
-  static final pinkAccent = pinkAccentSwatch;
-  static final purpleAccent = purpleAccentSwatch;
-  static final deepPurpleAccent = deepPurpleAccentSwatch;
-  static final indigoAccent = indigoAccentSwatch;
-  static final blueAccent = blueAccentSwatch;
-  static final lightBlueAccent = lightBlueAccentSwatch;
-  static final cyanAccent = cyanAccentSwatch;
-  static final tealAccent = tealAccentSwatch;
-  static final greenAccent = greenAccentSwatch;
-  static final lightGreenAccent = lightGreenAccentSwatch;
-  static final limeAccent = limeAccentSwatch;
-  static final yellowAccent = yellowAccentSwatch;
-  static final amberAccent = amberAccentSwatch;
-  static final orangeAccent = orangeAccentSwatch;
-  static final deepOrangeAccent = deepOrangeAccentSwatch;
+  static const redAccent = redAccentSwatch;
+  static const pinkAccent = pinkAccentSwatch;
+  static const purpleAccent = purpleAccentSwatch;
+  static const deepPurpleAccent = deepPurpleAccentSwatch;
+  static const indigoAccent = indigoAccentSwatch;
+  static const blueAccent = blueAccentSwatch;
+  static const lightBlueAccent = lightBlueAccentSwatch;
+  static const cyanAccent = cyanAccentSwatch;
+  static const tealAccent = tealAccentSwatch;
+  static const greenAccent = greenAccentSwatch;
+  static const lightGreenAccent = lightGreenAccentSwatch;
+  static const limeAccent = limeAccentSwatch;
+  static const yellowAccent = yellowAccentSwatch;
+  static const amberAccent = amberAccentSwatch;
+  static const orangeAccent = orangeAccentSwatch;
+  static const deepOrangeAccent = deepOrangeAccentSwatch;
 
   // Private constructor to prevent instantiation
   const MixColors._();
