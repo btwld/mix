@@ -19,7 +19,8 @@ void main() {
               margin: EdgeInsetsGeometryDto.only(top: 10.0, bottom: 12.0),
               constraints:
                   const BoxConstraintsDto(maxWidth: 300.0, minHeight: 200.0),
-              decoration: const BoxDecorationDto(color: ColorDto(Colors.blue)),
+              decoration:
+                  const BoxDecorationDto(color: ColorDto.value(Colors.blue)),
               transform: Matrix4.translationValues(10.0, 10.0, 0.0),
               clipBehavior: Clip.antiAlias,
               width: 300,
@@ -226,7 +227,8 @@ void main() {
             right: 10,
           ),
           constraints: const BoxConstraintsDto(maxHeight: 100),
-          decoration: const BoxDecorationDto(color: ColorDto(Colors.blue)),
+          decoration:
+              const BoxDecorationDto(color: ColorDto.value(Colors.blue)),
           transform: Matrix4.identity(),
           clipBehavior: Clip.antiAlias,
           width: 100,
@@ -255,7 +257,8 @@ void main() {
               right: 20,
             ),
             constraints: const BoxConstraintsDto(maxHeight: 200),
-            decoration: const BoxDecorationDto(color: ColorDto(Colors.red)),
+            decoration:
+                const BoxDecorationDto(color: ColorDto.value(Colors.red)),
             transform: Matrix4.identity(),
             clipBehavior: Clip.antiAliasWithSaveLayer,
             width: 200,
@@ -278,7 +281,7 @@ void main() {
       expect(mergedFlexBoxSpecAttribute.box!.constraints,
           const BoxConstraintsDto(maxHeight: 200));
       expect(mergedFlexBoxSpecAttribute.box!.decoration,
-          const BoxDecorationDto(color: ColorDto(Colors.red)));
+          const BoxDecorationDto(color: ColorDto.value(Colors.red)));
       expect(mergedFlexBoxSpecAttribute.box!.height, 200);
       expect(
         mergedFlexBoxSpecAttribute.box!.margin,
@@ -348,10 +351,10 @@ void main() {
 
     test('Immutable behavior when having multiple flexboxes', () {
       final flexBoxUtil = FlexBoxSpecUtility.self;
-      final flexBox1 = flexBoxUtil.chain
+      final flexBox1 = flexBoxUtil
         ..box.padding(10)
         ..flex.mainAxisAlignment.start();
-      final flexBox2 = flexBoxUtil.chain
+      final flexBox2 = flexBoxUtil
         ..box.padding(20)
         ..flex.mainAxisAlignment.end();
 
@@ -408,7 +411,7 @@ void main() {
       expect(flexBoxAttribute.box!.padding, const EdgeInsets.all(10.0).toDto());
       expect(
         (flexBoxAttribute.box!.decoration as BoxDecorationDto).color,
-        const ColorDto(Colors.red),
+        const ColorDto.value(Colors.red),
       );
       expect(flexBoxAttribute.box!.alignment, Alignment.center);
       expect(

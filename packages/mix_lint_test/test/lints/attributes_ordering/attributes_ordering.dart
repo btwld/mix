@@ -80,7 +80,7 @@ final inOrder_1 = Style(
     $box.height(20),
   ),
   $with.clipOval(),
-  _style(),
+  _style,
   test(),
 );
 
@@ -91,7 +91,7 @@ final inOrder_2 = Style(
   ),
   $text.capitalize(),
   $with.clipOval(),
-  _style(),
+  _style,
   $box.height(20),
   $stack.fit.expand(),
   test(),
@@ -103,6 +103,6 @@ Style _style = Style(
   $box.border.width(2),
 );
 
-StyleElement test() => Style.asAttribute(
+StyleElement test() => Style(
       $with.scale(1),
     );

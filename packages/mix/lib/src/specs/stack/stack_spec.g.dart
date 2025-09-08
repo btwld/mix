@@ -40,7 +40,7 @@ mixin _$StackSpec on Spec<StackSpec> {
     StackFit? fit,
     TextDirection? textDirection,
     Clip? clipBehavior,
-    AnimatedData? animated,
+    AnimationConfig? animated,
     WidgetModifiersConfig? modifiers,
   }) {
     return StackSpec(
@@ -152,7 +152,7 @@ class StackSpecAttribute extends SpecAttribute<StackSpec> with Diagnosticable {
       fit: fit,
       textDirection: textDirection,
       clipBehavior: clipBehavior,
-      animated: animated?.resolve(mix) ?? mix.animation,
+      animated: animated?.resolve(mix),
       modifiers: modifiers?.resolve(mix),
     );
   }
@@ -259,7 +259,7 @@ class StackSpecUtility<T extends SpecAttribute>
     StackFit? fit,
     TextDirection? textDirection,
     Clip? clipBehavior,
-    AnimatedDataDto? animated,
+    AnimationConfigDto? animated,
     WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(StackSpecAttribute(

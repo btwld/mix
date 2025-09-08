@@ -1,8 +1,47 @@
 import 'package:flutter/widgets.dart';
 
 import '../../internal/build_context_ext.dart';
-import '../../theme/tokens/breakpoints_token.dart';
+import '../../theme/tokens/mix_token.dart';
 import '../context_variant.dart';
+
+/// Simple breakpoint class for responsive design
+@immutable
+class Breakpoint {
+  final double minWidth;
+  final double maxWidth;
+
+  const Breakpoint({this.minWidth = 0, this.maxWidth = double.infinity});
+
+  bool matches(Size size) {
+    return size.width >= minWidth && size.width <= maxWidth;
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is Breakpoint &&
+        other.minWidth == minWidth &&
+        other.maxWidth == maxWidth;
+  }
+
+  @override
+  String toString() => 'Breakpoint(minWidth: $minWidth, maxWidth: $maxWidth)';
+
+  @override
+  int get hashCode => Object.hash(minWidth, maxWidth);
+}
+
+/// Token for breakpoints
+typedef BreakpointToken = MixableToken<Breakpoint>;
+
+/// Standard breakpoint tokens
+class BreakpointTokens {
+  static const xsmall = BreakpointToken('breakpoint.xsmall');
+  static const small = BreakpointToken('breakpoint.small');
+  static const medium = BreakpointToken('breakpoint.medium');
+  static const large = BreakpointToken('breakpoint.large');
+}
 
 /// Represents a variant of a context based on a specific breakpoint.
 ///
@@ -54,7 +93,8 @@ class OnBreakpointTokenVariant extends MediaQueryContextVariant {
   @override
   bool when(BuildContext context) {
     final size = context.screenSize;
-    final selectedbreakpoint = token.resolve(context);
+    final scope = context.mixTheme;
+    final selectedbreakpoint = scope.getToken(token, context);
 
     return selectedbreakpoint.matches(size);
   }

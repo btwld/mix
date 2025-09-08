@@ -18,10 +18,11 @@
 
 library mix;
 
+export 'src/attributes/animation/animated_config_dto.dart';
+export 'src/attributes/animation/animated_util.dart';
+
 /// ATTRIBUTES
-export 'src/attributes/animated/animated_data.dart';
-export 'src/attributes/animated/animated_data_dto.dart';
-export 'src/attributes/animated/animated_util.dart';
+export 'src/attributes/animation/animation_config.dart';
 export 'src/attributes/border/border_dto.dart';
 export 'src/attributes/border/border_radius_dto.dart';
 export 'src/attributes/border/border_radius_util.dart';
@@ -43,6 +44,7 @@ export 'src/attributes/modifiers/widget_modifiers_config.dart';
 export 'src/attributes/modifiers/widget_modifiers_config_dto.dart';
 export 'src/attributes/modifiers/widget_modifiers_util.dart';
 export 'src/attributes/scalars/curves.dart';
+export 'src/attributes/scalars/radius_util.dart';
 export 'src/attributes/scalars/scalar_util.dart';
 export 'src/attributes/shadow/shadow_dto.dart';
 export 'src/attributes/shadow/shadow_util.dart';
@@ -55,7 +57,7 @@ export 'src/attributes/text_style/text_style_util.dart';
 export 'src/core/attributes_map.dart';
 export 'src/core/computed_style/computed_style.dart';
 export 'src/core/computed_style/computed_style_provider.dart';
-export 'src/core/deprecation_notices.dart';
+export 'src/core/deprecated.dart';
 export 'src/core/directive.dart';
 
 /// CORE
@@ -113,14 +115,8 @@ export 'src/specs/text/text_widget.dart';
 export 'src/theme/material/material_theme.dart';
 export 'src/theme/material/material_tokens.dart';
 export 'src/theme/mix/mix_theme.dart';
-export 'src/theme/tokens/breakpoints_token.dart';
-export 'src/theme/tokens/color_token.dart';
 export 'src/theme/tokens/mix_token.dart';
-export 'src/theme/tokens/radius_token.dart';
-export 'src/theme/tokens/space_token.dart';
-export 'src/theme/tokens/text_style_token.dart';
-export 'src/theme/tokens/token_resolver.dart';
-export 'src/theme/tokens/token_util.dart';
+export 'src/theme/tokens/value_resolver.dart';
 
 /// VARIANTS
 export 'src/variants/context_variant.dart';

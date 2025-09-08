@@ -3,10 +3,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../attributes/animated/animated_data.dart';
+import '../../attributes/animation/animation_config.dart';
 import '../../internal/iterable_ext.dart';
 import '../../internal/string_ext.dart';
-import '../../theme/tokens/token_resolver.dart';
+import '../../theme/mix/mix_theme.dart';
 import '../../variants/context_variant.dart';
 import '../../variants/variant_attribute.dart';
 import '../attributes_map.dart';
@@ -14,8 +14,7 @@ import '../modifier.dart';
 import '../spec.dart';
 import 'style_mix.dart';
 
-@Deprecated('Use MixContext instead. This will be removed in version 2.0')
-typedef MixData = MixContext;
+// Deprecated typedef moved to src/core/deprecated.dart
 
 // MixContext would be a more accurate name as this class provides the contextual
 // environment for attribute resolution (tokens, context, animation state) rather than
@@ -29,28 +28,30 @@ typedef MixData = MixContext;
 /// the style computation process.
 @immutable
 class MixContext with Diagnosticable {
-  final AnimatedData? animation;
+  final AnimationConfig? animation;
 
-  // Instance variables for widget attributes, widget modifiers and token resolver.
+  // Instance variables for widget attributes, widget modifiers and scope.
   final AttributeMap _attributes;
-
-  final MixTokenResolver _tokenResolver;
+  final MixScopeData _scope;
+  final BuildContext _context;
 
   /// Creates a [MixContext] instance with the given parameters.
   const MixContext._({
-    required MixTokenResolver resolver,
+    required MixScopeData scope,
+    required BuildContext context,
     required AttributeMap attributes,
     required this.animation,
   })  : _attributes = attributes,
-        _tokenResolver = resolver;
+        _scope = scope,
+        _context = context;
 
   factory MixContext.create(BuildContext context, Style style) {
     final attributeList = applyContextToVisualAttributes(context, style);
-
-    final resolver = MixTokenResolver(context);
+    final scope = MixScope.of(context);
 
     return MixContext._(
-      resolver: resolver,
+      scope: scope,
+      context: context,
       attributes: AttributeMap(attributeList),
       animation: style is AnimatedStyle ? style.animated : null,
     );
@@ -59,8 +60,11 @@ class MixContext with Diagnosticable {
   /// Whether this style data includes animation configuration.
   bool get isAnimated => animation != null;
 
-  /// Token resolver for resolving design tokens in this context.
-  MixTokenResolver get tokens => _tokenResolver;
+  /// Scope for accessing design tokens and theme data.
+  MixScopeData get scope => _scope;
+
+  /// BuildContext for resolving tokens and accessing Flutter theme.
+  BuildContext get context => _context;
 
   /// Attribute collection for testing purposes.
   @visibleForTesting
@@ -139,7 +143,8 @@ class MixContext with Diagnosticable {
   // /// Merges this [MixData] with another, prioritizing this instance's properties.
   MixContext merge(MixContext other) {
     return MixContext._(
-      resolver: other._tokenResolver,
+      scope: other._scope,
+      context: other._context,
       attributes: _attributes.merge(other._attributes),
       animation: other.animation ?? animation,
     );
@@ -147,11 +152,13 @@ class MixContext with Diagnosticable {
 
   MixContext copyWith({
     AttributeMap? attributes,
-    AnimatedData? animation,
-    MixTokenResolver? resolver,
+    AnimationConfig? animation,
+    MixScopeData? scope,
+    BuildContext? context,
   }) {
     return MixContext._(
-      resolver: resolver ?? _tokenResolver,
+      scope: scope ?? _scope,
+      context: context ?? _context,
       attributes: attributes ?? _attributes,
       animation: animation ?? this.animation,
     );

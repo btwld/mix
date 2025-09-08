@@ -7,6 +7,8 @@ packages:
   - examples/*
   - packages/*/demo
 
+sdkPath: .fvm/flutter_sdk
+
 command:
   bootstrap:
     environment:

@@ -352,7 +352,7 @@ mixin _$CircleBorderDto on Mixable<CircleBorder> {
   CircleBorder resolve(MixContext mix) {
     return CircleBorder(
       side: _$this.side?.resolve(mix) ?? BorderSide.none,
-      eccentricity: _$this.eccentricity ?? 0.0,
+      eccentricity: _$this.eccentricity?.resolve(mix) ?? 0.0,
     );
   }
 
@@ -370,7 +370,8 @@ mixin _$CircleBorderDto on Mixable<CircleBorder> {
 
     return CircleBorderDto(
       side: _$this.side?.merge(other.side) ?? other.side,
-      eccentricity: other.eccentricity ?? _$this.eccentricity,
+      eccentricity:
+          _$this.eccentricity?.merge(other.eccentricity) ?? other.eccentricity,
     );
   }
 
@@ -406,7 +407,7 @@ class CircleBorderUtility<T extends StyleElement>
   @override
   T only({
     BorderSideDto? side,
-    double? eccentricity,
+    SpaceDto? eccentricity,
   }) {
     return builder(CircleBorderDto(
       side: side,
@@ -420,7 +421,7 @@ class CircleBorderUtility<T extends StyleElement>
   }) {
     return only(
       side: side?.toDto(),
-      eccentricity: eccentricity,
+      eccentricity: eccentricity?.toDto(),
     );
   }
 }
@@ -431,7 +432,7 @@ extension CircleBorderMixExt on CircleBorder {
   CircleBorderDto toDto() {
     return CircleBorderDto(
       side: side.toDto(),
-      eccentricity: eccentricity,
+      eccentricity: eccentricity.toDto(),
     );
   }
 }
@@ -458,12 +459,12 @@ mixin _$StarBorderDto on Mixable<StarBorder> {
   StarBorder resolve(MixContext mix) {
     return StarBorder(
       side: _$this.side?.resolve(mix) ?? BorderSide.none,
-      points: _$this.points ?? 5,
-      innerRadiusRatio: _$this.innerRadiusRatio ?? 0.4,
-      pointRounding: _$this.pointRounding ?? 0,
-      valleyRounding: _$this.valleyRounding ?? 0,
-      rotation: _$this.rotation ?? 0,
-      squash: _$this.squash ?? 0,
+      points: _$this.points?.resolve(mix) ?? 5,
+      innerRadiusRatio: _$this.innerRadiusRatio?.resolve(mix) ?? 0.4,
+      pointRounding: _$this.pointRounding?.resolve(mix) ?? 0,
+      valleyRounding: _$this.valleyRounding?.resolve(mix) ?? 0,
+      rotation: _$this.rotation?.resolve(mix) ?? 0,
+      squash: _$this.squash?.resolve(mix) ?? 0,
     );
   }
 
@@ -481,12 +482,16 @@ mixin _$StarBorderDto on Mixable<StarBorder> {
 
     return StarBorderDto(
       side: _$this.side?.merge(other.side) ?? other.side,
-      points: other.points ?? _$this.points,
-      innerRadiusRatio: other.innerRadiusRatio ?? _$this.innerRadiusRatio,
-      pointRounding: other.pointRounding ?? _$this.pointRounding,
-      valleyRounding: other.valleyRounding ?? _$this.valleyRounding,
-      rotation: other.rotation ?? _$this.rotation,
-      squash: other.squash ?? _$this.squash,
+      points: _$this.points?.merge(other.points) ?? other.points,
+      innerRadiusRatio:
+          _$this.innerRadiusRatio?.merge(other.innerRadiusRatio) ??
+              other.innerRadiusRatio,
+      pointRounding: _$this.pointRounding?.merge(other.pointRounding) ??
+          other.pointRounding,
+      valleyRounding: _$this.valleyRounding?.merge(other.valleyRounding) ??
+          other.valleyRounding,
+      rotation: _$this.rotation?.merge(other.rotation) ?? other.rotation,
+      squash: _$this.squash?.merge(other.squash) ?? other.squash,
     );
   }
 
@@ -542,12 +547,12 @@ class StarBorderUtility<T extends StyleElement>
   @override
   T only({
     BorderSideDto? side,
-    double? points,
-    double? innerRadiusRatio,
-    double? pointRounding,
-    double? valleyRounding,
-    double? rotation,
-    double? squash,
+    SpaceDto? points,
+    SpaceDto? innerRadiusRatio,
+    SpaceDto? pointRounding,
+    SpaceDto? valleyRounding,
+    SpaceDto? rotation,
+    SpaceDto? squash,
   }) {
     return builder(StarBorderDto(
       side: side,
@@ -571,12 +576,12 @@ class StarBorderUtility<T extends StyleElement>
   }) {
     return only(
       side: side?.toDto(),
-      points: points,
-      innerRadiusRatio: innerRadiusRatio,
-      pointRounding: pointRounding,
-      valleyRounding: valleyRounding,
-      rotation: rotation,
-      squash: squash,
+      points: points?.toDto(),
+      innerRadiusRatio: innerRadiusRatio?.toDto(),
+      pointRounding: pointRounding?.toDto(),
+      valleyRounding: valleyRounding?.toDto(),
+      rotation: rotation?.toDto(),
+      squash: squash?.toDto(),
     );
   }
 }
@@ -587,12 +592,12 @@ extension StarBorderMixExt on StarBorder {
   StarBorderDto toDto() {
     return StarBorderDto(
       side: side.toDto(),
-      points: points,
-      innerRadiusRatio: innerRadiusRatio,
-      pointRounding: pointRounding,
-      valleyRounding: valleyRounding,
-      rotation: rotation,
-      squash: squash,
+      points: points.toDto(),
+      innerRadiusRatio: innerRadiusRatio.toDto(),
+      pointRounding: pointRounding.toDto(),
+      valleyRounding: valleyRounding.toDto(),
+      rotation: rotation.toDto(),
+      squash: squash.toDto(),
     );
   }
 }
@@ -757,8 +762,8 @@ mixin _$LinearBorderEdgeDto on Mixable<LinearBorderEdge> {
   @override
   LinearBorderEdge resolve(MixContext mix) {
     return LinearBorderEdge(
-      size: _$this.size ?? 1.0,
-      alignment: _$this.alignment ?? 0.0,
+      size: _$this.size?.resolve(mix) ?? 1.0,
+      alignment: _$this.alignment?.resolve(mix) ?? 0.0,
     );
   }
 
@@ -775,8 +780,8 @@ mixin _$LinearBorderEdgeDto on Mixable<LinearBorderEdge> {
     if (other == null) return _$this;
 
     return LinearBorderEdgeDto(
-      size: other.size ?? _$this.size,
-      alignment: other.alignment ?? _$this.alignment,
+      size: _$this.size?.merge(other.size) ?? other.size,
+      alignment: _$this.alignment?.merge(other.alignment) ?? other.alignment,
     );
   }
 
@@ -811,8 +816,8 @@ class LinearBorderEdgeUtility<T extends StyleElement>
   /// Returns a new [LinearBorderEdgeDto] with the specified properties.
   @override
   T only({
-    double? size,
-    double? alignment,
+    SpaceDto? size,
+    SpaceDto? alignment,
   }) {
     return builder(LinearBorderEdgeDto(
       size: size,
@@ -825,8 +830,8 @@ class LinearBorderEdgeUtility<T extends StyleElement>
     double? alignment,
   }) {
     return only(
-      size: size,
-      alignment: alignment,
+      size: size?.toDto(),
+      alignment: alignment?.toDto(),
     );
   }
 }
@@ -836,8 +841,8 @@ extension LinearBorderEdgeMixExt on LinearBorderEdge {
   /// Converts this [LinearBorderEdge] to a [LinearBorderEdgeDto].
   LinearBorderEdgeDto toDto() {
     return LinearBorderEdgeDto(
-      size: size,
-      alignment: alignment,
+      size: size.toDto(),
+      alignment: alignment.toDto(),
     );
   }
 }

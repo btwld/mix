@@ -21,10 +21,10 @@ mixin _$BoxConstraintsDto on Mixable<BoxConstraints> {
   @override
   BoxConstraints resolve(MixContext mix) {
     return BoxConstraints(
-      minWidth: _$this.minWidth ?? 0.0,
-      maxWidth: _$this.maxWidth ?? double.infinity,
-      minHeight: _$this.minHeight ?? 0.0,
-      maxHeight: _$this.maxHeight ?? double.infinity,
+      minWidth: _$this.minWidth?.resolve(mix) ?? 0.0,
+      maxWidth: _$this.maxWidth?.resolve(mix) ?? double.infinity,
+      minHeight: _$this.minHeight?.resolve(mix) ?? 0.0,
+      maxHeight: _$this.maxHeight?.resolve(mix) ?? double.infinity,
     );
   }
 
@@ -41,10 +41,10 @@ mixin _$BoxConstraintsDto on Mixable<BoxConstraints> {
     if (other == null) return _$this;
 
     return BoxConstraintsDto(
-      minWidth: other.minWidth ?? _$this.minWidth,
-      maxWidth: other.maxWidth ?? _$this.maxWidth,
-      minHeight: other.minHeight ?? _$this.minHeight,
-      maxHeight: other.maxHeight ?? _$this.maxHeight,
+      minWidth: _$this.minWidth?.merge(other.minWidth) ?? other.minWidth,
+      maxWidth: _$this.maxWidth?.merge(other.maxWidth) ?? other.maxWidth,
+      minHeight: _$this.minHeight?.merge(other.minHeight) ?? other.minHeight,
+      maxHeight: _$this.maxHeight?.merge(other.maxHeight) ?? other.maxHeight,
     );
   }
 
@@ -87,10 +87,10 @@ class BoxConstraintsUtility<T extends StyleElement>
   /// Returns a new [BoxConstraintsDto] with the specified properties.
   @override
   T only({
-    double? minWidth,
-    double? maxWidth,
-    double? minHeight,
-    double? maxHeight,
+    SpaceDto? minWidth,
+    SpaceDto? maxWidth,
+    SpaceDto? minHeight,
+    SpaceDto? maxHeight,
   }) {
     return builder(BoxConstraintsDto(
       minWidth: minWidth,
@@ -107,10 +107,10 @@ class BoxConstraintsUtility<T extends StyleElement>
     double? maxHeight,
   }) {
     return only(
-      minWidth: minWidth,
-      maxWidth: maxWidth,
-      minHeight: minHeight,
-      maxHeight: maxHeight,
+      minWidth: minWidth?.toDto(),
+      maxWidth: maxWidth?.toDto(),
+      minHeight: minHeight?.toDto(),
+      maxHeight: maxHeight?.toDto(),
     );
   }
 }
@@ -120,10 +120,10 @@ extension BoxConstraintsMixExt on BoxConstraints {
   /// Converts this [BoxConstraints] to a [BoxConstraintsDto].
   BoxConstraintsDto toDto() {
     return BoxConstraintsDto(
-      minWidth: minWidth,
-      maxWidth: maxWidth,
-      minHeight: minHeight,
-      maxHeight: maxHeight,
+      minWidth: minWidth.toDto(),
+      maxWidth: maxWidth.toDto(),
+      minHeight: minHeight.toDto(),
+      maxHeight: maxHeight.toDto(),
     );
   }
 }

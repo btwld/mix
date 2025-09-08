@@ -103,7 +103,7 @@ List<T>? _mergeList<T>(List<T>? a, List<T>? b) {
 List<V> _resolveList<T extends Mixable<V>, V>(List<T>? a, MixContext mix) {
   if (a == null) return [];
 
-  return a.map((e) => e.resolve(mix)).toList();
+  return a.map((e) => e.resolve(mix)).whereType<V>().toList();
 }
 
 w.Matrix4? _lerpMatrix4(w.Matrix4? a, w.Matrix4? b, double t) {

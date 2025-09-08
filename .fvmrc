@@ -1,5 +1,5 @@
 {
-  "flutter": "3.27.0",
+  "flutter": "stable",
   "flavors": {
     "prod": "stable",
     "mincompat": "3.27.0"

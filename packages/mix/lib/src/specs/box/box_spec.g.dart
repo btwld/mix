@@ -47,7 +47,7 @@ mixin _$BoxSpec on Spec<BoxSpec> {
     double? width,
     double? height,
     WidgetModifiersConfig? modifiers,
-    AnimatedData? animated,
+    AnimationConfig? animated,
   }) {
     return BoxSpec(
       alignment: alignment ?? _$this.alignment,
@@ -184,8 +184,8 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
   final Matrix4? transform;
   final AlignmentGeometry? transformAlignment;
   final Clip? clipBehavior;
-  final double? width;
-  final double? height;
+  final SpaceDto? width;
+  final SpaceDto? height;
 
   const BoxSpecAttribute({
     this.alignment,
@@ -223,10 +223,10 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
       transform: transform,
       transformAlignment: transformAlignment,
       clipBehavior: clipBehavior,
-      width: width,
-      height: height,
+      width: width?.resolve(mix),
+      height: height?.resolve(mix),
       modifiers: modifiers?.resolve(mix),
-      animated: animated?.resolve(mix) ?? mix.animation,
+      animated: animated?.resolve(mix),
     );
   }
 
@@ -253,8 +253,8 @@ class BoxSpecAttribute extends SpecAttribute<BoxSpec> with Diagnosticable {
       transform: other.transform ?? transform,
       transformAlignment: other.transformAlignment ?? transformAlignment,
       clipBehavior: other.clipBehavior ?? clipBehavior,
-      width: other.width ?? width,
-      height: other.height ?? height,
+      width: width?.merge(other.width) ?? other.width,
+      height: height?.merge(other.height) ?? other.height,
       modifiers: modifiers?.merge(other.modifiers) ?? other.modifiers,
       animated: animated?.merge(other.animated) ?? other.animated,
     );
@@ -440,10 +440,10 @@ class BoxSpecUtility<T extends SpecAttribute>
     Matrix4? transform,
     AlignmentGeometry? transformAlignment,
     Clip? clipBehavior,
-    double? width,
-    double? height,
+    SpaceDto? width,
+    SpaceDto? height,
     WidgetModifiersConfigDto? modifiers,
-    AnimatedDataDto? animated,
+    AnimationConfigDto? animated,
   }) {
     return builder(BoxSpecAttribute(
       alignment: alignment,

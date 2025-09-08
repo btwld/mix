@@ -21,11 +21,11 @@ abstract class MixError {
     return FlutterError.fromParts([
       ErrorSummary('Invalid access: $token cannot access field $field'),
       ErrorDescription(
-        'The $field field cannot be directly accessed through TextStyleRef. '
-        'Ensure you are using the appropriate methods or properties provided by TextStyleToken to interact with the style properties.',
+        'The $field field cannot be directly accessed through a token reference. '
+        'Ensure you are using the appropriate methods or properties provided by tokens to interact with the style properties.',
       ),
       ErrorHint(
-        'Consider using TextStyleToken.resolve() to access the $field. '
+        'Consider using the token\'s resolve() method to access the $field. '
         'This method ensures that $token is used within the appropriate context where $field is available.',
       ),
     ]);

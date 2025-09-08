@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/element.dart';
-import '../../theme/tokens/text_style_token.dart';
+import '../../theme/tokens/mix_token.dart';
 import '../color/color_dto.dart';
 import '../color/color_util.dart';
 import '../enum/enum_util.dart';
@@ -36,6 +36,8 @@ final class TextStyleUtility<T extends StyleElement>
 
   TextStyleUtility(super.builder) : super(valueToDto: (v) => v.toDto());
 
+  T token(MixableToken<TextStyle> token) => builder(TextStyleDto.token(token));
+
   T height(double v) => only(height: v);
 
   T wordSpacing(double v) => only(wordSpacing: v);
@@ -63,8 +65,6 @@ final class TextStyleUtility<T extends StyleElement>
   T decorationThickness(double v) => call(decorationThickness: v);
 
   T fontFamilyFallback(List<String> v) => call(fontFamilyFallback: v);
-
-  T ref(TextStyleToken token) => builder(TextStyleDto.ref(token));
 
   T call({
     String? fontFamily,

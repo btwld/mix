@@ -1,9 +1,28 @@
 import 'package:flutter/foundation.dart';
 
 import '../internal/compare_mixin.dart';
+import '../theme/tokens/mix_token.dart';
 import 'factory/mix_context.dart';
-import 'spec.dart';
 import 'utility.dart';
+
+// Generic directive for modifying values
+@immutable
+class MixableDirective<T> {
+  final T Function(T) modify;
+  final String? debugLabel;
+
+  const MixableDirective(this.modify, {this.debugLabel});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MixableDirective<T> &&
+          runtimeType == other.runtimeType &&
+          debugLabel == other.debugLabel;
+
+  @override
+  int get hashCode => debugLabel.hashCode;
+}
 
 abstract class StyleElement with EqualityMixin {
   const StyleElement();
@@ -16,20 +35,140 @@ abstract class StyleElement with EqualityMixin {
   StyleElement merge(covariant StyleElement? other);
 }
 
-@Deprecated('Use StyleElement instead')
-typedef Attribute = StyleElement;
-
-@Deprecated('Use StyleAttribute instead')
-typedef StyledAttribute = SpecAttribute;
-
-@Deprecated('Use Mixable instead')
-typedef Dto<Value> = Mixable<Value>;
+// Deprecated typedefs moved to src/core/deprecated.dart
 
 abstract class Mixable<Value> with EqualityMixin {
-  const Mixable();
+  final List<MixableDirective<Value>> directives;
 
+  const Mixable({this.directives = const []});
+
+  const factory Mixable.value(
+    Value value, {
+    List<MixableDirective<Value>> directives,
+  }) = _ValueMixable<Value>;
+
+  const factory Mixable.token(
+    MixableToken<Value> token, {
+    List<MixableDirective<Value>> directives,
+  }) = _TokenMixable<Value>;
+
+  const factory Mixable.composite(
+    List<Mixable<Value>> items, {
+    List<MixableDirective<Value>> directives,
+  }) = _CompositeMixable<Value>;
+
+  /// Resolves token value if present, otherwise returns null
   Value resolve(MixContext mix);
+
+  /// Merges this mixable with another
   Mixable<Value> merge(covariant Mixable<Value>? other);
+
+  /// Apply all directives to the resolved value
+  @protected
+  Value applyDirectives(Value value) {
+    Value result = value;
+    for (final directive in directives) {
+      result = directive.modify(result);
+    }
+
+    return result;
+  }
+
+  /// Helper method to merge directives
+  @protected
+  List<MixableDirective<Value>> mergeDirectives(
+    List<MixableDirective<Value>> other,
+  ) {
+    return [...directives, ...other];
+  }
+}
+
+// Private implementations for Mixable<T>
+@immutable
+class _ValueMixable<T> extends Mixable<T> {
+  final T value;
+
+  const _ValueMixable(this.value, {super.directives});
+
+  @override
+  T resolve(MixContext mix) => applyDirectives(value);
+
+  @override
+  Mixable<T> merge(Mixable<T>? other) {
+    if (other == null) return this;
+
+    final allDirectives = mergeDirectives(other.directives);
+
+    return switch ((this, other)) {
+      (_, _CompositeMixable(:var items)) =>
+        Mixable.composite([...items, this], directives: allDirectives),
+      _ => Mixable.composite([this, other], directives: allDirectives),
+    };
+  }
+
+  @override
+  List<Object?> get props => [value, directives];
+}
+
+@immutable
+class _TokenMixable<T> extends Mixable<T> {
+  final MixableToken<T> token;
+
+  const _TokenMixable(this.token, {super.directives});
+
+  @override
+  T resolve(MixContext mix) =>
+      applyDirectives(mix.scope.getToken(token, mix.context));
+
+  @override
+  Mixable<T> merge(Mixable<T>? other) {
+    if (other == null) return this;
+
+    final allDirectives = mergeDirectives(other.directives);
+
+    return switch ((this, other)) {
+      (_, _CompositeMixable(:var items)) =>
+        Mixable.composite([...items, this], directives: allDirectives),
+      _ => Mixable.composite([this, other], directives: allDirectives),
+    };
+  }
+
+  @override
+  List<Object?> get props => [token, directives];
+}
+
+@immutable
+class _CompositeMixable<T> extends Mixable<T> {
+  final List<Mixable<T>> items;
+
+  const _CompositeMixable(this.items, {super.directives});
+
+  @override
+  T resolve(MixContext mix) {
+    // For scalar types, last value wins
+    T? result;
+    for (final item in items) {
+      result = item.resolve(mix);
+    }
+
+    if (result == null) {
+      throw StateError('CompositeMixable resolved to null - no items provided');
+    }
+
+    return applyDirectives(result);
+  }
+
+  @override
+  Mixable<T> merge(Mixable<T>? other) {
+    if (other == null) return this;
+
+    final allDirectives = mergeDirectives(other.directives);
+
+    return Mixable.composite([...items, other], directives: allDirectives);
+  }
+
+  @override
+  List<Object?> get props => [items, directives];
 }
 
 // Define a mixin for properties that have default values
@@ -48,18 +187,3 @@ abstract class DtoUtility<A extends StyleElement, D extends Mixable<Value>,
 
   A as(Value value) => builder(_fromValue(value));
 }
-
-// /// Provides the ability to merge this object with another of the same type.
-// ///
-// /// Defines a single method, [merge], which takes another object of type [T]
-// /// and returns a new object representing the merged result.
-// ///
-// /// Typically used by classes like [MixableDto] or [StyleAttribute] that need to merge
-// /// instances of the same type.
-// mixin MergeableMixin<T> {
-//   /// Merges this object with [other], returning a new object of type [T].
-//   T merge(covariant T? other);
-//   // Used as the key to determine how
-//   // attributes get merged
-//   Object get mergeKey => runtimeType;
-// }

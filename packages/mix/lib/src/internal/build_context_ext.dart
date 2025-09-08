@@ -33,7 +33,7 @@ extension BuildContextExt on BuildContext {
   TextTheme get textTheme => theme.textTheme;
 
   /// Mix Theme Data.
-  MixThemeData get mixTheme => MixTheme.of(this);
+  MixScopeData get mixTheme => MixScope.of(this);
 
   /// Check if brightness is Brightness.dark.
   bool get isDarkMode => brightness == Brightness.dark;

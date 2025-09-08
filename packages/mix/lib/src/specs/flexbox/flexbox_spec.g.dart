@@ -36,7 +36,7 @@ mixin _$FlexBoxSpec on Spec<FlexBoxSpec> {
   /// replaced with the new values.
   @override
   FlexBoxSpec copyWith({
-    AnimatedData? animated,
+    AnimationConfig? animated,
     WidgetModifiersConfig? modifiers,
     BoxSpec? box,
     FlexSpec? flex,
@@ -134,7 +134,7 @@ class FlexBoxSpecAttribute extends SpecAttribute<FlexBoxSpec>
   @override
   FlexBoxSpec resolve(MixContext mix) {
     return FlexBoxSpec(
-      animated: animated?.resolve(mix) ?? mix.animation,
+      animated: animated?.resolve(mix),
       modifiers: modifiers?.resolve(mix),
       box: box?.resolve(mix),
       flex: flex?.resolve(mix),
@@ -310,7 +310,7 @@ class FlexBoxSpecUtility<T extends SpecAttribute>
   /// Returns a new [FlexBoxSpecAttribute] with the specified properties.
   @override
   T only({
-    AnimatedDataDto? animated,
+    AnimationConfigDto? animated,
     WidgetModifiersConfigDto? modifiers,
     BoxSpecAttribute? box,
     FlexSpecAttribute? flex,

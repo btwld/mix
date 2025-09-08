@@ -45,7 +45,7 @@ mixin _$ImageSpec on Spec<ImageSpec> {
     Rect? centerSlice,
     FilterQuality? filterQuality,
     BlendMode? colorBlendMode,
-    AnimatedData? animated,
+    AnimationConfig? animated,
     WidgetModifiersConfig? modifiers,
   }) {
     return ImageSpec(
@@ -156,8 +156,8 @@ mixin _$ImageSpec on Spec<ImageSpec> {
 /// Use this class to configure the attributes of a [ImageSpec] and pass it to
 /// the [ImageSpec] constructor.
 class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
-  final double? width;
-  final double? height;
+  final SpaceDto? width;
+  final SpaceDto? height;
   final ColorDto? color;
   final ImageRepeat? repeat;
   final BoxFit? fit;
@@ -191,8 +191,8 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
   @override
   ImageSpec resolve(MixContext mix) {
     return ImageSpec(
-      width: width,
-      height: height,
+      width: width?.resolve(mix),
+      height: height?.resolve(mix),
       color: color?.resolve(mix),
       repeat: repeat,
       fit: fit,
@@ -200,7 +200,7 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
       centerSlice: centerSlice,
       filterQuality: filterQuality,
       colorBlendMode: colorBlendMode,
-      animated: animated?.resolve(mix) ?? mix.animation,
+      animated: animated?.resolve(mix),
       modifiers: modifiers?.resolve(mix),
     );
   }
@@ -218,8 +218,8 @@ class ImageSpecAttribute extends SpecAttribute<ImageSpec> with Diagnosticable {
     if (other == null) return this;
 
     return ImageSpecAttribute(
-      width: other.width ?? width,
-      height: other.height ?? height,
+      width: width?.merge(other.width) ?? other.width,
+      height: height?.merge(other.height) ?? other.height,
       color: color?.merge(other.color) ?? other.color,
       repeat: other.repeat ?? repeat,
       fit: other.fit ?? fit,
@@ -334,8 +334,8 @@ class ImageSpecUtility<T extends SpecAttribute>
   /// Returns a new [ImageSpecAttribute] with the specified properties.
   @override
   T only({
-    double? width,
-    double? height,
+    SpaceDto? width,
+    SpaceDto? height,
     ColorDto? color,
     ImageRepeat? repeat,
     BoxFit? fit,
@@ -343,7 +343,7 @@ class ImageSpecUtility<T extends SpecAttribute>
     Rect? centerSlice,
     FilterQuality? filterQuality,
     BlendMode? colorBlendMode,
-    AnimatedDataDto? animated,
+    AnimationConfigDto? animated,
     WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(ImageSpecAttribute(

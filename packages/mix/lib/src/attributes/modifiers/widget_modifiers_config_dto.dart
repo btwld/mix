@@ -12,8 +12,7 @@ import 'widget_modifiers_config.dart';
 )
 typedef WidgetModifiersDataDto = WidgetModifiersConfigDto;
 
-class WidgetModifiersConfigDto extends Mixable<WidgetModifiersConfig>
-    with Diagnosticable {
+class WidgetModifiersConfigDto extends Mixable<WidgetModifiersConfig> {
   final List<WidgetModifierSpecAttribute> value;
 
   const WidgetModifiersConfigDto(this.value);

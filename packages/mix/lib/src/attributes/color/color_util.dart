@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/element.dart';
 import '../../core/utility.dart';
-import '../../theme/tokens/color_token.dart';
-import 'color_directives.dart';
-import 'color_directives_impl.dart';
+import '../../theme/tokens/mix_token.dart';
 import 'color_dto.dart';
 import 'material_colors_util.dart';
 
@@ -13,7 +11,9 @@ abstract base class BaseColorUtility<T extends StyleElement>
     extends MixUtility<T, ColorDto> {
   const BaseColorUtility(super.builder);
 
-  T _buildColor(Color color) => builder(ColorDto(color));
+  T _buildColor(Color color) => builder(Mixable.value(color));
+
+  T token(MixableToken<Color> token) => builder(Mixable.token(token));
 }
 
 @immutable
@@ -23,9 +23,6 @@ base class FoundationColorUtility<T extends StyleElement, C extends Color>
   const FoundationColorUtility(super.builder, this.color);
 
   T call() => _buildColor(color);
-  @override
-  T directive(ColorDirective directive) =>
-      builder(ColorDto.raw(value: color, directives: [directive]));
 }
 
 /// A utility class for building [StyleElement] instances from a list of [ColorDto] objects.
@@ -50,7 +47,7 @@ final class ColorUtility<T extends StyleElement> extends BaseColorUtility<T>
     with ColorDirectiveMixin<T>, MaterialColorsMixin<T>, BasicColorsMixin<T> {
   ColorUtility(super.builder);
 
-  T ref(ColorToken ref) => _buildColor(ref());
+  T ref(MixableToken<Color> ref) => builder(Mixable.token(ref));
 
   T call(Color color) => _buildColor(color);
 }
@@ -94,27 +91,6 @@ base mixin BasicColorsMixin<T extends StyleElement> on BaseColorUtility<T> {
 }
 
 base mixin ColorDirectiveMixin<T extends StyleElement> on BaseColorUtility<T> {
-  T directive(ColorDirective directive) =>
-      builder(ColorDto.directive(directive));
-  T withOpacity(double opacity) => directive(OpacityColorDirective(opacity));
-  T withAlpha(int alpha) => directive(AlphaColorDirective(alpha));
-  T darken(int percentage) => directive(DarkenColorDirective(percentage));
-  T lighten(int percentage) => directive(LightenColorDirective(percentage));
-  T saturate(int percentage) => directive(SaturateColorDirective(percentage));
-  T desaturate(int percentage) =>
-      directive(DesaturateColorDirective(percentage));
-  T tint(int percentage) => directive(TintColorDirective(percentage));
-  T shade(int percentage) => directive(ShadeColorDirective(percentage));
-  T brighten(int percentage) => directive(BrightenColorDirective(percentage));
-  T resetDirectives() => directive(const ResetColorDirective());
-
-  T withSaturation(double saturation) => directive(
-        SaturationColorDirective(saturation),
-      );
-
-  T withLightness(double lightness) => directive(
-        LightnessColorDirective(lightness),
-      );
-  T withHue(double hue) => directive(HueColorDirective(hue));
-  T withValue(double value) => directive(ValueColorDirective(value));
+  // TODO: Color directives will be implemented later with the new MixableDirective system
+  // For now, this mixin is kept for backward compatibility but methods are not implemented
 }

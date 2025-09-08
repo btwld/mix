@@ -34,7 +34,7 @@ final class BoxBorderUtility<T extends StyleElement>
     double? strokeAlign,
   }) {
     return all(
-      color: color,
+      color: color != null ? Mixable.value(color) : null,
       strokeAlign: strokeAlign,
       style: style,
       width: width,

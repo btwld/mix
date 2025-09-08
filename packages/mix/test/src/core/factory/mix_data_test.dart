@@ -5,20 +5,20 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 // Define theme color tokens
-const _surface = ColorToken('surface');
-const _onSurface = ColorToken('onSurface');
+const _surface = MixableToken<Color>('surface');
+const _onSurface = MixableToken<Color>('onSurface');
 
 // Light theme
-final _lightTheme = MixThemeData(
-  colors: {
+final _lightTheme = MixScopeData.static(
+  tokens: {
     _surface: const Color(0xFF000000),
     _onSurface: const Color(0xFFFFFFFF),
   },
 );
 
 // Dark theme
-final _darkTheme = MixThemeData(
-  colors: {
+final _darkTheme = MixScopeData.static(
+  tokens: {
     _surface: const Color(0xFFFFFFFF),
     _onSurface: const Color(0xFF000000),
   },
@@ -45,7 +45,7 @@ class _ThemeToggleWrapperState extends State<_ThemeToggleWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    return MixTheme(
+    return MixScope(
       data: isDark ? _darkTheme : _lightTheme,
       child: widget.child,
     );

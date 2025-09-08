@@ -71,7 +71,7 @@ mixin _$AspectRatioModifierSpec on WidgetModifierSpec<AspectRatioModifierSpec> {
 class AspectRatioModifierSpecAttribute
     extends WidgetModifierSpecAttribute<AspectRatioModifierSpec>
     with Diagnosticable {
-  final double? aspectRatio;
+  final SpaceDto? aspectRatio;
 
   const AspectRatioModifierSpecAttribute({
     this.aspectRatio,
@@ -88,7 +88,7 @@ class AspectRatioModifierSpecAttribute
   @override
   AspectRatioModifierSpec resolve(MixContext mix) {
     return AspectRatioModifierSpec(
-      aspectRatio,
+      aspectRatio?.resolve(mix),
     );
   }
 
@@ -106,7 +106,7 @@ class AspectRatioModifierSpecAttribute
     if (other == null) return this;
 
     return AspectRatioModifierSpecAttribute(
-      aspectRatio: other.aspectRatio ?? aspectRatio,
+      aspectRatio: aspectRatio?.merge(other.aspectRatio) ?? other.aspectRatio,
     );
   }
 

@@ -91,7 +91,7 @@ void main() {
     test('gap() returns correct instance', () {
       final flex = flexUtility.gap(10);
 
-      expect(flex.gap, const SpaceDto(10));
+      expect(flex.gap, const SpaceDto.value(10));
     });
 
     // row()
@@ -136,7 +136,7 @@ void main() {
       expect(attr.textDirection, TextDirection.ltr);
       expect(attr.textBaseline, TextBaseline.alphabetic);
       expect(attr.clipBehavior, Clip.antiAlias);
-      expect(attr.gap, const SpaceDto(10));
+      expect(attr.gap, const SpaceDto.value(10));
 
       expect(attr.modifiers?.value.first,
           const OpacityModifierSpecAttribute(opacity: 0.5));
@@ -153,7 +153,7 @@ void main() {
       expect(flexAttribute?.textDirection, TextDirection.ltr);
       expect(flexAttribute?.textBaseline, TextBaseline.alphabetic);
       expect(flexAttribute?.clipBehavior, Clip.antiAlias);
-      expect(flexAttribute?.gap, const SpaceDto(10));
+      expect(flexAttribute?.gap, const SpaceDto.value(10));
 
       expect(flexAttribute?.modifiers?.value.first,
           const OpacityModifierSpecAttribute(opacity: 0.5));

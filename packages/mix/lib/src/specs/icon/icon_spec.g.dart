@@ -45,7 +45,7 @@ mixin _$IconSpec on Spec<IconSpec> {
     TextDirection? textDirection,
     bool? applyTextScaling,
     double? fill,
-    AnimatedData? animated,
+    AnimationConfig? animated,
     WidgetModifiersConfig? modifiers,
   }) {
     return IconSpec(
@@ -160,14 +160,14 @@ mixin _$IconSpec on Spec<IconSpec> {
 /// the [IconSpec] constructor.
 class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
   final ColorDto? color;
-  final double? size;
-  final double? weight;
-  final double? grade;
-  final double? opticalSize;
+  final SpaceDto? size;
+  final SpaceDto? weight;
+  final SpaceDto? grade;
+  final SpaceDto? opticalSize;
   final List<ShadowDto>? shadows;
   final TextDirection? textDirection;
   final bool? applyTextScaling;
-  final double? fill;
+  final SpaceDto? fill;
 
   const IconSpecAttribute({
     this.color,
@@ -195,15 +195,15 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
   IconSpec resolve(MixContext mix) {
     return IconSpec(
       color: color?.resolve(mix),
-      size: size,
-      weight: weight,
-      grade: grade,
-      opticalSize: opticalSize,
+      size: size?.resolve(mix),
+      weight: weight?.resolve(mix),
+      grade: grade?.resolve(mix),
+      opticalSize: opticalSize?.resolve(mix),
       shadows: shadows?.map((e) => e.resolve(mix)).toList(),
       textDirection: textDirection,
       applyTextScaling: applyTextScaling,
-      fill: fill,
-      animated: animated?.resolve(mix) ?? mix.animation,
+      fill: fill?.resolve(mix),
+      animated: animated?.resolve(mix),
       modifiers: modifiers?.resolve(mix),
     );
   }
@@ -222,14 +222,14 @@ class IconSpecAttribute extends SpecAttribute<IconSpec> with Diagnosticable {
 
     return IconSpecAttribute(
       color: color?.merge(other.color) ?? other.color,
-      size: other.size ?? size,
-      weight: other.weight ?? weight,
-      grade: other.grade ?? grade,
-      opticalSize: other.opticalSize ?? opticalSize,
+      size: size?.merge(other.size) ?? other.size,
+      weight: weight?.merge(other.weight) ?? other.weight,
+      grade: grade?.merge(other.grade) ?? other.grade,
+      opticalSize: opticalSize?.merge(other.opticalSize) ?? other.opticalSize,
       shadows: MixHelpers.mergeList(shadows, other.shadows),
       textDirection: other.textDirection ?? textDirection,
       applyTextScaling: other.applyTextScaling ?? applyTextScaling,
-      fill: other.fill ?? fill,
+      fill: fill?.merge(other.fill) ?? other.fill,
       animated: animated?.merge(other.animated) ?? other.animated,
       modifiers: modifiers?.merge(other.modifiers) ?? other.modifiers,
     );
@@ -337,15 +337,15 @@ class IconSpecUtility<T extends SpecAttribute>
   @override
   T only({
     ColorDto? color,
-    double? size,
-    double? weight,
-    double? grade,
-    double? opticalSize,
+    SpaceDto? size,
+    SpaceDto? weight,
+    SpaceDto? grade,
+    SpaceDto? opticalSize,
     List<ShadowDto>? shadows,
     TextDirection? textDirection,
     bool? applyTextScaling,
-    double? fill,
-    AnimatedDataDto? animated,
+    SpaceDto? fill,
+    AnimationConfigDto? animated,
     WidgetModifiersConfigDto? modifiers,
   }) {
     return builder(IconSpecAttribute(
