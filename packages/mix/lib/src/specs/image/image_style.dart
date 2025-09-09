@@ -7,7 +7,7 @@ import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/modifier_config.dart';
-import '../../modifiers/modifier_util.dart';
+import '../../style/mixins/modifier_style_mixin.dart';
 import '../../variants/variant_util.dart';
 import 'image_spec.dart';
 import 'image_mutable_style.dart';
@@ -18,7 +18,7 @@ typedef ImageMix = ImageStyler;
 class ImageStyler extends Style<ImageSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<ImageStyler, ImageSpec>,
+        ModifierStyleMixin<ImageStyler, ImageSpec>,
         StyleVariantMixin<ImageStyler, ImageSpec> {
   final Prop<ImageProvider<Object>>? $image;
   final Prop<double>? $width;
