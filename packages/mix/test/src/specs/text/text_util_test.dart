@@ -406,7 +406,7 @@ void main() {
       test('resolves maxLines token with context', () {
         const maxLinesToken = MixToken<int>('maxLines');
         final context = MockBuildContext(
-          tokens: {maxLinesToken.defineValue(5)},
+          tokens: {TokenDefinition(maxLinesToken, 5)},
         );
 
         final testUtil = TextMutableStyler(
@@ -420,7 +420,7 @@ void main() {
       test('resolves textAlign token with context', () {
         const textAlignToken = MixToken<TextAlign>('textAlign');
         final context = MockBuildContext(
-          tokens: {textAlignToken.defineValue(TextAlign.center)},
+          tokens: {TokenDefinition(textAlignToken, TextAlign.center)},
         );
 
         final testUtil = TextMutableStyler(
@@ -434,7 +434,7 @@ void main() {
       test('resolves softWrap token with context', () {
         const softWrapToken = MixToken<bool>('softWrap');
         final context = MockBuildContext(
-          tokens: {softWrapToken.defineValue(false)},
+          tokens: {TokenDefinition(softWrapToken, false)},
         );
 
         final testUtil = TextMutableStyler(
@@ -448,7 +448,7 @@ void main() {
       test('resolves selectionColor token with context', () {
         const selectionColorToken = MixToken<Color>('selectionColor');
         final context = MockBuildContext(
-          tokens: {selectionColorToken.defineValue(Colors.red)},
+          tokens: {TokenDefinition(selectionColorToken, Colors.red)},
         );
 
         final testUtil = TextMutableStyler(
@@ -462,7 +462,7 @@ void main() {
       test('resolves textDirection token with context', () {
         const textDirectionToken = MixToken<TextDirection>('textDirection');
         final context = MockBuildContext(
-          tokens: {textDirectionToken.defineValue(TextDirection.rtl)},
+          tokens: {TokenDefinition(textDirectionToken, TextDirection.rtl)},
         );
 
         final testUtil = TextMutableStyler(
@@ -476,7 +476,7 @@ void main() {
       test('resolves semanticsLabel token with context', () {
         const semanticsLabelToken = MixToken<String>('semanticsLabel');
         final context = MockBuildContext(
-          tokens: {semanticsLabelToken.defineValue('Custom label')},
+          tokens: {TokenDefinition(semanticsLabelToken, 'Custom label')},
         );
 
         final testUtil = TextMutableStyler(
@@ -491,7 +491,7 @@ void main() {
         const localeToken = MixToken<Locale>('locale');
         const locale = Locale('en', 'US');
         final context = MockBuildContext(
-          tokens: {localeToken.defineValue(locale)},
+          tokens: {TokenDefinition(localeToken, locale)},
         );
 
         final testUtil = TextMutableStyler(
@@ -511,11 +511,11 @@ void main() {
 
         final context = MockBuildContext(
           tokens: {
-            maxLinesToken.defineValue(2),
-            textAlignToken.defineValue(TextAlign.right),
-            selectionColorToken.defineValue(Colors.green),
-            semanticsLabelToken.defineValue('Test label'),
-            localeToken.defineValue(const Locale('es', 'ES')),
+            TokenDefinition(maxLinesToken, 2),
+            TokenDefinition(textAlignToken, TextAlign.right),
+            TokenDefinition(selectionColorToken, Colors.green),
+            TokenDefinition(semanticsLabelToken, 'Test label'),
+            TokenDefinition(localeToken, const Locale('es', 'ES')),
           },
         );
 

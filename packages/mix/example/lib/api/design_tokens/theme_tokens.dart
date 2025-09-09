@@ -57,7 +57,7 @@ class _Example extends StatelessWidget {
         .color($primaryColor())
         .height(100)
         .width(100)
-        .padding(16.0);
+        .padding(.all(16.0));
 
     return Box(style: style);
   }

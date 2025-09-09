@@ -55,7 +55,7 @@ void main() {
       expect(merged, PropMatcher.isToken(token));
 
       // But during resolution, token takes precedence
-      final context = MockBuildContext(tokens: {token.defineValue(42)});
+      final context = MockBuildContext(tokens: {TokenDefinition(token, 42)});
       expect(merged, resolvesTo(42, context: context));
     });
 
