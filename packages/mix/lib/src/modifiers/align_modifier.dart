@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/helpers.dart';
-import '../core/modifier.dart';
+import '../core/widget_modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
@@ -10,7 +10,7 @@ import '../core/utility.dart';
 /// Modifier that aligns its child within the available space.
 ///
 /// Wraps the child in an [Align] widget with the specified alignment and size factors.
-final class AlignModifier extends Modifier<AlignModifier> with Diagnosticable {
+final class AlignModifier extends WidgetModifier<AlignModifier> with Diagnosticable {
   final AlignmentGeometry alignment;
   final double? widthFactor;
   final double? heightFactor;

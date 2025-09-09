@@ -7,10 +7,10 @@ import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/style_spec.dart';
-import '../../modifiers/modifier_config.dart';
+import '../../modifiers/widget_modifier_config.dart';
 import '../../style/mixins/animation_style_mixin.dart';
 import '../../style/mixins/flex_style_mixin.dart';
-import '../../style/mixins/modifier_style_mixin.dart';
+import '../../style/mixins/widget_modifier_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
 import 'flex_spec.dart';
 import 'flex_mutable_style.dart';
@@ -28,7 +28,7 @@ typedef FlexMix = FlexStyler;
 class FlexStyler extends Style<FlexSpec>
     with
         Diagnosticable,
-        ModifierStyleMixin<FlexStyler, FlexSpec>,
+        WidgetModifierStyleMixin<FlexStyler, FlexSpec>,
         VariantStyleMixin<FlexStyler, FlexSpec>,
         FlexStyleMixin<FlexStyler>,
         AnimationStyleMixin<FlexSpec, FlexStyler> {
@@ -86,7 +86,7 @@ class FlexStyler extends Style<FlexSpec>
     )
     double? gap,
     AnimationConfig? animation,
-    ModifierConfig? modifier,
+    WidgetModifierConfig? modifier,
     List<VariantStyle<FlexSpec>>? variants,
   }) : this.create(
          direction: Prop.maybe(direction),
@@ -130,7 +130,7 @@ class FlexStyler extends Style<FlexSpec>
     return merge(FlexStyler(spacing: value));
   }
 
-  FlexStyler modifier(ModifierConfig value) {
+  FlexStyler modifier(WidgetModifierConfig value) {
     return merge(FlexStyler(modifier: value));
   }
 
@@ -231,7 +231,7 @@ class FlexStyler extends Style<FlexSpec>
   }
 
   @override
-  FlexStyler wrap(ModifierConfig value) {
+  FlexStyler wrap(WidgetModifierConfig value) {
     return modifier(value);
   }
 

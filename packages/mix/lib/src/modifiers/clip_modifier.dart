@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/helpers.dart';
-import '../core/modifier.dart';
+import '../core/widget_modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../properties/painting/border_radius_mix.dart';
@@ -10,7 +10,7 @@ import '../properties/painting/border_radius_mix.dart';
 /// Modifier that clips its child to an oval shape.
 ///
 /// Wraps the child in a [ClipOval] widget with the specified clipper and clip behavior.
-final class ClipOvalModifier extends Modifier<ClipOvalModifier>
+final class ClipOvalModifier extends WidgetModifier<ClipOvalModifier>
     with Diagnosticable {
   final CustomClipper<Rect>? clipper;
   final Clip clipBehavior;
@@ -96,7 +96,7 @@ class ClipOvalModifierMix extends ModifierMix<ClipOvalModifier> {
 /// Modifier that clips its child to a rectangular shape.
 ///
 /// Wraps the child in a [ClipRect] widget with the specified clipper and clip behavior.
-final class ClipRectModifier extends Modifier<ClipRectModifier>
+final class ClipRectModifier extends WidgetModifier<ClipRectModifier>
     with Diagnosticable {
   final CustomClipper<Rect>? clipper;
   final Clip clipBehavior;
@@ -182,7 +182,7 @@ class ClipRectModifierMix extends ModifierMix<ClipRectModifier> {
 /// Modifier that clips its child to a rounded rectangular shape.
 ///
 /// Wraps the child in a [ClipRRect] widget with the specified border radius.
-final class ClipRRectModifier extends Modifier<ClipRRectModifier>
+final class ClipRRectModifier extends WidgetModifier<ClipRRectModifier>
     with Diagnosticable {
   final BorderRadiusGeometry borderRadius;
   final CustomClipper<RRect>? clipper;
@@ -293,7 +293,7 @@ class ClipRRectModifierMix extends ModifierMix<ClipRRectModifier> {
 /// Modifier that clips its child using a custom path.
 ///
 /// Wraps the child in a [ClipPath] widget with the specified clipper.
-final class ClipPathModifier extends Modifier<ClipPathModifier>
+final class ClipPathModifier extends WidgetModifier<ClipPathModifier>
     with Diagnosticable {
   final CustomClipper<Path>? clipper;
   final Clip clipBehavior;
@@ -379,7 +379,7 @@ class ClipPathModifierMix extends ModifierMix<ClipPathModifier> {
 /// Modifier that clips its child to a triangle shape.
 ///
 /// Wraps the child in a [ClipPath] widget using a triangle clipper.
-final class ClipTriangleModifier extends Modifier<ClipTriangleModifier>
+final class ClipTriangleModifier extends WidgetModifier<ClipTriangleModifier>
     with Diagnosticable {
   final Clip clipBehavior;
 

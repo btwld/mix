@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/helpers.dart';
-import '../core/modifier.dart';
+import '../core/widget_modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
@@ -11,7 +11,7 @@ import '../theme/tokens/mix_token.dart';
 /// Modifier that constrains its child to a specific aspect ratio.
 ///
 /// Wraps the child in an [AspectRatio] widget with the specified ratio.
-final class AspectRatioModifier extends Modifier<AspectRatioModifier>
+final class AspectRatioModifier extends WidgetModifier<AspectRatioModifier>
     with Diagnosticable {
   final double aspectRatio;
 

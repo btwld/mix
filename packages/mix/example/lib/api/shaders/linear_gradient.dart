@@ -28,7 +28,7 @@ class LinearGradientIconExample extends StatelessWidget {
           .size(100)
           .color(Colors.white)
           .wrap(
-            ModifierConfig.shaderMask(
+            WidgetModifierConfig.shaderMask(
               shaderCallback: ShaderCallbackBuilder.linearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,

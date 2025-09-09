@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/helpers.dart';
-import '../core/modifier.dart';
+import '../core/widget_modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
@@ -11,7 +11,7 @@ import '../properties/painting/shadow_mix.dart';
 /// Modifier that applies icon theme data to its descendants.
 ///
 /// Wraps the child in an [IconTheme] widget with the specified theme data.
-final class IconThemeModifier extends Modifier<IconThemeModifier>
+final class IconThemeModifier extends WidgetModifier<IconThemeModifier>
     with Diagnosticable {
   final IconThemeData data;
 

@@ -6,7 +6,7 @@ import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/style_spec.dart';
-import '../../modifiers/modifier_config.dart';
+import '../../modifiers/widget_modifier_config.dart';
 import '../../properties/layout/constraints_mix.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/painting/border_mix.dart';
@@ -17,7 +17,7 @@ import '../../style/mixins/border_style_mixin.dart';
 import '../../style/mixins/constraint_style_mixin.dart';
 import '../../style/mixins/decoration_style_mixin.dart';
 import '../../style/mixins/flex_style_mixin.dart';
-import '../../style/mixins/modifier_style_mixin.dart';
+import '../../style/mixins/widget_modifier_style_mixin.dart';
 import '../../style/mixins/shadow_style_mixin.dart';
 import '../../style/mixins/spacing_style_mixin.dart';
 import '../../style/mixins/transform_style_mixin.dart';
@@ -41,7 +41,7 @@ typedef FlexBoxMix = FlexBoxStyler;
 class FlexBoxStyler extends Style<FlexBoxSpec>
     with
         Diagnosticable,
-        ModifierStyleMixin<FlexBoxStyler, FlexBoxSpec>,
+        WidgetModifierStyleMixin<FlexBoxStyler, FlexBoxSpec>,
         VariantStyleMixin<FlexBoxStyler, FlexBoxSpec>,
         BorderStyleMixin<FlexBoxStyler>,
         BorderRadiusStyleMixin<FlexBoxStyler>,
@@ -78,7 +78,7 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
     double? spacing,
     // Style properties
     AnimationConfig? animation,
-    ModifierConfig? modifier,
+    WidgetModifierConfig? modifier,
     List<VariantStyle<FlexBoxSpec>>? variants,
   }) : this.create(
          box: Prop.maybeMix(
@@ -157,7 +157,7 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
     return merge(FlexBoxStyler(spacing: value));
   }
 
-  FlexBoxStyler modifier(ModifierConfig value) {
+  FlexBoxStyler modifier(WidgetModifierConfig value) {
     return merge(FlexBoxStyler(modifier: value));
   }
 
@@ -209,7 +209,7 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
 
   /// Modifier instance method
   @override
-  FlexBoxStyler wrap(ModifierConfig value) {
+  FlexBoxStyler wrap(WidgetModifierConfig value) {
     return modifier(value);
   }
 

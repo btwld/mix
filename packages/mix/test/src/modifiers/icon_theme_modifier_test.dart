@@ -156,7 +156,7 @@ void main() {
 
     setUp(() {
       utility = IconThemeModifierUtility(
-        (attr) => BoxStyler(modifier: ModifierConfig.modifier(attr)),
+        (attr) => BoxStyler(modifier: WidgetModifierConfig.modifier(attr)),
       );
     });
 

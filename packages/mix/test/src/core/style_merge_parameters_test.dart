@@ -10,14 +10,14 @@ void main() {
       test('merges orderOfModifiers correctly', () {
         final first = BoxStyler(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: ModifierConfig.orderOfModifiers([
+          modifier: WidgetModifierConfig.orderOfModifiers([
             OpacityModifier,
             PaddingModifier,
           ]),
         );
         final second = BoxStyler(
           constraints: BoxConstraintsMix.height(200.0),
-          modifier: ModifierConfig.orderOfModifiers([
+          modifier: WidgetModifierConfig.orderOfModifiers([
             ClipOvalModifier,
             TransformModifier,
           ]),
@@ -33,7 +33,7 @@ void main() {
       test('preserves first orderOfModifiers when second is empty', () {
         final first = BoxStyler(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: ModifierConfig.orderOfModifiers([
+          modifier: WidgetModifierConfig.orderOfModifiers([
             OpacityModifier,
             PaddingModifier,
           ]),
@@ -97,11 +97,11 @@ void main() {
 
         final first = BoxStyler(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: ModifierConfig(modifiers: firstModifiers),
+          modifier: WidgetModifierConfig(modifiers: firstModifiers),
         );
         final second = BoxStyler(
           constraints: BoxConstraintsMix.height(200.0),
-          modifier: ModifierConfig(modifiers: secondModifiers),
+          modifier: WidgetModifierConfig(modifiers: secondModifiers),
         );
 
         final merged = first.merge(second);
@@ -146,7 +146,7 @@ void main() {
       test('handles null merge correctly', () {
         final first = BoxStyler(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: ModifierConfig.orderOfModifiers(const [OpacityModifier]),
+          modifier: WidgetModifierConfig.orderOfModifiers(const [OpacityModifier]),
         );
 
         final merged = first.merge(null);
@@ -159,14 +159,14 @@ void main() {
       test('merges orderOfModifiers correctly', () {
         final first = TextStyler(
           maxLines: 2,
-          modifier: ModifierConfig.orderOfModifiers(const [
+          modifier: WidgetModifierConfig.orderOfModifiers(const [
             OpacityModifier,
             PaddingModifier,
           ]),
         );
         final second = TextStyler(
           overflow: TextOverflow.ellipsis,
-          modifier: ModifierConfig.orderOfModifiers(const [
+          modifier: WidgetModifierConfig.orderOfModifiers(const [
             ClipOvalModifier,
             TransformModifier,
           ]),
@@ -184,14 +184,14 @@ void main() {
       test('merges orderOfModifiers correctly', () {
         final first = IconStyler(
           size: 24.0,
-          modifier: ModifierConfig.orderOfModifiers(const [
+          modifier: WidgetModifierConfig.orderOfModifiers(const [
             OpacityModifier,
             PaddingModifier,
           ]),
         );
         final second = IconStyler(
           color: Colors.red,
-          modifier: ModifierConfig.orderOfModifiers(const [
+          modifier: WidgetModifierConfig.orderOfModifiers(const [
             ClipOvalModifier,
             TransformModifier,
           ]),
@@ -209,14 +209,14 @@ void main() {
       test('merges orderOfModifiers correctly', () {
         final first = FlexStyler(
           direction: Axis.horizontal,
-          modifier: ModifierConfig.orderOfModifiers(const [
+          modifier: WidgetModifierConfig.orderOfModifiers(const [
             OpacityModifier,
             PaddingModifier,
           ]),
         );
         final second = FlexStyler(
           spacing: 8.0,
-          modifier: ModifierConfig.orderOfModifiers(const [
+          modifier: WidgetModifierConfig.orderOfModifiers(const [
             ClipOvalModifier,
             TransformModifier,
           ]),
@@ -234,14 +234,14 @@ void main() {
       test('merges orderOfModifiers correctly', () {
         final first = ImageStyler(
           width: 100.0,
-          modifier: ModifierConfig.orderOfModifiers(const [
+          modifier: WidgetModifierConfig.orderOfModifiers(const [
             OpacityModifier,
             PaddingModifier,
           ]),
         );
         final second = ImageStyler(
           height: 200.0,
-          modifier: ModifierConfig.orderOfModifiers(const [
+          modifier: WidgetModifierConfig.orderOfModifiers(const [
             ClipOvalModifier,
             TransformModifier,
           ]),
@@ -259,14 +259,14 @@ void main() {
       test('merges orderOfModifiers correctly', () {
         final first = StackStyler(
           alignment: Alignment.center,
-          modifier: ModifierConfig.orderOfModifiers(const [
+          modifier: WidgetModifierConfig.orderOfModifiers(const [
             OpacityModifier,
             PaddingModifier,
           ]),
         );
         final second = StackStyler(
           fit: StackFit.expand,
-          modifier: ModifierConfig.orderOfModifiers(const [
+          modifier: WidgetModifierConfig.orderOfModifiers(const [
             ClipOvalModifier,
             TransformModifier,
           ]),
@@ -284,14 +284,14 @@ void main() {
       test('merges orderOfModifiers correctly', () {
         final first = FlexBoxStyler(
           constraints: BoxConstraintsMix.width(100),
-          modifier: ModifierConfig.orderOfModifiers(const [
+          modifier: WidgetModifierConfig.orderOfModifiers(const [
             OpacityModifier,
             PaddingModifier,
           ]),
         );
         final second = FlexBoxStyler(
           spacing: 8.0,
-          modifier: ModifierConfig.orderOfModifiers(const [
+          modifier: WidgetModifierConfig.orderOfModifiers(const [
             ClipOvalModifier,
             TransformModifier,
           ]),
@@ -309,14 +309,14 @@ void main() {
       test('merges orderOfModifiers correctly', () {
         final first = StackBoxStyler(
           constraints: BoxConstraintsMix.width(100),
-          modifier: ModifierConfig.orderOfModifiers(const [
+          modifier: WidgetModifierConfig.orderOfModifiers(const [
             OpacityModifier,
             PaddingModifier,
           ]),
         );
         final second = StackBoxStyler(
           stackAlignment: Alignment.center,
-          modifier: ModifierConfig.orderOfModifiers(const [
+          modifier: WidgetModifierConfig.orderOfModifiers(const [
             ClipOvalModifier,
             TransformModifier,
           ]),
@@ -334,15 +334,15 @@ void main() {
       test('chained merges preserve final values', () {
         final first = BoxStyler(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: ModifierConfig.orderOfModifiers(const [OpacityModifier]),
+          modifier: WidgetModifierConfig.orderOfModifiers(const [OpacityModifier]),
         );
         final second = BoxStyler(
           constraints: BoxConstraintsMix.height(200.0),
-          modifier: ModifierConfig.orderOfModifiers(const [PaddingModifier]),
+          modifier: WidgetModifierConfig.orderOfModifiers(const [PaddingModifier]),
         );
         final third = BoxStyler(
           decoration: DecorationMix.color(Colors.blue),
-          modifier: ModifierConfig.orderOfModifiers(const [ClipOvalModifier]),
+          modifier: WidgetModifierConfig.orderOfModifiers(const [ClipOvalModifier]),
         );
 
         final merged = first.merge(second).merge(third);
@@ -357,11 +357,11 @@ void main() {
 
         final first = BoxStyler(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: ModifierConfig(modifiers: [firstOpacity]),
+          modifier: WidgetModifierConfig(modifiers: [firstOpacity]),
         );
         final second = BoxStyler(
           constraints: BoxConstraintsMix.height(200.0),
-          modifier: ModifierConfig(modifiers: [secondOpacity]),
+          modifier: WidgetModifierConfig(modifiers: [secondOpacity]),
         );
 
         final merged = first.merge(second);
@@ -405,11 +405,11 @@ void main() {
       test('empty orderOfModifiers list behavior', () {
         final first = BoxStyler(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: ModifierConfig.orderOfModifiers(const [OpacityModifier]),
+          modifier: WidgetModifierConfig.orderOfModifiers(const [OpacityModifier]),
         );
         final second = BoxStyler(
           constraints: BoxConstraintsMix.height(200.0),
-          modifier: ModifierConfig.orderOfModifiers(const []),
+          modifier: WidgetModifierConfig.orderOfModifiers(const []),
         );
 
         final merged = first.merge(second);
@@ -420,7 +420,7 @@ void main() {
       test('null vs empty list handling for modifiers', () {
         final first = BoxStyler(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: ModifierConfig(
+          modifier: WidgetModifierConfig(
             modifiers: [OpacityModifierMix(opacity: 0.5)],
           ),
         );
@@ -461,7 +461,7 @@ void main() {
       test('merge with self returns same instance', () {
         final style = BoxStyler(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: ModifierConfig.orderOfModifiers(const [OpacityModifier]),
+          modifier: WidgetModifierConfig.orderOfModifiers(const [OpacityModifier]),
         );
 
         final merged = style.merge(style);
@@ -489,12 +489,12 @@ void main() {
       test('mixed null and non-null parameters', () {
         final first = BoxStyler(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: ModifierConfig.orderOfModifiers(const [OpacityModifier]),
+          modifier: WidgetModifierConfig.orderOfModifiers(const [OpacityModifier]),
           animation: null,
         );
         final second = BoxStyler(
           constraints: BoxConstraintsMix.height(200.0),
-          modifier: ModifierConfig.orderOfModifiers(const []),
+          modifier: WidgetModifierConfig.orderOfModifiers(const []),
           animation: const CurveAnimationConfig(
             duration: Duration(milliseconds: 100),
             curve: Curves.linear,

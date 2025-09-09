@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../core/helpers.dart';
-import '../core/modifier.dart';
+import '../core/widget_modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
@@ -10,7 +10,7 @@ import '../core/utility.dart';
 /// Modifier that applies a mouse cursor to its child.
 ///
 /// Wraps the child in a [MouseRegion] widget with the specified cursor.
-class MouseCursorModifier extends Modifier<MouseCursorModifier>
+class MouseCursorModifier extends WidgetModifier<MouseCursorModifier>
     with Diagnosticable {
   final MouseCursor? mouseCursor;
 

@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../animation/animation_config.dart';
-import '../modifiers/modifier_config.dart';
+import '../modifiers/widget_modifier_config.dart';
 import '../specs/box/box_style.dart';
 import '../specs/flex/flex_style.dart';
 import '../specs/flexbox/flexbox_style.dart';
@@ -14,7 +14,7 @@ import '../specs/text/text_style.dart';
 import '../variants/variant.dart';
 import 'internal/compare_mixin.dart';
 import 'mix_element.dart';
-import 'modifier.dart';
+import 'widget_modifier.dart';
 import 'spec.dart';
 import 'style_spec.dart';
 
@@ -31,7 +31,7 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     implements StyleElement {
   final List<VariantStyle<S>>? $variants;
 
-  final ModifierConfig? $modifier;
+  final WidgetModifierConfig? $modifier;
   final AnimationConfig? $animation;
 
   static final box = BoxStyler.new;
@@ -45,7 +45,7 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
 
   const Style({
     required List<VariantStyle<S>>? variants,
-    required ModifierConfig? modifier,
+    required WidgetModifierConfig? modifier,
     required AnimationConfig? animation,
   }) : $modifier = modifier,
        $animation = animation,
@@ -145,7 +145,7 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   }
 }
 
-abstract class ModifierMix<S extends Modifier<S>> extends Mix<S>
+abstract class ModifierMix<S extends WidgetModifier<S>> extends Mix<S>
     implements StyleElement {
   const ModifierMix();
 

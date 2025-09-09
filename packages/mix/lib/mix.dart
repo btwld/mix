@@ -33,7 +33,7 @@ export 'src/core/directive.dart';
 export 'src/core/extensions/extensions.dart';
 export 'src/core/helpers.dart';
 export 'src/core/mix_element.dart';
-export 'src/core/modifier.dart';
+export 'src/core/widget_modifier.dart';
 export 'src/core/pointer_position.dart';
 export 'src/core/prop.dart';
 export 'src/core/prop_refs.dart';
@@ -61,8 +61,8 @@ export 'src/modifiers/internal/reset_modifier.dart';
 export 'src/modifiers/intrinsic_modifier.dart';
 
 /// PROPERTIES
-export 'src/modifiers/modifier_config.dart';
-export 'src/modifiers/modifier_util.dart';
+export 'src/modifiers/widget_modifier_config.dart';
+export 'src/modifiers/widget_modifier_util.dart';
 export 'src/modifiers/mouse_cursor_modifier.dart';
 export 'src/modifiers/opacity_modifier.dart';
 export 'src/modifiers/padding_modifier.dart';
@@ -150,7 +150,7 @@ export 'src/style/mixins/border_style_mixin.dart';
 export 'src/style/mixins/constraint_style_mixin.dart';
 export 'src/style/mixins/decoration_style_mixin.dart';
 export 'src/style/mixins/flex_style_mixin.dart';
-export 'src/style/mixins/modifier_style_mixin.dart';
+export 'src/style/mixins/widget_modifier_style_mixin.dart';
 export 'src/style/mixins/shadow_style_mixin.dart';
 export 'src/style/mixins/spacing_style_mixin.dart';
 export 'src/style/mixins/text_style_mixin.dart';

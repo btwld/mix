@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/helpers.dart';
-import '../core/modifier.dart';
+import '../core/widget_modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
@@ -11,7 +11,7 @@ import '../theme/tokens/mix_token.dart';
 /// Modifier that makes its child flexible within a flex layout.
 ///
 /// Wraps the child in a [Flexible] widget with the specified flex and fit properties.
-final class FlexibleModifier extends Modifier<FlexibleModifier>
+final class FlexibleModifier extends WidgetModifier<FlexibleModifier>
     with Diagnosticable {
   final int? flex;
   final FlexFit? fit;

@@ -6,10 +6,10 @@ import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/style_spec.dart';
-import '../../modifiers/modifier_config.dart';
+import '../../modifiers/widget_modifier_config.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../style/mixins/animation_style_mixin.dart';
-import '../../style/mixins/modifier_style_mixin.dart';
+import '../../style/mixins/widget_modifier_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
 import 'icon_spec.dart';
 import 'icon_mutable_style.dart';
@@ -20,7 +20,7 @@ typedef IconMix = IconStyler;
 class IconStyler extends Style<IconSpec>
     with
         Diagnosticable,
-        ModifierStyleMixin<IconStyler, IconSpec>,
+        WidgetModifierStyleMixin<IconStyler, IconSpec>,
         VariantStyleMixin<IconStyler, IconSpec>,
         AnimationStyleMixin<IconSpec, IconStyler> {
   final Prop<Color>? $color;
@@ -83,7 +83,7 @@ class IconStyler extends Style<IconSpec>
     BlendMode? blendMode,
     IconData? icon,
     AnimationConfig? animation,
-    ModifierConfig? modifier,
+    WidgetModifierConfig? modifier,
     List<VariantStyle<IconSpec>>? variants,
   }) : this.create(
          color: Prop.maybe(color),
@@ -184,7 +184,7 @@ class IconStyler extends Style<IconSpec>
     return StyledIcon(icon: icon, semanticLabel: semanticLabel, style: this);
   }
 
-  IconStyler modifier(ModifierConfig value) {
+  IconStyler modifier(WidgetModifierConfig value) {
     return merge(IconStyler(modifier: value));
   }
 
@@ -269,7 +269,7 @@ class IconStyler extends Style<IconSpec>
   }
 
   @override
-  IconStyler wrap(ModifierConfig value) {
+  IconStyler wrap(WidgetModifierConfig value) {
     return modifier(value);
   }
 

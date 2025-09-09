@@ -56,8 +56,8 @@ void main() {
         expect(util.on, isA<OnContextVariantUtility<StackSpec, StackStyler>>());
       });
 
-      test('wrap utility is ModifierUtility', () {
-        expect(util.wrap, isA<ModifierUtility<StackStyler>>());
+      test('wrap utility is WidgetModifierUtility', () {
+        expect(util.wrap, isA<WidgetModifierUtility<StackStyler>>());
       });
     });
 

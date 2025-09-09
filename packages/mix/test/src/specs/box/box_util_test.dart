@@ -48,8 +48,8 @@ void main() {
         expect(util.on, isA<OnContextVariantUtility<BoxSpec, BoxStyler>>());
       });
 
-      test('wrap utility is ModifierUtility', () {
-        expect(util.wrap, isA<ModifierUtility<BoxStyler>>());
+      test('wrap utility is WidgetModifierUtility', () {
+        expect(util.wrap, isA<WidgetModifierUtility<BoxStyler>>());
       });
     });
 

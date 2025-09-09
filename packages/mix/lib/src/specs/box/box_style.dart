@@ -6,7 +6,7 @@ import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/style_spec.dart';
-import '../../modifiers/modifier_config.dart';
+import '../../modifiers/widget_modifier_config.dart';
 import '../../properties/layout/constraints_mix.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/painting/border_mix.dart';
@@ -17,7 +17,7 @@ import '../../style/mixins/border_radius_style_mixin.dart';
 import '../../style/mixins/border_style_mixin.dart';
 import '../../style/mixins/constraint_style_mixin.dart';
 import '../../style/mixins/decoration_style_mixin.dart';
-import '../../style/mixins/modifier_style_mixin.dart';
+import '../../style/mixins/widget_modifier_style_mixin.dart';
 import '../../style/mixins/shadow_style_mixin.dart';
 import '../../style/mixins/spacing_style_mixin.dart';
 import '../../style/mixins/transform_style_mixin.dart';
@@ -36,7 +36,7 @@ typedef BoxMix = BoxStyler;
 class BoxStyler extends Style<BoxSpec>
     with
         Diagnosticable,
-        ModifierStyleMixin<BoxStyler, BoxSpec>,
+        WidgetModifierStyleMixin<BoxStyler, BoxSpec>,
         VariantStyleMixin<BoxStyler, BoxSpec>,
         BorderStyleMixin<BoxStyler>,
         BorderRadiusStyleMixin<BoxStyler>,
@@ -90,7 +90,7 @@ class BoxStyler extends Style<BoxSpec>
     AlignmentGeometry? transformAlignment,
     Clip? clipBehavior,
     AnimationConfig? animation,
-    ModifierConfig? modifier,
+    WidgetModifierConfig? modifier,
     List<VariantStyle<BoxSpec>>? variants,
   }) : this.create(
          alignment: Prop.maybe(alignment),
@@ -126,7 +126,7 @@ class BoxStyler extends Style<BoxSpec>
   }
 
   /// Modifier instance method
-  BoxStyler modifier(ModifierConfig value) {
+  BoxStyler modifier(WidgetModifierConfig value) {
     return merge(BoxStyler(modifier: value));
   }
 
@@ -176,7 +176,7 @@ class BoxStyler extends Style<BoxSpec>
 
   /// Mixin implementation
   @override
-  BoxStyler wrap(ModifierConfig value) {
+  BoxStyler wrap(WidgetModifierConfig value) {
     return modifier(value);
   }
 

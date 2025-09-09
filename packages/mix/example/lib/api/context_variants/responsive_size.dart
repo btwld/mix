@@ -24,7 +24,7 @@ class Example extends StatelessWidget {
               .fontWeight(FontWeight.bold)
               .color(Colors.white),
         )
-        .wrap(ModifierConfig.align(alignment: Alignment.center))
+        .wrap(WidgetModifierConfig.align(alignment: Alignment.center))
         .animate(AnimationConfig.spring(const Duration(milliseconds: 300)));
 
     return Center(

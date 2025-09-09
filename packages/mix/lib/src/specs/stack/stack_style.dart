@@ -6,9 +6,9 @@ import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/style_spec.dart';
-import '../../modifiers/modifier_config.dart';
+import '../../modifiers/widget_modifier_config.dart';
 import '../../style/mixins/animation_style_mixin.dart';
-import '../../style/mixins/modifier_style_mixin.dart';
+import '../../style/mixins/widget_modifier_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
 import 'stack_spec.dart';
 import 'stack_mutable_style.dart';
@@ -25,7 +25,7 @@ typedef StackMix = StackStyler;
 class StackStyler extends Style<StackSpec>
     with
         Diagnosticable,
-        ModifierStyleMixin<StackStyler, StackSpec>,
+        WidgetModifierStyleMixin<StackStyler, StackSpec>,
         VariantStyleMixin<StackStyler, StackSpec>,
         AnimationStyleMixin<StackSpec, StackStyler> {
   final Prop<AlignmentGeometry>? $alignment;
@@ -52,7 +52,7 @@ class StackStyler extends Style<StackSpec>
     TextDirection? textDirection,
     Clip? clipBehavior,
     AnimationConfig? animation,
-    ModifierConfig? modifier,
+    WidgetModifierConfig? modifier,
     List<VariantStyle<StackSpec>>? variants,
   }) : this.create(
          alignment: Prop.maybe(alignment),
@@ -90,7 +90,7 @@ class StackStyler extends Style<StackSpec>
     return merge(StackStyler(clipBehavior: value));
   }
 
-  StackStyler modifier(ModifierConfig value) {
+  StackStyler modifier(WidgetModifierConfig value) {
     return merge(StackStyler(modifier: value));
   }
 
@@ -147,7 +147,7 @@ class StackStyler extends Style<StackSpec>
   }
 
   @override
-  StackStyler wrap(ModifierConfig value) {
+  StackStyler wrap(WidgetModifierConfig value) {
     return modifier(value);
   }
 

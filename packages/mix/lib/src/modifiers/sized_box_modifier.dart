@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/helpers.dart';
-import '../core/modifier.dart';
+import '../core/widget_modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
@@ -10,7 +10,7 @@ import '../core/utility.dart';
 /// Modifier that constrains its child to a specific size.
 ///
 /// Wraps the child in a [SizedBox] widget with the specified width and height.
-final class SizedBoxModifier extends Modifier<SizedBoxModifier>
+final class SizedBoxModifier extends WidgetModifier<SizedBoxModifier>
     with Diagnosticable {
   final double? width;
   final double? height;

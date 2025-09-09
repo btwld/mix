@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/helpers.dart';
-import '../core/modifier.dart';
+import '../core/widget_modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
@@ -11,7 +11,7 @@ import '../theme/tokens/mix_token.dart';
 /// Modifier that applies opacity to its child.
 ///
 /// Wraps the child in an [Opacity] widget with the specified opacity value.
-final class OpacityModifier extends Modifier<OpacityModifier>
+final class OpacityModifier extends WidgetModifier<OpacityModifier>
     with Diagnosticable {
   /// Opacity value between 0.0 and 1.0 (inclusive).
   final double opacity;

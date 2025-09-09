@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/helpers.dart';
-import '../core/modifier.dart';
+import '../core/widget_modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
@@ -11,7 +11,7 @@ import '../theme/tokens/mix_token.dart';
 /// Modifier that controls the visibility of its child.
 ///
 /// Wraps the child in a [Visibility] widget to show or hide it while maintaining layout space.
-final class VisibilityModifier extends Modifier<VisibilityModifier>
+final class VisibilityModifier extends WidgetModifier<VisibilityModifier>
     with Diagnosticable {
   /// Whether the child widget should be visible.
   final bool visible;

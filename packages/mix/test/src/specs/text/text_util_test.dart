@@ -95,8 +95,8 @@ void main() {
         expect(util.on, isA<OnContextVariantUtility<TextSpec, TextStyler>>());
       });
 
-      test('wrap utility is ModifierUtility', () {
-        expect(util.wrap, isA<ModifierUtility<TextStyler>>());
+      test('wrap utility is WidgetModifierUtility', () {
+        expect(util.wrap, isA<WidgetModifierUtility<TextStyler>>());
       });
     });
 
