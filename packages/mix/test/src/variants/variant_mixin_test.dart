@@ -4,7 +4,7 @@ import 'package:mix/mix.dart';
 
 // Test implementation of VariantMixin
 class TestVariantAttribute extends Style<BoxSpec>
-    with StyleVariantMixin<TestVariantAttribute, BoxSpec> {
+    with VariantStyleMixin<TestVariantAttribute, BoxSpec> {
   const TestVariantAttribute({super.variants, super.modifier, super.animation});
 
   @override
@@ -93,108 +93,20 @@ void main() {
       expect(result.$variants!.first.variant, isA<ContextVariant>());
     });
 
-    test('onEnabled creates correct variant', () {
+    test('onFocused creates correct variant', () {
       const attribute = TestVariantAttribute();
       const style = TestVariantAttribute();
-      final result = attribute.onEnabled(style);
+      final result = attribute.onFocused(style);
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
       expect(result.$variants!.first.variant, isA<ContextVariant>());
     });
 
-    test('onMobile creates correct variant', () {
+    test('onSelected creates correct variant', () {
       const attribute = TestVariantAttribute();
       const style = TestVariantAttribute();
-      final result = attribute.onMobile(style);
-
-      expect(result.$variants, isNotNull);
-      expect(result.$variants!.length, 1);
-      expect(result.$variants!.first.variant, isA<ContextVariant>());
-    });
-
-    test('onDesktop creates correct variant', () {
-      const attribute = TestVariantAttribute();
-      const style = TestVariantAttribute();
-      final result = attribute.onDesktop(style);
-
-      expect(result.$variants, isNotNull);
-      expect(result.$variants!.length, 1);
-      expect(result.$variants!.first.variant, isA<ContextVariant>());
-    });
-
-    test('orientation variants work correctly', () {
-      const attribute = TestVariantAttribute();
-      const style = TestVariantAttribute();
-
-      final portraitResult = attribute.onPortrait(style);
-      final landscapeResult = attribute.onLandscape(
-        style,
-      );
-
-      expect(portraitResult.$variants!.length, 1);
-      expect(landscapeResult.$variants!.length, 1);
-      expect(portraitResult.$variants!.first.variant, isA<ContextVariant>());
-      expect(landscapeResult.$variants!.first.variant, isA<ContextVariant>());
-    });
-
-    test('direction variants work correctly', () {
-      const attribute = TestVariantAttribute();
-      const style = TestVariantAttribute();
-
-      final ltrResult = attribute.onLtr(style);
-      final rtlResult = attribute.onRtl(style);
-
-      expect(ltrResult.$variants!.length, 1);
-      expect(rtlResult.$variants!.length, 1);
-      expect(ltrResult.$variants!.first.variant, isA<ContextVariant>());
-      expect(rtlResult.$variants!.first.variant, isA<ContextVariant>());
-    });
-
-    test('platform variants work correctly', () {
-      const attribute = TestVariantAttribute();
-      const style = TestVariantAttribute();
-
-      final iosResult = attribute.onIos(style);
-      final androidResult = attribute.onAndroid(style);
-      final macosResult = attribute.onMacos(style);
-      final windowsResult = attribute.onWindows(style);
-      final linuxResult = attribute.onLinux(style);
-      final fuchsiaResult = attribute.onFuchsia(style);
-      final webResult = attribute.onWeb(style);
-
-      expect(iosResult.$variants!.length, 1);
-      expect(androidResult.$variants!.length, 1);
-      expect(macosResult.$variants!.length, 1);
-      expect(windowsResult.$variants!.length, 1);
-      expect(linuxResult.$variants!.length, 1);
-      expect(fuchsiaResult.$variants!.length, 1);
-      expect(webResult.$variants!.length, 1);
-    });
-
-    test('widget state variants work correctly', () {
-      const attribute = TestVariantAttribute();
-      const style = TestVariantAttribute();
-
-      final focusResult = attribute.onFocused(style);
-      final selectedResult = attribute.onSelected(style);
-      final draggedResult = attribute.onDragged(style);
-      final errorResult = attribute.onError(style);
-      final scrolledUnderResult = attribute.onScrolledUnder(
-        style,
-      );
-
-      expect(focusResult.$variants!.length, 1);
-      expect(selectedResult.$variants!.length, 1);
-      expect(draggedResult.$variants!.length, 1);
-      expect(errorResult.$variants!.length, 1);
-      expect(scrolledUnderResult.$variants!.length, 1);
-    });
-
-    test('onTablet creates correct variant', () {
-      const attribute = TestVariantAttribute();
-      const style = TestVariantAttribute();
-      final result = attribute.onTablet(style);
+      final result = attribute.onSelected(style);
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
@@ -240,6 +152,117 @@ void main() {
 
       expect(result.$variants!.first.value, equals(darkStyle));
       expect(result.$variants!.last.value, equals(hoverStyle));
+    });
+
+    test('onError creates correct variant', () {
+      const attribute = TestVariantAttribute();
+      const style = TestVariantAttribute();
+      final result = attribute.onError(style);
+
+      expect(result.$variants, isNotNull);
+      expect(result.$variants!.length, 1);
+      expect(result.$variants!.first.variant, isA<ContextVariant>());
+    });
+
+    test('onScrolledUnder creates correct variant', () {
+      const attribute = TestVariantAttribute();
+      const style = TestVariantAttribute();
+      final result = attribute.onScrolledUnder(style);
+
+      expect(result.$variants, isNotNull);
+      expect(result.$variants!.length, 1);
+      expect(result.$variants!.first.variant, isA<ContextVariant>());
+    });
+
+    test('onDragged creates correct variant', () {
+      const attribute = TestVariantAttribute();
+      const style = TestVariantAttribute();
+      final result = attribute.onDragged(style);
+
+      expect(result.$variants, isNotNull);
+      expect(result.$variants!.length, 1);
+      expect(result.$variants!.first.variant, isA<ContextVariant>());
+    });
+
+    test('onEnabled creates correct variant', () {
+      const attribute = TestVariantAttribute();
+      const style = TestVariantAttribute();
+      final result = attribute.onEnabled(style);
+
+      expect(result.$variants, isNotNull);
+      expect(result.$variants!.length, 1);
+      expect(result.$variants!.first.variant, isA<ContextVariant>());
+    });
+
+    test('orientation variants work correctly', () {
+      const attribute = TestVariantAttribute();
+      const style = TestVariantAttribute();
+
+      final portraitResult = attribute.onPortrait(style);
+      final landscapeResult = attribute.onLandscape(style);
+
+      expect(portraitResult.$variants!.length, 1);
+      expect(landscapeResult.$variants!.length, 1);
+      expect(portraitResult.$variants!.first.variant, isA<ContextVariant>());
+      expect(landscapeResult.$variants!.first.variant, isA<ContextVariant>());
+    });
+
+    test('device breakpoint variants work correctly', () {
+      const attribute = TestVariantAttribute();
+      const style = TestVariantAttribute();
+
+      final mobileResult = attribute.onMobile(style);
+      final tabletResult = attribute.onTablet(style);
+      final desktopResult = attribute.onDesktop(style);
+
+      expect(mobileResult.$variants!.length, 1);
+      expect(tabletResult.$variants!.length, 1);
+      expect(desktopResult.$variants!.length, 1);
+      expect(mobileResult.$variants!.first.variant, isA<ContextVariant>());
+      expect(tabletResult.$variants!.first.variant, isA<ContextVariant>());
+      expect(desktopResult.$variants!.first.variant, isA<ContextVariant>());
+    });
+
+    test('text direction variants work correctly', () {
+      const attribute = TestVariantAttribute();
+      const style = TestVariantAttribute();
+
+      final ltrResult = attribute.onLtr(style);
+      final rtlResult = attribute.onRtl(style);
+
+      expect(ltrResult.$variants!.length, 1);
+      expect(rtlResult.$variants!.length, 1);
+      expect(ltrResult.$variants!.first.variant, isA<ContextVariant>());
+      expect(rtlResult.$variants!.first.variant, isA<ContextVariant>());
+    });
+
+    test('platform variants work correctly', () {
+      const attribute = TestVariantAttribute();
+      const style = TestVariantAttribute();
+
+      final iosResult = attribute.onIos(style);
+      final androidResult = attribute.onAndroid(style);
+      final macosResult = attribute.onMacos(style);
+      final windowsResult = attribute.onWindows(style);
+      final linuxResult = attribute.onLinux(style);
+      final fuchsiaResult = attribute.onFuchsia(style);
+      final webResult = attribute.onWeb(style);
+
+      expect(iosResult.$variants!.length, 1);
+      expect(androidResult.$variants!.length, 1);
+      expect(macosResult.$variants!.length, 1);
+      expect(windowsResult.$variants!.length, 1);
+      expect(linuxResult.$variants!.length, 1);
+      expect(fuchsiaResult.$variants!.length, 1);
+      expect(webResult.$variants!.length, 1);
+
+      expect(iosResult.$variants!.first.variant, isA<ContextVariant>());
+      expect(androidResult.$variants!.first.variant, isA<ContextVariant>());
+      expect(macosResult.$variants!.first.variant, isA<ContextVariant>());
+      expect(windowsResult.$variants!.first.variant, isA<ContextVariant>());
+      expect(linuxResult.$variants!.first.variant, isA<ContextVariant>());
+      expect(fuchsiaResult.$variants!.first.variant, isA<ContextVariant>());
+      expect(webResult.$variants!.first.variant, isA<ContextVariant>());
     });
   });
 }

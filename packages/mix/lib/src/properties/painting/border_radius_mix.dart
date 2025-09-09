@@ -236,6 +236,8 @@ final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
 
   /// Creates with circular radius.
   factory BorderRadiusMix.circular(double radius) {
+    // Use a simple value-based creation. Token-aware radius should be passed as
+    // a Radius token to BorderRadiusMix.all(...) at call sites.
     return BorderRadiusMix.all(Radius.circular(radius));
   }
 
@@ -288,7 +290,6 @@ final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
   BorderRadiusMix bottomRight(Radius radius) {
     return merge(BorderRadiusMix.bottomRight(radius));
   }
-
 
   @override
   BorderRadius resolve(BuildContext context) {
@@ -426,7 +427,6 @@ final class BorderRadiusDirectionalMix
   BorderRadiusDirectionalMix bottomEnd(Radius radius) {
     return merge(BorderRadiusDirectionalMix.bottomEnd(radius));
   }
-
 
   @override
   BorderRadiusDirectional resolve(BuildContext context) {
