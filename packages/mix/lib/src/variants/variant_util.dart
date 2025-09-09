@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/breakpoint.dart';
+import '../core/pointer_position.dart';
 import '../core/spec.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
@@ -344,6 +345,30 @@ mixin StyleVariantMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
     // Create a VariantStyle with ContextVariantBuilder that will be resolved at runtime
     // Use this style as a placeholder; the actual style comes from the builder function
     return variants([VariantStyle<S>(ContextVariantBuilder<T>(fn), this)]);
+  }
+
+  /// Creates a variant that applies styling based on pointer position.
+  ///
+  /// The provided builder function receives a [PointerPosition] and should return
+  /// a style that will be applied when the pointer position is available.
+  ///
+  /// Example:
+  /// ```dart
+  /// BoxStyle().onPointerPosition((PointerPosition position) {
+  ///   final opacity = position.position.x.abs(); // More left = more transparent
+  ///   return BoxStyle().modifier.opacity(opacity);
+  /// })
+  /// ```
+  T onPointerPosition(T Function(PointerPosition position) fn) {
+    return variant(
+      ContextVariantBuilder<T>((context) {
+        final position = PointerPosition.maybeOf(context);
+        if (position == null) return this as T;
+
+        return fn(position);
+      }),
+      this as T,
+    );
   }
 
   /// Creates a variant for pressed state
