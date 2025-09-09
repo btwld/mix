@@ -5,9 +5,9 @@
 /// throughout your styles and updated in one place.
 /// 
 /// Key concepts:
-/// - Creating MixToken instances for colors and other values
-/// - Using tokens in styles with token() method
-/// - Providing token values through MixScope
+/// - Creating individual token types (ColorToken, RadiusToken) for type safety
+/// - Using tokens in styles with token() method  
+/// - Providing token values through MixScope with typed collections
 /// - Building a design system with consistent values
 library;
 
@@ -19,13 +19,9 @@ void main() {
   runMixApp(Example());
 }
 
-final $primaryColor = MixToken<Color>('primary');
-final $pill = MixToken<Radius>('pill');
-
-final tokenDefinitions = {
-  $primaryColor.defineValue(Colors.blue),
-  $pill.defineValue(Radius.circular(20)),
-};
+// Using the new individual token types
+final $primaryColor = ColorToken('primary');
+final $pill = RadiusToken('pill');
 
 class Example extends StatelessWidget {
   const Example({super.key});
@@ -33,7 +29,12 @@ class Example extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MixScope(
-      tokens: tokenDefinitions,
+      colors: {
+        $primaryColor: Colors.blue,
+      },
+      radii: {
+        $pill: Radius.circular(20),
+      },
       child: _Example(),
     );
   }
