@@ -179,7 +179,7 @@ mixin ModifierStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   T wrapMouseCursor(MouseCursor cursor) {
     // Note: MouseCursorModifierMix needs to be wrapped in WidgetModifierConfig
     return wrap(
-      WidgetModifierConfig.modifier(MouseCursorModifierMix(mouseCursor: cursor)),
+      WidgetModifierConfig.widgetModifier(MouseCursorModifierMix(mouseCursor: cursor)),
     );
   }
 

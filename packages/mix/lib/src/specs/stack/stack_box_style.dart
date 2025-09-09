@@ -236,12 +236,12 @@ class StackBoxStyler extends Style<ZBoxSpec>
   @override
   StackBoxStyler merge(StackBoxStyler? other) {
     return StackBoxStyler.create(
+      box: MixOps.merge($box, other?.$box),
+      stack: MixOps.merge($stack, other?.$stack),
       widgetModifier: MixOps.mergeWidgetModifier(
         $widgetModifier,
         other?.$widgetModifier,
       ),
-      box: MixOps.merge($box, other?.$box),
-      stack: MixOps.merge($stack, other?.$stack),
       animation: MixOps.mergeAnimation($animation, other?.$animation),
       variants: MixOps.mergeVariants($variants, other?.$variants),
     );
@@ -300,7 +300,6 @@ class StackBoxMutableStyler {
     List<VariantStyle<ZBoxSpec>>? variants,
   }) {
     return StackBoxStyler(
-      widgetModifier: widgetModifier,
       decoration: decoration,
       padding: padding,
       margin: margin,
@@ -313,6 +312,7 @@ class StackBoxMutableStyler {
       fit: fit,
       textDirection: textDirection,
       stackClipBehavior: stackClipBehavior,
+      widgetModifier: widgetModifier,
       animation: animation,
       variants: variants,
     );

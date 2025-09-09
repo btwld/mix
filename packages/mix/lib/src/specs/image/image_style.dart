@@ -7,7 +7,7 @@ import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/modifier_config.dart';
-import '../../modifiers/modifier_util.dart';
+import '../../style/mixins/modifier_style_mixin.dart';
 import '../../variants/variant_util.dart';
 import 'image_spec.dart';
 import 'image_mutable_style.dart';
@@ -18,7 +18,7 @@ typedef ImageMix = ImageStyler;
 class ImageStyler extends Style<ImageSpec>
     with
         Diagnosticable,
-        StyleModifierMixin<ImageStyler, ImageSpec>,
+        ModifierStyleMixin<ImageStyler, ImageSpec>,
         StyleVariantMixin<ImageStyler, ImageSpec> {
   final Prop<ImageProvider<Object>>? $image;
   final Prop<double>? $width;
@@ -91,7 +91,6 @@ class ImageStyler extends Style<ImageSpec>
     WidgetModifierConfig? widgetModifier,
     List<VariantStyle<ImageSpec>>? variants,
   }) : this.create(
-         widgetModifier: widgetModifier,
          image: Prop.maybe(image),
          width: Prop.maybe(width),
          height: Prop.maybe(height),
@@ -108,6 +107,7 @@ class ImageStyler extends Style<ImageSpec>
          isAntiAlias: Prop.maybe(isAntiAlias),
          matchTextDirection: Prop.maybe(matchTextDirection),
          animation: animation,
+         widgetModifier: widgetModifier,
          variants: variants,
        );
 
@@ -253,10 +253,6 @@ class ImageStyler extends Style<ImageSpec>
   @override
   ImageStyler merge(ImageStyler? other) {
     return ImageStyler.create(
-      widgetModifier: MixOps.mergeWidgetModifier(
-        $widgetModifier,
-        other?.$widgetModifier,
-      ),
       image: MixOps.merge($image, other?.$image),
       width: MixOps.merge($width, other?.$width),
       height: MixOps.merge($height, other?.$height),
@@ -279,6 +275,10 @@ class ImageStyler extends Style<ImageSpec>
         other?.$matchTextDirection,
       ),
       animation: MixOps.mergeAnimation($animation, other?.$animation),
+      widgetModifier: MixOps.mergeWidgetModifier(
+        $widgetModifier,
+        other?.$widgetModifier,
+      ),
       variants: MixOps.mergeVariants($variants, other?.$variants),
     );
   }

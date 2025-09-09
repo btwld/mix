@@ -263,7 +263,7 @@ class MockStyle<T> extends Style<MockSpec<T>> {
   const MockStyle(
     this.value, {
     super.variants,
-    super.modifier,
+    super.widgetModifier,
     super.animation,
   });
 

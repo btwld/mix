@@ -89,7 +89,6 @@ class FlexStyler extends Style<FlexSpec>
     WidgetModifierConfig? widgetModifier,
     List<VariantStyle<FlexSpec>>? variants,
   }) : this.create(
-         widgetModifier: widgetModifier,
          direction: Prop.maybe(direction),
          mainAxisAlignment: Prop.maybe(mainAxisAlignment),
          crossAxisAlignment: Prop.maybe(crossAxisAlignment),
@@ -100,6 +99,7 @@ class FlexStyler extends Style<FlexSpec>
          clipBehavior: Prop.maybe(clipBehavior),
          spacing: Prop.maybe(spacing ?? gap),
          animation: animation,
+         widgetModifier: widgetModifier,
          variants: variants,
        );
 
@@ -191,10 +191,6 @@ class FlexStyler extends Style<FlexSpec>
   @override
   FlexStyler merge(FlexStyler? other) {
     return FlexStyler.create(
-      widgetModifier: MixOps.mergeWidgetModifier(
-        $widgetModifier,
-        other?.$widgetModifier,
-      ),
       direction: MixOps.merge($direction, other?.$direction),
       mainAxisAlignment: MixOps.merge(
         $mainAxisAlignment,
@@ -214,6 +210,10 @@ class FlexStyler extends Style<FlexSpec>
       clipBehavior: MixOps.merge($clipBehavior, other?.$clipBehavior),
       spacing: MixOps.merge($spacing, other?.$spacing),
       animation: MixOps.mergeAnimation($animation, other?.$animation),
+      widgetModifier: MixOps.mergeWidgetModifier(
+        $widgetModifier,
+        other?.$widgetModifier,
+      ),
       variants: MixOps.mergeVariants($variants, other?.$variants),
     );
   }

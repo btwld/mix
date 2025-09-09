@@ -9,12 +9,12 @@ void main() {
     test(
       'merge clears when reset is encountered in other and reset is not included',
       () {
-        final current = WidgetModifierConfig.modifiers([
+        final current = WidgetModifierConfig.widgetModifiers([
           OpacityModifierMix(opacity: 0.2),
           AlignModifierMix(alignment: Alignment.center),
         ]);
 
-        final other = WidgetModifierConfig.modifiers([
+        final other = WidgetModifierConfig.widgetModifiers([
           const ResetModifierMix(),
           PaddingModifierMix(padding: EdgeInsetsDirectionalMix(top: 8.0)),
           OpacityModifierMix(opacity: 0.8),
@@ -42,13 +42,13 @@ void main() {
     test(
       'merge clears when reset is encountered in current list and continues',
       () {
-        final current = WidgetModifierConfig.modifiers([
+        final current = WidgetModifierConfig.widgetModifiers([
           OpacityModifierMix(opacity: 0.2),
           const ResetModifierMix(),
           AlignModifierMix(alignment: Alignment.centerRight),
         ]);
 
-        final other = WidgetModifierConfig.modifiers([
+        final other = WidgetModifierConfig.widgetModifiers([
           PaddingModifierMix(
             padding: EdgeInsetsDirectionalMix(bottom: 4.0),
           ),
@@ -74,7 +74,7 @@ void main() {
     );
 
     test('resolve filters out reset when present alone', () {
-      final cfg = WidgetModifierConfig.modifiers([const ResetModifierMix()]);
+      final cfg = WidgetModifierConfig.widgetModifiers([const ResetModifierMix()]);
 
       final resolved = cfg.resolve(MockBuildContext());
       expect(resolved, isEmpty);

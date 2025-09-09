@@ -7,6 +7,7 @@ import '../../core/style.dart' show Style, VariantStyle;
 import '../../core/style_spec.dart';
 import '../../core/utility.dart';
 import '../../core/utility_variant_mixin.dart';
+import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/layout/constraints_util.dart';
 import '../../properties/layout/edge_insets_geometry_util.dart';
@@ -47,7 +48,7 @@ class BoxMutableStyler extends StyleMutableBuilder<BoxSpec>
   );
 
   late final wrap = ModifierUtility(
-    (prop) => mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
+    (prop) => mutable.wrap(WidgetModifierConfig(widgetModifiers: [prop])),
   );
 
   /// Convenience accessors for commonly used decoration properties.

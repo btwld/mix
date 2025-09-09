@@ -72,15 +72,15 @@ final class ModifierUtility<T extends Style<Object?>>
   T rotate(double value) => transform.rotate(value);
 
   /// Makes the widget take up only its intrinsic width.
-  T intrinsicWidth() => utilityBuilder(const IntrinsicWidthWidgetModifierMix());
+  T intrinsicWidth() => utilityBuilder(const IntrinsicWidthModifierMix());
 
   /// Makes the widget take up only its intrinsic height.
-  T intrinsicHeight() => utilityBuilder(const IntrinsicHeightWidgetModifierMix());
+  T intrinsicHeight() => utilityBuilder(const IntrinsicHeightModifierMix());
 
   /// Clips the widget to an oval shape.
   T clipOval({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
     return utilityBuilder(
-      ClipOvalWidgetModifierMix(clipper: clipper, clipBehavior: clipBehavior),
+      ClipOvalModifierMix(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
@@ -91,7 +91,7 @@ final class ModifierUtility<T extends Style<Object?>>
     Clip? clipBehavior,
   }) {
     return utilityBuilder(
-      ClipRRectWidgetModifierMix(
+      ClipRRectModifierMix(
         borderRadius: BorderRadiusMix.maybeValue(borderRadius),
         clipper: clipper,
         clipBehavior: clipBehavior,
@@ -102,24 +102,24 @@ final class ModifierUtility<T extends Style<Object?>>
   /// Clips the widget to a rectangle.
   T clipRect({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
     return utilityBuilder(
-      ClipRectWidgetModifierMix(clipper: clipper, clipBehavior: clipBehavior),
+      ClipRectModifierMix(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
   /// Clips the widget to a triangle shape.
   T clipTriangle({Clip? clipBehavior}) {
-    return utilityBuilder(ClipTriangleWidgetModifierMix(clipBehavior: clipBehavior));
+    return utilityBuilder(ClipTriangleModifierMix(clipBehavior: clipBehavior));
   }
 
   /// Clips the widget to a custom path.
   T clipPath({CustomClipper<Path>? clipper, Clip? clipBehavior}) {
     return utilityBuilder(
-      ClipPathWidgetModifierMix(clipper: clipper, clipBehavior: clipBehavior),
+      ClipPathModifierMix(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
   /// Resets all modifiers.
-  T reset() => utilityBuilder(const ResetWidgetModifierMix());
+  T reset() => utilityBuilder(const ResetModifierMix());
 }
 
 /// Provides convenient modifier methods for spec attributes.
@@ -292,7 +292,7 @@ mixin StyleWidgetModifierMixin<T extends Style<S>, S extends Spec<S>> on Style<S
   T wrapMouseCursor(MouseCursor cursor) {
     // Note: MouseCursorWidgetModifierMix needs to be wrapped in WidgetModifierConfig
     return wrap(
-      WidgetModifierConfig.modifier(MouseCursorWidgetModifierMix(mouseCursor: cursor)),
+      WidgetModifierConfig.widgetModifier(MouseCursorModifierMix(mouseCursor: cursor)),
     );
   }
 

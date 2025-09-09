@@ -86,7 +86,6 @@ class IconStyler extends Style<IconSpec>
     WidgetModifierConfig? widgetModifier,
     List<VariantStyle<IconSpec>>? variants,
   }) : this.create(
-         widgetModifier: widgetModifier,
          color: Prop.maybe(color),
          size: Prop.maybe(size),
          weight: Prop.maybe(weight),
@@ -101,6 +100,7 @@ class IconStyler extends Style<IconSpec>
          blendMode: Prop.maybe(blendMode),
          icon: Prop.maybe(icon),
          animation: animation,
+         widgetModifier: widgetModifier,
          variants: variants,
        );
 
@@ -222,10 +222,6 @@ class IconStyler extends Style<IconSpec>
   @override
   IconStyler merge(IconStyler? other) {
     return IconStyler.create(
-      widgetModifier: MixOps.mergeWidgetModifier(
-        $widgetModifier,
-        other?.$widgetModifier,
-      ),
       color: MixOps.merge($color, other?.$color),
       size: MixOps.merge($size, other?.$size),
       weight: MixOps.merge($weight, other?.$weight),
@@ -243,6 +239,10 @@ class IconStyler extends Style<IconSpec>
       blendMode: MixOps.merge($blendMode, other?.$blendMode),
       icon: MixOps.merge($icon, other?.$icon),
       animation: MixOps.mergeAnimation($animation, other?.$animation),
+      widgetModifier: MixOps.mergeWidgetModifier(
+        $widgetModifier,
+        other?.$widgetModifier,
+      ),
       variants: MixOps.mergeVariants($variants, other?.$variants),
     );
   }
