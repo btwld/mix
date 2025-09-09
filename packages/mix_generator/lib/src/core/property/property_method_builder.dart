@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 
 import '../metadata/field_metadata.dart';
 import '../utils/helpers.dart';
@@ -16,12 +17,18 @@ Map<String, String?> extractConstructorDefaults(
       defaults[param.name] = param.defaultValueCode;
     }
     // If it's a required parameter with no default value and is a list type, set empty list as default
-    else if (param.isRequired && param.type.isList) {
+    else if (param.isRequired && _isListType(param.type)) {
       defaults[param.name] = '[]';
     }
   }
 
   return defaults;
+}
+
+/// Helper function to check if a DartType is a List type
+bool _isListType(DartType type) {
+  return type.element?.displayName == 'List' || 
+         type.getDisplayString().startsWith('List<');
 }
 
 class MixableTypeMethods {
