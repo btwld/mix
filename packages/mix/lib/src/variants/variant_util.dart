@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../core/breakpoint.dart';
-import '../core/pointer_position.dart';
 import '../core/spec.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
@@ -297,4 +296,3 @@ class VariantAttributeBuilder<T extends Spec<T>> {
   @override
   int get hashCode => variant.hashCode;
 }
-
