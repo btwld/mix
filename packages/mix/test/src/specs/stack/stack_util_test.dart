@@ -375,7 +375,7 @@ void main() {
       test('resolves tokens with context', () {
         const alignmentToken = MixToken<AlignmentGeometry>('stackAlignment');
         final context = MockBuildContext(
-          tokens: {alignmentToken.defineValue(Alignment.topLeft)},
+          tokens: {TokenDefinition(alignmentToken, Alignment.topLeft)},
         );
 
         final testUtil = StackMutableStyler(

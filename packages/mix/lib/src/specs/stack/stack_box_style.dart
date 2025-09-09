@@ -160,7 +160,6 @@ class StackBoxStyler extends Style<ZBoxSpec>
     return merge(StackBoxStyler(variants: variants));
   }
 
-
   // Mixin implementations - delegate to BoxMix
 
   /// Padding instance method - delegates to box

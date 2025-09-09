@@ -11,9 +11,7 @@ void main() {
     late GradientUtility<MockStyle<GradientMix>> util;
 
     setUp(() {
-      util = GradientUtility<MockStyle<GradientMix>>(
-        (mix) => MockStyle(mix),
-      );
+      util = GradientUtility<MockStyle<GradientMix>>((mix) => MockStyle(mix));
     });
 
     group('utility properties', () {
@@ -116,10 +114,7 @@ void main() {
 
         expect(
           gradient,
-          const LinearGradient(
-            colors: [],
-            begin: Alignment.topLeft,
-          ),
+          const LinearGradient(colors: [], begin: Alignment.topLeft),
         );
       });
 
@@ -130,10 +125,7 @@ void main() {
 
         expect(
           gradient,
-          const LinearGradient(
-            colors: [],
-            end: Alignment.bottomRight,
-          ),
+          const LinearGradient(colors: [], end: Alignment.bottomRight),
         );
       });
 
@@ -144,10 +136,7 @@ void main() {
 
         expect(
           gradient,
-          const LinearGradient(
-            colors: [],
-            tileMode: TileMode.mirror,
-          ),
+          const LinearGradient(colors: [], tileMode: TileMode.mirror),
         );
       });
 
@@ -158,9 +147,7 @@ void main() {
 
         expect(
           gradient,
-          const LinearGradient(
-            colors: [Colors.red, Colors.blue, Colors.green],
-          ),
+          const LinearGradient(colors: [Colors.red, Colors.blue, Colors.green]),
         );
       });
 
@@ -171,10 +158,7 @@ void main() {
 
         expect(
           gradient,
-          const LinearGradient(
-            colors: [],
-            stops: [0.0, 0.5, 1.0],
-          ),
+          const LinearGradient(colors: [], stops: [0.0, 0.5, 1.0]),
         );
       });
     });
@@ -311,10 +295,7 @@ void main() {
 
         expect(
           gradient,
-          const RadialGradient(
-            colors: [],
-            center: Alignment.topLeft,
-          ),
+          const RadialGradient(colors: [], center: Alignment.topLeft),
         );
       });
 
@@ -323,13 +304,7 @@ void main() {
 
         final gradient = result.value.resolve(MockBuildContext());
 
-        expect(
-          gradient,
-          const RadialGradient(
-            colors: [],
-            radius: 0.7,
-          ),
-        );
+        expect(gradient, const RadialGradient(colors: [], radius: 0.7));
       });
 
       test('focal sets focal point', () {
@@ -339,10 +314,7 @@ void main() {
 
         expect(
           gradient,
-          const RadialGradient(
-            colors: [],
-            focal: Alignment.bottomRight,
-          ),
+          const RadialGradient(colors: [], focal: Alignment.bottomRight),
         );
       });
 
@@ -351,13 +323,7 @@ void main() {
 
         final gradient = result.value.resolve(MockBuildContext());
 
-        expect(
-          gradient,
-          const RadialGradient(
-            colors: [],
-            focalRadius: 0.3,
-          ),
-        );
+        expect(gradient, const RadialGradient(colors: [], focalRadius: 0.3));
       });
 
       test('colors sets gradient colors', () {
@@ -367,9 +333,7 @@ void main() {
 
         expect(
           gradient,
-          const RadialGradient(
-            colors: [Colors.yellow, Colors.red],
-          ),
+          const RadialGradient(colors: [Colors.yellow, Colors.red]),
         );
       });
     });
@@ -497,10 +461,7 @@ void main() {
 
         expect(
           gradient,
-          const SweepGradient(
-            colors: [],
-            center: Alignment.bottomCenter,
-          ),
+          const SweepGradient(colors: [], center: Alignment.bottomCenter),
         );
       });
 
@@ -511,10 +472,7 @@ void main() {
 
         expect(
           gradient,
-          SweepGradient(
-            colors: const [],
-            startAngle: math.pi / 4,
-          ),
+          SweepGradient(colors: const [], startAngle: math.pi / 4),
         );
       });
 
@@ -525,10 +483,7 @@ void main() {
 
         expect(
           gradient,
-          SweepGradient(
-            colors: const [],
-            endAngle: math.pi * 1.5,
-          ),
+          SweepGradient(colors: const [], endAngle: math.pi * 1.5),
         );
       });
 
@@ -539,9 +494,7 @@ void main() {
 
         expect(
           gradient,
-          const SweepGradient(
-            colors: [Colors.red, Colors.green, Colors.blue],
-          ),
+          const SweepGradient(colors: [Colors.red, Colors.green, Colors.blue]),
         );
       });
     });
@@ -625,9 +578,7 @@ void main() {
     late GradientUtility<MockStyle<GradientMix>> util;
 
     setUp(() {
-      util = GradientUtility<MockStyle<GradientMix>>(
-        (mix) => MockStyle(mix),
-      );
+      util = GradientUtility<MockStyle<GradientMix>>((mix) => MockStyle(mix));
     });
 
     test('linear gradient through parent utility', () {

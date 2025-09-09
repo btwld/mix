@@ -24,9 +24,7 @@ void main() {
         final resolved = merged.resolve(MockBuildContext());
 
         // Ensure no reset present in resolved modifiers
-        final hasReset = resolved.any(
-          (m) => m is ResetModifier,
-        );
+        final hasReset = resolved.any((m) => m is ResetModifier);
         expect(hasReset, isFalse);
 
         // Ensure previous modifiers are cleared and only post-reset ones remain
@@ -49,18 +47,14 @@ void main() {
         ]);
 
         final other = ModifierConfig.modifiers([
-          PaddingModifierMix(
-            padding: EdgeInsetsDirectionalMix(bottom: 4.0),
-          ),
+          PaddingModifierMix(padding: EdgeInsetsDirectionalMix(bottom: 4.0)),
         ]);
 
         final merged = current.merge(other);
         final resolved = merged.resolve(MockBuildContext());
 
         // Ensure no reset present
-        final hasReset = resolved.any(
-          (m) => m is ResetModifier,
-        );
+        final hasReset = resolved.any((m) => m is ResetModifier);
         expect(hasReset, isFalse);
 
         // After reset in current, Opacity (0.2) is cleared; Align (after reset) remains,

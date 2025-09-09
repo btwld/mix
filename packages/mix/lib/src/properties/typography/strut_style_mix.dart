@@ -185,7 +185,10 @@ class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
       fontStyle: MixOps.merge($fontStyle, other.$fontStyle),
       height: MixOps.merge($height, other.$height),
       leading: MixOps.merge($leading, other.$leading),
-      forceStrutHeight: MixOps.merge($forceStrutHeight, other.$forceStrutHeight),
+      forceStrutHeight: MixOps.merge(
+        $forceStrutHeight,
+        other.$forceStrutHeight,
+      ),
     );
   }
 

@@ -15,8 +15,14 @@ void main() {
           leadingDistribution: TextLeadingDistribution.even,
         );
 
-        expect(textHeightBehaviorMix.$applyHeightToFirstAscent, resolvesTo(false));
-        expect(textHeightBehaviorMix.$applyHeightToLastDescent, resolvesTo(true));
+        expect(
+          textHeightBehaviorMix.$applyHeightToFirstAscent,
+          resolvesTo(false),
+        );
+        expect(
+          textHeightBehaviorMix.$applyHeightToLastDescent,
+          resolvesTo(true),
+        );
         expect(
           textHeightBehaviorMix.$leadingDistribution,
           resolvesTo(TextLeadingDistribution.even),
@@ -34,8 +40,14 @@ void main() {
           textHeightBehavior,
         );
 
-        expect(textHeightBehaviorMix.$applyHeightToFirstAscent, resolvesTo(true));
-        expect(textHeightBehaviorMix.$applyHeightToLastDescent, resolvesTo(false));
+        expect(
+          textHeightBehaviorMix.$applyHeightToFirstAscent,
+          resolvesTo(true),
+        );
+        expect(
+          textHeightBehaviorMix.$applyHeightToLastDescent,
+          resolvesTo(false),
+        );
         expect(
           textHeightBehaviorMix.$leadingDistribution,
           resolvesTo(TextLeadingDistribution.proportional),
@@ -65,7 +77,10 @@ void main() {
           final textHeightBehaviorMix =
               TextHeightBehaviorMix.applyHeightToFirstAscent(false);
 
-          expect(textHeightBehaviorMix.$applyHeightToFirstAscent, resolvesTo(false));
+          expect(
+            textHeightBehaviorMix.$applyHeightToFirstAscent,
+            resolvesTo(false),
+          );
           expect(textHeightBehaviorMix.$applyHeightToLastDescent, isNull);
           expect(textHeightBehaviorMix.$leadingDistribution, isNull);
         },
@@ -77,7 +92,10 @@ void main() {
           final textHeightBehaviorMix =
               TextHeightBehaviorMix.applyHeightToLastDescent(true);
 
-          expect(textHeightBehaviorMix.$applyHeightToLastDescent, resolvesTo(true));
+          expect(
+            textHeightBehaviorMix.$applyHeightToLastDescent,
+            resolvesTo(true),
+          );
           expect(textHeightBehaviorMix.$applyHeightToFirstAscent, isNull);
           expect(textHeightBehaviorMix.$leadingDistribution, isNull);
         },
@@ -106,14 +124,20 @@ void main() {
         final textHeightBehaviorMix = TextHeightBehaviorMix()
             .applyHeightToFirstAscent(true);
 
-        expect(textHeightBehaviorMix.$applyHeightToFirstAscent, resolvesTo(true));
+        expect(
+          textHeightBehaviorMix.$applyHeightToFirstAscent,
+          resolvesTo(true),
+        );
       });
 
       test('applyHeightToLastDescent utility works correctly', () {
         final textHeightBehaviorMix = TextHeightBehaviorMix()
             .applyHeightToLastDescent(false);
 
-        expect(textHeightBehaviorMix.$applyHeightToLastDescent, resolvesTo(false));
+        expect(
+          textHeightBehaviorMix.$applyHeightToLastDescent,
+          resolvesTo(false),
+        );
       });
 
       test('leadingDistribution utility works correctly', () {
@@ -184,7 +208,10 @@ void main() {
 
         expect(merged.$applyHeightToFirstAscent, resolvesTo(false));
         expect(merged.$applyHeightToLastDescent, resolvesTo(false));
-        expect(merged.$leadingDistribution, resolvesTo(TextLeadingDistribution.even));
+        expect(
+          merged.$leadingDistribution,
+          resolvesTo(TextLeadingDistribution.even),
+        );
       });
     });
 

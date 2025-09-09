@@ -5,7 +5,6 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-
   group('BorderRadiusGeometryUtility', () {
     late BorderRadiusGeometryUtility<MockStyle<BorderRadiusGeometryMix>> util;
 
@@ -473,7 +472,7 @@ void main() {
       // We need to use a Radius token instead of double token
       const radiusValueToken = MixToken<Radius>('radiusValue');
       final context = MockBuildContext(
-        tokens: {radiusValueToken.defineValue(const Radius.circular(16.0))},
+        tokens: {TokenDefinition(radiusValueToken, const Radius.circular(16.0))},
       );
 
       final borderRadiusMix = BorderRadiusMix.create(

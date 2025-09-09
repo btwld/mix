@@ -217,10 +217,7 @@ void main() {
 
     group('only constructor', () {
       test('creates Prop values from direct values', () {
-        final attribute = FlexibleModifierMix(
-          flex: 3,
-          fit: FlexFit.loose,
-        );
+        final attribute = FlexibleModifierMix(flex: 3, fit: FlexFit.loose);
 
         expect(attribute.flex, resolvesTo(3));
         expect(attribute.fit, resolvesTo(FlexFit.loose));
@@ -246,16 +243,11 @@ void main() {
 
     group('resolve', () {
       test('resolves to FlexibleModifier with resolved values', () {
-        final attribute = FlexibleModifierMix(
-          flex: 4,
-          fit: FlexFit.tight,
-        );
+        final attribute = FlexibleModifierMix(flex: 4, fit: FlexFit.tight);
 
         expect(
           attribute,
-          resolvesTo(
-            const FlexibleModifier(flex: 4, fit: FlexFit.tight),
-          ),
+          resolvesTo(const FlexibleModifier(flex: 4, fit: FlexFit.tight)),
         );
       });
 
@@ -268,14 +260,8 @@ void main() {
 
     group('merge', () {
       test('merges with other FlexibleModifierMix', () {
-        final attribute1 = FlexibleModifierMix(
-          flex: 1,
-          fit: FlexFit.loose,
-        );
-        final attribute2 = FlexibleModifierMix(
-          flex: 3,
-          fit: FlexFit.tight,
-        );
+        final attribute1 = FlexibleModifierMix(flex: 1, fit: FlexFit.loose);
+        final attribute2 = FlexibleModifierMix(flex: 3, fit: FlexFit.tight);
 
         final merged = attribute1.merge(attribute2);
 
@@ -304,14 +290,8 @@ void main() {
 
     group('equality and props', () {
       test('equal when all Prop values match', () {
-        final attribute1 = FlexibleModifierMix(
-          flex: 2,
-          fit: FlexFit.tight,
-        );
-        final attribute2 = FlexibleModifierMix(
-          flex: 2,
-          fit: FlexFit.tight,
-        );
+        final attribute1 = FlexibleModifierMix(flex: 2, fit: FlexFit.tight);
+        final attribute2 = FlexibleModifierMix(flex: 2, fit: FlexFit.tight);
 
         expect(attribute1, equals(attribute2));
       });
@@ -324,10 +304,7 @@ void main() {
       });
 
       test('props contains all Prop values', () {
-        final attribute = FlexibleModifierMix(
-          flex: 3,
-          fit: FlexFit.tight,
-        );
+        final attribute = FlexibleModifierMix(flex: 3, fit: FlexFit.tight);
 
         final props = attribute.props;
         expect(props.length, 2);
@@ -338,13 +315,10 @@ void main() {
   });
 
   group('FlexibleModifierUtility', () {
-    late FlexibleModifierUtility<MockStyle<FlexibleModifierMix>>
-    utility;
+    late FlexibleModifierUtility<MockStyle<FlexibleModifierMix>> utility;
 
     setUp(() {
-      utility = FlexibleModifierUtility(
-        (attribute) => MockStyle(attribute),
-      );
+      utility = FlexibleModifierUtility((attribute) => MockStyle(attribute));
     });
 
     test('tight() creates attribute with tight fit', () {

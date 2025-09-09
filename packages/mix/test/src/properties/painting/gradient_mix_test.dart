@@ -42,13 +42,16 @@ void main() {
         expect(linearGradientMix.$begin, resolvesTo(Alignment.topCenter));
         expect(linearGradientMix.$end, resolvesTo(Alignment.bottomCenter));
         expect(linearGradientMix.$tileMode, resolvesTo(TileMode.clamp));
-        expect(linearGradientMix.$transform, resolvesTo(const GradientRotation(0.25)));
-        
+        expect(
+          linearGradientMix.$transform,
+          resolvesTo(const GradientRotation(0.25)),
+        );
+
         expect(linearGradientMix.$colors, hasLength(3));
         expect(linearGradientMix.$colors![0], resolvesTo(Colors.green));
         expect(linearGradientMix.$colors![1], resolvesTo(Colors.yellow));
         expect(linearGradientMix.$colors![2], resolvesTo(Colors.red));
-        
+
         expect(linearGradientMix.$stops, hasLength(3));
         expect(linearGradientMix.$stops![0], resolvesTo(0.0));
         expect(linearGradientMix.$stops![1], resolvesTo(0.5));
@@ -345,13 +348,16 @@ void main() {
         expect(radialGradientMix.$tileMode, resolvesTo(TileMode.repeated));
         expect(radialGradientMix.$focal, resolvesTo(Alignment.bottomRight));
         expect(radialGradientMix.$focalRadius, resolvesTo(0.3));
-        expect(radialGradientMix.$transform, resolvesTo(const GradientRotation(1.5)));
-        
+        expect(
+          radialGradientMix.$transform,
+          resolvesTo(const GradientRotation(1.5)),
+        );
+
         expect(radialGradientMix.$colors, hasLength(3));
         expect(radialGradientMix.$colors![0], resolvesTo(Colors.purple));
         expect(radialGradientMix.$colors![1], resolvesTo(Colors.orange));
         expect(radialGradientMix.$colors![2], resolvesTo(Colors.cyan));
-        
+
         expect(radialGradientMix.$stops, hasLength(3));
         expect(radialGradientMix.$stops![0], resolvesTo(0.1));
         expect(radialGradientMix.$stops![1], resolvesTo(0.6));
@@ -648,13 +654,16 @@ void main() {
         expect(sweepGradientMix.$startAngle, resolvesTo(1.0));
         expect(sweepGradientMix.$endAngle, resolvesTo(2.0));
         expect(sweepGradientMix.$tileMode, resolvesTo(TileMode.decal));
-        expect(sweepGradientMix.$transform, resolvesTo(const GradientRotation(0.75)));
-        
+        expect(
+          sweepGradientMix.$transform,
+          resolvesTo(const GradientRotation(0.75)),
+        );
+
         expect(sweepGradientMix.$colors, hasLength(3));
         expect(sweepGradientMix.$colors![0], resolvesTo(Colors.cyan));
         expect(sweepGradientMix.$colors![1], resolvesTo(Colors.pink));
         expect(sweepGradientMix.$colors![2], resolvesTo(Colors.lime));
-        
+
         expect(sweepGradientMix.$stops, hasLength(3));
         expect(sweepGradientMix.$stops![0], resolvesTo(0.2));
         expect(sweepGradientMix.$stops![1], resolvesTo(0.7));

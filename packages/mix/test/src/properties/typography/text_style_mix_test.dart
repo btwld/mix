@@ -39,7 +39,10 @@ void main() {
         expect(textStyleMix.$fontFamily, resolvesTo('Roboto'));
         expect(textStyleMix.$decoration, resolvesTo(TextDecoration.underline));
         expect(textStyleMix.$decorationColor, resolvesTo(Colors.red));
-        expect(textStyleMix.$decorationStyle, resolvesTo(TextDecorationStyle.solid));
+        expect(
+          textStyleMix.$decorationStyle,
+          resolvesTo(TextDecorationStyle.solid),
+        );
         expect(textStyleMix.$textBaseline, resolvesTo(TextBaseline.alphabetic));
         expect(textStyleMix.$debugLabel, resolvesTo('test-style'));
         expect(textStyleMix.$inherit, resolvesTo(false));
@@ -108,53 +111,71 @@ void main() {
         // Test basic color properties
         expect(textStyleMix.$color, resolvesTo(Colors.green));
         expect(textStyleMix.$backgroundColor, resolvesTo(Colors.red));
-        
+
         // Test font properties
         expect(textStyleMix.$fontSize, resolvesTo(18.0));
         expect(textStyleMix.$fontWeight, resolvesTo(FontWeight.w500));
         expect(textStyleMix.$fontStyle, resolvesTo(FontStyle.normal));
         expect(textStyleMix.$fontFamily, resolvesTo('Arial'));
-        
+
         // Test spacing properties
         expect(textStyleMix.$letterSpacing, resolvesTo(0.5));
         expect(textStyleMix.$wordSpacing, resolvesTo(2.0));
         expect(textStyleMix.$height, resolvesTo(1.4));
-        
+
         // Test baseline and debug properties
         expect(textStyleMix.$textBaseline, resolvesTo(TextBaseline.alphabetic));
         expect(textStyleMix.$debugLabel, resolvesTo('test_style'));
-        
+
         // Test decoration properties
-        expect(textStyleMix.$decoration, resolvesTo(TextDecoration.lineThrough));
+        expect(
+          textStyleMix.$decoration,
+          resolvesTo(TextDecoration.lineThrough),
+        );
         expect(textStyleMix.$decorationColor, resolvesTo(Colors.purple));
-        expect(textStyleMix.$decorationStyle, resolvesTo(TextDecorationStyle.dashed));
+        expect(
+          textStyleMix.$decorationStyle,
+          resolvesTo(TextDecorationStyle.dashed),
+        );
         expect(textStyleMix.$decorationThickness, resolvesTo(2.5));
-        
+
         // Test inherit property
         expect(textStyleMix.$inherit, resolvesTo(false));
-        
+
         // Test list properties
         expect(textStyleMix.$shadows, isNotNull);
         expect(textStyleMix.$shadows, hasLength(2));
         // Verify shadows are converted to ShadowMix
         expect(textStyleMix.$shadows![0], isA<Prop<Shadow>>());
         expect(textStyleMix.$shadows![1], isA<Prop<Shadow>>());
-        
+
         expect(textStyleMix.$fontFeatures, isNotNull);
         expect(textStyleMix.$fontFeatures, hasLength(2));
-        expect(textStyleMix.$fontFeatures![0], resolvesTo(const FontFeature.enable('liga')));
-        expect(textStyleMix.$fontFeatures![1], resolvesTo(const FontFeature.tabularFigures()));
-        
+        expect(
+          textStyleMix.$fontFeatures![0],
+          resolvesTo(const FontFeature.enable('liga')),
+        );
+        expect(
+          textStyleMix.$fontFeatures![1],
+          resolvesTo(const FontFeature.tabularFigures()),
+        );
+
         expect(textStyleMix.$fontVariations, isNotNull);
         expect(textStyleMix.$fontVariations, hasLength(2));
-        expect(textStyleMix.$fontVariations![0], resolvesTo(const FontVariation('wght', 700.0)));
-        expect(textStyleMix.$fontVariations![1], resolvesTo(const FontVariation('wdth', 100.0)));
-        
+        expect(
+          textStyleMix.$fontVariations![0],
+          resolvesTo(const FontVariation('wght', 700.0)),
+        );
+        expect(
+          textStyleMix.$fontVariations![1],
+          resolvesTo(const FontVariation('wdth', 100.0)),
+        );
+
         expect(textStyleMix.$fontFamilyFallback, isNotNull);
         expect(textStyleMix.$fontFamilyFallback, hasLength(2));
         expect(textStyleMix.$fontFamilyFallback![0], resolvesTo('Helvetica'));
         expect(textStyleMix.$fontFamilyFallback![1], resolvesTo('sans-serif'));
-        
+
         // Note: leadingDistribution, locale, and overflow are not extracted by TextStyleMix.value()
         // as they are not part of the TextStyleMix properties
       });
@@ -182,7 +203,7 @@ void main() {
         expect(textStyleMix.$foreground, resolvesTo(foregroundPaint));
         expect(textStyleMix.$background, resolvesTo(backgroundPaint));
         expect(textStyleMix.$fontSize, resolvesTo(20.0));
-        
+
         // Color should be null when foreground is provided
         expect(textStyleMix.$color, isNull);
         expect(textStyleMix.$backgroundColor, isNull);
@@ -323,7 +344,10 @@ void main() {
           TextBaseline.ideographic,
         );
 
-        expect(textStyleMix.$textBaseline, resolvesTo(TextBaseline.ideographic));
+        expect(
+          textStyleMix.$textBaseline,
+          resolvesTo(TextBaseline.ideographic),
+        );
         expect(textStyleMix.$color, isNull);
         expect(textStyleMix.$backgroundColor, isNull);
         expect(textStyleMix.$fontSize, isNull);
@@ -431,7 +455,10 @@ void main() {
             TextDecorationStyle.dashed,
           );
 
-          expect(textStyleMix.$decorationStyle, resolvesTo(TextDecorationStyle.dashed));
+          expect(
+            textStyleMix.$decorationStyle,
+            resolvesTo(TextDecorationStyle.dashed),
+          );
           expect(textStyleMix.$color, isNull);
           expect(textStyleMix.$backgroundColor, isNull);
           expect(textStyleMix.$fontSize, isNull);
@@ -749,7 +776,10 @@ void main() {
           TextDecorationStyle.dotted,
         );
 
-        expect(textStyleMix.$decorationStyle, resolvesTo(TextDecorationStyle.dotted));
+        expect(
+          textStyleMix.$decorationStyle,
+          resolvesTo(TextDecorationStyle.dotted),
+        );
       });
 
       test('debugLabel utility works correctly', () {

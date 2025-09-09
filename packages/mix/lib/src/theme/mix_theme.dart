@@ -2,8 +2,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import '../core/breakpoint.dart';
 import 'material/material_theme.dart';
+import 'tokens/breakpoint_token.dart';
+import 'tokens/color_token.dart';
 import 'tokens/mix_token.dart';
+import 'tokens/radius_token.dart';
+import 'tokens/space_token.dart';
+import 'tokens/text_style_token.dart';
 
 @Deprecated('Use MixScope instead')
 typedef MixTheme = MixScope;
@@ -21,14 +27,33 @@ class MixScope extends InheritedModel<String> {
   /// Creates a MixScope with the provided tokens and modifier ordering
   factory MixScope({
     Set<TokenDefinition>? tokens,
+    Map<ColorToken, Color>? colors,
+    Map<TextStyleToken, TextStyle>? textStyles,
+    Map<SpaceToken, double>? spaces,
+    Map<RadiusToken, Radius>? radii,
+    Map<BreakpointToken, Breakpoint>? breakpoints,
     List<Type>? orderOfModifiers,
     required Widget child,
     Key? key,
   }) {
+    final allTokens = <TokenDefinition>{
+      ...?tokens,
+      if (colors != null)
+        ...colors.entries.map((e) => TokenDefinition(e.key, e.value)),
+      if (textStyles != null)
+        ...textStyles.entries.map((e) => TokenDefinition(e.key, e.value)),
+      if (spaces != null)
+        ...spaces.entries.map((e) => TokenDefinition(e.key, e.value)),
+      if (radii != null)
+        ...radii.entries.map((e) => TokenDefinition(e.key, e.value)),
+      if (breakpoints != null)
+        ...breakpoints.entries.map((e) => TokenDefinition(e.key, e.value)),
+    };
+
     return MixScope._(
       key: key,
-      tokens: tokens != null
-          ? {for (final token in tokens) token.token: token.resolver}
+      tokens: allTokens.isNotEmpty
+          ? {for (final token in allTokens) token.token: token.resolver}
           : null,
       orderOfModifiers: orderOfModifiers,
       child: child,
@@ -47,7 +72,7 @@ class MixScope extends InheritedModel<String> {
     : _tokens = null,
       orderOfModifiers = null;
 
-  /// Creates a MixScope with Material design tokens pre-configured
+  /// Creates a Widget with Material design tokens pre-configured
   ///
   /// Material Design tokens automatically adapt to light and dark themes
   /// through Flutter's built-in theming system.
@@ -55,25 +80,40 @@ class MixScope extends InheritedModel<String> {
   /// Example:
   /// ```dart
   /// MixScope.withMaterial(
-  ///   tokens: {
-  ///     // Add custom adaptive tokens alongside material ones
-  ///     myCustomColor.defineAdaptive(
-  ///       light: Colors.blue,
-  ///       dark: Colors.lightBlue,
-  ///     ),
+  ///   colors: {
+  ///     myCustomColor: Colors.blue,
   ///   },
   ///   child: MyApp(),
   /// )
   /// ```
-  factory MixScope.withMaterial({
+  static Widget withMaterial({
     Set<TokenDefinition>? tokens,
+    Map<ColorToken, Color>? colors,
+    Map<TextStyleToken, TextStyle>? textStyles,
+    Map<SpaceToken, double>? spaces,
+    Map<RadiusToken, Radius>? radii,
+    Map<BreakpointToken, Breakpoint>? breakpoints,
     List<Type>? orderOfModifiers,
     required Widget child,
     Key? key,
   }) {
+    final allCustomTokens = <TokenDefinition>{
+      ...?tokens,
+      if (colors != null)
+        ...colors.entries.map((e) => TokenDefinition(e.key, e.value)),
+      if (textStyles != null)
+        ...textStyles.entries.map((e) => TokenDefinition(e.key, e.value)),
+      if (spaces != null)
+        ...spaces.entries.map((e) => TokenDefinition(e.key, e.value)),
+      if (radii != null)
+        ...radii.entries.map((e) => TokenDefinition(e.key, e.value)),
+      if (breakpoints != null)
+        ...breakpoints.entries.map((e) => TokenDefinition(e.key, e.value)),
+    };
+
     return createMaterialMixScope(
       key: key,
-      additionalTokens: tokens,
+      additionalTokens: allCustomTokens.isNotEmpty ? allCustomTokens : null,
       orderOfModifiers: orderOfModifiers,
       child: child,
     );

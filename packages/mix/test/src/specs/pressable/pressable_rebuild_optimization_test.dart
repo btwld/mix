@@ -102,51 +102,57 @@ void main() {
       );
     });
 
-    testWidgets('MixInteractionDetector child should not rebuild on state changes', (
-      WidgetTester tester,
-    ) async {
-      int childBuildCount = 0;
+    testWidgets(
+      'MixInteractionDetector child should not rebuild on state changes',
+      (WidgetTester tester) async {
+        int childBuildCount = 0;
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: MixInteractionDetector(
-                child: Builder(
-                  builder: (context) {
-                    childBuildCount++;
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: Center(
+                child: MixInteractionDetector(
+                  child: Builder(
+                    builder: (context) {
+                      childBuildCount++;
 
-                    return Container(
-                      width: 100,
-                      height: 100,
-                      color: Colors.green,
-                      child: const Text('Interact with me'),
-                    );
-                  },
+                      return Container(
+                        width: 100,
+                        height: 100,
+                        color: Colors.green,
+                        child: const Text('Interact with me'),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      );
+        );
 
-      // Initial build
-      expect(childBuildCount, 1);
+        // Initial build
+        expect(childBuildCount, 1);
 
-      // Hover over the interactable
-      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
-      await gesture.addPointer(location: Offset.zero);
-      addTearDown(gesture.removePointer);
-      await tester.pump();
-      await gesture.moveTo(tester.getCenter(find.byType(MixInteractionDetector)));
-      await tester.pump();
+        // Hover over the interactable
+        final gesture = await tester.createGesture(
+          kind: PointerDeviceKind.mouse,
+        );
+        await gesture.addPointer(location: Offset.zero);
+        addTearDown(gesture.removePointer);
+        await tester.pump();
+        await gesture.moveTo(
+          tester.getCenter(find.byType(MixInteractionDetector)),
+        );
+        await tester.pump();
 
-      // Child should NOT rebuild on hover
-      expect(
-        childBuildCount,
-        1,
-        reason: 'MixInteractionDetector child should not rebuild on hover state change',
-      );
-    });
+        // Child should NOT rebuild on hover
+        expect(
+          childBuildCount,
+          1,
+          reason:
+              'MixInteractionDetector child should not rebuild on hover state change',
+        );
+      },
+    );
   });
 }

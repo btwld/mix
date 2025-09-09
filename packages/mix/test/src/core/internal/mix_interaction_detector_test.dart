@@ -74,7 +74,7 @@ void main() {
 
       // When disabled on initialization, should emit false hover callback
       expect(lastHoverState, isFalse);
-      
+
       // Try to interact - should not respond
       final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
       await gesture.addPointer(location: Offset.zero);
@@ -84,7 +84,10 @@ void main() {
       expect(lastHoverState, isFalse);
 
       // Try to tap - should not respond. Tap the detector itself to avoid hit-test warnings when disabled.
-      await tester.tap(find.byType(MixInteractionDetector), warnIfMissed: false);
+      await tester.tap(
+        find.byType(MixInteractionDetector),
+        warnIfMissed: false,
+      );
       await tester.pump();
 
       // Should still be false (no hover events should get through)
@@ -385,12 +388,14 @@ void main() {
       final errors = <FlutterErrorDetails>[];
       final originalOnError = FlutterError.onError;
       FlutterError.onError = (details) {
-        if (details.toString().contains('setState() or markNeedsBuild() called during build')) {
+        if (details.toString().contains(
+          'setState() or markNeedsBuild() called during build',
+        )) {
           errors.add(details);
         }
         originalOnError?.call(details);
       };
-      
+
       try {
         // Test with internal controller - disabled initially
         await tester.pumpWidget(
@@ -401,9 +406,14 @@ void main() {
             ),
           ),
         );
-        
-        expect(errors, isEmpty, reason: 'Should not cause setState during build with internal controller');
-        
+
+        expect(
+          errors,
+          isEmpty,
+          reason:
+              'Should not cause setState during build with internal controller',
+        );
+
         // Test with external controller - disabled initially
         final controller = WidgetStatesController();
         await tester.pumpWidget(
@@ -415,9 +425,14 @@ void main() {
             ),
           ),
         );
-        
-        expect(errors, isEmpty, reason: 'Should not cause setState during build with external controller');
-        
+
+        expect(
+          errors,
+          isEmpty,
+          reason:
+              'Should not cause setState during build with external controller',
+        );
+
         // Test with enabled initially
         await tester.pumpWidget(
           MaterialApp(
@@ -428,8 +443,12 @@ void main() {
             ),
           ),
         );
-        
-        expect(errors, isEmpty, reason: 'Should not cause setState during build when enabled');
+
+        expect(
+          errors,
+          isEmpty,
+          reason: 'Should not cause setState during build when enabled',
+        );
       } finally {
         FlutterError.onError = originalOnError;
       }
@@ -440,7 +459,7 @@ void main() {
     ) async {
       final controller = WidgetStatesController();
       bool? lastHoverValue;
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: MixInteractionDetector(
@@ -451,28 +470,31 @@ void main() {
           ),
         ),
       );
-      
+
       // Should be disabled and hover callback should have been called with false
       expect(controller.has(WidgetState.disabled), isTrue);
       expect(controller.has(WidgetState.hovered), isFalse);
       expect(lastHoverValue, isFalse);
-      
+
       // Try to interact - should be blocked by IgnorePointer
       final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
       await gesture.addPointer(location: Offset.zero);
       await gesture.moveTo(tester.getCenter(find.byKey(const Key('test'))));
       await tester.pump();
-      
+
       expect(controller.has(WidgetState.hovered), isFalse);
       expect(lastHoverValue, isFalse); // Should still be false
-      
+
       // Try to tap - should be blocked. Tap the detector to avoid hit-test warnings when disabled.
-      await tester.tap(find.byType(MixInteractionDetector), warnIfMissed: false);
+      await tester.tap(
+        find.byType(MixInteractionDetector),
+        warnIfMissed: false,
+      );
       await tester.pump();
-      
+
       expect(controller.has(WidgetState.pressed), isFalse);
       expect(lastHoverValue, isFalse); // Should still be false
-      
+
       await gesture.removePointer();
     });
 
@@ -480,7 +502,7 @@ void main() {
       WidgetTester tester,
     ) async {
       final controller = WidgetStatesController();
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: MixInteractionDetector(
@@ -489,12 +511,14 @@ void main() {
           ),
         ),
       );
-      
+
       // Test single gesture
-      final gesture = await tester.startGesture(tester.getCenter(find.byKey(const Key('test'))));
+      final gesture = await tester.startGesture(
+        tester.getCenter(find.byKey(const Key('test'))),
+      );
       await tester.pump();
       expect(controller.has(WidgetState.pressed), isTrue);
-      
+
       await gesture.up();
       await tester.pump();
       expect(controller.has(WidgetState.pressed), isFalse);
@@ -504,7 +528,7 @@ void main() {
       WidgetTester tester,
     ) async {
       PointerPosition? capturedPosition;
-      
+
       await tester.pumpWidget(
         MaterialApp(
           home: MixInteractionDetector(
@@ -515,16 +539,20 @@ void main() {
           ),
         ),
       );
-      
+
       // Move mouse to trigger position callback
       final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
       await gesture.addPointer(location: Offset.zero);
       await gesture.moveTo(tester.getCenter(find.byKey(const Key('test'))));
       await tester.pump();
-      
-      expect(capturedPosition, isNotNull, reason: 'Callback should fire even without provider listeners');
+
+      expect(
+        capturedPosition,
+        isNotNull,
+        reason: 'Callback should fire even without provider listeners',
+      );
       expect(capturedPosition!.position, equals(Alignment.center));
-      
+
       await gesture.removePointer();
     });
 
@@ -538,13 +566,13 @@ void main() {
           ),
         ),
       );
-      
+
       // Should not crash when hovering over zero-size widget
       final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
       await gesture.addPointer(location: Offset.zero);
       await gesture.moveTo(const Offset(50, 50));
       await tester.pump();
-      
+
       // No assertion needed - just checking it doesn't crash
       await gesture.removePointer();
     });
