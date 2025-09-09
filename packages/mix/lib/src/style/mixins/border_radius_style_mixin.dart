@@ -5,7 +5,8 @@ import '../../properties/painting/border_radius_mix.dart';
 import 'decoration_style_mixin.dart';
 
 /// Mixin that provides convenient border radius styling methods
-mixin BorderRadiusStyleMixin<T extends Mix<Object?>> implements DecorationStyleMixin<T> {
+mixin BorderRadiusStyleMixin<T extends Mix<Object?>>
+    implements DecorationStyleMixin<T> {
   // Methods accepting Radius values (using existing factory constructors)
 
   T borderRadiusAll(Radius radius) {

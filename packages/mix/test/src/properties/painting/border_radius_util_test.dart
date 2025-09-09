@@ -5,7 +5,6 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-
   group('BorderRadiusGeometryUtility', () {
     late BorderRadiusGeometryUtility<MockStyle<BorderRadiusGeometryMix>> util;
 

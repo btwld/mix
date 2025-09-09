@@ -6,7 +6,9 @@ import '../../../helpers/testing_utils.dart';
 
 // Test class that extends MockStyle and uses BorderStyleMixin
 class TestBorderStyle extends MockStyle<DecorationMix>
-    with BorderStyleMixin<TestBorderStyle>, DecorationStyleMixin<TestBorderStyle> {
+    with
+        BorderStyleMixin<TestBorderStyle>,
+        DecorationStyleMixin<TestBorderStyle> {
   TestBorderStyle([DecorationMix? value]) : super(value ?? BoxDecorationMix());
 
   @override

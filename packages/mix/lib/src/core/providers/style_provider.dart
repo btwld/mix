@@ -22,4 +22,3 @@ class StyleProvider<S extends Spec<S>> extends InheritedWidget {
     return style != oldWidget.style;
   }
 }
-

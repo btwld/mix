@@ -11,8 +11,11 @@ mixin ValueRef<T> on Prop<T> {
   /// Generates a detailed error message for token reference misuse.
   String _buildTokenReferenceError(Symbol memberName) {
     final typeName = T.toString();
-    final memberNameStr = memberName.toString().replaceFirst('Symbol("', '').replaceFirst('")', '');
-    
+    final memberNameStr = memberName
+        .toString()
+        .replaceFirst('Symbol("', '')
+        .replaceFirst('")', '');
+
     return '''Cannot access '$memberNameStr' on a $typeName token reference.
 
 This is a context-dependent $typeName token that needs to be resolved through BuildContext before use.
@@ -22,7 +25,7 @@ To use as an actual $typeName value:
 - Pass it to Mix utilities: \$box.color.token(myColorToken)  
 - Or resolve it first: myColorToken.resolve(context)''';
   }
-  
+
   @override
   Never noSuchMethod(Invocation invocation) {
     throw UnimplementedError(_buildTokenReferenceError(invocation.memberName));

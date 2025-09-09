@@ -59,7 +59,6 @@ class EdgeInsetsConverter implements MixConverter<EdgeInsets> {
   }
 }
 
-
 /// Converts [StrutStyle] to [StrutStyleMix].
 class StrutStyleConverter implements MixConverter<StrutStyle> {
   const StrutStyleConverter();
@@ -82,7 +81,6 @@ class TextHeightBehaviorConverter implements MixConverter<TextHeightBehavior> {
     return TextHeightBehaviorMix.value(value);
   }
 }
-
 
 /// Converts [BoxDecoration] to [BoxDecorationMix].
 class BoxDecorationConverter implements MixConverter<BoxDecoration> {
@@ -263,7 +261,6 @@ class SweepGradientConverter implements MixConverter<SweepGradient> {
     return SweepGradientMix.value(value);
   }
 }
-
 
 /// Converts [BoxConstraints] to [BoxConstraintsMix].
 class BoxConstraintsConverter implements MixConverter<BoxConstraints> {

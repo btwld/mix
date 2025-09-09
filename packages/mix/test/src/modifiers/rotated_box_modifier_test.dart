@@ -181,14 +181,11 @@ void main() {
     });
 
     group('resolve', () {
-      test(
-        'resolves to RotatedBoxModifier with resolved quarter turns',
-        () {
-          final attribute = RotatedBoxModifierMix(quarterTurns: 1);
+      test('resolves to RotatedBoxModifier with resolved quarter turns', () {
+        final attribute = RotatedBoxModifierMix(quarterTurns: 1);
 
-          expect(attribute, resolvesTo(const RotatedBoxModifier(1)));
-        },
-      );
+        expect(attribute, resolvesTo(const RotatedBoxModifier(1)));
+      });
 
       test('resolves with null quarter turns to zero', () {
         final attribute = RotatedBoxModifierMix();
@@ -204,7 +201,10 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expect(merged.quarterTurns, resolvesTo(3)); // Prop<int> uses replacement
+        expect(
+          merged.quarterTurns,
+          resolvesTo(3),
+        ); // Prop<int> uses replacement
       });
 
       test('returns original when other is null', () {
@@ -251,15 +251,10 @@ void main() {
   });
 
   group('RotatedBoxModifierUtility', () {
-    late RotatedBoxModifierUtility<
-      MockStyle<RotatedBoxModifierMix>
-    >
-    utility;
+    late RotatedBoxModifierUtility<MockStyle<RotatedBoxModifierMix>> utility;
 
     setUp(() {
-      utility = RotatedBoxModifierUtility(
-        (attribute) => MockStyle(attribute),
-      );
+      utility = RotatedBoxModifierUtility((attribute) => MockStyle(attribute));
     });
 
     test('call() creates attribute with specified quarter turns', () {
@@ -303,24 +298,15 @@ void main() {
     test('utility methods are convenience for call()', () {
       final d90Result = utility.d90();
 
-      expect(
-        d90Result.value.quarterTurns!,
-        resolvesTo(1),
-      );
+      expect(d90Result.value.quarterTurns!, resolvesTo(1));
 
       final d180Result = utility.d180();
 
-      expect(
-        d180Result.value.quarterTurns!,
-        resolvesTo(2),
-      );
+      expect(d180Result.value.quarterTurns!, resolvesTo(2));
 
       final d270Result = utility.d270();
 
-      expect(
-        d270Result.value.quarterTurns!,
-        resolvesTo(3),
-      );
+      expect(d270Result.value.quarterTurns!, resolvesTo(3));
     });
   });
 

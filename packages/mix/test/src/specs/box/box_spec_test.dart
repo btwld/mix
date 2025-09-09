@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -119,11 +118,24 @@ void main() {
 
         final lerped = spec1.lerp(spec2, 0.5);
 
-        expect(lerped.constraints, BoxConstraints.lerp(
-          const BoxConstraints(minWidth: 100.0, maxWidth: 100.0, minHeight: 200.0, maxHeight: 200.0),
-          const BoxConstraints(minWidth: 200.0, maxWidth: 200.0, minHeight: 400.0, maxHeight: 400.0),
-          0.5,
-        ));
+        expect(
+          lerped.constraints,
+          BoxConstraints.lerp(
+            const BoxConstraints(
+              minWidth: 100.0,
+              maxWidth: 100.0,
+              minHeight: 200.0,
+              maxHeight: 200.0,
+            ),
+            const BoxConstraints(
+              minWidth: 200.0,
+              maxWidth: 200.0,
+              minHeight: 400.0,
+              maxHeight: 400.0,
+            ),
+            0.5,
+          ),
+        );
         expect(lerped.alignment, Alignment.center);
       });
 
@@ -140,7 +152,12 @@ void main() {
         // When t < 0.5, constraints interpolate towards null (partial values)
         final lerped1 = spec.lerp(null, 0.3);
         final expectedConstraints1 = BoxConstraints.lerp(
-          const BoxConstraints(minWidth: 100.0, maxWidth: 100.0, minHeight: 200.0, maxHeight: 200.0),
+          const BoxConstraints(
+            minWidth: 100.0,
+            maxWidth: 100.0,
+            minHeight: 200.0,
+            maxHeight: 200.0,
+          ),
           null,
           0.3,
         );
@@ -149,7 +166,12 @@ void main() {
         // When t >= 0.5, constraints interpolate closer to null (smaller values)
         final lerped2 = spec.lerp(null, 0.7);
         final expectedConstraints2 = BoxConstraints.lerp(
-          const BoxConstraints(minWidth: 100.0, maxWidth: 100.0, minHeight: 200.0, maxHeight: 200.0),
+          const BoxConstraints(
+            minWidth: 100.0,
+            maxWidth: 100.0,
+            minHeight: 200.0,
+            maxHeight: 200.0,
+          ),
           null,
           0.7,
         );

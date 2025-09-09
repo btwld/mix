@@ -146,7 +146,10 @@ void main() {
 
         expect(merged.$blurRadius, resolvesTo(10.0)); // from first
         expect(merged.$color, resolvesTo(Colors.red)); // second overrides
-        expect(merged.$offset, resolvesTo(const Offset(3.0, 3.0))); // from second
+        expect(
+          merged.$offset,
+          resolvesTo(const Offset(3.0, 3.0)),
+        ); // from second
       });
 
       test('returns this when other is null', () {
@@ -380,7 +383,10 @@ void main() {
 
         expect(merged.$blurRadius, resolvesTo(10.0)); // from first
         expect(merged.$color, resolvesTo(Colors.red)); // second overrides
-        expect(merged.$offset, resolvesTo(const Offset(3.0, 3.0))); // from second
+        expect(
+          merged.$offset,
+          resolvesTo(const Offset(3.0, 3.0)),
+        ); // from second
         expect(merged.$spreadRadius, resolvesTo(2.0)); // second overrides
       });
 

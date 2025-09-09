@@ -63,9 +63,13 @@ void main() {
               (e) => e.message,
               'message',
               allOf([
-                contains("Cannot access 'nonExistentMethod' on a Color token reference"),
+                contains(
+                  "Cannot access 'nonExistentMethod' on a Color token reference",
+                ),
                 contains('This is a context-dependent Color token'),
-                contains('Token references can only be passed directly to Mix styling utilities'),
+                contains(
+                  'Token references can only be passed directly to Mix styling utilities',
+                ),
                 contains('Pass it to Mix utilities'),
                 contains('Or resolve it first'),
               ]),
@@ -590,7 +594,10 @@ void main() {
         final alignmentRef = AlignmentProp(Prop.token(alignmentToken));
 
         // Both should work with their specific types
-        expect(alignmentGeometryRef, PropMatcher.isToken(alignmentGeometryToken));
+        expect(
+          alignmentGeometryRef,
+          PropMatcher.isToken(alignmentGeometryToken),
+        );
         expect(alignmentRef, PropMatcher.isToken(alignmentToken));
 
         // Both are class-based refs, so they use $token

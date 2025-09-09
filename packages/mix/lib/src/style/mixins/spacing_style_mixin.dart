@@ -39,21 +39,25 @@ mixin SpacingStyleMixin<T extends Mix<Object?>> {
 
     // Use directional if start/end provided
     if (start != null || end != null) {
-      return padding(EdgeInsetsGeometryMix.directional(
-        start: start ?? resolvedLeft,
-        end: end ?? resolvedRight,
-        top: resolvedTop,
-        bottom: resolvedBottom,
-      ));
+      return padding(
+        EdgeInsetsGeometryMix.directional(
+          start: start ?? resolvedLeft,
+          end: end ?? resolvedRight,
+          top: resolvedTop,
+          bottom: resolvedBottom,
+        ),
+      );
     }
 
     // Otherwise use regular EdgeInsets
-    return padding(EdgeInsetsGeometryMix.only(
-      left: resolvedLeft,
-      right: resolvedRight,
-      top: resolvedTop,
-      bottom: resolvedBottom,
-    ));
+    return padding(
+      EdgeInsetsGeometryMix.only(
+        left: resolvedLeft,
+        right: resolvedRight,
+        top: resolvedTop,
+        bottom: resolvedBottom,
+      ),
+    );
   }
 
   // Margin convenience methods
@@ -86,20 +90,24 @@ mixin SpacingStyleMixin<T extends Mix<Object?>> {
 
     // Use directional if start/end provided
     if (start != null || end != null) {
-      return margin(EdgeInsetsGeometryMix.directional(
-        start: start ?? resolvedLeft,
-        end: end ?? resolvedRight,
-        top: resolvedTop,
-        bottom: resolvedBottom,
-      ));
+      return margin(
+        EdgeInsetsGeometryMix.directional(
+          start: start ?? resolvedLeft,
+          end: end ?? resolvedRight,
+          top: resolvedTop,
+          bottom: resolvedBottom,
+        ),
+      );
     }
 
     // Otherwise use regular EdgeInsets
-    return margin(EdgeInsetsGeometryMix.only(
-      left: resolvedLeft,
-      right: resolvedRight,
-      top: resolvedTop,
-      bottom: resolvedBottom,
-    ));
+    return margin(
+      EdgeInsetsGeometryMix.only(
+        left: resolvedLeft,
+        right: resolvedRight,
+        top: resolvedTop,
+        bottom: resolvedBottom,
+      ),
+    );
   }
 }

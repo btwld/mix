@@ -556,7 +556,9 @@ void main() {
 
       test('handles multiple merges correctly', () {
         final util1 = TextMutableStyler(TextStyler(maxLines: 3));
-        final util2 = TextMutableStyler(TextStyler(textAlign: TextAlign.center));
+        final util2 = TextMutableStyler(
+          TextStyler(textAlign: TextAlign.center),
+        );
         final util3 = TextMutableStyler(TextStyler(softWrap: false));
 
         final result = util1.merge(util2).merge(util3);

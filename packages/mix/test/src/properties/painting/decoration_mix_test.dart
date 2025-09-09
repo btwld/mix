@@ -19,7 +19,10 @@ void main() {
 
         expect(boxDecorationMix.$color, resolvesTo(Colors.blue));
         expect(boxDecorationMix.$shape, resolvesTo(BoxShape.circle));
-        expect(boxDecorationMix.$backgroundBlendMode, resolvesTo(BlendMode.multiply));
+        expect(
+          boxDecorationMix.$backgroundBlendMode,
+          resolvesTo(BlendMode.multiply),
+        );
         expect(boxDecorationMix.$border, isA<Prop<BoxBorder>>());
         expect(
           boxDecorationMix.$borderRadius,
@@ -80,12 +83,16 @@ void main() {
 
         expect(boxDecorationMix.$color, resolvesTo(Colors.red));
         expect(boxDecorationMix.$shape, resolvesTo(BoxShape.rectangle));
-        expect(boxDecorationMix.$backgroundBlendMode, resolvesTo(BlendMode.multiply));
-        
+        expect(
+          boxDecorationMix.$backgroundBlendMode,
+          resolvesTo(BlendMode.multiply),
+        );
+
         // Test border extraction
         expect(boxDecorationMix.$border, isNotNull);
         // BoxDecorationMix.value() creates a BorderMix, which is wrapped as MixSource
-        final borderMixSource = boxDecorationMix.$border!.sources[0] as MixSource<BoxBorder>;
+        final borderMixSource =
+            boxDecorationMix.$border!.sources[0] as MixSource<BoxBorder>;
         final borderMix = borderMixSource.mix;
         // Resolve the BorderMix to get the actual Border
         final border = borderMix.resolve(MockBuildContext()) as Border;
@@ -93,39 +100,46 @@ void main() {
         expect(border.top.width, 2.0);
         expect(border.right.color, Colors.green);
         expect(border.right.width, 1.0);
-        
+
         // Test borderRadius extraction
         expect(boxDecorationMix.$borderRadius, isNotNull);
         // BorderRadiusGeometryMix.maybeValue() creates a Mix
-        final borderRadiusMixSource = boxDecorationMix.$borderRadius!.sources[0] as MixSource<BorderRadiusGeometry>;
+        final borderRadiusMixSource =
+            boxDecorationMix.$borderRadius!.sources[0]
+                as MixSource<BorderRadiusGeometry>;
         final borderRadiusMix = borderRadiusMixSource.mix;
-        final borderRadius = borderRadiusMix.resolve(MockBuildContext()) as BorderRadius;
+        final borderRadius =
+            borderRadiusMix.resolve(MockBuildContext()) as BorderRadius;
         expect(borderRadius.topLeft, const Radius.circular(8.0));
-        
+
         // Test boxShadow extraction
         expect(boxDecorationMix.$boxShadow, isNotNull);
         expect(boxDecorationMix.$boxShadow!.length, 2);
-        
-        final firstShadowSource = boxDecorationMix.$boxShadow![0].sources[0] as MixSource<BoxShadow>;
+
+        final firstShadowSource =
+            boxDecorationMix.$boxShadow![0].sources[0] as MixSource<BoxShadow>;
         final firstShadowMix = firstShadowSource.mix;
         final firstShadow = firstShadowMix.resolve(MockBuildContext());
         expect(firstShadow.color, Colors.black);
         expect(firstShadow.offset, const Offset(2.0, 2.0));
         expect(firstShadow.blurRadius, 5.0);
         expect(firstShadow.spreadRadius, 1.0);
-        
-        final secondShadowSource = boxDecorationMix.$boxShadow![1].sources[0] as MixSource<BoxShadow>;
+
+        final secondShadowSource =
+            boxDecorationMix.$boxShadow![1].sources[0] as MixSource<BoxShadow>;
         final secondShadowMix = secondShadowSource.mix;
         final secondShadow = secondShadowMix.resolve(MockBuildContext());
         expect(secondShadow.color, Colors.grey);
         expect(secondShadow.offset, const Offset(1.0, 1.0));
         expect(secondShadow.blurRadius, 3.0);
-        
+
         // Test gradient extraction
         expect(boxDecorationMix.$gradient, isNotNull);
-        final gradientMixSource = boxDecorationMix.$gradient!.sources[0] as MixSource<Gradient>;
+        final gradientMixSource =
+            boxDecorationMix.$gradient!.sources[0] as MixSource<Gradient>;
         final gradientMix = gradientMixSource.mix;
-        final gradient = gradientMix.resolve(MockBuildContext()) as LinearGradient;
+        final gradient =
+            gradientMix.resolve(MockBuildContext()) as LinearGradient;
         expect(gradient.colors, [Colors.white, Colors.black]);
         expect(gradient.begin, Alignment.topLeft);
         expect(gradient.end, Alignment.bottomRight);
@@ -300,53 +314,60 @@ void main() {
 
         // Color should be null since we're using gradient
         expect(shapeDecorationMix.$color, isNull);
-        
+
         // Test shape extraction
         expect(shapeDecorationMix.$shape, isNotNull);
         // ShapeDecorationMix.value() creates a ShapeBorderMix, which is wrapped as MixSource
-        final shapeMixSource = shapeDecorationMix.$shape!.sources[0] as MixSource<ShapeBorder>;
+        final shapeMixSource =
+            shapeDecorationMix.$shape!.sources[0] as MixSource<ShapeBorder>;
         final shapeMix = shapeMixSource.mix;
         // Resolve the ShapeBorderMix to get the actual ShapeBorder
-        final shape = shapeMix.resolve(MockBuildContext()) as RoundedRectangleBorder;
+        final shape =
+            shapeMix.resolve(MockBuildContext()) as RoundedRectangleBorder;
         expect(shape.borderRadius, BorderRadius.circular(10.0));
         expect(shape.side.color, Colors.blue);
         expect(shape.side.width, 2.0);
-        
+
         // Test gradient extraction
         expect(shapeDecorationMix.$gradient, isNotNull);
         // GradientMix.maybeValue() creates a GradientMix, which is wrapped as MixSource
-        final gradientMixSource = shapeDecorationMix.$gradient!.sources[0] as MixSource<Gradient>;
+        final gradientMixSource =
+            shapeDecorationMix.$gradient!.sources[0] as MixSource<Gradient>;
         final gradientMix = gradientMixSource.mix;
         // Resolve the GradientMix to get the actual Gradient
-        final gradient = gradientMix.resolve(MockBuildContext()) as RadialGradient;
+        final gradient =
+            gradientMix.resolve(MockBuildContext()) as RadialGradient;
         expect(gradient.colors, [Colors.red, Colors.yellow]);
         expect(gradient.center, Alignment.center);
         expect(gradient.radius, 0.5);
-        
+
         // Test shadows extraction
         expect(shapeDecorationMix.$shadows, isNotNull);
         expect(shapeDecorationMix.$shadows!.length, 2);
-        
+
         // BoxShadowMix.value() likely creates MixSource
-        final firstShadowSource = shapeDecorationMix.$shadows![0].sources[0] as MixSource<BoxShadow>;
+        final firstShadowSource =
+            shapeDecorationMix.$shadows![0].sources[0] as MixSource<BoxShadow>;
         final firstShadowMix = firstShadowSource.mix;
         final firstShadow = firstShadowMix.resolve(MockBuildContext());
         expect(firstShadow.color, Colors.black54);
         expect(firstShadow.offset, const Offset(3.0, 3.0));
         expect(firstShadow.blurRadius, 6.0);
         expect(firstShadow.spreadRadius, 2.0);
-        
-        final secondShadowSource = shapeDecorationMix.$shadows![1].sources[0] as MixSource<BoxShadow>;
+
+        final secondShadowSource =
+            shapeDecorationMix.$shadows![1].sources[0] as MixSource<BoxShadow>;
         final secondShadowMix = secondShadowSource.mix;
         final secondShadow = secondShadowMix.resolve(MockBuildContext());
         expect(secondShadow.color, Colors.grey);
         expect(secondShadow.offset, const Offset(1.0, 1.0));
         expect(secondShadow.blurRadius, 2.0);
-        
+
         // Test image extraction
         expect(shapeDecorationMix.$image, isNotNull);
         // DecorationImageMix.maybeValue() creates a Mix
-        final imageMixSource = shapeDecorationMix.$image!.sources[0] as MixSource<DecorationImage>;
+        final imageMixSource =
+            shapeDecorationMix.$image!.sources[0] as MixSource<DecorationImage>;
         final imageMix = imageMixSource.mix;
         final decorationImage = imageMix.resolve(MockBuildContext());
         expect(decorationImage.image, isA<NetworkImage>());

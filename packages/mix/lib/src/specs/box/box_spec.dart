@@ -133,4 +133,3 @@ class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
     clipBehavior,
   ];
 }
-

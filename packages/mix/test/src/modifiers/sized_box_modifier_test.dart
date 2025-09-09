@@ -215,10 +215,7 @@ void main() {
 
     group('only constructor', () {
       test('creates Prop values from direct values', () {
-        final attribute = SizedBoxModifierMix(
-          width: 100.0,
-          height: 200.0,
-        );
+        final attribute = SizedBoxModifierMix(width: 100.0, height: 200.0);
 
         expect(attribute.width!, resolvesTo(100.0));
         expect(attribute.height!, resolvesTo(200.0));
@@ -244,10 +241,7 @@ void main() {
 
     group('resolve', () {
       test('resolves to SizedBoxModifier with resolved values', () {
-        final attribute = SizedBoxModifierMix(
-          width: 100.0,
-          height: 200.0,
-        );
+        final attribute = SizedBoxModifierMix(width: 100.0, height: 200.0);
 
         const expectedModifier = SizedBoxModifier(width: 100.0, height: 200.0);
 
@@ -265,14 +259,8 @@ void main() {
 
     group('merge', () {
       test('merges with other SizedBoxModifierMix', () {
-        final attribute1 = SizedBoxModifierMix(
-          width: 100.0,
-          height: 100.0,
-        );
-        final attribute2 = SizedBoxModifierMix(
-          width: 200.0,
-          height: 200.0,
-        );
+        final attribute1 = SizedBoxModifierMix(width: 100.0, height: 100.0);
+        final attribute2 = SizedBoxModifierMix(width: 200.0, height: 200.0);
 
         final merged = attribute1.merge(attribute2);
 
@@ -290,10 +278,7 @@ void main() {
 
       test('merges with null values', () {
         final attribute1 = SizedBoxModifierMix();
-        final attribute2 = SizedBoxModifierMix(
-          width: 100.0,
-          height: 200.0,
-        );
+        final attribute2 = SizedBoxModifierMix(width: 100.0, height: 200.0);
 
         final merged = attribute1.merge(attribute2);
 
@@ -304,14 +289,8 @@ void main() {
 
     group('equality and props', () {
       test('equal when all Prop values match', () {
-        final attribute1 = SizedBoxModifierMix(
-          width: 100.0,
-          height: 200.0,
-        );
-        final attribute2 = SizedBoxModifierMix(
-          width: 100.0,
-          height: 200.0,
-        );
+        final attribute1 = SizedBoxModifierMix(width: 100.0, height: 200.0);
+        final attribute2 = SizedBoxModifierMix(width: 100.0, height: 200.0);
 
         expect(attribute1, equals(attribute2));
       });
@@ -324,10 +303,7 @@ void main() {
       });
 
       test('props contains all Prop values', () {
-        final attribute = SizedBoxModifierMix(
-          width: 100.0,
-          height: 200.0,
-        );
+        final attribute = SizedBoxModifierMix(width: 100.0, height: 200.0);
 
         final props = attribute.props;
         expect(props.length, 2);

@@ -182,11 +182,13 @@ void main() {
 
         expect(
           () => variantAttr1.merge(variantAttr2),
-          throwsA(isA<ArgumentError>().having(
-            (e) => e.message,
-            'message',
-            contains('Cannot merge VariantStyle with different variants'),
-          )),
+          throwsA(
+            isA<ArgumentError>().having(
+              (e) => e.message,
+              'message',
+              contains('Cannot merge VariantStyle with different variants'),
+            ),
+          ),
         );
       });
 

@@ -9,9 +9,7 @@ void main() {
     late ShadowUtility<MockStyle<ShadowMix>> util;
 
     setUp(() {
-      util = ShadowUtility<MockStyle<ShadowMix>>(
-        (mix) => MockStyle(mix),
-      );
+      util = ShadowUtility<MockStyle<ShadowMix>>((mix) => MockStyle(mix));
     });
 
     group('utility properties', () {
@@ -68,29 +66,16 @@ void main() {
 
         expect(
           shadow,
-          const Shadow(
-            blurRadius: 8.0,
-            color: Colors.blue,
-            offset: offset,
-          ),
+          const Shadow(blurRadius: 8.0, color: Colors.blue, offset: offset),
         );
       });
 
       test('handles partial properties', () {
-        final result = util(
-          blurRadius: 6.0,
-          color: Colors.green,
-        );
+        final result = util(blurRadius: 6.0, color: Colors.green);
 
         final shadow = result.value.resolve(MockBuildContext());
 
-        expect(
-          shadow,
-          const Shadow(
-            blurRadius: 6.0,
-            color: Colors.green,
-          ),
-        );
+        expect(shadow, const Shadow(blurRadius: 6.0, color: Colors.green));
       });
 
       test('handles null values', () {
@@ -115,11 +100,7 @@ void main() {
 
         expect(
           shadow,
-          const Shadow(
-            blurRadius: 3.0,
-            color: Colors.yellow,
-            offset: offset,
-          ),
+          const Shadow(blurRadius: 3.0, color: Colors.yellow, offset: offset),
         );
       });
 
@@ -186,9 +167,7 @@ void main() {
     late BoxShadowUtility<MockStyle<BoxShadowMix>> util;
 
     setUp(() {
-      util = BoxShadowUtility<MockStyle<BoxShadowMix>>(
-        (mix) => MockStyle(mix),
-      );
+      util = BoxShadowUtility<MockStyle<BoxShadowMix>>((mix) => MockStyle(mix));
     });
 
     group('utility properties', () {
@@ -268,19 +247,13 @@ void main() {
       });
 
       test('handles partial properties', () {
-        final result = util(
-          color: Colors.green,
-          blurRadius: 6.0,
-        );
+        final result = util(color: Colors.green, blurRadius: 6.0);
 
         final boxShadow = result.value.resolve(MockBuildContext());
 
         expect(
           boxShadow,
-          const BoxShadow(
-            color: Colors.green,
-            blurRadius: 6.0,
-          ),
+          const BoxShadow(color: Colors.green, blurRadius: 6.0),
         );
       });
 
@@ -317,19 +290,13 @@ void main() {
       });
 
       test('handles partial parameters', () {
-        final result = util(
-          color: Colors.orange,
-          blurRadius: 5.0,
-        );
+        final result = util(color: Colors.orange, blurRadius: 5.0);
 
         final boxShadow = result.value.resolve(MockBuildContext());
 
         expect(
           boxShadow,
-          const BoxShadow(
-            color: Colors.orange,
-            blurRadius: 5.0,
-          ),
+          const BoxShadow(color: Colors.orange, blurRadius: 5.0),
         );
       });
     });
@@ -596,7 +563,9 @@ void main() {
       final boxShadowColor = boxShadowUtil.color.red();
 
       final shadowResolved = shadowColor.value.resolve(MockBuildContext());
-      final boxShadowResolved = boxShadowColor.value.resolve(MockBuildContext());
+      final boxShadowResolved = boxShadowColor.value.resolve(
+        MockBuildContext(),
+      );
 
       expect(shadowResolved.color, Colors.red);
       expect(boxShadowResolved.color, Colors.red);

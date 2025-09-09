@@ -14,8 +14,13 @@ void main() {
         expect(mixProp.sources, hasLength(1));
         expect(mixProp.sources.first, isA<TokenSource<Shadow>>());
         // TokenSource doesn't provide direct Mix value
-        final mixSource = mixProp.sources.whereType<MixSource<Shadow>>().firstOrNull;
-        expect(mixSource, isNull); // Cannot provide value for tokens without context
+        final mixSource = mixProp.sources
+            .whereType<MixSource<Shadow>>()
+            .firstOrNull;
+        expect(
+          mixSource,
+          isNull,
+        ); // Cannot provide value for tokens without context
       });
 
       test('stores token correctly', () {
@@ -208,7 +213,9 @@ void main() {
         final mixProp = Prop.token(token);
 
         // TokenSource doesn't provide direct Mix value
-        final mixSource = mixProp.sources.whereType<MixSource<Shadow>>().firstOrNull;
+        final mixSource = mixProp.sources
+            .whereType<MixSource<Shadow>>()
+            .firstOrNull;
         expect(mixSource, isNull);
       });
 
@@ -216,7 +223,10 @@ void main() {
         final shadowMix = ShadowMix(color: Colors.red, blurRadius: 2.0);
         final mixProp = Prop.mix(shadowMix);
 
-        expect(mixProp, resolvesTo(const Shadow(color: Colors.red, blurRadius: 2.0)));
+        expect(
+          mixProp,
+          resolvesTo(const Shadow(color: Colors.red, blurRadius: 2.0)),
+        );
       });
     });
   });

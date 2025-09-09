@@ -136,9 +136,7 @@ void main() {
       });
 
       test('uses step function for physics', () {
-        const start = ScrollViewModifier(
-          physics: BouncingScrollPhysics(),
-        );
+        const start = ScrollViewModifier(physics: BouncingScrollPhysics());
         const end = ScrollViewModifier(physics: ClampingScrollPhysics());
 
         expect(start.lerp(end, 0.49).physics, isA<BouncingScrollPhysics>());
@@ -217,18 +215,12 @@ void main() {
 
       test('physics instances affect equality', () {
         // With const, Dart might optimize to the same instance
-        const modifier1 = ScrollViewModifier(
-          physics: BouncingScrollPhysics(),
-        );
-        const modifier2 = ScrollViewModifier(
-          physics: BouncingScrollPhysics(),
-        );
+        const modifier1 = ScrollViewModifier(physics: BouncingScrollPhysics());
+        const modifier2 = ScrollViewModifier(physics: BouncingScrollPhysics());
 
         // These might be equal due to const optimization
         // Different physics types should definitely not be equal
-        const modifier3 = ScrollViewModifier(
-          physics: ClampingScrollPhysics(),
-        );
+        const modifier3 = ScrollViewModifier(physics: ClampingScrollPhysics());
 
         expect(modifier1, isNot(equals(modifier3)));
         expect(modifier1, equals(modifier2));
@@ -488,10 +480,16 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expect(merged.scrollDirection, resolvesTo(Axis.horizontal)); // overridden
+        expect(
+          merged.scrollDirection,
+          resolvesTo(Axis.horizontal),
+        ); // overridden
         expect(merged.reverse, resolvesTo(false)); // preserved
         expect(merged.padding, isNotNull); // preserved
-        expect(merged.physics, resolvesTo(isA<BouncingScrollPhysics>())); // added
+        expect(
+          merged.physics,
+          resolvesTo(isA<BouncingScrollPhysics>()),
+        ); // added
         expect(merged.clipBehavior, resolvesTo(Clip.antiAlias)); // added
       });
 
@@ -575,15 +573,10 @@ void main() {
   });
 
   group('ScrollViewModifierUtility', () {
-    late ScrollViewModifierUtility<
-      MockStyle<ScrollViewModifierMix>
-    >
-    utility;
+    late ScrollViewModifierUtility<MockStyle<ScrollViewModifierMix>> utility;
 
     setUp(() {
-      utility = ScrollViewModifierUtility(
-        (attribute) => MockStyle(attribute),
-      );
+      utility = ScrollViewModifierUtility((attribute) => MockStyle(attribute));
     });
 
     test('call() creates attribute with specified values', () {
@@ -637,7 +630,10 @@ void main() {
         final result = utility.neverScrollableScrollPhysics();
         final attribute = result.value;
 
-        expect(attribute.physics, resolvesTo(isA<NeverScrollableScrollPhysics>()));
+        expect(
+          attribute.physics,
+          resolvesTo(isA<NeverScrollableScrollPhysics>()),
+        );
       },
     );
 

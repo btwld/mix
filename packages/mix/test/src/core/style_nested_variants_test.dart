@@ -9,7 +9,7 @@ void main() {
     test('simple nested named variants should work', () {
       const primaryVariant = NamedVariant('primary');
       const secondaryVariant = NamedVariant('secondary');
-      
+
       final testAttribute = _MockSpecAttribute(
         width: 100.0,
         variants: [
@@ -34,7 +34,7 @@ void main() {
         namedVariants: {primaryVariant, secondaryVariant},
       );
       final resolvedValue = result.spec.resolvedValue as Map<String, dynamic>;
-      
+
       // Should resolve to 300.0 (nested secondary variant within primary)
       expect(resolvedValue['width'], 300.0);
     });
@@ -70,11 +70,12 @@ void main() {
               child: Builder(
                 builder: (context) {
                   final result = testAttribute.build(context);
-                  final resolvedValue = result.spec.resolvedValue as Map<String, dynamic>;
-                  
+                  final resolvedValue =
+                      result.spec.resolvedValue as Map<String, dynamic>;
+
                   // Should resolve to 300.0 (nested orientation variant within hover)
                   expect(resolvedValue['width'], 300.0);
-                  
+
                   return Container();
                 },
               ),
@@ -84,7 +85,9 @@ void main() {
       );
     });
 
-    testWidgets('nested variant without parent condition should not apply', (tester) async {
+    testWidgets('nested variant without parent condition should not apply', (
+      tester,
+    ) async {
       final testAttribute = _MockSpecAttribute(
         width: 100.0,
         variants: [
@@ -109,11 +112,12 @@ void main() {
           home: Builder(
             builder: (context) {
               final result = testAttribute.build(context);
-              final resolvedValue = result.spec.resolvedValue as Map<String, dynamic>;
-              
+              final resolvedValue =
+                  result.spec.resolvedValue as Map<String, dynamic>;
+
               // Should resolve to 100.0 (base value, hover not active so nested dark doesn't apply)
               expect(resolvedValue['width'], 100.0);
-              
+
               return Container();
             },
           ),
@@ -159,11 +163,12 @@ void main() {
               child: Builder(
                 builder: (context) {
                   final result = testAttribute.build(context);
-                  final resolvedValue = result.spec.resolvedValue as Map<String, dynamic>;
-                  
+                  final resolvedValue =
+                      result.spec.resolvedValue as Map<String, dynamic>;
+
                   // Should resolve to 400.0 (three levels deep)
                   expect(resolvedValue['width'], 400.0);
-                  
+
                   return Container();
                 },
               ),
@@ -175,7 +180,7 @@ void main() {
 
     test('empty nested variants should not cause issues', () {
       const primaryVariant = NamedVariant('primary');
-      
+
       final testAttribute = _MockSpecAttribute(
         width: 100.0,
         variants: [
@@ -195,14 +200,14 @@ void main() {
         namedVariants: {primaryVariant},
       );
       final resolvedValue = result.spec.resolvedValue as Map<String, dynamic>;
-      
+
       // Should resolve to 200.0 (primary variant with empty nested variants)
       expect(resolvedValue['width'], 200.0);
     });
 
     test('null nested variants should work correctly', () {
       const primaryVariant = NamedVariant('primary');
-      
+
       final testAttribute = _MockSpecAttribute(
         width: 100.0,
         variants: [
@@ -222,7 +227,7 @@ void main() {
         namedVariants: {primaryVariant},
       );
       final resolvedValue = result.spec.resolvedValue as Map<String, dynamic>;
-      
+
       // Should resolve to 200.0 (primary variant with null nested variants)
       expect(resolvedValue['width'], 200.0);
     });
@@ -234,7 +239,7 @@ void main() {
       const level3 = NamedVariant('level3');
       const level4 = NamedVariant('level4');
       const level5 = NamedVariant('level5');
-      
+
       final testAttribute = _MockSpecAttribute(
         width: 100.0,
         variants: [
@@ -283,11 +288,10 @@ void main() {
         namedVariants: {level1, level2, level3, level4, level5},
       );
       final resolvedValue = result.spec.resolvedValue as Map<String, dynamic>;
-      
+
       // Should resolve to 600.0 (deepest level)
       expect(resolvedValue['width'], 600.0);
     });
-
   });
 }
 

@@ -243,7 +243,9 @@ void main() {
 
       test('creates with provided Prop value', () {
         final mouseCursor = Prop.value<MouseCursor>(SystemMouseCursors.click);
-        final attribute = MouseCursorModifierMix.create(mouseCursor: mouseCursor);
+        final attribute = MouseCursorModifierMix.create(
+          mouseCursor: mouseCursor,
+        );
 
         expect(attribute.mouseCursor, same(mouseCursor));
       });
@@ -297,7 +299,10 @@ void main() {
 
         final merged = attribute1.merge(attribute2);
 
-        expect(merged.mouseCursor, resolvesTo(SystemMouseCursors.click)); // overridden
+        expect(
+          merged.mouseCursor,
+          resolvesTo(SystemMouseCursors.click),
+        ); // overridden
       });
 
       test('returns original when other is null', () {
@@ -466,10 +471,7 @@ void main() {
 
       for (final cursor in testCases) {
         final attribute = MouseCursorModifierMix(mouseCursor: cursor);
-        expect(
-          attribute,
-          resolvesTo(MouseCursorModifier(mouseCursor: cursor)),
-        );
+        expect(attribute, resolvesTo(MouseCursorModifier(mouseCursor: cursor)));
 
         final modifier = attribute.resolve(MockBuildContext());
         const child = SizedBox(width: 50, height: 50);

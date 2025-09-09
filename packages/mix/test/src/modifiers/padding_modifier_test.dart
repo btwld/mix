@@ -55,9 +55,7 @@ void main() {
       });
 
       test('interpolates asymmetric padding correctly', () {
-        const start = PaddingModifier(
-          EdgeInsets.fromLTRB(10, 20, 30, 40),
-        );
+        const start = PaddingModifier(EdgeInsets.fromLTRB(10, 20, 30, 40));
         const end = PaddingModifier(EdgeInsets.fromLTRB(20, 40, 60, 80));
         final result = start.lerp(end, 0.5);
 
@@ -213,10 +211,7 @@ void main() {
       test('resolves with null padding to zero padding', () {
         final attribute = PaddingModifierMix();
 
-        expect(
-          attribute,
-          resolvesTo(const PaddingModifier(EdgeInsets.zero)),
-        );
+        expect(attribute, resolvesTo(const PaddingModifier(EdgeInsets.zero)));
       });
 
       test('resolves EdgeInsetsDirectionalMix correctly', () {
@@ -241,27 +236,18 @@ void main() {
 
     group('merge', () {
       test('merges with other PaddingModifierMix', () {
-        final attribute1 = PaddingModifierMix(
-          padding: EdgeInsetsMix.all(10.0),
-        );
-        final attribute2 = PaddingModifierMix(
-          padding: EdgeInsetsMix.all(20.0),
-        );
+        final attribute1 = PaddingModifierMix(padding: EdgeInsetsMix.all(10.0));
+        final attribute2 = PaddingModifierMix(padding: EdgeInsetsMix.all(20.0));
 
         final merged = attribute1.merge(attribute2);
 
         // Prop<Mix> accumulates, but since both set all sides, second wins
         expect(merged.padding, isNotNull);
-        expect(
-          merged,
-          resolvesTo(const PaddingModifier(EdgeInsets.all(20.0))),
-        );
+        expect(merged, resolvesTo(const PaddingModifier(EdgeInsets.all(20.0))));
       });
 
       test('returns original when other is null', () {
-        final attribute = PaddingModifierMix(
-          padding: EdgeInsetsMix.all(10.0),
-        );
+        final attribute = PaddingModifierMix(padding: EdgeInsetsMix.all(10.0));
 
         final merged = attribute.merge(null);
 
@@ -291,31 +277,21 @@ void main() {
 
     group('equality and props', () {
       test('equal when padding matches', () {
-        final attribute1 = PaddingModifierMix(
-          padding: EdgeInsetsMix.all(16.0),
-        );
-        final attribute2 = PaddingModifierMix(
-          padding: EdgeInsetsMix.all(16.0),
-        );
+        final attribute1 = PaddingModifierMix(padding: EdgeInsetsMix.all(16.0));
+        final attribute2 = PaddingModifierMix(padding: EdgeInsetsMix.all(16.0));
 
         expect(attribute1, equals(attribute2));
       });
 
       test('not equal when padding differs', () {
-        final attribute1 = PaddingModifierMix(
-          padding: EdgeInsetsMix.all(10.0),
-        );
-        final attribute2 = PaddingModifierMix(
-          padding: EdgeInsetsMix.all(20.0),
-        );
+        final attribute1 = PaddingModifierMix(padding: EdgeInsetsMix.all(10.0));
+        final attribute2 = PaddingModifierMix(padding: EdgeInsetsMix.all(20.0));
 
         expect(attribute1, isNot(equals(attribute2)));
       });
 
       test('props contains padding', () {
-        final attribute = PaddingModifierMix(
-          padding: EdgeInsetsMix.all(16.0),
-        );
+        final attribute = PaddingModifierMix(padding: EdgeInsetsMix.all(16.0));
 
         final props = attribute.props;
         expect(props.length, 1);
@@ -325,13 +301,10 @@ void main() {
   });
 
   group('PaddingModifierUtility', () {
-    late PaddingModifierUtility<MockStyle<PaddingModifierMix>>
-    utility;
+    late PaddingModifierUtility<MockStyle<PaddingModifierMix>> utility;
 
     setUp(() {
-      utility = PaddingModifierUtility(
-        (attribute) => MockStyle(attribute),
-      );
+      utility = PaddingModifierUtility((attribute) => MockStyle(attribute));
     });
 
     test('call() creates attribute with specified padding', () {
@@ -365,10 +338,7 @@ void main() {
       // Test all padding
       final allResult = utility.call(padding: EdgeInsetsMix.all(16.0));
       final allAttr = allResult.value;
-      expect(
-        allAttr,
-        resolvesTo(const PaddingModifier(EdgeInsets.all(16.0))),
-      );
+      expect(allAttr, resolvesTo(const PaddingModifier(EdgeInsets.all(16.0))));
 
       // Test horizontal padding
       final horizontalResult = utility.call(
@@ -389,18 +359,13 @@ void main() {
       final verticalAttr = verticalResult.value;
       expect(
         verticalAttr,
-        resolvesTo(
-          const PaddingModifier(EdgeInsets.symmetric(vertical: 25.0)),
-        ),
+        resolvesTo(const PaddingModifier(EdgeInsets.symmetric(vertical: 25.0))),
       );
 
       // Test individual sides
       final topResult = utility.call(padding: EdgeInsetsMix(top: 10.0));
       final topAttr = topResult.value;
-      expect(
-        topAttr,
-        resolvesTo(PaddingModifier(EdgeInsets.only(top: 10.0))),
-      );
+      expect(topAttr, resolvesTo(PaddingModifier(EdgeInsets.only(top: 10.0))));
 
       final leftResult = utility.call(padding: EdgeInsetsMix(left: 20.0));
       final leftAttr = leftResult.value;
@@ -415,9 +380,7 @@ void main() {
     testWidgets('PaddingModifierMix resolves and builds correctly', (
       WidgetTester tester,
     ) async {
-      final attribute = PaddingModifierMix(
-        padding: EdgeInsetsMix.all(24.0),
-      );
+      final attribute = PaddingModifierMix(padding: EdgeInsetsMix.all(24.0));
 
       expect(
         attribute,
@@ -446,9 +409,7 @@ void main() {
         ),
       );
 
-      final override2 = PaddingModifierMix(
-        padding: EdgeInsetsMix(top: 30.0),
-      );
+      final override2 = PaddingModifierMix(padding: EdgeInsetsMix(top: 30.0));
 
       final result = base.merge(override1).merge(override2);
 
@@ -456,9 +417,7 @@ void main() {
       // Final result: left/right from override1, top from override2, bottom from override1
       expect(
         result,
-        resolvesTo(
-          const PaddingModifier(EdgeInsets.fromLTRB(20, 30, 20, 10)),
-        ),
+        resolvesTo(const PaddingModifier(EdgeInsets.fromLTRB(20, 30, 20, 10))),
       );
     });
 
@@ -488,9 +447,7 @@ void main() {
       expect(
         attribute,
         resolvesTo(
-          const PaddingModifier(
-            EdgeInsetsDirectional.fromSTEB(10, 30, 20, 40),
-          ),
+          const PaddingModifier(EdgeInsetsDirectional.fromSTEB(10, 30, 20, 40)),
         ),
       );
     });

@@ -42,7 +42,8 @@ void main() {
         );
 
         final result =
-            DecorationMerger().tryMerge(context, box1, box2) as BoxDecorationMix;
+            DecorationMerger().tryMerge(context, box1, box2)
+                as BoxDecorationMix;
 
         expect(result.runtimeType, equals(BoxDecorationMix));
         expect(result.$color, resolvesTo(Colors.red));
@@ -195,7 +196,9 @@ void main() {
           border: BorderMix.all(BorderSideMix(color: Colors.red, width: 1)),
         );
         expect(
-          DecorationMerger().tryMerge(context, shape, boxWithBorder).runtimeType,
+          DecorationMerger()
+              .tryMerge(context, shape, boxWithBorder)
+              .runtimeType,
           equals(ShapeDecorationMix),
         );
 
@@ -204,7 +207,9 @@ void main() {
           borderRadius: BorderRadiusGeometryMix.circular(8),
         );
         expect(
-          DecorationMerger().tryMerge(context, shape, boxWithBorderRadius).runtimeType,
+          DecorationMerger()
+              .tryMerge(context, shape, boxWithBorderRadius)
+              .runtimeType,
           equals(ShapeDecorationMix),
         );
 
@@ -220,7 +225,9 @@ void main() {
           backgroundBlendMode: BlendMode.multiply,
         );
         expect(
-          DecorationMerger().tryMerge(context, shape, boxWithBlendMode).runtimeType,
+          DecorationMerger()
+              .tryMerge(context, shape, boxWithBlendMode)
+              .runtimeType,
           equals(ShapeDecorationMix),
         );
       });
@@ -231,7 +238,9 @@ void main() {
         // ShapeDecorationMix without shape - should preserve BoxDecorationMix
         final shapeWithoutShape = ShapeDecorationMix(color: Colors.blue);
         expect(
-          DecorationMerger().tryMerge(context, box, shapeWithoutShape).runtimeType,
+          DecorationMerger()
+              .tryMerge(context, box, shapeWithoutShape)
+              .runtimeType,
           equals(BoxDecorationMix),
         );
 
@@ -270,7 +279,11 @@ void main() {
         final emptyBox = BoxDecorationMix();
         final emptyShape = ShapeDecorationMix();
 
-        final result = DecorationMerger().tryMerge(context, emptyBox, emptyShape);
+        final result = DecorationMerger().tryMerge(
+          context,
+          emptyBox,
+          emptyShape,
+        );
         expect(
           result.runtimeType,
           equals(BoxDecorationMix),
@@ -290,7 +303,8 @@ void main() {
           ],
         );
 
-        final result = DecorationMerger().tryMerge(context, 
+        final result = DecorationMerger().tryMerge(
+          context,
           boxWithShadows,
           shapeWithShadows,
         );
@@ -298,7 +312,10 @@ void main() {
 
         final boxResult = result as BoxDecorationMix;
         expect(boxResult.$boxShadow?.length, equals(1));
-        expect(boxResult.$boxShadow, isNotNull); // Second argument takes precedence
+        expect(
+          boxResult.$boxShadow,
+          isNotNull,
+        ); // Second argument takes precedence
       });
 
       test('handles null properties correctly', () {
@@ -313,7 +330,8 @@ void main() {
           gradient: LinearGradientMix(colors: [Colors.white, Colors.black]),
         );
 
-        final result = DecorationMerger().tryMerge(context, 
+        final result = DecorationMerger().tryMerge(
+          context,
           boxWithNulls,
           shapeWithNulls,
         );

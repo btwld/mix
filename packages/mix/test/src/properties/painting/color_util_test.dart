@@ -440,7 +440,10 @@ void main() {
       // Test that directives can be applied using the base utility methods
       final withOpacity = util.withOpacity(0.6);
       expect(withOpacity.value.$directives, hasLength(1));
-      expect(withOpacity.value.$directives!.first, isA<OpacityColorDirective>());
+      expect(
+        withOpacity.value.$directives!.first,
+        isA<OpacityColorDirective>(),
+      );
     });
   });
 
@@ -466,9 +469,7 @@ void main() {
     test('token falls back when not found in context', () {
       const colorToken = MixToken<Color>('missingColor');
 
-      final context = MockBuildContext(
-        tokens: {},
-      );
+      final context = MockBuildContext(tokens: {});
 
       final util = ColorUtility<MockStyle<Prop<Color>>>(
         (prop) => MockStyle(prop),

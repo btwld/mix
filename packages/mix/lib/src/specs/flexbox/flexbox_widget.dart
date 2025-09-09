@@ -146,7 +146,10 @@ extension FlexSpecWidget on FlexSpec {
 /// Extension to convert [FlexBoxSpec] directly to a styled flex widget.
 extension FlexBoxSpecWidget on FlexBoxSpec {
   /// Creates a widget from this [FlexBoxSpec].
-  Widget createWidget({required Axis direction, List<Widget> children = const []}) {
+  Widget createWidget({
+    required Axis direction,
+    List<Widget> children = const [],
+  }) {
     return _createFlexBoxSpecWidget(
       spec: this,
       forcedDirection: direction,
@@ -183,7 +186,10 @@ extension FlexSpecWrappedWidget on StyleSpec<FlexSpec> {
 
 extension FlexBoxSpecWrappedWidget on StyleSpec<FlexBoxSpec> {
   /// Creates a widget that resolves this [StyleSpec<FlexBoxSpec>] with context.
-  Widget createWidget({required Axis direction, List<Widget> children = const []}) {
+  Widget createWidget({
+    required Axis direction,
+    List<Widget> children = const [],
+  }) {
     return StyleSpecBuilder(
       builder: (context, spec) {
         return _createFlexBoxSpecWidget(

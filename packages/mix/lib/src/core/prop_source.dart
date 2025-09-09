@@ -21,19 +21,19 @@ sealed class PropSource<V> {
 @immutable
 class ValueSource<V> extends PropSource<V> {
   final V value;
-  
+
   const ValueSource(this.value);
-  
+
   @override
   String toString() => 'ValueSource($value)';
-  
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    
+
     return other is ValueSource<V> && other.value == value;
   }
-  
+
   @override
   int get hashCode => value.hashCode;
 }
@@ -45,19 +45,19 @@ class ValueSource<V> extends PropSource<V> {
 @immutable
 class TokenSource<V> extends PropSource<V> {
   final MixToken<V> token;
-  
+
   const TokenSource(this.token);
-  
+
   @override
   String toString() => 'TokenSource($token)';
-  
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    
+
     return other is TokenSource<V> && other.token == token;
   }
-  
+
   @override
   int get hashCode => token.hashCode;
 }
@@ -69,20 +69,19 @@ class TokenSource<V> extends PropSource<V> {
 @immutable
 class MixSource<V> extends PropSource<V> {
   final Mix<V> mix;
-  
+
   const MixSource(this.mix);
-  
+
   @override
   String toString() => 'MixSource($mix)';
-  
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    
+
     return other is MixSource<V> && other.mix == mix;
   }
-  
+
   @override
   int get hashCode => mix.hashCode;
 }
-

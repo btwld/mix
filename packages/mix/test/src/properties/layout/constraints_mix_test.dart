@@ -177,20 +177,23 @@ void main() {
       test('width utility merges correctly with existing properties', () {
         final initial = BoxConstraintsMix(minHeight: 50.0, maxHeight: 100.0);
         final result = initial.width(75.0);
-        
+
         expect(result.$minWidth, resolvesTo(75.0));
         expect(result.$maxWidth, resolvesTo(75.0));
-        expect(result.$minHeight, resolvesTo(50.0));  // Should preserve existing
-        expect(result.$maxHeight, resolvesTo(100.0)); // Should preserve existing
+        expect(result.$minHeight, resolvesTo(50.0)); // Should preserve existing
+        expect(
+          result.$maxHeight,
+          resolvesTo(100.0),
+        ); // Should preserve existing
       });
 
       test('height utility merges correctly with existing properties', () {
         final initial = BoxConstraintsMix(minWidth: 50.0, maxWidth: 100.0);
         final result = initial.height(75.0);
-        
+
         expect(result.$minHeight, resolvesTo(75.0));
         expect(result.$maxHeight, resolvesTo(75.0));
-        expect(result.$minWidth, resolvesTo(50.0));  // Should preserve existing
+        expect(result.$minWidth, resolvesTo(50.0)); // Should preserve existing
         expect(result.$maxWidth, resolvesTo(100.0)); // Should preserve existing
       });
     });

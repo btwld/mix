@@ -7,13 +7,13 @@ import '../../../helpers/testing_utils.dart';
 void main() {
   group('RoundedRectangleBorderUtility', () {
     late RoundedRectangleBorderUtility<MockStyle<RoundedRectangleBorderMix>>
-        util;
+    util;
 
     setUp(() {
-      util = RoundedRectangleBorderUtility<
-          MockStyle<RoundedRectangleBorderMix>>(
-        (mix) => MockStyle(mix),
-      );
+      util =
+          RoundedRectangleBorderUtility<MockStyle<RoundedRectangleBorderMix>>(
+            (mix) => MockStyle(mix),
+          );
     });
 
     group('utility properties', () {
@@ -63,10 +63,7 @@ void main() {
 
         expect(
           border,
-          const RoundedRectangleBorder(
-            borderRadius: radius,
-            side: side,
-          ),
+          const RoundedRectangleBorder(borderRadius: radius, side: side),
         );
       });
 
@@ -78,10 +75,7 @@ void main() {
 
         final border = result.value.resolve(MockBuildContext());
 
-        expect(
-          border,
-          const RoundedRectangleBorder(borderRadius: radius),
-        );
+        expect(border, const RoundedRectangleBorder(borderRadius: radius));
       });
 
       test('handles null values', () {
@@ -106,10 +100,7 @@ void main() {
 
         expect(
           border,
-          const RoundedRectangleBorder(
-            borderRadius: radius,
-            side: side,
-          ),
+          const RoundedRectangleBorder(borderRadius: radius, side: side),
         );
       });
     });
@@ -131,12 +122,13 @@ void main() {
 
   group('BeveledRectangleBorderUtility', () {
     late BeveledRectangleBorderUtility<MockStyle<BeveledRectangleBorderMix>>
-        util;
+    util;
 
     setUp(() {
-      util = BeveledRectangleBorderUtility<MockStyle<BeveledRectangleBorderMix>>(
-        (mix) => MockStyle(mix),
-      );
+      util =
+          BeveledRectangleBorderUtility<MockStyle<BeveledRectangleBorderMix>>(
+            (mix) => MockStyle(mix),
+          );
     });
 
     group('utility properties', () {
@@ -186,10 +178,7 @@ void main() {
 
         expect(
           border,
-          const BeveledRectangleBorder(
-            borderRadius: radius,
-            side: side,
-          ),
+          const BeveledRectangleBorder(borderRadius: radius, side: side),
         );
       });
     });
@@ -203,10 +192,7 @@ void main() {
 
         final border = result.value.resolve(MockBuildContext());
 
-        expect(
-          border,
-          const BeveledRectangleBorder(borderRadius: radius),
-        );
+        expect(border, const BeveledRectangleBorder(borderRadius: radius));
       });
     });
 
@@ -226,13 +212,15 @@ void main() {
 
   group('ContinuousRectangleBorderUtility', () {
     late ContinuousRectangleBorderUtility<
-        MockStyle<ContinuousRectangleBorderMix>> util;
+      MockStyle<ContinuousRectangleBorderMix>
+    >
+    util;
 
     setUp(() {
-      util = ContinuousRectangleBorderUtility<
-          MockStyle<ContinuousRectangleBorderMix>>(
-        (mix) => MockStyle(mix),
-      );
+      util =
+          ContinuousRectangleBorderUtility<
+            MockStyle<ContinuousRectangleBorderMix>
+          >((mix) => MockStyle(mix));
     });
 
     group('utility properties', () {
@@ -247,7 +235,9 @@ void main() {
 
     group('property setters', () {
       test('borderRadius sets border radius', () {
-        final result = util.borderRadius.borderRadius.all(Radius.circular(16.0));
+        final result = util.borderRadius.borderRadius.all(
+          Radius.circular(16.0),
+        );
 
         final border = result.value.resolve(MockBuildContext());
 
@@ -282,10 +272,7 @@ void main() {
 
         expect(
           border,
-          const ContinuousRectangleBorder(
-            borderRadius: radius,
-            side: side,
-          ),
+          const ContinuousRectangleBorder(borderRadius: radius, side: side),
         );
       });
     });
@@ -299,10 +286,7 @@ void main() {
 
         final border = result.value.resolve(MockBuildContext());
 
-        expect(
-          border,
-          const ContinuousRectangleBorder(borderRadius: radius),
-        );
+        expect(border, const ContinuousRectangleBorder(borderRadius: radius));
       });
     });
 
@@ -368,13 +352,7 @@ void main() {
 
         final border = result.value.resolve(MockBuildContext());
 
-        expect(
-          border,
-          const CircleBorder(
-            side: side,
-            eccentricity: 0.5,
-          ),
-        );
+        expect(border, const CircleBorder(side: side, eccentricity: 0.5));
       });
 
       test('handles partial properties', () {
@@ -397,20 +375,11 @@ void main() {
     group('call method', () {
       test('delegates to only method', () {
         const side = BorderSide(color: Colors.green, width: 1.0);
-        final result = util(
-          side: BorderSideMix.value(side),
-          eccentricity: 0.7,
-        );
+        final result = util(side: BorderSideMix.value(side), eccentricity: 0.7);
 
         final border = result.value.resolve(MockBuildContext());
 
-        expect(
-          border,
-          const CircleBorder(
-            side: side,
-            eccentricity: 0.7,
-          ),
-        );
+        expect(border, const CircleBorder(side: side, eccentricity: 0.7));
       });
     });
 
@@ -556,20 +525,11 @@ void main() {
       });
 
       test('handles partial properties', () {
-        final result = util.only(
-          points: 5.0,
-          innerRadiusRatio: 0.3,
-        );
+        final result = util.only(points: 5.0, innerRadiusRatio: 0.3);
 
         final border = result.value.resolve(MockBuildContext());
 
-        expect(
-          border,
-          const StarBorder(
-            points: 5.0,
-            innerRadiusRatio: 0.3,
-          ),
-        );
+        expect(border, const StarBorder(points: 5.0, innerRadiusRatio: 0.3));
       });
 
       test('handles null values', () {
@@ -594,11 +554,7 @@ void main() {
 
         expect(
           border,
-          const StarBorder(
-            side: side,
-            points: 7.0,
-            rotation: 15.0,
-          ),
+          const StarBorder(side: side, points: 7.0, rotation: 15.0),
         );
       });
     });
@@ -683,9 +639,7 @@ void main() {
 
         expect(
           border,
-          const LinearBorder(
-            end: LinearBorderEdge(size: 0.3, alignment: 1.0),
-          ),
+          const LinearBorder(end: LinearBorderEdge(size: 0.3, alignment: 1.0)),
         );
       });
 
@@ -696,9 +650,7 @@ void main() {
 
         expect(
           border,
-          const LinearBorder(
-            top: LinearBorderEdge(size: 0.7, alignment: 0.5),
-          ),
+          const LinearBorder(top: LinearBorderEdge(size: 0.7, alignment: 0.5)),
         );
       });
 
@@ -751,12 +703,8 @@ void main() {
 
       test('handles partial properties', () {
         final result = util.only(
-          start: LinearBorderEdgeMix.value(
-            const LinearBorderEdge(size: 0.6),
-          ),
-          end: LinearBorderEdgeMix.value(
-            const LinearBorderEdge(size: 0.8),
-          ),
+          start: LinearBorderEdgeMix.value(const LinearBorderEdge(size: 0.6)),
+          end: LinearBorderEdgeMix.value(const LinearBorderEdge(size: 0.8)),
         );
 
         final border = result.value.resolve(MockBuildContext());
@@ -960,8 +908,9 @@ void main() {
 
     group('as method', () {
       test('accepts StadiumBorder', () {
-        const border =
-            StadiumBorder(side: BorderSide(color: Colors.purple, width: 4.0));
+        const border = StadiumBorder(
+          side: BorderSide(color: Colors.purple, width: 4.0),
+        );
         final result = util.as(border);
 
         final resolved = result.value.resolve(MockBuildContext());
@@ -1011,7 +960,9 @@ void main() {
 
     group('shape border utilities integration', () {
       test('roundedRectangle utility works', () {
-        final result = util.roundedRectangle.borderRadius.borderRadius.all(Radius.circular(10.0));
+        final result = util.roundedRectangle.borderRadius.borderRadius.all(
+          Radius.circular(10.0),
+        );
 
         final border = result.value.resolve(MockBuildContext());
 
@@ -1024,7 +975,9 @@ void main() {
       });
 
       test('beveled utility works', () {
-        final result = util.beveled.borderRadius.borderRadius.all(Radius.circular(8.0));
+        final result = util.beveled.borderRadius.borderRadius.all(
+          Radius.circular(8.0),
+        );
 
         final border = result.value.resolve(MockBuildContext());
 
@@ -1037,7 +990,9 @@ void main() {
       });
 
       test('continuous utility works', () {
-        final result = util.continuous.borderRadius.borderRadius.all(Radius.circular(12.0));
+        final result = util.continuous.borderRadius.borderRadius.all(
+          Radius.circular(12.0),
+        );
 
         final border = result.value.resolve(MockBuildContext());
 
@@ -1117,8 +1072,9 @@ void main() {
       });
 
       test('accepts StadiumBorder', () {
-        const border =
-            StadiumBorder(side: BorderSide(color: Colors.teal, width: 1.0));
+        const border = StadiumBorder(
+          side: BorderSide(color: Colors.teal, width: 1.0),
+        );
         final result = util.as(border);
 
         final resolved = result.value.resolve(MockBuildContext());
@@ -1131,8 +1087,8 @@ void main() {
     test('different shape borders maintain their specific properties', () {
       final roundedBorderUtil =
           RoundedRectangleBorderUtility<MockStyle<RoundedRectangleBorderMix>>(
-        (mix) => MockStyle(mix),
-      );
+            (mix) => MockStyle(mix),
+          );
       final circleBorderUtil = CircleBorderUtility<MockStyle<CircleBorderMix>>(
         (mix) => MockStyle(mix),
       );
@@ -1140,12 +1096,16 @@ void main() {
         (mix) => MockStyle(mix),
       );
 
-      final rounded = roundedBorderUtil.borderRadius.borderRadius.all(Radius.circular(8.0));
+      final rounded = roundedBorderUtil.borderRadius.borderRadius.all(
+        Radius.circular(8.0),
+      );
       final circle = circleBorderUtil.eccentricity(0.6);
       final star = starBorderUtil.points(5.0);
 
-      expect(rounded.value.resolve(MockBuildContext()),
-          isA<RoundedRectangleBorder>());
+      expect(
+        rounded.value.resolve(MockBuildContext()),
+        isA<RoundedRectangleBorder>(),
+      );
       expect(circle.value.resolve(MockBuildContext()), isA<CircleBorder>());
       expect(star.value.resolve(MockBuildContext()), isA<StarBorder>());
     });
@@ -1153,15 +1113,15 @@ void main() {
     test('side utilities work consistently across shape borders', () {
       final roundedBorderUtil =
           RoundedRectangleBorderUtility<MockStyle<RoundedRectangleBorderMix>>(
-        (mix) => MockStyle(mix),
-      );
+            (mix) => MockStyle(mix),
+          );
       final circleBorderUtil = CircleBorderUtility<MockStyle<CircleBorderMix>>(
         (mix) => MockStyle(mix),
       );
       final stadiumBorderUtil =
           StadiumBorderUtility<MockStyle<StadiumBorderMix>>(
-        (mix) => MockStyle(mix),
-      );
+            (mix) => MockStyle(mix),
+          );
 
       const side = BorderSide(color: Colors.red, width: 2.0);
 

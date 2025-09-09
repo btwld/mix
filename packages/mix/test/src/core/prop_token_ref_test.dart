@@ -17,73 +17,117 @@ void main() {
       test('ColorProp behavior - isAnyTokenRef detects it correctly', () {
         final colorToken = MixToken<Color>('test-color');
         final colorRef = ColorProp(Prop.token(colorToken));
-        
+
         // ColorProp should be detected as a token reference
-        expect(isAnyTokenRef(colorRef), isTrue, 
-          reason: 'Should detect ColorProp as token reference');
-        
+        expect(
+          isAnyTokenRef(colorRef),
+          isTrue,
+          reason: 'Should detect ColorProp as token reference',
+        );
+
         // ColorProp already has proper token behavior built-in
-        expect(colorRef, PropMatcher.hasTokens, 
-          reason: 'ColorProp should have token source');
-        expect(colorRef, PropMatcher.isToken(colorToken), 
-          reason: 'ColorProp should contain the original token');
+        expect(
+          colorRef,
+          PropMatcher.hasTokens,
+          reason: 'ColorProp should have token source',
+        );
+        expect(
+          colorRef,
+          PropMatcher.isToken(colorToken),
+          reason: 'ColorProp should contain the original token',
+        );
       });
 
       test('DoubleRef passed to Prop.value - now detects token', () {
         final doubleToken = MixToken<double>('test-double');
         final doubleRef = DoubleRef.token(doubleToken);
-        
+
         // Pass the DoubleRef to Prop.value
         final prop = Prop.value(doubleRef);
-        
+
         // With fix: should now detect DoubleRef as token
-        expect(prop, PropMatcher.hasTokens, reason: 'Should detect DoubleRef as token reference');
-        expect(prop, PropMatcher.isToken(doubleToken), reason: 'Should store the original double token');
-        expect(prop, isNot(PropMatcher.hasValues), reason: 'Should not store as ValueSource');
+        expect(
+          prop,
+          PropMatcher.hasTokens,
+          reason: 'Should detect DoubleRef as token reference',
+        );
+        expect(
+          prop,
+          PropMatcher.isToken(doubleToken),
+          reason: 'Should store the original double token',
+        );
+        expect(
+          prop,
+          isNot(PropMatcher.hasValues),
+          reason: 'Should not store as ValueSource',
+        );
       });
 
       test('IntRef passed to Prop.value - now detects token', () {
         final intToken = MixToken<int>('test-int');
         final intRef = IntRef.token(intToken);
-        
-        
+
         // Pass the IntRef to Prop.value
         final prop = Prop.value(intRef);
-        
+
         // With fix: should now detect IntRef as token
-        expect(prop, PropMatcher.hasTokens, reason: 'Should detect IntRef as token reference');
-        expect(prop, PropMatcher.isToken(intToken), reason: 'Should store the original int token');
-        expect(prop, isNot(PropMatcher.hasValues), reason: 'Should not store as ValueSource');
+        expect(
+          prop,
+          PropMatcher.hasTokens,
+          reason: 'Should detect IntRef as token reference',
+        );
+        expect(
+          prop,
+          PropMatcher.isToken(intToken),
+          reason: 'Should store the original int token',
+        );
+        expect(
+          prop,
+          isNot(PropMatcher.hasValues),
+          reason: 'Should not store as ValueSource',
+        );
       });
 
       test('StringRef passed to Prop.value - now detects token', () {
         final stringToken = MixToken<String>('test-string');
         final stringRef = StringRef.token(stringToken);
-        
-        
+
         // Pass the StringRef to Prop.value
         final prop = Prop.value(stringRef);
-        
-        // With fix: should now detect StringRef as token
-        expect(prop, PropMatcher.hasTokens, reason: 'Should detect StringRef as token reference');
-        expect(prop, PropMatcher.isToken(stringToken), reason: 'Should store the original string token');
-        expect(prop, isNot(PropMatcher.hasValues), reason: 'Should not store as ValueSource');
-      });
 
+        // With fix: should now detect StringRef as token
+        expect(
+          prop,
+          PropMatcher.hasTokens,
+          reason: 'Should detect StringRef as token reference',
+        );
+        expect(
+          prop,
+          PropMatcher.isToken(stringToken),
+          reason: 'Should store the original string token',
+        );
+        expect(
+          prop,
+          isNot(PropMatcher.hasValues),
+          reason: 'Should not store as ValueSource',
+        );
+      });
     });
 
     group('Token Resolution Tests', () {
-      testWidgets('DoubleRef resolves to token value from context', (tester) async {
+      testWidgets('DoubleRef resolves to token value from context', (
+        tester,
+      ) async {
         final doubleToken = MixToken<double>('width-token');
         final doubleRef = DoubleRef.token(doubleToken);
-        
+
         // Create Prop from token reference
         final prop = Prop.value(doubleRef);
-        
+
         // Verify it's stored as TokenSource
         expect(prop, PropMatcher.hasTokens);
         expect(prop, PropMatcher.isToken(doubleToken));
-        
+
         await tester.pumpWidget(
           MixScope(
             tokens: {
@@ -93,12 +137,18 @@ void main() {
               builder: (context) {
                 // Resolve the prop - should return the token value, not the ref value
                 final resolved = prop.resolveProp(context);
-                
-                expect(resolved, equals(150.0), 
-                  reason: 'Should resolve to token value from theme');
-                expect(resolved, isNot(equals(doubleRef)), 
-                  reason: 'Should not return the reference value');
-                
+
+                expect(
+                  resolved,
+                  equals(150.0),
+                  reason: 'Should resolve to token value from theme',
+                );
+                expect(
+                  resolved,
+                  isNot(equals(doubleRef)),
+                  reason: 'Should not return the reference value',
+                );
+
                 return Container();
               },
             ),
@@ -106,27 +156,27 @@ void main() {
         );
       });
 
-      testWidgets('IntRef resolves to token value from context', (tester) async {
+      testWidgets('IntRef resolves to token value from context', (
+        tester,
+      ) async {
         final intToken = MixToken<int>('count-token');
         final intRef = IntRef.token(intToken);
-        
+
         final prop = Prop.value(intRef);
-        
+
         expect(prop, PropMatcher.hasTokens);
         expect(prop, PropMatcher.isToken(intToken));
-        
+
         await tester.pumpWidget(
           MixScope(
-            tokens: {
-              intToken.defineValue(42),
-            },
+            tokens: {intToken.defineValue(42)},
             child: Builder(
               builder: (context) {
                 final resolved = prop.resolveProp(context);
-                
+
                 expect(resolved, equals(42));
                 expect(resolved, isNot(equals(intRef)));
-                
+
                 return Container();
               },
             ),
@@ -134,27 +184,27 @@ void main() {
         );
       });
 
-      testWidgets('StringRef resolves to token value from context', (tester) async {
+      testWidgets('StringRef resolves to token value from context', (
+        tester,
+      ) async {
         final stringToken = MixToken<String>('text-token');
         final stringRef = StringRef.token(stringToken);
-        
+
         final prop = Prop.value(stringRef);
-        
+
         expect(prop, PropMatcher.hasTokens);
         expect(prop, PropMatcher.isToken(stringToken));
-        
+
         await tester.pumpWidget(
           MixScope(
-            tokens: {
-              stringToken.defineValue('Hello World'),
-            },
+            tokens: {stringToken.defineValue('Hello World')},
             child: Builder(
               builder: (context) {
                 final resolved = prop.resolveProp(context);
-                
+
                 expect(resolved, equals('Hello World'));
                 expect(resolved, isNot(equals(stringRef)));
-                
+
                 return Container();
               },
             ),
@@ -167,26 +217,35 @@ void main() {
       test('isAnyTokenRef detects ColorProp correctly', () {
         final colorToken = MixToken<Color>('test-color');
         final colorRef = ColorProp(Prop.token(colorToken));
-        
-        expect(isAnyTokenRef(colorRef), isTrue,
-          reason: 'isAnyTokenRef should detect ColorProp');
+
+        expect(
+          isAnyTokenRef(colorRef),
+          isTrue,
+          reason: 'isAnyTokenRef should detect ColorProp',
+        );
       });
 
       test('isAnyTokenRef detects DoubleRef correctly', () {
         final doubleToken = MixToken<double>('test-double');
         final doubleRef = DoubleRef.token(doubleToken);
-        
-        expect(isAnyTokenRef(doubleRef), isTrue,
-          reason: 'isAnyTokenRef should detect DoubleRef');
+
+        expect(
+          isAnyTokenRef(doubleRef),
+          isTrue,
+          reason: 'isAnyTokenRef should detect DoubleRef',
+        );
       });
 
       test('getTokenFromValue retrieves token from DoubleRef', () {
         final doubleToken = MixToken<double>('test-double');
         final doubleRef = DoubleRef.token(doubleToken);
-        
+
         final retrieved = getTokenFromValue(doubleRef);
-        expect(retrieved, equals(doubleToken),
-          reason: 'Should retrieve original token from DoubleRef');
+        expect(
+          retrieved,
+          equals(doubleToken),
+          reason: 'Should retrieve original token from DoubleRef',
+        );
       });
 
       test('getTokenFromValue returns null for regular values', () {

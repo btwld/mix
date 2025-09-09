@@ -316,7 +316,7 @@ sealed class AnimationConfig {
       curve: Curves.linear,
     );
   }
-  
+
   /// Creates a spring animation configuration with standard spring physics.
   static SpringAnimationConfig springDescription({
     double mass = 1.0,
@@ -770,14 +770,13 @@ final class SpringAnimationConfig extends AnimationConfig with Equatable {
          ratio: ratio,
        );
 
-
-
   @override
   List<Object?> get props => [spring.mass, spring.stiffness, spring.damping];
 }
 
 class PhaseAnimationConfig<T extends Spec<T>, U extends Style<T>>
-    extends AnimationConfig with Equatable {
+    extends AnimationConfig
+    with Equatable {
   final List<U> styles;
   final List<CurveAnimationConfig> curveConfigs;
   final Listenable trigger;
@@ -789,8 +788,6 @@ class PhaseAnimationConfig<T extends Spec<T>, U extends Style<T>>
     required this.trigger,
     this.onEnd,
   });
-
-
 
   @override
   List<Object?> get props => [styles, trigger, curveConfigs];
@@ -1051,7 +1048,8 @@ class KeyframeAnimationResult {
   }
 }
 
-class KeyframeAnimationConfig<S extends Spec<S>> extends AnimationConfig with Equatable {
+class KeyframeAnimationConfig<S extends Spec<S>> extends AnimationConfig
+    with Equatable {
   final Listenable trigger;
   final List<KeyframeTrack> timeline;
   final KeyframeStyleBuilder<S, Style<S>> styleBuilder;

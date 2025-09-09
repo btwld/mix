@@ -350,9 +350,10 @@ void main() {
       });
 
       test('chaining after construction with initial mix', () {
-        final utility = FlexMutableStyler(FlexStyler(direction: Axis.horizontal))
-          ..gap(8.0)
-          ..mainAxisAlignment(MainAxisAlignment.center);
+        final utility =
+            FlexMutableStyler(FlexStyler(direction: Axis.horizontal))
+              ..gap(8.0)
+              ..mainAxisAlignment(MainAxisAlignment.center);
 
         final spec = utility.resolve(MockBuildContext());
 
@@ -384,7 +385,9 @@ void main() {
 
       test('empty utility after chaining with null values', () {
         // This tests the behavior when properties are explicitly set to null
-        final utility = FlexMutableStyler(FlexStyler(direction: Axis.horizontal));
+        final utility = FlexMutableStyler(
+          FlexStyler(direction: Axis.horizontal),
+        );
         final spec = utility.resolve(MockBuildContext());
 
         expect(spec.spec.direction, Axis.horizontal);
