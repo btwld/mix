@@ -20,7 +20,7 @@ import 'visibility_modifier.dart';
 
 /// Provides utilities for applying modifiers to styles.
 final class ModifierUtility<T extends Style<Object?>>
-    extends MixUtility<T, ModifierMix> {
+    extends MixUtility<T, WidgetModifierMix> {
   /// Opacity modifier utility.
   late final opacity = OpacityModifierUtility<T>(utilityBuilder);
 

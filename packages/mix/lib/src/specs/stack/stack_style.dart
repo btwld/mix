@@ -55,12 +55,12 @@ class StackStyler extends Style<StackSpec>
     WidgetModifierConfig? widgetModifier,
     List<VariantStyle<StackSpec>>? variants,
   }) : this.create(
-         widgetModifier: widgetModifier,
          alignment: Prop.maybe(alignment),
          fit: Prop.maybe(fit),
          textDirection: Prop.maybe(textDirection),
          clipBehavior: Prop.maybe(clipBehavior),
          animation: animation,
+         widgetModifier: widgetModifier,
          variants: variants,
        );
 
@@ -126,15 +126,15 @@ class StackStyler extends Style<StackSpec>
   @override
   StackStyler merge(StackStyler? other) {
     return StackStyler.create(
-      widgetModifier: MixOps.mergeWidgetModifier(
-        $widgetModifier,
-        other?.$widgetModifier,
-      ),
       alignment: MixOps.merge($alignment, other?.$alignment),
       fit: MixOps.merge($fit, other?.$fit),
       textDirection: MixOps.merge($textDirection, other?.$textDirection),
       clipBehavior: MixOps.merge($clipBehavior, other?.$clipBehavior),
       animation: MixOps.mergeAnimation($animation, other?.$animation),
+      widgetModifier: MixOps.mergeWidgetModifier(
+        $widgetModifier,
+        other?.$widgetModifier,
+      ),
       variants: MixOps.mergeVariants($variants, other?.$variants),
     );
   }

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
-import '../../core/style.dart' show Style;
-import '../../core/style.dart' show VariantStyle;
+import '../../core/style.dart' show Style, VariantStyle, WidgetModifierMix;
 import '../../core/style_spec.dart';
 import '../../core/utility.dart';
 import '../../core/utility_variant_mixin.dart';
+import '../../modifiers/modifier_config.dart';
 import '../../modifiers/modifier_util.dart';
 import '../../properties/layout/constraints_util.dart';
 import '../../properties/layout/edge_insets_geometry_util.dart';
@@ -47,7 +47,7 @@ class FlexBoxMutableStyler extends StyleMutableBuilder<FlexBoxSpec>
   );
 
   late final wrap = ModifierUtility(
-    (prop) => mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
+    (WidgetModifierMix prop) => mutable.wrap(WidgetModifierConfig(widgetModifiers: [prop])),
   );
 
   /// Container decoration convenience accessors.

@@ -135,7 +135,7 @@ class DefaultTextStyleModifierMix
     this.maxLines,
     this.textWidthBasis,
     this.textHeightBehavior,
-  }) : super();
+  });
 
   DefaultTextStyleModifierMix({
     TextStyleMix? style,

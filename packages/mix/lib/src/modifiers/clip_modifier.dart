@@ -254,7 +254,7 @@ class ClipRRectModifierMix extends WidgetModifierMix<ClipRRectModifier> {
     this.borderRadius,
     this.clipper,
     this.clipBehavior,
-  }) : super();
+  });
 
   ClipRRectModifierMix({
     BorderRadiusGeometryMix? borderRadius,

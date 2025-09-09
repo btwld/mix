@@ -93,7 +93,6 @@ class BoxStyler extends Style<BoxSpec>
     WidgetModifierConfig? widgetModifier,
     List<VariantStyle<BoxSpec>>? variants,
   }) : this.create(
-         widgetModifier: widgetModifier,
          alignment: Prop.maybe(alignment),
          padding: Prop.maybeMix(padding),
          margin: Prop.maybeMix(margin),
@@ -104,6 +103,7 @@ class BoxStyler extends Style<BoxSpec>
          transformAlignment: Prop.maybe(transformAlignment),
          clipBehavior: Prop.maybe(clipBehavior),
          variants: variants,
+         widgetModifier: widgetModifier,
          animation: animation,
        );
 
@@ -239,10 +239,6 @@ class BoxStyler extends Style<BoxSpec>
   @override
   BoxStyler merge(BoxStyler? other) {
     return BoxStyler.create(
-      widgetModifier: MixOps.mergeWidgetModifier(
-        $widgetModifier,
-        other?.$widgetModifier,
-      ),
       alignment: MixOps.merge($alignment, other?.$alignment),
       padding: MixOps.merge($padding, other?.$padding),
       margin: MixOps.merge($margin, other?.$margin),
@@ -259,6 +255,10 @@ class BoxStyler extends Style<BoxSpec>
       ),
       clipBehavior: MixOps.merge($clipBehavior, other?.$clipBehavior),
       variants: MixOps.mergeVariants($variants, other?.$variants),
+      widgetModifier: MixOps.mergeWidgetModifier(
+        $widgetModifier,
+        other?.$widgetModifier,
+      ),
       animation: MixOps.mergeAnimation($animation, other?.$animation),
     );
   }

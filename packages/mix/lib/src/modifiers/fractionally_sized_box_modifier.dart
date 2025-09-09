@@ -86,7 +86,7 @@ class FractionallySizedBoxModifierMix
     this.widthFactor,
     this.heightFactor,
     this.alignment,
-  }) : super();
+  });
 
   FractionallySizedBoxModifierMix({
     double? widthFactor,

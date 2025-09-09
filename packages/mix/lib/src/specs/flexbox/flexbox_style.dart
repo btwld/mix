@@ -81,7 +81,6 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
     WidgetModifierConfig? widgetModifier,
     List<VariantStyle<FlexBoxSpec>>? variants,
   }) : this.create(
-         widgetModifier: widgetModifier,
          box: Prop.maybeMix(
            BoxStyler(
              alignment: alignment,
@@ -109,6 +108,7 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
            ),
          ),
          animation: animation,
+         widgetModifier: widgetModifier,
          variants: variants,
        );
 
@@ -126,7 +126,8 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
     return FlexBoxStyler().builder(fn);
   }
 
-  static FlexBoxMutableStyler get chain => FlexBoxMutableStyler(FlexBoxStyler());
+  static FlexBoxMutableStyler get chain =>
+      FlexBoxMutableStyler(FlexBoxStyler());
 
   /// Sets animation
   FlexBoxStyler animate(AnimationConfig animation) {
@@ -262,13 +263,13 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
   @override
   FlexBoxStyler merge(FlexBoxStyler? other) {
     return FlexBoxStyler.create(
+      box: MixOps.merge($box, other?.$box),
+      flex: MixOps.merge($flex, other?.$flex),
+      animation: MixOps.mergeAnimation($animation, other?.$animation),
       widgetModifier: MixOps.mergeWidgetModifier(
         $widgetModifier,
         other?.$widgetModifier,
       ),
-      box: MixOps.merge($box, other?.$box),
-      flex: MixOps.merge($flex, other?.$flex),
-      animation: MixOps.mergeAnimation($animation, other?.$animation),
       variants: MixOps.mergeVariants($variants, other?.$variants),
     );
   }

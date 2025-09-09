@@ -76,7 +76,7 @@ class IconThemeModifierMix extends WidgetModifierMix<IconThemeModifier> {
     this.opacity,
     this.shadows,
     this.applyTextScaling,
-  }) : super();
+  });
 
   IconThemeModifierMix({
     Color? color,

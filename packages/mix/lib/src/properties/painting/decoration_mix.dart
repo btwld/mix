@@ -407,8 +407,6 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
     // For now, we consider all CircleBorderMix as mergeable
     // In the future, we might need to check eccentricity
     return true;
-  
-    return shape is Prop<RoundedRectangleBorder>;
   }
 
   @override

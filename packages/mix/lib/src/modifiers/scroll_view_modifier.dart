@@ -26,7 +26,7 @@ final class ScrollViewModifier extends WidgetModifier<ScrollViewModifier>
     this.padding,
     this.physics,
     this.clipBehavior,
-  }) : super();
+  });
 
   @override
   ScrollViewModifier copyWith({
@@ -181,7 +181,7 @@ class ScrollViewModifierMix extends WidgetModifierMix<ScrollViewModifier>
     this.padding,
     this.physics,
     this.clipBehavior,
-  }) : super();
+  });
 
   ScrollViewModifierMix({
     Axis? scrollDirection,

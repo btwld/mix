@@ -101,7 +101,7 @@ class AlignModifierMix extends WidgetModifierMix<AlignModifier> with Diagnostica
     this.alignment,
     this.widthFactor,
     this.heightFactor,
-  }) : super();
+  });
 
   AlignModifierMix({
     AlignmentGeometry? alignment,

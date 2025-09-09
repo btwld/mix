@@ -18,7 +18,7 @@ final class ShaderMaskModifier extends WidgetModifier<ShaderMaskModifier>
   const ShaderMaskModifier({
     required this.shaderCallback,
     this.blendMode = BlendMode.modulate,
-  }) : super();
+  });
 
   @override
   ShaderMaskModifier copyWith({
