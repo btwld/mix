@@ -1,13 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../core/modifier.dart';
+import '../core/widget_modifier.dart';
 import '../core/style.dart';
 
 /// Modifier that forces its child to be exactly as tall as its intrinsic height.
 ///
 /// Wraps the child in an [IntrinsicHeight] widget.
-final class IntrinsicHeightModifier extends Modifier<IntrinsicHeightModifier>
+final class IntrinsicHeightModifier extends WidgetModifier<IntrinsicHeightModifier>
     with Diagnosticable {
   const IntrinsicHeightModifier();
 
@@ -40,7 +40,7 @@ final class IntrinsicHeightModifier extends Modifier<IntrinsicHeightModifier>
 /// Modifier that forces its child to be exactly as wide as its intrinsic width.
 ///
 /// Wraps the child in an [IntrinsicWidth] widget.
-final class IntrinsicWidthModifier extends Modifier<IntrinsicWidthModifier>
+final class IntrinsicWidthModifier extends WidgetModifier<IntrinsicWidthModifier>
     with Diagnosticable {
   const IntrinsicWidthModifier();
 

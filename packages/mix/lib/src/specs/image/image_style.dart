@@ -6,8 +6,8 @@ import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/style_spec.dart';
-import '../../modifiers/modifier_config.dart';
-import '../../style/mixins/modifier_style_mixin.dart';
+import '../../modifiers/widget_modifier_config.dart';
+import '../../style/mixins/widget_modifier_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
 import 'image_spec.dart';
 import 'image_mutable_style.dart';
@@ -18,7 +18,7 @@ typedef ImageMix = ImageStyler;
 class ImageStyler extends Style<ImageSpec>
     with
         Diagnosticable,
-        ModifierStyleMixin<ImageStyler, ImageSpec>,
+        WidgetModifierStyleMixin<ImageStyler, ImageSpec>,
         VariantStyleMixin<ImageStyler, ImageSpec> {
   final Prop<ImageProvider<Object>>? $image;
   final Prop<double>? $width;
@@ -88,7 +88,7 @@ class ImageStyler extends Style<ImageSpec>
     bool? isAntiAlias,
     bool? matchTextDirection,
     AnimationConfig? animation,
-    ModifierConfig? modifier,
+    WidgetModifierConfig? modifier,
     List<VariantStyle<ImageSpec>>? variants,
   }) : this.create(
          image: Prop.maybe(image),
@@ -209,7 +209,7 @@ class ImageStyler extends Style<ImageSpec>
     return merge(ImageStyler(matchTextDirection: value));
   }
 
-  ImageStyler modifier(ModifierConfig value) {
+  ImageStyler modifier(WidgetModifierConfig value) {
     return merge(ImageStyler(modifier: value));
   }
 
@@ -302,7 +302,7 @@ class ImageStyler extends Style<ImageSpec>
   }
 
   @override
-  ImageStyler wrap(ModifierConfig value) {
+  ImageStyler wrap(WidgetModifierConfig value) {
     return modifier(value);
   }
 

@@ -439,7 +439,7 @@ void main() {
   group('Modifiers', () {
     test('modifiers can be added to attribute', () {
       final attribute = FlexStyler(
-        modifier: ModifierConfig(
+        modifier: WidgetModifierConfig(
           modifiers: [
             OpacityModifierMix(opacity: 0.5),
             PaddingModifierMix(padding: EdgeInsetsMix.all(8.0)),
@@ -453,11 +453,11 @@ void main() {
 
     test('modifiers merge correctly', () {
       final first = FlexStyler(
-        modifier: ModifierConfig(modifiers: [OpacityModifierMix(opacity: 0.5)]),
+        modifier: WidgetModifierConfig(modifiers: [OpacityModifierMix(opacity: 0.5)]),
       );
 
       final second = FlexStyler(
-        modifier: ModifierConfig(
+        modifier: WidgetModifierConfig(
           modifiers: [PaddingModifierMix(padding: EdgeInsetsMix.all(8.0))],
         ),
       );

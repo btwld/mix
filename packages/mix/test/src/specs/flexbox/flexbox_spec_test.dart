@@ -197,7 +197,7 @@ void main() {
     group('Modifiers', () {
       test('modifiers can be added to attribute', () {
         final attribute = FlexBoxStyler(
-          modifier: ModifierConfig(
+          modifier: WidgetModifierConfig(
             modifiers: [
               OpacityModifierMix(opacity: 0.5),
               TransformModifierMix(
@@ -214,13 +214,13 @@ void main() {
 
       test('modifiers are merged correctly', () {
         final first = FlexBoxStyler(
-          modifier: ModifierConfig(
+          modifier: WidgetModifierConfig(
             modifiers: [OpacityModifierMix(opacity: 0.5)],
           ),
         );
 
         final second = FlexBoxStyler(
-          modifier: ModifierConfig(
+          modifier: WidgetModifierConfig(
             modifiers: [TransformModifierMix(transform: Matrix4.identity())],
           ),
         );

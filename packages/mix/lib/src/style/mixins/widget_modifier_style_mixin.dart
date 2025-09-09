@@ -2,52 +2,52 @@ import 'package:flutter/widgets.dart';
 
 import '../../core/spec.dart';
 import '../../core/style.dart';
-import '../../modifiers/modifier_config.dart';
+import '../../modifiers/widget_modifier_config.dart';
 import '../../modifiers/mouse_cursor_modifier.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
 import '../../properties/typography/text_style_mix.dart';
 import '../../specs/box/box_style.dart';
 
-/// Provides convenient modifier styling methods for spec attributes.
-mixin ModifierStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
-  /// Applies the given [value] modifier configuration.
-  T wrap(ModifierConfig value);
+/// Provides convenient widget modifier styling methods for spec attributes.
+mixin WidgetModifierStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
+  /// Applies the given [value] widget modifier configuration.
+  T wrap(WidgetModifierConfig value);
 
   /// Wraps the widget with an opacity modifier.
   T wrapOpacity(double opacity) {
-    return wrap(ModifierConfig.opacity(opacity));
+    return wrap(WidgetModifierConfig.opacity(opacity));
   }
 
   /// Wraps the widget with a padding modifier.
   T wrapPadding(EdgeInsetsGeometryMix padding) {
-    return wrap(ModifierConfig.padding(padding));
+    return wrap(WidgetModifierConfig.padding(padding));
   }
 
   /// Wraps the widget with a clip oval modifier.
   T wrapClipOval({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
     return wrap(
-      ModifierConfig.clipOval(clipper: clipper, clipBehavior: clipBehavior),
+      WidgetModifierConfig.clipOval(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
   /// Wraps the widget with a clip rect modifier.
   T wrapClipRect({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
     return wrap(
-      ModifierConfig.clipRect(clipper: clipper, clipBehavior: clipBehavior),
+      WidgetModifierConfig.clipRect(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
   /// Wraps the widget with a clip path modifier.
   T wrapClipPath({CustomClipper<Path>? clipper, Clip? clipBehavior}) {
     return wrap(
-      ModifierConfig.clipPath(clipper: clipper, clipBehavior: clipBehavior),
+      WidgetModifierConfig.clipPath(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
   /// Wraps the widget with a clip triangle modifier.
   T wrapClipTriangle({Clip? clipBehavior}) {
-    return wrap(ModifierConfig.clipTriangle(clipBehavior: clipBehavior));
+    return wrap(WidgetModifierConfig.clipTriangle(clipBehavior: clipBehavior));
   }
 
   /// Wraps the widget with a clip rounded rectangle modifier.
@@ -57,7 +57,7 @@ mixin ModifierStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
     Clip? clipBehavior,
   }) {
     return wrap(
-      ModifierConfig.clipRRect(
+      WidgetModifierConfig.clipRRect(
         borderRadius: BorderRadiusMix.value(borderRadius),
         clipper: clipper,
         clipBehavior: clipBehavior,
@@ -67,28 +67,28 @@ mixin ModifierStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
 
   /// Wraps the widget with a visibility modifier.
   T wrapVisibility(bool visible) {
-    return wrap(ModifierConfig.visibility(visible));
+    return wrap(WidgetModifierConfig.visibility(visible));
   }
 
   /// Wraps the widget with an aspect ratio modifier.
   T wrapAspectRatio(double aspectRatio) {
-    return wrap(ModifierConfig.aspectRatio(aspectRatio));
+    return wrap(WidgetModifierConfig.aspectRatio(aspectRatio));
   }
 
   /// Wraps the widget with a flexible modifier.
   T wrapFlexible({int flex = 1, FlexFit fit = FlexFit.loose}) {
-    return wrap(ModifierConfig.flexible(flex: flex, fit: fit));
+    return wrap(WidgetModifierConfig.flexible(flex: flex, fit: fit));
   }
 
   /// Wraps the widget with an expanded modifier.
   T wrapExpanded({int flex = 1}) {
-    return wrap(ModifierConfig.flexible(flex: flex, fit: FlexFit.tight));
+    return wrap(WidgetModifierConfig.flexible(flex: flex, fit: FlexFit.tight));
   }
 
   /// Wraps the widget with a scale transform modifier.
   T wrapScale(double scale, {Alignment alignment = Alignment.center}) {
     return wrap(
-      ModifierConfig.transform(
+      WidgetModifierConfig.transform(
         transform: Matrix4.diagonal3Values(scale, scale, 1.0),
         alignment: alignment,
       ),
@@ -98,7 +98,7 @@ mixin ModifierStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   /// Wraps the widget with a rotate transform modifier.
   T wrapRotate(double angle, {Alignment alignment = Alignment.center}) {
     return wrap(
-      ModifierConfig.transform(
+      WidgetModifierConfig.transform(
         transform: Matrix4.rotationZ(angle),
         alignment: alignment,
       ),
@@ -108,27 +108,27 @@ mixin ModifierStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   /// Wraps the widget with a translate transform modifier.
   T wrapTranslate(double x, double y, [double z = 0.0]) {
     return wrap(
-      ModifierConfig.transform(transform: Matrix4.translationValues(x, y, z)),
+      WidgetModifierConfig.transform(transform: Matrix4.translationValues(x, y, z)),
     );
   }
 
   /// Wraps the widget with a transform modifier.
   T wrapTransform(Matrix4 transform, {Alignment alignment = Alignment.center}) {
     return wrap(
-      ModifierConfig.transform(transform: transform, alignment: alignment),
+      WidgetModifierConfig.transform(transform: transform, alignment: alignment),
     );
   }
 
   /// Wraps the widget with a sized box modifier.
   T wrapSizedBox({double? width, double? height}) {
-    return wrap(ModifierConfig.sizedBox(width: width, height: height));
+    return wrap(WidgetModifierConfig.sizedBox(width: width, height: height));
   }
 
   /// Wraps the widget with constrained box modifier.
   T wrapConstrainedBox(BoxConstraints constraints) {
     // Convert BoxConstraints to SizedBox for simplicity
     return wrap(
-      ModifierConfig.sizedBox(
+      WidgetModifierConfig.sizedBox(
         width: constraints.hasBoundedWidth ? constraints.maxWidth : null,
         height: constraints.hasBoundedHeight ? constraints.maxHeight : null,
       ),
@@ -137,12 +137,12 @@ mixin ModifierStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
 
   /// Wraps the widget with an align modifier.
   T wrapAlign(AlignmentGeometry alignment) {
-    return wrap(ModifierConfig.align(alignment: alignment));
+    return wrap(WidgetModifierConfig.align(alignment: alignment));
   }
 
   /// Wraps the widget with a center modifier.
   T wrapCenter() {
-    return wrap(ModifierConfig.align(alignment: Alignment.center));
+    return wrap(WidgetModifierConfig.align(alignment: Alignment.center));
   }
 
   /// Wraps the widget with a fractionally sized box modifier.
@@ -152,7 +152,7 @@ mixin ModifierStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
     AlignmentGeometry alignment = Alignment.center,
   }) {
     return wrap(
-      ModifierConfig.fractionallySizedBox(
+      WidgetModifierConfig.fractionallySizedBox(
         widthFactor: widthFactor,
         heightFactor: heightFactor,
         alignment: alignment,
@@ -162,36 +162,36 @@ mixin ModifierStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
 
   /// Wraps the widget with a rotated box modifier.
   T wrapRotatedBox(int quarterTurns) {
-    return wrap(ModifierConfig.rotatedBox(quarterTurns));
+    return wrap(WidgetModifierConfig.rotatedBox(quarterTurns));
   }
 
   /// Wraps the widget with an intrinsic width modifier.
   T wrapIntrinsicWidth() {
-    return wrap(ModifierConfig.intrinsicWidth());
+    return wrap(WidgetModifierConfig.intrinsicWidth());
   }
 
   /// Wraps the widget with an intrinsic height modifier.
   T wrapIntrinsicHeight() {
-    return wrap(ModifierConfig.intrinsicHeight());
+    return wrap(WidgetModifierConfig.intrinsicHeight());
   }
 
   /// Wraps the widget with a mouse cursor modifier.
   T wrapMouseCursor(MouseCursor cursor) {
-    // Note: MouseCursorModifierMix needs to be wrapped in ModifierConfig
+    // Note: MouseCursorModifierMix needs to be wrapped in WidgetModifierConfig
     return wrap(
-      ModifierConfig.modifier(MouseCursorModifierMix(mouseCursor: cursor)),
+      WidgetModifierConfig.modifier(MouseCursorModifierMix(mouseCursor: cursor)),
     );
   }
 
   /// Wraps the widget with a default text style modifier.
   T wrapDefaultTextStyle(TextStyleMix style) {
-    return wrap(ModifierConfig.defaultTextStyle(style: style));
+    return wrap(WidgetModifierConfig.defaultTextStyle(style: style));
   }
 
   /// Wraps the widget with an icon theme modifier.
   T wrapIconTheme(IconThemeData data) {
     return wrap(
-      ModifierConfig.iconTheme(
+      WidgetModifierConfig.iconTheme(
         color: data.color,
         size: data.size,
         fill: data.fill,
@@ -212,7 +212,7 @@ mixin ModifierStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   //   BlendMode blendMode = BlendMode.modulate,
   // }) {
   //   return wrap(
-  //     ModifierConfig.shaderMask(
+  //     WidgetModifierConfig.shaderMask(
   //       shaderCallback: shaderCallback,
   //       blendMode: blendMode,
   //     ),
@@ -221,6 +221,6 @@ mixin ModifierStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
 
   /// Wraps the widget with a box modifier.
   T wrapBox(BoxStyler spec) {
-    return wrap(ModifierConfig.box(spec));
+    return wrap(WidgetModifierConfig.box(spec));
   }
 }

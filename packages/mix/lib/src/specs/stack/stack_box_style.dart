@@ -6,7 +6,7 @@ import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/style_spec.dart';
-import '../../modifiers/modifier_config.dart';
+import '../../modifiers/widget_modifier_config.dart';
 import '../../properties/layout/constraints_mix.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
@@ -106,7 +106,7 @@ class StackBoxStyler extends Style<ZBoxSpec>
     return merge(StackBoxStyler(animation: animation));
   }
 
-  StackBoxStyler modifier(ModifierConfig value) {
+  StackBoxStyler modifier(WidgetModifierConfig value) {
     return merge(StackBoxStyler(modifier: value));
   }
 
@@ -292,7 +292,7 @@ class StackBoxMutableStyler {
     TextDirection? textDirection,
     Clip? stackClipBehavior,
     // Style properties
-    ModifierConfig? modifier,
+    WidgetModifierConfig? modifier,
     AnimationConfig? animation,
     List<VariantStyle<ZBoxSpec>>? variants,
   }) {

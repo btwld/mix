@@ -6,14 +6,14 @@ import 'package:flutter/rendering.dart' as r;
 import 'package:flutter/widgets.dart' as w;
 
 import '../animation/animation_config.dart';
-import '../modifiers/modifier_config.dart';
+import '../modifiers/widget_modifier_config.dart';
 import '../properties/painting/decoration_mix.dart';
 import '../properties/painting/shape_border_mix.dart';
 import 'decoration_merge.dart';
 import 'directive.dart';
 import 'internal/deep_collection_equality.dart';
 import 'mix_element.dart';
-import 'modifier.dart';
+import 'widget_modifier.dart';
 import 'prop.dart';
 import 'style.dart';
 import 'prop_source.dart';
@@ -57,9 +57,9 @@ class MixOps {
     return other ?? current;
   }
 
-  static ModifierConfig? mergeModifier(
-    ModifierConfig? current,
-    ModifierConfig? other,
+  static WidgetModifierConfig? mergeModifier(
+    WidgetModifierConfig? current,
+    WidgetModifierConfig? other,
   ) {
     return current?.merge(other) ?? other;
   }
@@ -173,9 +173,9 @@ T? _lerpSnap<T>(T? a, T? b, double t) {
 }
 
 /// Lerp modifier lists using ModifierListTween
-List<Modifier>? _lerpModifierList(
-  List<Modifier>? a,
-  List<Modifier>? b,
+List<WidgetModifier>? _lerpModifierList(
+  List<WidgetModifier>? a,
+  List<WidgetModifier>? b,
   double t,
 ) {
   return ModifierListTween(begin: a, end: b).lerp(t);
@@ -255,7 +255,7 @@ T? _lerpValue<T>(T? a, T? b, double t) {
     (Matrix4? a, Matrix4? b) => Matrix4Tween(begin: a, end: b).lerp(t) as T?,
 
     // List of Modifiers - use ModifierListTween for proper lerping
-    (List<Modifier>? a, List<Modifier>? b) => _lerpModifierList(a, b, t) as T?,
+    (List<WidgetModifier>? a, List<WidgetModifier>? b) => _lerpModifierList(a, b, t) as T?,
 
     // Default snap behavior for non-lerpable types
     _ => t < 0.5 ? a : b,

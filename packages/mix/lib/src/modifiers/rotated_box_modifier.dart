@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/helpers.dart';
-import '../core/modifier.dart';
+import '../core/widget_modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
@@ -10,7 +10,7 @@ import '../core/utility.dart';
 /// Modifier that rotates its child by quarter turns.
 ///
 /// Wraps the child in a [RotatedBox] widget with the specified quarter turns.
-final class RotatedBoxModifier extends Modifier<RotatedBoxModifier>
+final class RotatedBoxModifier extends WidgetModifier<RotatedBoxModifier>
     with Diagnosticable {
   final int quarterTurns;
   const RotatedBoxModifier([int? quarterTurns])

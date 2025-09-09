@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/helpers.dart';
-import '../core/modifier.dart';
+import '../core/widget_modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
@@ -11,7 +11,7 @@ import '../core/utility.dart';
 ///
 /// Wraps the child in a [FractionallySizedBox] widget with the specified factors.
 final class FractionallySizedBoxModifier
-    extends Modifier<FractionallySizedBoxModifier>
+    extends WidgetModifier<FractionallySizedBoxModifier>
     with Diagnosticable {
   final double? widthFactor;
   final double? heightFactor;

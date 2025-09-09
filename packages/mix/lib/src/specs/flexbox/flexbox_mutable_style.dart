@@ -7,8 +7,8 @@ import '../../core/style.dart' show VariantStyle;
 import '../../core/style_spec.dart';
 import '../../core/utility.dart';
 import '../../core/utility_variant_mixin.dart';
-import '../../modifiers/modifier_config.dart';
-import '../../modifiers/modifier_util.dart';
+import '../../modifiers/widget_modifier_config.dart';
+import '../../modifiers/widget_modifier_util.dart';
 import '../../properties/layout/constraints_util.dart';
 import '../../properties/layout/edge_insets_geometry_util.dart';
 import '../../properties/painting/decoration_util.dart';
@@ -47,8 +47,8 @@ class FlexBoxMutableStyler extends StyleMutableBuilder<FlexBoxSpec>
     (v) => mutable.variants([v]),
   );
 
-  late final wrap = ModifierUtility(
-    (prop) => mutable.wrap(ModifierConfig(modifiers: [prop])),
+  late final wrap = WidgetModifierUtility(
+    (prop) => mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
   );
 
   /// Container decoration convenience accessors.

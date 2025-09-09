@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/helpers.dart';
-import '../core/modifier.dart';
+import '../core/widget_modifier.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
@@ -14,7 +14,7 @@ import '../specs/box/box_widget.dart';
 /// Modifier that wraps its child in a styled Container using BoxSpec styling.
 ///
 /// Wraps the child in a [Container] widget with the specified box styling.
-final class BoxModifier extends Modifier<BoxModifier> with Diagnosticable {
+final class BoxModifier extends WidgetModifier<BoxModifier> with Diagnosticable {
   final BoxSpec spec;
 
   const BoxModifier(this.spec);

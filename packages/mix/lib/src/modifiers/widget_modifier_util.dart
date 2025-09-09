@@ -18,8 +18,8 @@ import 'sized_box_modifier.dart';
 import 'transform_modifier.dart';
 import 'visibility_modifier.dart';
 
-/// Provides utilities for applying modifiers to styles.
-final class ModifierUtility<T extends Style<Object?>>
+/// Provides utilities for applying widget modifiers to styles.
+final class WidgetModifierUtility<T extends Style<Object?>>
     extends MixUtility<T, ModifierMix> {
   /// Opacity modifier utility.
   late final opacity = OpacityModifierUtility<T>(utilityBuilder);
@@ -56,7 +56,7 @@ final class ModifierUtility<T extends Style<Object?>>
   /// Icon theme modifier utility.
   late final iconTheme = IconThemeModifierUtility<T>(utilityBuilder);
 
-  ModifierUtility(super.utilityBuilder);
+  WidgetModifierUtility(super.utilityBuilder);
 
   /// Scales the widget by the given [value].
   T scale(double value) => transform.scale(value);

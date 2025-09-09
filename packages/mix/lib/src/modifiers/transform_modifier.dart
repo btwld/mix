@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/helpers.dart';
-import '../core/modifier.dart';
+import '../core/widget_modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
@@ -12,7 +12,7 @@ import '../core/utility.dart';
 /// Modifier that applies matrix transformations to its child.
 ///
 /// Wraps the child in a [Transform] widget with the specified matrix and alignment.
-final class TransformModifier extends Modifier<TransformModifier>
+final class TransformModifier extends WidgetModifier<TransformModifier>
     with Diagnosticable {
   final Matrix4 transform;
   final Alignment? alignment;

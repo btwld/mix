@@ -201,7 +201,7 @@ void main() {
             .height(100)
             .alignment(Alignment.center)
             .wrap(
-              ModifierConfig.modifiers([
+              WidgetModifierConfig.modifiers([
                 OpacityModifierMix(opacity: 0.5),
                 PaddingModifierMix(padding: EdgeInsetsGeometryMix.all(10)),
                 ClipOvalModifierMix(),
@@ -250,7 +250,7 @@ void main() {
             .height(100)
             .color(Colors.blue)
             .wrap(
-              ModifierConfig.modifiers([
+              WidgetModifierConfig.modifiers([
                 OpacityModifierMix(opacity: 0.5),
                 PaddingModifierMix(padding: EdgeInsetsGeometryMix.all(10)),
                 ClipOvalModifierMix(),
@@ -324,7 +324,7 @@ void main() {
             .height(100)
             .color(Colors.blue)
             .wrap(
-              ModifierConfig.modifiers([
+              WidgetModifierConfig.modifiers([
                 OpacityModifierMix(opacity: 0.5),
                 PaddingModifierMix(padding: EdgeInsetsGeometryMix.all(10)),
                 ClipOvalModifierMix(),

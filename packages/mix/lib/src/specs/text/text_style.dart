@@ -7,12 +7,12 @@ import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/style_spec.dart';
-import '../../modifiers/modifier_config.dart';
+import '../../modifiers/widget_modifier_config.dart';
 import '../../properties/typography/strut_style_mix.dart';
 import '../../properties/typography/text_height_behavior_mix.dart';
 import '../../properties/typography/text_style_mix.dart';
 import '../../style/mixins/animation_style_mixin.dart';
-import '../../style/mixins/modifier_style_mixin.dart';
+import '../../style/mixins/widget_modifier_style_mixin.dart';
 import '../../style/mixins/text_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
 import 'text_spec.dart';
@@ -31,7 +31,7 @@ typedef TextMix = TextStyler;
 class TextStyler extends Style<TextSpec>
     with
         Diagnosticable,
-        ModifierStyleMixin<TextStyler, TextSpec>,
+        WidgetModifierStyleMixin<TextStyler, TextSpec>,
         VariantStyleMixin<TextStyler, TextSpec>,
         TextStyleMixin<TextStyler>,
         AnimationStyleMixin<TextSpec, TextStyler> {
@@ -99,7 +99,7 @@ class TextStyler extends Style<TextSpec>
     String? semanticsLabel,
     Locale? locale,
     AnimationConfig? animation,
-    ModifierConfig? modifier,
+    WidgetModifierConfig? modifier,
     List<VariantStyle<TextSpec>>? variants,
   }) : this.create(
          overflow: Prop.maybe(overflow),
@@ -235,7 +235,7 @@ class TextStyler extends Style<TextSpec>
     );
   }
 
-  TextStyler modifier(ModifierConfig value) {
+  TextStyler modifier(WidgetModifierConfig value) {
     return merge(TextStyler(modifier: value));
   }
 
@@ -345,7 +345,7 @@ class TextStyler extends Style<TextSpec>
   }
 
   @override
-  TextStyler wrap(ModifierConfig value) {
+  TextStyler wrap(WidgetModifierConfig value) {
     return modifier(value);
   }
 

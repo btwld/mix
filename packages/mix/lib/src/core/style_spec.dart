@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 
 import '../animation/animation_config.dart';
 import 'helpers.dart';
-import 'modifier.dart';
+import 'widget_modifier.dart';
 import 'spec.dart';
 import 'style_builder.dart';
 
@@ -33,7 +33,7 @@ class StyleSpec<T extends Spec<T>> extends Spec<StyleSpec<T>>
   final AnimationConfig? animation;
 
   /// Widget-level modifiers to apply around the built widget.
-  final List<Modifier>? widgetModifiers;
+  final List<WidgetModifier>? widgetModifiers;
 
   /// Creates a [StyleSpec] with the provided spec and optional metadata.
   const StyleSpec({required this.spec, this.animation, this.widgetModifiers});
@@ -44,7 +44,7 @@ class StyleSpec<T extends Spec<T>> extends Spec<StyleSpec<T>>
   StyleSpec<T> copyWith({
     T? spec,
     AnimationConfig? animation,
-    List<Modifier>? widgetModifiers,
+    List<WidgetModifier>? widgetModifiers,
   }) {
     return StyleSpec(
       spec: spec ?? this.spec,
@@ -73,7 +73,7 @@ class StyleSpec<T extends Spec<T>> extends Spec<StyleSpec<T>>
     super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('animation', animation))
-      ..add(IterableProperty<Modifier>('widgetModifiers', widgetModifiers))
+      ..add(IterableProperty<WidgetModifier>('widgetModifiers', widgetModifiers))
       ..add(DiagnosticsProperty<T>('spec', spec));
   }
 

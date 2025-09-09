@@ -88,7 +88,7 @@ void main() {
     testWidgets('createBuilder applies modifiers', (WidgetTester tester) async {
       // Create a modifier mix
       final opacityModifierMix = OpacityModifierMix(opacity: 0.5);
-      final modifierConfig = ModifierConfig(modifiers: [opacityModifierMix]);
+      final modifierConfig = WidgetModifierConfig(modifiers: [opacityModifierMix]);
 
       final style = BoxStyler().color(Colors.blue).modifier(modifierConfig);
 
