@@ -65,11 +65,13 @@ mixin ConstraintStyleMixin<T extends Mix<Object?>> {
     final resolvedMinHeight = minHeight ?? height;
     final resolvedMaxHeight = maxHeight ?? height;
 
-    return constraints(BoxConstraintsMix(
-      minWidth: resolvedMinWidth,
-      maxWidth: resolvedMaxWidth,
-      minHeight: resolvedMinHeight,
-      maxHeight: resolvedMaxHeight,
-    ));
+    return constraints(
+      BoxConstraintsMix(
+        minWidth: resolvedMinWidth,
+        maxWidth: resolvedMaxWidth,
+        minHeight: resolvedMinHeight,
+        maxHeight: resolvedMaxHeight,
+      ),
+    );
   }
 }

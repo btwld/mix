@@ -197,7 +197,6 @@ class BoxStyler extends Style<BoxSpec>
     return merge(BoxStyler(variants: value));
   }
 
-
   /// Resolves to [StyleSpec<BoxSpec>] using the provided [BuildContext].
   ///
   /// If a property is null in the context, it uses the default value

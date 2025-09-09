@@ -301,7 +301,6 @@ class ImageStyler extends Style<ImageSpec>
       ..add(DiagnosticsProperty('matchTextDirection', $matchTextDirection));
   }
 
-
   @override
   ImageStyler wrap(ModifierConfig value) {
     return modifier(value);

@@ -344,7 +344,6 @@ class TextStyler extends Style<TextSpec>
       ..add(DiagnosticsProperty('directives', $textDirectives));
   }
 
-
   @override
   TextStyler wrap(ModifierConfig value) {
     return modifier(value);

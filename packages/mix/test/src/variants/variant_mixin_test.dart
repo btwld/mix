@@ -36,7 +36,6 @@ class TestVariantAttribute extends Style<BoxSpec>
   List<Object?> get props => [$variants, $modifier, $animation];
 }
 
-
 void main() {
   group('VariantMixin', () {
     test('onDark creates correct variant', () {
@@ -113,14 +112,41 @@ void main() {
       expect(result.$variants!.first.variant, isA<ContextVariant>());
     });
 
+    test('onMobile creates correct variant', () {
+      const attribute = TestVariantAttribute();
+      const style = TestVariantAttribute();
+      final result = attribute.onMobile(style);
+
+      expect(result.$variants, isNotNull);
+      expect(result.$variants!.length, 1);
+      expect(result.$variants!.first.variant, isA<ContextVariant>());
+    });
+
+    test('onDesktop creates correct variant', () {
+      const attribute = TestVariantAttribute();
+      const style = TestVariantAttribute();
+      final result = attribute.onDesktop(style);
+
+      expect(result.$variants, isNotNull);
+      expect(result.$variants!.length, 1);
+      expect(result.$variants!.first.variant, isA<ContextVariant>());
+    });
+
+    test('onTablet creates correct variant', () {
+      const attribute = TestVariantAttribute();
+      const style = TestVariantAttribute();
+      final result = attribute.onTablet(style);
+
+      expect(result.$variants, isNotNull);
+      expect(result.$variants!.length, 1);
+      expect(result.$variants!.first.variant, isA<ContextVariant>());
+    });
+
     test('onBreakpoint creates correct variant', () {
       const attribute = TestVariantAttribute();
       const style = TestVariantAttribute();
       final breakpoint = Breakpoint(minWidth: 800, maxWidth: 1200);
-      final result = attribute.onBreakpoint(
-        breakpoint,
-        style,
-      );
+      final result = attribute.onBreakpoint(breakpoint, style);
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
@@ -143,9 +169,7 @@ void main() {
       const darkStyle = TestVariantAttribute();
       const hoverStyle = TestVariantAttribute();
 
-      final result = attribute
-          .onDark(darkStyle)
-          .onHovered(hoverStyle);
+      final result = attribute.onDark(darkStyle).onHovered(hoverStyle);
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 2);
@@ -192,77 +216,6 @@ void main() {
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
       expect(result.$variants!.first.variant, isA<ContextVariant>());
-    });
-
-    test('orientation variants work correctly', () {
-      const attribute = TestVariantAttribute();
-      const style = TestVariantAttribute();
-
-      final portraitResult = attribute.onPortrait(style);
-      final landscapeResult = attribute.onLandscape(style);
-
-      expect(portraitResult.$variants!.length, 1);
-      expect(landscapeResult.$variants!.length, 1);
-      expect(portraitResult.$variants!.first.variant, isA<ContextVariant>());
-      expect(landscapeResult.$variants!.first.variant, isA<ContextVariant>());
-    });
-
-    test('device breakpoint variants work correctly', () {
-      const attribute = TestVariantAttribute();
-      const style = TestVariantAttribute();
-
-      final mobileResult = attribute.onMobile(style);
-      final tabletResult = attribute.onTablet(style);
-      final desktopResult = attribute.onDesktop(style);
-
-      expect(mobileResult.$variants!.length, 1);
-      expect(tabletResult.$variants!.length, 1);
-      expect(desktopResult.$variants!.length, 1);
-      expect(mobileResult.$variants!.first.variant, isA<ContextVariant>());
-      expect(tabletResult.$variants!.first.variant, isA<ContextVariant>());
-      expect(desktopResult.$variants!.first.variant, isA<ContextVariant>());
-    });
-
-    test('text direction variants work correctly', () {
-      const attribute = TestVariantAttribute();
-      const style = TestVariantAttribute();
-
-      final ltrResult = attribute.onLtr(style);
-      final rtlResult = attribute.onRtl(style);
-
-      expect(ltrResult.$variants!.length, 1);
-      expect(rtlResult.$variants!.length, 1);
-      expect(ltrResult.$variants!.first.variant, isA<ContextVariant>());
-      expect(rtlResult.$variants!.first.variant, isA<ContextVariant>());
-    });
-
-    test('platform variants work correctly', () {
-      const attribute = TestVariantAttribute();
-      const style = TestVariantAttribute();
-
-      final iosResult = attribute.onIos(style);
-      final androidResult = attribute.onAndroid(style);
-      final macosResult = attribute.onMacos(style);
-      final windowsResult = attribute.onWindows(style);
-      final linuxResult = attribute.onLinux(style);
-      final fuchsiaResult = attribute.onFuchsia(style);
-      final webResult = attribute.onWeb(style);
-
-      expect(iosResult.$variants!.length, 1);
-      expect(androidResult.$variants!.length, 1);
-      expect(macosResult.$variants!.length, 1);
-      expect(windowsResult.$variants!.length, 1);
-      expect(linuxResult.$variants!.length, 1);
-      expect(fuchsiaResult.$variants!.length, 1);
-      expect(webResult.$variants!.length, 1);
-
-      expect(iosResult.$variants!.first.variant, isA<ContextVariant>());
-      expect(androidResult.$variants!.first.variant, isA<ContextVariant>());
-      expect(macosResult.$variants!.first.variant, isA<ContextVariant>());
-      expect(windowsResult.$variants!.first.variant, isA<ContextVariant>());
-      expect(linuxResult.$variants!.first.variant, isA<ContextVariant>());
-      expect(fuchsiaResult.$variants!.first.variant, isA<ContextVariant>());
-      expect(webResult.$variants!.first.variant, isA<ContextVariant>());
     });
   });
 }

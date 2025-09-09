@@ -110,15 +110,18 @@ void main() {
         expect(MixColors.purpleSwatch[900]!.toARGB32(), 0xFF4A148C);
       });
 
-      test('grey swatch has correct primary color and shades including 350 and 850', () {
-        expect(MixColors.grey, MixColors.greySwatch);
-        expect(MixColors.greySwatch.toARGB32(), 0xFF9E9E9E);
-        expect(MixColors.greySwatch[50]!.toARGB32(), 0xFFFAFAFA);
-        expect(MixColors.greySwatch[350]!.toARGB32(), 0xFFD6D6D6);
-        expect(MixColors.greySwatch[500]!.toARGB32(), 0xFF9E9E9E);
-        expect(MixColors.greySwatch[850]!.toARGB32(), 0xFF303030);
-        expect(MixColors.greySwatch[900]!.toARGB32(), 0xFF212121);
-      });
+      test(
+        'grey swatch has correct primary color and shades including 350 and 850',
+        () {
+          expect(MixColors.grey, MixColors.greySwatch);
+          expect(MixColors.greySwatch.toARGB32(), 0xFF9E9E9E);
+          expect(MixColors.greySwatch[50]!.toARGB32(), 0xFFFAFAFA);
+          expect(MixColors.greySwatch[350]!.toARGB32(), 0xFFD6D6D6);
+          expect(MixColors.greySwatch[500]!.toARGB32(), 0xFF9E9E9E);
+          expect(MixColors.greySwatch[850]!.toARGB32(), 0xFF303030);
+          expect(MixColors.greySwatch[900]!.toARGB32(), 0xFF212121);
+        },
+      );
     });
 
     group('Accent Color Swatches', () {
@@ -131,14 +134,17 @@ void main() {
         expect(MixColors.redAccentSwatch[700]!.toARGB32(), 0xFFD50000);
       });
 
-      test('blueAccent swatch has correct primary color and limited shades', () {
-        expect(MixColors.blueAccent, MixColors.blueAccentSwatch);
-        expect(MixColors.blueAccentSwatch.toARGB32(), 0xFF448AFF);
-        expect(MixColors.blueAccentSwatch[100]!.toARGB32(), 0xFF82B1FF);
-        expect(MixColors.blueAccentSwatch[200]!.toARGB32(), 0xFF448AFF);
-        expect(MixColors.blueAccentSwatch[400]!.toARGB32(), 0xFF2979FF);
-        expect(MixColors.blueAccentSwatch[700]!.toARGB32(), 0xFF2962FF);
-      });
+      test(
+        'blueAccent swatch has correct primary color and limited shades',
+        () {
+          expect(MixColors.blueAccent, MixColors.blueAccentSwatch);
+          expect(MixColors.blueAccentSwatch.toARGB32(), 0xFF448AFF);
+          expect(MixColors.blueAccentSwatch[100]!.toARGB32(), 0xFF82B1FF);
+          expect(MixColors.blueAccentSwatch[200]!.toARGB32(), 0xFF448AFF);
+          expect(MixColors.blueAccentSwatch[400]!.toARGB32(), 0xFF2979FF);
+          expect(MixColors.blueAccentSwatch[700]!.toARGB32(), 0xFF2962FF);
+        },
+      );
     });
 
     group('Color Alias Consistency', () {
@@ -186,8 +192,19 @@ void main() {
 
     group('ColorSwatch Properties', () {
       test('standard shades exist in primary color swatches', () {
-        final standardShades = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
-        
+        final standardShades = [
+          50,
+          100,
+          200,
+          300,
+          400,
+          500,
+          600,
+          700,
+          800,
+          900,
+        ];
+
         for (final shade in standardShades) {
           expect(MixColors.redSwatch[shade], isNotNull);
           expect(MixColors.blueSwatch[shade], isNotNull);
@@ -198,7 +215,7 @@ void main() {
 
       test('accent shades exist in accent color swatches', () {
         final accentShades = [100, 200, 400, 700];
-        
+
         for (final shade in accentShades) {
           expect(MixColors.redAccentSwatch[shade], isNotNull);
           expect(MixColors.blueAccentSwatch[shade], isNotNull);
@@ -212,7 +229,7 @@ void main() {
       test('MixColors shade access works with specific shades', () {
         final lightBlue = MixColors.blueSwatch[100];
         final darkBlue = MixColors.blueSwatch[900];
-        
+
         expect(lightBlue, isNotNull);
         expect(darkBlue, isNotNull);
         expect(lightBlue!.toARGB32(), 0xFFBBDEFB);

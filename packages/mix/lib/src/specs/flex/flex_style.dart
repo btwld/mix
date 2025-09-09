@@ -230,7 +230,6 @@ class FlexStyler extends Style<FlexSpec>
       ..add(DiagnosticsProperty('spacing', $spacing));
   }
 
-
   @override
   FlexStyler wrap(ModifierConfig value) {
     return modifier(value);

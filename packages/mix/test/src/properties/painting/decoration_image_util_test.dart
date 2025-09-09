@@ -80,10 +80,7 @@ void main() {
 
         expect(
           decorationImage,
-          DecorationImage(
-            image: provider,
-            alignment: Alignment.topRight,
-          ),
+          DecorationImage(image: provider, alignment: Alignment.topRight),
         );
       });
 
@@ -108,10 +105,7 @@ void main() {
 
         expect(
           decorationImage,
-          DecorationImage(
-            image: provider,
-            repeat: ImageRepeat.repeatX,
-          ),
+          DecorationImage(image: provider, repeat: ImageRepeat.repeatX),
         );
       });
 
@@ -123,10 +117,7 @@ void main() {
 
         expect(
           decorationImage,
-          DecorationImage(
-            image: provider,
-            filterQuality: FilterQuality.high,
-          ),
+          DecorationImage(image: provider, filterQuality: FilterQuality.high),
         );
       });
 
@@ -316,7 +307,10 @@ void main() {
 
         final providerResult = util.provider(provider);
         final fitResult = util(image: provider, fit: BoxFit.cover);
-        final alignmentResult = util(image: provider, alignment: Alignment.bottomRight);
+        final alignmentResult = util(
+          image: provider,
+          alignment: Alignment.bottomRight,
+        );
 
         final providerImage = providerResult.value.resolve(MockBuildContext());
         final fitImage = fitResult.value.resolve(MockBuildContext());

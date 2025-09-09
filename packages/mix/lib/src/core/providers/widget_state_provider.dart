@@ -65,22 +65,22 @@ class WidgetStateProvider extends InheritedModel<WidgetState> {
 
   /// Whether the widget is disabled.
   final bool disabled;
-  
+
   /// Whether the widget is being hovered.
   final bool hovered;
-  
+
   /// Whether the widget has focus.
   final bool focused;
-  
+
   /// Whether the widget is being pressed.
   final bool pressed;
-  
+
   /// Whether the widget is being dragged.
   final bool dragged;
-  
+
   /// Whether the widget is selected.
   final bool selected;
-  
+
   /// Whether the widget has an error.
   final bool error;
 

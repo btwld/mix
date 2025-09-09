@@ -299,7 +299,7 @@ void main() {
     group('token support', () {
       test('resolves tokens with context', () {
         const gapToken = MixToken<double>('gap');
-        final context = MockBuildContext(tokens: {gapToken.defineValue(24.0)});
+        final context = MockBuildContext(tokens: {TokenDefinition(gapToken, 24.0)});
 
         final utility = FlexMutableStyler(
           FlexStyler.create(spacing: Prop.token(gapToken)),
@@ -350,9 +350,10 @@ void main() {
       });
 
       test('chaining after construction with initial mix', () {
-        final utility = FlexMutableStyler(FlexStyler(direction: Axis.horizontal))
-          ..gap(8.0)
-          ..mainAxisAlignment(MainAxisAlignment.center);
+        final utility =
+            FlexMutableStyler(FlexStyler(direction: Axis.horizontal))
+              ..gap(8.0)
+              ..mainAxisAlignment(MainAxisAlignment.center);
 
         final spec = utility.resolve(MockBuildContext());
 
@@ -384,7 +385,9 @@ void main() {
 
       test('empty utility after chaining with null values', () {
         // This tests the behavior when properties are explicitly set to null
-        final utility = FlexMutableStyler(FlexStyler(direction: Axis.horizontal));
+        final utility = FlexMutableStyler(
+          FlexStyler(direction: Axis.horizontal),
+        );
         final spec = utility.resolve(MockBuildContext());
 
         expect(spec.spec.direction, Axis.horizontal);

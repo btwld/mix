@@ -73,17 +73,17 @@ class MixOps {
     if (other == null) return List<VariantStyle<S>>.of(current);
 
     final Map<Object, VariantStyle<S>> merged = {};
-    
+
     for (final variant in current) {
       merged[variant.mergeKey] = variant;
     }
-    
+
     for (final variant in other) {
       final key = variant.mergeKey;
       final existing = merged[key];
       merged[key] = existing != null ? existing.merge(variant) : variant;
     }
-    
+
     return merged.values.toList();
   }
 
@@ -255,8 +255,7 @@ T? _lerpValue<T>(T? a, T? b, double t) {
     (Matrix4? a, Matrix4? b) => Matrix4Tween(begin: a, end: b).lerp(t) as T?,
 
     // List of Modifiers - use ModifierListTween for proper lerping
-    (List<Modifier>? a, List<Modifier>? b) => 
-      _lerpModifierList(a, b, t) as T?,
+    (List<Modifier>? a, List<Modifier>? b) => _lerpModifierList(a, b, t) as T?,
 
     // Default snap behavior for non-lerpable types
     _ => t < 0.5 ? a : b,

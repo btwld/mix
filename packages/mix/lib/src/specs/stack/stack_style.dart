@@ -146,7 +146,6 @@ class StackStyler extends Style<StackSpec>
       ..add(DiagnosticsProperty('clipBehavior', $clipBehavior));
   }
 
-
   @override
   StackStyler wrap(ModifierConfig value) {
     return modifier(value);

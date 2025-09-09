@@ -126,7 +126,8 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
     return FlexBoxStyler().builder(fn);
   }
 
-  static FlexBoxMutableStyler get chain => FlexBoxMutableStyler(FlexBoxStyler());
+  static FlexBoxMutableStyler get chain =>
+      FlexBoxMutableStyler(FlexBoxStyler());
 
   /// Sets animation
   FlexBoxStyler animate(AnimationConfig animation) {
@@ -216,7 +217,6 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
   FlexBoxStyler variants(List<VariantStyle<FlexBoxSpec>> variants) {
     return merge(FlexBoxStyler(variants: variants));
   }
-
 
   /// Border radius instance method
   @override

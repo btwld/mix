@@ -11,10 +11,7 @@ void main() {
   group('Material tokens', () {
     testWidgets('colors', (tester) async {
       final theme = ThemeData.light();
-      await tester.pumpWithMixScope(
-        Container(),
-        withMaterial: true,
-      );
+      await tester.pumpWithMixScope(Container(), withMaterial: true);
       final context = tester.element(find.byType(Container));
       final colors = const MaterialTokens().colorScheme;
       final scope = MixScope.of(context);

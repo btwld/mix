@@ -72,14 +72,13 @@ void main() {
     });
 
     test('merge returns correct attribute', () {
-      final attr1 = AspectRatioModifierMix.create(
-        aspectRatio: Prop.value(1.0),
-      );
-      final attr2 = AspectRatioModifierMix.create(
-        aspectRatio: Prop.value(2.0),
-      );
+      final attr1 = AspectRatioModifierMix.create(aspectRatio: Prop.value(1.0));
+      final attr2 = AspectRatioModifierMix.create(aspectRatio: Prop.value(2.0));
       final merged = attr1.merge(attr2);
-      expect(merged.aspectRatio, resolvesTo(2.0)); // Prop uses replacement strategy
+      expect(
+        merged.aspectRatio,
+        resolvesTo(2.0),
+      ); // Prop uses replacement strategy
     });
 
     test('resolve returns correct modifier', () {
@@ -90,15 +89,9 @@ void main() {
     });
 
     test('equality', () {
-      final attr1 = AspectRatioModifierMix.create(
-        aspectRatio: Prop.value(1.0),
-      );
-      final attr2 = AspectRatioModifierMix.create(
-        aspectRatio: Prop.value(1.0),
-      );
-      final attr3 = AspectRatioModifierMix.create(
-        aspectRatio: Prop.value(2.0),
-      );
+      final attr1 = AspectRatioModifierMix.create(aspectRatio: Prop.value(1.0));
+      final attr2 = AspectRatioModifierMix.create(aspectRatio: Prop.value(1.0));
+      final attr3 = AspectRatioModifierMix.create(aspectRatio: Prop.value(2.0));
       expect(attr1, equals(attr2));
       expect(attr1, isNot(equals(attr3)));
     });

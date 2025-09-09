@@ -271,11 +271,13 @@ void main() {
 
         expect(
           () => primaryStyle.merge(secondaryStyle),
-          throwsA(isA<ArgumentError>().having(
-            (e) => e.message,
-            'message',
-            contains('Cannot merge VariantStyle with different variants'),
-          )),
+          throwsA(
+            isA<ArgumentError>().having(
+              (e) => e.message,
+              'message',
+              contains('Cannot merge VariantStyle with different variants'),
+            ),
+          ),
         );
       });
     });

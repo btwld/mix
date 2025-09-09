@@ -62,10 +62,7 @@ void main() {
 
         final edgeInsets = result.value.resolve(MockBuildContext());
 
-        expect(
-          edgeInsets,
-          const EdgeInsets.symmetric(horizontal: 20.0),
-        );
+        expect(edgeInsets, const EdgeInsets.symmetric(horizontal: 20.0));
       });
 
       test('vertical sets top and bottom sides', () {
@@ -73,10 +70,7 @@ void main() {
 
         final edgeInsets = result.value.resolve(MockBuildContext());
 
-        expect(
-          edgeInsets,
-          const EdgeInsets.symmetric(vertical: 12.0),
-        );
+        expect(edgeInsets, const EdgeInsets.symmetric(vertical: 12.0));
       });
 
       test('top sets only top side', () {
@@ -160,10 +154,7 @@ void main() {
 
         final edgeInsets = result.value.resolve(MockBuildContext());
 
-        expect(
-          edgeInsets,
-          const EdgeInsets.only(top: 10.0, left: 20.0),
-        );
+        expect(edgeInsets, const EdgeInsets.only(top: 10.0, left: 20.0));
       });
 
       test('handles null values', () {
@@ -240,12 +231,7 @@ void main() {
 
         expect(
           result.value,
-          EdgeInsetsMix(
-            top: 8.0,
-            bottom: 12.0,
-            left: 16.0,
-            right: 20.0,
-          ),
+          EdgeInsetsMix(top: 8.0, bottom: 12.0, left: 16.0, right: 20.0),
         );
       });
 
@@ -264,16 +250,18 @@ void main() {
     });
 
     group('directional utility access', () {
-      test('directional property provides access to EdgeInsetsDirectionalUtility', () {
-        final directionalResult = util.directional.all(16.0);
+      test(
+        'directional property provides access to EdgeInsetsDirectionalUtility',
+        () {
+          final directionalResult = util.directional.all(16.0);
 
-        final edgeInsets = directionalResult.value.resolve(MockBuildContext());
+          final edgeInsets = directionalResult.value.resolve(
+            MockBuildContext(),
+          );
 
-        expect(
-          edgeInsets,
-          const EdgeInsetsDirectional.all(16.0),
-        );
-      });
+          expect(edgeInsets, const EdgeInsetsDirectional.all(16.0));
+        },
+      );
     });
   });
 
@@ -500,5 +488,4 @@ void main() {
       });
     });
   });
-
 }

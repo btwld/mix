@@ -8,7 +8,8 @@ import 'border_radius_mix.dart';
 import '../../style/mixins/decoration_style_mixin.dart';
 
 /// Mixin that provides convenient border radius methods
-mixin BorderRadiusMixin<T extends Mix<Object?>> implements DecorationStyleMixin<T> {
+mixin BorderRadiusMixin<T extends Mix<Object?>>
+    implements DecorationStyleMixin<T> {
   // Methods accepting Radius values (using existing factory constructors)
 
   T borderRadiusAll(Radius radius) {

@@ -18,7 +18,7 @@ import 'package:mix/mix.dart';
 /// // With custom context for token resolution
 /// final context = MockBuildContext(
 ///   tokens: {
-///     MixToken<Color>('primary').defineValue(Colors.blue),
+///     TokenDefinition(ColorToken('primary'), Colors.blue),
 ///   },
 /// );
 /// expect(tokenProp, resolvesTo(Colors.blue, context: context));
@@ -141,7 +141,7 @@ class MockBuildContext extends BuildContext {
   MixScope? _mixScope;
 
   MockBuildContext({
-    Set<TokenDefinition>? tokens, 
+    Set<TokenDefinition>? tokens,
     List<Type>? orderOfModifiers,
     ThemeData? themeData,
   }) : _tokens = tokens,

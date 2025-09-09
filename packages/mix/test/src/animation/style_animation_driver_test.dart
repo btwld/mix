@@ -14,10 +14,12 @@ final class StyleAnimationDriverTest
     required super.vsync,
     super.unbounded,
     required super.initialSpec,
-  }) : super(config: const CurveAnimationConfig(
-    duration: Duration(milliseconds: 300),
-    curve: Curves.linear,
-  ));
+  }) : super(
+         config: const CurveAnimationConfig(
+           duration: Duration(milliseconds: 300),
+           curve: Curves.linear,
+         ),
+       );
 
   @override
   Future<void> executeAnimation() async {
@@ -33,7 +35,10 @@ final class StyleAnimationDriverTest
 
   // Helper method to trigger animation like the old animateTo
   Future<void> triggerAnimation(StyleSpec<MockSpec<double>> targetSpec) async {
-    didUpdateSpec(animation.value ?? StyleSpec(spec: MockSpec(resolvedValue: 0.0)), targetSpec);
+    didUpdateSpec(
+      animation.value ?? StyleSpec(spec: MockSpec(resolvedValue: 0.0)),
+      targetSpec,
+    );
   }
 }
 
@@ -73,7 +78,9 @@ void main() {
           }
         });
 
-        await driver.triggerAnimation(MockSpec(resolvedValue: 0.0).toStyleSpec());
+        await driver.triggerAnimation(
+          MockSpec(resolvedValue: 0.0).toStyleSpec(),
+        );
         final future = driver.triggerAnimation(
           MockSpec(resolvedValue: 1.0).toStyleSpec(),
         );
@@ -154,7 +161,7 @@ void main() {
       // Start an animation by updating spec
       driver.didUpdateSpec(
         MockSpec(resolvedValue: 0.0).toStyleSpec(),
-        MockSpec(resolvedValue: 0.5).toStyleSpec()
+        MockSpec(resolvedValue: 0.5).toStyleSpec(),
       );
       await tester.pump();
 
@@ -222,28 +229,33 @@ void main() {
         driver.dispose();
       });
 
-      testWidgets(
-        'triggers animation when target is set',
-        (tester) async {
-          // Call with target spec
-          await driver.triggerAnimation(MockSpec(resolvedValue: 0.5).toStyleSpec());
+      testWidgets('triggers animation when target is set', (tester) async {
+        // Call with target spec
+        await driver.triggerAnimation(
+          MockSpec(resolvedValue: 0.5).toStyleSpec(),
+        );
 
-          // Verify executeAnimation was called
-          expect(driver.executeAnimationCallCounter, 1);
-        },
-      );
+        // Verify executeAnimation was called
+        expect(driver.executeAnimationCallCounter, 1);
+      });
 
       test('calls executeAnimation when target style changes', () async {
         // First call
-        await driver.triggerAnimation(MockSpec(resolvedValue: 0.5).toStyleSpec());
+        await driver.triggerAnimation(
+          MockSpec(resolvedValue: 0.5).toStyleSpec(),
+        );
         expect(driver.executeAnimationCallCounter, 1);
 
         // Call with different target style
-        await driver.triggerAnimation(MockSpec(resolvedValue: 1.0).toStyleSpec());
+        await driver.triggerAnimation(
+          MockSpec(resolvedValue: 1.0).toStyleSpec(),
+        );
         expect(driver.executeAnimationCallCounter, 2);
 
         // Call with different target style
-        await driver.triggerAnimation(MockSpec(resolvedValue: 2.0).toStyleSpec());
+        await driver.triggerAnimation(
+          MockSpec(resolvedValue: 2.0).toStyleSpec(),
+        );
         expect(driver.executeAnimationCallCounter, 3);
       });
     });
@@ -318,8 +330,8 @@ void main() {
 
       // Trigger animation by updating spec
       driver.didUpdateSpec(
-        MockSpec(resolvedValue: 0.0).toStyleSpec(), 
-        MockSpec(resolvedValue: 1.0).toStyleSpec()
+        MockSpec(resolvedValue: 0.0).toStyleSpec(),
+        MockSpec(resolvedValue: 1.0).toStyleSpec(),
       );
 
       // Let the animation run to completion
@@ -338,7 +350,7 @@ void main() {
     setUp(() {
       trigger = ValueNotifier(false);
       mockContext = MockBuildContext();
-      
+
       final config = PhaseAnimationConfig<MockSpec, MockStyle>(
         styles: [
           MockStyle(MockSpec(resolvedValue: 0.0).toStyleSpec()),
@@ -356,7 +368,7 @@ void main() {
         ],
         trigger: trigger,
       );
-      
+
       driver = PhaseAnimationDriver<MockSpec>(
         vsync: const TestVSync(),
         config: config,

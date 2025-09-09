@@ -1,37 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:mix/mix.dart';
+import 'package:mix/src/theme/tokens/color_token.dart';
+import 'package:mix/src/theme/tokens/space_token.dart';
+import 'package:mix/src/theme/tokens/radius_token.dart';
 
 // Basic color tokens
-final $primary = MixToken<Color>('primary');
-final $surface = MixToken<Color>('surface');
-final $surfaceVariant = MixToken<Color>('surface.variant');
-final $onPrimary = MixToken<Color>('on.primary');
-final $onSurface = MixToken<Color>('on.surface');
-final $onSurfaceVariant = MixToken<Color>('on.surface.variant');
+final $primary = ColorToken('primary');
+final $surface = ColorToken('surface');
+final $surfaceVariant = ColorToken('surface.variant');
+final $onPrimary = ColorToken('on.primary');
+final $onSurface = ColorToken('on.surface');
+final $onSurfaceVariant = ColorToken('on.surface.variant');
 
 // Basic spacing tokens
-final $space = MixToken<double>('space');
-final $spaceSmall = MixToken<double>('space.small');
-final $spaceLarge = MixToken<double>('space.large');
+final $space = SpaceToken('space');
+final $spaceSmall = SpaceToken('space.small');
+final $spaceLarge = SpaceToken('space.large');
 
 // Basic radius token
-final $radius = MixToken<Radius>('radius');
+final $radius = RadiusToken('radius');
 
-// Simple default theme
-final exampleTheme = {
-  // Colors
-  $primary.defineValue(Colors.blue),
-  $surface.defineValue(Colors.grey.shade200),
-  $surfaceVariant.defineValue(Colors.grey.shade300),
-  $onPrimary.defineValue(Colors.white),
-  $onSurface.defineValue(Colors.grey.shade800),
-  $onSurfaceVariant.defineValue(Colors.grey.shade600),
-  
-  // Spacing
-  $spaceSmall.defineValue(8.0),
-  $space.defineValue(16.0),
-  $spaceLarge.defineValue(24.0),
-  
-  // Radius
-  $radius.defineValue(const Radius.circular(20)),
+// Token maps for use with MixScope
+final exampleColorTokens = <ColorToken, Color>{
+  $primary: Colors.blue,
+  $surface: Colors.grey.shade200,
+  $surfaceVariant: Colors.grey.shade300,
+  $onPrimary: Colors.white,
+  $onSurface: Colors.grey.shade800,
+  $onSurfaceVariant: Colors.grey.shade600,
+};
+
+final exampleSpaceTokens = <SpaceToken, double>{
+  $spaceSmall: 8.0,
+  $space: 16.0,
+  $spaceLarge: 24.0,
+};
+
+final exampleRadiusTokens = <RadiusToken, Radius>{
+  $radius: const Radius.circular(20),
 };

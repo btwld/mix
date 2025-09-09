@@ -40,14 +40,14 @@ void main() {
           // Test that properties are properly extracted by resolving
           final context = MockBuildContext();
           final resolved = roundedRectangleBorderMix.resolve(context);
-          
+
           expect(resolved.borderRadius, isA<BorderRadius>());
           final borderRadius = resolved.borderRadius as BorderRadius;
           expect(borderRadius.topLeft, const Radius.circular(12.0));
           expect(borderRadius.topRight, const Radius.circular(8.0));
           expect(borderRadius.bottomLeft, const Radius.circular(4.0));
           expect(borderRadius.bottomRight, const Radius.circular(16.0));
-          
+
           expect(resolved.side.color, Colors.blue);
           expect(resolved.side.width, 2.5);
         },
@@ -240,7 +240,7 @@ void main() {
       test('value constructor extracts all properties from CircleBorder', () {
         const circleBorder = CircleBorder(
           side: BorderSide(
-            color: Colors.purple, 
+            color: Colors.purple,
             width: 1.5,
             style: BorderStyle.solid,
             strokeAlign: 0.5,
@@ -252,12 +252,12 @@ void main() {
         // Test that properties are properly extracted by resolving
         final context = MockBuildContext();
         final resolved = circleBorderMix.resolve(context);
-        
+
         expect(resolved.side.color, Colors.purple);
         expect(resolved.side.width, 1.5);
         expect(resolved.side.style, BorderStyle.solid);
         expect(resolved.side.strokeAlign, 0.5);
-        
+
         // Test that eccentricity is properly handled (should be default 0.0)
         expect(resolved.eccentricity, 0.0);
       });
@@ -367,7 +367,7 @@ void main() {
       test('value constructor extracts all properties from StadiumBorder', () {
         const stadiumBorder = StadiumBorder(
           side: BorderSide(
-            color: Colors.cyan, 
+            color: Colors.cyan,
             width: 1.0,
             style: BorderStyle.none,
             strokeAlign: -0.5,
@@ -379,7 +379,7 @@ void main() {
         // Test that properties are properly extracted by resolving
         final context = MockBuildContext();
         final resolved = stadiumBorderMix.resolve(context);
-        
+
         expect(resolved.side.color, Colors.cyan);
         expect(resolved.side.width, 1.0);
         expect(resolved.side.style, BorderStyle.none);
@@ -456,7 +456,7 @@ void main() {
               bottomRight: Radius.circular(8.0),
             ),
             side: BorderSide(
-              color: Colors.teal, 
+              color: Colors.teal,
               width: 2.0,
               style: BorderStyle.solid,
               strokeAlign: 1.0,
@@ -470,14 +470,14 @@ void main() {
           // Test that properties are properly extracted by resolving
           final context = MockBuildContext();
           final resolved = beveledRectangleBorderMix.resolve(context);
-          
+
           expect(resolved.borderRadius, isA<BorderRadius>());
           final borderRadius = resolved.borderRadius as BorderRadius;
           expect(borderRadius.topLeft, const Radius.circular(6.0));
           expect(borderRadius.topRight, const Radius.circular(10.0));
           expect(borderRadius.bottomLeft, const Radius.circular(4.0));
           expect(borderRadius.bottomRight, const Radius.circular(8.0));
-          
+
           expect(resolved.side.color, Colors.teal);
           expect(resolved.side.width, 2.0);
           expect(resolved.side.style, BorderStyle.solid);

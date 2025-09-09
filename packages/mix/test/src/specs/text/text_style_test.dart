@@ -108,13 +108,16 @@ void main() {
         expect(textMix.$style, isNotNull);
       });
 
-      test('backgroundColor factory creates TextStyling with backgroundColor', () {
-        final textMix = TextStyler(
-          style: TextStyleMix(backgroundColor: Colors.yellow),
-        );
+      test(
+        'backgroundColor factory creates TextStyling with backgroundColor',
+        () {
+          final textMix = TextStyler(
+            style: TextStyleMix(backgroundColor: Colors.yellow),
+          );
 
-        expect(textMix.$style, isNotNull);
-      });
+          expect(textMix.$style, isNotNull);
+        },
+      );
 
       test('shadows factory creates TextStyling with shadows', () {
         final textMix = TextStyler(
@@ -134,13 +137,16 @@ void main() {
         expect(textMix.$style, isNotNull);
       });
 
-      test('fontVariations factory creates TextStyling with fontVariations', () {
-        final textMix = TextStyler(
-          style: TextStyleMix(fontVariations: [FontVariation('wght', 400)]),
-        );
+      test(
+        'fontVariations factory creates TextStyling with fontVariations',
+        () {
+          final textMix = TextStyler(
+            style: TextStyleMix(fontVariations: [FontVariation('wght', 400)]),
+          );
 
-        expect(textMix.$style, isNotNull);
-      });
+          expect(textMix.$style, isNotNull);
+        },
+      );
 
       test('decoration factory creates TextStyling with decoration', () {
         final textMix = TextStyler(
@@ -150,21 +156,27 @@ void main() {
         expect(textMix.$style, isNotNull);
       });
 
-      test('decorationColor factory creates TextStyling with decorationColor', () {
-        final textMix = TextStyler(
-          style: TextStyleMix(decorationColor: Colors.blue),
-        );
+      test(
+        'decorationColor factory creates TextStyling with decorationColor',
+        () {
+          final textMix = TextStyler(
+            style: TextStyleMix(decorationColor: Colors.blue),
+          );
 
-        expect(textMix.$style, isNotNull);
-      });
+          expect(textMix.$style, isNotNull);
+        },
+      );
 
-      test('decorationStyle factory creates TextStyling with decorationStyle', () {
-        final textMix = TextStyler(
-          style: TextStyleMix(decorationStyle: TextDecorationStyle.dashed),
-        );
+      test(
+        'decorationStyle factory creates TextStyling with decorationStyle',
+        () {
+          final textMix = TextStyler(
+            style: TextStyleMix(decorationStyle: TextDecorationStyle.dashed),
+          );
 
-        expect(textMix.$style, isNotNull);
-      });
+          expect(textMix.$style, isNotNull);
+        },
+      );
 
       test('height factory creates TextStyling with height', () {
         final textMix = TextStyler(style: TextStyleMix(height: 1.5));
@@ -224,11 +236,19 @@ void main() {
         expect(textMix.$maxLines, resolvesTo(2));
       });
 
-      test('textWidthBasis factory creates TextStyling with textWidthBasis', () {
-        final textMix = TextStyler(textWidthBasis: TextWidthBasis.longestLine);
+      test(
+        'textWidthBasis factory creates TextStyling with textWidthBasis',
+        () {
+          final textMix = TextStyler(
+            textWidthBasis: TextWidthBasis.longestLine,
+          );
 
-        expect(textMix.$textWidthBasis, resolvesTo(TextWidthBasis.longestLine));
-      });
+          expect(
+            textMix.$textWidthBasis,
+            resolvesTo(TextWidthBasis.longestLine),
+          );
+        },
+      );
 
       test(
         'textHeightBehavior factory creates TextStyling with textHeightBehavior',
@@ -262,41 +282,53 @@ void main() {
         expect(textMix.$textDirectives!.length, 1);
       });
 
-      test('uppercase factory creates TextStyling with uppercase directive', () {
-        final textMix = TextStyler(
-          textDirectives: [const UppercaseStringDirective()],
-        );
+      test(
+        'uppercase factory creates TextStyling with uppercase directive',
+        () {
+          final textMix = TextStyler(
+            textDirectives: [const UppercaseStringDirective()],
+          );
 
-        expect(textMix.$textDirectives, isNotNull);
-        expect(textMix.$textDirectives!.length, 1);
-      });
+          expect(textMix.$textDirectives, isNotNull);
+          expect(textMix.$textDirectives!.length, 1);
+        },
+      );
 
-      test('lowercase factory creates TextStyling with lowercase directive', () {
-        final textMix = TextStyler(
-          textDirectives: [const LowercaseStringDirective()],
-        );
+      test(
+        'lowercase factory creates TextStyling with lowercase directive',
+        () {
+          final textMix = TextStyler(
+            textDirectives: [const LowercaseStringDirective()],
+          );
 
-        expect(textMix.$textDirectives, isNotNull);
-        expect(textMix.$textDirectives!.length, 1);
-      });
+          expect(textMix.$textDirectives, isNotNull);
+          expect(textMix.$textDirectives!.length, 1);
+        },
+      );
 
-      test('capitalize factory creates TextStyling with capitalize directive', () {
-        final textMix = TextStyler(
-          textDirectives: [const CapitalizeStringDirective()],
-        );
+      test(
+        'capitalize factory creates TextStyling with capitalize directive',
+        () {
+          final textMix = TextStyler(
+            textDirectives: [const CapitalizeStringDirective()],
+          );
 
-        expect(textMix.$textDirectives, isNotNull);
-        expect(textMix.$textDirectives!.length, 1);
-      });
+          expect(textMix.$textDirectives, isNotNull);
+          expect(textMix.$textDirectives!.length, 1);
+        },
+      );
 
-      test('titleCase factory creates TextStyling with titleCase directive', () {
-        final textMix = TextStyler(
-          textDirectives: [const TitleCaseStringDirective()],
-        );
+      test(
+        'titleCase factory creates TextStyling with titleCase directive',
+        () {
+          final textMix = TextStyler(
+            textDirectives: [const TitleCaseStringDirective()],
+          );
 
-        expect(textMix.$textDirectives, isNotNull);
-        expect(textMix.$textDirectives!.length, 1);
-      });
+          expect(textMix.$textDirectives, isNotNull);
+          expect(textMix.$textDirectives!.length, 1);
+        },
+      );
 
       test(
         'sentenceCase factory creates TextStyling with sentenceCase directive',
@@ -376,7 +408,9 @@ void main() {
       });
 
       test('strutStyle utility works correctly', () {
-        final attribute = TextStyler().strutStyle(StrutStyleMix(fontSize: 14.0));
+        final attribute = TextStyler().strutStyle(
+          StrutStyleMix(fontSize: 14.0),
+        );
 
         expect(attribute.$strutStyle, isNotNull);
       });
@@ -406,7 +440,9 @@ void main() {
       });
 
       test('textHeightBehavior utility works correctly', () {
-        final attribute = TextStyler().textHeightBehavior(TextHeightBehaviorMix());
+        final attribute = TextStyler().textHeightBehavior(
+          TextHeightBehaviorMix(),
+        );
 
         expect(attribute.$textHeightBehavior, isNotNull);
       });

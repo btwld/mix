@@ -5,27 +5,27 @@
 /// throughout your styles and updated in one place.
 /// 
 /// Key concepts:
-/// - Creating MixToken instances for colors and other values
-/// - Using tokens in styles with token() method
-/// - Providing token values through MixScope
+/// - Creating individual token types (ColorToken, RadiusToken, etc.)
+/// - Using tokens in styles with direct calls
+/// - Providing token values through MixScope with typed parameters
 /// - Building a design system with consistent values
 library;
 
 import '../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
+import 'package:mix/src/theme/tokens/color_token.dart';
+import 'package:mix/src/theme/tokens/radius_token.dart';
+import 'package:mix/src/theme/tokens/space_token.dart';
 
 void main() {
   runMixApp(Example());
 }
 
-final $primaryColor = MixToken<Color>('primary');
-final $pill = MixToken<Radius>('pill');
-
-final tokenDefinitions = {
-  $primaryColor.defineValue(Colors.blue),
-  $pill.defineValue(Radius.circular(20)),
-};
+// Create individual token instances using specific token types
+final $primaryColor = ColorToken('primary');
+final $pill = RadiusToken('pill');
+final $spacing = SpaceToken('spacing.large');
 
 class Example extends StatelessWidget {
   const Example({super.key});
@@ -33,7 +33,15 @@ class Example extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MixScope(
-      tokens: tokenDefinitions,
+      colors: {
+        $primaryColor: Colors.blue,
+      },
+      radii: {
+        $pill: Radius.circular(20),
+      },
+      spaces: {
+        $spacing: 16.0,
+      },
       child: _Example(),
     );
   }
@@ -48,7 +56,8 @@ class _Example extends StatelessWidget {
         .borderRadius(.topLeft($pill()))
         .color($primaryColor())
         .height(100)
-        .width(100);
+        .width(100)
+        .padding(.all(16.0));
 
     return Box(style: style);
   }

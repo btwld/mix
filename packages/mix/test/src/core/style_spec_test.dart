@@ -4,13 +4,12 @@ import 'package:mix/mix.dart';
 
 void main() {
   group('StyleSpecWidgetBuilder', () {
-    testWidgets('createBuilder creates widget with resolved spec',
-        (WidgetTester tester) async {
+    testWidgets('createBuilder creates widget with resolved spec', (
+      WidgetTester tester,
+    ) async {
       const testColor = Colors.blue;
       const testPadding = EdgeInsets.all(16);
-      final style = BoxStyler()
-        .color(testColor)
-        .padding(EdgeInsetsMix.all(16));
+      final style = BoxStyler().color(testColor).padding(EdgeInsetsMix.all(16));
 
       await tester.pumpWidget(
         MaterialApp(
@@ -36,12 +35,12 @@ void main() {
       expect(container.padding, equals(testPadding));
     });
 
-    testWidgets('createBuilder works with TextSpec', (WidgetTester tester) async {
+    testWidgets('createBuilder works with TextSpec', (
+      WidgetTester tester,
+    ) async {
       const testFontSize = 20.0;
       const testColor = Colors.red;
-      final style = TextStyler()
-        .fontSize(testFontSize)
-        .color(testColor);
+      final style = TextStyler().fontSize(testFontSize).color(testColor);
 
       await tester.pumpWidget(
         MaterialApp(
@@ -49,10 +48,7 @@ void main() {
             builder: (context) {
               final styleSpec = style.build(context);
               return styleSpec.createBuilder((context, spec) {
-                return Text(
-                  'Test Text',
-                  style: spec.style,
-                );
+                return Text('Test Text', style: spec.style);
               });
             },
           ),
@@ -64,12 +60,12 @@ void main() {
       expect(text.style?.color, equals(testColor));
     });
 
-    testWidgets('createBuilder works with IconSpec', (WidgetTester tester) async {
+    testWidgets('createBuilder works with IconSpec', (
+      WidgetTester tester,
+    ) async {
       const testSize = 30.0;
       const testColor = Colors.green;
-      final style = IconStyler()
-        .size(testSize)
-        .color(testColor);
+      final style = IconStyler().size(testSize).color(testColor);
 
       await tester.pumpWidget(
         MaterialApp(
@@ -77,11 +73,7 @@ void main() {
             builder: (context) {
               final styleSpec = style.build(context);
               return styleSpec.createBuilder((context, spec) {
-                return Icon(
-                  Icons.star,
-                  size: spec.size,
-                  color: spec.color,
-                );
+                return Icon(Icons.star, size: spec.size, color: spec.color);
               });
             },
           ),
@@ -97,10 +89,8 @@ void main() {
       // Create a modifier mix
       final opacityModifierMix = OpacityModifierMix(opacity: 0.5);
       final modifierConfig = ModifierConfig(modifiers: [opacityModifierMix]);
-      
-      final style = BoxStyler()
-        .color(Colors.blue)
-        .modifier(modifierConfig);
+
+      final style = BoxStyler().color(Colors.blue).modifier(modifierConfig);
 
       await tester.pumpWidget(
         MaterialApp(
@@ -125,13 +115,17 @@ void main() {
       expect(opacity.opacity, equals(0.5));
     });
 
-    testWidgets('createBuilder works with animation', (WidgetTester tester) async {
+    testWidgets('createBuilder works with animation', (
+      WidgetTester tester,
+    ) async {
       final style = BoxStyler()
-        .color(Colors.blue)
-        .animate(AnimationConfig.curve(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        ));
+          .color(Colors.blue)
+          .animate(
+            AnimationConfig.curve(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+            ),
+          );
 
       await tester.pumpWidget(
         MaterialApp(
@@ -154,11 +148,12 @@ void main() {
       expect(find.byType(Container), findsOneWidget);
     });
 
-    testWidgets('createBuilder can create custom widgets',
-        (WidgetTester tester) async {
+    testWidgets('createBuilder can create custom widgets', (
+      WidgetTester tester,
+    ) async {
       final style = BoxStyler()
-        .padding(EdgeInsetsMix.all(20))
-        .color(Colors.purple);
+          .padding(EdgeInsetsMix.all(20))
+          .color(Colors.purple);
 
       await tester.pumpWidget(
         MaterialApp(
@@ -192,15 +187,14 @@ void main() {
       expect(padding.padding, equals(const EdgeInsets.all(20)));
     });
 
-    testWidgets('createBuilder preserves type safety',
-        (WidgetTester tester) async {
+    testWidgets('createBuilder preserves type safety', (
+      WidgetTester tester,
+    ) async {
       final boxStyle = BoxStyler()
-        .color(Colors.blue)
-        .padding(EdgeInsetsMix.all(10));
+          .color(Colors.blue)
+          .padding(EdgeInsetsMix.all(10));
 
-      final textStyle = TextStyler()
-        .fontSize(16)
-        .color(Colors.black);
+      final textStyle = TextStyler().fontSize(16).color(Colors.black);
 
       await tester.pumpWidget(
         MaterialApp(
@@ -225,10 +219,7 @@ void main() {
                   // TextSpec type is preserved
                   return textSpec.createBuilder((context, spec) {
                     // spec is typed as TextSpec
-                    return Text(
-                      'Test',
-                      style: spec.style,
-                    );
+                    return Text('Test', style: spec.style);
                   });
                 },
               ),

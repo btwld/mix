@@ -263,7 +263,6 @@ class IconStyler extends Style<IconSpec>
       ..add(DiagnosticsProperty('icon', $icon));
   }
 
-
   @override
   IconStyler variants(List<VariantStyle<IconSpec>> value) {
     return merge(IconStyler(variants: value));

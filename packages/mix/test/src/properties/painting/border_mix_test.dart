@@ -251,13 +251,13 @@ void main() {
         // Check that each side's Mix is correctly stored
         expect(borderMix.$top, isNotNull);
         expect(borderMix.$top, PropMatcher.isMix(topSide));
-        
+
         expect(borderMix.$right, isNotNull);
         expect(borderMix.$right, PropMatcher.isMix(rightSide));
-        
+
         expect(borderMix.$bottom, isNotNull);
         expect(borderMix.$bottom, PropMatcher.isMix(bottomSide));
-        
+
         expect(borderMix.$left, isNotNull);
         expect(borderMix.$left, PropMatcher.isMix(leftSide));
       });
@@ -395,29 +395,29 @@ void main() {
         expect(borderMix.$left, PropMatcher.isMix(side));
       });
 
-      test('symmetric factory creates BorderMix with vertical and horizontal', () {
-        final vertical = BorderSideMix(color: Colors.red, width: 2.0);
-        final horizontal = BorderSideMix(color: Colors.blue, width: 3.0);
-        final borderMix = BorderMix.symmetric(
-          vertical: vertical,
-          horizontal: horizontal,
-        );
+      test(
+        'symmetric factory creates BorderMix with vertical and horizontal',
+        () {
+          final vertical = BorderSideMix(color: Colors.red, width: 2.0);
+          final horizontal = BorderSideMix(color: Colors.blue, width: 3.0);
+          final borderMix = BorderMix.symmetric(
+            vertical: vertical,
+            horizontal: horizontal,
+          );
 
-        // Check horizontal and vertical sides
-        expect(borderMix.$top, PropMatcher.isMix(horizontal));
-        expect(borderMix.$right, PropMatcher.isMix(vertical));
-        expect(borderMix.$bottom, PropMatcher.isMix(horizontal));
-        expect(borderMix.$left, PropMatcher.isMix(vertical));
-      });
+          // Check horizontal and vertical sides
+          expect(borderMix.$top, PropMatcher.isMix(horizontal));
+          expect(borderMix.$right, PropMatcher.isMix(vertical));
+          expect(borderMix.$bottom, PropMatcher.isMix(horizontal));
+          expect(borderMix.$left, PropMatcher.isMix(vertical));
+        },
+      );
 
       test('only factory creates BorderMix with specified sides', () {
         final topSide = BorderSideMix(color: Colors.red, width: 1.0);
         final bottomSide = BorderSideMix(color: Colors.blue, width: 2.0);
-        
-        final borderMix = BorderMix(
-          top: topSide,
-          bottom: bottomSide,
-        );
+
+        final borderMix = BorderMix(top: topSide, bottom: bottomSide);
 
         // Check that the top and bottom sides are properly set
         expect(borderMix.$top, PropMatcher.isMix(topSide));
@@ -443,19 +443,19 @@ void main() {
 
         // Verify merged border resolves correctly
         final resolved = merged.resolve(MockBuildContext());
-        
+
         // Top from first (unchanged)
         expect(resolved.top.color, Colors.red);
         expect(resolved.top.width, 1.0);
-        
+
         // Right from second (overrides first)
         expect(resolved.right.color, Colors.blue);
         expect(resolved.right.width, 3.0);
-        
+
         // Bottom from second (new)
         expect(resolved.bottom.color, Colors.yellow);
         expect(resolved.bottom.width, 4.0);
-        
+
         // Left is none
         expect(resolved.left, BorderSide.none);
       });

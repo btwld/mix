@@ -44,7 +44,6 @@ void main() {
       // Each call returns a new instance
       expect($stack, isNot(same($stack)));
     });
-
   });
 
   group('Utility Functionality', () {
@@ -86,7 +85,6 @@ void main() {
       final stack = $stack..alignment(Alignment.center);
       expect(stack, isA<StackMutableStyler>());
     });
-
   });
 
   group('Global getters behavior', () {

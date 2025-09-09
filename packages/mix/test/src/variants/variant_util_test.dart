@@ -605,7 +605,6 @@ void main() {
       });
     });
 
-
     group('Type safety', () {
       test('maintains type safety with different variant types', () {
         const namedVariant = NamedVariant('test');
@@ -637,7 +636,6 @@ void main() {
         expect(namedVariant, isA<NamedVariant>());
         expect(contextVariant, isA<ContextVariant>());
         expect(notVariant, isA<ContextVariant>());
-
       });
     });
   });

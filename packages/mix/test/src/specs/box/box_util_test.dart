@@ -426,7 +426,9 @@ void main() {
       test('handles multiple merges correctly', () {
         final util1 = BoxMutableStyler(BoxStyler(alignment: Alignment.center));
         final util2 = BoxMutableStyler(BoxStyler(clipBehavior: Clip.antiAlias));
-        final util3 = BoxMutableStyler(BoxStyler(transform: Matrix4.identity()));
+        final util3 = BoxMutableStyler(
+          BoxStyler(transform: Matrix4.identity()),
+        );
 
         final result = util1.merge(util2).merge(util3);
         final context = MockBuildContext();
@@ -450,7 +452,9 @@ void main() {
       });
 
       test('merge with self returns new instance', () {
-        final testUtil = BoxMutableStyler(BoxStyler(alignment: Alignment.center));
+        final testUtil = BoxMutableStyler(
+          BoxStyler(alignment: Alignment.center),
+        );
         final result = testUtil.merge(testUtil);
         final context = MockBuildContext();
         final spec = result.resolve(context);

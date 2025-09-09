@@ -70,13 +70,19 @@ void main() {
       test('fontWeight sets font weight', () {
         final result = util.fontWeight(FontWeight.bold);
 
-        expect(result.value, resolvesTo(const TextStyle(fontWeight: FontWeight.bold)));
+        expect(
+          result.value,
+          resolvesTo(const TextStyle(fontWeight: FontWeight.bold)),
+        );
       });
 
       test('fontStyle sets font style', () {
         final result = util.fontStyle(FontStyle.italic);
 
-        expect(result.value, resolvesTo(const TextStyle(fontStyle: FontStyle.italic)));
+        expect(
+          result.value,
+          resolvesTo(const TextStyle(fontStyle: FontStyle.italic)),
+        );
       });
 
       test('decoration sets text decoration', () {
@@ -97,13 +103,19 @@ void main() {
       test('backgroundColor sets background color', () {
         final result = util.backgroundColor(Colors.yellow);
 
-        expect(result.value, resolvesTo(const TextStyle(backgroundColor: Colors.yellow)));
+        expect(
+          result.value,
+          resolvesTo(const TextStyle(backgroundColor: Colors.yellow)),
+        );
       });
 
       test('decorationColor sets decoration color', () {
         final result = util.decorationColor(Colors.blue);
 
-        expect(result.value, resolvesTo(const TextStyle(decorationColor: Colors.blue)));
+        expect(
+          result.value,
+          resolvesTo(const TextStyle(decorationColor: Colors.blue)),
+        );
       });
 
       test('decorationStyle sets decoration style', () {
@@ -111,7 +123,9 @@ void main() {
 
         expect(
           result.value,
-          resolvesTo(const TextStyle(decorationStyle: TextDecorationStyle.dashed)),
+          resolvesTo(
+            const TextStyle(decorationStyle: TextDecorationStyle.dashed),
+          ),
         );
       });
 
@@ -159,32 +173,47 @@ void main() {
       test('italic sets font style to italic', () {
         final result = util.italic();
 
-        expect(result.value, resolvesTo(const TextStyle(fontStyle: FontStyle.italic)));
+        expect(
+          result.value,
+          resolvesTo(const TextStyle(fontStyle: FontStyle.italic)),
+        );
       });
 
       test('bold sets font weight to bold', () {
         final result = util.bold();
 
-        expect(result.value, resolvesTo(const TextStyle(fontWeight: FontWeight.bold)));
+        expect(
+          result.value,
+          resolvesTo(const TextStyle(fontWeight: FontWeight.bold)),
+        );
       });
 
       test('decorationThickness sets decoration thickness', () {
         final result = util.decorationThickness(2.5);
 
-        expect(result.value, resolvesTo(const TextStyle(decorationThickness: 2.5)));
+        expect(
+          result.value,
+          resolvesTo(const TextStyle(decorationThickness: 2.5)),
+        );
       });
 
       test('debugLabel sets debug label', () {
         final result = util.debugLabel('test-label');
 
-        expect(result.value, resolvesTo(const TextStyle(debugLabel: 'test-label')));
+        expect(
+          result.value,
+          resolvesTo(const TextStyle(debugLabel: 'test-label')),
+        );
       });
 
       test('fontFamilyFallback sets font family fallback', () {
         final fallbacks = ['Arial', 'sans-serif'];
         final result = util.fontFamilyFallback(fallbacks);
 
-        expect(result.value, resolvesTo(TextStyle(fontFamilyFallback: fallbacks)));
+        expect(
+          result.value,
+          resolvesTo(TextStyle(fontFamilyFallback: fallbacks)),
+        );
       });
     });
 
@@ -206,7 +235,10 @@ void main() {
         ];
         final result = util.fontFeatures(features);
 
-        expect(result.value, resolvesTo(const TextStyle(fontFeatures: features)));
+        expect(
+          result.value,
+          resolvesTo(const TextStyle(fontFeatures: features)),
+        );
       });
 
       test('fontVariations sets font variations', () {
@@ -216,14 +248,20 @@ void main() {
         ];
         final result = util.fontVariations(variations);
 
-        expect(result.value, resolvesTo(const TextStyle(fontVariations: variations)));
+        expect(
+          result.value,
+          resolvesTo(const TextStyle(fontVariations: variations)),
+        );
       });
 
       test('fontVariation sets single font variation', () {
         const variation = FontVariation('wght', 600);
         final result = util.fontVariation(variation);
 
-        expect(result.value, resolvesTo(const TextStyle(fontVariations: [variation])));
+        expect(
+          result.value,
+          resolvesTo(const TextStyle(fontVariations: [variation])),
+        );
       });
 
       test('foreground sets foreground paint', () {
@@ -264,23 +302,25 @@ void main() {
 
         expect(
           result.value,
-          resolvesTo(const TextStyle(
-            color: Colors.red,
-            backgroundColor: Colors.yellow,
-            fontFamily: 'Arial',
-            fontSize: 18.0,
-            fontWeight: FontWeight.w600,
-            fontStyle: FontStyle.italic,
-            letterSpacing: 1.0,
-            wordSpacing: 2.0,
-            height: 1.4,
-            decoration: TextDecoration.underline,
-            decorationColor: Colors.blue,
-            decorationStyle: TextDecorationStyle.solid,
-            decorationThickness: 1.5,
-            textBaseline: TextBaseline.alphabetic,
-            inherit: false,
-          )),
+          resolvesTo(
+            const TextStyle(
+              color: Colors.red,
+              backgroundColor: Colors.yellow,
+              fontFamily: 'Arial',
+              fontSize: 18.0,
+              fontWeight: FontWeight.w600,
+              fontStyle: FontStyle.italic,
+              letterSpacing: 1.0,
+              wordSpacing: 2.0,
+              height: 1.4,
+              decoration: TextDecoration.underline,
+              decorationColor: Colors.blue,
+              decorationStyle: TextDecorationStyle.solid,
+              decorationThickness: 1.5,
+              textBaseline: TextBaseline.alphabetic,
+              inherit: false,
+            ),
+          ),
         );
       });
 
@@ -293,11 +333,13 @@ void main() {
 
         expect(
           result.value,
-          resolvesTo(const TextStyle(
-            fontFamily: 'Georgia',
-            fontSize: 14.0,
-            color: Colors.green,
-          )),
+          resolvesTo(
+            const TextStyle(
+              fontFamily: 'Georgia',
+              fontSize: 14.0,
+              color: Colors.green,
+            ),
+          ),
         );
       });
 
@@ -325,13 +367,15 @@ void main() {
 
         expect(
           result.value,
-          resolvesTo(TextStyle(
-            shadows: shadows,
-            fontFeatures: fontFeatures,
-            fontVariations: fontVariations,
-            fontFamilyFallback: fallbacks,
-            debugLabel: 'test-style',
-          )),
+          resolvesTo(
+            TextStyle(
+              shadows: shadows,
+              fontFeatures: fontFeatures,
+              fontVariations: fontVariations,
+              fontFamilyFallback: fallbacks,
+              debugLabel: 'test-style',
+            ),
+          ),
         );
       });
 
@@ -346,10 +390,9 @@ void main() {
 
         expect(
           result.value,
-          resolvesTo(TextStyle(
-            foreground: foregroundPaint,
-            background: backgroundPaint,
-          )),
+          resolvesTo(
+            TextStyle(foreground: foregroundPaint, background: backgroundPaint),
+          ),
         );
       });
     });
@@ -386,27 +429,29 @@ void main() {
 
         expect(
           result.value,
-          resolvesTo(TextStyle(
-            color: Colors.purple,
-            backgroundColor: Colors.pink,
-            fontFamily: 'Times New Roman',
-            fontSize: 20.0,
-            fontWeight: FontWeight.w300,
-            fontStyle: FontStyle.normal,
-            letterSpacing: 0.5,
-            wordSpacing: 1.5,
-            height: 1.8,
-            decoration: TextDecoration.lineThrough,
-            decorationColor: Colors.orange,
-            decorationStyle: TextDecorationStyle.dotted,
-            decorationThickness: 2.0,
-            textBaseline: TextBaseline.ideographic,
-            shadows: shadows,
-            fontFeatures: fontFeatures,
-            fontVariations: fontVariations,
-            debugLabel: 'call-test',
-            inherit: false,
-          )),
+          resolvesTo(
+            TextStyle(
+              color: Colors.purple,
+              backgroundColor: Colors.pink,
+              fontFamily: 'Times New Roman',
+              fontSize: 20.0,
+              fontWeight: FontWeight.w300,
+              fontStyle: FontStyle.normal,
+              letterSpacing: 0.5,
+              wordSpacing: 1.5,
+              height: 1.8,
+              decoration: TextDecoration.lineThrough,
+              decorationColor: Colors.orange,
+              decorationStyle: TextDecorationStyle.dotted,
+              decorationThickness: 2.0,
+              textBaseline: TextBaseline.ideographic,
+              shadows: shadows,
+              fontFeatures: fontFeatures,
+              fontVariations: fontVariations,
+              debugLabel: 'call-test',
+              inherit: false,
+            ),
+          ),
         );
       });
 
@@ -419,11 +464,13 @@ void main() {
 
         expect(
           result.value,
-          resolvesTo(const TextStyle(
-            fontWeight: FontWeight.w800,
-            fontSize: 22.0,
-            color: Colors.teal,
-          )),
+          resolvesTo(
+            const TextStyle(
+              fontWeight: FontWeight.w800,
+              fontSize: 22.0,
+              color: Colors.teal,
+            ),
+          ),
         );
       });
 
@@ -516,8 +563,14 @@ void main() {
         final result1 = util.fontWeight(FontWeight.normal);
         final result2 = util.fontWeight(FontWeight.bold);
 
-        expect(result1.value, resolvesTo(const TextStyle(fontWeight: FontWeight.w400)));
-        expect(result2.value, resolvesTo(const TextStyle(fontWeight: FontWeight.w700)));
+        expect(
+          result1.value,
+          resolvesTo(const TextStyle(fontWeight: FontWeight.w400)),
+        );
+        expect(
+          result2.value,
+          resolvesTo(const TextStyle(fontWeight: FontWeight.w700)),
+        );
       });
     });
 
@@ -599,12 +652,18 @@ void main() {
       test('decorationColor utility supports tokens', () {
         const colorToken = MixToken<Color>('decorationColor');
         final context = MockBuildContext(
-          tokens: {colorToken.defineValue(Colors.orange)},
+          tokens: {TokenDefinition(colorToken, Colors.orange)},
         );
 
         final result = util.decorationColor.token(colorToken);
 
-        expect(result.value, resolvesTo(const TextStyle(decorationColor: Colors.orange), context: context));
+        expect(
+          result.value,
+          resolvesTo(
+            const TextStyle(decorationColor: Colors.orange),
+            context: context,
+          ),
+        );
       });
     });
 
@@ -648,7 +707,10 @@ void main() {
       test('handles empty font family fallback list', () {
         final result = util.fontFamilyFallback([]);
 
-        expect(result.value, resolvesTo(const TextStyle(fontFamilyFallback: [])));
+        expect(
+          result.value,
+          resolvesTo(const TextStyle(fontFamilyFallback: [])),
+        );
       });
 
       test('handles empty shadow list', () {
@@ -688,12 +750,14 @@ void main() {
 
       expect(
         result.value,
-        resolvesTo(const TextStyle(
-          color: Colors.blue,
-          fontSize: 16.0,
-          fontWeight: FontWeight.w500,
-          fontFamily: 'Roboto',
-        )),
+        resolvesTo(
+          const TextStyle(
+            color: Colors.blue,
+            fontSize: 16.0,
+            fontWeight: FontWeight.w500,
+            fontFamily: 'Roboto',
+          ),
+        ),
       );
     });
 
@@ -709,8 +773,14 @@ void main() {
 
       expect(colorResult.value, resolvesTo(const TextStyle(color: Colors.red)));
       expect(sizeResult.value, resolvesTo(const TextStyle(fontSize: 18.0)));
-      expect(weightResult.value, resolvesTo(const TextStyle(fontWeight: FontWeight.bold)));
-      expect(familyResult.value, resolvesTo(const TextStyle(fontFamily: 'Arial')));
+      expect(
+        weightResult.value,
+        resolvesTo(const TextStyle(fontWeight: FontWeight.bold)),
+      );
+      expect(
+        familyResult.value,
+        resolvesTo(const TextStyle(fontFamily: 'Arial')),
+      );
     });
 
     test('convenience methods work correctly', () {
@@ -721,8 +791,14 @@ void main() {
       final boldResult = util.bold();
       final italicResult = util.italic();
 
-      expect(boldResult.value, resolvesTo(const TextStyle(fontWeight: FontWeight.bold)));
-      expect(italicResult.value, resolvesTo(const TextStyle(fontStyle: FontStyle.italic)));
+      expect(
+        boldResult.value,
+        resolvesTo(const TextStyle(fontWeight: FontWeight.bold)),
+      );
+      expect(
+        italicResult.value,
+        resolvesTo(const TextStyle(fontStyle: FontStyle.italic)),
+      );
     });
 
     test('preserves Flutter TextStyle semantics', () {
