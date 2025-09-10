@@ -4,12 +4,8 @@ import 'package:flutter/widgets.dart';
 
 import '../core/breakpoint.dart';
 import 'material/material_theme.dart';
-import 'tokens/breakpoint_token.dart';
-import 'tokens/color_token.dart';
 import 'tokens/mix_token.dart';
-import 'tokens/radius_token.dart';
-import 'tokens/space_token.dart';
-import 'tokens/text_style_token.dart';
+import 'tokens/value_tokens.dart';
 
 @Deprecated('Use MixScope instead')
 typedef MixTheme = MixScope;

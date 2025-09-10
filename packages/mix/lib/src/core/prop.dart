@@ -3,11 +3,11 @@ import 'package:flutter/widgets.dart';
 
 import '../theme/mix_theme.dart';
 import '../theme/tokens/mix_token.dart';
+import '../theme/tokens/token_refs.dart';
 import 'converter_registry.dart';
 import 'directive.dart';
 import 'helpers.dart';
 import 'mix_element.dart';
-import 'prop_refs.dart';
 import 'prop_source.dart';
 
 /// A property that can hold values, tokens, or Mix types.

@@ -14,9 +14,6 @@ library;
 import '../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
-import 'package:mix/src/theme/tokens/color_token.dart';
-import 'package:mix/src/theme/tokens/radius_token.dart';
-import 'package:mix/src/theme/tokens/space_token.dart';
 
 void main() {
   runMixApp(Example());

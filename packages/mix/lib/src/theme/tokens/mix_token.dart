@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../core/prop_refs.dart';
+import 'token_refs.dart';
 import '../mix_theme.dart';
 
 

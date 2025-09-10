@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../tokens/color_token.dart';
-import '../tokens/text_style_token.dart';
+import '../tokens/value_tokens.dart';
 
 /// Provides access to Material Design tokens for colors and text styles.
 ///

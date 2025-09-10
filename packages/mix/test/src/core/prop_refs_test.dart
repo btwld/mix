@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/src/core/prop.dart';
 import 'package:mix/src/core/prop_refs.dart';
+import 'package:mix/src/theme/tokens/token_refs.dart';
 import 'package:mix/src/core/prop_source.dart';
 
 import '../../helpers/testing_utils.dart';
@@ -16,7 +17,7 @@ void main() {
     group('TokenRef Base Class', () {
       test('creates with token', () {
         final token = TestToken<Color>('test-color');
-        final ref = ColorProp(Prop.token(token));
+        final ref = ColorRef(Prop.token(token));
 
         expect(ref, PropMatcher.isToken(token));
       });
@@ -28,12 +29,12 @@ void main() {
         ); // Same name, different instance
         final token3 = TestToken<Color>('different-color');
 
-        final ref1 = ColorProp(Prop.token(token1));
-        final ref2 = ColorProp(Prop.token(token1)); // Same token instance
-        final ref3 = ColorProp(
+        final ref1 = ColorRef(Prop.token(token1));
+        final ref2 = ColorRef(Prop.token(token1)); // Same token instance
+        final ref3 = ColorRef(
           Prop.token(token2),
         ); // Different token instance, same name
-        final ref4 = ColorProp(Prop.token(token3)); // Different token
+        final ref4 = ColorRef(Prop.token(token3)); // Different token
 
         expect(ref1, equals(ref2));
         expect(
@@ -45,15 +46,15 @@ void main() {
 
       test('hashCode based on token', () {
         final token = TestToken<Color>('test-color');
-        final ref1 = ColorProp(Prop.token(token));
-        final ref2 = ColorProp(Prop.token(token));
+        final ref1 = ColorRef(Prop.token(token));
+        final ref2 = ColorRef(Prop.token(token));
 
         expect(ref1.hashCode, equals(ref2.hashCode));
       });
 
       test('noSuchMethod throws UnimplementedError with detailed message', () {
         final token = TestToken<Color>('test-color');
-        final ref = ColorProp(Prop.token(token));
+        final ref = ColorRef(Prop.token(token));
 
         expect(
           () => (ref as dynamic).nonExistentMethod(),
@@ -81,7 +82,7 @@ void main() {
     group('Class-based Token References', () {
       test('ColorRef implements Color interface', () {
         final token = TestToken<Color>('test-color');
-        final ref = ColorProp(Prop.token(token));
+        final ref = ColorRef(Prop.token(token));
 
         expect(ref, isA<Color>());
         expect(ref, PropMatcher.isToken(token));
@@ -89,7 +90,7 @@ void main() {
 
       test('DurationProp implements Duration interface', () {
         final token = TestToken<Duration>('test-duration');
-        final ref = DurationProp(Prop.token(token));
+        final ref = DurationRef(Prop.token(token));
 
         expect(ref, isA<Duration>());
         expect(ref, PropMatcher.isToken(token));
@@ -97,7 +98,7 @@ void main() {
 
       test('OffsetProp implements Offset interface', () {
         final token = TestToken<Offset>('test-offset');
-        final ref = OffsetProp(Prop.token(token));
+        final ref = OffsetRef(Prop.token(token));
 
         expect(ref, isA<Offset>());
         expect(ref, PropMatcher.isToken(token));
@@ -105,7 +106,7 @@ void main() {
 
       test('RadiusProp implements Radius interface', () {
         final token = TestToken<Radius>('test-radius');
-        final ref = RadiusProp(Prop.token(token));
+        final ref = RadiusRef(Prop.token(token));
 
         expect(ref, isA<Radius>());
         expect(ref, PropMatcher.isToken(token));
@@ -413,11 +414,11 @@ void main() {
         final radiusToken = TestToken<Radius>('test-radius');
         final textStyleToken = TestToken<TextStyle>('test-text-style');
 
-        final colorRef = ColorProp(Prop.token(colorToken));
-        final durationRef = DurationProp(Prop.token(durationToken));
-        final offsetProp = OffsetProp(Prop.token(offsetToken));
-        final radiusRef = RadiusProp(Prop.token(radiusToken));
-        final textStyleRef = TextStyleProp(Prop.token(textStyleToken));
+        final colorRef = ColorRef(Prop.token(colorToken));
+        final durationRef = DurationRef(Prop.token(durationToken));
+        final offsetProp = OffsetRef(Prop.token(offsetToken));
+        final radiusRef = RadiusRef(Prop.token(radiusToken));
+        final textStyleRef = TextStyleRef(Prop.token(textStyleToken));
 
         expect(isAnyTokenRef(colorRef), isTrue);
         expect(isAnyTokenRef(durationRef), isTrue);
@@ -469,7 +470,7 @@ void main() {
         final colorToken = TestToken<Color>('test-color');
         final doubleToken = TestToken<double>('test-double');
 
-        final colorRef = ColorProp(Prop.token(colorToken));
+        final colorRef = ColorRef(Prop.token(colorToken));
         final doubleRef = DoubleRef.token(doubleToken);
 
         final mixedList = [colorRef, Colors.blue, doubleRef, 42.0, 'hello'];
@@ -499,9 +500,9 @@ void main() {
         final durationToken = TestToken<Duration>('test-duration');
         final offsetToken = TestToken<Offset>('test-offset');
 
-        final colorRef = ColorProp(Prop.token(colorToken));
-        final durationProp = DurationProp(Prop.token(durationToken));
-        final offsetProp = OffsetProp(Prop.token(offsetToken));
+        final colorRef = ColorRef(Prop.token(colorToken));
+        final durationProp = DurationRef(Prop.token(durationToken));
+        final offsetProp = OffsetRef(Prop.token(offsetToken));
 
         expect(colorRef, PropMatcher.isToken(colorToken));
         expect(durationProp, PropMatcher.isToken(durationToken));
@@ -550,21 +551,18 @@ void main() {
         final doubleToken = TestToken<double>('test-double');
         final stringToken = TestToken<String>('test-string');
 
-        final colorRef = ColorProp(Prop.token(colorToken));
+        final colorRef = ColorRef(Prop.token(colorToken));
         final doubleRef = DoubleRef.token(doubleToken);
         final stringRef = StringRef.token(stringToken);
 
         // Type-safe calls for class-based refs use $token
-        final TestToken<Color> colorResult = colorRef.sources
-            .whereType<TokenSource<Color>>()
-            .first
-            .token as TestToken<Color>;
-        final TestToken<double>? doubleResult = getTokenFromValue<double>(
-          doubleRef,
-        ) as TestToken<double>?;
-        final TestToken<String>? stringResult = getTokenFromValue<String>(
-          stringRef,
-        ) as TestToken<String>?;
+        final TestToken<Color> colorResult =
+            colorRef.sources.whereType<TokenSource<Color>>().first.token
+                as TestToken<Color>;
+        final TestToken<double>? doubleResult =
+            getTokenFromValue<double>(doubleRef) as TestToken<double>?;
+        final TestToken<String>? stringResult =
+            getTokenFromValue<String>(stringRef) as TestToken<String>?;
 
         expect(colorResult, equals(colorToken));
         expect(doubleResult, equals(doubleToken));
@@ -587,10 +585,10 @@ void main() {
         );
         final alignmentToken = TestToken<Alignment>('test-alignment');
 
-        final alignmentGeometryRef = AlignmentGeometryProp(
+        final alignmentGeometryRef = AlignmentGeometryRef(
           Prop.token(alignmentGeometryToken),
         );
-        final alignmentRef = AlignmentProp(Prop.token(alignmentToken));
+        final alignmentRef = AlignmentRef(Prop.token(alignmentToken));
 
         // Both should work with their specific types
         expect(

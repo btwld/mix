@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/src/core/prop_refs.dart';
+import 'package:mix/src/theme/tokens/token_refs.dart';
 
 void main() {
   group('assertIsRealType', () {
     test('should assert when ColorProp is passed', () {
       expect(
-        () => assertIsRealType(ColorProp),
+        () => assertIsRealType(ColorRef),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
@@ -19,7 +20,7 @@ void main() {
 
     test('should assert when RadiusProp is passed', () {
       expect(
-        () => assertIsRealType(RadiusProp),
+        () => assertIsRealType(RadiusRef),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
@@ -32,7 +33,7 @@ void main() {
 
     test('should assert when TextStyleProp is passed', () {
       expect(
-        () => assertIsRealType(TextStyleProp),
+        () => assertIsRealType(TextStyleRef),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
@@ -45,7 +46,7 @@ void main() {
 
     test('should assert when ShadowProp is passed', () {
       expect(
-        () => assertIsRealType(ShadowProp),
+        () => assertIsRealType(ShadowRef),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
@@ -58,7 +59,7 @@ void main() {
 
     test('should assert when GradientProp is passed', () {
       expect(
-        () => assertIsRealType(GradientProp),
+        () => assertIsRealType(GradientRef),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
@@ -71,7 +72,7 @@ void main() {
 
     test('should assert when BoxDecorationProp is passed', () {
       expect(
-        () => assertIsRealType(BoxDecorationProp),
+        () => assertIsRealType(BoxDecorationRef),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
@@ -84,7 +85,7 @@ void main() {
 
     test('should assert when ShapeBorderProp is passed', () {
       expect(
-        () => assertIsRealType(ShapeBorderProp),
+        () => assertIsRealType(ShapeBorderRef),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
@@ -97,7 +98,7 @@ void main() {
 
     test('should assert when BoxConstraintsProp is passed', () {
       expect(
-        () => assertIsRealType(BoxConstraintsProp),
+        () => assertIsRealType(BoxConstraintsRef),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
@@ -110,7 +111,7 @@ void main() {
 
     test('should assert when DecorationImageProp is passed', () {
       expect(
-        () => assertIsRealType(DecorationImageProp),
+        () => assertIsRealType(DecorationImageRef),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
@@ -123,7 +124,7 @@ void main() {
 
     test('should assert when EdgeInsetsGeometryProp is passed', () {
       expect(
-        () => assertIsRealType(EdgeInsetsGeometryProp),
+        () => assertIsRealType(EdgeInsetsGeometryRef),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
@@ -136,7 +137,7 @@ void main() {
 
     test('should assert when BorderRadiusGeometryProp is passed', () {
       expect(
-        () => assertIsRealType(BorderRadiusGeometryProp),
+        () => assertIsRealType(BorderRadiusGeometryRef),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
@@ -149,7 +150,7 @@ void main() {
 
     test('should assert when AlignmentGeometryProp is passed', () {
       expect(
-        () => assertIsRealType(AlignmentGeometryProp),
+        () => assertIsRealType(AlignmentGeometryRef),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
@@ -162,7 +163,7 @@ void main() {
 
     test('should assert when TextDecorationProp is passed', () {
       expect(
-        () => assertIsRealType(TextDecorationProp),
+        () => assertIsRealType(TextDecorationRef),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
@@ -175,7 +176,7 @@ void main() {
 
     test('should assert when OffsetProp is passed', () {
       expect(
-        () => assertIsRealType(OffsetProp),
+        () => assertIsRealType(OffsetRef),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
@@ -188,7 +189,7 @@ void main() {
 
     test('should assert when RectProp is passed', () {
       expect(
-        () => assertIsRealType(RectProp),
+        () => assertIsRealType(RectRef),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
@@ -201,7 +202,7 @@ void main() {
 
     test('should assert when LocaleProp is passed', () {
       expect(
-        () => assertIsRealType(LocaleProp),
+        () => assertIsRealType(LocaleRef),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
@@ -214,7 +215,7 @@ void main() {
 
     test('should assert when ImageProviderProp is passed', () {
       expect(
-        () => assertIsRealType(ImageProviderProp),
+        () => assertIsRealType(ImageProviderRef),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
@@ -227,7 +228,7 @@ void main() {
 
     test('should assert when GradientTransformProp is passed', () {
       expect(
-        () => assertIsRealType(GradientTransformProp),
+        () => assertIsRealType(GradientTransformRef),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
@@ -240,7 +241,7 @@ void main() {
 
     test('should assert when Matrix4Prop is passed', () {
       expect(
-        () => assertIsRealType(Matrix4Prop),
+        () => assertIsRealType(Matrix4Ref),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
@@ -253,7 +254,7 @@ void main() {
 
     test('should assert when TextScalerProp is passed', () {
       expect(
-        () => assertIsRealType(TextScalerProp),
+        () => assertIsRealType(TextScalerRef),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
@@ -266,7 +267,7 @@ void main() {
 
     test('should assert when TableColumnWidthProp is passed', () {
       expect(
-        () => assertIsRealType(TableColumnWidthProp),
+        () => assertIsRealType(TableColumnWidthRef),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
@@ -279,7 +280,7 @@ void main() {
 
     test('should assert when TableBorderProp is passed', () {
       expect(
-        () => assertIsRealType(TableBorderProp),
+        () => assertIsRealType(TableBorderRef),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
@@ -292,7 +293,7 @@ void main() {
 
     test('should assert when StrutStyleProp is passed', () {
       expect(
-        () => assertIsRealType(StrutStyleProp),
+        () => assertIsRealType(StrutStyleRef),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,
@@ -305,7 +306,7 @@ void main() {
 
     test('should assert when TextHeightBehaviorProp is passed', () {
       expect(
-        () => assertIsRealType(TextHeightBehaviorProp),
+        () => assertIsRealType(TextHeightBehaviorRef),
         throwsA(
           isA<AssertionError>().having(
             (e) => e.message,

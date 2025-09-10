@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/src/core/prop.dart';
-import 'package:mix/src/core/prop_refs.dart';
+import 'package:mix/src/theme/tokens/token_refs.dart';
 import 'package:mix/src/theme/mix_theme.dart';
 
 import '../../helpers/testing_utils.dart';
@@ -15,7 +15,7 @@ void main() {
     group('Current Behavior Tests', () {
       test('ColorProp behavior - isAnyTokenRef detects it correctly', () {
         final colorToken = TestToken<Color>('test-color');
-        final colorRef = ColorProp(Prop.token(colorToken));
+        final colorRef = ColorRef(Prop.token(colorToken));
 
         // ColorProp should be detected as a token reference
         expect(
@@ -215,7 +215,7 @@ void main() {
     group('Verify detection functions work', () {
       test('isAnyTokenRef detects ColorProp correctly', () {
         final colorToken = TestToken<Color>('test-color');
-        final colorRef = ColorProp(Prop.token(colorToken));
+        final colorRef = ColorRef(Prop.token(colorToken));
 
         expect(
           isAnyTokenRef(colorRef),

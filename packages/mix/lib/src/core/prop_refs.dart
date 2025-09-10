@@ -1,201 +1,127 @@
-import 'dart:ui';
-
 import 'package:flutter/widgets.dart';
 
-import '../theme/tokens/mix_token.dart';
-import 'directive.dart';
+import '../theme/tokens/token_refs.dart';
 import 'prop.dart';
-import 'prop_source.dart';
 
-mixin ValueRef<T> on Prop<T> {
-  /// Generates a detailed error message for token reference misuse.
-  String _buildTokenReferenceError(Symbol memberName) {
-    final typeName = T.toString();
-    final memberNameStr = memberName
-        .toString()
-        .replaceFirst('Symbol("', '')
-        .replaceFirst('")', '');
 
-    return '''Cannot access '$memberNameStr' on a $typeName token reference.
-
-This is a context-dependent $typeName token that needs to be resolved through BuildContext before use.
-Token references can only be passed directly to Mix styling utilities (e.g., \$box.color).
-
-To use as an actual $typeName value:
-- Pass it to Mix utilities: \$box.color.token(myColorToken)  
-- Or resolve it first: myColorToken.resolve(context)''';
-  }
-
-  @override
-  Never noSuchMethod(Invocation invocation) {
-    throw UnimplementedError(_buildTokenReferenceError(invocation.memberName));
-  }
-}
-
-/// Token reference for [Color] values with directive support.
-final class ColorProp extends Prop<Color>
-    with ValueRef<Color>
-    implements Color {
-  ColorProp(super.prop) : super.fromProp();
-
-  @override
-  ColorProp withValues({
-    double? alpha,
-    double? red,
-    double? green,
-    double? blue,
-    ColorSpace? colorSpace,
-  }) {
-    return ColorProp(
-      mergeProp(
-        Prop.directives([
-          WithValuesColorDirective(
-            alpha: alpha,
-            red: red,
-            green: green,
-            blue: blue,
-            colorSpace: colorSpace,
-          ),
-        ]),
-      ),
-    );
-  }
-}
 
 /// Token reference for [AlignmentGeometry] values
-final class AlignmentGeometryProp extends Prop<AlignmentGeometry>
+final class AlignmentGeometryRef extends Prop<AlignmentGeometry>
     with ValueRef<AlignmentGeometry>
     implements AlignmentGeometry {
-  AlignmentGeometryProp(super.prop) : super.fromProp();
+  AlignmentGeometryRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [Alignment] values
-final class AlignmentProp extends Prop<Alignment>
+final class AlignmentRef extends Prop<Alignment>
     with ValueRef<Alignment>
     implements Alignment {
-  AlignmentProp(super.prop) : super.fromProp();
+  AlignmentRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [AlignmentDirectional] values
-final class AlignmentDirectionalProp extends Prop<AlignmentDirectional>
+final class AlignmentDirectionalRef extends Prop<AlignmentDirectional>
     with ValueRef<AlignmentDirectional>
     implements AlignmentDirectional {
-  AlignmentDirectionalProp(super.prop) : super.fromProp();
+  AlignmentDirectionalRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [FontFeature] values
-final class FontFeatureProp extends Prop<FontFeature>
+final class FontFeatureRef extends Prop<FontFeature>
     with ValueRef<FontFeature>
     implements FontFeature {
-  FontFeatureProp(super.prop) : super.fromProp();
+  FontFeatureRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [Duration] values
-final class DurationProp extends Prop<Duration>
+final class DurationRef extends Prop<Duration>
     with ValueRef<Duration>
     implements Duration {
-  DurationProp(super.prop) : super.fromProp();
+  DurationRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [FontWeight] values
-final class FontWeightProp extends Prop<FontWeight>
+final class FontWeightRef extends Prop<FontWeight>
     with ValueRef<FontWeight>
     implements FontWeight {
-  FontWeightProp(super.prop) : super.fromProp();
+  FontWeightRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [TextDecoration] values
-final class TextDecorationProp extends Prop<TextDecoration>
+final class TextDecorationRef extends Prop<TextDecoration>
     with ValueRef<TextDecoration>
     implements TextDecoration {
-  TextDecorationProp(super.prop) : super.fromProp();
+  TextDecorationRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [Offset] values
-final class OffsetProp extends Prop<Offset>
+final class OffsetRef extends Prop<Offset>
     with ValueRef<Offset>
     implements Offset {
-  OffsetProp(super.prop) : super.fromProp();
+  OffsetRef(super.prop) : super.fromProp();
 }
 
-/// Token reference for [Radius] values
-final class RadiusProp extends Prop<Radius>
-    with ValueRef<Radius>
-    implements Radius {
-  RadiusProp(super.prop) : super.fromProp();
-}
 
 /// Token reference for [Rect] values
-final class RectProp extends Prop<Rect> with ValueRef<Rect> implements Rect {
-  RectProp(super.prop) : super.fromProp();
+final class RectRef extends Prop<Rect> with ValueRef<Rect> implements Rect {
+  RectRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [Locale] values
-final class LocaleProp extends Prop<Locale>
+final class LocaleRef extends Prop<Locale>
     with ValueRef<Locale>
     implements Locale {
-  LocaleProp(super.prop) : super.fromProp();
+  LocaleRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [ImageProvider] values
-final class ImageProviderProp extends Prop<ImageProvider>
+final class ImageProviderRef extends Prop<ImageProvider>
     with ValueRef<ImageProvider>
     implements ImageProvider {
-  ImageProviderProp(super.prop) : super.fromProp();
+  ImageProviderRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [GradientTransform] values
-final class GradientTransformProp extends Prop<GradientTransform>
+final class GradientTransformRef extends Prop<GradientTransform>
     with ValueRef<GradientTransform>
     implements GradientTransform {
-  GradientTransformProp(super.prop) : super.fromProp();
+  GradientTransformRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [Matrix4] values
-final class Matrix4Prop extends Prop<Matrix4>
+final class Matrix4Ref extends Prop<Matrix4>
     with ValueRef<Matrix4>
     implements Matrix4 {
-  Matrix4Prop(super.prop) : super.fromProp();
+  Matrix4Ref(super.prop) : super.fromProp();
 }
 
 /// Token reference for [TextScaler] values
-final class TextScalerProp extends Prop<TextScaler>
+final class TextScalerRef extends Prop<TextScaler>
     with ValueRef<TextScaler>
     implements TextScaler {
-  TextScalerProp(super.prop) : super.fromProp();
+  TextScalerRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [TableColumnWidth] values
-final class TableColumnWidthProp extends Prop<TableColumnWidth>
+final class TableColumnWidthRef extends Prop<TableColumnWidth>
     with ValueRef<TableColumnWidth>
     implements TableColumnWidth {
-  TableColumnWidthProp(super.prop) : super.fromProp();
+  TableColumnWidthRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [TableBorder] values
-final class TableBorderProp extends Prop<TableBorder>
+final class TableBorderRef extends Prop<TableBorder>
     with ValueRef<TableBorder>
     implements TableBorder {
-  TableBorderProp(super.prop) : super.fromProp();
+  TableBorderRef(super.prop) : super.fromProp();
 }
 
-/// Token reference for [TextStyle] values
-final class TextStyleProp extends Prop<TextStyle>
-    with ValueRef<TextStyle>
-    implements TextStyle {
-  TextStyleProp(super.prop) : super.fromProp();
-
-  @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return super.toString();
-  }
-}
 
 /// Token reference for [StrutStyle] values
-final class StrutStyleProp extends Prop<StrutStyle>
+final class StrutStyleRef extends Prop<StrutStyle>
     with ValueRef<StrutStyle>
     implements StrutStyle {
-  StrutStyleProp(super.prop) : super.fromProp();
+  StrutStyleRef(super.prop) : super.fromProp();
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -204,10 +130,10 @@ final class StrutStyleProp extends Prop<StrutStyle>
 }
 
 /// Token reference for [TextHeightBehavior] values
-final class TextHeightBehaviorProp extends Prop<TextHeightBehavior>
+final class TextHeightBehaviorRef extends Prop<TextHeightBehavior>
     with ValueRef<TextHeightBehavior>
     implements TextHeightBehavior {
-  TextHeightBehaviorProp(super.prop) : super.fromProp();
+  TextHeightBehaviorRef(super.prop) : super.fromProp();
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -216,101 +142,88 @@ final class TextHeightBehaviorProp extends Prop<TextHeightBehavior>
 }
 
 /// Token reference for [BoxBorder] values
-final class BoxBorderProp extends Prop<BoxBorder>
+final class BoxBorderRef extends Prop<BoxBorder>
     with ValueRef<BoxBorder>
     implements BoxBorder {
-  BoxBorderProp(super.prop) : super.fromProp();
+  BoxBorderRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [BorderRadiusGeometry] values
-final class BorderRadiusGeometryProp extends Prop<BorderRadiusGeometry>
+final class BorderRadiusGeometryRef extends Prop<BorderRadiusGeometry>
     with ValueRef<BorderRadiusGeometry>
     implements BorderRadiusGeometry {
-  BorderRadiusGeometryProp(super.prop) : super.fromProp();
+  BorderRadiusGeometryRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [BorderRadius] values
-final class BorderRadiusProp extends Prop<BorderRadius>
+final class BorderRadiusRef extends Prop<BorderRadius>
     with ValueRef<BorderRadius>
     implements BorderRadius {
-  BorderRadiusProp(super.prop) : super.fromProp();
+  BorderRadiusRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [BorderRadiusDirectional] values
-final class BorderRadiusDirectionalProp extends Prop<BorderRadiusDirectional>
+final class BorderRadiusDirectionalRef extends Prop<BorderRadiusDirectional>
     with ValueRef<BorderRadiusDirectional>
     implements BorderRadiusDirectional {
-  BorderRadiusDirectionalProp(super.prop) : super.fromProp();
+  BorderRadiusDirectionalRef(super.prop) : super.fromProp();
 }
 
-/// Token reference for [Shadow] values
-final class ShadowProp extends Prop<Shadow>
-    with ValueRef<Shadow>
-    implements Shadow {
-  ShadowProp(super.prop) : super.fromProp();
-}
-
-/// Token reference for [BoxShadow] values
-final class BoxShadowProp extends Prop<BoxShadow>
-    with ValueRef<BoxShadow>
-    implements BoxShadow {
-  BoxShadowProp(super.prop) : super.fromProp();
-}
 
 /// Token reference for [Gradient] values
-final class GradientProp extends Prop<Gradient>
+final class GradientRef extends Prop<Gradient>
     with ValueRef<Gradient>
     implements Gradient {
-  GradientProp(super.prop) : super.fromProp();
+  GradientRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [LinearGradient] values.
-final class LinearGradientProp extends Prop<LinearGradient>
+final class LinearGradientRef extends Prop<LinearGradient>
     with ValueRef<LinearGradient>
     implements LinearGradient {
-  LinearGradientProp(super.prop) : super.fromProp();
+  LinearGradientRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [RadialGradient] values.
-final class RadialGradientProp extends Prop<RadialGradient>
+final class RadialGradientRef extends Prop<RadialGradient>
     with ValueRef<RadialGradient>
     implements RadialGradient {
-  RadialGradientProp(super.prop) : super.fromProp();
+  RadialGradientRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [SweepGradient] values.
-final class SweepGradientProp extends Prop<SweepGradient>
+final class SweepGradientRef extends Prop<SweepGradient>
     with ValueRef<SweepGradient>
     implements SweepGradient {
-  SweepGradientProp(super.prop) : super.fromProp();
+  SweepGradientRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [EdgeInsetsGeometry] values
-final class EdgeInsetsGeometryProp extends Prop<EdgeInsetsGeometry>
+final class EdgeInsetsGeometryRef extends Prop<EdgeInsetsGeometry>
     with ValueRef<EdgeInsetsGeometry>
     implements EdgeInsetsGeometry {
-  EdgeInsetsGeometryProp(super.prop) : super.fromProp();
+  EdgeInsetsGeometryRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [EdgeInsets] values
-final class EdgeInsetsProp extends Prop<EdgeInsets>
+final class EdgeInsetsRef extends Prop<EdgeInsets>
     with ValueRef<EdgeInsets>
     implements EdgeInsets {
-  EdgeInsetsProp(super.prop) : super.fromProp();
+  EdgeInsetsRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [EdgeInsetsDirectional] values
-final class EdgeInsetsDirectionalProp extends Prop<EdgeInsetsDirectional>
+final class EdgeInsetsDirectionalRef extends Prop<EdgeInsetsDirectional>
     with ValueRef<EdgeInsetsDirectional>
     implements EdgeInsetsDirectional {
-  EdgeInsetsDirectionalProp(super.prop) : super.fromProp();
+  EdgeInsetsDirectionalRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [BoxDecoration] values
-final class BoxDecorationProp extends Prop<BoxDecoration>
+final class BoxDecorationRef extends Prop<BoxDecoration>
     with ValueRef<BoxDecoration>
     implements BoxDecoration {
-  BoxDecorationProp(super.prop) : super.fromProp();
+  BoxDecorationRef(super.prop) : super.fromProp();
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -319,10 +232,10 @@ final class BoxDecorationProp extends Prop<BoxDecoration>
 }
 
 /// Token reference for [BorderSide] values.
-final class BorderSideProp extends Prop<BorderSide>
+final class BorderSideRef extends Prop<BorderSide>
     with ValueRef<BorderSide>
     implements BorderSide {
-  BorderSideProp(super.prop) : super.fromProp();
+  BorderSideRef(super.prop) : super.fromProp();
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -331,10 +244,10 @@ final class BorderSideProp extends Prop<BorderSide>
 }
 
 /// Token reference for [ShapeBorder] values
-final class ShapeBorderProp extends Prop<ShapeBorder>
+final class ShapeBorderRef extends Prop<ShapeBorder>
     with ValueRef<ShapeBorder>
     implements ShapeBorder {
-  ShapeBorderProp(super.prop) : super.fromProp();
+  ShapeBorderRef(super.prop) : super.fromProp();
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -343,82 +256,25 @@ final class ShapeBorderProp extends Prop<ShapeBorder>
 }
 
 /// Token reference for [BoxConstraints] values
-final class BoxConstraintsProp extends Prop<BoxConstraints>
+final class BoxConstraintsRef extends Prop<BoxConstraints>
     with ValueRef<BoxConstraints>
     implements BoxConstraints {
-  BoxConstraintsProp(super.prop) : super.fromProp();
+  BoxConstraintsRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [DecorationImage] values
-final class DecorationImageProp extends Prop<DecorationImage>
+final class DecorationImageRef extends Prop<DecorationImage>
     with ValueRef<DecorationImage>
     implements DecorationImage {
-  DecorationImageProp(super.prop) : super.fromProp();
+  DecorationImageRef(super.prop) : super.fromProp();
 }
 
 /// Token reference for [Curve] values
-final class CurveProp extends Prop<Curve>
-    with ValueRef<Curve>
-    implements Curve {
-  CurveProp(super.prop) : super.fromProp();
+final class CurveRef extends Prop<Curve> with ValueRef<Curve> implements Curve {
+  CurveRef(super.prop) : super.fromProp();
 }
 
-// =============================================================================
-// EXTENSION TYPE TOKEN REFERENCES FOR PRIMITIVES
-// =============================================================================
-// Extension types for primitive values (double, int, string) that implement their
-// respective interfaces while being trackable through a token registry.
-// Each token gets a unique representation value based on token.hashCode to ensure
-// reliable registry lookups without collisions.
 
-/// Global registry to associate extension type values with their tokens
-final Map<Object, MixToken> _tokenRegistry = <Object, MixToken>{};
-
-/// Extension type for [double] values with token tracking
-extension type const DoubleRef(double _value) implements double {
-  /// Creates a DoubleRef using token hashCode and registers it with a token
-  static DoubleRef token(MixToken<double> token) {
-    // Use negative nano-values: -0.0001 to -0.000001
-    // Negative values clearly indicate "this is a reference, not a real value"
-    final hash = token.hashCode.abs() % 100000;
-    final ref = DoubleRef(-(0.000001 + hash * 0.000001));
-    _tokenRegistry[ref] = token;
-
-    return ref;
-  }
-}
-
-/// Extension type for [int] values with token tracking
-extension type const IntRef(int _value) implements int {
-  /// Creates an IntRef using token hashCode and registers it with a token
-  static IntRef token(MixToken<int> token) {
-    // Use negative small values for token references
-    // Negative values clearly indicate "this is a reference, not a real value"
-    final hash = token.hashCode.abs() % 100000;
-    final ref = IntRef(-(1 + hash));
-    _tokenRegistry[ref] = token;
-
-    return ref;
-  }
-}
-
-/// Extension type for [String] values with token tracking
-extension type const StringRef(String _value) implements String {
-  /// Creates a StringRef using token hashCode and registers it with a token
-  static StringRef token(MixToken<String> token) {
-    final uniqueValue = '_tk_${token.hashCode.toRadixString(36)}';
-    final ref = StringRef(uniqueValue);
-    _tokenRegistry[ref] = token;
-
-    return ref;
-  }
-}
-
-/// Utility to clean up token registry (for memory management)
-@visibleForTesting
-void clearTokenRegistry() {
-  _tokenRegistry.clear();
-}
 
 /// Asserts that the given type is not a token reference type.
 ///
@@ -428,58 +284,58 @@ void assertIsRealType(Type value) {
   // Only check if the value is a TokenRef type that should be replaced
   final Type? realType = switch (value) {
     // Color types
-    == ColorProp => Color,
+    == ColorRef => Color,
 
     // Border types
-    == BorderSideProp => BorderSide,
-    == BoxBorderProp => BoxBorder,
-    == BorderRadiusProp => BorderRadius,
-    == BorderRadiusDirectionalProp => BorderRadiusDirectional,
-    == BorderRadiusGeometryProp => BorderRadiusGeometry,
+    == BorderSideRef => BorderSide,
+    == BoxBorderRef => BoxBorder,
+    == BorderRadiusRef => BorderRadius,
+    == BorderRadiusDirectionalRef => BorderRadiusDirectional,
+    == BorderRadiusGeometryRef => BorderRadiusGeometry,
 
     // Gradient types
-    == GradientProp => Gradient,
-    == LinearGradientProp => LinearGradient,
-    == RadialGradientProp => RadialGradient,
-    == SweepGradientProp => SweepGradient,
-    == GradientTransformProp => GradientTransform,
+    == GradientRef => Gradient,
+    == LinearGradientRef => LinearGradient,
+    == RadialGradientRef => RadialGradient,
+    == SweepGradientRef => SweepGradient,
+    == GradientTransformRef => GradientTransform,
 
     // Geometry types
-    == AlignmentGeometryProp => AlignmentGeometry,
-    == AlignmentProp => Alignment,
-    == AlignmentDirectionalProp => AlignmentDirectional,
-    == EdgeInsetsGeometryProp => EdgeInsetsGeometry,
-    == EdgeInsetsProp => EdgeInsets,
-    == EdgeInsetsDirectionalProp => EdgeInsetsDirectional,
+    == AlignmentGeometryRef => AlignmentGeometry,
+    == AlignmentRef => Alignment,
+    == AlignmentDirectionalRef => AlignmentDirectional,
+    == EdgeInsetsGeometryRef => EdgeInsetsGeometry,
+    == EdgeInsetsRef => EdgeInsets,
+    == EdgeInsetsDirectionalRef => EdgeInsetsDirectional,
 
     // Shape and decoration types
-    == RadiusProp => Radius,
-    == OffsetProp => Offset,
-    == RectProp => Rect,
-    == ShadowProp => Shadow,
-    == BoxShadowProp => BoxShadow,
-    == BoxDecorationProp => BoxDecoration,
-    == DecorationImageProp => DecorationImage,
-    == ShapeBorderProp => ShapeBorder,
-    == BoxConstraintsProp => BoxConstraints,
+    == RadiusRef => Radius,
+    == OffsetRef => Offset,
+    == RectRef => Rect,
+    == ShadowRef => Shadow,
+    == BoxShadowRef => BoxShadow,
+    == BoxDecorationRef => BoxDecoration,
+    == DecorationImageRef => DecorationImage,
+    == ShapeBorderRef => ShapeBorder,
+    == BoxConstraintsRef => BoxConstraints,
 
     // Text types
-    == TextStyleProp => TextStyle,
-    == TextDecorationProp => TextDecoration,
-    == StrutStyleProp => StrutStyle,
-    == TextHeightBehaviorProp => TextHeightBehavior,
-    == TextScalerProp => TextScaler,
-    == FontFeatureProp => FontFeature,
-    == FontWeightProp => FontWeight,
+    == TextStyleRef => TextStyle,
+    == TextDecorationRef => TextDecoration,
+    == StrutStyleRef => StrutStyle,
+    == TextHeightBehaviorRef => TextHeightBehavior,
+    == TextScalerRef => TextScaler,
+    == FontFeatureRef => FontFeature,
+    == FontWeightRef => FontWeight,
 
     // Other types
-    == LocaleProp => Locale,
-    == ImageProviderProp => ImageProvider,
-    == Matrix4Prop => Matrix4,
-    == TableColumnWidthProp => TableColumnWidth,
-    == TableBorderProp => TableBorder,
-    == DurationProp => Duration,
-    == CurveProp => Curve,
+    == LocaleRef => Locale,
+    == ImageProviderRef => ImageProvider,
+    == Matrix4Ref => Matrix4,
+    == TableColumnWidthRef => TableColumnWidth,
+    == TableBorderRef => TableBorder,
+    == DurationRef => Duration,
+    == CurveRef => Curve,
 
     // All other types are valid - not TokenRef types
     _ => null,
@@ -491,127 +347,3 @@ void assertIsRealType(Type value) {
   );
 }
 
-/// Gets the token associated with a token reference value.
-///
-/// Returns the [MixToken] if the value is a registered token reference,
-/// or null if it's not a token reference.
-MixToken<T>? getTokenFromValue<T>(Object value) {
-  return _tokenRegistry[value] as MixToken<T>?;
-}
-
-/// Checks if a value is any type of token reference.
-///
-/// Returns true for both class-based token references (Prop with ValueRef)
-/// and extension type token references registered in the token registry.
-bool isAnyTokenRef(Object value) {
-  // Check if it's a class-based token reference (extends Prop with ValueRef mixin)
-  // We can check if it has the ValueRef mixin by checking if it has a token source
-  if (value is Prop && value.sources.any((s) => s is TokenSource)) {
-    // Additional check to ensure it's actually a token reference class
-    final typeName = value.runtimeType.toString();
-    if (typeName.endsWith('Ref') || typeName.endsWith('Prop')) {
-      return true;
-    }
-  }
-
-  // Check if it's an extension type token reference by looking in the registry
-  return _tokenRegistry.containsKey(value);
-}
-
-/// Creates the appropriate token reference type for the given token.
-///
-/// Returns a token reference that implements the target type T,
-/// allowing the token to be used wherever T is expected.
-T getReferenceValue<T>(MixToken<T> token) {
-  final prop = Prop.token(token);
-  if (T == Color) {
-    return ColorProp(prop as Prop<Color>) as T;
-  } else if (T == double) {
-    return DoubleRef.token(token as MixToken<double>) as T;
-  } else if (T == int) {
-    return IntRef.token(token as MixToken<int>) as T;
-  } else if (T == String) {
-    return StringRef.token(token as MixToken<String>) as T;
-  } else if (T == Radius) {
-    return RadiusProp(prop as Prop<Radius>) as T;
-  } else if (T == Offset) {
-    return OffsetProp(prop as Prop<Offset>) as T;
-  } else if (T == Rect) {
-    return RectProp(prop as Prop<Rect>) as T;
-  } else if (T == Shadow) {
-    return ShadowProp(prop as Prop<Shadow>) as T;
-  } else if (T == BoxShadow) {
-    return BoxShadowProp(prop as Prop<BoxShadow>) as T;
-  } else if (T == BoxDecoration) {
-    return BoxDecorationProp(prop as Prop<BoxDecoration>) as T;
-  } else if (T == DecorationImage) {
-    return DecorationImageProp(prop as Prop<DecorationImage>) as T;
-  } else if (T == ShapeBorder) {
-    return ShapeBorderProp(prop as Prop<ShapeBorder>) as T;
-  } else if (T == BoxConstraints) {
-    return BoxConstraintsProp(prop as Prop<BoxConstraints>) as T;
-  } else if (T == Gradient) {
-    return GradientProp(prop as Prop<Gradient>) as T;
-  } else if (T == LinearGradient) {
-    return LinearGradientProp(prop as Prop<LinearGradient>) as T;
-  } else if (T == RadialGradient) {
-    return RadialGradientProp(prop as Prop<RadialGradient>) as T;
-  } else if (T == SweepGradient) {
-    return SweepGradientProp(prop as Prop<SweepGradient>) as T;
-  } else if (T == GradientTransform) {
-    return GradientTransformProp(prop as Prop<GradientTransform>) as T;
-  } else if (T == AlignmentGeometry) {
-    return AlignmentGeometryProp(prop as Prop<AlignmentGeometry>) as T;
-  } else if (T == Alignment) {
-    return AlignmentProp(prop as Prop<Alignment>) as T;
-  } else if (T == AlignmentDirectional) {
-    return AlignmentDirectionalProp(prop as Prop<AlignmentDirectional>) as T;
-  } else if (T == EdgeInsetsGeometry) {
-    return EdgeInsetsGeometryProp(prop as Prop<EdgeInsetsGeometry>) as T;
-  } else if (T == EdgeInsets) {
-    return EdgeInsetsProp(prop as Prop<EdgeInsets>) as T;
-  } else if (T == EdgeInsetsDirectional) {
-    return EdgeInsetsDirectionalProp(prop as Prop<EdgeInsetsDirectional>) as T;
-  } else if (T == BorderSide) {
-    return BorderSideProp(prop as Prop<BorderSide>) as T;
-  } else if (T == BoxBorder) {
-    return BoxBorderProp(prop as Prop<BoxBorder>) as T;
-  } else if (T == BorderRadius) {
-    return BorderRadiusProp(prop as Prop<BorderRadius>) as T;
-  } else if (T == BorderRadiusDirectional) {
-    return BorderRadiusDirectionalProp(prop as Prop<BorderRadiusDirectional>)
-        as T;
-  } else if (T == BorderRadiusGeometry) {
-    return BorderRadiusGeometryProp(prop as Prop<BorderRadiusGeometry>) as T;
-  } else if (T == TextStyle) {
-    return TextStyleProp(prop as Prop<TextStyle>) as T;
-  } else if (T == TextDecoration) {
-    return TextDecorationProp(prop as Prop<TextDecoration>) as T;
-  } else if (T == StrutStyle) {
-    return StrutStyleProp(prop as Prop<StrutStyle>) as T;
-  } else if (T == TextHeightBehavior) {
-    return TextHeightBehaviorProp(prop as Prop<TextHeightBehavior>) as T;
-  } else if (T == TextScaler) {
-    return TextScalerProp(prop as Prop<TextScaler>) as T;
-  } else if (T == FontFeature) {
-    return FontFeatureProp(prop as Prop<FontFeature>) as T;
-  } else if (T == FontWeight) {
-    return FontWeightProp(prop as Prop<FontWeight>) as T;
-  } else if (T == Locale) {
-    return LocaleProp(prop as Prop<Locale>) as T;
-  } else if (T == ImageProvider) {
-    return ImageProviderProp(prop as Prop<ImageProvider>) as T;
-  } else if (T == Matrix4) {
-    return Matrix4Prop(prop as Prop<Matrix4>) as T;
-  } else if (T == TableColumnWidth) {
-    return TableColumnWidthProp(prop as Prop<TableColumnWidth>) as T;
-  } else if (T == TableBorder) {
-    return TableBorderProp(prop as Prop<TableBorder>) as T;
-  } else if (T == Duration) {
-    return DurationProp(prop as Prop<Duration>) as T;
-  } else if (T == Curve) {
-    return CurveProp(prop as Prop<Curve>) as T;
-  }
-
-  return prop as T;
-}

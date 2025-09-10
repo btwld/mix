@@ -163,6 +163,8 @@ export 'src/theme/material/material_tokens.dart';
 export 'src/theme/mix_colors.dart';
 export 'src/theme/mix_theme.dart';
 export 'src/theme/tokens/mix_token.dart';
+export 'src/theme/tokens/token_refs.dart';
+export 'src/theme/tokens/value_tokens.dart';
 
 /// VARIANTS
 export 'src/variants/variant.dart';
