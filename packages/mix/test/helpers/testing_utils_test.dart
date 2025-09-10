@@ -35,12 +35,12 @@ void main() {
       });
 
       test('PropMatcher identifies token structure', () {
-        const colorToken = MixToken<Color>('primary');
+        const colorToken = TestToken<Color>('primary');
         final colorProp = Prop.token(colorToken);
         expect(colorProp, PropMatcher.isToken(colorToken));
         expect(colorProp, PropMatcher.hasTokens);
 
-        final spacingToken = MixToken<double>('spacing.small');
+        final spacingToken = TestToken<double>('spacing.small');
         final spacingProp = Prop.token(spacingToken);
         expect(spacingProp, PropMatcher.isToken(spacingToken));
         expect(spacingProp, PropMatcher.hasTokens);
@@ -78,7 +78,7 @@ void main() {
       });
 
       test('PropMatcher distinguishes between token and value', () {
-        const colorToken = MixToken<Color>('primary');
+        const colorToken = TestToken<Color>('primary');
         final tokenProp = Prop.token(colorToken);
 
         expect(tokenProp, PropMatcher.hasTokens);
@@ -88,7 +88,7 @@ void main() {
 
       test('PropMatcher distinguishes between value and token', () {
         final valueProp = Prop.value(Colors.red);
-        const colorToken = MixToken<Color>('primary');
+        const colorToken = TestToken<Color>('primary');
 
         expect(valueProp, PropMatcher.hasValues);
         expect(valueProp, isNot(PropMatcher.hasTokens));
@@ -128,7 +128,7 @@ void main() {
       });
 
       test('resolves tokens with custom context', () {
-        const colorToken = MixToken<Color>('primary');
+        const colorToken = TestToken<Color>('primary');
         final tokenProp = Prop.token(colorToken);
 
         final context = MockBuildContext(
@@ -191,7 +191,7 @@ void main() {
 
       test('provides MixScope with custom data', () {
         final context = MockBuildContext(
-          tokens: {MixToken<Color>('primary'): Colors.blue},
+          tokens: {TestToken<Color>('primary'): Colors.blue},
         );
 
         final mixScope = context.dependOnInheritedWidgetOfExactType<MixScope>();

@@ -650,7 +650,7 @@ void main() {
       });
 
       test('decorationColor utility supports tokens', () {
-        const colorToken = MixToken<Color>('decorationColor');
+        const colorToken = TestToken<Color>('decorationColor');
         final context = MockBuildContext(
           tokens: {colorToken: Colors.orange},
         );

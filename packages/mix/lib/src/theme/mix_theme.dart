@@ -183,7 +183,7 @@ class MixScope extends InheritedModel<String> {
   Map<MixToken, Object>? get tokens => _tokens;
 
   /// Type-safe token resolution with error handling
-  T getToken<T>(MixToken<T> token, BuildContext context) {
+  T getToken<T>(MixToken<T> token, BuildContext _) {
     final value = _tokens?[token];
     if (value == null) {
       throw StateError('Token "${token.name}" not found in scope');

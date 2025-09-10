@@ -22,7 +22,7 @@ void main() {
       });
 
       test('token method creates token prop', () {
-        const colorToken = MixToken<Color>('primaryColor');
+        const colorToken = TestToken<Color>('primaryColor');
         final context = MockBuildContext(
           tokens: {colorToken: Colors.blue},
         );
@@ -34,7 +34,7 @@ void main() {
       });
 
       test('ref method (deprecated) delegates to token', () {
-        const colorToken = MixToken<Color>('primaryColor');
+        const colorToken = TestToken<Color>('primaryColor');
         final context = MockBuildContext(
           tokens: {colorToken: Colors.green},
         );
@@ -449,7 +449,7 @@ void main() {
 
   group('Token and context resolution', () {
     test('token resolves from MixScopeData', () {
-      const colorToken = MixToken<Color>('testColor');
+      const colorToken = TestToken<Color>('testColor');
       const expectedColor = Colors.purple;
 
       final context = MockBuildContext(
@@ -467,7 +467,7 @@ void main() {
     });
 
     test('token falls back when not found in context', () {
-      const colorToken = MixToken<Color>('missingColor');
+      const colorToken = TestToken<Color>('missingColor');
 
       final context = MockBuildContext(tokens: {});
 

@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/src/core/prop.dart';
 import 'package:mix/src/core/prop_refs.dart';
 import 'package:mix/src/theme/mix_theme.dart';
-import 'package:mix/src/theme/tokens/mix_token.dart';
 
 import '../../helpers/testing_utils.dart';
 
@@ -15,7 +14,7 @@ void main() {
 
     group('Current Behavior Tests', () {
       test('ColorProp behavior - isAnyTokenRef detects it correctly', () {
-        final colorToken = MixToken<Color>('test-color');
+        final colorToken = TestToken<Color>('test-color');
         final colorRef = ColorProp(Prop.token(colorToken));
 
         // ColorProp should be detected as a token reference
@@ -39,7 +38,7 @@ void main() {
       });
 
       test('DoubleRef passed to Prop.value - now detects token', () {
-        final doubleToken = MixToken<double>('test-double');
+        final doubleToken = TestToken<double>('test-double');
         final doubleRef = DoubleRef.token(doubleToken);
 
         // Pass the DoubleRef to Prop.value
@@ -64,7 +63,7 @@ void main() {
       });
 
       test('IntRef passed to Prop.value - now detects token', () {
-        final intToken = MixToken<int>('test-int');
+        final intToken = TestToken<int>('test-int');
         final intRef = IntRef.token(intToken);
 
         // Pass the IntRef to Prop.value
@@ -89,7 +88,7 @@ void main() {
       });
 
       test('StringRef passed to Prop.value - now detects token', () {
-        final stringToken = MixToken<String>('test-string');
+        final stringToken = TestToken<String>('test-string');
         final stringRef = StringRef.token(stringToken);
 
         // Pass the StringRef to Prop.value
@@ -118,7 +117,7 @@ void main() {
       testWidgets('DoubleRef resolves to token value from context', (
         tester,
       ) async {
-        final doubleToken = MixToken<double>('width-token');
+        final doubleToken = TestToken<double>('width-token');
         final doubleRef = DoubleRef.token(doubleToken);
 
         // Create Prop from token reference
@@ -159,7 +158,7 @@ void main() {
       testWidgets('IntRef resolves to token value from context', (
         tester,
       ) async {
-        final intToken = MixToken<int>('count-token');
+        final intToken = TestToken<int>('count-token');
         final intRef = IntRef.token(intToken);
 
         final prop = Prop.value(intRef);
@@ -187,7 +186,7 @@ void main() {
       testWidgets('StringRef resolves to token value from context', (
         tester,
       ) async {
-        final stringToken = MixToken<String>('text-token');
+        final stringToken = TestToken<String>('text-token');
         final stringRef = StringRef.token(stringToken);
 
         final prop = Prop.value(stringRef);
@@ -215,7 +214,7 @@ void main() {
 
     group('Verify detection functions work', () {
       test('isAnyTokenRef detects ColorProp correctly', () {
-        final colorToken = MixToken<Color>('test-color');
+        final colorToken = TestToken<Color>('test-color');
         final colorRef = ColorProp(Prop.token(colorToken));
 
         expect(
@@ -226,7 +225,7 @@ void main() {
       });
 
       test('isAnyTokenRef detects DoubleRef correctly', () {
-        final doubleToken = MixToken<double>('test-double');
+        final doubleToken = TestToken<double>('test-double');
         final doubleRef = DoubleRef.token(doubleToken);
 
         expect(
@@ -237,7 +236,7 @@ void main() {
       });
 
       test('getTokenFromValue retrieves token from DoubleRef', () {
-        final doubleToken = MixToken<double>('test-double');
+        final doubleToken = TestToken<double>('test-double');
         final doubleRef = DoubleRef.token(doubleToken);
 
         final retrieved = getTokenFromValue(doubleRef);

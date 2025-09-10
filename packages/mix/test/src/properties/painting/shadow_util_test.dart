@@ -150,7 +150,7 @@ void main() {
       });
 
       test('color utility supports tokens', () {
-        const colorToken = MixToken<Color>('shadowColor');
+        const colorToken = TestToken<Color>('shadowColor');
         final context = MockBuildContext(
           tokens: {colorToken: Colors.black54},
         );

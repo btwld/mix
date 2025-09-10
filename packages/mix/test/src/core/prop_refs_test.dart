@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/src/core/prop.dart';
 import 'package:mix/src/core/prop_refs.dart';
 import 'package:mix/src/core/prop_source.dart';
-import 'package:mix/src/theme/tokens/mix_token.dart';
 
 import '../../helpers/testing_utils.dart';
 
@@ -16,18 +15,18 @@ void main() {
 
     group('TokenRef Base Class', () {
       test('creates with token', () {
-        final token = MixToken<Color>('test-color');
+        final token = TestToken<Color>('test-color');
         final ref = ColorProp(Prop.token(token));
 
         expect(ref, PropMatcher.isToken(token));
       });
 
       test('equality based on token', () {
-        final token1 = MixToken<Color>('test-color');
-        final token2 = MixToken<Color>(
+        final token1 = TestToken<Color>('test-color');
+        final token2 = TestToken<Color>(
           'test-color',
         ); // Same name, different instance
-        final token3 = MixToken<Color>('different-color');
+        final token3 = TestToken<Color>('different-color');
 
         final ref1 = ColorProp(Prop.token(token1));
         final ref2 = ColorProp(Prop.token(token1)); // Same token instance
@@ -40,12 +39,12 @@ void main() {
         expect(
           ref1,
           equals(ref3),
-        ); // MixToken equality is based on name, so these are equal
+        ); // TestToken equality is based on name, so these are equal
         expect(ref1, isNot(equals(ref4)));
       });
 
       test('hashCode based on token', () {
-        final token = MixToken<Color>('test-color');
+        final token = TestToken<Color>('test-color');
         final ref1 = ColorProp(Prop.token(token));
         final ref2 = ColorProp(Prop.token(token));
 
@@ -53,7 +52,7 @@ void main() {
       });
 
       test('noSuchMethod throws UnimplementedError with detailed message', () {
-        final token = MixToken<Color>('test-color');
+        final token = TestToken<Color>('test-color');
         final ref = ColorProp(Prop.token(token));
 
         expect(
@@ -81,7 +80,7 @@ void main() {
 
     group('Class-based Token References', () {
       test('ColorRef implements Color interface', () {
-        final token = MixToken<Color>('test-color');
+        final token = TestToken<Color>('test-color');
         final ref = ColorProp(Prop.token(token));
 
         expect(ref, isA<Color>());
@@ -89,7 +88,7 @@ void main() {
       });
 
       test('DurationProp implements Duration interface', () {
-        final token = MixToken<Duration>('test-duration');
+        final token = TestToken<Duration>('test-duration');
         final ref = DurationProp(Prop.token(token));
 
         expect(ref, isA<Duration>());
@@ -97,7 +96,7 @@ void main() {
       });
 
       test('OffsetProp implements Offset interface', () {
-        final token = MixToken<Offset>('test-offset');
+        final token = TestToken<Offset>('test-offset');
         final ref = OffsetProp(Prop.token(token));
 
         expect(ref, isA<Offset>());
@@ -105,7 +104,7 @@ void main() {
       });
 
       test('RadiusProp implements Radius interface', () {
-        final token = MixToken<Radius>('test-radius');
+        final token = TestToken<Radius>('test-radius');
         final ref = RadiusProp(Prop.token(token));
 
         expect(ref, isA<Radius>());
@@ -116,7 +115,7 @@ void main() {
     group('Extension Type Token References', () {
       group('DoubleRef', () {
         test('creates from token using hybrid hashing', () {
-          final token = MixToken<double>('test-double');
+          final token = TestToken<double>('test-double');
           final ref = DoubleRef.token(token);
 
           expect(ref, isA<double>());
@@ -125,7 +124,7 @@ void main() {
         });
 
         test('can be used as double', () {
-          final token = MixToken<double>('test-double');
+          final token = TestToken<double>('test-double');
           final ref = DoubleRef.token(token);
 
           // Test arithmetic operations work correctly
@@ -137,7 +136,7 @@ void main() {
         });
 
         test('deterministic value for same token', () {
-          final token = MixToken<double>('consistent-double');
+          final token = TestToken<double>('consistent-double');
           final ref1 = DoubleRef.token(token);
           final ref2 = DoubleRef.token(token);
 
@@ -149,8 +148,8 @@ void main() {
         });
 
         test('different values for different tokens', () {
-          final token1 = MixToken<double>('double-1');
-          final token2 = MixToken<double>('double-2');
+          final token1 = TestToken<double>('double-1');
+          final token2 = TestToken<double>('double-2');
           final ref1 = DoubleRef.token(token1);
           final ref2 = DoubleRef.token(token2);
 
@@ -162,7 +161,7 @@ void main() {
         });
 
         test('registry lookup works correctly', () {
-          final token = MixToken<double>('registry-test');
+          final token = TestToken<double>('registry-test');
           final ref = DoubleRef.token(token);
 
           expect(getTokenFromValue<double>(ref), equals(token));
@@ -179,7 +178,7 @@ void main() {
 
       group('IntRef', () {
         test('creates from token using hybrid hashing', () {
-          final token = MixToken<int>('test-int');
+          final token = TestToken<int>('test-int');
           final ref = IntRef.token(token);
 
           expect(ref, isA<int>());
@@ -188,7 +187,7 @@ void main() {
         });
 
         test('can be used as int', () {
-          final token = MixToken<int>('test-int');
+          final token = TestToken<int>('test-int');
           final ref = IntRef.token(token);
 
           // Test arithmetic operations work correctly
@@ -200,7 +199,7 @@ void main() {
         });
 
         test('deterministic value for same token', () {
-          final token = MixToken<int>('consistent-int');
+          final token = TestToken<int>('consistent-int');
           final ref1 = IntRef.token(token);
           final ref2 = IntRef.token(token);
 
@@ -212,8 +211,8 @@ void main() {
         });
 
         test('different values for different tokens', () {
-          final token1 = MixToken<int>('int-1');
-          final token2 = MixToken<int>('int-2');
+          final token1 = TestToken<int>('int-1');
+          final token2 = TestToken<int>('int-2');
           final ref1 = IntRef.token(token1);
           final ref2 = IntRef.token(token2);
 
@@ -227,7 +226,7 @@ void main() {
 
       group('StringRef', () {
         test('creates from token using hybrid hashing', () {
-          final token = MixToken<String>('test-string');
+          final token = TestToken<String>('test-string');
           final ref = StringRef.token(token);
 
           expect(ref, isA<String>());
@@ -237,7 +236,7 @@ void main() {
         });
 
         test('can be used as string', () {
-          final token = MixToken<String>('test-string');
+          final token = TestToken<String>('test-string');
           final ref = StringRef.token(token);
 
           // Test string operations
@@ -248,7 +247,7 @@ void main() {
         });
 
         test('deterministic value for same token', () {
-          final token = MixToken<String>('consistent-string');
+          final token = TestToken<String>('consistent-string');
           final ref1 = StringRef.token(token);
           final ref2 = StringRef.token(token);
 
@@ -257,8 +256,8 @@ void main() {
         });
 
         test('different values for different tokens', () {
-          final token1 = MixToken<String>('string-1');
-          final token2 = MixToken<String>('string-2');
+          final token1 = TestToken<String>('string-1');
+          final token2 = TestToken<String>('string-2');
           final ref1 = StringRef.token(token1);
           final ref2 = StringRef.token(token2);
 
@@ -270,7 +269,7 @@ void main() {
         });
 
         test('generates valid base36 representation', () {
-          final token = MixToken<String>('base36-test');
+          final token = TestToken<String>('base36-test');
           final ref = StringRef.token(token);
 
           expect(ref, startsWith('_tk_'));
@@ -281,9 +280,9 @@ void main() {
 
     group('Registry Management', () {
       test('clearTokenRegistry removes all entries', () {
-        final token1 = MixToken<double>('test-1');
-        final token2 = MixToken<int>('test-2');
-        final token3 = MixToken<String>('test-3');
+        final token1 = TestToken<double>('test-1');
+        final token2 = TestToken<int>('test-2');
+        final token3 = TestToken<String>('test-3');
 
         final ref1 = DoubleRef.token(token1);
         final ref2 = IntRef.token(token2);
@@ -304,7 +303,7 @@ void main() {
       });
 
       test('registry handles multiple tokens correctly', () {
-        final tokens = List.generate(10, (i) => MixToken<double>('token-$i'));
+        final tokens = List.generate(10, (i) => TestToken<double>('token-$i'));
         final refs = tokens.map((token) => DoubleRef.token(token)).toList();
 
         // Verify all references work
@@ -315,9 +314,9 @@ void main() {
       });
 
       test('different primitive types can coexist in registry', () {
-        final doubleToken = MixToken<double>('double-token');
-        final intToken = MixToken<int>('int-token');
-        final stringToken = MixToken<String>('string-token');
+        final doubleToken = TestToken<double>('double-token');
+        final intToken = TestToken<int>('int-token');
+        final stringToken = TestToken<String>('string-token');
 
         final doubleRef = DoubleRef.token(doubleToken);
         final intRef = IntRef.token(intToken);
@@ -331,8 +330,8 @@ void main() {
 
     group('Edge Cases', () {
       test('handles tokens with same name but different instances', () {
-        final token1 = MixToken<double>('same-name');
-        final token2 = MixToken<double>('same-name');
+        final token1 = TestToken<double>('same-name');
+        final token2 = TestToken<double>('same-name');
 
         final ref1 = DoubleRef.token(token1);
         final ref2 = DoubleRef.token(token2);
@@ -341,7 +340,7 @@ void main() {
         expect(ref1, equals(ref1));
         expect(ref2, equals(ref2));
 
-        // Different token instances with same name are equal (MixToken equality is name-based)
+        // Different token instances with same name are equal (TestToken equality is name-based)
         // but may produce different representation values based on object hashCode
         expect(
           getTokenFromValue(ref1),
@@ -354,7 +353,7 @@ void main() {
       });
 
       test('handles tokens with special characters in names', () {
-        final token = MixToken<String>('special!@#\$%^&*()_+-={}[]|;:,.<>?');
+        final token = TestToken<String>('special!@#\$%^&*()_+-={}[]|;:,.<>?');
         final ref = StringRef.token(token);
 
         expect(getTokenFromValue(ref), equals(token));
@@ -365,8 +364,8 @@ void main() {
       });
 
       test('handles empty and very long token names', () {
-        final emptyToken = MixToken<String>('');
-        final longToken = MixToken<String>('a' * 1000);
+        final emptyToken = TestToken<String>('');
+        final longToken = TestToken<String>('a' * 1000);
 
         final emptyRef = StringRef.token(emptyToken);
         final longRef = StringRef.token(longToken);
@@ -377,7 +376,7 @@ void main() {
 
       test('handles negative hashCode values', () {
         // Create a token that likely has negative hashCode
-        final token = MixToken<int>('negative-hash-test');
+        final token = TestToken<int>('negative-hash-test');
         final ref = IntRef.token(token);
 
         expect(getTokenFromValue(ref), equals(token));
@@ -387,9 +386,9 @@ void main() {
 
     group('Type Safety', () {
       test('extension types maintain type safety', () {
-        final doubleToken = MixToken<double>('type-test');
-        final intToken = MixToken<int>('type-test');
-        final stringToken = MixToken<String>('type-test');
+        final doubleToken = TestToken<double>('type-test');
+        final intToken = TestToken<int>('type-test');
+        final stringToken = TestToken<String>('type-test');
 
         final doubleRef = DoubleRef.token(doubleToken);
         final intRef = IntRef.token(intToken);
@@ -400,19 +399,19 @@ void main() {
         expect(stringRef, isA<String>());
 
         // Verify token types are preserved
-        expect(getTokenFromValue(doubleRef), isA<MixToken<double>>());
-        expect(getTokenFromValue(intRef), isA<MixToken<int>>());
-        expect(getTokenFromValue(stringRef), isA<MixToken<String>>());
+        expect(getTokenFromValue(doubleRef), isA<TestToken<double>>());
+        expect(getTokenFromValue(intRef), isA<TestToken<int>>());
+        expect(getTokenFromValue(stringRef), isA<TestToken<String>>());
       });
     });
 
     group('isAnyTokenRef Function', () {
       test('returns true for class-based token references', () {
-        final colorToken = MixToken<Color>('test-color');
-        final durationToken = MixToken<Duration>('test-duration');
-        final offsetToken = MixToken<Offset>('test-offset');
-        final radiusToken = MixToken<Radius>('test-radius');
-        final textStyleToken = MixToken<TextStyle>('test-text-style');
+        final colorToken = TestToken<Color>('test-color');
+        final durationToken = TestToken<Duration>('test-duration');
+        final offsetToken = TestToken<Offset>('test-offset');
+        final radiusToken = TestToken<Radius>('test-radius');
+        final textStyleToken = TestToken<TextStyle>('test-text-style');
 
         final colorRef = ColorProp(Prop.token(colorToken));
         final durationRef = DurationProp(Prop.token(durationToken));
@@ -428,9 +427,9 @@ void main() {
       });
 
       test('returns true for extension type token references', () {
-        final doubleToken = MixToken<double>('test-double');
-        final intToken = MixToken<int>('test-int');
-        final stringToken = MixToken<String>('test-string');
+        final doubleToken = TestToken<double>('test-double');
+        final intToken = TestToken<int>('test-int');
+        final stringToken = TestToken<String>('test-string');
 
         final doubleRef = DoubleRef.token(doubleToken);
         final intRef = IntRef.token(intToken);
@@ -467,8 +466,8 @@ void main() {
       );
 
       test('handles mixed collections correctly', () {
-        final colorToken = MixToken<Color>('test-color');
-        final doubleToken = MixToken<double>('test-double');
+        final colorToken = TestToken<Color>('test-color');
+        final doubleToken = TestToken<double>('test-double');
 
         final colorRef = ColorProp(Prop.token(colorToken));
         final doubleRef = DoubleRef.token(doubleToken);
@@ -483,7 +482,7 @@ void main() {
       });
 
       test('works correctly after registry clear', () {
-        final doubleToken = MixToken<double>('test-double');
+        final doubleToken = TestToken<double>('test-double');
         final doubleRef = DoubleRef.token(doubleToken);
 
         expect(isAnyTokenRef(doubleRef), isTrue);
@@ -496,9 +495,9 @@ void main() {
 
     group('getTokenFromValue Function', () {
       test('returns token for class-based token references', () {
-        final colorToken = MixToken<Color>('test-color');
-        final durationToken = MixToken<Duration>('test-duration');
-        final offsetToken = MixToken<Offset>('test-offset');
+        final colorToken = TestToken<Color>('test-color');
+        final durationToken = TestToken<Duration>('test-duration');
+        final offsetToken = TestToken<Offset>('test-offset');
 
         final colorRef = ColorProp(Prop.token(colorToken));
         final durationProp = DurationProp(Prop.token(durationToken));
@@ -510,9 +509,9 @@ void main() {
       });
 
       test('returns token for extension type token references', () {
-        final doubleToken = MixToken<double>('test-double');
-        final intToken = MixToken<int>('test-int');
-        final stringToken = MixToken<String>('test-string');
+        final doubleToken = TestToken<double>('test-double');
+        final intToken = TestToken<int>('test-int');
+        final stringToken = TestToken<String>('test-string');
 
         final doubleRef = DoubleRef.token(doubleToken);
         final intRef = IntRef.token(intToken);
@@ -547,33 +546,33 @@ void main() {
       );
 
       test('maintains type safety with generic parameter', () {
-        final colorToken = MixToken<Color>('test-color');
-        final doubleToken = MixToken<double>('test-double');
-        final stringToken = MixToken<String>('test-string');
+        final colorToken = TestToken<Color>('test-color');
+        final doubleToken = TestToken<double>('test-double');
+        final stringToken = TestToken<String>('test-string');
 
         final colorRef = ColorProp(Prop.token(colorToken));
         final doubleRef = DoubleRef.token(doubleToken);
         final stringRef = StringRef.token(stringToken);
 
         // Type-safe calls for class-based refs use $token
-        final MixToken<Color> colorResult = colorRef.sources
+        final TestToken<Color> colorResult = colorRef.sources
             .whereType<TokenSource<Color>>()
             .first
-            .token;
-        final MixToken<double>? doubleResult = getTokenFromValue<double>(
+            .token as TestToken<Color>;
+        final TestToken<double>? doubleResult = getTokenFromValue<double>(
           doubleRef,
-        );
-        final MixToken<String>? stringResult = getTokenFromValue<String>(
+        ) as TestToken<double>?;
+        final TestToken<String>? stringResult = getTokenFromValue<String>(
           stringRef,
-        );
+        ) as TestToken<String>?;
 
         expect(colorResult, equals(colorToken));
         expect(doubleResult, equals(doubleToken));
         expect(stringResult, equals(stringToken));
 
-        expect(colorResult, isA<MixToken<Color>>());
-        expect(doubleResult, isA<MixToken<double>>());
-        expect(stringResult, isA<MixToken<String>>());
+        expect(colorResult, isA<TestToken<Color>>());
+        expect(doubleResult, isA<TestToken<double>>());
+        expect(stringResult, isA<TestToken<String>>());
       });
 
       test('returns null when type parameter does not match token type', () {
@@ -583,10 +582,10 @@ void main() {
       });
 
       test('handles polymorphic token references correctly', () {
-        final alignmentGeometryToken = MixToken<AlignmentGeometry>(
+        final alignmentGeometryToken = TestToken<AlignmentGeometry>(
           'test-alignment-geometry',
         );
-        final alignmentToken = MixToken<Alignment>('test-alignment');
+        final alignmentToken = TestToken<Alignment>('test-alignment');
 
         final alignmentGeometryRef = AlignmentGeometryProp(
           Prop.token(alignmentGeometryToken),
@@ -605,7 +604,7 @@ void main() {
       });
 
       test('works correctly after registry clear', () {
-        final doubleToken = MixToken<double>('test-double');
+        final doubleToken = TestToken<double>('test-double');
         final doubleRef = DoubleRef.token(doubleToken);
 
         expect(getTokenFromValue(doubleRef), equals(doubleToken));
@@ -616,9 +615,9 @@ void main() {
       });
 
       test('handles multiple tokens of same type correctly', () {
-        final token1 = MixToken<double>('double-1');
-        final token2 = MixToken<double>('double-2');
-        final token3 = MixToken<double>('double-3');
+        final token1 = TestToken<double>('double-1');
+        final token2 = TestToken<double>('double-2');
+        final token3 = TestToken<double>('double-3');
 
         final ref1 = DoubleRef.token(token1);
         final ref2 = DoubleRef.token(token2);
@@ -634,9 +633,9 @@ void main() {
       });
 
       test('works with edge case token names', () {
-        final emptyNameToken = MixToken<String>('');
-        final longNameToken = MixToken<String>('a' * 1000);
-        final specialCharsToken = MixToken<String>('special!@#\$%^&*()');
+        final emptyNameToken = TestToken<String>('');
+        final longNameToken = TestToken<String>('a' * 1000);
+        final specialCharsToken = TestToken<String>('special!@#\$%^&*()');
 
         final emptyRef = StringRef.token(emptyNameToken);
         final longRef = StringRef.token(longNameToken);
