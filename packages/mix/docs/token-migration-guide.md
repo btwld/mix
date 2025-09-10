@@ -85,11 +85,11 @@ class MixScopeData {
 ### 1. Creating Tokens
 
 ```dart
-// Create type-safe tokens
-const primaryColor = MixToken<Color>('primary');
-const largeSpace = MixToken<double>('large');
-const headingStyle = MixToken<TextStyle>('heading');
-const roundedCorner = MixToken<Radius>('rounded');
+// Create type-safe tokens using specific token types
+const primaryColor = ColorToken('primary');
+const largeSpace = SpaceToken('large');
+const headingStyle = TextStyleToken('heading');
+const roundedCorner = RadiusToken('rounded');
 ```
 
 ### 2. Theme Setup
@@ -285,26 +285,26 @@ T getToken<T>(MixToken<T> token, BuildContext context) {
 ```dart
 class AppTokens {
   // Colors
-  static const primary = MixToken<Color>('primary');
-  static const secondary = MixToken<Color>('secondary');
-  static const surface = MixToken<Color>('surface');
+  static const primary = ColorToken('primary');
+  static const secondary = ColorToken('secondary');
+  static const surface = ColorToken('surface');
   
   // Spacing
-  static const xs = MixToken<double>('xs');
-  static const sm = MixToken<double>('sm');
-  static const md = MixToken<double>('md');
-  static const lg = MixToken<double>('lg');
-  static const xl = MixToken<double>('xl');
+  static const xs = SpaceToken('xs');
+  static const sm = SpaceToken('sm');
+  static const md = SpaceToken('md');
+  static const lg = SpaceToken('lg');
+  static const xl = SpaceToken('xl');
   
   // Typography
-  static const heading1 = MixToken<TextStyle>('heading1');
-  static const heading2 = MixToken<TextStyle>('heading2');
-  static const body = MixToken<TextStyle>('body');
-  static const caption = MixToken<TextStyle>('caption');
+  static const heading1 = TextStyleToken('heading1');
+  static const heading2 = TextStyleToken('heading2');
+  static const body = TextStyleToken('body');
+  static const caption = TextStyleToken('caption');
   
   // Radius
-  static const rounded = MixToken<Radius>('rounded');
-  static const circular = MixToken<Radius>('circular');
+  static const rounded = RadiusToken('rounded');
+  static const circular = RadiusToken('circular');
 }
 ```
 
@@ -346,10 +346,10 @@ class AppTheme {
 
 ```dart
 // Good: Type-safe token creation
-const primaryColor = MixToken<Color>('primary');
+const primaryColor = ColorToken('primary');
 
 // Good: Clear naming convention
-const headerTextStyle = MixToken<TextStyle>('text.header');
+const headerTextStyle = TextStyleToken('text.header');
 
 // Good: Consistent usage
 $box.color.token(primaryColor)
@@ -433,16 +433,58 @@ final adaptiveTheme = MixScopeData.fromResolvers(
 );
 ```
 
-### 3. Semantic Tokens
+### 3. Light/Dark Theme Tokens
+
+```dart
+// Define separate token maps for light and dark themes
+class AppTokens {
+  static const primary = ColorToken('primary');
+  static const secondary = ColorToken('secondary');
+  static const background = ColorToken('background');
+  static const text = ColorToken('text');
+}
+
+final lightTokens = <MixToken, Object>{
+  AppTokens.primary: Colors.blue,
+  AppTokens.secondary: Colors.blue.shade100,
+  AppTokens.background: Colors.white,
+  AppTokens.text: Colors.black87,
+};
+
+final darkTokens = <MixToken, Object>{
+  AppTokens.primary: Colors.lightBlue,
+  AppTokens.secondary: Colors.blue.shade800,
+  AppTokens.background: Colors.grey.shade900,
+  AppTokens.text: Colors.white70,
+};
+
+// Simple brightness check before MixScope
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    final tokens = brightness == Brightness.light ? lightTokens : darkTokens;
+    
+    return MixScope(
+      tokens: tokens,
+      child: MaterialApp(
+        // Your app content
+      ),
+    );
+  }
+}
+```
+
+### 4. Semantic Tokens
 
 ```dart
 // Semantic naming for better maintainability
-const actionPrimary = MixToken<Color>('action.primary');
-const actionSecondary = MixToken<Color>('action.secondary');
-const actionDanger = MixToken<Color>('action.danger');
+const actionPrimary = ColorToken('action.primary');
+const actionSecondary = ColorToken('action.secondary');
+const actionDanger = ColorToken('action.danger');
 
-const contentPadding = MixToken<double>('layout.content.padding');
-const sectionSpacing = MixToken<double>('layout.section.spacing');
+const contentPadding = SpaceToken('layout.content.padding');
+const sectionSpacing = SpaceToken('layout.section.spacing');
 ```
 
 ## Supported Token Types
