@@ -43,15 +43,20 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   ///
   /// Example:
   /// ```dart
-  /// BoxStyle().builder((context) {
+  /// BoxStyle().onBuilder((context) {
   ///   final theme = Theme.of(context);
   ///   return BoxStyle().decoration.color(theme.primaryColor);
   /// })
   /// ```
-  T builder(T Function(BuildContext context) fn) {
+  T onBuilder(T Function(BuildContext context) fn) {
     // Create a VariantStyle with ContextVariantBuilder that will be resolved at runtime
     // Use this style as a placeholder; the actual style comes from the builder function
     return variants([VariantStyle<S>(ContextVariantBuilder<T>(fn), this)]);
+  }
+
+  @Deprecated('Use onBuilder instead. This method will be removed in a future version.')
+  T builder(T Function(BuildContext context) fn) {
+    return onBuilder(fn);
   }
 
   /// Creates a variant for pressed state

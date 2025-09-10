@@ -122,10 +122,6 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
   }) : $box = box,
        $flex = flex;
 
-  factory FlexBoxStyler.builder(FlexBoxStyler Function(BuildContext) fn) {
-    return FlexBoxStyler().builder(fn);
-  }
-
   static FlexBoxMutableStyler get chain =>
       FlexBoxMutableStyler(FlexBoxStyler());
 

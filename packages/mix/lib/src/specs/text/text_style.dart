@@ -121,10 +121,6 @@ class TextStyler extends Style<TextSpec>
          variants: variants,
        );
 
-  factory TextStyler.builder(TextStyler Function(BuildContext) fn) {
-    return TextStyler().builder(fn);
-  }
-
   static TextMutableStyler get chain => TextMutableStyler(TextStyler());
 
   StyledText call(String text) {

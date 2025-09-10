@@ -111,10 +111,6 @@ class ImageStyler extends Style<ImageSpec>
          variants: variants,
        );
 
-  factory ImageStyler.builder(ImageStyler Function(BuildContext) fn) {
-    return ImageStyler().builder(fn);
-  }
-
   static ImageMutableStyler get chain => ImageMutableStyler(ImageStyler());
 
   /// Sets image provider

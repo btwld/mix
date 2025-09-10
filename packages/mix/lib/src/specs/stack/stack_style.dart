@@ -64,10 +64,6 @@ class StackStyler extends Style<StackSpec>
          variants: variants,
        );
 
-  factory StackStyler.builder(StackStyler Function(BuildContext) fn) {
-    return StackStyler().builder(fn);
-  }
-
   static StackMutableStyler get chain => StackMutableStyler(StackStyler());
 
   /// Sets stack alignment
