@@ -1,6 +1,7 @@
 import 'package:analyzer/dart/element/element.dart';
 
 import '../metadata/field_metadata.dart';
+import '../utils/extensions.dart';
 import '../utils/helpers.dart';
 import '../utils/string_utils.dart';
 
