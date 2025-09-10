@@ -26,7 +26,7 @@ typedef MixTheme = MixScope;
 class MixScope extends InheritedModel<String> {
   /// Creates a MixScope with the provided tokens and modifier ordering
   factory MixScope({
-    Set<TokenDefinition>? tokens,
+    Map<MixToken, Object>? tokens,
     Map<ColorToken, Color>? colors,
     Map<TextStyleToken, TextStyle>? textStyles,
     Map<SpaceToken, double>? spaces,
@@ -36,32 +36,25 @@ class MixScope extends InheritedModel<String> {
     required Widget child,
     Key? key,
   }) {
-    final allTokens = <TokenDefinition>{
+    final allTokens = <MixToken, Object>{
       ...?tokens,
-      if (colors != null)
-        ...colors.entries.map((e) => TokenDefinition(e.key, e.value)),
-      if (textStyles != null)
-        ...textStyles.entries.map((e) => TokenDefinition(e.key, e.value)),
-      if (spaces != null)
-        ...spaces.entries.map((e) => TokenDefinition(e.key, e.value)),
-      if (radii != null)
-        ...radii.entries.map((e) => TokenDefinition(e.key, e.value)),
-      if (breakpoints != null)
-        ...breakpoints.entries.map((e) => TokenDefinition(e.key, e.value)),
+      ...?colors?.cast<MixToken, Object>(),
+      ...?textStyles?.cast<MixToken, Object>(),
+      ...?spaces?.cast<MixToken, Object>(),
+      ...?radii?.cast<MixToken, Object>(),
+      ...?breakpoints?.cast<MixToken, Object>(),
     };
 
     return MixScope._(
       key: key,
-      tokens: allTokens.isNotEmpty
-          ? {for (final token in allTokens) token.token: token.resolver}
-          : null,
+      tokens: allTokens.isEmpty ? null : allTokens,
       orderOfModifiers: orderOfModifiers,
       child: child,
     );
   }
 
   const MixScope._({
-    required Map<MixToken, ValueBuilder>? tokens,
+    required Map<MixToken, Object>? tokens,
     required this.orderOfModifiers,
     required super.child,
     super.key,
@@ -87,7 +80,7 @@ class MixScope extends InheritedModel<String> {
   /// )
   /// ```
   static Widget withMaterial({
-    Set<TokenDefinition>? tokens,
+    Map<MixToken, Object>? tokens,
     Map<ColorToken, Color>? colors,
     Map<TextStyleToken, TextStyle>? textStyles,
     Map<SpaceToken, double>? spaces,
@@ -97,23 +90,18 @@ class MixScope extends InheritedModel<String> {
     required Widget child,
     Key? key,
   }) {
-    final allCustomTokens = <TokenDefinition>{
+    final allCustomTokens = <MixToken, Object>{
       ...?tokens,
-      if (colors != null)
-        ...colors.entries.map((e) => TokenDefinition(e.key, e.value)),
-      if (textStyles != null)
-        ...textStyles.entries.map((e) => TokenDefinition(e.key, e.value)),
-      if (spaces != null)
-        ...spaces.entries.map((e) => TokenDefinition(e.key, e.value)),
-      if (radii != null)
-        ...radii.entries.map((e) => TokenDefinition(e.key, e.value)),
-      if (breakpoints != null)
-        ...breakpoints.entries.map((e) => TokenDefinition(e.key, e.value)),
+      ...?colors?.cast<MixToken, Object>(),
+      ...?textStyles?.cast<MixToken, Object>(),
+      ...?spaces?.cast<MixToken, Object>(),
+      ...?radii?.cast<MixToken, Object>(),
+      ...?breakpoints?.cast<MixToken, Object>(),
     };
 
     return createMaterialMixScope(
       key: key,
-      additionalTokens: allCustomTokens.isNotEmpty ? allCustomTokens : null,
+      additionalTokens: allCustomTokens.isEmpty ? null : allCustomTokens,
       orderOfModifiers: orderOfModifiers,
       child: child,
     );
@@ -187,34 +175,33 @@ class MixScope extends InheritedModel<String> {
     );
   }
 
-  final Map<MixToken, ValueBuilder>? _tokens;
+  final Map<MixToken, Object>? _tokens;
 
   final List<Type>? orderOfModifiers;
 
   /// Getter for tokens map
-  Map<MixToken, ValueBuilder>? get tokens => _tokens;
+  Map<MixToken, Object>? get tokens => _tokens;
 
   /// Type-safe token resolution with error handling
   T getToken<T>(MixToken<T> token, BuildContext context) {
-    final resolver = _tokens?[token];
-    if (resolver == null) {
+    final value = _tokens?[token];
+    if (value == null) {
       throw StateError('Token "${token.name}" not found in scope');
     }
 
-    final resolved = resolver(context);
-    if (resolved is T) {
-      return resolved;
+    if (value is T) {
+      return value as T;
     }
 
     throw StateError(
-      'Token "${token.name}" resolved to ${resolved.runtimeType}, expected $T',
+      'Token "${token.name}" resolved to ${value.runtimeType}, expected $T',
     );
   }
 
   /// Creates a new MixScope by merging this scope with another
   MixScope merge(MixScope other) {
     final mergedTokens = _tokens != null || other._tokens != null
-        ? <MixToken, ValueBuilder>{...?_tokens, ...?other._tokens}
+        ? <MixToken, Object>{...?_tokens, ...?other._tokens}
         : null;
 
     return MixScope._(

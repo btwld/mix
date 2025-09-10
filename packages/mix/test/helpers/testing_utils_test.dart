@@ -132,7 +132,7 @@ void main() {
         final tokenProp = Prop.token(colorToken);
 
         final context = MockBuildContext(
-          tokens: {TokenDefinition(colorToken, const Color(0xFF2196F3))},
+          tokens: {colorToken: const Color(0xFF2196F3)},
         );
 
         expect(
@@ -191,7 +191,7 @@ void main() {
 
       test('provides MixScope with custom data', () {
         final context = MockBuildContext(
-          tokens: {TokenDefinition(MixToken<Color>('primary'), Colors.blue)},
+          tokens: {MixToken<Color>('primary'): Colors.blue},
         );
 
         final mixScope = context.dependOnInheritedWidgetOfExactType<MixScope>();

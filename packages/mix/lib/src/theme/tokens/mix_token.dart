@@ -3,21 +3,6 @@ import 'package:flutter/material.dart';
 import '../../core/prop_refs.dart';
 import '../mix_theme.dart';
 
-typedef ValueBuilder<T> = T Function(BuildContext context);
-
-/// Associates a [MixToken] with its concrete value.
-///
-/// This class binds a token to its resolved value directly.
-class TokenDefinition<T> {
-  final MixToken<T> token;
-  final T value;
-
-  const TokenDefinition(this.token, this.value);
-
-  // Internal conversion for existing resolution system
-  ValueBuilder<T> get resolver =>
-      (_) => value;
-}
 
 /// A design token that can be resolved to a value within a Mix theme.
 ///

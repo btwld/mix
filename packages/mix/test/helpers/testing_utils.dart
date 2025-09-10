@@ -18,7 +18,7 @@ import 'package:mix/mix.dart';
 /// // With custom context for token resolution
 /// final context = MockBuildContext(
 ///   tokens: {
-///     TokenDefinition(ColorToken('primary'), Colors.blue),
+///     ColorToken('primary'): Colors.blue,
 ///   },
 /// );
 /// expect(tokenProp, resolvesTo(Colors.blue, context: context));
@@ -135,13 +135,13 @@ class _ResolvesToMatcher<T> extends Matcher {
 
 /// Mock BuildContext for testing Mix components
 class MockBuildContext extends BuildContext {
-  final Set<TokenDefinition>? _tokens;
+  final Map<MixToken, Object>? _tokens;
   final List<Type>? _orderOfModifiers;
   final ThemeData? _themeData;
   MixScope? _mixScope;
 
   MockBuildContext({
-    Set<TokenDefinition>? tokens,
+    Map<MixToken, Object>? tokens,
     List<Type>? orderOfModifiers,
     ThemeData? themeData,
   }) : _tokens = tokens,
@@ -433,7 +433,7 @@ extension WidgetTesterExtension on WidgetTester {
   /// Pump widget with Mix scope
   Future<void> pumpWithMixScope(
     Widget widget, {
-    Set<TokenDefinition>? tokens,
+    Map<MixToken, Object>? tokens,
     List<Type>? orderOfModifiers,
     bool withMaterial = false,
   }) async {

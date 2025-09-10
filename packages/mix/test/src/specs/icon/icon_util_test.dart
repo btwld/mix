@@ -432,7 +432,7 @@ void main() {
     group('Token support', () {
       test('resolves tokens with context', () {
         const sizeToken = MixToken<double>('iconSize');
-        final context = MockBuildContext(tokens: {TokenDefinition(sizeToken, 32.0)});
+        final context = MockBuildContext(tokens: {sizeToken: 32.0});
 
         final testUtil = IconMutableStyler(
           IconStyler.create(size: Prop.token(sizeToken)),

@@ -459,7 +459,7 @@ void main() {
     group('Token support', () {
       test('resolves tokens with context', () {
         const gapToken = MixToken<double>('gap');
-        final context = MockBuildContext(tokens: {TokenDefinition(gapToken, 24.0)});
+        final context = MockBuildContext(tokens: {gapToken: 24.0});
 
         final testUtil = FlexBoxMutableStyler(
           FlexBoxStyler.create(

@@ -557,7 +557,7 @@ void main() {
       test('resolves tokens with context', () {
         const widthToken = MixToken<double>('imageWidth');
         final context = MockBuildContext(
-          tokens: {TokenDefinition(widthToken, 150.0)},
+          tokens: {widthToken: 150.0},
         );
 
         final testUtil = ImageMutableStyler(
@@ -575,9 +575,9 @@ void main() {
 
         final context = MockBuildContext(
           tokens: {
-            TokenDefinition(widthToken, 200.0),
-            TokenDefinition(heightToken, 300.0),
-            TokenDefinition(colorToken, Colors.blue),
+            widthToken: 200.0,
+            heightToken: 300.0,
+            colorToken: Colors.blue,
           },
         );
 
@@ -604,9 +604,9 @@ void main() {
 
         final context = MockBuildContext(
           tokens: {
-            TokenDefinition(fitToken, BoxFit.cover),
-            TokenDefinition(repeatToken, ImageRepeat.repeat),
-            TokenDefinition(filterQualityToken, FilterQuality.high),
+            fitToken: BoxFit.cover,
+            repeatToken: ImageRepeat.repeat,
+            filterQualityToken: FilterQuality.high,
           },
         );
 
@@ -631,9 +631,9 @@ void main() {
 
         final context = MockBuildContext(
           tokens: {
-            TokenDefinition(labelToken, 'My Image'),
-            TokenDefinition(excludeToken, true),
-            TokenDefinition(gaplessToken, false),
+            labelToken: 'My Image',
+            excludeToken: true,
+            gaplessToken: false,
           },
         );
 

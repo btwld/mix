@@ -131,7 +131,7 @@ void main() {
         await tester.pumpWidget(
           MixScope(
             tokens: {
-              TokenDefinition(doubleToken, 150.0), // Define the token value
+              doubleToken: 150.0, // Define the token value
             },
             child: Builder(
               builder: (context) {
@@ -169,7 +169,7 @@ void main() {
 
         await tester.pumpWidget(
           MixScope(
-            tokens: {TokenDefinition(intToken, 42)},
+            tokens: {intToken: 42},
             child: Builder(
               builder: (context) {
                 final resolved = prop.resolveProp(context);
@@ -197,7 +197,7 @@ void main() {
 
         await tester.pumpWidget(
           MixScope(
-            tokens: {TokenDefinition(stringToken, 'Hello World')},
+            tokens: {stringToken: 'Hello World'},
             child: Builder(
               builder: (context) {
                 final resolved = prop.resolveProp(context);
