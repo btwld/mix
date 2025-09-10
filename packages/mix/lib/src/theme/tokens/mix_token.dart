@@ -9,7 +9,7 @@ import '../mix_theme.dart';
 /// Tokens provide a way to reference theme values indirectly, allowing for
 /// dynamic theming and consistent design system implementation.
 @immutable
-class MixToken<T> {
+abstract class MixToken<T> {
   final String name;
   const MixToken(this.name);
 

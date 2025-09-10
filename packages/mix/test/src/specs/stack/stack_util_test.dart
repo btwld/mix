@@ -373,7 +373,7 @@ void main() {
 
     group('Token support', () {
       test('resolves tokens with context', () {
-        const alignmentToken = MixToken<AlignmentGeometry>('stackAlignment');
+        const alignmentToken = TestToken<AlignmentGeometry>('stackAlignment');
         final context = MockBuildContext(
           tokens: {alignmentToken: Alignment.topLeft},
         );

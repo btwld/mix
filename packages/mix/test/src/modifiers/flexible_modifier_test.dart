@@ -386,7 +386,7 @@ void main() {
     });
 
     test('flexToken() creates attribute with token', () {
-      const token = MixToken<int>('test.flex');
+      const token = TestToken<int>('test.flex');
       final result = utility.flexToken(token);
       final attribute = result.value;
 
@@ -395,7 +395,7 @@ void main() {
     });
 
     test('fitToken() creates attribute with token', () {
-      const token = MixToken<FlexFit>('test.fit');
+      const token = TestToken<FlexFit>('test.fit');
       final result = utility.fitToken(token);
       final attribute = result.value;
 

@@ -8,7 +8,7 @@ void main() {
   group('Prop Token Support', () {
     group('Prop.token constructor', () {
       test('creates Prop with token source', () {
-        final token = MixToken<Shadow>('shadow.primary');
+        final token = TestToken<Shadow>('shadow.primary');
         final mixProp = Prop.token(token);
 
         expect(mixProp.sources, hasLength(1));
@@ -24,7 +24,7 @@ void main() {
       });
 
       test('stores token correctly', () {
-        final token = MixToken<BoxShadow>('shadow.box');
+        final token = TestToken<BoxShadow>('shadow.box');
         final mixProp = Prop.token(token);
 
         expect(mixProp.sources, hasLength(1));
@@ -35,7 +35,7 @@ void main() {
 
     group('Token resolution', () {
       test('resolves token to correct value', () {
-        final token = MixToken<Shadow>('shadow.primary');
+        final token = TestToken<Shadow>('shadow.primary');
         final shadowValue = Shadow(
           color: Colors.black,
           offset: Offset.zero,
@@ -52,7 +52,7 @@ void main() {
       });
 
       test('resolves BoxShadow token correctly', () {
-        final token = MixToken<BoxShadow>('shadow.box');
+        final token = TestToken<BoxShadow>('shadow.box');
         final boxShadowValue = BoxShadow(
           color: Colors.red,
           offset: Offset(2, 2),
@@ -70,7 +70,7 @@ void main() {
       });
 
       test('resolves TextStyle token correctly', () {
-        final token = MixToken<TextStyle>('text.body');
+        final token = TestToken<TextStyle>('text.body');
         final textStyleValue = TextStyle(
           fontSize: 16.0,
           fontWeight: FontWeight.normal,
@@ -89,7 +89,7 @@ void main() {
 
     group('Merging behavior', () {
       test('token source + value source (accumulation strategy)', () {
-        final token = MixToken<Shadow>('shadow.primary');
+        final token = TestToken<Shadow>('shadow.primary');
         final shadowValue = Shadow(
           color: Colors.black,
           blurRadius: 4.0,
@@ -118,7 +118,7 @@ void main() {
       });
 
       test('value source + token source (accumulation strategy)', () {
-        final token = MixToken<Shadow>('shadow.primary');
+        final token = TestToken<Shadow>('shadow.primary');
         final directShadow = ShadowMix(color: Colors.red, blurRadius: 2.0);
 
         final valueProp = Prop.mix(directShadow);
@@ -133,8 +133,8 @@ void main() {
       });
 
       test('token source + token source (accumulation strategy)', () {
-        final token1 = MixToken<Shadow>('shadow.primary');
-        final token2 = MixToken<Shadow>('shadow.secondary');
+        final token1 = TestToken<Shadow>('shadow.primary');
+        final token2 = TestToken<Shadow>('shadow.secondary');
 
         final prop1 = Prop.token(token1);
         final prop2 = Prop.token(token2);
@@ -152,7 +152,7 @@ void main() {
       });
 
       test('preserves directives during merge', () {
-        final token = MixToken<Shadow>('shadow.primary');
+        final token = TestToken<Shadow>('shadow.primary');
         final directive = MockDirective<Shadow>('test');
 
         final prop1 = Prop<Shadow>.token(token);
@@ -173,7 +173,7 @@ void main() {
         );
       });
       test('throws error when resolving without context token', () {
-        final token = MixToken<Shadow>('shadow.missing');
+        final token = TestToken<Shadow>('shadow.missing');
         final mixProp = Prop.token(token);
 
         final context = MockBuildContext(); // No tokens defined
@@ -182,7 +182,7 @@ void main() {
       });
 
       test('handles null merge correctly', () {
-        final token = MixToken<Shadow>('shadow.primary');
+        final token = TestToken<Shadow>('shadow.primary');
         final mixProp = Prop.token(token);
 
         final merged = mixProp.mergeProp(null);
@@ -191,7 +191,7 @@ void main() {
       });
 
       test('equality works correctly for token sources', () {
-        final token = MixToken<Shadow>('shadow.primary');
+        final token = TestToken<Shadow>('shadow.primary');
         final prop1 = Prop.token(token);
         final prop2 = Prop.token(token);
 
@@ -199,7 +199,7 @@ void main() {
       });
 
       test('hashCode works correctly for token sources', () {
-        final token = MixToken<Shadow>('shadow.primary');
+        final token = TestToken<Shadow>('shadow.primary');
         final prop1 = Prop.token(token);
         final prop2 = Prop.token(token);
 
@@ -209,7 +209,7 @@ void main() {
 
     group('Backward compatibility', () {
       test('value getter returns null for token sources', () {
-        final token = MixToken<Shadow>('shadow.primary');
+        final token = TestToken<Shadow>('shadow.primary');
         final mixProp = Prop.token(token);
 
         // TokenSource doesn't provide direct Mix value

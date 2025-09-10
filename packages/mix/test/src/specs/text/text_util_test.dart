@@ -404,7 +404,7 @@ void main() {
 
     group('Token support', () {
       test('resolves maxLines token with context', () {
-        const maxLinesToken = MixToken<int>('maxLines');
+        const maxLinesToken = TestToken<int>('maxLines');
         final context = MockBuildContext(tokens: {maxLinesToken: 5});
 
         final testUtil = TextMutableStyler(
@@ -416,7 +416,7 @@ void main() {
       });
 
       test('resolves textAlign token with context', () {
-        const textAlignToken = MixToken<TextAlign>('textAlign');
+        const textAlignToken = TestToken<TextAlign>('textAlign');
         final context = MockBuildContext(
           tokens: {textAlignToken: TextAlign.center},
         );
@@ -430,7 +430,7 @@ void main() {
       });
 
       test('resolves softWrap token with context', () {
-        const softWrapToken = MixToken<bool>('softWrap');
+        const softWrapToken = TestToken<bool>('softWrap');
         final context = MockBuildContext(tokens: {softWrapToken: false});
 
         final testUtil = TextMutableStyler(
@@ -442,7 +442,7 @@ void main() {
       });
 
       test('resolves selectionColor token with context', () {
-        const selectionColorToken = MixToken<Color>('selectionColor');
+        const selectionColorToken = TestToken<Color>('selectionColor');
         final context = MockBuildContext(
           tokens: {selectionColorToken: Colors.red},
         );
@@ -456,7 +456,7 @@ void main() {
       });
 
       test('resolves textDirection token with context', () {
-        const textDirectionToken = MixToken<TextDirection>('textDirection');
+        const textDirectionToken = TestToken<TextDirection>('textDirection');
         final context = MockBuildContext(
           tokens: {textDirectionToken: TextDirection.rtl},
         );
@@ -470,7 +470,7 @@ void main() {
       });
 
       test('resolves semanticsLabel token with context', () {
-        const semanticsLabelToken = MixToken<String>('semanticsLabel');
+        const semanticsLabelToken = TestToken<String>('semanticsLabel');
         final context = MockBuildContext(
           tokens: {semanticsLabelToken: 'Custom label'},
         );
@@ -484,7 +484,7 @@ void main() {
       });
 
       test('resolves locale token with context', () {
-        const localeToken = MixToken<Locale>('locale');
+        const localeToken = TestToken<Locale>('locale');
         const locale = Locale('en', 'US');
         final context = MockBuildContext(tokens: {localeToken: locale});
 
@@ -497,11 +497,11 @@ void main() {
       });
 
       test('resolves multiple tokens with context', () {
-        const maxLinesToken = MixToken<int>('maxLines');
-        const textAlignToken = MixToken<TextAlign>('textAlign');
-        const selectionColorToken = MixToken<Color>('selectionColor');
-        const semanticsLabelToken = MixToken<String>('semanticsLabel');
-        const localeToken = MixToken<Locale>('locale');
+        const maxLinesToken = TestToken<int>('maxLines');
+        const textAlignToken = TestToken<TextAlign>('textAlign');
+        const selectionColorToken = TestToken<Color>('selectionColor');
+        const semanticsLabelToken = TestToken<String>('semanticsLabel');
+        const localeToken = TestToken<Locale>('locale');
 
         final context = MockBuildContext(
           tokens: {

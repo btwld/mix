@@ -855,3 +855,23 @@ class _PropHasDirectivesMatcher extends Matcher {
     return mismatchDescription.add('does not have directives');
   }
 }
+
+// =============================================================================
+// TEST TOKEN UTILITY
+// =============================================================================
+
+/// Test-only token implementation for creating generic tokens in tests
+///
+/// Use this instead of MixToken directly in tests since MixToken is now abstract.
+/// This allows tests to create tokens for any type without needing a specific
+/// token subclass.
+///
+/// Example:
+/// ```dart
+/// final colorToken = TestToken<Color>('test-color');
+/// final spaceToken = TestToken<double>('test-space');
+/// final textToken = TestToken<TextStyle>('test-text');
+/// ```
+class TestToken<T> extends MixToken<T> {
+  const TestToken(super.name);
+}

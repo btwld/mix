@@ -555,7 +555,7 @@ void main() {
 
     group('Token support', () {
       test('resolves tokens with context', () {
-        const widthToken = MixToken<double>('imageWidth');
+        const widthToken = TestToken<double>('imageWidth');
         final context = MockBuildContext(
           tokens: {widthToken: 150.0},
         );
@@ -569,9 +569,9 @@ void main() {
       });
 
       test('resolves multiple tokens', () {
-        const widthToken = MixToken<double>('imageWidth');
-        const heightToken = MixToken<double>('imageHeight');
-        const colorToken = MixToken<Color>('imageColor');
+        const widthToken = TestToken<double>('imageWidth');
+        const heightToken = TestToken<double>('imageHeight');
+        const colorToken = TestToken<Color>('imageColor');
 
         final context = MockBuildContext(
           tokens: {
@@ -596,9 +596,9 @@ void main() {
       });
 
       test('resolves enum tokens', () {
-        const fitToken = MixToken<BoxFit>('imageFit');
-        const repeatToken = MixToken<ImageRepeat>('imageRepeat');
-        const filterQualityToken = MixToken<FilterQuality>(
+        const fitToken = TestToken<BoxFit>('imageFit');
+        const repeatToken = TestToken<ImageRepeat>('imageRepeat');
+        const filterQualityToken = TestToken<FilterQuality>(
           'imageFilterQuality',
         );
 
@@ -625,9 +625,9 @@ void main() {
       });
 
       test('resolves string and bool tokens', () {
-        const labelToken = MixToken<String>('imageLabel');
-        const excludeToken = MixToken<bool>('excludeFromSemantics');
-        const gaplessToken = MixToken<bool>('gaplessPlayback');
+        const labelToken = TestToken<String>('imageLabel');
+        const excludeToken = TestToken<bool>('excludeFromSemantics');
+        const gaplessToken = TestToken<bool>('gaplessPlayback');
 
         final context = MockBuildContext(
           tokens: {

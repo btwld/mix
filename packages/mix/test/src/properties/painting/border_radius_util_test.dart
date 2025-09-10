@@ -470,7 +470,7 @@ void main() {
     test('resolves radius tokens with context', () {
       // Create a BorderRadiusMix with tokens
       // We need to use a Radius token instead of double token
-      const radiusValueToken = MixToken<Radius>('radiusValue');
+      const radiusValueToken = TestToken<Radius>('radiusValue');
       final context = MockBuildContext(
         tokens: {radiusValueToken: const Radius.circular(16.0)},
       );

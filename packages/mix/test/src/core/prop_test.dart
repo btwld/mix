@@ -15,7 +15,7 @@ void main() {
     });
 
     test('token constructor stores token reference', () {
-      final token = MixToken<Color>('primary');
+      final token = TestToken<Color>('primary');
       final prop = Prop.token(token);
 
       expect(prop, isNot(PropMatcher.hasValues));
@@ -43,7 +43,7 @@ void main() {
     });
 
     test('merges value and token sources (universal accumulation)', () {
-      final token = MixToken<int>('n');
+      final token = TestToken<int>('n');
       final p1 = Prop.value(1);
       final p2 = Prop.token(token);
 
