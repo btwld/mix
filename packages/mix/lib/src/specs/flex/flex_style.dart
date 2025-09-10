@@ -103,10 +103,6 @@ class FlexStyler extends Style<FlexSpec>
          variants: variants,
        );
 
-  factory FlexStyler.builder(FlexStyler Function(BuildContext) fn) {
-    return FlexStyler().builder(fn);
-  }
-
   static FlexMutableStyler get chain => FlexMutableStyler(FlexStyler());
 
   /// The gap between children.

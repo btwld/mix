@@ -107,10 +107,6 @@ class BoxStyler extends Style<BoxSpec>
          animation: animation,
        );
 
-  factory BoxStyler.builder(BoxStyler Function(BuildContext) fn) {
-    return BoxStyler().builder(fn);
-  }
-
   static BoxMutableStyler get chain => BoxMutableStyler(BoxStyler());
 
   BoxStyler clipBehavior(Clip value) {

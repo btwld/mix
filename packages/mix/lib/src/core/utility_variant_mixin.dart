@@ -66,14 +66,19 @@ mixin UtilityVariantMixin<S extends Spec<S>, T extends Style<S>> {
   ///
   /// Example:
   /// ```dart
-  /// $box.builder((context) {
+  /// $box.onBuilder((context) {
   ///   final theme = Theme.of(context);
   ///   return $box.color(theme.primaryColor);
   /// })
   /// ```
-  T builder(T Function(BuildContext context) fn) {
+  T onBuilder(T Function(BuildContext context) fn) {
     return withVariants([
       VariantStyle<S>(ContextVariantBuilder<T>(fn), currentValue),
     ]);
+  }
+
+  @Deprecated('Use onBuilder instead. This method will be removed in a future version.')
+  T builder(T Function(BuildContext context) fn) {
+    return onBuilder(fn);
   }
 }
