@@ -3,10 +3,5 @@ include: ../../lints_with_dcm.yaml
 analyzer:
   errors:
     prefer_const_constructors: ignore
-    deprecated_member_use_from_same_package: ignore
   enable-experiment:
     - dot-shorthands
-
-linter:
-  rules:
-    avoid_unnecessary_containers: false
