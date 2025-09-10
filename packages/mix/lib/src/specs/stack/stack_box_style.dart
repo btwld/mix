@@ -95,10 +95,6 @@ class StackBoxStyler extends Style<ZBoxSpec>
   }) : $box = box,
        $stack = stack;
 
-  factory StackBoxStyler.builder(StackBoxStyler Function(BuildContext) fn) {
-    return StackBoxStyler().builder(fn);
-  }
-
   static StackBoxMutableStyler get chain => StackBoxMutableStyler.self;
 
   /// Sets animation

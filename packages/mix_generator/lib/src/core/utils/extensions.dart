@@ -19,13 +19,25 @@ extension DartTypeExtensions on DartType {
   bool get isNullable => nullabilitySuffix == NullabilitySuffix.question;
 
   /// Whether this type is a Dart core List.
-  bool get isList => isDartCoreList;
+  bool get isList {
+    if (this is! InterfaceType) return false;
+    final element = (this as InterfaceType).element;
+    return element.name == 'List' && element.library.name == 'dart.core';
+  }
 
   /// Whether this type is a Dart core Map.
-  bool get isMap => isDartCoreMap;
+  bool get isMap {
+    if (this is! InterfaceType) return false;
+    final element = (this as InterfaceType).element;
+    return element.name == 'Map' && element.library.name == 'dart.core';
+  }
 
   /// Whether this type is a Dart core Set.
-  bool get isSet => isDartCoreSet;
+  bool get isSet {
+    if (this is! InterfaceType) return false;
+    final element = (this as InterfaceType).element;
+    return element.name == 'Set' && element.library.name == 'dart.core';
+  }
 
   /// Whether this type is a Future.
   bool get isFuture {

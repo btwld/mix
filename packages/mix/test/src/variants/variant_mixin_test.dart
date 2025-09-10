@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
+import '../../helpers/testing_utils.dart';
+
 // Test implementation of VariantMixin
 class TestVariantAttribute extends Style<BoxSpec>
     with VariantStyleMixin<TestVariantAttribute, BoxSpec> {
@@ -216,6 +218,49 @@ void main() {
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
       expect(result.$variants!.first.variant, isA<ContextVariant>());
+    });
+
+    test('onBuilder creates correct variant', () {
+      const attribute = TestVariantAttribute();
+      final result = attribute.onBuilder((context) => attribute);
+
+      expect(result.$variants, isNotNull);
+      expect(result.$variants!.length, 1);
+      expect(result.$variants!.first.variant, isA<ContextVariantBuilder>());
+    });
+
+    test('builder (deprecated) still works and creates same result as onBuilder', () {
+      const attribute = TestVariantAttribute();
+      
+      final onBuilderResult = attribute.onBuilder((context) => attribute);
+      final builderResult = attribute.builder((context) => attribute);
+
+      expect(builderResult.$variants, isNotNull);
+      expect(builderResult.$variants!.length, 1);
+      expect(builderResult.$variants!.first.variant, isA<ContextVariantBuilder>());
+      
+      // Both should create the same type of variant
+      expect(
+        builderResult.$variants!.first.variant.runtimeType,
+        equals(onBuilderResult.$variants!.first.variant.runtimeType)
+      );
+    });
+
+    test('onBuilder function receives correct context', () {
+      const attribute = TestVariantAttribute();
+      BuildContext? capturedContext;
+      
+      final result = attribute.onBuilder((context) {
+        capturedContext = context;
+        return attribute;
+      });
+
+      // Get the variant builder and execute it
+      final variantBuilder = result.$variants!.first.variant as ContextVariantBuilder<TestVariantAttribute>;
+      final mockContext = MockBuildContext();
+      variantBuilder.build(mockContext);
+
+      expect(capturedContext, same(mockContext));
     });
   });
 }

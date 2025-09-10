@@ -104,10 +104,6 @@ class IconStyler extends Style<IconSpec>
          variants: variants,
        );
 
-  factory IconStyler.builder(IconStyler Function(BuildContext) fn) {
-    return IconStyler().builder(fn);
-  }
-
   static IconMutableStyler get chain => IconMutableStyler(IconStyler());
 
   /// Sets icon color
