@@ -28,7 +28,7 @@ class SpaceToken extends MixToken<double> {
   const SpaceToken(super.name);
 
   @override
-  double call() => DoubleRef.token(this);
+  double call() => SpaceRef.token(this);
 }
 
 /// A token representing a breakpoint value in the Mix theme.

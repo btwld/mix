@@ -31,7 +31,7 @@ void main() {
     });
 
     group('Token Call Resolution', () {
-      test('spaceToken() creates DoubleRef that implements double', () {
+      test('spaceToken() creates SpaceRef that implements double', () {
         final tokenCall = smallSpace();
         
         expect(tokenCall, isA<double>());
