@@ -535,8 +535,14 @@ final cardStyle = BoxStyler()
 final buttonStyle = BoxStyler()
   .color(Colors.blue)
   .borderRounded(8)
-  .paddingOnly(horizontal: 24, vertical: 12)
-  .borderAll(color: Colors.blue.shade700, width: 1);
+  .paddingOnly(
+    horizontal: 24,
+    vertical: 12,
+  )
+  .borderAll(
+    color: Colors.blue.shade700,
+    width: 1
+  );
 
 // Container with specific dimensions using instance methods
 final containerStyle = BoxStyler()

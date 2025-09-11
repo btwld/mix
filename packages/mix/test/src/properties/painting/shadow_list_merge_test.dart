@@ -6,7 +6,7 @@ import '../../../helpers/testing_utils.dart';
 
 void main() {
   group('ShadowListMix merge behavior', () {
-    test('merges shadow lists by replacement', () {
+    test('merges shadow lists by replacement (index-wise)', () {
       final list1 = ShadowListMix([
         ShadowMix(blurRadius: 5.0, color: Colors.black),
         ShadowMix(blurRadius: 3.0, color: Colors.grey),
@@ -18,9 +18,16 @@ void main() {
 
       final merged = list1.merge(list2);
 
-      expect(merged.items.length, 1);
-      expect(merged.items[0].resolve(MockBuildContext()).blurRadius, 8.0);
-      expect(merged.items[0].resolve(MockBuildContext()).color, Colors.red);
+      // Replace-by-index: index 0 comes from list2; index 1 remains from list1
+      expect(merged.items.length, 2);
+      final ctx = MockBuildContext();
+      final s0 = merged.items[0].resolve(ctx);
+      expect(s0.blurRadius, 8.0);
+      expect(s0.color, Colors.red);
+
+      final s1 = merged.items[1].resolve(ctx);
+      expect(s1.blurRadius, 3.0);
+      expect(s1.color, Colors.grey);
     });
 
     test('returns original list when merging with null', () {
@@ -59,7 +66,9 @@ void main() {
 
       final list1 = ShadowListMix(shadows);
       final list2 = ShadowListMix(shadows);
-      final list3 = ShadowListMix([ShadowMix(blurRadius: 8.0, color: Colors.red)]);
+      final list3 = ShadowListMix([
+        ShadowMix(blurRadius: 8.0, color: Colors.red),
+      ]);
 
       expect(list1.props, equals(list2.props));
       expect(list1.props, isNot(equals(list3.props)));
@@ -67,7 +76,7 @@ void main() {
   });
 
   group('BoxShadowListMix merge behavior', () {
-    test('merges box shadow lists by replacement', () {
+    test('merges box shadow lists by replacement (index-wise)', () {
       final list1 = BoxShadowListMix([
         BoxShadowMix(blurRadius: 5.0, color: Colors.black, spreadRadius: 1.0),
         BoxShadowMix(blurRadius: 3.0, color: Colors.grey, spreadRadius: 2.0),
@@ -79,11 +88,18 @@ void main() {
 
       final merged = list1.merge(list2);
 
-      expect(merged.items.length, 1);
-      final resolved = merged.items[0].resolve(MockBuildContext());
-      expect(resolved.blurRadius, 8.0);
-      expect(resolved.color, Colors.red);
-      expect(resolved.spreadRadius, 3.0);
+      // Replace-by-index: index 0 comes from list2; index 1 remains from list1
+      expect(merged.items.length, 2);
+      final ctx = MockBuildContext();
+      final s0 = merged.items[0].resolve(ctx);
+      expect(s0.blurRadius, 8.0);
+      expect(s0.color, Colors.red);
+      expect(s0.spreadRadius, 3.0);
+
+      final s1 = merged.items[1].resolve(ctx);
+      expect(s1.blurRadius, 3.0);
+      expect(s1.color, Colors.grey);
+      expect(s1.spreadRadius, 2.0);
     });
 
     test('returns original list when merging with null', () {
@@ -126,7 +142,9 @@ void main() {
 
       final list1 = BoxShadowListMix(shadows);
       final list2 = BoxShadowListMix(shadows);
-      final list3 = BoxShadowListMix([BoxShadowMix(blurRadius: 8.0, color: Colors.red)]);
+      final list3 = BoxShadowListMix([
+        BoxShadowMix(blurRadius: 8.0, color: Colors.red),
+      ]);
 
       expect(list1.props, equals(list2.props));
       expect(list1.props, isNot(equals(list3.props)));

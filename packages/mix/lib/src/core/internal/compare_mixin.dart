@@ -77,10 +77,10 @@ mixin Equatable {
   /// Overrides the hash code getter to compute hash code based on properties.
   @override
   int get hashCode {
-    // Combine runtimeType hash with individual property hashes for better distribution
+    // Combine runtimeType hash with deep hashes of props for consistency with deep equality
     var hash = runtimeType.hashCode;
     for (final prop in props) {
-      hash = Object.hash(hash, prop);
+      hash = Object.hash(hash, _equality.hash(prop));
     }
 
     return hash;

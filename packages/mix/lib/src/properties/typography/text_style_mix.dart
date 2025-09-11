@@ -431,8 +431,9 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
       debugLabel: MixOps.merge($debugLabel, other?.$debugLabel),
       wordSpacing: MixOps.merge($wordSpacing, other?.$wordSpacing),
       textBaseline: MixOps.merge($textBaseline, other?.$textBaseline),
+      shadows: MixOps.merge($shadows, other?.$shadows),
       // Merge lists - default replace strategy (merge at index)
-      fontFeatures: MixOps.mergeList($fontFeatures, other?.$fontFeatures),
+      fontFeatures: MixOps.merge($fontFeatures, other?.$fontFeatures),
       decoration: MixOps.merge($decoration, other?.$decoration),
       decorationColor: MixOps.merge($decorationColor, other?.$decorationColor),
       decorationStyle: MixOps.merge($decorationStyle, other?.$decorationStyle),
@@ -440,7 +441,6 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
       height: MixOps.merge($height, other?.$height),
       foreground: MixOps.merge($foreground, other?.$foreground),
       background: MixOps.merge($background, other?.$background),
-      shadows: MixOps.merge($shadows, other.$shadows),
       decorationThickness: MixOps.merge(
         $decorationThickness,
         other?.$decorationThickness,

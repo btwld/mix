@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../theme/tokens/mix_token.dart';
+import 'internal/compare_mixin.dart';
 import 'mix_element.dart';
 
 /// Represents the origin of a property value.
@@ -19,7 +20,7 @@ sealed class PropSource<V> {
 /// Created when a property is initialized with a concrete value
 /// that doesn't require context resolution or conversion.
 @immutable
-class ValueSource<V> extends PropSource<V> {
+class ValueSource<V> extends PropSource<V> with Equatable {
   final V value;
 
   const ValueSource(this.value);
@@ -28,14 +29,7 @@ class ValueSource<V> extends PropSource<V> {
   String toString() => 'ValueSource($value)';
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is ValueSource<V> && other.value == value;
-  }
-
-  @override
-  int get hashCode => value.hashCode;
+  List<Object?> get props => [value];
 }
 
 /// A source that references a token.
@@ -43,7 +37,7 @@ class ValueSource<V> extends PropSource<V> {
 /// The token will be resolved from [MixScope] during property resolution,
 /// allowing theme-aware and context-dependent values.
 @immutable
-class TokenSource<V> extends PropSource<V> {
+class TokenSource<V> extends PropSource<V> with Equatable {
   final MixToken<V> token;
 
   const TokenSource(this.token);
@@ -52,14 +46,7 @@ class TokenSource<V> extends PropSource<V> {
   String toString() => 'TokenSource($token)';
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is TokenSource<V> && other.token == token;
-  }
-
-  @override
-  int get hashCode => token.hashCode;
+  List<Object?> get props => [token];
 }
 
 /// A source that contains a [Mix] value.
@@ -67,7 +54,7 @@ class TokenSource<V> extends PropSource<V> {
 /// Mix values support accumulation merging, where multiple Mix values
 /// are combined rather than replaced during merge operations.
 @immutable
-class MixSource<V> extends PropSource<V> {
+class MixSource<V> extends PropSource<V> with Equatable {
   final Mix<V> mix;
 
   const MixSource(this.mix);
@@ -76,12 +63,5 @@ class MixSource<V> extends PropSource<V> {
   String toString() => 'MixSource($mix)';
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is MixSource<V> && other.mix == mix;
-  }
-
-  @override
-  int get hashCode => mix.hashCode;
+  List<Object?> get props => [mix];
 }
