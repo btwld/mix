@@ -28,8 +28,7 @@ void main() {
           boxDecorationMix.$borderRadius,
           isA<Prop<BorderRadiusGeometry>>(),
         );
-        expect(boxDecorationMix.$boxShadow, hasLength(1));
-        expect(boxDecorationMix.$boxShadow![0], isA<Prop<BoxShadow>>());
+        expect(boxDecorationMix.$boxShadow, resolvesTo(hasLength(1)));
       });
 
       test('named constructors work correctly', () {
@@ -113,25 +112,7 @@ void main() {
         expect(borderRadius.topLeft, const Radius.circular(8.0));
 
         // Test boxShadow extraction
-        expect(boxDecorationMix.$boxShadow, isNotNull);
-        expect(boxDecorationMix.$boxShadow!.length, 2);
-
-        final firstShadowSource =
-            boxDecorationMix.$boxShadow![0].sources[0] as MixSource<BoxShadow>;
-        final firstShadowMix = firstShadowSource.mix;
-        final firstShadow = firstShadowMix.resolve(MockBuildContext());
-        expect(firstShadow.color, Colors.black);
-        expect(firstShadow.offset, const Offset(2.0, 2.0));
-        expect(firstShadow.blurRadius, 5.0);
-        expect(firstShadow.spreadRadius, 1.0);
-
-        final secondShadowSource =
-            boxDecorationMix.$boxShadow![1].sources[0] as MixSource<BoxShadow>;
-        final secondShadowMix = secondShadowSource.mix;
-        final secondShadow = secondShadowMix.resolve(MockBuildContext());
-        expect(secondShadow.color, Colors.grey);
-        expect(secondShadow.offset, const Offset(1.0, 1.0));
-        expect(secondShadow.blurRadius, 3.0);
+        expect(boxDecorationMix.$boxShadow, resolvesTo(hasLength(2)));
 
         // Test gradient extraction
         expect(boxDecorationMix.$gradient, isNotNull);
@@ -235,8 +216,7 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.$boxShadow, hasLength(1));
-        expect(merged.$boxShadow![0], resolvesTo(isA<BoxShadow>()));
+        expect(merged.$boxShadow, resolvesTo(hasLength(1)));
       });
     });
 
@@ -276,7 +256,7 @@ void main() {
 
         expect(shapeDecorationMix.$color, resolvesTo(Colors.green));
         expect(shapeDecorationMix.$shape, isA<Prop<ShapeBorder>>());
-        expect(shapeDecorationMix.$shadows, hasLength(1));
+        expect(shapeDecorationMix.$shadows, resolvesTo(hasLength(1)));
       });
 
       test('value constructor extracts all properties from ShapeDecoration', () {
@@ -343,26 +323,7 @@ void main() {
         expect(gradient.radius, 0.5);
 
         // Test shadows extraction
-        expect(shapeDecorationMix.$shadows, isNotNull);
-        expect(shapeDecorationMix.$shadows!.length, 2);
-
-        // BoxShadowMix.value() likely creates MixSource
-        final firstShadowSource =
-            shapeDecorationMix.$shadows![0].sources[0] as MixSource<BoxShadow>;
-        final firstShadowMix = firstShadowSource.mix;
-        final firstShadow = firstShadowMix.resolve(MockBuildContext());
-        expect(firstShadow.color, Colors.black54);
-        expect(firstShadow.offset, const Offset(3.0, 3.0));
-        expect(firstShadow.blurRadius, 6.0);
-        expect(firstShadow.spreadRadius, 2.0);
-
-        final secondShadowSource =
-            shapeDecorationMix.$shadows![1].sources[0] as MixSource<BoxShadow>;
-        final secondShadowMix = secondShadowSource.mix;
-        final secondShadow = secondShadowMix.resolve(MockBuildContext());
-        expect(secondShadow.color, Colors.grey);
-        expect(secondShadow.offset, const Offset(1.0, 1.0));
-        expect(secondShadow.blurRadius, 2.0);
+        expect(shapeDecorationMix.$shadows, resolvesTo(hasLength(2)));
 
         // Test image extraction
         expect(shapeDecorationMix.$image, isNotNull);

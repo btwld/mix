@@ -12,7 +12,7 @@ import '../../core/prop.dart';
 class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
   // Properties use MixableProperty for cleaner merging
   final Prop<String>? $fontFamily;
-  final List<Prop<String>>? $fontFamilyFallback;
+  final Prop<List<String>>? $fontFamilyFallback;
   final Prop<double>? $fontSize;
   final Prop<FontWeight>? $fontWeight;
   final Prop<FontStyle>? $fontStyle;
@@ -31,7 +31,7 @@ class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
     bool? forceStrutHeight,
   }) : this.create(
          fontFamily: Prop.maybe(fontFamily),
-         fontFamilyFallback: fontFamilyFallback?.map(Prop.value).toList(),
+         fontFamilyFallback: Prop.maybe(fontFamilyFallback),
          fontSize: Prop.maybe(fontSize),
          fontWeight: Prop.maybe(fontWeight),
          fontStyle: Prop.maybe(fontStyle),
@@ -42,7 +42,7 @@ class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
 
   const StrutStyleMix.create({
     Prop<String>? fontFamily,
-    List<Prop<String>>? fontFamilyFallback,
+    Prop<List<String>>? fontFamilyFallback,
     Prop<double>? fontSize,
     Prop<FontWeight>? fontWeight,
     Prop<FontStyle>? fontStyle,
@@ -160,7 +160,7 @@ class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
   StrutStyle resolve(BuildContext context) {
     return StrutStyle(
       fontFamily: MixOps.resolve(context, $fontFamily),
-      fontFamilyFallback: MixOps.resolveList(context, $fontFamilyFallback),
+      fontFamilyFallback: MixOps.resolve(context, $fontFamilyFallback),
       fontSize: MixOps.resolve(context, $fontSize),
       height: MixOps.resolve(context, $height),
       leading: MixOps.resolve(context, $leading),
@@ -174,7 +174,7 @@ class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
   StrutStyleMix merge(StrutStyleMix? other) {
     return StrutStyleMix.create(
       fontFamily: MixOps.merge($fontFamily, other?.$fontFamily),
-      fontFamilyFallback: MixOps.mergeList(
+      fontFamilyFallback: MixOps.merge(
         $fontFamilyFallback,
         other?.$fontFamilyFallback,
       ),

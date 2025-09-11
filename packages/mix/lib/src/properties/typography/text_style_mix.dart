@@ -31,13 +31,11 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
   final Prop<Paint>? $background;
   final Prop<bool>? $inherit;
 
-  // Lists of MixValues for simple types
-  final List<Prop<String>>? $fontFamilyFallback;
-  final List<Prop<FontFeature>>? $fontFeatures;
-  final List<Prop<FontVariation>>? $fontVariations;
-
-  // Lists of Mix types
-  final List<Prop<Shadow>>? $shadows;
+  // List properties as Prop<List<...>>
+  final Prop<List<String>>? $fontFamilyFallback;
+  final Prop<List<FontFeature>>? $fontFeatures;
+  final Prop<List<FontVariation>>? $fontVariations;
+  final Prop<List<Shadow>>? $shadows;
 
   /// Creates with text color.
   factory TextStyleMix.color(Color value) {
@@ -182,18 +180,18 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
          debugLabel: Prop.maybe(debugLabel),
          wordSpacing: Prop.maybe(wordSpacing),
          textBaseline: Prop.maybe(textBaseline),
-         shadows: shadows?.map(Prop.mix).toList(),
-         fontFeatures: fontFeatures?.map(Prop.value).toList(),
+         shadows: shadows != null ? Prop.mix(ShadowListMix(shadows)) : null,
+         fontFeatures: Prop.maybe(fontFeatures),
          decoration: Prop.maybe(decoration),
          decorationColor: Prop.maybe(decorationColor),
          decorationStyle: Prop.maybe(decorationStyle),
-         fontVariations: fontVariations?.map(Prop.value).toList(),
+         fontVariations: Prop.maybe(fontVariations),
          height: Prop.maybe(height),
          foreground: Prop.maybe(foreground),
          background: Prop.maybe(background),
          decorationThickness: Prop.maybe(decorationThickness),
          fontFamily: Prop.maybe(fontFamily),
-         fontFamilyFallback: fontFamilyFallback?.map(Prop.value).toList(),
+         fontFamilyFallback: Prop.maybe(fontFamilyFallback),
          inherit: Prop.maybe(inherit),
        );
 
@@ -207,18 +205,18 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
     Prop<String>? debugLabel,
     Prop<double>? wordSpacing,
     Prop<TextBaseline>? textBaseline,
-    List<Prop<Shadow>>? shadows,
-    List<Prop<FontFeature>>? fontFeatures,
+    Prop<List<Shadow>>? shadows,
+    Prop<List<FontFeature>>? fontFeatures,
     Prop<TextDecoration>? decoration,
     Prop<Color>? decorationColor,
     Prop<TextDecorationStyle>? decorationStyle,
-    List<Prop<FontVariation>>? fontVariations,
+    Prop<List<FontVariation>>? fontVariations,
     Prop<double>? height,
     Prop<Paint>? foreground,
     Prop<Paint>? background,
     Prop<double>? decorationThickness,
     Prop<String>? fontFamily,
-    List<Prop<String>>? fontFamilyFallback,
+    Prop<List<String>>? fontFamilyFallback,
     Prop<bool>? inherit,
   }) : $color = color,
        $backgroundColor = backgroundColor,
@@ -407,17 +405,17 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
       height: MixOps.resolve(context, $height),
       foreground: MixOps.resolve(context, $foreground),
       background: MixOps.resolve(context, $background),
-      // Resolve lists using helpers
-      shadows: MixOps.resolveList(context, $shadows),
-      fontFeatures: MixOps.resolveList(context, $fontFeatures),
-      fontVariations: MixOps.resolveList(context, $fontVariations),
+      // Resolve list props directly
+      shadows: MixOps.resolve(context, $shadows),
+      fontFeatures: MixOps.resolve(context, $fontFeatures),
+      fontVariations: MixOps.resolve(context, $fontVariations),
       decoration: MixOps.resolve(context, $decoration),
       decorationColor: MixOps.resolve(context, $decorationColor),
       decorationStyle: MixOps.resolve(context, $decorationStyle),
       decorationThickness: MixOps.resolve(context, $decorationThickness),
       debugLabel: MixOps.resolve(context, $debugLabel),
       fontFamily: MixOps.resolve(context, $fontFamily),
-      fontFamilyFallback: MixOps.resolveList(context, $fontFamilyFallback),
+      fontFamilyFallback: MixOps.resolve(context, $fontFamilyFallback),
     );
   }
 
@@ -433,13 +431,13 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
       debugLabel: MixOps.merge($debugLabel, other?.$debugLabel),
       wordSpacing: MixOps.merge($wordSpacing, other?.$wordSpacing),
       textBaseline: MixOps.merge($textBaseline, other?.$textBaseline),
-      // Merge lists - default replace strategy (merge at index)
-      shadows: MixOps.mergeList($shadows, other?.$shadows),
-      fontFeatures: MixOps.mergeList($fontFeatures, other?.$fontFeatures),
+      // Merge list props
+      shadows: MixOps.merge($shadows, other?.$shadows),
+      fontFeatures: MixOps.merge($fontFeatures, other?.$fontFeatures),
       decoration: MixOps.merge($decoration, other?.$decoration),
       decorationColor: MixOps.merge($decorationColor, other?.$decorationColor),
       decorationStyle: MixOps.merge($decorationStyle, other?.$decorationStyle),
-      fontVariations: MixOps.mergeList($fontVariations, other?.$fontVariations),
+      fontVariations: MixOps.merge($fontVariations, other?.$fontVariations),
       height: MixOps.merge($height, other?.$height),
       foreground: MixOps.merge($foreground, other?.$foreground),
       background: MixOps.merge($background, other?.$background),
@@ -448,7 +446,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
         other?.$decorationThickness,
       ),
       fontFamily: MixOps.merge($fontFamily, other?.$fontFamily),
-      fontFamilyFallback: MixOps.mergeList(
+      fontFamilyFallback: MixOps.merge(
         $fontFamilyFallback,
         other?.$fontFamilyFallback,
       ),

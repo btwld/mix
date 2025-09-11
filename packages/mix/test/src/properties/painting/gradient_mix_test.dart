@@ -19,12 +19,11 @@ void main() {
         expect(linearGradientMix.$begin, resolvesTo(Alignment.topLeft));
         expect(linearGradientMix.$end, resolvesTo(Alignment.bottomRight));
         expect(linearGradientMix.$tileMode, resolvesTo(TileMode.repeated));
-        expect(linearGradientMix.$colors, hasLength(2));
-        expect(linearGradientMix.$colors![0], resolvesTo(Colors.red));
-        expect(linearGradientMix.$colors![1], resolvesTo(Colors.blue));
-        expect(linearGradientMix.$stops, hasLength(2));
-        expect(linearGradientMix.$stops![0], resolvesTo(0.0));
-        expect(linearGradientMix.$stops![1], resolvesTo(1.0));
+        expect(
+          linearGradientMix.$colors,
+          resolvesTo(equals([Colors.red, Colors.blue])),
+        );
+        expect(linearGradientMix.$stops, resolvesTo(equals([0.0, 1.0])));
       });
 
       test('value constructor extracts all properties from LinearGradient', () {
@@ -47,15 +46,12 @@ void main() {
           resolvesTo(const GradientRotation(0.25)),
         );
 
-        expect(linearGradientMix.$colors, hasLength(3));
-        expect(linearGradientMix.$colors![0], resolvesTo(Colors.green));
-        expect(linearGradientMix.$colors![1], resolvesTo(Colors.yellow));
-        expect(linearGradientMix.$colors![2], resolvesTo(Colors.red));
+        expect(
+          linearGradientMix.$colors,
+          resolvesTo(equals([Colors.green, Colors.yellow, Colors.red])),
+        );
 
-        expect(linearGradientMix.$stops, hasLength(3));
-        expect(linearGradientMix.$stops![0], resolvesTo(0.0));
-        expect(linearGradientMix.$stops![1], resolvesTo(0.5));
-        expect(linearGradientMix.$stops![2], resolvesTo(1.0));
+        expect(linearGradientMix.$stops, resolvesTo(equals([0.0, 0.5, 1.0])));
       });
 
       test('maybeValue returns null for null input', () {
@@ -70,7 +66,7 @@ void main() {
         final result = LinearGradientMix.maybeValue(linearGradient);
 
         expect(result, isNotNull);
-        expect(result!.$colors, hasLength(2));
+        expect(result!.$colors, resolvesTo(hasLength(2)));
       });
     });
 
@@ -124,7 +120,7 @@ void main() {
         final colors = [Colors.red, Colors.green, Colors.blue];
         final gradientMix = LinearGradientMix.colors(colors);
 
-        expect(gradientMix.$colors?.length, 3);
+        expect(gradientMix.$colors, resolvesTo(hasLength(3)));
         expect(gradientMix.$begin, isNull);
         expect(gradientMix.$end, isNull);
         expect(gradientMix.$tileMode, isNull);
@@ -136,7 +132,7 @@ void main() {
         final stops = [0.0, 0.5, 1.0];
         final gradientMix = LinearGradientMix.stops(stops);
 
-        expect(gradientMix.$stops?.length, 3);
+        expect(gradientMix.$stops, resolvesTo(hasLength(3)));
         expect(gradientMix.$begin, isNull);
         expect(gradientMix.$end, isNull);
         expect(gradientMix.$tileMode, isNull);
@@ -175,14 +171,14 @@ void main() {
         final colors = [Colors.yellow, Colors.purple];
         final gradientMix = LinearGradientMix().colors(colors);
 
-        expect(gradientMix.$colors?.length, 2);
+        expect(gradientMix.$colors, resolvesTo(hasLength(2)));
       });
 
       test('stops utility works correctly', () {
         final stops = [0.2, 0.8];
         final gradientMix = LinearGradientMix().stops(stops);
 
-        expect(gradientMix.$stops?.length, 2);
+        expect(gradientMix.$stops, resolvesTo(hasLength(2)));
       });
     });
 
@@ -249,9 +245,10 @@ void main() {
         expect(merged.$begin, resolvesTo(Alignment.topLeft));
         expect(merged.$end, resolvesTo(Alignment.bottomRight));
         expect(merged.$tileMode, resolvesTo(TileMode.repeated));
-        expect(merged.$colors, hasLength(2));
-        expect(merged.$colors![0], resolvesTo(Colors.green));
-        expect(merged.$colors![1], resolvesTo(Colors.yellow));
+        expect(
+          merged.$colors,
+          resolvesTo(equals([Colors.green, Colors.yellow])),
+        );
       });
     });
 
@@ -326,8 +323,8 @@ void main() {
         expect(radialGradientMix.$center, resolvesTo(Alignment.center));
         expect(radialGradientMix.$radius, resolvesTo(0.5));
         expect(radialGradientMix.$tileMode, resolvesTo(TileMode.mirror));
-        expect(radialGradientMix.$colors, hasLength(2));
-        expect(radialGradientMix.$stops, hasLength(2));
+        expect(radialGradientMix.$colors, resolvesTo(hasLength(2)));
+        expect(radialGradientMix.$stops, resolvesTo(hasLength(2)));
       });
 
       test('value constructor extracts all properties from RadialGradient', () {
@@ -354,15 +351,12 @@ void main() {
           resolvesTo(const GradientRotation(1.5)),
         );
 
-        expect(radialGradientMix.$colors, hasLength(3));
-        expect(radialGradientMix.$colors![0], resolvesTo(Colors.purple));
-        expect(radialGradientMix.$colors![1], resolvesTo(Colors.orange));
-        expect(radialGradientMix.$colors![2], resolvesTo(Colors.cyan));
+        expect(
+          radialGradientMix.$colors,
+          resolvesTo(equals([Colors.purple, Colors.orange, Colors.cyan])),
+        );
 
-        expect(radialGradientMix.$stops, hasLength(3));
-        expect(radialGradientMix.$stops![0], resolvesTo(0.1));
-        expect(radialGradientMix.$stops![1], resolvesTo(0.6));
-        expect(radialGradientMix.$stops![2], resolvesTo(0.9));
+        expect(radialGradientMix.$stops, resolvesTo(equals([0.1, 0.6, 0.9])));
       });
 
       test('maybeValue returns null for null input', () {
@@ -377,7 +371,7 @@ void main() {
         final result = RadialGradientMix.maybeValue(radialGradient);
 
         expect(result, isNotNull);
-        expect(result!.$colors, hasLength(2));
+        expect(result!.$colors, resolvesTo(hasLength(2)));
       });
     });
 
@@ -468,7 +462,7 @@ void main() {
         final colors = [Colors.red, Colors.green, Colors.blue];
         final gradientMix = RadialGradientMix.colors(colors);
 
-        expect(gradientMix.$colors?.length, 3);
+        expect(gradientMix.$colors, resolvesTo(hasLength(3)));
         expect(gradientMix.$center, isNull);
         expect(gradientMix.$radius, isNull);
         expect(gradientMix.$tileMode, isNull);
@@ -482,7 +476,7 @@ void main() {
         final stops = [0.0, 0.5, 1.0];
         final gradientMix = RadialGradientMix.stops(stops);
 
-        expect(gradientMix.$stops?.length, 3);
+        expect(gradientMix.$stops, resolvesTo(hasLength(3)));
         expect(gradientMix.$center, isNull);
         expect(gradientMix.$radius, isNull);
         expect(gradientMix.$tileMode, isNull);
@@ -535,14 +529,14 @@ void main() {
         final colors = [Colors.yellow, Colors.purple];
         final gradientMix = RadialGradientMix().colors(colors);
 
-        expect(gradientMix.$colors?.length, 2);
+        expect(gradientMix.$colors, resolvesTo(hasLength(2)));
       });
 
       test('stops utility works correctly', () {
         final stops = [0.1, 0.9];
         final gradientMix = RadialGradientMix().stops(stops);
 
-        expect(gradientMix.$stops?.length, 2);
+        expect(gradientMix.$stops, resolvesTo(hasLength(2)));
       });
     });
 
@@ -580,9 +574,10 @@ void main() {
 
         expect(merged.$center, resolvesTo(Alignment.center));
         expect(merged.$radius, resolvesTo(0.8));
-        expect(merged.$colors, hasLength(2));
-        expect(merged.$colors![0], resolvesTo(Colors.green));
-        expect(merged.$colors![1], resolvesTo(Colors.yellow));
+        expect(
+          merged.$colors,
+          resolvesTo(equals([Colors.green, Colors.yellow])),
+        );
       });
     });
 
@@ -635,7 +630,7 @@ void main() {
         expect(sweepGradientMix.$startAngle, resolvesTo(0.0));
         expect(sweepGradientMix.$endAngle, resolvesTo(3.14159));
         expect(sweepGradientMix.$tileMode, resolvesTo(TileMode.mirror));
-        expect(sweepGradientMix.$colors, hasLength(2));
+        expect(sweepGradientMix.$colors, resolvesTo(hasLength(2)));
       });
 
       test('value constructor extracts all properties from SweepGradient', () {
@@ -660,15 +655,12 @@ void main() {
           resolvesTo(const GradientRotation(0.75)),
         );
 
-        expect(sweepGradientMix.$colors, hasLength(3));
-        expect(sweepGradientMix.$colors![0], resolvesTo(Colors.cyan));
-        expect(sweepGradientMix.$colors![1], resolvesTo(Colors.pink));
-        expect(sweepGradientMix.$colors![2], resolvesTo(Colors.lime));
+        expect(
+          sweepGradientMix.$colors,
+          resolvesTo(equals([Colors.cyan, Colors.pink, Colors.lime])),
+        );
 
-        expect(sweepGradientMix.$stops, hasLength(3));
-        expect(sweepGradientMix.$stops![0], resolvesTo(0.2));
-        expect(sweepGradientMix.$stops![1], resolvesTo(0.7));
-        expect(sweepGradientMix.$stops![2], resolvesTo(1.0));
+        expect(sweepGradientMix.$stops, resolvesTo(equals([0.2, 0.7, 1.0])));
       });
 
       test('maybeValue returns null for null input', () {
@@ -681,7 +673,7 @@ void main() {
         final result = SweepGradientMix.maybeValue(sweepGradient);
 
         expect(result, isNotNull);
-        expect(result!.$colors, hasLength(2));
+        expect(result!.$colors, resolvesTo(hasLength(2)));
       });
     });
 
@@ -751,7 +743,7 @@ void main() {
         final colors = [Colors.red, Colors.green, Colors.blue];
         final gradientMix = SweepGradientMix.colors(colors);
 
-        expect(gradientMix.$colors?.length, 3);
+        expect(gradientMix.$colors, resolvesTo(hasLength(3)));
         expect(gradientMix.$center, isNull);
         expect(gradientMix.$startAngle, isNull);
         expect(gradientMix.$endAngle, isNull);
@@ -764,7 +756,7 @@ void main() {
         final stops = [0.0, 0.5, 1.0];
         final gradientMix = SweepGradientMix.stops(stops);
 
-        expect(gradientMix.$stops?.length, 3);
+        expect(gradientMix.$stops, resolvesTo(hasLength(3)));
         expect(gradientMix.$center, isNull);
         expect(gradientMix.$startAngle, isNull);
         expect(gradientMix.$endAngle, isNull);
@@ -810,14 +802,14 @@ void main() {
         final colors = [Colors.yellow, Colors.purple];
         final gradientMix = SweepGradientMix().colors(colors);
 
-        expect(gradientMix.$colors?.length, 2);
+        expect(gradientMix.$colors, resolvesTo(hasLength(2)));
       });
 
       test('stops utility works correctly', () {
         final stops = [0.3, 0.7];
         final gradientMix = SweepGradientMix().stops(stops);
 
-        expect(gradientMix.$stops?.length, 2);
+        expect(gradientMix.$stops, resolvesTo(hasLength(2)));
       });
     });
 
@@ -859,9 +851,10 @@ void main() {
         expect(merged.$center, resolvesTo(Alignment.center));
         expect(merged.$startAngle, resolvesTo(0.0));
         expect(merged.$endAngle, resolvesTo(3.14159));
-        expect(merged.$colors, hasLength(2));
-        expect(merged.$colors![0], resolvesTo(Colors.green));
-        expect(merged.$colors![1], resolvesTo(Colors.yellow));
+        expect(
+          merged.$colors,
+          resolvesTo(equals([Colors.green, Colors.yellow])),
+        );
       });
     });
 

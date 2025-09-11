@@ -311,7 +311,7 @@ void main() {
         expect(result.runtimeType, equals(BoxDecorationMix));
 
         final boxResult = result as BoxDecorationMix;
-        expect(boxResult.$boxShadow?.length, equals(1));
+        expect(boxResult.$boxShadow, resolvesTo(hasLength(1)));
         expect(
           boxResult.$boxShadow,
           isNotNull,

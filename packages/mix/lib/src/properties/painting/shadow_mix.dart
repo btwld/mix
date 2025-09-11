@@ -267,3 +267,67 @@ enum ElevationShadow {
 
   const ElevationShadow(this.elevation);
 }
+
+/// Mix wrapper for a list of [ShadowMix] items resolving to List<Shadow>.
+class ShadowListMix extends Mix<List<Shadow>> with Diagnosticable {
+  final List<ShadowMix> items;
+
+  const ShadowListMix(this.items);
+
+  @override
+  List<Shadow> resolve(BuildContext context) {
+    return items.map((m) => m.resolve(context)).toList();
+  }
+
+  @override
+  ShadowListMix merge(covariant ShadowListMix? other) {
+    final merged = MixOps.mergeList(
+      items,
+      other?.items,
+      strategy: ListMergeStrategy.override,
+    )!;
+
+    return ShadowListMix(merged);
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(IterableProperty('items', items));
+  }
+
+  @override
+  List<Object?> get props => [items];
+}
+
+/// Mix wrapper for a list of [BoxShadowMix] items resolving to List<BoxShadow>.
+class BoxShadowListMix extends Mix<List<BoxShadow>> with Diagnosticable {
+  final List<BoxShadowMix> items;
+
+  const BoxShadowListMix(this.items);
+
+  @override
+  List<BoxShadow> resolve(BuildContext context) {
+    return items.map((m) => m.resolve(context)).toList();
+  }
+
+  @override
+  BoxShadowListMix merge(covariant BoxShadowListMix? other) {
+    final merged = MixOps.mergeList(
+      items,
+      other?.items,
+      strategy: ListMergeStrategy.override,
+    )!;
+
+    return BoxShadowListMix(merged);
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(IterableProperty('items', items));
+  }
+
+  @override
+  List<Object?> get props => [items];
+}

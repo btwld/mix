@@ -28,21 +28,6 @@ class _DemoAppState extends State<DemoApp> {
   final trigger = ValueNotifier(0);
   Timer? _timer;
 
-  @override
-  void initState() {
-    super.initState();
-
-    _timer = Timer.periodic(5.s, (timer) {
-      trigger.value++;
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
-
   BoxMix get _boxStyle => Style.box()
       .color(Colors.blueAccent.shade400)
       .paddingX(16)
@@ -75,6 +60,21 @@ class _DemoAppState extends State<DemoApp> {
           ),
         ),
       );
+
+  @override
+  void initState() {
+    super.initState();
+
+    _timer = Timer.periodic(5.s, (timer) {
+      trigger.value++;
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
