@@ -1,4 +1,5 @@
 /// Consolidated design tokens for various value types in the Mix theme.
+library;
 import 'package:flutter/material.dart';
 
 import '../../core/breakpoint.dart';

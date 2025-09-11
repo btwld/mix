@@ -38,18 +38,18 @@ void main() {
         );
       });
 
-      test('SpaceRef passed to Prop.value - now detects token', () {
+      test('DoubleRef passed to Prop.value - now detects token', () {
         final doubleToken = TestToken<double>('test-double');
-        final doubleRef = SpaceRef.token(doubleToken);
+        final doubleRef = DoubleRef.token(doubleToken);
 
         // Pass the DoubleRef to Prop.value
         final prop = Prop.value(doubleRef);
 
-        // With fix: should now detect SpaceRef as token
+        // With fix: should now detect DoubleRef as token
         expect(
           prop,
           PropMatcher.hasTokens,
-          reason: 'Should detect SpaceRef as token reference',
+          reason: 'Should detect DoubleRef as token reference',
         );
         expect(
           prop,
@@ -91,11 +91,11 @@ void main() {
     });
 
     group('Token Resolution Tests', () {
-      testWidgets('SpaceRef resolves to token value from context', (
+      testWidgets('DoubleRef resolves to token value from context', (
         tester,
       ) async {
         final doubleToken = TestToken<double>('width-token');
-        final doubleRef = SpaceRef.token(doubleToken);
+        final doubleRef = DoubleRef.token(doubleToken);
 
         // Create Prop from token reference
         final prop = Prop.value(doubleRef);
@@ -189,14 +189,14 @@ void main() {
         );
       });
 
-      test('isAnyTokenRef detects SpaceRef correctly', () {
+      test('isAnyTokenRef detects DoubleRef correctly', () {
         final doubleToken = TestToken<double>('test-double');
-        final doubleRef = SpaceRef.token(doubleToken);
+        final doubleRef = DoubleRef.token(doubleToken);
 
         expect(
           isAnyTokenRef(doubleRef),
           isTrue,
-          reason: 'isAnyTokenRef should detect SpaceRef',
+          reason: 'isAnyTokenRef should detect DoubleRef',
         );
       });
 
@@ -211,15 +211,15 @@ void main() {
         );
       });
 
-      test('getTokenFromValue retrieves token from SpaceRef', () {
+      test('getTokenFromValue retrieves token from DoubleRef', () {
         final doubleToken = TestToken<double>('test-double');
-        final doubleRef = SpaceRef.token(doubleToken);
+        final doubleRef = DoubleRef.token(doubleToken);
 
         final retrieved = getTokenFromValue(doubleRef);
         expect(
           retrieved,
           equals(doubleToken),
-          reason: 'Should retrieve original token from SpaceRef',
+          reason: 'Should retrieve original token from DoubleRef',
         );
       });
 
