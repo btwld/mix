@@ -103,3 +103,11 @@ class FontWeightToken extends MixToken<FontWeight> {
   @override
   FontWeightRef call() => FontWeightRef(Prop.token(this));
 }
+
+/// Design token for [Duration] values.
+class DurationToken extends MixToken<Duration> {
+  const DurationToken(super.name);
+
+  @override
+  DurationRef call() => DurationRef(Prop.token(this));
+}
