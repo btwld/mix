@@ -166,6 +166,8 @@ T getReferenceValue<T>(MixToken<T> token) {
     return BorderSideRef(prop as Prop<BorderSide>) as T;
   } else if (T == FontWeight) {
     return FontWeightRef(prop as Prop<FontWeight>) as T;
+  } else if (T == Duration) {
+    return DurationRef(prop as Prop<Duration>) as T;
   } else if (T == List<Shadow>) {
     return ShadowListRef(prop as Prop<List<Shadow>>) as T;
   } else if (T == List<BoxShadow>) {
