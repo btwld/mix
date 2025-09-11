@@ -94,10 +94,10 @@ void main() {
     });
 
     group('Extension Type Token References', () {
-      group('SpaceRef', () {
+      group('DoubleRef', () {
         test('creates from token using hybrid hashing', () {
           final token = TestToken<double>('test-double');
-          final ref = SpaceRef.token(token);
+          final ref = DoubleRef.token(token);
 
           expect(ref, isA<double>());
           expect(getTokenFromValue<double>(ref), equals(token));
@@ -106,7 +106,7 @@ void main() {
 
         test('can be used as double', () {
           final token = TestToken<double>('test-double');
-          final ref = SpaceRef.token(token);
+          final ref = DoubleRef.token(token);
 
           // Test arithmetic operations work correctly
           final originalValue = ref as double;
@@ -118,8 +118,8 @@ void main() {
 
         test('deterministic value for same token', () {
           final token = TestToken<double>('consistent-double');
-          final ref1 = SpaceRef.token(token);
-          final ref2 = SpaceRef.token(token);
+          final ref1 = DoubleRef.token(token);
+          final ref2 = DoubleRef.token(token);
 
           expect(ref1, equals(ref2));
           expect(
@@ -131,8 +131,8 @@ void main() {
         test('different values for different tokens', () {
           final token1 = TestToken<double>('double-1');
           final token2 = TestToken<double>('double-2');
-          final ref1 = SpaceRef.token(token1);
-          final ref2 = SpaceRef.token(token2);
+          final ref1 = DoubleRef.token(token1);
+          final ref2 = DoubleRef.token(token2);
 
           expect(ref1, isNot(equals(ref2)));
           expect(
@@ -143,15 +143,15 @@ void main() {
 
         test('registry lookup works correctly', () {
           final token = TestToken<double>('registry-test');
-          final ref = SpaceRef.token(token);
+          final ref = DoubleRef.token(token);
 
           expect(getTokenFromValue<double>(ref), equals(token));
           expect(getTokenFromValue<double>(ref)?.name, equals('registry-test'));
         });
 
         test('throws when token not found in registry', () {
-          // Create a SpaceRef manually without registering it
-          final manualRef = SpaceRef(42.0);
+          // Create a DoubleRef manually without registering it
+          final manualRef = DoubleRef(42.0);
 
           expect(getTokenFromValue<double>(manualRef), isNull);
         });
@@ -166,30 +166,30 @@ void main() {
         expect(isAnyTokenRef(colorRef), isTrue);
       });
 
-      test('detects SpaceRef as token reference', () {
+      test('detects DoubleRef as token reference', () {
         final token1 = TestToken<double>('test1');
-        final ref1 = SpaceRef.token(token1);
+        final ref1 = DoubleRef.token(token1);
 
         expect(isAnyTokenRef(ref1), isTrue);
       });
 
       test('correctly handles mixed types in collections', () {
         final colorToken = TestToken<Color>('color');
-        final spaceToken = TestToken<double>('space');
+        final doubleToken = TestToken<double>('double');
         final colorRef = ColorRef(Prop.token(colorToken));
-        final spaceRef = SpaceRef.token(spaceToken);
+        final doubleRef = DoubleRef.token(doubleToken);
 
         final mixedList = <Object>[
           'regular string',
           42,
-          spaceRef, // SpaceRef
+          doubleRef, // DoubleRef
           colorRef, // ColorRef
           Colors.red,
         ];
 
         expect(isAnyTokenRef(mixedList[0]), isFalse); // String
         expect(isAnyTokenRef(mixedList[1]), isFalse); // int
-        expect(isAnyTokenRef(mixedList[2]), isTrue); // SpaceRef
+        expect(isAnyTokenRef(mixedList[2]), isTrue); // DoubleRef
         expect(isAnyTokenRef(mixedList[3]), isTrue); // ColorRef
         expect(isAnyTokenRef(mixedList[4]), isFalse); // Color
       });
@@ -212,32 +212,32 @@ void main() {
 
       test('does not detect manually created refs', () {
         // Create refs manually without using .token() method
-        final manualSpaceRef = SpaceRef(42.0);
+        final manualDoubleRef = DoubleRef(42.0);
 
-        expect(isAnyTokenRef(manualSpaceRef), isFalse);
+        expect(isAnyTokenRef(manualDoubleRef), isFalse);
       });
     });
 
     group('getTokenFromValue function', () {
       test('retrieves tokens from registered refs', () {
-        final spaceToken = TestToken<double>('space');
-        final spaceRef = SpaceRef.token(spaceToken);
+        final doubleToken = TestToken<double>('double');
+        final doubleRef = DoubleRef.token(doubleToken);
 
-        expect(getTokenFromValue(spaceRef), equals(spaceToken));
+        expect(getTokenFromValue(doubleRef), equals(doubleToken));
       });
 
       test('handles mixed registered and unregistered refs', () {
-        final spaceToken = TestToken<double>('space');
-        final spaceRef = SpaceRef.token(spaceToken);
+        final doubleToken = TestToken<double>('double');
+        final doubleRef = DoubleRef.token(doubleToken);
 
-        expect(getTokenFromValue(spaceRef), equals(spaceToken));
+        expect(getTokenFromValue(doubleRef), equals(doubleToken));
       });
 
       test('returns null for manually created refs', () {
         // Create refs manually without using .token() method
-        final manualSpaceRef = SpaceRef(42.0);
+        final manualDoubleRef = DoubleRef(42.0);
 
-        expect(getTokenFromValue(manualSpaceRef), isNull);
+        expect(getTokenFromValue(manualDoubleRef), isNull);
       });
 
       test('handles edge cases', () {
@@ -250,7 +250,7 @@ void main() {
     group('clearTokenRegistry', () {
       test('clears all registered tokens', () {
         final tokens = List.generate(10, (i) => TestToken<double>('token-$i'));
-        final refs = tokens.map((token) => SpaceRef.token(token)).toList();
+        final refs = tokens.map((token) => DoubleRef.token(token)).toList();
 
         // Verify all tokens are registered
         for (int i = 0; i < refs.length; i++) {
@@ -270,7 +270,7 @@ void main() {
     group('Token reference edge cases', () {
       test('handles empty string token names', () {
         final emptyNameToken = TestToken<double>('');
-        final ref = SpaceRef.token(emptyNameToken);
+        final ref = DoubleRef.token(emptyNameToken);
 
         expect(getTokenFromValue(ref), equals(emptyNameToken));
       });
@@ -279,8 +279,8 @@ void main() {
         final longNameToken = TestToken<double>('very.long.token.name.with.dots');
         final specialCharsToken = TestToken<double>('token-with_special/chars@123');
         
-        final longRef = SpaceRef.token(longNameToken);
-        final specialRef = SpaceRef.token(specialCharsToken);
+        final longRef = DoubleRef.token(longNameToken);
+        final specialRef = DoubleRef.token(specialCharsToken);
 
         expect(getTokenFromValue(longRef), equals(longNameToken));
         expect(getTokenFromValue(specialRef), equals(specialCharsToken));
