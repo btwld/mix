@@ -283,13 +283,11 @@ final class EdgeInsetsMix extends EdgeInsetsGeometryMix<EdgeInsets> {
 
   @override
   EdgeInsetsMix merge(EdgeInsetsMix? other) {
-    if (other == null) return this;
-
     return EdgeInsetsMix.create(
-      top: MixOps.merge($top, other.$top),
-      bottom: MixOps.merge($bottom, other.$bottom),
-      left: MixOps.merge($left, other.$left),
-      right: MixOps.merge($right, other.$right),
+      top: MixOps.merge($top, other?.$top),
+      bottom: MixOps.merge($bottom, other?.$bottom),
+      left: MixOps.merge($left, other?.$left),
+      right: MixOps.merge($right, other?.$right),
     );
   }
 
@@ -427,13 +425,11 @@ final class EdgeInsetsDirectionalMix
 
   @override
   EdgeInsetsDirectionalMix merge(EdgeInsetsDirectionalMix? other) {
-    if (other == null) return this;
-
     return EdgeInsetsDirectionalMix.create(
-      top: MixOps.merge($top, other.$top),
-      bottom: MixOps.merge($bottom, other.$bottom),
-      start: MixOps.merge($start, other.$start),
-      end: MixOps.merge($end, other.$end),
+      top: MixOps.merge($top, other?.$top),
+      bottom: MixOps.merge($bottom, other?.$bottom),
+      start: MixOps.merge($start, other?.$start),
+      end: MixOps.merge($end, other?.$end),
     );
   }
 

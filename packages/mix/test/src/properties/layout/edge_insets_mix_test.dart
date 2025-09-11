@@ -220,11 +220,12 @@ void main() {
     });
 
     group('merge', () {
-      test('returns this when other is null', () {
+      test('returns equivalent instance when other is null', () {
         final edgeInsetsMix = EdgeInsetsMix(top: 8.0);
         final merged = edgeInsetsMix.merge(null);
 
-        expect(merged, same(edgeInsetsMix));
+        expect(identical(merged, edgeInsetsMix), isFalse);
+        expect(merged, equals(edgeInsetsMix));
       });
 
       test('merges properties correctly', () {
@@ -370,11 +371,12 @@ void main() {
     });
 
     group('merge', () {
-      test('returns this when other is null', () {
+      test('returns equivalent instance when other is null', () {
         final edgeInsetsDirectionalMix = EdgeInsetsDirectionalMix(top: 8.0);
         final merged = edgeInsetsDirectionalMix.merge(null);
 
-        expect(merged, same(edgeInsetsDirectionalMix));
+        expect(identical(merged, edgeInsetsDirectionalMix), isFalse);
+        expect(merged, equals(edgeInsetsDirectionalMix));
       });
 
       test('merges properties correctly', () {

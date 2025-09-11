@@ -94,20 +94,18 @@ class TextHeightBehaviorMix extends Mix<TextHeightBehavior>
   /// Merges with another text height behavior.
   @override
   TextHeightBehaviorMix merge(TextHeightBehaviorMix? other) {
-    if (other == null) return this;
-
     return TextHeightBehaviorMix.create(
       applyHeightToFirstAscent: MixOps.merge(
         $applyHeightToFirstAscent,
-        other.$applyHeightToFirstAscent,
+        other?.$applyHeightToFirstAscent,
       ),
       applyHeightToLastDescent: MixOps.merge(
         $applyHeightToLastDescent,
-        other.$applyHeightToLastDescent,
+        other?.$applyHeightToLastDescent,
       ),
       leadingDistribution: MixOps.merge(
         $leadingDistribution,
-        other.$leadingDistribution,
+        other?.$leadingDistribution,
       ),
     );
   }

@@ -253,11 +253,12 @@ void main() {
     });
 
     group('merge', () {
-      test('returns this when other is null', () {
+      test('returns equivalent instance when other is null', () {
         final constraintsMix = BoxConstraintsMix(minWidth: 50.0);
         final merged = constraintsMix.merge(null);
 
-        expect(merged, same(constraintsMix));
+        expect(identical(merged, constraintsMix), isFalse);
+        expect(merged, equals(constraintsMix));
       });
 
       test('merges properties correctly', () {

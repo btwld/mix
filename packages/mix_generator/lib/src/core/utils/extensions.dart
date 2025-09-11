@@ -22,6 +22,7 @@ extension DartTypeExtensions on DartType {
   bool get isList {
     if (this is! InterfaceType) return false;
     final element = (this as InterfaceType).element;
+
     return element.name == 'List' && element.library.name == 'dart.core';
   }
 
@@ -29,6 +30,7 @@ extension DartTypeExtensions on DartType {
   bool get isMap {
     if (this is! InterfaceType) return false;
     final element = (this as InterfaceType).element;
+
     return element.name == 'Map' && element.library.name == 'dart.core';
   }
 
@@ -36,6 +38,7 @@ extension DartTypeExtensions on DartType {
   bool get isSet {
     if (this is! InterfaceType) return false;
     final element = (this as InterfaceType).element;
+
     return element.name == 'Set' && element.library.name == 'dart.core';
   }
 

@@ -152,11 +152,12 @@ void main() {
         ); // from second
       });
 
-      test('returns this when other is null', () {
+      test('returns equivalent instance when other is null', () {
         final shadowMix = ShadowMix(blurRadius: 5.0);
         final merged = shadowMix.merge(null);
 
-        expect(identical(shadowMix, merged), isTrue);
+        expect(identical(shadowMix, merged), isFalse);
+        expect(merged, equals(shadowMix));
       });
     });
 
@@ -390,11 +391,12 @@ void main() {
         expect(merged.$spreadRadius, resolvesTo(2.0)); // second overrides
       });
 
-      test('returns this when other is null', () {
+      test('returns equivalent instance when other is null', () {
         final boxShadowMix = BoxShadowMix(blurRadius: 5.0);
         final merged = boxShadowMix.merge(null);
 
-        expect(identical(boxShadowMix, merged), isTrue);
+        expect(identical(boxShadowMix, merged), isFalse);
+        expect(merged, equals(boxShadowMix));
       });
     });
 

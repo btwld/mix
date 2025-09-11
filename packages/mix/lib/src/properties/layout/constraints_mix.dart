@@ -204,13 +204,11 @@ final class BoxConstraintsMix extends ConstraintsMix<BoxConstraints>
   /// Merges with another [BoxConstraintsMix].
   @override
   BoxConstraintsMix merge(BoxConstraintsMix? other) {
-    if (other == null) return this;
-
     return BoxConstraintsMix.create(
-      minWidth: MixOps.merge($minWidth, other.$minWidth),
-      maxWidth: MixOps.merge($maxWidth, other.$maxWidth),
-      minHeight: MixOps.merge($minHeight, other.$minHeight),
-      maxHeight: MixOps.merge($maxHeight, other.$maxHeight),
+      minWidth: MixOps.merge($minWidth, other?.$minWidth),
+      maxWidth: MixOps.merge($maxWidth, other?.$maxWidth),
+      minHeight: MixOps.merge($minHeight, other?.$minHeight),
+      maxHeight: MixOps.merge($maxHeight, other?.$maxHeight),
     );
   }
 

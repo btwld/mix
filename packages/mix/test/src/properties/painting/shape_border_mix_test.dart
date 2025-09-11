@@ -150,13 +150,14 @@ void main() {
     });
 
     group('merge', () {
-      test('returns this when other is null', () {
+      test('returns equivalent instance when other is null', () {
         final roundedRectangleBorderMix = RoundedRectangleBorderMix(
           borderRadius: BorderRadiusMix(topLeft: const Radius.circular(8.0)),
         );
         final merged = roundedRectangleBorderMix.merge(null);
 
-        expect(merged, same(roundedRectangleBorderMix));
+        expect(identical(merged, roundedRectangleBorderMix), isFalse);
+        expect(merged, equals(roundedRectangleBorderMix));
       });
 
       test('merges properties correctly', () {

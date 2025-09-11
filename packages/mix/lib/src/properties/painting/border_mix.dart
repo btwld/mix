@@ -285,13 +285,11 @@ final class BorderMix extends BoxBorderMix<Border> with DefaultValue<Border> {
   /// to the values from this instance.
   @override
   BorderMix merge(BorderMix? other) {
-    if (other == null) return this;
-
     return BorderMix.create(
-      top: MixOps.merge($top, other.$top),
-      bottom: MixOps.merge($bottom, other.$bottom),
-      left: MixOps.merge($left, other.$left),
-      right: MixOps.merge($right, other.$right),
+      top: MixOps.merge($top, other?.$top),
+      bottom: MixOps.merge($bottom, other?.$bottom),
+      left: MixOps.merge($left, other?.$left),
+      right: MixOps.merge($right, other?.$right),
     );
   }
 
@@ -453,13 +451,11 @@ final class BorderDirectionalMix extends BoxBorderMix<BorderDirectional>
   /// to the values from this instance.
   @override
   BorderDirectionalMix merge(BorderDirectionalMix? other) {
-    if (other == null) return this;
-
     return BorderDirectionalMix.create(
-      top: MixOps.merge($top, other.$top),
-      bottom: MixOps.merge($bottom, other.$bottom),
-      start: MixOps.merge($start, other.$start),
-      end: MixOps.merge($end, other.$end),
+      top: MixOps.merge($top, other?.$top),
+      bottom: MixOps.merge($bottom, other?.$bottom),
+      start: MixOps.merge($start, other?.$start),
+      end: MixOps.merge($end, other?.$end),
     );
   }
 
@@ -608,13 +604,11 @@ final class BorderSideMix extends Mix<BorderSide>
   /// to the values from this instance.
   @override
   BorderSideMix merge(BorderSideMix? other) {
-    if (other == null) return this;
-
     return BorderSideMix.create(
-      color: MixOps.merge($color, other.$color),
-      width: MixOps.merge($width, other.$width),
-      style: MixOps.merge($style, other.$style),
-      strokeAlign: MixOps.merge($strokeAlign, other.$strokeAlign),
+      color: MixOps.merge($color, other?.$color),
+      width: MixOps.merge($width, other?.$width),
+      style: MixOps.merge($style, other?.$style),
+      strokeAlign: MixOps.merge($strokeAlign, other?.$strokeAlign),
     );
   }
 

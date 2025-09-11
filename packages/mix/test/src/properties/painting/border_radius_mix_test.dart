@@ -296,13 +296,14 @@ void main() {
     });
 
     group('merge', () {
-      test('returns this when other is null', () {
+      test('returns equivalent instance when other is null', () {
         final borderRadiusMix = BorderRadiusMix(
           topLeft: const Radius.circular(8.0),
         );
         final merged = borderRadiusMix.merge(null);
 
-        expect(merged, same(borderRadiusMix));
+        expect(identical(merged, borderRadiusMix), isFalse);
+        expect(merged, equals(borderRadiusMix));
       });
 
       test('merges properties correctly', () {
@@ -470,13 +471,14 @@ void main() {
     });
 
     group('merge', () {
-      test('returns this when other is null', () {
+      test('returns equivalent instance when other is null', () {
         final borderRadiusDirectionalMix = BorderRadiusDirectionalMix(
           topStart: const Radius.circular(8.0),
         );
         final merged = borderRadiusDirectionalMix.merge(null);
 
-        expect(merged, same(borderRadiusDirectionalMix));
+        expect(identical(merged, borderRadiusDirectionalMix), isFalse);
+        expect(merged, equals(borderRadiusDirectionalMix));
       });
 
       test('merges properties correctly', () {
