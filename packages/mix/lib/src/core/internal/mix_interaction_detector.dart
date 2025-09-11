@@ -37,10 +37,6 @@ class _MixInteractionDetectorState extends State<MixInteractionDetector> {
   WidgetStatesController? _internalController;
   late final PointerPositionNotifier _cursorPositionNotifier;
 
-  WidgetStatesController get _effectiveController =>
-      widget.controller ??
-      (_internalController ??= _createInternalController());
-
   @override
   void initState() {
     super.initState();
@@ -168,6 +164,10 @@ class _MixInteractionDetectorState extends State<MixInteractionDetector> {
       PointerPosition(position: alignment, offset: localPosition),
     );
   }
+
+  WidgetStatesController get _effectiveController =>
+      widget.controller ??
+      (_internalController ??= _createInternalController());
 
   @override
   void didUpdateWidget(MixInteractionDetector oldWidget) {

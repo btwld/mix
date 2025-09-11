@@ -171,9 +171,9 @@ class MixScope extends InheritedModel<String> {
     );
   }
 
-  final Map<MixToken, Object>? _tokens;
-
   final List<Type>? orderOfModifiers;
+
+  final Map<MixToken, Object>? _tokens;
 
   /// Getter for tokens map
   Map<MixToken, Object>? get tokens => _tokens;
