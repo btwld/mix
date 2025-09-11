@@ -198,11 +198,12 @@ void main() {
     });
 
     group('merge', () {
-      test('returns this when other is null', () {
+      test('returns equivalent instance when other is null', () {
         final boxDecorationMix = BoxDecorationMix(color: Colors.blue);
         final merged = boxDecorationMix.merge(null);
 
-        expect(merged, same(boxDecorationMix));
+        expect(identical(merged, boxDecorationMix), isFalse);
+        expect(merged, equals(boxDecorationMix));
       });
 
       test('merges properties correctly', () {
@@ -409,11 +410,12 @@ void main() {
     });
 
     group('merge', () {
-      test('returns this when other is null', () {
+      test('returns equivalent instance when other is null', () {
         final shapeDecorationMix = ShapeDecorationMix(color: Colors.green);
         final merged = shapeDecorationMix.merge(null);
 
-        expect(merged, same(shapeDecorationMix));
+        expect(identical(merged, shapeDecorationMix), isFalse);
+        expect(merged, equals(shapeDecorationMix));
       });
 
       test('merges properties correctly', () {

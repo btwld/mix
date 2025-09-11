@@ -63,11 +63,11 @@ sealed class GradientMix<T extends Gradient> extends Mix<T>
 
   /// Merges common gradient properties.
   @protected
-  Map<String, dynamic> mergeCommonProperties(GradientMix other) {
+  Map<String, dynamic> mergeCommonProperties(GradientMix? other) {
     return {
-      'transform': MixOps.merge($transform, other.$transform),
-      'colors': MixOps.mergeList($colors, other.$colors),
-      'stops': MixOps.mergeList($stops, other.$stops),
+      'transform': MixOps.merge($transform, other?.$transform),
+      'colors': MixOps.mergeList($colors, other?.$colors),
+      'stops': MixOps.mergeList($stops, other?.$stops),
     };
   }
 
@@ -202,14 +202,12 @@ final class LinearGradientMix extends GradientMix<LinearGradient>
 
   @override
   LinearGradientMix merge(LinearGradientMix? other) {
-    if (other == null) return this;
-
     final commonProps = mergeCommonProperties(other);
 
     return LinearGradientMix.create(
-      begin: MixOps.merge($begin, other.$begin),
-      end: MixOps.merge($end, other.$end),
-      tileMode: MixOps.merge($tileMode, other.$tileMode),
+      begin: MixOps.merge($begin, other?.$begin),
+      end: MixOps.merge($end, other?.$end),
+      tileMode: MixOps.merge($tileMode, other?.$tileMode),
       transform: commonProps['transform'],
       colors: commonProps['colors'],
       stops: commonProps['stops'],
@@ -405,16 +403,14 @@ final class RadialGradientMix extends GradientMix<RadialGradient>
 
   @override
   RadialGradientMix merge(RadialGradientMix? other) {
-    if (other == null) return this;
-
     final commonProps = mergeCommonProperties(other);
 
     return RadialGradientMix.create(
-      center: MixOps.merge($center, other.$center),
-      radius: MixOps.merge($radius, other.$radius),
-      tileMode: MixOps.merge($tileMode, other.$tileMode),
-      focal: MixOps.merge($focal, other.$focal),
-      focalRadius: MixOps.merge($focalRadius, other.$focalRadius),
+      center: MixOps.merge($center, other?.$center),
+      radius: MixOps.merge($radius, other?.$radius),
+      tileMode: MixOps.merge($tileMode, other?.$tileMode),
+      focal: MixOps.merge($focal, other?.$focal),
+      focalRadius: MixOps.merge($focalRadius, other?.$focalRadius),
       transform: commonProps['transform'],
       colors: commonProps['colors'],
       stops: commonProps['stops'],
@@ -596,15 +592,13 @@ final class SweepGradientMix extends GradientMix<SweepGradient>
 
   @override
   SweepGradientMix merge(SweepGradientMix? other) {
-    if (other == null) return this;
-
     final commonProps = mergeCommonProperties(other);
 
     return SweepGradientMix.create(
-      center: MixOps.merge($center, other.$center),
-      startAngle: MixOps.merge($startAngle, other.$startAngle),
-      endAngle: MixOps.merge($endAngle, other.$endAngle),
-      tileMode: MixOps.merge($tileMode, other.$tileMode),
+      center: MixOps.merge($center, other?.$center),
+      startAngle: MixOps.merge($startAngle, other?.$startAngle),
+      endAngle: MixOps.merge($endAngle, other?.$endAngle),
+      tileMode: MixOps.merge($tileMode, other?.$tileMode),
       transform: commonProps['transform'],
       colors: commonProps['colors'],
       stops: commonProps['stops'],

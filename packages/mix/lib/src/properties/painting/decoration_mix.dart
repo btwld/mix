@@ -257,20 +257,18 @@ final class BoxDecorationMix extends DecorationMix<BoxDecoration>
   /// Merges the properties of this [BoxDecorationMix] with the properties of [other].
   @override
   BoxDecorationMix merge(BoxDecorationMix? other) {
-    if (other == null) return this;
-
     return BoxDecorationMix.create(
-      border: MixOps.merge($border, other.$border),
-      borderRadius: MixOps.merge($borderRadius, other.$borderRadius),
-      shape: MixOps.merge($shape, other.$shape),
+      border: MixOps.merge($border, other?.$border),
+      borderRadius: MixOps.merge($borderRadius, other?.$borderRadius),
+      shape: MixOps.merge($shape, other?.$shape),
       backgroundBlendMode: MixOps.merge(
         $backgroundBlendMode,
-        other.$backgroundBlendMode,
+        other?.$backgroundBlendMode,
       ),
-      color: MixOps.merge($color, other.$color),
-      image: MixOps.merge($image, other.$image),
-      gradient: MixOps.merge($gradient, other.$gradient),
-      boxShadow: MixOps.mergeList($boxShadow, other.$boxShadow),
+      color: MixOps.merge($color, other?.$color),
+      image: MixOps.merge($image, other?.$image),
+      gradient: MixOps.merge($gradient, other?.$gradient),
+      boxShadow: MixOps.mergeList($boxShadow, other?.$boxShadow),
     );
   }
 
@@ -376,14 +374,12 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
   /// Merges the properties of this [ShapeDecorationMix] with the properties of [other].
   @override
   ShapeDecorationMix merge(ShapeDecorationMix? other) {
-    if (other == null) return this;
-
     return ShapeDecorationMix.create(
-      shape: MixOps.merge($shape, other.$shape),
-      color: MixOps.merge($color, other.$color),
-      image: MixOps.merge($image, other.$image),
-      gradient: MixOps.merge($gradient, other.$gradient),
-      shadows: MixOps.mergeList($boxShadow, other.$boxShadow),
+      shape: MixOps.merge($shape, other?.$shape),
+      color: MixOps.merge($color, other?.$color),
+      image: MixOps.merge($image, other?.$image),
+      gradient: MixOps.merge($gradient, other?.$gradient),
+      shadows: MixOps.mergeList($boxShadow, other?.$boxShadow),
     );
   }
 

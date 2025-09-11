@@ -215,11 +215,12 @@ void main() {
     });
 
     group('merge', () {
-      test('returns this when other is null', () {
+      test('returns equivalent instance when other is null', () {
         final strutStyleMix = StrutStyleMix(fontSize: 16.0);
         final merged = strutStyleMix.merge(null);
 
-        expect(merged, same(strutStyleMix));
+        expect(identical(merged, strutStyleMix), isFalse);
+        expect(merged, equals(strutStyleMix));
       });
 
       test('merges properties correctly', () {
