@@ -33,7 +33,6 @@ export 'src/core/directive.dart';
 export 'src/core/extensions/extensions.dart';
 export 'src/core/helpers.dart';
 export 'src/core/mix_element.dart';
-export 'src/core/widget_modifier.dart';
 export 'src/core/pointer_position.dart';
 export 'src/core/prop.dart';
 export 'src/core/prop_refs.dart';
@@ -49,6 +48,7 @@ export 'src/core/style_spec.dart';
 export 'src/core/style_widget.dart';
 export 'src/core/utility.dart';
 export 'src/core/utility_variant_mixin.dart';
+export 'src/core/widget_modifier.dart';
 export 'src/modifiers/align_modifier.dart';
 export 'src/modifiers/aspect_ratio_modifier.dart';
 export 'src/modifiers/box_modifier.dart' hide BoxModifierUtility;
@@ -59,10 +59,6 @@ export 'src/modifiers/fractionally_sized_box_modifier.dart';
 export 'src/modifiers/icon_theme_modifier.dart';
 export 'src/modifiers/internal/reset_modifier.dart';
 export 'src/modifiers/intrinsic_modifier.dart';
-
-/// PROPERTIES
-export 'src/modifiers/widget_modifier_config.dart';
-export 'src/modifiers/widget_modifier_util.dart';
 export 'src/modifiers/mouse_cursor_modifier.dart';
 export 'src/modifiers/opacity_modifier.dart';
 export 'src/modifiers/padding_modifier.dart';
@@ -72,6 +68,10 @@ export 'src/modifiers/shader_mask_modifier.dart';
 export 'src/modifiers/sized_box_modifier.dart';
 export 'src/modifiers/transform_modifier.dart';
 export 'src/modifiers/visibility_modifier.dart';
+
+/// PROPERTIES
+export 'src/modifiers/widget_modifier_config.dart';
+export 'src/modifiers/widget_modifier_util.dart';
 
 /// ICONOGRAPHY
 export 'src/properties/layout/constraints_mix.dart';
@@ -109,38 +109,38 @@ export 'src/properties/typography/text_style_util.dart';
 /// TYPOGRAPHY
 export 'src/providers/icon_scope.dart';
 export 'src/providers/text_scope.dart';
+export 'src/specs/box/box_mutable_style.dart';
 export 'src/specs/box/box_spec.dart';
 
 /// SPECS
 export 'src/specs/box/box_style.dart';
-export 'src/specs/box/box_mutable_style.dart';
 export 'src/specs/box/box_widget.dart';
+export 'src/specs/flex/flex_mutable_style.dart';
 export 'src/specs/flex/flex_spec.dart';
 export 'src/specs/flex/flex_style.dart';
-export 'src/specs/flex/flex_mutable_style.dart';
+export 'src/specs/flexbox/flexbox_mutable_style.dart';
 export 'src/specs/flexbox/flexbox_spec.dart';
 export 'src/specs/flexbox/flexbox_style.dart';
-export 'src/specs/flexbox/flexbox_mutable_style.dart';
 export 'src/specs/flexbox/flexbox_widget.dart';
+export 'src/specs/icon/icon_mutable_style.dart';
 export 'src/specs/icon/icon_spec.dart';
 export 'src/specs/icon/icon_style.dart';
-export 'src/specs/icon/icon_mutable_style.dart';
 export 'src/specs/icon/icon_widget.dart';
+export 'src/specs/image/image_mutable_style.dart';
 export 'src/specs/image/image_spec.dart';
 export 'src/specs/image/image_style.dart' hide ImageMix;
-export 'src/specs/image/image_mutable_style.dart';
 export 'src/specs/image/image_widget.dart';
-export 'src/specs/pressable/pressable_widget.dart';
 export 'src/specs/mutable_stylers.dart';
+export 'src/specs/pressable/pressable_widget.dart';
 export 'src/specs/stack/stack_box_spec.dart';
 export 'src/specs/stack/stack_box_style.dart';
+export 'src/specs/stack/stack_mutable_style.dart';
 export 'src/specs/stack/stack_spec.dart';
 export 'src/specs/stack/stack_style.dart' hide StackMix;
-export 'src/specs/stack/stack_mutable_style.dart';
 export 'src/specs/stack/stack_widget.dart';
+export 'src/specs/text/text_mutable_style.dart';
 export 'src/specs/text/text_spec.dart';
 export 'src/specs/text/text_style.dart';
-export 'src/specs/text/text_mutable_style.dart';
 export 'src/specs/text/text_widget.dart';
 
 /// STYLE MIXINS
@@ -150,12 +150,12 @@ export 'src/style/mixins/border_style_mixin.dart';
 export 'src/style/mixins/constraint_style_mixin.dart';
 export 'src/style/mixins/decoration_style_mixin.dart';
 export 'src/style/mixins/flex_style_mixin.dart';
-export 'src/style/mixins/widget_modifier_style_mixin.dart';
 export 'src/style/mixins/shadow_style_mixin.dart';
 export 'src/style/mixins/spacing_style_mixin.dart';
 export 'src/style/mixins/text_style_mixin.dart';
 export 'src/style/mixins/transform_style_mixin.dart';
 export 'src/style/mixins/variant_style_mixin.dart';
+export 'src/style/mixins/widget_modifier_style_mixin.dart';
 
 /// THEME
 export 'src/theme/material/material_theme.dart';

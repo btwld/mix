@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/src/core/prop.dart';
+import 'package:mix/src/core/prop_refs.dart';
 import 'package:mix/src/theme/tokens/token_refs.dart';
 import 'package:mix/src/theme/mix_theme.dart';
 
@@ -62,6 +63,30 @@ void main() {
         );
       });
 
+      test('BorderSideRef behavior - isAnyTokenRef detects it correctly', () {
+        final borderSideToken = TestToken<BorderSide>('test-border-side');
+        final borderSideRef = BorderSideRef(Prop.token(borderSideToken));
+
+        // BorderSideRef should be detected as a token reference
+        expect(
+          isAnyTokenRef(borderSideRef),
+          isTrue,
+          reason: 'Should detect BorderSideRef as token reference',
+        );
+
+        // BorderSideRef should have proper token behavior built-in
+        expect(
+          borderSideRef,
+          PropMatcher.hasTokens,
+          reason: 'BorderSideRef should have token source',
+        );
+        expect(
+          borderSideRef,
+          PropMatcher.isToken(borderSideToken),
+          reason: 'BorderSideRef should contain the original token',
+        );
+      });
+
 
     });
 
@@ -107,6 +132,48 @@ void main() {
         );
       });
 
+      testWidgets('BorderSideRef resolves to token value from context', (
+        tester,
+      ) async {
+        final borderSideToken = TestToken<BorderSide>('border-side-token');
+        const testBorderSide = BorderSide(color: Colors.red, width: 2.0);
+        final borderSideRef = BorderSideRef(Prop.token(borderSideToken));
+
+        // BorderSideRef IS already a Prop, no need to wrap in Prop.value
+        final prop = borderSideRef;
+
+        // Verify it's stored as TokenSource
+        expect(prop, PropMatcher.hasTokens);
+        expect(prop, PropMatcher.isToken(borderSideToken));
+
+        await tester.pumpWidget(
+          MixScope(
+            tokens: {
+              borderSideToken: testBorderSide, // Define the token value
+            },
+            child: Builder(
+              builder: (context) {
+                // Resolve the prop - should return the token value, not the ref value
+                final resolved = prop.resolveProp(context);
+
+                expect(
+                  resolved,
+                  equals(testBorderSide),
+                  reason: 'Should resolve to token value from theme',
+                );
+                expect(
+                  resolved,
+                  isNot(equals(borderSideRef)),
+                  reason: 'Should not return the reference value',
+                );
+
+                return Container();
+              },
+            ),
+          ),
+        );
+      });
+
 
     });
 
@@ -130,6 +197,17 @@ void main() {
           isAnyTokenRef(doubleRef),
           isTrue,
           reason: 'isAnyTokenRef should detect SpaceRef',
+        );
+      });
+
+      test('isAnyTokenRef detects BorderSideRef correctly', () {
+        final borderSideToken = TestToken<BorderSide>('test-border-side');
+        final borderSideRef = BorderSideRef(Prop.token(borderSideToken));
+
+        expect(
+          isAnyTokenRef(borderSideRef),
+          isTrue,
+          reason: 'isAnyTokenRef should detect BorderSideRef',
         );
       });
 

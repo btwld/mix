@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../core/breakpoint.dart';
 import '../../core/prop.dart';
+import '../../core/prop_refs.dart';
 import '../../core/prop_source.dart';
 import 'mix_token.dart';
 
@@ -157,6 +158,8 @@ T getReferenceValue<T>(MixToken<T> token) {
     return TextStyleRef(prop as Prop<TextStyle>) as T;
   } else if (T == Breakpoint) {
     return BreakpointRef(prop as Prop<Breakpoint>) as T;
+  } else if (T == BorderSide) {
+    return BorderSideRef(prop as Prop<BorderSide>) as T;
   }
 
   return prop as T;
