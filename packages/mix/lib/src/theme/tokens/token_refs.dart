@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../core/breakpoint.dart';
 import '../../core/prop.dart';
+import '../../core/prop_refs.dart';
 import '../../core/prop_source.dart';
 import 'mix_token.dart';
 
@@ -88,45 +89,21 @@ final class BreakpointRef extends Prop<Breakpoint>
 /// Global registry to associate extension type values with their tokens
 final Map<Object, MixToken> _tokenRegistry = <Object, MixToken>{};
 
-/// Extension type for [double] values with token tracking
-extension type const DoubleRef(double _value) implements double {
-  /// Creates a DoubleRef using token hashCode and registers it with a token
-  static DoubleRef token(MixToken<double> token) {
+/// Extension type for [double] values with token tracking (space values)
+extension type const SpaceRef(double _value) implements double {
+  /// Creates a SpaceRef using token hashCode and registers it with a token
+  static SpaceRef token(MixToken<double> token) {
     // Use negative nano-values: -0.0001 to -0.000001
     // Negative values clearly indicate "this is a reference, not a real value"
     final hash = token.hashCode.abs() % 100000;
-    final ref = DoubleRef(-(0.000001 + hash * 0.000001));
+    final ref = SpaceRef(-(0.000001 + hash * 0.000001));
     _tokenRegistry[ref] = token;
 
     return ref;
   }
 }
 
-/// Extension type for [int] values with token tracking
-extension type const IntRef(int _value) implements int {
-  /// Creates an IntRef using token hashCode and registers it with a token
-  static IntRef token(MixToken<int> token) {
-    // Use negative small values for token references
-    // Negative values clearly indicate "this is a reference, not a real value"
-    final hash = token.hashCode.abs() % 100000;
-    final ref = IntRef(-(1 + hash));
-    _tokenRegistry[ref] = token;
 
-    return ref;
-  }
-}
-
-/// Extension type for [String] values with token tracking
-extension type const StringRef(String _value) implements String {
-  /// Creates a StringRef using token hashCode and registers it with a token
-  static StringRef token(MixToken<String> token) {
-    final uniqueValue = '_tk_${token.hashCode.toRadixString(36)}';
-    final ref = StringRef(uniqueValue);
-    _tokenRegistry[ref] = token;
-
-    return ref;
-  }
-}
 
 /// Utility to clean up token registry (for memory management)
 @visibleForTesting
@@ -170,11 +147,7 @@ T getReferenceValue<T>(MixToken<T> token) {
   if (T == Color) {
     return ColorRef(prop as Prop<Color>) as T;
   } else if (T == double) {
-    return DoubleRef.token(token as MixToken<double>) as T;
-  } else if (T == int) {
-    return IntRef.token(token as MixToken<int>) as T;
-  } else if (T == String) {
-    return StringRef.token(token as MixToken<String>) as T;
+    return SpaceRef.token(token as MixToken<double>) as T;
   } else if (T == Radius) {
     return RadiusRef(prop as Prop<Radius>) as T;
   } else if (T == Shadow) {
@@ -185,6 +158,8 @@ T getReferenceValue<T>(MixToken<T> token) {
     return TextStyleRef(prop as Prop<TextStyle>) as T;
   } else if (T == Breakpoint) {
     return BreakpointRef(prop as Prop<Breakpoint>) as T;
+  } else if (T == BorderSide) {
+    return BorderSideRef(prop as Prop<BorderSide>) as T;
   }
 
   return prop as T;

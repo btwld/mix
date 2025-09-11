@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/breakpoint.dart';
 import '../../core/prop.dart';
+import '../../core/prop_refs.dart';
 import 'token_refs.dart';
 import 'mix_token.dart';
 
@@ -28,7 +29,7 @@ class SpaceToken extends MixToken<double> {
   const SpaceToken(super.name);
 
   @override
-  double call() => DoubleRef.token(this);
+  double call() => SpaceRef.token(this);
 }
 
 /// A token representing a breakpoint value in the Mix theme.
@@ -61,4 +62,12 @@ class ShadowToken extends MixToken<Shadow> {
 
   @override
   ShadowRef call() => ShadowRef(Prop.token(this));
+}
+
+/// A token representing a border side value in the Mix theme.
+class BorderSideToken extends MixToken<BorderSide> {
+  const BorderSideToken(super.name);
+
+  @override
+  BorderSideRef call() => BorderSideRef(Prop.token(this));
 }

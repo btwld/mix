@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/src/core/prop.dart';
+import 'package:mix/src/core/prop_refs.dart';
 import 'package:mix/src/theme/tokens/token_refs.dart';
 import 'package:mix/src/theme/mix_theme.dart';
 
@@ -37,18 +38,18 @@ void main() {
         );
       });
 
-      test('DoubleRef passed to Prop.value - now detects token', () {
+      test('SpaceRef passed to Prop.value - now detects token', () {
         final doubleToken = TestToken<double>('test-double');
-        final doubleRef = DoubleRef.token(doubleToken);
+        final doubleRef = SpaceRef.token(doubleToken);
 
         // Pass the DoubleRef to Prop.value
         final prop = Prop.value(doubleRef);
 
-        // With fix: should now detect DoubleRef as token
+        // With fix: should now detect SpaceRef as token
         expect(
           prop,
           PropMatcher.hasTokens,
-          reason: 'Should detect DoubleRef as token reference',
+          reason: 'Should detect SpaceRef as token reference',
         );
         expect(
           prop,
@@ -62,63 +63,39 @@ void main() {
         );
       });
 
-      test('IntRef passed to Prop.value - now detects token', () {
-        final intToken = TestToken<int>('test-int');
-        final intRef = IntRef.token(intToken);
+      test('BorderSideRef behavior - isAnyTokenRef detects it correctly', () {
+        final borderSideToken = TestToken<BorderSide>('test-border-side');
+        final borderSideRef = BorderSideRef(Prop.token(borderSideToken));
 
-        // Pass the IntRef to Prop.value
-        final prop = Prop.value(intRef);
-
-        // With fix: should now detect IntRef as token
+        // BorderSideRef should be detected as a token reference
         expect(
-          prop,
+          isAnyTokenRef(borderSideRef),
+          isTrue,
+          reason: 'Should detect BorderSideRef as token reference',
+        );
+
+        // BorderSideRef should have proper token behavior built-in
+        expect(
+          borderSideRef,
           PropMatcher.hasTokens,
-          reason: 'Should detect IntRef as token reference',
+          reason: 'BorderSideRef should have token source',
         );
         expect(
-          prop,
-          PropMatcher.isToken(intToken),
-          reason: 'Should store the original int token',
-        );
-        expect(
-          prop,
-          isNot(PropMatcher.hasValues),
-          reason: 'Should not store as ValueSource',
+          borderSideRef,
+          PropMatcher.isToken(borderSideToken),
+          reason: 'BorderSideRef should contain the original token',
         );
       });
 
-      test('StringRef passed to Prop.value - now detects token', () {
-        final stringToken = TestToken<String>('test-string');
-        final stringRef = StringRef.token(stringToken);
 
-        // Pass the StringRef to Prop.value
-        final prop = Prop.value(stringRef);
-
-        // With fix: should now detect StringRef as token
-        expect(
-          prop,
-          PropMatcher.hasTokens,
-          reason: 'Should detect StringRef as token reference',
-        );
-        expect(
-          prop,
-          PropMatcher.isToken(stringToken),
-          reason: 'Should store the original string token',
-        );
-        expect(
-          prop,
-          isNot(PropMatcher.hasValues),
-          reason: 'Should not store as ValueSource',
-        );
-      });
     });
 
     group('Token Resolution Tests', () {
-      testWidgets('DoubleRef resolves to token value from context', (
+      testWidgets('SpaceRef resolves to token value from context', (
         tester,
       ) async {
         final doubleToken = TestToken<double>('width-token');
-        final doubleRef = DoubleRef.token(doubleToken);
+        final doubleRef = SpaceRef.token(doubleToken);
 
         // Create Prop from token reference
         final prop = Prop.value(doubleRef);
@@ -155,26 +132,40 @@ void main() {
         );
       });
 
-      testWidgets('IntRef resolves to token value from context', (
+      testWidgets('BorderSideRef resolves to token value from context', (
         tester,
       ) async {
-        final intToken = TestToken<int>('count-token');
-        final intRef = IntRef.token(intToken);
+        final borderSideToken = TestToken<BorderSide>('border-side-token');
+        const testBorderSide = BorderSide(color: Colors.red, width: 2.0);
+        final borderSideRef = BorderSideRef(Prop.token(borderSideToken));
 
-        final prop = Prop.value(intRef);
+        // BorderSideRef IS already a Prop, no need to wrap in Prop.value
+        final prop = borderSideRef;
 
+        // Verify it's stored as TokenSource
         expect(prop, PropMatcher.hasTokens);
-        expect(prop, PropMatcher.isToken(intToken));
+        expect(prop, PropMatcher.isToken(borderSideToken));
 
         await tester.pumpWidget(
           MixScope(
-            tokens: {intToken: 42},
+            tokens: {
+              borderSideToken: testBorderSide, // Define the token value
+            },
             child: Builder(
               builder: (context) {
+                // Resolve the prop - should return the token value, not the ref value
                 final resolved = prop.resolveProp(context);
 
-                expect(resolved, equals(42));
-                expect(resolved, isNot(equals(intRef)));
+                expect(
+                  resolved,
+                  equals(testBorderSide),
+                  reason: 'Should resolve to token value from theme',
+                );
+                expect(
+                  resolved,
+                  isNot(equals(borderSideRef)),
+                  reason: 'Should not return the reference value',
+                );
 
                 return Container();
               },
@@ -183,33 +174,7 @@ void main() {
         );
       });
 
-      testWidgets('StringRef resolves to token value from context', (
-        tester,
-      ) async {
-        final stringToken = TestToken<String>('text-token');
-        final stringRef = StringRef.token(stringToken);
 
-        final prop = Prop.value(stringRef);
-
-        expect(prop, PropMatcher.hasTokens);
-        expect(prop, PropMatcher.isToken(stringToken));
-
-        await tester.pumpWidget(
-          MixScope(
-            tokens: {stringToken: 'Hello World'},
-            child: Builder(
-              builder: (context) {
-                final resolved = prop.resolveProp(context);
-
-                expect(resolved, equals('Hello World'));
-                expect(resolved, isNot(equals(stringRef)));
-
-                return Container();
-              },
-            ),
-          ),
-        );
-      });
     });
 
     group('Verify detection functions work', () {
@@ -224,26 +189,37 @@ void main() {
         );
       });
 
-      test('isAnyTokenRef detects DoubleRef correctly', () {
+      test('isAnyTokenRef detects SpaceRef correctly', () {
         final doubleToken = TestToken<double>('test-double');
-        final doubleRef = DoubleRef.token(doubleToken);
+        final doubleRef = SpaceRef.token(doubleToken);
 
         expect(
           isAnyTokenRef(doubleRef),
           isTrue,
-          reason: 'isAnyTokenRef should detect DoubleRef',
+          reason: 'isAnyTokenRef should detect SpaceRef',
         );
       });
 
-      test('getTokenFromValue retrieves token from DoubleRef', () {
+      test('isAnyTokenRef detects BorderSideRef correctly', () {
+        final borderSideToken = TestToken<BorderSide>('test-border-side');
+        final borderSideRef = BorderSideRef(Prop.token(borderSideToken));
+
+        expect(
+          isAnyTokenRef(borderSideRef),
+          isTrue,
+          reason: 'isAnyTokenRef should detect BorderSideRef',
+        );
+      });
+
+      test('getTokenFromValue retrieves token from SpaceRef', () {
         final doubleToken = TestToken<double>('test-double');
-        final doubleRef = DoubleRef.token(doubleToken);
+        final doubleRef = SpaceRef.token(doubleToken);
 
         final retrieved = getTokenFromValue(doubleRef);
         expect(
           retrieved,
           equals(doubleToken),
-          reason: 'Should retrieve original token from DoubleRef',
+          reason: 'Should retrieve original token from SpaceRef',
         );
       });
 

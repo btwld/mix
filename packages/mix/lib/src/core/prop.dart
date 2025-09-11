@@ -84,7 +84,7 @@ class Prop<V> {
     // If it's already a Prop, return unchanged
     if (value is Prop<V>) return value;
 
-    // Check if this is a token reference (DoubleRef, IntRef, StringRef)
+    // Check if this is a token reference (SpaceRef)
     // Only for primitive extension types, not for class-based Props
     if (isAnyTokenRef(value as Object)) {
       final token = getTokenFromValue(value as Object) as MixToken<V>?;
