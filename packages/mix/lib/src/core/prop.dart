@@ -76,25 +76,20 @@ class Prop<V> {
   /// Creates a property from a direct value.
   ///
   /// If [value] is already a [Prop], returns it unchanged.
-  /// Otherwise, checks if it's a token reference and handles accordingly.
+  /// Detects token references and creates appropriate source types.
   ///
-  /// This method does NOT auto-convert values to Mix types.
-  /// Use [Prop.mix] for explicit Mix values.
+  /// Does not auto-convert values to Mix types. Use [Prop.mix] for Mix values.
   static Prop<V> value<V>(V value) {
-    // If it's already a Prop, return unchanged
     if (value is Prop<V>) return value;
 
-    // Check if this is a token reference (SpaceRef)
-    // Only for primitive extension types, not for class-based Props
+    // Handle extension type token references
     if (isAnyTokenRef(value as Object)) {
       final token = getTokenFromValue(value as Object) as MixToken<V>?;
       if (token != null) {
-        // This is a token reference - store as TokenSource
         return Prop._(sources: [TokenSource(token)]);
       }
     }
 
-    // Regular value - store as ValueSource
     return Prop._(sources: [ValueSource(value)]);
   }
 

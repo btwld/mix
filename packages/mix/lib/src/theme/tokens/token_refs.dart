@@ -81,73 +81,77 @@ final class BreakpointRef extends Prop<Breakpoint>
 // =============================================================================
 // EXTENSION TYPE TOKEN REFERENCES FOR PRIMITIVES
 // =============================================================================
-// Extension types for primitive values (double, int, string) that implement their
-// respective interfaces while being trackable through a token registry.
-// Each token gets a unique representation value based on token.hashCode to ensure
-// reliable registry lookups without collisions.
 
-/// Global registry to associate extension type values with their tokens
+/// Global registry that maps extension type values to their source tokens.
 final Map<Object, MixToken> _tokenRegistry = <Object, MixToken>{};
 
-/// Extension type for [double] values with token tracking (space values)
-extension type const SpaceRef(double _value) implements double {
-  /// Creates a SpaceRef using token hashCode and registers it with a token
-  static SpaceRef token(MixToken<double> token) {
-    // Use negative nano-values: -0.0001 to -0.000001
-    // Negative values clearly indicate "this is a reference, not a real value"
+/// Clears the token registry.
+@visibleForTesting
+void clearTokenRegistry() {
+  _tokenRegistry.clear();
+}
+
+/// Returns the token associated with a token reference value.
+///
+/// Returns null if the value is not a registered token reference.
+MixToken<T>? getTokenFromValue<T>(Object value) {
+  return _tokenRegistry[value] as MixToken<T>?;
+}
+
+/// Token reference for [double] values that implements the double interface.
+extension type const DoubleRef(double _value) implements double {
+  /// Creates a token reference and registers it in the global registry.
+  static DoubleRef token(MixToken<double> token) {
+    // Generate unique negative nano-value to avoid collisions with real values
     final hash = token.hashCode.abs() % 100000;
-    final ref = SpaceRef(-(0.000001 + hash * 0.000001));
+    final ref = DoubleRef(-(0.000001 + hash * 0.000001));
     _tokenRegistry[ref] = token;
 
     return ref;
   }
 }
 
-
-
-/// Utility to clean up token registry (for memory management)
-@visibleForTesting
-void clearTokenRegistry() {
-  _tokenRegistry.clear();
+/// Token reference for [List<Shadow>] values
+final class ShadowListRef extends Prop<List<Shadow>>
+    with ValueRef<List<Shadow>>
+    implements List<Shadow> {
+  ShadowListRef(super.prop) : super.fromProp();
 }
 
-/// Gets the token associated with a token reference value.
-///
-/// Returns the [MixToken] if the value is a registered token reference,
-/// or null if it's not a token reference.
-MixToken<T>? getTokenFromValue<T>(Object value) {
-  return _tokenRegistry[value] as MixToken<T>?;
+/// Token reference for [List<BoxShadow>] values
+final class BoxShadowListRef extends Prop<List<BoxShadow>>
+    with ValueRef<List<BoxShadow>>
+    implements List<BoxShadow> {
+  BoxShadowListRef(super.prop) : super.fromProp();
 }
 
-/// Checks if a value is any type of token reference.
+/// Returns true if the value is a token reference.
 ///
-/// Returns true for both class-based token references (Prop with ValueRef)
-/// and extension type token references registered in the token registry.
+/// Detects both class-based token references (Prop with ValueRef)
+/// and extension type token references.
 bool isAnyTokenRef(Object value) {
-  // Check if it's a class-based token reference (extends Prop with ValueRef mixin)
-  // We can check if it has the ValueRef mixin by checking if it has a token source
+  // Check for class-based token references
   if (value is Prop && value.sources.any((s) => s is TokenSource)) {
-    // Additional check to ensure it's actually a token reference class
     final typeName = value.runtimeType.toString();
     if (typeName.endsWith('Ref') || typeName.endsWith('Prop')) {
       return true;
     }
   }
 
-  // Check if it's an extension type token reference by looking in the registry
+  // Check for extension type token references
   return _tokenRegistry.containsKey(value);
 }
 
-/// Creates the appropriate token reference type for the given token.
+/// Creates the appropriate token reference for the given token.
 ///
-/// Returns a token reference that implements the target type T,
-/// allowing the token to be used wherever T is expected.
+/// Returns a reference that implements the target type, allowing the token
+/// to be used wherever the type is expected.
 T getReferenceValue<T>(MixToken<T> token) {
   final prop = Prop.token(token);
   if (T == Color) {
     return ColorRef(prop as Prop<Color>) as T;
   } else if (T == double) {
-    return SpaceRef.token(token as MixToken<double>) as T;
+    return DoubleRef.token(token as MixToken<double>) as T;
   } else if (T == Radius) {
     return RadiusRef(prop as Prop<Radius>) as T;
   } else if (T == Shadow) {
@@ -160,6 +164,12 @@ T getReferenceValue<T>(MixToken<T> token) {
     return BreakpointRef(prop as Prop<Breakpoint>) as T;
   } else if (T == BorderSide) {
     return BorderSideRef(prop as Prop<BorderSide>) as T;
+  } else if (T == FontWeight) {
+    return FontWeightRef(prop as Prop<FontWeight>) as T;
+  } else if (T == List<Shadow>) {
+    return ShadowListRef(prop as Prop<List<Shadow>>) as T;
+  } else if (T == List<BoxShadow>) {
+    return BoxShadowListRef(prop as Prop<List<BoxShadow>>) as T;
   }
 
   return prop as T;
