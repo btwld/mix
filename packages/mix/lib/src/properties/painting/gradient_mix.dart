@@ -66,8 +66,8 @@ sealed class GradientMix<T extends Gradient> extends Mix<T>
   Map<String, dynamic> mergeCommonProperties(GradientMix? other) {
     return {
       'transform': MixOps.merge($transform, other?.$transform),
-      'colors': MixOps.mergeList($colors, other?.$colors),
-      'stops': MixOps.mergeList($stops, other?.$stops),
+      'colors': MixOps.merge($colors, other?.$colors),
+      'stops': MixOps.merge($stops, other?.$stops),
     };
   }
 

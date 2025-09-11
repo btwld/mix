@@ -162,12 +162,6 @@ class PressableWidgetState extends State<Pressable> {
     widget.onFocusChange?.call(hasFocus);
   }
 
-  @override
-  void dispose() {
-    if (widget.controller == null) _controller.dispose();
-    super.dispose();
-  }
-
   bool get hasOnPress => widget.onPress != null;
 
   MouseCursor get mouseCursor {
@@ -190,6 +184,12 @@ class PressableWidgetState extends State<Pressable> {
       ),
       ...?widget.actions,
     };
+  }
+
+  @override
+  void dispose() {
+    if (widget.controller == null) _controller.dispose();
+    super.dispose();
   }
 
   @override

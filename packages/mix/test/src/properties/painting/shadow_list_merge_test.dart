@@ -5,117 +5,131 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-  group('Shadow list merge (Prop<List<T>> with ListMix wrappers)', () {
-    test(
-      'BoxDecorationMix: merges boxShadow lists by index with in-place item merge',
-      () {
-        final first = BoxDecorationMix.boxShadow([
-          BoxShadowMix(color: Colors.blue, blurRadius: 4.0),
-          BoxShadowMix(offset: const Offset(1, 1), spreadRadius: 1.0),
-        ]);
+  group('ShadowListMix merge behavior', () {
+    test('merges shadow lists by replacement', () {
+      final list1 = ShadowListMix([
+        ShadowMix(blurRadius: 5.0, color: Colors.black),
+        ShadowMix(blurRadius: 3.0, color: Colors.grey),
+      ]);
 
-        final second = BoxDecorationMix.boxShadow([
-          BoxShadowMix(color: Colors.red),
-          BoxShadowMix(blurRadius: 10.0),
-        ]);
+      final list2 = ShadowListMix([
+        ShadowMix(blurRadius: 8.0, color: Colors.red),
+      ]);
 
-        final merged = first.merge(second);
+      final merged = list1.merge(list2);
 
-        final ctx = MockBuildContext();
-        final resolved = merged.resolve(ctx);
-        expect(resolved, isA<BoxDecoration>());
-        final box = resolved;
+      expect(merged.items.length, 1);
+      expect(merged.items[0].resolve(MockBuildContext()).blurRadius, 8.0);
+      expect(merged.items[0].resolve(MockBuildContext()).color, Colors.red);
+    });
 
-        expect(box.boxShadow, isNotNull);
-        expect(box.boxShadow, hasLength(2));
+    test('returns original list when merging with null', () {
+      final list = ShadowListMix([
+        ShadowMix(blurRadius: 5.0, color: Colors.black),
+      ]);
 
-        // Index 0: color from second, blur from first (since second didn't set blur)
-        expect(box.boxShadow![0].color, Colors.red);
-        expect(box.boxShadow![0].blurRadius, 4.0);
+      final merged = list.merge(null);
 
-        // Index 1: offset from first, blur from second, spread from first
-        expect(box.boxShadow![1].offset, const Offset(1, 1));
-        expect(box.boxShadow![1].blurRadius, 10.0);
-        expect(box.boxShadow![1].spreadRadius, 1.0);
-      },
-    );
+      expect(merged.items.length, 1);
+      expect(merged.items[0].resolve(MockBuildContext()).blurRadius, 5.0);
+      expect(merged.items[0].resolve(MockBuildContext()).color, Colors.black);
+    });
 
-    test(
-      'BoxDecorationMix: merges lists of different lengths (first shorter)',
-      () {
-        final first = BoxDecorationMix.boxShadow([
-          BoxShadowMix(blurRadius: 2.0),
-        ]);
+    test('resolves shadow list to List<Shadow>', () {
+      final shadowList = ShadowListMix([
+        ShadowMix(blurRadius: 5.0, color: Colors.black),
+        ShadowMix(blurRadius: 3.0, color: Colors.grey),
+      ]);
 
-        final second = BoxDecorationMix.boxShadow([
-          BoxShadowMix(color: Colors.red),
-          BoxShadowMix(blurRadius: 7.0),
-        ]);
+      final resolved = shadowList.resolve(MockBuildContext());
 
-        final merged = first.merge(second);
-        final box = merged.resolve(MockBuildContext());
+      expect(resolved, isA<List<Shadow>>());
+      expect(resolved.length, 2);
+      expect(resolved[0].blurRadius, 5.0);
+      expect(resolved[0].color, Colors.black);
+      expect(resolved[1].blurRadius, 3.0);
+      expect(resolved[1].color, Colors.grey);
+    });
 
-        expect(box.boxShadow, hasLength(2));
-        // index 0 merged: blur from first, color from second
-        expect(box.boxShadow![0].blurRadius, 2.0);
-        expect(box.boxShadow![0].color, Colors.red);
-        // index 1 comes from second (since first is shorter)
-        expect(box.boxShadow![1].blurRadius, 7.0);
-      },
-    );
+    test('has correct equality and props', () {
+      final shadows = [
+        ShadowMix(blurRadius: 5.0, color: Colors.black),
+        ShadowMix(blurRadius: 3.0, color: Colors.grey),
+      ];
 
-    test(
-      'BoxDecorationMix: merges lists of different lengths (first longer)',
-      () {
-        final first = BoxDecorationMix.boxShadow([
-          BoxShadowMix(blurRadius: 2.0),
-          BoxShadowMix(spreadRadius: 3.0),
-        ]);
+      final list1 = ShadowListMix(shadows);
+      final list2 = ShadowListMix(shadows);
+      final list3 = ShadowListMix([ShadowMix(blurRadius: 8.0, color: Colors.red)]);
 
-        final second = BoxDecorationMix.boxShadow([
-          BoxShadowMix(color: Colors.red),
-        ]);
+      expect(list1.props, equals(list2.props));
+      expect(list1.props, isNot(equals(list3.props)));
+    });
+  });
 
-        final merged = first.merge(second);
-        final box = merged.resolve(MockBuildContext());
+  group('BoxShadowListMix merge behavior', () {
+    test('merges box shadow lists by replacement', () {
+      final list1 = BoxShadowListMix([
+        BoxShadowMix(blurRadius: 5.0, color: Colors.black, spreadRadius: 1.0),
+        BoxShadowMix(blurRadius: 3.0, color: Colors.grey, spreadRadius: 2.0),
+      ]);
 
-        expect(box.boxShadow, hasLength(2));
-        // index 0 merged: blur from first, color from second
-        expect(box.boxShadow![0].blurRadius, 2.0);
-        expect(box.boxShadow![0].color, Colors.red);
-        // index 1 retained from first (since second is shorter)
-        expect(box.boxShadow![1].spreadRadius, 3.0);
-      },
-    );
+      final list2 = BoxShadowListMix([
+        BoxShadowMix(blurRadius: 8.0, color: Colors.red, spreadRadius: 3.0),
+      ]);
 
-    group('Integration via ShadowStyleMixin (BoxStyler)', () {
-      test('shadowOnly merge: same index item merges in-place', () {
-        final a = BoxStyler().shadowOnly(color: Colors.blue, blurRadius: 4.0);
-        final b = BoxStyler().shadowOnly(color: Colors.red);
+      final merged = list1.merge(list2);
 
-        final merged = a.merge(b);
-        final spec = merged.resolve(MockBuildContext());
-        final decoration = spec.spec.decoration as BoxDecoration?;
-        expect(decoration, isNotNull);
-        expect(decoration!.boxShadow, hasLength(1));
-        expect(decoration.boxShadow![0].color, Colors.red);
-        expect(decoration.boxShadow![0].blurRadius, 4.0);
-      });
+      expect(merged.items.length, 1);
+      final resolved = merged.items[0].resolve(MockBuildContext());
+      expect(resolved.blurRadius, 8.0);
+      expect(resolved.color, Colors.red);
+      expect(resolved.spreadRadius, 3.0);
+    });
 
-      test('shadows merge: multiple items merge by index', () {
-        final a = BoxStyler().shadows([
-          BoxShadowMix(offset: const Offset(1, 1)),
-        ]);
-        final b = BoxStyler().shadows([BoxShadowMix(blurRadius: 10.0)]);
+    test('returns original list when merging with null', () {
+      final list = BoxShadowListMix([
+        BoxShadowMix(blurRadius: 5.0, color: Colors.black, spreadRadius: 1.0),
+      ]);
 
-        final merged = a.merge(b);
-        final spec = merged.resolve(MockBuildContext());
-        final decoration = spec.spec.decoration as BoxDecoration?;
-        expect(decoration, isNotNull);
-        expect(decoration!.boxShadow, hasLength(1));
-        expect(decoration.boxShadow![0].offset, const Offset(1, 1));
-        expect(decoration.boxShadow![0].blurRadius, 10.0);
-      });
+      final merged = list.merge(null);
+
+      expect(merged.items.length, 1);
+      final resolved = merged.items[0].resolve(MockBuildContext());
+      expect(resolved.blurRadius, 5.0);
+      expect(resolved.color, Colors.black);
+      expect(resolved.spreadRadius, 1.0);
+    });
+
+    test('resolves box shadow list to List<BoxShadow>', () {
+      final shadowList = BoxShadowListMix([
+        BoxShadowMix(blurRadius: 5.0, color: Colors.black, spreadRadius: 1.0),
+        BoxShadowMix(blurRadius: 3.0, color: Colors.grey, spreadRadius: 2.0),
+      ]);
+
+      final resolved = shadowList.resolve(MockBuildContext());
+
+      expect(resolved, isA<List<BoxShadow>>());
+      expect(resolved.length, 2);
+      expect(resolved[0].blurRadius, 5.0);
+      expect(resolved[0].color, Colors.black);
+      expect(resolved[0].spreadRadius, 1.0);
+      expect(resolved[1].blurRadius, 3.0);
+      expect(resolved[1].color, Colors.grey);
+      expect(resolved[1].spreadRadius, 2.0);
+    });
+
+    test('has correct equality and props', () {
+      final shadows = [
+        BoxShadowMix(blurRadius: 5.0, color: Colors.black, spreadRadius: 1.0),
+        BoxShadowMix(blurRadius: 3.0, color: Colors.grey, spreadRadius: 2.0),
+      ];
+
+      final list1 = BoxShadowListMix(shadows);
+      final list2 = BoxShadowListMix(shadows);
+      final list3 = BoxShadowListMix([BoxShadowMix(blurRadius: 8.0, color: Colors.red)]);
+
+      expect(list1.props, equals(list2.props));
+      expect(list1.props, isNot(equals(list3.props)));
     });
   });
 }

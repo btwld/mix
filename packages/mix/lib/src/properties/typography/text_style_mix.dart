@@ -436,7 +436,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
       decoration: MixOps.merge($decoration, other?.$decoration),
       decorationColor: MixOps.merge($decorationColor, other?.$decorationColor),
       decorationStyle: MixOps.merge($decorationStyle, other?.$decorationStyle),
-      fontVariations: MixOps.mergeList($fontVariations, other?.$fontVariations),
+      fontVariations: MixOps.merge($fontVariations, other?.$fontVariations),
       height: MixOps.merge($height, other?.$height),
       foreground: MixOps.merge($foreground, other?.$foreground),
       background: MixOps.merge($background, other?.$background),

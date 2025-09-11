@@ -284,10 +284,7 @@ void main() {
         expect(merged.$fontFamily, resolvesTo('Roboto')); // preserved
         expect(merged.$fontSize, resolvesTo(16.0)); // overridden
         expect(merged.$fontWeight, resolvesTo(FontWeight.bold)); // added
-        expect(
-          merged.$fontFamilyFallback,
-          resolvesTo(equals(['Times'])),
-        ); // concatenated
+        expect(merged.$fontFamilyFallback, resolvesTo(equals(['Times'])));
       });
     });
 
