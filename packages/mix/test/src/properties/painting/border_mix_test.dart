@@ -176,11 +176,12 @@ void main() {
         expect(merged.$style, resolvesTo(BorderStyle.solid)); // from second
       });
 
-      test('returns this when other is null', () {
+      test('returns equivalent instance when other is null', () {
         final borderSideMix = BorderSideMix(width: 2.0);
         final merged = borderSideMix.merge(null);
 
-        expect(identical(borderSideMix, merged), isTrue);
+        expect(identical(borderSideMix, merged), isFalse);
+        expect(merged, equals(borderSideMix));
       });
     });
 
@@ -460,11 +461,12 @@ void main() {
         expect(resolved.left, BorderSide.none);
       });
 
-      test('returns this when other is null', () {
+      test('returns equivalent instance when other is null', () {
         final borderMix = BorderMix(top: BorderSideMix(color: Colors.red));
         final merged = borderMix.merge(null);
 
-        expect(identical(borderMix, merged), isTrue);
+        expect(identical(borderMix, merged), isFalse);
+        expect(merged, equals(borderMix));
       });
     });
 

@@ -423,38 +423,36 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
 
   @override
   TextStyleMix merge(TextStyleMix? other) {
-    if (other == null) return this;
-
     return TextStyleMix.create(
-      color: MixOps.merge($color, other.$color),
-      backgroundColor: MixOps.merge($backgroundColor, other.$backgroundColor),
-      fontSize: MixOps.merge($fontSize, other.$fontSize),
-      fontWeight: MixOps.merge($fontWeight, other.$fontWeight),
-      fontStyle: MixOps.merge($fontStyle, other.$fontStyle),
-      letterSpacing: MixOps.merge($letterSpacing, other.$letterSpacing),
-      debugLabel: MixOps.merge($debugLabel, other.$debugLabel),
-      wordSpacing: MixOps.merge($wordSpacing, other.$wordSpacing),
-      textBaseline: MixOps.merge($textBaseline, other.$textBaseline),
+      color: MixOps.merge($color, other?.$color),
+      backgroundColor: MixOps.merge($backgroundColor, other?.$backgroundColor),
+      fontSize: MixOps.merge($fontSize, other?.$fontSize),
+      fontWeight: MixOps.merge($fontWeight, other?.$fontWeight),
+      fontStyle: MixOps.merge($fontStyle, other?.$fontStyle),
+      letterSpacing: MixOps.merge($letterSpacing, other?.$letterSpacing),
+      debugLabel: MixOps.merge($debugLabel, other?.$debugLabel),
+      wordSpacing: MixOps.merge($wordSpacing, other?.$wordSpacing),
+      textBaseline: MixOps.merge($textBaseline, other?.$textBaseline),
       // Merge lists - default replace strategy (merge at index)
-      shadows: MixOps.mergeList($shadows, other.$shadows),
-      fontFeatures: MixOps.mergeList($fontFeatures, other.$fontFeatures),
-      decoration: MixOps.merge($decoration, other.$decoration),
-      decorationColor: MixOps.merge($decorationColor, other.$decorationColor),
-      decorationStyle: MixOps.merge($decorationStyle, other.$decorationStyle),
-      fontVariations: MixOps.mergeList($fontVariations, other.$fontVariations),
-      height: MixOps.merge($height, other.$height),
-      foreground: MixOps.merge($foreground, other.$foreground),
-      background: MixOps.merge($background, other.$background),
+      shadows: MixOps.mergeList($shadows, other?.$shadows),
+      fontFeatures: MixOps.mergeList($fontFeatures, other?.$fontFeatures),
+      decoration: MixOps.merge($decoration, other?.$decoration),
+      decorationColor: MixOps.merge($decorationColor, other?.$decorationColor),
+      decorationStyle: MixOps.merge($decorationStyle, other?.$decorationStyle),
+      fontVariations: MixOps.mergeList($fontVariations, other?.$fontVariations),
+      height: MixOps.merge($height, other?.$height),
+      foreground: MixOps.merge($foreground, other?.$foreground),
+      background: MixOps.merge($background, other?.$background),
       decorationThickness: MixOps.merge(
         $decorationThickness,
-        other.$decorationThickness,
+        other?.$decorationThickness,
       ),
-      fontFamily: MixOps.merge($fontFamily, other.$fontFamily),
+      fontFamily: MixOps.merge($fontFamily, other?.$fontFamily),
       fontFamilyFallback: MixOps.mergeList(
         $fontFamilyFallback,
-        other.$fontFamilyFallback,
+        other?.$fontFamilyFallback,
       ),
-      inherit: MixOps.merge($inherit, other.$inherit),
+      inherit: MixOps.merge($inherit, other?.$inherit),
     );
   }
 

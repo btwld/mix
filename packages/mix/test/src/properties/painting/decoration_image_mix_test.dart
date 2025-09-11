@@ -302,13 +302,14 @@ void main() {
     });
 
     group('merge', () {
-      test('returns this when other is null', () {
+      test('returns equivalent instance when other is null', () {
         final decorationImageMix = DecorationImageMix(
           image: const AssetImage('assets/test.png'),
         );
         final merged = decorationImageMix.merge(null);
 
-        expect(merged, same(decorationImageMix));
+        expect(identical(merged, decorationImageMix), isFalse);
+        expect(merged, equals(decorationImageMix));
       });
 
       test('merges properties correctly', () {

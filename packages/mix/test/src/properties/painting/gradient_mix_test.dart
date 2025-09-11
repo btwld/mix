@@ -222,13 +222,14 @@ void main() {
     });
 
     group('merge', () {
-      test('returns this when other is null', () {
+      test('returns equivalent instance when other is null', () {
         final linearGradientMix = LinearGradientMix(
           colors: const [Colors.red, Colors.blue],
         );
         final merged = linearGradientMix.merge(null);
 
-        expect(merged, same(linearGradientMix));
+        expect(identical(merged, linearGradientMix), isFalse);
+        expect(merged, equals(linearGradientMix));
       });
 
       test('merges properties correctly', () {

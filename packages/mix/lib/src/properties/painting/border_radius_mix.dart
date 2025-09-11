@@ -303,13 +303,11 @@ final class BorderRadiusMix extends BorderRadiusGeometryMix<BorderRadius> {
 
   @override
   BorderRadiusMix merge(BorderRadiusMix? other) {
-    if (other == null) return this;
-
     return BorderRadiusMix.create(
-      topLeft: MixOps.merge($topLeft, other.$topLeft),
-      topRight: MixOps.merge($topRight, other.$topRight),
-      bottomLeft: MixOps.merge($bottomLeft, other.$bottomLeft),
-      bottomRight: MixOps.merge($bottomRight, other.$bottomRight),
+      topLeft: MixOps.merge($topLeft, other?.$topLeft),
+      topRight: MixOps.merge($topRight, other?.$topRight),
+      bottomLeft: MixOps.merge($bottomLeft, other?.$bottomLeft),
+      bottomRight: MixOps.merge($bottomRight, other?.$bottomRight),
     );
   }
 
@@ -440,13 +438,11 @@ final class BorderRadiusDirectionalMix
 
   @override
   BorderRadiusDirectionalMix merge(BorderRadiusDirectionalMix? other) {
-    if (other == null) return this;
-
     return BorderRadiusDirectionalMix.create(
-      topStart: MixOps.merge($topStart, other.$topStart),
-      topEnd: MixOps.merge($topEnd, other.$topEnd),
-      bottomStart: MixOps.merge($bottomStart, other.$bottomStart),
-      bottomEnd: MixOps.merge($bottomEnd, other.$bottomEnd),
+      topStart: MixOps.merge($topStart, other?.$topStart),
+      topEnd: MixOps.merge($topEnd, other?.$topEnd),
+      bottomStart: MixOps.merge($bottomStart, other?.$bottomStart),
+      bottomEnd: MixOps.merge($bottomEnd, other?.$bottomEnd),
     );
   }
 

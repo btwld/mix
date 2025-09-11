@@ -39,8 +39,6 @@ sealed class ShapeBorderMix<T extends ShapeBorder> extends Mix<T> {
   /// Merges instances of the same type.
   @override
   ShapeBorderMix<T> merge(covariant ShapeBorderMix<T>? other) {
-    if (other == null) return this;
-
     // Use pattern matching for type-safe same-type merging only
     return switch ((this, other)) {
           (RoundedRectangleBorderMix a, RoundedRectangleBorderMix b) => a.merge(
@@ -143,11 +141,9 @@ final class RoundedRectangleBorderMix
 
   @override
   RoundedRectangleBorderMix merge(RoundedRectangleBorderMix? other) {
-    if (other == null) return this;
-
     return RoundedRectangleBorderMix.create(
-      borderRadius: MixOps.merge($borderRadius, other.$borderRadius),
-      side: MixOps.merge($side, other.$side),
+      borderRadius: MixOps.merge($borderRadius, other?.$borderRadius),
+      side: MixOps.merge($side, other?.$side),
     );
   }
 
@@ -216,11 +212,9 @@ final class RoundedSuperellipseBorderMix
 
   @override
   RoundedSuperellipseBorderMix merge(RoundedSuperellipseBorderMix? other) {
-    if (other == null) return this;
-
     return RoundedSuperellipseBorderMix.create(
-      borderRadius: MixOps.merge($borderRadius, other.$borderRadius),
-      side: MixOps.merge($side, other.$side),
+      borderRadius: MixOps.merge($borderRadius, other?.$borderRadius),
+      side: MixOps.merge($side, other?.$side),
     );
   }
 
@@ -288,11 +282,9 @@ final class BeveledRectangleBorderMix
 
   @override
   BeveledRectangleBorderMix merge(BeveledRectangleBorderMix? other) {
-    if (other == null) return this;
-
     return BeveledRectangleBorderMix.create(
-      borderRadius: MixOps.merge($borderRadius, other.$borderRadius),
-      side: MixOps.merge($side, other.$side),
+      borderRadius: MixOps.merge($borderRadius, other?.$borderRadius),
+      side: MixOps.merge($side, other?.$side),
     );
   }
 
@@ -362,11 +354,9 @@ final class ContinuousRectangleBorderMix
 
   @override
   ContinuousRectangleBorderMix merge(ContinuousRectangleBorderMix? other) {
-    if (other == null) return this;
-
     return ContinuousRectangleBorderMix.create(
-      borderRadius: MixOps.merge($borderRadius, other.$borderRadius),
-      side: MixOps.merge($side, other.$side),
+      borderRadius: MixOps.merge($borderRadius, other?.$borderRadius),
+      side: MixOps.merge($side, other?.$side),
     );
   }
 
@@ -427,11 +417,9 @@ final class CircleBorderMix extends OutlinedBorderMix<CircleBorder> {
 
   @override
   CircleBorderMix merge(CircleBorderMix? other) {
-    if (other == null) return this;
-
     return CircleBorderMix.create(
-      side: MixOps.merge($side, other.$side),
-      eccentricity: MixOps.merge($eccentricity, other.$eccentricity),
+      side: MixOps.merge($side, other?.$side),
+      eccentricity: MixOps.merge($eccentricity, other?.$eccentricity),
     );
   }
 
@@ -581,19 +569,17 @@ final class StarBorderMix extends OutlinedBorderMix<StarBorder> {
 
   @override
   StarBorderMix merge(StarBorderMix? other) {
-    if (other == null) return this;
-
     return StarBorderMix.create(
-      side: MixOps.merge($side, other.$side),
-      points: MixOps.merge($points, other.$points),
+      side: MixOps.merge($side, other?.$side),
+      points: MixOps.merge($points, other?.$points),
       innerRadiusRatio: MixOps.merge(
         $innerRadiusRatio,
-        other.$innerRadiusRatio,
+        other?.$innerRadiusRatio,
       ),
-      pointRounding: MixOps.merge($pointRounding, other.$pointRounding),
-      valleyRounding: MixOps.merge($valleyRounding, other.$valleyRounding),
-      rotation: MixOps.merge($rotation, other.$rotation),
-      squash: MixOps.merge($squash, other.$squash),
+      pointRounding: MixOps.merge($pointRounding, other?.$pointRounding),
+      valleyRounding: MixOps.merge($valleyRounding, other?.$valleyRounding),
+      rotation: MixOps.merge($rotation, other?.$rotation),
+      squash: MixOps.merge($squash, other?.$squash),
     );
   }
 
@@ -716,14 +702,12 @@ final class LinearBorderMix extends OutlinedBorderMix<LinearBorder> {
 
   @override
   LinearBorderMix merge(LinearBorderMix? other) {
-    if (other == null) return this;
-
     return LinearBorderMix.create(
-      side: MixOps.merge($side, other.$side),
-      start: MixOps.merge($start, other.$start),
-      end: MixOps.merge($end, other.$end),
-      top: MixOps.merge($top, other.$top),
-      bottom: MixOps.merge($bottom, other.$bottom),
+      side: MixOps.merge($side, other?.$side),
+      start: MixOps.merge($start, other?.$start),
+      end: MixOps.merge($end, other?.$end),
+      top: MixOps.merge($top, other?.$top),
+      bottom: MixOps.merge($bottom, other?.$bottom),
     );
   }
 
@@ -781,11 +765,9 @@ final class LinearBorderEdgeMix extends Mix<LinearBorderEdge>
 
   @override
   LinearBorderEdgeMix merge(LinearBorderEdgeMix? other) {
-    if (other == null) return this;
-
     return LinearBorderEdgeMix.create(
-      size: MixOps.merge($size, other.$size),
-      alignment: MixOps.merge($alignment, other.$alignment),
+      size: MixOps.merge($size, other?.$size),
+      alignment: MixOps.merge($alignment, other?.$alignment),
     );
   }
 
@@ -834,9 +816,7 @@ final class StadiumBorderMix extends OutlinedBorderMix<StadiumBorder> {
 
   @override
   StadiumBorderMix merge(StadiumBorderMix? other) {
-    if (other == null) return this;
-
-    return StadiumBorderMix.create(side: MixOps.merge($side, other.$side));
+    return StadiumBorderMix.create(side: MixOps.merge($side, other?.$side));
   }
 
   @override

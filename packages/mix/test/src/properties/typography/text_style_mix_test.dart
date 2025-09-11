@@ -592,11 +592,12 @@ void main() {
     });
 
     group('merge', () {
-      test('returns this when other is null', () {
+      test('returns equivalent instance when other is null', () {
         final textStyleMix = TextStyleMix(fontSize: 16.0);
         final merged = textStyleMix.merge(null);
 
-        expect(merged, same(textStyleMix));
+        expect(identical(merged, textStyleMix), isFalse);
+        expect(merged, equals(textStyleMix));
       });
 
       test('merges properties correctly', () {

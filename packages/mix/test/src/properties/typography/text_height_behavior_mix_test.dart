@@ -184,13 +184,14 @@ void main() {
     });
 
     group('merge', () {
-      test('returns this when other is null', () {
+      test('returns equivalent instance when other is null', () {
         final textHeightBehaviorMix = TextHeightBehaviorMix(
           applyHeightToFirstAscent: false,
         );
         final merged = textHeightBehaviorMix.merge(null);
 
-        expect(merged, same(textHeightBehaviorMix));
+        expect(identical(merged, textHeightBehaviorMix), isFalse);
+        expect(merged, equals(textHeightBehaviorMix));
       });
 
       test('merges properties correctly', () {

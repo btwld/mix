@@ -94,12 +94,10 @@ class ShadowMix extends BaseShadowMix<Shadow>
   /// Merges with another shadow.
   @override
   ShadowMix merge(ShadowMix? other) {
-    if (other == null) return this;
-
     return ShadowMix.create(
-      blurRadius: MixOps.merge($blurRadius, other.$blurRadius),
-      color: MixOps.merge($color, other.$color),
-      offset: MixOps.merge($offset, other.$offset),
+      blurRadius: MixOps.merge($blurRadius, other?.$blurRadius),
+      color: MixOps.merge($color, other?.$color),
+      offset: MixOps.merge($offset, other?.$offset),
     );
   }
 
@@ -224,13 +222,11 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
   /// Merges with another box shadow.
   @override
   BoxShadowMix merge(BoxShadowMix? other) {
-    if (other == null) return this;
-
     return BoxShadowMix.create(
-      color: MixOps.merge($color, other.$color),
-      offset: MixOps.merge($offset, other.$offset),
-      blurRadius: MixOps.merge($blurRadius, other.$blurRadius),
-      spreadRadius: MixOps.merge($spreadRadius, other.$spreadRadius),
+      color: MixOps.merge($color, other?.$color),
+      offset: MixOps.merge($offset, other?.$offset),
+      blurRadius: MixOps.merge($blurRadius, other?.$blurRadius),
+      spreadRadius: MixOps.merge($spreadRadius, other?.$spreadRadius),
     );
   }
 

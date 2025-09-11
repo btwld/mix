@@ -197,17 +197,15 @@ final class DecorationImageMix extends Mix<DecorationImage>
   /// to the values from this instance.
   @override
   DecorationImageMix merge(DecorationImageMix? other) {
-    if (other == null) return this;
-
     return DecorationImageMix.create(
-      image: MixOps.merge($image, other.$image),
-      fit: MixOps.merge($fit, other.$fit),
-      alignment: MixOps.merge($alignment, other.$alignment),
-      centerSlice: MixOps.merge($centerSlice, other.$centerSlice),
-      repeat: MixOps.merge($repeat, other.$repeat),
-      filterQuality: MixOps.merge($filterQuality, other.$filterQuality),
-      invertColors: MixOps.merge($invertColors, other.$invertColors),
-      isAntiAlias: MixOps.merge($isAntiAlias, other.$isAntiAlias),
+      image: MixOps.merge($image, other?.$image),
+      fit: MixOps.merge($fit, other?.$fit),
+      alignment: MixOps.merge($alignment, other?.$alignment),
+      centerSlice: MixOps.merge($centerSlice, other?.$centerSlice),
+      repeat: MixOps.merge($repeat, other?.$repeat),
+      filterQuality: MixOps.merge($filterQuality, other?.$filterQuality),
+      invertColors: MixOps.merge($invertColors, other?.$invertColors),
+      isAntiAlias: MixOps.merge($isAntiAlias, other?.$isAntiAlias),
     );
   }
 

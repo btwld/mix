@@ -172,22 +172,20 @@ class StrutStyleMix extends Mix<StrutStyle> with Diagnosticable {
 
   @override
   StrutStyleMix merge(StrutStyleMix? other) {
-    if (other == null) return this;
-
     return StrutStyleMix.create(
-      fontFamily: MixOps.merge($fontFamily, other.$fontFamily),
+      fontFamily: MixOps.merge($fontFamily, other?.$fontFamily),
       fontFamilyFallback: MixOps.mergeList(
         $fontFamilyFallback,
-        other.$fontFamilyFallback,
+        other?.$fontFamilyFallback,
       ),
-      fontSize: MixOps.merge($fontSize, other.$fontSize),
-      fontWeight: MixOps.merge($fontWeight, other.$fontWeight),
-      fontStyle: MixOps.merge($fontStyle, other.$fontStyle),
-      height: MixOps.merge($height, other.$height),
-      leading: MixOps.merge($leading, other.$leading),
+      fontSize: MixOps.merge($fontSize, other?.$fontSize),
+      fontWeight: MixOps.merge($fontWeight, other?.$fontWeight),
+      fontStyle: MixOps.merge($fontStyle, other?.$fontStyle),
+      height: MixOps.merge($height, other?.$height),
+      leading: MixOps.merge($leading, other?.$leading),
       forceStrutHeight: MixOps.merge(
         $forceStrutHeight,
-        other.$forceStrutHeight,
+        other?.$forceStrutHeight,
       ),
     );
   }

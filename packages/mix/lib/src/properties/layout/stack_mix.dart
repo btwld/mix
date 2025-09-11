@@ -113,13 +113,11 @@ final class StackMix extends Mix<StackSpec> with Diagnosticable {
   /// Merges the properties of this [StackMix] with the properties of [other].
   @override
   StackMix merge(StackMix? other) {
-    if (other == null) return this;
-
     return StackMix.create(
-      alignment: MixOps.merge($alignment, other.$alignment),
-      fit: MixOps.merge($fit, other.$fit),
-      textDirection: MixOps.merge($textDirection, other.$textDirection),
-      clipBehavior: MixOps.merge($clipBehavior, other.$clipBehavior),
+      alignment: MixOps.merge($alignment, other?.$alignment),
+      fit: MixOps.merge($fit, other?.$fit),
+      textDirection: MixOps.merge($textDirection, other?.$textDirection),
+      clipBehavior: MixOps.merge($clipBehavior, other?.$clipBehavior),
     );
   }
 
