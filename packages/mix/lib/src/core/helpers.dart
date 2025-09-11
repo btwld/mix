@@ -13,12 +13,12 @@ import 'decoration_merge.dart';
 import 'directive.dart';
 import 'internal/deep_collection_equality.dart';
 import 'mix_element.dart';
-import 'widget_modifier.dart';
 import 'prop.dart';
-import 'style.dart';
 import 'prop_source.dart';
 import 'shape_border_merge.dart';
 import 'spec.dart';
+import 'style.dart';
+import 'widget_modifier.dart';
 
 /// Core operations for Mix framework value transformations.
 ///
@@ -33,9 +33,17 @@ class MixOps {
 
   static const mergeList = _mergeList;
 
-  static const resolveList = _resolveList;
-
   const MixOps._();
+
+  @Deprecated('Use resolve(context, Prop<List<V>>?) directly')
+  static List<V>? resolvePropList<T extends Prop<V>, V>(
+    BuildContext context,
+    List<T>? a,
+  ) => _resolveList(context, a);
+
+  static List<V>? resolveList<V>(BuildContext context, Prop<List<V>>? prop) {
+    return resolve(context, prop);
+  }
 
   static V? resolve<V>(BuildContext context, Prop<V>? prop) {
     if (prop == null) return null;
@@ -255,7 +263,8 @@ T? _lerpValue<T>(T? a, T? b, double t) {
     (Matrix4? a, Matrix4? b) => Matrix4Tween(begin: a, end: b).lerp(t) as T?,
 
     // List of Modifiers - use ModifierListTween for proper lerping
-    (List<WidgetModifier>? a, List<WidgetModifier>? b) => _lerpModifierList(a, b, t) as T?,
+    (List<WidgetModifier>? a, List<WidgetModifier>? b) =>
+      _lerpModifierList(a, b, t) as T?,
 
     // Default snap behavior for non-lerpable types
     _ => t < 0.5 ? a : b,

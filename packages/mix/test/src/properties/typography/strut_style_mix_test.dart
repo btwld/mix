@@ -30,9 +30,10 @@ void main() {
         expect(strutStyleMix.$forceStrutHeight, resolvesTo(true));
 
         // Test fontFamilyFallback list
-        expect(strutStyleMix.$fontFamilyFallback, hasLength(2));
-        expect(strutStyleMix.$fontFamilyFallback![0], resolvesTo('Arial'));
-        expect(strutStyleMix.$fontFamilyFallback![1], resolvesTo('Helvetica'));
+        expect(
+          strutStyleMix.$fontFamilyFallback,
+          resolvesTo(equals(['Arial', 'Helvetica'])),
+        );
       });
 
       test('value constructor extracts properties from StrutStyle', () {
@@ -57,8 +58,10 @@ void main() {
         expect(strutStyleMix.$leading, resolvesTo(1.0));
         expect(strutStyleMix.$forceStrutHeight, resolvesTo(false));
 
-        expect(strutStyleMix.$fontFamilyFallback, hasLength(1));
-        expect(strutStyleMix.$fontFamilyFallback![0], resolvesTo('Arial'));
+        expect(
+          strutStyleMix.$fontFamilyFallback,
+          resolvesTo(equals(['Arial'])),
+        );
       });
 
       test('maybeValue returns null for null input', () {
@@ -97,9 +100,10 @@ void main() {
             fontFamilyFallback,
           );
 
-          expect(strutStyleMix.$fontFamilyFallback?.length, 2);
-          expect(strutStyleMix.$fontFamilyFallback![0], resolvesTo('Georgia'));
-          expect(strutStyleMix.$fontFamilyFallback![1], resolvesTo('serif'));
+          expect(
+            strutStyleMix.$fontFamilyFallback,
+            resolvesTo(equals(['Georgia', 'serif'])),
+          );
           expect(strutStyleMix.$fontFamily, isNull);
           expect(strutStyleMix.$fontSize, isNull);
           expect(strutStyleMix.$height, isNull);
@@ -256,10 +260,10 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.$fontFamilyFallback, hasLength(2));
-
-        expect(merged.$fontFamilyFallback![0], resolvesTo('Times'));
-        expect(merged.$fontFamilyFallback![1], resolvesTo('Georgia'));
+        expect(
+          merged.$fontFamilyFallback,
+          resolvesTo(equals(['Times', 'Georgia'])),
+        );
       });
 
       test('preserves all properties in complex merge', () {
@@ -280,8 +284,10 @@ void main() {
         expect(merged.$fontFamily, resolvesTo('Roboto')); // preserved
         expect(merged.$fontSize, resolvesTo(16.0)); // overridden
         expect(merged.$fontWeight, resolvesTo(FontWeight.bold)); // added
-        expect(merged.$fontFamilyFallback, hasLength(1)); // concatenated
-        expect(merged.$fontFamilyFallback![0], resolvesTo('Times'));
+        expect(
+          merged.$fontFamilyFallback,
+          resolvesTo(equals(['Times'])),
+        ); // concatenated
       });
     });
 
@@ -341,9 +347,10 @@ void main() {
           fontFamilyFallback,
         );
 
-        expect(strutStyleMix.$fontFamilyFallback?.length, 2);
-        expect(strutStyleMix.$fontFamilyFallback![0], resolvesTo('Verdana'));
-        expect(strutStyleMix.$fontFamilyFallback![1], resolvesTo('sans-serif'));
+        expect(
+          strutStyleMix.$fontFamilyFallback,
+          resolvesTo(equals(['Verdana', 'sans-serif'])),
+        );
       });
 
       test('fontSize utility works correctly', () {

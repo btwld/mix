@@ -151,9 +151,7 @@ void main() {
 
       test('color utility supports tokens', () {
         const colorToken = TestToken<Color>('shadowColor');
-        final context = MockBuildContext(
-          tokens: {colorToken: Colors.black54},
-        );
+        final context = MockBuildContext(tokens: {colorToken: Colors.black54});
 
         final result = util.color.token(colorToken);
         final shadow = result.value.resolve(context);
@@ -350,79 +348,91 @@ void main() {
   });
 
   group('ElevationPropUtility', () {
-    late ElevationPropUtility<MockStyle<List<Prop<BoxShadow>>>> util;
+    late ElevationPropUtility<MockStyle<BoxShadowListMix>> util;
 
     setUp(() {
-      util = ElevationPropUtility<MockStyle<List<Prop<BoxShadow>>>>(
+      util = ElevationPropUtility<MockStyle<BoxShadowListMix>>(
         (mixProps) => MockStyle(mixProps),
       );
     });
 
     group('predefined elevation properties', () {
       test('has e1 property', () {
-        expect(util.e1, isA<MockStyle<List<Prop<BoxShadow>>>>());
+        expect(util.e1, isA<MockStyle<BoxShadowListMix>>());
       });
 
       test('has e2 property', () {
-        expect(util.e2, isA<MockStyle<List<Prop<BoxShadow>>>>());
+        expect(util.e2, isA<MockStyle<BoxShadowListMix>>());
       });
 
       test('has e3 property', () {
-        expect(util.e3, isA<MockStyle<List<Prop<BoxShadow>>>>());
+        expect(util.e3, isA<MockStyle<BoxShadowListMix>>());
       });
 
       test('has e4 property', () {
-        expect(util.e4, isA<MockStyle<List<Prop<BoxShadow>>>>());
+        expect(util.e4, isA<MockStyle<BoxShadowListMix>>());
       });
 
       test('has e6 property', () {
-        expect(util.e6, isA<MockStyle<List<Prop<BoxShadow>>>>());
+        expect(util.e6, isA<MockStyle<BoxShadowListMix>>());
       });
 
       test('has e8 property', () {
-        expect(util.e8, isA<MockStyle<List<Prop<BoxShadow>>>>());
+        expect(util.e8, isA<MockStyle<BoxShadowListMix>>());
       });
 
       test('has e9 property', () {
-        expect(util.e9, isA<MockStyle<List<Prop<BoxShadow>>>>());
+        expect(util.e9, isA<MockStyle<BoxShadowListMix>>());
       });
 
       test('has e12 property', () {
-        expect(util.e12, isA<MockStyle<List<Prop<BoxShadow>>>>());
+        expect(util.e12, isA<MockStyle<BoxShadowListMix>>());
       });
 
       test('has e16 property', () {
-        expect(util.e16, isA<MockStyle<List<Prop<BoxShadow>>>>());
+        expect(util.e16, isA<MockStyle<BoxShadowListMix>>());
       });
 
       test('has e24 property', () {
-        expect(util.e24, isA<MockStyle<List<Prop<BoxShadow>>>>());
+        expect(util.e24, isA<MockStyle<BoxShadowListMix>>());
       });
     });
 
     group('elevation getters', () {
       test('one creates elevation 1', () {
         final result = util.one;
-        expect(result, isA<MockStyle<List<Prop<BoxShadow>>>>());
-        expect(result.value.length, kElevationToShadow[1]!.length);
+        expect(result, isA<MockStyle<BoxShadowListMix>>());
+        expect(
+          result.value.resolve(MockBuildContext()).length,
+          kElevationToShadow[1]!.length,
+        );
       });
 
       test('two creates elevation 2', () {
         final result = util.two;
-        expect(result, isA<MockStyle<List<Prop<BoxShadow>>>>());
-        expect(result.value.length, kElevationToShadow[2]!.length);
+        expect(result, isA<MockStyle<BoxShadowListMix>>());
+        expect(
+          result.value.resolve(MockBuildContext()).length,
+          kElevationToShadow[2]!.length,
+        );
       });
 
       test('three creates elevation 3', () {
         final result = util.three;
-        expect(result, isA<MockStyle<List<Prop<BoxShadow>>>>());
-        expect(result.value.length, kElevationToShadow[3]!.length);
+        expect(result, isA<MockStyle<BoxShadowListMix>>());
+        expect(
+          result.value.resolve(MockBuildContext()).length,
+          kElevationToShadow[3]!.length,
+        );
       });
 
       test('twentyFour creates elevation 24', () {
         final result = util.twentyFour;
-        expect(result, isA<MockStyle<List<Prop<BoxShadow>>>>());
-        expect(result.value.length, kElevationToShadow[24]!.length);
+        expect(result, isA<MockStyle<BoxShadowListMix>>());
+        expect(
+          result.value.resolve(MockBuildContext()).length,
+          kElevationToShadow[24]!.length,
+        );
       });
     });
 
@@ -430,15 +440,12 @@ void main() {
       test('creates elevation shadow for valid values', () {
         const elevation = 6;
         final result = util(elevation);
+        final ctx = MockBuildContext();
 
-        expect(result.value.length, kElevationToShadow[elevation]!.length);
-
-        // Verify that the Props contain the correct BoxShadow values
+        final resolved = result.value.resolve(ctx);
         final expectedShadows = kElevationToShadow[elevation]!;
-        for (int i = 0; i < expectedShadows.length; i++) {
-          final mixProp = result.value[i];
-          expect(mixProp, resolvesTo(expectedShadows[i]));
-        }
+
+        expect(resolved, equals(expectedShadows));
       });
 
       test('throws FlutterError for invalid elevation values', () {
@@ -482,7 +489,10 @@ void main() {
         final result = util(testElevation);
         final expectedShadows = kElevationToShadow[testElevation]!;
 
-        expect(result.value.length, expectedShadows.length);
+        expect(
+          result.value.resolve(MockBuildContext()).length,
+          expectedShadows.length,
+        );
       });
     });
 
@@ -491,24 +501,22 @@ void main() {
         const elevation = 8;
         final result = util(elevation);
         final expectedShadows = kElevationToShadow[elevation]!;
-
-        for (int i = 0; i < expectedShadows.length; i++) {
-          final mixProp = result.value[i];
-          // Verify that each Prop resolves to the expected BoxShadow
-          expect(mixProp, resolvesTo(expectedShadows[i]));
-        }
+        expect(
+          result.value.resolve(MockBuildContext()),
+          equals(expectedShadows),
+        );
       });
     });
 
     group('edge cases', () {
       test('handles minimum elevation', () {
         final result = util(1);
-        expect(result.value.isNotEmpty, true);
+        expect(result.value.resolve(MockBuildContext()).isNotEmpty, true);
       });
 
       test('handles maximum elevation', () {
         final result = util(24);
-        expect(result.value.isNotEmpty, true);
+        expect(result.value.resolve(MockBuildContext()).isNotEmpty, true);
       });
 
       test('throws for negative elevation', () {
@@ -517,8 +525,8 @@ void main() {
 
       test('handles zero elevation', () {
         final result = util(0);
-        expect(result, isA<MockStyle<List<Prop<BoxShadow>>>>());
-        expect(result.value, isEmpty);
+        expect(result, isA<MockStyle<BoxShadowListMix>>());
+        expect(result.value.resolve(MockBuildContext()), isEmpty);
       });
     });
   });

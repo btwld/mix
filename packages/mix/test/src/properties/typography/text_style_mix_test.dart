@@ -54,12 +54,12 @@ void main() {
           shadows: [ShadowMix(blurRadius: 5.0, color: Colors.black)],
         );
 
-        expect(textStyleMix.$fontFamilyFallback, hasLength(2));
-        expect(textStyleMix.$fontFamilyFallback![0], resolvesTo('Arial'));
-        expect(textStyleMix.$fontFamilyFallback![1], resolvesTo('Helvetica'));
+        expect(
+          textStyleMix.$fontFamilyFallback,
+          resolvesTo(equals(['Arial', 'Helvetica'])),
+        );
 
-        expect(textStyleMix.$shadows, hasLength(1));
-        expect(textStyleMix.$shadows![0], isA<Prop<Shadow>>());
+        expect(textStyleMix.$shadows, resolvesTo(hasLength(1)));
       });
 
       test('value constructor extracts all properties from TextStyle', () {
@@ -143,38 +143,29 @@ void main() {
         expect(textStyleMix.$inherit, resolvesTo(false));
 
         // Test list properties
-        expect(textStyleMix.$shadows, isNotNull);
-        expect(textStyleMix.$shadows, hasLength(2));
-        // Verify shadows are converted to ShadowMix
-        expect(textStyleMix.$shadows![0], isA<Prop<Shadow>>());
-        expect(textStyleMix.$shadows![1], isA<Prop<Shadow>>());
+        expect(textStyleMix.$shadows, resolvesTo(hasLength(2)));
 
-        expect(textStyleMix.$fontFeatures, isNotNull);
-        expect(textStyleMix.$fontFeatures, hasLength(2));
         expect(
-          textStyleMix.$fontFeatures![0],
-          resolvesTo(const FontFeature.enable('liga')),
-        );
-        expect(
-          textStyleMix.$fontFeatures![1],
-          resolvesTo(const FontFeature.tabularFigures()),
+          textStyleMix.$fontFeatures,
+          resolvesTo(
+            equals([FontFeature.enable('liga'), FontFeature.tabularFigures()]),
+          ),
         );
 
-        expect(textStyleMix.$fontVariations, isNotNull);
-        expect(textStyleMix.$fontVariations, hasLength(2));
         expect(
-          textStyleMix.$fontVariations![0],
-          resolvesTo(const FontVariation('wght', 700.0)),
-        );
-        expect(
-          textStyleMix.$fontVariations![1],
-          resolvesTo(const FontVariation('wdth', 100.0)),
+          textStyleMix.$fontVariations,
+          resolvesTo(
+            equals([
+              FontVariation('wght', 700.0),
+              FontVariation('wdth', 100.0),
+            ]),
+          ),
         );
 
-        expect(textStyleMix.$fontFamilyFallback, isNotNull);
-        expect(textStyleMix.$fontFamilyFallback, hasLength(2));
-        expect(textStyleMix.$fontFamilyFallback![0], resolvesTo('Helvetica'));
-        expect(textStyleMix.$fontFamilyFallback![1], resolvesTo('sans-serif'));
+        expect(
+          textStyleMix.$fontFamilyFallback,
+          resolvesTo(equals(['Helvetica', 'sans-serif'])),
+        );
 
         // Note: leadingDistribution, locale, and overflow are not extracted by TextStyleMix.value()
         // as they are not part of the TextStyleMix properties
@@ -498,9 +489,7 @@ void main() {
             fontFamilyFallback,
           );
 
-          expect(textStyleMix.$fontFamilyFallback?.length, 2);
-          expect(textStyleMix.$fontFamilyFallback![0], resolvesTo('Arial'));
-          expect(textStyleMix.$fontFamilyFallback![1], resolvesTo('Helvetica'));
+          expect(textStyleMix.$fontFamilyFallback, resolvesTo(hasLength(2)));
           expect(textStyleMix.$color, isNull);
           expect(textStyleMix.$backgroundColor, isNull);
           expect(textStyleMix.$fontSize, isNull);
@@ -519,7 +508,7 @@ void main() {
         final shadows = [ShadowMix(blurRadius: 5.0, color: Colors.black)];
         final textStyleMix = TextStyleMix.shadows(shadows);
 
-        expect(textStyleMix.$shadows?.length, 1);
+        expect(textStyleMix.$shadows, resolvesTo(hasLength(1)));
         expect(textStyleMix.$color, isNull);
         expect(textStyleMix.$backgroundColor, isNull);
         expect(textStyleMix.$fontSize, isNull);
@@ -635,16 +624,18 @@ void main() {
 
         final merged = first.merge(second);
 
-        expect(merged.$fontFamilyFallback, hasLength(2));
-        expect(merged.$fontFamilyFallback![0], resolvesTo('Helvetica'));
-        expect(merged.$fontFamilyFallback![1], resolvesTo('Times'));
-
-        expect(merged.$shadows, hasLength(1));
-        // Verify the shadow was replaced (second shadow overwrites first)
-        final resolvedShadow = merged.$shadows![0].resolveProp(
-          MockBuildContext(),
+        expect(
+          merged.$fontFamilyFallback,
+          resolvesTo(equals(['Helvetica', 'Times'])),
         );
-        expect(resolvedShadow.blurRadius, 10.0);
+
+        expect(merged.$shadows, resolvesTo(hasLength(1)));
+        expect(
+          merged.$shadows,
+          resolvesTo(
+            predicate<List<Shadow>>((list) => list.first.blurRadius == 10.0),
+          ),
+        );
       });
     });
 
@@ -795,16 +786,17 @@ void main() {
           fontFamilyFallback,
         );
 
-        expect(textStyleMix.$fontFamilyFallback?.length, 2);
-        expect(textStyleMix.$fontFamilyFallback![0], resolvesTo('Georgia'));
-        expect(textStyleMix.$fontFamilyFallback![1], resolvesTo('serif'));
+        expect(
+          textStyleMix.$fontFamilyFallback,
+          resolvesTo(equals(['Georgia', 'serif'])),
+        );
       });
 
       test('shadows utility works correctly', () {
         final shadows = [ShadowMix(blurRadius: 8.0, color: Colors.grey)];
         final textStyleMix = TextStyleMix().shadows(shadows);
 
-        expect(textStyleMix.$shadows?.length, 1);
+        expect(textStyleMix.$shadows, resolvesTo(hasLength(1)));
       });
 
       test('inherit utility works correctly', () {

@@ -11,12 +11,12 @@ import '../../core/prop.dart';
 @immutable
 sealed class GradientMix<T extends Gradient> extends Mix<T>
     with DefaultValue<T> {
-  final List<Prop<double>>? $stops;
-  final List<Prop<Color>>? $colors;
+  final Prop<List<double>>? $stops;
+  final Prop<List<Color>>? $colors;
   final Prop<GradientTransform>? $transform;
   const GradientMix({
-    List<Prop<double>>? stops,
-    List<Prop<Color>>? colors,
+    Prop<List<double>>? stops,
+    Prop<List<Color>>? colors,
     Prop<GradientTransform>? transform,
   }) : $stops = stops,
        $colors = colors,
@@ -95,8 +95,8 @@ final class LinearGradientMix extends GradientMix<LinearGradient>
          end: Prop.maybe(end),
          tileMode: Prop.maybe(tileMode),
          transform: Prop.maybe(transform),
-         colors: colors?.map((c) => Prop.value(c)).toList(),
-         stops: stops?.map(Prop.value).toList(),
+         colors: Prop.maybe(colors),
+         stops: Prop.maybe(stops),
        );
 
   const LinearGradientMix.create({
@@ -191,10 +191,8 @@ final class LinearGradientMix extends GradientMix<LinearGradient>
     return LinearGradient(
       begin: MixOps.resolve(context, $begin) ?? defaultValue.begin,
       end: MixOps.resolve(context, $end) ?? defaultValue.end,
-      colors:
-          $colors?.map((c) => c.resolveProp(context)).toList() ??
-          defaultValue.colors,
-      stops: MixOps.resolveList(context, $stops) ?? defaultValue.stops,
+      colors: MixOps.resolve(context, $colors) ?? defaultValue.colors,
+      stops: MixOps.resolve(context, $stops) ?? defaultValue.stops,
       tileMode: MixOps.resolve(context, $tileMode) ?? defaultValue.tileMode,
       transform: MixOps.resolve(context, $transform) ?? defaultValue.transform,
     );
@@ -265,8 +263,8 @@ final class RadialGradientMix extends GradientMix<RadialGradient>
          focal: Prop.maybe(focal),
          focalRadius: Prop.maybe(focalRadius),
          transform: Prop.maybe(transform),
-         colors: colors?.map((c) => Prop.value(c)).toList(),
-         stops: stops?.map(Prop.value).toList(),
+         colors: Prop.maybe(colors),
+         stops: Prop.maybe(stops),
        );
 
   const RadialGradientMix.create({
@@ -389,10 +387,8 @@ final class RadialGradientMix extends GradientMix<RadialGradient>
     return RadialGradient(
       center: MixOps.resolve(context, $center) ?? defaultValue.center,
       radius: MixOps.resolve(context, $radius) ?? defaultValue.radius,
-      colors:
-          $colors?.map((c) => c.resolveProp(context)).toList() ??
-          defaultValue.colors,
-      stops: MixOps.resolveList(context, $stops) ?? defaultValue.stops,
+      colors: MixOps.resolve(context, $colors) ?? defaultValue.colors,
+      stops: MixOps.resolve(context, $stops) ?? defaultValue.stops,
       tileMode: MixOps.resolve(context, $tileMode) ?? defaultValue.tileMode,
       focal: MixOps.resolve(context, $focal) ?? defaultValue.focal,
       focalRadius:
@@ -470,8 +466,8 @@ final class SweepGradientMix extends GradientMix<SweepGradient>
          endAngle: Prop.maybe(endAngle),
          tileMode: Prop.maybe(tileMode),
          transform: Prop.maybe(transform),
-         colors: colors?.map((c) => Prop.value(c)).toList(),
-         stops: stops?.map(Prop.value).toList(),
+         colors: Prop.maybe(colors),
+         stops: Prop.maybe(stops),
        );
 
   const SweepGradientMix.create({
@@ -581,10 +577,8 @@ final class SweepGradientMix extends GradientMix<SweepGradient>
       startAngle:
           MixOps.resolve(context, $startAngle) ?? defaultValue.startAngle,
       endAngle: MixOps.resolve(context, $endAngle) ?? defaultValue.endAngle,
-      colors:
-          $colors?.map((c) => c.resolveProp(context)).toList() ??
-          defaultValue.colors,
-      stops: MixOps.resolveList(context, $stops) ?? defaultValue.stops,
+      colors: MixOps.resolve(context, $colors) ?? defaultValue.colors,
+      stops: MixOps.resolve(context, $stops) ?? defaultValue.stops,
       tileMode: MixOps.resolve(context, $tileMode) ?? defaultValue.tileMode,
       transform: MixOps.resolve(context, $transform) ?? defaultValue.transform,
     );

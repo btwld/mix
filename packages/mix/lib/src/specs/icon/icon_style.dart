@@ -9,10 +9,10 @@ import '../../core/style_spec.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../style/mixins/animation_style_mixin.dart';
-import '../../style/mixins/widget_modifier_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
-import 'icon_spec.dart';
+import '../../style/mixins/widget_modifier_style_mixin.dart';
 import 'icon_mutable_style.dart';
+import 'icon_spec.dart';
 import 'icon_widget.dart';
 
 typedef IconMix = IconStyler;
@@ -28,7 +28,7 @@ class IconStyler extends Style<IconSpec>
   final Prop<double>? $weight;
   final Prop<double>? $grade;
   final Prop<double>? $opticalSize;
-  final List<Prop<Shadow>>? $shadows;
+  final Prop<List<Shadow>>? $shadows;
   final Prop<TextDirection>? $textDirection;
   final Prop<bool>? $applyTextScaling;
   final Prop<double>? $fill;
@@ -43,7 +43,7 @@ class IconStyler extends Style<IconSpec>
     Prop<double>? weight,
     Prop<double>? grade,
     Prop<double>? opticalSize,
-    List<Prop<Shadow>>? shadows,
+    Prop<List<Shadow>>? shadows,
     Prop<TextDirection>? textDirection,
     Prop<bool>? applyTextScaling,
     Prop<double>? fill,
@@ -91,7 +91,7 @@ class IconStyler extends Style<IconSpec>
          weight: Prop.maybe(weight),
          grade: Prop.maybe(grade),
          opticalSize: Prop.maybe(opticalSize),
-         shadows: shadows?.map(Prop.mix).toList(),
+         shadows: shadows != null ? Prop.mix(ShadowListMix(shadows)) : null,
          textDirection: Prop.maybe(textDirection),
          applyTextScaling: Prop.maybe(applyTextScaling),
          fill: Prop.maybe(fill),
@@ -198,7 +198,7 @@ class IconStyler extends Style<IconSpec>
       weight: MixOps.resolve(context, $weight),
       grade: MixOps.resolve(context, $grade),
       opticalSize: MixOps.resolve(context, $opticalSize),
-      shadows: MixOps.resolveList(context, $shadows),
+      shadows: MixOps.resolve(context, $shadows),
       textDirection: MixOps.resolve(context, $textDirection),
       applyTextScaling: MixOps.resolve(context, $applyTextScaling),
       fill: MixOps.resolve(context, $fill),
@@ -223,7 +223,7 @@ class IconStyler extends Style<IconSpec>
       weight: MixOps.merge($weight, other?.$weight),
       grade: MixOps.merge($grade, other?.$grade),
       opticalSize: MixOps.merge($opticalSize, other?.$opticalSize),
-      shadows: MixOps.mergeList($shadows, other?.$shadows),
+      shadows: MixOps.merge($shadows, other?.$shadows),
       textDirection: MixOps.merge($textDirection, other?.$textDirection),
       applyTextScaling: MixOps.merge(
         $applyTextScaling,

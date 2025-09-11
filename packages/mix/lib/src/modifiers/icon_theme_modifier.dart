@@ -2,10 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/helpers.dart';
-import '../core/widget_modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
+import '../core/widget_modifier.dart';
 import '../properties/painting/shadow_mix.dart';
 
 /// Modifier that applies icon theme data to its descendants.
@@ -63,7 +63,7 @@ class IconThemeModifierMix extends ModifierMix<IconThemeModifier> {
   final Prop<double>? grade;
   final Prop<double>? opticalSize;
   final Prop<double>? opacity;
-  final List<Prop<Shadow>>? shadows;
+  final Prop<List<Shadow>>? shadows;
   final Prop<bool>? applyTextScaling;
 
   const IconThemeModifierMix.create({
@@ -96,7 +96,7 @@ class IconThemeModifierMix extends ModifierMix<IconThemeModifier> {
          grade: Prop.maybe(grade),
          opticalSize: Prop.maybe(opticalSize),
          opacity: Prop.maybe(opacity),
-         shadows: shadows?.map(Prop.mix).toList(),
+         shadows: shadows != null ? Prop.mix(ShadowListMix(shadows)) : null,
          applyTextScaling: Prop.maybe(applyTextScaling),
        );
 
@@ -119,7 +119,7 @@ class IconThemeModifierMix extends ModifierMix<IconThemeModifier> {
         opticalSize: MixOps.resolve(context, opticalSize),
         color: MixOps.resolve(context, color),
         opacity: MixOps.resolve(context, opacity),
-        shadows: MixOps.resolveList(context, shadows),
+        shadows: MixOps.resolve(context, shadows),
         applyTextScaling: MixOps.resolve(context, applyTextScaling),
       ),
     );
@@ -144,7 +144,7 @@ class IconThemeModifierMix extends ModifierMix<IconThemeModifier> {
       grade: MixOps.merge(grade, other.grade),
       opticalSize: MixOps.merge(opticalSize, other.opticalSize),
       opacity: MixOps.merge(opacity, other.opacity),
-      shadows: MixOps.mergeList(shadows, other.shadows),
+      shadows: MixOps.merge(shadows, other.shadows),
       applyTextScaling: MixOps.merge(applyTextScaling, other.applyTextScaling),
     );
   }

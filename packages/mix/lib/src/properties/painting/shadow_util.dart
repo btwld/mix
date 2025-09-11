@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
 import 'color_util.dart';
@@ -84,13 +83,14 @@ final class BoxShadowUtility<T extends Style<Object?>>
   }
 }
 
-/// A utility class for building [Style] instances from elevation values that produces [Prop<BoxShadow>] lists.
+/// A utility class for building [Style] instances from elevation values that produces
+/// a Mix value representing a list of [BoxShadow]s.
 ///
 /// This class extends [MixUtility] and provides methods to create [Style] instances
 /// based on predefined elevation values, which are mapped to corresponding lists of
-/// [Prop<BoxShadow>] objects that can be directly used in DTOs.
+/// [BoxShadowMix] and wrapped into a [BoxShadowListMix].
 final class ElevationPropUtility<T extends Style<Object?>>
-    extends MixUtility<T, List<Prop<BoxShadow>>> {
+    extends MixUtility<T, BoxShadowListMix> {
   /// Creates an [T] instance with an elevation of 1.
   late final e1 = one;
 
@@ -153,13 +153,13 @@ final class ElevationPropUtility<T extends Style<Object?>>
   /// Creates an [T] instance with an elevation of 24.
   T get twentyFour => call(24);
 
-  /// Creates an [Style] instance from an elevation value.
+  /// Creates a Mix value from an elevation value.
   ///
   /// Retrieves the corresponding list of [BoxShadow] objects from the [kElevationToShadow]
-  /// map, maps each [BoxShadow] to a [Prop<BoxShadow>], and passes the resulting list to
-  /// the [utilityBuilder] function to create the [Style] instance.
+  /// map, maps each [BoxShadow] to a [BoxShadowMix], wraps them in a [BoxShadowListMix],
+  /// and passes it to the [utilityBuilder].
   ///
-  /// Throws an [AssertionError] if the provided [value] is not a valid elevation value.
+  /// Throws a [FlutterError] if the provided [value] is not a valid elevation value.
   T call(int value) {
     if (!kElevationToShadow.containsKey(value)) {
       throw FlutterError.fromParts([
@@ -173,17 +173,10 @@ final class ElevationPropUtility<T extends Style<Object?>>
       ]);
     }
 
-    final boxShadows = kElevationToShadow[value]!.map(
-      (e) => Prop.mix(
-        BoxShadowMix.create(
-          color: Prop.value(e.color),
-          offset: Prop.value(e.offset),
-          blurRadius: Prop.value(e.blurRadius),
-          spreadRadius: Prop.value(e.spreadRadius),
-        ),
-      ),
-    );
+    final items = kElevationToShadow[value]!
+        .map<BoxShadowMix>((e) => BoxShadowMix.value(e))
+        .toList();
 
-    return utilityBuilder(boxShadows.toList());
+    return utilityBuilder(BoxShadowListMix(items));
   }
 }
