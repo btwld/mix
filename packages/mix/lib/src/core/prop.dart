@@ -113,8 +113,19 @@ class Prop<V> {
   /// Creates a property from a nullable [Mix] value.
   ///
   /// Returns `null` if [value] is `null`, otherwise calls [Prop.mix].
+  /// Preserves token references (MixRef objects) instead of wrapping them in MixSource.
   static Prop<V>? maybeMix<V>(Mix<V>? value) {
     if (value == null) return null;
+    
+    // Check if value is already a token reference (MixRef)
+    // MixRef objects are Prop<V> instances with TokenSource that implement Mix interfaces
+    if (value is Prop<V>) {
+      final prop = value as Prop<V>;
+      if (prop.hasToken) {
+        return prop; // Return token reference directly to preserve TokenSource
+      }
+    }
+    
     return Prop.mix(value);
   }
 
