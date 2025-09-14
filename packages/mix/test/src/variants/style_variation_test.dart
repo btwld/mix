@@ -6,17 +6,20 @@ import '../../helpers/testing_utils.dart';
 
 class TestOutlinedBoxStyler extends BoxStyler implements StyleVariation<BoxSpec> {
   @override
-  String get variantName => 'outlined';
+  NamedVariant get variantType => outlined;
   
   @override
-  BoxStyler styleBuilder(BoxStyler style, List<NamedVariant> activeVariants) {
+  BoxStyler styleBuilder(BoxStyler style, Set<NamedVariant> activeVariants, BuildContext context) {
+    // Only apply styling if outlined variant is active
+    if (!activeVariants.contains(outlined)) return style;
+    
     final result = switch (activeVariants) {
-      _ when hasVariant(activeVariants, small) => style.width(80.0),
-      _ when hasVariant(activeVariants, large) => style.width(120.0),
+      _ when activeVariants.contains(small) => style.width(80.0),
+      _ when activeVariants.contains(large) => style.width(120.0),
       _ => style.width(100.0),
     };
     
-    return switch ((hasVariant(activeVariants, small), hasVariant(activeVariants, primary))) {
+    return switch ((activeVariants.contains(small), activeVariants.contains(primary))) {
       (true, true) => result.height(40.0),
       _ => result,
     };
@@ -25,23 +28,32 @@ class TestOutlinedBoxStyler extends BoxStyler implements StyleVariation<BoxSpec>
 
 class TestSolidBoxStyler extends BoxStyler implements StyleVariation<BoxSpec> {
   @override
-  String get variantName => 'solid';
+  NamedVariant get variantType => solid;
   
   @override
-  BoxStyler styleBuilder(BoxStyler style, List<NamedVariant> activeVariants) =>
-    switch (activeVariants) {
-      _ when hasVariant(activeVariants, small) => style.width(70.0),
-      _ when hasVariant(activeVariants, large) => style.width(110.0),
+  BoxStyler styleBuilder(BoxStyler style, Set<NamedVariant> activeVariants, BuildContext context) {
+    // Only apply styling if solid variant is active
+    if (!activeVariants.contains(solid)) return style;
+    
+    return switch (activeVariants) {
+      _ when activeVariants.contains(small) => style.width(70.0),
+      _ when activeVariants.contains(large) => style.width(110.0),
       _ => style.width(90.0),
     };
+  }
 }
 
 class TestSmallBoxStyler extends BoxStyler implements StyleVariation<BoxSpec> {
   @override
-  String get variantName => 'small';
+  NamedVariant get variantType => small;
   
   @override
-  BoxStyler styleBuilder(BoxStyler style, List<NamedVariant> activeVariants) => style.height(32.0);
+  BoxStyler styleBuilder(BoxStyler style, Set<NamedVariant> activeVariants, BuildContext context) {
+    // Only apply styling if small variant is active
+    if (!activeVariants.contains(small)) return style;
+    
+    return style.height(32.0);
+  }
 }
 
 void main() {
@@ -51,32 +63,56 @@ void main() {
       
       expect(outlinedStyler, isA<StyleVariation<BoxSpec>>());
       expect(outlinedStyler, isA<BoxStyler>());
-      expect(outlinedStyler.variantName, 'outlined');
+      expect(outlinedStyler.variantType, outlined);
     });
 
-    test('should apply base styling through styleBuilder', () {
-      final outlinedStyler = TestOutlinedBoxStyler();
-      final result = outlinedStyler.styleBuilder(BoxStyler(), []);
-      
-      expect(result, isA<BoxStyler>());
-      expect(result, isNotNull);
+    testWidgets('should apply base styling through styleBuilder', (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: Builder(
+          builder: (context) {
+            final outlinedStyler = TestOutlinedBoxStyler();
+            final result = outlinedStyler.styleBuilder(BoxStyler(), {}, context);
+            
+            expect(result, isA<BoxStyler>());
+            expect(result, isNotNull);
+            
+            return Container();
+          },
+        ),
+      ));
     });
 
-    test('should handle user modifications correctly', () {
-      final outlinedStyler = TestOutlinedBoxStyler();
-      final userModified = BoxStyler().height(48);
-      final result = outlinedStyler.styleBuilder(userModified, []);
-      
-      expect(result, isA<BoxStyler>());
+    testWidgets('should handle user modifications correctly', (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: Builder(
+          builder: (context) {
+            final outlinedStyler = TestOutlinedBoxStyler();
+            final userModified = BoxStyler().height(48);
+            final result = outlinedStyler.styleBuilder(userModified, {}, context);
+            
+            expect(result, isA<BoxStyler>());
+            
+            return Container();
+          },
+        ),
+      ));
     });
 
-    test('should preserve user styling in styleBuilder', () {
-      final outlinedStyler = TestOutlinedBoxStyler();
-      final userStyle = BoxStyler().height(48).width(100);
-      
-      final result = outlinedStyler.styleBuilder(userStyle, []);
-      
-      expect(result, isA<BoxStyler>());
+    testWidgets('should preserve user styling in styleBuilder', (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: Builder(
+          builder: (context) {
+            final outlinedStyler = TestOutlinedBoxStyler();
+            final userStyle = BoxStyler().height(48).width(100);
+            
+            final result = outlinedStyler.styleBuilder(userStyle, {}, context);
+            
+            expect(result, isA<BoxStyler>());
+            
+            return Container();
+          },
+        ),
+      ));
     });
   });
 
@@ -108,77 +144,135 @@ void main() {
   });
 
   group('Contextual Adaptation', () {
-    test('should adapt based on single active variant', () {
-      final outlinedStyler = TestOutlinedBoxStyler();
-      final activeVariants = [small];
-      
-      final result = outlinedStyler.styleBuilder(BoxStyler(), activeVariants);
-      
-      expect(result, isA<BoxStyler>());
-      // Should have base outlined styling + small adaptation
+    testWidgets('should adapt based on single active variant', (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: Builder(
+          builder: (context) {
+            final outlinedStyler = TestOutlinedBoxStyler();
+            final activeVariants = {outlined, small};
+            
+            final result = outlinedStyler.styleBuilder(BoxStyler(), activeVariants, context);
+            
+            expect(result, isA<BoxStyler>());
+            // Should have base outlined styling + small adaptation
+            
+            return Container();
+          },
+        ),
+      ));
     });
 
-    test('should handle multiple active variants', () {
-      final outlinedStyler = TestOutlinedBoxStyler();
-      final activeVariants = [
-        small,
-        large,
-      ];
-      
-      final result = outlinedStyler.styleBuilder(BoxStyler(), activeVariants);
-      
-      expect(result, isA<BoxStyler>());
+    testWidgets('should handle multiple active variants', (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: Builder(
+          builder: (context) {
+            final outlinedStyler = TestOutlinedBoxStyler();
+            final activeVariants = {
+              outlined,
+              small,
+              large,
+            };
+            
+            final result = outlinedStyler.styleBuilder(BoxStyler(), activeVariants, context);
+            
+            expect(result, isA<BoxStyler>());
+            
+            return Container();
+          },
+        ),
+      ));
     });
 
-    test('should handle complex variant combinations', () {
-      final outlinedStyler = TestOutlinedBoxStyler();
-      final activeVariants = [
-        small,
-        primary,
-      ];
-      
-      final result = outlinedStyler.styleBuilder(BoxStyler(), activeVariants);
-      
-      expect(result, isA<BoxStyler>());
+    testWidgets('should handle complex variant combinations', (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: Builder(
+          builder: (context) {
+            final outlinedStyler = TestOutlinedBoxStyler();
+            final activeVariants = {
+              outlined,
+              small,
+              primary,
+            };
+            
+            final result = outlinedStyler.styleBuilder(BoxStyler(), activeVariants, context);
+            
+            expect(result, isA<BoxStyler>());
+            
+            return Container();
+          },
+        ),
+      ));
     });
 
-    test('should handle no active variants gracefully', () {
-      final outlinedStyler = TestOutlinedBoxStyler();
-      final result = outlinedStyler.styleBuilder(BoxStyler(), []);
-      
-      expect(result, isA<BoxStyler>());
+    testWidgets('should handle no active variants gracefully', (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: Builder(
+          builder: (context) {
+            final outlinedStyler = TestOutlinedBoxStyler();
+            final result = outlinedStyler.styleBuilder(BoxStyler(), {}, context);
+            
+            expect(result, isA<BoxStyler>());
+            
+            return Container();
+          },
+        ),
+      ));
     });
 
-    test('should adapt differently based on base variant', () {
-      final outlinedStyler = TestOutlinedBoxStyler();
-      final solidStyler = TestSolidBoxStyler();
-      final activeVariants = [small];
-      
-      final outlinedResult = outlinedStyler.styleBuilder(BoxStyler(), activeVariants);
-      final solidResult = solidStyler.styleBuilder(BoxStyler(), activeVariants);
-      
-      expect(outlinedResult, isA<BoxStyler>());
-      expect(solidResult, isA<BoxStyler>());
+    testWidgets('should adapt differently based on base variant', (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: Builder(
+          builder: (context) {
+            final outlinedStyler = TestOutlinedBoxStyler();
+            final solidStyler = TestSolidBoxStyler();
+            final activeVariants = {small};
+            
+            final outlinedResult = outlinedStyler.styleBuilder(BoxStyler(), {outlined, ...activeVariants}, context);
+            final solidResult = solidStyler.styleBuilder(BoxStyler(), {solid, ...activeVariants}, context);
+            
+            expect(outlinedResult, isA<BoxStyler>());
+            expect(solidResult, isA<BoxStyler>());
+            
+            return Container();
+          },
+        ),
+      ));
     });
   });
 
   group('Type Safety with Covariant', () {
-    test('should maintain specific return types', () {
-      final outlinedStyler = TestOutlinedBoxStyler();
-      final result = outlinedStyler.styleBuilder(BoxStyler(), []);
-      
-      expect(result, isA<BoxStyler>());
-      
-      final chainedResult = result.height(100);
-      expect(chainedResult, isA<BoxStyler>());
+    testWidgets('should maintain specific return types', (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: Builder(
+          builder: (context) {
+            final outlinedStyler = TestOutlinedBoxStyler();
+            final result = outlinedStyler.styleBuilder(BoxStyler(), {}, context);
+            
+            expect(result, isA<BoxStyler>());
+            
+            final chainedResult = result.height(100);
+            expect(chainedResult, isA<BoxStyler>());
+            
+            return Container();
+          },
+        ),
+      ));
     });
 
-    test('should accept specific parameter types', () {
-      final outlinedStyler = TestOutlinedBoxStyler();
-      final boxStyler = BoxStyler().height(48);
-      
-      final result = outlinedStyler.styleBuilder(boxStyler, []);
-      expect(result, isA<BoxStyler>());
+    testWidgets('should accept specific parameter types', (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: Builder(
+          builder: (context) {
+            final outlinedStyler = TestOutlinedBoxStyler();
+            final boxStyler = BoxStyler().height(48);
+            
+            final result = outlinedStyler.styleBuilder(boxStyler, {}, context);
+            expect(result, isA<BoxStyler>());
+            
+            return Container();
+          },
+        ),
+      ));
     });
   });
 
@@ -188,40 +282,58 @@ void main() {
       
       expect(component, isA<BoxStyler>());
       expect(component, isA<StyleVariation<BoxSpec>>());
-      expect(component.variantName, 'outlined');
+      expect(component.variantType, outlined);
       
       final modified = component.height(48).width(100);
       expect(modified, isA<BoxStyler>());
     });
 
-    test('should enable contextual styling patterns', () {
-      final outlinedStyler = TestOutlinedBoxStyler();
-      final smallStyler = TestSmallBoxStyler();
-      final userStyle = BoxStyler().height(40);
-      
-      final outlinedResult = outlinedStyler.styleBuilder(
-        userStyle,
-        [small],
-      );
-      
-      final smallResult = smallStyler.styleBuilder(BoxStyler(), []);
-      
-      expect(outlinedResult, isA<BoxStyler>());
-      expect(smallResult, isA<BoxStyler>());
+    testWidgets('should enable contextual styling patterns', (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: Builder(
+          builder: (context) {
+            final outlinedStyler = TestOutlinedBoxStyler();
+            final smallStyler = TestSmallBoxStyler();
+            final userStyle = BoxStyler().height(40);
+            
+            final outlinedResult = outlinedStyler.styleBuilder(
+              userStyle,
+              {outlined, small},
+              context,
+            );
+            
+            final smallResult = smallStyler.styleBuilder(BoxStyler(), {small}, context);
+            
+            expect(outlinedResult, isA<BoxStyler>());
+            expect(smallResult, isA<BoxStyler>());
+            
+            return Container();
+          },
+        ),
+      ));
     });
 
-    test('should maintain user modifications through resolution', () {
-      final outlinedStyler = TestOutlinedBoxStyler();
-      final userModifications = BoxStyler()
-          .height(48)
-          .width(100);
-      
-      final result = outlinedStyler.styleBuilder(
-        userModifications,
-        [small, primary],
-      );
-      
-      expect(result, isA<BoxStyler>());
+    testWidgets('should maintain user modifications through resolution', (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        home: Builder(
+          builder: (context) {
+            final outlinedStyler = TestOutlinedBoxStyler();
+            final userModifications = BoxStyler()
+                .height(48)
+                .width(100);
+            
+            final result = outlinedStyler.styleBuilder(
+              userModifications,
+              {outlined, small, primary},
+              context,
+            );
+            
+            expect(result, isA<BoxStyler>());
+            
+            return Container();
+          },
+        ),
+      ));
     });
   });
 
@@ -251,13 +363,15 @@ void main() {
         home: Builder(
           builder: (context) {
             final outlinedStyler = TestOutlinedBoxStyler();
-            final styleVariations = <StyleVariation<BoxSpec>>[outlinedStyler];
             
-            final baseStyle = BoxStyler().height(48.0);
+            final baseStyle = BoxStyler()
+                .height(48.0)
+                .variants([
+                  VariantStyle(outlined, outlinedStyler),
+                ]);
             final resolvedSpec = baseStyle.build(
               context,
               namedVariants: {outlined},
-              styleVariations: styleVariations,
             );
             
             expect(resolvedSpec, isA<StyleSpec<BoxSpec>>());
@@ -279,13 +393,15 @@ void main() {
         home: Builder(
           builder: (context) {
             final outlinedStyler = TestOutlinedBoxStyler();
-            final styleVariations = <StyleVariation<BoxSpec>>[outlinedStyler];
             
-            final baseStyle = BoxStyler().height(48.0);
+            final baseStyle = BoxStyler()
+                .height(48.0)
+                .variants([
+                  VariantStyle(outlined, outlinedStyler),
+                ]);
             final resolvedSpec = baseStyle.build(
               context,
               namedVariants: {outlined, small},
-              styleVariations: styleVariations,
             );
             
             expect(resolvedSpec, isA<StyleSpec<BoxSpec>>());
@@ -305,9 +421,12 @@ void main() {
         home: Builder(
           builder: (context) {
             final outlinedStyler = TestOutlinedBoxStyler();
-            final styleVariations = <StyleVariation<BoxSpec>>[outlinedStyler];
             
-            final baseStyle = BoxStyler().width(200.0);
+            final baseStyle = BoxStyler()
+                .width(200.0)
+                .variants([
+                  VariantStyle(outlined, outlinedStyler),
+                ]);
             final resolvedSpec = baseStyle.build(
               context,
               namedVariants: {
@@ -315,7 +434,6 @@ void main() {
                 small,
                 primary
               },
-              styleVariations: styleVariations,
             );
             
             expect(resolvedSpec, isA<StyleSpec<BoxSpec>>());
@@ -338,13 +456,15 @@ void main() {
           builder: (context) {
             final outlinedStyler = TestOutlinedBoxStyler();
             final smallStyler = TestSmallBoxStyler();
-            final styleVariations = <StyleVariation<BoxSpec>>[outlinedStyler, smallStyler];
             
-            final baseStyle = BoxStyler();
+            final baseStyle = BoxStyler()
+                .variants([
+                  VariantStyle(outlined, outlinedStyler),
+                  VariantStyle(small, smallStyler),
+                ]);
             final resolvedSpec = baseStyle.build(
               context,
               namedVariants: {outlined, small},
-              styleVariations: styleVariations,
             );
             
             expect(resolvedSpec, isA<StyleSpec<BoxSpec>>());
@@ -361,7 +481,7 @@ void main() {
       ));
     });
 
-    testWidgets('should handle empty styleVariations gracefully', (tester) async {
+    testWidgets('should handle no StyleVariations gracefully', (tester) async {
       await tester.pumpWidget(MaterialApp(
         home: Builder(
           builder: (context) {
@@ -369,7 +489,6 @@ void main() {
             final resolvedSpec = baseStyle.build(
               context,
               namedVariants: {outlined},
-              styleVariations: [], // Empty styleVariations
             );
             
             expect(resolvedSpec, isA<StyleSpec<BoxSpec>>());
@@ -391,13 +510,16 @@ void main() {
         home: Builder(
           builder: (context) {
             final outlinedStyler = TestOutlinedBoxStyler();
-            final styleVariations = <StyleVariation<BoxSpec>>[outlinedStyler];
             
-            final baseStyle = BoxStyler().height(48.0).width(100.0);
+            final baseStyle = BoxStyler()
+                .height(48.0)
+                .width(100.0)
+                .variants([
+                  VariantStyle(outlined, outlinedStyler),
+                ]);
             final resolvedSpec = baseStyle.build(
               context,
-              namedVariants: {NamedVariant('solid')}, // Doesn't match 'outlined'
-              styleVariations: styleVariations,
+              namedVariants: {solid}, // Doesn't match 'outlined'
             );
             
             expect(resolvedSpec, isA<StyleSpec<BoxSpec>>());
@@ -421,14 +543,16 @@ void main() {
         home: Builder(
           builder: (context) {
             final outlinedStyler = TestOutlinedBoxStyler();
-            final styleVariations = <StyleVariation<BoxSpec>>[outlinedStyler];
             
-            final baseStyle = BoxStyler().height(48.0);
+            final baseStyle = BoxStyler()
+                .height(48.0)
+                .variants([
+                  VariantStyle(outlined, outlinedStyler),
+                ]);
 
             final resolvedSpec = baseStyle.build(
               context,
               namedVariants: {outlined},
-              styleVariations: styleVariations,
             );
             
             expect(resolvedSpec, isA<StyleSpec<BoxSpec>>());

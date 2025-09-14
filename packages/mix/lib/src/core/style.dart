@@ -74,7 +74,6 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   Style<S> mergeActiveVariants(
     BuildContext context, {
     required Set<NamedVariant> namedVariants,
-    List<StyleVariation<S>> styleVariations = const [],
   }) {
     // Filter variants that should be active in this context
     final activeVariants = ($variants ?? [])
@@ -99,7 +98,17 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     final stylesToMerge = activeVariants.map((variantAttr) {
       return switch (variantAttr.variant) {
         ContextVariantBuilder variant => variant.build(context) as Style<S>,
-        (ContextVariant() || NamedVariant()) => variantAttr.value,
+        (ContextVariant() || NamedVariant()) => () {
+          // Check if the value is a StyleVariation
+          if (variantAttr.value is StyleVariation<S>) {
+            final styleVariation = variantAttr.value as StyleVariation<S>;
+            // Only apply if this variant is active
+            if (namedVariants.contains(styleVariation.variantType)) {
+              return styleVariation.styleBuilder(this, namedVariants, context);
+            }
+          }
+          return variantAttr.value;
+        }(),
       };
     }).toList();
 
@@ -109,56 +118,16 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     // Merge each variant style, recursively resolving nested variants
     for (final variantStyle in stylesToMerge) {
       // Recursively resolve any nested variants within this variant's style
-      // NOTE: Don't pass styleVariations to avoid infinite recursion
       final fullyResolvedStyle = variantStyle.mergeActiveVariants(
         context,
         namedVariants: namedVariants,
-        styleVariations: const [], // StyleVariations only processed at top level
       );
       mergedStyle = mergedStyle.merge(fullyResolvedStyle);
     }
 
-    // Process StyleVariation objects (NEW)
-    mergedStyle = _processStyleVariations(
-      mergedStyle,
-      context,
-      namedVariants,
-      styleVariations,
-    );
-
     return mergedStyle;
   }
 
-  /// Processes StyleVariation objects and applies their dynamic styling
-  Style<S> _processStyleVariations(
-    Style<S> baseStyle,
-    BuildContext context,
-    Set<NamedVariant> namedVariants,
-    List<StyleVariation<S>> styleVariations,
-  ) {
-    Style<S> result = baseStyle;
-    
-    // Filter StyleVariations that should be active based on named variants
-    final activeStyleVariations = styleVariations
-        .where((sv) => namedVariants.any((nv) => nv.name == sv.variantName))
-        .toList();
-
-    // Convert namedVariants to list for passing to styleBuilder
-    final activeVariantsList = namedVariants.toList();
-
-    // Process each active StyleVariation
-    for (final styleVariation in activeStyleVariations) {
-      // Call dynamic styleBuilder with base style (user modifications) and variant context
-      final resolvedStyle = styleVariation.styleBuilder(
-        result,                     // Current result style (includes user modifications)
-        activeVariantsList,         // All active NamedVariant objects for context
-      );
-      
-      result = result.merge(resolvedStyle);
-    }
-
-    return result;
-  }
 
   /// Resolves this attribute to its concrete value using the provided [BuildContext].
   @override
@@ -178,12 +147,10 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   StyleSpec<S> build(
     BuildContext context, {
     Set<NamedVariant> namedVariants = const {},
-    List<StyleVariation<S>> styleVariations = const [],
   }) {
     final styleData = mergeActiveVariants(
       context,
       namedVariants: namedVariants,
-      styleVariations: styleVariations,
     );
 
     return styleData.resolve(context);

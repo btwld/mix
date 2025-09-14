@@ -179,17 +179,18 @@ bool hasAllVariants(List<NamedVariant> activeVariants, List<NamedVariant> varian
 /// Interface for design system components that adapt their styling
 /// based on active variants and user modifications.
 abstract class StyleVariation<S extends Spec<S>> {
-  /// String identifier for this variant
-  String get variantName;
+  /// The named variant this StyleVariation handles
+  NamedVariant get variantType;
   
   /// Combines user modifications with variant styling and contextual adaptations.
-  Style<S> styleBuilder(covariant Style<S> style, List<NamedVariant> activeVariants);
+  Style<S> styleBuilder(covariant Style<S> style, Set<NamedVariant> activeVariants, BuildContext context);
 }
 
 // Common named variants
 const primary = NamedVariant('primary');
 const secondary = NamedVariant('secondary');
 const outlined = NamedVariant('outlined');
+const solid = NamedVariant('solid');
 const danger = NamedVariant('danger');
 
 // Size variants
