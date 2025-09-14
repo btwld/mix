@@ -10,24 +10,24 @@ import 'tokens/value_tokens.dart';
 @Deprecated('Use MixScope instead')
 typedef MixTheme = MixScope;
 
-/// Inherited widget that provides Mix theme data and token resolution to its descendants.
+/// Provides Mix design tokens and configuration to descendant widgets.
 ///
-/// The [MixScope] is the root of the Mix theming system, providing access to design tokens,
-/// default widget modifier ordering, and other theme-related configuration.
-///
-/// Uses InheritedModel to enable aspect-based dependencies for efficient rebuilds.
-/// Supported aspects:
-/// - 'tokens': Rebuilds when token values change
-/// - 'modifierOrder': Rebuilds when modifier ordering changes
+/// Exposes type-safe design tokens, modifier ordering, and token resolution.
+/// Uses [InheritedModel] with aspects: `tokens` and `modifierOrder`.
 class MixScope extends InheritedModel<String> {
-  /// Creates a MixScope with the provided tokens and modifier ordering
+  /// Creates a [MixScope] with the provided tokens and modifier ordering.
   factory MixScope({
     Map<MixToken, Object>? tokens,
     Map<ColorToken, Color>? colors,
     Map<TextStyleToken, TextStyle>? textStyles,
     Map<SpaceToken, double>? spaces,
+    Map<DoubleToken, double>? doubles,
     Map<RadiusToken, Radius>? radii,
     Map<BreakpointToken, Breakpoint>? breakpoints,
+    Map<ShadowToken, List<Shadow>>? shadows,
+    Map<BoxShadowToken, List<BoxShadow>>? boxShadows,
+    Map<BorderSideToken, BorderSide>? borders,
+    Map<FontWeightToken, FontWeight>? fontWeights,
     List<Type>? orderOfModifiers,
     required Widget child,
     Key? key,
@@ -37,8 +37,13 @@ class MixScope extends InheritedModel<String> {
       ...?colors?.cast<MixToken, Object>(),
       ...?textStyles?.cast<MixToken, Object>(),
       ...?spaces?.cast<MixToken, Object>(),
+      ...?doubles?.cast<MixToken, Object>(),
       ...?radii?.cast<MixToken, Object>(),
       ...?breakpoints?.cast<MixToken, Object>(),
+      ...?shadows?.cast<MixToken, Object>(),
+      ...?boxShadows?.cast<MixToken, Object>(),
+      ...?borders?.cast<MixToken, Object>(),
+      ...?fontWeights?.cast<MixToken, Object>(),
     };
 
     return MixScope._(
@@ -56,32 +61,25 @@ class MixScope extends InheritedModel<String> {
     super.key,
   }) : _tokens = tokens;
 
-  /// Creates an empty MixScope with no tokens or modifier ordering
+  /// Creates an empty [MixScope] with no tokens or modifier ordering.
   const MixScope.empty({required super.child, super.key})
     : _tokens = null,
       orderOfModifiers = null;
 
-  /// Creates a Widget with Material design tokens pre-configured
-  ///
-  /// Material Design tokens automatically adapt to light and dark themes
-  /// through Flutter's built-in theming system.
-  ///
-  /// Example:
-  /// ```dart
-  /// MixScope.withMaterial(
-  ///   colors: {
-  ///     myCustomColor: Colors.blue,
-  ///   },
-  ///   child: MyApp(),
-  /// )
-  /// ```
+  /// Creates a widget with Material Design tokens pre-configured.
   static Widget withMaterial({
     Map<MixToken, Object>? tokens,
     Map<ColorToken, Color>? colors,
     Map<TextStyleToken, TextStyle>? textStyles,
     Map<SpaceToken, double>? spaces,
+    Map<DoubleToken, double>? doubles,
     Map<RadiusToken, Radius>? radii,
     Map<BreakpointToken, Breakpoint>? breakpoints,
+    // Additional token maps (list-based)
+    Map<ShadowToken, List<Shadow>>? shadows,
+    Map<BoxShadowToken, List<BoxShadow>>? boxShadows,
+    Map<BorderSideToken, BorderSide>? borders,
+    Map<FontWeightToken, FontWeight>? fontWeights,
     List<Type>? orderOfModifiers,
     required Widget child,
     Key? key,
@@ -91,8 +89,13 @@ class MixScope extends InheritedModel<String> {
       ...?colors?.cast<MixToken, Object>(),
       ...?textStyles?.cast<MixToken, Object>(),
       ...?spaces?.cast<MixToken, Object>(),
+      ...?doubles?.cast<MixToken, Object>(),
       ...?radii?.cast<MixToken, Object>(),
       ...?breakpoints?.cast<MixToken, Object>(),
+      ...?shadows?.cast<MixToken, Object>(),
+      ...?boxShadows?.cast<MixToken, Object>(),
+      ...?borders?.cast<MixToken, Object>(),
+      ...?fontWeights?.cast<MixToken, Object>(),
     };
 
     return createMaterialMixScope(
@@ -103,10 +106,7 @@ class MixScope extends InheritedModel<String> {
     );
   }
 
-  /// Gets the MixScope from the widget tree.
-  ///
-  /// Optionally specify an [aspect] to create a dependency only on that aspect.
-  /// Supported aspects: 'tokens', 'modifierOrder'
+  /// Returns the current [MixScope] from the widget tree.
   static MixScope of(BuildContext context, [String? aspect]) {
     final MixScope? scope = maybeOf(context, aspect);
     if (scope != null) {
@@ -131,17 +131,13 @@ class MixScope extends InheritedModel<String> {
   }
 
   /// Resolves a token value from the nearest MixScope.
-  ///
-  /// This method creates a dependency on the 'tokens' aspect.
   static T tokenOf<T>(MixToken<T> token, BuildContext context) {
     final scope = MixScope.of(context, 'tokens');
 
     return scope.getToken(token, context);
   }
 
-  /// Gets the MixScope from the widget tree, or null if not found.
-  ///
-  /// Optionally specify an [aspect] to create a dependency only on that aspect.
+  /// Returns the current [MixScope], or null if not found.
   static MixScope? maybeOf(BuildContext context, [String? aspect]) {
     if (aspect != null) {
       return InheritedModel.inheritFrom<MixScope>(context, aspect: aspect);
@@ -150,7 +146,7 @@ class MixScope extends InheritedModel<String> {
     return context.dependOnInheritedWidgetOfExactType();
   }
 
-  /// Combines multiple MixScopes into a single scope
+  /// Combines multiple [MixScope] instances into a single scope.
   static MixScope combine({
     required Iterable<MixScope> scopes,
     required Widget child,
@@ -175,10 +171,10 @@ class MixScope extends InheritedModel<String> {
 
   final Map<MixToken, Object>? _tokens;
 
-  /// Getter for tokens map
+  /// Returns the raw token map provided to this scope.
   Map<MixToken, Object>? get tokens => _tokens;
 
-  /// Type-safe token resolution with error handling
+  /// Resolves [token] to its concrete value.
   T getToken<T>(MixToken<T> token, BuildContext _) {
     final value = _tokens?[token];
     if (value == null) {
@@ -194,7 +190,7 @@ class MixScope extends InheritedModel<String> {
     );
   }
 
-  /// Creates a new MixScope by merging this scope with another
+  /// Returns a new [MixScope] by merging this scope with [other].
   MixScope merge(MixScope other) {
     final mergedTokens = _tokens != null || other._tokens != null
         ? <MixToken, Object>{...?_tokens, ...?other._tokens}
@@ -234,5 +230,3 @@ class MixScope extends InheritedModel<String> {
     return false;
   }
 }
-
-// Deprecated typedefs moved to src/core/deprecated.dart

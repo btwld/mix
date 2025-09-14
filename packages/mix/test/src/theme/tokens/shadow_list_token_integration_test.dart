@@ -4,9 +4,9 @@ import 'package:mix/mix.dart';
 
 
 void main() {
-  group('ShadowListToken Integration Tests', () {
-    test('ShadowListToken can be created and called', () {
-      const token = ShadowListToken('shadows.elevated');
+  group('ShadowToken Integration Tests', () {
+    test('ShadowToken can be created and called', () {
+      const token = ShadowToken('shadows.elevated');
       
       // Calling the token should return a ShadowListRef
       final ref = token();
@@ -17,8 +17,8 @@ void main() {
       expect(isAnyTokenRef(ref), isTrue);
     });
 
-    testWidgets('ShadowListToken resolves through MixScope', (tester) async {
-      const shadowListToken = ShadowListToken('shadows.test');
+    testWidgets('ShadowToken resolves through MixScope', (tester) async {
+      const shadowToken = ShadowToken('shadows.test');
       final testShadows = [
         const Shadow(color: Colors.black, offset: Offset(2, 2), blurRadius: 4),
         const Shadow(color: Colors.grey, offset: Offset(1, 1), blurRadius: 2),
@@ -26,10 +26,10 @@ void main() {
 
       await tester.pumpWidget(
         MixScope(
-          tokens: {shadowListToken: testShadows},
+          tokens: {shadowToken: testShadows},
           child: Builder(
             builder: (context) {
-              final resolvedShadows = shadowListToken.resolve(context);
+              final resolvedShadows = shadowToken.resolve(context);
               
               expect(resolvedShadows, equals(testShadows));
               expect(resolvedShadows.length, equals(2));
@@ -43,10 +43,10 @@ void main() {
       );
     });
 
-    test('ShadowListToken integrates with getReferenceValue', () {
-      const shadowListToken = ShadowListToken('test.shadows');
-      
-      final ref = getReferenceValue(shadowListToken);
+    test('ShadowToken integrates with getReferenceValue', () {
+      const shadowToken = ShadowToken('test.shadows');
+
+      final ref = getReferenceValue(shadowToken);
       
       expect(ref, isA<List<Shadow>>());
       expect(ref, isA<ShadowListRef>());
@@ -54,18 +54,18 @@ void main() {
     });
 
     test('ShadowListRef implements List<Shadow> interface', () {
-      const shadowListToken = ShadowListToken('test.shadows');
-      final shadowListRef = shadowListToken();
+      const shadowToken = ShadowToken('test.shadows');
+      final shadowRef = shadowToken();
       
       // Should work as a List<Shadow>
-      expect(shadowListRef, isA<List<Shadow>>());
-      expect(shadowListRef.runtimeType, equals(ShadowListRef));
+      expect(shadowRef, isA<List<Shadow>>());
+      expect(shadowRef.runtimeType, equals(ShadowListRef));
     });
   });
 
-  group('BoxShadowListToken Integration Tests', () {
-    test('BoxShadowListToken can be created and called', () {
-      const token = BoxShadowListToken('box.shadows.card');
+  group('BoxShadowToken Integration Tests', () {
+    test('BoxShadowToken can be created and called', () {
+      const token = BoxShadowToken('box.shadows.card');
       
       // Calling the token should return a BoxShadowListRef
       final ref = token();
@@ -76,8 +76,8 @@ void main() {
       expect(isAnyTokenRef(ref), isTrue);
     });
 
-    testWidgets('BoxShadowListToken resolves through MixScope', (tester) async {
-      const boxShadowListToken = BoxShadowListToken('box.shadows.test');
+    testWidgets('BoxShadowToken resolves through MixScope', (tester) async {
+      const boxShadowToken = BoxShadowToken('box.shadows.test');
       final testBoxShadows = [
         const BoxShadow(color: Colors.black, offset: Offset(0, 2), blurRadius: 4),
         const BoxShadow(color: Colors.grey, offset: Offset(0, 1), blurRadius: 3),
@@ -85,10 +85,10 @@ void main() {
 
       await tester.pumpWidget(
         MixScope(
-          tokens: {boxShadowListToken: testBoxShadows},
+          tokens: {boxShadowToken: testBoxShadows},
           child: Builder(
             builder: (context) {
-              final resolvedBoxShadows = boxShadowListToken.resolve(context);
+              final resolvedBoxShadows = boxShadowToken.resolve(context);
               
               expect(resolvedBoxShadows, equals(testBoxShadows));
               expect(resolvedBoxShadows.length, equals(2));
@@ -102,10 +102,10 @@ void main() {
       );
     });
 
-    test('BoxShadowListToken integrates with getReferenceValue', () {
-      const boxShadowListToken = BoxShadowListToken('test.box.shadows');
-      
-      final ref = getReferenceValue(boxShadowListToken);
+    test('BoxShadowToken integrates with getReferenceValue', () {
+      const boxShadowToken = BoxShadowToken('test.box.shadows');
+
+      final ref = getReferenceValue(boxShadowToken);
       
       expect(ref, isA<List<BoxShadow>>());
       expect(ref, isA<BoxShadowListRef>());
@@ -113,12 +113,12 @@ void main() {
     });
 
     test('BoxShadowListRef implements List<BoxShadow> interface', () {
-      const boxShadowListToken = BoxShadowListToken('test.box.shadows');
-      final boxShadowListRef = boxShadowListToken();
+      const boxShadowToken = BoxShadowToken('test.box.shadows');
+      final boxShadowRef = boxShadowToken();
       
       // Should work as a List<BoxShadow>
-      expect(boxShadowListRef, isA<List<BoxShadow>>());
-      expect(boxShadowListRef.runtimeType, equals(BoxShadowListRef));
+      expect(boxShadowRef, isA<List<BoxShadow>>());
+      expect(boxShadowRef.runtimeType, equals(BoxShadowListRef));
     });
   });
 }

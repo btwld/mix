@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import '../../core/breakpoint.dart';
 import '../../core/prop.dart';
 import '../../core/prop_refs.dart';
-import 'token_refs.dart';
 import 'mix_token.dart';
+import 'token_refs.dart';
 
 /// Design token for [Color] values.
 class ColorToken extends MixToken<Color> {
@@ -60,27 +60,6 @@ class TextStyleToken extends MixToken<TextStyle> {
   TextStyleRef call() => TextStyleRef(Prop.token(this));
 }
 
-/// Design token for [BoxShadow] values.
-class BoxShadowToken extends MixToken<BoxShadow> {
-  const BoxShadowToken(super.name);
-
-  /// Returns a Mix framework compatible reference for use with Mix styling utilities.
-  BoxShadowMixRef mix() => BoxShadowMixRef(Prop.token(this));
-
-  @override
-  BoxShadowRef call() => BoxShadowRef(Prop.token(this));
-}
-
-/// Design token for [Shadow] values.
-class ShadowToken extends MixToken<Shadow> {
-  const ShadowToken(super.name);
-
-  /// Returns a Mix framework compatible reference for use with Mix styling utilities.
-  ShadowMixRef mix() => ShadowMixRef(Prop.token(this));
-
-  @override
-  ShadowRef call() => ShadowRef(Prop.token(this));
-}
 
 /// Design token for [BorderSide] values.
 class BorderSideToken extends MixToken<BorderSide> {
@@ -91,8 +70,8 @@ class BorderSideToken extends MixToken<BorderSide> {
 }
 
 /// Design token for shadow lists.
-class ShadowListToken extends MixToken<List<Shadow>> {
-  const ShadowListToken(super.name);
+class ShadowToken extends MixToken<List<Shadow>> {
+  const ShadowToken(super.name);
 
   /// Returns a Mix framework compatible reference for use with Mix styling utilities.
   ShadowListMixRef mix() => ShadowListMixRef(Prop.token(this));
@@ -102,8 +81,8 @@ class ShadowListToken extends MixToken<List<Shadow>> {
 }
 
 /// Design token for box shadow lists.
-class BoxShadowListToken extends MixToken<List<BoxShadow>> {
-  const BoxShadowListToken(super.name);
+class BoxShadowToken extends MixToken<List<BoxShadow>> {
+  const BoxShadowToken(super.name);
 
   /// Returns a Mix framework compatible reference for use with Mix styling utilities.
   BoxShadowListMixRef mix() => BoxShadowListMixRef(Prop.token(this));
