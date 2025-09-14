@@ -824,11 +824,6 @@ void main() {
       group('TextStyler Resolution', () {
         test('TextStyler with MixRef resolves correctly through BuildContext', () {
           final token = TextStyleToken('test-style');
-          final expectedStyle = const TextStyle(fontSize: 18, color: Colors.blue);
-          
-          final context = MockBuildContext(
-            tokens: {token: expectedStyle},
-          );
           
           final styler = TextStyler(style: token.mix());
           // TODO: MixRef resolution needs widget-level testing
@@ -839,7 +834,6 @@ void main() {
 
         test('TextStyler MixRef resolves to null when token not in theme', () {
           final token = TextStyleToken('missing-style');
-          final context = MockBuildContext(); // No tokens
           
           final styler = TextStyler(style: token.mix());
           // TODO: MixRef resolution needs widget-level testing
