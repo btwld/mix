@@ -54,6 +54,9 @@ class TextStyleToken extends MixToken<TextStyle> {
 
   @override
   TextStyleRef call() => TextStyleRef(Prop.token(this));
+
+  /// Returns a Mix framework compatible reference for use with Mix styling utilities.
+  TextStyleMixRef mix() => TextStyleMixRef(Prop.token(this));
 }
 
 /// Design token for [BoxShadow] values.
@@ -62,6 +65,9 @@ class BoxShadowToken extends MixToken<BoxShadow> {
 
   @override
   BoxShadowRef call() => BoxShadowRef(Prop.token(this));
+
+  /// Returns a Mix framework compatible reference for use with Mix styling utilities.
+  BoxShadowMixRef mix() => BoxShadowMixRef(Prop.token(this));
 }
 
 /// Design token for [Shadow] values.
@@ -70,6 +76,9 @@ class ShadowToken extends MixToken<Shadow> {
 
   @override
   ShadowRef call() => ShadowRef(Prop.token(this));
+
+  /// Returns a Mix framework compatible reference for use with Mix styling utilities.
+  ShadowMixRef mix() => ShadowMixRef(Prop.token(this));
 }
 
 /// Design token for [BorderSide] values.
@@ -86,6 +95,9 @@ class ShadowListToken extends MixToken<List<Shadow>> {
 
   @override
   ShadowListRef call() => ShadowListRef(Prop.token(this));
+
+  /// Returns a Mix framework compatible reference for use with Mix styling utilities.
+  ShadowListMixRef mix() => ShadowListMixRef(Prop.token(this));
 }
 
 /// Design token for box shadow lists.
@@ -94,6 +106,9 @@ class BoxShadowListToken extends MixToken<List<BoxShadow>> {
 
   @override
   BoxShadowListRef call() => BoxShadowListRef(Prop.token(this));
+
+  /// Returns a Mix framework compatible reference for use with Mix styling utilities.
+  BoxShadowListMixRef mix() => BoxShadowListMixRef(Prop.token(this));
 }
 
 /// Design token for [FontWeight] values.

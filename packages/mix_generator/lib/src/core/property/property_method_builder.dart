@@ -16,7 +16,7 @@ Map<String, String?> extractConstructorDefaults(
       defaults[param.name] = param.defaultValueCode;
     }
     // If it's a required parameter with no default value and is a list type, set empty list as default
-    else if (param.isRequired && param.type.isList) {
+    else if (param.isRequired && param.type.isDartCoreList) {
       defaults[param.name] = '[]';
     }
   }
