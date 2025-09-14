@@ -115,9 +115,9 @@ class Prop<V> {
   /// Returns `null` if [value] is `null`, otherwise calls [Prop.mix].
   static Prop<V>? maybeMix<V>(Mix<V>? value) {
     if (value == null) return null;
-
     return Prop.mix(value);
   }
+
 
   /// Creates a property from a regular value by converting it to a Mix.
   ///
