@@ -1,5 +1,6 @@
 /// Consolidated design tokens for various value types in the Mix theme.
 library;
+
 import 'package:flutter/material.dart';
 
 import '../../core/breakpoint.dart';
@@ -52,33 +53,33 @@ class BreakpointToken extends MixToken<Breakpoint> {
 class TextStyleToken extends MixToken<TextStyle> {
   const TextStyleToken(super.name);
 
-  @override
-  TextStyleRef call() => TextStyleRef(Prop.token(this));
-
   /// Returns a Mix framework compatible reference for use with Mix styling utilities.
   TextStyleMixRef mix() => TextStyleMixRef(Prop.token(this));
+
+  @override
+  TextStyleRef call() => TextStyleRef(Prop.token(this));
 }
 
 /// Design token for [BoxShadow] values.
 class BoxShadowToken extends MixToken<BoxShadow> {
   const BoxShadowToken(super.name);
 
-  @override
-  BoxShadowRef call() => BoxShadowRef(Prop.token(this));
-
   /// Returns a Mix framework compatible reference for use with Mix styling utilities.
   BoxShadowMixRef mix() => BoxShadowMixRef(Prop.token(this));
+
+  @override
+  BoxShadowRef call() => BoxShadowRef(Prop.token(this));
 }
 
 /// Design token for [Shadow] values.
 class ShadowToken extends MixToken<Shadow> {
   const ShadowToken(super.name);
 
-  @override
-  ShadowRef call() => ShadowRef(Prop.token(this));
-
   /// Returns a Mix framework compatible reference for use with Mix styling utilities.
   ShadowMixRef mix() => ShadowMixRef(Prop.token(this));
+
+  @override
+  ShadowRef call() => ShadowRef(Prop.token(this));
 }
 
 /// Design token for [BorderSide] values.
@@ -93,22 +94,22 @@ class BorderSideToken extends MixToken<BorderSide> {
 class ShadowListToken extends MixToken<List<Shadow>> {
   const ShadowListToken(super.name);
 
-  @override
-  ShadowListRef call() => ShadowListRef(Prop.token(this));
-
   /// Returns a Mix framework compatible reference for use with Mix styling utilities.
   ShadowListMixRef mix() => ShadowListMixRef(Prop.token(this));
+
+  @override
+  ShadowListRef call() => ShadowListRef(Prop.token(this));
 }
 
 /// Design token for box shadow lists.
 class BoxShadowListToken extends MixToken<List<BoxShadow>> {
   const BoxShadowListToken(super.name);
 
-  @override
-  BoxShadowListRef call() => BoxShadowListRef(Prop.token(this));
-
   /// Returns a Mix framework compatible reference for use with Mix styling utilities.
   BoxShadowListMixRef mix() => BoxShadowListMixRef(Prop.token(this));
+
+  @override
+  BoxShadowListRef call() => BoxShadowListRef(Prop.token(this));
 }
 
 /// Design token for [FontWeight] values.
