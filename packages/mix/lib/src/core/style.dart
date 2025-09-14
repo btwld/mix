@@ -25,8 +25,6 @@ sealed class StyleElement {
 }
 
 /// Base class for style classes that can be resolved to specifications.
-///
-/// Provides variant support, modifiers, and animation configuration for styled elements.
 abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     implements StyleElement {
   final List<VariantStyle<S>>? $variants;
@@ -129,11 +127,11 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     return mergedStyle;
   }
 
-  /// Resolves this attribute to its concrete value using the provided [BuildContext].
+  /// Resolves this style to its concrete value.
   @override
   StyleSpec<S> resolve(BuildContext context);
 
-  /// Merges this attribute with another attribute of the same type.
+  /// Merges this style with another style of the same type.
   @override
   Style<S> merge(covariant Style<S>? other);
 
@@ -142,8 +140,6 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   Object get mergeKey => S;
 
   /// Builds the style into a fully resolved spec with metadata.
-  ///
-  /// This method resolves the style, which now includes animation and modifiers metadata.
   StyleSpec<S> build(
     BuildContext context, {
     Set<NamedVariant> namedVariants = const {},

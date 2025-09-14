@@ -4,20 +4,16 @@ import 'internal/compare_mixin.dart';
 import 'style_spec.dart';
 
 /// Base class for all resolved specifications that define widget properties.
-///
-/// Specs are the final resolved form of styling attributes after applying
-/// context-specific values and merging operations.
 @immutable
 abstract class Spec<T extends Spec<T>> with Equatable {
   const Spec();
 
   Type get type => T;
 
-  /// Creates a copy of this spec with the given fields
-  /// replaced by the non-null parameter values.
+  /// Creates a copy of this spec with non-null parameter values.
   T copyWith();
 
-  /// Linearly interpolates with another [Spec] object.
+  /// Linearly interpolates between this and another [Spec].
   T lerp(covariant T? other, double t);
 }
 

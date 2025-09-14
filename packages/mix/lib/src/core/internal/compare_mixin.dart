@@ -1,5 +1,3 @@
-// ignore_for_file: avoid-dynamic
-
 import 'package:flutter/widgets.dart';
 
 import 'deep_collection_equality.dart';

@@ -34,6 +34,23 @@ import 'visibility_modifier.dart';
 /// Provides factory methods for creating and combining modifiers that can be
 /// applied to widgets. Modifiers are applied in a specific order and can be
 /// merged together using the Mix framework's accumulation strategy.
+///
+/// ## Modifier Ordering
+///
+/// Modifiers are applied in a carefully designed order to ensure correct
+/// visual output. The default order prioritizes:
+/// 1. Context setup (flex behavior, themes)
+/// 2. Size establishment (explicit, relative, content-driven)
+/// 3. Layout modifications (rotation, alignment)
+/// 4. Spacing (padding)
+/// 5. Visual effects (transforms, clipping, opacity)
+///
+/// Example:
+/// ```dart
+/// final config = WidgetModifierConfig.opacity(0.5)
+///     .padding(EdgeInsets.all(16))
+///     .scale(1.2);
+/// ```
 final class WidgetModifierConfig with Equatable {
   final List<Type>? $orderOfModifiers;
   final List<ModifierMix>? $modifiers;
@@ -44,25 +61,41 @@ final class WidgetModifierConfig with Equatable {
   }) : $modifiers = modifiers,
        $orderOfModifiers = orderOfModifiers;
 
+  /// Creates a configuration with a single modifier.
   factory WidgetModifierConfig.modifier(ModifierMix value) {
     return WidgetModifierConfig(modifiers: [value]);
   }
 
+  /// Creates a configuration with multiple modifiers.
   factory WidgetModifierConfig.modifiers(List<ModifierMix> value) {
     return WidgetModifierConfig(modifiers: value);
   }
 
+  /// Creates a configuration that specifies custom modifier ordering.
+  ///
+  /// The [value] list defines the order in which modifiers should be applied.
+  /// Any modifiers not included in this list will use the default ordering.
   factory WidgetModifierConfig.orderOfModifiers(List<Type> value) {
     return WidgetModifierConfig(orderOfModifiers: value);
   }
+  /// Creates a configuration that resets all previous modifiers.
+  ///
+  /// When this modifier is encountered during merging, all previously
+  /// accumulated modifiers are cleared.
   factory WidgetModifierConfig.reset() {
     return WidgetModifierConfig.modifier(const ResetModifierMix());
   }
 
+  /// Creates a configuration that applies opacity.
+  ///
+  /// The [opacity] value should be between 0.0 (transparent) and 1.0 (opaque).
   factory WidgetModifierConfig.opacity(double opacity) {
     return WidgetModifierConfig.modifier(OpacityModifierMix(opacity: opacity));
   }
 
+  /// Creates a configuration that maintains a specific aspect ratio.
+  ///
+  /// The [aspectRatio] is the ratio of width to height (e.g., 16/9 for widescreen).
   factory WidgetModifierConfig.aspectRatio(double aspectRatio) {
     return WidgetModifierConfig.modifier(
       AspectRatioModifierMix(aspectRatio: aspectRatio),
@@ -137,7 +170,11 @@ final class WidgetModifierConfig with Equatable {
     );
   }
 
-  /// Scale using transform.
+  /// Creates a configuration that scales the widget.
+  ///
+  /// Applies uniform scaling using a transform matrix. The [scale] factor
+  /// multiplies the widget's size (1.0 = normal size, 2.0 = double size).
+  /// The [alignment] determines the scaling origin point.
   factory WidgetModifierConfig.scale(
     double scale, {
     Alignment alignment = Alignment.center,

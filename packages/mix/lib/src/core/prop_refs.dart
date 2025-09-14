@@ -1,3 +1,9 @@
+/// Reference types for Mix tokens covering common Flutter classes.
+///
+/// These references are returned by typed tokens (for example, a
+/// `TextStyleToken` returns a [TextStyleRef]). They carry token provenance and
+/// can be passed directly to Mix utilities, which resolve them later against
+/// the nearest `MixScope`.
 import 'package:flutter/widgets.dart';
 
 import '../theme/tokens/token_refs.dart';
@@ -346,4 +352,3 @@ void assertIsRealType(Type value) {
     'Cannot use $value for generic, use $realType instead.',
   );
 }
-

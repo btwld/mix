@@ -10,10 +10,10 @@ import 'box_style.dart';
 ///
 /// Applies [BoxSpec] styling to create a customized [Container].
 class Box extends StyleWidget<BoxSpec> {
-  const Box({super.style = const BoxStyler.create(), super.key, this.child});
-
   /// Child widget to display inside the box.
   final Widget? child;
+
+  const Box({super.style = const BoxStyler.create(), super.key, this.child});
 
   @override
   Widget build(BuildContext context, BoxSpec spec) {

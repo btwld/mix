@@ -1,9 +1,3 @@
-/// Material Design theme integration for Mix framework.
-///
-/// Provides pre-configured material tokens that map Material Design tokens
-/// to Flutter's Material theme values, enabling seamless integration between
-/// Mix styling and Material Design systems.
-library;
 
 import 'package:flutter/widgets.dart';
 
@@ -14,7 +8,7 @@ import 'material_tokens.dart';
 
 const _md = MaterialTokens();
 
-/// Creates color token map from the current Material theme context.
+/// Returns color tokens resolved from the current [Theme] context.
 Map<MixToken, Object> _createMaterialColorTokens(BuildContext context) {
   return {
     _md.colorScheme.primary: context.colorScheme.primary,
@@ -32,7 +26,7 @@ Map<MixToken, Object> _createMaterialColorTokens(BuildContext context) {
   };
 }
 
-/// Creates text style token map from the current Material theme context.
+/// Returns text style tokens resolved from the current [Theme] context.
 Map<MixToken, Object> _createMaterialTextStyleTokens(BuildContext context) {
   return {
     _md.textTheme.displayLarge: context.textTheme.displayLarge!,
@@ -67,10 +61,10 @@ Map<MixToken, Object> _createMaterialTextStyleTokens(BuildContext context) {
   };
 }
 
-/// Creates a MixScope with Material Design tokens pre-configured.
+/// Creates a [MixScope] with Material tokens pre-configured.
 ///
-/// This method uses a Builder to dynamically access the current Material theme
-/// and creates token map with concrete values from the theme.
+/// Uses a [Builder] to read the current Material [Theme] and produce a token
+/// map with concrete values, merged with any [additionalTokens] provided.
 Widget createMaterialMixScope({
   Map<MixToken, Object>? additionalTokens,
   List<Type>? orderOfModifiers,

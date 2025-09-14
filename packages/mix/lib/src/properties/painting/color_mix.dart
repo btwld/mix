@@ -1,5 +1,3 @@
-// ignore_for_file: avoid-commented-out-code
-
 // import 'package:flutter/widgets.dart';
 
 // import '../../core/directive.dart';

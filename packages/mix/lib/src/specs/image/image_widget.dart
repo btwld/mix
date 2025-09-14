@@ -10,16 +10,6 @@ import 'image_style.dart';
 ///
 /// Applies [ImageSpec] styling to create a customized [Image].
 class StyledImage extends StyleWidget<ImageSpec> {
-  const StyledImage({
-    super.key,
-    super.style = const ImageMix.create(),
-    this.frameBuilder,
-    this.loadingBuilder,
-    this.errorBuilder,
-    this.image,
-    this.opacity,
-  });
-
   /// The image to display.
   final ImageProvider<Object>? image;
 
@@ -34,6 +24,16 @@ class StyledImage extends StyleWidget<ImageSpec> {
 
   /// Animation for opacity changes.
   final Animation<double>? opacity;
+
+  const StyledImage({
+    super.key,
+    super.style = const ImageMix.create(),
+    this.frameBuilder,
+    this.loadingBuilder,
+    this.errorBuilder,
+    this.image,
+    this.opacity,
+  });
 
   @override
   Widget build(BuildContext context, ImageSpec spec) {

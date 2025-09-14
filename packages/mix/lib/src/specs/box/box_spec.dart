@@ -6,10 +6,6 @@ import '../../core/helpers.dart';
 import '../../core/spec.dart';
 
 /// Specification for box styling and layout properties.
-///
-/// Provides comprehensive box styling including alignment, padding, margin, constraints,
-/// decoration, transformation, and clipping behavior. Used as the resolved form
-/// of [BoxStyle] styling attributes.
 class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
   /// Aligns the child within the box.
   final AlignmentGeometry? alignment;
@@ -20,22 +16,22 @@ class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
   /// Adds empty space around the box.
   final EdgeInsetsGeometry? margin;
 
-  /// Applies additional constraints to the child.
+  /// Additional constraints for the child.
   final BoxConstraints? constraints;
 
-  /// Paints a decoration behind the child.
+  /// Background decoration.
   final Decoration? decoration;
 
-  /// Paints a decoration in front of the child.
+  /// Foreground decoration.
   final Decoration? foregroundDecoration;
 
-  /// Applies a transformation matrix before painting the box.
+  /// Transformation matrix.
   final Matrix4? transform;
 
-  /// Aligns the origin of the coordinate system for the [transform].
+  /// Transform origin alignment.
   final AlignmentGeometry? transformAlignment;
 
-  /// Defines the clip behavior for the box when content overflows.
+  /// Clipping behavior for overflow.
   final Clip? clipBehavior;
 
   const BoxSpec({
@@ -50,8 +46,7 @@ class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
     this.clipBehavior,
   });
 
-  /// Creates a copy of this [BoxSpec] but with the given fields
-  /// replaced with the new values.
+  /// Creates a copy with the given fields replaced.
   @override
   BoxSpec copyWith({
     AlignmentGeometry? alignment,
@@ -77,7 +72,7 @@ class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
     );
   }
 
-  /// Linearly interpolates between this and [other] BoxSpec.
+  /// Linearly interpolates between this and [other].
   @override
   BoxSpec lerp(BoxSpec? other, double t) {
     return BoxSpec(
@@ -116,10 +111,7 @@ class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
       ..add(EnumProperty<Clip>('clipBehavior', clipBehavior));
   }
 
-  /// The list of properties that constitute the state of this [BoxSpec].
-  ///
-  /// This property is used by the [==] operator and the [hashCode] getter to
-  /// compare two [BoxSpec] instances for equality.
+  /// Properties that constitute the state of this [BoxSpec].
   @override
   List<Object?> get props => [
     alignment,

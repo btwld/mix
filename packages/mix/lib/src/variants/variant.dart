@@ -120,7 +120,7 @@ class ContextVariant extends Variant {
     return ContextVariant.breakpoint(Breakpoint.desktop);
   }
 
-  /// Check if this variant should be active for the given context
+  /// Checks if this variant should be active for the given context.
   bool when(BuildContext context) {
     return shouldApply(context);
   }

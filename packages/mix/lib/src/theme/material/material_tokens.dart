@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../tokens/value_tokens.dart';
 
-/// Provides access to Material Design tokens for colors and text styles.
+/// Provides Material Design tokens for colors and text styles.
 ///
-/// Contains organized token collections that map to Material Design 3
-/// color schemes and typography system.
+/// Contains organized token collections that map to Material Design 3 color
+/// schemes and typography, with Material 2 aliases retained for convenience.
 @immutable
 class MaterialTokens {
   final colorScheme = const _MaterialColorTokens();
@@ -14,7 +14,7 @@ class MaterialTokens {
   const MaterialTokens();
 }
 
-/// Material Design color tokens for theme integration.
+/// Material color tokens for theme integration.
 @immutable
 class _MaterialColorTokens {
   final primary = const ColorToken('md.color.primary');
@@ -44,7 +44,7 @@ class _MaterialColorTokens {
   const _MaterialColorTokens();
 }
 
-/// Material Design 3 text style tokens for typography.
+/// Material 3 text style tokens for typography.
 @immutable
 class _MaterialTextStyles {
   //  Material 3 text styles

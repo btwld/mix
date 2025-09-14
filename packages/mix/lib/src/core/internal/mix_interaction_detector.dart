@@ -14,6 +14,12 @@ import '../providers/widget_state_provider.dart';
 /// gates interactions, and clears transient hover/press states. When true, it tracks these.
 @internal
 class MixInteractionDetector extends StatefulWidget {
+  final Widget child;
+
+  final WidgetStatesController? controller;
+  final bool enabled;
+  final ValueChanged<bool>? onHoverChange;
+  final ValueChanged<PointerPosition>? onPointerPositionChange;
   const MixInteractionDetector({
     super.key,
     required this.child,
@@ -23,12 +29,6 @@ class MixInteractionDetector extends StatefulWidget {
     this.onPointerPositionChange,
   });
 
-  final Widget child;
-  final WidgetStatesController? controller;
-  final bool enabled;
-  final ValueChanged<bool>? onHoverChange;
-  final ValueChanged<PointerPosition>? onPointerPositionChange;
-
   @override
   State<MixInteractionDetector> createState() => _MixInteractionDetectorState();
 }
@@ -36,13 +36,6 @@ class MixInteractionDetector extends StatefulWidget {
 class _MixInteractionDetectorState extends State<MixInteractionDetector> {
   WidgetStatesController? _internalController;
   late final PointerPositionNotifier _cursorPositionNotifier;
-
-  @override
-  void initState() {
-    super.initState();
-    _cursorPositionNotifier = PointerPositionNotifier();
-    _syncDisabledState();
-  }
 
   /// Creates an internal controller with initial disabled state if needed.
   WidgetStatesController _createInternalController() {
@@ -168,6 +161,13 @@ class _MixInteractionDetectorState extends State<MixInteractionDetector> {
   WidgetStatesController get _effectiveController =>
       widget.controller ??
       (_internalController ??= _createInternalController());
+
+  @override
+  void initState() {
+    super.initState();
+    _cursorPositionNotifier = PointerPositionNotifier();
+    _syncDisabledState();
+  }
 
   @override
   void didUpdateWidget(MixInteractionDetector oldWidget) {
