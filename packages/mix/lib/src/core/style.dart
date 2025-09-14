@@ -107,6 +107,7 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
               return styleVariation.styleBuilder(this, namedVariants, context);
             }
           }
+
           return variantAttr.value;
         }(),
       };
@@ -127,7 +128,6 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
 
     return mergedStyle;
   }
-
 
   /// Resolves this attribute to its concrete value using the provided [BuildContext].
   @override

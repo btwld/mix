@@ -11,10 +11,10 @@ import '../core/style.dart';
 sealed class Variant {
   const Variant();
 
-  String get key;
-  
   /// Factory method to create a named variant
   static NamedVariant named(String name) => NamedVariant(name);
+
+  String get key;
 }
 
 /// Manual variants applied when explicitly requested.
@@ -170,20 +170,28 @@ class ContextVariantBuilder<S extends Style<Object?>> extends Variant {
 bool hasVariant(List<NamedVariant> activeVariants, NamedVariant variant) =>
     activeVariants.contains(variant);
 
-bool hasAnyVariant(List<NamedVariant> activeVariants, List<NamedVariant> variants) =>
-    variants.any((variant) => activeVariants.contains(variant));
+bool hasAnyVariant(
+  List<NamedVariant> activeVariants,
+  List<NamedVariant> variants,
+) => variants.any((variant) => activeVariants.contains(variant));
 
-bool hasAllVariants(List<NamedVariant> activeVariants, List<NamedVariant> variants) =>
-    variants.every((variant) => activeVariants.contains(variant));
+bool hasAllVariants(
+  List<NamedVariant> activeVariants,
+  List<NamedVariant> variants,
+) => variants.every((variant) => activeVariants.contains(variant));
 
 /// Interface for design system components that adapt their styling
 /// based on active variants and user modifications.
 abstract class StyleVariation<S extends Spec<S>> {
   /// The named variant this StyleVariation handles
   NamedVariant get variantType;
-  
+
   /// Combines user modifications with variant styling and contextual adaptations.
-  Style<S> styleBuilder(covariant Style<S> style, Set<NamedVariant> activeVariants, BuildContext context);
+  Style<S> styleBuilder(
+    covariant Style<S> style,
+    Set<NamedVariant> activeVariants,
+    BuildContext context,
+  );
 }
 
 // Common named variants
