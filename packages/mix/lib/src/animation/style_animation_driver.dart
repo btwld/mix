@@ -51,7 +51,6 @@ abstract class StyleAnimationDriver<S extends Spec<S>> {
   /// Gets the animation that drives spec changes.
   Animation<StyleSpec<S>?> get animation => _animation;
 
-  // ignore: no-empty-block
   void didUpdateSpec(StyleSpec<S> oldSpec, StyleSpec<S> newSpec) {}
   void updateDriver(AnimationConfig config);
 
@@ -442,6 +441,5 @@ class NoAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   }
 
   @override
-  // ignore: no-empty-block
   void updateDriver(AnimationConfig config) {}
 }

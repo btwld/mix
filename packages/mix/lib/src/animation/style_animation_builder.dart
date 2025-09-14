@@ -11,18 +11,18 @@ import 'style_animation_driver.dart';
 /// animated style changes. It also manages the animation lifecycle,
 /// triggering animations when the style changes.
 class StyleAnimationBuilder<S extends Spec<S>> extends StatefulWidget {
+  /// The target spec to animate to.
+  final StyleSpec<S> spec;
+
+  /// The builder function that creates the widget with the animated spec.
+  final Widget Function(BuildContext context, StyleSpec<S> spec) builder;
+
   const StyleAnimationBuilder({
     super.key,
 
     required this.spec,
     required this.builder,
   });
-
-  /// The target spec to animate to.
-  final StyleSpec<S> spec;
-
-  /// The builder function that creates the widget with the animated spec.
-  final Widget Function(BuildContext context, StyleSpec<S> spec) builder;
 
   @override
   State<StyleAnimationBuilder<S>> createState() =>
@@ -34,48 +34,43 @@ class _StyleAnimationBuilderState<S extends Spec<S>>
     with TickerProviderStateMixin {
   late StyleAnimationDriver<S> animationDriver;
 
-  @override
-  void initState() {
-    super.initState();
-    final spec = widget.spec;
-    final config = spec.animation;
-    animationDriver = _createAnimationDriver(config: config, initialSpec: spec);
-  }
-
   StyleAnimationDriver<S> _createAnimationDriver({
     required AnimationConfig? config,
     required StyleSpec<S> initialSpec,
   }) {
     return switch (config) {
-      // ignore: avoid-undisposed-instances
       CurveAnimationConfig() => CurveAnimationDriver<S>(
         vsync: this,
         config: config,
         initialSpec: initialSpec,
       ),
-      // ignore: avoid-undisposed-instances
       SpringAnimationConfig() => SpringAnimationDriver<S>(
         vsync: this,
         config: config,
         initialSpec: initialSpec,
       ),
-      // ignore: avoid-undisposed-instances
       PhaseAnimationConfig() => PhaseAnimationDriver<S>(
         vsync: this,
         config: config,
         initialSpec: initialSpec,
         context: context,
       ),
-      // ignore: avoid-undisposed-instances
       KeyframeAnimationConfig() => KeyframeAnimationDriver<S>(
         vsync: this,
         config: config as KeyframeAnimationConfig<S>,
         initialSpec: initialSpec,
         context: context,
       ),
-      // ignore: avoid-undisposed-instances
       null => NoAnimationDriver<S>(vsync: this, initialSpec: initialSpec),
     };
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final spec = widget.spec;
+    final config = spec.animation;
+    animationDriver = _createAnimationDriver(config: config, initialSpec: spec);
   }
 
   @override

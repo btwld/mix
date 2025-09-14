@@ -6,10 +6,7 @@ import '../core/spec.dart';
 import '../core/style.dart';
 import 'spring_curves.dart';
 
-/// Configuration data for animated styles in the Mix framework.
-///
-/// This sealed class provides different types of animation configurations
-/// for use with animated widgets and style transitions.
+/// Configuration data for animated styles.
 sealed class AnimationConfig {
   factory AnimationConfig.curve({
     required Duration duration,

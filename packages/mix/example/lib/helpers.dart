@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class _ExampleApp extends StatelessWidget {
-  const _ExampleApp({required this.child});
-
   final Widget child;
+
+  const _ExampleApp({required this.child});
 
   @override
   Widget build(BuildContext context) {

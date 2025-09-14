@@ -5,11 +5,10 @@ import '../core/breakpoint.dart';
 import '../core/providers/widget_state_provider.dart';
 import '../core/style.dart';
 
-/// Sealed base class for all variant types in the Mix framework.
+/// Base class for all variant types.
 ///
-/// Variants are used to conditionally apply styling based on either:
-/// - Manual application (NamedVariant)
-/// - Automatic context conditions (ContextVariant)
+/// Conditionally applies styling based on manual application
+/// or automatic context conditions.
 @immutable
 sealed class Variant {
   const Variant();
@@ -17,10 +16,7 @@ sealed class Variant {
   String get key;
 }
 
-/// Manual variants that are only applied when explicitly requested.
-/// These variants don't automatically apply based on context.
-///
-/// Examples: primary, outlined, large
+/// Manual variants applied only when explicitly requested.
 @immutable
 class NamedVariant extends Variant {
   final String name;
@@ -41,8 +37,7 @@ class NamedVariant extends Variant {
   int get hashCode => name.hashCode;
 }
 
-/// Base for variants that automatically apply based on context conditions.
-/// These variants check their conditions during widget build.
+/// Variants that automatically apply based on context conditions.
 @immutable
 class ContextVariant extends Variant {
   final bool Function(BuildContext) shouldApply;
@@ -124,7 +119,7 @@ class ContextVariant extends Variant {
     return ContextVariant.breakpoint(Breakpoint.desktop);
   }
 
-  /// Check if this variant should be active for the given context
+  /// Checks if this variant should be active for the given context.
   bool when(BuildContext context) {
     return shouldApply(context);
   }
@@ -148,10 +143,9 @@ final class WidgetStateVariant extends ContextVariant {
 }
 
 /// Variant that dynamically builds a Style based on build context.
-/// This variant type allows for complex styling that depends on runtime context.
 @immutable
 class ContextVariantBuilder<S extends Style<Object?>> extends Variant {
-  /// Function that builds a Style based on the given BuildContext
+  /// Function that builds a Style from the given BuildContext.
   final S Function(BuildContext) fn;
 
   const ContextVariantBuilder(this.fn);
@@ -167,7 +161,7 @@ class ContextVariantBuilder<S extends Style<Object?>> extends Variant {
   @override
   String get key => fn.hashCode.toString();
 
-  /// Build a Style from the given BuildContext
+  /// Builds a Style from the given BuildContext.
   S build(BuildContext context) => fn(context);
 }
 

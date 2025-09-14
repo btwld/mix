@@ -1,8 +1,3 @@
-/// Utility exports for Mix specification system.
-///
-/// This file provides convenient global accessors for commonly used spec attributes,
-/// utilities, and modifiers in the Mix framework.
-library;
 
 // Global utilities for $on and $wrap functionality are now available via spec-specific utilities:
 // - $box.on.hover(), $box.wrap.opacity(), etc.

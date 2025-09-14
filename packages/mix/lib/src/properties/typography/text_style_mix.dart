@@ -7,8 +7,6 @@ import '../../core/prop.dart';
 import '../painting/shadow_mix.dart';
 
 /// Mix representation of [TextStyle].
-///
-/// Comprehensive text styling with tokens.
 @immutable
 class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
   // Simple properties use MixValue directly
@@ -268,14 +266,7 @@ class TextStyleMix extends Mix<TextStyle> with Diagnosticable {
         inherit: textStyle.inherit,
       );
 
-  /// Constructor that accepts a nullable [TextStyle] value and extracts its properties.
-  ///
-  /// Returns null if the input is null, otherwise uses [TextStyleMix.value].
-  ///
-  /// ```dart
-  /// const TextStyle? textStyle = TextStyle(color: Colors.blue, fontSize: 16.0);
-  /// final dto = TextStyleMix.maybeValue(textStyle); // Returns TextStyleMix or null
-  /// ```
+  /// Creates a [TextStyleMix] from a nullable [TextStyle].
   static TextStyleMix? maybeValue(TextStyle? textStyle) {
     return textStyle != null ? TextStyleMix.value(textStyle) : null;
   }

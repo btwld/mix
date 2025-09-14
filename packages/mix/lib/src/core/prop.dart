@@ -12,54 +12,31 @@ import 'prop_source.dart';
 
 /// A property that can hold values, tokens, or Mix types.
 ///
-/// [Prop] is the foundation of the Mix styling system. It provides:
-/// - Storage for values through different source types
-/// - Token resolution via [BuildContext]
-/// - Merging capabilities with different strategies
-/// - Directive application for value transformations
-/// - Animation configuration support
+/// Provides storage for values, token resolution, merging strategies,
+/// and directive application for value transformations.
 ///
-/// This class serves as the base for both regular and Mix properties,
-/// consolidating the previous PropBase hierarchy into a single implementation.
-///
-/// ## Value Creation
-/// Use [Prop.value] for regular values - it creates a [ValueSource] without conversion.
-/// Use [Prop.mix] for explicit Mix values - it creates a [MixSource].
-///
-/// ## Conversion Behavior
-/// Type conversion to Mix types happens ONLY during resolution when Mix values
-/// are present in the property. [Prop.value] never auto-converts values.
+/// Use [Prop.value] for regular values, [Prop.mix] for Mix values.
+/// Type conversion to Mix types happens only during resolution.
 @immutable
 class Prop<V> {
-  /// The list of sources that provide values for this property.
-  ///
-  /// Sources can be [ValueSource], [TokenSource], or [MixSource].
+  /// Sources that provide values for this property.
   final List<PropSource<V>> sources;
 
-  /// Optional directives to transform the resolved value.
-  ///
-  /// Directives are applied after resolution but before the value is returned.
+  /// Directives to transform the resolved value.
   final List<Directive<V>>? $directives;
 
   // Constructors
 
   /// Creates a property with the given sources and directives.
-  ///
-  /// This constructor is private and used internally by factory methods.
   const Prop._({required this.sources, List<Directive<V>>? directives})
     : $directives = directives;
 
-  /// Creates a new property by copying all fields from another property.
-  ///
-  /// Used by subclasses that need to wrap existing properties.
+  /// Creates a property by copying all fields from another property.
   Prop.fromProp(Prop<V> other)
     : sources = other.sources,
       $directives = other.$directives;
 
   /// Creates a property that references a token.
-  ///
-  /// The token will be resolved from [MixScope] during resolution.
-  /// Optionally accepts [directives] configuration.
   factory Prop.token(MixToken<V> token, {List<Directive<V>>? directives}) {
     return Prop._(sources: [TokenSource(token)], directives: directives);
   }
@@ -93,11 +70,7 @@ class Prop<V> {
     return Prop._(sources: [ValueSource(value)]);
   }
 
-  /// Creates a property from a [Mix] value.
-  ///
-  /// Use this when you explicitly want to store a Mix value
-  /// for accumulation merging behavior.
-  /// Preserves token references (MixRef objects) instead of wrapping them in MixSource.
+  /// Creates a property from a [Mix] value for accumulation merging.
   static Prop<V> mix<V>(Mix<V> mix) {
     // Check if mix is already a token reference (MixRef)
     // MixRef objects are Prop<V> instances with TokenSource that implement Mix interfaces
@@ -112,8 +85,6 @@ class Prop<V> {
   }
 
   /// Creates a property from a nullable value.
-  ///
-  /// Returns `null` if [value] is `null`, otherwise calls [Prop.value].
   static Prop<V>? maybe<V>(V? value) {
     if (value == null) return null;
 
@@ -121,9 +92,6 @@ class Prop<V> {
   }
 
   /// Creates a property from a nullable [Mix] value.
-  ///
-  /// Returns `null` if [value] is `null`, otherwise calls [Prop.mix].
-  /// Preserves token references (MixRef objects) instead of wrapping them in MixSource.
   static Prop<V>? maybeMix<V>(Mix<V>? value) {
     if (value == null) return null;
     
@@ -140,10 +108,7 @@ class Prop<V> {
   }
 
 
-  /// Creates a property from a regular value by converting it to a Mix.
-  ///
-  /// Uses the converter registry to transform the value into a Mix type,
-  /// then wraps it in a Prop. Returns null if conversion is not possible.
+  /// Creates a property by converting a regular value to a Mix.
   static Prop<V>? mixValue<V>(V value) {
     final converted = MixConverterRegistry.instance.tryConvert<V>(value);
     if (converted == null) return null;
@@ -157,14 +122,10 @@ class Prop<V> {
   Type get type => V;
 
   /// Whether this property contains at least one value source.
-  ///
-  /// Returns `true` if the property has [ValueSource] or [MixSource].
   bool get hasValue =>
       sources.any((s) => s is ValueSource<V> || s is MixSource<V>);
 
   /// Whether this property contains at least one token source.
-  ///
-  /// Returns `true` if the property has [TokenSource].
   bool get hasToken => sources.any((s) => s is TokenSource<V>);
 
   // Methods
@@ -176,12 +137,8 @@ class Prop<V> {
 
   /// Merges this property with another property.
   ///
-  /// Always accumulates all sources from both properties.
-  /// During resolution, the behavior depends on the source types:
-  /// - Mix sources: merged using accumulation strategy
-  /// - Regular values: last value wins during resolution
-  ///
-  /// Directives are merged from both properties.
+  /// Accumulates all sources. Mix sources use accumulation strategy,
+  /// regular values use replacement strategy.
   Prop<V> mergeProp(covariant Prop<V>? other) {
     if (other == null) return this;
 
@@ -192,15 +149,10 @@ class Prop<V> {
     );
   }
 
-  /// Resolves this property to a concrete value using the given context.
+  /// Resolves this property to a concrete value.
   ///
-  /// Resolution process:
-  /// 1. Resolves all sources (tokens from context, Mix values, etc.)
-  /// 2. Converts regular values to Mix when Mix values are present
-  /// 3. Merges multiple values based on type (accumulation for Mix, replacement for others)
-  /// 4. Applies any directives to transform the final value
-  ///
-  /// Throws [FlutterError] if the property has no sources.
+  /// Resolves sources, converts values to Mix if needed, merges based on type,
+  /// and applies directives.
   V resolveProp(BuildContext context) {
     if (sources.isEmpty) {
       throw FlutterError('Prop<$V> has no sources');

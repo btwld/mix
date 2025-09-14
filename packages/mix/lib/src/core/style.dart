@@ -25,8 +25,6 @@ sealed class StyleElement {
 }
 
 /// Base class for style classes that can be resolved to specifications.
-///
-/// Provides variant support, modifiers, and animation configuration for styled elements.
 abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     implements StyleElement {
   final List<VariantStyle<S>>? $variants;
@@ -61,14 +59,7 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
 
   /// Merges all active variants with their nested variants recursively.
   ///
-  /// This method evaluates which variants should be active based on the current
-  /// context and named variants, then recursively processes nested variants
-  /// within each active variant's style. The result is a fully merged style
-  /// with all applicable variants applied.
-  ///
-  /// Variant priority order (lowest to highest):
-  /// 1. ContextVariant and NamedVariant (applied first)
-  /// 2. WidgetStateVariant (applied last, highest priority)
+  /// Priority order: ContextVariant and NamedVariant first, then WidgetStateVariant.
   @visibleForTesting
   Style<S> mergeActiveVariants(
     BuildContext context, {
@@ -117,11 +108,11 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     return mergedStyle;
   }
 
-  /// Resolves this attribute to its concrete value using the provided [BuildContext].
+  /// Resolves this style to its concrete value.
   @override
   StyleSpec<S> resolve(BuildContext context);
 
-  /// Merges this attribute with another attribute of the same type.
+  /// Merges this style with another style of the same type.
   @override
   Style<S> merge(covariant Style<S>? other);
 
@@ -130,8 +121,6 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   Object get mergeKey => S;
 
   /// Builds the style into a fully resolved spec with metadata.
-  ///
-  /// This method resolves the style, which now includes animation and modifiers metadata.
   StyleSpec<S> build(
     BuildContext context, {
     Set<NamedVariant> namedVariants = const {},

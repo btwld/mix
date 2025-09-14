@@ -1,5 +1,3 @@
-// ABOUTME: Token references for types used by MixToken classes in the Mix theme.
-// ABOUTME: Contains refs, extension types and utilities specifically for design tokens.
 import 'package:flutter/widgets.dart';
 
 import '../../core/breakpoint.dart';
@@ -11,7 +9,7 @@ import '../../properties/typography/text_style_mix.dart';
 import 'mix_token.dart';
 
 mixin ValueRef<T> on Prop<T> {
-  /// Generates a detailed error message for token reference misuse.
+  /// Builds a detailed error message when a token reference is used eagerly.
   String _buildTokenReferenceError(Symbol memberName) {
     final typeName = T.toString();
     final memberNameStr = memberName
@@ -47,7 +45,7 @@ final class RadiusRef extends Prop<Radius>
   RadiusRef(super.prop) : super.fromProp();
 }
 
-/// Token reference for [TextStyle] values
+/// Token reference for [TextStyle] values.
 final class TextStyleRef extends Prop<TextStyle>
     with ValueRef<TextStyle>
     implements TextStyle {
@@ -59,14 +57,14 @@ final class TextStyleRef extends Prop<TextStyle>
   }
 }
 
-/// Token reference for [Shadow] values
+/// Token reference for [Shadow] values.
 final class ShadowRef extends Prop<Shadow>
     with ValueRef<Shadow>
     implements Shadow {
   ShadowRef(super.prop) : super.fromProp();
 }
 
-/// Token reference for [BoxShadow] values
+/// Token reference for [BoxShadow] values.
 final class BoxShadowRef extends Prop<BoxShadow>
     with ValueRef<BoxShadow>
     implements BoxShadow {
@@ -148,7 +146,7 @@ final class BoxShadowListMixRef extends Prop<List<BoxShadow>>
 // EXTENSION TYPE TOKEN REFERENCES FOR PRIMITIVES
 // =============================================================================
 
-/// Global registry that maps extension type values to their source tokens.
+/// Global registry that maps extension-type reference values to their tokens.
 final Map<Object, MixToken> _tokenRegistry = <Object, MixToken>{};
 
 /// Clears the token registry.
@@ -157,14 +155,17 @@ void clearTokenRegistry() {
   _tokenRegistry.clear();
 }
 
-/// Returns the token associated with a token reference value.
+/// Returns the token associated with an extension-type reference value.
 ///
 /// Returns null if the value is not a registered token reference.
 MixToken<T>? getTokenFromValue<T>(Object value) {
   return _tokenRegistry[value] as MixToken<T>?;
 }
 
-/// Token reference for [double] values that implements the double interface.
+/// Token reference for [double] values, implemented as an extension type.
+///
+/// Instances carry a unique negative sentinel value and register themselves in
+/// a private registry so they can be resolved to the originating token.
 extension type const DoubleRef(double _value) implements double {
   /// Creates a token reference and registers it in the global registry.
   static DoubleRef token(MixToken<double> token) {
@@ -177,24 +178,24 @@ extension type const DoubleRef(double _value) implements double {
   }
 }
 
-/// Token reference for [List<Shadow>] values
+/// Token reference for list-based [Shadow] values.
 final class ShadowListRef extends Prop<List<Shadow>>
     with ValueRef<List<Shadow>>
     implements List<Shadow> {
   ShadowListRef(super.prop) : super.fromProp();
 }
 
-/// Token reference for [List<BoxShadow>] values
+/// Token reference for list-based [BoxShadow] values.
 final class BoxShadowListRef extends Prop<List<BoxShadow>>
     with ValueRef<List<BoxShadow>>
     implements List<BoxShadow> {
   BoxShadowListRef(super.prop) : super.fromProp();
 }
 
-/// Returns true if the value is a token reference.
+/// Returns true if [value] is any kind of token reference.
 ///
-/// Detects both class-based token references (Prop with ValueRef)
-/// and extension type token references.
+/// Detects both class-based references (Prop with [ValueRef]) and
+/// extension-type references (e.g., [DoubleRef]).
 bool isAnyTokenRef(Object value) {
   // Check for class-based token references
   if (value is Prop && value.sources.any((s) => s is TokenSource)) {
@@ -208,10 +209,10 @@ bool isAnyTokenRef(Object value) {
   return _tokenRegistry.containsKey(value);
 }
 
-/// Creates the appropriate token reference for the given token.
+/// Returns a reference value appropriate for the generic type [T].
 ///
-/// Returns a reference that implements the target type, allowing the token
-/// to be used wherever the type is expected.
+/// The returned value implements [T], allowing the token to be passed anywhere
+/// a [T] is expected (e.g., style utilities), and resolved later by Mix.
 T getReferenceValue<T>(MixToken<T> token) {
   final prop = Prop.token(token);
   if (T == Color) {

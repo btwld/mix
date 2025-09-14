@@ -4,21 +4,21 @@ import 'token_refs.dart';
 import '../mix_theme.dart';
 
 
-/// A design token that can be resolved to a value within a Mix theme.
+/// A design token that resolves to a value within a Mix theme.
 ///
-/// Tokens provide a way to reference theme values indirectly, allowing for
-/// dynamic theming and consistent design system implementation.
+/// Identifies semantic values in your design system. Provide concrete
+/// values in a `MixScope`, then call or resolve to get the value.
 @immutable
 abstract class MixToken<T> {
   final String name;
   const MixToken(this.name);
 
-  /// Resolves this token to its value using the reference system.
+  /// Returns a reference value for Mix utilities.
   T call() {
     return getReferenceValue(this);
   }
 
-  /// Resolves this token to its value within the given context.
+  /// Resolves this token to a concrete value.
   T resolve(BuildContext context) {
     return MixScope.tokenOf(this, context);
   }
