@@ -97,7 +97,17 @@ class Prop<V> {
   ///
   /// Use this when you explicitly want to store a Mix value
   /// for accumulation merging behavior.
+  /// Preserves token references (MixRef objects) instead of wrapping them in MixSource.
   static Prop<V> mix<V>(Mix<V> mix) {
+    // Check if mix is already a token reference (MixRef)
+    // MixRef objects are Prop<V> instances with TokenSource that implement Mix interfaces
+    if (mix is Prop<V>) {
+      final prop = mix as Prop<V>;
+      if (prop.hasToken) {
+        return prop; // Return token reference directly to preserve TokenSource
+      }
+    }
+    
     return Prop._(sources: [MixSource(mix)]);
   }
 
