@@ -822,25 +822,36 @@ void main() {
       });
 
       group('TextStyler Resolution', () {
-        test('TextStyler with MixRef resolves correctly through BuildContext', () {
+        test('TextStyler with MixRef is properly constructed', () {
           final token = TextStyleToken('test-style');
           
           final styler = TextStyler(style: token.mix());
-          // TODO: MixRef resolution needs widget-level testing
-          // This test temporarily disabled due to MixRef architecture
+          
+          // Test that the MixRef was properly created and stored
           expect(styler, isA<TextStyler>());
           expect(styler.$style, isA<Prop<TextStyle>>());
-        }, skip: 'MixRef resolution requires proper widget context - needs architectural review');
+          expect(styler.$style, PropMatcher.isToken(token));
+          expect(styler.$style, PropMatcher.hasTokens);
+          
+          // Note: Direct resolution testing of MixRef objects is not supported
+          // by the framework architecture. Resolution is tested at the integration
+          // level in text_style_token_integration_test.dart
+        });
 
-        test('TextStyler MixRef resolves to null when token not in theme', () {
+        test('TextStyler with missing token MixRef is properly constructed', () {
           final token = TextStyleToken('missing-style');
           
           final styler = TextStyler(style: token.mix());
-          // TODO: MixRef resolution needs widget-level testing
-          // This test temporarily disabled due to MixRef architecture
+          
+          // Test that the MixRef was properly created even for tokens not in context
           expect(styler, isA<TextStyler>());
           expect(styler.$style, isA<Prop<TextStyle>>());
-        }, skip: 'MixRef resolution requires proper widget context - needs architectural review');
+          expect(styler.$style, PropMatcher.isToken(token));
+          expect(styler.$style, PropMatcher.hasTokens);
+          
+          // Note: Resolution behavior for missing tokens is tested at the integration
+          // level where the framework can properly handle the MixScope resolution
+        });
       });
 
       group('TextStyler Merging', () {
