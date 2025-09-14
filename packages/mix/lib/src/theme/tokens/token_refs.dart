@@ -6,6 +6,8 @@ import '../../core/breakpoint.dart';
 import '../../core/prop.dart';
 import '../../core/prop_refs.dart';
 import '../../core/prop_source.dart';
+import '../../properties/painting/shadow_mix.dart';
+import '../../properties/typography/text_style_mix.dart';
 import 'mix_token.dart';
 
 mixin ValueRef<T> on Prop<T> {
@@ -76,6 +78,70 @@ final class BreakpointRef extends Prop<Breakpoint>
     with ValueRef<Breakpoint>
     implements Breakpoint {
   BreakpointRef(super.prop) : super.fromProp();
+}
+
+// =============================================================================
+// MIX REF CLASSES - FOR MIX FRAMEWORK USAGE
+// =============================================================================
+
+/// Token reference for [TextStyleMix] that implements Mix interface instead of Flutter interface
+final class TextStyleMixRef extends Prop<TextStyle>
+    with ValueRef<TextStyle>
+    implements TextStyleMix {
+  TextStyleMixRef(super.prop) : super.fromProp();
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return super.toString();
+  }
+}
+
+/// Token reference for [ShadowMix] that implements Mix interface instead of Flutter interface  
+final class ShadowMixRef extends Prop<Shadow>
+    with ValueRef<Shadow>
+    implements ShadowMix {
+  ShadowMixRef(super.prop) : super.fromProp();
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return super.toString();
+  }
+}
+
+/// Token reference for [BoxShadowMix] that implements Mix interface instead of Flutter interface
+final class BoxShadowMixRef extends Prop<BoxShadow>
+    with ValueRef<BoxShadow>
+    implements BoxShadowMix {
+  BoxShadowMixRef(super.prop) : super.fromProp();
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return super.toString();
+  }
+}
+
+/// Token reference for [ShadowListMix] that implements Mix interface instead of Flutter interface
+final class ShadowListMixRef extends Prop<List<Shadow>>
+    with ValueRef<List<Shadow>>
+    implements ShadowListMix {
+  ShadowListMixRef(super.prop) : super.fromProp();
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return super.toString();
+  }
+}
+
+/// Token reference for [BoxShadowListMix] that implements Mix interface instead of Flutter interface
+final class BoxShadowListMixRef extends Prop<List<BoxShadow>>
+    with ValueRef<List<BoxShadow>>
+    implements BoxShadowListMix {
+  BoxShadowListMixRef(super.prop) : super.fromProp();
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return super.toString();
+  }
 }
 
 // =============================================================================

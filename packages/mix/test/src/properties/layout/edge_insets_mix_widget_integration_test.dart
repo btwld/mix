@@ -18,9 +18,8 @@ void main() {
 
     testWidgets('SpaceTokens resolve correctly in widget tree', (tester) async {
       // Create a simple widget that uses EdgeInsetsMix with tokens
-      Widget testWidget = Container(
-        child: Builder(
-          builder: (context) {
+      Widget testWidget = Builder(
+        builder: (context) {
             final mix = EdgeInsetsGeometryMix.only(
               top: smallSpace(),
               left: mediumSpace(),
@@ -35,8 +34,7 @@ void main() {
               child: const Text('Test Content'),
             );
           },
-        ),
-      );
+        );
 
       // Pump widget with MixScope containing our tokens
       await tester.pumpWithMixScope(
@@ -153,9 +151,8 @@ void main() {
     });
 
     testWidgets('EdgeInsetsDirectionalMix works in widget tree', (tester) async {
-      Widget testWidget = Container(
-        child: Builder(
-          builder: (context) {
+      Widget testWidget = Builder(
+        builder: (context) {
             final mix = EdgeInsetsGeometryMix.directional(
               start: smallSpace(),
               top: mediumSpace(),
@@ -168,8 +165,7 @@ void main() {
               child: const Text('Directional Content'),
             );
           },
-        ),
-      );
+        );
 
       await tester.pumpWithMixScope(
         testWidget,

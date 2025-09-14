@@ -268,7 +268,7 @@ enum ElevationShadow {
   const ElevationShadow(this.elevation);
 }
 
-/// Mix wrapper for a list of [ShadowMix] items resolving to List<Shadow>.
+/// Mix wrapper for a list of [ShadowMix] items resolving to `List<Shadow>`.
 class ShadowListMix extends Mix<List<Shadow>> with Diagnosticable {
   final List<ShadowMix> items;
 
@@ -300,7 +300,7 @@ class ShadowListMix extends Mix<List<Shadow>> with Diagnosticable {
   List<Object?> get props => [items];
 }
 
-/// Mix wrapper for a list of [BoxShadowMix] items resolving to List<BoxShadow>.
+/// Mix wrapper for a list of [BoxShadowMix] items resolving to `List<BoxShadow>`.
 class BoxShadowListMix extends Mix<List<BoxShadow>> with Diagnosticable {
   final List<BoxShadowMix> items;
 
