@@ -533,8 +533,8 @@ The current system supports tokens for:
 - **`TextStyle`** - Typography styles
 - **`Radius`** - Border radius values
 - **`Breakpoint`** - Responsive breakpoints
-- **`List<BoxShadow>`** - Box shadow effects (list-based)
-- **`List<Shadow>`** - Text/paint shadow effects (list-based)
+- **`BoxShadow`** - Box shadow effects
+- **`Shadow`** - Text shadow effects
 
 ## Migration from Old System
 
@@ -611,21 +611,3 @@ The Mix token system uses `MixToken<T>` with `MixScope` for a type-safe, streaml
 5. **Consolidated token types** in single `value_tokens.dart` file
 
 The system is simplified, type-safe, and production-ready with comprehensive token type support.
-### Shadows are list-based
-
-In Mix, shadow tokens are list-based for more predictable merging behavior:
-
-- Use `BoxShadowToken` for `List<BoxShadow>` values
-- Use `ShadowToken` for `List<Shadow>` values
-
-Update any single-value usages to provide lists instead:
-
-```dart
-// Old (single value)
-// BoxShadowToken('shadow.card'): const BoxShadow(...)
-
-// New (list-based)
-BoxShadowToken('shadow.card'): const [
-  BoxShadow(blurRadius: 8, offset: Offset(0, 4)),
-]
-```

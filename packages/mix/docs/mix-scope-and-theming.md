@@ -27,9 +27,16 @@ final color1 = primary();                 // via reference system
 final color2 = primary.resolve(context);  // via BuildContext
 ```
 
-### Token Values
-- MixScope stores concrete values mapped by `MixToken<T>` keys.
-- Provide them via the typed maps in the MixScope constructor or in `MixScope.withMaterial`.
+### TokenDefinition<T>
+- Binds a MixToken to a concrete value (static or computed) used by MixScope
+
+```dart
+TokenDefinition(primary, Colors.blue);
+```
+
+### ValueBuilder<T>
+- A resolver function type: `T Function(BuildContext context)`
+- MixScope stores a `Map<MixToken, ValueBuilder>` internally
 
 ## Setting Up MixScope
 
@@ -43,9 +50,6 @@ MixScope(
   spaces: {
     SpaceToken('space.md'): 16.0,
   },
-  doubles: {
-    DoubleToken('elevation.card'): 2.0,
-  },
   radii: {
     RadiusToken('radius.pill'): const Radius.circular(20),
   },
@@ -55,34 +59,17 @@ MixScope(
       fontWeight: FontWeight.bold,
     ),
   },
-  fontWeights: {
-    FontWeightToken('weight.semibold'): FontWeight.w600,
-  },
-  borders: {
-    BorderSideToken('border.default'): const BorderSide(width: 1),
-  },
-  shadows: {
-    ShadowToken('shadow.sm'): const [Shadow(blurRadius: 2, offset: Offset(0, 1))],
-  },
-  boxShadows: {
-    BoxShadowToken('shadow.card'): const [
-      BoxShadow(blurRadius: 8, spreadRadius: 0, offset: Offset(0, 4)),
-    ],
-  },
   child: MyApp(),
 )
 ```
 
-### 2) Using the generic `tokens:` map
-
-You can also combine values into a single `Map<MixToken, Object>` via `tokens:`:
+### 2) Using TokenDefinition for custom sets
 
 ```dart
 MixScope(
   tokens: {
-    ColorToken('brand.primary'): Colors.blue,
-    SpaceToken('space.md'): 16.0,
-    ShadowToken('shadow.sm'): const [Shadow(blurRadius: 2, offset: Offset(0, 1))],
+    TokenDefinition(ColorToken('brand.primary'), Colors.blue),
+    TokenDefinition(SpaceToken('space.md'), 16.0),
   },
   child: MyApp(),
 )
@@ -103,8 +90,8 @@ MixScope.withMaterial(
 ```
 
 Notes:
-- `withMaterial` reads `Theme.of(context)` at build time and maps Material tokens.
-- You can combine Material tokens with your own values via any of the typed maps or the generic `tokens:`.
+- withMaterial reads Theme.of(context) at build time and maps Material tokens
+- You can combine Material tokens with your own TokenDefinition set via `tokens:` as well
 
 ## Accessing Tokens
 
@@ -127,13 +114,10 @@ final brand = ColorToken('brand.primary').resolve(context);
 // Example from an app style
 final $primary = ColorToken('brand.primary');
 final $spacing = SpaceToken('space.md');
-final $cardShadow = BoxShadowToken('shadow.card');
 
 final style = BoxStyler()
   .color($primary())
   .padding(.all($spacing()));
-  // For APIs that take lists of shadows/boxShadows
-  // .boxShadow($cardShadow())
 ```
 
 ## Modifier Ordering
@@ -242,7 +226,7 @@ void main() {
 ## Best Practices
 
 - Prefer semantic token names, e.g., `brand.primary`, `layout.content.padding`
-- Keep tokens type-safe using the provided token classes (ColorToken, SpaceToken, DoubleToken, RadiusToken, TextStyleToken, BreakpointToken, ShadowToken, BoxShadowToken, BorderSideToken, FontWeightToken)
+- Keep tokens type-safe using the provided token classes (ColorToken, SpaceToken, RadiusToken, TextStyleToken, BreakpointToken)
 - Centralize token declarations for discoverability
 - Use nested scopes for feature- or screen-level overrides
 - Leverage `withMaterial` when you want automatic alignment with Material Theme
@@ -261,3 +245,4 @@ void main() {
 ## Notes on Older Docs
 
 If you encounter references to `MixScopeData` in older documents, note that the current implementation exposes token resolution directly from `MixScope` (an InheritedModel with aspects), storing `Map<MixToken, ValueBuilder>`. Use the APIs above.
+
