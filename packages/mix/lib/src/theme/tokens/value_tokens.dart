@@ -1,3 +1,5 @@
+/// Consolidated design tokens for various value types in the Mix theme.
+library;
 import 'package:flutter/material.dart';
 
 import '../../core/breakpoint.dart';
@@ -68,14 +70,15 @@ class BreakpointToken extends MixToken<Breakpoint> {
 class TextStyleToken extends MixToken<TextStyle> {
   const TextStyleToken(super.name);
 
+  /// Returns a Mix framework compatible reference for use with Mix styling utilities.
+  TextStyleMixRef mix() => TextStyleMixRef(Prop.token(this));
+
   @override
   TextStyleRef call() => TextStyleRef(Prop.token(this));
 }
 
 
-/// A token that represents a [BorderSide] value.
-///
-/// Useful for borders and outlines in decoration APIs.
+/// Design token for [BorderSide] values.
 class BorderSideToken extends MixToken<BorderSide> {
   const BorderSideToken(super.name);
 
@@ -90,6 +93,9 @@ class BorderSideToken extends MixToken<BorderSide> {
 class ShadowToken extends MixToken<List<Shadow>> {
   const ShadowToken(super.name);
 
+  /// Returns a Mix framework compatible reference for use with Mix styling utilities.
+  ShadowListMixRef mix() => ShadowListMixRef(Prop.token(this));
+
   @override
   ShadowListRef call() => ShadowListRef(Prop.token(this));
 }
@@ -100,6 +106,9 @@ class ShadowToken extends MixToken<List<Shadow>> {
 /// token when the target API expects `List<BoxShadow>`.
 class BoxShadowToken extends MixToken<List<BoxShadow>> {
   const BoxShadowToken(super.name);
+
+  /// Returns a Mix framework compatible reference for use with Mix styling utilities.
+  BoxShadowListMixRef mix() => BoxShadowListMixRef(Prop.token(this));
 
   @override
   BoxShadowListRef call() => BoxShadowListRef(Prop.token(this));

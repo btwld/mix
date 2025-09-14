@@ -59,7 +59,15 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
 
   /// Merges all active variants with their nested variants recursively.
   ///
-  /// Priority order: ContextVariant and NamedVariant first, then WidgetStateVariant.
+  /// This method evaluates which variants should be active based on the current
+  /// context and named variants, then recursively processes nested variants
+  /// within each active variant's style. The result is a fully merged style
+  /// with all applicable variants applied.
+  ///
+  /// Variant priority order (lowest to highest):
+  /// 1. ContextVariant and NamedVariant (applied first)
+  /// 2. StyleVariation (applied second)
+  /// 3. WidgetStateVariant (applied last, highest priority)
   @visibleForTesting
   Style<S> mergeActiveVariants(
     BuildContext context, {
@@ -88,7 +96,18 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     final stylesToMerge = activeVariants.map((variantAttr) {
       return switch (variantAttr.variant) {
         ContextVariantBuilder variant => variant.build(context) as Style<S>,
-        (ContextVariant() || NamedVariant()) => variantAttr.value,
+        (ContextVariant() || NamedVariant()) => () {
+          // Check if the value is a StyleVariation
+          if (variantAttr.value is StyleVariation<S>) {
+            final styleVariation = variantAttr.value as StyleVariation<S>;
+            // Only apply if this variant is active
+            if (namedVariants.contains(styleVariation.variantType)) {
+              return styleVariation.styleBuilder(this, namedVariants, context);
+            }
+          }
+
+          return variantAttr.value;
+        }(),
       };
     }).toList();
 
