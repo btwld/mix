@@ -14,14 +14,15 @@ class TestOutlinedBoxStyler extends BoxStyler
   final variantKey = _testOutlined;
 
   @override
-  BoxStyler buildStyle(BoxStyler style, Set<String> activeVariants) {
-    // Only apply styling if outlined variant is active
-    if (!activeVariants.contains(_testOutlined)) return style;
+  BoxStyler buildStyle(Set<String> activeVariants) {
+    // Always apply styling - StyleVariantMixin activation is handled by TriggerVariant
+    // Create a clean BoxStyler without variants to prevent recursion
+    final cleanBase = BoxStyler();
 
     final result = switch (activeVariants) {
-      _ when activeVariants.contains(_testSmall) => style.width(80.0),
-      _ when activeVariants.contains(_testLarge) => style.width(120.0),
-      _ => style.width(100.0),
+      _ when activeVariants.contains(_testSmall) => cleanBase.width(80.0),
+      _ when activeVariants.contains(_testLarge) => cleanBase.width(120.0),
+      _ => cleanBase.width(100.0),
     };
 
     return switch ((
@@ -40,14 +41,15 @@ class TestSolidBoxStyler extends BoxStyler
   final variantKey = _testSolid;
 
   @override
-  BoxStyler buildStyle(BoxStyler style, Set<String> activeVariants) {
-    // Only apply styling if solid variant is active
-    if (!activeVariants.contains(_testSolid)) return style;
+  BoxStyler buildStyle(Set<String> activeVariants) {
+    // Always apply styling - StyleVariantMixin activation is handled by TriggerVariant
+    // Create a clean BoxStyler without variants to prevent recursion
+    final cleanBase = BoxStyler();
 
     return switch (activeVariants) {
-      _ when activeVariants.contains(_testSmall) => style.width(70.0),
-      _ when activeVariants.contains(_testLarge) => style.width(110.0),
-      _ => style.width(90.0),
+      _ when activeVariants.contains(_testSmall) => cleanBase.width(70.0),
+      _ when activeVariants.contains(_testLarge) => cleanBase.width(110.0),
+      _ => cleanBase.width(90.0),
     };
   }
 }
@@ -58,11 +60,12 @@ class TestSmallBoxStyler extends BoxStyler
   final variantKey = _testSmall;
 
   @override
-  BoxStyler buildStyle(BoxStyler style, Set<String> activeVariants) {
-    // Only apply styling if small variant is active
-    if (!activeVariants.contains(_testSmall)) return style;
+  BoxStyler buildStyle(Set<String> activeVariants) {
+    // Always apply styling - StyleVariantMixin activation is handled by TriggerVariant
+    // Create a clean BoxStyler without variants to prevent recursion
+    final cleanBase = BoxStyler();
 
-    return style.height(32.0);
+    return cleanBase.height(32.0);
   }
 }
 
@@ -84,7 +87,7 @@ void main() {
           home: Builder(
             builder: (context) {
               final outlinedStyler = TestOutlinedBoxStyler();
-              final result = outlinedStyler.buildStyle(BoxStyler(), {});
+              final result = outlinedStyler.buildStyle({});
 
               expect(result, isA<BoxStyler>());
               expect(result, isNotNull);
@@ -102,8 +105,7 @@ void main() {
           home: Builder(
             builder: (context) {
               final outlinedStyler = TestOutlinedBoxStyler();
-              final userModified = BoxStyler().height(48);
-              final result = outlinedStyler.buildStyle(userModified, {});
+              final result = outlinedStyler.buildStyle({});
 
               expect(result, isA<BoxStyler>());
 
@@ -120,9 +122,8 @@ void main() {
           home: Builder(
             builder: (context) {
               final outlinedStyler = TestOutlinedBoxStyler();
-              final userStyle = BoxStyler().height(48).width(100);
 
-              final result = outlinedStyler.buildStyle(userStyle, {});
+              final result = outlinedStyler.buildStyle({});
 
               expect(result, isA<BoxStyler>());
 
@@ -143,10 +144,7 @@ void main() {
               final outlinedStyler = TestOutlinedBoxStyler();
               final activeVariants = {_testOutlined, _testSmall};
 
-              final result = outlinedStyler.buildStyle(
-                BoxStyler(),
-                activeVariants,
-              );
+              final result = outlinedStyler.buildStyle(activeVariants);
 
               expect(result, isA<BoxStyler>());
               // Should have base outlined styling + small adaptation
@@ -166,10 +164,7 @@ void main() {
               final outlinedStyler = TestOutlinedBoxStyler();
               final activeVariants = {_testOutlined, _testSmall, _testLarge};
 
-              final result = outlinedStyler.buildStyle(
-                BoxStyler(),
-                activeVariants,
-              );
+              final result = outlinedStyler.buildStyle(activeVariants);
 
               expect(result, isA<BoxStyler>());
 
@@ -188,10 +183,7 @@ void main() {
               final outlinedStyler = TestOutlinedBoxStyler();
               final activeVariants = {_testOutlined, _testSmall, _primary};
 
-              final result = outlinedStyler.buildStyle(
-                BoxStyler(),
-                activeVariants,
-              );
+              final result = outlinedStyler.buildStyle(activeVariants);
 
               expect(result, isA<BoxStyler>());
 
@@ -208,7 +200,7 @@ void main() {
           home: Builder(
             builder: (context) {
               final outlinedStyler = TestOutlinedBoxStyler();
-              final result = outlinedStyler.buildStyle(BoxStyler(), {});
+              final result = outlinedStyler.buildStyle({});
 
               expect(result, isA<BoxStyler>());
 
@@ -230,11 +222,11 @@ void main() {
               final solidStyler = TestSolidBoxStyler();
               final activeVariants = {_testSmall};
 
-              final outlinedResult = outlinedStyler.buildStyle(BoxStyler(), {
+              final outlinedResult = outlinedStyler.buildStyle({
                 _testOutlined,
                 ...activeVariants,
               });
-              final solidResult = solidStyler.buildStyle(BoxStyler(), {
+              final solidResult = solidStyler.buildStyle({
                 _testSolid,
                 ...activeVariants,
               });
@@ -257,7 +249,7 @@ void main() {
           home: Builder(
             builder: (context) {
               final outlinedStyler = TestOutlinedBoxStyler();
-              final result = outlinedStyler.buildStyle(BoxStyler(), {});
+              final result = outlinedStyler.buildStyle({});
 
               expect(result, isA<BoxStyler>());
 
@@ -277,9 +269,8 @@ void main() {
           home: Builder(
             builder: (context) {
               final outlinedStyler = TestOutlinedBoxStyler();
-              final boxStyler = BoxStyler().height(48);
 
-              final result = outlinedStyler.buildStyle(boxStyler, {});
+              final result = outlinedStyler.buildStyle({});
               expect(result, isA<BoxStyler>());
 
               return Container();
@@ -309,14 +300,13 @@ void main() {
             builder: (context) {
               final outlinedStyler = TestOutlinedBoxStyler();
               final smallStyler = TestSmallBoxStyler();
-              final userStyle = BoxStyler().height(40);
 
-              final outlinedResult = outlinedStyler.buildStyle(userStyle, {
+              final outlinedResult = outlinedStyler.buildStyle({
                 _testOutlined,
                 _testSmall,
               });
 
-              final smallResult = smallStyler.buildStyle(BoxStyler(), {
+              final smallResult = smallStyler.buildStyle({
                 _testSmall,
               });
 
@@ -338,9 +328,8 @@ void main() {
           home: Builder(
             builder: (context) {
               final outlinedStyler = TestOutlinedBoxStyler();
-              final userModifications = BoxStyler().height(48).width(100);
 
-              final result = outlinedStyler.buildStyle(userModifications, {
+              final result = outlinedStyler.buildStyle({
                 _testOutlined,
                 _testSmall,
                 _primary,

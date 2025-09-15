@@ -237,6 +237,6 @@ mixin StyleVariantMixin<T extends Style<S>, S extends Spec<S>> on Style<S>
   @override
   String get mergeKey => variantKey;
 
-  /// Combines user modifications with variant styling and contextual adaptations.
-  T buildStyle(T style, Set<String> activeVariants);
+  /// Adapts this style based on active variants.
+  T buildStyle(Set<String> activeVariants);
 }
