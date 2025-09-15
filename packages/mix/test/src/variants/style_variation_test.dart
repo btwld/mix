@@ -8,7 +8,7 @@ final _testSmall = 'test_small';
 final _testLarge = 'test_large';
 final _primary = 'primary';
 
-class TestOutlinedBoxStyler extends BoxStyler
+class _OutlinedBoxStyler extends BoxStyler
     with StyleVariantMixin<BoxStyler, BoxSpec> {
   @override
   final variantKey = _testOutlined;
@@ -72,7 +72,7 @@ class TestSmallBoxStyler extends BoxStyler
 void main() {
   group('StyleVariation Interface', () {
     test('should implement basic interface correctly', () {
-      final outlinedStyler = TestOutlinedBoxStyler();
+      final outlinedStyler = _OutlinedBoxStyler();
 
       expect(outlinedStyler, isA<StyleVariantMixin<BoxStyler, BoxSpec>>());
       expect(outlinedStyler, isA<BoxStyler>());
@@ -86,7 +86,7 @@ void main() {
         MaterialApp(
           home: Builder(
             builder: (context) {
-              final outlinedStyler = TestOutlinedBoxStyler();
+              final outlinedStyler = _OutlinedBoxStyler();
               final result = outlinedStyler.buildStyle({});
 
               expect(result, isA<BoxStyler>());
@@ -104,7 +104,7 @@ void main() {
         MaterialApp(
           home: Builder(
             builder: (context) {
-              final outlinedStyler = TestOutlinedBoxStyler();
+              final outlinedStyler = _OutlinedBoxStyler();
               final result = outlinedStyler.buildStyle({});
 
               expect(result, isA<BoxStyler>());
@@ -121,7 +121,7 @@ void main() {
         MaterialApp(
           home: Builder(
             builder: (context) {
-              final outlinedStyler = TestOutlinedBoxStyler();
+              final outlinedStyler = _OutlinedBoxStyler();
 
               final result = outlinedStyler.buildStyle({});
 
@@ -141,7 +141,7 @@ void main() {
         MaterialApp(
           home: Builder(
             builder: (context) {
-              final outlinedStyler = TestOutlinedBoxStyler();
+              final outlinedStyler = _OutlinedBoxStyler();
               final activeVariants = {_testOutlined, _testSmall};
 
               final result = outlinedStyler.buildStyle(activeVariants);
@@ -161,7 +161,7 @@ void main() {
         MaterialApp(
           home: Builder(
             builder: (context) {
-              final outlinedStyler = TestOutlinedBoxStyler();
+              final outlinedStyler = _OutlinedBoxStyler();
               final activeVariants = {_testOutlined, _testSmall, _testLarge};
 
               final result = outlinedStyler.buildStyle(activeVariants);
@@ -180,7 +180,7 @@ void main() {
         MaterialApp(
           home: Builder(
             builder: (context) {
-              final outlinedStyler = TestOutlinedBoxStyler();
+              final outlinedStyler = _OutlinedBoxStyler();
               final activeVariants = {_testOutlined, _testSmall, _primary};
 
               final result = outlinedStyler.buildStyle(activeVariants);
@@ -199,7 +199,7 @@ void main() {
         MaterialApp(
           home: Builder(
             builder: (context) {
-              final outlinedStyler = TestOutlinedBoxStyler();
+              final outlinedStyler = _OutlinedBoxStyler();
               final result = outlinedStyler.buildStyle({});
 
               expect(result, isA<BoxStyler>());
@@ -218,7 +218,7 @@ void main() {
         MaterialApp(
           home: Builder(
             builder: (context) {
-              final outlinedStyler = TestOutlinedBoxStyler();
+              final outlinedStyler = _OutlinedBoxStyler();
               final solidStyler = TestSolidBoxStyler();
               final activeVariants = {_testSmall};
 
@@ -248,7 +248,7 @@ void main() {
         MaterialApp(
           home: Builder(
             builder: (context) {
-              final outlinedStyler = TestOutlinedBoxStyler();
+              final outlinedStyler = _OutlinedBoxStyler();
               final result = outlinedStyler.buildStyle({});
 
               expect(result, isA<BoxStyler>());
@@ -268,7 +268,7 @@ void main() {
         MaterialApp(
           home: Builder(
             builder: (context) {
-              final outlinedStyler = TestOutlinedBoxStyler();
+              final outlinedStyler = _OutlinedBoxStyler();
 
               final result = outlinedStyler.buildStyle({});
               expect(result, isA<BoxStyler>());
@@ -283,7 +283,7 @@ void main() {
 
   group('StyleVariation Integration', () {
     test('should work as natural API', () {
-      final component = TestOutlinedBoxStyler();
+      final component = _OutlinedBoxStyler();
 
       expect(component, isA<BoxStyler>());
       expect(component, isA<StyleVariantMixin<BoxStyler, BoxSpec>>());
@@ -298,7 +298,7 @@ void main() {
         MaterialApp(
           home: Builder(
             builder: (context) {
-              final outlinedStyler = TestOutlinedBoxStyler();
+              final outlinedStyler = _OutlinedBoxStyler();
               final smallStyler = TestSmallBoxStyler();
 
               final outlinedResult = outlinedStyler.buildStyle({
@@ -325,7 +325,7 @@ void main() {
         MaterialApp(
           home: Builder(
             builder: (context) {
-              final outlinedStyler = TestOutlinedBoxStyler();
+              final outlinedStyler = _OutlinedBoxStyler();
 
               final result = outlinedStyler.buildStyle({
                 _testOutlined,
@@ -351,7 +351,7 @@ void main() {
         MaterialApp(
           home: Builder(
             builder: (context) {
-              final outlinedStyler = TestOutlinedBoxStyler();
+              final outlinedStyler = _OutlinedBoxStyler();
 
               final baseStyle = BoxStyler().height(48.0).withVariants([
                 EventVariantStyle(
@@ -386,7 +386,7 @@ void main() {
         MaterialApp(
           home: Builder(
             builder: (context) {
-              final outlinedStyler = TestOutlinedBoxStyler();
+              final outlinedStyler = _OutlinedBoxStyler();
 
               final baseStyle = BoxStyler().height(48.0).withVariants([
                 EventVariantStyle(
@@ -419,7 +419,7 @@ void main() {
         MaterialApp(
           home: Builder(
             builder: (context) {
-              final outlinedStyler = TestOutlinedBoxStyler();
+              final outlinedStyler = _OutlinedBoxStyler();
 
               final baseStyle = BoxStyler().width(200.0).withVariants([
                 EventVariantStyle(
@@ -452,7 +452,7 @@ void main() {
         MaterialApp(
           home: Builder(
             builder: (context) {
-              final outlinedStyler = TestOutlinedBoxStyler();
+              final outlinedStyler = _OutlinedBoxStyler();
               final smallStyler = TestSmallBoxStyler();
 
               final baseStyle = BoxStyler().withVariants([
@@ -518,7 +518,7 @@ void main() {
         MaterialApp(
           home: Builder(
             builder: (context) {
-              final outlinedStyler = TestOutlinedBoxStyler();
+              final outlinedStyler = _OutlinedBoxStyler();
 
               final baseStyle = BoxStyler()
                   .height(48.0)
@@ -558,7 +558,7 @@ void main() {
         MaterialApp(
           home: Builder(
             builder: (context) {
-              final outlinedStyler = TestOutlinedBoxStyler();
+              final outlinedStyler = _OutlinedBoxStyler();
 
               final baseStyle = BoxStyler().height(48.0).withVariants([
                 EventVariantStyle(
