@@ -1,0 +1,8 @@
+export default {
+    styling: "Styling",
+    variants: "Variants",
+    "widget-modifiers": "Widget Modifiers",
+    "design-token": "Design Tokens",
+    animations: "Animations",
+    directives: "Directives"
+};

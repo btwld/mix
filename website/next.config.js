@@ -1,13 +1,12 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+import nextra from "nextra";
 
-const withNextra = require("nextra")({
+const withNextra = nextra({
   theme: "nextra-theme-docs",
   themeConfig: "./theme.config.tsx",
   mdxOptions: { remarkPlugins: [] },
 });
 
-// eslint-disable-next-line no-undef
-module.exports = withNextra({
+export default withNextra({
   reactStrictMode: true,
 
   async redirects() {

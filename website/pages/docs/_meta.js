@@ -1,0 +1,52 @@
+export default {
+    "-- Overview": {
+        type: "separator",
+        title: "Overview"
+    },
+    overview: {
+        title: "Overview",
+        display: "children"
+    },
+
+    "-- Guides": {
+        type: "separator",
+        title: "Guides"
+    },
+    guides: {
+        title: "Guides",
+        display: "children"
+    },
+    "-- Tutorials": {
+        type: "separator",
+        title: "Tutorials"
+    },
+    tutorials: {
+        title: "Tutorials",
+        display: "children"
+    },
+
+    "-- Widgets": {
+        type: "separator",
+        title: "Widgets"
+    },
+    widgets: {
+        title: "Widgets",
+        display: "children"
+    },
+    "-- Tools": {
+        type: "separator",
+        title: "Tools"
+    },
+    tools: {
+        title: "Tools",
+        display: "children"
+    },
+    "-- Utilities": {
+        type: "separator",
+        title: "Utilities"
+    },
+    utilities: {
+        title: "Utilities",
+        display: "children"
+    }
+};
