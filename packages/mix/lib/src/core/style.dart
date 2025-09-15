@@ -67,7 +67,7 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   /// with all applicable variants applied.
   ///
   /// Variant priority order (lowest to highest):
-  /// 1. ContextVariant and NamedVariant (applied first)
+  /// 1. TriggerVariant and VariantBuilder (applied first)
   /// 2. StyleVariation (applied second)
   /// 3. WidgetStateVariant (applied last, highest priority)
   @visibleForTesting
@@ -77,9 +77,7 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   }) {
     // Filter variants that should be active in this context
     final activeVariants = ($variants ?? []).where((variantStyle) {
-      if (variantStyle is NamedVariant<S>) {
-        return namedVariants.contains(variantStyle.name);
-      } else if (variantStyle is TriggerVariant<S>) {
+      if (variantStyle is TriggerVariant<S>) {
         return variantStyle.isActive(context);
       } else if (variantStyle is VariantBuilder<S>) {
         return true; // Always active
@@ -98,9 +96,7 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
 
     // Extract the style from each active variant
     final stylesToMerge = activeVariants.map((variantStyle) {
-      if (variantStyle is NamedVariant<S>) {
-        return variantStyle.style;
-      } else if (variantStyle is TriggerVariant<S>) {
+      if (variantStyle is TriggerVariant<S>) {
         return variantStyle.style;
       } else if (variantStyle is VariantBuilder<S>) {
         return variantStyle.resolve(context);

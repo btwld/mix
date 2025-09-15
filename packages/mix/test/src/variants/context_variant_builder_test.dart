@@ -64,14 +64,14 @@ void main() {
 
         final builder = VariantBuilder(builderFunction);
 
-        expect(builder.key, builderFunction.hashCode.toString());
+        expect(builder.variantKey, builderFunction.hashCode.toString());
       });
 
       test('different functions have different keys', () {
         final builder1 = VariantBuilder((context) => BoxStyler().width(100.0));
         final builder2 = VariantBuilder((context) => BoxStyler().width(200.0));
 
-        expect(builder1.key, isNot(equals(builder2.key)));
+        expect(builder1.variantKey, isNot(equals(builder2.variantKey)));
       });
 
       test('same function reference has same key', () {
@@ -82,14 +82,14 @@ void main() {
         final builder1 = VariantBuilder(builderFunction);
         final builder2 = VariantBuilder(builderFunction);
 
-        expect(builder1.key, equals(builder2.key));
+        expect(builder1.variantKey, equals(builder2.variantKey));
       });
 
       test('key is consistent across calls', () {
         final builder = VariantBuilder((context) => BoxStyler().width(100.0));
 
-        final key1 = builder.key;
-        final key2 = builder.key;
+        final key1 = builder.variantKey;
+        final key2 = builder.variantKey;
 
         expect(key1, equals(key2));
       });
@@ -252,14 +252,17 @@ void main() {
         expect(builder, isNot(equals(trigger)));
       });
 
-      test('can be used alongside named variants', () {
+      test('can be used alongside trigger variants', () {
         final builder = VariantBuilder((context) => BoxStyler().width(100.0));
-        final namedVariant = NamedVariant('primary', BoxStyler().width(100));
+        final triggerVariant = TriggerVariant(
+          ContextTrigger.widgetState(WidgetState.hovered),
+          BoxStyler().width(100),
+        );
 
         // Both can be used independently
         expect(builder, isA<VariantBuilder>());
-        expect(namedVariant, isA<NamedVariant>());
-        expect(builder.key, isNot(equals(namedVariant.key)));
+        expect(triggerVariant, isA<TriggerVariant>());
+        expect(builder.variantKey, isNot(equals(triggerVariant.variantKey)));
       });
 
       test('can use Trigger.not for negation', () {
@@ -377,8 +380,8 @@ void main() {
 
         // VariantBuilder should integrate with the broader Mix system
         expect(builder, isA<VariantBuilder>());
-        expect(builder.key, isA<String>());
-        expect(builder.key.isNotEmpty, isTrue);
+        expect(builder.variantKey, isA<String>());
+        expect(builder.variantKey.isNotEmpty, isTrue);
       });
 
       test('works with VariantStyle wrapper', () {
@@ -387,23 +390,27 @@ void main() {
         final trigger = ContextTrigger('test', (context) => true);
         final variantStyle = TriggerVariant(trigger, style);
 
+        expect(builder, isA<VariantBuilder>());
         expect(variantStyle.trigger, trigger);
         expect(variantStyle.style, style);
-        expect(variantStyle.key, trigger.key);
+        expect(variantStyle.variantKey, trigger.key);
       });
 
       test('key works as mergeKey for VariantStyle', () {
         final builder1 = VariantBuilder((context) => BoxStyler().width(100.0));
         final builder2 = VariantBuilder((context) => BoxStyler().width(200.0));
 
+        expect(builder1, isA<VariantBuilder>());
+        expect(builder2, isA<VariantBuilder>());
+
         final trigger1 = ContextTrigger('test1', (context) => true);
         final trigger2 = ContextTrigger('test2', (context) => true);
         final style1 = TriggerVariant(trigger1, BoxStyler().height(100.0));
         final style2 = TriggerVariant(trigger2, BoxStyler().height(200.0));
 
-        expect(style1.key, trigger1.key);
-        expect(style2.key, trigger2.key);
-        expect(style1.key, isNot(equals(style2.key)));
+        expect(style1.variantKey, trigger1.key);
+        expect(style2.variantKey, trigger2.key);
+        expect(style1.variantKey, isNot(equals(style2.variantKey)));
       });
     });
 

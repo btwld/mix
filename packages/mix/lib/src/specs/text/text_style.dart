@@ -296,7 +296,7 @@ class TextStyler extends Style<TextSpec>
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  TextStyler merge(TextStyler? other) {
+  TextStyler merge(covariant TextStyler? other) {
     return TextStyler.create(
       overflow: MixOps.merge($overflow, other?.$overflow),
       strutStyle: MixOps.merge($strutStyle, other?.$strutStyle),

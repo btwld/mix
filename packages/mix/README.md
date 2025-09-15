@@ -58,22 +58,18 @@ Learn more about [styling](https://fluttermix.com/docs/guides/styling)
 
 First-class support for variants, allowing you to define styling variations that can be applied conditionally or responsively.
 
-```dart {1, 8-12, 15}
-const onOutlined = NamedVariant('outlined');
-
+```dart
 final baseStyle = Style(
   $box.borderRadius(10),
   $box.color.black(),
   $text.style.color.white(),
 
-  onOutlined(
-    $box.color.transparent(),
-    $box.border.color.black(),
-    $text.style.color.black(),
+  // Trigger variant for hover state
+  $box.onHovered(
+    $box.color.grey(),
+    $text.style.color.white(),
   ),
 );
-
-final outlinedStyle = baseStyle.applyVariant(onOutlined);
 ```
 
 Learn more about [variants](https://fluttermix.com/docs/guides/variants)

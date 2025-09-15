@@ -14,10 +14,6 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
     return variants([variantStyle]);
   }
 
-  /// Creates a named variant that activates when the given variant name is active
-  T onVariant(String variantName, T style) {
-    return variants([NamedVariant<S>(variantName, style)]);
-  }
 
   /// Must be implemented by the class using this mixin
   T variants(List<Variant<S>> value);

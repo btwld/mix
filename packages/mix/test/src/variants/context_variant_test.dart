@@ -4,6 +4,11 @@ import 'package:mix/mix.dart';
 
 import '../../helpers/testing_utils.dart';
 
+// Test variant constants
+const primary = 'primary';
+const secondary = 'secondary';
+const outlined = 'outlined';
+
 void main() {
   group('ContextTrigger', () {
     group('Constructor', () {
@@ -242,14 +247,6 @@ void main() {
         expect(notVariant.key, 'not_test');
       });
 
-      test('ContextTriggers and NamedVariants are distinct types', () {
-        final contextVariant = ContextTrigger('test', (context) => true);
-        final namedVariant = NamedVariant('primary', BoxStyler().width(100));
-
-        expect(contextVariant, isA<ContextTrigger>());
-        expect(namedVariant, isA<NamedVariant>());
-        expect(contextVariant.key, isNot(equals(namedVariant.key)));
-      });
     });
 
     group('VariantSpecAttribute integration', () {
@@ -260,7 +257,7 @@ void main() {
 
         expect(variantAttr.trigger, contextVariant);
         expect(variantAttr.style, style);
-        expect(variantAttr.key, 'test');
+        expect(variantAttr.variantKey, 'test');
       });
 
       test('different contexts create different mergeKeys', () {
@@ -276,9 +273,9 @@ void main() {
           BoxStyler().height(200.0),
         );
 
-        expect(style1.key, 'context1');
-        expect(style2.key, 'context2');
-        expect(style1.key, isNot(equals(style2.key)));
+        expect(style1.variantKey, 'context1');
+        expect(style2.variantKey, 'context2');
+        expect(style1.variantKey, isNot(equals(style2.variantKey)));
       });
     });
 

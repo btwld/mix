@@ -114,10 +114,16 @@ void main() {
 
       test('merges variants correctly', () {
         final firstVariants = [
-          NamedVariant('primary', BoxStyler().color(Colors.blue)),
+          TriggerVariant(
+            ContextTrigger.widgetState(WidgetState.hovered),
+            BoxStyler().color(Colors.blue),
+          ),
         ];
         final secondVariants = [
-          NamedVariant('secondary', BoxStyler().color(Colors.red)),
+          TriggerVariant(
+            ContextTrigger.widgetState(WidgetState.pressed),
+            BoxStyler().color(Colors.red),
+          ),
         ];
 
         final first = BoxStyler(
@@ -133,8 +139,14 @@ void main() {
 
         expect(merged.$variants, isNotNull);
         expect(merged.$variants!.length, 2);
-        expect((merged.$variants![0] as NamedVariant).name, 'primary');
-        expect((merged.$variants![1] as NamedVariant).name, 'secondary');
+        expect(
+          (merged.$variants![0] as TriggerVariant).trigger,
+          isA<WidgetStateTrigger>(),
+        );
+        expect(
+          (merged.$variants![1] as TriggerVariant).trigger,
+          isA<WidgetStateTrigger>(),
+        );
       });
 
       test('handles null merge correctly', () {
@@ -372,8 +384,9 @@ void main() {
       test('merges with same variant types correctly', () {
         final firstStyle = BoxStyler().width(100.0);
         final secondStyle = BoxStyler().height(200.0);
-        final variant1 = NamedVariant('primary', firstStyle);
-        final variant2 = NamedVariant('primary', secondStyle);
+        final trigger = ContextTrigger.widgetState(WidgetState.hovered);
+        final variant1 = TriggerVariant(trigger, firstStyle);
+        final variant2 = TriggerVariant(trigger, secondStyle);
 
         final first = BoxStyler(
           decoration: DecorationMix.color(Colors.red),
@@ -388,9 +401,12 @@ void main() {
 
         expect(merged.$variants, isNotNull);
         expect(merged.$variants!.length, 1);
-        expect((merged.$variants![0] as NamedVariant).name, 'primary');
+        expect(
+          (merged.$variants![0] as TriggerVariant).trigger,
+          equals(trigger),
+        );
 
-        final mergedVariantStyle = (merged.$variants![0] as NamedVariant).style as BoxStyler;
+        final mergedVariantStyle = (merged.$variants![0] as TriggerVariant).style as BoxStyler;
         final context = MockBuildContext();
         final spec = mergedVariantStyle.resolve(context).spec;
         expect(spec.constraints?.minWidth, 100.0);
@@ -434,8 +450,8 @@ void main() {
         final first = BoxStyler(
           constraints: BoxConstraintsMix.width(100.0),
           variants: [
-            NamedVariant(
-              'primary',
+            TriggerVariant(
+              ContextTrigger.widgetState(WidgetState.hovered),
               BoxStyler().color(Colors.blue),
             ),
           ],
@@ -448,7 +464,10 @@ void main() {
 
         expect(merged.$variants, isNotNull);
         expect(merged.$variants!.length, 1);
-        expect((merged.$variants![0] as NamedVariant).name, 'primary');
+        expect(
+          (merged.$variants![0] as TriggerVariant).trigger,
+          isA<WidgetStateTrigger>(),
+        );
       });
     });
 

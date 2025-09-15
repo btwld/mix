@@ -231,7 +231,7 @@ class StackBoxStyler extends Style<ZBoxSpec>
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  StackBoxStyler merge(StackBoxStyler? other) {
+  StackBoxStyler merge(covariant StackBoxStyler? other) {
     return StackBoxStyler.create(
       box: MixOps.merge($box, other?.$box),
       stack: MixOps.merge($stack, other?.$stack),

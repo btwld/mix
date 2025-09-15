@@ -248,7 +248,7 @@ class ImageStyler extends Style<ImageSpec>
   }
 
   @override
-  ImageStyler merge(ImageStyler? other) {
+  ImageStyler merge(covariant ImageStyler? other) {
     return ImageStyler.create(
       image: MixOps.merge($image, other?.$image),
       width: MixOps.merge($width, other?.$width),

@@ -121,7 +121,7 @@ class StackStyler extends Style<StackSpec>
 
   /// Merges the properties of this [StackStyler] with the properties of [other].
   @override
-  StackStyler merge(StackStyler? other) {
+  StackStyler merge(covariant StackStyler? other) {
     return StackStyler.create(
       alignment: MixOps.merge($alignment, other?.$alignment),
       fit: MixOps.merge($fit, other?.$fit),

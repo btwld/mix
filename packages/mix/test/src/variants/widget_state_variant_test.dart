@@ -294,15 +294,6 @@ void main() {
         expect(hovered.state, isNot(equals(pressed.state)));
       });
 
-      test('widget states can combine with named variants', () {
-        final hovered = WidgetStateTrigger(WidgetState.hovered);
-        final primary = NamedVariant('primary', BoxStyler());
-
-        // Test they are different types of variants
-        expect(hovered, isA<WidgetStateTrigger>());
-        expect(primary, isA<NamedVariant>());
-        expect(hovered.key, isNot(equals(primary.key)));
-      });
 
       test('negated widget states work correctly', () {
         final hovered = WidgetStateTrigger(WidgetState.hovered);
@@ -331,7 +322,7 @@ void main() {
 
         expect(variantAttr.trigger, hoverVariant);
         expect(variantAttr.style, style);
-        expect(variantAttr.key, hoverVariant.key);
+        expect(variantAttr.variantKey, hoverVariant.key);
       });
 
       test(
@@ -347,9 +338,9 @@ void main() {
             BoxStyler().width(150.0),
           );
 
-          expect(hoverStyle.key, isNot(equals(pressStyle.key)));
-          expect(hoverStyle.key, 'widget_state_hovered');
-          expect(pressStyle.key, 'widget_state_pressed');
+          expect(hoverStyle.variantKey, isNot(equals(pressStyle.variantKey)));
+          expect(hoverStyle.variantKey, 'widget_state_hovered');
+          expect(pressStyle.variantKey, 'widget_state_pressed');
         },
       );
 

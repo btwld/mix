@@ -258,7 +258,7 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  FlexBoxStyler merge(FlexBoxStyler? other) {
+  FlexBoxStyler merge(covariant FlexBoxStyler? other) {
     return FlexBoxStyler.create(
       box: MixOps.merge($box, other?.$box),
       flex: MixOps.merge($flex, other?.$flex),

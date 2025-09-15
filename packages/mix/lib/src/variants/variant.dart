@@ -8,6 +8,9 @@ import '../core/spec.dart';
 import '../core/style.dart';
 import '../core/style_spec.dart';
 
+@Deprecated('Use ContextTrigger instead')
+typedef ContextVariant = ContextTrigger;
+
 /// Triggers that determine when styles should be applied based on context conditions.
 @immutable
 class ContextTrigger {
@@ -125,71 +128,24 @@ final class WidgetStateTrigger extends ContextTrigger {
   int get hashCode => state.hashCode;
 }
 
-/// Base class for variant-based styling
+/// Base interface for variant-based styling
 @immutable
-sealed class Variant<S extends Spec<S>> extends Mixable<StyleSpec<S>> {
-  const Variant();
-
+abstract interface class Variant<S extends Spec<S>> {
   /// Gets the key for this variant style
-  String get key;
+  String get variantKey;
 
-  @override
+  /// The key used to identify compatible types for merging
+  Object get mergeKey => variantKey;
+
+  /// Merges this variant with another variant of the same type
   Variant<S> merge(covariant Variant<S>? other);
-
-  @override
-  Object get mergeKey => key;
 }
 
-/// Variant style for named activation (like "primary", "outlined")
-@immutable
-final class NamedVariant<S extends Spec<S>> extends Variant<S> {
-  final String name;
-  final Style<S> _style;
-
-  const NamedVariant(this.name, Style<S> style) : _style = style;
-
-  Style<S> get style => _style;
-
-  bool matches(Iterable<String> otherVariantNames) =>
-      otherVariantNames.contains(name);
-
-  NamedVariant<S>? removeVariants(Iterable<String> variantNamesToRemove) {
-    final shouldRemove = variantNamesToRemove.contains(name);
-
-    return shouldRemove ? null : this;
-  }
-
-  @override
-  NamedVariant<S> merge(covariant NamedVariant<S>? other) {
-    if (other == null) {
-      return this;
-    }
-
-    if (key != other.key) {
-      throw ArgumentError(
-        'Cannot merge NamedVariant with different keys. '
-        'Attempted to merge key "$key" with "${other.key}".',
-      );
-    }
-
-    return NamedVariant(name, _style.merge(other._style));
-  }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is NamedVariant<S> && other.name == name && other._style == _style;
-
-  @override
-  String get key => name;
-
-  @override
-  int get hashCode => Object.hash(name, _style);
-}
 
 /// Variant style for trigger-based variants (automatic activation)
 @immutable
-final class TriggerVariant<S extends Spec<S>> extends Variant<S> {
+final class TriggerVariant<S extends Spec<S>> extends Mixable<StyleSpec<S>>
+    implements Variant<S> {
   final ContextTrigger trigger;
   final Style<S> _style;
 
@@ -207,10 +163,10 @@ final class TriggerVariant<S extends Spec<S>> extends Variant<S> {
       return this;
     }
 
-    if (key != other.key) {
+    if (variantKey != other.variantKey) {
       throw ArgumentError(
         'Cannot merge TriggerVariant with different keys. '
-        'Attempted to merge key "$key" with "${other.key}".',
+        'Attempted to merge key "$variantKey" with "${other.variantKey}".',
       );
     }
 
@@ -225,7 +181,7 @@ final class TriggerVariant<S extends Spec<S>> extends Variant<S> {
           other._style == _style;
 
   @override
-  String get key => trigger.key;
+  String get variantKey => trigger.key;
 
   @override
   int get hashCode => Object.hash(trigger, _style);
@@ -233,7 +189,8 @@ final class TriggerVariant<S extends Spec<S>> extends Variant<S> {
 
 /// Variant style for dynamic style building (always active)
 @immutable
-final class VariantBuilder<S extends Spec<S>> extends Variant<S> {
+final class VariantBuilder<S extends Spec<S>> extends Mixable<StyleSpec<S>>
+    implements Variant<S> {
   final Style<S> Function(BuildContext) builder;
 
   const VariantBuilder(this.builder);
@@ -246,10 +203,10 @@ final class VariantBuilder<S extends Spec<S>> extends Variant<S> {
       return this;
     }
 
-    if (key != other.key) {
+    if (variantKey != other.variantKey) {
       throw ArgumentError(
         'Cannot merge VariantBuilder with different keys. '
-        'Attempted to merge key "$key" with "${other.key}".',
+        'Attempted to merge key "$variantKey" with "${other.variantKey}".',
       );
     }
 
@@ -265,7 +222,7 @@ final class VariantBuilder<S extends Spec<S>> extends Variant<S> {
       other is VariantBuilder<S> && other.builder == builder;
 
   @override
-  String get key => builder.hashCode.toString();
+  String get variantKey => builder.hashCode.toString();
 
   @override
   int get hashCode => builder.hashCode;
@@ -273,21 +230,12 @@ final class VariantBuilder<S extends Spec<S>> extends Variant<S> {
 
 /// Interface for design system components that adapt their styling
 /// based on active variants and user modifications.
-abstract class StyleVariation<S extends Spec<S>> extends Variant<S> {
+abstract interface class StyleVariant<S extends Spec<S>> implements Variant<S> {
   /// The named variant this StyleVariation handles
   String get variant;
 
   /// Combines user modifications with variant styling and contextual adaptations.
   Style<S> buildStyle(covariant Style<S> style, Set<String> activeVariants);
+  @override
+  String get variantKey => variant;
 }
-
-// Common named variants
-const primary = 'primary';
-const secondary = 'secondary';
-const outlined = 'outlined';
-const solid = 'solid';
-const danger = 'danger';
-
-// Size variants
-const small = 'small';
-const large = 'large';
