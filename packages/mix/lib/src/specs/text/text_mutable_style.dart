@@ -102,7 +102,7 @@ class TextMutableStyler extends StyleMutableBuilder<TextSpec>
   TextStyler animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
-  TextStyler withVariants(List<Variant<TextSpec>> variants) {
+  TextStyler withVariants(List<VariantStyle<TextSpec>> variants) {
     return mutable.withVariants(variants);
   }
 

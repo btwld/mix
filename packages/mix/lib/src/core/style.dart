@@ -28,7 +28,7 @@ sealed class StyleElement {
 /// Provides variant support, modifiers, and animation configuration for styled elements.
 abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     implements StyleElement {
-  final List<Variant<S>>? $variants;
+  final List<VariantStyle<S>>? $variants;
 
   final WidgetModifierConfig? $modifier;
   final AnimationConfig? $animation;
@@ -43,7 +43,7 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   static final stackbox = StackBoxStyler.new;
 
   const Style({
-    required List<Variant<S>>? variants,
+    required List<VariantStyle<S>>? variants,
     required WidgetModifierConfig? modifier,
     required AnimationConfig? animation,
   }) : $modifier = modifier,
@@ -53,13 +53,13 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   @internal
   Set<WidgetState> get widgetStates {
     return ($variants ?? [])
-        .whereType<TriggerVariant<S>>()
+        .whereType<EventVariantStyle<S>>()
         .where((v) => v.trigger is WidgetStateTrigger)
         .map((v) => (v.trigger as WidgetStateTrigger).state)
         .toSet();
   }
 
-  Style<S> withVariants(List<Variant<S>> value);
+  Style<S> withVariants(List<VariantStyle<S>> value);
 
   ///
   /// This method evaluates which variants should be active based on the current
@@ -69,7 +69,7 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   ///
   /// Variant priority order (lowest to highest):
   /// 1. StyleVariantMixin (applied first, lowest priority)
-  /// 2. TriggerVariant and VariantBuilder (applied second)
+  /// 2. EventVariantStyle and VariantStyleBuilder (applied second)
   /// 3. WidgetStateVariant (applied last, highest priority)
   @visibleForTesting
   Style<S> mergeActiveVariants(
@@ -81,9 +81,9 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
 
     // 1. Filter variants that should be active in this context
     final activeVariants = ($variants ?? []).where((variantStyle) {
-      if (variantStyle is TriggerVariant<S>) {
+      if (variantStyle is EventVariantStyle<S>) {
         return variantStyle.isActive(context);
-      } else if (variantStyle is VariantBuilder<S>) {
+      } else if (variantStyle is VariantStyleBuilder<S>) {
         return true; // Always active
       }
 
@@ -109,13 +109,13 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
 
     // Add keys from StyleVariantMixin styles within variants (for context only)
     for (final variant in activeVariants) {
-      if (variant is TriggerVariant<S>) {
+      if (variant is EventVariantStyle<S>) {
         final style = variant.style;
         if (style is StyleVariantMixin) {
           final styleVariantMixin = style as StyleVariantMixin;
           aggregatedKeys.add(styleVariantMixin.variantKey);
         }
-      } else if (variant is VariantBuilder<S>) {
+      } else if (variant is VariantStyleBuilder<S>) {
         final style = variant.resolve(context);
         if (style is StyleVariantMixin) {
           final styleVariantMixin = style as StyleVariantMixin;
@@ -127,27 +127,29 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     // 3. Apply StyleVariantMixin at top level ONLY if not being handled by variants
     // Check if this StyleVariantMixin is already being handled by a variant
     final isInVariants = activeVariants.any((variant) {
-      final variantStyle = variant is TriggerVariant<S>
+      final variantStyle = variant is EventVariantStyle<S>
           ? variant.style
-          : variant is VariantBuilder<S>
-              ? variant.resolve(context)
-              : null;
+          : variant is VariantStyleBuilder<S>
+          ? variant.resolve(context)
+          : null;
+
       return variantStyle == this;
     });
 
     if (this is StyleVariantMixin && !isInVariants) {
       final styleVariant = this as StyleVariantMixin;
       // Pass aggregated keys MINUS its own key
-      final keysForThis = Set<String>.of(aggregatedKeys)..remove(styleVariant.variantKey);
+      final keysForThis = Set<String>.of(aggregatedKeys)
+        ..remove(styleVariant.variantKey);
       final resultStyle = styleVariant.buildStyle(keysForThis);
       mergedStyle = resultStyle as Style<S>;
     }
 
-    // 4. Sort by priority: TriggerVariant with WidgetStateTrigger gets applied last (highest priority)
+    // 4. Sort by priority: EventVariantStyle with WidgetStateTrigger gets applied last (highest priority)
     activeVariants.sort(
       (a, b) => Comparable.compare(
-        (a is TriggerVariant<S> && a.trigger is WidgetStateTrigger) ? 1 : 0,
-        (b is TriggerVariant<S> && b.trigger is WidgetStateTrigger) ? 1 : 0,
+        (a is EventVariantStyle<S> && a.trigger is WidgetStateTrigger) ? 1 : 0,
+        (b is EventVariantStyle<S> && b.trigger is WidgetStateTrigger) ? 1 : 0,
       ),
     );
 
@@ -155,9 +157,9 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     for (final variant in activeVariants) {
       Style<S> variantStyle;
 
-      if (variant is TriggerVariant<S>) {
+      if (variant is EventVariantStyle<S>) {
         variantStyle = variant.style;
-      } else if (variant is VariantBuilder<S>) {
+      } else if (variant is VariantStyleBuilder<S>) {
         variantStyle = variant.resolve(context);
       } else {
         continue; // Should not happen with our filtering above
@@ -167,7 +169,8 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
       if (variantStyle is StyleVariantMixin) {
         final styleVariantMixin = variantStyle as StyleVariantMixin;
         // Pass aggregated keys MINUS its own key
-        final keysForVariant = Set<String>.of(aggregatedKeys)..remove(styleVariantMixin.variantKey);
+        final keysForVariant = Set<String>.of(aggregatedKeys)
+          ..remove(styleVariantMixin.variantKey);
         variantStyle = styleVariantMixin.buildStyle(keysForVariant) as Style<S>;
 
         // StyleVariantMixin has already processed variants, merge directly

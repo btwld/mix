@@ -54,7 +54,7 @@ class StackStyler extends Style<StackSpec>
     Clip? clipBehavior,
     AnimationConfig? animation,
     WidgetModifierConfig? modifier,
-    List<Variant<StackSpec>>? variants,
+    List<VariantStyle<StackSpec>>? variants,
   }) : this.create(
          alignment: Prop.maybe(alignment),
          fit: Prop.maybe(fit),
@@ -98,7 +98,7 @@ class StackStyler extends Style<StackSpec>
   }
 
   @override
-  StackStyler withVariants(List<Variant<StackSpec>> variants) {
+  StackStyler withVariants(List<VariantStyle<StackSpec>> variants) {
     return merge(StackStyler(variants: variants));
   }
 

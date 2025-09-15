@@ -352,7 +352,9 @@ void main() {
       test('variant factory creates TextStyling with variant', () {
         final variant = ContextTrigger.brightness(Brightness.dark);
         final style = TextStyler(style: TextStyleMix(color: Colors.white));
-        final textMix = TextStyler(variants: [TriggerVariant(variant, style)]);
+        final textMix = TextStyler(
+          variants: [EventVariantStyle(variant, style)],
+        );
 
         expect(textMix.$variants, isNotNull);
         expect(textMix.$variants!.length, 1);
@@ -631,7 +633,7 @@ void main() {
       test('variant method adds variant to TextStyling', () {
         final variant = ContextTrigger.brightness(Brightness.dark);
         final style = TextStyler(style: TextStyleMix(color: Colors.white));
-        final textMix = TextStyler().variant(TriggerVariant(variant, style));
+        final textMix = TextStyler().variant(EventVariantStyle(variant, style));
 
         expect(textMix.$variants, isNotNull);
         expect(textMix.$variants!.length, 1);
@@ -639,11 +641,11 @@ void main() {
 
       test('variants method sets multiple variants', () {
         final variants = [
-          TriggerVariant(
+          EventVariantStyle(
             ContextTrigger.brightness(Brightness.dark),
             TextStyler(style: TextStyleMix(color: Colors.white)),
           ),
-          TriggerVariant(
+          EventVariantStyle(
             ContextTrigger.brightness(Brightness.light),
             TextStyler(style: TextStyleMix(color: Colors.black)),
           ),

@@ -90,7 +90,7 @@ class ImageStyler extends Style<ImageSpec>
     bool? matchTextDirection,
     AnimationConfig? animation,
     WidgetModifierConfig? modifier,
-    List<Variant<ImageSpec>>? variants,
+    List<VariantStyle<ImageSpec>>? variants,
   }) : this.create(
          image: Prop.maybe(image),
          width: Prop.maybe(width),
@@ -216,7 +216,7 @@ class ImageStyler extends Style<ImageSpec>
   }
 
   @override
-  ImageStyler withVariants(List<Variant<ImageSpec>> variants) {
+  ImageStyler withVariants(List<VariantStyle<ImageSpec>> variants) {
     return merge(ImageStyler(variants: variants));
   }
 

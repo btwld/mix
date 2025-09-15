@@ -153,7 +153,7 @@ class StackBoxStyler extends Style<ZBoxSpec>
   }
 
   @override
-  StackBoxStyler withVariants(List<Variant<ZBoxSpec>> variants) {
+  StackBoxStyler withVariants(List<VariantStyle<ZBoxSpec>> variants) {
     return merge(StackBoxStyler(variants: variants));
   }
 
@@ -291,7 +291,7 @@ class StackBoxMutableStyler {
     // Style properties
     WidgetModifierConfig? modifier,
     AnimationConfig? animation,
-    List<Variant<ZBoxSpec>>? variants,
+    List<VariantStyle<ZBoxSpec>>? variants,
   }) {
     return StackBoxStyler(
       decoration: decoration,

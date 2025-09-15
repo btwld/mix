@@ -88,7 +88,7 @@ class FlexStyler extends Style<FlexSpec>
     double? gap,
     AnimationConfig? animation,
     WidgetModifierConfig? modifier,
-    List<Variant<FlexSpec>>? variants,
+    List<VariantStyle<FlexSpec>>? variants,
   }) : this.create(
          direction: Prop.maybe(direction),
          mainAxisAlignment: Prop.maybe(mainAxisAlignment),
@@ -144,7 +144,7 @@ class FlexStyler extends Style<FlexSpec>
   }
 
   @override
-  FlexStyler withVariants(List<Variant<FlexSpec>> variants) {
+  FlexStyler withVariants(List<VariantStyle<FlexSpec>> variants) {
     return merge(FlexStyler(variants: variants));
   }
 

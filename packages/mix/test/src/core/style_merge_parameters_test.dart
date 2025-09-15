@@ -114,13 +114,13 @@ void main() {
 
       test('merges variants correctly', () {
         final firstVariants = [
-          TriggerVariant(
+          EventVariantStyle(
             ContextTrigger.widgetState(WidgetState.hovered),
             BoxStyler().color(Colors.blue),
           ),
         ];
         final secondVariants = [
-          TriggerVariant(
+          EventVariantStyle(
             ContextTrigger.widgetState(WidgetState.pressed),
             BoxStyler().color(Colors.red),
           ),
@@ -140,11 +140,11 @@ void main() {
         expect(merged.$variants, isNotNull);
         expect(merged.$variants!.length, 2);
         expect(
-          (merged.$variants![0] as TriggerVariant).trigger,
+          (merged.$variants![0] as EventVariantStyle).trigger,
           isA<WidgetStateTrigger>(),
         );
         expect(
-          (merged.$variants![1] as TriggerVariant).trigger,
+          (merged.$variants![1] as EventVariantStyle).trigger,
           isA<WidgetStateTrigger>(),
         );
       });
@@ -152,7 +152,9 @@ void main() {
       test('handles null merge correctly', () {
         final first = BoxStyler(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: WidgetModifierConfig.orderOfModifiers(const [OpacityModifier]),
+          modifier: WidgetModifierConfig.orderOfModifiers(const [
+            OpacityModifier,
+          ]),
         );
 
         final merged = first.merge(null);
@@ -340,15 +342,21 @@ void main() {
       test('chained merges preserve final values', () {
         final first = BoxStyler(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: WidgetModifierConfig.orderOfModifiers(const [OpacityModifier]),
+          modifier: WidgetModifierConfig.orderOfModifiers(const [
+            OpacityModifier,
+          ]),
         );
         final second = BoxStyler(
           constraints: BoxConstraintsMix.height(200.0),
-          modifier: WidgetModifierConfig.orderOfModifiers(const [PaddingModifier]),
+          modifier: WidgetModifierConfig.orderOfModifiers(const [
+            PaddingModifier,
+          ]),
         );
         final third = BoxStyler(
           decoration: DecorationMix.color(Colors.blue),
-          modifier: WidgetModifierConfig.orderOfModifiers(const [ClipOvalModifier]),
+          modifier: WidgetModifierConfig.orderOfModifiers(const [
+            ClipOvalModifier,
+          ]),
         );
 
         final merged = first.merge(second).merge(third);
@@ -385,8 +393,8 @@ void main() {
         final firstStyle = BoxStyler().width(100.0);
         final secondStyle = BoxStyler().height(200.0);
         final trigger = ContextTrigger.widgetState(WidgetState.hovered);
-        final variant1 = TriggerVariant(trigger, firstStyle);
-        final variant2 = TriggerVariant(trigger, secondStyle);
+        final variant1 = EventVariantStyle(trigger, firstStyle);
+        final variant2 = EventVariantStyle(trigger, secondStyle);
 
         final first = BoxStyler(
           decoration: DecorationMix.color(Colors.red),
@@ -402,11 +410,12 @@ void main() {
         expect(merged.$variants, isNotNull);
         expect(merged.$variants!.length, 1);
         expect(
-          (merged.$variants![0] as TriggerVariant).trigger,
+          (merged.$variants![0] as EventVariantStyle).trigger,
           equals(trigger),
         );
 
-        final mergedVariantStyle = (merged.$variants![0] as TriggerVariant).style as BoxStyler;
+        final mergedVariantStyle =
+            (merged.$variants![0] as EventVariantStyle).style as BoxStyler;
         final context = MockBuildContext();
         final spec = mergedVariantStyle.resolve(context).spec;
         expect(spec.constraints?.minWidth, 100.0);
@@ -416,7 +425,9 @@ void main() {
       test('empty orderOfModifiers list behavior', () {
         final first = BoxStyler(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: WidgetModifierConfig.orderOfModifiers(const [OpacityModifier]),
+          modifier: WidgetModifierConfig.orderOfModifiers(const [
+            OpacityModifier,
+          ]),
         );
         final second = BoxStyler(
           constraints: BoxConstraintsMix.height(200.0),
@@ -450,7 +461,7 @@ void main() {
         final first = BoxStyler(
           constraints: BoxConstraintsMix.width(100.0),
           variants: [
-            TriggerVariant(
+            EventVariantStyle(
               ContextTrigger.widgetState(WidgetState.hovered),
               BoxStyler().color(Colors.blue),
             ),
@@ -465,7 +476,7 @@ void main() {
         expect(merged.$variants, isNotNull);
         expect(merged.$variants!.length, 1);
         expect(
-          (merged.$variants![0] as TriggerVariant).trigger,
+          (merged.$variants![0] as EventVariantStyle).trigger,
           isA<WidgetStateTrigger>(),
         );
       });
@@ -475,7 +486,9 @@ void main() {
       test('merge with self returns same instance', () {
         final style = BoxStyler(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: WidgetModifierConfig.orderOfModifiers(const [OpacityModifier]),
+          modifier: WidgetModifierConfig.orderOfModifiers(const [
+            OpacityModifier,
+          ]),
         );
 
         final merged = style.merge(style);
@@ -503,7 +516,9 @@ void main() {
       test('mixed null and non-null parameters', () {
         final first = BoxStyler(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: WidgetModifierConfig.orderOfModifiers(const [OpacityModifier]),
+          modifier: WidgetModifierConfig.orderOfModifiers(const [
+            OpacityModifier,
+          ]),
           animation: null,
         );
         final second = BoxStyler(

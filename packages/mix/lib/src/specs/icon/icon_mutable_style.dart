@@ -70,7 +70,7 @@ class IconMutableStyler extends StyleMutableBuilder<IconSpec>
   IconStyler animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
-  IconStyler withVariants(List<Variant<IconSpec>> variants) {
+  IconStyler withVariants(List<VariantStyle<IconSpec>> variants) {
     return mutable.withVariants(variants);
   }
 

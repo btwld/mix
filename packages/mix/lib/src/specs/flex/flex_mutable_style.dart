@@ -76,7 +76,7 @@ class FlexMutableStyler extends StyleMutableBuilder<FlexSpec>
   FlexStyler animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
-  FlexStyler withVariants(List<Variant<FlexSpec>> variants) {
+  FlexStyler withVariants(List<VariantStyle<FlexSpec>> variants) {
     return mutable.withVariants(variants);
   }
 

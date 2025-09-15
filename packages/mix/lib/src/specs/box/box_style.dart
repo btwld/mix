@@ -92,7 +92,7 @@ class BoxStyler extends Style<BoxSpec>
     Clip? clipBehavior,
     AnimationConfig? animation,
     WidgetModifierConfig? modifier,
-    List<Variant<BoxSpec>>? variants,
+    List<VariantStyle<BoxSpec>>? variants,
   }) : this.create(
          alignment: Prop.maybe(alignment),
          padding: Prop.maybeMix(padding),
@@ -190,7 +190,7 @@ class BoxStyler extends Style<BoxSpec>
   }
 
   @override
-  BoxStyler withVariants(List<Variant<BoxSpec>> value) {
+  BoxStyler withVariants(List<VariantStyle<BoxSpec>> value) {
     return merge(BoxStyler(variants: value));
   }
 

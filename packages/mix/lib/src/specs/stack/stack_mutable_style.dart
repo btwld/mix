@@ -52,7 +52,7 @@ class StackMutableStyler extends StyleMutableBuilder<StackSpec>
   StackStyler animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
-  StackStyler withVariants(List<Variant<StackSpec>> variants) {
+  StackStyler withVariants(List<VariantStyle<StackSpec>> variants) {
     return mutable.withVariants(variants);
   }
 

@@ -93,7 +93,9 @@ void main() {
       test('', () {
         final variant = ContextTrigger.brightness(Brightness.dark);
         final style = ImageStyler().color(Colors.white);
-        final imageMix = ImageStyler().variant(TriggerVariant(variant, style));
+        final imageMix = ImageStyler().variant(
+          EventVariantStyle(variant, style),
+        );
 
         expect(imageMix.$variants, isNotNull);
         expect(imageMix.$variants!.length, 1);
@@ -198,7 +200,9 @@ void main() {
       test('', () {
         final variant = ContextTrigger.brightness(Brightness.dark);
         final style = ImageStyler().color(Colors.white);
-        final imageMix = ImageStyler().variant(TriggerVariant(variant, style));
+        final imageMix = ImageStyler().variant(
+          EventVariantStyle(variant, style),
+        );
 
         expect(imageMix.$variants, isNotNull);
         expect(imageMix.$variants!.length, 1);
@@ -206,11 +210,11 @@ void main() {
 
       test('variants method sets multiple variants', () {
         final variants = [
-          TriggerVariant(
+          EventVariantStyle(
             ContextTrigger.brightness(Brightness.dark),
             ImageStyler().color(Colors.white),
           ),
-          TriggerVariant(
+          EventVariantStyle(
             ContextTrigger.brightness(Brightness.light),
             ImageStyler().color(Colors.black),
           ),

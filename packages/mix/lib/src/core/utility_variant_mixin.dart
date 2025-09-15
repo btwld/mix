@@ -11,7 +11,7 @@ import 'style.dart';
 /// with other utility methods like animate().
 mixin UtilityVariantMixin<S extends Spec<S>, T extends Style<S>> {
   /// Must be implemented by utilities to apply multiple variants to a style.
-  T withVariants(List<Variant<S>> variants);
+  T withVariants(List<VariantStyle<S>> variants);
 
   /// Gets the current utility value as a style.
   T get currentValue;
@@ -24,7 +24,7 @@ mixin UtilityVariantMixin<S extends Spec<S>, T extends Style<S>> {
   /// ```
   T onHovered(T style) {
     return withVariants([
-      TriggerVariant(ContextTrigger.widgetState(WidgetState.hovered), style),
+      EventVariantStyle(ContextTrigger.widgetState(WidgetState.hovered), style),
     ]);
   }
 
@@ -36,7 +36,7 @@ mixin UtilityVariantMixin<S extends Spec<S>, T extends Style<S>> {
   /// ```
   T onPressed(T style) {
     return withVariants([
-      TriggerVariant(ContextTrigger.widgetState(WidgetState.pressed), style),
+      EventVariantStyle(ContextTrigger.widgetState(WidgetState.pressed), style),
     ]);
   }
 
@@ -48,7 +48,7 @@ mixin UtilityVariantMixin<S extends Spec<S>, T extends Style<S>> {
   /// ```
   T onDark(T style) {
     return withVariants([
-      TriggerVariant(ContextTrigger.brightness(Brightness.dark), style),
+      EventVariantStyle(ContextTrigger.brightness(Brightness.dark), style),
     ]);
   }
 
@@ -60,7 +60,7 @@ mixin UtilityVariantMixin<S extends Spec<S>, T extends Style<S>> {
   /// ```
   T onLight(T style) {
     return withVariants([
-      TriggerVariant(ContextTrigger.brightness(Brightness.light), style),
+      EventVariantStyle(ContextTrigger.brightness(Brightness.light), style),
     ]);
   }
 
@@ -77,7 +77,7 @@ mixin UtilityVariantMixin<S extends Spec<S>, T extends Style<S>> {
   /// })
   /// ```
   T onBuilder(T Function(BuildContext context) fn) {
-    return withVariants([VariantBuilder<S>(fn)]);
+    return withVariants([VariantStyleBuilder<S>(fn)]);
   }
 
   @Deprecated(

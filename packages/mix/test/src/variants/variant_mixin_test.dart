@@ -10,12 +10,12 @@ class TestVariantAttribute extends Style<BoxSpec>
   const TestVariantAttribute({super.variants, super.modifier, super.animation});
 
   @override
-  TestVariantAttribute variant(covariant Variant<BoxSpec> variantStyle) {
+  TestVariantAttribute variant(covariant VariantStyle<BoxSpec> variantStyle) {
     return TestVariantAttribute(variants: [...?$variants, variantStyle]);
   }
 
   @override
-  TestVariantAttribute withVariants(List<Variant<BoxSpec>> value) {
+  TestVariantAttribute withVariants(List<VariantStyle<BoxSpec>> value) {
     return merge(TestVariantAttribute(variants: value));
   }
 
@@ -47,8 +47,8 @@ void main() {
       expect(result.$variants!.length, 1);
 
       final variantStyle = result.$variants!.first;
-      expect(variantStyle, isA<TriggerVariant<BoxSpec>>());
-      if (variantStyle is TriggerVariant<BoxSpec>) {
+      expect(variantStyle, isA<EventVariantStyle<BoxSpec>>());
+      if (variantStyle is EventVariantStyle<BoxSpec>) {
         expect(variantStyle.trigger, isA<ContextTrigger>());
       }
     });
@@ -62,8 +62,8 @@ void main() {
       expect(result.$variants!.length, 1);
 
       final variantStyle = result.$variants!.first;
-      expect(variantStyle, isA<TriggerVariant<BoxSpec>>());
-      if (variantStyle is TriggerVariant<BoxSpec>) {
+      expect(variantStyle, isA<EventVariantStyle<BoxSpec>>());
+      if (variantStyle is EventVariantStyle<BoxSpec>) {
         expect(variantStyle.trigger, isA<ContextTrigger>());
       }
     });
@@ -76,8 +76,8 @@ void main() {
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
       final variantStyle = result.$variants!.first;
-      expect(variantStyle, isA<TriggerVariant<BoxSpec>>());
-      if (variantStyle is TriggerVariant<BoxSpec>) {
+      expect(variantStyle, isA<EventVariantStyle<BoxSpec>>());
+      if (variantStyle is EventVariantStyle<BoxSpec>) {
         expect(variantStyle.trigger, isA<ContextTrigger>());
       }
     });
@@ -90,8 +90,8 @@ void main() {
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
       final variantStyle = result.$variants!.first;
-      expect(variantStyle, isA<TriggerVariant<BoxSpec>>());
-      if (variantStyle is TriggerVariant<BoxSpec>) {
+      expect(variantStyle, isA<EventVariantStyle<BoxSpec>>());
+      if (variantStyle is EventVariantStyle<BoxSpec>) {
         expect(variantStyle.trigger, isA<ContextTrigger>());
       }
     });
@@ -104,8 +104,8 @@ void main() {
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
       final variantStyle = result.$variants!.first;
-      expect(variantStyle, isA<TriggerVariant<BoxSpec>>());
-      if (variantStyle is TriggerVariant<BoxSpec>) {
+      expect(variantStyle, isA<EventVariantStyle<BoxSpec>>());
+      if (variantStyle is EventVariantStyle<BoxSpec>) {
         expect(variantStyle.trigger, isA<ContextTrigger>());
       }
     });
@@ -118,8 +118,8 @@ void main() {
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
       final variantStyle = result.$variants!.first;
-      expect(variantStyle, isA<TriggerVariant<BoxSpec>>());
-      if (variantStyle is TriggerVariant<BoxSpec>) {
+      expect(variantStyle, isA<EventVariantStyle<BoxSpec>>());
+      if (variantStyle is EventVariantStyle<BoxSpec>) {
         expect(variantStyle.trigger, isA<ContextTrigger>());
       }
     });
@@ -132,8 +132,8 @@ void main() {
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
       final variantStyle = result.$variants!.first;
-      expect(variantStyle, isA<TriggerVariant<BoxSpec>>());
-      if (variantStyle is TriggerVariant<BoxSpec>) {
+      expect(variantStyle, isA<EventVariantStyle<BoxSpec>>());
+      if (variantStyle is EventVariantStyle<BoxSpec>) {
         expect(variantStyle.trigger, isA<ContextTrigger>());
       }
     });
@@ -146,8 +146,8 @@ void main() {
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
       final variantStyle = result.$variants!.first;
-      expect(variantStyle, isA<TriggerVariant<BoxSpec>>());
-      if (variantStyle is TriggerVariant<BoxSpec>) {
+      expect(variantStyle, isA<EventVariantStyle<BoxSpec>>());
+      if (variantStyle is EventVariantStyle<BoxSpec>) {
         expect(variantStyle.trigger, isA<ContextTrigger>());
       }
     });
@@ -160,8 +160,8 @@ void main() {
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
       final variantStyle = result.$variants!.first;
-      expect(variantStyle, isA<TriggerVariant<BoxSpec>>());
-      if (variantStyle is TriggerVariant<BoxSpec>) {
+      expect(variantStyle, isA<EventVariantStyle<BoxSpec>>());
+      if (variantStyle is EventVariantStyle<BoxSpec>) {
         expect(variantStyle.trigger, isA<ContextTrigger>());
       }
     });
@@ -174,8 +174,8 @@ void main() {
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
       final variantStyle = result.$variants!.first;
-      expect(variantStyle, isA<TriggerVariant<BoxSpec>>());
-      if (variantStyle is TriggerVariant<BoxSpec>) {
+      expect(variantStyle, isA<EventVariantStyle<BoxSpec>>());
+      if (variantStyle is EventVariantStyle<BoxSpec>) {
         expect(variantStyle.trigger, isA<ContextTrigger>());
       }
     });
@@ -189,8 +189,8 @@ void main() {
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
       final variantStyle = result.$variants!.first;
-      expect(variantStyle, isA<TriggerVariant<BoxSpec>>());
-      if (variantStyle is TriggerVariant<BoxSpec>) {
+      expect(variantStyle, isA<EventVariantStyle<BoxSpec>>());
+      if (variantStyle is EventVariantStyle<BoxSpec>) {
         expect(variantStyle.trigger, isA<ContextTrigger>());
       }
     });
@@ -204,8 +204,8 @@ void main() {
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
       final variantStyle = result.$variants!.first;
-      expect(variantStyle, isA<TriggerVariant<BoxSpec>>());
-      if (variantStyle is TriggerVariant<BoxSpec>) {
+      expect(variantStyle, isA<EventVariantStyle<BoxSpec>>());
+      if (variantStyle is EventVariantStyle<BoxSpec>) {
         expect(variantStyle.style, equals(style));
       }
     });
@@ -222,10 +222,10 @@ void main() {
 
       final firstVariant = result.$variants!.first;
       final lastVariant = result.$variants!.last;
-      expect(firstVariant, isA<TriggerVariant<BoxSpec>>());
-      expect(lastVariant, isA<TriggerVariant<BoxSpec>>());
-      if (firstVariant is TriggerVariant<BoxSpec> &&
-          lastVariant is TriggerVariant<BoxSpec>) {
+      expect(firstVariant, isA<EventVariantStyle<BoxSpec>>());
+      expect(lastVariant, isA<EventVariantStyle<BoxSpec>>());
+      if (firstVariant is EventVariantStyle<BoxSpec> &&
+          lastVariant is EventVariantStyle<BoxSpec>) {
         expect(firstVariant.style, equals(darkStyle));
         expect(lastVariant.style, equals(hoverStyle));
       }
@@ -239,8 +239,8 @@ void main() {
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
       final variantStyle = result.$variants!.first;
-      expect(variantStyle, isA<TriggerVariant<BoxSpec>>());
-      if (variantStyle is TriggerVariant<BoxSpec>) {
+      expect(variantStyle, isA<EventVariantStyle<BoxSpec>>());
+      if (variantStyle is EventVariantStyle<BoxSpec>) {
         expect(variantStyle.trigger, isA<ContextTrigger>());
       }
     });
@@ -253,8 +253,8 @@ void main() {
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
       final variantStyle = result.$variants!.first;
-      expect(variantStyle, isA<TriggerVariant<BoxSpec>>());
-      if (variantStyle is TriggerVariant<BoxSpec>) {
+      expect(variantStyle, isA<EventVariantStyle<BoxSpec>>());
+      if (variantStyle is EventVariantStyle<BoxSpec>) {
         expect(variantStyle.trigger, isA<ContextTrigger>());
       }
     });
@@ -267,8 +267,8 @@ void main() {
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
       final variantStyle = result.$variants!.first;
-      expect(variantStyle, isA<TriggerVariant<BoxSpec>>());
-      if (variantStyle is TriggerVariant<BoxSpec>) {
+      expect(variantStyle, isA<EventVariantStyle<BoxSpec>>());
+      if (variantStyle is EventVariantStyle<BoxSpec>) {
         expect(variantStyle.trigger, isA<ContextTrigger>());
       }
     });
@@ -281,8 +281,8 @@ void main() {
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
       final variantStyle = result.$variants!.first;
-      expect(variantStyle, isA<TriggerVariant<BoxSpec>>());
-      if (variantStyle is TriggerVariant<BoxSpec>) {
+      expect(variantStyle, isA<EventVariantStyle<BoxSpec>>());
+      if (variantStyle is EventVariantStyle<BoxSpec>) {
         expect(variantStyle.trigger, isA<ContextTrigger>());
       }
     });
@@ -293,7 +293,7 @@ void main() {
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
-      expect(result.$variants!.first, isA<VariantBuilder<BoxSpec>>());
+      expect(result.$variants!.first, isA<VariantStyleBuilder<BoxSpec>>());
     });
 
     test(
@@ -306,7 +306,10 @@ void main() {
 
         expect(builderResult.$variants, isNotNull);
         expect(builderResult.$variants!.length, 1);
-        expect(builderResult.$variants!.first, isA<VariantBuilder<BoxSpec>>());
+        expect(
+          builderResult.$variants!.first,
+          isA<VariantStyleBuilder<BoxSpec>>(),
+        );
 
         // Both should create the same type of variant
         expect(
@@ -326,7 +329,8 @@ void main() {
       });
 
       // Get the variant builder and execute it
-      final variantBuilder = result.$variants!.first as VariantBuilder<BoxSpec>;
+      final variantBuilder =
+          result.$variants!.first as VariantStyleBuilder<BoxSpec>;
       final mockContext = MockBuildContext();
       variantBuilder.resolve(mockContext);
 

@@ -15,7 +15,7 @@ class TestOutlinedBoxStyler extends BoxStyler
 
   @override
   BoxStyler buildStyle(Set<String> activeVariants) {
-    // Always apply styling - StyleVariantMixin activation is handled by TriggerVariant
+    // Always apply styling - StyleVariantMixin activation is handled by EventVariantStyle
     // Create a clean BoxStyler without variants to prevent recursion
     final cleanBase = BoxStyler();
 
@@ -42,7 +42,7 @@ class TestSolidBoxStyler extends BoxStyler
 
   @override
   BoxStyler buildStyle(Set<String> activeVariants) {
-    // Always apply styling - StyleVariantMixin activation is handled by TriggerVariant
+    // Always apply styling - StyleVariantMixin activation is handled by EventVariantStyle
     // Create a clean BoxStyler without variants to prevent recursion
     final cleanBase = BoxStyler();
 
@@ -61,7 +61,7 @@ class TestSmallBoxStyler extends BoxStyler
 
   @override
   BoxStyler buildStyle(Set<String> activeVariants) {
-    // Always apply styling - StyleVariantMixin activation is handled by TriggerVariant
+    // Always apply styling - StyleVariantMixin activation is handled by EventVariantStyle
     // Create a clean BoxStyler without variants to prevent recursion
     final cleanBase = BoxStyler();
 
@@ -306,9 +306,7 @@ void main() {
                 _testSmall,
               });
 
-              final smallResult = smallStyler.buildStyle({
-                _testSmall,
-              });
+              final smallResult = smallStyler.buildStyle({_testSmall});
 
               expect(outlinedResult, isA<BoxStyler>());
               expect(smallResult, isA<BoxStyler>());
@@ -356,7 +354,7 @@ void main() {
               final outlinedStyler = TestOutlinedBoxStyler();
 
               final baseStyle = BoxStyler().height(48.0).withVariants([
-                TriggerVariant(
+                EventVariantStyle(
                   ContextTrigger(_testOutlined, (context) => true),
                   outlinedStyler,
                 ),
@@ -391,7 +389,7 @@ void main() {
               final outlinedStyler = TestOutlinedBoxStyler();
 
               final baseStyle = BoxStyler().height(48.0).withVariants([
-                TriggerVariant(
+                EventVariantStyle(
                   ContextTrigger(_testOutlined, (context) => true),
                   outlinedStyler,
                 ),
@@ -424,7 +422,7 @@ void main() {
               final outlinedStyler = TestOutlinedBoxStyler();
 
               final baseStyle = BoxStyler().width(200.0).withVariants([
-                TriggerVariant(
+                EventVariantStyle(
                   ContextTrigger(_testOutlined, (context) => true),
                   outlinedStyler,
                 ),
@@ -458,11 +456,11 @@ void main() {
               final smallStyler = TestSmallBoxStyler();
 
               final baseStyle = BoxStyler().withVariants([
-                TriggerVariant(
+                EventVariantStyle(
                   ContextTrigger(_testOutlined, (context) => true),
                   outlinedStyler,
                 ),
-                TriggerVariant(
+                EventVariantStyle(
                   ContextTrigger(_testSmall, (context) => true),
                   smallStyler,
                 ),
@@ -526,7 +524,7 @@ void main() {
                   .height(48.0)
                   .width(100.0)
                   .withVariants([
-                    TriggerVariant(
+                    EventVariantStyle(
                       ContextTrigger(_testOutlined, (context) => true),
                       outlinedStyler,
                     ),
@@ -563,7 +561,7 @@ void main() {
               final outlinedStyler = TestOutlinedBoxStyler();
 
               final baseStyle = BoxStyler().height(48.0).withVariants([
-                TriggerVariant(
+                EventVariantStyle(
                   ContextTrigger(_testOutlined, (context) => true),
                   outlinedStyler,
                 ),

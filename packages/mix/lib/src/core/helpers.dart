@@ -72,15 +72,15 @@ class MixOps {
     return current?.merge(other) ?? other;
   }
 
-  static List<Variant<S>>? mergeVariants<S extends Spec<S>>(
-    List<Variant<S>>? current,
-    List<Variant<S>>? other,
+  static List<VariantStyle<S>>? mergeVariants<S extends Spec<S>>(
+    List<VariantStyle<S>>? current,
+    List<VariantStyle<S>>? other,
   ) {
     if (current == null && other == null) return null;
-    if (current == null) return List<Variant<S>>.of(other!);
-    if (other == null) return List<Variant<S>>.of(current);
+    if (current == null) return List<VariantStyle<S>>.of(other!);
+    if (other == null) return List<VariantStyle<S>>.of(current);
 
-    final Map<Object, Variant<S>> merged = {};
+    final Map<Object, VariantStyle<S>> merged = {};
 
     for (final variant in current) {
       merged[variant.mergeKey] = variant;
@@ -90,7 +90,7 @@ class MixOps {
       final key = variant.mergeKey;
       final existing = merged[key];
       merged[key] = existing != null
-          ? existing.merge(variant) as Variant<S>
+          ? existing.merge(variant) as VariantStyle<S>
           : variant;
     }
 

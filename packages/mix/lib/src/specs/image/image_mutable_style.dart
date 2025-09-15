@@ -72,7 +72,7 @@ class ImageMutableStyler extends StyleMutableBuilder<ImageSpec>
   }
 
   @override
-  ImageStyler withVariants(List<Variant<ImageSpec>> variants) {
+  ImageStyler withVariants(List<VariantStyle<ImageSpec>> variants) {
     return mutable.withVariants(variants);
   }
 

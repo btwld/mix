@@ -12,7 +12,7 @@ import 'variant.dart';
 )
 @immutable
 class OnContextVariantUtility<S extends Spec<S>, T extends Style<S>>
-    extends MixUtility<T, Variant<S>> {
+    extends MixUtility<T, VariantStyle<S>> {
   const OnContextVariantUtility(super.utilityBuilder);
 
   /// Creates a variant attribute for the hover state
@@ -243,8 +243,8 @@ class OnContextVariantUtility<S extends Spec<S>, T extends Style<S>>
 
 /// Builder class for creating variant-based styling attributes.
 ///
-/// This class wraps a [Variant] and provides methods to create
-/// [Variant] instances with styling rules that apply
+/// This class wraps a [VariantStyle] and provides methods to create
+/// [VariantStyle] instances with styling rules that apply
 /// when the variant condition is met.
 @Deprecated(
   'Use direct methods like \$box.onHovered() instead of \$box.on.hover()',
@@ -262,11 +262,11 @@ class VariantAttributeBuilder<T extends Spec<T>> {
   /// This allows the existing `.on` pattern to work while users migrate to direct methods.
   /// Usage: `$box.on.hover($box.color.red())` becomes `$box.on.hover()($box.color.red())`
   @Deprecated('Use direct methods like \$box.onHovered() instead')
-  TriggerVariant<T> call<S extends Style<T>>(S style) {
-    return TriggerVariant<T>(trigger, style);
+  EventVariantStyle<T> call<S extends Style<T>>(S style) {
+    return EventVariantStyle<T>(trigger, style);
   }
 
-  /// Creates a [Variant] that applies the given styling elements
+  /// Creates a [VariantStyle] that applies the given styling elements
   /// when this variant's condition is met.
   ///
   /// Supports both single and multiple style elements:

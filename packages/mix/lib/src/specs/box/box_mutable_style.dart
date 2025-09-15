@@ -85,7 +85,7 @@ class BoxMutableStyler extends StyleMutableBuilder<BoxSpec>
   BoxStyler animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
-  BoxStyler withVariants(List<Variant<BoxSpec>> variants) {
+  BoxStyler withVariants(List<VariantStyle<BoxSpec>> variants) {
     return mutable.withVariants(variants);
   }
 

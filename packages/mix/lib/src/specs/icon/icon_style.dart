@@ -85,7 +85,7 @@ class IconStyler extends Style<IconSpec>
     IconData? icon,
     AnimationConfig? animation,
     WidgetModifierConfig? modifier,
-    List<Variant<IconSpec>>? variants,
+    List<VariantStyle<IconSpec>>? variants,
   }) : this.create(
          color: Prop.maybe(color),
          size: Prop.maybe(size),
@@ -261,7 +261,7 @@ class IconStyler extends Style<IconSpec>
   }
 
   @override
-  IconStyler withVariants(List<Variant<IconSpec>> value) {
+  IconStyler withVariants(List<VariantStyle<IconSpec>> value) {
     return merge(IconStyler(variants: value));
   }
 

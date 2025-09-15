@@ -268,7 +268,7 @@ class MockStyle<T> extends Style<MockSpec<T>> {
   });
 
   @override
-  MockStyle<T> withVariants(List<Variant<MockSpec<T>>> variants) {
+  MockStyle<T> withVariants(List<VariantStyle<MockSpec<T>>> variants) {
     return merge(MockStyle(value, variants: variants));
   }
 

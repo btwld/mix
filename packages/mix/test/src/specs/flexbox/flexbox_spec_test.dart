@@ -257,7 +257,7 @@ void main() {
         final variant = ContextTrigger('test', (context) => true);
         final withVariants = FlexBoxStyler(
           variants: [
-            TriggerVariant(
+            EventVariantStyle(
               variant,
               FlexBoxStyler(decoration: BoxDecorationMix(color: Colors.green)),
             ),

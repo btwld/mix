@@ -80,7 +80,7 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
     // Style properties
     AnimationConfig? animation,
     WidgetModifierConfig? modifier,
-    List<Variant<FlexBoxSpec>>? variants,
+    List<VariantStyle<FlexBoxSpec>>? variants,
   }) : this.create(
          box: Prop.maybeMix(
            BoxStyler(
@@ -211,7 +211,7 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
   }
 
   @override
-  FlexBoxStyler withVariants(List<Variant<FlexBoxSpec>> variants) {
+  FlexBoxStyler withVariants(List<VariantStyle<FlexBoxSpec>> variants) {
     return merge(FlexBoxStyler(variants: variants));
   }
 

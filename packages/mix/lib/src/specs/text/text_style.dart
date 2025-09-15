@@ -101,7 +101,7 @@ class TextStyler extends Style<TextSpec>
     Locale? locale,
     AnimationConfig? animation,
     WidgetModifierConfig? modifier,
-    List<Variant<TextSpec>>? variants,
+    List<VariantStyle<TextSpec>>? variants,
   }) : this.create(
          overflow: Prop.maybe(overflow),
          strutStyle: Prop.maybeMix(strutStyle),
@@ -249,7 +249,7 @@ class TextStyler extends Style<TextSpec>
   }
 
   @override
-  TextStyler withVariants(List<Variant<TextSpec>> variants) {
+  TextStyler withVariants(List<VariantStyle<TextSpec>> variants) {
     return merge(TextStyler(variants: variants));
   }
 

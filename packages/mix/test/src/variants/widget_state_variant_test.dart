@@ -294,7 +294,6 @@ void main() {
         expect(hovered.state, isNot(equals(pressed.state)));
       });
 
-
       test('negated widget states work correctly', () {
         final hovered = WidgetStateTrigger(WidgetState.hovered);
         final notHovered = ContextTrigger.not(hovered);
@@ -318,7 +317,7 @@ void main() {
       test('can be used in VariantSpecAttribute wrapper', () {
         final hoverVariant = WidgetStateTrigger(WidgetState.hovered);
         final style = BoxStyler().width(100.0);
-        final variantAttr = TriggerVariant<BoxSpec>(hoverVariant, style);
+        final variantAttr = EventVariantStyle<BoxSpec>(hoverVariant, style);
 
         expect(variantAttr.trigger, hoverVariant);
         expect(variantAttr.style, style);
@@ -328,12 +327,12 @@ void main() {
       test(
         'different widget states create different VariantSpecAttribute mergeKeys',
         () {
-          final hoverStyle = TriggerVariant<BoxSpec>(
+          final hoverStyle = EventVariantStyle<BoxSpec>(
             WidgetStateTrigger(WidgetState.hovered),
             BoxStyler().width(100.0),
           );
 
-          final pressStyle = TriggerVariant<BoxSpec>(
+          final pressStyle = EventVariantStyle<BoxSpec>(
             WidgetStateTrigger(WidgetState.pressed),
             BoxStyler().width(150.0),
           );
@@ -347,12 +346,12 @@ void main() {
       test('merges correctly when variants match', () {
         final hoverVariant = WidgetStateTrigger(WidgetState.hovered);
 
-        final style1 = TriggerVariant<BoxSpec>(
+        final style1 = EventVariantStyle<BoxSpec>(
           hoverVariant,
           BoxStyler().width(100.0),
         );
 
-        final style2 = TriggerVariant<BoxSpec>(
+        final style2 = EventVariantStyle<BoxSpec>(
           hoverVariant,
           BoxStyler().height(200.0),
         );

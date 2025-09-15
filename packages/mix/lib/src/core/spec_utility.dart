@@ -42,7 +42,7 @@ abstract class StyleAttributeBuilder<S extends Spec<S>> extends Style<S>
 
   /// Mutable variants from internal attribute
   @override
-  List<Variant<S>>? get $variants => style.$variants;
+  List<VariantStyle<S>>? get $variants => style.$variants;
 
   @override
   List<Object?> get props => [style];
@@ -82,7 +82,7 @@ abstract class StyleMutableBuilder<S extends Spec<S>> extends Style<S>
 
   /// Mutable variants from internal attribute
   @override
-  List<Variant<S>>? get $variants => value.$variants;
+  List<VariantStyle<S>>? get $variants => value.$variants;
 
   @override
   List<Object?> get props => [mutable];

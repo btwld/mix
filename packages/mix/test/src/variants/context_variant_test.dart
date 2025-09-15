@@ -253,7 +253,7 @@ void main() {
       test('can be wrapped in VariantSpecAttribute', () {
         final contextVariant = ContextTrigger('test', (context) => true);
         final style = BoxStyler().width(100.0);
-        final variantAttr = TriggerVariant<BoxSpec>(contextVariant, style);
+        final variantAttr = EventVariantStyle<BoxSpec>(contextVariant, style);
 
         expect(variantAttr.trigger, contextVariant);
         expect(variantAttr.style, style);
@@ -264,11 +264,11 @@ void main() {
         final variant1 = ContextTrigger('context1', (context) => true);
         final variant2 = ContextTrigger('context2', (context) => false);
 
-        final style1 = TriggerVariant<BoxSpec>(
+        final style1 = EventVariantStyle<BoxSpec>(
           variant1,
           BoxStyler().width(100.0),
         );
-        final style2 = TriggerVariant<BoxSpec>(
+        final style2 = EventVariantStyle<BoxSpec>(
           variant2,
           BoxStyler().height(200.0),
         );

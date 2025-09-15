@@ -129,8 +129,8 @@ final class WidgetStateTrigger extends ContextTrigger {
 
 /// Base interface for variant-based styling
 @immutable
-sealed class Variant<S extends Spec<S>> extends Mixable {
-  const Variant();
+sealed class VariantStyle<S extends Spec<S>> extends Mixable {
+  const VariantStyle();
 
   /// Unique key identifying this variant
   String get variantKey;
@@ -140,36 +140,36 @@ sealed class Variant<S extends Spec<S>> extends Mixable {
 
 /// Variant style for trigger-based variants (automatic activation)
 @immutable
-final class TriggerVariant<S extends Spec<S>> extends Variant<S> {
+final class EventVariantStyle<S extends Spec<S>> extends VariantStyle<S> {
   final ContextTrigger trigger;
   final Style<S> _style;
 
-  const TriggerVariant(this.trigger, Style<S> style) : _style = style;
+  const EventVariantStyle(this.trigger, Style<S> style) : _style = style;
 
   Style<S> get style => _style;
 
   bool isActive(BuildContext context) => trigger.matches(context);
 
   @override
-  TriggerVariant<S> merge(covariant TriggerVariant<S>? other) {
+  EventVariantStyle<S> merge(covariant EventVariantStyle<S>? other) {
     if (other == null) {
       return this;
     }
 
     if (variantKey != other.variantKey) {
       throw ArgumentError(
-        'Cannot merge TriggerVariant with different keys. '
+        'Cannot merge EventVariantStyle with different keys. '
         'Attempted to merge key "$variantKey" with "${other.variantKey}".',
       );
     }
 
-    return TriggerVariant(trigger, _style.merge(other._style));
+    return EventVariantStyle(trigger, _style.merge(other._style));
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TriggerVariant<S> &&
+      other is EventVariantStyle<S> &&
           other.trigger == trigger &&
           other._style == _style;
 
@@ -182,15 +182,15 @@ final class TriggerVariant<S extends Spec<S>> extends Variant<S> {
 
 /// Variant style for dynamic style building (always active)
 @immutable
-final class VariantBuilder<S extends Spec<S>> extends Variant<S> {
+final class VariantStyleBuilder<S extends Spec<S>> extends VariantStyle<S> {
   final Style<S> Function(BuildContext) builder;
 
-  const VariantBuilder(this.builder);
+  const VariantStyleBuilder(this.builder);
 
   Style<S> resolve(BuildContext context) => builder(context);
 
   @override
-  VariantBuilder<S> merge(covariant VariantBuilder<S>? other) {
+  VariantStyleBuilder<S> merge(covariant VariantStyleBuilder<S>? other) {
     if (other == null) {
       return this;
     }
@@ -203,7 +203,7 @@ final class VariantBuilder<S extends Spec<S>> extends Variant<S> {
     }
 
     // Create new builder that merges the resolved styles
-    return VariantBuilder(
+    return VariantStyleBuilder(
       (context) => builder(context).merge(other.builder(context)),
     );
   }
@@ -211,7 +211,7 @@ final class VariantBuilder<S extends Spec<S>> extends Variant<S> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is VariantBuilder<S> && other.builder == builder;
+      other is VariantStyleBuilder<S> && other.builder == builder;
 
   @override
   String get variantKey => builder.hashCode.toString();
@@ -223,7 +223,7 @@ final class VariantBuilder<S extends Spec<S>> extends Variant<S> {
 /// Interface for design system components that adapt their styling
 /// based on active variants and user modifications.
 mixin StyleVariantMixin<T extends Style<S>, S extends Spec<S>> on Style<S>
-    implements Variant<S> {
+    implements VariantStyle<S> {
   /// The named variant this StyleVariation handles
   @override
   String get variantKey;
