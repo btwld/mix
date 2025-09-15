@@ -73,9 +73,11 @@ void main() {
       });
 
       test('', () {
-        final variant = ContextTrigger.brightness(Brightness.dark);
+        final variant = ContextVariant.brightness(Brightness.dark);
         final style = IconStyler().color(Colors.white);
-        final iconMix = IconStyler().variant(EventVariantStyle(variant, style));
+        final iconMix = IconStyler().variant(
+          ContextVariantStyle(variant, style),
+        );
 
         expect(iconMix.$variants, isNotNull);
         expect(iconMix.$variants!.length, 1);
@@ -142,9 +144,9 @@ void main() {
 
   group('Variant Methods', () {
     test('', () {
-      final variant = ContextTrigger.brightness(Brightness.dark);
+      final variant = ContextVariant.brightness(Brightness.dark);
       final style = IconStyler().color(Colors.white);
-      final iconMix = IconStyler().variant(EventVariantStyle(variant, style));
+      final iconMix = IconStyler().variant(ContextVariantStyle(variant, style));
 
       expect(iconMix.$variants, isNotNull);
       expect(iconMix.$variants!.length, 1);
@@ -152,12 +154,12 @@ void main() {
 
     test('variants method sets multiple variants', () {
       final variants = [
-        EventVariantStyle(
-          ContextTrigger.brightness(Brightness.dark),
+        ContextVariantStyle(
+          ContextVariant.brightness(Brightness.dark),
           IconStyler().color(Colors.white),
         ),
-        EventVariantStyle(
-          ContextTrigger.brightness(Brightness.light),
+        ContextVariantStyle(
+          ContextVariant.brightness(Brightness.light),
           IconStyler().color(Colors.black),
         ),
       ];

@@ -114,14 +114,14 @@ void main() {
 
       test('merges variants correctly', () {
         final firstVariants = [
-          EventVariantStyle(
-            ContextTrigger.widgetState(WidgetState.hovered),
+          ContextVariantStyle(
+            ContextVariant.widgetState(WidgetState.hovered),
             BoxStyler().color(Colors.blue),
           ),
         ];
         final secondVariants = [
-          EventVariantStyle(
-            ContextTrigger.widgetState(WidgetState.pressed),
+          ContextVariantStyle(
+            ContextVariant.widgetState(WidgetState.pressed),
             BoxStyler().color(Colors.red),
           ),
         ];
@@ -140,11 +140,11 @@ void main() {
         expect(merged.$variants, isNotNull);
         expect(merged.$variants!.length, 2);
         expect(
-          (merged.$variants![0] as EventVariantStyle).trigger,
+          (merged.$variants![0] as ContextVariantStyle).trigger,
           isA<WidgetStateTrigger>(),
         );
         expect(
-          (merged.$variants![1] as EventVariantStyle).trigger,
+          (merged.$variants![1] as ContextVariantStyle).trigger,
           isA<WidgetStateTrigger>(),
         );
       });
@@ -392,9 +392,9 @@ void main() {
       test('merges with same variant types correctly', () {
         final firstStyle = BoxStyler().width(100.0);
         final secondStyle = BoxStyler().height(200.0);
-        final trigger = ContextTrigger.widgetState(WidgetState.hovered);
-        final variant1 = EventVariantStyle(trigger, firstStyle);
-        final variant2 = EventVariantStyle(trigger, secondStyle);
+        final trigger = ContextVariant.widgetState(WidgetState.hovered);
+        final variant1 = ContextVariantStyle(trigger, firstStyle);
+        final variant2 = ContextVariantStyle(trigger, secondStyle);
 
         final first = BoxStyler(
           decoration: DecorationMix.color(Colors.red),
@@ -410,12 +410,12 @@ void main() {
         expect(merged.$variants, isNotNull);
         expect(merged.$variants!.length, 1);
         expect(
-          (merged.$variants![0] as EventVariantStyle).trigger,
+          (merged.$variants![0] as ContextVariantStyle).trigger,
           equals(trigger),
         );
 
         final mergedVariantStyle =
-            (merged.$variants![0] as EventVariantStyle).style as BoxStyler;
+            (merged.$variants![0] as ContextVariantStyle).style as BoxStyler;
         final context = MockBuildContext();
         final spec = mergedVariantStyle.resolve(context).spec;
         expect(spec.constraints?.minWidth, 100.0);
@@ -461,8 +461,8 @@ void main() {
         final first = BoxStyler(
           constraints: BoxConstraintsMix.width(100.0),
           variants: [
-            EventVariantStyle(
-              ContextTrigger.widgetState(WidgetState.hovered),
+            ContextVariantStyle(
+              ContextVariant.widgetState(WidgetState.hovered),
               BoxStyler().color(Colors.blue),
             ),
           ],
@@ -476,7 +476,7 @@ void main() {
         expect(merged.$variants, isNotNull);
         expect(merged.$variants!.length, 1);
         expect(
-          (merged.$variants![0] as EventVariantStyle).trigger,
+          (merged.$variants![0] as ContextVariantStyle).trigger,
           isA<WidgetStateTrigger>(),
         );
       });

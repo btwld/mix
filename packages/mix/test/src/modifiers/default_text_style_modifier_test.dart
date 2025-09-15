@@ -145,7 +145,7 @@ void main() {
     });
 
     group('build', () {
-      testWidgets('should wrap child in DefaultTextStyle', (tester) async {
+      test('should wrap child in DefaultTextStyle', () {
         const modifier = DefaultTextStyleModifier(
           style: TextStyle(fontSize: 16, color: Colors.red),
           textAlign: TextAlign.center,
@@ -158,11 +158,8 @@ void main() {
         const child = Text('Test Text');
         final result = modifier.build(child);
 
-        await tester.pumpWidget(MaterialApp(home: Scaffold(body: result)));
-
-        final defaultTextStyle = tester.widget<DefaultTextStyle>(
-          find.byType(DefaultTextStyle),
-        );
+        expect(result, isA<DefaultTextStyle>());
+        final defaultTextStyle = result as DefaultTextStyle;
 
         expect(defaultTextStyle.style.fontSize, equals(16));
         expect(defaultTextStyle.style.color, equals(Colors.red));
@@ -177,18 +174,13 @@ void main() {
         expect(defaultTextStyle.child, equals(child));
       });
 
-      testWidgets('should use default values when not specified', (
-        tester,
-      ) async {
+      test('should use default values when not specified', () {
         const modifier = DefaultTextStyleModifier();
         const child = Text('Test Text');
         final result = modifier.build(child);
 
-        await tester.pumpWidget(MaterialApp(home: Scaffold(body: result)));
-
-        final defaultTextStyle = tester.widget<DefaultTextStyle>(
-          find.byType(DefaultTextStyle),
-        );
+        expect(result, isA<DefaultTextStyle>());
+        final defaultTextStyle = result as DefaultTextStyle;
 
         expect(defaultTextStyle.style, equals(const TextStyle()));
         expect(defaultTextStyle.textAlign, isNull);
@@ -363,7 +355,9 @@ void main() {
         );
       });
 
-      testWidgets('should resolve with null values', (tester) async {
+      testWidgets('should resolve with default values when not specified', (
+        tester,
+      ) async {
         final mix = DefaultTextStyleModifierMix.create();
 
         await tester.pumpWidget(
@@ -373,12 +367,12 @@ void main() {
                 final resolved = mix.resolve(context);
 
                 expect(resolved, isA<DefaultTextStyleModifier>());
-                expect(resolved.style, isNull);
+                expect(resolved.style, equals(const TextStyle()));
                 expect(resolved.textAlign, isNull);
-                expect(resolved.softWrap, isNull);
-                expect(resolved.overflow, isNull);
+                expect(resolved.softWrap, isTrue);
+                expect(resolved.overflow, equals(TextOverflow.clip));
                 expect(resolved.maxLines, isNull);
-                expect(resolved.textWidthBasis, isNull);
+                expect(resolved.textWidthBasis, equals(TextWidthBasis.parent));
                 expect(resolved.textHeightBehavior, isNull);
 
                 return Container();

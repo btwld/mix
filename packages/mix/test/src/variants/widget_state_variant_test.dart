@@ -12,7 +12,7 @@ void main() {
 
         expect(variant.state, WidgetState.hovered);
         expect(variant.key, 'widget_state_hovered');
-        expect(variant, isA<ContextTrigger>());
+        expect(variant, isA<ContextVariant>());
       });
 
       test('creates different variants for different states', () {
@@ -40,7 +40,7 @@ void main() {
 
     group('Factory from ContextTrigger', () {
       test('ContextTrigger.widgetState creates WidgetStateVariant', () {
-        final variant = ContextTrigger.widgetState(WidgetState.hovered);
+        final variant = ContextVariant.widgetState(WidgetState.hovered);
 
         expect(variant, isA<WidgetStateTrigger>());
         expect(variant.state, WidgetState.hovered);
@@ -50,8 +50,8 @@ void main() {
       test(
         'factory method creates different variants for different states',
         () {
-          final hovered = ContextTrigger.widgetState(WidgetState.hovered);
-          final pressed = ContextTrigger.widgetState(WidgetState.pressed);
+          final hovered = ContextVariant.widgetState(WidgetState.hovered);
+          final pressed = ContextVariant.widgetState(WidgetState.pressed);
 
           expect(hovered, isA<WidgetStateTrigger>());
           expect(pressed, isA<WidgetStateTrigger>());
@@ -117,7 +117,7 @@ void main() {
 
       test('equality works across factory methods', () {
         final direct = WidgetStateTrigger(WidgetState.hovered);
-        final factory = ContextTrigger.widgetState(WidgetState.hovered);
+        final factory = ContextVariant.widgetState(WidgetState.hovered);
 
         expect(direct, equals(factory));
         expect(direct.hashCode, equals(factory.hashCode));
@@ -128,8 +128,8 @@ void main() {
       test('inherits ContextTrigger properties and methods', () {
         final variant = WidgetStateTrigger(WidgetState.hovered);
 
-        expect(variant, isA<ContextTrigger>());
-        expect(variant, isA<ContextTrigger>());
+        expect(variant, isA<ContextVariant>());
+        expect(variant, isA<ContextVariant>());
         expect(variant.key, isA<String>());
         expect(variant.shouldApply, isA<Function>());
       });
@@ -176,110 +176,110 @@ void main() {
     group('Predefined widget state variants', () {
       test('predefined variants use WidgetStateVariant', () {
         expect(
-          ContextTrigger.widgetState(WidgetState.hovered),
+          ContextVariant.widgetState(WidgetState.hovered),
           isA<WidgetStateTrigger>(),
         );
         expect(
-          ContextTrigger.widgetState(WidgetState.pressed),
+          ContextVariant.widgetState(WidgetState.pressed),
           isA<WidgetStateTrigger>(),
         );
         expect(
-          ContextTrigger.widgetState(WidgetState.focused),
+          ContextVariant.widgetState(WidgetState.focused),
           isA<WidgetStateTrigger>(),
         );
         expect(
-          ContextTrigger.widgetState(WidgetState.disabled),
+          ContextVariant.widgetState(WidgetState.disabled),
           isA<WidgetStateTrigger>(),
         );
         expect(
-          ContextTrigger.widgetState(WidgetState.selected),
+          ContextVariant.widgetState(WidgetState.selected),
           isA<WidgetStateTrigger>(),
         );
         expect(
-          ContextTrigger.widgetState(WidgetState.dragged),
+          ContextVariant.widgetState(WidgetState.dragged),
           isA<WidgetStateTrigger>(),
         );
         expect(
-          ContextTrigger.widgetState(WidgetState.error),
+          ContextVariant.widgetState(WidgetState.error),
           isA<WidgetStateTrigger>(),
         );
       });
 
       test('predefined variants have correct states', () {
         expect(
-          ContextTrigger.widgetState(WidgetState.hovered).state,
+          ContextVariant.widgetState(WidgetState.hovered).state,
           WidgetState.hovered,
         );
         expect(
-          ContextTrigger.widgetState(WidgetState.pressed).state,
+          ContextVariant.widgetState(WidgetState.pressed).state,
           WidgetState.pressed,
         );
         expect(
-          ContextTrigger.widgetState(WidgetState.focused).state,
+          ContextVariant.widgetState(WidgetState.focused).state,
           WidgetState.focused,
         );
         expect(
-          ContextTrigger.widgetState(WidgetState.disabled).state,
+          ContextVariant.widgetState(WidgetState.disabled).state,
           WidgetState.disabled,
         );
         expect(
-          ContextTrigger.widgetState(WidgetState.selected).state,
+          ContextVariant.widgetState(WidgetState.selected).state,
           WidgetState.selected,
         );
         expect(
-          ContextTrigger.widgetState(WidgetState.dragged).state,
+          ContextVariant.widgetState(WidgetState.dragged).state,
           WidgetState.dragged,
         );
         expect(
-          ContextTrigger.widgetState(WidgetState.error).state,
+          ContextVariant.widgetState(WidgetState.error).state,
           WidgetState.error,
         );
       });
 
       test('predefined variants have correct keys', () {
         expect(
-          ContextTrigger.widgetState(WidgetState.hovered).key,
+          ContextVariant.widgetState(WidgetState.hovered).key,
           'widget_state_hovered',
         );
         expect(
-          ContextTrigger.widgetState(WidgetState.pressed).key,
+          ContextVariant.widgetState(WidgetState.pressed).key,
           'widget_state_pressed',
         );
         expect(
-          ContextTrigger.widgetState(WidgetState.focused).key,
+          ContextVariant.widgetState(WidgetState.focused).key,
           'widget_state_focused',
         );
         expect(
-          ContextTrigger.widgetState(WidgetState.disabled).key,
+          ContextVariant.widgetState(WidgetState.disabled).key,
           'widget_state_disabled',
         );
         expect(
-          ContextTrigger.widgetState(WidgetState.selected).key,
+          ContextVariant.widgetState(WidgetState.selected).key,
           'widget_state_selected',
         );
         expect(
-          ContextTrigger.widgetState(WidgetState.dragged).key,
+          ContextVariant.widgetState(WidgetState.dragged).key,
           'widget_state_dragged',
         );
         expect(
-          ContextTrigger.widgetState(WidgetState.error).key,
+          ContextVariant.widgetState(WidgetState.error).key,
           'widget_state_error',
         );
       });
 
       test('predefined enabled variant uses NOT logic', () {
-        final disabled = ContextTrigger.widgetState(WidgetState.disabled);
-        final enabled = ContextTrigger.not(disabled);
+        final disabled = ContextVariant.widgetState(WidgetState.disabled);
+        final enabled = ContextVariant.not(disabled);
 
-        expect(enabled, isA<ContextTrigger>());
+        expect(enabled, isA<ContextVariant>());
         expect(enabled.key, contains('not'));
       });
 
       test('predefined unselected variant uses NOT logic', () {
-        final selected = ContextTrigger.widgetState(WidgetState.selected);
-        final unselected = ContextTrigger.not(selected);
+        final selected = ContextVariant.widgetState(WidgetState.selected);
+        final unselected = ContextVariant.not(selected);
 
-        expect(unselected, isA<ContextTrigger>());
+        expect(unselected, isA<ContextVariant>());
         expect(unselected.key, contains('not'));
       });
     });
@@ -296,16 +296,16 @@ void main() {
 
       test('negated widget states work correctly', () {
         final hovered = WidgetStateTrigger(WidgetState.hovered);
-        final notHovered = ContextTrigger.not(hovered);
+        final notHovered = ContextVariant.not(hovered);
 
-        expect(notHovered, isA<ContextTrigger>());
+        expect(notHovered, isA<ContextVariant>());
         expect(notHovered.key, contains('not'));
       });
 
       test('enabled variant is opposite of disabled', () {
-        final disabled = ContextTrigger.widgetState(WidgetState.disabled);
-        final enabled = ContextTrigger.not(disabled);
-        final hover = ContextTrigger.widgetState(WidgetState.hovered);
+        final disabled = ContextVariant.widgetState(WidgetState.disabled);
+        final enabled = ContextVariant.not(disabled);
+        final hover = ContextVariant.widgetState(WidgetState.hovered);
 
         // Test they are distinct
         expect(enabled.key, isNot(equals(disabled.key)));
@@ -317,7 +317,7 @@ void main() {
       test('can be used in VariantSpecAttribute wrapper', () {
         final hoverVariant = WidgetStateTrigger(WidgetState.hovered);
         final style = BoxStyler().width(100.0);
-        final variantAttr = EventVariantStyle<BoxSpec>(hoverVariant, style);
+        final variantAttr = ContextVariantStyle<BoxSpec>(hoverVariant, style);
 
         expect(variantAttr.trigger, hoverVariant);
         expect(variantAttr.style, style);
@@ -327,12 +327,12 @@ void main() {
       test(
         'different widget states create different VariantSpecAttribute mergeKeys',
         () {
-          final hoverStyle = EventVariantStyle<BoxSpec>(
+          final hoverStyle = ContextVariantStyle<BoxSpec>(
             WidgetStateTrigger(WidgetState.hovered),
             BoxStyler().width(100.0),
           );
 
-          final pressStyle = EventVariantStyle<BoxSpec>(
+          final pressStyle = ContextVariantStyle<BoxSpec>(
             WidgetStateTrigger(WidgetState.pressed),
             BoxStyler().width(150.0),
           );
@@ -346,12 +346,12 @@ void main() {
       test('merges correctly when variants match', () {
         final hoverVariant = WidgetStateTrigger(WidgetState.hovered);
 
-        final style1 = EventVariantStyle<BoxSpec>(
+        final style1 = ContextVariantStyle<BoxSpec>(
           hoverVariant,
           BoxStyler().width(100.0),
         );
 
-        final style2 = EventVariantStyle<BoxSpec>(
+        final style2 = ContextVariantStyle<BoxSpec>(
           hoverVariant,
           BoxStyler().height(200.0),
         );

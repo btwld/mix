@@ -79,12 +79,12 @@ void main() {
       });
 
       test('creates StackBoxStyle with variants', () {
-        final variant = ContextTrigger.brightness(Brightness.dark);
+        final variant = ContextVariant.brightness(Brightness.dark);
         final style = StackBoxStyler(
           decoration: DecorationMix.color(Colors.white),
         );
         final stackBoxStyle = StackBoxStyler(
-          variants: [EventVariantStyle(variant, style)],
+          variants: [ContextVariantStyle(variant, style)],
         );
 
         expect(stackBoxStyle.$variants, isNotNull);

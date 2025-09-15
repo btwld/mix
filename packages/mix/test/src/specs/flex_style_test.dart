@@ -218,9 +218,9 @@ void main() {
     });
 
     test('variant factory creates with variant', () {
-      final variant = ContextTrigger.brightness(Brightness.dark);
+      final variant = ContextVariant.brightness(Brightness.dark);
       final style = FlexStyler(direction: Axis.horizontal);
-      final flexMix = FlexStyler().variant(EventVariantStyle(variant, style));
+      final flexMix = FlexStyler().variant(ContextVariantStyle(variant, style));
 
       expect(flexMix.$variants, isNotNull);
       expect(flexMix.$variants!.length, 1);
@@ -473,9 +473,9 @@ void main() {
 
   group('Variant Methods', () {
     test('variant method sets single variant', () {
-      final variant = ContextTrigger.brightness(Brightness.dark);
+      final variant = ContextVariant.brightness(Brightness.dark);
       final style = FlexStyler(direction: Axis.horizontal);
-      final flexMix = FlexStyler().variant(EventVariantStyle(variant, style));
+      final flexMix = FlexStyler().variant(ContextVariantStyle(variant, style));
 
       expect(flexMix.$variants, isNotNull);
       expect(flexMix.$variants!.length, 1);
@@ -483,12 +483,12 @@ void main() {
 
     test('variants method sets multiple variants', () {
       final variants = [
-        EventVariantStyle(
-          ContextTrigger.brightness(Brightness.dark),
+        ContextVariantStyle(
+          ContextVariant.brightness(Brightness.dark),
           FlexStyler(direction: Axis.horizontal),
         ),
-        EventVariantStyle(
-          ContextTrigger.brightness(Brightness.light),
+        ContextVariantStyle(
+          ContextVariant.brightness(Brightness.light),
           FlexStyler(direction: Axis.vertical),
         ),
       ];

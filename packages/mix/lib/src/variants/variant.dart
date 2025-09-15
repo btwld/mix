@@ -7,88 +7,85 @@ import '../core/providers/widget_state_provider.dart';
 import '../core/spec.dart';
 import '../core/style.dart';
 
-@Deprecated('Use ContextTrigger instead')
-typedef ContextVariant = ContextTrigger;
-
 /// Triggers that determine when styles should be applied based on context conditions.
 @immutable
-class ContextTrigger {
+class ContextVariant {
   final bool Function(BuildContext) shouldApply;
   final String key;
 
-  const ContextTrigger(this.key, this.shouldApply);
+  const ContextVariant(this.key, this.shouldApply);
 
   static WidgetStateTrigger widgetState(WidgetState state) {
     return WidgetStateTrigger(state);
   }
 
-  static ContextTrigger orientation(Orientation orientation) {
-    return ContextTrigger(
+  static ContextVariant orientation(Orientation orientation) {
+    return ContextVariant(
       'media_query_orientation_${orientation.name}',
       (context) => MediaQuery.orientationOf(context) == orientation,
     );
   }
 
-  static ContextTrigger not(ContextTrigger trigger) {
-    return ContextTrigger(
+  static ContextVariant not(ContextVariant trigger) {
+    return ContextVariant(
       'not_${trigger.key}',
       (context) => !trigger.matches(context),
     );
   }
 
-  static ContextTrigger breakpoint(Breakpoint breakpoint) {
-    return ContextTrigger(
+  static ContextVariant breakpoint(Breakpoint breakpoint) {
+    return ContextVariant(
       'breakpoint_${breakpoint.minWidth ?? '0.0'}_${breakpoint.maxWidth ?? 'infinity'}',
       (context) => breakpoint.matches(MediaQuery.sizeOf(context)),
     );
   }
 
-  static ContextTrigger brightness(Brightness brightness) {
-    return ContextTrigger(
+  static ContextVariant brightness(Brightness brightness) {
+    return ContextVariant(
       'media_query_platform_brightness_${brightness.name}',
       (context) => MediaQuery.platformBrightnessOf(context) == brightness,
     );
   }
 
-  static ContextTrigger size(String name, bool Function(Size) condition) {
-    return ContextTrigger(
+  static ContextVariant size(String name, bool Function(Size) condition) {
+    return ContextVariant(
       'media_query_size_$name',
       (context) => condition(MediaQuery.sizeOf(context)),
     );
   }
 
   // Directionality
-  static ContextTrigger directionality(TextDirection direction) {
-    return ContextTrigger(
+  static ContextVariant directionality(TextDirection direction) {
+    return ContextVariant(
       'directionality_${direction.name}',
       (context) => Directionality.of(context) == direction,
     );
   }
 
   // Platform
-  static ContextTrigger platform(TargetPlatform platform) {
-    return ContextTrigger(
+  static ContextVariant platform(TargetPlatform platform) {
+    return ContextVariant(
       'platform_${platform.name}',
       (context) => defaultTargetPlatform == platform,
     );
   }
 
   // Web
-  static ContextTrigger web() {
-    return ContextTrigger('web', (_) => kIsWeb);
+  static ContextVariant web() {
+    return ContextVariant('web', (_) => kIsWeb);
   }
 
   // Responsive breakpoints
-  static ContextTrigger mobile() {
-    return ContextTrigger.breakpoint(Breakpoint.mobile);
+  static ContextVariant mobile() {
+    return ContextVariant.breakpoint(Breakpoint.mobile);
   }
 
-  static ContextTrigger tablet() {
-    return ContextTrigger.breakpoint(Breakpoint.tablet);
+  static ContextVariant tablet() {
+    return ContextVariant.breakpoint(Breakpoint.tablet);
   }
 
-  static ContextTrigger desktop() {
-    return ContextTrigger.breakpoint(Breakpoint.desktop);
+  static ContextVariant desktop() {
+    return ContextVariant.breakpoint(Breakpoint.desktop);
   }
 
   /// Check if this trigger should activate for the given context
@@ -102,7 +99,7 @@ class ContextTrigger {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ContextTrigger &&
+      other is ContextVariant &&
           other.key == key &&
           other.shouldApply == shouldApply;
 
@@ -110,7 +107,7 @@ class ContextTrigger {
   int get hashCode => Object.hash(key, shouldApply);
 }
 
-final class WidgetStateTrigger extends ContextTrigger {
+final class WidgetStateTrigger extends ContextVariant {
   final WidgetState state;
 
   WidgetStateTrigger(this.state)
@@ -140,18 +137,18 @@ sealed class VariantStyle<S extends Spec<S>> extends Mixable {
 
 /// Variant style for trigger-based variants (automatic activation)
 @immutable
-final class EventVariantStyle<S extends Spec<S>> extends VariantStyle<S> {
-  final ContextTrigger trigger;
+final class ContextVariantStyle<S extends Spec<S>> extends VariantStyle<S> {
+  final ContextVariant trigger;
   final Style<S> _style;
 
-  const EventVariantStyle(this.trigger, Style<S> style) : _style = style;
+  const ContextVariantStyle(this.trigger, Style<S> style) : _style = style;
 
   Style<S> get style => _style;
 
   bool isActive(BuildContext context) => trigger.matches(context);
 
   @override
-  EventVariantStyle<S> merge(covariant EventVariantStyle<S>? other) {
+  ContextVariantStyle<S> merge(covariant ContextVariantStyle<S>? other) {
     if (other == null) {
       return this;
     }
@@ -163,13 +160,13 @@ final class EventVariantStyle<S extends Spec<S>> extends VariantStyle<S> {
       );
     }
 
-    return EventVariantStyle(trigger, _style.merge(other._style));
+    return ContextVariantStyle(trigger, _style.merge(other._style));
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is EventVariantStyle<S> &&
+      other is ContextVariantStyle<S> &&
           other.trigger == trigger &&
           other._style == _style;
 
@@ -218,25 +215,4 @@ final class VariantStyleBuilder<S extends Spec<S>> extends VariantStyle<S> {
 
   @override
   int get hashCode => builder.hashCode;
-}
-
-/// Interface for design system components that adapt their styling
-/// based on active variants and user modifications.
-mixin StyleVariantMixin<T extends Style<S>, S extends Spec<S>> on Style<S>
-    implements VariantStyle<S> {
-  /// The named variant this StyleVariation handles
-  @override
-  String get variantKey;
-
-  T merge(T? other) {
-    if (other == null) return this as T;
-
-    return other.withVariants([this]) as T;
-  }
-
-  @override
-  String get mergeKey => variantKey;
-
-  /// Adapts this style based on active variants.
-  T buildStyle(Set<String> activeVariants);
 }

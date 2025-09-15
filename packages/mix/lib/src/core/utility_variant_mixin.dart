@@ -24,7 +24,10 @@ mixin UtilityVariantMixin<S extends Spec<S>, T extends Style<S>> {
   /// ```
   T onHovered(T style) {
     return withVariants([
-      EventVariantStyle(ContextTrigger.widgetState(WidgetState.hovered), style),
+      ContextVariantStyle(
+        ContextVariant.widgetState(WidgetState.hovered),
+        style,
+      ),
     ]);
   }
 
@@ -36,7 +39,10 @@ mixin UtilityVariantMixin<S extends Spec<S>, T extends Style<S>> {
   /// ```
   T onPressed(T style) {
     return withVariants([
-      EventVariantStyle(ContextTrigger.widgetState(WidgetState.pressed), style),
+      ContextVariantStyle(
+        ContextVariant.widgetState(WidgetState.pressed),
+        style,
+      ),
     ]);
   }
 
@@ -48,7 +54,7 @@ mixin UtilityVariantMixin<S extends Spec<S>, T extends Style<S>> {
   /// ```
   T onDark(T style) {
     return withVariants([
-      EventVariantStyle(ContextTrigger.brightness(Brightness.dark), style),
+      ContextVariantStyle(ContextVariant.brightness(Brightness.dark), style),
     ]);
   }
 
@@ -60,7 +66,7 @@ mixin UtilityVariantMixin<S extends Spec<S>, T extends Style<S>> {
   /// ```
   T onLight(T style) {
     return withVariants([
-      EventVariantStyle(ContextTrigger.brightness(Brightness.light), style),
+      ContextVariantStyle(ContextVariant.brightness(Brightness.light), style),
     ]);
   }
 

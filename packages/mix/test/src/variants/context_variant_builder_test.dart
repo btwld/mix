@@ -266,11 +266,11 @@ void main() {
         final builder = VariantStyleBuilder(
           (context) => BoxStyler().width(100.0),
         );
-        final trigger = ContextTrigger('test', (context) => true);
+        final trigger = ContextVariant('test', (context) => true);
 
         // Both are separate variants that can be used independently
         expect(builder, isA<VariantStyleBuilder>());
-        expect(trigger, isA<ContextTrigger>());
+        expect(trigger, isA<ContextVariant>());
         expect(builder, isNot(equals(trigger)));
       });
 
@@ -278,22 +278,22 @@ void main() {
         final builder = VariantStyleBuilder(
           (context) => BoxStyler().width(100.0),
         );
-        final triggerVariant = EventVariantStyle(
-          ContextTrigger.widgetState(WidgetState.hovered),
+        final triggerVariant = ContextVariantStyle(
+          ContextVariant.widgetState(WidgetState.hovered),
           BoxStyler().width(100),
         );
 
         // Both can be used independently
         expect(builder, isA<VariantStyleBuilder>());
-        expect(triggerVariant, isA<EventVariantStyle>());
+        expect(triggerVariant, isA<ContextVariantStyle>());
         expect(builder.variantKey, isNot(equals(triggerVariant.variantKey)));
       });
 
       test('can use Trigger.not for negation', () {
-        final trigger = ContextTrigger.widgetState(WidgetState.disabled);
-        final notTrigger = ContextTrigger.not(trigger);
+        final trigger = ContextVariant.widgetState(WidgetState.disabled);
+        final notTrigger = ContextVariant.not(trigger);
 
-        expect(notTrigger, isA<ContextTrigger>());
+        expect(notTrigger, isA<ContextVariant>());
         expect(notTrigger.key, contains('not'));
       });
     });
@@ -415,8 +415,8 @@ void main() {
           (context) => BoxStyler().width(100.0),
         );
         final style = BoxStyler().height(200.0);
-        final trigger = ContextTrigger('test', (context) => true);
-        final variantStyle = EventVariantStyle(trigger, style);
+        final trigger = ContextVariant('test', (context) => true);
+        final variantStyle = ContextVariantStyle(trigger, style);
 
         expect(builder, isA<VariantStyleBuilder>());
         expect(variantStyle.trigger, trigger);
@@ -435,10 +435,10 @@ void main() {
         expect(builder1, isA<VariantStyleBuilder>());
         expect(builder2, isA<VariantStyleBuilder>());
 
-        final trigger1 = ContextTrigger('test1', (context) => true);
-        final trigger2 = ContextTrigger('test2', (context) => true);
-        final style1 = EventVariantStyle(trigger1, BoxStyler().height(100.0));
-        final style2 = EventVariantStyle(trigger2, BoxStyler().height(200.0));
+        final trigger1 = ContextVariant('test1', (context) => true);
+        final trigger2 = ContextVariant('test2', (context) => true);
+        final style1 = ContextVariantStyle(trigger1, BoxStyler().height(100.0));
+        final style2 = ContextVariantStyle(trigger2, BoxStyler().height(200.0));
 
         expect(style1.variantKey, trigger1.key);
         expect(style2.variantKey, trigger2.key);

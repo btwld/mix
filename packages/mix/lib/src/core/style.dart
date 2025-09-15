@@ -53,7 +53,7 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   @internal
   Set<WidgetState> get widgetStates {
     return ($variants ?? [])
-        .whereType<EventVariantStyle<S>>()
+        .whereType<ContextVariantStyle<S>>()
         .where((v) => v.trigger is WidgetStateTrigger)
         .map((v) => (v.trigger as WidgetStateTrigger).state)
         .toSet();
@@ -68,9 +68,8 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   /// with all applicable variants applied.
   ///
   /// Variant priority order (lowest to highest):
-  /// 1. StyleVariantMixin (applied first, lowest priority)
-  /// 2. EventVariantStyle and VariantStyleBuilder (applied second)
-  /// 3. WidgetStateVariant (applied last, highest priority)
+  /// 1. EventVariantStyle and VariantStyleBuilder (applied first)
+  /// 2. WidgetStateVariant (applied last, highest priority)
   @visibleForTesting
   Style<S> mergeActiveVariants(
     BuildContext context, {
@@ -81,8 +80,9 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
 
     // 1. Filter variants that should be active in this context
     final activeVariants = ($variants ?? []).where((variantStyle) {
-      if (variantStyle is EventVariantStyle<S>) {
-        return variantStyle.isActive(context);
+      if (variantStyle is ContextVariantStyle<S>) {
+        return variantStyle.isActive(context) ||
+            namedVariants.contains(variantStyle.variantKey);
       } else if (variantStyle is VariantStyleBuilder<S>) {
         return true; // Always active
       }
@@ -90,99 +90,37 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
       return false;
     }).toList();
 
-    // 2. Aggregate ALL variant keys for context
-    final aggregatedKeys = <String>{};
-
-    // Add namedVariants (external activation)
-    aggregatedKeys.addAll(namedVariants);
-
-    // Add current style's key if it implements StyleVariantMixin
-    if (this is StyleVariantMixin) {
-      final styleVariant = this as StyleVariantMixin;
-      aggregatedKeys.add(styleVariant.variantKey);
-    }
-
-    // Add keys from all active variants
-    for (final variant in activeVariants) {
-      aggregatedKeys.add(variant.variantKey);
-    }
-
-    // Add keys from StyleVariantMixin styles within variants (for context only)
-    for (final variant in activeVariants) {
-      if (variant is EventVariantStyle<S>) {
-        final style = variant.style;
-        if (style is StyleVariantMixin) {
-          final styleVariantMixin = style as StyleVariantMixin;
-          aggregatedKeys.add(styleVariantMixin.variantKey);
-        }
-      } else if (variant is VariantStyleBuilder<S>) {
-        final style = variant.resolve(context);
-        if (style is StyleVariantMixin) {
-          final styleVariantMixin = style as StyleVariantMixin;
-          aggregatedKeys.add(styleVariantMixin.variantKey);
-        }
-      }
-    }
-
-    // 3. Apply StyleVariantMixin at top level ONLY if not being handled by variants
-    // Check if this StyleVariantMixin is already being handled by a variant
-    final isInVariants = activeVariants.any((variant) {
-      final variantStyle = variant is EventVariantStyle<S>
-          ? variant.style
-          : variant is VariantStyleBuilder<S>
-          ? variant.resolve(context)
-          : null;
-
-      return variantStyle == this;
-    });
-
-    if (this is StyleVariantMixin && !isInVariants) {
-      final styleVariant = this as StyleVariantMixin;
-      // Pass aggregated keys MINUS its own key
-      final keysForThis = Set<String>.of(aggregatedKeys)
-        ..remove(styleVariant.variantKey);
-      final resultStyle = styleVariant.buildStyle(keysForThis);
-      mergedStyle = resultStyle as Style<S>;
-    }
-
-    // 4. Sort by priority: EventVariantStyle with WidgetStateTrigger gets applied last (highest priority)
+    // 2. Sort by priority: EventVariantStyle with WidgetStateTrigger gets applied last (highest priority)
     activeVariants.sort(
       (a, b) => Comparable.compare(
-        (a is EventVariantStyle<S> && a.trigger is WidgetStateTrigger) ? 1 : 0,
-        (b is EventVariantStyle<S> && b.trigger is WidgetStateTrigger) ? 1 : 0,
+        (a is ContextVariantStyle<S> && a.trigger is WidgetStateTrigger)
+            ? 1
+            : 0,
+        (b is ContextVariantStyle<S> && b.trigger is WidgetStateTrigger)
+            ? 1
+            : 0,
       ),
     );
 
-    // 5. Merge variant styles with StyleVariantMixin support
+    // 3. Merge variant styles recursively
     for (final variant in activeVariants) {
-      Style<S> variantStyle;
+      Style<S>? variantStyle;
 
-      if (variant is EventVariantStyle<S>) {
+      if (variant is ContextVariantStyle<S>) {
         variantStyle = variant.style;
       } else if (variant is VariantStyleBuilder<S>) {
         variantStyle = variant.resolve(context);
-      } else {
+      }
+
+      if (variantStyle == null || identical(variantStyle, this)) {
         continue; // Should not happen with our filtering above
       }
 
-      // Process StyleVariantMixin inside variants by calling buildStyle()
-      if (variantStyle is StyleVariantMixin) {
-        final styleVariantMixin = variantStyle as StyleVariantMixin;
-        // Pass aggregated keys MINUS its own key
-        final keysForVariant = Set<String>.of(aggregatedKeys)
-          ..remove(styleVariantMixin.variantKey);
-        variantStyle = styleVariantMixin.buildStyle(keysForVariant) as Style<S>;
-
-        // StyleVariantMixin has already processed variants, merge directly
-        mergedStyle = mergedStyle.merge(variantStyle);
-      } else {
-        // Continue with normal recursive processing for non-StyleVariantMixin
-        final fullyResolvedStyle = variantStyle.mergeActiveVariants(
-          context,
-          namedVariants: namedVariants,
-        );
-        mergedStyle = mergedStyle.merge(fullyResolvedStyle);
-      }
+      final fullyResolvedStyle = variantStyle.mergeActiveVariants(
+        context,
+        namedVariants: namedVariants,
+      );
+      mergedStyle = mergedStyle.merge(fullyResolvedStyle);
     }
 
     return mergedStyle;

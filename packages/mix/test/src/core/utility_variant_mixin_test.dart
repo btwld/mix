@@ -11,10 +11,13 @@ class TestUtilityVariant extends Spec<TestUtilityVariant>
   const TestUtilityVariant({
     required this.value,
     List<VariantStyle<TestUtilityVariant>>? variantCalls,
-  }) : variantCalls = variantCalls ?? const <VariantStyle<TestUtilityVariant>>[];
+  }) : variantCalls =
+           variantCalls ?? const <VariantStyle<TestUtilityVariant>>[];
 
   @override
-  TestUtilityStyle withVariants(List<VariantStyle<TestUtilityVariant>> variants) {
+  TestUtilityStyle withVariants(
+    List<VariantStyle<TestUtilityVariant>> variants,
+  ) {
     return TestUtilityStyle(
       value: value,
       variantCalls: [...variantCalls, ...variants],
@@ -22,7 +25,8 @@ class TestUtilityVariant extends Spec<TestUtilityVariant>
   }
 
   @override
-  TestUtilityStyle get currentValue => TestUtilityStyle(value: value, variantCalls: variantCalls);
+  TestUtilityStyle get currentValue =>
+      TestUtilityStyle(value: value, variantCalls: variantCalls);
 
   @override
   TestUtilityVariant resolve(BuildContext context) {
@@ -39,10 +43,7 @@ class TestUtilityVariant extends Spec<TestUtilityVariant>
 
   @override
   TestUtilityVariant copyWith() {
-    return TestUtilityVariant(
-      value: value,
-      variantCalls: variantCalls,
-    );
+    return TestUtilityVariant(value: value, variantCalls: variantCalls);
   }
 
   @override
@@ -71,7 +72,9 @@ class TestUtilityStyle extends Style<TestUtilityVariant>
   TestUtilityStyle get currentValue => this;
 
   @override
-  TestUtilityStyle withVariants(List<VariantStyle<TestUtilityVariant>> variants) {
+  TestUtilityStyle withVariants(
+    List<VariantStyle<TestUtilityVariant>> variants,
+  ) {
     return TestUtilityStyle(
       value: value,
       variantCalls: [...variantCalls, ...variants],
@@ -114,12 +117,12 @@ class TestUtilityStyle extends Style<TestUtilityVariant>
 
   @override
   List<Object?> get props => [
-        value,
-        variantCalls,
-        $animation,
-        $modifier,
-        $variants,
-      ];
+    value,
+    variantCalls,
+    $animation,
+    $modifier,
+    $variants,
+  ];
 }
 
 void main() {
@@ -139,9 +142,9 @@ void main() {
         expect(result.variantCalls.length, equals(1));
 
         final variant = result.variantCalls.first;
-        expect(variant, isA<EventVariantStyle<TestUtilityVariant>>());
+        expect(variant, isA<ContextVariantStyle<TestUtilityVariant>>());
 
-        final eventVariant = variant as EventVariantStyle<TestUtilityVariant>;
+        final eventVariant = variant as ContextVariantStyle<TestUtilityVariant>;
         expect(eventVariant.trigger, isA<WidgetStateTrigger>());
         expect(eventVariant.style, equals(hoverStyle));
       });
@@ -167,9 +170,9 @@ void main() {
         expect(result.variantCalls.length, equals(1));
 
         final variant = result.variantCalls.first;
-        expect(variant, isA<EventVariantStyle<TestUtilityVariant>>());
+        expect(variant, isA<ContextVariantStyle<TestUtilityVariant>>());
 
-        final eventVariant = variant as EventVariantStyle<TestUtilityVariant>;
+        final eventVariant = variant as ContextVariantStyle<TestUtilityVariant>;
         expect(eventVariant.trigger, isA<WidgetStateTrigger>());
         expect(eventVariant.style, equals(pressedStyle));
       });
@@ -184,10 +187,10 @@ void main() {
         expect(result.variantCalls.length, equals(1));
 
         final variant = result.variantCalls.first;
-        expect(variant, isA<EventVariantStyle<TestUtilityVariant>>());
+        expect(variant, isA<ContextVariantStyle<TestUtilityVariant>>());
 
-        final eventVariant = variant as EventVariantStyle<TestUtilityVariant>;
-        expect(eventVariant.trigger, isA<ContextTrigger>());
+        final eventVariant = variant as ContextVariantStyle<TestUtilityVariant>;
+        expect(eventVariant.trigger, isA<ContextVariant>());
         expect(eventVariant.style, equals(darkStyle));
       });
     });
@@ -201,10 +204,10 @@ void main() {
         expect(result.variantCalls.length, equals(1));
 
         final variant = result.variantCalls.first;
-        expect(variant, isA<EventVariantStyle<TestUtilityVariant>>());
+        expect(variant, isA<ContextVariantStyle<TestUtilityVariant>>());
 
-        final eventVariant = variant as EventVariantStyle<TestUtilityVariant>;
-        expect(eventVariant.trigger, isA<ContextTrigger>());
+        final eventVariant = variant as ContextVariantStyle<TestUtilityVariant>;
+        expect(eventVariant.trigger, isA<ContextVariant>());
         expect(eventVariant.style, equals(lightStyle));
       });
     });
@@ -233,7 +236,9 @@ void main() {
 
         expect(builderResult.variantCalls.length, equals(1));
 
-        final variant = builderResult.variantCalls.first as VariantStyleBuilder<TestUtilityVariant>;
+        final variant =
+            builderResult.variantCalls.first
+                as VariantStyleBuilder<TestUtilityVariant>;
 
         // Test that the builder function works
         final context = MockBuildContext();
@@ -284,11 +289,26 @@ void main() {
         expect(result.variantCalls.length, equals(5));
 
         // Check that all variants are present
-        expect(result.variantCalls[0], isA<EventVariantStyle<TestUtilityVariant>>());
-        expect(result.variantCalls[1], isA<EventVariantStyle<TestUtilityVariant>>());
-        expect(result.variantCalls[2], isA<EventVariantStyle<TestUtilityVariant>>());
-        expect(result.variantCalls[3], isA<EventVariantStyle<TestUtilityVariant>>());
-        expect(result.variantCalls[4], isA<VariantStyleBuilder<TestUtilityVariant>>());
+        expect(
+          result.variantCalls[0],
+          isA<ContextVariantStyle<TestUtilityVariant>>(),
+        );
+        expect(
+          result.variantCalls[1],
+          isA<ContextVariantStyle<TestUtilityVariant>>(),
+        );
+        expect(
+          result.variantCalls[2],
+          isA<ContextVariantStyle<TestUtilityVariant>>(),
+        );
+        expect(
+          result.variantCalls[3],
+          isA<ContextVariantStyle<TestUtilityVariant>>(),
+        );
+        expect(
+          result.variantCalls[4],
+          isA<VariantStyleBuilder<TestUtilityVariant>>(),
+        );
       });
     });
 
@@ -313,12 +333,30 @@ void main() {
         expect(result.variantCalls.length, equals(6));
 
         // All should be proper variant types
-        expect(result.variantCalls[0], isA<EventVariantStyle<TestUtilityVariant>>());
-        expect(result.variantCalls[1], isA<EventVariantStyle<TestUtilityVariant>>());
-        expect(result.variantCalls[2], isA<EventVariantStyle<TestUtilityVariant>>());
-        expect(result.variantCalls[3], isA<EventVariantStyle<TestUtilityVariant>>());
-        expect(result.variantCalls[4], isA<VariantStyleBuilder<TestUtilityVariant>>());
-        expect(result.variantCalls[5], isA<VariantStyleBuilder<TestUtilityVariant>>());
+        expect(
+          result.variantCalls[0],
+          isA<ContextVariantStyle<TestUtilityVariant>>(),
+        );
+        expect(
+          result.variantCalls[1],
+          isA<ContextVariantStyle<TestUtilityVariant>>(),
+        );
+        expect(
+          result.variantCalls[2],
+          isA<ContextVariantStyle<TestUtilityVariant>>(),
+        );
+        expect(
+          result.variantCalls[3],
+          isA<ContextVariantStyle<TestUtilityVariant>>(),
+        );
+        expect(
+          result.variantCalls[4],
+          isA<VariantStyleBuilder<TestUtilityVariant>>(),
+        );
+        expect(
+          result.variantCalls[5],
+          isA<VariantStyleBuilder<TestUtilityVariant>>(),
+        );
       });
     });
 
@@ -333,8 +371,10 @@ void main() {
 
         expect(result.variantCalls.length, equals(2));
 
-        final hoverVariant = result.variantCalls[0] as EventVariantStyle<TestUtilityVariant>;
-        final pressedVariant = result.variantCalls[1] as EventVariantStyle<TestUtilityVariant>;
+        final hoverVariant =
+            result.variantCalls[0] as ContextVariantStyle<TestUtilityVariant>;
+        final pressedVariant =
+            result.variantCalls[1] as ContextVariantStyle<TestUtilityVariant>;
 
         expect(hoverVariant.trigger, isA<WidgetStateTrigger>());
         expect(pressedVariant.trigger, isA<WidgetStateTrigger>());
@@ -349,17 +389,17 @@ void main() {
         final darkStyle = TestUtilityStyle(value: 'dark');
         final lightStyle = TestUtilityStyle(value: 'light');
 
-        final result = testUtility
-            .onDark(darkStyle)
-            .onLight(lightStyle);
+        final result = testUtility.onDark(darkStyle).onLight(lightStyle);
 
         expect(result.variantCalls.length, equals(2));
 
-        final darkVariant = result.variantCalls[0] as EventVariantStyle<TestUtilityVariant>;
-        final lightVariant = result.variantCalls[1] as EventVariantStyle<TestUtilityVariant>;
+        final darkVariant =
+            result.variantCalls[0] as ContextVariantStyle<TestUtilityVariant>;
+        final lightVariant =
+            result.variantCalls[1] as ContextVariantStyle<TestUtilityVariant>;
 
-        expect(darkVariant.trigger, isA<ContextTrigger>());
-        expect(lightVariant.trigger, isA<ContextTrigger>());
+        expect(darkVariant.trigger, isA<ContextVariant>());
+        expect(lightVariant.trigger, isA<ContextVariant>());
 
         // Verify the triggers are for different brightness modes
         expect(darkVariant.trigger, isNot(equals(lightVariant.trigger)));

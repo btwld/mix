@@ -300,7 +300,7 @@ Applies the given modifier configuration to wrap the image widget.
 - **wrapIconTheme(IconThemeData data)** → ImageStyler - Wraps with icon theme modifier
 - **wrapBox(BoxStyler spec)** → ImageStyler - Wraps with box modifier
 
-## Variant Methods (from StyleVariantMixin)
+## Variant Methods
 
 ### variants(List<VariantStyle<ImageSpec>> value) → ImageStyler
 Sets conditional styling variants based on context or state.

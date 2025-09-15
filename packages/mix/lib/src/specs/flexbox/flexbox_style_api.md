@@ -334,7 +334,7 @@ Applies the given modifier configuration to wrap the flexbox widget.
 - **wrapIconTheme(IconThemeData data)** → FlexBoxStyler - Wraps with icon theme modifier
 - **wrapBox(BoxStyler spec)** → FlexBoxStyler - Wraps with box modifier
 
-## Variant Methods (from VariantStyleMixin)
+## Variant Methods
 
 ### variants(List<VariantStyle<FlexBoxSpec>> value) → FlexBoxStyler
 Sets conditional styling variants based on context or state.

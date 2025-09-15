@@ -230,7 +230,7 @@ The following properties are available as readonly `Prop<T>` values:
 - **$box** → `Prop<StyleSpec<BoxSpec>>?` - Box specification
 - **$stack** → `Prop<StyleSpec<StackSpec>>?` - Stack specification
 
-## Variant Methods (from VariantStyleMixin)
+## Variant Methods
 
 ### variants(List<VariantStyle<ZBoxSpec>> value) → StackBoxStyler
 Sets conditional styling variants based on context or state.

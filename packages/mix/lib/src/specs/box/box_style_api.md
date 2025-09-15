@@ -317,7 +317,7 @@ Creates keyframe-based animation with timeline control.
 ### phaseAnimation<P>({required Listenable trigger, required List<P> phases, required BoxStyler Function(P phase, BoxStyler style) styleBuilder, required CurveAnimationConfig Function(P phase) configBuilder}) → BoxStyler
 Creates phase-based animation with custom curve configurations for each phase.
 
-## Variant Methods (from VariantStyleMixin)
+## Variant Methods
 
 ### variants(List<VariantStyle<BoxSpec>> value) → BoxStyler
 Sets conditional styling variants based on context or state.
