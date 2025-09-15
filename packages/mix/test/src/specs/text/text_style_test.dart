@@ -648,7 +648,7 @@ void main() {
             TextStyler(style: TextStyleMix(color: Colors.black)),
           ),
         ];
-        final textMix = TextStyler().variants(variants);
+        final textMix = TextStyler().withVariants(variants);
 
         expect(textMix.$variants, isNotNull);
         expect(textMix.$variants!.length, 2);

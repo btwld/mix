@@ -132,7 +132,7 @@ void main() {
             StackStyler().alignment(Alignment.bottomRight),
           ),
         ];
-        final stackMix = StackStyler().variants(variants);
+        final stackMix = StackStyler().withVariants(variants);
 
         expect(stackMix.$variants, isNotNull);
         expect(stackMix.$variants!.length, 2);

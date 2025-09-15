@@ -15,21 +15,18 @@ mixin Resolvable<V> {
 ///
 /// Provides the ability to combine two instances of the same type,
 /// typically used for combining style properties.
-abstract class Mixable<T> {
+abstract class Mixable {
   const Mixable();
 
-  /// The key used to identify compatible types for merging.
-  Object get mergeKey => runtimeType;
-
   /// Merges this instance with [other], with [other] taking precedence.
-  Mixable<T> merge(covariant Mixable<T>? other);
+  Mixable merge(covariant Mixable? other);
 }
 
 /// Base class for Mix-compatible styling elements that are both mixable and resolvable.
 ///
 /// Combines the abilities to merge with other instances and resolve to concrete values
 /// using a [BuildContext]. This is the foundation for all styling elements in Mix.
-abstract class Mix<T> extends Mixable<T> with Resolvable<T>, Equatable {
+abstract class Mix<T> extends Mixable with Resolvable<T>, Equatable {
   const Mix();
 
   @override

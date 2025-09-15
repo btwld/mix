@@ -216,7 +216,7 @@ class ImageStyler extends Style<ImageSpec>
   }
 
   @override
-  ImageStyler variants(List<Variant<ImageSpec>> variants) {
+  ImageStyler withVariants(List<Variant<ImageSpec>> variants) {
     return merge(ImageStyler(variants: variants));
   }
 
@@ -248,7 +248,7 @@ class ImageStyler extends Style<ImageSpec>
   }
 
   @override
-  ImageStyler merge(covariant ImageStyler? other) {
+  ImageStyler merge(ImageStyler? other) {
     return ImageStyler.create(
       image: MixOps.merge($image, other?.$image),
       width: MixOps.merge($width, other?.$width),

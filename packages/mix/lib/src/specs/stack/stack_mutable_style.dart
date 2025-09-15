@@ -32,7 +32,7 @@ class StackMutableStyler extends StyleMutableBuilder<StackSpec>
     'Note: Returns StackStyle for consistency with other utility methods like animate().',
   )
   late final on = OnContextVariantUtility<StackSpec, StackStyler>(
-    (v) => mutable.variants([v]),
+    (v) => mutable.withVariants([v]),
   );
 
   late final wrap = WidgetModifierUtility(
@@ -53,7 +53,7 @@ class StackMutableStyler extends StyleMutableBuilder<StackSpec>
 
   @override
   StackStyler withVariants(List<Variant<StackSpec>> variants) {
-    return mutable.variants(variants);
+    return mutable.withVariants(variants);
   }
 
   @override

@@ -6,7 +6,6 @@ import '../core/mix_element.dart';
 import '../core/providers/widget_state_provider.dart';
 import '../core/spec.dart';
 import '../core/style.dart';
-import '../core/style_spec.dart';
 
 @Deprecated('Use ContextTrigger instead')
 typedef ContextVariant = ContextTrigger;
@@ -130,22 +129,18 @@ final class WidgetStateTrigger extends ContextTrigger {
 
 /// Base interface for variant-based styling
 @immutable
-abstract interface class Variant<S extends Spec<S>> {
-  /// Gets the key for this variant style
+sealed class Variant<S extends Spec<S>> extends Mixable {
+  const Variant();
+
+  /// Unique key identifying this variant
   String get variantKey;
 
-  /// The key used to identify compatible types for merging
   Object get mergeKey => variantKey;
-
-  /// Merges this variant with another variant of the same type
-  Variant<S> merge(covariant Variant<S>? other);
 }
-
 
 /// Variant style for trigger-based variants (automatic activation)
 @immutable
-final class TriggerVariant<S extends Spec<S>> extends Mixable<StyleSpec<S>>
-    implements Variant<S> {
+final class TriggerVariant<S extends Spec<S>> extends Variant<S> {
   final ContextTrigger trigger;
   final Style<S> _style;
 
@@ -153,9 +148,7 @@ final class TriggerVariant<S extends Spec<S>> extends Mixable<StyleSpec<S>>
 
   Style<S> get style => _style;
 
-  bool isActive(BuildContext context) {
-    return trigger.matches(context);
-  }
+  bool isActive(BuildContext context) => trigger.matches(context);
 
   @override
   TriggerVariant<S> merge(covariant TriggerVariant<S>? other) {
@@ -189,8 +182,7 @@ final class TriggerVariant<S extends Spec<S>> extends Mixable<StyleSpec<S>>
 
 /// Variant style for dynamic style building (always active)
 @immutable
-final class VariantBuilder<S extends Spec<S>> extends Mixable<StyleSpec<S>>
-    implements Variant<S> {
+final class VariantBuilder<S extends Spec<S>> extends Variant<S> {
   final Style<S> Function(BuildContext) builder;
 
   const VariantBuilder(this.builder);
@@ -230,12 +222,21 @@ final class VariantBuilder<S extends Spec<S>> extends Mixable<StyleSpec<S>>
 
 /// Interface for design system components that adapt their styling
 /// based on active variants and user modifications.
-abstract interface class StyleVariant<S extends Spec<S>> implements Variant<S> {
+mixin StyleVariantMixin<T extends Style<S>, S extends Spec<S>> on Style<S>
+    implements Variant<S> {
   /// The named variant this StyleVariation handles
-  String get variant;
+  @override
+  String get variantKey;
+
+  T merge(T? other) {
+    if (other == null) return this as T;
+
+    return other.withVariants([this]) as T;
+  }
+
+  @override
+  String get mergeKey => variantKey;
 
   /// Combines user modifications with variant styling and contextual adaptations.
-  Style<S> buildStyle(covariant Style<S> style, Set<String> activeVariants);
-  @override
-  String get variantKey => variant;
+  T buildStyle(T style, Set<String> activeVariants);
 }

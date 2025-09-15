@@ -190,7 +190,7 @@ class BoxStyler extends Style<BoxSpec>
   }
 
   @override
-  BoxStyler variants(List<Variant<BoxSpec>> value) {
+  BoxStyler withVariants(List<Variant<BoxSpec>> value) {
     return merge(BoxStyler(variants: value));
   }
 
@@ -234,7 +234,7 @@ class BoxStyler extends Style<BoxSpec>
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  BoxStyler merge(covariant BoxStyler? other) {
+  BoxStyler merge(BoxStyler? other) {
     return BoxStyler.create(
       alignment: MixOps.merge($alignment, other?.$alignment),
       padding: MixOps.merge($padding, other?.$padding),

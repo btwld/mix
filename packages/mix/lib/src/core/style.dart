@@ -59,7 +59,8 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
         .toSet();
   }
 
-  /// Merges all active variants with their nested variants recursively.
+  Style<S> withVariants(List<Variant<S>> value);
+
   ///
   /// This method evaluates which variants should be active based on the current
   /// context and named variants, then recursively processes nested variants
@@ -129,10 +130,6 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   @override
   Style<S> merge(covariant Style<S>? other);
 
-  /// Default implementation uses runtimeType as the merge key
-  @override
-  Object get mergeKey => S;
-
   /// Builds the style into a fully resolved spec with metadata.
   ///
   /// This method resolves the style, which now includes animation and modifiers metadata.
@@ -153,12 +150,11 @@ abstract class ModifierMix<S extends WidgetModifier<S>> extends Mix<S>
     implements StyleElement {
   const ModifierMix();
 
+  Type get mergeKey => S;
+
   @override
   ModifierMix<S> merge(covariant ModifierMix<S>? other);
 
   @override
   S resolve(BuildContext context);
-
-  @override
-  Type get mergeKey => S;
 }

@@ -49,7 +49,7 @@ class TextMutableStyler extends StyleMutableBuilder<TextSpec>
     'Note: Returns TextStyling for consistency with other utility methods like animate().',
   )
   late final on = OnContextVariantUtility<TextSpec, TextStyler>(
-    (v) => mutable.variants([v]),
+    (v) => mutable.withVariants([v]),
   );
   late final wrap = WidgetModifierUtility(
     (prop) => mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
@@ -103,7 +103,7 @@ class TextMutableStyler extends StyleMutableBuilder<TextSpec>
 
   @override
   TextStyler withVariants(List<Variant<TextSpec>> variants) {
-    return mutable.variants(variants);
+    return mutable.withVariants(variants);
   }
 
   @override

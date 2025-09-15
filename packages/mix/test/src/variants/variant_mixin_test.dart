@@ -15,7 +15,7 @@ class TestVariantAttribute extends Style<BoxSpec>
   }
 
   @override
-  TestVariantAttribute variants(List<Variant<BoxSpec>> value) {
+  TestVariantAttribute withVariants(List<Variant<BoxSpec>> value) {
     return merge(TestVariantAttribute(variants: value));
   }
 

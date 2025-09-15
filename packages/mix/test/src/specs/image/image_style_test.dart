@@ -215,7 +215,7 @@ void main() {
             ImageStyler().color(Colors.black),
           ),
         ];
-        final imageMix = ImageStyler().variants(variants);
+        final imageMix = ImageStyler().withVariants(variants);
 
         expect(imageMix.$variants, isNotNull);
         expect(imageMix.$variants!.length, 2);

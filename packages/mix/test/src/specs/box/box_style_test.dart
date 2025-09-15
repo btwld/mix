@@ -370,7 +370,7 @@ void main() {
             BoxStyler(decoration: DecorationMix.color(Colors.black)),
           ),
         ];
-        final boxMix = BoxStyler().variants(variants);
+        final boxMix = BoxStyler().withVariants(variants);
 
         expect(boxMix.$variants, isNotNull);
         expect(boxMix.$variants!.length, 2);

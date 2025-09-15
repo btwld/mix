@@ -217,7 +217,7 @@ class IconStyler extends Style<IconSpec>
   }
 
   @override
-  IconStyler merge(covariant IconStyler? other) {
+  IconStyler merge(IconStyler? other) {
     return IconStyler.create(
       color: MixOps.merge($color, other?.$color),
       size: MixOps.merge($size, other?.$size),
@@ -261,7 +261,7 @@ class IconStyler extends Style<IconSpec>
   }
 
   @override
-  IconStyler variants(List<Variant<IconSpec>> value) {
+  IconStyler withVariants(List<Variant<IconSpec>> value) {
     return merge(IconStyler(variants: value));
   }
 

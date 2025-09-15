@@ -35,7 +35,7 @@ class IconMutableStyler extends StyleMutableBuilder<IconSpec>
     'Note: Returns IconStyle for consistency with other utility methods like animate().',
   )
   late final on = OnContextVariantUtility<IconSpec, IconStyler>(
-    (v) => mutable.variants([v]),
+    (v) => mutable.withVariants([v]),
   );
 
   late final wrap = WidgetModifierUtility(
@@ -71,7 +71,7 @@ class IconMutableStyler extends StyleMutableBuilder<IconSpec>
 
   @override
   IconStyler withVariants(List<Variant<IconSpec>> variants) {
-    return mutable.variants(variants);
+    return mutable.withVariants(variants);
   }
 
   @override

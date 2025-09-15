@@ -40,7 +40,7 @@ class FlexMutableStyler extends StyleMutableBuilder<FlexSpec>
     'Note: Returns FlexStyle for consistency with other utility methods like animate().',
   )
   late final on = OnContextVariantUtility<FlexSpec, FlexStyler>(
-    (v) => mutable.variants([v]),
+    (v) => mutable.withVariants([v]),
   );
 
   late final wrap = WidgetModifierUtility(
@@ -77,7 +77,7 @@ class FlexMutableStyler extends StyleMutableBuilder<FlexSpec>
 
   @override
   FlexStyler withVariants(List<Variant<FlexSpec>> variants) {
-    return mutable.variants(variants);
+    return mutable.withVariants(variants);
   }
 
   @override

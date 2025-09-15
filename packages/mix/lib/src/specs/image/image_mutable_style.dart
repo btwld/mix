@@ -40,7 +40,7 @@ class ImageMutableStyler extends StyleMutableBuilder<ImageSpec>
     'Note: Returns ImageStyle for consistency with other utility methods like animate().',
   )
   late final on = OnContextVariantUtility<ImageSpec, ImageStyler>(
-    (v) => mutable.variants([v]),
+    (v) => mutable.withVariants([v]),
   );
 
   late final wrap = WidgetModifierUtility(
@@ -66,14 +66,14 @@ class ImageMutableStyler extends StyleMutableBuilder<ImageSpec>
   late final isAntiAlias = mutable.isAntiAlias;
   late final matchTextDirection = mutable.matchTextDirection;
   late final animate = mutable.animate;
-  late final variants = mutable.variants;
+  late final variants = mutable.withVariants;
   ImageMutableStyler([ImageStyler? attribute]) {
     mutable = ImageMutableState(attribute ?? ImageStyler());
   }
 
   @override
   ImageStyler withVariants(List<Variant<ImageSpec>> variants) {
-    return mutable.variants(variants);
+    return mutable.withVariants(variants);
   }
 
   @override

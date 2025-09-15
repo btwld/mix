@@ -89,7 +89,9 @@ class MixOps {
     for (final variant in other) {
       final key = variant.mergeKey;
       final existing = merged[key];
-      merged[key] = existing != null ? existing.merge(variant) : variant;
+      merged[key] = existing != null
+          ? existing.merge(variant) as Variant<S>
+          : variant;
     }
 
     return merged.values.toList();

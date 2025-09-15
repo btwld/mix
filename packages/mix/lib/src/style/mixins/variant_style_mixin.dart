@@ -11,36 +11,41 @@ import '../../variants/variant.dart';
 /// a fluent API for applying context variants to spec attributes.
 mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   T variant(Variant<S> variantStyle) {
-    return variants([variantStyle]);
+    return withVariants([variantStyle]);
   }
 
+  @Deprecated('Use withVariants instead.')
+  T variants(List<Variant<S>> variantStyles) {
+    return withVariants(variantStyles);
+  }
 
   /// Must be implemented by the class using this mixin
-  T variants(List<Variant<S>> value);
+  @override
+  T withVariants(List<Variant<S>> value);
 
   /// Creates a variant for dark mode
   T onDark(T style) {
-    return variants([
+    return withVariants([
       TriggerVariant<S>(ContextTrigger.brightness(Brightness.dark), style),
     ]);
   }
 
   T onNot(ContextTrigger variantTrigger, T style) {
-    return variants([
+    return withVariants([
       TriggerVariant<S>(ContextTrigger.not(variantTrigger), style),
     ]);
   }
 
   /// Creates a variant for light mode
   T onLight(T style) {
-    return variants([
+    return withVariants([
       TriggerVariant<S>(ContextTrigger.brightness(Brightness.light), style),
     ]);
   }
 
   /// Creates a variant for hover state
   T onHovered(T style) {
-    return variants([
+    return withVariants([
       TriggerVariant<S>(ContextTrigger.widgetState(WidgetState.hovered), style),
     ]);
   }
@@ -60,7 +65,7 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   T onBuilder(T Function(BuildContext context) fn) {
     // Create a VariantStyle with ContextVariantBuilder that will be resolved at runtime
     // Use this style as a placeholder; the actual style comes from the builder function
-    return variants([VariantBuilder<S>((context) => fn(context))]);
+    return withVariants([VariantBuilder<S>((context) => fn(context))]);
   }
 
   @Deprecated(
@@ -72,21 +77,21 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
 
   /// Creates a variant for pressed state
   T onPressed(T style) {
-    return variants([
+    return withVariants([
       TriggerVariant<S>(ContextTrigger.widgetState(WidgetState.pressed), style),
     ]);
   }
 
   /// Creates a variant for focused state
   T onFocused(T style) {
-    return variants([
+    return withVariants([
       TriggerVariant<S>(ContextTrigger.widgetState(WidgetState.focused), style),
     ]);
   }
 
   /// Creates a variant for disabled state
   T onDisabled(T style) {
-    return variants([
+    return withVariants([
       TriggerVariant<S>(
         ContextTrigger.widgetState(WidgetState.disabled),
         style,
@@ -96,7 +101,7 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
 
   /// Creates a variant for selected state
   T onSelected(T style) {
-    return variants([
+    return withVariants([
       TriggerVariant<S>(
         ContextTrigger.widgetState(WidgetState.selected),
         style,
@@ -106,14 +111,14 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
 
   /// Creates a variant for error state
   T onError(T style) {
-    return variants([
+    return withVariants([
       TriggerVariant<S>(ContextTrigger.widgetState(WidgetState.error), style),
     ]);
   }
 
   /// Creates a variant for scrolled under state
   T onScrolledUnder(T style) {
-    return variants([
+    return withVariants([
       TriggerVariant<S>(
         ContextTrigger.widgetState(WidgetState.scrolledUnder),
         style,
@@ -123,14 +128,14 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
 
   /// Creates a variant for dragged state
   T onDragged(T style) {
-    return variants([
+    return withVariants([
       TriggerVariant<S>(ContextTrigger.widgetState(WidgetState.dragged), style),
     ]);
   }
 
   /// Creates a variant for enabled state (opposite of disabled)
   T onEnabled(T style) {
-    return variants([
+    return withVariants([
       TriggerVariant<S>(
         ContextTrigger.not(ContextTrigger.widgetState(WidgetState.disabled)),
         style,
@@ -140,14 +145,14 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
 
   /// Creates a variant based on breakpoint
   T onBreakpoint(Breakpoint breakpoint, T style) {
-    return variants([
+    return withVariants([
       TriggerVariant<S>(ContextTrigger.breakpoint(breakpoint), style),
     ]);
   }
 
   /// Creates a variant for portrait orientation
   T onPortrait(T style) {
-    return variants([
+    return withVariants([
       TriggerVariant<S>(
         ContextTrigger.orientation(Orientation.portrait),
         style,
@@ -157,7 +162,7 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
 
   /// Creates a variant for landscape orientation
   T onLandscape(T style) {
-    return variants([
+    return withVariants([
       TriggerVariant<S>(
         ContextTrigger.orientation(Orientation.landscape),
         style,
@@ -167,22 +172,22 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
 
   /// Creates a variant for mobile breakpoint
   T onMobile(T style) {
-    return variants([TriggerVariant<S>(ContextTrigger.mobile(), style)]);
+    return withVariants([TriggerVariant<S>(ContextTrigger.mobile(), style)]);
   }
 
   /// Creates a variant for tablet breakpoint
   T onTablet(T style) {
-    return variants([TriggerVariant<S>(ContextTrigger.tablet(), style)]);
+    return withVariants([TriggerVariant<S>(ContextTrigger.tablet(), style)]);
   }
 
   /// Creates a variant for desktop breakpoint
   T onDesktop(T style) {
-    return variants([TriggerVariant<S>(ContextTrigger.desktop(), style)]);
+    return withVariants([TriggerVariant<S>(ContextTrigger.desktop(), style)]);
   }
 
   /// Creates a variant for left-to-right text direction
   T onLtr(T style) {
-    return variants([
+    return withVariants([
       TriggerVariant<S>(
         ContextTrigger.directionality(TextDirection.ltr),
         style,
@@ -192,7 +197,7 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
 
   /// Creates a variant for right-to-left text direction
   T onRtl(T style) {
-    return variants([
+    return withVariants([
       TriggerVariant<S>(
         ContextTrigger.directionality(TextDirection.rtl),
         style,
@@ -202,48 +207,48 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
 
   /// Creates a variant for iOS platform
   T onIos(T style) {
-    return variants([
+    return withVariants([
       TriggerVariant<S>(ContextTrigger.platform(TargetPlatform.iOS), style),
     ]);
   }
 
   /// Creates a variant for Android platform
   T onAndroid(T style) {
-    return variants([
+    return withVariants([
       TriggerVariant<S>(ContextTrigger.platform(TargetPlatform.android), style),
     ]);
   }
 
   /// Creates a variant for macOS platform
   T onMacos(T style) {
-    return variants([
+    return withVariants([
       TriggerVariant<S>(ContextTrigger.platform(TargetPlatform.macOS), style),
     ]);
   }
 
   /// Creates a variant for Windows platform
   T onWindows(T style) {
-    return variants([
+    return withVariants([
       TriggerVariant<S>(ContextTrigger.platform(TargetPlatform.windows), style),
     ]);
   }
 
   /// Creates a variant for Linux platform
   T onLinux(T style) {
-    return variants([
+    return withVariants([
       TriggerVariant<S>(ContextTrigger.platform(TargetPlatform.linux), style),
     ]);
   }
 
   /// Creates a variant for Fuchsia platform
   T onFuchsia(T style) {
-    return variants([
+    return withVariants([
       TriggerVariant<S>(ContextTrigger.platform(TargetPlatform.fuchsia), style),
     ]);
   }
 
   /// Creates a variant for web platform
   T onWeb(T style) {
-    return variants([TriggerVariant<S>(ContextTrigger.web(), style)]);
+    return withVariants([TriggerVariant<S>(ContextTrigger.web(), style)]);
   }
 }

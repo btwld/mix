@@ -211,7 +211,7 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
   }
 
   @override
-  FlexBoxStyler variants(List<Variant<FlexBoxSpec>> variants) {
+  FlexBoxStyler withVariants(List<Variant<FlexBoxSpec>> variants) {
     return merge(FlexBoxStyler(variants: variants));
   }
 
@@ -258,7 +258,7 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  FlexBoxStyler merge(covariant FlexBoxStyler? other) {
+  FlexBoxStyler merge(FlexBoxStyler? other) {
     return FlexBoxStyler.create(
       box: MixOps.merge($box, other?.$box),
       flex: MixOps.merge($flex, other?.$flex),

@@ -44,7 +44,7 @@ class BoxMutableStyler extends StyleMutableBuilder<BoxSpec>
     'Note: Returns BoxStyle for consistency with other utility methods like animate().',
   )
   late final on = OnContextVariantUtility<BoxSpec, BoxStyler>(
-    (v) => mutable.variants([v]),
+    (v) => mutable.withVariants([v]),
   );
 
   late final wrap = WidgetModifierUtility(
@@ -86,7 +86,7 @@ class BoxMutableStyler extends StyleMutableBuilder<BoxSpec>
 
   @override
   BoxStyler withVariants(List<Variant<BoxSpec>> variants) {
-    return mutable.variants(variants);
+    return mutable.withVariants(variants);
   }
 
   @override

@@ -161,7 +161,7 @@ void main() {
           IconStyler().color(Colors.black),
         ),
       ];
-      final iconMix = IconStyler().variants(variants);
+      final iconMix = IconStyler().withVariants(variants);
 
       expect(iconMix.$variants, isNotNull);
       expect(iconMix.$variants!.length, 2);

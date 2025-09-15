@@ -8,9 +8,10 @@ final _testSmall = 'test_small';
 final _testLarge = 'test_large';
 final _primary = 'primary';
 
-class TestOutlinedBoxStyler extends BoxStyler implements StyleVariant<BoxSpec> {
+class TestOutlinedBoxStyler extends BoxStyler
+    with StyleVariantMixin<BoxStyler, BoxSpec> {
   @override
-  String get variantKey => _testOutlined;
+  final variantKey = _testOutlined;
 
   @override
   BoxStyler buildStyle(BoxStyler style, Set<String> activeVariants) {
@@ -33,14 +34,10 @@ class TestOutlinedBoxStyler extends BoxStyler implements StyleVariant<BoxSpec> {
   }
 }
 
-class TestSolidBoxStyler extends BoxStyler implements StyleVariant<BoxSpec> {
+class TestSolidBoxStyler extends BoxStyler
+    with StyleVariantMixin<BoxStyler, BoxSpec> {
   @override
-  String get variantKey => _testSolid;
-
-  @override
-  TestSolidBoxStyler merge(covariant TestSolidBoxStyler? other) {
-    return TestSolidBoxStyler();
-  }
+  final variantKey = _testSolid;
 
   @override
   BoxStyler buildStyle(BoxStyler style, Set<String> activeVariants) {
@@ -55,14 +52,10 @@ class TestSolidBoxStyler extends BoxStyler implements StyleVariant<BoxSpec> {
   }
 }
 
-class TestSmallBoxStyler extends BoxStyler implements StyleVariant<BoxSpec> {
+class TestSmallBoxStyler extends BoxStyler
+    with StyleVariantMixin<BoxStyler, BoxSpec> {
   @override
-  String get variantKey => _testSmall;
-
-  @override
-  TestSmallBoxStyler merge(covariant TestSmallBoxStyler? other) {
-    return TestSmallBoxStyler();
-  }
+  final variantKey = _testSmall;
 
   @override
   BoxStyler buildStyle(BoxStyler style, Set<String> activeVariants) {
@@ -78,7 +71,7 @@ void main() {
     test('should implement basic interface correctly', () {
       final outlinedStyler = TestOutlinedBoxStyler();
 
-      expect(outlinedStyler, isA<StyleVariant<BoxSpec>>());
+      expect(outlinedStyler, isA<StyleVariantMixin<BoxStyler, BoxSpec>>());
       expect(outlinedStyler, isA<BoxStyler>());
       expect(outlinedStyler.variantKey, _testOutlined);
     });
@@ -140,7 +133,6 @@ void main() {
       );
     });
   });
-
 
   group('Contextual Adaptation', () {
     testWidgets('should adapt based on single active variant', (tester) async {
@@ -303,7 +295,7 @@ void main() {
       final component = TestOutlinedBoxStyler();
 
       expect(component, isA<BoxStyler>());
-      expect(component, isA<StyleVariant<BoxSpec>>());
+      expect(component, isA<StyleVariantMixin<BoxStyler, BoxSpec>>());
       expect(component.variantKey, _testOutlined);
 
       final modified = component.height(48).width(100);
@@ -364,7 +356,6 @@ void main() {
     });
   });
 
-
   group('Integration with Style.build()', () {
     testWidgets('should resolve StyleVariation through Style.build()', (
       tester,
@@ -375,7 +366,7 @@ void main() {
             builder: (context) {
               final outlinedStyler = TestOutlinedBoxStyler();
 
-              final baseStyle = BoxStyler().height(48.0).variants([
+              final baseStyle = BoxStyler().height(48.0).withVariants([
                 TriggerVariant(
                   ContextTrigger(_testOutlined, (context) => true),
                   outlinedStyler,
@@ -410,7 +401,7 @@ void main() {
             builder: (context) {
               final outlinedStyler = TestOutlinedBoxStyler();
 
-              final baseStyle = BoxStyler().height(48.0).variants([
+              final baseStyle = BoxStyler().height(48.0).withVariants([
                 TriggerVariant(
                   ContextTrigger(_testOutlined, (context) => true),
                   outlinedStyler,
@@ -443,7 +434,7 @@ void main() {
             builder: (context) {
               final outlinedStyler = TestOutlinedBoxStyler();
 
-              final baseStyle = BoxStyler().width(200.0).variants([
+              final baseStyle = BoxStyler().width(200.0).withVariants([
                 TriggerVariant(
                   ContextTrigger(_testOutlined, (context) => true),
                   outlinedStyler,
@@ -477,7 +468,7 @@ void main() {
               final outlinedStyler = TestOutlinedBoxStyler();
               final smallStyler = TestSmallBoxStyler();
 
-              final baseStyle = BoxStyler().variants([
+              final baseStyle = BoxStyler().withVariants([
                 TriggerVariant(
                   ContextTrigger(_testOutlined, (context) => true),
                   outlinedStyler,
@@ -542,12 +533,15 @@ void main() {
             builder: (context) {
               final outlinedStyler = TestOutlinedBoxStyler();
 
-              final baseStyle = BoxStyler().height(48.0).width(100.0).variants([
-                TriggerVariant(
-                  ContextTrigger(_testOutlined, (context) => true),
-                  outlinedStyler,
-                ),
-              ]);
+              final baseStyle = BoxStyler()
+                  .height(48.0)
+                  .width(100.0)
+                  .withVariants([
+                    TriggerVariant(
+                      ContextTrigger(_testOutlined, (context) => true),
+                      outlinedStyler,
+                    ),
+                  ]);
               final resolvedSpec = baseStyle.build(
                 context,
                 namedVariants: {_testSolid}, // Doesn't match 'outlined'
@@ -579,7 +573,7 @@ void main() {
             builder: (context) {
               final outlinedStyler = TestOutlinedBoxStyler();
 
-              final baseStyle = BoxStyler().height(48.0).variants([
+              final baseStyle = BoxStyler().height(48.0).withVariants([
                 TriggerVariant(
                   ContextTrigger(_testOutlined, (context) => true),
                   outlinedStyler,

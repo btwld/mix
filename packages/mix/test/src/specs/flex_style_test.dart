@@ -492,7 +492,7 @@ void main() {
           FlexStyler(direction: Axis.vertical),
         ),
       ];
-      final flexMix = FlexStyler().variants(variants);
+      final flexMix = FlexStyler().withVariants(variants);
 
       expect(flexMix.$variants, isNotNull);
       expect(flexMix.$variants!.length, 2);

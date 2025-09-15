@@ -144,7 +144,7 @@ class FlexStyler extends Style<FlexSpec>
   }
 
   @override
-  FlexStyler variants(List<Variant<FlexSpec>> variants) {
+  FlexStyler withVariants(List<Variant<FlexSpec>> variants) {
     return merge(FlexStyler(variants: variants));
   }
 
@@ -186,7 +186,7 @@ class FlexStyler extends Style<FlexSpec>
   /// Properties from [other] that are null will fall back
   /// to the values from this instance.
   @override
-  FlexStyler merge(covariant FlexStyler? other) {
+  FlexStyler merge(FlexStyler? other) {
     return FlexStyler.create(
       direction: MixOps.merge($direction, other?.$direction),
       mainAxisAlignment: MixOps.merge(
