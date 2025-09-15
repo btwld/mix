@@ -10,11 +10,8 @@ import 'style.dart';
 /// delegation approach. All methods return Style types for consistency
 /// with other utility methods like animate().
 mixin UtilityVariantMixin<S extends Spec<S>, T extends Style<S>> {
-  /// Must be implemented by utilities to apply a variant to a style.
-  T withVariant(Variant variant, T style);
-
   /// Must be implemented by utilities to apply multiple variants to a style.
-  T withVariants(List<VariantStyle<S>> variants);
+  T withVariants(List<Variant<S>> variants);
 
   /// Gets the current utility value as a style.
   T get currentValue;
@@ -26,7 +23,9 @@ mixin UtilityVariantMixin<S extends Spec<S>, T extends Style<S>> {
   /// $box.onHovered($box.color.red())
   /// ```
   T onHovered(T style) {
-    return withVariant(ContextVariant.widgetState(WidgetState.hovered), style);
+    return withVariants([
+      TriggerVariant(ContextTrigger.widgetState(WidgetState.hovered), style),
+    ]);
   }
 
   /// Creates a variant for pressed state.
@@ -36,7 +35,9 @@ mixin UtilityVariantMixin<S extends Spec<S>, T extends Style<S>> {
   /// $box.onPressed($box.color.blue())
   /// ```
   T onPressed(T style) {
-    return withVariant(ContextVariant.widgetState(WidgetState.pressed), style);
+    return withVariants([
+      TriggerVariant(ContextTrigger.widgetState(WidgetState.pressed), style),
+    ]);
   }
 
   /// Creates a variant for dark mode.
@@ -46,7 +47,9 @@ mixin UtilityVariantMixin<S extends Spec<S>, T extends Style<S>> {
   /// $box.onDark($box.color.white())
   /// ```
   T onDark(T style) {
-    return withVariant(ContextVariant.brightness(Brightness.dark), style);
+    return withVariants([
+      TriggerVariant(ContextTrigger.brightness(Brightness.dark), style),
+    ]);
   }
 
   /// Creates a variant for light mode.
@@ -56,7 +59,9 @@ mixin UtilityVariantMixin<S extends Spec<S>, T extends Style<S>> {
   /// $box.onLight($box.color.black())
   /// ```
   T onLight(T style) {
-    return withVariant(ContextVariant.brightness(Brightness.light), style);
+    return withVariants([
+      TriggerVariant(ContextTrigger.brightness(Brightness.light), style),
+    ]);
   }
 
   /// Creates a variant that applies styling based on the build context.
@@ -72,12 +77,12 @@ mixin UtilityVariantMixin<S extends Spec<S>, T extends Style<S>> {
   /// })
   /// ```
   T onBuilder(T Function(BuildContext context) fn) {
-    return withVariants([
-      VariantStyle<S>(ContextVariantBuilder<T>(fn), currentValue),
-    ]);
+    return withVariants([VariantBuilder<S>(fn)]);
   }
 
-  @Deprecated('Use onBuilder instead. This method will be removed in a future version.')
+  @Deprecated(
+    'Use onBuilder instead. This method will be removed in a future version.',
+  )
   T builder(T Function(BuildContext context) fn) {
     return onBuilder(fn);
   }

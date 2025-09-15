@@ -254,10 +254,10 @@ void main() {
         final attribute = FlexBoxStyler();
         expect(attribute.$variants, isNull); // By default no variants
 
-        final variant = ContextVariant('test', (context) => true);
+        final variant = ContextTrigger('test', (context) => true);
         final withVariants = FlexBoxStyler(
           variants: [
-            VariantStyle(
+            TriggerVariant(
               variant,
               FlexBoxStyler(decoration: BoxDecorationMix(color: Colors.green)),
             ),

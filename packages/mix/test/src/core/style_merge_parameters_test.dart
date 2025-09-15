@@ -114,16 +114,10 @@ void main() {
 
       test('merges variants correctly', () {
         final firstVariants = [
-          VariantStyle(
-            const NamedVariant('primary'),
-            BoxStyler().color(Colors.blue),
-          ),
+          NamedVariant('primary', BoxStyler().color(Colors.blue)),
         ];
         final secondVariants = [
-          VariantStyle(
-            const NamedVariant('secondary'),
-            BoxStyler().color(Colors.red),
-          ),
+          NamedVariant('secondary', BoxStyler().color(Colors.red)),
         ];
 
         final first = BoxStyler(
@@ -139,8 +133,8 @@ void main() {
 
         expect(merged.$variants, isNotNull);
         expect(merged.$variants!.length, 2);
-        expect(merged.$variants![0].variant, const NamedVariant('primary'));
-        expect(merged.$variants![1].variant, const NamedVariant('secondary'));
+        expect((merged.$variants![0] as NamedVariant).name, 'primary');
+        expect((merged.$variants![1] as NamedVariant).name, 'secondary');
       });
 
       test('handles null merge correctly', () {
@@ -376,26 +370,27 @@ void main() {
       });
 
       test('merges with same variant types correctly', () {
-        const variant = NamedVariant('primary');
         final firstStyle = BoxStyler().width(100.0);
         final secondStyle = BoxStyler().height(200.0);
+        final variant1 = NamedVariant('primary', firstStyle);
+        final variant2 = NamedVariant('primary', secondStyle);
 
         final first = BoxStyler(
           decoration: DecorationMix.color(Colors.red),
-          variants: [VariantStyle(variant, firstStyle)],
+          variants: [variant1],
         );
         final second = BoxStyler(
           padding: EdgeInsetsMix.all(10),
-          variants: [VariantStyle(variant, secondStyle)],
+          variants: [variant2],
         );
 
         final merged = first.merge(second);
 
         expect(merged.$variants, isNotNull);
         expect(merged.$variants!.length, 1);
-        expect(merged.$variants![0].variant, variant);
+        expect((merged.$variants![0] as NamedVariant).name, 'primary');
 
-        final mergedVariantStyle = merged.$variants![0].value as BoxStyler;
+        final mergedVariantStyle = (merged.$variants![0] as NamedVariant).style as BoxStyler;
         final context = MockBuildContext();
         final spec = mergedVariantStyle.resolve(context).spec;
         expect(spec.constraints?.minWidth, 100.0);
@@ -439,8 +434,8 @@ void main() {
         final first = BoxStyler(
           constraints: BoxConstraintsMix.width(100.0),
           variants: [
-            VariantStyle(
-              const NamedVariant('primary'),
+            NamedVariant(
+              'primary',
               BoxStyler().color(Colors.blue),
             ),
           ],
@@ -453,7 +448,7 @@ void main() {
 
         expect(merged.$variants, isNotNull);
         expect(merged.$variants!.length, 1);
-        expect(merged.$variants![0].variant, const NamedVariant('primary'));
+        expect((merged.$variants![0] as NamedVariant).name, 'primary');
       });
     });
 

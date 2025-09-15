@@ -4,6 +4,9 @@ import 'package:mix/mix.dart';
 
 import '../../helpers/testing_utils.dart';
 
+// Helper function for const test
+bool _alwaysTrue(BuildContext context) => true;
+
 void main() {
   group('OnContextVariantUtility', () {
     final utility = OnContextVariantUtility<MockSpec, MockStyle<String>>(
@@ -496,51 +499,47 @@ void main() {
 
   group('VariantAttributeBuilder', () {
     group('Constructor', () {
-      test('can be created with a variant', () {
-        const variant = NamedVariant('test');
-        const builder = VariantAttributeBuilder<MockSpec>(variant);
+      test('can be created with a trigger', () {
+        final trigger = ContextTrigger('test', (context) => true);
+        final builder = VariantAttributeBuilder<MockSpec>(trigger);
         expect(builder, isA<VariantAttributeBuilder<MockSpec>>());
       });
 
-      test('can be created with different variant types', () {
-        const namedVariant = NamedVariant('test');
-        final contextVariant = ContextVariant('test', (context) => true);
-        final widgetStateVariant = WidgetStateVariant(WidgetState.hovered);
+      test('can be created with different trigger types', () {
+        final contextTrigger = ContextTrigger('test', (context) => true);
+        final widgetStateTrigger = WidgetStateTrigger(WidgetState.hovered);
+        final brightnessTrigger = ContextTrigger.brightness(Brightness.dark);
 
         expect(
-          VariantAttributeBuilder<MockSpec>(namedVariant),
+          VariantAttributeBuilder<MockSpec>(contextTrigger),
           isA<VariantAttributeBuilder<MockSpec>>(),
         );
         expect(
-          VariantAttributeBuilder<MockSpec>(contextVariant),
+          VariantAttributeBuilder<MockSpec>(widgetStateTrigger),
           isA<VariantAttributeBuilder<MockSpec>>(),
         );
         expect(
-          VariantAttributeBuilder<MockSpec>(widgetStateVariant),
-          isA<VariantAttributeBuilder<MockSpec>>(),
-        );
-        expect(
-          VariantAttributeBuilder<MockSpec>(namedVariant),
+          VariantAttributeBuilder<MockSpec>(brightnessTrigger),
           isA<VariantAttributeBuilder<MockSpec>>(),
         );
       });
 
       test('maintains const constructor behavior', () {
-        const variant = NamedVariant('test');
+        const trigger = ContextTrigger('test', _alwaysTrue);
         expect(
-          () => const VariantAttributeBuilder<MockSpec>(variant),
+          () => const VariantAttributeBuilder<MockSpec>(trigger),
           returnsNormally,
         );
       });
     });
 
     group('Equality and hashCode', () {
-      test('equality based on wrapped variant', () {
-        const variant = NamedVariant('test');
-        const builder1 = VariantAttributeBuilder<MockSpec>(variant);
-        const builder2 = VariantAttributeBuilder<MockSpec>(variant);
+      test('equality based on wrapped trigger', () {
+        const trigger = ContextTrigger('test', _alwaysTrue);
+        const builder1 = VariantAttributeBuilder<MockSpec>(trigger);
+        const builder2 = VariantAttributeBuilder<MockSpec>(trigger);
         const builder3 = VariantAttributeBuilder<MockSpec>(
-          NamedVariant('other'),
+          ContextTrigger('other', _alwaysTrue),
         );
 
         expect(builder1, equals(builder2));
@@ -548,17 +547,17 @@ void main() {
       });
 
       test('hashCode consistent for equal builders', () {
-        const variant = NamedVariant('test');
-        const builder1 = VariantAttributeBuilder<MockSpec>(variant);
-        const builder2 = VariantAttributeBuilder<MockSpec>(variant);
+        const trigger = ContextTrigger('test', _alwaysTrue);
+        const builder1 = VariantAttributeBuilder<MockSpec>(trigger);
+        const builder2 = VariantAttributeBuilder<MockSpec>(trigger);
 
         expect(builder1.hashCode, equals(builder2.hashCode));
-        expect(builder1.hashCode, equals(variant.hashCode));
+        expect(builder1.hashCode, equals(trigger.hashCode));
       });
 
       test('toString provides meaningful representation', () {
-        const variant = NamedVariant('primary');
-        const builder = VariantAttributeBuilder<MockSpec>(variant);
+        const trigger = ContextTrigger('primary', _alwaysTrue);
+        const builder = VariantAttributeBuilder<MockSpec>(trigger);
 
         final stringRep = builder.toString();
         expect(stringRep, contains('VariantAttributeBuilder'));
@@ -566,16 +565,14 @@ void main() {
       });
 
       test('different variant types create different builders', () {
-        const namedVariant = NamedVariant('test');
-        final contextVariant = ContextVariant('test', (context) => true);
+        final contextVariant1 = ContextTrigger('test1', (context) => true);
+        final contextVariant2 = ContextTrigger('test2', (context) => true);
 
-        const namedBuilder = VariantAttributeBuilder<MockSpec>(namedVariant);
-        final contextBuilder = VariantAttributeBuilder<MockSpec>(
-          contextVariant,
-        );
+        final builder1 = VariantAttributeBuilder<MockSpec>(contextVariant1);
+        final builder2 = VariantAttributeBuilder<MockSpec>(contextVariant2);
 
-        expect(namedBuilder, isNot(equals(contextBuilder)));
-        expect(namedBuilder.hashCode, isNot(equals(contextBuilder.hashCode)));
+        expect(builder1, isNot(equals(builder2)));
+        expect(builder1.hashCode, isNot(equals(builder2.hashCode)));
       });
     });
 
@@ -591,12 +588,12 @@ void main() {
       });
 
       test('can be stored in collections', () {
-        const variant1 = NamedVariant('test1');
-        const variant2 = NamedVariant('test2');
+        final trigger1 = ContextTrigger('test1', (context) => true);
+        final trigger2 = ContextTrigger('test2', (context) => true);
 
         final builders = [
-          const VariantAttributeBuilder<MockSpec>(variant1),
-          const VariantAttributeBuilder<MockSpec>(variant2),
+          VariantAttributeBuilder<MockSpec>(trigger1),
+          VariantAttributeBuilder<MockSpec>(trigger2),
         ];
 
         expect(builders, hasLength(2));
@@ -606,15 +603,11 @@ void main() {
     });
 
     group('Type safety', () {
-      test('maintains type safety with different variant types', () {
-        const namedVariant = NamedVariant('test');
-        final contextVariant = ContextVariant('test', (context) => true);
-        final widgetStateVariant = WidgetStateVariant(WidgetState.hovered);
+      test('maintains type safety with different trigger types', () {
+        final contextVariant = ContextTrigger('test', (context) => true);
+        final widgetStateVariant = WidgetStateTrigger(WidgetState.hovered);
+        final brightnessVariant = ContextTrigger.brightness(Brightness.dark);
 
-        expect(
-          VariantAttributeBuilder<MockSpec>(namedVariant),
-          isA<VariantAttributeBuilder<MockSpec>>(),
-        );
         expect(
           VariantAttributeBuilder<MockSpec>(contextVariant),
           isA<VariantAttributeBuilder<MockSpec>>(),
@@ -623,19 +616,23 @@ void main() {
           VariantAttributeBuilder<MockSpec>(widgetStateVariant),
           isA<VariantAttributeBuilder<MockSpec>>(),
         );
+        expect(
+          VariantAttributeBuilder<MockSpec>(brightnessVariant),
+          isA<VariantAttributeBuilder<MockSpec>>(),
+        );
       });
 
-      test('works with different variant types', () {
-        const namedVariant = NamedVariant('test');
-        final contextVariant = ContextVariant('test', (context) => true);
-        final notVariant = ContextVariant.not(
-          ContextVariant.widgetState(WidgetState.disabled),
+      test('works with different trigger types', () {
+        final contextVariant = ContextTrigger('test', (context) => true);
+        final notVariant = ContextTrigger.not(
+          ContextTrigger.widgetState(WidgetState.disabled),
         );
+        final orientationVariant = ContextTrigger.orientation(Orientation.landscape);
 
-        // Verify that variants can be created with different types
-        expect(namedVariant, isA<NamedVariant>());
-        expect(contextVariant, isA<ContextVariant>());
-        expect(notVariant, isA<ContextVariant>());
+        // Verify that triggers can be created with different types
+        expect(contextVariant, isA<ContextTrigger>());
+        expect(notVariant, isA<ContextTrigger>());
+        expect(orientationVariant, isA<ContextTrigger>());
       });
     });
   });

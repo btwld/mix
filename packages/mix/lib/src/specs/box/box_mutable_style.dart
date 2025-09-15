@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../animation/animation_config.dart';
 import '../../core/prop.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
-import '../../core/style.dart' show Style, VariantStyle;
+import '../../core/style.dart' show Style;
 import '../../core/style_spec.dart';
 import '../../core/utility.dart';
 import '../../core/utility_variant_mixin.dart';
@@ -85,12 +85,7 @@ class BoxMutableStyler extends StyleMutableBuilder<BoxSpec>
   BoxStyler animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
-  BoxStyler withVariant(Variant variant, BoxStyler style) {
-    return mutable.variant(variant, style);
-  }
-
-  @override
-  BoxStyler withVariants(List<VariantStyle<BoxSpec>> variants) {
+  BoxStyler withVariants(List<Variant<BoxSpec>> variants) {
     return mutable.variants(variants);
   }
 

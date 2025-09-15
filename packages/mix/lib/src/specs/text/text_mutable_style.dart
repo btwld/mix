@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
-import '../../core/style.dart' show Style, VariantStyle;
+import '../../core/style.dart' show Style;
 import '../../core/style_spec.dart';
 import '../../core/utility.dart';
 import '../../core/utility_variant_mixin.dart';
@@ -102,12 +102,7 @@ class TextMutableStyler extends StyleMutableBuilder<TextSpec>
   TextStyler animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
-  TextStyler withVariant(Variant variant, TextStyler style) {
-    return mutable.variant(variant, style);
-  }
-
-  @override
-  TextStyler withVariants(List<VariantStyle<TextSpec>> variants) {
+  TextStyler withVariants(List<Variant<TextSpec>> variants) {
     return mutable.variants(variants);
   }
 

@@ -17,6 +17,7 @@ import '../../style/mixins/decoration_style_mixin.dart';
 import '../../style/mixins/spacing_style_mixin.dart';
 import '../../style/mixins/transform_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
+import '../../variants/variant.dart';
 import '../box/box_spec.dart';
 import '../box/box_style.dart';
 import 'stack_box_spec.dart';
@@ -152,7 +153,7 @@ class StackBoxStyler extends Style<ZBoxSpec>
   }
 
   @override
-  StackBoxStyler variants(List<VariantStyle<ZBoxSpec>> variants) {
+  StackBoxStyler variants(List<Variant<ZBoxSpec>> variants) {
     return merge(StackBoxStyler(variants: variants));
   }
 
@@ -290,7 +291,7 @@ class StackBoxMutableStyler {
     // Style properties
     WidgetModifierConfig? modifier,
     AnimationConfig? animation,
-    List<VariantStyle<ZBoxSpec>>? variants,
+    List<Variant<ZBoxSpec>>? variants,
   }) {
     return StackBoxStyler(
       decoration: decoration,

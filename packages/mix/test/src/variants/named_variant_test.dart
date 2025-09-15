@@ -8,17 +8,17 @@ void main() {
   group('NamedVariant', () {
     group('Constructor', () {
       test('creates NamedVariant with correct name and key', () {
-        const variant = NamedVariant('primary');
+        final variant = NamedVariant('primary', MockStyle<String>(''));
 
         expect(variant.name, 'primary');
         expect(variant.key, 'primary');
-        expect(variant, isA<Variant>());
+        expect(variant, isA<NamedVariant>());
       });
 
       test('creates different variants with different names', () {
-        const primary = NamedVariant('primary');
-        const secondary = NamedVariant('secondary');
-        const large = NamedVariant('large');
+        final primary = NamedVariant('primary', MockStyle<String>(''));
+        final secondary = NamedVariant('secondary', MockStyle<String>(''));
+        final large = NamedVariant('large', MockStyle<String>(''));
 
         expect(primary.name, 'primary');
         expect(secondary.name, 'secondary');
@@ -30,21 +30,24 @@ void main() {
       });
 
       test('accepts empty string name', () {
-        const variant = NamedVariant('');
+        final variant = NamedVariant('', MockStyle<String>(''));
 
         expect(variant.name, '');
         expect(variant.key, '');
       });
 
       test('accepts special characters in name', () {
-        const specialChars = NamedVariant('primary-large_v2.0');
+        final specialChars = NamedVariant(
+          'primary-large_v2.0',
+          MockStyle<String>(''),
+        );
 
         expect(specialChars.name, 'primary-large_v2.0');
         expect(specialChars.key, 'primary-large_v2.0');
       });
 
       test('accepts unicode characters in name', () {
-        const unicode = NamedVariant('préféré');
+        final unicode = NamedVariant('préféré', MockStyle<String>(''));
 
         expect(unicode.name, 'préféré');
         expect(unicode.key, 'préféré');
@@ -66,15 +69,15 @@ void main() {
         ];
 
         for (final name in testNames) {
-          final variant = NamedVariant(name);
+          final variant = NamedVariant(name, MockStyle<String>(''));
           expect(variant.key, equals(variant.name));
           expect(variant.key, name);
         }
       });
 
       test('key is consistent across instances', () {
-        const variant1 = NamedVariant('primary');
-        const variant2 = NamedVariant('primary');
+        final variant1 = NamedVariant('primary', MockStyle<String>(''));
+        final variant2 = NamedVariant('primary', MockStyle<String>(''));
 
         expect(variant1.key, equals(variant2.key));
         expect(variant1.key, 'primary');
@@ -83,32 +86,32 @@ void main() {
 
     group('Equality and hashCode', () {
       test('equal NamedVariants have same hashCode', () {
-        const variant1 = NamedVariant('primary');
-        const variant2 = NamedVariant('primary');
+        final variant1 = NamedVariant('primary', MockStyle<String>(''));
+        final variant2 = NamedVariant('primary', MockStyle<String>(''));
 
         expect(variant1, equals(variant2));
         expect(variant1.hashCode, equals(variant2.hashCode));
       });
 
       test('different names are not equal', () {
-        const primary = NamedVariant('primary');
-        const secondary = NamedVariant('secondary');
+        final primary = NamedVariant('primary', MockStyle<String>(''));
+        final secondary = NamedVariant('secondary', MockStyle<String>(''));
 
         expect(primary, isNot(equals(secondary)));
         expect(primary.hashCode, isNot(equals(secondary.hashCode)));
       });
 
       test('identical instances are equal', () {
-        const variant = NamedVariant('primary');
+        final variant = NamedVariant('primary', MockStyle<String>(''));
 
         expect(variant, equals(variant));
         expect(identical(variant, variant), isTrue);
       });
 
       test('case sensitive equality', () {
-        const lower = NamedVariant('primary');
-        const upper = NamedVariant('PRIMARY');
-        const mixed = NamedVariant('Primary');
+        final lower = NamedVariant('primary', MockStyle<String>(''));
+        final upper = NamedVariant('PRIMARY', MockStyle<String>(''));
+        final mixed = NamedVariant('Primary', MockStyle<String>(''));
 
         expect(lower, isNot(equals(upper)));
         expect(lower, isNot(equals(mixed)));
@@ -116,9 +119,9 @@ void main() {
       });
 
       test('whitespace sensitive equality', () {
-        const normal = NamedVariant('primary');
-        const withSpace = NamedVariant('primary ');
-        const withTab = NamedVariant('\tprimary');
+        final normal = NamedVariant('primary', MockStyle<String>(''));
+        final withSpace = NamedVariant('primary ', MockStyle<String>(''));
+        final withTab = NamedVariant('\tprimary', MockStyle<String>(''));
 
         expect(normal, isNot(equals(withSpace)));
         expect(normal, isNot(equals(withTab)));
@@ -128,17 +131,17 @@ void main() {
 
     group('Const constructor behavior', () {
       test('const constructor creates compile-time constants', () {
-        const variant1 = NamedVariant('primary');
-        const variant2 = NamedVariant('primary');
+        final variant1 = NamedVariant('primary', MockStyle<String>(''));
+        final variant2 = NamedVariant('primary', MockStyle<String>(''));
 
-        // Const instances with same value should be identical
-        expect(identical(variant1, variant2), isTrue);
-        expect(variant1, same(variant2));
+        // Non-const instances won't be identical
+        expect(identical(variant1, variant2), isFalse);
+        expect(variant1, equals(variant2));
       });
 
       test('const and non-const instances are equal but not identical', () {
-        const constVariant = NamedVariant('primary');
-        final nonConstVariant = NamedVariant('primary');
+        final constVariant = NamedVariant('primary', MockStyle<String>(''));
+        final nonConstVariant = NamedVariant('primary', MockStyle<String>(''));
 
         expect(constVariant, equals(nonConstVariant));
         expect(identical(constVariant, nonConstVariant), isFalse);
@@ -147,9 +150,9 @@ void main() {
 
     group('NamedVariant independence', () {
       test('multiple NamedVariants are independent', () {
-        const primary = NamedVariant('primary');
-        const large = NamedVariant('large');
-        const outlined = NamedVariant('outlined');
+        final primary = NamedVariant('primary', MockStyle<String>(''));
+        final large = NamedVariant('large', MockStyle<String>(''));
+        final outlined = NamedVariant('outlined', MockStyle<String>(''));
 
         expect(primary.key, 'primary');
         expect(large.key, 'large');
@@ -161,92 +164,85 @@ void main() {
       });
 
       test('NamedVariants do not automatically apply based on context', () {
-        const primary = NamedVariant('primary');
-        const secondary = NamedVariant('secondary');
+        final primary = NamedVariant('primary', MockStyle<String>(''));
+        final secondary = NamedVariant('secondary', MockStyle<String>(''));
 
         // NamedVariants are manual - they only apply when explicitly included
         expect(primary, isA<NamedVariant>());
         expect(secondary, isA<NamedVariant>());
-        expect(primary, isNot(isA<ContextVariant>()));
-        expect(secondary, isNot(isA<ContextVariant>()));
+        expect(primary, isNot(isA<ContextTrigger>()));
+        expect(secondary, isNot(isA<ContextTrigger>()));
       });
     });
 
     group('Integration with other variant types', () {
       test('NamedVariants are distinct from WidgetStateVariants', () {
-        const primary = NamedVariant('primary');
-        final hovered = WidgetStateVariant(WidgetState.hovered);
+        final primary = NamedVariant('primary', MockStyle<String>(''));
+        final hovered = WidgetStateTrigger(WidgetState.hovered);
 
         expect(primary, isA<NamedVariant>());
-        expect(hovered, isA<WidgetStateVariant>());
+        expect(hovered, isA<WidgetStateTrigger>());
         expect(primary.key, isNot(equals(hovered.key)));
       });
 
-      test('NamedVariants are distinct from ContextVariants', () {
-        const primary = NamedVariant('primary');
-        final darkMode = ContextVariant('dark', (context) => true);
+      test('NamedVariants are distinct from ContextTriggers', () {
+        final primary = NamedVariant('primary', MockStyle<String>(''));
+        final darkMode = ContextTrigger('dark', (context) => true);
 
         expect(primary, isA<NamedVariant>());
-        expect(darkMode, isA<ContextVariant>());
+        expect(darkMode, isA<ContextTrigger>());
         expect(primary.key, isNot(equals(darkMode.key)));
       });
 
       test('works alongside predefined variants', () {
-        const custom = NamedVariant('custom');
+        final custom = NamedVariant('custom', MockStyle<String>(''));
 
         // Can be used with widget state variants
-        final hover = ContextVariant.widgetState(WidgetState.hovered);
+        final hover = ContextTrigger.widgetState(WidgetState.hovered);
         expect(custom, isA<NamedVariant>());
-        expect(hover, isA<WidgetStateVariant>());
+        expect(hover, isA<WidgetStateTrigger>());
 
         // Can be used with context variants
-        final dark = ContextVariant.brightness(Brightness.dark);
+        final dark = ContextTrigger.brightness(Brightness.dark);
         expect(custom, isA<NamedVariant>());
-        expect(dark, isA<ContextVariant>());
+        expect(dark, isA<ContextTrigger>());
       });
     });
 
     group('VariantSpecAttribute integration', () {
       test('can be used in VariantSpecAttribute wrapper', () {
-        const primaryVariant = NamedVariant('primary');
-        final style = BoxStyler().width(100.0);
-        final variantAttr = VariantStyle(primaryVariant, style);
+        final primaryVariant = NamedVariant('primary', BoxStyler().width(100.0));
 
-        expect(variantAttr.variant, primaryVariant);
-        expect(variantAttr.value, style);
-        expect(variantAttr.mergeKey, 'primary');
+        expect(primaryVariant.name, 'primary');
+        expect(primaryVariant.style, isA<BoxStyler>());
+        expect(primaryVariant.key, 'primary');
       });
 
       test('different NamedVariants create different mergeKeys', () {
-        const primaryVariant = NamedVariant('primary');
-        const secondaryVariant = NamedVariant('secondary');
-
-        final primaryStyle = VariantStyle(
-          primaryVariant,
+        final primaryStyle = NamedVariant(
+          'primary',
           BoxStyler().width(100.0),
         );
 
-        final secondaryStyle = VariantStyle(
-          secondaryVariant,
+        final secondaryStyle = NamedVariant(
+          'secondary',
           BoxStyler().width(150.0),
         );
 
-        expect(primaryStyle.mergeKey, 'primary');
-        expect(secondaryStyle.mergeKey, 'secondary');
-        expect(primaryStyle.mergeKey, isNot(equals(secondaryStyle.mergeKey)));
+        expect(primaryStyle.key, 'primary');
+        expect(secondaryStyle.key, 'secondary');
+        expect(primaryStyle.key, isNot(equals(secondaryStyle.key)));
       });
 
       test('merges correctly when variants match', () {
-        const primaryVariant = NamedVariant('primary');
+        final style1 = NamedVariant('primary', BoxStyler().width(100.0));
 
-        final style1 = VariantStyle(primaryVariant, BoxStyler().width(100.0));
-
-        final style2 = VariantStyle(primaryVariant, BoxStyler().height(200.0));
+        final style2 = NamedVariant('primary', BoxStyler().height(200.0));
 
         final merged = style1.merge(style2);
 
-        expect(merged.variant, primaryVariant);
-        final mergedBox = merged.value as BoxStyler;
+        expect(merged.name, 'primary');
+        final mergedBox = merged.style as BoxStyler;
         final context = MockBuildContext();
         final constraints = mergedBox.resolve(context).constraints;
         expect(constraints?.minWidth, 100.0);
@@ -256,16 +252,13 @@ void main() {
       });
 
       test('throws when merging with different variants', () {
-        const primaryVariant = NamedVariant('primary');
-        const secondaryVariant = NamedVariant('secondary');
-
-        final primaryStyle = VariantStyle(
-          primaryVariant,
+        final primaryStyle = NamedVariant(
+          'primary',
           BoxStyler().width(100.0),
         );
 
-        final secondaryStyle = VariantStyle(
-          secondaryVariant,
+        final secondaryStyle = NamedVariant(
+          'secondary',
           BoxStyler().height(200.0),
         );
 
@@ -275,7 +268,7 @@ void main() {
             isA<ArgumentError>().having(
               (e) => e.message,
               'message',
-              contains('Cannot merge VariantStyle with different variants'),
+              contains('Cannot merge NamedVariant with different keys'),
             ),
           ),
         );
@@ -284,45 +277,41 @@ void main() {
 
     group('Predefined NamedVariants', () {
       test('predefined named variants exist and have correct properties', () {
-        expect(primary, isA<NamedVariant>());
-        expect(secondary, isA<NamedVariant>());
-        expect(outlined, isA<NamedVariant>());
+        expect(primary, isA<String>());
+        expect(secondary, isA<String>());
+        expect(outlined, isA<String>());
 
-        expect(primary.name, 'primary');
-        expect(secondary.name, 'secondary');
-        expect(outlined.name, 'outlined');
-
-        expect(primary.key, 'primary');
-        expect(secondary.key, 'secondary');
-        expect(outlined.key, 'outlined');
+        expect(primary, 'primary');
+        expect(secondary, 'secondary');
+        expect(outlined, 'outlined');
       });
 
       test('predefined variants are const instances', () {
         // Should be able to use in const contexts
-        const primaryCopy = NamedVariant('primary');
-        const secondaryCopy = NamedVariant('secondary');
+        final primaryCopy = NamedVariant('primary', MockStyle<String>(''));
+        final secondaryCopy = NamedVariant('secondary', MockStyle<String>(''));
 
-        expect(primary, equals(primaryCopy));
-        expect(secondary, equals(secondaryCopy));
+        expect(primaryCopy.name, primary);
+        expect(secondaryCopy.name, secondary);
 
-        // Const instances should be identical
-        expect(identical(primary, primaryCopy), isTrue);
-        expect(identical(secondary, secondaryCopy), isTrue);
+        // String comparison
+        expect(primaryCopy.name, 'primary');
+        expect(secondaryCopy.name, 'secondary');
       });
     });
 
     group('Context behavior', () {
       test('NamedVariants never match context automatically', () {
-        const primary = NamedVariant('primary');
+        final primary = NamedVariant('primary', MockStyle<String>(''));
         // NamedVariants don't have context-based conditions
         // They're only activated when explicitly included in namedVariants
         expect(primary, isA<NamedVariant>());
-        expect(primary, isNot(isA<ContextVariant>()));
+        expect(primary, isNot(isA<ContextTrigger>()));
       });
 
       test('NamedVariants require explicit inclusion to be active', () {
-        const primary = NamedVariant('primary');
-        const large = NamedVariant('large');
+        final primary = NamedVariant('primary', MockStyle<String>(''));
+        final large = NamedVariant('large', MockStyle<String>(''));
 
         // NamedVariants are manual - they don't have when() method
         // They're only active when explicitly included in namedVariants set
@@ -336,7 +325,7 @@ void main() {
     group('Edge cases and validation', () {
       test('handles very long names', () {
         final longName = 'a' * 1000; // 1000 character name
-        final variant = NamedVariant(longName);
+        final variant = NamedVariant(longName, MockStyle<String>(''));
 
         expect(variant.name, longName);
         expect(variant.key, longName);
@@ -344,9 +333,9 @@ void main() {
       });
 
       test('handles names with numbers', () {
-        const variant1 = NamedVariant('variant1');
-        const variant2 = NamedVariant('2ndVariant');
-        const numeric = NamedVariant('12345');
+        final variant1 = NamedVariant('variant1', MockStyle<String>(''));
+        final variant2 = NamedVariant('2ndVariant', MockStyle<String>(''));
+        final numeric = NamedVariant('12345', MockStyle<String>(''));
 
         expect(variant1.name, 'variant1');
         expect(variant2.name, '2ndVariant');
@@ -354,7 +343,7 @@ void main() {
       });
 
       test('immutability of name property', () {
-        const variant = NamedVariant('primary');
+        final variant = NamedVariant('primary', MockStyle<String>(''));
 
         expect(variant.name, 'primary');
         // Name should not be modifiable (enforced by final keyword)
@@ -362,7 +351,7 @@ void main() {
       });
 
       test('string representation is useful for debugging', () {
-        const variant = NamedVariant('primary');
+        final variant = NamedVariant('primary', MockStyle<String>(''));
 
         // toString should provide meaningful output
         final stringRep = variant.toString();
@@ -373,13 +362,13 @@ void main() {
 
     group('Common usage patterns', () {
       test('semantic variant names work correctly', () {
-        const semanticVariants = [
-          NamedVariant('primary'),
-          NamedVariant('secondary'),
-          NamedVariant('success'),
-          NamedVariant('warning'),
-          NamedVariant('error'),
-          NamedVariant('info'),
+        final semanticVariants = [
+          NamedVariant('primary', MockStyle<String>('')),
+          NamedVariant('secondary', MockStyle<String>('')),
+          NamedVariant('success', MockStyle<String>('')),
+          NamedVariant('warning', MockStyle<String>('')),
+          NamedVariant('error', MockStyle<String>('')),
+          NamedVariant('info', MockStyle<String>('')),
         ];
 
         for (final variant in semanticVariants) {
@@ -390,13 +379,13 @@ void main() {
       });
 
       test('size variant names work correctly', () {
-        const sizeVariants = [
-          NamedVariant('xs'),
-          NamedVariant('sm'),
-          NamedVariant('md'),
-          NamedVariant('lg'),
-          NamedVariant('xl'),
-          NamedVariant('2xl'),
+        final sizeVariants = [
+          NamedVariant('xs', MockStyle<String>('')),
+          NamedVariant('sm', MockStyle<String>('')),
+          NamedVariant('md', MockStyle<String>('')),
+          NamedVariant('lg', MockStyle<String>('')),
+          NamedVariant('xl', MockStyle<String>('')),
+          NamedVariant('2xl', MockStyle<String>('')),
         ];
 
         for (final variant in sizeVariants) {
@@ -406,11 +395,11 @@ void main() {
       });
 
       test('style variant names work correctly', () {
-        const styleVariants = [
-          NamedVariant('filled'),
-          NamedVariant('outlined'),
-          NamedVariant('ghost'),
-          NamedVariant('link'),
+        final styleVariants = [
+          NamedVariant('filled', MockStyle<String>('')),
+          NamedVariant('outlined', MockStyle<String>('')),
+          NamedVariant('ghost', MockStyle<String>('')),
+          NamedVariant('link', MockStyle<String>('')),
         ];
 
         for (final variant in styleVariants) {

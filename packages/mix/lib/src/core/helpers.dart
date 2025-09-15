@@ -9,6 +9,7 @@ import '../animation/animation_config.dart';
 import '../modifiers/widget_modifier_config.dart';
 import '../properties/painting/decoration_mix.dart';
 import '../properties/painting/shape_border_mix.dart';
+import '../variants/variant.dart';
 import 'decoration_merge.dart';
 import 'directive.dart';
 import 'internal/deep_collection_equality.dart';
@@ -17,7 +18,6 @@ import 'prop.dart';
 import 'prop_source.dart';
 import 'shape_border_merge.dart';
 import 'spec.dart';
-import 'style.dart';
 import 'widget_modifier.dart';
 
 /// Core operations for Mix framework value transformations.
@@ -72,15 +72,15 @@ class MixOps {
     return current?.merge(other) ?? other;
   }
 
-  static List<VariantStyle<S>>? mergeVariants<S extends Spec<S>>(
-    List<VariantStyle<S>>? current,
-    List<VariantStyle<S>>? other,
+  static List<Variant<S>>? mergeVariants<S extends Spec<S>>(
+    List<Variant<S>>? current,
+    List<Variant<S>>? other,
   ) {
     if (current == null && other == null) return null;
-    if (current == null) return List<VariantStyle<S>>.of(other!);
-    if (other == null) return List<VariantStyle<S>>.of(current);
+    if (current == null) return List<Variant<S>>.of(other!);
+    if (other == null) return List<Variant<S>>.of(current);
 
-    final Map<Object, VariantStyle<S>> merged = {};
+    final Map<Object, Variant<S>> merged = {};
 
     for (final variant in current) {
       merged[variant.mergeKey] = variant;

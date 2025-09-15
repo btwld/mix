@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
-import '../../core/style.dart' show Style, VariantStyle;
+import '../../core/style.dart' show Style;
 import '../../core/style_spec.dart';
 import '../../core/utility.dart';
 import '../../core/utility_variant_mixin.dart';
@@ -70,12 +70,7 @@ class IconMutableStyler extends StyleMutableBuilder<IconSpec>
   IconStyler animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
-  IconStyler withVariant(Variant variant, IconStyler style) {
-    return mutable.variant(variant, style);
-  }
-
-  @override
-  IconStyler withVariants(List<VariantStyle<IconSpec>> variants) {
+  IconStyler withVariants(List<Variant<IconSpec>> variants) {
     return mutable.variants(variants);
   }
 

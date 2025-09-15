@@ -10,7 +10,7 @@ void main() {
     WidgetTester tester, {
     required _MockSpecAttribute testAttribute,
     required Set<WidgetState> activeStates,
-    required Set<NamedVariant> namedVariants,
+    required Set<String> namedVariants,
     required double expectedWidth,
   }) async {
     await tester.pumpWidget(
@@ -39,21 +39,21 @@ void main() {
         tester,
       ) async {
         // Create test attribute with mixed variant types
-        final contextVariant = ContextVariant('context', (context) => true);
-        const namedVariant = NamedVariant('named');
+        final contextVariant = ContextTrigger('context', (context) => true);
+        const namedVariant = 'named';
         // Create a real WidgetStateVariant for testing priority
-        final widgetStateVariant = WidgetStateVariant(WidgetState.hovered);
+        final widgetStateVariant = WidgetStateTrigger(WidgetState.hovered);
 
         // Create VariantSpecAttributes with different priorities
-        final contextVarAttr = VariantStyle(
+        final contextVarAttr = TriggerVariant(
           contextVariant,
           _MockSpecAttribute(width: 100.0),
         );
-        final namedVarAttr = VariantStyle(
+        final namedVarAttr = NamedVariant(
           namedVariant,
           _MockSpecAttribute(width: 200.0),
         );
-        final widgetStateVarAttr = VariantStyle(
+        final widgetStateVarAttr = TriggerVariant(
           widgetStateVariant,
           _MockSpecAttribute(width: 300.0),
         );
@@ -96,19 +96,19 @@ void main() {
       testWidgets('multiple WidgetStateVariants maintain relative order', (
         tester,
       ) async {
-        final hoveredVariant = WidgetStateVariant(WidgetState.hovered);
-        final pressedVariant = WidgetStateVariant(WidgetState.pressed);
-        final focusedVariant = WidgetStateVariant(WidgetState.focused);
+        final hoveredVariant = WidgetStateTrigger(WidgetState.hovered);
+        final pressedVariant = WidgetStateTrigger(WidgetState.pressed);
+        final focusedVariant = WidgetStateTrigger(WidgetState.focused);
 
-        final hoveredVarAttr = VariantStyle(
+        final hoveredVarAttr = TriggerVariant(
           hoveredVariant,
           _MockSpecAttribute(width: 100.0),
         );
-        final pressedVarAttr = VariantStyle(
+        final pressedVarAttr = TriggerVariant(
           pressedVariant,
           _MockSpecAttribute(width: 200.0),
         );
-        final focusedVarAttr = VariantStyle(
+        final focusedVarAttr = TriggerVariant(
           focusedVariant,
           _MockSpecAttribute(width: 300.0),
         );
@@ -148,30 +148,30 @@ void main() {
 
       testWidgets('mixed variant types are sorted correctly', (tester) async {
         // Create a mix of all variant types
-        final contextVariant = ContextVariant('context', (context) => true);
-        const namedVariant = NamedVariant('named');
-        final widgetStateVariant1 = WidgetStateVariant(WidgetState.hovered);
-        final widgetStateVariant2 = WidgetStateVariant(WidgetState.pressed);
-        const multiNamedVariant = NamedVariant('multi');
+        final contextVariant = ContextTrigger('context', (context) => true);
+        const namedVariant = 'named';
+        final widgetStateVariant1 = WidgetStateTrigger(WidgetState.hovered);
+        final widgetStateVariant2 = WidgetStateTrigger(WidgetState.pressed);
+        const multiNamedVariant = 'multi';
 
         final varAttrs = [
-          VariantStyle(
+          TriggerVariant(
             widgetStateVariant1,
             _MockSpecAttribute(width: 100.0),
           ), // Should be sorted to end
-          VariantStyle(
+          TriggerVariant(
             contextVariant,
             _MockSpecAttribute(width: 200.0),
           ), // Should be sorted earlier
-          VariantStyle(
+          TriggerVariant(
             widgetStateVariant2,
             _MockSpecAttribute(width: 300.0),
           ), // Should be sorted to end
-          VariantStyle(
+          NamedVariant(
             namedVariant,
             _MockSpecAttribute(width: 400.0),
           ), // Should be sorted earlier
-          VariantStyle(
+          NamedVariant(
             multiNamedVariant,
             _MockSpecAttribute(width: 500.0),
           ), // Should be sorted earlier
@@ -192,16 +192,16 @@ void main() {
       });
 
       test('non-WidgetStateVariants have equal priority', () {
-        final contextVariant1 = ContextVariant('context1', (context) => true);
-        final contextVariant2 = ContextVariant('context2', (context) => true);
-        const namedVariant1 = NamedVariant('named1');
-        const namedVariant2 = NamedVariant('named2');
+        final contextVariant1 = ContextTrigger('context1', (context) => true);
+        final contextVariant2 = ContextTrigger('context2', (context) => true);
+        const namedVariant1 = 'named1';
+        const namedVariant2 = 'named2';
 
         final varAttrs = [
-          VariantStyle(contextVariant1, _MockSpecAttribute(width: 100.0)),
-          VariantStyle(contextVariant2, _MockSpecAttribute(width: 200.0)),
-          VariantStyle(namedVariant1, _MockSpecAttribute(width: 300.0)),
-          VariantStyle(namedVariant2, _MockSpecAttribute(width: 400.0)),
+          TriggerVariant(contextVariant1, _MockSpecAttribute(width: 100.0)),
+          TriggerVariant(contextVariant2, _MockSpecAttribute(width: 200.0)),
+          NamedVariant(namedVariant1, _MockSpecAttribute(width: 300.0)),
+          NamedVariant(namedVariant2, _MockSpecAttribute(width: 400.0)),
         ];
 
         final testAttribute = _MockSpecAttribute(
@@ -224,22 +224,22 @@ void main() {
     group('Variant resolution logic', () {
       test('ContextVariant evaluation with context conditions', () {
         // Context variant that checks screen width
-        final mobileVariant = ContextVariant('mobile', (context) {
+        final mobileVariant = ContextTrigger('mobile', (context) {
           final size =
               MediaQuery.maybeOf(context)?.size ?? const Size(800, 600);
           return size.width <= 768;
         });
-        final desktopVariant = ContextVariant('desktop', (context) {
+        final desktopVariant = ContextTrigger('desktop', (context) {
           final size =
               MediaQuery.maybeOf(context)?.size ?? const Size(800, 600);
           return size.width > 768;
         });
 
-        final mobileVarAttr = VariantStyle(
+        final mobileVarAttr = TriggerVariant(
           mobileVariant,
           _MockSpecAttribute(width: 100.0),
         );
-        final desktopVarAttr = VariantStyle(
+        final desktopVarAttr = TriggerVariant(
           desktopVariant,
           _MockSpecAttribute(width: 200.0),
         );
@@ -262,19 +262,19 @@ void main() {
       });
 
       test('NamedVariant evaluation with namedVariants parameter', () {
-        const primaryVariant = NamedVariant('primary');
-        const secondaryVariant = NamedVariant('secondary');
-        const unusedVariant = NamedVariant('unused');
+        const primaryVariant = 'primary';
+        const secondaryVariant = 'secondary';
+        const unusedVariant = 'unused';
 
-        final primaryVarAttr = VariantStyle(
+        final primaryVarAttr = NamedVariant(
           primaryVariant,
           _MockSpecAttribute(width: 100.0),
         );
-        final secondaryVarAttr = VariantStyle(
+        final secondaryVarAttr = NamedVariant(
           secondaryVariant,
           _MockSpecAttribute(width: 200.0),
         );
-        final unusedVarAttr = VariantStyle(
+        final unusedVarAttr = NamedVariant(
           unusedVariant,
           _MockSpecAttribute(width: 300.0),
         );
@@ -296,14 +296,11 @@ void main() {
       });
 
       test('ContextVariantBuilder is always applied', () {
-        final contextBuilder = ContextVariantBuilder<_MockSpecAttribute>(
+        final contextBuilder = VariantBuilder<MockSpec<Map<String, dynamic>>>(
           (context) => _MockSpecAttribute(width: 150.0),
         );
 
-        final builderVarAttr = VariantStyle(
-          contextBuilder,
-          _MockSpecAttribute(width: 100.0),
-        );
+        final builderVarAttr = contextBuilder;
 
         final testAttribute = _MockSpecAttribute(
           width: 50.0,
@@ -322,14 +319,14 @@ void main() {
       });
 
       test('filtering excludes non-matching variants', () {
-        final falseContextVariant = ContextVariant('false', (context) => false);
-        const unmatchedNamedVariant = NamedVariant('unmatched');
+        final falseContextVariant = ContextTrigger('false', (context) => false);
+        const unmatchedNamedVariant = 'unmatched';
 
-        final falseVarAttr = VariantStyle(
+        final falseVarAttr = TriggerVariant(
           falseContextVariant,
           _MockSpecAttribute(width: 100.0),
         );
-        final unmatchedVarAttr = VariantStyle(
+        final unmatchedVarAttr = NamedVariant(
           unmatchedNamedVariant,
           _MockSpecAttribute(width: 200.0),
         );
@@ -342,7 +339,7 @@ void main() {
         final context = MockBuildContext();
         final result = testAttribute.mergeActiveVariants(
           context,
-          namedVariants: {const NamedVariant('other')},
+          namedVariants: {'other'},
         );
 
         // No variants should apply, base width remains
@@ -353,14 +350,14 @@ void main() {
 
     group('Merging behavior', () {
       testWidgets('variants are merged in sorted order', (tester) async {
-        final contextVariant = ContextVariant('context', (context) => true);
-        final widgetStateVariant = WidgetStateVariant(WidgetState.hovered);
+        final contextVariant = ContextTrigger('context', (context) => true);
+        final widgetStateVariant = WidgetStateTrigger(WidgetState.hovered);
 
-        final contextVarAttr = VariantStyle(
+        final contextVarAttr = TriggerVariant(
           contextVariant,
           _MockSpecAttribute(width: 100.0, height: 200.0),
         );
-        final widgetStateVarAttr = VariantStyle(
+        final widgetStateVarAttr = TriggerVariant(
           widgetStateVariant,
           _MockSpecAttribute(width: 300.0), // Overrides width, keeps height
         );
@@ -431,23 +428,23 @@ void main() {
         tester,
       ) async {
         // Create comprehensive test with all variant types
-        final contextVariant = ContextVariant('context', (context) => true);
-        const namedVariant = NamedVariant('named');
-        final widgetStateVariant = WidgetStateVariant(WidgetState.hovered);
-        const multiNamedVariant = NamedVariant('multi_named');
-        final contextBuilder = ContextVariantBuilder<_MockSpecAttribute>(
+        final contextVariant = ContextTrigger('context', (context) => true);
+        const namedVariant = 'named';
+        final widgetStateVariant = WidgetStateTrigger(WidgetState.hovered);
+        const multiNamedVariant = 'multi_named';
+        final contextBuilder = VariantBuilder<MockSpec<Map<String, dynamic>>>(
           (context) => _MockSpecAttribute(width: 150.0, height: 500.0),
         );
 
         final varAttrs = [
-          VariantStyle(multiNamedVariant, _MockSpecAttribute(width: 100.0)),
-          VariantStyle(contextVariant, _MockSpecAttribute(width: 200.0)),
-          VariantStyle(
+          NamedVariant(multiNamedVariant, _MockSpecAttribute(width: 100.0)),
+          TriggerVariant(contextVariant, _MockSpecAttribute(width: 200.0)),
+          TriggerVariant(
             widgetStateVariant,
             _MockSpecAttribute(width: 300.0),
           ), // Highest priority
-          VariantStyle(namedVariant, _MockSpecAttribute(width: 400.0)),
-          VariantStyle(contextBuilder, _MockSpecAttribute(width: 500.0)),
+          NamedVariant(namedVariant, _MockSpecAttribute(width: 400.0)),
+          contextBuilder,
         ];
 
         final testAttribute = _MockSpecAttribute(
@@ -465,7 +462,7 @@ void main() {
                     context,
                     namedVariants: {
                       namedVariant,
-                      const NamedVariant('multi_named'),
+                      'multi_named',
                     },
                   );
 
@@ -484,25 +481,25 @@ void main() {
       testWidgets('multiple WidgetStateVariants with different states', (
         tester,
       ) async {
-        final hoveredVariant = WidgetStateVariant(WidgetState.hovered);
-        final pressedVariant = WidgetStateVariant(WidgetState.pressed);
-        final focusedVariant = WidgetStateVariant(WidgetState.focused);
-        final disabledVariant = WidgetStateVariant(WidgetState.disabled);
+        final hoveredVariant = WidgetStateTrigger(WidgetState.hovered);
+        final pressedVariant = WidgetStateTrigger(WidgetState.pressed);
+        final focusedVariant = WidgetStateTrigger(WidgetState.focused);
+        final disabledVariant = WidgetStateTrigger(WidgetState.disabled);
 
         final varAttrs = [
-          VariantStyle(
+          TriggerVariant(
             hoveredVariant,
             _MockSpecAttribute(width: 100.0, height: 100.0),
           ),
-          VariantStyle(
+          TriggerVariant(
             pressedVariant,
             _MockSpecAttribute(width: 200.0, height: 200.0),
           ),
-          VariantStyle(
+          TriggerVariant(
             focusedVariant,
             _MockSpecAttribute(width: 300.0), // Only overrides width
           ),
-          VariantStyle(
+          TriggerVariant(
             disabledVariant,
             _MockSpecAttribute(
               width: 0.0,
@@ -547,9 +544,9 @@ void main() {
       });
 
       test('variant merging preserves base attribute properties', () {
-        final contextVariant = ContextVariant('context', (context) => true);
+        final contextVariant = ContextTrigger('context', (context) => true);
 
-        final contextVarAttr = VariantStyle(
+        final contextVarAttr = TriggerVariant(
           contextVariant,
           _MockSpecAttribute(width: 0.0, height: 200.0), // Only sets height
         );
@@ -575,12 +572,12 @@ void main() {
 
     group('Edge cases', () {
       test('handles empty context with no matching variants', () {
-        final contextVariant = ContextVariant('context', (context) => false);
-        const namedVariant = NamedVariant('named');
+        final contextVariant = ContextTrigger('context', (context) => false);
+        const namedVariant = 'named';
 
         final varAttrs = [
-          VariantStyle(contextVariant, _MockSpecAttribute(width: 100.0)),
-          VariantStyle(namedVariant, _MockSpecAttribute(width: 200.0)),
+          TriggerVariant(contextVariant, _MockSpecAttribute(width: 100.0)),
+          NamedVariant(namedVariant, _MockSpecAttribute(width: 200.0)),
         ];
 
         final testAttribute = _MockSpecAttribute(
@@ -602,20 +599,20 @@ void main() {
       test('sorting is stable for non-WidgetStateVariant elements', () {
         // Create multiple non-WidgetState variants to test stable sort
         final variants = [
-          VariantStyle(
-            ContextVariant('context1', (context) => true),
+          TriggerVariant(
+            ContextTrigger('context1', (context) => true),
             _MockSpecAttribute(width: 100.0),
           ),
-          VariantStyle(
-            const NamedVariant('named1'),
+          NamedVariant(
+            'named1',
             _MockSpecAttribute(width: 200.0),
           ),
-          VariantStyle(
-            ContextVariant('context2', (context) => true),
+          TriggerVariant(
+            ContextTrigger('context2', (context) => true),
             _MockSpecAttribute(width: 300.0),
           ),
-          VariantStyle(
-            const NamedVariant('named2'),
+          NamedVariant(
+            'named2',
             _MockSpecAttribute(width: 400.0),
           ),
         ];
@@ -629,8 +626,8 @@ void main() {
         final result = testAttribute.mergeActiveVariants(
           context,
           namedVariants: {
-            const NamedVariant('named1'),
-            const NamedVariant('named2'),
+            'named1',
+            'named2',
           },
         );
 
@@ -645,12 +642,12 @@ void main() {
         tester,
       ) async {
         // Test with real WidgetStateVariant from the codebase
-        final hoverVariant = WidgetStateVariant(WidgetState.hovered);
-        final pressVariant = WidgetStateVariant(WidgetState.pressed);
+        final hoverVariant = WidgetStateTrigger(WidgetState.hovered);
+        final pressVariant = WidgetStateTrigger(WidgetState.pressed);
 
         final varAttrs = [
-          VariantStyle(hoverVariant, _MockSpecAttribute(width: 100.0)),
-          VariantStyle(pressVariant, _MockSpecAttribute(width: 200.0)),
+          TriggerVariant(hoverVariant, _MockSpecAttribute(width: 100.0)),
+          TriggerVariant(pressVariant, _MockSpecAttribute(width: 200.0)),
         ];
 
         final testAttribute = _MockSpecAttribute(
@@ -686,12 +683,12 @@ void main() {
       ) async {
         // Test with predefined variants from the variant system
         final varAttrs = [
-          VariantStyle(
-            WidgetStateVariant(WidgetState.hovered), // hover variant
+          TriggerVariant(
+            WidgetStateTrigger(WidgetState.hovered), // hover variant
             _MockSpecAttribute(width: 100.0),
           ),
-          VariantStyle(
-            WidgetStateVariant(WidgetState.pressed), // press variant
+          TriggerVariant(
+            WidgetStateTrigger(WidgetState.pressed), // press variant
             _MockSpecAttribute(width: 200.0),
           ),
         ];

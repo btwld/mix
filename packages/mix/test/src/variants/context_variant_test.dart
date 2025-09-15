@@ -5,61 +5,61 @@ import 'package:mix/mix.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  group('ContextVariant', () {
+  group('ContextTrigger', () {
     group('Constructor', () {
       test('creates variant with correct properties', () {
-        final variant = ContextVariant('test_key', (context) => true);
+        final variant = ContextTrigger('test_key', (context) => true);
 
         expect(variant.key, 'test_key');
-        expect(variant.when(MockBuildContext()), true);
-        expect(variant, isA<Variant>());
-        expect(variant, isA<ContextVariant>());
+        expect(variant.matches(MockBuildContext()), true);
+        expect(variant, isA<ContextTrigger>());
+        expect(variant, isA<ContextTrigger>());
       });
 
       test('creates variants with different keys and functions', () {
-        final variant1 = ContextVariant('key1', (context) => true);
-        final variant2 = ContextVariant('key2', (context) => false);
-        final variant3 = ContextVariant('key3', (context) => context.mounted);
+        final variant1 = ContextTrigger('key1', (context) => true);
+        final variant2 = ContextTrigger('key2', (context) => false);
+        final variant3 = ContextTrigger('key3', (context) => context.mounted);
 
         expect(variant1.key, 'key1');
         expect(variant2.key, 'key2');
         expect(variant3.key, 'key3');
 
         final context = MockBuildContext();
-        expect(variant1.when(context), isTrue);
-        expect(variant2.when(context), isFalse);
-        expect(variant3.when(context), isTrue);
+        expect(variant1.matches(context), isTrue);
+        expect(variant2.matches(context), isFalse);
+        expect(variant3.matches(context), isTrue);
       });
 
       test('accepts complex conditional functions', () {
         var callCount = 0;
-        final variant = ContextVariant('complex', (context) {
+        final variant = ContextTrigger('complex', (context) {
           callCount++;
           return callCount % 2 == 0;
         });
 
         final context = MockBuildContext();
-        expect(variant.when(context), isFalse); // callCount = 1
-        expect(variant.when(context), isTrue); // callCount = 2
-        expect(variant.when(context), isFalse); // callCount = 3
+        expect(variant.matches(context), isFalse); // callCount = 1
+        expect(variant.matches(context), isTrue); // callCount = 2
+        expect(variant.matches(context), isFalse); // callCount = 3
       });
 
       test('accepts empty string key', () {
-        final variant = ContextVariant('', (context) => true);
+        final variant = ContextTrigger('', (context) => true);
 
         expect(variant.key, '');
-        expect(variant.when(MockBuildContext()), isTrue);
+        expect(variant.matches(MockBuildContext()), isTrue);
       });
 
       test('function parameter is properly passed', () {
         BuildContext? capturedContext;
-        final variant = ContextVariant('test', (context) {
+        final variant = ContextTrigger('test', (context) {
           capturedContext = context;
           return true;
         });
 
         final mockContext = MockBuildContext();
-        variant.when(mockContext);
+        variant.matches(mockContext);
 
         expect(capturedContext, same(mockContext));
       });
@@ -67,14 +67,14 @@ void main() {
 
     group('widgetState factory', () {
       test('creates widget state variant with correct key', () {
-        final variant = ContextVariant.widgetState(WidgetState.hovered);
+        final variant = ContextTrigger.widgetState(WidgetState.hovered);
 
         expect(variant.key, 'widget_state_hovered');
       });
 
       test('creates different variants for different states', () {
-        final hovered = ContextVariant.widgetState(WidgetState.hovered);
-        final pressed = ContextVariant.widgetState(WidgetState.pressed);
+        final hovered = ContextTrigger.widgetState(WidgetState.hovered);
+        final pressed = ContextTrigger.widgetState(WidgetState.pressed);
 
         expect(hovered.key, 'widget_state_hovered');
         expect(pressed.key, 'widget_state_pressed');
@@ -84,7 +84,7 @@ void main() {
 
     group('orientation factory', () {
       test('creates orientation variant with correct key', () {
-        final variant = ContextVariant.orientation(Orientation.portrait);
+        final variant = ContextTrigger.orientation(Orientation.portrait);
 
         expect(variant.key, 'media_query_orientation_portrait');
       });
@@ -92,7 +92,7 @@ void main() {
 
     group('platformBrightness factory', () {
       test('creates brightness variant with correct key', () {
-        final variant = ContextVariant.brightness(Brightness.dark);
+        final variant = ContextTrigger.brightness(Brightness.dark);
 
         expect(variant.key, 'media_query_platform_brightness_dark');
       });
@@ -100,7 +100,7 @@ void main() {
 
     group('size factory', () {
       test('creates size variant with correct key', () {
-        final variant = ContextVariant.size(
+        final variant = ContextTrigger.size(
           'mobile',
           (size) => size.width < 768,
         );
@@ -111,14 +111,14 @@ void main() {
 
     group('direction factory', () {
       test('creates direction variant with correct key', () {
-        final variant = ContextVariant.directionality(TextDirection.ltr);
+        final variant = ContextTrigger.directionality(TextDirection.ltr);
 
         expect(variant.key, 'directionality_ltr');
       });
 
       test('creates different variants for different directions', () {
-        final ltr = ContextVariant.directionality(TextDirection.ltr);
-        final rtl = ContextVariant.directionality(TextDirection.rtl);
+        final ltr = ContextTrigger.directionality(TextDirection.ltr);
+        final rtl = ContextTrigger.directionality(TextDirection.rtl);
 
         expect(ltr.key, 'directionality_ltr');
         expect(rtl.key, 'directionality_rtl');
@@ -128,9 +128,9 @@ void main() {
 
     group('platform factory', () {
       test('creates platform variant with correct key', () {
-        final ios = ContextVariant.platform(TargetPlatform.iOS);
-        final android = ContextVariant.platform(TargetPlatform.android);
-        final windows = ContextVariant.platform(TargetPlatform.windows);
+        final ios = ContextTrigger.platform(TargetPlatform.iOS);
+        final android = ContextTrigger.platform(TargetPlatform.android);
+        final windows = ContextTrigger.platform(TargetPlatform.windows);
 
         expect(ios.key, 'platform_iOS');
         expect(android.key, 'platform_android');
@@ -140,7 +140,7 @@ void main() {
       test('creates different variants for different platforms', () {
         const platforms = TargetPlatform.values;
         final variants = platforms
-            .map((p) => ContextVariant.platform(p))
+            .map((p) => ContextTrigger.platform(p))
             .toList();
         final keys = variants.map((v) => v.key).toSet();
 
@@ -151,7 +151,7 @@ void main() {
 
     group('web factory', () {
       test('creates web variant with correct key', () {
-        final variant = ContextVariant.web();
+        final variant = ContextTrigger.web();
 
         expect(variant.key, 'web');
       });
@@ -160,65 +160,65 @@ void main() {
     group('when method', () {
       test('calls shouldApply function', () {
         bool called = false;
-        final variant = ContextVariant('test', (context) {
+        final variant = ContextTrigger('test', (context) {
           called = true;
           return true;
         });
 
-        final result = variant.when(MockBuildContext());
+        final result = variant.matches(MockBuildContext());
 
         expect(called, true);
         expect(result, true);
       });
 
       test('returns shouldApply function result', () {
-        final trueVariant = ContextVariant('true', (context) => true);
-        final falseVariant = ContextVariant('false', (context) => false);
-        final nullCheckVariant = ContextVariant(
+        final trueVariant = ContextTrigger('true', (context) => true);
+        final falseVariant = ContextTrigger('false', (context) => false);
+        final nullCheckVariant = ContextTrigger(
           'null_check',
           (context) => context.mounted,
         );
 
         final context = MockBuildContext();
-        expect(trueVariant.when(context), isTrue);
-        expect(falseVariant.when(context), isFalse);
-        expect(nullCheckVariant.when(context), isTrue);
+        expect(trueVariant.matches(context), isTrue);
+        expect(falseVariant.matches(context), isFalse);
+        expect(nullCheckVariant.matches(context), isTrue);
       });
 
       test('calls function each time when is called', () {
         var callCount = 0;
-        final variant = ContextVariant('counter', (context) {
+        final variant = ContextTrigger('counter', (context) {
           callCount++;
           return true;
         });
 
         final context = MockBuildContext();
-        variant.when(context);
-        variant.when(context);
-        variant.when(context);
+        variant.matches(context);
+        variant.matches(context);
+        variant.matches(context);
 
         expect(callCount, 3);
       });
     });
     group('Equality and hashCode', () {
-      test('equal ContextVariants have same hashCode', () {
-        final variant1 = ContextVariant('test', (context) => true);
-        final variant2 = ContextVariant('test', (context) => true);
+      test('equal ContextTriggers have same hashCode', () {
+        final variant1 = ContextTrigger('test', (context) => true);
+        final variant2 = ContextTrigger('test', (context) => true);
 
-        // Note: ContextVariant equality is based on key, not function
+        // Note: ContextTrigger equality is based on key, not function
         expect(variant1.key, equals(variant2.key));
       });
 
       test('different keys create different variants', () {
-        final variant1 = ContextVariant('test1', (context) => true);
-        final variant2 = ContextVariant('test2', (context) => true);
+        final variant1 = ContextTrigger('test1', (context) => true);
+        final variant2 = ContextTrigger('test2', (context) => true);
 
         expect(variant1.key, isNot(equals(variant2.key)));
       });
 
       test('factory method variants have consistent keys', () {
-        final variant1 = ContextVariant.brightness(Brightness.dark);
-        final variant2 = ContextVariant.brightness(Brightness.dark);
+        final variant1 = ContextTrigger.brightness(Brightness.dark);
+        final variant2 = ContextTrigger.brightness(Brightness.dark);
 
         expect(variant1.key, equals(variant2.key));
       });
@@ -226,8 +226,8 @@ void main() {
 
     group('Variant composition', () {
       test('separate variants can be used independently', () {
-        final variant1 = ContextVariant('test1', (context) => true);
-        final variant2 = ContextVariant('test2', (context) => false);
+        final variant1 = ContextTrigger('test1', (context) => true);
+        final variant2 = ContextTrigger('test2', (context) => false);
 
         expect(variant1.key, 'test1');
         expect(variant2.key, 'test2');
@@ -235,18 +235,18 @@ void main() {
       });
 
       test('can be negated with NOT static method', () {
-        final variant = ContextVariant('test', (context) => true);
-        final notVariant = ContextVariant.not(variant);
+        final variant = ContextTrigger('test', (context) => true);
+        final notVariant = ContextTrigger.not(variant);
 
-        expect(notVariant, isA<ContextVariant>());
+        expect(notVariant, isA<ContextTrigger>());
         expect(notVariant.key, 'not_test');
       });
 
-      test('ContextVariants and NamedVariants are distinct types', () {
-        final contextVariant = ContextVariant('test', (context) => true);
-        const namedVariant = NamedVariant('primary');
+      test('ContextTriggers and NamedVariants are distinct types', () {
+        final contextVariant = ContextTrigger('test', (context) => true);
+        final namedVariant = NamedVariant('primary', BoxStyler().width(100));
 
-        expect(contextVariant, isA<ContextVariant>());
+        expect(contextVariant, isA<ContextTrigger>());
         expect(namedVariant, isA<NamedVariant>());
         expect(contextVariant.key, isNot(equals(namedVariant.key)));
       });
@@ -254,102 +254,102 @@ void main() {
 
     group('VariantSpecAttribute integration', () {
       test('can be wrapped in VariantSpecAttribute', () {
-        final contextVariant = ContextVariant('test', (context) => true);
+        final contextVariant = ContextTrigger('test', (context) => true);
         final style = BoxStyler().width(100.0);
-        final variantAttr = VariantStyle<BoxSpec>(contextVariant, style);
+        final variantAttr = TriggerVariant<BoxSpec>(contextVariant, style);
 
-        expect(variantAttr.variant, contextVariant);
-        expect(variantAttr.value, style);
-        expect(variantAttr.mergeKey, 'test');
+        expect(variantAttr.trigger, contextVariant);
+        expect(variantAttr.style, style);
+        expect(variantAttr.key, 'test');
       });
 
       test('different contexts create different mergeKeys', () {
-        final variant1 = ContextVariant('context1', (context) => true);
-        final variant2 = ContextVariant('context2', (context) => false);
+        final variant1 = ContextTrigger('context1', (context) => true);
+        final variant2 = ContextTrigger('context2', (context) => false);
 
-        final style1 = VariantStyle<BoxSpec>(
+        final style1 = TriggerVariant<BoxSpec>(
           variant1,
           BoxStyler().width(100.0),
         );
-        final style2 = VariantStyle<BoxSpec>(
+        final style2 = TriggerVariant<BoxSpec>(
           variant2,
           BoxStyler().height(200.0),
         );
 
-        expect(style1.mergeKey, 'context1');
-        expect(style2.mergeKey, 'context2');
-        expect(style1.mergeKey, isNot(equals(style2.mergeKey)));
+        expect(style1.key, 'context1');
+        expect(style2.key, 'context2');
+        expect(style1.key, isNot(equals(style2.key)));
       });
     });
 
     group('Complex condition scenarios', () {
       test('handles complex conditional logic', () {
-        final complexVariant = ContextVariant('complex', (context) {
+        final complexVariant = ContextTrigger('complex', (context) {
           // Simulate complex logic that might depend on context properties
           return context.size?.width != null && context.size!.width > 800;
         });
 
         final context = MockBuildContext();
-        final result = complexVariant.when(context);
+        final result = complexVariant.matches(context);
 
         // The MockBuildContext has size (800, 600) by default
         expect(result, isFalse);
       });
 
       test('can throw exceptions in shouldApply function', () {
-        final throwingVariant = ContextVariant('throwing', (context) {
+        final throwingVariant = ContextTrigger('throwing', (context) {
           throw Exception('Test exception');
         });
 
         final context = MockBuildContext();
-        expect(() => throwingVariant.when(context), throwsException);
+        expect(() => throwingVariant.matches(context), throwsException);
       });
 
       test('handles null context gracefully in custom functions', () {
-        final nullSafeVariant = ContextVariant('null_safe', (context) {
+        final nullSafeVariant = ContextTrigger('null_safe', (context) {
           return context.mounted;
         });
 
         final context = MockBuildContext();
-        expect(() => nullSafeVariant.when(context), returnsNormally);
+        expect(() => nullSafeVariant.matches(context), returnsNormally);
       });
     });
 
     group('Factory method comprehensive testing', () {
       test('all orientation values create valid variants', () {
         for (final orientation in Orientation.values) {
-          final variant = ContextVariant.orientation(orientation);
+          final variant = ContextTrigger.orientation(orientation);
           expect(variant.key, contains(orientation.name));
-          expect(variant, isA<ContextVariant>());
+          expect(variant, isA<ContextTrigger>());
         }
       });
 
       test('all brightness values create valid variants', () {
         for (final brightness in Brightness.values) {
-          final variant = ContextVariant.brightness(brightness);
+          final variant = ContextTrigger.brightness(brightness);
           expect(variant.key, contains(brightness.name));
-          expect(variant, isA<ContextVariant>());
+          expect(variant, isA<ContextTrigger>());
         }
       });
 
       test('all text direction values create valid variants', () {
         for (final direction in TextDirection.values) {
-          final variant = ContextVariant.directionality(direction);
+          final variant = ContextTrigger.directionality(direction);
           expect(variant.key, contains(direction.name));
-          expect(variant, isA<ContextVariant>());
+          expect(variant, isA<ContextTrigger>());
         }
       });
 
       test('size factory accepts custom conditions', () {
-        final mobileVariant = ContextVariant.size(
+        final mobileVariant = ContextTrigger.size(
           'mobile',
           (size) => size.width <= 480,
         );
-        final tabletVariant = ContextVariant.size(
+        final tabletVariant = ContextTrigger.size(
           'tablet',
           (size) => size.width > 480 && size.width <= 1024,
         );
-        final desktopVariant = ContextVariant.size(
+        final desktopVariant = ContextTrigger.size(
           'desktop',
           (size) => size.width > 1024,
         );
@@ -364,20 +364,20 @@ void main() {
       test('handles function that returns non-boolean gracefully', () {
         // In Dart, this would be a compile-time error, but let's test runtime behavior
         expect(
-          () => ContextVariant('test', (context) => true),
+          () => ContextTrigger('test', (context) => true),
           returnsNormally,
         );
       });
 
       test('key property is immutable', () {
-        final variant = ContextVariant('immutable', (context) => true);
+        final variant = ContextTrigger('immutable', (context) => true);
         expect(variant.key, 'immutable');
         // Key should not change
         expect(variant.key, 'immutable');
       });
 
       test('shouldApply function is consistently referenced', () {
-        final variant = ContextVariant('consistent', (context) => true);
+        final variant = ContextTrigger('consistent', (context) => true);
         final function1 = variant.shouldApply;
         final function2 = variant.shouldApply;
 
@@ -389,222 +389,222 @@ void main() {
   group('Predefined variants', () {
     test('widget state variants are defined', () {
       expect(
-        ContextVariant.widgetState(WidgetState.hovered).key,
+        ContextTrigger.widgetState(WidgetState.hovered).key,
         'widget_state_hovered',
       );
       expect(
-        ContextVariant.widgetState(WidgetState.pressed).key,
+        ContextTrigger.widgetState(WidgetState.pressed).key,
         'widget_state_pressed',
       );
       expect(
-        ContextVariant.widgetState(WidgetState.focused).key,
+        ContextTrigger.widgetState(WidgetState.focused).key,
         'widget_state_focused',
       );
       expect(
-        ContextVariant.widgetState(WidgetState.disabled).key,
+        ContextTrigger.widgetState(WidgetState.disabled).key,
         'widget_state_disabled',
       );
       expect(
-        ContextVariant.widgetState(WidgetState.selected).key,
+        ContextTrigger.widgetState(WidgetState.selected).key,
         'widget_state_selected',
       );
       expect(
-        ContextVariant.widgetState(WidgetState.dragged).key,
+        ContextTrigger.widgetState(WidgetState.dragged).key,
         'widget_state_dragged',
       );
       expect(
-        ContextVariant.widgetState(WidgetState.error).key,
+        ContextTrigger.widgetState(WidgetState.error).key,
         'widget_state_error',
       );
     });
 
     test('brightness variants are defined', () {
       expect(
-        ContextVariant.brightness(Brightness.dark).key,
+        ContextTrigger.brightness(Brightness.dark).key,
         'media_query_platform_brightness_dark',
       );
       expect(
-        ContextVariant.brightness(Brightness.light).key,
+        ContextTrigger.brightness(Brightness.light).key,
         'media_query_platform_brightness_light',
       );
     });
 
     test('orientation variants are defined', () {
       expect(
-        ContextVariant.orientation(Orientation.portrait).key,
+        ContextTrigger.orientation(Orientation.portrait).key,
         'media_query_orientation_portrait',
       );
       expect(
-        ContextVariant.orientation(Orientation.landscape).key,
+        ContextTrigger.orientation(Orientation.landscape).key,
         'media_query_orientation_landscape',
       );
     });
 
     test('size variants are defined', () {
       expect(
-        ContextVariant.size('mobile', (size) => size.width <= 767).key,
+        ContextTrigger.size('mobile', (size) => size.width <= 767).key,
         'media_query_size_mobile',
       );
       expect(
-        ContextVariant.size(
+        ContextTrigger.size(
           'tablet',
           (size) => size.width > 767 && size.width <= 1279,
         ).key,
         'media_query_size_tablet',
       );
       expect(
-        ContextVariant.size('desktop', (size) => size.width > 1279).key,
+        ContextTrigger.size('desktop', (size) => size.width > 1279).key,
         'media_query_size_desktop',
       );
     });
 
     test('breakpoint variants are defined', () {
       expect(
-        ContextVariant.size('xsmall', (size) => size.width <= 480).key,
+        ContextTrigger.size('xsmall', (size) => size.width <= 480).key,
         'media_query_size_xsmall',
       );
       expect(
-        ContextVariant.size('small', (size) => size.width <= 768).key,
+        ContextTrigger.size('small', (size) => size.width <= 768).key,
         'media_query_size_small',
       );
       expect(
-        ContextVariant.size('medium', (size) => size.width <= 1024).key,
+        ContextTrigger.size('medium', (size) => size.width <= 1024).key,
         'media_query_size_medium',
       );
       expect(
-        ContextVariant.size('large', (size) => size.width <= 1280).key,
+        ContextTrigger.size('large', (size) => size.width <= 1280).key,
         'media_query_size_large',
       );
       expect(
-        ContextVariant.size('xlarge', (size) => size.width > 1280).key,
+        ContextTrigger.size('xlarge', (size) => size.width > 1280).key,
         'media_query_size_xlarge',
       );
     });
 
     test('platform variants are defined', () {
-      expect(ContextVariant.platform(TargetPlatform.iOS).key, 'platform_iOS');
+      expect(ContextTrigger.platform(TargetPlatform.iOS).key, 'platform_iOS');
       expect(
-        ContextVariant.platform(TargetPlatform.android).key,
+        ContextTrigger.platform(TargetPlatform.android).key,
         'platform_android',
       );
       expect(
-        ContextVariant.platform(TargetPlatform.macOS).key,
+        ContextTrigger.platform(TargetPlatform.macOS).key,
         'platform_macOS',
       );
       expect(
-        ContextVariant.platform(TargetPlatform.windows).key,
+        ContextTrigger.platform(TargetPlatform.windows).key,
         'platform_windows',
       );
       expect(
-        ContextVariant.platform(TargetPlatform.linux).key,
+        ContextTrigger.platform(TargetPlatform.linux).key,
         'platform_linux',
       );
       expect(
-        ContextVariant.platform(TargetPlatform.fuchsia).key,
+        ContextTrigger.platform(TargetPlatform.fuchsia).key,
         'platform_fuchsia',
       );
-      expect(ContextVariant.web().key, 'web');
+      expect(ContextTrigger.web().key, 'web');
     });
 
     test('direction variants are defined', () {
       expect(
-        ContextVariant.directionality(TextDirection.ltr).key,
+        ContextTrigger.directionality(TextDirection.ltr).key,
         'directionality_ltr',
       );
       expect(
-        ContextVariant.directionality(TextDirection.rtl).key,
+        ContextTrigger.directionality(TextDirection.rtl).key,
         'directionality_rtl',
       );
     });
 
     test('utility variants using NOT logic are defined', () {
-      final disabled = ContextVariant.widgetState(WidgetState.disabled);
-      final selected = ContextVariant.widgetState(WidgetState.selected);
-      final enabled = ContextVariant.not(disabled);
-      final unselected = ContextVariant.not(selected);
+      final disabled = ContextTrigger.widgetState(WidgetState.disabled);
+      final selected = ContextTrigger.widgetState(WidgetState.selected);
+      final enabled = ContextTrigger.not(disabled);
+      final unselected = ContextTrigger.not(selected);
 
-      expect(enabled, isA<ContextVariant>());
+      expect(enabled, isA<ContextTrigger>());
       expect(enabled.key, contains('not'));
 
-      expect(unselected, isA<ContextVariant>());
+      expect(unselected, isA<ContextTrigger>());
       expect(unselected.key, contains('not'));
     });
 
     test('named variants are defined', () {
-      expect(primary.key, 'primary');
-      expect(secondary.key, 'secondary');
-      expect(outlined.key, 'outlined');
-      expect(primary, isA<NamedVariant>());
-      expect(secondary, isA<NamedVariant>());
-      expect(outlined, isA<NamedVariant>());
+      expect(primary, 'primary');
+      expect(secondary, 'secondary');
+      expect(outlined, 'outlined');
+      expect(primary, isA<String>());
+      expect(secondary, isA<String>());
+      expect(outlined, isA<String>());
     });
 
-    test('all predefined context variants are ContextVariant instances', () {
-      expect(ContextVariant.brightness(Brightness.dark), isA<ContextVariant>());
+    test('all predefined context variants are ContextTrigger instances', () {
+      expect(ContextTrigger.brightness(Brightness.dark), isA<ContextTrigger>());
       expect(
-        ContextVariant.brightness(Brightness.light),
-        isA<ContextVariant>(),
+        ContextTrigger.brightness(Brightness.light),
+        isA<ContextTrigger>(),
       );
       expect(
-        ContextVariant.orientation(Orientation.portrait),
-        isA<ContextVariant>(),
+        ContextTrigger.orientation(Orientation.portrait),
+        isA<ContextTrigger>(),
       );
       expect(
-        ContextVariant.orientation(Orientation.landscape),
-        isA<ContextVariant>(),
+        ContextTrigger.orientation(Orientation.landscape),
+        isA<ContextTrigger>(),
       );
       expect(
-        ContextVariant.size('mobile', (size) => size.width <= 767),
-        isA<ContextVariant>(),
+        ContextTrigger.size('mobile', (size) => size.width <= 767),
+        isA<ContextTrigger>(),
       );
       expect(
-        ContextVariant.size(
+        ContextTrigger.size(
           'tablet',
           (size) => size.width > 767 && size.width <= 1279,
         ),
-        isA<ContextVariant>(),
+        isA<ContextTrigger>(),
       );
       expect(
-        ContextVariant.size('desktop', (size) => size.width > 1279),
-        isA<ContextVariant>(),
+        ContextTrigger.size('desktop', (size) => size.width > 1279),
+        isA<ContextTrigger>(),
       );
       expect(
-        ContextVariant.directionality(TextDirection.ltr),
-        isA<ContextVariant>(),
+        ContextTrigger.directionality(TextDirection.ltr),
+        isA<ContextTrigger>(),
       );
       expect(
-        ContextVariant.directionality(TextDirection.rtl),
-        isA<ContextVariant>(),
+        ContextTrigger.directionality(TextDirection.rtl),
+        isA<ContextTrigger>(),
       );
       expect(
-        ContextVariant.platform(TargetPlatform.iOS),
-        isA<ContextVariant>(),
+        ContextTrigger.platform(TargetPlatform.iOS),
+        isA<ContextTrigger>(),
       );
       expect(
-        ContextVariant.platform(TargetPlatform.android),
-        isA<ContextVariant>(),
+        ContextTrigger.platform(TargetPlatform.android),
+        isA<ContextTrigger>(),
       );
-      expect(ContextVariant.web(), isA<ContextVariant>());
+      expect(ContextTrigger.web(), isA<ContextTrigger>());
     });
 
     test('predefined size variants have different breakpoints', () {
-      final mobile = ContextVariant.size('mobile', (size) => size.width <= 767);
-      final tablet = ContextVariant.size(
+      final mobile = ContextTrigger.size('mobile', (size) => size.width <= 767);
+      final tablet = ContextTrigger.size(
         'tablet',
         (size) => size.width > 767 && size.width <= 1279,
       );
-      final desktop = ContextVariant.size(
+      final desktop = ContextTrigger.size(
         'desktop',
         (size) => size.width > 1279,
       );
-      final xsmall = ContextVariant.size('xsmall', (size) => size.width <= 480);
-      final small = ContextVariant.size('small', (size) => size.width <= 768);
-      final medium = ContextVariant.size(
+      final xsmall = ContextTrigger.size('xsmall', (size) => size.width <= 480);
+      final small = ContextTrigger.size('small', (size) => size.width <= 768);
+      final medium = ContextTrigger.size(
         'medium',
         (size) => size.width <= 1024,
       );
-      final large = ContextVariant.size('large', (size) => size.width <= 1280);
-      final xlarge = ContextVariant.size('xlarge', (size) => size.width > 1280);
+      final large = ContextTrigger.size('large', (size) => size.width <= 1280);
+      final xlarge = ContextTrigger.size('xlarge', (size) => size.width > 1280);
 
       // Test that the size conditions are different
       expect(mobile.key, isNot(equals(tablet.key)));

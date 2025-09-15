@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
 import '../../core/style.dart' show Style;
-import '../../core/style.dart' show VariantStyle;
 import '../../core/style_spec.dart';
 import '../../core/utility.dart';
 import '../../core/utility_variant_mixin.dart';
@@ -139,12 +138,7 @@ class FlexBoxMutableStyler extends StyleMutableBuilder<FlexBoxSpec>
       mutable.animate(animation);
 
   @override
-  FlexBoxStyler withVariant(Variant variant, FlexBoxStyler style) {
-    return mutable.variant(variant, style);
-  }
-
-  @override
-  FlexBoxStyler withVariants(List<VariantStyle<FlexBoxSpec>> variants) {
+  FlexBoxStyler withVariants(List<Variant<FlexBoxSpec>> variants) {
     return mutable.variants(variants);
   }
 

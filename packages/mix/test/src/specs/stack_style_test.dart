@@ -64,9 +64,9 @@ void main() {
       });
 
       test('', () {
-        final variant = ContextVariant.brightness(Brightness.dark);
+        final variant = ContextTrigger.brightness(Brightness.dark);
         final style = StackStyler().alignment(Alignment.center);
-        final stackMix = StackStyler().variant(variant, style);
+        final stackMix = StackStyler().variant(TriggerVariant(variant, style));
 
         expect(stackMix.$variants, isNotNull);
         expect(stackMix.$variants!.length, 1);
@@ -113,9 +113,9 @@ void main() {
 
     group('Variant Methods', () {
       test('', () {
-        final variant = ContextVariant.brightness(Brightness.dark);
+        final variant = ContextTrigger.brightness(Brightness.dark);
         final style = StackStyler().alignment(Alignment.center);
-        final stackMix = StackStyler().variant(variant, style);
+        final stackMix = StackStyler().variant(TriggerVariant(variant, style));
 
         expect(stackMix.$variants, isNotNull);
         expect(stackMix.$variants!.length, 1);
@@ -123,12 +123,12 @@ void main() {
 
       test('variants method sets multiple variants', () {
         final variants = [
-          VariantStyle(
-            ContextVariant.brightness(Brightness.dark),
+          TriggerVariant(
+            ContextTrigger.brightness(Brightness.dark),
             StackStyler().alignment(Alignment.topLeft),
           ),
-          VariantStyle(
-            ContextVariant.brightness(Brightness.light),
+          TriggerVariant(
+            ContextTrigger.brightness(Brightness.light),
             StackStyler().alignment(Alignment.bottomRight),
           ),
         ];

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
 import '../../core/style.dart' show Style;
-import '../../core/style.dart' show VariantStyle;
 import '../../core/style_spec.dart';
 import '../../core/utility.dart';
 import '../../core/utility_variant_mixin.dart';
@@ -73,12 +72,7 @@ class ImageMutableStyler extends StyleMutableBuilder<ImageSpec>
   }
 
   @override
-  ImageStyler withVariant(Variant variant, ImageStyler style) {
-    return mutable.variant(variant, style);
-  }
-
-  @override
-  ImageStyler withVariants(List<VariantStyle<ImageSpec>> variants) {
+  ImageStyler withVariants(List<Variant<ImageSpec>> variants) {
     return mutable.variants(variants);
   }
 

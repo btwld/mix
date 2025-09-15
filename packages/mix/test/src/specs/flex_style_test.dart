@@ -218,9 +218,9 @@ void main() {
     });
 
     test('variant factory creates with variant', () {
-      final variant = ContextVariant.brightness(Brightness.dark);
+      final variant = ContextTrigger.brightness(Brightness.dark);
       final style = FlexStyler(direction: Axis.horizontal);
-      final flexMix = FlexStyler().variant(variant, style);
+      final flexMix = FlexStyler().variant(TriggerVariant(variant, style));
 
       expect(flexMix.$variants, isNotNull);
       expect(flexMix.$variants!.length, 1);
@@ -453,7 +453,9 @@ void main() {
 
     test('modifiers merge correctly', () {
       final first = FlexStyler(
-        modifier: WidgetModifierConfig(modifiers: [OpacityModifierMix(opacity: 0.5)]),
+        modifier: WidgetModifierConfig(
+          modifiers: [OpacityModifierMix(opacity: 0.5)],
+        ),
       );
 
       final second = FlexStyler(
@@ -471,9 +473,9 @@ void main() {
 
   group('Variant Methods', () {
     test('variant method sets single variant', () {
-      final variant = ContextVariant.brightness(Brightness.dark);
+      final variant = ContextTrigger.brightness(Brightness.dark);
       final style = FlexStyler(direction: Axis.horizontal);
-      final flexMix = FlexStyler().variant(variant, style);
+      final flexMix = FlexStyler().variant(TriggerVariant(variant, style));
 
       expect(flexMix.$variants, isNotNull);
       expect(flexMix.$variants!.length, 1);
@@ -481,12 +483,12 @@ void main() {
 
     test('variants method sets multiple variants', () {
       final variants = [
-        VariantStyle(
-          ContextVariant.brightness(Brightness.dark),
+        TriggerVariant(
+          ContextTrigger.brightness(Brightness.dark),
           FlexStyler(direction: Axis.horizontal),
         ),
-        VariantStyle(
-          ContextVariant.brightness(Brightness.light),
+        TriggerVariant(
+          ContextTrigger.brightness(Brightness.light),
           FlexStyler(direction: Axis.vertical),
         ),
       ];

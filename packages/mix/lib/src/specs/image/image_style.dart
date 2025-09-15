@@ -7,10 +7,11 @@ import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/widget_modifier_config.dart';
-import '../../style/mixins/widget_modifier_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
-import 'image_spec.dart';
+import '../../style/mixins/widget_modifier_style_mixin.dart';
+import '../../variants/variant.dart';
 import 'image_mutable_style.dart';
+import 'image_spec.dart';
 import 'image_widget.dart';
 
 typedef ImageMix = ImageStyler;
@@ -89,7 +90,7 @@ class ImageStyler extends Style<ImageSpec>
     bool? matchTextDirection,
     AnimationConfig? animation,
     WidgetModifierConfig? modifier,
-    List<VariantStyle<ImageSpec>>? variants,
+    List<Variant<ImageSpec>>? variants,
   }) : this.create(
          image: Prop.maybe(image),
          width: Prop.maybe(width),
@@ -215,7 +216,7 @@ class ImageStyler extends Style<ImageSpec>
   }
 
   @override
-  ImageStyler variants(List<VariantStyle<ImageSpec>> variants) {
+  ImageStyler variants(List<Variant<ImageSpec>> variants) {
     return merge(ImageStyler(variants: variants));
   }
 

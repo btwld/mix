@@ -7,19 +7,16 @@ import '../../helpers/testing_utils.dart';
 void main() {
   group('Style Nested Variants', () {
     test('simple nested named variants should work', () {
-      const primaryVariant = NamedVariant('primary');
-      const secondaryVariant = NamedVariant('secondary');
-
       final testAttribute = _MockSpecAttribute(
         width: 100.0,
         variants: [
-          VariantStyle(
-            primaryVariant,
+          NamedVariant(
+            'primary',
             _MockSpecAttribute(
               width: 200.0,
               variants: [
-                VariantStyle(
-                  secondaryVariant,
+                NamedVariant(
+                  'secondary',
                   _MockSpecAttribute(width: 300.0),
                 ),
               ],
@@ -31,7 +28,7 @@ void main() {
       final context = MockBuildContext();
       final result = testAttribute.build(
         context,
-        namedVariants: {primaryVariant, secondaryVariant},
+        namedVariants: {'primary', 'secondary'},
       );
       final resolvedValue = result.spec.resolvedValue as Map<String, dynamic>;
 
@@ -44,13 +41,13 @@ void main() {
       final testAttribute = _MockSpecAttribute(
         width: 100.0,
         variants: [
-          VariantStyle(
-            ContextVariant.widgetState(WidgetState.hovered),
+          TriggerVariant(
+            ContextTrigger.widgetState(WidgetState.hovered),
             _MockSpecAttribute(
               width: 200.0,
               variants: [
-                VariantStyle(
-                  ContextVariant.orientation(Orientation.portrait),
+                TriggerVariant(
+                  ContextTrigger.orientation(Orientation.portrait),
                   _MockSpecAttribute(width: 300.0),
                 ),
               ],
@@ -91,13 +88,13 @@ void main() {
       final testAttribute = _MockSpecAttribute(
         width: 100.0,
         variants: [
-          VariantStyle(
-            ContextVariant.widgetState(WidgetState.hovered),
+          TriggerVariant(
+            ContextTrigger.widgetState(WidgetState.hovered),
             _MockSpecAttribute(
               width: 200.0,
               variants: [
-                VariantStyle(
-                  ContextVariant.brightness(Brightness.dark),
+                TriggerVariant(
+                  ContextTrigger.brightness(Brightness.dark),
                   _MockSpecAttribute(width: 300.0),
                 ),
               ],
@@ -129,18 +126,18 @@ void main() {
       final testAttribute = _MockSpecAttribute(
         width: 100.0,
         variants: [
-          VariantStyle(
-            ContextVariant.widgetState(WidgetState.hovered),
+          TriggerVariant(
+            ContextTrigger.widgetState(WidgetState.hovered),
             _MockSpecAttribute(
               width: 200.0,
               variants: [
-                VariantStyle(
-                  ContextVariant.widgetState(WidgetState.pressed),
+                TriggerVariant(
+                  ContextTrigger.widgetState(WidgetState.pressed),
                   _MockSpecAttribute(
                     width: 300.0,
                     variants: [
-                      VariantStyle(
-                        ContextVariant.orientation(Orientation.portrait),
+                      TriggerVariant(
+                        ContextTrigger.orientation(Orientation.portrait),
                         _MockSpecAttribute(width: 400.0),
                       ),
                     ],
@@ -179,13 +176,11 @@ void main() {
     });
 
     test('empty nested variants should not cause issues', () {
-      const primaryVariant = NamedVariant('primary');
-
       final testAttribute = _MockSpecAttribute(
         width: 100.0,
         variants: [
-          VariantStyle(
-            primaryVariant,
+          NamedVariant(
+            'primary',
             _MockSpecAttribute(
               width: 200.0,
               variants: [], // Empty nested variants
@@ -197,7 +192,7 @@ void main() {
       final context = MockBuildContext();
       final result = testAttribute.build(
         context,
-        namedVariants: {primaryVariant},
+        namedVariants: {'primary'},
       );
       final resolvedValue = result.spec.resolvedValue as Map<String, dynamic>;
 
@@ -206,13 +201,11 @@ void main() {
     });
 
     test('null nested variants should work correctly', () {
-      const primaryVariant = NamedVariant('primary');
-
       final testAttribute = _MockSpecAttribute(
         width: 100.0,
         variants: [
-          VariantStyle(
-            primaryVariant,
+          NamedVariant(
+            'primary',
             _MockSpecAttribute(
               width: 200.0,
               variants: null, // Null nested variants
@@ -224,7 +217,7 @@ void main() {
       final context = MockBuildContext();
       final result = testAttribute.build(
         context,
-        namedVariants: {primaryVariant},
+        namedVariants: {'primary'},
       );
       final resolvedValue = result.spec.resolvedValue as Map<String, dynamic>;
 
@@ -234,37 +227,31 @@ void main() {
 
     test('deeply nested named variants should work', () {
       // Create 5 levels of nesting with named variants
-      const level1 = NamedVariant('level1');
-      const level2 = NamedVariant('level2');
-      const level3 = NamedVariant('level3');
-      const level4 = NamedVariant('level4');
-      const level5 = NamedVariant('level5');
-
       final testAttribute = _MockSpecAttribute(
         width: 100.0,
         variants: [
-          VariantStyle(
-            level1,
+          NamedVariant(
+            'level1',
             _MockSpecAttribute(
               width: 200.0,
               variants: [
-                VariantStyle(
-                  level2,
+                NamedVariant(
+                  'level2',
                   _MockSpecAttribute(
                     width: 300.0,
                     variants: [
-                      VariantStyle(
-                        level3,
+                      NamedVariant(
+                        'level3',
                         _MockSpecAttribute(
                           width: 400.0,
                           variants: [
-                            VariantStyle(
-                              level4,
+                            NamedVariant(
+                              'level4',
                               _MockSpecAttribute(
                                 width: 500.0,
                                 variants: [
-                                  VariantStyle(
-                                    level5,
+                                  NamedVariant(
+                                    'level5',
                                     _MockSpecAttribute(width: 600.0),
                                   ),
                                 ],
@@ -285,7 +272,7 @@ void main() {
       final context = MockBuildContext();
       final result = testAttribute.build(
         context,
-        namedVariants: {level1, level2, level3, level4, level5},
+        namedVariants: {'level1', 'level2', 'level3', 'level4', 'level5'},
       );
       final resolvedValue = result.spec.resolvedValue as Map<String, dynamic>;
 

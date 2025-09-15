@@ -5,205 +5,177 @@ import 'package:mix/mix.dart';
 import '../../helpers/testing_utils.dart';
 
 void main() {
-  group('VariantSpecAttribute', () {
+  group('VariantStyle', () {
     group('Constructor', () {
-      test('creates VariantSpecAttribute with variant and style', () {
-        const variant = NamedVariant('primary');
+      test('creates NamedVariant with name and style', () {
         final style = BoxStyler().width(100.0);
-        final variantAttr = VariantStyle(variant, style);
+        final variant = NamedVariant('primary', style);
 
-        expect(variantAttr.variant, variant);
-        expect(variantAttr.value, style);
-        expect(variantAttr.mergeKey, 'primary');
+        expect(variant.name, 'primary');
+        expect(variant.style, style);
+        expect(variant.key, 'primary');
       });
 
-      test('creates VariantSpecAttribute with ContextVariant', () {
-        final variant = ContextVariant.widgetState(WidgetState.hovered);
+      test('creates TriggerVariant with ContextTrigger', () {
+        final trigger = ContextTrigger.widgetState(WidgetState.hovered);
         final style = BoxStyler().height(200.0);
-        final variantAttr = VariantStyle(variant, style);
+        final variant = TriggerVariant(trigger, style);
 
-        expect(variantAttr.variant, variant);
-        expect(variantAttr.value, style);
-        expect(variantAttr.mergeKey, 'widget_state_hovered');
+        expect(variant.trigger, trigger);
+        expect(variant.style, style);
+        expect(variant.key, 'widget_state_hovered');
       });
 
-      test('creates VariantSpecAttribute with ContextVariant', () {
-        final variant = ContextVariant.widgetState(WidgetState.hovered);
-        final style = BoxStyler().width(150.0);
-        final variantAttr = VariantStyle(variant, style);
+      test('creates VariantBuilder with function', () {
+        final variant = VariantBuilder<BoxSpec>(
+          (context) => BoxStyler().width(150.0),
+        );
 
-        expect(variantAttr.variant, variant);
-        expect(variantAttr.value, style);
-        expect(variantAttr.mergeKey, 'widget_state_hovered');
+        expect(variant.builder, isA<Function>());
+        expect(variant.key, isA<String>());
       });
     });
 
-    group('matches method', () {
-      test('matches when variant is in the provided list', () {
-        const variant = NamedVariant('primary');
-        final style = BoxStyler().width(100.0);
-        final variantAttr = VariantStyle(variant, style);
+    group('NamedVariant matching', () {
+      test('matches when name is in the provided list', () {
+        final variant = NamedVariant('primary', BoxStyler().width(100.0));
 
-        const variants = [NamedVariant('primary'), NamedVariant('secondary')];
-        expect(variantAttr.matches(variants), isTrue);
+        const variantNames = ['primary', 'secondary'];
+        expect(variant.matches(variantNames), isTrue);
       });
 
-      test('does not match when variant is not in the provided list', () {
-        const variant = NamedVariant('tertiary');
-        final style = BoxStyler().width(100.0);
-        final variantAttr = VariantStyle(variant, style);
+      test('does not match when name is not in the provided list', () {
+        final variant = NamedVariant('tertiary', BoxStyler().width(100.0));
 
-        const variants = [NamedVariant('primary'), NamedVariant('secondary')];
-        expect(variantAttr.matches(variants), isFalse);
+        const variantNames = ['primary', 'secondary'];
+        expect(variant.matches(variantNames), isFalse);
       });
 
       test('matches empty list returns false', () {
-        const variant = NamedVariant('primary');
-        final style = BoxStyler().width(100.0);
-        final variantAttr = VariantStyle(variant, style);
+        final variant = NamedVariant('primary', BoxStyler().width(100.0));
 
-        expect(variantAttr.matches([]), isFalse);
+        expect(variant.matches([]), isFalse);
       });
 
-      test('matches with ContextVariant', () {
-        final variant = ContextVariant('test', (context) => true);
-        final style = BoxStyler().width(100.0);
-        final variantAttr = VariantStyle(variant, style);
+      test('TriggerVariant isActive with context', () {
+        final trigger = ContextTrigger('test', (context) => true);
+        final variant = TriggerVariant(trigger, BoxStyler().width(100.0));
 
-        // The exact variant must be in the list to match
-        final variants = [variant];
-        expect(variantAttr.matches(variants), isTrue);
+        // Should be active when trigger condition is true
+        final context = MockBuildContext();
+        expect(variant.isActive(context), isTrue);
 
-        // Different variants don't match
-        const otherVariants = [NamedVariant('primary')];
-        expect(variantAttr.matches(otherVariants), isFalse);
+        final falseTrigger = ContextTrigger('false', (context) => false);
+        final falseVariant = TriggerVariant(falseTrigger, BoxStyler().width(100.0));
+        expect(falseVariant.isActive(context), isFalse);
       });
     });
 
-    group('removeVariants method', () {
-      test('returns null when removing the only variant', () {
-        const variant = NamedVariant('primary');
-        final style = BoxStyler().width(100.0);
-        final variantAttr = VariantStyle(variant, style);
+    group('NamedVariant removeVariants method', () {
+      test('returns null when removing the variant', () {
+        final variant = NamedVariant('primary', BoxStyler().width(100.0));
 
-        const variantsToRemove = [NamedVariant('primary')];
-        final result = variantAttr.removeVariants(variantsToRemove);
+        const variantsToRemove = ['primary'];
+        final result = variant.removeVariants(variantsToRemove);
 
         expect(result, isNull);
       });
 
       test('returns same instance when variant not in removal list', () {
-        const variant = NamedVariant('primary');
-        final style = BoxStyler().width(100.0);
-        final variantAttr = VariantStyle(variant, style);
+        final variant = NamedVariant('primary', BoxStyler().width(100.0));
 
-        const variantsToRemove = [NamedVariant('secondary')];
-        final result = variantAttr.removeVariants(variantsToRemove);
+        const variantsToRemove = ['secondary'];
+        final result = variant.removeVariants(variantsToRemove);
 
-        expect(result, same(variantAttr));
+        expect(result, same(variant));
       });
 
       test('handles variant removal correctly', () {
-        const variant = NamedVariant('primary');
-        final style = BoxStyler().width(100.0);
-        final variantAttr = VariantStyle(variant, style);
+        final variant = NamedVariant('primary', BoxStyler().width(100.0));
 
-        const variantsToRemove = [NamedVariant('primary')];
-        final result = variantAttr.removeVariants(variantsToRemove);
+        const variantsToRemove = ['primary'];
+        final result = variant.removeVariants(variantsToRemove);
 
         expect(result, isNull);
       });
 
-      test('returns attribute when variant not in removal list', () {
-        const variant = NamedVariant('primary');
-        final style = BoxStyler().width(100.0);
-        final variantAttr = VariantStyle(variant, style);
+      test('returns variant when name not in removal list', () {
+        final variant = NamedVariant('primary', BoxStyler().width(100.0));
 
-        const variantsToRemove = [NamedVariant('secondary')];
-        final result = variantAttr.removeVariants(variantsToRemove);
+        const variantsToRemove = ['secondary'];
+        final result = variant.removeVariants(variantsToRemove);
 
         expect(result, isNotNull);
-        expect(result!.variant, variant);
+        expect(result!.name, 'primary');
       });
 
-      test('returns null when variant is removed', () {
-        const variant = NamedVariant('primary');
-        final style = BoxStyler().width(100.0);
-        final variantAttr = VariantStyle(variant, style);
+      test('returns null when variant name is removed', () {
+        final variant = NamedVariant('primary', BoxStyler().width(100.0));
 
-        const variantsToRemove = [NamedVariant('primary')];
-        final result = variantAttr.removeVariants(variantsToRemove);
+        const variantsToRemove = ['primary'];
+        final result = variant.removeVariants(variantsToRemove);
 
         expect(result, isNull);
       });
 
-      test('preserves context variant when removal doesnt match', () {
-        final variant = ContextVariant('test', (context) => true);
-        final style = BoxStyler().width(100.0);
-        final variantAttr = VariantStyle(variant, style);
+      test('TriggerVariant does not have removeVariants method', () {
+        final trigger = ContextTrigger('test', (context) => true);
+        final variant = TriggerVariant(trigger, BoxStyler().width(100.0));
 
-        const variantsToRemove = [NamedVariant('other')];
-        final result = variantAttr.removeVariants(variantsToRemove);
-
-        expect(result, isNotNull);
-        expect(result!.variant, same(variant));
+        // TriggerVariant doesn't have removeVariants method since it's trigger-based
+        expect(variant.trigger, same(trigger));
+        expect(variant.key, 'test');
       });
     });
 
-    group('merge method', () {
+    group('NamedVariant merge method', () {
       test('merges styles when variants match', () {
-        const variant = NamedVariant('primary');
         final style1 = BoxStyler().width(100.0);
         final style2 = BoxStyler().height(200.0);
 
-        final variantAttr1 = VariantStyle(variant, style1);
-        final variantAttr2 = VariantStyle(variant, style2);
+        final variant1 = NamedVariant('primary', style1);
+        final variant2 = NamedVariant('primary', style2);
 
-        final merged = variantAttr1.merge(variantAttr2);
+        final merged = variant1.merge(variant2);
 
-        expect(merged.variant, variant);
-        final mergedBox = merged.value as BoxStyler;
+        expect(merged.name, 'primary');
         final context = MockBuildContext();
-        final constraints = mergedBox.resolve(context).constraints;
+        final resolvedSpec = merged.style.resolve(context);
+        final constraints = resolvedSpec.spec.constraints;
         expect(constraints?.minWidth, 100.0);
         expect(constraints?.maxWidth, 100.0);
         expect(constraints?.minHeight, 200.0);
         expect(constraints?.maxHeight, 200.0);
       });
 
-      test('throws when variants do not match', () {
-        const variant1 = NamedVariant('primary');
-        const variant2 = NamedVariant('secondary');
+      test('throws when variant names do not match', () {
         final style1 = BoxStyler().width(100.0);
         final style2 = BoxStyler().height(200.0);
 
-        final variantAttr1 = VariantStyle(variant1, style1);
-        final variantAttr2 = VariantStyle(variant2, style2);
+        final variant1 = NamedVariant('primary', style1);
+        final variant2 = NamedVariant('secondary', style2);
 
         expect(
-          () => variantAttr1.merge(variantAttr2),
+          () => variant1.merge(variant2),
           throwsA(
             isA<ArgumentError>().having(
               (e) => e.message,
               'message',
-              contains('Cannot merge VariantStyle with different variants'),
+              contains('Cannot merge NamedVariant with different keys'),
             ),
           ),
         );
       });
 
       test('returns this when other is null', () {
-        const variant = NamedVariant('primary');
-        final style = BoxStyler().width(100.0);
-        final variantAttr = VariantStyle(variant, style);
+        final variant = NamedVariant('primary', BoxStyler().width(100.0));
 
-        final merged = variantAttr.merge(null);
+        final merged = variant.merge(null);
 
-        expect(merged, equals(variantAttr));
+        expect(merged, equals(variant));
       });
 
       test('merges with overlapping properties - other takes precedence', () {
-        const variant = NamedVariant('primary');
         final style1 = BoxStyler(
           constraints: BoxConstraintsMix(
             minWidth: 100.0,
@@ -214,15 +186,15 @@ void main() {
         );
         final style2 = BoxStyler().width(200.0);
 
-        final variantAttr1 = VariantStyle(variant, style1);
-        final variantAttr2 = VariantStyle(variant, style2);
+        final variant1 = NamedVariant('primary', style1);
+        final variant2 = NamedVariant('primary', style2);
 
-        final merged = variantAttr1.merge(variantAttr2);
+        final merged = variant1.merge(variant2);
 
-        expect(merged.variant, variant);
-        final mergedBox = merged.value as BoxStyler;
+        expect(merged.name, 'primary');
         final context = MockBuildContext();
-        final constraints = mergedBox.resolve(context).constraints;
+        final resolvedSpec = merged.style.resolve(context);
+        final constraints = resolvedSpec.spec.constraints;
         expect(constraints?.minWidth, 200.0); // other overrides
         expect(constraints?.maxWidth, 200.0); // other overrides
         expect(constraints?.minHeight, 150.0); // from first
@@ -231,132 +203,126 @@ void main() {
     });
 
     group('Equality', () {
-      test('equal VariantSpecAttributes have same hashCode', () {
-        const variant = NamedVariant('primary');
+      test('equal NamedVariants have same hashCode', () {
         final style = BoxStyler().width(100.0);
 
-        final variantAttr1 = VariantStyle(variant, style);
-        final variantAttr2 = VariantStyle(variant, style);
+        final variant1 = NamedVariant('primary', style);
+        final variant2 = NamedVariant('primary', style);
 
-        expect(variantAttr1, equals(variantAttr2));
-        expect(variantAttr1.hashCode, equals(variantAttr2.hashCode));
+        expect(variant1, equals(variant2));
+        expect(variant1.hashCode, equals(variant2.hashCode));
       });
 
-      test('different variants are not equal', () {
-        const variant1 = NamedVariant('primary');
-        const variant2 = NamedVariant('secondary');
+      test('different variant names are not equal', () {
         final style = BoxStyler().width(100.0);
 
-        final variantAttr1 = VariantStyle(variant1, style);
-        final variantAttr2 = VariantStyle(variant2, style);
+        final variant1 = NamedVariant('primary', style);
+        final variant2 = NamedVariant('secondary', style);
 
-        expect(variantAttr1, isNot(equals(variantAttr2)));
+        expect(variant1, isNot(equals(variant2)));
       });
 
       test('different styles are not equal', () {
-        const variant = NamedVariant('primary');
         final style1 = BoxStyler().width(100.0);
         final style2 = BoxStyler().width(200.0);
 
-        final variantAttr1 = VariantStyle(variant, style1);
-        final variantAttr2 = VariantStyle(variant, style2);
+        final variant1 = NamedVariant('primary', style1);
+        final variant2 = NamedVariant('primary', style2);
 
-        expect(variantAttr1, isNot(equals(variantAttr2)));
+        expect(variant1, isNot(equals(variant2)));
       });
 
       test('identical instances are equal', () {
-        const variant = NamedVariant('primary');
-        final style = BoxStyler().width(100.0);
-        final variantAttr = VariantStyle(variant, style);
+        final variant = NamedVariant('primary', BoxStyler().width(100.0));
 
-        expect(variantAttr, equals(variantAttr));
-        expect(identical(variantAttr, variantAttr), isTrue);
+        expect(variant, equals(variant));
+        expect(identical(variant, variant), isTrue);
       });
     });
 
-    group('mergeKey property', () {
-      test('uses variant key as merge key', () {
-        const variant = NamedVariant('primary');
-        final style = BoxStyler().width(100.0);
-        final variantAttr = VariantStyle(variant, style);
+    group('key property', () {
+      test('NamedVariant uses name as key', () {
+        final variant = NamedVariant('primary', BoxStyler().width(100.0));
 
-        expect(variantAttr.mergeKey, 'primary');
+        expect(variant.key, 'primary');
       });
 
-      test('uses ContextVariant key as merge key', () {
-        final variant = ContextVariant.widgetState(WidgetState.hovered);
-        final style = BoxStyler().width(100.0);
-        final variantAttr = VariantStyle(variant, style);
+      test('TriggerVariant uses trigger key as key', () {
+        final trigger = ContextTrigger.widgetState(WidgetState.hovered);
+        final variant = TriggerVariant(trigger, BoxStyler().width(100.0));
 
-        expect(variantAttr.mergeKey, 'widget_state_hovered');
+        expect(variant.key, 'widget_state_hovered');
       });
 
-      test('uses variant key as merge key', () {
-        const variant = NamedVariant('primary');
-        final style = BoxStyler().width(100.0);
-        final variantAttr = VariantStyle(variant, style);
+      test('VariantBuilder uses builder hashCode as key', () {
+        final variant = VariantBuilder<BoxSpec>(
+          (context) => BoxStyler().width(100.0),
+        );
 
-        expect(variantAttr.mergeKey, 'primary');
+        expect(variant.key, isA<String>());
       });
     });
 
-    group('Different SpecAttribute Types', () {
-      test('works with TextSpecAttribute', () {
-        const variant = NamedVariant('large');
+    group('Different Spec Types', () {
+      test('works with TextStyler', () {
         final textStyle = TextStyler(textAlign: TextAlign.center, maxLines: 2);
-        final variantAttr = VariantStyle(variant, textStyle);
+        final variant = NamedVariant('large', textStyle);
 
-        expect(variantAttr.variant, variant);
-        expect(variantAttr.value, textStyle);
-        final textAttr = variantAttr.value as TextStyler;
-        expect(textAttr.$textAlign, resolvesTo(TextAlign.center));
-        expect(textAttr.$maxLines, resolvesTo(2));
+        expect(variant.name, 'large');
+        expect(variant.style, textStyle);
+        final context = MockBuildContext();
+        final resolvedSpec = variant.style.resolve(context);
+        expect(resolvedSpec.spec.textAlign, TextAlign.center);
+        expect(resolvedSpec.spec.maxLines, 2);
       });
 
-      test('', () {
-        const variant = NamedVariant('avatar');
+      test('works with ImageStyler', () {
         final imageStyle = ImageStyler(
           width: 50.0,
           height: 50.0,
           fit: BoxFit.cover,
         );
-        final variantAttr = VariantStyle(variant, imageStyle);
+        final variant = NamedVariant('avatar', imageStyle);
 
-        expect(variantAttr.variant, variant);
-        expect(variantAttr.value, imageStyle);
-        final imageAttr = variantAttr.value as ImageStyler;
-        expect(imageAttr.$width, resolvesTo(50.0));
-        expect(imageAttr.$height, resolvesTo(50.0));
-        expect(imageAttr.$fit, resolvesTo(BoxFit.cover));
+        expect(variant.name, 'avatar');
+        expect(variant.style, imageStyle);
+        final context = MockBuildContext();
+        final resolvedSpec = variant.style.resolve(context);
+        expect(resolvedSpec.spec.width, 50.0);
+        expect(resolvedSpec.spec.height, 50.0);
+        expect(resolvedSpec.spec.fit, BoxFit.cover);
       });
     });
 
     group('Complex Scenarios', () {
-      test('complex variant combinations', () {
-        final variant1 = ContextVariant.widgetState(WidgetState.hovered);
-        final variant2 = ContextVariant.brightness(Brightness.dark);
+      test('different trigger variants', () {
+        final trigger1 = ContextTrigger.widgetState(WidgetState.hovered);
+        final trigger2 = ContextTrigger.brightness(Brightness.dark);
 
         final style = BoxStyler().width(100.0);
-        final variantAttr1 = VariantStyle(variant1, style);
-        final variantAttr2 = VariantStyle(variant2, style);
+        final variant1 = TriggerVariant(trigger1, style);
+        final variant2 = TriggerVariant(trigger2, style);
 
-        expect(variantAttr1.variant, variant1);
-        expect(variantAttr2.variant, variant2);
-        expect(variantAttr1.value, style);
-        expect(variantAttr2.value, style);
+        expect(variant1.trigger, trigger1);
+        expect(variant2.trigger, trigger2);
+        expect(variant1.style, style);
+        expect(variant2.style, style);
+        expect(variant1.key, 'widget_state_hovered');
+        expect(variant2.key, 'media_query_platform_brightness_dark');
       });
 
-      test('removing variants from different variant types', () {
-        final variant = ContextVariant.widgetState(WidgetState.hovered);
-        final style = BoxStyler().width(100.0);
-        final variantAttr = VariantStyle(variant, style);
+      test('different variant types have different behaviors', () {
+        final trigger = ContextTrigger.widgetState(WidgetState.hovered);
+        final triggerVariant = TriggerVariant(trigger, BoxStyler().width(100.0));
+        final namedVariant = NamedVariant('primary', BoxStyler().width(200.0));
 
-        // Try to remove a NamedVariant - should not affect ContextVariant
-        const variantsToRemove = [NamedVariant('primary')];
-        final result = variantAttr.removeVariants(variantsToRemove);
+        // TriggerVariant is context-based
+        expect(triggerVariant.key, 'widget_state_hovered');
+        expect(triggerVariant.trigger, trigger);
 
-        expect(result, isNotNull);
-        expect(result!.variant, same(variant));
+        // NamedVariant is name-based
+        expect(namedVariant.key, 'primary');
+        expect(namedVariant.name, 'primary');
       });
     });
   });

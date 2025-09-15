@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 
 import '../animation/animation_config.dart';
 import '../modifiers/widget_modifier_config.dart';
+import '../variants/variant.dart';
 import 'spec.dart';
 import 'style.dart';
 import 'style_spec.dart';
@@ -41,7 +42,7 @@ abstract class StyleAttributeBuilder<S extends Spec<S>> extends Style<S>
 
   /// Mutable variants from internal attribute
   @override
-  List<VariantStyle<S>>? get $variants => style.$variants;
+  List<Variant<S>>? get $variants => style.$variants;
 
   @override
   List<Object?> get props => [style];
@@ -81,7 +82,7 @@ abstract class StyleMutableBuilder<S extends Spec<S>> extends Style<S>
 
   /// Mutable variants from internal attribute
   @override
-  List<VariantStyle<S>>? get $variants => value.$variants;
+  List<Variant<S>>? get $variants => value.$variants;
 
   @override
   List<Object?> get props => [mutable];

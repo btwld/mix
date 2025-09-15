@@ -12,11 +12,12 @@ import '../../properties/typography/strut_style_mix.dart';
 import '../../properties/typography/text_height_behavior_mix.dart';
 import '../../properties/typography/text_style_mix.dart';
 import '../../style/mixins/animation_style_mixin.dart';
-import '../../style/mixins/widget_modifier_style_mixin.dart';
 import '../../style/mixins/text_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
-import 'text_spec.dart';
+import '../../style/mixins/widget_modifier_style_mixin.dart';
+import '../../variants/variant.dart';
 import 'text_mutable_style.dart';
+import 'text_spec.dart';
 import 'text_widget.dart';
 
 typedef TextMix = TextStyler;
@@ -100,7 +101,7 @@ class TextStyler extends Style<TextSpec>
     Locale? locale,
     AnimationConfig? animation,
     WidgetModifierConfig? modifier,
-    List<VariantStyle<TextSpec>>? variants,
+    List<Variant<TextSpec>>? variants,
   }) : this.create(
          overflow: Prop.maybe(overflow),
          strutStyle: Prop.maybeMix(strutStyle),
@@ -248,7 +249,7 @@ class TextStyler extends Style<TextSpec>
   }
 
   @override
-  TextStyler variants(List<VariantStyle<TextSpec>> variants) {
+  TextStyler variants(List<Variant<TextSpec>> variants) {
     return merge(TextStyler(variants: variants));
   }
 
