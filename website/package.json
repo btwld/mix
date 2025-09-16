@@ -3,7 +3,7 @@
     "dev": "next --turbopack",
     "build": "next build",
     "start": "next start",
-    "postbuild": "pagefind --site .vercel/output/static && cp -r .vercel/output/static/_pagefind .vercel/output/static"
+    "postbuild": "pagefind --site .vercel/output/static"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.13",
