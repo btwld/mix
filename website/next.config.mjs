@@ -8,6 +8,5 @@ const withNextra = nextra({
 
 // Export the final Next.js config with Nextra included
 export default withNextra({
-    output: 'export',
     // ... Add regular Next.js options here
 })
