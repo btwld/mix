@@ -1,31 +1,3 @@
----
-title: Getting Started
-og_image: getting-started-og.png
----
-
-import { Steps } from "nextra/components";
-
-# Getting Started
-
-<Steps>
-
-### Installation
-
-Run this in your Flutter project:
-
-```bash
-flutter pub add mix
-```
-
-Import it where you use it:
-
-```dart
-import 'package:mix/mix.dart';
-```
-
-### Your first Mix widget
-
-```dart
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
@@ -58,27 +30,11 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-```
 
-### Reuse the style
-
-Extract it and reuse across widgets:
-
-```dart
 final primaryCard = BoxStyler().color(Colors.blue).borderRounded(12);
 
 final box = Box(style: primaryCard, child: StyledText('Primary'));
-
 final box2 = Box(
   style: primaryCard.color(Colors.green),
   child: StyledText('Success'),
 );
-```
-
-### What’s next
-
-- [Dynamic Styling](/docs/guides/dynamic-styling)
-- [Animations Guide](/docs/guides/animations)
-- [Design Tokens and Theming](/docs/guides/design-token)
-
-</Steps>
