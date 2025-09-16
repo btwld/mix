@@ -1,3 +1,5 @@
+"use client";
+
 export function Video({ src }) {
   return (
     <video

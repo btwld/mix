@@ -1,8 +1,8 @@
 import nextra from "nextra";
 
 const withNextra = nextra({
-  theme: "nextra-theme-docs",
-  themeConfig: "./theme.config.tsx",
+  // theme and themeConfig are removed in Nextra 4
+  // Pass props to Layout/Search/etc via app/layout.tsx
   mdxOptions: { remarkPlugins: [] },
 });
 
