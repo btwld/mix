@@ -111,3 +111,4 @@ CLAUDE.md
 # API compatibility reports
 api-compat-*.md
 website/.next/
+website/public/_pagefind/
