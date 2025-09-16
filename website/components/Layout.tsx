@@ -1,5 +1,8 @@
+
 "use client";
+
 import React from "react";
+import '../globals.css';
 
 type LayoutProps = { children?: React.ReactNode };
 

@@ -1,0 +1,77 @@
+---
+title: Getting Started
+og_image: getting-started-og.png
+---
+
+import { Steps } from "nextra/components";
+
+# Getting Started
+
+<Steps>
+
+### Installation
+
+Run the following command in the root of your project:
+
+```
+flutter pub add mix
+```
+
+Import it everywhere you use it:
+
+```dart
+import 'package:mix/mix.dart';
+```
+
+### Styling Your First Widget
+
+#### Flutter's Traditional Approach
+
+In Flutter, you might style a Container with elevation and color like this:
+
+```dart
+Container(
+  height: 100,
+  width: 100,
+  margin: EdgeInsets.symmetric(
+    vertical: 10,
+    horizontal: 20,
+  ),
+  decoration: BoxDecoration(
+    color: Colors.blue,
+    borderRadius: BorderRadius.circular(10),
+    border: Border.all(
+      color: Colors.black,
+      width: 1,
+      style: BorderStyle.solid,
+    ),
+  ),
+  child: Text('Hello World'),
+);
+```
+
+### Mix's Approach
+
+This is how you would style the same Container with Mix:
+
+```dart
+final style = Style(
+  $box.height(100),
+  $box.width(100),
+  $box.margin(10, 20),
+  $box.color.blue(),
+  $box.borderRadius(10),
+  $box.border(
+    color: Colors.black,
+    width: 1,
+    style: BorderStyle.solid,
+  ),
+);
+
+Box(
+  style: style,
+  child: Text('Hello Mix'),
+);
+```
+
+</Steps>
