@@ -15,8 +15,14 @@ body {
 
 .dark body {
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, #111 300px);
-
 }
+
+body ::selection {
+    background: var(--nextra-selection, #402649);
+    /* fallback if var not found */
+    color: inherit;
+}
+
 
 pre {
     background-color: #120d1c !important;
