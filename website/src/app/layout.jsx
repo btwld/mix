@@ -64,7 +64,7 @@ export default async function RootLayout({ children }) {
                     banner={banner}
                     navbar={navbar}
                     pageMap={await getPageMap()}
-                    docsRepositoryBase="https://github.com/shuding/nextra/tree/main/docs"
+                    docsRepositoryBase="https://github.com/btwld/mix/tree/main/docs"
                     footer={footer}
                     darkMode={false}
                     navigation={{ prev: true, next: true }}
