@@ -49,11 +49,11 @@ export default async function RootLayout({ children }) {
                 <meta name="description" content={description} />
                 <meta name="og:description" content={description} />
                 <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:image" content="https://fluttermix.com/og.jpeg" />
+                <meta name="twitter:image" content="https://fluttermix.com/og_banner.png" />
                 <meta name="twitter:site:domain" content="fluttermix.com" />
                 <meta name="twitter:url" content="https://fluttermix.com" />
                 <meta name="og:title" content="Mix" />
-                <meta name="og:image" content="https://fluttermix.com/og.jpeg" />
+                <meta name="og:image" content="https://fluttermix.com/og_banner.png" />
                 <meta name="apple-mobile-web-app-title" content="Mix" />
                 <link rel="icon" href="/favicon.ico" type="image/png" />
                 <link rel="icon" href="/favicon.ico" type="image/png" media="(prefers-color-scheme: dark)" />
