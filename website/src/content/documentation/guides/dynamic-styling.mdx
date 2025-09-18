@@ -70,59 +70,33 @@ final style = BoxStyler()
 
 Below is a list of all built-in variant methods available on stylers (e.g., `BoxStyler`, `TextStyler`). Each method allows you to apply a style based on a specific state, platform, breakpoint, or context.
 
-- **`onHovered(style)`**: Applies `style` when the widget is hovered.
-
-- **`onPressed(style)`**: Applies `style` when the widget is pressed.
-
-- **`onFocused(style)`**: Applies `style` when the widget is focused.
-
-- **`onDisabled(style)`**: Applies `style` when the widget is disabled.
-
-- **`onSelected(style)`**: Applies `style` when the widget is selected.
-
-- **`onError(style)`**: Applies `style` when the widget is in an error state.
-
-- **`onScrolledUnder(style)`**: Applies `style` when the widget is scrolled under.
-
-- **`onDragged(style)`**: Applies `style` when the widget is being dragged.
-
-- **`onEnabled(style)`**: Applies `style` when the widget is enabled (not disabled).
-
-- **`onDark(style)`**: Applies `style` in dark mode.
-
-- **`onLight(style)`**: Applies `style` in light mode.
-
-- **`onPortrait(style)`**: Applies `style` in portrait orientation.
-
-- **`onLandscape(style)`**: Applies `style` in landscape orientation.
-
-- **`onBreakpoint(breakpoint, style)`**: Applies `style` for a custom breakpoint.
-
-- **`onMobile(style)`**: Applies `style` on mobile devices.
-
-- **`onTablet(style)`**: Applies `style` on tablets.
-
-- **`onDesktop(style)`**: Applies `style` on desktops.
-
-- **`onLtr(style)`**: Applies `style` for left-to-right text direction.
-
-- **`onRtl(style)`**: Applies `style` for right-to-left text direction.
-
-- **`onIos(style)`**: Applies `style` on iOS.
-
-- **`onAndroid(style)`**: Applies `style` on Android.
-
-- **`onMacos(style)`**: Applies `style` on macOS.
-
-- **`onWindows(style)`**: Applies `style` on Windows.
-
-- **`onLinux(style)`**: Applies `style` on Linux.
-
-- **`onFuchsia(style)`**: Applies `style` on Fuchsia.
-
-- **`onWeb(style)`**: Applies `style` on web.
-
-- **`onNot(contextVariant, style)`**: Applies `style` when the given context variant is **not** active.
-
-- **`onBuilder((context) => style)`**: Applies a style based on a custom function using `BuildContext`.
-
+| Method | Description |
+|--------|-------------|
+| `onHovered(style)` | Applies style when the widget is hovered |
+| `onPressed(style)` | Applies style when the widget is pressed |
+| `onFocused(style)` | Applies style when the widget is focused |
+| `onDisabled(style)` | Applies style when the widget is disabled |
+| `onSelected(style)` | Applies style when the widget is selected |
+| `onError(style)` | Applies style when the widget is in an error state |
+| `onScrolledUnder(style)` | Applies style when the widget is scrolled under |
+| `onDragged(style)` | Applies style when the widget is being dragged |
+| `onEnabled(style)` | Applies style when the widget is enabled (not disabled) |
+| `onDark(style)` | Applies style in dark mode |
+| `onLight(style)` | Applies style in light mode |
+| `onPortrait(style)` | Applies style in portrait orientation |
+| `onLandscape(style)` | Applies style in landscape orientation |
+| `onBreakpoint(breakpoint, style)` | Applies style for a custom breakpoint |
+| `onMobile(style)` | Applies style on mobile devices |
+| `onTablet(style)` | Applies style on tablets |
+| `onDesktop(style)` | Applies style on desktops |
+| `onLtr(style)` | Applies style for left-to-right text direction |
+| `onRtl(style)` | Applies style for right-to-left text direction |
+| `onIos(style)` | Applies style on iOS |
+| `onAndroid(style)` | Applies style on Android |
+| `onMacos(style)` | Applies style on macOS |
+| `onWindows(style)` | Applies style on Windows |
+| `onLinux(style)` | Applies style on Linux |
+| `onFuchsia(style)` | Applies style on Fuchsia |
+| `onWeb(style)` | Applies style on web |
+| `onNot(contextVariant, style)` | Applies style when the given context variant is **not** active |
+| `onBuilder((context) => style)` | Applies a style based on a custom function using BuildContext |

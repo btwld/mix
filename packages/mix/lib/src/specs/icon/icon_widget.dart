@@ -10,8 +10,8 @@ import 'icon_style.dart';
 ///
 /// Applies [IconSpec] for custom icon appearance.
 class StyledIcon extends StyleWidget<IconSpec> {
-  const StyledIcon({
-    this.icon,
+  const StyledIcon(
+    this.icon, {
     this.semanticLabel,
     super.style = const IconStyler.create(),
     super.key,

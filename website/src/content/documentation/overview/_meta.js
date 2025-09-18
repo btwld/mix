@@ -1,5 +1,5 @@
 export default {
-    index: "Introduction",
+    introduction: "Introduction",
     "getting-started": "Getting started",
     "utility-first": "Utility-First",
     comparison: "Comparative Overview",

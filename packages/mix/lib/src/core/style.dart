@@ -34,15 +34,6 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   final WidgetModifierConfig? $modifier;
   final AnimationConfig? $animation;
 
-  static final box = BoxStyler.new;
-  static final text = TextStyler.new;
-  static final icon = IconStyler.new;
-  static final image = ImageStyler.new;
-  static final stack = StackStyler.new;
-  static final flex = FlexStyler.new;
-  static final flexbox = FlexBoxStyler.new;
-  static final stackbox = StackBoxStyler.new;
-
   const Style({
     required List<VariantStyle<S>>? variants,
     required WidgetModifierConfig? modifier,

@@ -1,12 +1,12 @@
 export default {
-    introduction: {
-        title: "Introduction"
+    stylewidgets: {
+        title: "StyleWidgets"
     },
     box: {
         title: "Box"
     },
-    "pressable-box": {
-        title: "PressableBox"
+    flexbox: {
+        title: "FlexBox"
     },
     text: {
         title: "Text"
@@ -17,10 +17,7 @@ export default {
     image: {
         title: "Image"
     },
-    flex: {
-        title: "Flex"
+    pressable: {
+        title: "Pressable"
     },
-    stack: {
-        title: "Stack"
-    }
 };

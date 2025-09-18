@@ -11,7 +11,4 @@ export default {
     widgets: {
         title: 'Widgets',
     },
-    utilities: {
-        title: 'Utilities',
-    },
 }
