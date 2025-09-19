@@ -1,17 +1,17 @@
-## A Comparative Look at Mix
+import 'package:example/helpers.dart';
+import 'package:flutter/material.dart';
+import 'package:mix/mix.dart';
 
-Mix rethinks the way we handle styling in Flutter by simplifying and streamlining the process. This comparison aims to showcase how Mix enhances code readability, maintainability, and reduces boilerplate, especially when dealing with complex widget styles and interactions.
+void main() {
+  runMixApp(
+    const Row(
+      spacing: 16,
+      mainAxisSize: MainAxisSize.min,
+      children: [CustomMixWidget(), CustomWidget()],
+    ),
+  );
+}
 
-### Code Comparison: With Mix vs. Without Mix
-
-We'll compare a common scenario: styling a custom widget, to illustrate the advantages of using Mix. In this example, we'll be styling a custom widget with the following requirements:
-
-- **Flexible Overriding of Styles**: This demonstrates the ability to override specific `TextStyle` and `BoxDecoration` properties, showcasing Mix's flexibility and adaptability in customization.
-- **Simplified Interaction-Based Styling**: This highlights Mix’s capability to handle hover states effortlessly, allowing for dynamic styling changes in response to user interactions.
-
-#### With Mix
-
-```dart
 class CustomMixWidget extends StatelessWidget {
   const CustomMixWidget({super.key});
 
@@ -25,6 +25,7 @@ class CustomMixWidget extends StatelessWidget {
         .onHovered(
           TextStyler()
               .animate(AnimationConfig.easeInOut(100.ms))
+              .color(Colors.grey.shade700)
               .onLight(TextStyler().color(Colors.white)),
         );
   }
@@ -48,6 +49,7 @@ class CustomMixWidget extends StatelessWidget {
               .paddingAll(10)
               .scale(1.5)
               .animate(AnimationConfig.easeInOut(100.ms))
+              .color(Colors.cyan.shade300)
               .onLight(BoxStyler().color(Colors.blue.shade300)),
         );
   }
@@ -63,23 +65,15 @@ class CustomMixWidget extends StatelessWidget {
     );
   }
 }
-```
 
-Take a look at how Mix lets you define styles and handle hover states in a really clean. The code is shorter, easier to follow, and just feels more natural to work with.
-
-### Without Mix
-
-```dart
 class CustomWidget extends StatefulWidget {
-  const CustomWidget({
-    Key? key,
-  }) : super(key: key);
+  const CustomWidget({super.key});
 
   @override
-  _CustomWidgetState createState() => _CustomWidgetState();
+  CustomWidgetState createState() => CustomWidgetState();
 }
 
-class _CustomWidgetState extends State<CustomWidget> {
+class CustomWidgetState extends State<CustomWidget> {
   bool _isHover = false;
 
   final _curve = Curves.linear;
@@ -87,16 +81,16 @@ class _CustomWidgetState extends State<CustomWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
     final backgroundColor = isDark ? Colors.cyan : Colors.blue;
     final textColor = isDark ? Colors.black : Colors.white;
     final borderRadius = BorderRadius.circular(10);
 
-    final onHoverTextColor =
-        isDark ? textColor.lighten(20) : textColor.darken(20);
+    final onHoverTextColor = isDark
+        ? Colors.grey.shade700
+        : Colors.grey.shade200;
 
-    final onHoverBgColor =
-        isDark ? backgroundColor.lighten(20) : backgroundColor.darken(30);
+    final onHoverBgColor = isDark ? Colors.cyan.shade300 : Colors.blue.shade300;
 
     return MouseRegion(
       onEnter: (event) {
@@ -117,8 +111,9 @@ class _CustomWidgetState extends State<CustomWidget> {
             duration: _duration,
             height: 120,
             width: 120,
-            padding:
-                _isHover ? const EdgeInsets.all(10) : const EdgeInsets.all(20),
+            padding: _isHover
+                ? const EdgeInsets.all(10)
+                : const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: _isHover ? onHoverBgColor : backgroundColor,
               borderRadius: borderRadius,
@@ -129,10 +124,11 @@ class _CustomWidgetState extends State<CustomWidget> {
               duration: _duration,
               child: Text(
                 'Custom Widget',
-                style: Theme.of(context)
-                    .textTheme
-                    .labelLarge
-                    ?.copyWith(color: _isHover ? onHoverTextColor : textColor),
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  color: _isHover ? onHoverTextColor : textColor,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                ),
               ),
             ),
           ),
@@ -141,6 +137,3 @@ class _CustomWidgetState extends State<CustomWidget> {
     );
   }
 }
-```
-
-Without Mix, the code is more verbose, especially in managing the hover state and styling. The separation between logic and presentation is less clear.

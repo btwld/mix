@@ -103,7 +103,7 @@ class ArrowIconButton extends StatelessWidget {
           trigger: animationTrigger,
           phases: ArrowPhases.values,
           styleBuilder: (phase, style) =>
-              style.wrapTranslate(phase.offset.dx, phase.offset.dy),
+              style.wrapTranslate(x: phase.offset.dx, y: phase.offset.dy),
           configBuilder: (phase) => CurveAnimationConfig(
             duration: phase.duration,
             curve: phase.curve,

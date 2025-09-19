@@ -34,15 +34,6 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   final WidgetModifierConfig? $modifier;
   final AnimationConfig? $animation;
 
-  static final box = BoxStyler.new;
-  static final text = TextStyler.new;
-  static final icon = IconStyler.new;
-  static final image = ImageStyler.new;
-  static final stack = StackStyler.new;
-  static final flex = FlexStyler.new;
-  static final flexbox = FlexBoxStyler.new;
-  static final stackbox = StackBoxStyler.new;
-
   const Style({
     required List<VariantStyle<S>>? variants,
     required WidgetModifierConfig? modifier,
@@ -95,34 +86,42 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     );
 
     // Extract the style from each active variant
-    final stylesToMerge = activeVariants.map((variantAttr) {
-      return switch (variantAttr.variant) {
-        ContextVariantBuilder variant => variant.build(context) as Style<S>,
+    final stylesToMerge = <(Style<S>, bool)>[]; // (style, isFromStyleVariation)
+    
+    for (final variantAttr in activeVariants) {
+      final result = switch (variantAttr.variant) {
+        ContextVariantBuilder variant => (variant.build(context) as Style<S>, false),
         (ContextVariant() || NamedVariant()) => () {
           // Check if the value is a StyleVariation
           if (variantAttr.value is StyleVariation<S>) {
             final styleVariation = variantAttr.value as StyleVariation<S>;
             // Only apply if this variant is active
             if (namedVariants.contains(styleVariation.variantType)) {
-              return styleVariation.styleBuilder(this, namedVariants, context);
+              return (styleVariation.styleBuilder(this, namedVariants, context), true);
             }
           }
 
-          return variantAttr.value;
+          return (variantAttr.value, false);
         }(),
       };
-    }).toList();
+      stylesToMerge.add(result);
+    }
 
     // Start with current style as base
     Style<S> mergedStyle = this;
 
     // Merge each variant style, recursively resolving nested variants
-    for (final variantStyle in stylesToMerge) {
-      // Recursively resolve any nested variants within this variant's style
-      final fullyResolvedStyle = variantStyle.mergeActiveVariants(
-        context,
-        namedVariants: namedVariants,
-      );
+    for (final (variantStyle, isFromStyleVariation) in stylesToMerge) {
+      final fullyResolvedStyle = isFromStyleVariation
+          // For StyleVariation results, we don't recursively resolve variants
+          // since StyleVariation.styleBuilder should handle its own variant logic
+          // and return a final style. This prevents infinite recursion.
+          ? variantStyle
+          // For regular variants, recursively resolve any nested variants
+          : variantStyle.mergeActiveVariants(
+              context,
+              namedVariants: namedVariants,
+            );
       mergedStyle = mergedStyle.merge(fullyResolvedStyle);
     }
 

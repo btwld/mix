@@ -31,8 +31,9 @@ pre {
 }
 
 html.dark {
-    --nextra-primary-hue: 300;
-    --nextra-primary-saturation: 40;
+    --nextra-primary-hue: 270;
+    --nextra-primary-saturation: 68;
+    --nextra-primary-brightness: 70;
     /* orange in dark mode */
 }
 
@@ -44,4 +45,39 @@ button {
 a:hover,
 button:hover {
     text-decoration: none !important;
+}
+
+
+table {
+    border-radius: 12px;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    border: 1px solid #303030;
+}
+
+table th,
+table td {
+    text-align: left;
+    padding: 0.8rem;
+    padding-right: 4rem;
+    border: none;
+    font-size: 0.9rem;
+}
+
+table tr:not(:last-child) td {
+    border-bottom: 1px solid #303030;
+}
+
+tbody td {
+    background-color: #191919;
+}
+
+th {
+    background-color: #212121;
+}
+
+table th,
+table td {
+    width: 1%;
 }
