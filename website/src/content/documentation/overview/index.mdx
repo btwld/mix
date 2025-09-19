@@ -1,0 +1,109 @@
+---
+title: Introduction
+og_image: introduction-og.png
+---
+# Introduction
+
+Mix is a simple and intuitive styling system for Flutter, enabling the creation of beautiful and consistent UIs with ease.
+
+Mix brings industry-proven design system concepts to Flutter. It separates style semantics from widgets while maintaining an easy-to-understand and manageable relationship between them.
+
+-  Easily compose, merge, and apply styles across widgets.
+-  Write cleaner, more maintainable styling definitions.
+-  Apply styles conditionally based on the BuildContext.
+
+## Why Mix?
+
+Flutter developers often face challenges when it comes to styling widgets and maintaining a consistent look and feel across their apps. Flutter is heavily dependent on the Material Design System and theming, and that can be challenging, especially when creating your own design system.
+
+Mix addresses these challenges by creating a styling system that uses utility functions for a more intuitive and composable way to style. This approach can be kept consistent across widgets and files.
+
+## Goals with Mix
+
+- Define visual properties outside the widget's build method while still allowing access to the `BuildContext`. This is done by having the style definition resolved during widget build, similar to how the current `Theme.of` works, but with much more flexibility.
+- Ensure consistent styling throughout your app. By having separate style definitions, you can reuse not only specific values, like colors and typography, but also entire style definitions across other styles.
+- Quickly adapt to changing design requirements. By promoting style composability and inheritance, you can more easily maintain a `DRY` approach to managing your design system.
+- Create adaptive designs and layouts by leveraging style variants, which are based on existing styles but can be applied conditionally or responsively.
+- Type-safe composability. Mix leverages the power of Dart's type system and class to create a type-safe styling experience.
+
+## Guiding Principles
+
+-  **Simple Abstraction**: A low-cost layer over the Flutter API, letting you style widgets without altering their core behavior, ensuring they remain compatible and predictable.
+-  **Consistent**: Even though we are creating a new styling system, we should always keep the styling API consistent with its Flutter equivalents.
+-  **Composable**: Styles should be easily composable by combining simple, reusable elements, promoting code reuse and maintainability.
+-  **Extensible**: Mix should allow for reasonable overrides and reuse of its utilities, making it easy to fit your own needs.
+
+## Key Features
+
+### **Powerful Styling API**:
+
+Styles are easily defined using a fluent API with `Styler` classes, inspired by the builder design pattern. This approach lets you define styling properties and values in a chainable and intuitive way:
+
+```dart
+final boxStyle = BoxStyler()
+    .height(100)
+    .width(100)
+    .color(Colors.purple)
+    .borderRounded(10);
+
+final textStyle = TextStyler()
+    .fontSize(20)
+    .fontWeight(FontWeight.bold)
+    .color(Colors.black);
+```
+
+Learn more about [styling](/documentation/guides/styling)
+
+### **Dynamic Styling**
+
+Mix provides powerful dynamic styling capabilities, enabling you to define styles that adapt to user interaction, widget state, or the current `BuildContext`. This allows for highly responsive and interactive UIs with minimal effort.
+
+You can easily create styles that change based on widget states (such as hover or press) and context (like dark mode) using the fluent API:
+
+```dart
+final buttonStyle = BoxStyler()
+    .height(50)
+    .borderRounded(25)
+    .color(Colors.blue)
+    .onHovered(BoxStyler().color(Colors.blue.shade700))
+    .onDark(BoxStyler().color(Colors.blue.shade200));
+```
+
+Learn more about [Dynamic Styling](/documentation/guides/dynamic-styling)
+
+### **Animation Support**:
+
+Mix supports three main types of animations:
+- **Implicit Animations**: Simple, property-based transitions (like color, size, or scale) that animate automatically when state or variants change.
+- **Phase Animations**: Multi-step animations that progress through defined phases, ideal for state machines or sequential effects.
+- **Keyframe Animations**: Advanced, timeline-based animations with precise control over multiple properties and timing, similar to CSS keyframes.
+
+Learn more in the [Animations Guide](/documentation/guides/animations).
+
+### **Design Tokens and Theming**:
+
+Mix goes beyond the Material `Theme` definitions by allowing the definition of design tokens and properties that can be used across all styling utilities:
+
+```dart
+final $primaryColor = ColorToken('primary');
+final $borderRadius = RadiusToken('borderRadius');
+
+final tokenDefinitions = <MixToken, Object>{
+  $primaryColor: Colors.blue,
+  $borderRadius: Radius.circular(8),
+};
+
+final tokenStyle = BoxStyler()
+    .color($primaryColor())
+    .width(100)
+    .height(100)
+    .borderRadius(BorderRadiusGeometryMix.all($borderRadius()));
+
+// Set the tokens in the MixScope
+MixScope(
+  tokens: tokenDefinitions,
+  child: MyApp(),
+);
+```
+
+Learn more about [Design Tokens and Theming](/documentation/guides/design-token)
