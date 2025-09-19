@@ -46,4 +46,4 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           run-dcm: false
-          flutter-version: '3.32.6'
+          flutter-version: 'stable'
