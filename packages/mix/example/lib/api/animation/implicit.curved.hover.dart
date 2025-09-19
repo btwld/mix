@@ -10,9 +10,10 @@
 /// - Transform alignment with .transformAlignment()
 library;
 
-import '../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
+
+import '../../helpers.dart';
 
 void main() {
   runMixApp(Example());
@@ -35,7 +36,7 @@ class Example extends StatelessWidget {
               .scale(1.5)
               .animate(AnimationConfig.easeInOut(1000.ms)),
         )
-        .animate(AnimationConfig.spring(300.ms, bounce: 0.4));
+        .animate(AnimationConfig.linear(300.ms));
 
     return Box(style: style);
   }

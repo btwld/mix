@@ -61,6 +61,7 @@ String _joinPaths(String path1, String path2, [String? path3, String? path4]) {
     path1,
     path2,
     path3,
+    // ignore: unnecessary-trailing-comma
     path4,
   ].where((e) => e != null).join(Platform.pathSeparator);
 }
