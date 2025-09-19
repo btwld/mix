@@ -90,13 +90,10 @@ class _HeartAnimationState extends State<HeartAnimation> {
             final verticalStretch = values.get('verticalStretch');
             final angle = values.get('angle');
 
-            return style.transform(
-              Matrix4.identity()
-                ..scaleByDouble(scale, scale, scale, 1.0)
-                ..translateByDouble(0, verticalOffset, 0, 1)
-                ..scaleByDouble(1, verticalStretch, 1, 1)
-                ..rotateZ(angle),
-            );
+            return style
+                .wrapScale(x: scale, y: scale * verticalStretch)
+                .wrapTranslate(x: 0, y: verticalOffset)
+                .wrapRotate(angle);
           },
         ),
         child: ShaderMask(

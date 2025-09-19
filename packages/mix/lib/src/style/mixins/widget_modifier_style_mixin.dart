@@ -2,15 +2,16 @@ import 'package:flutter/widgets.dart';
 
 import '../../core/spec.dart';
 import '../../core/style.dart';
-import '../../modifiers/widget_modifier_config.dart';
 import '../../modifiers/mouse_cursor_modifier.dart';
+import '../../modifiers/widget_modifier_config.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
 import '../../properties/typography/text_style_mix.dart';
 import '../../specs/box/box_style.dart';
 
 /// Provides convenient widget modifier styling methods for spec attributes.
-mixin WidgetModifierStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
+mixin WidgetModifierStyleMixin<T extends Style<S>, S extends Spec<S>>
+    on Style<S> {
   /// Applies the given [value] widget modifier configuration.
   T wrap(WidgetModifierConfig value);
 
@@ -27,21 +28,30 @@ mixin WidgetModifierStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S
   /// Wraps the widget with a clip oval modifier.
   T wrapClipOval({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
     return wrap(
-      WidgetModifierConfig.clipOval(clipper: clipper, clipBehavior: clipBehavior),
+      WidgetModifierConfig.clipOval(
+        clipper: clipper,
+        clipBehavior: clipBehavior,
+      ),
     );
   }
 
   /// Wraps the widget with a clip rect modifier.
   T wrapClipRect({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
     return wrap(
-      WidgetModifierConfig.clipRect(clipper: clipper, clipBehavior: clipBehavior),
+      WidgetModifierConfig.clipRect(
+        clipper: clipper,
+        clipBehavior: clipBehavior,
+      ),
     );
   }
 
   /// Wraps the widget with a clip path modifier.
   T wrapClipPath({CustomClipper<Path>? clipper, Clip? clipBehavior}) {
     return wrap(
-      WidgetModifierConfig.clipPath(clipper: clipper, clipBehavior: clipBehavior),
+      WidgetModifierConfig.clipPath(
+        clipper: clipper,
+        clipBehavior: clipBehavior,
+      ),
     );
   }
 
@@ -86,36 +96,48 @@ mixin WidgetModifierStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S
   }
 
   /// Wraps the widget with a scale transform modifier.
-  T wrapScale(double scale, {Alignment alignment = Alignment.center}) {
+  T wrapScale({
+    required double x,
+    required double y,
+    Alignment alignment = Alignment.center,
+  }) {
+    return wrap(WidgetModifierConfig.scale(x: x, y: y, alignment: alignment));
+  }
+
+  /// Wraps the widget with a skew transform modifier.
+  T wrapSkew(
+    double skewX,
+    double skewY, {
+    Alignment alignment = Alignment.center,
+  }) {
     return wrap(
-      WidgetModifierConfig.transform(
-        transform: Matrix4.diagonal3Values(scale, scale, 1.0),
+      WidgetModifierConfig.skew(
+        skewX: skewX,
+        skewY: skewY,
         alignment: alignment,
       ),
     );
   }
 
   /// Wraps the widget with a rotate transform modifier.
-  T wrapRotate(double angle, {Alignment alignment = Alignment.center}) {
+  T wrapRotate(double radians, {Alignment alignment = Alignment.center}) {
     return wrap(
-      WidgetModifierConfig.transform(
-        transform: Matrix4.rotationZ(angle),
-        alignment: alignment,
-      ),
+      WidgetModifierConfig.rotate(radians: radians, alignment: alignment),
     );
   }
 
   /// Wraps the widget with a translate transform modifier.
-  T wrapTranslate(double x, double y, [double z = 0.0]) {
-    return wrap(
-      WidgetModifierConfig.transform(transform: Matrix4.translationValues(x, y, z)),
-    );
+  T wrapTranslate({required double x, required double y}) {
+    return wrap(WidgetModifierConfig.translate(x: x, y: y));
   }
 
   /// Wraps the widget with a transform modifier.
   T wrapTransform(Matrix4 transform, {Alignment alignment = Alignment.center}) {
     return wrap(
-      WidgetModifierConfig.transform(transform: transform, alignment: alignment),
+      WidgetModifierConfig.transform(
+        transform: transform,
+        alignment: alignment,
+      ),
     );
   }
 
@@ -179,7 +201,9 @@ mixin WidgetModifierStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S
   T wrapMouseCursor(MouseCursor cursor) {
     // Note: MouseCursorModifierMix needs to be wrapped in WidgetModifierConfig
     return wrap(
-      WidgetModifierConfig.modifier(MouseCursorModifierMix(mouseCursor: cursor)),
+      WidgetModifierConfig.modifier(
+        MouseCursorModifierMix(mouseCursor: cursor),
+      ),
     );
   }
 
