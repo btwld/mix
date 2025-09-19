@@ -1,28 +1,30 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import 'testing_utils.dart';
-
-testOverrideModifiersOrder(
+Future<void> testOverrideModifiersOrder(
   WidgetTester tester, {
   required Widget Function(Style, List<Type>) widgetBuilder,
 }) async {
-  final style = Style(
-    const VisibilityModifierSpecAttribute(visible: true),
-    const OpacityModifierSpecAttribute(opacity: 1),
-    const TransformModifierSpecAttribute(),
-    const AspectRatioModifierSpecAttribute(aspectRatio: 2),
-    const ClipOvalModifierSpecAttribute(),
-    const PaddingModifierSpecAttribute(
-        padding: EdgeInsetsDirectionalDto(top: 10)),
+  final style = BoxStyler().modifier(
+    WidgetModifierConfig(
+      modifiers: [
+        VisibilityModifierMix(visible: true),
+        OpacityModifierMix(opacity: 1.0),
+        TransformModifierMix(),
+        AspectRatioModifierMix(aspectRatio: 2.0),
+        AlignModifierMix(alignment: Alignment.center),
+        PaddingModifierMix(padding: EdgeInsetsDirectionalMix(top: 10.0)),
+      ],
+    ),
   );
+
   const orderOfModifiersOnlySpecs = [
-    ClipOvalModifierSpec,
-    AspectRatioModifierSpec,
-    TransformModifierSpec,
-    OpacityModifierSpec,
-    VisibilityModifierSpec,
+    AlignModifier,
+    AspectRatioModifier,
+    TransformModifier,
+    OpacityModifier,
+    VisibilityModifier,
   ];
 
   // JUST SPECS
@@ -35,11 +37,11 @@ testOverrideModifiersOrder(
 
   // SPECS + ATTRIBUTES
   const orderOfModifiersSpecsAndAttributes = [
-    ClipOvalModifierSpec,
-    AspectRatioModifierSpecAttribute,
-    TransformModifierSpecAttribute,
-    OpacityModifierSpec,
-    VisibilityModifierSpecAttribute,
+    AlignModifier,
+    AspectRatioModifierMix,
+    TransformModifierMix,
+    OpacityModifier,
+    VisibilityModifierMix,
   ];
   await verifyDescendants(
     widgetBuilder(style, orderOfModifiersSpecsAndAttributes),
@@ -50,11 +52,11 @@ testOverrideModifiersOrder(
 
   // JUST ATTRIBUTES
   const orderOfModifiersOnlyAttributes = [
-    ClipOvalModifierSpecAttribute,
-    AspectRatioModifierSpecAttribute,
-    TransformModifierSpecAttribute,
-    OpacityModifierSpecAttribute,
-    VisibilityModifierSpecAttribute,
+    AlignModifierMix,
+    AspectRatioModifierMix,
+    TransformModifierMix,
+    OpacityModifierMix,
+    VisibilityModifierMix,
   ];
 
   await verifyDescendants(
@@ -71,25 +73,20 @@ Future<void> verifyDescendants(
   List<Type> orderOfModifiers,
   WidgetTester tester,
 ) async {
-  await tester.pumpMaterialApp(
-    widget,
-  );
+  await tester.pumpWidget(MaterialApp(home: Scaffold(body: widget)));
 
   expect(find.byType(widget.runtimeType), findsOneWidget);
 
   expect(
     find.descendant(
       of: find.byType(widget.runtimeType),
-      matching: find.byType(ClipOval),
+      matching: find.byType(Align),
     ),
     findsOneWidget,
   );
 
   expect(
-    find.descendant(
-      of: find.byType(ClipOval),
-      matching: find.byType(AspectRatio),
-    ),
+    find.descendant(of: find.byType(Align), matching: find.byType(AspectRatio)),
     findsOneWidget,
   );
 
@@ -102,18 +99,12 @@ Future<void> verifyDescendants(
   );
 
   expect(
-    find.descendant(
-      of: find.byType(Transform),
-      matching: find.byType(Opacity),
-    ),
+    find.descendant(of: find.byType(Transform), matching: find.byType(Opacity)),
     findsOneWidget,
   );
 
   expect(
-    find.descendant(
-      of: find.byType(Opacity),
-      matching: find.byType(Padding),
-    ),
+    find.descendant(of: find.byType(Opacity), matching: find.byType(Padding)),
     findsOneWidget,
   );
 }

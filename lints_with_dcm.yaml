@@ -1,5 +1,9 @@
 include: lints.yaml
 
+analyzer:
+  enable-experiment:
+    - dot-shorthands
+
 dart_code_metrics:
   extends:
     - package:dart_code_metrics_presets/recommended.yaml
@@ -13,6 +17,8 @@ dart_code_metrics:
     newline-before-return: true
     avoid-importing-entrypoint-exports:
       only-in-src: true
+    avoid-duplicate-constant-values: false
+    no-equal-switch-expression-cases: false
     prefer-match-file-name: false
     avoid-suspicious-super-overrides: false
     prefer-overriding-parent-equality: false

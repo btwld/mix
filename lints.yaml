@@ -2,6 +2,8 @@ include: package:flutter_lints/flutter.yaml
 
 analyzer:
   exclude: 
+  enable-experiment:
+    - dot-shorthands
 linter:
   rules:
     # TODO: Turn this to true when all public apis are documented 

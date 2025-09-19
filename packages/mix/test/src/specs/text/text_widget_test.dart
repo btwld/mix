@@ -2,245 +2,121 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../../helpers/testing_utils.dart';
-
 void main() {
-  testWidgets(
-    'StyledText should apply modifiers only once',
-    (tester) async {
-      await tester.pumpMaterialApp(
-        StyledText(
-          'test',
-          style: Style(
-            $box.height(100),
-            $box.width(100),
-            $with.align(),
+  group('Default parameters for StyledText matches Text', () {
+    testWidgets('should have the same default parameters', (tester) async {
+      const testText = 'Hello World';
+      const styledTextKey = Key('styled-text');
+      const textKey = Key('text');
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Column(
+              children: [
+                StyledText(testText, key: styledTextKey),
+                Text(testText, key: textKey),
+              ],
+            ),
           ),
         ),
       );
 
-      expect(find.byType(Align), findsOneWidget);
-    },
-  );
+      /// Get widgets by key
+      final styledTextFinder = find.byKey(styledTextKey);
+      final textFinder = find.byKey(textKey);
 
-  testWidgets('TextSpec properties should match Text properties',
-      (WidgetTester tester) async {
-    const textSpec = TextSpec(
-      style: TextStyle(fontSize: 20, color: Colors.red),
-      strutStyle: StrutStyle(fontSize: 16),
-      textAlign: TextAlign.center,
-      textDirection: TextDirection.rtl,
-      softWrap: false,
-      overflow: TextOverflow.ellipsis,
-      textScaler: TextScaler.linear(1.5),
-      maxLines: 3,
-      textWidthBasis: TextWidthBasis.longestLine,
-      textHeightBehavior: TextHeightBehavior(applyHeightToFirstAscent: false),
-    );
+      /// Find the Text widget inside the StyledText widget
+      final styledText = tester.widget<Text>(
+        find.descendant(of: styledTextFinder, matching: find.byType(Text)),
+      );
+      final text = tester.widget<Text>(textFinder);
 
-    const textKey = Key('text');
-    final text = Text(
-      'Sample Text',
-      key: textKey,
-      style: textSpec.style,
-      strutStyle: textSpec.strutStyle,
-      textAlign: textSpec.textAlign,
-      textDirection: textSpec.textDirection,
-      softWrap: textSpec.softWrap,
-      overflow: textSpec.overflow,
-      textScaler: textSpec.textScaler,
-      maxLines: textSpec.maxLines,
-      textWidthBasis: textSpec.textWidthBasis,
-      textHeightBehavior: textSpec.textHeightBehavior,
-    );
-    const mixedTextKey = Key('mixed_text');
-    const mixedText = TextSpecWidget(
-      'Mixed Text',
-      key: mixedTextKey,
-      spec: textSpec,
-    );
-
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: Column(
-            children: [text, mixedText],
-          ),
-        ),
-      ),
-    );
-
-    final textFinder = find.byKey(textKey);
-    final textWidget = tester.widget<Text>(textFinder);
-    expect(textFinder, findsOneWidget);
-
-    final mixedTextFinder = find.byKey(mixedTextKey);
-    expect(mixedTextFinder, findsOneWidget);
-
-    final mixedTextWidget = tester.widget<Text>(find.descendant(
-      of: mixedTextFinder,
-      matching: find.byType(Text),
-    ));
-
-    expect(textWidget.data, 'Sample Text');
-    expect(mixedTextWidget.data, 'Mixed Text');
-    expect(textWidget.style, mixedTextWidget.style);
-    expect(textWidget.strutStyle, mixedTextWidget.strutStyle);
-    expect(textWidget.textAlign, mixedTextWidget.textAlign);
-    expect(textWidget.textDirection, mixedTextWidget.textDirection);
-    expect(textWidget.softWrap, mixedTextWidget.softWrap);
-    expect(textWidget.overflow, mixedTextWidget.overflow);
-    expect(textWidget.textScaler, mixedTextWidget.textScaler);
-    expect(textWidget.maxLines, mixedTextWidget.maxLines);
-    expect(textWidget.textWidthBasis, mixedTextWidget.textWidthBasis);
-    expect(textWidget.textHeightBehavior, mixedTextWidget.textHeightBehavior);
-  });
-
-  testWidgets('StyledText should apply TextSpec properties', (tester) async {
-    await tester.pumpMaterialApp(
-      StyledText(
-        'Hello, World!',
-        style: Style(
-          $text.style.color(Colors.red),
-          $text.style.fontSize(24.0),
-        ),
-      ),
-    );
-
-    final textFinder = find.byType(Text);
-    expect(textFinder, findsOneWidget);
-
-    final text = tester.widget<Text>(textFinder);
-    expect(text.style?.color, Colors.red);
-    expect(text.style?.fontSize, 24.0);
-  });
-
-  testWidgets('StyledText should handle inherit property', (tester) async {
-    await tester.pumpMaterialApp(
-      StyledText(
-        'Hello, World!',
-        style: Style($text.style.color(Colors.red)),
-        inherit: false,
-      ),
-    );
-
-    final textFinder = find.byType(Text);
-    expect(textFinder, findsOneWidget);
-
-    final text = tester.widget<Text>(textFinder);
-    expect(text.style?.color, Colors.red);
-  });
-
-  testWidgets('StyledText should handle locale property', (tester) async {
-    await tester.pumpMaterialApp(
-      StyledText(
-        'Hello, World!',
-        style: Style($text.style.color(Colors.red)),
-        locale: const Locale('en', 'US'),
-      ),
-    );
-
-    final textFinder = find.byType(Text);
-    expect(textFinder, findsOneWidget);
-
-    final text = tester.widget<Text>(textFinder);
-    expect(text.locale, const Locale('en', 'US'));
-  });
-
-  testWidgets('TextSpecWidget should handle semanticsLabel and locale',
-      (tester) async {
-    const spec = TextSpec(style: TextStyle(color: Colors.blue));
-
-    await tester.pumpMaterialApp(
-      const TextSpecWidget(
-        'Hello, World!',
-        spec: spec,
-        semanticsLabel: 'Custom Text',
-        locale: Locale('fr', 'FR'),
-      ),
-    );
-
-    final textFinder = find.byType(Text);
-    expect(textFinder, findsOneWidget);
-
-    final text = tester.widget<Text>(textFinder);
-    expect(text.semanticsLabel, 'Custom Text');
-    expect(text.locale, const Locale('fr', 'FR'));
-  });
-
-  testWidgets('TextSpecWidget should apply TextSpec.directive', (tester) async {
-    final spec = TextSpec(directive: TextDirective((v) => v.toUpperCase()));
-
-    await tester.pumpMaterialApp(
-      TextSpecWidget(
-        'Hello, World!',
-        spec: spec,
-      ),
-    );
-
-    final textFinder = find.text('HELLO, WORLD!');
-    expect(textFinder, findsOneWidget);
-  });
-
-  testWidgets('AnimatedTextSpecWidget should animate TextSpec properties',
-      (tester) async {
-    const spec1 = TextSpec(style: TextStyle(color: Colors.red, fontSize: 16.0));
-    const spec2 =
-        TextSpec(style: TextStyle(color: Colors.blue, fontSize: 24.0));
-
-    await tester.pumpMaterialApp(
-      const AnimatedTextSpecWidget(
-        'Hello, World!',
-        spec: spec1,
-        duration: Duration(milliseconds: 500),
-      ),
-    );
-
-    expect(find.byType(TextSpecWidget), findsOneWidget);
-    Text text = tester.widget<Text>(find.byType(Text));
-    expect(text.style?.color, Colors.red);
-    expect(text.style?.fontSize, 16.0);
-
-    await tester.pumpMaterialApp(
-      const AnimatedTextSpecWidget(
-        'Hello, World!',
-        spec: spec2,
-        duration: Duration(milliseconds: 500),
-      ),
-    );
-    await tester.pump(const Duration(milliseconds: 250));
-
-    expect(find.byType(TextSpecWidget), findsOneWidget);
-    text = tester.widget<Text>(find.byType(Text));
-    expect(text.style?.color, Color.lerp(Colors.red, Colors.blue, 0.5));
-    expect(text.style?.fontSize, 20.0);
-
-    await tester.pump(const Duration(milliseconds: 250));
-
-    expect(find.byType(TextSpecWidget), findsOneWidget);
-    text = tester.widget<Text>(find.byType(Text));
-    expect(text.style?.color, Colors.blue);
-    expect(text.style?.fontSize, 24.0);
-  });
-
-  testWidgets('AnimatedTextSpecWidget should handle semanticsLabel and locale',
-      (tester) async {
-    const spec = TextSpec(style: TextStyle(color: Colors.blue));
-
-    await tester.pumpMaterialApp(
-      const AnimatedTextSpecWidget(
-        'Hello, World!',
-        spec: spec,
-        duration: Duration(milliseconds: 500),
-        semanticsLabel: 'Custom Animated Text',
-        locale: Locale('es', 'ES'),
-      ),
-    );
-
-    expect(find.byType(TextSpecWidget), findsOneWidget);
-    final textSpecWidget =
-        tester.widget<TextSpecWidget>(find.byType(TextSpecWidget));
-    expect(textSpecWidget.semanticsLabel, 'Custom Animated Text');
-    expect(textSpecWidget.locale, const Locale('es', 'ES'));
+      /// Compare the default parameters with detailed error messages
+      expect(
+        styledText.style,
+        text.style,
+        reason:
+            'StyledText style (${styledText.style}) should match Text style (${text.style})',
+      );
+      expect(
+        styledText.strutStyle,
+        text.strutStyle,
+        reason:
+            'StyledText strutStyle (${styledText.strutStyle}) should match Text strutStyle (${text.strutStyle})',
+      );
+      expect(
+        styledText.textAlign,
+        text.textAlign,
+        reason:
+            'StyledText textAlign (${styledText.textAlign}) should match Text textAlign (${text.textAlign})',
+      );
+      expect(
+        styledText.textDirection,
+        text.textDirection,
+        reason:
+            'StyledText textDirection (${styledText.textDirection}) should match Text textDirection (${text.textDirection})',
+      );
+      expect(
+        styledText.locale,
+        text.locale,
+        reason:
+            'StyledText locale (${styledText.locale}) should match Text locale (${text.locale})',
+      );
+      expect(
+        styledText.softWrap,
+        text.softWrap,
+        reason:
+            'StyledText softWrap (${styledText.softWrap}) should match Text softWrap (${text.softWrap})',
+      );
+      expect(
+        styledText.overflow,
+        text.overflow,
+        reason:
+            'StyledText overflow (${styledText.overflow}) should match Text overflow (${text.overflow})',
+      );
+      expect(
+        styledText.textScaler,
+        text.textScaler,
+        reason:
+            'StyledText textScaler (${styledText.textScaler}) should match Text textScaler (${text.textScaler})',
+      );
+      expect(
+        styledText.maxLines,
+        text.maxLines,
+        reason:
+            'StyledText maxLines (${styledText.maxLines}) should match Text maxLines (${text.maxLines})',
+      );
+      expect(
+        styledText.semanticsLabel,
+        text.semanticsLabel,
+        reason:
+            'StyledText semanticsLabel (${styledText.semanticsLabel}) should match Text semanticsLabel (${text.semanticsLabel})',
+      );
+      expect(
+        styledText.textWidthBasis,
+        text.textWidthBasis,
+        reason:
+            'StyledText textWidthBasis (${styledText.textWidthBasis}) should match Text textWidthBasis (${text.textWidthBasis})',
+      );
+      expect(
+        styledText.textHeightBehavior,
+        text.textHeightBehavior,
+        reason:
+            'StyledText textHeightBehavior (${styledText.textHeightBehavior}) should match Text textHeightBehavior (${text.textHeightBehavior})',
+      );
+      expect(
+        styledText.selectionColor,
+        text.selectionColor,
+        reason:
+            'StyledText selectionColor (${styledText.selectionColor}) should match Text selectionColor (${text.selectionColor})',
+      );
+      expect(
+        styledText.data,
+        text.data,
+        reason:
+            'StyledText data (${styledText.data}) should match Text data (${text.data})',
+      );
+    });
   });
 }

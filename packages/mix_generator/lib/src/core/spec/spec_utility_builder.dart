@@ -11,7 +11,7 @@ class SpecUtilityBuilder implements CodeBuilder {
   String build() {
     final specName = metadata.name;
     final attributeName = '${specName}Attribute';
-    final utilityName = '${specName}Utility';
+    final utilityName = '${specName}MutableStyler';
 
     // Generate utility fields using UtilityCodeGenerator:
     final generatedFields = UtilityCodeGenerator.generateUtilityFields(

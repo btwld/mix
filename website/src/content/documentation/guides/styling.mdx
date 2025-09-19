@@ -1,0 +1,62 @@
+
+# Styling with Mix
+
+Mix enhances Flutter development with a functional styling approach, focusing on separating visual semantics from business logic for improved readability and maintainability. Its emphasis on concise style declarations simplifies the workflow, allowing the creation of complex styles from simple building blocks.
+
+This method fosters modularity, reusability, and flexibility in styling, streamlining the process of defining and applying styles to widgets.
+
+## Understanding Style and Styler
+
+In Mix, `Style` is an abstract class that defines the contract for visual semantics outside of widget builds. Classes that extend `Style` typically follow the naming convention of ending with `Styler` (for example, `BoxStyler`, `TextStyler`). These styler classes act as declarative style builders, resolving with `BuildContext` to access theme data, media queries, and other contextual information—enabling adaptive, context-aware styling for your app.
+
+By using stylers, you separate presentation logic from your widget tree, making your codebase more maintainable and your styles more reusable.
+
+## Fluent and Familiar API
+
+Mix provides a chainable builder API that mirrors Flutter's naming conventions and behavior, making styles predictable and easy to read for Flutter developers:
+
+```dart
+final style = BoxStyler()
+  .width(240)
+  .height(100)
+  .color(Colors.blue)
+  .borderRounded(12);
+```
+
+This familiar approach reduces the learning curve and makes your styling code feel natural within the Flutter ecosystem.
+
+## Style Composition and Override
+
+One of Mix's most powerful features is the ability to build new styles on top of existing ones. This composition pattern promotes reusability and maintains consistency across your application:
+
+```dart
+final base = BoxStyler()
+    .paddingX(16)
+    .paddingY(8)
+    .borderRounded(8)
+    .color(Colors.black)
+    .wrapDefaultTextStyle(
+      TextStyleMix()
+        .color(Colors.deepOrange)
+        .fontWeight(FontWeight.bold),
+    );
+
+final solid = base.color(Colors.blue);
+
+final soft = base
+    .color(Colors.blue.shade100)
+    .wrapDefaultTextStyle(TextStyleMix().color(Colors.blue));
+```
+
+**Order Matters**: The sequence in which you chain styling attributes directly affects the final result. Attributes are merged in order, so later attributes will override earlier ones when there are conflicts.
+
+## Dynamic and Context-Aware Styling
+
+Mix styles can adapt to user interactions and context changes using variants. This enables responsive designs that react to hover states, theme changes, and other contextual factors:
+
+```dart
+final button = BoxStyler()
+  .color(Colors.blue)
+  .onHovered(BoxStyler().color(Colors.blue.shade700))
+  .onDark(BoxStyler().color(Colors.blue.shade200));
+```

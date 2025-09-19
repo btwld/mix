@@ -52,13 +52,11 @@ static $className of(BuildContext context) {
     final mixinName = '_\$$className';
 
     // Determine the base spec type
-    final specType = metadata.isWidgetModifier
-        ? 'WidgetModifierSpec<$className>'
-        : 'Spec<$className>';
+    // Since modifiers now extend Modifier, not a separate spec
+    final specType = 'Spec<$className>';
 
-    // Generate static methods for regular specs
-    final staticMethods =
-        metadata.isWidgetModifier ? '' : _generateStaticMethods();
+    // Generate static methods for all specs
+    final staticMethods = _generateStaticMethods();
 
     // Check which methods need to be generated
     final hasCopyWith = metadata.hasMethod('copyWith');

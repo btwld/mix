@@ -1,45 +1,52 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mix_annotations/mix_annotations.dart';
 
-import '../../attributes/animated/animated_data.dart';
-import '../../attributes/animated/animated_data_dto.dart';
-import '../../attributes/animated/animated_util.dart';
-import '../../attributes/color/color_dto.dart';
-import '../../attributes/color/color_util.dart';
-import '../../attributes/enum/enum_util.dart';
-import '../../attributes/modifiers/widget_modifiers_config.dart';
-import '../../attributes/modifiers/widget_modifiers_config_dto.dart';
-import '../../attributes/modifiers/widget_modifiers_util.dart';
-import '../../attributes/shadow/shadow_dto.dart';
-import '../../attributes/shadow/shadow_util.dart';
-import '../../core/computed_style/computed_style.dart';
-import '../../core/factory/mix_context.dart';
-import '../../core/factory/style_mix.dart';
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
-import '../../core/utility.dart';
-import 'icon_widget.dart';
 
-part 'icon_spec.g.dart';
-
-@MixableSpec()
-final class IconSpec extends Spec<IconSpec> with _$IconSpec, Diagnosticable {
+/// Specification for icon styling properties.
+///
+/// Provides comprehensive icon styling including color, size, weight, optical properties,
+/// text direction, scaling behavior, and shadow effects.
+final class IconSpec extends Spec<IconSpec> with Diagnosticable {
+  /// The color to use when drawing the icon.
   final Color? color;
+
+  /// The size of the icon in logical pixels.
   final double? size;
+
+  /// The font weight variant (100-900) for supported icon fonts.
   final double? weight;
+
+  /// The grade variant (-25 to 200) for supported icon fonts.
   final double? grade;
+
+  /// The optical size variant (20-48) for supported icon fonts.
   final double? opticalSize;
+
+  /// The text direction to use for rendering the icon.
   final TextDirection? textDirection;
+
+  /// Whether to scale the icon according to the textScaleFactor.
   final bool? applyTextScaling;
 
-  // TODO: add shadow utility
+  /// A list of shadows to paint behind the icon.
   final List<Shadow>? shadows;
+
+  /// The fill variant (0.0-1.0) for supported icon fonts.
   final double? fill;
 
-  static const of = _$IconSpec.of;
+  /// Semantic description for accessibility.
+  final String? semanticsLabel;
 
-  static const from = _$IconSpec.from;
+  /// The opacity to apply to the icon.
+  final double? opacity;
+
+  /// The blend mode to apply when drawing the icon.
+  final BlendMode? blendMode;
+
+  /// The icon data to display.
+  final IconData? icon;
 
   const IconSpec({
     this.color,
@@ -51,42 +58,107 @@ final class IconSpec extends Spec<IconSpec> with _$IconSpec, Diagnosticable {
     this.textDirection,
     this.applyTextScaling,
     this.fill,
-    super.animated,
-    super.modifiers,
+    this.semanticsLabel,
+    this.opacity,
+    this.blendMode,
+    this.icon,
   });
 
-  Widget call(
-    IconData? icon, {
-    String? semanticLabel,
-    List<Type> orderOfModifiers = const [],
+  @override
+  IconSpec copyWith({
+    Color? color,
+    double? size,
+    double? weight,
+    double? grade,
+    double? opticalSize,
+    List<Shadow>? shadows,
     TextDirection? textDirection,
+    bool? applyTextScaling,
+    double? fill,
+    String? semanticsLabel,
+    double? opacity,
+    BlendMode? blendMode,
+    IconData? icon,
   }) {
-    return isAnimated
-        ? AnimatedIconSpecWidget(
-            icon,
-            spec: this,
-            semanticLabel: semanticLabel,
-            textDirection: textDirection,
-            curve: animated!.curve,
-            duration: animated!.duration,
-            orderOfModifiers: orderOfModifiers,
-          )
-        : IconSpecWidget(
-            icon,
-            spec: this,
-            semanticLabel: semanticLabel,
-            textDirection: textDirection,
-            orderOfModifiers: orderOfModifiers,
-          );
+    return IconSpec(
+      color: color ?? this.color,
+      size: size ?? this.size,
+      weight: weight ?? this.weight,
+      grade: grade ?? this.grade,
+      opticalSize: opticalSize ?? this.opticalSize,
+      shadows: shadows ?? this.shadows,
+      textDirection: textDirection ?? this.textDirection,
+      applyTextScaling: applyTextScaling ?? this.applyTextScaling,
+      fill: fill ?? this.fill,
+      semanticsLabel: semanticsLabel ?? this.semanticsLabel,
+      opacity: opacity ?? this.opacity,
+      blendMode: blendMode ?? this.blendMode,
+      icon: icon ?? this.icon,
+    );
+  }
+
+  @override
+  IconSpec lerp(IconSpec? other, double t) {
+    return IconSpec(
+      color: MixOps.lerp(color, other?.color, t),
+      size: MixOps.lerp(size, other?.size, t),
+      weight: MixOps.lerp(weight, other?.weight, t),
+      grade: MixOps.lerp(grade, other?.grade, t),
+      opticalSize: MixOps.lerp(opticalSize, other?.opticalSize, t),
+      shadows: MixOps.lerp(shadows, other?.shadows, t),
+      textDirection: MixOps.lerpSnap(textDirection, other?.textDirection, t),
+      applyTextScaling: MixOps.lerpSnap(
+        applyTextScaling,
+        other?.applyTextScaling,
+        t,
+      ),
+      fill: MixOps.lerp(fill, other?.fill, t),
+      semanticsLabel: MixOps.lerpSnap(semanticsLabel, other?.semanticsLabel, t),
+      opacity: MixOps.lerp(opacity, other?.opacity, t),
+      blendMode: MixOps.lerpSnap(blendMode, other?.blendMode, t),
+      icon: MixOps.lerpSnap(icon, other?.icon, t),
+    );
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    _debugFillProperties(properties);
+    properties
+      ..add(ColorProperty('color', color))
+      ..add(DoubleProperty('size', size))
+      ..add(DoubleProperty('weight', weight))
+      ..add(DoubleProperty('grade', grade))
+      ..add(DoubleProperty('opticalSize', opticalSize))
+      ..add(IterableProperty<Shadow>('shadows', shadows))
+      ..add(EnumProperty<TextDirection>('textDirection', textDirection))
+      ..add(
+        FlagProperty(
+          'applyTextScaling',
+          value: applyTextScaling,
+          ifTrue: 'scales with text',
+        ),
+      )
+      ..add(DoubleProperty('fill', fill))
+      ..add(StringProperty('semanticsLabel', semanticsLabel))
+      ..add(DoubleProperty('opacity', opacity))
+      ..add(EnumProperty<BlendMode>('blendMode', blendMode))
+      ..add(DiagnosticsProperty('icon', icon));
   }
-}
 
-extension IconSpecUtilityExt<T extends SpecAttribute> on IconSpecUtility<T> {
-  ShadowUtility get shadow => ShadowUtility((v) => only(shadows: [v]));
+  @override
+  List<Object?> get props => [
+    color,
+    size,
+    weight,
+    grade,
+    opticalSize,
+    shadows,
+    textDirection,
+    applyTextScaling,
+    fill,
+    semanticsLabel,
+    opacity,
+    blendMode,
+    icon,
+  ];
 }

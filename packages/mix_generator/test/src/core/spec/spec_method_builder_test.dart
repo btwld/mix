@@ -72,7 +72,7 @@ void main() {
         expect(
           result,
           contains(
-              'itemsList: MixHelpers.mergeList(itemsList, other.itemsList),'),
+              'itemsList: MixOps.mergeList(itemsList, other.itemsList),'),
         );
 
         // Verify the merge method contains the simple field merge pattern

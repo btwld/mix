@@ -1,0 +1,49 @@
+import '../../../helpers.dart';
+import 'package:flutter/material.dart';
+import 'package:mix/mix.dart';
+
+void main() {
+  runMixApp(Example());
+}
+
+class Example extends StatelessWidget {
+  const Example({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final flexStyle = StackBoxStyler(
+      constraints: BoxConstraintsMix.height(100).width(100),
+      stackAlignment: Alignment.bottomCenter,
+    );
+
+    final boxStyle = BoxStyler()
+        .color(Colors.deepOrange)
+        .height(100)
+        .width(100);
+
+    return ZBox(
+      style: flexStyle,
+      children: [
+        Box(style: boxStyle),
+        Box(
+          style: BoxStyler().color(Colors.grey.shade300).height(50).width(100),
+        ),
+        Box(
+          style: BoxStyler()
+              .color(Colors.black)
+              .height(15)
+              .width(100)
+              .wrapAlign(Alignment.center),
+        ),
+        Box(
+          style: BoxStyler()
+              .color(Colors.grey.shade100)
+              .height(100)
+              .width(100)
+              .borderAll(color: Colors.black, width: 20)
+              .wrapScale(x: 0.50, y: 0.50),
+        ),
+      ],
+    );
+  }
+}

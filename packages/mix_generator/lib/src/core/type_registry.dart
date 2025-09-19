@@ -153,6 +153,21 @@ class TypeRegistry {
     if (TypeUtils.isResolvable(type)) {
       final dtoName = type.element!.name!;
 
+      // Special handling for Mixable<T> types
+      if (dtoName == 'Mixable' &&
+          type is InterfaceType &&
+          type.typeArguments.isNotEmpty) {
+        final innerType = type.typeArguments.first;
+        final innerTypeString = innerType.getTypeAsString();
+
+        // Look for utility for the inner type (e.g., Color for Mixable<Color>)
+        for (final entry in utilities.entries) {
+          if (entry.value == innerTypeString) {
+            return entry.key;
+          }
+        }
+      }
+
       // Handle DTOs by removing the Dto suffix for utility lookup
       if (dtoName.endsWith('Dto')) {
         final baseName = dtoName.substring(0, dtoName.length - 3);
@@ -227,7 +242,25 @@ class TypeRegistry {
 
     // Special handling for DTO types
     if (TypeUtils.isResolvable(type)) {
-      return type.element!.name!;
+      final typeName = type.element!.name!;
+
+      // Special handling for Mixable<T> - treat it as a resolvable type
+      if (typeName == 'Mixable') {
+        // Return the typedef name if it's known (e.g., ColorDto for Mixable<Color>)
+        if (type is InterfaceType && type.typeArguments.isNotEmpty) {
+          final innerType = type.typeArguments.first;
+          final innerTypeString = innerType.getTypeAsString();
+
+          // Check if we have a typedef registered for this Mixable<T>
+          for (final entry in resolvables.entries) {
+            if (entry.value == innerTypeString && entry.key.endsWith('Dto')) {
+              return entry.key;
+            }
+          }
+        }
+      }
+
+      return typeName;
     }
 
     // Check for a direct DTO mapping
@@ -306,13 +339,7 @@ class TypeReference {
 }
 
 /// List of utility types that should be ignored in certain contexts
-final ignoredUtilities = [
-  'SpacingSideUtility',
-  'FontFamilyUtility',
-  'GapUtility',
-  'FontSizeUtility',
-  'StrokeAlignUtility',
-];
+final ignoredUtilities = ['SpacingSideUtility', 'FontSizeUtility'];
 
 /// Map of resolvable class names to their corresponding Flutter type names
 final resolvables = {
@@ -321,12 +348,11 @@ final resolvables = {
   'TextSpecAttribute': 'TextSpec',
   'FlexSpecAttribute': 'FlexSpec',
   'BoxDecorationDto': 'BoxDecoration',
-  'AnimatedDataDto': 'AnimatedData',
+  'AnimationConfigDto': 'AnimationConfig',
   'BoxBorderDto': 'BoxBorder',
   'BorderRadiusGeometryDto': 'BorderRadiusGeometry',
   'BorderSideDto': 'BorderSide',
   'BoxShadowDto': 'BoxShadow',
-  'ColorDto': 'Color',
   'ConstraintsDto': 'Constraints',
   'DecorationDto': 'Decoration',
   'DecorationImageDto': 'DecorationImage',
@@ -342,81 +368,38 @@ final resolvables = {
   'TextDirectiveDto': 'TextDirective',
   'TextHeightBehaviorDto': 'TextHeightBehavior',
   'TextStyleDto': 'TextStyle',
-  'WidgetModifiersConfigDto': 'WidgetModifiersConfig',
-  'WidgetModifiersDataDto': 'WidgetModifiersData',
+  'ModifiersConfigDto': 'ModifiersConfig',
+  'ModifiersDataDto': 'ModifiersData',
   'BorderDto': 'Border',
   'BorderRadiusDto': 'BorderRadius',
   'EdgeInsetsDto': 'EdgeInsets',
   'BoxConstraintsDto': 'BoxConstraints',
+  // Mixable<T> typedef entries
+  'ColorDto': 'Color',
+  'RadiusDto': 'Radius',
 };
 
 /// Map of utility class names to their corresponding value types
 final utilities = {
-  'AlignmentUtility': 'Alignment',
-  'AlignmentDirectionalUtility': 'AlignmentDirectional',
-  'AlignmentGeometryUtility': 'AlignmentGeometry',
-  'AnimatedUtility': 'AnimatedData',
-  'AxisUtility': 'Axis',
-  'BoolUtility': 'bool',
-  'BlendModeUtility': 'BlendMode',
-  'BorderStyleUtility': 'BorderStyle',
+  'AnimatedUtility': 'AnimationConfig',
   'BoxConstraintsUtility': 'BoxConstraints',
-  'BoxFitUtility': 'BoxFit',
   'BoxDecorationUtility': 'BoxDecoration',
   'BoxShadowListUtility': 'List<BoxShadow>',
-  'BoxShapeUtility': 'BoxShape',
-  'ClipUtility': 'Clip',
   'ColorUtility': 'Color',
   'ColorListUtility': 'List<ColorDto>',
   'ConstraintsUtility': 'Constraints',
-  'CrossAxisAlignmentUtility': 'CrossAxisAlignment',
-  'CurveUtility': 'Curve',
   'DecorationUtility': 'Decoration',
-  'DoubleUtility': 'double',
-  'DurationUtility': 'Duration',
   'EdgeInsetsGeometryUtility': 'EdgeInsetsGeometry',
-  'FlexFitUtility': 'FlexFit',
-  'FontFeatureUtility': 'FontFeature',
-  'FontStyleUtility': 'FontStyle',
-  'FontWeightUtility': 'FontWeight',
-  'GapUtility': 'SpacingSide',
   'GradientUtility': 'Gradient',
-  'GradientTransformUtility': 'GradientTransform',
-  'ImageProviderUtility': 'ImageProvider<Object>',
-  'ImageRepeatUtility': 'ImageRepeat',
-  'IntUtility': 'int',
   'ListUtility': 'List',
-  'MainAxisAlignmentUtility': 'MainAxisAlignment',
-  'MainAxisSizeUtility': 'MainAxisSize',
-  'Matrix4Utility': 'Matrix4',
-  'OffsetUtility': 'Offset',
-  'RadiusUtility': 'Radius',
-  'RectUtility': 'Rect',
   'ShadowListUtility': 'List<ShadowDto>',
-  'SpecModifierUtility': 'WidgetModifiersConfig',
-  'StackFitUtility': 'StackFit',
+  'SpecModifierUtility': 'ModifiersConfig',
   'ShapeBorderUtility': 'ShapeBorder',
   'SpacingUtility': 'EdgeInsetsGeometry',
   'EdgeInsetsUtility': 'EdgeInsets',
-  'StringUtility': 'String',
   'TableBorderUtility': 'TableBorder',
-  'TableCellVerticalAlignmentUtility': 'TableCellVerticalAlignment',
-  'TableColumnWidthUtility': 'TableColumnWidth',
-  'TextAlignUtility': 'TextAlign',
-  'TextBaselineUtility': 'TextBaseline',
-  'TextDecorationUtility': 'TextDecoration',
-  'TextDecorationStyleUtility': 'TextDecorationStyle',
-  'TextDirectionUtility': 'TextDirection',
   'TextDirectiveUtility': 'TextDirective',
-  'TextLeadingDistributionUtility': 'TextLeadingDistribution',
-  'TextOverflowUtility': 'TextOverflow',
-  'TextScalerUtility': 'TextScaler',
-  'TextWidthBasisUtility': 'TextWidthBasis',
-  'TileModeUtility': 'TileMode',
-  'VerticalDirectionUtility': 'VerticalDirection',
-  'WidgetModifiersUtility': 'WidgetModifiersData',
-  'WrapAlignmentUtility': 'WrapAlignment',
-  'FilterQualityUtility': 'FilterQuality',
+  'ModifiersUtility': 'ModifiersData',
   'BorderRadiusGeometryUtility': 'BorderRadiusGeometry',
   'BorderSideUtility': 'BorderSide',
   'BoxBorderUtility': 'BoxBorder',
@@ -425,7 +408,6 @@ final utilities = {
   'StrutStyleUtility': 'StrutStyle',
   'TextHeightBehaviorUtility': 'TextHeightBehavior',
   'TextStyleUtility': 'TextStyle',
-  'PaintUtility': 'Paint',
   'ScrollPhysicsUtility': 'ScrollPhysics',
   'MouseCursorUtility': 'MouseCursor',
 };

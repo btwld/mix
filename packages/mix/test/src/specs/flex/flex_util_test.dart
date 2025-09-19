@@ -5,223 +5,394 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-  group('FlexUtility', () {
-    final flexUtility = FlexSpecUtility(MixUtility.selfBuilder);
-    test('call() returns correct instance', () {
-      final flex = flexUtility.only(
-        direction: Axis.horizontal,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-      );
+  group('FlexMutableStyler', () {
+    late FlexMutableStyler util;
 
-      expect(flex.direction, Axis.horizontal);
-      expect(flex.mainAxisAlignment, MainAxisAlignment.center);
-      expect(flex.crossAxisAlignment, CrossAxisAlignment.center);
-      expect(flex.mainAxisSize, MainAxisSize.max);
+    setUp(() {
+      util = FlexMutableStyler();
     });
 
-    // direction()
-    test('direction() returns correct instance', () {
-      final flex = flexUtility.direction(Axis.horizontal);
+    group('individual utility methods', () {
+      test('direction utility modifies internal state', () {
+        util.direction(Axis.horizontal);
 
-      expect(flex.direction, Axis.horizontal);
+        final spec = util.resolve(MockBuildContext());
+        expect(spec.spec, const FlexSpec(direction: Axis.horizontal));
+      });
+
+      test('mainAxisAlignment utility modifies internal state', () {
+        util.mainAxisAlignment(MainAxisAlignment.center);
+
+        final spec = util.resolve(MockBuildContext());
+        expect(
+          spec.spec,
+          const FlexSpec(mainAxisAlignment: MainAxisAlignment.center),
+        );
+      });
+
+      test('crossAxisAlignment utility modifies internal state', () {
+        util.crossAxisAlignment(CrossAxisAlignment.stretch);
+
+        final spec = util.resolve(MockBuildContext());
+        expect(
+          spec.spec,
+          const FlexSpec(crossAxisAlignment: CrossAxisAlignment.stretch),
+        );
+      });
+
+      test('mainAxisSize utility modifies internal state', () {
+        util.mainAxisSize(MainAxisSize.min);
+
+        final spec = util.resolve(MockBuildContext());
+        expect(spec.spec, const FlexSpec(mainAxisSize: MainAxisSize.min));
+      });
+
+      test('verticalDirection utility modifies internal state', () {
+        util.verticalDirection(VerticalDirection.up);
+
+        final spec = util.resolve(MockBuildContext());
+        expect(
+          spec.spec,
+          const FlexSpec(verticalDirection: VerticalDirection.up),
+        );
+      });
+
+      test('textDirection utility modifies internal state', () {
+        util.textDirection(TextDirection.rtl);
+
+        final spec = util.resolve(MockBuildContext());
+        expect(spec.spec, const FlexSpec(textDirection: TextDirection.rtl));
+      });
+
+      test('textBaseline utility modifies internal state', () {
+        util.textBaseline(TextBaseline.ideographic);
+
+        final spec = util.resolve(MockBuildContext());
+        expect(
+          spec.spec,
+          const FlexSpec(textBaseline: TextBaseline.ideographic),
+        );
+      });
+
+      test('clipBehavior utility modifies internal state', () {
+        util.clipBehavior(Clip.antiAlias);
+
+        final spec = util.resolve(MockBuildContext());
+        expect(spec.spec, const FlexSpec(clipBehavior: Clip.antiAlias));
+      });
+
+      test('spacing utility modifies internal state', () {
+        util.spacing(16.0);
+
+        final spec = util.resolve(MockBuildContext());
+        expect(spec.spec, const FlexSpec(spacing: 16.0));
+      });
     });
 
-    // mainAxisAlignment()
-    test('mainAxisAlignment() returns correct instance', () {
-      final flex = flexUtility.mainAxisAlignment(MainAxisAlignment.center);
+    group('cascade chaining', () {
+      test('chains multiple utility calls', () {
+        util
+          ..direction(Axis.horizontal)
+          ..spacing(8.0);
 
-      expect(flex.mainAxisAlignment, MainAxisAlignment.center);
+        final spec = util.resolve(MockBuildContext());
+        expect(
+          spec.spec,
+          const FlexSpec(direction: Axis.horizontal, spacing: 8.0),
+        );
+      });
+
+      test('chains all properties together', () {
+        util
+          ..direction(Axis.vertical)
+          ..mainAxisAlignment(MainAxisAlignment.center)
+          ..crossAxisAlignment(CrossAxisAlignment.stretch)
+          ..spacing(12.0);
+
+        final spec = util.resolve(MockBuildContext());
+        expect(
+          spec.spec,
+          const FlexSpec(
+            direction: Axis.vertical,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            spacing: 12.0,
+          ),
+        );
+      });
+
+      test('later calls override earlier ones', () {
+        util
+          ..direction(Axis.horizontal)
+          ..direction(Axis.vertical);
+
+        final spec = util.resolve(MockBuildContext());
+        expect(spec.spec, const FlexSpec(direction: Axis.vertical));
+      });
     });
 
-    // crossAxisAlignment()
-    test('crossAxisAlignment() returns correct instance', () {
-      final flex = flexUtility.crossAxisAlignment(CrossAxisAlignment.center);
+    group('convenience methods', () {
+      test('', () {
+        final result = util.row();
 
-      expect(flex.crossAxisAlignment, CrossAxisAlignment.center);
+        expect(result, FlexStyler(direction: Axis.horizontal));
+      });
+
+      test('', () {
+        final result = util.column();
+
+        expect(result, FlexStyler(direction: Axis.vertical));
+      });
     });
 
-    // mainAxisSize()
-    test('mainAxisSize() returns correct instance', () {
-      final flex = flexUtility.mainAxisSize(MainAxisSize.max);
-      final helper = flexUtility.mainAxisSize.max();
+    group('animation', () {
+      test('', () {
+        final animationConfig = AnimationConfig.linear(
+          const Duration(seconds: 1),
+        );
+        final result = util.animate(animationConfig);
 
-      expect(flex.mainAxisSize, MainAxisSize.max);
-      expect(helper.mainAxisSize, MainAxisSize.max);
+        expect(result, FlexStyler(animation: animationConfig));
+      });
     });
 
-    // verticalDirection()
-    test('verticalDirection() returns correct instance', () {
-      final flex = flexUtility.verticalDirection(VerticalDirection.down);
-      final helper = flexUtility.verticalDirection.down();
+    group('utility construction', () {
+      test('', () {
+        final initialMix = FlexStyler(direction: Axis.horizontal);
+        final utility = FlexMutableStyler(initialMix);
 
-      expect(flex.verticalDirection, VerticalDirection.down);
-      expect(helper.verticalDirection, VerticalDirection.down);
+        final spec = utility.resolve(MockBuildContext());
+        expect(spec.spec, const FlexSpec(direction: Axis.horizontal));
+      });
+
+      test('', () {
+        final utility = FlexMutableStyler();
+
+        final spec = utility.resolve(MockBuildContext());
+        expect(spec.spec.direction, isNull);
+        expect(spec.spec.spacing, isNull);
+      });
     });
 
-    // textDirection()
-    test('textDirection() returns correct instance', () {
-      final flex = flexUtility.textDirection(TextDirection.ltr);
-      final helper = flexUtility.textDirection.ltr();
+    group('merge functionality', () {
+      test('merge with null returns same instance', () {
+        final result = util.merge(null);
+        expect(result, same(util));
+      });
 
-      expect(flex.textDirection, TextDirection.ltr);
-      expect(helper.textDirection, TextDirection.ltr);
+      test('', () {
+        final other = FlexMutableStyler(FlexStyler(direction: Axis.horizontal));
+        final result = util.merge(other);
+
+        expect(result, isNot(same(util)));
+        expect(result, isA<FlexMutableStyler>());
+
+        final spec = result.resolve(MockBuildContext());
+        expect(spec.spec, const FlexSpec(direction: Axis.horizontal));
+      });
+
+      test('', () {
+        final otherMix = FlexStyler(spacing: 8.0);
+        final result = util.merge(otherMix);
+
+        expect(result, isNot(same(util)));
+        expect(result, isA<FlexMutableStyler>());
+
+        final spec = result.resolve(MockBuildContext());
+        expect(spec.spec, const FlexSpec(spacing: 8.0));
+      });
+
+      test('merge combines properties correctly', () {
+        final util1 = FlexMutableStyler(
+          FlexStyler(direction: Axis.horizontal, spacing: 4.0),
+        );
+        final util2 = FlexMutableStyler(
+          FlexStyler(spacing: 8.0, clipBehavior: Clip.hardEdge),
+        );
+
+        final result = util1.merge(util2);
+        final spec = result.resolve(MockBuildContext());
+
+        expect(
+          spec.spec,
+          const FlexSpec(
+            direction: Axis.horizontal,
+            spacing: 8.0,
+            clipBehavior: Clip.hardEdge,
+          ),
+        );
+      });
+
+      test('handles multiple merges correctly', () {
+        final util1 = FlexMutableStyler(FlexStyler(direction: Axis.horizontal));
+        final util2 = FlexMutableStyler(FlexStyler(spacing: 8.0));
+        final util3 = FlexMutableStyler(
+          FlexStyler(mainAxisAlignment: MainAxisAlignment.center),
+        );
+
+        final result = util1.merge(util2).merge(util3);
+        final spec = result.resolve(MockBuildContext());
+
+        expect(
+          spec.spec,
+          const FlexSpec(
+            direction: Axis.horizontal,
+            spacing: 8.0,
+            mainAxisAlignment: MainAxisAlignment.center,
+          ),
+        );
+      });
     });
 
-    // textBaseline()
-    test('textBaseline() returns correct instance', () {
-      final flex = flexUtility.textBaseline(TextBaseline.alphabetic);
-      final helper = flexUtility.textBaseline.alphabetic();
+    group('resolution', () {
+      test('', () {
+        final spec = util.resolve(MockBuildContext());
 
-      expect(flex.textBaseline, TextBaseline.alphabetic);
-      expect(helper.textBaseline, TextBaseline.alphabetic);
+        expect(spec.spec.direction, isNull);
+        expect(spec.spec.mainAxisAlignment, isNull);
+        expect(spec.spec.spacing, isNull);
+      });
+
+      test('', () {
+        util
+          ..direction(Axis.vertical)
+          ..mainAxisAlignment(MainAxisAlignment.center)
+          ..spacing(12.0);
+
+        final spec = util.resolve(MockBuildContext());
+
+        expect(
+          spec.spec,
+          const FlexSpec(
+            direction: Axis.vertical,
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 12.0,
+          ),
+        );
+      });
     });
 
-    // clipBehavior()
-    test('clipBehavior() returns correct instance', () {
-      final flex = flexUtility.clipBehavior(Clip.antiAlias);
-      final helper = flexUtility.clipBehavior.antiAlias();
+    group('resolvesTo matcher integration', () {
+      test('', () {
+        util
+          ..direction(Axis.horizontal)
+          ..mainAxisAlignment(MainAxisAlignment.center)
+          ..spacing(8.0);
 
-      expect(flex.clipBehavior, Clip.antiAlias);
-      expect(helper.clipBehavior, Clip.antiAlias);
+        expect(
+          util,
+          resolvesTo(
+            isA<StyleSpec<FlexSpec>>().having(
+              (w) => w.spec,
+              'spec',
+              const FlexSpec(
+                direction: Axis.horizontal,
+                mainAxisAlignment: MainAxisAlignment.center,
+                spacing: 8.0,
+              ),
+            ),
+          ),
+        );
+      });
     });
 
-    // gap()
-    test('gap() returns correct instance', () {
-      final flex = flexUtility.gap(10);
+    group('token support', () {
+      test('resolves tokens with context', () {
+        const gapToken = TestToken<double>('gap');
+        final context = MockBuildContext(tokens: {gapToken: 24.0});
 
-      expect(flex.gap, const SpaceDto(10));
+        final utility = FlexMutableStyler(
+          FlexStyler.create(spacing: Prop.token(gapToken)),
+        );
+        final spec = utility.resolve(context);
+
+        expect(spec.spec.gap, 24.0);
+      });
     });
 
-    // row()
-    test('row() returns correct instance', () {
-      final flex = flexUtility.row();
+    group('variant utilities', () {
+      test('on utility creates VariantAttributeBuilder', () {
+        final hoverBuilder = util.on.hover;
 
-      expect(flex.direction, Axis.horizontal);
+        expect(hoverBuilder, isA<VariantAttributeBuilder<FlexSpec>>());
+      });
     });
 
-    // column()
-    test('column() returns correct instance', () {
-      final flex = flexUtility.column();
+    group('modifier utilities', () {
+      test('', () {
+        final result = util.wrap.opacity(0.5);
 
-      expect(flex.direction, Axis.vertical);
-    });
-  });
-
-  group('FlexSpecUtility fluent', () {
-    test('fluent behavior', () {
-      final flex = FlexSpecUtility.self;
-
-      final util = flex
-        ..crossAxisAlignment.center()
-        ..mainAxisAlignment.spaceBetween()
-        ..mainAxisSize.min()
-        ..verticalDirection.down()
-        ..direction.horizontal()
-        ..textDirection.ltr()
-        ..textBaseline.alphabetic()
-        ..clipBehavior.antiAlias()
-        ..gap(10)
-        ..wrap.opacity(0.5);
-
-      final attr = util.attributeValue!;
-
-      expect(util, isA<StyleElement>());
-      expect(attr.crossAxisAlignment, CrossAxisAlignment.center);
-      expect(attr.mainAxisAlignment, MainAxisAlignment.spaceBetween);
-      expect(attr.mainAxisSize, MainAxisSize.min);
-      expect(attr.verticalDirection, VerticalDirection.down);
-      expect(attr.direction, Axis.horizontal);
-      expect(attr.textDirection, TextDirection.ltr);
-      expect(attr.textBaseline, TextBaseline.alphabetic);
-      expect(attr.clipBehavior, Clip.antiAlias);
-      expect(attr.gap, const SpaceDto(10));
-
-      expect(attr.modifiers?.value.first,
-          const OpacityModifierSpecAttribute(opacity: 0.5));
-
-      final style = Style(util);
-
-      final flexAttribute = style.styles.attributeOfType<FlexSpecAttribute>();
-
-      expect(flexAttribute?.crossAxisAlignment, CrossAxisAlignment.center);
-      expect(flexAttribute?.mainAxisAlignment, MainAxisAlignment.spaceBetween);
-      expect(flexAttribute?.mainAxisSize, MainAxisSize.min);
-      expect(flexAttribute?.verticalDirection, VerticalDirection.down);
-      expect(flexAttribute?.direction, Axis.horizontal);
-      expect(flexAttribute?.textDirection, TextDirection.ltr);
-      expect(flexAttribute?.textBaseline, TextBaseline.alphabetic);
-      expect(flexAttribute?.clipBehavior, Clip.antiAlias);
-      expect(flexAttribute?.gap, const SpaceDto(10));
-
-      expect(flexAttribute?.modifiers?.value.first,
-          const OpacityModifierSpecAttribute(opacity: 0.5));
-
-      final mixData = style.of(MockBuildContext());
-      final flexSpec = FlexSpec.from(mixData);
-
-      expect(flexSpec.crossAxisAlignment, CrossAxisAlignment.center);
-      expect(flexSpec.mainAxisAlignment, MainAxisAlignment.spaceBetween);
-      expect(flexSpec.mainAxisSize, MainAxisSize.min);
-      expect(flexSpec.verticalDirection, VerticalDirection.down);
-      expect(flexSpec.direction, Axis.horizontal);
-      expect(flexSpec.textDirection, TextDirection.ltr);
-      expect(flexSpec.textBaseline, TextBaseline.alphabetic);
-      expect(flexSpec.clipBehavior, Clip.antiAlias);
-      expect(flexSpec.gap, 10);
-
-      expect(flexSpec.modifiers?.value.first, const OpacityModifierSpec(0.5));
+        expect(result, isA<FlexStyler>());
+        expect(result.$modifier, isNotNull);
+        expect(result.$modifier!.$modifiers!.length, 1);
+      });
     });
 
-    test('Immutable behavior when having multiple flex', () {
-      final flex1 = FlexSpecUtility.self..crossAxisAlignment.start();
-      final flex2 = FlexSpecUtility.self..crossAxisAlignment.end();
+    group('complex scenarios', () {
+      test('combines chaining with merge', () {
+        final util1 = FlexMutableStyler()
+          ..direction(Axis.horizontal)
+          ..spacing(4.0);
+        final util2 = FlexMutableStyler()
+          ..mainAxisAlignment(MainAxisAlignment.center);
 
-      final attr1 = flex1.attributeValue!;
-      final attr2 = flex2.attributeValue!;
+        final result = util1.merge(util2);
+        final spec = result.resolve(MockBuildContext());
 
-      expect(attr1.crossAxisAlignment, CrossAxisAlignment.start);
-      expect(attr2.crossAxisAlignment, CrossAxisAlignment.end);
+        expect(
+          spec.spec,
+          const FlexSpec(
+            direction: Axis.horizontal,
+            spacing: 4.0,
+            mainAxisAlignment: MainAxisAlignment.center,
+          ),
+        );
+      });
 
-      final style1 = Style(flex1);
-      final style2 = Style(flex2);
+      test('chaining after construction with initial mix', () {
+        final utility =
+            FlexMutableStyler(FlexStyler(direction: Axis.horizontal))
+              ..gap(8.0)
+              ..mainAxisAlignment(MainAxisAlignment.center);
 
-      final flexAttribute1 = style1.styles.attributeOfType<FlexSpecAttribute>();
-      final flexAttribute2 = style2.styles.attributeOfType<FlexSpecAttribute>();
+        final spec = utility.resolve(MockBuildContext());
 
-      expect(flexAttribute1?.crossAxisAlignment, CrossAxisAlignment.start);
-      expect(flexAttribute2?.crossAxisAlignment, CrossAxisAlignment.end);
-
-      final mixData1 = style1.of(MockBuildContext());
-      final mixData2 = style2.of(MockBuildContext());
-
-      final flexSpec1 = FlexSpec.from(mixData1);
-      final flexSpec2 = FlexSpec.from(mixData2);
-
-      expect(flexSpec1.crossAxisAlignment, CrossAxisAlignment.start);
-      expect(flexSpec2.crossAxisAlignment, CrossAxisAlignment.end);
+        expect(
+          spec.spec,
+          const FlexSpec(
+            direction: Axis.horizontal,
+            spacing: 8.0,
+            mainAxisAlignment: MainAxisAlignment.center,
+          ),
+        );
+      });
     });
 
-    test('Mutate behavior and not on same utility', () {
-      final flex = FlexSpecUtility.self;
+    group('edge cases', () {
+      test('multiple property changes via chaining', () {
+        util
+          ..direction(Axis.horizontal)
+          ..direction(Axis.vertical)
+          ..gap(4.0) // deprecated, should be overridden by spacing
+          ..spacing(8.0);
 
-      final flexValue = flex;
-      flexValue
-        ..crossAxisAlignment.center()
-        ..mainAxisAlignment.spaceBetween()
-        ..mainAxisSize.min();
+        final spec = util.resolve(MockBuildContext());
+        expect(
+          spec.spec,
+          const FlexSpec(direction: Axis.vertical, spacing: 8.0),
+        );
+      });
 
-      final flexAttribute = flexValue.attributeValue!;
-      final flexAttribute2 = flex.crossAxisAlignment.end();
+      test('empty utility after chaining with null values', () {
+        // This tests the behavior when properties are explicitly set to null
+        final utility = FlexMutableStyler(
+          FlexStyler(direction: Axis.horizontal),
+        );
+        final spec = utility.resolve(MockBuildContext());
 
-      expect(flexAttribute.crossAxisAlignment, CrossAxisAlignment.center);
-      expect(flexAttribute.mainAxisAlignment, MainAxisAlignment.spaceBetween);
-      expect(flexAttribute.mainAxisSize, MainAxisSize.min);
-
-      expect(flexAttribute2.crossAxisAlignment, CrossAxisAlignment.end);
-      expect(flexAttribute2.mainAxisAlignment, isNull);
-      expect(flexAttribute2.mainAxisSize, isNull);
+        expect(spec.spec.direction, Axis.horizontal);
+        expect(spec.spec.spacing, isNull);
+      });
     });
   });
 }

@@ -1,65 +1,98 @@
-import 'package:flutter/material.dart';
+/// Material Design theme integration for Mix framework.
+///
+/// Provides pre-configured material tokens that map Material Design tokens
+/// to Flutter's Material theme values, enabling seamless integration between
+/// Mix styling and Material Design systems.
+library;
 
-import '../mix/mix_theme.dart';
-import '../tokens/color_token.dart';
-import '../tokens/text_style_token.dart';
+import 'package:flutter/widgets.dart';
+
+import '../../core/internal/internal_extensions.dart';
+import '../mix_theme.dart';
+import '../tokens/mix_token.dart';
 import 'material_tokens.dart';
 
 const _md = MaterialTokens();
 
-extension on BuildContext {
-  TextTheme get text => Theme.of(this).textTheme;
-  ColorScheme get color => Theme.of(this).colorScheme;
+/// Creates color token map from the current Material theme context.
+Map<MixToken, Object> _createMaterialColorTokens(BuildContext context) {
+  return {
+    _md.colorScheme.primary: context.colorScheme.primary,
+    _md.colorScheme.secondary: context.colorScheme.secondary,
+    _md.colorScheme.tertiary: context.colorScheme.tertiary,
+    _md.colorScheme.surface: context.colorScheme.surface,
+    _md.colorScheme.background: context.colorScheme.surface,
+    _md.colorScheme.error: context.colorScheme.error,
+    _md.colorScheme.onPrimary: context.colorScheme.onPrimary,
+    _md.colorScheme.onSecondary: context.colorScheme.onSecondary,
+    _md.colorScheme.onTertiary: context.colorScheme.onTertiary,
+    _md.colorScheme.onSurface: context.colorScheme.onSurface,
+    _md.colorScheme.onBackground: context.colorScheme.onSurface,
+    _md.colorScheme.onError: context.colorScheme.onError,
+  };
 }
 
-final materialMixTheme = MixThemeData(
-  colors: {
-    _md.colorScheme.primary: ColorResolver((c) => c.color.primary),
-    _md.colorScheme.secondary: ColorResolver((c) => c.color.secondary),
-    _md.colorScheme.tertiary: ColorResolver((c) => c.color.tertiary),
-    _md.colorScheme.surface: ColorResolver((c) => c.color.surface),
-    _md.colorScheme.background: ColorResolver((c) => c.color.surface),
-    _md.colorScheme.error: ColorResolver((c) => c.color.error),
-    _md.colorScheme.onPrimary: ColorResolver((c) => c.color.onPrimary),
-    _md.colorScheme.onSecondary: ColorResolver((c) => c.color.onSecondary),
-    _md.colorScheme.onTertiary: ColorResolver((c) => c.color.onTertiary),
-    _md.colorScheme.onSurface: ColorResolver((c) => c.color.onSurface),
-    _md.colorScheme.onBackground:
-        ColorResolver((context) => context.color.onSurface),
-    _md.colorScheme.onError: ColorResolver((context) => context.color.onError),
-  },
-  textStyles: {
-    _md.textTheme.displayLarge: TextStyleResolver((c) => c.text.displayLarge!),
-    _md.textTheme.displayMedium:
-        TextStyleResolver((c) => c.text.displayMedium!),
-    _md.textTheme.displaySmall: TextStyleResolver((c) => c.text.displaySmall!),
-    _md.textTheme.headlineLarge:
-        TextStyleResolver((c) => c.text.headlineLarge!),
-    _md.textTheme.headlineMedium:
-        TextStyleResolver((c) => c.text.headlineMedium!),
-    _md.textTheme.headlineSmall:
-        TextStyleResolver((c) => c.text.headlineSmall!),
-    _md.textTheme.titleLarge: TextStyleResolver((c) => c.text.titleLarge!),
-    _md.textTheme.titleMedium: TextStyleResolver((c) => c.text.titleMedium!),
-    _md.textTheme.titleSmall: TextStyleResolver((c) => c.text.titleSmall!),
-    _md.textTheme.bodyLarge: TextStyleResolver((c) => c.text.bodyLarge!),
-    _md.textTheme.bodyMedium: TextStyleResolver((c) => c.text.bodyMedium!),
-    _md.textTheme.bodySmall: TextStyleResolver((c) => c.text.bodySmall!),
-    _md.textTheme.labelLarge: TextStyleResolver((c) => c.text.labelLarge!),
-    _md.textTheme.labelMedium: TextStyleResolver((c) => c.text.labelMedium!),
-    _md.textTheme.labelSmall: TextStyleResolver((c) => c.text.labelSmall!),
-    _md.textTheme.headline1: TextStyleResolver((c) => c.text.displayLarge!),
-    _md.textTheme.headline2: TextStyleResolver((c) => c.text.displayMedium!),
-    _md.textTheme.headline3: TextStyleResolver((c) => c.text.displaySmall!),
-    _md.textTheme.headline4: TextStyleResolver((c) => c.text.headlineMedium!),
-    _md.textTheme.headline5: TextStyleResolver((c) => c.text.headlineSmall!),
-    _md.textTheme.headline6: TextStyleResolver((c) => c.text.titleLarge!),
-    _md.textTheme.subtitle1: TextStyleResolver((c) => c.text.titleMedium!),
-    _md.textTheme.subtitle2: TextStyleResolver((c) => c.text.titleSmall!),
-    _md.textTheme.bodyText1: TextStyleResolver((c) => c.text.bodyLarge!),
-    _md.textTheme.bodyText2: TextStyleResolver((c) => c.text.bodyMedium!),
-    _md.textTheme.caption: TextStyleResolver((c) => c.text.bodySmall!),
-    _md.textTheme.button: TextStyleResolver((c) => c.text.labelLarge!),
-    _md.textTheme.overline: TextStyleResolver((c) => c.text.labelSmall!),
-  },
-);
+/// Creates text style token map from the current Material theme context.
+Map<MixToken, Object> _createMaterialTextStyleTokens(BuildContext context) {
+  return {
+    _md.textTheme.displayLarge: context.textTheme.displayLarge!,
+    _md.textTheme.displayMedium: context.textTheme.displayMedium!,
+    _md.textTheme.displaySmall: context.textTheme.displaySmall!,
+    _md.textTheme.headlineLarge: context.textTheme.headlineLarge!,
+    _md.textTheme.headlineMedium: context.textTheme.headlineMedium!,
+    _md.textTheme.headlineSmall: context.textTheme.headlineSmall!,
+    _md.textTheme.titleLarge: context.textTheme.titleLarge!,
+    _md.textTheme.titleMedium: context.textTheme.titleMedium!,
+    _md.textTheme.titleSmall: context.textTheme.titleSmall!,
+    _md.textTheme.bodyLarge: context.textTheme.bodyLarge!,
+    _md.textTheme.bodyMedium: context.textTheme.bodyMedium!,
+    _md.textTheme.bodySmall: context.textTheme.bodySmall!,
+    _md.textTheme.labelLarge: context.textTheme.labelLarge!,
+    _md.textTheme.labelMedium: context.textTheme.labelMedium!,
+    _md.textTheme.labelSmall: context.textTheme.labelSmall!,
+    // Deprecated aliases
+    _md.textTheme.headline1: context.textTheme.displayLarge!,
+    _md.textTheme.headline2: context.textTheme.displayMedium!,
+    _md.textTheme.headline3: context.textTheme.displaySmall!,
+    _md.textTheme.headline4: context.textTheme.headlineMedium!,
+    _md.textTheme.headline5: context.textTheme.headlineSmall!,
+    _md.textTheme.headline6: context.textTheme.titleLarge!,
+    _md.textTheme.subtitle1: context.textTheme.titleMedium!,
+    _md.textTheme.subtitle2: context.textTheme.titleSmall!,
+    _md.textTheme.bodyText1: context.textTheme.bodyLarge!,
+    _md.textTheme.bodyText2: context.textTheme.bodyMedium!,
+    _md.textTheme.caption: context.textTheme.bodySmall!,
+    _md.textTheme.button: context.textTheme.labelLarge!,
+    _md.textTheme.overline: context.textTheme.labelSmall!,
+  };
+}
+
+/// Creates a MixScope with Material Design tokens pre-configured.
+///
+/// This method uses a Builder to dynamically access the current Material theme
+/// and creates token map with concrete values from the theme.
+Widget createMaterialMixScope({
+  Map<MixToken, Object>? additionalTokens,
+  List<Type>? orderOfModifiers,
+  required Widget child,
+  Key? key,
+}) {
+  return Builder(
+    builder: (context) {
+      final materialColorTokens = _createMaterialColorTokens(context);
+      final materialTextStyleTokens = _createMaterialTextStyleTokens(context);
+      final allMaterialTokens = {
+        ...materialColorTokens,
+        ...materialTextStyleTokens,
+      };
+      final tokens = {...allMaterialTokens, ...?additionalTokens};
+
+      return MixScope(
+        key: key,
+        tokens: tokens,
+        orderOfModifiers: orderOfModifiers,
+        child: child,
+      );
+    },
+  );
+}

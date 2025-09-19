@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
@@ -7,420 +5,465 @@ import 'package:mix/mix.dart';
 import '../../../helpers/testing_utils.dart';
 
 void main() {
-  group('FlexBoxSpec', () {
-    test('resolve', () {
-      final mix = MixContext.create(
-        MockBuildContext(),
-        Style(
-          FlexBoxSpecAttribute(
-            box: BoxSpecAttribute(
-              alignment: Alignment.center,
-              padding: EdgeInsetsGeometryDto.only(top: 8, bottom: 16),
-              margin: EdgeInsetsGeometryDto.only(top: 10.0, bottom: 12.0),
-              constraints:
-                  const BoxConstraintsDto(maxWidth: 300.0, minHeight: 200.0),
-              decoration: const BoxDecorationDto(color: ColorDto(Colors.blue)),
-              transform: Matrix4.translationValues(10.0, 10.0, 0.0),
-              clipBehavior: Clip.antiAlias,
-              width: 300,
-              height: 200,
-            ),
-            flex: const FlexSpecAttribute(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              verticalDirection: VerticalDirection.down,
-              textDirection: TextDirection.ltr,
-              textBaseline: TextBaseline.alphabetic,
-            ),
-          ),
-        ),
-      );
-
-      final spec = mix.attributeOf<FlexBoxSpecAttribute>()!.resolve(mix);
-
-      expect(spec.box.alignment, Alignment.center);
-      expect(spec.box.padding, const EdgeInsets.only(top: 8.0, bottom: 16.0));
-      expect(spec.box.margin, const EdgeInsets.only(top: 10.0, bottom: 12.0));
-      expect(
-        spec.box.constraints,
-        const BoxConstraints(maxWidth: 300.0, minHeight: 200.0),
-      );
-      expect(spec.box.decoration, const BoxDecoration(color: Colors.blue));
-      expect(spec.box.transform, Matrix4.translationValues(10.0, 10.0, 0.0));
-      expect(spec.box.clipBehavior, Clip.antiAlias);
-      expect(spec.box.width, 300);
-      expect(spec.box.height, 200);
-
-      expect(spec.flex.mainAxisAlignment, MainAxisAlignment.center);
-      expect(spec.flex.crossAxisAlignment, CrossAxisAlignment.center);
-      expect(spec.flex.mainAxisSize, MainAxisSize.max);
-      expect(spec.flex.verticalDirection, VerticalDirection.down);
-      expect(spec.flex.textDirection, TextDirection.ltr);
-      expect(spec.flex.textBaseline, TextBaseline.alphabetic);
-    });
-
-    test('copyWith', () {
-      final spec = FlexBoxSpec(
-        box: BoxSpec(
+  group('FlexBoxMutableStyler', () {
+    group('Constructor', () {
+      test('', () {
+        final containerAttr = BoxStyler(
           alignment: Alignment.center,
-          padding: const EdgeInsets.all(16.0),
-          margin: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-          constraints: const BoxConstraints(maxWidth: 300.0, minHeight: 200.0),
-          decoration: const BoxDecoration(color: Colors.blue),
-          transform: Matrix4.translationValues(10.0, 10.0, 0.0),
-          clipBehavior: Clip.antiAlias,
-          width: 300,
-          height: 200,
-        ),
-        flex: const FlexSpec(
+          padding: EdgeInsetsMix(top: 10.0, bottom: 20.0),
+        );
+
+        final flexAttr = FlexStyler(
+          direction: Axis.horizontal,
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          verticalDirection: VerticalDirection.down,
-          textDirection: TextDirection.ltr,
-          textBaseline: TextBaseline.alphabetic,
-        ),
-      );
-
-      final copiedSpec = spec.copyWith(
-        box: spec.box.copyWith(
-          width: 250.0,
-          height: 150.0,
-        ),
-        flex: spec.flex.copyWith(
-          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-        ),
-      );
+        );
 
-      expect(copiedSpec.box.alignment, Alignment.center);
-      expect(copiedSpec.box.padding, const EdgeInsets.all(16.0));
-      expect(
-          copiedSpec.box.margin, const EdgeInsets.only(top: 8.0, bottom: 8.0));
-      expect(copiedSpec.box.width, 250.0);
-      expect(copiedSpec.box.height, 150.0);
+        final attribute = FlexBoxStyler.create(
+          box: Prop.maybeMix(containerAttr),
+          flex: Prop.maybeMix(flexAttr),
+        );
 
-      expect(copiedSpec.flex.mainAxisAlignment, MainAxisAlignment.start);
-      expect(copiedSpec.flex.crossAxisAlignment, CrossAxisAlignment.start);
-      expect(copiedSpec.flex.mainAxisSize, MainAxisSize.max);
-      expect(copiedSpec.flex.verticalDirection, VerticalDirection.down);
-      expect(copiedSpec.flex.textDirection, TextDirection.ltr);
-      expect(copiedSpec.flex.textBaseline, TextBaseline.alphabetic);
+        // Verify properties are set
+        expect(attribute.$box!.sources[0], isA<MixSource<Object?>>());
+        expect(attribute.$flex!.sources[0], isA<MixSource<Object?>>());
+      });
+
+      test('', () {
+        final attribute = FlexBoxStyler();
+
+        // Verify empty FlexBoxStyle creates empty box and flex specs
+        expect(attribute.$box, isNotNull);
+        expect(attribute.$flex, isNotNull);
+      });
     });
 
-    test('lerp', () {
-      final spec1 = FlexBoxSpec(
-        box: BoxSpec(
-          alignment: Alignment.topLeft,
-          padding: const EdgeInsets.all(8.0),
-          margin: const EdgeInsets.only(top: 4.0),
-          constraints: const BoxConstraints(maxWidth: 200.0),
-          decoration: const BoxDecoration(color: Colors.red),
-          transform: Matrix4.identity(),
-          clipBehavior: Clip.none,
-          width: 300,
-          height: 200,
-        ),
-        flex: const FlexSpec(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-        ),
-      );
-
-      final spec2 = FlexBoxSpec(
-        box: BoxSpec(
-          alignment: Alignment.bottomRight,
-          padding: const EdgeInsets.all(16.0),
-          margin: const EdgeInsets.only(top: 8.0),
-          constraints: const BoxConstraints(maxWidth: 400.0),
-          decoration: const BoxDecoration(color: Colors.blue),
-          transform: Matrix4.rotationZ(0.5),
-          clipBehavior: Clip.antiAlias,
-          width: 400,
-          height: 300,
-        ),
-        flex: const FlexSpec(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisSize: MainAxisSize.max,
-        ),
-      );
-
-      const t = 0.5;
-      final lerpedSpec = spec1.lerp(spec2, t);
-
-      expect(
-        lerpedSpec.box.alignment,
-        Alignment.lerp(Alignment.topLeft, Alignment.bottomRight, t),
-      );
-      expect(
-        lerpedSpec.box.padding,
-        EdgeInsets.lerp(
-          const EdgeInsets.all(8.0),
-          const EdgeInsets.all(16.0),
-          t,
-        ),
-      );
-      expect(lerpedSpec.box.width, lerpDouble(300, 400, t));
-      expect(lerpedSpec.box.height, lerpDouble(200, 300, t));
-
-      expect(lerpedSpec.flex.mainAxisAlignment, MainAxisAlignment.end);
-      expect(lerpedSpec.flex.crossAxisAlignment, CrossAxisAlignment.end);
-      expect(lerpedSpec.flex.mainAxisSize, MainAxisSize.max);
-    });
-
-    test('equality', () {
-      final spec1 = FlexBoxSpec(
-        box: BoxSpec(
-          alignment: Alignment.topLeft,
-          padding: const EdgeInsets.all(8.0),
-          margin: const EdgeInsets.only(top: 4.0),
-          constraints: const BoxConstraints(maxWidth: 200.0),
-          decoration: const BoxDecoration(color: Colors.red),
-          transform: Matrix4.identity(),
-          clipBehavior: Clip.none,
-          width: 300,
-          height: 200,
-        ),
-        flex: const FlexSpec(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-        ),
-      );
-
-      final spec2 = FlexBoxSpec(
-        box: BoxSpec(
-          alignment: Alignment.topLeft,
-          padding: const EdgeInsets.all(8.0),
-          margin: const EdgeInsets.only(top: 4.0),
-          constraints: const BoxConstraints(maxWidth: 200.0),
-          decoration: const BoxDecoration(color: Colors.red),
-          transform: Matrix4.identity(),
-          clipBehavior: Clip.none,
-          width: 300,
-          height: 200,
-        ),
-        flex: const FlexSpec(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-        ),
-      );
-
-      expect(spec1, spec2);
-    });
-
-    test('merge() returns correct instance', () {
-      final flexBoxSpecAttribute = FlexBoxSpecAttribute(
-        box: BoxSpecAttribute(
+    group('Resolution', () {
+      test('', () {
+        final attribute = FlexBoxStyler(
           alignment: Alignment.center,
-          padding: EdgeInsetsGeometryDto.only(
-              top: 20, bottom: 20, left: 20, right: 20),
-          margin: EdgeInsetsGeometryDto.only(
-            top: 10,
-            bottom: 10,
-            left: 10,
-            right: 10,
-          ),
-          constraints: const BoxConstraintsDto(maxHeight: 100),
-          decoration: const BoxDecorationDto(color: ColorDto(Colors.blue)),
-          transform: Matrix4.identity(),
-          clipBehavior: Clip.antiAlias,
-          width: 100,
-          height: 100,
-        ),
-        flex: const FlexSpecAttribute(
+          padding: EdgeInsetsMix(top: 10.0, bottom: 20.0),
+          direction: Axis.horizontal,
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          verticalDirection: VerticalDirection.down,
-          textDirection: TextDirection.ltr,
-          textBaseline: TextBaseline.alphabetic,
-        ),
-      );
+        );
 
-      final mergedFlexBoxSpecAttribute = flexBoxSpecAttribute.merge(
-        FlexBoxSpecAttribute(
-          box: BoxSpecAttribute(
-            alignment: Alignment.centerLeft,
-            padding: EdgeInsetsGeometryDto.only(
-                top: 30, bottom: 30, left: 30, right: 30),
-            margin: EdgeInsetsGeometryDto.only(
-              top: 20,
-              bottom: 20,
-              left: 20,
-              right: 20,
+        final context = MockBuildContext();
+        final resolved = attribute.resolve(context);
+
+        expect(resolved, isNotNull);
+        expect(resolved.spec.box?.spec.alignment, Alignment.center);
+        expect(
+          resolved.spec.box?.spec.padding,
+          const EdgeInsets.only(top: 10.0, bottom: 20.0),
+        );
+        expect(resolved.spec.flex?.spec.direction, Axis.horizontal);
+        expect(
+          resolved.spec.flex?.spec.mainAxisAlignment,
+          MainAxisAlignment.center,
+        );
+      });
+
+      test('resolves complex nested properties correctly', () {
+        final attribute = FlexBoxStyler(
+          decoration: BoxDecorationMix(
+            color: Colors.red,
+            border: BoxBorderMix.all(
+              BorderSideMix(color: Colors.blue, width: 2.0),
             ),
-            constraints: const BoxConstraintsDto(maxHeight: 200),
-            decoration: const BoxDecorationDto(color: ColorDto(Colors.red)),
-            transform: Matrix4.identity(),
-            clipBehavior: Clip.antiAliasWithSaveLayer,
-            width: 200,
-            height: 200,
+            borderRadius: BorderRadiusMix(
+              topLeft: const Radius.circular(8.0),
+              topRight: const Radius.circular(8.0),
+            ),
           ),
-          flex: const FlexSpecAttribute(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            verticalDirection: VerticalDirection.up,
-            textDirection: TextDirection.rtl,
-            textBaseline: TextBaseline.ideographic,
+          spacing: 10.0,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        );
+
+        final context = MockBuildContext();
+        final resolved = attribute.resolve(context);
+
+        expect(resolved, isNotNull);
+        final decoration = resolved.spec.box?.spec.decoration as BoxDecoration?;
+        expect(decoration?.color, Colors.red);
+        expect(decoration?.border, isNotNull);
+        expect(decoration?.borderRadius, isNotNull);
+        expect(resolved.spec.flex?.spec.spacing, 10.0);
+        expect(
+          resolved.spec.flex?.spec.mainAxisAlignment,
+          MainAxisAlignment.spaceBetween,
+        );
+      });
+    });
+
+    group('Merge', () {
+      test('merges properties correctly', () {
+        final first = FlexBoxStyler(
+          alignment: Alignment.center,
+          padding: EdgeInsetsMix.all(10.0),
+          direction: Axis.horizontal,
+        );
+
+        final second = FlexBoxStyler(
+          alignment: Alignment.topLeft, // This should override
+          margin: EdgeInsetsMix.all(20.0), // This should be added
+          mainAxisAlignment: MainAxisAlignment.center, // This should be added
+        );
+
+        final merged = first.merge(second);
+
+        // Resolve to check merged values
+        final context = MockBuildContext();
+        final resolved = merged.resolve(context);
+        final boxSpec = resolved.spec.box?.spec;
+
+        expect(boxSpec?.alignment, Alignment.topLeft); // second overrides first
+        expect(boxSpec?.padding, const EdgeInsets.all(10.0)); // from first
+        expect(boxSpec?.margin, const EdgeInsets.all(20.0)); // from second
+        expect(
+          resolved.spec.flex?.spec.direction,
+          Axis.horizontal,
+        ); // from first
+        expect(
+          resolved.spec.flex?.spec.mainAxisAlignment,
+          MainAxisAlignment.center,
+        ); // from second
+      });
+
+      test('returns this when other is null', () {
+        final attribute = FlexBoxStyler(alignment: Alignment.center);
+
+        final merged = attribute.merge(null);
+
+        expect(identical(attribute, merged), isFalse);
+        expect(merged, equals(attribute));
+      });
+
+      test('merges nested box and flex attributes correctly', () {
+        final first = FlexBoxStyler(
+          decoration: BoxDecorationMix(color: Colors.red),
+        );
+
+        final second = FlexBoxStyler(
+          decoration: BoxDecorationMix(
+            border: BoxBorderMix.all(BorderSideMix(color: Colors.blue)),
           ),
-        ),
-      );
+        );
 
-      expect(mergedFlexBoxSpecAttribute.box!.alignment, Alignment.centerLeft);
-      expect(mergedFlexBoxSpecAttribute.box!.clipBehavior,
-          Clip.antiAliasWithSaveLayer);
-      expect(mergedFlexBoxSpecAttribute.box!.constraints,
-          const BoxConstraintsDto(maxHeight: 200));
-      expect(mergedFlexBoxSpecAttribute.box!.decoration,
-          const BoxDecorationDto(color: ColorDto(Colors.red)));
-      expect(mergedFlexBoxSpecAttribute.box!.height, 200);
-      expect(
-        mergedFlexBoxSpecAttribute.box!.margin,
-        EdgeInsetsGeometryDto.only(top: 20, bottom: 20, left: 20, right: 20),
-      );
-      expect(
-        mergedFlexBoxSpecAttribute.box!.padding,
-        EdgeInsetsGeometryDto.only(top: 30, bottom: 30, left: 30, right: 30),
-      );
-      expect(mergedFlexBoxSpecAttribute.box!.transform, Matrix4.identity());
-      expect(mergedFlexBoxSpecAttribute.box!.width, 200);
+        final merged = first.merge(second);
 
-      expect(mergedFlexBoxSpecAttribute.flex!.mainAxisAlignment,
-          MainAxisAlignment.start);
-      expect(mergedFlexBoxSpecAttribute.flex!.crossAxisAlignment,
-          CrossAxisAlignment.start);
-      expect(mergedFlexBoxSpecAttribute.flex!.mainAxisSize, MainAxisSize.min);
-      expect(mergedFlexBoxSpecAttribute.flex!.verticalDirection,
-          VerticalDirection.up);
-      expect(mergedFlexBoxSpecAttribute.flex!.textDirection, TextDirection.rtl);
-      expect(mergedFlexBoxSpecAttribute.flex!.textBaseline,
-          TextBaseline.ideographic);
+        // Resolve to check merged decoration
+        final context = MockBuildContext();
+        final resolved = merged.resolve(context);
+        final decoration = resolved.spec.box?.spec.decoration as BoxDecoration?;
+
+        expect(decoration?.color, Colors.red); // from first
+        expect(decoration?.border, isNotNull); // from second
+      });
+    });
+
+    group('Equality', () {
+      test('equal attributes have same hashCode', () {
+        final attr1 = FlexBoxStyler(
+          alignment: Alignment.center,
+          direction: Axis.horizontal,
+        );
+
+        final attr2 = FlexBoxStyler(
+          alignment: Alignment.center,
+          direction: Axis.horizontal,
+        );
+
+        expect(attr1, equals(attr2));
+        expect(attr1.hashCode, equals(attr2.hashCode));
+      });
+
+      test('different attributes are not equal', () {
+        final attr1 = FlexBoxStyler(alignment: Alignment.center);
+
+        final attr2 = FlexBoxStyler(alignment: Alignment.topLeft);
+
+        expect(attr1, isNot(equals(attr2)));
+      });
+
+      test('attributes with different nested properties are not equal', () {
+        final attr1 = FlexBoxStyler(direction: Axis.horizontal);
+
+        final attr2 = FlexBoxStyler(direction: Axis.vertical);
+
+        expect(attr1, isNot(equals(attr2)));
+      });
+    });
+
+    group('Modifiers', () {
+      test('modifiers can be added to attribute', () {
+        final attribute = FlexBoxStyler(
+          modifier: WidgetModifierConfig(
+            modifiers: [
+              OpacityModifierMix(opacity: 0.5),
+              TransformModifierMix(
+                transform: Matrix4.identity(),
+                alignment: Alignment.center,
+              ),
+            ],
+          ),
+        );
+
+        expect(attribute.$modifier, isNotNull);
+        expect(attribute.$modifier!.$modifiers!.length, 2);
+      });
+
+      test('modifiers are merged correctly', () {
+        final first = FlexBoxStyler(
+          modifier: WidgetModifierConfig(
+            modifiers: [OpacityModifierMix(opacity: 0.5)],
+          ),
+        );
+
+        final second = FlexBoxStyler(
+          modifier: WidgetModifierConfig(
+            modifiers: [TransformModifierMix(transform: Matrix4.identity())],
+          ),
+        );
+
+        final merged = first.merge(second);
+
+        // Modifiers are combined when merging
+        expect(merged.$modifier, isNotNull);
+        expect(merged.$modifier!.$modifiers!.length, 2);
+      });
+    });
+
+    group('Animation', () {
+      test('animation config can be added to attribute', () {
+        final attribute = FlexBoxStyler();
+        expect(attribute.$animation, isNull); // By default no animation
+
+        final withAnimation = FlexBoxStyler(
+          animation: CurveAnimationConfig(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeIn,
+          ),
+        );
+
+        expect(withAnimation.$animation, isNotNull);
+      });
+    });
+
+    group('Variants', () {
+      test('variants functionality exists', () {
+        final attribute = FlexBoxStyler();
+        expect(attribute.$variants, isNull); // By default no variants
+
+        final variant = ContextVariant('test', (context) => true);
+        final withVariants = FlexBoxStyler(
+          variants: [
+            VariantStyle(
+              variant,
+              FlexBoxStyler(decoration: BoxDecorationMix(color: Colors.green)),
+            ),
+          ],
+        );
+
+        expect(withVariants.$variants, isNotNull);
+        expect(withVariants.$variants!.length, 1);
+      });
+    });
+
+    group('Composite Behavior', () {
+      test('box and flex attributes work independently', () {
+        final boxOnly = FlexBoxStyler(alignment: Alignment.center);
+
+        final flexOnly = FlexBoxStyler(direction: Axis.horizontal);
+
+        expect(boxOnly.$box, isNotNull);
+        expect(
+          boxOnly.$flex,
+          isNotNull,
+        ); // Now creates empty flex even for box-only
+
+        expect(
+          flexOnly.$box,
+          isNotNull,
+        ); // Now creates empty box even for flex-only
+        expect(flexOnly.$flex, isNotNull);
+      });
+
+      test('partial updates preserve other attribute', () {
+        final initial = FlexBoxStyler(
+          alignment: Alignment.center,
+          direction: Axis.horizontal,
+        );
+
+        final updateBox = FlexBoxStyler(padding: EdgeInsetsMix.all(10.0));
+
+        final merged = initial.merge(updateBox);
+
+        // Check that flex is preserved and box is updated
+        final context = MockBuildContext();
+        final resolved = merged.resolve(context);
+
+        expect(
+          resolved.spec.flex?.spec.direction,
+          Axis.horizontal,
+        ); // preserved
+        expect(
+          resolved.spec.box?.spec.padding,
+          const EdgeInsets.all(10.0),
+        ); // updated
+        final boxSpec = resolved.spec.box?.spec;
+        expect(
+          boxSpec?.alignment,
+          Alignment.center,
+        ); // preserved from initial container
+      });
+    });
+
+    group('Edge Cases', () {
+      test('handles empty merge correctly', () {
+        final empty1 = FlexBoxStyler();
+        final empty2 = FlexBoxStyler();
+
+        final merged = empty1.merge(empty2);
+
+        expect(
+          merged.$box,
+          isNotNull,
+        ); // Empty FlexBoxStyle creates empty specs
+        expect(merged.$flex, isNotNull);
+      });
+
+      test('handles resolution with all null properties', () {
+        final attribute = FlexBoxStyler();
+
+        final context = MockBuildContext();
+        final resolved = attribute.resolve(context);
+
+        expect(resolved, isNotNull);
+        expect(
+          resolved.spec.box,
+          isNotNull,
+        ); // Empty FlexBoxStyle resolves to empty BoxSpec
+        expect(
+          resolved.spec.flex,
+          isNotNull,
+        ); // Empty FlexBoxStyle resolves to empty FlexSpec
+      });
+
+      test('handles complex nested chaining', () {
+        final utility = FlexBoxMutableStyler();
+
+        // Build complex nested structure using mutable utilities
+        utility.alignment(Alignment.center);
+        utility.padding.all(10.0);
+        utility.margin.horizontal(20.0);
+        utility.color.red();
+        utility.direction(Axis.horizontal);
+        utility.mainAxisAlignment(MainAxisAlignment.spaceBetween);
+        utility.spacing(10.0);
+
+        final context = MockBuildContext();
+        final resolved = utility.resolve(context);
+        final boxSpec = resolved.spec.box?.spec;
+
+        // Verify all properties are resolved correctly
+        expect(boxSpec?.alignment, Alignment.center);
+        expect(boxSpec?.padding, const EdgeInsets.all(10.0));
+        expect(boxSpec?.margin, const EdgeInsets.symmetric(horizontal: 20.0));
+        expect((boxSpec?.decoration as BoxDecoration?)?.color, Colors.red);
+        expect(resolved.spec.flex?.spec.direction, Axis.horizontal);
+        expect(
+          resolved.spec.flex?.spec.mainAxisAlignment,
+          MainAxisAlignment.spaceBetween,
+        );
+        expect(resolved.spec.flex?.spec.spacing, 10.0);
+      });
     });
   });
 
-  group('FlexBoxSpecUtility fluent', () {
-    test('fluent behavior', () {
-      final flexBox = FlexBoxSpecUtility.self;
+  group('FlexBoxMutableStyler', () {
+    test('', () {
+      final spec = FlexBoxSpec();
 
-      final util = flexBox
-        ..box.alignment.center()
-        ..box.padding(8)
-        ..flex.mainAxisAlignment.center()
-        ..flex.crossAxisAlignment.center();
-
-      final attr = util.attributeValue!;
-
-      expect(util, isA<StyleElement>());
-      expect(attr.box!.alignment, Alignment.center);
-      expect(attr.box!.padding, const EdgeInsets.all(8.0).toDto());
-      expect(attr.box!.margin, null);
-      expect(attr.flex!.mainAxisAlignment, MainAxisAlignment.center);
-      expect(attr.flex!.crossAxisAlignment, CrossAxisAlignment.center);
-
-      final style = Style(util);
-
-      final flexBoxAttribute =
-          style.styles.attributeOfType<FlexBoxSpecAttribute>();
-
-      expect(flexBoxAttribute?.box!.alignment, Alignment.center);
-      expect(flexBoxAttribute?.box!.padding, const EdgeInsets.all(8.0).toDto());
-      expect(flexBoxAttribute?.box!.margin, null);
-      expect(
-          flexBoxAttribute?.flex!.mainAxisAlignment, MainAxisAlignment.center);
-      expect(flexBoxAttribute?.flex!.crossAxisAlignment,
-          CrossAxisAlignment.center);
-
-      final mixData = style.of(MockBuildContext());
-      final flexBoxSpec = FlexBoxSpec.from(mixData);
-
-      expect(flexBoxSpec.box.alignment, Alignment.center);
-      expect(flexBoxSpec.box.padding, const EdgeInsets.all(8.0));
-      expect(flexBoxSpec.box.margin, null);
-      expect(flexBoxSpec.flex.mainAxisAlignment, MainAxisAlignment.center);
-      expect(flexBoxSpec.flex.crossAxisAlignment, CrossAxisAlignment.center);
+      expect(spec.box, null);
+      expect(spec.flex, null);
     });
 
-    test('Immutable behavior when having multiple flexboxes', () {
-      final flexBoxUtil = FlexBoxSpecUtility.self;
-      final flexBox1 = flexBoxUtil.chain
-        ..box.padding(10)
-        ..flex.mainAxisAlignment.start();
-      final flexBox2 = flexBoxUtil.chain
-        ..box.padding(20)
-        ..flex.mainAxisAlignment.end();
+    test('', () {
+      const boxSpec = BoxSpec(alignment: Alignment.center);
+      const flexSpec = FlexSpec(direction: Axis.vertical);
+      final boxStyleSpec = StyleSpec(spec: boxSpec);
+      final flexStyleSpec = StyleSpec(spec: flexSpec);
+      final spec = FlexBoxSpec(box: boxStyleSpec, flex: flexStyleSpec);
 
-      final attr1 = flexBox1.attributeValue!;
-      final attr2 = flexBox2.attributeValue!;
-
-      expect(attr1.box!.padding, const EdgeInsets.all(10.0).toDto());
-      expect(attr2.box!.padding, const EdgeInsets.all(20.0).toDto());
-      expect(attr1.flex!.mainAxisAlignment, MainAxisAlignment.start);
-      expect(attr2.flex!.mainAxisAlignment, MainAxisAlignment.end);
-
-      final style1 = Style(flexBox1);
-      final style2 = Style(flexBox2);
-
-      final flexBoxAttribute1 =
-          style1.styles.attributeOfType<FlexBoxSpecAttribute>();
-      final flexBoxAttribute2 =
-          style2.styles.attributeOfType<FlexBoxSpecAttribute>();
-
-      expect(
-          flexBoxAttribute1?.box!.padding, const EdgeInsets.all(10.0).toDto());
-      expect(
-          flexBoxAttribute2?.box!.padding, const EdgeInsets.all(20.0).toDto());
-      expect(
-          flexBoxAttribute1?.flex!.mainAxisAlignment, MainAxisAlignment.start);
-      expect(flexBoxAttribute2?.flex!.mainAxisAlignment, MainAxisAlignment.end);
-
-      final mixData1 = style1.of(MockBuildContext());
-      final mixData2 = style2.of(MockBuildContext());
-
-      final flexBoxSpec1 = FlexBoxSpec.from(mixData1);
-      final flexBoxSpec2 = FlexBoxSpec.from(mixData2);
-
-      expect(flexBoxSpec1.box.padding, const EdgeInsets.all(10.0));
-      expect(flexBoxSpec2.box.padding, const EdgeInsets.all(20.0));
-      expect(flexBoxSpec1.flex.mainAxisAlignment, MainAxisAlignment.start);
-      expect(flexBoxSpec2.flex.mainAxisAlignment, MainAxisAlignment.end);
+      expect(spec.box?.spec, boxSpec);
+      expect(spec.flex?.spec, flexSpec);
     });
 
-    test('Mutate behavior and not on same utility', () {
-      final flexBox = FlexBoxSpecUtility.self;
-
-      final flexBoxValue = flexBox;
-      flexBoxValue
-        ..box.padding(10)
-        ..box.color.red()
-        ..box.alignment.center()
-        ..flex.mainAxisAlignment.center()
-        ..flex.crossAxisAlignment.center();
-
-      final flexBoxAttribute = flexBoxValue.attributeValue!;
-      final flexBoxAttribute2 = flexBox.box.padding(20);
-
-      expect(flexBoxAttribute.box!.padding, const EdgeInsets.all(10.0).toDto());
-      expect(
-        (flexBoxAttribute.box!.decoration as BoxDecorationDto).color,
-        const ColorDto(Colors.red),
+    test('copyWith creates new instance with updated values', () {
+      final original = FlexBoxSpec(
+        box: StyleSpec(spec: BoxSpec(alignment: Alignment.center)),
+        flex: StyleSpec(spec: FlexSpec(direction: Axis.horizontal)),
       );
-      expect(flexBoxAttribute.box!.alignment, Alignment.center);
-      expect(
-          flexBoxAttribute.flex!.mainAxisAlignment, MainAxisAlignment.center);
-      expect(
-          flexBoxAttribute.flex!.crossAxisAlignment, CrossAxisAlignment.center);
 
-      expect(
-          flexBoxAttribute2.box!.padding, const EdgeInsets.all(20.0).toDto());
-      expect((flexBoxAttribute2.box!.decoration as BoxDecorationDto?)?.color,
-          isNull);
-      expect(flexBoxAttribute2.box!.alignment, isNull);
+      final updated = original.copyWith(
+        box: StyleSpec(spec: BoxSpec(alignment: Alignment.topLeft)),
+      );
+
+      expect(updated.box?.spec.alignment, Alignment.topLeft);
+      expect(updated.flex?.spec.direction, Axis.horizontal);
+      expect(identical(original, updated), isFalse);
+    });
+
+    test('', () {
+      final spec1 = FlexBoxSpec(
+        box: StyleSpec(spec: BoxSpec(padding: EdgeInsets.all(10.0))),
+        flex: StyleSpec(spec: FlexSpec(spacing: 10.0)),
+      );
+
+      final spec2 = FlexBoxSpec(
+        box: StyleSpec(spec: BoxSpec(padding: EdgeInsets.all(20.0))),
+        flex: StyleSpec(spec: FlexSpec(spacing: 20.0)),
+      );
+
+      final interpolated = spec1.lerp(spec2, 0.5);
+      final boxSpec = interpolated.box?.spec;
+      final flexSpec = interpolated.flex?.spec;
+
+      expect(boxSpec?.padding, const EdgeInsets.all(15.0));
+      expect(flexSpec?.spacing, 15.0);
+    });
+
+    test('lerp interpolates properly when other is null', () {
+      final spec = FlexBoxSpec(
+        box: StyleSpec(spec: BoxSpec(alignment: Alignment.center)),
+      );
+
+      final result = spec.lerp(null, 0.5);
+      final boxSpec = result.box?.spec;
+
+      // Properties should interpolate according to their lerp behavior
+      expect(boxSpec?.alignment, Alignment.lerp(Alignment.center, null, 0.5));
+    });
+
+    test('equality and hashCode', () {
+      final spec1 = FlexBoxSpec(
+        box: StyleSpec(spec: BoxSpec(alignment: Alignment.center)),
+        flex: StyleSpec(spec: FlexSpec(direction: Axis.horizontal)),
+      );
+
+      final spec2 = FlexBoxSpec(
+        box: StyleSpec(spec: BoxSpec(alignment: Alignment.center)),
+        flex: StyleSpec(spec: FlexSpec(direction: Axis.horizontal)),
+      );
+
+      final spec3 = FlexBoxSpec(
+        box: StyleSpec(spec: BoxSpec(alignment: Alignment.topLeft)),
+        flex: StyleSpec(spec: FlexSpec(direction: Axis.horizontal)),
+      );
+
+      expect(spec1, equals(spec2));
+      expect(spec1.hashCode, equals(spec2.hashCode));
+      expect(spec1, isNot(equals(spec3)));
     });
   });
 }

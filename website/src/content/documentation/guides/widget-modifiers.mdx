@@ -1,0 +1,87 @@
+
+# Widget Modifiers
+
+In Mix, a modifier is simply a method you use on a `Style` to add extra behavior or effects to a widget—without having to change the widget tree itself. When you use a modifier, it wraps your widget with another widget (like `Transform`, `Padding`, and so on). This lets you tweak how your widget looks or acts, all while keeping the widget tree clean and unchanged.
+
+To make modifiers easy to identify and use, Mix follows a clear naming pattern: all modifiers start with the prefix `wrap`. This convention helps you quickly spot and consistently apply modifiers throughout your styles.
+
+## Understanding the Mechanics
+
+Take the `wrapOpacity` method, for instance. The Container widget doesn't inherently possess the ability to change its opacity. But, by employing a Opacity widget as a parent, we can introduce this effect.
+
+```dart
+final style = BoxStyler()
+  .color(Colors.red)
+  .size(100, 100)
+  .wrapOpacity(0.4)
+```
+
+in this case, the `Box` will be wrapped with an `Opacity` widget with an opacity of 0.4. The final widget tree will be equivalent to:
+
+```dart
+Opacity(
+  opacity: 0.4,
+  child: Container(...),
+);
+```
+
+### Creating a custom modifier
+
+Mix provides a set of built-in modifiers that can be used out of the box. But you can also create your own modifiers to fit your needs.
+
+Creating a modifier is like creating a `Widget` but instead of extending `StatelessWidget`, you extend `WidgetModifier`. Define the properties you want to modify and the widget you want to decorate.
+
+```dart
+final class OpacityModifier extends WidgetModifier<OpacityModifier> {
+
+  final double opacity;
+  const OpacityModifier([double? opacity]) : opacity = opacity ?? 1.0;
+
+  @override
+  OpacityModifier copyWith({double? opacity});
+
+  @override
+  OpacityModifier lerp(OpacityModifier? other, double t);
+
+  @override
+  List<Object?> get props => [opacity];
+
+  @override
+  Widget build(Widget child) {
+    return Opacity(opacity: opacity, child: child);
+  }
+}
+```
+
+The `build` method is the most important method in a modifier. It's the method that will be called to build the widget tree. It's where you define the widget tree that will be wrapped by the modifier and how it will be modified.
+
+After creating the `WidgetModifier`, you need to create a Mix class for applying the modifier. This class will be used to make the modifier mergeable and resolveable.
+
+```dart
+class OpacityModifierMix extends ModifierMix<OpacityModifier> {
+  final Prop<double>? opacity;
+
+  const OpacityModifierMix.create({this.opacity});
+
+  OpacityModifierMix({double? opacity})
+    : this.create(opacity: Prop.maybe(opacity));
+
+  @override
+  OpacityModifier resolve(BuildContext context);
+
+  @override
+  OpacityModifierMix merge(OpacityModifierMix? other);
+
+  @override
+  List<Object?> get props => [opacity];
+}
+```
+
+To use your custom modifier in a style, you can use it through the `.wrap` method on your style. For example, if you have a `BoxStyler` and want to apply your custom `OpacityModifierMix`, you can do:
+
+```dart
+final style = BoxStyler()
+  .color(Colors.red)
+  .size(100, 100)
+  .wrap(OpacityModifierMix(opacity: 0.4))
+```

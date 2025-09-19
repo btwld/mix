@@ -2,180 +2,208 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../../core/animated_spec_widget.dart';
-import '../../core/factory/mix_provider.dart';
-import '../../core/spec_widget.dart';
-import '../../core/styled_widget.dart';
-import '../../modifiers/internal/render_widget_modifier.dart';
-import '../box/box_spec.dart';
+import '../../core/style_builder.dart';
+import '../../core/style_spec.dart';
+import '../../core/style_widget.dart';
+import '../box/box_widget.dart';
 import '../flex/flex_spec.dart';
 import 'flexbox_spec.dart';
+import 'flexbox_style.dart';
 
-/// A styled flex container widget combining box and flex capabilities.
+@Deprecated('Use ColumnBox instead')
+typedef VBox = ColumnBox;
+
+@Deprecated('Use RowBox instead')
+typedef HBox = RowBox;
+
+/// Combines [Container] and [Flex] with Mix styling.
 ///
-/// Applies both [BoxSpec] and [FlexSpec] styling to create flexible layouts
-/// with advanced styling through the Mix framework. Combines container and
-/// flex properties for complex layouts.
-///
-/// Example:
-/// ```dart
-/// FlexBox(
-///   direction: Axis.horizontal,
-///   style: Style(
-///     $flex.gap(8),
-///     $box.padding.all(16),
-///   ),
-///   children: [Widget1(), Widget2()],
-/// )
-/// ```
-class FlexBox extends StyledWidget {
+/// Applies both box and flex specifications for flexible layouts,
+/// providing decoration, constraints, and flex layout in one widget.
+class FlexBox extends StyleWidget<FlexBoxSpec> {
   const FlexBox({
-    super.style,
+    super.style = const FlexBoxStyler.create(),
     super.key,
-    super.inherit,
-    required this.direction,
     this.children = const <Widget>[],
-    super.orderOfModifiers = const [],
   });
 
+  /// Child widgets to be arranged in the flex layout.
   final List<Widget> children;
-  final Axis direction;
+
+  /// Constrains the flex direction for RowBox/ColumnBox.
+  /// When specified, prevents conflicting direction in style specs.
+  Axis? get _forcedDirection => null;
 
   @override
-  Widget build(BuildContext context) {
-    // TODO: the support for FlexBoxSpec using BoxSpec and FlexSpec is a temporary
-    // solution to not break the existing API. it should be implemented using only
-    // FlexBoxSpec in the next major version.
-    return SpecBuilder(
-      inherit: inherit,
-      style: style,
-      orderOfModifiers: orderOfModifiers,
-      builder: (context) {
-        final mixData = Mix.of(context);
-
-        final spec =
-            mixData.attributeOf<FlexBoxSpecAttribute>()?.resolve(mixData);
-
-        final boxSpec = spec?.box ?? BoxSpec.of(context);
-        final flexSpec = spec?.flex ?? FlexSpec.of(context);
-
-        final newSpec = FlexBoxSpec(
-          animated: spec?.animated,
-          modifiers: spec?.modifiers,
-          box: boxSpec,
-          flex: flexSpec,
-        );
-
-        return newSpec(direction: direction, children: children);
-      },
-    );
-  }
-}
-
-class FlexBoxSpecWidget extends SpecWidget<FlexBoxSpec> {
-  const FlexBoxSpecWidget({
-    super.key,
-    super.spec,
-    this.children = const <Widget>[],
-    required this.direction,
-    this.orderOfModifiers = const [],
-  });
-
-  final List<Widget> children;
-  final Axis direction;
-  final List<Type> orderOfModifiers;
-
-  @override
-  Widget build(BuildContext context) {
-    final spec = this.spec ?? const FlexBoxSpec();
-
-    // TODO: Convert to a BoxSpecWidget and a FlexSpecWidget in the next major version.
-    // it should be implemented following the same pattern as the others SpecWidgets.
-    // This code must be like this to keep the existing animation API working.
-    return RenderSpecModifiers(
+  Widget build(BuildContext context, FlexBoxSpec spec) {
+    return _createFlexBoxSpecWidget(
       spec: spec,
-      orderOfModifiers: orderOfModifiers,
-      child: spec.box(
-        orderOfModifiers: orderOfModifiers,
-        child: spec.flex(direction: direction, children: children),
-      ),
-    );
-  }
-}
-
-class AnimatedFlexBoxSpecWidget
-    extends ImplicitlyAnimatedSpecWidget<FlexBoxSpec> {
-  const AnimatedFlexBoxSpecWidget({
-    super.key,
-    required super.spec,
-    this.children = const <Widget>[],
-    required this.direction,
-    this.orderOfModifiers = const [],
-    super.curve,
-    required super.duration,
-    super.onEnd,
-  });
-
-  final List<Widget> children;
-  final Axis direction;
-  final List<Type> orderOfModifiers;
-
-  @override
-  Widget build(BuildContext context, FlexBoxSpec animatedSpec) {
-    return FlexBoxSpecWidget(
-      spec: animatedSpec,
-      direction: direction,
-      orderOfModifiers: orderOfModifiers,
+      forcedDirection: _forcedDirection,
       children: children,
     );
   }
 }
 
-/// A horizontal flex container with `Style` for easy and consistent styling.
+/// Horizontal flex box with Mix styling.
 ///
-/// `HBox` is a specialized `FlexBox` designed for horizontal layouts, simplifying
-/// the process of applying horizontal alignment with advanced styling via `Style`.
-/// It's an efficient way to achieve consistent styling in horizontal arrangements.
-///
-/// Inherits all functionalities of `FlexBox`, optimized for horizontal layouts.
-///
-/// Example Usage:
-/// ```dart
-/// HBox(
-///   style: yourStyle,
-///   children: [Widget1(), Widget2()],
-/// );
-/// ```
-class HBox extends FlexBox {
-  const HBox({
-    super.style,
+/// Shorthand for [FlexBox] with [Axis.horizontal].
+class RowBox extends FlexBox {
+  const RowBox({
+    super.style = const FlexBoxStyler.create(),
     super.key,
-    super.inherit,
     super.children = const <Widget>[],
-  }) : super(direction: Axis.horizontal);
+  });
+
+  @override
+  Axis get _forcedDirection => Axis.horizontal;
 }
 
-/// A vertical flex container that uses `Style` for streamlined styling.
+/// Vertical flex box with Mix styling.
 ///
-/// `VBox` is a vertical counterpart to `HBox`, utilizing `Style` for efficient
-/// and consistent styling in vertical layouts. It offers an easy way to manage
-/// vertical alignment and styling in a cohesive manner.
-///
-/// Inherits the comprehensive styling and layout capabilities of `FlexBox`, tailored
-/// for vertical orientations.
-///
-/// Example Usage:
-/// ```dart
-/// VBox(
-///   style: yourStyle,
-///   children: [Widget1(), Widget2()],
-/// );
-/// ```
-class VBox extends FlexBox {
-  const VBox({
-    super.style,
+/// Shorthand for [FlexBox] with [Axis.vertical].
+class ColumnBox extends FlexBox {
+  const ColumnBox({
+    super.style = const FlexBoxStyler.create(),
     super.key,
-    super.inherit,
     super.children = const <Widget>[],
-  }) : super(direction: Axis.vertical);
+  });
+
+  @override
+  Axis get _forcedDirection => Axis.vertical;
+}
+
+/// Creates a [Flex] widget from a [FlexSpec] and required parameters.
+///
+/// Applies all flex layout properties with appropriate default values
+/// when specification properties are null.
+Flex _createFlexSpecWidget({
+  required FlexSpec? spec,
+  Axis? forcedDirection,
+  List<Widget> children = const [],
+}) {
+  final hasDirectionFromBothSources =
+      forcedDirection != null && spec?.direction != null;
+  final hasDirectionsConflict = forcedDirection != spec?.direction;
+
+  assert(
+    !(hasDirectionFromBothSources && hasDirectionsConflict),
+    'Direction cannot be specified in the spec for RowBox (horizontal) or ColumnBox (vertical). Use FlexBox if you need dynamic direction control.',
+  );
+
+  return Flex(
+    direction: spec?.direction ?? forcedDirection ?? Axis.horizontal,
+    mainAxisAlignment: spec?.mainAxisAlignment ?? MainAxisAlignment.start,
+    mainAxisSize: spec?.mainAxisSize ?? MainAxisSize.max,
+    crossAxisAlignment: spec?.crossAxisAlignment ?? CrossAxisAlignment.center,
+    textDirection: spec?.textDirection,
+    verticalDirection: spec?.verticalDirection ?? VerticalDirection.down,
+    textBaseline: spec?.textBaseline,
+    clipBehavior: spec?.clipBehavior ?? Clip.none,
+    spacing: spec?.spacing ?? 0.0,
+    children: children,
+  );
+}
+
+/// Creates a Box-styled container with [Flex] child from a [FlexBoxSpec].
+///
+/// Applies box styling as the outer container and flex layout as the inner
+/// child widget, combining both specifications effectively.
+Widget _createFlexBoxSpecWidget({
+  required FlexBoxSpec spec,
+  required Axis? forcedDirection,
+  List<Widget> children = const [],
+}) {
+  final flexWidget = _createFlexSpecWidget(
+    spec: spec.flex?.spec,
+    forcedDirection: forcedDirection,
+    children: children,
+  );
+
+  if (spec.box != null) {
+    return spec.box!.createWidget(child: flexWidget);
+  }
+
+  return flexWidget;
+}
+
+/// Extension to convert [FlexSpec] directly to a [Flex] widget.
+extension FlexSpecWidget on FlexSpec {
+  /// Creates a [Flex] widget from this [FlexSpec].
+  Flex createWidget({Axis? direction, List<Widget> children = const []}) {
+    return _createFlexSpecWidget(
+      spec: this,
+      forcedDirection: direction,
+      children: children,
+    );
+  }
+
+  @Deprecated('Use .createWidget() instead')
+  Flex call({Axis? direction, List<Widget> children = const []}) {
+    return createWidget(direction: direction, children: children);
+  }
+}
+
+/// Extension to convert [FlexBoxSpec] directly to a styled flex widget.
+extension FlexBoxSpecWidget on FlexBoxSpec {
+  /// Creates a widget from this [FlexBoxSpec].
+  Widget createWidget({
+    required Axis direction,
+    List<Widget> children = const [],
+  }) {
+    return _createFlexBoxSpecWidget(
+      spec: this,
+      forcedDirection: direction,
+      children: children,
+    );
+  }
+
+  @Deprecated('Use .createWidget() instead')
+  Widget call({required Axis direction, List<Widget> children = const []}) {
+    return createWidget(direction: direction, children: children);
+  }
+}
+
+extension FlexSpecWrappedWidget on StyleSpec<FlexSpec> {
+  /// Creates a widget that resolves this [StyleSpec<FlexSpec>] with context.
+  Widget createWidget({Axis? direction, List<Widget> children = const []}) {
+    return StyleSpecBuilder(
+      builder: (context, spec) {
+        return _createFlexSpecWidget(
+          spec: spec,
+          forcedDirection: direction,
+          children: children,
+        );
+      },
+      styleSpec: this,
+    );
+  }
+
+  @Deprecated('Use .createWidget() instead')
+  Widget call({Axis? direction, List<Widget> children = const []}) {
+    return createWidget(direction: direction, children: children);
+  }
+}
+
+extension FlexBoxSpecWrappedWidget on StyleSpec<FlexBoxSpec> {
+  /// Creates a widget that resolves this [StyleSpec<FlexBoxSpec>] with context.
+  Widget createWidget({
+    required Axis direction,
+    List<Widget> children = const [],
+  }) {
+    return StyleSpecBuilder(
+      builder: (context, spec) {
+        return _createFlexBoxSpecWidget(
+          spec: spec,
+          forcedDirection: direction,
+          children: children,
+        );
+      },
+      styleSpec: this,
+    );
+  }
+
+  @Deprecated('Use .createWidget() instead')
+  Widget call({required Axis direction, List<Widget> children = const []}) {
+    return createWidget(direction: direction, children: children);
+  }
 }

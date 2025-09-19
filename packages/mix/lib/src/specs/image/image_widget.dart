@@ -1,174 +1,189 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/animated_spec_widget.dart';
-import '../../core/spec_widget.dart';
-import '../../core/styled_widget.dart';
-import '../../internal/constants.dart';
-import '../../modifiers/internal/render_widget_modifier.dart';
+import '../../core/style_builder.dart';
+import '../../core/style_spec.dart';
+import '../../core/style_widget.dart';
 import 'image_spec.dart';
+import 'image_style.dart';
 
-class StyledImage extends StyledWidget {
+/// A styled image widget using Mix framework.
+///
+/// Applies [ImageSpec] styling to create a customized [Image].
+class StyledImage extends StyleWidget<ImageSpec> {
   const StyledImage({
     super.key,
-    super.style,
-    super.inherit = true,
+    super.style = const ImageMix.create(),
     this.frameBuilder,
     this.loadingBuilder,
     this.errorBuilder,
-    this.semanticLabel,
-    this.excludeFromSemantics = false,
-    required this.image,
-    this.gaplessPlayback = false,
-    this.isAntiAlias = false,
-    this.matchTextDirection = false,
-    this.opacity,
-    super.orderOfModifiers = const [],
-  });
-
-  final ImageProvider<Object> image;
-  final ImageFrameBuilder? frameBuilder;
-  final ImageLoadingBuilder? loadingBuilder;
-  final ImageErrorWidgetBuilder? errorBuilder;
-  final String? semanticLabel;
-  final bool excludeFromSemantics;
-  final bool gaplessPlayback;
-  final bool isAntiAlias;
-  final bool matchTextDirection;
-  final Animation<double>? opacity;
-
-  @override
-  Widget build(BuildContext context) {
-    return SpecBuilder(
-      inherit: inherit,
-      style: style,
-      orderOfModifiers: orderOfModifiers,
-      builder: (context) {
-        final spec = ImageSpec.of(context);
-
-        return spec(
-          image: image,
-          frameBuilder: frameBuilder,
-          loadingBuilder: loadingBuilder,
-          errorBuilder: errorBuilder,
-          semanticLabel: semanticLabel,
-          excludeFromSemantics: excludeFromSemantics,
-          gaplessPlayback: gaplessPlayback,
-          isAntiAlias: isAntiAlias,
-          matchTextDirection: matchTextDirection,
-          opacity: opacity,
-          orderOfModifiers: orderOfModifiers,
-        );
-      },
-    );
-  }
-}
-
-class ImageSpecWidget extends SpecWidget<ImageSpec> {
-  const ImageSpecWidget({
-    super.key,
-    this.orderOfModifiers = const [],
-    super.spec,
-    required this.image,
-    this.frameBuilder,
-    this.loadingBuilder,
-    this.errorBuilder,
-    this.semanticLabel,
-    this.excludeFromSemantics = false,
-    this.gaplessPlayback = false,
-    this.isAntiAlias = false,
-    this.opacity,
-    this.matchTextDirection = false,
-  });
-
-  final ImageProvider<Object> image;
-  final ImageFrameBuilder? frameBuilder;
-  final ImageLoadingBuilder? loadingBuilder;
-  final ImageErrorWidgetBuilder? errorBuilder;
-  final String? semanticLabel;
-  final bool excludeFromSemantics;
-  final List<Type> orderOfModifiers;
-  final bool gaplessPlayback;
-  final bool isAntiAlias;
-  final bool matchTextDirection;
-  final Animation<double>? opacity;
-
-  @override
-  Widget build(BuildContext context) {
-    return RenderSpecModifiers(
-      spec: spec ?? const ImageSpec(),
-      orderOfModifiers: orderOfModifiers,
-      child: Image(
-        image: image,
-        frameBuilder: frameBuilder,
-        loadingBuilder: loadingBuilder,
-        errorBuilder: errorBuilder,
-        semanticLabel: semanticLabel,
-        excludeFromSemantics: excludeFromSemantics,
-        width: spec?.width,
-        height: spec?.height,
-        color: spec?.color,
-        opacity: opacity,
-        colorBlendMode: spec?.colorBlendMode ?? BlendMode.clear,
-        fit: spec?.fit,
-        alignment: spec?.alignment ?? Alignment.center,
-        repeat: spec?.repeat ?? ImageRepeat.noRepeat,
-        centerSlice: spec?.centerSlice,
-        matchTextDirection: matchTextDirection,
-        gaplessPlayback: gaplessPlayback,
-        isAntiAlias: isAntiAlias,
-        filterQuality: spec?.filterQuality ?? FilterQuality.low,
-      ),
-    );
-  }
-}
-
-class AnimatedImageSpecWidget extends ImplicitlyAnimatedSpecWidget<ImageSpec> {
-  const AnimatedImageSpecWidget({
-    required super.spec,
-    required this.image,
-    this.frameBuilder,
-    this.loadingBuilder,
-    this.errorBuilder,
-    this.semanticLabel,
-    this.excludeFromSemantics = false,
-    super.key,
-    super.duration = kDefaultAnimationDuration,
-    super.curve = Curves.linear,
-    super.onEnd,
-    this.gaplessPlayback = false,
-    this.isAntiAlias = false,
-    this.matchTextDirection = false,
-    this.orderOfModifiers = const [],
+    this.image,
     this.opacity,
   });
 
-  final ImageProvider<Object> image;
+  /// The image to display.
+  final ImageProvider<Object>? image;
+
+  /// Builder for custom frame rendering.
   final ImageFrameBuilder? frameBuilder;
+
+  /// Builder for loading state.
   final ImageLoadingBuilder? loadingBuilder;
+
+  /// Builder for error state.
   final ImageErrorWidgetBuilder? errorBuilder;
-  final String? semanticLabel;
-  final bool excludeFromSemantics;
-  final bool gaplessPlayback;
-  final bool isAntiAlias;
-  final bool matchTextDirection;
+
+  /// Animation for opacity changes.
   final Animation<double>? opacity;
-  final List<Type> orderOfModifiers;
 
   @override
-  Widget build(BuildContext context, ImageSpec animatedSpec) {
-    return ImageSpecWidget(
-      spec: animatedSpec,
-      orderOfModifiers: orderOfModifiers,
+  Widget build(BuildContext context, ImageSpec spec) {
+    return _createImageSpecWidget(
+      spec: spec,
       image: image,
       frameBuilder: frameBuilder,
       loadingBuilder: loadingBuilder,
       errorBuilder: errorBuilder,
-      semanticLabel: semanticLabel,
-      excludeFromSemantics: excludeFromSemantics,
-      gaplessPlayback: gaplessPlayback,
-      isAntiAlias: isAntiAlias,
       opacity: opacity,
-      matchTextDirection: matchTextDirection,
+    );
+  }
+}
+
+/// Creates an [Image] widget from an [ImageSpec] and optional overrides.
+Image _createImageSpecWidget({
+  required ImageSpec spec,
+  ImageProvider<Object>? image,
+  ImageFrameBuilder? frameBuilder,
+  ImageLoadingBuilder? loadingBuilder,
+  ImageErrorWidgetBuilder? errorBuilder,
+  Animation<double>? opacity,
+}) {
+  final imageProvider = _resolveImage(image, spec);
+
+  return Image(
+    image: imageProvider,
+    frameBuilder: frameBuilder,
+    loadingBuilder: loadingBuilder,
+    errorBuilder: errorBuilder,
+    semanticLabel: spec.semanticLabel,
+    excludeFromSemantics: spec.excludeFromSemantics ?? false,
+    width: spec.width,
+    height: spec.height,
+    color: spec.color,
+    opacity: opacity,
+    colorBlendMode: spec.colorBlendMode,
+    fit: spec.fit,
+    alignment: spec.alignment ?? Alignment.center,
+    repeat: spec.repeat ?? ImageRepeat.noRepeat,
+    centerSlice: spec.centerSlice,
+    matchTextDirection: spec.matchTextDirection ?? false,
+    gaplessPlayback: spec.gaplessPlayback ?? false,
+    isAntiAlias: spec.isAntiAlias ?? false,
+    filterQuality: spec.filterQuality ?? FilterQuality.medium,
+  );
+}
+
+/// Resolves the image provider from widget or spec.
+/// Throws if no image provider is found.
+ImageProvider<Object> _resolveImage(
+  ImageProvider<Object>? widgetImage,
+  ImageSpec spec,
+) {
+  final imageProvider = widgetImage ?? spec.image;
+
+  if (imageProvider == null) {
+    throw FlutterError.fromParts([
+      ErrorSummary('No ImageProvider found for StyledImage.'),
+      ErrorDescription(
+        'StyledImage requires an ImageProvider to be specified either through '
+        'the widget\'s image parameter or through the style\'s image property.',
+      ),
+      ErrorHint(
+        'To fix this, either:\n'
+        '  - Pass an image parameter when creating the StyledImage\n'
+        '  - Include an image property in your ImageMix style',
+      ),
+    ]);
+  }
+
+  return imageProvider;
+}
+
+/// Extension to convert [ImageSpec] directly to an [Image] widget.
+extension ImageSpecWidget on ImageSpec {
+  /// Creates an [Image] widget from this [ImageSpec].
+  Image createWidget({
+    ImageProvider<Object>? image,
+    ImageFrameBuilder? frameBuilder,
+    ImageLoadingBuilder? loadingBuilder,
+    ImageErrorWidgetBuilder? errorBuilder,
+    Animation<double>? opacity,
+  }) {
+    return _createImageSpecWidget(
+      spec: this,
+      image: image,
+      frameBuilder: frameBuilder,
+      loadingBuilder: loadingBuilder,
+      errorBuilder: errorBuilder,
+      opacity: opacity,
+    );
+  }
+
+  @Deprecated('Use .createWidget() instead')
+  Image call({
+    ImageProvider<Object>? image,
+    ImageFrameBuilder? frameBuilder,
+    ImageLoadingBuilder? loadingBuilder,
+    ImageErrorWidgetBuilder? errorBuilder,
+    Animation<double>? opacity,
+  }) {
+    return createWidget(
+      image: image,
+      frameBuilder: frameBuilder,
+      loadingBuilder: loadingBuilder,
+      errorBuilder: errorBuilder,
+      opacity: opacity,
+    );
+  }
+}
+
+extension ImageSpecWrappedWidget on StyleSpec<ImageSpec> {
+  /// Creates a widget that resolves this [StyleSpec<ImageSpec>] with context.
+  Widget createWidget({
+    ImageProvider<Object>? image,
+    ImageFrameBuilder? frameBuilder,
+    ImageLoadingBuilder? loadingBuilder,
+    ImageErrorWidgetBuilder? errorBuilder,
+    Animation<double>? opacity,
+  }) {
+    return StyleSpecBuilder(
+      builder: (context, spec) {
+        return _createImageSpecWidget(
+          spec: spec,
+          image: image,
+          frameBuilder: frameBuilder,
+          loadingBuilder: loadingBuilder,
+          errorBuilder: errorBuilder,
+          opacity: opacity,
+        );
+      },
+      styleSpec: this,
+    );
+  }
+
+  @Deprecated('Use .createWidget() instead')
+  Widget call({
+    ImageProvider<Object>? image,
+    ImageFrameBuilder? frameBuilder,
+    ImageLoadingBuilder? loadingBuilder,
+    ImageErrorWidgetBuilder? errorBuilder,
+    Animation<double>? opacity,
+  }) {
+    return createWidget(
+      image: image,
+      frameBuilder: frameBuilder,
+      loadingBuilder: loadingBuilder,
+      errorBuilder: errorBuilder,
+      opacity: opacity,
     );
   }
 }

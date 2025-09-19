@@ -132,7 +132,9 @@ class ExtractAttributes extends DartAssist {
 
         try {
           extractor.applyRefactor(unit.content);
-        } catch (e) {}
+        } catch (e) {
+          // Ignore refactoring errors and continue
+        }
       });
     });
   }

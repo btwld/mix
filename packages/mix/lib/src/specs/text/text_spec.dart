@@ -1,60 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mix_annotations/mix_annotations.dart';
 
-import '../../attributes/animated/animated_data.dart';
-import '../../attributes/animated/animated_data_dto.dart';
-import '../../attributes/animated/animated_util.dart';
-import '../../attributes/enum/enum_util.dart';
-import '../../attributes/modifiers/widget_modifiers_config.dart';
-import '../../attributes/modifiers/widget_modifiers_config_dto.dart';
-import '../../attributes/modifiers/widget_modifiers_util.dart';
-import '../../attributes/scalars/scalar_util.dart';
-import '../../attributes/strut_style/strut_style_dto.dart';
-import '../../attributes/text_height_behavior/text_height_behavior_dto.dart';
-import '../../attributes/text_style/text_style_dto.dart';
-import '../../attributes/text_style/text_style_util.dart';
-import '../../core/computed_style/computed_style.dart';
 import '../../core/directive.dart';
-import '../../core/factory/mix_context.dart';
-import '../../core/factory/style_mix.dart';
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
-import '../../core/utility.dart';
-import 'text_directives_util.dart';
-import 'text_widget.dart';
 
-part 'text_spec.g.dart';
-
-const _style = MixableFieldUtility(
-  type: TextStyle,
-  properties: [
-    (path: 'color', alias: 'color'),
-    (path: 'fontFamily', alias: 'fontFamily'),
-    (path: 'fontWeight', alias: 'fontWeight'),
-    (path: 'fontStyle', alias: 'fontStyle'),
-    (path: 'fontSize', alias: 'fontSize'),
-    (path: 'letterSpacing', alias: 'letterSpacing'),
-    (path: 'wordSpacing', alias: 'wordSpacing'),
-    (path: 'textBaseline', alias: 'textBaseline'),
-    (path: 'backgroundColor', alias: 'backgroundColor'),
-    (path: 'shadows', alias: 'shadows'),
-    (path: 'fontFeatures', alias: 'fontFeatures'),
-    (path: 'fontVariations', alias: 'fontVariations'),
-    (path: 'decoration', alias: 'decoration'),
-    (path: 'decorationColor', alias: 'decorationColor'),
-    (path: 'decorationStyle', alias: 'decorationStyle'),
-    (path: 'debugLabel', alias: 'debugLabel'),
-    (path: 'height', alias: 'height'),
-    (path: 'foreground', alias: 'foreground'),
-    (path: 'background', alias: 'background'),
-    (path: 'decorationThickness', alias: 'decorationThickness'),
-    (path: 'fontFamilyFallback', alias: 'fontFamilyFallback'),
-  ],
-);
-
-@MixableSpec()
-final class TextSpec extends Spec<TextSpec> with _$TextSpec, Diagnosticable {
+/// Specification for text styling and layout properties.
+///
+/// Provides comprehensive text styling including overflow behavior, structure styling,
+/// alignment, line limits, text direction, and string directive support.
+final class TextSpec extends Spec<TextSpec> with Diagnosticable {
   final TextOverflow? overflow;
   final StrutStyle? strutStyle;
   final TextAlign? textAlign;
@@ -62,41 +17,26 @@ final class TextSpec extends Spec<TextSpec> with _$TextSpec, Diagnosticable {
   final TextWidthBasis? textWidthBasis;
   final TextScaler? textScaler;
 
-  @MixableField(utilities: [_style])
   final TextStyle? style;
   final TextDirection? textDirection;
   final bool? softWrap;
 
-  @Deprecated('Use textScaler instead')
-  final double? textScaleFactor;
-
-  @MixableField(dto: MixableFieldType(type: TextHeightBehaviorDto))
   final TextHeightBehavior? textHeightBehavior;
 
-  @MixableField(
-    utilities: [
-      MixableFieldUtility(
-        properties: [
-          (path: 'uppercase', alias: 'uppercase'),
-          (path: 'lowercase', alias: 'lowercase'),
-          (path: 'capitalize', alias: 'capitalize'),
-          (path: 'titleCase', alias: 'titleCase'),
-          (path: 'sentenceCase', alias: 'sentenceCase'),
-        ],
-      ),
-    ],
-  )
-  final TextDirective? directive;
+  final List<Directive<String>>? textDirectives;
 
-  static const of = _$TextSpec.of;
+  final Color? selectionColor;
 
-  static const from = _$TextSpec.from;
+  /// Alternative semantics label for accessibility.
+  final String? semanticsLabel;
+
+  /// Locale for text rendering and formatting.
+  final Locale? locale;
 
   const TextSpec({
     this.overflow,
     this.strutStyle,
     this.textAlign,
-    @Deprecated('Use textScaler instead') this.textScaleFactor,
     this.textScaler,
     this.maxLines,
     this.style,
@@ -104,40 +44,138 @@ final class TextSpec extends Spec<TextSpec> with _$TextSpec, Diagnosticable {
     this.textHeightBehavior,
     this.textDirection,
     this.softWrap,
-    this.directive,
-    super.animated,
-    super.modifiers,
+    this.textDirectives,
+    this.selectionColor,
+    this.semanticsLabel,
+    this.locale,
   });
 
-  Widget call(
-    String text, {
-    @Deprecated('Use semanticsLabel instead') String? semanticLabel,
+  /// Creates a copy of this [TextSpec] but with the given fields
+  /// replaced with the new values.
+  @override
+  TextSpec copyWith({
+    TextOverflow? overflow,
+    StrutStyle? strutStyle,
+    TextAlign? textAlign,
+    TextScaler? textScaler,
+    int? maxLines,
+    TextStyle? style,
+    TextWidthBasis? textWidthBasis,
+    TextHeightBehavior? textHeightBehavior,
+    TextDirection? textDirection,
+    bool? softWrap,
+    List<Directive<String>>? textDirectives,
+    Color? selectionColor,
     String? semanticsLabel,
     Locale? locale,
-    List<Type> orderOfModifiers = const [],
   }) {
-    return isAnimated
-        ? AnimatedTextSpecWidget(
-            text,
-            spec: this,
-            semanticsLabel: semanticsLabel ?? semanticLabel,
-            locale: locale,
-            orderOfModifiers: orderOfModifiers,
-            duration: animated!.duration,
-            curve: animated!.curve,
-          )
-        : TextSpecWidget(
-            text,
-            spec: this,
-            semanticsLabel: semanticsLabel ?? semanticLabel,
-            locale: locale,
-            orderOfModifiers: orderOfModifiers,
-          );
+    return TextSpec(
+      overflow: overflow ?? this.overflow,
+      strutStyle: strutStyle ?? this.strutStyle,
+      textAlign: textAlign ?? this.textAlign,
+      textScaler: textScaler ?? this.textScaler,
+      maxLines: maxLines ?? this.maxLines,
+      style: style ?? this.style,
+      textWidthBasis: textWidthBasis ?? this.textWidthBasis,
+      textHeightBehavior: textHeightBehavior ?? this.textHeightBehavior,
+      textDirection: textDirection ?? this.textDirection,
+      softWrap: softWrap ?? this.softWrap,
+      textDirectives: textDirectives ?? this.textDirectives,
+      selectionColor: selectionColor ?? this.selectionColor,
+      semanticsLabel: semanticsLabel ?? this.semanticsLabel,
+      locale: locale ?? this.locale,
+    );
+  }
+
+  /// Linearly interpolates between this [TextSpec] and another [TextSpec] based on the given parameter [t].
+  ///
+  /// The parameter [t] represents the interpolation factor, typically ranging from 0.0 to 1.0.
+  /// When [t] is 0.0, the current [TextSpec] is returned. When [t] is 1.0, the [other] [TextSpec] is returned.
+  /// For values of [t] between 0.0 and 1.0, an interpolated [TextSpec] is returned.
+  ///
+  /// If [other] is null, this method returns the current [TextSpec] instance.
+  ///
+  /// The interpolation is performed on each property of the [TextSpec] using the appropriate
+  /// interpolation method:
+  /// - [MixOps.lerpStrutStyle] for [strutStyle].
+  /// - [MixOps.lerp] for [style].
+  /// For [overflow] and [textAlign] and [textScaler] and [maxLines] and [textWidthBasis] and [textHeightBehavior] and [textDirection] and [softWrap] and [textDirectives], the interpolation is performed using a step function.
+  /// If [t] is less than 0.5, the value from the current [TextSpec] is used. Otherwise, the value
+  /// from the [other] [TextSpec] is used.
+  ///
+  /// This method is typically used in animations to smoothly transition between
+  /// different [TextSpec] configurations.
+  @override
+  TextSpec lerp(TextSpec? other, double t) {
+    return TextSpec(
+      overflow: MixOps.lerpSnap(overflow, other?.overflow, t),
+      strutStyle: MixOps.lerp(strutStyle, other?.strutStyle, t),
+      textAlign: MixOps.lerpSnap(textAlign, other?.textAlign, t),
+      textScaler: MixOps.lerpSnap(textScaler, other?.textScaler, t),
+      maxLines: MixOps.lerpSnap(maxLines, other?.maxLines, t),
+      style: MixOps.lerp(style, other?.style, t),
+      textWidthBasis: MixOps.lerpSnap(textWidthBasis, other?.textWidthBasis, t),
+      textHeightBehavior: MixOps.lerpSnap(
+        textHeightBehavior,
+        other?.textHeightBehavior,
+        t,
+      ),
+      textDirection: MixOps.lerpSnap(textDirection, other?.textDirection, t),
+      softWrap: MixOps.lerpSnap(softWrap, other?.softWrap, t),
+      textDirectives: MixOps.lerpSnap(textDirectives, other?.textDirectives, t),
+      selectionColor: MixOps.lerp(selectionColor, other?.selectionColor, t),
+      semanticsLabel: MixOps.lerpSnap(semanticsLabel, other?.semanticsLabel, t),
+      locale: MixOps.lerpSnap(locale, other?.locale, t),
+    );
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    _debugFillProperties(properties);
+    properties
+      ..add(EnumProperty<TextOverflow>('overflow', overflow))
+      ..add(DiagnosticsProperty('strutStyle', strutStyle))
+      ..add(EnumProperty<TextAlign>('textAlign', textAlign))
+      ..add(DiagnosticsProperty('textScaler', textScaler))
+      ..add(IntProperty('maxLines', maxLines))
+      ..add(DiagnosticsProperty('style', style))
+      ..add(EnumProperty<TextWidthBasis>('textWidthBasis', textWidthBasis))
+      ..add(DiagnosticsProperty('textHeightBehavior', textHeightBehavior))
+      ..add(EnumProperty<TextDirection>('textDirection', textDirection))
+      ..add(
+        FlagProperty(
+          'softWrap',
+          value: softWrap,
+          ifTrue: 'wrapping at word boundaries',
+        ),
+      )
+      ..add(
+        IterableProperty<Directive<String>>('textDirectives', textDirectives),
+      )
+      ..add(ColorProperty('selectionColor', selectionColor))
+      ..add(StringProperty('semanticsLabel', semanticsLabel))
+      ..add(DiagnosticsProperty('locale', locale));
   }
+
+  /// The list of properties that constitute the state of this [TextSpec].
+  ///
+  /// This property is used by the [==] operator and the [hashCode] getter to
+  /// compare two [TextSpec] instances for equality.
+  @override
+  List<Object?> get props => [
+    overflow,
+    strutStyle,
+    textAlign,
+    textScaler,
+    maxLines,
+    style,
+    textWidthBasis,
+    textHeightBehavior,
+    textDirection,
+    softWrap,
+    textDirectives,
+    selectionColor,
+    semanticsLabel,
+    locale,
+  ];
 }

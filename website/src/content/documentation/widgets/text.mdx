@@ -1,0 +1,64 @@
+# StyledText
+
+This is equivalent to the **Text** widget in Flutter.
+
+```dart
+StyledText(
+  'Hello World',
+  style: TextStyler()
+      .color(Colors.red)
+      .fontSize(20),
+);
+```
+
+## Constructor
+
+| Prop  | Type          | Required / Default Value                |
+|-------|---------------|-----------------------------------------|
+| text  | `String`      | Required                               |
+| style | `Style<TextSpec>`  | Optional, defaults to `TextStyler.create()` |
+| key   | `Key?`        | Optional                               |
+
+## Style API Reference
+
+Mix provides an extension of Style\<TextSpec> called `TextStyler` for easily 
+styling `StyledText` widgets.
+
+| Method | Description |
+|--------|-------------|
+| `animate` | Sets animation configuration |
+| `modifier` | Adds widget modifiers |
+| `overflow` | Sets text overflow behavior (ellipsis, fade, clip) |
+| `strutStyle` | Sets strut style for line height and text positioning |
+| `textAlign` | Sets text alignment within its bounding box |
+| `maxLines` | Sets maximum number of lines for text |
+| `textWidthBasis` | Sets how text width is measured |
+| `textHeightBehavior` | Sets text height adjustment behavior |
+| `textDirection` | Sets text reading direction (LTR/RTL) |
+| `softWrap` | Sets whether text should soft-wrap |
+| `textScaler` | Sets text scaling factor |
+| `selectionColor` | Sets text selection color |
+| `semanticsLabel` | Sets semantic label for accessibility |
+| `locale` | Sets locale for text display |
+| `color` | Sets text color |
+| `fontSize` | Sets font size |
+| `fontWeight` | Sets font weight (boldness) |
+| `fontStyle` | Sets font style (italic, normal) |
+| `fontFamily` | Sets font family |
+| `decoration` | Sets text decoration (underline, line-through) |
+| `decorationColor` | Sets decoration color |
+| `decorationStyle` | Sets decoration style |
+| `backgroundColor` | Sets text background color |
+| `height` | Sets line height multiplier |
+| `letterSpacing` | Sets spacing between letters |
+| `wordSpacing` | Sets spacing between words |
+| `textBaseline` | Sets text baseline alignment |
+| `shadow` | Sets single text shadow |
+| `shadows` | Sets multiple text shadows |
+| `fontFeatures` | Sets font features |
+| `uppercase` | Transforms text to uppercase |
+| `lowercase` | Transforms text to lowercase |
+| `capitalize` | Capitalizes first letter of each word |
+| `titleCase` | Converts text to title case |
+| `sentenceCase` | Capitalizes first letter of sentences |
+

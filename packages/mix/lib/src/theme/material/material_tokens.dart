@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../tokens/color_token.dart';
-import '../tokens/text_style_token.dart';
+import '../tokens/value_tokens.dart';
 
+/// Provides access to Material Design tokens for colors and text styles.
+///
+/// Contains organized token collections that map to Material Design 3
+/// color schemes and typography system.
 @immutable
 class MaterialTokens {
   final colorScheme = const _MaterialColorTokens();
@@ -11,6 +14,7 @@ class MaterialTokens {
   const MaterialTokens();
 }
 
+/// Material Design color tokens for theme integration.
 @immutable
 class _MaterialColorTokens {
   final primary = const ColorToken('md.color.primary');
@@ -40,24 +44,16 @@ class _MaterialColorTokens {
   const _MaterialColorTokens();
 }
 
+/// Material Design 3 text style tokens for typography.
 @immutable
-// Material 3 TextTheme Tokens.
 class _MaterialTextStyles {
   //  Material 3 text styles
   final displayLarge = const TextStyleToken('md3.text.theme.display.large');
-  final displayMedium = const TextStyleToken(
-    'md3.text.theme.display.medium',
-  );
+  final displayMedium = const TextStyleToken('md3.text.theme.display.medium');
   final displaySmall = const TextStyleToken('md3.text.theme.display.small');
-  final headlineLarge = const TextStyleToken(
-    'md3.text.theme.headline.large',
-  );
-  final headlineMedium = const TextStyleToken(
-    'md3.text.theme.headline.medium',
-  );
-  final headlineSmall = const TextStyleToken(
-    'md3.text.theme.headline.small',
-  );
+  final headlineLarge = const TextStyleToken('md3.text.theme.headline.large');
+  final headlineMedium = const TextStyleToken('md3.text.theme.headline.medium');
+  final headlineSmall = const TextStyleToken('md3.text.theme.headline.small');
 
   final titleLarge = const TextStyleToken('md3.text.theme.title.large');
   final titleMedium = const TextStyleToken('md3.text.theme.title.medium');

@@ -5,7 +5,7 @@
 #### Don't
 
 ```dart
-final variantTest = Variant('test');
+final variantTest = NamedVariant('test');
 
 Style (
     $box.color.red(),
@@ -21,7 +21,7 @@ Style (
 #### Do
 
 ```dart
-final variantTest = Variant('test');
+final variantTest = NamedVariant('test');
 
 Style (
     $box.color.red(),

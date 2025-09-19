@@ -1,10 +1,13 @@
-import { Button } from "./Button";
 
+"use client";
+
+import { Button } from "./Button";
 import { Features } from "./Features";
+
 import Layout from "./Layout";
 import { Logo } from "./Logo";
 
-const HomeContent = () => {
+export const HomeContent = () => {
   return (
     <Layout>
       <div className="home-content">
@@ -17,18 +20,18 @@ const HomeContent = () => {
           </h1>
           <p className="subtitle">
             Effortlessly style your widgets
-            <br className="sm:block hidden" />
+            <br className="" />
             and build design systems.
           </p>
 
           <div className="not-prose mb-16 mt-6 flex flex-col sm:flex-row gap-3">
-            <Button href="/docs/overview" arrow="right">
+            <Button href="/documentation/overview/getting-started" arrow="right">
               <>Getting Started</>
             </Button>
             <Button href="https://discord.com/invite/Ycn6GV3m2k" variant="discord" target="_blank">
               <>Join our community</>
             </Button>
-            <Button href="/docs/overview" variant="outline">
+            <Button href="/documentation/overview/introduction" variant="outline">
               <>Documentation</>
             </Button>
           </div>
@@ -44,15 +47,15 @@ const HomeContent = () => {
             font-size: 3.125rem;
             font-size: min(4.375rem, max(8vw, 2.5rem));
             font-weight: 700;
-            font-feature-settings: initial;
             letter-spacing: -0.12rem;
             margin-left: -0.2rem;
-
             line-height: 1.2;
             background-image: linear-gradient(146deg, #000, #757a7d);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            font-feature-settings: initial;
+            text-align: left;
           }
           :global(.dark) .headline {
             background-image: linear-gradient(146deg, #fff, #757a7d);
@@ -74,5 +77,3 @@ const HomeContent = () => {
     </Layout>
   );
 };
-
-export default HomeContent;

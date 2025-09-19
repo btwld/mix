@@ -4,15 +4,11 @@
     "source.fixAll": "explicit",
     "source.dcm.fixAll": "explicit"
   },
-  "dart.flutterSdkPath": ".fvm/versions/3.27.0",
-  "dart.lineLength": 80,
+  "dart.flutterSdkPath": ".fvm/versions/stable",
   "search.exclude": {
-    "**/.fvm/versions": true
+    "**/.fvm": true
   },
   "files.watcherExclude": {
-    "**/.fvm/versions": true
-  },
-  "files.exclude": {
-    "**/.fvm/versions": true
+    "**/.fvm": true
   }
 }

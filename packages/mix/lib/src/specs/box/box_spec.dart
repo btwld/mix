@@ -1,71 +1,16 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mix_annotations/mix_annotations.dart';
 
-import '../../attributes/animated/animated_data.dart';
-import '../../attributes/animated/animated_data_dto.dart';
-import '../../attributes/animated/animated_util.dart';
-import '../../attributes/constraints/constraints_dto.dart';
-import '../../attributes/decoration/decoration_dto.dart';
-import '../../attributes/enum/enum_util.dart';
-import '../../attributes/modifiers/widget_modifiers_config.dart';
-import '../../attributes/modifiers/widget_modifiers_config_dto.dart';
-import '../../attributes/modifiers/widget_modifiers_util.dart';
-import '../../attributes/scalars/scalar_util.dart';
-import '../../attributes/spacing/edge_insets_dto.dart';
-import '../../attributes/spacing/spacing_util.dart';
-import '../../core/computed_style/computed_style.dart';
-import '../../core/factory/mix_context.dart';
-import '../../core/factory/style_mix.dart';
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
-import '../../core/utility.dart';
-import 'box_widget.dart';
 
-part 'box_spec.g.dart';
-
-const _constraints = MixableFieldUtility(
-  type: BoxConstraints,
-  properties: [
-    (path: 'minWidth', alias: 'minWidth'),
-    (path: 'maxWidth', alias: 'maxWidth'),
-    (path: 'minHeight', alias: 'minHeight'),
-    (path: 'maxHeight', alias: 'maxHeight'),
-  ],
-);
-
-const _foreground = MixableFieldUtility(type: BoxDecoration);
-const _boxDecor = MixableFieldUtility(
-  type: BoxDecoration,
-  properties: [
-    (path: 'color', alias: 'color'),
-    (path: 'border', alias: 'border'),
-    (path: 'border.directional', alias: 'borderDirectional'),
-    (path: 'borderRadius', alias: 'borderRadius'),
-    (path: 'borderRadius.directional', alias: 'borderRadiusDirectional'),
-    (path: 'gradient', alias: 'gradient'),
-    (path: 'gradient.sweep', alias: 'sweepGradient'),
-    (path: 'gradient.radial', alias: 'radialGradient'),
-    (path: 'gradient.linear', alias: 'linearGradient'),
-    (path: 'boxShadows', alias: 'shadows'),
-    (path: 'boxShadow', alias: 'shadow'),
-    (path: 'elevation', alias: 'elevation'),
-  ],
-);
-
-const _shapeDecor = MixableFieldUtility(
-  alias: 'shapeDecoration',
-  type: ShapeDecoration,
-  properties: [(path: 'shape', alias: 'shape')],
-);
-
-@MixableSpec()
-final class BoxSpec extends Spec<BoxSpec> with _$BoxSpec, Diagnosticable {
-  /// {@macro box_spec_of}
-  static const of = _$BoxSpec.of;
-
-  static const from = _$BoxSpec.from;
-
+/// Specification for box styling and layout properties.
+///
+/// Provides comprehensive box styling including alignment, padding, margin, constraints,
+/// decoration, transformation, and clipping behavior. Used as the resolved form
+/// of [BoxStyle] styling attributes.
+class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
   /// Aligns the child within the box.
   final AlignmentGeometry? alignment;
 
@@ -76,15 +21,12 @@ final class BoxSpec extends Spec<BoxSpec> with _$BoxSpec, Diagnosticable {
   final EdgeInsetsGeometry? margin;
 
   /// Applies additional constraints to the child.
-  @MixableField(utilities: [_constraints])
   final BoxConstraints? constraints;
 
   /// Paints a decoration behind the child.
-  @MixableField(utilities: [_boxDecor, _shapeDecor])
   final Decoration? decoration;
 
   /// Paints a decoration in front of the child.
-  @MixableField(utilities: [_foreground])
   final Decoration? foregroundDecoration;
 
   /// Applies a transformation matrix before painting the box.
@@ -93,15 +35,8 @@ final class BoxSpec extends Spec<BoxSpec> with _$BoxSpec, Diagnosticable {
   /// Aligns the origin of the coordinate system for the [transform].
   final AlignmentGeometry? transformAlignment;
 
-  /// Defines the clip behavior for the box
-  /// when [BoxConstraints] has a negative minimum extent.
+  /// Defines the clip behavior for the box when content overflows.
   final Clip? clipBehavior;
-
-  /// Specifies the width of the box.
-  final double? width;
-
-  /// Specifies the height of the box.
-  final double? height;
 
   const BoxSpec({
     this.alignment,
@@ -113,32 +48,88 @@ final class BoxSpec extends Spec<BoxSpec> with _$BoxSpec, Diagnosticable {
     this.transform,
     this.transformAlignment,
     this.clipBehavior,
-    this.width,
-    this.height,
-    super.modifiers,
-    super.animated,
   });
 
-  Widget call({Widget? child, List<Type> orderOfModifiers = const []}) {
-    return isAnimated
-        ? AnimatedBoxSpecWidget(
-            spec: this,
-            duration: animated!.duration,
-            curve: animated!.curve,
-            onEnd: animated?.onEnd,
-            orderOfModifiers: orderOfModifiers,
-            child: child,
-          )
-        : BoxSpecWidget(
-            spec: this,
-            orderOfModifiers: orderOfModifiers,
-            child: child,
-          );
+  /// Creates a copy of this [BoxSpec] but with the given fields
+  /// replaced with the new values.
+  @override
+  BoxSpec copyWith({
+    AlignmentGeometry? alignment,
+    EdgeInsetsGeometry? padding,
+    EdgeInsetsGeometry? margin,
+    BoxConstraints? constraints,
+    Decoration? decoration,
+    Decoration? foregroundDecoration,
+    Matrix4? transform,
+    AlignmentGeometry? transformAlignment,
+    Clip? clipBehavior,
+  }) {
+    return BoxSpec(
+      alignment: alignment ?? this.alignment,
+      padding: padding ?? this.padding,
+      margin: margin ?? this.margin,
+      constraints: constraints ?? this.constraints,
+      decoration: decoration ?? this.decoration,
+      foregroundDecoration: foregroundDecoration ?? this.foregroundDecoration,
+      transform: transform ?? this.transform,
+      transformAlignment: transformAlignment ?? this.transformAlignment,
+      clipBehavior: clipBehavior ?? this.clipBehavior,
+    );
+  }
+
+  /// Linearly interpolates between this and [other] BoxSpec.
+  @override
+  BoxSpec lerp(BoxSpec? other, double t) {
+    return BoxSpec(
+      alignment: MixOps.lerp(alignment, other?.alignment, t),
+      padding: MixOps.lerp(padding, other?.padding, t),
+      margin: MixOps.lerp(margin, other?.margin, t),
+      constraints: MixOps.lerp(constraints, other?.constraints, t),
+      decoration: MixOps.lerp(decoration, other?.decoration, t),
+      foregroundDecoration: MixOps.lerp(
+        foregroundDecoration,
+        other?.foregroundDecoration,
+        t,
+      ),
+      transform: MixOps.lerp(transform, other?.transform, t),
+      transformAlignment: MixOps.lerp(
+        transformAlignment,
+        other?.transformAlignment,
+        t,
+      ),
+      clipBehavior: MixOps.lerpSnap(clipBehavior, other?.clipBehavior, t),
+    );
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    _debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('alignment', alignment))
+      ..add(DiagnosticsProperty('padding', padding))
+      ..add(DiagnosticsProperty('margin', margin))
+      ..add(DiagnosticsProperty('constraints', constraints))
+      ..add(DiagnosticsProperty('decoration', decoration))
+      ..add(DiagnosticsProperty('foregroundDecoration', foregroundDecoration))
+      ..add(DiagnosticsProperty('transform', transform))
+      ..add(DiagnosticsProperty('transformAlignment', transformAlignment))
+      ..add(EnumProperty<Clip>('clipBehavior', clipBehavior));
   }
+
+  /// The list of properties that constitute the state of this [BoxSpec].
+  ///
+  /// This property is used by the [==] operator and the [hashCode] getter to
+  /// compare two [BoxSpec] instances for equality.
+  @override
+  List<Object?> get props => [
+    alignment,
+    padding,
+    margin,
+    constraints,
+    decoration,
+    foregroundDecoration,
+    transform,
+    transformAlignment,
+    clipBehavior,
+  ];
 }

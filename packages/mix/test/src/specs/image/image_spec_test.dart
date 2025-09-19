@@ -1,212 +1,402 @@
-import 'dart:ui';
+import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
-
-import '../../../helpers/testing_utils.dart';
+import 'package:mix/src/specs/image/image_spec.dart';
 
 void main() {
-  group('ImageSpec', () {
-    test('resolve returns correct recipe', () {
-      final recipe = ImageSpec.from(EmptyMixData);
+  group('ImageMutableStyler', () {
+    group('Constructor', () {
+      test('', () {
+        const spec = ImageSpec(
+          width: 200.0,
+          height: 150.0,
+          color: Colors.blue,
+          repeat: ImageRepeat.repeat,
+          fit: BoxFit.cover,
+          alignment: Alignment.center,
+          centerSlice: Rect.fromLTWH(10, 10, 20, 20),
+          filterQuality: FilterQuality.high,
+          colorBlendMode: BlendMode.multiply,
+          semanticLabel: 'Test image',
+          excludeFromSemantics: true,
+          gaplessPlayback: true,
+          isAntiAlias: false,
+          matchTextDirection: true,
+        );
 
-      expect(recipe.width, null);
-      expect(recipe.height, null);
-      expect(recipe.color, null);
-      expect(recipe.repeat, null);
-      expect(recipe.fit, null);
+        expect(spec.width, 200.0);
+        expect(spec.height, 150.0);
+        expect(spec.color, Colors.blue);
+        expect(spec.repeat, ImageRepeat.repeat);
+        expect(spec.fit, BoxFit.cover);
+        expect(spec.alignment, Alignment.center);
+        expect(spec.centerSlice, const Rect.fromLTWH(10, 10, 20, 20));
+        expect(spec.filterQuality, FilterQuality.high);
+        expect(spec.colorBlendMode, BlendMode.multiply);
+        expect(spec.semanticLabel, 'Test image');
+        expect(spec.excludeFromSemantics, true);
+        expect(spec.gaplessPlayback, true);
+        expect(spec.isAntiAlias, false);
+        expect(spec.matchTextDirection, true);
+      });
+
+      test('', () {
+        const spec = ImageSpec();
+
+        expect(spec.width, isNull);
+        expect(spec.height, isNull);
+        expect(spec.color, isNull);
+        expect(spec.repeat, isNull);
+        expect(spec.fit, isNull);
+        expect(spec.alignment, isNull);
+        expect(spec.centerSlice, isNull);
+        expect(spec.filterQuality, isNull);
+        expect(spec.colorBlendMode, isNull);
+        expect(spec.semanticLabel, isNull);
+        expect(spec.excludeFromSemantics, isNull);
+        expect(spec.gaplessPlayback, isNull);
+        expect(spec.isAntiAlias, isNull);
+        expect(spec.matchTextDirection, isNull);
+      });
     });
 
-    test('lerp returns correct ImageSpec', () {
-      const spec1 = ImageSpec(
-        width: 100,
-        height: 200,
-        color: Colors.red,
-        repeat: ImageRepeat.repeat,
-        fit: BoxFit.cover,
-        alignment: Alignment.bottomCenter,
-        centerSlice: Rect.zero,
-        filterQuality: FilterQuality.low,
-        colorBlendMode: BlendMode.srcOver,
-      );
-      const spec2 = ImageSpec(
-        width: 150,
-        height: 250,
-        color: Colors.blue,
-        repeat: ImageRepeat.noRepeat,
-        fit: BoxFit.fill,
-        alignment: Alignment.bottomCenter,
-        centerSlice: Rect.fromLTRB(0, 0, 0, 0),
-        filterQuality: FilterQuality.high,
-        colorBlendMode: BlendMode.colorBurn,
-      );
-      final lerpSpec = spec1.lerp(spec2, 0.5);
+    group('copyWith', () {
+      test('creates new instance with updated properties', () {
+        const original = ImageSpec(
+          width: 100.0,
+          height: 100.0,
+          fit: BoxFit.contain,
+          color: Colors.red,
+        );
 
-      expect(lerpSpec.width, lerpDouble(100, 150, 0.5));
-      expect(lerpSpec.height, lerpDouble(200, 250, 0.5));
-      expect(lerpSpec.color, Color.lerp(Colors.red, Colors.blue, 0.5));
-      expect(lerpSpec.repeat, ImageRepeat.noRepeat);
-      expect(lerpSpec.fit, BoxFit.fill);
-      expect(lerpSpec.alignment, Alignment.bottomCenter);
-      expect(lerpSpec.centerSlice, const Rect.fromLTRB(0, 0, 0, 0));
-      expect(lerpSpec.filterQuality, FilterQuality.high);
-      expect(lerpSpec.colorBlendMode, BlendMode.colorBurn);
+        final updated = original.copyWith(
+          width: 200.0,
+          fit: BoxFit.cover,
+          alignment: Alignment.topLeft,
+        );
+
+        expect(updated.width, 200.0);
+        expect(updated.height, 100.0);
+        expect(updated.fit, BoxFit.cover);
+        expect(updated.color, Colors.red);
+        expect(updated.alignment, Alignment.topLeft);
+      });
+
+      test('preserves original properties when not specified', () {
+        const original = ImageSpec(
+          repeat: ImageRepeat.repeatX,
+          filterQuality: FilterQuality.low,
+          colorBlendMode: BlendMode.overlay,
+        );
+
+        final updated = original.copyWith(repeat: ImageRepeat.repeatY);
+
+        expect(updated.repeat, ImageRepeat.repeatY);
+        expect(updated.filterQuality, FilterQuality.low);
+        expect(updated.colorBlendMode, BlendMode.overlay);
+      });
+
+      test('handles null values correctly', () {
+        const original = ImageSpec(width: 100.0, height: 200.0);
+        final updated = original.copyWith();
+
+        expect(updated.width, 100.0);
+        expect(updated.height, 200.0);
+      });
     });
 
-    test('copyWith returns correct ImageSpec', () {
-      const spec = ImageSpec(
-        width: 100,
-        height: 200,
-        color: Colors.red,
-        repeat: ImageRepeat.repeat,
-        fit: BoxFit.cover,
-        alignment: Alignment.bottomCenter,
-        centerSlice: Rect.fromLTRB(0, 0, 0, 0),
-        filterQuality: FilterQuality.low,
-        colorBlendMode: BlendMode.srcOver,
-      );
-      final copiedSpec = spec.copyWith(
-        width: 150,
-        height: 250,
-        color: Colors.blue,
-        repeat: ImageRepeat.noRepeat,
-        fit: BoxFit.fill,
-        alignment: Alignment.topCenter,
-        centerSlice: Rect.zero,
-        filterQuality: FilterQuality.none,
-        colorBlendMode: BlendMode.clear,
-      );
+    group('lerp', () {
+      test('', () {
+        const spec1 = ImageSpec(
+          width: 100.0,
+          height: 200.0,
+          color: Colors.red, // Pure red
+          alignment: Alignment.topLeft,
+        );
+        const spec2 = ImageSpec(
+          width: 200.0,
+          height: 400.0,
+          color: Colors.blue, // Pure blue
+          alignment: Alignment.bottomRight,
+        );
 
-      expect(copiedSpec.width, 150);
-      expect(copiedSpec.height, 250);
-      expect(copiedSpec.color, Colors.blue);
-      expect(copiedSpec.repeat, ImageRepeat.noRepeat);
-      expect(copiedSpec.fit, BoxFit.fill);
-      expect(copiedSpec.alignment, Alignment.topCenter);
-      expect(copiedSpec.centerSlice, Rect.zero);
-      expect(copiedSpec.filterQuality, FilterQuality.none);
-      expect(copiedSpec.colorBlendMode, BlendMode.clear);
+        final lerped = spec1.lerp(spec2, 0.5);
+
+        expect(lerped.width, ui.lerpDouble(100.0, 200.0, 0.5));
+        expect(lerped.height, ui.lerpDouble(200.0, 400.0, 0.5));
+        // The color should match exactly what Color.lerp produces
+        final expectedColor = Color.lerp(Colors.red, Colors.blue, 0.5);
+        expect(lerped.color, expectedColor);
+        expect(lerped.alignment, Alignment.center);
+      });
+
+      test('handles null other parameter correctly', () {
+        const spec = ImageSpec(width: 100.0, height: 200.0);
+
+        // When t < 0.5, should preserve original values
+        final lerped1 = spec.lerp(null, 0.3);
+        expect(lerped1.width, ui.lerpDouble(100.0, null, 0.3));
+        expect(lerped1.height, ui.lerpDouble(200.0, null, 0.3));
+
+        // When t >= 0.5, properties interpolate properly with null
+        final lerped2 = spec.lerp(null, 0.7);
+        expect(
+          lerped2.width,
+          ui.lerpDouble(100.0, null, 0.7),
+        ); // width should interpolate properly
+        expect(
+          lerped2.height,
+          ui.lerpDouble(200.0, null, 0.7),
+        ); // height should interpolate properly
+      });
+
+      test('handles edge cases (t=0, t=1)', () {
+        const spec1 = ImageSpec(width: 100.0, color: Colors.red);
+        const spec2 = ImageSpec(width: 200.0, color: Colors.blue);
+
+        final lerpedAt0 = spec1.lerp(spec2, 0.0);
+        final lerpedAt1 = spec1.lerp(spec2, 1.0);
+
+        expect(lerpedAt0.width, ui.lerpDouble(100.0, 200.0, 0.0));
+        expect(lerpedAt0.color, Color.lerp(Colors.red, Colors.blue, 0.0));
+        expect(lerpedAt1.width, ui.lerpDouble(100.0, 200.0, 1.0));
+        expect(lerpedAt1.color, Color.lerp(Colors.red, Colors.blue, 1.0));
+      });
+
+      test('uses step function for discrete properties', () {
+        const spec1 = ImageSpec(
+          repeat: ImageRepeat.noRepeat,
+          fit: BoxFit.contain,
+          filterQuality: FilterQuality.low,
+          colorBlendMode: BlendMode.srcOver,
+          semanticLabel: 'Image 1',
+          excludeFromSemantics: false,
+          gaplessPlayback: false,
+          isAntiAlias: true,
+          matchTextDirection: false,
+        );
+        const spec2 = ImageSpec(
+          repeat: ImageRepeat.repeat,
+          fit: BoxFit.cover,
+          filterQuality: FilterQuality.high,
+          colorBlendMode: BlendMode.multiply,
+          semanticLabel: 'Image 2',
+          excludeFromSemantics: true,
+          gaplessPlayback: true,
+          isAntiAlias: false,
+          matchTextDirection: true,
+        );
+
+        final lerpedBefore = spec1.lerp(spec2, 0.4);
+        final lerpedAfter = spec1.lerp(spec2, 0.6);
+
+        // t < 0.5 uses spec1
+        expect(lerpedBefore.repeat, ImageRepeat.noRepeat);
+        expect(lerpedBefore.fit, BoxFit.contain);
+        expect(lerpedBefore.filterQuality, FilterQuality.low);
+        expect(lerpedBefore.colorBlendMode, BlendMode.srcOver);
+        expect(lerpedBefore.semanticLabel, 'Image 1');
+        expect(lerpedBefore.excludeFromSemantics, false);
+        expect(lerpedBefore.gaplessPlayback, false);
+        expect(lerpedBefore.isAntiAlias, true);
+        expect(lerpedBefore.matchTextDirection, false);
+
+        // t >= 0.5 uses spec2
+        expect(lerpedAfter.repeat, ImageRepeat.repeat);
+        expect(lerpedAfter.fit, BoxFit.cover);
+        expect(lerpedAfter.filterQuality, FilterQuality.high);
+        expect(lerpedAfter.colorBlendMode, BlendMode.multiply);
+        expect(lerpedAfter.semanticLabel, 'Image 2');
+        expect(lerpedAfter.excludeFromSemantics, true);
+        expect(lerpedAfter.gaplessPlayback, true);
+        expect(lerpedAfter.isAntiAlias, false);
+        expect(lerpedAfter.matchTextDirection, true);
+      });
+
+      test('interpolates Rect centerSlice correctly', () {
+        const spec1 = ImageSpec(centerSlice: Rect.fromLTWH(0, 0, 10, 10));
+        const spec2 = ImageSpec(centerSlice: Rect.fromLTWH(10, 10, 30, 30));
+
+        final lerped = spec1.lerp(spec2, 0.5);
+
+        expect(lerped.centerSlice, const Rect.fromLTWH(5, 5, 20, 20));
+      });
+
+      test('interpolates AlignmentGeometry correctly', () {
+        const spec1 = ImageSpec(alignment: Alignment.topLeft);
+        const spec2 = ImageSpec(alignment: Alignment.bottomRight);
+
+        final lerped = spec1.lerp(spec2, 0.5);
+
+        expect(lerped.alignment, Alignment.center);
+      });
     });
 
-    test('props returns correct list of properties', () {
-      const spec = ImageSpec(
-        width: 100,
-        height: 200,
-        color: Colors.red,
-        repeat: ImageRepeat.repeat,
-        fit: BoxFit.cover,
-        alignment: Alignment.bottomCenter,
-        centerSlice: Rect.zero,
-        filterQuality: FilterQuality.low,
-        colorBlendMode: BlendMode.srcOver,
-        animated: AnimatedData.withDefaults(),
-      );
+    group('equality', () {
+      test('specs with same properties are equal', () {
+        const spec1 = ImageSpec(
+          width: 100.0,
+          height: 200.0,
+          color: Colors.blue,
+          fit: BoxFit.cover,
+        );
+        const spec2 = ImageSpec(
+          width: 100.0,
+          height: 200.0,
+          color: Colors.blue,
+          fit: BoxFit.cover,
+        );
 
-      T getValueOf<T>(T field) => (spec.props[spec.props.indexOf(field)]) as T;
+        expect(spec1, spec2);
+        expect(spec1.hashCode, spec2.hashCode);
+      });
 
-      expect(getValueOf(spec.width), 100);
-      expect(getValueOf(spec.height), 200);
-      expect(getValueOf(spec.color), Colors.red);
-      expect(getValueOf(spec.repeat), ImageRepeat.repeat);
-      expect(getValueOf(spec.fit), BoxFit.cover);
-      expect(getValueOf(spec.alignment), Alignment.bottomCenter);
-      expect(getValueOf(spec.centerSlice), Rect.zero);
-      expect(getValueOf(spec.filterQuality), FilterQuality.low);
-      expect(getValueOf(spec.colorBlendMode), BlendMode.srcOver);
-      expect(getValueOf(spec.modifiers), null);
-      expect(getValueOf(spec.animated), const AnimatedData.withDefaults());
-      expect(spec.props.length, 11);
-    });
-  });
+      test('specs with different properties are not equal', () {
+        const spec1 = ImageSpec(width: 100.0, height: 200.0);
+        const spec2 = ImageSpec(width: 150.0, height: 200.0);
 
-  group('ImageSpecUtility fluent', () {
-    test('fluent behavior', () {
-      final image = ImageSpecUtility.self;
+        expect(spec1, isNot(spec2));
+      });
 
-      final util = image
-        ..width(100)
-        ..height(200)
-        ..color.red()
-        ..fit.cover();
+      test('specs with null vs non-null properties are not equal', () {
+        const spec1 = ImageSpec(width: 100.0);
+        const spec2 = ImageSpec();
 
-      final attr = util.attributeValue!;
-
-      expect(util, isA<StyleElement>());
-      expect(attr.width, 100);
-      expect(attr.height, 200);
-      expect(attr.color, Colors.red.toDto());
-      expect(attr.fit, BoxFit.cover);
-
-      final style = Style(util);
-
-      final imageAttribute = style.styles.attributeOfType<ImageSpecAttribute>();
-
-      expect(imageAttribute?.width, 100);
-      expect(imageAttribute?.height, 200);
-      expect(imageAttribute?.color, Colors.red.toDto());
-      expect(imageAttribute?.fit, BoxFit.cover);
-
-      final mixData = style.of(MockBuildContext());
-      final imageSpec = ImageSpec.from(mixData);
-
-      expect(imageSpec.width, 100);
-      expect(imageSpec.height, 200);
-      expect(imageSpec.color, Colors.red);
-      expect(imageSpec.fit, BoxFit.cover);
+        expect(spec1, isNot(spec2));
+      });
     });
 
-    test('Immutable behavior when having multiple images', () {
-      final imageUtil = ImageSpecUtility.self;
-      final image1 = imageUtil.chain..width(100);
-      final image2 = imageUtil.chain..width(200);
+    group('debugFillProperties', () {
+      test('includes all properties in diagnostics', () {
+        const spec = ImageSpec(
+          width: 200.0,
+          height: 150.0,
+          color: Colors.blue,
+          repeat: ImageRepeat.repeat,
+          fit: BoxFit.cover,
+          alignment: Alignment.center,
+          centerSlice: Rect.fromLTWH(10, 10, 20, 20),
+          filterQuality: FilterQuality.high,
+          colorBlendMode: BlendMode.multiply,
+          semanticLabel: 'Debug test',
+          excludeFromSemantics: true,
+          gaplessPlayback: false,
+          isAntiAlias: true,
+          matchTextDirection: false,
+        );
 
-      final attr1 = image1.attributeValue!;
-      final attr2 = image2.attributeValue!;
+        final diagnostics = DiagnosticPropertiesBuilder();
+        spec.debugFillProperties(diagnostics);
 
-      expect(attr1.width, 100);
-      expect(attr2.width, 200);
-
-      final style1 = Style(image1);
-      final style2 = Style(image2);
-
-      final imageAttribute1 =
-          style1.styles.attributeOfType<ImageSpecAttribute>();
-      final imageAttribute2 =
-          style2.styles.attributeOfType<ImageSpecAttribute>();
-
-      expect(imageAttribute1?.width, 100);
-      expect(imageAttribute2?.width, 200);
-
-      final mixData1 = style1.of(MockBuildContext());
-      final mixData2 = style2.of(MockBuildContext());
-
-      final imageSpec1 = ImageSpec.from(mixData1);
-      final imageSpec2 = ImageSpec.from(mixData2);
-
-      expect(imageSpec1.width, 100);
-      expect(imageSpec2.width, 200);
+        final properties = diagnostics.properties;
+        expect(properties.any((p) => p.name == 'width'), isTrue);
+        expect(properties.any((p) => p.name == 'height'), isTrue);
+        expect(properties.any((p) => p.name == 'color'), isTrue);
+        expect(properties.any((p) => p.name == 'repeat'), isTrue);
+        expect(properties.any((p) => p.name == 'fit'), isTrue);
+        expect(properties.any((p) => p.name == 'alignment'), isTrue);
+        expect(properties.any((p) => p.name == 'centerSlice'), isTrue);
+        expect(properties.any((p) => p.name == 'filterQuality'), isTrue);
+        expect(properties.any((p) => p.name == 'colorBlendMode'), isTrue);
+        expect(properties.any((p) => p.name == 'semanticLabel'), isTrue);
+        expect(properties.any((p) => p.name == 'excludeFromSemantics'), isTrue);
+        expect(properties.any((p) => p.name == 'gaplessPlayback'), isTrue);
+        expect(properties.any((p) => p.name == 'isAntiAlias'), isTrue);
+        expect(properties.any((p) => p.name == 'matchTextDirection'), isTrue);
+      });
     });
 
-    test('Mutate behavior and not on same utility', () {
-      final image = ImageSpecUtility.self;
+    group('props', () {
+      test('includes all properties in props list', () {
+        const spec = ImageSpec(
+          width: 200.0,
+          height: 150.0,
+          color: Colors.blue,
+          image: AssetImage('test_image.png'),
+          repeat: ImageRepeat.repeat,
+          fit: BoxFit.cover,
+          alignment: Alignment.center,
+          centerSlice: Rect.fromLTWH(10, 10, 20, 20),
+          filterQuality: FilterQuality.high,
+          colorBlendMode: BlendMode.multiply,
+          semanticLabel: 'Props test',
+          excludeFromSemantics: true,
+          gaplessPlayback: false,
+          isAntiAlias: true,
+          matchTextDirection: false,
+        );
 
-      final imageValue = image;
-      imageValue
-        ..width(100)
-        ..color.red()
-        ..fit.cover();
+        // 15 ImageSpec properties
+        expect(spec.props.length, 15);
+        expect(spec.props, contains(200.0));
+        expect(spec.props, contains(150.0));
+        expect(spec.props, contains(Colors.blue));
+        expect(spec.props, contains(ImageRepeat.repeat));
+        expect(spec.props, contains(BoxFit.cover));
+        expect(spec.props, contains(Alignment.center));
+        expect(spec.props, contains(const Rect.fromLTWH(10, 10, 20, 20)));
+        expect(spec.props, contains(FilterQuality.high));
+        expect(spec.props, contains(BlendMode.multiply));
+        expect(spec.props, contains('Props test'));
+        expect(spec.props, contains(true));
+        expect(spec.props, contains(AssetImage('test_image.png')));
+        expect(spec.props, contains(false));
+      });
+    });
 
-      final imageAttribute = imageValue.attributeValue!;
-      final imageAttribute2 = image.width(200);
+    group('Real-world scenarios', () {
+      test('creates responsive image spec', () {
+        const responsiveSpec = ImageSpec(
+          fit: BoxFit.cover,
+          alignment: Alignment.center,
+          filterQuality: FilterQuality.medium,
+        );
 
-      expect(imageAttribute.width, 100);
-      expect(imageAttribute.color, Colors.red.toDto());
-      expect(imageAttribute.fit, BoxFit.cover);
+        expect(responsiveSpec.fit, BoxFit.cover);
+        expect(responsiveSpec.alignment, Alignment.center);
+        expect(responsiveSpec.filterQuality, FilterQuality.medium);
+      });
 
-      expect(imageAttribute2.width, 200);
-      expect(imageAttribute2.color, isNull);
-      expect(imageAttribute2.fit, isNull);
+      test('creates tinted image spec', () {
+        const tintedSpec = ImageSpec(
+          color: Colors.blue,
+          colorBlendMode: BlendMode.overlay,
+          fit: BoxFit.contain,
+        );
+
+        expect(tintedSpec.color, Colors.blue);
+        expect(tintedSpec.colorBlendMode, BlendMode.overlay);
+        expect(tintedSpec.fit, BoxFit.contain);
+      });
+
+      test('creates nine-patch image spec', () {
+        const ninePatchSpec = ImageSpec(
+          centerSlice: Rect.fromLTWH(16, 16, 32, 32),
+          repeat: ImageRepeat.noRepeat,
+          fit: BoxFit.fill,
+        );
+
+        expect(ninePatchSpec.centerSlice, const Rect.fromLTWH(16, 16, 32, 32));
+        expect(ninePatchSpec.repeat, ImageRepeat.noRepeat);
+        expect(ninePatchSpec.fit, BoxFit.fill);
+      });
+
+      test('creates fixed size image spec', () {
+        const fixedSizeSpec = ImageSpec(
+          width: 64.0,
+          height: 64.0,
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.topCenter,
+        );
+
+        expect(fixedSizeSpec.width, 64.0);
+        expect(fixedSizeSpec.height, 64.0);
+        expect(fixedSizeSpec.fit, BoxFit.scaleDown);
+        expect(fixedSizeSpec.alignment, Alignment.topCenter);
+      });
     });
   });
 }

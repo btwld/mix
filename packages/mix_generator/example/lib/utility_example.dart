@@ -27,11 +27,6 @@ class ColorUtility {
 
   const ColorUtility(this.builder);
 
-  // After code generation, methods like these would be available:
-  // ColorAttribute red() => builder(Color.red);
-  // ColorAttribute green() => builder(Color.green);
-  // ColorAttribute blue() => builder(Color.blue);
-  // etc.
 }
 
 // Define a custom attribute for colors
@@ -66,11 +61,6 @@ class BorderRadiusUtility {
 
   const BorderRadiusUtility(this.builder);
 
-  // After code generation, methods like these would be available:
-  // BorderRadiusAttribute none() => builder(BorderRadius.none);
-  // BorderRadiusAttribute small() => builder(BorderRadius.small);
-  // BorderRadiusAttribute medium() => builder(BorderRadius.medium);
-  // etc.
 }
 
 // Define a custom attribute for border radius
@@ -108,11 +98,6 @@ class SpacingUtility {
 
   const SpacingUtility(this.builder);
 
-  // After code generation, methods like these would be available:
-  // SpacingAttribute none() => builder(Spacings.none);
-  // SpacingAttribute xs() => builder(Spacings.xs);
-  // SpacingAttribute sm() => builder(Spacings.sm);
-  // etc.
 }
 
 // Define a custom attribute for spacing
@@ -135,15 +120,7 @@ void exampleUsage() {
   // Using the class utility with constants
   final borderRadiusUtility =
       BorderRadiusUtility((radius) => BorderRadiusAttribute(radius));
-  // final smallRadiusAttribute = borderRadiusUtility.small();  // This would work after generation
-
+  
   // Using the class utility with mapping
   final spacingUtility = SpacingUtility((spacing) => SpacingAttribute(spacing));
-  // final mediumSpacingAttribute = spacingUtility.md();  // This would work after generation
-
-  // Print statements would work after generation
-  // print('Created attributes:');
-  // print('- Color: ${redAttribute.props}');
-  // print('- Border Radius: ${smallRadiusAttribute.props}');
-  // print('- Spacing: ${mediumSpacingAttribute.props}');
 }

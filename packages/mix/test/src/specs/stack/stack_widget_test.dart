@@ -2,123 +2,152 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../../helpers/override_modifiers_order.dart';
-import '../../../helpers/testing_utils.dart';
-
 void main() {
-  testWidgets('Stack', (tester) async {
-    final style = Style(
-      $stack.fit.expand(),
-      $stack.alignment.topCenter(),
-      $stack.clipBehavior.antiAlias(),
-      $stack.textDirection.ltr(),
-    );
-    await tester.pumpMaterialApp(
-      ZBox(
-        style: style,
-        children: [
-          Container(color: const Color(0xFF000000), width: 100, height: 100),
-          Container(color: const Color(0xFF0000FF), width: 50, height: 50),
-        ],
-      ),
-    );
+  group('Default parameters for ZBox matches Container+Stack', () {
+    testWidgets('should have the same default parameters', (tester) async {
+      const zBoxKey = Key('zbox');
+      const containerKey = Key('container');
+      const stackKey = Key('stack');
 
-    final stackWidget = tester.widget<Stack>(find.byType(Stack));
-
-    expect(find.byType(Stack), findsOneWidget);
-    expect(
-        find.byType(Container),
-        findsNWidgets(
-            3)); // ZBox creates 1 internal Container + 2 child Containers
-    expect(stackWidget.alignment, Alignment.topCenter);
-    expect(stackWidget.fit, StackFit.expand);
-    expect(stackWidget.clipBehavior, Clip.antiAlias);
-    expect(stackWidget.textDirection, TextDirection.ltr);
-  });
-
-  testWidgets('ZBox', (tester) async {
-    final style = Style(
-      $stack.fit.expand(),
-      $stack.alignment.topCenter(),
-      $stack.textDirection.ltr(),
-      $stack.clipBehavior.antiAlias(),
-      $box.color(Colors.red),
-    );
-
-    await tester.pumpMaterialApp(ZBox(style: style, children: const []));
-
-    final stackWidget = tester.widget<Stack>(find.byType(Stack));
-    final container = tester.widget<Container>(find.byType(Container));
-
-    expect(find.byType(Stack), findsOneWidget);
-
-    expect(find.byType(Container), findsOneWidget);
-
-    expect((container.decoration as BoxDecoration).color, Colors.red);
-
-    expect(stackWidget.alignment, Alignment.topCenter);
-    expect(stackWidget.fit, StackFit.expand);
-    expect(stackWidget.clipBehavior, Clip.antiAlias);
-    expect(stackWidget.textDirection, TextDirection.ltr);
-  });
-
-  testWidgets(
-    'ZBox should apply modifiers only once',
-    (tester) async {
-      await tester.pumpMaterialApp(
-        ZBox(
-          style: Style(
-            $flex.gap(10),
-            $with.align(),
-          ),
-          children: const [
-            SizedBox(
-              height: 10,
-              width: 20,
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Column(
+              children: [
+                ZBox(
+                  key: zBoxKey,
+                  style: StackBoxStyler(), // Use default empty StackBoxStyle
+                  children: const [],
+                ),
+                Container(
+                  key: containerKey,
+                  child: Stack(key: stackKey, children: const []),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       );
 
-      expect(find.byType(Align), findsOneWidget);
-    },
-  );
+      /// Get widgets by key
+      final zBoxFinder = find.byKey(zBoxKey);
+      final containerFinder = find.byKey(containerKey);
+      final stackFinder = find.byKey(stackKey);
 
-  testWidgets(
-    'ZBox should apply modifiers only once',
-    (tester) async {
-      await tester.pumpMaterialApp(
-        ZBox(
-          style: Style(
-            $flex.gap(10),
-            $stack.alignment.center(),
-            $with.align(),
-          ),
-          children: const [
-            SizedBox(
-              height: 10,
-              width: 20,
+      /// Find the Container and Stack widgets inside the ZBox widget
+      final styledContainer = tester.widget<Container>(
+        find.descendant(of: zBoxFinder, matching: find.byType(Container)),
+      );
+      final styledStack = tester.widget<Stack>(
+        find.descendant(of: zBoxFinder, matching: find.byType(Stack)),
+      );
+
+      final container = tester.widget<Container>(containerFinder);
+      final stack = tester.widget<Stack>(stackFinder);
+
+      /// Compare Container default parameters
+      expect(styledContainer.alignment, container.alignment);
+      expect(styledContainer.padding, container.padding);
+      expect(styledContainer.decoration, container.decoration);
+      expect(
+        styledContainer.foregroundDecoration,
+        container.foregroundDecoration,
+      );
+      expect(styledContainer.constraints, container.constraints);
+      expect(styledContainer.margin, container.margin);
+      expect(styledContainer.transform, container.transform);
+      expect(styledContainer.transformAlignment, container.transformAlignment);
+      expect(styledContainer.clipBehavior, container.clipBehavior);
+
+      /// Compare Stack default parameters with detailed error messages
+      expect(
+        styledStack.alignment,
+        stack.alignment,
+        reason:
+            'ZBox Stack alignment (${styledStack.alignment}) should match Stack alignment (${stack.alignment})',
+      );
+      expect(
+        styledStack.textDirection,
+        stack.textDirection,
+        reason:
+            'ZBox Stack textDirection (${styledStack.textDirection}) should match Stack textDirection (${stack.textDirection})',
+      );
+      expect(
+        styledStack.fit,
+        stack.fit,
+        reason:
+            'ZBox Stack fit (${styledStack.fit}) should match Stack fit (${stack.fit})',
+      );
+      expect(
+        styledStack.clipBehavior,
+        stack.clipBehavior,
+        reason:
+            'ZBox Stack clipBehavior (${styledStack.clipBehavior}) should match Stack clipBehavior (${stack.clipBehavior})',
+      );
+    });
+
+    testWidgets('should verify Stack defaults match Flutter Stack defaults', (
+      tester,
+    ) async {
+      const zBoxKey = Key('zbox');
+      const stackKey = Key('stack');
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Column(
+              children: [
+                ZBox(key: zBoxKey, children: const []),
+                Stack(key: stackKey, children: const []),
+              ],
             ),
-          ],
+          ),
         ),
       );
 
-      expect(find.byType(Align), findsOneWidget);
-    },
-  );
+      /// Get widgets by key
+      final zBoxFinder = find.byKey(zBoxKey);
+      final stackFinder = find.byKey(stackKey);
 
-  testWidgets(
-    'Renders modifiers in the correct order with many overrides',
-    (tester) async {
-      testOverrideModifiersOrder(
-        tester,
-        widgetBuilder: (style, orderOfModifiers) {
-          return ZBox(
-            style: style,
-            orderOfModifiers: orderOfModifiers,
-          );
-        },
+      /// Find the Stack widget inside the ZBox widget
+      final styledStack = tester.widget<Stack>(
+        find.descendant(of: zBoxFinder, matching: find.byType(Stack)),
       );
-    },
-  );
+      final stack = tester.widget<Stack>(stackFinder);
+
+      /// Verify specific defaults
+      expect(
+        styledStack.alignment,
+        AlignmentDirectional.topStart,
+        reason: 'ZBox Stack should default to AlignmentDirectional.topStart',
+      );
+      expect(
+        stack.alignment,
+        AlignmentDirectional.topStart,
+        reason: 'Flutter Stack should default to AlignmentDirectional.topStart',
+      );
+
+      expect(
+        styledStack.fit,
+        StackFit.loose,
+        reason: 'ZBox Stack should default to StackFit.loose',
+      );
+      expect(
+        stack.fit,
+        StackFit.loose,
+        reason: 'Flutter Stack should default to StackFit.loose',
+      );
+
+      expect(
+        styledStack.clipBehavior,
+        Clip.hardEdge,
+        reason: 'ZBox Stack should default to Clip.hardEdge',
+      );
+      expect(
+        stack.clipBehavior,
+        Clip.hardEdge,
+        reason: 'Flutter Stack should default to Clip.hardEdge',
+      );
+    });
+  });
 }

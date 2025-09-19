@@ -1,7 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
 
 import '../metadata/field_metadata.dart';
-import '../utils/extensions.dart';
 import '../utils/helpers.dart';
 import '../utils/string_utils.dart';
 
@@ -17,7 +16,7 @@ Map<String, String?> extractConstructorDefaults(
       defaults[param.name] = param.defaultValueCode;
     }
     // If it's a required parameter with no default value and is a list type, set empty list as default
-    else if (param.isRequired && param.type.isList) {
+    else if (param.isRequired && param.type.isDartCoreList) {
       defaults[param.name] = '[]';
     }
   }
@@ -42,8 +41,8 @@ class MixableTypeMethods {
     final params = buildParameters(fields, (field) {
       final fieldName = useInternalRef ? field.asInternalRef : field.name;
 
-      // Special handling for AnimatedDataDto
-      if (field.resolvable?.type == 'AnimatedDataDto') {
+      // Special handling for AnimationConfigDto
+      if (field.resolvable?.type == 'AnimationConfigDto') {
         return '$fieldName?.resolve(mix) ?? mix.animation';
       }
 
@@ -52,19 +51,22 @@ class MixableTypeMethods {
       // 2. If the type has HasDefaultValue mixin, use defaultValue.fieldName
 
       // Default value from constructor if available
-      final constructorDefault = (field.nullable &&
+      final constructorDefault =
+          (field.nullable &&
               constructorDefaults != null &&
               constructorDefaults.containsKey(field.name))
           ? ' ?? ${constructorDefaults[field.name]!}'
           : '';
 
       // Default value from HasDefaultValue mixin if available
-      final defaultValueFallback =
-          hasDefaultValue ? ' ?? defaultValue.${field.name}' : '';
+      final defaultValueFallback = hasDefaultValue
+          ? ' ?? defaultValue.${field.name}'
+          : '';
 
       // Combine fallbacks in order of priority
-      final fallbackExpression =
-          hasDefaultValue ? defaultValueFallback : constructorDefault;
+      final fallbackExpression = hasDefaultValue
+          ? defaultValueFallback
+          : constructorDefault;
 
       if (field.isListType) {
         // Check if the list elements are resolvable
@@ -82,8 +84,9 @@ class MixableTypeMethods {
       return '$fieldName$fallbackExpression';
     });
 
-    final constIgnoreRule =
-        fields.isEmpty && isConst ? '// ignore: prefer_const_constructors' : '';
+    final constIgnoreRule = fields.isEmpty && isConst
+        ? '// ignore: prefer_const_constructors'
+        : '';
 
     const defaultValueRef = 'defaultValue';
 
@@ -97,7 +100,7 @@ class MixableTypeMethods {
   /// final ${resolvedType.lowerCaseFirst} = $className(...).resolve(mix);
   /// ```
   @override
-  $resolvedType resolve(MixContext mix) {
+  $resolvedType resolve(BuildContext mix) {
   $constIgnoreRule
     return $resolvedType$constructorRef(
       $params
@@ -114,42 +117,44 @@ class MixableTypeMethods {
     required bool useInternalRef,
     String constructorRef = '',
   }) {
-    final mergeStatements = fields.map((field) {
-      final fieldName = field.name;
-      final fieldNameRef = useInternalRef ? field.asInternalRef : fieldName;
+    final mergeStatements = fields
+        .map((field) {
+          final fieldName = field.name;
+          final fieldNameRef = useInternalRef ? field.asInternalRef : fieldName;
 
-      // Handle list fields with proper null-aware spread
-      if (field.isListType) {
-        // Check if the field has a default value (not nullable)
-        final hasDefaultValue = !field.nullable;
-        final spreadOperator = hasDefaultValue ? '...' : '...?';
+          // Handle list fields with proper null-aware spread
+          if (field.isListType) {
+            // Check if the field has a default value (not nullable)
+            final hasDefaultValue = !field.nullable;
+            final spreadOperator = hasDefaultValue ? '...' : '...?';
 
-        return shouldMergeLists
-            ? '$fieldName: MixHelpers.mergeList($fieldNameRef, other.$fieldName),'
-            : '$fieldName: [$spreadOperator $fieldNameRef, $spreadOperator other.$fieldName],';
-      } else if (field.hasResolvable) {
-        final resolvable = field.resolvable;
-        // Build a default merge statement using the merge() method if available
-        final defaultMerge =
-            '$fieldName: $fieldNameRef?.merge(other.$fieldName) ?? other.$fieldName,';
+            return shouldMergeLists
+                ? '$fieldName: MixOps.mergeList($fieldNameRef, other.$fieldName),'
+                : '$fieldName: [$spreadOperator $fieldNameRef, $spreadOperator other.$fieldName],';
+          } else if (field.hasResolvable) {
+            final resolvable = field.resolvable;
+            // Build a default merge statement using the merge() method if available
+            final defaultMerge =
+                '$fieldName: $fieldNameRef?.merge(other.$fieldName) ?? other.$fieldName,';
 
-        // Extract the element from the representation type (if it exists)
+            // Extract the element from the representation type (if it exists)
 
-        if (resolvable == null) {
-          return defaultMerge;
-        }
+            if (resolvable == null) {
+              return defaultMerge;
+            }
 
-        if (resolvable.tryToMergeType) {
-          return '$fieldName: ${resolvable.type}.tryToMerge($fieldNameRef, other.$fieldName),';
-        }
+            if (resolvable.tryToMergeType) {
+              return '$fieldName: ${resolvable.type}.tryToMerge($fieldNameRef, other.$fieldName),';
+            }
 
-        return defaultMerge;
-      }
+            return defaultMerge;
+          }
 
-      // Default: use the value from other if non-null, otherwise fallback to this value
+          // Default: use the value from other if non-null, otherwise fallback to this value
 
-      return '$fieldName: other.$fieldName ?? $fieldNameRef,';
-    }).join('\n');
+          return '$fieldName: other.$fieldName ?? $fieldNameRef,';
+        })
+        .join('\n');
 
     final thisRef = useInternalRef ? '_\$this' : 'this';
 

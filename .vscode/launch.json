@@ -16,6 +16,13 @@
       "flutterMode": "profile"
     },
     {
+      "name": "Mix Example",
+      "cwd": "packages/mix/example",
+      "request": "launch",
+      "type": "dart",
+      "args": ["--enable-experiment=dot-shorthands"]
+    },
+    {
       "name": "Launch Demo",
       "cwd": "demo",
       "request": "launch",
@@ -27,15 +34,6 @@
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile"
-    },
-    {
-      "name": "Run all Tests",
-      "request": "launch",
-      "type": "dart",
-      "program": "./test/",
-      "args": [
-        "--coverage"
-      ]
-     }
+    }
   ]
 }

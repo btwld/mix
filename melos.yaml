@@ -4,19 +4,21 @@ name: mix_workspace
 packages:
   - packages/*
   - packages/mix/example
+  - packages/mix_generator/example
   - examples/*
   - packages/*/demo
 
+sdkPath: .fvm/flutter_sdk
 command:
   bootstrap:
     environment:
-      sdk: ">=3.6.0 <4.0.0"
-      flutter: ">=3.27.0"
+      sdk: ">=3.9.0 <4.0.0"
+      flutter: ">=3.35.2 <4.0.0"
     dependencies:
       meta: ^1.15.0
     dev_dependencies:
-      flutter_lints: ^4.0.0
-      dart_code_metrics_presets: ^2.14.0
+      flutter_lints: ^6.0.0
+      dart_code_metrics_presets: ^2.24.0
       build_runner: ^2.4.9
   publish:
     hooks:

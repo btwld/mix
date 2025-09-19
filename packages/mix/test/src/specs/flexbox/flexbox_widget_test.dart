@@ -2,258 +2,320 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
-import '../../../helpers/override_modifiers_order.dart';
-import '../../../helpers/testing_utils.dart';
-
 void main() {
-  testWidgets('FlexBox', (WidgetTester tester) async {
-    final paddingAttr = $box.padding(10);
-    final marginAttr = $box.margin(15);
-    final alignmentAttr = $box.alignment.center();
-    final clipAttr = $box.clipBehavior.hardEdge();
-    final mainAxisAttr = $flex.mainAxisAlignment.center();
-    final crossAxisAttr = $flex.crossAxisAlignment.center();
+  group('Default parameters for FlexBox matches Container+Flex', () {
+    testWidgets('should have the same default parameters', (tester) async {
+      const flexBoxKey = Key('flexbox');
+      const containerKey = Key('container');
+      const flexKey = Key('flex');
 
-    final boxDecorationAttr = $box.decoration(
-      border: Border.all(color: Colors.red, width: 1, style: BorderStyle.solid),
-      borderRadius: BorderRadius.circular(10),
-      color: Colors.red,
-    );
-
-    await tester.pumpStyledWidget(
-      FlexBox(
-        style: Style(
-          paddingAttr,
-          marginAttr,
-          alignmentAttr,
-          clipAttr,
-          boxDecorationAttr,
-          mainAxisAttr,
-          crossAxisAttr,
-        ),
-        direction: Axis.horizontal,
-        children: const [],
-      ),
-    );
-
-    final flexFinder = find.byType(Flex);
-    final containerFinder = find.byType(Container);
-    final flexWidget = tester.widget<Flex>(flexFinder);
-    final containerWidget = tester.widget<Container>(containerFinder);
-
-    expect(containerWidget.padding, const EdgeInsets.all(10));
-    expect(containerWidget.margin, const EdgeInsets.all(15));
-    expect(containerWidget.alignment, Alignment.center);
-    expect(containerWidget.clipBehavior, Clip.hardEdge);
-    expect(
-      containerWidget.decoration,
-      BoxDecoration(
-        color: Colors.red,
-        border:
-            Border.all(color: Colors.red, width: 1, style: BorderStyle.solid),
-        borderRadius: BorderRadius.circular(10),
-      ),
-    );
-    expect(flexWidget.mainAxisAlignment, MainAxisAlignment.center);
-    expect(flexWidget.crossAxisAlignment, CrossAxisAlignment.center);
-  });
-
-  testWidgets(
-    'FlexBox should apply modifiers only once',
-    (tester) async {
-      await tester.pumpMaterialApp(
-        FlexBox(
-          style: Style(
-            $box.height(100),
-            $box.width(100),
-            $with.align(),
-          ),
-          direction: Axis.horizontal,
-          children: const [
-            FlexBox(
-              direction: Axis.horizontal,
-              children: [],
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Column(
+              children: [
+                FlexBox(key: flexBoxKey, style: FlexBoxStyler()),
+                Container(
+                  key: containerKey,
+                  child: Flex(
+                    direction: Axis.horizontal,
+                    key: flexKey,
+                    children: const [],
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       );
 
-      expect(find.byType(Align), findsOneWidget);
+      /// Get widgets by key
+      final flexBoxFinder = find.byKey(flexBoxKey);
+      final containerFinder = find.byKey(containerKey);
+      final flexFinder = find.byKey(flexKey);
+
+      /// Find the Container and Flex widgets inside the FlexBox widget
+      final styledContainer = tester.widget<Container>(
+        find.descendant(of: flexBoxFinder, matching: find.byType(Container)),
+      );
+      final styledFlex = tester.widget<Flex>(
+        find.descendant(of: flexBoxFinder, matching: find.byType(Flex)),
+      );
+
+      final container = tester.widget<Container>(containerFinder);
+      final flex = tester.widget<Flex>(flexFinder);
+
+      /// Compare Container default parameters
+      expect(styledContainer.alignment, container.alignment);
+      expect(styledContainer.padding, container.padding);
+      expect(styledContainer.decoration, container.decoration);
+      expect(
+        styledContainer.foregroundDecoration,
+        container.foregroundDecoration,
+      );
+      expect(styledContainer.constraints, container.constraints);
+      expect(styledContainer.margin, container.margin);
+      expect(styledContainer.transform, container.transform);
+      expect(styledContainer.transformAlignment, container.transformAlignment);
+      expect(styledContainer.clipBehavior, container.clipBehavior);
+
+      /// Compare Flex default parameters
+      expect(styledFlex.direction, flex.direction);
+      expect(styledFlex.mainAxisAlignment, flex.mainAxisAlignment);
+      expect(styledFlex.mainAxisSize, flex.mainAxisSize);
+      expect(styledFlex.crossAxisAlignment, flex.crossAxisAlignment);
+      expect(styledFlex.textDirection, flex.textDirection);
+      expect(styledFlex.verticalDirection, flex.verticalDirection);
+      expect(styledFlex.textBaseline, flex.textBaseline);
+      expect(styledFlex.clipBehavior, flex.clipBehavior);
+    });
+  });
+
+  group('Default parameters for HBox matches Row', () {
+    testWidgets('should have the same default parameters', (tester) async {
+      const hBoxKey = Key('hbox');
+      const rowKey = Key('row');
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Column(
+              children: [
+                RowBox(key: hBoxKey),
+                Row(key: rowKey, children: const []),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      /// Get widgets by key
+      final hBoxFinder = find.byKey(hBoxKey);
+      final rowFinder = find.byKey(rowKey);
+
+      /// Find the Flex widget inside the HBox widget
+      final styledFlex = tester.widget<Flex>(
+        find.descendant(of: hBoxFinder, matching: find.byType(Flex)),
+      );
+      final row = tester.widget<Flex>(rowFinder);
+
+      /// Compare the default parameters
+      expect(styledFlex.direction, row.direction);
+      expect(styledFlex.mainAxisAlignment, row.mainAxisAlignment);
+      expect(styledFlex.mainAxisSize, row.mainAxisSize);
+      expect(styledFlex.crossAxisAlignment, row.crossAxisAlignment);
+      expect(styledFlex.textDirection, row.textDirection);
+      expect(styledFlex.verticalDirection, row.verticalDirection);
+      expect(styledFlex.textBaseline, row.textBaseline);
+      expect(styledFlex.clipBehavior, row.clipBehavior);
+    });
+  });
+
+  group('Default parameters for VBox matches Column', () {
+    testWidgets('should have the same default parameters', (tester) async {
+      const vBoxKey = Key('vbox');
+      const columnKey = Key('column');
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Row(
+              children: [
+                ColumnBox(key: vBoxKey),
+                Column(key: columnKey, children: const []),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      /// Get widgets by key
+      final vBoxFinder = find.byKey(vBoxKey);
+      final columnFinder = find.byKey(columnKey);
+
+      /// Find the Flex widget inside the VBox widget
+      final styledFlex = tester.widget<Flex>(
+        find.descendant(of: vBoxFinder, matching: find.byType(Flex)),
+      );
+      final column = tester.widget<Flex>(columnFinder);
+
+      /// Compare the default parameters
+      expect(styledFlex.direction, column.direction);
+      expect(styledFlex.mainAxisAlignment, column.mainAxisAlignment);
+      expect(styledFlex.mainAxisSize, column.mainAxisSize);
+      expect(styledFlex.crossAxisAlignment, column.crossAxisAlignment);
+      expect(styledFlex.textDirection, column.textDirection);
+      expect(styledFlex.verticalDirection, column.verticalDirection);
+      expect(styledFlex.textBaseline, column.textBaseline);
+      expect(styledFlex.clipBehavior, column.clipBehavior);
+    });
+
+    testWidgets('should verify FlexBox defaults match Flutter Flex defaults', (
+      tester,
+    ) async {
+      const flexBoxKey = Key('flexbox');
+      const flexKey = Key('flex');
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Column(
+              children: [
+                FlexBox(key: flexBoxKey),
+                Flex(
+                  direction: Axis.horizontal,
+                  key: flexKey,
+                  children: const [],
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      /// Get widgets by key
+      final flexBoxFinder = find.byKey(flexBoxKey);
+      final flexFinder = find.byKey(flexKey);
+
+      /// Find the Flex widget inside the FlexBox widget
+      final styledFlex = tester.widget<Flex>(
+        find.descendant(of: flexBoxFinder, matching: find.byType(Flex)),
+      );
+      final flex = tester.widget<Flex>(flexFinder);
+
+      /// Verify specific defaults
+      expect(
+        styledFlex.mainAxisAlignment,
+        MainAxisAlignment.start,
+        reason: 'FlexBox should default to MainAxisAlignment.start',
+      );
+      expect(
+        flex.mainAxisAlignment,
+        MainAxisAlignment.start,
+        reason: 'Flutter Flex should default to MainAxisAlignment.start',
+      );
+
+      expect(
+        styledFlex.mainAxisSize,
+        MainAxisSize.max,
+        reason: 'FlexBox should default to MainAxisSize.max',
+      );
+      expect(
+        flex.mainAxisSize,
+        MainAxisSize.max,
+        reason: 'Flutter Flex should default to MainAxisSize.max',
+      );
+
+      expect(
+        styledFlex.crossAxisAlignment,
+        CrossAxisAlignment.center,
+        reason: 'FlexBox should default to CrossAxisAlignment.center',
+      );
+      expect(
+        flex.crossAxisAlignment,
+        CrossAxisAlignment.center,
+        reason: 'Flutter Flex should default to CrossAxisAlignment.center',
+      );
+
+      expect(
+        styledFlex.verticalDirection,
+        VerticalDirection.down,
+        reason: 'FlexBox should default to VerticalDirection.down',
+      );
+      expect(
+        flex.verticalDirection,
+        VerticalDirection.down,
+        reason: 'Flutter Flex should default to VerticalDirection.down',
+      );
+
+      expect(
+        styledFlex.clipBehavior,
+        Clip.none,
+        reason: 'FlexBox should default to Clip.none',
+      );
+      expect(
+        flex.clipBehavior,
+        Clip.none,
+        reason: 'Flutter Flex should default to Clip.none',
+      );
+    });
+  });
+
+  testWidgets(
+    'ColumnBox throws an exception when direction is specified in the style',
+    (tester) async {
+      const flexBoxKey = Key('flexbox');
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: ColumnBox(
+              key: flexBoxKey,
+              style: FlexBoxStyler().direction(Axis.horizontal),
+            ),
+          ),
+        ),
+      );
+
+      final exception = tester.takeException();
+      expect(exception, isNotNull);
+      expect(
+        exception.toString(),
+        contains(
+          'Direction cannot be specified in the spec for RowBox (horizontal) or ColumnBox (vertical)',
+        ),
+      );
     },
   );
 
-  testWidgets('FlexBox handles onEnd', (WidgetTester tester) async {
-    var countPressTime = 0;
-    var countOnEnd = 0;
-
-    await tester.pumpWidget(
-      MaterialApp(
-        home: PressableBox(
-          onPress: () {
-            countPressTime++;
-          },
-          child: FlexBox(
-            style: Style(
-              $flexbox.height(50),
-              $flexbox.width(50),
-              $flexbox.wrap.transform.scale(1),
-              $on.press(
-                $flexbox.wrap.transform.scale(1.5),
-              ),
-            ).animate(
-              onEnd: () {
-                countOnEnd++;
-              },
-            ),
-            direction: Axis.horizontal,
-            children: const [Box()],
-          ),
-        ),
-      ),
-    );
-
-    final pressableFinder = find.byType(Pressable);
-    await tester.tap(pressableFinder);
-
-    await tester.pumpAndSettle();
-
-    expect(countPressTime, 1);
-    expect(countOnEnd, 2);
-  });
-
-  testWidgets('FlexBox handles onEnd #2', (WidgetTester tester) async {
-    var countPressTime = 0;
-    var countOnEnd = 0;
-
-    await tester.pumpWidget(
-      MaterialApp(
-        home: PressableBox(
-          onPress: () {
-            countPressTime++;
-          },
-          child: FlexBox(
-            style: Style(
-              $box.height(50),
-              $box.width(50),
-              $box.wrap.transform.scale(1),
-              $on.press(
-                $box.wrap.transform.scale(1.5),
-              ),
-            ).animate(
-              onEnd: () {
-                countOnEnd++;
-              },
-            ),
-            direction: Axis.horizontal,
-            children: const [Box()],
-          ),
-        ),
-      ),
-    );
-
-    final pressableFinder = find.byType(Pressable);
-    await tester.tap(pressableFinder);
-
-    await tester.pumpAndSettle();
-
-    expect(countPressTime, 1);
-    expect(countOnEnd, 2);
-  });
-
   testWidgets(
-      'FlexBoxSpec properties should match Flex and Container properties',
-      (WidgetTester tester) async {
-    final flexBoxSpec = FlexBoxSpec(
-      box: BoxSpec(
-        alignment: Alignment.center,
-        padding: const EdgeInsets.all(16),
-        margin: const EdgeInsets.symmetric(horizontal: 8),
-        decoration: BoxDecoration(
-          color: Colors.blue,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        foregroundDecoration: BoxDecoration(
-          border: Border.all(color: Colors.red, width: 2),
-        ),
-        transform: Matrix4.rotationZ(0.1),
-        transformAlignment: Alignment.topLeft,
-        clipBehavior: Clip.antiAlias,
-        width: 150,
-        height: 100,
-      ),
-      flex: const FlexSpec(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        direction: Axis.horizontal,
-        verticalDirection: VerticalDirection.down,
-        textDirection: TextDirection.ltr,
-        textBaseline: TextBaseline.alphabetic,
-      ),
-    );
-
-    const flexBoxKey = Key('flexbox');
-    final flexBox = FlexBoxSpecWidget(
-      key: flexBoxKey,
-      spec: flexBoxSpec,
-      direction: Axis.horizontal,
-      children: const [],
-    );
-
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: flexBox,
-        ),
-      ),
-    );
-
-    final flexBoxFinder = find.byKey(flexBoxKey);
-    expect(flexBoxFinder, findsOneWidget);
-
-    final containerWidget = tester.widget<Container>(find.descendant(
-      of: flexBoxFinder,
-      matching: find.byType(Container),
-    ));
-
-    final flexWidget = tester.widget<Flex>(find.descendant(
-      of: flexBoxFinder,
-      matching: find.byType(Flex),
-    ));
-
-    expect(containerWidget.alignment, flexBoxSpec.box.alignment);
-    expect(containerWidget.padding, flexBoxSpec.box.padding);
-    expect(containerWidget.margin, flexBoxSpec.box.margin);
-    expect(containerWidget.decoration, flexBoxSpec.box.decoration);
-    expect(containerWidget.foregroundDecoration,
-        flexBoxSpec.box.foregroundDecoration);
-    expect(containerWidget.transform, flexBoxSpec.box.transform);
-    expect(
-        containerWidget.transformAlignment, flexBoxSpec.box.transformAlignment);
-    expect(containerWidget.clipBehavior, flexBoxSpec.box.clipBehavior);
-
-    expect(flexWidget.mainAxisAlignment, flexBoxSpec.flex.mainAxisAlignment);
-    expect(flexWidget.crossAxisAlignment, flexBoxSpec.flex.crossAxisAlignment);
-    expect(flexWidget.mainAxisSize, flexBoxSpec.flex.mainAxisSize);
-    expect(flexWidget.direction, flexBoxSpec.flex.direction);
-    expect(flexWidget.verticalDirection, flexBoxSpec.flex.verticalDirection);
-    expect(flexWidget.textDirection, flexBoxSpec.flex.textDirection);
-    expect(flexWidget.textBaseline, flexBoxSpec.flex.textBaseline);
-  });
-
-  testWidgets(
-    'Renders modifiers in the correct order with many overrides',
+    'RowBox throws an exception when direction is specified in the style',
     (tester) async {
-      testOverrideModifiersOrder(
-        tester,
-        widgetBuilder: (style, orderOfModifiers) {
-          return FlexBox(
-            style: style,
-            orderOfModifiers: orderOfModifiers,
-            direction: Axis.horizontal,
-            children: const [],
-          );
-        },
+      const flexBoxKey = Key('flexbox');
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: RowBox(
+              key: flexBoxKey,
+              style: FlexBoxStyler().direction(Axis.vertical),
+            ),
+          ),
+        ),
+      );
+
+      final exception = tester.takeException();
+      expect(exception, isNotNull);
+      expect(
+        exception.toString(),
+        contains(
+          'Direction cannot be specified in the spec for RowBox (horizontal) or ColumnBox (vertical)',
+        ),
+      );
+    },
+  );
+
+  testWidgets(
+    'FlexBox does NOT throw when direction is specified in the style',
+    (tester) async {
+      const flexBoxKey = Key('flexbox');
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: FlexBox(
+              key: flexBoxKey,
+              style: FlexBoxStyler().direction(Axis.horizontal),
+            ),
+          ),
+        ),
+      );
+
+      final exception = tester.takeException();
+      expect(
+        exception,
+        isNull,
+        reason: 'FlexBox should allow direction in the style',
       );
     },
   );

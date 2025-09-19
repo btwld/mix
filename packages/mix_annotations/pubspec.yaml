@@ -4,9 +4,9 @@ version: 1.7.0
 repository: https://github.com/btwld/mix/tree/main/packages/mix_annotation
 
 environment:
-  sdk: ">=3.6.0 <4.0.0"
+  sdk: ">=3.9.0 <4.0.0"
 
 dev_dependencies:
   test: ^1.21.0
-  dart_code_metrics_presets: ^2.14.0
-  flutter_lints: ^4.0.0
+  dart_code_metrics_presets: ^2.24.0
+  flutter_lints: ^6.0.0

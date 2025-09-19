@@ -1,156 +1,94 @@
 import 'package:flutter/material.dart';
 
-import '../../core/animated_spec_widget.dart';
-import '../../core/spec_widget.dart';
-import '../../core/styled_widget.dart';
-import '../../modifiers/internal/render_widget_modifier.dart';
+import '../../core/style_builder.dart';
+import '../../core/style_spec.dart';
+import '../../core/style_widget.dart';
 import 'icon_spec.dart';
+import 'icon_style.dart';
 
-class StyledIcon extends StyledWidget {
-  const StyledIcon(
-    this.icon, {
+/// Displays an icon with Mix styling.
+///
+/// Applies [IconSpec] for custom icon appearance.
+class StyledIcon extends StyleWidget<IconSpec> {
+  const StyledIcon({
+    this.icon,
     this.semanticLabel,
-    super.style,
+    super.style = const IconStyler.create(),
     super.key,
-    super.inherit = true,
-    this.textDirection,
-    @Deprecated('Use orderOfModifiers parameter instead')
-    List<Type> modifierOrder = const <Type>[],
-    super.orderOfModifiers = const <Type>[],
   });
 
+  /// The icon to display.
   final IconData? icon;
+
+  /// Semantic label for accessibility.
   final String? semanticLabel;
-  // TODO: Should textDirection be a contructor argument or a style attribute?
-  final TextDirection? textDirection;
 
   @override
-  Widget build(BuildContext context) {
-    return SpecBuilder(
-      inherit: inherit,
-      style: style,
-      orderOfModifiers: orderOfModifiers,
-      builder: (context) {
-        final spec = IconSpec.of(context);
-
-        return spec(
-          icon,
-          semanticLabel: semanticLabel,
-          orderOfModifiers: orderOfModifiers,
-          textDirection: textDirection,
-        );
-      },
-    );
-  }
-}
-
-class IconSpecWidget extends SpecWidget<IconSpec> {
-  const IconSpecWidget(
-    this.icon, {
-    super.spec,
-    this.semanticLabel,
-    super.key,
-    this.textDirection,
-    @Deprecated('Use orderOfModifiers parameter instead')
-    List<Type> modifierOrder = const <Type>[],
-    this.orderOfModifiers = const <Type>[],
-  });
-
-  final IconData? icon;
-  final String? semanticLabel;
-  final TextDirection? textDirection;
-  final List<Type> orderOfModifiers;
-
-  @override
-  Widget build(BuildContext context) {
-    return RenderSpecModifiers(
-      spec: spec ?? const IconSpec(),
-      orderOfModifiers: orderOfModifiers,
-      child: Icon(
-        icon,
-        size: spec?.size,
-        fill: spec?.fill,
-        weight: spec?.weight,
-        grade: spec?.grade,
-        opticalSize: spec?.opticalSize,
-        color: spec?.color,
-        shadows: spec?.shadows,
-        semanticLabel: semanticLabel,
-        textDirection: textDirection,
-      ),
-    );
-  }
-}
-
-class AnimatedStyledIcon extends StyledWidget {
-  const AnimatedStyledIcon(
-    this.icon, {
-    this.semanticLabel,
-    super.style,
-    super.key,
-    required this.progress,
-    super.inherit,
-    this.textDirection,
-    @Deprecated('Use orderOfModifiers parameter instead')
-    List<Type> modifierOrder = const <Type>[],
-    super.orderOfModifiers = const <Type>[],
-  });
-
-  final AnimatedIconData icon;
-  final String? semanticLabel;
-  final Animation<double> progress;
-  final TextDirection? textDirection;
-
-  @override
-  Widget build(BuildContext context) {
-    return SpecBuilder(
-      inherit: inherit,
-      style: style,
-      orderOfModifiers: orderOfModifiers,
-      builder: (context) {
-        final spec = IconSpec.of(context);
-
-        return AnimatedIcon(
-          icon: icon,
-          progress: progress,
-          color: spec.color,
-          size: spec.size,
-          semanticLabel: semanticLabel,
-          textDirection: textDirection,
-        );
-      },
-    );
-  }
-}
-
-class AnimatedIconSpecWidget extends ImplicitlyAnimatedSpecWidget<IconSpec> {
-  const AnimatedIconSpecWidget(
-    this.icon, {
-    required super.spec,
-    super.key,
-    this.semanticLabel,
-    this.textDirection,
-    super.curve,
-    required super.duration,
-    super.onEnd,
-    @Deprecated('Use orderOfModifiers parameter instead')
-    List<Type> modifierOrder = const <Type>[],
-    this.orderOfModifiers = const <Type>[],
-  });
-
-  final IconData? icon;
-  final String? semanticLabel;
-  final TextDirection? textDirection;
-  final List<Type> orderOfModifiers;
-
-  @override
-  Widget build(BuildContext context, IconSpec animatedSpec) {
-    return IconSpecWidget(
-      icon,
-      spec: animatedSpec,
+  Widget build(BuildContext context, IconSpec spec) {
+    return _createIconSpecWidget(
+      spec: spec,
+      icon: icon,
       semanticLabel: semanticLabel,
-      textDirection: textDirection,
-      orderOfModifiers: orderOfModifiers,
     );
+  }
+}
+
+/// Creates an [Icon] widget from an [IconSpec] and optional overrides.
+Icon _createIconSpecWidget({
+  required IconSpec? spec,
+  IconData? icon,
+  String? semanticLabel,
+}) {
+  return Icon(
+    icon ?? spec?.icon,
+    size: spec?.size,
+    fill: spec?.fill,
+    weight: spec?.weight,
+    grade: spec?.grade,
+    opticalSize: spec?.opticalSize,
+    color: spec?.color,
+    shadows: spec?.shadows,
+    semanticLabel: semanticLabel ?? spec?.semanticsLabel,
+    textDirection: spec?.textDirection,
+    applyTextScaling: spec?.applyTextScaling,
+    blendMode: spec?.blendMode,
+  );
+}
+
+/// Extension to convert [IconSpec] directly to an [Icon] widget.
+extension IconSpecWidget on IconSpec {
+  /// Creates an [Icon] widget from this [IconSpec].
+  Icon createWidget({IconData? icon, String? semanticLabel}) {
+    return _createIconSpecWidget(
+      spec: this,
+      icon: icon,
+      semanticLabel: semanticLabel,
+    );
+  }
+
+  @Deprecated('Use .createWidget() instead')
+  Icon call({IconData? icon, String? semanticLabel}) {
+    return createWidget(icon: icon, semanticLabel: semanticLabel);
+  }
+}
+
+extension IconSpecWrappedWidget on StyleSpec<IconSpec> {
+  /// Creates a widget that resolves this [StyleSpec<IconSpec>] with context.
+  Widget createWidget({IconData? icon, String? semanticLabel}) {
+    return StyleSpecBuilder(
+      builder: (context, spec) {
+        return _createIconSpecWidget(
+          spec: spec,
+          icon: icon,
+          semanticLabel: semanticLabel,
+        );
+      },
+      styleSpec: this,
+    );
+  }
+
+  @Deprecated('Use .createWidget() instead')
+  Widget call({IconData? icon, String? semanticLabel}) {
+    return createWidget(icon: icon, semanticLabel: semanticLabel);
   }
 }

@@ -1,52 +1,47 @@
 import 'package:flutter/widgets.dart';
-import 'package:mix_annotations/mix_annotations.dart';
 
-import '../attributes/animated/animated_data.dart';
-import '../attributes/animated/animated_data_dto.dart';
-import '../attributes/modifiers/widget_modifiers_config.dart';
-import '../attributes/modifiers/widget_modifiers_config_dto.dart';
-import '../internal/compare_mixin.dart';
-import 'element.dart';
-import 'factory/mix_context.dart';
+import 'internal/compare_mixin.dart';
+import 'style_spec.dart';
 
+/// Base class for all resolved specifications that define widget properties.
+///
+/// Specs are the final resolved form of styling attributes after applying
+/// context-specific values and merging operations.
 @immutable
-abstract class Spec<T extends Spec<T>> with EqualityMixin {
-  final AnimatedData? animated;
-
-  @MixableField(
-    utilities: [MixableFieldUtility(alias: 'wrap')],
-    isLerpable: false,
-  )
-  final WidgetModifiersConfig? modifiers;
-
-  const Spec({this.animated, this.modifiers});
+abstract class Spec<T extends Spec<T>> with Equatable {
+  const Spec();
 
   Type get type => T;
-
-  bool get isAnimated => animated != null;
 
   /// Creates a copy of this spec with the given fields
   /// replaced by the non-null parameter values.
   T copyWith();
 
-  /// Linearly interpolate with another [Spec] object.
+  /// Linearly interpolates with another [Spec] object.
   T lerp(covariant T? other, double t);
 }
 
-/// An abstract class representing a resolvable attribute.
-///
-/// This class extends the [StyleElement] class and provides a generic type [Self] and [Value].
-/// The [Self] type represents the concrete implementation of the attribute, while the [Value] type represents the resolvable value.
-abstract class SpecAttribute<Value> extends StyleElement
-    implements Mixable<Value> {
-  final AnimatedDataDto? animated;
-  final WidgetModifiersDataDto? modifiers;
-
-  const SpecAttribute({this.animated, this.modifiers});
+/// A [Tween] for interpolating between two [Spec] objects.
+class SpecTween<T extends Spec<T>> extends Tween<T?> {
+  SpecTween({super.begin, super.end});
 
   @override
-  Value resolve(MixContext mix);
+  T? lerp(double t) {
+    if (begin == null) return end;
+    if (end == null) return begin;
+
+    return begin?.lerp(end, t);
+  }
+}
+
+class WidgeSpecTween<S extends Spec<S>> extends Tween<StyleSpec<S>?> {
+  WidgeSpecTween({super.begin, super.end});
 
   @override
-  SpecAttribute<Value> merge(covariant SpecAttribute<Value>? other);
+  StyleSpec<S>? lerp(double t) {
+    if (begin == null) return end;
+    if (end == null) return begin;
+
+    return begin?.lerp(end, t);
+  }
 }

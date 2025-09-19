@@ -25,7 +25,7 @@ Style(
 #### Do
 
 ```dart
-final example = Variant('example');
+final example = NamedVariant('example');
 
 Style(
     example(

@@ -1,57 +1,61 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mix_annotations/mix_annotations.dart';
 
-import '../../attributes/animated/animated_data.dart';
-import '../../attributes/animated/animated_data_dto.dart';
-import '../../attributes/animated/animated_util.dart';
-import '../../attributes/enum/enum_util.dart';
-import '../../attributes/modifiers/widget_modifiers_config.dart';
-import '../../attributes/modifiers/widget_modifiers_config_dto.dart';
-import '../../attributes/modifiers/widget_modifiers_util.dart';
-import '../../attributes/scalars/scalar_util.dart';
-import '../../core/computed_style/computed_style.dart';
-import '../../core/factory/mix_context.dart';
-import '../../core/factory/style_mix.dart';
+import '../../core/helpers.dart';
 import '../../core/spec.dart';
-import 'stack_widget.dart';
 
-part 'stack_spec.g.dart';
-
-@MixableSpec()
-final class StackSpec extends Spec<StackSpec> with _$StackSpec, Diagnosticable {
+final class StackSpec extends Spec<StackSpec> with Diagnosticable {
   final AlignmentGeometry? alignment;
   final StackFit? fit;
   final TextDirection? textDirection;
   final Clip? clipBehavior;
-
-  static const of = _$StackSpec.of;
-
-  static const from = _$StackSpec.from;
 
   const StackSpec({
     this.alignment,
     this.fit,
     this.textDirection,
     this.clipBehavior,
-    super.animated,
-    super.modifiers,
   });
 
-  Widget call({List<Widget> children = const []}) {
-    return isAnimated
-        ? AnimatedStackSpecWidget(
-            spec: this,
-            curve: animated!.curve,
-            duration: animated!.duration,
-            children: children,
-          )
-        : StackSpecWidget(spec: this, children: children);
+  /// Creates a copy of this [StackSpec] but with the given fields
+  /// replaced with the new values.
+  @override
+  StackSpec copyWith({
+    AlignmentGeometry? alignment,
+    StackFit? fit,
+    TextDirection? textDirection,
+    Clip? clipBehavior,
+  }) {
+    return StackSpec(
+      alignment: alignment ?? this.alignment,
+      fit: fit ?? this.fit,
+      textDirection: textDirection ?? this.textDirection,
+      clipBehavior: clipBehavior ?? this.clipBehavior,
+    );
+  }
+
+  /// Linearly interpolates between this [StackSpec] and another [StackSpec] based on the given parameter [t].
+  @override
+  StackSpec lerp(StackSpec? other, double t) {
+    return StackSpec(
+      alignment: MixOps.lerp(alignment, other?.alignment, t),
+      fit: MixOps.lerpSnap(fit, other?.fit, t),
+      textDirection: MixOps.lerpSnap(textDirection, other?.textDirection, t),
+      clipBehavior: MixOps.lerpSnap(clipBehavior, other?.clipBehavior, t),
+    );
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    _debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('alignment', alignment))
+      ..add(EnumProperty<StackFit>('fit', fit))
+      ..add(EnumProperty<TextDirection>('textDirection', textDirection))
+      ..add(EnumProperty<Clip>('clipBehavior', clipBehavior));
   }
+
+  /// The list of properties that constitute the state of this [StackSpec].
+  @override
+  List<Object?> get props => [alignment, fit, textDirection, clipBehavior];
 }

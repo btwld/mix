@@ -15,6 +15,7 @@ Mix brings industry-proven design system concepts to Flutter. It separates style
 -  Easily compose, merge, and apply styles across widgets.
 -  Write cleaner, more maintainable styling definitions.
 -  Apply styles conditionally based on the BuildContext.
+-  **NEW**: Optimized for Dart's dot notation syntax for even cleaner code.
 
 ## Why Mix?
 
@@ -30,6 +31,26 @@ Mix addresses these challenges by creating a styling system that uses utility fu
 - Create adaptive designs and layouts by leveraging style variants, which are based on existing styles but can be applied conditionally or responsively.
 - Type-safe composability. Mix leverages the power of Dart's type system and class to create a type-safe styling experience.
 
+## Installation
+
+### Prerequisites
+
+- **Dart SDK**: ≥ 3.9.0 (required for dot notation syntax)
+- **Flutter**: Latest stable version
+
+### Add Mix to Your Project
+
+```yaml
+dependencies:
+  mix: ^2.0.0-dev.1
+```
+
+Or using the Flutter CLI:
+
+```bash
+flutter pub add mix:^2.0.0-dev.1
+```
+
 ## Guiding Principles
 
 -  **Simple Abstraction**: A low-cost layer over the Flutter API, letting you style widgets without altering their core behavior, ensuring they remain compatible and predictable.
@@ -44,13 +65,34 @@ Mix addresses these challenges by creating a styling system that uses utility fu
 Styles are easily defined using the `Style` class, which allows you to define a style's properties and values. Here's an example of defining a style:
 
 ```dart
+// Traditional syntax with cascade notation (always supported)
 final style = Style(
-  $box.height(100),
-  $box.width(100),
-  $box.color.purple(),
-  $box.borderRadius(10),
+  $box.height(100)
+    ..width(100)
+    ..color.purple()
+    ..borderRadius(10),
+);
+
+// NEW: Dot notation syntax (requires Dart SDK ≥ 3.9.0)
+final style = Style.box(
+  .height(100)
+  .width(100)
+  .color(Colors.purple)
+  .borderRadius(.circular(10))
 );
 ```
+
+### Enabling Dot Notation Syntax (Recommended)
+
+Mix 2.0 is optimized for Dart's experimental dot notation syntax, which provides a cleaner and more intuitive API. To enable it, add this to your `analysis_options.yaml`:
+
+```yaml
+analyzer:
+  enable-experiment:
+    - dot-shorthands
+```
+
+**Note**: This feature requires Dart SDK ≥ 3.9.0. The traditional cascade syntax will always remain supported.
 
 Learn more about [styling](https://fluttermix.com/docs/guides/styling)
 
@@ -59,7 +101,7 @@ Learn more about [styling](https://fluttermix.com/docs/guides/styling)
 First-class support for variants, allowing you to define styling variations that can be applied conditionally or responsively.
 
 ```dart {1, 8-12, 15}
-const onOutlined = Variant('outlined');
+const onOutlined = NamedVariant('outlined');
 
 final baseStyle = Style(
   $box.borderRadius(10),

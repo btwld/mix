@@ -6,137 +6,616 @@ import '../../helpers/testing_utils.dart';
 
 void main() {
   group('ContextVariant', () {
-    test(
-        'call method should return a VariantAttribute with provided attributes',
-        () {
-      const variant = _MockContextVariant();
-      const attribute1 = MockDoubleScalarAttribute(1.0);
-      const attribute2 = MockIntScalarAttribute(2);
+    group('Constructor', () {
+      test('creates variant with correct properties', () {
+        final variant = ContextVariant('test_key', (context) => true);
 
-      final result = variant(attribute1, attribute2);
+        expect(variant.key, 'test_key');
+        expect(variant.when(MockBuildContext()), true);
+        expect(variant, isA<Variant>());
+        expect(variant, isA<ContextVariant>());
+      });
 
-      expect(result, isA<VariantAttribute>());
-      expect(result.variant, equals(variant));
-      expect(result.value.styles.length, equals(2));
-      expect(result.value.styles.containsType(attribute1), isTrue);
-      expect(result.value.styles.containsType(attribute2), isTrue);
+      test('creates variants with different keys and functions', () {
+        final variant1 = ContextVariant('key1', (context) => true);
+        final variant2 = ContextVariant('key2', (context) => false);
+        final variant3 = ContextVariant('key3', (context) => context.mounted);
+
+        expect(variant1.key, 'key1');
+        expect(variant2.key, 'key2');
+        expect(variant3.key, 'key3');
+
+        final context = MockBuildContext();
+        expect(variant1.when(context), isTrue);
+        expect(variant2.when(context), isFalse);
+        expect(variant3.when(context), isTrue);
+      });
+
+      test('accepts complex conditional functions', () {
+        var callCount = 0;
+        final variant = ContextVariant('complex', (context) {
+          callCount++;
+          return callCount % 2 == 0;
+        });
+
+        final context = MockBuildContext();
+        expect(variant.when(context), isFalse); // callCount = 1
+        expect(variant.when(context), isTrue); // callCount = 2
+        expect(variant.when(context), isFalse); // callCount = 3
+      });
+
+      test('accepts empty string key', () {
+        final variant = ContextVariant('', (context) => true);
+
+        expect(variant.key, '');
+        expect(variant.when(MockBuildContext()), isTrue);
+      });
+
+      test('function parameter is properly passed', () {
+        BuildContext? capturedContext;
+        final variant = ContextVariant('test', (context) {
+          capturedContext = context;
+          return true;
+        });
+
+        final mockContext = MockBuildContext();
+        variant.when(mockContext);
+
+        expect(capturedContext, same(mockContext));
+      });
     });
 
-    test('call method should ignore null attributes', () {
-      const variant = _MockContextVariant();
-      const attribute1 = MockDoubleScalarAttribute(1.0);
+    group('widgetState factory', () {
+      test('creates widget state variant with correct key', () {
+        final variant = ContextVariant.widgetState(WidgetState.hovered);
 
-      final result = variant(attribute1, null);
+        expect(variant.key, 'widget_state_hovered');
+      });
 
-      expect(result.value.styles.length, equals(1));
-      expect(result.value.styles.containsType(attribute1), isTrue);
+      test('creates different variants for different states', () {
+        final hovered = ContextVariant.widgetState(WidgetState.hovered);
+        final pressed = ContextVariant.widgetState(WidgetState.pressed);
+
+        expect(hovered.key, 'widget_state_hovered');
+        expect(pressed.key, 'widget_state_pressed');
+        expect(hovered.key != pressed.key, true);
+      });
     });
 
-    test('priority should return VariantPriority.normal by default', () {
-      const variant = _MockContextVariant();
+    group('orientation factory', () {
+      test('creates orientation variant with correct key', () {
+        final variant = ContextVariant.orientation(Orientation.portrait);
 
-      expect(variant.priority, equals(VariantPriority.normal));
+        expect(variant.key, 'media_query_orientation_portrait');
+      });
     });
 
-    test('mergeKey should return the runtime type as a string', () {
-      const variant = _MockContextVariant();
+    group('platformBrightness factory', () {
+      test('creates brightness variant with correct key', () {
+        final variant = ContextVariant.brightness(Brightness.dark);
 
-      expect(variant.mergeKey, equals('_MockContextVariant'));
+        expect(variant.key, 'media_query_platform_brightness_dark');
+      });
     });
 
-    test('props should return a list containing the priority', () {
-      const variant = _MockContextVariant();
+    group('size factory', () {
+      test('creates size variant with correct key', () {
+        final variant = ContextVariant.size(
+          'mobile',
+          (size) => size.width < 768,
+        );
 
-      expect(variant.props, equals([VariantPriority.normal]));
+        expect(variant.key, 'media_query_size_mobile');
+      });
+    });
+
+    group('direction factory', () {
+      test('creates direction variant with correct key', () {
+        final variant = ContextVariant.directionality(TextDirection.ltr);
+
+        expect(variant.key, 'directionality_ltr');
+      });
+
+      test('creates different variants for different directions', () {
+        final ltr = ContextVariant.directionality(TextDirection.ltr);
+        final rtl = ContextVariant.directionality(TextDirection.rtl);
+
+        expect(ltr.key, 'directionality_ltr');
+        expect(rtl.key, 'directionality_rtl');
+        expect(ltr.key, isNot(equals(rtl.key)));
+      });
+    });
+
+    group('platform factory', () {
+      test('creates platform variant with correct key', () {
+        final ios = ContextVariant.platform(TargetPlatform.iOS);
+        final android = ContextVariant.platform(TargetPlatform.android);
+        final windows = ContextVariant.platform(TargetPlatform.windows);
+
+        expect(ios.key, 'platform_iOS');
+        expect(android.key, 'platform_android');
+        expect(windows.key, 'platform_windows');
+      });
+
+      test('creates different variants for different platforms', () {
+        const platforms = TargetPlatform.values;
+        final variants = platforms
+            .map((p) => ContextVariant.platform(p))
+            .toList();
+        final keys = variants.map((v) => v.key).toSet();
+
+        // All platforms should have different keys
+        expect(keys.length, platforms.length);
+      });
+    });
+
+    group('web factory', () {
+      test('creates web variant with correct key', () {
+        final variant = ContextVariant.web();
+
+        expect(variant.key, 'web');
+      });
+    });
+
+    group('when method', () {
+      test('calls shouldApply function', () {
+        bool called = false;
+        final variant = ContextVariant('test', (context) {
+          called = true;
+          return true;
+        });
+
+        final result = variant.when(MockBuildContext());
+
+        expect(called, true);
+        expect(result, true);
+      });
+
+      test('returns shouldApply function result', () {
+        final trueVariant = ContextVariant('true', (context) => true);
+        final falseVariant = ContextVariant('false', (context) => false);
+        final nullCheckVariant = ContextVariant(
+          'null_check',
+          (context) => context.mounted,
+        );
+
+        final context = MockBuildContext();
+        expect(trueVariant.when(context), isTrue);
+        expect(falseVariant.when(context), isFalse);
+        expect(nullCheckVariant.when(context), isTrue);
+      });
+
+      test('calls function each time when is called', () {
+        var callCount = 0;
+        final variant = ContextVariant('counter', (context) {
+          callCount++;
+          return true;
+        });
+
+        final context = MockBuildContext();
+        variant.when(context);
+        variant.when(context);
+        variant.when(context);
+
+        expect(callCount, 3);
+      });
+    });
+    group('Equality and hashCode', () {
+      test('equal ContextVariants have same hashCode', () {
+        final variant1 = ContextVariant('test', (context) => true);
+        final variant2 = ContextVariant('test', (context) => true);
+
+        // Note: ContextVariant equality is based on key, not function
+        expect(variant1.key, equals(variant2.key));
+      });
+
+      test('different keys create different variants', () {
+        final variant1 = ContextVariant('test1', (context) => true);
+        final variant2 = ContextVariant('test2', (context) => true);
+
+        expect(variant1.key, isNot(equals(variant2.key)));
+      });
+
+      test('factory method variants have consistent keys', () {
+        final variant1 = ContextVariant.brightness(Brightness.dark);
+        final variant2 = ContextVariant.brightness(Brightness.dark);
+
+        expect(variant1.key, equals(variant2.key));
+      });
+    });
+
+    group('Variant composition', () {
+      test('separate variants can be used independently', () {
+        final variant1 = ContextVariant('test1', (context) => true);
+        final variant2 = ContextVariant('test2', (context) => false);
+
+        expect(variant1.key, 'test1');
+        expect(variant2.key, 'test2');
+        expect(variant1, isNot(equals(variant2)));
+      });
+
+      test('can be negated with NOT static method', () {
+        final variant = ContextVariant('test', (context) => true);
+        final notVariant = ContextVariant.not(variant);
+
+        expect(notVariant, isA<ContextVariant>());
+        expect(notVariant.key, 'not_test');
+      });
+
+      test('ContextVariants and NamedVariants are distinct types', () {
+        final contextVariant = ContextVariant('test', (context) => true);
+        const namedVariant = NamedVariant('primary');
+
+        expect(contextVariant, isA<ContextVariant>());
+        expect(namedVariant, isA<NamedVariant>());
+        expect(contextVariant.key, isNot(equals(namedVariant.key)));
+      });
+    });
+
+    group('VariantSpecAttribute integration', () {
+      test('can be wrapped in VariantSpecAttribute', () {
+        final contextVariant = ContextVariant('test', (context) => true);
+        final style = BoxStyler().width(100.0);
+        final variantAttr = VariantStyle<BoxSpec>(contextVariant, style);
+
+        expect(variantAttr.variant, contextVariant);
+        expect(variantAttr.value, style);
+        expect(variantAttr.mergeKey, 'test');
+      });
+
+      test('different contexts create different mergeKeys', () {
+        final variant1 = ContextVariant('context1', (context) => true);
+        final variant2 = ContextVariant('context2', (context) => false);
+
+        final style1 = VariantStyle<BoxSpec>(
+          variant1,
+          BoxStyler().width(100.0),
+        );
+        final style2 = VariantStyle<BoxSpec>(
+          variant2,
+          BoxStyler().height(200.0),
+        );
+
+        expect(style1.mergeKey, 'context1');
+        expect(style2.mergeKey, 'context2');
+        expect(style1.mergeKey, isNot(equals(style2.mergeKey)));
+      });
+    });
+
+    group('Complex condition scenarios', () {
+      test('handles complex conditional logic', () {
+        final complexVariant = ContextVariant('complex', (context) {
+          // Simulate complex logic that might depend on context properties
+          return context.size?.width != null && context.size!.width > 800;
+        });
+
+        final context = MockBuildContext();
+        final result = complexVariant.when(context);
+
+        // The MockBuildContext has size (800, 600) by default
+        expect(result, isFalse);
+      });
+
+      test('can throw exceptions in shouldApply function', () {
+        final throwingVariant = ContextVariant('throwing', (context) {
+          throw Exception('Test exception');
+        });
+
+        final context = MockBuildContext();
+        expect(() => throwingVariant.when(context), throwsException);
+      });
+
+      test('handles null context gracefully in custom functions', () {
+        final nullSafeVariant = ContextVariant('null_safe', (context) {
+          return context.mounted;
+        });
+
+        final context = MockBuildContext();
+        expect(() => nullSafeVariant.when(context), returnsNormally);
+      });
+    });
+
+    group('Factory method comprehensive testing', () {
+      test('all orientation values create valid variants', () {
+        for (final orientation in Orientation.values) {
+          final variant = ContextVariant.orientation(orientation);
+          expect(variant.key, contains(orientation.name));
+          expect(variant, isA<ContextVariant>());
+        }
+      });
+
+      test('all brightness values create valid variants', () {
+        for (final brightness in Brightness.values) {
+          final variant = ContextVariant.brightness(brightness);
+          expect(variant.key, contains(brightness.name));
+          expect(variant, isA<ContextVariant>());
+        }
+      });
+
+      test('all text direction values create valid variants', () {
+        for (final direction in TextDirection.values) {
+          final variant = ContextVariant.directionality(direction);
+          expect(variant.key, contains(direction.name));
+          expect(variant, isA<ContextVariant>());
+        }
+      });
+
+      test('size factory accepts custom conditions', () {
+        final mobileVariant = ContextVariant.size(
+          'mobile',
+          (size) => size.width <= 480,
+        );
+        final tabletVariant = ContextVariant.size(
+          'tablet',
+          (size) => size.width > 480 && size.width <= 1024,
+        );
+        final desktopVariant = ContextVariant.size(
+          'desktop',
+          (size) => size.width > 1024,
+        );
+
+        expect(mobileVariant.key, 'media_query_size_mobile');
+        expect(tabletVariant.key, 'media_query_size_tablet');
+        expect(desktopVariant.key, 'media_query_size_desktop');
+      });
+    });
+
+    group('Edge cases and error handling', () {
+      test('handles function that returns non-boolean gracefully', () {
+        // In Dart, this would be a compile-time error, but let's test runtime behavior
+        expect(
+          () => ContextVariant('test', (context) => true),
+          returnsNormally,
+        );
+      });
+
+      test('key property is immutable', () {
+        final variant = ContextVariant('immutable', (context) => true);
+        expect(variant.key, 'immutable');
+        // Key should not change
+        expect(variant.key, 'immutable');
+      });
+
+      test('shouldApply function is consistently referenced', () {
+        final variant = ContextVariant('consistent', (context) => true);
+        final function1 = variant.shouldApply;
+        final function2 = variant.shouldApply;
+
+        expect(identical(function1, function2), isTrue);
+      });
     });
   });
 
-  group('WidgetContextVariant', () {
-    test('priority should return VariantPriority.highest', () {
-      const variant = _MockWidgetContextVariant<int>(5);
-
-      expect(variant.priority, equals(VariantPriority.highest));
+  group('Predefined variants', () {
+    test('widget state variants are defined', () {
+      expect(
+        ContextVariant.widgetState(WidgetState.hovered).key,
+        'widget_state_hovered',
+      );
+      expect(
+        ContextVariant.widgetState(WidgetState.pressed).key,
+        'widget_state_pressed',
+      );
+      expect(
+        ContextVariant.widgetState(WidgetState.focused).key,
+        'widget_state_focused',
+      );
+      expect(
+        ContextVariant.widgetState(WidgetState.disabled).key,
+        'widget_state_disabled',
+      );
+      expect(
+        ContextVariant.widgetState(WidgetState.selected).key,
+        'widget_state_selected',
+      );
+      expect(
+        ContextVariant.widgetState(WidgetState.dragged).key,
+        'widget_state_dragged',
+      );
+      expect(
+        ContextVariant.widgetState(WidgetState.error).key,
+        'widget_state_error',
+      );
     });
 
-    test('event method should return a ContextVariantBuilder', () {
-      const variant = _MockWidgetContextVariant<int>(4);
-      final style = Style();
+    test('brightness variants are defined', () {
+      expect(
+        ContextVariant.brightness(Brightness.dark).key,
+        'media_query_platform_brightness_dark',
+      );
+      expect(
+        ContextVariant.brightness(Brightness.light).key,
+        'media_query_platform_brightness_light',
+      );
+    });
 
-      final result = variant.event((_) => style);
+    test('orientation variants are defined', () {
+      expect(
+        ContextVariant.orientation(Orientation.portrait).key,
+        'media_query_orientation_portrait',
+      );
+      expect(
+        ContextVariant.orientation(Orientation.landscape).key,
+        'media_query_orientation_landscape',
+      );
+    });
 
-      expect(result, isA<ContextVariantBuilder>());
-      expect(result.variant, equals(variant));
-      expect(result.fn(MockBuildContext()), equals(style));
+    test('size variants are defined', () {
+      expect(
+        ContextVariant.size('mobile', (size) => size.width <= 767).key,
+        'media_query_size_mobile',
+      );
+      expect(
+        ContextVariant.size(
+          'tablet',
+          (size) => size.width > 767 && size.width <= 1279,
+        ).key,
+        'media_query_size_tablet',
+      );
+      expect(
+        ContextVariant.size('desktop', (size) => size.width > 1279).key,
+        'media_query_size_desktop',
+      );
+    });
+
+    test('breakpoint variants are defined', () {
+      expect(
+        ContextVariant.size('xsmall', (size) => size.width <= 480).key,
+        'media_query_size_xsmall',
+      );
+      expect(
+        ContextVariant.size('small', (size) => size.width <= 768).key,
+        'media_query_size_small',
+      );
+      expect(
+        ContextVariant.size('medium', (size) => size.width <= 1024).key,
+        'media_query_size_medium',
+      );
+      expect(
+        ContextVariant.size('large', (size) => size.width <= 1280).key,
+        'media_query_size_large',
+      );
+      expect(
+        ContextVariant.size('xlarge', (size) => size.width > 1280).key,
+        'media_query_size_xlarge',
+      );
+    });
+
+    test('platform variants are defined', () {
+      expect(ContextVariant.platform(TargetPlatform.iOS).key, 'platform_iOS');
+      expect(
+        ContextVariant.platform(TargetPlatform.android).key,
+        'platform_android',
+      );
+      expect(
+        ContextVariant.platform(TargetPlatform.macOS).key,
+        'platform_macOS',
+      );
+      expect(
+        ContextVariant.platform(TargetPlatform.windows).key,
+        'platform_windows',
+      );
+      expect(
+        ContextVariant.platform(TargetPlatform.linux).key,
+        'platform_linux',
+      );
+      expect(
+        ContextVariant.platform(TargetPlatform.fuchsia).key,
+        'platform_fuchsia',
+      );
+      expect(ContextVariant.web().key, 'web');
+    });
+
+    test('direction variants are defined', () {
+      expect(
+        ContextVariant.directionality(TextDirection.ltr).key,
+        'directionality_ltr',
+      );
+      expect(
+        ContextVariant.directionality(TextDirection.rtl).key,
+        'directionality_rtl',
+      );
+    });
+
+    test('utility variants using NOT logic are defined', () {
+      final disabled = ContextVariant.widgetState(WidgetState.disabled);
+      final selected = ContextVariant.widgetState(WidgetState.selected);
+      final enabled = ContextVariant.not(disabled);
+      final unselected = ContextVariant.not(selected);
+
+      expect(enabled, isA<ContextVariant>());
+      expect(enabled.key, contains('not'));
+
+      expect(unselected, isA<ContextVariant>());
+      expect(unselected.key, contains('not'));
+    });
+
+    test('named variants are defined', () {
+      expect(primary.key, 'primary');
+      expect(secondary.key, 'secondary');
+      expect(outlined.key, 'outlined');
+      expect(primary, isA<NamedVariant>());
+      expect(secondary, isA<NamedVariant>());
+      expect(outlined, isA<NamedVariant>());
+    });
+
+    test('all predefined context variants are ContextVariant instances', () {
+      expect(ContextVariant.brightness(Brightness.dark), isA<ContextVariant>());
+      expect(
+        ContextVariant.brightness(Brightness.light),
+        isA<ContextVariant>(),
+      );
+      expect(
+        ContextVariant.orientation(Orientation.portrait),
+        isA<ContextVariant>(),
+      );
+      expect(
+        ContextVariant.orientation(Orientation.landscape),
+        isA<ContextVariant>(),
+      );
+      expect(
+        ContextVariant.size('mobile', (size) => size.width <= 767),
+        isA<ContextVariant>(),
+      );
+      expect(
+        ContextVariant.size(
+          'tablet',
+          (size) => size.width > 767 && size.width <= 1279,
+        ),
+        isA<ContextVariant>(),
+      );
+      expect(
+        ContextVariant.size('desktop', (size) => size.width > 1279),
+        isA<ContextVariant>(),
+      );
+      expect(
+        ContextVariant.directionality(TextDirection.ltr),
+        isA<ContextVariant>(),
+      );
+      expect(
+        ContextVariant.directionality(TextDirection.rtl),
+        isA<ContextVariant>(),
+      );
+      expect(
+        ContextVariant.platform(TargetPlatform.iOS),
+        isA<ContextVariant>(),
+      );
+      expect(
+        ContextVariant.platform(TargetPlatform.android),
+        isA<ContextVariant>(),
+      );
+      expect(ContextVariant.web(), isA<ContextVariant>());
+    });
+
+    test('predefined size variants have different breakpoints', () {
+      final mobile = ContextVariant.size('mobile', (size) => size.width <= 767);
+      final tablet = ContextVariant.size(
+        'tablet',
+        (size) => size.width > 767 && size.width <= 1279,
+      );
+      final desktop = ContextVariant.size(
+        'desktop',
+        (size) => size.width > 1279,
+      );
+      final xsmall = ContextVariant.size('xsmall', (size) => size.width <= 480);
+      final small = ContextVariant.size('small', (size) => size.width <= 768);
+      final medium = ContextVariant.size(
+        'medium',
+        (size) => size.width <= 1024,
+      );
+      final large = ContextVariant.size('large', (size) => size.width <= 1280);
+      final xlarge = ContextVariant.size('xlarge', (size) => size.width > 1280);
+
+      // Test that the size conditions are different
+      expect(mobile.key, isNot(equals(tablet.key)));
+      expect(tablet.key, isNot(equals(desktop.key)));
+      expect(mobile.key, isNot(equals(desktop.key)));
+
+      // Test extended breakpoint variants
+      expect(xsmall.key, isNot(equals(small.key)));
+      expect(small.key, isNot(equals(medium.key)));
+      expect(medium.key, isNot(equals(large.key)));
+      expect(large.key, isNot(equals(xlarge.key)));
     });
   });
-
-  group('MediaQueryContextVariant', () {
-    test('priority should return VariantPriority.normal', () {
-      const variant = MockMediaQueryContextVariant();
-
-      expect(variant.priority, equals(VariantPriority.normal));
-    });
-  });
-
-  group('ContextVariantBuilder', () {
-    test(
-        'merge method should return a new ContextVariantBuilder with merged functions',
-        () {
-      const variant = _MockContextVariant();
-      final style1 = Style();
-      final style2 = Style();
-      final builder1 = ContextVariantBuilder((_) => style1, variant);
-      final builder2 = ContextVariantBuilder((_) => style2, variant);
-
-      final result = builder1.merge(builder2);
-
-      expect(result, isA<ContextVariantBuilder>());
-      expect(result.variant, equals(variant));
-      expect(result.fn(MockBuildContext()), equals(style1.merge(style2)));
-    });
-
-    test('props should return a list containing the variant', () {
-      const variant = _MockContextVariant();
-      final builder = ContextVariantBuilder((_) => Style(), variant);
-
-      expect(builder.props, equals([variant]));
-    });
-
-    test('build method should return a Style with the result of the function',
-        () {
-      const variant = _MockContextVariant();
-      final style = Style();
-      final builder = ContextVariantBuilder((_) => style, variant);
-
-      final result = builder.build(MockBuildContext());
-
-      expect(result, isA<Style>());
-      expect(result, equals(style));
-    });
-  });
-}
-
-class _MockContextVariant extends ContextVariant {
-  const _MockContextVariant();
-
-  @override
-  bool when(BuildContext context) => true;
-}
-
-class _MockWidgetContextVariant<T> extends MixWidgetStateVariant<T> {
-  final T value;
-  const _MockWidgetContextVariant(this.value);
-
-  @override
-  bool when(BuildContext context) => true;
-
-  @override
-  T builder(BuildContext context) => value;
-}
-
-class MockMediaQueryContextVariant extends MediaQueryContextVariant {
-  const MockMediaQueryContextVariant();
-
-  @override
-  bool when(BuildContext context) => true;
 }

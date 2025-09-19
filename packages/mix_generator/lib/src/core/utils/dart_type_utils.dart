@@ -426,31 +426,16 @@ const $Mixable = 'Mixable';
 class MixHelperRef {
   const MixHelperRef._();
 
-  static String get _refName => 'MixHelpers';
+  static String get _refName => 'MixOps';
 
   /// Reference to the deep equality function.
   static String get deepEquality => '$_refName.deepEquality';
 
-  /// Reference to the double interpolation function.
-  static String get lerpDouble => '$_refName.lerpDouble';
+  /// Reference to the general interpolation function.
+  static String get lerp => '$_refName.lerp';
 
   /// Reference to the list merging function.
   static String get mergeList => '$_refName.mergeList';
-
-  /// Reference to the StrutStyle interpolation function.
-  static String get lerpStrutStyle => '$_refName.lerpStrutStyle';
-
-  /// Reference to the Matrix4 interpolation function.
-  static String get lerpMatrix4 => '$_refName.lerpMatrix4';
-
-  /// Reference to the TextStyle interpolation function.
-  static String get lerpTextStyle => '$_refName.lerpTextStyle';
-
-  /// Reference to the integer interpolation function.
-  static String get lerpInt => '$_refName.lerpInt';
-
-  /// Reference to the Shadow list interpolation function.
-  static String get lerpShadowList => '$_refName.lerpShadowList';
 }
 
 class ClassMemberCollection {
