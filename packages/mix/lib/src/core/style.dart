@@ -3,20 +3,12 @@ import 'package:flutter/widgets.dart';
 
 import '../animation/animation_config.dart';
 import '../modifiers/widget_modifier_config.dart';
-import '../specs/box/box_style.dart';
-import '../specs/flex/flex_style.dart';
-import '../specs/flexbox/flexbox_style.dart';
-import '../specs/icon/icon_style.dart';
-import '../specs/image/image_style.dart';
-import '../specs/stack/stack_box_style.dart';
-import '../specs/stack/stack_style.dart';
-import '../specs/text/text_style.dart';
 import '../variants/variant.dart';
 import 'internal/compare_mixin.dart';
 import 'mix_element.dart';
-import 'widget_modifier.dart';
 import 'spec.dart';
 import 'style_spec.dart';
+import 'widget_modifier.dart';
 
 /// Marker interface for style-related elements.
 @internal
@@ -87,17 +79,25 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
 
     // Extract the style from each active variant
     final stylesToMerge = <(Style<S>, bool)>[]; // (style, isFromStyleVariation)
-    
+
     for (final variantAttr in activeVariants) {
       final result = switch (variantAttr.variant) {
-        ContextVariantBuilder variant => (variant.build(context) as Style<S>, false),
+        ContextVariantBuilder variant => (
+          variant.build(context) as Style<S>,
+          false,
+        ),
         (ContextVariant() || NamedVariant()) => () {
           // Check if the value is a StyleVariation
+          // ignore: avoid-unrelated-type-assertions
           if (variantAttr.value is StyleVariation<S>) {
+            // ignore: avoid-unrelated-type-casts
             final styleVariation = variantAttr.value as StyleVariation<S>;
             // Only apply if this variant is active
             if (namedVariants.contains(styleVariation.variantType)) {
-              return (styleVariation.styleBuilder(this, namedVariants, context), true);
+              return (
+                styleVariation.styleBuilder(this, namedVariants, context),
+                true,
+              );
             }
           }
 
