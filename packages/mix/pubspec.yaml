@@ -6,7 +6,7 @@ repository: https://github.com/btwld/mix/tree/main/packages/mix
 
 environment:
   sdk: ">=3.9.0 <4.0.0"
-  flutter: ">=3.35.2 <4.0.0"
+  flutter: ">=3.35.2"
   
 dependencies:
   mix_annotations: ^1.7.0
