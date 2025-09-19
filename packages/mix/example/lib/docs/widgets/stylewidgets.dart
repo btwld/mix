@@ -26,7 +26,7 @@ void main() {
   // 4
   final iconStyle = IconStyler().color(Colors.blue).size(30);
 
-  StyledIcon(Icons.ac_unit, style: iconStyle);
+  StyledIcon(icon: Icons.ac_unit, style: iconStyle);
 
   // 5
   final imageStyle = ImageStyler().width(200).height(150);

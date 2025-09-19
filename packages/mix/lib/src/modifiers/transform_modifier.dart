@@ -137,7 +137,7 @@ class TransformModifierMix extends ModifierMix<TransformModifier>
   TransformModifier resolve(BuildContext context) {
     return TransformModifier(
       transform: MixOps.resolve(context, transform),
-      alignment: MixOps.resolve(context, alignment)!,
+      alignment: MixOps.resolve(context, alignment) ?? Alignment.center,
     );
   }
 

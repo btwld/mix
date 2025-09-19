@@ -271,7 +271,7 @@ void main() {
           alignment: Alignment.center, // Default from resolve method
         );
 
-        expect(attribute, resolvesTo(expectedModifier));
+        expect(attribute.resolve(MockBuildContext()), expectedModifier);
       });
     });
 

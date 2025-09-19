@@ -251,7 +251,7 @@ void main() {
           home: Scaffold(
             body: ColumnBox(
               key: flexBoxKey,
-              style: Style.flexbox().direction(Axis.horizontal),
+              style: FlexBoxStyler().direction(Axis.horizontal),
             ),
           ),
         ),
@@ -278,7 +278,7 @@ void main() {
           home: Scaffold(
             body: RowBox(
               key: flexBoxKey,
-              style: Style.flexbox().direction(Axis.vertical),
+              style: FlexBoxStyler().direction(Axis.vertical),
             ),
           ),
         ),
@@ -305,7 +305,7 @@ void main() {
           home: Scaffold(
             body: FlexBox(
               key: flexBoxKey,
-              style: Style.flexbox().direction(Axis.horizontal),
+              style: FlexBoxStyler().direction(Axis.horizontal),
             ),
           ),
         ),

@@ -1,6 +1,7 @@
-import '../../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
+
+import '../../../helpers.dart';
 
 void main() {
   runMixApp(Example());
@@ -12,16 +13,13 @@ class Example extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final flexStyle = FlexBoxStyler()
-        .mainAxisSize(.min)
+        .mainAxisSize(MainAxisSize.min)
         .spacing(4)
         .color(Colors.cyan.shade50)
         .paddingX(10)
         .paddingY(4)
         .borderRounded(99)
-        .borderAll(
-          color: Colors.cyan.shade600,
-          width: 2,
-        );
+        .borderAll(color: Colors.cyan.shade600, width: 2);
 
     final iconStyle = IconStyler()
         .icon(Icons.ac_unit_rounded)

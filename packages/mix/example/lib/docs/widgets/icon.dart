@@ -3,5 +3,5 @@ import 'package:mix/mix.dart';
 
 void main() {
   // 1.
-  StyledIcon(Icons.star, style: IconStyler().color(Colors.blue).size(30));
+  StyledIcon(icon: Icons.star, style: IconStyler().color(Colors.blue).size(30));
 }

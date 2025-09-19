@@ -30,7 +30,7 @@ class _ExampleState extends State<Example> {
         .borderRounded(30)
         .color(Colors.grey.shade200)
         .borderAll(color: Colors.grey.shade300, width: 2)
-        .animate(.spring(300.ms))
+        .animate(AnimationConfig.spring(300.ms))
         .onSelected(BoxStyler()
           .color(Colors.blue.shade500)
           .borderAll(color: Colors.blue.shade600, width: 2)
@@ -43,7 +43,7 @@ class _ExampleState extends State<Example> {
 
     final textStyle = TextStyler()
         .fontSize(16)
-        .fontWeight(.w600)
+        .fontWeight(FontWeight.w600)
         .color(Colors.grey.shade700)
         .onSelected(TextStyler().color(Colors.white));
 

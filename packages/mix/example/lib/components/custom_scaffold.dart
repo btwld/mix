@@ -2,23 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
 final scaffoldContainer = FlexBoxStyler()
-    .mainAxisSize(.max)
-    .crossAxisAlignment(.stretch)
-    .mainAxisAlignment(.start)
+    .mainAxisSize(MainAxisSize.max)
+    .crossAxisAlignment(CrossAxisAlignment.stretch)
+    .mainAxisAlignment(MainAxisAlignment.start)
     .color(Colors.white);
 
-final appHeaderContainer = 
-    BoxStyler()
+final appHeaderContainer = BoxStyler()
     .height(80)
     .color(Colors.black)
-    .padding(.all(16))
-    .alignment(.center)
+    .paddingAll(16)
+    .alignment(Alignment.center)
     .wrapDefaultTextStyle(
-       TextStyleMix()
-            .fontSize(20)
-            .fontWeight(FontWeight.bold)
-            .color(Colors.white),
-      
+      TextStyleMix()
+          .fontSize(20)
+          .fontWeight(FontWeight.bold)
+          .color(Colors.white),
     );
 
 final scaffoldBodyContainer = BoxStyler()
@@ -26,11 +24,7 @@ final scaffoldBodyContainer = BoxStyler()
     .padding(EdgeInsetsMix.all(16));
 
 class CustomScaffold extends StatelessWidget {
-  const CustomScaffold({
-    super.key,
-    this.appBar,
-    required this.body,
-  });
+  const CustomScaffold({super.key, this.appBar, required this.body});
 
   final Widget? appBar;
   final Widget body;
@@ -42,10 +36,7 @@ class CustomScaffold extends StatelessWidget {
       children: [
         if (appBar != null) appBar!,
         Expanded(
-          child: SizedBox(
-            width: double.infinity,
-            child: body,
-          ),
+          child: SizedBox(width: double.infinity, child: body),
         ),
       ],
     );
@@ -53,18 +44,12 @@ class CustomScaffold extends StatelessWidget {
 }
 
 class CustomAppBar extends StatelessWidget {
-  const CustomAppBar({
-    super.key,
-    required this.title,
-  });
+  const CustomAppBar({super.key, required this.title});
 
   final String title;
 
   @override
   Widget build(BuildContext context) {
-    return Box(
-      style: appHeaderContainer,
-      child: Text(title),
-    );
+    return Box(style: appHeaderContainer, child: Text(title));
   }
 }

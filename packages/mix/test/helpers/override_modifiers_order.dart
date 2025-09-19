@@ -6,7 +6,7 @@ Future<void> testOverrideModifiersOrder(
   WidgetTester tester, {
   required Widget Function(Style, List<Type>) widgetBuilder,
 }) async {
-  final style = Style.box().modifier(
+  final style = BoxStyler().modifier(
     WidgetModifierConfig(
       modifiers: [
         VisibilityModifierMix(visible: true),

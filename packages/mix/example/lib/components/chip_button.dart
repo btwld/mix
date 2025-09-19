@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:mix/mix.dart';
 
-
 final chipButtonLabel = TextStyler(
-      style: TextStyleMix(
-        fontSize: 12,
-        fontWeight: FontWeight.w500,
-        color: Colors.white,
-      ),
-      textAlign: TextAlign.center,
+  style: TextStyleMix(
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    color: Colors.white,
+  ),
+  textAlign: TextAlign.center,
 );
 
 final chipButtonContainer = BoxStyler()
@@ -19,12 +18,9 @@ final chipButtonContainer = BoxStyler()
     .borderRounded(20)
     .onHovered(BoxStyler().color(Colors.blue.shade700))
     .onSelected(BoxStyler().color(Colors.black))
-    .alignment(.center)
-    .wrap(.defaultText(chipButtonLabel))
-    .animate(.easeInOut(300.ms));
-
- 
-
+    .alignment(Alignment.center)
+    .wrap(WidgetModifierConfig.defaultText(chipButtonLabel))
+    .animate(AnimationConfig.easeInOut(300.ms));
 
 class FilterChipButton extends StatefulWidget {
   const FilterChipButton({
@@ -74,9 +70,7 @@ class _FilterChipButtonState extends State<FilterChipButton> {
     return Pressable(
       onPress: widget.onPressed,
       controller: controller,
-      child: Box(
-        style: chipButtonContainer ,
-        child:Text(widget.label),)
+      child: Box(style: chipButtonContainer, child: Text(widget.label)),
     );
   }
 }

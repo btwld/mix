@@ -25,6 +25,7 @@ void main() {
   // 5
   BoxStyler borderTop(Color color) => BoxStyler().borderTop(color: color);
   borderTop(Colors.red);
+  // ignore: unused_local_variable
   final style = borderTop(Colors.red).paddingAll(8);
 
   // 6

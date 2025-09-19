@@ -52,7 +52,7 @@ class _HeartAnimationState extends State<HeartAnimation> {
         });
       },
       child: Box(
-        style: Style.box().keyframeAnimation(
+        style: BoxStyler().keyframeAnimation(
           trigger: _trigger,
           timeline: [
             KeyframeTrack<double>('scale', [

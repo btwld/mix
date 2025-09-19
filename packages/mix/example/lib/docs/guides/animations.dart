@@ -217,7 +217,7 @@ class _HeartKeyframeAnimationState extends State<HeartKeyframeAnimation> {
       onPress: () {
         _trigger.value++;
       },
-      child: StyledIcon(CupertinoIcons.heart_fill, style: style),
+      child: StyledIcon(icon: CupertinoIcons.heart_fill, style: style),
     );
   }
 }
