@@ -1,0 +1,375 @@
+import { Callout } from 'nextra/components'
+
+# Widget Modifiers
+
+Modifiers in Mix extend functionality by defining the widget composition tree structure, providing support for core widgets, external widgets, and third-party widgets without compromising the simplicity of core Mix.
+
+## $with
+
+You can find all available modifiers within the `$with` utility. This provides a single place to access all modifier functions.
+
+## Spec Modifiers
+You can also apply modifiers to specific widgets, thanks to the `wrap` property of each Attribute.
+
+```dart
+Box(
+  style: Style(
+    $box.wrap.scale(0.5),
+  ),
+);
+```
+
+It's a simple example of how to use SpecModifiers. In more complex cases, you may want to apply a modifier to a specific widget in the widget tree.
+
+```dart
+Box(
+  style: Style(
+    $icon.wrap.scale(2),
+  ),
+  child: StyledIcon(
+    Icons.abc,
+  ),
+);
+```
+
+The code above results in a Box without any Transform applied, but as its child a StyledIcon widget with a Transform over it. The reason this is possible is because the `$icon.wrap` property will only be applied to the `StyledIcon`s.
+
+## Understanding the Mechanics
+
+Take the `scale` attribute, for instance. The Container widget doesn't inherently possess the ability to scale. But, by employing a Transform widget as a modifier, we can introduce this effect.
+
+```dart
+Transform.scale(
+  scale: 0.5,
+  child: Container(
+    child: const Text("Half sized box"),
+  ),
+)
+```
+
+<Callout emoji="⚠️">
+  Important Note: Modifiers are a special kind of attribute that can't be
+  inherited for any child widgets.
+</Callout>
+
+### Creating a modifier
+
+We can achieve the same effect by creating a custom `WidgetModifier`.
+
+Creating a modifier is like creating a `StatelessWidget`. Extend `WidgetModifier`. Define the properties you want to modify and the widget you want to decorate.
+
+```dart {2, 15-19}
+class ScaleModifier extends WidgetModifier<ScaleModifier> {
+  final double scale;
+  const ScaleModifier(this.scale, {super.key});
+
+  @override
+  ScaleModifier lerp(ScaleModifier? other, double t) {
+    return ScaleModifier(lerpDouble(scale, other?.scale, t) ?? scale);
+  }
+
+  @override
+  get props => [scale];
+
+  @override
+  Widget build(MixData mix, Widget child) {
+    return Transform.scale(
+      key: key,
+      scale: scale,
+      child: child,
+    );
+  }
+}
+
+```
+
+You can then create an extension of the
+
+### Crafting a modifier utility
+
+To simplify modifier usage, you can design an utility function that automatically creates the modifier for you.
+
+```dart
+ScaleModifier scale(double scale, {Key? key}) => ScaleModifier(scale, key: key);
+```
+
+### Using a modifier
+
+```dart {2}
+final style = Style(
+  $with.scale(0.5),
+  // or $box.wrap.scale(0.5),
+);
+
+Box(
+  style: style,
+  child: const Text('Half sized box'),
+);
+```
+
+## Built-in modifiers
+
+Mix comes with a set of built-in modifiers that can be used out of the box.
+
+### Scale Modifier
+
+Decorates a `Box` with a `Transform.scale` widget
+
+```dart
+final modifier = Style(
+  $with.scale(0.5),
+);
+
+final specModifier = Style(
+  $box.wrap.scale(0.5),
+);
+
+// Equivalent to
+Transform.scale(
+  scale: 0.5,
+  child: Box(
+    child: const Text('Half sized box'),
+  ),
+);
+```
+### Opacity Modifier
+
+Decorates a `Box` with an `Opacity` widget
+
+```dart
+final modifier = Style(
+  $with.opacity(0.5),
+);
+
+final specModifier = Style(
+  $box.wrap.opacity(0.5),
+);
+
+// Equivalent to
+Opacity(
+  opacity: 0.5,
+  child: Box(
+    child: const Text('Half transparent box'),
+  ),
+);
+```
+
+### Rotate Modifier
+
+Decorates a `Box` with a `Transform.rotate` widget. The parameter is the amount of quarter turns (90 degrees) for the rotation.
+
+```dart
+final modifier = Style(
+  // 270 degress (90 * 3)
+  $with.rotate(3),
+);
+
+final specModifier = Style(
+  $box.wrap.rotate(3),
+);
+
+// Equivalent to
+RotatedBox(
+  quarterTurns: 3,
+  child: Box(
+    child: const Text('Rotated box'),
+  ),
+);
+```
+
+**Helper methods**
+
+Alternative syntax to explicit any of the 3 possible rotations in degrees.
+- `$with.rotate.d90()`
+- `$with.rotate.d180()`
+- `$with.rotate.d270()`
+
+All helpers are also available for SpecModifiers.
+
+### Aspect Ratio Modifier
+
+Decorates a `Box` with an `AspectRatio` widget
+
+```dart
+final modifier = Style(
+  $with.aspectRatio(6/9),
+);
+
+final specModifier = Style(
+  $box.wrap.aspectRatio(6/9),
+);
+
+// Equivalent to
+AspectRatio(
+  aspectRatio: 6/9,
+  child: Box(
+    child: const Text('Aspect ratio box'),
+  ),
+);
+```
+
+### Clip Modifier
+
+Decorates a `Box` with different types of `Clip` widgets
+
+```dart
+final modifier = Style(
+  $with.clipOval(),
+);
+
+final specModifier = Style(
+  $box.wrap.clipOval(),
+);
+
+// Equivalent to
+ClipOval(
+  child: Box(
+    child: const Text('Oval box'),
+  ),
+);
+```
+
+**Helper methods**
+
+All helpers are also available for SpecModifiers.
+
+- `$with.clipOval()`: Wraps with a `ClipOval` widget
+- `$with.clipRrect()`: Wraps with a `ClipRRect` widget
+- `$with.clipRect()`: Wraps with a `ClipRect` widget
+- `$with.clipPath()`: Wraps with a `ClipPath` widget
+- `$with.clipTriangle()`: Wraps with a `ClipPath` widget that clips to a triangle
+
+### Visibility Modifier
+
+Decorates a `Box` with a `Visibility` widget
+
+```dart
+final modifier = Style(
+  $with.visibility(false),
+);
+
+final specModifier = Style(
+  $box.wrap.visibility(false),
+);
+
+// Equivalent to
+Visibility(
+  visible: false,
+  child: Box(
+    child: const Text('Invisible box'),
+  ),
+);
+```
+
+### IntrinsicHeight and IntrinsicWidth Modifier
+
+Decorates a `Box` with a `IntrinsicHeight` or `IntrinsicWidth` widget
+
+```dart
+final modifier = Style(
+  $with.intrinsicHeight(), // or intrinsicWidth()
+);
+
+final specModifier = Style(
+  $box.wrap.intrinsicHeight(), // or intrinsicWidth()
+);
+
+// Equivalent to
+IntrinsicHeight( // or IntrinsicWidth
+  child: Box(
+    child: const Text('Invisible box'),
+  ),
+);
+```
+
+**Helper methods**
+
+All helpers are also available for SpecModifiers.
+
+- `$with.show()`: Wraps the `Box` with a `Visibility` widget that is visible
+- `$with.hide()`: Wraps the `Box` with a `Visibility` widget that is invisible
+- `$with.visibility.on()`: Wraps the `Box` with a `Visibility` widget that is visible
+- `$with.visibility.off()`: Wraps the `Box` with a `Visibility` widget that is invisible
+
+### Flexible Modifier
+
+Decorates a `Flex` Styled widget like `FlexBox`, `HBox`, `VBox`, with a `Flexible` widget
+
+```dart
+final modifier = Style(
+  $with.flexible(flex:1, fit: FlexFit.tight),
+);
+
+final specModifier = Style(
+  $box.wrap.flexible(flex:1, fit: FlexFit.tight),
+);
+```
+
+**Helper methods**
+
+All helpers are also available for SpecModifiers.
+
+- `$with.flexible(flex:1, fit: FlexFit.tight)`: Wraps the `Flex` Styled widget with a `Flexible` widget
+- `$with.flexible.expanded()`: Equivalent to `Expanded` widget, or `flexible(fit: FlexFit.tight)`
+- `$with.flexible.loose()`: Equivalent to `Flexible` widget, or `flexible(fit: FlexFit.loose)`
+- `$with.flexible.tight()`: Equivalent to `flexible(fit: FlexFit.tight)`
+- `$with.expanded()`: Equivalent to `Expanded` widget, or `flexible(fit: FlexFit.tight)`
+
+This is equivalent to wrapping the `Flex` Styled widget with a `Flexible` widget.
+
+```dart
+Flexible(
+  flex: 1,
+  fit: FlexFit.tight,
+  child: FlexBox(
+    children: [
+        const Text('Flexible box'),
+    ],
+  ),
+);
+```
+
+### Mouse Cursor
+
+Decorates the `StyledWidget` with a `MouseRegion` widget but applying only the `cursor` property.
+
+**Helper methods**
+
+- `$with.cursor.defer()`
+- `$with.cursor.uncontrolled()`
+- `$with.cursor.none()`
+- `$with.cursor.basic()`
+- `$with.cursor.click()`
+- `$with.cursor.forbidden()`
+- `$with.cursor.wait()`
+- `$with.cursor.progress()`
+- `$with.cursor.contextMenu()`
+- `$with.cursor.help()`
+- `$with.cursor.text()`
+- `$with.cursor.verticalText()`
+- `$with.cursor.cell()`
+- `$with.cursor.precise()`
+- `$with.cursor.move()`
+- `$with.cursor.grab()`
+- `$with.cursor.grabbing()`
+- `$with.cursor.noDrop()`
+- `$with.cursor.alias()`
+- `$with.cursor.copy()`
+- `$with.cursor.disappearing()`
+- `$with.cursor.allScroll()`
+- `$with.cursor.resizeLeftRight()`
+- `$with.cursor.resizeUpDown()`
+- `$with.cursor.resizeUpLeftDownRight()`
+- `$with.cursor.resizeUpRightDownLeft()`
+- `$with.cursor.resizeUp()`
+- `$with.cursor.resizeDown()`
+- `$with.cursor.resizeLeft()`
+- `$with.cursor.resizeRight()`
+- `$with.cursor.resizeUpLeft()`
+- `$with.cursor.resizeUpRight()`
+- `$with.cursor.resizeDownLeft()`
+- `$with.cursor.resizeDownRight()`
+- `$with.cursor.resizeColumn()`
+- `$with.cursor.resizeRow()`
+- `$with.cursor.zoomIn()`
+- `$with.cursor.zoomOut()`
