@@ -1,28 +1,35 @@
----
-id: animations
-title: "Animations"
----
+import 'dart:math';
 
-# Animations
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:mix/mix.dart';
 
-Mix provides three main ways to animate your widgets, each suited to different levels of control and complexity:
+import '../../helpers.dart';
 
-- **Implicit**: Simple property transitions that animate automatically when values change (state or variants).
-- **Phase**: Multi-step sequences that progress through defined phases, great for state machines.
-- **Keyframe**: Timeline-based animations with precise control over multiple properties and easing.
+void main() {
+  runMixApp(const Example());
+}
 
-## Implicit Animations
+class Example extends StatelessWidget {
+  const Example({super.key});
 
-Implicit animations are the easiest way to animate style changes—Mix interpolates between old and new values automatically.
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      spacing: 16,
+      children: [
+        ScaleAnimation(),
+        HoverAnimation(),
+        CompressExpandAnimation(),
+        HeartKeyframeAnimation(),
+      ],
+    );
+  }
+}
 
-- **When to use**: Simple hover/press effect or any other variant/state transition.
-- **How it works**: Call `.animate(...)` on any `Style`/`Styler`. Works with state and variants (e.g. hover, press, dark mode).
+// 1
 
-### Example: State-triggered
-
-This example demonstrates an implicit animation in Mix. When the `appear` state changes, the box smoothly transitions its scale between 0.1 and 1 using the `.animate(...)` modifier. The `AnimationConfig.easeInOut(1.s)` sets the animation to use an ease-in-out curve over 1 second.
-
-```dart
 class ScaleAnimation extends StatefulWidget {
   const ScaleAnimation({super.key});
 
@@ -57,13 +64,9 @@ class _ScaleAnimationState extends State<ScaleAnimation> {
     return Box(style: style);
   }
 }
-```
 
-### Example: Variant-triggered
+// 2
 
-In the following example, the box smoothly grows in size and shifts its color from black to blue when you hover over it. Rather than toggling a state variable yourself, you can use variants like onHovered or onPressed to trigger these implicit animations directly in your style definitions.
-
-```dart
 class HoverAnimation extends StatelessWidget {
   const HoverAnimation({super.key});
 
@@ -75,32 +78,15 @@ class HoverAnimation extends StatelessWidget {
         .width(100)
         .borderRounded(10)
         .scale(1)
-        .onHovered(
-          BoxStyler()
-            .color(Colors.blue)
-            .scale(1.5),
-        )
+        .onHovered(BoxStyler().color(Colors.blue).scale(1.5))
         .animate(AnimationConfig.spring(800.ms));
 
     return Box(style: style);
   }
 }
-```
 
-## Phase Animations
+// 3
 
-Phase animations let you define a small set of named phases, each with its own style and config. The sequence plays forward to completion, then resolves back to the initial phase.
-
-- **When to use**: State machines, progress indicators, or sequential micro-interactions that start with an initial value and, in the end, return to that same initial value.
-- **How it works**: Use `.phaseAnimation(...)` with:
-  - `trigger`: a `Listenable` (e.g., `ValueNotifier`, `ChangeNotifier`).
-  - `phases`: a list of values (usually an enum).
-  - `styleBuilder`: returns the style for each phase.
-  - `configBuilder`: returns the animation config for each phase.
-
-### Example: Compress/Expand
-
-```dart
 enum AnimationPhases { initial, compress, expanded }
 
 class CompressExpandAnimation extends StatefulWidget {
@@ -152,18 +138,9 @@ class _CompressExpandAnimationState extends State<CompressExpandAnimation> {
     );
   }
 }
-```
 
-## Keyframe Animations
+// 4
 
-Keyframes give you full control by mapping moments in time to values across multiple tracks (like CSS keyframes).
-
-- **When to use**: Choreographed sequences, multi-property transitions.
-- **How it works**: Use `.keyframeAnimation(...)` with a list of `KeyframeTrack`s. Each track represents a property to animate and runs in parallel with the others, while the keyframes within a track are executed in sequence. Each keyframe defines a value, duration, and easing, and you can optionally provide a `tweenBuilder` for custom interpolation.
-
-### Example: Heart
-
-```dart
 class HeartKeyframeAnimation extends StatefulWidget {
   const HeartKeyframeAnimation({super.key});
 
@@ -240,23 +217,7 @@ class _HeartKeyframeAnimationState extends State<HeartKeyframeAnimation> {
       onPress: () {
         _trigger.value++;
       },
-      child: StyledIcon(icon: CupertinoIcons.heart_fill, style: style),
+      child: StyledIcon(CupertinoIcons.heart_fill, style: style),
     );
   }
 }
-
-```
-
-## Comparison
-
-| Type | Use Case | Complexity | Control |
-|------|----------|------------|---------|
-| **Implicit** | Simple state transitions | Low | Basic |
-| **Phase** | Multi-step/state machine | Medium | Moderate |
-| **Keyframe** | Choreographed, multi-track | High | Full |
-
-## Notes
-
-- **Animation triggers**: Phase and keyframe animations use a `Listenable` to start/advance animations.
-- **Configs**: Use `AnimationConfig` for timing, easing and delay.
-- **Works with context**: Variants like hover/press/dark mode combine well with animations.

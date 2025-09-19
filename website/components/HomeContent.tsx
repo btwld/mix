@@ -25,13 +25,13 @@ export const HomeContent = () => {
           </p>
 
           <div className="not-prose mb-16 mt-6 flex flex-col sm:flex-row gap-3">
-            <Button href="/documentation/overview" arrow="right">
+            <Button href="/documentation/overview/getting-started" arrow="right">
               <>Getting Started</>
             </Button>
             <Button href="https://discord.com/invite/Ycn6GV3m2k" variant="discord" target="_blank">
               <>Join our community</>
             </Button>
-            <Button href="/documentation/overview" variant="outline">
+            <Button href="/documentation/overview/introduction" variant="outline">
               <>Documentation</>
             </Button>
           </div>

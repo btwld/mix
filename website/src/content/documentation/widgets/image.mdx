@@ -1,113 +1,49 @@
-# StyleImage
+# StyledImage
 
-A wrapped `Image` widget that can be easily themed and styled using Mix style attributes. This simplifies the process of applying consistent and reusable styling across `Image` widgets.
-
-## Usage
-
-To use `StyledImage`, you need to pass the `ImageProvider` and apply the style using the `Style` class.
+This is equivalent to the **Image** widget in Flutter.
 
 ```dart
 StyledImage(
-  image: const AssetImage('assets/image.jpg'),
-  style: Style(
-    $image.width(152),
-    $image.height(152),
-    $image.fit.fill(),
-    $image.alignment.bottomLeft(),
-    $image.blendMode.colorDodge(),
-  ),
-),
-```
-
-## Inheritance
-
-The **StyledImage** widget has the `inherit` flag set to `true` by default. This means that the style attributes will be inherited from its closest `Style` ancestor in the widget tree.
-
-```dart
-Box(
-  Style(
-    $image.height(30),
-    $image.color.blue(),
-  ),
-  child: StyledImage(image: const AssetImage('some_image.jpg')),
+  image: AssetImage('assets/image.jpg'),
+  style: ImageStyler()
+      .width(152)
+      .height(152)
+      .fit(BoxFit.cover),
 );
 ```
 
-In this example, the `StyledImage` widget will inherit the image height and color from the `Box` widget. However, remember that modifier attributes cannot be inherited.
+## Constructor
 
-## Utilities
+| Prop           | Type                        | Required / Default Value                |
+|----------------|-----------------------------|-----------------------------------------|
+| image          | `ImageProvider<Object>?`    | Optional                               |
+| frameBuilder   | `ImageFrameBuilder?`        | Optional                               |
+| loadingBuilder | `ImageLoadingBuilder?`      | Optional                               |
+| errorBuilder   | `ImageErrorWidgetBuilder?`  | Optional                               |
+| opacity        | `Animation<double>?`        | Optional                               |
+| style          | `ImageStyler`               | Optional, defaults to `ImageMix.create()` |
+| key            | `Key?`                      | Optional                               |
 
-The `$image` constant alias is an instance of `ImageMutableStyler`, which facilitates the construction of `ImageSpecAttribute` objects. These attributes are used to style and manage properties of `StyledImage` widgets.
+## Style API Reference
 
-#### **color**
+Mix provides an extension of Style\<ImageSpec> called `ImageStyler` for easily styling `StyledImage` widgets.
 
-Change the color of the image:
-
-```dart
-// Apply a color to the image
-$image.color.red();
-```
-
-#### **width**
-
-Specifies the width of the image.
-
-```dart
-$image.width(100);
-```
-
-#### **height**
-
-Specifies the height of the image.
-
-```dart
-$image.height(100);
-```
-
-#### **repeat**
-
-Determines how the image should be repeated over the space of the widget.
-
-```dart
-$image.repeat.repeat();
-```
-
-#### **fit**
-
-Defines how the image should be inscribed into the space allocated during layout.
-
-```dart
-$image.fit.cover();
-```
-
-#### **alignment**
-
-Specifies the alignment of the image within its bounds.
-
-```dart
-$image.alignment.center();
-```
-
-#### **centerSlice**
-
-Slices the image for nine-patch effects.
-
-```dart
-$image.centerSlice.fromLTWH(10, 10, 20, 20);
-```
-
-#### **blendMode**
-
-Specifies the blending mode applied to the image's color and the underlying widget's color.
-
-```dart
-$image.blendMode.multiply();
-```
-
-#### **filterQuality**
-
-Determines the quality of the filtering operations applied to the image.
-
-```dart
-$image.filterQuality.high();
-```
+| Method | Description |
+|--------|-------------|
+| `animate` | Sets animation configuration |
+| `modifier` | Adds widget modifiers |
+| `image` | Sets the image provider |
+| `width` | Sets image width |
+| `height` | Sets image height |
+| `color` | Sets color overlay for the image |
+| `repeat` | Sets how the image should be repeated |
+| `fit` | Sets how the image should be fitted within its container |
+| `alignment` | Sets image alignment within its bounds |
+| `centerSlice` | Sets center slice for nine-patch effects |
+| `filterQuality` | Sets filter quality for image scaling |
+| `colorBlendMode` | Sets blend mode for color overlay |
+| `semanticLabel` | Sets semantic label for accessibility |
+| `excludeFromSemantics` | Sets whether to exclude from semantics |
+| `gaplessPlayback` | Sets whether to maintain previous image while loading |
+| `isAntiAlias` | Sets whether to apply anti-aliasing |
+| `matchTextDirection` | Sets whether image should match text direction |
