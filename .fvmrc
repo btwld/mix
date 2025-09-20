@@ -2,7 +2,7 @@
   "flutter": "stable",
   "flavors": {
     "prod": "stable",
-    "mincompat": "3.35.0"
+    "mincompat": "3.35.2"
   },
   "runPubGetOnSdkChanges": true,
   "updateGitIgnore": false
