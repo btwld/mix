@@ -1,4 +1,4 @@
-## 2.0.0-beta.1
+## 2.0.0-beta.2
 
 - First public beta
 
