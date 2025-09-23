@@ -28,8 +28,9 @@ class DependencyGraph {
     // Add the dependency
     _dependencies[from]!.add(to);
 
-    _logger
-        .fine('Added dependency: ${_getNodeName(from)} -> ${_getNodeName(to)}');
+    _logger.fine(
+      'Added dependency: ${_getNodeName(from)} -> ${_getNodeName(to)}',
+    );
   }
 
   /// Get all nodes in the graph

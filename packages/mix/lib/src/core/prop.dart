@@ -109,7 +109,7 @@ class Prop<V> {
         return prop; // Return token reference directly to preserve TokenSource
       }
     }
-    
+
     return Prop._(sources: [MixSource(mix)]);
   }
 
@@ -128,7 +128,7 @@ class Prop<V> {
   /// Preserves token references (MixRef objects) instead of wrapping them in MixSource.
   static Prop<V>? maybeMix<V>(Mix<V>? value) {
     if (value == null) return null;
-    
+
     // Check if value is already a token reference (MixRef)
     // MixRef objects are Prop<V> instances with TokenSource that implement Mix interfaces
     // ignore: avoid-unrelated-type-assertions
@@ -139,10 +139,9 @@ class Prop<V> {
         return prop; // Return token reference directly to preserve TokenSource
       }
     }
-    
+
     return Prop.mix(value);
   }
-
 
   /// Creates a property from a regular value by converting it to a Mix.
   ///

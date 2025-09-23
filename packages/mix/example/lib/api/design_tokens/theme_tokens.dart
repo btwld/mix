@@ -32,8 +32,8 @@ class Example extends StatelessWidget {
   Widget build(BuildContext context) {
     return MixScope(
       colors: {$primaryColor: Colors.blue},
-      radii: {$pill: Radius.circular(20)},
       spaces: {$spacing: 16.0},
+      radii: {$pill: Radius.circular(20)},
       child: _Example(),
     );
   }
