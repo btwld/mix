@@ -32,16 +32,16 @@ void main() {
   final imageStyle = ImageStyler().width(200).height(150);
 
   StyledImage(
-    image: NetworkImage('https://example.com/image.png'),
     style: imageStyle,
+    image: NetworkImage('https://example.com/image.png'),
   );
 
   // 6
   final pressableStyle = BoxStyler().color(Colors.blue).size(100, 100);
 
   PressableBox(
-    onPress: () => print('Pressed!'),
     style: pressableStyle,
+    onPress: () => print('Pressed!'),
     child: Text('Tap me'),
   );
 }

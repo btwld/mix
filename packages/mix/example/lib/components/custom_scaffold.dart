@@ -24,10 +24,10 @@ final scaffoldBodyContainer = BoxStyler()
     .padding(EdgeInsetsMix.all(16));
 
 class CustomScaffold extends StatelessWidget {
-  final Widget? appBar;
-
-  final Widget body;
   const CustomScaffold({super.key, this.appBar, required this.body});
+
+  final Widget? appBar;
+  final Widget body;
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +44,9 @@ class CustomScaffold extends StatelessWidget {
 }
 
 class CustomAppBar extends StatelessWidget {
-  final String title;
-
   const CustomAppBar({super.key, required this.title});
+
+  final String title;
 
   @override
   Widget build(BuildContext context) {

@@ -9,9 +9,6 @@ import 'box_spec.dart';
 ///
 /// Applies [BoxSpec] styling to create a customized [Container].
 class Box extends StyleWidget<BoxSpec> {
-  /// Child widget to display inside the box.
-  final Widget? child;
-
   const Box({super.style, super.spec, super.key, this.child});
 
   /// Builder pattern for `StyleSpec<BoxSpec>` with custom builder function.
@@ -21,6 +18,9 @@ class Box extends StyleWidget<BoxSpec> {
   ) {
     return StyleSpecBuilder<BoxSpec>(builder: builder, styleSpec: styleSpec);
   }
+
+  /// Child widget to display inside the box.
+  final Widget? child;
 
   @override
   Widget build(BuildContext context, BoxSpec spec) {

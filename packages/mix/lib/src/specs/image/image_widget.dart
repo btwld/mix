@@ -9,6 +9,25 @@ import 'image_spec.dart';
 ///
 /// Applies [ImageSpec] styling to create a customized [Image].
 class StyledImage extends StyleWidget<ImageSpec> {
+  const StyledImage({
+    super.key,
+    super.style,
+    super.spec,
+    this.frameBuilder,
+    this.loadingBuilder,
+    this.errorBuilder,
+    this.image,
+    this.opacity,
+  });
+
+  /// Builder pattern for `StyleSpec<ImageSpec>` with custom builder function.
+  static Widget builder(
+    StyleSpec<ImageSpec> styleSpec,
+    Widget Function(BuildContext context, ImageSpec spec) builder,
+  ) {
+    return StyleSpecBuilder<ImageSpec>(builder: builder, styleSpec: styleSpec);
+  }
+
   /// The image to display.
   final ImageProvider<Object>? image;
 
@@ -23,26 +42,6 @@ class StyledImage extends StyleWidget<ImageSpec> {
 
   /// Animation for opacity changes.
   final Animation<double>? opacity;
-
-  const StyledImage({
-    super.key,
-    super.style,
-    super.spec,
-    this.frameBuilder,
-    this.loadingBuilder,
-    this.errorBuilder,
-    this.image,
-    this.opacity,
-  });
-
-  /// Builder pattern for StyleSpec<ImageSpec> with custom builder function.
-  static Widget builder(
-    StyleSpec<ImageSpec> styleSpec,
-    Widget Function(BuildContext context, ImageSpec spec) builder,
-  ) {
-    return StyleSpecBuilder<ImageSpec>(builder: builder, styleSpec: styleSpec);
-  }
-
   @override
   Widget build(BuildContext context, ImageSpec spec) {
     final imageProvider = _resolveImage(image, spec);

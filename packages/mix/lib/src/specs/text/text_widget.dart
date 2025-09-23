@@ -10,9 +10,6 @@ import 'text_spec.dart';
 ///
 /// Applies [TextSpec] for custom text appearance.
 class StyledText extends StyleWidget<TextSpec> {
-  /// The text to display.
-  final String text;
-
   /// Creates a [StyledText] with required [text] and optional [style] or [spec].
   const StyledText(this.text, {super.style, super.spec, super.key});
 
@@ -23,6 +20,9 @@ class StyledText extends StyleWidget<TextSpec> {
   ) {
     return StyleSpecBuilder<TextSpec>(builder: builder, styleSpec: styleSpec);
   }
+
+  /// The text to display.
+  final String text;
 
   @override
   Widget build(BuildContext context, TextSpec spec) {

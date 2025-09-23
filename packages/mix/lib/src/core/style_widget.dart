@@ -9,18 +9,18 @@ import 'style_builder.dart';
 /// Provides style application and inheritance through the Mix framework.
 /// Type [S] must extend [Spec<S>] for type-safe styling.
 abstract class StyleWidget<S extends Spec<S>> extends StatefulWidget {
-  /// Style to apply to this widget.
-  final Style<S>? style;
-
-  /// Direct spec to apply to this widget.
-  final S? spec;
-
   /// Creates a [StyleWidget] with either [style] or [spec].
   const StyleWidget({this.style, this.spec, super.key})
     : assert(
         (style != null) != (spec != null),
         'Provide either style or spec, not both',
       );
+
+  /// Style to apply to this widget.
+  final Style<S>? style;
+
+  /// Direct spec to apply to this widget.
+  final S? spec;
 
   @override
   State<StyleWidget<S>> createState() => _StyleWidgetState<S>();
@@ -35,9 +35,7 @@ class _StyleWidgetState<S extends Spec<S>> extends State<StyleWidget<S>> {
     if (widget.spec != null) {
       // Direct spec usage - no style resolution needed
       return widget.build(context, widget.spec!);
-    } else {
-      // Style resolution path (current behavior)
-      return StyleBuilder<S>(style: widget.style!, builder: widget.build);
-    }
+    } // Style resolution path (current behavior)
+    return StyleBuilder<S>(style: widget.style!, builder: widget.build);
   }
 }

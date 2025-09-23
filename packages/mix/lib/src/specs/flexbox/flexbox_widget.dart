@@ -20,9 +20,6 @@ typedef HBox = RowBox;
 /// Applies both box and flex specifications for flexible layouts,
 /// providing decoration, constraints, and flex layout in one widget.
 class FlexBox extends StyleWidget<FlexBoxSpec> {
-  /// Child widgets to be arranged in the flex layout.
-  final List<Widget> children;
-
   const FlexBox({
     super.style,
     super.spec,
@@ -40,6 +37,9 @@ class FlexBox extends StyleWidget<FlexBoxSpec> {
       styleSpec: styleSpec,
     );
   }
+
+  /// Child widgets to be arranged in the flex layout.
+  final List<Widget> children;
 
   /// Constrains the flex direction for RowBox/ColumnBox.
   /// When specified, prevents conflicting direction in style specs.
@@ -179,9 +179,8 @@ extension FlexBoxSpecWidget on FlexBoxSpec {
   }) {
     if (direction == Axis.horizontal) {
       return RowBox(spec: this, children: children);
-    } else {
-      return ColumnBox(spec: this, children: children);
     }
+    return ColumnBox(spec: this, children: children);
   }
 
   @Deprecated(
@@ -230,9 +229,8 @@ extension FlexBoxSpecWrappedWidget on StyleSpec<FlexBoxSpec> {
     return FlexBox.builder(this, (context, spec) {
       if (direction == Axis.horizontal) {
         return RowBox(spec: spec, children: children);
-      } else {
-        return ColumnBox(spec: spec, children: children);
       }
+      return ColumnBox(spec: spec, children: children);
     });
   }
 

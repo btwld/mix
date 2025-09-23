@@ -5,8 +5,8 @@ import 'package:mix/mix.dart';
 void main() {
   runMixApp(
     const Row(
-      spacing: 16,
       mainAxisSize: MainAxisSize.min,
+      spacing: 16,
       children: [CustomMixWidget(), CustomWidget()],
     ),
   );
@@ -107,10 +107,6 @@ class CustomWidgetState extends State<CustomWidget> {
           curve: _curve,
           duration: _duration,
           child: AnimatedContainer(
-            curve: _curve,
-            duration: _duration,
-            height: 120,
-            width: 120,
             padding: _isHover
                 ? const EdgeInsets.all(10)
                 : const EdgeInsets.all(20),
@@ -118,6 +114,10 @@ class CustomWidgetState extends State<CustomWidget> {
               color: _isHover ? onHoverBgColor : backgroundColor,
               borderRadius: borderRadius,
             ),
+            width: 120,
+            height: 120,
+            curve: _curve,
+            duration: _duration,
             child: AnimatedAlign(
               alignment: _isHover ? Alignment.topLeft : Alignment.center,
               curve: _curve,
@@ -126,8 +126,8 @@ class CustomWidgetState extends State<CustomWidget> {
                 'Custom Widget',
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: _isHover ? onHoverTextColor : textColor,
-                  fontWeight: FontWeight.w600,
                   fontSize: 16,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
