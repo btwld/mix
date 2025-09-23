@@ -29,19 +29,6 @@ class TestUtilityVariant extends Spec<TestUtilityVariant>
       TestUtilityStyle(value: value, variantCalls: variantCalls);
 
   @override
-  TestUtilityVariant resolve(BuildContext context) {
-    return this;
-  }
-
-  @override
-  TestUtilityVariant merge(TestUtilityVariant? other) {
-    return TestUtilityVariant(
-      value: other?.value ?? value,
-      variantCalls: [...variantCalls, ...?other?.variantCalls],
-    );
-  }
-
-  @override
   TestUtilityVariant copyWith() {
     return TestUtilityVariant(value: value, variantCalls: variantCalls);
   }
@@ -84,7 +71,6 @@ class TestUtilityStyle extends Style<TestUtilityVariant>
     );
   }
 
-  @override
   TestUtilityStyle animate(AnimationConfig animation) {
     return TestUtilityStyle(
       value: value,
@@ -227,10 +213,11 @@ void main() {
 
       test('should call builder function correctly', () {
         var builderCalled = false;
-        TestUtilityStyle? receivedContext;
+        BuildContext? receivedContext;
 
         final builderResult = testUtility.onBuilder((context) {
           builderCalled = true;
+          receivedContext = context;
           return TestUtilityStyle(value: 'builder-called');
         });
 
@@ -244,6 +231,8 @@ void main() {
         final context = MockBuildContext();
         final style = variant.resolve(context);
 
+        expect(builderCalled, isTrue);
+        expect(receivedContext, same(context));
         expect((style as TestUtilityStyle).value, equals('builder-called'));
       });
     });

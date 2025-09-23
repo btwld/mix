@@ -4,7 +4,9 @@ import 'package:mix/mix.dart';
 
 // Test implementation that uses the spacing mixin
 class TestSpacingStyler extends Style<BoxSpec>
-    with SpacingStyleMixin<TestSpacingStyler> {
+    with
+        SpacingStyleMixin<TestSpacingStyler>,
+        AnimationStyleMixin<BoxSpec, TestSpacingStyler> {
   final List<EdgeInsetsGeometryMix> paddingCalls;
   final List<EdgeInsetsGeometryMix> marginCalls;
 
@@ -72,11 +74,7 @@ class TestSpacingStyler extends Style<BoxSpec>
   }
 
   @override
-  List<Object?> get props => [
-        $animation,
-        $modifier,
-        $variants,
-      ];
+  List<Object?> get props => [$animation, $modifier, $variants];
 }
 
 void main() {
@@ -93,84 +91,102 @@ void main() {
 
         expect(testStyler.paddingCalls.length, equals(1));
         final edgeInsetsMix = testStyler.paddingCalls.first as EdgeInsetsMix;
-expect(edgeInsetsMix.$top, isNotNull);
+        expect(edgeInsetsMix.$top, isNotNull);
         expect(edgeInsetsMix.$bottom, isNull);
         expect(edgeInsetsMix.$left, isNull);
         expect(edgeInsetsMix.$right, isNull);
       });
 
-      test('paddingBottom should call padding with bottom EdgeInsetsGeometryMix', () {
-        testStyler.paddingBottom(20);
+      test(
+        'paddingBottom should call padding with bottom EdgeInsetsGeometryMix',
+        () {
+          testStyler.paddingBottom(20);
 
-        expect(testStyler.paddingCalls.length, equals(1));
-        final edgeInsetsMix = testStyler.paddingCalls.first as EdgeInsetsMix;
-expect(edgeInsetsMix.$top, isNull);
-        expect(edgeInsetsMix.$bottom, isNotNull);
-        expect(edgeInsetsMix.$left, isNull);
-        expect(edgeInsetsMix.$right, isNull);
-      });
+          expect(testStyler.paddingCalls.length, equals(1));
+          final edgeInsetsMix = testStyler.paddingCalls.first as EdgeInsetsMix;
+          expect(edgeInsetsMix.$top, isNull);
+          expect(edgeInsetsMix.$bottom, isNotNull);
+          expect(edgeInsetsMix.$left, isNull);
+          expect(edgeInsetsMix.$right, isNull);
+        },
+      );
 
-      test('paddingLeft should call padding with left EdgeInsetsGeometryMix', () {
-        testStyler.paddingLeft(15);
+      test(
+        'paddingLeft should call padding with left EdgeInsetsGeometryMix',
+        () {
+          testStyler.paddingLeft(15);
 
-        expect(testStyler.paddingCalls.length, equals(1));
-        final edgeInsetsMix = testStyler.paddingCalls.first as EdgeInsetsMix;
-expect(edgeInsetsMix.$top, isNull);
-        expect(edgeInsetsMix.$bottom, isNull);
-        expect(edgeInsetsMix.$left, isNotNull);
-        expect(edgeInsetsMix.$right, isNull);
-      });
+          expect(testStyler.paddingCalls.length, equals(1));
+          final edgeInsetsMix = testStyler.paddingCalls.first as EdgeInsetsMix;
+          expect(edgeInsetsMix.$top, isNull);
+          expect(edgeInsetsMix.$bottom, isNull);
+          expect(edgeInsetsMix.$left, isNotNull);
+          expect(edgeInsetsMix.$right, isNull);
+        },
+      );
 
-      test('paddingRight should call padding with right EdgeInsetsGeometryMix', () {
-        testStyler.paddingRight(25);
+      test(
+        'paddingRight should call padding with right EdgeInsetsGeometryMix',
+        () {
+          testStyler.paddingRight(25);
 
-        expect(testStyler.paddingCalls.length, equals(1));
-        final edgeInsetsMix = testStyler.paddingCalls.first as EdgeInsetsMix;
-expect(edgeInsetsMix.$top, isNull);
-        expect(edgeInsetsMix.$bottom, isNull);
-        expect(edgeInsetsMix.$left, isNull);
-        expect(edgeInsetsMix.$right, isNotNull);
-      });
+          expect(testStyler.paddingCalls.length, equals(1));
+          final edgeInsetsMix = testStyler.paddingCalls.first as EdgeInsetsMix;
+          expect(edgeInsetsMix.$top, isNull);
+          expect(edgeInsetsMix.$bottom, isNull);
+          expect(edgeInsetsMix.$left, isNull);
+          expect(edgeInsetsMix.$right, isNotNull);
+        },
+      );
 
-      test('paddingX should call padding with horizontal EdgeInsetsGeometryMix', () {
-        testStyler.paddingX(30);
+      test(
+        'paddingX should call padding with horizontal EdgeInsetsGeometryMix',
+        () {
+          testStyler.paddingX(30);
 
-        expect(testStyler.paddingCalls.length, equals(1));
-        final edgeInsetsMix = testStyler.paddingCalls.first as EdgeInsetsMix;
-expect(edgeInsetsMix.$top, isNull);
-        expect(edgeInsetsMix.$bottom, isNull);
-        expect(edgeInsetsMix.$left, isNotNull);
-        expect(edgeInsetsMix.$right, isNotNull);
-      });
+          expect(testStyler.paddingCalls.length, equals(1));
+          final edgeInsetsMix = testStyler.paddingCalls.first as EdgeInsetsMix;
+          expect(edgeInsetsMix.$top, isNull);
+          expect(edgeInsetsMix.$bottom, isNull);
+          expect(edgeInsetsMix.$left, isNotNull);
+          expect(edgeInsetsMix.$right, isNotNull);
+        },
+      );
 
-      test('paddingY should call padding with vertical EdgeInsetsGeometryMix', () {
-        testStyler.paddingY(35);
+      test(
+        'paddingY should call padding with vertical EdgeInsetsGeometryMix',
+        () {
+          testStyler.paddingY(35);
 
-        expect(testStyler.paddingCalls.length, equals(1));
-        final edgeInsetsMix = testStyler.paddingCalls.first as EdgeInsetsMix;
-expect(edgeInsetsMix.$top, isNotNull);
-        expect(edgeInsetsMix.$bottom, isNotNull);
-        expect(edgeInsetsMix.$left, isNull);
-        expect(edgeInsetsMix.$right, isNull);
-      });
+          expect(testStyler.paddingCalls.length, equals(1));
+          final edgeInsetsMix = testStyler.paddingCalls.first as EdgeInsetsMix;
+          expect(edgeInsetsMix.$top, isNotNull);
+          expect(edgeInsetsMix.$bottom, isNotNull);
+          expect(edgeInsetsMix.$left, isNull);
+          expect(edgeInsetsMix.$right, isNull);
+        },
+      );
 
       test('paddingAll should call padding with all EdgeInsetsGeometryMix', () {
         testStyler.paddingAll(40);
 
         expect(testStyler.paddingCalls.length, equals(1));
         final edgeInsetsMix = testStyler.paddingCalls.first as EdgeInsetsMix;
-expect(edgeInsetsMix.$top, isNotNull);
+        expect(edgeInsetsMix.$top, isNotNull);
         expect(edgeInsetsMix.$bottom, isNotNull);
         expect(edgeInsetsMix.$left, isNotNull);
         expect(edgeInsetsMix.$right, isNotNull);
       });
 
-      test('paddingStart should call padding with start EdgeInsetsGeometryMix', () {
-        testStyler.paddingStart(45);
+      test(
+        'paddingStart should call padding with start EdgeInsetsGeometryMix',
+        () {
+          testStyler.paddingStart(45);
 
-        expect(testStyler.paddingCalls.length, equals(1));
-        expect(testStyler.paddingCalls.first, isA<EdgeInsetsGeometryMix>());
-      });
+          expect(testStyler.paddingCalls.length, equals(1));
+          expect(testStyler.paddingCalls.first, isA<EdgeInsetsGeometryMix>());
+        },
+      );
 
       test('paddingEnd should call padding with end EdgeInsetsGeometryMix', () {
         testStyler.paddingEnd(50);
@@ -188,12 +204,15 @@ expect(edgeInsetsMix.$top, isNotNull);
         expect(testStyler.marginCalls.first, isA<EdgeInsetsGeometryMix>());
       });
 
-      test('marginBottom should call margin with bottom EdgeInsetsGeometryMix', () {
-        testStyler.marginBottom(20);
+      test(
+        'marginBottom should call margin with bottom EdgeInsetsGeometryMix',
+        () {
+          testStyler.marginBottom(20);
 
-        expect(testStyler.marginCalls.length, equals(1));
-        expect(testStyler.marginCalls.first, isA<EdgeInsetsGeometryMix>());
-      });
+          expect(testStyler.marginCalls.length, equals(1));
+          expect(testStyler.marginCalls.first, isA<EdgeInsetsGeometryMix>());
+        },
+      );
 
       test('marginLeft should call margin with left EdgeInsetsGeometryMix', () {
         testStyler.marginLeft(15);
@@ -202,26 +221,35 @@ expect(edgeInsetsMix.$top, isNotNull);
         expect(testStyler.marginCalls.first, isA<EdgeInsetsGeometryMix>());
       });
 
-      test('marginRight should call margin with right EdgeInsetsGeometryMix', () {
-        testStyler.marginRight(25);
+      test(
+        'marginRight should call margin with right EdgeInsetsGeometryMix',
+        () {
+          testStyler.marginRight(25);
 
-        expect(testStyler.marginCalls.length, equals(1));
-        expect(testStyler.marginCalls.first, isA<EdgeInsetsGeometryMix>());
-      });
+          expect(testStyler.marginCalls.length, equals(1));
+          expect(testStyler.marginCalls.first, isA<EdgeInsetsGeometryMix>());
+        },
+      );
 
-      test('marginX should call margin with horizontal EdgeInsetsGeometryMix', () {
-        testStyler.marginX(30);
+      test(
+        'marginX should call margin with horizontal EdgeInsetsGeometryMix',
+        () {
+          testStyler.marginX(30);
 
-        expect(testStyler.marginCalls.length, equals(1));
-        expect(testStyler.marginCalls.first, isA<EdgeInsetsGeometryMix>());
-      });
+          expect(testStyler.marginCalls.length, equals(1));
+          expect(testStyler.marginCalls.first, isA<EdgeInsetsGeometryMix>());
+        },
+      );
 
-      test('marginY should call margin with vertical EdgeInsetsGeometryMix', () {
-        testStyler.marginY(35);
+      test(
+        'marginY should call margin with vertical EdgeInsetsGeometryMix',
+        () {
+          testStyler.marginY(35);
 
-        expect(testStyler.marginCalls.length, equals(1));
-        expect(testStyler.marginCalls.first, isA<EdgeInsetsGeometryMix>());
-      });
+          expect(testStyler.marginCalls.length, equals(1));
+          expect(testStyler.marginCalls.first, isA<EdgeInsetsGeometryMix>());
+        },
+      );
 
       test('marginAll should call margin with all EdgeInsetsGeometryMix', () {
         testStyler.marginAll(40);
@@ -230,12 +258,15 @@ expect(edgeInsetsMix.$top, isNotNull);
         expect(testStyler.marginCalls.first, isA<EdgeInsetsGeometryMix>());
       });
 
-      test('marginStart should call margin with start EdgeInsetsGeometryMix', () {
-        testStyler.marginStart(45);
+      test(
+        'marginStart should call margin with start EdgeInsetsGeometryMix',
+        () {
+          testStyler.marginStart(45);
 
-        expect(testStyler.marginCalls.length, equals(1));
-        expect(testStyler.marginCalls.first, isA<EdgeInsetsGeometryMix>());
-      });
+          expect(testStyler.marginCalls.length, equals(1));
+          expect(testStyler.marginCalls.first, isA<EdgeInsetsGeometryMix>());
+        },
+      );
 
       test('marginEnd should call margin with end EdgeInsetsGeometryMix', () {
         testStyler.marginEnd(50);
@@ -275,12 +306,7 @@ expect(edgeInsetsMix.$top, isNotNull);
       });
 
       test('should handle all parameters', () {
-        testStyler.paddingOnly(
-          left: 10,
-          right: 20,
-          top: 30,
-          bottom: 40,
-        );
+        testStyler.paddingOnly(left: 10, right: 20, top: 30, bottom: 40);
 
         expect(testStyler.paddingCalls.length, equals(1));
         expect(testStyler.paddingCalls.first, isA<EdgeInsetsGeometryMix>());
@@ -317,12 +343,7 @@ expect(edgeInsetsMix.$top, isNotNull);
       });
 
       test('should handle all parameters', () {
-        testStyler.marginOnly(
-          left: 10,
-          right: 20,
-          top: 30,
-          bottom: 40,
-        );
+        testStyler.marginOnly(left: 10, right: 20, top: 30, bottom: 40);
 
         expect(testStyler.marginCalls.length, equals(1));
         expect(testStyler.marginCalls.first, isA<EdgeInsetsGeometryMix>());
@@ -331,10 +352,7 @@ expect(edgeInsetsMix.$top, isNotNull);
 
     group('method chaining', () {
       test('should support method chaining', () {
-        final result = testStyler
-            .paddingTop(10)
-            .marginLeft(20)
-            .paddingAll(30);
+        final result = testStyler.paddingTop(10).marginLeft(20).paddingAll(30);
 
         expect(result, same(testStyler));
         expect(testStyler.paddingCalls.length, equals(2));

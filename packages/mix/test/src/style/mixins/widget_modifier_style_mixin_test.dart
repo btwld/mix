@@ -4,7 +4,9 @@ import 'package:mix/mix.dart';
 
 // Test implementation that uses the mixin
 class TestStyler extends Style<BoxSpec>
-    with WidgetModifierStyleMixin<TestStyler, BoxSpec> {
+    with
+        WidgetModifierStyleMixin<TestStyler, BoxSpec>,
+        AnimationStyleMixin<BoxSpec, TestStyler> {
   final List<WidgetModifierConfig> calledWith;
 
   TestStyler({
@@ -60,11 +62,7 @@ class TestStyler extends Style<BoxSpec>
   }
 
   @override
-  List<Object?> get props => [
-        $animation,
-        $modifier,
-        $variants,
-      ];
+  List<Object?> get props => [$animation, $modifier, $variants];
 }
 
 void main() {
@@ -193,12 +191,15 @@ void main() {
         expect(testStyler.calledWith.first, isA<WidgetModifierConfig>());
       });
 
-      test('should call wrap with widget modifier config with custom parameters', () {
-        testStyler.wrapFlexible(flex: 2, fit: FlexFit.tight);
+      test(
+        'should call wrap with widget modifier config with custom parameters',
+        () {
+          testStyler.wrapFlexible(flex: 2, fit: FlexFit.tight);
 
-        expect(testStyler.calledWith.length, equals(1));
-        expect(testStyler.calledWith.first, isA<WidgetModifierConfig>());
-      });
+          expect(testStyler.calledWith.length, equals(1));
+          expect(testStyler.calledWith.first, isA<WidgetModifierConfig>());
+        },
+      );
     });
 
     group('wrapExpanded', () {

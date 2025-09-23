@@ -186,9 +186,7 @@ void main() {
       });
 
       test('should create with create constructor', () {
-        final mix = VisibilityModifierMix.create(
-          visible: Prop.value(false),
-        );
+        final mix = VisibilityModifierMix.create(visible: Prop.value(false));
 
         expect(mix.visible, isA<Prop<bool>>());
       });
@@ -230,7 +228,10 @@ void main() {
                 final resolved = mix.resolve(context);
 
                 expect(resolved, isA<VisibilityModifier>());
-                expect(resolved.visible, isTrue); // VisibilityModifier defaults to true when null
+                expect(
+                  resolved.visible,
+                  isTrue,
+                ); // VisibilityModifier defaults to true when null
 
                 return Container();
               },
@@ -350,7 +351,11 @@ void main() {
 }
 
 // Test helper class
-class TestStyle extends Style<BoxSpec> {
+class TestStyle extends Style<BoxSpec>
+    with
+        AnimationStyleMixin<BoxSpec, TestStyle>,
+        VariantStyleMixin<TestStyle, BoxSpec>,
+        WidgetModifierStyleMixin<TestStyle, BoxSpec> {
   final VisibilityModifierMix modifierMix;
 
   const TestStyle({
@@ -377,6 +382,16 @@ class TestStyle extends Style<BoxSpec> {
       variants: $variants,
       modifier: $modifier,
       animation: animation,
+    );
+  }
+
+  @override
+  TestStyle wrap(WidgetModifierConfig value) {
+    return TestStyle(
+      modifierMix: modifierMix,
+      variants: $variants,
+      modifier: value,
+      animation: $animation,
     );
   }
 

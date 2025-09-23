@@ -3,7 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 
 // Test style implementation for testing animation utility
-class TestAnimationStyle extends Style<BoxSpec> {
+class TestAnimationStyle extends Style<BoxSpec>
+    with AnimationStyleMixin<BoxSpec, TestAnimationStyle> {
   final AnimationConfig? testAnimation;
 
   TestAnimationStyle({

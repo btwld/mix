@@ -4,7 +4,10 @@ import 'package:mix/mix.dart';
 
 // Test implementation that uses the border radius mixin
 class TestBorderRadiusStyler extends Style<BoxSpec>
-    with BorderRadiusStyleMixin<TestBorderRadiusStyler> {
+    with
+        BorderRadiusStyleMixin<TestBorderRadiusStyler>,
+        AnimationStyleMixin<BoxSpec, TestBorderRadiusStyler>,
+        DecorationStyleMixin<TestBorderRadiusStyler> {
   final List<BorderRadiusGeometryMix> borderRadiusCalls;
   final List<DecorationMix> decorationCalls;
   final List<DecorationMix> foregroundDecorationCalls;
@@ -18,7 +21,8 @@ class TestBorderRadiusStyler extends Style<BoxSpec>
     List<DecorationMix>? foregroundDecorationCalls,
   }) : borderRadiusCalls = borderRadiusCalls ?? <BorderRadiusGeometryMix>[],
        decorationCalls = decorationCalls ?? <DecorationMix>[],
-       foregroundDecorationCalls = foregroundDecorationCalls ?? <DecorationMix>[];
+       foregroundDecorationCalls =
+           foregroundDecorationCalls ?? <DecorationMix>[];
 
   @override
   TestBorderRadiusStyler borderRadius(BorderRadiusGeometryMix value) {
@@ -243,11 +247,7 @@ class TestBorderRadiusStyler extends Style<BoxSpec>
   }
 
   @override
-  List<Object?> get props => [
-        $animation,
-        $modifier,
-        $variants,
-      ];
+  List<Object?> get props => [$animation, $modifier, $variants];
 }
 
 void main() {
@@ -264,7 +264,10 @@ void main() {
         testStyler.borderRadiusAll(radius);
 
         expect(testStyler.borderRadiusCalls.length, equals(1));
-        expect(testStyler.borderRadiusCalls.first, isA<BorderRadiusGeometryMix>());
+        expect(
+          testStyler.borderRadiusCalls.first,
+          isA<BorderRadiusGeometryMix>(),
+        );
       });
 
       test('borderRadiusTop should call borderRadius', () {
@@ -272,7 +275,10 @@ void main() {
         testStyler.borderRadiusTop(radius);
 
         expect(testStyler.borderRadiusCalls.length, equals(1));
-        expect(testStyler.borderRadiusCalls.first, isA<BorderRadiusGeometryMix>());
+        expect(
+          testStyler.borderRadiusCalls.first,
+          isA<BorderRadiusGeometryMix>(),
+        );
       });
 
       test('borderRadiusBottom should call borderRadius', () {
@@ -280,7 +286,10 @@ void main() {
         testStyler.borderRadiusBottom(radius);
 
         expect(testStyler.borderRadiusCalls.length, equals(1));
-        expect(testStyler.borderRadiusCalls.first, isA<BorderRadiusGeometryMix>());
+        expect(
+          testStyler.borderRadiusCalls.first,
+          isA<BorderRadiusGeometryMix>(),
+        );
       });
 
       test('borderRadiusLeft should call borderRadius', () {
@@ -288,7 +297,10 @@ void main() {
         testStyler.borderRadiusLeft(radius);
 
         expect(testStyler.borderRadiusCalls.length, equals(1));
-        expect(testStyler.borderRadiusCalls.first, isA<BorderRadiusGeometryMix>());
+        expect(
+          testStyler.borderRadiusCalls.first,
+          isA<BorderRadiusGeometryMix>(),
+        );
       });
 
       test('borderRadiusRight should call borderRadius', () {
@@ -296,7 +308,10 @@ void main() {
         testStyler.borderRadiusRight(radius);
 
         expect(testStyler.borderRadiusCalls.length, equals(1));
-        expect(testStyler.borderRadiusCalls.first, isA<BorderRadiusGeometryMix>());
+        expect(
+          testStyler.borderRadiusCalls.first,
+          isA<BorderRadiusGeometryMix>(),
+        );
       });
 
       test('borderRadiusTopLeft should call borderRadius', () {
@@ -304,7 +319,10 @@ void main() {
         testStyler.borderRadiusTopLeft(radius);
 
         expect(testStyler.borderRadiusCalls.length, equals(1));
-        expect(testStyler.borderRadiusCalls.first, isA<BorderRadiusGeometryMix>());
+        expect(
+          testStyler.borderRadiusCalls.first,
+          isA<BorderRadiusGeometryMix>(),
+        );
       });
 
       test('borderRadiusTopRight should call borderRadius', () {
@@ -312,7 +330,10 @@ void main() {
         testStyler.borderRadiusTopRight(radius);
 
         expect(testStyler.borderRadiusCalls.length, equals(1));
-        expect(testStyler.borderRadiusCalls.first, isA<BorderRadiusGeometryMix>());
+        expect(
+          testStyler.borderRadiusCalls.first,
+          isA<BorderRadiusGeometryMix>(),
+        );
       });
 
       test('borderRadiusBottomLeft should call borderRadius', () {
@@ -320,7 +341,10 @@ void main() {
         testStyler.borderRadiusBottomLeft(radius);
 
         expect(testStyler.borderRadiusCalls.length, equals(1));
-        expect(testStyler.borderRadiusCalls.first, isA<BorderRadiusGeometryMix>());
+        expect(
+          testStyler.borderRadiusCalls.first,
+          isA<BorderRadiusGeometryMix>(),
+        );
       });
 
       test('borderRadiusBottomRight should call borderRadius', () {
@@ -328,7 +352,10 @@ void main() {
         testStyler.borderRadiusBottomRight(radius);
 
         expect(testStyler.borderRadiusCalls.length, equals(1));
-        expect(testStyler.borderRadiusCalls.first, isA<BorderRadiusGeometryMix>());
+        expect(
+          testStyler.borderRadiusCalls.first,
+          isA<BorderRadiusGeometryMix>(),
+        );
       });
     });
 
@@ -338,7 +365,10 @@ void main() {
         testStyler.borderRadiusTopStart(radius);
 
         expect(testStyler.borderRadiusCalls.length, equals(1));
-        expect(testStyler.borderRadiusCalls.first, isA<BorderRadiusGeometryMix>());
+        expect(
+          testStyler.borderRadiusCalls.first,
+          isA<BorderRadiusGeometryMix>(),
+        );
       });
 
       test('borderRadiusTopEnd should call borderRadius', () {
@@ -346,7 +376,10 @@ void main() {
         testStyler.borderRadiusTopEnd(radius);
 
         expect(testStyler.borderRadiusCalls.length, equals(1));
-        expect(testStyler.borderRadiusCalls.first, isA<BorderRadiusGeometryMix>());
+        expect(
+          testStyler.borderRadiusCalls.first,
+          isA<BorderRadiusGeometryMix>(),
+        );
       });
 
       test('borderRadiusBottomStart should call borderRadius', () {
@@ -354,7 +387,10 @@ void main() {
         testStyler.borderRadiusBottomStart(radius);
 
         expect(testStyler.borderRadiusCalls.length, equals(1));
-        expect(testStyler.borderRadiusCalls.first, isA<BorderRadiusGeometryMix>());
+        expect(
+          testStyler.borderRadiusCalls.first,
+          isA<BorderRadiusGeometryMix>(),
+        );
       });
 
       test('borderRadiusBottomEnd should call borderRadius', () {
@@ -362,7 +398,10 @@ void main() {
         testStyler.borderRadiusBottomEnd(radius);
 
         expect(testStyler.borderRadiusCalls.length, equals(1));
-        expect(testStyler.borderRadiusCalls.first, isA<BorderRadiusGeometryMix>());
+        expect(
+          testStyler.borderRadiusCalls.first,
+          isA<BorderRadiusGeometryMix>(),
+        );
       });
     });
 
@@ -371,7 +410,10 @@ void main() {
         testStyler.borderRounded(8);
 
         expect(testStyler.borderRadiusCalls.length, equals(1));
-        expect(testStyler.borderRadiusCalls.first, isA<BorderRadiusGeometryMix>());
+        expect(
+          testStyler.borderRadiusCalls.first,
+          isA<BorderRadiusGeometryMix>(),
+        );
       });
     });
 
@@ -380,28 +422,40 @@ void main() {
         testStyler.borderRoundedTop(10);
 
         expect(testStyler.borderRadiusCalls.length, equals(1));
-        expect(testStyler.borderRadiusCalls.first, isA<BorderRadiusGeometryMix>());
+        expect(
+          testStyler.borderRadiusCalls.first,
+          isA<BorderRadiusGeometryMix>(),
+        );
       });
 
       test('borderRoundedBottom should call borderRadius', () {
         testStyler.borderRoundedBottom(12);
 
         expect(testStyler.borderRadiusCalls.length, equals(1));
-        expect(testStyler.borderRadiusCalls.first, isA<BorderRadiusGeometryMix>());
+        expect(
+          testStyler.borderRadiusCalls.first,
+          isA<BorderRadiusGeometryMix>(),
+        );
       });
 
       test('borderRoundedLeft should call borderRadius', () {
         testStyler.borderRoundedLeft(14);
 
         expect(testStyler.borderRadiusCalls.length, equals(1));
-        expect(testStyler.borderRadiusCalls.first, isA<BorderRadiusGeometryMix>());
+        expect(
+          testStyler.borderRadiusCalls.first,
+          isA<BorderRadiusGeometryMix>(),
+        );
       });
 
       test('borderRoundedRight should call borderRadius', () {
         testStyler.borderRoundedRight(16);
 
         expect(testStyler.borderRadiusCalls.length, equals(1));
-        expect(testStyler.borderRadiusCalls.first, isA<BorderRadiusGeometryMix>());
+        expect(
+          testStyler.borderRadiusCalls.first,
+          isA<BorderRadiusGeometryMix>(),
+        );
       });
     });
 
@@ -410,28 +464,40 @@ void main() {
         testStyler.borderRoundedTopLeft(18);
 
         expect(testStyler.borderRadiusCalls.length, equals(1));
-        expect(testStyler.borderRadiusCalls.first, isA<BorderRadiusGeometryMix>());
+        expect(
+          testStyler.borderRadiusCalls.first,
+          isA<BorderRadiusGeometryMix>(),
+        );
       });
 
       test('borderRoundedTopRight should call borderRadius', () {
         testStyler.borderRoundedTopRight(20);
 
         expect(testStyler.borderRadiusCalls.length, equals(1));
-        expect(testStyler.borderRadiusCalls.first, isA<BorderRadiusGeometryMix>());
+        expect(
+          testStyler.borderRadiusCalls.first,
+          isA<BorderRadiusGeometryMix>(),
+        );
       });
 
       test('borderRoundedBottomLeft should call borderRadius', () {
         testStyler.borderRoundedBottomLeft(22);
 
         expect(testStyler.borderRadiusCalls.length, equals(1));
-        expect(testStyler.borderRadiusCalls.first, isA<BorderRadiusGeometryMix>());
+        expect(
+          testStyler.borderRadiusCalls.first,
+          isA<BorderRadiusGeometryMix>(),
+        );
       });
 
       test('borderRoundedBottomRight should call borderRadius', () {
         testStyler.borderRoundedBottomRight(24);
 
         expect(testStyler.borderRadiusCalls.length, equals(1));
-        expect(testStyler.borderRadiusCalls.first, isA<BorderRadiusGeometryMix>());
+        expect(
+          testStyler.borderRadiusCalls.first,
+          isA<BorderRadiusGeometryMix>(),
+        );
       });
     });
 
@@ -440,28 +506,40 @@ void main() {
         testStyler.borderRoundedTopStart(26);
 
         expect(testStyler.borderRadiusCalls.length, equals(1));
-        expect(testStyler.borderRadiusCalls.first, isA<BorderRadiusGeometryMix>());
+        expect(
+          testStyler.borderRadiusCalls.first,
+          isA<BorderRadiusGeometryMix>(),
+        );
       });
 
       test('borderRoundedTopEnd should call borderRadius', () {
         testStyler.borderRoundedTopEnd(28);
 
         expect(testStyler.borderRadiusCalls.length, equals(1));
-        expect(testStyler.borderRadiusCalls.first, isA<BorderRadiusGeometryMix>());
+        expect(
+          testStyler.borderRadiusCalls.first,
+          isA<BorderRadiusGeometryMix>(),
+        );
       });
 
       test('borderRoundedBottomStart should call borderRadius', () {
         testStyler.borderRoundedBottomStart(30);
 
         expect(testStyler.borderRadiusCalls.length, equals(1));
-        expect(testStyler.borderRadiusCalls.first, isA<BorderRadiusGeometryMix>());
+        expect(
+          testStyler.borderRadiusCalls.first,
+          isA<BorderRadiusGeometryMix>(),
+        );
       });
 
       test('borderRoundedBottomEnd should call borderRadius', () {
         testStyler.borderRoundedBottomEnd(32);
 
         expect(testStyler.borderRadiusCalls.length, equals(1));
-        expect(testStyler.borderRadiusCalls.first, isA<BorderRadiusGeometryMix>());
+        expect(
+          testStyler.borderRadiusCalls.first,
+          isA<BorderRadiusGeometryMix>(),
+        );
       });
     });
 
@@ -531,7 +609,10 @@ void main() {
         testStyler.borderRadiusAll(radius);
 
         expect(testStyler.borderRadiusCalls.length, equals(1));
-        expect(testStyler.borderRadiusCalls.first, isA<BorderRadiusGeometryMix>());
+        expect(
+          testStyler.borderRadiusCalls.first,
+          isA<BorderRadiusGeometryMix>(),
+        );
       });
 
       test('should handle zero radius', () {
@@ -539,7 +620,10 @@ void main() {
         testStyler.borderRadiusAll(radius);
 
         expect(testStyler.borderRadiusCalls.length, equals(1));
-        expect(testStyler.borderRadiusCalls.first, isA<BorderRadiusGeometryMix>());
+        expect(
+          testStyler.borderRadiusCalls.first,
+          isA<BorderRadiusGeometryMix>(),
+        );
       });
     });
   });

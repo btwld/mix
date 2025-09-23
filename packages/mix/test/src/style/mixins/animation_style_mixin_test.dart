@@ -13,7 +13,6 @@ class TestAnimationStyler extends Style<BoxSpec>
     super.animation,
     List<AnimationConfig>? calledWith,
   }) : calledWith = calledWith ?? <AnimationConfig>[];
-
   @override
   TestAnimationStyler animate(AnimationConfig config) {
     calledWith.add(config);

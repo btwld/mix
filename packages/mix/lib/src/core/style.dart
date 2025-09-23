@@ -61,15 +61,16 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
 
   Style<S> withVariants(List<VariantStyle<S>> value);
 
+  /// Resolves variant-driven styling before producing a concrete spec.
   ///
-  /// This method evaluates which variants should be active based on the current
-  /// context and named variants, then recursively processes nested variants
-  /// within each active variant's style. The result is a fully merged style
-  /// with all applicable variants applied.
-  ///
-  /// Variant priority order (lowest to highest):
-  /// 1. EventVariantStyle and VariantStyleBuilder (applied first)
-  /// 2. WidgetStateVariant (applied last, highest priority)
+  /// The resolution flow:
+  /// * Determine which variants are active either because their context trigger
+  ///   evaluates to true or because the caller manually requested them through
+  ///   [namedVariants].
+  /// * Ensure widget-state driven variants run last so they override any
+  ///   lower-priority styling.
+  /// * Recursively merge the resolved variant styles to build a single style
+  ///   tree that reflects every active variant.
   @visibleForTesting
   Style<S> mergeActiveVariants(
     BuildContext context, {
@@ -78,7 +79,7 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
     // Start with current style as base
     Style<S> mergedStyle = this;
 
-    // 1. Filter variants that should be active in this context
+    // 1. Gather variants that should be applied for the current context/input
     final activeVariants = ($variants ?? []).where((variantStyle) {
       if (variantStyle is ContextVariantStyle<S>) {
         return variantStyle.isActive(context) ||
@@ -90,7 +91,7 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
       return false;
     }).toList();
 
-    // 2. Sort by priority: EventVariantStyle with WidgetStateTrigger gets applied last (highest priority)
+    // 2. Widget state variants have the highest priority and should merge last
     activeVariants.sort(
       (a, b) => Comparable.compare(
         (a is ContextVariantStyle<S> && a.trigger is WidgetStateTrigger)
@@ -102,25 +103,23 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
       ),
     );
 
-    // 3. Merge variant styles recursively
+    // 3. Merge the styles contributed by each active variant
     for (final variant in activeVariants) {
-      Style<S>? variantStyle;
+      final variantStyle = switch (variant) {
+        ContextVariantStyle<S> contextVariant => contextVariant.style,
+        VariantStyleBuilder<S> builderVariant => builderVariant.resolve(context),
+      };
 
-      if (variant is ContextVariantStyle<S>) {
-        variantStyle = variant.style;
-      } else if (variant is VariantStyleBuilder<S>) {
-        variantStyle = variant.resolve(context);
-      }
-
-      if (variantStyle == null || identical(variantStyle, this)) {
+      if (identical(variantStyle, this)) {
         continue; // Should not happen with our filtering above
       }
 
-      final fullyResolvedStyle = variantStyle.mergeActiveVariants(
-        context,
-        namedVariants: namedVariants,
+      mergedStyle = mergedStyle.merge(
+        variantStyle.mergeActiveVariants(
+          context,
+          namedVariants: namedVariants,
+        ),
       );
-      mergedStyle = mergedStyle.merge(fullyResolvedStyle);
     }
 
     return mergedStyle;

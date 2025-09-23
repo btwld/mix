@@ -518,7 +518,10 @@ void main() {
 }
 
 // Test helper class
-class TestStyle extends Style<BoxSpec> {
+class TestStyle extends Style<BoxSpec>
+    with
+        WidgetModifierStyleMixin<TestStyle, BoxSpec>,
+        AnimationStyleMixin<BoxSpec, TestStyle> {
   final DefaultTextStyleModifierMix modifierMix;
 
   const TestStyle({
@@ -534,6 +537,16 @@ class TestStyle extends Style<BoxSpec> {
       modifierMix: modifierMix,
       variants: variants,
       modifier: $modifier,
+      animation: $animation,
+    );
+  }
+
+  @override
+  TestStyle wrap(WidgetModifierConfig value) {
+    return TestStyle(
+      modifierMix: modifierMix,
+      variants: $variants,
+      modifier: value,
       animation: $animation,
     );
   }

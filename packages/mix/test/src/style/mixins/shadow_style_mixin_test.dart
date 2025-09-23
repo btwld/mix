@@ -30,7 +30,6 @@ class TestShadowStyler extends Style<BoxSpec>
     );
   }
 
-  @override
   TestShadowStyler animate(AnimationConfig animation) {
     return TestShadowStyler(
       variants: $variants,
