@@ -50,12 +50,6 @@ runs:
       shell: bash    
       run: melos run brb
 
-    - name: Run Test
-      run: |
-        melos run test:flutter
-        melos run test:dart
-      shell: bash
-
     - name: Install DCM
       if: ${{ inputs.run-dcm }}
       uses: CQLabs/setup-dcm@v2
@@ -65,6 +59,12 @@ runs:
     - name: Run DCM Analysis
       if: ${{ inputs.run-dcm }}
       run: dcm analyze .
+      shell: bash
+
+    - name: Run Test
+      run: |
+        melos run test:flutter
+        melos run test:dart
       shell: bash
 
     - name: Run melos fix
