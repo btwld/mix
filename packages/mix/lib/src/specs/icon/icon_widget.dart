@@ -4,6 +4,7 @@ import '../../core/style_builder.dart';
 import '../../core/style_spec.dart';
 import '../../core/style_widget.dart';
 import 'icon_spec.dart';
+import 'icon_style.dart';
 
 /// Displays an icon with Mix styling.
 ///
@@ -12,7 +13,7 @@ class StyledIcon extends StyleWidget<IconSpec> {
   const StyledIcon({
     this.icon,
     this.semanticLabel,
-    super.style,
+    super.style = const IconStyler.create(),
     super.spec,
     super.key,
   });

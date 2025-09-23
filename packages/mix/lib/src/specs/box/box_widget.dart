@@ -4,12 +4,18 @@ import '../../core/style_builder.dart';
 import '../../core/style_spec.dart';
 import '../../core/style_widget.dart';
 import 'box_spec.dart';
+import 'box_style.dart';
 
 /// A styled box widget using Mix framework.
 ///
 /// Applies [BoxSpec] styling to create a customized [Container].
 class Box extends StyleWidget<BoxSpec> {
-  const Box({super.style, super.spec, super.key, this.child});
+  const Box({
+    super.style = const BoxStyler.create(),
+    super.spec,
+    super.key,
+    this.child,
+  });
 
   /// Builder pattern for `StyleSpec<BoxSpec>` with custom builder function.
   static Widget builder(
