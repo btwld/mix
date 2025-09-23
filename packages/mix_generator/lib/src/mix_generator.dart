@@ -44,10 +44,12 @@ class MixGenerator extends Generator {
 
   // Type checkers for all annotations
   final TypeChecker _specChecker = const TypeChecker.fromRuntime(MixableSpec);
-  final TypeChecker _propertyChecker =
-      const TypeChecker.fromRuntime(MixableType);
-  final TypeChecker _utilityChecker =
-      const TypeChecker.fromRuntime(MixableUtility);
+  final TypeChecker _propertyChecker = const TypeChecker.fromRuntime(
+    MixableType,
+  );
+  final TypeChecker _utilityChecker = const TypeChecker.fromRuntime(
+    MixableUtility,
+  );
 
   // Map to store types discovered during the generation phase
   final Map<String, String> _discoveredTypes = {};
@@ -84,8 +86,9 @@ class MixGenerator extends Generator {
 
   List<UtilityMetadata> _createUtilityMetadata(List<ClassElement> elements) {
     return elements.map((element) {
-      final reader =
-          ConstantReader(_utilityChecker.firstAnnotationOfExact(element));
+      final reader = ConstantReader(
+        _utilityChecker.firstAnnotationOfExact(element),
+      );
 
       return UtilityMetadata.fromAnnotation(element, reader);
     }).toList();
@@ -125,8 +128,10 @@ class MixGenerator extends Generator {
       for (final param in metadata.parameters) {
         if (_isGeneratedType(param.dartType)) {
           // Find the metadata for the dependency
-          final dependencyMetadata =
-              _findMetadataForType(param.dartType, graph);
+          final dependencyMetadata = _findMetadataForType(
+            param.dartType,
+            graph,
+          );
           if (dependencyMetadata != null) {
             graph.addDependency(metadata, dependencyMetadata);
           }
@@ -156,8 +161,10 @@ class MixGenerator extends Generator {
     for (final metadata in metadataList) {
       for (final param in metadata.parameters) {
         if (_isGeneratedType(param.dartType)) {
-          final dependencyMetadata =
-              _findMetadataForType(param.dartType, graph);
+          final dependencyMetadata = _findMetadataForType(
+            param.dartType,
+            graph,
+          );
           if (dependencyMetadata != null) {
             graph.addDependency(metadata, dependencyMetadata);
           }
@@ -334,8 +341,9 @@ class MixGenerator extends Generator {
     buffer.writeln();
 
     // Generate attribute class
-    if (metadata.generatedComponents
-        .hasFlag(GeneratedSpecComponents.attribute)) {
+    if (metadata.generatedComponents.hasFlag(
+      GeneratedSpecComponents.attribute,
+    )) {
       final attributeBuilder = SpecAttributeBuilder(metadata);
       buffer.writeln(attributeBuilder.build());
       buffer.writeln();
@@ -366,16 +374,18 @@ class MixGenerator extends Generator {
     buffer.writeln();
 
     // Generate utility class
-    if (metadata.generatedComponents
-        .hasFlag(GeneratedPropertyComponents.utility)) {
+    if (metadata.generatedComponents.hasFlag(
+      GeneratedPropertyComponents.utility,
+    )) {
       final utilityBuilder = MixableTypeUtilityBuilder(metadata);
       buffer.writeln(utilityBuilder.build());
       buffer.writeln();
     }
 
     // Generate extension
-    if (metadata.generatedComponents
-        .hasFlag(GeneratedPropertyComponents.resolvableExtension)) {
+    if (metadata.generatedComponents.hasFlag(
+      GeneratedPropertyComponents.resolvableExtension,
+    )) {
       final extensionBuilder = MixableTypeExtensionBuilder(metadata);
       buffer.writeln(extensionBuilder.build());
       buffer.writeln();
@@ -599,11 +609,7 @@ class MixGenerator extends Generator {
 
       final sourceOrderedElements = library
           .annotatedWith(
-            TypeChecker.any([
-              _specChecker,
-              _propertyChecker,
-              _utilityChecker,
-            ]),
+            TypeChecker.any([_specChecker, _propertyChecker, _utilityChecker]),
           )
           .map((annotated) => annotated.element)
           .whereType<ClassElement>()

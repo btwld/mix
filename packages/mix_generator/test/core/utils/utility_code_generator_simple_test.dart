@@ -4,14 +4,18 @@ import 'package:test/test.dart';
 void main() {
   group('UtilityCodeGenerator - Simple Methods', () {
     test('generateDocTemplate creates correct documentation', () {
-      final result =
-          UtilityCodeGenerator.generateDocTemplate('ColorUtility', 'Color');
+      final result = UtilityCodeGenerator.generateDocTemplate(
+        'ColorUtility',
+        'Color',
+      );
 
       expect(result, contains('{@template color_utility}'));
       expect(
-          result,
-          contains(
-              'A utility class for creating [StyleElement] instances from [Color] values.'));
+        result,
+        contains(
+          'A utility class for creating [StyleElement] instances from [Color] values.',
+        ),
+      );
       expect(result, contains('This class extends [MixUtility]'));
     });
 
@@ -23,27 +27,35 @@ void main() {
       );
 
       expect(result, contains('/// Utility for defining [BoxSpec.color]'));
-      expect(result,
-          contains('late final color = ColorUtility((v) => only(color: v));'));
+      expect(
+        result,
+        contains('late final color = ColorUtility((v) => only(color: v));'),
+      );
     });
 
     test('chainGetter creates correct getter', () {
       final result = UtilityCodeGenerator.chainGetter('ColorUtility');
 
       expect(
-          result,
-          contains(
-              'ColorUtility<T> get chain => ColorUtility(attributeBuilder);'));
+        result,
+        contains(
+          'ColorUtility<T> get chain => ColorUtility(attributeBuilder);',
+        ),
+      );
     });
 
     test('selfGetter creates correct static getter', () {
-      final result =
-          UtilityCodeGenerator.selfGetter('ColorUtility', 'ColorAttribute');
+      final result = UtilityCodeGenerator.selfGetter(
+        'ColorUtility',
+        'ColorAttribute',
+      );
 
       expect(
-          result,
-          contains(
-              'static ColorUtility<ColorAttribute> get self => ColorUtility((v) => v);'));
+        result,
+        contains(
+          'static ColorUtility<ColorAttribute> get self => ColorUtility((v) => v);',
+        ),
+      );
     });
   });
 }

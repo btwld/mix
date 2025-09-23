@@ -795,7 +795,7 @@ void main() {
       group('TextStyler(style: token.mix())', () {
         test('compiles and creates TextStyler correctly', () {
           final token = TextStyleToken('test-style');
-          
+
           // This is our main goal - this should compile and work!
           final styler = TextStyler(style: token.mix());
 
@@ -806,7 +806,7 @@ void main() {
 
         test('works with other TextStyler parameters', () {
           final token = TextStyleToken('test-style');
-          
+
           final styler = TextStyler(
             style: token.mix(),
             maxLines: 2,
@@ -824,15 +824,15 @@ void main() {
       group('TextStyler Resolution', () {
         test('TextStyler with MixRef is properly constructed', () {
           final token = TextStyleToken('test-style');
-          
+
           final styler = TextStyler(style: token.mix());
-          
+
           // Test that the MixRef was properly created and stored
           expect(styler, isA<TextStyler>());
           expect(styler.$style, isA<Prop<TextStyle>>());
           expect(styler.$style, PropMatcher.isToken(token));
           expect(styler.$style, PropMatcher.hasTokens);
-          
+
           // Note: Direct resolution testing of MixRef objects is not supported
           // by the framework architecture. Resolution is tested at the integration
           // level in text_style_token_integration_test.dart
@@ -840,15 +840,15 @@ void main() {
 
         test('TextStyler with missing token MixRef is properly constructed', () {
           final token = TextStyleToken('missing-style');
-          
+
           final styler = TextStyler(style: token.mix());
-          
+
           // Test that the MixRef was properly created even for tokens not in context
           expect(styler, isA<TextStyler>());
           expect(styler.$style, isA<Prop<TextStyle>>());
           expect(styler.$style, PropMatcher.isToken(token));
           expect(styler.$style, PropMatcher.hasTokens);
-          
+
           // Note: Resolution behavior for missing tokens is tested at the integration
           // level where the framework can properly handle the MixScope resolution
         });
@@ -857,12 +857,12 @@ void main() {
       group('TextStyler Merging', () {
         test('TextStyler with MixRef merges correctly with other styles', () {
           final token = TextStyleToken('test-style');
-          
+
           final styler1 = TextStyler(style: token.mix());
           final styler2 = TextStyler(maxLines: 3, overflow: TextOverflow.fade);
-          
+
           final merged = styler1.merge(styler2);
-          
+
           expect(merged.$style, isA<Prop<TextStyle>>());
           expect(merged.$maxLines, resolvesTo(3));
           expect(merged.$overflow, resolvesTo(TextOverflow.fade));
@@ -871,12 +871,12 @@ void main() {
         test('TextStyler MixRef can be merged with regular TextStyleMix', () {
           final token = TextStyleToken('test-style');
           final regularStyle = TextStyleMix(color: Colors.red);
-          
+
           final tokenStyler = TextStyler(style: token.mix());
           final regularStyler = TextStyler(style: regularStyle);
-          
+
           final merged = tokenStyler.merge(regularStyler);
-          
+
           expect(merged.$style, isNotNull);
           // The merged style should contain both the token and the regular style
           expect(merged.$style, isA<Prop<TextStyle>>());
@@ -886,9 +886,9 @@ void main() {
       group('TextStyleMixin Methods', () {
         test('TextStyleMixin methods work with token.mix()', () {
           final token = TextStyleToken('test-style');
-          
+
           final styler = TextStyler().style(token.mix());
-          
+
           // After calling .style(), the result is no longer a direct token reference
           // but it should still be a valid Prop<TextStyle>
           expect(styler.$style, isNotNull);
@@ -898,12 +898,12 @@ void main() {
 
         test('chaining works with token.mix()', () {
           final token = TextStyleToken('test-style');
-          
+
           final styler = TextStyler()
-            .style(token.mix())
-            .maxLines(2)
-            .overflow(TextOverflow.ellipsis);
-          
+              .style(token.mix())
+              .maxLines(2)
+              .overflow(TextOverflow.ellipsis);
+
           // After chaining, the style is merged but should still be valid
           expect(styler.$style, isNotNull);
           expect(styler.$style, isA<Prop<TextStyle>>());
@@ -914,11 +914,9 @@ void main() {
         test('multiple style applications merge correctly', () {
           final token = TextStyleToken('test-style');
           final regularStyle = TextStyleMix(color: Colors.green);
-          
-          final styler = TextStyler()
-            .style(token.mix())
-            .style(regularStyle);
-          
+
+          final styler = TextStyler().style(token.mix()).style(regularStyle);
+
           expect(styler.$style, isNotNull);
           expect(styler.$style, isA<Prop<TextStyle>>());
         });
@@ -927,91 +925,99 @@ void main() {
       group('TextStyler Factory Methods', () {
         test('TextStyler color method works after token.mix()', () {
           final token = TextStyleToken('test-style');
-          
+
           final styler = TextStyler(style: token.mix()).color(Colors.purple);
-          
+
           expect(styler.$style, isNotNull);
           expect(styler.$style, isA<Prop<TextStyle>>());
         });
 
         test('TextStyler fontSize method works after token.mix()', () {
           final token = TextStyleToken('test-style');
-          
+
           final styler = TextStyler(style: token.mix()).fontSize(20);
-          
+
           expect(styler.$style, isNotNull);
           expect(styler.$style, isA<Prop<TextStyle>>());
         });
 
         test('chaining style methods works correctly', () {
           final token = TextStyleToken('test-style');
-          
-          final styler = TextStyler(style: token.mix())
-            .color(Colors.orange)
-            .fontSize(16)
-            .fontWeight(FontWeight.bold);
-          
+
+          final styler = TextStyler(
+            style: token.mix(),
+          ).color(Colors.orange).fontSize(16).fontWeight(FontWeight.bold);
+
           expect(styler.$style, isNotNull);
           expect(styler.$style, isA<Prop<TextStyle>>());
         });
       });
 
       group('Basic Integration Verification', () {
-        test('TextStyler with token.mix() can be created and has correct properties', () {
-          final token = TextStyleToken('heading-style');
-          
-          final styler = TextStyler(
-            style: token.mix(),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-          );
-          
-          // Verify the styler was created correctly with all properties
-          expect(styler.$style, isNotNull);
-          expect(styler.$style, isA<Prop<TextStyle>>());
-          expect(styler.$maxLines, resolvesTo(1));
-          expect(styler.$overflow, resolvesTo(TextOverflow.ellipsis));
-          expect(styler.$textAlign, resolvesTo(TextAlign.center));
-        });
+        test(
+          'TextStyler with token.mix() can be created and has correct properties',
+          () {
+            final token = TextStyleToken('heading-style');
 
-        test('TextStyler with token.mix() plus style methods can be chained', () {
-          final token = TextStyleToken('base-style');
-          
-          final styler = TextStyler(style: token.mix())
-            .color(Colors.blue)
-            .fontWeight(FontWeight.w600);
-          
-          // Verify the chained styler has the expected structure
-          expect(styler.$style, isNotNull);
-          expect(styler.$style, isA<Prop<TextStyle>>());
-        });
+            final styler = TextStyler(
+              style: token.mix(),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            );
+
+            // Verify the styler was created correctly with all properties
+            expect(styler.$style, isNotNull);
+            expect(styler.$style, isA<Prop<TextStyle>>());
+            expect(styler.$maxLines, resolvesTo(1));
+            expect(styler.$overflow, resolvesTo(TextOverflow.ellipsis));
+            expect(styler.$textAlign, resolvesTo(TextAlign.center));
+          },
+        );
+
+        test(
+          'TextStyler with token.mix() plus style methods can be chained',
+          () {
+            final token = TextStyleToken('base-style');
+
+            final styler = TextStyler(
+              style: token.mix(),
+            ).color(Colors.blue).fontWeight(FontWeight.w600);
+
+            // Verify the chained styler has the expected structure
+            expect(styler.$style, isNotNull);
+            expect(styler.$style, isA<Prop<TextStyle>>());
+          },
+        );
       });
 
       group('Performance and Memory', () {
-        test('creating multiple TextStyler with same token.mix() is efficient', () {
-          final token = TextStyleToken('shared-style');
-          
-          final stylers = List.generate(
-            100, 
-            (i) => TextStyler(style: token.mix()),
-          );
-          
-          // Verify all stylers were created successfully
-          for (final styler in stylers) {
-            expect(styler.$style, isNotNull);
-            expect(styler.$style, isA<Prop<TextStyle>>());
-          }
-          
-          expect(stylers.length, equals(100));
-        });
+        test(
+          'creating multiple TextStyler with same token.mix() is efficient',
+          () {
+            final token = TextStyleToken('shared-style');
+
+            final stylers = List.generate(
+              100,
+              (i) => TextStyler(style: token.mix()),
+            );
+
+            // Verify all stylers were created successfully
+            for (final styler in stylers) {
+              expect(styler.$style, isNotNull);
+              expect(styler.$style, isA<Prop<TextStyle>>());
+            }
+
+            expect(stylers.length, equals(100));
+          },
+        );
 
         test('token registry handles multiple MixRef creations correctly', () {
           final token = TextStyleToken('memory-test');
-          
+
           // Create many MixRefs
           final refs = List.generate(50, (i) => token.mix());
-          
+
           // All should be token references
           for (final ref in refs) {
             expect(isAnyTokenRef(ref), isTrue);

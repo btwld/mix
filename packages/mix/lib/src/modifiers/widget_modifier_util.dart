@@ -114,4 +114,3 @@ final class WidgetModifierUtility<T extends Style<Object?>>
   /// Resets all modifiers.
   T reset() => utilityBuilder(const ResetModifierMix());
 }
-

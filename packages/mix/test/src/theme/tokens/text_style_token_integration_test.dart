@@ -13,10 +13,10 @@ void main() {
     group('Basic Token Functionality', () {
       test('TextStyleToken can be created and called', () {
         const token = TextStyleToken('text.style.heading');
-        
+
         // Calling the token should return a TextStyleRef
         final ref = token();
-        
+
         expect(ref, isA<TextStyleRef>());
         expect(ref, isA<TextStyle>());
         expect(ref, PropMatcher.hasTokens);
@@ -33,11 +33,11 @@ void main() {
             child: Builder(
               builder: (context) {
                 final resolvedStyle = textStyleToken.resolve(context);
-                
+
                 expect(resolvedStyle, equals(testStyle));
                 expect(resolvedStyle.fontSize, equals(18));
                 expect(resolvedStyle.color, equals(Colors.blue));
-                
+
                 return Container();
               },
             ),
@@ -48,14 +48,14 @@ void main() {
       test('TextStyleToken correctly prevents direct property access', () {
         const textStyleToken = TextStyleToken('test.textStyle');
         final textStyleRef = textStyleToken();
-        
+
         // TextStyleRef should throw error when trying to access properties directly
         expect(
           () => textStyleRef.fontSize,
           throwsA(isA<UnimplementedError>()),
           reason: 'TextStyleRef should prevent direct property access',
         );
-        
+
         expect(
           () => textStyleRef.color,
           throwsA(isA<UnimplementedError>()),
@@ -65,9 +65,9 @@ void main() {
 
       test('TextStyleToken integrates with getReferenceValue', () {
         const textStyleToken = TextStyleToken('test.textStyle');
-        
+
         final ref = getReferenceValue(textStyleToken);
-        
+
         expect(ref, isA<TextStyle>());
         expect(ref, isA<TextStyleRef>());
         expect(ref, PropMatcher.hasTokens);
@@ -77,10 +77,10 @@ void main() {
       test('TextStyleRef implements TextStyle interface', () {
         const textStyleToken = TextStyleToken('test.style');
         final textStyleRef = textStyleToken();
-        
+
         // Should be detectable as a token reference
         expect(isAnyTokenRef(textStyleRef), isTrue);
-        
+
         // Should implement TextStyle
         expect(textStyleRef, isA<TextStyle>());
       });
@@ -90,7 +90,7 @@ void main() {
       test('TextStyleToken.mix() returns TextStyleMixRef', () {
         final token = TextStyleToken('test');
         final mixRef = token.mix();
-        
+
         expect(mixRef, isA<TextStyleMixRef>());
         expect(mixRef, isA<TextStyleMix>());
         expect(mixRef, isA<Prop<TextStyle>>());
@@ -106,7 +106,7 @@ void main() {
 
       test('both call() and mix() work on same token', () {
         final token = TextStyleToken('test');
-        
+
         final flutterRef = token.call();
         final mixRef = token.mix();
 
@@ -123,7 +123,7 @@ void main() {
 
       test('mix() method can be called multiple times', () {
         final token = TextStyleToken('test');
-        
+
         final mixRef1 = token.mix();
         final mixRef2 = token.mix();
 
@@ -188,20 +188,20 @@ void main() {
         expect(mixRef, PropMatcher.hasTokens);
       });
 
-      test('TextStyleMixRef throws UnimplementedError when accessing methods directly', () {
-        final token = TextStyleToken('test-style');
-        final mixRef = TextStyleMixRef(Prop.token(token));
+      test(
+        'TextStyleMixRef throws UnimplementedError when accessing methods directly',
+        () {
+          final token = TextStyleToken('test-style');
+          final mixRef = TextStyleMixRef(Prop.token(token));
 
-        expect(
-          () => mixRef.color(Colors.red),
-          throwsA(isA<UnimplementedError>()),
-        );
+          expect(
+            () => mixRef.color(Colors.red),
+            throwsA(isA<UnimplementedError>()),
+          );
 
-        expect(
-          () => mixRef.fontSize(16),
-          throwsA(isA<UnimplementedError>()),
-        );
-      });
+          expect(() => mixRef.fontSize(16), throwsA(isA<UnimplementedError>()));
+        },
+      );
 
       test('TextStyleMixRef toString works correctly', () {
         final token = TextStyleToken('test-style');
@@ -257,7 +257,7 @@ void main() {
 
       test('mix() and call() refs are both detected as token references', () {
         final token = TextStyleToken('test-style');
-        
+
         final flutterRef = token.call();
         final mixRef = token.mix();
 
@@ -269,10 +269,10 @@ void main() {
     group('Backward Compatibility', () {
       test('existing token.call() usage continues to work', () {
         final token = TextStyleToken('test-style');
-        
+
         // This existing pattern should still work
         final flutterRef = token.call();
-        // Alternative syntax should also still work  
+        // Alternative syntax should also still work
         final flutterRef2 = token();
 
         expect(flutterRef, isA<TextStyleRef>());
@@ -299,13 +299,13 @@ void main() {
 
       test('can use both token.call() and token.mix() in same code', () {
         final textToken = TextStyleToken('test-style');
-        
+
         // Flutter usage
         final flutterRef = textToken.call();
-        
+
         // Mix usage (NEW!)
         final mixRef = textToken.mix();
-        
+
         // Both should work correctly
         expect(flutterRef, isA<TextStyle>());
         expect(mixRef, isA<TextStyleMix>());
@@ -313,10 +313,12 @@ void main() {
         expect(mixRef, PropMatcher.isToken(textToken));
       });
 
-      testWidgets('both call() and mix() refs resolve through MixScope', (tester) async {
+      testWidgets('both call() and mix() refs resolve through MixScope', (
+        tester,
+      ) async {
         final token = TextStyleToken('theme-style');
         const expectedStyle = TextStyle(fontSize: 20, color: Colors.green);
-        
+
         await tester.pumpWidget(
           MixScope(
             tokens: {token: expectedStyle},
@@ -324,11 +326,11 @@ void main() {
               builder: (context) {
                 final flutterRef = token.call();
                 final mixRef = token.mix();
-                
+
                 // Both should resolve to the same style through context
                 expect(flutterRef.resolveProp(context), equals(expectedStyle));
                 expect(mixRef.resolveProp(context), equals(expectedStyle));
-                
+
                 return Container();
               },
             ),
@@ -341,22 +343,19 @@ void main() {
       test('direct access to MixRef methods throws appropriate errors', () {
         final token = TextStyleToken('error-test');
         final mixRef = token.mix();
-        
+
         expect(
           () => mixRef.color(Colors.red),
           throwsA(isA<UnimplementedError>()),
         );
-        
-        expect(
-          () => mixRef.fontSize(16),
-          throwsA(isA<UnimplementedError>()),
-        );
+
+        expect(() => mixRef.fontSize(16), throwsA(isA<UnimplementedError>()));
       });
 
       test('error messages are helpful for token reference misuse', () {
         final token = TextStyleToken('error-test');
         final mixRef = token.mix();
-        
+
         try {
           mixRef.color(Colors.red);
           fail('Expected UnimplementedError');
@@ -374,17 +373,17 @@ void main() {
         final textToken = TextStyleToken('text');
         final shadowToken = ShadowToken('shadow');
         final boxShadowToken = BoxShadowToken('boxshadow');
-        
+
         // These assignments should all compile correctly
         TextStyleRef textRef = textToken.call();
         TextStyleMixRef textMixRef = textToken.mix();
-        
+
         ShadowListRef shadowRef = shadowToken.call();
         ShadowListMixRef shadowMixRef = shadowToken.mix();
 
         BoxShadowListRef boxShadowRef = boxShadowToken.call();
         BoxShadowListMixRef boxShadowMixRef = boxShadowToken.mix();
-        
+
         // Runtime verification
         expect(textRef, isA<TextStyle>());
         expect(textMixRef, isA<TextStyleMix>());
@@ -398,7 +397,7 @@ void main() {
         final token = TextStyleToken('test-style');
 
         final flutterRef = token.call(); // Returns TextStyleRef
-        final mixRef = token.mix();       // Returns TextStyleMixRef
+        final mixRef = token.mix(); // Returns TextStyleMixRef
 
         // Different concrete types
         expect(flutterRef.runtimeType, isNot(mixRef.runtimeType));
@@ -414,18 +413,21 @@ void main() {
     });
 
     group('Performance and Memory', () {
-      test('creating multiple TextStyler with same token.mix() is efficient', () {
-        final token = TextStyleToken('shared-style');
-        
-        final refs = List.generate(50, (i) => token.mix());
-        
-        for (final ref in refs) {
-          expect(ref, PropMatcher.isToken(token));
-          expect(isAnyTokenRef(ref), isTrue);
-        }
-        
-        expect(refs.length, equals(50));
-      });
+      test(
+        'creating multiple TextStyler with same token.mix() is efficient',
+        () {
+          final token = TextStyleToken('shared-style');
+
+          final refs = List.generate(50, (i) => token.mix());
+
+          for (final ref in refs) {
+            expect(ref, PropMatcher.isToken(token));
+            expect(isAnyTokenRef(ref), isTrue);
+          }
+
+          expect(refs.length, equals(50));
+        },
+      );
     });
   });
 }

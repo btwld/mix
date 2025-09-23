@@ -53,8 +53,9 @@ class MixableTypeMetadata extends BaseMetadata {
 
     // Extract constructor defaults from resolved type
     final resolvedConstructor = findTargetConstructor(resolvedElement);
-    final constructorDefaults =
-        extractConstructorDefaults(resolvedConstructor.parameters);
+    final constructorDefaults = extractConstructorDefaults(
+      resolvedConstructor.parameters,
+    );
 
     // Check if the class has the HasDefaultValue mixin using utility method
     final hasDefaultValue = TypeUtils.hasDefaultValueMixin(element);

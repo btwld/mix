@@ -9,11 +9,13 @@ class CommonMethods {
     required List<ParameterMetadata> fields,
     required bool useInternalRef,
   }) {
-    final propsFields = fields.map((field) {
-      final fieldRef = useInternalRef ? field.asInternalRef : field.name;
+    final propsFields = fields
+        .map((field) {
+          final fieldRef = useInternalRef ? field.asInternalRef : field.name;
 
-      return '$fieldRef,';
-    }).join('\n');
+          return '$fieldRef,';
+        })
+        .join('\n');
 
     return '''
   /// The list of properties that constitute the state of this [$className].
@@ -31,17 +33,21 @@ $propsFields
     required List<ParameterMetadata> fields,
     required bool useInternalRef,
   }) {
-    final propertyStatements = fields.map((field) {
-      final fieldName = field.name;
-      final fieldRef = useInternalRef ? field.asInternalRef : fieldName;
+    final propertyStatements = fields
+        .map((field) {
+          final fieldName = field.name;
+          final fieldRef = useInternalRef ? field.asInternalRef : fieldName;
 
-      return 'properties.add(DiagnosticsProperty(\'$fieldName\', $fieldRef, defaultValue: null));';
-    }).join('\n    ');
+          return 'properties.add(DiagnosticsProperty(\'$fieldName\', $fieldRef, defaultValue: null));';
+        })
+        .join('\n    ');
 
-    final methodName =
-        useInternalRef ? '_debugFillProperties' : 'debugFillProperties';
-    final superCall =
-        useInternalRef ? '' : 'super.debugFillProperties(properties);\n    ';
+    final methodName = useInternalRef
+        ? '_debugFillProperties'
+        : 'debugFillProperties';
+    final superCall = useInternalRef
+        ? ''
+        : 'super.debugFillProperties(properties);\n    ';
 
     final override = useInternalRef ? '' : '@override';
 

@@ -44,11 +44,13 @@ void main() {
 
       // Check the exact type representation
       print(
-          'Display string: ${imageProviderType.getDisplayString(withNullability: false)}');
+        'Display string: ${imageProviderType.getDisplayString(withNullability: false)}',
+      );
       print('Is interface type: ${imageProviderType is InterfaceType}');
       if (imageProviderType is InterfaceType) {
         print(
-            'Type arguments: ${imageProviderType.typeArguments.map((t) => t.getDisplayString(withNullability: false)).join(', ')}');
+          'Type arguments: ${imageProviderType.typeArguments.map((t) => t.getDisplayString(withNullability: false)).join(', ')}',
+        );
       }
 
       // Check if it's in the utilities map
