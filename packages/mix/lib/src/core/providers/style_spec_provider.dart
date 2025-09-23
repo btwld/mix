@@ -5,6 +5,9 @@ import '../style_spec.dart';
 
 /// Provides a resolved StyleSpec<S> to descendant widgets.
 class StyleSpecProvider<T extends Spec<T>> extends InheritedWidget {
+  /// The resolved style spec provided to descendant widgets.
+  final StyleSpec<T> spec;
+
   const StyleSpecProvider({
     super.key,
     required this.spec,
@@ -20,9 +23,6 @@ class StyleSpecProvider<T extends Spec<T>> extends InheritedWidget {
 
     return provider?.spec;
   }
-
-  /// The resolved style spec provided to descendant widgets.
-  final StyleSpec<T> spec;
 
   @override
   bool updateShouldNotify(covariant StyleSpecProvider<T> oldWidget) =>
