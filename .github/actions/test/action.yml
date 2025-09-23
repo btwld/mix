@@ -23,15 +23,10 @@ runs:
     - name: Install FVM
       shell: bash
       run: |
-        NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://fvm.app/install.sh)"
-        echo "PATH=/home/runner/.fvm_flutter/bin/fvm:$PATH" >> $GITHUB_ENV
-
-    - name: Use FVM
-      shell: bash
-      run: |
-        fvm --version
+        curl -fsSL https://fvm.app/install.sh | bash
         fvm use ${{ inputs.flutter-version }} --force
-        
+
+
     - uses: kuhnroyal/flutter-fvm-config-action@v2
       id: fvm-config-action
 
