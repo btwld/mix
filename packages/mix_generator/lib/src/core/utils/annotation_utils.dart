@@ -94,6 +94,7 @@ String? _getUtilityTypeNameFromReader(ConstantReader? typeReader) {
   if (typeReader == null) return null;
 
   if (typeReader.isString) {
+
     return typeReader.stringValue;
   } else if (typeReader.isType) {
     final typeName = typeReader.typeValue.element?.name;
