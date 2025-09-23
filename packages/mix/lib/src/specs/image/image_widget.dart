@@ -43,6 +43,7 @@ class StyledImage extends StyleWidget<ImageSpec> {
 
   /// Animation for opacity changes.
   final Animation<double>? opacity;
+
   @override
   Widget build(BuildContext context, ImageSpec spec) {
     final imageProvider = _resolveImage(image, spec);

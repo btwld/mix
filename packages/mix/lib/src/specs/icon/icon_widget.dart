@@ -31,6 +31,7 @@ class StyledIcon extends StyleWidget<IconSpec> {
 
   /// Semantic label for accessibility.
   final String? semanticLabel;
+
   @override
   Widget build(BuildContext context, IconSpec spec) {
     return Icon(

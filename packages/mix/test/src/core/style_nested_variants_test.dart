@@ -304,8 +304,6 @@ class _MockSpecAttribute extends Style<MockSpec<Map<String, dynamic>>> {
     required this.width, 
     this.height,
     super.variants = const [],
-    super.modifier,
-    super.animation,
   });
 
   @override

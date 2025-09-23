@@ -28,6 +28,7 @@ class ZBox extends StyleWidget<ZBoxSpec> {
   }
 
   final List<Widget> children;
+
   @override
   Widget build(BuildContext context, ZBoxSpec spec) {
     final boxStyleSpec = spec.box;
