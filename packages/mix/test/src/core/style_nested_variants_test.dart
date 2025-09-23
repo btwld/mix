@@ -300,7 +300,13 @@ class _MockSpecAttribute extends Style<MockSpec<Map<String, dynamic>>> {
   final double width;
   final double? height;
 
-  _MockSpecAttribute({required this.width, this.height, super.variants});
+  _MockSpecAttribute({
+    required this.width, 
+    this.height,
+    super.variants = const [],
+    super.modifier,
+    super.animation,
+  });
 
   @override
   StyleSpec<MockSpec<Map<String, dynamic>>> resolve(BuildContext context) {
