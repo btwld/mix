@@ -232,7 +232,8 @@ Future<LibraryElement> resolveMixTestLibrary(String code) async {
     final sources = {
       'mix_annotations|lib/mix_annotations.dart': _mixAnnotationsDefinitions,
       'mix|lib/mix.dart': _mixDefinitions,
-      'test_package|lib/main.dart': '''
+      'test_package|lib/main.dart':
+          '''
         // @dart=3.0
         // Enable generic-metadata language feature
         library test_lib;
@@ -244,22 +245,21 @@ Future<LibraryElement> resolveMixTestLibrary(String code) async {
       ''',
     };
 
-    final resolvedLib = await resolveSources(
-      sources,
-      (resolver) async {
-        // First ensure the mix_annotations package is resolved
-        await resolver
-            .libraryFor(AssetId('mix_annotations', 'lib/mix_annotations.dart'));
+    final resolvedLib = await resolveSources(sources, (resolver) async {
+      // First ensure the mix_annotations package is resolved
+      await resolver.libraryFor(
+        AssetId('mix_annotations', 'lib/mix_annotations.dart'),
+      );
 
-        // Then ensure the mix package is resolved
-        await resolver.libraryFor(AssetId('mix', 'lib/mix.dart'));
+      // Then ensure the mix package is resolved
+      await resolver.libraryFor(AssetId('mix', 'lib/mix.dart'));
 
-        // Finally resolve our test library that imports both
-        final library =
-            await resolver.libraryFor(AssetId('test_package', 'lib/main.dart'));
-        return library;
-      },
-    );
+      // Finally resolve our test library that imports both
+      final library = await resolver.libraryFor(
+        AssetId('test_package', 'lib/main.dart'),
+      );
+      return library;
+    });
 
     return resolvedLib;
   } catch (e) {

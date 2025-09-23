@@ -33,7 +33,7 @@ void main() {
     group('Token Call Resolution', () {
       test('spaceToken() creates SpaceRef that implements double', () {
         final tokenCall = smallSpace();
-        
+
         expect(tokenCall, isA<double>());
         expect(isAnyTokenRef(tokenCall), isTrue);
       });
@@ -84,10 +84,10 @@ void main() {
 
       test('mixing tokens and direct values works', () {
         final mix = EdgeInsetsMix(
-          top: smallSpace(),  // 8.0 from token
-          bottom: 12.0,       // direct value
+          top: smallSpace(), // 8.0 from token
+          bottom: 12.0, // direct value
           left: mediumSpace(), // 16.0 from token
-          right: 20.0,        // direct value
+          right: 20.0, // direct value
         );
 
         expect(mix.$top, PropMatcher.hasTokens);
@@ -114,10 +114,7 @@ void main() {
         expect(mix.$left, PropMatcher.isToken(mediumSpace));
         expect(mix.$right, PropMatcher.isToken(mediumSpace));
 
-        expect(
-          mix,
-          resolvesTo(EdgeInsets.all(16.0), context: context),
-        );
+        expect(mix, resolvesTo(EdgeInsets.all(16.0), context: context));
       });
 
       test('symmetric() constructor works with token calls', () {
@@ -170,9 +167,9 @@ void main() {
 
       test('fromLTRB() constructor works with token calls', () {
         final mix = EdgeInsetsMix.fromLTRB(
-          smallSpace(),     // left: 8.0
-          mediumSpace(),    // top: 16.0
-          largeSpace(),     // right: 24.0
+          smallSpace(), // left: 8.0
+          mediumSpace(), // top: 16.0
+          largeSpace(), // right: 24.0
           extraLargeSpace(), // bottom: 32.0
         );
 
@@ -197,10 +194,7 @@ void main() {
 
         expect(mix, isA<EdgeInsetsMix>());
         expect((mix).$top, PropMatcher.isToken(mediumSpace));
-        expect(
-          mix,
-          resolvesTo(EdgeInsets.all(16.0), context: context),
-        );
+        expect(mix, resolvesTo(EdgeInsets.all(16.0), context: context));
       });
 
       test('static only() works with token calls', () {
@@ -265,9 +259,9 @@ void main() {
 
       test('static fromLTRB() works with token calls', () {
         final mix = EdgeInsetsGeometryMix.fromLTRB(
-          smallSpace(),     // left: 8.0
-          mediumSpace(),    // top: 16.0  
-          largeSpace(),     // right: 24.0
+          smallSpace(), // left: 8.0
+          mediumSpace(), // top: 16.0
+          largeSpace(), // right: 24.0
           extraLargeSpace(), // bottom: 32.0
         );
 
@@ -288,9 +282,18 @@ void main() {
         final rightMix = EdgeInsetsGeometryMix.right(extraLargeSpace());
 
         expect(topMix, resolvesTo(EdgeInsets.only(top: 8.0), context: context));
-        expect(bottomMix, resolvesTo(EdgeInsets.only(bottom: 16.0), context: context));
-        expect(leftMix, resolvesTo(EdgeInsets.only(left: 24.0), context: context));
-        expect(rightMix, resolvesTo(EdgeInsets.only(right: 32.0), context: context));
+        expect(
+          bottomMix,
+          resolvesTo(EdgeInsets.only(bottom: 16.0), context: context),
+        );
+        expect(
+          leftMix,
+          resolvesTo(EdgeInsets.only(left: 24.0), context: context),
+        );
+        expect(
+          rightMix,
+          resolvesTo(EdgeInsets.only(right: 32.0), context: context),
+        );
       });
     });
 
@@ -300,10 +303,7 @@ void main() {
 
         final topMix = baseMix.top(smallSpace());
         expect(topMix.$top, PropMatcher.isToken(smallSpace));
-        expect(
-          topMix,
-          resolvesTo(EdgeInsets.only(top: 8.0), context: context),
-        );
+        expect(topMix, resolvesTo(EdgeInsets.only(top: 8.0), context: context));
 
         final bottomMix = baseMix.bottom(mediumSpace());
         expect(bottomMix.$bottom, PropMatcher.isToken(mediumSpace));
@@ -384,7 +384,10 @@ void main() {
     group('Merge Behavior', () {
       test('merging EdgeInsetsMix with tokens preserves token references', () {
         final mix1 = EdgeInsetsMix(top: smallSpace(), left: mediumSpace());
-        final mix2 = EdgeInsetsMix(bottom: largeSpace(), right: extraLargeSpace());
+        final mix2 = EdgeInsetsMix(
+          bottom: largeSpace(),
+          right: extraLargeSpace(),
+        );
 
         final merged = mix1.merge(mix2);
 
@@ -436,10 +439,7 @@ void main() {
         final missingToken = SpaceToken('missing.token');
         final mix = EdgeInsetsMix(top: missingToken());
 
-        expect(
-          () => mix.resolve(context),
-          throwsStateError,
-        );
+        expect(() => mix.resolve(context), throwsStateError);
       });
 
       test('wrong parameter types are rejected', () {
@@ -534,9 +534,9 @@ void main() {
 
       test('fromSTEB() constructor works with token calls', () {
         final mix = EdgeInsetsDirectionalMix.fromSTEB(
-          smallSpace(),     // start: 8.0
-          mediumSpace(),    // top: 16.0
-          largeSpace(),     // end: 24.0
+          smallSpace(), // start: 8.0
+          mediumSpace(), // top: 16.0
+          largeSpace(), // end: 24.0
           extraLargeSpace(), // bottom: 32.0
         );
 
@@ -568,7 +568,12 @@ void main() {
         expect(
           mix,
           resolvesTo(
-            EdgeInsetsDirectional.only(start: 8.0, top: 16.0, end: 24.0, bottom: 32.0),
+            EdgeInsetsDirectional.only(
+              start: 8.0,
+              top: 16.0,
+              end: 24.0,
+              bottom: 32.0,
+            ),
             context: context,
           ),
         );
@@ -576,9 +581,9 @@ void main() {
 
       test('static fromSTEB() works with token calls', () {
         final mix = EdgeInsetsGeometryMix.fromSTEB(
-          smallSpace(),     // start: 8.0
-          mediumSpace(),    // top: 16.0
-          largeSpace(),     // end: 24.0
+          smallSpace(), // start: 8.0
+          mediumSpace(), // top: 16.0
+          largeSpace(), // end: 24.0
           extraLargeSpace(), // bottom: 32.0
         );
 
@@ -622,7 +627,12 @@ void main() {
         expect(
           mix,
           resolvesTo(
-            EdgeInsetsDirectional.only(start: 8.0, top: 16.0, end: 24.0, bottom: 32.0),
+            EdgeInsetsDirectional.only(
+              start: 8.0,
+              top: 16.0,
+              end: 24.0,
+              bottom: 32.0,
+            ),
             context: context,
           ),
         );

@@ -14,10 +14,7 @@ void main() {
     });
 
     test('handles empty signature and invocation', () {
-      const info = ParameterInfo(
-        signature: '',
-        invocation: '',
-      );
+      const info = ParameterInfo(signature: '', invocation: '');
 
       expect(info.signature, isEmpty);
       expect(info.invocation, isEmpty);
@@ -29,8 +26,10 @@ void main() {
         invocation: 'a, b: b, c: c',
       );
 
-      expect(info.signature,
-          equals('int a, {required String b, double? c = 1.0}'));
+      expect(
+        info.signature,
+        equals('int a, {required String b, double? c = 1.0}'),
+      );
       expect(info.invocation, equals('a, b: b, c: c'));
     });
   });

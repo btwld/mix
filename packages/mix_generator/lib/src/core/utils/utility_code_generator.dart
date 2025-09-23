@@ -41,21 +41,22 @@ class UtilityCodeGenerator {
       final enumTypeName = enumElement.name;
       final enumValues = metadata.enumValues;
 
-      final callMethod = metadata.generatedMethods.hasFlag(
-        GeneratedUtilityMethods.callMethod,
-      )
+      final callMethod =
+          metadata.generatedMethods.hasFlag(GeneratedUtilityMethods.callMethod)
           ? '''
   /// Creates a [StyleElement] instance with the specified $enumTypeName value.
   T call($enumTypeName value) => builder(value);
   '''
           : '';
 
-      final enumMethods = enumValues.map((value) {
-        return '''
+      final enumMethods = enumValues
+          .map((value) {
+            return '''
   /// Creates a [StyleElement] instance with [$enumTypeName.$value] value.
   T $value() => builder($enumTypeName.$value);
   ''';
-      }).join('\n');
+          })
+          .join('\n');
 
       final comments = generateDocTemplate(className, enumTypeName);
 
@@ -170,8 +171,8 @@ $callMethod
     // Check if the field type is assignable to the value type
     final isAssignable =
         TypeUtils.isAssignableTo(field.type, valueElement.thisType) ||
-            (referenceElement != null &&
-                field.type.element?.name == referenceElement.name);
+        (referenceElement != null &&
+            field.type.element?.name == referenceElement.name);
 
     return isAssignable;
   }
@@ -332,8 +333,9 @@ $signatureLine
     for (var param in parameters) {
       final paramName = param.name;
       final paramType = param.type.getDisplayString(withNullability: true);
-      final defaultValue =
-          param.defaultValueCode != null ? ' = ${param.defaultValueCode}' : '';
+      final defaultValue = param.defaultValueCode != null
+          ? ' = ${param.defaultValueCode}'
+          : '';
 
       if (param.isPositional) {
         if (param.isRequiredPositional) {
@@ -345,8 +347,9 @@ $signatureLine
         }
       } else if (param.isNamed) {
         final requiredParam = param.isRequiredNamed ? 'required ' : '';
-        signatureNamedParams
-            .add('$requiredParam$paramType $paramName$defaultValue');
+        signatureNamedParams.add(
+          '$requiredParam$paramType $paramName$defaultValue',
+        );
         invocationNamedParams.add('$paramName: $paramName');
       }
     }
@@ -391,18 +394,22 @@ $signatureLine
           final utilityExpression =
               '$utilityName((v) => only($propertyName: v))';
 
-          expressions.add(generateUtilityField(
-            docPath: '$className.$propertyName',
-            aliasName: prop.name,
-            utilityExpression: utilityExpression,
-          ));
+          expressions.add(
+            generateUtilityField(
+              docPath: '$className.$propertyName',
+              aliasName: prop.name,
+              utilityExpression: utilityExpression,
+            ),
+          );
         } else {
           // Nested utility
-          expressions.add(generateUtilityField(
-            docPath: '$className.${prop.path}',
-            aliasName: prop.name,
-            utilityExpression: prop.path,
-          ));
+          expressions.add(
+            generateUtilityField(
+              docPath: '$className.${prop.path}',
+              aliasName: prop.name,
+              utilityExpression: prop.path,
+            ),
+          );
         }
       }
     }
@@ -437,17 +444,21 @@ late final $aliasName = $utilityExpression;
 ''';
     }
 
-    final fieldStatements = fields.map((e) {
-      final fieldName = e.name;
+    final fieldStatements = fields
+        .map((e) {
+          final fieldName = e.name;
 
-      return '$fieldName: $fieldName,';
-    }).join('\n      ');
+          return '$fieldName: $fieldName,';
+        })
+        .join('\n      ');
 
-    final optionalParameters = fields.map((e) {
-      final fieldType = e.resolvable?.type ?? e.type;
+    final optionalParameters = fields
+        .map((e) {
+          final fieldType = e.resolvable?.type ?? e.type;
 
-      return '$fieldType? ${e.name},';
-    }).join('\n    ');
+          return '$fieldType? ${e.name},';
+        })
+        .join('\n    ');
 
     return '''
   /// Returns a new [$utilityType] with the specified properties.
@@ -486,25 +497,29 @@ late final $aliasName = $utilityExpression;
       return '';
     }
 
-    final optionalParameters = fields.map((field) {
-      final fieldType = TypeUtils.getResolvedTypeFromDto(field.dartType);
+    final optionalParameters = fields
+        .map((field) {
+          final fieldType = TypeUtils.getResolvedTypeFromDto(field.dartType);
 
-      return '$fieldType? ${field.name},';
-    }).join('\n  ');
+          return '$fieldType? ${field.name},';
+        })
+        .join('\n  ');
 
-    final fieldStatements = fields.map((field) {
-      final fieldName = field.name;
+    final fieldStatements = fields
+        .map((field) {
+          final fieldName = field.name;
 
-      if (field.isDtoListType) {
-        return '$fieldName: $fieldName?.map((e) => e.toDto()).toList(),';
-      }
+          if (field.isDtoListType) {
+            return '$fieldName: $fieldName?.map((e) => e.toDto()).toList(),';
+          }
 
-      if (field.hasResolvable) {
-        return '$fieldName: $fieldName?.toDto(),';
-      }
+          if (field.hasResolvable) {
+            return '$fieldName: $fieldName?.toDto(),';
+          }
 
-      return '$fieldName: $fieldName,';
-    }).join('\n    ');
+          return '$fieldName: $fieldName,';
+        })
+        .join('\n    ');
 
     return '''
   T call({

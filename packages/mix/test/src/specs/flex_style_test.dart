@@ -453,7 +453,9 @@ void main() {
 
     test('modifiers merge correctly', () {
       final first = FlexStyler(
-        modifier: WidgetModifierConfig(modifiers: [OpacityModifierMix(opacity: 0.5)]),
+        modifier: WidgetModifierConfig(
+          modifiers: [OpacityModifierMix(opacity: 0.5)],
+        ),
       );
 
       final second = FlexStyler(

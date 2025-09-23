@@ -31,14 +31,15 @@ class _ExampleState extends State<Example> {
         .color(Colors.grey.shade200)
         .borderAll(color: Colors.grey.shade300, width: 2)
         .animate(AnimationConfig.spring(300.ms))
-        .onSelected(BoxStyler()
-          .color(Colors.blue.shade500)
-          .borderAll(color: Colors.blue.shade600, width: 2)
-          .shadowOnly(
-            color: Colors.blue.shade200,
-            blurRadius: 10,
-            spreadRadius: 2,
-          )
+        .onSelected(
+          BoxStyler()
+              .color(Colors.blue.shade500)
+              .borderAll(color: Colors.blue.shade600, width: 2)
+              .shadowOnly(
+                color: Colors.blue.shade200,
+                blurRadius: 10,
+                spreadRadius: 2,
+              ),
         );
 
     final textStyle = TextStyler()

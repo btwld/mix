@@ -44,9 +44,7 @@ void main() {
 
         final mixProp = Prop.token(token);
 
-        final context = MockBuildContext(
-          tokens: {token: shadowValue},
-        );
+        final context = MockBuildContext(tokens: {token: shadowValue});
 
         expect(mixProp, resolvesTo(shadowValue, context: context));
       });
@@ -62,9 +60,7 @@ void main() {
 
         final mixProp = Prop.token(token);
 
-        final context = MockBuildContext(
-          tokens: {token: boxShadowValue},
-        );
+        final context = MockBuildContext(tokens: {token: boxShadowValue});
 
         expect(mixProp, resolvesTo(boxShadowValue, context: context));
       });
@@ -79,9 +75,7 @@ void main() {
 
         final mixProp = Prop.token(token);
 
-        final context = MockBuildContext(
-          tokens: {token: textStyleValue},
-        );
+        final context = MockBuildContext(tokens: {token: textStyleValue});
 
         expect(mixProp, resolvesTo(textStyleValue, context: context));
       });
@@ -108,9 +102,7 @@ void main() {
         expect(merged.sources[1], isA<MixSource<Shadow>>());
 
         // Test resolution with token context
-        final context = MockBuildContext(
-          tokens: {token: shadowValue},
-        );
+        final context = MockBuildContext(tokens: {token: shadowValue});
 
         final resolved = merged.resolveProp(context);
         // The resolved value should be the merged result of token + direct value
