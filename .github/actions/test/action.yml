@@ -69,11 +69,8 @@ runs:
 
     - name: Run DCM Analysis
       if: ${{ inputs.run-dcm }}
-      uses: CQLabs/dcm-action@v2
-      with:
-        github-token: ${{ inputs.token }}
-        analyze: true
-        folders: lib
+      run: dcm analyze .
+      shell: bash
 
     - name: Run melos fix
       run: melos run fix
