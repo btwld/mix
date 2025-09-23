@@ -8,6 +8,7 @@ import '../../core/style_widget.dart';
 import '../box/box_widget.dart';
 import '../flex/flex_spec.dart';
 import 'flexbox_spec.dart';
+import 'flexbox_style.dart';
 
 @Deprecated('Use ColumnBox instead')
 typedef VBox = ColumnBox;
@@ -21,7 +22,7 @@ typedef HBox = RowBox;
 /// providing decoration, constraints, and flex layout in one widget.
 class FlexBox extends StyleWidget<FlexBoxSpec> {
   const FlexBox({
-    super.style,
+    super.style = const FlexBoxStyler.create(),
     super.spec,
     super.key,
     this.children = const <Widget>[],
