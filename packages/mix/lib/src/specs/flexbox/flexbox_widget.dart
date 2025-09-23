@@ -30,7 +30,7 @@ class FlexBox extends StyleWidget<FlexBoxSpec> {
     this.children = const <Widget>[],
   });
 
-  /// Builder pattern for StyleSpec<FlexBoxSpec> with custom builder function.
+  /// Builder pattern for `StyleSpec<FlexBoxSpec>` with custom builder function.
   static Widget builder(
     StyleSpec<FlexBoxSpec> styleSpec,
     Widget Function(BuildContext context, FlexBoxSpec spec) builder,
@@ -72,7 +72,7 @@ class RowBox extends FlexBox {
     super.children = const <Widget>[],
   });
 
-  /// Builder pattern for StyleSpec<FlexBoxSpec> with custom builder function.
+  /// Builder pattern for `StyleSpec<FlexBoxSpec>` with custom builder function.
   static Widget builder(
     StyleSpec<FlexBoxSpec> styleSpec,
     Widget Function(BuildContext context, FlexBoxSpec spec) builder,
@@ -98,7 +98,7 @@ class ColumnBox extends FlexBox {
     super.children = const <Widget>[],
   });
 
-  /// Builder pattern for StyleSpec<FlexBoxSpec> with custom builder function.
+  /// Builder pattern for `StyleSpec<FlexBoxSpec>` with custom builder function.
   static Widget builder(
     StyleSpec<FlexBoxSpec> styleSpec,
     Widget Function(BuildContext context, FlexBoxSpec spec) builder,

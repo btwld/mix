@@ -23,7 +23,7 @@ class StyledIcon extends StyleWidget<IconSpec> {
     super.key,
   });
 
-  /// Builder pattern for StyleSpec<IconSpec> with custom builder function.
+  /// Builder pattern for `StyleSpec<IconSpec>` with custom builder function.
   static Widget builder(
     StyleSpec<IconSpec> styleSpec,
     Widget Function(BuildContext context, IconSpec spec) builder,

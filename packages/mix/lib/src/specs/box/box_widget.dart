@@ -14,7 +14,7 @@ class Box extends StyleWidget<BoxSpec> {
 
   const Box({super.style, super.spec, super.key, this.child});
 
-  /// Builder pattern for StyleSpec<BoxSpec> with custom builder function.
+  /// Builder pattern for `StyleSpec<BoxSpec>` with custom builder function.
   static Widget builder(
     StyleSpec<BoxSpec> styleSpec,
     Widget Function(BuildContext context, BoxSpec spec) builder,

@@ -16,7 +16,7 @@ class StyledText extends StyleWidget<TextSpec> {
   /// Creates a [StyledText] with required [text] and optional [style] or [spec].
   const StyledText(this.text, {super.style, super.spec, super.key});
 
-  /// Builder pattern for StyleSpec<TextSpec> with custom builder function.
+  /// Builder pattern for `StyleSpec<TextSpec>` with custom builder function.
   static Widget builder(
     StyleSpec<TextSpec> styleSpec,
     Widget Function(BuildContext context, TextSpec spec) builder,
