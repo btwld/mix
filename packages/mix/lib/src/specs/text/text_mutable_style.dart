@@ -22,7 +22,7 @@ import 'text_style.dart';
 /// Supports the same API as [TextStyler] but maintains mutable internal state
 /// enabling fluid styling: `$text..color.red()..fontSize(16)`.
 class TextMutableStyler extends StyleMutableBuilder<TextSpec>
-    with UtilityVariantMixin<TextSpec, TextStyler> {
+    with UtilityVariantMixin<TextStyler, TextSpec> {
   late final textOverflow = MixUtility(mutable.overflow);
 
   late final strutStyle = StrutStyleUtility(mutable.strutStyle);
@@ -138,7 +138,7 @@ class TextMutableStyler extends StyleMutableBuilder<TextSpec>
   TextStyler get value => mutable.value;
 }
 
-class TextMutableState extends TextStyler with Mutable<TextSpec, TextStyler> {
+class TextMutableState extends TextStyler with Mutable<TextStyler, TextSpec> {
   TextMutableState(TextStyler style) {
     value = style;
   }

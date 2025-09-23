@@ -19,7 +19,7 @@ import 'stack_style.dart';
 /// Supports the same API as [StackStyler] but maintains mutable internal state
 /// enabling fluid styling: `$stack..alignment(Alignment.center)..fit(StackFit.expand)`.
 class StackMutableStyler extends StyleMutableBuilder<StackSpec>
-    with UtilityVariantMixin<StackSpec, StackStyler> {
+    with UtilityVariantMixin<StackStyler, StackSpec> {
   late final alignment = MixUtility(mutable.alignment);
 
   late final fit = MixUtility(mutable.fit);
@@ -90,7 +90,7 @@ class StackMutableStyler extends StyleMutableBuilder<StackSpec>
 }
 
 class StackMutableState extends StackStyler
-    with Mutable<StackSpec, StackStyler> {
+    with Mutable<StackStyler, StackSpec> {
   StackMutableState(StackStyler style) {
     value = style;
   }

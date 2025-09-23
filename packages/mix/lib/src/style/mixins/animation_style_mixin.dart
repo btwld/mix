@@ -4,7 +4,7 @@ import '../../animation/animation_config.dart';
 import '../../core/spec.dart';
 import '../../core/style.dart';
 
-mixin AnimationStyleMixin<S extends Spec<S>, T extends Style<S>> on Style<S> {
+mixin AnimationStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   @protected
   T animate(AnimationConfig config);
 

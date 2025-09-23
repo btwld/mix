@@ -9,7 +9,7 @@ import 'style.dart';
 /// This mixin provides variant methods for styling utilities with a simple
 /// delegation approach. All methods return Style types for consistency
 /// with other utility methods like animate().
-mixin UtilityVariantMixin<S extends Spec<S>, T extends Style<S>> {
+mixin UtilityVariantMixin<T extends Style<S>, S extends Spec<S>> {
   /// Must be implemented by utilities to apply a variant to a style.
   T withVariant(Variant variant, T style);
 

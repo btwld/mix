@@ -31,7 +31,7 @@ class FlexStyler extends Style<FlexSpec>
         WidgetModifierStyleMixin<FlexStyler, FlexSpec>,
         VariantStyleMixin<FlexStyler, FlexSpec>,
         FlexStyleMixin<FlexStyler>,
-        AnimationStyleMixin<FlexSpec, FlexStyler> {
+        AnimationStyleMixin<FlexStyler, FlexSpec> {
   final Prop<Axis>? $direction;
   final Prop<MainAxisAlignment>? $mainAxisAlignment;
   final Prop<CrossAxisAlignment>? $crossAxisAlignment;

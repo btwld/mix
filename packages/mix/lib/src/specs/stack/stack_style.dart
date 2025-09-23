@@ -27,7 +27,7 @@ class StackStyler extends Style<StackSpec>
         Diagnosticable,
         WidgetModifierStyleMixin<StackStyler, StackSpec>,
         VariantStyleMixin<StackStyler, StackSpec>,
-        AnimationStyleMixin<StackSpec, StackStyler> {
+        AnimationStyleMixin<StackStyler, StackSpec> {
   final Prop<AlignmentGeometry>? $alignment;
   final Prop<StackFit>? $fit;
   final Prop<TextDirection>? $textDirection;
