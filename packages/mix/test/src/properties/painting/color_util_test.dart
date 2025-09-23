@@ -23,9 +23,7 @@ void main() {
 
       test('token method creates token prop', () {
         const colorToken = TestToken<Color>('primaryColor');
-        final context = MockBuildContext(
-          tokens: {colorToken: Colors.blue},
-        );
+        final context = MockBuildContext(tokens: {colorToken: Colors.blue});
 
         final result = util.token(colorToken);
         final color = result.value.resolveProp(context);
@@ -35,9 +33,7 @@ void main() {
 
       test('ref method (deprecated) delegates to token', () {
         const colorToken = TestToken<Color>('primaryColor');
-        final context = MockBuildContext(
-          tokens: {colorToken: Colors.green},
-        );
+        final context = MockBuildContext(tokens: {colorToken: Colors.green});
 
         final result = util.ref(colorToken);
         final color = result.value.resolveProp(context);
@@ -452,9 +448,7 @@ void main() {
       const colorToken = TestToken<Color>('testColor');
       const expectedColor = Colors.purple;
 
-      final context = MockBuildContext(
-        tokens: {colorToken: expectedColor},
-      );
+      final context = MockBuildContext(tokens: {colorToken: expectedColor});
 
       final util = ColorUtility<MockStyle<Prop<Color>>>(
         (prop) => MockStyle(prop),

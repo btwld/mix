@@ -12,7 +12,8 @@ import '../properties/typography/text_style_mix.dart';
 /// Modifier that applies default text styling to its descendants.
 ///
 /// Wraps the child in a [DefaultTextStyle] widget with the specified text properties.
-final class DefaultTextStyleModifier extends WidgetModifier<DefaultTextStyleModifier>
+final class DefaultTextStyleModifier
+    extends WidgetModifier<DefaultTextStyleModifier>
     with Diagnosticable {
   final TextStyle style;
   final TextAlign? textAlign;

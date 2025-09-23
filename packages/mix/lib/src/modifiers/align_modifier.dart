@@ -10,7 +10,8 @@ import '../core/utility.dart';
 /// Modifier that aligns its child within the available space.
 ///
 /// Wraps the child in an [Align] widget with the specified alignment and size factors.
-final class AlignModifier extends WidgetModifier<AlignModifier> with Diagnosticable {
+final class AlignModifier extends WidgetModifier<AlignModifier>
+    with Diagnosticable {
   final AlignmentGeometry alignment;
   final double? widthFactor;
   final double? heightFactor;

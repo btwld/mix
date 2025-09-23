@@ -34,7 +34,8 @@ $className lerp(double t) {
     // Build the tween class
     final classBuilder = ClassBuilder(
       className: tweenName,
-      documentation: '''
+      documentation:
+          '''
 /// A tween that interpolates between two [$className] instances.
 /// 
 /// This class can be used in animations to smoothly transition between

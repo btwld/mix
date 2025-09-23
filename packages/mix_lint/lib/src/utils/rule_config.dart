@@ -24,14 +24,14 @@ class RuleConfig<T> {
     this.correctionMessage,
     this.errorSeverity = ErrorSeverity.INFO,
     RuleParameterParser<T>? paramsParser,
-  })  : parameters = paramsParser?.call(configs.rules[name]?.json ?? {}) as T,
-        _problemMessageFactory = problemMessage;
+  }) : parameters = paramsParser?.call(configs.rules[name]?.json ?? {}) as T,
+       _problemMessageFactory = problemMessage;
 
   LintCode get lintCode => LintCode(
-        name: name,
-        problemMessage: _problemMessageFactory(parameters),
-        correctionMessage: correctionMessage,
-        url: url,
-        errorSeverity: errorSeverity,
-      );
+    name: name,
+    problemMessage: _problemMessageFactory(parameters),
+    correctionMessage: correctionMessage,
+    url: url,
+    errorSeverity: errorSeverity,
+  );
 }

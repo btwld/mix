@@ -17,8 +17,9 @@ class SpecMethods {
     required bool useInternalRef,
   }) {
     final params = buildParameters(fields, (field) {
-      final fieldName =
-          useInternalRef ? field.asInternalRef : 'this.${field.name}';
+      final fieldName = useInternalRef
+          ? field.asInternalRef
+          : 'this.${field.name}';
 
       return '${field.name} ?? $fieldName';
     });
@@ -72,8 +73,10 @@ class SpecMethods {
 
     // Generate the documentation for the method
     final lerpMethodsDocs = lerpMethods.entries
-        .map((e) =>
-            '/// - [${e.key}] for ${e.value.map((name) => '[$name]').join(' and ')}.\n')
+        .map(
+          (e) =>
+              '/// - [${e.key}] for ${e.value.map((name) => '[$name]').join(' and ')}.\n',
+        )
         .join();
 
     final stepMethodDocs = stepMethodFields.isEmpty
@@ -196,8 +199,9 @@ bool _hasStaticLerpMethod(Element? element) {
         .map((type) => type.element),
   ];
 
-  return typesToCheck
-      .any((type) => _hasLerpMethodWithSignature(type, isStatic: true));
+  return typesToCheck.any(
+    (type) => _hasLerpMethodWithSignature(type, isStatic: true),
+  );
 }
 
 /// Checks if the element has a lerp method with the expected signature
@@ -205,12 +209,14 @@ bool _hasLerpMethodWithSignature(
   InterfaceElement element, {
   required bool isStatic,
 }) {
-  return element.methods.any((method) =>
-      method.name == 'lerp' &&
-      method.isPublic &&
-      method.isStatic == isStatic &&
-      method.parameters.length == (isStatic ? 3 : 2) &&
-      method.parameters.last.type.isDartCoreDouble);
+  return element.methods.any(
+    (method) =>
+        method.name == 'lerp' &&
+        method.isPublic &&
+        method.isStatic == isStatic &&
+        method.parameters.length == (isStatic ? 3 : 2) &&
+        method.parameters.last.type.isDartCoreDouble,
+  );
 }
 
 /// Gets the appropriate lerp method name for a field

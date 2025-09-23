@@ -18,7 +18,7 @@ class RecursiveSimpleIdentifierVisitor extends RecursiveAstVisitor<void> {
 class RecursiveFunctionExpressionInvocationVisitor
     extends RecursiveAstVisitor<void> {
   final void Function(FunctionExpressionInvocation node)
-      onVisitFunctionExpressionInvocation;
+  onVisitFunctionExpressionInvocation;
 
   const RecursiveFunctionExpressionInvocationVisitor({
     required this.onVisitFunctionExpressionInvocation,

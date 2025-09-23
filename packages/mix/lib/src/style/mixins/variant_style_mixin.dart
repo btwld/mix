@@ -54,7 +54,9 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
     return variants([VariantStyle<S>(ContextVariantBuilder<T>(fn), this)]);
   }
 
-  @Deprecated('Use onBuilder instead. This method will be removed in a future version.')
+  @Deprecated(
+    'Use onBuilder instead. This method will be removed in a future version.',
+  )
   T builder(T Function(BuildContext context) fn) {
     return onBuilder(fn);
   }

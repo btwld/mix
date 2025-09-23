@@ -11,13 +11,7 @@
 
 // Example 1: Enum Utility
 // Define an enum for colors
-enum Color {
-  red,
-  green,
-  blue,
-  yellow,
-  purple,
-}
+enum Color { red, green, blue, yellow, purple }
 
 // Create a utility class for the Color enum
 // In a real project, you would use @MixableFieldUtility()
@@ -26,7 +20,6 @@ class ColorUtility {
   final Function(Color) builder;
 
   const ColorUtility(this.builder);
-
 }
 
 // Define a custom attribute for colors
@@ -60,7 +53,6 @@ class BorderRadiusUtility {
   final Function(BorderRadius) builder;
 
   const BorderRadiusUtility(this.builder);
-
 }
 
 // Define a custom attribute for border radius
@@ -97,7 +89,6 @@ class SpacingUtility {
   final Function(Spacing) builder;
 
   const SpacingUtility(this.builder);
-
 }
 
 // Define a custom attribute for spacing
@@ -118,9 +109,10 @@ void exampleUsage() {
   // final redAttribute = colorUtility.red();  // This would work after generation
 
   // Using the class utility with constants
-  final borderRadiusUtility =
-      BorderRadiusUtility((radius) => BorderRadiusAttribute(radius));
-  
+  final borderRadiusUtility = BorderRadiusUtility(
+    (radius) => BorderRadiusAttribute(radius),
+  );
+
   // Using the class utility with mapping
   final spacingUtility = SpacingUtility((spacing) => SpacingAttribute(spacing));
 }

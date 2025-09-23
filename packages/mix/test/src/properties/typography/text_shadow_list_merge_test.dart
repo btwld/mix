@@ -33,9 +33,7 @@ void main() {
     });
 
     test('different lengths are handled (left shorter)', () {
-      final first = TextStyleMix.shadows([
-        ShadowMix(blurRadius: 2.0),
-      ]);
+      final first = TextStyleMix.shadows([ShadowMix(blurRadius: 2.0)]);
       final second = TextStyleMix.shadows([
         ShadowMix(color: Colors.red),
         ShadowMix(blurRadius: 7.0),
@@ -51,4 +49,3 @@ void main() {
     });
   });
 }
-
