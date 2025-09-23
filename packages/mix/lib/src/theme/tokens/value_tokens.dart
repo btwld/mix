@@ -46,7 +46,7 @@ class BreakpointToken extends MixToken<Breakpoint> {
   const BreakpointToken(super.name);
 
   @override
-  BreakpointRef call() => BreakpointRef(Prop.token(this));
+  BreakpointRef call() => BreakpointRef(name, Prop.token(this));
 }
 
 /// Design token for [TextStyle] values.

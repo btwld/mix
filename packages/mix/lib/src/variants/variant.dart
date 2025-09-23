@@ -5,6 +5,7 @@ import '../core/breakpoint.dart';
 import '../core/providers/widget_state_provider.dart';
 import '../core/spec.dart';
 import '../core/style.dart';
+import '../theme/tokens/token_refs.dart';
 
 /// Base class for all variant types.
 @immutable
@@ -66,6 +67,14 @@ class ContextVariant extends Variant {
   }
 
   static ContextVariant breakpoint(Breakpoint breakpoint) {
+    if (breakpoint case final BreakpointRef ref) {
+      return ContextVariant(
+        'breakpoint_${ref.tokenName}',
+        (context) =>
+            ref.resolveProp(context).matches(MediaQuery.sizeOf(context)),
+      );
+    }
+
     return ContextVariant(
       'breakpoint_${breakpoint.minWidth ?? '0.0'}_${breakpoint.maxWidth ?? 'infinity'}',
       (context) => breakpoint.matches(MediaQuery.sizeOf(context)),

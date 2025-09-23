@@ -77,7 +77,8 @@ final class BoxShadowRef extends Prop<BoxShadow>
 final class BreakpointRef extends Prop<Breakpoint>
     with ValueRef<Breakpoint>
     implements Breakpoint {
-  BreakpointRef(super.prop) : super.fromProp();
+  final String tokenName;
+  BreakpointRef(this.tokenName, super.prop) : super.fromProp();
 }
 
 // =============================================================================
@@ -96,7 +97,7 @@ final class TextStyleMixRef extends Prop<TextStyle>
   }
 }
 
-/// Token reference for [ShadowMix] that implements Mix interface instead of Flutter interface  
+/// Token reference for [ShadowMix] that implements Mix interface instead of Flutter interface
 final class ShadowMixRef extends Prop<Shadow>
     with ValueRef<Shadow>
     implements ShadowMix {
@@ -227,7 +228,7 @@ T getReferenceValue<T>(MixToken<T> token) {
   } else if (T == TextStyle) {
     return TextStyleRef(prop as Prop<TextStyle>) as T;
   } else if (T == Breakpoint) {
-    return BreakpointRef(prop as Prop<Breakpoint>) as T;
+    return BreakpointRef(token.name, prop as Prop<Breakpoint>) as T;
   } else if (T == BorderSide) {
     return BorderSideRef(prop as Prop<BorderSide>) as T;
   } else if (T == FontWeight) {
