@@ -11,15 +11,15 @@ import 'text_style.dart';
 ///
 /// Applies [TextSpec] for custom text appearance.
 class StyledText extends StyleWidget<TextSpec> {
+  /// The text to display.
+  final String text;
+
   /// Creates a [StyledText] with required [text] and optional [style].
   const StyledText(
     this.text, {
     super.style = const TextStyler.create(),
     super.key,
   });
-
-  /// The text to display.
-  final String text;
 
   @override
   Widget build(BuildContext context, TextSpec spec) {

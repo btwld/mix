@@ -23,16 +23,16 @@ final chipButtonContainer = BoxStyler()
     .animate(AnimationConfig.easeInOut(300.ms));
 
 class FilterChipButton extends StatefulWidget {
+  final String label;
+
+  final bool selected;
+  final VoidCallback onPressed;
   const FilterChipButton({
     super.key,
     required this.label,
     required this.selected,
     required this.onPressed,
   });
-
-  final String label;
-  final bool selected;
-  final VoidCallback onPressed;
 
   @override
   State<FilterChipButton> createState() => _FilterChipButtonState();

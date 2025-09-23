@@ -12,13 +12,13 @@ import 'stack_spec.dart';
 ///
 /// Creates a stacked layout with box styling capabilities.
 class ZBox extends StyleWidget<ZBoxSpec> {
+  final List<Widget> children;
+
   const ZBox({
     super.style = const StackBoxMix.create(),
     this.children = const <Widget>[],
     super.key,
   });
-
-  final List<Widget> children;
 
   @override
   Widget build(BuildContext context, ZBoxSpec spec) {

@@ -8,18 +8,18 @@ import '../../core/widget_modifier.dart';
 /// Renders a widget with applied modifiers in the correct order.
 @internal
 class RenderModifiers extends StatelessWidget {
+  /// Widget to which modifiers will be applied.
+  final Widget child;
+
+  /// List of modifiers to apply to the [child].
+  final List<WidgetModifier> widgetModifiers;
+
   /// Creates a widget that applies [widgetModifiers] to a [child] widget.
   const RenderModifiers({
     required this.child,
     required this.widgetModifiers,
     super.key,
   });
-
-  /// Widget to which modifiers will be applied.
-  final Widget child;
-
-  /// List of modifiers to apply to the [child].
-  final List<WidgetModifier> widgetModifiers;
 
   @override
   Widget build(BuildContext context) {
@@ -29,13 +29,13 @@ class RenderModifiers extends StatelessWidget {
 
 /// Internal widget that iteratively applies modifiers to a child widget.
 class _RenderModifiers extends StatelessWidget {
-  const _RenderModifiers({required this.child, required this.modifiers});
-
   /// Base widget to transform.
   final Widget child;
 
   /// Modifiers to apply in sequence.
   final Iterable<WidgetModifier> modifiers;
+
+  const _RenderModifiers({required this.child, required this.modifiers});
 
   @override
   Widget build(BuildContext context) {

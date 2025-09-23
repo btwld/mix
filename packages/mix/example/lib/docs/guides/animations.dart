@@ -130,6 +130,7 @@ class _CompressExpandAnimationState extends State<CompressExpandAnimation> {
             AnimationPhases.expanded => CurveAnimationConfig.decelerate(100.ms),
           },
         );
+
     return Pressable(
       onPress: () {
         _isExpanded.value = !_isExpanded.value;
@@ -213,6 +214,7 @@ class _HeartKeyframeAnimationState extends State<HeartKeyframeAnimation> {
             );
           },
         );
+
     return Pressable(
       onPress: () {
         _trigger.value++;

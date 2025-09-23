@@ -86,8 +86,8 @@ enum ArrowPhases {
 }
 
 class ArrowIconButton extends StatelessWidget {
-  const ArrowIconButton({super.key, required this.animationTrigger});
   final ValueNotifier animationTrigger;
+  const ArrowIconButton({super.key, required this.animationTrigger});
   @override
   Widget build(BuildContext context) {
     final boxContainer = BoxStyler()
