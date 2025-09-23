@@ -52,9 +52,19 @@ class _HeartAnimationState extends State<HeartAnimation> {
         });
       },
       child: Box(
-        style: BoxStyler().keyframeAnimation(
+        style: Style.box().keyframeAnimation(
           trigger: _trigger,
           timeline: [
+            KeyframeTrack<Color>(
+              'color',
+              [
+                Keyframe.linear(Colors.blue.shade100, 100.ms),
+                Keyframe.elasticOut(Colors.blue.shade400, 800.ms),
+                Keyframe.elasticOut(Colors.green.shade100, 800.ms),
+              ],
+              initial: Colors.red.shade100,
+              tweenBuilder: ColorTween.new,
+            ),
             KeyframeTrack<double>('scale', [
               Keyframe.linear(1.0, 360.ms),
               Keyframe.elasticOut(1.5, 800.ms),
@@ -90,10 +100,13 @@ class _HeartAnimationState extends State<HeartAnimation> {
             final verticalStretch = values.get('verticalStretch');
             final angle = values.get('angle');
 
-            return style
-                .wrapScale(x: scale, y: scale * verticalStretch)
-                .wrapTranslate(x: 0, y: verticalOffset)
-                .wrapRotate(angle);
+            return style.transform(
+              Matrix4.identity()
+                ..scaleByDouble(scale, scale, scale, 1.0)
+                ..translateByDouble(0, verticalOffset, 0, 1)
+                ..scaleByDouble(1, verticalStretch, 1, 1)
+                ..rotateZ(angle),
+            );
           },
         ),
         child: ShaderMask(

@@ -276,13 +276,9 @@ void main() {
       });
 
       test('handles complex token names', () {
-        final longNameToken = TestToken<double>(
-          'very.long.token.name.with.dots',
-        );
-        final specialCharsToken = TestToken<double>(
-          'token-with_special/chars@123',
-        );
-
+        final longNameToken = TestToken<double>('very.long.token.name.with.dots');
+        final specialCharsToken = TestToken<double>('token-with_special/chars@123');
+        
         final longRef = DoubleRef.token(longNameToken);
         final specialRef = DoubleRef.token(specialCharsToken);
 

@@ -11,7 +11,7 @@ void main() {
       expect(modifier.spec, equals(spec));
     });
 
-    test('build() creates Box with child', () {
+    test('build() creates Container with child', () {
       const spec = BoxSpec(
         padding: EdgeInsets.all(16),
         decoration: BoxDecoration(color: Colors.red),
@@ -21,10 +21,14 @@ void main() {
 
       final result = modifier.build(child);
 
-      expect(result, isA<Box>());
-      final box = result as Box;
-      expect(box.child, equals(child));
-      expect(box.spec, equals(spec));
+      expect(result, isA<Container>());
+      final container = result as Container;
+      expect(container.child, equals(child));
+      expect(container.padding, equals(const EdgeInsets.all(16)));
+      expect(
+        container.decoration,
+        equals(const BoxDecoration(color: Colors.red)),
+      );
     });
 
     test('copyWith creates new instance with updated spec', () {

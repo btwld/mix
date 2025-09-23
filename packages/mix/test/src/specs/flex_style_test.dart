@@ -220,7 +220,7 @@ void main() {
     test('variant factory creates with variant', () {
       final variant = ContextVariant.brightness(Brightness.dark);
       final style = FlexStyler(direction: Axis.horizontal);
-      final flexMix = FlexStyler().variant(variant, style);
+      final flexMix = FlexStyler().variant(ContextVariantStyle(variant, style));
 
       expect(flexMix.$variants, isNotNull);
       expect(flexMix.$variants!.length, 1);
@@ -475,7 +475,7 @@ void main() {
     test('variant method sets single variant', () {
       final variant = ContextVariant.brightness(Brightness.dark);
       final style = FlexStyler(direction: Axis.horizontal);
-      final flexMix = FlexStyler().variant(variant, style);
+      final flexMix = FlexStyler().variant(ContextVariantStyle(variant, style));
 
       expect(flexMix.$variants, isNotNull);
       expect(flexMix.$variants!.length, 1);
@@ -483,16 +483,16 @@ void main() {
 
     test('variants method sets multiple variants', () {
       final variants = [
-        VariantStyle(
+        ContextVariantStyle(
           ContextVariant.brightness(Brightness.dark),
           FlexStyler(direction: Axis.horizontal),
         ),
-        VariantStyle(
+        ContextVariantStyle(
           ContextVariant.brightness(Brightness.light),
           FlexStyler(direction: Axis.vertical),
         ),
       ];
-      final flexMix = FlexStyler().variants(variants);
+      final flexMix = FlexStyler().withVariants(variants);
 
       expect(flexMix.$variants, isNotNull);
       expect(flexMix.$variants!.length, 2);

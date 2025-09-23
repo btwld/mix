@@ -29,14 +29,14 @@ class _ExampleState extends State<Example> {
 
   @override
   Widget build(BuildContext context) {
-    final style = BoxStyler()
+    final style = Style.box()
         .color(Colors.black)
         .height(100)
         .width(100)
         .borderRounded(10)
-        .onHovered(BoxStyler().color(Colors.blue))
+        .onHovered(Style.box().color(Colors.blue))
         .onPressed(
-          BoxStyler().color(Colors.red).animate(AnimationConfig.easeIn(200.ms)),
+          Style.box().color(Colors.red).animate(AnimationConfig.easeIn(200.ms)),
         );
     // .animate(AnimationConfig.easeIn(2.s));
     // .translate(appear ? 0 : -50, 0)

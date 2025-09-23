@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
-import '../../core/style.dart' show Style, VariantStyle;
+import '../../core/style.dart' show Style;
 import '../../core/style_spec.dart';
 import '../../core/utility.dart';
 import '../../core/utility_variant_mixin.dart';
@@ -35,7 +35,7 @@ class IconMutableStyler extends StyleMutableBuilder<IconSpec>
     'Note: Returns IconStyle for consistency with other utility methods like animate().',
   )
   late final on = OnContextVariantUtility<IconSpec, IconStyler>(
-    (v) => mutable.variants([v]),
+    (v) => mutable.withVariants([v]),
   );
 
   late final wrap = WidgetModifierUtility(
@@ -70,13 +70,8 @@ class IconMutableStyler extends StyleMutableBuilder<IconSpec>
   IconStyler animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
-  IconStyler withVariant(Variant variant, IconStyler style) {
-    return mutable.variant(variant, style);
-  }
-
-  @override
   IconStyler withVariants(List<VariantStyle<IconSpec>> variants) {
-    return mutable.variants(variants);
+    return mutable.withVariants(variants);
   }
 
   @override

@@ -182,7 +182,7 @@ Creates keyframe-based animation with timeline control.
 ### phaseAnimation<P>({required Listenable trigger, required List<P> phases, required StackStyler Function(P phase, StackStyler style) styleBuilder, required CurveAnimationConfig Function(P phase) configBuilder}) → StackStyler
 Creates phase-based animation with custom curve configurations for each phase.
 
-## Variant Methods (from VariantStyleMixin)
+## Variant Methods
 
 ### variants(List<VariantStyle<StackSpec>> value) → StackStyler
 Sets conditional styling variants based on context or state.

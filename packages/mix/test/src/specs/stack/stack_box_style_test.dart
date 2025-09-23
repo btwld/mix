@@ -84,7 +84,7 @@ void main() {
           decoration: DecorationMix.color(Colors.white),
         );
         final stackBoxStyle = StackBoxStyler(
-          variants: [VariantStyle(variant, style)],
+          variants: [ContextVariantStyle(variant, style)],
         );
 
         expect(stackBoxStyle.$variants, isNotNull);

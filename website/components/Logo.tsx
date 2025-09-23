@@ -1,4 +1,3 @@
-"use client";
 import Image from "next/image";
 
 export const Logo = ({ size = 150 }) => (
@@ -6,6 +5,6 @@ export const Logo = ({ size = 150 }) => (
     alt="Mix logo"
     width={size}
     height={size}
-    src="/assets/icon_logo.svg"
+    src="/assets/mix-icon-dark.svg"
   />
 );

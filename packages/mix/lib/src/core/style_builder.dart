@@ -21,7 +21,6 @@ class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
     required this.style,
     required this.builder,
     this.controller,
-    this.inheritable = false,
   });
 
   /// The style element to resolve and apply.
@@ -32,15 +31,6 @@ class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
 
   /// Optional controller for managing widget state.
   final WidgetStatesController? controller;
-
-  /// Whether to provide the resolved style to descendant widgets.
-  ///
-  /// When true, wraps the child widget with StyleProvider containing the final
-  /// resolved style (after merging with any inherited styles). This allows
-  /// descendant widgets to inherit the complete computed style.
-  ///
-  /// Defaults to false.
-  final bool inheritable;
 
   @override
   State<StyleBuilder<S>> createState() => _StyleBuilderState<S>();
@@ -94,11 +84,6 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
       // If we need interactivity and no MixWidgetStateModel is present,
       // wrap in MixInteractionDetector
       current = MixInteractionDetector(controller: _controller, child: current);
-    }
-
-    // If inheritable is true, wrap with StyleProvider to pass the merged style down
-    if (widget.inheritable) {
-      current = StyleProvider<S>(style: mergedStyle, child: current);
     }
 
     return current;

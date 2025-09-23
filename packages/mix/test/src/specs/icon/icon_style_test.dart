@@ -75,7 +75,9 @@ void main() {
       test('', () {
         final variant = ContextVariant.brightness(Brightness.dark);
         final style = IconStyler().color(Colors.white);
-        final iconMix = IconStyler().variant(variant, style);
+        final iconMix = IconStyler().variant(
+          ContextVariantStyle(variant, style),
+        );
 
         expect(iconMix.$variants, isNotNull);
         expect(iconMix.$variants!.length, 1);
@@ -144,7 +146,7 @@ void main() {
     test('', () {
       final variant = ContextVariant.brightness(Brightness.dark);
       final style = IconStyler().color(Colors.white);
-      final iconMix = IconStyler().variant(variant, style);
+      final iconMix = IconStyler().variant(ContextVariantStyle(variant, style));
 
       expect(iconMix.$variants, isNotNull);
       expect(iconMix.$variants!.length, 1);
@@ -152,16 +154,16 @@ void main() {
 
     test('variants method sets multiple variants', () {
       final variants = [
-        VariantStyle(
+        ContextVariantStyle(
           ContextVariant.brightness(Brightness.dark),
           IconStyler().color(Colors.white),
         ),
-        VariantStyle(
+        ContextVariantStyle(
           ContextVariant.brightness(Brightness.light),
           IconStyler().color(Colors.black),
         ),
       ];
-      final iconMix = IconStyler().variants(variants);
+      final iconMix = IconStyler().withVariants(variants);
 
       expect(iconMix.$variants, isNotNull);
       expect(iconMix.$variants!.length, 2);

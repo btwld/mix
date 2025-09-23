@@ -69,10 +69,8 @@ class _AttributesOrderingFix extends DartFix {
   }
 
   void sortArgument(List<Expression> arguments) {
-    final currentOrder = arguments
-        .map((e) => e.staticType!.toString())
-        .toSet()
-        .toList();
+    final currentOrder =
+        arguments.map((e) => e.staticType!.toString()).toSet().toList();
 
     final mapWithOthers = Map.fromIterables(
       currentOrder,
@@ -96,9 +94,9 @@ class _AttributesOrderingFix extends DartFix {
     List<AnalysisError> others,
   ) {
     ChangeBuilder createChangeBuilder() => reporter.createChangeBuilder(
-      message: 'Fix the order of the attributes',
-      priority: 80,
-    );
+          message: 'Fix the order of the attributes',
+          priority: 80,
+        );
 
     void addReplacement(
       ChangeBuilder changeBuilder,
@@ -140,9 +138,8 @@ class _AttributesOrderingFix extends DartFix {
       if (!analysisError.sourceRange.intersects(expression.sourceRange)) return;
       if (expression.staticType == null) return;
 
-      if (variantAttributeChecker.isAssignableFromType(
-        expression.staticType!,
-      )) {
+      if (variantAttributeChecker
+          .isAssignableFromType(expression.staticType!)) {
         suggestReplacementIfNeeded(
           arguments: expression.argumentList.arguments,
           sourceRange: expression.argumentList.sourceRange,

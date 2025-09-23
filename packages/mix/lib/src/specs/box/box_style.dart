@@ -17,13 +17,14 @@ import '../../style/mixins/border_radius_style_mixin.dart';
 import '../../style/mixins/border_style_mixin.dart';
 import '../../style/mixins/constraint_style_mixin.dart';
 import '../../style/mixins/decoration_style_mixin.dart';
-import '../../style/mixins/widget_modifier_style_mixin.dart';
 import '../../style/mixins/shadow_style_mixin.dart';
 import '../../style/mixins/spacing_style_mixin.dart';
 import '../../style/mixins/transform_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
-import 'box_spec.dart';
+import '../../style/mixins/widget_modifier_style_mixin.dart';
+import '../../variants/variant.dart';
 import 'box_mutable_style.dart';
+import 'box_spec.dart';
 import 'box_widget.dart';
 
 typedef BoxMix = BoxStyler;
@@ -189,7 +190,7 @@ class BoxStyler extends Style<BoxSpec>
   }
 
   @override
-  BoxStyler variants(List<VariantStyle<BoxSpec>> value) {
+  BoxStyler withVariants(List<VariantStyle<BoxSpec>> value) {
     return merge(BoxStyler(variants: value));
   }
 

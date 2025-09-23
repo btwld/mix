@@ -74,8 +74,7 @@ MixableFieldUtility _readMixableFieldUtility(ConstantReader reader) {
   final utilityName = _getUtilityTypeNameFromReader(typeReader);
   final utilityAlias = reader.peek('alias')?.stringValue;
 
-  final properties =
-      reader
+  final properties = reader
           .peek('properties')
           ?.listValue
           .map((e) => parseMixableUtilityProps(ConstantReader(e)))
@@ -183,8 +182,7 @@ MixableUtility readMixableUtility(ClassElement element) {
 
   // Safely handle the referenceType field, which might not be a Type
   final referenceTypeReader = reader.peek('referenceType');
-  final referenceType =
-      referenceTypeReader != null &&
+  final referenceType = referenceTypeReader != null &&
           !referenceTypeReader.isNull &&
           referenceTypeReader.isType
       ? referenceTypeReader.typeValue
@@ -294,9 +292,9 @@ FieldResolvableMetadata? createFieldResolvableMetadata({
       tryToMergeType: typeRegistry.hasTryToMerge(resolvableTypeName),
     );
   } catch (e) {
-    Logger(
-      'AnnotationUtils',
-    ).warning('Error creating resolvable metadata for $name: $e');
+    Logger('AnnotationUtils').warning(
+      'Error creating resolvable metadata for $name: $e',
+    );
 
     return null;
   }
@@ -320,21 +318,22 @@ List<UtilityProperty> createUtilityProperties({
     final aliasName = util.alias ?? name;
     final utilType = util.typeAsString ?? defaultUtilityName;
 
-    result.add(
-      UtilityProperty(name: aliasName, path: name, utilityName: utilType),
-    );
+    result.add(UtilityProperty(
+      name: aliasName,
+      path: name,
+      utilityName: utilType,
+    ));
 
     // Add nested properties
     for (final nested in util.properties) {
-      result.add(
-        UtilityProperty(
-          name: nested.alias,
-          path: '$aliasName.${nested.path}',
-          utilityName: utilType,
-        ),
-      );
+      result.add(UtilityProperty(
+        name: nested.alias,
+        path: '$aliasName.${nested.path}',
+        utilityName: utilType,
+      ));
     }
   }
 
   return result;
 }
+

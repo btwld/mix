@@ -4,15 +4,20 @@ import 'package:mix/mix.dart';
 
 import '../../helpers/testing_utils.dart';
 
+// Test variant constants
+const primary = 'primary';
+const secondary = 'secondary';
+const outlined = 'outlined';
+
 void main() {
-  group('ContextVariant', () {
+  group('ContextTrigger', () {
     group('Constructor', () {
       test('creates variant with correct properties', () {
         final variant = ContextVariant('test_key', (context) => true);
 
         expect(variant.key, 'test_key');
-        expect(variant.when(MockBuildContext()), true);
-        expect(variant, isA<Variant>());
+        expect(variant.matches(MockBuildContext()), true);
+        expect(variant, isA<ContextVariant>());
         expect(variant, isA<ContextVariant>());
       });
 
@@ -26,9 +31,9 @@ void main() {
         expect(variant3.key, 'key3');
 
         final context = MockBuildContext();
-        expect(variant1.when(context), isTrue);
-        expect(variant2.when(context), isFalse);
-        expect(variant3.when(context), isTrue);
+        expect(variant1.matches(context), isTrue);
+        expect(variant2.matches(context), isFalse);
+        expect(variant3.matches(context), isTrue);
       });
 
       test('accepts complex conditional functions', () {
@@ -39,16 +44,16 @@ void main() {
         });
 
         final context = MockBuildContext();
-        expect(variant.when(context), isFalse); // callCount = 1
-        expect(variant.when(context), isTrue); // callCount = 2
-        expect(variant.when(context), isFalse); // callCount = 3
+        expect(variant.matches(context), isFalse); // callCount = 1
+        expect(variant.matches(context), isTrue); // callCount = 2
+        expect(variant.matches(context), isFalse); // callCount = 3
       });
 
       test('accepts empty string key', () {
         final variant = ContextVariant('', (context) => true);
 
         expect(variant.key, '');
-        expect(variant.when(MockBuildContext()), isTrue);
+        expect(variant.matches(MockBuildContext()), isTrue);
       });
 
       test('function parameter is properly passed', () {
@@ -59,7 +64,7 @@ void main() {
         });
 
         final mockContext = MockBuildContext();
-        variant.when(mockContext);
+        variant.matches(mockContext);
 
         expect(capturedContext, same(mockContext));
       });
@@ -165,7 +170,7 @@ void main() {
           return true;
         });
 
-        final result = variant.when(MockBuildContext());
+        final result = variant.matches(MockBuildContext());
 
         expect(called, true);
         expect(result, true);
@@ -180,9 +185,9 @@ void main() {
         );
 
         final context = MockBuildContext();
-        expect(trueVariant.when(context), isTrue);
-        expect(falseVariant.when(context), isFalse);
-        expect(nullCheckVariant.when(context), isTrue);
+        expect(trueVariant.matches(context), isTrue);
+        expect(falseVariant.matches(context), isFalse);
+        expect(nullCheckVariant.matches(context), isTrue);
       });
 
       test('calls function each time when is called', () {
@@ -193,19 +198,19 @@ void main() {
         });
 
         final context = MockBuildContext();
-        variant.when(context);
-        variant.when(context);
-        variant.when(context);
+        variant.matches(context);
+        variant.matches(context);
+        variant.matches(context);
 
         expect(callCount, 3);
       });
     });
     group('Equality and hashCode', () {
-      test('equal ContextVariants have same hashCode', () {
+      test('equal ContextTriggers have same hashCode', () {
         final variant1 = ContextVariant('test', (context) => true);
         final variant2 = ContextVariant('test', (context) => true);
 
-        // Note: ContextVariant equality is based on key, not function
+        // Note: ContextTrigger equality is based on key, not function
         expect(variant1.key, equals(variant2.key));
       });
 
@@ -241,44 +246,35 @@ void main() {
         expect(notVariant, isA<ContextVariant>());
         expect(notVariant.key, 'not_test');
       });
-
-      test('ContextVariants and NamedVariants are distinct types', () {
-        final contextVariant = ContextVariant('test', (context) => true);
-        const namedVariant = NamedVariant('primary');
-
-        expect(contextVariant, isA<ContextVariant>());
-        expect(namedVariant, isA<NamedVariant>());
-        expect(contextVariant.key, isNot(equals(namedVariant.key)));
-      });
     });
 
     group('VariantSpecAttribute integration', () {
       test('can be wrapped in VariantSpecAttribute', () {
         final contextVariant = ContextVariant('test', (context) => true);
         final style = BoxStyler().width(100.0);
-        final variantAttr = VariantStyle<BoxSpec>(contextVariant, style);
+        final variantAttr = ContextVariantStyle<BoxSpec>(contextVariant, style);
 
-        expect(variantAttr.variant, contextVariant);
-        expect(variantAttr.value, style);
-        expect(variantAttr.mergeKey, 'test');
+        expect(variantAttr.trigger, contextVariant);
+        expect(variantAttr.style, style);
+        expect(variantAttr.variantKey, 'test');
       });
 
       test('different contexts create different mergeKeys', () {
         final variant1 = ContextVariant('context1', (context) => true);
         final variant2 = ContextVariant('context2', (context) => false);
 
-        final style1 = VariantStyle<BoxSpec>(
+        final style1 = ContextVariantStyle<BoxSpec>(
           variant1,
           BoxStyler().width(100.0),
         );
-        final style2 = VariantStyle<BoxSpec>(
+        final style2 = ContextVariantStyle<BoxSpec>(
           variant2,
           BoxStyler().height(200.0),
         );
 
-        expect(style1.mergeKey, 'context1');
-        expect(style2.mergeKey, 'context2');
-        expect(style1.mergeKey, isNot(equals(style2.mergeKey)));
+        expect(style1.variantKey, 'context1');
+        expect(style2.variantKey, 'context2');
+        expect(style1.variantKey, isNot(equals(style2.variantKey)));
       });
     });
 
@@ -290,7 +286,7 @@ void main() {
         });
 
         final context = MockBuildContext();
-        final result = complexVariant.when(context);
+        final result = complexVariant.matches(context);
 
         // The MockBuildContext has size (800, 600) by default
         expect(result, isFalse);
@@ -302,7 +298,7 @@ void main() {
         });
 
         final context = MockBuildContext();
-        expect(() => throwingVariant.when(context), throwsException);
+        expect(() => throwingVariant.matches(context), throwsException);
       });
 
       test('handles null context gracefully in custom functions', () {
@@ -311,7 +307,7 @@ void main() {
         });
 
         final context = MockBuildContext();
-        expect(() => nullSafeVariant.when(context), returnsNormally);
+        expect(() => nullSafeVariant.matches(context), returnsNormally);
       });
     });
 
@@ -531,15 +527,15 @@ void main() {
     });
 
     test('named variants are defined', () {
-      expect(primary.key, 'primary');
-      expect(secondary.key, 'secondary');
-      expect(outlined.key, 'outlined');
-      expect(primary, isA<NamedVariant>());
-      expect(secondary, isA<NamedVariant>());
-      expect(outlined, isA<NamedVariant>());
+      expect(primary, 'primary');
+      expect(secondary, 'secondary');
+      expect(outlined, 'outlined');
+      expect(primary, isA<String>());
+      expect(secondary, isA<String>());
+      expect(outlined, isA<String>());
     });
 
-    test('all predefined context variants are ContextVariant instances', () {
+    test('all predefined context variants are ContextTrigger instances', () {
       expect(ContextVariant.brightness(Brightness.dark), isA<ContextVariant>());
       expect(
         ContextVariant.brightness(Brightness.light),

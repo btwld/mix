@@ -243,7 +243,7 @@ class OnContextVariantUtility<S extends Spec<S>, T extends Style<S>>
 
 /// Builder class for creating variant-based styling attributes.
 ///
-/// This class wraps a [Variant] and provides methods to create
+/// This class wraps a [VariantStyle] and provides methods to create
 /// [VariantStyle] instances with styling rules that apply
 /// when the variant condition is met.
 @Deprecated(
@@ -251,19 +251,19 @@ class OnContextVariantUtility<S extends Spec<S>, T extends Style<S>>
 )
 @immutable
 class VariantAttributeBuilder<T extends Spec<T>> {
-  /// The variant condition that determines when styling should apply
-  final Variant variant;
+  /// The trigger condition that determines when styling should apply
+  final ContextVariant trigger;
 
-  /// Creates a new [VariantAttributeBuilder] with the given [variant]
-  const VariantAttributeBuilder(this.variant);
+  /// Creates a new [VariantAttributeBuilder] with the given [trigger]
+  const VariantAttributeBuilder(this.trigger);
 
   /// Temporary call method to make the builder functional during deprecation period.
   ///
   /// This allows the existing `.on` pattern to work while users migrate to direct methods.
   /// Usage: `$box.on.hover($box.color.red())` becomes `$box.on.hover()($box.color.red())`
   @Deprecated('Use direct methods like \$box.onHovered() instead')
-  VariantStyle<T> call<S extends Style<T>>(S style) {
-    return VariantStyle<T>(variant, style);
+  ContextVariantStyle<T> call<S extends Style<T>>(S style) {
+    return ContextVariantStyle<T>(trigger, style);
   }
 
   /// Creates a [VariantStyle] that applies the given styling elements
@@ -284,15 +284,15 @@ class VariantAttributeBuilder<T extends Spec<T>> {
   // Variants should now be applied directly to specific spec types.
 
   @override
-  String toString() => 'VariantAttributeBuilder($variant)';
+  String toString() => 'VariantAttributeBuilder($trigger)';
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is VariantAttributeBuilder &&
           runtimeType == other.runtimeType &&
-          variant == other.variant;
+          trigger == other.trigger;
 
   @override
-  int get hashCode => variant.hashCode;
+  int get hashCode => trigger.hashCode;
 }

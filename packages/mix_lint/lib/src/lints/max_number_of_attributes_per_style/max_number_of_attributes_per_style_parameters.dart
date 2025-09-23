@@ -7,7 +7,8 @@ class MaxNumberOfAttributesPerStyleParameters {
 
   factory MaxNumberOfAttributesPerStyleParameters.fromJson(
     Map<String, Object?> json,
-  ) => MaxNumberOfAttributesPerStyleParameters(
-    maxNumber: json['max_number'] as int? ?? _defaultMaxNumber,
-  );
+  ) =>
+      MaxNumberOfAttributesPerStyleParameters(
+        maxNumber: json['max_number'] as int? ?? _defaultMaxNumber,
+      );
 }

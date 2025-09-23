@@ -79,10 +79,8 @@ class UtilityMetadata extends BaseMetadata {
           final mappingType = mixableUtility?.type;
 
           if (mappingType != null) {
-            final mappingTypeElement = annotation
-                .read('type')
-                .typeValue
-                .element;
+            final mappingTypeElement =
+                annotation.read('type').typeValue.element;
             if (mappingTypeElement is! ClassElement) {
               throw InvalidGenerationSourceError(
                 'The mapping type must be a class',

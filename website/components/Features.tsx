@@ -1,3 +1,5 @@
+"use client";
+
 import {
   motion,
   useMotionTemplate,
@@ -13,7 +15,6 @@ import {
   VenetianMaskIcon,
   WrenchIcon,
 } from "lucide-react";
-import React from "react";
 
 interface IFeature {
   href: string;
@@ -24,28 +25,28 @@ interface IFeature {
 
 const features: Array<IFeature> = [
   {
-    href: "/documentation/overview/utility-first",
+    href: "/docs/overview/utility-first",
     name: "Intuitive Style Semantics",
     description:
       "Transform simple elements into elegant, complex designs, enabling flexible and scalable UIs.",
     icon: HandMetalIcon,
   },
   {
-    href: "/documentation/guides/variants",
+    href: "/docs/guides/variants",
     name: "First-class Variants",
     description:
       "Seamlessly create condition and responsive styling variants, allow you to create reactive styling and variations.",
     icon: VenetianMaskIcon,
   },
   {
-    href: "/documentation/guides/design-token",
+    href: "/docs/guides/design-token",
     name: "Design Tokens & Theming",
     description:
       "Define consistent style properties across widgets inspired by modern design principles for a unified UI.",
     icon: PaintBucketIcon,
   },
   {
-    href: "/documentation/overview/utility-first",
+    href: "/docs/overview/utility-first",
     name: "Utility-First",
     description:
       "Craft your styling with simple, reusable functions for easy customization and API extension.",

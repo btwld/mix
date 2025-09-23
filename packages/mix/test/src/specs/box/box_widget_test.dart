@@ -13,7 +13,7 @@ void main() {
           home: Scaffold(
             body: Column(
               children: [
-                Box(spec: const BoxSpec(), key: boxKey),
+                Box(key: boxKey),
                 Container(key: containerKey),
               ],
             ),
@@ -105,7 +105,7 @@ void main() {
           home: Scaffold(
             body: Column(
               children: [
-                Box(spec: const BoxSpec(), key: boxKey),
+                Box(key: boxKey),
                 Container(key: containerKey),
               ],
             ),

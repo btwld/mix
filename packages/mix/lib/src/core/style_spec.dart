@@ -73,9 +73,7 @@ class StyleSpec<T extends Spec<T>> extends Spec<StyleSpec<T>>
     super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('animation', animation))
-      ..add(
-        IterableProperty<WidgetModifier>('widgetModifiers', widgetModifiers),
-      )
+      ..add(IterableProperty<WidgetModifier>('widgetModifiers', widgetModifiers))
       ..add(DiagnosticsProperty<T>('spec', spec));
   }
 

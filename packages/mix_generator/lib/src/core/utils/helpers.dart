@@ -29,11 +29,9 @@ String buildParameters(
 
   // Add named parameters if any
   if (namedParams.isNotEmpty) {
-    parts.add(
-      namedParams
-          .map((param) => '${param.name}: ${buildParam(param)}')
-          .join(', '),
-    );
+    parts.add(namedParams
+        .map((param) => '${param.name}: ${buildParam(param)}')
+        .join(', '));
   }
 
   // Join all parts with comma separator

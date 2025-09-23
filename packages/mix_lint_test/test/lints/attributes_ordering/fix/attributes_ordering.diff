@@ -1,0 +1,184 @@
+Message: `Fix the order of the attributes`
+Priority: 80
+Diff for file `test/lints/attributes_ordering/fix/attributes_ordering.dart:6`:
+```
+final test1 = Style(
+  $flex.gap(3),
+-   $box.color.red(),
+-   $flex.row(),
++   $flex.row(),
++   $box.color.red(),
+  $box.borderRadius(3),
+  $text.style.color.red(),
+```
+---
+Message: `Fix the order of the attributes`
+Priority: 80
+Diff for file `test/lints/attributes_ordering/fix/attributes_ordering.dart:18`:
+```
+final test2 = Style(
+  $box.color.red(),
+-   $flex.gap(3),
+-   $box.borderRadius(3),
++   $box.borderRadius(3),
++   $flex.gap(3),
+);
+
+```
+---
+Message: `Fix the order of the attributes`
+Priority: 80
+Diff for file `test/lints/attributes_ordering/fix/attributes_ordering.dart:30`:
+```
+  a(
+    $box.color.red(),
+-     $flex.gap(3),
+-     $box.borderRadius(3),
++     $box.borderRadius(3),
++     $flex.gap(3),
+  ),
+);
+```
+---
+Message: `Fix the order of the attributes`
+Priority: 80
+Diff for file `test/lints/attributes_ordering/fix/attributes_ordering.dart:40`:
+```
+    b(
+      $box.color.red(),
+-       $flex.gap(3),
+-       $box.borderRadius(3),
++       $box.borderRadius(3),
++       $flex.gap(3),
+    ),
+  ),
+```
+---
+Message: `Fix the order of the attributes`
+Priority: 80
+Diff for file `test/lints/attributes_ordering/fix/attributes_ordering.dart:50`:
+```
+  a(
+    $box.color.red(),
+- // expect_lint: mix_attributes_ordering
+-     c(
+-       $box.color.red(),
+-       $flex.gap(3),
+-       $box.borderRadius(3),
+-     ),
+-     $box.borderRadius(3),
+- // expect_lint: mix_attributes_ordering
++     $box.borderRadius(3),
++     c(
++       $box.color.red(),
++       $flex.gap(3),
++       $box.borderRadius(3),
++     ),
+    b(
+      $box.color.red(),
+```
+---
+Message: `Fix the order of the attributes`
+Priority: 80
+Diff for file `test/lints/attributes_ordering/fix/attributes_ordering.dart:53`:
+```
+    c(
+      $box.color.red(),
+-       $flex.gap(3),
+-       $box.borderRadius(3),
++       $box.borderRadius(3),
++       $flex.gap(3),
+    ),
+    $box.borderRadius(3),
+```
+---
+Message: `Fix the order of the attributes`
+Priority: 80
+Diff for file `test/lints/attributes_ordering/fix/attributes_ordering.dart:60`:
+```
+    b(
+      $box.color.red(),
+-       $flex.gap(3),
+-       $box.borderRadius(3),
++       $box.borderRadius(3),
++       $flex.gap(3),
+    ),
+  ),
+```
+---
+Message: `Fix the order of the attributes`
+Priority: 80
+Diff for file `test/lints/attributes_ordering/fix/attributes_ordering.dart:50`:
+```
+  a(
+    $box.color.red(),
+- // expect_lint: mix_attributes_ordering
+-     c(
+-       $box.color.red(),
+-       $flex.gap(3),
+-       $box.borderRadius(3),
+-     ),
+-     $box.borderRadius(3),
+- // expect_lint: mix_attributes_ordering
++     $box.borderRadius(3),
++     c(
++       $box.color.red(),
++       $flex.gap(3),
++       $box.borderRadius(3),
++     ),
+    b(
+      $box.color.red(),
+```
+---
+Message: `Fix the order of the attributes`
+Priority: 80
+Diff for file `test/lints/attributes_ordering/fix/attributes_ordering.dart:53`:
+```
+    c(
+      $box.color.red(),
+-       $flex.gap(3),
+-       $box.borderRadius(3),
++       $box.borderRadius(3),
++       $flex.gap(3),
+    ),
+    $box.borderRadius(3),
+```
+---
+Message: `Fix the order of the attributes`
+Priority: 80
+Diff for file `test/lints/attributes_ordering/fix/attributes_ordering.dart:50`:
+```
+  a(
+    $box.color.red(),
+- // expect_lint: mix_attributes_ordering
+-     c(
+-       $box.color.red(),
+-       $flex.gap(3),
+-       $box.borderRadius(3),
+-     ),
+-     $box.borderRadius(3),
+- // expect_lint: mix_attributes_ordering
++     $box.borderRadius(3),
++     c(
++       $box.color.red(),
++       $flex.gap(3),
++       $box.borderRadius(3),
++     ),
+    b(
+      $box.color.red(),
+```
+---
+Message: `Fix the order of the attributes`
+Priority: 80
+Diff for file `test/lints/attributes_ordering/fix/attributes_ordering.dart:60`:
+```
+    b(
+      $box.color.red(),
+-       $flex.gap(3),
+-       $box.borderRadius(3),
++       $box.borderRadius(3),
++       $flex.gap(3),
+    ),
+  ),
+```
+---

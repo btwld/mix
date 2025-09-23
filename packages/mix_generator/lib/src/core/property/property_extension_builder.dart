@@ -14,31 +14,28 @@ class MixableTypeExtensionBuilder extends CodeBuilder {
     final className = metadata.name;
     final resolvedTypeName = metadata.resolvedElement.name;
 
-    final fieldStatements = metadata.resolvableFields
-        .map((field) {
-          final fieldName = field.name;
+    final fieldStatements = metadata.resolvableFields.map((field) {
+      final fieldName = field.name;
 
-          if (field.hasResolvable) {
-            final fieldNameRef = field.nullable ? '$fieldName?' : fieldName;
+      if (field.hasResolvable) {
+        final fieldNameRef = field.nullable ? '$fieldName?' : fieldName;
 
-            if (field.isListType) {
-              return '$fieldName: $fieldNameRef.map((e) => e.toDto()).toList(),';
-            } else if (field.isMapType) {
-              return '$fieldName: $fieldNameRef.map((k, v) => MapEntry(k, v.toDto())),';
-            } else if (field.isSetType) {
-              return '$fieldName: $fieldNameRef.map((e) => e.toDto()).toSet(),';
-            }
+        if (field.isListType) {
+          return '$fieldName: $fieldNameRef.map((e) => e.toDto()).toList(),';
+        } else if (field.isMapType) {
+          return '$fieldName: $fieldNameRef.map((k, v) => MapEntry(k, v.toDto())),';
+        } else if (field.isSetType) {
+          return '$fieldName: $fieldNameRef.map((e) => e.toDto()).toSet(),';
+        }
 
-            return '$fieldName: $fieldNameRef.toDto(),';
-          }
+        return '$fieldName: $fieldNameRef.toDto(),';
+      }
 
-          return '$fieldName: $fieldName,';
-        })
-        .join('\n      ');
+      return '$fieldName: $fieldName,';
+    }).join('\n      ');
 
     // Build the extension for the value type
-    final valueExtension =
-        '''
+    final valueExtension = '''
 /// Extension methods to convert [$resolvedTypeName] to [$className].
 extension ${resolvedTypeName}MixExt on $resolvedTypeName {
   /// Converts this [$resolvedTypeName] to a [$className].
@@ -51,8 +48,7 @@ extension ${resolvedTypeName}MixExt on $resolvedTypeName {
 ''';
 
     // Build the extension for List<ValueType>
-    final listExtension =
-        '''
+    final listExtension = '''
 /// Extension methods to convert List<[$resolvedTypeName]> to List<[$className]>.
 extension List${resolvedTypeName}MixExt on List<$resolvedTypeName> {
   /// Converts this List<[$resolvedTypeName]> to a List<[$className]>.

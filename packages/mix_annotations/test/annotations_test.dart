@@ -54,10 +54,7 @@ void main() {
       test('should create instance with provided values', () {
         final properties = [(path: 'path', alias: 'alias')];
         final utility = MixableFieldUtility(
-          alias: 'util',
-          type: int,
-          properties: properties,
-        );
+            alias: 'util', type: int, properties: properties);
         expect(utility.alias, equals('util'));
         expect(utility.type, equals(int));
         expect(utility.properties, equals(properties));

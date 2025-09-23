@@ -28,7 +28,7 @@ class _DemoAppState extends State<DemoApp> {
   final trigger = ValueNotifier(0);
   Timer? _timer;
 
-  BoxMix get _boxStyle => BoxStyler()
+  BoxMix get _boxStyle => Style.box()
       .color(Colors.blueAccent.shade400)
       .paddingX(16)
       .paddingY(8)
@@ -84,7 +84,7 @@ class _DemoAppState extends State<DemoApp> {
           style: _boxStyle,
           child: StyledText(
             'Update',
-            style: TextStyler()
+            style: Style.text()
                 //
                 .color(Colors.white)
                 .fontWeight(FontWeight.w500),

@@ -8,10 +8,11 @@ import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../style/mixins/animation_style_mixin.dart';
-import '../../style/mixins/widget_modifier_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
-import 'stack_spec.dart';
+import '../../style/mixins/widget_modifier_style_mixin.dart';
+import '../../variants/variant.dart';
 import 'stack_mutable_style.dart';
+import 'stack_spec.dart';
 
 typedef StackMix = StackStyler;
 
@@ -97,7 +98,7 @@ class StackStyler extends Style<StackSpec>
   }
 
   @override
-  StackStyler variants(List<VariantStyle<StackSpec>> variants) {
+  StackStyler withVariants(List<VariantStyle<StackSpec>> variants) {
     return merge(StackStyler(variants: variants));
   }
 

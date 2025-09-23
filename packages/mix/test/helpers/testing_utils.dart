@@ -268,6 +268,11 @@ class MockStyle<T> extends Style<MockSpec<T>> {
   });
 
   @override
+  MockStyle<T> withVariants(List<VariantStyle<MockSpec<T>>> variants) {
+    return merge(MockStyle(value, variants: variants));
+  }
+
+  @override
   MockStyle<T> merge(covariant MockStyle<T>? other) {
     if (other == null) return this;
     // For Prop types, use their merge method

@@ -1,7 +1,3 @@
-## 2.0.0-dev.2
-
-- First public beta
-
 ## 2.0.0-dev.1
 
 - Initial development version for Mix 2.0

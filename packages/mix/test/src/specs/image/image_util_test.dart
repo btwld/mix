@@ -556,7 +556,9 @@ void main() {
     group('Token support', () {
       test('resolves tokens with context', () {
         const widthToken = TestToken<double>('imageWidth');
-        final context = MockBuildContext(tokens: {widthToken: 150.0});
+        final context = MockBuildContext(
+          tokens: {widthToken: 150.0},
+        );
 
         final testUtil = ImageMutableStyler(
           ImageStyler.create(width: Prop.token(widthToken)),

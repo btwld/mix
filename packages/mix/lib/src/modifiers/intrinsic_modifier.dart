@@ -7,8 +7,7 @@ import '../core/style.dart';
 /// Modifier that forces its child to be exactly as tall as its intrinsic height.
 ///
 /// Wraps the child in an [IntrinsicHeight] widget.
-final class IntrinsicHeightModifier
-    extends WidgetModifier<IntrinsicHeightModifier>
+final class IntrinsicHeightModifier extends WidgetModifier<IntrinsicHeightModifier>
     with Diagnosticable {
   const IntrinsicHeightModifier();
 
@@ -41,8 +40,7 @@ final class IntrinsicHeightModifier
 /// Modifier that forces its child to be exactly as wide as its intrinsic width.
 ///
 /// Wraps the child in an [IntrinsicWidth] widget.
-final class IntrinsicWidthModifier
-    extends WidgetModifier<IntrinsicWidthModifier>
+final class IntrinsicWidthModifier extends WidgetModifier<IntrinsicWidthModifier>
     with Diagnosticable {
   const IntrinsicWidthModifier();
 

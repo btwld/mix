@@ -96,7 +96,9 @@ void main() {
       test('variant factory creates BoxMix with variant', () {
         final variant = ContextVariant.brightness(Brightness.dark);
         final style = BoxStyler(decoration: DecorationMix.color(Colors.blue));
-        final boxMix = BoxStyler(variants: [VariantStyle(variant, style)]);
+        final boxMix = BoxStyler(
+          variants: [ContextVariantStyle(variant, style)],
+        );
 
         expect(boxMix.$variants, isNotNull);
         expect(boxMix.$variants!.length, 1);
@@ -353,7 +355,7 @@ void main() {
       test('variant method adds variant to BoxMix', () {
         final variant = ContextVariant.brightness(Brightness.dark);
         final style = BoxStyler(decoration: DecorationMix.color(Colors.white));
-        final boxMix = BoxStyler().variant(variant, style);
+        final boxMix = BoxStyler().variant(ContextVariantStyle(variant, style));
 
         expect(boxMix.$variants, isNotNull);
         expect(boxMix.$variants!.length, 1);
@@ -361,16 +363,16 @@ void main() {
 
       test('variants method sets multiple variants', () {
         final variants = [
-          VariantStyle(
+          ContextVariantStyle(
             ContextVariant.brightness(Brightness.dark),
             BoxStyler(decoration: DecorationMix.color(Colors.white)),
           ),
-          VariantStyle(
+          ContextVariantStyle(
             ContextVariant.brightness(Brightness.light),
             BoxStyler(decoration: DecorationMix.color(Colors.black)),
           ),
         ];
-        final boxMix = BoxStyler().variants(variants);
+        final boxMix = BoxStyler().withVariants(variants);
 
         expect(boxMix.$variants, isNotNull);
         expect(boxMix.$variants!.length, 2);

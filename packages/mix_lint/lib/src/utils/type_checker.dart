@@ -45,7 +45,10 @@ const variantAttributeChecker = TypeChecker.fromName(
   packageName: 'mix',
 );
 
-const attributeChecker = TypeChecker.fromName('Attribute', packageName: 'mix');
+const attributeChecker = TypeChecker.fromName(
+  'Attribute',
+  packageName: 'mix',
+);
 
 const specAttributeChecker = TypeChecker.fromName(
   'SpecAttribute',

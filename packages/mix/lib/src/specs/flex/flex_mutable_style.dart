@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
-import '../../core/style.dart' show Style, VariantStyle;
+import '../../core/style.dart' show Style;
 import '../../core/style_spec.dart';
 import '../../core/utility.dart';
 import '../../core/utility_variant_mixin.dart';
@@ -40,7 +40,7 @@ class FlexMutableStyler extends StyleMutableBuilder<FlexSpec>
     'Note: Returns FlexStyle for consistency with other utility methods like animate().',
   )
   late final on = OnContextVariantUtility<FlexSpec, FlexStyler>(
-    (v) => mutable.variants([v]),
+    (v) => mutable.withVariants([v]),
   );
 
   late final wrap = WidgetModifierUtility(
@@ -76,13 +76,8 @@ class FlexMutableStyler extends StyleMutableBuilder<FlexSpec>
   FlexStyler animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
-  FlexStyler withVariant(Variant variant, FlexStyler style) {
-    return mutable.variant(variant, style);
-  }
-
-  @override
   FlexStyler withVariants(List<VariantStyle<FlexSpec>> variants) {
-    return mutable.variants(variants);
+    return mutable.withVariants(variants);
   }
 
   @override

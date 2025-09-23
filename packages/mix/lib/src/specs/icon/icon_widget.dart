@@ -4,6 +4,7 @@ import '../../core/style_builder.dart';
 import '../../core/style_spec.dart';
 import '../../core/style_widget.dart';
 import 'icon_spec.dart';
+import 'icon_style.dart';
 
 /// Displays an icon with Mix styling.
 ///
@@ -12,73 +13,81 @@ class StyledIcon extends StyleWidget<IconSpec> {
   const StyledIcon({
     this.icon,
     this.semanticLabel,
-    super.style,
-    super.spec,
+    super.style = const IconStyler.create(),
     super.key,
   });
-
-  /// Builder pattern for `StyleSpec<IconSpec>` with custom builder function.
-  static Widget builder(
-    StyleSpec<IconSpec> styleSpec,
-    Widget Function(BuildContext context, IconSpec spec) builder,
-  ) {
-    return StyleSpecBuilder<IconSpec>(builder: builder, styleSpec: styleSpec);
-  }
 
   /// The icon to display.
   final IconData? icon;
 
   /// Semantic label for accessibility.
   final String? semanticLabel;
+
   @override
   Widget build(BuildContext context, IconSpec spec) {
-    return Icon(
-      icon ?? spec.icon,
-      size: spec.size,
-      fill: spec.fill,
-      weight: spec.weight,
-      grade: spec.grade,
-      opticalSize: spec.opticalSize,
-      color: spec.color,
-      shadows: spec.shadows,
-      semanticLabel: semanticLabel ?? spec.semanticsLabel,
-      textDirection: spec.textDirection,
-      applyTextScaling: spec.applyTextScaling,
-      blendMode: spec.blendMode,
+    return _createIconSpecWidget(
+      spec: spec,
+      icon: icon,
+      semanticLabel: semanticLabel,
     );
   }
 }
 
-/// Extension to convert [IconSpec] directly to a [StyledIcon] widget.
+/// Creates an [Icon] widget from an [IconSpec] and optional overrides.
+Icon _createIconSpecWidget({
+  required IconSpec? spec,
+  IconData? icon,
+  String? semanticLabel,
+}) {
+  return Icon(
+    icon ?? spec?.icon,
+    size: spec?.size,
+    fill: spec?.fill,
+    weight: spec?.weight,
+    grade: spec?.grade,
+    opticalSize: spec?.opticalSize,
+    color: spec?.color,
+    shadows: spec?.shadows,
+    semanticLabel: semanticLabel ?? spec?.semanticsLabel,
+    textDirection: spec?.textDirection,
+    applyTextScaling: spec?.applyTextScaling,
+    blendMode: spec?.blendMode,
+  );
+}
+
+/// Extension to convert [IconSpec] directly to an [Icon] widget.
 extension IconSpecWidget on IconSpec {
-  /// Creates a [StyledIcon] widget from this [IconSpec].
-  @Deprecated(
-    'Use StyledIcon(spec: this, icon: icon, semanticLabel: semanticLabel) instead',
-  )
-  Widget createWidget({IconData? icon, String? semanticLabel}) {
-    return StyledIcon(spec: this, icon: icon, semanticLabel: semanticLabel);
+  /// Creates an [Icon] widget from this [IconSpec].
+  Icon createWidget({IconData? icon, String? semanticLabel}) {
+    return _createIconSpecWidget(
+      spec: this,
+      icon: icon,
+      semanticLabel: semanticLabel,
+    );
   }
 
-  @Deprecated(
-    'Use StyledIcon(spec: this, icon: icon, semanticLabel: semanticLabel) instead',
-  )
-  Widget call({IconData? icon, String? semanticLabel}) {
+  @Deprecated('Use .createWidget() instead')
+  Icon call({IconData? icon, String? semanticLabel}) {
     return createWidget(icon: icon, semanticLabel: semanticLabel);
   }
 }
 
 extension IconSpecWrappedWidget on StyleSpec<IconSpec> {
   /// Creates a widget that resolves this [StyleSpec<IconSpec>] with context.
-  @Deprecated(
-    'Use StyledIcon.builder(styleSpec, builder) for custom logic, or styleSpec(icon: icon, semanticLabel: semanticLabel) for simple cases',
-  )
   Widget createWidget({IconData? icon, String? semanticLabel}) {
-    return StyledIcon.builder(this, (context, spec) {
-      return StyledIcon(spec: spec, icon: icon, semanticLabel: semanticLabel);
-    });
+    return StyleSpecBuilder(
+      builder: (context, spec) {
+        return _createIconSpecWidget(
+          spec: spec,
+          icon: icon,
+          semanticLabel: semanticLabel,
+        );
+      },
+      styleSpec: this,
+    );
   }
 
-  /// Convenient shorthand for creating a StyledIcon widget with this StyleSpec.
+  @Deprecated('Use .createWidget() instead')
   Widget call({IconData? icon, String? semanticLabel}) {
     return createWidget(icon: icon, semanticLabel: semanticLabel);
   }

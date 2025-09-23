@@ -11,6 +11,7 @@ import '../../properties/painting/shadow_mix.dart';
 import '../../style/mixins/animation_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
 import '../../style/mixins/widget_modifier_style_mixin.dart';
+import '../../variants/variant.dart';
 import 'icon_mutable_style.dart';
 import 'icon_spec.dart';
 import 'icon_widget.dart';
@@ -260,7 +261,7 @@ class IconStyler extends Style<IconSpec>
   }
 
   @override
-  IconStyler variants(List<VariantStyle<IconSpec>> value) {
+  IconStyler withVariants(List<VariantStyle<IconSpec>> value) {
     return merge(IconStyler(variants: value));
   }
 

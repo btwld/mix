@@ -93,7 +93,9 @@ void main() {
       test('', () {
         final variant = ContextVariant.brightness(Brightness.dark);
         final style = ImageStyler().color(Colors.white);
-        final imageMix = ImageStyler().variant(variant, style);
+        final imageMix = ImageStyler().variant(
+          ContextVariantStyle(variant, style),
+        );
 
         expect(imageMix.$variants, isNotNull);
         expect(imageMix.$variants!.length, 1);
@@ -198,7 +200,9 @@ void main() {
       test('', () {
         final variant = ContextVariant.brightness(Brightness.dark);
         final style = ImageStyler().color(Colors.white);
-        final imageMix = ImageStyler().variant(variant, style);
+        final imageMix = ImageStyler().variant(
+          ContextVariantStyle(variant, style),
+        );
 
         expect(imageMix.$variants, isNotNull);
         expect(imageMix.$variants!.length, 1);
@@ -206,16 +210,16 @@ void main() {
 
       test('variants method sets multiple variants', () {
         final variants = [
-          VariantStyle(
+          ContextVariantStyle(
             ContextVariant.brightness(Brightness.dark),
             ImageStyler().color(Colors.white),
           ),
-          VariantStyle(
+          ContextVariantStyle(
             ContextVariant.brightness(Brightness.light),
             ImageStyler().color(Colors.black),
           ),
         ];
-        final imageMix = ImageStyler().variants(variants);
+        final imageMix = ImageStyler().withVariants(variants);
 
         expect(imageMix.$variants, isNotNull);
         expect(imageMix.$variants!.length, 2);

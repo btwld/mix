@@ -1,13 +1,10 @@
-
-"use client";
-
 import { Button } from "./Button";
-import { Features } from "./Features";
 
+import { Features } from "./Features";
 import Layout from "./Layout";
 import { Logo } from "./Logo";
 
-export const HomeContent = () => {
+const HomeContent = () => {
   return (
     <Layout>
       <div className="home-content">
@@ -20,18 +17,18 @@ export const HomeContent = () => {
           </h1>
           <p className="subtitle">
             Effortlessly style your widgets
-            <br className="" />
+            <br className="sm:block hidden" />
             and build design systems.
           </p>
 
           <div className="not-prose mb-16 mt-6 flex flex-col sm:flex-row gap-3">
-            <Button href="/documentation/overview/getting-started" arrow="right">
+            <Button href="/docs/overview" arrow="right">
               <>Getting Started</>
             </Button>
             <Button href="https://discord.com/invite/Ycn6GV3m2k" variant="discord" target="_blank">
               <>Join our community</>
             </Button>
-            <Button href="/documentation/overview/introduction" variant="outline">
+            <Button href="/docs/overview" variant="outline">
               <>Documentation</>
             </Button>
           </div>
@@ -47,15 +44,15 @@ export const HomeContent = () => {
             font-size: 3.125rem;
             font-size: min(4.375rem, max(8vw, 2.5rem));
             font-weight: 700;
+            font-feature-settings: initial;
             letter-spacing: -0.12rem;
             margin-left: -0.2rem;
+
             line-height: 1.2;
             background-image: linear-gradient(146deg, #000, #757a7d);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            font-feature-settings: initial;
-            text-align: left;
           }
           :global(.dark) .headline {
             background-image: linear-gradient(146deg, #fff, #757a7d);
@@ -77,3 +74,5 @@ export const HomeContent = () => {
     </Layout>
   );
 };
+
+export default HomeContent;

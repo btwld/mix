@@ -1,7 +1,6 @@
+import '../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
-
-import '../../helpers.dart';
 
 void main() {
   runMixApp(Example());
@@ -16,8 +15,8 @@ class Example extends StatelessWidget {
         .color(Colors.red)
         .height(100)
         .width(100)
-        .borderRounded(10)
-        .onHovered(BoxStyler().color(Colors.blue));
+        .borderRadius(.all(.circular(10)))
+        .onHovered(Style.box().color(Colors.blue));
 
     return Box(style: style);
   }

@@ -257,7 +257,7 @@ void main() {
         final variant = ContextVariant('test', (context) => true);
         final withVariants = FlexBoxStyler(
           variants: [
-            VariantStyle(
+            ContextVariantStyle(
               variant,
               FlexBoxStyler(decoration: BoxDecorationMix(color: Colors.green)),
             ),

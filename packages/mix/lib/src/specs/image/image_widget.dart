@@ -4,6 +4,7 @@ import '../../core/style_builder.dart';
 import '../../core/style_spec.dart';
 import '../../core/style_widget.dart';
 import 'image_spec.dart';
+import 'image_style.dart';
 
 /// A styled image widget using Mix framework.
 ///
@@ -11,22 +12,13 @@ import 'image_spec.dart';
 class StyledImage extends StyleWidget<ImageSpec> {
   const StyledImage({
     super.key,
-    super.style,
-    super.spec,
+    super.style = const ImageMix.create(),
     this.frameBuilder,
     this.loadingBuilder,
     this.errorBuilder,
     this.image,
     this.opacity,
   });
-
-  /// Builder pattern for `StyleSpec<ImageSpec>` with custom builder function.
-  static Widget builder(
-    StyleSpec<ImageSpec> styleSpec,
-    Widget Function(BuildContext context, ImageSpec spec) builder,
-  ) {
-    return StyleSpecBuilder<ImageSpec>(builder: builder, styleSpec: styleSpec);
-  }
 
   /// The image to display.
   final ImageProvider<Object>? image;
@@ -42,32 +34,52 @@ class StyledImage extends StyleWidget<ImageSpec> {
 
   /// Animation for opacity changes.
   final Animation<double>? opacity;
+
   @override
   Widget build(BuildContext context, ImageSpec spec) {
-    final imageProvider = _resolveImage(image, spec);
-
-    return Image(
-      image: imageProvider,
+    return _createImageSpecWidget(
+      spec: spec,
+      image: image,
       frameBuilder: frameBuilder,
       loadingBuilder: loadingBuilder,
       errorBuilder: errorBuilder,
-      semanticLabel: spec.semanticLabel,
-      excludeFromSemantics: spec.excludeFromSemantics ?? false,
-      width: spec.width,
-      height: spec.height,
-      color: spec.color,
       opacity: opacity,
-      colorBlendMode: spec.colorBlendMode,
-      fit: spec.fit,
-      alignment: spec.alignment ?? Alignment.center,
-      repeat: spec.repeat ?? ImageRepeat.noRepeat,
-      centerSlice: spec.centerSlice,
-      matchTextDirection: spec.matchTextDirection ?? false,
-      gaplessPlayback: spec.gaplessPlayback ?? false,
-      isAntiAlias: spec.isAntiAlias ?? false,
-      filterQuality: spec.filterQuality ?? FilterQuality.medium,
     );
   }
+}
+
+/// Creates an [Image] widget from an [ImageSpec] and optional overrides.
+Image _createImageSpecWidget({
+  required ImageSpec spec,
+  ImageProvider<Object>? image,
+  ImageFrameBuilder? frameBuilder,
+  ImageLoadingBuilder? loadingBuilder,
+  ImageErrorWidgetBuilder? errorBuilder,
+  Animation<double>? opacity,
+}) {
+  final imageProvider = _resolveImage(image, spec);
+
+  return Image(
+    image: imageProvider,
+    frameBuilder: frameBuilder,
+    loadingBuilder: loadingBuilder,
+    errorBuilder: errorBuilder,
+    semanticLabel: spec.semanticLabel,
+    excludeFromSemantics: spec.excludeFromSemantics ?? false,
+    width: spec.width,
+    height: spec.height,
+    color: spec.color,
+    opacity: opacity,
+    colorBlendMode: spec.colorBlendMode,
+    fit: spec.fit,
+    alignment: spec.alignment ?? Alignment.center,
+    repeat: spec.repeat ?? ImageRepeat.noRepeat,
+    centerSlice: spec.centerSlice,
+    matchTextDirection: spec.matchTextDirection ?? false,
+    gaplessPlayback: spec.gaplessPlayback ?? false,
+    isAntiAlias: spec.isAntiAlias ?? false,
+    filterQuality: spec.filterQuality ?? FilterQuality.medium,
+  );
 }
 
 /// Resolves the image provider from widget or spec.
@@ -96,33 +108,28 @@ ImageProvider<Object> _resolveImage(
   return imageProvider;
 }
 
-/// Extension to convert [ImageSpec] directly to a [StyledImage] widget.
+/// Extension to convert [ImageSpec] directly to an [Image] widget.
 extension ImageSpecWidget on ImageSpec {
-  /// Creates a [StyledImage] widget from this [ImageSpec].
-  @Deprecated(
-    'Use StyledImage(spec: this, image: image, frameBuilder: frameBuilder, loadingBuilder: loadingBuilder, errorBuilder: errorBuilder, opacity: opacity) instead',
-  )
-  Widget createWidget({
+  /// Creates an [Image] widget from this [ImageSpec].
+  Image createWidget({
     ImageProvider<Object>? image,
     ImageFrameBuilder? frameBuilder,
     ImageLoadingBuilder? loadingBuilder,
     ImageErrorWidgetBuilder? errorBuilder,
     Animation<double>? opacity,
   }) {
-    return StyledImage(
+    return _createImageSpecWidget(
       spec: this,
+      image: image,
       frameBuilder: frameBuilder,
       loadingBuilder: loadingBuilder,
       errorBuilder: errorBuilder,
-      image: image,
       opacity: opacity,
     );
   }
 
-  @Deprecated(
-    'Use StyledImage(spec: this, image: image, frameBuilder: frameBuilder, loadingBuilder: loadingBuilder, errorBuilder: errorBuilder, opacity: opacity) instead',
-  )
-  Widget call({
+  @Deprecated('Use .createWidget() instead')
+  Image call({
     ImageProvider<Object>? image,
     ImageFrameBuilder? frameBuilder,
     ImageLoadingBuilder? loadingBuilder,
@@ -141,9 +148,6 @@ extension ImageSpecWidget on ImageSpec {
 
 extension ImageSpecWrappedWidget on StyleSpec<ImageSpec> {
   /// Creates a widget that resolves this [StyleSpec<ImageSpec>] with context.
-  @Deprecated(
-    'Use StyledImage.builder(styleSpec, builder) for custom logic, or styleSpec(image: image, frameBuilder: frameBuilder, loadingBuilder: loadingBuilder, errorBuilder: errorBuilder, opacity: opacity) for simple cases',
-  )
   Widget createWidget({
     ImageProvider<Object>? image,
     ImageFrameBuilder? frameBuilder,
@@ -151,19 +155,22 @@ extension ImageSpecWrappedWidget on StyleSpec<ImageSpec> {
     ImageErrorWidgetBuilder? errorBuilder,
     Animation<double>? opacity,
   }) {
-    return StyledImage.builder(this, (context, spec) {
-      return StyledImage(
-        spec: spec,
-        frameBuilder: frameBuilder,
-        loadingBuilder: loadingBuilder,
-        errorBuilder: errorBuilder,
-        image: image,
-        opacity: opacity,
-      );
-    });
+    return StyleSpecBuilder(
+      builder: (context, spec) {
+        return _createImageSpecWidget(
+          spec: spec,
+          image: image,
+          frameBuilder: frameBuilder,
+          loadingBuilder: loadingBuilder,
+          errorBuilder: errorBuilder,
+          opacity: opacity,
+        );
+      },
+      styleSpec: this,
+    );
   }
 
-  /// Convenient shorthand for creating a StyledImage widget with this StyleSpec.
+  @Deprecated('Use .createWidget() instead')
   Widget call({
     ImageProvider<Object>? image,
     ImageFrameBuilder? frameBuilder,

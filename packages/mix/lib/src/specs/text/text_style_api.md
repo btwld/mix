@@ -283,7 +283,7 @@ Creates keyframe-based animation with timeline control.
 ### phaseAnimation<P>({required Listenable trigger, required List<P> phases, required TextStyler Function(P phase, TextStyler style) styleBuilder, required CurveAnimationConfig Function(P phase) configBuilder}) → TextStyler
 Creates phase-based animation with custom curve configurations for each phase.
 
-## Variant Methods (from VariantStyleMixin)
+## Variant Methods
 
 ### variants(List<VariantStyle<TextSpec>> value) → TextStyler
 Sets conditional styling variants based on context or state.

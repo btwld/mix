@@ -1,9 +1,9 @@
 /// Theme Tokens Example
-///
+/// 
 /// Shows how to use design tokens for consistent theming across your app.
 /// Design tokens allow you to define reusable values that can be referenced
 /// throughout your styles and updated in one place.
-///
+/// 
 /// Key concepts:
 /// - Creating individual token types (ColorToken, RadiusToken, etc.)
 /// - Using tokens in styles with direct calls
@@ -11,10 +11,9 @@
 /// - Building a design system with consistent values
 library;
 
+import '../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
-
-import '../../helpers.dart';
 
 void main() {
   runMixApp(Example());
@@ -31,9 +30,15 @@ class Example extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MixScope(
-      colors: {$primaryColor: Colors.blue},
-      spaces: {$spacing: 16.0},
-      radii: {$pill: Radius.circular(20)},
+      colors: {
+        $primaryColor: Colors.blue,
+      },
+      radii: {
+        $pill: Radius.circular(20),
+      },
+      spaces: {
+        $spacing: 16.0,
+      },
       child: _Example(),
     );
   }
@@ -45,11 +50,11 @@ class _Example extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = BoxStyler()
-        .borderRadiusTopLeft($pill())
+        .borderRadius(.topLeft($pill()))
         .color($primaryColor())
         .height(100)
         .width(100)
-        .paddingAll(16.0);
+        .padding(.all(16.0));
 
     return Box(style: style);
   }

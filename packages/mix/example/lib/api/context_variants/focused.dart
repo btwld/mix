@@ -1,7 +1,6 @@
+import '../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
-
-import '../../helpers.dart';
 
 void main() {
   runMixApp(Example());
@@ -39,7 +38,6 @@ class _ExampleState extends State<Example> {
         .height(100)
         .width(100)
         .borderRounded(10)
-        .wrapOpacity(0.4)
         .onFocused(
           BoxStyler()
               .color(Colors.blue)

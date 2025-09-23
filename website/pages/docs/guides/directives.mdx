@@ -1,0 +1,30 @@
+## Directives
+
+Directives in Mix are specialized attributes that define transformations to be applied to widgets during the build process. They are particularly useful for dynamically modifying widget properties based on specific conditions or parameters.
+
+## Example: Text Directives
+
+A prime example is the `TextDirective`, which allows for text case transformations in `StyledText` widgets.
+
+```dart {4}
+const StyledText(
+  'Hello World',
+  style:  Style(
+    $text.upperCase(),
+  ),
+),
+```
+
+In this example, the text "Hello World" is transformed to "HELLO WORLD" using the `upperCase()` directive.
+
+### Directives Catalog
+
+Mix provides a range of directives, allowing for a variety of transformations to be applied to widgets. The following is a list of all available directives:
+
+#### Text Directives
+
+- `$text.capitalize()`: Capitalizes the first letter of each word.
+- `$text.upperCase()`: Converts all characters to uppercase.
+- `$text.lowerCase()`: Converts all characters to lowercase.
+- `$text.titleCase()`: Transforms the first letter of each word in a sentence to uppercase.
+- `$text.sentenceCase()`: Transforms the first letter of the first word in a sentence to uppercase.

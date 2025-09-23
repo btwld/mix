@@ -22,8 +22,7 @@ class SpecUtilityBuilder implements CodeBuilder {
     // Build your class using a ClassBuilder or do it manually:
     final classBuilder = ClassBuilder(
       className: utilityName,
-      documentation:
-          '''
+      documentation: '''
 /// Utility class for configuring [$specName] properties.
 ///
 /// This class provides methods to set individual properties of a [$specName].

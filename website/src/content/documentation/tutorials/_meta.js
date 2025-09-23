@@ -1,7 +1,0 @@
-export default {
-    "creating-a-widget": "Creating a Widget",
-    "extending-utilities": "Extending Utilities",
-    "controlling-widget-state": "Controlling Widget State",
-    theming: "Theming",
-    "creating-context-variants": "Creating Context Variants"
-};

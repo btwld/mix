@@ -2,53 +2,21 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../core/breakpoint.dart';
+import '../core/mix_element.dart';
 import '../core/providers/widget_state_provider.dart';
 import '../core/spec.dart';
 import '../core/style.dart';
 
-/// Base class for all variant types.
+/// Triggers that determine when styles should be applied based on context conditions.
 @immutable
-sealed class Variant {
-  const Variant();
-
-  /// Factory method to create a named variant
-  static NamedVariant named(String name) => NamedVariant(name);
-
-  String get key;
-}
-
-/// Manual variants applied when explicitly requested.
-@immutable
-class NamedVariant extends Variant {
-  final String name;
-
-  const NamedVariant(this.name);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is NamedVariant && other.name == name;
-
-  @override
-  String toString() => 'NamedVariant($name)';
-
-  @override
-  String get key => name;
-
-  @override
-  int get hashCode => name.hashCode;
-}
-
-/// Variants that automatically apply based on context conditions.
-@immutable
-class ContextVariant extends Variant {
+class ContextVariant {
   final bool Function(BuildContext) shouldApply;
-
-  @override
   final String key;
+
   const ContextVariant(this.key, this.shouldApply);
 
-  static WidgetStateVariant widgetState(WidgetState state) {
-    return WidgetStateVariant(state);
+  static WidgetStateTrigger widgetState(WidgetState state) {
+    return WidgetStateTrigger(state);
   }
 
   static ContextVariant orientation(Orientation orientation) {
@@ -58,10 +26,10 @@ class ContextVariant extends Variant {
     );
   }
 
-  static ContextVariant not(ContextVariant variant) {
+  static ContextVariant not(ContextVariant trigger) {
     return ContextVariant(
-      'not_${variant.key}',
-      (context) => !variant.when(context),
+      'not_${trigger.key}',
+      (context) => !trigger.matches(context),
     );
   }
 
@@ -120,16 +88,29 @@ class ContextVariant extends Variant {
     return ContextVariant.breakpoint(Breakpoint.desktop);
   }
 
-  /// Check if this variant should be active for the given context
-  bool when(BuildContext context) {
+  /// Check if this trigger should activate for the given context
+  bool matches(BuildContext context) {
     return shouldApply(context);
   }
+
+  @override
+  String toString() => 'ContextTrigger($key)';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ContextVariant &&
+          other.key == key &&
+          other.shouldApply == shouldApply;
+
+  @override
+  int get hashCode => Object.hash(key, shouldApply);
 }
 
-final class WidgetStateVariant extends ContextVariant {
+final class WidgetStateTrigger extends ContextVariant {
   final WidgetState state;
 
-  WidgetStateVariant(this.state)
+  WidgetStateTrigger(this.state)
     : super('widget_state_${state.name}', (context) {
         return WidgetStateProvider.hasStateOf(context, state);
       });
@@ -137,70 +118,101 @@ final class WidgetStateVariant extends ContextVariant {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is WidgetStateVariant && other.state == state;
+      other is WidgetStateTrigger && other.state == state;
 
   @override
   int get hashCode => state.hashCode;
 }
 
-/// Variant that dynamically builds a Style based on build context.
+/// Base interface for variant-based styling
 @immutable
-class ContextVariantBuilder<S extends Style<Object?>> extends Variant {
-  /// Function that builds a Style from context
-  final S Function(BuildContext) fn;
+sealed class VariantStyle<S extends Spec<S>> extends Mixable {
+  const VariantStyle();
 
-  const ContextVariantBuilder(this.fn);
+  /// Unique key identifying this variant
+  String get variantKey;
+
+  Object get mergeKey => variantKey;
+}
+
+/// Variant style for trigger-based variants (automatic activation)
+@immutable
+final class ContextVariantStyle<S extends Spec<S>> extends VariantStyle<S> {
+  final ContextVariant trigger;
+  final Style<S> _style;
+
+  const ContextVariantStyle(this.trigger, Style<S> style) : _style = style;
+
+  Style<S> get style => _style;
+
+  bool isActive(BuildContext context) => trigger.matches(context);
+
+  @override
+  ContextVariantStyle<S> merge(covariant ContextVariantStyle<S>? other) {
+    if (other == null) {
+      return this;
+    }
+
+    if (variantKey != other.variantKey) {
+      throw ArgumentError(
+        'Cannot merge EventVariantStyle with different keys. '
+        'Attempted to merge key "$variantKey" with "${other.variantKey}".',
+      );
+    }
+
+    return ContextVariantStyle(trigger, _style.merge(other._style));
+  }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ContextVariantBuilder && other.fn == fn;
+      other is ContextVariantStyle<S> &&
+          other.trigger == trigger &&
+          other._style == _style;
 
   @override
-  int get hashCode => fn.hashCode;
+  String get variantKey => trigger.key;
 
   @override
-  String get key => fn.hashCode.toString();
-
-  /// Build a Style from context
-  S build(BuildContext context) => fn(context);
+  int get hashCode => Object.hash(trigger, _style);
 }
 
-// Helper functions for cleaner variant checking
-bool hasVariant(List<NamedVariant> activeVariants, NamedVariant variant) =>
-    activeVariants.contains(variant);
+/// Variant style for dynamic style building (always active)
+@immutable
+final class VariantStyleBuilder<S extends Spec<S>> extends VariantStyle<S> {
+  final Style<S> Function(BuildContext) builder;
 
-bool hasAnyVariant(
-  List<NamedVariant> activeVariants,
-  List<NamedVariant> variants,
-) => variants.any((variant) => activeVariants.contains(variant));
+  const VariantStyleBuilder(this.builder);
 
-bool hasAllVariants(
-  List<NamedVariant> activeVariants,
-  List<NamedVariant> variants,
-) => variants.every((variant) => activeVariants.contains(variant));
+  Style<S> resolve(BuildContext context) => builder(context);
 
-/// Interface for design system components that adapt their styling
-/// based on active variants and user modifications.
-abstract class StyleVariation<S extends Spec<S>> {
-  /// The named variant this StyleVariation handles
-  NamedVariant get variantType;
+  @override
+  VariantStyleBuilder<S> merge(covariant VariantStyleBuilder<S>? other) {
+    if (other == null) {
+      return this;
+    }
 
-  /// Combines user modifications with variant styling and contextual adaptations.
-  Style<S> styleBuilder(
-    covariant Style<S> style,
-    Set<NamedVariant> activeVariants,
-    BuildContext context,
-  );
+    if (variantKey != other.variantKey) {
+      throw ArgumentError(
+        'Cannot merge VariantBuilder with different keys. '
+        'Attempted to merge key "$variantKey" with "${other.variantKey}".',
+      );
+    }
+
+    // Create new builder that merges the resolved styles
+    return VariantStyleBuilder(
+      (context) => builder(context).merge(other.builder(context)),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is VariantStyleBuilder<S> && other.builder == builder;
+
+  @override
+  String get variantKey => builder.hashCode.toString();
+
+  @override
+  int get hashCode => builder.hashCode;
 }
-
-// Common named variants
-const primary = NamedVariant('primary');
-const secondary = NamedVariant('secondary');
-const outlined = NamedVariant('outlined');
-const solid = NamedVariant('solid');
-const danger = NamedVariant('danger');
-
-// Size variants
-const small = NamedVariant('small');
-const large = NamedVariant('large');

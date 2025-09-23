@@ -1,7 +1,6 @@
+import '../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
-
-import '../../helpers.dart';
 
 void main() {
   runMixApp(Example());
@@ -29,15 +28,15 @@ class _ExampleState extends State<Example> {
         .color(Colors.red)
         .height(100)
         .width(100)
-        .borderRounded(10)
+        .borderRadius(.all(.circular(10)))
         .onSelected(BoxStyler().color(Colors.blue));
 
     return Pressable(
+      controller: controller,
       onPress: () {
         final isSelected = controller.has(WidgetState.selected);
         controller.update(WidgetState.selected, !isSelected);
       },
-      controller: controller,
       child: Box(style: style),
     );
   }

@@ -352,7 +352,9 @@ void main() {
       test('variant factory creates TextStyling with variant', () {
         final variant = ContextVariant.brightness(Brightness.dark);
         final style = TextStyler(style: TextStyleMix(color: Colors.white));
-        final textMix = TextStyler(variants: [VariantStyle(variant, style)]);
+        final textMix = TextStyler(
+          variants: [ContextVariantStyle(variant, style)],
+        );
 
         expect(textMix.$variants, isNotNull);
         expect(textMix.$variants!.length, 1);
@@ -631,7 +633,9 @@ void main() {
       test('variant method adds variant to TextStyling', () {
         final variant = ContextVariant.brightness(Brightness.dark);
         final style = TextStyler(style: TextStyleMix(color: Colors.white));
-        final textMix = TextStyler().variant(variant, style);
+        final textMix = TextStyler().variant(
+          ContextVariantStyle(variant, style),
+        );
 
         expect(textMix.$variants, isNotNull);
         expect(textMix.$variants!.length, 1);
@@ -639,16 +643,16 @@ void main() {
 
       test('variants method sets multiple variants', () {
         final variants = [
-          VariantStyle(
+          ContextVariantStyle(
             ContextVariant.brightness(Brightness.dark),
             TextStyler(style: TextStyleMix(color: Colors.white)),
           ),
-          VariantStyle(
+          ContextVariantStyle(
             ContextVariant.brightness(Brightness.light),
             TextStyler(style: TextStyleMix(color: Colors.black)),
           ),
         ];
-        final textMix = TextStyler().variants(variants);
+        final textMix = TextStyler().withVariants(variants);
 
         expect(textMix.$variants, isNotNull);
         expect(textMix.$variants!.length, 2);

@@ -9,6 +9,7 @@ import '../animation/animation_config.dart';
 import '../modifiers/widget_modifier_config.dart';
 import '../properties/painting/decoration_mix.dart';
 import '../properties/painting/shape_border_mix.dart';
+import '../variants/variant.dart';
 import 'decoration_merge.dart';
 import 'directive.dart';
 import 'internal/deep_collection_equality.dart';
@@ -17,7 +18,6 @@ import 'prop.dart';
 import 'prop_source.dart';
 import 'shape_border_merge.dart';
 import 'spec.dart';
-import 'style.dart';
 import 'widget_modifier.dart';
 
 /// Core operations for Mix framework value transformations.
@@ -89,7 +89,9 @@ class MixOps {
     for (final variant in other) {
       final key = variant.mergeKey;
       final existing = merged[key];
-      merged[key] = existing != null ? existing.merge(variant) : variant;
+      merged[key] = existing != null
+          ? existing.merge(variant) as VariantStyle<S>
+          : variant;
     }
 
     return merged.values.toList();

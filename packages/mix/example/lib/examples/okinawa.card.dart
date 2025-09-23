@@ -55,7 +55,7 @@ class OkinawaCard extends StatelessWidget {
           blurRadius: 100,
         );
 
-    final columnBoxStyle = FlexBoxStyler()
+    final columnBoxStyle = Style.flexbox()
         .paddingAll(8)
         .width(double.infinity)
         .color(Colors.black.withValues(alpha: 0.1))

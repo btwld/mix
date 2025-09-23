@@ -10,15 +10,13 @@ class TestVariantAttribute extends Style<BoxSpec>
   const TestVariantAttribute({super.variants, super.modifier, super.animation});
 
   @override
-  TestVariantAttribute variant(Variant variant, TestVariantAttribute style) {
-    return TestVariantAttribute(
-      variants: [...?$variants, VariantStyle(variant, style)],
-    );
+  TestVariantAttribute variant(covariant VariantStyle<BoxSpec> variantStyle) {
+    return TestVariantAttribute(variants: [...?$variants, variantStyle]);
   }
 
   @override
-  TestVariantAttribute variants(List<VariantStyle<BoxSpec>> value) {
-    return TestVariantAttribute(variants: value);
+  TestVariantAttribute withVariants(List<VariantStyle<BoxSpec>> value) {
+    return merge(TestVariantAttribute(variants: value));
   }
 
   @override
@@ -48,8 +46,11 @@ void main() {
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
 
-      final variant = result.$variants!.first.variant;
-      expect(variant, isA<ContextVariant>());
+      final variantStyle = result.$variants!.first;
+      expect(variantStyle, isA<ContextVariantStyle<BoxSpec>>());
+      if (variantStyle is ContextVariantStyle<BoxSpec>) {
+        expect(variantStyle.trigger, isA<ContextVariant>());
+      }
     });
 
     test('onLight creates correct variant', () {
@@ -60,8 +61,11 @@ void main() {
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
 
-      final variant = result.$variants!.first.variant;
-      expect(variant, isA<ContextVariant>());
+      final variantStyle = result.$variants!.first;
+      expect(variantStyle, isA<ContextVariantStyle<BoxSpec>>());
+      if (variantStyle is ContextVariantStyle<BoxSpec>) {
+        expect(variantStyle.trigger, isA<ContextVariant>());
+      }
     });
 
     test('onHover creates correct variant', () {
@@ -71,7 +75,11 @@ void main() {
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
-      expect(result.$variants!.first.variant, isA<ContextVariant>());
+      final variantStyle = result.$variants!.first;
+      expect(variantStyle, isA<ContextVariantStyle<BoxSpec>>());
+      if (variantStyle is ContextVariantStyle<BoxSpec>) {
+        expect(variantStyle.trigger, isA<ContextVariant>());
+      }
     });
 
     test('onPress creates correct variant', () {
@@ -81,7 +89,11 @@ void main() {
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
-      expect(result.$variants!.first.variant, isA<ContextVariant>());
+      final variantStyle = result.$variants!.first;
+      expect(variantStyle, isA<ContextVariantStyle<BoxSpec>>());
+      if (variantStyle is ContextVariantStyle<BoxSpec>) {
+        expect(variantStyle.trigger, isA<ContextVariant>());
+      }
     });
 
     test('onDisabled creates correct variant', () {
@@ -91,7 +103,11 @@ void main() {
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
-      expect(result.$variants!.first.variant, isA<ContextVariant>());
+      final variantStyle = result.$variants!.first;
+      expect(variantStyle, isA<ContextVariantStyle<BoxSpec>>());
+      if (variantStyle is ContextVariantStyle<BoxSpec>) {
+        expect(variantStyle.trigger, isA<ContextVariant>());
+      }
     });
 
     test('onFocused creates correct variant', () {
@@ -101,7 +117,11 @@ void main() {
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
-      expect(result.$variants!.first.variant, isA<ContextVariant>());
+      final variantStyle = result.$variants!.first;
+      expect(variantStyle, isA<ContextVariantStyle<BoxSpec>>());
+      if (variantStyle is ContextVariantStyle<BoxSpec>) {
+        expect(variantStyle.trigger, isA<ContextVariant>());
+      }
     });
 
     test('onSelected creates correct variant', () {
@@ -111,7 +131,11 @@ void main() {
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
-      expect(result.$variants!.first.variant, isA<ContextVariant>());
+      final variantStyle = result.$variants!.first;
+      expect(variantStyle, isA<ContextVariantStyle<BoxSpec>>());
+      if (variantStyle is ContextVariantStyle<BoxSpec>) {
+        expect(variantStyle.trigger, isA<ContextVariant>());
+      }
     });
 
     test('onMobile creates correct variant', () {
@@ -121,7 +145,11 @@ void main() {
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
-      expect(result.$variants!.first.variant, isA<ContextVariant>());
+      final variantStyle = result.$variants!.first;
+      expect(variantStyle, isA<ContextVariantStyle<BoxSpec>>());
+      if (variantStyle is ContextVariantStyle<BoxSpec>) {
+        expect(variantStyle.trigger, isA<ContextVariant>());
+      }
     });
 
     test('onDesktop creates correct variant', () {
@@ -131,7 +159,11 @@ void main() {
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
-      expect(result.$variants!.first.variant, isA<ContextVariant>());
+      final variantStyle = result.$variants!.first;
+      expect(variantStyle, isA<ContextVariantStyle<BoxSpec>>());
+      if (variantStyle is ContextVariantStyle<BoxSpec>) {
+        expect(variantStyle.trigger, isA<ContextVariant>());
+      }
     });
 
     test('onTablet creates correct variant', () {
@@ -141,7 +173,11 @@ void main() {
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
-      expect(result.$variants!.first.variant, isA<ContextVariant>());
+      final variantStyle = result.$variants!.first;
+      expect(variantStyle, isA<ContextVariantStyle<BoxSpec>>());
+      if (variantStyle is ContextVariantStyle<BoxSpec>) {
+        expect(variantStyle.trigger, isA<ContextVariant>());
+      }
     });
 
     test('onBreakpoint creates correct variant', () {
@@ -152,7 +188,11 @@ void main() {
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
-      expect(result.$variants!.first.variant, isA<ContextVariant>());
+      final variantStyle = result.$variants!.first;
+      expect(variantStyle, isA<ContextVariantStyle<BoxSpec>>());
+      if (variantStyle is ContextVariantStyle<BoxSpec>) {
+        expect(variantStyle.trigger, isA<ContextVariant>());
+      }
     });
 
     test('variant creates proper style attribute', () {
@@ -163,7 +203,11 @@ void main() {
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
-      expect(result.$variants!.first.value, equals(style));
+      final variantStyle = result.$variants!.first;
+      expect(variantStyle, isA<ContextVariantStyle<BoxSpec>>());
+      if (variantStyle is ContextVariantStyle<BoxSpec>) {
+        expect(variantStyle.style, equals(style));
+      }
     });
 
     test('variant can be chained with different styles', () {
@@ -176,8 +220,15 @@ void main() {
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 2);
 
-      expect(result.$variants!.first.value, equals(darkStyle));
-      expect(result.$variants!.last.value, equals(hoverStyle));
+      final firstVariant = result.$variants!.first;
+      final lastVariant = result.$variants!.last;
+      expect(firstVariant, isA<ContextVariantStyle<BoxSpec>>());
+      expect(lastVariant, isA<ContextVariantStyle<BoxSpec>>());
+      if (firstVariant is ContextVariantStyle<BoxSpec> &&
+          lastVariant is ContextVariantStyle<BoxSpec>) {
+        expect(firstVariant.style, equals(darkStyle));
+        expect(lastVariant.style, equals(hoverStyle));
+      }
     });
 
     test('onError creates correct variant', () {
@@ -187,7 +238,11 @@ void main() {
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
-      expect(result.$variants!.first.variant, isA<ContextVariant>());
+      final variantStyle = result.$variants!.first;
+      expect(variantStyle, isA<ContextVariantStyle<BoxSpec>>());
+      if (variantStyle is ContextVariantStyle<BoxSpec>) {
+        expect(variantStyle.trigger, isA<ContextVariant>());
+      }
     });
 
     test('onScrolledUnder creates correct variant', () {
@@ -197,7 +252,11 @@ void main() {
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
-      expect(result.$variants!.first.variant, isA<ContextVariant>());
+      final variantStyle = result.$variants!.first;
+      expect(variantStyle, isA<ContextVariantStyle<BoxSpec>>());
+      if (variantStyle is ContextVariantStyle<BoxSpec>) {
+        expect(variantStyle.trigger, isA<ContextVariant>());
+      }
     });
 
     test('onDragged creates correct variant', () {
@@ -207,7 +266,11 @@ void main() {
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
-      expect(result.$variants!.first.variant, isA<ContextVariant>());
+      final variantStyle = result.$variants!.first;
+      expect(variantStyle, isA<ContextVariantStyle<BoxSpec>>());
+      if (variantStyle is ContextVariantStyle<BoxSpec>) {
+        expect(variantStyle.trigger, isA<ContextVariant>());
+      }
     });
 
     test('onEnabled creates correct variant', () {
@@ -217,7 +280,11 @@ void main() {
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
-      expect(result.$variants!.first.variant, isA<ContextVariant>());
+      final variantStyle = result.$variants!.first;
+      expect(variantStyle, isA<ContextVariantStyle<BoxSpec>>());
+      if (variantStyle is ContextVariantStyle<BoxSpec>) {
+        expect(variantStyle.trigger, isA<ContextVariant>());
+      }
     });
 
     test('onBuilder creates correct variant', () {
@@ -226,7 +293,7 @@ void main() {
 
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 1);
-      expect(result.$variants!.first.variant, isA<ContextVariantBuilder>());
+      expect(result.$variants!.first, isA<VariantStyleBuilder<BoxSpec>>());
     });
 
     test(
@@ -240,14 +307,14 @@ void main() {
         expect(builderResult.$variants, isNotNull);
         expect(builderResult.$variants!.length, 1);
         expect(
-          builderResult.$variants!.first.variant,
-          isA<ContextVariantBuilder>(),
+          builderResult.$variants!.first,
+          isA<VariantStyleBuilder<BoxSpec>>(),
         );
 
         // Both should create the same type of variant
         expect(
-          builderResult.$variants!.first.variant.runtimeType,
-          equals(onBuilderResult.$variants!.first.variant.runtimeType),
+          builderResult.$variants!.first.runtimeType,
+          equals(onBuilderResult.$variants!.first.runtimeType),
         );
       },
     );
@@ -263,10 +330,9 @@ void main() {
 
       // Get the variant builder and execute it
       final variantBuilder =
-          result.$variants!.first.variant
-              as ContextVariantBuilder<TestVariantAttribute>;
+          result.$variants!.first as VariantStyleBuilder<BoxSpec>;
       final mockContext = MockBuildContext();
-      variantBuilder.build(mockContext);
+      variantBuilder.resolve(mockContext);
 
       expect(capturedContext, same(mockContext));
     });

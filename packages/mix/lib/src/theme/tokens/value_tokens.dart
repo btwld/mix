@@ -60,6 +60,7 @@ class TextStyleToken extends MixToken<TextStyle> {
   TextStyleRef call() => TextStyleRef(Prop.token(this));
 }
 
+
 /// Design token for [BorderSide] values.
 class BorderSideToken extends MixToken<BorderSide> {
   const BorderSideToken(super.name);

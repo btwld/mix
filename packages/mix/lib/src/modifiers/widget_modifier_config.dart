@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 
 import '../core/internal/compare_mixin.dart';
-import '../core/style.dart';
 import '../core/widget_modifier.dart';
+import '../core/style.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
 import '../properties/painting/border_radius_mix.dart';
 import '../properties/painting/shadow_mix.dart';
@@ -138,45 +138,18 @@ final class WidgetModifierConfig with Equatable {
   }
 
   /// Scale using transform.
-  factory WidgetModifierConfig.scale({
-    required double x,
-    required double y,
+  factory WidgetModifierConfig.scale(
+    double scale, {
     Alignment alignment = Alignment.center,
   }) {
-    return WidgetModifierConfig.modifier(
-      ScaleModifierMix(x: x, y: y, alignment: alignment),
-    );
-  }
-
-  factory WidgetModifierConfig.rotate({
-    required double radians,
-    Alignment alignment = Alignment.center,
-  }) {
-    return WidgetModifierConfig.modifier(
-      RotateModifierMix(radians: radians, alignment: alignment),
-    );
-  }
-
-  factory WidgetModifierConfig.translate({
-    required double x,
-    required double y,
-  }) {
-    return WidgetModifierConfig.modifier(TranslateModifierMix(x: x, y: y));
-  }
-  factory WidgetModifierConfig.skew({
-    required double skewX,
-    required double skewY,
-    Alignment alignment = Alignment.center,
-  }) {
-    return WidgetModifierConfig.modifier(
-      SkewModifierMix(skewX: skewX, skewY: skewY, alignment: alignment),
+    return WidgetModifierConfig.transform(
+      transform: Matrix4.diagonal3Values(scale, scale, 1.0),
+      alignment: alignment,
     );
   }
 
   factory WidgetModifierConfig.visibility(bool visible) {
-    return WidgetModifierConfig.modifier(
-      VisibilityModifierMix(visible: visible),
-    );
+    return WidgetModifierConfig.modifier(VisibilityModifierMix(visible: visible));
   }
 
   factory WidgetModifierConfig.align({
@@ -204,9 +177,7 @@ final class WidgetModifierConfig with Equatable {
   }
 
   factory WidgetModifierConfig.flexible({int? flex, FlexFit? fit}) {
-    return WidgetModifierConfig.modifier(
-      FlexibleModifierMix(flex: flex, fit: fit),
-    );
+    return WidgetModifierConfig.modifier(FlexibleModifierMix(flex: flex, fit: fit));
   }
 
   factory WidgetModifierConfig.rotatedBox(int quarterTurns) {
@@ -373,12 +344,8 @@ final class WidgetModifierConfig with Equatable {
     );
   }
 
-  WidgetModifierConfig scale(
-    double x,
-    double y, {
-    Alignment alignment = Alignment.center,
-  }) {
-    return merge(WidgetModifierConfig.scale(x: x, y: y, alignment: alignment));
+  WidgetModifierConfig scale(double scale, {Alignment alignment = Alignment.center}) {
+    return merge(WidgetModifierConfig.scale(scale, alignment: alignment));
   }
 
   WidgetModifierConfig opacity(double value) {
@@ -389,27 +356,15 @@ final class WidgetModifierConfig with Equatable {
     return merge(WidgetModifierConfig.aspectRatio(value));
   }
 
-  WidgetModifierConfig clipOval({
-    CustomClipper<Rect>? clipper,
-    Clip? clipBehavior,
-  }) {
+  WidgetModifierConfig clipOval({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
     return merge(
-      WidgetModifierConfig.clipOval(
-        clipper: clipper,
-        clipBehavior: clipBehavior,
-      ),
+      WidgetModifierConfig.clipOval(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
-  WidgetModifierConfig clipRect({
-    CustomClipper<Rect>? clipper,
-    Clip? clipBehavior,
-  }) {
+  WidgetModifierConfig clipRect({CustomClipper<Rect>? clipper, Clip? clipBehavior}) {
     return merge(
-      WidgetModifierConfig.clipRect(
-        clipper: clipper,
-        clipBehavior: clipBehavior,
-      ),
+      WidgetModifierConfig.clipRect(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
@@ -431,15 +386,9 @@ final class WidgetModifierConfig with Equatable {
     );
   }
 
-  WidgetModifierConfig clipPath({
-    CustomClipper<Path>? clipper,
-    Clip? clipBehavior,
-  }) {
+  WidgetModifierConfig clipPath({CustomClipper<Path>? clipper, Clip? clipBehavior}) {
     return merge(
-      WidgetModifierConfig.clipPath(
-        clipper: clipper,
-        clipBehavior: clipBehavior,
-      ),
+      WidgetModifierConfig.clipPath(clipper: clipper, clipBehavior: clipBehavior),
     );
   }
 
@@ -452,10 +401,7 @@ final class WidgetModifierConfig with Equatable {
     Alignment alignment = Alignment.center,
   }) {
     return merge(
-      WidgetModifierConfig.transform(
-        transform: transform,
-        alignment: alignment,
-      ),
+      WidgetModifierConfig.transform(transform: transform, alignment: alignment),
     );
   }
 
@@ -663,10 +609,6 @@ const _defaultOrder = [
   // 13. TransformModifier: Applies visual transformations (scale, rotate, translate).
   // IMPORTANT: Visual-only - doesn't affect layout space, unlike RotatedBoxModifier.
   TransformModifier,
-  ScaleModifier,
-  RotateModifier,
-  TranslateModifier,
-  SkewModifier,
 
   // 14. Clip Modifiers: Applies visual clipping in various shapes.
   // Applied near the end to clip the widget's final visual appearance.
@@ -699,10 +641,6 @@ final defaultModifier = {
   AlignModifier: AlignModifier(),
   PaddingModifier: PaddingModifier(),
   TransformModifier: TransformModifier(),
-  ScaleModifier: ScaleModifier(),
-  RotateModifier: RotateModifier(),
-  TranslateModifier: TranslateModifier(),
-  SkewModifier: SkewModifier(),
   ClipOvalModifier: ClipOvalModifier(),
   ClipRRectModifier: ClipRRectModifier(),
   ClipPathModifier: ClipPathModifier(),
@@ -731,14 +669,12 @@ class ModifierListTween extends Tween<List<WidgetModifier>?> {
       lerpedModifiers = [];
       for (final modifier in otherModifiers) {
         WidgetModifier? thisModifier = thisModifierMap[modifier.runtimeType];
-        thisModifier ??=
-            defaultModifier[modifier.runtimeType] as WidgetModifier?;
+        thisModifier ??= defaultModifier[modifier.runtimeType] as WidgetModifier?;
 
         if (thisModifier != null) {
           // Both have this modifier type, lerp them
           // We need to use dynamic dispatch here since lerp is type-specific
-          final lerpedModifier =
-              thisModifier.lerp(modifier, t) as WidgetModifier;
+          final lerpedModifier = thisModifier.lerp(modifier, t) as WidgetModifier;
           lerpedModifiers.add(lerpedModifier);
         } else {
           // Only this has the modifier, fade it out if t > 0.5

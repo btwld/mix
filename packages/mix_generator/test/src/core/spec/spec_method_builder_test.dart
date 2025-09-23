@@ -47,7 +47,7 @@ void main() {
             dtoWithTryToMerge,
             dtoWithoutTryToMerge,
             listField,
-            simpleField,
+            simpleField
           ],
           isAbstract: false,
           shouldMergeLists: true,
@@ -58,22 +58,21 @@ void main() {
         expect(
           result,
           contains(
-            'borderField: BorderSideDto.tryToMerge(borderField, other.borderField),',
-          ),
+              'borderField: BorderSideDto.tryToMerge(borderField, other.borderField),'),
         );
 
         // Verify the merge method contains the default merge pattern for CustomDto
         expect(
           result,
           contains(
-            'customField: customField?.merge(other.customField) ?? other.customField,',
-          ),
+              'customField: customField?.merge(other.customField) ?? other.customField,'),
         );
 
         // Verify the merge method contains the list merge pattern
         expect(
           result,
-          contains('itemsList: MixOps.mergeList(itemsList, other.itemsList),'),
+          contains(
+              'itemsList: MixOps.mergeList(itemsList, other.itemsList),'),
         );
 
         // Verify the merge method contains the simple field merge pattern
@@ -123,8 +122,7 @@ void main() {
           expect(
             result,
             contains(
-              'boxDecoration: DecorationDto.tryToMerge(boxDecoration, other.boxDecoration),',
-            ),
+                'boxDecoration: DecorationDto.tryToMerge(boxDecoration, other.boxDecoration),'),
             reason: 'BoxDecorationDto should use DecorationDto.tryToMerge',
           );
 
@@ -132,8 +130,7 @@ void main() {
           expect(
             result,
             contains(
-              'shapeDecoration: DecorationDto.tryToMerge(shapeDecoration, other.shapeDecoration),',
-            ),
+                'shapeDecoration: DecorationDto.tryToMerge(shapeDecoration, other.shapeDecoration),'),
             reason: 'ShapeDecorationDto should use DecorationDto.tryToMerge',
           );
         } else {
@@ -141,16 +138,14 @@ void main() {
           expect(
             result,
             contains(
-              'boxDecoration: boxDecoration?.merge(other.boxDecoration) ?? other.boxDecoration,',
-            ),
+                'boxDecoration: boxDecoration?.merge(other.boxDecoration) ?? other.boxDecoration,'),
             reason: 'BoxDecorationDto should use default merge pattern',
           );
 
           expect(
             result,
             contains(
-              'shapeDecoration: shapeDecoration?.merge(other.shapeDecoration) ?? other.shapeDecoration,',
-            ),
+                'shapeDecoration: shapeDecoration?.merge(other.shapeDecoration) ?? other.shapeDecoration,'),
             reason: 'ShapeDecorationDto should use default merge pattern',
           );
         }
@@ -175,10 +170,10 @@ class _TestFieldMetadata implements ParameterMetadata {
     required bool isDto,
     String? representationElementName,
     bool isList = false,
-  }) : _name = name,
-       _isDto = isDto,
-       _representationElementName = representationElementName,
-       _isList = isList;
+  })  : _name = name,
+        _isDto = isDto,
+        _representationElementName = representationElementName,
+        _isList = isList;
 
   @override
   String get name => _name;
@@ -204,16 +199,17 @@ class _TestFieldMetadata implements ParameterMetadata {
   @override
   FieldResolvableMetadata? get resolvable =>
       _isDto && _representationElementName != null
-      ? FieldResolvableMetadata(
-          name: _name,
-          type: _representationElementName.endsWith('DecorationDto')
-              ? 'DecorationDto'
-              : _representationElementName,
-          tryToMergeType:
-              _representationElementName.endsWith('DecorationDto') ||
-              TypeRegistry.instance.hasTryToMerge(_representationElementName),
-        )
-      : null;
+          ? FieldResolvableMetadata(
+              name: _name,
+              type: _representationElementName.endsWith('DecorationDto')
+                  ? 'DecorationDto'
+                  : _representationElementName,
+              tryToMergeType:
+                  _representationElementName.endsWith('DecorationDto') ||
+                      TypeRegistry.instance
+                          .hasTryToMerge(_representationElementName),
+            )
+          : null;
 
   @override
   dynamic noSuchMethod(Invocation invocation) => null;

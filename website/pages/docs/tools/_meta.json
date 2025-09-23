@@ -1,0 +1,4 @@
+{
+  "lint": "mix_lint",
+  "generator": "mix_generator"
+}

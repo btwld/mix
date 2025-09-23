@@ -1,7 +1,6 @@
+import '../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
-
-import '../../helpers.dart';
 
 void main() {
   runMixApp(SwitchAnimation());
@@ -33,7 +32,7 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
           });
         },
         child: Box(
-          style: BoxStyler()
+          style: Style.box()
               .color(
                 _trigger.value ? Colors.deepPurpleAccent : Colors.grey.shade300,
               )
@@ -45,7 +44,7 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
               )
               .animate(AnimationConfig.easeOut(300.ms)),
           child: Box(
-            style: BoxStyler()
+            style: Style.box()
                 .height(30)
                 .width(40)
                 .color(Colors.white)

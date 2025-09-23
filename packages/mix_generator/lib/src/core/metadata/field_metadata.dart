@@ -310,9 +310,8 @@ FieldMetadata? _getFieldFromParameter(ParameterElement parameter) {
   // Search up the class hierarchy for the field
   ClassElement? current = classElement;
   while (current != null) {
-    final field = current.fields.firstWhereOrNull(
-      (field) => field.name == parameter.name,
-    );
+    final field = current.fields
+        .firstWhereOrNull((field) => field.name == parameter.name);
 
     if (field != null) {
       return FieldMetadata.fromField(field);

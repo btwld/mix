@@ -24,7 +24,7 @@ class LinearGradientIconExample extends StatelessWidget {
   Widget build(BuildContext context) {
     return StyledIcon(
       icon: CupertinoIcons.heart_fill,
-      style: IconStyler()
+      style: Style.icon()
           .size(100)
           .color(Colors.white)
           .wrap(

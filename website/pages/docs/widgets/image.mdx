@@ -1,0 +1,119 @@
+---
+title: Image
+---
+
+import { Callout } from "nextra-theme-docs";
+
+# StyleImage
+
+A wrapped `Image` widget that can be easily themed and styled using Mix style attributes. This simplifies the process of applying consistent and reusable styling across `Image` widgets.
+
+## Usage
+
+To use `StyledImage`, you need to pass the `ImageProvider` and apply the style using the `Style` class.
+
+```dart
+StyledImage(
+  image: const AssetImage('assets/image.jpg'),
+  style: Style(
+    $image.width(152),
+    $image.height(152),
+    $image.fit.fill(),
+    $image.alignment.bottomLeft(),
+    $image.blendMode.colorDodge(),
+  ),
+),
+```
+
+## Inheritance
+
+The **StyledImage** widget has the `inherit` flag set to `true` by default. This means that the style attributes will be inherited from its closest `Style` ancestor in the widget tree.
+
+```dart
+Box(
+  Style(
+    $image.height(30),
+    $image.color.blue(),
+  ),
+  child: StyledImage(image: const AssetImage('some_image.jpg')),
+);
+```
+
+In this example, the `StyledImage` widget will inherit the image height and color from the `Box` widget. However, remember that modifier attributes cannot be inherited.
+
+## Utilities
+
+The `$image` constant alias is an instance of `ImageMutableStyler`, which facilitates the construction of `ImageSpecAttribute` objects. These attributes are used to style and manage properties of `StyledImage` widgets.
+
+#### **color**
+
+Change the color of the image:
+
+```dart
+// Apply a color to the image
+$image.color.red();
+```
+
+#### **width**
+
+Specifies the width of the image.
+
+```dart
+$image.width(100);
+```
+
+#### **height**
+
+Specifies the height of the image.
+
+```dart
+$image.height(100);
+```
+
+#### **repeat**
+
+Determines how the image should be repeated over the space of the widget.
+
+```dart
+$image.repeat.repeat();
+```
+
+#### **fit**
+
+Defines how the image should be inscribed into the space allocated during layout.
+
+```dart
+$image.fit.cover();
+```
+
+#### **alignment**
+
+Specifies the alignment of the image within its bounds.
+
+```dart
+$image.alignment.center();
+```
+
+#### **centerSlice**
+
+Slices the image for nine-patch effects.
+
+```dart
+$image.centerSlice.fromLTWH(10, 10, 20, 20);
+```
+
+#### **blendMode**
+
+Specifies the blending mode applied to the image's color and the underlying widget's color.
+
+```dart
+$image.blendMode.multiply();
+```
+
+#### **filterQuality**
+
+Determines the quality of the filtering operations applied to the image.
+
+```dart
+$image.filterQuality.high();
+```

@@ -1,12 +1,6 @@
+import { PropsWithChildren } from "react";
 
-"use client";
-
-import React from "react";
-import '../globals.css';
-
-type LayoutProps = { children?: React.ReactNode };
-
-const Layout = ({ children }: LayoutProps) => {
+const Layout = ({ children }: PropsWithChildren) => {
   return (
     <div className="flex justify-center">
       <div className="w-full max-w-5xl px-4 md:px-8">{children}</div>

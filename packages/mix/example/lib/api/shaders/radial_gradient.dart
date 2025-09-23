@@ -23,7 +23,7 @@ class LinearGradientIconExample extends StatelessWidget {
   Widget build(BuildContext context) {
     return StyledText(
       'Hello',
-      style: TextStyler()
+      style: Style.text()
           .fontSize(100)
           .color(Colors.white)
           .fontWeight(FontWeight.bold)

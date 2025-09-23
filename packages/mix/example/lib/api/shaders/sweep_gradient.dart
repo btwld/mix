@@ -24,7 +24,7 @@ class SweepGradientIconExample extends StatelessWidget {
   Widget build(BuildContext context) {
     return StyledIcon(
       icon: CupertinoIcons.clock_solid,
-      style: IconStyler()
+      style: Style.icon()
           .size(100)
           .color(Colors.white)
           .wrap(

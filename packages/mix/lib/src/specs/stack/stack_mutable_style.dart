@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../animation/animation_config.dart';
 import '../../core/spec_utility.dart' show Mutable, StyleMutableBuilder;
 import '../../core/style.dart' show Style;
-import '../../core/style.dart' show VariantStyle;
 import '../../core/style_spec.dart';
 import '../../core/utility.dart';
 import '../../core/utility_variant_mixin.dart';
@@ -33,7 +32,7 @@ class StackMutableStyler extends StyleMutableBuilder<StackSpec>
     'Note: Returns StackStyle for consistency with other utility methods like animate().',
   )
   late final on = OnContextVariantUtility<StackSpec, StackStyler>(
-    (v) => mutable.variants([v]),
+    (v) => mutable.withVariants([v]),
   );
 
   late final wrap = WidgetModifierUtility(
@@ -53,13 +52,8 @@ class StackMutableStyler extends StyleMutableBuilder<StackSpec>
   StackStyler animate(AnimationConfig animation) => mutable.animate(animation);
 
   @override
-  StackStyler withVariant(Variant variant, StackStyler style) {
-    return mutable.variant(variant, style);
-  }
-
-  @override
   StackStyler withVariants(List<VariantStyle<StackSpec>> variants) {
-    return mutable.variants(variants);
+    return mutable.withVariants(variants);
   }
 
   @override

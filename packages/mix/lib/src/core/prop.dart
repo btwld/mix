@@ -1,3 +1,5 @@
+// ignore_for_file: avoid-unrelated-type-assertions, avoid-unrelated-type-casts
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -101,9 +103,8 @@ class Prop<V> {
   static Prop<V> mix<V>(Mix<V> mix) {
     // Check if mix is already a token reference (MixRef)
     // MixRef objects are Prop<V> instances with TokenSource that implement Mix interfaces
-    // ignore: avoid-unrelated-type-assertions
+
     if (mix is Prop<V>) {
-      // ignore: avoid-unrelated-type-casts
       final prop = mix as Prop<V>;
       if (prop.hasToken) {
         return prop; // Return token reference directly to preserve TokenSource
@@ -131,9 +132,7 @@ class Prop<V> {
 
     // Check if value is already a token reference (MixRef)
     // MixRef objects are Prop<V> instances with TokenSource that implement Mix interfaces
-    // ignore: avoid-unrelated-type-assertions
     if (value is Prop<V>) {
-      // ignore: avoid-unrelated-type-casts
       final prop = value as Prop<V>;
       if (prop.hasToken) {
         return prop; // Return token reference directly to preserve TokenSource

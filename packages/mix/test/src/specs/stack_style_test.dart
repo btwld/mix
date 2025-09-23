@@ -66,7 +66,9 @@ void main() {
       test('', () {
         final variant = ContextVariant.brightness(Brightness.dark);
         final style = StackStyler().alignment(Alignment.center);
-        final stackMix = StackStyler().variant(variant, style);
+        final stackMix = StackStyler().variant(
+          ContextVariantStyle(variant, style),
+        );
 
         expect(stackMix.$variants, isNotNull);
         expect(stackMix.$variants!.length, 1);
@@ -115,7 +117,9 @@ void main() {
       test('', () {
         final variant = ContextVariant.brightness(Brightness.dark);
         final style = StackStyler().alignment(Alignment.center);
-        final stackMix = StackStyler().variant(variant, style);
+        final stackMix = StackStyler().variant(
+          ContextVariantStyle(variant, style),
+        );
 
         expect(stackMix.$variants, isNotNull);
         expect(stackMix.$variants!.length, 1);
@@ -123,16 +127,16 @@ void main() {
 
       test('variants method sets multiple variants', () {
         final variants = [
-          VariantStyle(
+          ContextVariantStyle(
             ContextVariant.brightness(Brightness.dark),
             StackStyler().alignment(Alignment.topLeft),
           ),
-          VariantStyle(
+          ContextVariantStyle(
             ContextVariant.brightness(Brightness.light),
             StackStyler().alignment(Alignment.bottomRight),
           ),
         ];
-        final stackMix = StackStyler().variants(variants);
+        final stackMix = StackStyler().withVariants(variants);
 
         expect(stackMix.$variants, isNotNull);
         expect(stackMix.$variants!.length, 2);

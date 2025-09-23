@@ -34,11 +34,14 @@ class MaxNumberOfAttributesPerStyle extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addInstanceCreationExpressionFor(styleChecker, (node) {
-      if (node.argumentList.arguments.length > parameters.maxNumber) {
-        reporter.atNode(node, code);
-      }
-    });
+    context.registry.addInstanceCreationExpressionFor(
+      styleChecker,
+      (node) {
+        if (node.argumentList.arguments.length > parameters.maxNumber) {
+          reporter.atNode(node, code);
+        }
+      },
+    );
 
     context.registry.addFunctionExpressionInvocationFor(
       variantAttributeChecker,

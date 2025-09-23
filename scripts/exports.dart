@@ -16,7 +16,9 @@ void main(List<String> args) {
   final mixFile = File(_joinPaths(libDirectory.path, '$packageName.dart'));
 
   if (!libDirectory.existsSync()) {
-    throw Exception('The lib directory (${libDirectory.path}) was not found.');
+    throw Exception(
+      'The lib directory (${libDirectory.path}) was not found.',
+    );
   }
 
   _libraryExport(
@@ -74,12 +76,9 @@ bool _isDartFile(String path) {
 }
 
 String _joinPaths(String path1, String path2, [String? path3, String? path4]) {
-  return [
-    path1,
-    path2,
-    path3,
-    path4,
-  ].where((e) => e != null).join(Platform.pathSeparator);
+  return [path1, path2, path3, path4]
+      .where((e) => e != null)
+      .join(Platform.pathSeparator);
 }
 
 String _getRelativePath(String filePath, String fromPath) {

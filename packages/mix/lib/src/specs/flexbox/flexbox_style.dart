@@ -17,17 +17,18 @@ import '../../style/mixins/border_style_mixin.dart';
 import '../../style/mixins/constraint_style_mixin.dart';
 import '../../style/mixins/decoration_style_mixin.dart';
 import '../../style/mixins/flex_style_mixin.dart';
-import '../../style/mixins/widget_modifier_style_mixin.dart';
 import '../../style/mixins/shadow_style_mixin.dart';
 import '../../style/mixins/spacing_style_mixin.dart';
 import '../../style/mixins/transform_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
+import '../../style/mixins/widget_modifier_style_mixin.dart';
+import '../../variants/variant.dart';
 import '../box/box_spec.dart';
 import '../box/box_style.dart';
 import '../flex/flex_spec.dart';
 import '../flex/flex_style.dart';
-import 'flexbox_spec.dart';
 import 'flexbox_mutable_style.dart';
+import 'flexbox_spec.dart';
 
 typedef FlexBoxMix = FlexBoxStyler;
 
@@ -210,7 +211,7 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
   }
 
   @override
-  FlexBoxStyler variants(List<VariantStyle<FlexBoxSpec>> variants) {
+  FlexBoxStyler withVariants(List<VariantStyle<FlexBoxSpec>> variants) {
     return merge(FlexBoxStyler(variants: variants));
   }
 
