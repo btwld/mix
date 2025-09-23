@@ -52,7 +52,7 @@ extension BoxSpecWidget on BoxSpec {
 
   @Deprecated('Use Box(spec: this, child: child) instead')
   Widget call({Widget? child}) {
-    return createWidget(child: child);
+    return Box(spec: this, child: child);
   }
 }
 
