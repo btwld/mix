@@ -180,6 +180,7 @@ extension FlexBoxSpecWidget on FlexBoxSpec {
     if (direction == Axis.horizontal) {
       return RowBox(spec: this, children: children);
     }
+
     return ColumnBox(spec: this, children: children);
   }
 
@@ -230,6 +231,7 @@ extension FlexBoxSpecWrappedWidget on StyleSpec<FlexBoxSpec> {
       if (direction == Axis.horizontal) {
         return RowBox(spec: spec, children: children);
       }
+
       return ColumnBox(spec: spec, children: children);
     });
   }

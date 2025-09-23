@@ -36,6 +36,7 @@ class _StyleWidgetState<S extends Spec<S>> extends State<StyleWidget<S>> {
       // Direct spec usage - no style resolution needed
       return widget.build(context, widget.spec!);
     } // Style resolution path (current behavior)
+
     return StyleBuilder<S>(style: widget.style!, builder: widget.build);
   }
 }
