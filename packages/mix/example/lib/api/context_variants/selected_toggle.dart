@@ -49,11 +49,11 @@ class _ExampleState extends State<Example> {
         .onSelected(TextStyler().color(Colors.white));
 
     return Pressable(
-      controller: controller,
       onPress: () {
         final isSelected = controller.has(WidgetState.selected);
         controller.update(WidgetState.selected, !isSelected);
       },
+      controller: controller,
       child: Box(
         style: style,
         child: Center(
