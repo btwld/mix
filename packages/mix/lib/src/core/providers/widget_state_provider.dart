@@ -19,27 +19,6 @@ extension on Set<WidgetState> {
 /// allowing them to conditionally style based on states like hover, pressed, focused, etc.
 /// Uses [InheritedModel] for efficient updates - only widgets depending on changed states rebuild.
 class WidgetStateProvider extends InheritedModel<WidgetState> {
-  /// Whether the widget is disabled.
-  final bool disabled;
-
-  /// Whether the widget is being hovered.
-  final bool hovered;
-
-  /// Whether the widget has focus.
-  final bool focused;
-
-  /// Whether the widget is being pressed.
-  final bool pressed;
-
-  /// Whether the widget is being dragged.
-  final bool dragged;
-
-  /// Whether the widget is selected.
-  final bool selected;
-
-  /// Whether the widget has an error.
-  final bool error;
-
   WidgetStateProvider({
     super.key,
     required Set<WidgetState> states,
@@ -83,6 +62,27 @@ class WidgetStateProvider extends InheritedModel<WidgetState> {
       WidgetState.scrolledUnder => false,
     };
   }
+
+  /// Whether the widget is disabled.
+  final bool disabled;
+
+  /// Whether the widget is being hovered.
+  final bool hovered;
+
+  /// Whether the widget has focus.
+  final bool focused;
+
+  /// Whether the widget is being pressed.
+  final bool pressed;
+
+  /// Whether the widget is being dragged.
+  final bool dragged;
+
+  /// Whether the widget is selected.
+  final bool selected;
+
+  /// Whether the widget has an error.
+  final bool error;
 
   @override
   bool updateShouldNotify(WidgetStateProvider oldWidget) {

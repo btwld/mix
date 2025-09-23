@@ -14,7 +14,7 @@ void main() {
           home: Scaffold(
             body: Column(
               children: [
-                StyledText(testText, key: styledTextKey),
+                StyledText(testText, spec: const TextSpec(), key: styledTextKey),
                 Text(testText, key: textKey),
               ],
             ),

@@ -7,12 +7,6 @@ import '../specs/text/text_style.dart';
 /// Wraps its child in a [DefaultTextStyle] with the resolved text styling
 /// and makes the text style available through inheritance.
 class TextScope extends StatelessWidget {
-  /// The text style to provide to descendant widgets.
-  final TextStyler text;
-
-  /// The widget below this widget in the tree.
-  final Widget child;
-
   const TextScope({required this.text, required this.child, super.key});
 
   /// Gets the closest [TextStyler] from the widget tree, or null if not found.
@@ -32,6 +26,12 @@ class TextScope extends StatelessWidget {
 
     return result!;
   }
+
+  /// The text style to provide to descendant widgets.
+  final TextStyler text;
+
+  /// The widget below this widget in the tree.
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -55,9 +55,9 @@ class TextScope extends StatelessWidget {
 }
 
 class _TextInheritedWidget extends InheritedWidget {
-  final TextStyler text;
-
   const _TextInheritedWidget({required this.text, required super.child});
+
+  final TextStyler text;
 
   @override
   bool updateShouldNotify(_TextInheritedWidget oldWidget) {

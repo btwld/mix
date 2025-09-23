@@ -14,7 +14,7 @@ void main() {
           home: Scaffold(
             body: Column(
               children: [
-                StyledIcon(icon: testIcon, key: styledIconKey),
+                StyledIcon(spec: const IconSpec(), icon: testIcon, key: styledIconKey),
                 Icon(testIcon, key: iconKey),
               ],
             ),
