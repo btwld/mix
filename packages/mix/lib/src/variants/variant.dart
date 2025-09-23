@@ -6,6 +6,7 @@ import '../core/providers/widget_state_provider.dart';
 import '../core/spec.dart';
 import '../core/style.dart';
 import '../theme/tokens/token_refs.dart';
+import '../theme/tokens/value_tokens.dart';
 
 /// Base class for all variant types.
 @immutable
@@ -68,11 +69,9 @@ class ContextVariant extends Variant {
 
   static ContextVariant breakpoint(Breakpoint breakpoint) {
     if (breakpoint case final BreakpointRef ref) {
-      return ContextVariant(
-        'breakpoint_${ref.tokenName}',
-        (context) =>
-            ref.resolveProp(context).matches(MediaQuery.sizeOf(context)),
-      );
+      return ContextVariant('breakpoint_${ref.tokenName}', (context) {
+        return ref.resolveProp(context).matches(MediaQuery.sizeOf(context));
+      });
     }
 
     return ContextVariant(
@@ -118,15 +117,15 @@ class ContextVariant extends Variant {
 
   // Responsive breakpoints
   static ContextVariant mobile() {
-    return ContextVariant.breakpoint(Breakpoint.mobile);
+    return ContextVariant.breakpoint(BreakpointToken.mobile());
   }
 
   static ContextVariant tablet() {
-    return ContextVariant.breakpoint(Breakpoint.tablet);
+    return ContextVariant.breakpoint(BreakpointToken.tablet());
   }
 
   static ContextVariant desktop() {
-    return ContextVariant.breakpoint(Breakpoint.desktop);
+    return ContextVariant.breakpoint(BreakpointToken.desktop());
   }
 
   /// Check if this variant should be active for the given context

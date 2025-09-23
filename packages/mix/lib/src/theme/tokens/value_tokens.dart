@@ -43,10 +43,14 @@ class DoubleToken extends MixToken<double> {
 
 /// Design token for [Breakpoint] values.
 class BreakpointToken extends MixToken<Breakpoint> {
+  static const mobile = BreakpointToken('mix.breakpoint.mobile');
+  static const tablet = BreakpointToken('mix.breakpoint.tablet');
+  static const desktop = BreakpointToken('mix.breakpoint.desktop');
+
   const BreakpointToken(super.name);
 
   @override
-  BreakpointRef call() => BreakpointRef(name, Prop.token(this));
+  BreakpointRef call() => BreakpointRef(this, Prop.token(this));
 }
 
 /// Design token for [TextStyle] values.
@@ -59,7 +63,6 @@ class TextStyleToken extends MixToken<TextStyle> {
   @override
   TextStyleRef call() => TextStyleRef(Prop.token(this));
 }
-
 
 /// Design token for [BorderSide] values.
 class BorderSideToken extends MixToken<BorderSide> {
