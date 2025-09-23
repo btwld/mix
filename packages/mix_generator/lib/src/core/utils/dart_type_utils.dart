@@ -342,8 +342,9 @@ class TypeUtils {
       // Check if the library is in the problematic list
       for (final lib in problematicLibraries) {
         if (libraryUri.startsWith(lib)) {
-          _logger
-              .fine('Type from problematic library: $typeName ($libraryUri)');
+          _logger.fine(
+            'Type from problematic library: $typeName ($libraryUri)',
+          );
 
           return false;
         }
@@ -445,8 +446,8 @@ class ClassMemberCollection {
   final Map<String, PropertyAccessorElement> accessorsByName;
 
   ClassMemberCollection({required this.fields, required this.accessors})
-      : fieldsByName = {for (var f in fields) f.name: f},
-        accessorsByName = {for (var a in accessors) a.name: a};
+    : fieldsByName = {for (var f in fields) f.name: f},
+      accessorsByName = {for (var a in accessors) a.name: a};
 
   /// Get a field by name, returns null if not found
   FieldElement? getField(String name) => fieldsByName[name];

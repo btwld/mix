@@ -77,7 +77,9 @@ mixin UtilityVariantMixin<S extends Spec<S>, T extends Style<S>> {
     ]);
   }
 
-  @Deprecated('Use onBuilder instead. This method will be removed in a future version.')
+  @Deprecated(
+    'Use onBuilder instead. This method will be removed in a future version.',
+  )
   T builder(T Function(BuildContext context) fn) {
     return onBuilder(fn);
   }

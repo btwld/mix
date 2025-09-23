@@ -52,8 +52,9 @@ class ExtractAttributes extends DartAssist {
       );
     }
 
-    ancestorNode =
-        node.thisOrAncestorMatching<TopLevelVariableDeclaration>((node) {
+    ancestorNode = node.thisOrAncestorMatching<TopLevelVariableDeclaration>((
+      node,
+    ) {
       return node is TopLevelVariableDeclaration;
     });
 
@@ -184,7 +185,9 @@ class _FieldDeclarationExtractor
   });
 
   String reformatCode(String content) {
-    return content.substring(node.offset, node.end).replaceRange(
+    return content
+        .substring(node.offset, node.end)
+        .replaceRange(
           target.offset - node.offset,
           target.offset - node.offset + target.length,
           '$extractedCodeName(),',
@@ -255,7 +258,9 @@ class _TopLevelVariableDeclarationExtractor
   String get privateExtractedCodeName => '_$extractedCodeName';
 
   String reformatCode(String content) {
-    return content.substring(node.offset, node.end).replaceRange(
+    return content
+        .substring(node.offset, node.end)
+        .replaceRange(
           target.offset - node.offset,
           target.offset - node.offset + target.length,
           '$privateExtractedCodeName(),',

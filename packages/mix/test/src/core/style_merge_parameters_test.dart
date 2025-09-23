@@ -146,7 +146,9 @@ void main() {
       test('handles null merge correctly', () {
         final first = BoxStyler(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: WidgetModifierConfig.orderOfModifiers(const [OpacityModifier]),
+          modifier: WidgetModifierConfig.orderOfModifiers(const [
+            OpacityModifier,
+          ]),
         );
 
         final merged = first.merge(null);
@@ -334,15 +336,21 @@ void main() {
       test('chained merges preserve final values', () {
         final first = BoxStyler(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: WidgetModifierConfig.orderOfModifiers(const [OpacityModifier]),
+          modifier: WidgetModifierConfig.orderOfModifiers(const [
+            OpacityModifier,
+          ]),
         );
         final second = BoxStyler(
           constraints: BoxConstraintsMix.height(200.0),
-          modifier: WidgetModifierConfig.orderOfModifiers(const [PaddingModifier]),
+          modifier: WidgetModifierConfig.orderOfModifiers(const [
+            PaddingModifier,
+          ]),
         );
         final third = BoxStyler(
           decoration: DecorationMix.color(Colors.blue),
-          modifier: WidgetModifierConfig.orderOfModifiers(const [ClipOvalModifier]),
+          modifier: WidgetModifierConfig.orderOfModifiers(const [
+            ClipOvalModifier,
+          ]),
         );
 
         final merged = first.merge(second).merge(third);
@@ -405,7 +413,9 @@ void main() {
       test('empty orderOfModifiers list behavior', () {
         final first = BoxStyler(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: WidgetModifierConfig.orderOfModifiers(const [OpacityModifier]),
+          modifier: WidgetModifierConfig.orderOfModifiers(const [
+            OpacityModifier,
+          ]),
         );
         final second = BoxStyler(
           constraints: BoxConstraintsMix.height(200.0),
@@ -461,7 +471,9 @@ void main() {
       test('merge with self returns same instance', () {
         final style = BoxStyler(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: WidgetModifierConfig.orderOfModifiers(const [OpacityModifier]),
+          modifier: WidgetModifierConfig.orderOfModifiers(const [
+            OpacityModifier,
+          ]),
         );
 
         final merged = style.merge(style);
@@ -489,7 +501,9 @@ void main() {
       test('mixed null and non-null parameters', () {
         final first = BoxStyler(
           constraints: BoxConstraintsMix.width(100.0),
-          modifier: WidgetModifierConfig.orderOfModifiers(const [OpacityModifier]),
+          modifier: WidgetModifierConfig.orderOfModifiers(const [
+            OpacityModifier,
+          ]),
           animation: null,
         );
         final second = BoxStyler(

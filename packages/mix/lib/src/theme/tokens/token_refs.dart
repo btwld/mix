@@ -96,7 +96,7 @@ final class TextStyleMixRef extends Prop<TextStyle>
   }
 }
 
-/// Token reference for [ShadowMix] that implements Mix interface instead of Flutter interface  
+/// Token reference for [ShadowMix] that implements Mix interface instead of Flutter interface
 final class ShadowMixRef extends Prop<Shadow>
     with ValueRef<Shadow>
     implements ShadowMix {

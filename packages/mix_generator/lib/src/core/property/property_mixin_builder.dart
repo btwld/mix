@@ -19,8 +19,9 @@ class MixableTypeMixinBuilder extends CodeBuilder {
     final hasMerge = metadata.element.methods.any((m) => m.name == 'merge');
     final hasProps = metadata.element.methods.any((m) => m.name == 'props');
 
-    final defaultValueMixin =
-        metadata.hasDefaultValue ? ', HasDefaultValue<$resolvedTypeName>' : '';
+    final defaultValueMixin = metadata.hasDefaultValue
+        ? ', HasDefaultValue<$resolvedTypeName>'
+        : '';
 
     // Only generate methods that aren't already defined
     final resolveMethod = !hasResolve

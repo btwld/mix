@@ -37,8 +37,10 @@ extension ListUserMixExt on List<User> {
       expect(sampleCode, contains('name: name,'));
       expect(sampleCode, contains('age: age,'));
       expect(sampleCode, contains('address: address.toDto(),'));
-      expect(sampleCode,
-          contains('friends: friends.map((e) => e.toDto()).toList(),'));
+      expect(
+        sampleCode,
+        contains('friends: friends.map((e) => e.toDto()).toList(),'),
+      );
       expect(sampleCode, contains('extension ListUserMixExt on List<User>'));
       expect(sampleCode, contains('List<UserDto> toDto()'));
       expect(sampleCode, contains('return map((e) => e.toDto()).toList();'));

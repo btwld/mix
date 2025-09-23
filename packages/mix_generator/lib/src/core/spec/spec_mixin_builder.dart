@@ -19,13 +19,15 @@ class SpecMixinBuilder implements CodeBuilder {
     final specAttributeName = '${className}Attribute';
 
     // Static from method to create from MixContext
-    final fromMethod = '''
+    final fromMethod =
+        '''
 static $className from(MixContext mix) {
   return mix.attributeOf<$specAttributeName>()?.resolve(mix) ?? ${metadata.isConst ? 'const' : ''} $className${metadata.constructorRef}();
 }''';
 
     // Static of method to get from BuildContext
-    final ofMethod = '''
+    final ofMethod =
+        '''
 /// {@template ${className.snakeCase}_of}
 /// Retrieves the [$className] from the nearest [ComputedStyle] ancestor in the widget tree.
 ///
@@ -70,33 +72,39 @@ static $className of(BuildContext context) {
 
     if (metadata.generatedMethods.hasFlag(GeneratedSpecMethods.copyWith) &&
         !hasCopyWith) {
-      methods.add(SpecMethods.generateCopyWithMethod(
-        className: className,
-        constructorRef: metadata.constructorRef,
-        fields: metadata.parameters,
-        isConst: metadata.isConst,
-        useInternalRef: true,
-      ));
+      methods.add(
+        SpecMethods.generateCopyWithMethod(
+          className: className,
+          constructorRef: metadata.constructorRef,
+          fields: metadata.parameters,
+          isConst: metadata.isConst,
+          useInternalRef: true,
+        ),
+      );
     }
 
     if (metadata.generatedMethods.hasFlag(GeneratedSpecMethods.lerp) &&
         !hasLerp) {
-      methods.add(SpecMethods.generateLerpMethod(
-        className: className,
-        constructorRef: metadata.constructorRef,
-        fields: metadata.parameters,
-        isConst: metadata.isConst,
-        useInternalRef: true,
-      ));
+      methods.add(
+        SpecMethods.generateLerpMethod(
+          className: className,
+          constructorRef: metadata.constructorRef,
+          fields: metadata.parameters,
+          isConst: metadata.isConst,
+          useInternalRef: true,
+        ),
+      );
     }
 
     if (metadata.generatedMethods.hasFlag(GeneratedSpecMethods.equals) &&
         !hasProps) {
-      methods.add(CommonMethods.generatePropsGetter(
-        className: className,
-        fields: metadata.parameters,
-        useInternalRef: true,
-      ));
+      methods.add(
+        CommonMethods.generatePropsGetter(
+          className: className,
+          fields: metadata.parameters,
+          useInternalRef: true,
+        ),
+      );
     }
 
     // Add self getter
@@ -104,10 +112,12 @@ static $className of(BuildContext context) {
 
     // Add diagnostics methods if needed
     if (metadata.isDiagnosticable) {
-      methods.add(CommonMethods.generateDebugFillPropertiesMethod(
-        fields: metadata.parameters,
-        useInternalRef: true,
-      ));
+      methods.add(
+        CommonMethods.generateDebugFillPropertiesMethod(
+          fields: metadata.parameters,
+          useInternalRef: true,
+        ),
+      );
     }
 
     // Combine all methods
