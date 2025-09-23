@@ -75,6 +75,8 @@ extension BoxSpecWrappedWidget on StyleSpec<BoxSpec> {
 
   /// Convenient shorthand for creating a Box widget with this StyleSpec.
   Widget call({Widget? child}) {
-    return createWidget(child: child);
+    return Box.builder(this, (context, spec) {
+      return Box(spec: spec, child: child);
+    });
   }
 }

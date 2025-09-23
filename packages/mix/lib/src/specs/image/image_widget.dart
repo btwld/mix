@@ -131,11 +131,12 @@ extension ImageSpecWidget on ImageSpec {
     ImageErrorWidgetBuilder? errorBuilder,
     Animation<double>? opacity,
   }) {
-    return createWidget(
-      image: image,
+    return StyledImage(
+      spec: this,
       frameBuilder: frameBuilder,
       loadingBuilder: loadingBuilder,
       errorBuilder: errorBuilder,
+      image: image,
       opacity: opacity,
     );
   }
@@ -173,12 +174,15 @@ extension ImageSpecWrappedWidget on StyleSpec<ImageSpec> {
     ImageErrorWidgetBuilder? errorBuilder,
     Animation<double>? opacity,
   }) {
-    return createWidget(
-      image: image,
-      frameBuilder: frameBuilder,
-      loadingBuilder: loadingBuilder,
-      errorBuilder: errorBuilder,
-      opacity: opacity,
-    );
+    return StyledImage.builder(this, (context, spec) {
+      return StyledImage(
+        spec: spec,
+        frameBuilder: frameBuilder,
+        loadingBuilder: loadingBuilder,
+        errorBuilder: errorBuilder,
+        image: image,
+        opacity: opacity,
+      );
+    });
   }
 }

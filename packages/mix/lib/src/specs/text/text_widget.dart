@@ -61,7 +61,7 @@ extension TextSpecWidget on TextSpec {
 
   @Deprecated('Use StyledText(text, spec: this) instead')
   Widget call(String text) {
-    return createWidget(text);
+    return StyledText(text, spec: this);
   }
 }
 
@@ -78,6 +78,8 @@ extension TextSpecWrappedWidget on StyleSpec<TextSpec> {
 
   /// Convenient shorthand for creating a StyledText widget with this StyleSpec.
   Widget call(String text) {
-    return createWidget(text);
+    return StyledText.builder(this, (context, spec) {
+      return StyledText(text, spec: spec);
+    });
   }
 }

@@ -68,7 +68,7 @@ extension StackSpecWidget on StackSpec {
 
   @Deprecated('StackSpec is a component spec. Use ZBox for complete widgets')
   Stack call({List<Widget> children = const []}) {
-    return createWidget(children: children);
+    return _createStackSpecWidget(spec: this, children: children);
   }
 }
 
@@ -121,6 +121,8 @@ extension ZBoxSpecWrappedWidget on StyleSpec<ZBoxSpec> {
 
   /// Convenient shorthand for creating a ZBox widget with this StyleSpec.
   Widget call({List<Widget> children = const []}) {
-    return createWidget(children: children);
+    return ZBox.builder(this, (context, spec) {
+      return ZBox(spec: spec, children: children);
+    });
   }
 }
