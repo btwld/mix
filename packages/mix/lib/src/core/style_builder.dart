@@ -16,14 +16,6 @@ import 'style_spec.dart';
 /// and provides it to the builder function. It also manages style inheritance,
 /// variant application, and modifier rendering.
 class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
-  const StyleBuilder({
-    super.key,
-    required this.style,
-    required this.builder,
-    this.controller,
-    this.inheritable = false,
-  });
-
   /// The style element to resolve and apply.
   final Style<S> style;
 
@@ -41,6 +33,14 @@ class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
   ///
   /// Defaults to false.
   final bool inheritable;
+
+  const StyleBuilder({
+    super.key,
+    required this.style,
+    required this.builder,
+    this.controller,
+    this.inheritable = false,
+  });
 
   @override
   State<StyleBuilder<S>> createState() => _StyleBuilderState<S>();
@@ -110,17 +110,17 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
 /// Applies resolved style specs, widget modifiers, and animation support
 /// to the builder function while providing the spec through StyleSpecProvider.
 class StyleSpecBuilder<S extends Spec<S>> extends StatelessWidget {
-  const StyleSpecBuilder({
-    super.key,
-    required this.builder,
-    required this.styleSpec,
-  });
-
   /// The style to resolve.
   final StyleSpec<S> styleSpec;
 
   /// The builder function that receives the resolved style.
   final Widget Function(BuildContext context, S spec) builder;
+
+  const StyleSpecBuilder({
+    super.key,
+    required this.builder,
+    required this.styleSpec,
+  });
 
   @override
   Widget build(BuildContext context) {
