@@ -50,7 +50,25 @@ class BreakpointToken extends MixToken<Breakpoint> {
   const BreakpointToken(super.name);
 
   @override
-  BreakpointRef call() => BreakpointRef(this, Prop.token(this));
+  BreakpointRef call() => BreakpointRef(this);
+
+  @override
+  Breakpoint resolve(BuildContext context) {
+    try {
+      return super.resolve(context);
+    } catch (e) {
+      switch (this) {
+        case mobile:
+          return Breakpoint.maxWidth(767);
+        case tablet:
+          return Breakpoint.widthRange(768, 1023);
+        case desktop:
+          return Breakpoint.minWidth(1024);
+        default:
+          rethrow;
+      }
+    }
+  }
 }
 
 /// Design token for [TextStyle] values.

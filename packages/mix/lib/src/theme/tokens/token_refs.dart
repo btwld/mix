@@ -9,9 +9,9 @@ import '../../core/prop_source.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../properties/typography/text_style_mix.dart';
 import 'mix_token.dart';
-import 'value_tokens.dart' show BreakpointToken;
+import 'value_tokens.dart';
 
-mixin ValueRef<T> on Prop<T> {
+mixin ValueRef<T> {
   /// Generates a detailed error message for token reference misuse.
   String _buildTokenReferenceError(Symbol memberName) {
     final typeName = T.toString();
@@ -75,29 +75,9 @@ final class BoxShadowRef extends Prop<BoxShadow>
 }
 
 /// Token reference for [Breakpoint] values
-final class BreakpointRef extends Prop<Breakpoint>
-    with ValueRef<Breakpoint>
-    implements Breakpoint {
-  final MixToken<Breakpoint> tokenName;
-  BreakpointRef(this.tokenName, super.prop) : super.fromProp();
-
-  @override
-  Breakpoint resolveProp(BuildContext context) {
-    try {
-      return super.resolveProp(context);
-    } catch (e) {
-      switch (tokenName) {
-        case BreakpointToken.mobile:
-          return Breakpoint.maxWidth(767);
-        case BreakpointToken.tablet:
-          return Breakpoint.widthRange(768, 1023);
-        case BreakpointToken.desktop:
-          return Breakpoint.minWidth(1024);
-        default:
-          rethrow;
-      }
-    }
-  }
+final class BreakpointRef with ValueRef<Breakpoint> implements Breakpoint {
+  final BreakpointToken token;
+  const BreakpointRef(this.token);
 }
 
 // =============================================================================
@@ -247,11 +227,7 @@ T getReferenceValue<T>(MixToken<T> token) {
   } else if (T == TextStyle) {
     return TextStyleRef(prop as Prop<TextStyle>) as T;
   } else if (T == Breakpoint) {
-    return BreakpointRef(
-          token as MixToken<Breakpoint>,
-          prop as Prop<Breakpoint>,
-        )
-        as T;
+    return BreakpointRef(token as BreakpointToken) as T;
   } else if (T == BorderSide) {
     return BorderSideRef(prop as Prop<BorderSide>) as T;
   } else if (T == FontWeight) {

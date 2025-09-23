@@ -12,19 +12,19 @@ void main() {
             builder: (context) {
               final mobile = BreakpointToken.mobile();
               expect(
-                mobile.resolveProp(context),
+                mobile.token.resolve(context),
                 equals(Breakpoint.maxWidth(767)),
               );
 
               final tablet = BreakpointToken.tablet();
               expect(
-                tablet.resolveProp(context),
+                tablet.token.resolve(context),
                 equals(Breakpoint.widthRange(768, 1023)),
               );
 
               final desktop = BreakpointToken.desktop();
               expect(
-                desktop.resolveProp(context),
+                desktop.token.resolve(context),
                 equals(Breakpoint.minWidth(1024)),
               );
 
@@ -52,13 +52,16 @@ void main() {
             child: Builder(
               builder: (context) {
                 final mobile = BreakpointToken.mobile();
-                expect(mobile.resolveProp(context), equals(mobileBreakpoint));
+                expect(mobile.token.resolve(context), equals(mobileBreakpoint));
 
                 final tablet = BreakpointToken.tablet();
-                expect(tablet.resolveProp(context), equals(tabletBreakpoint));
+                expect(tablet.token.resolve(context), equals(tabletBreakpoint));
 
                 final desktop = BreakpointToken.desktop();
-                expect(desktop.resolveProp(context), equals(desktopBreakpoint));
+                expect(
+                  desktop.token.resolve(context),
+                  equals(desktopBreakpoint),
+                );
 
                 return Box();
               },

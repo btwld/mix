@@ -69,8 +69,8 @@ class ContextVariant extends Variant {
 
   static ContextVariant breakpoint(Breakpoint breakpoint) {
     if (breakpoint case final BreakpointRef ref) {
-      return ContextVariant('breakpoint_${ref.tokenName}', (context) {
-        return ref.resolveProp(context).matches(MediaQuery.sizeOf(context));
+      return ContextVariant('breakpoint_${ref.token.name}', (context) {
+        return ref.token.resolve(context).matches(MediaQuery.sizeOf(context));
       });
     }
 

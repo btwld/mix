@@ -29,6 +29,12 @@ class Breakpoint {
   /// If null, there is no maximum height constraint.
   final double? maxHeight;
 
+  static const mobile = Breakpoint(maxWidth: 767);
+
+  static const tablet = Breakpoint(minWidth: 768, maxWidth: 1023);
+
+  static const desktop = Breakpoint(minWidth: 1024);
+
   /// Creates a new breakpoint with the specified constraints.
   ///
   /// At least one constraint must be provided.
