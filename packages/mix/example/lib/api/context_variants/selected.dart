@@ -33,11 +33,11 @@ class _ExampleState extends State<Example> {
         .onSelected(BoxStyler().color(Colors.blue));
 
     return Pressable(
-      controller: controller,
       onPress: () {
         final isSelected = controller.has(WidgetState.selected);
         controller.update(WidgetState.selected, !isSelected);
       },
+      controller: controller,
       child: Box(style: style),
     );
   }
