@@ -29,29 +29,11 @@ class Breakpoint {
   /// If null, there is no maximum height constraint.
   final double? maxHeight;
 
-  /// Extra small devices (portrait phones, up to 575px)
-  static const xs = Breakpoint.maxWidth(575);
+  static const mobile = Breakpoint(maxWidth: 767);
 
-  /// Small devices (landscape phones, 576px and up)
-  static const sm = Breakpoint.widthRange(576, 767);
+  static const tablet = Breakpoint(minWidth: 768, maxWidth: 1023);
 
-  /// Medium devices (tablets, 768px and up)
-  static const md = Breakpoint.widthRange(768, 991);
-
-  /// Large devices (desktops, 992px and up)
-  static const lg = Breakpoint.widthRange(992, 1199);
-
-  /// Extra large devices (large desktops, 1200px and up)
-  static const xl = Breakpoint.minWidth(1200);
-
-  /// Mobile devices (up to 767px)
-  static const mobile = Breakpoint.maxWidth(767);
-
-  /// Tablet devices (768px to 1023px)
-  static const tablet = Breakpoint.widthRange(768, 1023);
-
-  /// Desktop devices (1024px and up)
-  static const desktop = Breakpoint.minWidth(1024);
+  static const desktop = Breakpoint(minWidth: 1024);
 
   /// Creates a new breakpoint with the specified constraints.
   ///

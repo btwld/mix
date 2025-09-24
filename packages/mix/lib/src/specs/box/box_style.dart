@@ -45,7 +45,7 @@ class BoxStyler extends Style<BoxSpec>
         SpacingStyleMixin<BoxStyler>,
         TransformStyleMixin<BoxStyler>,
         ConstraintStyleMixin<BoxStyler>,
-        AnimationStyleMixin<BoxSpec, BoxStyler> {
+        AnimationStyleMixin<BoxStyler, BoxSpec> {
   final Prop<AlignmentGeometry>? $alignment;
   final Prop<EdgeInsetsGeometry>? $padding;
   final Prop<EdgeInsetsGeometry>? $margin;

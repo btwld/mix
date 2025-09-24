@@ -14,7 +14,7 @@ abstract class StyleWidget<S extends Spec<S>> extends StatefulWidget {
   const StyleWidget({this.style, this.styleSpec, super.key})
     : assert(
         (style != null) != (styleSpec != null),
-        'Provide either style or spec, not both',
+        'Provide either style or styleSpec, not both',
       );
 
   /// Style to apply to this widget.

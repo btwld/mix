@@ -41,7 +41,7 @@ void main() {
 
   PressableBox(
     style: pressableStyle,
-    onPress: () => print('Pressed!'),
+    onPress: () => debugPrint('Pressed!'),
     child: Text('Tap me'),
   );
 }

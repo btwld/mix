@@ -5,6 +5,7 @@ import '../../core/style_spec.dart';
 import '../../core/style_widget.dart';
 import '../box/box_widget.dart';
 import 'stack_box_spec.dart';
+import 'stack_box_style.dart';
 import 'stack_spec.dart';
 
 /// Combines [Container] and [Stack] with Mix styling.
@@ -12,7 +13,7 @@ import 'stack_spec.dart';
 /// Creates a stacked layout with box styling capabilities.
 class ZBox extends StyleWidget<ZBoxSpec> {
   const ZBox({
-    super.style,
+    super.style = const StackBoxStyler.create(),
     super.styleSpec,
     this.children = const <Widget>[],
     super.key,
@@ -27,6 +28,7 @@ class ZBox extends StyleWidget<ZBoxSpec> {
   }
 
   final List<Widget> children;
+
   @override
   Widget build(BuildContext context, ZBoxSpec spec) {
     final boxStyleSpec = spec.box;

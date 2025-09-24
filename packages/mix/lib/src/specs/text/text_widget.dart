@@ -5,13 +5,19 @@ import '../../core/style_builder.dart';
 import '../../core/style_spec.dart';
 import '../../core/style_widget.dart';
 import 'text_spec.dart';
+import 'text_style.dart';
 
 /// Displays text with Mix styling.
 ///
 /// Applies [TextSpec] for custom text appearance.
 class StyledText extends StyleWidget<TextSpec> {
-  /// Creates a [StyledText] with required [text] and optional [style] or [spec].
-  const StyledText(this.text, {super.style, super.styleSpec, super.key});
+  /// Creates a [StyledText] with required [text] and optional [style] or [styleSpec].
+  const StyledText(
+    this.text, {
+    super.style = const TextStyler.create(),
+    super.styleSpec,
+    super.key,
+  });
 
   /// Builder pattern for `StyleSpec<TextSpec>` with custom builder function.
   static Widget builder(

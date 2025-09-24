@@ -8,6 +8,7 @@ import '../../core/style_widget.dart';
 import '../box/box_widget.dart';
 import '../flex/flex_spec.dart';
 import 'flexbox_spec.dart';
+import 'flexbox_style.dart';
 
 @Deprecated('Use ColumnBox instead')
 typedef VBox = ColumnBox;
@@ -21,7 +22,7 @@ typedef HBox = RowBox;
 /// providing decoration, constraints, and flex layout in one widget.
 class FlexBox extends StyleWidget<FlexBoxSpec> {
   const FlexBox({
-    super.style,
+    super.style = const FlexBoxStyler.create(),
     super.styleSpec,
     super.key,
     this.children = const <Widget>[],
@@ -66,7 +67,7 @@ class FlexBox extends StyleWidget<FlexBoxSpec> {
 /// Shorthand for [FlexBox] with [Axis.horizontal].
 class RowBox extends FlexBox {
   const RowBox({
-    super.style,
+    super.style = const FlexBoxStyler.create(),
     super.styleSpec,
     super.key,
     super.children = const <Widget>[],
@@ -92,7 +93,7 @@ class RowBox extends FlexBox {
 /// Shorthand for [FlexBox] with [Axis.vertical].
 class ColumnBox extends FlexBox {
   const ColumnBox({
-    super.style,
+    super.style = const FlexBoxStyler.create(),
     super.styleSpec,
     super.key,
     super.children = const <Widget>[],
@@ -169,7 +170,16 @@ extension FlexSpecWrappedWidget on StyleSpec<FlexSpec> {
     'FlexSpec is a component spec. Use FlexBox.builder(), RowBox.builder(), or ColumnBox.builder() with FlexBoxSpec instead',
   )
   Widget call({Axis? direction, List<Widget> children = const []}) {
-    return createWidget(direction: direction, children: children);
+    return StyleSpecBuilder(
+      builder: (context, spec) {
+        return _createFlexSpecWidget(
+          spec: spec,
+          forcedDirection: direction,
+          children: children,
+        );
+      },
+      styleSpec: this,
+    );
   }
 }
 
