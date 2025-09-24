@@ -294,9 +294,8 @@ FieldResolvableMetadata? createFieldResolvableMetadata({
       tryToMergeType: typeRegistry.hasTryToMerge(resolvableTypeName),
     );
   } catch (e) {
-    Logger(
-      'AnnotationUtils',
-    ).warning('Error creating resolvable metadata for $name: $e');
+    final logger = Logger('AnnotationUtils');
+    logger.warning('Error creating resolvable metadata for $name: $e');
 
     return null;
   }
