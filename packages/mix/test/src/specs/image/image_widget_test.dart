@@ -15,7 +15,7 @@ void main() {
           home: Scaffold(
             body: Column(
               children: [
-                StyledImage(spec: const ImageSpec(), key: styledImageKey, image: imageProvider),
+                StyledImage(styleSpec: StyleSpec(spec: const ImageSpec()), key: styledImageKey, image: imageProvider),
                 Image(key: imageKey, image: imageProvider),
               ],
             ),

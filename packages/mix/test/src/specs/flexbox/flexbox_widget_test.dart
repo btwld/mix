@@ -81,7 +81,7 @@ void main() {
           home: Scaffold(
             body: Column(
               children: [
-                RowBox(spec: const FlexBoxSpec(), key: hBoxKey),
+                RowBox(styleSpec: StyleSpec(spec: const FlexBoxSpec()), key: hBoxKey),
                 Row(key: rowKey, children: const []),
               ],
             ),
@@ -121,7 +121,7 @@ void main() {
           home: Scaffold(
             body: Row(
               children: [
-                ColumnBox(spec: const FlexBoxSpec(), key: vBoxKey),
+                ColumnBox(styleSpec: StyleSpec(spec: const FlexBoxSpec()), key: vBoxKey),
                 Column(key: columnKey, children: const []),
               ],
             ),
@@ -161,7 +161,7 @@ void main() {
           home: Scaffold(
             body: Column(
               children: [
-                FlexBox(spec: const FlexBoxSpec(), key: flexBoxKey),
+                FlexBox(styleSpec: StyleSpec(spec: const FlexBoxSpec()), key: flexBoxKey),
                 Flex(
                   direction: Axis.horizontal,
                   key: flexKey,

@@ -7,6 +7,7 @@ import '../core/style.dart';
 import '../core/utility.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
 import '../properties/painting/decoration_mix.dart';
+import '../core/style_spec.dart';
 import '../specs/box/box_spec.dart';
 import '../specs/box/box_style.dart';
 import '../specs/box/box_widget.dart';
@@ -43,7 +44,7 @@ final class BoxModifier extends WidgetModifier<BoxModifier>
 
   @override
   Widget build(Widget child) {
-    return spec.createWidget(child: child);
+    return Box(styleSpec: StyleSpec(spec: spec), child: child);
   }
 }
 

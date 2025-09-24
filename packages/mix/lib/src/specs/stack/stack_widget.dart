@@ -13,7 +13,7 @@ import 'stack_spec.dart';
 class ZBox extends StyleWidget<ZBoxSpec> {
   const ZBox({
     super.style,
-    super.spec,
+    super.styleSpec,
     this.children = const <Widget>[],
     super.key,
   });
@@ -35,7 +35,7 @@ class ZBox extends StyleWidget<ZBoxSpec> {
     final stack = _createStackSpecWidget(spec: stackSpec, children: children);
 
     if (boxStyleSpec != null) {
-      return Box(spec: boxStyleSpec.spec, child: stack);
+      return Box(styleSpec: boxStyleSpec, child: stack);
     }
 
     return stack;
@@ -56,33 +56,7 @@ Stack _createStackSpecWidget({
   );
 }
 
-/// Extension to convert [StackSpec] directly to a [Stack] widget.
-extension StackSpecWidget on StackSpec {
-  /// Creates a [Stack] widget from this [StackSpec].
-  @Deprecated('StackSpec is a component spec. Use ZBox for complete widgets')
-  Stack createWidget({List<Widget> children = const []}) {
-    return _createStackSpecWidget(spec: this, children: children);
-  }
 
-  @Deprecated('StackSpec is a component spec. Use ZBox for complete widgets')
-  Stack call({List<Widget> children = const []}) {
-    return createWidget(children: children);
-  }
-}
-
-/// Extension to convert [ZBoxSpec] directly to a [ZBox] widget.
-extension ZBoxSpecWidget on ZBoxSpec {
-  /// Creates a [ZBox] widget from this [ZBoxSpec].
-  @Deprecated('Use ZBox(spec: this, children: children) instead')
-  Widget createWidget({List<Widget> children = const []}) {
-    return ZBox(spec: this, children: children);
-  }
-
-  @Deprecated('Use ZBox(spec: this, children: children) instead')
-  Widget call({List<Widget> children = const []}) {
-    return createWidget(children: children);
-  }
-}
 
 extension StackSpecWrappedWidget on StyleSpec<StackSpec> {
   /// Creates a widget that resolves this [StyleSpec<StackSpec>] with context.
@@ -113,12 +87,12 @@ extension ZBoxSpecWrappedWidget on StyleSpec<ZBoxSpec> {
   )
   Widget createWidget({List<Widget> children = const []}) {
     return ZBox.builder(this, (context, spec) {
-      return ZBox(spec: spec, children: children);
+      return ZBox(styleSpec: StyleSpec(spec: spec), children: children);
     });
   }
 
   /// Convenient shorthand for creating a ZBox widget with this StyleSpec.
   Widget call({List<Widget> children = const []}) {
-    return createWidget(children: children);
+    return ZBox(styleSpec: this, children: children);
   }
 }

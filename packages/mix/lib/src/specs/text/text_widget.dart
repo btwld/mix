@@ -11,7 +11,7 @@ import 'text_spec.dart';
 /// Applies [TextSpec] for custom text appearance.
 class StyledText extends StyleWidget<TextSpec> {
   /// Creates a [StyledText] with required [text] and optional [style] or [spec].
-  const StyledText(this.text, {super.style, super.spec, super.key});
+  const StyledText(this.text, {super.style, super.styleSpec, super.key});
 
   /// Builder pattern for `StyleSpec<TextSpec>` with custom builder function.
   static Widget builder(
@@ -45,19 +45,6 @@ class StyledText extends StyleWidget<TextSpec> {
   }
 }
 
-/// Extension to convert [TextSpec] directly to a [StyledText] widget.
-extension TextSpecWidget on TextSpec {
-  /// Creates a [StyledText] widget from this [TextSpec].
-  @Deprecated('Use StyledText(text, spec: this) instead')
-  Widget createWidget(String text) {
-    return StyledText(text, spec: this);
-  }
-
-  @Deprecated('Use StyledText(text, spec: this) instead')
-  Widget call(String text) {
-    return createWidget(text);
-  }
-}
 
 extension TextSpecWrappedWidget on StyleSpec<TextSpec> {
   /// Creates a widget that resolves this [StyleSpec<TextSpec>] with context.
@@ -66,12 +53,12 @@ extension TextSpecWrappedWidget on StyleSpec<TextSpec> {
   )
   Widget createWidget(String text) {
     return StyledText.builder(this, (context, spec) {
-      return StyledText(text, spec: spec);
+      return StyledText(text, styleSpec: StyleSpec(spec: spec));
     });
   }
 
   /// Convenient shorthand for creating a StyledText widget with this StyleSpec.
   Widget call(String text) {
-    return createWidget(text);
+    return StyledText(text, styleSpec: this);
   }
 }
