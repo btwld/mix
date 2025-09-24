@@ -43,10 +43,32 @@ class DoubleToken extends MixToken<double> {
 
 /// Design token for [Breakpoint] values.
 class BreakpointToken extends MixToken<Breakpoint> {
+  static const mobile = BreakpointToken('mix.breakpoint.mobile');
+  static const tablet = BreakpointToken('mix.breakpoint.tablet');
+  static const desktop = BreakpointToken('mix.breakpoint.desktop');
+
   const BreakpointToken(super.name);
 
   @override
-  BreakpointRef call() => BreakpointRef(Prop.token(this));
+  BreakpointRef call() => BreakpointRef(this);
+
+  @override
+  Breakpoint resolve(BuildContext context) {
+    try {
+      return super.resolve(context);
+    } catch (e) {
+      switch (this) {
+        case mobile:
+          return Breakpoint.maxWidth(767);
+        case tablet:
+          return Breakpoint.widthRange(768, 1023);
+        case desktop:
+          return Breakpoint.minWidth(1024);
+        default:
+          rethrow;
+      }
+    }
+  }
 }
 
 /// Design token for [TextStyle] values.

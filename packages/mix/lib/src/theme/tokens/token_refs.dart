@@ -3,14 +3,16 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/breakpoint.dart';
+import '../../core/internal/compare_mixin.dart';
 import '../../core/prop.dart';
 import '../../core/prop_refs.dart';
 import '../../core/prop_source.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../properties/typography/text_style_mix.dart';
 import 'mix_token.dart';
+import 'value_tokens.dart';
 
-mixin ValueRef<T> on Prop<T> {
+mixin ValueRef<T> {
   /// Generates a detailed error message for token reference misuse.
   String _buildTokenReferenceError(Symbol memberName) {
     final typeName = T.toString();
@@ -74,10 +76,14 @@ final class BoxShadowRef extends Prop<BoxShadow>
 }
 
 /// Token reference for [Breakpoint] values
-final class BreakpointRef extends Prop<Breakpoint>
-    with ValueRef<Breakpoint>
+final class BreakpointRef
+    with ValueRef<Breakpoint>, Equatable
     implements Breakpoint {
-  BreakpointRef(super.prop) : super.fromProp();
+  final BreakpointToken token;
+  const BreakpointRef(this.token);
+
+  @override
+  List<Object?> get props => [token];
 }
 
 // =============================================================================
@@ -227,7 +233,7 @@ T getReferenceValue<T>(MixToken<T> token) {
   } else if (T == TextStyle) {
     return TextStyleRef(prop as Prop<TextStyle>) as T;
   } else if (T == Breakpoint) {
-    return BreakpointRef(prop as Prop<Breakpoint>) as T;
+    return BreakpointRef(token as BreakpointToken) as T;
   } else if (T == BorderSide) {
     return BorderSideRef(prop as Prop<BorderSide>) as T;
   } else if (T == FontWeight) {

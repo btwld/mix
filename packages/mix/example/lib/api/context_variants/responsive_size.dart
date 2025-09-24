@@ -1,6 +1,7 @@
-import '../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
+
+import '../../helpers.dart';
 
 void main() {
   runMixApp(Example());
@@ -15,7 +16,7 @@ class Example extends StatelessWidget {
         .width(100)
         .height(100)
         .color(Colors.blue.shade400)
-        .onBreakpoint(Breakpoint.xs, BoxStyler().color(Colors.green))
+        .onBreakpoint(Breakpoint.maxWidth(575), BoxStyler().color(Colors.green))
         .borderRounded(16)
         .shadowOnly(color: Colors.black.withValues(alpha: 0.2), blurRadius: 20)
         .wrapDefaultTextStyle(
