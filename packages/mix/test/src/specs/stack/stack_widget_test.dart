@@ -97,7 +97,7 @@ void main() {
           home: Scaffold(
             body: Column(
               children: [
-                ZBox(styleSpec: StyleSpec(spec: const ZBoxSpec()), key: zBoxKey, children: const []),
+                ZBox(style: null, styleSpec: StyleSpec(spec: const ZBoxSpec()), key: zBoxKey, children: const []),
                 Stack(key: stackKey, children: const []),
               ],
             ),
