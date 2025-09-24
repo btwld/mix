@@ -55,10 +55,19 @@ runs:
       shell: bash    
       run: melos run brb
 
-    - name: Run Test
+    - name: Run Test with Dynamic Concurrency
       run: |
-        melos run test:flutter
-        melos run test:dart
+        # Detect available cores and use half for concurrency
+        TOTAL_CORES=$(nproc)
+        CONCURRENCY=$((TOTAL_CORES / 2))
+        # Ensure minimum of 1
+        CONCURRENCY=$((CONCURRENCY > 0 ? CONCURRENCY : 1))
+        
+        echo "Total cores: $TOTAL_CORES, Using concurrency: $CONCURRENCY across ALL packages"
+        
+        # Run all tests concurrently across all packages with flutter test
+        # flutter test can handle both Flutter and Dart packages
+        melos exec -c $CONCURRENCY --fail-fast -- flutter test
       shell: bash
 
     - name: Install DCM
