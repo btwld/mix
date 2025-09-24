@@ -19,13 +19,6 @@ class StyledText extends StyleWidget<TextSpec> {
     super.key,
   });
 
-  /// Builder pattern for `StyleSpec<TextSpec>` with custom builder function.
-  static Widget builder(
-    StyleSpec<TextSpec> styleSpec,
-    Widget Function(BuildContext context, TextSpec spec) builder,
-  ) {
-    return StyleSpecBuilder<TextSpec>(builder: builder, styleSpec: styleSpec);
-  }
 
   /// The text to display.
   final String text;
@@ -68,18 +61,18 @@ extension TextSpecWidget on TextSpec {
 extension TextSpecWrappedWidget on StyleSpec<TextSpec> {
   /// Creates a widget that resolves this [StyleSpec<TextSpec>] with context.
   @Deprecated(
-    'Use StyledText.builder(styleSpec, builder) for custom logic, or styleSpec(text) for simple cases',
+    'Use StyleSpecBuilder directly for custom logic, or styleSpec(text) for simple cases',
   )
   Widget createWidget(String text) {
-    return StyledText.builder(this, (context, spec) {
+    return StyleSpecBuilder<TextSpec>(builder: (context, spec) {
       return StyledText(text, spec: spec);
-    });
+    }, styleSpec: this);
   }
 
   /// Convenient shorthand for creating a StyledText widget with this StyleSpec.
   Widget call(String text) {
-    return StyledText.builder(this, (context, spec) {
+    return StyleSpecBuilder<TextSpec>(builder: (context, spec) {
       return StyledText(text, spec: spec);
-    });
+    }, styleSpec: this);
   }
 }

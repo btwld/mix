@@ -28,17 +28,6 @@ class FlexBox extends StyleWidget<FlexBoxSpec> {
     this.children = const <Widget>[],
   });
 
-  /// Builder pattern for `StyleSpec<FlexBoxSpec>` with custom builder function.
-  static Widget builder(
-    StyleSpec<FlexBoxSpec> styleSpec,
-    Widget Function(BuildContext context, FlexBoxSpec spec) builder,
-  ) {
-    return StyleSpecBuilder<FlexBoxSpec>(
-      builder: builder,
-      styleSpec: styleSpec,
-    );
-  }
-
   /// Child widgets to be arranged in the flex layout.
   final List<Widget> children;
 
@@ -73,17 +62,6 @@ class RowBox extends FlexBox {
     super.children = const <Widget>[],
   });
 
-  /// Builder pattern for `StyleSpec<FlexBoxSpec>` with custom builder function.
-  static Widget builder(
-    StyleSpec<FlexBoxSpec> styleSpec,
-    Widget Function(BuildContext context, FlexBoxSpec spec) builder,
-  ) {
-    return StyleSpecBuilder<FlexBoxSpec>(
-      builder: builder,
-      styleSpec: styleSpec,
-    );
-  }
-
   @override
   Axis get _forcedDirection => Axis.horizontal;
 }
@@ -98,17 +76,6 @@ class ColumnBox extends FlexBox {
     super.key,
     super.children = const <Widget>[],
   });
-
-  /// Builder pattern for `StyleSpec<FlexBoxSpec>` with custom builder function.
-  static Widget builder(
-    StyleSpec<FlexBoxSpec> styleSpec,
-    Widget Function(BuildContext context, FlexBoxSpec spec) builder,
-  ) {
-    return StyleSpecBuilder<FlexBoxSpec>(
-      builder: builder,
-      styleSpec: styleSpec,
-    );
-  }
 
   @override
   Axis get _forcedDirection => Axis.vertical;
@@ -205,7 +172,7 @@ extension FlexBoxSpecWidget on FlexBoxSpec {
 extension FlexSpecWrappedWidget on StyleSpec<FlexSpec> {
   /// Creates a widget that resolves this [StyleSpec<FlexSpec>] with context.
   @Deprecated(
-    'FlexSpec is a component spec. Use FlexBox.builder(), RowBox.builder(), or ColumnBox.builder() with FlexBoxSpec instead',
+    'FlexSpec is a component spec. Use StyleSpecBuilder directly with FlexBoxSpec instead',
   )
   Widget createWidget({Axis? direction, List<Widget> children = const []}) {
     return StyleSpecBuilder(
@@ -221,7 +188,7 @@ extension FlexSpecWrappedWidget on StyleSpec<FlexSpec> {
   }
 
   @Deprecated(
-    'FlexSpec is a component spec. Use FlexBox.builder(), RowBox.builder(), or ColumnBox.builder() with FlexBoxSpec instead',
+    'FlexSpec is a component spec. Use StyleSpecBuilder directly with FlexBoxSpec instead',
   )
   Widget call({Axis? direction, List<Widget> children = const []}) {
     return StyleSpecBuilder(
@@ -240,32 +207,32 @@ extension FlexSpecWrappedWidget on StyleSpec<FlexSpec> {
 extension FlexBoxSpecWrappedWidget on StyleSpec<FlexBoxSpec> {
   /// Creates a widget that resolves this [StyleSpec<FlexBoxSpec>] with context.
   @Deprecated(
-    'Use FlexBox.builder(styleSpec, builder), RowBox.builder(styleSpec, builder), or ColumnBox.builder(styleSpec, builder) for custom logic, or styleSpec(direction: direction, children: children) for simple cases',
+    'Use StyleSpecBuilder directly for custom logic, or styleSpec(direction: direction, children: children) for simple cases',
   )
   Widget createWidget({
     required Axis direction,
     List<Widget> children = const [],
   }) {
-    return FlexBox.builder(this, (context, spec) {
+    return StyleSpecBuilder<FlexBoxSpec>(builder: (context, spec) {
       if (direction == Axis.horizontal) {
         return RowBox(spec: spec, children: children);
       }
 
       return ColumnBox(spec: spec, children: children);
-    });
+    }, styleSpec: this);
   }
 
   /// Convenient shorthand for creating a FlexBox widget with this StyleSpec.
   Widget call({required Axis direction, List<Widget> children = const []}) {
     switch (direction) {
       case Axis.horizontal:
-        return RowBox.builder(this, (context, spec) {
+        return StyleSpecBuilder<FlexBoxSpec>(builder: (context, spec) {
           return RowBox(spec: spec, children: children);
-        });
+        }, styleSpec: this);
       case Axis.vertical:
-        return ColumnBox.builder(this, (context, spec) {
+        return StyleSpecBuilder<FlexBoxSpec>(builder: (context, spec) {
           return ColumnBox(spec: spec, children: children);
-        });
+        }, styleSpec: this);
     }
   }
 }

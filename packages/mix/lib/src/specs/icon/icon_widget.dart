@@ -18,13 +18,6 @@ class StyledIcon extends StyleWidget<IconSpec> {
     super.key,
   });
 
-  /// Builder pattern for `StyleSpec<IconSpec>` with custom builder function.
-  static Widget builder(
-    StyleSpec<IconSpec> styleSpec,
-    Widget Function(BuildContext context, IconSpec spec) builder,
-  ) {
-    return StyleSpecBuilder<IconSpec>(builder: builder, styleSpec: styleSpec);
-  }
 
   /// The icon to display.
   final IconData? icon;
@@ -72,18 +65,18 @@ extension IconSpecWidget on IconSpec {
 extension IconSpecWrappedWidget on StyleSpec<IconSpec> {
   /// Creates a widget that resolves this [StyleSpec<IconSpec>] with context.
   @Deprecated(
-    'Use StyledIcon.builder(styleSpec, builder) for custom logic, or styleSpec(icon: icon, semanticLabel: semanticLabel) for simple cases',
+    'Use StyleSpecBuilder directly for custom logic, or styleSpec(icon: icon, semanticLabel: semanticLabel) for simple cases',
   )
   Widget createWidget({IconData? icon, String? semanticLabel}) {
-    return StyledIcon.builder(this, (context, spec) {
+    return StyleSpecBuilder<IconSpec>(builder: (context, spec) {
       return StyledIcon(spec: spec, icon: icon, semanticLabel: semanticLabel);
-    });
+    }, styleSpec: this);
   }
 
   /// Convenient shorthand for creating a StyledIcon widget with this StyleSpec.
   Widget call({IconData? icon, String? semanticLabel}) {
-    return StyledIcon.builder(this, (context, spec) {
+    return StyleSpecBuilder<IconSpec>(builder: (context, spec) {
       return StyledIcon(spec: spec, icon: icon, semanticLabel: semanticLabel);
-    });
+    }, styleSpec: this);
   }
 }

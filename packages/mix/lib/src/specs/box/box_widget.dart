@@ -17,13 +17,6 @@ class Box extends StyleWidget<BoxSpec> {
     this.child,
   });
 
-  /// Builder pattern for `StyleSpec<BoxSpec>` with custom builder function.
-  static Widget builder(
-    StyleSpec<BoxSpec> styleSpec,
-    Widget Function(BuildContext context, BoxSpec spec) builder,
-  ) {
-    return StyleSpecBuilder<BoxSpec>(builder: builder, styleSpec: styleSpec);
-  }
 
   /// Child widget to display inside the box.
   final Widget? child;
@@ -65,18 +58,18 @@ extension BoxSpecWidget on BoxSpec {
 extension BoxSpecWrappedWidget on StyleSpec<BoxSpec> {
   /// Creates a widget that resolves this [StyleSpec<BoxSpec>] with context.
   @Deprecated(
-    'Use Box.builder(styleSpec, builder) for custom logic, or styleSpec(child: child) for simple cases',
+    'Use StyleSpecBuilder directly for custom logic, or styleSpec(child: child) for simple cases',
   )
   Widget createWidget({Widget? child}) {
-    return Box.builder(this, (context, spec) {
+    return StyleSpecBuilder<BoxSpec>(builder: (context, spec) {
       return Box(spec: spec, child: child);
-    });
+    }, styleSpec: this);
   }
 
   /// Convenient shorthand for creating a Box widget with this StyleSpec.
   Widget call({Widget? child}) {
-    return Box.builder(this, (context, spec) {
+    return StyleSpecBuilder<BoxSpec>(builder: (context, spec) {
       return Box(spec: spec, child: child);
-    });
+    }, styleSpec: this);
   }
 }

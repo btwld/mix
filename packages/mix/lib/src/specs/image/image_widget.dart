@@ -21,13 +21,6 @@ class StyledImage extends StyleWidget<ImageSpec> {
     this.opacity,
   });
 
-  /// Builder pattern for `StyleSpec<ImageSpec>` with custom builder function.
-  static Widget builder(
-    StyleSpec<ImageSpec> styleSpec,
-    Widget Function(BuildContext context, ImageSpec spec) builder,
-  ) {
-    return StyleSpecBuilder<ImageSpec>(builder: builder, styleSpec: styleSpec);
-  }
 
   /// The image to display.
   final ImageProvider<Object>? image;
@@ -145,7 +138,7 @@ extension ImageSpecWidget on ImageSpec {
 extension ImageSpecWrappedWidget on StyleSpec<ImageSpec> {
   /// Creates a widget that resolves this [StyleSpec<ImageSpec>] with context.
   @Deprecated(
-    'Use StyledImage.builder(styleSpec, builder) for custom logic, or styleSpec(image: image, frameBuilder: frameBuilder, loadingBuilder: loadingBuilder, errorBuilder: errorBuilder, opacity: opacity) for simple cases',
+    'Use StyleSpecBuilder directly for custom logic, or styleSpec(image: image, frameBuilder: frameBuilder, loadingBuilder: loadingBuilder, errorBuilder: errorBuilder, opacity: opacity) for simple cases',
   )
   Widget createWidget({
     ImageProvider<Object>? image,
@@ -154,7 +147,7 @@ extension ImageSpecWrappedWidget on StyleSpec<ImageSpec> {
     ImageErrorWidgetBuilder? errorBuilder,
     Animation<double>? opacity,
   }) {
-    return StyledImage.builder(this, (context, spec) {
+    return StyleSpecBuilder<ImageSpec>(builder: (context, spec) {
       return StyledImage(
         spec: spec,
         frameBuilder: frameBuilder,
@@ -163,7 +156,7 @@ extension ImageSpecWrappedWidget on StyleSpec<ImageSpec> {
         image: image,
         opacity: opacity,
       );
-    });
+    }, styleSpec: this);
   }
 
   /// Convenient shorthand for creating a StyledImage widget with this StyleSpec.
@@ -174,7 +167,7 @@ extension ImageSpecWrappedWidget on StyleSpec<ImageSpec> {
     ImageErrorWidgetBuilder? errorBuilder,
     Animation<double>? opacity,
   }) {
-    return StyledImage.builder(this, (context, spec) {
+    return StyleSpecBuilder<ImageSpec>(builder: (context, spec) {
       return StyledImage(
         spec: spec,
         frameBuilder: frameBuilder,
@@ -183,6 +176,6 @@ extension ImageSpecWrappedWidget on StyleSpec<ImageSpec> {
         image: image,
         opacity: opacity,
       );
-    });
+    }, styleSpec: this);
   }
 }
