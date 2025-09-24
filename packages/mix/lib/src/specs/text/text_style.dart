@@ -34,7 +34,7 @@ class TextStyler extends Style<TextSpec>
         WidgetModifierStyleMixin<TextStyler, TextSpec>,
         VariantStyleMixin<TextStyler, TextSpec>,
         TextStyleMixin<TextStyler>,
-        AnimationStyleMixin<TextSpec, TextStyler> {
+        AnimationStyleMixin<TextStyler, TextSpec> {
   final Prop<TextOverflow>? $overflow;
   final Prop<StrutStyle>? $strutStyle;
   final Prop<TextAlign>? $textAlign;

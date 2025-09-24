@@ -22,7 +22,7 @@ class IconStyler extends Style<IconSpec>
         Diagnosticable,
         WidgetModifierStyleMixin<IconStyler, IconSpec>,
         VariantStyleMixin<IconStyler, IconSpec>,
-        AnimationStyleMixin<IconSpec, IconStyler> {
+        AnimationStyleMixin<IconStyler, IconSpec> {
   final Prop<Color>? $color;
   final Prop<double>? $size;
   final Prop<double>? $weight;
