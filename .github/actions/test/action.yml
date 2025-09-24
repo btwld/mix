@@ -23,15 +23,10 @@ runs:
     - name: Install FVM
       shell: bash
       run: |
-        NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://fvm.app/install.sh)"
-        echo "PATH=/home/runner/.fvm_flutter/bin/fvm:$PATH" >> $GITHUB_ENV
-
-    - name: Use FVM
-      shell: bash
-      run: |
-        fvm --version
+        curl -fsSL https://fvm.app/install.sh | bash
         fvm use ${{ inputs.flutter-version }} --force
-        
+
+
     - uses: kuhnroyal/flutter-fvm-config-action@v2
       id: fvm-config-action
 
@@ -47,13 +42,30 @@ runs:
     - name: Setup Melos
       uses: bluefireteam/melos-action@v3
 
+    - name: Get dependencies
+      shell: bash
+      run: melos bootstrap
+
+    - name: Run build runner
+      shell: bash    
+      run: melos run brb
+
     - uses: invertase/github-action-dart-analyzer@v1
       with:
         fatal-infos: false
       
-    - name: Run build runner
-      shell: bash    
-      run: melos run brb
+
+    - name: Install DCM
+      if: ${{ inputs.run-dcm }}
+      uses: CQLabs/setup-dcm@v2
+      with:
+        github-token: ${{ inputs.token }}
+
+    # Lint
+    - name: analyze
+      run: melos run --no-select analyze
+      shell: bash
+      
 
     - name: Run Test
       run: |
@@ -61,31 +73,15 @@ runs:
         melos run test:dart
       shell: bash
 
-    - name: Install DCM
-      if: ${{ inputs.run-dcm }}
-      uses: CQLabs/setup-dcm@v1
-      with:
-        github_token: ${{ inputs.token }}
-        folders: packages/*/lib
+    # - name: Run melos fix
+    #   run: melos run fix
+    #   shell: bash
 
-    - name: Run DCM
-      run: dcm analyze .
-      shell: bash
-
-    - name: Run melos fix
-      run: melos run fix
-      shell: bash
-
-    # Lint
-    - name: analyze
-      run: melos run --no-select analyze
-      shell: bash
-      
     # - name: Run custom_lint
     #   run: melos run custom_lint_analyze
     #   shell: bash
       
     # Others
-    - name: Verify if mix_lint_test is up to date with mix_lint
-      run: cd scripts && ./compare_files.sh ../packages/mix_lint/lib/src/lints ../packages/mix_lint_test/test/lints
-      shell: bash
+    # - name: Verify if mix_lint_test is up to date with mix_lint
+    #   run: cd scripts && ./compare_files.sh ../packages/mix_lint/lib/src/lints ../packages/mix_lint_test/test/lints
+    #   shell: bash

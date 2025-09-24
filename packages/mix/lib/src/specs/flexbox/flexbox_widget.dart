@@ -164,7 +164,11 @@ extension FlexSpecWidget on FlexSpec {
     'FlexSpec is a component spec. Use FlexBox, RowBox, or ColumnBox for complete widgets',
   )
   Flex call({Axis? direction, List<Widget> children = const []}) {
-    return createWidget(direction: direction, children: children);
+    return _createFlexSpecWidget(
+      spec: this,
+      forcedDirection: direction,
+      children: children,
+    );
   }
 }
 
@@ -189,7 +193,12 @@ extension FlexBoxSpecWidget on FlexBoxSpec {
     'Use FlexBox(spec: this, children: children), RowBox(spec: this, children: children), or ColumnBox(spec: this, children: children) instead',
   )
   Widget call({required Axis direction, List<Widget> children = const []}) {
-    return createWidget(direction: direction, children: children);
+    switch (direction) {
+      case Axis.horizontal:
+        return RowBox(spec: this, children: children);
+      case Axis.vertical:
+        return ColumnBox(spec: this, children: children);
+    }
   }
 }
 
@@ -215,7 +224,16 @@ extension FlexSpecWrappedWidget on StyleSpec<FlexSpec> {
     'FlexSpec is a component spec. Use FlexBox.builder(), RowBox.builder(), or ColumnBox.builder() with FlexBoxSpec instead',
   )
   Widget call({Axis? direction, List<Widget> children = const []}) {
-    return createWidget(direction: direction, children: children);
+    return StyleSpecBuilder(
+      builder: (context, spec) {
+        return _createFlexSpecWidget(
+          spec: spec,
+          forcedDirection: direction,
+          children: children,
+        );
+      },
+      styleSpec: this,
+    );
   }
 }
 
@@ -239,6 +257,15 @@ extension FlexBoxSpecWrappedWidget on StyleSpec<FlexBoxSpec> {
 
   /// Convenient shorthand for creating a FlexBox widget with this StyleSpec.
   Widget call({required Axis direction, List<Widget> children = const []}) {
-    return createWidget(direction: direction, children: children);
+    switch (direction) {
+      case Axis.horizontal:
+        return RowBox.builder(this, (context, spec) {
+          return RowBox(spec: spec, children: children);
+        });
+      case Axis.vertical:
+        return ColumnBox.builder(this, (context, spec) {
+          return ColumnBox(spec: spec, children: children);
+        });
+    }
   }
 }

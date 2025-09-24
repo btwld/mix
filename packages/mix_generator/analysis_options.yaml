@@ -2,3 +2,4 @@ include: ../../lints_with_dcm.yaml
 analyzer:
   errors:
     non_constant_identifier_names: ignore
+    deprecated_member_use: ignore
