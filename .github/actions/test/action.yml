@@ -48,7 +48,7 @@ runs:
 
     - name: Run build runner
       shell: bash    
-      run: melos run brb
+      run: melos run gen
 
     - uses: invertase/github-action-dart-analyzer@v1
       with:
@@ -73,8 +73,8 @@ runs:
         melos run test:dart
       shell: bash
 
-    # - name: Run melos fix
-    #   run: melos run fix
+    # - name: Run melos lint
+    #   run: melos run lint
     #   shell: bash
 
     # - name: Run custom_lint
