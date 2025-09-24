@@ -49,7 +49,11 @@ jobs:
       - name: Setup Melos
         uses: bluefireteam/melos-action@v3
         
-      - name: Run melos fix
+      - name: Run lint fixes
+        run: melos run lint
+        shell: bash
+        
+      - name: Dry run package publishing
         run: |
           if [[ "${{ github.event.inputs.mix_lint }}" == "true" ]]; then
             cd packages/mix_lint && dart pub publish --dry-run && cd ../..

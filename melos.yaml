@@ -22,7 +22,7 @@ command:
       build_runner: ^2.4.9
   publish:
     hooks:
-      pre: melos run gen:build
+      pre: melos run gen
 
 categories:
   flutter_projects: 
@@ -34,100 +34,66 @@ categories:
     - packages/mix_generator
 
 scripts:
-  # ANALYSIS
+  # ANALYSIS & LINTING
   analyze:
-    run: melos run analyze:dart && melos run analyze:dcm
-    description: Run all static analysis checks.
-    exec:
-      failFast: true
-      
-  analyze:dart:
-    run: melos exec -c 4 -- dart analyze .
-    description: Run Dart static analysis checks.
+    run: |
+      melos exec -c 4 -- dart analyze . && \
+      melos exec -c 4 --depends-on="dart_code_metrics_presets" -- dcm analyze . --fatal-style --fatal-warnings
+    description: Run all static analysis checks (dart + DCM)
 
-  analyze:dcm:
-    run: melos exec -c 4 -- dcm analyze . --fatal-style --fatal-warnings
-    description: Run DCM static analysis checks.
-    packageFilters:
-      dependsOn: "dart_code_metrics_presets"
+  lint:
+    run: |
+      melos exec --depends-on="dart_code_metrics_presets" -- dcm fix . && \
+      melos exec -- dart fix --apply && \
+      melos exec -- dart format .
+    description: Fix all linting issues and format code
 
-  lint:fix:all:
-    run: melos run lint:dart:fix && melos run lint:dcm:fix
-    description: Run all static analysis checks and apply fixes.
+  # FORMATTING
+  format:
+    run: melos exec -- dart format .
+    description: Format all Dart files
 
-  lint:dart:fix:
-    run: melos exec -- dart fix --apply .
-    description: Run Dart static analysis checks.
+  format:check:
+    run: melos exec -- dart format --output=none --set-exit-if-changed .
+    description: Check formatting without applying changes
 
-  lint:dcm:fix:
-    run: melos exec -- dcm fix .
-    description: Run DCM static analysis checks.
-    packageFilters:
-      dependsOn: "dart_code_metrics_presets"
-
-  gen:watch:
-    run: melos exec --order-dependents -- dart run build_runner watch --delete-conflicting-outputs
-    description: Generate code for all packages
-    packageFilters:
-      dependsOn: "build_runner"
-
-  gen:build:
-    run: melos run gen:clean && melos run gen:build:flutter && melos run gen:build:dart
-    description: Generate code for all packages
-
-  gen:build:flutter:
-    run: melos exec --category=flutter_projects --order-dependents -- flutter pub run build_runner build --delete-conflicting-outputs
-    description: Generate code for Flutter packages
-    packageFilters:
-      dependsOn: "build_runner"
-
-  gen:build:dart:
-    run: melos exec --category=dart_projects --order-dependents -- dart run build_runner build --delete-conflicting-outputs
-    description: Generate code for Dart packages
-    packageFilters:
-      dependsOn: "build_runner"
-
-  gen:clean:
-    run: melos run gen:clean:flutter && melos run gen:clean:dart
-    description: Clean generated code for all packages
-
-  gen:clean:flutter:
-    run: melos exec --category=flutter_projects --order-dependents -- flutter pub run build_runner clean
-    description: Clean generated code for Flutter packages
-    packageFilters:
-      dependsOn: "build_runner"
-
-  gen:clean:dart:
-    run: melos exec --category=dart_projects --order-dependents -- dart run build_runner clean
-    description: Clean generated code for Dart packages
-    packageFilters:
-      dependsOn: "build_runner"
+  # TESTING
+  test:
+    run: melos run test:flutter && melos run test:dart
+    description: Run all tests
 
   test:flutter:
     run: melos exec --category=flutter_projects -- flutter test 
-    description: Run flutter test
+    description: Run Flutter tests
     packageFilters:
       dirExists: test
 
   test:dart:
     run: melos exec --category=dart_projects -- dart test
-    description: Run dart test
+    description: Run Dart tests
     packageFilters:
       dirExists: test
 
   test:coverage:
     run: melos exec --category=flutter_projects -- flutter test --coverage
-    description: Run flutter test with coverage
+    description: Run tests with coverage
     packageFilters:
       dirExists: test
 
-  brb:
-    run: melos run gen:build
-    
-  brbc: 
-    run: melos run gen:clean
-  fix:
-    run: melos run lint:fix:all
+  # CODE GENERATION
+  gen:
+    run: melos run gen:clean && melos exec --order-dependents --depends-on="build_runner" -- dart run build_runner build --delete-conflicting-outputs
+    description: Generate code for all packages
+
+  gen:watch:
+    run: melos exec --order-dependents --depends-on="build_runner" -- dart run build_runner watch --delete-conflicting-outputs
+    description: Watch mode for code generation
+
+  gen:clean:
+    run: melos exec --order-dependents --depends-on="build_runner" -- dart run build_runner clean
+    description: Clean generated code
+
+  # UTILITIES
   custom_lint_analyze:
     run: melos exec --depends-on="mix_lint" dart pub run custom_lint
 
@@ -139,7 +105,6 @@ scripts:
     run: ./scripts/verify_changelogs.sh packages
     description: Verify that all packages have the same version
 
-  # API compatibility checking with dart_apitool
   api-check:
     run: dart scripts/api_check.dart
-    description: "Check API compatibility for mix packages (usage: melos run api-check -- [package] [version])"
+    description: Check API compatibility for mix packages
