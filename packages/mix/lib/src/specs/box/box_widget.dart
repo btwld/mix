@@ -12,7 +12,7 @@ import 'box_style.dart';
 class Box extends StyleWidget<BoxSpec> {
   const Box({
     super.style = const BoxStyler.create(),
-    super.spec,
+    super.styleSpec,
     super.key,
     this.child,
   });
@@ -48,35 +48,17 @@ class Box extends StyleWidget<BoxSpec> {
 /// Alias for [Box] widget for backward compatibility.
 typedef StyledContainer = Box;
 
-/// Extension to convert [BoxSpec] directly to a [Box] widget.
-extension BoxSpecWidget on BoxSpec {
-  /// Creates a [Box] widget from this [BoxSpec].
-  @Deprecated('Use Box(spec: this, child: child) instead')
-  Widget createWidget({Widget? child}) {
-    return Box(spec: this, child: child);
-  }
-
-  @Deprecated('Use Box(spec: this, child: child) instead')
-  Widget call({Widget? child}) {
-    return Box(spec: this, child: child);
-  }
-}
-
 extension BoxSpecWrappedWidget on StyleSpec<BoxSpec> {
   /// Creates a widget that resolves this [StyleSpec<BoxSpec>] with context.
   @Deprecated(
     'Use Box.builder(styleSpec, builder) for custom logic, or styleSpec(child: child) for simple cases',
   )
   Widget createWidget({Widget? child}) {
-    return Box.builder(this, (context, spec) {
-      return Box(spec: spec, child: child);
-    });
+    return call(child: child);
   }
 
   /// Convenient shorthand for creating a Box widget with this StyleSpec.
   Widget call({Widget? child}) {
-    return Box.builder(this, (context, spec) {
-      return Box(spec: spec, child: child);
-    });
+    return Box(styleSpec: this, child: child);
   }
 }

@@ -15,7 +15,7 @@ class StyledText extends StyleWidget<TextSpec> {
   const StyledText(
     this.text, {
     super.style = const TextStyler.create(),
-    super.spec,
+    super.styleSpec,
     super.key,
   });
 
@@ -51,19 +51,6 @@ class StyledText extends StyleWidget<TextSpec> {
   }
 }
 
-/// Extension to convert [TextSpec] directly to a [StyledText] widget.
-extension TextSpecWidget on TextSpec {
-  /// Creates a [StyledText] widget from this [TextSpec].
-  @Deprecated('Use StyledText(text, spec: this) instead')
-  Widget createWidget(String text) {
-    return StyledText(text, spec: this);
-  }
-
-  @Deprecated('Use StyledText(text, spec: this) instead')
-  Widget call(String text) {
-    return StyledText(text, spec: this);
-  }
-}
 
 extension TextSpecWrappedWidget on StyleSpec<TextSpec> {
   /// Creates a widget that resolves this [StyleSpec<TextSpec>] with context.
@@ -71,15 +58,11 @@ extension TextSpecWrappedWidget on StyleSpec<TextSpec> {
     'Use StyledText.builder(styleSpec, builder) for custom logic, or styleSpec(text) for simple cases',
   )
   Widget createWidget(String text) {
-    return StyledText.builder(this, (context, spec) {
-      return StyledText(text, spec: spec);
-    });
+    return call(text);
   }
 
   /// Convenient shorthand for creating a StyledText widget with this StyleSpec.
   Widget call(String text) {
-    return StyledText.builder(this, (context, spec) {
-      return StyledText(text, spec: spec);
-    });
+    return StyledText(text, styleSpec: this);
   }
 }
