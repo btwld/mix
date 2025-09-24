@@ -3,6 +3,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../../core/breakpoint.dart';
+import '../../core/internal/compare_mixin.dart';
 import '../../core/prop.dart';
 import '../../core/prop_refs.dart';
 import '../../core/prop_source.dart';
@@ -75,9 +76,14 @@ final class BoxShadowRef extends Prop<BoxShadow>
 }
 
 /// Token reference for [Breakpoint] values
-final class BreakpointRef with ValueRef<Breakpoint> implements Breakpoint {
+final class BreakpointRef
+    with ValueRef<Breakpoint>, Equatable
+    implements Breakpoint {
   final BreakpointToken token;
   const BreakpointRef(this.token);
+
+  @override
+  List<Object?> get props => [token];
 }
 
 // =============================================================================
