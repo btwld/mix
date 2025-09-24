@@ -4,6 +4,7 @@ import '../../core/style_builder.dart';
 import '../../core/style_spec.dart';
 import '../../core/style_widget.dart';
 import 'icon_spec.dart';
+import 'icon_style.dart';
 
 /// Displays an icon with Mix styling.
 ///
@@ -12,7 +13,7 @@ class StyledIcon extends StyleWidget<IconSpec> {
   const StyledIcon({
     this.icon,
     this.semanticLabel,
-    super.style,
+    super.style = const IconStyler.create(),
     super.spec,
     super.key,
   });
@@ -30,6 +31,7 @@ class StyledIcon extends StyleWidget<IconSpec> {
 
   /// Semantic label for accessibility.
   final String? semanticLabel;
+
   @override
   Widget build(BuildContext context, IconSpec spec) {
     return Icon(
@@ -63,7 +65,7 @@ extension IconSpecWidget on IconSpec {
     'Use StyledIcon(spec: this, icon: icon, semanticLabel: semanticLabel) instead',
   )
   Widget call({IconData? icon, String? semanticLabel}) {
-    return createWidget(icon: icon, semanticLabel: semanticLabel);
+    return StyledIcon(spec: this, icon: icon, semanticLabel: semanticLabel);
   }
 }
 
@@ -80,6 +82,8 @@ extension IconSpecWrappedWidget on StyleSpec<IconSpec> {
 
   /// Convenient shorthand for creating a StyledIcon widget with this StyleSpec.
   Widget call({IconData? icon, String? semanticLabel}) {
-    return createWidget(icon: icon, semanticLabel: semanticLabel);
+    return StyledIcon.builder(this, (context, spec) {
+      return StyledIcon(spec: spec, icon: icon, semanticLabel: semanticLabel);
+    });
   }
 }

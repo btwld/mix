@@ -57,7 +57,7 @@ abstract class StyleMutableBuilder<S extends Spec<S>> extends Style<S>
 
   /// Internal mutable wrapper
   @protected
-  Mutable<S, Style<S>> get mutable;
+  Mutable<Style<S>, S> get mutable;
 
   /// Access to the actual accumulated style
   @visibleForTesting
@@ -91,7 +91,7 @@ abstract class StyleMutableBuilder<S extends Spec<S>> extends Style<S>
 ///
 /// Enables styles to accumulate merge operations into an internal value,
 /// providing error handling and type safety for merge operations.
-mixin Mutable<S extends Spec<S>, T extends Style<S>> on Style<S> {
+mixin Mutable<T extends Style<S>, S extends Spec<S>> on Style<S> {
   late T value;
 
   // Intercept merge calls
@@ -100,7 +100,7 @@ mixin Mutable<S extends Spec<S>, T extends Style<S>> on Style<S> {
     if (other == null) return this as T;
 
     try {
-      final otherValue = other is Mutable<S, T> ? other.value : other;
+      final otherValue = other is Mutable<T, S> ? other.value : other;
       // Accumulate merges - use super.merge to avoid recursion
       value = value.merge(otherValue) as T;
 

@@ -21,7 +21,7 @@ import 'icon_style.dart';
 /// Supports the same API as [IconStyler] but maintains mutable internal state
 /// enabling fluid styling: `$icon..color(Colors.blue)..size(24)..weight(400)`.
 class IconMutableStyler extends StyleMutableBuilder<IconSpec>
-    with UtilityVariantMixin<IconSpec, IconStyler> {
+    with UtilityVariantMixin<IconStyler, IconSpec> {
   late final color = ColorUtility<IconStyler>(
     (prop) => mutable.merge(IconStyler.create(color: prop)),
   );
@@ -106,7 +106,7 @@ class IconMutableStyler extends StyleMutableBuilder<IconSpec>
   IconStyler get value => mutable.value;
 }
 
-class IconMutableState extends IconStyler with Mutable<IconSpec, IconStyler> {
+class IconMutableState extends IconStyler with Mutable<IconStyler, IconSpec> {
   IconMutableState(IconStyler style) {
     value = style;
   }

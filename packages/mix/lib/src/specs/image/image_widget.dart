@@ -4,6 +4,7 @@ import '../../core/style_builder.dart';
 import '../../core/style_spec.dart';
 import '../../core/style_widget.dart';
 import 'image_spec.dart';
+import 'image_style.dart';
 
 /// A styled image widget using Mix framework.
 ///
@@ -11,7 +12,7 @@ import 'image_spec.dart';
 class StyledImage extends StyleWidget<ImageSpec> {
   const StyledImage({
     super.key,
-    super.style,
+    super.style = const ImageStyler.create(),
     super.spec,
     this.frameBuilder,
     this.loadingBuilder,
@@ -42,6 +43,7 @@ class StyledImage extends StyleWidget<ImageSpec> {
 
   /// Animation for opacity changes.
   final Animation<double>? opacity;
+
   @override
   Widget build(BuildContext context, ImageSpec spec) {
     final imageProvider = _resolveImage(image, spec);
@@ -129,11 +131,12 @@ extension ImageSpecWidget on ImageSpec {
     ImageErrorWidgetBuilder? errorBuilder,
     Animation<double>? opacity,
   }) {
-    return createWidget(
-      image: image,
+    return StyledImage(
+      spec: this,
       frameBuilder: frameBuilder,
       loadingBuilder: loadingBuilder,
       errorBuilder: errorBuilder,
+      image: image,
       opacity: opacity,
     );
   }
@@ -171,12 +174,15 @@ extension ImageSpecWrappedWidget on StyleSpec<ImageSpec> {
     ImageErrorWidgetBuilder? errorBuilder,
     Animation<double>? opacity,
   }) {
-    return createWidget(
-      image: image,
-      frameBuilder: frameBuilder,
-      loadingBuilder: loadingBuilder,
-      errorBuilder: errorBuilder,
-      opacity: opacity,
-    );
+    return StyledImage.builder(this, (context, spec) {
+      return StyledImage(
+        spec: spec,
+        frameBuilder: frameBuilder,
+        loadingBuilder: loadingBuilder,
+        errorBuilder: errorBuilder,
+        image: image,
+        opacity: opacity,
+      );
+    });
   }
 }

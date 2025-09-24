@@ -19,7 +19,7 @@ import 'image_style.dart';
 /// Supports the same API as [ImageStyler] but maintains mutable internal state
 /// enabling fluid styling: `$image..width(100)..height(100)..fit(BoxFit.cover)`.
 class ImageMutableStyler extends StyleMutableBuilder<ImageSpec>
-    with UtilityVariantMixin<ImageSpec, ImageStyler> {
+    with UtilityVariantMixin<ImageStyler, ImageSpec> {
   late final color = ColorUtility(
     (prop) => mutable.merge(ImageStyler.create(color: prop)),
   );
@@ -110,7 +110,7 @@ class ImageMutableStyler extends StyleMutableBuilder<ImageSpec>
 }
 
 class ImageMutableState extends ImageStyler
-    with Mutable<ImageSpec, ImageStyler> {
+    with Mutable<ImageStyler, ImageSpec> {
   ImageMutableState(ImageStyler style) {
     value = style;
   }
