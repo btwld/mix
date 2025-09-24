@@ -69,8 +69,7 @@ runs:
 
     - name: Run Test
       run: |
-        melos run test:flutter
-        melos run test:dart
+        melos exec --scope="mix" -- flutter test
       shell: bash
 
     # - name: Run melos lint
