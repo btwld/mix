@@ -21,13 +21,6 @@ class StyledImage extends StyleWidget<ImageSpec> {
     this.opacity,
   });
 
-  /// Builder pattern for `StyleSpec<ImageSpec>` with custom builder function.
-  static Widget builder(
-    StyleSpec<ImageSpec> styleSpec,
-    Widget Function(BuildContext context, ImageSpec spec) builder,
-  ) {
-    return StyleSpecBuilder<ImageSpec>(builder: builder, styleSpec: styleSpec);
-  }
 
   /// The image to display.
   final ImageProvider<Object>? image;

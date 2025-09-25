@@ -19,13 +19,6 @@ class StyledText extends StyleWidget<TextSpec> {
     super.key,
   });
 
-  /// Builder pattern for `StyleSpec<TextSpec>` with custom builder function.
-  static Widget builder(
-    StyleSpec<TextSpec> styleSpec,
-    Widget Function(BuildContext context, TextSpec spec) builder,
-  ) {
-    return StyleSpecBuilder<TextSpec>(builder: builder, styleSpec: styleSpec);
-  }
 
   /// The text to display.
   final String text;

@@ -19,13 +19,6 @@ class ZBox extends StyleWidget<ZBoxSpec> {
     super.key,
   });
 
-  /// Builder pattern for `StyleSpec<ZBoxSpec>` with custom builder function.
-  static Widget builder(
-    StyleSpec<ZBoxSpec> styleSpec,
-    Widget Function(BuildContext context, ZBoxSpec spec) builder,
-  ) {
-    return StyleSpecBuilder<ZBoxSpec>(builder: builder, styleSpec: styleSpec);
-  }
 
   final List<Widget> children;
 

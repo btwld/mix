@@ -28,17 +28,6 @@ class FlexBox extends StyleWidget<FlexBoxSpec> {
     this.children = const <Widget>[],
   });
 
-  /// Builder pattern for `StyleSpec<FlexBoxSpec>` with custom builder function.
-  static Widget builder(
-    StyleSpec<FlexBoxSpec> styleSpec,
-    Widget Function(BuildContext context, FlexBoxSpec spec) builder,
-  ) {
-    return StyleSpecBuilder<FlexBoxSpec>(
-      builder: builder,
-      styleSpec: styleSpec,
-    );
-  }
-
   /// Child widgets to be arranged in the flex layout.
   final List<Widget> children;
 
@@ -73,17 +62,6 @@ class RowBox extends FlexBox {
     super.children = const <Widget>[],
   });
 
-  /// Builder pattern for `StyleSpec<FlexBoxSpec>` with custom builder function.
-  static Widget builder(
-    StyleSpec<FlexBoxSpec> styleSpec,
-    Widget Function(BuildContext context, FlexBoxSpec spec) builder,
-  ) {
-    return StyleSpecBuilder<FlexBoxSpec>(
-      builder: builder,
-      styleSpec: styleSpec,
-    );
-  }
-
   @override
   Axis get _forcedDirection => Axis.horizontal;
 }
@@ -98,17 +76,6 @@ class ColumnBox extends FlexBox {
     super.key,
     super.children = const <Widget>[],
   });
-
-  /// Builder pattern for `StyleSpec<FlexBoxSpec>` with custom builder function.
-  static Widget builder(
-    StyleSpec<FlexBoxSpec> styleSpec,
-    Widget Function(BuildContext context, FlexBoxSpec spec) builder,
-  ) {
-    return StyleSpecBuilder<FlexBoxSpec>(
-      builder: builder,
-      styleSpec: styleSpec,
-    );
-  }
 
   @override
   Axis get _forcedDirection => Axis.vertical;

@@ -17,13 +17,6 @@ class Box extends StyleWidget<BoxSpec> {
     this.child,
   });
 
-  /// Builder pattern for `StyleSpec<BoxSpec>` with custom builder function.
-  static Widget builder(
-    StyleSpec<BoxSpec> styleSpec,
-    Widget Function(BuildContext context, BoxSpec spec) builder,
-  ) {
-    return StyleSpecBuilder<BoxSpec>(builder: builder, styleSpec: styleSpec);
-  }
 
   /// Child widget to display inside the box.
   final Widget? child;
