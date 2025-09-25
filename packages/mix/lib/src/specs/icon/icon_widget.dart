@@ -51,17 +51,19 @@ class StyledIcon extends StyleWidget<IconSpec> {
   }
 }
 
-
 extension IconSpecWrappedWidget on StyleSpec<IconSpec> {
   /// Creates a widget that resolves this [StyleSpec<IconSpec>] with context.
   @Deprecated(
-    'Use StyledIcon.builder(styleSpec, builder) for custom logic, or styleSpec(icon: icon, semanticLabel: semanticLabel) for simple cases',
+    'Use StyledIcon(icon: icon, semanticLabel: semanticLabel, styleSpec: styleSpec) instead',
   )
   Widget createWidget({IconData? icon, String? semanticLabel}) {
     return call(icon: icon, semanticLabel: semanticLabel);
   }
 
   /// Convenient shorthand for creating a StyledIcon widget with this StyleSpec.
+  @Deprecated(
+    'Use StyledIcon(icon: icon, semanticLabel: semanticLabel, styleSpec: styleSpec) instead',
+  )
   Widget call({IconData? icon, String? semanticLabel}) {
     return StyledIcon(
       icon: icon,

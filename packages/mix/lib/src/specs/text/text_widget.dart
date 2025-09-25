@@ -51,17 +51,15 @@ class StyledText extends StyleWidget<TextSpec> {
   }
 }
 
-
 extension TextSpecWrappedWidget on StyleSpec<TextSpec> {
   /// Creates a widget that resolves this [StyleSpec<TextSpec>] with context.
-  @Deprecated(
-    'Use StyledText.builder(styleSpec, builder) for custom logic, or styleSpec(text) for simple cases',
-  )
+  @Deprecated('Use StyledText(text, styleSpec: styleSpec) instead')
   Widget createWidget(String text) {
     return call(text);
   }
 
   /// Convenient shorthand for creating a StyledText widget with this StyleSpec.
+  @Deprecated('Use StyledText(text, styleSpec: styleSpec) instead')
   Widget call(String text) {
     return StyledText(text, styleSpec: this);
   }

@@ -98,11 +98,10 @@ ImageProvider<Object> _resolveImage(
   return imageProvider;
 }
 
-
 extension ImageSpecWrappedWidget on StyleSpec<ImageSpec> {
   /// Creates a widget that resolves this [StyleSpec<ImageSpec>] with context.
   @Deprecated(
-    'Use StyledImage.builder(styleSpec, builder) for custom logic, or styleSpec(image: image, frameBuilder: frameBuilder, loadingBuilder: loadingBuilder, errorBuilder: errorBuilder, opacity: opacity) for simple cases',
+    'Use StyledImage(image: image, frameBuilder: frameBuilder, loadingBuilder: loadingBuilder, errorBuilder: errorBuilder, opacity: opacity, styleSpec: styleSpec) instead',
   )
   Widget createWidget({
     ImageProvider<Object>? image,
@@ -121,6 +120,9 @@ extension ImageSpecWrappedWidget on StyleSpec<ImageSpec> {
   }
 
   /// Convenient shorthand for creating a StyledImage widget with this StyleSpec.
+  @Deprecated(
+    'Use StyledImage(image: image, frameBuilder: frameBuilder, loadingBuilder: loadingBuilder, errorBuilder: errorBuilder, opacity: opacity, styleSpec: styleSpec) instead',
+  )
   Widget call({
     ImageProvider<Object>? image,
     ImageFrameBuilder? frameBuilder,

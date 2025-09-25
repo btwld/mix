@@ -146,13 +146,10 @@ Flex _createFlexSpecWidget({
   );
 }
 
-
-
-
 extension FlexBoxSpecWrappedWidget on StyleSpec<FlexBoxSpec> {
   /// Creates a widget that resolves this [StyleSpec<FlexBoxSpec>] with context.
   @Deprecated(
-    'Use FlexBox.builder(styleSpec, builder), RowBox.builder(styleSpec, builder), or ColumnBox.builder(styleSpec, builder) for custom logic, or styleSpec(direction: direction, children: children) for simple cases',
+    'Use RowBox(children: children, styleSpec: styleSpec) for horizontal or ColumnBox(children: children, styleSpec: styleSpec) for vertical instead',
   )
   Widget createWidget({
     required Axis direction,
@@ -162,6 +159,9 @@ extension FlexBoxSpecWrappedWidget on StyleSpec<FlexBoxSpec> {
   }
 
   /// Convenient shorthand for creating a FlexBox widget with this StyleSpec.
+  @Deprecated(
+    'Use RowBox(children: children, styleSpec: styleSpec) for horizontal or ColumnBox(children: children, styleSpec: styleSpec) for vertical instead',
+  )
   Widget call({required Axis direction, List<Widget> children = const []}) {
     switch (direction) {
       case Axis.horizontal:

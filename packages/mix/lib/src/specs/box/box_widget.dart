@@ -50,14 +50,13 @@ typedef StyledContainer = Box;
 
 extension BoxSpecWrappedWidget on StyleSpec<BoxSpec> {
   /// Creates a widget that resolves this [StyleSpec<BoxSpec>] with context.
-  @Deprecated(
-    'Use Box.builder(styleSpec, builder) for custom logic, or styleSpec(child: child) for simple cases',
-  )
+  @Deprecated('Use Box(styleSpec: styleSpec, child: child) instead')
   Widget createWidget({Widget? child}) {
     return call(child: child);
   }
 
   /// Convenient shorthand for creating a Box widget with this StyleSpec.
+  @Deprecated('Use Box(styleSpec: styleSpec, child: child) instead')
   Widget call({Widget? child}) {
     return Box(styleSpec: this, child: child);
   }
