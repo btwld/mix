@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/style_builder.dart';
 import '../../core/style_spec.dart';
 import '../../core/style_widget.dart';
 import 'image_spec.dart';
@@ -13,7 +12,7 @@ class StyledImage extends StyleWidget<ImageSpec> {
   const StyledImage({
     super.key,
     super.style = const ImageStyler.create(),
-    super.spec,
+    super.styleSpec,
     this.frameBuilder,
     this.loadingBuilder,
     this.errorBuilder,
@@ -91,54 +90,10 @@ ImageProvider<Object> _resolveImage(
   return imageProvider;
 }
 
-/// Extension to convert [ImageSpec] directly to a [StyledImage] widget.
-extension ImageSpecWidget on ImageSpec {
-  /// Creates a [StyledImage] widget from this [ImageSpec].
-  @Deprecated(
-    'Use StyledImage(spec: this, image: image, frameBuilder: frameBuilder, loadingBuilder: loadingBuilder, errorBuilder: errorBuilder, opacity: opacity) instead',
-  )
-  Widget createWidget({
-    ImageProvider<Object>? image,
-    ImageFrameBuilder? frameBuilder,
-    ImageLoadingBuilder? loadingBuilder,
-    ImageErrorWidgetBuilder? errorBuilder,
-    Animation<double>? opacity,
-  }) {
-    return StyledImage(
-      spec: this,
-      frameBuilder: frameBuilder,
-      loadingBuilder: loadingBuilder,
-      errorBuilder: errorBuilder,
-      image: image,
-      opacity: opacity,
-    );
-  }
-
-  @Deprecated(
-    'Use StyledImage(spec: this, image: image, frameBuilder: frameBuilder, loadingBuilder: loadingBuilder, errorBuilder: errorBuilder, opacity: opacity) instead',
-  )
-  Widget call({
-    ImageProvider<Object>? image,
-    ImageFrameBuilder? frameBuilder,
-    ImageLoadingBuilder? loadingBuilder,
-    ImageErrorWidgetBuilder? errorBuilder,
-    Animation<double>? opacity,
-  }) {
-    return StyledImage(
-      spec: this,
-      frameBuilder: frameBuilder,
-      loadingBuilder: loadingBuilder,
-      errorBuilder: errorBuilder,
-      image: image,
-      opacity: opacity,
-    );
-  }
-}
-
 extension ImageSpecWrappedWidget on StyleSpec<ImageSpec> {
   /// Creates a widget that resolves this [StyleSpec<ImageSpec>] with context.
   @Deprecated(
-    'Use StyleSpecBuilder directly for custom logic, or styleSpec(image: image, frameBuilder: frameBuilder, loadingBuilder: loadingBuilder, errorBuilder: errorBuilder, opacity: opacity) for simple cases',
+    'Use StyledImage(image: image, frameBuilder: frameBuilder, loadingBuilder: loadingBuilder, errorBuilder: errorBuilder, opacity: opacity, styleSpec: styleSpec) instead',
   )
   Widget createWidget({
     ImageProvider<Object>? image,
@@ -147,19 +102,19 @@ extension ImageSpecWrappedWidget on StyleSpec<ImageSpec> {
     ImageErrorWidgetBuilder? errorBuilder,
     Animation<double>? opacity,
   }) {
-    return StyleSpecBuilder<ImageSpec>(builder: (context, spec) {
-      return StyledImage(
-        spec: spec,
-        frameBuilder: frameBuilder,
-        loadingBuilder: loadingBuilder,
-        errorBuilder: errorBuilder,
-        image: image,
-        opacity: opacity,
-      );
-    }, styleSpec: this);
+    return call(
+      image: image,
+      frameBuilder: frameBuilder,
+      loadingBuilder: loadingBuilder,
+      errorBuilder: errorBuilder,
+      opacity: opacity,
+    );
   }
 
   /// Convenient shorthand for creating a StyledImage widget with this StyleSpec.
+  @Deprecated(
+    'Use StyledImage(image: image, frameBuilder: frameBuilder, loadingBuilder: loadingBuilder, errorBuilder: errorBuilder, opacity: opacity, styleSpec: styleSpec) instead',
+  )
   Widget call({
     ImageProvider<Object>? image,
     ImageFrameBuilder? frameBuilder,
@@ -167,15 +122,13 @@ extension ImageSpecWrappedWidget on StyleSpec<ImageSpec> {
     ImageErrorWidgetBuilder? errorBuilder,
     Animation<double>? opacity,
   }) {
-    return StyleSpecBuilder<ImageSpec>(builder: (context, spec) {
-      return StyledImage(
-        spec: spec,
-        frameBuilder: frameBuilder,
-        loadingBuilder: loadingBuilder,
-        errorBuilder: errorBuilder,
-        image: image,
-        opacity: opacity,
-      );
-    }, styleSpec: this);
+    return StyledImage(
+      styleSpec: this,
+      frameBuilder: frameBuilder,
+      loadingBuilder: loadingBuilder,
+      errorBuilder: errorBuilder,
+      image: image,
+      opacity: opacity,
+    );
   }
 }

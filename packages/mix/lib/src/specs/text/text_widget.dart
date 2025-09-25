@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../core/directive.dart';
-import '../../core/style_builder.dart';
 import '../../core/style_spec.dart';
 import '../../core/style_widget.dart';
 import 'text_spec.dart';
@@ -15,7 +14,7 @@ class StyledText extends StyleWidget<TextSpec> {
   const StyledText(
     this.text, {
     super.style = const TextStyler.create(),
-    super.spec,
+    super.styleSpec,
     super.key,
   });
 
@@ -44,35 +43,16 @@ class StyledText extends StyleWidget<TextSpec> {
   }
 }
 
-/// Extension to convert [TextSpec] directly to a [StyledText] widget.
-extension TextSpecWidget on TextSpec {
-  /// Creates a [StyledText] widget from this [TextSpec].
-  @Deprecated('Use StyledText(text, spec: this) instead')
-  Widget createWidget(String text) {
-    return StyledText(text, spec: this);
-  }
-
-  @Deprecated('Use StyledText(text, spec: this) instead')
-  Widget call(String text) {
-    return StyledText(text, spec: this);
-  }
-}
-
 extension TextSpecWrappedWidget on StyleSpec<TextSpec> {
   /// Creates a widget that resolves this [StyleSpec<TextSpec>] with context.
-  @Deprecated(
-    'Use StyleSpecBuilder directly for custom logic, or styleSpec(text) for simple cases',
-  )
+  @Deprecated('Use StyledText(text, styleSpec: styleSpec) instead')
   Widget createWidget(String text) {
-    return StyleSpecBuilder<TextSpec>(builder: (context, spec) {
-      return StyledText(text, spec: spec);
-    }, styleSpec: this);
+    return call(text);
   }
 
   /// Convenient shorthand for creating a StyledText widget with this StyleSpec.
+  @Deprecated('Use StyledText(text, styleSpec: styleSpec) instead')
   Widget call(String text) {
-    return StyleSpecBuilder<TextSpec>(builder: (context, spec) {
-      return StyledText(text, spec: spec);
-    }, styleSpec: this);
+    return StyledText(text, styleSpec: this);
   }
 }

@@ -2,7 +2,6 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../../core/style_builder.dart';
 import '../../core/style_spec.dart';
 import '../../core/style_widget.dart';
 import '../box/box_widget.dart';
@@ -23,7 +22,7 @@ typedef HBox = RowBox;
 class FlexBox extends StyleWidget<FlexBoxSpec> {
   const FlexBox({
     super.style = const FlexBoxStyler.create(),
-    super.spec,
+    super.styleSpec,
     super.key,
     this.children = const <Widget>[],
   });
@@ -44,7 +43,7 @@ class FlexBox extends StyleWidget<FlexBoxSpec> {
     );
 
     if (spec.box != null) {
-      return Box(spec: spec.box!.spec, child: flexWidget);
+      return Box(styleSpec: spec.box!, child: flexWidget);
     }
 
     return flexWidget;
@@ -57,7 +56,7 @@ class FlexBox extends StyleWidget<FlexBoxSpec> {
 class RowBox extends FlexBox {
   const RowBox({
     super.style,
-    super.spec,
+    super.styleSpec,
     super.key,
     super.children = const <Widget>[],
   });
@@ -72,7 +71,7 @@ class RowBox extends FlexBox {
 class ColumnBox extends FlexBox {
   const ColumnBox({
     super.style,
-    super.spec,
+    super.styleSpec,
     super.key,
     super.children = const <Widget>[],
   });
@@ -113,126 +112,28 @@ Flex _createFlexSpecWidget({
   );
 }
 
-/// Extension to convert [FlexSpec] directly to a [Flex] widget.
-extension FlexSpecWidget on FlexSpec {
-  /// Creates a [Flex] widget from this [FlexSpec].
-  @Deprecated(
-    'FlexSpec is a component spec. Use FlexBox, RowBox, or ColumnBox for complete widgets',
-  )
-  Flex createWidget({Axis? direction, List<Widget> children = const []}) {
-    return _createFlexSpecWidget(
-      spec: this,
-      forcedDirection: direction,
-      children: children,
-    );
-  }
-
-  @Deprecated(
-    'FlexSpec is a component spec. Use FlexBox, RowBox, or ColumnBox for complete widgets',
-  )
-  Flex call({Axis? direction, List<Widget> children = const []}) {
-    return _createFlexSpecWidget(
-      spec: this,
-      forcedDirection: direction,
-      children: children,
-    );
-  }
-}
-
-/// Extension to convert [FlexBoxSpec] directly to a [FlexBox] widget.
-extension FlexBoxSpecWidget on FlexBoxSpec {
-  /// Creates a [FlexBox] widget from this [FlexBoxSpec].
-  @Deprecated(
-    'Use FlexBox(spec: this, children: children), RowBox(spec: this, children: children), or ColumnBox(spec: this, children: children) instead',
-  )
-  Widget createWidget({
-    required Axis direction,
-    List<Widget> children = const [],
-  }) {
-    if (direction == Axis.horizontal) {
-      return RowBox(spec: this, children: children);
-    }
-
-    return ColumnBox(spec: this, children: children);
-  }
-
-  @Deprecated(
-    'Use FlexBox(spec: this, children: children), RowBox(spec: this, children: children), or ColumnBox(spec: this, children: children) instead',
-  )
-  Widget call({required Axis direction, List<Widget> children = const []}) {
-    switch (direction) {
-      case Axis.horizontal:
-        return RowBox(spec: this, children: children);
-      case Axis.vertical:
-        return ColumnBox(spec: this, children: children);
-    }
-  }
-}
-
-extension FlexSpecWrappedWidget on StyleSpec<FlexSpec> {
-  /// Creates a widget that resolves this [StyleSpec<FlexSpec>] with context.
-  @Deprecated(
-    'FlexSpec is a component spec. Use StyleSpecBuilder directly with FlexBoxSpec instead',
-  )
-  Widget createWidget({Axis? direction, List<Widget> children = const []}) {
-    return StyleSpecBuilder(
-      builder: (context, spec) {
-        return _createFlexSpecWidget(
-          spec: spec,
-          forcedDirection: direction,
-          children: children,
-        );
-      },
-      styleSpec: this,
-    );
-  }
-
-  @Deprecated(
-    'FlexSpec is a component spec. Use StyleSpecBuilder directly with FlexBoxSpec instead',
-  )
-  Widget call({Axis? direction, List<Widget> children = const []}) {
-    return StyleSpecBuilder(
-      builder: (context, spec) {
-        return _createFlexSpecWidget(
-          spec: spec,
-          forcedDirection: direction,
-          children: children,
-        );
-      },
-      styleSpec: this,
-    );
-  }
-}
-
 extension FlexBoxSpecWrappedWidget on StyleSpec<FlexBoxSpec> {
   /// Creates a widget that resolves this [StyleSpec<FlexBoxSpec>] with context.
   @Deprecated(
-    'Use StyleSpecBuilder directly for custom logic, or styleSpec(direction: direction, children: children) for simple cases',
+    'Use RowBox(children: children, styleSpec: styleSpec) for horizontal or ColumnBox(children: children, styleSpec: styleSpec) for vertical instead',
   )
   Widget createWidget({
     required Axis direction,
     List<Widget> children = const [],
   }) {
-    return StyleSpecBuilder<FlexBoxSpec>(builder: (context, spec) {
-      if (direction == Axis.horizontal) {
-        return RowBox(spec: spec, children: children);
-      }
-
-      return ColumnBox(spec: spec, children: children);
-    }, styleSpec: this);
+    return call(direction: direction, children: children);
   }
 
   /// Convenient shorthand for creating a FlexBox widget with this StyleSpec.
+  @Deprecated(
+    'Use RowBox(children: children, styleSpec: styleSpec) for horizontal or ColumnBox(children: children, styleSpec: styleSpec) for vertical instead',
+  )
   Widget call({required Axis direction, List<Widget> children = const []}) {
     switch (direction) {
       case Axis.horizontal:
-        return StyleSpecBuilder<FlexBoxSpec>(builder: (context, spec) {
-          return RowBox(spec: spec, children: children);
-        }, styleSpec: this);
+        return RowBox(styleSpec: this, children: children);
       case Axis.vertical:
-        return StyleSpecBuilder<FlexBoxSpec>(builder: (context, spec) {
-          return ColumnBox(spec: spec, children: children);
-        }, styleSpec: this);
+        return ColumnBox(styleSpec: this, children: children);
     }
   }
 }
