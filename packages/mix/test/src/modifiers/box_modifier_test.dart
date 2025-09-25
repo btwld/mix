@@ -24,7 +24,8 @@ void main() {
       expect(result, isA<Box>());
       final box = result as Box;
       expect(box.child, equals(child));
-      expect(box.styleSpec, equals(spec));
+      expect(box.styleSpec, isA<StyleSpec<BoxSpec>>());
+      expect(box.styleSpec!.spec, equals(spec));
     });
 
     test('copyWith creates new instance with updated spec', () {
