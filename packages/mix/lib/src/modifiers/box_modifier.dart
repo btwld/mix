@@ -1,7 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../mix.dart';
+import '../core/helpers.dart';
+import '../core/style.dart';
+import '../core/style_spec.dart';
+import '../core/utility.dart';
+import '../core/widget_modifier.dart';
+import '../specs/box/box_spec.dart';
+import '../specs/box/box_style.dart';
+import '../specs/box/box_widget.dart';
+import '../properties/painting/decoration_mix.dart';
+import '../properties/layout/edge_insets_geometry_mix.dart';
 
 /// Modifier that wraps its child in a styled Container using BoxSpec styling.
 ///
