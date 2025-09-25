@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 
-import '../../core/style_builder.dart';
 import '../../core/style_spec.dart';
 import '../../core/style_widget.dart';
 import 'box_spec.dart';
@@ -16,7 +15,6 @@ class Box extends StyleWidget<BoxSpec> {
     super.key,
     this.child,
   });
-
 
   /// Child widget to display inside the box.
   final Widget? child;
