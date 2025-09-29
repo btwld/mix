@@ -1,3 +1,7 @@
+## 2.0.0-dev.3
+
+- small update public beta
+
 ## 2.0.0-dev.2
 
 - First public beta
