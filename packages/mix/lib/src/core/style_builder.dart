@@ -94,9 +94,12 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
       // If we need interactivity and no MixWidgetStateModel is present,
       // wrap in MixInteractionDetector
       current = MixInteractionDetector(controller: _controller, child: current);
-    } else if (widget.controller?.value case final widgetStates?) {
-      // If we have a controller, wrap with WidgetStateProvider
-      current = WidgetStateProvider(states: widgetStates, child: current);
+    } else if (widget.controller != null) {
+      // If we have an external controller, wrap with _ExternalControllerProvider
+      current = _ExternalControllerProvider(
+        controller: _controller,
+        child: current,
+      );
     }
 
     // If inheritable is true, wrap with StyleProvider to pass the merged style down
@@ -166,6 +169,26 @@ class StyleSpecBuilder<S extends Spec<S>> extends StatelessWidget {
         }
 
         return animatedChild;
+      },
+    );
+  }
+}
+
+class _ExternalControllerProvider extends StatelessWidget {
+  const _ExternalControllerProvider({
+    required this.controller,
+    required this.child,
+  });
+
+  final WidgetStatesController controller;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: controller,
+      builder: (_, _) {
+        return WidgetStateProvider(states: controller.value, child: child);
       },
     );
   }
