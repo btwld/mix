@@ -72,7 +72,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
 
     // Calculate interactivity need early
     final needsToTrackWidgetState =
-        widgetStates.isNotEmpty || widget.controller != null;
+        widgetStates.isNotEmpty && widget.controller == null;
 
     final alreadyHasWidgetStateScope = WidgetStateProvider.of(context) != null;
 
@@ -94,6 +94,11 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
       // If we need interactivity and no MixWidgetStateModel is present,
       // wrap in MixInteractionDetector
       current = MixInteractionDetector(controller: _controller, child: current);
+    }
+
+    if (widget.controller?.value case final widgetStates?) {
+      // If we have a controller, wrap with WidgetStateProvider
+      current = WidgetStateProvider(states: widgetStates, child: current);
     }
 
     // If inheritable is true, wrap with StyleProvider to pass the merged style down
