@@ -94,9 +94,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
       // If we need interactivity and no MixWidgetStateModel is present,
       // wrap in MixInteractionDetector
       current = MixInteractionDetector(controller: _controller, child: current);
-    }
-
-    if (widget.controller?.value case final widgetStates?) {
+    } else if (widget.controller?.value case final widgetStates?) {
       // If we have a controller, wrap with WidgetStateProvider
       current = WidgetStateProvider(states: widgetStates, child: current);
     }
