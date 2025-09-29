@@ -72,7 +72,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
 
     // Calculate interactivity need early
     final needsToTrackWidgetState =
-        widgetStates.isNotEmpty && widget.controller == null;
+        widget.controller == null && widgetStates.isNotEmpty;
 
     final alreadyHasWidgetStateScope = WidgetStateProvider.of(context) != null;
 
