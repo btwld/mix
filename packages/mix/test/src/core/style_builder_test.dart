@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
+import 'package:mix/src/core/internal/mix_interaction_detector.dart';
 import 'package:mix/src/modifiers/internal/render_modifier.dart';
 
 void main() {
@@ -729,6 +730,89 @@ void main() {
         // Verify that we have two StyleProviders in the widget tree (outer and middle)
         expect(find.byType(StyleProvider<BoxSpec>), findsNWidgets(2));
       });
+    });
+
+    group('Controller', () {
+      testWidgets(
+        'should use provided controller to track widget state and update the style',
+        (tester) async {
+          final controller = WidgetStatesController();
+          addTearDown(controller.dispose);
+
+          controller.update(WidgetState.pressed, true);
+          final paddingMix = EdgeInsetsGeometryMix.all(10);
+
+          await tester.pumpWidget(
+            StyleBuilder<BoxSpec>(
+              style: BoxStyler()
+                  .paddingAll(1)
+                  .onPressed(BoxStyler().padding(paddingMix)),
+              controller: controller,
+              builder: (context, spec) {
+                final expectedPadding = paddingMix.resolve(context);
+
+                expect(spec.padding, expectedPadding);
+                expect(spec, isNot(BoxSpec()));
+                return Container();
+              },
+            ),
+          );
+        },
+      );
+    });
+
+    testWidgets(
+      'should not track interactions in widget states when controller is provided',
+      (WidgetTester tester) async {
+        final controller = WidgetStatesController();
+        addTearDown(controller.dispose);
+
+        await tester.pumpWidget(
+          StyleBuilder<BoxSpec>(
+            key: const Key('test'),
+            controller: controller,
+            style: BoxStyler()
+                .size(100, 100)
+                .onHovered(BoxStyler().paddingAll(10)),
+            builder: (context, spec) {
+              return Box(styleSpec: StyleSpec(spec: spec));
+            },
+          ),
+        );
+
+        // Verify that no MixInteractionDetector is created
+        expect(find.byType(MixInteractionDetector), findsNothing);
+      },
+    );
+
+    testWidgets('should update the Style when the controller is updated', (
+      WidgetTester tester,
+    ) async {
+      final controller = WidgetStatesController();
+      addTearDown(controller.dispose);
+
+      await tester.pumpWidget(
+        StyleBuilder<BoxSpec>(
+          key: const Key('test'),
+          controller: controller,
+          style: BoxStyler()
+              .size(100, 100)
+              .color(Colors.red)
+              .onHovered(BoxStyler().color(Colors.blueGrey)),
+          builder: (context, spec) {
+            return Box(styleSpec: StyleSpec(spec: spec));
+          },
+        ),
+      );
+
+      final container = tester.widget<Container>(find.byType(Container));
+      expect(container.decoration, BoxDecoration(color: Colors.red));
+
+      controller.update(WidgetState.hovered, true);
+      await tester.pump();
+
+      final hoveredContainer = tester.widget<Container>(find.byType(Container));
+      expect(hoveredContainer.decoration, BoxDecoration(color: Colors.blueGrey));
     });
   });
 }
