@@ -730,5 +730,34 @@ void main() {
         expect(find.byType(StyleProvider<BoxSpec>), findsNWidgets(2));
       });
     });
+
+    group('Controller', () {
+      testWidgets(
+        'should use provided controller to track widget state and update the style',
+        (tester) async {
+          final controller = WidgetStatesController();
+          addTearDown(controller.dispose);
+
+          controller.update(WidgetState.pressed, true);
+          final paddingMix = EdgeInsetsGeometryMix.all(10);
+
+          await tester.pumpWidget(
+            StyleBuilder<BoxSpec>(
+              style: BoxStyler()
+                  .paddingAll(1)
+                  .onPressed(BoxStyler().padding(paddingMix)),
+              controller: controller,
+              builder: (context, spec) {
+                final expectedPadding = paddingMix.resolve(context);
+
+                expect(spec.padding, expectedPadding);
+                expect(spec, isNot(BoxSpec()));
+                return Container();
+              },
+            ),
+          );
+        },
+      );
+    });
   });
 }
