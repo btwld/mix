@@ -1,3 +1,7 @@
+## 2.0.0-dev.4
+
+- fix: widget state tracking logic in StyleBuilder
+
 ## 2.0.0-dev.3
 
 - small update public beta
