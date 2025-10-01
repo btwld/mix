@@ -6,6 +6,7 @@ import '../../modifiers/mouse_cursor_modifier.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
+import '../../properties/painting/icon_theme_mix.dart';
 import '../../properties/typography/text_style_mix.dart';
 import '../../specs/box/box_style.dart';
 
@@ -213,20 +214,8 @@ mixin WidgetModifierStyleMixin<T extends Style<S>, S extends Spec<S>>
   }
 
   /// Wraps the widget with an icon theme modifier.
-  T wrapIconTheme(IconThemeData data) {
-    return wrap(
-      WidgetModifierConfig.iconTheme(
-        color: data.color,
-        size: data.size,
-        fill: data.fill,
-        weight: data.weight,
-        grade: data.grade,
-        opticalSize: data.opticalSize,
-        opacity: data.opacity,
-        shadows: data.shadows,
-        applyTextScaling: data.applyTextScaling,
-      ),
-    );
+  T wrapIconTheme(IconThemeDataMix data) {
+    return wrap(WidgetModifierConfig.iconTheme(data: data));
   }
 
   // TODO: Fix ShaderCallbackBuilder type issue

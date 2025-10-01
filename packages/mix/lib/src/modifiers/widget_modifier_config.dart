@@ -5,7 +5,7 @@ import '../core/style.dart';
 import '../core/widget_modifier.dart';
 import '../properties/layout/edge_insets_geometry_mix.dart';
 import '../properties/painting/border_radius_mix.dart';
-import '../properties/painting/shadow_mix.dart';
+import '../properties/painting/icon_theme_mix.dart';
 import '../properties/typography/text_height_behavior_mix.dart';
 import '../properties/typography/text_style_mix.dart';
 import '../specs/box/box_style.dart';
@@ -276,42 +276,22 @@ final class WidgetModifierConfig with Equatable {
   factory WidgetModifierConfig.defaultIcon(IconStyler iconMix) {
     return WidgetModifierConfig.modifier(
       IconThemeModifierMix.create(
-        color: iconMix.$color,
-        size: iconMix.$size,
-        fill: iconMix.$fill,
-        weight: iconMix.$weight,
-        grade: iconMix.$grade,
-        opticalSize: iconMix.$opticalSize,
-        shadows: iconMix.$shadows,
-        applyTextScaling: iconMix.$applyTextScaling,
+        data: IconThemeDataMix.create(
+          color: iconMix.$color,
+          size: iconMix.$size,
+          fill: iconMix.$fill,
+          weight: iconMix.$weight,
+          grade: iconMix.$grade,
+          opticalSize: iconMix.$opticalSize,
+          shadows: iconMix.$shadows,
+          applyTextScaling: iconMix.$applyTextScaling,
+        ),
       ),
     );
   }
 
-  factory WidgetModifierConfig.iconTheme({
-    Color? color,
-    double? size,
-    double? fill,
-    double? weight,
-    double? grade,
-    double? opticalSize,
-    double? opacity,
-    List<Shadow>? shadows,
-    bool? applyTextScaling,
-  }) {
-    return WidgetModifierConfig.modifier(
-      IconThemeModifierMix(
-        color: color,
-        size: size,
-        fill: fill,
-        weight: weight,
-        grade: grade,
-        opticalSize: opticalSize,
-        opacity: opacity,
-        shadows: shadows?.map((shadow) => ShadowMix.value(shadow)).toList(),
-        applyTextScaling: applyTextScaling,
-      ),
-    );
+  factory WidgetModifierConfig.iconTheme({IconThemeDataMix? data}) {
+    return WidgetModifierConfig.modifier(IconThemeModifierMix(data: data));
   }
 
   factory WidgetModifierConfig.box(BoxStyler spec) {

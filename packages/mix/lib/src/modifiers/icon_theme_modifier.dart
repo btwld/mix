@@ -2,10 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../core/helpers.dart';
-import '../core/prop.dart';
 import '../core/style.dart';
 import '../core/utility.dart';
 import '../core/widget_modifier.dart';
+import '../properties/painting/icon_theme_mix.dart';
 import '../properties/painting/shadow_mix.dart';
 
 /// Modifier that applies icon theme data to its descendants.
@@ -13,7 +13,7 @@ import '../properties/painting/shadow_mix.dart';
 /// Wraps the child in an [IconTheme] widget with the specified theme data.
 final class IconThemeModifier extends WidgetModifier<IconThemeModifier>
     with Diagnosticable {
-  final IconThemeData data;
+  final IconThemeData? data;
 
   const IconThemeModifier({this.data = const IconThemeData()});
 
@@ -44,7 +44,7 @@ final class IconThemeModifier extends WidgetModifier<IconThemeModifier>
 
   @override
   Widget build(Widget child) {
-    return IconTheme(data: data, child: child);
+    return IconTheme(data: data ?? const IconThemeData(), child: child);
   }
 }
 
@@ -56,49 +56,11 @@ final class IconThemeModifier extends WidgetModifier<IconThemeModifier>
 /// Use this class to configure the attributes of a [IconThemeModifier] and pass it to
 /// the [IconThemeModifier] constructor.
 class IconThemeModifierMix extends ModifierMix<IconThemeModifier> {
-  final Prop<Color>? color;
-  final Prop<double>? size;
-  final Prop<double>? fill;
-  final Prop<double>? weight;
-  final Prop<double>? grade;
-  final Prop<double>? opticalSize;
-  final Prop<double>? opacity;
-  final Prop<List<Shadow>>? shadows;
-  final Prop<bool>? applyTextScaling;
+  final IconThemeDataMix? data;
 
-  const IconThemeModifierMix.create({
-    this.color,
-    this.size,
-    this.fill,
-    this.weight,
-    this.grade,
-    this.opticalSize,
-    this.opacity,
-    this.shadows,
-    this.applyTextScaling,
-  });
+  const IconThemeModifierMix.create({this.data});
 
-  IconThemeModifierMix({
-    Color? color,
-    double? size,
-    double? fill,
-    double? weight,
-    double? grade,
-    double? opticalSize,
-    double? opacity,
-    List<ShadowMix>? shadows,
-    bool? applyTextScaling,
-  }) : this.create(
-         color: Prop.maybe(color),
-         size: Prop.maybe(size),
-         fill: Prop.maybe(fill),
-         weight: Prop.maybe(weight),
-         grade: Prop.maybe(grade),
-         opticalSize: Prop.maybe(opticalSize),
-         opacity: Prop.maybe(opacity),
-         shadows: shadows != null ? Prop.mix(ShadowListMix(shadows)) : null,
-         applyTextScaling: Prop.maybe(applyTextScaling),
-       );
+  IconThemeModifierMix({IconThemeDataMix? data}) : this.create(data: data);
 
   /// Resolves to [IconThemeModifier] using the provided [BuildContext].
   ///
@@ -110,20 +72,10 @@ class IconThemeModifierMix extends ModifierMix<IconThemeModifier> {
   /// ```
   @override
   IconThemeModifier resolve(BuildContext context) {
-    return IconThemeModifier(
-      data: IconThemeData(
-        size: MixOps.resolve(context, size),
-        fill: MixOps.resolve(context, fill),
-        weight: MixOps.resolve(context, weight),
-        grade: MixOps.resolve(context, grade),
-        opticalSize: MixOps.resolve(context, opticalSize),
-        color: MixOps.resolve(context, color),
-        opacity: MixOps.resolve(context, opacity),
-        shadows: MixOps.resolve(context, shadows),
-        applyTextScaling: MixOps.resolve(context, applyTextScaling),
-      ),
-    );
+    return IconThemeModifier(data: data?.resolve(context));
   }
+
+  
 
   /// Merges the properties of this [IconThemeModifierMix] with the properties of [other].
   ///
@@ -136,31 +88,11 @@ class IconThemeModifierMix extends ModifierMix<IconThemeModifier> {
   IconThemeModifierMix merge(IconThemeModifierMix? other) {
     if (other == null) return this;
 
-    return IconThemeModifierMix.create(
-      color: MixOps.merge(color, other.color),
-      size: MixOps.merge(size, other.size),
-      fill: MixOps.merge(fill, other.fill),
-      weight: MixOps.merge(weight, other.weight),
-      grade: MixOps.merge(grade, other.grade),
-      opticalSize: MixOps.merge(opticalSize, other.opticalSize),
-      opacity: MixOps.merge(opacity, other.opacity),
-      shadows: MixOps.merge(shadows, other.shadows),
-      applyTextScaling: MixOps.merge(applyTextScaling, other.applyTextScaling),
-    );
+    return IconThemeModifierMix.create(data: data?.merge(other.data));
   }
 
   @override
-  List<Object?> get props => [
-    color,
-    size,
-    fill,
-    weight,
-    grade,
-    opticalSize,
-    opacity,
-    shadows,
-    applyTextScaling,
-  ];
+  List<Object?> get props => [data];
 }
 
 /// Utility class for configuring [IconThemeModifier] properties.
@@ -185,15 +117,17 @@ final class IconThemeModifierUtility<T extends Style<Object?>>
   }) {
     return utilityBuilder(
       IconThemeModifierMix(
-        color: color,
-        size: size,
-        fill: fill,
-        weight: weight,
-        grade: grade,
-        opticalSize: opticalSize,
-        opacity: opacity,
-        shadows: shadows,
-        applyTextScaling: applyTextScaling,
+        data: IconThemeDataMix(
+          color: color,
+          size: size,
+          fill: fill,
+          weight: weight,
+          grade: grade,
+          opticalSize: opticalSize,
+          opacity: opacity,
+          shadows: shadows,
+          applyTextScaling: applyTextScaling,
+        ),
       ),
     );
   }

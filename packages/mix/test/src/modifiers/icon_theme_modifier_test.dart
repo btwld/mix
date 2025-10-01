@@ -50,10 +50,10 @@ void main() {
         const end = IconThemeModifier(data: endData);
         final result = start.lerp(end, 0.5);
 
-        expect(result.data.size, 30.0);
+        expect(result.data?.size, 30.0);
         // Use Color.lerp to get the exact expected result
         expect(
-          result.data.color,
+          result.data?.color,
           Color.lerp(const Color(0xFF000000), const Color(0xFFFFFFFF), 0.5),
         );
       });
@@ -90,14 +90,11 @@ void main() {
         const size = 24.0;
         const opacity = 0.8;
         final attribute = IconThemeModifierMix(
-          color: color,
-          size: size,
-          opacity: opacity,
+          data: IconThemeDataMix(color: color, size: size, opacity: opacity),
         );
-
-        expect(attribute.color, resolvesTo(color));
-        expect(attribute.size, resolvesTo(size));
-        expect(attribute.opacity, resolvesTo(opacity));
+        expect(attribute.data?.$color, resolvesTo(color));
+        expect(attribute.data?.$size, resolvesTo(size));
+        expect(attribute.data?.$opacity, resolvesTo(opacity));
       });
     });
 
@@ -107,41 +104,36 @@ void main() {
         const size = 24.0;
         const opacity = 0.8;
         final attribute = IconThemeModifierMix(
-          color: color,
-          size: size,
-          opacity: opacity,
+          data: IconThemeDataMix(color: color, size: size, opacity: opacity),
         );
 
         final modifier = attribute.resolve(MockBuildContext());
 
-        expect(modifier.data.color, color);
-        expect(modifier.data.size, size);
-        expect(modifier.data.opacity, opacity);
+        expect(modifier.data?.color, color);
+        expect(modifier.data?.size, size);
+        expect(modifier.data?.opacity, opacity);
       });
     });
 
     group('merge', () {
       test('merges properties correctly', () {
         final first = IconThemeModifierMix(
-          color: const Color(0xFF000000),
-          size: 24.0,
+          data: IconThemeDataMix(color: const Color(0xFF000000), size: 24.0),
         );
         final second = IconThemeModifierMix(
-          color: const Color(0xFF0000FF),
-          opacity: 0.8,
+          data: IconThemeDataMix(color: const Color(0xFF0000FF), opacity: 0.8),
         );
 
         final merged = first.merge(second);
 
-        expect(merged.color, resolvesTo(const Color(0xFF0000FF)));
-        expect(merged.size, resolvesTo(24.0));
-        expect(merged.opacity, resolvesTo(0.8));
+        expect(merged.data?.$color, resolvesTo(const Color(0xFF0000FF)));
+        expect(merged.data?.$size, resolvesTo(24.0));
+        expect(merged.data?.$opacity, resolvesTo(0.8));
       });
 
       test('handles null other parameter', () {
         final attribute = IconThemeModifierMix(
-          color: const Color(0xFF000000),
-          size: 24.0,
+          data: IconThemeDataMix(color: const Color(0xFF000000), size: 24.0),
         );
 
         final result = attribute.merge(null);
@@ -169,9 +161,9 @@ void main() {
 
       expect(result.$modifier?.$modifiers?.first, isA<IconThemeModifierMix>());
       final attr = result.$modifier!.$modifiers!.first as IconThemeModifierMix;
-      expect(attr.color, resolvesTo(color));
-      expect(attr.size, resolvesTo(size));
-      expect(attr.opacity, resolvesTo(opacity));
+      expect(attr.data?.$color, resolvesTo(color));
+      expect(attr.data?.$size, resolvesTo(size));
+      expect(attr.data?.$opacity, resolvesTo(opacity));
     });
 
     test('color convenience method works', () {
@@ -180,7 +172,7 @@ void main() {
 
       expect(result.$modifier?.$modifiers?.first, isA<IconThemeModifierMix>());
       final attr = result.$modifier!.$modifiers!.first as IconThemeModifierMix;
-      expect(attr.color, resolvesTo(color));
+      expect(attr.data?.$color, resolvesTo(color));
     });
 
     test('size convenience method works', () {
@@ -189,7 +181,7 @@ void main() {
 
       expect(result.$modifier?.$modifiers?.first, isA<IconThemeModifierMix>());
       final attr = result.$modifier!.$modifiers!.first as IconThemeModifierMix;
-      expect(attr.size, resolvesTo(size));
+      expect(attr.data?.$size, resolvesTo(size));
     });
 
     test('opacity convenience method works', () {
@@ -198,16 +190,18 @@ void main() {
 
       expect(result.$modifier?.$modifiers?.first, isA<IconThemeModifierMix>());
       final attr = result.$modifier!.$modifiers!.first as IconThemeModifierMix;
-      expect(attr.opacity, resolvesTo(opacity));
+      expect(attr.data?.$opacity, resolvesTo(opacity));
     });
   });
 
   group('Integration', () {
     testWidgets('attribute resolves and builds correctly', (tester) async {
       final attribute = IconThemeModifierMix(
-        color: const Color(0xFF0000FF),
-        size: 32.0,
-        opacity: 0.7,
+        data: IconThemeDataMix(
+          color: const Color(0xFF0000FF),
+          size: 32.0,
+          opacity: 0.7,
+        ),
       );
       expect(
         attribute,
