@@ -61,6 +61,51 @@ class IconThemeDataMix extends Mix<IconThemeData> {
          applyTextScaling: Prop.maybe(applyTextScaling),
        );
 
+  /// Factory constructor for creating [IconThemeDataMix] with only color.
+  factory IconThemeDataMix.color(Color color) {
+    return IconThemeDataMix(color: color);
+  }
+
+  /// Factory constructor for creating [IconThemeDataMix] with only size.
+  factory IconThemeDataMix.size(double size) {
+    return IconThemeDataMix(size: size);
+  }
+
+  /// Factory constructor for creating [IconThemeDataMix] with only fill.
+  factory IconThemeDataMix.fill(double fill) {
+    return IconThemeDataMix(fill: fill);
+  }
+
+  /// Factory constructor for creating [IconThemeDataMix] with only weight.
+  factory IconThemeDataMix.weight(double weight) {
+    return IconThemeDataMix(weight: weight);
+  }
+
+  /// Factory constructor for creating [IconThemeDataMix] with only grade.
+  factory IconThemeDataMix.grade(double grade) {
+    return IconThemeDataMix(grade: grade);
+  }
+
+  /// Factory constructor for creating [IconThemeDataMix] with only opticalSize.
+  factory IconThemeDataMix.opticalSize(double opticalSize) {
+    return IconThemeDataMix(opticalSize: opticalSize);
+  }
+
+  /// Factory constructor for creating [IconThemeDataMix] with only opacity.
+  factory IconThemeDataMix.opacity(double opacity) {
+    return IconThemeDataMix(opacity: opacity);
+  }
+
+  /// Factory constructor for creating [IconThemeDataMix] with only shadows.
+  factory IconThemeDataMix.shadows(List<ShadowMix> shadows) {
+    return IconThemeDataMix(shadows: shadows);
+  }
+
+  /// Factory constructor for creating [IconThemeDataMix] with only applyTextScaling.
+  factory IconThemeDataMix.applyTextScaling(bool applyTextScaling) {
+    return IconThemeDataMix(applyTextScaling: applyTextScaling);
+  }
+
   /// Sets icon color (method style)
   IconThemeDataMix color(Color value) {
     return merge(IconThemeDataMix(color: value));
