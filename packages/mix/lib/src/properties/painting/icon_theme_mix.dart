@@ -203,14 +203,14 @@ class IconThemeDataMix extends Mix<IconThemeData> {
 
   @override
   List<Object?> get props => [
-    color,
-    size,
-    fill,
-    weight,
-    grade,
-    opticalSize,
-    opacity,
-    shadows,
-    applyTextScaling,
+    $color,
+    $size,
+    $fill,
+    $weight,
+    $grade,
+    $opticalSize,
+    $opacity,
+    $shadows,
+    $applyTextScaling,
   ];
 }
