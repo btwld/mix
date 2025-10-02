@@ -56,6 +56,12 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
     _controller = widget.controller ?? WidgetStatesController();
   }
 
+  Style<S> _buildStyle(BuildContext context) {
+    final inheritedStyle = StyleProvider.maybeOf<S>(context);
+
+    return inheritedStyle?.merge(widget.style) ?? widget.style;
+  }
+
   @override
   void dispose() {
     // Only dispose controllers we created internally
@@ -68,20 +74,17 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
 
   @override
   Widget build(BuildContext context) {
-    final widgetStates = widget.style.widgetStates;
+    final style = _buildStyle(context);
 
     // Calculate interactivity need early
     final needsToTrackWidgetState =
-        widget.controller == null && widgetStates.isNotEmpty;
+        widget.controller == null && style.widgetStates.isNotEmpty;
 
     final alreadyHasWidgetStateScope = WidgetStateProvider.of(context) != null;
 
-    final inheritedStyle = StyleProvider.maybeOf<S>(context);
-    final mergedStyle = inheritedStyle?.merge(widget.style) ?? widget.style;
-
     Widget current = Builder(
       builder: (context) {
-        final wrappedSpec = mergedStyle.build(context);
+        final wrappedSpec = style.build(context);
 
         return StyleSpecBuilder(
           builder: widget.builder,
@@ -104,7 +107,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
 
     // If inheritable is true, wrap with StyleProvider to pass the merged style down
     if (widget.inheritable) {
-      current = StyleProvider<S>(style: mergedStyle, child: current);
+      current = StyleProvider<S>(style: style, child: current);
     }
 
     return current;

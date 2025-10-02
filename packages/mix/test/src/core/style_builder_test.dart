@@ -730,6 +730,64 @@ void main() {
         // Verify that we have two StyleProviders in the widget tree (outer and middle)
         expect(find.byType(StyleProvider<BoxSpec>), findsNWidgets(2));
       });
+
+      testWidgets(
+        'Should track widgetState when the style on the provider has context variants',
+        (tester) async {
+          final controller = WidgetStatesController();
+          addTearDown(controller.dispose);
+
+          // Parent style provides a variant for hovered state
+          final parentStyle = BoxStyler()
+              .width(100)
+              .height(100)
+              .color(Colors.blue)
+              .onHovered(BoxStyler().color(Colors.red));
+
+          // Child style is just a simple style
+          final childStyle = BoxStyler().width(50).height(50);
+
+          late BoxSpec childResolvedSpec;
+
+          await tester.pumpWidget(
+            MaterialApp(
+              home: StyleBuilder<BoxSpec>(
+                style: parentStyle,
+                inheritable: true,
+                builder: (context, parentSpec) {
+                  return StyleBuilder<BoxSpec>(
+                    style: childStyle,
+                    controller: controller,
+                    builder: (context, childSpec) {
+                      childResolvedSpec = childSpec;
+                      return Container(
+                        decoration: childSpec.decoration,
+                        constraints: childSpec.constraints,
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          );
+
+          // Initially, the color should be blue (not hovered)
+          expect(
+            (childResolvedSpec.decoration as BoxDecoration?)?.color,
+            Colors.blue,
+          );
+
+          // Simulate hovered state
+          controller.update(WidgetState.hovered, true);
+          await tester.pump();
+
+          // After updating the state, the color should be red (hovered)
+          expect(
+            (childResolvedSpec.decoration as BoxDecoration?)?.color,
+            Colors.red,
+          );
+        },
+      );
     });
 
     group('Controller', () {
@@ -812,7 +870,10 @@ void main() {
       await tester.pump();
 
       final hoveredContainer = tester.widget<Container>(find.byType(Container));
-      expect(hoveredContainer.decoration, BoxDecoration(color: Colors.blueGrey));
+      expect(
+        hoveredContainer.decoration,
+        BoxDecoration(color: Colors.blueGrey),
+      );
     });
   });
 }
