@@ -732,7 +732,7 @@ void main() {
       });
 
       testWidgets(
-        'Should track widgetState when the style on the provider has context variants',
+        'Should create MixInteractionDetector when StyleProvider\'s style contains widget state variants',
         (tester) async {
           // Parent style provides a variant for hovered state
           final parentStyle = BoxStyler()
