@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
 
+import '../../specs/icon/icon_spec.dart';
+import '../../specs/text/text_spec.dart';
 import '../spec.dart';
 import '../style.dart';
 
@@ -22,3 +24,17 @@ class StyleProvider<S extends Spec<S>> extends InheritedWidget {
     return style != oldWidget.style;
   }
 }
+
+/// Provides [TextStyler] to descendant [StyledText].
+///
+/// This is a convenience typedef for [StyleProvider<TextSpec>] that makes it
+/// easier to provide [TextStyler] (font, color, size, etc.) to descendant
+/// [StyledText] widgets through the widget tree.
+typedef DefaultStyledText = StyleProvider<TextSpec>;
+
+/// Provides [IconStyler] to descendant [StyledIcon] widgets.
+///
+/// This is a convenience typedef for [StyleProvider<IconSpec>] that makes it
+/// easier to provide [IconStyler] (size, color, theme, etc.) to descendant
+/// [StyledIcon] widgets through the widget tree.
+typedef DefaultStyledIcon = StyleProvider<IconSpec>;
