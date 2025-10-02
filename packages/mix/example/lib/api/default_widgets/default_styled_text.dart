@@ -26,8 +26,8 @@ class Example extends StatelessWidget {
       child: DefaultStyledText(
         style: baseStyle,
         child: Column(
-          spacing: 16,
           mainAxisSize: MainAxisSize.min,
+          spacing: 16,
           children: [
             StyledText('hello world'),
             StyledText(
