@@ -277,7 +277,7 @@ Adds a single variant with the given variant condition and style.
 - **onPressed(IconStyler style)** → IconStyler - Applies style when pressed
 - **onFocused(IconStyler style)** → IconStyler - Applies style when focused
 - **onDisabled(IconStyler style)** → IconStyler - Applies style when disabled
-- **onSelected(IconStyler style)** → IconStyler - Applies style when selected
+- **onEnabled(IconStyler style)** → IconStyler - Applies style when enabled
 
 #### Responsive Variants
 - **onBreakpoint(Breakpoint breakpoint, IconStyler style)** → IconStyler - Applies style at specific breakpoint

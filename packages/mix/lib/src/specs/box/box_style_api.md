@@ -335,7 +335,7 @@ Adds a single variant with the given variant condition and style.
 - **onPressed(BoxStyler style)** → BoxStyler - Applies style when pressed
 - **onFocused(BoxStyler style)** → BoxStyler - Applies style when focused
 - **onDisabled(BoxStyler style)** → BoxStyler - Applies style when disabled
-- **onSelected(BoxStyler style)** → BoxStyler - Applies style when selected
+- **onEnabled(BoxStyler style)** → BoxStyler - Applies style when enabled
 
 #### Responsive Variants
 - **onBreakpoint(Breakpoint breakpoint, BoxStyler style)** → BoxStyler - Applies style at specific breakpoint

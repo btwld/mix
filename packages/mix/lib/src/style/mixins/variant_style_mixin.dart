@@ -76,29 +76,6 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
     return variant(ContextVariant.widgetState(WidgetState.disabled), style);
   }
 
-  /// Creates a variant for selected state
-  T onSelected(T style) {
-    return variant(ContextVariant.widgetState(WidgetState.selected), style);
-  }
-
-  /// Creates a variant for error state
-  T onError(T style) {
-    return variant(ContextVariant.widgetState(WidgetState.error), style);
-  }
-
-  /// Creates a variant for scrolled under state
-  T onScrolledUnder(T style) {
-    return variant(
-      ContextVariant.widgetState(WidgetState.scrolledUnder),
-      style,
-    );
-  }
-
-  /// Creates a variant for dragged state
-  T onDragged(T style) {
-    return variant(ContextVariant.widgetState(WidgetState.dragged), style);
-  }
-
   /// Creates a variant for enabled state (opposite of disabled)
   T onEnabled(T style) {
     return variant(

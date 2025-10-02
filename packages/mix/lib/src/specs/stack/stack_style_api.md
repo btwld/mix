@@ -200,7 +200,7 @@ Adds a single variant with the given variant condition and style.
 - **onPressed(StackStyler style)** → StackStyler - Applies style when pressed
 - **onFocused(StackStyler style)** → StackStyler - Applies style when focused
 - **onDisabled(StackStyler style)** → StackStyler - Applies style when disabled
-- **onSelected(StackStyler style)** → StackStyler - Applies style when selected
+- **onEnabled(StackStyler style)** → StackStyler - Applies style when enabled
 
 #### Responsive Variants
 - **onBreakpoint(Breakpoint breakpoint, StackStyler style)** → StackStyler - Applies style at specific breakpoint
