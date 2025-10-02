@@ -17,6 +17,7 @@ import '../../style/mixins/decoration_style_mixin.dart';
 import '../../style/mixins/spacing_style_mixin.dart';
 import '../../style/mixins/transform_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
+import '../../style/mixins/widget_state_variant_mixin.dart';
 import '../box/box_spec.dart';
 import '../box/box_style.dart';
 import 'stack_box_spec.dart';
@@ -36,6 +37,7 @@ class StackBoxStyler extends Style<ZBoxSpec>
     with
         Diagnosticable,
         VariantStyleMixin<StackBoxStyler, ZBoxSpec>,
+        WidgetStateVariantMixin<StackBoxStyler, ZBoxSpec>,
         BorderRadiusStyleMixin<StackBoxStyler>,
         DecorationStyleMixin<StackBoxStyler>,
         SpacingStyleMixin<StackBoxStyler>,

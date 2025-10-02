@@ -11,6 +11,7 @@ import '../../properties/painting/shadow_mix.dart';
 import '../../style/mixins/animation_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
 import '../../style/mixins/widget_modifier_style_mixin.dart';
+import '../../style/mixins/widget_state_variant_mixin.dart';
 import 'icon_mutable_style.dart';
 import 'icon_spec.dart';
 import 'icon_widget.dart';
@@ -22,6 +23,7 @@ class IconStyler extends Style<IconSpec>
         Diagnosticable,
         WidgetModifierStyleMixin<IconStyler, IconSpec>,
         VariantStyleMixin<IconStyler, IconSpec>,
+        WidgetStateVariantMixin<IconStyler, IconSpec>,
         AnimationStyleMixin<IconStyler, IconSpec> {
   final Prop<Color>? $color;
   final Prop<double>? $size;

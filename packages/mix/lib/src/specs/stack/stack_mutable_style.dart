@@ -7,6 +7,7 @@ import '../../core/style.dart' show VariantStyle;
 import '../../core/style_spec.dart';
 import '../../core/utility.dart';
 import '../../core/utility_variant_mixin.dart';
+import '../../core/utility_widget_state_variant_mixin.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../modifiers/widget_modifier_util.dart';
 import '../../variants/variant.dart';
@@ -19,7 +20,9 @@ import 'stack_style.dart';
 /// Supports the same API as [StackStyler] but maintains mutable internal state
 /// enabling fluid styling: `$stack..alignment(Alignment.center)..fit(StackFit.expand)`.
 class StackMutableStyler extends StyleMutableBuilder<StackSpec>
-    with UtilityVariantMixin<StackStyler, StackSpec> {
+    with
+        UtilityVariantMixin<StackStyler, StackSpec>,
+        UtilityWidgetStateVariantMixin<StackStyler, StackSpec> {
   late final alignment = MixUtility(mutable.alignment);
 
   late final fit = MixUtility(mutable.fit);

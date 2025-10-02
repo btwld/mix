@@ -6,7 +6,9 @@ import '../../helpers/testing_utils.dart';
 
 // Test implementation of VariantMixin
 class TestVariantAttribute extends Style<BoxSpec>
-    with VariantStyleMixin<TestVariantAttribute, BoxSpec> {
+    with
+        VariantStyleMixin<TestVariantAttribute, BoxSpec>,
+        WidgetStateVariantMixin<TestVariantAttribute, BoxSpec> {
   const TestVariantAttribute({super.variants, super.modifier, super.animation});
 
   @override

@@ -19,26 +19,6 @@ mixin UtilityVariantMixin<T extends Style<S>, S extends Spec<S>> {
   /// Gets the current utility value as a style.
   T get currentValue;
 
-  /// Creates a variant for hover state.
-  ///
-  /// Example:
-  /// ```dart
-  /// $box.onHovered($box.color.red())
-  /// ```
-  T onHovered(T style) {
-    return withVariant(ContextVariant.widgetState(WidgetState.hovered), style);
-  }
-
-  /// Creates a variant for pressed state.
-  ///
-  /// Example:
-  /// ```dart
-  /// $box.onPressed($box.color.blue())
-  /// ```
-  T onPressed(T style) {
-    return withVariant(ContextVariant.widgetState(WidgetState.pressed), style);
-  }
-
   /// Creates a variant for dark mode.
   ///
   /// Example:

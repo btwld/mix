@@ -7,6 +7,7 @@ import '../../core/style.dart' show VariantStyle;
 import '../../core/style_spec.dart';
 import '../../core/utility.dart';
 import '../../core/utility_variant_mixin.dart';
+import '../../core/utility_widget_state_variant_mixin.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../modifiers/widget_modifier_util.dart';
 import '../../properties/layout/constraints_util.dart';
@@ -22,7 +23,9 @@ import 'flexbox_style.dart';
 /// Combines box and flex styling capabilities. Supports the same API as [FlexBoxStyler]
 /// but maintains mutable internal state enabling fluid styling: `$flexbox..color.red()..width(100)`.
 class FlexBoxMutableStyler extends StyleMutableBuilder<FlexBoxSpec>
-    with UtilityVariantMixin<FlexBoxStyler, FlexBoxSpec> {
+    with
+        UtilityVariantMixin<FlexBoxStyler, FlexBoxSpec>,
+        UtilityWidgetStateVariantMixin<FlexBoxStyler, FlexBoxSpec> {
   late final padding = EdgeInsetsGeometryUtility<FlexBoxStyler>(
     (prop) => mutable.merge(FlexBoxStyler(padding: prop)),
   );
