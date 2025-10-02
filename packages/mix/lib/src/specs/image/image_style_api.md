@@ -318,7 +318,7 @@ Adds a single variant with the given variant condition and style.
 - **onPressed(ImageStyler style)** → ImageStyler - Applies style when pressed
 - **onFocused(ImageStyler style)** → ImageStyler - Applies style when focused
 - **onDisabled(ImageStyler style)** → ImageStyler - Applies style when disabled
-- **onSelected(ImageStyler style)** → ImageStyler - Applies style when selected
+- **onEnabled(ImageStyler style)** → ImageStyler - Applies style when enabled
 
 #### Responsive Variants
 - **onBreakpoint(Breakpoint breakpoint, ImageStyler style)** → ImageStyler - Applies style at specific breakpoint

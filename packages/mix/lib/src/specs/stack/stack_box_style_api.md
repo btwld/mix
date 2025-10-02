@@ -248,7 +248,7 @@ Adds a single variant with the given variant condition and style.
 - **onPressed(StackBoxStyler style)** → StackBoxStyler - Applies style when pressed
 - **onFocused(StackBoxStyler style)** → StackBoxStyler - Applies style when focused
 - **onDisabled(StackBoxStyler style)** → StackBoxStyler - Applies style when disabled
-- **onSelected(StackBoxStyler style)** → StackBoxStyler - Applies style when selected
+- **onEnabled(StackBoxStyler style)** → StackBoxStyler - Applies style when enabled
 
 #### Responsive Variants
 - **onBreakpoint(Breakpoint breakpoint, StackBoxStyler style)** → StackBoxStyler - Applies style at specific breakpoint

@@ -31,7 +31,8 @@ class _ExampleState extends State<Example> {
         .color(Colors.grey.shade200)
         .borderAll(color: Colors.grey.shade300, width: 2)
         .animate(AnimationConfig.spring(300.ms))
-        .onSelected(
+        .variant(
+          ContextVariant.widgetState(WidgetState.selected),
           BoxStyler()
               .color(Colors.blue.shade500)
               .borderAll(color: Colors.blue.shade600, width: 2)
@@ -46,7 +47,10 @@ class _ExampleState extends State<Example> {
         .fontSize(16)
         .fontWeight(FontWeight.w600)
         .color(Colors.grey.shade700)
-        .onSelected(TextStyler().color(Colors.white));
+        .variant(
+          ContextVariant.widgetState(WidgetState.selected),
+          TextStyler().color(Colors.white),
+        );
 
     return Pressable(
       onPress: () {

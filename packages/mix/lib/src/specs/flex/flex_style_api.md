@@ -276,7 +276,7 @@ Adds a single variant with the given variant condition and style.
 - **onPressed(FlexStyler style)** → FlexStyler - Applies style when pressed
 - **onFocused(FlexStyler style)** → FlexStyler - Applies style when focused
 - **onDisabled(FlexStyler style)** → FlexStyler - Applies style when disabled
-- **onSelected(FlexStyler style)** → FlexStyler - Applies style when selected
+- **onEnabled(FlexStyler style)** → FlexStyler - Applies style when enabled
 
 #### Responsive Variants
 - **onBreakpoint(Breakpoint breakpoint, FlexStyler style)** → FlexStyler - Applies style at specific breakpoint

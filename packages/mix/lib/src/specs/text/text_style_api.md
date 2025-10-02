@@ -301,7 +301,7 @@ Adds a single variant with the given variant condition and style.
 - **onPressed(TextStyler style)** → TextStyler - Applies style when pressed
 - **onFocused(TextStyler style)** → TextStyler - Applies style when focused
 - **onDisabled(TextStyler style)** → TextStyler - Applies style when disabled
-- **onSelected(TextStyler style)** → TextStyler - Applies style when selected
+- **onEnabled(TextStyler style)** → TextStyler - Applies style when enabled
 
 #### Responsive Variants
 - **onBreakpoint(Breakpoint breakpoint, TextStyler style)** → TextStyler - Applies style at specific breakpoint

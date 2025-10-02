@@ -352,7 +352,7 @@ Adds a single variant with the given variant condition and style.
 - **onPressed(FlexBoxStyler style)** → FlexBoxStyler - Applies style when pressed
 - **onFocused(FlexBoxStyler style)** → FlexBoxStyler - Applies style when focused
 - **onDisabled(FlexBoxStyler style)** → FlexBoxStyler - Applies style when disabled
-- **onSelected(FlexBoxStyler style)** → FlexBoxStyler - Applies style when selected
+- **onEnabled(FlexBoxStyler style)** → FlexBoxStyler - Applies style when enabled
 
 #### Responsive Variants
 - **onBreakpoint(Breakpoint breakpoint, FlexBoxStyler style)** → FlexBoxStyler - Applies style at specific breakpoint
