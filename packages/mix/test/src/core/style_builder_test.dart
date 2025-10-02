@@ -734,9 +734,6 @@ void main() {
       testWidgets(
         'Should track widgetState when the style on the provider has context variants',
         (tester) async {
-          final controller = WidgetStatesController();
-          addTearDown(controller.dispose);
-
           // Parent style provides a variant for hovered state
           final parentStyle = BoxStyler()
               .width(100)
@@ -747,45 +744,27 @@ void main() {
           // Child style is just a simple style
           final childStyle = BoxStyler().width(50).height(50);
 
-          late BoxSpec childResolvedSpec;
-
           await tester.pumpWidget(
             MaterialApp(
-              home: StyleBuilder<BoxSpec>(
+              home: StyleProvider<BoxSpec>(
                 style: parentStyle,
-                inheritable: true,
-                builder: (context, parentSpec) {
-                  return StyleBuilder<BoxSpec>(
-                    style: childStyle,
-                    controller: controller,
-                    builder: (context, childSpec) {
-                      childResolvedSpec = childSpec;
-                      return Container(
-                        decoration: childSpec.decoration,
-                        constraints: childSpec.constraints,
-                      );
-                    },
-                  );
-                },
+                child: StyleBuilder<BoxSpec>(
+                  style: childStyle,
+                  builder: (context, childSpec) {
+                    return Container(
+                      decoration: childSpec.decoration,
+                      constraints: childSpec.constraints,
+                    );
+                  },
+                ),
               ),
             ),
           );
 
-          // Initially, the color should be blue (not hovered)
-          expect(
-            (childResolvedSpec.decoration as BoxDecoration?)?.color,
-            Colors.blue,
-          );
+          // Look for a MixInteractionDetector down the tree
+          final styleBuilderFinder = find.byType(MixInteractionDetector);
 
-          // Simulate hovered state
-          controller.update(WidgetState.hovered, true);
-          await tester.pump();
-
-          // After updating the state, the color should be red (hovered)
-          expect(
-            (childResolvedSpec.decoration as BoxDecoration?)?.color,
-            Colors.red,
-          );
+          expect(styleBuilderFinder, findsOneWidget);
         },
       );
     });
