@@ -95,6 +95,7 @@ export 'src/properties/painting/decoration_mix.dart';
 export 'src/properties/painting/decoration_util.dart';
 export 'src/properties/painting/gradient_mix.dart';
 export 'src/properties/painting/gradient_util.dart';
+export 'src/properties/painting/icon_theme_mix.dart';
 export 'src/properties/painting/material_colors_util.dart';
 export 'src/properties/painting/shadow_mix.dart';
 export 'src/properties/painting/shadow_util.dart';
