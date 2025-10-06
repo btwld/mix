@@ -23,7 +23,7 @@ final class VisibilityModifier extends WidgetModifier<VisibilityModifier>
   }
 
   @override
-  VisibilityModifier lerp(_VisibilityModifier? other, double t) {
+  VisibilityModifier lerp(VisibilityModifier? other, double t) {
     if (other == null) return this;
     if (visible == other.visible) return this;
     if (t == 0) return this;
