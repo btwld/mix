@@ -23,10 +23,12 @@ final class VisibilityModifier extends WidgetModifier<VisibilityModifier>
   }
 
   @override
-  VisibilityModifier lerp(VisibilityModifier? other, double t) {
+  VisibilityModifier lerp(_VisibilityModifier? other, double t) {
     if (other == null) return this;
-
-    return VisibilityModifier(MixOps.lerpSnap(visible, other.visible, t));
+    if (visible == other.visible) return this;
+    if (t == 0) return this;
+    if (t == 1) return other;
+    return _VisibilityModifier(true);
   }
 
   @override
