@@ -38,18 +38,18 @@ class TestBorderStyle extends MockStyle<DecorationMix>
 
   @override
   TestBorderStyle shadow(BoxShadowMix value) {
-    return decoration(BoxDecorationMix.boxShadow([value]));
+    return decoration(BoxDecorationMix.boxShadow(BoxShadowListMix([value])));
   }
 
   @override
-  TestBorderStyle shadows(List<BoxShadowMix> value) {
+  TestBorderStyle shadows(BoxShadowListMix value) {
     return decoration(BoxDecorationMix.boxShadow(value));
   }
 
   @override
   TestBorderStyle elevation(ElevationShadow value) {
     return decoration(
-      BoxDecorationMix.boxShadow(BoxShadowMix.fromElevation(value)),
+      BoxDecorationMix.boxShadow(BoxShadowMix.fromElevation(value).toMix()),
     );
   }
 

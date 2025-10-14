@@ -36,18 +36,18 @@ mixin DecorationStyleMixin<T extends Mix<Object?>> {
 
   /// Sets single shadow
   T shadow(BoxShadowMix value) {
-    return decoration(BoxDecorationMix.boxShadow([value]));
+    return decoration(BoxDecorationMix.boxShadow(BoxShadowListMix([value])));
   }
 
   /// Sets multiple shadows
-  T shadows(List<BoxShadowMix> value) {
+  T shadows(BoxShadowListMix value) {
     return decoration(BoxDecorationMix.boxShadow(value));
   }
 
   /// Sets elevation shadow
   T elevation(ElevationShadow value) {
     return decoration(
-      BoxDecorationMix.boxShadow(BoxShadowMix.fromElevation(value)),
+      BoxDecorationMix.boxShadow(BoxShadowMix.fromElevation(value).toMix()),
     );
   }
 

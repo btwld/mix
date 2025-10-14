@@ -352,14 +352,14 @@ void main() {
           BoxDecorationMix(
             color: Colors.red,
             shape: BoxShape.circle,
-            boxShadow: [
+            boxShadow: BoxShadowListMix([
               BoxShadowMix(
                 color: Colors.black,
                 offset: const Offset(2, 2),
                 blurRadius: 4.0,
                 spreadRadius: 0.0,
               ),
-            ],
+            ]),
           ),
         );
       });

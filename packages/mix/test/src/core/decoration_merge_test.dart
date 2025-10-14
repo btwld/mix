@@ -292,7 +292,9 @@ void main() {
 
       test('handles decorations with only shadows/boxShadow', () {
         final boxWithShadows = BoxDecorationMix(
-          boxShadow: [BoxShadowMix(color: Colors.black26, blurRadius: 4)],
+          boxShadow: BoxShadowListMix([
+            BoxShadowMix(color: Colors.black26, blurRadius: 4),
+          ]),
         );
         final shapeWithShadows = ShapeDecorationMix(
           shadows: [
@@ -351,7 +353,9 @@ void main() {
         final box = BoxDecorationMix(
           color: Colors.red,
           gradient: LinearGradientMix(colors: [Colors.white, Colors.black]),
-          boxShadow: [BoxShadowMix(color: Colors.black26, blurRadius: 4)],
+          boxShadow: BoxShadowListMix([
+            BoxShadowMix(color: Colors.black26, blurRadius: 4),
+          ]),
         );
         final shape = ShapeDecorationMix(
           color: Colors.blue,
