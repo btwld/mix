@@ -14,7 +14,7 @@ void main() {
           backgroundBlendMode: BlendMode.multiply,
           border: BorderMix.all(BorderSideMix(color: Colors.red, width: 2.0)),
           borderRadius: BorderRadiusMix(topLeft: const Radius.circular(8.0)),
-          boxShadow: [BoxShadowMix(color: Colors.black, blurRadius: 5.0)],
+          boxShadow: BoxShadowListMix([BoxShadowMix(color: Colors.black, blurRadius: 5.0)]),
         );
 
         expect(boxDecorationMix.$color, resolvesTo(Colors.blue));
@@ -163,10 +163,10 @@ void main() {
       test('resolves with complex properties', () {
         final boxDecorationMix = BoxDecorationMix(
           borderRadius: BorderRadiusMix(topLeft: const Radius.circular(8.0)),
-          boxShadow: [
+          boxShadow: BoxShadowListMix([
             BoxShadowMix(color: Colors.black, blurRadius: 5.0),
             BoxShadowMix(color: Colors.grey, blurRadius: 10.0),
-          ],
+          ]),
         );
 
         final resolved = boxDecorationMix.resolve(MockBuildContext());
@@ -207,11 +207,11 @@ void main() {
 
       test('merges list properties correctly', () {
         final first = BoxDecorationMix(
-          boxShadow: [BoxShadowMix(color: Colors.black, blurRadius: 5.0)],
+          boxShadow: BoxShadowListMix([BoxShadowMix(color: Colors.black, blurRadius: 5.0)]),
         );
 
         final second = BoxDecorationMix(
-          boxShadow: [BoxShadowMix(color: Colors.grey, blurRadius: 10.0)],
+          boxShadow: BoxShadowListMix([BoxShadowMix(color: Colors.grey, blurRadius: 10.0)]),
         );
 
         final merged = first.merge(second);

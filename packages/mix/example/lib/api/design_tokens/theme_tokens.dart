@@ -24,6 +24,7 @@ void main() {
 final $primaryColor = ColorToken('primary');
 final $pill = RadiusToken('pill');
 final $spacing = SpaceToken('spacing.large');
+final $shadow = BoxShadowToken('shadow.card');
 
 class Example extends StatelessWidget {
   const Example({super.key});
@@ -34,6 +35,9 @@ class Example extends StatelessWidget {
       colors: {$primaryColor: Colors.blue},
       spaces: {$spacing: 16.0},
       radii: {$pill: Radius.circular(20)},
+      boxShadows: {
+        $shadow: [BoxShadow(color: Colors.red, blurRadius: 10)],
+      },
       child: _Example(),
     );
   }
@@ -49,7 +53,8 @@ class _Example extends StatelessWidget {
         .color($primaryColor())
         .height(100)
         .width(100)
-        .paddingAll(16.0);
+        .paddingAll(16.0)
+        .shadows($shadow.mix());
 
     return Box(style: style);
   }

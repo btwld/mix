@@ -331,3 +331,9 @@ class BoxShadowListMix extends Mix<List<BoxShadow>> with Diagnosticable {
   @override
   List<Object?> get props => [items];
 }
+
+extension BoxShadowListMixExt on List<BoxShadowMix> {
+  BoxShadowListMix toMix() {
+    return BoxShadowListMix(this);
+  }
+}
