@@ -1,9 +1,18 @@
-import '../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
+import '../../helpers.dart';
+
+final $primaryColor = ColorToken('primary');
+final $secondaryColor = ColorToken('secondary');
+
 void main() {
-  runMixApp(Example());
+  runMixApp(
+    MixScope(
+      colors: {$primaryColor: Colors.red, $secondaryColor: Colors.blue},
+      child: Example(),
+    ),
+  );
 }
 
 class Example extends StatelessWidget {
@@ -15,13 +24,14 @@ class Example extends StatelessWidget {
         .height(100)
         .width(200)
         .borderRounded(16)
+        .color($primaryColor())
         .shadowOnly(
-          color: Colors.purple.shade200,
+          color: $primaryColor(),
           offset: Offset(0, 8),
           blurRadius: 20,
         )
         .linearGradient(
-          colors: [Colors.purple.shade400, Colors.pink.shade300],
+          colors: [$primaryColor(), $secondaryColor()],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         );
