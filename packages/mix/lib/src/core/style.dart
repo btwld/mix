@@ -198,7 +198,7 @@ final class VariantStyle<S extends Spec<S>> extends Mixable<StyleSpec<S>>
       return VariantStyle(variant, _style);
     }
 
-    if (variant != other.variant) {
+    if (variant.key != other.variant.key) {
       throw ArgumentError(
         'Cannot merge VariantStyle with different variants. '
         'Attempted to merge variant "${variant.key}" with "${other.variant.key}".',
