@@ -1,5 +1,5 @@
 {
-  "flutter": "main",
+  "flutter": "beta",
   "flavors": {
     "prod": "stable",
     "mincompat": "3.35.2"
