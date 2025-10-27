@@ -25,7 +25,7 @@ class _ExampleState extends State<Example> {
         .width(60)
         .borderRounded(30)
         .color(Colors.grey.shade200)
-        .animate(.easeInOut(600.ms))
+        .animate(AnimationConfig.easeInOut(600.ms))
         .onDark(BoxStyler().color(Colors.grey.shade800))
         .shadowOnly(
           color: Colors.black.withValues(alpha: 0.1),

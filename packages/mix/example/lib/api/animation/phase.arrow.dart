@@ -43,13 +43,15 @@ class _ExampleState extends State<Example> {
             .paddingX(16)
             .paddingY(8)
             .borderRounded(10)
-            .border(.all(.color(Colors.grey.shade200)))
-            .mainAxisSize(.min)
+            .border(BoxBorderMix.all(BorderSideMix.color(Colors.grey.shade200)))
+            .mainAxisSize(MainAxisSize.min)
             .spacing(8)
             .onHovered(
-              FlexBoxStyler().border(.all(.color(Colors.grey.shade300))),
+              FlexBoxStyler().border(
+                BoxBorderMix.all(BorderSideMix.color(Colors.grey.shade300)),
+              ),
             )
-            .animate(.easeInOut(150.ms)),
+            .animate(AnimationConfig.easeInOut(150.ms)),
 
         children: [
           Text('Developer Preview'),
@@ -101,7 +103,7 @@ class ArrowIconButton extends StatelessWidget {
           trigger: animationTrigger,
           phases: ArrowPhases.values,
           styleBuilder: (phase, style) =>
-              style.wrap(.translate(x: phase.offset.dx, y: phase.offset.dy)),
+              style.wrapTranslate(x: phase.offset.dx, y: phase.offset.dy),
           configBuilder: (phase) => CurveAnimationConfig(
             duration: phase.duration,
             curve: phase.curve,

@@ -19,15 +19,14 @@ class Example extends StatelessWidget {
         .onBreakpoint(Breakpoint.maxWidth(575), BoxStyler().color(Colors.green))
         .borderRounded(16)
         .shadowOnly(color: Colors.black.withValues(alpha: 0.2), blurRadius: 20)
-        .wrap(
-          .defaultText(
-            TextStyler() //
-                .fontSize(16)
-                .fontWeight(.bold)
-                .color(Colors.white),
-          ).align(alignment: .center),
+        .wrapDefaultTextStyle(
+          TextStyleMix()
+              .fontSize(16)
+              .fontWeight(FontWeight.bold)
+              .color(Colors.white),
         )
-        .animate(.spring(300.ms));
+        .wrap(WidgetModifierConfig.align(alignment: Alignment.center))
+        .animate(AnimationConfig.spring(const Duration(milliseconds: 300)));
 
     return Center(
       child: Box(

@@ -163,40 +163,40 @@ class _HeartKeyframeAnimationState extends State<HeartKeyframeAnimation> {
             KeyframeTrack<Color>(
               'color',
               [
-                .linear(Colors.blue.shade100, 100.ms),
-                .elasticOut(Colors.blue.shade400, 800.ms),
-                .elasticOut(Colors.green.shade100, 800.ms),
+                Keyframe.linear(Colors.blue.shade100, 100.ms),
+                Keyframe.elasticOut(Colors.blue.shade400, 800.ms),
+                Keyframe.elasticOut(Colors.green.shade100, 800.ms),
               ],
               initial: Colors.red.shade100,
               tweenBuilder: ColorTween.new,
             ),
             KeyframeTrack<double>('scale', [
-              .linear(1.0, 360.ms),
-              .elasticOut(1.5, 800.ms),
-              .elasticOut(1.0, 800.ms),
+              Keyframe.linear(1.0, 360.ms),
+              Keyframe.elasticOut(1.5, 800.ms),
+              Keyframe.elasticOut(1.0, 800.ms),
             ], initial: 1.0),
             KeyframeTrack<double>('verticalOffset', [
-              .linear(0.0, 100.ms),
-              .easeIn(20.0, 150.ms),
-              .elasticOut(-60.0, 1000.ms),
-              .elasticOut(0.0, 800.ms),
+              Keyframe.linear(0.0, 100.ms),
+              Keyframe.easeIn(20.0, 150.ms),
+              Keyframe.elasticOut(-60.0, 1000.ms),
+              Keyframe.elasticOut(0.0, 800.ms),
             ], initial: 0.0),
             KeyframeTrack<double>('verticalStretch', [
-              .ease(1.0, 100.ms),
-              .ease(0.6, 150.ms),
-              .ease(1.5, 100.ms),
-              .ease(1.05, 150.ms),
-              .ease(1.0, 880.ms),
-              .ease(0.8, 100.ms),
-              .ease(1.04, 400.ms),
-              .ease(1.0, 220.ms),
+              Keyframe.ease(1.0, 100.ms),
+              Keyframe.ease(0.6, 150.ms),
+              Keyframe.ease(1.5, 100.ms),
+              Keyframe.ease(1.05, 150.ms),
+              Keyframe.ease(1.0, 880.ms),
+              Keyframe.ease(0.8, 100.ms),
+              Keyframe.ease(1.04, 400.ms),
+              Keyframe.ease(1.0, 220.ms),
             ], initial: 1.0),
             KeyframeTrack<double>('angle', [
-              .easeIn(0.0, 580.ms),
-              .easeIn(16.0 * (pi / 180), 125.ms),
-              .easeIn(-16.0 * (pi / 180), 125.ms),
-              .easeIn(16.0 * (pi / 180), 125.ms),
-              .easeIn(0.0, 125.ms),
+              Keyframe.easeIn(0.0, 580.ms),
+              Keyframe.easeIn(16.0 * (pi / 180), 125.ms),
+              Keyframe.easeIn(-16.0 * (pi / 180), 125.ms),
+              Keyframe.easeIn(16.0 * (pi / 180), 125.ms),
+              Keyframe.easeIn(0.0, 125.ms),
             ], initial: 0.0),
           ],
           styleBuilder: (values, style) {
@@ -205,14 +205,12 @@ class _HeartKeyframeAnimationState extends State<HeartKeyframeAnimation> {
             final verticalStretch = values.get('verticalStretch');
             final angle = values.get('angle');
 
-            return style.wrap(
-              .transform(
-                transform: Matrix4.identity()
-                  ..scaleByDouble(scale, scale, scale, 1.0)
-                  ..translateByDouble(0, verticalOffset, 0, 1)
-                  ..scaleByDouble(1, verticalStretch, 1, 1)
-                  ..rotateZ(angle),
-              ),
+            return style.wrapTransform(
+              Matrix4.identity()
+                ..scaleByDouble(scale, scale, scale, 1.0)
+                ..translateByDouble(0, verticalOffset, 0, 1)
+                ..scaleByDouble(1, verticalStretch, 1, 1)
+                ..rotateZ(angle),
             );
           },
         );

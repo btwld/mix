@@ -41,17 +41,21 @@ class _DemoAppState extends State<DemoApp> {
           Colors.white.withValues(alpha: 0),
         ],
         stops: [0.0, 0.3, 0.4, 1],
-        tileMode: .clamp,
+        tileMode: TileMode.clamp,
       )
       .keyframeAnimation(
         trigger: trigger,
         timeline: [
-          KeyframeTrack<double>('progress', [.ease(1, 2000.ms)], initial: -1),
+          KeyframeTrack<double>('progress', [
+            Keyframe.ease(1, 2000.ms),
+          ], initial: -1),
         ],
         styleBuilder: (values, style) => style.foregroundDecoration(
-          .gradient(
-            LinearGradientMix().transform(
-              _SlidingGradientTransform(slidePercent: values.get('progress')),
+          BoxDecorationMix.gradient(
+            LinearGradientMix(
+              transform: _SlidingGradientTransform(
+                slidePercent: values.get('progress'),
+              ),
             ),
           ),
         ),
@@ -83,7 +87,7 @@ class _DemoAppState extends State<DemoApp> {
             style: TextStyler()
                 //
                 .color(Colors.white)
-                .fontWeight(.w500),
+                .fontWeight(FontWeight.w500),
           ),
         ),
       ),

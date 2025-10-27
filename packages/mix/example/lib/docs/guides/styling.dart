@@ -17,17 +17,15 @@ void main() {
       .paddingY(8)
       .borderRounded(8)
       .color(Colors.black)
-      .wrap(
-        .defaultTextStyle(
-          style: TextStyleMix().color(Colors.deepOrange).fontWeight(.bold),
-        ),
+      .wrapDefaultTextStyle(
+        TextStyleMix().color(Colors.deepOrange).fontWeight(FontWeight.bold),
       );
 
   final solid = base.color(Colors.blue);
 
   final soft = base
       .color(Colors.blue.shade100)
-      .wrap(.defaultTextStyle(style: TextStyleMix().color(Colors.blue)));
+      .wrapDefaultTextStyle(TextStyleMix().color(Colors.blue));
 
   // 3
   final button = BoxStyler()

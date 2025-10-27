@@ -1,7 +1,6 @@
+import '../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
-
-import '../../helpers.dart';
 
 void main() {
   runMixApp(Example());
@@ -37,7 +36,7 @@ class _ExampleState extends State<Example> {
         .borderRounded(10)
         .translate(appear ? 0 : -50, 0)
         .scale(appear ? 1 : 0.1)
-        .animate(.easeInOut(1.s));
+        .animate(AnimationConfig.easeInOut(1.s));
 
     return Box(style: style);
   }

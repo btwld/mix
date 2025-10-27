@@ -39,7 +39,7 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
               )
               .height(30)
               .width(65)
-              .borderRadiusAll(.circular(40))
+              .borderRadiusAll(Radius.circular(40))
               .alignment(
                 _trigger.value ? Alignment.centerRight : Alignment.centerLeft,
               )
@@ -55,7 +55,7 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
                     Colors.transparent,
                   ],
                   stops: [0.3, 1],
-                  focal: .center,
+                  focal: Alignment.center,
                   focalRadius: 1.1,
                 )
                 .borderRounded(40)
@@ -70,15 +70,15 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
                   trigger: _trigger,
                   timeline: [
                     KeyframeTrack<double>('scale', [
-                      .easeOutSine(1.25, 200.ms),
-                      .elasticOut(0.85, 500.ms),
+                      Keyframe.easeOutSine(1.25, 200.ms),
+                      Keyframe.elasticOut(0.85, 500.ms),
                     ], initial: 0.85),
                     KeyframeTrack<double>(
                       'width',
                       [
-                        .decelerate(50, 100.ms),
-                        .linear(50, 100.ms),
-                        .elasticOut(40, 500.ms),
+                        Keyframe.decelerate(50, 100.ms),
+                        Keyframe.linear(50, 100.ms),
+                        Keyframe.elasticOut(40, 500.ms),
                       ],
                       initial: 40,
                       tweenBuilder: Tween.new,

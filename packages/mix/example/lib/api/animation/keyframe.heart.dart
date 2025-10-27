@@ -56,32 +56,32 @@ class _HeartAnimationState extends State<HeartAnimation> {
           trigger: _trigger,
           timeline: [
             KeyframeTrack<double>('scale', [
-              .linear(1.0, 360.ms),
-              .elasticOut(1.5, 800.ms),
-              .elasticOut(1.0, 800.ms),
+              Keyframe.linear(1.0, 360.ms),
+              Keyframe.elasticOut(1.5, 800.ms),
+              Keyframe.elasticOut(1.0, 800.ms),
             ], initial: 1.0),
             KeyframeTrack<double>('verticalOffset', [
-              .linear(0.0, 100.ms),
-              .easeIn(20.0, 150.ms),
-              .elasticOut(-60.0, 1000.ms),
-              .elasticOut(0.0, 800.ms),
+              Keyframe.linear(0.0, 100.ms),
+              Keyframe.easeIn(20.0, 150.ms),
+              Keyframe.elasticOut(-60.0, 1000.ms),
+              Keyframe.elasticOut(0.0, 800.ms),
             ], initial: 0.0),
             KeyframeTrack<double>('verticalStretch', [
-              .ease(1.0, 100.ms),
-              .ease(0.6, 150.ms),
-              .ease(1.5, 100.ms),
-              .ease(1.05, 150.ms),
-              .ease(1.0, 880.ms),
-              .ease(0.8, 100.ms),
-              .ease(1.04, 400.ms),
-              .ease(1.0, 220.ms),
+              Keyframe.ease(1.0, 100.ms),
+              Keyframe.ease(0.6, 150.ms),
+              Keyframe.ease(1.5, 100.ms),
+              Keyframe.ease(1.05, 150.ms),
+              Keyframe.ease(1.0, 880.ms),
+              Keyframe.ease(0.8, 100.ms),
+              Keyframe.ease(1.04, 400.ms),
+              Keyframe.ease(1.0, 220.ms),
             ], initial: 1.0),
             KeyframeTrack<double>('angle', [
-              .easeIn(0.0, 580.ms),
-              .easeIn(16.0 * (pi / 180), 125.ms),
-              .easeIn(-16.0 * (pi / 180), 125.ms),
-              .easeIn(16.0 * (pi / 180), 125.ms),
-              .easeIn(0.0, 125.ms),
+              Keyframe.easeIn(0.0, 580.ms),
+              Keyframe.easeIn(16.0 * (pi / 180), 125.ms),
+              Keyframe.easeIn(-16.0 * (pi / 180), 125.ms),
+              Keyframe.easeIn(16.0 * (pi / 180), 125.ms),
+              Keyframe.easeIn(0.0, 125.ms),
             ], initial: 0.0),
           ],
           styleBuilder: (values, style) {
@@ -91,16 +91,16 @@ class _HeartAnimationState extends State<HeartAnimation> {
             final angle = values.get('angle');
 
             return style
-                .wrap(.scale(scale, scale * verticalStretch))
-                .wrap(.translate(x: 0, y: verticalOffset))
-                .wrap(.rotate(radians: angle));
+                .wrapScale(x: scale, y: scale * verticalStretch)
+                .wrapTranslate(x: 0, y: verticalOffset)
+                .wrapRotate(angle);
           },
         ),
         child: ShaderMask(
           shaderCallback: (Rect bounds) {
             return LinearGradient(
-              begin: .topCenter,
-              end: .bottomCenter,
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
               colors: [Colors.redAccent.shade100, Colors.redAccent.shade400],
             ).createShader(bounds);
           },

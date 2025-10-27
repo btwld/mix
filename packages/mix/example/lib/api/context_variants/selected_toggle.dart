@@ -1,7 +1,6 @@
+import '../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
-
-import '../../helpers.dart';
 
 void main() {
   runMixApp(Example());
@@ -37,8 +36,10 @@ class _ExampleState extends State<Example> {
           BoxStyler()
               .color(Colors.blue.shade500)
               .borderAll(color: Colors.blue.shade600, width: 2)
-              .shadow(
-                .color(Colors.blue.shade200).blurRadius(10).spreadRadius(2),
+              .shadowOnly(
+                color: Colors.blue.shade200,
+                blurRadius: 10,
+                spreadRadius: 2,
               ),
         );
 

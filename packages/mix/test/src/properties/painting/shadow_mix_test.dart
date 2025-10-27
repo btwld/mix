@@ -315,7 +315,7 @@ void main() {
       });
 
       test('offset utility works correctly', () {
-        final boxShadowMix = BoxShadowMix().offset(x: 2.0, y: 3.0);
+        final boxShadowMix = BoxShadowMix().offset(const Offset(2.0, 3.0));
 
         expect(boxShadowMix.$offset, resolvesTo(const Offset(2.0, 3.0)));
       });

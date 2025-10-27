@@ -11,10 +11,9 @@
 /// - Transform alignment and scaling
 library;
 
+import '../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
-
-import '../../helpers.dart';
 
 void main() {
   runMixApp(BlockAnimation());
@@ -49,23 +48,17 @@ class _BlockAnimationState extends State<BlockAnimation> {
           trigger: _isExpanded,
           phases: AnimationPhases.values,
           styleBuilder: (phase, style) => switch (phase) {
-            .initial =>
-              style //
-                  .scale(1),
-            .compress =>
-              style //
-                  .scale(0.75)
-                  .color(Colors.red.shade800),
-            .expanded =>
-              style //
-                  .scale(1.25)
-                  .borderRounded(20)
-                  .color(Colors.yellow.shade300),
+            AnimationPhases.initial => style.scale(1),
+            AnimationPhases.compress =>
+              style.scale(0.75).color(Colors.red.shade800),
+            AnimationPhases.expanded =>
+              style.scale(1.25).borderRounded(20).color(Colors.yellow.shade300),
           },
           configBuilder: (phase) => switch (phase) {
-            .initial => .springWithDampingRatio(800.ms, ratio: 0.3),
-            .compress => .decelerate(200.ms),
-            .expanded => .decelerate(100.ms),
+            AnimationPhases.initial =>
+              CurveAnimationConfig.springWithDampingRatio(800.ms, ratio: 0.3),
+            AnimationPhases.compress => CurveAnimationConfig.decelerate(200.ms),
+            AnimationPhases.expanded => CurveAnimationConfig.decelerate(100.ms),
           },
         );
 

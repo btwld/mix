@@ -38,13 +38,13 @@ class EmojiSelector extends StatelessWidget {
 
     return FlexBox(
       style: FlexBoxStyler()
-          .padding(.symmetric(vertical: 10, horizontal: 16))
+          .padding(EdgeInsetsMix.symmetric(vertical: 10, horizontal: 16))
           .color(Colors.white)
           .borderRounded(50)
           .shadowOnly(color: Colors.black12, blurRadius: 50)
           .spacing(16)
-          .mainAxisAlignment(.center)
-          .mainAxisSize(.min),
+          .mainAxisAlignment(MainAxisAlignment.center)
+          .mainAxisSize(MainAxisSize.min),
 
       children: [
         PopUpAnimation(child: emoji('❤️')),
@@ -92,12 +92,16 @@ class _PopUpAnimationState extends State<PopUpAnimation> {
       style: BoxStyler().keyframeAnimation(
         trigger: trigger,
         timeline: [
-          KeyframeTrack('scale', [
-            .ease(0.2, 200.ms),
-            .elasticOut(1.0, 1000.ms),
+          KeyframeTrack<double>('scale', [
+            Keyframe.ease(0.2, 200.ms),
+            Keyframe.elasticOut(1.0, 1000.ms),
           ], initial: 0),
-          KeyframeTrack<double>('y', [.elasticOut(0, 800.ms)], initial: -100),
-          KeyframeTrack<double>('opacity', [.easeIn(1.0, 500.ms)], initial: 0),
+          KeyframeTrack<double>('y', [
+            Keyframe.elasticOut(0, 800.ms),
+          ], initial: -100),
+          KeyframeTrack<double>('opacity', [
+            Keyframe.easeIn(1.0, 500.ms),
+          ], initial: 0),
         ],
         styleBuilder: (values, style) {
           final scale = values.get('scale');
@@ -110,7 +114,7 @@ class _PopUpAnimationState extends State<PopUpAnimation> {
                   ..scaleByDouble(scale, scale, 1, 1)
                   ..translateByDouble(0.0, y, 0, 1),
               )
-              .wrap(.opacity(opacity));
+              .wrapOpacity(opacity);
         },
       ),
       child: widget.child,

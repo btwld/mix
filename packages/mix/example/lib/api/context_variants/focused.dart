@@ -39,7 +39,7 @@ class _ExampleState extends State<Example> {
         .height(100)
         .width(100)
         .borderRounded(10)
-        .wrap(.opacity(0.4))
+        .wrapOpacity(0.4)
         .onFocused(
           BoxStyler()
               .color(Colors.blue)
@@ -47,11 +47,11 @@ class _ExampleState extends State<Example> {
         );
 
     return Column(
-      mainAxisSize: .min,
+      mainAxisSize: MainAxisSize.min,
       spacing: 16,
       children: [
         Row(
-          mainAxisSize: .min,
+          mainAxisSize: MainAxisSize.min,
           spacing: 8,
           children: [
             Pressable(

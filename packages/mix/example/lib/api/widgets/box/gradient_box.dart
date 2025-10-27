@@ -1,7 +1,6 @@
+import '../../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
-
-import '../../../helpers.dart';
 
 void main() {
   runMixApp(Example());
@@ -18,8 +17,8 @@ class Example extends StatelessWidget {
         .borderRounded(10)
         .linearGradient(
           colors: [Colors.deepPurple.shade700, Colors.deepPurple.shade200],
-          begin: .topLeft,
-          end: .bottomRight,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         )
         .shadowOnly(
           color: Colors.deepPurple.shade700,
