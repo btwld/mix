@@ -1,6 +1,7 @@
-import '../../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
+
+import '../../../helpers.dart';
 
 void main() {
   runMixApp(Example());
@@ -12,8 +13,8 @@ class Example extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final flexStyle = StackBoxStyler(
-      constraints: BoxConstraintsMix.height(100).width(100),
-      stackAlignment: Alignment.bottomCenter,
+      constraints: .height(100).width(100),
+      stackAlignment: .bottomCenter,
     );
 
     final boxStyle = BoxStyler()
@@ -33,7 +34,7 @@ class Example extends StatelessWidget {
               .color(Colors.black)
               .height(15)
               .width(100)
-              .wrapAlign(Alignment.center),
+              .wrap(.align(alignment: .center)),
         ),
         Box(
           style: BoxStyler()
@@ -41,7 +42,7 @@ class Example extends StatelessWidget {
               .height(100)
               .width(100)
               .borderAll(color: Colors.black, width: 20)
-              .wrapScale(x: 0.50, y: 0.50),
+              .wrap(.scale(0.50, 0.50)),
         ),
       ],
     );
