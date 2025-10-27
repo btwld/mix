@@ -13,7 +13,7 @@ class Example extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final flexStyle = FlexBoxStyler()
-        .mainAxisSize(MainAxisSize.min)
+        .mainAxisSize(.min)
         .spacing(4)
         .color(Colors.cyan.shade50)
         .paddingX(10)
@@ -27,7 +27,7 @@ class Example extends StatelessWidget {
         .size(18);
     final textStyle = TextStyler()
         .fontSize(16)
-        .fontWeight(FontWeight.w500)
+        .fontWeight(.w500)
         .color(Colors.cyan.shade700);
 
     return RowBox(
