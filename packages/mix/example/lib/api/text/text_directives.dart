@@ -1,6 +1,7 @@
-import '../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
+
+import '../../helpers.dart';
 
 void main() {
   runMixApp(Example());
@@ -13,7 +14,7 @@ class Example extends StatelessWidget {
   Widget build(BuildContext context) {
     final baseStyle = TextStyler()
         .fontSize(18)
-        .fontWeight(FontWeight.w600)
+        .fontWeight(.w600)
         .color(Colors.blue.shade700);
 
     return ColumnBox(

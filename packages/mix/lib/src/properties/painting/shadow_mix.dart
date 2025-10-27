@@ -192,8 +192,8 @@ class BoxShadowMix extends BaseShadowMix<BoxShadow>
   }
 
   /// Copy with offset.
-  BoxShadowMix offset(Offset value) {
-    return merge(BoxShadowMix.offset(value));
+  BoxShadowMix offset({double? x, double? y}) {
+    return merge(BoxShadowMix.offset(Offset(x ?? 0, y ?? 0)));
   }
 
   /// Copy with blur radius.

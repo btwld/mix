@@ -26,10 +26,10 @@ class LinearGradientIconExample extends StatelessWidget {
       style: TextStyler()
           .fontSize(100)
           .color(Colors.white)
-          .fontWeight(FontWeight.bold)
+          .fontWeight(.bold)
           .wrap(
-            WidgetModifierConfig.shaderMask(
-              shaderCallback: ShaderCallbackBuilder.radialGradient(
+            .shaderMask(
+              shaderCallback: .radialGradient(
                 center: Alignment.centerLeft,
                 radius: 0.7,
                 colors: [

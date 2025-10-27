@@ -1,6 +1,7 @@
-import '../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
+
+import '../../helpers.dart';
 
 void main() {
   runMixApp(Example());
@@ -23,9 +24,9 @@ class _ExampleState extends State<Example> {
         .height(100)
         .width(100)
         .borderRounded(10)
-        .transform(Matrix4.identity())
+        .transform(.identity())
         .translate(0, _translated ? 100 : -100)
-        .animate(AnimationConfig.spring(300.ms, bounce: 0.6));
+        .animate(.spring(300.ms, bounce: 0.6));
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,

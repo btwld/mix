@@ -28,8 +28,8 @@ class SweepGradientIconExample extends StatelessWidget {
           .size(100)
           .color(Colors.white)
           .wrap(
-            WidgetModifierConfig.shaderMask(
-              shaderCallback: ShaderCallbackBuilder.sweepGradient(
+            .shaderMask(
+              shaderCallback: .sweepGradient(
                 center: Alignment.topCenter,
                 colors: [
                   Colors.redAccent.shade100,
