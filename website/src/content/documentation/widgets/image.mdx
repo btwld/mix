@@ -3,12 +3,14 @@
 This is equivalent to the **Image** widget in Flutter.
 
 ```dart
+final style = ImageStyler()
+  .width(152)
+  .height(152)
+  .fit(BoxFit.cover);
+  
 StyledImage(
   image: AssetImage('assets/image.jpg'),
-  style: ImageStyler()
-      .width(152)
-      .height(152)
-      .fit(BoxFit.cover),
+  style: style,
 );
 ```
 

@@ -3,11 +3,13 @@
 This is equivalent to the **Text** widget in Flutter.
 
 ```dart
+final style = TextStyler()
+  .color(Colors.red)
+  .fontSize(20);
+  
 StyledText(
   'Hello World',
-  style: TextStyler()
-      .color(Colors.red)
-      .fontSize(20),
+  style: style,
 );
 ```
 

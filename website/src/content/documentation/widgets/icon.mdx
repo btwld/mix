@@ -3,11 +3,13 @@
 This is equivalent to the **Icon** widget in Flutter.
 
 ```dart
+final style = IconStyler()
+  .color(Colors.blue)
+  .size(30);
+
 StyledIcon(
   icon: Icons.star,
-  style: IconStyler()
-    .color(Colors.blue)
-    .size(30),
+  style: style,
 );
 ```
 

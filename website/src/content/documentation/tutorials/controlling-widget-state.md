@@ -93,7 +93,7 @@ onTap: () {
   onPressed?.call();
   _controller.pressed = true;
   // Reset the pressed state after a short delay
-  Future.delayed(const Duration(milliseconds: 100), () {
+  Future.delayed(100.ms, () {
     _controller.pressed = false;
   });
 },
