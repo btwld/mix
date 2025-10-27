@@ -33,6 +33,7 @@ jobs:
         uses: ./.github/actions/test/
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          flutter-version: 'beta'
 
   test_min_sdk:
     runs-on: ubuntu-latest
