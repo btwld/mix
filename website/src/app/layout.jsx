@@ -40,6 +40,8 @@ export default async function RootLayout({ children }) {
             dir="ltr"
             // Suggested by `next-themes` package https://github.com/pacocoursey/next-themes#with-app
             suppressHydrationWarning
+            // Force dark mode for Tailwind CSS
+            className="dark"
         >
             <Head>
                 <meta name="msapplication-TileColor" content="#fff" />
@@ -69,7 +71,11 @@ export default async function RootLayout({ children }) {
                     darkMode={false}
                     navigation={{ prev: true, next: true }}
                     toc={{ float: true, backToTop: "Scroll to top" }}
-                    nextThemes={{ defaultTheme: "dark", forcedTheme: "dark" }}
+                    nextThemes={{
+                        forcedTheme: "dark",
+                        defaultTheme: "dark",
+                        storageKey: "theme"
+                    }}
                     sidebar={{
                         defaultMenuCollapseLevel: 8,
                         autoCollapse: false,
