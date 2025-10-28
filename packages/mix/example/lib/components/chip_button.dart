@@ -22,7 +22,6 @@ final chipButtonContainer = BoxStyler()
       BoxStyler().color(Colors.black),
     )
     .alignment(Alignment.center)
-    .wrap(WidgetModifierConfig.defaultText(chipButtonLabel))
     .animate(AnimationConfig.easeInOut(300.ms));
 
 class FilterChipButton extends StatefulWidget {
@@ -73,7 +72,7 @@ class _FilterChipButtonState extends State<FilterChipButton> {
     return Pressable(
       onPress: widget.onPressed,
       controller: controller,
-      child: Box(style: chipButtonContainer, child: Text(widget.label)),
+      child: chipButtonContainer(child: chipButtonLabel(widget.label)),
     );
   }
 }

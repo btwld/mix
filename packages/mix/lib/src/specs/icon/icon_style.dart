@@ -178,8 +178,13 @@ class IconStyler extends Style<IconSpec>
     return merge(IconStyler(icon: value));
   }
 
-  StyledIcon call({IconData? icon, String? semanticLabel}) {
-    return StyledIcon(icon: icon, semanticLabel: semanticLabel, style: this);
+  StyledIcon call({Key? key, IconData? icon, String? semanticLabel}) {
+    return StyledIcon(
+      key: key,
+      icon: icon,
+      semanticLabel: semanticLabel,
+      style: this,
+    );
   }
 
   IconStyler modifier(WidgetModifierConfig value) {

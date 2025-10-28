@@ -18,7 +18,6 @@ class StyledText extends StyleWidget<TextSpec> {
     super.key,
   });
 
-
   /// The text to display.
   final String text;
 

@@ -133,12 +133,13 @@ export 'src/specs/image/image_style.dart' hide ImageMix;
 export 'src/specs/image/image_widget.dart';
 export 'src/specs/mutable_stylers.dart';
 export 'src/specs/pressable/pressable_widget.dart';
-export 'src/specs/stack/stack_box_spec.dart';
-export 'src/specs/stack/stack_box_style.dart';
 export 'src/specs/stack/stack_mutable_style.dart';
 export 'src/specs/stack/stack_spec.dart';
 export 'src/specs/stack/stack_style.dart' hide StackMix;
-export 'src/specs/stack/stack_widget.dart';
+export 'src/specs/stackbox/stackbox_mutable_style.dart';
+export 'src/specs/stackbox/stackbox_spec.dart';
+export 'src/specs/stackbox/stackbox_style.dart';
+export 'src/specs/stackbox/stackbox_widget.dart';
 export 'src/specs/text/text_mutable_style.dart';
 export 'src/specs/text/text_spec.dart';
 export 'src/specs/text/text_style.dart';
@@ -156,8 +157,8 @@ export 'src/style/mixins/spacing_style_mixin.dart';
 export 'src/style/mixins/text_style_mixin.dart';
 export 'src/style/mixins/transform_style_mixin.dart';
 export 'src/style/mixins/variant_style_mixin.dart';
-export 'src/style/mixins/widget_state_variant_mixin.dart';
 export 'src/style/mixins/widget_modifier_style_mixin.dart';
+export 'src/style/mixins/widget_state_variant_mixin.dart';
 
 /// THEME
 export 'src/theme/material/material_theme.dart';
