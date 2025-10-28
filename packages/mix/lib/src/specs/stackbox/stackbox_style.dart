@@ -144,22 +144,27 @@ class StackBoxStyler extends Style<StackBoxSpec>
   }
 
   // Stack property methods
+  /// Sets the alignment for the Stack widget.
   StackBoxStyler stackAlignment(AlignmentGeometry value) {
     return merge(StackBoxStyler(stackAlignment: value));
   }
 
+  /// Sets how the Stack widget sizes itself based on its children.
   StackBoxStyler fit(StackFit value) {
     return merge(StackBoxStyler(fit: value));
   }
 
+  /// Sets the text direction for the Stack widget.
   StackBoxStyler textDirection(TextDirection value) {
     return merge(StackBoxStyler(textDirection: value));
   }
 
+  /// Sets the clip behavior for the Stack widget.
   StackBoxStyler stackClipBehavior(Clip value) {
     return merge(StackBoxStyler(stackClipBehavior: value));
   }
 
+  /// Applies a custom StackStyler to the StackBox.
   StackBoxStyler stack(StackStyler value) {
     return merge(StackBoxStyler.create(stack: Prop.maybeMix(value)));
   }
