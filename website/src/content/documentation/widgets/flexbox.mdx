@@ -7,11 +7,13 @@ title: FlexBox
 This is equivalent to the **Flex** wrapped in **Container** widgets in Flutter. Everything you can do with the `Box` widget, you can also do with `FlexBox`. However, the main difference is that you can specify flex attributes for it.
 
 ```dart
+final style = FlexBoxStyler()
+  .color(Colors.blue)
+  .direction(Axis.horizontal)
+  .mainAxisAlignment(MainAxisAlignment.spaceBetween);
+  
 FlexBox(
-  style: FlexBoxStyler()
-      .color(Colors.blue)
-      .direction(Axis.horizontal)
-      .mainAxisAlignment(MainAxisAlignment.spaceBetween),
+  style: style,
   children: [
     Box(child: Text('Box 1')),
     Box(child: Text('Box 2')),

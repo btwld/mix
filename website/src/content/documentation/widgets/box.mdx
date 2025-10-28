@@ -4,12 +4,14 @@
 This is equivalent to the **Container** widget in Flutter.
 
 ```dart
+final style = BoxStyler()
+  .width(100)
+  .height(100)
+  .color(Colors.blue)
+  .borderRounded(8);
+
 Box(
-  style: BoxStyler()
-      .width(100)
-      .height(100)
-      .color(Colors.blue)
-      .borderRounded(8),
+  style: style,
   child: Text('Styled Box'),
 );
 ```
