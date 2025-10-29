@@ -1,78 +1,145 @@
-import { Callout } from "nextra/components";
+# ZBox
 
-# ZBox (Stack)
+Combines `Container` and `Stack` with Mix styling.
 
-<Callout type="error">
-  This documentation is currently under development and may contain outdated content.
-</Callout>
+Creates a stacked layout with box styling capabilities.
 
-`ZBox` is a composite styled widget that combines the layout capabilities of a `Box` with the stacking functionality of `StyledStack`. It is designed for use cases where you need a styled stacking layout, encapsulated within a box-shaped container with alignment and other style properties.
+## Constructor
 
-## Usage
+| Prop  | Type         | Required / Default Value                |
+|-------|--------------|------------------------------------------|
+| `style` | `Style` | `const StackBoxStyler.create()` |
+| `styleSpec` | `StyleSpec?` | `Optional` |
+| `children` | `List<Widget>` | `const <Widget>[]` |
 
-To use `ZBox`, create an instance and provide it with a style and a list of widgets for your stacked layout:
+## Style API Reference
 
-```dart
-ZBox(
-  style: Style(
-    $stack.alignment.bottomLeft(),
-    $stack.fit.loose(),
-    $box.width(300),
-    $box.height(300),
-    $box.color.blue(),
-  ),
-  children: [...],
-);
-```
-
-## Utilities
-
-The `$stack` variable is an instance of `StackMutableStyler`, which facilitates the construction of `StackSpecAttribute` objects. These objects are used to style and manage the visuals of `ZBox` and `StyledStack`.
-
-### **alignment**
-
-This utility aligns layers within the stacked layout:
-
-```dart
-// Align at the bottom center of the stack
-$stack.alignment.bottomCenter();
-
-// Align at the top right of the stack
-$stack.alignment.topRight();
-```
-
-### **fit**
-
-This utility determines how layers are sized within the stack:
-
-```dart
-// StackFit.loose
-$stack.fit.loose();
-
-// StackFit.expand
-$stack.fit.expand();
-```
-
-### **textDirection**
-
-This utility indicates the text direction in the stack for correct placement of elements:
-
-```dart
-// Left-to-right text direction
-$stack.textDirection.ltr();
-
-// Right-to-left text direction
-$stack.textDirection.rtl();
-```
-
-### **clipBehavior**
-
-This utility controls how children outside the stack's bounds are clipped:
-
-```dart
-// Clip.hardEdge
-$stack.clipBehavior.hardEdge();
-
-// Clip.none
-$stack.clipBehavior.none();
-```
+| Method | Description |
+|--------|-------------|
+| `animate` | Sets animation |
+| `modifier` |  |
+| `stackAlignment` | Sets stack alignment |
+| `fit` | Sets stack fit |
+| `textDirection` | Sets text direction |
+| `stackClipBehavior` | Sets stack clip behavior |
+| `alignment` | Sets box alignment |
+| `transformAlignment` | Sets transform alignment |
+| `clipBehavior` | Sets box clip behavior |
+| `foregroundDecoration` | Sets foreground decoration |
+| `variants` |  |
+| `padding` | Padding instance method - delegates to box |
+| `margin` | Margin instance method - delegates to box |
+| `transform` | Transform instance method - delegates to box |
+| `decoration` | Decoration instance method - delegates to box |
+| `constraints` | Constraints instance method - delegates to box |
+| `borderRadius` | Border radius instance method - delegates to box |
+| `variant` |  |
+| `onDark` | Creates a variant for dark mode |
+| `onNot` |  |
+| `onLight` | Creates a variant for light mode |
+| `onBuilder` | Creates a variant that applies styling based on the build context. The provided builder function receives a [BuildContext] and should return a style that will be applied when this variant is active. Example: ```dart BoxStyle().onBuilder((context) {   final theme = Theme.of(context);   return BoxStyle().decoration.color(theme.primaryColor); }) ``` |
+| `builder` |  |
+| `onBreakpoint` | Creates a variant based on breakpoint |
+| `onPortrait` | Creates a variant for portrait orientation |
+| `onLandscape` | Creates a variant for landscape orientation |
+| `onMobile` | Creates a variant for mobile breakpoint |
+| `onTablet` | Creates a variant for tablet breakpoint |
+| `onDesktop` | Creates a variant for desktop breakpoint |
+| `onLtr` | Creates a variant for left-to-right text direction |
+| `onRtl` | Creates a variant for right-to-left text direction |
+| `onIos` | Creates a variant for iOS platform |
+| `onAndroid` | Creates a variant for Android platform |
+| `onMacos` | Creates a variant for macOS platform |
+| `onWindows` | Creates a variant for Windows platform |
+| `onLinux` | Creates a variant for Linux platform |
+| `onFuchsia` | Creates a variant for Fuchsia platform |
+| `onWeb` | Creates a variant for web platform |
+| `onHovered` | Creates a variant for hover state |
+| `onPressed` | Creates a variant for pressed state |
+| `onFocused` | Creates a variant for focused state |
+| `onDisabled` | Creates a variant for disabled state |
+| `onEnabled` | Creates a variant for enabled state (opposite of disabled) |
+| `borderRadiusAll` |  |
+| `borderRadiusTop` |  |
+| `borderRadiusBottom` |  |
+| `borderRadiusLeft` |  |
+| `borderRadiusRight` |  |
+| `borderRadiusTopLeft` |  |
+| `borderRadiusTopRight` |  |
+| `borderRadiusBottomLeft` |  |
+| `borderRadiusBottomRight` |  |
+| `borderRadiusTopStart` |  |
+| `borderRadiusTopEnd` |  |
+| `borderRadiusBottomStart` |  |
+| `borderRadiusBottomEnd` |  |
+| `borderRounded` |  |
+| `borderRoundedTop` |  |
+| `borderRoundedBottom` |  |
+| `borderRoundedLeft` |  |
+| `borderRoundedRight` |  |
+| `borderRoundedTopLeft` |  |
+| `borderRoundedTopRight` |  |
+| `borderRoundedBottomLeft` |  |
+| `borderRoundedBottomRight` |  |
+| `borderRoundedTopStart` |  |
+| `borderRoundedTopEnd` |  |
+| `borderRoundedBottomStart` |  |
+| `borderRoundedBottomEnd` |  |
+| `color` | Sets background color |
+| `gradient` | Sets gradient with any GradientMix type |
+| `border` | Sets border |
+| `shadow` | Sets single shadow |
+| `shadows` | Sets multiple shadows |
+| `elevation` | Sets elevation shadow |
+| `image` | Sets image decoration |
+| `shape` | Sets box shape |
+| `shapeCircle` | Sets a circular shape (CircleBorder) |
+| `shapeStadium` | Sets a stadium shape (StadiumBorder) |
+| `shapeRoundedRectangle` | Sets a rounded rectangle shape (RoundedRectangleBorder) |
+| `shapeBeveledRectangle` | Sets a beveled rectangle shape (BeveledRectangleBorder) |
+| `shapeContinuousRectangle` | Sets a continuous rectangle shape (ContinuousRectangleBorder) |
+| `shapeStar` | Sets a star shape (StarBorder) |
+| `shapeLinear` | Sets a linear border shape (LinearBorder) |
+| `shapeSuperellipse` | Sets a superellipse shape (RoundedSuperellipseBorder) |
+| `backgroundImage` | Sets a background image from an ImageProvider |
+| `backgroundImageUrl` | Sets a background image from a network URL |
+| `backgroundImageAsset` | Sets a background image from an asset path |
+| `foregroundLinearGradient` | Sets a foreground linear gradient |
+| `foregroundRadialGradient` | Sets a foreground radial gradient |
+| `foregroundSweepGradient` | Sets a foreground sweep gradient |
+| `linearGradient` | Sets a background linear gradient |
+| `radialGradient` | Sets a background radial gradient |
+| `sweepGradient` | Sets a background sweep gradient |
+| `paddingTop` |  |
+| `paddingBottom` |  |
+| `paddingLeft` |  |
+| `paddingRight` |  |
+| `paddingX` |  |
+| `paddingY` |  |
+| `paddingAll` |  |
+| `paddingStart` |  |
+| `paddingEnd` |  |
+| `paddingOnly` | Creates padding with only specified values, supporting priority resolution |
+| `marginTop` |  |
+| `marginBottom` |  |
+| `marginLeft` |  |
+| `marginRight` |  |
+| `marginX` |  |
+| `marginY` |  |
+| `marginAll` |  |
+| `marginStart` |  |
+| `marginEnd` |  |
+| `marginOnly` | Creates margin with only specified values, supporting priority resolution |
+| `rotate` | Sets rotation transform |
+| `scale` | Sets scale transform |
+| `translate` | Sets translation transform |
+| `skew` | Sets skew transform |
+| `transformReset` | Resets transform to identity (no effect) |
+| `width` | Sets both min and max width to create a fixed width |
+| `height` | Sets both min and max height to create a fixed height |
+| `minWidth` | Sets minimum width constraint |
+| `maxWidth` | Sets maximum width constraint |
+| `minHeight` | Sets minimum height constraint |
+| `maxHeight` | Sets maximum height constraint |
+| `size` | Sets both width and height to specific values |
+| `constraintsOnly` | Creates constraints with only specified values, supporting priority resolution |
