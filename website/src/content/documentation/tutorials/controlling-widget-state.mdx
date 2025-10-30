@@ -1,152 +1,149 @@
-import { Callout } from "nextra/components";
 
 # Controlling Widget State
 
-<Callout type="error">
-  This documentation is currently under development and may contain outdated content.
-</Callout>
+In this tutorial, we'll explore how to manage manually widget states in Mix, including hover, pressed, and focused states. Mix provides multiple approaches to handle widget states, from simple automatic state management to advanced manual control using `WidgetStatesController`.
 
-In this tutorial, we'll explore how to use the `MixWidgetStateController` to manage the state of a custom pressable widget called CustomPressable. We'll cover how to create the CustomPressable widget, handle press and long press gestures, and update the widget state using the `MixWidgetStateController`.
+## Approach 1: Automatic State Management
 
-## Creating the CustomPressable Widget
-
-First, let's create the CustomPressable widget that extends StatefulWidget:
+The simplest way to handle widget states is using Mix's automatic state management with the `Box` widget. Mix automatically tracks hover, press, and focus states for you:
 
 ```dart
-class CustomPressable extends StatefulWidget {
-  const CustomPressable({super.key, this.style, this.onPressed, this.label});
+class SimpleExample extends StatelessWidget {
+  const SimpleExample({super.key});
 
-  final Style? style
-  final VoidCallback? onPressed;
-  final String? label;
+  BoxStyler get style => BoxStyler()
+      .color(Colors.red)
+      .size(100, 100)
+      .onHovered(BoxStyler().color(Colors.blue))
+      .onPressed(BoxStyler().color(Colors.green))
+      .onFocused(BoxStyler().color(Colors.yellow));
 
   @override
-  _CustomPressableState createState() => _CustomPressableState();
+  Widget build(BuildContext context) {
+    return style();
+  }
+}
+```
+
+In this example:
+- The base color is red
+- When hovered, the color changes to blue
+- When pressed, the color changes to green
+- When focused, the color changes to yellow
+
+## Approach 2: Manual State Control with WidgetStatesController
+
+For more advanced scenarios where you need manual control over widget states, you can use `WidgetStatesController` with `StyleBuilder`:
+
+```dart
+class AdvancedExample extends StatefulWidget {
+  const AdvancedExample({super.key});
+
+  @override
+  State<AdvancedExample> createState() => _AdvancedExampleState();
 }
 
-class _CustomPressableState extends State<CustomPressable> {
-  late final MixWidgetStateController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = MixWidgetStateController();
-  }
+class _AdvancedExampleState extends State<AdvancedExample> {
+  final controller = WidgetStatesController();
 
   @override
   void dispose() {
-    _controller.dispose();
+    controller.dispose();
     super.dispose();
   }
 
+  BoxStyler get style => BoxStyler()
+      .color(Colors.red)
+      .size(100, 100)
+      .onHovered(BoxStyler().color(Colors.blue))
+      .onPressed(BoxStyler().color(Colors.green))
+      .onFocused(BoxStyler().color(Colors.yellow));
+
   @override
   Widget build(BuildContext context) {
-    // We'll build the widget tree here
-  }
-}
-```
-
-In the _CustomPressableState class, we create an instance of `MixWidgetStateController` called `_controller` in the initState method. We also make sure to dispose of the `_controller` in the dispose method to avoid memory leaks.
-
-## Building the Widget Tree
-
-Next, let's build the widget tree inside the build method of _CustomPressableState:
-
-```dart
-@override
-Widget build(BuildContext context) {
-  return GestureDetector(
-    onTap: () {
-      onPressed?.call();
-    },
-    child: FocusableActionDetector(
-      onShowFocusHighlight: (hasFocus) {
-        // Update focus state
-      },
-      onShowHoverHighlight: (isHovered) {
-        // Update hover state
-      },
-      child: SpecBuilder(
-        style: widget.style,
-        controller: _controller,
-        builder: (context) {
-          final BoxWidget = BoxSpec.of(context);
-          final TextWidget = TextSpec.of(context);
-          return BoxWidget(
-            child: TextWidget(widget.label),
-          );
+    return GestureDetector(
+      onTapDown: (_) => controller.pressed = true,
+      onTapUp: (_) => controller.pressed = false,
+      onTapCancel: () => controller.pressed = false,
+      child: StyleBuilder(
+        style: style,
+        controller: controller,
+        builder: (context, spec) {
+          return Box(styleSpec: StyleSpec(spec: spec));
         },
-      ),
-    ),
-  );
-}
-```
-
-We use the `SpecBuilder` to build the widget tree, passing the `_controller` to manage the widget state. Inside the builder function of SpecBuilder, we have a GestureDetector to handle press and long press gestures, and a FocusableActionDetector to handle focus and hover interactions.
-
-## Handling Press and Long Press Gestures
-
-Let's implement the logic to handle press and long press gestures:
-
-```dart
-onTap: () {
-  onPressed?.call();
-  _controller.pressed = true;
-  // Reset the pressed state after a short delay
-  Future.delayed(100.ms, () {
-    _controller.pressed = false;
-  });
-},
-```
-
-When a tap gesture occurs, we set the pressed property of the _controller to true. After a short delay of 100 milliseconds, we reset the pressed state to false using Future.delayed.
-
-Similarly, when a long press gesture occurs, we set the longPressed property of the _controller to true and reset it to false after a short delay.
-
-## Updating Focus and Hover States
-
-Let's update the focus and hover states using the onShowFocusHighlight and onShowHoverHighlight callbacks:
-
-```dart
-onShowFocusHighlight: (hasFocus) => _controller.focused = hasFocus,
-onShowHoverHighlight: (isHovered) => _controller.hovered = isHovered,
-```
-
-When the focus state changes, we update the focused property of the _controller accordingly. Similarly, when the hover state changes, we update the hovered property of the `_controller`.
-
-## Using the CustomPressable Widget
-
-Now that we have created the CustomPressable widget and implemented the necessary logic, we can use it in our app:
-
-```dart
-final style = Style(
-  $box.width(200),
-  $box.height(100),
-  $box.color(Colors.blue),
-  $on.press(
-    $box.color(Colors.darkBlue),
-  ),
-  $on.hover(
-    $box.color(Colors.lightBlue),
-  ),
-);
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: CustomPressable(
-            style: style,
-            label: 'Press Me',
-            onPressed: () {
-              print('Button pressed');
-            },
-          ),
-        ),
       ),
     );
   }
 }
 ```
+
+### Creating the WidgetStatesController
+
+First, create an instance of `WidgetStatesController` in your state class:
+
+```dart
+final controller = WidgetStatesController();
+```
+
+Remember to dispose of the controller when the widget is disposed to avoid memory leaks:
+
+```dart
+@override
+void dispose() {
+  controller.dispose();
+  super.dispose();
+}
+```
+
+### Managing Widget States
+
+The `WidgetStatesController` provides properties to control different widget states:
+
+- `controller.pressed = true/false` - Controls the pressed state
+- `controller.hovered = true/false` - Controls the hover state  
+- `controller.focused = true/false` - Controls the focus state
+- `controller.disabled = true/false` - Controls the disabled state
+
+### Using StyleBuilder
+
+`StyleBuilder` is the low-level building block for creating styled widgets with Mix. It resolves your style definitions and provides the resolved spec to the builder function:
+
+```dart
+StyleBuilder(
+  style: style,
+  controller: controller,
+  builder: (context, spec) {
+    return Box(styleSpec: StyleSpec(spec: spec));
+  },
+)
+```
+
+The `builder` function receives:
+- `context` - The build context
+- `spec` - The resolved `BoxSpec` with all style properties applied based on the current widget states
+
+### Connecting Gesture Detection
+
+Use Flutter's `GestureDetector` to connect user interactions to the controller:
+
+```dart
+GestureDetector(
+  onTapDown: (_) => controller.pressed = true,
+  onTapUp: (_) => controller.pressed = false,
+  onTapCancel: () => controller.pressed = false,
+  child: StyleBuilder(...),
+)
+```
+
+## When to Use Each Approach
+
+**Use automatic state management (Approach 1) when:**
+- You need simple hover, press, and focus interactions
+- You want Mix to handle all the complexity for you
+- You're building standard interactive widgets
+
+**Use manual state control (Approach 2) when:**
+- You need custom gesture handling logic
+- You want to programmatically control widget states
+- You need to share state across multiple widgets
+- You're building complex custom widgets with specific interaction patterns

@@ -18,7 +18,7 @@ final $spaceLarge = SpaceToken('space.large');
 final $radius = RadiusToken('radius');
 
 // Token maps for use with MixScope
-final exampleColorTokens = <ColorToken, Color>{
+final exampleColorTokens = {
   $primary: Colors.blue,
   $surface: Colors.grey.shade200,
   $surfaceVariant: Colors.grey.shade300,
@@ -27,12 +27,6 @@ final exampleColorTokens = <ColorToken, Color>{
   $onSurfaceVariant: Colors.grey.shade600,
 };
 
-final exampleSpaceTokens = <SpaceToken, double>{
-  $spaceSmall: 8.0,
-  $space: 16.0,
-  $spaceLarge: 24.0,
-};
+final exampleSpaceTokens = {$spaceSmall: 8.0, $space: 16.0, $spaceLarge: 24.0};
 
-final exampleRadiusTokens = <RadiusToken, Radius>{
-  $radius: const Radius.circular(20),
-};
+final exampleRadiusTokens = {$radius: const Radius.circular(20)};

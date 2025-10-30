@@ -1,36 +1,36 @@
 import 'package:flutter/material.dart';
 
-import 'components/custom_scaffold.dart';
-import 'components/chip_button.dart';
 import 'api/animation/implicit.curved.hover.dart' as hover_scale;
 import 'api/animation/implicit.curved.scale.dart' as auto_scale;
-import 'api/animation/phase.compress.dart' as tap_phase;
-import 'api/animation/keyframe.switch.dart' as animated_switch;
 import 'api/animation/implicit.spring.translate.dart' as spring_anim;
+import 'api/animation/keyframe.switch.dart' as animated_switch;
+import 'api/animation/phase.compress.dart' as tap_phase;
 import 'api/context_variants/disabled.dart' as disabled;
 import 'api/context_variants/focused.dart' as focused;
 import 'api/context_variants/hovered.dart' as hovered;
 import 'api/context_variants/on_dark_light.dart' as dark_light;
 import 'api/context_variants/pressed.dart' as pressed;
+import 'api/context_variants/responsive_size.dart' as responsive_size;
 import 'api/context_variants/selected.dart' as selected;
 import 'api/context_variants/selected_toggle.dart' as selected_toggle;
-import 'api/context_variants/responsive_size.dart' as responsive_size;
 // Animation examples have different class names, will be added separately
 import 'api/design_tokens/theme_tokens.dart' as theme_tokens;
+// Gradient examples
+import 'api/gradients/gradient_linear.dart' as gradient_linear;
+import 'api/gradients/gradient_radial.dart' as gradient_radial;
+import 'api/gradients/gradient_sweep.dart' as gradient_sweep;
+// Text examples
+import 'api/text/text_directives.dart' as text_directives;
+import 'api/widgets/box/gradient_box.dart' as gradient_box;
 // Import all example widgets
 import 'api/widgets/box/simple_box.dart' as simple_box;
-import 'api/widgets/box/gradient_box.dart' as gradient_box;
 import 'api/widgets/hbox/icon_label_chip.dart' as icon_label_chip;
 import 'api/widgets/icon/styled_icon.dart' as styled_icon;
 import 'api/widgets/text/styled_text.dart' as styled_text;
 import 'api/widgets/vbox/card_layout.dart' as card_layout;
 import 'api/widgets/zbox/layered_boxes.dart' as layered_boxes;
-// Text examples
-import 'api/text/text_directives.dart' as text_directives;
-// Gradient examples
-import 'api/gradients/gradient_linear.dart' as gradient_linear;
-import 'api/gradients/gradient_radial.dart' as gradient_radial;
-import 'api/gradients/gradient_sweep.dart' as gradient_sweep;
+import 'components/chip_button.dart';
+import 'components/custom_scaffold.dart';
 
 void main() {
   runApp(const MixExampleApp());
@@ -42,12 +42,11 @@ class MixExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WidgetsApp(
-      pageRouteBuilder:
-          <T extends Object?>(RouteSettings settings, WidgetBuilder builder) =>
-              PageRouteBuilder<T>(
-                settings: settings,
-                pageBuilder: (context, animation, _) => builder(context),
-              ),
+      pageRouteBuilder: <T>(RouteSettings settings, WidgetBuilder builder) =>
+          PageRouteBuilder<T>(
+            settings: settings,
+            pageBuilder: (context, animation, _) => builder(context),
+          ),
       home: const ExampleNavigator(),
       title: 'Mix Examples',
       color: const Color(0xFF2196F3),

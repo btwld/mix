@@ -1,3 +1,5 @@
+// ignore_for_file: avoid-flexible-outside-flex
+
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 

@@ -17,14 +17,9 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class DemoApp extends StatefulWidget {
+class DemoApp extends StatelessWidget {
   const DemoApp({super.key});
 
-  @override
-  State<DemoApp> createState() => _DemoAppState();
-}
-
-class _DemoAppState extends State<DemoApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,6 +38,13 @@ class HeartAnimation extends StatefulWidget {
 
 class _HeartAnimationState extends State<HeartAnimation> {
   final ValueNotifier<int> _trigger = ValueNotifier(0);
+
+  @override
+  void dispose() {
+    _trigger.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

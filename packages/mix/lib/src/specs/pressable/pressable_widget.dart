@@ -78,7 +78,6 @@ class Pressable extends StatefulWidget {
     this.excludeFromSemantics = false,
     this.semanticButtonLabel,
     this.onKeyEvent,
-
     this.controller,
     this.actions,
     required this.child,
