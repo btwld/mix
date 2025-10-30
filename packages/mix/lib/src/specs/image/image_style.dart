@@ -7,11 +7,11 @@ import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/widget_modifier_config.dart';
-import '../../style/mixins/widget_modifier_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
+import '../../style/mixins/widget_modifier_style_mixin.dart';
 import '../../style/mixins/widget_state_variant_mixin.dart';
-import 'image_spec.dart';
 import 'image_mutable_style.dart';
+import 'image_spec.dart';
 import 'image_widget.dart';
 
 typedef ImageMix = ImageStyler;
@@ -207,6 +207,7 @@ class ImageStyler extends Style<ImageSpec>
     return merge(ImageStyler(matchTextDirection: value));
   }
 
+  /// Sets the widget modifier.
   ImageStyler modifier(WidgetModifierConfig value) {
     return merge(ImageStyler(modifier: value));
   }
@@ -216,6 +217,7 @@ class ImageStyler extends Style<ImageSpec>
     return merge(ImageStyler(animation: animation));
   }
 
+  /// Sets the variants list.
   @override
   ImageStyler variants(List<VariantStyle<ImageSpec>> variants) {
     return merge(ImageStyler(variants: variants));
@@ -299,6 +301,7 @@ class ImageStyler extends Style<ImageSpec>
       ..add(DiagnosticsProperty('matchTextDirection', $matchTextDirection));
   }
 
+  /// Sets the widget modifier.
   @override
   ImageStyler wrap(WidgetModifierConfig value) {
     return modifier(value);

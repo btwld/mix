@@ -123,18 +123,22 @@ class StackBoxStyler extends Style<StackBoxSpec>
 
   // BoxMix instance methods
 
+  /// Sets the alignment for the box.
   StackBoxStyler alignment(AlignmentGeometry value) {
     return merge(StackBoxStyler(alignment: value));
   }
 
+  /// Sets the transform alignment for the box.
   StackBoxStyler transformAlignment(AlignmentGeometry value) {
     return merge(StackBoxStyler(transformAlignment: value));
   }
 
+  /// Sets the clip behavior for the box.
   StackBoxStyler clipBehavior(Clip value) {
     return merge(StackBoxStyler(clipBehavior: value));
   }
 
+  /// Sets the widget modifier.
   StackBoxStyler modifier(WidgetModifierConfig value) {
     return merge(StackBoxStyler(modifier: value));
   }
@@ -187,6 +191,7 @@ class StackBoxStyler extends Style<StackBoxSpec>
     return merge(StackBoxStyler(margin: value));
   }
 
+  /// Sets the transform for the box.
   @override
   StackBoxStyler transform(
     Matrix4 value, {
@@ -215,12 +220,13 @@ class StackBoxStyler extends Style<StackBoxSpec>
     return modifier(value);
   }
 
+  /// Sets the variants list.
   @override
   StackBoxStyler variants(List<VariantStyle<StackBoxSpec>> variants) {
     return merge(StackBoxStyler(variants: variants));
   }
 
-  /// Border radius instance method
+  /// Sets the border radius property via decoration.
   @override
   StackBoxStyler borderRadius(BorderRadiusGeometryMix value) {
     return merge(StackBoxStyler(decoration: DecorationMix.borderRadius(value)));

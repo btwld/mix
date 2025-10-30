@@ -1,9 +1,34 @@
 # StackBox
 
-Combines `Container` and `Stack` with Mix styling.
+`StackBox` is equivalent to Flutter's `Stack` and `Container` widgets combined, but provides powerful styling capabilities through the Mix framework.
 
-Applies both box and stack specifications for stacked layouts,
-providing decoration, constraints, and stack layout in one widget.
+`StackBox` enables you to create stacked layouts with visual styles such as decoration, padding, margin, constraints, and box/stack behaviors—all customizable and responsive.
+
+You can use the `StackBoxStyler` API to fluently compose your layout and decoration styles. Example:
+
+```dart
+final style = StackBoxStyler()
+ .padding(EdgeInsets.all(16))
+ .decoration(
+   BoxDecoration(
+     color: Colors.white,
+     borderRadius: BorderRadius.circular(12),
+   ),
+ )
+ .alignment(Alignment.center);
+
+StackBox(
+ children: [
+   Icon(Icons.star, size: 48),
+   Positioned(
+     right: 0,
+     bottom: 0,
+     child: Text('Badge'),
+   ),
+ ],
+ style: style,
+)
+```
 
 ## Constructor
 
@@ -20,10 +45,10 @@ providing decoration, constraints, and stack layout in one widget.
 | Method | Description |
 |--------|-------------|
 | `animate` | Sets animation |
-| `alignment` |  |
-| `transformAlignment` |  |
-| `clipBehavior` |  |
-| `modifier` |  |
+| `alignment` | Sets the alignment for the box. |
+| `transformAlignment` | Sets the transform alignment for the box. |
+| `clipBehavior` | Sets the clip behavior for the box. |
+| `modifier` | Sets the widget modifier. |
 | `stackAlignment` | Sets the alignment for the Stack widget. |
 | `fit` | Sets how the Stack widget sizes itself based on its children. |
 | `textDirection` | Sets the text direction for the Stack widget. |
@@ -32,12 +57,12 @@ providing decoration, constraints, and stack layout in one widget.
 | `foregroundDecoration` | Foreground decoration instance method |
 | `padding` | Padding instance method |
 | `margin` | Margin instance method |
-| `transform` |  |
+| `transform` | Sets the transform for the box. |
 | `decoration` | Decoration instance method - delegates to box |
 | `constraints` | Constraints instance method |
 | `wrap` | Modifier instance method |
-| `variants` |  |
-| `borderRadius` | Border radius instance method |
+| `variants` | Sets the variants list. |
+| `borderRadius` | Sets the border radius property via decoration. |
 | `border` | Border instance method |
 
 ### Border Radius

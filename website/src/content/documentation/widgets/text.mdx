@@ -1,8 +1,23 @@
 # StyledText
 
-Displays text with Mix styling.
+`StyledText` is equivalent to Flutter's `Text` widget, but provides
+styling capabilities through the Mix framework. It allows you to create
+visually styled text with typography, colors, decorations, text
+transformations, and responsive variants.
 
-Applies `TextSpec` for custom text appearance.
+You can use `TextStyler` to create styles with a fluent API. Example:
+
+```dart
+final style = TextStyler()
+ .fontSize(24)
+ .fontWeight(FontWeight.bold)
+ .color(Colors.blue);
+
+StyledText(
+ 'Hello Mix',
+ style: style,
+)
+```
 
 ## Constructor
 
@@ -18,7 +33,7 @@ Applies `TextSpec` for custom text appearance.
 
 | Method | Description |
 |--------|-------------|
-| `textDirective` |  |
+| `textDirective` | Sets a text directive. It will be applied to the text before it is displayed. |
 | `overflow` | Sets text overflow behavior |
 | `strutStyle` | Sets strut style |
 | `textAlign` | Sets text alignment |
@@ -37,11 +52,11 @@ Applies `TextSpec` for custom text appearance.
 | `capitalize` | Applies capitalize directive |
 | `titleCase` | Applies title case directive |
 | `sentenceCase` | Applies sentence case directive |
-| `modifier` |  |
+| `modifier` | Sets the widget modifier. |
 | `style` | Mixin implementation for text styling |
 | `animate` | Convenience method for animating the TextSpec |
-| `variants` |  |
-| `wrap` |  |
+| `variants` | Sets the variants list. |
+| `wrap` | Sets the widget modifier. |
 
 ### Animation
 

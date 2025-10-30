@@ -12,10 +12,35 @@ import 'stackbox_style.dart';
 @Deprecated('Use StackBox instead')
 typedef ZBox = StackBox;
 
-/// Combines [Container] and [Stack] with Mix styling.
+/// [StackBox] is equivalent to Flutter's [Stack] and [Container] widgets combined, but provides powerful styling capabilities through the Mix framework.
 ///
-/// Applies both box and stack specifications for stacked layouts,
-/// providing decoration, constraints, and stack layout in one widget.
+/// [StackBox] enables you to create stacked layouts with visual styles such as decoration, padding, margin, constraints, and box/stack behaviors—all customizable and responsive.
+///
+/// You can use the [StackBoxStyler] API to fluently compose your layout and decoration styles. Example:
+///
+/// ```dart
+/// final style = StackBoxStyler()
+///   .padding(EdgeInsets.all(16))
+///   .decoration(
+///     BoxDecoration(
+///       color: Colors.white,
+///       borderRadius: BorderRadius.circular(12),
+///     ),
+///   )
+///   .alignment(Alignment.center);
+///
+/// StackBox(
+///   children: [
+///     Icon(Icons.star, size: 48),
+///     Positioned(
+///       right: 0,
+///       bottom: 0,
+///       child: Text('Badge'),
+///     ),
+///   ],
+///   style: style,
+/// )
+/// ```
 class StackBox extends StyleWidget<StackBoxSpec> {
   const StackBox({
     super.style = const StackBoxStyler.create(),

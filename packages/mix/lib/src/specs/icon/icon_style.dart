@@ -187,6 +187,7 @@ class IconStyler extends Style<IconSpec>
     );
   }
 
+  /// Sets the widget modifier.
   IconStyler modifier(WidgetModifierConfig value) {
     return merge(IconStyler(modifier: value));
   }
@@ -266,11 +267,13 @@ class IconStyler extends Style<IconSpec>
       ..add(DiagnosticsProperty('icon', $icon));
   }
 
+  /// Sets the variants list.
   @override
   IconStyler variants(List<VariantStyle<IconSpec>> value) {
     return merge(IconStyler(variants: value));
   }
 
+  /// Sets the widget modifier.
   @override
   IconStyler wrap(WidgetModifierConfig value) {
     return modifier(value);
