@@ -1,54 +1,25 @@
+/// Theming Tutorial
+///
+/// This example demonstrates Mix's robust theming system using design tokens.
+/// It shows how to create multiple themes and apply them consistently across
+/// your application.
+///
+/// Key concepts:
+/// - Creating design tokens (ColorToken, TextStyleToken, SpaceToken, RadiusToken)
+/// - Using MixScope to provide token values
+/// - Building themed components with BoxStyler and TextStyler
+/// - Switching between themes dynamically
+library;
 
-# Theming
+import 'package:flutter/material.dart';
+import 'package:mix/mix.dart';
 
-## Introduction
+import '../../helpers.dart';
 
-Mix offers a robust theming system that enables you to style your application consistently and efficiently, providing both scalability and flexibility. The theming system is built on the concept of design tokens, which are key-value pairs defining visual properties such as colors, text styles, spacing, and border radii. These tokens can be uniformly applied across all your widgets, ensuring a consistent aesthetic throughout your application. You can easily alter the appearance of your application by updating the design tokens, without modifying individual widget implementations.
-
-## Getting Started
-
-In this guide, we will create a single-screen, multi-theme application to demonstrate the power of Mix's theming system. The final result will look like this:
-
-![images](./images/two-themed-app.png)
-
-As depicted in the image above, we have two different themes for the same screen, each using distinct colors, text styles, fonts, and border radii. The left one employs a light theme with blue as the primary color, hence it will be referred to as `LightBlueTheme`. The right one utilizes a dark theme with purple as the primary color, and will therefore be named `DarkPurpleTheme`.
-
-## Setting Up MixScope
-
-Before we start styling our application with these themes, the initial step is to configure `MixScope`. `MixScope` acts as an ancestor widget that passes down the defined tokens to all its child widgets, ensuring they can access and utilize the same styling information. Properly setting up MixScope is crucial to harnessing the full potential of the Mix package for your application's theming needs.
-
-Here's how you can initialize and implement `MixScope`:
-
-### Wrapping the Root Widget
-
-To apply your theme globally, you'll want to wrap your application's widgets with the `MixScope` widget, providing token values through named parameters.
-
-```dart
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MixScope(
-      colors: LightBlueTheme.colors,
-      textStyles: LightBlueTheme.textStyles,
-      radii: LightBlueTheme.radii,
-      spaces: LightBlueTheme.spaces,
-      child: const MaterialApp(
-        home: ProfilePage(),
-      ),
-    );
-  }
+void main() {
+  runMixApp(const ThemingTutorialApp());
 }
-```
 
-### Creating Design Tokens
-
-The next crucial step is defining your design tokens. In Mix, there are several types of design tokens: `ColorToken`, `TextStyleToken`, `SpaceToken`, `RadiusToken`, and `BreakpointToken`. Each token type represents a different design property. 
-
-The recommended way to organize your tokens is using Dart enums. This provides type safety, autocomplete support, and a clean API. Here's how to define your token enums:
-
-```dart
 enum CustomColorTokens {
   primary('primary'),
   onPrimary('on-primary'),
@@ -57,6 +28,7 @@ enum CustomColorTokens {
   onSurfaceVariant('on-surface-variant');
 
   final String name;
+
   const CustomColorTokens(this.name);
 
   ColorToken get token => ColorToken(name);
@@ -65,7 +37,7 @@ enum CustomColorTokens {
 enum CustomTextStyleTokens {
   headline1('headline1'),
   headline2('headline2'),
-  button('button'),
+  button('headline3'),
   body('body'),
   callout('callout');
 
@@ -94,22 +66,8 @@ enum MyThemeSpaceToken {
 
   SpaceToken get token => SpaceToken(name);
 }
-```
 
-With this approach, you access tokens like this:
-
-```dart
-final primaryColorToken = CustomColorTokens.primary.token;
-final headline1TextStyleToken = CustomTextStyleTokens.headline1.token;
-```
-
-### Creating Theme Data
-
-Now that we have our tokens defined, we need to create theme classes that map tokens to their actual values. We'll organize these as static maps within theme classes. This makes it easy to switch between themes.
-
-Here's the `LightBlueTheme`:
-
-```dart
+// Light Blue Theme
 class LightBlueTheme {
   static Map<ColorToken, Color> get colors => {
     CustomColorTokens.primary.token: const Color(0xFF0093B9),
@@ -157,11 +115,8 @@ class LightBlueTheme {
     MyThemeSpaceToken.large.token: 24,
   };
 }
-```
 
-And the `DarkPurpleTheme`:
-
-```dart
+// Dark Purple Theme
 class DarkPurpleTheme {
   static Map<ColorToken, Color> get colors => {
     CustomColorTokens.primary.token: const Color(0xFF617AFA),
@@ -209,17 +164,8 @@ class DarkPurpleTheme {
     MyThemeSpaceToken.large.token: 24,
   };
 }
-```
 
-## Creating the UI
-
-Now that we have defined our themes, we can start creating the UI for our application. We will create a simple profile page with an image and some text, and then apply the themes to the UI.
-
-### Creating the Components
-
-The interface chosen for this guide is quite simple. The only custom component is a button, so let's create that first.
-
-```dart
+// ProfileButton Component
 class ProfileButton extends StatelessWidget {
   const ProfileButton({super.key, required this.label});
 
@@ -227,7 +173,6 @@ class ProfileButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Create a box styler with tokens
     final box = BoxStyler()
         .height(50)
         .width(double.infinity)
@@ -235,40 +180,24 @@ class ProfileButton extends StatelessWidget {
         .alignment(Alignment.center)
         .borderRadiusAll(MyThemeRadiusToken.large.token());
 
-    // Create a text styler with tokens
     final text = TextStyler()
         .style(CustomTextStyleTokens.button.token.mix())
         .color(CustomColorTokens.onPrimary.token());
 
-    // Use stylers as callable functions
     return box(child: text(label));
   }
 }
-```
 
-This code demonstrates several key concepts:
-
-1. **Token calling**: Call tokens as functions with `token()` to get token references for use in stylers
-2. **TextStyle tokens**: Use `.token.mix()` for text style tokens to get the Mix-compatible reference
-3. **Callable stylers**: Mix stylers can be called like functions, passing the child widget directly
-4. **Fluent API**: Chain styling methods for clean, readable code
-
-### Creating the ProfilePage
-
-Now that we have built the `ProfileButton`, we can create the `ProfilePage` widget. This page uses a combination of Mix widgets and Flutter's native Scaffold.
-
-```dart
+// ProfilePage Widget
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // AppBar title styling
     final appBarTitle = TextStyler()
         .style(CustomTextStyleTokens.headline2.token.mix())
         .color(CustomColorTokens.onSurface.token());
 
-    // Layout styling with FlexBoxStyler
     final flexBox = FlexBoxStyler()
         .crossAxisAlignment(.start)
         .marginAll(MyThemeSpaceToken.medium.token())
@@ -285,7 +214,7 @@ class ProfilePage extends StatelessWidget {
         child: ColumnBox(
           style: flexBox,
           children: [
-            // Image placeholder
+            // Image
             ImagePlaceholder(),
             // Title
             StyledText(
@@ -303,7 +232,7 @@ class ProfilePage extends StatelessWidget {
             ),
             // Description
             StyledText(
-              'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+              'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s.',
               style: TextStyler()
                   .style(CustomTextStyleTokens.body.token.mix())
                   .color(CustomColorTokens.onSurfaceVariant.token()),
@@ -336,24 +265,8 @@ class ImagePlaceholder extends StatelessWidget {
     return imageContainer(child: icon(icon: Icons.image));
   }
 }
-```
 
-Key points about this implementation:
-
-1. **ColumnBox**: Use Mix's `ColumnBox` with `FlexBoxStyler` for layout control with token-based spacing
-2. **Token resolution**: For native Flutter widgets like Scaffold and AppBar, use `.resolve(context)` to get actual values
-3. **Callable stylers**: Text stylers can be called as functions to create styled text widgets
-4. **Component composition**: Break down complex UIs into smaller, reusable components like `ImagePlaceholder`
-
-Now that everything is set up, you can wrap your app with `MixScope` to provide the theme values.
-
-![images](./images/light-themed-app.png)
-
-## Switching Between Themes
-
-One of the powerful features of Mix's theming system is the ability to switch themes dynamically. Here's how you can implement theme switching:
-
-```dart
+// Main App with Theme Switching
 class ThemingTutorialApp extends StatefulWidget {
   const ThemingTutorialApp({super.key});
 
@@ -362,22 +275,22 @@ class ThemingTutorialApp extends StatefulWidget {
 }
 
 class _ThemingTutorialAppState extends State<ThemingTutorialApp> {
-  bool _isDarkPurpleTheme = false;
+  final bool _isDarkPurpleTheme = true;
 
   @override
   Widget build(BuildContext context) {
     // Select theme based on state
-    final colors = _isDarkPurpleTheme 
-        ? DarkPurpleTheme.colors 
+    final colors = _isDarkPurpleTheme
+        ? DarkPurpleTheme.colors
         : LightBlueTheme.colors;
     final textStyles = _isDarkPurpleTheme
         ? DarkPurpleTheme.textStyles
         : LightBlueTheme.textStyles;
-    final radii = _isDarkPurpleTheme 
-        ? DarkPurpleTheme.radii 
+    final radii = _isDarkPurpleTheme
+        ? DarkPurpleTheme.radii
         : LightBlueTheme.radii;
-    final spaces = _isDarkPurpleTheme 
-        ? DarkPurpleTheme.spaces 
+    final spaces = _isDarkPurpleTheme
+        ? DarkPurpleTheme.spaces
         : LightBlueTheme.spaces;
 
     return MixScope(
@@ -389,24 +302,3 @@ class _ThemingTutorialAppState extends State<ThemingTutorialApp> {
     );
   }
 }
-```
-
-To toggle the theme, simply call `setState` to update `_isDarkPurpleTheme`. All widgets using tokens will automatically update to reflect the new theme.
-
-## Key Takeaways
-
-Mix's theming system provides:
-
-1. **Type-safe tokens**: Enum-based tokens with compile-time safety and autocomplete support
-2. **Easy theme switching**: Change themes by updating token value maps
-3. **Consistent styling**: Tokens ensure design consistency across your entire app
-4. **Fluent API**: Chainable stylers with callable functions for clean code
-5. **Flexible integration**: Works seamlessly with both Mix widgets and native Flutter widgets
-
-## Best Practices
-
-- **Organize tokens by category**: Use separate enums for colors, text styles, radii, and spacing
-- **Use static theme classes**: Keep theme data organized in classes with static getters
-- **Leverage callable stylers**: Use stylers as functions for concise component code
-- **Compose components**: Break down UIs into smaller, reusable styled components
-- **Mix with Flutter**: Use Mix for your design system components, native Flutter widgets where appropriate
