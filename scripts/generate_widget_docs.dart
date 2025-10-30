@@ -44,10 +44,10 @@ void main() async {
       outputFileName: 'image.mdx',
     ),
     WidgetConfig(
-      widgetName: 'ZBox',
-      widgetPath: 'packages/mix/lib/src/specs/stack/stack_widget.dart',
+      widgetName: 'StackBox',
+      widgetPath: 'packages/mix/lib/src/specs/stackbox/stackbox_widget.dart',
       stylerName: 'StackBoxStyler',
-      stylerPath: 'packages/mix/lib/src/specs/stack/stack_box_style.dart',
+      stylerPath: 'packages/mix/lib/src/specs/stackbox/stackbox_style.dart',
       outputFileName: 'stack.mdx',
     ),
   ];
@@ -121,12 +121,14 @@ class StylerMethod {
   final String returnType;
   final List<MethodParam> parameters;
   final String? documentation;
+  final String source; // The class or mixin name this method comes from
 
   StylerMethod({
     required this.name,
     required this.returnType,
     required this.parameters,
     this.documentation,
+    required this.source,
   });
 }
 
@@ -194,21 +196,66 @@ Future<String> generateDocumentation(WidgetConfig config) async {
   }
   buffer.writeln();
 
-  // Style API Reference
+  // Style API Reference - grouped by source
   buffer.writeln('## Style API Reference');
   buffer.writeln();
-  buffer.writeln('| Method | Description |');
-  buffer.writeln('|--------|-------------|');
 
+  // Group methods by their source (mixin or class)
+  final methodsBySource = <String, List<StylerMethod>>{};
   for (final method in stylerMethods) {
-    // Skip certain methods
     if (_shouldSkipMethod(method.name)) continue;
 
-    final description = method.documentation?.replaceAll('\n', ' ') ?? '';
-    buffer.writeln('| `${method.name}` | $description |');
+    methodsBySource.putIfAbsent(method.source, () => []).add(method);
+  }
+
+  // Sort sources: main class first, then mixins alphabetically
+  final sources = methodsBySource.keys.toList();
+  sources.sort((a, b) {
+    // Main class (the styler itself) comes first
+    if (a == config.stylerName) return -1;
+    if (b == config.stylerName) return 1;
+    // Then sort mixins alphabetically
+    return a.compareTo(b);
+  });
+
+  // Generate a table for each source
+  for (final source in sources) {
+    final methods = methodsBySource[source]!;
+
+    // Create a friendly section name
+    String sectionName = source;
+    if (source == config.stylerName) {
+      sectionName = '${widgetInfo.name} Methods';
+    } else {
+      // Convert mixin names to readable titles
+      sectionName = _formatMixinName(source);
+    }
+
+    buffer.writeln('### $sectionName');
+    buffer.writeln();
+    buffer.writeln('| Method | Description |');
+    buffer.writeln('|--------|-------------|');
+
+    for (final method in methods) {
+      final description = method.documentation?.replaceAll('\n', ' ') ?? '';
+      buffer.writeln('| `${method.name}` | $description |');
+    }
+    buffer.writeln();
   }
 
   return buffer.toString();
+}
+
+String _formatMixinName(String mixinName) {
+  // Convert camel case to title case with spaces
+  // e.g., "BorderStyleMixin" -> "Border Style"
+  final name = mixinName
+      .replaceAll('Mixin', '')
+      .replaceAll('Style', '')
+      .replaceAllMapped(RegExp(r'([A-Z])'), (match) => ' ${match.group(1)}')
+      .trim();
+
+  return name;
 }
 
 bool _shouldSkipMethod(String methodName) {
@@ -484,12 +531,16 @@ class StylerVisitor extends RecursiveAstVisitor<void> {
   List<String> mixinNames = [];
   final Set<String> _addedMethods =
       {}; // Track added method names to avoid duplicates
+  String _currentSource = ''; // Track current class or mixin being visited
 
   StylerVisitor(this.targetClassName);
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
     if (node.name.lexeme == targetClassName) {
+      // Set current source to the target class name
+      _currentSource = targetClassName;
+
       // Extract mixin names
       if (node.withClause != null) {
         for (final mixin in node.withClause!.mixinTypes) {
@@ -517,6 +568,9 @@ class StylerVisitor extends RecursiveAstVisitor<void> {
   @override
   void visitMixinDeclaration(MixinDeclaration node) {
     if (mixinNames.contains(node.name.lexeme)) {
+      // Set current source to the mixin name
+      _currentSource = node.name.lexeme;
+
       // Extract public methods from mixin
       for (final member in node.members) {
         if (member is MethodDeclaration) {
@@ -599,6 +653,7 @@ class StylerVisitor extends RecursiveAstVisitor<void> {
         returnType: returnType,
         parameters: parameters,
         documentation: documentation,
+        source: _currentSource,
       ),
     );
 

@@ -1,17 +1,18 @@
 # StyledIcon
 
-`StyledIcon` is equivalent to Flutter's `Icon` widget, but provides styling capabilities through the Mix framework. It allows you to create visually styled icons with color, size, shadows, and responsive variants.
+`StyledIcon` is equivalent to Flutter's `Icon` widget, but provides styling capabilities through the Mix framework.
+It allows you to create visually styled icons with color, size, shadows, and responsive variants.
 
 You can use `IconStyler` to create styles with a fluent API. Example:
 
 ```dart
 final style = IconStyler()
-  .size(32)
-  .color(Colors.blue);
+ .size(32)
+ .color(Colors.blue);
 
 StyledIcon(
-  Icons.favorite,
-  style: style,
+ Icons.favorite,
+ style: style,
 )
 ```
 
@@ -25,6 +26,8 @@ StyledIcon(
 | `styleSpec` | `StyleSpec?` | `Optional` |
 
 ## Style API Reference
+
+### StyledIcon Methods
 
 | Method | Description |
 |--------|-------------|
@@ -45,6 +48,18 @@ StyledIcon(
 | `modifier` |  |
 | `animate` | Sets animation |
 | `variants` |  |
+
+### Animation
+
+| Method | Description |
+|--------|-------------|
+| `keyframeAnimation` |  |
+| `phaseAnimation` |  |
+
+### Variant
+
+| Method | Description |
+|--------|-------------|
 | `variant` |  |
 | `onDark` | Creates a variant for dark mode |
 | `onNot` |  |
@@ -66,10 +81,14 @@ StyledIcon(
 | `onLinux` | Creates a variant for Linux platform |
 | `onFuchsia` | Creates a variant for Fuchsia platform |
 | `onWeb` | Creates a variant for web platform |
+
+### Widget State Variant
+
+| Method | Description |
+|--------|-------------|
 | `onHovered` | Creates a variant for hover state |
 | `onPressed` | Creates a variant for pressed state |
 | `onFocused` | Creates a variant for focused state |
 | `onDisabled` | Creates a variant for disabled state |
 | `onEnabled` | Creates a variant for enabled state (opposite of disabled) |
-| `keyframeAnimation` |  |
-| `phaseAnimation` |  |
+

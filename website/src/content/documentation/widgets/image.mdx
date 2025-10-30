@@ -1,22 +1,8 @@
 # StyledImage
 
-`StyledImage` is equivalent to Flutter's `Image` widget, but provides styling capabilities through the Mix framework. It allows you to create visually styled images with dimensions, colors, blend modes, filters, and responsive variants.
+A styled image widget using Mix framework.
 
-You can use `ImageStyler` to create styles with a fluent API. Example:
-
-```dart
-final style = ImageStyler()
-  .width(200)
-  .height(200)
-  .fit(BoxFit.cover)
-  .color(Colors.blue.withOpacity(0.5))
-  .colorBlendMode(BlendMode.overlay);
-
-StyledImage(
-  image: AssetImage('assets/photo.jpg'),
-  style: style,
-)
-```
+Applies `ImageSpec` styling to create a customized `Image`.
 
 ## Constructor
 
@@ -31,6 +17,8 @@ StyledImage(
 | `opacity` | `Animation<double>?` | `Optional` |
 
 ## Style API Reference
+
+### StyledImage Methods
 
 | Method | Description |
 |--------|-------------|
@@ -52,6 +40,11 @@ StyledImage(
 | `modifier` |  |
 | `animate` | Convenience method for animating the ImageStyleSpec |
 | `variants` |  |
+
+### Variant
+
+| Method | Description |
+|--------|-------------|
 | `variant` |  |
 | `onDark` | Creates a variant for dark mode |
 | `onNot` |  |
@@ -73,8 +66,14 @@ StyledImage(
 | `onLinux` | Creates a variant for Linux platform |
 | `onFuchsia` | Creates a variant for Fuchsia platform |
 | `onWeb` | Creates a variant for web platform |
+
+### Widget State Variant
+
+| Method | Description |
+|--------|-------------|
 | `onHovered` | Creates a variant for hover state |
 | `onPressed` | Creates a variant for pressed state |
 | `onFocused` | Creates a variant for focused state |
 | `onDisabled` | Creates a variant for disabled state |
 | `onEnabled` | Creates a variant for enabled state (opposite of disabled) |
+

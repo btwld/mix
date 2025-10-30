@@ -28,6 +28,8 @@ Box(style: style, child: Text('Hello Mix'))
 
 ## Style API Reference
 
+### Box Methods
+
 | Method | Description |
 |--------|-------------|
 | `clipBehavior` |  |
@@ -43,41 +45,18 @@ Box(style: style, child: Text('Hello Mix'))
 | `borderRadius` | Border radius instance method |
 | `border` | Border instance method |
 | `variants` |  |
-| `variant` |  |
-| `onDark` | Creates a variant for dark mode |
-| `onNot` |  |
-| `onLight` | Creates a variant for light mode |
-| `onBuilder` | Creates a variant that applies styling based on the build context. The provided builder function receives a [BuildContext] and should return a style that will be applied when this variant is active. Example: ```dart BoxStyle().onBuilder((context) {   final theme = Theme.of(context);   return BoxStyle().decoration.color(theme.primaryColor); }) ``` |
-| `builder` |  |
-| `onBreakpoint` | Creates a variant based on breakpoint |
-| `onPortrait` | Creates a variant for portrait orientation |
-| `onLandscape` | Creates a variant for landscape orientation |
-| `onMobile` | Creates a variant for mobile breakpoint |
-| `onTablet` | Creates a variant for tablet breakpoint |
-| `onDesktop` | Creates a variant for desktop breakpoint |
-| `onLtr` | Creates a variant for left-to-right text direction |
-| `onRtl` | Creates a variant for right-to-left text direction |
-| `onIos` | Creates a variant for iOS platform |
-| `onAndroid` | Creates a variant for Android platform |
-| `onMacos` | Creates a variant for macOS platform |
-| `onWindows` | Creates a variant for Windows platform |
-| `onLinux` | Creates a variant for Linux platform |
-| `onFuchsia` | Creates a variant for Fuchsia platform |
-| `onWeb` | Creates a variant for web platform |
-| `onHovered` | Creates a variant for hover state |
-| `onPressed` | Creates a variant for pressed state |
-| `onFocused` | Creates a variant for focused state |
-| `onDisabled` | Creates a variant for disabled state |
-| `onEnabled` | Creates a variant for enabled state (opposite of disabled) |
-| `borderTop` |  |
-| `borderBottom` |  |
-| `borderLeft` |  |
-| `borderRight` |  |
-| `borderStart` |  |
-| `borderEnd` |  |
-| `borderVertical` |  |
-| `borderHorizontal` |  |
-| `borderAll` |  |
+
+### Animation
+
+| Method | Description |
+|--------|-------------|
+| `keyframeAnimation` |  |
+| `phaseAnimation` |  |
+
+### Border Radius
+
+| Method | Description |
+|--------|-------------|
 | `borderRadiusAll` |  |
 | `borderRadiusTop` |  |
 | `borderRadiusBottom` |  |
@@ -104,9 +83,38 @@ Box(style: style, child: Text('Hello Mix'))
 | `borderRoundedTopEnd` |  |
 | `borderRoundedBottomStart` |  |
 | `borderRoundedBottomEnd` |  |
-| `shadowOnly` | Creates a single box shadow with named parameters |
-| `boxShadows` | Creates multiple box shadows from a list of BoxShadowMix |
-| `boxElevation` | Creates box shadows from Material Design elevation level |
+
+### Border
+
+| Method | Description |
+|--------|-------------|
+| `borderTop` |  |
+| `borderBottom` |  |
+| `borderLeft` |  |
+| `borderRight` |  |
+| `borderStart` |  |
+| `borderEnd` |  |
+| `borderVertical` |  |
+| `borderHorizontal` |  |
+| `borderAll` |  |
+
+### Constraint
+
+| Method | Description |
+|--------|-------------|
+| `width` | Sets both min and max width to create a fixed width |
+| `height` | Sets both min and max height to create a fixed height |
+| `minWidth` | Sets minimum width constraint |
+| `maxWidth` | Sets maximum width constraint |
+| `minHeight` | Sets minimum height constraint |
+| `maxHeight` | Sets maximum height constraint |
+| `size` | Sets both width and height to specific values |
+| `constraintsOnly` | Creates constraints with only specified values, supporting priority resolution |
+
+### Decoration
+
+| Method | Description |
+|--------|-------------|
 | `color` | Sets background color |
 | `gradient` | Sets gradient with any GradientMix type |
 | `shadow` | Sets single shadow |
@@ -131,6 +139,19 @@ Box(style: style, child: Text('Hello Mix'))
 | `linearGradient` | Sets a background linear gradient |
 | `radialGradient` | Sets a background radial gradient |
 | `sweepGradient` | Sets a background sweep gradient |
+
+### Shadow
+
+| Method | Description |
+|--------|-------------|
+| `shadowOnly` | Creates a single box shadow with named parameters |
+| `boxShadows` | Creates multiple box shadows from a list of BoxShadowMix |
+| `boxElevation` | Creates box shadows from Material Design elevation level |
+
+### Spacing
+
+| Method | Description |
+|--------|-------------|
 | `paddingTop` |  |
 | `paddingBottom` |  |
 | `paddingLeft` |  |
@@ -151,18 +172,50 @@ Box(style: style, child: Text('Hello Mix'))
 | `marginStart` |  |
 | `marginEnd` |  |
 | `marginOnly` | Creates margin with only specified values, supporting priority resolution |
+
+### Transform
+
+| Method | Description |
+|--------|-------------|
 | `rotate` | Sets rotation transform |
 | `scale` | Sets scale transform |
 | `translate` | Sets translation transform |
 | `skew` | Sets skew transform |
 | `transformReset` | Resets transform to identity (no effect) |
-| `width` | Sets both min and max width to create a fixed width |
-| `height` | Sets both min and max height to create a fixed height |
-| `minWidth` | Sets minimum width constraint |
-| `maxWidth` | Sets maximum width constraint |
-| `minHeight` | Sets minimum height constraint |
-| `maxHeight` | Sets maximum height constraint |
-| `size` | Sets both width and height to specific values |
-| `constraintsOnly` | Creates constraints with only specified values, supporting priority resolution |
-| `keyframeAnimation` |  |
-| `phaseAnimation` |  |
+
+### Variant
+
+| Method | Description |
+|--------|-------------|
+| `variant` |  |
+| `onDark` | Creates a variant for dark mode |
+| `onNot` |  |
+| `onLight` | Creates a variant for light mode |
+| `onBuilder` | Creates a variant that applies styling based on the build context. The provided builder function receives a [BuildContext] and should return a style that will be applied when this variant is active. Example: ```dart BoxStyle().onBuilder((context) {   final theme = Theme.of(context);   return BoxStyle().decoration.color(theme.primaryColor); }) ``` |
+| `builder` |  |
+| `onBreakpoint` | Creates a variant based on breakpoint |
+| `onPortrait` | Creates a variant for portrait orientation |
+| `onLandscape` | Creates a variant for landscape orientation |
+| `onMobile` | Creates a variant for mobile breakpoint |
+| `onTablet` | Creates a variant for tablet breakpoint |
+| `onDesktop` | Creates a variant for desktop breakpoint |
+| `onLtr` | Creates a variant for left-to-right text direction |
+| `onRtl` | Creates a variant for right-to-left text direction |
+| `onIos` | Creates a variant for iOS platform |
+| `onAndroid` | Creates a variant for Android platform |
+| `onMacos` | Creates a variant for macOS platform |
+| `onWindows` | Creates a variant for Windows platform |
+| `onLinux` | Creates a variant for Linux platform |
+| `onFuchsia` | Creates a variant for Fuchsia platform |
+| `onWeb` | Creates a variant for web platform |
+
+### Widget State Variant
+
+| Method | Description |
+|--------|-------------|
+| `onHovered` | Creates a variant for hover state |
+| `onPressed` | Creates a variant for pressed state |
+| `onFocused` | Creates a variant for focused state |
+| `onDisabled` | Creates a variant for disabled state |
+| `onEnabled` | Creates a variant for enabled state (opposite of disabled) |
+

@@ -1,8 +1,9 @@
-# ZBox
+# StackBox
 
 Combines `Container` and `Stack` with Mix styling.
 
-Creates a stacked layout with box styling capabilities.
+Applies both box and stack specifications for stacked layouts,
+providing decoration, constraints, and stack layout in one widget.
 
 ## Constructor
 
@@ -14,51 +15,34 @@ Creates a stacked layout with box styling capabilities.
 
 ## Style API Reference
 
+### StackBox Methods
+
 | Method | Description |
 |--------|-------------|
 | `animate` | Sets animation |
+| `alignment` |  |
+| `transformAlignment` |  |
+| `clipBehavior` |  |
 | `modifier` |  |
-| `stackAlignment` | Sets stack alignment |
-| `fit` | Sets stack fit |
-| `textDirection` | Sets text direction |
-| `stackClipBehavior` | Sets stack clip behavior |
-| `alignment` | Sets box alignment |
-| `transformAlignment` | Sets transform alignment |
-| `clipBehavior` | Sets box clip behavior |
-| `foregroundDecoration` | Sets foreground decoration |
-| `variants` |  |
-| `padding` | Padding instance method - delegates to box |
-| `margin` | Margin instance method - delegates to box |
-| `transform` | Transform instance method - delegates to box |
+| `stackAlignment` | Sets the alignment for the Stack widget. |
+| `fit` | Sets how the Stack widget sizes itself based on its children. |
+| `textDirection` | Sets the text direction for the Stack widget. |
+| `stackClipBehavior` | Sets the clip behavior for the Stack widget. |
+| `stack` | Applies a custom StackStyler to the StackBox. |
+| `foregroundDecoration` | Foreground decoration instance method |
+| `padding` | Padding instance method |
+| `margin` | Margin instance method |
+| `transform` |  |
 | `decoration` | Decoration instance method - delegates to box |
-| `constraints` | Constraints instance method - delegates to box |
-| `borderRadius` | Border radius instance method - delegates to box |
-| `variant` |  |
-| `onDark` | Creates a variant for dark mode |
-| `onNot` |  |
-| `onLight` | Creates a variant for light mode |
-| `onBuilder` | Creates a variant that applies styling based on the build context. The provided builder function receives a [BuildContext] and should return a style that will be applied when this variant is active. Example: ```dart BoxStyle().onBuilder((context) {   final theme = Theme.of(context);   return BoxStyle().decoration.color(theme.primaryColor); }) ``` |
-| `builder` |  |
-| `onBreakpoint` | Creates a variant based on breakpoint |
-| `onPortrait` | Creates a variant for portrait orientation |
-| `onLandscape` | Creates a variant for landscape orientation |
-| `onMobile` | Creates a variant for mobile breakpoint |
-| `onTablet` | Creates a variant for tablet breakpoint |
-| `onDesktop` | Creates a variant for desktop breakpoint |
-| `onLtr` | Creates a variant for left-to-right text direction |
-| `onRtl` | Creates a variant for right-to-left text direction |
-| `onIos` | Creates a variant for iOS platform |
-| `onAndroid` | Creates a variant for Android platform |
-| `onMacos` | Creates a variant for macOS platform |
-| `onWindows` | Creates a variant for Windows platform |
-| `onLinux` | Creates a variant for Linux platform |
-| `onFuchsia` | Creates a variant for Fuchsia platform |
-| `onWeb` | Creates a variant for web platform |
-| `onHovered` | Creates a variant for hover state |
-| `onPressed` | Creates a variant for pressed state |
-| `onFocused` | Creates a variant for focused state |
-| `onDisabled` | Creates a variant for disabled state |
-| `onEnabled` | Creates a variant for enabled state (opposite of disabled) |
+| `constraints` | Constraints instance method |
+| `variants` |  |
+| `borderRadius` | Border radius instance method |
+| `border` | Border instance method |
+
+### Border Radius
+
+| Method | Description |
+|--------|-------------|
 | `borderRadiusAll` |  |
 | `borderRadiusTop` |  |
 | `borderRadiusBottom` |  |
@@ -85,9 +69,40 @@ Creates a stacked layout with box styling capabilities.
 | `borderRoundedTopEnd` |  |
 | `borderRoundedBottomStart` |  |
 | `borderRoundedBottomEnd` |  |
+
+### Border
+
+| Method | Description |
+|--------|-------------|
+| `borderTop` |  |
+| `borderBottom` |  |
+| `borderLeft` |  |
+| `borderRight` |  |
+| `borderStart` |  |
+| `borderEnd` |  |
+| `borderVertical` |  |
+| `borderHorizontal` |  |
+| `borderAll` |  |
+
+### Constraint
+
+| Method | Description |
+|--------|-------------|
+| `width` | Sets both min and max width to create a fixed width |
+| `height` | Sets both min and max height to create a fixed height |
+| `minWidth` | Sets minimum width constraint |
+| `maxWidth` | Sets maximum width constraint |
+| `minHeight` | Sets minimum height constraint |
+| `maxHeight` | Sets maximum height constraint |
+| `size` | Sets both width and height to specific values |
+| `constraintsOnly` | Creates constraints with only specified values, supporting priority resolution |
+
+### Decoration
+
+| Method | Description |
+|--------|-------------|
 | `color` | Sets background color |
 | `gradient` | Sets gradient with any GradientMix type |
-| `border` | Sets border |
 | `shadow` | Sets single shadow |
 | `shadows` | Sets multiple shadows |
 | `elevation` | Sets elevation shadow |
@@ -110,6 +125,19 @@ Creates a stacked layout with box styling capabilities.
 | `linearGradient` | Sets a background linear gradient |
 | `radialGradient` | Sets a background radial gradient |
 | `sweepGradient` | Sets a background sweep gradient |
+
+### Shadow
+
+| Method | Description |
+|--------|-------------|
+| `shadowOnly` | Creates a single box shadow with named parameters |
+| `boxShadows` | Creates multiple box shadows from a list of BoxShadowMix |
+| `boxElevation` | Creates box shadows from Material Design elevation level |
+
+### Spacing
+
+| Method | Description |
+|--------|-------------|
 | `paddingTop` |  |
 | `paddingBottom` |  |
 | `paddingLeft` |  |
@@ -130,16 +158,50 @@ Creates a stacked layout with box styling capabilities.
 | `marginStart` |  |
 | `marginEnd` |  |
 | `marginOnly` | Creates margin with only specified values, supporting priority resolution |
+
+### Transform
+
+| Method | Description |
+|--------|-------------|
 | `rotate` | Sets rotation transform |
 | `scale` | Sets scale transform |
 | `translate` | Sets translation transform |
 | `skew` | Sets skew transform |
 | `transformReset` | Resets transform to identity (no effect) |
-| `width` | Sets both min and max width to create a fixed width |
-| `height` | Sets both min and max height to create a fixed height |
-| `minWidth` | Sets minimum width constraint |
-| `maxWidth` | Sets maximum width constraint |
-| `minHeight` | Sets minimum height constraint |
-| `maxHeight` | Sets maximum height constraint |
-| `size` | Sets both width and height to specific values |
-| `constraintsOnly` | Creates constraints with only specified values, supporting priority resolution |
+
+### Variant
+
+| Method | Description |
+|--------|-------------|
+| `variant` |  |
+| `onDark` | Creates a variant for dark mode |
+| `onNot` |  |
+| `onLight` | Creates a variant for light mode |
+| `onBuilder` | Creates a variant that applies styling based on the build context. The provided builder function receives a [BuildContext] and should return a style that will be applied when this variant is active. Example: ```dart BoxStyle().onBuilder((context) {   final theme = Theme.of(context);   return BoxStyle().decoration.color(theme.primaryColor); }) ``` |
+| `builder` |  |
+| `onBreakpoint` | Creates a variant based on breakpoint |
+| `onPortrait` | Creates a variant for portrait orientation |
+| `onLandscape` | Creates a variant for landscape orientation |
+| `onMobile` | Creates a variant for mobile breakpoint |
+| `onTablet` | Creates a variant for tablet breakpoint |
+| `onDesktop` | Creates a variant for desktop breakpoint |
+| `onLtr` | Creates a variant for left-to-right text direction |
+| `onRtl` | Creates a variant for right-to-left text direction |
+| `onIos` | Creates a variant for iOS platform |
+| `onAndroid` | Creates a variant for Android platform |
+| `onMacos` | Creates a variant for macOS platform |
+| `onWindows` | Creates a variant for Windows platform |
+| `onLinux` | Creates a variant for Linux platform |
+| `onFuchsia` | Creates a variant for Fuchsia platform |
+| `onWeb` | Creates a variant for web platform |
+
+### Widget State Variant
+
+| Method | Description |
+|--------|-------------|
+| `onHovered` | Creates a variant for hover state |
+| `onPressed` | Creates a variant for pressed state |
+| `onFocused` | Creates a variant for focused state |
+| `onDisabled` | Creates a variant for disabled state |
+| `onEnabled` | Creates a variant for enabled state (opposite of disabled) |
+
