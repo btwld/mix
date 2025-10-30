@@ -32,71 +32,72 @@ Box(style: style, child: Text('Hello Mix'))
 
 | Method | Description |
 |--------|-------------|
-| `clipBehavior` |  |
-| `alignment` |  |
-| `modifier` | Modifier instance method |
-| `foregroundDecoration` | Foreground decoration instance method |
-| `transform` |  |
-| `constraints` | Constraints instance method |
-| `padding` | Padding instance method |
-| `margin` | Margin instance method |
-| `decoration` | Decoration instance method |
-| `animate` | Animation instance method |
-| `borderRadius` | Border radius instance method |
-| `border` | Border instance method |
-| `variants` |  |
+| `clipBehavior` | Sets the clip behavior. |
+| `alignment` | Sets the alignment. |
+| `modifier` | Sets the widget modifier. |
+| `foregroundDecoration` | Sets the foreground decoration. |
+| `transform` | Sets the transform and optionally the alignment. |
+| `constraints` | Sets the box constraints. |
+| `padding` | Sets the padding. |
+| `margin` | Sets the margin. |
+| `decoration` | Sets the decoration. |
+| `animate` | Sets the animation configuration. |
+| `wrap` | Wraps with a widget modifier. |
+| `borderRadius` | Sets the border radius. |
+| `border` | Sets the border decoration. |
+| `variants` | Sets the style variants. |
 
 ### Animation
 
 | Method | Description |
 |--------|-------------|
-| `keyframeAnimation` |  |
-| `phaseAnimation` |  |
+| `keyframeAnimation` | Creates a keyframe animation. It will animate through the given timeline. |
+| `phaseAnimation` | Creates a phase animation. It will animate through the given phases. |
 
 ### Border Radius
 
 | Method | Description |
 |--------|-------------|
-| `borderRadiusAll` |  |
-| `borderRadiusTop` |  |
-| `borderRadiusBottom` |  |
-| `borderRadiusLeft` |  |
-| `borderRadiusRight` |  |
-| `borderRadiusTopLeft` |  |
-| `borderRadiusTopRight` |  |
-| `borderRadiusBottomLeft` |  |
-| `borderRadiusBottomRight` |  |
-| `borderRadiusTopStart` |  |
-| `borderRadiusTopEnd` |  |
-| `borderRadiusBottomStart` |  |
-| `borderRadiusBottomEnd` |  |
-| `borderRounded` |  |
-| `borderRoundedTop` |  |
-| `borderRoundedBottom` |  |
-| `borderRoundedLeft` |  |
-| `borderRoundedRight` |  |
-| `borderRoundedTopLeft` |  |
-| `borderRoundedTopRight` |  |
-| `borderRoundedBottomLeft` |  |
-| `borderRoundedBottomRight` |  |
-| `borderRoundedTopStart` |  |
-| `borderRoundedTopEnd` |  |
-| `borderRoundedBottomStart` |  |
-| `borderRoundedBottomEnd` |  |
+| `borderRadiusAll` | Sets border radius for all corners. |
+| `borderRadiusTop` | Sets border radius for the top corners. |
+| `borderRadiusBottom` | Sets border radius for the bottom corners. |
+| `borderRadiusLeft` | Sets border radius for the left corners. |
+| `borderRadiusRight` | Sets border radius for the right corners. |
+| `borderRadiusTopLeft` | Sets border radius for the top left corner. |
+| `borderRadiusTopRight` | Sets border radius for the top right corner. |
+| `borderRadiusBottomLeft` | Sets border radius for the bottom left corner. |
+| `borderRadiusBottomRight` | Sets border radius for the bottom right corner. |
+| `borderRadiusTopStart` | Sets border radius for the top start corner (directional). |
+| `borderRadiusTopEnd` | Sets border radius for the top end corner (directional). |
+| `borderRadiusBottomStart` | Sets border radius for the bottom start corner (directional). |
+| `borderRadiusBottomEnd` | Sets border radius for the bottom end corner (directional). |
+| `borderRounded` | Sets a uniform circular radius for all corners. |
+| `borderRoundedTop` | Sets a circular radius for the top corners. |
+| `borderRoundedBottom` | Sets a circular radius for the bottom corners. |
+| `borderRoundedLeft` | Sets a circular radius for the left corners. |
+| `borderRoundedRight` | Sets a circular radius for the right corners. |
+| `borderRoundedTopLeft` | Sets a circular radius for the top left corner. |
+| `borderRoundedTopRight` | Sets a circular radius for the top right corner. |
+| `borderRoundedBottomLeft` | Sets a circular radius for the bottom left corner. |
+| `borderRoundedBottomRight` | Sets a circular radius for the bottom right corner. |
+| `borderRoundedTopStart` | Sets a circular radius for the top start corner (directional). |
+| `borderRoundedTopEnd` | Sets a circular radius for the top end corner (directional). |
+| `borderRoundedBottomStart` | Sets a circular radius for the bottom start corner (directional). |
+| `borderRoundedBottomEnd` | Sets a circular radius for the bottom end corner (directional). |
 
 ### Border
 
 | Method | Description |
 |--------|-------------|
-| `borderTop` |  |
-| `borderBottom` |  |
-| `borderLeft` |  |
-| `borderRight` |  |
-| `borderStart` |  |
-| `borderEnd` |  |
-| `borderVertical` |  |
-| `borderHorizontal` |  |
-| `borderAll` |  |
+| `borderTop` | Sets the top border. |
+| `borderBottom` | Sets the bottom border. |
+| `borderLeft` | Sets the left border. |
+| `borderRight` | Sets the right border. |
+| `borderStart` | Sets the start border (RTL-aware). |
+| `borderEnd` | Sets the end border (RTL-aware). |
+| `borderVertical` | Sets vertical borders (top & bottom). |
+| `borderHorizontal` | Sets horizontal borders (left & right). |
+| `borderAll` | Sets all borders. |
 
 ### Constraint
 
@@ -152,26 +153,26 @@ Box(style: style, child: Text('Hello Mix'))
 
 | Method | Description |
 |--------|-------------|
-| `paddingTop` |  |
-| `paddingBottom` |  |
-| `paddingLeft` |  |
-| `paddingRight` |  |
-| `paddingX` |  |
-| `paddingY` |  |
-| `paddingAll` |  |
-| `paddingStart` |  |
-| `paddingEnd` |  |
-| `paddingOnly` | Creates padding with only specified values, supporting priority resolution |
-| `marginTop` |  |
-| `marginBottom` |  |
-| `marginLeft` |  |
-| `marginRight` |  |
-| `marginX` |  |
-| `marginY` |  |
-| `marginAll` |  |
-| `marginStart` |  |
-| `marginEnd` |  |
-| `marginOnly` | Creates margin with only specified values, supporting priority resolution |
+| `paddingTop` | Sets the top padding. |
+| `paddingBottom` | Sets the bottom padding. |
+| `paddingLeft` | Sets the left padding. |
+| `paddingRight` | Sets the right padding. |
+| `paddingX` | Sets horizontal (left and right) padding. |
+| `paddingY` | Sets vertical (top and bottom) padding. |
+| `paddingAll` | Sets padding on all sides. |
+| `paddingStart` | Sets the start (leading) padding. |
+| `paddingEnd` | Sets the end (trailing) padding. |
+| `paddingOnly` | Sets custom padding for each side with priority resolution. |
+| `marginTop` | Sets the top margin. |
+| `marginBottom` | Sets the bottom margin. |
+| `marginLeft` | Sets the left margin. |
+| `marginRight` | Sets the right margin. |
+| `marginX` | Sets horizontal (left and right) margin. |
+| `marginY` | Sets vertical (top and bottom) margin. |
+| `marginAll` | Sets margin on all sides. |
+| `marginStart` | Sets the start (leading) margin. |
+| `marginEnd` | Sets the end (trailing) margin. |
+| `marginOnly` | Sets custom margin for each side with priority resolution. |
 
 ### Transform
 
@@ -187,27 +188,27 @@ Box(style: style, child: Text('Hello Mix'))
 
 | Method | Description |
 |--------|-------------|
-| `variant` |  |
-| `onDark` | Creates a variant for dark mode |
-| `onNot` |  |
-| `onLight` | Creates a variant for light mode |
-| `onBuilder` | Creates a variant that applies styling based on the build context. The provided builder function receives a [BuildContext] and should return a style that will be applied when this variant is active. Example: ```dart BoxStyle().onBuilder((context) {   final theme = Theme.of(context);   return BoxStyle().decoration.color(theme.primaryColor); }) ``` |
-| `builder` |  |
-| `onBreakpoint` | Creates a variant based on breakpoint |
-| `onPortrait` | Creates a variant for portrait orientation |
-| `onLandscape` | Creates a variant for landscape orientation |
-| `onMobile` | Creates a variant for mobile breakpoint |
-| `onTablet` | Creates a variant for tablet breakpoint |
-| `onDesktop` | Creates a variant for desktop breakpoint |
-| `onLtr` | Creates a variant for left-to-right text direction |
-| `onRtl` | Creates a variant for right-to-left text direction |
-| `onIos` | Creates a variant for iOS platform |
-| `onAndroid` | Creates a variant for Android platform |
-| `onMacos` | Creates a variant for macOS platform |
-| `onWindows` | Creates a variant for Windows platform |
-| `onLinux` | Creates a variant for Linux platform |
-| `onFuchsia` | Creates a variant for Fuchsia platform |
-| `onWeb` | Creates a variant for web platform |
+| `variant` | Adds a single variant to this style. |
+| `onDark` | Creates a variant for dark mode. |
+| `onNot` | Creates a variant for when the context does NOT match the provided variant. |
+| `onLight` | Creates a variant for light mode. |
+| `onBuilder` | Creates a variant using a builder function that receives the build context. |
+| `builder` | Deprecated: Use [onBuilder] instead. |
+| `onBreakpoint` | Creates a variant based on the specified breakpoint. |
+| `onPortrait` | Creates a variant for portrait device orientation. |
+| `onLandscape` | Creates a variant for landscape device orientation. |
+| `onMobile` | Creates a variant for mobile breakpoint. |
+| `onTablet` | Creates a variant for tablet breakpoint. |
+| `onDesktop` | Creates a variant for desktop breakpoint. |
+| `onLtr` | Creates a variant for left-to-right text direction. |
+| `onRtl` | Creates a variant for right-to-left text direction. |
+| `onIos` | Creates a variant for iOS platform. |
+| `onAndroid` | Creates a variant for Android platform. |
+| `onMacos` | Creates a variant for macOS platform. |
+| `onWindows` | Creates a variant for Windows platform. |
+| `onLinux` | Creates a variant for Linux platform. |
+| `onFuchsia` | Creates a variant for Fuchsia platform. |
+| `onWeb` | Creates a variant for web platform. |
 
 ### Widget State Variant
 

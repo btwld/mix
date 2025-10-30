@@ -48,39 +48,40 @@ StyledIcon(
 | `modifier` |  |
 | `animate` | Sets animation |
 | `variants` |  |
+| `wrap` |  |
 
 ### Animation
 
 | Method | Description |
 |--------|-------------|
-| `keyframeAnimation` |  |
-| `phaseAnimation` |  |
+| `keyframeAnimation` | Creates a keyframe animation. It will animate through the given timeline. |
+| `phaseAnimation` | Creates a phase animation. It will animate through the given phases. |
 
 ### Variant
 
 | Method | Description |
 |--------|-------------|
-| `variant` |  |
-| `onDark` | Creates a variant for dark mode |
-| `onNot` |  |
-| `onLight` | Creates a variant for light mode |
-| `onBuilder` | Creates a variant that applies styling based on the build context. The provided builder function receives a [BuildContext] and should return a style that will be applied when this variant is active. Example: ```dart BoxStyle().onBuilder((context) {   final theme = Theme.of(context);   return BoxStyle().decoration.color(theme.primaryColor); }) ``` |
-| `builder` |  |
-| `onBreakpoint` | Creates a variant based on breakpoint |
-| `onPortrait` | Creates a variant for portrait orientation |
-| `onLandscape` | Creates a variant for landscape orientation |
-| `onMobile` | Creates a variant for mobile breakpoint |
-| `onTablet` | Creates a variant for tablet breakpoint |
-| `onDesktop` | Creates a variant for desktop breakpoint |
-| `onLtr` | Creates a variant for left-to-right text direction |
-| `onRtl` | Creates a variant for right-to-left text direction |
-| `onIos` | Creates a variant for iOS platform |
-| `onAndroid` | Creates a variant for Android platform |
-| `onMacos` | Creates a variant for macOS platform |
-| `onWindows` | Creates a variant for Windows platform |
-| `onLinux` | Creates a variant for Linux platform |
-| `onFuchsia` | Creates a variant for Fuchsia platform |
-| `onWeb` | Creates a variant for web platform |
+| `variant` | Adds a single variant to this style. |
+| `onDark` | Creates a variant for dark mode. |
+| `onNot` | Creates a variant for when the context does NOT match the provided variant. |
+| `onLight` | Creates a variant for light mode. |
+| `onBuilder` | Creates a variant using a builder function that receives the build context. |
+| `builder` | Deprecated: Use [onBuilder] instead. |
+| `onBreakpoint` | Creates a variant based on the specified breakpoint. |
+| `onPortrait` | Creates a variant for portrait device orientation. |
+| `onLandscape` | Creates a variant for landscape device orientation. |
+| `onMobile` | Creates a variant for mobile breakpoint. |
+| `onTablet` | Creates a variant for tablet breakpoint. |
+| `onDesktop` | Creates a variant for desktop breakpoint. |
+| `onLtr` | Creates a variant for left-to-right text direction. |
+| `onRtl` | Creates a variant for right-to-left text direction. |
+| `onIos` | Creates a variant for iOS platform. |
+| `onAndroid` | Creates a variant for Android platform. |
+| `onMacos` | Creates a variant for macOS platform. |
+| `onWindows` | Creates a variant for Windows platform. |
+| `onLinux` | Creates a variant for Linux platform. |
+| `onFuchsia` | Creates a variant for Fuchsia platform. |
+| `onWeb` | Creates a variant for web platform. |
 
 ### Widget State Variant
 

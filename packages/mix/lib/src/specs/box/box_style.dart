@@ -111,29 +111,33 @@ class BoxStyler extends Style<BoxSpec>
 
   static BoxMutableStyler get chain => BoxMutableStyler(BoxStyler());
 
+  /// Sets the clip behavior.
   BoxStyler clipBehavior(Clip value) {
     return merge(BoxStyler(clipBehavior: value));
   }
 
+  /// Sets the alignment.
   BoxStyler alignment(AlignmentGeometry value) {
     return merge(BoxStyler(alignment: value));
   }
 
+  /// Returns a Box widget with optional key and child.
   Box call({Key? key, Widget? child}) {
     return Box(key: key, style: this, child: child);
   }
 
-  /// Modifier instance method
+  /// Sets the widget modifier.
   BoxStyler modifier(WidgetModifierConfig value) {
     return merge(BoxStyler(modifier: value));
   }
 
-  /// Foreground decoration instance method
+  /// Sets the foreground decoration.
   @override
   BoxStyler foregroundDecoration(DecorationMix value) {
     return merge(BoxStyler(foregroundDecoration: value));
   }
 
+  /// Sets the transform and optionally the alignment.
   @override
   BoxStyler transform(
     Matrix4 value, {
@@ -142,54 +146,55 @@ class BoxStyler extends Style<BoxSpec>
     return merge(BoxStyler(transform: value, transformAlignment: alignment));
   }
 
-  /// Constraints instance method
+  /// Sets the box constraints.
   @override
   BoxStyler constraints(BoxConstraintsMix value) {
     return merge(BoxStyler(constraints: value));
   }
 
-  /// Padding instance method
+  /// Sets the padding.
   @override
   BoxStyler padding(EdgeInsetsGeometryMix value) {
     return merge(BoxStyler(padding: value));
   }
 
-  /// Margin instance method
+  /// Sets the margin.
   @override
   BoxStyler margin(EdgeInsetsGeometryMix value) {
     return merge(BoxStyler(margin: value));
   }
 
-  /// Decoration instance method
+  /// Sets the decoration.
   @override
   BoxStyler decoration(DecorationMix value) {
     return merge(BoxStyler(decoration: value));
   }
 
-  /// Animation instance method
+  /// Sets the animation configuration.
   @override
   BoxStyler animate(AnimationConfig animation) {
     return merge(BoxStyler(animation: animation));
   }
 
-  /// Mixin implementation
+  /// Wraps with a widget modifier.
   @override
   BoxStyler wrap(WidgetModifierConfig value) {
     return modifier(value);
   }
 
-  /// Border radius instance method
+  /// Sets the border radius.
   @override
   BoxStyler borderRadius(BorderRadiusGeometryMix value) {
     return merge(BoxStyler(decoration: DecorationMix.borderRadius(value)));
   }
 
-  /// Border instance method
+  /// Sets the border decoration.
   @override
   BoxStyler border(BoxBorderMix value) {
     return merge(BoxStyler(decoration: DecorationMix.border(value)));
   }
 
+  /// Sets the style variants.
   @override
   BoxStyler variants(List<VariantStyle<BoxSpec>> value) {
     return merge(BoxStyler(variants: value));

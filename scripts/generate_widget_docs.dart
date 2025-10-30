@@ -291,7 +291,6 @@ bool _shouldSkipMethod(String methodName) {
     'debugFillProperties',
     'call',
     'chain',
-    'wrap',
     'create',
     'only',
     'props', // Getter for equality, not a style method

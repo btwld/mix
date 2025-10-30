@@ -53,6 +53,7 @@ class Box extends StyleWidget<BoxSpec> {
 }
 
 /// Alias for [Box] widget for backward compatibility.
+@Deprecated('Use Box instead')
 typedef StyledContainer = Box;
 
 extension BoxSpecWrappedWidget on StyleSpec<BoxSpec> {
