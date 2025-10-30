@@ -9,36 +9,45 @@ import '../../core/style_spec.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../properties/layout/constraints_mix.dart';
 import '../../properties/layout/edge_insets_geometry_mix.dart';
+import '../../properties/painting/border_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
 import '../../properties/painting/decoration_mix.dart';
 import '../../style/mixins/border_radius_style_mixin.dart';
+import '../../style/mixins/border_style_mixin.dart';
 import '../../style/mixins/constraint_style_mixin.dart';
 import '../../style/mixins/decoration_style_mixin.dart';
+import '../../style/mixins/shadow_style_mixin.dart';
 import '../../style/mixins/spacing_style_mixin.dart';
 import '../../style/mixins/transform_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
+import '../../style/mixins/widget_modifier_style_mixin.dart';
 import '../../style/mixins/widget_state_variant_mixin.dart';
 import '../box/box_spec.dart';
 import '../box/box_style.dart';
-import 'stack_box_spec.dart';
-import 'stack_spec.dart';
-import 'stack_style.dart';
+import '../stack/stack_spec.dart';
+import '../stack/stack_style.dart';
+import 'stackbox_mutable_style.dart';
+import 'stackbox_spec.dart';
+import 'stackbox_widget.dart';
 
 typedef StackBoxMix = StackBoxStyler;
 
-/// Represents the attributes of a [ZBoxSpec].
+/// Represents the attributes of a [StackBoxSpec].
 ///
 /// This class encapsulates properties defining the layout and
-/// appearance of a [ZBoxSpec].
+/// appearance of a [StackBoxSpec].
 ///
-/// Use this class to configure the attributes of a [ZBoxSpec] and pass it to
-/// the [ZBoxSpec] constructor.
-class StackBoxStyler extends Style<ZBoxSpec>
+/// Use this class to configure the attributes of a [StackBoxSpec] and pass it to
+/// the [StackBoxSpec] constructor.
+class StackBoxStyler extends Style<StackBoxSpec>
     with
         Diagnosticable,
-        VariantStyleMixin<StackBoxStyler, ZBoxSpec>,
-        WidgetStateVariantMixin<StackBoxStyler, ZBoxSpec>,
+        WidgetModifierStyleMixin<StackBoxStyler, StackBoxSpec>,
+        VariantStyleMixin<StackBoxStyler, StackBoxSpec>,
+        WidgetStateVariantMixin<StackBoxStyler, StackBoxSpec>,
+        BorderStyleMixin<StackBoxStyler>,
         BorderRadiusStyleMixin<StackBoxStyler>,
+        ShadowStyleMixin<StackBoxStyler>,
         DecorationStyleMixin<StackBoxStyler>,
         SpacingStyleMixin<StackBoxStyler>,
         TransformStyleMixin<StackBoxStyler>,
@@ -46,6 +55,7 @@ class StackBoxStyler extends Style<ZBoxSpec>
   final Prop<StyleSpec<BoxSpec>>? $box;
   final Prop<StyleSpec<StackSpec>>? $stack;
 
+  /// Main constructor with individual property parameters
   StackBoxStyler({
     // Box properties
     DecorationMix? decoration,
@@ -63,116 +73,120 @@ class StackBoxStyler extends Style<ZBoxSpec>
     TextDirection? textDirection,
     Clip? stackClipBehavior,
     // Style properties
-    super.modifier,
-    super.animation,
-    super.variants,
-  }) : $box = Prop.maybeMix(
-         BoxStyler(
-           alignment: alignment,
-           padding: padding,
-           margin: margin,
-           constraints: constraints,
-           decoration: decoration,
-           foregroundDecoration: foregroundDecoration,
-           transform: transform,
-           transformAlignment: transformAlignment,
-           clipBehavior: clipBehavior,
+    AnimationConfig? animation,
+    WidgetModifierConfig? modifier,
+    List<VariantStyle<StackBoxSpec>>? variants,
+  }) : this.create(
+         box: Prop.maybeMix(
+           BoxStyler(
+             alignment: alignment,
+             padding: padding,
+             margin: margin,
+             constraints: constraints,
+             decoration: decoration,
+             foregroundDecoration: foregroundDecoration,
+             transform: transform,
+             transformAlignment: transformAlignment,
+             clipBehavior: clipBehavior,
+           ),
          ),
-       ),
-       $stack = Prop.maybeMix(
-         StackStyler(
-           alignment: stackAlignment,
-           fit: fit,
-           textDirection: textDirection,
-           clipBehavior: stackClipBehavior,
+         stack: Prop.maybeMix(
+           StackStyler(
+             alignment: stackAlignment,
+             fit: fit,
+             textDirection: textDirection,
+             clipBehavior: stackClipBehavior,
+           ),
          ),
+         animation: animation,
+         modifier: modifier,
+         variants: variants,
        );
 
+  /// Create constructor with Prop`<T>` types for internal use
   const StackBoxStyler.create({
     Prop<StyleSpec<BoxSpec>>? box,
     Prop<StyleSpec<StackSpec>>? stack,
-    super.modifier,
     super.animation,
+    super.modifier,
     super.variants,
   }) : $box = box,
        $stack = stack;
 
-  static StackBoxMutableStyler get chain => StackBoxMutableStyler.self;
+  static StackBoxMutableStyler get chain =>
+      StackBoxMutableStyler(StackBoxStyler());
 
   /// Sets animation
   StackBoxStyler animate(AnimationConfig animation) {
     return merge(StackBoxStyler(animation: animation));
   }
 
-  StackBoxStyler modifier(WidgetModifierConfig value) {
-    return merge(StackBoxStyler(modifier: value));
-  }
+  // BoxMix instance methods
 
-  // Stack property convenience methods
-
-  /// Sets stack alignment
-  StackBoxStyler stackAlignment(AlignmentGeometry value) {
-    return merge(StackBoxStyler(stackAlignment: value));
-  }
-
-  /// Sets stack fit
-  StackBoxStyler fit(StackFit value) {
-    return merge(StackBoxStyler(fit: value));
-  }
-
-  /// Sets text direction
-  StackBoxStyler textDirection(TextDirection value) {
-    return merge(StackBoxStyler(textDirection: value));
-  }
-
-  /// Sets stack clip behavior
-  StackBoxStyler stackClipBehavior(Clip value) {
-    return merge(StackBoxStyler(stackClipBehavior: value));
-  }
-
-  // Box property convenience methods
-
-  /// Sets box alignment
   StackBoxStyler alignment(AlignmentGeometry value) {
     return merge(StackBoxStyler(alignment: value));
   }
 
-  /// Sets transform alignment
   StackBoxStyler transformAlignment(AlignmentGeometry value) {
     return merge(StackBoxStyler(transformAlignment: value));
   }
 
-  /// Sets box clip behavior
   StackBoxStyler clipBehavior(Clip value) {
     return merge(StackBoxStyler(clipBehavior: value));
   }
 
-  /// Sets foreground decoration
+  StackBoxStyler modifier(WidgetModifierConfig value) {
+    return merge(StackBoxStyler(modifier: value));
+  }
+
+  StackBox call({Key? key, required List<Widget> children}) {
+    return StackBox(key: key, style: this, children: children);
+  }
+
+  // Stack property methods
+  /// Sets the alignment for the Stack widget.
+  StackBoxStyler stackAlignment(AlignmentGeometry value) {
+    return merge(StackBoxStyler(stackAlignment: value));
+  }
+
+  /// Sets how the Stack widget sizes itself based on its children.
+  StackBoxStyler fit(StackFit value) {
+    return merge(StackBoxStyler(fit: value));
+  }
+
+  /// Sets the text direction for the Stack widget.
+  StackBoxStyler textDirection(TextDirection value) {
+    return merge(StackBoxStyler(textDirection: value));
+  }
+
+  /// Sets the clip behavior for the Stack widget.
+  StackBoxStyler stackClipBehavior(Clip value) {
+    return merge(StackBoxStyler(stackClipBehavior: value));
+  }
+
+  /// Applies a custom StackStyler to the StackBox.
+  StackBoxStyler stack(StackStyler value) {
+    return merge(StackBoxStyler.create(stack: Prop.maybeMix(value)));
+  }
+
+  /// Foreground decoration instance method
   @override
   StackBoxStyler foregroundDecoration(DecorationMix value) {
     return merge(StackBoxStyler(foregroundDecoration: value));
   }
 
-  @override
-  StackBoxStyler variants(List<VariantStyle<ZBoxSpec>> variants) {
-    return merge(StackBoxStyler(variants: variants));
-  }
-
-  // Mixin implementations - delegate to BoxMix
-
-  /// Padding instance method - delegates to box
+  /// Padding instance method
   @override
   StackBoxStyler padding(EdgeInsetsGeometryMix value) {
     return merge(StackBoxStyler(padding: value));
   }
 
-  /// Margin instance method - delegates to box
+  /// Margin instance method
   @override
   StackBoxStyler margin(EdgeInsetsGeometryMix value) {
     return merge(StackBoxStyler(margin: value));
   }
 
-  /// Transform instance method - delegates to box
   @override
   StackBoxStyler transform(
     Matrix4 value, {
@@ -189,35 +203,52 @@ class StackBoxStyler extends Style<ZBoxSpec>
     return merge(StackBoxStyler(decoration: value));
   }
 
-  /// Constraints instance method - delegates to box
+  /// Constraints instance method
   @override
   StackBoxStyler constraints(BoxConstraintsMix value) {
     return merge(StackBoxStyler(constraints: value));
   }
 
-  /// Border radius instance method - delegates to box
+  /// Modifier instance method
+  @override
+  StackBoxStyler wrap(WidgetModifierConfig value) {
+    return modifier(value);
+  }
+
+  @override
+  StackBoxStyler variants(List<VariantStyle<StackBoxSpec>> variants) {
+    return merge(StackBoxStyler(variants: variants));
+  }
+
+  /// Border radius instance method
   @override
   StackBoxStyler borderRadius(BorderRadiusGeometryMix value) {
     return merge(StackBoxStyler(decoration: DecorationMix.borderRadius(value)));
   }
 
-  /// Resolves to [ZBoxSpec] using the provided [BuildContext].
+  /// Border instance method
+  @override
+  StackBoxStyler border(BoxBorderMix value) {
+    return merge(StackBoxStyler(decoration: DecorationMix.border(value)));
+  }
+
+  /// Resolves to [StackBoxSpec] using the provided [BuildContext].
   ///
   /// If a property is null in the context, it uses the default value
   /// defined in the property specification.
   ///
   /// ```dart
-  /// final zBoxSpec = StackBoxStyler(...).resolve(context);
+  /// final stackBoxStyleSpec = StackBoxStyler(...).resolve(context);
   /// ```
   @override
-  StyleSpec<ZBoxSpec> resolve(BuildContext context) {
+  StyleSpec<StackBoxSpec> resolve(BuildContext context) {
     final boxSpec = MixOps.resolve(context, $box);
     final stackSpec = MixOps.resolve(context, $stack);
 
-    final zBoxSpec = ZBoxSpec(box: boxSpec, stack: stackSpec);
+    final stackBoxSpec = StackBoxSpec(box: boxSpec, stack: stackSpec);
 
     return StyleSpec(
-      spec: zBoxSpec,
+      spec: stackBoxSpec,
       animation: $animation,
       widgetModifiers: $modifier?.resolve(context),
     );
@@ -236,8 +267,8 @@ class StackBoxStyler extends Style<ZBoxSpec>
     return StackBoxStyler.create(
       box: MixOps.merge($box, other?.$box),
       stack: MixOps.merge($stack, other?.$stack),
-      modifier: MixOps.mergeModifier($modifier, other?.$modifier),
       animation: MixOps.mergeAnimation($animation, other?.$animation),
+      modifier: MixOps.mergeModifier($modifier, other?.$modifier),
       variants: MixOps.mergeVariants($variants, other?.$variants),
     );
   }
@@ -256,60 +287,4 @@ class StackBoxStyler extends Style<ZBoxSpec>
   /// compare two [StackBoxStyler] instances for equality.
   @override
   List<Object?> get props => [$box, $stack];
-}
-
-/// Utility class for configuring [ZBoxSpec] properties.
-///
-/// This class provides methods to set individual properties of a [ZBoxSpec].
-/// Use the methods of this class to configure specific properties of a [ZBoxSpec].
-class StackBoxMutableStyler {
-  /// Utility for defining [StackBoxStyler] box properties
-  final box = BoxStyler();
-
-  /// Utility for defining [StackBoxStyler.stack]
-  final stack = StackStyler();
-
-  StackBoxMutableStyler();
-
-  static StackBoxMutableStyler get self => StackBoxMutableStyler();
-
-  /// Returns a new [StackBoxStyler] with the specified properties.
-  StackBoxStyler only({
-    // Box properties
-    DecorationMix? decoration,
-    EdgeInsetsGeometryMix? padding,
-    EdgeInsetsGeometryMix? margin,
-    BoxConstraintsMix? constraints,
-    AlignmentGeometry? alignment,
-    Matrix4? transform,
-    AlignmentGeometry? transformAlignment,
-    Clip? clipBehavior,
-    // Stack properties
-    AlignmentGeometry? stackAlignment,
-    StackFit? fit,
-    TextDirection? textDirection,
-    Clip? stackClipBehavior,
-    // Style properties
-    WidgetModifierConfig? modifier,
-    AnimationConfig? animation,
-    List<VariantStyle<ZBoxSpec>>? variants,
-  }) {
-    return StackBoxStyler(
-      decoration: decoration,
-      padding: padding,
-      margin: margin,
-      alignment: alignment,
-      constraints: constraints,
-      transform: transform,
-      transformAlignment: transformAlignment,
-      clipBehavior: clipBehavior,
-      stackAlignment: stackAlignment,
-      fit: fit,
-      textDirection: textDirection,
-      stackClipBehavior: stackClipBehavior,
-      modifier: modifier,
-      animation: animation,
-      variants: variants,
-    );
-  }
 }
