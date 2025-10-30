@@ -1,3 +1,5 @@
+// ignore_for_file: avoid-unused-instances
+
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
