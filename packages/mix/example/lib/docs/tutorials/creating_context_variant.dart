@@ -10,17 +10,17 @@ void main() {
 }
 
 class CustomInheritedWidget extends InheritedWidget {
-  final bool flag;
-
   const CustomInheritedWidget({
     super.key,
-    required this.flag,
     required super.child,
+    required this.flag,
   });
 
   static CustomInheritedWidget? of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<CustomInheritedWidget>();
   }
+
+  final bool flag;
 
   @override
   bool updateShouldNotify(covariant CustomInheritedWidget oldWidget) {
@@ -38,6 +38,7 @@ class Example extends StatelessWidget {
           .variant(
             ContextVariant('custom_flag', (context) {
               final flag = CustomInheritedWidget.of(context)?.flag ?? false;
+
               return flag;
             }),
             BoxStyler().color(Colors.blue),
@@ -55,6 +56,7 @@ extension WidgetStateVariantMixinX<T extends Style<S>, S extends Spec<S>>
     return variant(
       ContextVariant('custom_flag', (context) {
         final flag = CustomInheritedWidget.of(context)?.flag ?? false;
+
         return flag;
       }),
       style,

@@ -204,10 +204,9 @@ class ProfilePage extends StatelessWidget {
         .spacing(MyThemeSpaceToken.medium.token());
 
     return Scaffold(
-      backgroundColor: CustomColorTokens.surface.token.resolve(context),
       appBar: AppBar(
-        backgroundColor: CustomColorTokens.surface.token.resolve(context),
         title: appBarTitle('Profile'),
+        backgroundColor: CustomColorTokens.surface.token.resolve(context),
         centerTitle: false,
       ),
       body: SafeArea(
@@ -243,6 +242,7 @@ class ProfilePage extends StatelessWidget {
           ],
         ),
       ),
+      backgroundColor: CustomColorTokens.surface.token.resolve(context),
     );
   }
 }
@@ -296,8 +296,8 @@ class _ThemingTutorialAppState extends State<ThemingTutorialApp> {
     return MixScope(
       colors: colors,
       textStyles: textStyles,
-      radii: radii,
       spaces: spaces,
+      radii: radii,
       child: const ProfilePage(),
     );
   }

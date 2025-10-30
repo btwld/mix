@@ -55,6 +55,17 @@ class ButtonStyler extends Style<ButtonSpec>
        $icon = Prop.maybeMix(icon),
        $label = Prop.maybeMix(label);
 
+  ButtonStyler.create({
+    Prop<StyleSpec<FlexBoxSpec>>? container,
+    Prop<StyleSpec<IconSpec>>? icon,
+    Prop<StyleSpec<TextSpec>>? label,
+    super.animation,
+    super.modifier,
+    super.variants,
+  }) : $container = container,
+       $icon = icon,
+       $label = label;
+
   // Component Token
   ButtonStyler container(FlexBoxStyler value) {
     return merge(ButtonStyler(container: value));
@@ -118,17 +129,6 @@ class ButtonStyler extends Style<ButtonSpec>
     return merge(ButtonStyler(container: FlexBoxStyler().scale(value)));
   }
 
-  ButtonStyler.create({
-    Prop<StyleSpec<FlexBoxSpec>>? container,
-    Prop<StyleSpec<IconSpec>>? icon,
-    Prop<StyleSpec<TextSpec>>? label,
-    super.animation,
-    super.modifier,
-    super.variants,
-  }) : $container = container,
-       $icon = icon,
-       $label = label;
-
   @override
   ButtonStyler merge(covariant ButtonStyler? other) {
     return ButtonStyler.create(
@@ -140,9 +140,6 @@ class ButtonStyler extends Style<ButtonSpec>
       variants: MixOps.mergeVariants($variants, other?.$variants),
     );
   }
-
-  @override
-  List<Object?> get props => [$container, $icon, $label];
 
   @override
   StyleSpec<ButtonSpec> resolve(BuildContext context) {
@@ -159,6 +156,9 @@ class ButtonStyler extends Style<ButtonSpec>
   ButtonStyler variant(Variant variant, ButtonStyler style) {
     return merge(ButtonStyler(variants: [VariantStyle(variant, style)]));
   }
+
+  @override
+  List<Object?> get props => [$container, $icon, $label];
 }
 
 enum ButtonVariant {
@@ -176,7 +176,7 @@ enum ButtonVariant {
       .container(
         FlexBoxStyler()
             .color(Colors.transparent)
-            .borderAll(width: 1.5, color: Colors.blueAccent),
+            .borderAll(color: Colors.blueAccent, width: 1.5),
       )
       .backgroundColor(Colors.transparent)
       .borderWidth(1.5)
@@ -268,8 +268,8 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Pressable(
-      onPress: disabled ? null : onPressed,
       enabled: !disabled,
+      onPress: disabled ? null : onPressed,
       child: StyleBuilder(
         style: buttonStyle(style, variant),
         builder: (context, spec) {
@@ -424,8 +424,8 @@ class CreatingAWidgetExample extends StatelessWidget {
             const SizedBox(height: 10),
             FilledButton(
               label: 'Disabled Button',
-              icon: icon,
               disabled: true,
+              icon: icon,
               onPressed: () {},
             ),
           ],

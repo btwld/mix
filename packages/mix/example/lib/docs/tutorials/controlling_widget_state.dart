@@ -56,10 +56,10 @@ class _Example2State extends State<Example2> {
       onTapCancel: () => controller.pressed = false,
       child: StyleBuilder(
         style: style,
-        controller: controller,
         builder: (context, spec) {
           return Box(styleSpec: StyleSpec(spec: spec));
         },
+        controller: controller,
       ),
     );
   }
