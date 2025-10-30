@@ -17,7 +17,7 @@ class CustomInheritedWidget extends InheritedWidget {
   });
 
   static CustomInheritedWidget? of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<CustomInheritedWidget>();
+    return context.dependOnInheritedWidgetOfExactType();
   }
 
   final bool flag;
