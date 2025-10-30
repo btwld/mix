@@ -68,10 +68,13 @@ final class BoxDecorationUtility<T extends Style<Object?>>
 
   /// Utility for defining [BoxDecorationMix.boxShadow] from elevation
   late final elevation = MixUtility<T, ElevationShadow>(
-    (elevation) => only(boxShadow: BoxShadowMix.fromElevation(elevation)),
+    (elevation) =>
+        only(boxShadow: BoxShadowMix.fromElevation(elevation).toMix()),
   );
 
-  late final boxShadow = BoxShadowUtility<T>((v) => only(boxShadow: [v]));
+  late final boxShadow = BoxShadowUtility<T>(
+    (v) => only(boxShadow: BoxShadowListMix([v])),
+  );
 
   /// Utility for defining [BoxDecorationMix.borderRadius]
   late final _borderRadiusGeometry = BorderRadiusGeometryUtility<T>(
@@ -85,7 +88,7 @@ final class BoxDecorationUtility<T extends Style<Object?>>
   /// Utility for defining [BoxDecorationMix.boxShadow] from a list of BoxShadow
 
   T boxShadows(List<BoxShadow> shadows) {
-    return only(boxShadow: shadows.map(BoxShadowMix.value).toList());
+    return only(boxShadow: shadows.map(BoxShadowMix.value).toList().toMix());
   }
 
   T only({
@@ -93,7 +96,7 @@ final class BoxDecorationUtility<T extends Style<Object?>>
     DecorationImageMix? image,
     BoxBorderMix? border,
     BorderRadiusGeometryMix? borderRadius,
-    List<BoxShadowMix>? boxShadow,
+    BoxShadowListMix? boxShadow,
     GradientMix? gradient,
     BlendMode? backgroundBlendMode,
     BoxShape? shape,
@@ -127,7 +130,7 @@ final class BoxDecorationUtility<T extends Style<Object?>>
       image: DecorationImageMix.maybeValue(image),
       border: BoxBorderMix.maybeValue(border),
       borderRadius: BorderRadiusGeometryMix.maybeValue(borderRadius),
-      boxShadow: boxShadow?.map(BoxShadowMix.value).toList(),
+      boxShadow: boxShadow?.map(BoxShadowMix.value).toList().toMix(),
       gradient: GradientMix.maybeValue(gradient),
       backgroundBlendMode: backgroundBlendMode,
       shape: shape,

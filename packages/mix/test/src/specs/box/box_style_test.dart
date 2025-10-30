@@ -252,10 +252,10 @@ void main() {
       });
 
       test('shadows method sets multiple shadows', () {
-        final shadows = [
+        final shadows = BoxShadowListMix([
           BoxShadowMix(color: Colors.black, blurRadius: 5.0),
           BoxShadowMix(color: Colors.grey, blurRadius: 10.0),
-        ];
+        ]);
         final boxMix = BoxStyler().shadows(shadows);
 
         expect(boxMix.$decoration, isNotNull);
