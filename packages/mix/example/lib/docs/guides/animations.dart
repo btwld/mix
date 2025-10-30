@@ -153,6 +153,12 @@ class _HeartKeyframeAnimationState extends State<HeartKeyframeAnimation> {
   final _trigger = ValueNotifier(0);
 
   @override
+  void dispose() {
+    _trigger.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final style = IconStyler()
         .color(Colors.red)

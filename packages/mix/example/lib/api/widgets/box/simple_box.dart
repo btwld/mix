@@ -8,7 +8,7 @@
 /// - Using BoxStyle() to create box styles
 /// - Setting color, width, and height properties
 /// - Applying border radius with BorderRadiusMix
-// ignore_for_file: unused_local_variable
+// ignore_for_file: unused_local_variable, avoid-commented-out-code
 
 library;
 

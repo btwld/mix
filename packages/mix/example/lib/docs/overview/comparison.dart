@@ -1,6 +1,9 @@
-import '../../helpers.dart';
+// ignore_for_file: no-empty-block
+
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
+
+import '../../helpers.dart';
 
 void main() {
   runMixApp(

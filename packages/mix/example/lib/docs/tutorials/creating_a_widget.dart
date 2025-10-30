@@ -1,3 +1,5 @@
+// ignore_for_file: no-empty-block
+
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
@@ -55,7 +57,7 @@ class ButtonStyler extends Style<ButtonSpec>
        $icon = Prop.maybeMix(icon),
        $label = Prop.maybeMix(label);
 
-  ButtonStyler.create({
+  const ButtonStyler.create({
     Prop<StyleSpec<FlexBoxSpec>>? container,
     Prop<StyleSpec<IconSpec>>? icon,
     Prop<StyleSpec<TextSpec>>? label,
@@ -262,7 +264,8 @@ class CustomButton extends StatelessWidget {
                 ),
               )
               .icon(IconStyler().color(Colors.blueGrey.shade700)),
-        );
+        )
+        .merge(style);
   }
 
   @override
@@ -286,61 +289,6 @@ class CustomButton extends StatelessWidget {
   }
 }
 
-// // Filled Style
-// Style get _filledStyle => Style(
-//   _container.color.ref(_mdPrimary),
-//   _label.style.color.ref(_mdOnPrimary),
-//   _icon.color.ref(_mdOnPrimary),
-// );
-
-// // Elevated Style
-// Style get _elevatedStyle => Style(
-//   _filledStyle(),
-//   _container.shadow.offset(0, 5),
-//   _container.shadow.color.ref(_mdPrimary),
-//   _container.shadow.color.darken(20),
-// );
-
-// // Outlined Style
-// Style get _outlinedStyle => Style(
-//   _container.color.transparent(),
-//   _container.border.width(1.5),
-//   _container.border.color.ref(_mdPrimary),
-//   _label.style.color.ref(_mdPrimary),
-//   _icon.color.ref(_mdPrimary),
-// );
-
-// // Link Style
-// Style get _linkStyle => Style(
-//   _outlinedStyle(),
-//   _container.border.style.none(),
-//   _container.color(Colors.transparent),
-// );
-
-// // State Styles
-// Style get _onDisabled => Style(
-//   _container.color.desaturate(100),
-//   _label.style.color.desaturate(100),
-//   _icon.color.desaturate(100),
-//   $with.opacity(0.5),
-// );
-
-// Style get _onHover => Style(
-//   _container.color.brighten(10),
-//   _label.style.color.brighten(10),
-//   _icon.color.brighten(10),
-// );
-
-// Style get _onPress => Style(
-//   _container.color.darken(10),
-//   _icon.color.darken(10),
-//   _label.style.color.darken(10),
-//   $with.scale(0.9),
-// );
-
-// Complete Button Style
-
-// Convenience Variant Widgets
 final class FilledButton extends CustomButton {
   const FilledButton({
     super.key,
