@@ -5,7 +5,7 @@ import '../../core/style_widget.dart';
 import 'image_spec.dart';
 import 'image_style.dart';
 
-/// `StyledImage` is equivalent to Flutter's [`Image`] widget, but provides styling
+/// [StyledImage] is equivalent to Flutter's [Image] widget, but provides styling
 /// capabilities through the Mix framework. It allows you to create visually styled
 /// images with dimensions, colors, blend modes, filters, and responsive variants.
 ///

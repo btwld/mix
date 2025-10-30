@@ -171,9 +171,7 @@ Future<String> generateDocumentation(WidgetConfig config) async {
   // Documentation
   if (widgetInfo.documentation != null &&
       widgetInfo.documentation!.isNotEmpty) {
-    final formattedDoc = widgetInfo.documentation!
-        .replaceAll('[', '`')
-        .replaceAll(']', '`');
+    final formattedDoc = _formatDocumentation(widgetInfo.documentation!);
     buffer.writeln(formattedDoc);
     buffer.writeln();
   }
@@ -256,6 +254,33 @@ String _formatMixinName(String mixinName) {
       .trim();
 
   return name;
+}
+
+String _formatDocumentation(String doc) {
+  // Replace [text] with `text` for inline code, but not inside code blocks
+  final buffer = StringBuffer();
+  var inCodeBlock = false;
+  final lines = doc.split('\n');
+
+  for (final line in lines) {
+    // Check if this line starts/ends a code block
+    if (line.trim().startsWith('```')) {
+      inCodeBlock = !inCodeBlock;
+      buffer.writeln(line);
+      continue;
+    }
+
+    if (inCodeBlock) {
+      // Don't modify content inside code blocks
+      buffer.writeln(line);
+    } else {
+      // Replace [text] with `text` for inline code references
+      final formattedLine = line.replaceAll('[', '`').replaceAll(']', '`');
+      buffer.writeln(formattedLine);
+    }
+  }
+
+  return buffer.toString().trim();
 }
 
 bool _shouldSkipMethod(String methodName) {
