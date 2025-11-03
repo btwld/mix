@@ -20,7 +20,6 @@ migrate_working_dir/
 
 #i add them since no need to version control them
 pubspec.lock
-analysis_options.yaml
 example.iml
 windows/
 linux/

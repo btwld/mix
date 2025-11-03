@@ -1,0 +1,7 @@
+include: ../mix/analysis_options.yaml
+
+analyzer:
+  errors:
+    prefer_const_constructors: ignore
+  enable-experiment:
+    - dot-shorthands
