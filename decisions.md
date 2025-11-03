@@ -469,13 +469,13 @@ final boxSpecs = <TokenSpec<BoxStyler>>[
 - [x] Basic test coverage
 - [x] Package structure and exports
 
-### Phase 2: P1 Fixes (🔄 In Progress)
-- [ ] Fix prefixed flex detection
-- [ ] Change Row → Column for non-flex
-- [ ] Restore const constructors
-- [ ] Add w-full/h-full constraint guards
-- [ ] Expand unknown-token diagnostics
-- [ ] Add P1 test coverage
+### Phase 2: P1 Fixes (✅ Complete)
+- [x] Fix prefixed flex detection
+- [x] Change Row → Column for non-flex
+- [x] Restore const constructors
+- [x] Add w-full/h-full constraint guards
+- [x] Expand unknown-token diagnostics
+- [x] Add P1 test coverage
 
 ### Phase 3: P2 Improvements (⏳ Planned)
 - [ ] Fractional sizes (w-1/2, etc.)

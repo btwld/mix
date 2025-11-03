@@ -187,6 +187,22 @@ void main() {
     expect(parser.wantsFlex({'bg-blue-500'}), isFalse);
   });
 
+  test('Parser defaults to column for prefixed-only flex tokens', () {
+    final parser = TwParserV2();
+
+    // Only prefixed flex - should start with column (block-like)
+    final prefixedOnly = parser.parseFlex('md:flex');
+    expect(prefixedOnly, isA<FlexBoxStyler>());
+
+    // Base flex - should allow default row behavior
+    final baseFlex = parser.parseFlex('flex');
+    expect(baseFlex, isA<FlexBoxStyler>());
+
+    // Explicit column - should be column
+    final explicitCol = parser.parseFlex('flex-col');
+    expect(explicitCol, isA<FlexBoxStyler>());
+  });
+
   test('Div constructor is const', () {
     const div = Div(classNames: 'flex');
     expect(div, isNotNull);

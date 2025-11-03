@@ -148,7 +148,7 @@ export 'src/tw_widget.dart';
 
 ---
 
-## Phase 2: P1 Fixes 🔄 In Progress
+## Phase 2: P1 Fixes ✅ Complete
 
 **Goal**: Fix critical semantic issues and Flutter constraint violations before production use.
 
@@ -156,7 +156,7 @@ export 'src/tw_widget.dart';
 
 ---
 
-### P1.1: Fix Prefixed Flex Detection ⏳ Not Started
+### P1.1: Fix Prefixed Flex Detection ✅ Complete
 
 **File**: `lib/src/tw_parser_v2.dart`
 
@@ -205,7 +205,7 @@ test('wantsFlex detects prefixed flex tokens', () {
 
 ---
 
-### P1.2: Change Non-Flex Layout to Column ⏳ Not Started
+### P1.2: Change Non-Flex Layout to Column ✅ Complete
 
 **File**: `lib/src/tw_widget.dart`
 
@@ -258,7 +258,7 @@ testWidgets('Div wraps multiple children in Column', (tester) async {
 
 ---
 
-### P1.3: Restore Const Constructors ⏳ Not Started
+### P1.3: Restore Const Constructors ✅ Complete
 
 **Files**: `lib/src/tw_widget.dart` (both `Div` and `Span`)
 
@@ -347,7 +347,7 @@ test('Span constructor is const', () {
 
 ---
 
-### P1.4: Add w-full/h-full Constraint Guards ⏳ Not Started
+### P1.4: Add w-full/h-full Constraint Guards ✅ Complete
 
 **File**: `lib/src/tw_widget.dart`
 
@@ -478,7 +478,7 @@ testWidgets('md:w-full is also guarded', (tester) async {
 
 ---
 
-### P1.5: Expand Unknown-Token Diagnostics ⏳ Not Started
+### P1.5: Expand Unknown-Token Diagnostics ✅ Complete
 
 **File**: `lib/src/tw_parser_v2.dart`
 

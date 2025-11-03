@@ -34,8 +34,20 @@ class TwParserV2 {
   }
 
   FlexBoxStyler parseFlex(String classNames) {
-    var styler = FlexBoxStyler();
-    for (final token in listTokens(classNames)) {
+    final tokens = listTokens(classNames);
+
+    // Check for base (non-prefixed) flex direction tokens
+    // If only prefixed tokens (md:flex), default to column (block-like)
+    final hasBaseFlex = tokens.any((t) {
+      if (t.contains(':')) return false;
+      return t == 'flex' || t == 'flex-row' || t == 'flex-col';
+    });
+
+    // Default to column (vertical, block-like) when only prefixed flex
+    // This matches Tailwind: below breakpoint = block, at breakpoint = flex
+    var styler = hasBaseFlex ? FlexBoxStyler() : FlexBoxStyler().column();
+
+    for (final token in tokens) {
       styler = _applyFlexToken(styler, token);
     }
     return styler;
