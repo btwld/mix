@@ -25,26 +25,18 @@ concurrency:
 jobs:
   test:
     name: Test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout mix repo
-        uses: actions/checkout@v4
-      - name: Run Tests
-        uses: ./.github/actions/test/
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          flutter-version: 'beta'
+    uses: btwld/dart-actions/.github/workflows/ci.yml@main
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      flutter-version: 'beta'
+      run-dcm: true
 
   test_min_sdk:
-    runs-on: ubuntu-latest
     name: Test Min SDK
-    steps:
-      - name: Checkout mix repo
-        uses: actions/checkout@v4
-
-      - name: Run Tests
-        uses: ./.github/actions/test/
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          run-dcm: false
-          flutter-version: 'beta'
+    uses: btwld/dart-actions/.github/workflows/ci.yml@main
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      flutter-version: 'beta'
+      run-dcm: false
