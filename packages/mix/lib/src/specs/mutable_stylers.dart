@@ -13,6 +13,7 @@ import 'flexbox/flexbox_mutable_style.dart';
 import 'icon/icon_mutable_style.dart';
 import 'image/image_mutable_style.dart';
 import 'stack/stack_mutable_style.dart';
+import 'stackbox/stackbox_mutable_style.dart';
 import 'text/text_mutable_style.dart';
 
 /// Global accessor for box specification utilities.
@@ -35,6 +36,9 @@ TextMutableStyler get $text => TextMutableStyler();
 
 /// Global accessor for stack specification utilities.
 StackMutableStyler get $stack => StackMutableStyler();
+
+/// Global accessor for stackbox specification utilities.
+StackBoxMutableStyler get $stackbox => StackBoxMutableStyler();
 
 // Global $on and $wrap utilities have been replaced by spec-specific utilities:
 //

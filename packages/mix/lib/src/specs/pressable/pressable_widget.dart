@@ -53,7 +53,6 @@ class PressableBox extends StatelessWidget {
       onFocusChange: onFocusChange,
       autofocus: autofocus,
       focusNode: focusNode,
-
       child: Box(style: style ?? const BoxStyler.create(), child: child),
     );
   }
@@ -79,7 +78,6 @@ class Pressable extends StatefulWidget {
     this.excludeFromSemantics = false,
     this.semanticButtonLabel,
     this.onKeyEvent,
-
     this.controller,
     this.actions,
     required this.child,

@@ -6,9 +6,24 @@ import '../../core/style_widget.dart';
 import 'text_spec.dart';
 import 'text_style.dart';
 
-/// Displays text with Mix styling.
+/// [StyledText] is equivalent to Flutter's [Text] widget, but provides
+/// styling capabilities through the Mix framework. It allows you to create
+/// visually styled text with typography, colors, decorations, text
+/// transformations, and responsive variants.
 ///
-/// Applies [TextSpec] for custom text appearance.
+/// You can use [TextStyler] to create styles with a fluent API. Example:
+///
+/// ```dart
+/// final style = TextStyler()
+///   .fontSize(24)
+///   .fontWeight(FontWeight.bold)
+///   .color(Colors.blue);
+///
+/// StyledText(
+///   'Hello Mix',
+///   style: style,
+/// )
+/// ```
 class StyledText extends StyleWidget<TextSpec> {
   /// Creates a [StyledText] with required [text] and optional [style] or [spec].
   const StyledText(
@@ -17,7 +32,6 @@ class StyledText extends StyleWidget<TextSpec> {
     super.styleSpec,
     super.key,
   });
-
 
   /// The text to display.
   final String text;

@@ -27,6 +27,7 @@ command:
 categories:
   flutter_projects: 
     - packages/mix
+    - packages/mix/example
     - packages/mix_lint
     - packages/mix_lint_test
     - packages/annotations
@@ -118,6 +119,12 @@ scripts:
   test:coverage:
     run: melos exec --category=flutter_projects -- flutter test --coverage
     description: Run flutter test with coverage
+    packageFilters:
+      dirExists: test
+
+  ci:
+    run: melos run test:flutter && melos run test:dart
+    description: Run flutter and dart tests
     packageFilters:
       dirExists: test
 

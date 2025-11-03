@@ -65,7 +65,9 @@ class MyApp extends StatelessWidget {
 Extract it and reuse across widgets:
 
 ```dart
-final primaryCard = BoxStyler().color(Colors.blue).borderRounded(12);
+final primaryCard = BoxStyler()
+  .color(Colors.blue)
+  .borderRounded(12);
 
 final box = Box(style: primaryCard, child: StyledText('Primary'));
 

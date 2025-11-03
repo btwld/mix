@@ -18,13 +18,13 @@ class CustomMixWidget extends StatelessWidget {
   TextStyler get customTextStyle {
     return TextStyler()
         .fontSize(16)
-        .fontWeight(FontWeight.w600)
+        .fontWeight(.w600)
         .color(Colors.white)
-        .animate(AnimationConfig.easeInOut(100.ms))
+        .animate(.easeInOut(100.ms))
         .onDark(TextStyler().color(Colors.black))
         .onHovered(
           TextStyler()
-              .animate(AnimationConfig.easeInOut(100.ms))
+              .animate(.easeInOut(100.ms))
               .onLight(TextStyler().color(Colors.white)),
         );
   }
@@ -34,20 +34,20 @@ class CustomMixWidget extends StatelessWidget {
         .height(120)
         .width(120)
         .paddingAll(20)
-        .elevation(ElevationShadow.nine)
-        .alignment(Alignment.center)
+        .elevation(.nine)
+        .alignment(.center)
         .borderRounded(10)
         .color(Colors.blue)
         .scale(1.0)
-        .animate(AnimationConfig.easeInOut(100.ms))
+        .animate(.easeInOut(100.ms))
         .onDark(BoxStyler().color(Colors.cyan))
         .onHovered(
           BoxStyler()
-              .alignment(Alignment.topLeft)
-              .elevation(ElevationShadow.two)
+              .alignment(.topLeft)
+              .elevation(.two)
               .paddingAll(10)
               .scale(1.5)
-              .animate(AnimationConfig.easeInOut(100.ms))
+              .animate(.easeInOut(100.ms))
               .onLight(BoxStyler().color(Colors.blue.shade300)),
         );
   }
@@ -83,7 +83,7 @@ class _CustomWidgetState extends State<CustomWidget> {
   bool _isHover = false;
 
   final _curve = Curves.linear;
-  final _duration = const Duration(milliseconds: 100);
+  final _duration = 100.ms;
 
   @override
   Widget build(BuildContext context) {
