@@ -122,6 +122,12 @@ scripts:
     packageFilters:
       dirExists: test
 
+  test:ci:
+    run: melos run test:flutter && melos run test:dart
+    description: Run flutter and dart tests
+    packageFilters:
+      dirExists: test
+
   brb:
     run: melos run gen:build
     
