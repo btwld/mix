@@ -11,7 +11,7 @@
 | Phase | Status | Items | Priority |
 |-------|--------|-------|----------|
 | Phase 1: POC | ✅ Complete | 6/6 | - |
-| Phase 2: P1 Fixes | 🔄 In Progress | 0/5 | Critical |
+| Phase 2: P1 Fixes | ✅ Complete | 5/5 | Critical |
 | Phase 3: P2 Improvements | ⏳ Planned | 0/7 | High |
 | Phase 4: P3 Enhancements | ⏳ Future | 0/5 | Low |
 
@@ -152,7 +152,7 @@ export 'src/tw_widget.dart';
 
 **Goal**: Fix critical semantic issues and Flutter constraint violations before production use.
 
-**Status**: 0/5 items complete
+**Status**: 5/5 items complete
 
 ---
 
@@ -198,10 +198,10 @@ test('wantsFlex detects prefixed flex tokens', () {
 ```
 
 **Checklist**:
-- [ ] Update `wantsFlex()` method
-- [ ] Add unit tests for prefixed flex detection
-- [ ] Add widget test: `testWidgets('Div picks FlexBox for md:flex')`
-- [ ] Verify existing tests still pass
+- [x] Update `wantsFlex()` method
+- [x] Add unit tests for prefixed flex detection
+- [x] Add widget test: `testWidgets('Div picks FlexBox for md:flex')`
+- [x] Verify existing tests still pass
 
 ---
 
@@ -251,10 +251,10 @@ testWidgets('Div wraps multiple children in Column', (tester) async {
 ```
 
 **Checklist**:
-- [ ] Replace `Row` with `Column` in non-flex path
-- [ ] Add widget test verifying Column usage
-- [ ] Update documentation if needed
-- [ ] Verify existing tests still pass
+- [x] Replace `Row` with `Column` in non-flex path
+- [x] Add widget test verifying Column usage
+- [x] Update documentation if needed
+- [x] Verify existing tests still pass
 
 ---
 
@@ -336,14 +336,14 @@ test('Span constructor is const', () {
 ```
 
 **Checklist**:
-- [ ] Make `Div` config field nullable
-- [ ] Move defaulting to `Div.build()`
-- [ ] Add `const` to `Div` constructor
-- [ ] Make `Span` config field nullable
-- [ ] Move defaulting to `Span.build()`
-- [ ] Add `const` to `Span` constructor
-- [ ] Add compile-time tests for const constructors
-- [ ] Verify existing tests still pass
+- [x] Make `Div` config field nullable
+- [x] Move defaulting to `Div.build()`
+- [x] Add `const` to `Div` constructor
+- [x] Make `Span` config field nullable
+- [x] Move defaulting to `Span.build()`
+- [x] Add `const` to `Span` constructor
+- [x] Add compile-time tests for const constructors
+- [x] Verify existing tests still pass
 
 ---
 
@@ -553,17 +553,17 @@ test('Unimplemented tokens are reported', () {
 ```
 
 **Checklist**:
-- [ ] Add `handled` tracking to `_applyFlexAtomic`
-- [ ] Set `handled = true` in all branches of `_applyFlexAtomic`
-- [ ] Add warning for unhandled tokens in `_applyFlexAtomic`
-- [ ] Add `handled` tracking to `_applyBoxAtomic`
-- [ ] Set `handled = true` in all branches of `_applyBoxAtomic`
-- [ ] Add warning for unhandled tokens in `_applyBoxAtomic`
-- [ ] Add `handled` tracking to `_applyTextAtomic`
-- [ ] Set `handled = true` in all branches of `_applyTextAtomic`
-- [ ] Add warning for unhandled tokens in `_applyTextAtomic`
-- [ ] Add unit tests for unknown token warnings
-- [ ] Verify existing tests still pass
+- [x] Add `handled` tracking to `_applyFlexAtomic`
+- [x] Set `handled = true` in all branches of `_applyFlexAtomic`
+- [x] Add warning for unhandled tokens in `_applyFlexAtomic`
+- [x] Add `handled` tracking to `_applyBoxAtomic`
+- [x] Set `handled = true` in all branches of `_applyBoxAtomic`
+- [x] Add warning for unhandled tokens in `_applyBoxAtomic`
+- [x] Add `handled` tracking to `_applyTextAtomic`
+- [x] Set `handled = true` in all branches of `_applyTextAtomic`
+- [x] Add warning for unhandled tokens in `_applyTextAtomic`
+- [x] Add unit tests for unknown token warnings
+- [x] Verify existing tests still pass
 
 ---
 
@@ -697,13 +697,13 @@ test('Unimplemented tokens are reported', () {
 
 ### Phase 2 Checklist
 
-- [ ] P1.1: Fix prefixed flex detection (0/4 tasks)
-- [ ] P1.2: Change Row → Column (0/4 tasks)
-- [ ] P1.3: Restore const constructors (0/8 tasks)
-- [ ] P1.4: Add constraint guards (0/6 tasks)
-- [ ] P1.5: Expand diagnostics (0/10 tasks)
+- [x] P1.1: Fix prefixed flex detection (4/4 tasks)
+- [x] P1.2: Change Row → Column (4/4 tasks)
+- [x] P1.3: Restore const constructors (8/8 tasks)
+- [x] P1.4: Add constraint guards (6/6 tasks)
+- [x] P1.5: Expand diagnostics (10/10 tasks)
 
-**Total**: 0/32 P1 tasks complete
+**Total**: 32/32 P1 tasks complete
 
 ---
 

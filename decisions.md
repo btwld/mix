@@ -4,7 +4,7 @@
 
 **Last Updated**: 2025-11-03
 **Package Version**: 0.1.0-dev.0
-**Review Status**: ✅ POC validated, P1 fixes identified
+**Review Status**: ✅ POC validated, P1 fixes implemented
 
 ---
 
@@ -25,7 +25,7 @@ Validate a Tailwind-inspired utility layer for Mix 2.0 by implementing a standal
 - ✅ Core parser translates Tailwind classes to Mix stylers
 - ✅ Widget layer (`Div`, `Span`) bridges class strings to Mix components
 - ✅ Prefix support for breakpoints, pseudo-states, and theme modes
-- ⚠️ P1 fixes needed for production readiness
+- ✅ P1 fixes implemented for production readiness
 - 🔄 P2/P3 improvements for broader Tailwind parity
 
 ---
@@ -62,7 +62,7 @@ Validate a Tailwind-inspired utility layer for Mix 2.0 by implementing a standal
 
 ### 2. Parser (`lib/src/tw_parser_v2.dart`)
 
-**Status**: ✅ Core implemented, ⚠️ P1 fixes required
+**Status**: ✅ Core implemented, ✅ P1 fixes resolved
 
 #### Architecture
 - Token pipeline: tokenize → apply prefix handling (breakpoints, pseudo states) → atomic mutators
@@ -89,32 +89,31 @@ Validate a Tailwind-inspired utility layer for Mix 2.0 by implementing a standal
 #### Known Limitations
 - **Unsupported tokens**: `flex-*` item-level utilities trigger optional `Warn` callback
 - **Size fallback**: Tokens without config entries resolve to `0`
-- **⚠️ P1 Issue**: `wantsFlex()` doesn't detect prefixed flex tokens (e.g., `sm:flex`)
-- **⚠️ P1 Issue**: Unknown tokens (except `flex-*`) are silently ignored
+- **Responsive widget switching**: Still requires manual `isFlex` override for non-flex breakpoints
 
 ---
 
 ### 3. Widgets (`lib/src/tw_widget.dart`)
 
-**Status**: ✅ Core implemented, ⚠️ P1 fixes required
+**Status**: ✅ Core implemented, ✅ P1 fixes resolved
 
 #### `Div` Widget
 - Stateless widget bridging class strings to Mix widgets
 - Optional `isFlex` override; falls back to `parser.wantsFlex` to choose between `FlexBox` and `Box`
-- **⚠️ P1 Issue**: Non-flex layouts wrap multiple children in `Row` (should be `Column` for block-flow semantics)
-- **⚠️ P1 Issue**: Constructors are non-const due to initializer defaulting
-- **⚠️ P1 Issue**: No constraint guards for `w-full`/`h-full` (can crash in tight parents)
+- ✅ Non-flex layouts now wrap multiple children in `Column` to match block flow semantics
+- ✅ Constructors restored to `const` by deferring config defaulting to build
+- ✅ Constraint guards clamp `w-full` / `h-full` when parent constraints are finite
 - Accepts optional `onUnsupported` passthrough
 
 #### `Span` Widget
 - Stateless text widget calling `parser.parseText` and rendering `StyledText`
-- **⚠️ P1 Issue**: Non-const constructor
+- ✅ Const constructor restored by deferring config defaulting
 
 ---
 
 ### 4. Tests (`test/div_and_span_test.dart`)
 
-**Status**: ✅ Basic coverage, 🔄 P1 tests needed
+**Status**: ✅ Coverage updated with P1 regressions prevented
 
 #### Current Test Coverage
 - ✅ `Div` selects `FlexBox` when `flex` token present
@@ -123,12 +122,12 @@ Validate a Tailwind-inspired utility layer for Mix 2.0 by implementing a standal
 - ✅ `TwParserV2` records unsupported `flex-*` tokens via callback
 
 #### Missing Test Coverage (P1)
-- ❌ Prefixed flex detection (`md:flex` should trigger FlexBox)
-- ❌ Column fallback for multiple children
-- ❌ Constraint guards for `w-full` in tight parents
-- ❌ Unknown token warnings
-- ❌ Prefix chains (`md:hover:bg-blue-500`)
-- ❌ Token precedence (`px-4 p-2` should yield x=16, y=8)
+- ✅ Prefixed flex detection (`md:flex` should trigger FlexBox)
+- ✅ Column fallback for multiple children
+- ✅ Constraint guards for `w-full`/`h-full` inside bounded parents
+- ✅ Unknown token warnings
+- 🔸 Prefix chains (`md:hover:bg-blue-500`) – still deferred
+- 🔸 Token precedence (`px-4 p-2`) – remains on backlog
 
 ---
 
@@ -163,7 +162,7 @@ bool wantsFlex(Set<String> tokens) {
 
 **Files**: `lib/src/tw_parser_v2.dart:26-30`
 
-**Decision**: ✅ **Approved** - Implement this fix
+**Decision**: ✅ **Completed** (2025-11-03) - Prefixed flex detection shipped with unit coverage
 
 ---
 
@@ -184,7 +183,7 @@ bool wantsFlex(Set<String> tokens) {
 
 **Files**: `lib/src/tw_widget.dart:40`
 
-**Decision**: ✅ **Approved** - Column matches HTML block flow
+**Decision**: ✅ **Completed** (2025-11-03) - Column fallback and widget tests merged
 
 **Alternative Considered**: Configurable via static property. **Rejected** - Adds complexity without clear use case. Can revisit if users request it.
 
@@ -222,7 +221,7 @@ class Div extends StatelessWidget {
 
 **Files**: `lib/src/tw_widget.dart` (`Div` and `Span`)
 
-**Decision**: ✅ **Approved** - Restore const for Flutter optimization
+**Decision**: ✅ **Completed** (2025-11-03) - Const constructors restored for Div/Span
 
 ---
 
@@ -260,7 +259,7 @@ return Box(style: boxStyle, child: resolvedChild);
 
 **Files**: `lib/src/tw_widget.dart`
 
-**Decision**: ✅ **Approved** - Always on. Overhead is conditional (only when `w-full`/`h-full` present)
+**Decision**: ✅ **Completed** (2025-11-03) - Constraint guards enabled with LayoutBuilder helper
 
 ---
 
@@ -292,7 +291,7 @@ FlexBoxStyler _applyFlexAtomic(FlexBoxStyler styler, String token) {
 
 **Files**: `lib/src/tw_parser_v2.dart` (all three `_apply*Atomic` methods)
 
-**Decision**: ✅ **Approved** - Implement for better DX
+**Decision**: ✅ **Completed** (2025-11-03) - Unknown tokens now surfaced through `onUnsupported`
 
 ---
 
