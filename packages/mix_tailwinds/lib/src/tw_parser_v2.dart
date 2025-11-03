@@ -24,9 +24,13 @@ class TwParserV2 {
   Set<String> setTokens(String classNames) => listTokens(classNames).toSet();
 
   bool wantsFlex(Set<String> tokens) {
-    return tokens.contains('flex') ||
-        tokens.contains('flex-row') ||
-        tokens.contains('flex-col');
+    for (final token in tokens) {
+      final base = token.substring(token.lastIndexOf(':') + 1);
+      if (base == 'flex' || base == 'flex-row' || base == 'flex-col') {
+        return true;
+      }
+    }
+    return false;
   }
 
   FlexBoxStyler parseFlex(String classNames) {
@@ -166,305 +170,262 @@ class TwParserV2 {
   }
 
   FlexBoxStyler _applyFlexAtomic(FlexBoxStyler styler, String token) {
+    var result = styler;
+    var handled = true;
+
     if (token == 'flex' || token == 'flex-row') {
-      return styler.row();
-    }
-    if (token == 'flex-col') {
-      return styler.column();
-    }
-
-    if (token == 'items-start') {
-      return styler.crossAxisAlignment(CrossAxisAlignment.start);
-    }
-    if (token == 'items-center') {
-      return styler.crossAxisAlignment(CrossAxisAlignment.center);
-    }
-    if (token == 'items-end') {
-      return styler.crossAxisAlignment(CrossAxisAlignment.end);
-    }
-
-    if (token == 'justify-start') {
-      return styler.mainAxisAlignment(MainAxisAlignment.start);
-    }
-    if (token == 'justify-center') {
-      return styler.mainAxisAlignment(MainAxisAlignment.center);
-    }
-    if (token == 'justify-end') {
-      return styler.mainAxisAlignment(MainAxisAlignment.end);
-    }
-    if (token == 'justify-between') {
-      return styler.mainAxisAlignment(MainAxisAlignment.spaceBetween);
-    }
-    if (token == 'justify-around') {
-      return styler.mainAxisAlignment(MainAxisAlignment.spaceAround);
-    }
-    if (token == 'justify-evenly') {
-      return styler.mainAxisAlignment(MainAxisAlignment.spaceEvenly);
-    }
-
-    if (token.startsWith('gap-')) {
-      return styler.spacing(config.spaceOf(token.substring(4)));
-    }
-
-    if (token.startsWith('w-')) {
-      return styler.width(_sizeFrom(token.substring(2)));
-    }
-    if (token.startsWith('h-')) {
-      return styler.height(_sizeFrom(token.substring(2)));
-    }
-
-    if (token.startsWith('p-')) {
-      return styler.paddingAll(config.spaceOf(token.substring(2)));
-    }
-    if (token.startsWith('px-')) {
-      return styler.paddingX(config.spaceOf(token.substring(3)));
-    }
-    if (token.startsWith('py-')) {
-      return styler.paddingY(config.spaceOf(token.substring(3)));
-    }
-    if (token.startsWith('pt-')) {
-      return styler.paddingTop(config.spaceOf(token.substring(3)));
-    }
-    if (token.startsWith('pr-')) {
-      return styler.paddingRight(config.spaceOf(token.substring(3)));
-    }
-    if (token.startsWith('pb-')) {
-      return styler.paddingBottom(config.spaceOf(token.substring(3)));
-    }
-    if (token.startsWith('pl-')) {
-      return styler.paddingLeft(config.spaceOf(token.substring(3)));
-    }
-
-    if (token.startsWith('m-')) {
-      return styler.marginAll(config.spaceOf(token.substring(2)));
-    }
-    if (token.startsWith('mx-')) {
-      return styler.marginX(config.spaceOf(token.substring(3)));
-    }
-    if (token.startsWith('my-')) {
-      return styler.marginY(config.spaceOf(token.substring(3)));
-    }
-    if (token.startsWith('mt-')) {
-      return styler.marginTop(config.spaceOf(token.substring(3)));
-    }
-    if (token.startsWith('mr-')) {
-      return styler.marginRight(config.spaceOf(token.substring(3)));
-    }
-    if (token.startsWith('mb-')) {
-      return styler.marginBottom(config.spaceOf(token.substring(3)));
-    }
-    if (token.startsWith('ml-')) {
-      return styler.marginLeft(config.spaceOf(token.substring(3)));
-    }
-
-    if (token.startsWith('bg-')) {
+      result = styler.row();
+    } else if (token == 'flex-col') {
+      result = styler.column();
+    } else if (token == 'items-start') {
+      result = styler.crossAxisAlignment(CrossAxisAlignment.start);
+    } else if (token == 'items-center') {
+      result = styler.crossAxisAlignment(CrossAxisAlignment.center);
+    } else if (token == 'items-end') {
+      result = styler.crossAxisAlignment(CrossAxisAlignment.end);
+    } else if (token == 'justify-start') {
+      result = styler.mainAxisAlignment(MainAxisAlignment.start);
+    } else if (token == 'justify-center') {
+      result = styler.mainAxisAlignment(MainAxisAlignment.center);
+    } else if (token == 'justify-end') {
+      result = styler.mainAxisAlignment(MainAxisAlignment.end);
+    } else if (token == 'justify-between') {
+      result = styler.mainAxisAlignment(MainAxisAlignment.spaceBetween);
+    } else if (token == 'justify-around') {
+      result = styler.mainAxisAlignment(MainAxisAlignment.spaceAround);
+    } else if (token == 'justify-evenly') {
+      result = styler.mainAxisAlignment(MainAxisAlignment.spaceEvenly);
+    } else if (token.startsWith('gap-')) {
+      result = styler.spacing(config.spaceOf(token.substring(4)));
+    } else if (token.startsWith('w-')) {
+      result = styler.width(_sizeFrom(token.substring(2)));
+    } else if (token.startsWith('h-')) {
+      result = styler.height(_sizeFrom(token.substring(2)));
+    } else if (token.startsWith('p-')) {
+      result = styler.paddingAll(config.spaceOf(token.substring(2)));
+    } else if (token.startsWith('px-')) {
+      result = styler.paddingX(config.spaceOf(token.substring(3)));
+    } else if (token.startsWith('py-')) {
+      result = styler.paddingY(config.spaceOf(token.substring(3)));
+    } else if (token.startsWith('pt-')) {
+      result = styler.paddingTop(config.spaceOf(token.substring(3)));
+    } else if (token.startsWith('pr-')) {
+      result = styler.paddingRight(config.spaceOf(token.substring(3)));
+    } else if (token.startsWith('pb-')) {
+      result = styler.paddingBottom(config.spaceOf(token.substring(3)));
+    } else if (token.startsWith('pl-')) {
+      result = styler.paddingLeft(config.spaceOf(token.substring(3)));
+    } else if (token.startsWith('m-')) {
+      result = styler.marginAll(config.spaceOf(token.substring(2)));
+    } else if (token.startsWith('mx-')) {
+      result = styler.marginX(config.spaceOf(token.substring(3)));
+    } else if (token.startsWith('my-')) {
+      result = styler.marginY(config.spaceOf(token.substring(3)));
+    } else if (token.startsWith('mt-')) {
+      result = styler.marginTop(config.spaceOf(token.substring(3)));
+    } else if (token.startsWith('mr-')) {
+      result = styler.marginRight(config.spaceOf(token.substring(3)));
+    } else if (token.startsWith('mb-')) {
+      result = styler.marginBottom(config.spaceOf(token.substring(3)));
+    } else if (token.startsWith('ml-')) {
+      result = styler.marginLeft(config.spaceOf(token.substring(3)));
+    } else if (token.startsWith('bg-')) {
       final color = config.colorOf(token.substring(3));
       if (color != null) {
-        return styler.color(color);
+        result = styler.color(color);
+      } else {
+        handled = false;
       }
-    }
-
-    if (token == 'border') {
-      return styler.borderAll(
+    } else if (token == 'border') {
+      result = styler.borderAll(
         color: config.colorOf('gray-200') ?? const Color(0xFFE5E7EB),
         width: 1,
       );
-    }
-    if (token.startsWith('border-')) {
+    } else if (token.startsWith('border-')) {
       final key = token.substring(7);
       final width = config.borderWidthOf(key, fallback: -1);
       if (width > 0) {
-        return styler.borderAll(
+        result = styler.borderAll(
           color: config.colorOf('gray-200') ?? const Color(0xFFE5E7EB),
           width: width,
         );
+      } else {
+        final color = config.colorOf(key);
+        if (color != null) {
+          result = styler.borderAll(color: color, width: 1);
+        } else {
+          handled = false;
+        }
       }
-      final color = config.colorOf(key);
-      if (color != null) {
-        return styler.borderAll(color: color, width: 1);
-      }
-    }
-
-    if (token == 'rounded' || token.startsWith('rounded-')) {
+    } else if (token == 'rounded' || token.startsWith('rounded-')) {
       final suffix = token == 'rounded' ? '' : token.substring(8);
-      return styler.borderRounded(config.radiusOf(suffix));
-    }
-
-    if (token == 'shadow') {
-      return styler.elevation(ElevationShadow.two);
-    }
-    if (token == 'shadow-md') {
-      return styler.elevation(ElevationShadow.four);
-    }
-    if (token == 'shadow-lg') {
-      return styler.elevation(ElevationShadow.eight);
-    }
-
-    if (token.startsWith('flex-')) {
+      result = styler.borderRounded(config.radiusOf(suffix));
+    } else if (token == 'shadow') {
+      result = styler.elevation(ElevationShadow.two);
+    } else if (token == 'shadow-md') {
+      result = styler.elevation(ElevationShadow.four);
+    } else if (token == 'shadow-lg') {
+      result = styler.elevation(ElevationShadow.eight);
+    } else if (token.startsWith('flex-')) {
       onUnsupported?.call(token);
-      return styler;
+    } else {
+      handled = false;
     }
 
-    return styler;
+    if (!handled) {
+      onUnsupported?.call(token);
+    }
+
+    return result;
   }
 
   BoxStyler _applyBoxAtomic(BoxStyler styler, String token) {
+    var result = styler;
+    var handled = true;
+
     if (token.startsWith('w-')) {
-      return styler.width(_sizeFrom(token.substring(2)));
-    }
-    if (token.startsWith('h-')) {
-      return styler.height(_sizeFrom(token.substring(2)));
-    }
-
-    if (token.startsWith('p-')) {
-      return styler.paddingAll(config.spaceOf(token.substring(2)));
-    }
-    if (token.startsWith('px-')) {
-      return styler.paddingX(config.spaceOf(token.substring(3)));
-    }
-    if (token.startsWith('py-')) {
-      return styler.paddingY(config.spaceOf(token.substring(3)));
-    }
-    if (token.startsWith('pt-')) {
-      return styler.paddingTop(config.spaceOf(token.substring(3)));
-    }
-    if (token.startsWith('pr-')) {
-      return styler.paddingRight(config.spaceOf(token.substring(3)));
-    }
-    if (token.startsWith('pb-')) {
-      return styler.paddingBottom(config.spaceOf(token.substring(3)));
-    }
-    if (token.startsWith('pl-')) {
-      return styler.paddingLeft(config.spaceOf(token.substring(3)));
-    }
-
-    if (token.startsWith('m-')) {
-      return styler.marginAll(config.spaceOf(token.substring(2)));
-    }
-    if (token.startsWith('mx-')) {
-      return styler.marginX(config.spaceOf(token.substring(3)));
-    }
-    if (token.startsWith('my-')) {
-      return styler.marginY(config.spaceOf(token.substring(3)));
-    }
-    if (token.startsWith('mt-')) {
-      return styler.marginTop(config.spaceOf(token.substring(3)));
-    }
-    if (token.startsWith('mr-')) {
-      return styler.marginRight(config.spaceOf(token.substring(3)));
-    }
-    if (token.startsWith('mb-')) {
-      return styler.marginBottom(config.spaceOf(token.substring(3)));
-    }
-    if (token.startsWith('ml-')) {
-      return styler.marginLeft(config.spaceOf(token.substring(3)));
-    }
-
-    if (token.startsWith('bg-')) {
+      result = styler.width(_sizeFrom(token.substring(2)));
+    } else if (token.startsWith('h-')) {
+      result = styler.height(_sizeFrom(token.substring(2)));
+    } else if (token.startsWith('p-')) {
+      result = styler.paddingAll(config.spaceOf(token.substring(2)));
+    } else if (token.startsWith('px-')) {
+      result = styler.paddingX(config.spaceOf(token.substring(3)));
+    } else if (token.startsWith('py-')) {
+      result = styler.paddingY(config.spaceOf(token.substring(3)));
+    } else if (token.startsWith('pt-')) {
+      result = styler.paddingTop(config.spaceOf(token.substring(3)));
+    } else if (token.startsWith('pr-')) {
+      result = styler.paddingRight(config.spaceOf(token.substring(3)));
+    } else if (token.startsWith('pb-')) {
+      result = styler.paddingBottom(config.spaceOf(token.substring(3)));
+    } else if (token.startsWith('pl-')) {
+      result = styler.paddingLeft(config.spaceOf(token.substring(3)));
+    } else if (token.startsWith('m-')) {
+      result = styler.marginAll(config.spaceOf(token.substring(2)));
+    } else if (token.startsWith('mx-')) {
+      result = styler.marginX(config.spaceOf(token.substring(3)));
+    } else if (token.startsWith('my-')) {
+      result = styler.marginY(config.spaceOf(token.substring(3)));
+    } else if (token.startsWith('mt-')) {
+      result = styler.marginTop(config.spaceOf(token.substring(3)));
+    } else if (token.startsWith('mr-')) {
+      result = styler.marginRight(config.spaceOf(token.substring(3)));
+    } else if (token.startsWith('mb-')) {
+      result = styler.marginBottom(config.spaceOf(token.substring(3)));
+    } else if (token.startsWith('ml-')) {
+      result = styler.marginLeft(config.spaceOf(token.substring(3)));
+    } else if (token.startsWith('bg-')) {
       final color = config.colorOf(token.substring(3));
       if (color != null) {
-        return styler.color(color);
+        result = styler.color(color);
+      } else {
+        handled = false;
       }
-    }
-
-    if (token == 'border') {
-      return styler.borderAll(
+    } else if (token == 'border') {
+      result = styler.borderAll(
         color: config.colorOf('gray-200') ?? const Color(0xFFE5E7EB),
         width: 1,
       );
-    }
-    if (token.startsWith('border-')) {
+    } else if (token.startsWith('border-')) {
       final key = token.substring(7);
       final width = config.borderWidthOf(key, fallback: -1);
       if (width > 0) {
-        return styler.borderAll(
+        result = styler.borderAll(
           color: config.colorOf('gray-200') ?? const Color(0xFFE5E7EB),
           width: width,
         );
+      } else {
+        final color = config.colorOf(key);
+        if (color != null) {
+          result = styler.borderAll(color: color, width: 1);
+        } else {
+          handled = false;
+        }
       }
-      final color = config.colorOf(key);
-      if (color != null) {
-        return styler.borderAll(color: color, width: 1);
-      }
-    }
-
-    if (token == 'rounded' || token.startsWith('rounded-')) {
+    } else if (token == 'rounded' || token.startsWith('rounded-')) {
       final suffix = token == 'rounded' ? '' : token.substring(8);
-      return styler.borderRounded(config.radiusOf(suffix));
-    }
-
-    if (token == 'shadow') {
-      return styler.elevation(ElevationShadow.two);
-    }
-    if (token == 'shadow-md') {
-      return styler.elevation(ElevationShadow.four);
-    }
-    if (token == 'shadow-lg') {
-      return styler.elevation(ElevationShadow.eight);
-    }
-
-    if (token.startsWith('text-')) {
+      result = styler.borderRounded(config.radiusOf(suffix));
+    } else if (token == 'shadow') {
+      result = styler.elevation(ElevationShadow.two);
+    } else if (token == 'shadow-md') {
+      result = styler.elevation(ElevationShadow.four);
+    } else if (token == 'shadow-lg') {
+      result = styler.elevation(ElevationShadow.eight);
+    } else if (token.startsWith('text-')) {
       final color = config.colorOf(token.substring(5));
       if (color != null) {
-        return styler.wrapDefaultTextStyle(TextStyleMix().color(color));
+        result = styler.wrapDefaultTextStyle(TextStyleMix().color(color));
+      } else {
+        final size = config.fontSizeOf(token.substring(5), fallback: -1);
+        if (size > 0) {
+          result = styler.wrapDefaultTextStyle(TextStyleMix().fontSize(size));
+        } else {
+          handled = false;
+        }
       }
-      final size = config.fontSizeOf(token.substring(5), fallback: -1);
-      if (size > 0) {
-        return styler.wrapDefaultTextStyle(TextStyleMix().fontSize(size));
-      }
-    }
-    if (token == 'font-bold') {
-      return styler.wrapDefaultTextStyle(
+    } else if (token == 'font-bold') {
+      result = styler.wrapDefaultTextStyle(
         TextStyleMix().fontWeight(FontWeight.w700),
       );
-    }
-    if (token == 'font-semibold') {
-      return styler.wrapDefaultTextStyle(
+    } else if (token == 'font-semibold') {
+      result = styler.wrapDefaultTextStyle(
         TextStyleMix().fontWeight(FontWeight.w600),
       );
-    }
-    if (token == 'font-medium') {
-      return styler.wrapDefaultTextStyle(
+    } else if (token == 'font-medium') {
+      result = styler.wrapDefaultTextStyle(
         TextStyleMix().fontWeight(FontWeight.w500),
       );
+    } else {
+      handled = false;
     }
 
-    return styler;
+    if (!handled) {
+      onUnsupported?.call(token);
+    }
+
+    return result;
   }
 
   TextStyler _applyTextAtomic(TextStyler styler, String token) {
+    var result = styler;
+    var handled = true;
+
     if (token.startsWith('text-')) {
       final color = config.colorOf(token.substring(5));
       if (color != null) {
-        return styler.color(color);
+        result = styler.color(color);
+      } else {
+        final size = config.fontSizeOf(token.substring(5), fallback: -1);
+        if (size > 0) {
+          result = styler.fontSize(size);
+        } else {
+          handled = false;
+        }
       }
-      final size = config.fontSizeOf(token.substring(5), fallback: -1);
-      if (size > 0) {
-        return styler.fontSize(size);
-      }
+    } else if (token == 'uppercase') {
+      result = styler.uppercase();
+    } else if (token == 'lowercase') {
+      result = styler.lowercase();
+    } else if (token == 'capitalize') {
+      result = styler.capitalize();
+    } else if (token == 'font-bold') {
+      result = styler.fontWeight(FontWeight.w700);
+    } else if (token == 'font-semibold') {
+      result = styler.fontWeight(FontWeight.w600);
+    } else if (token == 'font-medium') {
+      result = styler.fontWeight(FontWeight.w500);
+    } else if (token == 'font-light') {
+      result = styler.fontWeight(FontWeight.w300);
+    } else {
+      handled = false;
     }
-    if (token == 'uppercase') {
-      return styler.uppercase();
+
+    if (!handled) {
+      onUnsupported?.call(token);
     }
-    if (token == 'lowercase') {
-      return styler.lowercase();
-    }
-    if (token == 'capitalize') {
-      return styler.capitalize();
-    }
-    if (token == 'font-bold') {
-      return styler.fontWeight(FontWeight.w700);
-    }
-    if (token == 'font-semibold') {
-      return styler.fontWeight(FontWeight.w600);
-    }
-    if (token == 'font-medium') {
-      return styler.fontWeight(FontWeight.w500);
-    }
-    if (token == 'font-light') {
-      return styler.fontWeight(FontWeight.w300);
-    }
-    return styler;
+
+    return result;
   }
 
   double _sizeFrom(String key) {
