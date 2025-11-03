@@ -31,12 +31,3 @@ jobs:
     with:
       flutter-version: 'beta'
       run-dcm: true
-
-  test_min_sdk:
-    name: Test Min SDK
-    uses: btwld/dart-actions/.github/workflows/ci.yml@main
-    secrets:
-      token: ${{ secrets.GITHUB_TOKEN }}
-    with:
-      flutter-version: 'beta'
-      run-dcm: false
