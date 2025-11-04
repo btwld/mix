@@ -1,5 +1,5 @@
-name: mix_example
-description: "A new Flutter project."
+name: examples
+description: "Example project for the mix package."
 publish_to: 'none' 
 version: 1.0.0+1
 
@@ -12,7 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   mix:
-    path: ../mix
+    path: ../packages/mix
 
 
 dev_dependencies:
