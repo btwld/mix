@@ -57,7 +57,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
   }
 
   Style<S> _buildStyle(BuildContext context) {
-    final inheritedStyle = StyleProvider.maybeOf<S>(context);
+    final inheritedStyle = Style.maybeOf<S>(context);
 
     return inheritedStyle?.merge(widget.style) ?? widget.style;
   }
