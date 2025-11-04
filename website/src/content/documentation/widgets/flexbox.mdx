@@ -1,76 +1,158 @@
----
-title: FlexBox
----
-
 # FlexBox
 
-This is equivalent to the **Flex** wrapped in **Container** widgets in Flutter. Everything you can do with the `Box` widget, you can also do with `FlexBox`. However, the main difference is that you can specify flex attributes for it.
+`FlexBox` combines Flutter's `Container` and `Flex` widgets with Mix styling.
+
+It provides both box styling (decoration, padding, margins, transforms, constraints)
+and flex layout capabilities (direction, alignment, spacing) in a single widget.
+This makes it ideal for creating styled flex layouts without nesting multiple widgets.
+
+For specific layouts, use `RowBox` for horizontal layouts or `ColumnBox` for vertical layouts.
+
+You can use `FlexBoxStyler` to create styles with a fluent API. Example:
 
 ```dart
+final style = FlexBoxStyler()
+ .direction(Axis.horizontal)
+ .mainAxisAlignment(MainAxisAlignment.spaceBetween)
+ .crossAxisAlignment(CrossAxisAlignment.center)
+ .padding(16)
+ .spacing(12)
+ .color(Colors.grey.shade100)
+ .borderRounded(8);
+
 FlexBox(
-  style: FlexBoxStyler()
-      .color(Colors.blue)
-      .direction(Axis.horizontal)
-      .mainAxisAlignment(MainAxisAlignment.spaceBetween),
-  children: [
-    Box(child: Text('Box 1')),
-    Box(child: Text('Box 2')),
-    Box(child: Text('Box 3')),
-  ],
-);
-```
-
-### RowBox and ColumnBox
-
-If you want to quickly set the direction of your flex container, you can use `RowBox` or `ColumnBox`. These widgets work just like Flutter’s `Row` and `Column`, but with the added bonus that you can style them using all the same options as `Box`. This makes them perfect when you want to lock in a horizontal or vertical layout and still take advantage of powerful styling features.
-
-```dart
-RowBox(
-  style: FlexBoxStyler()
-      .color(Colors.blue)
-      .mainAxisAlignment(MainAxisAlignment.spaceBetween),
-  children: [...],
-);
-```
-
-```dart
-ColumnBox(
-  style: FlexBoxStyler()
-      .color(Colors.blue)
-      .mainAxisAlignment(MainAxisAlignment.spaceBetween),
-  children: [...],
-);
+ style: style,
+ children: [
+   StyledIcon(icon: Icons.star),
+   StyledText('Rating'),
+   StyledText('4.5'),
+ ],
+)
 ```
 
 ## Constructor
 
-| Prop      | Type                        | Required / Default Value                |
-|-----------|-----------------------------|-----------------------------------------|
-| style     | `Style<FlexBoxSpec>`             | Optional, defaults to `FlexBoxStyler.create()` |
-| key       | `Key?`                      | Optional                               |
-| children  | `List<Widget>`              | Optional, defaults to `const <Widget>[]` |
-
+| Prop  | Type         | Required / Default Value                |
+|-------|--------------|------------------------------------------|
+| `style` | `Style` | `const FlexBoxStyler.create()` |
+| `styleSpec` | `StyleSpec?` | `Optional` |
+| `children` | `List<Widget>` | `const <Widget>[]` |
 
 ## Style API Reference
 
-Mix provides an extension of Style\<FlexBoxSpec> called `FlexBoxStyler` for easily styling `FlexBox`, `RowBox`, and `ColumnBox` widgets.
+### FlexBox Methods
 
 | Method | Description |
 |--------|-------------|
-| `animate` | Sets animation configuration |
-| `alignment` | Sets box alignment |
-| `transformAlignment` | Sets transform alignment |
-| `clipBehavior` | Sets clip behavior |
-| `modifier` | Adds widget modifiers |
-| `flex` | Sets flex properties |
-| `foregroundDecoration` | Sets foreground decoration |
-| `padding` | Sets padding |
-| `margin` | Sets margin |
-| `transform` | Sets transform matrix |
-| `decoration` | Sets decoration |
-| `constraints` | Sets box constraints |
-| `borderRadius` | Sets border radius |
-| `border` | Sets border |
+| `animate` | Sets the animation property. |
+| `alignment` | Sets the alignment property. |
+| `transformAlignment` | Sets the transform alignment. |
+| `clipBehavior` | Sets the clip behavior. |
+| `gap` | Sets gap value (deprecated). |
+| `modifier` | Sets the widget modifier. |
+| `foregroundDecoration` | Sets the foreground decoration. |
+| `flex` | Sets the flex property. |
+| `padding` | Sets the padding property. |
+| `margin` | Sets the margin property. |
+| `transform` | Sets the transform property. |
+| `decoration` | Sets the decoration property. |
+| `constraints` | Sets the constraints property. |
+| `wrap` | Sets the widget modifier (wrap). |
+| `variants` | Sets the variants list. |
+| `borderRadius` | Sets the border radius property via decoration. |
+| `border` | Sets the border property via decoration. |
+
+### Border Radius
+
+| Method | Description |
+|--------|-------------|
+| `borderRadiusAll` | Sets border radius for all corners. |
+| `borderRadiusTop` | Sets border radius for the top corners. |
+| `borderRadiusBottom` | Sets border radius for the bottom corners. |
+| `borderRadiusLeft` | Sets border radius for the left corners. |
+| `borderRadiusRight` | Sets border radius for the right corners. |
+| `borderRadiusTopLeft` | Sets border radius for the top left corner. |
+| `borderRadiusTopRight` | Sets border radius for the top right corner. |
+| `borderRadiusBottomLeft` | Sets border radius for the bottom left corner. |
+| `borderRadiusBottomRight` | Sets border radius for the bottom right corner. |
+| `borderRadiusTopStart` | Sets border radius for the top start corner (directional). |
+| `borderRadiusTopEnd` | Sets border radius for the top end corner (directional). |
+| `borderRadiusBottomStart` | Sets border radius for the bottom start corner (directional). |
+| `borderRadiusBottomEnd` | Sets border radius for the bottom end corner (directional). |
+| `borderRounded` | Sets a uniform circular radius for all corners. |
+| `borderRoundedTop` | Sets a circular radius for the top corners. |
+| `borderRoundedBottom` | Sets a circular radius for the bottom corners. |
+| `borderRoundedLeft` | Sets a circular radius for the left corners. |
+| `borderRoundedRight` | Sets a circular radius for the right corners. |
+| `borderRoundedTopLeft` | Sets a circular radius for the top left corner. |
+| `borderRoundedTopRight` | Sets a circular radius for the top right corner. |
+| `borderRoundedBottomLeft` | Sets a circular radius for the bottom left corner. |
+| `borderRoundedBottomRight` | Sets a circular radius for the bottom right corner. |
+| `borderRoundedTopStart` | Sets a circular radius for the top start corner (directional). |
+| `borderRoundedTopEnd` | Sets a circular radius for the top end corner (directional). |
+| `borderRoundedBottomStart` | Sets a circular radius for the bottom start corner (directional). |
+| `borderRoundedBottomEnd` | Sets a circular radius for the bottom end corner (directional). |
+
+### Border
+
+| Method | Description |
+|--------|-------------|
+| `borderTop` | Sets the top border. |
+| `borderBottom` | Sets the bottom border. |
+| `borderLeft` | Sets the left border. |
+| `borderRight` | Sets the right border. |
+| `borderStart` | Sets the start border (RTL-aware). |
+| `borderEnd` | Sets the end border (RTL-aware). |
+| `borderVertical` | Sets vertical borders (top & bottom). |
+| `borderHorizontal` | Sets horizontal borders (left & right). |
+| `borderAll` | Sets all borders. |
+
+### Constraint
+
+| Method | Description |
+|--------|-------------|
+| `width` | Sets both min and max width to create a fixed width |
+| `height` | Sets both min and max height to create a fixed height |
+| `minWidth` | Sets minimum width constraint |
+| `maxWidth` | Sets maximum width constraint |
+| `minHeight` | Sets minimum height constraint |
+| `maxHeight` | Sets maximum height constraint |
+| `size` | Sets both width and height to specific values |
+| `constraintsOnly` | Creates constraints with only specified values, supporting priority resolution |
+
+### Decoration
+
+| Method | Description |
+|--------|-------------|
+| `color` | Sets background color |
+| `gradient` | Sets gradient with any GradientMix type |
+| `shadow` | Sets single shadow |
+| `shadows` | Sets multiple shadows |
+| `elevation` | Sets elevation shadow |
+| `image` | Sets image decoration |
+| `shape` | Sets box shape |
+| `shapeCircle` | Sets a circular shape (CircleBorder) |
+| `shapeStadium` | Sets a stadium shape (StadiumBorder) |
+| `shapeRoundedRectangle` | Sets a rounded rectangle shape (RoundedRectangleBorder) |
+| `shapeBeveledRectangle` | Sets a beveled rectangle shape (BeveledRectangleBorder) |
+| `shapeContinuousRectangle` | Sets a continuous rectangle shape (ContinuousRectangleBorder) |
+| `shapeStar` | Sets a star shape (StarBorder) |
+| `shapeLinear` | Sets a linear border shape (LinearBorder) |
+| `shapeSuperellipse` | Sets a superellipse shape (RoundedSuperellipseBorder) |
+| `backgroundImage` | Sets a background image from an ImageProvider |
+| `backgroundImageUrl` | Sets a background image from a network URL |
+| `backgroundImageAsset` | Sets a background image from an asset path |
+| `foregroundLinearGradient` | Sets a foreground linear gradient |
+| `foregroundRadialGradient` | Sets a foreground radial gradient |
+| `foregroundSweepGradient` | Sets a foreground sweep gradient |
+| `linearGradient` | Sets a background linear gradient |
+| `radialGradient` | Sets a background radial gradient |
+| `sweepGradient` | Sets a background sweep gradient |
+
+### Flex
+
+| Method | Description |
+|--------|-------------|
 | `direction` | Sets flex direction |
 | `mainAxisAlignment` | Sets main axis alignment |
 | `crossAxisAlignment` | Sets cross axis alignment |
@@ -78,84 +160,86 @@ Mix provides an extension of Style\<FlexBoxSpec> called `FlexBoxStyler` for easi
 | `verticalDirection` | Sets vertical direction |
 | `textDirection` | Sets text direction |
 | `textBaseline` | Sets text baseline |
-| `spacing` | Sets spacing between children |
-| `row` | Sets direction to horizontal |
-| `column` | Sets direction to vertical |
-| `paddingTop` | Sets top padding |
-| `paddingBottom` | Sets bottom padding |
-| `paddingLeft` | Sets left padding |
-| `paddingRight` | Sets right padding |
-| `paddingX` | Sets horizontal padding |
-| `paddingY` | Sets vertical padding |
-| `paddingAll` | Sets padding on all sides |
-| `paddingStart` | Sets start padding (RTL-aware) |
-| `paddingEnd` | Sets end padding (RTL-aware) |
-| `paddingOnly` | Sets specific padding values |
-| `marginTop` | Sets top margin |
-| `marginBottom` | Sets bottom margin |
-| `marginLeft` | Sets left margin |
-| `marginRight` | Sets right margin |
-| `marginX` | Sets horizontal margin |
-| `marginY` | Sets vertical margin |
-| `marginAll` | Sets margin on all sides |
-| `marginStart` | Sets start margin (RTL-aware) |
-| `marginEnd` | Sets end margin (RTL-aware) |
-| `marginOnly` | Sets specific margin values |
-| `width` | Sets fixed width |
-| `height` | Sets fixed height |
-| `minWidth` | Sets minimum width |
-| `maxWidth` | Sets maximum width |
-| `minHeight` | Sets minimum height |
-| `maxHeight` | Sets maximum height |
-| `size` | Sets both width and height |
-| `constraintsOnly` | Sets specific constraints |
-| `color` | Sets background color |
-| `gradient` | Sets gradient background |
-| `shadow` | Sets single shadow |
-| `shadows` | Sets multiple shadows |
-| `elevation` | Sets Material elevation |
-| `image` | Sets background image |
-| `shape` | Sets shape |
-| `borderTop` | Sets top border |
-| `borderBottom` | Sets bottom border |
-| `borderLeft` | Sets left border |
-| `borderRight` | Sets right border |
-| `borderStart` | Sets start border (RTL-aware) |
-| `borderEnd` | Sets end border (RTL-aware) |
-| `borderVertical` | Sets top and bottom borders |
-| `borderHorizontal` | Sets left and right borders |
-| `borderAll` | Sets all borders |
-| `borderRadiusAll` | Sets radius on all corners |
-| `borderRadiusTop` | Sets radius on top corners |
-| `borderRadiusBottom` | Sets radius on bottom corners |
-| `borderRadiusLeft` | Sets radius on left corners |
-| `borderRadiusRight` | Sets radius on right corners |
-| `borderRadiusTopLeft` | Sets top-left radius |
-| `borderRadiusTopRight` | Sets top-right radius |
-| `borderRadiusBottomLeft` | Sets bottom-left radius |
-| `borderRadiusBottomRight` | Sets bottom-right radius |
-| `borderRadiusTopStart` | Sets top-start radius (RTL-aware) |
-| `borderRadiusTopEnd` | Sets top-end radius (RTL-aware) |
-| `borderRadiusBottomStart` | Sets bottom-start radius (RTL-aware) |
-| `borderRadiusBottomEnd` | Sets bottom-end radius (RTL-aware) |
-| `borderRounded` | Sets circular radius on all corners |
-| `borderRoundedTop` | Sets circular radius on top corners |
-| `borderRoundedBottom` | Sets circular radius on bottom corners |
-| `borderRoundedLeft` | Sets circular radius on left corners |
-| `borderRoundedRight` | Sets circular radius on right corners |
-| `borderRoundedTopLeft` | Sets circular top-left radius |
-| `borderRoundedTopRight` | Sets circular top-right radius |
-| `borderRoundedBottomLeft` | Sets circular bottom-left radius |
-| `borderRoundedBottomRight` | Sets circular bottom-right radius |
-| `borderRoundedTopStart` | Sets circular top-start radius (RTL-aware) |
-| `borderRoundedTopEnd` | Sets circular top-end radius (RTL-aware) |
-| `borderRoundedBottomStart` | Sets circular bottom-start radius (RTL-aware) |
-| `borderRoundedBottomEnd` | Sets circular bottom-end radius (RTL-aware) |
-| `shadowOnly` | Creates single shadow with parameters |
-| `boxShadows` | Sets multiple box shadows |
-| `boxElevation` | Sets Material elevation shadow |
+| `spacing` | Sets spacing |
+| `row` | Convenience method for setting direction to horizontal (row) |
+| `column` | Convenience method for setting direction to vertical (column) |
+
+### Shadow
+
+| Method | Description |
+|--------|-------------|
+| `shadowOnly` | Creates a single box shadow with named parameters |
+| `boxShadows` | Creates multiple box shadows from a list of BoxShadowMix |
+| `boxElevation` | Creates box shadows from Material Design elevation level |
+
+### Spacing
+
+| Method | Description |
+|--------|-------------|
+| `paddingTop` | Sets the top padding. |
+| `paddingBottom` | Sets the bottom padding. |
+| `paddingLeft` | Sets the left padding. |
+| `paddingRight` | Sets the right padding. |
+| `paddingX` | Sets horizontal (left and right) padding. |
+| `paddingY` | Sets vertical (top and bottom) padding. |
+| `paddingAll` | Sets padding on all sides. |
+| `paddingStart` | Sets the start (leading) padding. |
+| `paddingEnd` | Sets the end (trailing) padding. |
+| `paddingOnly` | Sets custom padding for each side with priority resolution. |
+| `marginTop` | Sets the top margin. |
+| `marginBottom` | Sets the bottom margin. |
+| `marginLeft` | Sets the left margin. |
+| `marginRight` | Sets the right margin. |
+| `marginX` | Sets horizontal (left and right) margin. |
+| `marginY` | Sets vertical (top and bottom) margin. |
+| `marginAll` | Sets margin on all sides. |
+| `marginStart` | Sets the start (leading) margin. |
+| `marginEnd` | Sets the end (trailing) margin. |
+| `marginOnly` | Sets custom margin for each side with priority resolution. |
+
+### Transform
+
+| Method | Description |
+|--------|-------------|
 | `rotate` | Sets rotation transform |
 | `scale` | Sets scale transform |
 | `translate` | Sets translation transform |
 | `skew` | Sets skew transform |
-| `transformReset` | Resets transform to identity |
+| `transformReset` | Resets transform to identity (no effect) |
+
+### Variant
+
+| Method | Description |
+|--------|-------------|
+| `variant` | Adds a single variant to this style. |
+| `onDark` | Creates a variant for dark mode. |
+| `onNot` | Creates a variant for when the context does NOT match the provided variant. |
+| `onLight` | Creates a variant for light mode. |
+| `onBuilder` | Creates a variant using a builder function that receives the build context. |
+| `builder` | Deprecated: Use [onBuilder] instead. |
+| `onBreakpoint` | Creates a variant based on the specified breakpoint. |
+| `onPortrait` | Creates a variant for portrait device orientation. |
+| `onLandscape` | Creates a variant for landscape device orientation. |
+| `onMobile` | Creates a variant for mobile breakpoint. |
+| `onTablet` | Creates a variant for tablet breakpoint. |
+| `onDesktop` | Creates a variant for desktop breakpoint. |
+| `onLtr` | Creates a variant for left-to-right text direction. |
+| `onRtl` | Creates a variant for right-to-left text direction. |
+| `onIos` | Creates a variant for iOS platform. |
+| `onAndroid` | Creates a variant for Android platform. |
+| `onMacos` | Creates a variant for macOS platform. |
+| `onWindows` | Creates a variant for Windows platform. |
+| `onLinux` | Creates a variant for Linux platform. |
+| `onFuchsia` | Creates a variant for Fuchsia platform. |
+| `onWeb` | Creates a variant for web platform. |
+
+### Widget State Variant
+
+| Method | Description |
+|--------|-------------|
+| `onHovered` | Creates a variant for hover state |
+| `onPressed` | Creates a variant for pressed state |
+| `onFocused` | Creates a variant for focused state |
+| `onDisabled` | Creates a variant for disabled state |
+| `onEnabled` | Creates a variant for enabled state (opposite of disabled) |
+

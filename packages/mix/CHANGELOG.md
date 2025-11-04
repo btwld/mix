@@ -1,3 +1,15 @@
+## 2.0.0-dev.6
+
+- refactor: `Stack` and `StackBox`
+- feat: Implement call method for `Stack` and `FlexBox` 
+
+## 2.0.0-dev.5
+
+- fix: VariantStyle merge
+- refactor: extract widget state variant mixins into separate files
+- feat: Add DefaultStyledText and DefaultStyledIcon typedefs
+- refactor: remove unsupported widget state variants
+
 ## 2.0.0-dev.4
 
 - fix: widget state tracking logic in StyleBuilder

@@ -1,44 +1,95 @@
 # StyledIcon
 
-This is equivalent to the **Icon** widget in Flutter.
+`StyledIcon` is equivalent to Flutter's `Icon` widget, but provides styling capabilities through the Mix framework.
+It allows you to create visually styled icons with color, size, shadows, and responsive variants.
+
+You can use `IconStyler` to create styles with a fluent API. Example:
 
 ```dart
+final style = IconStyler()
+ .size(32)
+ .color(Colors.blue);
+
 StyledIcon(
-  icon: Icons.star,
-  style: IconStyler()
-    .color(Colors.blue)
-    .size(30),
-);
+ Icons.favorite,
+ style: style,
+)
 ```
 
 ## Constructor
 
-| Prop          | Type                        | Required / Default Value                |
-|---------------|-----------------------------|-----------------------------------------|
-| icon          | `IconData?`                 | Optional                               |
-| semanticLabel | `String?`                   | Optional                               |
-| style         | `IconStyler`                | Optional, defaults to `IconStyler.create()` |
-| key           | `Key?`                      | Optional                               |
+| Prop  | Type         | Required / Default Value                |
+|-------|--------------|------------------------------------------|
+| `icon` | `IconData?` | `Optional` |
+| `semanticLabel` | `String?` | `Optional` |
+| `style` | `Style` | `const IconStyler.create()` |
+| `styleSpec` | `StyleSpec?` | `Optional` |
 
 ## Style API Reference
 
-Mix provides an extension of Style\<IconSpec> called `IconStyler` for easily styling `StyledIcon` widgets.
+### StyledIcon Methods
 
 | Method | Description |
 |--------|-------------|
-| `animate` | Sets animation configuration |
-| `modifier` | Adds widget modifiers |
 | `color` | Sets icon color |
 | `size` | Sets icon size |
-| `weight` | Sets stroke weight for drawing the icon |
-| `grade` | Sets grade (granular stroke weight) for drawing the icon |
-| `opticalSize` | Sets optical size for drawing the icon |
-| `fill` | Sets fill for drawing the icon (0.0 to 1.0) |
-| `applyTextScaling` | Sets whether icon scales with text scale factor |
-| `shadow` | Sets single shadow effect |
-| `shadows` | Sets multiple shadow effects |
-| `semanticsLabel` | Sets semantic label for accessibility |
-| `opacity` | Sets icon opacity |
-| `blendMode` | Sets blend mode for icon rendering |
-| `icon` | Sets the icon data |
-| `textDirection` | Sets text direction for icon rendering |
+| `weight` | Sets icon weight |
+| `grade` | Sets icon grade |
+| `opticalSize` | Sets icon optical size |
+| `shadow` | Sets single icon shadow |
+| `shadows` | Sets icon shadows |
+| `textDirection` | Sets text direction |
+| `applyTextScaling` | Sets apply text scaling |
+| `fill` | Sets icon fill |
+| `semanticsLabel` | Sets semantics label |
+| `opacity` | Sets opacity |
+| `blendMode` | Sets blend mode |
+| `icon` | Sets icon data |
+| `modifier` | Sets the widget modifier. |
+| `animate` | Sets animation |
+| `variants` | Sets the variants list. |
+| `wrap` | Sets the widget modifier. |
+
+### Animation
+
+| Method | Description |
+|--------|-------------|
+| `keyframeAnimation` | Creates a keyframe animation. It will animate through the given timeline. |
+| `phaseAnimation` | Creates a phase animation. It will animate through the given phases. |
+
+### Variant
+
+| Method | Description |
+|--------|-------------|
+| `variant` | Adds a single variant to this style. |
+| `onDark` | Creates a variant for dark mode. |
+| `onNot` | Creates a variant for when the context does NOT match the provided variant. |
+| `onLight` | Creates a variant for light mode. |
+| `onBuilder` | Creates a variant using a builder function that receives the build context. |
+| `builder` | Deprecated: Use [onBuilder] instead. |
+| `onBreakpoint` | Creates a variant based on the specified breakpoint. |
+| `onPortrait` | Creates a variant for portrait device orientation. |
+| `onLandscape` | Creates a variant for landscape device orientation. |
+| `onMobile` | Creates a variant for mobile breakpoint. |
+| `onTablet` | Creates a variant for tablet breakpoint. |
+| `onDesktop` | Creates a variant for desktop breakpoint. |
+| `onLtr` | Creates a variant for left-to-right text direction. |
+| `onRtl` | Creates a variant for right-to-left text direction. |
+| `onIos` | Creates a variant for iOS platform. |
+| `onAndroid` | Creates a variant for Android platform. |
+| `onMacos` | Creates a variant for macOS platform. |
+| `onWindows` | Creates a variant for Windows platform. |
+| `onLinux` | Creates a variant for Linux platform. |
+| `onFuchsia` | Creates a variant for Fuchsia platform. |
+| `onWeb` | Creates a variant for web platform. |
+
+### Widget State Variant
+
+| Method | Description |
+|--------|-------------|
+| `onHovered` | Creates a variant for hover state |
+| `onPressed` | Creates a variant for pressed state |
+| `onFocused` | Creates a variant for focused state |
+| `onDisabled` | Creates a variant for disabled state |
+| `onEnabled` | Creates a variant for enabled state (opposite of disabled) |
+

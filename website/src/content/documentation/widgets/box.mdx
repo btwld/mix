@@ -1,119 +1,222 @@
-
 # Box
 
-This is equivalent to the **Container** widget in Flutter.
+`Box` is equivalent to Flutter's `Container`, it provides
+styling capabilities through the Mix framework. It can be used to
+create visually styled boxes with decoration, padding, margins, transforms,
+and constraints.
+
+You can use `BoxStyler` to create styles with a fluent API. Example:
 
 ```dart
-Box(
-  style: BoxStyler()
-      .width(100)
-      .height(100)
-      .color(Colors.blue)
-      .borderRounded(8),
-  child: Text('Styled Box'),
-);
+final style = BoxStyler()
+ .width(200)
+ .height(100)
+ .color(Colors.blue)
+ .borderRounded(12)
+ .padding(16);
+
+Box(style: style, child: Text('Hello Mix'))
 ```
 
 ## Constructor
 
 | Prop  | Type         | Required / Default Value                |
-|-------|--------------|-----------------------------------------|
-| child | `Widget?`    | Optional                               |
-| style | `Style<BoxSpec>`  | Optional, defaults to `BoxStyler.create()` |
-| key   | `Key?`       | Optional                               |
+|-------|--------------|------------------------------------------|
+| `style` | `Style` | `const BoxStyler.create()` |
+| `styleSpec` | `StyleSpec?` | `Optional` |
+| `child` | `Widget?` | `Optional` |
 
 ## Style API Reference
 
+### Box Methods
+
 | Method | Description |
 |--------|-------------|
-| `animate` | Sets animation configuration |
-| `modifier` | Adds widget modifiers |
-| `alignment` | Sets box alignment |
-| `transformAlignment` | Sets transform alignment |
-| `clipBehavior` | Sets clip behavior |
-| `padding` | Sets padding |
-| `margin` | Sets margin |
-| `transform` | Sets transform matrix |
-| `decoration` | Sets decoration |
-| `foregroundDecoration` | Sets foreground decoration |
-| `constraints` | Sets box constraints |
-| `width` | Sets fixed width |
-| `height` | Sets fixed height |
-| `minWidth` | Sets minimum width |
-| `maxWidth` | Sets maximum width |
-| `minHeight` | Sets minimum height |
-| `maxHeight` | Sets maximum height |
-| `size` | Sets both width and height |
-| `constraintsOnly` | Sets specific constraints |
-| `paddingTop` | Sets top padding |
-| `paddingBottom` | Sets bottom padding |
-| `paddingLeft` | Sets left padding |
-| `paddingRight` | Sets right padding |
-| `paddingX` | Sets horizontal padding |
-| `paddingY` | Sets vertical padding |
-| `paddingAll` | Sets padding on all sides |
-| `paddingStart` | Sets start padding (RTL-aware) |
-| `paddingEnd` | Sets end padding (RTL-aware) |
-| `paddingOnly` | Sets specific padding values |
-| `marginTop` | Sets top margin |
-| `marginBottom` | Sets bottom margin |
-| `marginLeft` | Sets left margin |
-| `marginRight` | Sets right margin |
-| `marginX` | Sets horizontal margin |
-| `marginY` | Sets vertical margin |
-| `marginAll` | Sets margin on all sides |
-| `marginStart` | Sets start margin (RTL-aware) |
-| `marginEnd` | Sets end margin (RTL-aware) |
-| `marginOnly` | Sets specific margin values |
+| `clipBehavior` | Sets the clip behavior. |
+| `alignment` | Sets the alignment. |
+| `modifier` | Sets the widget modifier. |
+| `foregroundDecoration` | Sets the foreground decoration. |
+| `transform` | Sets the transform and optionally the alignment. |
+| `constraints` | Sets the box constraints. |
+| `padding` | Sets the padding. |
+| `margin` | Sets the margin. |
+| `decoration` | Sets the decoration. |
+| `animate` | Sets the animation configuration. |
+| `wrap` | Wraps with a widget modifier. |
+| `borderRadius` | Sets the border radius. |
+| `border` | Sets the border decoration. |
+| `variants` | Sets the style variants. |
+
+### Animation
+
+| Method | Description |
+|--------|-------------|
+| `keyframeAnimation` | Creates a keyframe animation. It will animate through the given timeline. |
+| `phaseAnimation` | Creates a phase animation. It will animate through the given phases. |
+
+### Border Radius
+
+| Method | Description |
+|--------|-------------|
+| `borderRadiusAll` | Sets border radius for all corners. |
+| `borderRadiusTop` | Sets border radius for the top corners. |
+| `borderRadiusBottom` | Sets border radius for the bottom corners. |
+| `borderRadiusLeft` | Sets border radius for the left corners. |
+| `borderRadiusRight` | Sets border radius for the right corners. |
+| `borderRadiusTopLeft` | Sets border radius for the top left corner. |
+| `borderRadiusTopRight` | Sets border radius for the top right corner. |
+| `borderRadiusBottomLeft` | Sets border radius for the bottom left corner. |
+| `borderRadiusBottomRight` | Sets border radius for the bottom right corner. |
+| `borderRadiusTopStart` | Sets border radius for the top start corner (directional). |
+| `borderRadiusTopEnd` | Sets border radius for the top end corner (directional). |
+| `borderRadiusBottomStart` | Sets border radius for the bottom start corner (directional). |
+| `borderRadiusBottomEnd` | Sets border radius for the bottom end corner (directional). |
+| `borderRounded` | Sets a uniform circular radius for all corners. |
+| `borderRoundedTop` | Sets a circular radius for the top corners. |
+| `borderRoundedBottom` | Sets a circular radius for the bottom corners. |
+| `borderRoundedLeft` | Sets a circular radius for the left corners. |
+| `borderRoundedRight` | Sets a circular radius for the right corners. |
+| `borderRoundedTopLeft` | Sets a circular radius for the top left corner. |
+| `borderRoundedTopRight` | Sets a circular radius for the top right corner. |
+| `borderRoundedBottomLeft` | Sets a circular radius for the bottom left corner. |
+| `borderRoundedBottomRight` | Sets a circular radius for the bottom right corner. |
+| `borderRoundedTopStart` | Sets a circular radius for the top start corner (directional). |
+| `borderRoundedTopEnd` | Sets a circular radius for the top end corner (directional). |
+| `borderRoundedBottomStart` | Sets a circular radius for the bottom start corner (directional). |
+| `borderRoundedBottomEnd` | Sets a circular radius for the bottom end corner (directional). |
+
+### Border
+
+| Method | Description |
+|--------|-------------|
+| `borderTop` | Sets the top border. |
+| `borderBottom` | Sets the bottom border. |
+| `borderLeft` | Sets the left border. |
+| `borderRight` | Sets the right border. |
+| `borderStart` | Sets the start border (RTL-aware). |
+| `borderEnd` | Sets the end border (RTL-aware). |
+| `borderVertical` | Sets vertical borders (top & bottom). |
+| `borderHorizontal` | Sets horizontal borders (left & right). |
+| `borderAll` | Sets all borders. |
+
+### Constraint
+
+| Method | Description |
+|--------|-------------|
+| `width` | Sets both min and max width to create a fixed width |
+| `height` | Sets both min and max height to create a fixed height |
+| `minWidth` | Sets minimum width constraint |
+| `maxWidth` | Sets maximum width constraint |
+| `minHeight` | Sets minimum height constraint |
+| `maxHeight` | Sets maximum height constraint |
+| `size` | Sets both width and height to specific values |
+| `constraintsOnly` | Creates constraints with only specified values, supporting priority resolution |
+
+### Decoration
+
+| Method | Description |
+|--------|-------------|
 | `color` | Sets background color |
-| `gradient` | Sets gradient background |
+| `gradient` | Sets gradient with any GradientMix type |
 | `shadow` | Sets single shadow |
 | `shadows` | Sets multiple shadows |
-| `elevation` | Sets Material elevation |
-| `image` | Sets background image |
-| `shape` | Sets shape |
-| `border` | Sets border |
-| `borderRadius` | Sets border radius |
-| `borderTop` | Sets top border |
-| `borderBottom` | Sets bottom border |
-| `borderLeft` | Sets left border |
-| `borderRight` | Sets right border |
-| `borderStart` | Sets start border (RTL-aware) |
-| `borderEnd` | Sets end border (RTL-aware) |
-| `borderVertical` | Sets top and bottom borders |
-| `borderHorizontal` | Sets left and right borders |
-| `borderAll` | Sets all borders |
-| `borderRadiusAll` | Sets radius on all corners |
-| `borderRadiusTop` | Sets radius on top corners |
-| `borderRadiusBottom` | Sets radius on bottom corners |
-| `borderRadiusLeft` | Sets radius on left corners |
-| `borderRadiusRight` | Sets radius on right corners |
-| `borderRadiusTopLeft` | Sets top-left radius |
-| `borderRadiusTopRight` | Sets top-right radius |
-| `borderRadiusBottomLeft` | Sets bottom-left radius |
-| `borderRadiusBottomRight` | Sets bottom-right radius |
-| `borderRadiusTopStart` | Sets top-start radius (RTL-aware) |
-| `borderRadiusTopEnd` | Sets top-end radius (RTL-aware) |
-| `borderRadiusBottomStart` | Sets bottom-start radius (RTL-aware) |
-| `borderRadiusBottomEnd` | Sets bottom-end radius (RTL-aware) |
-| `borderRounded` | Sets circular radius on all corners |
-| `borderRoundedTop` | Sets circular radius on top corners |
-| `borderRoundedBottom` | Sets circular radius on bottom corners |
-| `borderRoundedLeft` | Sets circular radius on left corners |
-| `borderRoundedRight` | Sets circular radius on right corners |
-| `borderRoundedTopLeft` | Sets circular top-left radius |
-| `borderRoundedTopRight` | Sets circular top-right radius |
-| `borderRoundedBottomLeft` | Sets circular bottom-left radius |
-| `borderRoundedBottomRight` | Sets circular bottom-right radius |
-| `borderRoundedTopStart` | Sets circular top-start radius (RTL-aware) |
-| `borderRoundedTopEnd` | Sets circular top-end radius (RTL-aware) |
-| `borderRoundedBottomStart` | Sets circular bottom-start radius (RTL-aware) |
-| `borderRoundedBottomEnd` | Sets circular bottom-end radius (RTL-aware) |
-| `shadowOnly` | Creates single shadow with parameters |
-| `boxShadows` | Sets multiple box shadows |
-| `boxElevation` | Sets Material elevation shadow |
+| `elevation` | Sets elevation shadow |
+| `image` | Sets image decoration |
+| `shape` | Sets box shape |
+| `shapeCircle` | Sets a circular shape (CircleBorder) |
+| `shapeStadium` | Sets a stadium shape (StadiumBorder) |
+| `shapeRoundedRectangle` | Sets a rounded rectangle shape (RoundedRectangleBorder) |
+| `shapeBeveledRectangle` | Sets a beveled rectangle shape (BeveledRectangleBorder) |
+| `shapeContinuousRectangle` | Sets a continuous rectangle shape (ContinuousRectangleBorder) |
+| `shapeStar` | Sets a star shape (StarBorder) |
+| `shapeLinear` | Sets a linear border shape (LinearBorder) |
+| `shapeSuperellipse` | Sets a superellipse shape (RoundedSuperellipseBorder) |
+| `backgroundImage` | Sets a background image from an ImageProvider |
+| `backgroundImageUrl` | Sets a background image from a network URL |
+| `backgroundImageAsset` | Sets a background image from an asset path |
+| `foregroundLinearGradient` | Sets a foreground linear gradient |
+| `foregroundRadialGradient` | Sets a foreground radial gradient |
+| `foregroundSweepGradient` | Sets a foreground sweep gradient |
+| `linearGradient` | Sets a background linear gradient |
+| `radialGradient` | Sets a background radial gradient |
+| `sweepGradient` | Sets a background sweep gradient |
+
+### Shadow
+
+| Method | Description |
+|--------|-------------|
+| `shadowOnly` | Creates a single box shadow with named parameters |
+| `boxShadows` | Creates multiple box shadows from a list of BoxShadowMix |
+| `boxElevation` | Creates box shadows from Material Design elevation level |
+
+### Spacing
+
+| Method | Description |
+|--------|-------------|
+| `paddingTop` | Sets the top padding. |
+| `paddingBottom` | Sets the bottom padding. |
+| `paddingLeft` | Sets the left padding. |
+| `paddingRight` | Sets the right padding. |
+| `paddingX` | Sets horizontal (left and right) padding. |
+| `paddingY` | Sets vertical (top and bottom) padding. |
+| `paddingAll` | Sets padding on all sides. |
+| `paddingStart` | Sets the start (leading) padding. |
+| `paddingEnd` | Sets the end (trailing) padding. |
+| `paddingOnly` | Sets custom padding for each side with priority resolution. |
+| `marginTop` | Sets the top margin. |
+| `marginBottom` | Sets the bottom margin. |
+| `marginLeft` | Sets the left margin. |
+| `marginRight` | Sets the right margin. |
+| `marginX` | Sets horizontal (left and right) margin. |
+| `marginY` | Sets vertical (top and bottom) margin. |
+| `marginAll` | Sets margin on all sides. |
+| `marginStart` | Sets the start (leading) margin. |
+| `marginEnd` | Sets the end (trailing) margin. |
+| `marginOnly` | Sets custom margin for each side with priority resolution. |
+
+### Transform
+
+| Method | Description |
+|--------|-------------|
 | `rotate` | Sets rotation transform |
 | `scale` | Sets scale transform |
 | `translate` | Sets translation transform |
 | `skew` | Sets skew transform |
-| `transformReset` | Resets transform to identity |
+| `transformReset` | Resets transform to identity (no effect) |
+
+### Variant
+
+| Method | Description |
+|--------|-------------|
+| `variant` | Adds a single variant to this style. |
+| `onDark` | Creates a variant for dark mode. |
+| `onNot` | Creates a variant for when the context does NOT match the provided variant. |
+| `onLight` | Creates a variant for light mode. |
+| `onBuilder` | Creates a variant using a builder function that receives the build context. |
+| `builder` | Deprecated: Use [onBuilder] instead. |
+| `onBreakpoint` | Creates a variant based on the specified breakpoint. |
+| `onPortrait` | Creates a variant for portrait device orientation. |
+| `onLandscape` | Creates a variant for landscape device orientation. |
+| `onMobile` | Creates a variant for mobile breakpoint. |
+| `onTablet` | Creates a variant for tablet breakpoint. |
+| `onDesktop` | Creates a variant for desktop breakpoint. |
+| `onLtr` | Creates a variant for left-to-right text direction. |
+| `onRtl` | Creates a variant for right-to-left text direction. |
+| `onIos` | Creates a variant for iOS platform. |
+| `onAndroid` | Creates a variant for Android platform. |
+| `onMacos` | Creates a variant for macOS platform. |
+| `onWindows` | Creates a variant for Windows platform. |
+| `onLinux` | Creates a variant for Linux platform. |
+| `onFuchsia` | Creates a variant for Fuchsia platform. |
+| `onWeb` | Creates a variant for web platform. |
+
+### Widget State Variant
+
+| Method | Description |
+|--------|-------------|
+| `onHovered` | Creates a variant for hover state |
+| `onPressed` | Creates a variant for pressed state |
+| `onFocused` | Creates a variant for focused state |
+| `onDisabled` | Creates a variant for disabled state |
+| `onEnabled` | Creates a variant for enabled state (opposite of disabled) |
+

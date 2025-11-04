@@ -1,0 +1,47 @@
+import 'package:flutter/material.dart';
+import 'package:mix/mix.dart';
+
+import '../../../helpers.dart';
+
+void main() {
+  runMixApp(Example());
+}
+
+class Example extends StatelessWidget {
+  const Example({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final flexStyle = FlexBoxStyler()
+        .mainAxisSize(.min)
+        .spacing(4)
+        .crossAxisAlignment(.start)
+        .mainAxisAlignment(.spaceBetween)
+        .color(Colors.grey.shade50)
+        .paddingX(12)
+        .paddingY(10)
+        .borderRounded(10)
+        .borderAll(color: Colors.blueGrey.shade400, width: 1)
+        .height(150)
+        .width(120)
+        .shadow(.color(Colors.black12).blurRadius(10));
+
+    final iconStyle = IconStyler()
+        .icon(Icons.piano_outlined)
+        .color(Colors.blueGrey.shade600)
+        .size(20);
+
+    final textStyle = TextStyler()
+        .fontSize(16)
+        .fontWeight(.w500)
+        .color(Colors.blueGrey.shade600);
+
+    return ColumnBox(
+      style: flexStyle,
+      children: [
+        StyledIcon(style: iconStyle),
+        StyledText('Musician', style: textStyle),
+      ],
+    );
+  }
+}

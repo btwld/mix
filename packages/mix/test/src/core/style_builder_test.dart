@@ -730,6 +730,43 @@ void main() {
         // Verify that we have two StyleProviders in the widget tree (outer and middle)
         expect(find.byType(StyleProvider<BoxSpec>), findsNWidgets(2));
       });
+
+      testWidgets(
+        'Should create MixInteractionDetector when StyleProvider\'s style contains widget state variants',
+        (tester) async {
+          // Parent style provides a variant for hovered state
+          final parentStyle = BoxStyler()
+              .width(100)
+              .height(100)
+              .color(Colors.blue)
+              .onHovered(BoxStyler().color(Colors.red));
+
+          // Child style is just a simple style
+          final childStyle = BoxStyler().width(50).height(50);
+
+          await tester.pumpWidget(
+            MaterialApp(
+              home: StyleProvider<BoxSpec>(
+                style: parentStyle,
+                child: StyleBuilder<BoxSpec>(
+                  style: childStyle,
+                  builder: (context, childSpec) {
+                    return Container(
+                      decoration: childSpec.decoration,
+                      constraints: childSpec.constraints,
+                    );
+                  },
+                ),
+              ),
+            ),
+          );
+
+          // Look for a MixInteractionDetector down the tree
+          final styleBuilderFinder = find.byType(MixInteractionDetector);
+
+          expect(styleBuilderFinder, findsOneWidget);
+        },
+      );
     });
 
     group('Controller', () {
@@ -812,7 +849,10 @@ void main() {
       await tester.pump();
 
       final hoveredContainer = tester.widget<Container>(find.byType(Container));
-      expect(hoveredContainer.decoration, BoxDecoration(color: Colors.blueGrey));
+      expect(
+        hoveredContainer.decoration,
+        BoxDecoration(color: Colors.blueGrey),
+      );
     });
   });
 }

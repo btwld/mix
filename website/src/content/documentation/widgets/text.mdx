@@ -1,64 +1,130 @@
 # StyledText
 
-This is equivalent to the **Text** widget in Flutter.
+`StyledText` is equivalent to Flutter's `Text` widget, but provides
+styling capabilities through the Mix framework. It allows you to create
+visually styled text with typography, colors, decorations, text
+transformations, and responsive variants.
+
+You can use `TextStyler` to create styles with a fluent API. Example:
 
 ```dart
+final style = TextStyler()
+ .fontSize(24)
+ .fontWeight(FontWeight.bold)
+ .color(Colors.blue);
+
 StyledText(
-  'Hello World',
-  style: TextStyler()
-      .color(Colors.red)
-      .fontSize(20),
-);
+ 'Hello Mix',
+ style: style,
+)
 ```
 
 ## Constructor
 
-| Prop  | Type          | Required / Default Value                |
-|-------|---------------|-----------------------------------------|
-| text  | `String`      | Required                               |
-| style | `Style<TextSpec>`  | Optional, defaults to `TextStyler.create()` |
-| key   | `Key?`        | Optional                               |
+| Prop  | Type         | Required / Default Value                |
+|-------|--------------|------------------------------------------|
+| `text` | `String` | `Required` |
+| `style` | `Style` | `const TextStyler.create()` |
+| `styleSpec` | `StyleSpec?` | `Optional` |
 
 ## Style API Reference
 
-Mix provides an extension of Style\<TextSpec> called `TextStyler` for easily 
-styling `StyledText` widgets.
+### StyledText Methods
 
 | Method | Description |
 |--------|-------------|
-| `animate` | Sets animation configuration |
-| `modifier` | Adds widget modifiers |
-| `overflow` | Sets text overflow behavior (ellipsis, fade, clip) |
-| `strutStyle` | Sets strut style for line height and text positioning |
-| `textAlign` | Sets text alignment within its bounding box |
-| `maxLines` | Sets maximum number of lines for text |
-| `textWidthBasis` | Sets how text width is measured |
-| `textHeightBehavior` | Sets text height adjustment behavior |
-| `textDirection` | Sets text reading direction (LTR/RTL) |
-| `softWrap` | Sets whether text should soft-wrap |
-| `textScaler` | Sets text scaling factor |
-| `selectionColor` | Sets text selection color |
-| `semanticsLabel` | Sets semantic label for accessibility |
-| `locale` | Sets locale for text display |
+| `textDirective` | Sets a text directive. It will be applied to the text before it is displayed. |
+| `overflow` | Sets text overflow behavior |
+| `strutStyle` | Sets strut style |
+| `textAlign` | Sets text alignment |
+| `textScaler` | Sets text scaler |
+| `maxLines` | Sets maximum number of lines |
+| `textWidthBasis` | Sets text width basis |
+| `textHeightBehavior` | Sets text height behavior |
+| `textDirection` | Sets text direction |
+| `softWrap` | Sets soft wrap behavior |
+| `directive` | Adds a text directive |
+| `selectionColor` | Sets selection color |
+| `semanticsLabel` | Sets semantics label |
+| `locale` | Sets locale |
+| `uppercase` | Applies uppercase directive |
+| `lowercase` | Applies lowercase directive |
+| `capitalize` | Applies capitalize directive |
+| `titleCase` | Applies title case directive |
+| `sentenceCase` | Applies sentence case directive |
+| `modifier` | Sets the widget modifier. |
+| `style` | Mixin implementation for text styling |
+| `animate` | Convenience method for animating the TextSpec |
+| `variants` | Sets the variants list. |
+| `wrap` | Sets the widget modifier. |
+
+### Animation
+
+| Method | Description |
+|--------|-------------|
+| `keyframeAnimation` | Creates a keyframe animation. It will animate through the given timeline. |
+| `phaseAnimation` | Creates a phase animation. It will animate through the given phases. |
+
+### Text
+
+| Method | Description |
+|--------|-------------|
 | `color` | Sets text color |
+| `backgroundColor` | Sets background color |
 | `fontSize` | Sets font size |
-| `fontWeight` | Sets font weight (boldness) |
-| `fontStyle` | Sets font style (italic, normal) |
-| `fontFamily` | Sets font family |
-| `decoration` | Sets text decoration (underline, line-through) |
+| `fontWeight` | Sets font weight |
+| `fontStyle` | Sets font style |
+| `letterSpacing` | Sets letter spacing |
+| `wordSpacing` | Sets word spacing |
+| `height` | Sets line height |
+| `textBaseline` | Sets text baseline |
+| `decoration` | Sets text decoration |
 | `decorationColor` | Sets decoration color |
 | `decorationStyle` | Sets decoration style |
-| `backgroundColor` | Sets text background color |
-| `height` | Sets line height multiplier |
-| `letterSpacing` | Sets spacing between letters |
-| `wordSpacing` | Sets spacing between words |
-| `textBaseline` | Sets text baseline alignment |
-| `shadow` | Sets single text shadow |
-| `shadows` | Sets multiple text shadows |
+| `decorationThickness` | Sets decoration thickness |
+| `fontFamily` | Sets font family |
+| `fontFamilyFallback` | Sets font family fallback |
+| `shadows` | Sets text shadows |
 | `fontFeatures` | Sets font features |
-| `uppercase` | Transforms text to uppercase |
-| `lowercase` | Transforms text to lowercase |
-| `capitalize` | Capitalizes first letter of each word |
-| `titleCase` | Converts text to title case |
-| `sentenceCase` | Capitalizes first letter of sentences |
+| `fontVariations` | Sets font variations |
+| `foreground` | Sets foreground paint |
+| `background` | Sets background paint |
+| `debugLabel` | Sets debug label |
+| `inherit` | Sets inherit property |
+
+### Variant
+
+| Method | Description |
+|--------|-------------|
+| `variant` | Adds a single variant to this style. |
+| `onDark` | Creates a variant for dark mode. |
+| `onNot` | Creates a variant for when the context does NOT match the provided variant. |
+| `onLight` | Creates a variant for light mode. |
+| `onBuilder` | Creates a variant using a builder function that receives the build context. |
+| `builder` | Deprecated: Use [onBuilder] instead. |
+| `onBreakpoint` | Creates a variant based on the specified breakpoint. |
+| `onPortrait` | Creates a variant for portrait device orientation. |
+| `onLandscape` | Creates a variant for landscape device orientation. |
+| `onMobile` | Creates a variant for mobile breakpoint. |
+| `onTablet` | Creates a variant for tablet breakpoint. |
+| `onDesktop` | Creates a variant for desktop breakpoint. |
+| `onLtr` | Creates a variant for left-to-right text direction. |
+| `onRtl` | Creates a variant for right-to-left text direction. |
+| `onIos` | Creates a variant for iOS platform. |
+| `onAndroid` | Creates a variant for Android platform. |
+| `onMacos` | Creates a variant for macOS platform. |
+| `onWindows` | Creates a variant for Windows platform. |
+| `onLinux` | Creates a variant for Linux platform. |
+| `onFuchsia` | Creates a variant for Fuchsia platform. |
+| `onWeb` | Creates a variant for web platform. |
+
+### Widget State Variant
+
+| Method | Description |
+|--------|-------------|
+| `onHovered` | Creates a variant for hover state |
+| `onPressed` | Creates a variant for pressed state |
+| `onFocused` | Creates a variant for focused state |
+| `onDisabled` | Creates a variant for disabled state |
+| `onEnabled` | Creates a variant for enabled state (opposite of disabled) |
 

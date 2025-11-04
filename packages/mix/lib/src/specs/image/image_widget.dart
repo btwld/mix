@@ -5,9 +5,25 @@ import '../../core/style_widget.dart';
 import 'image_spec.dart';
 import 'image_style.dart';
 
-/// A styled image widget using Mix framework.
+/// [StyledImage] is equivalent to Flutter's [Image] widget, but provides styling
+/// capabilities through the Mix framework. It allows you to create visually styled
+/// images with dimensions, colors, blend modes, filters, and responsive variants.
 ///
-/// Applies [ImageSpec] styling to create a customized [Image].
+/// You can use [ImageStyler] to create styles with a fluent API. Example:
+///
+/// ```dart
+/// final style = ImageStyler()
+///   .width(200)
+///   .height(200)
+///   .fit(BoxFit.cover)
+///   .color(Colors.blue.withOpacity(0.5))
+///   .colorBlendMode(BlendMode.overlay);
+///
+/// StyledImage(
+///   image: AssetImage('assets/photo.jpg'),
+///   style: style,
+/// )
+/// ```
 class StyledImage extends StyleWidget<ImageSpec> {
   const StyledImage({
     super.key,
@@ -19,7 +35,6 @@ class StyledImage extends StyleWidget<ImageSpec> {
     this.image,
     this.opacity,
   });
-
 
   /// The image to display.
   final ImageProvider<Object>? image;

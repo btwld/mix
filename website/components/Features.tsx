@@ -55,8 +55,8 @@ const features: Array<IFeature> = [
 
 function FeatureIcon({ icon: Icon }: { icon: IFeature["icon"] }) {
   return (
-    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-zinc-900/5 ring-1 ring-zinc-900/25 backdrop-blur-[2px] transition duration-300 group-hover:bg-white/50 group-hover:ring-zinc-900/25 dark:bg-white/7.5 dark:ring-white/15 dark:group-hover:bg-purple-300/10 dark:group-hover:ring-purple-400">
-      <Icon className="h-5 w-5 fill-zinc-700/10 stroke-zinc-700 transition-colors duration-300 group-hover:stroke-zinc-900 dark:fill-white/10 dark:stroke-zinc-400 dark:group-hover:fill-purple-300/10 dark:group-hover:stroke-purple-400" />
+    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white/7.5 ring-1 ring-white/15 backdrop-blur-[2px] transition duration-300 group-hover:bg-purple-300/10 group-hover:ring-purple-400">
+      <Icon className="h-5 w-5 fill-white/10 stroke-zinc-400 transition-colors duration-300 group-hover:fill-purple-300/10 group-hover:stroke-purple-400" />
     </div>
   );
 }
@@ -75,7 +75,7 @@ function FeaturePattern({
     <div className="pointer-events-none">
       <div className="absolute inset-0 rounded-2xl transition duration-300 [mask-image:linear-gradient(white,transparent)] group-hover:opacity-50"></div>
       <motion.div
-        className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#D7EDEA] to-[#F4FBDF] opacity-0 transition duration-300 group-hover:opacity-100 dark:from-[#23202e] dark:to-[#282331]"
+        className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#23202e] to-[#282331] opacity-0 transition duration-300 group-hover:opacity-100"
         style={style}
       />
       <motion.div
@@ -104,19 +104,19 @@ function Feature({ feature }: { feature: IFeature }) {
     <div
       key={feature.href}
       onMouseMove={onMouseMove}
-      className="group relative flex rounded-2xl bg-zinc-50 transition-shadow hover:shadow-md hover:shadow-zinc-900/5 dark:bg-white/2.5 dark:hover:shadow-black/5"
+      className="group relative flex rounded-2xl bg-white/2.5 transition-shadow hover:shadow-md hover:shadow-black/5"
     >
       <FeaturePattern mouseX={mouseX} mouseY={mouseY} />
-      <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-zinc-900/7.5 group-hover:ring-zinc-900/10 dark:ring-white/10 dark:group-hover:ring-white/20" />
+      <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/10 group-hover:ring-white/20" />
       <div className="relative rounded-2xl px-4 pb-4 pt-16">
         <FeatureIcon icon={feature.icon} />
-        <h3 className="mt-4 text-sm font-semibold leading-7 text-zinc-900 dark:text-white">
+        <h3 className="mt-4 text-sm font-semibold leading-7 text-white">
           <Link href={feature.href}>
             <span className="absolute inset-0 rounded-2xl" />
             {feature.name}
           </Link>
         </h3>
-        <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="mt-1 text-sm text-zinc-400">
           {feature.description}
         </p>
       </div>
@@ -127,7 +127,7 @@ function Feature({ feature }: { feature: IFeature }) {
 export function Features() {
   return (
     <div className="my-16 xl:max-w-none">
-      <div className="not-prose mt-4 grid grid-cols-1 gap-8 border-t border-zinc-900/5 pt-10 sm:grid-cols-2 xl:grid-cols-4 dark:border-white/5">
+      <div className="not-prose mt-4 grid grid-cols-1 gap-8 border-t border-white/5 pt-10 sm:grid-cols-2 xl:grid-cols-4">
         {features.map((feature) => (
           <Feature key={feature.name} feature={feature} />
         ))}

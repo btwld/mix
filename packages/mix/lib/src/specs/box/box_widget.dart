@@ -5,9 +5,25 @@ import '../../core/style_widget.dart';
 import 'box_spec.dart';
 import 'box_style.dart';
 
-/// A styled box widget using Mix framework.
+/// [Box] is equivalent to Flutter's [Container], it provides
+/// styling capabilities through the Mix framework. It can be used to
+/// create visually styled boxes with decoration, padding, margins, transforms,
+/// and constraints.
 ///
-/// Applies [BoxSpec] styling to create a customized [Container].
+///
+/// You can use [BoxStyler] to create styles with a fluent API. Example:
+///
+/// ```dart
+/// final style = BoxStyler()
+///   .width(200)
+///   .height(100)
+///   .color(Colors.blue)
+///   .borderRounded(12)
+///   .padding(16);
+///
+/// Box(style: style, child: Text('Hello Mix'))
+/// ```
+///
 class Box extends StyleWidget<BoxSpec> {
   const Box({
     super.style = const BoxStyler.create(),
@@ -37,6 +53,7 @@ class Box extends StyleWidget<BoxSpec> {
 }
 
 /// Alias for [Box] widget for backward compatibility.
+@Deprecated('Use Box instead')
 typedef StyledContainer = Box;
 
 extension BoxSpecWrappedWidget on StyleSpec<BoxSpec> {

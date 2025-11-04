@@ -8,6 +8,7 @@ mixin AnimationStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   @protected
   T animate(AnimationConfig config);
 
+  /// Creates a keyframe animation. It will animate through the given timeline.
   T keyframeAnimation({
     required Listenable trigger,
     required List<KeyframeTrack> timeline,
@@ -23,6 +24,7 @@ mixin AnimationStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
     );
   }
 
+  /// Creates a phase animation. It will animate through the given phases.
   T phaseAnimation<P>({
     required Listenable trigger,
     required List<P> phases,

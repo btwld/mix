@@ -1,78 +1,233 @@
-import { Callout } from "nextra/components";
+# StackBox
 
-# ZBox (Stack)
+`StackBox` is equivalent to Flutter's `Stack` and `Container` widgets combined, but provides powerful styling capabilities through the Mix framework.
 
-<Callout type="error">
-  This documentation is currently under development and may contain outdated content.
-</Callout>
+`StackBox` enables you to create stacked layouts with visual styles such as decoration, padding, margin, constraints, and box/stack behaviors—all customizable and responsive.
 
-`ZBox` is a composite styled widget that combines the layout capabilities of a `Box` with the stacking functionality of `StyledStack`. It is designed for use cases where you need a styled stacking layout, encapsulated within a box-shaped container with alignment and other style properties.
-
-## Usage
-
-To use `ZBox`, create an instance and provide it with a style and a list of widgets for your stacked layout:
+You can use the `StackBoxStyler` API to fluently compose your layout and decoration styles. Example:
 
 ```dart
-ZBox(
-  style: Style(
-    $stack.alignment.bottomLeft(),
-    $stack.fit.loose(),
-    $box.width(300),
-    $box.height(300),
-    $box.color.blue(),
-  ),
-  children: [...],
-);
+final style = StackBoxStyler()
+ .padding(EdgeInsets.all(16))
+ .decoration(
+   BoxDecoration(
+     color: Colors.white,
+     borderRadius: BorderRadius.circular(12),
+   ),
+ )
+ .alignment(Alignment.center);
+
+StackBox(
+ children: [
+   Icon(Icons.star, size: 48),
+   Positioned(
+     right: 0,
+     bottom: 0,
+     child: Text('Badge'),
+   ),
+ ],
+ style: style,
+)
 ```
 
-## Utilities
+## Constructor
 
-The `$stack` variable is an instance of `StackMutableStyler`, which facilitates the construction of `StackSpecAttribute` objects. These objects are used to style and manage the visuals of `ZBox` and `StyledStack`.
+| Prop  | Type         | Required / Default Value                |
+|-------|--------------|------------------------------------------|
+| `style` | `Style` | `const StackBoxStyler.create()` |
+| `styleSpec` | `StyleSpec?` | `Optional` |
+| `children` | `List<Widget>` | `const <Widget>[]` |
 
-### **alignment**
+## Style API Reference
 
-This utility aligns layers within the stacked layout:
+### StackBox Methods
 
-```dart
-// Align at the bottom center of the stack
-$stack.alignment.bottomCenter();
+| Method | Description |
+|--------|-------------|
+| `animate` | Sets animation |
+| `alignment` | Sets the alignment for the box. |
+| `transformAlignment` | Sets the transform alignment for the box. |
+| `clipBehavior` | Sets the clip behavior for the box. |
+| `modifier` | Sets the widget modifier. |
+| `stackAlignment` | Sets the alignment for the Stack widget. |
+| `fit` | Sets how the Stack widget sizes itself based on its children. |
+| `textDirection` | Sets the text direction for the Stack widget. |
+| `stackClipBehavior` | Sets the clip behavior for the Stack widget. |
+| `stack` | Applies a custom StackStyler to the StackBox. |
+| `foregroundDecoration` | Foreground decoration instance method |
+| `padding` | Padding instance method |
+| `margin` | Margin instance method |
+| `transform` | Sets the transform for the box. |
+| `decoration` | Decoration instance method - delegates to box |
+| `constraints` | Constraints instance method |
+| `wrap` | Modifier instance method |
+| `variants` | Sets the variants list. |
+| `borderRadius` | Sets the border radius property via decoration. |
+| `border` | Border instance method |
 
-// Align at the top right of the stack
-$stack.alignment.topRight();
-```
+### Border Radius
 
-### **fit**
+| Method | Description |
+|--------|-------------|
+| `borderRadiusAll` | Sets border radius for all corners. |
+| `borderRadiusTop` | Sets border radius for the top corners. |
+| `borderRadiusBottom` | Sets border radius for the bottom corners. |
+| `borderRadiusLeft` | Sets border radius for the left corners. |
+| `borderRadiusRight` | Sets border radius for the right corners. |
+| `borderRadiusTopLeft` | Sets border radius for the top left corner. |
+| `borderRadiusTopRight` | Sets border radius for the top right corner. |
+| `borderRadiusBottomLeft` | Sets border radius for the bottom left corner. |
+| `borderRadiusBottomRight` | Sets border radius for the bottom right corner. |
+| `borderRadiusTopStart` | Sets border radius for the top start corner (directional). |
+| `borderRadiusTopEnd` | Sets border radius for the top end corner (directional). |
+| `borderRadiusBottomStart` | Sets border radius for the bottom start corner (directional). |
+| `borderRadiusBottomEnd` | Sets border radius for the bottom end corner (directional). |
+| `borderRounded` | Sets a uniform circular radius for all corners. |
+| `borderRoundedTop` | Sets a circular radius for the top corners. |
+| `borderRoundedBottom` | Sets a circular radius for the bottom corners. |
+| `borderRoundedLeft` | Sets a circular radius for the left corners. |
+| `borderRoundedRight` | Sets a circular radius for the right corners. |
+| `borderRoundedTopLeft` | Sets a circular radius for the top left corner. |
+| `borderRoundedTopRight` | Sets a circular radius for the top right corner. |
+| `borderRoundedBottomLeft` | Sets a circular radius for the bottom left corner. |
+| `borderRoundedBottomRight` | Sets a circular radius for the bottom right corner. |
+| `borderRoundedTopStart` | Sets a circular radius for the top start corner (directional). |
+| `borderRoundedTopEnd` | Sets a circular radius for the top end corner (directional). |
+| `borderRoundedBottomStart` | Sets a circular radius for the bottom start corner (directional). |
+| `borderRoundedBottomEnd` | Sets a circular radius for the bottom end corner (directional). |
 
-This utility determines how layers are sized within the stack:
+### Border
 
-```dart
-// StackFit.loose
-$stack.fit.loose();
+| Method | Description |
+|--------|-------------|
+| `borderTop` | Sets the top border. |
+| `borderBottom` | Sets the bottom border. |
+| `borderLeft` | Sets the left border. |
+| `borderRight` | Sets the right border. |
+| `borderStart` | Sets the start border (RTL-aware). |
+| `borderEnd` | Sets the end border (RTL-aware). |
+| `borderVertical` | Sets vertical borders (top & bottom). |
+| `borderHorizontal` | Sets horizontal borders (left & right). |
+| `borderAll` | Sets all borders. |
 
-// StackFit.expand
-$stack.fit.expand();
-```
+### Constraint
 
-### **textDirection**
+| Method | Description |
+|--------|-------------|
+| `width` | Sets both min and max width to create a fixed width |
+| `height` | Sets both min and max height to create a fixed height |
+| `minWidth` | Sets minimum width constraint |
+| `maxWidth` | Sets maximum width constraint |
+| `minHeight` | Sets minimum height constraint |
+| `maxHeight` | Sets maximum height constraint |
+| `size` | Sets both width and height to specific values |
+| `constraintsOnly` | Creates constraints with only specified values, supporting priority resolution |
 
-This utility indicates the text direction in the stack for correct placement of elements:
+### Decoration
 
-```dart
-// Left-to-right text direction
-$stack.textDirection.ltr();
+| Method | Description |
+|--------|-------------|
+| `color` | Sets background color |
+| `gradient` | Sets gradient with any GradientMix type |
+| `shadow` | Sets single shadow |
+| `shadows` | Sets multiple shadows |
+| `elevation` | Sets elevation shadow |
+| `image` | Sets image decoration |
+| `shape` | Sets box shape |
+| `shapeCircle` | Sets a circular shape (CircleBorder) |
+| `shapeStadium` | Sets a stadium shape (StadiumBorder) |
+| `shapeRoundedRectangle` | Sets a rounded rectangle shape (RoundedRectangleBorder) |
+| `shapeBeveledRectangle` | Sets a beveled rectangle shape (BeveledRectangleBorder) |
+| `shapeContinuousRectangle` | Sets a continuous rectangle shape (ContinuousRectangleBorder) |
+| `shapeStar` | Sets a star shape (StarBorder) |
+| `shapeLinear` | Sets a linear border shape (LinearBorder) |
+| `shapeSuperellipse` | Sets a superellipse shape (RoundedSuperellipseBorder) |
+| `backgroundImage` | Sets a background image from an ImageProvider |
+| `backgroundImageUrl` | Sets a background image from a network URL |
+| `backgroundImageAsset` | Sets a background image from an asset path |
+| `foregroundLinearGradient` | Sets a foreground linear gradient |
+| `foregroundRadialGradient` | Sets a foreground radial gradient |
+| `foregroundSweepGradient` | Sets a foreground sweep gradient |
+| `linearGradient` | Sets a background linear gradient |
+| `radialGradient` | Sets a background radial gradient |
+| `sweepGradient` | Sets a background sweep gradient |
 
-// Right-to-left text direction
-$stack.textDirection.rtl();
-```
+### Shadow
 
-### **clipBehavior**
+| Method | Description |
+|--------|-------------|
+| `shadowOnly` | Creates a single box shadow with named parameters |
+| `boxShadows` | Creates multiple box shadows from a list of BoxShadowMix |
+| `boxElevation` | Creates box shadows from Material Design elevation level |
 
-This utility controls how children outside the stack's bounds are clipped:
+### Spacing
 
-```dart
-// Clip.hardEdge
-$stack.clipBehavior.hardEdge();
+| Method | Description |
+|--------|-------------|
+| `paddingTop` | Sets the top padding. |
+| `paddingBottom` | Sets the bottom padding. |
+| `paddingLeft` | Sets the left padding. |
+| `paddingRight` | Sets the right padding. |
+| `paddingX` | Sets horizontal (left and right) padding. |
+| `paddingY` | Sets vertical (top and bottom) padding. |
+| `paddingAll` | Sets padding on all sides. |
+| `paddingStart` | Sets the start (leading) padding. |
+| `paddingEnd` | Sets the end (trailing) padding. |
+| `paddingOnly` | Sets custom padding for each side with priority resolution. |
+| `marginTop` | Sets the top margin. |
+| `marginBottom` | Sets the bottom margin. |
+| `marginLeft` | Sets the left margin. |
+| `marginRight` | Sets the right margin. |
+| `marginX` | Sets horizontal (left and right) margin. |
+| `marginY` | Sets vertical (top and bottom) margin. |
+| `marginAll` | Sets margin on all sides. |
+| `marginStart` | Sets the start (leading) margin. |
+| `marginEnd` | Sets the end (trailing) margin. |
+| `marginOnly` | Sets custom margin for each side with priority resolution. |
 
-// Clip.none
-$stack.clipBehavior.none();
-```
+### Transform
+
+| Method | Description |
+|--------|-------------|
+| `rotate` | Sets rotation transform |
+| `scale` | Sets scale transform |
+| `translate` | Sets translation transform |
+| `skew` | Sets skew transform |
+| `transformReset` | Resets transform to identity (no effect) |
+
+### Variant
+
+| Method | Description |
+|--------|-------------|
+| `variant` | Adds a single variant to this style. |
+| `onDark` | Creates a variant for dark mode. |
+| `onNot` | Creates a variant for when the context does NOT match the provided variant. |
+| `onLight` | Creates a variant for light mode. |
+| `onBuilder` | Creates a variant using a builder function that receives the build context. |
+| `builder` | Deprecated: Use [onBuilder] instead. |
+| `onBreakpoint` | Creates a variant based on the specified breakpoint. |
+| `onPortrait` | Creates a variant for portrait device orientation. |
+| `onLandscape` | Creates a variant for landscape device orientation. |
+| `onMobile` | Creates a variant for mobile breakpoint. |
+| `onTablet` | Creates a variant for tablet breakpoint. |
+| `onDesktop` | Creates a variant for desktop breakpoint. |
+| `onLtr` | Creates a variant for left-to-right text direction. |
+| `onRtl` | Creates a variant for right-to-left text direction. |
+| `onIos` | Creates a variant for iOS platform. |
+| `onAndroid` | Creates a variant for Android platform. |
+| `onMacos` | Creates a variant for macOS platform. |
+| `onWindows` | Creates a variant for Windows platform. |
+| `onLinux` | Creates a variant for Linux platform. |
+| `onFuchsia` | Creates a variant for Fuchsia platform. |
+| `onWeb` | Creates a variant for web platform. |
+
+### Widget State Variant
+
+| Method | Description |
+|--------|-------------|
+| `onHovered` | Creates a variant for hover state |
+| `onPressed` | Creates a variant for pressed state |
+| `onFocused` | Creates a variant for focused state |
+| `onDisabled` | Creates a variant for disabled state |
+| `onEnabled` | Creates a variant for enabled state (opposite of disabled) |
+

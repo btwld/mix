@@ -1,0 +1,25 @@
+name: examples
+description: "Example project for the mix package."
+publish_to: 'none' 
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.9.0 <4.0.0"
+  flutter: ">=3.35.0"
+
+dependencies:
+  cupertino_icons: ^1.0.8
+  flutter:
+    sdk: flutter
+  mix:
+    path: ../packages/mix
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  dart_code_metrics_presets: ^2.24.0
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true

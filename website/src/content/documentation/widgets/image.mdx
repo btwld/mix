@@ -1,49 +1,96 @@
 # StyledImage
 
-This is equivalent to the **Image** widget in Flutter.
+`StyledImage` is equivalent to Flutter's `Image` widget, but provides styling
+capabilities through the Mix framework. It allows you to create visually styled
+images with dimensions, colors, blend modes, filters, and responsive variants.
+
+You can use `ImageStyler` to create styles with a fluent API. Example:
 
 ```dart
+final style = ImageStyler()
+ .width(200)
+ .height(200)
+ .fit(BoxFit.cover)
+ .color(Colors.blue.withOpacity(0.5))
+ .colorBlendMode(BlendMode.overlay);
+
 StyledImage(
-  image: AssetImage('assets/image.jpg'),
-  style: ImageStyler()
-      .width(152)
-      .height(152)
-      .fit(BoxFit.cover),
-);
+ image: AssetImage('assets/photo.jpg'),
+ style: style,
+)
 ```
 
 ## Constructor
 
-| Prop           | Type                        | Required / Default Value                |
-|----------------|-----------------------------|-----------------------------------------|
-| image          | `ImageProvider<Object>?`    | Optional                               |
-| frameBuilder   | `ImageFrameBuilder?`        | Optional                               |
-| loadingBuilder | `ImageLoadingBuilder?`      | Optional                               |
-| errorBuilder   | `ImageErrorWidgetBuilder?`  | Optional                               |
-| opacity        | `Animation<double>?`        | Optional                               |
-| style          | `Style<ImageSpec>`               | Optional, defaults to `ImageMix.create()` |
-| key            | `Key?`                      | Optional                               |
+| Prop  | Type         | Required / Default Value                |
+|-------|--------------|------------------------------------------|
+| `style` | `Style` | `const ImageStyler.create()` |
+| `styleSpec` | `StyleSpec?` | `Optional` |
+| `frameBuilder` | `ImageFrameBuilder?` | `Optional` |
+| `loadingBuilder` | `ImageLoadingBuilder?` | `Optional` |
+| `errorBuilder` | `ImageErrorWidgetBuilder?` | `Optional` |
+| `image` | `ImageProvider<Object>?` | `Optional` |
+| `opacity` | `Animation<double>?` | `Optional` |
 
 ## Style API Reference
 
-Mix provides an extension of Style\<ImageSpec> called `ImageStyler` for easily styling `StyledImage` widgets.
+### StyledImage Methods
 
 | Method | Description |
 |--------|-------------|
-| `animate` | Sets animation configuration |
-| `modifier` | Adds widget modifiers |
-| `image` | Sets the image provider |
+| `image` | Sets image provider |
 | `width` | Sets image width |
 | `height` | Sets image height |
-| `color` | Sets color overlay for the image |
-| `repeat` | Sets how the image should be repeated |
-| `fit` | Sets how the image should be fitted within its container |
-| `alignment` | Sets image alignment within its bounds |
-| `centerSlice` | Sets center slice for nine-patch effects |
-| `filterQuality` | Sets filter quality for image scaling |
-| `colorBlendMode` | Sets blend mode for color overlay |
-| `semanticLabel` | Sets semantic label for accessibility |
-| `excludeFromSemantics` | Sets whether to exclude from semantics |
-| `gaplessPlayback` | Sets whether to maintain previous image while loading |
-| `isAntiAlias` | Sets whether to apply anti-aliasing |
-| `matchTextDirection` | Sets whether image should match text direction |
+| `color` | Sets image color |
+| `repeat` | Sets image repeat |
+| `fit` | Sets image fit |
+| `alignment` | Sets image alignment |
+| `centerSlice` | Sets center slice |
+| `filterQuality` | Sets filter quality |
+| `colorBlendMode` | Sets color blend mode |
+| `semanticLabel` | Sets semantic label |
+| `excludeFromSemantics` | Sets exclude from semantics |
+| `gaplessPlayback` | Sets gapless playback |
+| `isAntiAlias` | Sets is anti alias |
+| `matchTextDirection` | Sets match text direction |
+| `modifier` | Sets the widget modifier. |
+| `animate` | Convenience method for animating the ImageStyleSpec |
+| `variants` | Sets the variants list. |
+| `wrap` | Sets the widget modifier. |
+
+### Variant
+
+| Method | Description |
+|--------|-------------|
+| `variant` | Adds a single variant to this style. |
+| `onDark` | Creates a variant for dark mode. |
+| `onNot` | Creates a variant for when the context does NOT match the provided variant. |
+| `onLight` | Creates a variant for light mode. |
+| `onBuilder` | Creates a variant using a builder function that receives the build context. |
+| `builder` | Deprecated: Use [onBuilder] instead. |
+| `onBreakpoint` | Creates a variant based on the specified breakpoint. |
+| `onPortrait` | Creates a variant for portrait device orientation. |
+| `onLandscape` | Creates a variant for landscape device orientation. |
+| `onMobile` | Creates a variant for mobile breakpoint. |
+| `onTablet` | Creates a variant for tablet breakpoint. |
+| `onDesktop` | Creates a variant for desktop breakpoint. |
+| `onLtr` | Creates a variant for left-to-right text direction. |
+| `onRtl` | Creates a variant for right-to-left text direction. |
+| `onIos` | Creates a variant for iOS platform. |
+| `onAndroid` | Creates a variant for Android platform. |
+| `onMacos` | Creates a variant for macOS platform. |
+| `onWindows` | Creates a variant for Windows platform. |
+| `onLinux` | Creates a variant for Linux platform. |
+| `onFuchsia` | Creates a variant for Fuchsia platform. |
+| `onWeb` | Creates a variant for web platform. |
+
+### Widget State Variant
+
+| Method | Description |
+|--------|-------------|
+| `onHovered` | Creates a variant for hover state |
+| `onPressed` | Creates a variant for pressed state |
+| `onFocused` | Creates a variant for focused state |
+| `onDisabled` | Creates a variant for disabled state |
+| `onEnabled` | Creates a variant for enabled state (opposite of disabled) |
+

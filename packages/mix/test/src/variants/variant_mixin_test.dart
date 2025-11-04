@@ -6,7 +6,9 @@ import '../../helpers/testing_utils.dart';
 
 // Test implementation of VariantMixin
 class TestVariantAttribute extends Style<BoxSpec>
-    with VariantStyleMixin<TestVariantAttribute, BoxSpec> {
+    with
+        VariantStyleMixin<TestVariantAttribute, BoxSpec>,
+        WidgetStateVariantMixin<TestVariantAttribute, BoxSpec> {
   const TestVariantAttribute({super.variants, super.modifier, super.animation});
 
   @override
@@ -104,16 +106,6 @@ void main() {
       expect(result.$variants!.first.variant, isA<ContextVariant>());
     });
 
-    test('onSelected creates correct variant', () {
-      const attribute = TestVariantAttribute();
-      const style = TestVariantAttribute();
-      final result = attribute.onSelected(style);
-
-      expect(result.$variants, isNotNull);
-      expect(result.$variants!.length, 1);
-      expect(result.$variants!.first.variant, isA<ContextVariant>());
-    });
-
     test('onMobile creates correct variant', () {
       const attribute = TestVariantAttribute();
       const style = TestVariantAttribute();
@@ -178,36 +170,6 @@ void main() {
 
       expect(result.$variants!.first.value, equals(darkStyle));
       expect(result.$variants!.last.value, equals(hoverStyle));
-    });
-
-    test('onError creates correct variant', () {
-      const attribute = TestVariantAttribute();
-      const style = TestVariantAttribute();
-      final result = attribute.onError(style);
-
-      expect(result.$variants, isNotNull);
-      expect(result.$variants!.length, 1);
-      expect(result.$variants!.first.variant, isA<ContextVariant>());
-    });
-
-    test('onScrolledUnder creates correct variant', () {
-      const attribute = TestVariantAttribute();
-      const style = TestVariantAttribute();
-      final result = attribute.onScrolledUnder(style);
-
-      expect(result.$variants, isNotNull);
-      expect(result.$variants!.length, 1);
-      expect(result.$variants!.first.variant, isA<ContextVariant>());
-    });
-
-    test('onDragged creates correct variant', () {
-      const attribute = TestVariantAttribute();
-      const style = TestVariantAttribute();
-      final result = attribute.onDragged(style);
-
-      expect(result.$variants, isNotNull);
-      expect(result.$variants!.length, 1);
-      expect(result.$variants!.first.variant, isA<ContextVariant>());
     });
 
     test('onEnabled creates correct variant', () {

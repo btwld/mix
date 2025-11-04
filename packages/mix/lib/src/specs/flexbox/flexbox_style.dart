@@ -17,17 +17,19 @@ import '../../style/mixins/border_style_mixin.dart';
 import '../../style/mixins/constraint_style_mixin.dart';
 import '../../style/mixins/decoration_style_mixin.dart';
 import '../../style/mixins/flex_style_mixin.dart';
-import '../../style/mixins/widget_modifier_style_mixin.dart';
 import '../../style/mixins/shadow_style_mixin.dart';
 import '../../style/mixins/spacing_style_mixin.dart';
 import '../../style/mixins/transform_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
+import '../../style/mixins/widget_modifier_style_mixin.dart';
+import '../../style/mixins/widget_state_variant_mixin.dart';
 import '../box/box_spec.dart';
 import '../box/box_style.dart';
 import '../flex/flex_spec.dart';
 import '../flex/flex_style.dart';
-import 'flexbox_spec.dart';
 import 'flexbox_mutable_style.dart';
+import 'flexbox_spec.dart';
+import 'flexbox_widget.dart';
 
 typedef FlexBoxMix = FlexBoxStyler;
 
@@ -43,6 +45,7 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
         Diagnosticable,
         WidgetModifierStyleMixin<FlexBoxStyler, FlexBoxSpec>,
         VariantStyleMixin<FlexBoxStyler, FlexBoxSpec>,
+        WidgetStateVariantMixin<FlexBoxStyler, FlexBoxSpec>,
         BorderStyleMixin<FlexBoxStyler>,
         BorderRadiusStyleMixin<FlexBoxStyler>,
         ShadowStyleMixin<FlexBoxStyler>,
@@ -125,26 +128,29 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
   static FlexBoxMutableStyler get chain =>
       FlexBoxMutableStyler(FlexBoxStyler());
 
-  /// Sets animation
+  /// Sets the animation property.
   FlexBoxStyler animate(AnimationConfig animation) {
     return merge(FlexBoxStyler(animation: animation));
   }
 
   // BoxMix instance methods
 
+  /// Sets the alignment property.
   FlexBoxStyler alignment(AlignmentGeometry value) {
     return merge(FlexBoxStyler(alignment: value));
   }
 
+  /// Sets the transform alignment.
   FlexBoxStyler transformAlignment(AlignmentGeometry value) {
     return merge(FlexBoxStyler(transformAlignment: value));
   }
 
+  /// Sets the clip behavior.
   FlexBoxStyler clipBehavior(Clip value) {
     return merge(FlexBoxStyler(clipBehavior: value));
   }
 
-  /// Sets gap
+  /// Sets gap value (deprecated).
   @Deprecated(
     'Use spacing instead. '
     'This feature was deprecated after Mix v2.0.0.',
@@ -153,34 +159,41 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
     return merge(FlexBoxStyler(spacing: value));
   }
 
+  /// Sets the widget modifier.
   FlexBoxStyler modifier(WidgetModifierConfig value) {
     return merge(FlexBoxStyler(modifier: value));
   }
 
-  /// Foreground decoration instance method
+  /// Creates a FlexBox widget with children.
+  FlexBox call({Key? key, required List<Widget> children}) {
+    return FlexBox(key: key, style: this, children: children);
+  }
+
+  /// Sets the foreground decoration.
   @override
   FlexBoxStyler foregroundDecoration(DecorationMix value) {
     return merge(FlexBoxStyler(foregroundDecoration: value));
   }
 
-  // FlexMixin implementation
+  /// Sets the flex property.
   @override
   FlexBoxStyler flex(FlexStyler value) {
     return merge(FlexBoxStyler.create(flex: Prop.maybeMix(value)));
   }
 
-  /// Padding instance method
+  /// Sets the padding property.
   @override
   FlexBoxStyler padding(EdgeInsetsGeometryMix value) {
     return merge(FlexBoxStyler(padding: value));
   }
 
-  /// Margin instance method
+  /// Sets the margin property.
   @override
   FlexBoxStyler margin(EdgeInsetsGeometryMix value) {
     return merge(FlexBoxStyler(margin: value));
   }
 
+  /// Sets the transform property.
   @override
   FlexBoxStyler transform(
     Matrix4 value, {
@@ -191,36 +204,37 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
     );
   }
 
-  /// Decoration instance method - delegates to box
+  /// Sets the decoration property.
   @override
   FlexBoxStyler decoration(DecorationMix value) {
     return merge(FlexBoxStyler(decoration: value));
   }
 
-  /// Constraints instance method
+  /// Sets the constraints property.
   @override
   FlexBoxStyler constraints(BoxConstraintsMix value) {
     return merge(FlexBoxStyler(constraints: value));
   }
 
-  /// Modifier instance method
+  /// Sets the widget modifier (wrap).
   @override
   FlexBoxStyler wrap(WidgetModifierConfig value) {
     return modifier(value);
   }
 
+  /// Sets the variants list.
   @override
   FlexBoxStyler variants(List<VariantStyle<FlexBoxSpec>> variants) {
     return merge(FlexBoxStyler(variants: variants));
   }
 
-  /// Border radius instance method
+  /// Sets the border radius property via decoration.
   @override
   FlexBoxStyler borderRadius(BorderRadiusGeometryMix value) {
     return merge(FlexBoxStyler(decoration: DecorationMix.borderRadius(value)));
   }
 
-  /// Border instance method
+  /// Sets the border property via decoration.
   @override
   FlexBoxStyler border(BoxBorderMix value) {
     return merge(FlexBoxStyler(decoration: DecorationMix.border(value)));
