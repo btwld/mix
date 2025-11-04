@@ -25,114 +25,41 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  publish-dry-run:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout mix repo
-        uses: actions/checkout@v4
-    
-      - name: Install FVM
-        shell: bash
-        run: |
-          curl -fsSL https://fvm.app/install.sh | bash
-          fvm use ${{ inputs.flutter-version }} --force
-
-
-      - uses: kuhnroyal/flutter-fvm-config-action@v2
-        id: fvm-config-action
-
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
-          channel: ${{ steps.fvm-config-action.outputs.FLUTTER_CHANNEL }}
-          
-      - name: Setup Melos
-        uses: bluefireteam/melos-action@v3
-        
-      - name: Run melos fix
-        run: |
-          if [[ "${{ github.event.inputs.mix_lint }}" == "true" ]]; then
-            cd packages/mix_lint && dart pub publish --dry-run && cd ../..
-          fi
-          if [[ "${{ github.event.inputs.mix_annotations }}" == "true" ]]; then
-            cd packages/mix_annotations && dart pub publish --dry-run && cd ../..
-          fi
-          if [[ "${{ github.event.inputs.mix_generator }}" == "true" ]]; then
-            cd packages/mix_generator && dart pub publish --dry-run && cd ../..
-          fi
-          if [[ "${{ github.event.inputs.mix }}" == "true" ]]; then
-            cd packages/mix && dart pub publish --dry-run && cd ../..
-          fi
-        shell: bash
-
-  test-mincompat:
-    needs: [publish-dry-run]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout mix repo
-        uses: actions/checkout@v4
-
-      - name: Run Tests
-        uses: ./.github/actions/test/
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          flutter-version: 'mincompat'
-
-  test-stable:
-    needs: [publish-dry-run]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout mix repo
-        uses: actions/checkout@v4
-
-      - name: Run Tests
-        uses: ./.github/actions/test/
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-  prepare-matrix:
-    name: Selecting packages to publish
+  prepare-packages:
+    name: Prepare package list
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      packages: ${{ steps.set-packages.outputs.packages }}
     steps:
-      - id: set-matrix
+      - id: set-packages
         run: |
-          matrix=()
+          packages=()
+          # Order matters for dependencies: lint and annotations first, then generator, then mix
           if [[ "${{ github.event.inputs.mix_lint }}" == "true" ]]; then
-            matrix+=('{"name": "mix_lint", "path": "packages/mix_lint"}')
+            packages+=("mix_lint")
           fi
           if [[ "${{ github.event.inputs.mix_annotations }}" == "true" ]]; then
-            matrix+=('{"name": "mix_annotations", "path": "packages/mix_annotations"}')
+            packages+=("mix_annotations")
           fi
           if [[ "${{ github.event.inputs.mix_generator }}" == "true" ]]; then
-            matrix+=('{"name": "mix_generator", "path": "packages/mix_generator"}')
+            packages+=("mix_generator")
           fi
           if [[ "${{ github.event.inputs.mix }}" == "true" ]]; then
-            matrix+=('{"name": "mix", "path": "packages/mix"}')
+            packages+=("mix")
           fi
-          echo "matrix=$(IFS=,; echo "[${matrix[*]}]")" >> $GITHUB_OUTPUT
+          
+          # Join array elements with newline for multi-line string
+          printf -v joined '%s\n' "${packages[@]}"
+          echo "packages<<EOF" >> $GITHUB_OUTPUT
+          echo "$joined" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
   publish:
-    needs: [test-mincompat, test-stable, publish-dry-run, prepare-matrix]
-    environment: Production
-    runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 1
-      matrix:
-        package: ${{fromJSON(needs.prepare-matrix.outputs.matrix)}}
-    steps:
-      - uses: actions/checkout@v4
-      - name: '>> publish ${{ matrix.package.name }} package to pub.dev <<'
-        id: publish
-        uses: k-paxian/dart-package-publisher@master
-        with:
-          accessToken: ${{ secrets.OAUTH_ACCESS_TOKEN }}
-          refreshToken: ${{ secrets.OAUTH_REFRESH_TOKEN }}
-          relativePath: ${{ matrix.package.path }}
-      - name: 'Commit release tag'
-        if: steps.publish.outputs.success
-        uses: hole19/git-tag-action@master
-        env:
-          TAG: ${{steps.publish.outputs.package}}-${{steps.publish.outputs.localVersion}}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    needs: [prepare-packages]
+    uses: btwld/dart-actions/.github/workflows/publish.yml@main
+    with:
+      packages_folder_path: "packages"
+      packages: ${{ needs.prepare-packages.outputs.packages }}
+    permissions:
+      id-token: write
+      contents: read

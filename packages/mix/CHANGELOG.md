@@ -1,3 +1,8 @@
+## 2.0.0-dev.6
+
+- refactor: `Stack` and `StackBox`
+- feat: Implement call method for `Stack` and `FlexBox` 
+
 ## 2.0.0-dev.5
 
 - fix: VariantStyle merge
