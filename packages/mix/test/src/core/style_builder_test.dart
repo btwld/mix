@@ -728,7 +728,7 @@ void main() {
       });
 
       testWidgets(
-        'Should create MixInteractionDetector when StyleProvider\'s style contains widget state variants',
+        'Should create MixInteractionDetector when inherited style contains widget state variants',
         (tester) async {
           // Parent style provides a variant for hovered state
           final parentStyle = BoxStyler()
@@ -742,17 +742,20 @@ void main() {
 
           await tester.pumpWidget(
             MaterialApp(
-              home: StyleProvider<BoxSpec>(
+              home: StyleBuilder<BoxSpec>(
                 style: parentStyle,
-                child: StyleBuilder<BoxSpec>(
-                  style: childStyle,
-                  builder: (context, childSpec) {
-                    return Container(
-                      decoration: childSpec.decoration,
-                      constraints: childSpec.constraints,
-                    );
-                  },
-                ),
+                inheritable: true,
+                builder: (context, parentSpec) {
+                  return StyleBuilder<BoxSpec>(
+                    style: childStyle,
+                    builder: (context, childSpec) {
+                      return Container(
+                        decoration: childSpec.decoration,
+                        constraints: childSpec.constraints,
+                      );
+                    },
+                  );
+                },
               ),
             ),
           );
