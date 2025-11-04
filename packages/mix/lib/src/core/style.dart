@@ -55,7 +55,9 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
 
   /// Gets the closest [Style] from the widget tree, or null if not found.
   static Style<S>? maybeOf<S extends Spec<S>>(BuildContext context) {
-    return StyleProvider.maybeOf(context);
+    final provider = context.getInheritedWidgetOfExactType<StyleProvider<S>>();
+
+    return provider?.style;
   }
 
   @internal
