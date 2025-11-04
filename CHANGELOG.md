@@ -22,7 +22,9 @@ Packages with other changes:
 #### `mix` - `v2.0.0-dev.6`
 
 - refactor: `Stack` and `StackBox`
+- refactor: introduce Style.of() and Style.maybeOf() static methods
 - feat: Implement call method for `Stack` and `FlexBox` 
+- feat: add number directives and extension for numeric transformations
 
 
 ## 2025-07-02
