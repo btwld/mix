@@ -5,7 +5,7 @@ packages:
   - packages/*
   - packages/mix/example
   - packages/mix_generator/example
-  - examples/*
+  - examples
   - packages/*/demo
 
 sdkPath: .fvm/flutter_sdk
