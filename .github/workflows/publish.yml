@@ -20,10 +20,6 @@ on:
         description: publish mix_generator
         default: false
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
-
 jobs:
   prepare-packages:
     name: Prepare package list
