@@ -216,7 +216,6 @@ void main() {
       });
 
       test('token-based proportional scaling', () {
-        final fontSizeToken = TestToken<double>('fontSize');
         final ratioToken = TestToken<double>('ratio');
 
         final letterSpacing = Prop.token(ratioToken).multiply(12.0);

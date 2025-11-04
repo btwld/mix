@@ -134,15 +134,15 @@ extension NumberPropDirectiveExt<T extends num> on Prop<T> {
 
   /// Helper method to apply a number directive.
   ///
-  /// Converts this Prop<T> to Prop<num> and applies the directive.
+  /// Converts this `Prop<T>` to `Prop<num>` and applies the directive.
   Prop<num> _applyNumberDirective(Directive<num> directive) {
     return _asPropNum().directives([directive]);
   }
 
-  /// Converts this Prop<T extends num> to Prop<num>.
+  /// Converts this `Prop<T extends num>` to `Prop<num>`.
   ///
   /// Required to work around Dart's type invariance - we can't directly apply
-  /// Directive<num> to Prop<T> even though T extends num.
+  /// `Directive<num>` to `Prop<T>` even though T extends num.
   Prop<num> _asPropNum() {
     // Edge case: prop with only directives (no sources)
     if (sources.isEmpty) {
