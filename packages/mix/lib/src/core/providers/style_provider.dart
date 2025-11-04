@@ -7,11 +7,9 @@ import '../style.dart';
 
 /// Provides unresolved styles to descendant widgets for inheritance.
 ///
-/// Deprecated: Use [Style.of] or [Style.maybeOf] instead.
-@Deprecated(
-  'Use Style.of() or Style.maybeOf() instead. '
-  'This will be removed in a future release.',
-)
+/// This widget is used internally by [StyleBuilder] when `inheritable: true`.
+/// For accessing styles from the widget tree, prefer using [Style.of] or
+/// [Style.maybeOf] static methods.
 class StyleProvider<S extends Spec<S>> extends InheritedWidget {
   const StyleProvider({super.key, required this.style, required super.child});
 
