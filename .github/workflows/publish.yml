@@ -59,6 +59,7 @@ jobs:
   publish:
     # needs: [prepare-packages]
     uses: btwld/dart-actions/.github/workflows/publish.yml@main
+    environment: Production
     with:
       packages_folder_path: "packages"
       # packages: ${{ needs.prepare-packages.outputs.packages }}
