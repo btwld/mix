@@ -1,61 +1,68 @@
 name: Publish to pub.dev
 
 on:
-  workflow_dispatch:
-    inputs:
-      mix:
-        type: boolean
-        description: publish mix 
-        default: false
-      mix_lint:
-        type: boolean
-        description: publish mix_lint
-        default: false
-      mix_annotations:
-        type: boolean
-        description: publish mix_annotations
-        default: false
-      mix_generator:
-        type: boolean
-        description: publish mix_generator
-        default: false
+  push:
+    tags:
+      - 'mix-*'
+      # - 'mix_lint-*'
+      # - 'mix_annotations-*'
+      # - 'mix_generator-*'
+  # workflow_dispatch:
+  #   inputs:
+  #     mix:
+  #       type: boolean
+  #       description: publish mix 
+  #       default: false
+  #     mix_lint:
+  #       type: boolean
+  #       description: publish mix_lint
+  #       default: false
+  #     mix_annotations:
+  #       type: boolean
+  #       description: publish mix_annotations
+  #       default: false
+  #     mix_generator:
+  #       type: boolean
+  #       description: publish mix_generator
+  #       default: false
 
 jobs:
-  prepare-packages:
-    name: Prepare package list
-    runs-on: ubuntu-latest
-    outputs:
-      packages: ${{ steps.set-packages.outputs.packages }}
-    steps:
-      - id: set-packages
-        run: |
-          packages=()
-          # Order matters for dependencies: lint and annotations first, then generator, then mix
-          if [[ "${{ github.event.inputs.mix_lint }}" == "true" ]]; then
-            packages+=("mix_lint")
-          fi
-          if [[ "${{ github.event.inputs.mix_annotations }}" == "true" ]]; then
-            packages+=("mix_annotations")
-          fi
-          if [[ "${{ github.event.inputs.mix_generator }}" == "true" ]]; then
-            packages+=("mix_generator")
-          fi
-          if [[ "${{ github.event.inputs.mix }}" == "true" ]]; then
-            packages+=("mix")
-          fi
+  # prepare-packages:
+  #   name: Prepare package list
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     packages: ${{ steps.set-packages.outputs.packages }}
+  #   steps:
+  #     - id: set-packages
+  #       run: |
+  #         packages=()
+  #         # Order matters for dependencies: lint and annotations first, then generator, then mix
+  #         if [[ "${{ github.event.inputs.mix_lint }}" == "true" ]]; then
+  #           packages+=("mix_lint")
+  #         fi
+  #         if [[ "${{ github.event.inputs.mix_annotations }}" == "true" ]]; then
+  #           packages+=("mix_annotations")
+  #         fi
+  #         if [[ "${{ github.event.inputs.mix_generator }}" == "true" ]]; then
+  #           packages+=("mix_generator")
+  #         fi
+  #         if [[ "${{ github.event.inputs.mix }}" == "true" ]]; then
+  #           packages+=("mix")
+  #         fi
           
-          # Join array elements with newline for multi-line string
-          printf -v joined '%s\n' "${packages[@]}"
-          echo "packages<<EOF" >> $GITHUB_OUTPUT
-          echo "$joined" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+  #         # Join array elements with newline for multi-line string
+  #         printf -v joined '%s\n' "${packages[@]}"
+  #         echo "packages<<EOF" >> $GITHUB_OUTPUT
+  #         echo "$joined" >> $GITHUB_OUTPUT
+  #         echo "EOF" >> $GITHUB_OUTPUT
 
   publish:
-    needs: [prepare-packages]
+    # needs: [prepare-packages]
     uses: btwld/dart-actions/.github/workflows/publish.yml@main
     with:
       packages_folder_path: "packages"
-      packages: ${{ needs.prepare-packages.outputs.packages }}
+      # packages: ${{ needs.prepare-packages.outputs.packages }}
+      packages: "mix"
     permissions:
       id-token: write
       contents: read
