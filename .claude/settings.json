@@ -1,0 +1,11 @@
+{
+  "hooks": {
+    "sessionStart": "scripts/setup.sh"
+  },
+  "model": {
+    "default": "sonnet"
+  },
+  "shell": {
+    "defaultShell": "/bin/bash"
+  }
+}
