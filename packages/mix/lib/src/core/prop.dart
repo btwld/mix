@@ -258,7 +258,14 @@ class Prop<V> {
 
       if (mixValues.isEmpty) {
         // Release-safe fallback to maintain stability
-        resolvedValue = values.last as V;
+        final lastValue = values.last;
+        if (lastValue is V) {
+          resolvedValue = lastValue;
+        } else {
+          throw StateError(
+            'Type mismatch in Prop<$V>: expected $V but got ${lastValue.runtimeType}',
+          );
+        }
       } else {
         // Merge all Mix values
         Mix<V> mergedMix = mixValues.first;
@@ -269,7 +276,14 @@ class Prop<V> {
       }
     } else {
       // Simple values - use last one (replacement strategy)
-      resolvedValue = values.last as V;
+      final lastValue = values.last;
+      if (lastValue is V) {
+        resolvedValue = lastValue;
+      } else {
+        throw StateError(
+          'Type mismatch in Prop<$V>: expected $V but got ${lastValue.runtimeType}',
+        );
+      }
     }
 
     // Apply directives

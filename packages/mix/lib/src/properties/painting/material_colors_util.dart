@@ -16,9 +16,12 @@ class MaterialColorCallableUtility<T extends Style<Object?>> {
   const MaterialColorCallableUtility(this.builder, this.materialColor);
 
   // Call method for new syntax: grey(300)
-  T call([int? shade]) => builder(
-    Prop.value(shade == null ? materialColor : materialColor[shade]!),
-  );
+  T call([int? shade]) {
+    final color = shade == null
+        ? materialColor
+        : (materialColor[shade] ?? materialColor);
+    return builder(Prop.value(color));
+  }
 
   // Deprecated shade methods for backward compatibility
   @Deprecated('Use grey(50) instead of grey.shade50()')
@@ -105,7 +108,15 @@ final class MaterialColorUtility<T extends Style<Object?>>
   MaterialColorUtility(super.builder, MaterialColor super.color);
 
   /// Gets the underlying MaterialColor for shade access.
-  MaterialColor get materialColor => color as MaterialColor;
+  MaterialColor get materialColor {
+    if (color is! MaterialColor) {
+      throw StateError(
+        'MaterialColorUtility was constructed with a Color that is not a '
+        'MaterialColor. Expected MaterialColor but got ${color.runtimeType}.',
+      );
+    }
+    return color as MaterialColor;
+  }
 }
 
 /// Provides access to all Material Design colors with optional shade selection.
@@ -114,8 +125,10 @@ final class MaterialColorUtility<T extends Style<Object?>>
 /// specific variations of the color. Without a shade, returns the primary color.
 mixin ColorsUtilityMixin<T extends Style<Object?>>
     on MixUtility<T, Prop<Color>> {
-  T _wrapColor(ColorSwatch color, [int? shade]) =>
-      utilityBuilder(Prop.value(shade == null ? color : color[shade]!));
+  T _wrapColor(ColorSwatch color, [int? shade]) {
+    final selectedColor = shade == null ? color : (color[shade] ?? color);
+    return utilityBuilder(Prop.value(selectedColor));
+  }
 
   // Use MaterialColorCallableUtility to support both .grey(300) and .grey.shade300()
   late final red = MaterialColorCallableUtility(utilityBuilder, Colors.red);
@@ -214,5 +227,13 @@ final class MaterialAccentColorUtility<T extends Style<Object?>>
   MaterialAccentColorUtility(super.builder, MaterialAccentColor super.color);
 
   /// Gets the underlying MaterialAccentColor for shade access.
-  MaterialAccentColor get materialAccentColor => color as MaterialAccentColor;
+  MaterialAccentColor get materialAccentColor {
+    if (color is! MaterialAccentColor) {
+      throw StateError(
+        'MaterialAccentColorUtility was constructed with a Color that is not a '
+        'MaterialAccentColor. Expected MaterialAccentColor but got ${color.runtimeType}.',
+      );
+    }
+    return color as MaterialAccentColor;
+  }
 }

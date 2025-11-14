@@ -6,8 +6,11 @@ abstract class MixError {
     Type type,
     List<String> supportedTypes,
   ) {
-    final supportedTypesFormated =
-        '${supportedTypes.sublist(0, supportedTypes.length - 1).join(', ')} and ${supportedTypes.last}';
+    final supportedTypesFormated = switch (supportedTypes.length) {
+      0 => 'none',
+      1 => supportedTypes.first,
+      _ => '${supportedTypes.sublist(0, supportedTypes.length - 1).join(', ')} and ${supportedTypes.last}'
+    };
 
     return FlutterError.fromParts([
       ErrorSummary('Unsupported $type type'),

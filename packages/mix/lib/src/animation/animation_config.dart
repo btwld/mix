@@ -1014,7 +1014,9 @@ class KeyframeTrack<T> with Equatable {
         curve: Interval(
           0.0,
           totalDuration.inMilliseconds.toDouble() /
-              timelineDuration.inMilliseconds,
+              (timelineDuration.inMilliseconds == 0
+                  ? 1
+                  : timelineDuration.inMilliseconds),
         ),
       ),
     );

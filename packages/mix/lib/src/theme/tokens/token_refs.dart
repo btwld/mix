@@ -166,8 +166,21 @@ void clearTokenRegistry() {
 /// Returns the token associated with a token reference value.
 ///
 /// Returns null if the value is not a registered token reference.
+///
+/// Note: This function performs an unsafe cast from untyped MixToken to MixToken<T>.
+/// The type safety relies on tokens being registered with the correct type.
 MixToken<T>? getTokenFromValue<T>(Object value) {
-  return _tokenRegistry[value] as MixToken<T>?;
+  final token = _tokenRegistry[value];
+  if (token == null) return null;
+
+  // Defensive: Attempt to return the token with expected type
+  // Type safety depends on correct registration
+  try {
+    return token as MixToken<T>?;
+  } catch (e) {
+    // If cast fails, return null rather than crashing
+    return null;
+  }
 }
 
 /// Token reference for [double] values that implements the double interface.

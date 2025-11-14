@@ -715,37 +715,40 @@ class ModifierListTween extends Tween<List<WidgetModifier>?> {
 
   @override
   List<WidgetModifier>? lerp(double t) {
-    List<WidgetModifier>? lerpedModifiers;
-    if (end != null) {
-      final thisModifiers = begin!;
-      final otherModifiers = end!;
+    // Handle null cases first
+    if (begin == null && end == null) return null;
+    if (begin == null) return end;
+    if (end == null) return begin;
 
-      // Create a map of modifiers by runtime type from the other list
-      final thisModifierMap = <Type, WidgetModifier>{};
+    // Now safe to use bang operators
+    final thisModifiers = begin!;
+    final otherModifiers = end!;
 
-      for (final modifier in thisModifiers) {
-        thisModifierMap[modifier.runtimeType] = modifier;
-      }
+    // Create a map of modifiers by runtime type from the other list
+    final thisModifierMap = <Type, WidgetModifier>{};
 
-      // Lerp each modifier from this list with its matching type from other
-      lerpedModifiers = [];
-      for (final modifier in otherModifiers) {
-        WidgetModifier? thisModifier = thisModifierMap[modifier.runtimeType];
-        thisModifier ??=
-            defaultModifier[modifier.runtimeType] as WidgetModifier?;
+    for (final modifier in thisModifiers) {
+      thisModifierMap[modifier.runtimeType] = modifier;
+    }
 
-        if (thisModifier != null) {
-          // Both have this modifier type, lerp them
-          // We need to use dynamic dispatch here since lerp is type-specific
-          final lerpedModifier =
-              thisModifier.lerp(modifier, t) as WidgetModifier;
-          lerpedModifiers.add(lerpedModifier);
-        } else {
-          // Only this has the modifier, fade it out if t > 0.5
+    // Lerp each modifier from this list with its matching type from other
+    final lerpedModifiers = <WidgetModifier>[];
+    for (final modifier in otherModifiers) {
+      WidgetModifier? thisModifier = thisModifierMap[modifier.runtimeType];
+      thisModifier ??=
+          defaultModifier[modifier.runtimeType] as WidgetModifier?;
 
-          if (t < 0.5) {
-            lerpedModifiers.add(modifier);
-          }
+      if (thisModifier != null) {
+        // Both have this modifier type, lerp them
+        // We need to use dynamic dispatch here since lerp is type-specific
+        final lerpedModifier =
+            thisModifier.lerp(modifier, t) as WidgetModifier;
+        lerpedModifiers.add(lerpedModifier);
+      } else {
+        // Only this has the modifier, fade it out if t > 0.5
+
+        if (t < 0.5) {
+          lerpedModifiers.add(modifier);
         }
       }
     }
