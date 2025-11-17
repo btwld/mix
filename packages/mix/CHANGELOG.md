@@ -1,4 +1,4 @@
-## 2.0.0-rc.6
+## 2.0.0-rc.0
 
 - refactor: `Stack` and `StackBox`
 - refactor: introduce Style.of() and Style.maybeOf() static methods
