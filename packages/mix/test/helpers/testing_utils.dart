@@ -783,7 +783,7 @@ extension WrappedStackSpecAccess on StyleSpec<StackSpec> {
   AlignmentGeometry? get alignment => spec.alignment;
 }
 
-extension WrappedZBoxSpecAccess on StyleSpec<ZBoxSpec> {
+extension WrappedZBoxSpecAccess on StyleSpec<StackBoxSpec> {
   BoxSpec? get box => spec.box?.spec;
   StackSpec? get stack => spec.stack?.spec;
 }
