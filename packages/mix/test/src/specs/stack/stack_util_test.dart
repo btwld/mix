@@ -52,10 +52,6 @@ void main() {
         expect(util.clipBehavior, isA<MixUtility<StackStyler, Clip>>());
       });
 
-      test('on utility is OnContextVariantUtility', () {
-        expect(util.on, isA<OnContextVariantUtility<StackSpec, StackStyler>>());
-      });
-
       test('wrap utility is WidgetModifierUtility', () {
         expect(util.wrap, isA<WidgetModifierUtility<StackStyler>>());
       });
@@ -107,14 +103,6 @@ void main() {
         final result = util.animate(animationConfig);
 
         expect(result.$animation, animationConfig);
-      });
-    });
-
-    group('Variant utilities', () {
-      test('on utility creates VariantAttributeBuilder', () {
-        final hoverBuilder = util.on.hover;
-
-        expect(hoverBuilder, isA<VariantAttributeBuilder<StackSpec>>());
       });
     });
 

@@ -10,11 +10,11 @@ import '../../core/style_spec.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../style/mixins/animation_style_mixin.dart';
 import '../../style/mixins/flex_style_mixin.dart';
-import '../../style/mixins/widget_modifier_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
+import '../../style/mixins/widget_modifier_style_mixin.dart';
 import '../../style/mixins/widget_state_variant_mixin.dart';
-import 'flex_spec.dart';
 import 'flex_mutable_style.dart';
+import 'flex_spec.dart';
 
 typedef FlexMix = FlexStyler;
 
@@ -82,11 +82,6 @@ class FlexStyler extends Style<FlexSpec>
     TextBaseline? textBaseline,
     Clip? clipBehavior,
     double? spacing,
-    @Deprecated(
-      'Use spacing instead. '
-      'This feature was deprecated after Mix v2.0.0.',
-    )
-    double? gap,
     AnimationConfig? animation,
     WidgetModifierConfig? modifier,
     List<VariantStyle<FlexSpec>>? variants,
@@ -99,7 +94,7 @@ class FlexStyler extends Style<FlexSpec>
          textDirection: Prop.maybe(textDirection),
          textBaseline: Prop.maybe(textBaseline),
          clipBehavior: Prop.maybe(clipBehavior),
-         spacing: Prop.maybe(spacing ?? gap),
+         spacing: Prop.maybe(spacing),
          animation: animation,
          modifier: modifier,
          variants: variants,
@@ -107,25 +102,9 @@ class FlexStyler extends Style<FlexSpec>
 
   static FlexMutableStyler get chain => FlexMutableStyler(FlexStyler());
 
-  /// The gap between children.
-  @Deprecated(
-    'Use \$spacing instead. '
-    'This feature was deprecated after Mix v2.0.0.',
-  )
-  Prop<double>? get $gap => $spacing;
-
   /// Sets clip behavior
   FlexStyler clipBehavior(Clip value) {
     return merge(FlexStyler(clipBehavior: value));
-  }
-
-  /// Sets gap
-  @Deprecated(
-    'Use spacing instead. '
-    'This feature was deprecated after Mix v2.0.0.',
-  )
-  FlexStyler gap(double value) {
-    return merge(FlexStyler(spacing: value));
   }
 
   FlexStyler modifier(WidgetModifierConfig value) {

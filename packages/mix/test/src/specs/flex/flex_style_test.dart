@@ -20,7 +20,6 @@ void main() {
         expect(flexMix.$textDirection, isNull);
         expect(flexMix.$textBaseline, isNull);
         expect(flexMix.$clipBehavior, isNull);
-        expect(flexMix.$gap, isNull);
       });
 
       test(
@@ -112,7 +111,7 @@ void main() {
       });
 
       test('gap factory creates correct FlexStyle', () {
-        final flexMix = FlexStyler().gap(12.0);
+        final flexMix = FlexStyler();
         expect(flexMix.$spacing, resolvesTo(12.0));
       });
     });
@@ -159,7 +158,7 @@ void main() {
 
       test('gap method creates new instance', () {
         final original = FlexStyler();
-        final modified = original.gap(20.0);
+        final modified = original;
 
         expect(identical(original, modified), isFalse);
         expect(modified.$spacing, resolvesTo(20.0));

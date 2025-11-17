@@ -217,7 +217,7 @@ class TypeUtils {
 
   /// Extracts the type argument from a Dto class.
   ///
-  /// For example, if the class is UserDto extends Dto<User>,
+  /// For example, if the class is UserDto extends Dto\<User>,
   /// this will return the User type.
   static DartType? extractDtoTypeArgument(ClassElement classElement) {
     try {
