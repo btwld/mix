@@ -109,11 +109,6 @@ void main() {
         final flexMix = FlexStyler().spacing(12.0);
         expect(flexMix.$spacing, resolvesTo(12.0));
       });
-
-      test('gap factory creates correct FlexStyle', () {
-        final flexMix = FlexStyler();
-        expect(flexMix.$spacing, resolvesTo(12.0));
-      });
     });
 
     group('Builder methods', () {
@@ -151,14 +146,6 @@ void main() {
       test('spacing method creates new instance', () {
         final original = FlexStyler();
         final modified = original.spacing(20.0);
-
-        expect(identical(original, modified), isFalse);
-        expect(modified.$spacing, resolvesTo(20.0));
-      });
-
-      test('gap method creates new instance', () {
-        final original = FlexStyler();
-        final modified = original;
 
         expect(identical(original, modified), isFalse);
         expect(modified.$spacing, resolvesTo(20.0));

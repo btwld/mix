@@ -342,9 +342,10 @@ void main() {
       });
 
       test('chaining after construction with initial mix', () {
-        final utility = FlexMutableStyler(
-          FlexStyler(direction: Axis.horizontal),
-        )..mainAxisAlignment(MainAxisAlignment.center);
+        final utility =
+            FlexMutableStyler(FlexStyler(direction: Axis.horizontal))
+              ..mainAxisAlignment(MainAxisAlignment.center)
+              ..spacing(8);
 
         final spec = utility.resolve(MockBuildContext());
 
