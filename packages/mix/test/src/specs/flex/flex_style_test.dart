@@ -20,7 +20,6 @@ void main() {
         expect(flexMix.$textDirection, isNull);
         expect(flexMix.$textBaseline, isNull);
         expect(flexMix.$clipBehavior, isNull);
-        expect(flexMix.$gap, isNull);
       });
 
       test(
@@ -110,11 +109,6 @@ void main() {
         final flexMix = FlexStyler().spacing(12.0);
         expect(flexMix.$spacing, resolvesTo(12.0));
       });
-
-      test('gap factory creates correct FlexStyle', () {
-        final flexMix = FlexStyler().gap(12.0);
-        expect(flexMix.$spacing, resolvesTo(12.0));
-      });
     });
 
     group('Builder methods', () {
@@ -152,14 +146,6 @@ void main() {
       test('spacing method creates new instance', () {
         final original = FlexStyler();
         final modified = original.spacing(20.0);
-
-        expect(identical(original, modified), isFalse);
-        expect(modified.$spacing, resolvesTo(20.0));
-      });
-
-      test('gap method creates new instance', () {
-        final original = FlexStyler();
-        final modified = original.gap(20.0);
 
         expect(identical(original, modified), isFalse);
         expect(modified.$spacing, resolvesTo(20.0));

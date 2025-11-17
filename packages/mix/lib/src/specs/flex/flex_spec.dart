@@ -47,20 +47,8 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
     this.textDirection,
     this.textBaseline,
     this.clipBehavior,
-    double? spacing,
-    @Deprecated(
-      'Use spacing instead. '
-      'This feature was deprecated after Mix v2.0.0.',
-    )
-    double? gap,
-  }) : spacing = spacing ?? gap;
-
-  /// The gap between children.
-  @Deprecated(
-    'Use spacing instead. '
-    'This feature was deprecated after Mix v2.0.0.',
-  )
-  double? get gap => spacing;
+    this.spacing,
+  });
 
   /// Creates a copy of this [FlexSpec] with the given properties replaced.
   @override
@@ -74,11 +62,6 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
     TextBaseline? textBaseline,
     Clip? clipBehavior,
     double? spacing,
-    @Deprecated(
-      'Use spacing instead. '
-      'This feature was deprecated after Mix v2.0.0.',
-    )
-    double? gap,
   }) {
     return FlexSpec(
       direction: direction ?? this.direction,
@@ -89,7 +72,7 @@ final class FlexSpec extends Spec<FlexSpec> with Diagnosticable {
       textDirection: textDirection ?? this.textDirection,
       textBaseline: textBaseline ?? this.textBaseline,
       clipBehavior: clipBehavior ?? this.clipBehavior,
-      spacing: spacing ?? gap ?? this.spacing,
+      spacing: spacing ?? this.spacing,
     );
   }
 
