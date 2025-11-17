@@ -1,32 +1,14 @@
-## 2.0.0-dev.6
+## 2.0.0-rc.6
 
 - refactor: `Stack` and `StackBox`
 - refactor: introduce Style.of() and Style.maybeOf() static methods
 - feat: Implement call method for `Stack` and `FlexBox` 
 - feat: add number directives and extension for numeric transformations
-
-## 2.0.0-dev.5
-
 - fix: VariantStyle merge
 - refactor: extract widget state variant mixins into separate files
 - feat: Add DefaultStyledText and DefaultStyledIcon typedefs
 - refactor: remove unsupported widget state variants
-
-## 2.0.0-dev.4
-
 - fix: widget state tracking logic in StyleBuilder
-
-## 2.0.0-dev.3
-
-- small update public beta
-
-## 2.0.0-dev.2
-
-- First public beta
-
-## 2.0.0-dev.1
-
-- Initial development version for Mix 2.0
 
 ### 1.7.0
 
