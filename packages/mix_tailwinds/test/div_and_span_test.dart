@@ -750,6 +750,26 @@ void main() {
     expect(parser.wantsFlex({'bg-blue-500'}), isFalse);
   });
 
+  test('wantsFlex detects flex-implying properties', () {
+    final parser = TwParser();
+    // items-* implies flex
+    expect(parser.wantsFlex({'items-center'}), isTrue);
+    expect(parser.wantsFlex({'items-start'}), isTrue);
+    expect(parser.wantsFlex({'md:items-end'}), isTrue);
+    // justify-* implies flex
+    expect(parser.wantsFlex({'justify-between'}), isTrue);
+    expect(parser.wantsFlex({'justify-center'}), isTrue);
+    expect(parser.wantsFlex({'lg:justify-end'}), isTrue);
+    // gap-* implies flex
+    expect(parser.wantsFlex({'gap-4'}), isTrue);
+    expect(parser.wantsFlex({'gap-x-2'}), isTrue);
+    expect(parser.wantsFlex({'gap-y-6'}), isTrue);
+    expect(parser.wantsFlex({'md:gap-8'}), isTrue);
+    // Non-flex tokens should still return false
+    expect(parser.wantsFlex({'p-4'}), isFalse);
+    expect(parser.wantsFlex({'text-center'}), isFalse);
+  });
+
   test('Parser defaults to column for prefixed-only flex tokens', () {
     final parser = TwParser();
 
