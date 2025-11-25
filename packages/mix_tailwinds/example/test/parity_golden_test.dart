@@ -22,12 +22,12 @@ void main() {
     FlutterError.onError = originalOnError;
   });
 
-  Future<void> _pumpAtWidth(WidgetTester tester, double width) async {
-    tester.binding.window.devicePixelRatioTestValue = 1;
-    tester.binding.window.physicalSizeTestValue = Size(width, 2000);
+  Future<void> pumpAtWidth(WidgetTester tester, double width) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = Size(width, 2000);
     addTearDown(() {
-      tester.binding.window.clearPhysicalSizeTestValue();
-      tester.binding.window.clearDevicePixelRatioTestValue();
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
     });
 
     await tester.pumpWidget(
@@ -52,7 +52,7 @@ void main() {
 
   for (final width in widths) {
     testWidgets('matches Flutter golden at ${width.toInt()}px', (tester) async {
-      await _pumpAtWidth(tester, width);
+      await pumpAtWidth(tester, width);
       await expectLater(
         find.byType(TailwindParityPreview),
         matchesGoldenFile('goldens/flutter-plan-card-${width.toInt()}.png'),
