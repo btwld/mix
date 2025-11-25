@@ -399,7 +399,15 @@ class TwParser {
   bool wantsFlex(Set<String> tokens) {
     for (final token in tokens) {
       final base = token.substring(token.lastIndexOf(':') + 1);
+      // Explicit flex tokens
       if (base == 'flex' || base == 'flex-row' || base == 'flex-col') {
+        return true;
+      }
+      // Flex-only properties that imply flex intent
+      if (base.startsWith('items-') ||
+          base.startsWith('justify-') ||
+          base.startsWith('gap-') ||
+          base == 'gap') {
         return true;
       }
     }
