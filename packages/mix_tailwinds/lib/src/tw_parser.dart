@@ -6,6 +6,14 @@ import 'tw_utils.dart';
 
 typedef Warn = void Function(String token);
 
+/// Extension to provide convenience method for wrapping default text styles.
+extension BoxStylerTextStyleExtension on BoxStyler {
+  /// Wraps this box styler with a default text style modifier.
+  BoxStyler wrapDefaultTextStyle(TextStyleMix textStyle) {
+    return wrap(WidgetModifierConfig.defaultTextStyle(style: textStyle));
+  }
+}
+
 const Map<String, ElevationShadow> _shadowElevationTokens = {
   'shadow-sm': ElevationShadow.one,
   'shadow': ElevationShadow.two,
