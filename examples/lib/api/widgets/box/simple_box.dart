@@ -5,9 +5,10 @@
 /// styled container.
 ///
 /// Key concepts:
-/// - Using BoxStyle() to create box styles
+/// - Using BoxStyler() to create box styles (recommended)
+/// - Alternative: Using $box accessor for BoxMutableStyler
 /// - Setting color, width, and height properties
-/// - Applying border radius with BorderRadiusMix
+/// - Applying border radius with borderRounded()
 // ignore_for_file: unused_local_variable, avoid-commented-out-code
 
 library;
@@ -25,32 +26,27 @@ class Example extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // OLD Syntax
-    // final boxStyle = Style(
-    //   $box.color(Colors.red),
-    //   $box.height(100),
-    //   $box.width(100),
-    //   $box.borderRadius(10),
-    // );
+    // RECOMMENDED: BoxStyler() API
+    final boxStyle = BoxStyler()
+        .color(Colors.red)
+        .size(100, 100)
+        .borderRounded(10);
 
-    // NEW Fluent API with dot notation
+    // ALTERNATIVE: $box accessor (returns BoxMutableStyler)
+    // Provides the same fluent API as BoxStyler()
     final fluentStyle = $box
         .color(Colors.red)
         .height(100)
         .width(100)
         .borderRounded(10);
 
-    /// Builder Pattern Syntax for backwards compatibility
+    // LEGACY: Builder pattern with cascade notation
+    // Still works but BoxStyler() or $box is preferred
     final builderStyle = $box
       ..color.red()
       ..height(100)
       ..width(100)
       ..borderRadius.circular(10);
-
-    final boxStyle = BoxStyler()
-        .color(Colors.red)
-        .size(100, 100)
-        .borderRounded(10);
 
     return Box(style: boxStyle);
     // or

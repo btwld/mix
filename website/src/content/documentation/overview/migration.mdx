@@ -2,11 +2,151 @@ import { Callout } from "nextra/components";
 
 # Migration Guide
 
-<Callout type="error">
-  This documentation is currently under development and may contain outdated content.
-</Callout>
+This guide covers migrating between major versions of Mix.
+
+## 1.x to 2.0
+
+Mix 2.0 introduces a new fluent Styler API that replaces the utility-prefix pattern from v1.x. This change provides better IDE support, more intuitive method chaining, and improved type safety.
+
+### Breaking Changes
+
+#### Style API Overhaul
+
+The biggest change is moving from the `Style()` constructor with utility prefixes to dedicated Styler classes:
+
+| v1.x Pattern | v2.0 Pattern |
+|--------------|--------------|
+| `Style($box.color.blue())` | `BoxStyler().color(Colors.blue)` |
+| `Style($text.style.fontSize(16))` | `TextStyler().fontSize(16)` |
+| `Style($icon.size(24))` | `IconStyler().size(24)` |
+| `Style($flex.gap(8))` | `FlexBoxStyler().gap(8)` |
+| `Style($stack.alignment.center())` | `StackBoxStyler().alignment(Alignment.center)` |
+
+#### Utility Prefixes Removed
+
+The `$box`, `$text`, `$icon`, `$flex`, `$stack` utility prefixes are no longer used. Instead, use the corresponding Styler class:
+
+```dart
+// v1.x
+final style = Style(
+  $box.color.blue(),
+  $box.padding(16),
+  $box.borderRadius(8),
+);
+
+// v2.0
+final style = BoxStyler()
+    .color(Colors.blue)
+    .paddingAll(16)
+    .borderRounded(8);
+```
+
+#### Context Variants
+
+The `$on` namespace is replaced with method calls directly on the Styler:
+
+| v1.x Pattern | v2.0 Pattern |
+|--------------|--------------|
+| `$on.hover(...)` | `.onHovered(...)` |
+| `$on.press(...)` | `.onPressed(...)` |
+| `$on.focus(...)` | `.onFocused(...)` |
+| `$on.disabled(...)` | `.onDisabled(...)` |
+| `$on.dark(...)` | `.onDark(...)` |
+| `$on.light(...)` | `.onLight(...)` |
+
+```dart
+// v1.x
+final style = Style(
+  $box.color.blue(),
+  $on.hover($box.color.red()),
+  $on.dark($box.color.white()),
+);
+
+// v2.0
+final style = BoxStyler()
+    .color(Colors.blue)
+    .onHovered(BoxStyler().color(Colors.red))
+    .onDark(BoxStyler().color(Colors.white));
+```
+
+#### Widget Modifiers
+
+The `$with` namespace is replaced with `.wrap*()` methods:
+
+| v1.x Pattern | v2.0 Pattern |
+|--------------|--------------|
+| `$with.opacity(0.5)` | `.wrapOpacity(0.5)` |
+| `$with.scale(2)` | `.wrapScale(2)` |
+| `$with.rotate(45)` | `.wrapRotate(45)` |
+
+#### Theming
+
+`MixTheme` and `MixThemeData` are replaced with `MixScope`:
+
+```dart
+// v1.x
+MixTheme(
+  data: MixThemeData(
+    colors: {primaryColor: Colors.blue},
+  ),
+  child: MyApp(),
+);
+
+// v2.0
+MixScope(
+  colors: {primaryColor: Colors.blue},
+  child: MyApp(),
+);
+```
+
+#### Token Usage
+
+Token resolution syntax has changed:
+
+```dart
+// v1.x
+$box.color.ref(primaryColor)
+
+// v2.0
+BoxStyler().color(primaryColor())
+// or with token method
+BoxStyler().colorToken(primaryColor)
+```
+
+### Widget Name Changes
+
+| v1.x Widget | v2.0 Widget |
+|-------------|-------------|
+| `StyledBox` | `Box` |
+| `StyledFlex` | `FlexBox` |
+| `StyledRow` | `RowBox` |
+| `StyledColumn` | `ColumnBox` |
+| `StyledStack` | `StackBox` |
+| `PressableBox` | `Pressable` + `Box` (separate) |
+
+### New Features in 2.0
+
+- **Fluent Styler API**: Chain methods for better readability
+- **Callable Stylers**: Use `BoxStyler()...()` as shorthand for creating widgets
+- **Style.of() / Style.maybeOf()**: Access resolved styles from the widget tree
+- **Number directives**: `multiply()`, `add()`, `subtract()`, `divide()`, `clamp()`
+- **Improved animation support**: Better integration with animation configs
+
+### Migration Tips
+
+1. **Start with imports**: Replace `Style(` with the appropriate Styler class
+2. **Update utility calls**: Convert `$box.property()` to `.property()` method chains
+3. **Update variants**: Replace `$on.hover()` with `.onHovered()`
+4. **Update modifiers**: Replace `$with.opacity()` with `.wrapOpacity()`
+5. **Update theming**: Replace `MixTheme` with `MixScope`
+
+---
 
 ## 0.0.7 to 1.0.0
+
+<Callout type="warning">
+  This section documents migration from legacy versions. If you're upgrading to Mix 2.0, see the section above.
+</Callout>
 
 In our pursuit of API usability and efficiency, we introduced several deprecations in the latest Mix Package versions. If you encounter issues not covered by deprecation notices, please [open an issue or send a PR to our deprecation file](https://github.com/btwld/mix/blob/main/lib/src/deprecations.dart).
 

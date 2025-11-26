@@ -41,14 +41,23 @@ Mix addresses these challenges by creating a styling system that uses utility fu
 
 ### **Powerful Styling API**:
 
-Styles are easily defined using the `Style` class, which allows you to define a style's properties and values. Here's an example of defining a style:
+Styles are easily defined using Styler classes like `BoxStyler` and `TextStyler`, which provide a fluent, chainable API for defining style properties:
 
 ```dart
-final style = Style(
-  $box.height(100),
-  $box.width(100),
-  $box.color.purple(),
-  $box.borderRadius(10),
+final cardStyle = BoxStyler()
+    .height(100)
+    .width(240)
+    .color(Colors.purple)
+    .borderRounded(12)
+    .paddingAll(16);
+
+// Apply the style to a Box widget
+Box(
+  style: cardStyle,
+  child: StyledText(
+    'Hello Mix',
+    style: TextStyler().color(Colors.white).fontSize(18),
+  ),
 );
 ```
 
@@ -58,42 +67,39 @@ Learn more about [styling](https://fluttermix.com/docs/guides/styling)
 
 First-class support for variants, allowing you to define styling variations that can be applied conditionally or responsively.
 
-```dart {1, 8-12, 15}
+```dart
+// Define a named variant
 const onOutlined = NamedVariant('outlined');
 
-final baseStyle = Style(
-  $box.borderRadius(10),
-  $box.color.black(),
-  $text.style.color.white(),
+// Create a base style with variant support
+final baseStyle = BoxStyler()
+    .borderRounded(10)
+    .color(Colors.black)
+    .variant(
+      onOutlined,
+      BoxStyler()
+          .color(Colors.transparent)
+          .borderAll(color: Colors.black),
+    );
 
-  onOutlined(
-    $box.color.transparent(),
-    $box.border.color.black(),
-    $text.style.color.black(),
-  ),
-);
-
+// Apply the variant when needed
 final outlinedStyle = baseStyle.applyVariant(onOutlined);
 ```
 
-Learn more about [variants](https://fluttermix.com/docs/guides/variants)
+Learn more about [dynamic styling](https://fluttermix.com/docs/guides/dynamic-styling)
 
 ### **BuildContext Responsive Styling**:
 
-Mix allows you to define styles that are context-aware, allowing you to apply styles conditionally based on the BuildContext.
+Mix allows you to define styles that are context-aware, applying styles conditionally based on the BuildContext.
 
-```dart {4-7}
-final style = Style(
-  $box.color.black(),
-  $text.style.color.white(),
-  $on.dark(
-    $box.color.white(),
-    $text.style.color.black(),
-  ),
-);
+```dart
+final style = BoxStyler()
+    .color(Colors.black)
+    .onDark(BoxStyler().color(Colors.white))
+    .onLight(BoxStyler().color(Colors.black));
 ```
 
-Learn more about [context variants](https://fluttermix.com/docs/guides/variants#context-variants)
+Learn more about [dynamic styling](https://fluttermix.com/docs/guides/dynamic-styling)
 
 ### **Design Tokens and Theming**:
 
@@ -104,11 +110,12 @@ Mix goes beyond the Material `Theme` definitions by allowing the definition of d
 A complete set of utility primitives allows you to define styling properties and values in a more intuitive and composable way.
 
 ```dart
-$box.padding(20); /// Padding 20 on all sides
-$box.padding(20, 10); /// Padding 20 on top and bottom, 10 on left and right
-
-$box.padding.top(20); /// Padding 20 on top
-$box.padding.horizontal(20); /// Padding 20 on left and right
+BoxStyler()
+    .paddingAll(20)           // Padding 20 on all sides
+    .paddingX(16)             // Padding 16 on left and right
+    .paddingY(8)              // Padding 8 on top and bottom
+    .paddingTop(20)           // Padding 20 on top
+    .paddingHorizontal(20);   // Padding 20 on left and right
 ```
 
 Learn more about [utilities](https://fluttermix.com/docs/overview/utility-first)
