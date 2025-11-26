@@ -23,6 +23,40 @@ const Map<String, ElevationShadow> _shadowElevationTokens = {
   'shadow-2xl': ElevationShadow.twelve,
 };
 
+/// Tailwind ease token mapping to Flutter curves.
+const Map<String, Curve> _easeTokens = {
+  'ease-linear': Curves.linear,
+  'ease-in': Curves.easeIn,
+  'ease-out': Curves.easeOut,
+  'ease-in-out': Curves.easeInOut,
+};
+
+/// Transition trigger tokens that enable animation.
+const Set<String> _transitionTriggerTokens = {
+  'transition',
+  'transition-all',
+  'transition-colors',
+  'transition-opacity',
+  'transition-shadow',
+  'transition-transform',
+};
+
+/// Returns true if the token is an animation-related token.
+bool _isAnimationToken(String token) {
+  if (_transitionTriggerTokens.contains(token)) return true;
+  if (token == 'transition-none') return true;
+  if (_easeTokens.containsKey(token)) return true;
+
+  // Only match valid numeric duration/delay
+  if (token.startsWith('duration-')) {
+    return int.tryParse(token.substring(9)) != null;
+  }
+  if (token.startsWith('delay-')) {
+    return int.tryParse(token.substring(6)) != null;
+  }
+  return false;
+}
+
 final Map<String, FlexBoxStyler Function(FlexBoxStyler)> _flexAtomicHandlers = {
   // Use CrossAxisAlignment.start to achieve left-aligned content visually matching CSS.
   // Note: CSS default is stretch, but Flutter's stretch requires bounded constraints
@@ -450,6 +484,75 @@ class TwParser {
     return styler;
   }
 
+  /// Parses animation tokens and returns CurveAnimationConfig or null.
+  ///
+  /// Returns null if:
+  /// - No transition trigger token is present
+  /// - transition-none is present (explicitly disables animation)
+  ///
+  /// When `transition` is present with no explicit modifiers, Tailwind defaults apply:
+  /// - Duration: 150ms
+  /// - Curve: Curves.easeOut
+  /// - Delay: 0ms
+  CurveAnimationConfig? parseAnimation(String classNames) {
+    final tokens = listTokens(classNames);
+
+    var hasTransition = false;
+    var hasTransitionNone = false;
+    var duration = const Duration(milliseconds: 150); // Tailwind default
+    Curve curve = Curves.easeOut; // Tailwind default
+    var delay = Duration.zero;
+
+    for (final token in tokens) {
+      final base = token.substring(token.lastIndexOf(':') + 1);
+
+      // Transition triggers (all aliases map to same behavior)
+      if (_transitionTriggerTokens.contains(base)) {
+        hasTransition = true;
+      }
+      // Explicit disable
+      else if (base == 'transition-none') {
+        hasTransitionNone = true;
+      }
+      // Duration (last-wins via reassignment)
+      else if (base.startsWith('duration-')) {
+        final key = base.substring(9);
+        final ms = int.tryParse(key);
+        if (ms != null) {
+          duration = Duration(milliseconds: ms);
+        } else {
+          onUnsupported?.call(token);
+        }
+      }
+      // Ease (last-wins via reassignment)
+      else if (_easeTokens.containsKey(base)) {
+        curve = _easeTokens[base]!;
+      }
+      // Delay (last-wins via reassignment)
+      else if (base.startsWith('delay-')) {
+        final key = base.substring(6);
+        final ms = int.tryParse(key);
+        if (ms != null) {
+          delay = Duration(milliseconds: ms);
+        } else {
+          onUnsupported?.call(token);
+        }
+      }
+    }
+
+    // transition-none disables everything
+    if (hasTransitionNone) return null;
+
+    // No trigger = no animation
+    if (!hasTransition) return null;
+
+    return CurveAnimationConfig(
+      duration: duration,
+      curve: curve,
+      delay: delay,
+    );
+  }
+
   /// Generic prefix handler that applies variant modifiers and breakpoints.
   /// This is the single source of truth for prefix handling logic.
   S _applyPrefixedToken<S>(
@@ -646,6 +749,8 @@ class TwParser {
     } else if (token.startsWith('rounded-')) {
       final suffix = token.substring(8);
       result = styler.borderRounded(config.radiusOf(suffix));
+    } else if (_isAnimationToken(token)) {
+      // Animation tokens handled by parseAnimation(), don't report as unsupported
     } else {
       handled = false;
     }
@@ -778,6 +883,8 @@ class TwParser {
           handled = false;
         }
       }
+    } else if (_isAnimationToken(token)) {
+      // Animation tokens handled by parseAnimation(), don't report as unsupported
     } else {
       handled = false;
     }
@@ -813,6 +920,8 @@ class TwParser {
           handled = false;
         }
       }
+    } else if (_isAnimationToken(token)) {
+      // Animation tokens handled by parseAnimation(), don't report as unsupported
     } else {
       handled = false;
     }

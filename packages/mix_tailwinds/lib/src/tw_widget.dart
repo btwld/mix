@@ -30,11 +30,15 @@ class Div extends StatelessWidget {
     final parser = TwParser(config: cfg, onUnsupported: onUnsupported);
     final tokens = parser.setTokens(classNames);
     final shouldUseFlex = isFlex ?? parser.wantsFlex(tokens);
+    final animationConfig = parser.parseAnimation(classNames);
 
     Widget built;
 
     if (shouldUseFlex) {
-      final flexStyle = parser.parseFlex(classNames);
+      var flexStyle = parser.parseFlex(classNames);
+      if (animationConfig != null) {
+        flexStyle = flexStyle.animate(animationConfig);
+      }
       final rawChildren = children.isNotEmpty
           ? List<Widget>.from(children)
           : (child != null ? <Widget>[child!] : const <Widget>[]);
@@ -46,7 +50,10 @@ class Div extends StatelessWidget {
         rawChildren: rawChildren,
       );
     } else {
-      final boxStyle = parser.parseBox(classNames);
+      var boxStyle = parser.parseBox(classNames);
+      if (animationConfig != null) {
+        boxStyle = boxStyle.animate(animationConfig);
+      }
       final resolvedChild =
           child ?? (children.isNotEmpty ? Column(children: children) : null);
 
