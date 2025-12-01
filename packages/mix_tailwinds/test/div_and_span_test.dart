@@ -1528,31 +1528,31 @@ void main() {
   });
 
   // ==========================================================================
-  // Arbitrary Numeric Value Tests (P2)
+  // Non-Tailwind Value Warning Tests
   // ==========================================================================
 
-  test('duration-2000 parses as 2000ms (arbitrary value)', () {
-    final config = TwParser().parseAnimation('transition duration-2000');
-    expect(config, isNotNull);
-    expect(config!.duration, const Duration(milliseconds: 2000));
+  test('duration-2000 warns (not a valid Tailwind value)', () {
+    final seen = <String>[];
+    TwParser(onUnsupported: seen.add).parseAnimation('transition duration-2000');
+    expect(seen, contains('duration-2000'));
   });
 
-  test('duration-50 parses as 50ms (arbitrary value)', () {
-    final config = TwParser().parseAnimation('transition duration-50');
-    expect(config, isNotNull);
-    expect(config!.duration, const Duration(milliseconds: 50));
+  test('duration-50 warns (not a valid Tailwind value)', () {
+    final seen = <String>[];
+    TwParser(onUnsupported: seen.add).parseAnimation('transition duration-50');
+    expect(seen, contains('duration-50'));
   });
 
-  test('delay-2500 parses as 2500ms (arbitrary value)', () {
-    final config = TwParser().parseAnimation('transition delay-2500');
-    expect(config, isNotNull);
-    expect(config!.delay, const Duration(milliseconds: 2500));
+  test('delay-2500 warns (not a valid Tailwind value)', () {
+    final seen = <String>[];
+    TwParser(onUnsupported: seen.add).parseAnimation('transition delay-2500');
+    expect(seen, contains('delay-2500'));
   });
 
-  test('delay-25 parses as 25ms (arbitrary value)', () {
-    final config = TwParser().parseAnimation('transition delay-25');
-    expect(config, isNotNull);
-    expect(config!.delay, const Duration(milliseconds: 25));
+  test('delay-25 warns (not a valid Tailwind value)', () {
+    final seen = <String>[];
+    TwParser(onUnsupported: seen.add).parseAnimation('transition delay-25');
+    expect(seen, contains('delay-25'));
   });
 
   // ==========================================================================
