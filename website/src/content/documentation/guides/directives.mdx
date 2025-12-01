@@ -1,28 +1,249 @@
-## Directives
+---
+title: Directives
+---
 
-Directives in Mix are specialized attributes that define transformations to be applied to widgets during the build process. They are particularly useful for dynamically modifying widget properties based on specific conditions or parameters.
+import { Callout } from "nextra/components";
 
-## Example: Text Directives
+# Directives
 
-A prime example is the `TextDirective`, which allows for text case transformations in `StyledText` widgets.
+Directives transform values (text, numbers, colors) when a style is resolved. Unlike modifiers (which wrap widgets), directives transform the underlying data values.
 
-```dart {4}
+```dart
+// The text "hello world" is transformed to "HELLO WORLD" at build time
 StyledText(
   'hello world',
-  style: TextStyler().uppercase()
+  style: TextStyler().uppercase(),
 )
 ```
 
-In this example, the text "hello world" is transformed to "HELLO WORLD" using the `.uppercase()` directive.
+Directives can be chained:
 
-### Directives Catalog
+```dart
+// Chain: multiply by 2, then add 5, then clamp between 0-30
+final style = BoxStyler.create(
+  width: Prop.value(10.0).multiply(2).add(5).clamp(0, 30),
+);
+```
 
-Mix provides a range of directives, allowing for a variety of transformations to be applied to widgets. The following is a list of all available directives:
+## Text Directives
 
-#### Text Directives
+Transform strings in `StyledText` widgets:
 
-- `.capitalize()`: Capitalizes the first letter of each word.
-- `.uppercase()`: Converts all characters to uppercase.
-- `.lowercase()`: Converts all characters to lowercase.
-- `.titleCase()`: Transforms the first letter of each word in a sentence to uppercase.
-- `.sentenceCase()`: Transforms the first letter of the first word in a sentence to uppercase.
+### Available Text Directives
+
+| Method | Description | Example Input | Result |
+|--------|-------------|---------------|--------|
+| `.uppercase()` | Converts all characters to uppercase | "hello world" | "HELLO WORLD" |
+| `.lowercase()` | Converts all characters to lowercase | "Hello World" | "hello world" |
+| `.capitalize()` | Capitalizes the first letter of each word | "hello world" | "Hello World" |
+| `.titleCase()` | Transforms to title case format | "hello world" | "Hello World" |
+| `.sentenceCase()` | Capitalizes the first letter of the first word | "hello world" | "Hello world" |
+
+### Usage Examples
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:mix/mix.dart';
+
+// Uppercase text
+StyledText(
+  'welcome back',
+  style: TextStyler().uppercase().fontSize(18),
+)
+
+// Title case for headings
+StyledText(
+  'user profile settings',
+  style: TextStyler().titleCase().fontWeight(FontWeight.bold),
+)
+
+// Sentence case for descriptions
+StyledText(
+  'click here to continue',
+  style: TextStyler().sentenceCase().color(Colors.grey),
+)
+```
+
+## Number Directives
+
+Transform numeric values (width, height, padding, font sizes):
+
+### Available Number Directives
+
+| Method | Description | Example |
+|--------|-------------|---------|
+| `.multiply(factor)` | Multiplies by a factor | `Prop.value(10).multiply(2)` → 20 |
+| `.add(addend)` | Adds a value | `Prop.value(10).add(5)` → 15 |
+| `.subtract(value)` | Subtracts a value | `Prop.value(10).subtract(3)` → 7 |
+| `.divide(divisor)` | Divides by a value | `Prop.value(10).divide(2)` → 5 |
+| `.clamp(min, max)` | Constrains between bounds | `Prop.value(25).clamp(0, 20)` → 20 |
+| `.abs()` | Returns absolute value | `Prop.value(-10).abs()` → 10 |
+| `.round()` | Rounds to nearest integer | `Prop.value(15.7).round()` → 16 |
+| `.floor()` | Rounds down | `Prop.value(15.7).floor()` → 15 |
+| `.ceil()` | Rounds up | `Prop.value(15.3).ceil()` → 16 |
+| `.scale(ratio)` | Alias for multiply | `Prop.value(10).scale(1.5)` → 15 |
+
+### Usage Examples
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:mix/mix.dart';
+
+// Proportional typography scaling
+final style = TextStyler.create(
+  style: TextStyleMix(
+    letterSpacing: Prop.value(0.0025).multiply(12.0),
+  ),
+);
+
+// Dynamic sizing with tokens
+final $baseSize = DoubleToken('base.size');
+
+final boxStyle = BoxStyler.create(
+  width: Prop.token($baseSize).multiply(2),
+  height: Prop.token($baseSize).multiply(1.5),
+);
+
+// Clamped responsive values
+final responsiveStyle = BoxStyler.create(
+  padding: Prop.value(16.0).clamp(8, 32),
+);
+
+// Chaining multiple directives
+final chainedStyle = BoxStyler.create(
+  width: Prop.value(100.0).multiply(2).add(20).clamp(0, 300),
+);
+```
+
+<Callout type="warning">
+  Division always returns a double in Dart. The divisor cannot be zero.
+</Callout>
+
+## Color Directives
+
+Transform color values (opacity, brightness, saturation):
+
+### Available Color Directives
+
+| Method | Description |
+|--------|-------------|
+| `.withOpacity(opacity)` | Sets the alpha channel (0.0 to 1.0) |
+| `.withAlpha(alpha)` | Sets the alpha channel (0 to 255) |
+| `.darken(amount)` | Darkens the color by a percentage |
+| `.lighten(amount)` | Lightens the color by a percentage |
+| `.saturate(amount)` | Increases saturation |
+| `.desaturate(amount)` | Decreases saturation |
+| `.tint(amount)` | Mixes with white |
+| `.shade(amount)` | Mixes with black |
+| `.brighten(amount)` | Increases brightness |
+| `.withRed(value)` | Sets the red channel |
+| `.withGreen(value)` | Sets the green channel |
+| `.withBlue(value)` | Sets the blue channel |
+
+### Usage Examples
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:mix/mix.dart';
+
+// Semi-transparent background
+final style = BoxStyler()
+    .color(Colors.blue.withOpacity(0.5));
+
+// Hover state with darkened color
+final buttonStyle = BoxStyler()
+    .color(Colors.blue)
+    .onHovered(BoxStyler().color(Colors.blue.darken(10)));
+
+// Disabled state with desaturated color
+final disabledStyle = BoxStyler()
+    .color(Colors.blue.desaturate(50).withOpacity(0.6));
+```
+
+## Creating Custom Directives
+
+Extend `Directive<T>` to create application-specific transformations.
+
+### Text Directive Example
+
+```dart
+import 'package:mix/mix.dart';
+
+/// Directive that reverses a string
+final class ReverseStringDirective extends Directive<String> {
+  const ReverseStringDirective();
+
+  @override
+  String apply(String value) => value.split('').reversed.join();
+
+  @override
+  String get key => 'reverse';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is ReverseStringDirective;
+
+  @override
+  int get hashCode => key.hashCode;
+}
+
+// Usage with TextStyler
+extension ReverseTextDirective on TextStyler {
+  TextStyler reverse() {
+    return merge(
+      TextStyler(textDirectives: [const ReverseStringDirective()]),
+    );
+  }
+}
+
+// Apply the custom directive
+StyledText(
+  'hello',
+  style: TextStyler().reverse(), // Displays "olleh"
+)
+```
+
+### Number Directive Example
+
+```dart
+import 'package:mix/mix.dart';
+
+/// Directive that negates a number
+final class NegateNumberDirective extends NumberDirective {
+  const NegateNumberDirective();
+
+  @override
+  num apply(num value) => -value;
+
+  @override
+  String get key => 'number_negate';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is NegateNumberDirective;
+
+  @override
+  int get hashCode => key.hashCode;
+}
+
+// Extension to make it easy to use
+extension NegateNumberPropExt<T extends num> on Prop<T> {
+  Prop<num> negate() {
+    return directives([const NegateNumberDirective()]);
+  }
+}
+```
+
+## Best Practices
+
+- Use text directives for consistent case formatting
+- Use number directives for proportional sizing with tokens
+- Use color directives for state variations (hover, disabled)
+- Keep directives simple—complex logic belongs elsewhere
+
+**Chaining order matters:**
+
+```dart
+Prop.value(10).add(5).multiply(2)  // (10 + 5) * 2 = 30
+Prop.value(10).multiply(2).add(5)  // (10 * 2) + 5 = 25
+```
