@@ -41,18 +41,44 @@ const Set<String> _transitionTriggerTokens = {
   'transition-transform',
 };
 
+/// Valid Tailwind duration keys (matches TwConfig._standard.durations).
+const Set<String> _validDurationKeys = {
+  '0',
+  '75',
+  '100',
+  '150',
+  '200',
+  '300',
+  '500',
+  '700',
+  '1000',
+};
+
+/// Valid Tailwind delay keys (matches TwConfig._standard.delays).
+const Set<String> _validDelayKeys = {
+  '0',
+  '75',
+  '100',
+  '150',
+  '200',
+  '300',
+  '500',
+  '700',
+  '1000',
+};
+
 /// Returns true if the token is an animation-related token.
 bool _isAnimationToken(String token) {
   if (_transitionTriggerTokens.contains(token)) return true;
   if (token == 'transition-none') return true;
   if (_easeTokens.containsKey(token)) return true;
 
-  // Only match valid numeric duration/delay
+  // Only match valid Tailwind duration/delay values
   if (token.startsWith('duration-')) {
-    return int.tryParse(token.substring(9)) != null;
+    return _validDurationKeys.contains(token.substring(9));
   }
   if (token.startsWith('delay-')) {
-    return int.tryParse(token.substring(6)) != null;
+    return _validDelayKeys.contains(token.substring(6));
   }
   return false;
 }
@@ -517,7 +543,7 @@ class TwParser {
       // Duration (last-wins via reassignment)
       else if (base.startsWith('duration-')) {
         final key = base.substring(9);
-        final ms = int.tryParse(key);
+        final ms = config.durationOf(key);
         if (ms != null) {
           duration = Duration(milliseconds: ms);
         } else {
@@ -531,7 +557,7 @@ class TwParser {
       // Delay (last-wins via reassignment)
       else if (base.startsWith('delay-')) {
         final key = base.substring(6);
-        final ms = int.tryParse(key);
+        final ms = config.delayOf(key);
         if (ms != null) {
           delay = Duration(milliseconds: ms);
         } else {
@@ -933,7 +959,10 @@ class TwParser {
     return result;
   }
 
-  double? _sizeFrom(String key) => config.space[key];
+  double? _sizeFrom(String key) {
+    final value = config.spaceOf(key, fallback: double.nan);
+    return value.isNaN ? null : value;
+  }
 }
 
 bool _isFullOrScreenKey(String key) => key == 'full' || key == 'screen';

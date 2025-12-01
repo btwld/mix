@@ -9,6 +9,8 @@ class TwConfig {
     required this.breakpoints,
     required this.fontSizes,
     required this.colors,
+    required this.durations,
+    required this.delays,
   });
 
   final Map<String, double> space;
@@ -17,6 +19,8 @@ class TwConfig {
   final Map<String, double> breakpoints;
   final Map<String, double> fontSizes;
   final Map<String, Color> colors;
+  final Map<String, int> durations;
+  final Map<String, int> delays;
 
   double spaceOf(String key, {double fallback = 0}) => space[key] ?? fallback;
 
@@ -32,6 +36,10 @@ class TwConfig {
       fontSizes[key] ?? fallback;
 
   Color? colorOf(String key) => colors[key];
+
+  int? durationOf(String key) => durations[key];
+
+  int? delayOf(String key) => delays[key];
 
   static const TwConfig _standard = TwConfig(
     space: {
@@ -112,6 +120,28 @@ class TwConfig {
       'black': Colors.black,
       'white': Colors.white,
       'transparent': Colors.transparent,
+    },
+    durations: {
+      '0': 0,
+      '75': 75,
+      '100': 100,
+      '150': 150,
+      '200': 200,
+      '300': 300,
+      '500': 500,
+      '700': 700,
+      '1000': 1000,
+    },
+    delays: {
+      '0': 0,
+      '75': 75,
+      '100': 100,
+      '150': 150,
+      '200': 200,
+      '300': 300,
+      '500': 500,
+      '700': 700,
+      '1000': 1000,
     },
   );
 
