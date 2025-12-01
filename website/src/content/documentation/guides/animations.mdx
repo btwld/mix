@@ -23,6 +23,9 @@ Implicit animations are the easiest way to animate style changes—Mix interpola
 This example demonstrates an implicit animation in Mix. When the `appear` state changes, the box smoothly transitions its scale between 0.1 and 1 using the `.animate(...)` modifier. The `AnimationConfig.easeInOut(1.s)` sets the animation to use an ease-in-out curve over 1 second.
 
 ```dart
+import 'package:flutter/material.dart';
+import 'package:mix/mix.dart';
+
 class ScaleAnimation extends StatefulWidget {
   const ScaleAnimation({super.key});
 

@@ -180,13 +180,13 @@ To enhance readability, short aliases and shorthand property/method names are re
 
 #### Modifiers
 
-The order of modifiers was previously determined by their addition sequence. Now, we enforce a specific ordering but also allow customizable orders. This might cause behavior changes in rare cases. For details, refer to the [modifiers guide](https://fluttermix.com/docs/guides/modifiers).
+The order of modifiers was previously determined by their addition sequence. Now, we enforce a specific ordering but also allow customizable orders. This might cause behavior changes in rare cases. For details, refer to the [modifiers guide](/documentation/guides/widget-modifiers).
 
 ### StyledWidgets updates
 
 #### The new PressableBox
 
-To provide a more consistent way to use the gesture APIs, we developed a new widget that merges the functionalities of `Box` and `Pressable`. Thus, the new `PressableBox` can receive a style like a `Box` and also accept interactions and its variants, similar to a `Pressable`. For more information, see the [PressableBox guide](https://www.fluttermix.com/docs/widgets/pressable-box).
+To provide a more consistent way to use the gesture APIs, we developed a new widget that merges the functionalities of `Box` and `Pressable`. Thus, the new `PressableBox` can receive a style like a `Box` and also accept interactions and its variants, similar to a `Pressable`. For more information, see the [PressableBox guide](/documentation/widgets/pressable).
 Keep in mind that the idea is to reserve the old `Pressable` for more advanced cases.
 
 ### Behavior changes
@@ -197,11 +197,11 @@ Modifiers cannot be inherited by any children. The reason is that the abstract c
 
 #### Operators `and` (`&`) and `or` (`|`)
 
-The operators have been redesigned to allow for concatenation and grouping, enabling the creation of conditions like, `(primary | secondary) & onHover`. For details, refer to the [variants guide](https://www.fluttermix.com/docs/guides/variants#combining-operators)
+The operators have been redesigned to allow for concatenation and grouping, enabling the creation of conditions like, `(primary | secondary) & onHover`. For details, refer to the [variants guide](/documentation/guides/variants#combining-operators)
 
 #### StyledWidgets and Modifiers
 
-A bunch of `StyledWidgets` now allow receiving modifiers' attributes, including `StyledIcon`, `StyledFlex`, and `StyledIcon`. Additionally, when a modifier is not applied to a Style, a `RenderWidgetModifiers` will not be present in the widget tree. This simplification makes the widget easier to debug.
+Several `StyledWidgets` now allow receiving modifiers' attributes, including `StyledIcon`, `StyledFlex`, and `StyledText`. Additionally, when a modifier is not applied to a Style, a `RenderWidgetModifiers` will not be present in the widget tree. This simplification makes the widget easier to debug.
 
 #### Theming
 

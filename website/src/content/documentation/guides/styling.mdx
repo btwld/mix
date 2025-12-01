@@ -16,11 +16,14 @@ By using stylers, you separate presentation logic from your widget tree, making 
 Mix provides a chainable builder API that mirrors Flutter's naming conventions and behavior, making styles predictable and easy to read for Flutter developers:
 
 ```dart
+import 'package:flutter/material.dart';
+import 'package:mix/mix.dart';
+
 final style = BoxStyler()
-  .width(240)
-  .height(100)
-  .color(Colors.blue)
-  .borderRounded(12);
+    .width(240)
+    .height(100)
+    .color(Colors.blue)
+    .borderRounded(12);
 ```
 
 This familiar approach reduces the learning curve and makes your styling code feel natural within the Flutter ecosystem.

@@ -4,42 +4,85 @@ og_image: introduction-og.png
 ---
 # Introduction
 
-Mix is a simple and intuitive styling system for Flutter, enabling the creation of beautiful and consistent UIs with ease.
+Mix is a styling system for Flutter that separates style definitions from widget structure. It provides a composable, type-safe way to define and apply styles.
 
-Mix brings industry-proven design system concepts to Flutter. It separates style semantics from widgets while maintaining an easy-to-understand and manageable relationship between them.
-
--  Easily compose, merge, and apply styles across widgets.
--  Write cleaner, more maintainable styling definitions.
--  Apply styles conditionally based on the BuildContext.
+-  Compose, merge, and apply styles across widgets
+-  Write maintainable styling definitions separate from widget code
+-  Apply styles conditionally based on BuildContext
 
 ## Why Mix?
 
-Flutter developers often face challenges when it comes to styling widgets and maintaining a consistent look and feel across their apps. Flutter is heavily dependent on the Material Design System and theming, and that can be challenging, especially when creating your own design system.
+Mix provides utility functions for intuitive, composable styling that stays consistent across widgets and files—without being tied to Material Design.
 
-Mix addresses these challenges by creating a styling system that uses utility functions for a more intuitive and composable way to style. This approach can be kept consistent across widgets and files.
+## Goals
 
-## Goals with Mix
-
-- Define visual properties outside the widget's build method while still allowing access to the `BuildContext`. This is done by having the style definition resolved during widget build, similar to how the current `Theme.of` works, but with much more flexibility.
-- Ensure consistent styling throughout your app. By having separate style definitions, you can reuse not only specific values, like colors and typography, but also entire style definitions across other styles.
-- Quickly adapt to changing design requirements. By promoting style composability and inheritance, you can more easily maintain a `DRY` approach to managing your design system.
-- Create adaptive designs and layouts by leveraging style variants, which are based on existing styles but can be applied conditionally or responsively.
-- Type-safe composability. Mix leverages the power of Dart's type system and class to create a type-safe styling experience.
+- Define styles outside widgets while retaining `BuildContext` access
+- Reuse style definitions across your app for consistency
+- Adapt styles conditionally using variants (hover, dark mode, breakpoints)
+- Type-safe composability using Dart's type system
 
 ## Guiding Principles
 
--  **Simple Abstraction**: A low-cost layer over the Flutter API, letting you style widgets without altering their core behavior, ensuring they remain compatible and predictable.
--  **Consistent**: Even though we are creating a new styling system, we should always keep the styling API consistent with its Flutter equivalents.
--  **Composable**: Styles should be easily composable by combining simple, reusable elements, promoting code reuse and maintainability.
--  **Extensible**: Mix should allow for reasonable overrides and reuse of its utilities, making it easy to fit your own needs.
+-  **Simple**: Thin layer over Flutter—widgets remain compatible and predictable
+-  **Consistent**: API mirrors Flutter naming conventions
+-  **Composable**: Build complex styles from simple, reusable pieces
+-  **Extensible**: Override and extend utilities to fit your needs
+
+## Understanding the Styler Pattern
+
+Mix provides two constructor patterns for Styler classes. Understanding when to use each is key to effective styling:
+
+### Fluent API: `BoxStyler()`
+
+The default constructor provides a fluent API for chaining style properties:
+
+```dart
+final style = BoxStyler()
+    .color(Colors.blue)
+    .paddingAll(16)
+    .borderRounded(8);
+```
+
+Use this pattern when:
+- Defining styles with direct values
+- Chaining multiple style properties together
+- Building most common styling use cases
+
+### Prop-Based API: `BoxStyler.create()`
+
+The `.create()` constructor accepts `Prop<T>` parameters for advanced composition:
+
+```dart
+final style = BoxStyler.create(
+  color: Prop.token($primaryColor),
+  padding: Prop.value(EdgeInsets.all(16)),
+);
+```
+
+Use this pattern when:
+- Working with design tokens (`Prop.token()`)
+- Applying number directives like `multiply()` or `clamp()`
+- Building custom widget libraries that need deferred resolution
+
+### How Prop<T> Works
+
+`Prop<T>` is a wrapper that enables deferred value resolution. It can hold:
+- **Direct values**: `Prop.value(Colors.blue)`
+- **Token references**: `Prop.token($primaryColor)`
+- **Directives**: `Prop.value(16.0).multiply(2).clamp(0, 50)`
+
+Values are resolved when the style is applied, allowing tokens to be looked up from `MixScope` and directives to transform values at build time.
 
 ## Key Features
 
 ### **Powerful Styling API**:
 
-Styles are easily defined using a fluent API with `Styler` classes, inspired by the builder design pattern. The builder design pattern is a software design approach that enables the step-by-step construction of complex objects using a chainable API, making code more readable and flexible. This approach lets you define styling properties and values in a chainable and intuitive way:
+Define styles using a fluent, chainable API with `Styler` classes:
 
 ```dart
+import 'package:flutter/material.dart';
+import 'package:mix/mix.dart';
+
 final boxStyle = BoxStyler()
     .height(100)
     .width(100)
@@ -56,9 +99,7 @@ Learn more about [styling](/documentation/guides/styling)
 
 ### **Dynamic Styling**
 
-Mix provides powerful dynamic styling capabilities, enabling you to define styles that adapt to user interaction, widget state, or the current `BuildContext`. This allows for highly responsive and interactive UIs with minimal effort.
-
-You can easily create styles that change based on widget states (such as hover or press) and context (like dark mode) using the fluent API:
+Styles can adapt to interactions and context (hover, press, dark mode):
 
 ```dart
 final buttonStyle = BoxStyler()
@@ -73,16 +114,11 @@ Learn more about [Dynamic Styling](/documentation/guides/dynamic-styling)
 
 ### **Animation Support**:
 
-Mix supports three main types of animations:
-- **Implicit Animations**: Simple, property-based transitions (like color, size, or scale) that animate automatically when state or variants change.
-- **Phase Animations**: Multi-step animations that progress through defined phases, ideal for state machines or sequential effects.
-- **Keyframe Animations**: Advanced, timeline-based animations with precise control over multiple properties and timing, similar to CSS keyframes.
-
-Learn more in the [Animations Guide](/documentation/guides/animations).
+Mix supports implicit animations, phase animations (multi-step sequences), and keyframe animations. Learn more in the [Animations Guide](/documentation/guides/animations).
 
 ### **Design Tokens and Theming**:
 
-Mix goes beyond the Material `Theme` definitions by allowing the definition of design tokens and properties that can be used across all styling utilities:
+Define reusable design tokens for colors, spacing, radii, and more:
 
 ```dart
 final $primaryColor = ColorToken('primary');
