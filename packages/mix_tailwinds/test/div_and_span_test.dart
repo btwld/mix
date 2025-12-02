@@ -1259,6 +1259,12 @@ void main() {
     expect(config!.delay, const Duration(milliseconds: 75));
   });
 
+  test('delay-100 sets 100ms delay', () {
+    final config = TwParser().parseAnimation('transition delay-100');
+    expect(config, isNotNull);
+    expect(config!.delay, const Duration(milliseconds: 100));
+  });
+
   test('delay-150 sets 150ms delay', () {
     final config = TwParser().parseAnimation('transition delay-150');
     expect(config, isNotNull);
@@ -1269,6 +1275,12 @@ void main() {
     final config = TwParser().parseAnimation('transition delay-500');
     expect(config, isNotNull);
     expect(config!.delay, const Duration(milliseconds: 500));
+  });
+
+  test('delay-700 sets 700ms delay', () {
+    final config = TwParser().parseAnimation('transition delay-700');
+    expect(config, isNotNull);
+    expect(config!.delay, const Duration(milliseconds: 700));
   });
 
   test('delay-1000 sets 1000ms delay', () {
