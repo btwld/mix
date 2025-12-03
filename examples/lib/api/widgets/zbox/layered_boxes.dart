@@ -24,7 +24,7 @@ class Example extends StatelessWidget {
         .height(100)
         .width(100);
 
-    return ZBox(
+    return StackBox(
       style: flexStyle,
       children: [
         Box(style: boxStyle),

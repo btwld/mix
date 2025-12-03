@@ -66,7 +66,7 @@ void main() {
           textDirection: TextDirection.rtl,
           textBaseline: TextBaseline.ideographic,
           clipBehavior: Clip.hardEdge,
-          gap: 8.0,
+          spacing: 8.0,
         );
 
         expect(attribute.$direction, resolvesTo(Axis.vertical));
@@ -87,7 +87,7 @@ void main() {
       });
 
       test('creates with partial properties', () {
-        final attribute = FlexStyler(direction: Axis.horizontal, gap: 12.0);
+        final attribute = FlexStyler(direction: Axis.horizontal, spacing: 12.0);
 
         expect(attribute.$direction, resolvesTo(Axis.horizontal));
         expect(attribute.$spacing, resolvesTo(12.0));
@@ -274,7 +274,7 @@ void main() {
       expect(spec.spec.textDirection, TextDirection.ltr);
       expect(spec.spec.textBaseline, TextBaseline.alphabetic);
       expect(spec.spec.clipBehavior, Clip.antiAlias);
-      expect(spec.spec.gap, 16.0);
+      expect(spec.spec.spacing, 16.0);
     });
 
     test('resolves with null values correctly', () {
@@ -285,7 +285,7 @@ void main() {
 
       expect(spec, isNotNull);
       expect(spec.spec.direction, Axis.vertical);
-      expect(spec.spec.gap, 12.0);
+      expect(spec.spec.spacing, 12.0);
       expect(spec.spec.mainAxisAlignment, isNull);
       expect(spec.spec.crossAxisAlignment, isNull);
       expect(spec.spec.mainAxisSize, isNull);
@@ -301,7 +301,7 @@ void main() {
       final first = FlexStyler(
         direction: Axis.horizontal,
         mainAxisAlignment: MainAxisAlignment.start,
-        gap: 8.0,
+        spacing: 8.0,
       );
 
       final second = FlexStyler(
@@ -522,7 +522,7 @@ void main() {
       expect(spec.spec.direction, Axis.horizontal);
       expect(spec.spec.mainAxisAlignment, MainAxisAlignment.spaceBetween);
       expect(spec.spec.crossAxisAlignment, CrossAxisAlignment.center);
-      expect(spec.spec.gap, 16.0);
+      expect(spec.spec.spacing, 16.0);
     });
   });
 

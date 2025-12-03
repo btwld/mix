@@ -5,15 +5,15 @@ packages:
   - packages/*
   - packages/mix/example
   - packages/mix_generator/example
-  - examples/*
+  - examples
   - packages/*/demo
 
 sdkPath: .fvm/flutter_sdk
 command:
   bootstrap:
     environment:
-      sdk: ">=3.9.0 <4.0.0"
-      flutter: ">=3.35.0"
+      sdk: ">=3.10.0 <4.0.0"
+      flutter: ">=3.38.1"
     dependencies:
       meta: ^1.15.0
     dev_dependencies:
@@ -119,6 +119,12 @@ scripts:
   test:coverage:
     run: melos exec --category=flutter_projects -- flutter test --coverage
     description: Run flutter test with coverage
+    packageFilters:
+      dirExists: test
+
+  ci:
+    run: melos run test:flutter && melos run test:dart
+    description: Run flutter and dart tests
     packageFilters:
       dirExists: test
 

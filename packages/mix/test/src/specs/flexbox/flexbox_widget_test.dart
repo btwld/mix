@@ -81,7 +81,7 @@ void main() {
           home: Scaffold(
             body: Column(
               children: [
-                RowBox( key: hBoxKey),
+                RowBox(key: hBoxKey),
                 Row(key: rowKey, children: const []),
               ],
             ),
@@ -121,7 +121,7 @@ void main() {
           home: Scaffold(
             body: Row(
               children: [
-                ColumnBox( key: vBoxKey),
+                ColumnBox(key: vBoxKey),
                 Column(key: columnKey, children: const []),
               ],
             ),
@@ -161,7 +161,7 @@ void main() {
           home: Scaffold(
             body: Column(
               children: [
-                FlexBox( key: flexBoxKey),
+                FlexBox(key: flexBoxKey),
                 Flex(
                   direction: Axis.horizontal,
                   key: flexKey,

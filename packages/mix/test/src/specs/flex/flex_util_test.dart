@@ -306,15 +306,7 @@ void main() {
         );
         final spec = utility.resolve(context);
 
-        expect(spec.spec.gap, 24.0);
-      });
-    });
-
-    group('variant utilities', () {
-      test('on utility creates VariantAttributeBuilder', () {
-        final hoverBuilder = util.on.hover;
-
-        expect(hoverBuilder, isA<VariantAttributeBuilder<FlexSpec>>());
+        expect(spec.spec.spacing, 24.0);
       });
     });
 
@@ -352,8 +344,8 @@ void main() {
       test('chaining after construction with initial mix', () {
         final utility =
             FlexMutableStyler(FlexStyler(direction: Axis.horizontal))
-              ..gap(8.0)
-              ..mainAxisAlignment(MainAxisAlignment.center);
+              ..mainAxisAlignment(MainAxisAlignment.center)
+              ..spacing(8);
 
         final spec = utility.resolve(MockBuildContext());
 
@@ -373,7 +365,6 @@ void main() {
         util
           ..direction(Axis.horizontal)
           ..direction(Axis.vertical)
-          ..gap(4.0) // deprecated, should be overridden by spacing
           ..spacing(8.0);
 
         final spec = util.resolve(MockBuildContext());

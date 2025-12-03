@@ -388,6 +388,251 @@ final class SentenceCaseStringDirective extends Directive<String> {
   int get hashCode => key.hashCode;
 }
 
+/// Base class for number directives that transform numeric values.
+///
+/// Number directives work with [num] type to support both [int] and [double]
+/// values, allowing Dart's type system to handle coercion naturally.
+abstract class NumberDirective extends Directive<num> {
+  const NumberDirective();
+}
+
+/// Multiplies a numeric value by a factor.
+///
+/// Throws [ArgumentError] if [factor] is not finite.
+///
+/// Example:
+/// ```dart
+/// letterSpacing: Prop.value(0.0025).multiply(12.0) // = 0.03
+/// ```
+final class MultiplyNumberDirective extends NumberDirective {
+  final num factor;
+
+  MultiplyNumberDirective(this.factor) {
+    if (!factor.isFinite) {
+      throw ArgumentError.value(factor, 'factor', 'Must be finite');
+    }
+  }
+
+  @override
+  num apply(num value) => value * factor;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MultiplyNumberDirective && factor == other.factor;
+
+  @override
+  String get key => 'number_multiply';
+
+  @override
+  int get hashCode => Object.hash(key, factor);
+}
+
+/// Adds a value to a numeric value.
+///
+/// Throws [ArgumentError] if [addend] is not finite.
+final class AddNumberDirective extends NumberDirective {
+  final num addend;
+
+  AddNumberDirective(this.addend) {
+    if (!addend.isFinite) {
+      throw ArgumentError.value(addend, 'addend', 'Must be finite');
+    }
+  }
+
+  @override
+  num apply(num value) => value + addend;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AddNumberDirective && addend == other.addend;
+
+  @override
+  String get key => 'number_add';
+
+  @override
+  int get hashCode => Object.hash(key, addend);
+}
+
+/// Subtracts a value from a numeric value.
+///
+/// Throws [ArgumentError] if [subtrahend] is not finite.
+final class SubtractNumberDirective extends NumberDirective {
+  final num subtrahend;
+
+  SubtractNumberDirective(this.subtrahend) {
+    if (!subtrahend.isFinite) {
+      throw ArgumentError.value(subtrahend, 'subtrahend', 'Must be finite');
+    }
+  }
+
+  @override
+  num apply(num value) => value - subtrahend;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SubtractNumberDirective && subtrahend == other.subtrahend;
+
+  @override
+  String get key => 'number_subtract';
+
+  @override
+  int get hashCode => Object.hash(key, subtrahend);
+}
+
+/// Divides a numeric value by a divisor.
+///
+/// Throws [ArgumentError] if [divisor] is zero or not finite.
+///
+/// Note: Division in Dart always returns a double, even for int/int division.
+final class DivideNumberDirective extends NumberDirective {
+  final num divisor;
+
+  DivideNumberDirective(this.divisor) {
+    if (divisor == 0) {
+      throw ArgumentError.value(divisor, 'divisor', 'Cannot divide by zero');
+    }
+    if (!divisor.isFinite) {
+      throw ArgumentError.value(divisor, 'divisor', 'Must be finite');
+    }
+  }
+
+  @override
+  num apply(num value) {
+    return value / divisor;
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DivideNumberDirective && divisor == other.divisor;
+
+  @override
+  String get key => 'number_divide';
+
+  @override
+  int get hashCode => Object.hash(key, divisor);
+}
+
+/// Clamps a numeric value between min and max bounds.
+///
+/// Throws [ArgumentError] if [min] or [max] is not finite,
+/// or if [min] is greater than [max].
+///
+/// Inspired by CSS `clamp()` function.
+final class ClampNumberDirective extends NumberDirective {
+  final num min;
+  final num max;
+
+  ClampNumberDirective(this.min, this.max) {
+    if (!min.isFinite) {
+      throw ArgumentError.value(min, 'min', 'Must be finite');
+    }
+    if (!max.isFinite) {
+      throw ArgumentError.value(max, 'max', 'Must be finite');
+    }
+    if (min > max) {
+      throw ArgumentError(
+        'min ($min) must be less than or equal to max ($max)',
+      );
+    }
+  }
+
+  @override
+  num apply(num value) => value.clamp(min, max);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ClampNumberDirective && min == other.min && max == other.max;
+
+  @override
+  String get key => 'number_clamp';
+
+  @override
+  int get hashCode => Object.hash(key, min, max);
+}
+
+/// Returns the absolute value of a numeric value.
+///
+/// Inspired by CSS `abs()` function.
+final class AbsNumberDirective extends NumberDirective {
+  const AbsNumberDirective();
+
+  @override
+  num apply(num value) => value.abs();
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is AbsNumberDirective;
+
+  @override
+  String get key => 'number_abs';
+
+  @override
+  int get hashCode => key.hashCode;
+}
+
+/// Rounds a numeric value to the nearest integer (as double).
+///
+/// Uses round-half-away-from-zero rounding (e.g., 2.5 → 3.0, -2.5 → -3.0).
+///
+/// Inspired by CSS `round()` function.
+final class RoundNumberDirective extends NumberDirective {
+  const RoundNumberDirective();
+
+  @override
+  num apply(num value) => value.roundToDouble();
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is RoundNumberDirective;
+
+  @override
+  String get key => 'number_round';
+
+  @override
+  int get hashCode => key.hashCode;
+}
+
+/// Floors a numeric value (rounds down).
+final class FloorNumberDirective extends NumberDirective {
+  const FloorNumberDirective();
+
+  @override
+  num apply(num value) => value.floorToDouble();
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is FloorNumberDirective;
+
+  @override
+  String get key => 'number_floor';
+
+  @override
+  int get hashCode => key.hashCode;
+}
+
+/// Ceils a numeric value (rounds up).
+final class CeilNumberDirective extends NumberDirective {
+  const CeilNumberDirective();
+
+  @override
+  num apply(num value) => value.ceilToDouble();
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is CeilNumberDirective;
+
+  @override
+  String get key => 'number_ceil';
+
+  @override
+  int get hashCode => key.hashCode;
+}
+
 /// Extension on [List<Directive<T>>] to provide apply functionality
 extension DirectiveListExt<T> on List<Directive<T>> {
   /// Applies all directives in the list to the given value in sequence

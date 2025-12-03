@@ -62,13 +62,6 @@ class FlexMutableStyler extends StyleMutableBuilder<FlexSpec>
   /// Sets the spacing between children in the flex layout.
   FlexStyler spacing(double v) => mutable.spacing(v);
 
-  /// Sets the gap between children in the flex layout.
-  @Deprecated(
-    'Use spacing instead. '
-    'This feature was deprecated after Mix v2.0.0.',
-  )
-  FlexStyler gap(double v) => mutable.spacing(v);
-
   /// Sets flex direction to horizontal (row layout).
   FlexStyler row() => mutable.direction(Axis.horizontal);
 

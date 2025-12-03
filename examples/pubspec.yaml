@@ -1,25 +1,24 @@
-name: example
-description: "A new Flutter project."
+name: examples
+description: "Example project for the mix package."
 publish_to: 'none' 
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.10.0-290.1.beta"
-  flutter: ">=3.35.0"
+  sdk: ">=3.10.0 <4.0.0"
+  flutter: ">=3.38.1"
 
 dependencies:
   cupertino_icons: ^1.0.8
   flutter:
     sdk: flutter
   mix:
-    path: ../
+    path: ../packages/mix
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   dart_code_metrics_presets: ^2.24.0
-
   flutter_lints: ^6.0.0
 
 flutter:

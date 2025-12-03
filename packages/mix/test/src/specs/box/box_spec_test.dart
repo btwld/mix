@@ -246,7 +246,7 @@ void main() {
 
       test('interpolates transform correctly', () {
         final transform1 = Matrix4.identity();
-        final transform2 = Matrix4.identity()..scale(2.0);
+        final transform2 = Matrix4.identity()..scaleByDouble(2.0, 2.0, 1.0, .0);
 
         final spec1 = BoxSpec(transform: transform1);
         final spec2 = BoxSpec(transform: transform2);
@@ -416,7 +416,7 @@ void main() {
       test('creates transformed container spec', () {
         final transformMatrix = Matrix4.identity()
           ..rotateZ(0.1)
-          ..scale(1.2);
+          ..scaleByDouble(1.2, 1.2, 1.0, 1.0);
 
         final transformedSpec = BoxSpec(
           transform: transformMatrix,

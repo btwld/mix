@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-11-04
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`mix` - `v2.0.0-dev.6`](#mix---v200-dev6)
+
+---
+
+#### `mix` - `v2.0.0-dev.6`
+
+- refactor: `Stack` and `StackBox`
+- refactor: introduce Style.of() and Style.maybeOf() static methods
+- feat: Implement call method for `Stack` and `FlexBox` 
+- feat: add number directives and extension for numeric transformations
+
+
 ## 2025-07-02
 
 ### Changes
