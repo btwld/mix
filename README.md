@@ -35,20 +35,20 @@ Mix addresses these challenges by creating a styling system that uses utility fu
 
 ### Prerequisites
 
-- **Dart SDK**: ≥ 3.9.0 (required for dot notation syntax)
+- **Dart SDK**: ≥ 3.10.0 (required for dot notation syntax)
 - **Flutter**: Latest stable version
 
 ### Add Mix to Your Project
 
 ```yaml
 dependencies:
-  mix: ^2.0.0-dev.1
+  mix: ^2.0.0-rc.0
 ```
 
 Or using the Flutter CLI:
 
 ```bash
-flutter pub add mix:^2.0.0-dev.1
+flutter pub add mix:^2.0.0-rc.0
 ```
 
 ## Guiding Principles
@@ -102,7 +102,7 @@ final cardStyle = BoxStyler()
     .borderRounded(12);
 ```
 
-**Note**: This feature requires Dart SDK ≥ 3.9.0.
+**Note**: This feature requires Dart SDK ≥ 3.10.0.
 
 Learn more about [styling](https://fluttermix.com/docs/guides/styling)
 

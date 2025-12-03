@@ -144,9 +144,9 @@ class _CompressExpandAnimationState extends State<CompressExpandAnimation> {
                 .color(Colors.yellow.shade300),
           },
           configBuilder: (phase) => switch (phase) {
-            AnimationPhases.initial => AnimationConfig.springWithDampingRatio(800.ms, ratio: 0.3),
-            AnimationPhases.compress => AnimationConfig.decelerate(200.ms),
-            AnimationPhases.expanded => AnimationConfig.decelerate(100.ms),
+            AnimationPhases.initial => CurveAnimationConfig.springWithDampingRatio(800.ms, ratio: 0.3),
+            AnimationPhases.compress => CurveAnimationConfig.decelerate(200.ms),
+            AnimationPhases.expanded => CurveAnimationConfig.decelerate(100.ms),
           },
         );
     return Pressable(
