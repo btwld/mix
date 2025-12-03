@@ -134,6 +134,168 @@ void main() {
         ); // (12 + 20) / 2
       });
 
+      test('lerps animated text directives progress', () {
+        const spec1 = TextSpec(
+          textDirectives: [_TestAnimatedDirective()],
+        );
+        const spec2 = TextSpec(
+          textDirectives: [_TestAnimatedDirective()],
+        );
+
+        final lerped = spec1.lerp(spec2, 0.5);
+
+        // The directive should have progress interpolated to 0.5
+        expect(_extractProgress(lerped.textDirectives!.single), closeTo(0.5, 1e-9));
+      });
+
+      test('handles mismatched directive list lengths - first longer', () {
+        const spec1 = TextSpec(
+          textDirectives: [
+            _TestAnimatedDirective(),
+            _TestAnimatedDirective(),
+          ],
+        );
+        const spec2 = TextSpec(
+          textDirectives: [_TestAnimatedDirective()],
+        );
+
+        final lerped = spec1.lerp(spec2, 0.5);
+
+        expect(lerped.textDirectives?.length, 2);
+        // First interpolates normally
+        expect(
+          _extractProgress(lerped.textDirectives![0]),
+          closeTo(0.5, 1e-9),
+        );
+        // Second disappears (progress = 1 - t = 0.5)
+        expect(
+          _extractProgress(lerped.textDirectives![1]),
+          closeTo(0.5, 1e-9),
+        );
+      });
+
+      test('handles mismatched directive list lengths - second longer', () {
+        const spec1 = TextSpec(
+          textDirectives: [_TestAnimatedDirective()],
+        );
+        const spec2 = TextSpec(
+          textDirectives: [
+            _TestAnimatedDirective(),
+            _TestAnimatedDirective(),
+          ],
+        );
+
+        final lerped = spec1.lerp(spec2, 0.5);
+
+        expect(lerped.textDirectives?.length, 2);
+        expect(
+          _extractProgress(lerped.textDirectives![0]),
+          closeTo(0.5, 1e-9),
+        );
+        // Appearing directive animates from 0 to target, so at t=0.5 it's 0.5
+        expect(
+          _extractProgress(lerped.textDirectives![1]),
+          closeTo(0.5, 1e-9),
+        );
+      });
+
+      test('snaps when animated directives have different keys', () {
+        const spec1 = TextSpec(
+          textDirectives: [_TestAnimatedDirective()],
+        );
+        const spec2 = TextSpec(
+          textDirectives: [_AnotherAnimatedDirective()],
+        );
+
+        final lerpedBefore = spec1.lerp(spec2, 0.4);
+        final lerpedAfter = spec1.lerp(spec2, 0.6);
+
+        expect(lerpedBefore.textDirectives?[0], isA<_TestAnimatedDirective>());
+        expect(lerpedAfter.textDirectives?[0], isA<_AnotherAnimatedDirective>());
+      });
+
+      test('handles null textDirectives in first spec', () {
+        const spec1 = TextSpec();
+        const spec2 = TextSpec(
+          textDirectives: [_TestAnimatedDirective()],
+        );
+
+        final lerped = spec1.lerp(spec2, 0.5);
+
+        expect(lerped.textDirectives?.length, 1);
+        // Appearing: progress at t=0.5 is 0.5
+        expect(
+          _extractProgress(lerped.textDirectives![0]),
+          closeTo(0.5, 1e-9),
+        );
+      });
+
+      test('handles null textDirectives in second spec', () {
+        const spec1 = TextSpec(
+          textDirectives: [_TestAnimatedDirective()],
+        );
+        const spec2 = TextSpec();
+
+        final lerped = spec1.lerp(spec2, 0.5);
+
+        expect(lerped.textDirectives?.length, 1);
+        // Disappearing: progress at t=0.5 is 0.5
+        expect(
+          _extractProgress(lerped.textDirectives![0]),
+          closeTo(0.5, 1e-9),
+        );
+      });
+
+      test('typewriter directive reveals characters progressively', () {
+        const directive = TypewriterDirective();
+
+        const text = 'Hello World';
+
+        expect(directive.apply(text, 0.0), '');
+        expect(directive.apply(text, 0.5), 'Hello ');
+        expect(directive.apply(text, 1.0), 'Hello World');
+      });
+
+      test('reverse typewriter directive hides characters progressively', () {
+        const directive = TypewriterDirective(reverse: true);
+
+        const text = 'Hello World';
+
+        expect(directive.apply(text, 0.0), 'Hello World');
+        expect(directive.apply(text, 0.5), 'Hello ');
+        expect(directive.apply(text, 1.0), '');
+      });
+
+      test('typewriter directive lerps correctly during animation', () {
+        const spec1 = TextSpec(
+          textDirectives: [TypewriterDirective()],
+        );
+        const spec2 = TextSpec(
+          textDirectives: [TypewriterDirective()],
+        );
+
+        final lerped0 = spec1.lerp(spec2, 0.0);
+        final lerped50 = spec1.lerp(spec2, 0.5);
+        final lerped100 = spec1.lerp(spec2, 1.0);
+
+        // TypewriterDirective uses rounding, so we test with exact boundaries
+        // At t=0.0, progress should be 0 (empty string)
+        // At t=0.5, progress should be 0.5 (half string)
+        // At t=1.0, progress should be 1.0 (full string)
+        expect(
+          _extractTypewriterProgress(lerped0.textDirectives![0]),
+          closeTo(0.0, 0.01),
+        );
+        expect(
+          _extractTypewriterProgress(lerped50.textDirectives![0]),
+          closeTo(0.5, 0.01),
+        );
+        expect(
+          _extractTypewriterProgress(lerped100.textDirectives![0]),
+          closeTo(1.0, 0.01),
+        );
+      });
+
       test('handles null other parameter correctly', () {
         const spec = TextSpec(maxLines: 3, overflow: TextOverflow.ellipsis);
 
@@ -344,7 +506,7 @@ void main() {
       });
     });
 
-    group('Real-world scenarios', () {
+  group('Real-world scenarios', () {
       test('creates heading text spec', () {
         const headingSpec = TextSpec(
           style: TextStyle(
@@ -402,4 +564,50 @@ void main() {
       });
     });
   });
+}
+
+/// Helper to extract progress from a test animated directive
+double _extractProgress(SpecDirective<String> directive) {
+  final result = switch (directive) {
+    _TestAnimatedDirective() => directive.apply('', 1.0),
+    AnimatedSpecDirective<String>() => directive.apply('', 0),
+    _ => '',
+  };
+  final match = RegExp(r'\[([\d.]+)\]').firstMatch(result);
+
+  return match != null ? double.parse(match.group(1)!) : 0.0;
+}
+
+/// Helper to extract progress from a typewriter directive
+double _extractTypewriterProgress(SpecDirective<String> directive) {
+  // For typewriter, we test by using a known string length
+  const text = '0123456789'; // 10 characters
+  final result = switch (directive) {
+    AnimatedSpecDirective<String>() => directive.apply(text, 0),
+    _ => text,
+  };
+
+  return result.length / text.length;
+}
+
+// Test helper: Basic AnimatedSpecDirective
+class _TestAnimatedDirective extends AnimatedSpecDirective<String> {
+  const _TestAnimatedDirective();
+
+  @override
+  String apply(String value, double progress) => '$value[$progress]';
+
+  @override
+  String get key => '_test_animated_directive';
+}
+
+// Test helper: Another AnimatedSpecDirective with different key
+class _AnotherAnimatedDirective extends AnimatedSpecDirective<String> {
+  const _AnotherAnimatedDirective();
+
+  @override
+  String apply(String value, double progress) => '$value[$progress]';
+
+  @override
+  String get key => '_another_animated_directive';
 }

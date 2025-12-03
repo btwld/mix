@@ -397,7 +397,7 @@ class MockMix<T> extends Mix<T> {
 ///   (value) => value * 2,
 /// );
 /// ```
-class MockDirective<T> extends Directive<T> {
+class MockDirective<T> extends PropDirective<T> {
   final String name;
   final T Function(T)? transformer;
 
@@ -471,7 +471,7 @@ extension WidgetTesterExtension on WidgetTester {
 /// A simple directive implementation for testing purposes.
 /// By default, applies identity transformation (returns value unchanged).
 /// Can optionally provide a custom transformer function.
-class MockMixDirective<T> extends Directive<T> {
+class MockMixDirective<T> extends PropDirective<T> {
   final String name;
   final T Function(T)? transform;
 

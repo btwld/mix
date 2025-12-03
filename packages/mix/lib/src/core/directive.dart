@@ -1,16 +1,30 @@
-import 'dart:ui';
+import 'dart:math' as math;
 
 import 'package:flutter/widgets.dart';
 
-import 'internal/internal_extensions.dart';
+// ═══════════════════════════════════════════════════════════════════════════
+// PROP DIRECTIVES - For Prop resolution only
+// ═══════════════════════════════════════════════════════════════════════════
 
-/// Base class for directives that apply transformations to values.
+/// Directive applied once during Prop resolution.
 ///
-/// Directives provide a way to transform values like colors or strings in a consistent,
-/// composable manner throughout the Mix framework.
+/// PropDirectives are used with Prop instances and applied immediately during
+/// `Prop.resolveProp()`. They transform values once and are discarded before
+/// the Spec is created.
+///
+/// ## Usage
+///
+/// ```dart
+/// // In color transformations
+/// Prop<Color>.value(Colors.red)
+///   .directives([OpacityColorDirective(0.5)]);
+/// ```
+///
+/// PropDirectives are stored in `Prop.$directives` and applied during resolution,
+/// before animation occurs. For directives that need to animate, use [SpecDirective].
 @immutable
-abstract class Directive<T> {
-  const Directive();
+abstract class PropDirective<T> {
+  const PropDirective();
 
   /// The unique identifier for this directive type.
   String get key;
@@ -19,384 +33,251 @@ abstract class Directive<T> {
   T apply(T value);
 }
 
-/// Directive that applies opacity to a color.
-class OpacityColorDirective extends Directive<Color> {
-  final double opacity;
+// ═══════════════════════════════════════════════════════════════════════════
+// SPEC DIRECTIVES - For Spec storage and rendering
+// ═══════════════════════════════════════════════════════════════════════════
 
-  const OpacityColorDirective(this.opacity);
+/// Base for directives stored in Specs.
+///
+/// SpecDirectives live inside [Spec] objects (e.g., [TextSpec]) and are
+/// interpolated whenever the spec animates. There are two types:
+///
+/// - [StaticSpecDirective]: Instant transformations that snap during animation
+///   (e.g., uppercase, titlecase)
+/// - [AnimatedSpecDirective]: Animated transformations that lerp during animation
+///   (e.g., typewriter effect)
+///
+/// This class is sealed - you must extend either [StaticSpecDirective] or
+/// [AnimatedSpecDirective].
+@immutable
+sealed class SpecDirective<T> {
+  const SpecDirective();
+
+  /// The unique identifier for this directive type.
+  String get key;
+}
+
+/// Instant transformation that snaps during animation.
+///
+/// Use this for transformations that should apply instantly without interpolation,
+/// such as text case transformations (uppercase, lowercase, titlecase).
+///
+/// ## Example
+///
+/// ```dart
+/// final class UppercaseDirective extends StaticSpecDirective<String> {
+///   const UppercaseDirective();
+///
+///   @override
+///   String get key => 'uppercase';
+///
+///   @override
+///   String apply(String value) => value.toUpperCase();
+/// }
+/// ```
+@immutable
+abstract class StaticSpecDirective<T> extends SpecDirective<T> {
+  const StaticSpecDirective();
+
+  /// Applies the transformation to the given value.
+  T apply(T value);
+}
+
+/// Animated transformation that lerps progress during animation.
+///
+/// Use this for transformations that should animate smoothly, such as
+/// typewriter effects where text is revealed character by character.
+///
+/// Progress is provided externally during animation - directives are stateless.
+///
+/// ## Example
+///
+/// ```dart
+/// final class TypewriterDirective extends AnimatedSpecDirective<String> {
+///   final bool reverse;
+///
+///   const TypewriterDirective({this.reverse = false});
+///
+///   @override
+///   String get key => 'typewriter';
+///
+///   @override
+///   String apply(String value, double progress) {
+///     if (value.isEmpty) return value;
+///     final p = reverse ? (1.0 - progress) : progress;
+///     final length = (value.length * p).round().clamp(0, value.length);
+///     return value.substring(0, length);
+///   }
+/// }
+/// ```
+@immutable
+abstract class AnimatedSpecDirective<T> extends SpecDirective<T> {
+  const AnimatedSpecDirective();
+
+  /// Applies the transformation with externally-provided progress (0.0 to 1.0).
+  T apply(T value, double progress);
+
+  /// Whether this directive can animate with [other].
+  ///
+  /// Subclasses can override to include additional state comparisons.
+  @mustCallSuper
+  bool isCompatibleWith(covariant AnimatedSpecDirective<T> other) =>
+      runtimeType == other.runtimeType && key == other.key;
+}
+
+/// Internal wrapper to carry progress through spec lerping.
+///
+/// This is not part of the public API. It wraps an [AnimatedSpecDirective]
+/// with a specific progress value so that [SpecDirectiveListExt.apply] can
+/// apply the correct progress without external context.
+final class _AnimatedWithProgress<T> extends AnimatedSpecDirective<T> {
+  final AnimatedSpecDirective<T> _directive;
+  final double _progress;
+
+  const _AnimatedWithProgress(this._directive, this._progress);
 
   @override
-  Color apply(Color color) => color.withValues(alpha: opacity);
+  T apply(T value, double _) => _directive.apply(value, _progress);
+
+  @override
+  String get key => _directive.key;
+
+  // Intentionally not calling super - we delegate to wrapped directive
+  @override
+  // ignore: must_call_super
+  bool isCompatibleWith(covariant AnimatedSpecDirective<T> other) {
+    final directive = other is _AnimatedWithProgress<T>
+        ? other._directive
+        : other;
+
+    return _directive.isCompatibleWith(directive);
+  }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is OpacityColorDirective && opacity == other.opacity;
+      other is _AnimatedWithProgress<T> &&
+          _directive == other._directive &&
+          _progress == other._progress;
 
   @override
-  String get key => 'color_opacity';
-
-  @override
-  int get hashCode => opacity.hashCode;
+  int get hashCode => Object.hash(_directive, _progress);
 }
 
-/// Directive that applies withValues to a color.
-class WithValuesColorDirective extends Directive<Color> {
-  final double? alpha;
-  final double? red;
-  final double? green;
-  final double? blue;
-  final ColorSpace? colorSpace;
-
-  const WithValuesColorDirective({
-    this.alpha,
-    this.red,
-    this.green,
-    this.blue,
-    this.colorSpace,
-  });
-
-  @override
-  Color apply(Color color) => color.withValues(
-    alpha: alpha,
-    red: red,
-    green: green,
-    blue: blue,
-    colorSpace: colorSpace,
-  );
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is WithValuesColorDirective &&
-          alpha == other.alpha &&
-          red == other.red &&
-          green == other.green &&
-          blue == other.blue &&
-          colorSpace == other.colorSpace;
-
-  @override
-  String get key => 'color_with_values';
-
-  @override
-  int get hashCode =>
-      alpha.hashCode ^
-      red.hashCode ^
-      green.hashCode ^
-      blue.hashCode ^
-      colorSpace.hashCode;
-}
-
-/// Directive that applies alpha to a color.
-class AlphaColorDirective extends Directive<Color> {
-  final int alpha;
-
-  const AlphaColorDirective(this.alpha);
-
-  @override
-  Color apply(Color color) => color.withAlpha(alpha);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is AlphaColorDirective && alpha == other.alpha;
-
-  @override
-  String get key => 'color_alpha';
-
-  @override
-  int get hashCode => alpha.hashCode;
-}
-
-/// Directive that darkens a color.
-class DarkenColorDirective extends Directive<Color> {
-  final int amount;
-
-  const DarkenColorDirective(this.amount);
-
-  @override
-  Color apply(Color color) => color.darken(amount);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is DarkenColorDirective && amount == other.amount;
-
-  @override
-  String get key => 'color_darken';
-
-  @override
-  int get hashCode => amount.hashCode;
-}
-
-/// Directive that lightens a color.
-class LightenColorDirective extends Directive<Color> {
-  final int amount;
-
-  const LightenColorDirective(this.amount);
-
-  @override
-  Color apply(Color color) => color.lighten(amount);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is LightenColorDirective && amount == other.amount;
-
-  @override
-  String get key => 'color_lighten';
-
-  @override
-  int get hashCode => amount.hashCode;
-}
-
-/// Directive that saturates a color.
-class SaturateColorDirective extends Directive<Color> {
-  final int amount;
-
-  const SaturateColorDirective(this.amount);
-
-  @override
-  Color apply(Color color) => color.saturate(amount);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is SaturateColorDirective && amount == other.amount;
-
-  @override
-  String get key => 'color_saturate';
-
-  @override
-  int get hashCode => amount.hashCode;
-}
-
-/// Directive that desaturates a color.
-class DesaturateColorDirective extends Directive<Color> {
-  final int amount;
-
-  const DesaturateColorDirective(this.amount);
-
-  @override
-  Color apply(Color color) => color.desaturate(amount);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is DesaturateColorDirective && amount == other.amount;
-
-  @override
-  String get key => 'color_desaturate';
-
-  @override
-  int get hashCode => amount.hashCode;
-}
-
-/// Directive that applies tint to a color.
-class TintColorDirective extends Directive<Color> {
-  final int amount;
-
-  const TintColorDirective(this.amount);
-
-  @override
-  Color apply(Color color) => color.tint(amount);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is TintColorDirective && amount == other.amount;
-
-  @override
-  String get key => 'color_tint';
-
-  @override
-  int get hashCode => amount.hashCode;
-}
-
-/// Directive that applies shade to a color.
-class ShadeColorDirective extends Directive<Color> {
-  final int amount;
-
-  const ShadeColorDirective(this.amount);
-
-  @override
-  Color apply(Color color) => color.shade(amount);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is ShadeColorDirective && amount == other.amount;
-
-  @override
-  String get key => 'color_shade';
-
-  @override
-  int get hashCode => amount.hashCode;
-}
-
-/// Directive that brightens a color.
-class BrightenColorDirective extends Directive<Color> {
-  final int amount;
-
-  const BrightenColorDirective(this.amount);
-
-  @override
-  Color apply(Color color) => color.brighten(amount);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is BrightenColorDirective && amount == other.amount;
-
-  @override
-  String get key => 'color_brighten';
-
-  @override
-  int get hashCode => amount.hashCode;
-}
-
-/// Directive that sets the red channel of a color.
-class WithRedColorDirective extends Directive<Color> {
-  final int red;
-
-  const WithRedColorDirective(this.red);
-
-  @override
-  Color apply(Color color) => color.withRed(red);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is WithRedColorDirective && red == other.red;
-
-  @override
-  String get key => 'color_with_red';
-
-  @override
-  int get hashCode => red.hashCode;
-}
-
-/// Directive that sets the green channel of a color.
-class WithGreenColorDirective extends Directive<Color> {
-  final int green;
-
-  const WithGreenColorDirective(this.green);
-
-  @override
-  Color apply(Color color) => color.withGreen(green);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is WithGreenColorDirective && green == other.green;
-
-  @override
-  String get key => 'color_with_green';
-
-  @override
-  int get hashCode => green.hashCode;
-}
-
-/// Directive that sets the blue channel of a color.
-class WithBlueColorDirective extends Directive<Color> {
-  final int blue;
-
-  const WithBlueColorDirective(this.blue);
-
-  @override
-  Color apply(Color color) => color.withBlue(blue);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is WithBlueColorDirective && blue == other.blue;
-
-  @override
-  String get key => 'color_with_blue';
-
-  @override
-  int get hashCode => blue.hashCode;
-}
-
-/// Directive that capitalizes the first letter of a string.
-final class CapitalizeStringDirective extends Directive<String> {
-  const CapitalizeStringDirective();
-  @override
-  String apply(String value) => value.capitalize;
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is CapitalizeStringDirective;
-  @override
-  String get key => 'capitalize';
-  @override
-  int get hashCode => key.hashCode;
-}
-
-/// Directive that converts a string to uppercase.
-final class UppercaseStringDirective extends Directive<String> {
-  const UppercaseStringDirective();
-  @override
-  String apply(String value) => value.toUpperCase();
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is UppercaseStringDirective;
-  @override
-  String get key => 'uppercase';
-  @override
-  int get hashCode => key.hashCode;
-}
-
-/// Directive that converts a string to lowercase.
-final class LowercaseStringDirective extends Directive<String> {
-  const LowercaseStringDirective();
-  @override
-  String apply(String value) => value.toLowerCase();
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is LowercaseStringDirective;
-  @override
-  String get key => 'lowercase';
-  @override
-  int get hashCode => key.hashCode;
-}
-
-/// Directive that converts a string to title case.
-final class TitleCaseStringDirective extends Directive<String> {
-  const TitleCaseStringDirective();
-  @override
-  String apply(String value) => value.titleCase;
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is TitleCaseStringDirective;
-  @override
-  String get key => 'title_case';
-  @override
-  int get hashCode => key.hashCode;
-}
-
-/// Directive that converts a string to sentence case.
-final class SentenceCaseStringDirective extends Directive<String> {
-  const SentenceCaseStringDirective();
-  @override
-  String apply(String value) => value.sentenceCase;
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is SentenceCaseStringDirective;
-  @override
-  String get key => 'sentence_case';
-  @override
-  int get hashCode => key.hashCode;
-}
-
-/// Extension on [List<Directive<T>>] to provide apply functionality
-extension DirectiveListExt<T> on List<Directive<T>> {
-  /// Applies all directives in the list to the given value in sequence
+// ═══════════════════════════════════════════════════════════════════════════
+// EXTENSIONS
+// ═══════════════════════════════════════════════════════════════════════════
+
+/// Extension on [List<SpecDirective<T>>] to provide apply functionality.
+extension SpecDirectiveListExt<T> on List<SpecDirective<T>> {
+  /// Applies all directives in the list to the given value in sequence.
   T apply(T value) {
     var result = value;
     for (final directive in this) {
-      result = directive.apply(result);
+      result = switch (directive) {
+        StaticSpecDirective<T>() => directive.apply(result),
+        // For wrapped animated directives, progress is already captured
+        _AnimatedWithProgress<T>() => directive.apply(result, 0),
+        // For unwrapped animated directives, apply at full progress
+        AnimatedSpecDirective<T>() => directive.apply(result, 1.0),
+      };
     }
 
     return result;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TWEEN
+// ═══════════════════════════════════════════════════════════════════════════
+
+/// Tween for interpolating between [SpecDirective] lists.
+///
+/// This tween enables smooth animations of directive lists by:
+/// - Interpolating progress for [AnimatedSpecDirective] instances
+/// - Snapping instantly for [StaticSpecDirective] instances
+///
+/// Used internally by specs (e.g., [TextSpec]) to handle directive animation.
+class SpecDirectiveListTween<T> extends Tween<List<SpecDirective<T>>?> {
+  SpecDirectiveListTween({super.begin, super.end});
+
+  @override
+  List<SpecDirective<T>>? lerp(double t) {
+    final a = begin;
+    final b = end;
+
+    if (a == null && b == null) return null;
+    if (a == null) return _animateAppearing(b!, t);
+    if (b == null) return _animateDisappearing(a, t);
+
+    return _interpolateLists(a, b, t);
+  }
+
+  List<SpecDirective<T>> _animateAppearing(
+    List<SpecDirective<T>> end,
+    double t,
+  ) {
+    return end.map((d) => switch (d) {
+      AnimatedSpecDirective<T>() => _AnimatedWithProgress(d, t),
+      StaticSpecDirective<T>() => d,
+    }).toList();
+  }
+
+  List<SpecDirective<T>> _animateDisappearing(
+    List<SpecDirective<T>> begin,
+    double t,
+  ) {
+    return begin.map((d) => switch (d) {
+      AnimatedSpecDirective<T>() => _AnimatedWithProgress(d, 1.0 - t),
+      StaticSpecDirective<T>() => d,
+    }).toList();
+  }
+
+  List<SpecDirective<T>> _interpolateLists(
+    List<SpecDirective<T>> a,
+    List<SpecDirective<T>> b,
+    double t,
+  ) {
+    final maxLength = math.max(a.length, b.length);
+    final result = <SpecDirective<T>>[];
+
+    for (var i = 0; i < maxLength; i++) {
+      final da = i < a.length ? a[i] : null;
+      final db = i < b.length ? b[i] : null;
+      result.add(_lerpDirective(da, db, t));
+    }
+
+    return result;
+  }
+
+  SpecDirective<T> _lerpDirective(
+    SpecDirective<T>? a,
+    SpecDirective<T>? b,
+    double t,
+  ) {
+    // At least one must be non-null (guaranteed by caller iterating over maxLength)
+    assert(a != null || b != null, 'At least one directive must be non-null');
+
+    return switch ((a, b)) {
+      // Appearing
+      (null, final AnimatedSpecDirective<T> b) => _AnimatedWithProgress(b, t),
+      (null, final StaticSpecDirective<T> b) => b,
+
+      // Disappearing
+      (final AnimatedSpecDirective<T> a, null) =>
+        _AnimatedWithProgress(a, 1.0 - t),
+      (final StaticSpecDirective<T> a, null) => a,
+
+      // Both animated & compatible: lerp progress
+      (final AnimatedSpecDirective<T> a, final AnimatedSpecDirective<T> b)
+          when a.isCompatibleWith(b) =>
+        _AnimatedWithProgress(b, t),
+
+      // Snap at 0.5 for incompatible or static (both non-null)
+      (final a?, final b?) => t < 0.5 ? a : b,
+
+      // Unreachable: (null, null) case - assertion above prevents this
+      _ => throw StateError('Unreachable: both directives are null'),
+    };
   }
 }

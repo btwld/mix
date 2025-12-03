@@ -39,14 +39,26 @@ class Prop<V> {
   /// Optional directives to transform the resolved value.
   ///
   /// Directives are applied after resolution but before the value is returned.
-  final List<Directive<V>>? $directives;
+  /// Only [PropDirective] instances should be used here. For animated directives
+  /// that lerp during Spec animations, use [SpecDirective] in Spec fields instead.
+  ///
+  /// ## Migration Note
+  ///
+  /// The type changed from `List<Directive<V>>?` to `List<PropDirective<V>>?`.
+  /// If you were using [Directive] directly:
+  /// - For prop-level directives (applied once during resolution), change to [PropDirective]
+  /// - For animated directives (lerped during animations), use [SpecDirective] in Spec fields
+  ///
+  /// All existing color and string transform directives are now [PropDirective] instances
+  /// and will continue to work without changes.
+  final List<PropDirective<V>>? $directives;
 
   // Constructors
 
   /// Creates a property with the given sources and directives.
   ///
   /// This constructor is private and used internally by factory methods.
-  const Prop._({required this.sources, List<Directive<V>>? directives})
+  const Prop._({required this.sources, List<PropDirective<V>>? directives})
     : $directives = directives;
 
   /// Creates a new property by copying all fields from another property.
@@ -60,7 +72,7 @@ class Prop<V> {
   ///
   /// The token will be resolved from [MixScope] during resolution.
   /// Optionally accepts [directives] configuration.
-  factory Prop.token(MixToken<V> token, {List<Directive<V>>? directives}) {
+  factory Prop.token(MixToken<V> token, {List<PropDirective<V>>? directives}) {
     return Prop._(sources: [TokenSource(token)], directives: directives);
   }
 
@@ -68,7 +80,7 @@ class Prop<V> {
   ///
   /// This property has no value source and is used for applying
   /// transformations when merged with other properties.
-  const Prop.directives(List<Directive<V>> directives)
+  const Prop.directives(List<PropDirective<V>> directives)
     : this._(sources: const [], directives: directives);
 
   // Factory methods
@@ -173,7 +185,7 @@ class Prop<V> {
   // Methods
 
   /// Returns a new property with the given directives merged with existing ones.
-  Prop<V> directives(List<Directive<V>> directives) {
+  Prop<V> directives(List<PropDirective<V>> directives) {
     return mergeProp(Prop.directives(directives));
   }
 
@@ -237,15 +249,22 @@ class Prop<V> {
           if (converted != null) {
             mixValues.add(converted);
           } else {
-            // Debug-only diagnostic to surface silent conversion failures
-            assert(() {
-              debugPrint(
-                'Mix: could not convert value of type ${value.runtimeType} '
-                'to Mix<$V>. Register a MixConverter for <$V> or pass a Mix via Prop.mix.',
+            final message = StringBuffer()
+              ..writeln(
+                'Mix: could not convert value of type ${value.runtimeType} to Mix<$V> '
+                'while resolving Prop<$V>.',
+              )
+              ..writeln(
+                'This Prop mixes regular ${value.runtimeType} values with Mix<$V> '
+                'instances. Register a MixConverter<$V> or ensure all values are '
+                'provided via Prop.mix().',
+              )
+              ..writeln(
+                'Sources: ${sources.map((s) => s.runtimeType).join(', ')}',
               );
 
-              return true;
-            }());
+            debugPrint(message.toString());
+            throw FlutterError(message.toString());
           }
         }
       }

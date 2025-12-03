@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../animation/spring_curves.dart';
 import '../../core/directive.dart';
+import '../../core/directives/text_directives.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
 import '../painting/shadow_mix.dart';
@@ -682,10 +683,10 @@ extension ElevationShadowPropUtilityExt<T extends Style<Object?>>
   T twentyFour() => call(ElevationShadow.twentyFour);
 }
 
-/// Extension for creating [Directive<String>] values with text transformations.
+/// Extension for creating [SpecDirective<String>] values with text transformations.
 extension DirectiveStringPropUtilityExt<T extends Style<Object?>>
-    on MixUtility<T, Directive<String>> {
-  T call(Directive<String> value) => utilityBuilder(value);
+    on MixUtility<T, SpecDirective<String>> {
+  T call(SpecDirective<String> value) => utilityBuilder(value);
 
   T capitalize() => call(CapitalizeStringDirective());
   T uppercase() => call(UppercaseStringDirective());

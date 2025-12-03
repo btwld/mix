@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../animation/animation_config.dart';
 import '../../core/directive.dart';
+import '../../core/directives/text_directives.dart';
 import '../../core/helpers.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
@@ -47,7 +48,7 @@ class TextStyler extends Style<TextSpec>
   final Prop<TextHeightBehavior>? $textHeightBehavior;
   final Prop<TextDirection>? $textDirection;
   final Prop<bool>? $softWrap;
-  final List<Directive<String>>? $textDirectives;
+  final List<SpecDirective<String>>? $textDirectives;
   final Prop<Color>? $selectionColor;
   final Prop<String>? $semanticsLabel;
   final Prop<Locale>? $locale;
@@ -63,7 +64,7 @@ class TextStyler extends Style<TextSpec>
     Prop<TextHeightBehavior>? textHeightBehavior,
     Prop<TextDirection>? textDirection,
     Prop<bool>? softWrap,
-    List<Directive<String>>? textDirectives,
+    List<SpecDirective<String>>? textDirectives,
     Prop<Color>? selectionColor,
     Prop<String>? semanticsLabel,
     Prop<Locale>? locale,
@@ -96,7 +97,7 @@ class TextStyler extends Style<TextSpec>
     TextHeightBehaviorMix? textHeightBehavior,
     TextDirection? textDirection,
     bool? softWrap,
-    List<Directive<String>>? textDirectives,
+    List<SpecDirective<String>>? textDirectives,
     Color? selectionColor,
     String? semanticsLabel,
     Locale? locale,
@@ -129,7 +130,11 @@ class TextStyler extends Style<TextSpec>
     return StyledText(text, style: this);
   }
 
-  TextStyler textDirective(Directive<String> value) {
+  /// Adds a text directive for transforming or animating text.
+  ///
+  /// Use this to add [StaticSpecDirective] transforms (like [UppercaseStringDirective])
+  /// or [AnimatedSpecDirective] animations (like [TypewriterDirective]).
+  TextStyler textDirective(SpecDirective<String> value) {
     return merge(TextStyler(textDirectives: [value]));
   }
 
@@ -178,9 +183,10 @@ class TextStyler extends Style<TextSpec>
     return merge(TextStyler(softWrap: value));
   }
 
-  /// Adds a text directive
-  TextStyler directive(Directive<String> value) {
-    return merge(TextStyler(textDirectives: [value]));
+  /// Adds a text directive.
+  @Deprecated('Use textDirective() instead for clarity')
+  TextStyler directive(SpecDirective<String> value) {
+    return textDirective(value);
   }
 
   /// Sets selection color

@@ -30,6 +30,8 @@ export 'src/core/breakpoint.dart';
 export 'src/core/converter_registry.dart';
 export 'src/core/converter_registry_init.dart';
 export 'src/core/directive.dart';
+export 'src/core/directives/color_directives.dart';
+export 'src/core/directives/text_directives.dart';
 export 'src/core/extensions/extensions.dart';
 export 'src/core/helpers.dart';
 export 'src/core/mix_element.dart';

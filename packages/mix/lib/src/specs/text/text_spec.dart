@@ -23,7 +23,18 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
 
   final TextHeightBehavior? textHeightBehavior;
 
-  final List<Directive<String>>? textDirectives;
+  /// List of text directives to apply during rendering.
+  ///
+  /// This field stores [SpecDirective<String>] instances:
+  /// - **StaticSpecDirective**: Applied once, snaps during animation
+  ///   (e.g., [UppercaseStringDirective], [LowercaseStringDirective])
+  /// - **AnimatedSpecDirective**: Interpolated smoothly during animation
+  ///   by providing progress values (e.g., [TypewriterDirective])
+  ///
+  /// During [lerp], StaticSpecDirectives snap to the nearest value (t < 0.5 ? a : b)
+  /// while AnimatedSpecDirectives receive interpolated progress values via
+  /// [SpecDirectiveListTween].
+  final List<SpecDirective<String>>? textDirectives;
 
   final Color? selectionColor;
 
@@ -64,7 +75,7 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
     TextHeightBehavior? textHeightBehavior,
     TextDirection? textDirection,
     bool? softWrap,
-    List<Directive<String>>? textDirectives,
+    List<SpecDirective<String>>? textDirectives,
     Color? selectionColor,
     String? semanticsLabel,
     Locale? locale,
@@ -97,11 +108,15 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
   ///
   /// The interpolation is performed on each property of the [TextSpec] using the appropriate
   /// interpolation method:
-  /// - [MixOps.lerpStrutStyle] for [strutStyle].
-  /// - [MixOps.lerp] for [style].
-  /// For [overflow] and [textAlign] and [textScaler] and [maxLines] and [textWidthBasis] and [textHeightBehavior] and [textDirection] and [softWrap] and [textDirectives], the interpolation is performed using a step function.
-  /// If [t] is less than 0.5, the value from the current [TextSpec] is used. Otherwise, the value
-  /// from the [other] [TextSpec] is used.
+  /// - [MixOps.lerp] for [strutStyle], [style], [selectionColor].
+  /// - [SpecDirectiveListTween] for [textDirectives] to animate AnimatedSpecDirective
+  ///   progress while snapping StaticSpecDirective instances.
+  /// - Step function (snap to nearest) for [overflow], [textAlign], [textScaler], [maxLines],
+  ///   [textWidthBasis], [textHeightBehavior], [textDirection], [softWrap], [semanticsLabel],
+  ///   and [locale].
+  ///
+  /// For properties using a step function: If [t] is less than 0.5, the value from the current
+  /// [TextSpec] is used. Otherwise, the value from the [other] [TextSpec] is used.
   ///
   /// This method is typically used in animations to smoothly transition between
   /// different [TextSpec] configurations.
@@ -122,7 +137,10 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
       ),
       textDirection: MixOps.lerpSnap(textDirection, other?.textDirection, t),
       softWrap: MixOps.lerpSnap(softWrap, other?.softWrap, t),
-      textDirectives: MixOps.lerpSnap(textDirectives, other?.textDirectives, t),
+      textDirectives: SpecDirectiveListTween<String>(
+        begin: textDirectives,
+        end: other?.textDirectives,
+      ).lerp(t),
       selectionColor: MixOps.lerp(selectionColor, other?.selectionColor, t),
       semanticsLabel: MixOps.lerpSnap(semanticsLabel, other?.semanticsLabel, t),
       locale: MixOps.lerpSnap(locale, other?.locale, t),
@@ -150,7 +168,10 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
         ),
       )
       ..add(
-        IterableProperty<Directive<String>>('textDirectives', textDirectives),
+        IterableProperty<SpecDirective<String>>(
+          'textDirectives',
+          textDirectives,
+        ),
       )
       ..add(ColorProperty('selectionColor', selectionColor))
       ..add(StringProperty('semanticsLabel', semanticsLabel))

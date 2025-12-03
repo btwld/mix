@@ -61,7 +61,7 @@ void main() {
 
     test('merges directives', () {
       // Intentionally pass an empty directives list to 'a' and verify it is preserved
-      final a = Prop.value(1).directives(<Directive<int>>[]);
+      final a = Prop.value(1).directives(<PropDirective<int>>[]);
       final b = Prop.value(2);
 
       final merged = a.mergeProp(b);
@@ -183,5 +183,69 @@ void main() {
       expect(resolved.right, 8.0); // from converted prop1
       expect(resolved.bottom, 8.0); // from converted prop1
     });
+
+    test('throws when Mix conversion is required but no converter exists', () {
+      const unconverted = _UnconvertibleType('plain');
+      final prop1 = Prop.value(unconverted);
+      final prop2 = Prop.mix(
+        MockMix<_UnconvertibleType>(const _UnconvertibleType('mix')),
+      );
+
+      final merged = prop1.mergeProp(prop2);
+
+      expect(
+        () => merged.resolveProp(MockBuildContext()),
+        throwsA(
+          isA<FlutterError>().having(
+            (error) => error.toString(),
+            'description',
+            allOf(
+              contains('could not convert value'),
+              contains('_UnconvertibleType'),
+            ),
+          ),
+        ),
+      );
+    });
   });
+
+  group('PropOps.applyDirectives', () {
+    test('rethrows failures with directive context', () {
+      final directives = [const _ThrowingIntDirective('explode')];
+
+      expect(
+        () => PropOps.applyDirectives<int>(0, directives),
+        throwsA(
+          isA<FlutterError>().having(
+            (error) => error.toString(),
+            'description',
+            allOf(contains('explode'), contains('position 0')),
+          ),
+        ),
+      );
+    });
+  });
+}
+
+class _UnconvertibleType {
+  final String label;
+
+  const _UnconvertibleType(this.label);
+
+  @override
+  String toString() => 'UnconvertibleType($label)';
+}
+
+class _ThrowingIntDirective extends PropDirective<int> {
+  final String label;
+
+  const _ThrowingIntDirective(this.label);
+
+  @override
+  int apply(int value) {
+    throw StateError('boom');
+  }
+
+  @override
+  String get key => label;
 }

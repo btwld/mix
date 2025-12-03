@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/directive.dart';
+import '../../core/directives/color_directives.dart';
 import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/utility.dart';
@@ -13,7 +14,7 @@ import 'material_colors_util.dart';
 /// that are applied during resolution.
 mixin ColorDirectiveMixin<T extends Style<Object?>>
     on MixUtility<T, Prop<Color>> {
-  T directive(Directive<Color> directive) {
+  T directive(PropDirective<Color> directive) {
     return utilityBuilder(Prop.directives([directive]));
   }
 
