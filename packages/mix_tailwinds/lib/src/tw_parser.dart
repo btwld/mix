@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
@@ -67,6 +69,33 @@ const Set<String> _validDelayKeys = {
   '1000',
 };
 
+/// Valid Tailwind scale keys (matches TwConfig._standard.scales).
+const Set<String> _validScaleKeys = {
+  '0',
+  '50',
+  '75',
+  '90',
+  '95',
+  '100',
+  '105',
+  '110',
+  '125',
+  '150',
+};
+
+/// Valid Tailwind rotation keys (matches TwConfig._standard.rotations).
+const Set<String> _validRotationKeys = {
+  '0',
+  '1',
+  '2',
+  '3',
+  '6',
+  '12',
+  '45',
+  '90',
+  '180',
+};
+
 /// Returns true if the token is an animation-related token.
 bool _isAnimationToken(String token) {
   if (_transitionTriggerTokens.contains(token)) return true;
@@ -80,6 +109,26 @@ bool _isAnimationToken(String token) {
   if (token.startsWith('delay-')) {
     return _validDelayKeys.contains(token.substring(6));
   }
+  return false;
+}
+
+/// Returns true if the token is a valid transform-related token.
+/// Validates the value portion against known valid keys.
+bool _isTransformToken(String token) {
+  if (token.startsWith('scale-')) {
+    return _validScaleKeys.contains(token.substring(6));
+  }
+  if (token.startsWith('-rotate-')) {
+    return _validRotationKeys.contains(token.substring(8));
+  }
+  if (token.startsWith('rotate-')) {
+    return _validRotationKeys.contains(token.substring(7));
+  }
+  // Translate tokens use spacing scale - allow any spacing value (validated elsewhere)
+  if (token.startsWith('translate-x-')) return true;
+  if (token.startsWith('translate-y-')) return true;
+  if (token.startsWith('-translate-x-')) return true;
+  if (token.startsWith('-translate-y-')) return true;
   return false;
 }
 
@@ -579,6 +628,75 @@ class TwParser {
     );
   }
 
+  /// Parses transform tokens and returns a composite Matrix4.
+  ///
+  /// Tailwind CSS applies transforms in a fixed order regardless of class order:
+  /// translate → rotate → scale
+  ///
+  /// This method extracts all transform values and builds a single matrix
+  /// following that order to match Tailwind's behavior exactly.
+  ///
+  /// Returns null if no transform tokens are present.
+  Matrix4? parseTransform(String classNames) {
+    final tokens = listTokens(classNames);
+
+    double? scale;
+    double? rotateDeg;
+    double? translateX;
+    double? translateY;
+
+    for (final token in tokens) {
+      // Strip any prefix (hover:, md:, etc.) to get base token
+      final base = token.substring(token.lastIndexOf(':') + 1);
+
+      if (base.startsWith('scale-')) {
+        scale = config.scaleOf(base.substring(6));
+      } else if (base.startsWith('-rotate-')) {
+        final deg = config.rotationOf(base.substring(8));
+        if (deg != null) rotateDeg = -deg;
+      } else if (base.startsWith('rotate-')) {
+        rotateDeg = config.rotationOf(base.substring(7));
+      } else if (base.startsWith('-translate-x-')) {
+        final px = config.spaceOf(base.substring(13));
+        translateX = -px;
+      } else if (base.startsWith('translate-x-')) {
+        translateX = config.spaceOf(base.substring(12));
+      } else if (base.startsWith('-translate-y-')) {
+        final px = config.spaceOf(base.substring(13));
+        translateY = -px;
+      } else if (base.startsWith('translate-y-')) {
+        translateY = config.spaceOf(base.substring(12));
+      }
+    }
+
+    // No transform tokens found
+    if (scale == null &&
+        rotateDeg == null &&
+        translateX == null &&
+        translateY == null) {
+      return null;
+    }
+
+    // Build matrix in Tailwind's fixed order: translate → rotate → scale
+    var matrix = Matrix4.identity();
+
+    if (translateX != null || translateY != null) {
+      matrix = matrix.multiplied(
+        Matrix4.translationValues(translateX ?? 0.0, translateY ?? 0.0, 0.0),
+      );
+    }
+
+    if (rotateDeg != null) {
+      matrix = matrix.multiplied(Matrix4.rotationZ(rotateDeg * math.pi / 180));
+    }
+
+    if (scale != null) {
+      matrix = matrix.multiplied(Matrix4.diagonal3Values(scale, scale, 1.0));
+    }
+
+    return matrix;
+  }
+
   /// Generic prefix handler that applies variant modifiers and breakpoints.
   /// This is the single source of truth for prefix handling logic.
   S _applyPrefixedToken<S>(
@@ -777,6 +895,8 @@ class TwParser {
       result = styler.borderRounded(config.radiusOf(suffix));
     } else if (_isAnimationToken(token)) {
       // Animation tokens handled by parseAnimation(), don't report as unsupported
+    } else if (_isTransformToken(token)) {
+      // Transform tokens handled by parseTransform(), don't report as unsupported
     } else {
       handled = false;
     }
@@ -911,6 +1031,8 @@ class TwParser {
       }
     } else if (_isAnimationToken(token)) {
       // Animation tokens handled by parseAnimation(), don't report as unsupported
+    } else if (_isTransformToken(token)) {
+      // Transform tokens handled by parseTransform(), don't report as unsupported
     } else {
       handled = false;
     }

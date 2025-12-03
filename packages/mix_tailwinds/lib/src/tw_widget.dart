@@ -65,6 +65,16 @@ class Div extends StatelessWidget {
       );
     }
 
+    // Apply transform if present
+    final transformMatrix = parser.parseTransform(classNames);
+    if (transformMatrix != null) {
+      built = Transform(
+        transform: transformMatrix,
+        alignment: Alignment.center,
+        child: built,
+      );
+    }
+
     return _wrapWithFlexItemDecorators(
       child: built,
       tokens: tokens,
