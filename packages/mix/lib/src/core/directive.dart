@@ -19,373 +19,104 @@ abstract class Directive<T> {
   T apply(T value);
 }
 
-/// Directive that applies opacity to a color.
-class OpacityColorDirective extends Directive<Color> {
-  final double opacity;
-
-  const OpacityColorDirective(this.opacity);
-
-  @override
-  Color apply(Color color) => color.withValues(alpha: opacity);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is OpacityColorDirective && opacity == other.opacity;
-
-  @override
-  String get key => 'color_opacity';
-
-  @override
-  int get hashCode => opacity.hashCode;
+/// Directive applied once during Prop resolution.
+///
+/// PropDirectives are used with Prop instances and applied immediately during
+/// `Prop.resolveProp()`. They transform values once and are discarded before
+/// the Spec is created.
+///
+/// ## Usage
+///
+/// ```dart
+/// // In color transformations
+/// Prop<Color>.value(Colors.red)
+///   .directives([OpacityColorDirective(0.5)]);
+///
+/// // In string transformations
+/// Prop<String>.value("hello")
+///   .directives([UppercaseStringDirective()]);
+/// ```
+///
+/// PropDirectives are stored in `Prop.$directives` and applied during resolution,
+/// before animation occurs. For directives that need to animate, use [SpecDirective].
+@immutable
+abstract class PropDirective<T> extends Directive<T> {
+  const PropDirective();
 }
 
-/// Directive that applies withValues to a color.
-class WithValuesColorDirective extends Directive<Color> {
-  final double? alpha;
-  final double? red;
-  final double? green;
-  final double? blue;
-  final ColorSpace? colorSpace;
-
-  const WithValuesColorDirective({
-    this.alpha,
-    this.red,
-    this.green,
-    this.blue,
-    this.colorSpace,
-  });
-
-  @override
-  Color apply(Color color) => color.withValues(
-    alpha: alpha,
-    red: red,
-    green: green,
-    blue: blue,
-    colorSpace: colorSpace,
-  );
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is WithValuesColorDirective &&
-          alpha == other.alpha &&
-          red == other.red &&
-          green == other.green &&
-          blue == other.blue &&
-          colorSpace == other.colorSpace;
-
-  @override
-  String get key => 'color_with_values';
-
-  @override
-  int get hashCode =>
-      alpha.hashCode ^
-      red.hashCode ^
-      green.hashCode ^
-      blue.hashCode ^
-      colorSpace.hashCode;
-}
-
-/// Directive that applies alpha to a color.
-class AlphaColorDirective extends Directive<Color> {
-  final int alpha;
-
-  const AlphaColorDirective(this.alpha);
-
-  @override
-  Color apply(Color color) => color.withAlpha(alpha);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is AlphaColorDirective && alpha == other.alpha;
-
-  @override
-  String get key => 'color_alpha';
-
-  @override
-  int get hashCode => alpha.hashCode;
-}
-
-/// Directive that darkens a color.
-class DarkenColorDirective extends Directive<Color> {
-  final int amount;
-
-  const DarkenColorDirective(this.amount);
-
-  @override
-  Color apply(Color color) => color.darken(amount);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is DarkenColorDirective && amount == other.amount;
-
-  @override
-  String get key => 'color_darken';
-
-  @override
-  int get hashCode => amount.hashCode;
-}
-
-/// Directive that lightens a color.
-class LightenColorDirective extends Directive<Color> {
-  final int amount;
-
-  const LightenColorDirective(this.amount);
-
-  @override
-  Color apply(Color color) => color.lighten(amount);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is LightenColorDirective && amount == other.amount;
-
-  @override
-  String get key => 'color_lighten';
-
-  @override
-  int get hashCode => amount.hashCode;
-}
-
-/// Directive that saturates a color.
-class SaturateColorDirective extends Directive<Color> {
-  final int amount;
-
-  const SaturateColorDirective(this.amount);
-
-  @override
-  Color apply(Color color) => color.saturate(amount);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is SaturateColorDirective && amount == other.amount;
-
-  @override
-  String get key => 'color_saturate';
-
-  @override
-  int get hashCode => amount.hashCode;
-}
-
-/// Directive that desaturates a color.
-class DesaturateColorDirective extends Directive<Color> {
-  final int amount;
-
-  const DesaturateColorDirective(this.amount);
-
-  @override
-  Color apply(Color color) => color.desaturate(amount);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is DesaturateColorDirective && amount == other.amount;
-
-  @override
-  String get key => 'color_desaturate';
-
-  @override
-  int get hashCode => amount.hashCode;
-}
-
-/// Directive that applies tint to a color.
-class TintColorDirective extends Directive<Color> {
-  final int amount;
-
-  const TintColorDirective(this.amount);
-
-  @override
-  Color apply(Color color) => color.tint(amount);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is TintColorDirective && amount == other.amount;
-
-  @override
-  String get key => 'color_tint';
-
-  @override
-  int get hashCode => amount.hashCode;
-}
-
-/// Directive that applies shade to a color.
-class ShadeColorDirective extends Directive<Color> {
-  final int amount;
-
-  const ShadeColorDirective(this.amount);
-
-  @override
-  Color apply(Color color) => color.shade(amount);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is ShadeColorDirective && amount == other.amount;
-
-  @override
-  String get key => 'color_shade';
-
-  @override
-  int get hashCode => amount.hashCode;
-}
-
-/// Directive that brightens a color.
-class BrightenColorDirective extends Directive<Color> {
-  final int amount;
-
-  const BrightenColorDirective(this.amount);
-
-  @override
-  Color apply(Color color) => color.brighten(amount);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is BrightenColorDirective && amount == other.amount;
-
-  @override
-  String get key => 'color_brighten';
-
-  @override
-  int get hashCode => amount.hashCode;
-}
-
-/// Directive that sets the red channel of a color.
-class WithRedColorDirective extends Directive<Color> {
-  final int red;
-
-  const WithRedColorDirective(this.red);
-
-  @override
-  Color apply(Color color) => color.withRed(red);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is WithRedColorDirective && red == other.red;
-
-  @override
-  String get key => 'color_with_red';
-
-  @override
-  int get hashCode => red.hashCode;
-}
-
-/// Directive that sets the green channel of a color.
-class WithGreenColorDirective extends Directive<Color> {
-  final int green;
-
-  const WithGreenColorDirective(this.green);
-
-  @override
-  Color apply(Color color) => color.withGreen(green);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is WithGreenColorDirective && green == other.green;
-
-  @override
-  String get key => 'color_with_green';
-
-  @override
-  int get hashCode => green.hashCode;
-}
-
-/// Directive that sets the blue channel of a color.
-class WithBlueColorDirective extends Directive<Color> {
-  final int blue;
-
-  const WithBlueColorDirective(this.blue);
-
-  @override
-  Color apply(Color color) => color.withBlue(blue);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is WithBlueColorDirective && blue == other.blue;
-
-  @override
-  String get key => 'color_with_blue';
-
-  @override
-  int get hashCode => blue.hashCode;
-}
-
-/// Directive that capitalizes the first letter of a string.
-final class CapitalizeStringDirective extends Directive<String> {
-  const CapitalizeStringDirective();
-  @override
-  String apply(String value) => value.capitalize;
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is CapitalizeStringDirective;
-  @override
-  String get key => 'capitalize';
-  @override
-  int get hashCode => key.hashCode;
-}
-
-/// Directive that converts a string to uppercase.
-final class UppercaseStringDirective extends Directive<String> {
-  const UppercaseStringDirective();
-  @override
-  String apply(String value) => value.toUpperCase();
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is UppercaseStringDirective;
-  @override
-  String get key => 'uppercase';
-  @override
-  int get hashCode => key.hashCode;
-}
-
-/// Directive that converts a string to lowercase.
-final class LowercaseStringDirective extends Directive<String> {
-  const LowercaseStringDirective();
-  @override
-  String apply(String value) => value.toLowerCase();
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is LowercaseStringDirective;
-  @override
-  String get key => 'lowercase';
-  @override
-  int get hashCode => key.hashCode;
-}
-
-/// Directive that converts a string to title case.
-final class TitleCaseStringDirective extends Directive<String> {
-  const TitleCaseStringDirective();
-  @override
-  String apply(String value) => value.titleCase;
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is TitleCaseStringDirective;
-  @override
-  String get key => 'title_case';
-  @override
-  int get hashCode => key.hashCode;
-}
-
-/// Directive that converts a string to sentence case.
-final class SentenceCaseStringDirective extends Directive<String> {
-  const SentenceCaseStringDirective();
-  @override
-  String apply(String value) => value.sentenceCase;
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is SentenceCaseStringDirective;
-  @override
-  String get key => 'sentence_case';
-  @override
-  int get hashCode => key.hashCode;
+/// Directive lerped during Spec animation.
+///
+/// SpecDirectives are used in Spec instances (like TextSpec) and participate in
+/// animation by implementing [lerp] to interpolate between two directive states.
+///
+/// ## Basic Implementation
+///
+/// ```dart
+/// class TypewriterDirective extends SpecDirective<String> {
+///   final double progress;
+///
+///   const TypewriterDirective({this.progress = 0.0});
+///
+///   @override
+///   String apply(String value) {
+///     final length = (value.length * progress).round().clamp(0, value.length);
+///     return value.substring(0, length);
+///   }
+///
+///   @override
+///   SpecDirective<String> lerp(SpecDirective<String>? other, double t) {
+///     if (other is! TypewriterDirective) return this;
+///     return TypewriterDirective(
+///       progress: progress + (other.progress - progress) * t,
+///     );
+///   }
+///
+///   @override
+///   String get key => 'typewriter';
+/// }
+/// ```
+///
+/// ## Animation Behavior
+///
+/// During `Spec.lerp()`, SpecDirective instances are matched by runtime type and [key].
+/// When both specs contain matching SpecDirectives, [lerp] is called to interpolate
+/// between them:
+///
+/// ```dart
+/// final start = TextSpec(textDirectives: [TypewriterDirective(progress: 0.0)]);
+/// final end = TextSpec(textDirectives: [TypewriterDirective(progress: 1.0)]);
+///
+/// // At t=0.5
+/// final interpolated = start.lerp(end, 0.5);
+/// // Result: TypewriterDirective(progress: 0.5)
+/// ```
+///
+/// Non-matching directives snap to the nearest value (t < 0.5 uses first, otherwise second).
+///
+/// ## Implementation Requirements
+///
+/// Subclasses must:
+/// - Override [key] to uniquely identify the directive type for lerp matching
+/// - Override [apply] to transform values based on directive state
+/// - Override [lerp] to interpolate with another directive of the same type
+/// - Ensure [key] is consistent across instances for animation continuity
+@immutable
+abstract class SpecDirective<T> extends Directive<T> {
+  const SpecDirective();
+
+  /// Interpolates between this directive and [other] at time [t].
+  ///
+  /// This method mirrors the [Spec.lerp] pattern for consistency. When [other]
+  /// is not the same type as this directive, implementations should snap to the
+  /// nearest value (return this if t < 0.5, otherwise return other).
+  ///
+  /// The [t] parameter is typically in the range 0.0 to 1.0, where:
+  /// - 0.0 returns this directive's state
+  /// - 1.0 returns other's state
+  /// - 0.5 returns halfway between
+  ///
+  /// Implementations should handle null [other] by returning this.
+  SpecDirective<T> lerp(SpecDirective<T>? other, double t);
 }
 
 /// Extension on [List<Directive<T>>] to provide apply functionality
@@ -400,3 +131,71 @@ extension DirectiveListExt<T> on List<Directive<T>> {
     return result;
   }
 }
+
+/// Tween for interpolating between directive lists.
+///
+/// This tween enables smooth animations of directive lists by:
+/// - Calling [SpecDirective.lerp] for matching SpecDirective pairs
+/// - Snapping to nearest for PropDirectives or incompatible directives
+///
+/// Used internally by [MixOps.lerpDirectives] to handle [List<Directive<T>>] interpolation
+/// while preserving generic type safety.
+class DirectiveListTween<T> extends Tween<List<Directive<T>>?> {
+  DirectiveListTween({super.begin, super.end});
+
+  @override
+  List<Directive<T>>? lerp(double t) {
+    final a = begin;
+    final b = end;
+
+    if (a == null && b == null) return null;
+    if (a == null) return b;
+    if (b == null) return a;
+
+    final maxLength = a.length > b.length ? a.length : b.length;
+    final result = <Directive<T>>[];
+
+    for (var i = 0; i < maxLength; i++) {
+      final directiveA = i < a.length ? a[i] : null;
+      final directiveB = i < b.length ? b[i] : null;
+
+      final directive = switch ((directiveA, directiveB)) {
+        // One is null - use the non-null directive
+        (null, final b?) => b,
+        (final a?, null) => a,
+
+        // Both are SpecDirectives with matching type and key - lerp them
+        (final SpecDirective<T> a, final SpecDirective<T> b)
+          when a.runtimeType == b.runtimeType && a.key == b.key => () {
+            final lerped = a.lerp(b, t);
+
+            // Fail-fast validation: verify return type consistency
+            if (lerped.runtimeType != a.runtimeType) {
+              throw FlutterError(
+                'Mix: SpecDirective.lerp() type safety violation.\n'
+                'Expected: ${a.runtimeType}\n'
+                'Received: ${lerped.runtimeType}\n'
+                'This is a bug in the ${a.runtimeType}.lerp() implementation.\n'
+                'Directive key: ${a.key}\n'
+                'The lerp() method must return an instance of the same type it was called on.',
+              );
+            }
+
+            return lerped;
+          }(),
+
+        // Otherwise snap to nearest
+        (final a?, final b?) => t < 0.5 ? a : b,
+
+        // Both null - skip
+        _ => null,
+      };
+
+      if (directive != null) result.add(directive);
+    }
+
+    return result;
+  }
+}
+
+

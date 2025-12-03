@@ -23,6 +23,18 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
 
   final TextHeightBehavior? textHeightBehavior;
 
+  /// List of text directives to apply during rendering.
+  ///
+  /// This field accepts both [PropDirective] and [SpecDirective] instances:
+  /// - **PropDirective**: Applied once, snaps during animation
+  ///   (e.g., [UppercaseStringDirective], [LowercaseStringDirective])
+  /// - **SpecDirective**: Interpolated smoothly during animation
+  ///   (e.g., [TypewriterDirective], [ReverseTypewriterDirective])
+  ///
+  /// During [lerp], PropDirectives snap to the nearest value (t < 0.5 ? a : b)
+  /// while SpecDirectives are interpolated via their [SpecDirective.lerp] method.
+  ///
+  /// See [MixOps.lerpDirectives] for the interpolation implementation.
   final List<Directive<String>>? textDirectives;
 
   final Color? selectionColor;
@@ -97,11 +109,15 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
   ///
   /// The interpolation is performed on each property of the [TextSpec] using the appropriate
   /// interpolation method:
-  /// - [MixOps.lerpStrutStyle] for [strutStyle].
-  /// - [MixOps.lerp] for [style].
-  /// For [overflow] and [textAlign] and [textScaler] and [maxLines] and [textWidthBasis] and [textHeightBehavior] and [textDirection] and [softWrap] and [textDirectives], the interpolation is performed using a step function.
-  /// If [t] is less than 0.5, the value from the current [TextSpec] is used. Otherwise, the value
-  /// from the [other] [TextSpec] is used.
+  /// - [MixOps.lerp] for [strutStyle], [style], [selectionColor].
+  /// - [MixOps.lerpDirectives] for [textDirectives] to interpolate SpecDirective instances
+  ///   while snapping PropDirective instances.
+  /// - Step function (snap to nearest) for [overflow], [textAlign], [textScaler], [maxLines],
+  ///   [textWidthBasis], [textHeightBehavior], [textDirection], [softWrap], [semanticsLabel],
+  ///   and [locale].
+  ///
+  /// For properties using a step function: If [t] is less than 0.5, the value from the current
+  /// [TextSpec] is used. Otherwise, the value from the [other] [TextSpec] is used.
   ///
   /// This method is typically used in animations to smoothly transition between
   /// different [TextSpec] configurations.
@@ -122,7 +138,7 @@ final class TextSpec extends Spec<TextSpec> with Diagnosticable {
       ),
       textDirection: MixOps.lerpSnap(textDirection, other?.textDirection, t),
       softWrap: MixOps.lerpSnap(softWrap, other?.softWrap, t),
-      textDirectives: MixOps.lerpSnap(textDirectives, other?.textDirectives, t),
+      textDirectives: MixOps.lerpDirectives(textDirectives, other?.textDirectives, t),
       selectionColor: MixOps.lerp(selectionColor, other?.selectionColor, t),
       semanticsLabel: MixOps.lerpSnap(semanticsLabel, other?.semanticsLabel, t),
       locale: MixOps.lerpSnap(locale, other?.locale, t),

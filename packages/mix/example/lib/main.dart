@@ -27,6 +27,7 @@ import 'api/widgets/vbox/card_layout.dart' as card_layout;
 import 'api/widgets/zbox/layered_boxes.dart' as layered_boxes;
 // Text examples
 import 'api/text/text_directives.dart' as text_directives;
+import 'api/text/typewriter_directive.dart' as typewriter_directive;
 // Gradient examples
 import 'api/gradients/gradient_linear.dart' as gradient_linear;
 import 'api/gradients/gradient_radial.dart' as gradient_radial;
@@ -116,6 +117,12 @@ class _ExampleNavigatorState extends State<ExampleNavigator> {
           'Text transformations: uppercase, lowercase, capitalize, etc.',
       category: 'Widgets',
       widget: const text_directives.Example(),
+    ),
+    ExampleItem(
+      title: 'Text - Typewriter',
+      description: 'Progressively reveal or hide text with directives',
+      category: 'Widgets',
+      widget: const typewriter_directive.Example(),
     ),
 
     // Context Variants

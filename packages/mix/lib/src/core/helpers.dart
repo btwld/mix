@@ -95,6 +95,21 @@ class MixOps {
     return merged.values.toList();
   }
 
+  /// Lerps directive lists using DirectiveListTween for SpecDirective support.
+  ///
+  /// This method must be called directly by specs (e.g., TextSpec) rather than
+  /// going through [lerp] because Dart's type erasure prevents generic types like
+  /// `List<Directive<T>>` from being preserved through dynamic dispatch.
+  ///
+  /// See [DirectiveListTween] for implementation details.
+  static List<Directive<T>>? lerpDirectives<T>(
+    List<Directive<T>>? a,
+    List<Directive<T>>? b,
+    double t,
+  ) {
+    return DirectiveListTween<T>(begin: a, end: b).lerp(t);
+  }
+
   static List<T>? _mergeList<T>(
     List<T>? a,
     List<T>? b, {
@@ -282,12 +297,39 @@ class PropOps {
   /// Applies directives to a resolved value.
   ///
   /// Returns the original value if no directives are provided.
-  static V applyDirectives<V>(V value, List<Directive<V>>? directives) {
+  ///
+  /// Throws [FlutterError] if any directive fails to apply, with diagnostic context
+  /// including the directive type, position in the list, and the original error.
+  static V applyDirectives<V>(V value, List<PropDirective<V>>? directives) {
     if (directives == null || directives.isEmpty) return value;
 
     var result = value;
-    for (final directive in directives) {
-      result = directive.apply(result);
+    for (var i = 0; i < directives.length; i++) {
+      final directive = directives[i];
+      try {
+        result = directive.apply(result);
+      } catch (e, stackTrace) {
+        // Provide diagnostic context for debugging
+        assert(() {
+          debugPrint(
+            'Mix: Directive application failed.\n'
+            'Directive: ${directive.runtimeType} (key: ${directive.key})\n'
+            'Position: $i of ${directives.length}\n'
+            'Input type: ${result.runtimeType}\n'
+            'Error: $e\n'
+            'Stack trace: $stackTrace',
+          );
+          return true;
+        }());
+
+        // Rethrow with context - don't swallow the error
+        throw FlutterError(
+          'Mix: Failed to apply ${directive.runtimeType} directive (${directive.key}) '
+          'at position $i of ${directives.length}.\n'
+          'Input value type: ${result.runtimeType}\n'
+          'Original error: $e',
+        );
+      }
     }
 
     return result;
@@ -297,9 +339,9 @@ class PropOps {
   ///
   /// Returns a new list containing all directives from both lists,
   /// or null if both lists are null.
-  static List<Directive<V>>? mergeDirectives<V>(
-    List<Directive<V>>? current,
-    List<Directive<V>>? other,
+  static List<PropDirective<V>>? mergeDirectives<V>(
+    List<PropDirective<V>>? current,
+    List<PropDirective<V>>? other,
   ) {
     return switch ((current, other)) {
       (null, null) => null,

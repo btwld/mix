@@ -134,6 +134,163 @@ void main() {
         ); // (12 + 20) / 2
       });
 
+      test('lerps animated text directives progress', () {
+        const spec1 = TextSpec(
+          textDirectives: [_TestAnimatedDirective(progress: 0.0)],
+        );
+        const spec2 = TextSpec(
+          textDirectives: [_TestAnimatedDirective(progress: 1.0)],
+        );
+
+        final lerped = spec1.lerp(spec2, 0.5);
+        final directive = lerped.textDirectives?.single as _TestAnimatedDirective;
+
+        expect(directive.progress, closeTo(0.5, 1e-9));
+      });
+
+      test('handles mismatched directive list lengths - first longer', () {
+        const spec1 = TextSpec(
+          textDirectives: [
+            _TestAnimatedDirective(progress: 0.0),
+            _TestAnimatedDirective(progress: 0.0),
+          ],
+        );
+        const spec2 = TextSpec(
+          textDirectives: [_TestAnimatedDirective(progress: 1.0)],
+        );
+
+        final lerped = spec1.lerp(spec2, 0.5);
+
+        expect(lerped.textDirectives?.length, 2);
+        expect(
+          (lerped.textDirectives?[0] as _TestAnimatedDirective).progress,
+          closeTo(0.5, 1e-9),
+        );
+        expect(
+          (lerped.textDirectives?[1] as _TestAnimatedDirective).progress,
+          0.0,
+        );
+      });
+
+      test('handles mismatched directive list lengths - second longer', () {
+        const spec1 = TextSpec(
+          textDirectives: [_TestAnimatedDirective(progress: 0.0)],
+        );
+        const spec2 = TextSpec(
+          textDirectives: [
+            _TestAnimatedDirective(progress: 1.0),
+            _TestAnimatedDirective(progress: 1.0),
+          ],
+        );
+
+        final lerped = spec1.lerp(spec2, 0.5);
+
+        expect(lerped.textDirectives?.length, 2);
+        expect(
+          (lerped.textDirectives?[0] as _TestAnimatedDirective).progress,
+          closeTo(0.5, 1e-9),
+        );
+        expect(
+          (lerped.textDirectives?[1] as _TestAnimatedDirective).progress,
+          1.0,
+        );
+      });
+
+      test('snaps when animated directives have different keys', () {
+        const spec1 = TextSpec(
+          textDirectives: [_TestAnimatedDirective(progress: 0.0)],
+        );
+        const spec2 = TextSpec(
+          textDirectives: [_AnotherAnimatedDirective(progress: 1.0)],
+        );
+
+        final lerpedBefore = spec1.lerp(spec2, 0.4);
+        final lerpedAfter = spec1.lerp(spec2, 0.6);
+
+        expect(lerpedBefore.textDirectives?[0], isA<_TestAnimatedDirective>());
+        expect(lerpedAfter.textDirectives?[0], isA<_AnotherAnimatedDirective>());
+      });
+
+      test('handles null textDirectives in first spec', () {
+        const spec1 = TextSpec();
+        const spec2 = TextSpec(
+          textDirectives: [_TestAnimatedDirective(progress: 1.0)],
+        );
+
+        final lerped = spec1.lerp(spec2, 0.5);
+
+        expect(lerped.textDirectives?.length, 1);
+        expect(
+          (lerped.textDirectives?[0] as _TestAnimatedDirective).progress,
+          1.0,
+        );
+      });
+
+      test('handles null textDirectives in second spec', () {
+        const spec1 = TextSpec(
+          textDirectives: [_TestAnimatedDirective(progress: 0.0)],
+        );
+        const spec2 = TextSpec();
+
+        final lerped = spec1.lerp(spec2, 0.5);
+
+        expect(lerped.textDirectives?.length, 1);
+        expect(
+          (lerped.textDirectives?[0] as _TestAnimatedDirective).progress,
+          0.0,
+        );
+      });
+
+      test('typewriter directive reveals characters progressively', () {
+        const directive0 = TypewriterDirective(progress: 0.0);
+        const directive50 = TypewriterDirective(progress: 0.5);
+        const directive100 = TypewriterDirective(progress: 1.0);
+
+        const text = 'Hello World';
+
+        expect(directive0.apply(text), '');
+        expect(directive50.apply(text), 'Hello ');
+        expect(directive100.apply(text), 'Hello World');
+      });
+
+      test('reverse typewriter directive hides characters progressively', () {
+        const directive0 = ReverseTypewriterDirective(progress: 0.0);
+        const directive50 = ReverseTypewriterDirective(progress: 0.5);
+        const directive100 = ReverseTypewriterDirective(progress: 1.0);
+
+        const text = 'Hello World';
+
+        expect(directive0.apply(text), 'Hello World');
+        expect(directive50.apply(text), 'Hello ');
+        expect(directive100.apply(text), '');
+      });
+
+      test('typewriter directive lerps correctly during animation', () {
+        const spec1 = TextSpec(
+          textDirectives: [TypewriterDirective(progress: 0.0)],
+        );
+        const spec2 = TextSpec(
+          textDirectives: [TypewriterDirective(progress: 1.0)],
+        );
+
+        final lerped25 = spec1.lerp(spec2, 0.25);
+        final lerped50 = spec1.lerp(spec2, 0.5);
+        final lerped75 = spec1.lerp(spec2, 0.75);
+
+        expect(
+          (lerped25.textDirectives?[0] as TypewriterDirective).progress,
+          closeTo(0.25, 1e-9),
+        );
+        expect(
+          (lerped50.textDirectives?[0] as TypewriterDirective).progress,
+          closeTo(0.5, 1e-9),
+        );
+        expect(
+          (lerped75.textDirectives?[0] as TypewriterDirective).progress,
+          closeTo(0.75, 1e-9),
+        );
+      });
+
       test('handles null other parameter correctly', () {
         const spec = TextSpec(maxLines: 3, overflow: TextOverflow.ellipsis);
 
@@ -344,7 +501,7 @@ void main() {
       });
     });
 
-    group('Real-world scenarios', () {
+  group('Real-world scenarios', () {
       test('creates heading text spec', () {
         const headingSpec = TextSpec(
           style: TextStyle(
@@ -402,4 +559,44 @@ void main() {
       });
     });
   });
+}
+
+class _TestAnimatedDirective extends SpecDirective<String> {
+  final double progress;
+
+  const _TestAnimatedDirective({this.progress = 0.0});
+
+  @override
+  String apply(String value) => value;
+
+  @override
+  _TestAnimatedDirective lerp(SpecDirective<String>? other, double t) {
+    if (other is! _TestAnimatedDirective) return this;
+    return _TestAnimatedDirective(
+      progress: progress + (other.progress - progress) * t,
+    );
+  }
+
+  @override
+  String get key => '_test_animated_directive';
+}
+
+class _AnotherAnimatedDirective extends SpecDirective<String> {
+  final double progress;
+
+  const _AnotherAnimatedDirective({this.progress = 0.0});
+
+  @override
+  String apply(String value) => value;
+
+  @override
+  _AnotherAnimatedDirective lerp(SpecDirective<String>? other, double t) {
+    if (other is! _AnotherAnimatedDirective) return this;
+    return _AnotherAnimatedDirective(
+      progress: progress + (other.progress - progress) * t,
+    );
+  }
+
+  @override
+  String get key => '_another_animated_directive';
 }

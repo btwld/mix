@@ -115,7 +115,7 @@ void main() {
         expect(result.value, isA<Prop<Color>>());
         expect(directives, isNotEmpty);
         expect(directives!.first, isA<OpacityColorDirective>());
-        expect((directives.first as OpacityColorDirective).opacity, 0.5);
+        expect((directives.first as OpacityColorDirective).value, 0.5);
       });
 
       test('withAlpha applies alpha directive', () {
@@ -125,7 +125,7 @@ void main() {
         expect(result.value, isA<Prop<Color>>());
         expect(directives, isNotEmpty);
         expect(directives!.first, isA<AlphaColorDirective>());
-        expect((directives.first as AlphaColorDirective).alpha, 128);
+        expect((directives.first as AlphaColorDirective).value, 128);
       });
 
       test('darken applies darken directive', () {
@@ -135,7 +135,7 @@ void main() {
         expect(result.value, isA<Prop<Color>>());
         expect(directives, isNotEmpty);
         expect(directives!.first, isA<DarkenColorDirective>());
-        expect((directives.first as DarkenColorDirective).amount, 20);
+        expect((directives.first as DarkenColorDirective).value, 20);
       });
 
       test('lighten applies lighten directive', () {
@@ -145,7 +145,7 @@ void main() {
         expect(result.value, isA<Prop<Color>>());
         expect(directives, isNotEmpty);
         expect(directives!.first, isA<LightenColorDirective>());
-        expect((directives.first as LightenColorDirective).amount, 30);
+        expect((directives.first as LightenColorDirective).value, 30);
       });
 
       test('saturate applies saturate directive', () {
@@ -155,7 +155,7 @@ void main() {
         expect(result.value, isA<Prop<Color>>());
         expect(directives, isNotEmpty);
         expect(directives!.first, isA<SaturateColorDirective>());
-        expect((directives.first as SaturateColorDirective).amount, 25);
+        expect((directives.first as SaturateColorDirective).value, 25);
       });
 
       test('desaturate applies desaturate directive', () {
@@ -165,7 +165,7 @@ void main() {
         expect(result.value, isA<Prop<Color>>());
         expect(directives, isNotEmpty);
         expect(directives!.first, isA<DesaturateColorDirective>());
-        expect((directives.first as DesaturateColorDirective).amount, 15);
+        expect((directives.first as DesaturateColorDirective).value, 15);
       });
 
       test('tint applies tint directive', () {
@@ -175,7 +175,7 @@ void main() {
         expect(result.value, isA<Prop<Color>>());
         expect(directives, isNotEmpty);
         expect(directives!.first, isA<TintColorDirective>());
-        expect((directives.first as TintColorDirective).amount, 40);
+        expect((directives.first as TintColorDirective).value, 40);
       });
 
       test('shade applies shade directive', () {
@@ -185,7 +185,7 @@ void main() {
         expect(result.value, isA<Prop<Color>>());
         expect(directives, isNotEmpty);
         expect(directives!.first, isA<ShadeColorDirective>());
-        expect((directives.first as ShadeColorDirective).amount, 35);
+        expect((directives.first as ShadeColorDirective).value, 35);
       });
 
       test('brighten applies brighten directive', () {
@@ -195,7 +195,7 @@ void main() {
         expect(result.value, isA<Prop<Color>>());
         expect(directives, isNotEmpty);
         expect(directives!.first, isA<BrightenColorDirective>());
-        expect((directives.first as BrightenColorDirective).amount, 50);
+        expect((directives.first as BrightenColorDirective).value, 50);
       });
     });
   });
@@ -225,7 +225,7 @@ void main() {
         expect(result.value, isA<Prop<Color>>());
         expect(directives, isNotEmpty);
         expect(directives!.first, isA<OpacityColorDirective>());
-        expect((directives.first as OpacityColorDirective).opacity, 0.7);
+        expect((directives.first as OpacityColorDirective).value, 0.7);
       });
 
       test('withAlpha applies alpha directive', () {
@@ -235,7 +235,7 @@ void main() {
         expect(result.value, isA<Prop<Color>>());
         expect(directives, isNotEmpty);
         expect(directives!.first, isA<AlphaColorDirective>());
-        expect((directives.first as AlphaColorDirective).alpha, 200);
+        expect((directives.first as AlphaColorDirective).value, 200);
       });
 
       test('darken applies darken directive', () {
@@ -245,7 +245,7 @@ void main() {
         expect(result.value, isA<Prop<Color>>());
         expect(directives, isNotEmpty);
         expect(directives!.first, isA<DarkenColorDirective>());
-        expect((directives.first as DarkenColorDirective).amount, 10);
+        expect((directives.first as DarkenColorDirective).value, 10);
       });
 
       test('lighten applies lighten directive', () {
@@ -255,7 +255,7 @@ void main() {
         expect(result.value, isA<Prop<Color>>());
         expect(directives, isNotEmpty);
         expect(directives!.first, isA<LightenColorDirective>());
-        expect((directives.first as LightenColorDirective).amount, 15);
+        expect((directives.first as LightenColorDirective).value, 15);
       });
 
       test('saturate applies saturate directive', () {
@@ -265,7 +265,7 @@ void main() {
         expect(result.value, isA<Prop<Color>>());
         expect(directives, isNotEmpty);
         expect(directives!.first, isA<SaturateColorDirective>());
-        expect((directives.first as SaturateColorDirective).amount, 20);
+        expect((directives.first as SaturateColorDirective).value, 20);
       });
 
       test('desaturate applies desaturate directive', () {
@@ -275,7 +275,7 @@ void main() {
         expect(result.value, isA<Prop<Color>>());
         expect(directives, isNotEmpty);
         expect(directives!.first, isA<DesaturateColorDirective>());
-        expect((directives.first as DesaturateColorDirective).amount, 25);
+        expect((directives.first as DesaturateColorDirective).value, 25);
       });
 
       test('tint applies tint directive', () {
@@ -285,7 +285,7 @@ void main() {
         expect(result.value, isA<Prop<Color>>());
         expect(directives, isNotEmpty);
         expect(directives!.first, isA<TintColorDirective>());
-        expect((directives.first as TintColorDirective).amount, 30);
+        expect((directives.first as TintColorDirective).value, 30);
       });
 
       test('shade applies shade directive', () {
@@ -295,7 +295,7 @@ void main() {
         expect(result.value, isA<Prop<Color>>());
         expect(directives, isNotEmpty);
         expect(directives!.first, isA<ShadeColorDirective>());
-        expect((directives.first as ShadeColorDirective).amount, 40);
+        expect((directives.first as ShadeColorDirective).value, 40);
       });
 
       test('brighten applies brighten directive', () {
@@ -305,7 +305,7 @@ void main() {
         expect(result.value, isA<Prop<Color>>());
         expect(directives, isNotEmpty);
         expect(directives!.first, isA<BrightenColorDirective>());
-        expect((directives.first as BrightenColorDirective).amount, 45);
+        expect((directives.first as BrightenColorDirective).value, 45);
       });
     });
   });
@@ -331,7 +331,7 @@ void main() {
       expect(result.value, isA<Prop<Color>>());
       expect(directives, isNotEmpty);
       expect(directives!.first, isA<OpacityColorDirective>());
-      expect((directives.first as OpacityColorDirective).opacity, 0.8);
+      expect((directives.first as OpacityColorDirective).value, 0.8);
     });
   });
 
@@ -350,7 +350,7 @@ void main() {
         expect(result.value, isA<Prop<Color>>());
         expect(directives, isNotEmpty);
         expect(directives!.first, isA<OpacityColorDirective>());
-        expect((directives.first as OpacityColorDirective).opacity, 0.5);
+        expect((directives.first as OpacityColorDirective).value, 0.5);
       });
 
       test('black.darken creates darkened black', () {
@@ -360,7 +360,7 @@ void main() {
         expect(result.value, isA<Prop<Color>>());
         expect(directives, isNotEmpty);
         expect(directives!.first, isA<DarkenColorDirective>());
-        expect((directives.first as DarkenColorDirective).amount, 10);
+        expect((directives.first as DarkenColorDirective).value, 10);
       });
     });
 
@@ -371,7 +371,7 @@ void main() {
 
         expect(directives, isNotEmpty);
         expect(directives!.first, isA<OpacityColorDirective>());
-        expect((directives.first as OpacityColorDirective).opacity, 0.9);
+        expect((directives.first as OpacityColorDirective).value, 0.9);
       });
 
       test('white.lighten creates lightened white', () {
@@ -381,7 +381,7 @@ void main() {
         expect(result.value, isA<Prop<Color>>());
         expect(directives, isNotEmpty);
         expect(directives!.first, isA<LightenColorDirective>());
-        expect((directives.first as LightenColorDirective).amount, 5);
+        expect((directives.first as LightenColorDirective).value, 5);
       });
     });
 
@@ -393,7 +393,7 @@ void main() {
         expect(result.value, isA<Prop<Color>>());
         expect(directives, isNotEmpty);
         expect(directives!.first, isA<AlphaColorDirective>());
-        expect((directives.first as AlphaColorDirective).alpha, 100);
+        expect((directives.first as AlphaColorDirective).value, 100);
       });
     });
   });

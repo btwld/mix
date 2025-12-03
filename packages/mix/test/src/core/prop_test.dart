@@ -61,7 +61,7 @@ void main() {
 
     test('merges directives', () {
       // Intentionally pass an empty directives list to 'a' and verify it is preserved
-      final a = Prop.value(1).directives(<Directive<int>>[]);
+      final a = Prop.value(1).directives(<PropDirective<int>>[]);
       final b = Prop.value(2);
 
       final merged = a.mergeProp(b);
