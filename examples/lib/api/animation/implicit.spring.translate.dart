@@ -26,7 +26,7 @@ class _ExampleState extends State<Example> {
         .borderRounded(10)
         .transform(.identity())
         .translate(0, _translated ? 100 : -100)
-        .animate(.spring(300.ms, bounce: 0.6));
+        .animate(AnimationConfig.spring(300.ms, bounce: 0.6));
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,

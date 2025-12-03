@@ -37,18 +37,11 @@ final base = BoxStyler()
     .paddingX(16)
     .paddingY(8)
     .borderRounded(8)
-    .color(Colors.black)
-    .wrapDefaultTextStyle(
-      TextStyleMix()
-        .color(Colors.deepOrange)
-        .fontWeight(FontWeight.bold),
-    );
+    .color(Colors.black);
 
 final solid = base.color(Colors.blue);
 
-final soft = base
-    .color(Colors.blue.shade100)
-    .wrapDefaultTextStyle(TextStyleMix().color(Colors.blue));
+final soft = base.color(Colors.blue.shade100);
 ```
 
 **Order Matters**: The sequence in which you chain styling attributes directly affects the final result. Attributes are merged in order, so later attributes will override earlier ones when there are conflicts.

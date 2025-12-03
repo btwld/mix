@@ -71,13 +71,13 @@ final style = BoxStyler()
 
 #### Widget Modifiers
 
-The `$with` namespace is replaced with `.wrap*()` methods:
+The `$with` namespace is replaced with `.wrap()` method using ModifierMix classes:
 
 | v1.x Pattern | v2.0 Pattern |
 |--------------|--------------|
-| `$with.opacity(0.5)` | `.wrapOpacity(0.5)` |
-| `$with.scale(2)` | `.wrapScale(2)` |
-| `$with.rotate(45)` | `.wrapRotate(45)` |
+| `$with.opacity(0.5)` | `.wrap(OpacityModifierMix(opacity: 0.5))` |
+| `$with.scale(2)` | `.scale(2)` (use transform methods) |
+| `$with.rotate(45)` | `.rotate(45)` (use transform methods) |
 
 #### Theming
 
@@ -109,8 +109,6 @@ $box.color.ref(primaryColor)
 
 // v2.0
 BoxStyler().color(primaryColor())
-// or with token method
-BoxStyler().colorToken(primaryColor)
 ```
 
 ### Widget Name Changes
@@ -137,7 +135,7 @@ BoxStyler().colorToken(primaryColor)
 1. **Start with imports**: Replace `Style(` with the appropriate Styler class
 2. **Update utility calls**: Convert `$box.property()` to `.property()` method chains
 3. **Update variants**: Replace `$on.hover()` with `.onHovered()`
-4. **Update modifiers**: Replace `$with.opacity()` with `.wrapOpacity()`
+4. **Update modifiers**: Replace `$with.opacity()` with `.wrap(OpacityModifierMix(...))`
 5. **Update theming**: Replace `MixTheme` with `MixScope`
 
 ---

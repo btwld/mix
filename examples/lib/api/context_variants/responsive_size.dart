@@ -27,7 +27,7 @@ class Example extends StatelessWidget {
                 .color(Colors.white),
           ).align(alignment: .center),
         )
-        .animate(.spring(300.ms));
+        .animate(AnimationConfig.spring(300.ms));
 
     return Center(
       child: Box(

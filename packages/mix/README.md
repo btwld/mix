@@ -82,8 +82,12 @@ final baseStyle = BoxStyler()
           .borderAll(color: Colors.black),
     );
 
-// Apply the variant when needed
-final outlinedStyle = baseStyle.applyVariant(onOutlined);
+// Use with a widget - variants are activated via StyleBuilder
+StyleBuilder(
+  style: baseStyle,
+  namedVariants: {onOutlined}, // Activate the outlined variant
+  builder: (spec) => Box(styleSpec: spec, child: ...),
+);
 ```
 
 Learn more about [dynamic styling](https://fluttermix.com/docs/guides/dynamic-styling)
@@ -115,7 +119,7 @@ BoxStyler()
     .paddingX(16)             // Padding 16 on left and right
     .paddingY(8)              // Padding 8 on top and bottom
     .paddingTop(20)           // Padding 20 on top
-    .paddingHorizontal(20);   // Padding 20 on left and right
+    .paddingLeft(20);         // Padding 20 on left
 ```
 
 Learn more about [utilities](https://fluttermix.com/docs/overview/utility-first)
