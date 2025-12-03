@@ -6,11 +6,11 @@ import { Callout } from "nextra/components";
 
 # Widget Modifiers
 
-Modifiers wrap a widget with another widget (like `Transform`, `Padding`, or `Opacity`) to add effects without changing the widget tree. All modifier methods start with `wrap`.
+Modifiers wrap a widget with another widget (like `Transform`, `Padding`, or `Opacity`) to add effects without changing the widget tree. Use the `.wrap()` method with a `ModifierMix` class.
 
 ## How Modifiers Work
 
-`wrapOpacity` wraps a widget with `Opacity`:
+Use `.wrap()` with a modifier mix class to wrap a widget:
 
 ```dart
 import 'package:flutter/material.dart';
@@ -19,26 +19,25 @@ import 'package:mix/mix.dart';
 final style = BoxStyler()
     .color(Colors.red)
     .size(100, 100)
-    .wrapOpacity(0.4);
+    .wrap(OpacityModifierMix(opacity: 0.4));
 ```
 
 This produces a widget tree equivalent to `Opacity(opacity: 0.4, child: Container(...))`.
 
 ## Built-in Modifiers
 
-| Method | Description | Wrapper Widget |
-|--------|-------------|----------------|
-| `.wrapOpacity(value)` | Sets opacity | `Opacity` |
-| `.wrapPadding(insets)` | Adds padding | `Padding` |
-| `.wrapAlign(alignment)` | Sets alignment | `Align` |
-| `.wrapAspectRatio(ratio)` | Constrains aspect ratio | `AspectRatio` |
-| `.wrapFlexible(flex, fit)` | Makes flexible in Flex layouts | `Flexible` |
-| `.wrapScale(scale)` | Applies scale transform | `Transform.scale` |
-| `.wrapRotate(angle)` | Applies rotation transform | `Transform.rotate` |
-| `.wrapVisibility(visible)` | Shows/hides widget | `Visibility` |
-| `.wrapClipRect()` | Clips to rectangle | `ClipRect` |
-| `.wrapClipRRect(radius)` | Clips to rounded rectangle | `ClipRRect` |
-| `.wrapClipOval()` | Clips to oval | `ClipOval` |
+| ModifierMix Class | Description | Wrapper Widget |
+|-------------------|-------------|----------------|
+| `OpacityModifierMix(opacity: value)` | Sets opacity | `Opacity` |
+| `PaddingModifierMix(padding: insets)` | Adds padding | `Padding` |
+| `AlignModifierMix(alignment: alignment)` | Sets alignment | `Align` |
+| `AspectRatioModifierMix(aspectRatio: ratio)` | Constrains aspect ratio | `AspectRatio` |
+| `FlexibleModifierMix(flex: flex, fit: fit)` | Makes flexible in Flex layouts | `Flexible` |
+| `TransformModifierMix(transform: matrix)` | Applies transform | `Transform` |
+| `VisibilityModifierMix(visible: visible)` | Shows/hides widget | `Visibility` |
+| `ClipRectModifierMix()` | Clips to rectangle | `ClipRect` |
+| `ClipRRectModifierMix(borderRadius: radius)` | Clips to rounded rectangle | `ClipRRect` |
+| `ClipOvalModifierMix()` | Clips to oval | `ClipOval` |
 
 ### Usage Examples
 
@@ -50,16 +49,16 @@ import 'package:mix/mix.dart';
 final cardStyle = BoxStyler()
     .color(Colors.white)
     .size(200, 100)
-    .wrapOpacity(0.9)
-    .wrapPadding(EdgeInsets.all(16))
-    .wrapAlign(Alignment.center);
+    .wrap(OpacityModifierMix(opacity: 0.9))
+    .wrap(PaddingModifierMix(padding: EdgeInsets.all(16)))
+    .wrap(AlignModifierMix(alignment: Alignment.center));
 
-// Animated scale on hover
+// Use transform methods for scale/rotate
 final buttonStyle = BoxStyler()
     .color(Colors.blue)
     .paddingAll(16)
-    .wrapScale(1.0)
-    .onHovered(BoxStyler().wrapScale(1.1));
+    .scale(1.0)
+    .onHovered(BoxStyler().scale(1.1));
 ```
 
 ## Modifier Ordering
@@ -69,9 +68,9 @@ Modifiers are applied from innermost to outermost in the order they are chained.
 ```dart
 // Result: Align → Opacity → Padding → Box
 final style = BoxStyler()
-    .wrapPadding(EdgeInsets.all(8))  // innermost wrapper
-    .wrapOpacity(0.5)                 // middle wrapper
-    .wrapAlign(Alignment.center);     // outermost wrapper
+    .wrap(PaddingModifierMix(padding: EdgeInsets.all(8)))  // innermost wrapper
+    .wrap(OpacityModifierMix(opacity: 0.5))                 // middle wrapper
+    .wrap(AlignModifierMix(alignment: Alignment.center));   // outermost wrapper
 ```
 
 <Callout type="info">
