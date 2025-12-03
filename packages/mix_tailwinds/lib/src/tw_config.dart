@@ -11,6 +11,8 @@ class TwConfig {
     required this.colors,
     required this.durations,
     required this.delays,
+    required this.scales,
+    required this.rotations,
   });
 
   final Map<String, double> space;
@@ -21,6 +23,8 @@ class TwConfig {
   final Map<String, Color> colors;
   final Map<String, int> durations;
   final Map<String, int> delays;
+  final Map<String, double> scales;
+  final Map<String, double> rotations;
 
   double spaceOf(String key, {double fallback = 0}) => space[key] ?? fallback;
 
@@ -40,6 +44,10 @@ class TwConfig {
   int? durationOf(String key) => durations[key];
 
   int? delayOf(String key) => delays[key];
+
+  double? scaleOf(String key) => scales[key];
+
+  double? rotationOf(String key) => rotations[key];
 
   static const TwConfig _standard = TwConfig(
     space: {
@@ -142,6 +150,29 @@ class TwConfig {
       '500': 500,
       '700': 700,
       '1000': 1000,
+    },
+    scales: {
+      '0': 0.0,
+      '50': 0.5,
+      '75': 0.75,
+      '90': 0.9,
+      '95': 0.95,
+      '100': 1.0,
+      '105': 1.05,
+      '110': 1.1,
+      '125': 1.25,
+      '150': 1.5,
+    },
+    rotations: {
+      '0': 0,
+      '1': 1,
+      '2': 2,
+      '3': 3,
+      '6': 6,
+      '12': 12,
+      '45': 45,
+      '90': 90,
+      '180': 180,
     },
   );
 

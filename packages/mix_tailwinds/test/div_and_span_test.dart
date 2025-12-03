@@ -1631,6 +1631,21 @@ void main() {
     expect(config!.curve, Curves.easeIn);
   });
 
+  test('parseBox with transition classes produces style that can be animated', () {
+    final parser = TwParser();
+    final animConfig = parser.parseAnimation('transition duration-300 ease-in-out');
+    final boxStyle = parser.parseBox('bg-blue-500 p-4');
+
+    // Verify animation config is correct
+    expect(animConfig, isNotNull);
+    expect(animConfig!.duration, const Duration(milliseconds: 300));
+    expect(animConfig.curve, Curves.easeInOut);
+
+    // Verify style can be animated (this is what tw_widget.dart does)
+    final animatedStyle = boxStyle.animate(animConfig);
+    expect(animatedStyle, isNotNull);
+  });
+
   testWidgets('Div with transition renders without error', (tester) async {
     await tester.pumpWidget(
       Directionality(
@@ -1681,5 +1696,343 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(find.byType(FlexBox), findsOneWidget);
+  });
+
+  // ==========================================================================
+  // Transform Token Recognition Tests
+  // ==========================================================================
+
+  test('scale-105 parses without warnings', () {
+    final seen = <String>[];
+    TwParser(onUnsupported: seen.add).parseBox('scale-105');
+    expect(seen, isEmpty);
+  });
+
+  test('scale-50 parses without warnings', () {
+    final seen = <String>[];
+    TwParser(onUnsupported: seen.add).parseBox('scale-50');
+    expect(seen, isEmpty);
+  });
+
+  test('scale-150 parses without warnings', () {
+    final seen = <String>[];
+    TwParser(onUnsupported: seen.add).parseBox('scale-150');
+    expect(seen, isEmpty);
+  });
+
+  test('rotate-45 parses without warnings', () {
+    final seen = <String>[];
+    TwParser(onUnsupported: seen.add).parseBox('rotate-45');
+    expect(seen, isEmpty);
+  });
+
+  test('rotate-90 parses without warnings', () {
+    final seen = <String>[];
+    TwParser(onUnsupported: seen.add).parseBox('rotate-90');
+    expect(seen, isEmpty);
+  });
+
+  test('-rotate-45 parses without warnings', () {
+    final seen = <String>[];
+    TwParser(onUnsupported: seen.add).parseBox('-rotate-45');
+    expect(seen, isEmpty);
+  });
+
+  test('translate-x-4 parses without warnings', () {
+    final seen = <String>[];
+    TwParser(onUnsupported: seen.add).parseBox('translate-x-4');
+    expect(seen, isEmpty);
+  });
+
+  test('translate-y-4 parses without warnings', () {
+    final seen = <String>[];
+    TwParser(onUnsupported: seen.add).parseBox('translate-y-4');
+    expect(seen, isEmpty);
+  });
+
+  test('-translate-x-4 parses without warnings', () {
+    final seen = <String>[];
+    TwParser(onUnsupported: seen.add).parseBox('-translate-x-4');
+    expect(seen, isEmpty);
+  });
+
+  test('-translate-y-4 parses without warnings', () {
+    final seen = <String>[];
+    TwParser(onUnsupported: seen.add).parseBox('-translate-y-4');
+    expect(seen, isEmpty);
+  });
+
+  // ==========================================================================
+  // parseTransform Tests
+  // ==========================================================================
+
+  test('parseTransform returns null for no transform tokens', () {
+    final matrix = TwParser().parseTransform('bg-blue-500 p-4');
+    expect(matrix, isNull);
+  });
+
+  test('parseTransform returns matrix for scale-105', () {
+    final matrix = TwParser().parseTransform('scale-105');
+    expect(matrix, isNotNull);
+    // Check diagonal values for 1.05 scale
+    expect(matrix![0], closeTo(1.05, 0.0001));
+    expect(matrix[5], closeTo(1.05, 0.0001));
+  });
+
+  test('parseTransform returns matrix for scale-50', () {
+    final matrix = TwParser().parseTransform('scale-50');
+    expect(matrix, isNotNull);
+    expect(matrix![0], closeTo(0.5, 0.0001));
+    expect(matrix[5], closeTo(0.5, 0.0001));
+  });
+
+  test('parseTransform returns matrix for rotate-90', () {
+    final matrix = TwParser().parseTransform('rotate-90');
+    expect(matrix, isNotNull);
+    // For 90 degree rotation: cos(90) = 0, sin(90) = 1
+    expect(matrix![0], closeTo(0, 0.0001)); // cos(90)
+    expect(matrix[1], closeTo(1, 0.0001)); // sin(90)
+    expect(matrix[4], closeTo(-1, 0.0001)); // -sin(90)
+    expect(matrix[5], closeTo(0, 0.0001)); // cos(90)
+  });
+
+  test('parseTransform returns matrix for -rotate-45', () {
+    final matrix = TwParser().parseTransform('-rotate-45');
+    expect(matrix, isNotNull);
+    // For -45 degree rotation: cos(-45) ≈ 0.707, sin(-45) ≈ -0.707
+    expect(matrix![0], closeTo(0.7071, 0.001)); // cos(-45)
+    expect(matrix[1], closeTo(-0.7071, 0.001)); // sin(-45)
+  });
+
+  test('parseTransform returns matrix for translate-x-4', () {
+    final matrix = TwParser().parseTransform('translate-x-4');
+    expect(matrix, isNotNull);
+    // Translation is stored in [12] for x and [13] for y in Matrix4
+    expect(matrix![12], closeTo(16, 0.0001)); // 4 in spacing scale = 16px
+  });
+
+  test('parseTransform returns matrix for translate-y-4', () {
+    final matrix = TwParser().parseTransform('translate-y-4');
+    expect(matrix, isNotNull);
+    expect(matrix![13], closeTo(16, 0.0001)); // 4 in spacing scale = 16px
+  });
+
+  test('parseTransform returns matrix for -translate-x-4', () {
+    final matrix = TwParser().parseTransform('-translate-x-4');
+    expect(matrix, isNotNull);
+    expect(matrix![12], closeTo(-16, 0.0001));
+  });
+
+  test('parseTransform returns matrix for -translate-y-4', () {
+    final matrix = TwParser().parseTransform('-translate-y-4');
+    expect(matrix, isNotNull);
+    expect(matrix![13], closeTo(-16, 0.0001));
+  });
+
+  // ==========================================================================
+  // Transform Composition Tests (Tailwind Order Independence)
+  // ==========================================================================
+
+  test('scale-105 rotate-45 produces same matrix as rotate-45 scale-105', () {
+    final matrix1 = TwParser().parseTransform('scale-105 rotate-45');
+    final matrix2 = TwParser().parseTransform('rotate-45 scale-105');
+
+    expect(matrix1, isNotNull);
+    expect(matrix2, isNotNull);
+
+    // Both should produce the same result due to Tailwind's fixed order
+    for (var i = 0; i < 16; i++) {
+      expect(matrix1![i], closeTo(matrix2![i], 0.0001),
+          reason: 'Matrix element [$i] should match');
+    }
+  });
+
+  test('translate + scale produces consistent matrix', () {
+    final matrix1 = TwParser().parseTransform('translate-x-4 scale-110');
+    final matrix2 = TwParser().parseTransform('scale-110 translate-x-4');
+
+    expect(matrix1, isNotNull);
+    expect(matrix2, isNotNull);
+
+    // Both should produce the same result
+    for (var i = 0; i < 16; i++) {
+      expect(matrix1![i], closeTo(matrix2![i], 0.0001),
+          reason: 'Matrix element [$i] should match');
+    }
+  });
+
+  test('translate + rotate + scale composes correctly', () {
+    final matrix = TwParser().parseTransform('translate-x-4 rotate-45 scale-105');
+    expect(matrix, isNotNull);
+
+    // The matrix should contain all transformations
+    // Just verify it's not identity
+    expect(matrix![0], isNot(closeTo(1, 0.0001))); // Should have rotation+scale
+    expect(matrix[12], closeTo(16, 0.0001)); // Should have translation
+  });
+
+  // ==========================================================================
+  // Transform Widget Tests
+  // ==========================================================================
+
+  testWidgets('Div with scale-105 renders Transform widget', (tester) async {
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: Div(
+          classNames: 'scale-105 bg-blue-500',
+          child: const SizedBox(width: 50, height: 50),
+        ),
+      ),
+    );
+
+    expect(tester.takeException(), isNull);
+    expect(find.byType(Transform), findsOneWidget);
+  });
+
+  testWidgets('Div with rotate-45 renders Transform widget', (tester) async {
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: Div(
+          classNames: 'rotate-45',
+          child: const SizedBox(width: 50, height: 50),
+        ),
+      ),
+    );
+
+    expect(tester.takeException(), isNull);
+    expect(find.byType(Transform), findsOneWidget);
+  });
+
+  testWidgets('Div with translate-x-4 renders Transform widget', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: Div(
+          classNames: 'translate-x-4',
+          child: const SizedBox(width: 50, height: 50),
+        ),
+      ),
+    );
+
+    expect(tester.takeException(), isNull);
+    expect(find.byType(Transform), findsOneWidget);
+  });
+
+  testWidgets('Div without transform tokens does not render Transform', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: Div(
+          classNames: 'bg-blue-500 p-4',
+          child: const SizedBox(width: 50, height: 50),
+        ),
+      ),
+    );
+
+    expect(tester.takeException(), isNull);
+    expect(find.byType(Transform), findsNothing);
+  });
+
+  testWidgets('Div with combined transforms renders single Transform', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: Div(
+          classNames: 'scale-110 rotate-12 translate-x-2',
+          child: const SizedBox(width: 50, height: 50),
+        ),
+      ),
+    );
+
+    expect(tester.takeException(), isNull);
+    // Should only have one Transform widget with composite matrix
+    expect(find.byType(Transform), findsOneWidget);
+  });
+
+  testWidgets('FlexBox Div with transform renders correctly', (tester) async {
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: Div(
+          classNames: 'flex gap-4 scale-105',
+          children: const [
+            SizedBox(width: 20, height: 20),
+            SizedBox(width: 20, height: 20),
+          ],
+        ),
+      ),
+    );
+
+    expect(tester.takeException(), isNull);
+    expect(find.byType(FlexBox), findsOneWidget);
+    expect(find.byType(Transform), findsOneWidget);
+  });
+
+  // ==========================================================================
+  // Transform with Prefixes Tests
+  // ==========================================================================
+
+  test('hover:scale-105 parses without warnings', () {
+    final seen = <String>[];
+    TwParser(onUnsupported: seen.add).parseBox('hover:scale-105');
+    expect(seen, isEmpty);
+  });
+
+  test('md:rotate-45 parses without warnings', () {
+    final seen = <String>[];
+    TwParser(onUnsupported: seen.add).parseBox('md:rotate-45');
+    expect(seen, isEmpty);
+  });
+
+  test('lg:translate-x-4 parses without warnings', () {
+    final seen = <String>[];
+    TwParser(onUnsupported: seen.add).parseBox('lg:translate-x-4');
+    expect(seen, isEmpty);
+  });
+
+  test('dark:scale-110 parses without warnings', () {
+    final seen = <String>[];
+    TwParser(onUnsupported: seen.add).parseBox('dark:scale-110');
+    expect(seen, isEmpty);
+  });
+
+  test('md:hover:scale-105 parses without warnings', () {
+    final seen = <String>[];
+    TwParser(onUnsupported: seen.add).parseBox('md:hover:scale-105');
+    expect(seen, isEmpty);
+  });
+
+  // ==========================================================================
+  // Transform in flex context
+  // ==========================================================================
+
+  test('transform tokens parse without warnings in flex context', () {
+    final seen = <String>[];
+    TwParser(onUnsupported: seen.add).parseFlex('flex scale-105 rotate-45');
+    expect(seen, isEmpty);
+  });
+
+  // ==========================================================================
+  // Invalid Transform Values
+  // ==========================================================================
+
+  test('scale-999 warns via onUnsupported', () {
+    final seen = <String>[];
+    TwParser(onUnsupported: seen.add).parseBox('scale-999');
+    expect(seen, contains('scale-999'));
+  });
+
+  test('rotate-999 warns via onUnsupported', () {
+    final seen = <String>[];
+    TwParser(onUnsupported: seen.add).parseBox('rotate-999');
+    expect(seen, contains('rotate-999'));
   });
 }
