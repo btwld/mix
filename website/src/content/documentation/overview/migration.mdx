@@ -120,7 +120,9 @@ BoxStyler().color(primaryColor())
 | `StyledRow` | `RowBox` |
 | `StyledColumn` | `ColumnBox` |
 | `StyledStack` | `StackBox` |
-| `PressableBox` | `Pressable` + `Box` (separate) |
+| `HBox` | `RowBox` |
+| `VBox` | `ColumnBox` |
+| `ZBox` | `StackBox` |
 
 ### New Features in 2.0
 
@@ -195,7 +197,9 @@ Modifiers cannot be inherited by any children. The reason is that the abstract c
 
 #### Operators `and` (`&`) and `or` (`|`)
 
-The operators have been redesigned to allow for concatenation and grouping, enabling the creation of conditions like, `(primary | secondary) & onHover`. For details, refer to the [variants guide](/documentation/guides/variants#combining-operators)
+The operators have been redesigned to allow for concatenation and grouping, enabling the creation of conditions like `(primary | secondary) & onHover`.
+
+**Note:** In Mix 2.0, use nested variant methods (e.g., `.onHovered().onDark()`) instead of the `&` and `|` operators.
 
 #### StyledWidgets and Modifiers
 

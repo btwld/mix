@@ -42,13 +42,13 @@ analyzer:
     - dot-shorthands
 ```
 
-**Note**: This requires Dart SDK ≥ 3.9.0
+**Note**: This requires Dart SDK ≥ 3.10.0
 
 ## Getting Started with Mix
 
 ### Prerequisites
 
-- **Dart SDK**: ≥ 3.9.0 (required for dot notation syntax)
+- **Dart SDK**: ≥ 3.10.0 (required for dot notation syntax)
 - **Flutter**: Latest stable version
 
 ### Setting Up Your Project
@@ -59,7 +59,7 @@ flutter create my_mix_app
 cd my_mix_app
 
 # Add Mix 2.0 to your dependencies
-flutter pub add mix:^2.0.0-dev.1
+flutter pub add mix:^2.0.0-rc.0
 ```
 
 ### Enable Dot Notation Syntax
@@ -110,9 +110,9 @@ flutter run lib/api/animation/spring_animation.dart
 |------|-------------|--------------|
 | [`simple_box.dart`](lib/api/widgets/box/simple_box.dart) | Basic styled container | Colors, dimensions, border radius |
 | [`gradient_box.dart`](lib/api/widgets/box/gradient_box.dart) | Box with gradient and shadow | Gradients, shadows, advanced styling |
-| [`icon_label_chip.dart`](lib/api/widgets/hbox/icon_label_chip.dart) | Horizontal layout chip | HBox, flex properties, gaps |
-| [`card_layout.dart`](lib/api/widgets/vbox/card_layout.dart) | Vertical card layout | VBox, alignment, spacing |
-| [`layered_boxes.dart`](lib/api/widgets/zbox/layered_boxes.dart) | Stacked layout example | ZBox, layering, positioning |
+| [`icon_label_chip.dart`](lib/api/widgets/hbox/icon_label_chip.dart) | Horizontal layout chip | RowBox, flex properties, gaps |
+| [`card_layout.dart`](lib/api/widgets/vbox/card_layout.dart) | Vertical card layout | ColumnBox, alignment, spacing |
+| [`layered_boxes.dart`](lib/api/widgets/zbox/layered_boxes.dart) | Stacked layout example | StackBox, layering, positioning |
 | [`styled_icon.dart`](lib/api/widgets/icon/styled_icon.dart) | Customized icon | Icon styling, sizes, colors |
 | [`styled_text.dart`](lib/api/widgets/text/styled_text.dart) | Typography example | Text styling, fonts, weights |
 
@@ -202,7 +202,7 @@ BoxStyler()
 ## Learning Path
 
 1. **Start with widgets** - Understand basic styling with `simple_box.dart`
-2. **Explore layouts** - Learn about HBox, VBox, and ZBox
+2. **Explore layouts** - Learn about RowBox, ColumnBox, and StackBox
 3. **Add interactivity** - Try context variants (hover, press, focus)
 4. **Animate** - Progress from simple to complex animations
 5. **Build systems** - Use design tokens for consistent theming

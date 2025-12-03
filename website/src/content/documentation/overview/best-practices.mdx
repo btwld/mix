@@ -128,56 +128,47 @@ class CustomButtonStyle {
   final CustomButtonType type;
   final CustomButtonSize size;
 
-  BoxStyler container() => BoxStyler()
-      .borderRounded(8)
-      .variant(
-        CustomButtonSize.medium,
-        BoxStyler().paddingX(16).paddingY(8),
-      )
-      .variant(
-        CustomButtonSize.large,
-        BoxStyler().paddingX(24).paddingY(16),
-      )
-      .variant(
-        CustomButtonType.primary,
-        BoxStyler().color(Colors.black),
-      )
-      .variant(
-        CustomButtonType.destructive,
-        BoxStyler().color(Colors.redAccent),
-      )
-      .variant(
-        CustomButtonType.link,
-        BoxStyler().color(Colors.transparent),
-      )
-      .applyVariants([type, size]);
+  BoxStyler container() {
+    var style = BoxStyler().borderRounded(8);
 
-  TextStyler label() => TextStyler()
-      .color(Colors.white)
-      .fontWeight(FontWeight.bold)
-      .variant(
-        CustomButtonSize.medium,
-        TextStyler().fontSize(14),
-      )
-      .variant(
-        CustomButtonSize.large,
-        TextStyler().fontSize(18),
-      )
-      .variant(
-        CustomButtonType.primary,
-        TextStyler().color(Colors.white),
-      )
-      .variant(
-        CustomButtonType.destructive,
-        TextStyler().color(Colors.white),
-      )
-      .variant(
-        CustomButtonType.link,
-        TextStyler()
-            .color(Colors.black)
-            .decoration(TextDecoration.underline),
-      )
-      .applyVariants([type, size]);
+    // Apply size
+    style = switch (size) {
+      CustomButtonSize.medium => style.paddingX(16).paddingY(8),
+      CustomButtonSize.large => style.paddingX(24).paddingY(16),
+    };
+
+    // Apply type
+    style = switch (type) {
+      CustomButtonType.primary => style.color(Colors.black),
+      CustomButtonType.destructive => style.color(Colors.redAccent),
+      CustomButtonType.link => style.color(Colors.transparent),
+    };
+
+    return style;
+  }
+
+  TextStyler label() {
+    var style = TextStyler()
+        .color(Colors.white)
+        .fontWeight(FontWeight.bold);
+
+    // Apply size
+    style = switch (size) {
+      CustomButtonSize.medium => style.fontSize(14),
+      CustomButtonSize.large => style.fontSize(18),
+    };
+
+    // Apply type
+    style = switch (type) {
+      CustomButtonType.primary => style.color(Colors.white),
+      CustomButtonType.destructive => style.color(Colors.white),
+      CustomButtonType.link => style
+          .color(Colors.black)
+          .decoration(TextDecoration.underline),
+    };
+
+    return style;
+  }
 }
 ```
 
