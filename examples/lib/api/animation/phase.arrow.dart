@@ -49,7 +49,7 @@ class _ExampleState extends State<Example> {
             .onHovered(
               FlexBoxStyler().border(.all(.new().color(Colors.grey.shade300))),
             )
-            .animate(AnimationConfig.easeInOut(150.ms)),
+            .animate(.easeInOut(150.ms)),
 
         children: [
           Text('Developer Preview'),

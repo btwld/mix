@@ -43,7 +43,7 @@ class _SwitchAnimationState extends State<SwitchAnimation> {
               .alignment(
                 _trigger.value ? Alignment.centerRight : Alignment.centerLeft,
               )
-              .animate(AnimationConfig.easeOut(300.ms)),
+              .animate(.easeOut(300.ms)),
           child: Box(
             style: BoxStyler()
                 .height(30)
