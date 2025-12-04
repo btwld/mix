@@ -79,7 +79,7 @@ This enables cleaner syntax with dot shorthands throughout your Mix code:
 BoxStyler()
     .height(100)
     .width(100)
-    .color(.blue)  // Dot shorthand for Colors.blue
+    .color(Colors.blue)
 ```
 
 ## Running the Examples
@@ -163,7 +163,7 @@ Box(style: style);
 final style = BoxStyler()
     .color(Colors.black)
     .onHovered(BoxStyler().color(Colors.blue).scale(1.5))
-    .animate(AnimationConfig.easeInOut(duration: Duration(milliseconds: 300)));
+    .animate(.easeInOut(300.ms));
 ```
 
 ### Using Design Tokens
@@ -192,9 +192,9 @@ BoxStyler()
         AnimationPhases.expanded => style.scale(1.25),
       },
       configBuilder: (phase) => switch (phase) {
-        AnimationPhases.initial => AnimationConfig.decelerate(duration: Duration(milliseconds: 200)),
-        AnimationPhases.compress => AnimationConfig.decelerate(duration: Duration(milliseconds: 100)),
-        AnimationPhases.expanded => AnimationConfig.bounceOut(duration: Duration(milliseconds: 600)),
+        AnimationPhases.initial => .decelerate(200.ms),
+        AnimationPhases.compress => .decelerate(100.ms),
+        AnimationPhases.expanded => .bounceOut(600.ms),
       },
     )
 ```

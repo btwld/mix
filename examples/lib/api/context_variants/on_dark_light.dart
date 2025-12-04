@@ -25,7 +25,7 @@ class _ExampleState extends State<Example> {
         .width(60)
         .borderRounded(30)
         .color(Colors.grey.shade200)
-        .animate(AnimationConfig.easeInOut(600.ms))
+        .animate(.easeInOut(600.ms))
         .onDark(BoxStyler().color(Colors.grey.shade800))
         .shadowOnly(
           color: Colors.black.withValues(alpha: 0.1),
@@ -38,7 +38,7 @@ class _ExampleState extends State<Example> {
         .color(Colors.grey.shade800)
         .size(28)
         .icon(Icons.dark_mode)
-        .animate(AnimationConfig.easeInOut(200.ms))
+        .animate(.easeInOut(200.ms))
         .onDark(IconStyler().icon(Icons.light_mode).color(Colors.yellow));
 
     return MediaQuery(

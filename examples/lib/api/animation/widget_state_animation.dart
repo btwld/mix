@@ -31,7 +31,7 @@ class _ExampleState extends State<Example> {
         .onPressed(
           BoxStyler() //
               .color(Colors.red)
-              .animate(AnimationConfig.easeIn(200.ms)),
+              .animate(.easeIn(200.ms)),
         );
 
     return Box(style: style);

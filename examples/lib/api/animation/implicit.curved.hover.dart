@@ -34,9 +34,9 @@ class Example extends StatelessWidget {
           BoxStyler()
               .color(Colors.blue)
               .scale(1.5)
-              .animate(AnimationConfig.easeInOut(1000.ms)),
+              .animate(.easeInOut(1000.ms)),
         )
-        .animate(AnimationConfig.linear(300.ms));
+        .animate(.linear(300.ms));
 
     return Box(style: style);
   }

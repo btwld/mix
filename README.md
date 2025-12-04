@@ -98,7 +98,7 @@ With dot notation enabled, you can write:
 final cardStyle = BoxStyler()
     .height(100)
     .width(240)
-    .color(.purple)
+    .color(Colors.purple)
     .borderRounded(12);
 ```
 
