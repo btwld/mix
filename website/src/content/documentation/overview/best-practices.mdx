@@ -50,7 +50,7 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Pressable(
-      onPressed: onPress,
+      onPress: onPress,
       child: Box(
         child: StyledText(title),
       ),
@@ -193,7 +193,7 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final style = CustomButtonStyle(type, size);
     return Pressable(
-      onPressed: onPress,
+      onPress: onPress,
       child: Box(
         style: style.container(),
         child: StyledText(

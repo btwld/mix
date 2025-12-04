@@ -21,11 +21,11 @@ StyledText(
 
 ## Constructor
 
-| Prop  | Type         | Required / Default Value                |
-|-------|--------------|------------------------------------------|
-| `text` | `String` | `Required` |
-| `style` | `Style` | `const TextStyler.create()` |
-| `styleSpec` | `StyleSpec?` | `Optional` |
+| Prop | Type | Required / Default Value |
+|------|------|--------------------------|
+| `text` | `String` | Required |
+| `style` | `TextStyler?` | Optional, defaults to `const TextStyler.create()` |
+| `styleSpec` | `StyleSpec<TextSpec>?` | Optional |
 
 ## Style API Reference
 
@@ -127,4 +127,3 @@ StyledText(
 | `onFocused` | Creates a variant for focused state |
 | `onDisabled` | Creates a variant for disabled state |
 | `onEnabled` | Creates a variant for enabled state (opposite of disabled) |
-

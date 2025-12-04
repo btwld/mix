@@ -11,7 +11,7 @@ To use Mix Generator, add the following dependencies to your `pubspec.yaml` file
 ```bash
 flutter pub add mix
 flutter pub add mix_annotations
-flutter pub add:dev mix_generator
+flutter pub add --dev mix_generator
 ```
 
 pubspec.yaml
