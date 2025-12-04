@@ -18,12 +18,12 @@ StyledIcon(
 
 ## Constructor
 
-| Prop  | Type         | Required / Default Value                |
-|-------|--------------|------------------------------------------|
-| `icon` | `IconData?` | `Optional` |
-| `semanticLabel` | `String?` | `Optional` |
-| `style` | `Style` | `const IconStyler.create()` |
-| `styleSpec` | `StyleSpec?` | `Optional` |
+| Prop | Type | Required / Default Value |
+|------|------|--------------------------|
+| `icon` | `IconData?` | Optional |
+| `semanticLabel` | `String?` | Optional |
+| `style` | `IconStyler?` | Optional, defaults to `const IconStyler.create()` |
+| `styleSpec` | `StyleSpec<IconSpec>?` | Optional |
 
 ## Style API Reference
 
@@ -92,4 +92,3 @@ StyledIcon(
 | `onFocused` | Creates a variant for focused state |
 | `onDisabled` | Creates a variant for disabled state |
 | `onEnabled` | Creates a variant for enabled state (opposite of disabled) |
-

@@ -86,7 +86,7 @@ final baseStyle = BoxStyler()
 StyleBuilder(
   style: baseStyle,
   namedVariants: {onOutlined}, // Activate the outlined variant
-  builder: (spec) => Box(styleSpec: spec, child: ...),
+  builder: (context, spec) => Box(styleSpec: spec, child: ...),
 );
 ```
 

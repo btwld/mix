@@ -32,11 +32,11 @@ StackBox(
 
 ## Constructor
 
-| Prop  | Type         | Required / Default Value                |
-|-------|--------------|------------------------------------------|
-| `style` | `Style` | `const StackBoxStyler.create()` |
-| `styleSpec` | `StyleSpec?` | `Optional` |
-| `children` | `List<Widget>` | `const <Widget>[]` |
+| Prop | Type | Required / Default Value |
+|------|------|--------------------------|
+| `style` | `StackBoxStyler?` | Optional, defaults to `const StackBoxStyler.create()` |
+| `styleSpec` | `StyleSpec<StackBoxSpec>?` | Optional |
+| `children` | `List<Widget>` | Optional, defaults to `const <Widget>[]` |
 
 ## Style API Reference
 
@@ -230,4 +230,3 @@ StackBox(
 | `onFocused` | Creates a variant for focused state |
 | `onDisabled` | Creates a variant for disabled state |
 | `onEnabled` | Creates a variant for enabled state (opposite of disabled) |
-
