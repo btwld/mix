@@ -157,11 +157,11 @@ The major updates are:
 #### `Mix` evolved to `Style`
 The `Mix` class is now `Style`. Several methods in the renamed class, including `withVariants`, `withMaybeVariants` among others, are deprecated to boost performance and reduce potential confusion.
 
-| before 1.0.0 | 1.0.0 |
+| before 1.0.0 | 1.0.0+ |
 | ------- | ------ |
 | `Mix`   | `Style` |
-| `Mix.withVariant` | `Style.applyVariant` |
-| `Mix.withManyVariants` | `Style.applyVariants` |
+| `Mix.withVariant` | Use `.variant()` on Styler classes |
+| `Mix.withManyVariants` | Use multiple `.variant()` calls |
 | `withMaybeVariant` or `withMaybeVariants` | removed |
 
 

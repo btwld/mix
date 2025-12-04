@@ -111,25 +111,19 @@ Learn more about [styling](https://fluttermix.com/docs/guides/styling)
 First-class support for variants, allowing you to define styling variations that can be applied conditionally or responsively.
 
 ```dart
-// Define a named variant
-const onOutlined = NamedVariant('outlined');
-
-// Create a base style with variant support
-final baseStyle = BoxStyler()
+// Define styles with widget state variants
+final buttonStyle = BoxStyler()
     .borderRounded(10)
-    .color(Colors.black)
-    .variant(
-      onOutlined,
-      BoxStyler()
-          .color(Colors.transparent)
-          .borderAll(color: Colors.black),
-    );
+    .color(Colors.blue)
+    .paddingAll(16)
+    // Variants are applied automatically based on widget state
+    .onHovered(BoxStyler().color(Colors.blue.shade700))
+    .onPressed(BoxStyler().color(Colors.blue.shade900));
 
-// Use with a widget - variants are activated via StyleBuilder
-StyleBuilder(
-  style: baseStyle,
-  namedVariants: {onOutlined}, // Activate the outlined variant
-  builder: (context, spec) => Box(styleSpec: spec, child: ...),
+// Use with a Pressable widget - states are tracked automatically
+Pressable(
+  onPress: () => print('Pressed!'),
+  child: Box(style: buttonStyle, child: Text('Click me')),
 );
 ```
 
