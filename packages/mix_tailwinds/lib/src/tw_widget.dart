@@ -65,16 +65,6 @@ class Div extends StatelessWidget {
       );
     }
 
-    // Apply transform if present
-    final transformMatrix = parser.parseTransform(classNames);
-    if (transformMatrix != null) {
-      built = Transform(
-        transform: transformMatrix,
-        alignment: Alignment.center,
-        child: built,
-      );
-    }
-
     return _wrapWithFlexItemDecorators(
       child: built,
       tokens: tokens,
@@ -133,7 +123,9 @@ Widget _buildResponsiveFlex({
       final gapY = _resolveResponsiveGap(tokens, cfg, width, 'gap-y-');
 
       var style = baseStyle;
-      final mainGap = axis == Axis.horizontal ? (gapX ?? baseGap) : (gapY ?? baseGap);
+      final mainGap = axis == Axis.horizontal
+          ? (gapX ?? baseGap)
+          : (gapY ?? baseGap);
       if (mainGap != null) {
         style = style.spacing(mainGap);
       }
@@ -191,13 +183,8 @@ Widget _wrapWithFlexItemDecorators({
   }
 
   return Builder(
-    builder: (context) => _applyFlexItemDecorators(
-      child,
-      tokens,
-      cfg,
-      context,
-      viewportWidth,
-    ),
+    builder: (context) =>
+        _applyFlexItemDecorators(child, tokens, cfg, context, viewportWidth),
   );
 }
 
@@ -221,10 +208,18 @@ Widget _applyContainerSizingResponsive(
   BuildContext context,
   double width,
 ) {
-  final widthIntent =
-      _resolveDimensionIntent(tokens, cfg, width, isWidth: true);
-  final heightIntent =
-      _resolveDimensionIntent(tokens, cfg, width, isWidth: false);
+  final widthIntent = _resolveDimensionIntent(
+    tokens,
+    cfg,
+    width,
+    isWidth: true,
+  );
+  final heightIntent = _resolveDimensionIntent(
+    tokens,
+    cfg,
+    width,
+    isWidth: false,
+  );
 
   if (widthIntent == _DimensionIntent.none &&
       heightIntent == _DimensionIntent.none) {
@@ -238,19 +233,19 @@ Widget _applyContainerSizingResponsive(
   if (widthIntent != _DimensionIntent.none) {
     targetWidth = widthIntent == _DimensionIntent.screen
         ? (viewport.width > 0
-            ? viewport.width
-            : _finiteOrNull(constraints.maxWidth))
+              ? viewport.width
+              : _finiteOrNull(constraints.maxWidth))
         : _finiteOrNull(constraints.maxWidth) ??
-            (viewport.width > 0 ? viewport.width : null);
+              (viewport.width > 0 ? viewport.width : null);
   }
 
   if (heightIntent != _DimensionIntent.none) {
     targetHeight = heightIntent == _DimensionIntent.screen
         ? (viewport.height > 0
-            ? viewport.height
-            : _finiteOrNull(constraints.maxHeight))
+              ? viewport.height
+              : _finiteOrNull(constraints.maxHeight))
         : _finiteOrNull(constraints.maxHeight) ??
-            (viewport.height > 0 ? viewport.height : null);
+              (viewport.height > 0 ? viewport.height : null);
   }
 
   if (targetWidth == null && targetHeight == null) {
