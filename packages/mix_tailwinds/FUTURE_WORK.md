@@ -365,9 +365,9 @@ Div(
 **Key Behaviors**:
 - `scale-105 rotate-45` produces the same result as `rotate-45 scale-105` (order independent, matching Tailwind)
 - Single Transform widget wrapping for performance
-- Works with all prefix variants: responsive (`md:scale-110`), state (`hover:scale-105`), dark mode (`dark:rotate-3`)
+- Prefix syntax is recognized: `hover:scale-105`, `md:rotate-45`, `dark:translate-x-4`
 
-**Note**: Variant-aware transforms are in progress (see "In Progress" section above)
+**Current Limitation**: Transforms apply unconditionally regardless of prefix. For example, `hover:scale-105` currently applies scale at all times, not just on hover. See "Variant-Aware Transforms" in the "In Progress" section for the planned fix.
 
 ---
 

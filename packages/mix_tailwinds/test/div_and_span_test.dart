@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -306,10 +307,7 @@ void main() {
   testWidgets('w-1/2 applies half-width constraint', (tester) async {
     await _pumpSized(
       tester,
-      Div(
-        classNames: 'w-1/2 bg-blue-500',
-        child: const SizedBox(height: 40),
-      ),
+      Div(classNames: 'w-1/2 bg-blue-500', child: const SizedBox(height: 40)),
       width: 200,
     );
 
@@ -342,10 +340,7 @@ void main() {
   testWidgets('h-1/4 applies quarter-height constraint', (tester) async {
     await _pumpSized(
       tester,
-      Div(
-        classNames: 'h-1/4 bg-blue-500',
-        child: const SizedBox(width: 40),
-      ),
+      Div(classNames: 'h-1/4 bg-blue-500', child: const SizedBox(width: 40)),
       height: 400,
     );
 
@@ -356,10 +351,7 @@ void main() {
   testWidgets('h-1/2 applies half-height constraint', (tester) async {
     await _pumpSized(
       tester,
-      Div(
-        classNames: 'h-1/2 bg-blue-500',
-        child: const SizedBox(width: 40),
-      ),
+      Div(classNames: 'h-1/2 bg-blue-500', child: const SizedBox(width: 40)),
       height: 300,
     );
 
@@ -410,9 +402,7 @@ void main() {
     expect(parentData.fit, FlexFit.tight);
   });
 
-  testWidgets('basis-32 constrains main-axis size inside Row', (
-    tester,
-  ) async {
+  testWidgets('basis-32 constrains main-axis size inside Row', (tester) async {
     await _pumpSized(
       tester,
       Row(
@@ -736,8 +726,9 @@ void main() {
 
   test('flex item tokens are ignored by parser callbacks', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add)
-        .parseFlex('flex flex-1 basis-1/2 self-end');
+    TwParser(
+      onUnsupported: seen.add,
+    ).parseFlex('flex flex-1 basis-1/2 self-end');
     expect(seen, isEmpty);
   });
 
@@ -798,9 +789,7 @@ void main() {
 
   test('Unknown tokens trigger onUnsupported callback', () {
     final seen = <String>[];
-    TwParser(
-      onUnsupported: seen.add,
-    ).parseBox('w-4 unknown-token bg-blue-500');
+    TwParser(onUnsupported: seen.add).parseBox('w-4 unknown-token bg-blue-500');
 
     expect(seen, contains('unknown-token'));
     expect(seen, isNot(contains('w-4')));
@@ -884,7 +873,9 @@ void main() {
 
   test('breakpoint + state prefixes chain correctly', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseBox('md:hover:bg-blue-500 lg:focus:bg-blue-700');
+    TwParser(
+      onUnsupported: seen.add,
+    ).parseBox('md:hover:bg-blue-500 lg:focus:bg-blue-700');
     expect(seen, isEmpty);
   });
 
@@ -1133,9 +1124,7 @@ void main() {
 
   test('flex with min-w-0 and overflow-hidden parses', () {
     final seen = <String>[];
-    TwParser(
-      onUnsupported: seen.add,
-    ).parseFlex('flex min-w-0 overflow-hidden');
+    TwParser(onUnsupported: seen.add).parseFlex('flex min-w-0 overflow-hidden');
     expect(seen, isEmpty);
   });
 
@@ -1545,7 +1534,9 @@ void main() {
 
   test('duration-2000 warns (not a valid Tailwind value)', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseAnimation('transition duration-2000');
+    TwParser(
+      onUnsupported: seen.add,
+    ).parseAnimation('transition duration-2000');
     expect(seen, contains('duration-2000'));
   });
 
@@ -1631,20 +1622,25 @@ void main() {
     expect(config!.curve, Curves.easeIn);
   });
 
-  test('parseBox with transition classes produces style that can be animated', () {
-    final parser = TwParser();
-    final animConfig = parser.parseAnimation('transition duration-300 ease-in-out');
-    final boxStyle = parser.parseBox('bg-blue-500 p-4');
+  test(
+    'parseBox with transition classes produces style that can be animated',
+    () {
+      final parser = TwParser();
+      final animConfig = parser.parseAnimation(
+        'transition duration-300 ease-in-out',
+      );
+      final boxStyle = parser.parseBox('bg-blue-500 p-4');
 
-    // Verify animation config is correct
-    expect(animConfig, isNotNull);
-    expect(animConfig!.duration, const Duration(milliseconds: 300));
-    expect(animConfig.curve, Curves.easeInOut);
+      // Verify animation config is correct
+      expect(animConfig, isNotNull);
+      expect(animConfig!.duration, const Duration(milliseconds: 300));
+      expect(animConfig.curve, Curves.easeInOut);
 
-    // Verify style can be animated (this is what tw_widget.dart does)
-    final animatedStyle = boxStyle.animate(animConfig);
-    expect(animatedStyle, isNotNull);
-  });
+      // Verify style can be animated (this is what tw_widget.dart does)
+      final animatedStyle = boxStyle.animate(animConfig);
+      expect(animatedStyle, isNotNull);
+    },
+  );
 
   testWidgets('Div with transition renders without error', (tester) async {
     await tester.pumpWidget(
@@ -1842,8 +1838,11 @@ void main() {
 
     // Both should produce the same result due to Tailwind's fixed order
     for (var i = 0; i < 16; i++) {
-      expect(matrix1![i], closeTo(matrix2![i], 0.0001),
-          reason: 'Matrix element [$i] should match');
+      expect(
+        matrix1![i],
+        closeTo(matrix2![i], 0.0001),
+        reason: 'Matrix element [$i] should match',
+      );
     }
   });
 
@@ -1856,13 +1855,18 @@ void main() {
 
     // Both should produce the same result
     for (var i = 0; i < 16; i++) {
-      expect(matrix1![i], closeTo(matrix2![i], 0.0001),
-          reason: 'Matrix element [$i] should match');
+      expect(
+        matrix1![i],
+        closeTo(matrix2![i], 0.0001),
+        reason: 'Matrix element [$i] should match',
+      );
     }
   });
 
   test('translate + rotate + scale composes correctly', () {
-    final matrix = TwParser().parseTransform('translate-x-4 rotate-45 scale-105');
+    final matrix = TwParser().parseTransform(
+      'translate-x-4 rotate-45 scale-105',
+    );
     expect(matrix, isNotNull);
 
     // The matrix should contain all transformations
@@ -1872,92 +1876,85 @@ void main() {
   });
 
   // ==========================================================================
-  // Transform Widget Tests
+  // Transform Application Tests
   // ==========================================================================
 
-  testWidgets('Div with scale-105 renders Transform widget', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Div(
-          classNames: 'scale-105 bg-blue-500',
-          child: const SizedBox(width: 50, height: 50),
-        ),
-      ),
-    );
+  testWidgets('Div with scale-105 sets container transform', (tester) async {
+    final container = await _boxContainerFor(tester, 'scale-105 bg-blue-500');
 
-    expect(tester.takeException(), isNull);
-    expect(find.byType(Transform), findsOneWidget);
+    expect(container.transform, isNotNull);
+    expect(container.transform![0], closeTo(1.05, 0.0001));
+    expect(
+      find.descendant(of: find.byType(Box), matching: find.byType(Transform)),
+      findsOneWidget,
+    );
   });
 
-  testWidgets('Div with rotate-45 renders Transform widget', (tester) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Div(
-          classNames: 'rotate-45',
-          child: const SizedBox(width: 50, height: 50),
-        ),
-      ),
-    );
+  testWidgets('Div with rotate-45 sets container transform', (tester) async {
+    final container = await _boxContainerFor(tester, 'rotate-45');
 
-    expect(tester.takeException(), isNull);
-    expect(find.byType(Transform), findsOneWidget);
+    expect(container.transform, isNotNull);
+    expect(container.transform![0], closeTo(0.7071, 0.001));
+    expect(
+      find.descendant(of: find.byType(Box), matching: find.byType(Transform)),
+      findsOneWidget,
+    );
   });
 
-  testWidgets('Div with translate-x-4 renders Transform widget', (
+  testWidgets('Div with translate-x-4 sets container transform', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Div(
-          classNames: 'translate-x-4',
-          child: const SizedBox(width: 50, height: 50),
-        ),
-      ),
-    );
+    final container = await _boxContainerFor(tester, 'translate-x-4');
 
-    expect(tester.takeException(), isNull);
-    expect(find.byType(Transform), findsOneWidget);
+    expect(container.transform, isNotNull);
+    expect(container.transform![12], closeTo(16, 0.0001));
+    expect(
+      find.descendant(of: find.byType(Box), matching: find.byType(Transform)),
+      findsOneWidget,
+    );
   });
 
-  testWidgets('Div without transform tokens does not render Transform', (
+  testWidgets('Div without transform tokens leaves container transform null', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Div(
-          classNames: 'bg-blue-500 p-4',
-          child: const SizedBox(width: 50, height: 50),
-        ),
-      ),
-    );
+    final container = await _boxContainerFor(tester, 'bg-blue-500 p-4');
 
-    expect(tester.takeException(), isNull);
-    expect(find.byType(Transform), findsNothing);
+    expect(container.transform, isNull);
+    expect(
+      find.descendant(of: find.byType(Box), matching: find.byType(Transform)),
+      findsNothing,
+    );
   });
 
-  testWidgets('Div with combined transforms renders single Transform', (
+  testWidgets('Div with combined transforms applies single composite matrix', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      Directionality(
-        textDirection: TextDirection.ltr,
-        child: Div(
-          classNames: 'scale-110 rotate-12 translate-x-2',
-          child: const SizedBox(width: 50, height: 50),
-        ),
-      ),
+    final container = await _boxContainerFor(
+      tester,
+      'scale-110 rotate-12 translate-x-2',
     );
 
-    expect(tester.takeException(), isNull);
-    // Should only have one Transform widget with composite matrix
-    expect(find.byType(Transform), findsOneWidget);
+    final expected = TwParser().parseTransform(
+      'scale-110 rotate-12 translate-x-2',
+    );
+
+    expect(container.transform, isNotNull);
+    for (var i = 0; i < 16; i++) {
+      expect(
+        container.transform![i],
+        closeTo(expected![i], 0.0001),
+        reason: 'Matrix element [$i] should match composite transform',
+      );
+    }
+    expect(
+      find.descendant(of: find.byType(Box), matching: find.byType(Transform)),
+      findsOneWidget,
+    );
   });
 
-  testWidgets('FlexBox Div with transform renders correctly', (tester) async {
+  testWidgets('FlexBox Div applies transform on its Box container', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       Directionality(
         textDirection: TextDirection.ltr,
@@ -1971,9 +1968,224 @@ void main() {
       ),
     );
 
-    expect(tester.takeException(), isNull);
-    expect(find.byType(FlexBox), findsOneWidget);
-    expect(find.byType(Transform), findsOneWidget);
+    final containerFinder = find.descendant(
+      of: find.byType(Box),
+      matching: find.byType(Container),
+    );
+
+    expect(containerFinder, findsOneWidget);
+    expect(tester.widget<Container>(containerFinder).transform, isNotNull);
+    expect(
+      find.descendant(of: find.byType(Box), matching: find.byType(Transform)),
+      findsOneWidget,
+    );
+  });
+
+  // ==========================================================================
+  // Variant-Aware Transform Tests
+  // ==========================================================================
+
+  testWidgets('hover:scale-105 applies scale only when hovered', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: Div(
+          classNames: 'hover:scale-105',
+          child: const SizedBox(width: 40, height: 40),
+        ),
+      ),
+    );
+
+    final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await gesture.addPointer(location: const Offset(-500, -500));
+    await tester.pump();
+
+    final containerFinder = find.descendant(
+      of: find.byType(Box),
+      matching: find.byType(Container),
+    );
+
+    await gesture.moveTo(tester.getCenter(containerFinder));
+    await tester.pump();
+
+    final hovered = tester.widget<Container>(containerFinder).transform;
+    expect(hovered, isNotNull);
+    expect(hovered![0], closeTo(1.05, 0.01));
+
+    await gesture.moveTo(const Offset(-500, -500));
+    await tester.pump();
+    await gesture.removePointer();
+
+    final afterExit = tester.widget<Container>(containerFinder).transform!;
+    expect(afterExit[0], closeTo(1.0, 0.001));
+  });
+
+  testWidgets('hover transform returns to base state when mouse exits', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: Div(
+          classNames: 'hover:scale-110',
+          child: const SizedBox(width: 30, height: 30),
+        ),
+      ),
+    );
+
+    final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await gesture.addPointer(location: const Offset(-500, -500));
+    await tester.pump();
+
+    final containerFinder = find.descendant(
+      of: find.byType(Box),
+      matching: find.byType(Container),
+    );
+
+    await gesture.moveTo(tester.getCenter(containerFinder));
+    await tester.pump();
+
+    expect(tester.widget<Container>(containerFinder).transform, isNotNull);
+
+    await gesture.moveTo(const Offset(-500, -500));
+    await tester.pump();
+    await gesture.removePointer();
+
+    final reset = tester.widget<Container>(containerFinder).transform!;
+    expect(reset[0], closeTo(1.0, 0.001));
+  });
+
+  testWidgets('md:rotate-45 applies only at md breakpoint', (tester) async {
+    await _pumpSized(
+      tester,
+      Div(
+        classNames: 'md:rotate-45',
+        child: const SizedBox(width: 20, height: 20),
+      ),
+      width: 500,
+      height: 400,
+    );
+
+    final containerFinder = find.descendant(
+      of: find.byType(Box),
+      matching: find.byType(Container),
+    );
+    final baseMatrix = tester.widget<Container>(containerFinder).transform!;
+    expect(baseMatrix[0], closeTo(1.0, 0.001));
+
+    await _pumpSized(
+      tester,
+      Div(
+        classNames: 'md:rotate-45',
+        child: const SizedBox(width: 20, height: 20),
+      ),
+      width: 900,
+      height: 600,
+    );
+
+    final rotated = tester.widget<Container>(containerFinder).transform!;
+    expect(rotated[0], closeTo(0.7071, 0.01));
+  });
+
+  testWidgets('rotate-45 hover:scale-110 keeps rotation on hover', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: Div(
+          classNames: 'rotate-45 hover:scale-110',
+          child: const SizedBox(width: 30, height: 30),
+        ),
+      ),
+    );
+
+    final containerFinder = find.descendant(
+      of: find.byType(Box),
+      matching: find.byType(Container),
+    );
+
+    final baseMatrix = tester.widget<Container>(containerFinder).transform!;
+
+    final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await gesture.addPointer(location: Offset.zero);
+    await gesture.moveTo(tester.getCenter(containerFinder));
+    await tester.pump();
+
+    final hoveredMatrix = tester.widget<Container>(containerFinder).transform!;
+
+    expect(hoveredMatrix[0], closeTo(baseMatrix[0] * 1.10, 0.02));
+    expect(hoveredMatrix[1], closeTo(baseMatrix[1] * 1.10, 0.02));
+
+    await gesture.moveTo(Offset.zero);
+    await tester.pump();
+    await gesture.removePointer();
+  });
+
+  testWidgets('transition hover:scale-110 animates on hover', (tester) async {
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: Div(
+          classNames: 'transition hover:scale-110',
+          child: const SizedBox(width: 30, height: 30),
+        ),
+      ),
+    );
+
+    final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await gesture.addPointer(location: const Offset(-500, -500));
+    await tester.pump();
+
+    final containerFinder = find.descendant(
+      of: find.byType(Box),
+      matching: find.byType(Container),
+    );
+
+    final baseMatrix = tester.widget<Container>(containerFinder).transform!;
+    expect(baseMatrix[0], closeTo(1.0, 0.001));
+
+    await gesture.moveTo(tester.getCenter(containerFinder));
+    await tester.pump(); // start animation
+
+    await tester.pump(const Duration(milliseconds: 50));
+    final midMatrix = tester.widget<Container>(containerFinder).transform!;
+    expect(midMatrix[0], greaterThan(1.0));
+    expect(midMatrix[0], lessThan(1.11));
+
+    await tester.pump(const Duration(milliseconds: 200));
+    final endMatrix = tester.widget<Container>(containerFinder).transform!;
+    expect(endMatrix[0], closeTo(1.10, 0.01));
+
+    await gesture.removePointer();
+  });
+
+  testWidgets('transform is applied via Mix container, not external wrapper', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: Div(
+          classNames: 'scale-105',
+          child: const SizedBox(width: 30, height: 30),
+        ),
+      ),
+    );
+
+    final boxFinder = find.byType(Box);
+    final transformFinder = find.descendant(
+      of: boxFinder,
+      matching: find.byType(Transform),
+    );
+
+    expect(transformFinder, findsOneWidget);
+    expect(
+      find.ancestor(of: boxFinder, matching: find.byType(Transform)),
+      findsNothing,
+    );
   });
 
   // ==========================================================================
