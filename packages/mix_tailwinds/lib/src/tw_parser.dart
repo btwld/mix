@@ -96,6 +96,60 @@ const Set<String> _validRotationKeys = {
   '180',
 };
 
+/// Accumulates individual transform components before building Matrix4.
+/// Supports component-wise inheritance from base to variant transforms.
+class _TransformAccum {
+  double? scale;
+  double? rotateDeg;
+  double? translateX;
+  double? translateY;
+
+  _TransformAccum();
+
+  /// Creates copy inheriting from [base], then overlaying [this].
+  _TransformAccum inheritFrom(_TransformAccum base) {
+    return _TransformAccum()
+      ..scale = scale ?? base.scale
+      ..rotateDeg = rotateDeg ?? base.rotateDeg
+      ..translateX = translateX ?? base.translateX
+      ..translateY = translateY ?? base.translateY;
+  }
+
+  bool get hasAnyTransform =>
+      scale != null ||
+      rotateDeg != null ||
+      translateX != null ||
+      translateY != null;
+
+  /// Builds Matrix4 in Tailwind's fixed order: translate -> rotate -> scale.
+  Matrix4 toMatrix4() {
+    var matrix = Matrix4.identity();
+    if (translateX != null || translateY != null) {
+      matrix = matrix.multiplied(
+        Matrix4.translationValues(translateX ?? 0.0, translateY ?? 0.0, 0.0),
+      );
+    }
+    if (rotateDeg != null) {
+      matrix = matrix.multiplied(Matrix4.rotationZ(rotateDeg! * math.pi / 180));
+    }
+    if (scale != null) {
+      matrix = matrix.multiplied(Matrix4.diagonal3Values(scale!, scale!, 1.0));
+    }
+    return matrix;
+  }
+}
+
+/// Groups transform tokens by their prefix chain.
+class _PrefixedTransforms {
+  final _TransformAccum base = _TransformAccum();
+  final Map<String, _TransformAccum> variants = {};
+
+  _TransformAccum forPrefix(String prefix) {
+    if (prefix.isEmpty) return base;
+    return variants.putIfAbsent(prefix, _TransformAccum.new);
+  }
+}
+
 /// Returns true if the token is an animation-related token.
 bool _isAnimationToken(String token) {
   if (_transitionTriggerTokens.contains(token)) return true;
@@ -162,37 +216,39 @@ final Map<String, FlexBoxStyler Function(FlexBoxStyler)> _flexAtomicHandlers = {
   ),
 };
 
-final Map<String, BoxStyler Function(BoxStyler, TwConfig)> _boxAtomicHandlers = {
-  'border': (s, cfg) => s.borderAll(color: _defaultBorderColor(cfg), width: 1),
-  // Overflow clipping
-  'overflow-hidden': (s, _) => s.clipBehavior(Clip.hardEdge),
-  'overflow-visible': (s, _) => s.clipBehavior(Clip.none),
-  'overflow-clip': (s, _) => s.clipBehavior(Clip.hardEdge),
-  'shadow-none': (s, _) => s.boxShadows(const <BoxShadowMix>[]),
-  ..._shadowElevationTokens.map(
-    (token, elevation) =>
-        MapEntry(token, (BoxStyler s, _) => s.elevation(elevation)),
-  ),
-  // Font weights (complete Tailwind set)
-  'font-thin': (s, _) =>
-      s.wrapDefaultTextStyle(TextStyleMix().fontWeight(FontWeight.w100)),
-  'font-extralight': (s, _) =>
-      s.wrapDefaultTextStyle(TextStyleMix().fontWeight(FontWeight.w200)),
-  'font-light': (s, _) =>
-      s.wrapDefaultTextStyle(TextStyleMix().fontWeight(FontWeight.w300)),
-  'font-normal': (s, _) =>
-      s.wrapDefaultTextStyle(TextStyleMix().fontWeight(FontWeight.w400)),
-  'font-medium': (s, _) =>
-      s.wrapDefaultTextStyle(TextStyleMix().fontWeight(FontWeight.w500)),
-  'font-semibold': (s, _) =>
-      s.wrapDefaultTextStyle(TextStyleMix().fontWeight(FontWeight.w600)),
-  'font-bold': (s, _) =>
-      s.wrapDefaultTextStyle(TextStyleMix().fontWeight(FontWeight.w700)),
-  'font-extrabold': (s, _) =>
-      s.wrapDefaultTextStyle(TextStyleMix().fontWeight(FontWeight.w800)),
-  'font-black': (s, _) =>
-      s.wrapDefaultTextStyle(TextStyleMix().fontWeight(FontWeight.w900)),
-};
+final Map<String, BoxStyler Function(BoxStyler, TwConfig)> _boxAtomicHandlers =
+    {
+      'border': (s, cfg) =>
+          s.borderAll(color: _defaultBorderColor(cfg), width: 1),
+      // Overflow clipping
+      'overflow-hidden': (s, _) => s.clipBehavior(Clip.hardEdge),
+      'overflow-visible': (s, _) => s.clipBehavior(Clip.none),
+      'overflow-clip': (s, _) => s.clipBehavior(Clip.hardEdge),
+      'shadow-none': (s, _) => s.boxShadows(const <BoxShadowMix>[]),
+      ..._shadowElevationTokens.map(
+        (token, elevation) =>
+            MapEntry(token, (BoxStyler s, _) => s.elevation(elevation)),
+      ),
+      // Font weights (complete Tailwind set)
+      'font-thin': (s, _) =>
+          s.wrapDefaultTextStyle(TextStyleMix().fontWeight(FontWeight.w100)),
+      'font-extralight': (s, _) =>
+          s.wrapDefaultTextStyle(TextStyleMix().fontWeight(FontWeight.w200)),
+      'font-light': (s, _) =>
+          s.wrapDefaultTextStyle(TextStyleMix().fontWeight(FontWeight.w300)),
+      'font-normal': (s, _) =>
+          s.wrapDefaultTextStyle(TextStyleMix().fontWeight(FontWeight.w400)),
+      'font-medium': (s, _) =>
+          s.wrapDefaultTextStyle(TextStyleMix().fontWeight(FontWeight.w500)),
+      'font-semibold': (s, _) =>
+          s.wrapDefaultTextStyle(TextStyleMix().fontWeight(FontWeight.w600)),
+      'font-bold': (s, _) =>
+          s.wrapDefaultTextStyle(TextStyleMix().fontWeight(FontWeight.w700)),
+      'font-extrabold': (s, _) =>
+          s.wrapDefaultTextStyle(TextStyleMix().fontWeight(FontWeight.w800)),
+      'font-black': (s, _) =>
+          s.wrapDefaultTextStyle(TextStyleMix().fontWeight(FontWeight.w900)),
+    };
 
 final Map<String, TextStyler Function(TextStyler)> _textAtomicHandlers = {
   'uppercase': (s) => s.uppercase(),
@@ -523,6 +579,168 @@ class TwParser {
     return false;
   }
 
+  bool _hasOnlyKnownPrefixParts(String prefix, Set<String> allowedVariants) {
+    if (prefix.isEmpty) return true;
+    for (final part in prefix.split(':')) {
+      if (_isBreakpoint(part)) continue;
+      if (allowedVariants.contains(part)) continue;
+      return false;
+    }
+    return true;
+  }
+
+  /// Groups transform tokens by prefix for variant-aware application.
+  _PrefixedTransforms _groupTransformsByPrefix(
+    List<String> tokens,
+    Set<String> allowedVariants,
+  ) {
+    final result = _PrefixedTransforms();
+
+    for (final token in tokens) {
+      final colonIndex = token.lastIndexOf(':');
+      final prefix = colonIndex > 0 ? token.substring(0, colonIndex) : '';
+      final base = colonIndex > 0 ? token.substring(colonIndex + 1) : token;
+
+      if (!_isTransformToken(base)) continue;
+      if (!_hasOnlyKnownPrefixParts(prefix, allowedVariants)) {
+        onUnsupported?.call(token);
+        continue;
+      }
+
+      final accum = result.forPrefix(prefix);
+
+      if (base.startsWith('scale-')) {
+        accum.scale = config.scaleOf(base.substring(6));
+      } else if (base.startsWith('-rotate-')) {
+        final deg = config.rotationOf(base.substring(8));
+        if (deg != null) accum.rotateDeg = -deg;
+      } else if (base.startsWith('rotate-')) {
+        accum.rotateDeg = config.rotationOf(base.substring(7));
+      } else if (base.startsWith('-translate-x-')) {
+        accum.translateX = -config.spaceOf(base.substring(13));
+      } else if (base.startsWith('translate-x-')) {
+        accum.translateX = config.spaceOf(base.substring(12));
+      } else if (base.startsWith('-translate-y-')) {
+        accum.translateY = -config.spaceOf(base.substring(13));
+      } else if (base.startsWith('translate-y-')) {
+        accum.translateY = config.spaceOf(base.substring(12));
+      }
+    }
+
+    return result;
+  }
+
+  /// Applies a transform via variant chain (e.g., 'md:hover' -> onBreakpoint(md, onHovered(...))).
+  BoxStyler _applyTransformWithVariant(
+    BoxStyler base,
+    String prefix,
+    Matrix4 matrix,
+  ) {
+    if (prefix.isEmpty) {
+      return base.transform(matrix);
+    }
+
+    final parts = prefix.split(':');
+    BoxStyler variantStyle = BoxStyler().transform(matrix);
+
+    for (var i = parts.length - 1; i >= 0; i--) {
+      final part = parts[i];
+      if (_isBreakpoint(part)) {
+        final min = config.breakpointOf(part);
+        variantStyle = BoxStyler().onBreakpoint(
+          Breakpoint(minWidth: min),
+          variantStyle,
+        );
+      } else if (_boxVariants.containsKey(part)) {
+        variantStyle = _boxVariants[part]!(BoxStyler(), variantStyle);
+      }
+    }
+
+    return base.merge(variantStyle);
+  }
+
+  /// Applies grouped transforms to BoxStyler with variant awareness.
+  BoxStyler _applyTransformsToStyler(
+    BoxStyler styler,
+    _PrefixedTransforms transforms,
+  ) {
+    var result = styler;
+
+    if (transforms.base.hasAnyTransform) {
+      result = result.transform(transforms.base.toMatrix4());
+    } else if (transforms.variants.isNotEmpty) {
+      // Provide identity so animations can interpolate from a non-null matrix.
+      result = result.transform(Matrix4.identity());
+    }
+
+    for (final entry in transforms.variants.entries) {
+      final inherited = entry.value.inheritFrom(transforms.base);
+      if (!inherited.hasAnyTransform) continue;
+      result = _applyTransformWithVariant(
+        result,
+        entry.key,
+        inherited.toMatrix4(),
+      );
+    }
+
+    return result;
+  }
+
+  /// Applies a transform with variant handling for FlexBoxStyler.
+  FlexBoxStyler _applyFlexTransformWithVariant(
+    FlexBoxStyler base,
+    String prefix,
+    Matrix4 matrix,
+  ) {
+    if (prefix.isEmpty) {
+      return base.transform(matrix);
+    }
+
+    final parts = prefix.split(':');
+    FlexBoxStyler variantStyle = FlexBoxStyler().transform(matrix);
+
+    for (var i = parts.length - 1; i >= 0; i--) {
+      final part = parts[i];
+      if (_isBreakpoint(part)) {
+        final min = config.breakpointOf(part);
+        variantStyle = FlexBoxStyler().onBreakpoint(
+          Breakpoint(minWidth: min),
+          variantStyle,
+        );
+      } else if (_flexVariants.containsKey(part)) {
+        variantStyle = _flexVariants[part]!(FlexBoxStyler(), variantStyle);
+      }
+    }
+
+    return base.merge(variantStyle);
+  }
+
+  /// Applies grouped transforms to FlexBoxStyler with variant awareness.
+  FlexBoxStyler _applyTransformsToFlexStyler(
+    FlexBoxStyler styler,
+    _PrefixedTransforms transforms,
+  ) {
+    var result = styler;
+
+    if (transforms.base.hasAnyTransform) {
+      result = result.transform(transforms.base.toMatrix4());
+    } else if (transforms.variants.isNotEmpty) {
+      result = result.transform(Matrix4.identity());
+    }
+
+    for (final entry in transforms.variants.entries) {
+      final inherited = entry.value.inheritFrom(transforms.base);
+      if (!inherited.hasAnyTransform) continue;
+      result = _applyFlexTransformWithVariant(
+        result,
+        entry.key,
+        inherited.toMatrix4(),
+      );
+    }
+
+    return result;
+  }
+
   FlexBoxStyler parseFlex(String classNames) {
     final tokens = listTokens(classNames);
 
@@ -537,18 +755,36 @@ class TwParser {
     // This matches Tailwind: below breakpoint = block, at breakpoint = flex
     var styler = hasBaseFlex ? FlexBoxStyler() : FlexBoxStyler().column();
 
+    final transformGroups = _groupTransformsByPrefix(
+      tokens,
+      _flexVariants.keys.toSet(),
+    );
+
     for (final token in tokens) {
+      final base = token.substring(token.lastIndexOf(':') + 1);
+      if (_isTransformToken(base)) continue;
       styler = _applyFlexToken(styler, token);
     }
-    return styler;
+
+    return _applyTransformsToFlexStyler(styler, transformGroups);
   }
 
   BoxStyler parseBox(String classNames) {
+    final tokens = listTokens(classNames);
     var styler = BoxStyler();
-    for (final token in listTokens(classNames)) {
+
+    final transformGroups = _groupTransformsByPrefix(
+      tokens,
+      _boxVariants.keys.toSet(),
+    );
+
+    for (final token in tokens) {
+      final base = token.substring(token.lastIndexOf(':') + 1);
+      if (_isTransformToken(base)) continue;
       styler = _applyBoxToken(styler, token);
     }
-    return styler;
+
+    return _applyTransformsToStyler(styler, transformGroups);
   }
 
   TextStyler parseText(String classNames) {
@@ -621,14 +857,16 @@ class TwParser {
     // No trigger = no animation
     if (!hasTransition) return null;
 
-    return CurveAnimationConfig(
-      duration: duration,
-      curve: curve,
-      delay: delay,
-    );
+    return CurveAnimationConfig(duration: duration, curve: curve, delay: delay);
   }
 
   /// Parses transform tokens and returns a composite Matrix4.
+  ///
+  /// @deprecated Use [parseBox] or [parseFlex] which now handle transforms with
+  /// full variant support.
+  @Deprecated(
+    'Transforms are now handled by parseBox/parseFlex with variant support',
+  )
   ///
   /// Tailwind CSS applies transforms in a fixed order regardless of class order:
   /// translate → rotate → scale
@@ -757,15 +995,14 @@ class TwParser {
         (b, bp, s) => b.onBreakpoint(bp, s),
       );
 
-  BoxStyler _applyBoxToken(BoxStyler base, String token) =>
-      _applyPrefixedToken(
-        base,
-        token,
-        _boxVariants,
-        BoxStyler.new,
-        _applyBoxAtomic,
-        (b, bp, s) => b.onBreakpoint(bp, s),
-      );
+  BoxStyler _applyBoxToken(BoxStyler base, String token) => _applyPrefixedToken(
+    base,
+    token,
+    _boxVariants,
+    BoxStyler.new,
+    _applyBoxAtomic,
+    (b, bp, s) => b.onBreakpoint(bp, s),
+  );
 
   TextStyler _applyTextToken(TextStyler base, String token) =>
       _applyPrefixedToken(
