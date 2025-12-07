@@ -19,7 +19,7 @@ import 'package:mix/mix.dart';
 final style = BoxStyler()
     .color(Colors.red)
     .size(100, 100)
-    .wrap(OpacityModifierMix(opacity: 0.4));
+    .wrap(.opacity(0.4));
 ```
 
 This produces a widget tree equivalent to `Opacity(opacity: 0.4, child: Container(...))`.
@@ -28,16 +28,16 @@ This produces a widget tree equivalent to `Opacity(opacity: 0.4, child: Containe
 
 | ModifierMix Class | Description | Wrapper Widget |
 |-------------------|-------------|----------------|
-| `OpacityModifierMix(opacity: value)` | Sets opacity | `Opacity` |
-| `PaddingModifierMix(padding: insets)` | Adds padding | `Padding` |
-| `AlignModifierMix(alignment: alignment)` | Sets alignment | `Align` |
-| `AspectRatioModifierMix(aspectRatio: ratio)` | Constrains aspect ratio | `AspectRatio` |
-| `FlexibleModifierMix(flex: flex, fit: fit)` | Makes flexible in Flex layouts | `Flexible` |
-| `TransformModifierMix(transform: matrix)` | Applies transform | `Transform` |
-| `VisibilityModifierMix(visible: visible)` | Shows/hides widget | `Visibility` |
-| `ClipRectModifierMix()` | Clips to rectangle | `ClipRect` |
-| `ClipRRectModifierMix(borderRadius: radius)` | Clips to rounded rectangle | `ClipRRect` |
-| `ClipOvalModifierMix()` | Clips to oval | `ClipOval` |
+| `.opacity(value)` | Sets opacity | `Opacity` |
+| `.padding(insets)` | Adds padding | `Padding` |
+| `.align(alignment)` | Sets alignment | `Align` |
+| `.aspectRatio(ratio)` | Constrains aspect ratio | `AspectRatio` |
+| `.flexible(flex: flex, fit: fit)` | Makes flexible in Flex layouts | `Flexible` |
+| `.transform(matrix)` | Applies transform | `Transform` |
+| `.visibility(visible: visible)` | Shows/hides widget | `Visibility` |
+| `.clipRect()` | Clips to rectangle | `ClipRect` |
+| `.clipRRect(borderRadius: radius)` | Clips to rounded rectangle | `ClipRRect` |
+| `.clipOval()` | Clips to oval | `ClipOval` |
 
 ### Usage Examples
 
@@ -49,9 +49,9 @@ import 'package:mix/mix.dart';
 final cardStyle = BoxStyler()
     .color(Colors.white)
     .size(200, 100)
-    .wrap(OpacityModifierMix(opacity: 0.9))
-    .wrap(PaddingModifierMix(padding: EdgeInsets.all(16)))
-    .wrap(AlignModifierMix(alignment: Alignment.center));
+    .wrap(.opacity(0.9))
+    .wrap(.padding(.all(16)))
+    .wrap(.align(alignment: .center));
 
 // Use transform methods for scale/rotate
 final buttonStyle = BoxStyler()
@@ -68,9 +68,9 @@ Modifiers are applied from innermost to outermost in the order they are chained.
 ```dart
 // Result: Align → Opacity → Padding → Box
 final style = BoxStyler()
-    .wrap(PaddingModifierMix(padding: EdgeInsets.all(8)))  // innermost wrapper
-    .wrap(OpacityModifierMix(opacity: 0.5))                 // middle wrapper
-    .wrap(AlignModifierMix(alignment: Alignment.center));   // outermost wrapper
+    .wrap(.padding(.all(8)))  // innermost wrapper
+    .wrap(.opacity(0.5))                 // middle wrapper
+    .wrap(.align(alignment: .center));   // outermost wrapper
 ```
 
 <Callout type="info">
@@ -184,14 +184,14 @@ import 'package:mix/mix.dart';
 final style = BoxStyler()
     .color(Colors.red)
     .size(100, 100)
-    .wrap(OpacityModifierMix(opacity: 0.4));
+    .wrap(.opacity(0.4));
 
 // With tokens
 final $opacityToken = DoubleToken('custom.opacity');
 
 final tokenStyle = BoxStyler()
     .color(Colors.blue)
-    .wrap(OpacityModifierMix.create(opacity: Prop.token($opacityToken)));
+    .wrap(.opacity(Prop.token($opacityToken)));
 ```
 
 ## Best Practices

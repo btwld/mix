@@ -23,10 +23,10 @@ class Example extends StatelessWidget {
         StyledText('hello world', style: baseStyle.uppercase()),
         StyledText('HELLO WORLD', style: baseStyle.lowercase()),
         StyledText('hello world', style: baseStyle.capitalize()),
-        StyledText('hello world from mix', style: baseStyle.titleCase()),
+        StyledText('hello world from mix', style: baseStyle.titlecase()),
         StyledText(
           'hello world. this is mix.',
-          style: baseStyle.sentenceCase(),
+          style: baseStyle.sentencecase(),
         ),
       ],
     );

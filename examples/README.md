@@ -32,16 +32,6 @@ The Styler API provides:
 - Natural chaining without cascade operators
 - Consistent syntax across all properties
 
-#### Enabling Dot Notation
-
-To use Mix's dot notation syntax with Dart's experimental dot shorthands, enable the feature in your `analysis_options.yaml`:
-
-```yaml
-analyzer:
-  enable-experiment:
-    - dot-shorthands
-```
-
 **Note**: This requires Dart SDK ≥ 3.10.0
 
 ## Getting Started with Mix
@@ -60,26 +50,6 @@ cd my_mix_app
 
 # Add Mix 2.0 to your dependencies
 flutter pub add mix:^2.0.0-rc.0
-```
-
-### Enable Dot Notation Syntax
-
-To use Mix's modern dot notation syntax, add this to your `analysis_options.yaml`:
-
-```yaml
-analyzer:
-  enable-experiment:
-    - dot-shorthands
-```
-
-This enables cleaner syntax with dot shorthands throughout your Mix code:
-
-```dart
-// With dot shorthands enabled, you can write:
-BoxStyler()
-    .height(100)
-    .width(100)
-    .color(Colors.blue)
 ```
 
 ## Running the Examples

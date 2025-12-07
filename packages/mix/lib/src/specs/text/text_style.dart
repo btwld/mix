@@ -221,14 +221,14 @@ class TextStyler extends Style<TextSpec>
   }
 
   /// Applies title case directive
-  TextStyler titleCase() {
+  TextStyler titlecase() {
     return merge(
       TextStyler(textDirectives: [const TitleCaseStringDirective()]),
     );
   }
 
   /// Applies sentence case directive
-  TextStyler sentenceCase() {
+  TextStyler sentencecase() {
     return merge(
       TextStyler(textDirectives: [const SentenceCaseStringDirective()]),
     );
