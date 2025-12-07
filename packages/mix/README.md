@@ -63,35 +63,6 @@ Box(
 
 Learn more about [styling](https://fluttermix.com/docs/guides/styling)
 
-### **First-Class Variant Support**:
-
-First-class support for variants, allowing you to define styling variations that can be applied conditionally or responsively.
-
-```dart
-// Define a named variant
-const onOutlined = NamedVariant('outlined');
-
-// Create a base style with variant support
-final baseStyle = BoxStyler()
-    .borderRounded(10)
-    .color(Colors.black)
-    .variant(
-      onOutlined,
-      BoxStyler()
-          .color(Colors.transparent)
-          .borderAll(color: Colors.black),
-    );
-
-// Use with a widget - variants are activated via StyleBuilder
-StyleBuilder(
-  style: baseStyle,
-  namedVariants: {onOutlined}, // Activate the outlined variant
-  builder: (context, spec) => Box(styleSpec: spec, child: ...),
-);
-```
-
-Learn more about [dynamic styling](https://fluttermix.com/docs/guides/dynamic-styling)
-
 ### **BuildContext Responsive Styling**:
 
 Mix allows you to define styles that are context-aware, applying styles conditionally based on the BuildContext.

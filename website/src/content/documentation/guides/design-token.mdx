@@ -67,28 +67,6 @@ class MyApp extends StatelessWidget {
 }
 ```
 
-### Nested Scopes
-
-You can nest `MixScope` widgets to override tokens for specific parts of your UI:
-
-```dart
-MixScope(
-  colors: {$primary: Colors.blue},
-  child: Column(
-    children: [
-      // Uses blue primary color
-      Box(style: BoxStyler().color($primary())),
-
-      // Override for this subtree only
-      MixScope(
-        colors: {$primary: Colors.red},
-        child: Box(style: BoxStyler().color($primary())), // Uses red
-      ),
-    ],
-  ),
-);
-```
-
 ## Built-in Token Types
 
 Mix provides several built-in token types for common styling needs:
@@ -163,7 +141,7 @@ MixScope(
 
 ### Call Syntax
 
-Use `$token()` to reference a token:
+Use `${token_name}.call()` or `${token_name}()` to reference a token:
 
 ```dart
 final style = BoxStyler()

@@ -6,7 +6,7 @@ import { Callout } from "nextra/components";
 
 # Directives
 
-Directives transform values (text, numbers, colors) when a style is resolved. Unlike modifiers (which wrap widgets), directives transform the underlying data values.
+Directives transform values (text, numbers) when a style is resolved. Unlike modifiers (which wrap widgets), directives transform the underlying data values.
 
 ```dart
 // The text "hello world" is transformed to "HELLO WORLD" at build time
@@ -36,8 +36,8 @@ Transform strings in `StyledText` widgets:
 | `.uppercase()` | Converts all characters to uppercase | "hello world" | "HELLO WORLD" |
 | `.lowercase()` | Converts all characters to lowercase | "Hello World" | "hello world" |
 | `.capitalize()` | Capitalizes the first letter of each word | "hello world" | "Hello World" |
-| `.titleCase()` | Transforms to title case format | "hello world" | "Hello World" |
-| `.sentenceCase()` | Capitalizes the first letter of the first word | "hello world" | "Hello world" |
+| `.titlecase()` | Transforms to title case format | "hello world" | "Hello World" |
+| `.sentencecase()` | Capitalizes the first letter of the first word | "hello world" | "Hello world" |
 
 ### Usage Examples
 
@@ -54,13 +54,13 @@ StyledText(
 // Title case for headings
 StyledText(
   'user profile settings',
-  style: TextStyler().titleCase().fontWeight(FontWeight.bold),
+  style: TextStyler().titlecase().fontWeight(FontWeight.bold),
 )
 
 // Sentence case for descriptions
 StyledText(
   'click here to continue',
-  style: TextStyler().sentenceCase().color(Colors.grey),
+  style: TextStyler().sentencecase().color(Colors.grey),
 )
 ```
 
@@ -118,47 +118,6 @@ final chainedStyle = BoxStyler.create(
 <Callout type="warning">
   Division always returns a double in Dart. The divisor cannot be zero.
 </Callout>
-
-## Color Directives
-
-Transform color values (opacity, brightness, saturation):
-
-### Available Color Directives
-
-| Method | Description |
-|--------|-------------|
-| `.withOpacity(opacity)` | Sets the alpha channel (0.0 to 1.0) |
-| `.withAlpha(alpha)` | Sets the alpha channel (0 to 255) |
-| `.darken(amount)` | Darkens the color by a percentage |
-| `.lighten(amount)` | Lightens the color by a percentage |
-| `.saturate(amount)` | Increases saturation |
-| `.desaturate(amount)` | Decreases saturation |
-| `.tint(amount)` | Mixes with white |
-| `.shade(amount)` | Mixes with black |
-| `.brighten(amount)` | Increases brightness |
-| `.withRed(value)` | Sets the red channel |
-| `.withGreen(value)` | Sets the green channel |
-| `.withBlue(value)` | Sets the blue channel |
-
-### Usage Examples
-
-```dart
-import 'package:flutter/material.dart';
-import 'package:mix/mix.dart';
-
-// Semi-transparent background
-final style = BoxStyler()
-    .color(Colors.blue.withOpacity(0.5));
-
-// Hover state with darkened color
-final buttonStyle = BoxStyler()
-    .color(Colors.blue)
-    .onHovered(BoxStyler().color(Colors.blue.darken(10)));
-
-// Disabled state with desaturated color
-final disabledStyle = BoxStyler()
-    .color(Colors.blue.desaturate(50).withOpacity(0.6));
-```
 
 ## Creating Custom Directives
 

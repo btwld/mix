@@ -8,14 +8,14 @@
 /// - Using BoxStyler() to create box styles (recommended)
 /// - Alternative: Using $box accessor for BoxMutableStyler
 /// - Setting color, width, and height properties
-/// - Applying border radius with borderRounded()
 // ignore_for_file: unused_local_variable, avoid-commented-out-code
 
 library;
 
-import '../../../helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
+
+import '../../../helpers.dart';
 
 void main() {
   runMixApp(Example());
