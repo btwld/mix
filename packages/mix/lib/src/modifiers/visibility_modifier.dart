@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../core/helpers.dart';
 import '../core/widget_modifier.dart';
 import '../core/prop.dart';
 import '../core/style.dart';
@@ -25,8 +24,10 @@ final class VisibilityModifier extends WidgetModifier<VisibilityModifier>
   @override
   VisibilityModifier lerp(VisibilityModifier? other, double t) {
     if (other == null) return this;
-
-    return VisibilityModifier(MixOps.lerpSnap(visible, other.visible, t));
+    if (visible == other.visible) return this;
+    if (t == 0) return this;
+    if (t == 1) return other;
+    return VisibilityModifier(true);
   }
 
   @override
