@@ -15,7 +15,7 @@ class Example extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final flexStyle = StackBoxStyler(
-      constraints: .height(100).width(100),
+      constraints: .new().height(100).width(100),
       stackAlignment: .bottomCenter,
     );
 
@@ -36,7 +36,7 @@ class Example extends StatelessWidget {
               .color(Colors.black)
               .height(15)
               .width(100)
-              .wrap(.align(alignment: .center)),
+              .wrap(.new().align(alignment: .center)),
         ),
         Box(
           style: BoxStyler()
@@ -44,7 +44,7 @@ class Example extends StatelessWidget {
               .height(100)
               .width(100)
               .borderAll(color: Colors.black, width: 20)
-              .wrap(.scale(0.50, 0.50)),
+              .wrap(.new().scale(0.50, 0.50)),
         ),
       ],
     );

@@ -39,7 +39,7 @@ class _ExampleState extends State<Example> {
         .height(100)
         .width(100)
         .borderRounded(10)
-        .wrap(.opacity(0.4))
+        .wrap(.new().opacity(0.4))
         .onFocused(
           BoxStyler()
               .color(Colors.blue)

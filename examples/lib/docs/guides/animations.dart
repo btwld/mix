@@ -212,7 +212,7 @@ class _HeartKeyframeAnimationState extends State<HeartKeyframeAnimation> {
             final angle = values.get('angle');
 
             return style.wrap(
-              .transform(
+              .new().transform(
                 transform: Matrix4.identity()
                   ..scaleByDouble(scale, scale, scale, 1.0)
                   ..translateByDouble(0, verticalOffset, 0, 1)

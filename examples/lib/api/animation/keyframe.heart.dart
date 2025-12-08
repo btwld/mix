@@ -93,9 +93,9 @@ class _HeartAnimationState extends State<HeartAnimation> {
             final angle = values.get('angle');
 
             return style
-                .wrap(.scale(scale, scale * verticalStretch))
-                .wrap(.translate(x: 0, y: verticalOffset))
-                .wrap(.rotate(radians: angle));
+                .wrap(.new().scale(scale, scale * verticalStretch))
+                .wrap(.new().translate(x: 0, y: verticalOffset))
+                .wrap(.new().rotate(radians: angle));
           },
         ),
         child: ShaderMask(
