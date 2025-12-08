@@ -482,7 +482,7 @@ void main() {
                   builder: (context, childSpec) {
                     childResolvedSpec = childSpec;
                     // Verify that StyleProvider is accessible within scope
-                    inheritedStyleFromProvider = StyleProvider.maybeOf<BoxSpec>(
+                    inheritedStyleFromProvider = Style.maybeOf<BoxSpec>(
                       context,
                     );
                     return Container(
@@ -596,7 +596,7 @@ void main() {
                   builder: (context, childSpec) {
                     childResolvedSpec = childSpec;
                     // Verify that StyleProvider is NOT accessible when inheritable=false
-                    inheritedStyleFromProvider = StyleProvider.maybeOf<BoxSpec>(
+                    inheritedStyleFromProvider = Style.maybeOf<BoxSpec>(
                       context,
                     );
                     return Container(
@@ -697,15 +697,11 @@ void main() {
                   style: middleStyle,
                   inheritable: true,
                   builder: (context, middleSpec) {
-                    middleProviderStyle = StyleProvider.maybeOf<BoxSpec>(
-                      context,
-                    );
+                    middleProviderStyle = Style.maybeOf<BoxSpec>(context);
                     return StyleBuilder<BoxSpec>(
                       style: innerStyle,
                       builder: (context, innerSpec) {
-                        innerProviderStyle = StyleProvider.maybeOf<BoxSpec>(
-                          context,
-                        );
+                        innerProviderStyle = Style.maybeOf<BoxSpec>(context);
                         return Container(
                           decoration: innerSpec.decoration,
                           constraints: innerSpec.constraints,
@@ -732,7 +728,7 @@ void main() {
       });
 
       testWidgets(
-        'Should create MixInteractionDetector when StyleProvider\'s style contains widget state variants',
+        'Should create MixInteractionDetector when inherited style contains widget state variants',
         (tester) async {
           // Parent style provides a variant for hovered state
           final parentStyle = BoxStyler()
@@ -746,17 +742,20 @@ void main() {
 
           await tester.pumpWidget(
             MaterialApp(
-              home: StyleProvider<BoxSpec>(
+              home: StyleBuilder<BoxSpec>(
                 style: parentStyle,
-                child: StyleBuilder<BoxSpec>(
-                  style: childStyle,
-                  builder: (context, childSpec) {
-                    return Container(
-                      decoration: childSpec.decoration,
-                      constraints: childSpec.constraints,
-                    );
-                  },
-                ),
+                inheritable: true,
+                builder: (context, parentSpec) {
+                  return StyleBuilder<BoxSpec>(
+                    style: childStyle,
+                    builder: (context, childSpec) {
+                      return Container(
+                        decoration: childSpec.decoration,
+                        constraints: childSpec.constraints,
+                      );
+                    },
+                  );
+                },
               ),
             ),
           );

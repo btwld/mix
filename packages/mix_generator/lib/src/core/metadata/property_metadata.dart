@@ -14,7 +14,7 @@ class MixableTypeMetadata extends BaseMetadata {
 
   final int generatedComponents;
 
-  /// The resolved value type (from Dto<T>)
+  /// The resolved value type (from Dto\<T>)
   final ClassElement resolvedElement;
 
   /// The resolved field accessors
@@ -97,7 +97,7 @@ class MixableTypeMetadata extends BaseMetadata {
     );
   }
 
-  /// Extracts the value type from a Dto<Value> class
+  /// Extracts the value type from a Dto\<Value> class
   static ClassElement _getResolvedType(ClassElement element) {
     final resolvedType = TypeUtils.extractDtoTypeArgument(element);
 

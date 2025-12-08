@@ -6,6 +6,7 @@ import '../modifiers/widget_modifier_config.dart';
 import '../variants/variant.dart';
 import 'internal/compare_mixin.dart';
 import 'mix_element.dart';
+import 'providers/style_provider.dart';
 import 'spec.dart';
 import 'style_spec.dart';
 import 'widget_modifier.dart';
@@ -33,6 +34,31 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   }) : $modifier = modifier,
        $animation = animation,
        $variants = variants;
+
+  /// Gets the closest [Style] from the widget tree.
+  ///
+  /// Throws a [FlutterError] if no [Style] is found in the widget tree.
+  static Style<S> of<S extends Spec<S>>(BuildContext context) {
+    final style = maybeOf<S>(context);
+    if (style == null) {
+      throw FlutterError(
+        'Style.of() called with a context that does not contain a Style of type $S.\n'
+        'No Style<$S> ancestor could be found starting from the context that was passed to Style.of().\n\n'
+        'If you are using StyleBuilder, make sure to set inheritable: true to provide the style to descendant widgets.\n\n'
+        'The context used was:\n'
+        '  $context',
+      );
+    }
+
+    return style;
+  }
+
+  /// Gets the closest [Style] from the widget tree, or null if not found.
+  static Style<S>? maybeOf<S extends Spec<S>>(BuildContext context) {
+    final provider = context.getInheritedWidgetOfExactType<StyleProvider<S>>();
+
+    return provider?.style;
+  }
 
   @internal
   Set<WidgetState> get widgetStates {

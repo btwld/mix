@@ -31,6 +31,7 @@ export 'src/core/converter_registry.dart';
 export 'src/core/converter_registry_init.dart';
 export 'src/core/directive.dart';
 export 'src/core/extensions/extensions.dart';
+export 'src/core/extensions/prop_number_ext.dart';
 export 'src/core/helpers.dart';
 export 'src/core/mix_element.dart';
 export 'src/core/pointer_position.dart';

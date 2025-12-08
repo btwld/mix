@@ -14,7 +14,7 @@ void main() {
           home: Scaffold(
             body: Column(
               children: [
-                ZBox(
+                StackBox(
                   key: zBoxKey,
                   style: StackBoxStyler(), // Use default empty StackBoxStyle
                   children: const [],
@@ -97,10 +97,7 @@ void main() {
           home: Scaffold(
             body: Column(
               children: [
-                StackBox(
-                  key: zBoxKey,
-                  children: const [],
-                ),
+                StackBox(key: zBoxKey, children: const []),
                 Stack(key: stackKey, children: const []),
               ],
             ),

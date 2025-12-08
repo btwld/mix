@@ -733,7 +733,7 @@ class _MockSpecAttribute extends Style<MockSpec<Map<String, dynamic>>> {
   final double? height;
 
   _MockSpecAttribute({
-    required this.width, 
+    required this.width,
     this.height,
     super.variants = const [],
     super.modifier,
