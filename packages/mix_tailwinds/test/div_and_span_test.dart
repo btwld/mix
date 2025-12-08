@@ -782,6 +782,10 @@ void main() {
     expect(div, isNotNull);
   });
 
+  // Note: Div asserts in build() when both child and children are provided.
+  // This assertion is verified manually - providing both triggers:
+  // 'Provide either child or children, not both.'
+
   test('Span constructor is const', () {
     const span = Span(text: 'Hello', classNames: 'text-blue-500');
     expect(span, isNotNull);
