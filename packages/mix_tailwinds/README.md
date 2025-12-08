@@ -58,6 +58,78 @@ As an experimental proof of concept:
 - Performance has not been optimized for production use
 - The API may change significantly in future versions
 
+## Semantic Differences from Tailwind CSS
+
+This package aims for Tailwind-like syntax but has intentional differences due to Flutter's rendering model:
+
+### Flexbox Behavior
+
+| Behavior | Tailwind CSS | mix_tailwinds | Reason |
+|----------|--------------|---------------|--------|
+| Cross-axis default | `stretch` | `start` | Flutter's `stretch` requires bounded constraints and causes infinite height errors in unbounded contexts |
+| Default axis (no `flex` class) | N/A | Vertical | Matches block element stacking behavior |
+
+### Typography
+
+| Behavior | Tailwind CSS | mix_tailwinds | Reason |
+|----------|--------------|---------------|--------|
+| `text-*` line-height | Auto-adjusts based on size | No auto-adjustment | Flutter and browser text rendering differ fundamentally |
+
+Use `leading-*` tokens explicitly for line height control.
+
+### Sizing
+
+| Behavior | Tailwind CSS | mix_tailwinds | Notes |
+|----------|--------------|---------------|-------|
+| `w-full` / `h-full` | 100% of parent | Best-effort parent/viewport | Falls back to viewport when parent is unbounded |
+| `w-screen` / `h-screen` | Viewport size | MediaQuery-based | Falls back to constraints if no MediaQuery available |
+
+### Animation
+
+| Behavior | Tailwind CSS | mix_tailwinds | Notes |
+|----------|--------------|---------------|-------|
+| Default duration | 150ms | 150ms | ✅ Matches |
+| Default easing | cubic-bezier(0.4, 0, 0.2, 1) | `Curves.easeOut` | Close approximation |
+| `transition-*` variants | Targets specific properties | All properties animate | Mix animates entire style uniformly |
+
+## Custom Configuration
+
+You can customize the default configuration using `TwConfigProvider`:
+
+```dart
+TwConfigProvider(
+  config: TwConfig.standard().copyWith(
+    colors: {
+      ...TwConfig.standard().colors,
+      'brand-500': Color(0xFF8B5CF6),
+      'brand-600': Color(0xFF7C3AED),
+    },
+  ),
+  child: MyApp(),
+)
+```
+
+Descendant `Div` and `Span` widgets will automatically use this configuration without needing to pass `config` explicitly.
+
+## Handling Unsupported Tokens
+
+The `Div` widget accepts an `onUnsupported` callback to help identify unrecognized Tailwind classes:
+
+```dart
+Div(
+  classNames: 'flex gap-4 unknown-class',
+  onUnsupported: (token) {
+    debugPrint('Unsupported Tailwind token: $token');
+  },
+  children: [...],
+)
+```
+
+This callback receives:
+- The final token value (base class, not including variant prefixes)
+- Only tokens that couldn't be mapped to Mix stylers
+- It's safe to throw from this callback (will surface during development)
+
 ## License
 
 See the [Mix repository](https://github.com/btwld/mix) for license information.
