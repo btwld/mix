@@ -49,6 +49,43 @@ class TwConfig {
 
   double? rotationOf(String key) => rotations[key];
 
+  /// Creates a copy of this config with the given fields replaced.
+  ///
+  /// Use this to customize the default config:
+  /// ```dart
+  /// final customConfig = TwConfig.standard().copyWith(
+  ///   colors: {
+  ///     ...TwConfig.standard().colors,
+  ///     'brand-500': myBrandColor,
+  ///   },
+  /// );
+  /// ```
+  TwConfig copyWith({
+    Map<String, double>? space,
+    Map<String, double>? radii,
+    Map<String, double>? borderWidths,
+    Map<String, double>? breakpoints,
+    Map<String, double>? fontSizes,
+    Map<String, Color>? colors,
+    Map<String, int>? durations,
+    Map<String, int>? delays,
+    Map<String, double>? scales,
+    Map<String, double>? rotations,
+  }) {
+    return TwConfig(
+      space: space ?? this.space,
+      radii: radii ?? this.radii,
+      borderWidths: borderWidths ?? this.borderWidths,
+      breakpoints: breakpoints ?? this.breakpoints,
+      fontSizes: fontSizes ?? this.fontSizes,
+      colors: colors ?? this.colors,
+      durations: durations ?? this.durations,
+      delays: delays ?? this.delays,
+      scales: scales ?? this.scales,
+      rotations: rotations ?? this.rotations,
+    );
+  }
+
   static const TwConfig _standard = TwConfig(
     space: {
       '0': 0,
@@ -177,4 +214,53 @@ class TwConfig {
   );
 
   factory TwConfig.standard() => _standard;
+}
+
+/// Provides [TwConfig] to descendant widgets via the widget tree.
+///
+/// Wrap your app or subtree with this to set a default config:
+/// ```dart
+/// TwConfigProvider(
+///   config: TwConfig.standard().copyWith(
+///     colors: {'brand-500': myBrandColor},
+///   ),
+///   child: MyApp(),
+/// )
+/// ```
+///
+/// Descendants can then use `Div` and `Span` without explicitly passing
+/// a config - they will automatically use the nearest provider's config.
+class TwConfigProvider extends InheritedWidget {
+  /// Creates a config provider.
+  const TwConfigProvider({
+    super.key,
+    required this.config,
+    required super.child,
+  });
+
+  /// The configuration to provide to descendant widgets.
+  final TwConfig config;
+
+  /// Returns the nearest [TwConfig], or [TwConfig.standard()] if none found.
+  ///
+  /// Use this when you need a config and want a sensible default.
+  static TwConfig of(BuildContext context) {
+    final provider =
+        context.dependOnInheritedWidgetOfExactType<TwConfigProvider>();
+    return provider?.config ?? TwConfig.standard();
+  }
+
+  /// Returns the nearest [TwConfig], or null if none found.
+  ///
+  /// Use this when you want to explicitly check if a provider exists.
+  static TwConfig? maybeOf(BuildContext context) {
+    final provider =
+        context.dependOnInheritedWidgetOfExactType<TwConfigProvider>();
+    return provider?.config;
+  }
+
+  @override
+  bool updateShouldNotify(TwConfigProvider oldWidget) {
+    return config != oldWidget.config;
+  }
 }
