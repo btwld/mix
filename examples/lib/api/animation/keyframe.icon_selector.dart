@@ -110,7 +110,7 @@ class _PopUpAnimationState extends State<PopUpAnimation> {
                   ..scaleByDouble(scale, scale, 1, 1)
                   ..translateByDouble(0.0, y, 0, 1),
               )
-              .wrap(.opacity(opacity));
+              .wrap(.new().opacity(opacity));
         },
       ),
       child: widget.child,

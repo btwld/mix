@@ -18,7 +18,7 @@ void main() {
       .borderRounded(8)
       .color(Colors.black)
       .wrap(
-        .defaultTextStyle(
+        .new().defaultTextStyle(
           style: TextStyleMix().color(Colors.deepOrange).fontWeight(.bold),
         ),
       );
@@ -27,7 +27,7 @@ void main() {
 
   final soft = base
       .color(Colors.blue.shade100)
-      .wrap(.defaultTextStyle(style: TextStyleMix().color(Colors.blue)));
+      .wrap(.new().defaultTextStyle(style: TextStyleMix().color(Colors.blue)));
 
   // 3
   final button = BoxStyler()
