@@ -163,6 +163,7 @@ final class WidgetModifierConfig with Equatable {
   }) {
     return WidgetModifierConfig.modifier(TranslateModifierMix(x: x, y: y));
   }
+
   factory WidgetModifierConfig.skew({
     required double skewX,
     required double skewY,
@@ -330,6 +331,19 @@ final class WidgetModifierConfig with Equatable {
       }
       acc[key] = acc[key]?.merge(m) ?? m;
     }
+  }
+
+  WidgetModifierConfig translate({required double x, required double y}) {
+    return merge(WidgetModifierConfig.translate(x: x, y: y));
+  }
+
+  WidgetModifierConfig rotate({
+    required double radians,
+    Alignment alignment = Alignment.center,
+  }) {
+    return merge(
+      WidgetModifierConfig.rotate(radians: radians, alignment: alignment),
+    );
   }
 
   /// Orders modifiers according to the specified order or default order.

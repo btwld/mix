@@ -24,7 +24,7 @@ class Example extends StatelessWidget {
         .borderAll(color: Colors.blueGrey.shade400, width: 1)
         .height(150)
         .width(120)
-        .shadow(.color(Colors.black12).blurRadius(10));
+        .shadow(.new().color(Colors.black12).blurRadius(10));
 
     final iconStyle = IconStyler()
         .icon(Icons.piano_outlined)

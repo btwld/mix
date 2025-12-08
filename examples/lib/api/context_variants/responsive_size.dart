@@ -20,7 +20,7 @@ class Example extends StatelessWidget {
         .borderRounded(16)
         .shadowOnly(color: Colors.black.withValues(alpha: 0.2), blurRadius: 20)
         .wrap(
-          .defaultText(
+          WidgetModifierConfig.defaultText(
             TextStyler() //
                 .fontSize(16)
                 .fontWeight(.bold)

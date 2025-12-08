@@ -43,11 +43,11 @@ class _ExampleState extends State<Example> {
             .paddingX(16)
             .paddingY(8)
             .borderRounded(10)
-            .border(.all(.color(Colors.grey.shade200)))
+            .border(.all(.new().color(Colors.grey.shade200)))
             .mainAxisSize(.min)
             .spacing(8)
             .onHovered(
-              FlexBoxStyler().border(.all(.color(Colors.grey.shade300))),
+              FlexBoxStyler().border(.all(.new().color(Colors.grey.shade300))),
             )
             .animate(.easeInOut(150.ms)),
 
@@ -100,8 +100,9 @@ class ArrowIconButton extends StatelessWidget {
         .phaseAnimation(
           trigger: animationTrigger,
           phases: ArrowPhases.values,
-          styleBuilder: (phase, style) =>
-              style.wrap(.translate(x: phase.offset.dx, y: phase.offset.dy)),
+          styleBuilder: (phase, style) => style.wrap(
+            .new().translate(x: phase.offset.dx, y: phase.offset.dy),
+          ),
           configBuilder: (phase) => CurveAnimationConfig(
             duration: phase.duration,
             curve: phase.curve,
