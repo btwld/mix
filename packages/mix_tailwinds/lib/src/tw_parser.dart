@@ -795,7 +795,7 @@ class TwParser {
     return styler;
   }
 
-  /// Parses animation tokens and returns CurveAnimationConfig or null.
+  /// Parses animation tokens from a pre-tokenized list.
   ///
   /// Returns null if:
   /// - No transition trigger token is present
@@ -805,8 +805,10 @@ class TwParser {
   /// - Duration: 150ms
   /// - Curve: Curves.easeOut
   /// - Delay: 0ms
-  CurveAnimationConfig? parseAnimation(String classNames) {
-    final tokens = listTokens(classNames);
+  ///
+  /// Use this method when you've already tokenized the class names to avoid
+  /// redundant parsing.
+  CurveAnimationConfig? parseAnimationFromTokens(List<String> tokens) {
 
     var hasTransition = false;
     var hasTransitionNone = false;
@@ -859,6 +861,14 @@ class TwParser {
 
     return CurveAnimationConfig(duration: duration, curve: curve, delay: delay);
   }
+
+  /// Parses animation tokens and returns CurveAnimationConfig or null.
+  ///
+  /// @deprecated Use [parseAnimationFromTokens] with pre-tokenized input to
+  /// avoid redundant parsing when tokens are already available.
+  @Deprecated('Use parseAnimationFromTokens with pre-tokenized list')
+  CurveAnimationConfig? parseAnimation(String classNames) =>
+      parseAnimationFromTokens(listTokens(classNames));
 
   /// Parses transform tokens and returns a composite Matrix4.
   ///

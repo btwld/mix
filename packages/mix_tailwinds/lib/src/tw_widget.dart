@@ -26,11 +26,15 @@ class Div extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cfg = config ?? TwConfig.standard();
+    assert(
+      child == null || children.isEmpty,
+      'Provide either child or children, not both.',
+    );
+    final cfg = config ?? TwConfigProvider.of(context);
     final parser = TwParser(config: cfg, onUnsupported: onUnsupported);
     final tokens = parser.setTokens(classNames);
     final shouldUseFlex = isFlex ?? parser.wantsFlex(tokens);
-    final animationConfig = parser.parseAnimation(classNames);
+    final animationConfig = parser.parseAnimationFromTokens(tokens.toList());
 
     Widget built;
 
@@ -88,7 +92,7 @@ class Span extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cfg = config ?? TwConfig.standard();
+    final cfg = config ?? TwConfigProvider.of(context);
     final style = TwParser(config: cfg).parseText(classNames);
     return StyledText(text, style: style);
   }
