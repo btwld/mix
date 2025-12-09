@@ -22,7 +22,6 @@ import '../../style/mixins/spacing_style_mixin.dart';
 import '../../style/mixins/transform_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
 import '../../style/mixins/widget_modifier_style_mixin.dart';
-import '../../style/mixins/widget_state_variant_mixin.dart';
 import '../box/box_spec.dart';
 import '../box/box_style.dart';
 import '../flex/flex_spec.dart';
@@ -45,7 +44,6 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
         Diagnosticable,
         WidgetModifierStyleMixin<FlexBoxStyler, FlexBoxSpec>,
         VariantStyleMixin<FlexBoxStyler, FlexBoxSpec>,
-        WidgetStateVariantMixin<FlexBoxStyler, FlexBoxSpec>,
         BorderStyleMixin<FlexBoxStyler>,
         BorderRadiusStyleMixin<FlexBoxStyler>,
         ShadowStyleMixin<FlexBoxStyler>,

@@ -10,7 +10,6 @@ import '../../modifiers/widget_modifier_config.dart';
 import '../../style/mixins/animation_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
 import '../../style/mixins/widget_modifier_style_mixin.dart';
-import '../../style/mixins/widget_state_variant_mixin.dart';
 import 'stack_spec.dart';
 
 typedef StackMix = StackStyler;
@@ -27,7 +26,6 @@ class StackStyler extends Style<StackSpec>
         Diagnosticable,
         WidgetModifierStyleMixin<StackStyler, StackSpec>,
         VariantStyleMixin<StackStyler, StackSpec>,
-        WidgetStateVariantMixin<StackStyler, StackSpec>,
         AnimationStyleMixin<StackStyler, StackSpec> {
   final Prop<AlignmentGeometry>? $alignment;
   final Prop<StackFit>? $fit;

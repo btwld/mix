@@ -122,4 +122,32 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   T onWeb(T style) {
     return variant(ContextVariant.web(), style);
   }
+
+  /// Creates a variant for hover state.
+  T onHovered(T style) {
+    return variant(ContextVariant.widgetState(WidgetState.hovered), style);
+  }
+
+  /// Creates a variant for pressed state.
+  T onPressed(T style) {
+    return variant(ContextVariant.widgetState(WidgetState.pressed), style);
+  }
+
+  /// Creates a variant for focused state.
+  T onFocused(T style) {
+    return variant(ContextVariant.widgetState(WidgetState.focused), style);
+  }
+
+  /// Creates a variant for disabled state.
+  T onDisabled(T style) {
+    return variant(ContextVariant.widgetState(WidgetState.disabled), style);
+  }
+
+  /// Creates a variant for enabled state (opposite of disabled).
+  T onEnabled(T style) {
+    return variant(
+      ContextVariant.not(ContextVariant.widgetState(WidgetState.disabled)),
+      style,
+    );
+  }
 }

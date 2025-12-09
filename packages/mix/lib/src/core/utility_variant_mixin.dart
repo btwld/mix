@@ -63,4 +63,32 @@ mixin UtilityVariantMixin<T extends Style<S>, S extends Spec<S>> {
   T builder(T Function(BuildContext context) fn) {
     return onBuilder(fn);
   }
+
+  /// Creates a variant for hover state.
+  T onHovered(T style) {
+    return withVariant(ContextVariant.widgetState(WidgetState.hovered), style);
+  }
+
+  /// Creates a variant for pressed state.
+  T onPressed(T style) {
+    return withVariant(ContextVariant.widgetState(WidgetState.pressed), style);
+  }
+
+  /// Creates a variant for focused state.
+  T onFocused(T style) {
+    return withVariant(ContextVariant.widgetState(WidgetState.focused), style);
+  }
+
+  /// Creates a variant for disabled state.
+  T onDisabled(T style) {
+    return withVariant(ContextVariant.widgetState(WidgetState.disabled), style);
+  }
+
+  /// Creates a variant for enabled state (opposite of disabled).
+  T onEnabled(T style) {
+    return withVariant(
+      ContextVariant.not(ContextVariant.widgetState(WidgetState.disabled)),
+      style,
+    );
+  }
 }

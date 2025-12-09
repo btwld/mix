@@ -6,7 +6,6 @@ import '../../core/style.dart' show Style, VariantStyle;
 import '../../core/style_spec.dart';
 import '../../core/utility.dart';
 import '../../core/utility_variant_mixin.dart';
-import '../../core/utility_widget_state_variant_mixin.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../modifiers/widget_modifier_util.dart';
 import '../../variants/variant.dart';
@@ -19,9 +18,7 @@ import 'flex_style.dart';
 /// Supports the same API as [FlexStyler] but maintains mutable internal state
 /// enabling fluid styling: `$flex..direction(Axis.horizontal)..spacing(8)`.
 class FlexMutableStyler extends StyleMutableBuilder<FlexSpec>
-    with
-        UtilityVariantMixin<FlexStyler, FlexSpec>,
-        UtilityWidgetStateVariantMixin<FlexStyler, FlexSpec> {
+    with UtilityVariantMixin<FlexStyler, FlexSpec> {
   late final direction = MixUtility(mutable.direction);
 
   late final mainAxisAlignment = MixUtility(mutable.mainAxisAlignment);

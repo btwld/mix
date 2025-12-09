@@ -22,7 +22,6 @@ import '../../style/mixins/spacing_style_mixin.dart';
 import '../../style/mixins/transform_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
 import '../../style/mixins/widget_modifier_style_mixin.dart';
-import '../../style/mixins/widget_state_variant_mixin.dart';
 import 'box_mutable_style.dart';
 import 'box_spec.dart';
 import 'box_widget.dart';
@@ -39,7 +38,6 @@ class BoxStyler extends Style<BoxSpec>
         Diagnosticable,
         WidgetModifierStyleMixin<BoxStyler, BoxSpec>,
         VariantStyleMixin<BoxStyler, BoxSpec>,
-        WidgetStateVariantMixin<BoxStyler, BoxSpec>,
         BorderStyleMixin<BoxStyler>,
         BorderRadiusStyleMixin<BoxStyler>,
         ShadowStyleMixin<BoxStyler>,

@@ -12,7 +12,6 @@ import '../../style/mixins/animation_style_mixin.dart';
 import '../../style/mixins/flex_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
 import '../../style/mixins/widget_modifier_style_mixin.dart';
-import '../../style/mixins/widget_state_variant_mixin.dart';
 import 'flex_mutable_style.dart';
 import 'flex_spec.dart';
 
@@ -31,7 +30,6 @@ class FlexStyler extends Style<FlexSpec>
         Diagnosticable,
         WidgetModifierStyleMixin<FlexStyler, FlexSpec>,
         VariantStyleMixin<FlexStyler, FlexSpec>,
-        WidgetStateVariantMixin<FlexStyler, FlexSpec>,
         FlexStyleMixin<FlexStyler>,
         AnimationStyleMixin<FlexStyler, FlexSpec> {
   final Prop<Axis>? $direction;

@@ -49,7 +49,6 @@ export 'src/core/style_spec.dart';
 export 'src/core/style_widget.dart';
 export 'src/core/utility.dart';
 export 'src/core/utility_variant_mixin.dart';
-export 'src/core/utility_widget_state_variant_mixin.dart';
 export 'src/core/widget_modifier.dart';
 export 'src/modifiers/align_modifier.dart';
 export 'src/modifiers/aspect_ratio_modifier.dart';
@@ -159,7 +158,6 @@ export 'src/style/mixins/text_style_mixin.dart';
 export 'src/style/mixins/transform_style_mixin.dart';
 export 'src/style/mixins/variant_style_mixin.dart';
 export 'src/style/mixins/widget_modifier_style_mixin.dart';
-export 'src/style/mixins/widget_state_variant_mixin.dart';
 
 /// THEME
 export 'src/theme/material/material_theme.dart';
