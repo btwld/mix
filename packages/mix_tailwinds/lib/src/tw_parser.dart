@@ -150,6 +150,146 @@ class _PrefixedTransforms {
   }
 }
 
+/// Shared spacing token types for padding/margin parsing.
+enum _SpacingKind {
+  paddingX,
+  paddingY,
+  paddingTop,
+  paddingRight,
+  paddingBottom,
+  paddingLeft,
+  paddingAll,
+  marginX,
+  marginY,
+  marginTop,
+  marginRight,
+  marginBottom,
+  marginLeft,
+  marginAll,
+}
+
+/// Parsed spacing token with kind and value.
+class _SpacingToken {
+  const _SpacingToken(this.kind, this.value);
+  final _SpacingKind kind;
+  final double value;
+}
+
+/// Parses padding/margin tokens, returns null if not a spacing token.
+_SpacingToken? _parseSpacingToken(String token, TwConfig config) {
+  if (token.startsWith('px-')) {
+    return _SpacingToken(_SpacingKind.paddingX, config.spaceOf(token.substring(3)));
+  }
+  if (token.startsWith('py-')) {
+    return _SpacingToken(_SpacingKind.paddingY, config.spaceOf(token.substring(3)));
+  }
+  if (token.startsWith('pt-')) {
+    return _SpacingToken(_SpacingKind.paddingTop, config.spaceOf(token.substring(3)));
+  }
+  if (token.startsWith('pr-')) {
+    return _SpacingToken(_SpacingKind.paddingRight, config.spaceOf(token.substring(3)));
+  }
+  if (token.startsWith('pb-')) {
+    return _SpacingToken(_SpacingKind.paddingBottom, config.spaceOf(token.substring(3)));
+  }
+  if (token.startsWith('pl-')) {
+    return _SpacingToken(_SpacingKind.paddingLeft, config.spaceOf(token.substring(3)));
+  }
+  if (token.startsWith('p-')) {
+    return _SpacingToken(_SpacingKind.paddingAll, config.spaceOf(token.substring(2)));
+  }
+  if (token.startsWith('mx-')) {
+    return _SpacingToken(_SpacingKind.marginX, config.spaceOf(token.substring(3)));
+  }
+  if (token.startsWith('my-')) {
+    return _SpacingToken(_SpacingKind.marginY, config.spaceOf(token.substring(3)));
+  }
+  if (token.startsWith('mt-')) {
+    return _SpacingToken(_SpacingKind.marginTop, config.spaceOf(token.substring(3)));
+  }
+  if (token.startsWith('mr-')) {
+    return _SpacingToken(_SpacingKind.marginRight, config.spaceOf(token.substring(3)));
+  }
+  if (token.startsWith('mb-')) {
+    return _SpacingToken(_SpacingKind.marginBottom, config.spaceOf(token.substring(3)));
+  }
+  if (token.startsWith('ml-')) {
+    return _SpacingToken(_SpacingKind.marginLeft, config.spaceOf(token.substring(3)));
+  }
+  if (token.startsWith('m-')) {
+    return _SpacingToken(_SpacingKind.marginAll, config.spaceOf(token.substring(2)));
+  }
+  return null;
+}
+
+/// Applies spacing token to FlexBoxStyler.
+FlexBoxStyler _applySpacingToFlex(FlexBoxStyler s, _SpacingToken t) {
+  switch (t.kind) {
+    case _SpacingKind.paddingX:
+      return s.paddingX(t.value);
+    case _SpacingKind.paddingY:
+      return s.paddingY(t.value);
+    case _SpacingKind.paddingTop:
+      return s.paddingTop(t.value);
+    case _SpacingKind.paddingRight:
+      return s.paddingRight(t.value);
+    case _SpacingKind.paddingBottom:
+      return s.paddingBottom(t.value);
+    case _SpacingKind.paddingLeft:
+      return s.paddingLeft(t.value);
+    case _SpacingKind.paddingAll:
+      return s.paddingAll(t.value);
+    case _SpacingKind.marginX:
+      return s.marginX(t.value);
+    case _SpacingKind.marginY:
+      return s.marginY(t.value);
+    case _SpacingKind.marginTop:
+      return s.marginTop(t.value);
+    case _SpacingKind.marginRight:
+      return s.marginRight(t.value);
+    case _SpacingKind.marginBottom:
+      return s.marginBottom(t.value);
+    case _SpacingKind.marginLeft:
+      return s.marginLeft(t.value);
+    case _SpacingKind.marginAll:
+      return s.marginAll(t.value);
+  }
+}
+
+/// Applies spacing token to BoxStyler.
+BoxStyler _applySpacingToBox(BoxStyler s, _SpacingToken t) {
+  switch (t.kind) {
+    case _SpacingKind.paddingX:
+      return s.paddingX(t.value);
+    case _SpacingKind.paddingY:
+      return s.paddingY(t.value);
+    case _SpacingKind.paddingTop:
+      return s.paddingTop(t.value);
+    case _SpacingKind.paddingRight:
+      return s.paddingRight(t.value);
+    case _SpacingKind.paddingBottom:
+      return s.paddingBottom(t.value);
+    case _SpacingKind.paddingLeft:
+      return s.paddingLeft(t.value);
+    case _SpacingKind.paddingAll:
+      return s.paddingAll(t.value);
+    case _SpacingKind.marginX:
+      return s.marginX(t.value);
+    case _SpacingKind.marginY:
+      return s.marginY(t.value);
+    case _SpacingKind.marginTop:
+      return s.marginTop(t.value);
+    case _SpacingKind.marginRight:
+      return s.marginRight(t.value);
+    case _SpacingKind.marginBottom:
+      return s.marginBottom(t.value);
+    case _SpacingKind.marginLeft:
+      return s.marginLeft(t.value);
+    case _SpacingKind.marginAll:
+      return s.marginAll(t.value);
+  }
+}
+
 /// Returns true if the token is an animation-related token.
 bool _isAnimationToken(String token) {
   if (_transitionTriggerTokens.contains(token)) return true;
@@ -198,7 +338,9 @@ final Map<String, FlexBoxStyler Function(FlexBoxStyler)> _flexAtomicHandlers = {
   'items-center': (s) => s.crossAxisAlignment(CrossAxisAlignment.center),
   'items-end': (s) => s.crossAxisAlignment(CrossAxisAlignment.end),
   'items-stretch': (s) => s.crossAxisAlignment(CrossAxisAlignment.stretch),
-  'items-baseline': (s) => s.crossAxisAlignment(CrossAxisAlignment.baseline),
+  'items-baseline': (s) => s
+      .crossAxisAlignment(CrossAxisAlignment.baseline)
+      .textBaseline(TextBaseline.alphabetic),
   'justify-start': (s) => s.mainAxisAlignment(MainAxisAlignment.start),
   'justify-center': (s) => s.mainAxisAlignment(MainAxisAlignment.center),
   'justify-end': (s) => s.mainAxisAlignment(MainAxisAlignment.end),
@@ -265,7 +407,7 @@ final Map<String, TextStyler Function(TextStyler)> _textAtomicHandlers = {
   'font-extrabold': (s) => s.fontWeight(FontWeight.w800),
   'font-black': (s) => s.fontWeight(FontWeight.w900),
   // Text truncation: overflow ellipsis + single line
-  'truncate': (s) => s.overflow(TextOverflow.ellipsis).maxLines(1),
+  'truncate': (s) => s.overflow(TextOverflow.ellipsis).maxLines(1).softWrap(false),
   // Line height (leading-*)
   'leading-none': (s) => s.height(1.0),
   'leading-tight': (s) => s.height(1.25),
@@ -1076,34 +1218,8 @@ class TwParser {
         token.startsWith('self-') ||
         token.startsWith('shrink')) {
       // Item-level utilities handled at the widget layer.
-    } else if (token.startsWith('px-')) {
-      result = styler.paddingX(config.spaceOf(token.substring(3)));
-    } else if (token.startsWith('py-')) {
-      result = styler.paddingY(config.spaceOf(token.substring(3)));
-    } else if (token.startsWith('pt-')) {
-      result = styler.paddingTop(config.spaceOf(token.substring(3)));
-    } else if (token.startsWith('pr-')) {
-      result = styler.paddingRight(config.spaceOf(token.substring(3)));
-    } else if (token.startsWith('pb-')) {
-      result = styler.paddingBottom(config.spaceOf(token.substring(3)));
-    } else if (token.startsWith('pl-')) {
-      result = styler.paddingLeft(config.spaceOf(token.substring(3)));
-    } else if (token.startsWith('p-')) {
-      result = styler.paddingAll(config.spaceOf(token.substring(2)));
-    } else if (token.startsWith('mx-')) {
-      result = styler.marginX(config.spaceOf(token.substring(3)));
-    } else if (token.startsWith('my-')) {
-      result = styler.marginY(config.spaceOf(token.substring(3)));
-    } else if (token.startsWith('mt-')) {
-      result = styler.marginTop(config.spaceOf(token.substring(3)));
-    } else if (token.startsWith('mr-')) {
-      result = styler.marginRight(config.spaceOf(token.substring(3)));
-    } else if (token.startsWith('mb-')) {
-      result = styler.marginBottom(config.spaceOf(token.substring(3)));
-    } else if (token.startsWith('ml-')) {
-      result = styler.marginLeft(config.spaceOf(token.substring(3)));
-    } else if (token.startsWith('m-')) {
-      result = styler.marginAll(config.spaceOf(token.substring(2)));
+    } else if (_parseSpacingToken(token, config) case final spacing?) {
+      result = _applySpacingToFlex(result, spacing);
     } else if (token.startsWith('bg-')) {
       final color = config.colorOf(token.substring(3));
       if (color != null) {
@@ -1143,7 +1259,8 @@ class TwParser {
     } else if (_isAnimationToken(token)) {
       // Animation tokens handled by parseAnimation(), don't report as unsupported
     } else if (_isTransformToken(token)) {
-      // Transform tokens handled by parseTransform(), don't report as unsupported
+      // Transform tokens are applied via grouped transforms in parseBox/parseFlex.
+      // We skip them here to avoid double-handling.
     } else {
       handled = false;
     }
@@ -1202,34 +1319,8 @@ class TwParser {
         token.startsWith('self-') ||
         token.startsWith('shrink')) {
       // Item-level utilities handled at the widget layer.
-    } else if (token.startsWith('px-')) {
-      result = styler.paddingX(config.spaceOf(token.substring(3)));
-    } else if (token.startsWith('py-')) {
-      result = styler.paddingY(config.spaceOf(token.substring(3)));
-    } else if (token.startsWith('pt-')) {
-      result = styler.paddingTop(config.spaceOf(token.substring(3)));
-    } else if (token.startsWith('pr-')) {
-      result = styler.paddingRight(config.spaceOf(token.substring(3)));
-    } else if (token.startsWith('pb-')) {
-      result = styler.paddingBottom(config.spaceOf(token.substring(3)));
-    } else if (token.startsWith('pl-')) {
-      result = styler.paddingLeft(config.spaceOf(token.substring(3)));
-    } else if (token.startsWith('p-')) {
-      result = styler.paddingAll(config.spaceOf(token.substring(2)));
-    } else if (token.startsWith('mx-')) {
-      result = styler.marginX(config.spaceOf(token.substring(3)));
-    } else if (token.startsWith('my-')) {
-      result = styler.marginY(config.spaceOf(token.substring(3)));
-    } else if (token.startsWith('mt-')) {
-      result = styler.marginTop(config.spaceOf(token.substring(3)));
-    } else if (token.startsWith('mr-')) {
-      result = styler.marginRight(config.spaceOf(token.substring(3)));
-    } else if (token.startsWith('mb-')) {
-      result = styler.marginBottom(config.spaceOf(token.substring(3)));
-    } else if (token.startsWith('ml-')) {
-      result = styler.marginLeft(config.spaceOf(token.substring(3)));
-    } else if (token.startsWith('m-')) {
-      result = styler.marginAll(config.spaceOf(token.substring(2)));
+    } else if (_parseSpacingToken(token, config) case final spacing?) {
+      result = _applySpacingToBox(result, spacing);
     } else if (token.startsWith('bg-')) {
       final color = config.colorOf(token.substring(3));
       if (color != null) {
@@ -1279,7 +1370,8 @@ class TwParser {
     } else if (_isAnimationToken(token)) {
       // Animation tokens handled by parseAnimation(), don't report as unsupported
     } else if (_isTransformToken(token)) {
-      // Transform tokens handled by parseTransform(), don't report as unsupported
+      // Transform tokens are applied via grouped transforms in parseBox/parseFlex.
+      // We skip them here to avoid double-handling.
     } else {
       handled = false;
     }

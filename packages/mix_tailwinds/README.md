@@ -92,6 +92,19 @@ Use `leading-*` tokens explicitly for line height control.
 | Default easing | cubic-bezier(0.4, 0, 0.2, 1) | `Curves.easeOut` | Close approximation |
 | `transition-*` variants | Targets specific properties | All properties animate | Mix animates entire style uniformly |
 
+### Flex Item Tokens
+
+Flex item tokens (`flex-1`, `flex-auto`, `flex-none`, `basis-*`, `self-*`, `shrink-*`) are handled at the widget layer, not the parser layer.
+
+| Token | Supported Values | Notes |
+|-------|------------------|-------|
+| `flex-1`, `flex-auto`, `flex-initial`, `flex-none` | ✅ Supported | Maps to Flutter's flex factor and fit |
+| `basis-*` | Spacing scale only (e.g., `basis-32`) | Fractional values like `basis-1/2` are **no-ops** |
+| `self-start`, `self-center`, `self-end` | ✅ Supported | Cross-axis alignment |
+| `shrink`, `shrink-0` | ✅ Supported | Controls shrink behavior |
+
+**Important**: Because flex item tokens are handled at the widget layer (not the parser), they do **not** trigger `onUnsupported` callbacks even when unsupported (like `basis-1/2`).
+
 ## Custom Configuration
 
 You can customize the default configuration using `TwConfigProvider`:
@@ -127,8 +140,10 @@ Div(
 
 This callback receives:
 - The final token value (base class, not including variant prefixes)
-- Only tokens that couldn't be mapped to Mix stylers
+- Only tokens that couldn't be mapped to Mix stylers at the **parser layer**
 - It's safe to throw from this callback (will surface during development)
+
+**Note**: Flex item tokens (`flex-*`, `basis-*`, `self-*`, `shrink*`) are handled at the widget layer and **never** trigger `onUnsupported`, even for unsupported values like `basis-1/2`. This is by design.
 
 ## License
 
