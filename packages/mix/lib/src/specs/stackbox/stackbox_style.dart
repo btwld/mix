@@ -21,7 +21,6 @@ import '../../style/mixins/spacing_style_mixin.dart';
 import '../../style/mixins/transform_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
 import '../../style/mixins/widget_modifier_style_mixin.dart';
-import '../../style/mixins/widget_state_variant_mixin.dart';
 import '../box/box_spec.dart';
 import '../box/box_style.dart';
 import '../stack/stack_spec.dart';
@@ -44,7 +43,6 @@ class StackBoxStyler extends Style<StackBoxSpec>
         Diagnosticable,
         WidgetModifierStyleMixin<StackBoxStyler, StackBoxSpec>,
         VariantStyleMixin<StackBoxStyler, StackBoxSpec>,
-        WidgetStateVariantMixin<StackBoxStyler, StackBoxSpec>,
         BorderStyleMixin<StackBoxStyler>,
         BorderRadiusStyleMixin<StackBoxStyler>,
         ShadowStyleMixin<StackBoxStyler>,
