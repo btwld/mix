@@ -4,8 +4,9 @@ import 'package:mix/mix.dart';
 import 'package:mix_tailwinds/mix_tailwinds.dart';
 
 void main() {
-  testWidgets('smoke test: renders nested Div and Span without warnings',
-      (tester) async {
+  testWidgets('smoke test: renders nested Div and Span without warnings', (
+    tester,
+  ) async {
     final unsupported = <String>[];
 
     await tester.pumpWidget(

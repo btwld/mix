@@ -122,20 +122,8 @@ class TwConfig {
       '2xl': 16,
       'full': 9999,
     },
-    borderWidths: {
-      '0': 0,
-      '': 1,
-      '2': 2,
-      '4': 4,
-      '8': 8,
-    },
-    breakpoints: {
-      'sm': 640,
-      'md': 768,
-      'lg': 1024,
-      'xl': 1280,
-      '2xl': 1536,
-    },
+    borderWidths: {'0': 0, '': 1, '2': 2, '4': 4, '8': 8},
+    breakpoints: {'sm': 640, 'md': 768, 'lg': 1024, 'xl': 1280, '2xl': 1536},
     fontSizes: {
       'xs': 12,
       'sm': 14,
@@ -246,8 +234,8 @@ class TwConfigProvider extends InheritedWidget {
   ///
   /// Use this when you need a config and want a sensible default.
   static TwConfig of(BuildContext context) {
-    final provider =
-        context.dependOnInheritedWidgetOfExactType<TwConfigProvider>();
+    final provider = context
+        .dependOnInheritedWidgetOfExactType<TwConfigProvider>();
     return provider?.config ?? TwConfig.standard();
   }
 
@@ -255,8 +243,8 @@ class TwConfigProvider extends InheritedWidget {
   ///
   /// Use this when you want to explicitly check if a provider exists.
   static TwConfig? maybeOf(BuildContext context) {
-    final provider =
-        context.dependOnInheritedWidgetOfExactType<TwConfigProvider>();
+    final provider = context
+        .dependOnInheritedWidgetOfExactType<TwConfigProvider>();
     return provider?.config;
   }
 

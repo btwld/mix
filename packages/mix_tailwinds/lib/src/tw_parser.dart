@@ -178,117 +178,128 @@ class _SpacingToken {
 /// Parses padding/margin tokens, returns null if not a spacing token.
 _SpacingToken? _parseSpacingToken(String token, TwConfig config) {
   if (token.startsWith('px-')) {
-    return _SpacingToken(_SpacingKind.paddingX, config.spaceOf(token.substring(3)));
+    return _SpacingToken(
+      _SpacingKind.paddingX,
+      config.spaceOf(token.substring(3)),
+    );
   }
   if (token.startsWith('py-')) {
-    return _SpacingToken(_SpacingKind.paddingY, config.spaceOf(token.substring(3)));
+    return _SpacingToken(
+      _SpacingKind.paddingY,
+      config.spaceOf(token.substring(3)),
+    );
   }
   if (token.startsWith('pt-')) {
-    return _SpacingToken(_SpacingKind.paddingTop, config.spaceOf(token.substring(3)));
+    return _SpacingToken(
+      _SpacingKind.paddingTop,
+      config.spaceOf(token.substring(3)),
+    );
   }
   if (token.startsWith('pr-')) {
-    return _SpacingToken(_SpacingKind.paddingRight, config.spaceOf(token.substring(3)));
+    return _SpacingToken(
+      _SpacingKind.paddingRight,
+      config.spaceOf(token.substring(3)),
+    );
   }
   if (token.startsWith('pb-')) {
-    return _SpacingToken(_SpacingKind.paddingBottom, config.spaceOf(token.substring(3)));
+    return _SpacingToken(
+      _SpacingKind.paddingBottom,
+      config.spaceOf(token.substring(3)),
+    );
   }
   if (token.startsWith('pl-')) {
-    return _SpacingToken(_SpacingKind.paddingLeft, config.spaceOf(token.substring(3)));
+    return _SpacingToken(
+      _SpacingKind.paddingLeft,
+      config.spaceOf(token.substring(3)),
+    );
   }
   if (token.startsWith('p-')) {
-    return _SpacingToken(_SpacingKind.paddingAll, config.spaceOf(token.substring(2)));
+    return _SpacingToken(
+      _SpacingKind.paddingAll,
+      config.spaceOf(token.substring(2)),
+    );
   }
   if (token.startsWith('mx-')) {
-    return _SpacingToken(_SpacingKind.marginX, config.spaceOf(token.substring(3)));
+    return _SpacingToken(
+      _SpacingKind.marginX,
+      config.spaceOf(token.substring(3)),
+    );
   }
   if (token.startsWith('my-')) {
-    return _SpacingToken(_SpacingKind.marginY, config.spaceOf(token.substring(3)));
+    return _SpacingToken(
+      _SpacingKind.marginY,
+      config.spaceOf(token.substring(3)),
+    );
   }
   if (token.startsWith('mt-')) {
-    return _SpacingToken(_SpacingKind.marginTop, config.spaceOf(token.substring(3)));
+    return _SpacingToken(
+      _SpacingKind.marginTop,
+      config.spaceOf(token.substring(3)),
+    );
   }
   if (token.startsWith('mr-')) {
-    return _SpacingToken(_SpacingKind.marginRight, config.spaceOf(token.substring(3)));
+    return _SpacingToken(
+      _SpacingKind.marginRight,
+      config.spaceOf(token.substring(3)),
+    );
   }
   if (token.startsWith('mb-')) {
-    return _SpacingToken(_SpacingKind.marginBottom, config.spaceOf(token.substring(3)));
+    return _SpacingToken(
+      _SpacingKind.marginBottom,
+      config.spaceOf(token.substring(3)),
+    );
   }
   if (token.startsWith('ml-')) {
-    return _SpacingToken(_SpacingKind.marginLeft, config.spaceOf(token.substring(3)));
+    return _SpacingToken(
+      _SpacingKind.marginLeft,
+      config.spaceOf(token.substring(3)),
+    );
   }
   if (token.startsWith('m-')) {
-    return _SpacingToken(_SpacingKind.marginAll, config.spaceOf(token.substring(2)));
+    return _SpacingToken(
+      _SpacingKind.marginAll,
+      config.spaceOf(token.substring(2)),
+    );
   }
   return null;
 }
 
 /// Applies spacing token to FlexBoxStyler.
-FlexBoxStyler _applySpacingToFlex(FlexBoxStyler s, _SpacingToken t) {
-  switch (t.kind) {
-    case _SpacingKind.paddingX:
-      return s.paddingX(t.value);
-    case _SpacingKind.paddingY:
-      return s.paddingY(t.value);
-    case _SpacingKind.paddingTop:
-      return s.paddingTop(t.value);
-    case _SpacingKind.paddingRight:
-      return s.paddingRight(t.value);
-    case _SpacingKind.paddingBottom:
-      return s.paddingBottom(t.value);
-    case _SpacingKind.paddingLeft:
-      return s.paddingLeft(t.value);
-    case _SpacingKind.paddingAll:
-      return s.paddingAll(t.value);
-    case _SpacingKind.marginX:
-      return s.marginX(t.value);
-    case _SpacingKind.marginY:
-      return s.marginY(t.value);
-    case _SpacingKind.marginTop:
-      return s.marginTop(t.value);
-    case _SpacingKind.marginRight:
-      return s.marginRight(t.value);
-    case _SpacingKind.marginBottom:
-      return s.marginBottom(t.value);
-    case _SpacingKind.marginLeft:
-      return s.marginLeft(t.value);
-    case _SpacingKind.marginAll:
-      return s.marginAll(t.value);
-  }
-}
+FlexBoxStyler _applySpacingToFlex(FlexBoxStyler s, _SpacingToken t) =>
+    switch (t.kind) {
+      _SpacingKind.paddingX => s.paddingX(t.value),
+      _SpacingKind.paddingY => s.paddingY(t.value),
+      _SpacingKind.paddingTop => s.paddingTop(t.value),
+      _SpacingKind.paddingRight => s.paddingRight(t.value),
+      _SpacingKind.paddingBottom => s.paddingBottom(t.value),
+      _SpacingKind.paddingLeft => s.paddingLeft(t.value),
+      _SpacingKind.paddingAll => s.paddingAll(t.value),
+      _SpacingKind.marginX => s.marginX(t.value),
+      _SpacingKind.marginY => s.marginY(t.value),
+      _SpacingKind.marginTop => s.marginTop(t.value),
+      _SpacingKind.marginRight => s.marginRight(t.value),
+      _SpacingKind.marginBottom => s.marginBottom(t.value),
+      _SpacingKind.marginLeft => s.marginLeft(t.value),
+      _SpacingKind.marginAll => s.marginAll(t.value),
+    };
 
 /// Applies spacing token to BoxStyler.
-BoxStyler _applySpacingToBox(BoxStyler s, _SpacingToken t) {
-  switch (t.kind) {
-    case _SpacingKind.paddingX:
-      return s.paddingX(t.value);
-    case _SpacingKind.paddingY:
-      return s.paddingY(t.value);
-    case _SpacingKind.paddingTop:
-      return s.paddingTop(t.value);
-    case _SpacingKind.paddingRight:
-      return s.paddingRight(t.value);
-    case _SpacingKind.paddingBottom:
-      return s.paddingBottom(t.value);
-    case _SpacingKind.paddingLeft:
-      return s.paddingLeft(t.value);
-    case _SpacingKind.paddingAll:
-      return s.paddingAll(t.value);
-    case _SpacingKind.marginX:
-      return s.marginX(t.value);
-    case _SpacingKind.marginY:
-      return s.marginY(t.value);
-    case _SpacingKind.marginTop:
-      return s.marginTop(t.value);
-    case _SpacingKind.marginRight:
-      return s.marginRight(t.value);
-    case _SpacingKind.marginBottom:
-      return s.marginBottom(t.value);
-    case _SpacingKind.marginLeft:
-      return s.marginLeft(t.value);
-    case _SpacingKind.marginAll:
-      return s.marginAll(t.value);
-  }
-}
+BoxStyler _applySpacingToBox(BoxStyler s, _SpacingToken t) => switch (t.kind) {
+  _SpacingKind.paddingX => s.paddingX(t.value),
+  _SpacingKind.paddingY => s.paddingY(t.value),
+  _SpacingKind.paddingTop => s.paddingTop(t.value),
+  _SpacingKind.paddingRight => s.paddingRight(t.value),
+  _SpacingKind.paddingBottom => s.paddingBottom(t.value),
+  _SpacingKind.paddingLeft => s.paddingLeft(t.value),
+  _SpacingKind.paddingAll => s.paddingAll(t.value),
+  _SpacingKind.marginX => s.marginX(t.value),
+  _SpacingKind.marginY => s.marginY(t.value),
+  _SpacingKind.marginTop => s.marginTop(t.value),
+  _SpacingKind.marginRight => s.marginRight(t.value),
+  _SpacingKind.marginBottom => s.marginBottom(t.value),
+  _SpacingKind.marginLeft => s.marginLeft(t.value),
+  _SpacingKind.marginAll => s.marginAll(t.value),
+};
 
 /// Directional border variations.
 enum _BorderKind { top, bottom, left, right, vertical, horizontal }
@@ -320,43 +331,40 @@ _BorderToken? _parseBorderToken(String token, TwConfig config) {
 }
 
 /// Applies border token to FlexBoxStyler.
-FlexBoxStyler _applyBorderToFlex(FlexBoxStyler s, _BorderToken t) {
-  switch (t.kind) {
-    case _BorderKind.top:
-      return s.borderTop(color: t.color, width: t.width);
-    case _BorderKind.bottom:
-      return s.borderBottom(color: t.color, width: t.width);
-    case _BorderKind.left:
-      return s.borderLeft(color: t.color, width: t.width);
-    case _BorderKind.right:
-      return s.borderRight(color: t.color, width: t.width);
-    case _BorderKind.vertical:
-      return s.borderVertical(color: t.color, width: t.width);
-    case _BorderKind.horizontal:
-      return s.borderHorizontal(color: t.color, width: t.width);
-  }
-}
+FlexBoxStyler _applyBorderToFlex(FlexBoxStyler s, _BorderToken t) =>
+    switch (t.kind) {
+      _BorderKind.top => s.borderTop(color: t.color, width: t.width),
+      _BorderKind.bottom => s.borderBottom(color: t.color, width: t.width),
+      _BorderKind.left => s.borderLeft(color: t.color, width: t.width),
+      _BorderKind.right => s.borderRight(color: t.color, width: t.width),
+      _BorderKind.vertical => s.borderVertical(color: t.color, width: t.width),
+      _BorderKind.horizontal => s.borderHorizontal(
+        color: t.color,
+        width: t.width,
+      ),
+    };
 
 /// Applies border token to BoxStyler.
-BoxStyler _applyBorderToBox(BoxStyler s, _BorderToken t) {
-  switch (t.kind) {
-    case _BorderKind.top:
-      return s.borderTop(color: t.color, width: t.width);
-    case _BorderKind.bottom:
-      return s.borderBottom(color: t.color, width: t.width);
-    case _BorderKind.left:
-      return s.borderLeft(color: t.color, width: t.width);
-    case _BorderKind.right:
-      return s.borderRight(color: t.color, width: t.width);
-    case _BorderKind.vertical:
-      return s.borderVertical(color: t.color, width: t.width);
-    case _BorderKind.horizontal:
-      return s.borderHorizontal(color: t.color, width: t.width);
-  }
-}
+BoxStyler _applyBorderToBox(BoxStyler s, _BorderToken t) => switch (t.kind) {
+  _BorderKind.top => s.borderTop(color: t.color, width: t.width),
+  _BorderKind.bottom => s.borderBottom(color: t.color, width: t.width),
+  _BorderKind.left => s.borderLeft(color: t.color, width: t.width),
+  _BorderKind.right => s.borderRight(color: t.color, width: t.width),
+  _BorderKind.vertical => s.borderVertical(color: t.color, width: t.width),
+  _BorderKind.horizontal => s.borderHorizontal(color: t.color, width: t.width),
+};
 
 /// Directional radius variations (8 directions including corners).
-enum _RadiusKind { top, bottom, left, right, topLeft, topRight, bottomLeft, bottomRight }
+enum _RadiusKind {
+  top,
+  bottom,
+  left,
+  right,
+  topLeft,
+  topRight,
+  bottomLeft,
+  bottomRight,
+}
 
 /// Parsed directional radius token.
 class _RadiusToken {
@@ -386,48 +394,29 @@ _RadiusToken? _parseRadiusToken(String token, TwConfig config) {
 }
 
 /// Applies radius token to FlexBoxStyler.
-FlexBoxStyler _applyRadiusToFlex(FlexBoxStyler s, _RadiusToken t) {
-  switch (t.kind) {
-    case _RadiusKind.top:
-      return s.borderRoundedTop(t.radius);
-    case _RadiusKind.bottom:
-      return s.borderRoundedBottom(t.radius);
-    case _RadiusKind.left:
-      return s.borderRoundedLeft(t.radius);
-    case _RadiusKind.right:
-      return s.borderRoundedRight(t.radius);
-    case _RadiusKind.topLeft:
-      return s.borderRoundedTopLeft(t.radius);
-    case _RadiusKind.topRight:
-      return s.borderRoundedTopRight(t.radius);
-    case _RadiusKind.bottomLeft:
-      return s.borderRoundedBottomLeft(t.radius);
-    case _RadiusKind.bottomRight:
-      return s.borderRoundedBottomRight(t.radius);
-  }
-}
+FlexBoxStyler _applyRadiusToFlex(FlexBoxStyler s, _RadiusToken t) =>
+    switch (t.kind) {
+      _RadiusKind.top => s.borderRoundedTop(t.radius),
+      _RadiusKind.bottom => s.borderRoundedBottom(t.radius),
+      _RadiusKind.left => s.borderRoundedLeft(t.radius),
+      _RadiusKind.right => s.borderRoundedRight(t.radius),
+      _RadiusKind.topLeft => s.borderRoundedTopLeft(t.radius),
+      _RadiusKind.topRight => s.borderRoundedTopRight(t.radius),
+      _RadiusKind.bottomLeft => s.borderRoundedBottomLeft(t.radius),
+      _RadiusKind.bottomRight => s.borderRoundedBottomRight(t.radius),
+    };
 
 /// Applies radius token to BoxStyler.
-BoxStyler _applyRadiusToBox(BoxStyler s, _RadiusToken t) {
-  switch (t.kind) {
-    case _RadiusKind.top:
-      return s.borderRoundedTop(t.radius);
-    case _RadiusKind.bottom:
-      return s.borderRoundedBottom(t.radius);
-    case _RadiusKind.left:
-      return s.borderRoundedLeft(t.radius);
-    case _RadiusKind.right:
-      return s.borderRoundedRight(t.radius);
-    case _RadiusKind.topLeft:
-      return s.borderRoundedTopLeft(t.radius);
-    case _RadiusKind.topRight:
-      return s.borderRoundedTopRight(t.radius);
-    case _RadiusKind.bottomLeft:
-      return s.borderRoundedBottomLeft(t.radius);
-    case _RadiusKind.bottomRight:
-      return s.borderRoundedBottomRight(t.radius);
-  }
-}
+BoxStyler _applyRadiusToBox(BoxStyler s, _RadiusToken t) => switch (t.kind) {
+  _RadiusKind.top => s.borderRoundedTop(t.radius),
+  _RadiusKind.bottom => s.borderRoundedBottom(t.radius),
+  _RadiusKind.left => s.borderRoundedLeft(t.radius),
+  _RadiusKind.right => s.borderRoundedRight(t.radius),
+  _RadiusKind.topLeft => s.borderRoundedTopLeft(t.radius),
+  _RadiusKind.topRight => s.borderRoundedTopRight(t.radius),
+  _RadiusKind.bottomLeft => s.borderRoundedBottomLeft(t.radius),
+  _RadiusKind.bottomRight => s.borderRoundedBottomRight(t.radius),
+};
 
 /// Returns true if the token is an animation-related token.
 bool _isAnimationToken(String token) {
@@ -546,7 +535,8 @@ final Map<String, TextStyler Function(TextStyler)> _textAtomicHandlers = {
   'font-extrabold': (s) => s.fontWeight(FontWeight.w800),
   'font-black': (s) => s.fontWeight(FontWeight.w900),
   // Text truncation: overflow ellipsis + single line
-  'truncate': (s) => s.overflow(TextOverflow.ellipsis).maxLines(1).softWrap(false),
+  'truncate': (s) =>
+      s.overflow(TextOverflow.ellipsis).maxLines(1).softWrap(false),
   // Line height (leading-*)
   'leading-none': (s) => s.height(1.0),
   'leading-tight': (s) => s.height(1.25),
@@ -952,7 +942,6 @@ class TwParser {
   /// Use this method when you've already tokenized the class names to avoid
   /// redundant parsing.
   CurveAnimationConfig? parseAnimationFromTokens(List<String> tokens) {
-
     var hasTransition = false;
     var hasTransitionNone = false;
     var duration = const Duration(milliseconds: 150); // Tailwind default

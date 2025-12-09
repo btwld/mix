@@ -6,9 +6,7 @@ void main() {
   group('TwConfig.copyWith', () {
     test('preserves unmodified values', () {
       final base = TwConfig.standard();
-      final modified = base.copyWith(
-        colors: {'custom': Colors.red},
-      );
+      final modified = base.copyWith(colors: {'custom': Colors.red});
 
       expect(modified.space, equals(base.space));
       expect(modified.radii, equals(base.radii));
@@ -31,10 +29,7 @@ void main() {
 
     test('allows extending colors with spread operator', () {
       final modified = TwConfig.standard().copyWith(
-        colors: {
-          ...TwConfig.standard().colors,
-          'custom-500': Colors.orange,
-        },
+        colors: {...TwConfig.standard().colors, 'custom-500': Colors.orange},
       );
 
       // Original color should still exist
@@ -149,10 +144,7 @@ void main() {
         MaterialApp(
           home: TwConfigProvider(
             config: customConfig,
-            child: const Div(
-              classNames: 'bg-brand-500',
-              child: Text('Test'),
-            ),
+            child: const Div(classNames: 'bg-brand-500', child: Text('Test')),
           ),
         ),
       );
