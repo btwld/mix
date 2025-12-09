@@ -50,8 +50,8 @@ class Example extends StatelessWidget {
   }
 }
 
-extension WidgetStateVariantMixinX<T extends Style<S>, S extends Spec<S>>
-    on WidgetStateVariantMixin<T, S> {
+extension VariantStyleMixinX<T extends Style<S>, S extends Spec<S>>
+    on VariantStyleMixin<T, S> {
   T onCustomFlag(T style) {
     return variant(
       ContextVariant('custom_flag', (context) {

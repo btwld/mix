@@ -41,7 +41,7 @@ class ButtonSpec extends Spec<ButtonSpec> {
 // Button Style
 
 class ButtonStyler extends Style<ButtonSpec>
-    with WidgetStateVariantMixin<ButtonStyler, ButtonSpec> {
+    with VariantStyleMixin<ButtonStyler, ButtonSpec> {
   final Prop<StyleSpec<FlexBoxSpec>>? $container;
   final Prop<StyleSpec<IconSpec>>? $icon;
   final Prop<StyleSpec<TextSpec>>? $label;
@@ -155,8 +155,8 @@ class ButtonStyler extends Style<ButtonSpec>
   }
 
   @override
-  ButtonStyler variant(Variant variant, ButtonStyler style) {
-    return merge(ButtonStyler(variants: [VariantStyle(variant, style)]));
+  ButtonStyler variants(List<VariantStyle<ButtonSpec>> value) {
+    return merge(ButtonStyler.create(variants: value));
   }
 
   @override
