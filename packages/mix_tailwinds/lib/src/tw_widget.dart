@@ -536,8 +536,8 @@ _FlexItemBehavior? _resolveFlexItemBehavior(
       case 'flex-none':
       case 'flex-shrink-0':
       case 'shrink-0':
-        // flex-none / flex-shrink-0: don't grow and don't shrink
-        candidate = const _FlexItemBehavior(flex: 0, fit: FlexFit.tight);
+        // flex-none / shrink-0: maintain intrinsic size (don't grow or fill)
+        candidate = const _FlexItemBehavior(flex: 0, fit: FlexFit.loose);
         break;
       case 'flex-shrink':
       case 'shrink':

@@ -2251,4 +2251,57 @@ void main() {
     TwParser(onUnsupported: seen.add).parseBox('rotate-999');
     expect(seen, contains('rotate-999'));
   });
+
+  // ==========================================================================
+  // Flex-None Behavior Tests
+  // ==========================================================================
+
+  testWidgets('flex-none child maintains intrinsic width in Row', (
+    tester,
+  ) async {
+    await _pumpSized(
+      tester,
+      Row(
+        children: [
+          Div(
+            classNames: 'flex-none bg-blue-500',
+            child: const SizedBox(width: 50, height: 50),
+          ),
+          Div(
+            classNames: 'flex-1 bg-red-500',
+            child: const SizedBox(height: 50),
+          ),
+        ],
+      ),
+      width: 300,
+    );
+
+    // Find the first Box (flex-none child)
+    final boxes = find.byType(Box);
+    expect(boxes, findsNWidgets(2));
+
+    // The flex-none child should maintain its 50px width
+    final flexNoneSize = tester.getSize(boxes.first);
+    expect(flexNoneSize.width, 50);
+  });
+
+  testWidgets('items-baseline renders without assertion', (tester) async {
+    // This test verifies that items-baseline sets textBaseline,
+    // which is required by Flutter when using CrossAxisAlignment.baseline
+    await _pumpSized(
+      tester,
+      Div(
+        classNames: 'flex items-baseline',
+        children: [
+          Span(text: 'Hello', classNames: 'text-lg'),
+          Span(text: 'World', classNames: 'text-sm'),
+        ],
+      ),
+      width: 300,
+    );
+
+    // If we get here without an assertion, the test passes
+    expect(find.text('Hello'), findsOneWidget);
+    expect(find.text('World'), findsOneWidget);
+  });
 }
