@@ -17,10 +17,8 @@ Future<Container> _boxContainerFor(
   );
   await tester.pump();
 
-  final containerFinder = find.descendant(
-    of: find.byType(Box),
-    matching: find.byType(Container),
-  );
+  // CSS semantic widgets use Container directly (margin is applied via Padding)
+  final containerFinder = find.byType(Container);
 
   expect(containerFinder, findsOneWidget);
 
@@ -76,7 +74,9 @@ Future<void> _pumpSized(
 }
 
 void main() {
-  testWidgets('Div picks FlexBox when flex token is present', (tester) async {
+  testWidgets('Div picks flex layout when flex token is present', (
+    tester,
+  ) async {
     final widget = Directionality(
       textDirection: TextDirection.ltr,
       child: Div(
@@ -87,10 +87,11 @@ void main() {
 
     await tester.pumpWidget(widget);
 
-    expect(find.byType(FlexBox), findsOneWidget);
+    // CSS semantic widgets use Flex directly instead of FlexBox
+    expect(find.byType(Flex), findsOneWidget);
   });
 
-  testWidgets('Div picks FlexBox when only md:flex token is present', (
+  testWidgets('Div picks flex layout when only md:flex token is present', (
     tester,
   ) async {
     final widget = Directionality(
@@ -103,10 +104,13 @@ void main() {
 
     await tester.pumpWidget(widget);
 
-    expect(find.byType(FlexBox), findsOneWidget);
+    // CSS semantic widgets use Flex directly instead of FlexBox
+    expect(find.byType(Flex), findsOneWidget);
   });
 
-  testWidgets('Div defaults to Box when flex tokens missing', (tester) async {
+  testWidgets('Div defaults to box layout when flex tokens missing', (
+    tester,
+  ) async {
     final widget = Directionality(
       textDirection: TextDirection.ltr,
       child: Div(classNames: 'bg-blue-500 p-4', child: const SizedBox()),
@@ -114,8 +118,9 @@ void main() {
 
     await tester.pumpWidget(widget);
 
-    expect(find.byType(Box), findsOneWidget);
-    expect(find.byType(FlexBox), findsNothing);
+    // CSS semantic widgets use Container directly; no Flex when not in flex mode
+    expect(find.byType(Container), findsOneWidget);
+    expect(find.byType(Flex), findsNothing);
   });
 
   testWidgets('Div wraps multiple children in Column', (tester) async {
@@ -179,7 +184,7 @@ void main() {
 
     final boxFinder = find.descendant(
       of: find.byType(Row),
-      matching: find.byType(Box),
+      matching: find.byType(Container),
     );
     final boxSize = tester.getSize(boxFinder);
     final rowSize = tester.getSize(find.byType(Row));
@@ -232,7 +237,7 @@ void main() {
 
     final boxFinder = find.descendant(
       of: find.byType(Column),
-      matching: find.byType(Box),
+      matching: find.byType(Container),
     );
     final boxSize = tester.getSize(boxFinder);
     final columnSize = tester.getSize(find.byType(Column));
@@ -311,7 +316,7 @@ void main() {
       width: 200,
     );
 
-    final boxSize = tester.getSize(find.byType(Box));
+    final boxSize = tester.getSize(find.byType(Container));
     expect(boxSize.width, closeTo(100, 0.0001));
   });
 
@@ -322,7 +327,7 @@ void main() {
       width: 300,
     );
 
-    final boxSize = tester.getSize(find.byType(Box));
+    final boxSize = tester.getSize(find.byType(Container));
     expect(boxSize.width, closeTo(200, 0.0001));
   });
 
@@ -333,7 +338,7 @@ void main() {
       width: 400,
     );
 
-    final boxSize = tester.getSize(find.byType(Box));
+    final boxSize = tester.getSize(find.byType(Container));
     expect(boxSize.width, closeTo(300, 0.0001));
   });
 
@@ -344,7 +349,7 @@ void main() {
       height: 400,
     );
 
-    final boxSize = tester.getSize(find.byType(Box));
+    final boxSize = tester.getSize(find.byType(Container));
     expect(boxSize.height, closeTo(100, 0.0001));
   });
 
@@ -355,7 +360,7 @@ void main() {
       height: 300,
     );
 
-    final boxSize = tester.getSize(find.byType(Box));
+    final boxSize = tester.getSize(find.byType(Container));
     expect(boxSize.height, closeTo(150, 0.0001));
   });
 
@@ -369,7 +374,7 @@ void main() {
       height: 240,
     );
 
-    final boxSize = tester.getSize(find.byType(Box));
+    final boxSize = tester.getSize(find.byType(Container));
     expect(boxSize.width, closeTo(60, 0.0001));
     expect(boxSize.height, closeTo(120, 0.0001));
   });
@@ -425,7 +430,7 @@ void main() {
 
     final boxFinder = find.descendant(
       of: find.byType(Row),
-      matching: find.byType(Box),
+      matching: find.byType(Container),
     );
     final boxSize = tester.getSize(boxFinder);
     expect(boxSize.width, closeTo(128, 0.0001));
@@ -1658,7 +1663,7 @@ void main() {
     );
 
     expect(tester.takeException(), isNull);
-    expect(find.byType(Box), findsOneWidget);
+    expect(find.byType(Container), findsOneWidget);
   });
 
   testWidgets('Div with transition-none renders without animation', (
@@ -1675,7 +1680,7 @@ void main() {
     );
 
     expect(tester.takeException(), isNull);
-    expect(find.byType(Box), findsOneWidget);
+    expect(find.byType(Container), findsOneWidget);
   });
 
   testWidgets('FlexBox Div with transition renders without error', (
@@ -1695,7 +1700,7 @@ void main() {
     );
 
     expect(tester.takeException(), isNull);
-    expect(find.byType(FlexBox), findsOneWidget);
+    expect(find.byType(Flex), findsOneWidget);
   });
 
   // ==========================================================================
@@ -1889,7 +1894,7 @@ void main() {
     expect(container.transform, isNotNull);
     expect(container.transform![0], closeTo(1.05, 0.0001));
     expect(
-      find.descendant(of: find.byType(Box), matching: find.byType(Transform)),
+      find.descendant(of: find.byType(Container), matching: find.byType(Transform)),
       findsOneWidget,
     );
   });
@@ -1900,7 +1905,7 @@ void main() {
     expect(container.transform, isNotNull);
     expect(container.transform![0], closeTo(0.7071, 0.001));
     expect(
-      find.descendant(of: find.byType(Box), matching: find.byType(Transform)),
+      find.descendant(of: find.byType(Container), matching: find.byType(Transform)),
       findsOneWidget,
     );
   });
@@ -1913,7 +1918,7 @@ void main() {
     expect(container.transform, isNotNull);
     expect(container.transform![12], closeTo(16, 0.0001));
     expect(
-      find.descendant(of: find.byType(Box), matching: find.byType(Transform)),
+      find.descendant(of: find.byType(Container), matching: find.byType(Transform)),
       findsOneWidget,
     );
   });
@@ -1925,7 +1930,7 @@ void main() {
 
     expect(container.transform, isNull);
     expect(
-      find.descendant(of: find.byType(Box), matching: find.byType(Transform)),
+      find.descendant(of: find.byType(Container), matching: find.byType(Transform)),
       findsNothing,
     );
   });
@@ -1951,7 +1956,7 @@ void main() {
       );
     }
     expect(
-      find.descendant(of: find.byType(Box), matching: find.byType(Transform)),
+      find.descendant(of: find.byType(Container), matching: find.byType(Transform)),
       findsOneWidget,
     );
   });
@@ -1972,15 +1977,13 @@ void main() {
       ),
     );
 
-    final containerFinder = find.descendant(
-      of: find.byType(Box),
-      matching: find.byType(Container),
-    );
+    // CSS semantic box creates single Container - no nested Container
+    final containerFinder = find.byType(Container);
 
     expect(containerFinder, findsOneWidget);
     expect(tester.widget<Container>(containerFinder).transform, isNotNull);
     expect(
-      find.descendant(of: find.byType(Box), matching: find.byType(Transform)),
+      find.descendant(of: find.byType(Container), matching: find.byType(Transform)),
       findsOneWidget,
     );
   });
@@ -2006,10 +2009,8 @@ void main() {
     await gesture.addPointer(location: const Offset(-500, -500));
     await tester.pump();
 
-    final containerFinder = find.descendant(
-      of: find.byType(Box),
-      matching: find.byType(Container),
-    );
+    // CSS semantic box creates single Container - no nested Container
+    final containerFinder = find.byType(Container);
 
     await gesture.moveTo(tester.getCenter(containerFinder));
     await tester.pump();
@@ -2043,10 +2044,8 @@ void main() {
     await gesture.addPointer(location: const Offset(-500, -500));
     await tester.pump();
 
-    final containerFinder = find.descendant(
-      of: find.byType(Box),
-      matching: find.byType(Container),
-    );
+    // CSS semantic box creates single Container - no nested Container
+    final containerFinder = find.byType(Container);
 
     await gesture.moveTo(tester.getCenter(containerFinder));
     await tester.pump();
@@ -2072,10 +2071,8 @@ void main() {
       height: 400,
     );
 
-    final containerFinder = find.descendant(
-      of: find.byType(Box),
-      matching: find.byType(Container),
-    );
+    // CSS semantic box creates single Container - no nested Container
+    final containerFinder = find.byType(Container);
     final baseMatrix = tester.widget<Container>(containerFinder).transform!;
     expect(baseMatrix[0], closeTo(1.0, 0.001));
 
@@ -2106,10 +2103,8 @@ void main() {
       ),
     );
 
-    final containerFinder = find.descendant(
-      of: find.byType(Box),
-      matching: find.byType(Container),
-    );
+    // CSS semantic box creates single Container - no nested Container
+    final containerFinder = find.byType(Container);
 
     final baseMatrix = tester.widget<Container>(containerFinder).transform!;
 
@@ -2143,10 +2138,8 @@ void main() {
     await gesture.addPointer(location: const Offset(-500, -500));
     await tester.pump();
 
-    final containerFinder = find.descendant(
-      of: find.byType(Box),
-      matching: find.byType(Container),
-    );
+    // CSS semantic box creates single Container - no nested Container
+    final containerFinder = find.byType(Container);
 
     final baseMatrix = tester.widget<Container>(containerFinder).transform!;
     expect(baseMatrix[0], closeTo(1.0, 0.001));
@@ -2179,7 +2172,7 @@ void main() {
       ),
     );
 
-    final boxFinder = find.byType(Box);
+    final boxFinder = find.byType(Container);
     final transformFinder = find.descendant(
       of: boxFinder,
       matching: find.byType(Transform),
@@ -2277,7 +2270,7 @@ void main() {
     );
 
     // Find the first Box (flex-none child)
-    final boxes = find.byType(Box);
+    final boxes = find.byType(Container);
     expect(boxes, findsNWidgets(2));
 
     // The flex-none child should maintain its 50px width
