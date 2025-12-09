@@ -22,7 +22,7 @@ class Div extends StatelessWidget {
   final List<Widget> children;
   final bool? isFlex;
   final TwConfig? config;
-  final Warn? onUnsupported;
+  final TokenWarningCallback? onUnsupported;
 
   @override
   Widget build(BuildContext context) {

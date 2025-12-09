@@ -6,7 +6,7 @@ import 'package:mix/mix.dart';
 import 'tw_config.dart';
 import 'tw_utils.dart';
 
-typedef Warn = void Function(String token);
+typedef TokenWarningCallback = void Function(String token);
 
 /// Extension to provide convenience method for wrapping default text styles.
 extension BoxStylerTextStyleExtension on BoxStyler {
@@ -290,6 +290,145 @@ BoxStyler _applySpacingToBox(BoxStyler s, _SpacingToken t) {
   }
 }
 
+/// Directional border variations.
+enum _BorderKind { top, bottom, left, right, vertical, horizontal }
+
+/// Parsed directional border token.
+class _BorderToken {
+  const _BorderToken(this.kind, this.color, this.width);
+  final _BorderKind kind;
+  final Color color;
+  final double width;
+}
+
+/// Parses directional border tokens (border-t-*, border-b-*, etc.).
+_BorderToken? _parseBorderToken(String token, TwConfig config) {
+  final directive = _parseBorderDirective(config, token);
+  if (directive == null) return null;
+
+  final kind = switch (directive.direction) {
+    't' => _BorderKind.top,
+    'b' => _BorderKind.bottom,
+    'l' => _BorderKind.left,
+    'r' => _BorderKind.right,
+    'x' => _BorderKind.vertical,
+    'y' => _BorderKind.horizontal,
+    _ => null,
+  };
+  if (kind == null) return null;
+  return _BorderToken(kind, directive.color, directive.width);
+}
+
+/// Applies border token to FlexBoxStyler.
+FlexBoxStyler _applyBorderToFlex(FlexBoxStyler s, _BorderToken t) {
+  switch (t.kind) {
+    case _BorderKind.top:
+      return s.borderTop(color: t.color, width: t.width);
+    case _BorderKind.bottom:
+      return s.borderBottom(color: t.color, width: t.width);
+    case _BorderKind.left:
+      return s.borderLeft(color: t.color, width: t.width);
+    case _BorderKind.right:
+      return s.borderRight(color: t.color, width: t.width);
+    case _BorderKind.vertical:
+      return s.borderVertical(color: t.color, width: t.width);
+    case _BorderKind.horizontal:
+      return s.borderHorizontal(color: t.color, width: t.width);
+  }
+}
+
+/// Applies border token to BoxStyler.
+BoxStyler _applyBorderToBox(BoxStyler s, _BorderToken t) {
+  switch (t.kind) {
+    case _BorderKind.top:
+      return s.borderTop(color: t.color, width: t.width);
+    case _BorderKind.bottom:
+      return s.borderBottom(color: t.color, width: t.width);
+    case _BorderKind.left:
+      return s.borderLeft(color: t.color, width: t.width);
+    case _BorderKind.right:
+      return s.borderRight(color: t.color, width: t.width);
+    case _BorderKind.vertical:
+      return s.borderVertical(color: t.color, width: t.width);
+    case _BorderKind.horizontal:
+      return s.borderHorizontal(color: t.color, width: t.width);
+  }
+}
+
+/// Directional radius variations (8 directions including corners).
+enum _RadiusKind { top, bottom, left, right, topLeft, topRight, bottomLeft, bottomRight }
+
+/// Parsed directional radius token.
+class _RadiusToken {
+  const _RadiusToken(this.kind, this.radius);
+  final _RadiusKind kind;
+  final double radius;
+}
+
+/// Parses directional radius tokens (rounded-t-*, rounded-tl-*, etc.).
+_RadiusToken? _parseRadiusToken(String token, TwConfig config) {
+  final directive = _parseRadiusDirective(config, token);
+  if (directive == null) return null;
+
+  final kind = switch (directive.direction) {
+    't' => _RadiusKind.top,
+    'b' => _RadiusKind.bottom,
+    'l' => _RadiusKind.left,
+    'r' => _RadiusKind.right,
+    'tl' => _RadiusKind.topLeft,
+    'tr' => _RadiusKind.topRight,
+    'bl' => _RadiusKind.bottomLeft,
+    'br' => _RadiusKind.bottomRight,
+    _ => null,
+  };
+  if (kind == null) return null;
+  return _RadiusToken(kind, directive.radius);
+}
+
+/// Applies radius token to FlexBoxStyler.
+FlexBoxStyler _applyRadiusToFlex(FlexBoxStyler s, _RadiusToken t) {
+  switch (t.kind) {
+    case _RadiusKind.top:
+      return s.borderRoundedTop(t.radius);
+    case _RadiusKind.bottom:
+      return s.borderRoundedBottom(t.radius);
+    case _RadiusKind.left:
+      return s.borderRoundedLeft(t.radius);
+    case _RadiusKind.right:
+      return s.borderRoundedRight(t.radius);
+    case _RadiusKind.topLeft:
+      return s.borderRoundedTopLeft(t.radius);
+    case _RadiusKind.topRight:
+      return s.borderRoundedTopRight(t.radius);
+    case _RadiusKind.bottomLeft:
+      return s.borderRoundedBottomLeft(t.radius);
+    case _RadiusKind.bottomRight:
+      return s.borderRoundedBottomRight(t.radius);
+  }
+}
+
+/// Applies radius token to BoxStyler.
+BoxStyler _applyRadiusToBox(BoxStyler s, _RadiusToken t) {
+  switch (t.kind) {
+    case _RadiusKind.top:
+      return s.borderRoundedTop(t.radius);
+    case _RadiusKind.bottom:
+      return s.borderRoundedBottom(t.radius);
+    case _RadiusKind.left:
+      return s.borderRoundedLeft(t.radius);
+    case _RadiusKind.right:
+      return s.borderRoundedRight(t.radius);
+    case _RadiusKind.topLeft:
+      return s.borderRoundedTopLeft(t.radius);
+    case _RadiusKind.topRight:
+      return s.borderRoundedTopRight(t.radius);
+    case _RadiusKind.bottomLeft:
+      return s.borderRoundedBottomLeft(t.radius);
+    case _RadiusKind.bottomRight:
+      return s.borderRoundedBottomRight(t.radius);
+  }
+}
+
 /// Returns true if the token is an animation-related token.
 bool _isAnimationToken(String token) {
   if (_transitionTriggerTokens.contains(token)) return true;
@@ -517,80 +656,6 @@ _BorderDirective? _parseBorderDirective(TwConfig config, String token) {
   return _BorderDirective(direction, color, width);
 }
 
-BoxStyler? _applyDirectionalBorder(
-  BoxStyler styler,
-  TwConfig config,
-  String token,
-) {
-  final directive = _parseBorderDirective(config, token);
-  if (directive == null) {
-    return null;
-  }
-
-  switch (directive.direction) {
-    case 't':
-      return styler.borderTop(color: directive.color, width: directive.width);
-    case 'b':
-      return styler.borderBottom(
-        color: directive.color,
-        width: directive.width,
-      );
-    case 'l':
-      return styler.borderLeft(color: directive.color, width: directive.width);
-    case 'r':
-      return styler.borderRight(color: directive.color, width: directive.width);
-    case 'x':
-      return styler.borderVertical(
-        color: directive.color,
-        width: directive.width,
-      );
-    case 'y':
-      return styler.borderHorizontal(
-        color: directive.color,
-        width: directive.width,
-      );
-    default:
-      return null;
-  }
-}
-
-FlexBoxStyler? _applyFlexDirectionalBorder(
-  FlexBoxStyler styler,
-  TwConfig config,
-  String token,
-) {
-  final directive = _parseBorderDirective(config, token);
-  if (directive == null) {
-    return null;
-  }
-
-  switch (directive.direction) {
-    case 't':
-      return styler.borderTop(color: directive.color, width: directive.width);
-    case 'b':
-      return styler.borderBottom(
-        color: directive.color,
-        width: directive.width,
-      );
-    case 'l':
-      return styler.borderLeft(color: directive.color, width: directive.width);
-    case 'r':
-      return styler.borderRight(color: directive.color, width: directive.width);
-    case 'x':
-      return styler.borderVertical(
-        color: directive.color,
-        width: directive.width,
-      );
-    case 'y':
-      return styler.borderHorizontal(
-        color: directive.color,
-        width: directive.width,
-      );
-    default:
-      return null;
-  }
-}
-
 class _RadiusDirective {
   const _RadiusDirective(this.direction, this.radius);
 
@@ -621,77 +686,13 @@ _RadiusDirective? _parseRadiusDirective(TwConfig config, String token) {
   return _RadiusDirective(key, radius);
 }
 
-BoxStyler? _applyDirectionalRadius(
-  BoxStyler styler,
-  TwConfig config,
-  String token,
-) {
-  final directive = _parseRadiusDirective(config, token);
-  if (directive == null) {
-    return null;
-  }
-
-  switch (directive.direction) {
-    case 't':
-      return styler.borderRoundedTop(directive.radius);
-    case 'b':
-      return styler.borderRoundedBottom(directive.radius);
-    case 'l':
-      return styler.borderRoundedLeft(directive.radius);
-    case 'r':
-      return styler.borderRoundedRight(directive.radius);
-    case 'tl':
-      return styler.borderRoundedTopLeft(directive.radius);
-    case 'tr':
-      return styler.borderRoundedTopRight(directive.radius);
-    case 'bl':
-      return styler.borderRoundedBottomLeft(directive.radius);
-    case 'br':
-      return styler.borderRoundedBottomRight(directive.radius);
-    default:
-      return null;
-  }
-}
-
-FlexBoxStyler? _applyFlexDirectionalRadius(
-  FlexBoxStyler styler,
-  TwConfig config,
-  String token,
-) {
-  final directive = _parseRadiusDirective(config, token);
-  if (directive == null) {
-    return null;
-  }
-
-  switch (directive.direction) {
-    case 't':
-      return styler.borderRoundedTop(directive.radius);
-    case 'b':
-      return styler.borderRoundedBottom(directive.radius);
-    case 'l':
-      return styler.borderRoundedLeft(directive.radius);
-    case 'r':
-      return styler.borderRoundedRight(directive.radius);
-    case 'tl':
-      return styler.borderRoundedTopLeft(directive.radius);
-    case 'tr':
-      return styler.borderRoundedTopRight(directive.radius);
-    case 'bl':
-      return styler.borderRoundedBottomLeft(directive.radius);
-    case 'br':
-      return styler.borderRoundedBottomRight(directive.radius);
-    default:
-      return null;
-  }
-}
-
 /// Parses Tailwind-like class strings into Mix stylers.
 class TwParser {
   TwParser({TwConfig? config, this.onUnsupported})
     : config = config ?? TwConfig.standard();
 
   final TwConfig config;
-  final Warn? onUnsupported;
+  final TokenWarningCallback? onUnsupported;
 
   List<String> listTokens(String classNames) {
     final trimmed = classNames.trim();
@@ -1227,9 +1228,8 @@ class TwParser {
       } else {
         handled = false;
       }
-    } else if (_applyFlexDirectionalBorder(styler, config, token)
-        case final borderResult?) {
-      result = borderResult;
+    } else if (_parseBorderToken(token, config) case final border?) {
+      result = _applyBorderToFlex(result, border);
     } else if (token == 'border') {
       result = styler.borderAll(color: _defaultBorderColor(config), width: 1);
     } else if (token.startsWith('border-')) {
@@ -1250,9 +1250,8 @@ class TwParser {
       }
     } else if (token == 'rounded') {
       result = styler.borderRounded(config.radiusOf(''));
-    } else if (_applyFlexDirectionalRadius(styler, config, token)
-        case final radiusResult?) {
-      result = radiusResult;
+    } else if (_parseRadiusToken(token, config) case final radius?) {
+      result = _applyRadiusToFlex(result, radius);
     } else if (token.startsWith('rounded-')) {
       final suffix = token.substring(8);
       result = styler.borderRounded(config.radiusOf(suffix));
@@ -1328,9 +1327,8 @@ class TwParser {
       } else {
         handled = false;
       }
-    } else if (_applyDirectionalBorder(styler, config, token)
-        case final borderResult?) {
-      result = borderResult;
+    } else if (_parseBorderToken(token, config) case final border?) {
+      result = _applyBorderToBox(result, border);
     } else if (token.startsWith('border-')) {
       final key = token.substring(7);
       final width = config.borderWidthOf(key, fallback: -1);
@@ -1349,9 +1347,8 @@ class TwParser {
       }
     } else if (token == 'rounded') {
       result = styler.borderRounded(config.radiusOf(''));
-    } else if (_applyDirectionalRadius(styler, config, token)
-        case final radiusResult?) {
-      result = radiusResult;
+    } else if (_parseRadiusToken(token, config) case final radius?) {
+      result = _applyRadiusToBox(result, radius);
     } else if (token.startsWith('rounded-')) {
       final suffix = token.substring(8);
       result = styler.borderRounded(config.radiusOf(suffix));
