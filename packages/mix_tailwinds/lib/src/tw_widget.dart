@@ -6,6 +6,135 @@ import 'tw_config.dart';
 import 'tw_parser.dart';
 import 'tw_utils.dart';
 
+// =============================================================================
+// CSS Semantic Box Widgets
+// =============================================================================
+
+/// A Box widget with CSS-style margin semantics.
+///
+/// In CSS, margin is outside the hit-test area - hover/press only triggers
+/// on the border-box (content + padding + border). This widget extracts
+/// margin from the BoxSpec and applies it OUTSIDE the MixInteractionDetector.
+///
+/// Widget tree structure:
+/// ```
+/// Padding(margin)              <- OUTSIDE hover detection
+///   └── StyleBuilder
+///         └── MixInteractionDetector  <- Hover detection here
+///               └── Container(no margin)
+/// ```
+class _CssSemanticBox extends StatelessWidget {
+  const _CssSemanticBox({required this.style, this.child});
+
+  final BoxStyler style;
+  final Widget? child;
+
+  @override
+  Widget build(BuildContext context) {
+    // Step 1: Resolve base margin BEFORE MixInteractionDetector
+    // This ensures margin is outside the hover/press detection area
+    final baseSpec = style.resolve(context).spec;
+    final margin = baseSpec.margin;
+
+    // Step 2: Build inner content with StyleBuilder (handles variants/animations)
+    Widget inner = StyleBuilder<BoxSpec>(
+      style: style,
+      builder: (context, spec) {
+        // Build Container WITHOUT margin - margin is applied externally
+        return Container(
+          alignment: spec.alignment,
+          padding: spec.padding,
+          decoration: spec.decoration,
+          foregroundDecoration: spec.foregroundDecoration,
+          constraints: spec.constraints,
+          transform: spec.transform,
+          transformAlignment: spec.transformAlignment,
+          clipBehavior: spec.clipBehavior ?? Clip.none,
+          // NOTE: margin intentionally omitted - applied externally
+          child: child,
+        );
+      },
+    );
+
+    // Step 3: Apply margin OUTSIDE MixInteractionDetector
+    if (margin != null) {
+      inner = Padding(padding: margin, child: inner);
+    }
+
+    return inner;
+  }
+}
+
+/// A FlexBox widget with CSS-style margin semantics.
+///
+/// See [_CssSemanticBox] for details on CSS margin semantics.
+class _CssSemanticFlexBox extends StatelessWidget {
+  const _CssSemanticFlexBox({required this.style, required this.children});
+
+  final FlexBoxStyler style;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    // Step 1: Resolve base margin BEFORE MixInteractionDetector
+    final baseSpec = style.resolve(context);
+    final margin = baseSpec.spec.box?.spec.margin;
+
+    // Step 2: Build inner content with StyleBuilder (handles variants/animations)
+    Widget inner = StyleBuilder<FlexBoxSpec>(
+      style: style,
+      builder: (context, spec) {
+        // Build Flex widget
+        final flexWidget = Flex(
+          direction: spec.flex?.spec.direction ?? Axis.horizontal,
+          mainAxisAlignment:
+              spec.flex?.spec.mainAxisAlignment ?? MainAxisAlignment.start,
+          mainAxisSize: spec.flex?.spec.mainAxisSize ?? MainAxisSize.max,
+          crossAxisAlignment:
+              spec.flex?.spec.crossAxisAlignment ?? CrossAxisAlignment.center,
+          textDirection: spec.flex?.spec.textDirection,
+          verticalDirection:
+              spec.flex?.spec.verticalDirection ?? VerticalDirection.down,
+          textBaseline: spec.flex?.spec.textBaseline,
+          clipBehavior: spec.flex?.spec.clipBehavior ?? Clip.none,
+          spacing: spec.flex?.spec.spacing ?? 0.0,
+          children: children,
+        );
+
+        // Wrap with box styling if present (but WITHOUT margin)
+        if (spec.box != null) {
+          final boxSpec = spec.box!.spec;
+          return Container(
+            alignment: boxSpec.alignment,
+            padding: boxSpec.padding,
+            decoration: boxSpec.decoration,
+            foregroundDecoration: boxSpec.foregroundDecoration,
+            constraints: boxSpec.constraints,
+            transform: boxSpec.transform,
+            transformAlignment: boxSpec.transformAlignment,
+            clipBehavior: boxSpec.clipBehavior ?? Clip.none,
+            // NOTE: margin intentionally omitted - applied externally
+            child: flexWidget,
+          );
+        }
+
+        return flexWidget;
+      },
+    );
+
+    // Step 3: Apply margin OUTSIDE MixInteractionDetector
+    if (margin != null) {
+      inner = Padding(padding: margin, child: inner);
+    }
+
+    return inner;
+  }
+}
+
+// =============================================================================
+// Public Widgets
+// =============================================================================
+
 class Div extends StatelessWidget {
   const Div({
     super.key,
@@ -137,7 +266,8 @@ Widget _buildResponsiveFlex({
       final crossGap = axis == Axis.horizontal ? gapY : gapX;
       final flexChildren = _applyCrossAxisGap(rawChildren, axis, crossGap);
 
-      Widget current = FlexBox(style: style, children: flexChildren);
+      // Use CSS semantic flex box - margin is outside hover/press detection area
+      Widget current = _CssSemanticFlexBox(style: style, children: flexChildren);
       current = _applyContainerSizingResponsive(
         current,
         tokens,
@@ -161,7 +291,8 @@ Widget _buildResponsiveBox({
   return LayoutBuilder(
     builder: (context, constraints) {
       final width = _effectiveWidth(constraints, context);
-      Widget current = Box(style: style, child: child);
+      // Use CSS semantic box - margin is outside hover/press detection area
+      Widget current = _CssSemanticBox(style: style, child: child);
       current = _applyContainerSizingResponsive(
         current,
         tokens,
