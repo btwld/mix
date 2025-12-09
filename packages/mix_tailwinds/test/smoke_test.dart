@@ -42,7 +42,9 @@ void main() {
       ),
     );
 
-    expect(find.byType(FlexBox), findsNWidgets(2));
+    // CSS semantic widgets use Flex directly instead of FlexBox
+    // Two flex divs: outer with md:flex and inner with flex
+    expect(find.byType(Flex), findsNWidgets(2));
     expect(find.text('Title'), findsOneWidget);
     expect(find.text('Primary'), findsOneWidget);
     expect(find.text('Secondary'), findsOneWidget);
