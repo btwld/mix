@@ -522,29 +522,19 @@ _FlexItemBehavior? _resolveFlexItemBehavior(
       continue;
     }
 
-    _FlexItemBehavior? candidate;
-    switch (info.base) {
-      case 'flex-1':
-        candidate = const _FlexItemBehavior(flex: 1, fit: FlexFit.tight);
-        break;
-      case 'flex-auto':
-        candidate = const _FlexItemBehavior(flex: 1, fit: FlexFit.loose);
-        break;
-      case 'flex-initial':
-        candidate = const _FlexItemBehavior(flex: 0, fit: FlexFit.loose);
-        break;
-      case 'flex-none':
-      case 'flex-shrink-0':
-      case 'shrink-0':
-        // flex-none / shrink-0: maintain intrinsic size (don't grow or fill)
-        candidate = const _FlexItemBehavior(flex: 0, fit: FlexFit.loose);
-        break;
-      case 'flex-shrink':
-      case 'shrink':
-        // Allow shrinking (default behavior)
-        candidate = const _FlexItemBehavior(flex: 0, fit: FlexFit.loose);
-        break;
-    }
+    final candidate = switch (info.base) {
+      'flex-1' => const _FlexItemBehavior(flex: 1, fit: FlexFit.tight),
+      'flex-auto' => const _FlexItemBehavior(flex: 1, fit: FlexFit.loose),
+      'flex-initial' => const _FlexItemBehavior(flex: 0, fit: FlexFit.loose),
+      // flex-none / shrink-0: maintain intrinsic size (don't grow or fill)
+      'flex-none' ||
+      'flex-shrink-0' ||
+      'shrink-0' => const _FlexItemBehavior(flex: 0, fit: FlexFit.loose),
+      // Allow shrinking (default behavior)
+      'flex-shrink' ||
+      'shrink' => const _FlexItemBehavior(flex: 0, fit: FlexFit.loose),
+      _ => null,
+    };
 
     if (candidate != null && info.minWidth >= chosenMin) {
       behavior = candidate;
@@ -631,20 +621,12 @@ _SelfAlignment? _resolveSelfAlignment(
       continue;
     }
 
-    _SelfAlignment? candidate;
-    switch (info.base) {
-      case 'self-start':
-        candidate = _SelfAlignment.start;
-        break;
-      case 'self-center':
-        candidate = _SelfAlignment.center;
-        break;
-      case 'self-end':
-        candidate = _SelfAlignment.end;
-        break;
-      default:
-        candidate = null;
-    }
+    final candidate = switch (info.base) {
+      'self-start' => _SelfAlignment.start,
+      'self-center' => _SelfAlignment.center,
+      'self-end' => _SelfAlignment.end,
+      _ => null,
+    };
 
     if (candidate != null && info.minWidth >= chosenMin) {
       alignment = candidate;
@@ -656,23 +638,17 @@ _SelfAlignment? _resolveSelfAlignment(
 }
 
 Widget _applySelfAlignment(Widget child, _SelfAlignment alignment, Axis axis) {
-  AlignmentGeometry resolved;
-  switch (alignment) {
-    case _SelfAlignment.start:
-      resolved = axis == Axis.horizontal
+  final resolved = switch (alignment) {
+    _SelfAlignment.start =>
+      axis == Axis.horizontal
           ? AlignmentDirectional.topCenter
-          : AlignmentDirectional.centerStart;
-      break;
-    case _SelfAlignment.center:
-      resolved = AlignmentDirectional.center;
-      break;
-    case _SelfAlignment.end:
-      resolved = axis == Axis.horizontal
+          : AlignmentDirectional.centerStart,
+    _SelfAlignment.center => AlignmentDirectional.center,
+    _SelfAlignment.end =>
+      axis == Axis.horizontal
           ? AlignmentDirectional.bottomCenter
-          : AlignmentDirectional.centerEnd;
-      break;
-  }
-
+          : AlignmentDirectional.centerEnd,
+  };
   return Align(alignment: resolved, child: child);
 }
 
