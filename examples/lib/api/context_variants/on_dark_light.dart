@@ -38,7 +38,7 @@ class _ExampleState extends State<Example> {
         .color(Colors.grey.shade800)
         .size(28)
         .icon(Icons.dark_mode)
-        .animate(AnimationConfig.easeInOut(200.ms))
+        .animate(.easeInOut(200.ms))
         .onDark(IconStyler().icon(Icons.light_mode).color(Colors.yellow));
 
     return MediaQuery(

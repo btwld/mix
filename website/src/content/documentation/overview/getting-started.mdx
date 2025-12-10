@@ -3,18 +3,36 @@ title: Getting Started
 og_image: getting-started-og.png
 ---
 
-import { Steps } from "nextra/components";
+import { Steps, Callout } from "nextra/components";
 
 # Getting Started
+
+## Prerequisites
+
+Before installing Mix 2.0, ensure you have:
+
+- **Dart SDK**: 3.10.0 or higher (required for the fluent Styler API)
+- **Flutter**: Latest stable version recommended
+
+<Callout type="info">
+  Mix 2.0 uses Dart's enhanced method chaining capabilities introduced in Dart 3.10. Ensure your project's `pubspec.yaml` specifies the correct SDK constraint: `sdk: '>=3.10.0 <4.0.0'`
+</Callout>
 
 <Steps>
 
 ### Installation
 
-Run this in your Flutter project:
+Install the current 2.0 RC (pre-release):
 
 ```bash
-flutter pub add mix
+flutter pub add mix --pre-release
+```
+
+Or pin explicitly in `pubspec.yaml`:
+
+```yaml
+dependencies:
+  mix: ^2.0.0-rc.0
 ```
 
 Import it where you use it:

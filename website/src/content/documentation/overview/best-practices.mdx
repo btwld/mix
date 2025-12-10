@@ -3,10 +3,6 @@ import { Callout,FileTree } from 'nextra/components';
 
 # Best Practices
 
-<Callout type="error">
-  This documentation is currently under development and may contain outdated content.
-</Callout>
-
 As you start to build your app with Mix, you'll want to follow some best practices to ensure your code aligns with the framework's conventions.
 
 <Callout type="info">
@@ -38,7 +34,7 @@ A well-organized file structure is crucial for maintaining a clean and scalable 
 
 ## Widget Structure
 
-It's recommended to use `StyledWidgets` for component creation. These widgets are key in structuring and styling your component. For example, the structure of your Button might look like this:
+It's recommended to use Mix's styled widgets for component creation. These widgets are key in structuring and styling your component. For example, the structure of your Button might look like this:
 
 ```dart
 class CustomButton extends StatelessWidget {
@@ -53,17 +49,17 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PressableBox(
+    return Pressable(
       onPress: onPress,
-      child: StyledText(
-        title,
+      child: Box(
+        child: StyledText(title),
       ),
     );
   }
 }
 ```
 
-This example utilizes two StyledWidgets: `PressableBox` and `StyledText`. Explore the full list of StyledWidgets [here](../widgets/introduction.mdx).
+This example utilizes Mix's styled widgets: `Pressable`, `Box`, and `StyledText`. Explore the full list of styled widgets [here](/documentation/widgets/stylewidgets).
 
 ## Defining Variants
 
@@ -111,10 +107,10 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PressableBox(
+    return Pressable(
       onPress: onPress,
-      child: StyledText(
-        title,
+      child: Box(
+        child: StyledText(title),
       ),
     );
   }
@@ -132,47 +128,47 @@ class CustomButtonStyle {
   final CustomButtonType type;
   final CustomButtonSize size;
 
-  Style container() => Style(
-        borderRadius(8),
-        CustomButtonSize.medium(
-          $box.padding.horizontal(16),
-          $box.padding.vertical(8),
-        ),
-        CustomButtonSize.large(
-          $box.padding.horizontal(24),
-          $box.padding.vertical(16),
-        ),
-        CustomButtonType.primary(
-          $box.color.black(),
-        ),
-        CustomButtonType.destructive(
-          $box.color.redAccent(),
-        ),
-        CustomButtonType.link(
-          $box.color.transparent(),
-        ),
-      ).applyVariants([type, size]);
+  BoxStyler container() {
+    var style = BoxStyler().borderRounded(8);
 
-  Style label() => Style(
-        $text.style.color.white(),
-        $text.style.bold(),
-        CustomButtonSize.medium(
-          $text.style.fontSize(14),
-        ),
-        CustomButtonSize.large(
-          $text.style.fontSize(18),
-        ),
-        CustomButtonType.primary(
-          $text.style.color.white(),
-        ),
-        CustomButtonType.destructive(
-          $text.style.color.white(),
-        ),
-        CustomButtonType.link(
-          $text.style.color.black(),
-          $text.style.decoration.underline(),
-        ),
-      ).applyVariants([type, size]);
+    // Apply size
+    style = switch (size) {
+      CustomButtonSize.medium => style.paddingX(16).paddingY(8),
+      CustomButtonSize.large => style.paddingX(24).paddingY(16),
+    };
+
+    // Apply type
+    style = switch (type) {
+      CustomButtonType.primary => style.color(Colors.black),
+      CustomButtonType.destructive => style.color(Colors.redAccent),
+      CustomButtonType.link => style.color(Colors.transparent),
+    };
+
+    return style;
+  }
+
+  TextStyler label() {
+    var style = TextStyler()
+        .color(Colors.white)
+        .fontWeight(FontWeight.bold);
+
+    // Apply size
+    style = switch (size) {
+      CustomButtonSize.medium => style.fontSize(14),
+      CustomButtonSize.large => style.fontSize(18),
+    };
+
+    // Apply type
+    style = switch (type) {
+      CustomButtonType.primary => style.color(Colors.white),
+      CustomButtonType.destructive => style.color(Colors.white),
+      CustomButtonType.link => style
+          .color(Colors.black)
+          .decoration(TextDecoration.underline),
+    };
+
+    return style;
+  }
 }
 ```
 
@@ -196,12 +192,14 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = CustomButtonStyle(type, size);
-    return PressableBox(
+    return Pressable(
       onPress: onPress,
-      style: style.container(),
-      child: StyledText(
-        title,
-        style: style.label(),
+      child: Box(
+        style: style.container(),
+        child: StyledText(
+          title,
+          style: style.label(),
+        ),
       ),
     );
   }

@@ -1,22 +1,25 @@
 
 # Dynamic Styling
 
-Traditionally, making your widgets react to different states—like being pressed, hovered, disabled, or adapting to dark mode—means scattering conditional logic and style changes throughout your widget tree. This quickly becomes verbose and hard to maintain, as you end up writing a lot of boilerplate just to update colors, borders, or other properties based on the widget's state or context. Mix streamlines this process by letting you define context-aware variants in a single place, so your styles automatically adapt to any situation without cluttering your UI code.
+Mix lets you define state-aware styles in one place instead of scattering conditional logic throughout your widget tree. Styles automatically adapt to hover, press, disabled, dark mode, and other contexts.
 
 ## Understanding Variants
 
 Let's look at a simple example: suppose you want a `Box` to change its color when hovered. With Mix, you can achieve this by simply adding `.onHovered(...)` to your style definition.
 
 ```dart
+import 'package:flutter/material.dart';
+import 'package:mix/mix.dart';
+
 final style = BoxStyler()
-  .color(Colors.red)
-  .height(100)
-  .width(100)
-  .borderRounded(10)
-  .onHovered(BoxStyler().color(Colors.blue));
+    .color(Colors.red)
+    .height(100)
+    .width(100)
+    .borderRounded(10)
+    .onHovered(BoxStyler().color(Colors.blue));
 ```
 
-Note that wasn't necessary to define the height, width, and border radius. Mix will automatically merge the style inside the `.onHovered(...)` method with the previous style. Making your code less verbose, much easier to read and maintain.
+Mix automatically merges the hovered style with the base style—you only define what changes.
 
 ### Composing Styles with Variants
 
@@ -76,10 +79,6 @@ Below is a list of all built-in variant methods available on stylers (e.g., `Box
 | `onPressed(style)` | Applies style when the widget is pressed |
 | `onFocused(style)` | Applies style when the widget is focused |
 | `onDisabled(style)` | Applies style when the widget is disabled |
-| `onSelected(style)` | Applies style when the widget is selected |
-| `onError(style)` | Applies style when the widget is in an error state |
-| `onScrolledUnder(style)` | Applies style when the widget is scrolled under |
-| `onDragged(style)` | Applies style when the widget is being dragged |
 | `onEnabled(style)` | Applies style when the widget is enabled (not disabled) |
 | `onDark(style)` | Applies style in dark mode |
 | `onLight(style)` | Applies style in light mode |

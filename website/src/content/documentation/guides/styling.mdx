@@ -16,11 +16,14 @@ By using stylers, you separate presentation logic from your widget tree, making 
 Mix provides a chainable builder API that mirrors Flutter's naming conventions and behavior, making styles predictable and easy to read for Flutter developers:
 
 ```dart
+import 'package:flutter/material.dart';
+import 'package:mix/mix.dart';
+
 final style = BoxStyler()
-  .width(240)
-  .height(100)
-  .color(Colors.blue)
-  .borderRounded(12);
+    .width(240)
+    .height(100)
+    .color(Colors.blue)
+    .borderRounded(12);
 ```
 
 This familiar approach reduces the learning curve and makes your styling code feel natural within the Flutter ecosystem.
@@ -34,18 +37,11 @@ final base = BoxStyler()
     .paddingX(16)
     .paddingY(8)
     .borderRounded(8)
-    .color(Colors.black)
-    .wrapDefaultTextStyle(
-      TextStyleMix()
-        .color(Colors.deepOrange)
-        .fontWeight(FontWeight.bold),
-    );
+    .color(Colors.black);
 
 final solid = base.color(Colors.blue);
 
-final soft = base
-    .color(Colors.blue.shade100)
-    .wrapDefaultTextStyle(TextStyleMix().color(Colors.blue));
+final soft = base.color(Colors.blue.shade100);
 ```
 
 **Order Matters**: The sequence in which you chain styling attributes directly affects the final result. Attributes are merged in order, so later attributes will override earlier ones when there are conflicts.

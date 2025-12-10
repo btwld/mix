@@ -13,18 +13,18 @@ final style = BoxStyler()
  .height(100)
  .color(Colors.blue)
  .borderRounded(12)
- .padding(16);
+ .paddingAll(16);
 
 Box(style: style, child: Text('Hello Mix'))
 ```
 
 ## Constructor
 
-| Prop  | Type         | Required / Default Value                |
-|-------|--------------|------------------------------------------|
-| `style` | `Style` | `const BoxStyler.create()` |
-| `styleSpec` | `StyleSpec?` | `Optional` |
-| `child` | `Widget?` | `Optional` |
+| Prop | Type | Required / Default Value |
+|------|------|--------------------------|
+| `style` | `BoxStyler?` | Optional, defaults to `const BoxStyler.create()` |
+| `styleSpec` | `StyleSpec<BoxSpec>?` | Optional (resolved style spec) |
+| `child` | `Widget?` | Optional |
 
 ## Style API Reference
 
@@ -219,4 +219,3 @@ Box(style: style, child: Text('Hello Mix'))
 | `onFocused` | Creates a variant for focused state |
 | `onDisabled` | Creates a variant for disabled state |
 | `onEnabled` | Creates a variant for enabled state (opposite of disabled) |
-

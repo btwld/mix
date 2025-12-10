@@ -22,15 +22,15 @@ StyledImage(
 
 ## Constructor
 
-| Prop  | Type         | Required / Default Value                |
-|-------|--------------|------------------------------------------|
-| `style` | `Style` | `const ImageStyler.create()` |
-| `styleSpec` | `StyleSpec?` | `Optional` |
-| `frameBuilder` | `ImageFrameBuilder?` | `Optional` |
-| `loadingBuilder` | `ImageLoadingBuilder?` | `Optional` |
-| `errorBuilder` | `ImageErrorWidgetBuilder?` | `Optional` |
-| `image` | `ImageProvider<Object>?` | `Optional` |
-| `opacity` | `Animation<double>?` | `Optional` |
+| Prop | Type | Required / Default Value |
+|------|------|--------------------------|
+| `style` | `ImageStyler?` | Optional, defaults to `const ImageStyler.create()` |
+| `styleSpec` | `StyleSpec<ImageSpec>?` | Optional |
+| `frameBuilder` | `ImageFrameBuilder?` | Optional |
+| `loadingBuilder` | `ImageLoadingBuilder?` | Optional |
+| `errorBuilder` | `ImageErrorWidgetBuilder?` | Optional |
+| `image` | `ImageProvider<Object>?` | Optional |
+| `opacity` | `Animation<double>?` | Optional |
 
 ## Style API Reference
 
@@ -93,4 +93,3 @@ StyledImage(
 | `onFocused` | Creates a variant for focused state |
 | `onDisabled` | Creates a variant for disabled state |
 | `onEnabled` | Creates a variant for enabled state (opposite of disabled) |
-

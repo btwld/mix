@@ -1,7 +1,7 @@
 
 # Building a Design System Widget
 
-When creating a design system in Flutter, building reusable components that maintain consistency and adhere to predefined design principles is crucial. In this guide, we'll explore the process of creating a button component for a design system using Mix's manual styling API, which gives you full control over how styles are defined, composed, and resolved.
+This guide walks through creating a design system button with Mix, demonstrating Specs, Stylers, variants, and state handling.
 
 ![Button Example](./images/button-example.png)
 
@@ -9,73 +9,31 @@ When creating a design system in Flutter, building reusable components that main
 
 ### Button Variants
 
-A design system button should support multiple variants to cater to different use cases and visual styles. Common variants include:
-
 ![Button Variants](./images/button-variants.png)
 
-- **Filled**: A button with a solid background color.
-- **Outline**: A button with a transparent background and a visible border.
-- **Elevated**: A button with a shadow effect to give it a raised appearance.
-- **Link**: A button that looks like a clickable link, usually without a background or border.
+- **Filled**: Solid background color
+- **Outline**: Transparent background with visible border
+- **Elevated**: Shadow effect for raised appearance
+- **Link**: Looks like a clickable link, no background
 
-Each variant should have a distinct visual style while maintaining consistency with the overall design system.
-
-### States of a Button
-
-To provide visual feedback to the user, each button variant should have well-defined states:
+### Button States
 
 ![Button States](./images/button-states.png)
 
-- **Normal**: The default state of the button.
-- **Hover**: The state when the user hovers over the button or focuses on it using keyboard navigation.
-- **Pressed**: The state when the button is actively being pressed.
-- **Disabled**: The state when the button is non-interactive and cannot be clicked.
-
-Implementing these states ensures that users have a clear understanding of the button's interactivity and current state.
-
-### Shared Visual Attributes
-
-While each button variant may have distinct visual characteristics, they should share common properties to maintain consistency across the design system. Some shared properties include:
-
-- **Border Radius**: The roundness of the button's corners.
-- **Color Palette**: The colors used for the button's background, text, and border should be derived from the design system's color palette.
-- **Typography**: The font family, size, and weight used for the button's text should align with the design system's typography guidelines.
-- **Padding and Spacing**: The internal padding and spacing between the button's text and its edges should be consistent across variants.
-
-By sharing these properties, the button component ensures a cohesive and consistent appearance throughout the application.
-
-## Setup Mix
-
-Add the `mix` package to your Flutter project:
-
-```bash
-flutter pub add mix
-```
-
-After running this command, your `pubspec.yaml` file should look similar to this:
-
-```yaml
-dependencies:
-  flutter:
-    sdk: flutter
-  mix: ^1.0.0
-```
+- **Normal**: Default state
+- **Hover**: Mouse over or keyboard focus
+- **Pressed**: Actively being pressed
+- **Disabled**: Non-interactive
 
 ## Button Structure
 
-Next, let's implement an example of a design system button.
-
-### Structure Overview
-
-Here is a simple example structure for a button.
-
-- Container: Wraps the entire button and provides box decoration (border radius, background color, spacing).
-- Icon (optional): Represents an icon or visual embellishment for the button.
-- Label: Displays the button's text content.
+- **Container**: Box decoration (border radius, background color, spacing)
+- **Icon** (optional): Visual embellishment
+- **Label**: Text content
 
 ### Create a Button Spec
 
-A Spec, which is short for Specification, defines the resolved visual properties and attributes that a Button can have. Our `ButtonSpec` will contain specs for the container (FlexBox), icon, and label.
+A `Spec` defines resolved visual properties. `ButtonSpec` contains specs for container, icon, and label:
 
 ```dart
 import 'package:flutter/material.dart';
@@ -115,16 +73,9 @@ class ButtonSpec extends Spec<ButtonSpec> {
 }
 ```
 
-The `ButtonSpec` class:
-- Extends `Spec<ButtonSpec>` to integrate with Mix's styling system
-- Contains `StyleSpec` properties for each visual component
-- Implements `copyWith` for immutable updates
-- Implements `lerp` for smooth animations between specs
-- Overrides `props` for equality comparison
-
 ### Create a Button Styler
 
-The `ButtonStyler` is the API class that provides a fluent interface for styling your button. It extends `Style<ButtonSpec>` and allows you to compose styles in a type-safe manner.
+`ButtonStyler` provides a fluent interface for styling. It extends `Style<ButtonSpec>` and uses `WidgetStateVariantMixin` for state support:
 
 ```dart
 class ButtonStyler extends Style<ButtonSpec>
@@ -224,16 +175,9 @@ class ButtonStyler extends Style<ButtonSpec>
 }
 ```
 
-The `ButtonStyler` provides:
-- **Component methods** (`container`, `icon`, `label`) for direct component styling
-- **Convenience methods** (`backgroundColor`, `textColor`, etc.) for common operations
-- **Merging capabilities** to compose styles together
-- **Resolution logic** to convert styles into specs
-- **Widget state support** via `WidgetStateVariantMixin` for states like pressed, disabled, hover
-
 ### Define Variants
 
-We'll use an enum to define our button variants. Each variant will have its own style getter:
+Use an enum to define button variants with their styles:
 
 ```dart
 enum ButtonVariant {
@@ -287,20 +231,9 @@ enum ButtonVariant {
 }
 ```
 
-This approach makes it easy to associate each variant with its specific styling while keeping the code organized and type-safe.
-
 ## Create the Button Widget
 
-Let's define a `CustomButton` class that extends `StatelessWidget`. We will use the following properties:
-
-- `label`: The button text (required).
-- `disabled`: If the button is disabled (optional, default is `false`).
-- `icon`: An optional icon next to the label (optional).
-- `variant`: The button's visual style (optional, default is `ButtonVariant.filled`).
-- `onPressed`: Callback function when pressed (required).
-- `style`: Additional custom styling (optional).
-
-With these properties in mind, here's the code for the `CustomButton` class:
+`CustomButton` uses `Pressable` for interaction states and `StyleBuilder` to resolve styles:
 
 ```dart
 class CustomButton extends StatelessWidget {
@@ -343,22 +276,9 @@ class CustomButton extends StatelessWidget {
 }
 ```
 
-Here's a breakdown of the `CustomButton` class implementation:
-
-1. We define the `CustomButton` class with its constructor, which takes the required and optional properties we discussed earlier.
-2. In the `build` method, we start by wrapping the button content with a `Pressable` widget. This widget is responsible for providing the button's interactive states, such as hover, pressed, and disabled. We set the `onPress` property to `onPressed` if the button is not disabled; otherwise, we set it to `null`. The `enabled` property is set to the opposite of `disabled`.
-3. Inside the `Pressable`, we use a `StyleBuilder` widget. This widget resolves the `ButtonStyler` into a `ButtonSpec` and provides it to the builder function. The builder receives both `context` and the resolved `spec`.
-4. Within the builder function, we use the resolved `spec` to access our styled components:
-   - `FlexBox`: The container widget that will hold our button's content. We pass `spec.container` to its `styleSpec` parameter.
-   - `StyledIcon`: If an icon is provided, we display it using `StyledIcon` with `spec.icon` for styling.
-   - `StyledText`: If a label is provided, we display it using `StyledText` with `spec.label` for styling.
-
 ## Styling Your Button
 
-Now let's create a function that defines the complete button styling. This function will:
-1. Define the base styles shared across all variants
-2. Merge the variant-specific style
-3. Add widget state styling (pressed, disabled)
+The `buttonStyle` function defines base styles, merges variant styles, and adds state handling:
 
 ```dart
 ButtonStyler buttonStyle(ButtonStyler? style, ButtonVariant? variant) {
@@ -401,20 +321,9 @@ ButtonStyler buttonStyle(ButtonStyler? style, ButtonVariant? variant) {
 }
 ```
 
-Here's what's happening:
-- **Base Container**: We define the base container with border radius, padding (using `.paddingX()` and `.paddingY()` for horizontal/vertical padding), spacing between children, and alignment properties.
-- **Label Style**: We set up the text styling with font size and weight using `TextStyler` and `TextStyleMix`.
-- **Icon Style**: We define the icon size.
-- **Variant Merge**: We merge the variant's style (from the enum we created earlier) using `.merge(variant?.style)`.
-- **Pressed State**: When pressed, we scale the button down to 0.9 using `.onPressed()` which leverages the `WidgetStateVariantMixin`.
-- **Disabled State**: When disabled, we change the colors to grey using `.onDisabled()`.
-- **Custom Style Override**: Finally, we merge any custom style passed to the button with `.merge(style)`.
-
-The `buttonStyle` function is already being called in our `CustomButton` widget's `StyleBuilder`. The function combines all the styling logic and is passed to the `StyleBuilder` which then resolves it into a `ButtonSpec` for rendering.
-
 ### Button Variant Widgets
 
-If you don't want to pass the variant manually every time you use it, you can go ahead and create a new widget for each variant like this.
+Create convenience widgets for each variant:
 
 ```dart
 final class FilledButton extends CustomButton {
@@ -545,26 +454,11 @@ class ButtonExampleScreen extends StatelessWidget {
 
 ## Summary
 
-Congratulations! You've built a complete, production-ready button component for a design system using Mix. Here's what we've accomplished:
+This tutorial covered:
 
-### Key Components
+- **ButtonSpec**: Resolved visual properties with animation support
+- **ButtonStyler**: Fluent API with state handling via `WidgetStateVariantMixin`
+- **ButtonVariant**: Enum associating variants with styles
+- **CustomButton**: Widget combining `Pressable` and `StyleBuilder`
 
-1. **ButtonSpec**: Defines the resolved visual properties (container, icon, label) and implements interpolation for smooth animations.
-
-2. **ButtonStyler**: Provides a fluent, type-safe API for styling with:
-   - Component methods for direct styling
-   - Convenience methods for common operations
-   - Built-in support for widget states (pressed, disabled, hover)
-
-3. **ButtonVariant**: An enum that associates each button variant (filled, outlined, elevated, link) with its specific styling.
-
-4. **CustomButton**: A reusable widget that combines all the pieces using `Pressable` for state management and `StyleBuilder` for style resolution.
-
-### Key Concepts
-
-- **Style Composition**: Using `.merge()` to combine multiple styles together, allowing for easy style overrides and extensions.
-- **Widget State Management**: Using `WidgetStateVariantMixin` methods like `.onPressed()` and `.onDisabled()` to define state-specific styling.
-- **Type Safety**: The entire styling system is strongly typed, catching errors at compile time.
-- **Separation of Concerns**: Styles are defined separately from the widget implementation, making them easier to maintain and test.
-
-This pattern can be extended to create other design system components like cards, inputs, dialogs, and more. The manual approach gives you complete control over the styling API while maintaining consistency and composability.
+This pattern extends to other components: cards, inputs, dialogs, etc.

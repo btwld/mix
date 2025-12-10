@@ -59,7 +59,7 @@ class _ScaleAnimationState extends State<ScaleAnimation> {
         .width(100)
         .borderRounded(10)
         .scale(appear ? 1 : 0.1) // state-based
-        .animate(AnimationConfig.easeInOut(1.s));
+        .animate(.easeInOut(1.s));
 
     return Box(style: style);
   }
@@ -79,7 +79,7 @@ class HoverAnimation extends StatelessWidget {
         .borderRounded(10)
         .scale(1)
         .onHovered(BoxStyler().color(Colors.blue).scale(1.5))
-        .animate(AnimationConfig.spring(800.ms));
+        .animate(.spring(800.ms));
 
     return Box(style: style);
   }
