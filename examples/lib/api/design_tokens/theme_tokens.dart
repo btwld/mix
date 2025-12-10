@@ -59,7 +59,7 @@ class _Example extends StatelessWidget {
           'Hello, World!',
           style: TextStyler()
               .color($primaryColor())
-              .wrap(.padding(.all($spacing()))),
+              .wrap(.new().padding(.all($spacing()))),
         ),
       ),
     );
