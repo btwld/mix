@@ -937,7 +937,7 @@ void main() {
       final helper = ParserTestHelper(customConfig);
 
       helper.parser.parseBox('scale-200');
-      expect(helper.unsupported, contains('scale-200'));
+      helper.expectNoWarnings();
     });
   });
 }

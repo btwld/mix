@@ -4,9 +4,32 @@ import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
 import 'tw_config.dart';
+import 'tw_prefix.dart';
 import 'tw_utils.dart';
 
 typedef TokenWarningCallback = void Function(String token);
+
+/// Represents a token split into prefix chain and base segment.
+typedef ParsedToken = ({
+  String raw,
+  List<String> prefixes,
+  String base,
+});
+
+ParsedToken extractToken(String token) {
+  final colonIndex = token.lastIndexOf(':');
+  if (colonIndex <= 0) {
+    return (raw: token, prefixes: const [], base: token);
+  }
+
+  final prefixPart = token.substring(0, colonIndex);
+  final base = token.substring(colonIndex + 1);
+  return (
+    raw: token,
+    prefixes: prefixPart.split(':'),
+    base: base,
+  );
+}
 
 /// Extension to provide convenience method for wrapping default text styles.
 extension BoxStylerTextStyleExtension on BoxStyler {
@@ -41,59 +64,6 @@ const Set<String> _transitionTriggerTokens = {
   'transition-opacity',
   'transition-shadow',
   'transition-transform',
-};
-
-/// Valid Tailwind duration keys (matches TwConfig._standard.durations).
-const Set<String> _validDurationKeys = {
-  '0',
-  '75',
-  '100',
-  '150',
-  '200',
-  '300',
-  '500',
-  '700',
-  '1000',
-};
-
-/// Valid Tailwind delay keys (matches TwConfig._standard.delays).
-const Set<String> _validDelayKeys = {
-  '0',
-  '75',
-  '100',
-  '150',
-  '200',
-  '300',
-  '500',
-  '700',
-  '1000',
-};
-
-/// Valid Tailwind scale keys (matches TwConfig._standard.scales).
-const Set<String> _validScaleKeys = {
-  '0',
-  '50',
-  '75',
-  '90',
-  '95',
-  '100',
-  '105',
-  '110',
-  '125',
-  '150',
-};
-
-/// Valid Tailwind rotation keys (matches TwConfig._standard.rotations).
-const Set<String> _validRotationKeys = {
-  '0',
-  '1',
-  '2',
-  '3',
-  '6',
-  '12',
-  '45',
-  '90',
-  '180',
 };
 
 /// Accumulates individual transform components before building Matrix4.
@@ -239,88 +209,88 @@ class _SpacingToken {
 
 /// Parses padding/margin tokens, returns null if not a spacing token.
 _SpacingToken? _parseSpacingToken(String token, TwConfig config) {
-  if (token.startsWith('px-')) {
+  if (token.startsWith(TwPrefix.paddingX)) {
     return _SpacingToken(
       _SpacingKind.paddingX,
-      config.spaceOf(token.substring(3)),
+      config.spaceOf(token.substring(TwPrefix.paddingX.length)),
     );
   }
-  if (token.startsWith('py-')) {
+  if (token.startsWith(TwPrefix.paddingY)) {
     return _SpacingToken(
       _SpacingKind.paddingY,
-      config.spaceOf(token.substring(3)),
+      config.spaceOf(token.substring(TwPrefix.paddingY.length)),
     );
   }
-  if (token.startsWith('pt-')) {
+  if (token.startsWith(TwPrefix.paddingTop)) {
     return _SpacingToken(
       _SpacingKind.paddingTop,
-      config.spaceOf(token.substring(3)),
+      config.spaceOf(token.substring(TwPrefix.paddingTop.length)),
     );
   }
-  if (token.startsWith('pr-')) {
+  if (token.startsWith(TwPrefix.paddingRight)) {
     return _SpacingToken(
       _SpacingKind.paddingRight,
-      config.spaceOf(token.substring(3)),
+      config.spaceOf(token.substring(TwPrefix.paddingRight.length)),
     );
   }
-  if (token.startsWith('pb-')) {
+  if (token.startsWith(TwPrefix.paddingBottom)) {
     return _SpacingToken(
       _SpacingKind.paddingBottom,
-      config.spaceOf(token.substring(3)),
+      config.spaceOf(token.substring(TwPrefix.paddingBottom.length)),
     );
   }
-  if (token.startsWith('pl-')) {
+  if (token.startsWith(TwPrefix.paddingLeft)) {
     return _SpacingToken(
       _SpacingKind.paddingLeft,
-      config.spaceOf(token.substring(3)),
+      config.spaceOf(token.substring(TwPrefix.paddingLeft.length)),
     );
   }
-  if (token.startsWith('p-')) {
+  if (token.startsWith(TwPrefix.padding)) {
     return _SpacingToken(
       _SpacingKind.paddingAll,
-      config.spaceOf(token.substring(2)),
+      config.spaceOf(token.substring(TwPrefix.padding.length)),
     );
   }
-  if (token.startsWith('mx-')) {
+  if (token.startsWith(TwPrefix.marginX)) {
     return _SpacingToken(
       _SpacingKind.marginX,
-      config.spaceOf(token.substring(3)),
+      config.spaceOf(token.substring(TwPrefix.marginX.length)),
     );
   }
-  if (token.startsWith('my-')) {
+  if (token.startsWith(TwPrefix.marginY)) {
     return _SpacingToken(
       _SpacingKind.marginY,
-      config.spaceOf(token.substring(3)),
+      config.spaceOf(token.substring(TwPrefix.marginY.length)),
     );
   }
-  if (token.startsWith('mt-')) {
+  if (token.startsWith(TwPrefix.marginTop)) {
     return _SpacingToken(
       _SpacingKind.marginTop,
-      config.spaceOf(token.substring(3)),
+      config.spaceOf(token.substring(TwPrefix.marginTop.length)),
     );
   }
-  if (token.startsWith('mr-')) {
+  if (token.startsWith(TwPrefix.marginRight)) {
     return _SpacingToken(
       _SpacingKind.marginRight,
-      config.spaceOf(token.substring(3)),
+      config.spaceOf(token.substring(TwPrefix.marginRight.length)),
     );
   }
-  if (token.startsWith('mb-')) {
+  if (token.startsWith(TwPrefix.marginBottom)) {
     return _SpacingToken(
       _SpacingKind.marginBottom,
-      config.spaceOf(token.substring(3)),
+      config.spaceOf(token.substring(TwPrefix.marginBottom.length)),
     );
   }
-  if (token.startsWith('ml-')) {
+  if (token.startsWith(TwPrefix.marginLeft)) {
     return _SpacingToken(
       _SpacingKind.marginLeft,
-      config.spaceOf(token.substring(3)),
+      config.spaceOf(token.substring(TwPrefix.marginLeft.length)),
     );
   }
-  if (token.startsWith('m-')) {
+  if (token.startsWith(TwPrefix.margin)) {
     return _SpacingToken(
       _SpacingKind.marginAll,
-      config.spaceOf(token.substring(2)),
+      config.spaceOf(token.substring(TwPrefix.margin.length)),
     );
   }
   return null;
@@ -428,38 +398,42 @@ BoxStyler _applyRadiusToBox(BoxStyler s, _RadiusToken t) => switch (t.kind) {
 };
 
 /// Returns true if the token is an animation-related token.
-bool _isAnimationToken(String token) {
+bool _isAnimationToken(String token, TwConfig config) {
   if (_transitionTriggerTokens.contains(token)) return true;
   if (token == 'transition-none') return true;
   if (_easeTokens.containsKey(token)) return true;
 
-  // Only match valid Tailwind duration/delay values
-  if (token.startsWith('duration-')) {
-    return _validDurationKeys.contains(token.substring(9));
+  if (token.startsWith(TwPrefix.duration)) {
+    final key = token.substring(TwPrefix.duration.length);
+    return config.durations.containsKey(key);
   }
-  if (token.startsWith('delay-')) {
-    return _validDelayKeys.contains(token.substring(6));
+  if (token.startsWith(TwPrefix.delay)) {
+    final key = token.substring(TwPrefix.delay.length);
+    return config.delays.containsKey(key);
   }
   return false;
 }
 
 /// Returns true if the token is a valid transform-related token.
 /// Validates the value portion against known valid keys.
-bool _isTransformToken(String token) {
-  if (token.startsWith('scale-')) {
-    return _validScaleKeys.contains(token.substring(6));
+bool _isTransformToken(String token, TwConfig config) {
+  if (token.startsWith(TwPrefix.scale)) {
+    final key = token.substring(TwPrefix.scale.length);
+    return config.scales.containsKey(key);
   }
-  if (token.startsWith('-rotate-')) {
-    return _validRotationKeys.contains(token.substring(8));
+  if (token.startsWith(TwPrefix.rotateNeg)) {
+    final key = token.substring(TwPrefix.rotateNeg.length);
+    return config.rotations.containsKey(key);
   }
-  if (token.startsWith('rotate-')) {
-    return _validRotationKeys.contains(token.substring(7));
+  if (token.startsWith(TwPrefix.rotate)) {
+    final key = token.substring(TwPrefix.rotate.length);
+    return config.rotations.containsKey(key);
   }
   // Translate tokens use spacing scale - allow any spacing value (validated elsewhere)
-  if (token.startsWith('translate-x-')) return true;
-  if (token.startsWith('translate-y-')) return true;
-  if (token.startsWith('-translate-x-')) return true;
-  if (token.startsWith('-translate-y-')) return true;
+  if (token.startsWith(TwPrefix.translateX)) return true;
+  if (token.startsWith(TwPrefix.translateY)) return true;
+  if (token.startsWith(TwPrefix.translateXNeg)) return true;
+  if (token.startsWith(TwPrefix.translateYNeg)) return true;
   return false;
 }
 
@@ -630,11 +604,11 @@ class _BorderDirective {
 }
 
 _BorderDirective? _parseBorderDirective(TwConfig config, String token) {
-  if (!token.startsWith('border-')) {
+  if (!token.startsWith(TwPrefix.border)) {
     return null;
   }
 
-  final body = token.substring(7);
+  final body = token.substring(TwPrefix.border.length);
   final dashIndex = body.indexOf('-');
   final direction = dashIndex == -1 ? body : body.substring(0, dashIndex);
 
@@ -678,11 +652,11 @@ class _RadiusDirective {
 }
 
 _RadiusDirective? _parseRadiusDirective(TwConfig config, String token) {
-  if (!token.startsWith('rounded-')) {
+  if (!token.startsWith(TwPrefix.rounded)) {
     return null;
   }
 
-  final directive = token.substring(8);
+  final directive = token.substring(TwPrefix.rounded.length);
   if (directive.isEmpty) {
     return null;
   }
@@ -720,7 +694,7 @@ class TwParser {
 
   bool wantsFlex(Set<String> tokens) {
     for (final token in tokens) {
-      final base = token.substring(token.lastIndexOf(':') + 1);
+      final base = extractToken(token).base;
       // Explicit flex tokens
       if (base == 'flex' || base == 'flex-row' || base == 'flex-col') {
         return true;
@@ -754,11 +728,12 @@ class TwParser {
     final result = _PrefixedTransforms();
 
     for (final token in tokens) {
-      final colonIndex = token.lastIndexOf(':');
-      final prefix = colonIndex > 0 ? token.substring(0, colonIndex) : '';
-      final base = colonIndex > 0 ? token.substring(colonIndex + 1) : token;
+      final parsed = extractToken(token);
+      final prefix =
+          parsed.prefixes.isEmpty ? '' : parsed.prefixes.join(':');
+      final base = parsed.base;
 
-      if (!_isTransformToken(base)) continue;
+      if (!_isTransformToken(base, config)) continue;
       if (!_hasOnlyKnownPrefixParts(prefix, allowedVariants)) {
         onUnsupported?.call(token);
         continue;
@@ -766,21 +741,25 @@ class TwParser {
 
       final accum = result.forPrefix(prefix);
 
-      if (base.startsWith('scale-')) {
-        accum.scale = config.scaleOf(base.substring(6));
-      } else if (base.startsWith('-rotate-')) {
-        final deg = config.rotationOf(base.substring(8));
+      if (base.startsWith(TwPrefix.scale)) {
+        accum.scale = config.scaleOf(base.substring(TwPrefix.scale.length));
+      } else if (base.startsWith(TwPrefix.rotateNeg)) {
+        final deg = config.rotationOf(base.substring(TwPrefix.rotateNeg.length));
         if (deg != null) accum.rotateDeg = -deg;
-      } else if (base.startsWith('rotate-')) {
-        accum.rotateDeg = config.rotationOf(base.substring(7));
-      } else if (base.startsWith('-translate-x-')) {
-        accum.translateX = -config.spaceOf(base.substring(13));
-      } else if (base.startsWith('translate-x-')) {
-        accum.translateX = config.spaceOf(base.substring(12));
-      } else if (base.startsWith('-translate-y-')) {
-        accum.translateY = -config.spaceOf(base.substring(13));
-      } else if (base.startsWith('translate-y-')) {
-        accum.translateY = config.spaceOf(base.substring(12));
+      } else if (base.startsWith(TwPrefix.rotate)) {
+        accum.rotateDeg = config.rotationOf(base.substring(TwPrefix.rotate.length));
+      } else if (base.startsWith(TwPrefix.translateXNeg)) {
+        accum.translateX =
+            -config.spaceOf(base.substring(TwPrefix.translateXNeg.length));
+      } else if (base.startsWith(TwPrefix.translateX)) {
+        accum.translateX =
+            config.spaceOf(base.substring(TwPrefix.translateX.length));
+      } else if (base.startsWith(TwPrefix.translateYNeg)) {
+        accum.translateY =
+            -config.spaceOf(base.substring(TwPrefix.translateYNeg.length));
+      } else if (base.startsWith(TwPrefix.translateY)) {
+        accum.translateY =
+            config.spaceOf(base.substring(TwPrefix.translateY.length));
       }
     }
 
@@ -905,9 +884,9 @@ class TwParser {
   /// Returns true if token establishes border structure (width/direction).
   bool _isBorderStructureToken(String token) {
     if (token == 'border') return true;
-    if (!token.startsWith('border-')) return false;
+    if (!token.startsWith(TwPrefix.border)) return false;
 
-    final key = token.substring(7);
+    final key = token.substring(TwPrefix.border.length);
 
     // Direction tokens with optional width/color (e.g., border-t, border-t-2)
     if (_parseBorderDirective(config, token) != null) return true;
@@ -920,8 +899,8 @@ class TwParser {
 
   /// Returns true if token is a color-only border token (e.g., border-gray-200).
   bool _isBorderColorOnlyToken(String token) {
-    if (!token.startsWith('border-')) return false;
-    final key = token.substring(7);
+    if (!token.startsWith(TwPrefix.border)) return false;
+    final key = token.substring(TwPrefix.border.length);
 
     // Must be a valid color
     if (config.colorOf(key) == null) return false;
@@ -948,9 +927,10 @@ class TwParser {
     final result = _PrefixedBorders();
 
     for (final token in tokens) {
-      final colonIndex = token.lastIndexOf(':');
-      final prefix = colonIndex > 0 ? token.substring(0, colonIndex) : '';
-      final base = colonIndex > 0 ? token.substring(colonIndex + 1) : token;
+      final parsed = extractToken(token);
+      final prefix =
+          parsed.prefixes.isEmpty ? '' : parsed.prefixes.join(':');
+      final base = parsed.base;
 
       if (!_isBorderToken(base)) continue;
       if (!_hasOnlyKnownPrefixParts(prefix, allowedVariants)) {
@@ -962,7 +942,7 @@ class TwParser {
 
       // Handle color-only tokens
       if (_isBorderColorOnlyToken(base)) {
-        final key = base.substring(7);
+        final key = base.substring(TwPrefix.border.length);
         accum.color = config.colorOf(key);
         continue;
       }
@@ -974,7 +954,7 @@ class TwParser {
       }
 
       // Handle width-only tokens (border-2, border-4, etc.)
-      final widthKey = base.substring(7);
+      final widthKey = base.substring(TwPrefix.border.length);
       final widthOnly = config.borderWidthOf(widthKey, fallback: -1);
       if (widthOnly > 0) {
         accum.setAll(widthOnly);
@@ -1175,8 +1155,11 @@ class TwParser {
     // Check for base (non-prefixed) flex direction tokens
     // If only prefixed tokens (md:flex), default to column (block-like)
     final hasBaseFlex = tokens.any((t) {
-      if (t.contains(':')) return false;
-      return t == 'flex' || t == 'flex-row' || t == 'flex-col';
+      final parsed = extractToken(t);
+      if (parsed.prefixes.isNotEmpty) return false;
+      return parsed.base == 'flex' ||
+          parsed.base == 'flex-row' ||
+          parsed.base == 'flex-col';
     });
 
     // Default to column (vertical, block-like) when only prefixed flex
@@ -1189,9 +1172,10 @@ class TwParser {
     final borderGroups = _groupBordersByPrefix(tokens, allowedVariants);
 
     for (final token in tokens) {
-      final base = token.substring(token.lastIndexOf(':') + 1);
+      final parsed = extractToken(token);
+      final base = parsed.base;
       // Skip tokens handled by grouped application
-      if (_isTransformToken(base)) continue;
+      if (_isTransformToken(base, config)) continue;
       if (_isBorderToken(base)) continue;
       styler = _applyFlexToken(styler, token);
     }
@@ -1210,9 +1194,10 @@ class TwParser {
     final borderGroups = _groupBordersByPrefix(tokens, allowedVariants);
 
     for (final token in tokens) {
-      final base = token.substring(token.lastIndexOf(':') + 1);
+      final parsed = extractToken(token);
+      final base = parsed.base;
       // Skip tokens handled by grouped application
-      if (_isTransformToken(base)) continue;
+      if (_isTransformToken(base, config)) continue;
       if (_isBorderToken(base)) continue;
       styler = _applyBoxToken(styler, token);
     }
@@ -1250,7 +1235,7 @@ class TwParser {
     var delay = Duration.zero;
 
     for (final token in tokens) {
-      final base = token.substring(token.lastIndexOf(':') + 1);
+      final base = extractToken(token).base;
 
       // Transition triggers (all aliases map to same behavior)
       if (_transitionTriggerTokens.contains(base)) {
@@ -1261,8 +1246,8 @@ class TwParser {
         hasTransitionNone = true;
       }
       // Duration (last-wins via reassignment)
-      else if (base.startsWith('duration-')) {
-        final key = base.substring(9);
+      else if (base.startsWith(TwPrefix.duration)) {
+        final key = base.substring(TwPrefix.duration.length);
         final ms = config.durationOf(key);
         if (ms != null) {
           duration = Duration(milliseconds: ms);
@@ -1275,8 +1260,8 @@ class TwParser {
         curve = _easeTokens[base]!;
       }
       // Delay (last-wins via reassignment)
-      else if (base.startsWith('delay-')) {
-        final key = base.substring(6);
+      else if (base.startsWith(TwPrefix.delay)) {
+        final key = base.substring(TwPrefix.delay.length);
         final ms = config.delayOf(key);
         if (ms != null) {
           delay = Duration(milliseconds: ms);
@@ -1330,23 +1315,23 @@ class TwParser {
       // Strip any prefix (hover:, md:, etc.) to get base token
       final base = token.substring(token.lastIndexOf(':') + 1);
 
-      if (base.startsWith('scale-')) {
-        scale = config.scaleOf(base.substring(6));
-      } else if (base.startsWith('-rotate-')) {
-        final deg = config.rotationOf(base.substring(8));
+      if (base.startsWith(TwPrefix.scale)) {
+        scale = config.scaleOf(base.substring(TwPrefix.scale.length));
+      } else if (base.startsWith(TwPrefix.rotateNeg)) {
+        final deg = config.rotationOf(base.substring(TwPrefix.rotateNeg.length));
         if (deg != null) rotateDeg = -deg;
-      } else if (base.startsWith('rotate-')) {
-        rotateDeg = config.rotationOf(base.substring(7));
-      } else if (base.startsWith('-translate-x-')) {
-        final px = config.spaceOf(base.substring(13));
+      } else if (base.startsWith(TwPrefix.rotate)) {
+        rotateDeg = config.rotationOf(base.substring(TwPrefix.rotate.length));
+      } else if (base.startsWith(TwPrefix.translateXNeg)) {
+        final px = config.spaceOf(base.substring(TwPrefix.translateXNeg.length));
         translateX = -px;
-      } else if (base.startsWith('translate-x-')) {
-        translateX = config.spaceOf(base.substring(12));
-      } else if (base.startsWith('-translate-y-')) {
-        final px = config.spaceOf(base.substring(13));
+      } else if (base.startsWith(TwPrefix.translateX)) {
+        translateX = config.spaceOf(base.substring(TwPrefix.translateX.length));
+      } else if (base.startsWith(TwPrefix.translateYNeg)) {
+        final px = config.spaceOf(base.substring(TwPrefix.translateYNeg.length));
         translateY = -px;
-      } else if (base.startsWith('translate-y-')) {
-        translateY = config.spaceOf(base.substring(12));
+      } else if (base.startsWith(TwPrefix.translateY)) {
+        translateY = config.spaceOf(base.substring(TwPrefix.translateY.length));
       }
     }
 
@@ -1466,12 +1451,12 @@ class TwParser {
     final atomicHandler = _flexAtomicHandlers[token];
     if (atomicHandler != null) {
       result = atomicHandler(styler);
-    } else if (token.startsWith('gap-x-') || token.startsWith('gap-y-')) {
+    } else if (token.startsWith(TwPrefix.gapX) || token.startsWith(TwPrefix.gapY)) {
       // Directional gaps handled in widget layer.
-    } else if (token.startsWith('gap-')) {
-      result = styler.spacing(config.spaceOf(token.substring(4)));
-    } else if (token.startsWith('w-')) {
-      final key = token.substring(2);
+    } else if (token.startsWith(TwPrefix.gap)) {
+      result = styler.spacing(config.spaceOf(token.substring(TwPrefix.gap.length)));
+    } else if (token.startsWith(TwPrefix.width)) {
+      final key = token.substring(TwPrefix.width.length);
       final fraction = parseFractionToken(key);
       if (fraction != null) {
         // Fractional sizing handled by widget layer.
@@ -1485,13 +1470,13 @@ class TwParser {
           handled = false;
         }
       }
-    } else if (token.startsWith('h-')) {
-      final key = token.substring(2);
-      final fraction = parseFractionToken(key);
-      if (fraction != null) {
-        // Fractional sizing handled by widget layer.
-      } else {
-        final size = _sizeFrom(key);
+      } else if (token.startsWith(TwPrefix.height)) {
+        final key = token.substring(TwPrefix.height.length);
+        final fraction = parseFractionToken(key);
+        if (fraction != null) {
+          // Fractional sizing handled by widget layer.
+        } else {
+          final size = _sizeFrom(key);
         if (size != null) {
           result = styler.height(size);
         } else if (_isFullOrScreenKey(key)) {
@@ -1514,8 +1499,8 @@ class TwParser {
       // Item-level utilities handled at the widget layer.
     } else if (_parseSpacingToken(token, config) case final spacing?) {
       result = _applySpacingToFlex(result, spacing);
-    } else if (token.startsWith('bg-')) {
-      final color = config.colorOf(token.substring(3));
+    } else if (token.startsWith(TwPrefix.background)) {
+      final color = config.colorOf(token.substring(TwPrefix.background.length));
       if (color != null) {
         result = styler.color(color);
       } else {
@@ -1528,12 +1513,12 @@ class TwParser {
       result = styler.borderRounded(config.radiusOf(''));
     } else if (_parseRadiusToken(token, config) case final radius?) {
       result = _applyRadiusToFlex(result, radius);
-    } else if (token.startsWith('rounded-')) {
-      final suffix = token.substring(8);
+    } else if (token.startsWith(TwPrefix.rounded)) {
+      final suffix = token.substring(TwPrefix.rounded.length);
       result = styler.borderRounded(config.radiusOf(suffix));
-    } else if (_isAnimationToken(token)) {
+    } else if (_isAnimationToken(token, config)) {
       // Animation tokens handled by parseAnimation(), don't report as unsupported
-    } else if (_isTransformToken(token)) {
+    } else if (_isTransformToken(token, config)) {
       // Transform tokens are applied via grouped transforms in parseBox/parseFlex.
       // We skip them here to avoid double-handling.
     } else {
@@ -1555,8 +1540,8 @@ class TwParser {
 
     if (exactHandler != null) {
       result = exactHandler(styler, config);
-    } else if (token.startsWith('w-')) {
-      final key = token.substring(2);
+    } else if (token.startsWith(TwPrefix.width)) {
+      final key = token.substring(TwPrefix.width.length);
       final fraction = parseFractionToken(key);
       if (fraction != null) {
         // Fractional sizing handled by widget layer.
@@ -1570,8 +1555,8 @@ class TwParser {
           handled = false;
         }
       }
-    } else if (token.startsWith('h-')) {
-      final key = token.substring(2);
+    } else if (token.startsWith(TwPrefix.height)) {
+      final key = token.substring(TwPrefix.height.length);
       final fraction = parseFractionToken(key);
       if (fraction != null) {
         // Fractional sizing handled by widget layer.
@@ -1599,8 +1584,8 @@ class TwParser {
       // Item-level utilities handled at the widget layer.
     } else if (_parseSpacingToken(token, config) case final spacing?) {
       result = _applySpacingToBox(result, spacing);
-    } else if (token.startsWith('bg-')) {
-      final color = config.colorOf(token.substring(3));
+    } else if (token.startsWith(TwPrefix.background)) {
+      final color = config.colorOf(token.substring(TwPrefix.background.length));
       if (color != null) {
         result = styler.color(color);
       } else {
@@ -1613,24 +1598,25 @@ class TwParser {
       result = styler.borderRounded(config.radiusOf(''));
     } else if (_parseRadiusToken(token, config) case final radius?) {
       result = _applyRadiusToBox(result, radius);
-    } else if (token.startsWith('rounded-')) {
-      final suffix = token.substring(8);
+    } else if (token.startsWith(TwPrefix.rounded)) {
+      final suffix = token.substring(TwPrefix.rounded.length);
       result = styler.borderRounded(config.radiusOf(suffix));
-    } else if (token.startsWith('text-')) {
-      final color = config.colorOf(token.substring(5));
+    } else if (token.startsWith(TwPrefix.text)) {
+      final color = config.colorOf(token.substring(TwPrefix.text.length));
       if (color != null) {
         result = styler.wrapDefaultTextStyle(TextStyleMix().color(color));
       } else {
-        final size = config.fontSizeOf(token.substring(5), fallback: -1);
+        final size =
+            config.fontSizeOf(token.substring(TwPrefix.text.length), fallback: -1);
         if (size > 0) {
           result = styler.wrapDefaultTextStyle(TextStyleMix().fontSize(size));
         } else {
           handled = false;
         }
       }
-    } else if (_isAnimationToken(token)) {
+    } else if (_isAnimationToken(token, config)) {
       // Animation tokens handled by parseAnimation(), don't report as unsupported
-    } else if (_isTransformToken(token)) {
+    } else if (_isTransformToken(token, config)) {
       // Transform tokens are applied via grouped transforms in parseBox/parseFlex.
       // We skip them here to avoid double-handling.
     } else {
@@ -1652,8 +1638,8 @@ class TwParser {
 
     if (exactHandler != null) {
       result = exactHandler(styler);
-    } else if (token.startsWith('text-')) {
-      final key = token.substring(5);
+    } else if (token.startsWith(TwPrefix.text)) {
+      final key = token.substring(TwPrefix.text.length);
       final color = config.colorOf(key);
       if (color != null) {
         result = styler.color(color);
@@ -1668,7 +1654,7 @@ class TwParser {
           handled = false;
         }
       }
-    } else if (_isAnimationToken(token)) {
+    } else if (_isAnimationToken(token, config)) {
       // Animation tokens handled by parseAnimation(), don't report as unsupported
     } else {
       handled = false;
