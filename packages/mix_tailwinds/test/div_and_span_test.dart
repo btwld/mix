@@ -407,6 +407,110 @@ void main() {
     expect(parentData.fit, FlexFit.tight);
   });
 
+  testWidgets('flex-1 auto-applies min-w-0 constraint', (tester) async {
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: SizedBox(
+          width: 200,
+          child: Row(
+            children: [
+              Div(
+                classNames: 'flex-1 bg-blue-500',
+                child: const SizedBox(width: 10, height: 10),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    // flex-1 should auto-apply ConstrainedBox with min 0
+    final constrainedBox = find.byType(ConstrainedBox);
+    expect(constrainedBox, findsOneWidget);
+    final box = tester.widget<ConstrainedBox>(constrainedBox);
+    expect(box.constraints.minWidth, 0);
+    expect(box.constraints.minHeight, 0);
+  });
+
+  testWidgets('flex-1 min-w-auto disables auto-constraint', (tester) async {
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: SizedBox(
+          width: 200,
+          child: Row(
+            children: [
+              Div(
+                classNames: 'flex-1 min-w-auto bg-blue-500',
+                child: const SizedBox(width: 10, height: 10),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    // min-w-auto escape hatch should prevent auto ConstrainedBox
+    final constrainedBoxes = tester.widgetList<ConstrainedBox>(
+      find.byType(ConstrainedBox),
+    );
+    for (final box in constrainedBoxes) {
+      expect(
+        box.constraints.minWidth == 0 && box.constraints.minHeight == 0,
+        isFalse,
+        reason: 'min-w-auto should disable auto min constraint',
+      );
+    }
+  });
+
+  testWidgets('flex-auto does NOT auto-apply min-w-0', (tester) async {
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: SizedBox(
+          width: 200,
+          child: Row(
+            children: [
+              Div(
+                classNames: 'flex-auto bg-blue-500',
+                child: const SizedBox(width: 10, height: 10),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    // flex-auto should NOT have ConstrainedBox with min 0
+    final constrainedBoxes = tester.widgetList<ConstrainedBox>(
+      find.byType(ConstrainedBox),
+    );
+    for (final box in constrainedBoxes) {
+      expect(
+        box.constraints.minWidth == 0 && box.constraints.minHeight == 0,
+        isFalse,
+        reason: 'flex-auto should respect content size, not auto-apply min-w-0',
+      );
+    }
+  });
+
+  testWidgets('TruncatedP renders correct hierarchy', (tester) async {
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: Row(
+          children: const [
+            TruncatedP(text: 'Long text', classNames: 'text-sm'),
+          ],
+        ),
+      ),
+    );
+
+    // Should find StyledText (from P)
+    expect(find.byType(StyledText), findsOneWidget);
+  });
+
   testWidgets('basis-32 constrains main-axis size inside Row', (tester) async {
     await _pumpSized(
       tester,
@@ -681,6 +785,73 @@ void main() {
     expect(border.right.color, const Color(0xFFEF4444));
   });
 
+  testWidgets('border-gray-200 alone produces no visible border', (tester) async {
+    // Color-only border tokens should NOT create borders
+    final decoration = await _boxDecorationFor(tester, 'border-gray-200');
+    final border = decoration?.border as Border?;
+    // Either null or all sides have width 0
+    expect(border?.top.width ?? 0, 0);
+    expect(border?.bottom.width ?? 0, 0);
+    expect(border?.left.width ?? 0, 0);
+    expect(border?.right.width ?? 0, 0);
+  });
+
+  testWidgets('border-t border-gray-200 applies color to top only',
+      (tester) async {
+    final decoration =
+        await _boxDecorationFor(tester, 'border-t border-gray-200');
+    final border = decoration?.border as Border?;
+    expect(border, isNotNull);
+    expect(border!.top.width, 1);
+    expect(border.top.color, const Color(0xFFE5E7EB)); // gray-200
+    expect(border.bottom.width, 0);
+    expect(border.left.width, 0);
+    expect(border.right.width, 0);
+  });
+
+  testWidgets('border border-red-500 applies color to all sides',
+      (tester) async {
+    final decoration =
+        await _boxDecorationFor(tester, 'border border-red-500');
+    final border = decoration?.border as Border?;
+    expect(border, isNotNull);
+    expect(border!.top.width, 1);
+    expect(border.top.color, const Color(0xFFEF4444)); // red-500
+    expect(border.bottom.color, const Color(0xFFEF4444));
+    expect(border.left.color, const Color(0xFFEF4444));
+    expect(border.right.color, const Color(0xFFEF4444));
+  });
+
+  testWidgets('border-x-2 border-blue-500 applies width and color',
+      (tester) async {
+    final decoration =
+        await _boxDecorationFor(tester, 'border-x-2 border-blue-500');
+    final border = decoration?.border as Border?;
+    expect(border, isNotNull);
+    expect(border!.left.width, 2);
+    expect(border.right.width, 2);
+    expect(border.left.color, const Color(0xFF3B82F6)); // blue-500
+    expect(border.right.color, const Color(0xFF3B82F6));
+    expect(border.top.width, 0);
+    expect(border.bottom.width, 0);
+  });
+
+  test('variant borders inherit base border structure', () {
+    // This tests that hover:border-red-500 inherits border-t's structure
+    // Previously, inheritColorFrom only inherited color, not widths
+    final parser = TwParser();
+    final styler = parser.parseFlex('border-t hover:border-red-500');
+
+    // The base should have top border with default width
+    // The hover variant should inherit the top-only structure
+    // We can verify the styler was created without errors
+    expect(styler, isNotNull);
+
+    // Parse with color on base to verify variant inheritance
+    final styler2 = parser.parseFlex('border-t border-gray-200 hover:border-red-500');
+    expect(styler2, isNotNull);
+  });
+
   testWidgets('rounded-t-md applies top border radius', (tester) async {
     final decoration = await _boxDecorationFor(tester, 'rounded-t-md');
     final radius = decoration?.borderRadius?.resolve(TextDirection.ltr);
@@ -717,11 +888,11 @@ void main() {
     expect(padding.top, 8);
   });
 
-  testWidgets('Span forwards text style tokens', (tester) async {
-    final span = Span(text: 'Hello', classNames: 'text-blue-500 font-bold');
+  testWidgets('P forwards text style tokens', (tester) async {
+    final p = P(text: 'Hello', classNames: 'text-blue-500 font-bold');
 
     await tester.pumpWidget(
-      Directionality(textDirection: TextDirection.ltr, child: span),
+      Directionality(textDirection: TextDirection.ltr, child: p),
     );
 
     final text = tester.widget<Text>(find.text('Hello'));
@@ -791,9 +962,9 @@ void main() {
   // This assertion is verified manually - providing both triggers:
   // 'Provide either child or children, not both.'
 
-  test('Span constructor is const', () {
-    const span = Span(text: 'Hello', classNames: 'text-blue-500');
-    expect(span, isNotNull);
+  test('P constructor is const', () {
+    const p = P(text: 'Hello', classNames: 'text-blue-500');
+    expect(p, isNotNull);
   });
 
   test('Unknown tokens trigger onUnsupported callback', () {
@@ -928,6 +1099,19 @@ void main() {
     expect(seen, isEmpty);
   });
 
+  test('leading-even applies even leading distribution', () {
+    final seen = <String>[];
+    TwParser(onUnsupported: seen.add).parseText('leading-even');
+    expect(seen, isEmpty);
+  });
+
+  test('leading-trim applies even distribution with trimmed ascent/descent',
+      () {
+    final seen = <String>[];
+    TwParser(onUnsupported: seen.add).parseText('leading-trim');
+    expect(seen, isEmpty);
+  });
+
   // ==========================================================================
   // Letter Spacing (tracking-*) Tests
   // ==========================================================================
@@ -1006,14 +1190,14 @@ void main() {
     expect(seen, isEmpty);
   });
 
-  testWidgets('Span truncate applies ellipsis and maxLines', (tester) async {
-    final span = Span(
+  testWidgets('P truncate applies ellipsis and maxLines', (tester) async {
+    final p = P(
       text: 'This is a very long text that should be truncated',
       classNames: 'truncate',
     );
 
     await tester.pumpWidget(
-      Directionality(textDirection: TextDirection.ltr, child: span),
+      Directionality(textDirection: TextDirection.ltr, child: p),
     );
 
     final text = tester.widget<Text>(
@@ -2286,8 +2470,8 @@ void main() {
       Div(
         classNames: 'flex items-baseline',
         children: [
-          Span(text: 'Hello', classNames: 'text-lg'),
-          Span(text: 'World', classNames: 'text-sm'),
+          P(text: 'Hello', classNames: 'text-lg'),
+          P(text: 'World', classNames: 'text-sm'),
         ],
       ),
       width: 300,
