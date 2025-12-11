@@ -130,15 +130,15 @@ class _CampaignOverviewCard extends StatelessWidget {
       classNames:
           'flex flex-col gap-5 rounded-2xl border border-gray-200 bg-white p-6 shadow-lg',
       children: [
-        const Span(
+        const P(
           text: 'Campaign Health',
           classNames: 'text-sm font-semibold uppercase text-blue-700',
         ),
-        const Span(
+        const P(
           text: 'November brand push',
           classNames: 'text-3xl font-semibold text-gray-700',
         ),
-        const Span(
+        const P(
           text:
               'Live performance snapshot for paid, lifecycle, and organic channels.',
           classNames: 'text-base text-gray-500',
@@ -195,14 +195,14 @@ class _MetricTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Div(
       classNames:
-          'md:flex-1 w-full rounded-xl bg-blue-50 p-4 flex flex-col gap-2 min-w-0',
+          'md:flex-1 w-full rounded-xl bg-blue-50 p-4 flex flex-col gap-2',
       children: [
-        Span(
+        P(
           text: label,
           classNames: 'text-sm font-semibold uppercase text-blue-700',
         ),
-        Span(text: value, classNames: 'text-2xl font-semibold text-gray-700'),
-        Span(text: change, classNames: 'text-sm text-blue-700'),
+        P(text: value, classNames: 'text-2xl font-semibold text-gray-700'),
+        P(text: change, classNames: 'text-sm text-blue-700'),
       ],
     );
   }
@@ -218,7 +218,7 @@ class _FilledButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Div(
       classNames: '$classNames flex items-center justify-center min-w-0 overflow-hidden',
-      child: Span(
+      child: P(
         text: label,
         classNames: 'text-base font-semibold text-white truncate',
       ),
@@ -236,7 +236,7 @@ class _OutlinedButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Div(
       classNames: '$classNames flex items-center justify-center min-w-0 overflow-hidden',
-      child: Span(
+      child: P(
         text: label,
         classNames: 'text-base font-semibold text-blue-600 truncate',
       ),
@@ -253,15 +253,15 @@ class _TeamActivityCard extends StatelessWidget {
       classNames:
           'flex flex-col gap-5 rounded-2xl border border-gray-200 bg-white p-6 shadow-lg',
       children: [
-        const Span(
+        const P(
           text: 'Team activity',
           classNames: 'text-sm font-semibold uppercase text-blue-700',
         ),
-        const Span(
+        const P(
           text: 'Channel owners',
           classNames: 'text-2xl font-semibold text-gray-700',
         ),
-        const Span(
+        const P(
           text: 'Latest updates from lifecycle, paid, and organic squads.',
           classNames: 'text-base text-gray-500',
         ),
@@ -368,29 +368,29 @@ class _ActivityRow extends StatelessWidget {
           children: [
             Div(
               classNames:
-                  'h-12 w-12 items-center justify-center rounded-full bg-gray-100 flex',
-              child: Span(
+                  'flex h-12 w-12 items-center justify-center rounded-full bg-gray-100',
+              child: P(
                 text: avatarLetter,
                 classNames: 'text-lg font-semibold text-gray-700',
               ),
             ),
             Div(
-              classNames: 'flex flex-1 flex-col gap-1 min-w-0',
+              classNames: 'flex flex-1 flex-col gap-1',
               children: [
-                Span(
+                P(
                   text: name,
                   classNames: 'text-base font-semibold text-gray-700',
                 ),
-                Span(text: role, classNames: 'text-sm text-gray-500'),
+                P(text: role, classNames: 'text-sm text-gray-500'),
                 Div(
                   classNames: 'flex items-center gap-2 min-w-0',
                   children: [
-                    Div(classNames: 'h-1 w-1 rounded-full flex-shrink-0 $badgeColor'),
+                    Div(classNames: 'h-1 w-1 rounded-full $badgeColor'),
                     Div(
-                      classNames: 'flex-1 min-w-0',
-                      child: Span(
+                      classNames: 'flex-1',
+                      child: P(
                         text: update,
-                        classNames: 'text-sm text-gray-500 truncate',
+                        classNames: 'truncate text-sm text-gray-500',
                       ),
                     ),
                   ],
@@ -399,7 +399,7 @@ class _ActivityRow extends StatelessWidget {
             ),
           ],
         ),
-        Span(text: timeago, classNames: 'text-sm text-gray-500'),
+        P(text: timeago, classNames: 'text-sm text-gray-500'),
       ],
     );
   }
