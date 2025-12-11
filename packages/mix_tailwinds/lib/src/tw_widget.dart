@@ -207,11 +207,22 @@ class Div extends StatelessWidget {
   }
 }
 
-class Span extends StatelessWidget {
-  const Span({
+/// Block-level text element with Tailwind styling.
+///
+/// Equivalent to HTML `<p>`. Renders as Flutter's `Text` widget
+/// which is block-level (takes its own line).
+///
+/// ```dart
+/// P(
+///   text: 'Hello world',
+///   classNames: 'text-lg font-bold text-gray-700',
+/// )
+/// ```
+class P extends StatelessWidget {
+  const P({
     super.key,
     required this.text,
-    required this.classNames,
+    this.classNames = '',
     this.config,
   });
 
@@ -224,6 +235,44 @@ class Span extends StatelessWidget {
     final cfg = config ?? TwConfigProvider.of(context);
     final style = TwParser(config: cfg).parseText(classNames);
     return StyledText(text, style: style);
+  }
+}
+
+/// Convenience wrapper for truncated text in flex containers.
+///
+/// Automatically wraps the text with `flex-1 min-w-0` container and applies
+/// `truncate` to enable text truncation with ellipsis.
+///
+/// Equivalent to:
+/// ```dart
+/// Div(
+///   classNames: 'flex-1 min-w-0',
+///   child: P(text: text, classNames: 'truncate $classNames'),
+/// )
+/// ```
+class TruncatedP extends StatelessWidget {
+  const TruncatedP({
+    super.key,
+    required this.text,
+    this.classNames = '',
+    this.config,
+  });
+
+  final String text;
+  final String classNames;
+  final TwConfig? config;
+
+  @override
+  Widget build(BuildContext context) {
+    return Div(
+      classNames: 'flex-1 min-w-0',
+      config: config,
+      child: P(
+        text: text,
+        classNames: 'truncate $classNames',
+        config: config,
+      ),
+    );
   }
 }
 
@@ -437,6 +486,13 @@ Widget _applyFlexItemDecorators(
 
   final behavior = _resolveFlexItemBehavior(tokens, cfg, viewportWidth);
   if (behavior != null) {
+    // Apply min constraint for CSS flex: 1 1 0% parity (shrink below content)
+    if (behavior.applyMinConstraint) {
+      current = ConstrainedBox(
+        constraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+        child: current,
+      );
+    }
     current = _FlexParentDataWrapper(
       flex: behavior.flex,
       fit: behavior.fit,
@@ -625,10 +681,15 @@ _ResponsiveToken _parseResponsiveToken(String token, TwConfig cfg) {
 enum _DimensionIntent { none, full, screen }
 
 class _FlexItemBehavior {
-  const _FlexItemBehavior({required this.flex, required this.fit});
+  const _FlexItemBehavior({
+    required this.flex,
+    required this.fit,
+    this.applyMinConstraint = false,
+  });
 
   final int flex;
   final FlexFit fit;
+  final bool applyMinConstraint;
 }
 
 class _BasisValue {
@@ -644,6 +705,12 @@ _FlexItemBehavior? _resolveFlexItemBehavior(
   TwConfig cfg,
   double width,
 ) {
+  // Check for min-w-auto escape hatch
+  final hasMinWidthAuto = tokens.any((token) {
+    final base = token.substring(token.lastIndexOf(':') + 1);
+    return base == 'min-w-auto';
+  });
+
   _FlexItemBehavior? behavior;
   double chosenMin = -1;
 
@@ -654,7 +721,12 @@ _FlexItemBehavior? _resolveFlexItemBehavior(
     }
 
     final candidate = switch (info.base) {
-      'flex-1' => const _FlexItemBehavior(flex: 1, fit: FlexFit.tight),
+      // flex-1: auto-apply min constraint for CSS flex: 1 1 0% parity
+      'flex-1' => _FlexItemBehavior(
+        flex: 1,
+        fit: FlexFit.tight,
+        applyMinConstraint: !hasMinWidthAuto,
+      ),
       'flex-auto' => const _FlexItemBehavior(flex: 1, fit: FlexFit.loose),
       'flex-initial' => const _FlexItemBehavior(flex: 0, fit: FlexFit.loose),
       // flex-none / shrink-0: maintain intrinsic size (don't grow or fill)

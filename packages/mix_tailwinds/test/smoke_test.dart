@@ -4,7 +4,7 @@ import 'package:mix/mix.dart';
 import 'package:mix_tailwinds/mix_tailwinds.dart';
 
 void main() {
-  testWidgets('smoke test: renders nested Div and Span without warnings', (
+  testWidgets('smoke test: renders nested Div and P without warnings', (
     tester,
   ) async {
     final unsupported = <String>[];
@@ -19,18 +19,18 @@ void main() {
             classNames: 'md:flex flex-col gap-4 p-4 w-full h-full bg-blue-500',
             onUnsupported: unsupported.add,
             children: const [
-              Span(
+              P(
                 text: 'Title',
                 classNames: 'text-white font-semibold text-xl',
               ),
               Div(
                 classNames: 'flex gap-2',
                 children: [
-                  Span(
+                  P(
                     text: 'Primary',
                     classNames: 'bg-white text-blue-700 px-3 py-1 rounded',
                   ),
-                  Span(
+                  P(
                     text: 'Secondary',
                     classNames: 'bg-blue-700 text-white px-3 py-1 rounded',
                   ),

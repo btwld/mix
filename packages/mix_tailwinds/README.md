@@ -75,7 +75,10 @@ This package aims for Tailwind-like syntax but has intentional differences due t
 |----------|--------------|---------------|--------|
 | `text-*` line-height | Auto-adjusts based on size | No auto-adjustment | Flutter and browser text rendering differ fundamentally |
 
-Use `leading-*` tokens explicitly for line height control.
+Use `leading-*` tokens explicitly for line height control:
+- `leading-none`, `leading-tight`, `leading-snug`, etc. - line height multipliers
+- `leading-even` - distribute leading evenly above/below text (better vertical centering)
+- `leading-trim` - trim leading for tight vertical centering (ideal for single characters like avatars)
 
 ### Sizing
 

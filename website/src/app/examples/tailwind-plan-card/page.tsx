@@ -161,12 +161,14 @@ function ActivityRow({
         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
           <span className="text-lg font-semibold text-gray-700">{avatarLetter}</span>
         </div>
-        <div className="flex flex-1 flex-col gap-1">
+        <div className="flex flex-1 flex-col gap-1 min-w-0">
           <p className="text-base font-semibold text-gray-700">{name}</p>
           <p className="text-sm text-gray-500">{role}</p>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 min-w-0">
             <div className={`h-1 w-1 rounded-full ${accentColor}`}></div>
-            <p className="text-sm text-gray-500">{update}</p>
+            <div className="flex-1 min-w-0">
+              <p className="truncate text-sm text-gray-500">{update}</p>
+            </div>
           </div>
         </div>
       </div>

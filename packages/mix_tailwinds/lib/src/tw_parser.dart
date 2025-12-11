@@ -150,6 +150,68 @@ class _PrefixedTransforms {
   }
 }
 
+/// Accumulates border properties before final application.
+/// Separates "structure" tokens (width/direction) from "color" tokens.
+/// Color is only applied to borders that have structure.
+class _BorderAccum {
+  double? topWidth;
+  double? bottomWidth;
+  double? leftWidth;
+  double? rightWidth;
+  Color? color;
+
+  _BorderAccum();
+
+  /// Creates copy inheriting all properties from [base], then overlaying [this].
+  /// Follows same pattern as [_TransformAccum.inheritFrom].
+  _BorderAccum inheritFrom(_BorderAccum base) {
+    return _BorderAccum()
+      ..topWidth = topWidth ?? base.topWidth
+      ..bottomWidth = bottomWidth ?? base.bottomWidth
+      ..leftWidth = leftWidth ?? base.leftWidth
+      ..rightWidth = rightWidth ?? base.rightWidth
+      ..color = color ?? base.color;
+  }
+
+  /// Whether any border structure (width/direction) was specified.
+  bool get hasStructure =>
+      topWidth != null ||
+      bottomWidth != null ||
+      leftWidth != null ||
+      rightWidth != null;
+
+  /// Sets all sides to the given width.
+  void setAll(double width) {
+    topWidth = width;
+    bottomWidth = width;
+    leftWidth = width;
+    rightWidth = width;
+  }
+
+  /// Sets horizontal sides (left/right) to the given width.
+  void setHorizontal(double width) {
+    leftWidth = width;
+    rightWidth = width;
+  }
+
+  /// Sets vertical sides (top/bottom) to the given width.
+  void setVertical(double width) {
+    topWidth = width;
+    bottomWidth = width;
+  }
+}
+
+/// Groups border tokens by their prefix chain.
+class _PrefixedBorders {
+  final _BorderAccum base = _BorderAccum();
+  final Map<String, _BorderAccum> variants = {};
+
+  _BorderAccum forPrefix(String prefix) {
+    if (prefix.isEmpty) return base;
+    return variants.putIfAbsent(prefix, _BorderAccum.new);
+  }
+}
+
 /// Shared spacing token types for padding/margin parsing.
 enum _SpacingKind {
   paddingX,
@@ -299,59 +361,6 @@ BoxStyler _applySpacingToBox(BoxStyler s, _SpacingToken t) => switch (t.kind) {
   _SpacingKind.marginBottom => s.marginBottom(t.value),
   _SpacingKind.marginLeft => s.marginLeft(t.value),
   _SpacingKind.marginAll => s.marginAll(t.value),
-};
-
-/// Directional border variations.
-enum _BorderKind { top, bottom, left, right, vertical, horizontal }
-
-/// Parsed directional border token.
-class _BorderToken {
-  const _BorderToken(this.kind, this.color, this.width);
-  final _BorderKind kind;
-  final Color color;
-  final double width;
-}
-
-/// Parses directional border tokens (border-t-*, border-b-*, etc.).
-_BorderToken? _parseBorderToken(String token, TwConfig config) {
-  final directive = _parseBorderDirective(config, token);
-  if (directive == null) return null;
-
-  final kind = switch (directive.direction) {
-    't' => _BorderKind.top,
-    'b' => _BorderKind.bottom,
-    'l' => _BorderKind.left,
-    'r' => _BorderKind.right,
-    'x' => _BorderKind.vertical,
-    'y' => _BorderKind.horizontal,
-    _ => null,
-  };
-  if (kind == null) return null;
-  return _BorderToken(kind, directive.color, directive.width);
-}
-
-/// Applies border token to FlexBoxStyler.
-FlexBoxStyler _applyBorderToFlex(FlexBoxStyler s, _BorderToken t) =>
-    switch (t.kind) {
-      _BorderKind.top => s.borderTop(color: t.color, width: t.width),
-      _BorderKind.bottom => s.borderBottom(color: t.color, width: t.width),
-      _BorderKind.left => s.borderLeft(color: t.color, width: t.width),
-      _BorderKind.right => s.borderRight(color: t.color, width: t.width),
-      _BorderKind.vertical => s.borderVertical(color: t.color, width: t.width),
-      _BorderKind.horizontal => s.borderHorizontal(
-        color: t.color,
-        width: t.width,
-      ),
-    };
-
-/// Applies border token to BoxStyler.
-BoxStyler _applyBorderToBox(BoxStyler s, _BorderToken t) => switch (t.kind) {
-  _BorderKind.top => s.borderTop(color: t.color, width: t.width),
-  _BorderKind.bottom => s.borderBottom(color: t.color, width: t.width),
-  _BorderKind.left => s.borderLeft(color: t.color, width: t.width),
-  _BorderKind.right => s.borderRight(color: t.color, width: t.width),
-  _BorderKind.vertical => s.borderVertical(color: t.color, width: t.width),
-  _BorderKind.horizontal => s.borderHorizontal(color: t.color, width: t.width),
 };
 
 /// Directional radius variations (8 directions including corners).
@@ -544,6 +553,21 @@ final Map<String, TextStyler Function(TextStyler)> _textAtomicHandlers = {
   'leading-normal': (s) => s.height(1.5),
   'leading-relaxed': (s) => s.height(1.625),
   'leading-loose': (s) => s.height(2.0),
+  // Leading distribution (text centering behavior)
+  // leading-even: distributes leading space evenly above/below text
+  'leading-even': (s) => s.textHeightBehavior(
+        TextHeightBehaviorMix(
+          leadingDistribution: TextLeadingDistribution.even,
+        ),
+      ),
+  // leading-trim: removes extra leading for tighter vertical centering (avatars)
+  'leading-trim': (s) => s.textHeightBehavior(
+        TextHeightBehaviorMix(
+          leadingDistribution: TextLeadingDistribution.even,
+          applyHeightToFirstAscent: false,
+          applyHeightToLastDescent: false,
+        ),
+      ),
   // Letter spacing (tracking-*)
   'tracking-tighter': (s) => s.letterSpacing(-0.8),
   'tracking-tight': (s) => s.letterSpacing(-0.4),
@@ -874,6 +898,277 @@ class TwParser {
     return result;
   }
 
+  // ---------------------------------------------------------------------------
+  // Border accumulation helpers
+  // ---------------------------------------------------------------------------
+
+  /// Returns true if token establishes border structure (width/direction).
+  bool _isBorderStructureToken(String token) {
+    if (token == 'border') return true;
+    if (!token.startsWith('border-')) return false;
+
+    final key = token.substring(7);
+
+    // Direction tokens with optional width/color (e.g., border-t, border-t-2)
+    if (_parseBorderDirective(config, token) != null) return true;
+
+    // Width-only tokens (e.g., border-2, border-4)
+    if (config.borderWidthOf(key, fallback: -1) > 0) return true;
+
+    return false;
+  }
+
+  /// Returns true if token is a color-only border token (e.g., border-gray-200).
+  bool _isBorderColorOnlyToken(String token) {
+    if (!token.startsWith('border-')) return false;
+    final key = token.substring(7);
+
+    // Must be a valid color
+    if (config.colorOf(key) == null) return false;
+
+    // Must NOT be a width
+    if (config.borderWidthOf(key, fallback: -1) > 0) return false;
+
+    // Must NOT be a direction token
+    if (_parseBorderDirective(config, token) != null) return false;
+
+    return true;
+  }
+
+  /// Returns true if token is any border-related token.
+  bool _isBorderToken(String token) {
+    return _isBorderStructureToken(token) || _isBorderColorOnlyToken(token);
+  }
+
+  /// Groups border tokens by prefix for variant-aware application.
+  _PrefixedBorders _groupBordersByPrefix(
+    List<String> tokens,
+    Set<String> allowedVariants,
+  ) {
+    final result = _PrefixedBorders();
+
+    for (final token in tokens) {
+      final colonIndex = token.lastIndexOf(':');
+      final prefix = colonIndex > 0 ? token.substring(0, colonIndex) : '';
+      final base = colonIndex > 0 ? token.substring(colonIndex + 1) : token;
+
+      if (!_isBorderToken(base)) continue;
+      if (!_hasOnlyKnownPrefixParts(prefix, allowedVariants)) {
+        onUnsupported?.call(token);
+        continue;
+      }
+
+      final accum = result.forPrefix(prefix);
+
+      // Handle color-only tokens
+      if (_isBorderColorOnlyToken(base)) {
+        final key = base.substring(7);
+        accum.color = config.colorOf(key);
+        continue;
+      }
+
+      // Handle 'border' (all sides, width 1)
+      if (base == 'border') {
+        accum.setAll(1.0);
+        continue;
+      }
+
+      // Handle width-only tokens (border-2, border-4, etc.)
+      final widthKey = base.substring(7);
+      final widthOnly = config.borderWidthOf(widthKey, fallback: -1);
+      if (widthOnly > 0) {
+        accum.setAll(widthOnly);
+        continue;
+      }
+
+      // Handle direction tokens (border-t, border-x-2, border-t-red-500, etc.)
+      if (_parseBorderDirective(config, base) case final directive?) {
+        final width = directive.width;
+        // If directive has a non-default color, set it
+        if (directive.color != _defaultBorderColor(config)) {
+          accum.color = directive.color;
+        }
+
+        switch (directive.direction) {
+          case 't':
+            accum.topWidth = width;
+          case 'b':
+            accum.bottomWidth = width;
+          case 'l':
+            accum.leftWidth = width;
+          case 'r':
+            accum.rightWidth = width;
+          case 'x':
+            accum.setHorizontal(width);
+          case 'y':
+            accum.setVertical(width);
+        }
+      }
+    }
+
+    return result;
+  }
+
+  /// Applies accumulated borders to FlexBoxStyler.
+  FlexBoxStyler _applyBordersToFlexStyler(
+    FlexBoxStyler styler,
+    _PrefixedBorders borders,
+  ) {
+    var result = styler;
+
+    // Apply base borders
+    if (borders.base.hasStructure) {
+      final color = borders.base.color ?? _defaultBorderColor(config);
+      if (borders.base.topWidth != null) {
+        result = result.borderTop(color: color, width: borders.base.topWidth!);
+      }
+      if (borders.base.bottomWidth != null) {
+        result =
+            result.borderBottom(color: color, width: borders.base.bottomWidth!);
+      }
+      if (borders.base.leftWidth != null) {
+        result =
+            result.borderLeft(color: color, width: borders.base.leftWidth!);
+      }
+      if (borders.base.rightWidth != null) {
+        result =
+            result.borderRight(color: color, width: borders.base.rightWidth!);
+      }
+    }
+
+    // Apply variant borders
+    for (final entry in borders.variants.entries) {
+      final inherited = entry.value.inheritFrom(borders.base);
+      if (!inherited.hasStructure) continue;
+      result = _applyFlexBorderWithVariant(result, entry.key, inherited);
+    }
+
+    return result;
+  }
+
+  /// Applies a border with variant handling for FlexBoxStyler.
+  FlexBoxStyler _applyFlexBorderWithVariant(
+    FlexBoxStyler base,
+    String prefix,
+    _BorderAccum border,
+  ) {
+    final color = border.color ?? _defaultBorderColor(config);
+    var variantStyle = FlexBoxStyler();
+
+    if (border.topWidth != null) {
+      variantStyle = variantStyle.borderTop(color: color, width: border.topWidth!);
+    }
+    if (border.bottomWidth != null) {
+      variantStyle = variantStyle.borderBottom(color: color, width: border.bottomWidth!);
+    }
+    if (border.leftWidth != null) {
+      variantStyle = variantStyle.borderLeft(color: color, width: border.leftWidth!);
+    }
+    if (border.rightWidth != null) {
+      variantStyle = variantStyle.borderRight(color: color, width: border.rightWidth!);
+    }
+
+    if (prefix.isEmpty) {
+      return base.merge(variantStyle);
+    }
+
+    final parts = prefix.split(':');
+    for (var i = parts.length - 1; i >= 0; i--) {
+      final part = parts[i];
+      if (_isBreakpoint(part)) {
+        final min = config.breakpointOf(part);
+        variantStyle = FlexBoxStyler().onBreakpoint(
+          Breakpoint(minWidth: min),
+          variantStyle,
+        );
+      } else if (_flexVariants.containsKey(part)) {
+        variantStyle = _flexVariants[part]!(FlexBoxStyler(), variantStyle);
+      }
+    }
+
+    return base.merge(variantStyle);
+  }
+
+  /// Applies accumulated borders to BoxStyler.
+  BoxStyler _applyBordersToBoxStyler(
+    BoxStyler styler,
+    _PrefixedBorders borders,
+  ) {
+    var result = styler;
+
+    // Apply base borders
+    if (borders.base.hasStructure) {
+      final color = borders.base.color ?? _defaultBorderColor(config);
+      if (borders.base.topWidth != null) {
+        result = result.borderTop(color: color, width: borders.base.topWidth!);
+      }
+      if (borders.base.bottomWidth != null) {
+        result =
+            result.borderBottom(color: color, width: borders.base.bottomWidth!);
+      }
+      if (borders.base.leftWidth != null) {
+        result =
+            result.borderLeft(color: color, width: borders.base.leftWidth!);
+      }
+      if (borders.base.rightWidth != null) {
+        result =
+            result.borderRight(color: color, width: borders.base.rightWidth!);
+      }
+    }
+
+    // Apply variant borders
+    for (final entry in borders.variants.entries) {
+      final inherited = entry.value.inheritFrom(borders.base);
+      if (!inherited.hasStructure) continue;
+      result = _applyBoxBorderWithVariant(result, entry.key, inherited);
+    }
+
+    return result;
+  }
+
+  /// Applies a border with variant handling for BoxStyler.
+  BoxStyler _applyBoxBorderWithVariant(
+    BoxStyler base,
+    String prefix,
+    _BorderAccum border,
+  ) {
+    final color = border.color ?? _defaultBorderColor(config);
+    var variantStyle = BoxStyler();
+
+    if (border.topWidth != null) {
+      variantStyle = variantStyle.borderTop(color: color, width: border.topWidth!);
+    }
+    if (border.bottomWidth != null) {
+      variantStyle = variantStyle.borderBottom(color: color, width: border.bottomWidth!);
+    }
+    if (border.leftWidth != null) {
+      variantStyle = variantStyle.borderLeft(color: color, width: border.leftWidth!);
+    }
+    if (border.rightWidth != null) {
+      variantStyle = variantStyle.borderRight(color: color, width: border.rightWidth!);
+    }
+
+    if (prefix.isEmpty) {
+      return base.merge(variantStyle);
+    }
+
+    final parts = prefix.split(':');
+    for (var i = parts.length - 1; i >= 0; i--) {
+      final part = parts[i];
+      if (_isBreakpoint(part)) {
+        final min = config.breakpointOf(part);
+        variantStyle = BoxStyler().onBreakpoint(
+          Breakpoint(minWidth: min),
+          variantStyle,
+        );
+      } else if (_boxVariants.containsKey(part)) {
+        variantStyle = _boxVariants[part]!(BoxStyler(), variantStyle);
+      }
+    }
+
+    return base.merge(variantStyle);
+  }
+
   FlexBoxStyler parseFlex(String classNames) {
     final tokens = listTokens(classNames);
 
@@ -888,17 +1183,20 @@ class TwParser {
     // This matches Tailwind: below breakpoint = block, at breakpoint = flex
     var styler = hasBaseFlex ? FlexBoxStyler() : FlexBoxStyler().column();
 
-    final transformGroups = _groupTransformsByPrefix(
-      tokens,
-      _flexVariants.keys.toSet(),
-    );
+    final allowedVariants = _flexVariants.keys.toSet();
+
+    final transformGroups = _groupTransformsByPrefix(tokens, allowedVariants);
+    final borderGroups = _groupBordersByPrefix(tokens, allowedVariants);
 
     for (final token in tokens) {
       final base = token.substring(token.lastIndexOf(':') + 1);
+      // Skip tokens handled by grouped application
       if (_isTransformToken(base)) continue;
+      if (_isBorderToken(base)) continue;
       styler = _applyFlexToken(styler, token);
     }
 
+    styler = _applyBordersToFlexStyler(styler, borderGroups);
     return _applyTransformsToFlexStyler(styler, transformGroups);
   }
 
@@ -906,17 +1204,20 @@ class TwParser {
     final tokens = listTokens(classNames);
     var styler = BoxStyler();
 
-    final transformGroups = _groupTransformsByPrefix(
-      tokens,
-      _boxVariants.keys.toSet(),
-    );
+    final allowedVariants = _boxVariants.keys.toSet();
+
+    final transformGroups = _groupTransformsByPrefix(tokens, allowedVariants);
+    final borderGroups = _groupBordersByPrefix(tokens, allowedVariants);
 
     for (final token in tokens) {
       final base = token.substring(token.lastIndexOf(':') + 1);
+      // Skip tokens handled by grouped application
       if (_isTransformToken(base)) continue;
+      if (_isBorderToken(base)) continue;
       styler = _applyBoxToken(styler, token);
     }
 
+    styler = _applyBordersToBoxStyler(styler, borderGroups);
     return _applyTransformsToStyler(styler, transformGroups);
   }
 
@@ -1201,6 +1502,9 @@ class TwParser {
       }
     } else if (token == 'min-w-0') {
       result = styler.minWidth(0);
+    } else if (token == 'min-w-auto') {
+      // Escape hatch for flex-1 auto min constraint - handled at widget layer
+      result = styler;
     } else if (token == 'min-h-0') {
       result = styler.minHeight(0);
     } else if (token.startsWith('flex-') ||
@@ -1217,26 +1521,9 @@ class TwParser {
       } else {
         handled = false;
       }
-    } else if (_parseBorderToken(token, config) case final border?) {
-      result = _applyBorderToFlex(result, border);
-    } else if (token == 'border') {
-      result = styler.borderAll(color: _defaultBorderColor(config), width: 1);
-    } else if (token.startsWith('border-')) {
-      final key = token.substring(7);
-      final width = config.borderWidthOf(key, fallback: -1);
-      if (width > 0) {
-        result = styler.borderAll(
-          color: _defaultBorderColor(config),
-          width: width,
-        );
-      } else {
-        final color = config.colorOf(key);
-        if (color != null) {
-          result = styler.borderAll(color: color, width: 1);
-        } else {
-          handled = false;
-        }
-      }
+    } else if (_isBorderToken(token)) {
+      // Border tokens are handled via grouped borders in parseFlex/parseBox.
+      // We skip them here to avoid double-handling.
     } else if (token == 'rounded') {
       result = styler.borderRounded(config.radiusOf(''));
     } else if (_parseRadiusToken(token, config) case final radius?) {
@@ -1300,6 +1587,9 @@ class TwParser {
       }
     } else if (token == 'min-w-0') {
       result = styler.minWidth(0);
+    } else if (token == 'min-w-auto') {
+      // Escape hatch for flex-1 auto min constraint - handled at widget layer
+      result = styler;
     } else if (token == 'min-h-0') {
       result = styler.minHeight(0);
     } else if (token.startsWith('flex-') ||
@@ -1316,24 +1606,9 @@ class TwParser {
       } else {
         handled = false;
       }
-    } else if (_parseBorderToken(token, config) case final border?) {
-      result = _applyBorderToBox(result, border);
-    } else if (token.startsWith('border-')) {
-      final key = token.substring(7);
-      final width = config.borderWidthOf(key, fallback: -1);
-      if (width > 0) {
-        result = styler.borderAll(
-          color: _defaultBorderColor(config),
-          width: width,
-        );
-      } else {
-        final color = config.colorOf(key);
-        if (color != null) {
-          result = styler.borderAll(color: color, width: 1);
-        } else {
-          handled = false;
-        }
-      }
+    } else if (_isBorderToken(token)) {
+      // Border tokens are handled via grouped borders in parseFlex/parseBox.
+      // We skip them here to avoid double-handling.
     } else if (token == 'rounded') {
       result = styler.borderRounded(config.radiusOf(''));
     } else if (_parseRadiusToken(token, config) case final radius?) {
