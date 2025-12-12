@@ -34,14 +34,3 @@ class SpecTween<T extends Spec<T>> extends Tween<T?> {
   }
 }
 
-class WidgeSpecTween<S extends Spec<S>> extends Tween<StyleSpec<S>?> {
-  WidgeSpecTween({super.begin, super.end});
-
-  @override
-  StyleSpec<S>? lerp(double t) {
-    if (begin == null) return end;
-    if (end == null) return begin;
-
-    return begin?.lerp(end, t);
-  }
-}

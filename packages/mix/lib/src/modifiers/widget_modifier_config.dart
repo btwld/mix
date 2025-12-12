@@ -721,7 +721,9 @@ final defaultModifier = {
   ClipRRectModifier: ClipRRectModifier(),
   ClipPathModifier: ClipPathModifier(),
   ClipTriangleModifier: ClipTriangleModifier(),
+  ClipRectModifier: ClipRectModifier(),
   OpacityModifier: OpacityModifier(),
+  ShaderMaskModifier: ShaderMaskModifier(),
 };
 
 class ModifierListTween extends Tween<List<WidgetModifier>?> {

@@ -35,12 +35,6 @@ class MixOps {
 
   const MixOps._();
 
-  @Deprecated('Use resolve(context, Prop<List<V>>?) directly')
-  static List<V>? resolvePropList<T extends Prop<V>, V>(
-    BuildContext context,
-    List<T>? a,
-  ) => _resolveList(context, a);
-
   static List<V>? resolveList<V>(BuildContext context, Prop<List<V>>? prop) {
     return resolve(context, prop);
   }
@@ -321,22 +315,6 @@ class PropOps {
   ///
   /// Delegates to the prop's resolveProp method with the given context.
   static V resolve<V>(Prop<V> prop, BuildContext context) {
-    // Delegate to Prop's own resolveProp method
-    return prop.resolveProp(context);
-  }
-
-  /// Merges two Prop instances containing Mix values.
-  ///
-  /// Delegates to the current prop's mergeProp method.
-  static Prop<V> mergeMix<V>(Prop<V> current, Prop<V>? other) {
-    // Delegate to Prop's own mergeProp method
-    return current.mergeProp(other);
-  }
-
-  /// Resolves a Prop instance containing Mix values to its final value.
-  ///
-  /// Delegates to the prop's resolveProp method with the given context.
-  static V resolveMix<V>(Prop<V> prop, BuildContext context) {
     // Delegate to Prop's own resolveProp method
     return prop.resolveProp(context);
   }
