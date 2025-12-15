@@ -1,47 +1,113 @@
+---
+title: Widget Modifiers
+---
+
+import { Callout } from "nextra/components";
 
 # Widget Modifiers
 
-In Mix, a modifier is simply a method you use on a `Style` to add extra behavior or effects to a widget—without having to change the widget tree itself. When you use a modifier, it wraps your widget with another widget (like `Transform`, `Padding`, and so on). This lets you tweak how your widget looks or acts, all while keeping the widget tree clean and unchanged.
+Modifiers wrap a widget with another widget (like `Transform`, `Padding`, or `Opacity`) to add effects without changing the widget tree. Use the `.wrap()` method with a `ModifierMix` class.
 
-To make modifiers easy to identify and use, Mix follows a clear naming pattern: all modifiers start with the prefix `wrap`. This convention helps you quickly spot and consistently apply modifiers throughout your styles.
+## How Modifiers Work
 
-## Understanding the Mechanics
-
-Take the `wrapOpacity` method, for instance. The Container widget doesn't inherently possess the ability to change its opacity. But, by employing a Opacity widget as a parent, we can introduce this effect.
+Use `.wrap()` with a modifier mix class to wrap a widget:
 
 ```dart
+import 'package:flutter/material.dart';
+import 'package:mix/mix.dart';
+
 final style = BoxStyler()
-  .color(Colors.red)
-  .size(100, 100)
-  .wrapOpacity(0.4)
+    .color(Colors.red)
+    .size(100, 100)
+    .wrap(.opacity(0.4));
 ```
 
-in this case, the `Box` will be wrapped with an `Opacity` widget with an opacity of 0.4. The final widget tree will be equivalent to:
+This produces a widget tree equivalent to `Opacity(opacity: 0.4, child: Container(...))`.
+
+## Built-in Modifiers
+
+| ModifierMix Class | Description | Wrapper Widget |
+|-------------------|-------------|----------------|
+| `.opacity(value)` | Sets opacity | `Opacity` |
+| `.padding(insets)` | Adds padding | `Padding` |
+| `.align(alignment)` | Sets alignment | `Align` |
+| `.aspectRatio(ratio)` | Constrains aspect ratio | `AspectRatio` |
+| `.flexible(flex: flex, fit: fit)` | Makes flexible in Flex layouts | `Flexible` |
+| `.transform(matrix)` | Applies transform | `Transform` |
+| `.visibility(visible: visible)` | Shows/hides widget | `Visibility` |
+| `.clipRect()` | Clips to rectangle | `ClipRect` |
+| `.clipRRect(borderRadius: radius)` | Clips to rounded rectangle | `ClipRRect` |
+| `.clipOval()` | Clips to oval | `ClipOval` |
+
+### Usage Examples
 
 ```dart
-Opacity(
-  opacity: 0.4,
-  child: Container(...),
-);
+import 'package:flutter/material.dart';
+import 'package:mix/mix.dart';
+
+// Combine multiple modifiers
+final cardStyle = BoxStyler()
+    .color(Colors.white)
+    .size(200, 100)
+    .wrap(.opacity(0.9))
+    .wrap(.padding(.all(16)))
+    .wrap(.align(alignment: .center));
+
+// Use transform methods for scale/rotate
+final buttonStyle = BoxStyler()
+    .color(Colors.blue)
+    .paddingAll(16)
+    .scale(1.0)
+    .onHovered(BoxStyler().scale(1.1));
 ```
 
-### Creating a custom modifier
+## Modifier Ordering
 
-Mix provides a set of built-in modifiers that can be used out of the box. But you can also create your own modifiers to fit your needs.
-
-Creating a modifier is like creating a `Widget` but instead of extending `StatelessWidget`, you extend `WidgetModifier`. Define the properties you want to modify and the widget you want to decorate.
+Modifiers are applied from innermost to outermost in the order they are chained. This means the last modifier in the chain becomes the outermost wrapper:
 
 ```dart
+// Result: Align → Opacity → Padding → Box
+final style = BoxStyler()
+    .wrap(.padding(.all(8)))  // innermost wrapper
+    .wrap(.opacity(0.5))                 // middle wrapper
+    .wrap(.align(alignment: .center));   // outermost wrapper
+```
+
+<Callout type="info">
+  The order of modifiers matters. Padding applied before opacity will have its padding inside the opacity effect, while padding after opacity will be outside.
+</Callout>
+
+## Creating Custom Modifiers
+
+Create custom modifiers with two classes:
+
+1. **WidgetModifier** - Builds the wrapper widget
+2. **ModifierMix** - Handles merging and resolving
+
+### Step 1: Create the WidgetModifier
+
+```dart
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+
+/// Modifier that applies opacity to its child.
 final class OpacityModifier extends WidgetModifier<OpacityModifier> {
-
+  /// Opacity value between 0.0 and 1.0 (inclusive).
   final double opacity;
+
   const OpacityModifier([double? opacity]) : opacity = opacity ?? 1.0;
 
   @override
-  OpacityModifier copyWith({double? opacity});
+  OpacityModifier copyWith({double? opacity}) {
+    return OpacityModifier(opacity ?? this.opacity);
+  }
 
   @override
-  OpacityModifier lerp(OpacityModifier? other, double t);
+  OpacityModifier lerp(OpacityModifier? other, double t) {
+    if (other == null) return this;
+    // Linear interpolation for smooth animations
+    return OpacityModifier(MixOps.lerp(opacity, other.opacity, t)!);
+  }
 
   @override
   List<Object?> get props => [opacity];
@@ -53,35 +119,84 @@ final class OpacityModifier extends WidgetModifier<OpacityModifier> {
 }
 ```
 
-The `build` method is the most important method in a modifier. It's the method that will be called to build the widget tree. It's where you define the widget tree that will be wrapped by the modifier and how it will be modified.
+Key methods to implement:
 
-After creating the `WidgetModifier`, you need to create a Mix class for applying the modifier. This class will be used to make the modifier mergeable and resolveable.
+| Method | Purpose |
+|--------|---------|
+| `copyWith` | Creates a copy with optional property updates |
+| `lerp` | Linear interpolation for animations between two modifier states |
+| `props` | List of properties for equality comparison |
+| `build` | Constructs the wrapper widget |
+
+### Step 2: Create the ModifierMix
+
+The `ModifierMix` class makes the modifier mergeable and resolvable. It uses `Prop<T>` for properties to support tokens and lazy resolution.
 
 ```dart
+import 'package:flutter/widgets.dart';
+import 'package:mix/mix.dart';
+
+/// Mix class for applying opacity modifications.
 class OpacityModifierMix extends ModifierMix<OpacityModifier> {
   final Prop<double>? opacity;
 
   const OpacityModifierMix.create({this.opacity});
 
+  /// Convenience constructor with direct value
   OpacityModifierMix({double? opacity})
-    : this.create(opacity: Prop.maybe(opacity));
+      : this.create(opacity: Prop.maybe(opacity));
 
   @override
-  OpacityModifier resolve(BuildContext context);
+  OpacityModifier resolve(BuildContext context) {
+    return OpacityModifier(opacity?.resolveProp(context));
+  }
 
   @override
-  OpacityModifierMix merge(OpacityModifierMix? other);
+  OpacityModifierMix merge(OpacityModifierMix? other) {
+    if (other == null) return this;
+
+    return OpacityModifierMix.create(
+      opacity: MixOps.merge(opacity, other.opacity),
+    );
+  }
 
   @override
   List<Object?> get props => [opacity];
 }
 ```
 
-To use your custom modifier in a style, you can use it through the `.wrap` method on your style. For example, if you have a `BoxStyler` and want to apply your custom `OpacityModifierMix`, you can do:
+Key methods:
+
+| Method | Purpose |
+|--------|---------|
+| `resolve` | Resolves `Prop` values using BuildContext and creates the final `WidgetModifier` |
+| `merge` | Combines two `ModifierMix` instances, with other's values taking precedence |
+| `props` | List of properties for equality comparison |
+
+### Step 3: Use the Custom Modifier
+
+To use your custom modifier in a style, use the `.wrap()` method:
 
 ```dart
+import 'package:flutter/material.dart';
+import 'package:mix/mix.dart';
+
 final style = BoxStyler()
-  .color(Colors.red)
-  .size(100, 100)
-  .wrap(OpacityModifierMix(opacity: 0.4))
+    .color(Colors.red)
+    .size(100, 100)
+    .wrap(.opacity(0.4));
+
+// With tokens
+final $opacityToken = DoubleToken('custom.opacity');
+
+final tokenStyle = BoxStyler()
+    .color(Colors.blue)
+    .wrap(.opacity(Prop.token($opacityToken)));
 ```
+
+## Best Practices
+
+- Use modifiers for transforms, visibility, layout adjustments, and clipping
+- Use styler methods (not modifiers) for colors, borders, shadows
+- Avoid deeply nested modifier chains
+- Implement `lerp` properly for smooth animations

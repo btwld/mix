@@ -51,6 +51,17 @@ class _Example extends StatelessWidget {
         .width(100)
         .paddingAll(16.0);
 
-    return Box(style: style);
+    return Box(
+      style: style,
+      child: MixScope(
+        colors: {$primaryColor: Colors.red},
+        child: StyledText(
+          'Hello, World!',
+          style: TextStyler()
+              .color($primaryColor())
+              .wrap(.new().padding(.all($spacing()))),
+        ),
+      ),
+    );
   }
 }

@@ -17,7 +17,7 @@ class Example extends StatelessWidget {
         .fontWeight(FontWeight.w600)
         .color(Colors.blue.shade700)
         .onHovered(TextStyler().color(Colors.red))
-        .animate(AnimationConfig.easeInOut(1.s));
+        .animate(.easeInOut(1.s));
 
     final iconStyle = IconStyler().size(20).color(Colors.blueAccent);
 

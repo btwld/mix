@@ -15,7 +15,7 @@ final style = FlexBoxStyler()
  .direction(Axis.horizontal)
  .mainAxisAlignment(MainAxisAlignment.spaceBetween)
  .crossAxisAlignment(CrossAxisAlignment.center)
- .padding(16)
+ .paddingAll(16)
  .spacing(12)
  .color(Colors.grey.shade100)
  .borderRounded(8);
@@ -32,11 +32,11 @@ FlexBox(
 
 ## Constructor
 
-| Prop  | Type         | Required / Default Value                |
-|-------|--------------|------------------------------------------|
-| `style` | `Style` | `const FlexBoxStyler.create()` |
-| `styleSpec` | `StyleSpec?` | `Optional` |
-| `children` | `List<Widget>` | `const <Widget>[]` |
+| Prop | Type | Required / Default Value |
+|------|------|--------------------------|
+| `style` | `FlexBoxStyler?` | Optional, defaults to `const FlexBoxStyler.create()` |
+| `styleSpec` | `StyleSpec<FlexBoxSpec>?` | Optional |
+| `children` | `List<Widget>` | Optional, defaults to `const <Widget>[]` |
 
 ## Style API Reference
 
@@ -242,4 +242,3 @@ FlexBox(
 | `onFocused` | Creates a variant for focused state |
 | `onDisabled` | Creates a variant for disabled state |
 | `onEnabled` | Creates a variant for enabled state (opposite of disabled) |
-

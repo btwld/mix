@@ -23,6 +23,9 @@ Implicit animations are the easiest way to animate style changes—Mix interpola
 This example demonstrates an implicit animation in Mix. When the `appear` state changes, the box smoothly transitions its scale between 0.1 and 1 using the `.animate(...)` modifier. The `AnimationConfig.easeInOut(1.s)` sets the animation to use an ease-in-out curve over 1 second.
 
 ```dart
+import 'package:flutter/material.dart';
+import 'package:mix/mix.dart';
+
 class ScaleAnimation extends StatefulWidget {
   const ScaleAnimation({super.key});
 
@@ -52,7 +55,7 @@ class _ScaleAnimationState extends State<ScaleAnimation> {
         .width(100)
         .borderRounded(10)
         .scale(appear ? 1 : 0.1) // state-based
-        .animate(AnimationConfig.easeInOut(1.s));
+        .animate(.easeInOut(1.s));
 
     return Box(style: style);
   }
@@ -131,13 +134,11 @@ class _CompressExpandAnimationState extends State<CompressExpandAnimation> {
           trigger: _isExpanded,
           phases: AnimationPhases.values,
           styleBuilder: (phase, style) => switch (phase) {
-            .initial => style
-              .scale(1),
+            .initial => style.scale(1),
             .compress => style
                 .scale(0.75)
                 .color(Colors.red.shade800),
-            .expanded =>
-              style
+            .expanded => style
                 .scale(1.25)
                 .borderRounded(20)
                 .color(Colors.yellow.shade300),
@@ -226,16 +227,16 @@ class _HeartKeyframeAnimationState extends State<HeartKeyframeAnimation> {
             ], initial: 0.0),
           ],
           styleBuilder: (values, style) {
-            final scale = values.get('scale');
-            final verticalOffset = values.get('verticalOffset');
-            final verticalStretch = values.get('verticalStretch');
-            final angle = values.get('angle');
+            final scale = values.get<double>('scale');
+            final verticalOffset = values.get<double>('verticalOffset');
+            final verticalStretch = values.get<double>('verticalStretch');
+            final angle = values.get<double>('angle');
 
-            return style.wrapTransform(
+            return style.transform(
               Matrix4.identity()
-                ..scaleByDouble(scale, scale, scale, 1.0)
-                ..translateByDouble(0, verticalOffset, 0, 1)
-                ..scaleByDouble(1, verticalStretch, 1, 1)
+                ..scale(scale, scale, scale)
+                ..translate(0.0, verticalOffset, 0.0)
+                ..scale(1.0, verticalStretch, 1.0)
                 ..rotateZ(angle),
             );
           },

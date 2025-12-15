@@ -606,14 +606,14 @@ void main() {
       });
 
       test('titleCase utility works correctly', () {
-        final attribute = TextStyler().titleCase();
+        final attribute = TextStyler().titlecase();
 
         expect(attribute.$textDirectives, isNotNull);
         expect(attribute.$textDirectives!.length, 1);
       });
 
       test('sentenceCase utility works correctly', () {
-        final attribute = TextStyler().sentenceCase();
+        final attribute = TextStyler().sentencecase();
 
         expect(attribute.$textDirectives, isNotNull);
         expect(attribute.$textDirectives!.length, 1);

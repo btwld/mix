@@ -31,7 +31,7 @@ class _ExampleState extends State<Example> {
         .borderRounded(30)
         .color(Colors.grey.shade200)
         .borderAll(color: Colors.grey.shade300, width: 2)
-        .animate(AnimationConfig.spring(300.ms))
+        .animate(.spring(300.ms))
         .variant(
           ContextVariant.widgetState(WidgetState.selected),
           BoxStyler()

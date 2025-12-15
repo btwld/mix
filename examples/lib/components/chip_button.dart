@@ -22,7 +22,7 @@ final chipButtonContainer = BoxStyler()
       BoxStyler().color(Colors.black),
     )
     .alignment(Alignment.center)
-    .animate(AnimationConfig.easeInOut(300.ms));
+    .animate(.easeInOut(300.ms));
 
 class FilterChipButton extends StatefulWidget {
   const FilterChipButton({
