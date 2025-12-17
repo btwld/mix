@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mix_tailwinds/mix_tailwinds.dart';
 
@@ -5,11 +6,41 @@ void main() {
   runApp(const TailwindParityApp());
 }
 
+/// Parses URL query parameters for screenshot mode (web only).
+/// Usage: ?screenshot=true&width=480
+class ScreenshotConfig {
+  static bool get isScreenshotMode {
+    if (!kIsWeb) return false;
+    final params = Uri.base.queryParameters;
+    return params['screenshot'] == 'true';
+  }
+
+  static double get width {
+    if (!kIsWeb) return 480;
+    final params = Uri.base.queryParameters;
+    return double.tryParse(params['width'] ?? '') ?? 480;
+  }
+}
+
 class TailwindParityApp extends StatelessWidget {
   const TailwindParityApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Screenshot mode: render clean preview without UI chrome
+    if (ScreenshotConfig.isScreenshotMode) {
+      final width = ScreenshotConfig.width;
+      return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+          backgroundColor: const Color(0xFFF3F4F6),
+          body: SingleChildScrollView(
+            child: TailwindParityPreview(width: width, scrollable: false),
+          ),
+        ),
+      );
+    }
+
     return MaterialApp(
       title: 'mix_tailwinds vs Tailwind CSS',
       theme: ThemeData(
@@ -217,7 +248,8 @@ class _FilledButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Div(
-      classNames: '$classNames flex items-center justify-center min-w-0 overflow-hidden',
+      classNames:
+          '$classNames flex items-center justify-center min-w-0 overflow-hidden',
       child: P(
         text: label,
         classNames: 'text-base font-semibold text-white truncate',
@@ -235,7 +267,8 @@ class _OutlinedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Div(
-      classNames: '$classNames flex items-center justify-center min-w-0 overflow-hidden',
+      classNames:
+          '$classNames flex items-center justify-center min-w-0 overflow-hidden',
       child: P(
         text: label,
         classNames: 'text-base font-semibold text-blue-600 truncate',
