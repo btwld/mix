@@ -12,7 +12,60 @@ The visual output should be identical (or as close as possible given platform di
 
 ---
 
-## Quick Start: Running Comparisons
+## AI Agent Workflow: Live Screenshot Comparison
+
+When the user asks to compare Flutter vs Tailwind rendering, follow these steps:
+
+### Step 1: Start Flutter Web Server
+
+```bash
+cd packages/mix_tailwinds/example
+flutter run -d web-server --web-port=8089
+```
+
+Wait for: `lib/main.dart is being served at http://localhost:8089`
+
+### Step 2: Capture Flutter Screenshots with Playwright
+
+The Flutter app supports a **screenshot mode** via URL query parameters:
+
+```
+http://localhost:8089/?screenshot=true&width=480
+http://localhost:8089/?screenshot=true&width=768
+http://localhost:8089/?screenshot=true&width=1024
+```
+
+For each width:
+1. Resize viewport: `browser_resize(width, 1200)`
+2. Navigate to: `http://localhost:8089/?screenshot=true&width={WIDTH}`
+3. Wait 2 seconds for render
+4. Take full-page screenshot: `browser_take_screenshot(fullPage: true, filename: "flutter-{WIDTH}.png")`
+
+### Step 3: Capture Tailwind Screenshots with Playwright
+
+For each width (480, 768, 1024):
+1. Resize viewport: `browser_resize(width, 1200)`
+2. Navigate to: `file:///path/to/packages/mix_tailwinds/example/real_tailwind/index.html`
+3. Screenshot the `<main>` element: `browser_take_screenshot(element: "main", ref: "e2", filename: "tailwind-{WIDTH}.png")`
+
+### Step 4: Visual Comparison
+
+Read both screenshots at each breakpoint and compare:
+- **Layout**: Flex direction, stacking, alignment
+- **Spacing**: Gaps, padding, margins
+- **Typography**: Font sizes, weights
+- **Colors**: Background, text, borders
+- **Responsive**: `md:` breakpoint behavior at 768px
+
+### Step 5: Report Findings
+
+Document any differences found, categorizing as:
+- **Parser bug**: Wrong layout/spacing/color (needs fix)
+- **Platform difference**: Font rendering, shadows (expected)
+
+---
+
+## Alternative: Golden Test Comparison
 
 ### 1. Generate Flutter Golden Images
 
@@ -33,10 +86,9 @@ Use Playwright to capture screenshots from `real_tailwind/index.html`:
 ```bash
 # Using Playwright MCP tools:
 1. Navigate to file:///path/to/packages/mix_tailwinds/example/real_tailwind/index.html
-2. Resize browser to 480x1400, take screenshot
-3. Resize to 768x1200, take screenshot
-4. Resize to 1024x1200, take screenshot
-5. Save to website/screenshots/tailwind-plan-card/
+2. Resize browser to 480x1200, screenshot <main> element
+3. Resize to 768x1200, screenshot <main> element
+4. Resize to 1024x1200, screenshot <main> element
 ```
 
 ### 3. Run Pixel Comparison

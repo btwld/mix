@@ -43,21 +43,8 @@ const Set<String> _transitionTriggerTokens = {
   'transition-transform',
 };
 
-/// Valid Tailwind duration keys (matches TwConfig._standard.durations).
-const Set<String> _validDurationKeys = {
-  '0',
-  '75',
-  '100',
-  '150',
-  '200',
-  '300',
-  '500',
-  '700',
-  '1000',
-};
-
-/// Valid Tailwind delay keys (matches TwConfig._standard.delays).
-const Set<String> _validDelayKeys = {
+/// Valid Tailwind duration/delay keys (matches TwConfig._standard.durations/delays).
+const Set<String> _validTimeKeys = {
   '0',
   '75',
   '100',
@@ -94,6 +81,19 @@ const Set<String> _validRotationKeys = {
   '45',
   '90',
   '180',
+};
+
+/// Tailwind font weight token mapping.
+const Map<String, FontWeight> _fontWeightTokens = {
+  'font-thin': FontWeight.w100,
+  'font-extralight': FontWeight.w200,
+  'font-light': FontWeight.w300,
+  'font-normal': FontWeight.w400,
+  'font-medium': FontWeight.w500,
+  'font-semibold': FontWeight.w600,
+  'font-bold': FontWeight.w700,
+  'font-extrabold': FontWeight.w800,
+  'font-black': FontWeight.w900,
 };
 
 /// Accumulates individual transform components before building Matrix4.
@@ -136,17 +136,6 @@ class _TransformAccum {
       matrix = matrix.multiplied(Matrix4.diagonal3Values(scale!, scale!, 1.0));
     }
     return matrix;
-  }
-}
-
-/// Groups transform tokens by their prefix chain.
-class _PrefixedTransforms {
-  final _TransformAccum base = _TransformAccum();
-  final Map<String, _TransformAccum> variants = {};
-
-  _TransformAccum forPrefix(String prefix) {
-    if (prefix.isEmpty) return base;
-    return variants.putIfAbsent(prefix, _TransformAccum.new);
   }
 }
 
@@ -201,14 +190,81 @@ class _BorderAccum {
   }
 }
 
-/// Groups border tokens by their prefix chain.
-class _PrefixedBorders {
-  final _BorderAccum base = _BorderAccum();
-  final Map<String, _BorderAccum> variants = {};
+/// Accumulates a transform token into [accum].
+void _accumulateTransform(_TransformAccum accum, String base, TwConfig config) {
+  if (base.startsWith('scale-')) {
+    accum.scale = config.scaleOf(base.substring(6));
+  } else if (base.startsWith('-rotate-')) {
+    final deg = config.rotationOf(base.substring(8));
+    if (deg != null) accum.rotateDeg = -deg;
+  } else if (base.startsWith('rotate-')) {
+    accum.rotateDeg = config.rotationOf(base.substring(7));
+  } else if (base.startsWith('-translate-x-')) {
+    accum.translateX = -config.spaceOf(base.substring(13));
+  } else if (base.startsWith('translate-x-')) {
+    accum.translateX = config.spaceOf(base.substring(12));
+  } else if (base.startsWith('-translate-y-')) {
+    accum.translateY = -config.spaceOf(base.substring(13));
+  } else if (base.startsWith('translate-y-')) {
+    accum.translateY = config.spaceOf(base.substring(12));
+  }
+}
 
-  _BorderAccum forPrefix(String prefix) {
-    if (prefix.isEmpty) return base;
-    return variants.putIfAbsent(prefix, _BorderAccum.new);
+/// Accumulates a border token into [accum].
+/// Uses [_parseBorderDirective] and [_defaultBorderColor] for parsing.
+void _accumulateBorder(_BorderAccum accum, String base, TwConfig config) {
+  if (!base.startsWith('border')) return;
+
+  // Handle color-only tokens (border-red-500)
+  if (base.startsWith('border-')) {
+    final key = base.substring(7);
+    final color = config.colorOf(key);
+    if (color != null &&
+        config.borderWidthOf(key, fallback: -1) <= 0 &&
+        _parseBorderDirective(config, base) == null) {
+      accum.color = color;
+      return;
+    }
+  }
+
+  // Handle 'border' (all sides, width 1)
+  if (base == 'border') {
+    accum.setAll(1.0);
+    return;
+  }
+
+  // Handle width-only tokens (border-2, border-4, etc.)
+  if (base.startsWith('border-')) {
+    final widthKey = base.substring(7);
+    final widthOnly = config.borderWidthOf(widthKey, fallback: -1);
+    if (widthOnly > 0) {
+      accum.setAll(widthOnly);
+      return;
+    }
+  }
+
+  // Handle direction tokens (border-t, border-x-2, border-t-red-500, etc.)
+  if (_parseBorderDirective(config, base) case final directive?) {
+    final width = directive.width;
+    // If directive has a non-default color, set it
+    if (directive.color != _defaultBorderColor(config)) {
+      accum.color = directive.color;
+    }
+
+    switch (directive.direction) {
+      case 't':
+        accum.topWidth = width;
+      case 'b':
+        accum.bottomWidth = width;
+      case 'l':
+        accum.leftWidth = width;
+      case 'r':
+        accum.rightWidth = width;
+      case 'x':
+        accum.setHorizontal(width);
+      case 'y':
+        accum.setVertical(width);
+    }
   }
 }
 
@@ -435,10 +491,10 @@ bool _isAnimationToken(String token) {
 
   // Only match valid Tailwind duration/delay values
   if (token.startsWith('duration-')) {
-    return _validDurationKeys.contains(token.substring(9));
+    return _validTimeKeys.contains(token.substring(9));
   }
   if (token.startsWith('delay-')) {
-    return _validDelayKeys.contains(token.substring(6));
+    return _validTimeKeys.contains(token.substring(6));
   }
   return false;
 }
@@ -497,8 +553,6 @@ final Map<String, FlexBoxStyler Function(FlexBoxStyler)> _flexAtomicHandlers = {
 
 final Map<String, BoxStyler Function(BoxStyler, TwConfig)> _boxAtomicHandlers =
     {
-      'border': (s, cfg) =>
-          s.borderAll(color: _defaultBorderColor(cfg), width: 1),
       // Overflow clipping
       'overflow-hidden': (s, _) => s.clipBehavior(Clip.hardEdge),
       'overflow-visible': (s, _) => s.clipBehavior(Clip.none),
@@ -509,24 +563,13 @@ final Map<String, BoxStyler Function(BoxStyler, TwConfig)> _boxAtomicHandlers =
             MapEntry(token, (BoxStyler s, _) => s.elevation(elevation)),
       ),
       // Font weights (complete Tailwind set)
-      'font-thin': (s, _) =>
-          s.wrapDefaultTextStyle(TextStyleMix().fontWeight(FontWeight.w100)),
-      'font-extralight': (s, _) =>
-          s.wrapDefaultTextStyle(TextStyleMix().fontWeight(FontWeight.w200)),
-      'font-light': (s, _) =>
-          s.wrapDefaultTextStyle(TextStyleMix().fontWeight(FontWeight.w300)),
-      'font-normal': (s, _) =>
-          s.wrapDefaultTextStyle(TextStyleMix().fontWeight(FontWeight.w400)),
-      'font-medium': (s, _) =>
-          s.wrapDefaultTextStyle(TextStyleMix().fontWeight(FontWeight.w500)),
-      'font-semibold': (s, _) =>
-          s.wrapDefaultTextStyle(TextStyleMix().fontWeight(FontWeight.w600)),
-      'font-bold': (s, _) =>
-          s.wrapDefaultTextStyle(TextStyleMix().fontWeight(FontWeight.w700)),
-      'font-extrabold': (s, _) =>
-          s.wrapDefaultTextStyle(TextStyleMix().fontWeight(FontWeight.w800)),
-      'font-black': (s, _) =>
-          s.wrapDefaultTextStyle(TextStyleMix().fontWeight(FontWeight.w900)),
+      ..._fontWeightTokens.map(
+        (token, weight) => MapEntry(
+          token,
+          (BoxStyler s, _) =>
+              s.wrapDefaultTextStyle(TextStyleMix().fontWeight(weight)),
+        ),
+      ),
     };
 
 final Map<String, TextStyler Function(TextStyler)> _textAtomicHandlers = {
@@ -534,15 +577,9 @@ final Map<String, TextStyler Function(TextStyler)> _textAtomicHandlers = {
   'lowercase': (s) => s.lowercase(),
   'capitalize': (s) => s.capitalize(),
   // Font weights (complete Tailwind set)
-  'font-thin': (s) => s.fontWeight(FontWeight.w100),
-  'font-extralight': (s) => s.fontWeight(FontWeight.w200),
-  'font-light': (s) => s.fontWeight(FontWeight.w300),
-  'font-normal': (s) => s.fontWeight(FontWeight.w400),
-  'font-medium': (s) => s.fontWeight(FontWeight.w500),
-  'font-semibold': (s) => s.fontWeight(FontWeight.w600),
-  'font-bold': (s) => s.fontWeight(FontWeight.w700),
-  'font-extrabold': (s) => s.fontWeight(FontWeight.w800),
-  'font-black': (s) => s.fontWeight(FontWeight.w900),
+  ..._fontWeightTokens.map(
+    (token, weight) => MapEntry(token, (TextStyler s) => s.fontWeight(weight)),
+  ),
   // Text truncation: overflow ellipsis + single line
   'truncate': (s) =>
       s.overflow(TextOverflow.ellipsis).maxLines(1).softWrap(false),
@@ -556,18 +593,16 @@ final Map<String, TextStyler Function(TextStyler)> _textAtomicHandlers = {
   // Leading distribution (text centering behavior)
   // leading-even: distributes leading space evenly above/below text
   'leading-even': (s) => s.textHeightBehavior(
-        TextHeightBehaviorMix(
-          leadingDistribution: TextLeadingDistribution.even,
-        ),
-      ),
+    TextHeightBehaviorMix(leadingDistribution: TextLeadingDistribution.even),
+  ),
   // leading-trim: removes extra leading for tighter vertical centering (avatars)
   'leading-trim': (s) => s.textHeightBehavior(
-        TextHeightBehaviorMix(
-          leadingDistribution: TextLeadingDistribution.even,
-          applyHeightToFirstAscent: false,
-          applyHeightToLastDescent: false,
-        ),
-      ),
+    TextHeightBehaviorMix(
+      leadingDistribution: TextLeadingDistribution.even,
+      applyHeightToFirstAscent: false,
+      applyHeightToLastDescent: false,
+    ),
+  ),
   // Letter spacing (tracking-*)
   'tracking-tighter': (s) => s.letterSpacing(-0.8),
   'tracking-tight': (s) => s.letterSpacing(-0.4),
@@ -584,39 +619,63 @@ final Map<String, TextStyler Function(TextStyler)> _textAtomicHandlers = {
 /// Applies a variant modifier (e.g., hover, focus) to a base styler.
 typedef _VariantApplier<S> = S Function(S base, S variant);
 
+typedef _StylerMerge<S> = S Function(S base, S other);
+typedef _BreakpointApplier<S> = S Function(S base, Breakpoint bp, S child);
+typedef _TransformApplier<S> = S Function(S styler, Matrix4 matrix);
+typedef _BorderSideApplier<S> =
+    S Function(S styler, {required Color color, required double width});
+
+Map<String, _VariantApplier<S>> _buildStandardVariants<S>({
+  required _VariantApplier<S> hover,
+  required _VariantApplier<S> focus,
+  required _VariantApplier<S> pressed,
+  required _VariantApplier<S> disabled,
+  required _VariantApplier<S> enabled,
+  required _VariantApplier<S> dark,
+  required _VariantApplier<S> light,
+}) {
+  return {
+    'hover': hover,
+    'focus': focus,
+    'active': pressed, // Tailwind alias
+    'pressed': pressed,
+    'disabled': disabled,
+    'enabled': enabled,
+    'dark': dark,
+    'light': light,
+  };
+}
+
 /// Variant maps for each styler type - single source of truth for prefix handling.
-final _flexVariants = <String, _VariantApplier<FlexBoxStyler>>{
-  'hover': (base, variant) => base.onHovered(variant),
-  'focus': (base, variant) => base.onFocused(variant),
-  'active': (base, variant) => base.onPressed(variant),
-  'pressed': (base, variant) => base.onPressed(variant),
-  'disabled': (base, variant) => base.onDisabled(variant),
-  'enabled': (base, variant) => base.onEnabled(variant),
-  'dark': (base, variant) => base.onDark(variant),
-  'light': (base, variant) => base.onLight(variant),
-};
+final _flexVariants = _buildStandardVariants<FlexBoxStyler>(
+  hover: (b, v) => b.onHovered(v),
+  focus: (b, v) => b.onFocused(v),
+  pressed: (b, v) => b.onPressed(v),
+  disabled: (b, v) => b.onDisabled(v),
+  enabled: (b, v) => b.onEnabled(v),
+  dark: (b, v) => b.onDark(v),
+  light: (b, v) => b.onLight(v),
+);
 
-final _boxVariants = <String, _VariantApplier<BoxStyler>>{
-  'hover': (base, variant) => base.onHovered(variant),
-  'focus': (base, variant) => base.onFocused(variant),
-  'active': (base, variant) => base.onPressed(variant),
-  'pressed': (base, variant) => base.onPressed(variant),
-  'disabled': (base, variant) => base.onDisabled(variant),
-  'enabled': (base, variant) => base.onEnabled(variant),
-  'dark': (base, variant) => base.onDark(variant),
-  'light': (base, variant) => base.onLight(variant),
-};
+final _boxVariants = _buildStandardVariants<BoxStyler>(
+  hover: (b, v) => b.onHovered(v),
+  focus: (b, v) => b.onFocused(v),
+  pressed: (b, v) => b.onPressed(v),
+  disabled: (b, v) => b.onDisabled(v),
+  enabled: (b, v) => b.onEnabled(v),
+  dark: (b, v) => b.onDark(v),
+  light: (b, v) => b.onLight(v),
+);
 
-final _textVariants = <String, _VariantApplier<TextStyler>>{
-  'hover': (base, variant) => base.onHovered(variant),
-  'focus': (base, variant) => base.onFocused(variant),
-  'active': (base, variant) => base.onPressed(variant),
-  'pressed': (base, variant) => base.onPressed(variant),
-  'disabled': (base, variant) => base.onDisabled(variant),
-  'enabled': (base, variant) => base.onEnabled(variant),
-  'dark': (base, variant) => base.onDark(variant),
-  'light': (base, variant) => base.onLight(variant),
-};
+final _textVariants = _buildStandardVariants<TextStyler>(
+  hover: (b, v) => b.onHovered(v),
+  focus: (b, v) => b.onFocused(v),
+  pressed: (b, v) => b.onPressed(v),
+  disabled: (b, v) => b.onDisabled(v),
+  enabled: (b, v) => b.onEnabled(v),
+  dark: (b, v) => b.onDark(v),
+  light: (b, v) => b.onLight(v),
+);
 
 Color _defaultBorderColor(TwConfig config) =>
     config.colorOf('gray-200') ?? const Color(0xFFE5E7EB);
@@ -736,171 +795,161 @@ class TwParser {
     return false;
   }
 
-  bool _hasOnlyKnownPrefixParts(String prefix, Set<String> allowedVariants) {
+  bool _hasOnlyKnownPrefixParts<T>(String prefix, Map<String, T> variants) {
     if (prefix.isEmpty) return true;
     for (final part in prefix.split(':')) {
       if (_isBreakpoint(part)) continue;
-      if (allowedVariants.contains(part)) continue;
+      if (variants.containsKey(part)) continue;
       return false;
     }
     return true;
   }
 
-  /// Groups transform tokens by prefix for variant-aware application.
-  _PrefixedTransforms _groupTransformsByPrefix(
-    List<String> tokens,
-    Set<String> allowedVariants,
-  ) {
-    final result = _PrefixedTransforms();
-
-    for (final token in tokens) {
-      final colonIndex = token.lastIndexOf(':');
-      final prefix = colonIndex > 0 ? token.substring(0, colonIndex) : '';
-      final base = colonIndex > 0 ? token.substring(colonIndex + 1) : token;
-
-      if (!_isTransformToken(base)) continue;
-      if (!_hasOnlyKnownPrefixParts(prefix, allowedVariants)) {
-        onUnsupported?.call(token);
-        continue;
-      }
-
-      final accum = result.forPrefix(prefix);
-
-      if (base.startsWith('scale-')) {
-        accum.scale = config.scaleOf(base.substring(6));
-      } else if (base.startsWith('-rotate-')) {
-        final deg = config.rotationOf(base.substring(8));
-        if (deg != null) accum.rotateDeg = -deg;
-      } else if (base.startsWith('rotate-')) {
-        accum.rotateDeg = config.rotationOf(base.substring(7));
-      } else if (base.startsWith('-translate-x-')) {
-        accum.translateX = -config.spaceOf(base.substring(13));
-      } else if (base.startsWith('translate-x-')) {
-        accum.translateX = config.spaceOf(base.substring(12));
-      } else if (base.startsWith('-translate-y-')) {
-        accum.translateY = -config.spaceOf(base.substring(13));
-      } else if (base.startsWith('translate-y-')) {
-        accum.translateY = config.spaceOf(base.substring(12));
-      }
-    }
-
-    return result;
-  }
-
-  /// Applies a transform via variant chain (e.g., 'md:hover' -> onBreakpoint(md, onHovered(...))).
-  BoxStyler _applyTransformWithVariant(
-    BoxStyler base,
-    String prefix,
-    Matrix4 matrix,
-  ) {
-    if (prefix.isEmpty) {
-      return base.transform(matrix);
-    }
-
-    final parts = prefix.split(':');
-    BoxStyler variantStyle = BoxStyler().transform(matrix);
-
-    for (var i = parts.length - 1; i >= 0; i--) {
-      final part = parts[i];
-      if (_isBreakpoint(part)) {
-        final min = config.breakpointOf(part);
-        variantStyle = BoxStyler().onBreakpoint(
-          Breakpoint(minWidth: min),
-          variantStyle,
-        );
-      } else if (_boxVariants.containsKey(part)) {
-        variantStyle = _boxVariants[part]!(BoxStyler(), variantStyle);
-      }
-    }
-
-    return base.merge(variantStyle);
-  }
-
-  /// Applies grouped transforms to BoxStyler with variant awareness.
-  BoxStyler _applyTransformsToStyler(
-    BoxStyler styler,
-    _PrefixedTransforms transforms,
-  ) {
-    var result = styler;
-
-    if (transforms.base.hasAnyTransform) {
-      result = result.transform(transforms.base.toMatrix4());
-    } else if (transforms.variants.isNotEmpty) {
-      // Provide identity so animations can interpolate from a non-null matrix.
-      result = result.transform(Matrix4.identity());
-    }
-
-    for (final entry in transforms.variants.entries) {
-      final inherited = entry.value.inheritFrom(transforms.base);
-      if (!inherited.hasAnyTransform) continue;
-      result = _applyTransformWithVariant(
-        result,
-        entry.key,
-        inherited.toMatrix4(),
-      );
-    }
-
-    return result;
-  }
-
-  /// Applies a transform with variant handling for FlexBoxStyler.
-  FlexBoxStyler _applyFlexTransformWithVariant(
-    FlexBoxStyler base,
-    String prefix,
-    Matrix4 matrix,
-  ) {
-    if (prefix.isEmpty) {
-      return base.transform(matrix);
-    }
-
-    final parts = prefix.split(':');
-    FlexBoxStyler variantStyle = FlexBoxStyler().transform(matrix);
-
-    for (var i = parts.length - 1; i >= 0; i--) {
-      final part = parts[i];
-      if (_isBreakpoint(part)) {
-        final min = config.breakpointOf(part);
-        variantStyle = FlexBoxStyler().onBreakpoint(
-          Breakpoint(minWidth: min),
-          variantStyle,
-        );
-      } else if (_flexVariants.containsKey(part)) {
-        variantStyle = _flexVariants[part]!(FlexBoxStyler(), variantStyle);
-      }
-    }
-
-    return base.merge(variantStyle);
-  }
-
-  /// Applies grouped transforms to FlexBoxStyler with variant awareness.
-  FlexBoxStyler _applyTransformsToFlexStyler(
-    FlexBoxStyler styler,
-    _PrefixedTransforms transforms,
-  ) {
-    var result = styler;
-
-    if (transforms.base.hasAnyTransform) {
-      result = result.transform(transforms.base.toMatrix4());
-    } else if (transforms.variants.isNotEmpty) {
-      result = result.transform(Matrix4.identity());
-    }
-
-    for (final entry in transforms.variants.entries) {
-      final inherited = entry.value.inheritFrom(transforms.base);
-      if (!inherited.hasAnyTransform) continue;
-      result = _applyFlexTransformWithVariant(
-        result,
-        entry.key,
-        inherited.toMatrix4(),
-      );
-    }
-
-    return result;
-  }
-
   // ---------------------------------------------------------------------------
   // Border accumulation helpers
   // ---------------------------------------------------------------------------
+
+  S _wrapStyleWithPrefix<S>(
+    String prefix,
+    S style, {
+    required Map<String, _VariantApplier<S>> variants,
+    required S Function() newStyler,
+    required _BreakpointApplier<S> applyBreakpoint,
+  }) {
+    if (prefix.isEmpty) return style;
+
+    return _applyPrefixedToken<S>(
+      newStyler(),
+      '$prefix:__tw_internal__',
+      variants,
+      newStyler,
+      (base, _) => style,
+      applyBreakpoint,
+    );
+  }
+
+  S _applyBorderSides<S>(
+    S styler,
+    _BorderAccum border, {
+    required Color color,
+    required _BorderSideApplier<S> top,
+    required _BorderSideApplier<S> bottom,
+    required _BorderSideApplier<S> left,
+    required _BorderSideApplier<S> right,
+  }) {
+    var result = styler;
+
+    if (border.topWidth != null) {
+      result = top(result, color: color, width: border.topWidth!);
+    }
+    if (border.bottomWidth != null) {
+      result = bottom(result, color: color, width: border.bottomWidth!);
+    }
+    if (border.leftWidth != null) {
+      result = left(result, color: color, width: border.leftWidth!);
+    }
+    if (border.rightWidth != null) {
+      result = right(result, color: color, width: border.rightWidth!);
+    }
+
+    return result;
+  }
+
+  S _applyAccumulatedBorders<S>(
+    S styler,
+    _BorderAccum baseBorder,
+    Map<String, _BorderAccum> variantBorders, {
+    required Map<String, _VariantApplier<S>> variants,
+    required S Function() newStyler,
+    required _StylerMerge<S> merge,
+    required _BreakpointApplier<S> applyBreakpoint,
+    required _BorderSideApplier<S> top,
+    required _BorderSideApplier<S> bottom,
+    required _BorderSideApplier<S> left,
+    required _BorderSideApplier<S> right,
+  }) {
+    var result = styler;
+
+    // Base borders
+    if (baseBorder.hasStructure) {
+      final color = baseBorder.color ?? _defaultBorderColor(config);
+      result = _applyBorderSides(
+        result,
+        baseBorder,
+        color: color,
+        top: top,
+        bottom: bottom,
+        left: left,
+        right: right,
+      );
+    }
+
+    // Variant borders
+    for (final entry in variantBorders.entries) {
+      final inherited = entry.value.inheritFrom(baseBorder);
+      if (!inherited.hasStructure) continue;
+
+      final color = inherited.color ?? _defaultBorderColor(config);
+      final variantStyle = _applyBorderSides(
+        newStyler(),
+        inherited,
+        color: color,
+        top: top,
+        bottom: bottom,
+        left: left,
+        right: right,
+      );
+
+      final wrapped = _wrapStyleWithPrefix(
+        entry.key,
+        variantStyle,
+        variants: variants,
+        newStyler: newStyler,
+        applyBreakpoint: applyBreakpoint,
+      );
+      result = merge(result, wrapped);
+    }
+
+    return result;
+  }
+
+  S _applyAccumulatedTransforms<S>(
+    S styler,
+    _TransformAccum baseTransform,
+    Map<String, _TransformAccum> variantTransforms, {
+    required Map<String, _VariantApplier<S>> variants,
+    required S Function() newStyler,
+    required _StylerMerge<S> merge,
+    required _BreakpointApplier<S> applyBreakpoint,
+    required _TransformApplier<S> setTransform,
+  }) {
+    var result = styler;
+
+    // Base transform or identity for animation interpolation.
+    if (baseTransform.hasAnyTransform) {
+      result = setTransform(result, baseTransform.toMatrix4());
+    } else if (variantTransforms.isNotEmpty) {
+      result = setTransform(result, Matrix4.identity());
+    }
+
+    // Variant transforms
+    for (final entry in variantTransforms.entries) {
+      final inherited = entry.value.inheritFrom(baseTransform);
+      if (!inherited.hasAnyTransform) continue;
+
+      final variantStyle = setTransform(newStyler(), inherited.toMatrix4());
+      final wrapped = _wrapStyleWithPrefix(
+        entry.key,
+        variantStyle,
+        variants: variants,
+        newStyler: newStyler,
+        applyBreakpoint: applyBreakpoint,
+      );
+      result = merge(result, wrapped);
+    }
+
+    return result;
+  }
 
   /// Returns true if token establishes border structure (width/direction).
   bool _isBorderStructureToken(String token) {
@@ -940,285 +989,174 @@ class TwParser {
     return _isBorderStructureToken(token) || _isBorderColorOnlyToken(token);
   }
 
-  /// Groups border tokens by prefix for variant-aware application.
-  _PrefixedBorders _groupBordersByPrefix(
-    List<String> tokens,
-    Set<String> allowedVariants,
-  ) {
-    final result = _PrefixedBorders();
+  FlexBoxStyler parseFlex(String classNames) {
+    final tokens = listTokens(classNames);
+
+    // Single pass: track hasBaseFlex and accumulate transforms/borders
+    var hasBaseFlex = false;
+    final baseTransform = _TransformAccum();
+    final baseBorder = _BorderAccum();
+    final variantTransforms = <String, _TransformAccum>{};
+    final variantBorders = <String, _BorderAccum>{};
+
+    // Pre-allocate styler - will be set correctly after loop based on hasBaseFlex
+    var styler = FlexBoxStyler();
 
     for (final token in tokens) {
       final colonIndex = token.lastIndexOf(':');
       final prefix = colonIndex > 0 ? token.substring(0, colonIndex) : '';
       final base = colonIndex > 0 ? token.substring(colonIndex + 1) : token;
 
-      if (!_isBorderToken(base)) continue;
-      if (!_hasOnlyKnownPrefixParts(prefix, allowedVariants)) {
-        onUnsupported?.call(token);
-        continue;
+      // Track base flex during iteration (replaces separate pass)
+      if (prefix.isEmpty &&
+          (base == 'flex' || base == 'flex-row' || base == 'flex-col')) {
+        hasBaseFlex = true;
       }
 
-      final accum = result.forPrefix(prefix);
-
-      // Handle color-only tokens
-      if (_isBorderColorOnlyToken(base)) {
-        final key = base.substring(7);
-        accum.color = config.colorOf(key);
-        continue;
-      }
-
-      // Handle 'border' (all sides, width 1)
-      if (base == 'border') {
-        accum.setAll(1.0);
-        continue;
-      }
-
-      // Handle width-only tokens (border-2, border-4, etc.)
-      final widthKey = base.substring(7);
-      final widthOnly = config.borderWidthOf(widthKey, fallback: -1);
-      if (widthOnly > 0) {
-        accum.setAll(widthOnly);
-        continue;
-      }
-
-      // Handle direction tokens (border-t, border-x-2, border-t-red-500, etc.)
-      if (_parseBorderDirective(config, base) case final directive?) {
-        final width = directive.width;
-        // If directive has a non-default color, set it
-        if (directive.color != _defaultBorderColor(config)) {
-          accum.color = directive.color;
+      // Accumulate transform tokens
+      if (_isTransformToken(base)) {
+        if (!_hasOnlyKnownPrefixParts(prefix, _flexVariants)) {
+          onUnsupported?.call(token);
+          continue;
         }
+        final accum = prefix.isEmpty
+            ? baseTransform
+            : variantTransforms.putIfAbsent(prefix, _TransformAccum.new);
+        _accumulateTransform(accum, base, config);
+        continue;
+      }
 
-        switch (directive.direction) {
-          case 't':
-            accum.topWidth = width;
-          case 'b':
-            accum.bottomWidth = width;
-          case 'l':
-            accum.leftWidth = width;
-          case 'r':
-            accum.rightWidth = width;
-          case 'x':
-            accum.setHorizontal(width);
-          case 'y':
-            accum.setVertical(width);
+      // Accumulate border tokens
+      if (_isBorderToken(base)) {
+        if (!_hasOnlyKnownPrefixParts(prefix, _flexVariants)) {
+          onUnsupported?.call(token);
+          continue;
         }
+        final accum = prefix.isEmpty
+            ? baseBorder
+            : variantBorders.putIfAbsent(prefix, _BorderAccum.new);
+        _accumulateBorder(accum, base, config);
+        continue;
       }
-    }
 
-    return result;
-  }
-
-  /// Applies accumulated borders to FlexBoxStyler.
-  FlexBoxStyler _applyBordersToFlexStyler(
-    FlexBoxStyler styler,
-    _PrefixedBorders borders,
-  ) {
-    var result = styler;
-
-    // Apply base borders
-    if (borders.base.hasStructure) {
-      final color = borders.base.color ?? _defaultBorderColor(config);
-      if (borders.base.topWidth != null) {
-        result = result.borderTop(color: color, width: borders.base.topWidth!);
-      }
-      if (borders.base.bottomWidth != null) {
-        result =
-            result.borderBottom(color: color, width: borders.base.bottomWidth!);
-      }
-      if (borders.base.leftWidth != null) {
-        result =
-            result.borderLeft(color: color, width: borders.base.leftWidth!);
-      }
-      if (borders.base.rightWidth != null) {
-        result =
-            result.borderRight(color: color, width: borders.base.rightWidth!);
-      }
-    }
-
-    // Apply variant borders
-    for (final entry in borders.variants.entries) {
-      final inherited = entry.value.inheritFrom(borders.base);
-      if (!inherited.hasStructure) continue;
-      result = _applyFlexBorderWithVariant(result, entry.key, inherited);
-    }
-
-    return result;
-  }
-
-  /// Applies a border with variant handling for FlexBoxStyler.
-  FlexBoxStyler _applyFlexBorderWithVariant(
-    FlexBoxStyler base,
-    String prefix,
-    _BorderAccum border,
-  ) {
-    final color = border.color ?? _defaultBorderColor(config);
-    var variantStyle = FlexBoxStyler();
-
-    if (border.topWidth != null) {
-      variantStyle = variantStyle.borderTop(color: color, width: border.topWidth!);
-    }
-    if (border.bottomWidth != null) {
-      variantStyle = variantStyle.borderBottom(color: color, width: border.bottomWidth!);
-    }
-    if (border.leftWidth != null) {
-      variantStyle = variantStyle.borderLeft(color: color, width: border.leftWidth!);
-    }
-    if (border.rightWidth != null) {
-      variantStyle = variantStyle.borderRight(color: color, width: border.rightWidth!);
-    }
-
-    if (prefix.isEmpty) {
-      return base.merge(variantStyle);
-    }
-
-    final parts = prefix.split(':');
-    for (var i = parts.length - 1; i >= 0; i--) {
-      final part = parts[i];
-      if (_isBreakpoint(part)) {
-        final min = config.breakpointOf(part);
-        variantStyle = FlexBoxStyler().onBreakpoint(
-          Breakpoint(minWidth: min),
-          variantStyle,
-        );
-      } else if (_flexVariants.containsKey(part)) {
-        variantStyle = _flexVariants[part]!(FlexBoxStyler(), variantStyle);
-      }
-    }
-
-    return base.merge(variantStyle);
-  }
-
-  /// Applies accumulated borders to BoxStyler.
-  BoxStyler _applyBordersToBoxStyler(
-    BoxStyler styler,
-    _PrefixedBorders borders,
-  ) {
-    var result = styler;
-
-    // Apply base borders
-    if (borders.base.hasStructure) {
-      final color = borders.base.color ?? _defaultBorderColor(config);
-      if (borders.base.topWidth != null) {
-        result = result.borderTop(color: color, width: borders.base.topWidth!);
-      }
-      if (borders.base.bottomWidth != null) {
-        result =
-            result.borderBottom(color: color, width: borders.base.bottomWidth!);
-      }
-      if (borders.base.leftWidth != null) {
-        result =
-            result.borderLeft(color: color, width: borders.base.leftWidth!);
-      }
-      if (borders.base.rightWidth != null) {
-        result =
-            result.borderRight(color: color, width: borders.base.rightWidth!);
-      }
-    }
-
-    // Apply variant borders
-    for (final entry in borders.variants.entries) {
-      final inherited = entry.value.inheritFrom(borders.base);
-      if (!inherited.hasStructure) continue;
-      result = _applyBoxBorderWithVariant(result, entry.key, inherited);
-    }
-
-    return result;
-  }
-
-  /// Applies a border with variant handling for BoxStyler.
-  BoxStyler _applyBoxBorderWithVariant(
-    BoxStyler base,
-    String prefix,
-    _BorderAccum border,
-  ) {
-    final color = border.color ?? _defaultBorderColor(config);
-    var variantStyle = BoxStyler();
-
-    if (border.topWidth != null) {
-      variantStyle = variantStyle.borderTop(color: color, width: border.topWidth!);
-    }
-    if (border.bottomWidth != null) {
-      variantStyle = variantStyle.borderBottom(color: color, width: border.bottomWidth!);
-    }
-    if (border.leftWidth != null) {
-      variantStyle = variantStyle.borderLeft(color: color, width: border.leftWidth!);
-    }
-    if (border.rightWidth != null) {
-      variantStyle = variantStyle.borderRight(color: color, width: border.rightWidth!);
-    }
-
-    if (prefix.isEmpty) {
-      return base.merge(variantStyle);
-    }
-
-    final parts = prefix.split(':');
-    for (var i = parts.length - 1; i >= 0; i--) {
-      final part = parts[i];
-      if (_isBreakpoint(part)) {
-        final min = config.breakpointOf(part);
-        variantStyle = BoxStyler().onBreakpoint(
-          Breakpoint(minWidth: min),
-          variantStyle,
-        );
-      } else if (_boxVariants.containsKey(part)) {
-        variantStyle = _boxVariants[part]!(BoxStyler(), variantStyle);
-      }
-    }
-
-    return base.merge(variantStyle);
-  }
-
-  FlexBoxStyler parseFlex(String classNames) {
-    final tokens = listTokens(classNames);
-
-    // Check for base (non-prefixed) flex direction tokens
-    // If only prefixed tokens (md:flex), default to column (block-like)
-    final hasBaseFlex = tokens.any((t) {
-      if (t.contains(':')) return false;
-      return t == 'flex' || t == 'flex-row' || t == 'flex-col';
-    });
-
-    // Default to column (vertical, block-like) when only prefixed flex
-    // This matches Tailwind: below breakpoint = block, at breakpoint = flex
-    var styler = hasBaseFlex ? FlexBoxStyler() : FlexBoxStyler().column();
-
-    final allowedVariants = _flexVariants.keys.toSet();
-
-    final transformGroups = _groupTransformsByPrefix(tokens, allowedVariants);
-    final borderGroups = _groupBordersByPrefix(tokens, allowedVariants);
-
-    for (final token in tokens) {
-      final base = token.substring(token.lastIndexOf(':') + 1);
-      // Skip tokens handled by grouped application
-      if (_isTransformToken(base)) continue;
-      if (_isBorderToken(base)) continue;
+      // Apply atomic token
       styler = _applyFlexToken(styler, token);
     }
 
-    styler = _applyBordersToFlexStyler(styler, borderGroups);
-    return _applyTransformsToFlexStyler(styler, transformGroups);
+    // Default to column (vertical, block-like) when only prefixed flex
+    // This matches Tailwind: below breakpoint = block, at breakpoint = flex
+    if (!hasBaseFlex) {
+      styler = styler.column();
+    }
+
+    // Apply accumulated borders
+    styler = _applyAccumulatedBorders(
+      styler,
+      baseBorder,
+      variantBorders,
+      variants: _flexVariants,
+      newStyler: FlexBoxStyler.new,
+      merge: (a, b) => a.merge(b),
+      applyBreakpoint: (b, bp, s) => b.onBreakpoint(bp, s),
+      top: (s, {required color, required width}) =>
+          s.borderTop(color: color, width: width),
+      bottom: (s, {required color, required width}) =>
+          s.borderBottom(color: color, width: width),
+      left: (s, {required color, required width}) =>
+          s.borderLeft(color: color, width: width),
+      right: (s, {required color, required width}) =>
+          s.borderRight(color: color, width: width),
+    );
+
+    // Apply accumulated transforms with identity-matrix rule
+    return _applyAccumulatedTransforms(
+      styler,
+      baseTransform,
+      variantTransforms,
+      variants: _flexVariants,
+      newStyler: FlexBoxStyler.new,
+      merge: (a, b) => a.merge(b),
+      applyBreakpoint: (b, bp, s) => b.onBreakpoint(bp, s),
+      setTransform: (s, m) => s.transform(m),
+    );
   }
 
   BoxStyler parseBox(String classNames) {
     final tokens = listTokens(classNames);
+
+    // Single pass: accumulate transforms/borders while applying atomic tokens
+    final baseTransform = _TransformAccum();
+    final baseBorder = _BorderAccum();
+    final variantTransforms = <String, _TransformAccum>{};
+    final variantBorders = <String, _BorderAccum>{};
+
     var styler = BoxStyler();
 
-    final allowedVariants = _boxVariants.keys.toSet();
-
-    final transformGroups = _groupTransformsByPrefix(tokens, allowedVariants);
-    final borderGroups = _groupBordersByPrefix(tokens, allowedVariants);
-
     for (final token in tokens) {
-      final base = token.substring(token.lastIndexOf(':') + 1);
-      // Skip tokens handled by grouped application
-      if (_isTransformToken(base)) continue;
-      if (_isBorderToken(base)) continue;
+      final colonIndex = token.lastIndexOf(':');
+      final prefix = colonIndex > 0 ? token.substring(0, colonIndex) : '';
+      final base = colonIndex > 0 ? token.substring(colonIndex + 1) : token;
+
+      // Accumulate transform tokens
+      if (_isTransformToken(base)) {
+        if (!_hasOnlyKnownPrefixParts(prefix, _boxVariants)) {
+          onUnsupported?.call(token);
+          continue;
+        }
+        final accum = prefix.isEmpty
+            ? baseTransform
+            : variantTransforms.putIfAbsent(prefix, _TransformAccum.new);
+        _accumulateTransform(accum, base, config);
+        continue;
+      }
+
+      // Accumulate border tokens
+      if (_isBorderToken(base)) {
+        if (!_hasOnlyKnownPrefixParts(prefix, _boxVariants)) {
+          onUnsupported?.call(token);
+          continue;
+        }
+        final accum = prefix.isEmpty
+            ? baseBorder
+            : variantBorders.putIfAbsent(prefix, _BorderAccum.new);
+        _accumulateBorder(accum, base, config);
+        continue;
+      }
+
+      // Apply atomic token
       styler = _applyBoxToken(styler, token);
     }
 
-    styler = _applyBordersToBoxStyler(styler, borderGroups);
-    return _applyTransformsToStyler(styler, transformGroups);
+    // Apply accumulated borders
+    styler = _applyAccumulatedBorders(
+      styler,
+      baseBorder,
+      variantBorders,
+      variants: _boxVariants,
+      newStyler: BoxStyler.new,
+      merge: (a, b) => a.merge(b),
+      applyBreakpoint: (b, bp, s) => b.onBreakpoint(bp, s),
+      top: (s, {required color, required width}) =>
+          s.borderTop(color: color, width: width),
+      bottom: (s, {required color, required width}) =>
+          s.borderBottom(color: color, width: width),
+      left: (s, {required color, required width}) =>
+          s.borderLeft(color: color, width: width),
+      right: (s, {required color, required width}) =>
+          s.borderRight(color: color, width: width),
+    );
+
+    // Apply accumulated transforms with identity-matrix rule
+    return _applyAccumulatedTransforms(
+      styler,
+      baseTransform,
+      variantTransforms,
+      variants: _boxVariants,
+      newStyler: BoxStyler.new,
+      merge: (a, b) => a.merge(b),
+      applyBreakpoint: (b, bp, s) => b.onBreakpoint(bp, s),
+      setTransform: (s, m) => s.transform(m),
+    );
   }
 
   TextStyler parseText(String classNames) {
@@ -1303,79 +1241,25 @@ class TwParser {
   CurveAnimationConfig? parseAnimation(String classNames) =>
       parseAnimationFromTokens(listTokens(classNames));
 
-  /// Parses transform tokens and returns a composite Matrix4.
+  /// Parses transform tokens from class names and returns a Matrix4.
   ///
-  /// @deprecated Use [parseBox] or [parseFlex] which now handle transforms with
-  /// full variant support.
-  @Deprecated(
-    'Transforms are now handled by parseBox/parseFlex with variant support',
-  )
-  ///
-  /// Tailwind CSS applies transforms in a fixed order regardless of class order:
-  /// translate → rotate → scale
-  ///
-  /// This method extracts all transform values and builds a single matrix
-  /// following that order to match Tailwind's behavior exactly.
+  /// For full variant support, use [parseBox] or [parseFlex] instead.
   ///
   /// Returns null if no transform tokens are present.
+  @Deprecated(
+    'Use parseBox/parseFlex which handle transforms with variant support',
+  )
   Matrix4? parseTransform(String classNames) {
-    final tokens = listTokens(classNames);
+    final accum = _TransformAccum();
 
-    double? scale;
-    double? rotateDeg;
-    double? translateX;
-    double? translateY;
-
-    for (final token in tokens) {
-      // Strip any prefix (hover:, md:, etc.) to get base token
+    for (final token in listTokens(classNames)) {
       final base = token.substring(token.lastIndexOf(':') + 1);
-
-      if (base.startsWith('scale-')) {
-        scale = config.scaleOf(base.substring(6));
-      } else if (base.startsWith('-rotate-')) {
-        final deg = config.rotationOf(base.substring(8));
-        if (deg != null) rotateDeg = -deg;
-      } else if (base.startsWith('rotate-')) {
-        rotateDeg = config.rotationOf(base.substring(7));
-      } else if (base.startsWith('-translate-x-')) {
-        final px = config.spaceOf(base.substring(13));
-        translateX = -px;
-      } else if (base.startsWith('translate-x-')) {
-        translateX = config.spaceOf(base.substring(12));
-      } else if (base.startsWith('-translate-y-')) {
-        final px = config.spaceOf(base.substring(13));
-        translateY = -px;
-      } else if (base.startsWith('translate-y-')) {
-        translateY = config.spaceOf(base.substring(12));
+      if (_isTransformToken(base)) {
+        _accumulateTransform(accum, base, config);
       }
     }
 
-    // No transform tokens found
-    if (scale == null &&
-        rotateDeg == null &&
-        translateX == null &&
-        translateY == null) {
-      return null;
-    }
-
-    // Build matrix in Tailwind's fixed order: translate → rotate → scale
-    var matrix = Matrix4.identity();
-
-    if (translateX != null || translateY != null) {
-      matrix = matrix.multiplied(
-        Matrix4.translationValues(translateX ?? 0.0, translateY ?? 0.0, 0.0),
-      );
-    }
-
-    if (rotateDeg != null) {
-      matrix = matrix.multiplied(Matrix4.rotationZ(rotateDeg * math.pi / 180));
-    }
-
-    if (scale != null) {
-      matrix = matrix.multiplied(Matrix4.diagonal3Values(scale, scale, 1.0));
-    }
-
-    return matrix;
+    return accum.hasAnyTransform ? accum.toMatrix4() : null;
   }
 
   /// Generic prefix handler that applies variant modifiers and breakpoints.
