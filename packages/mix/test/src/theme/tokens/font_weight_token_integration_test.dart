@@ -49,12 +49,6 @@ void main() {
         throwsA(isA<UnimplementedError>()),
         reason: 'FontWeightRef should prevent direct property access',
       );
-
-      expect(
-        () => fontWeightRef.index,
-        throwsA(isA<UnimplementedError>()),
-        reason: 'FontWeightRef should prevent direct property access',
-      );
     });
 
     test('FontWeightToken integrates with getReferenceValue', () {

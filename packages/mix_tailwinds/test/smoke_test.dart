@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mix/mix.dart';
 import 'package:mix_tailwinds/mix_tailwinds.dart';
 
 void main() {
@@ -19,10 +18,7 @@ void main() {
             classNames: 'md:flex flex-col gap-4 p-4 w-full h-full bg-blue-500',
             onUnsupported: unsupported.add,
             children: const [
-              P(
-                text: 'Title',
-                classNames: 'text-white font-semibold text-xl',
-              ),
+              P(text: 'Title', classNames: 'text-white font-semibold text-xl'),
               Div(
                 classNames: 'flex gap-2',
                 children: [

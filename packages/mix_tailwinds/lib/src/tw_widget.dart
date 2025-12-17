@@ -219,7 +219,25 @@ class Div extends StatelessWidget {
 /// )
 /// ```
 class P extends StatelessWidget {
-  const P({
+  const P({super.key, required this.text, this.classNames = '', this.config});
+
+  final String text;
+  final String classNames;
+  final TwConfig? config;
+
+  @override
+  Widget build(BuildContext context) {
+    final cfg = config ?? TwConfigProvider.of(context);
+    final style = TwParser(config: cfg).parseText(classNames);
+    return StyledText(text, style: style);
+  }
+}
+
+/// Inline-level text element with Tailwind styling.
+///
+/// Equivalent to HTML `<span>`. Renders as Mix's `StyledText` widget.
+class Span extends StatelessWidget {
+  const Span({
     super.key,
     required this.text,
     this.classNames = '',
@@ -267,11 +285,7 @@ class TruncatedP extends StatelessWidget {
     return Div(
       classNames: 'flex-1 min-w-0',
       config: config,
-      child: P(
-        text: text,
-        classNames: 'truncate $classNames',
-        config: config,
-      ),
+      child: P(text: text, classNames: 'truncate $classNames', config: config),
     );
   }
 }
@@ -315,8 +329,27 @@ Widget _buildResponsiveFlex({
       final crossGap = axis == Axis.horizontal ? gapY : gapX;
       final flexChildren = _applyCrossAxisGap(rawChildren, axis, crossGap);
 
+      final hasBoundedMainAxis = axis == Axis.horizontal
+          ? constraints.hasBoundedWidth
+          : constraints.hasBoundedHeight;
+      final resolvedChildren =
+          flexChildren.length == 1 &&
+              hasBoundedMainAxis &&
+              flexChildren.single is! ParentDataWidget<FlexParentData>
+          ? <Widget>[
+              _FlexParentDataWrapper(
+                flex: 1,
+                fit: FlexFit.loose,
+                child: flexChildren.single,
+              ),
+            ]
+          : flexChildren;
+
       // Use CSS semantic flex box - margin is outside hover/press detection area
-      Widget current = _CssSemanticFlexBox(style: style, children: flexChildren);
+      Widget current = _CssSemanticFlexBox(
+        style: style,
+        children: resolvedChildren,
+      );
       current = _applyContainerSizingResponsive(
         current,
         tokens,
