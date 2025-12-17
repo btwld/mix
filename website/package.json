@@ -5,7 +5,9 @@
     "start": "next start",
     "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind",
     "screenshots:tailwind": "node ./scripts/capture-tailwind-screenshots.mjs",
-    "compare:tailwind": "node ./scripts/compare-tailwind-flutter.mjs"
+    "compare:tailwind": "node ./scripts/compare-tailwind-flutter.mjs",
+    "compare:screenshots": "node scripts/compare-playwright-screenshots.mjs",
+    "compare:full": "node scripts/run-visual-comparison.mjs"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.13",

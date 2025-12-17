@@ -12,95 +12,58 @@ The visual output should be identical (or as close as possible given platform di
 
 ---
 
-## AI Agent Workflow: Live Screenshot Comparison
-
-When the user asks to compare Flutter vs Tailwind rendering, follow these steps:
+## Quick Start: Run Visual Comparison
 
 ### Step 1: Start Flutter Web Server
 
 ```bash
 cd packages/mix_tailwinds/example
-flutter run -d web-server --web-port=8089
+flutter run -d web-server --web-port=8089 --profile
 ```
 
 Wait for: `lib/main.dart is being served at http://localhost:8089`
 
-### Step 2: Capture Flutter Screenshots with Playwright
+**Note**: Use `--profile` mode for better Playwright compatibility.
 
-The Flutter app supports a **screenshot mode** via URL query parameters:
-
-```
-http://localhost:8089/?screenshot=true&width=480
-http://localhost:8089/?screenshot=true&width=768
-http://localhost:8089/?screenshot=true&width=1024
-```
-
-For each width:
-1. Resize viewport: `browser_resize(width, 1200)`
-2. Navigate to: `http://localhost:8089/?screenshot=true&width={WIDTH}`
-3. Wait 2 seconds for render
-4. Take full-page screenshot: `browser_take_screenshot(fullPage: true, filename: "flutter-{WIDTH}.png")`
-
-### Step 3: Capture Tailwind Screenshots with Playwright
-
-For each width (480, 768, 1024):
-1. Resize viewport: `browser_resize(width, 1200)`
-2. Navigate to: `file:///path/to/packages/mix_tailwinds/example/real_tailwind/index.html`
-3. Screenshot the `<main>` element: `browser_take_screenshot(element: "main", ref: "e2", filename: "tailwind-{WIDTH}.png")`
-
-### Step 4: Visual Comparison
-
-Read both screenshots at each breakpoint and compare:
-- **Layout**: Flex direction, stacking, alignment
-- **Spacing**: Gaps, padding, margins
-- **Typography**: Font sizes, weights
-- **Colors**: Background, text, borders
-- **Responsive**: `md:` breakpoint behavior at 768px
-
-### Step 5: Report Findings
-
-Document any differences found, categorizing as:
-- **Parser bug**: Wrong layout/spacing/color (needs fix)
-- **Platform difference**: Font rendering, shadows (expected)
-
----
-
-## Alternative: Golden Test Comparison
-
-### 1. Generate Flutter Golden Images
+### Step 2: Run Comparison Script
 
 ```bash
-cd packages/mix_tailwinds/example
-flutter test --update-goldens test/parity_golden_test.dart
+cd packages/mix_tailwinds/tool/visual-comparison
+npm install  # first time only
+npm run compare
 ```
 
-This creates golden PNGs at:
-- `test/goldens/flutter-plan-card-480.png`
-- `test/goldens/flutter-plan-card-768.png`
-- `test/goldens/flutter-plan-card-1024.png`
+This script automatically:
+1. Captures Tailwind screenshots from `real_tailwind/index.html`
+2. Captures Flutter screenshots from `localhost:8089`
+3. Generates pixel-diff images
+4. Reports diff percentages
 
-### 2. Capture Tailwind Screenshots
+### Output
 
-Use Playwright to capture screenshots from `real_tailwind/index.html`:
-
-```bash
-# Using Playwright MCP tools:
-1. Navigate to file:///path/to/packages/mix_tailwinds/example/real_tailwind/index.html
-2. Resize browser to 480x1200, screenshot <main> element
-3. Resize to 768x1200, screenshot <main> element
-4. Resize to 1024x1200, screenshot <main> element
+Screenshots and diffs are saved to `visual-comparison/` (gitignored):
+```
+visual-comparison/
+├── flutter-480.png
+├── flutter-768.png
+├── flutter-1024.png
+├── tailwind-480.png
+├── tailwind-768.png
+├── tailwind-1024.png
+└── diff/
+    ├── diff-480.png
+    ├── diff-768.png
+    └── diff-1024.png
 ```
 
-### 3. Run Pixel Comparison
+### Interpreting Results
 
-```bash
-cd website
-node ./scripts/compare-tailwind-flutter.mjs
-```
-
-This outputs:
-- Diff percentages for each breakpoint
-- Diff images in `screenshots/tailwind-plan-card/diff/`
+| Diff % | Interpretation |
+|--------|----------------|
+| < 3% | Excellent parity (font rendering differences only) |
+| 3-5% | Good parity (minor differences) |
+| 5-15% | Moderate diff (likely structural issues) |
+| > 15% | High diff (parser bugs likely) |
 
 ---
 
@@ -147,26 +110,25 @@ These cause the most visual difference and indicate parser bugs:
 
 ## Reading Diff Images
 
-The diff images (red pixels = differences) help identify problem areas:
+Red pixels in diff images indicate differences between Flutter and Tailwind:
 
 ### High Diff Concentration Areas
 
-1. **Red blob around text** → Font rendering difference (may be unavoidable platform difference)
-2. **Red outline around containers** → Border/radius rendering difference
-3. **Red fill in boxes** → Background color mismatch
-4. **Red gaps between elements** → Spacing/gap mismatch
-5. **Red around shadows** → Shadow rendering difference (Material vs CSS)
+1. **Red blob around text** - Font rendering difference (platform-specific)
+2. **Red outline around containers** - Border/radius rendering difference
+3. **Red fill in boxes** - Background color mismatch
+4. **Red gaps between elements** - Spacing/gap mismatch
+5. **Red around shadows** - Shadow rendering difference
 
 ### Acceptable Differences (Platform-Specific)
 
-Some differences are expected and acceptable:
 - **Font anti-aliasing** - Web and Flutter render fonts differently
 - **Sub-pixel rendering** - Minor 1px differences in positioning
 - **Shadow rendering** - Flutter uses Material elevation, CSS uses box-shadow
+- **Line height** - Minor differences in text vertical positioning
 
 ### Unacceptable Differences (Parser Bugs)
 
-These indicate bugs in `tw_parser.dart`:
 - **Wrong flex direction** - Items stacking wrong way
 - **Missing gaps** - No space between flex items
 - **Wrong colors** - Completely different color rendered
@@ -185,21 +147,11 @@ Look at the diff image and identify which element has the red pixels. Find the c
 
 ### Step 2: Check the Parser
 
-Look in `lib/src/tw_parser.dart` for how the class is handled:
-
-```dart
-// Example: checking how gap-4 is parsed
-// Search for: 'gap-' in tw_parser.dart
-```
+Look in `lib/src/tw_parser.dart` for how the class is handled.
 
 ### Step 3: Check the Config
 
-Look in `lib/src/tw_config.dart` for the value mapping:
-
-```dart
-// Example: checking spacing scale
-// TwConfig.standard().space['4'] should equal 16.0 (4 * 4px)
-```
+Look in `lib/src/tw_config.dart` for the value mapping.
 
 ### Step 4: Verify the Widget Layer
 
@@ -213,74 +165,42 @@ Some properties are handled in `lib/src/tw_widget.dart`:
 ## Reference: Tailwind Value Mappings
 
 ### Spacing Scale (space)
-| Token | Tailwind | mix_tailwinds | Pixels |
-|-------|----------|---------------|--------|
-| `0` | 0 | 0.0 | 0px |
-| `1` | 0.25rem | 4.0 | 4px |
-| `2` | 0.5rem | 8.0 | 8px |
-| `4` | 1rem | 16.0 | 16px |
-| `6` | 1.5rem | 24.0 | 24px |
-| `8` | 2rem | 32.0 | 32px |
+| Token | Pixels |
+|-------|--------|
+| `0` | 0px |
+| `1` | 4px |
+| `2` | 8px |
+| `4` | 16px |
+| `6` | 24px |
+| `8` | 32px |
 
 ### Border Radius Scale (radii)
-| Token | Tailwind | mix_tailwinds |
-|-------|----------|---------------|
-| `rounded` | 0.25rem | 4.0 |
-| `rounded-lg` | 0.5rem | 8.0 |
-| `rounded-xl` | 0.75rem | 12.0 |
-| `rounded-2xl` | 1rem | 16.0 |
-| `rounded-full` | 9999px | 9999.0 |
+| Token | Value |
+|-------|-------|
+| `rounded` | 4px |
+| `rounded-lg` | 8px |
+| `rounded-xl` | 12px |
+| `rounded-2xl` | 16px |
+| `rounded-full` | 9999px |
 
 ### Font Sizes (fontSizes)
-| Token | Tailwind | mix_tailwinds |
-|-------|----------|---------------|
-| `text-xs` | 0.75rem | 12.0 |
-| `text-sm` | 0.875rem | 14.0 |
-| `text-base` | 1rem | 16.0 |
-| `text-lg` | 1.125rem | 18.0 |
-| `text-xl` | 1.25rem | 20.0 |
-| `text-2xl` | 1.5rem | 24.0 |
-| `text-3xl` | 1.875rem | 30.0 |
+| Token | Size |
+|-------|------|
+| `text-xs` | 12px |
+| `text-sm` | 14px |
+| `text-base` | 16px |
+| `text-lg` | 18px |
+| `text-xl` | 20px |
+| `text-2xl` | 24px |
+| `text-3xl` | 30px |
 
 ### Breakpoints
-| Token | Tailwind | mix_tailwinds |
-|-------|----------|---------------|
-| `sm:` | 640px | 640.0 |
-| `md:` | 768px | 768.0 |
-| `lg:` | 1024px | 1024.0 |
-| `xl:` | 1280px | 1280.0 |
-
----
-
-## Reporting Findings
-
-When reporting comparison results, use this format:
-
-```markdown
-## Visual Comparison Report
-
-**Date**: [date]
-**Diff Percentages**:
-- 480px: X.XX%
-- 768px: X.XX%
-- 1024px: X.XX%
-
-### Issues Found
-
-#### Issue 1: [Brief description]
-- **Location**: [Which card/section]
-- **Tailwind class**: `[class-name]`
-- **Expected behavior**: [What Tailwind does]
-- **Actual behavior**: [What mix_tailwinds does]
-- **Severity**: Critical / Major / Minor / Cosmetic
-- **File to fix**: `tw_parser.dart` line XXX
-
-#### Issue 2: ...
-
-### Recommendations
-1. [Specific fix suggestion]
-2. [Specific fix suggestion]
-```
+| Token | Width |
+|-------|-------|
+| `sm:` | 640px |
+| `md:` | 768px |
+| `lg:` | 1024px |
+| `xl:` | 1280px |
 
 ---
 
@@ -293,9 +213,8 @@ When reporting comparison results, use this format:
 | `lib/src/tw_widget.dart` | Div/Span widget implementation |
 | `lib/src/tw_utils.dart` | Utility functions (fraction parsing) |
 | `example/lib/main.dart` | Flutter test component |
-| `example/real_tailwind/index.html` | Tailwind reference HTML |
-| `example/test/parity_golden_test.dart` | Golden test generator |
-| `website/scripts/compare-tailwind-flutter.mjs` | Pixel diff script |
+| `example/real_tailwind/index.html` | Tailwind reference HTML (uses Tailwind CDN) |
+| `tool/visual-comparison/run-visual-comparison.mjs` | Visual comparison script |
 
 ---
 
@@ -306,6 +225,6 @@ These differences are expected and not bugs:
 1. **Font rendering** - Web uses system fonts with different hinting than Flutter
 2. **Shadow spread** - Material elevation != CSS box-shadow
 3. **Sub-pixel anti-aliasing** - Different rendering engines
-4. **Line height** - Default line heights differ between platforms
+4. **Line height** - Minor line height differences between platforms
 
 Focus on fixing **structural** and **value** differences, not platform rendering differences.
