@@ -256,6 +256,120 @@ class Span extends StatelessWidget {
   }
 }
 
+/// Heading level 1 element with Tailwind styling.
+///
+/// Equivalent to HTML `<h1>`. Note: Like Tailwind's Preflight, headings have
+/// no default styles - use utility classes like `text-4xl font-bold`.
+class H1 extends StatelessWidget {
+  const H1({super.key, required this.text, this.classNames = '', this.config});
+
+  final String text;
+  final String classNames;
+  final TwConfig? config;
+
+  @override
+  Widget build(BuildContext context) {
+    final cfg = config ?? TwConfigProvider.of(context);
+    final style = TwParser(config: cfg).parseText(classNames);
+    return StyledText(text, style: style);
+  }
+}
+
+/// Heading level 2 element with Tailwind styling.
+///
+/// Equivalent to HTML `<h2>`. Note: Like Tailwind's Preflight, headings have
+/// no default styles - use utility classes like `text-3xl font-semibold`.
+class H2 extends StatelessWidget {
+  const H2({super.key, required this.text, this.classNames = '', this.config});
+
+  final String text;
+  final String classNames;
+  final TwConfig? config;
+
+  @override
+  Widget build(BuildContext context) {
+    final cfg = config ?? TwConfigProvider.of(context);
+    final style = TwParser(config: cfg).parseText(classNames);
+    return StyledText(text, style: style);
+  }
+}
+
+/// Heading level 3 element with Tailwind styling.
+///
+/// Equivalent to HTML `<h3>`. Note: Like Tailwind's Preflight, headings have
+/// no default styles - use utility classes like `text-2xl font-semibold`.
+class H3 extends StatelessWidget {
+  const H3({super.key, required this.text, this.classNames = '', this.config});
+
+  final String text;
+  final String classNames;
+  final TwConfig? config;
+
+  @override
+  Widget build(BuildContext context) {
+    final cfg = config ?? TwConfigProvider.of(context);
+    final style = TwParser(config: cfg).parseText(classNames);
+    return StyledText(text, style: style);
+  }
+}
+
+/// Heading level 4 element with Tailwind styling.
+///
+/// Equivalent to HTML `<h4>`. Note: Like Tailwind's Preflight, headings have
+/// no default styles - use utility classes like `text-xl font-semibold`.
+class H4 extends StatelessWidget {
+  const H4({super.key, required this.text, this.classNames = '', this.config});
+
+  final String text;
+  final String classNames;
+  final TwConfig? config;
+
+  @override
+  Widget build(BuildContext context) {
+    final cfg = config ?? TwConfigProvider.of(context);
+    final style = TwParser(config: cfg).parseText(classNames);
+    return StyledText(text, style: style);
+  }
+}
+
+/// Heading level 5 element with Tailwind styling.
+///
+/// Equivalent to HTML `<h5>`. Note: Like Tailwind's Preflight, headings have
+/// no default styles - use utility classes like `text-lg font-semibold`.
+class H5 extends StatelessWidget {
+  const H5({super.key, required this.text, this.classNames = '', this.config});
+
+  final String text;
+  final String classNames;
+  final TwConfig? config;
+
+  @override
+  Widget build(BuildContext context) {
+    final cfg = config ?? TwConfigProvider.of(context);
+    final style = TwParser(config: cfg).parseText(classNames);
+    return StyledText(text, style: style);
+  }
+}
+
+/// Heading level 6 element with Tailwind styling.
+///
+/// Equivalent to HTML `<h6>`. Note: Like Tailwind's Preflight, headings have
+/// no default styles - use utility classes like `text-base font-semibold`.
+class H6 extends StatelessWidget {
+  const H6({super.key, required this.text, this.classNames = '', this.config});
+
+  final String text;
+  final String classNames;
+  final TwConfig? config;
+
+  @override
+  Widget build(BuildContext context) {
+    final cfg = config ?? TwConfigProvider.of(context);
+    final style = TwParser(config: cfg).parseText(classNames);
+    return StyledText(text, style: style);
+  }
+}
+
 /// Convenience wrapper for truncated text in flex containers.
 ///
 /// Automatically wraps the text with `flex-1 min-w-0` container and applies

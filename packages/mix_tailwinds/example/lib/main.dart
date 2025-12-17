@@ -165,7 +165,7 @@ class _CampaignOverviewCard extends StatelessWidget {
           text: 'Campaign Health',
           classNames: 'text-sm font-semibold uppercase text-blue-700',
         ),
-        const P(
+        const H1(
           text: 'November brand push',
           classNames: 'text-3xl font-semibold text-gray-700',
         ),
@@ -176,7 +176,7 @@ class _CampaignOverviewCard extends StatelessWidget {
         ),
         Div(
           classNames:
-              'flex flex-col gap-4 border-t border-gray-200 pt-4 md:flex-row min-w-0',
+              'flex flex-col gap-4 border-t border-gray-200 pt-4 md:flex-row',
           children: const [
             _MetricTile(
               label: 'Spend',
@@ -192,17 +192,17 @@ class _CampaignOverviewCard extends StatelessWidget {
           ],
         ),
         Div(
-          classNames: 'flex flex-col gap-3 md:flex-row min-w-0',
-          children: const [
-            _FilledButton(
-              label: 'View live dashboard',
+          classNames: 'flex flex-col gap-3 md:flex-row',
+          children: [
+            Div(
               classNames:
-                  'md:flex-1 w-full rounded-full bg-blue-600 px-4 py-3 text-base font-semibold text-white hover:bg-blue-700',
+                  'flex flex-1 items-center justify-center rounded-full bg-blue-600 px-4 py-3 text-base font-semibold text-white hover:bg-blue-700',
+              child: const Span(text: 'View live dashboard'),
             ),
-            _OutlinedButton(
-              label: 'Download CSV',
+            Div(
               classNames:
-                  'md:flex-1 w-full rounded-full border border-blue-600 px-4 py-3 text-base font-semibold text-blue-600 hover:bg-blue-50',
+                  'flex flex-1 items-center justify-center rounded-full border border-blue-600 px-4 py-3 text-base font-semibold text-blue-600 hover:bg-blue-50',
+              child: const Span(text: 'Download CSV'),
             ),
           ],
         ),
@@ -225,8 +225,7 @@ class _MetricTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Div(
-      classNames:
-          'md:flex-1 w-full rounded-xl bg-blue-50 p-4 flex flex-col gap-2',
+      classNames: 'flex flex-1 flex-col gap-2 rounded-xl bg-blue-50 p-4',
       children: [
         P(
           text: label,
@@ -235,44 +234,6 @@ class _MetricTile extends StatelessWidget {
         P(text: value, classNames: 'text-2xl font-semibold text-gray-700'),
         P(text: change, classNames: 'text-sm text-blue-700'),
       ],
-    );
-  }
-}
-
-class _FilledButton extends StatelessWidget {
-  const _FilledButton({required this.label, required this.classNames});
-
-  final String label;
-  final String classNames;
-
-  @override
-  Widget build(BuildContext context) {
-    return Div(
-      classNames:
-          '$classNames flex items-center justify-center min-w-0 overflow-hidden',
-      child: P(
-        text: label,
-        classNames: 'text-base font-semibold text-white truncate',
-      ),
-    );
-  }
-}
-
-class _OutlinedButton extends StatelessWidget {
-  const _OutlinedButton({required this.label, required this.classNames});
-
-  final String label;
-  final String classNames;
-
-  @override
-  Widget build(BuildContext context) {
-    return Div(
-      classNames:
-          '$classNames flex items-center justify-center min-w-0 overflow-hidden',
-      child: P(
-        text: label,
-        classNames: 'text-base font-semibold text-blue-600 truncate',
-      ),
     );
   }
 }
@@ -290,7 +251,7 @@ class _TeamActivityCard extends StatelessWidget {
           text: 'Team activity',
           classNames: 'text-sm font-semibold uppercase text-blue-700',
         ),
-        const P(
+        const H2(
           text: 'Channel owners',
           classNames: 'text-2xl font-semibold text-gray-700',
         ),
@@ -349,10 +310,7 @@ class TailwindParityPreview extends StatelessWidget {
         alignment: Alignment.topCenter,
         heightFactor: 1,
         widthFactor: 1,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-          child: content,
-        ),
+        child: content,
       );
     }
 
@@ -402,7 +360,7 @@ class _ActivityRow extends StatelessWidget {
             Div(
               classNames:
                   'flex h-12 w-12 items-center justify-center rounded-full bg-gray-100',
-              child: P(
+              child: Span(
                 text: avatarLetter,
                 classNames: 'text-lg font-semibold text-gray-700',
               ),
@@ -416,16 +374,10 @@ class _ActivityRow extends StatelessWidget {
                 ),
                 P(text: role, classNames: 'text-sm text-gray-500'),
                 Div(
-                  classNames: 'flex items-center gap-2 min-w-0',
+                  classNames: 'flex items-center gap-2',
                   children: [
                     Div(classNames: 'h-1 w-1 rounded-full $badgeColor'),
-                    Div(
-                      classNames: 'flex-1',
-                      child: P(
-                        text: update,
-                        classNames: 'truncate text-sm text-gray-500',
-                      ),
-                    ),
+                    P(text: update, classNames: 'text-sm text-gray-500'),
                   ],
                 ),
               ],

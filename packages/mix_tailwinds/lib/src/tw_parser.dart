@@ -16,6 +16,14 @@ extension BoxStylerTextStyleExtension on BoxStyler {
   }
 }
 
+/// Extension to provide convenience method for wrapping default text styles on FlexBox.
+extension FlexBoxStylerTextStyleExtension on FlexBoxStyler {
+  /// Wraps this flex box styler with a default text style modifier.
+  FlexBoxStyler wrapDefaultTextStyle(TextStyleMix textStyle) {
+    return wrap(WidgetModifierConfig.defaultTextStyle(style: textStyle));
+  }
+}
+
 const Map<String, ElevationShadow> _shadowElevationTokens = {
   'shadow-sm': ElevationShadow.one,
   'shadow': ElevationShadow.two,
@@ -23,6 +31,28 @@ const Map<String, ElevationShadow> _shadowElevationTokens = {
   'shadow-lg': ElevationShadow.six,
   'shadow-xl': ElevationShadow.nine,
   'shadow-2xl': ElevationShadow.twelve,
+};
+
+/// Tailwind Preflight default line-height (1.5).
+/// Applied to all text unless overridden by text-* or leading-* classes.
+const double _preflightLineHeight = 1.5;
+
+/// Tailwind default line heights for text-* sizes (as multipliers).
+/// These match the default line-height values in Tailwind CSS.
+const Map<String, double> _tailwindLineHeights = {
+  'xs': 1.333, // 12px / 16px
+  'sm': 1.429, // 14px / 20px
+  'base': 1.5, // 16px / 24px
+  'lg': 1.556, // 18px / 28px
+  'xl': 1.4, // 20px / 28px
+  '2xl': 1.333, // 24px / 32px
+  '3xl': 1.2, // 30px / 36px
+  '4xl': 1.111, // 36px / 40px
+  '5xl': 1.0, // 48px / 48px (leading-none)
+  '6xl': 1.0, // 60px / 60px
+  '7xl': 1.0, // 72px / 72px
+  '8xl': 1.0, // 96px / 96px
+  '9xl': 1.0, // 128px / 128px
 };
 
 /// Tailwind ease token mapping to Flutter curves.
@@ -1160,7 +1190,9 @@ class TwParser {
   }
 
   TextStyler parseText(String classNames) {
-    var styler = TextStyler();
+    // Start with Tailwind Preflight default line-height of 1.5
+    // This will be overridden by any text-* or leading-* classes
+    var styler = TextStyler().height(_preflightLineHeight);
     for (final token in listTokens(classNames)) {
       styler = _applyTextToken(styler, token);
     }
@@ -1415,6 +1447,23 @@ class TwParser {
     } else if (token.startsWith('rounded-')) {
       final suffix = token.substring(8);
       result = styler.borderRounded(config.radiusOf(suffix));
+    } else if (token.startsWith('text-')) {
+      // Text color/size on FlexBox - propagates to child text widgets via DefaultTextStyle
+      final color = config.colorOf(token.substring(5));
+      if (color != null) {
+        result = styler.wrapDefaultTextStyle(TextStyleMix().color(color));
+      } else {
+        final size = config.fontSizeOf(token.substring(5), fallback: -1);
+        if (size > 0) {
+          result = styler.wrapDefaultTextStyle(TextStyleMix().fontSize(size));
+        } else {
+          handled = false;
+        }
+      }
+    } else if (_fontWeightTokens.containsKey(token)) {
+      // Font weight on FlexBox - propagates to child text widgets via DefaultTextStyle
+      result =
+          styler.wrapDefaultTextStyle(TextStyleMix().fontWeight(_fontWeightTokens[token]!));
     } else if (_isAnimationToken(token)) {
       // Animation tokens handled by parseAnimation(), don't report as unsupported
     } else if (_isTransformToken(token)) {
@@ -1545,9 +1594,11 @@ class TwParser {
         final size = config.fontSizeOf(key, fallback: -1);
         if (size > 0) {
           result = styler.fontSize(size);
-          // Note: Line height is not auto-applied with text-* because Flutter and
-          // browser text rendering differ fundamentally. Even with TextLeadingDistribution.even,
-          // the visual positioning differs. Use leading-* tokens explicitly when needed.
+          // Apply Tailwind's default line heights for text-* sizes
+          final lineHeight = _tailwindLineHeights[key];
+          if (lineHeight != null) {
+            result = result.height(lineHeight);
+          }
         } else {
           handled = false;
         }
