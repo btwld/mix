@@ -50,6 +50,16 @@ Future<void> _expectShadowElevation(
   }
 }
 
+/// Helper to parse animation config from class names.
+/// Uses the non-deprecated parseAnimationFromTokens internally.
+CurveAnimationConfig? _parseAnimation(
+  String classNames, {
+  TwParser? parser,
+}) {
+  final p = parser ?? TwParser();
+  return p.parseAnimationFromTokens(p.listTokens(classNames));
+}
+
 Future<void> _pumpSized(
   WidgetTester tester,
   Widget child, {
@@ -1408,19 +1418,19 @@ void main() {
   // ==========================================================================
 
   test('transition applies 150ms default duration', () {
-    final config = TwParser().parseAnimation('transition');
+    final config = _parseAnimation('transition');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 150));
   });
 
   test('transition applies ease-out default curve', () {
-    final config = TwParser().parseAnimation('transition');
+    final config = _parseAnimation('transition');
     expect(config, isNotNull);
     expect(config!.curve, Curves.easeOut);
   });
 
   test('transition applies 0ms default delay', () {
-    final config = TwParser().parseAnimation('transition');
+    final config = _parseAnimation('transition');
     expect(config, isNotNull);
     expect(config!.delay, Duration.zero);
   });
@@ -1430,43 +1440,43 @@ void main() {
   // ==========================================================================
 
   test('delay-0 sets 0ms delay', () {
-    final config = TwParser().parseAnimation('transition delay-0');
+    final config = _parseAnimation('transition delay-0');
     expect(config, isNotNull);
     expect(config!.delay, Duration.zero);
   });
 
   test('delay-75 sets 75ms delay', () {
-    final config = TwParser().parseAnimation('transition delay-75');
+    final config = _parseAnimation('transition delay-75');
     expect(config, isNotNull);
     expect(config!.delay, const Duration(milliseconds: 75));
   });
 
   test('delay-100 sets 100ms delay', () {
-    final config = TwParser().parseAnimation('transition delay-100');
+    final config = _parseAnimation('transition delay-100');
     expect(config, isNotNull);
     expect(config!.delay, const Duration(milliseconds: 100));
   });
 
   test('delay-150 sets 150ms delay', () {
-    final config = TwParser().parseAnimation('transition delay-150');
+    final config = _parseAnimation('transition delay-150');
     expect(config, isNotNull);
     expect(config!.delay, const Duration(milliseconds: 150));
   });
 
   test('delay-500 sets 500ms delay', () {
-    final config = TwParser().parseAnimation('transition delay-500');
+    final config = _parseAnimation('transition delay-500');
     expect(config, isNotNull);
     expect(config!.delay, const Duration(milliseconds: 500));
   });
 
   test('delay-700 sets 700ms delay', () {
-    final config = TwParser().parseAnimation('transition delay-700');
+    final config = _parseAnimation('transition delay-700');
     expect(config, isNotNull);
     expect(config!.delay, const Duration(milliseconds: 700));
   });
 
   test('delay-1000 sets 1000ms delay', () {
-    final config = TwParser().parseAnimation('transition delay-1000');
+    final config = _parseAnimation('transition delay-1000');
     expect(config, isNotNull);
     expect(config!.delay, const Duration(milliseconds: 1000));
   });
@@ -1476,39 +1486,39 @@ void main() {
   // ==========================================================================
 
   test('transition-none returns null config', () {
-    final config = TwParser().parseAnimation('transition-none');
+    final config = _parseAnimation('transition-none');
     expect(config, isNull);
   });
 
   test('transition-none disables even with duration present', () {
-    final config = TwParser().parseAnimation('transition-none duration-300');
+    final config = _parseAnimation('transition-none duration-300');
     expect(config, isNull);
   });
 
   test('transition-none disables even with ease present', () {
-    final config = TwParser().parseAnimation('transition-none ease-in');
+    final config = _parseAnimation('transition-none ease-in');
     expect(config, isNull);
   });
 
   test('transition-none disables even with delay present', () {
-    final config = TwParser().parseAnimation('transition-none delay-500');
+    final config = _parseAnimation('transition-none delay-500');
     expect(config, isNull);
   });
 
   test('transition-none disables with all modifiers', () {
-    final config = TwParser().parseAnimation(
+    final config = _parseAnimation(
       'transition-none duration-300 ease-in delay-100',
     );
     expect(config, isNull);
   });
 
   test('transition then transition-none disables animation', () {
-    final config = TwParser().parseAnimation('transition transition-none');
+    final config = _parseAnimation('transition transition-none');
     expect(config, isNull);
   });
 
   test('duration-300 then transition-none disables animation', () {
-    final config = TwParser().parseAnimation('duration-300 transition-none');
+    final config = _parseAnimation('duration-300 transition-none');
     expect(config, isNull);
   });
 
@@ -1517,7 +1527,7 @@ void main() {
   // ==========================================================================
 
   test('later duration overrides earlier', () {
-    final config = TwParser().parseAnimation(
+    final config = _parseAnimation(
       'transition duration-100 duration-300',
     );
     expect(config, isNotNull);
@@ -1525,19 +1535,19 @@ void main() {
   });
 
   test('later ease overrides earlier', () {
-    final config = TwParser().parseAnimation('transition ease-in ease-out');
+    final config = _parseAnimation('transition ease-in ease-out');
     expect(config, isNotNull);
     expect(config!.curve, Curves.easeOut);
   });
 
   test('later delay overrides earlier', () {
-    final config = TwParser().parseAnimation('transition delay-100 delay-500');
+    final config = _parseAnimation('transition delay-100 delay-500');
     expect(config, isNotNull);
     expect(config!.delay, const Duration(milliseconds: 500));
   });
 
   test('later delay-0 overrides earlier delay-500', () {
-    final config = TwParser().parseAnimation('transition delay-500 delay-0');
+    final config = _parseAnimation('transition delay-500 delay-0');
     expect(config, isNotNull);
     expect(config!.delay, Duration.zero);
   });
@@ -1547,22 +1557,22 @@ void main() {
   // ==========================================================================
 
   test('duration alone returns null', () {
-    final config = TwParser().parseAnimation('duration-300');
+    final config = _parseAnimation('duration-300');
     expect(config, isNull);
   });
 
   test('ease alone returns null', () {
-    final config = TwParser().parseAnimation('ease-in');
+    final config = _parseAnimation('ease-in');
     expect(config, isNull);
   });
 
   test('delay alone returns null', () {
-    final config = TwParser().parseAnimation('delay-200');
+    final config = _parseAnimation('delay-200');
     expect(config, isNull);
   });
 
   test('duration ease delay without transition returns null', () {
-    final config = TwParser().parseAnimation('duration-300 ease-in delay-100');
+    final config = _parseAnimation('duration-300 ease-in delay-100');
     expect(config, isNull);
   });
 
@@ -1571,55 +1581,55 @@ void main() {
   // ==========================================================================
 
   test('duration-0 sets 0ms duration', () {
-    final config = TwParser().parseAnimation('transition duration-0');
+    final config = _parseAnimation('transition duration-0');
     expect(config, isNotNull);
     expect(config!.duration, Duration.zero);
   });
 
   test('duration-75 sets 75ms duration', () {
-    final config = TwParser().parseAnimation('transition duration-75');
+    final config = _parseAnimation('transition duration-75');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 75));
   });
 
   test('duration-100 sets 100ms duration', () {
-    final config = TwParser().parseAnimation('transition duration-100');
+    final config = _parseAnimation('transition duration-100');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 100));
   });
 
   test('duration-150 sets 150ms duration', () {
-    final config = TwParser().parseAnimation('transition duration-150');
+    final config = _parseAnimation('transition duration-150');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 150));
   });
 
   test('duration-200 sets 200ms duration', () {
-    final config = TwParser().parseAnimation('transition duration-200');
+    final config = _parseAnimation('transition duration-200');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 200));
   });
 
   test('duration-300 sets 300ms duration', () {
-    final config = TwParser().parseAnimation('transition duration-300');
+    final config = _parseAnimation('transition duration-300');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 300));
   });
 
   test('duration-500 sets 500ms duration', () {
-    final config = TwParser().parseAnimation('transition duration-500');
+    final config = _parseAnimation('transition duration-500');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 500));
   });
 
   test('duration-700 sets 700ms duration', () {
-    final config = TwParser().parseAnimation('transition duration-700');
+    final config = _parseAnimation('transition duration-700');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 700));
   });
 
   test('duration-1000 sets 1000ms duration', () {
-    final config = TwParser().parseAnimation('transition duration-1000');
+    final config = _parseAnimation('transition duration-1000');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 1000));
   });
@@ -1629,25 +1639,25 @@ void main() {
   // ==========================================================================
 
   test('ease-linear sets Curves.linear', () {
-    final config = TwParser().parseAnimation('transition ease-linear');
+    final config = _parseAnimation('transition ease-linear');
     expect(config, isNotNull);
     expect(config!.curve, Curves.linear);
   });
 
   test('ease-in sets Curves.easeIn', () {
-    final config = TwParser().parseAnimation('transition ease-in');
+    final config = _parseAnimation('transition ease-in');
     expect(config, isNotNull);
     expect(config!.curve, Curves.easeIn);
   });
 
   test('ease-out sets Curves.easeOut', () {
-    final config = TwParser().parseAnimation('transition ease-out');
+    final config = _parseAnimation('transition ease-out');
     expect(config, isNotNull);
     expect(config!.curve, Curves.easeOut);
   });
 
   test('ease-in-out sets Curves.easeInOut', () {
-    final config = TwParser().parseAnimation('transition ease-in-out');
+    final config = _parseAnimation('transition ease-in-out');
     expect(config, isNotNull);
     expect(config!.curve, Curves.easeInOut);
   });
@@ -1657,7 +1667,7 @@ void main() {
   // ==========================================================================
 
   test('transition with all modifiers parses correctly', () {
-    final config = TwParser().parseAnimation(
+    final config = _parseAnimation(
       'transition duration-300 ease-in delay-100',
     );
     expect(config, isNotNull);
@@ -1667,7 +1677,7 @@ void main() {
   });
 
   test('transition-colors with modifiers parses correctly', () {
-    final config = TwParser().parseAnimation(
+    final config = _parseAnimation(
       'transition-colors duration-500 ease-in-out',
     );
     expect(config, isNotNull);
@@ -1687,37 +1697,49 @@ void main() {
 
   test('duration with invalid value warns via onUnsupported', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseAnimation('transition duration-abc');
+    _parseAnimation(
+      'transition duration-abc',
+      parser: TwParser(onUnsupported: seen.add),
+    );
     expect(seen, contains('duration-abc'));
   });
 
   test('delay with invalid value warns via onUnsupported', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseAnimation('transition delay-xyz');
+    _parseAnimation(
+      'transition delay-xyz',
+      parser: TwParser(onUnsupported: seen.add),
+    );
     expect(seen, contains('delay-xyz'));
   });
 
   test('duration with invalid value preserves default 150ms', () {
-    final config = TwParser().parseAnimation('transition duration-abc');
+    final config = _parseAnimation('transition duration-abc');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 150));
   });
 
   test('delay with invalid value preserves default 0ms', () {
-    final config = TwParser().parseAnimation('transition delay-xyz');
+    final config = _parseAnimation('transition delay-xyz');
     expect(config, isNotNull);
     expect(config!.delay, Duration.zero);
   });
 
   test('duration- without value warns via onUnsupported', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseAnimation('transition duration-');
+    _parseAnimation(
+      'transition duration-',
+      parser: TwParser(onUnsupported: seen.add),
+    );
     expect(seen, contains('duration-'));
   });
 
   test('delay- without value warns via onUnsupported', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseAnimation('transition delay-');
+    _parseAnimation(
+      'transition delay-',
+      parser: TwParser(onUnsupported: seen.add),
+    );
     expect(seen, contains('delay-'));
   });
 
@@ -1727,27 +1749,37 @@ void main() {
 
   test('duration-2000 warns (not a valid Tailwind value)', () {
     final seen = <String>[];
-    TwParser(
-      onUnsupported: seen.add,
-    ).parseAnimation('transition duration-2000');
+    _parseAnimation(
+      'transition duration-2000',
+      parser: TwParser(onUnsupported: seen.add),
+    );
     expect(seen, contains('duration-2000'));
   });
 
   test('duration-50 warns (not a valid Tailwind value)', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseAnimation('transition duration-50');
+    _parseAnimation(
+      'transition duration-50',
+      parser: TwParser(onUnsupported: seen.add),
+    );
     expect(seen, contains('duration-50'));
   });
 
   test('delay-2500 warns (not a valid Tailwind value)', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseAnimation('transition delay-2500');
+    _parseAnimation(
+      'transition delay-2500',
+      parser: TwParser(onUnsupported: seen.add),
+    );
     expect(seen, contains('delay-2500'));
   });
 
   test('delay-25 warns (not a valid Tailwind value)', () {
     final seen = <String>[];
-    TwParser(onUnsupported: seen.add).parseAnimation('transition delay-25');
+    _parseAnimation(
+      'transition delay-25',
+      parser: TwParser(onUnsupported: seen.add),
+    );
     expect(seen, contains('delay-25'));
   });
 
@@ -1756,29 +1788,29 @@ void main() {
   // ==========================================================================
 
   test('md:transition is recognized as transition trigger', () {
-    final config = TwParser().parseAnimation('md:transition');
+    final config = _parseAnimation('md:transition');
     expect(config, isNotNull);
   });
 
   test('hover:duration-500 modifies duration', () {
-    final config = TwParser().parseAnimation('transition hover:duration-500');
+    final config = _parseAnimation('transition hover:duration-500');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 500));
   });
 
   test('sm:ease-in correctly applies curve', () {
-    final config = TwParser().parseAnimation('transition sm:ease-in');
+    final config = _parseAnimation('transition sm:ease-in');
     expect(config, isNotNull);
     expect(config!.curve, Curves.easeIn);
   });
 
   test('md:transition-none disables animation', () {
-    final config = TwParser().parseAnimation('transition md:transition-none');
+    final config = _parseAnimation('transition md:transition-none');
     expect(config, isNull);
   });
 
   test('lg:delay-300 applies delay', () {
-    final config = TwParser().parseAnimation('transition lg:delay-300');
+    final config = _parseAnimation('transition lg:delay-300');
     expect(config, isNotNull);
     expect(config!.delay, const Duration(milliseconds: 300));
   });
@@ -1788,29 +1820,29 @@ void main() {
   // ==========================================================================
 
   test('empty string returns null', () {
-    final config = TwParser().parseAnimation('');
+    final config = _parseAnimation('');
     expect(config, isNull);
   });
 
   test('whitespace only returns null', () {
-    final config = TwParser().parseAnimation('   ');
+    final config = _parseAnimation('   ');
     expect(config, isNull);
   });
 
   test('order independence: duration before transition works', () {
-    final config = TwParser().parseAnimation('duration-300 transition');
+    final config = _parseAnimation('duration-300 transition');
     expect(config, isNotNull);
     expect(config!.duration, const Duration(milliseconds: 300));
   });
 
   test('order independence: delay before transition works', () {
-    final config = TwParser().parseAnimation('delay-200 transition');
+    final config = _parseAnimation('delay-200 transition');
     expect(config, isNotNull);
     expect(config!.delay, const Duration(milliseconds: 200));
   });
 
   test('order independence: ease before transition works', () {
-    final config = TwParser().parseAnimation('ease-in transition');
+    final config = _parseAnimation('ease-in transition');
     expect(config, isNotNull);
     expect(config!.curve, Curves.easeIn);
   });
@@ -1819,8 +1851,8 @@ void main() {
     'parseBox with transition classes produces style that can be animated',
     () {
       final parser = TwParser();
-      final animConfig = parser.parseAnimation(
-        'transition duration-300 ease-in-out',
+      final animConfig = parser.parseAnimationFromTokens(
+        parser.listTokens('transition duration-300 ease-in-out'),
       );
       final boxStyle = parser.parseBox('bg-blue-500 p-4');
 
@@ -1952,124 +1984,7 @@ void main() {
   });
 
   // ==========================================================================
-  // parseTransform Tests
-  // ==========================================================================
-
-  test('parseTransform returns null for no transform tokens', () {
-    final matrix = TwParser().parseTransform('bg-blue-500 p-4');
-    expect(matrix, isNull);
-  });
-
-  test('parseTransform returns matrix for scale-105', () {
-    final matrix = TwParser().parseTransform('scale-105');
-    expect(matrix, isNotNull);
-    // Check diagonal values for 1.05 scale
-    expect(matrix![0], closeTo(1.05, 0.0001));
-    expect(matrix[5], closeTo(1.05, 0.0001));
-  });
-
-  test('parseTransform returns matrix for scale-50', () {
-    final matrix = TwParser().parseTransform('scale-50');
-    expect(matrix, isNotNull);
-    expect(matrix![0], closeTo(0.5, 0.0001));
-    expect(matrix[5], closeTo(0.5, 0.0001));
-  });
-
-  test('parseTransform returns matrix for rotate-90', () {
-    final matrix = TwParser().parseTransform('rotate-90');
-    expect(matrix, isNotNull);
-    // For 90 degree rotation: cos(90) = 0, sin(90) = 1
-    expect(matrix![0], closeTo(0, 0.0001)); // cos(90)
-    expect(matrix[1], closeTo(1, 0.0001)); // sin(90)
-    expect(matrix[4], closeTo(-1, 0.0001)); // -sin(90)
-    expect(matrix[5], closeTo(0, 0.0001)); // cos(90)
-  });
-
-  test('parseTransform returns matrix for -rotate-45', () {
-    final matrix = TwParser().parseTransform('-rotate-45');
-    expect(matrix, isNotNull);
-    // For -45 degree rotation: cos(-45) ≈ 0.707, sin(-45) ≈ -0.707
-    expect(matrix![0], closeTo(0.7071, 0.001)); // cos(-45)
-    expect(matrix[1], closeTo(-0.7071, 0.001)); // sin(-45)
-  });
-
-  test('parseTransform returns matrix for translate-x-4', () {
-    final matrix = TwParser().parseTransform('translate-x-4');
-    expect(matrix, isNotNull);
-    // Translation is stored in [12] for x and [13] for y in Matrix4
-    expect(matrix![12], closeTo(16, 0.0001)); // 4 in spacing scale = 16px
-  });
-
-  test('parseTransform returns matrix for translate-y-4', () {
-    final matrix = TwParser().parseTransform('translate-y-4');
-    expect(matrix, isNotNull);
-    expect(matrix![13], closeTo(16, 0.0001)); // 4 in spacing scale = 16px
-  });
-
-  test('parseTransform returns matrix for -translate-x-4', () {
-    final matrix = TwParser().parseTransform('-translate-x-4');
-    expect(matrix, isNotNull);
-    expect(matrix![12], closeTo(-16, 0.0001));
-  });
-
-  test('parseTransform returns matrix for -translate-y-4', () {
-    final matrix = TwParser().parseTransform('-translate-y-4');
-    expect(matrix, isNotNull);
-    expect(matrix![13], closeTo(-16, 0.0001));
-  });
-
-  // ==========================================================================
-  // Transform Composition Tests (Tailwind Order Independence)
-  // ==========================================================================
-
-  test('scale-105 rotate-45 produces same matrix as rotate-45 scale-105', () {
-    final matrix1 = TwParser().parseTransform('scale-105 rotate-45');
-    final matrix2 = TwParser().parseTransform('rotate-45 scale-105');
-
-    expect(matrix1, isNotNull);
-    expect(matrix2, isNotNull);
-
-    // Both should produce the same result due to Tailwind's fixed order
-    for (var i = 0; i < 16; i++) {
-      expect(
-        matrix1![i],
-        closeTo(matrix2![i], 0.0001),
-        reason: 'Matrix element [$i] should match',
-      );
-    }
-  });
-
-  test('translate + scale produces consistent matrix', () {
-    final matrix1 = TwParser().parseTransform('translate-x-4 scale-110');
-    final matrix2 = TwParser().parseTransform('scale-110 translate-x-4');
-
-    expect(matrix1, isNotNull);
-    expect(matrix2, isNotNull);
-
-    // Both should produce the same result
-    for (var i = 0; i < 16; i++) {
-      expect(
-        matrix1![i],
-        closeTo(matrix2![i], 0.0001),
-        reason: 'Matrix element [$i] should match',
-      );
-    }
-  });
-
-  test('translate + rotate + scale composes correctly', () {
-    final matrix = TwParser().parseTransform(
-      'translate-x-4 rotate-45 scale-105',
-    );
-    expect(matrix, isNotNull);
-
-    // The matrix should contain all transformations
-    // Just verify it's not identity
-    expect(matrix![0], isNot(closeTo(1, 0.0001))); // Should have rotation+scale
-    expect(matrix[12], closeTo(16, 0.0001)); // Should have translation
-  });
-
-  // ==========================================================================
-  // Transform Application Tests
+  // Transform Widget Tests
   // ==========================================================================
 
   testWidgets('Div with scale-105 sets container transform', (tester) async {
@@ -2127,18 +2042,19 @@ void main() {
       'scale-110 rotate-12 translate-x-2',
     );
 
-    final expected = TwParser().parseTransform(
-      'scale-110 rotate-12 translate-x-2',
-    );
-
     expect(container.transform, isNotNull);
-    for (var i = 0; i < 16; i++) {
-      expect(
-        container.transform![i],
-        closeTo(expected![i], 0.0001),
-        reason: 'Matrix element [$i] should match composite transform',
-      );
-    }
+    final matrix = container.transform!;
+
+    // Verify scale (1.10) is applied - diagonal elements should be ~1.10 * cos(12°)
+    // cos(12°) ≈ 0.978, so [0] should be ~1.075
+    expect(matrix[0], closeTo(1.075, 0.01)); // scaled cos(12°)
+
+    // Verify rotation (12°) is applied - sin(12°) ≈ 0.208
+    expect(matrix[1], closeTo(0.228, 0.01)); // scaled sin(12°)
+
+    // Verify translation (translate-x-2 = 8px) is applied
+    expect(matrix[12], closeTo(8, 0.0001)); // x translation
+
     expect(
       find.descendant(of: find.byType(Container), matching: find.byType(Transform)),
       findsOneWidget,

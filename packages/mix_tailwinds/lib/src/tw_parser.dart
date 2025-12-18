@@ -169,6 +169,41 @@ class _TransformAccum {
   }
 }
 
+/// Gradient direction alignments for Tailwind gradient tokens.
+const Map<String, (Alignment, Alignment)> _gradientDirections = {
+  'to-t': (Alignment.bottomCenter, Alignment.topCenter),
+  'to-tr': (Alignment.bottomLeft, Alignment.topRight),
+  'to-r': (Alignment.centerLeft, Alignment.centerRight),
+  'to-br': (Alignment.topLeft, Alignment.bottomRight),
+  'to-b': (Alignment.topCenter, Alignment.bottomCenter),
+  'to-bl': (Alignment.topRight, Alignment.bottomLeft),
+  'to-l': (Alignment.centerRight, Alignment.centerLeft),
+  'to-tl': (Alignment.bottomRight, Alignment.topLeft),
+};
+
+/// Accumulates gradient properties before final application.
+class _GradientAccum {
+  (Alignment, Alignment)? direction;
+  Color? fromColor;
+  Color? viaColor;
+  Color? toColor;
+
+  _GradientAccum();
+
+  bool get hasGradient => direction != null && fromColor != null;
+
+  LinearGradientMix? toGradientMix() {
+    if (!hasGradient) return null;
+    final (begin, end) = direction!;
+    final colors = <Color>[
+      fromColor!,
+      if (viaColor != null) viaColor!,
+      toColor ?? fromColor!,
+    ];
+    return LinearGradientMix(begin: begin, end: end, colors: colors);
+  }
+}
+
 /// Accumulates border properties before final application.
 /// Separates "structure" tokens (width/direction) from "color" tokens.
 /// Color is only applied to borders that have structure.
@@ -220,20 +255,70 @@ class _BorderAccum {
   }
 }
 
+/// Returns true if the token is a gradient-related token.
+bool _isGradientToken(String token) {
+  if (token.startsWith('bg-gradient-')) return true;
+  if (token.startsWith('bg-linear-')) return true; // Tailwind v4 canonical
+  if (token.startsWith('from-')) return true;
+  if (token.startsWith('via-')) return true;
+  if (token.startsWith('to-') && _gradientDirections.containsKey(token)) {
+    return false; // 'to-*' alone is a direction, handled by bg-gradient-to-*
+  }
+  // Check for gradient color tokens (to-{color})
+  if (token.startsWith('to-') && !_gradientDirections.containsKey(token)) {
+    return true;
+  }
+  return false;
+}
+
+/// Accumulates a gradient token into [accum].
+void _accumulateGradient(_GradientAccum accum, String base, TwConfig config) {
+  if (base.startsWith('bg-gradient-')) {
+    final dirKey = base.substring(12); // Remove 'bg-gradient-'
+    final dir = _gradientDirections[dirKey];
+    if (dir != null) {
+      accum.direction = dir;
+    }
+  } else if (base.startsWith('bg-linear-')) {
+    // Tailwind v4 canonical syntax (bg-linear-to-* instead of bg-gradient-to-*)
+    final dirKey = base.substring(10); // Remove 'bg-linear-'
+    final dir = _gradientDirections[dirKey];
+    if (dir != null) {
+      accum.direction = dir;
+    }
+  } else if (base.startsWith('from-')) {
+    final colorKey = base.substring(5);
+    accum.fromColor = config.colorOf(colorKey);
+  } else if (base.startsWith('via-')) {
+    final colorKey = base.substring(4);
+    accum.viaColor = config.colorOf(colorKey);
+  } else if (base.startsWith('to-') && !_gradientDirections.containsKey(base)) {
+    final colorKey = base.substring(3);
+    accum.toColor = config.colorOf(colorKey);
+  }
+}
+
 /// Accumulates a transform token into [accum].
+///
+/// IMPORTANT: Negative prefixes must be checked before their positive counterparts.
+/// For example, '-rotate-45' must not match 'rotate-', so we check '-rotate-' first.
+/// Same for '-translate-x-' before 'translate-x-', and '-translate-y-' before 'translate-y-'.
 void _accumulateTransform(_TransformAccum accum, String base, TwConfig config) {
   if (base.startsWith('scale-')) {
     accum.scale = config.scaleOf(base.substring(6));
   } else if (base.startsWith('-rotate-')) {
+    // Check negative rotation before positive
     final deg = config.rotationOf(base.substring(8));
     if (deg != null) accum.rotateDeg = -deg;
   } else if (base.startsWith('rotate-')) {
     accum.rotateDeg = config.rotationOf(base.substring(7));
   } else if (base.startsWith('-translate-x-')) {
+    // Check negative translation before positive
     accum.translateX = -config.spaceOf(base.substring(13));
   } else if (base.startsWith('translate-x-')) {
     accum.translateX = config.spaceOf(base.substring(12));
   } else if (base.startsWith('-translate-y-')) {
+    // Check negative translation before positive
     accum.translateY = -config.spaceOf(base.substring(13));
   } else if (base.startsWith('translate-y-')) {
     accum.translateY = config.spaceOf(base.substring(12));
@@ -316,6 +401,25 @@ enum _SpacingKind {
   marginAll,
 }
 
+/// Table-driven spacing prefix mapping.
+/// Order matters: more specific prefixes (px-, py-) must come before less specific (p-).
+const Map<String, _SpacingKind> _spacingPrefixes = {
+  'px-': _SpacingKind.paddingX,
+  'py-': _SpacingKind.paddingY,
+  'pt-': _SpacingKind.paddingTop,
+  'pr-': _SpacingKind.paddingRight,
+  'pb-': _SpacingKind.paddingBottom,
+  'pl-': _SpacingKind.paddingLeft,
+  'p-': _SpacingKind.paddingAll,
+  'mx-': _SpacingKind.marginX,
+  'my-': _SpacingKind.marginY,
+  'mt-': _SpacingKind.marginTop,
+  'mr-': _SpacingKind.marginRight,
+  'mb-': _SpacingKind.marginBottom,
+  'ml-': _SpacingKind.marginLeft,
+  'm-': _SpacingKind.marginAll,
+};
+
 /// Parsed spacing token with kind and value.
 class _SpacingToken {
   const _SpacingToken(this.kind, this.value);
@@ -323,91 +427,16 @@ class _SpacingToken {
   final double value;
 }
 
-/// Parses padding/margin tokens, returns null if not a spacing token.
+/// Parses padding/margin tokens using table-driven lookup.
+/// Returns null if not a spacing token.
 _SpacingToken? _parseSpacingToken(String token, TwConfig config) {
-  if (token.startsWith('px-')) {
-    return _SpacingToken(
-      _SpacingKind.paddingX,
-      config.spaceOf(token.substring(3)),
-    );
-  }
-  if (token.startsWith('py-')) {
-    return _SpacingToken(
-      _SpacingKind.paddingY,
-      config.spaceOf(token.substring(3)),
-    );
-  }
-  if (token.startsWith('pt-')) {
-    return _SpacingToken(
-      _SpacingKind.paddingTop,
-      config.spaceOf(token.substring(3)),
-    );
-  }
-  if (token.startsWith('pr-')) {
-    return _SpacingToken(
-      _SpacingKind.paddingRight,
-      config.spaceOf(token.substring(3)),
-    );
-  }
-  if (token.startsWith('pb-')) {
-    return _SpacingToken(
-      _SpacingKind.paddingBottom,
-      config.spaceOf(token.substring(3)),
-    );
-  }
-  if (token.startsWith('pl-')) {
-    return _SpacingToken(
-      _SpacingKind.paddingLeft,
-      config.spaceOf(token.substring(3)),
-    );
-  }
-  if (token.startsWith('p-')) {
-    return _SpacingToken(
-      _SpacingKind.paddingAll,
-      config.spaceOf(token.substring(2)),
-    );
-  }
-  if (token.startsWith('mx-')) {
-    return _SpacingToken(
-      _SpacingKind.marginX,
-      config.spaceOf(token.substring(3)),
-    );
-  }
-  if (token.startsWith('my-')) {
-    return _SpacingToken(
-      _SpacingKind.marginY,
-      config.spaceOf(token.substring(3)),
-    );
-  }
-  if (token.startsWith('mt-')) {
-    return _SpacingToken(
-      _SpacingKind.marginTop,
-      config.spaceOf(token.substring(3)),
-    );
-  }
-  if (token.startsWith('mr-')) {
-    return _SpacingToken(
-      _SpacingKind.marginRight,
-      config.spaceOf(token.substring(3)),
-    );
-  }
-  if (token.startsWith('mb-')) {
-    return _SpacingToken(
-      _SpacingKind.marginBottom,
-      config.spaceOf(token.substring(3)),
-    );
-  }
-  if (token.startsWith('ml-')) {
-    return _SpacingToken(
-      _SpacingKind.marginLeft,
-      config.spaceOf(token.substring(3)),
-    );
-  }
-  if (token.startsWith('m-')) {
-    return _SpacingToken(
-      _SpacingKind.marginAll,
-      config.spaceOf(token.substring(2)),
-    );
+  for (final entry in _spacingPrefixes.entries) {
+    if (token.startsWith(entry.key)) {
+      return _SpacingToken(
+        entry.value,
+        config.spaceOf(token.substring(entry.key.length)),
+      );
+    }
   }
   return null;
 }
@@ -550,10 +579,13 @@ bool _isTransformToken(String token) {
 }
 
 final Map<String, FlexBoxStyler Function(FlexBoxStyler)> _flexAtomicHandlers = {
-  // Use CrossAxisAlignment.start to achieve left-aligned content visually matching CSS.
-  // Note: CSS default is stretch, but Flutter's stretch requires bounded constraints
-  // and causes infinite height errors in unbounded contexts. Using start provides
-  // consistent left-aligned content without layout errors.
+  // Use CrossAxisAlignment.start for better visual parity with CSS.
+  // CSS default is `align-items: stretch`, but Flutter's constraint model differs:
+  // - CSS: Container sizes to content first, then children stretch to match
+  // - Flutter: Parent provides bounds, children stretch to fill those bounds
+  // Using .start produces better visual parity because children size to intrinsic
+  // height, matching CSS behavior where items don't stretch beyond content needs.
+  // Users can explicitly add `items-stretch` where full stretch behavior is needed.
   'flex': (s) => s.row().crossAxisAlignment(CrossAxisAlignment.start),
   'flex-row': (s) => s.row().crossAxisAlignment(CrossAxisAlignment.start),
   'flex-col': (s) => s.column().crossAxisAlignment(CrossAxisAlignment.start),
@@ -1022,10 +1054,11 @@ class TwParser {
   FlexBoxStyler parseFlex(String classNames) {
     final tokens = listTokens(classNames);
 
-    // Single pass: track hasBaseFlex and accumulate transforms/borders
+    // Single pass: track hasBaseFlex and accumulate transforms/borders/gradients
     var hasBaseFlex = false;
     final baseTransform = _TransformAccum();
     final baseBorder = _BorderAccum();
+    final baseGradient = _GradientAccum();
     final variantTransforms = <String, _TransformAccum>{};
     final variantBorders = <String, _BorderAccum>{};
 
@@ -1041,6 +1074,14 @@ class TwParser {
       if (prefix.isEmpty &&
           (base == 'flex' || base == 'flex-row' || base == 'flex-col')) {
         hasBaseFlex = true;
+      }
+
+      // Accumulate gradient tokens (base only - variants not supported yet)
+      if (_isGradientToken(base)) {
+        if (prefix.isEmpty) {
+          _accumulateGradient(baseGradient, base, config);
+        }
+        continue;
       }
 
       // Accumulate transform tokens
@@ -1079,6 +1120,12 @@ class TwParser {
       styler = styler.column();
     }
 
+    // Apply accumulated gradient
+    final gradientMix = baseGradient.toGradientMix();
+    if (gradientMix != null) {
+      styler = styler.gradient(gradientMix);
+    }
+
     // Apply accumulated borders
     styler = _applyAccumulatedBorders(
       styler,
@@ -1114,9 +1161,10 @@ class TwParser {
   BoxStyler parseBox(String classNames) {
     final tokens = listTokens(classNames);
 
-    // Single pass: accumulate transforms/borders while applying atomic tokens
+    // Single pass: accumulate transforms/borders/gradients while applying atomic tokens
     final baseTransform = _TransformAccum();
     final baseBorder = _BorderAccum();
+    final baseGradient = _GradientAccum();
     final variantTransforms = <String, _TransformAccum>{};
     final variantBorders = <String, _BorderAccum>{};
 
@@ -1126,6 +1174,14 @@ class TwParser {
       final colonIndex = token.lastIndexOf(':');
       final prefix = colonIndex > 0 ? token.substring(0, colonIndex) : '';
       final base = colonIndex > 0 ? token.substring(colonIndex + 1) : token;
+
+      // Accumulate gradient tokens (base only - variants not supported yet)
+      if (_isGradientToken(base)) {
+        if (prefix.isEmpty) {
+          _accumulateGradient(baseGradient, base, config);
+        }
+        continue;
+      }
 
       // Accumulate transform tokens
       if (_isTransformToken(base)) {
@@ -1155,6 +1211,12 @@ class TwParser {
 
       // Apply atomic token
       styler = _applyBoxToken(styler, token);
+    }
+
+    // Apply accumulated gradient
+    final gradientMix = baseGradient.toGradientMix();
+    if (gradientMix != null) {
+      styler = styler.gradient(gradientMix);
     }
 
     // Apply accumulated borders
@@ -1263,35 +1325,6 @@ class TwParser {
     if (!hasTransition) return null;
 
     return CurveAnimationConfig(duration: duration, curve: curve, delay: delay);
-  }
-
-  /// Parses animation tokens and returns CurveAnimationConfig or null.
-  ///
-  /// @deprecated Use [parseAnimationFromTokens] with pre-tokenized input to
-  /// avoid redundant parsing when tokens are already available.
-  @Deprecated('Use parseAnimationFromTokens with pre-tokenized list')
-  CurveAnimationConfig? parseAnimation(String classNames) =>
-      parseAnimationFromTokens(listTokens(classNames));
-
-  /// Parses transform tokens from class names and returns a Matrix4.
-  ///
-  /// For full variant support, use [parseBox] or [parseFlex] instead.
-  ///
-  /// Returns null if no transform tokens are present.
-  @Deprecated(
-    'Use parseBox/parseFlex which handle transforms with variant support',
-  )
-  Matrix4? parseTransform(String classNames) {
-    final accum = _TransformAccum();
-
-    for (final token in listTokens(classNames)) {
-      final base = token.substring(token.lastIndexOf(':') + 1);
-      if (_isTransformToken(base)) {
-        _accumulateTransform(accum, base, config);
-      }
-    }
-
-    return accum.hasAnyTransform ? accum.toMatrix4() : null;
   }
 
   /// Generic prefix handler that applies variant modifiers and breakpoints.
@@ -1465,7 +1498,7 @@ class TwParser {
       result =
           styler.wrapDefaultTextStyle(TextStyleMix().fontWeight(_fontWeightTokens[token]!));
     } else if (_isAnimationToken(token)) {
-      // Animation tokens handled by parseAnimation(), don't report as unsupported
+      // Animation tokens handled by parseAnimationFromTokens(), don't report as unsupported
     } else if (_isTransformToken(token)) {
       // Transform tokens are applied via grouped transforms in parseBox/parseFlex.
       // We skip them here to avoid double-handling.
@@ -1562,7 +1595,7 @@ class TwParser {
         }
       }
     } else if (_isAnimationToken(token)) {
-      // Animation tokens handled by parseAnimation(), don't report as unsupported
+      // Animation tokens handled by parseAnimationFromTokens(), don't report as unsupported
     } else if (_isTransformToken(token)) {
       // Transform tokens are applied via grouped transforms in parseBox/parseFlex.
       // We skip them here to avoid double-handling.
@@ -1604,7 +1637,7 @@ class TwParser {
         }
       }
     } else if (_isAnimationToken(token)) {
-      // Animation tokens handled by parseAnimation(), don't report as unsupported
+      // Animation tokens handled by parseAnimationFromTokens(), don't report as unsupported
     } else {
       handled = false;
     }

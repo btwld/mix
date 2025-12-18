@@ -2,12 +2,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mix_tailwinds/mix_tailwinds.dart';
 
+import 'card_alert_preview.dart';
+
 void main() {
   runApp(const TailwindParityApp());
 }
 
 /// Parses URL query parameters for screenshot mode (web only).
-/// Usage: ?screenshot=true&width=480
+/// Usage: ?screenshot=true&width=480&example=card-alert
 class ScreenshotConfig {
   static bool get isScreenshotMode {
     if (!kIsWeb) return false;
@@ -20,6 +22,20 @@ class ScreenshotConfig {
     final params = Uri.base.queryParameters;
     return double.tryParse(params['width'] ?? '') ?? 480;
   }
+
+  /// Returns the example to display: 'dashboard' (default) or 'card-alert'.
+  static String get example {
+    if (!kIsWeb) return 'dashboard';
+    final params = Uri.base.queryParameters;
+    return params['example'] ?? 'dashboard';
+  }
+
+  /// Returns true if cardOnly mode is requested.
+  static bool get cardOnly {
+    if (!kIsWeb) return false;
+    final params = Uri.base.queryParameters;
+    return params['cardOnly'] == 'true';
+  }
 }
 
 class TailwindParityApp extends StatelessWidget {
@@ -30,6 +46,23 @@ class TailwindParityApp extends StatelessWidget {
     // Screenshot mode: render clean preview without UI chrome
     if (ScreenshotConfig.isScreenshotMode) {
       final width = ScreenshotConfig.width;
+      final example = ScreenshotConfig.example;
+
+      // Card alert example
+      if (example == 'card-alert') {
+        final cardOnly = ScreenshotConfig.cardOnly;
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: Scaffold(
+            body: SizedBox(
+              width: width,
+              child: CardAlertPreview(cardOnly: cardOnly),
+            ),
+          ),
+        );
+      }
+
+      // Default dashboard example
       return MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Scaffold(
