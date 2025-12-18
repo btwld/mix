@@ -472,6 +472,7 @@ Widget _buildResponsiveFlex({
         context,
         width,
       );
+      current = _applyMinSizingResponsive(current, tokens, cfg, context, width);
       current = _applyFractionalSizingResponsive(current, tokens, cfg, width);
       return current;
     },
@@ -497,6 +498,7 @@ Widget _buildResponsiveBox({
         context,
         width,
       );
+      current = _applyMinSizingResponsive(current, tokens, cfg, context, width);
       current = _applyFractionalSizingResponsive(current, tokens, cfg, width);
       return current;
     },
@@ -584,6 +586,64 @@ Widget _applyContainerSizingResponsive(
   }
 
   return SizedBox(width: targetWidth, height: targetHeight, child: child);
+}
+
+Widget _applyMinSizingResponsive(
+  Widget child,
+  Set<String> tokens,
+  TwConfig cfg,
+  BuildContext context,
+  double width,
+) {
+  final minWidthScreen = _resolveMinScreenIntent(tokens, cfg, width, isWidth: true);
+  final minHeightScreen = _resolveMinScreenIntent(tokens, cfg, width, isWidth: false);
+
+  if (!minWidthScreen && !minHeightScreen) {
+    return child;
+  }
+
+  final viewport = _viewportSize(context);
+  double? minWidth;
+  double? minHeight;
+
+  if (minWidthScreen && viewport.width > 0) {
+    minWidth = viewport.width;
+  }
+  if (minHeightScreen && viewport.height > 0) {
+    minHeight = viewport.height;
+  }
+
+  if (minWidth == null && minHeight == null) {
+    return child;
+  }
+
+  return ConstrainedBox(
+    constraints: BoxConstraints(
+      minWidth: minWidth ?? 0,
+      minHeight: minHeight ?? 0,
+    ),
+    child: child,
+  );
+}
+
+bool _resolveMinScreenIntent(
+  Set<String> tokens,
+  TwConfig cfg,
+  double width, {
+  required bool isWidth,
+}) {
+  final target = isWidth ? 'min-w-screen' : 'min-h-screen';
+
+  for (final token in tokens) {
+    final info = _parseResponsiveToken(token, cfg);
+    if (info.minWidth > width) {
+      continue;
+    }
+    if (info.base == target) {
+      return true;
+    }
+  }
+  return false;
 }
 
 Widget _applyFractionalSizingResponsive(
