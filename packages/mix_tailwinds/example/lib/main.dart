@@ -30,12 +30,6 @@ class ScreenshotConfig {
     return params['example'] ?? 'dashboard';
   }
 
-  /// Returns true if cardOnly mode is requested.
-  static bool get cardOnly {
-    if (!kIsWeb) return false;
-    final params = Uri.base.queryParameters;
-    return params['cardOnly'] == 'true';
-  }
 }
 
 class TailwindParityApp extends StatelessWidget {
@@ -48,15 +42,20 @@ class TailwindParityApp extends StatelessWidget {
       final width = ScreenshotConfig.width;
       final example = ScreenshotConfig.example;
 
-      // Card alert example
+      // Card alert example - use slate-900 background to match gradient edge
       if (example == 'card-alert') {
-        final cardOnly = ScreenshotConfig.cardOnly;
+        const slate900 = Color(0xFF0F172A);
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          home: Scaffold(
-            body: SizedBox(
+          theme: ThemeData(
+            scaffoldBackgroundColor: slate900,
+            canvasColor: slate900,
+          ),
+          home: Material(
+            color: slate900,
+            child: SizedBox(
               width: width,
-              child: CardAlertPreview(cardOnly: cardOnly),
+              child: const CardAlertPreview(),
             ),
           ),
         );

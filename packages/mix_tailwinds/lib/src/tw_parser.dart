@@ -383,42 +383,35 @@ void _accumulateBorder(_BorderAccum accum, String base, TwConfig config) {
   }
 }
 
-/// Shared spacing token types for padding/margin parsing.
-enum _SpacingKind {
-  paddingX,
-  paddingY,
-  paddingTop,
-  paddingRight,
-  paddingBottom,
-  paddingLeft,
-  paddingAll,
-  marginX,
-  marginY,
-  marginTop,
-  marginRight,
-  marginBottom,
-  marginLeft,
-  marginAll,
-}
-
-/// Table-driven spacing prefix mapping.
+/// Spacing token types with their Tailwind prefixes.
 /// Order matters: more specific prefixes (px-, py-) must come before less specific (p-).
-const Map<String, _SpacingKind> _spacingPrefixes = {
-  'px-': _SpacingKind.paddingX,
-  'py-': _SpacingKind.paddingY,
-  'pt-': _SpacingKind.paddingTop,
-  'pr-': _SpacingKind.paddingRight,
-  'pb-': _SpacingKind.paddingBottom,
-  'pl-': _SpacingKind.paddingLeft,
-  'p-': _SpacingKind.paddingAll,
-  'mx-': _SpacingKind.marginX,
-  'my-': _SpacingKind.marginY,
-  'mt-': _SpacingKind.marginTop,
-  'mr-': _SpacingKind.marginRight,
-  'mb-': _SpacingKind.marginBottom,
-  'ml-': _SpacingKind.marginLeft,
-  'm-': _SpacingKind.marginAll,
-};
+enum _SpacingKind {
+  paddingX('px-'),
+  paddingY('py-'),
+  paddingTop('pt-'),
+  paddingRight('pr-'),
+  paddingBottom('pb-'),
+  paddingLeft('pl-'),
+  paddingAll('p-'),
+  marginX('mx-'),
+  marginY('my-'),
+  marginTop('mt-'),
+  marginRight('mr-'),
+  marginBottom('mb-'),
+  marginLeft('ml-'),
+  marginAll('m-');
+
+  final String prefix;
+  const _SpacingKind(this.prefix);
+
+  /// Returns the spacing kind matching the token's prefix, or null if none match.
+  static _SpacingKind? fromToken(String token) {
+    for (final kind in values) {
+      if (token.startsWith(kind.prefix)) return kind;
+    }
+    return null;
+  }
+}
 
 /// Parsed spacing token with kind and value.
 class _SpacingToken {
@@ -427,18 +420,11 @@ class _SpacingToken {
   final double value;
 }
 
-/// Parses padding/margin tokens using table-driven lookup.
-/// Returns null if not a spacing token.
+/// Parses padding/margin tokens. Returns null if not a spacing token.
 _SpacingToken? _parseSpacingToken(String token, TwConfig config) {
-  for (final entry in _spacingPrefixes.entries) {
-    if (token.startsWith(entry.key)) {
-      return _SpacingToken(
-        entry.value,
-        config.spaceOf(token.substring(entry.key.length)),
-      );
-    }
-  }
-  return null;
+  final kind = _SpacingKind.fromToken(token);
+  if (kind == null) return null;
+  return _SpacingToken(kind, config.spaceOf(token.substring(kind.prefix.length)));
 }
 
 /// Applies spacing token to FlexBoxStyler.
@@ -478,16 +464,27 @@ BoxStyler _applySpacingToBox(BoxStyler s, _SpacingToken t) => switch (t.kind) {
   _SpacingKind.marginAll => s.marginAll(t.value),
 };
 
-/// Directional radius variations (8 directions including corners).
+/// Directional radius variations with their Tailwind direction codes.
 enum _RadiusKind {
-  top,
-  bottom,
-  left,
-  right,
-  topLeft,
-  topRight,
-  bottomLeft,
-  bottomRight,
+  top('t'),
+  bottom('b'),
+  left('l'),
+  right('r'),
+  topLeft('tl'),
+  topRight('tr'),
+  bottomLeft('bl'),
+  bottomRight('br');
+
+  final String direction;
+  const _RadiusKind(this.direction);
+
+  /// Returns the radius kind matching the direction code, or null if none match.
+  static _RadiusKind? fromDirection(String dir) {
+    for (final kind in values) {
+      if (kind.direction == dir) return kind;
+    }
+    return null;
+  }
 }
 
 /// Parsed directional radius token.
@@ -502,17 +499,7 @@ _RadiusToken? _parseRadiusToken(String token, TwConfig config) {
   final directive = _parseRadiusDirective(config, token);
   if (directive == null) return null;
 
-  final kind = switch (directive.direction) {
-    't' => _RadiusKind.top,
-    'b' => _RadiusKind.bottom,
-    'l' => _RadiusKind.left,
-    'r' => _RadiusKind.right,
-    'tl' => _RadiusKind.topLeft,
-    'tr' => _RadiusKind.topRight,
-    'bl' => _RadiusKind.bottomLeft,
-    'br' => _RadiusKind.bottomRight,
-    _ => null,
-  };
+  final kind = _RadiusKind.fromDirection(directive.direction);
   if (kind == null) return null;
   return _RadiusToken(kind, directive.radius);
 }
