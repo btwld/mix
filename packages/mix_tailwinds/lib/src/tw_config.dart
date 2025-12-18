@@ -39,7 +39,22 @@ class TwConfig {
   double fontSizeOf(String key, {double fallback = 14}) =>
       fontSizes[key] ?? fallback;
 
-  Color? colorOf(String key) => colors[key];
+  Color? colorOf(String key) {
+    // Handle opacity modifiers like 'white/10', 'purple-500/30'
+    final slashIndex = key.indexOf('/');
+    if (slashIndex > 0) {
+      final colorKey = key.substring(0, slashIndex);
+      final opacityStr = key.substring(slashIndex + 1);
+      final opacity = int.tryParse(opacityStr);
+      final baseColor = colors[colorKey];
+      if (baseColor != null && opacity != null && opacity >= 0 && opacity <= 100) {
+        // Convert percentage (0-100) to alpha (0-255)
+        final alpha = (opacity * 255 / 100).round();
+        return baseColor.withAlpha(alpha);
+      }
+    }
+    return colors[key];
+  }
 
   int? durationOf(String key) => durations[key];
 
@@ -140,17 +155,41 @@ class TwConfig {
       '9xl': 128,
     },
     colors: {
+      // Slate
+      'slate-300': Color(0xFFCBD5E1),
+      'slate-600': Color(0xFF475569),
+      'slate-700': Color(0xFF334155),
+      'slate-800': Color(0xFF1E293B),
+      'slate-900': Color(0xFF0F172A),
+      // Gray
+      'gray-100': Color(0xFFF3F4F6),
+      'gray-200': Color(0xFFE5E7EB),
+      'gray-500': Color(0xFF6B7280),
+      'gray-700': Color(0xFF374151),
+      // Blue
       'blue-50': Color(0xFFEFF6FF),
       'blue-100': Color(0xFFDBEAFE),
       'blue-500': Color(0xFF3B82F6),
       'blue-600': Color(0xFF2563EB),
       'blue-700': Color(0xFF1D4ED8),
-      'gray-100': Color(0xFFF3F4F6),
-      'gray-200': Color(0xFFE5E7EB),
-      'gray-500': Color(0xFF6B7280),
-      'gray-700': Color(0xFF374151),
+      // Purple
+      'purple-200': Color(0xFFE9D5FF),
+      'purple-400': Color(0xFFC084FC),
+      'purple-500': Color(0xFFA855F7),
+      'purple-600': Color(0xFF9333EA),
+      'purple-700': Color(0xFF7C3AED),
+      'purple-900': Color(0xFF581C87),
+      // Pink
+      'pink-400': Color(0xFFF472B6),
+      'pink-500': Color(0xFFEC4899),
+      // Red
       'red-500': Color(0xFFEF4444),
       'red-600': Color(0xFFDC2626),
+      // Amber
+      'amber-300': Color(0xFFFCD34D),
+      // Emerald
+      'emerald-400': Color(0xFF34D399),
+      // Base
       'black': Colors.black,
       'white': Colors.white,
       'transparent': Colors.transparent,
