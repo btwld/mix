@@ -912,11 +912,15 @@ _FlexItemBehavior? _resolveFlexItemBehavior(
   TwConfig cfg,
   double width,
 ) {
-  // Check for min-w-auto escape hatch
-  final hasMinWidthAuto = tokens.any((token) {
-    final base = token.substring(token.lastIndexOf(':') + 1);
-    return base == 'min-w-auto';
-  });
+  // Check for min-w-auto escape hatch (respects breakpoint prefixes)
+  var hasMinWidthAuto = false;
+  for (final token in tokens) {
+    final info = _parseResponsiveToken(token, cfg);
+    if (info.minWidth <= width && info.base == 'min-w-auto') {
+      hasMinWidthAuto = true;
+      break;
+    }
+  }
 
   _FlexItemBehavior? behavior;
   double chosenMin = -1;
