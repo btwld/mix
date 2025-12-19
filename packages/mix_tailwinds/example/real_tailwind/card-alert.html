@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Card Alert - Tailwind CSS Parity Sample</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-start justify-start p-4">
+    <div class="w-full">
+      <div class="bg-white/10 border border-white/20 rounded-3xl p-6 shadow-2xl">
+        <div class="flex items-start gap-4">
+          <!-- Avatar with gradient background -->
+          <div class="w-14 h-14 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center border-2 border-purple-400">
+            <span class="text-white font-semibold text-lg">SM</span>
+          </div>
+          <!-- Content -->
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+              <h3 class="text-white font-semibold text-lg truncate">Sarah Mitchell</h3>
+              <span class="px-2 py-0.5 bg-purple-500/30 text-purple-200 text-xs rounded-full font-medium">Admin</span>
+            </div>
+            <p class="text-slate-300 text-sm mb-4">Your profile changes are ready to publish. Review and confirm to update your public information.</p>
+            <div class="bg-white/5 rounded-xl p-3 mb-4 border border-white/10">
+              <div class="flex items-center gap-2 text-amber-300 text-sm">
+                <span>&#9888;</span>
+                <span>This action cannot be undone</span>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <button class="flex-1 px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl font-medium border border-white/10 hover:border-white/20 flex items-center justify-center">Cancel</button>
+              <button class="flex-1 px-4 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 text-white rounded-xl font-medium shadow-lg flex items-center justify-center">Save Changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
