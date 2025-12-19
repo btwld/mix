@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/breakpoint.dart';
+import '../../core/internal/applied_variants_style.dart';
 import '../../core/spec.dart';
 import '../../core/style.dart';
 import '../../variants/variant.dart';
@@ -17,6 +18,25 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
 
   /// Sets the list of variant styles. Must be implemented by the class using this mixin.
   T variants(List<VariantStyle<S>> value);
+
+  /// Applies the specified named variants to this style.
+  ///
+  /// Returns a new style that will have these variants activated
+  /// when resolved. Use this to select which named variants should
+  /// be active for a particular widget.
+  ///
+  /// Example:
+  /// ```dart
+  /// final sizeStyle = BoxStyler()
+  ///   .variant(small, BoxStyler().width(100).height(100))
+  ///   .variant(large, BoxStyler().width(200).height(200));
+  ///
+  /// // Apply the small variant
+  /// Box(style: sizeStyle.applyVariants([small]))
+  /// ```
+  Style<S> applyVariants(Iterable<NamedVariant> variantsToApply) {
+    return AppliedVariantsStyle<S>(this, variantsToApply.toSet());
+  }
 
   /// Creates a variant for dark mode.
   T onDark(T style) {
