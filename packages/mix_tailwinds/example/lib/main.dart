@@ -51,13 +51,7 @@ class TailwindParityApp extends StatelessWidget {
             scaffoldBackgroundColor: slate900,
             canvasColor: slate900,
           ),
-          home: Material(
-            color: slate900,
-            child: SizedBox(
-              width: width,
-              child: const CardAlertPreview(),
-            ),
-          ),
+          home: const CardAlertPreview(),
         );
       }
 
