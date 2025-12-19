@@ -71,11 +71,11 @@ This package aims for Tailwind-like syntax but has intentional differences due t
 
 ### Typography
 
-| Behavior | Tailwind CSS | mix_tailwinds | Reason |
-|----------|--------------|---------------|--------|
-| `text-*` line-height | Auto-adjusts based on size | No auto-adjustment | Flutter and browser text rendering differ fundamentally |
+| Behavior | Tailwind CSS | mix_tailwinds | Notes |
+|----------|--------------|---------------|-------|
+| `text-*` line-height | Auto-adjusts based on size | Auto-adjusts (matches Tailwind) | Uses Tailwind's default line-height multipliers per size |
 
-Use `leading-*` tokens explicitly for line height control:
+Override with `leading-*` tokens for custom line height:
 - `leading-none`, `leading-tight`, `leading-snug`, etc. - line height multipliers
 - `leading-even` - distribute leading evenly above/below text (better vertical centering)
 - `leading-trim` - trim leading for tight vertical centering (ideal for single characters like avatars)

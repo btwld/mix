@@ -145,12 +145,18 @@ class _GradientAccum {
 // =============================================================================
 
 class TwResolver {
-  const TwResolver(this.config);
+  const TwResolver(this.config, {this.onUnknownVariant});
+
+  /// Pre-compiled regex for parsing arbitrary length values (e.g., 123px, 1.5rem, 50%).
+  static final _arbitraryLengthRegex =
+      RegExp(r'^(-?\d+\.?\d*)(px|rem|em|%)?$');
 
   final TwConfig config;
+  final TokenWarningCallback? onUnknownVariant;
 
   /// Finds the last colon that's not inside square brackets.
   /// This handles tokens like `hover:bg-[color:var(--x)]` correctly.
+  /// Returns -1 if brackets are malformed (unclosed or extra closing).
   int _findLastPrefixColon(String token) {
     var bracketDepth = 0;
     var lastColonOutside = -1;
@@ -160,10 +166,14 @@ class TwResolver {
         bracketDepth++;
       } else if (c == ']') {
         bracketDepth--;
+        // Extra closing bracket - malformed
+        if (bracketDepth < 0) return -1;
       } else if (c == ':' && bracketDepth == 0) {
         lastColonOutside = i;
       }
     }
+    // Unclosed brackets - malformed, treat as no prefix
+    if (bracketDepth != 0) return -1;
     return lastColonOutside;
   }
 
@@ -255,6 +265,9 @@ class TwResolver {
         variants.add(TwBreakpointVariant(part, breakpoint));
         continue;
       }
+
+      // Unknown variant - warn user about potential typo
+      onUnknownVariant?.call(part);
     }
 
     return variants;
@@ -366,7 +379,7 @@ class TwResolver {
   }
 
   TwLengthValue? _parseArbitraryLength(String value) {
-    final match = RegExp(r'^(-?\d+\.?\d*)(px|rem|em|%)?$').firstMatch(value);
+    final match = _arbitraryLengthRegex.firstMatch(value);
     if (match == null) return null;
 
     var num = double.parse(match.group(1)!);
@@ -479,24 +492,85 @@ bool _isTransformToken(String token) {
 void _accumulateTransform(
   _TransformAccum accum,
   String base,
-  TwConfig config,
-) {
+  TwConfig config, {
+  String? token,
+  TokenWarningCallback? onUnsupported,
+}) {
   if (base.startsWith('scale-')) {
-    accum.scale = config.scaleOf(base.substring(6));
+    final key = base.substring(6);
+    if (config.hasScale(key)) {
+      accum.scale = config.scaleOf(key);
+    } else {
+      onUnsupported?.call(token ?? base);
+    }
   } else if (base.startsWith('-rotate-')) {
     final deg = config.rotationOf(base.substring(8));
     if (deg != null) accum.rotateDeg = -deg;
   } else if (base.startsWith('rotate-')) {
     accum.rotateDeg = config.rotationOf(base.substring(7));
   } else if (base.startsWith('-translate-x-')) {
-    accum.translateX = -config.spaceOf(base.substring(13));
+    final key = base.substring(13);
+    final value = _resolveTranslateValue(key, config);
+    if (value != null) {
+      accum.translateX = -value;
+    } else {
+      onUnsupported?.call(token ?? base);
+    }
   } else if (base.startsWith('translate-x-')) {
-    accum.translateX = config.spaceOf(base.substring(12));
+    final key = base.substring(12);
+    final value = _resolveTranslateValue(key, config);
+    if (value != null) {
+      accum.translateX = value;
+    } else {
+      onUnsupported?.call(token ?? base);
+    }
   } else if (base.startsWith('-translate-y-')) {
-    accum.translateY = -config.spaceOf(base.substring(13));
+    final key = base.substring(13);
+    final value = _resolveTranslateValue(key, config);
+    if (value != null) {
+      accum.translateY = -value;
+    } else {
+      onUnsupported?.call(token ?? base);
+    }
   } else if (base.startsWith('translate-y-')) {
-    accum.translateY = config.spaceOf(base.substring(12));
+    final key = base.substring(12);
+    final value = _resolveTranslateValue(key, config);
+    if (value != null) {
+      accum.translateY = value;
+    } else {
+      onUnsupported?.call(token ?? base);
+    }
   }
+}
+
+/// Regex for parsing arbitrary length values (e.g., 123px, 1.5rem, 50%).
+final _arbitraryLengthRegex = RegExp(r'^(-?\d+\.?\d*)(px|rem|em|%)?$');
+
+/// Resolves a translate value from either a spacing key or arbitrary value.
+/// Returns null if the key is invalid.
+double? _resolveTranslateValue(String key, TwConfig config) {
+  // Handle arbitrary values like [100px], [2rem]
+  if (key.startsWith('[') && key.endsWith(']')) {
+    final inner = key.substring(1, key.length - 1);
+    final match = _arbitraryLengthRegex.firstMatch(inner);
+    if (match == null) return null;
+
+    var num = double.parse(match.group(1)!);
+    final unitStr = match.group(2) ?? 'px';
+
+    // Convert rem/em to px using 16px base
+    if (unitStr == 'rem' || unitStr == 'em') {
+      return num * 16;
+    }
+    // For %, just return the raw number (caller can handle percentage)
+    // For px or no unit, return as-is
+    return num;
+  }
+  // Handle spacing scale keys
+  if (config.hasSpace(key)) {
+    return config.spaceOf(key);
+  }
+  return null;
 }
 
 Color _defaultBorderColor(TwConfig config) =>
@@ -514,8 +588,8 @@ bool _isBorderToken(String token, TwConfig config) {
   final dir = dashIdx == -1 ? key : key.substring(0, dashIdx);
   if (directions.contains(dir)) return true;
 
-  // Width tokens
-  if (config.borderWidthOf(key, fallback: -1) > 0) return true;
+  // Width tokens (>= 0 to include border-0)
+  if (config.borderWidthOf(key, fallback: -1) >= 0) return true;
 
   // Color tokens
   if (config.colorOf(key) != null) return true;
@@ -544,11 +618,11 @@ void _accumulateBorder(_BorderAccum accum, String base, TwConfig config) {
     return;
   }
 
-  // Handle width-only tokens
+  // Handle width-only tokens (>= 0 to include border-0)
   if (base.startsWith('border-')) {
     final widthKey = base.substring(7);
     final widthOnly = config.borderWidthOf(widthKey, fallback: -1);
-    if (widthOnly > 0) {
+    if (widthOnly >= 0) {
       accum.setAll(widthOnly);
       return;
     }
@@ -612,7 +686,8 @@ _BorderDirective? _parseBorderDirective(TwConfig config, String token) {
 
   if (remainder.isNotEmpty) {
     final widthCandidate = config.borderWidthOf(remainder, fallback: -1);
-    if (widthCandidate > 0) {
+    if (widthCandidate >= 0) {
+      // >= 0 to include border-t-0, border-b-0, etc.
       width = widthCandidate;
     } else {
       final colorCandidate = config.colorOf(remainder);
@@ -1018,7 +1093,13 @@ TextStyler _applyTextTransform(TextStyler styler, TwValue value) {
 class TwParser {
   TwParser({TwConfig? config, this.onUnsupported})
       : config = config ?? TwConfig.standard(),
-        _resolver = TwResolver(config ?? TwConfig.standard());
+        _resolver = TwResolver(
+          config ?? TwConfig.standard(),
+          onUnknownVariant: onUnsupported,
+        );
+
+  /// Pre-compiled regex for splitting class names by whitespace.
+  static final _whitespaceRegex = RegExp(r'\s+');
 
   final TwConfig config;
   final TokenWarningCallback? onUnsupported;
@@ -1027,7 +1108,7 @@ class TwParser {
   List<String> listTokens(String classNames) {
     final trimmed = classNames.trim();
     if (trimmed.isEmpty) return const [];
-    return trimmed.split(RegExp(r'\s+'));
+    return trimmed.split(_whitespaceRegex);
   }
 
   Set<String> setTokens(String classNames) => listTokens(classNames).toSet();
@@ -1061,7 +1142,8 @@ class TwParser {
     var styler = FlexBoxStyler();
 
     for (final token in tokens) {
-      final colonIndex = token.lastIndexOf(':');
+      // Use bracket-aware colon finding to handle arbitrary values like bg-[color:red]
+      final colonIndex = _findFirstPrefixColon(token);
       final prefix = colonIndex > 0 ? token.substring(0, colonIndex) : '';
       final base = colonIndex > 0 ? token.substring(colonIndex + 1) : token;
 
@@ -1088,7 +1170,8 @@ class TwParser {
         final accum = prefix.isEmpty
             ? baseTransform
             : variantTransforms.putIfAbsent(prefix, _TransformAccum.new);
-        _accumulateTransform(accum, base, config);
+        _accumulateTransform(accum, base, config,
+            token: token, onUnsupported: onUnsupported);
         continue;
       }
 
@@ -1164,7 +1247,8 @@ class TwParser {
     var styler = BoxStyler();
 
     for (final token in tokens) {
-      final colonIndex = token.lastIndexOf(':');
+      // Use bracket-aware colon finding to handle arbitrary values like bg-[color:red]
+      final colonIndex = _findFirstPrefixColon(token);
       final prefix = colonIndex > 0 ? token.substring(0, colonIndex) : '';
       final base = colonIndex > 0 ? token.substring(colonIndex + 1) : token;
 
@@ -1185,7 +1269,8 @@ class TwParser {
         final accum = prefix.isEmpty
             ? baseTransform
             : variantTransforms.putIfAbsent(prefix, _TransformAccum.new);
-        _accumulateTransform(accum, base, config);
+        _accumulateTransform(accum, base, config,
+            token: token, onUnsupported: onUnsupported);
         continue;
       }
 
@@ -1340,19 +1425,25 @@ class TwParser {
       );
 
   /// Finds the first colon that's not inside square brackets.
+  /// Returns -1 if brackets are malformed (unclosed or extra closing).
   int _findFirstPrefixColon(String token) {
     var bracketDepth = 0;
+    var firstColonOutside = -1;
     for (var i = 0; i < token.length; i++) {
       final c = token[i];
       if (c == '[') {
         bracketDepth++;
       } else if (c == ']') {
         bracketDepth--;
-      } else if (c == ':' && bracketDepth == 0) {
-        return i;
+        // Extra closing bracket - malformed
+        if (bracketDepth < 0) return -1;
+      } else if (c == ':' && bracketDepth == 0 && firstColonOutside == -1) {
+        firstColonOutside = i;
       }
     }
-    return -1;
+    // Unclosed brackets - malformed, treat as no prefix
+    if (bracketDepth != 0) return -1;
+    return firstColonOutside;
   }
 
   S _applyPrefixedToken<S>(
