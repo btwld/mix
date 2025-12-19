@@ -7,7 +7,6 @@ import '../../core/style.dart' show VariantStyle;
 import '../../core/style_spec.dart';
 import '../../core/utility.dart';
 import '../../core/utility_variant_mixin.dart';
-import '../../core/utility_widget_state_variant_mixin.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../modifiers/widget_modifier_util.dart';
 import '../../properties/layout/constraints_util.dart';
@@ -23,9 +22,7 @@ import 'stackbox_style.dart';
 /// Combines box and stack styling capabilities. Supports the same API as [StackBoxStyler]
 /// but maintains mutable internal state enabling fluid styling: `$stackbox..color.red()..width(100)`.
 class StackBoxMutableStyler extends StyleMutableBuilder<StackBoxSpec>
-    with
-        UtilityVariantMixin<StackBoxStyler, StackBoxSpec>,
-        UtilityWidgetStateVariantMixin<StackBoxStyler, StackBoxSpec> {
+    with UtilityVariantMixin<StackBoxStyler, StackBoxSpec> {
   late final padding = EdgeInsetsGeometryUtility<StackBoxStyler>(
     (prop) => mutable.merge(StackBoxStyler(padding: prop)),
   );

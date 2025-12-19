@@ -15,7 +15,6 @@ import '../../style/mixins/animation_style_mixin.dart';
 import '../../style/mixins/text_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
 import '../../style/mixins/widget_modifier_style_mixin.dart';
-import '../../style/mixins/widget_state_variant_mixin.dart';
 import 'text_mutable_style.dart';
 import 'text_spec.dart';
 import 'text_widget.dart';
@@ -34,7 +33,6 @@ class TextStyler extends Style<TextSpec>
         Diagnosticable,
         WidgetModifierStyleMixin<TextStyler, TextSpec>,
         VariantStyleMixin<TextStyler, TextSpec>,
-        WidgetStateVariantMixin<TextStyler, TextSpec>,
         TextStyleMixin<TextStyler>,
         AnimationStyleMixin<TextStyler, TextSpec> {
   final Prop<TextOverflow>? $overflow;
