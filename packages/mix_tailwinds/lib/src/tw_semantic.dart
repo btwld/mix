@@ -237,6 +237,7 @@ enum TwProperty {
   // Layout
   display,
   flexDirection,
+  flexWrap,
   alignItems,
   justifyContent,
   alignSelf,
@@ -275,6 +276,7 @@ enum TwProperty {
   fontSize,
   fontWeight,
   textColor,
+  textAlign,
   lineHeight,
   letterSpacing,
   textTransform,
@@ -761,10 +763,18 @@ const Map<String, TwFunctionalPlugin> functionalPlugins = {
 
 /// Named plugins - properties with fixed values.
 final Map<String, TwNamedPlugin> namedPlugins = {
-  // Flex display
+  // Display
   'flex': TwNamedPlugin(
     property: TwProperty.display,
     value: const TwEnumValue('flex'),
+  ),
+  'hidden': TwNamedPlugin(
+    property: TwProperty.display,
+    value: const TwEnumValue('none'),
+  ),
+  'block': TwNamedPlugin(
+    property: TwProperty.display,
+    value: const TwEnumValue('block'),
   ),
   'flex-row': TwNamedPlugin(
     property: TwProperty.flexDirection,
@@ -773,6 +783,20 @@ final Map<String, TwNamedPlugin> namedPlugins = {
   'flex-col': TwNamedPlugin(
     property: TwProperty.flexDirection,
     value: const TwEnumValue(Axis.vertical),
+  ),
+
+  // Flex wrap
+  'flex-wrap': TwNamedPlugin(
+    property: TwProperty.flexWrap,
+    value: const TwEnumValue(true),
+  ),
+  'flex-nowrap': TwNamedPlugin(
+    property: TwProperty.flexWrap,
+    value: const TwEnumValue(false),
+  ),
+  'flex-wrap-reverse': TwNamedPlugin(
+    property: TwProperty.flexWrap,
+    value: const TwEnumValue('reverse'),
   ),
 
   // Flex item properties
@@ -959,6 +983,32 @@ final Map<String, TwNamedPlugin> namedPlugins = {
   'font-black': TwNamedPlugin(
     property: TwProperty.fontWeight,
     value: const TwEnumValue(FontWeight.w900),
+  ),
+
+  // Text alignment
+  'text-left': TwNamedPlugin(
+    property: TwProperty.textAlign,
+    value: const TwEnumValue(TextAlign.left),
+  ),
+  'text-center': TwNamedPlugin(
+    property: TwProperty.textAlign,
+    value: const TwEnumValue(TextAlign.center),
+  ),
+  'text-right': TwNamedPlugin(
+    property: TwProperty.textAlign,
+    value: const TwEnumValue(TextAlign.right),
+  ),
+  'text-justify': TwNamedPlugin(
+    property: TwProperty.textAlign,
+    value: const TwEnumValue(TextAlign.justify),
+  ),
+  'text-start': TwNamedPlugin(
+    property: TwProperty.textAlign,
+    value: const TwEnumValue(TextAlign.start),
+  ),
+  'text-end': TwNamedPlugin(
+    property: TwProperty.textAlign,
+    value: const TwEnumValue(TextAlign.end),
   ),
 
   // Text transform
