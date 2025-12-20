@@ -271,27 +271,12 @@ void main() {
           .variant(smallVariant, smallStyle)
           .variant(largeVariant, largeStyle);
 
+      // Apply only small - both variants stay (style is merged in)
       final result = withVariants.applyVariants([smallVariant]);
 
       // Both variants remain (applied variant styles are merged in)
       expect(result.$variants, isNotNull);
       expect(result.$variants!.length, 2);
-    });
-
-    test('all variants stay in \$variants regardless of matching', () {
-      const smallVariant = NamedVariant('small');
-      const largeVariant = NamedVariant('large');
-      const attribute = TestVariantAttribute();
-      const smallStyle = TestVariantAttribute();
-      const largeStyle = TestVariantAttribute();
-
-      final withVariants = attribute
-          .variant(smallVariant, smallStyle)
-          .variant(largeVariant, largeStyle);
-
-      // Apply only small - both variants stay (style is merged in)
-      final result = withVariants.applyVariants([smallVariant]);
-
       expect(result.$variants!.any((v) => v.variant == largeVariant), isTrue);
       expect(result.$variants!.any((v) => v.variant == smallVariant), isTrue);
     });
