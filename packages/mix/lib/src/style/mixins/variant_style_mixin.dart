@@ -18,6 +18,36 @@ mixin VariantStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
   /// Sets the list of variant styles. Must be implemented by the class using this mixin.
   T variants(List<VariantStyle<S>> value);
 
+  /// Applies the specified named variants by merging their styles into this style.
+  ///
+  /// This method finds all [VariantStyle]s matching the given [NamedVariant]s
+  /// and merges their styles into the base style. The applied variants remain
+  /// in `$variants` but this is harmless - they only re-apply when explicitly
+  /// passed to `namedVariants` in `build()`, which widgets don't do by default.
+  ///
+  /// Returns the concrete type [T], enabling method chaining:
+  /// ```dart
+  /// final style = BoxStyler()
+  ///   .variant(small, BoxStyler().width(100))
+  ///   .variant(primary, BoxStyler().color(Colors.blue));
+  ///
+  /// // Apply and chain:
+  /// style.applyVariants([small]).onHovered(BoxStyler().opacity(0.8))
+  /// ```
+  T applyVariants(Iterable<NamedVariant> variantsToApply) {
+    final variantsSet = variantsToApply.toSet();
+
+    var result = this as T;
+    for (final vs in $variants ?? <VariantStyle<S>>[]) {
+      if (vs.variant is NamedVariant && variantsSet.contains(vs.variant)) {
+        // ignore: avoid-unnecessary-type-casts
+        result = result.merge(vs.value as T) as T;
+      }
+    }
+
+    return result;
+  }
+
   /// Creates a variant for dark mode.
   T onDark(T style) {
     return variant(ContextVariant.brightness(Brightness.dark), style);

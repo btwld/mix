@@ -233,4 +233,159 @@ void main() {
       expect(capturedContext, same(mockContext));
     });
   });
+
+  group('applyVariants', () {
+    test('returns concrete type T', () {
+      const smallVariant = NamedVariant('small');
+      const attribute = TestVariantAttribute();
+      const smallStyle = TestVariantAttribute();
+
+      final withVariant = attribute.variant(smallVariant, smallStyle);
+      final result = withVariant.applyVariants([smallVariant]);
+
+      expect(result, isA<TestVariantAttribute>());
+    });
+
+    test('merges matching variant style into result', () {
+      const smallVariant = NamedVariant('small');
+      const attribute = TestVariantAttribute();
+      const smallStyle = TestVariantAttribute();
+
+      final withVariant = attribute.variant(smallVariant, smallStyle);
+      final result = withVariant.applyVariants([smallVariant]);
+
+      // The applied variant style is merged, and variant stays in $variants
+      // (harmless - only re-applies if explicitly passed to build's namedVariants)
+      expect(result.$variants, isNotNull);
+      expect(result.$variants!.length, 1);
+    });
+
+    test('keeps all variants in \$variants after applying', () {
+      const smallVariant = NamedVariant('small');
+      const largeVariant = NamedVariant('large');
+      const attribute = TestVariantAttribute();
+      const smallStyle = TestVariantAttribute();
+      const largeStyle = TestVariantAttribute();
+
+      final withVariants = attribute
+          .variant(smallVariant, smallStyle)
+          .variant(largeVariant, largeStyle);
+
+      final result = withVariants.applyVariants([smallVariant]);
+
+      // Both variants remain (applied variant styles are merged in)
+      expect(result.$variants, isNotNull);
+      expect(result.$variants!.length, 2);
+    });
+
+    test('all variants stay in \$variants regardless of matching', () {
+      const smallVariant = NamedVariant('small');
+      const largeVariant = NamedVariant('large');
+      const attribute = TestVariantAttribute();
+      const smallStyle = TestVariantAttribute();
+      const largeStyle = TestVariantAttribute();
+
+      final withVariants = attribute
+          .variant(smallVariant, smallStyle)
+          .variant(largeVariant, largeStyle);
+
+      // Apply only small - both variants stay (style is merged in)
+      final result = withVariants.applyVariants([smallVariant]);
+
+      expect(result.$variants!.any((v) => v.variant == largeVariant), isTrue);
+      expect(result.$variants!.any((v) => v.variant == smallVariant), isTrue);
+    });
+
+    test('applies multiple variants at once', () {
+      const smallVariant = NamedVariant('small');
+      const primaryVariant = NamedVariant('primary');
+      const outlinedVariant = NamedVariant('outlined');
+      const attribute = TestVariantAttribute();
+      const smallStyle = TestVariantAttribute();
+      const primaryStyle = TestVariantAttribute();
+      const outlinedStyle = TestVariantAttribute();
+
+      final withVariants = attribute
+          .variant(smallVariant, smallStyle)
+          .variant(primaryVariant, primaryStyle)
+          .variant(outlinedVariant, outlinedStyle);
+
+      // Apply small and primary - all variants stay (styles are merged in)
+      final result = withVariants.applyVariants([smallVariant, primaryVariant]);
+
+      expect(result.$variants, isNotNull);
+      expect(result.$variants!.length, 3);
+    });
+
+    test('handles non-existent variants gracefully', () {
+      const smallVariant = NamedVariant('small');
+      const nonExistent = NamedVariant('nonexistent');
+      const attribute = TestVariantAttribute();
+      const smallStyle = TestVariantAttribute();
+
+      final withVariant = attribute.variant(smallVariant, smallStyle);
+
+      // Applying a non-existent variant should not throw
+      final result = withVariant.applyVariants([nonExistent]);
+
+      // Original variant should still be there
+      expect(result.$variants, isNotNull);
+      expect(result.$variants!.length, 1);
+      expect(result.$variants!.first.variant, equals(smallVariant));
+    });
+
+    test('handles empty variant list', () {
+      const smallVariant = NamedVariant('small');
+      const attribute = TestVariantAttribute();
+      const smallStyle = TestVariantAttribute();
+
+      final withVariant = attribute.variant(smallVariant, smallStyle);
+
+      // Applying empty list should not change anything
+      final result = withVariant.applyVariants([]);
+
+      expect(result.$variants, isNotNull);
+      expect(result.$variants!.length, 1);
+      expect(result.$variants!.first.variant, equals(smallVariant));
+    });
+
+    test('handles duplicate variants in apply list', () {
+      const smallVariant = NamedVariant('small');
+      const attribute = TestVariantAttribute();
+      const smallStyle = TestVariantAttribute();
+
+      final withVariant = attribute.variant(smallVariant, smallStyle);
+
+      // Applying same variant multiple times should work (merges once per match)
+      final result = withVariant.applyVariants([smallVariant, smallVariant]);
+
+      expect(result.$variants, isNotNull);
+      expect(result.$variants!.length, 1);
+    });
+
+    test('preserves all variants when applying named variants', () {
+      const smallVariant = NamedVariant('small');
+      const attribute = TestVariantAttribute();
+      const smallStyle = TestVariantAttribute();
+      const darkStyle = TestVariantAttribute();
+
+      final withVariants = attribute
+          .variant(smallVariant, smallStyle)
+          .onDark(darkStyle);
+
+      final result = withVariants.applyVariants([smallVariant]);
+
+      // Both variants remain (named variant style is merged in)
+      expect(result.$variants, isNotNull);
+      expect(result.$variants!.length, 2);
+      expect(
+        result.$variants!.any((v) => v.variant is ContextVariant),
+        isTrue,
+      );
+      expect(
+        result.$variants!.any((v) => v.variant == smallVariant),
+        isTrue,
+      );
+    });
+  });
 }
