@@ -1,5 +1,7 @@
 # Fumadocs Migration Guide: From Nextra to Modern Documentation
 
+> Status: This is a forward-looking plan. The current docs site still uses Nextra (see `website/package.json`). Keep this for reference and update or remove it when a migration is scheduled.
+
 ## Table of Contents
 1. [Introduction & Prerequisites](#introduction--prerequisites)
 2. [Project Setup Using Official CLI](#project-setup-using-official-cli)
