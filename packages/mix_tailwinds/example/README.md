@@ -10,7 +10,7 @@ This example renders the same UI twice: once with `mix_tailwinds` (Flutter) and 
 ## Run the Flutter preview
 
 ```bash
-cd /Users/leofarias/Forks/mix/.conductor/kathmandu/packages/mix_tailwinds/example
+cd packages/mix_tailwinds/example
 flutter pub get
 flutter run -d macos   # or chrome/ios/android as needed
 ```
@@ -22,7 +22,7 @@ The slider across the top constrains the preview width between 320 px and 1040
 Open the HTML file directly in a browser (or serve it via any static server):
 
 ```bash
-cd /Users/leofarias/Forks/mix/.conductor/kathmandu/packages/mix_tailwinds/example
+cd packages/mix_tailwinds/example
 open real_tailwind/index.html
 # — or —
 python3 -m http.server 5173 --directory real_tailwind
@@ -37,7 +37,7 @@ The Next.js docs site now ships with a Playwright-based helper that boots the Ta
 1. Install the Playwright browser binary once:
 
    ```bash
-   cd /Users/leofarias/Forks/mix/.conductor/kathmandu/website
+   cd website
    yarn install
    npx playwright install chromium
    ```
@@ -57,7 +57,7 @@ The PNGs land in `website/screenshots/tailwind-plan-card/`. They’re `.gitignor
 1. Render the Flutter surface into golden PNGs (same widths):
 
    ```bash
-   cd /Users/leofarias/Forks/mix/.conductor/kathmandu/packages/mix_tailwinds/example
+   cd packages/mix_tailwinds/example
    flutter test --update-goldens test/parity_golden_test.dart
    ```
 
@@ -66,7 +66,7 @@ The PNGs land in `website/screenshots/tailwind-plan-card/`. They’re `.gitignor
 2. With both sets of PNGs present, run the automated diff:
 
    ```bash
-   cd /Users/leofarias/Forks/mix/.conductor/kathmandu/website
+   cd website
    yarn compare:tailwind
    ```
 
