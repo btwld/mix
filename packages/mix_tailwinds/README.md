@@ -60,40 +60,7 @@ As an experimental proof of concept:
 
 ## Semantic Differences from Tailwind CSS
 
-This package aims for Tailwind-like syntax but has intentional differences due to Flutter's rendering model:
-
-### Flexbox Behavior
-
-| Behavior | Tailwind CSS | mix_tailwinds | Reason |
-|----------|--------------|---------------|--------|
-| Cross-axis default | `stretch` | `start` | Flutter's `stretch` requires bounded constraints and causes infinite height errors in unbounded contexts |
-| Default axis (no `flex` class) | N/A | Vertical | Matches block element stacking behavior |
-
-### Typography
-
-| Behavior | Tailwind CSS | mix_tailwinds | Notes |
-|----------|--------------|---------------|-------|
-| `text-*` line-height | Auto-adjusts based on size | Auto-adjusts (matches Tailwind) | Uses Tailwind's default line-height multipliers per size |
-
-Override with `leading-*` tokens for custom line height:
-- `leading-none`, `leading-tight`, `leading-snug`, etc. - line height multipliers
-- `leading-even` - distribute leading evenly above/below text (better vertical centering)
-- `leading-trim` - trim leading for tight vertical centering (ideal for single characters like avatars)
-
-### Sizing
-
-| Behavior | Tailwind CSS | mix_tailwinds | Notes |
-|----------|--------------|---------------|-------|
-| `w-full` / `h-full` | 100% of parent | Best-effort parent/viewport | Falls back to viewport when parent is unbounded |
-| `w-screen` / `h-screen` | Viewport size | MediaQuery-based | Falls back to constraints if no MediaQuery available |
-
-### Animation
-
-| Behavior | Tailwind CSS | mix_tailwinds | Notes |
-|----------|--------------|---------------|-------|
-| Default duration | 150ms | 150ms | ✅ Matches |
-| Default easing | cubic-bezier(0.4, 0, 0.2, 1) | `Curves.easeOut` | Close approximation |
-| `transition-*` variants | Targets specific properties | All properties animate | Mix animates entire style uniformly |
+For the authoritative list of Tailwind ↔ Flutter behavioral differences and recommended workarounds, see `FLUTTER_ADAPTATIONS.md`. This README focuses on the surface API and supported tokens to avoid duplication.
 
 ### Flex Item Tokens
 
