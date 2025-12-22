@@ -21,29 +21,10 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Install FVM
+    - name: Setup development environment
       shell: bash
       run: |
-        curl -fsSL https://fvm.app/install.sh | bash
-        fvm use mincompat --force
-        
-    - uses: kuhnroyal/flutter-fvm-config-action@v2
-      id: fvm-config-action
-
-    - uses: subosito/flutter-action@v2
-      with:
-        flutter-version: ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
-        channel: ${{ steps.fvm-config-action.outputs.FLUTTER_CHANNEL }}
-
-    - name: Flutter version
-      shell: bash
-      run: |
-        flutter --version
-        
-    - name: Setup Melos
-      run: |
-        dart pub global activate melos
-        melos bs
+        ./scripts/setup.sh --ci --flavor mincompat
 
     - name: Configure Git User
       run: |
