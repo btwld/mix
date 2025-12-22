@@ -100,9 +100,7 @@ void main() {
           // Verify that no animation wrapper is created
           expect(find.byType(StyleAnimationBuilder<BoxSpec>), findsNothing);
         },
-        skip:
-            // TODO: SHOULD REVIEW LATER: Skips because we are adding the animation driver everytime
-            true,
+        skip: true, // Animation driver is always added regardless of animation config
       );
 
       testWidgets(

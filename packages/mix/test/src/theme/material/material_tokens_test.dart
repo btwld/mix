@@ -63,12 +63,9 @@ void main() {
       );
     });
 
-    test(
-      'Material 3 textStyles',
-      () {
-        // Skip: Token integration needs architectural review - tokens resolve to functions instead of TextStyle
-      },
-      skip: 'Token integration needs architectural review',
-    );
+    group('Material 3 textStyles', () {
+      // Token integration needs architectural review:
+      // TextStyle tokens resolve to functions instead of TextStyle values
+    }, skip: 'Token integration needs architectural review');
   });
 }

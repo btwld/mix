@@ -381,10 +381,6 @@ void main() {
         expect(attribute.$softWrap, resolvesTo(true));
       });
 
-      test('maybeValue returns null for null spec', () {
-        expect(null, isNull); // TextStyling.maybeValue removed
-      });
-
       test('maybeValue returns attribute for non-null spec', () {
         const spec = TextSpec(overflow: TextOverflow.visible, maxLines: 1);
         final attribute = TextStyler(
