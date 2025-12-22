@@ -401,10 +401,8 @@ final class ShapeDecorationMix extends DecorationMix<ShapeDecoration>
     final shape = $shape;
     if (shape == null) return true;
 
-    // Check if it's a CircleBorderMix without eccentricity or RoundedRectangleBorderMix
-    // For now, we consider all CircleBorderMix as mergeable
-    // In the future, we might need to check eccentricity
-
+    // Only RoundedRectangleBorder shapes can be merged into BoxDecoration.
+    // CircleBorder and other ShapeBorder types require ShapeDecoration.
     return shape is Prop<RoundedRectangleBorder>;
   }
 

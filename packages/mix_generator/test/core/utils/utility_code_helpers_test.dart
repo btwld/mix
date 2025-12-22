@@ -35,12 +35,7 @@ void main() {
   });
 
   group('ElementInfo', () {
-    test('skipping tests due to analyzer dependencies', () {
-      // These tests are skipped because they rely on analyzer elements
-      // which are difficult to test without a more complex setup
-      // In a real implementation, we would use build_test package to create
-      // test fixtures with actual source code to verify the behavior
-      expect(true, isTrue);
-    });
-  });
+    // ElementInfo relies on analyzer elements which require build_test
+    // infrastructure. Integration tests are run via the example/ directory.
+  }, skip: 'Requires build_test integration test setup');
 }
