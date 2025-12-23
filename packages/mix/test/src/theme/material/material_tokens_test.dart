@@ -63,12 +63,73 @@ void main() {
       );
     });
 
-    test(
-      'Material 3 textStyles',
-      () {
-        // Skip: Token integration needs architectural review - tokens resolve to functions instead of TextStyle
-      },
-      skip: 'Token integration needs architectural review',
-    );
+    testWidgets('textStyles', (tester) async {
+      await tester.pumpWithMixScope(Container(), withMaterial: true);
+      final context = tester.element(find.byType(Container));
+      final scope = MixScope.of(context);
+      final tokens = const MaterialTokens().textTheme;
+      final textTheme = Theme.of(context).textTheme;
+
+      expect(
+        scope.getToken(tokens.displayLarge, context),
+        textTheme.displayLarge,
+      );
+      expect(
+        scope.getToken(tokens.displayMedium, context),
+        textTheme.displayMedium,
+      );
+      expect(
+        scope.getToken(tokens.displaySmall, context),
+        textTheme.displaySmall,
+      );
+      expect(
+        scope.getToken(tokens.headlineLarge, context),
+        textTheme.headlineLarge,
+      );
+      expect(
+        scope.getToken(tokens.headlineMedium, context),
+        textTheme.headlineMedium,
+      );
+      expect(
+        scope.getToken(tokens.headlineSmall, context),
+        textTheme.headlineSmall,
+      );
+      expect(scope.getToken(tokens.titleLarge, context), textTheme.titleLarge);
+      expect(
+        scope.getToken(tokens.titleMedium, context),
+        textTheme.titleMedium,
+      );
+      expect(scope.getToken(tokens.titleSmall, context), textTheme.titleSmall);
+      expect(scope.getToken(tokens.bodyLarge, context), textTheme.bodyLarge);
+      expect(scope.getToken(tokens.bodyMedium, context), textTheme.bodyMedium);
+      expect(scope.getToken(tokens.bodySmall, context), textTheme.bodySmall);
+      expect(scope.getToken(tokens.labelLarge, context), textTheme.labelLarge);
+      expect(scope.getToken(tokens.labelMedium, context), textTheme.labelMedium);
+      expect(scope.getToken(tokens.labelSmall, context), textTheme.labelSmall);
+
+      // Deprecated aliases
+      expect(scope.getToken(tokens.headline1, context), textTheme.displayLarge);
+      expect(
+        scope.getToken(tokens.headline2, context),
+        textTheme.displayMedium,
+      );
+      expect(scope.getToken(tokens.headline3, context), textTheme.displaySmall);
+      expect(
+        scope.getToken(tokens.headline4, context),
+        textTheme.headlineMedium,
+      );
+      expect(
+        scope.getToken(tokens.headline5, context),
+        textTheme.headlineSmall,
+      );
+      expect(scope.getToken(tokens.headline6, context), textTheme.titleLarge);
+      expect(scope.getToken(tokens.subtitle1, context), textTheme.titleMedium);
+      expect(scope.getToken(tokens.subtitle2, context), textTheme.titleSmall);
+      expect(scope.getToken(tokens.bodyText1, context), textTheme.bodyLarge);
+      expect(scope.getToken(tokens.bodyText2, context), textTheme.bodyMedium);
+      expect(scope.getToken(tokens.caption, context), textTheme.bodySmall);
+      expect(scope.getToken(tokens.button, context), textTheme.labelLarge);
+      expect(scope.getToken(tokens.overline, context), textTheme.labelSmall);
+    });
   });
 }

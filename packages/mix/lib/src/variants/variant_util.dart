@@ -266,22 +266,8 @@ class VariantAttributeBuilder<T extends Spec<T>> {
     return VariantStyle<T>(variant, style);
   }
 
-  /// Creates a [VariantStyle] that applies the given styling elements
-  /// when this variant's condition is met.
-  ///
-  /// Supports both single and multiple style elements:
-  /// ```dart
-  /// // Single attribute
-  /// final hoverStyle = $on.hover($box.color.blue());
-  ///
-  /// // Multiple attributes
-  /// final darkStyle = $on.dark(
-  ///   $box.color.white(),
-  ///   $text.style.color.black(),
-  /// );
-  /// ```
-  // This method has been removed as part of the MultiSpec/CompoundStyle cleanup.
-  // Variants should now be applied directly to specific spec types.
+  // Former attribute builder method removed as part of the
+  // MultiSpec/CompoundStyle cleanup. Apply variants directly to spec types.
 
   @override
   String toString() => 'VariantAttributeBuilder($variant)';

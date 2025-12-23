@@ -76,7 +76,7 @@ void main() {
       });
 
       testWidgets(
-        'No animation driver when animation config is null',
+        'Animation driver is still present when animation config is null',
         (tester) async {
           final boxAttribute = BoxStyler()
               .width(100)
@@ -97,12 +97,9 @@ void main() {
             ),
           );
 
-          // Verify that no animation wrapper is created
-          expect(find.byType(StyleAnimationBuilder<BoxSpec>), findsNothing);
+          // StyleSpecBuilder always wraps with StyleAnimationBuilder.
+          expect(find.byType(StyleAnimationBuilder<BoxSpec>), findsOneWidget);
         },
-        skip:
-            // TODO: SHOULD REVIEW LATER: Skips because we are adding the animation driver everytime
-            true,
       );
 
       testWidgets(
