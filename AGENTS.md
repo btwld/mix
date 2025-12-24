@@ -1,4 +1,4 @@
-# Mix
+# Mix 2.0
 
 Type-safe styling system for Flutter that separates style semantics from widgets.
 
@@ -11,7 +11,7 @@ packages/
   mix_generator/    # build_runner generator
   mix_lint/         # Custom linter
 examples/           # Interactive widget gallery
-website/            # Next.js documentation
+website/            # Documentation site
 ```
 
 ## Commands
@@ -44,12 +44,7 @@ packages/mix/lib/src/
   theme/      # Tokens, Material integration
 ```
 
-## Patterns
-
-**Naming:**
-- Specs: `{Feature}Spec` (final, immutable)
-- Styles: `{Feature}Styler` (typedef `{Feature}Mix`)
-- Widgets: `Box`, `StyledText`, `StyledIcon`
+## Examples
 
 **Properties:** Use `$` prefix for type-safe props:
 ```dart
@@ -61,9 +56,17 @@ Style($box.color.blue(), $text.style.bold())
 Style($box.color.black(), $on.dark($box.color.white()))
 ```
 
-## Guides
+**Fluent chaining:**
+```dart
+final box = BoxMix().size(200, 200).padding(EdgeInsetsMix.all(16));
+```
+
+## Documentation
 
 - `guides/api-composition-guidelines.md` - Fluent chaining, sizing, merge patterns
+- `examples/` - Interactive widget examples (Box, HBox, VBox, Text, Icon)
+- `website/` - Full documentation site (Next.js)
+- `packages/mix/lib/src/specs/box/` - Reference implementation for Spec/Style/Widget pattern
 
 ## Critical Rules
 
