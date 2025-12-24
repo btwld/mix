@@ -105,7 +105,6 @@ packages/mix/.cody/ignore
 
 .cursor
 .orbit
-CLAUDE.md
 .augment/env/setup.sh
 
 # API compatibility reports

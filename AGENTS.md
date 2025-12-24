@@ -61,6 +61,10 @@ Style($box.color.blue(), $text.style.bold())
 Style($box.color.black(), $on.dark($box.color.white()))
 ```
 
+## Guides
+
+- `guides/api-composition-guidelines.md` - Fluent chaining, sizing, merge patterns
+
 ## Critical Rules
 
 - **Dart SDK:** >=3.9.0 (enables dot-shorthands)
