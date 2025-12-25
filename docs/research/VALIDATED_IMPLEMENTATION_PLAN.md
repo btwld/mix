@@ -2,7 +2,7 @@
 
 ## Architectural Review Summary
 
-After thorough multi-agent validation, the original proposal was found to be **over-engineered**. This document presents a simplified, validated approach.
+After thorough multi-agent validation, the original proposal was found to be **over-engineered**. This document presents a simplified, validated approach with **corrected code** based on actual Mix API patterns.
 
 ---
 
@@ -46,105 +46,169 @@ After thorough multi-agent validation, the original proposal was found to be **o
 3. **New SymbolEffectBuilder widget unnecessary**
    - `StyleAnimationBuilder` + `PhaseAnimationDriver` already does this
 
-### Revised Implementation
+### Corrected Implementation
+
+#### IMPORTANT: API Corrections
+
+The original plan had incorrect API usage. Here are the corrections:
+
+```dart
+// ❌ INCORRECT (original plan):
+style.wrap(ScaleModifierMix(x: Prop(scale), y: Prop(scale)))
+
+// ✅ CORRECT (actual Mix API):
+style.wrap(WidgetModifierConfig.scale(x: scale, y: scale))
+```
+
+The `wrap()` method takes `WidgetModifierConfig`, not `ModifierMix` directly. Use the factory constructors.
 
 #### What to Build (~100 lines total)
 
 ```dart
 // File: packages/mix/lib/src/style/mixins/effect_style_mixin.dart
 
-/// Mixin providing symbol-like effects using existing animation infrastructure
+import 'dart:async';
+import 'dart:math' show pi;
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+
+import '../../animation/animation_config.dart';
+import '../../core/spec.dart';
+import '../../core/style.dart';
+import '../../modifiers/widget_modifier_config.dart';
+import 'animation_style_mixin.dart';
+
+/// Mixin providing symbol-like effects using existing animation infrastructure.
+///
+/// These effects are inspired by SwiftUI's symbolEffect but adapted for Flutter's
+/// capabilities (no layer-based icon animations).
 mixin EffectStyleMixin<T extends Style<S>, S extends Spec<S>>
     on Style<S>, AnimationStyleMixin<T, S> {
 
-  /// Bounce effect triggered by value change
-  /// Uses existing PhaseAnimationConfig internally
-  T bounceOnChange<V>({
-    required ValueListenable<V> trigger,
+  /// Bounce effect triggered by value change.
+  ///
+  /// Plays a scale-down-then-up animation each time [trigger] notifies.
+  /// Use with `ValueNotifier<int>` and increment to trigger.
+  ///
+  /// ```dart
+  /// final counter = ValueNotifier(0);
+  /// IconStyler().bounceOnChange(trigger: counter)
+  /// // Trigger: counter.value++;
+  /// ```
+  T bounceOnChange({
+    required Listenable trigger,
     double intensity = 0.15,
-    Duration duration = const Duration(milliseconds: 200),
+    Duration duration = const Duration(milliseconds: 250),
   }) {
-    return phaseAnimation(
+    final down = 1.0 - intensity;
+    final up = 1.0 + intensity;
+
+    return phaseAnimation<double>(
       trigger: trigger,
-      phases: [1.0, 1.0 - intensity, 1.0 + intensity, 1.0],
+      phases: [1.0, down, up, 1.0],
       styleBuilder: (scale, style) => style.wrap(
-        ScaleModifierMix(x: Prop(scale), y: Prop(scale)),
+        WidgetModifierConfig.scale(x: scale, y: scale),
       ) as T,
-      configBuilder: (_) => CurveAnimationConfig.easeOut(duration),
+      configBuilder: (phase) => CurveAnimationConfig.easeOut(
+        duration ~/ 4, // Each phase gets 1/4 of total duration
+      ),
     );
   }
 
-  /// Pulse effect while active (indefinite)
+  /// Pulse effect while active (indefinite).
+  ///
+  /// Fades opacity in and out continuously while [trigger] is true.
+  ///
+  /// ```dart
+  /// final isRecording = ValueNotifier(false);
+  /// IconStyler().pulseWhile(trigger: isRecording)
+  /// ```
   T pulseWhile({
     required ValueListenable<bool> trigger,
+    double minOpacity = 0.4,
     Duration duration = const Duration(milliseconds: 800),
   }) {
-    return phaseAnimation(
+    return phaseAnimation<double>(
       trigger: _RepeatWhileActiveNotifier(trigger),
-      phases: [1.0, 0.4, 1.0],
+      phases: [1.0, minOpacity, 1.0],
       styleBuilder: (opacity, style) => style.wrap(
-        OpacityModifierMix(opacity: Prop(opacity)),
+        WidgetModifierConfig.opacity(opacity),
       ) as T,
-      configBuilder: (_) => CurveAnimationConfig.easeInOut(duration),
+      configBuilder: (_) => CurveAnimationConfig.easeInOut(duration ~/ 2),
     );
   }
 
-  /// Wiggle effect triggered by value change
-  T wiggleOnChange<V>({
-    required ValueListenable<V> trigger,
-    double angle = 0.05,
-    Duration duration = const Duration(milliseconds: 300),
+  /// Wiggle effect triggered by value change.
+  ///
+  /// Rotates back and forth briefly each time [trigger] notifies.
+  T wiggleOnChange({
+    required Listenable trigger,
+    double angle = 0.1, // ~6 degrees
+    Duration duration = const Duration(milliseconds: 400),
   }) {
-    return phaseAnimation(
+    return phaseAnimation<double>(
       trigger: trigger,
       phases: [0.0, angle, -angle, angle * 0.5, -angle * 0.5, 0.0],
       styleBuilder: (radians, style) => style.wrap(
-        RotateModifierMix(angle: Prop(radians)),
+        WidgetModifierConfig.rotate(radians: radians),
       ) as T,
-      configBuilder: (_) => CurveAnimationConfig.easeOut(duration),
+      configBuilder: (_) => CurveAnimationConfig.easeOut(duration ~/ 6),
     );
   }
 
-  /// Rotate continuously while active
+  /// Rotate continuously while active.
+  ///
+  /// Spins the widget continuously while [trigger] is true.
   T rotateWhile({
     required ValueListenable<bool> trigger,
-    Duration duration = const Duration(seconds: 1),
+    Duration revolutionDuration = const Duration(seconds: 1),
   }) {
+    // Use keyframe animation for continuous rotation
     return keyframeAnimation(
       trigger: _RepeatWhileActiveNotifier(trigger),
       timeline: [
-        KeyframeTrack<double>('rotation', [
-          Keyframe.linear(0.0, Duration.zero),
-          Keyframe.linear(2 * pi, duration),
-        ], initial: 0.0),
+        KeyframeTrack<double>(
+          'rotation',
+          [
+            Keyframe.linear(0.0, Duration.zero),
+            Keyframe.linear(2 * pi, revolutionDuration),
+          ],
+          initial: 0.0,
+        ),
       ],
       styleBuilder: (values, style) => style.wrap(
-        RotateModifierMix(angle: Prop(values.get('rotation'))),
+        WidgetModifierConfig.rotate(radians: values.get('rotation')),
       ) as T,
     );
   }
 
-  /// Scale effect while active
+  /// Breathe effect while active.
+  ///
+  /// Subtle scale pulse while [trigger] is true, creating an "alive" feeling.
   T breatheWhile({
     required ValueListenable<bool> trigger,
-    double intensity = 0.08,
-    Duration duration = const Duration(milliseconds: 1200),
+    double intensity = 0.06,
+    Duration duration = const Duration(milliseconds: 1500),
   }) {
-    return phaseAnimation(
+    return phaseAnimation<double>(
       trigger: _RepeatWhileActiveNotifier(trigger),
       phases: [1.0, 1.0 + intensity, 1.0],
       styleBuilder: (scale, style) => style.wrap(
-        ScaleModifierMix(x: Prop(scale), y: Prop(scale)),
+        WidgetModifierConfig.scale(x: scale, y: scale),
       ) as T,
-      configBuilder: (_) => CurveAnimationConfig.easeInOut(duration),
+      configBuilder: (_) => CurveAnimationConfig.easeInOut(duration ~/ 2),
     );
   }
 }
 
-/// Helper: Notifier that repeats while a bool is true
+/// Helper notifier that repeats phase animations while a condition is true.
+///
+/// Used internally by indefinite effects (pulseWhile, rotateWhile, breatheWhile).
 class _RepeatWhileActiveNotifier extends ChangeNotifier {
   Timer? _timer;
   final ValueListenable<bool> _source;
+  bool _isDisposed = false;
 
   _RepeatWhileActiveNotifier(this._source) {
     _source.addListener(_onSourceChanged);
@@ -152,18 +216,23 @@ class _RepeatWhileActiveNotifier extends ChangeNotifier {
   }
 
   void _onSourceChanged() {
+    if (_isDisposed) return;
+
     if (_source.value) {
+      // Start repeating - notify at animation frame rate
       _timer?.cancel();
-      _timer = Timer.periodic(Duration(milliseconds: 16), (_) {
-        notifyListeners();
+      _timer = Timer.periodic(const Duration(milliseconds: 16), (_) {
+        if (!_isDisposed) notifyListeners();
       });
     } else {
       _timer?.cancel();
+      _timer = null;
     }
   }
 
   @override
   void dispose() {
+    _isDisposed = true;
     _timer?.cancel();
     _source.removeListener(_onSourceChanged);
     super.dispose();
@@ -176,7 +245,7 @@ class _RepeatWhileActiveNotifier extends ChangeNotifier {
 Add mixin to existing stylers:
 
 ```dart
-// In icon_style.dart - add EffectStyleMixin
+// In packages/mix/lib/src/specs/icon/icon_style.dart
 class IconStyler extends Style<IconSpec>
     with
         Diagnosticable,
@@ -185,22 +254,33 @@ class IconStyler extends Style<IconSpec>
         WidgetStateVariantMixin<IconStyler, IconSpec>,
         AnimationStyleMixin<IconStyler, IconSpec>,
         EffectStyleMixin<IconStyler, IconSpec>  // ADD THIS
+
+// In packages/mix/lib/src/specs/box/box_style.dart
+class BoxStyler extends Style<BoxSpec>
+    with
+        // ... existing mixins ...
+        EffectStyleMixin<BoxStyler, BoxSpec>  // ADD THIS
 ```
 
 #### Usage Example
 
 ```dart
-// Simple - just works!
-final likeCount = ValueNotifier(0);
-final isRecording = ValueNotifier(false);
+// Bounce on tap
+final tapCount = ValueNotifier(0);
 
 StyledIcon(
   Icons.favorite,
   style: IconStyler()
       .size(32)
       .color(Colors.red)
-      .bounceOnChange(trigger: likeCount),
+      .bounceOnChange(trigger: tapCount),
 )
+
+// Trigger:
+onTap: () => tapCount.value++
+
+// Pulse while recording
+final isRecording = ValueNotifier(false);
 
 StyledIcon(
   Icons.mic,
@@ -208,6 +288,16 @@ StyledIcon(
       .size(32)
       .color(Colors.red)
       .pulseWhile(trigger: isRecording),
+)
+
+// Spin while loading
+final isLoading = ValueNotifier(true);
+
+StyledIcon(
+  Icons.refresh,
+  style: IconStyler()
+      .size(24)
+      .rotateWhile(trigger: isLoading),
 )
 ```
 
@@ -219,7 +309,6 @@ StyledIcon(
 | `SymbolEffectConfig` | Just use existing AnimationConfig |
 | `SymbolEffectOptions` | Pass params directly to methods |
 | `SymbolEffectBuilder` | Reuse StyleAnimationBuilder |
-| Discrete/Indefinite protocols | Already handled by Listenable pattern |
 | `variableColor` effect | Not achievable without SF Symbol layers |
 | `replace` effect | Icon swaps are instant (font glyphs) |
 
@@ -231,82 +320,177 @@ StyledIcon(
 
 | Aspect | Original (Over-engineered) | Revised (Validated) |
 |--------|---------------------------|---------------------|
-| Scope widget | MixGeometryScope (custom InheritedWidget) | Follow PointerPositionProvider pattern |
+| Scope widget | Custom InheritedWidget + Maps | Follow InheritedNotifier pattern |
 | Tracker widget | GeometryTracker + MatchedGeometryAnimator | Single GeometryMatch widget |
-| API | Modifier-based (.matchedGeometry()) | Widget-based (cleaner separation) |
+| API | Modifier-based | Widget-based (cleaner) |
 | New files | 4+ files | 2 files (~200 LOC total) |
 | Timeline | 4-6 weeks | 2 weeks MVP |
 
 ### Key Findings from Validation
 
 #### ✅ Validated Assumptions
-1. **Mix has no GlobalKey usage** - CONFIRMED
-   - Only reference is in test utilities
-   - Clean slate for geometry tracking
-
+1. **Mix has no GlobalKey usage** - CONFIRMED (clean slate)
 2. **InheritedNotifier pattern exists** - CONFIRMED at `pointer_position.dart:139-146`
-   - `PointerPositionProvider` shows the pattern
-   - Can follow same approach for geometry
+3. **Transform modifiers work** - CONFIRMED with lerp support
 
-3. **Transform modifiers work** - CONFIRMED
-   - ScaleModifier, TranslateModifier have lerp support
-   - Can achieve visual position matching
+#### ❌ Issues Found in Original Plan
 
-#### ❌ Over-Engineering Identified
+1. **Missing listener registration** - Target widgets need to listen for source geometry changes
+2. **Inconsistent scope pattern** - Should follow `PointerPositionProvider` pattern exactly
+3. **Animation direction confusion** - Clarified: target animates FROM source TO self
 
-1. **Modifier-based API is wrong abstraction**
-   - Modifiers are stateless, resolved at build time
-   - Geometry tracking requires stateful GlobalKey
-   - Forces awkward pattern of modifier wrapping stateful widget
+### Corrected Implementation
 
-2. **Separate Tracker/Animator widgets unnecessary**
-   - Single widget can do both (like Flutter's Hero)
-   - `isSource` flag determines behavior
-
-3. **Custom listener management unnecessary**
-   - `InheritedNotifier` + `ChangeNotifier` already handles this
-   - Follow `PointerPositionProvider` pattern exactly
-
-4. **Transform-only animation has limitations**
-   - Doesn't handle clipping, overflow
-   - For true "hero flight", need Overlay (defer to V2)
-
-#### ⚠️ Risks Identified
-
-1. **RenderBox.localToGlobal() edge cases**
-   - Fails with scrollable parents (position changes without rebuild)
-   - Partially offscreen widgets return valid but clipped positions
-   - **Mitigation**: Document limitations, defer scroll handling to V2
-
-2. **One-frame delay with addPostFrameCallback**
-   - Geometry always one frame behind
-   - **Mitigation**: Acceptable for most animations, document as known behavior
-
-### Revised Implementation
-
-#### MVP Scope (V1)
-
-Focus on **same-screen geometry matching** (tab indicators, card expansions):
+#### Scope Widget (Following PointerPositionProvider Pattern Exactly)
 
 ```dart
-// File: packages/mix/lib/src/widgets/geometry_match.dart (~150 LOC)
+// File: packages/mix/lib/src/widgets/geometry_scope.dart (~80 LOC)
 
-/// Tracks widget geometry and optionally animates to match another tracked widget
+import 'package:flutter/widgets.dart';
+
+/// Data class for tracked geometry information.
+@immutable
+class TrackedGeometry {
+  final Rect rect;
+  final bool isVisible;
+
+  const TrackedGeometry({required this.rect, this.isVisible = true});
+
+  TrackedGeometry lerp(TrackedGeometry other, double t) {
+    return TrackedGeometry(
+      rect: Rect.lerp(rect, other.rect, t)!,
+      isVisible: t < 0.5 ? isVisible : other.isVisible,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TrackedGeometry && rect == other.rect && isVisible == other.isVisible;
+
+  @override
+  int get hashCode => Object.hash(rect, isVisible);
+}
+
+/// Notifier that tracks geometries by ID with per-ID listener support.
+class GeometryNotifier extends ChangeNotifier {
+  final Map<Object, TrackedGeometry> _geometries = {};
+  final Map<Object, Set<VoidCallback>> _idListeners = {};
+
+  /// Get geometry for a specific ID.
+  TrackedGeometry? operator [](Object id) => _geometries[id];
+
+  /// Register geometry for an ID, notifying listeners for that ID.
+  void register(Object id, TrackedGeometry geometry) {
+    if (_geometries[id] != geometry) {
+      _geometries[id] = geometry;
+      _notifyIdListeners(id);
+    }
+  }
+
+  /// Unregister geometry when widget disposes.
+  void unregister(Object id) {
+    _geometries.remove(id);
+  }
+
+  /// Add listener for specific geometry ID.
+  void addIdListener(Object id, VoidCallback callback) {
+    _idListeners.putIfAbsent(id, () => {}).add(callback);
+  }
+
+  /// Remove listener for specific geometry ID.
+  void removeIdListener(Object id, VoidCallback callback) {
+    _idListeners[id]?.remove(callback);
+  }
+
+  void _notifyIdListeners(Object id) {
+    for (final callback in _idListeners[id] ?? <VoidCallback>{}) {
+      callback();
+    }
+  }
+}
+
+/// Provides geometry tracking context for GeometryMatch widgets.
+///
+/// Wrap a subtree with GeometryScope to enable geometry matching within it.
+/// Uses InheritedNotifier pattern for efficient updates.
+class GeometryScope extends InheritedNotifier<GeometryNotifier> {
+  GeometryScope({
+    super.key,
+    required super.child,
+  }) : super(notifier: GeometryNotifier());
+
+  /// Get the notifier from context.
+  static GeometryNotifier of(BuildContext context) {
+    final scope = context.dependOnInheritedWidgetOfExactType<GeometryScope>();
+    if (scope?.notifier == null) {
+      throw FlutterError(
+        'GeometryScope.of() called without a GeometryScope ancestor.\n'
+        'Ensure GeometryMatch widgets are wrapped in a GeometryScope.',
+      );
+    }
+    return scope!.notifier!;
+  }
+
+  /// Get notifier without creating dependency (for registration).
+  static GeometryNotifier? maybeOf(BuildContext context) {
+    final scope = context.getInheritedWidgetOfExactType<GeometryScope>();
+    return scope?.notifier;
+  }
+}
+```
+
+#### GeometryMatch Widget (Corrected)
+
+```dart
+// File: packages/mix/lib/src/widgets/geometry_match.dart (~120 LOC)
+
+import 'package:flutter/widgets.dart';
+import 'package:flutter/scheduler.dart';
+
+import 'geometry_scope.dart';
+
+/// Tracks widget geometry and optionally animates to match another tracked widget.
+///
+/// When [isSource] is true, this widget reports its geometry to the scope.
+/// When [isSource] is false, this widget animates FROM the source's geometry
+/// TO its own final geometry when it first appears.
+///
+/// ```dart
+/// GeometryScope(
+///   child: Column(
+///     children: [
+///       if (!isExpanded)
+///         GeometryMatch(
+///           id: 'card',
+///           isSource: true,
+///           child: smallCard,
+///         ),
+///       if (isExpanded)
+///         GeometryMatch(
+///           id: 'card',
+///           isSource: false,
+///           child: largeCard,
+///         ),
+///     ],
+///   ),
+/// )
+/// ```
 class GeometryMatch extends StatefulWidget {
-  /// Unique identifier for this geometry group
+  /// Unique identifier for this geometry group.
   final Object id;
 
-  /// The widget to track/animate
+  /// The widget to track/animate.
   final Widget child;
 
-  /// If true, this widget provides the geometry reference
-  /// If false, this widget animates TO the reference geometry
+  /// If true, this widget provides the geometry reference (source).
+  /// If false, this widget animates FROM the source geometry (target).
   final bool isSource;
 
-  /// Animation duration (only used when isSource: false)
+  /// Animation duration (only used when isSource: false).
   final Duration duration;
 
-  /// Animation curve (only used when isSource: false)
+  /// Animation curve (only used when isSource: false).
   final Curve curve;
 
   const GeometryMatch({
@@ -326,8 +510,9 @@ class _GeometryMatchState extends State<GeometryMatch>
     with SingleTickerProviderStateMixin {
   final GlobalKey _key = GlobalKey();
   AnimationController? _controller;
-  Rect? _sourceRect;
-  Rect? _targetRect;
+  TrackedGeometry? _startGeometry; // Where animation starts (source position)
+  TrackedGeometry? _endGeometry;   // Where animation ends (our actual position)
+  GeometryNotifier? _notifier;
 
   @override
   void initState() {
@@ -335,74 +520,100 @@ class _GeometryMatchState extends State<GeometryMatch>
     if (!widget.isSource) {
       _controller = AnimationController(vsync: this, duration: widget.duration);
     }
-    WidgetsBinding.instance.addPostFrameCallback((_) => _updateGeometry());
+    SchedulerBinding.instance.addPostFrameCallback((_) => _initialize());
   }
 
-  void _updateGeometry() {
-    final renderBox = _key.currentContext?.findRenderObject() as RenderBox?;
-    if (renderBox == null || !renderBox.hasSize) return;
+  void _initialize() {
+    if (!mounted) return;
 
-    final position = renderBox.localToGlobal(Offset.zero);
-    final rect = position & renderBox.size;
+    _notifier = GeometryScope.maybeOf(context);
+    if (_notifier == null) return;
 
-    final scope = GeometryScope.of(context);
     if (widget.isSource) {
-      scope.register(widget.id, rect);
+      _reportGeometry();
     } else {
-      _onTargetGeometryChanged(scope.getGeometry(widget.id));
+      // Target: get source geometry, then animate from it to our position
+      _startGeometry = _notifier![widget.id];
+      _endGeometry = _getCurrentGeometry();
+
+      if (_startGeometry != null && _endGeometry != null) {
+        _controller?.forward();
+      }
+
+      // Listen for future source changes
+      _notifier!.addIdListener(widget.id, _onSourceChanged);
     }
   }
 
-  void _onTargetGeometryChanged(Rect? newTarget) {
-    if (newTarget == null) return;
+  void _reportGeometry() {
+    final geometry = _getCurrentGeometry();
+    if (geometry != null) {
+      _notifier?.register(widget.id, geometry);
+    }
+  }
 
-    final currentRect = _getCurrentRect();
-    if (currentRect == null) return;
+  TrackedGeometry? _getCurrentGeometry() {
+    final renderBox = _key.currentContext?.findRenderObject() as RenderBox?;
+    if (renderBox == null || !renderBox.hasSize) return null;
 
-    if (newTarget != _targetRect) {
-      _sourceRect = currentRect;
-      _targetRect = newTarget;
+    final position = renderBox.localToGlobal(Offset.zero);
+    return TrackedGeometry(rect: position & renderBox.size);
+  }
+
+  void _onSourceChanged() {
+    // Source geometry updated - restart animation
+    final newSource = _notifier?[widget.id];
+    if (newSource != null && newSource != _startGeometry) {
+      _startGeometry = newSource;
+      _endGeometry = _getCurrentGeometry();
       _controller?.forward(from: 0);
     }
   }
 
-  Rect? _getCurrentRect() {
-    final rb = _key.currentContext?.findRenderObject() as RenderBox?;
-    if (rb == null || !rb.hasSize) return null;
-    return rb.localToGlobal(Offset.zero) & rb.size;
+  @override
+  void didUpdateWidget(GeometryMatch oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isSource) {
+      SchedulerBinding.instance.addPostFrameCallback((_) => _reportGeometry());
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    // Source widgets just render normally
     if (widget.isSource || _controller == null) {
       return KeyedSubtree(key: _key, child: widget.child);
     }
 
+    // Target widgets animate from source geometry
     return AnimatedBuilder(
       animation: _controller!,
       builder: (context, _) {
-        if (_sourceRect == null || _targetRect == null) {
+        // If no animation data, render normally
+        if (_startGeometry == null || _endGeometry == null) {
           return KeyedSubtree(key: _key, child: widget.child);
         }
 
+        // Calculate current animated geometry
         final t = widget.curve.transform(_controller!.value);
-        final currentRect = Rect.lerp(_sourceRect, _targetRect, t)!;
-        final myRect = _getCurrentRect();
+        final animatedGeometry = _startGeometry!.lerp(_endGeometry!, t);
 
-        if (myRect == null) {
+        // Get current actual geometry
+        final currentGeometry = _getCurrentGeometry();
+        if (currentGeometry == null) {
           return KeyedSubtree(key: _key, child: widget.child);
         }
 
-        // Calculate transform to visually match target
-        final dx = currentRect.left - myRect.left;
-        final dy = currentRect.top - myRect.top;
-        final scaleX = currentRect.width / myRect.width;
-        final scaleY = currentRect.height / myRect.height;
+        // Calculate transform to move from current to animated position
+        final dx = animatedGeometry.rect.left - currentGeometry.rect.left;
+        final dy = animatedGeometry.rect.top - currentGeometry.rect.top;
+        final scaleX = animatedGeometry.rect.width / currentGeometry.rect.width;
+        final scaleY = animatedGeometry.rect.height / currentGeometry.rect.height;
 
         return Transform(
           transform: Matrix4.identity()
             ..translate(dx, dy)
-            ..scale(scaleX, scaleY),
+            ..scale(scaleX.clamp(0.01, 100.0), scaleY.clamp(0.01, 100.0)),
           alignment: Alignment.topLeft,
           child: KeyedSubtree(key: _key, child: widget.child),
         );
@@ -413,82 +624,13 @@ class _GeometryMatchState extends State<GeometryMatch>
   @override
   void dispose() {
     _controller?.dispose();
+    if (!widget.isSource) {
+      _notifier?.removeIdListener(widget.id, _onSourceChanged);
+    }
+    if (widget.isSource) {
+      _notifier?.unregister(widget.id);
+    }
     super.dispose();
-  }
-}
-```
-
-#### Scope Widget (Following PointerPositionProvider Pattern)
-
-```dart
-// File: packages/mix/lib/src/widgets/geometry_scope.dart (~60 LOC)
-
-/// Provides geometry tracking context for GeometryMatch widgets
-class GeometryScope extends StatefulWidget {
-  final Widget child;
-
-  const GeometryScope({required this.child, super.key});
-
-  static GeometryScopeState of(BuildContext context) {
-    return context.findAncestorStateOfType<GeometryScopeState>()!;
-  }
-
-  @override
-  State<GeometryScope> createState() => GeometryScopeState();
-}
-
-class GeometryScopeState extends State<GeometryScope> {
-  final _notifier = GeometryNotifier();
-
-  void register(Object id, Rect rect) => _notifier.register(id, rect);
-  Rect? getGeometry(Object id) => _notifier.geometries[id];
-
-  void addListener(Object id, VoidCallback callback) {
-    _notifier.addListenerForId(id, callback);
-  }
-
-  void removeListener(Object id, VoidCallback callback) {
-    _notifier.removeListenerForId(id, callback);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _GeometryScopeProvider(state: this, child: widget.child);
-  }
-}
-
-class _GeometryScopeProvider extends InheritedWidget {
-  final GeometryScopeState state;
-
-  const _GeometryScopeProvider({required this.state, required super.child});
-
-  @override
-  bool updateShouldNotify(_GeometryScopeProvider oldWidget) => false;
-}
-
-class GeometryNotifier extends ChangeNotifier {
-  final Map<Object, Rect> geometries = {};
-  final Map<Object, Set<VoidCallback>> _listeners = {};
-
-  void register(Object id, Rect rect) {
-    if (geometries[id] != rect) {
-      geometries[id] = rect;
-      _notifyListenersForId(id);
-    }
-  }
-
-  void addListenerForId(Object id, VoidCallback callback) {
-    _listeners.putIfAbsent(id, () => {}).add(callback);
-  }
-
-  void removeListenerForId(Object id, VoidCallback callback) {
-    _listeners[id]?.remove(callback);
-  }
-
-  void _notifyListenersForId(Object id) {
-    for (final callback in _listeners[id] ?? {}) {
-      callback();
-    }
   }
 }
 ```
@@ -496,7 +638,6 @@ class GeometryNotifier extends ChangeNotifier {
 #### Usage Example
 
 ```dart
-// Card expansion animation
 class ExpandableCard extends StatefulWidget {
   @override
   State<ExpandableCard> createState() => _ExpandableCardState();
@@ -508,55 +649,42 @@ class _ExpandableCardState extends State<ExpandableCard> {
   @override
   Widget build(BuildContext context) {
     return GeometryScope(
-      child: Column(
-        children: [
-          // Thumbnail (source)
-          if (!isExpanded)
-            GestureDetector(
-              onTap: () => setState(() => isExpanded = true),
-              child: GeometryMatch(
+      child: GestureDetector(
+        onTap: () => setState(() => isExpanded = !isExpanded),
+        child: isExpanded
+            ? GeometryMatch(
                 id: 'card',
-                isSource: true,
-                child: Box(
-                  style: BoxStyler().size(100, 100).borderRounded(8),
-                  child: Image.asset('photo.jpg'),
-                ),
-              ),
-            ),
-
-          // Expanded (animates FROM thumbnail position)
-          if (isExpanded)
-            GestureDetector(
-              onTap: () => setState(() => isExpanded = false),
-              child: GeometryMatch(
-                id: 'card',
-                isSource: false,
+                isSource: false, // Animate FROM thumbnail position
                 duration: Duration(milliseconds: 400),
                 curve: Curves.easeOutCubic,
-                child: Box(
-                  style: BoxStyler().size(300, 400).borderRounded(16),
-                  child: Image.asset('photo.jpg'),
+                child: Container(
+                  width: 300,
+                  height: 400,
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Center(child: Text('Expanded')),
+                ),
+              )
+            : GeometryMatch(
+                id: 'card',
+                isSource: true, // This is the reference geometry
+                child: Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Center(child: Text('Tap')),
                 ),
               ),
-            ),
-        ],
       ),
     );
   }
 }
 ```
-
-### What NOT to Build (Defer to V2)
-
-| Deferred Item | Reason |
-|---------------|--------|
-| Overlay-based hero flights | Complex, needs Navigator integration |
-| Scroll-aware tracking | Edge cases with nested scroll views |
-| Navigation route integration | Requires custom PageRoute |
-| Border-radius morphing | Needs custom painter |
-| Clip path animation | Complex interpolation |
-| Multiple geometry properties | Start with .frame only |
-| Anchor points | Start with topLeft alignment |
 
 ### V1 Limitations (Document These)
 
@@ -565,6 +693,15 @@ class _ExpandableCardState extends State<ExpandableCard> {
 3. **No scroll handling** - May glitch in scrollable containers
 4. **Transform artifacts** - Text may scale/blur during animation
 5. **No clipping respect** - Widget may overflow during flight
+
+### What to Defer to V2
+
+| Feature | Reason |
+|---------|--------|
+| Overlay-based hero flights | Complex Navigator integration |
+| Scroll-aware tracking | Edge cases with nested scrollables |
+| Navigation route integration | Requires custom PageRoute |
+| Border-radius morphing | Needs custom painter |
 
 ---
 
@@ -584,9 +721,9 @@ class _ExpandableCardState extends State<ExpandableCard> {
 
 | Day | Task |
 |-----|------|
-| 1 | Create `GeometryScope` following PointerPositionProvider pattern |
+| 1 | Create `GeometryScope` with `GeometryNotifier` |
 | 2 | Create `GeometryMatch` widget with GlobalKey tracking |
-| 3 | Implement animation logic in `_GeometryMatchState` |
+| 3 | Implement animation logic with proper listener registration |
 | 4 | Write tests for basic same-screen matching |
 | 5 | Create examples and documentation |
 
@@ -596,9 +733,9 @@ class _ExpandableCardState extends State<ExpandableCard> {
 
 ### New Files
 
-1. `packages/mix/lib/src/style/mixins/effect_style_mixin.dart` (~100 LOC)
-2. `packages/mix/lib/src/widgets/geometry_scope.dart` (~60 LOC)
-3. `packages/mix/lib/src/widgets/geometry_match.dart` (~150 LOC)
+1. `packages/mix/lib/src/style/mixins/effect_style_mixin.dart` (~130 LOC)
+2. `packages/mix/lib/src/widgets/geometry_scope.dart` (~80 LOC)
+3. `packages/mix/lib/src/widgets/geometry_match.dart` (~120 LOC)
 
 ### Modified Files
 
@@ -608,25 +745,30 @@ class _ExpandableCardState extends State<ExpandableCard> {
 
 ### Total New Code
 
-- symbolEffect: ~100 lines
-- matchedGeometry: ~210 lines
-- **Total: ~310 lines** (vs. ~1000+ in original plan)
+- symbolEffect: ~130 lines
+- matchedGeometry: ~200 lines
+- **Total: ~330 lines** (vs. ~1000+ in original plan)
 
 ---
 
-## Summary: What Changed
+## Corrections Made From Original Plan
 
-| Aspect | Before | After | Reduction |
-|--------|--------|-------|-----------|
-| symbolEffect LOC | ~800 | ~100 | 87% less |
-| matchedGeometry LOC | ~700 | ~210 | 70% less |
-| New sealed classes | 10+ | 0 | 100% less |
-| New widgets | 4 | 2 | 50% less |
-| New files | 7+ | 3 | 57% less |
-| Timeline | 7 weeks | 2 weeks | 71% less |
+| Issue | Original (Incorrect) | Corrected |
+|-------|---------------------|-----------|
+| `wrap()` API | `style.wrap(ScaleModifierMix(x: Prop(scale)))` | `style.wrap(WidgetModifierConfig.scale(x: scale, y: scale))` |
+| Missing listener | Target didn't listen for source changes | Added `addIdListener` / `removeIdListener` |
+| Scope pattern | Custom `InheritedWidget` + State | Proper `InheritedNotifier<GeometryNotifier>` |
+| Animation direction | Confusing | Clarified: target animates FROM source TO self |
+| Scale clamping | None | Added `.clamp(0.01, 100.0)` to prevent NaN |
+| Disposal | Incomplete | Proper cleanup of listeners and registration |
+
+---
+
+## Summary
 
 The revised plan delivers **80% of the value with 20% of the complexity** by:
 1. Reusing existing `PhaseAnimationConfig` and `KeyframeAnimationConfig`
-2. Following established `PointerPositionProvider` pattern
+2. Following established `PointerPositionProvider` / `InheritedNotifier` pattern
 3. Using simple widget-based API instead of forcing modifier pattern
 4. Deferring complex features (overlay flights, scroll handling) to V2
+5. **Fixing API usage to match actual Mix patterns**
