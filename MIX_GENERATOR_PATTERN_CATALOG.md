@@ -568,22 +568,30 @@ String _normalize(String code) {
 
 ### Deprecation Scope (What is and isn't deprecated)
 
-**DEPRECATED (do not generate)**:
+**DEPRECATED (do not generate new code for these patterns)**:
 | Item | Location | Replacement |
 |------|----------|-------------|
-| `on` utility in MutableStylers | All `*_mutable_style.dart` | Direct methods like `$box.onHovered()` |
+| Global `$box`, `$flex`, `$text` etc. accessors | `mutable_stylers.dart` | `BoxStyler()`, `FlexStyler()`, `TextStyler()` etc. |
+| `.on` property in MutableStylers | All `*_mutable_style.dart` | Direct methods: `BoxStyler().onHovered()` |
+| `.wrap` property in MutableStylers | All `*_mutable_style.dart` | `BoxStyler().wrap(...)` |
 | Legacy widget constructors | Various `*_widget.dart` | New constructors like `Box(styleSpec: ...)` |
+
+**Source**: Commit `73749c6` - "feat: deprecate $ utility accessors in favor of Styler classes (#806)"
 
 **NOT DEPRECATED (must generate)**:
 | Item | Evidence | Why needed |
 |------|----------|------------|
-| `MutableStyler` classes | `BoxStyler.chain` returns `BoxMutableStyler` | Cascade-style API |
+| `MutableStyler` classes | `BoxStyler.chain` returns `BoxMutableStyler` | Cascade-style API via `Styler.chain` |
+| `Styler` classes | Primary API: `BoxStyler().color(...)` | Replaces `$box.color(...)` |
 | `MutableState` classes | Used internally by MutableStyler | State management |
-| Utility patterns | All `*_mutable_style.dart` files | Fluent API |
+| Utility patterns | All `*_mutable_style.dart` files | Fluent API on MutableStyler |
 | `StyleMutableBuilder` | `core/spec_utility.dart:54` | Base class for MutableStyler |
 | UtilityRegistry | Required by utility patterns | Type → Utility mapping |
 
-**Simplification NOT valid**: Removing MutableStyler generation would break the `{Name}Styler.chain` accessor that returns `{Name}MutableStyler`. This is part of the active public API.
+**Generator Impact**:
+- **Keep generating**: MutableStyler classes, Styler classes, utility methods
+- **Mark deprecated in output**: Global `$` accessors (if generating mutable_stylers.dart entrypoints)
+- The deprecated `.on` and `.wrap` properties EXIST in current hand-written code with `@Deprecated` annotations
 
 ### When to use MixOps.lerp vs MixOps.lerpSnap
 - Check `FieldModel.isLerpableEffective` (annotation override first)
@@ -2419,17 +2427,31 @@ late final fontWeight = style.fontWeight;
 late final fontFamily = style.fontFamily;
 ```
 
-### 3.4 Deprecated Utility Pattern
+### 3.4 Deprecated Utility Patterns
+
+Both `.on` and `.wrap` are deprecated in favor of direct methods on Styler classes:
 
 ```dart
 @Deprecated(
-  'Use direct methods like \$box.onHovered() instead. '
-  'Note: Returns {Name}Style for consistency with other utility methods like animate().',
+  'Use {Name}Styler().onHovered() and similar methods directly instead. '
+  'This property was deprecated after Mix v2.0.0.',
 )
 late final on = OnContextVariantUtility<{Name}Spec, {Name}Styler>(
   (v) => mutable.variants([v]),
 );
+
+@Deprecated(
+  'Use {Name}Styler().wrap() method directly instead. '
+  'This property was deprecated after Mix v2.0.0.',
+)
+late final wrap = WidgetModifierUtility(
+  (prop) => mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
+);
 ```
+
+**Migration Examples**:
+- Before: `$box.on.hover()` → After: `BoxStyler().onHovered()`
+- Before: `$box.wrap.opacity(0.5)` → After: `BoxStyler().wrap(OpacityModifier(0.5))`
 
 ---
 
