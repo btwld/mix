@@ -1,5 +1,31 @@
 # Deep Research: matchedGeometryEffect & symbolEffect for Mix
 
+> **⚠️ ARCHITECTURAL REVIEW COMPLETE**
+>
+> This document contains the **original research proposal** which was found to be **over-engineered** during multi-agent validation.
+>
+> **See: [VALIDATED_IMPLEMENTATION_PLAN.md](./VALIDATED_IMPLEMENTATION_PLAN.md)** for the corrected, simplified implementation.
+>
+> ### Key Issues Identified in This Document:
+>
+> | Issue | This Document (Original) | Validated Correction |
+> |-------|--------------------------|----------------------|
+> | symbolEffect architecture | 10+ sealed classes, 3-4 files | Single mixin (~170 LOC), 1 file |
+> | API usage | `ScaleModifierMix(x: Prop(scale))` | `WidgetModifierConfig.scale(x: scale, y: scale)` |
+> | matchedGeometry scope | Custom InheritedWidget + State | InheritedNotifier pattern (like PointerPositionProvider) |
+> | Widget structure | GeometryTracker + MatchedGeometryAnimator (2 widgets) | Single GeometryMatch widget |
+> | Disposal handling | Geometry lost immediately on unregister | 100ms persistence for race conditions |
+> | Timeline | 7-9 weeks | 2-3 weeks |
+> | Total LOC | ~1000+ lines | ~405 lines |
+>
+> ### What's Still Valuable in This Document:
+> - SwiftUI API analysis and comparison tables
+> - Flutter Hero widget comparison
+> - Understanding of effect types and behaviors
+> - Conceptual architecture diagrams
+>
+> ---
+
 ## Executive Summary
 
 This document provides a thorough technical analysis of SwiftUI's `matchedGeometryEffect` and `symbolEffect` features, evaluates their feasibility for implementation in Mix, and proposes concrete implementation strategies.
@@ -7,6 +33,8 @@ This document provides a thorough technical analysis of SwiftUI's `matchedGeomet
 **Verdict:**
 - **symbolEffect**: ✅ **Highly Feasible** - Can be implemented with existing infrastructure
 - **matchedGeometryEffect**: ✅ **Feasible** - Requires new geometry tracking infrastructure
+
+> **Note:** The implementation strategies below were superseded by the validated plan. See [VALIDATED_IMPLEMENTATION_PLAN.md](./VALIDATED_IMPLEMENTATION_PLAN.md) for the correct approach.
 
 ---
 
