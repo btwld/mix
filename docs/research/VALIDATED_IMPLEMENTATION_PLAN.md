@@ -78,7 +78,6 @@ The `wrap()` method takes `WidgetModifierConfig`, not `ModifierMix` directly. Us
 ```dart
 // File: packages/mix/lib/src/style/mixins/effect_style_mixin.dart
 
-import 'dart:async';
 import 'dart:math' show pi;
 
 import 'package:flutter/foundation.dart';
@@ -89,32 +88,23 @@ import '../../core/spec.dart';
 import '../../core/style.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import 'animation_style_mixin.dart';
+import 'widget_modifier_style_mixin.dart';
 
 /// Mixin providing symbol-like effects using existing animation infrastructure.
 ///
 /// These effects are inspired by SwiftUI's symbolEffect but adapted for Flutter's
 /// capabilities (no layer-based icon animations).
 ///
-/// IMPORTANT: This mixin requires AnimationStyleMixin to also be mixed into the
-/// concrete style class. The phaseAnimation() and keyframeAnimation() methods
-/// are accessed through the concrete type at runtime.
+/// IMPORTANT: This mixin requires both AnimationStyleMixin and
+/// WidgetModifierStyleMixin in the concrete style class so that phaseAnimation()
+/// and wrap() are available.
 ///
 /// V1 Limitations:
 /// - Only one effect per style (last effect wins if multiple applied)
-/// - Timer.periodic used for indefinite effects (Ticker optimization in V2)
+/// - Indefinite effects loop via onEnd callbacks (no Timer)
 /// - Rapid triggers restart animation from beginning
-mixin EffectStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
-  /// Access AnimationStyleMixin methods via runtime cast.
-  /// Safe because concrete classes (IconStyler, BoxStyler) mix in both.
-  AnimationStyleMixin<T, S> get _anim {
-    if (this is! AnimationStyleMixin<T, S>) {
-      throw StateError(
-        'EffectStyleMixin requires AnimationStyleMixin to be mixed in. '
-        'Ensure your style class includes both mixins.',
-      );
-    }
-    return this as AnimationStyleMixin<T, S>;
-  }
+mixin EffectStyleMixin<T extends Style<S>, S extends Spec<S>>
+    on Style<S>, WidgetModifierStyleMixin<T, S>, AnimationStyleMixin<T, S> {
 
   /// Bounce effect triggered by value change.
   ///
@@ -134,7 +124,7 @@ mixin EffectStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
     final down = 1.0 - intensity;
     final up = 1.0 + intensity;
 
-    return _anim.phaseAnimation<double>(
+    return phaseAnimation<double>(
       trigger: trigger,
       phases: [1.0, down, up, 1.0],
       styleBuilder: (scale, style) => style.wrap(
@@ -159,13 +149,16 @@ mixin EffectStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
     double minOpacity = 0.4,
     Duration duration = const Duration(milliseconds: 800),
   }) {
-    return _anim.phaseAnimation<double>(
-      trigger: _RepeatWhileActiveNotifier(trigger),
+    return _loopingPhaseAnimation<double>(
+      active: trigger,
       phases: [1.0, minOpacity, 1.0],
       styleBuilder: (opacity, style) => style.wrap(
         WidgetModifierConfig.opacity(opacity),
       ) as T,
-      configBuilder: (_) => CurveAnimationConfig.easeInOut(duration ~/ 2),
+      configBuilder: (_, isLast, onEnd) => CurveAnimationConfig.easeInOut(
+        duration ~/ 2,
+        onEnd: isLast ? onEnd : null,
+      ),
     );
   }
 
@@ -177,7 +170,7 @@ mixin EffectStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
     double angle = 0.1, // ~6 degrees
     Duration duration = const Duration(milliseconds: 400),
   }) {
-    return _anim.phaseAnimation<double>(
+    return phaseAnimation<double>(
       trigger: trigger,
       phases: [0.0, angle, -angle, angle * 0.5, -angle * 0.5, 0.0],
       styleBuilder: (radians, style) => style.wrap(
@@ -194,22 +187,18 @@ mixin EffectStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
     required ValueListenable<bool> trigger,
     Duration revolutionDuration = const Duration(seconds: 1),
   }) {
-    // Use keyframe animation for continuous rotation
-    return _anim.keyframeAnimation(
-      trigger: _RepeatWhileActiveNotifier(trigger),
-      timeline: [
-        KeyframeTrack<double>(
-          'rotation',
-          [
-            Keyframe.linear(0.0, Duration.zero),
-            Keyframe.linear(2 * pi, revolutionDuration),
-          ],
-          initial: 0.0,
-        ),
-      ],
-      styleBuilder: (values, style) => style.wrap(
-        WidgetModifierConfig.rotate(radians: values.get('rotation')),
+    return _loopingPhaseAnimation<double>(
+      active: trigger,
+      phases: [0.0, 2 * pi],
+      styleBuilder: (radians, style) => style.wrap(
+        WidgetModifierConfig.rotate(radians: radians),
       ) as T,
+      // Use a zero-duration wrap phase so 2π -> 0 jump is visually seamless,
+      // then retrigger for the next cycle.
+      configBuilder: (phase, isLast, onEnd) => CurveAnimationConfig.linear(
+        phase == 0.0 ? Duration.zero : revolutionDuration,
+        onEnd: isLast ? onEnd : null,
+      ),
     );
   }
 
@@ -221,53 +210,80 @@ mixin EffectStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
     double intensity = 0.06,
     Duration duration = const Duration(milliseconds: 1500),
   }) {
-    return _anim.phaseAnimation<double>(
-      trigger: _RepeatWhileActiveNotifier(trigger),
+    return _loopingPhaseAnimation<double>(
+      active: trigger,
       phases: [1.0, 1.0 + intensity, 1.0],
       styleBuilder: (scale, style) => style.wrap(
         WidgetModifierConfig.scale(x: scale, y: scale),
       ) as T,
-      configBuilder: (_) => CurveAnimationConfig.easeInOut(duration ~/ 2),
+      configBuilder: (_, isLast, onEnd) => CurveAnimationConfig.easeInOut(
+        duration ~/ 2,
+        onEnd: isLast ? onEnd : null,
+      ),
+    );
+  }
+
+  /// Shared helper to loop phase animations while [active] remains true.
+  T _loopingPhaseAnimation<P>({
+    required ValueListenable<bool> active,
+    required List<P> phases,
+    required T Function(P phase, T style) styleBuilder,
+    required CurveAnimationConfig Function(
+      P phase,
+      bool isLast,
+      VoidCallback onEnd,
+    )
+    configBuilder,
+  }) {
+    final loop = _RepeatWhileActiveTrigger(active);
+    final styles = <T>[];
+    final configs = <CurveAnimationConfig>[];
+
+    for (int i = 0; i < phases.length; i++) {
+      final phase = phases[i];
+      final isLast = i == phases.length - 1;
+      styles.add(styleBuilder(phase, this as T));
+      configs.add(configBuilder(phase, isLast, loop.onCycleComplete));
+    }
+
+    return animate(
+      PhaseAnimationConfig<S, T>(
+        styles: styles,
+        curveConfigs: configs,
+        trigger: loop,
+      ),
     );
   }
 }
 
-/// Helper notifier that repeats phase animations while a condition is true.
+/// Helper notifier that retriggers animation cycles while active.
 ///
 /// Used internally by indefinite effects (pulseWhile, rotateWhile, breatheWhile).
 ///
-/// Note: Uses Timer.periodic for simplicity in V1. Future optimization could use
-/// Ticker for better frame synchronization, but the actual animations ARE
-/// frame-synced through AnimationController - this timer just triggers new cycles.
-class _RepeatWhileActiveNotifier extends ChangeNotifier {
-  Timer? _timer;
+/// Note: Uses onEnd callbacks from PhaseAnimationDriver instead of timers.
+class _RepeatWhileActiveTrigger extends ChangeNotifier {
   final ValueListenable<bool> _source;
-  bool _isDisposed = false;
+  bool _active = false;
 
-  _RepeatWhileActiveNotifier(this._source) {
+  _RepeatWhileActiveTrigger(this._source) {
     _source.addListener(_onSourceChanged);
     _onSourceChanged();
   }
 
   void _onSourceChanged() {
-    if (_isDisposed) return;
-
-    if (_source.value) {
-      // Start repeating - notify at animation frame rate
-      _timer?.cancel();
-      _timer = Timer.periodic(const Duration(milliseconds: 16), (_) {
-        if (!_isDisposed) notifyListeners();
-      });
-    } else {
-      _timer?.cancel();
-      _timer = null;
+    _active = _source.value;
+    if (_active) {
+      // Start first cycle immediately when activated.
+      notifyListeners();
     }
+  }
+
+  void onCycleComplete() {
+    if (_active) notifyListeners();
   }
 
   @override
   void dispose() {
-    _isDisposed = true;
-    _timer?.cancel();
     _source.removeListener(_onSourceChanged);
     super.dispose();
   }
@@ -383,7 +399,7 @@ StyledIcon(
 #### Scope Widget (Following PointerPositionProvider Pattern Exactly)
 
 ```dart
-// File: packages/mix/lib/src/providers/geometry_scope.dart (~105 LOC)
+// File: packages/mix/lib/src/providers/geometry_scope.dart (~120 LOC)
 // NOTE: Using src/providers/ to match existing Mix patterns (IconScope, TextScope)
 
 import 'dart:async';
@@ -439,6 +455,7 @@ class GeometryNotifier extends ChangeNotifier {
     if (_geometries[id] != geometry) {
       _geometries[id] = geometry;
       _notifyIdListeners(id);
+      notifyListeners();
     }
   }
 
@@ -450,6 +467,7 @@ class GeometryNotifier extends ChangeNotifier {
     _removalTimers[id] = Timer(_persistenceDuration, () {
       _geometries.remove(id);
       _removalTimers.remove(id);
+      notifyListeners();
     });
   }
 
@@ -468,6 +486,17 @@ class GeometryNotifier extends ChangeNotifier {
       callback();
     }
   }
+
+  @override
+  void dispose() {
+    for (final timer in _removalTimers.values) {
+      timer.cancel();
+    }
+    _removalTimers.clear();
+    _geometries.clear();
+    _idListeners.clear();
+    super.dispose();
+  }
 }
 
 /// Provides geometry tracking context for GeometryMatch widgets.
@@ -479,16 +508,20 @@ class GeometryNotifier extends ChangeNotifier {
 /// - Same-screen only (no cross-route animations)
 /// - One-frame geometry delay (initial frame uses captured geometry)
 /// - No scroll handling (may glitch in scrollable containers)
+/// - Geometry updates only occur when sources rebuild (documented)
 /// - Text scaling artifacts (mitigated by 0.1-100.0 scale clamping)
-class GeometryScope extends InheritedNotifier<GeometryNotifier> {
-  GeometryScope({
+class GeometryScope extends StatefulWidget {
+  const GeometryScope({
+    required this.child,
     super.key,
-    required super.child,
-  }) : super(notifier: GeometryNotifier());
+  });
+
+  final Widget child;
 
   /// Get the notifier from context.
   static GeometryNotifier of(BuildContext context) {
-    final scope = context.dependOnInheritedWidgetOfExactType<GeometryScope>();
+    final scope = context
+        .dependOnInheritedWidgetOfExactType<_GeometryScopeInherited>();
     if (scope?.notifier == null) {
       throw FlutterError(
         'GeometryScope.of() called without a GeometryScope ancestor.\n'
@@ -500,9 +533,44 @@ class GeometryScope extends InheritedNotifier<GeometryNotifier> {
 
   /// Get notifier without creating dependency (for registration).
   static GeometryNotifier? maybeOf(BuildContext context) {
-    final scope = context.getInheritedWidgetOfExactType<GeometryScope>();
+    final scope =
+        context.getInheritedWidgetOfExactType<_GeometryScopeInherited>();
     return scope?.notifier;
   }
+
+  @override
+  State<GeometryScope> createState() => _GeometryScopeState();
+}
+
+class _GeometryScopeState extends State<GeometryScope> {
+  late final GeometryNotifier _notifier;
+
+  @override
+  void initState() {
+    super.initState();
+    _notifier = GeometryNotifier();
+  }
+
+  @override
+  void dispose() {
+    _notifier.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _GeometryScopeInherited(
+      notifier: _notifier,
+      child: widget.child,
+    );
+  }
+}
+
+class _GeometryScopeInherited extends InheritedNotifier<GeometryNotifier> {
+  const _GeometryScopeInherited({
+    required GeometryNotifier super.notifier,
+    required super.child,
+  });
 }
 ```
 
@@ -765,9 +833,10 @@ class _ExpandableCardState extends State<ExpandableCard> {
 1. **Same-screen only** - No cross-route animations
 2. **One-frame geometry delay** - Initial frame uses captured geometry (known limitation, not a bug)
 3. **No scroll handling** - May glitch in scrollable containers
-4. **Transform artifacts** - Text may scale/blur during animation (mitigated by clamping)
-5. **No clipping respect** - Widget may overflow during flight
-6. **GlobalKey introduction** - First GlobalKey usage in Mix codebase (justified for geometry tracking)
+4. **Geometry updates on rebuilds only** - Moving layouts without rebuilds can desync
+5. **Transform artifacts** - Text may scale/blur during animation (mitigated by clamping)
+6. **No clipping respect** - Widget may overflow during flight
+7. **GlobalKey introduction** - First GlobalKey usage in Mix codebase (justified for geometry tracking)
 
 ### What to Defer to V2
 
@@ -840,8 +909,8 @@ class _ExpandableCardState extends State<ExpandableCard> {
 | Scale clamping | None or magic numbers | Named constants `_minScale`/`_maxScale` with 0.1-100.0 range |
 | Disposal | Incomplete | Proper cleanup of listeners and registration |
 | Source disposal race | Geometry lost immediately | Added 100ms persistence timeout in `GeometryNotifier.unregister()` |
-| Timer in effects | N/A | Documented as V1 optimization opportunity (Ticker would be better) |
-| Mixin constraint | `on Style<S>, AnimationStyleMixin<T, S>` (invalid) | `on Style<S>` with runtime-checked `_anim` getter |
+| Timer in effects | N/A | Loop via `onEnd` callbacks (no Timer) |
+| Mixin constraint | `on Style<S>, AnimationStyleMixin<T, S>` (invalid) | Constrain to `WidgetModifierStyleMixin` + `AnimationStyleMixin` |
 | Directory structure | `src/widgets/` (doesn't exist) | `src/providers/` to match existing patterns |
 | Missing import | N/A | Added `import 'package:flutter/scheduler.dart';` |
 | Documentation | "expected behavior" | "known limitation" (accurate framing) |
