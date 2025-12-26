@@ -83,8 +83,14 @@ import 'animation_style_mixin.dart';
 ///
 /// These effects are inspired by SwiftUI's symbolEffect but adapted for Flutter's
 /// capabilities (no layer-based icon animations).
-mixin EffectStyleMixin<T extends Style<S>, S extends Spec<S>>
-    on Style<S>, AnimationStyleMixin<T, S> {
+///
+/// NOTE: This mixin requires AnimationStyleMixin to also be mixed into the
+/// concrete style class. The phaseAnimation() and keyframeAnimation() methods
+/// are accessed through the concrete type at runtime.
+mixin EffectStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
+  // Cast to access AnimationStyleMixin methods - safe because concrete class
+  // (IconStyler, BoxStyler) mixes in both this AND AnimationStyleMixin.
+  AnimationStyleMixin<T, S> get _anim => this as AnimationStyleMixin<T, S>;
 
   /// Bounce effect triggered by value change.
   ///
@@ -104,7 +110,7 @@ mixin EffectStyleMixin<T extends Style<S>, S extends Spec<S>>
     final down = 1.0 - intensity;
     final up = 1.0 + intensity;
 
-    return phaseAnimation<double>(
+    return _anim.phaseAnimation<double>(
       trigger: trigger,
       phases: [1.0, down, up, 1.0],
       styleBuilder: (scale, style) => style.wrap(
@@ -129,7 +135,7 @@ mixin EffectStyleMixin<T extends Style<S>, S extends Spec<S>>
     double minOpacity = 0.4,
     Duration duration = const Duration(milliseconds: 800),
   }) {
-    return phaseAnimation<double>(
+    return _anim.phaseAnimation<double>(
       trigger: _RepeatWhileActiveNotifier(trigger),
       phases: [1.0, minOpacity, 1.0],
       styleBuilder: (opacity, style) => style.wrap(
@@ -147,7 +153,7 @@ mixin EffectStyleMixin<T extends Style<S>, S extends Spec<S>>
     double angle = 0.1, // ~6 degrees
     Duration duration = const Duration(milliseconds: 400),
   }) {
-    return phaseAnimation<double>(
+    return _anim.phaseAnimation<double>(
       trigger: trigger,
       phases: [0.0, angle, -angle, angle * 0.5, -angle * 0.5, 0.0],
       styleBuilder: (radians, style) => style.wrap(
@@ -165,7 +171,7 @@ mixin EffectStyleMixin<T extends Style<S>, S extends Spec<S>>
     Duration revolutionDuration = const Duration(seconds: 1),
   }) {
     // Use keyframe animation for continuous rotation
-    return keyframeAnimation(
+    return _anim.keyframeAnimation(
       trigger: _RepeatWhileActiveNotifier(trigger),
       timeline: [
         KeyframeTrack<double>(
@@ -191,7 +197,7 @@ mixin EffectStyleMixin<T extends Style<S>, S extends Spec<S>>
     double intensity = 0.06,
     Duration duration = const Duration(milliseconds: 1500),
   }) {
-    return phaseAnimation<double>(
+    return _anim.phaseAnimation<double>(
       trigger: _RepeatWhileActiveNotifier(trigger),
       phases: [1.0, 1.0 + intensity, 1.0],
       styleBuilder: (scale, style) => style.wrap(
@@ -348,7 +354,8 @@ StyledIcon(
 #### Scope Widget (Following PointerPositionProvider Pattern Exactly)
 
 ```dart
-// File: packages/mix/lib/src/widgets/geometry_scope.dart (~90 LOC)
+// File: packages/mix/lib/src/providers/geometry_scope.dart (~95 LOC)
+// NOTE: Using src/providers/ to match existing Mix patterns (IconScope, TextScope)
 
 import 'dart:async';
 
@@ -467,12 +474,12 @@ class GeometryScope extends InheritedNotifier<GeometryNotifier> {
 #### GeometryMatch Widget (Corrected)
 
 ```dart
-// File: packages/mix/lib/src/widgets/geometry_match.dart (~120 LOC)
+// File: packages/mix/lib/src/providers/geometry_match.dart (~120 LOC)
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter/scheduler.dart';
 
-import 'geometry_scope.dart';
+import 'geometry_scope.dart';  // Same directory in providers/
 
 /// Tracks widget geometry and optionally animates to match another tracked widget.
 ///
@@ -637,7 +644,8 @@ class _GeometryMatchState extends State<GeometryMatch>
         return Transform(
           transform: Matrix4.identity()
             ..translate(dx, dy)
-            ..scale(scaleX.clamp(0.01, 100.0), scaleY.clamp(0.01, 100.0)),
+            // Clamp scale to avoid text readability issues (0.1 min) and extreme values
+            ..scale(scaleX.clamp(0.1, 100.0), scaleY.clamp(0.1, 100.0)),
           alignment: Alignment.topLeft,
           child: KeyedSubtree(key: _key, child: widget.child),
         );
@@ -713,10 +721,11 @@ class _ExpandableCardState extends State<ExpandableCard> {
 ### V1 Limitations (Document These)
 
 1. **Same-screen only** - No cross-route animations
-2. **One-frame delay** - Geometry captured after layout
+2. **One-frame delay** - Geometry captured after layout (**expected behavior** - this is standard for interpolation-based animations where we animate FROM previous frame's position TO current. Calling `findRenderObject()` in AnimatedBuilder's builder callback is a valid Flutter pattern)
 3. **No scroll handling** - May glitch in scrollable containers
 4. **Transform artifacts** - Text may scale/blur during animation
 5. **No clipping respect** - Widget may overflow during flight
+6. **GlobalKey introduction** - First GlobalKey usage in Mix codebase (justified for geometry tracking)
 
 ### What to Defer to V2
 
@@ -757,9 +766,9 @@ class _ExpandableCardState extends State<ExpandableCard> {
 
 ### New Files
 
-1. `packages/mix/lib/src/style/mixins/effect_style_mixin.dart` (~135 LOC)
-2. `packages/mix/lib/src/widgets/geometry_scope.dart` (~95 LOC)
-3. `packages/mix/lib/src/widgets/geometry_match.dart` (~120 LOC)
+1. `packages/mix/lib/src/style/mixins/effect_style_mixin.dart` (~140 LOC)
+2. `packages/mix/lib/src/providers/geometry_scope.dart` (~95 LOC)
+3. `packages/mix/lib/src/providers/geometry_match.dart` (~120 LOC)
 
 ### Modified Files
 
@@ -769,9 +778,9 @@ class _ExpandableCardState extends State<ExpandableCard> {
 
 ### Total New Code
 
-- symbolEffect: ~135 lines
+- symbolEffect: ~140 lines (including _anim getter)
 - matchedGeometry: ~215 lines
-- **Total: ~350 lines** (vs. ~1000+ in original plan)
+- **Total: ~355 lines** (vs. ~1000+ in original plan)
 
 ---
 
@@ -783,10 +792,12 @@ class _ExpandableCardState extends State<ExpandableCard> {
 | Missing listener | Target didn't listen for source changes | Added `addIdListener` / `removeIdListener` |
 | Scope pattern | Custom `InheritedWidget` + State | Proper `InheritedNotifier<GeometryNotifier>` |
 | Animation direction | Confusing | Clarified: target animates FROM source TO self |
-| Scale clamping | None | Added `.clamp(0.01, 100.0)` to prevent NaN |
+| Scale clamping | None | Added `.clamp(0.1, 100.0)` - 0.1 min for text readability |
 | Disposal | Incomplete | Proper cleanup of listeners and registration |
 | Source disposal race | Geometry lost immediately | Added 100ms persistence timeout in `GeometryNotifier.unregister()` |
 | Timer in effects | N/A | Documented as V1 optimization opportunity (Ticker would be better) |
+| Mixin constraint | `on Style<S>, AnimationStyleMixin<T, S>` (invalid) | `on Style<S>` with `_anim` getter cast |
+| Directory structure | `src/widgets/` (doesn't exist) | `src/providers/` to match existing patterns |
 
 ---
 
