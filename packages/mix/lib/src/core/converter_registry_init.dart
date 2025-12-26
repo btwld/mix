@@ -339,7 +339,9 @@ void initializeMixConverters() {
   registry.register<BorderRadiusGeometry>(
     const BorderRadiusGeometryConverter(),
   );
-  registry.register<ShapeBorder>(const ShapeBorderConverter());
+  // TODO: ShapeBorder converter needs implementation for specific subtypes
+  // Disabled until implemented - currently always throws UnimplementedError
+  // registry.register<ShapeBorder>(const ShapeBorderConverter());
   registry.register<Gradient>(const GradientConverter());
   registry.register<LinearGradient>(const LinearGradientConverter());
   registry.register<RadialGradient>(const RadialGradientConverter());
