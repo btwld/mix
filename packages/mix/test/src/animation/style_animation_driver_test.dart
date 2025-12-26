@@ -679,8 +679,10 @@ void main() {
       expect(value?.spec.resolvedValue, 0.0);
     });
 
-    test('animation is never animating', () {
-      expect(driver.animation.isAnimating, false);
+    test('animation status is always forward (stopped)', () {
+      // AlwaysStoppedAnimation has status = forward, so isAnimating is true
+      // but the animation value never changes
+      expect(driver.animation.status, AnimationStatus.forward);
     });
 
     test('didUpdateSpec immediately updates animation value', () {
