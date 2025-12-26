@@ -27,6 +27,7 @@ final class VisibilityModifier extends WidgetModifier<VisibilityModifier>
     if (visible == other.visible) return this;
     if (t == 0) return this;
     if (t == 1) return other;
+
     return VisibilityModifier(true);
   }
 

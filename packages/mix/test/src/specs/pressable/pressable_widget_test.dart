@@ -295,7 +295,7 @@ void main() {
 
       final semantics = tester.getSemantics(find.byType(Pressable));
       expect(semantics.label, 'Test Button');
-      expect(semantics.hasFlag(SemanticsFlag.isButton), isTrue);
+      expect(semantics.flagsCollection.isButton, isTrue);
     });
 
     testWidgets('excludes semantics when requested', (tester) async {
