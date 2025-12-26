@@ -505,7 +505,7 @@ void main() {
       test('can be created with different variant types', () {
         const namedVariant = NamedVariant('test');
         final contextVariant = ContextVariant('test', (context) => true);
-        final widgetStateVariant = WidgetStateVariant(WidgetState.hovered);
+        final widgetStateVariant = ContextVariant.widgetState(WidgetState.hovered);
 
         expect(
           VariantAttributeBuilder<MockSpec>(namedVariant),
@@ -566,8 +566,8 @@ void main() {
       });
 
       test('different variant types create different builders', () {
-        const namedVariant = NamedVariant('test');
-        final contextVariant = ContextVariant('test', (context) => true);
+        const namedVariant = NamedVariant('named_test');
+        final contextVariant = ContextVariant('context_test', (context) => true);
 
         const namedBuilder = VariantAttributeBuilder<MockSpec>(namedVariant);
         final contextBuilder = VariantAttributeBuilder<MockSpec>(
@@ -609,7 +609,7 @@ void main() {
       test('maintains type safety with different variant types', () {
         const namedVariant = NamedVariant('test');
         final contextVariant = ContextVariant('test', (context) => true);
-        final widgetStateVariant = WidgetStateVariant(WidgetState.hovered);
+        final widgetStateVariant = ContextVariant.widgetState(WidgetState.hovered);
 
         expect(
           VariantAttributeBuilder<MockSpec>(namedVariant),

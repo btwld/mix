@@ -6,7 +6,6 @@ import '../../core/style.dart' show Style, VariantStyle;
 import '../../core/style_spec.dart';
 import '../../core/utility.dart';
 import '../../core/utility_variant_mixin.dart';
-import '../../core/utility_widget_state_variant_mixin.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../modifiers/widget_modifier_util.dart';
 import '../../properties/painting/color_util.dart';
@@ -23,9 +22,7 @@ import 'text_style.dart';
 /// Supports the same API as [TextStyler] but maintains mutable internal state
 /// enabling fluid styling: `$text..color.red()..fontSize(16)`.
 class TextMutableStyler extends StyleMutableBuilder<TextSpec>
-    with
-        UtilityVariantMixin<TextStyler, TextSpec>,
-        UtilityWidgetStateVariantMixin<TextStyler, TextSpec> {
+    with UtilityVariantMixin<TextStyler, TextSpec> {
   late final textOverflow = MixUtility(mutable.overflow);
 
   late final strutStyle = StrutStyleUtility(mutable.strutStyle);

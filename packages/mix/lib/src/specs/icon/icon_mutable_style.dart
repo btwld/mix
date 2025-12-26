@@ -6,7 +6,6 @@ import '../../core/style.dart' show Style, VariantStyle;
 import '../../core/style_spec.dart';
 import '../../core/utility.dart';
 import '../../core/utility_variant_mixin.dart';
-import '../../core/utility_widget_state_variant_mixin.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../modifiers/widget_modifier_util.dart';
 import '../../properties/painting/color_util.dart';
@@ -22,9 +21,7 @@ import 'icon_style.dart';
 /// Supports the same API as [IconStyler] but maintains mutable internal state
 /// enabling fluid styling: `$icon..color(Colors.blue)..size(24)..weight(400)`.
 class IconMutableStyler extends StyleMutableBuilder<IconSpec>
-    with
-        UtilityVariantMixin<IconStyler, IconSpec>,
-        UtilityWidgetStateVariantMixin<IconStyler, IconSpec> {
+    with UtilityVariantMixin<IconStyler, IconSpec> {
   late final color = ColorUtility<IconStyler>(
     (prop) => mutable.merge(IconStyler.create(color: prop)),
   );

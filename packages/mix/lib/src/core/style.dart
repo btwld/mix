@@ -1,4 +1,5 @@
-import 'package:flutter/foundation.dart';
+import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart' hide mergeSort;
 import 'package:flutter/widgets.dart';
 
 import '../animation/animation_config.dart';
@@ -63,8 +64,11 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   @internal
   Set<WidgetState> get widgetStates {
     return ($variants ?? [])
-        .where((v) => v.variant is WidgetStateVariant)
-        .map((v) => (v.variant as WidgetStateVariant).state)
+        .map((v) => switch (v.variant) {
+          ContextVariant(:final trackedState?) => trackedState,
+          _ => null,
+        })
+        .nonNulls
         .toSet();
   }
 
@@ -78,7 +82,7 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
   /// Variant priority order (lowest to highest):
   /// 1. ContextVariant and NamedVariant (applied first)
   /// 2. StyleVariation (applied second)
-  /// 3. WidgetStateVariant (applied last, highest priority)
+  /// 3. Widget state variants (applied last, highest priority)
   @visibleForTesting
   Style<S> mergeActiveVariants(
     BuildContext context, {
@@ -95,59 +99,35 @@ abstract class Style<S extends Spec<S>> extends Mix<StyleSpec<S>>
         )
         .toList();
 
-    // Sort by priority: WidgetStateVariant gets applied last (highest priority)
-    activeVariants.sort(
-      (a, b) => Comparable.compare(
-        a.variant is WidgetStateVariant ? 1 : 0,
-        b.variant is WidgetStateVariant ? 1 : 0,
-      ),
-    );
+    // Sort by priority: Widget state variants get applied last (highest priority)
+    // Using mergeSort for stable ordering (Dart's List.sort is NOT stable)
+    int priority(Variant v) => switch (v) {
+      ContextVariant(trackedState: final _?) => 1,
+      _ => 0,
+    };
+    mergeSort(activeVariants, compare: (a, b) =>
+        priority(a.variant).compareTo(priority(b.variant)));
 
     // Extract the style from each active variant
-    final stylesToMerge = <(Style<S>, bool)>[]; // (style, isFromStyleVariation)
+    final stylesToMerge = <Style<S>>[];
 
     for (final variantAttr in activeVariants) {
-      final result = switch (variantAttr.variant) {
-        ContextVariantBuilder variant => (
-          variant.build(context) as Style<S>,
-          false,
-        ),
-        (ContextVariant() || NamedVariant()) => () {
-          // Check if the value is a StyleVariation
-          // ignore: avoid-unrelated-type-assertions
-          if (variantAttr.value is StyleVariation<S>) {
-            // ignore: avoid-unrelated-type-casts
-            final styleVariation = variantAttr.value as StyleVariation<S>;
-            // Only apply if this variant is active
-            if (namedVariants.contains(styleVariation.variantType)) {
-              return (
-                styleVariation.styleBuilder(this, namedVariants, context),
-                true,
-              );
-            }
-          }
-
-          return (variantAttr.value, false);
-        }(),
+      final style = switch (variantAttr.variant) {
+        ContextVariantBuilder variant => variant.build(context) as Style<S>,
+        (ContextVariant() || NamedVariant()) => variantAttr.value,
       };
-      stylesToMerge.add(result);
+      stylesToMerge.add(style);
     }
 
     // Start with current style as base
     Style<S> mergedStyle = this;
 
     // Merge each variant style, recursively resolving nested variants
-    for (final (variantStyle, isFromStyleVariation) in stylesToMerge) {
-      final fullyResolvedStyle = isFromStyleVariation
-          // For StyleVariation results, we don't recursively resolve variants
-          // since StyleVariation.styleBuilder should handle its own variant logic
-          // and return a final style. This prevents infinite recursion.
-          ? variantStyle
-          // For regular variants, recursively resolve any nested variants
-          : variantStyle.mergeActiveVariants(
-              context,
-              namedVariants: namedVariants,
-            );
+    for (final variantStyle in stylesToMerge) {
+      final fullyResolvedStyle = variantStyle.mergeActiveVariants(
+        context,
+        namedVariants: namedVariants,
+      );
       mergedStyle = mergedStyle.merge(fullyResolvedStyle);
     }
 

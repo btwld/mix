@@ -42,7 +42,7 @@ void main() {
         final contextVariant = ContextVariant('context', (context) => true);
         const namedVariant = NamedVariant('named');
         // Create a real WidgetStateVariant for testing priority
-        final widgetStateVariant = WidgetStateVariant(WidgetState.hovered);
+        final widgetStateVariant = ContextVariant.widgetState(WidgetState.hovered);
 
         // Create VariantSpecAttributes with different priorities
         final contextVarAttr = VariantStyle(
@@ -96,9 +96,9 @@ void main() {
       testWidgets('multiple WidgetStateVariants maintain relative order', (
         tester,
       ) async {
-        final hoveredVariant = WidgetStateVariant(WidgetState.hovered);
-        final pressedVariant = WidgetStateVariant(WidgetState.pressed);
-        final focusedVariant = WidgetStateVariant(WidgetState.focused);
+        final hoveredVariant = ContextVariant.widgetState(WidgetState.hovered);
+        final pressedVariant = ContextVariant.widgetState(WidgetState.pressed);
+        final focusedVariant = ContextVariant.widgetState(WidgetState.focused);
 
         final hoveredVarAttr = VariantStyle(
           hoveredVariant,
@@ -150,8 +150,8 @@ void main() {
         // Create a mix of all variant types
         final contextVariant = ContextVariant('context', (context) => true);
         const namedVariant = NamedVariant('named');
-        final widgetStateVariant1 = WidgetStateVariant(WidgetState.hovered);
-        final widgetStateVariant2 = WidgetStateVariant(WidgetState.pressed);
+        final widgetStateVariant1 = ContextVariant.widgetState(WidgetState.hovered);
+        final widgetStateVariant2 = ContextVariant.widgetState(WidgetState.pressed);
         const multiNamedVariant = NamedVariant('multi');
 
         final varAttrs = [
@@ -354,7 +354,7 @@ void main() {
     group('Merging behavior', () {
       testWidgets('variants are merged in sorted order', (tester) async {
         final contextVariant = ContextVariant('context', (context) => true);
-        final widgetStateVariant = WidgetStateVariant(WidgetState.hovered);
+        final widgetStateVariant = ContextVariant.widgetState(WidgetState.hovered);
 
         final contextVarAttr = VariantStyle(
           contextVariant,
@@ -433,7 +433,7 @@ void main() {
         // Create comprehensive test with all variant types
         final contextVariant = ContextVariant('context', (context) => true);
         const namedVariant = NamedVariant('named');
-        final widgetStateVariant = WidgetStateVariant(WidgetState.hovered);
+        final widgetStateVariant = ContextVariant.widgetState(WidgetState.hovered);
         const multiNamedVariant = NamedVariant('multi_named');
         final contextBuilder = ContextVariantBuilder<_MockSpecAttribute>(
           (context) => _MockSpecAttribute(width: 150.0, height: 500.0),
@@ -484,10 +484,10 @@ void main() {
       testWidgets('multiple WidgetStateVariants with different states', (
         tester,
       ) async {
-        final hoveredVariant = WidgetStateVariant(WidgetState.hovered);
-        final pressedVariant = WidgetStateVariant(WidgetState.pressed);
-        final focusedVariant = WidgetStateVariant(WidgetState.focused);
-        final disabledVariant = WidgetStateVariant(WidgetState.disabled);
+        final hoveredVariant = ContextVariant.widgetState(WidgetState.hovered);
+        final pressedVariant = ContextVariant.widgetState(WidgetState.pressed);
+        final focusedVariant = ContextVariant.widgetState(WidgetState.focused);
+        final disabledVariant = ContextVariant.widgetState(WidgetState.disabled);
 
         final varAttrs = [
           VariantStyle(
@@ -645,8 +645,8 @@ void main() {
         tester,
       ) async {
         // Test with real WidgetStateVariant from the codebase
-        final hoverVariant = WidgetStateVariant(WidgetState.hovered);
-        final pressVariant = WidgetStateVariant(WidgetState.pressed);
+        final hoverVariant = ContextVariant.widgetState(WidgetState.hovered);
+        final pressVariant = ContextVariant.widgetState(WidgetState.pressed);
 
         final varAttrs = [
           VariantStyle(hoverVariant, _MockSpecAttribute(width: 100.0)),
@@ -687,11 +687,11 @@ void main() {
         // Test with predefined variants from the variant system
         final varAttrs = [
           VariantStyle(
-            WidgetStateVariant(WidgetState.hovered), // hover variant
+            ContextVariant.widgetState(WidgetState.hovered), // hover variant
             _MockSpecAttribute(width: 100.0),
           ),
           VariantStyle(
-            WidgetStateVariant(WidgetState.pressed), // press variant
+            ContextVariant.widgetState(WidgetState.pressed), // press variant
             _MockSpecAttribute(width: 200.0),
           ),
         ];

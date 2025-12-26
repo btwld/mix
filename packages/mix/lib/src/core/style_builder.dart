@@ -190,8 +190,8 @@ class _ExternalControllerProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListenableBuilder(
       listenable: controller,
-      builder: (_, _) {
-        return WidgetStateProvider(states: controller.value, child: child);
+      builder: (context, child) {
+        return WidgetStateProvider(states: controller.value, child: this.child);
       },
     );
   }

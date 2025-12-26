@@ -173,12 +173,13 @@ void main() {
     });
 
     group('Integration with other variant types', () {
-      test('NamedVariants are distinct from WidgetStateVariants', () {
+      test('NamedVariants are distinct from widget state variants', () {
         const primary = NamedVariant('primary');
-        final hovered = WidgetStateVariant(WidgetState.hovered);
+        final hovered = ContextVariant.widgetState(WidgetState.hovered);
 
         expect(primary, isA<NamedVariant>());
-        expect(hovered, isA<WidgetStateVariant>());
+        expect(hovered, isA<ContextVariant>());
+        expect(hovered.trackedState, equals(WidgetState.hovered));
         expect(primary.key, isNot(equals(hovered.key)));
       });
 
@@ -197,7 +198,8 @@ void main() {
         // Can be used with widget state variants
         final hover = ContextVariant.widgetState(WidgetState.hovered);
         expect(custom, isA<NamedVariant>());
-        expect(hover, isA<WidgetStateVariant>());
+        expect(hover, isA<ContextVariant>());
+        expect(hover.trackedState, isNotNull);
 
         // Can be used with context variants
         final dark = ContextVariant.brightness(Brightness.dark);

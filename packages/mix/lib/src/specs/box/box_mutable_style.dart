@@ -7,7 +7,6 @@ import '../../core/style.dart' show Style, VariantStyle;
 import '../../core/style_spec.dart';
 import '../../core/utility.dart';
 import '../../core/utility_variant_mixin.dart';
-import '../../core/utility_widget_state_variant_mixin.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../modifiers/widget_modifier_util.dart';
 import '../../properties/layout/constraints_util.dart';
@@ -23,9 +22,7 @@ import 'box_style.dart';
 /// Supports the same API as [BoxStyler] but maintains mutable internal state
 /// enabling fluid styling: `$box..color.red()..width(100)`.
 class BoxMutableStyler extends StyleMutableBuilder<BoxSpec>
-    with
-        UtilityVariantMixin<BoxStyler, BoxSpec>,
-        UtilityWidgetStateVariantMixin<BoxStyler, BoxSpec> {
+    with UtilityVariantMixin<BoxStyler, BoxSpec> {
   late final padding = EdgeInsetsGeometryUtility<BoxStyler>(
     (prop) => mutable.merge(BoxStyler.create(padding: Prop.mix(prop))),
   );

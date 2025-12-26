@@ -45,12 +45,22 @@ class NamedVariant extends Variant {
 class ContextVariant extends Variant {
   final bool Function(BuildContext) shouldApply;
 
+  /// Optional widget state tracking. When non-null, this variant is treated
+  /// as a widget state variant with higher priority during style resolution.
+  final WidgetState? trackedState;
+
   @override
   final String key;
-  const ContextVariant(this.key, this.shouldApply);
 
-  static WidgetStateVariant widgetState(WidgetState state) {
-    return WidgetStateVariant(state);
+  const ContextVariant(this.key, this.shouldApply, {this.trackedState});
+
+  /// Creates a widget state variant that applies when the widget is in the given state.
+  static ContextVariant widgetState(WidgetState state) {
+    return ContextVariant(
+      'widget_state_${state.name}',
+      (context) => WidgetStateProvider.hasStateOf(context, state),
+      trackedState: state,
+    );
   }
 
   static ContextVariant orientation(Orientation orientation) {
@@ -132,23 +142,14 @@ class ContextVariant extends Variant {
   bool when(BuildContext context) {
     return shouldApply(context);
   }
-}
-
-final class WidgetStateVariant extends ContextVariant {
-  final WidgetState state;
-
-  WidgetStateVariant(this.state)
-    : super('widget_state_${state.name}', (context) {
-        return WidgetStateProvider.hasStateOf(context, state);
-      });
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is WidgetStateVariant && other.state == state;
+      other is ContextVariant && other.key == key;
 
   @override
-  int get hashCode => state.hashCode;
+  int get hashCode => key.hashCode;
 }
 
 /// Variant that dynamically builds a Style based on build context.
@@ -172,34 +173,6 @@ class ContextVariantBuilder<S extends Style<Object?>> extends Variant {
 
   /// Build a Style from context
   S build(BuildContext context) => fn(context);
-}
-
-// Helper functions for cleaner variant checking
-bool hasVariant(List<NamedVariant> activeVariants, NamedVariant variant) =>
-    activeVariants.contains(variant);
-
-bool hasAnyVariant(
-  List<NamedVariant> activeVariants,
-  List<NamedVariant> variants,
-) => variants.any((variant) => activeVariants.contains(variant));
-
-bool hasAllVariants(
-  List<NamedVariant> activeVariants,
-  List<NamedVariant> variants,
-) => variants.every((variant) => activeVariants.contains(variant));
-
-/// Interface for design system components that adapt their styling
-/// based on active variants and user modifications.
-abstract class StyleVariation<S extends Spec<S>> {
-  /// The named variant this StyleVariation handles
-  NamedVariant get variantType;
-
-  /// Combines user modifications with variant styling and contextual adaptations.
-  Style<S> styleBuilder(
-    covariant Style<S> style,
-    Set<NamedVariant> activeVariants,
-    BuildContext context,
-  );
 }
 
 // Common named variants
