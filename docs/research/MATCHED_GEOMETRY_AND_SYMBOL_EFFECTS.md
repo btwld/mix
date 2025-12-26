@@ -6,25 +6,59 @@
 >
 > **See: [VALIDATED_IMPLEMENTATION_PLAN.md](./VALIDATED_IMPLEMENTATION_PLAN.md)** for the corrected, simplified implementation.
 >
-> ### Key Issues Identified in This Document:
+> ### Key Simplifications Applied:
 >
-> | Issue | This Document (Original) | Validated Correction |
-> |-------|--------------------------|----------------------|
-> | symbolEffect architecture | 10+ sealed classes, 3-4 files | Single mixin (~170 LOC), 1 file |
-> | API usage | `ScaleModifierMix(x: Prop(scale))` | `WidgetModifierConfig.scale(x: scale, y: scale)` |
-> | matchedGeometry scope | Custom InheritedWidget + State | InheritedNotifier pattern (like PointerPositionProvider) |
-> | Widget structure | GeometryTracker + MatchedGeometryAnimator (2 widgets) | Single GeometryMatch widget |
-> | Disposal handling | Geometry lost immediately on unregister | 100ms persistence for race conditions |
-> | Timeline | 7-9 weeks | 2-3 weeks |
-> | Total LOC | ~1000+ lines | ~405 lines |
+> | Before Refinement | Final Implementation | Reason |
+> |-------------------|---------------------|--------|
+> | 10+ sealed SymbolEffect classes | Single EffectStyleMixin (~165 LOC) | Flutter icons aren't layered like SF Symbols |
+> | controller.repeat() looping | onEnd callback chains | Simpler, uses existing infrastructure |
+> | 3 Maps in GeometryNotifier | 2 Maps (no removal timers) | YAGNI - add persistence in V2 if needed |
+> | Scale clamping constants | No clamping | YAGNI - document as limitation |
+> | Complex configBuilder API | Simple phaseDuration + curve | Internalize isLast logic |
+> | 100ms geometry persistence | Immediate removal | YAGNI - add in V2 if race conditions occur |
 >
 > ### What's Still Valuable in This Document:
 > - SwiftUI API analysis and comparison tables
 > - Flutter Hero widget comparison
 > - Understanding of effect types and behaviors
-> - Conceptual architecture diagrams
+> - Conceptual architecture diagrams (for understanding, not implementation)
 >
 > ---
+
+## Lessons Learned: Why This Was Over-Engineered
+
+### 1. SF Symbols ≠ Flutter Icons
+
+The original plan treated Flutter icons like SwiftUI's SF Symbols, which have:
+- Multiple layers that can animate independently
+- Built-in path-based animations
+- System-level integration
+
+Flutter icons are **font glyphs** - they're single shapes. All effects are just:
+- Transform (scale, rotate, translate)
+- Opacity
+
+The 10+ sealed classes were unnecessary.
+
+### 2. Existing Infrastructure Was Underutilized
+
+Mix already had:
+- `PhaseAnimationConfig` with `Listenable trigger` support
+- `AnimationStyleMixin.phaseAnimation()` method
+- `WidgetModifierConfig.scale/rotate/opacity()` factories
+- `onEnd` callback support in `CurveAnimationConfig`
+
+Instead of building new `SymbolEffectBuilder`, we reuse existing infrastructure.
+
+### 3. YAGNI Violations
+
+- **Timer persistence**: Added 100ms geometry persistence for "race conditions" that may never occur
+- **Scale clamping**: Added 0.1-100.0 range for "extreme transforms" without evidence of need
+- **Complex configBuilder**: Exposed `isLast` and `onEnd` when they could be handled internally
+
+The validated plan removes these and documents them as V2 enhancements if actually needed.
+
+---
 
 ## Executive Summary
 
