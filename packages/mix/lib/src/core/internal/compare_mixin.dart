@@ -1,5 +1,7 @@
 // ignore_for_file: avoid-dynamic
 
+import 'dart:math' as math;
+
 import 'package:flutter/widgets.dart';
 
 import 'deep_collection_equality.dart';
@@ -95,6 +97,14 @@ mixin Equatable {
     if (this == other) return diff;
 
     final otherProps = other.props;
+
+    // Handle different props lengths
+    if (props.length != otherProps.length) {
+      diff['props.length'] =
+          'this: ${props.length}, other: ${otherProps.length}';
+      return diff;
+    }
+
     final length = props.length;
 
     for (int i = 0; i < length; i++) {
@@ -139,8 +149,9 @@ Map<String, String?> compareObjects(Object? obj1, Object? obj2) {
     }
   } else if (obj1 is Iterable && obj2 is Iterable) {
     if (!_equality.equals(obj1, obj2)) {
-      // compare each item in the iterable and add it
-      for (int i = 0; i < obj1.length; i++) {
+      // compare each item in the iterable - use max length to catch all differences
+      final maxLength = math.max(obj1.length, obj2.length);
+      for (int i = 0; i < maxLength; i++) {
         final value = compareObjects(
           obj1.elementAtOrNull(i),
           obj2.elementAtOrNull(i),

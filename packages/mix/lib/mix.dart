@@ -88,7 +88,6 @@ export 'src/properties/painting/border_mix.dart';
 export 'src/properties/painting/border_radius_mix.dart';
 export 'src/properties/painting/border_radius_util.dart';
 export 'src/properties/painting/border_util.dart';
-export 'src/properties/painting/color_mix.dart';
 export 'src/properties/painting/color_util.dart';
 export 'src/properties/painting/decoration_image_mix.dart';
 export 'src/properties/painting/decoration_image_util.dart';

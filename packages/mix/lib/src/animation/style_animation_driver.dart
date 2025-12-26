@@ -148,12 +148,8 @@ class CurveAnimationDriver<S extends Spec<S>>
     required super.vsync,
     required super.config,
     required super.initialSpec,
-  }) : super(unbounded: false) {
-    _tween.begin = _initialSpec;
-    _tween.end = _initialSpec;
-
-    _animation = _controller.drive(_tween);
-  }
+  }) : super(unbounded: false);
+  // Parent (ImplicitAnimationDriver) already initializes _tween and _animation
 
   TweenSequence<StyleSpec<S>?> _createTweenSequence() => TweenSequence([
     if (config.delay > Duration.zero)
@@ -196,12 +192,8 @@ class SpringAnimationDriver<S extends Spec<S>>
     required super.vsync,
     required super.config,
     required super.initialSpec,
-  }) : super(unbounded: true) {
-    _tween.begin = _initialSpec;
-    _tween.end = _initialSpec;
-
-    _animation = _controller.drive(_tween);
-  }
+  }) : super(unbounded: true);
+  // Parent (ImplicitAnimationDriver) already initializes _tween and _animation
 
   @override
   Future<void> executeAnimation() async {
@@ -232,6 +224,9 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
 
   late TweenSequence<StyleSpec<S>?> _tweenSequence;
 
+  /// Stored reference to status listener for proper cleanup
+  void Function(AnimationStatus)? _statusListener;
+
   PhaseAnimationDriver({
     required super.vsync,
     required this.config,
@@ -242,6 +237,12 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   }
 
   void _setUpAnimation() {
+    // Remove old status listener if exists (prevents accumulation)
+    if (_statusListener != null) {
+      _animation.removeStatusListener(_statusListener!);
+      _statusListener = null;
+    }
+
     final specs = config.styles
         .map((e) => e.resolve(context) as StyleSpec<S>)
         .toList();
@@ -253,13 +254,14 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
 
     config.trigger.addListener(_onTriggerChanged);
 
-    // Add status listener for onEnd callback
+    // Add status listener for onEnd callback (store reference for cleanup)
     if (config.curveConfigs.last.onEnd != null) {
-      _animation.addStatusListener((status) {
+      _statusListener = (status) {
         if (status == AnimationStatus.completed) {
           config.curveConfigs.last.onEnd!();
         }
-      });
+      };
+      _animation.addStatusListener(_statusListener!);
     }
   }
 
@@ -280,7 +282,8 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
         items.add(
           TweenSequenceItem(
             tween: ConstantTween(specs[currentIndex]),
-            weight: configs[nextIndex].delay.inMilliseconds.toDouble(),
+            // Use currentIndex delay (not nextIndex) - this is the delay before this phase
+            weight: configs[currentIndex].delay.inMilliseconds.toDouble(),
           ),
         );
       }
@@ -312,6 +315,9 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
   @override
   void dispose() {
     config.trigger.removeListener(_onTriggerChanged);
+    if (_statusListener != null) {
+      _animation.removeStatusListener(_statusListener!);
+    }
     super.dispose();
   }
 
@@ -324,7 +330,8 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
 
   @override
   void updateDriver(covariant PhaseAnimationConfig config) {
-    config.trigger.removeListener(_onTriggerChanged);
+    // Remove listener from OLD config's trigger before replacing
+    this.config.trigger.removeListener(_onTriggerChanged);
     this.config = config;
     _setUpAnimation();
   }

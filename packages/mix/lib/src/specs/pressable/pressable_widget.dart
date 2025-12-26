@@ -133,12 +133,52 @@ class Pressable extends StatefulWidget {
 
 @visibleForTesting
 class PressableWidgetState extends State<Pressable> {
-  late final WidgetStatesController _controller;
+  late WidgetStatesController _controller;
+
+  /// Tracks whether we created the controller internally (and thus own it)
+  bool _ownsController = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = widget.controller ?? WidgetStatesController();
+    _initController();
+  }
+
+  void _initController() {
+    if (widget.controller != null) {
+      _controller = widget.controller!;
+      _ownsController = false;
+    } else {
+      _controller = WidgetStatesController();
+      _ownsController = true;
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant Pressable oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Handle controller changes
+    if (oldWidget.controller != widget.controller) {
+      _handleControllerChange(oldWidget);
+    }
+  }
+
+  void _handleControllerChange(Pressable oldWidget) {
+    // Dispose old internal controller if we owned it
+    if (_ownsController) {
+      _controller.dispose();
+    }
+
+    // Set up new controller
+    if (widget.controller != null) {
+      _controller = widget.controller!;
+      _ownsController = false;
+    } else {
+      // Create internal controller, preserving state from old external controller
+      _controller = WidgetStatesController(oldWidget.controller?.value ?? {});
+      _ownsController = true;
+    }
   }
 
   void _onTap() {
@@ -186,17 +226,33 @@ class PressableWidgetState extends State<Pressable> {
 
   @override
   void dispose() {
-    if (widget.controller == null) _controller.dispose();
+    if (_ownsController) _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget gestureChild = Actions(
+      actions: actions,
+      child: Focus(
+        focusNode: widget.focusNode,
+        autofocus: widget.autofocus,
+        onFocusChange: _onFocusChange,
+        onKeyEvent: widget.onKeyEvent ?? widget.onKey,
+        canRequestFocus: widget.canRequestFocus && widget.enabled,
+        child: MixInteractionDetector(
+          controller: _controller,
+          enabled: widget.enabled,
+          child: widget.child,
+        ),
+      ),
+    );
+
     Widget current = GestureDetector(
-      onTapDown: (_) => _onTapDown(),
-      onTapUp: (_) => _onTapUp(),
+      onTapDown: widget.enabled ? (_) => _onTapDown() : null,
+      onTapUp: widget.enabled ? (_) => _onTapUp() : null,
       onTap: widget.enabled && widget.onPress != null ? _onTap : null,
-      onTapCancel: () => _onTapUp(),
+      onTapCancel: widget.enabled ? () => _onTapUp() : null,
       onLongPress: widget.enabled && widget.onLongPress != null
           ? _onLongPress
           : null,
@@ -204,21 +260,7 @@ class PressableWidgetState extends State<Pressable> {
       excludeFromSemantics: widget.excludeFromSemantics,
       child: MouseRegion(
         cursor: mouseCursor,
-        child: Actions(
-          actions: actions,
-          child: Focus(
-            focusNode: widget.focusNode,
-            autofocus: widget.autofocus,
-            onFocusChange: _onFocusChange,
-            onKeyEvent: widget.onKeyEvent ?? widget.onKey,
-            canRequestFocus: widget.canRequestFocus && widget.enabled,
-            child: MixInteractionDetector(
-              controller: _controller,
-              enabled: widget.enabled,
-              child: widget.child,
-            ),
-          ),
-        ),
+        child: gestureChild,
       ),
     );
 
