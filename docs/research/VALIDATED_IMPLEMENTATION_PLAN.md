@@ -43,6 +43,31 @@ After thorough multi-agent validation, the original proposal was found to be **o
    - Already accepts `Listenable trigger` parameter
    - Already cycles through multiple phases
 
+### Expert Review Addendum (Animation System)
+
+These are small, high-leverage fixes that keep the plan simple (DRY/YAGNI) but
+avoid lifecycle bugs and unexpected motion in the current animation drivers.
+
+#### Must-fix before building effects
+1. **Fix listener removal in `PhaseAnimationDriver.updateDriver`**
+   - It currently removes the trigger listener from the *new* config, not the old one.
+   - Result: leaked listeners and multiple re-triggers across rebuilds.
+
+2. **Fix phase sequencing semantics**
+   - `_createTweenSequence` uses `configs[nextIndex]` (duration/curve) and
+     implicitly wraps last -> first, which shifts timings and adds a tail segment.
+   - This creates dead time and reverse motion (notably for `rotateWhile`).
+   - Minimal fix: treat phases as linear segments (current -> next) and use
+     `configs[currentIndex]` for that segment. Do not implicitly wrap.
+   - If wrapping is ever needed later, add an optional `wrap` flag (default false).
+
+3. **Avoid creating notifiers inside styles**
+   - `_RepeatWhileActiveTrigger` has no disposal path because styles are immutable.
+   - This will leak listeners when styles rebuild.
+   - Minimal, DRY fix: add internal repeat support to `PhaseAnimationConfig`
+     (e.g., `repeat` or `repeatWhile`) so looping does not require a custom notifier.
+   - If repeat support is deferred, skip indefinite effects in V1.
+
 #### ❌ Over-Engineering Identified
 
 1. **Sealed SymbolEffect hierarchy unnecessary**
@@ -131,7 +156,7 @@ mixin EffectStyleMixin<T extends Style<S>, S extends Spec<S>>
         WidgetModifierConfig.scale(x: scale, y: scale),
       ) as T,
       configBuilder: (phase) => CurveAnimationConfig.easeOut(
-        duration ~/ 4, // Each phase gets 1/4 of total duration
+        duration ~/ 3, // 4 phases -> 3 transitions
       ),
     );
   }
@@ -174,7 +199,7 @@ mixin EffectStyleMixin<T extends Style<S>, S extends Spec<S>>
       styleBuilder: (radians, style) => style.wrap(
         WidgetModifierConfig.rotate(radians: radians),
       ) as T,
-      configBuilder: (_) => CurveAnimationConfig.easeOut(duration ~/ 6),
+      configBuilder: (_) => CurveAnimationConfig.easeOut(duration ~/ 5),
     );
   }
 
@@ -227,57 +252,16 @@ mixin EffectStyleMixin<T extends Style<S>, S extends Spec<S>>
     required Duration phaseDuration,
     required Curve curve,
   }) {
-    final loop = _RepeatWhileActiveTrigger(active);
-    final styles = <T>[];
-    final configs = <CurveAnimationConfig>[];
-
-    for (int i = 0; i < phases.length; i++) {
-      final phase = phases[i];
-      final isLast = i == phases.length - 1;
-
-      styles.add(styleBuilder(phase, this as T));
-      configs.add(CurveAnimationConfig(
+    return phaseAnimation<P>(
+      trigger: active,
+      phases: phases,
+      styleBuilder: styleBuilder,
+      configBuilder: (_) => CurveAnimationConfig(
         duration: phaseDuration,
         curve: curve,
-        onEnd: isLast ? loop.onCycleComplete : null,
-      ));
-    }
-
-    return animate(
-      PhaseAnimationConfig<S, T>(
-        styles: styles,
-        curveConfigs: configs,
-        trigger: loop,
       ),
+      repeat: true,
     );
-  }
-}
-
-/// Helper notifier that retriggers animation cycles while active.
-///
-/// Used internally by indefinite effects (pulseWhile, rotateWhile, breatheWhile).
-/// Uses onEnd callbacks from PhaseAnimationDriver instead of Timer.periodic.
-class _RepeatWhileActiveTrigger extends ChangeNotifier {
-  final ValueListenable<bool> _source;
-
-  _RepeatWhileActiveTrigger(this._source) {
-    _source.addListener(_onSourceChanged);
-    _onSourceChanged();
-  }
-
-  void _onSourceChanged() {
-    if (_source.value) notifyListeners();
-  }
-
-  /// Called by last phase's onEnd callback to restart the cycle.
-  void onCycleComplete() {
-    if (_source.value) notifyListeners();
-  }
-
-  @override
-  void dispose() {
-    _source.removeListener(_onSourceChanged);
-    super.dispose();
   }
 }
 ```
@@ -748,6 +732,19 @@ class _GeometryMatchState extends State<GeometryMatch>
 }
 ```
 
+#### Expert Review Notes (Geometry)
+
+Small, YAGNI-friendly adjustments that reduce jitter and stale state:
+
+- **Avoid per-frame `localToGlobal` during animation**: cache `_endGeometry`
+  after the first layout pass and use it for transform math. Per-frame reads
+  can jitter because the transform affects the same measurement.
+- **Notify on unregister**: when a source disposes, notify id listeners (or
+  store `ValueNotifier<TrackedGeometry?>` per id) so targets can clear stale
+  geometry.
+- **Handle id/isSource changes**: if a widget is reused with a new id or role,
+  re-register and update listeners/controller to avoid stale references.
+
 #### Usage Example
 
 ```dart
@@ -837,7 +834,7 @@ class _ExpandableCardState extends State<ExpandableCard> {
 |-----|------|
 | 1 | Create `EffectStyleMixin` with `bounceOnChange`, `pulseWhile` |
 | 2 | Add `wiggleOnChange`, `rotateWhile`, `breatheWhile` |
-| 3 | Add `_RepeatWhileActiveNotifier` helper |
+| 3 | Add repeat support in `PhaseAnimationConfig` / driver |
 | 4 | Integrate mixin into `IconStyler`, `BoxStyler` |
 | 5 | Write tests and examples |
 
@@ -869,6 +866,9 @@ class _ExpandableCardState extends State<ExpandableCard> {
    - `export 'src/providers/geometry_match.dart';`
    - `export 'src/providers/geometry_scope.dart';`
    - `export 'src/style/mixins/effect_style_mixin.dart';`
+4. `packages/mix/lib/src/animation/style_animation_driver.dart` - Fix listener cleanup + phase sequencing
+5. `packages/mix/lib/src/animation/animation_config.dart` - Add minimal phase config flags if needed (e.g., wrap/repeat)
+6. `packages/mix/lib/src/style/mixins/animation_style_mixin.dart` - Pass through wrap/repeat options
 
 ### Total New Code
 
