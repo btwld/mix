@@ -274,6 +274,360 @@ Begin with Phase 1: Create `StylerMetadata` class by:
 Then proceed through phases sequentially, validating each phase before moving to the next.
 
 ---
+
+## CRITICAL CORRECTIONS & CLARIFICATIONS
+
+This section addresses gaps identified in the initial plan that MUST be resolved for exact-match generation.
+
+---
+
+### C1: Field-Level Override Handling (@MixableField)
+
+**Issue**: The `@MixableField` annotation exists but the plan doesn't specify how it affects generation.
+
+**Current @MixableField capabilities** (from `packages/mix_annotations/lib/src/annotations.dart`):
+```dart
+class MixableField {
+  final MixableFieldType? dto;           // DTO type override
+  final List<MixableFieldUtility>? utilities;  // Utility overrides
+  final bool isLerpable;                 // Default: true
+
+  const MixableField({this.dto, this.utilities, this.isLerpable = true});
+}
+```
+
+**How @MixableField affects generation**:
+
+| Property | Affects | Logic |
+|----------|---------|-------|
+| `isLerpable: false` | lerp() | Skip field in lerp, use `other.field` directly |
+| `dto` | Prop wrapper, resolve | Use specified DTO type instead of inferred |
+| `utilities` | MutableStyler | Use specified utility instead of inferred |
+
+**Required Addition**: The current `@MixableField` does NOT support:
+- FlagProperty `ifTrue` description
+- Diagnostic property type override
+- Merge strategy override
+
+**Proposal**: Either:
+1. Extend `@MixableField` with these properties, OR
+2. Use hardcoded curated maps for edge cases
+
+---
+
+### C2: FlagProperty ifTrue Text Resolution
+
+**Issue**: `FlagProperty` requires an `ifTrue` string, but there's no annotation for it.
+
+**Current hardcoded ifTrue strings** (from specs):
+
+| Spec | Field | ifTrue Value |
+|------|-------|--------------|
+| TextSpec | softWrap | `'wrapping at word boundaries'` |
+| ImageSpec | excludeFromSemantics | `'excluded from semantics'` |
+| ImageSpec | gaplessPlayback | `'gapless playback'` |
+| ImageSpec | isAntiAlias | `'anti-aliased'` |
+| ImageSpec | matchTextDirection | `'matches text direction'` |
+| IconSpec | applyTextScaling | `'scales with text'` |
+
+**Resolution Strategy**:
+
+**Option A: Curated Map (Recommended)**
+```dart
+const flagPropertyDescriptions = {
+  'softWrap': 'wrapping at word boundaries',
+  'excludeFromSemantics': 'excluded from semantics',
+  'gaplessPlayback': 'gapless playback',
+  'isAntiAlias': 'anti-aliased',
+  'matchTextDirection': 'matches text direction',
+  'applyTextScaling': 'scales with text',
+};
+```
+
+**Option B: Extend @MixableField**
+```dart
+@MixableField(diagnosticDescription: 'wrapping at word boundaries')
+final bool? softWrap;
+```
+
+**Option C: Derive from field name** (fallback)
+- `isAntiAlias` → `'anti-aliased'` (remove `is`, convert to description)
+- `matchTextDirection` → `'matches text direction'` (camelCase to words)
+
+**Recommendation**: Use Option A (curated map) for exact match, with Option C as fallback for unknown fields.
+
+---
+
+### C3: List Merge Semantics (CORRECTED)
+
+**Issue**: The original plan said "mergeList for Lists" which is WRONG for most cases.
+
+**Actual Pattern**:
+
+| Field Type | Declaration Example | Merge Pattern |
+|------------|---------------------|---------------|
+| `Prop<List<T>>?` | `final Prop<List<Shadow>>? $shadows;` | `MixOps.merge($shadows, other?.$shadows)` |
+| `List<T>?` (raw) | `final List<Directive<String>>? $textDirectives;` | `MixOps.mergeList($textDirectives, other?.$textDirectives)` |
+
+**Decision Logic**:
+```dart
+String getMergeCall(FieldMetadata field) {
+  if (field.isWrappedInProp) {
+    return 'MixOps.merge(\$${field.name}, other?.\$${field.name})';
+  } else if (field.isListType) {
+    return 'MixOps.mergeList(\$${field.name}, other?.\$${field.name})';
+  } else {
+    return 'MixOps.merge(\$${field.name}, other?.\$${field.name})';
+  }
+}
+```
+
+**Current raw List fields (NOT wrapped in Prop)**:
+- `TextStyler.$textDirectives` → `List<Directive<String>>?`
+
+**CRITICAL**: Always check if field type starts with `Prop<` before deciding merge strategy.
+
+---
+
+### C4: Domain Mixin Selection (Explicit Mapping)
+
+**Issue**: Mixin selection is NOT purely field-type driven. It's based on Spec purpose.
+
+**Explicit Mixin Mapping** (curated, not heuristic):
+
+| Styler | Mixins (in order) |
+|--------|-------------------|
+| BoxStyler | `Diagnosticable`, `WidgetModifierStyleMixin`, `VariantStyleMixin`, `WidgetStateVariantMixin`, `BorderStyleMixin`, `BorderRadiusStyleMixin`, `ShadowStyleMixin`, `DecorationStyleMixin`, `SpacingStyleMixin`, `AnimationStyleMixin` |
+| TextStyler | `Diagnosticable`, `WidgetModifierStyleMixin`, `VariantStyleMixin`, `WidgetStateVariantMixin`, `TextStyleMixin`, `AnimationStyleMixin` |
+| IconStyler | `Diagnosticable`, `WidgetModifierStyleMixin`, `VariantStyleMixin`, `WidgetStateVariantMixin`, `AnimationStyleMixin` |
+| ImageStyler | `Diagnosticable`, `WidgetModifierStyleMixin`, `VariantStyleMixin`, `WidgetStateVariantMixin` |
+| FlexStyler | `Diagnosticable`, `WidgetModifierStyleMixin`, `VariantStyleMixin`, `WidgetStateVariantMixin`, `FlexStyleMixin`, `AnimationStyleMixin` |
+| StackStyler | `Diagnosticable`, `WidgetModifierStyleMixin`, `VariantStyleMixin`, `WidgetStateVariantMixin`, `AnimationStyleMixin` |
+| FlexBoxStyler | `Diagnosticable`, `WidgetModifierStyleMixin`, `VariantStyleMixin`, `WidgetStateVariantMixin`, `BorderStyleMixin`, `BorderRadiusStyleMixin`, `ShadowStyleMixin`, `DecorationStyleMixin`, `SpacingStyleMixin`, `FlexStyleMixin`, `AnimationStyleMixin` |
+| StackBoxStyler | `Diagnosticable`, `WidgetModifierStyleMixin`, `VariantStyleMixin`, `WidgetStateVariantMixin`, `BorderStyleMixin`, `BorderRadiusStyleMixin`, `ShadowStyleMixin`, `DecorationStyleMixin`, `SpacingStyleMixin`, `AnimationStyleMixin` |
+
+**Required mixins (always present)**:
+1. `Diagnosticable`
+2. `WidgetModifierStyleMixin<S, Spec>`
+3. `VariantStyleMixin<S, Spec>`
+4. `WidgetStateVariantMixin<S, Spec>`
+
+**Conditional mixins** (annotation-driven or curated map):
+
+| Mixin | Trigger |
+|-------|---------|
+| `AnimationStyleMixin` | Default for most specs |
+| `SpacingStyleMixin` | Has `padding` or `margin` field |
+| `DecorationStyleMixin` | Has `decoration` field |
+| `BorderStyleMixin` | Spec exposes border decoration |
+| `BorderRadiusStyleMixin` | Spec exposes borderRadius decoration |
+| `ShadowStyleMixin` | Spec exposes boxShadow decoration |
+| `TextStyleMixin` | Has `style: TextStyle` field |
+| `FlexStyleMixin` | Has flex-related fields (`direction`, `mainAxisAlignment`, etc.) |
+
+**Recommendation**: Use a `@MixableSpec(mixins: [...])` annotation OR curated map, NOT heuristics.
+
+---
+
+### C5: Source Order Preservation
+
+**Issue**: Analyzer may return elements in different order than source file.
+
+**Strategy**:
+```dart
+// Get source offset for ordering
+List<ParameterElement> getParametersInSourceOrder(ConstructorElement ctor) {
+  final params = ctor.parameters.toList();
+  params.sort((a, b) => a.nameOffset.compareTo(b.nameOffset));
+  return params;
+}
+
+// For class fields
+List<FieldElement> getFieldsInSourceOrder(ClassElement element) {
+  final fields = element.fields.where((f) => !f.isStatic && !f.isSynthetic).toList();
+  fields.sort((a, b) => a.nameOffset.compareTo(b.nameOffset));
+  return fields;
+}
+```
+
+**Key points**:
+- Use `nameOffset` property to get source position
+- Sort by offset before processing
+- Verify with: constructor params, `props` getter, `debugFillProperties`
+
+---
+
+### C6: lerp Strategy Detection (Reliable Implementation)
+
+**Issue**: Checking "type has static lerp" via analyzer is tricky.
+
+**Implementation Strategy**:
+
+```dart
+enum LerpStrategy { interpolate, snap }
+
+class LerpResolver {
+  // Explicit known lerpable types (most reliable)
+  static const _lerpableTypes = {
+    'double', 'int', 'num',
+    'Color', 'HSVColor', 'HSLColor',
+    'Offset', 'Size', 'Rect', 'RRect',
+    'Alignment', 'FractionalOffset', 'AlignmentGeometry',
+    'EdgeInsets', 'EdgeInsetsGeometry', 'EdgeInsetsDirectional',
+    'BorderRadius', 'BorderRadiusGeometry', 'BorderRadiusDirectional',
+    'BorderSide', 'Border', 'BoxBorder', 'ShapeBorder',
+    'TextStyle', 'StrutStyle',
+    'BoxShadow', 'Shadow',
+    'BoxConstraints', 'Constraints',
+    'BoxDecoration', 'ShapeDecoration', 'Decoration',
+    'LinearGradient', 'RadialGradient', 'SweepGradient', 'Gradient',
+    'Matrix4',
+    'IconThemeData',
+    'RelativeRect',
+  };
+
+  // Known snappable types
+  static const _snappableTypes = {
+    'bool', 'String',
+    'Clip', 'Axis', 'TextAlign', 'TextDirection', 'TextBaseline',
+    'MainAxisAlignment', 'CrossAxisAlignment', 'MainAxisSize',
+    'VerticalDirection', 'TextOverflow', 'TextWidthBasis',
+    'BoxFit', 'ImageRepeat', 'FilterQuality', 'BlendMode',
+    'StackFit',
+    'ImageProvider',
+    'IconData',
+    'TextScaler',
+    'Locale',
+    'TextHeightBehavior',
+  };
+
+  LerpStrategy resolve(DartType type) {
+    final typeName = _getBaseName(type);
+
+    // 1. Check @MixableField(isLerpable: false)
+    if (hasNonLerpableAnnotation(type)) return LerpStrategy.snap;
+
+    // 2. Check explicit lists
+    if (_lerpableTypes.contains(typeName)) return LerpStrategy.interpolate;
+    if (_snappableTypes.contains(typeName)) return LerpStrategy.snap;
+
+    // 3. Check for List<LerpableType>
+    if (type.isDartCoreList) {
+      final elementType = _getListElementType(type);
+      final elementName = _getBaseName(elementType);
+      // List<Shadow>, List<BoxShadow> are lerpable
+      if ({'Shadow', 'BoxShadow'}.contains(elementName)) {
+        return LerpStrategy.interpolate;
+      }
+      // List<Directive<T>> is snappable
+      return LerpStrategy.snap;
+    }
+
+    // 4. Check if type is enum
+    if (_isEnum(type)) return LerpStrategy.snap;
+
+    // 5. Check if type is a Spec (nested specs use delegate lerp)
+    if (_isSpec(type)) return LerpStrategy.interpolate;
+
+    // 6. Default to snap for safety
+    return LerpStrategy.snap;
+  }
+}
+```
+
+---
+
+### C7: Import/Part Emission Rules
+
+**Issue**: Full file vs `.g.dart` part emission affects exact match.
+
+**Current approach**: The generator creates `.g.dart` part files.
+
+**Rules**:
+1. Generated file is a `part of` the source file
+2. Source file must have `part '{name}.g.dart';` directive
+3. Generated code does NOT include imports (uses source file imports)
+4. Use `// GENERATED CODE - DO NOT MODIFY BY HAND` header
+
+**code_builder import handling**:
+```dart
+// Don't allocate imports in part files
+final emitter = DartEmitter(
+  allocator: Allocator.none,  // No import allocation
+  useNullSafetySyntax: true,
+);
+```
+
+---
+
+### C8: typedef and static chain Generation
+
+**Issue**: These appear in all stylers but weren't explicitly mentioned.
+
+**Pattern**:
+```dart
+// Always generate typedef at top of styler file
+typedef {Name}Mix = {Name}Styler;
+
+// In styler class body, always generate static chain accessor
+static {Name}MutableStyler get chain => {Name}MutableStyler({Name}Styler());
+```
+
+**Rule**: Generate for ALL stylers, unconditionally.
+
+---
+
+### C9: Utility Accessor Curated Mapping
+
+**Issue**: Convenience accessor chains like `decoration.box.border` are not type-inferable.
+
+**Curated accessor mapping** (from hand-written files):
+
+| MutableStyler | Accessor | Chain |
+|---------------|----------|-------|
+| BoxMutableStyler | border | `decoration.box.border` |
+| BoxMutableStyler | borderRadius | `decoration.box.borderRadius` |
+| BoxMutableStyler | color | `decoration.box.color` |
+| BoxMutableStyler | shadow | `decoration.box.boxShadow` |
+| BoxMutableStyler | width | `constraints.width` |
+| BoxMutableStyler | height | `constraints.height` |
+| BoxMutableStyler | minWidth | `constraints.minWidth` |
+| BoxMutableStyler | maxWidth | `constraints.maxWidth` |
+| BoxMutableStyler | minHeight | `constraints.minHeight` |
+| BoxMutableStyler | maxHeight | `constraints.maxHeight` |
+| TextMutableStyler | fontSize | `style.fontSize` |
+| TextMutableStyler | fontWeight | `style.fontWeight` |
+| TextMutableStyler | fontFamily | `style.fontFamily` |
+| TextMutableStyler | letterSpacing | `style.letterSpacing` |
+| TextMutableStyler | wordSpacing | `style.wordSpacing` |
+| TextMutableStyler | textColor | `style.color` |
+| TextMutableStyler | height | `style.height` |
+
+**Resolution**: Use annotation `@MixableField(utilities: [...])` with `properties` to define chains, OR use curated map.
+
+---
+
+## ANSWERS TO REVIEW QUESTIONS
+
+### Q1: Where will the FlagProperty ifTrue description be sourced from?
+**A**: Curated map (see C2 above). Fallback: derive from field name by converting camelCase to sentence.
+
+### Q2: Are there non-Prop raw fields besides textDirectives that require special handling?
+**A**: Currently only `textDirectives: List<Directive<String>>?`. Check for any field NOT wrapped in `Prop<>`.
+
+### Q3: Do any existing stylers include extra methods or mixins not implied by field types?
+**A**: Yes. See C4 for explicit mixin mapping. Some stylers have mixins based on semantic purpose, not field types.
+
+### Q4: Will the generator emit full files or only part sections?
+**A**: Part files (`.g.dart`). No imports in generated code. Source file includes generated part.
+
+### Q5: Should @immutable/final class/doc comments be preserved or regenerated?
+**A**:
+- `@immutable` - Not used on specs (they're `final class`)
+- `final class` - Part of class declaration, preserved from source
+- Doc comments - Preserved from source, not regenerated
+
+---
 ---
 ---
 
