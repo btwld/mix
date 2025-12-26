@@ -63,10 +63,20 @@ final box = BoxMix().size(200, 200).padding(EdgeInsetsMix.all(16));
 
 ## Documentation
 
+**Guides:**
 - `guides/api-composition-guidelines.md` - Fluent chaining, sizing, merge patterns
+
+**Website (comprehensive docs):**
+- `website/src/content/documentation/overview/` - Introduction, getting started
+- `website/src/content/documentation/guides/styling.mdx` - Style/Styler pattern
+- `website/src/content/documentation/guides/dynamic-styling.mdx` - Variants (hover, press, dark)
+- `website/src/content/documentation/guides/design-token.mdx` - MixScope, tokens
+- `website/src/content/documentation/guides/animations.mdx` - Implicit, Phase, Keyframe
+- `website/src/content/documentation/widgets/` - Widget-specific APIs
+
+**Reference implementations:**
 - `examples/` - Interactive widget examples (Box, HBox, VBox, Text, Icon)
-- `website/` - Full documentation site (Next.js)
-- `packages/mix/lib/src/specs/box/` - Reference implementation for Spec/Style/Widget pattern
+- `packages/mix/lib/src/specs/box/` - Spec/Style/Widget pattern
 
 ## Critical Rules
 
