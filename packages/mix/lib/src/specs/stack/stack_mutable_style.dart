@@ -32,8 +32,8 @@ class StackMutableStyler extends StyleMutableBuilder<StackSpec>
   late final clipBehavior = MixUtility(mutable.clipBehavior);
 
   @Deprecated(
-    'Use direct methods like \$stack.onHovered() instead. '
-    'Note: Returns StackStyle for consistency with other utility methods like animate().',
+    'Use StackStyler().onHovered() and similar methods directly instead. '
+    'This property was deprecated after Mix v2.0.0.',
   )
   late final on = OnContextVariantUtility<StackSpec, StackStyler>(
     (v) => mutable.variants([v]),

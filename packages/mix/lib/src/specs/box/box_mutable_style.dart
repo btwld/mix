@@ -43,8 +43,8 @@ class BoxMutableStyler extends StyleMutableBuilder<BoxSpec>
   );
 
   @Deprecated(
-    'Use direct methods like \$box.onHovered() instead. '
-    'Note: Returns BoxStyle for consistency with other utility methods like animate().',
+    'Use BoxStyler().onHovered() and similar methods directly instead. '
+    'This property was deprecated after Mix v2.0.0.',
   )
   late final on = OnContextVariantUtility<BoxSpec, BoxStyler>(
     (v) => mutable.variants([v]),

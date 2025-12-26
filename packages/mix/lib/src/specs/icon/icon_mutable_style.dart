@@ -34,8 +34,8 @@ class IconMutableStyler extends StyleMutableBuilder<IconSpec>
   late final textDirection = MixUtility(mutable.textDirection);
 
   @Deprecated(
-    'Use direct methods like \$icon.onHovered() instead. '
-    'Note: Returns IconStyle for consistency with other utility methods like animate().',
+    'Use IconStyler().onHovered() and similar methods directly instead. '
+    'This property was deprecated after Mix v2.0.0.',
   )
   late final on = OnContextVariantUtility<IconSpec, IconStyler>(
     (v) => mutable.variants([v]),
