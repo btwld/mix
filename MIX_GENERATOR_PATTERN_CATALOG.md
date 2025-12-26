@@ -218,22 +218,22 @@ packages/mix_generator/test/golden/
 
 ---
 
-### Phase 1: Registries + Metadata Planning Layer
+### Phase 1: Registries + Derived Plans Layer
 
-**CRITICAL CORRECTION**: StylerMetadata/MutableMetadata are **derived plans** from Spec, NOT extractors from existing Styler classes. This avoids circular dependency.
+**CRITICAL**: StylerPlan/MutablePlan are **derived plans** from Spec + registries, NOT extractors from existing Styler classes. This avoids circular dependency.
 
 **Files to create:**
 ```
 packages/mix_generator/lib/src/core/registry/mix_type_registry.dart
 packages/mix_generator/lib/src/core/registry/utility_registry.dart
-packages/mix_generator/lib/src/core/metadata/styler_plan.dart
-packages/mix_generator/lib/src/core/metadata/mutable_plan.dart
-packages/mix_generator/lib/src/core/metadata/field_model.dart
+packages/mix_generator/lib/src/core/plans/styler_plan.dart
+packages/mix_generator/lib/src/core/plans/mutable_plan.dart
+packages/mix_generator/lib/src/core/plans/field_model.dart
 ```
 
 **Tasks:**
 
-1. **Build `MixTypeRegistry`** from `@MixableType` annotations:
+1. **Build `MixTypeRegistry`** from curated maps (or `@MixableType` scan):
    ```dart
    class MixTypeRegistry {
      // FlutterType → MixType mapping
@@ -247,16 +247,21 @@ packages/mix_generator/lib/src/core/metadata/field_model.dart
    }
    ```
 
-2. **Build `UtilityRegistry`** from `@MixableUtility` annotations:
+2. **Build `UtilityRegistry`** with callback kind enum (see C10):
    ```dart
+   /// Distinguishes utility initialization patterns
+   enum UtilityCallbackKind {
+     propMix,      // Specialized utility + Prop.mix(prop) — EdgeInsetsGeometryUtility, etc.
+     propDirect,   // Specialized utility + direct prop — ColorUtility
+     methodTearOff // MixUtility(mutable.method) — enums, Matrix4, etc.
+   }
+
    class UtilityRegistry {
-     // FlutterType → UtilityType mapping
-     final Map<String, String> utilities;
-     // Whether utility callback uses Prop.mix(prop) vs direct prop
-     final Map<String, bool> usesPropMix;
+     // FlutterType → (UtilityType, CallbackKind) mapping
+     final Map<String, (String, UtilityCallbackKind)> utilities;
 
      String? getUtility(String flutterType);
-     bool usesPropMixCallback(String flutterType);
+     UtilityCallbackKind? getCallbackKind(String flutterType);
    }
    ```
 
@@ -415,13 +420,30 @@ packages/mix_generator/test/builders/
 ## VALIDATION APPROACH
 
 ### Golden File Testing
+
+**Updated strategy** (per Phase 0): Compare generated `.g.dart` to expected fixtures, not hand-written files.
+
 ```dart
 // test/golden/box_spec_test.dart
-test('BoxSpec generated code matches hand-written', () {
-  final generated = generateSpecCode(BoxSpecMetadata);
-  final expected = File('packages/mix/lib/src/specs/box/box_spec.dart').readAsStringSync();
-  expect(generated, equalsIgnoringWhitespace(expected));
+test('BoxSpec generated code matches expected fixture', () {
+  // 1. Run generator on stub input
+  final generated = runGenerator('test/golden/fixtures/box_spec_input.dart');
+
+  // 2. Compare to expected .g.dart fixture
+  final expected = File('test/golden/expected/box_spec.g.dart').readAsStringSync();
+
+  expect(
+    _normalize(generated),
+    equals(_normalize(expected)),
+  );
 });
+
+String _normalize(String code) {
+  // Strip header, format, normalize newlines
+  return DartFormatter().format(
+    code.replaceFirst(RegExp(r'// GENERATED CODE.*\n'), '')
+  ).trim();
+}
 ```
 
 ### Incremental Validation
@@ -479,7 +501,10 @@ test('BoxSpec generated code matches hand-written', () {
 
 ## IMPORTANT CONSTRAINTS
 
-1. **Do NOT modify hand-written Spec/Styler files** - they are the source of truth
+1. **Hand-written files serve TWO roles**:
+   - **Current**: Full implementations serving as **golden references** for pattern matching
+   - **Future**: Will become **stubs** with `part 'x.g.dart';` and `with _$XMethods` added (Phase 0 requirement)
+   - **Clarification**: "Do not modify" means don't change patterns/logic — adding `part`/`with` boilerplate is required
 2. **Generated code must be identical** to hand-written code (ignoring formatting)
 3. **No backward compatibility required** - this is a from-scratch rewrite
 4. **Use code_builder for complex patterns** (class declarations, method signatures); string templates OK for simple repetitive patterns (see C15)
@@ -838,38 +863,55 @@ static {Name}MutableStyler get chain => {Name}MutableStyler({Name}Styler());
 
 ### C10: Utility Callback Pattern Decision Rule
 
-**Issue**: Two different utility patterns exist, need explicit decision rule.
+**Issue**: Three different utility patterns exist, need explicit decision rule with enum.
 
-**Pattern A: Specialized Utility with Prop.mix callback**
+**UtilityCallbackKind enum** (defined in Phase 1):
 ```dart
-// For types with corresponding Mix types (EdgeInsetsGeometryMix, DecorationMix, etc.)
+enum UtilityCallbackKind {
+  propMix,      // Specialized utility + Prop.mix(prop)
+  propDirect,   // Specialized utility + direct prop (e.g., ColorUtility)
+  methodTearOff // MixUtility(mutable.method)
+}
+```
+
+**Pattern A: propMix** — Specialized Utility with `Prop.mix(prop)`
+```dart
+// For types with corresponding Mix types that need Prop.mix wrapping
 late final padding = EdgeInsetsGeometryUtility<BoxStyler>(
   (prop) => mutable.merge(BoxStyler.create(padding: Prop.mix(prop))),
 );
 ```
 
-**Pattern B: MixUtility with method reference**
+**Pattern B: propDirect** — Specialized Utility with direct prop
 ```dart
-// For simple types (enums, scalars, no Mix type)
+// For types where prop is already the resolved type (no Prop.mix needed)
+late final color = ColorUtility<BoxStyler>(
+  (prop) => mutable.merge(BoxStyler.create(color: prop)),  // NOT Prop.mix(prop)
+);
+```
+
+**Pattern C: methodTearOff** — MixUtility with method reference
+```dart
+// For simple types (enums, scalars, no specialized utility)
 late final clipBehavior = MixUtility(mutable.clipBehavior);
 late final transform = MixUtility(mutable.transform);
 ```
 
-**Decision Rule**:
+**Decision Rule with CallbackKind**:
 
-| Field Type | Has Mix Type? | Utility Pattern |
-|------------|---------------|-----------------|
-| `EdgeInsetsGeometry` | Yes (`EdgeInsetsGeometryMix`) | `EdgeInsetsGeometryUtility<S>((prop) => mutable.merge(Styler.create(field: Prop.mix(prop))))` |
-| `BoxConstraints` | Yes (`BoxConstraintsMix`) | `BoxConstraintsUtility<S>((prop) => ...)` |
-| `Decoration` | Yes (`DecorationMix`) | `DecorationUtility<S>((prop) => ...)` |
-| `TextStyle` | Yes (`TextStyleMix`) | `TextStyleUtility<S>((prop) => ...)` |
-| `Color` | Yes (`ColorMix`) | `ColorUtility<S>((prop) => mutable.merge(Styler.create(field: prop)))` |
-| `Clip` (enum) | No | `MixUtility(mutable.clipBehavior)` |
-| `Axis` (enum) | No | `MixUtility(mutable.direction)` |
-| `Matrix4` | No | `MixUtility(mutable.transform)` |
-| `AlignmentGeometry` | No (uses direct) | `MixUtility(mutable.alignment)` |
+| Field Type | Utility | CallbackKind | Code Pattern |
+|------------|---------|--------------|--------------|
+| `EdgeInsetsGeometry` | `EdgeInsetsGeometryUtility` | `propMix` | `Prop.mix(prop)` |
+| `BoxConstraints` | `BoxConstraintsUtility` | `propMix` | `Prop.mix(prop)` |
+| `Decoration` | `DecorationUtility` | `propMix` | `Prop.mix(prop)` |
+| `TextStyle` | `TextStyleUtility` | `propMix` | `Prop.mix(prop)` |
+| `Color` | `ColorUtility` | `propDirect` | `prop` (no wrap) |
+| `Clip` (enum) | `MixUtility` | `methodTearOff` | `mutable.clipBehavior` |
+| `Axis` (enum) | `MixUtility` | `methodTearOff` | `mutable.direction` |
+| `Matrix4` | `MixUtility` | `methodTearOff` | `mutable.transform` |
+| `AlignmentGeometry` | `MixUtility` | `methodTearOff` | `mutable.alignment` |
 
-**Note**: `ColorUtility` uses `prop` directly (not `Prop.mix(prop)`) because Color is already a simple resolved type.
+**Key distinction**: `propDirect` vs `propMix` — ColorUtility uses `prop` directly because Color is already the resolved type, not a Mix type that needs unwrapping.
 
 ---
 
@@ -885,6 +927,63 @@ late final transform = MixUtility(mutable.transform);
 | Nested Spec types | FlexBoxSpec, StackBoxSpec | Contains `BoxSpec` and `FlexSpec`/`StackSpec`. Lerp delegates to nested `.lerp()`. |
 | `ImageStyler` | No AnimationStyleMixin | Only styler without AnimationStyleMixin in mixin list. |
 | Composite MutableStylers | FlexBoxMutableStyler, StackBoxMutableStyler | Have both box utilities AND flex/stack utilities with prefixed names to avoid collision. |
+
+**Required fixture test: textDirectives pattern** (must be one of the first tests):
+
+```dart
+// test/golden/fixtures/text_spec_input.dart (stub with raw List field)
+@MixableSpec()
+final class TextSpec extends Spec<TextSpec>
+    with Diagnosticable, _$TextSpecMethods {
+  final List<Directive<String>>? textDirectives;  // Raw List, NOT Prop wrapped
+  const TextSpec({this.textDirectives});
+}
+
+// Expected behaviors to verify in test/golden/expected/text_spec.g.dart:
+
+// 1. Styler field: raw List, NOT Prop<List>
+class TextStyler {
+  final List<Directive<String>>? $textDirectives;  // NOT Prop<List<...>>?
+}
+
+// 2. Styler merge: uses MixOps.mergeList, NOT MixOps.merge
+@override
+TextStyler merge(TextStyler? other) {
+  return TextStyler.create(
+    textDirectives: MixOps.mergeList($textDirectives, other?.$textDirectives),
+  );
+}
+
+// 3. Styler resolve: pass-through, NOT MixOps.resolve
+@override
+StyleSpec<TextSpec> resolve(BuildContext context) {
+  return StyleSpec(
+    spec: TextSpec(textDirectives: $textDirectives),  // Direct assignment
+  );
+}
+
+// 4. Diagnostics label: 'directives', NOT 'textDirectives' (see C18)
+..add(DiagnosticsProperty('directives', $textDirectives));
+```
+
+**Test assertions**:
+```dart
+test('textDirectives uses raw List pattern', () {
+  final generated = runGenerator('test/golden/fixtures/text_spec_input.dart');
+
+  // Verify NOT wrapped in Prop
+  expect(generated, isNot(contains('Prop<List<Directive<String>>>')));
+
+  // Verify uses mergeList
+  expect(generated, contains('MixOps.mergeList(\$textDirectives'));
+
+  // Verify direct pass-through in resolve
+  expect(generated, contains('textDirectives: \$textDirectives'));
+
+  // Verify diagnostic label alias
+  expect(generated, contains("DiagnosticsProperty('directives'"));
+});
+```
 
 ---
 
@@ -935,21 +1034,14 @@ class GeneratorException implements Exception {
 3. **Ignore trailing newlines** - Normalize to single trailing newline
 4. **Keep import order** - Don't normalize imports (they should match exactly)
 
-**Test structure**:
+**Test structure** (per Phase 0 golden strategy):
 ```dart
-test('BoxStyler generation matches hand-written', () {
-  // Input: BoxSpec class with @MixableSpec annotation
-  final input = '''
-    @MixableSpec()
-    final class BoxSpec extends Spec<BoxSpec> { ... }
-  ''';
+test('BoxSpec .g.dart matches expected fixture', () {
+  // 1. Run full generator on stub input
+  final generated = runGenerator('test/golden/fixtures/box_spec_input.dart');
 
-  // Generate
-  final generated = StylerBuilder().build(BoxSpecMetadata.fromSource(input));
-
-  // Compare (normalized)
-  final expected = File('packages/mix/lib/src/specs/box/box_style.dart')
-      .readAsStringSync();
+  // 2. Compare to expected .g.dart fixture (contains mixin + Styler + MutableStyler)
+  final expected = File('test/golden/expected/box_spec.g.dart').readAsStringSync();
 
   expect(
     _normalize(generated),
@@ -958,7 +1050,10 @@ test('BoxStyler generation matches hand-written', () {
 });
 
 String _normalize(String code) {
-  return DartFormatter().format(code).trim();
+  // Strip header, format, normalize
+  return DartFormatter().format(
+    code.replaceFirst(RegExp(r'// GENERATED CODE.*\n'), '')
+  ).trim();
 }
 ```
 
@@ -1220,10 +1315,15 @@ const mixTypeMap = {
 };
 
 const utilityMap = {
-  'EdgeInsetsGeometry': ('EdgeInsetsGeometryUtility', true),  // (utility, usesPropMix)
-  'BoxConstraints': ('BoxConstraintsUtility', true),
-  'Decoration': ('DecorationUtility', true),
-  'Clip': ('MixUtility', false),
+  // (utility, callbackKind) — see C10 for enum definition
+  'EdgeInsetsGeometry': ('EdgeInsetsGeometryUtility', UtilityCallbackKind.propMix),
+  'BoxConstraints': ('BoxConstraintsUtility', UtilityCallbackKind.propMix),
+  'Decoration': ('DecorationUtility', UtilityCallbackKind.propMix),
+  'TextStyle': ('TextStyleUtility', UtilityCallbackKind.propMix),
+  'Color': ('ColorUtility', UtilityCallbackKind.propDirect),  // direct prop, not Prop.mix
+  'Clip': ('MixUtility', UtilityCallbackKind.methodTearOff),
+  'Axis': ('MixUtility', UtilityCallbackKind.methodTearOff),
+  'Matrix4': ('MixUtility', UtilityCallbackKind.methodTearOff),
   // ...
 };
 ```
