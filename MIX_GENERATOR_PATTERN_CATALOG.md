@@ -129,9 +129,12 @@ mixin _$BoxSpecMethods on Spec<BoxSpec>, Diagnosticable {
 ```
 
 **Why this works**:
-- Mixins with `on Spec<BoxSpec>` can override abstract members from the superclass
-- The mixin declares abstract getters for fields, which the class satisfies via its `final` fields
+- Mixins with `on Spec<BoxSpec>, Diagnosticable` can override abstract members from the superclass
+- The mixin declares abstract getters (e.g., `AlignmentGeometry? get alignment;`) to specify expected fields
+- The class's `final` fields automatically provide implementations for these getters — no explicit implementation needed
 - Standard `source_gen` / `build_runner` model — one `.g.dart` per input library
+
+**Note on abstract getters**: The generated mixin declares abstract getters like `AlignmentGeometry? get alignment;`. When the Spec class has `final AlignmentGeometry? alignment;`, Dart automatically synthesizes a getter that satisfies the mixin's abstract declaration. This is intentional — it allows the mixin to reference fields without knowing their implementation details.
 
 ---
 
@@ -318,9 +321,10 @@ packages/mix_generator/lib/src/core/plans/field_model.dart
    ```dart
    /// Distinguishes utility initialization patterns
    enum UtilityCallbackKind {
-     propMix,      // Specialized utility + Prop.mix(prop) — EdgeInsetsGeometryUtility, etc.
-     propDirect,   // Specialized utility + direct prop — ColorUtility
-     methodTearOff // MixUtility(mutable.method) — enums, Matrix4, etc.
+     propMix,            // Specialized utility + Prop.mix(prop) — EdgeInsetsGeometryUtility, etc.
+     propDirect,         // Specialized utility + direct prop — ColorUtility (IconStyler)
+     methodTearOff,      // MixUtility(mutable.method) — enums, Matrix4, etc.
+     convenienceAccessor // Delegates to nested utility — BoxMutableStyler.color → decoration.box.color
    }
 
    class UtilityRegistry {
@@ -426,7 +430,20 @@ packages/mix_generator/lib/src/core/styler/styler_builder.dart
 5. Generate `resolve()` method (calls MixOps.resolve per field)
 6. Generate `merge()` method (calls MixOps.merge per field)
 7. Generate `debugFillProperties()` for Styler (all DiagnosticsProperty, excludes base fields)
-8. Generate `props` getter with `$`-prefixed fields only (base fields handled by super, see C19)
+8. Generate `props` getter with ALL `$`-prefixed fields INCLUDING base fields (see C19)
+9. Generate `call()` method for widget-creating Stylers
+
+**call() method pattern** (for widget-creating Stylers):
+```dart
+/// Returns a {WidgetName} widget with optional key and child.
+{WidgetName} call({Key? key, Widget? child}) {
+  return {WidgetName}(key: key, style: this, child: child);
+}
+```
+- BoxStyler → `Box call({Key? key, Widget? child})`
+- TextStyler → `StyledText call({Key? key, required String text})`
+- IconStyler → `StyledIcon call({Key? key, required IconData icon})`
+- Curated map determines which Stylers have this method and with what signature
 
 **Setter generation rule**:
 - Generate a setter for every field that appears in the public constructor
@@ -746,10 +763,28 @@ String getMergeCall(FieldMetadata field) {
 | StackBoxStyler | `Diagnosticable`, `WidgetModifierStyleMixin`, `VariantStyleMixin`, `WidgetStateVariantMixin`, `BorderStyleMixin`, `BorderRadiusStyleMixin`, `ShadowStyleMixin`, `DecorationStyleMixin`, `SpacingStyleMixin`, `AnimationStyleMixin` |
 
 **Required mixins (always present)**:
-1. `Diagnosticable`
-2. `WidgetModifierStyleMixin<S, Spec>`
-3. `VariantStyleMixin<S, Spec>`
-4. `WidgetStateVariantMixin<S, Spec>`
+1. `Diagnosticable` — no type params
+2. `WidgetModifierStyleMixin<S, Spec>` — two type params: `<{Name}Styler, {Name}Spec>`
+3. `VariantStyleMixin<S, Spec>` — two type params: `<{Name}Styler, {Name}Spec>`
+4. `WidgetStateVariantMixin<S, Spec>` — two type params: `<{Name}Styler, {Name}Spec>`
+
+**Mixin generic parameter patterns**:
+
+| Mixin Type | Generic Params | Example |
+|------------|----------------|---------|
+| `WidgetModifierStyleMixin` | `<S, Spec>` | `WidgetModifierStyleMixin<BoxStyler, BoxSpec>` |
+| `VariantStyleMixin` | `<S, Spec>` | `VariantStyleMixin<BoxStyler, BoxSpec>` |
+| `WidgetStateVariantMixin` | `<S, Spec>` | `WidgetStateVariantMixin<BoxStyler, BoxSpec>` |
+| `AnimationStyleMixin` | `<S, Spec>` | `AnimationStyleMixin<BoxStyler, BoxSpec>` |
+| `SpacingStyleMixin` | `<S>` | `SpacingStyleMixin<BoxStyler>` |
+| `DecorationStyleMixin` | `<S>` | `DecorationStyleMixin<BoxStyler>` |
+| `BorderStyleMixin` | `<S>` | `BorderStyleMixin<BoxStyler>` |
+| `BorderRadiusStyleMixin` | `<S>` | `BorderRadiusStyleMixin<BoxStyler>` |
+| `ShadowStyleMixin` | `<S>` | `ShadowStyleMixin<BoxStyler>` |
+| `TextStyleMixin` | `<S>` | `TextStyleMixin<TextStyler>` |
+| `FlexStyleMixin` | `<S>` | `FlexStyleMixin<FlexStyler>` |
+| `TransformStyleMixin` | `<S>` | `TransformStyleMixin<BoxStyler>` |
+| `ConstraintStyleMixin` | `<S>` | `ConstraintStyleMixin<BoxStyler>` |
 
 **Conditional mixins** (annotation-driven or curated map):
 
@@ -763,6 +798,8 @@ String getMergeCall(FieldMetadata field) {
 | `ShadowStyleMixin` | Spec exposes boxShadow decoration |
 | `TextStyleMixin` | Has `style: TextStyle` field |
 | `FlexStyleMixin` | Has flex-related fields (`direction`, `mainAxisAlignment`, etc.) |
+| `TransformStyleMixin` | Has `transform` field |
+| `ConstraintStyleMixin` | Has `constraints` field |
 
 **Recommendation**: Use a `@MixableSpec(mixins: [...])` annotation OR curated map, NOT heuristics.
 
@@ -953,9 +990,10 @@ static {Name}MutableStyler get chain => {Name}MutableStyler({Name}Styler());
 **UtilityCallbackKind enum** (defined in Phase 1):
 ```dart
 enum UtilityCallbackKind {
-  propMix,      // Specialized utility + Prop.mix(prop)
-  propDirect,   // Specialized utility + direct prop (e.g., ColorUtility)
-  methodTearOff // MixUtility(mutable.method)
+  propMix,            // Specialized utility + Prop.mix(prop)
+  propDirect,         // Specialized utility + direct prop (e.g., ColorUtility for IconStyler)
+  methodTearOff,      // MixUtility(mutable.method)
+  convenienceAccessor // Delegates to nested utility (e.g., BoxMutableStyler.color → decoration.box.color)
 }
 ```
 
@@ -970,8 +1008,9 @@ late final padding = EdgeInsetsGeometryUtility<BoxStyler>(
 **Pattern B: propDirect** — Specialized Utility with direct prop
 ```dart
 // For types where prop is already the resolved type (no Prop.mix needed)
-late final color = ColorUtility<BoxStyler>(
-  (prop) => mutable.merge(BoxStyler.create(color: prop)),  // NOT Prop.mix(prop)
+// Example: IconMutableStyler has direct color field
+late final color = ColorUtility<IconStyler>(
+  (prop) => mutable.merge(IconStyler.create(color: prop)),  // NOT Prop.mix(prop)
 );
 ```
 
@@ -982,21 +1021,33 @@ late final clipBehavior = MixUtility(mutable.clipBehavior);
 late final transform = MixUtility(mutable.transform);
 ```
 
+**Pattern D: convenienceAccessor** — Delegates to nested utility chain
+```dart
+// For fields accessible via nested utility (NOT a direct utility initialization)
+// Example: BoxMutableStyler.color delegates to decoration.box.color
+late final color = decoration.box.color;  // NOT ColorUtility<BoxStyler>(...)
+```
+
+**IMPORTANT**: BoxMutableStyler does NOT have `propDirect` color. Its `color` is a convenience accessor to `decoration.box.color`. Only specs with direct color fields (like IconSpec) use `propDirect` pattern.
+
 **Decision Rule with CallbackKind**:
 
-| Field Type | Utility | CallbackKind | Code Pattern |
-|------------|---------|--------------|--------------|
-| `EdgeInsetsGeometry` | `EdgeInsetsGeometryUtility` | `propMix` | `Prop.mix(prop)` |
-| `BoxConstraints` | `BoxConstraintsUtility` | `propMix` | `Prop.mix(prop)` |
-| `Decoration` | `DecorationUtility` | `propMix` | `Prop.mix(prop)` |
-| `TextStyle` | `TextStyleUtility` | `propMix` | `Prop.mix(prop)` |
-| `Color` | `ColorUtility` | `propDirect` | `prop` (no wrap) |
-| `Clip` (enum) | `MixUtility` | `methodTearOff` | `mutable.clipBehavior` |
-| `Axis` (enum) | `MixUtility` | `methodTearOff` | `mutable.direction` |
-| `Matrix4` | `MixUtility` | `methodTearOff` | `mutable.transform` |
-| `AlignmentGeometry` | `MixUtility` | `methodTearOff` | `mutable.alignment` |
+| Field Type | Utility | CallbackKind | Code Pattern | Example |
+|------------|---------|--------------|--------------|---------|
+| `EdgeInsetsGeometry` | `EdgeInsetsGeometryUtility` | `propMix` | `Prop.mix(prop)` | BoxMutableStyler.padding |
+| `BoxConstraints` | `BoxConstraintsUtility` | `propMix` | `Prop.mix(prop)` | BoxMutableStyler.constraints |
+| `Decoration` | `DecorationUtility` | `propMix` | `Prop.mix(prop)` | BoxMutableStyler.decoration |
+| `TextStyle` | `TextStyleUtility` | `propMix` | `Prop.mix(prop)` | TextMutableStyler.style |
+| `Color` (direct field) | `ColorUtility` | `propDirect` | `prop` (no wrap) | IconMutableStyler.color |
+| `Color` (via decorator) | N/A | `convenienceAccessor` | `decoration.box.color` | BoxMutableStyler.color |
+| `Clip` (enum) | `MixUtility` | `methodTearOff` | `mutable.clipBehavior` | BoxMutableStyler.clipBehavior |
+| `Axis` (enum) | `MixUtility` | `methodTearOff` | `mutable.direction` | FlexMutableStyler.direction |
+| `Matrix4` | `MixUtility` | `methodTearOff` | `mutable.transform` | BoxMutableStyler.transform |
+| `AlignmentGeometry` | `MixUtility` | `methodTearOff` | `mutable.alignment` | BoxMutableStyler.alignment |
 
-**Key distinction**: `propDirect` vs `propMix` — ColorUtility uses `prop` directly because Color is already the resolved type, not a Mix type that needs unwrapping.
+**Key distinctions**:
+- `propDirect` vs `propMix` — ColorUtility uses `prop` directly (no Mix type wrapper needed)
+- `convenienceAccessor` — field accessed via nested utility chain, not direct initialization
 
 ---
 
@@ -1382,14 +1433,11 @@ This ensures API consistency — `textDirectives` internally maps to `directives
 
 ### C19: Styler props Base-Fields Rule (Golden-Confirmed)
 
-**Issue**: Contradiction between "include base fields" and "base fields NOT included".
+**Issue**: Initial analysis was WRONG. Actual BoxStyler DOES include base fields.
 
-**Resolution**: Verify against actual BoxStyler and lock with golden test.
-
-**Expected rule** (to be confirmed via golden test):
+**Verified rule** (from actual BoxStyler:284):
 ```dart
-// Styler props does NOT include base fields ($animation, $modifier, $variants)
-// Base fields are handled by Style superclass or are intentionally excluded
+// Styler props DOES include base fields ($animation, $modifier, $variants)
 @override
 List<Object?> get props => [
   $alignment,
@@ -1397,18 +1445,23 @@ List<Object?> get props => [
   $margin,
   $constraints,
   $decoration,
-  $clipBehavior,
+  $foregroundDecoration,
   $transform,
-  // NO: $animation, $modifier, $variants
+  $transformAlignment,
+  $clipBehavior,
+  $animation,     // ← BASE FIELD INCLUDED
+  $modifier,      // ← BASE FIELD INCLUDED
+  $variants,      // ← BASE FIELD INCLUDED
 ];
 ```
 
 **Golden test to lock behavior**:
 ```dart
-test('BoxStyler props excludes base fields', () {
-  final props = BoxStyler().props;
-  expect(props, isNot(contains(isA<AnimationConfig>())));
-  expect(props, isNot(contains(isA<WidgetModifierConfig>())));
+test('BoxStyler props includes ALL fields including base fields', () {
+  final styler = BoxStyler(animation: CurveAnimationConfig.standard());
+  final props = styler.props;
+  // Base fields ARE included - verify by checking field count matches
+  expect(props.length, equals(12)); // 9 domain + 3 base
 });
 ```
 
@@ -1541,20 +1594,30 @@ test('unknown type falls back to MixUtility', () {
 
 ### C22: Composite Spec Generation Rules
 
-**Issue**: FlexBoxSpec/StackBoxSpec contain nested BoxSpec and FlexSpec/StackSpec.
+**Issue**: FlexBoxSpec/StackBoxSpec contain nested specs.
+
+**CRITICAL**: Nested specs are `StyleSpec<T>`, NOT `T` directly!
+
+From actual FlexBoxSpec:
+```dart
+final class FlexBoxSpec extends Spec<FlexBoxSpec> {
+  final StyleSpec<BoxSpec>? box;   // ← NOT BoxSpec, but StyleSpec<BoxSpec>
+  final StyleSpec<FlexSpec>? flex; // ← NOT FlexSpec, but StyleSpec<FlexSpec>
+  // ...
+}
+```
 
 **Handling rules**:
 
 **1. Nested Spec fields in lerp**:
 ```dart
-// FlexBoxSpec contains BoxSpec and FlexSpec as composed properties
-// Lerp delegates to nested spec's lerp method
+// StyleSpec<T> has its own lerp method
 @override
 FlexBoxSpec lerp(FlexBoxSpec? other, double t) {
   return FlexBoxSpec(
-    // Nested specs use their own lerp
-    box: box?.lerp(other?.box, t) ?? other?.box,
-    flex: flex?.lerp(other?.flex, t) ?? other?.flex,
+    // Uses StyleSpec.lerp, NOT BoxSpec.lerp directly
+    box: box?.lerp(other?.box, t),  // StyleSpec<BoxSpec>.lerp
+    flex: flex?.lerp(other?.flex, t), // StyleSpec<FlexSpec>.lerp
   );
 }
 ```
@@ -1583,14 +1646,21 @@ class FlexBoxMutableStyler {
 ```dart
 const compositeSpecs = {
   'FlexBoxSpec': CompositeSpec(
-    nestedSpecs: ['BoxSpec', 'FlexSpec'],
+    // Fields are StyleSpec<T>, not T directly
+    nestedFields: {
+      'box': 'StyleSpec<BoxSpec>',
+      'flex': 'StyleSpec<FlexSpec>',
+    },
     mutableAccessors: {
       'box': 'BoxMutableStyler',
       'flex': 'FlexMutableStyler',
     },
   ),
   'StackBoxSpec': CompositeSpec(
-    nestedSpecs: ['BoxSpec', 'StackSpec'],
+    nestedFields: {
+      'box': 'StyleSpec<BoxSpec>',
+      'stack': 'StyleSpec<StackSpec>',
+    },
     mutableAccessors: {
       'box': 'BoxMutableStyler',
       'stack': 'StackMutableStyler',
@@ -1651,15 +1721,25 @@ test('all known bool fields have FlagProperty descriptions', () {
 
 **Issue**: Multiple places showed inconsistent lerp patterns for nested Specs.
 
-**Locked rule**: For nested Spec fields (e.g., `BoxSpec` inside `FlexBoxSpec`), the lerp pattern is:
+**Two patterns exist depending on field type**:
 
+**Pattern A: StyleSpec<T> fields** (composite specs like FlexBoxSpec):
+```dart
+// StyleSpec.lerp handles null internally
+box: box?.lerp(other?.box, t),  // NO ?? fallback needed
+flex: flex?.lerp(other?.flex, t),
+```
+
+**Pattern B: Direct Spec fields** (hypothetical, if a Spec directly contains another Spec):
 ```dart
 field: field?.lerp(other?.field, t) ?? other?.field,
 ```
 
-**Translation**: "If this instance has a nested spec, lerp it toward the other's nested spec. If this instance doesn't have one, take the other's nested spec directly."
+**Translation of Pattern B**: "If this instance has a nested spec, lerp it toward the other's. If this instance doesn't have one, take the other's directly."
 
-**Why this pattern**:
+**Current codebase status**: FlexBoxSpec/StackBoxSpec use `StyleSpec<T>` (Pattern A), not direct Spec references (Pattern B).
+
+**Why Pattern A is simpler**:
 - Handles null on either side correctly
 - When `this.field` is null, we take `other?.field` as-is (snap behavior)
 - When `this.field` is non-null but `other?.field` is null, `lerp(null, t)` returns `this.field` (the nested spec's lerp handles this)
@@ -2039,6 +2119,25 @@ const {Name}Styler.create({
 | `List<ShadowMix>?` | `Prop.mix(ShadowListMix(value))` |
 | `List<Directive<String>>?` | Pass through (no wrapper) |
 
+**IconStyler shadows pattern** (List of Mix types):
+```dart
+// Field declaration
+final Prop<List<Shadow>>? $shadows;
+
+// Internal constructor (.create)
+const IconStyler.create({Prop<List<Shadow>>? shadows, ...})
+    : $shadows = shadows, ...;
+
+// Public constructor (takes List<ShadowMix>)
+IconStyler({List<ShadowMix>? shadows, ...})
+    : this.create(
+        shadows: shadows != null ? Prop.mix(ShadowListMix(shadows)) : null,
+        ...
+      );
+```
+
+This pattern wraps `List<TMix>` in `Prop.mix(TListMix(...))` for proper merge semantics.
+
 ### 2.4 Setter Method Pattern
 
 ```dart
@@ -2144,7 +2243,8 @@ void debugFillProperties(DiagnosticPropertiesBuilder properties) {
 |--------|--------------|----------------|
 | Property type | Type-specific (ColorProperty, IntProperty, etc.) | **Always `DiagnosticsProperty`** |
 | Field reference | `fieldName` (direct) | `$fieldName` (Prop wrapper) |
-| Base fields | N/A | **NOT included** (no animation, modifier, variants) |
+| Base fields in debugFillProperties | N/A | **NOT included** (animation, modifier, variants excluded) |
+| Base fields in props | N/A | **INCLUDED** (see C19) |
 | String name | Matches field name | Matches field name (without `$`) |
 
 **Examples from codebase**:
@@ -2174,14 +2274,16 @@ List<Object?> get props => [
   $field1,
   $field2,
   // ... all $-prefixed domain fields in declaration order
-  // EXCLUDES: $animation, $modifier, $variants (base fields)
+  $animation,   // ← BASE FIELD INCLUDED
+  $modifier,    // ← BASE FIELD INCLUDED
+  $variants,    // ← BASE FIELD INCLUDED
 ];
 ```
 
-**Why base fields are excluded**:
-- Base fields (`$animation`, `$modifier`, `$variants`) are inherited from `Style` superclass
-- Equality comparison should focus on domain-specific fields
-- Verified via golden test against BoxStyler.props
+**Base fields ARE included**:
+- Verified against actual BoxStyler.props which includes `$animation`, `$modifier`, `$variants`
+- All fields declared in the Styler class are included for complete equality checking
+- See C19 for golden test
 
 ---
 
@@ -2446,10 +2548,29 @@ SNAPPABLE (use MixOps.lerpSnap):
 | `double` | `DoubleProperty` |
 | `int` | `IntProperty` |
 | `String` | `StringProperty` |
-| `bool` | `FlagProperty` (with ifTrue) |
-| `enum` | `EnumProperty<T>` |
+| `bool` | `FlagProperty` (with ifTrue from curated map) |
+| `enum` (any) | `EnumProperty<T>` |
 | `List<T>` | `IterableProperty<T>` |
+| `StrutStyle` | `DiagnosticsProperty` |
+| `TextScaler` | `DiagnosticsProperty` |
+| `TextHeightBehavior` | `DiagnosticsProperty` |
+| `Locale` | `DiagnosticsProperty` |
+| `Rect` | `DiagnosticsProperty` |
+| `IconData` | `DiagnosticsProperty` |
+| `ImageProvider<Object>` | `DiagnosticsProperty` |
+| `EdgeInsetsGeometry` | `DiagnosticsProperty` |
+| `AlignmentGeometry` | `DiagnosticsProperty` |
+| `BoxConstraints` | `DiagnosticsProperty` |
+| `Decoration` | `DiagnosticsProperty` |
+| `Matrix4` | `DiagnosticsProperty` |
 | other | `DiagnosticsProperty` |
+
+**Decision rule**:
+1. Check for specialized property (`Color` → `ColorProperty`, etc.)
+2. Check if enum → `EnumProperty<T>`
+3. Check if `bool` → `FlagProperty` with ifTrue from curated map
+4. Check if `List<T>` → `IterableProperty<T>`
+5. Default → `DiagnosticsProperty`
 
 ---
 
