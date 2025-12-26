@@ -100,9 +100,9 @@ import 'widget_modifier_style_mixin.dart';
 /// and wrap() are available.
 ///
 /// V1 Limitations:
-/// - Only one effect per style (last effect wins if multiple applied)
-/// - Indefinite effects loop via onEnd callbacks (no Timer)
+/// - Only one effect per style (last wins)
 /// - Rapid triggers restart animation from beginning
+/// - Indefinite effects loop via onEnd callbacks (no Timer.periodic)
 mixin EffectStyleMixin<T extends Style<S>, S extends Spec<S>>
     on Style<S>, WidgetModifierStyleMixin<T, S>, AnimationStyleMixin<T, S> {
 
@@ -155,10 +155,8 @@ mixin EffectStyleMixin<T extends Style<S>, S extends Spec<S>>
       styleBuilder: (opacity, style) => style.wrap(
         WidgetModifierConfig.opacity(opacity),
       ) as T,
-      configBuilder: (_, isLast, onEnd) => CurveAnimationConfig.easeInOut(
-        duration ~/ 2,
-        onEnd: isLast ? onEnd : null,
-      ),
+      phaseDuration: duration ~/ 2,
+      curve: Curves.easeInOut,
     );
   }
 
@@ -183,6 +181,7 @@ mixin EffectStyleMixin<T extends Style<S>, S extends Spec<S>>
   /// Rotate continuously while active.
   ///
   /// Spins the widget continuously while [trigger] is true.
+  /// Loop is visually seamless since 2π radians = 0 radians.
   T rotateWhile({
     required ValueListenable<bool> trigger,
     Duration revolutionDuration = const Duration(seconds: 1),
@@ -193,12 +192,8 @@ mixin EffectStyleMixin<T extends Style<S>, S extends Spec<S>>
       styleBuilder: (radians, style) => style.wrap(
         WidgetModifierConfig.rotate(radians: radians),
       ) as T,
-      // Use a zero-duration wrap phase so 2π -> 0 jump is visually seamless,
-      // then retrigger for the next cycle.
-      configBuilder: (phase, isLast, onEnd) => CurveAnimationConfig.linear(
-        phase == 0.0 ? Duration.zero : revolutionDuration,
-        onEnd: isLast ? onEnd : null,
-      ),
+      phaseDuration: revolutionDuration,
+      curve: Curves.linear,
     );
   }
 
@@ -216,24 +211,21 @@ mixin EffectStyleMixin<T extends Style<S>, S extends Spec<S>>
       styleBuilder: (scale, style) => style.wrap(
         WidgetModifierConfig.scale(x: scale, y: scale),
       ) as T,
-      configBuilder: (_, isLast, onEnd) => CurveAnimationConfig.easeInOut(
-        duration ~/ 2,
-        onEnd: isLast ? onEnd : null,
-      ),
+      phaseDuration: duration ~/ 2,
+      curve: Curves.easeInOut,
     );
   }
 
   /// Shared helper to loop phase animations while [active] remains true.
+  ///
+  /// Simplified API: caller provides [phaseDuration] and [curve] instead of
+  /// a configBuilder callback. The isLast/onEnd logic is handled internally.
   T _loopingPhaseAnimation<P>({
     required ValueListenable<bool> active,
     required List<P> phases,
     required T Function(P phase, T style) styleBuilder,
-    required CurveAnimationConfig Function(
-      P phase,
-      bool isLast,
-      VoidCallback onEnd,
-    )
-    configBuilder,
+    required Duration phaseDuration,
+    required Curve curve,
   }) {
     final loop = _RepeatWhileActiveTrigger(active);
     final styles = <T>[];
@@ -242,8 +234,13 @@ mixin EffectStyleMixin<T extends Style<S>, S extends Spec<S>>
     for (int i = 0; i < phases.length; i++) {
       final phase = phases[i];
       final isLast = i == phases.length - 1;
+
       styles.add(styleBuilder(phase, this as T));
-      configs.add(configBuilder(phase, isLast, loop.onCycleComplete));
+      configs.add(CurveAnimationConfig(
+        duration: phaseDuration,
+        curve: curve,
+        onEnd: isLast ? loop.onCycleComplete : null,
+      ));
     }
 
     return animate(
@@ -259,11 +256,9 @@ mixin EffectStyleMixin<T extends Style<S>, S extends Spec<S>>
 /// Helper notifier that retriggers animation cycles while active.
 ///
 /// Used internally by indefinite effects (pulseWhile, rotateWhile, breatheWhile).
-///
-/// Note: Uses onEnd callbacks from PhaseAnimationDriver instead of timers.
+/// Uses onEnd callbacks from PhaseAnimationDriver instead of Timer.periodic.
 class _RepeatWhileActiveTrigger extends ChangeNotifier {
   final ValueListenable<bool> _source;
-  bool _active = false;
 
   _RepeatWhileActiveTrigger(this._source) {
     _source.addListener(_onSourceChanged);
@@ -271,15 +266,12 @@ class _RepeatWhileActiveTrigger extends ChangeNotifier {
   }
 
   void _onSourceChanged() {
-    _active = _source.value;
-    if (_active) {
-      // Start first cycle immediately when activated.
-      notifyListeners();
-    }
+    if (_source.value) notifyListeners();
   }
 
+  /// Called by last phase's onEnd callback to restart the cycle.
   void onCycleComplete() {
-    if (_active) notifyListeners();
+    if (_source.value) notifyListeners();
   }
 
   @override
@@ -399,10 +391,8 @@ StyledIcon(
 #### Scope Widget (Following PointerPositionProvider Pattern Exactly)
 
 ```dart
-// File: packages/mix/lib/src/providers/geometry_scope.dart (~120 LOC)
+// File: packages/mix/lib/src/providers/geometry_scope.dart (~105 LOC)
 // NOTE: Using src/providers/ to match existing Mix patterns (IconScope, TextScope)
-
-import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 
@@ -431,27 +421,15 @@ class TrackedGeometry {
 }
 
 /// Notifier that tracks geometries by ID with per-ID listener support.
-///
-/// Includes geometry persistence to handle race conditions when source
-/// widget disposes before target widget captures the geometry.
 class GeometryNotifier extends ChangeNotifier {
   final Map<Object, TrackedGeometry> _geometries = {};
   final Map<Object, Set<VoidCallback>> _idListeners = {};
-  final Map<Object, Timer> _removalTimers = {};
-
-  /// Duration to keep geometry after source unregisters.
-  /// Allows target widgets to capture geometry even if source disposes first.
-  static const _persistenceDuration = Duration(milliseconds: 100);
 
   /// Get geometry for a specific ID.
   TrackedGeometry? operator [](Object id) => _geometries[id];
 
   /// Register geometry for an ID, notifying listeners for that ID.
   void register(Object id, TrackedGeometry geometry) {
-    // Cancel any pending removal
-    _removalTimers[id]?.cancel();
-    _removalTimers.remove(id);
-
     if (_geometries[id] != geometry) {
       _geometries[id] = geometry;
       _notifyIdListeners(id);
@@ -460,15 +438,11 @@ class GeometryNotifier extends ChangeNotifier {
   }
 
   /// Unregister geometry when widget disposes.
-  /// Geometry persists briefly to handle disposal race conditions.
+  ///
+  /// V1: Immediate removal. V2 may add brief persistence if race conditions
+  /// prove problematic in practice.
   void unregister(Object id) {
-    // Keep geometry briefly for target widgets that may need it
-    _removalTimers[id]?.cancel();
-    _removalTimers[id] = Timer(_persistenceDuration, () {
-      _geometries.remove(id);
-      _removalTimers.remove(id);
-      notifyListeners();
-    });
+    _geometries.remove(id);
   }
 
   /// Add listener for specific geometry ID.
@@ -489,10 +463,6 @@ class GeometryNotifier extends ChangeNotifier {
 
   @override
   void dispose() {
-    for (final timer in _removalTimers.values) {
-      timer.cancel();
-    }
-    _removalTimers.clear();
     _geometries.clear();
     _idListeners.clear();
     super.dispose();
@@ -509,7 +479,7 @@ class GeometryNotifier extends ChangeNotifier {
 /// - One-frame geometry delay (initial frame uses captured geometry)
 /// - No scroll handling (may glitch in scrollable containers)
 /// - Geometry updates only occur when sources rebuild (documented)
-/// - Text scaling artifacts (mitigated by 0.1-100.0 scale clamping)
+/// - Text scaling artifacts possible with extreme size ratios
 class GeometryScope extends StatefulWidget {
   const GeometryScope({
     required this.child,
@@ -590,6 +560,13 @@ import 'geometry_scope.dart';  // Same directory in providers/
 /// When [isSource] is false, this widget animates FROM the source's geometry
 /// TO its own final geometry when it first appears.
 ///
+/// V1 Limitations:
+/// - Same-screen only (no cross-route animations)
+/// - One-frame geometry delay on first appearance
+/// - No scroll handling (may glitch in scrollables)
+/// - No scale clamping (extreme transforms possible)
+/// - Immediate geometry removal on dispose
+///
 /// ```dart
 /// GeometryScope(
 ///   child: Column(
@@ -647,11 +624,6 @@ class _GeometryMatchState extends State<GeometryMatch>
   TrackedGeometry? _startGeometry; // Where animation starts (source position)
   TrackedGeometry? _endGeometry;   // Where animation ends (our actual position)
   GeometryNotifier? _notifier;
-
-  /// Scale clamping constants to prevent extreme transforms.
-  /// 0.1 min maintains text readability, 100.0 max prevents extreme values.
-  static const double _minScale = 0.1;
-  static const double _maxScale = 100.0;
 
   @override
   void initState() {
@@ -749,13 +721,12 @@ class _GeometryMatchState extends State<GeometryMatch>
         final scaleX = animatedGeometry.rect.width / currentGeometry.rect.width;
         final scaleY = animatedGeometry.rect.height / currentGeometry.rect.height;
 
+        // V1: No scale clamping. Extreme size ratios documented as limitation.
+        // V2 may add clamping if users report issues with extreme transforms.
         return Transform(
           transform: Matrix4.identity()
             ..translate(dx, dy)
-            ..scale(
-              scaleX.clamp(_minScale, _maxScale),
-              scaleY.clamp(_minScale, _maxScale),
-            ),
+            ..scale(scaleX, scaleY),
           alignment: Alignment.topLeft,
           child: KeyedSubtree(key: _key, child: widget.child),
         );
@@ -828,20 +799,29 @@ class _ExpandableCardState extends State<ExpandableCard> {
 }
 ```
 
-### V1 Limitations (Document These)
+### V1 Limitations (YAGNI-Driven Deferrals)
 
-1. **Same-screen only** - No cross-route animations
-2. **One-frame geometry delay** - Initial frame uses captured geometry (known limitation, not a bug)
-3. **No scroll handling** - May glitch in scrollable containers
-4. **Geometry updates on rebuilds only** - Moving layouts without rebuilds can desync
-5. **Transform artifacts** - Text may scale/blur during animation (mitigated by clamping)
-6. **No clipping respect** - Widget may overflow during flight
-7. **GlobalKey introduction** - First GlobalKey usage in Mix codebase (justified for geometry tracking)
+#### symbolEffect
+- Only one effect per style (last wins)
+- Rapid triggers restart animation from beginning
+- Indefinite effects loop via onEnd callbacks (no Timer.periodic)
 
-### What to Defer to V2
+#### matchedGeometryEffect
+- Same-screen only (no cross-route animations)
+- One-frame geometry delay on first appearance (unavoidable - layout must complete)
+- No scroll handling (may glitch in scrollable containers)
+- No scale clamping (extreme transforms possible with large size ratios)
+- Immediate geometry removal on dispose (no persistence timer)
+- First GlobalKey usage in Mix codebase (justified for geometry tracking)
+- Transform artifacts (text may scale/blur during animation)
+- No clipping respect (widget may overflow during flight)
 
-| Feature | Reason |
-|---------|--------|
+### V2 Enhancements (If Needed)
+
+| Feature | Reason to Defer |
+|---------|----------------|
+| Geometry persistence timer | Only add if disposal race conditions occur in practice |
+| Scale clamping | Only add if extreme size ratios cause issues |
 | Overlay-based hero flights | Complex Navigator integration |
 | Scroll-aware tracking | Edge cases with nested scrollables |
 | Navigation route integration | Requires custom PageRoute |
@@ -906,14 +886,16 @@ class _ExpandableCardState extends State<ExpandableCard> {
 | Missing listener | Target didn't listen for source changes | Added `addIdListener` / `removeIdListener` |
 | Scope pattern | Custom `InheritedWidget` + State | Proper `InheritedNotifier<GeometryNotifier>` |
 | Animation direction | Confusing | Clarified: target animates FROM source TO self |
-| Scale clamping | None or magic numbers | Named constants `_minScale`/`_maxScale` with 0.1-100.0 range |
+| Scale clamping | Magic numbers | V1: no clamping (document as limitation, add in V2 if needed) |
 | Disposal | Incomplete | Proper cleanup of listeners and registration |
-| Source disposal race | Geometry lost immediately | Added 100ms persistence timeout in `GeometryNotifier.unregister()` |
+| Source disposal race | Geometry lost immediately | V1: immediate removal (add persistence in V2 if needed) |
 | Timer in effects | N/A | Loop via `onEnd` callbacks (no Timer) |
 | Mixin constraint | `on Style<S>, AnimationStyleMixin<T, S>` (invalid) | Constrain to `WidgetModifierStyleMixin` + `AnimationStyleMixin` |
 | Directory structure | `src/widgets/` (doesn't exist) | `src/providers/` to match existing patterns |
 | Missing import | N/A | Added `import 'package:flutter/scheduler.dart';` |
 | Documentation | "expected behavior" | "known limitation" (accurate framing) |
+| `_active` duplicate state | Stored `_active` copy of `_source.value` | Read `_source.value` directly |
+| Complex configBuilder API | `configBuilder(phase, isLast, onEnd)` callback | Simple `phaseDuration` + `curve` params |
 
 ---
 
