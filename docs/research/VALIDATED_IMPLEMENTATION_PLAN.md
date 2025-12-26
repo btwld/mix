@@ -205,6 +205,10 @@ mixin EffectStyleMixin<T extends Style<S>, S extends Spec<S>>
 /// Helper notifier that repeats phase animations while a condition is true.
 ///
 /// Used internally by indefinite effects (pulseWhile, rotateWhile, breatheWhile).
+///
+/// Note: Uses Timer.periodic for simplicity in V1. Future optimization could use
+/// Ticker for better frame synchronization, but the actual animations ARE
+/// frame-synced through AnimationController - this timer just triggers new cycles.
 class _RepeatWhileActiveNotifier extends ChangeNotifier {
   Timer? _timer;
   final ValueListenable<bool> _source;
@@ -344,7 +348,9 @@ StyledIcon(
 #### Scope Widget (Following PointerPositionProvider Pattern Exactly)
 
 ```dart
-// File: packages/mix/lib/src/widgets/geometry_scope.dart (~80 LOC)
+// File: packages/mix/lib/src/widgets/geometry_scope.dart (~90 LOC)
+
+import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 
@@ -373,15 +379,27 @@ class TrackedGeometry {
 }
 
 /// Notifier that tracks geometries by ID with per-ID listener support.
+///
+/// Includes geometry persistence to handle race conditions when source
+/// widget disposes before target widget captures the geometry.
 class GeometryNotifier extends ChangeNotifier {
   final Map<Object, TrackedGeometry> _geometries = {};
   final Map<Object, Set<VoidCallback>> _idListeners = {};
+  final Map<Object, Timer> _removalTimers = {};
+
+  /// Duration to keep geometry after source unregisters.
+  /// Allows target widgets to capture geometry even if source disposes first.
+  static const _persistenceDuration = Duration(milliseconds: 100);
 
   /// Get geometry for a specific ID.
   TrackedGeometry? operator [](Object id) => _geometries[id];
 
   /// Register geometry for an ID, notifying listeners for that ID.
   void register(Object id, TrackedGeometry geometry) {
+    // Cancel any pending removal
+    _removalTimers[id]?.cancel();
+    _removalTimers.remove(id);
+
     if (_geometries[id] != geometry) {
       _geometries[id] = geometry;
       _notifyIdListeners(id);
@@ -389,8 +407,14 @@ class GeometryNotifier extends ChangeNotifier {
   }
 
   /// Unregister geometry when widget disposes.
+  /// Geometry persists briefly to handle disposal race conditions.
   void unregister(Object id) {
-    _geometries.remove(id);
+    // Keep geometry briefly for target widgets that may need it
+    _removalTimers[id]?.cancel();
+    _removalTimers[id] = Timer(_persistenceDuration, () {
+      _geometries.remove(id);
+      _removalTimers.remove(id);
+    });
   }
 
   /// Add listener for specific geometry ID.
@@ -733,8 +757,8 @@ class _ExpandableCardState extends State<ExpandableCard> {
 
 ### New Files
 
-1. `packages/mix/lib/src/style/mixins/effect_style_mixin.dart` (~130 LOC)
-2. `packages/mix/lib/src/widgets/geometry_scope.dart` (~80 LOC)
+1. `packages/mix/lib/src/style/mixins/effect_style_mixin.dart` (~135 LOC)
+2. `packages/mix/lib/src/widgets/geometry_scope.dart` (~95 LOC)
 3. `packages/mix/lib/src/widgets/geometry_match.dart` (~120 LOC)
 
 ### Modified Files
@@ -745,9 +769,9 @@ class _ExpandableCardState extends State<ExpandableCard> {
 
 ### Total New Code
 
-- symbolEffect: ~130 lines
-- matchedGeometry: ~200 lines
-- **Total: ~330 lines** (vs. ~1000+ in original plan)
+- symbolEffect: ~135 lines
+- matchedGeometry: ~215 lines
+- **Total: ~350 lines** (vs. ~1000+ in original plan)
 
 ---
 
@@ -761,6 +785,8 @@ class _ExpandableCardState extends State<ExpandableCard> {
 | Animation direction | Confusing | Clarified: target animates FROM source TO self |
 | Scale clamping | None | Added `.clamp(0.01, 100.0)` to prevent NaN |
 | Disposal | Incomplete | Proper cleanup of listeners and registration |
+| Source disposal race | Geometry lost immediately | Added 100ms persistence timeout in `GeometryNotifier.unregister()` |
+| Timer in effects | N/A | Documented as V1 optimization opportunity (Ticker would be better) |
 
 ---
 
