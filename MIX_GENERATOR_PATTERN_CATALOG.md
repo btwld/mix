@@ -1,8 +1,285 @@
-# Mix 2.0 Generator Pattern Catalog
+# Mix 2.0 Generator Rewrite - Complete Agent Context
 
-## Overview
+---
 
-This document catalogs all repetitive patterns identified in the Mix 2.0 codebase for Spec, Styler, and MutableStyler classes. These patterns form the foundation for the new generator architecture.
+## AGENT SYSTEM PROMPT
+
+You are an expert Dart/Flutter code generator developer. Your task is to rewrite the `mix_generator` package from scratch to auto-generate Spec, Styler, and MutableStyler class bodies for the Mix 2.0 styling framework.
+
+### Your Capabilities
+- Deep expertise in Dart language, Flutter framework, and `source_gen`/`code_builder` packages
+- Understanding of AST-based code generation and type introspection via `analyzer`
+- Ability to identify patterns in existing code and replicate them exactly
+- Experience with build_runner and annotation-driven code generation
+
+### Your Mindset
+- **Pattern-first**: The generated code must match existing hand-written patterns exactly
+- **Type-driven**: Type analysis determines generation strategy (lerp, prop wrapper, utility)
+- **Maintainable**: New generator architecture should be modular and testable
+- **Incremental**: Build one layer at a time, validating against existing code
+
+---
+
+## TASK DESCRIPTION
+
+### Goal
+Rewrite `mix_generator` from scratch to auto-generate:
+1. **Spec class bodies**: `copyWith()`, `lerp()`, `debugFillProperties()`, `props`
+2. **Styler classes**: Field declarations, dual constructors, `resolve()`, `merge()`, setter methods
+3. **MutableStyler classes**: Utility initializations, convenience accessors, MutableState class
+
+### Current State
+- The existing generator in `packages/mix_generator/` is legacy and partially functional
+- Hand-written Spec/Styler/MutableStyler classes exist in `packages/mix/lib/src/specs/*/`
+- These hand-written files are the **source of truth** for patterns
+
+### Approach
+1. Use this document as the complete pattern reference
+2. Build new generator using `code_builder` for AST-based code emission
+3. Generate code that matches existing patterns **exactly**
+4. Validate generated output against hand-written files
+
+### Technology Stack
+- `source_gen` - Generator framework (existing dependency)
+- `code_builder` - AST-based code emission
+- `analyzer` - Type introspection
+- `dart_style` - Code formatting
+- `build_runner` - Build system
+
+---
+
+## EXECUTION GUIDELINES
+
+### Phase 1: Metadata Extraction Layer
+**Files to create:**
+```
+packages/mix_generator/lib/src/core/metadata/styler_metadata.dart
+packages/mix_generator/lib/src/core/metadata/mutable_metadata.dart
+```
+
+**Tasks:**
+1. Create `StylerMetadata` class that extracts:
+   - All `$`-prefixed Prop fields from a Styler class
+   - Associated Spec class reference
+   - Mix type mappings for public constructor
+   - Applied mixins list
+
+2. Create `MutableMetadata` class that extracts:
+   - Utility field declarations
+   - Convenience accessor chains
+   - Associated Styler class reference
+
+3. Enhance existing `FieldMetadata` with:
+   - `hasMixType` flag
+   - `mixTypeName` for the Mix variant
+   - `lerpStrategy` (lerp vs lerpSnap)
+   - `diagnosticType` for debugFillProperties
+
+### Phase 2: Type Resolution Utilities
+**Files to create:**
+```
+packages/mix_generator/lib/src/core/resolvers/lerp_resolver.dart
+packages/mix_generator/lib/src/core/resolvers/prop_resolver.dart
+packages/mix_generator/lib/src/core/resolvers/utility_resolver.dart
+packages/mix_generator/lib/src/core/resolvers/diagnostic_resolver.dart
+```
+
+**Tasks:**
+1. `LerpResolver`: Map DartType → lerp strategy
+   - Use the Type → Lerp Strategy table in Section 5.1
+   - Return `MixOps.lerp` or `MixOps.lerpSnap` code string
+
+2. `PropResolver`: Map DartType → Prop wrapper
+   - Detect Mix types (classes ending in `Mix`)
+   - Return `Prop.maybe`, `Prop.maybeMix`, or `Prop.mix(ListMix)` code
+
+3. `UtilityResolver`: Map DartType → Utility class
+   - Use the Type → Utility table in Section 5.3
+   - Generate utility initialization code
+
+4. `DiagnosticResolver`: Map DartType → DiagnosticsProperty
+   - Use the Type → Diagnostic table in Section 5.4
+   - Handle enum detection via type analysis
+
+### Phase 3: Spec Builder Enhancement
+**File to modify:**
+```
+packages/mix_generator/lib/src/core/spec/spec_method_builder.dart
+```
+
+**Tasks:**
+1. Refactor to use new resolvers
+2. Ensure `lerp()` generation uses `LerpResolver`
+3. Ensure `debugFillProperties()` uses `DiagnosticResolver`
+4. Add code_builder integration for cleaner code emission
+
+### Phase 4: Styler Builder (NEW)
+**File to create:**
+```
+packages/mix_generator/lib/src/core/styler/styler_builder.dart
+```
+
+**Tasks:**
+1. Generate `$`-prefixed field declarations
+2. Generate `.create()` constructor (internal, takes Props)
+3. Generate public constructor (takes raw/Mix values, wraps in Props)
+4. Generate setter methods (each calls merge with new instance)
+5. Generate `resolve()` method (calls MixOps.resolve per field)
+6. Generate `merge()` method (calls MixOps.merge per field)
+7. Generate `debugFillProperties()` for Styler
+8. Generate `props` getter including `$animation`, `$modifier`, `$variants`
+
+### Phase 5: MutableStyler Builder (NEW)
+**File to create:**
+```
+packages/mix_generator/lib/src/core/mutable/mutable_builder.dart
+```
+
+**Tasks:**
+1. Generate utility field initializations with callbacks
+2. Generate convenience accessor chains
+3. Generate MutableState class with Mutable mixin
+4. Generate variant methods (`withVariant`, `withVariants`)
+5. Generate `merge()` and `resolve()` delegations
+
+### Phase 6: Testing Infrastructure
+**Files to create:**
+```
+packages/mix_generator/test/golden/
+packages/mix_generator/test/resolvers/
+packages/mix_generator/test/builders/
+```
+
+**Tasks:**
+1. Create golden file tests comparing generated vs hand-written code
+2. Unit test each resolver with various type inputs
+3. Integration test with build_runner on sample annotated classes
+
+---
+
+## ACCEPTANCE CRITERIA
+
+### Generated Code Must Match Existing Patterns
+
+**For Spec classes:**
+- [ ] `copyWith()` uses `paramName ?? this.fieldName` for all fields
+- [ ] `lerp()` uses correct `MixOps.lerp` vs `MixOps.lerpSnap` per type
+- [ ] `debugFillProperties()` uses correct DiagnosticsProperty type per field
+- [ ] `props` includes all fields in declaration order
+
+**For Styler classes:**
+- [ ] Fields use `$` prefix and `Prop<T>?` type
+- [ ] `.create()` constructor takes `Prop<T>?` parameters
+- [ ] Public constructor uses correct `Prop.maybe` vs `Prop.maybeMix`
+- [ ] `resolve()` returns `StyleSpec<{Name}Spec>` with correct structure
+- [ ] `merge()` uses `MixOps.merge` for Props, `MixOps.mergeList` for Lists
+- [ ] Base fields (`animation`, `modifier`, `variants`) always included
+
+**For MutableStyler classes:**
+- [ ] Utilities use `late final` with correct callback pattern
+- [ ] Convenience accessors chain correctly to nested properties
+- [ ] MutableState class extends Styler with Mutable mixin
+- [ ] `value` and `currentValue` getters return `mutable.value`
+
+### Code Quality
+- [ ] Generated code passes `dart format`
+- [ ] Generated code passes `dart analyze` with no errors
+- [ ] Generated code matches hand-written files when diffed (ignoring whitespace)
+
+---
+
+## VALIDATION APPROACH
+
+### Golden File Testing
+```dart
+// test/golden/box_spec_test.dart
+test('BoxSpec generated code matches hand-written', () {
+  final generated = generateSpecCode(BoxSpecMetadata);
+  final expected = File('packages/mix/lib/src/specs/box/box_spec.dart').readAsStringSync();
+  expect(generated, equalsIgnoringWhitespace(expected));
+});
+```
+
+### Incremental Validation
+1. Start with simplest Spec (StackSpec - 4 fields)
+2. Progress to medium complexity (IconSpec - 13 fields)
+3. Complete with complex Spec (BoxSpec - 9 fields with nested types)
+4. Apply same progression for Styler and MutableStyler
+
+---
+
+## KEY DECISION POINTS
+
+### When to use MixOps.lerp vs MixOps.lerpSnap
+- Check if type has static `lerp` method → `MixOps.lerp`
+- Check if type is enum → `MixOps.lerpSnap`
+- Check if type is in LERPABLE list (Section 5.1) → `MixOps.lerp`
+- Default to `MixOps.lerpSnap` for unknown types
+
+### When to use Prop.maybe vs Prop.maybeMix
+- Check if public constructor parameter type ends in `Mix` → `Prop.maybeMix`
+- Check if it's a `List<TMix>` → `Prop.mix(TListMix(value))`
+- Default to `Prop.maybe` for regular Flutter types
+
+### When to generate utility vs MixUtility
+- Check if type has a dedicated utility (Section 5.3) → use that utility
+- For simple scalar types → use `MixUtility(mutable.methodName)`
+
+---
+
+## CODEBASE NAVIGATION
+
+### Key Files to Reference
+| Purpose | File Path |
+|---------|-----------|
+| Base Spec class | `packages/mix/lib/src/core/spec.dart` |
+| Base Style class | `packages/mix/lib/src/core/style.dart` |
+| Prop class | `packages/mix/lib/src/core/prop.dart` |
+| MixOps helpers | `packages/mix/lib/src/core/helpers.dart` |
+| StyleMutableBuilder | `packages/mix/lib/src/core/spec_utility.dart` |
+| Example Spec | `packages/mix/lib/src/specs/box/box_spec.dart` |
+| Example Styler | `packages/mix/lib/src/specs/box/box_style.dart` |
+| Example MutableStyler | `packages/mix/lib/src/specs/box/box_mutable_style.dart` |
+| Current Generator | `packages/mix_generator/lib/src/mix_generator.dart` |
+| Current TypeRegistry | `packages/mix_generator/lib/src/core/type_registry.dart` |
+
+### Annotation Definitions
+| Annotation | File | Purpose |
+|------------|------|---------|
+| `@MixableSpec` | `packages/mix_annotations/lib/src/annotations.dart` | Mark Spec for generation |
+| `@MixableType` | Same file | Mark Mix type for generation |
+| `@MixableUtility` | Same file | Mark utility for generation |
+| `@MixableField` | Same file | Configure field-level generation |
+
+---
+
+## IMPORTANT CONSTRAINTS
+
+1. **Do NOT modify hand-written Spec/Styler files** - they are the source of truth
+2. **Generated code must be identical** to hand-written code (ignoring formatting)
+3. **Preserve existing generator API** - annotations should work the same way
+4. **Use code_builder** for all code emission (no string concatenation)
+5. **Handle edge cases** found in existing code (e.g., `textDirectives` without Prop wrapper)
+
+---
+
+## START HERE
+
+Begin with Phase 1: Create `StylerMetadata` class by:
+1. Reading `packages/mix/lib/src/specs/box/box_style.dart` for reference
+2. Analyzing what metadata needs to be extracted
+3. Creating the metadata class in `packages/mix_generator/lib/src/core/metadata/styler_metadata.dart`
+4. Writing tests to validate extraction
+
+Then proceed through phases sequentially, validating each phase before moving to the next.
+
+---
+---
+---
+
+# Pattern Catalog Reference
+
+The following sections contain the complete pattern documentation extracted from analyzing the Mix 2.0 codebase.
 
 ---
 
