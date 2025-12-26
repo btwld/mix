@@ -257,8 +257,8 @@ test('BoxSpec generated code matches hand-written', () {
 
 1. **Do NOT modify hand-written Spec/Styler files** - they are the source of truth
 2. **Generated code must be identical** to hand-written code (ignoring formatting)
-3. **Preserve existing generator API** - annotations should work the same way
-4. **Use code_builder** for all code emission (no string concatenation)
+3. **No backward compatibility required** - this is a from-scratch rewrite
+4. **Use code_builder for complex patterns** (class declarations, method signatures); string templates OK for simple repetitive patterns (see C15)
 5. **Handle edge cases** found in existing code (e.g., `textDirectives` without Prop wrapper)
 
 ---
@@ -607,6 +607,212 @@ static {Name}MutableStyler get chain => {Name}MutableStyler({Name}Styler());
 
 ---
 
+### C10: Utility Callback Pattern Decision Rule
+
+**Issue**: Two different utility patterns exist, need explicit decision rule.
+
+**Pattern A: Specialized Utility with Prop.mix callback**
+```dart
+// For types with corresponding Mix types (EdgeInsetsGeometryMix, DecorationMix, etc.)
+late final padding = EdgeInsetsGeometryUtility<BoxStyler>(
+  (prop) => mutable.merge(BoxStyler.create(padding: Prop.mix(prop))),
+);
+```
+
+**Pattern B: MixUtility with method reference**
+```dart
+// For simple types (enums, scalars, no Mix type)
+late final clipBehavior = MixUtility(mutable.clipBehavior);
+late final transform = MixUtility(mutable.transform);
+```
+
+**Decision Rule**:
+
+| Field Type | Has Mix Type? | Utility Pattern |
+|------------|---------------|-----------------|
+| `EdgeInsetsGeometry` | Yes (`EdgeInsetsGeometryMix`) | `EdgeInsetsGeometryUtility<S>((prop) => mutable.merge(Styler.create(field: Prop.mix(prop))))` |
+| `BoxConstraints` | Yes (`BoxConstraintsMix`) | `BoxConstraintsUtility<S>((prop) => ...)` |
+| `Decoration` | Yes (`DecorationMix`) | `DecorationUtility<S>((prop) => ...)` |
+| `TextStyle` | Yes (`TextStyleMix`) | `TextStyleUtility<S>((prop) => ...)` |
+| `Color` | Yes (`ColorMix`) | `ColorUtility<S>((prop) => mutable.merge(Styler.create(field: prop)))` |
+| `Clip` (enum) | No | `MixUtility(mutable.clipBehavior)` |
+| `Axis` (enum) | No | `MixUtility(mutable.direction)` |
+| `Matrix4` | No | `MixUtility(mutable.transform)` |
+| `AlignmentGeometry` | No (uses direct) | `MixUtility(mutable.alignment)` |
+
+**Note**: `ColorUtility` uses `prop` directly (not `Prop.mix(prop)`) because Color is already a simple resolved type.
+
+---
+
+### C11: Edge Cases Consolidation
+
+**Issue**: Edge cases are scattered. Consolidate here.
+
+| Edge Case | Location | Handling |
+|-----------|----------|----------|
+| `textDirectives` | TextStyler | Raw `List<Directive<String>>?` without Prop wrapper. Uses `MixOps.mergeList`. |
+| `shadows` vs `boxShadow` | IconSpec/BoxSpec | `List<Shadow>` in Spec, becomes `Prop<List<Shadow>>?` in Styler. Uses `MixOps.merge`. |
+| `FlagProperty ifTrue` | All Specs with bool | Requires curated map (see C2). |
+| Nested Spec types | FlexBoxSpec, StackBoxSpec | Contains `BoxSpec` and `FlexSpec`/`StackSpec`. Lerp delegates to nested `.lerp()`. |
+| `ImageStyler` | No AnimationStyleMixin | Only styler without AnimationStyleMixin in mixin list. |
+| Composite MutableStylers | FlexBoxMutableStyler, StackBoxMutableStyler | Have both box utilities AND flex/stack utilities with prefixed names to avoid collision. |
+
+---
+
+### C12: Error Handling Strategy
+
+**Issue**: What happens when generator encounters unknown situations?
+
+**Strategy**: Fail fast with actionable error messages.
+
+```dart
+class GeneratorException implements Exception {
+  final String message;
+  final String? filePath;
+  final int? lineNumber;
+  final String? suggestion;
+
+  GeneratorException(this.message, {this.filePath, this.lineNumber, this.suggestion});
+
+  @override
+  String toString() {
+    final location = filePath != null ? ' at $filePath:$lineNumber' : '';
+    final hint = suggestion != null ? '\nSuggestion: $suggestion' : '';
+    return 'GeneratorException: $message$location$hint';
+  }
+}
+```
+
+**Error conditions**:
+
+| Situation | Action |
+|-----------|--------|
+| Unknown type not in lerp tables | Log warning, default to `lerpSnap`, continue |
+| Missing expected annotation | Fail with error pointing to class |
+| Field type mismatch (Spec vs Styler) | Fail with detailed comparison |
+| Unknown utility type | Fall back to `MixUtility`, log warning |
+| Mixin not in curated map | Fail with "add to mixin mapping" suggestion |
+
+---
+
+### C13: Testing Normalization Rules
+
+**Issue**: Phase 6 needs explicit comparison rules.
+
+**Normalization for golden file comparison**:
+
+1. **Format both with `dart format`** - Eliminates whitespace differences
+2. **Strip generated file header** - Remove `// GENERATED CODE - DO NOT MODIFY BY HAND`
+3. **Ignore trailing newlines** - Normalize to single trailing newline
+4. **Keep import order** - Don't normalize imports (they should match exactly)
+
+**Test structure**:
+```dart
+test('BoxStyler generation matches hand-written', () {
+  // Input: BoxSpec class with @MixableSpec annotation
+  final input = '''
+    @MixableSpec()
+    final class BoxSpec extends Spec<BoxSpec> { ... }
+  ''';
+
+  // Generate
+  final generated = StylerBuilder().build(BoxSpecMetadata.fromSource(input));
+
+  // Compare (normalized)
+  final expected = File('packages/mix/lib/src/specs/box/box_style.dart')
+      .readAsStringSync();
+
+  expect(
+    _normalize(generated),
+    equals(_normalize(expected)),
+  );
+});
+
+String _normalize(String code) {
+  return DartFormatter().format(code).trim();
+}
+```
+
+---
+
+### C14: Phase Dependencies (Explicit)
+
+**Clarification**: Each phase's outputs feed the next.
+
+```
+Phase 1: Metadata Layer
+  └─ Outputs: StylerMetadata, MutableMetadata, enhanced FieldMetadata
+       │
+       ▼
+Phase 2: Resolvers
+  └─ Inputs: FieldMetadata
+  └─ Outputs: LerpResolver, PropResolver, UtilityResolver, DiagnosticResolver
+       │
+       ▼
+Phase 3: Spec Builder (enhancement)
+  └─ Inputs: SpecMetadata, LerpResolver, DiagnosticResolver
+  └─ Outputs: Enhanced SpecMethodBuilder
+       │
+       ▼
+Phase 4: Styler Builder (NEW)
+  └─ Inputs: StylerMetadata, PropResolver, all resolvers
+  └─ Outputs: StylerBuilder
+       │
+       ▼
+Phase 5: MutableStyler Builder (NEW)
+  └─ Inputs: MutableMetadata, UtilityResolver, StylerMetadata
+  └─ Outputs: MutableStylerBuilder
+       │
+       ▼
+Phase 6: Testing
+  └─ Inputs: All builders, hand-written source files
+  └─ Outputs: Golden tests, regression tests
+```
+
+**START HERE clarification**: Begin with Phase 1, completing `StylerMetadata` first as it unlocks understanding of the full pattern.
+
+---
+
+### C15: code_builder vs String Templates
+
+**Issue**: Constraint #4 (code_builder for all emission) may be over-strict.
+
+**Decision**: Allow string templates for simple, well-defined patterns.
+
+| Pattern | Approach | Reasoning |
+|---------|----------|-----------|
+| `props` getter | String template | Simple list literal, no nesting |
+| `copyWith` body | String template | Repetitive `field ?? this.field` |
+| Class declaration with mixins | code_builder | Complex nesting, type parameters |
+| Method signatures | code_builder | Proper type handling |
+| Utility initializations | String template | Consistent pattern, readable |
+
+**Example - props getter with string template**:
+```dart
+String buildProps(List<FieldMetadata> fields) {
+  final fieldNames = fields.map((f) => f.name).join(', ');
+  return '''
+  @override
+  List<Object?> get props => [$fieldNames];
+  ''';
+}
+```
+
+**Example - class with mixins using code_builder**:
+```dart
+Class buildStylerClass(StylerMetadata meta) {
+  return Class((b) => b
+    ..name = meta.stylerName
+    ..extend = refer('Style<${meta.specName}>')
+    ..mixins.addAll(meta.mixins.map(refer))
+    ..fields.addAll(buildFields(meta))
+    ..constructors.addAll(buildConstructors(meta))
+    ..methods.addAll(buildMethods(meta)));
+}
+```
+
+---
+
 ## ANSWERS TO REVIEW QUESTIONS
 
 ### Q1: Where will the FlagProperty ifTrue description be sourced from?
@@ -626,6 +832,9 @@ static {Name}MutableStyler get chain => {Name}MutableStyler({Name}Styler());
 - `@immutable` - Not used on specs (they're `final class`)
 - `final class` - Part of class declaration, preserved from source
 - Doc comments - Preserved from source, not regenerated
+
+### Q6: Is backward compatibility required?
+**A**: **NO**. This is a from-scratch rewrite. No migration path, no feature flags, no legacy support needed.
 
 ---
 ---
