@@ -657,4 +657,67 @@ void main() {
       });
     });
   });
+
+  group('NoAnimationDriver', () {
+    late NoAnimationDriver<MockSpec<double>> driver;
+
+    setUp(() {
+      driver = NoAnimationDriver<MockSpec<double>>(
+        vsync: const TestVSync(),
+        initialSpec: MockSpec(resolvedValue: 0.0).toStyleSpec(),
+      );
+    });
+
+    tearDown(() {
+      driver.dispose();
+    });
+
+    test('initializes with initial spec as animation value', () {
+      final value = driver.animation.value;
+
+      expect(value, isNotNull);
+      expect(value?.spec.resolvedValue, 0.0);
+    });
+
+    test('animation is never animating', () {
+      expect(driver.animation.isAnimating, false);
+    });
+
+    test('didUpdateSpec immediately updates animation value', () {
+      final oldSpec = MockSpec(resolvedValue: 0.0).toStyleSpec();
+      final newSpec = MockSpec(resolvedValue: 1.0).toStyleSpec();
+
+      driver.didUpdateSpec(oldSpec, newSpec);
+
+      expect(driver.animation.value?.spec.resolvedValue, 1.0);
+    });
+
+    test('executeAnimation sets controller value to 1.0', () async {
+      await driver.executeAnimation();
+
+      expect(driver.controller.value, 1.0);
+    });
+
+    test('updateDriver does nothing (no-op)', () {
+      const config = CurveAnimationConfig(
+        duration: Duration(milliseconds: 100),
+        curve: Curves.linear,
+      );
+
+      // Should not throw
+      expect(() => driver.updateDriver(config), returnsNormally);
+    });
+
+    test('successive spec updates replace previous value', () {
+      final spec1 = MockSpec(resolvedValue: 0.0).toStyleSpec();
+      final spec2 = MockSpec(resolvedValue: 0.5).toStyleSpec();
+      final spec3 = MockSpec(resolvedValue: 1.0).toStyleSpec();
+
+      driver.didUpdateSpec(spec1, spec2);
+      expect(driver.animation.value?.spec.resolvedValue, 0.5);
+
+      driver.didUpdateSpec(spec2, spec3);
+      expect(driver.animation.value?.spec.resolvedValue, 1.0);
+    });
+  });
 }
