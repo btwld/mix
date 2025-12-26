@@ -5,8 +5,8 @@
 library;
 
 // Global utilities for $on and $wrap functionality are now available via spec-specific utilities:
-// - $box.on.hover(), $box.wrap.opacity(), etc.
-// - $text.on.dark(), $text.wrap.padding(), etc.
+// - BoxStyler().onHovered(), BoxStyler().wrap.opacity(), etc.
+// - TextStyler().onDark(), TextStyler().wrap.padding(), etc.
 import 'box/box_mutable_style.dart';
 import 'flex/flex_mutable_style.dart';
 import 'flexbox/flexbox_mutable_style.dart';
@@ -155,6 +155,6 @@ StackBoxMutableStyler get $stackbox => StackBoxMutableStyler();
 // Global $on and $wrap utilities have been replaced by spec-specific utilities:
 //
 // Instead of: $on.hover($box.color.red(), $text.style.color.white())
-// Use: $box.on.hover($box.color.red()) and $text.on.hover($text.style.color.white())
+// Use: BoxStyler().onHovered() and TextStyler().onHovered()
 //
 // This provides better type safety and eliminates the need for MultiSpec.
