@@ -469,6 +469,16 @@ packages/mix_generator/lib/src/core/mutable/mutable_builder.dart
 **Explicitly NOT generated (de-scoped)**:
 - **Deprecated `on` utility**: Some hand-written MutableStylers have `@Deprecated('Use ...')` on their `on` property. This is legacy API and will not be generated. Update expected golden fixtures accordingly.
 
+**Clarification: MutableStyler is STILL REQUIRED**:
+The `on` utility is the ONLY deprecated piece. The following are NOT deprecated and must be generated:
+- `MutableStyler` classes themselves — `BoxStyler.chain` returns `BoxMutableStyler`
+- `MutableState` classes — required for mutable state management
+- Utility patterns (propMix, propDirect, methodTearOff, convenienceAccessor)
+- `StyleMutableBuilder` inheritance
+- All utility registries and resolvers
+
+Removing MutableStyler generation would break the `{Name}Styler.chain` accessor pattern.
+
 **Migration:** After verifying golden equivalence, delete the hand-written MutableStyler file and update any barrel exports to import the generated file instead.
 
 ### Phase 6: Testing Infrastructure
@@ -555,6 +565,25 @@ String _normalize(String code) {
 ---
 
 ## KEY DECISION POINTS
+
+### Deprecation Scope (What is and isn't deprecated)
+
+**DEPRECATED (do not generate)**:
+| Item | Location | Replacement |
+|------|----------|-------------|
+| `on` utility in MutableStylers | All `*_mutable_style.dart` | Direct methods like `$box.onHovered()` |
+| Legacy widget constructors | Various `*_widget.dart` | New constructors like `Box(styleSpec: ...)` |
+
+**NOT DEPRECATED (must generate)**:
+| Item | Evidence | Why needed |
+|------|----------|------------|
+| `MutableStyler` classes | `BoxStyler.chain` returns `BoxMutableStyler` | Cascade-style API |
+| `MutableState` classes | Used internally by MutableStyler | State management |
+| Utility patterns | All `*_mutable_style.dart` files | Fluent API |
+| `StyleMutableBuilder` | `core/spec_utility.dart:54` | Base class for MutableStyler |
+| UtilityRegistry | Required by utility patterns | Type → Utility mapping |
+
+**Simplification NOT valid**: Removing MutableStyler generation would break the `{Name}Styler.chain` accessor that returns `{Name}MutableStyler`. This is part of the active public API.
 
 ### When to use MixOps.lerp vs MixOps.lerpSnap
 - Check `FieldModel.isLerpableEffective` (annotation override first)
