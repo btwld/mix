@@ -79,7 +79,7 @@ The `$with` namespace is replaced with `.wrap()` method using ModifierMix classe
 
 | v1.x Pattern | v2.0 Pattern |
 |--------------|--------------|
-| `$with.opacity(0.5)` | `.wrap(OpacityModifierMix(opacity: 0.5))` |
+| `$with.opacity(0.5)` | `.wrap(.new().opacity(0.5))` |
 | `$with.scale(2)` | `.scale(2)` (use transform methods) |
 | `$with.rotate(45)` | `.rotate(45)` (use transform methods) |
 
@@ -141,7 +141,7 @@ BoxStyler().color(primaryColor())
 1. **Start with imports**: Replace `Style(` with the appropriate Styler class
 2. **Update utility calls**: Convert `$box.property()` to `.property()` method chains
 3. **Update variants**: Replace `$on.hover()` with `.onHovered()`
-4. **Update modifiers**: Replace `$with.opacity()` with `.wrap(OpacityModifierMix(...))`
+4. **Update modifiers**: Replace `$with.opacity()` with `.wrap(.new().opacity(...))`
 5. **Update theming**: Replace `MixTheme` with `MixScope`
 
 ---
@@ -256,7 +256,7 @@ In version 1.0.0, the `$` symbol was introduced to access the API from the Mix p
 <Callout type="warning">
   **Deprecated**: In Mix 2.0, use the direct methods on Styler classes instead:
   - `$on.hover()` → `.onHovered()`
-  - `$with.opacity()` → `.wrap(OpacityModifierMix())`
+  - `$with.opacity()` → `.wrap(.new().opacity())`
 </Callout>
 
 Two namespaces were added in 1.0.0: `$on` and `$with`. The `$on` namespace was used to access ContextVariants, and `$with` was used for modifiers.
@@ -292,7 +292,7 @@ PressableBox(
         .height(200)
         .color(Colors.blue)
         .scale(2)
-        .wrap(OpacityModifierMix(opacity: 0.5))
+        .wrap(.new().opacity(0.5))
         .onHovered(BoxStyler().color(Colors.red))
         .onPressed(BoxStyler().color(Colors.green)),
   ),
