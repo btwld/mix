@@ -50,6 +50,10 @@ class BoxMutableStyler extends StyleMutableBuilder<BoxSpec>
     (v) => mutable.variants([v]),
   );
 
+  @Deprecated(
+    'Use BoxStyler().wrap() method directly instead. '
+    'This property was deprecated after Mix v2.0.0.',
+  )
   late final wrap = WidgetModifierUtility(
     (prop) => mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
   );
