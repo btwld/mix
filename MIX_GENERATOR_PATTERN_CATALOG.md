@@ -50,30 +50,128 @@ Rewrite `mix_generator` from scratch to auto-generate:
 
 ## EXECUTION GUIDELINES
 
-### Phase 1: Metadata Extraction Layer
+### Phase 0: Emission Strategy Decision (CRITICAL)
+
+**This decision must be made FIRST as everything else depends on it.**
+
+**Problem**: With standard `source_gen`, you cannot "fill in a class body" declared in a separate file. Dart doesn't have partial classes.
+
+**Decision: Option A - Generate Entire Classes**
+
+The generator will emit **complete class files** into `.g.dart` parts:
+- Hand-written files become **golden references for testing only**
+- Production files will be generated stubs + generated parts
+- Simplest approach for exact-match validation
+
+**Emission Structure**:
+```
+// box_spec.dart (source - minimal stub)
+part 'box_spec.g.dart';
+
+@MixableSpec()
+final class BoxSpec extends Spec<BoxSpec> with Diagnosticable {
+  final AlignmentGeometry? alignment;
+  // ... field declarations only
+  const BoxSpec({this.alignment, ...});
+}
+
+// box_spec.g.dart (generated - methods)
+part of 'box_spec.dart';
+
+// Generated extension or augmentation with:
+// - copyWith()
+// - lerp()
+// - debugFillProperties()
+// - props
+```
+
+**For Styler/MutableStyler**: Generate entire class into `.g.dart` since these are fully derived from Spec.
+
+**Golden Test Strategy**:
+- Compare generated `.g.dart` content against extracted method bodies from hand-written files
+- Hand-written files remain untouched as reference
+
+---
+
+### Phase 1: Registries + Metadata Planning Layer
+
+**CRITICAL CORRECTION**: StylerMetadata/MutableMetadata are **derived plans** from Spec, NOT extractors from existing Styler classes. This avoids circular dependency.
+
 **Files to create:**
 ```
-packages/mix_generator/lib/src/core/metadata/styler_metadata.dart
-packages/mix_generator/lib/src/core/metadata/mutable_metadata.dart
+packages/mix_generator/lib/src/core/registry/mix_type_registry.dart
+packages/mix_generator/lib/src/core/registry/utility_registry.dart
+packages/mix_generator/lib/src/core/metadata/styler_plan.dart
+packages/mix_generator/lib/src/core/metadata/mutable_plan.dart
+packages/mix_generator/lib/src/core/metadata/field_model.dart
 ```
 
 **Tasks:**
-1. Create `StylerMetadata` class that extracts:
-   - All `$`-prefixed Prop fields from a Styler class
-   - Associated Spec class reference
-   - Mix type mappings for public constructor
-   - Applied mixins list
 
-2. Create `MutableMetadata` class that extracts:
-   - Utility field declarations
-   - Convenience accessor chains
-   - Associated Styler class reference
+1. **Build `MixTypeRegistry`** from `@MixableType` annotations:
+   ```dart
+   class MixTypeRegistry {
+     // FlutterType → MixType mapping
+     final Map<String, String> mixTypes;
+     // FlutterType → ListMixType mapping (if applicable)
+     final Map<String, String> listMixTypes;
 
-3. Enhance existing `FieldMetadata` with:
-   - `hasMixType` flag
-   - `mixTypeName` for the Mix variant
-   - `lerpStrategy` (lerp vs lerpSnap)
-   - `diagnosticType` for debugFillProperties
+     bool hasMixType(String flutterType);
+     String? getMixType(String flutterType);
+     String? getListMixType(String flutterType);
+   }
+   ```
+
+2. **Build `UtilityRegistry`** from `@MixableUtility` annotations:
+   ```dart
+   class UtilityRegistry {
+     // FlutterType → UtilityType mapping
+     final Map<String, String> utilities;
+     // Whether utility callback uses Prop.mix(prop) vs direct prop
+     final Map<String, bool> usesPropMix;
+
+     String? getUtility(String flutterType);
+     bool usesPropMixCallback(String flutterType);
+   }
+   ```
+
+3. **Create `FieldModel`** with computed effective values:
+   ```dart
+   class FieldModel {
+     final String name;
+     final DartType dartType;
+     final MixableField? annotation;
+
+     // Computed effective values (resolved once, used everywhere)
+     final String effectiveSpecType;
+     final String? effectiveMixType;      // from registry or annotation
+     final String effectivePublicParamType;
+     final bool isLerpableEffective;      // from annotation or type analysis
+     final String effectiveUtility;       // from registry or annotation
+     final PropWrapperKind propWrapper;   // maybe, maybeMix, mix, none
+   }
+   ```
+
+4. **Create `StylerPlan`** derived from SpecMetadata + registries:
+   ```dart
+   class StylerPlan {
+     final String specName;
+     final String stylerName;
+     final List<FieldModel> fields;
+     final List<String> mixins;           // from curated map
+     final List<String> setterMethods;
+     // NOT extracted from existing Styler - COMPUTED from Spec
+   }
+   ```
+
+5. **Create `MutablePlan`** derived from StylerPlan + utility config:
+   ```dart
+   class MutablePlan {
+     final StylerPlan stylerPlan;
+     final List<UtilityDeclaration> utilities;
+     final List<ConvenienceAccessor> accessors;  // from curated map
+   }
+   ```
 
 ### Phase 2: Type Resolution Utilities
 **Files to create:**
@@ -86,16 +184,17 @@ packages/mix_generator/lib/src/core/resolvers/diagnostic_resolver.dart
 
 **Tasks:**
 1. `LerpResolver`: Map DartType → lerp strategy
-   - Use the Type → Lerp Strategy table in Section 5.1
+   - Use `MixTypeRegistry` for type lookups
+   - Check `FieldModel.isLerpableEffective` first (annotation override)
    - Return `MixOps.lerp` or `MixOps.lerpSnap` code string
 
 2. `PropResolver`: Map DartType → Prop wrapper
-   - Detect Mix types (classes ending in `Mix`)
+   - Use `MixTypeRegistry.hasMixType()` instead of `endsWith('Mix')`
    - Return `Prop.maybe`, `Prop.maybeMix`, or `Prop.mix(ListMix)` code
 
 3. `UtilityResolver`: Map DartType → Utility class
-   - Use the Type → Utility table in Section 5.3
-   - Generate utility initialization code
+   - Use `UtilityRegistry` for lookups
+   - Generate utility initialization code with correct callback pattern
 
 4. `DiagnosticResolver`: Map DartType → DiagnosticsProperty
    - Use the Type → Diagnostic table in Section 5.4
@@ -740,12 +839,18 @@ String _normalize(String code) {
 **Clarification**: Each phase's outputs feed the next.
 
 ```
-Phase 1: Metadata Layer
-  └─ Outputs: StylerMetadata, MutableMetadata, enhanced FieldMetadata
+Phase 0: Emission Strategy
+  └─ Outputs: Decision on full-class vs mixin vs augmentation
+  └─ Outputs: Stub file structure expectations
+       │
+       ▼
+Phase 1: Registries + Metadata Planning
+  └─ Inputs: @MixableType, @MixableUtility annotations
+  └─ Outputs: MixTypeRegistry, UtilityRegistry, FieldModel, StylerPlan, MutablePlan
        │
        ▼
 Phase 2: Resolvers
-  └─ Inputs: FieldMetadata
+  └─ Inputs: FieldModel, Registries
   └─ Outputs: LerpResolver, PropResolver, UtilityResolver, DiagnosticResolver
        │
        ▼
@@ -755,21 +860,21 @@ Phase 3: Spec Builder (enhancement)
        │
        ▼
 Phase 4: Styler Builder (NEW)
-  └─ Inputs: StylerMetadata, PropResolver, all resolvers
+  └─ Inputs: StylerPlan, PropResolver, all resolvers
   └─ Outputs: StylerBuilder
        │
        ▼
 Phase 5: MutableStyler Builder (NEW)
-  └─ Inputs: MutableMetadata, UtilityResolver, StylerMetadata
+  └─ Inputs: MutablePlan, UtilityRegistry, StylerPlan
   └─ Outputs: MutableStylerBuilder
        │
        ▼
 Phase 6: Testing
   └─ Inputs: All builders, hand-written source files
-  └─ Outputs: Golden tests, regression tests
+  └─ Outputs: Golden tests, compile tests, regression tests
 ```
 
-**START HERE clarification**: Begin with Phase 1, completing `StylerMetadata` first as it unlocks understanding of the full pattern.
+**START HERE clarification**: Phase 0 is a design decision. Implementation begins with Phase 1, building registries first.
 
 ---
 
@@ -810,6 +915,82 @@ Class buildStylerClass(StylerMetadata meta) {
     ..methods.addAll(buildMethods(meta)));
 }
 ```
+
+---
+
+### C16: isLerpable:false Semantics (Clarified)
+
+**Issue**: "Skip field in lerp, use other.field directly" is ambiguous.
+
+**Possible interpretations**:
+1. `other?.field` - Could be null if other is null
+2. `t < 0.5 ? this.field : other?.field` - Snap behavior at midpoint
+3. `other?.field ?? this.field` - Prefer other when present
+
+**Resolution**: Lock behavior with golden fixture test.
+
+**Create test fixture**:
+```dart
+@MixableSpec()
+final class TestSpec extends Spec<TestSpec> {
+  @MixableField(isLerpable: false)
+  final String? nonLerpableField;
+
+  final double? lerpableField;
+
+  const TestSpec({this.nonLerpableField, this.lerpableField});
+}
+```
+
+**Expected lerp output** (to be validated against actual behavior):
+```dart
+@override
+TestSpec lerp(TestSpec? other, double t) {
+  return TestSpec(
+    // isLerpable: false → snap at t >= 0.5
+    nonLerpableField: MixOps.lerpSnap(nonLerpableField, other?.nonLerpableField, t),
+    // default → interpolate
+    lerpableField: MixOps.lerp(lerpableField, other?.lerpableField, t),
+  );
+}
+```
+
+**Key insight**: `isLerpable: false` should use `MixOps.lerpSnap`, NOT skip the field entirely.
+
+---
+
+### C17: Compile-Level Integration Test
+
+**Issue**: Golden string equality won't catch:
+- Missing imports due to `Allocator.none`
+- Missing type visibility in source library
+- Subtle generic type mismatches
+
+**Required test**:
+```dart
+test('generated code compiles and analyzes clean', () async {
+  // 1. Run generator on test fixture
+  final result = await runBuilder(
+    mixGenerator,
+    {'test_fixtures|lib/box_spec_fixture.dart': boxSpecSource},
+  );
+
+  // 2. Write generated output to temp file
+  final tempDir = Directory.systemTemp.createTempSync();
+  final genFile = File('${tempDir.path}/box_spec.g.dart');
+  await genFile.writeAsString(result);
+
+  // 3. Run dart analyze on generated file
+  final analyzeResult = await Process.run('dart', ['analyze', tempDir.path]);
+
+  expect(analyzeResult.exitCode, equals(0),
+    reason: 'Generated code must pass dart analyze:\n${analyzeResult.stderr}');
+});
+```
+
+**CI integration**:
+- Add `dart analyze packages/mix_generator/test/fixtures/` to CI
+- Fail build if any generated fixture has analyzer errors
 
 ---
 
@@ -1241,6 +1422,58 @@ StyleSpec<{Name}Spec> resolve(BuildContext context) {
 | Has constraints | `ConstraintStyleMixin<{Name}Styler>` |
 | Has TextStyle | `TextStyleMixin<{Name}Styler>` |
 | Has flex properties | `FlexStyleMixin<{Name}Styler>` |
+
+### 2.8 Styler debugFillProperties Pattern
+
+**IMPORTANT**: Stylers use a DIFFERENT pattern than Specs for diagnostics.
+
+```dart
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  super.debugFillProperties(properties);
+  properties
+    ..add(DiagnosticsProperty('fieldName', $fieldName))
+    ..add(DiagnosticsProperty('fieldName', $fieldName));
+}
+```
+
+**Key Differences from Spec debugFillProperties**:
+
+| Aspect | Spec Pattern | Styler Pattern |
+|--------|--------------|----------------|
+| Property type | Type-specific (ColorProperty, IntProperty, etc.) | **Always `DiagnosticsProperty`** |
+| Field reference | `fieldName` (direct) | `$fieldName` (Prop wrapper) |
+| Base fields | N/A | **NOT included** (no animation, modifier, variants) |
+| String name | Matches field name | Matches field name (without `$`) |
+
+**Examples from codebase**:
+```dart
+// BoxStyler (all DiagnosticsProperty, all $-prefixed)
+properties
+  ..add(DiagnosticsProperty('alignment', $alignment))
+  ..add(DiagnosticsProperty('padding', $padding))
+  ..add(DiagnosticsProperty('margin', $margin))
+  ..add(DiagnosticsProperty('constraints', $constraints))
+  ..add(DiagnosticsProperty('decoration', $decoration))
+  ..add(DiagnosticsProperty('clipBehavior', $clipBehavior));
+
+// TextStyler (note: 'directives' not 'textDirectives')
+..add(DiagnosticsProperty('directives', $textDirectives));
+```
+
+**Edge case**: `$textDirectives` is displayed as `'directives'` (shortened name).
+
+### 2.9 Styler props Pattern
+
+```dart
+@override
+List<Object?> get props => [
+  $field1,
+  $field2,
+  // ... all $-prefixed fields in declaration order
+  // Base fields NOT typically included
+];
+```
 
 ---
 
