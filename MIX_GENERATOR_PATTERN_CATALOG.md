@@ -206,6 +206,22 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable, _$BoxSpecMethods 
 
 **Tooling suggestion**: A `build_runner` diagnostic that checks whether required symbols are in scope before emitting code would help catch missing imports early. Without this, if the stub forgets an import, the generated code will fail to compile with an "undefined name" error that points at the generated part rather than the stub.
 
+#### Fail-Fast Validations
+
+The generator should emit actionable errors for the following stub issues:
+
+| Validation | Error Message |
+|------------|---------------|
+| Missing `part` directive | `@MixableSpec found but no 'part "x.g.dart"' directive. Add: part 'box_spec.g.dart';` |
+| Missing `_$XSpecMethods` mixin | `BoxSpec must include 'with _$BoxSpecMethods' in its declaration` |
+| Missing `Diagnosticable` mixin | `BoxSpec must include 'with Diagnosticable' before '_$BoxSpecMethods'` |
+| Unknown Spec in mixin map | `BoxSpec not found in mixin_mappings.dart. Add entry or use @MixableSpec(mixins: [...])` |
+| Missing alias for known field | `Field 'textDirectives' requires alias. Add to field_aliases.dart or use @MixableField(publicName: 'directives')` |
+| Missing FlagProperty description | `Bool field 'clipToBounds' needs ifTrue description. Add to flag_descriptions.dart` |
+| Unrecognized field type | `Type 'CustomWidget' not in type registry. Using fallback: Prop.maybe + MixOps.lerpSnap` |
+
+These validations help developers fix issues at build time rather than encountering cryptic compile errors or runtime failures.
+
 **Migration path**:
 1. Hand-written style files remain as **golden references** during development
 2. Once generator output matches golden references, hand-written files can be deleted
@@ -281,14 +297,22 @@ packages/mix_generator/lib/src/core/plans/field_model.dart
    class MixTypeRegistry {
      // FlutterType → MixType mapping
      final Map<String, String> mixTypes;
-     // FlutterType → ListMixType mapping (if applicable)
+     // ElementType → ListMixType mapping (keyed by element type, NOT "List<T>")
+     // e.g., "Shadow" → "ShadowListMix", "BoxShadow" → "BoxShadowListMix"
      final Map<String, String> listMixTypes;
 
      bool hasMixType(String flutterType);
      String? getMixType(String flutterType);
-     String? getListMixType(String flutterType);
+     /// Lookup by element type, not by List<T> string
+     String? getListMixType(String elementType);
    }
    ```
+
+   **List handling logic**:
+   1. Detect `List<T>` in analyzer
+   2. Extract element type `T`
+   3. Look up `T` in `listMixTypes` registry
+   4. If found, generate `Prop.mix(TListMix(value))`
 
 2. **Build `UtilityRegistry`** with callback kind enum (see C10):
    ```dart
@@ -404,6 +428,12 @@ packages/mix_generator/lib/src/core/styler/styler_builder.dart
 7. Generate `debugFillProperties()` for Styler (all DiagnosticsProperty, excludes base fields)
 8. Generate `props` getter with `$`-prefixed fields only (base fields handled by super, see C19)
 
+**Setter generation rule**:
+- Generate a setter for every field that appears in the public constructor
+- Setter name = `stylerPublicName` (the aliased name, see D2)
+- No exceptions for raw list fields (e.g., `textDirectives` still gets a setter named `directives`)
+- Setter body: `return merge(copyWith(field: value))`
+
 **Migration:** After verifying golden equivalence, delete the hand-written Styler file and update any barrel exports to import the generated file instead.
 
 ### Phase 5: MutableStyler Builder (NEW)
@@ -418,6 +448,9 @@ packages/mix_generator/lib/src/core/mutable/mutable_builder.dart
 3. Generate MutableState class with Mutable mixin
 4. Generate variant methods (`withVariant`, `withVariants`)
 5. Generate `merge()` and `resolve()` delegations
+
+**Explicitly NOT generated (de-scoped)**:
+- **Deprecated `on` utility**: Some hand-written MutableStylers have `@Deprecated('Use ...')` on their `on` property. This is legacy API and will not be generated. Update expected golden fixtures accordingly.
 
 **Migration:** After verifying golden equivalence, delete the hand-written MutableStyler file and update any barrel exports to import the generated file instead.
 
