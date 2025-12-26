@@ -46,19 +46,31 @@ packages/mix/lib/src/
 
 ## Examples
 
-**Properties:** Use `$` prefix for type-safe props:
+**Fluent chaining (recommended):**
 ```dart
-Style($box.color.blue(), $text.style.bold())
+final style = BoxStyler()
+    .color(Colors.blue)
+    .size(100, 100)
+    .padding(16)
+    .borderRounded(8);
+
+Box(style: style, child: child)
 ```
 
 **Variants:** Context-aware styling:
 ```dart
-Style($box.color.black(), $on.dark($box.color.white()))
+final style = BoxStyler()
+    .color(Colors.white)
+    .onDark(BoxStyler().color(Colors.black))
+    .onHovered(BoxStyler().color(Colors.blue));
 ```
 
-**Fluent chaining:**
+**$box mutable accessor** (cascade notation):
 ```dart
-final box = BoxMix().size(200, 200).padding(EdgeInsetsMix.all(16));
+final style = $box
+  ..color(Colors.red)
+  ..height(100)
+  ..width(100);
 ```
 
 ## Documentation
