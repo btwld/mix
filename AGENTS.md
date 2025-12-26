@@ -51,7 +51,7 @@ packages/mix/lib/src/
 final style = BoxStyler()
     .color(Colors.blue)
     .size(100, 100)
-    .padding(16)
+    .paddingAll(16)
     .borderRounded(8);
 
 Box(style: style, child: child)

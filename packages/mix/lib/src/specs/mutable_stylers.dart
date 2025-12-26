@@ -5,8 +5,8 @@
 library;
 
 // Global utilities for $on and $wrap functionality are now available via spec-specific utilities:
-// - BoxStyler().onHovered(), BoxStyler().wrap.opacity(), etc.
-// - TextStyler().onDark(), TextStyler().wrap.padding(), etc.
+// - BoxStyler().onHovered(), BoxStyler().wrap(...), etc.
+// - TextStyler().onDark(), TextStyler().wrap(...), etc.
 import 'box/box_mutable_style.dart';
 import 'flex/flex_mutable_style.dart';
 import 'flexbox/flexbox_mutable_style.dart';
