@@ -731,7 +731,8 @@ class ModifierListTween extends Tween<List<WidgetModifier>?> {
   List<WidgetModifier>? lerp(double t) {
     List<WidgetModifier>? lerpedModifiers;
     if (end != null) {
-      final thisModifiers = begin!;
+      // Use empty list if begin is null (handles lerp from null to non-null)
+      final thisModifiers = begin ?? [];
       final otherModifiers = end!;
 
       // Create a map of modifiers by runtime type from the other list

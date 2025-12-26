@@ -40,13 +40,17 @@ class ImageMutableStyler extends StyleMutableBuilder<ImageSpec>
   late final colorBlendMode = MixUtility(mutable.colorBlendMode);
 
   @Deprecated(
-    'Use direct methods like \$image.onHovered() instead. '
-    'Note: Returns ImageStyle for consistency with other utility methods like animate().',
+    'Use ImageStyler().onHovered() and similar methods directly instead. '
+    'This property was deprecated after Mix v2.0.0.',
   )
   late final on = OnContextVariantUtility<ImageSpec, ImageStyler>(
     (v) => mutable.variants([v]),
   );
 
+  @Deprecated(
+    'Use ImageStyler().wrap() method directly instead. '
+    'This property was deprecated after Mix v2.0.0.',
+  )
   late final wrap = WidgetModifierUtility(
     (prop) => mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
   );

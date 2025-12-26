@@ -43,13 +43,17 @@ class FlexBoxMutableStyler extends StyleMutableBuilder<FlexBoxSpec>
   );
 
   @Deprecated(
-    'Use direct methods like \$flexbox.onHovered() instead. '
-    'Note: Returns FlexBoxStyle for consistency with other utility methods like animate().',
+    'Use FlexBoxStyler().onHovered() and similar methods directly instead. '
+    'This property was deprecated after Mix v2.0.0.',
   )
   late final on = OnContextVariantUtility<FlexBoxSpec, FlexBoxStyler>(
     (v) => mutable.variants([v]),
   );
 
+  @Deprecated(
+    'Use FlexBoxStyler().wrap() method directly instead. '
+    'This property was deprecated after Mix v2.0.0.',
+  )
   late final wrap = WidgetModifierUtility(
     (prop) => mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
   );

@@ -48,12 +48,16 @@ class TextMutableStyler extends StyleMutableBuilder<TextSpec>
   );
   late final locale = MixUtility(mutable.locale);
   @Deprecated(
-    'Use direct methods like \$text.onHovered() instead. '
-    'Note: Returns TextStyling for consistency with other utility methods like animate().',
+    'Use TextStyler().onHovered() and similar methods directly instead. '
+    'This property was deprecated after Mix v2.0.0.',
   )
   late final on = OnContextVariantUtility<TextSpec, TextStyler>(
     (v) => mutable.variants([v]),
   );
+  @Deprecated(
+    'Use TextStyler().wrap() method directly instead. '
+    'This property was deprecated after Mix v2.0.0.',
+  )
   late final wrap = WidgetModifierUtility(
     (prop) => mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
   );

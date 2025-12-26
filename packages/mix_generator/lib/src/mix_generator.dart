@@ -9,8 +9,6 @@
 // To complete the migration, these files should be modified to use MixGenerator methods
 // instead of TypeRegistry directly.
 
-import 'dart:io';
-
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
@@ -267,41 +265,22 @@ class MixGenerator extends Generator {
   void _registerTypes(List<BaseMetadata> sortedMetadata) {
     final types = <String, String>{};
 
-    // Write debug info to file
-    try {
-      final debugFile = File('/tmp/mix_generator_debug.txt');
-      final debugSink = debugFile.openWrite();
+    for (final metadata in sortedMetadata) {
+      final name = metadata.name;
 
-      debugSink.writeln(
-        '_registerTypes: Registering types from ${sortedMetadata.length} metadata objects',
-      );
-
-      for (final metadata in sortedMetadata) {
-        final typeName = metadata.runtimeType.toString();
-        final name = metadata.name;
-        debugSink.writeln('  Metadata type: $typeName, name: $name');
-
-        if (metadata is SpecMetadata) {
-          types['${name}Attribute'] = name;
-          types['${name}Utility'] = name;
-        } else if (metadata is MixableTypeMetadata) {
-          if (name.endsWith('Dto')) {
-            final baseName = name.substring(0, name.length - 3);
-            types['${baseName}Utility'] = baseName;
-          } else {
-            types['${name}Utility'] = name;
-          }
-        } else if (metadata is UtilityMetadata) {
-          types[name] = TypeUtils.removeUtilitySuffix(name);
+      if (metadata is SpecMetadata) {
+        types['${name}Attribute'] = name;
+        types['${name}Utility'] = name;
+      } else if (metadata is MixableTypeMetadata) {
+        if (name.endsWith('Dto')) {
+          final baseName = name.substring(0, name.length - 3);
+          types['${baseName}Utility'] = baseName;
         } else {
-          debugSink.writeln('  Unknown metadata type: $typeName');
+          types['${name}Utility'] = name;
         }
+      } else if (metadata is UtilityMetadata) {
+        types[name] = TypeUtils.removeUtilitySuffix(name);
       }
-
-      debugSink.writeln('  Added ${types.length} types to _discoveredTypes');
-      debugSink.close();
-    } catch (e) {
-      _logger.info('Error writing debug file: $e');
     }
 
     _discoveredTypes.addAll(types);

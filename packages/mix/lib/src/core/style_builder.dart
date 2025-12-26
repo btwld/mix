@@ -48,12 +48,52 @@ class StyleBuilder<S extends Spec<S>> extends StatefulWidget {
 
 class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
     with TickerProviderStateMixin {
-  late final WidgetStatesController _controller;
+  late WidgetStatesController _controller;
+
+  /// Tracks whether we created the controller internally (and thus own it)
+  bool _ownsController = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = widget.controller ?? WidgetStatesController();
+    _initController();
+  }
+
+  void _initController() {
+    if (widget.controller != null) {
+      _controller = widget.controller!;
+      _ownsController = false;
+    } else {
+      _controller = WidgetStatesController();
+      _ownsController = true;
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant StyleBuilder<S> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Handle controller changes
+    if (oldWidget.controller != widget.controller) {
+      _handleControllerChange(oldWidget);
+    }
+  }
+
+  void _handleControllerChange(StyleBuilder<S> oldWidget) {
+    // Dispose old internal controller if we owned it
+    if (_ownsController) {
+      _controller.dispose();
+    }
+
+    // Set up new controller
+    if (widget.controller != null) {
+      _controller = widget.controller!;
+      _ownsController = false;
+    } else {
+      // Create internal controller, preserving state from old external controller
+      _controller = WidgetStatesController(oldWidget.controller?.value ?? {});
+      _ownsController = true;
+    }
   }
 
   Style<S> _buildStyle(BuildContext context) {
@@ -65,7 +105,7 @@ class _StyleBuilderState<S extends Spec<S>> extends State<StyleBuilder<S>>
   @override
   void dispose() {
     // Only dispose controllers we created internally
-    if (widget.controller == null) {
+    if (_ownsController) {
       _controller.dispose();
     }
 
