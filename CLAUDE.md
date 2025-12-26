@@ -65,14 +65,6 @@ final style = BoxStyler()
     .onHovered(BoxStyler().color(Colors.blue));
 ```
 
-**$box mutable accessor** (cascade notation):
-```dart
-final style = $box
-  ..color(Colors.red)
-  ..height(100)
-  ..width(100);
-```
-
 ## Documentation
 
 **Guides:**
