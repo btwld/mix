@@ -232,36 +232,56 @@ These validations help developers fix issues at build time rather than encounter
 
 **Builder configuration** (`packages/mix_generator/build.yaml`):
 ```yaml
+targets:
+  $default:
+    builders:
+      mix_generator:
+        enabled: true
+        generate_for:
+          - lib/src/specs/**/*.dart  # Narrowed scope for specs only
+        options:
+          debug: false
+
 builders:
-  spec_mixin:
-    target: ":mix_generator"
-    import: "package:mix_generator/builder.dart"
-    builder_factories: ["mixableSpecBuilder"]
-    build_extensions: {".dart": [".spec.g.part"]}
+  mix_generator:
+    import: 'package:mix_generator/mix_generator.dart'
+    builder_factories: ['mixGenerator']
+    build_extensions: {'.dart': ['.g.dart']}
     auto_apply: dependents
-    build_to: cache
-    applies_builders: ["source_gen|combining_builder"]
+    build_to: source
+    applies_builders: []
 ```
 
-**Note**: Uses `SharedPartBuilder` so multiple generators can contribute to a single `.g.dart`. The `combining_builder` merges all `.g.part` files into the final `.g.dart`.
+**Note**: Uses `PartBuilder` with `.g.dart` output written directly to source. The generator entry point is `mixGenerator` in `mix_generator.dart`.
 
-**Consuming packages** — use `generate_for` in `build.yaml` to limit generator scope:
+**Current vs Future architecture**:
+- **Current**: `PartBuilder` outputs `.g.dart` directly to source
+- **Future option**: Could migrate to `SharedPartBuilder` with `combining_builder` if multiple generators need to contribute to the same `.g.dart`
+
+**Consuming packages** — the `generate_for` in targets section limits generator scope:
 ```yaml
 # In packages/mix/build.yaml
 targets:
   $default:
     builders:
-      mix_generator|spec_mixin:
+      mix_generator:
+        enabled: true
         generate_for:
-          - lib/src/specs/**.dart
+          - lib/src/specs/**/*.dart  # Only run on spec files
 ```
 
 ---
 
 #### Golden Test Strategy (Updated)
 
-Golden tests compare generated `.g.dart` content against **expected `.g.dart` fixtures**:
+Golden tests compare generated `.g.dart` content against **expected `.g.dart` fixtures**.
 
+**Setup required** (directory does not exist yet):
+```bash
+mkdir -p packages/mix_generator/test/golden/{fixtures,expected}
+```
+
+**Directory structure**:
 ```
 packages/mix_generator/test/golden/
   ├── expected/
@@ -271,6 +291,24 @@ packages/mix_generator/test/golden/
   └── fixtures/
       ├── box_spec_input.dart   # Minimal stub input
       └── ...
+```
+
+**Minimal fixture example** (`fixtures/box_spec_input.dart`):
+```dart
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:mix/mix.dart';
+
+part 'box_spec_input.g.dart';
+
+@MixableSpec()
+final class BoxSpec extends Spec<BoxSpec> with Diagnosticable, _$BoxSpecMethods {
+  final AlignmentGeometry? alignment;
+  final EdgeInsetsGeometry? padding;
+  final Clip? clipBehavior;
+
+  const BoxSpec({this.alignment, this.padding, this.clipBehavior});
+}
 ```
 
 **Test flow**:
@@ -432,6 +470,15 @@ packages/mix_generator/lib/src/core/styler/styler_builder.dart
 7. Generate `debugFillProperties()` for Styler (all DiagnosticsProperty, excludes base fields)
 8. Generate `props` getter with ALL `$`-prefixed fields INCLUDING base fields (see C19)
 9. Generate `call()` method for widget-creating Stylers
+10. Generate `static {Name}MutableStyler get chain` accessor (returns `{Name}MutableStyler({Name}Styler())`)
+
+**chain accessor pattern**:
+```dart
+/// Returns a mutable styler for cascade-style method chaining.
+static {Name}MutableStyler get chain => {Name}MutableStyler({Name}Styler());
+```
+
+**Consistency note**: StackStyler is currently missing the `chain` accessor in the hand-written code. The generator should add it for all Stylers uniformly.
 
 **call() method pattern** (for widget-creating Stylers):
 ```dart
@@ -2778,9 +2825,16 @@ class MutableStylerBuilder {
 Single `MixGenerator` coordinates all output pieces into one `.g.dart` part file:
 
 ```dart
-/// Entry point: packages/mix_generator/lib/builder.dart
-Builder mixableSpecBuilder(BuilderOptions options) =>
-    SharedPartBuilder([MixGenerator()], 'mix');
+/// Entry point: packages/mix_generator/lib/mix_generator.dart
+Builder mixGenerator(BuilderOptions options) {
+  return PartBuilder(
+    [MixGenerator()],
+    '.g.dart',
+    formatOutput: (code, version) {
+      return DartFormatter(languageVersion: version).format(code);
+    },
+  );
+}
 
 /// Main generator implementation
 class MixGenerator extends GeneratorForAnnotation<MixableSpec> {
@@ -2819,7 +2873,9 @@ class MixGenerator extends GeneratorForAnnotation<MixableSpec> {
 ```
 
 **Key points**:
-- Uses `SharedPartBuilder` so output combines with other generators into `.g.dart`
+- Uses `PartBuilder` to output `.g.dart` directly to source
+- Single generator produces Spec mixin + Styler + MutableStyler in one pass
+- Future: Could migrate to `SharedPartBuilder` if multiple generators need to combine output
 - Single annotation (`@MixableSpec`) triggers generation of all related artifacts
 - Plans are computed fresh from Spec + registries (no reading of existing Styler code)
 - Output order: mixin → typedef → Styler → MutableStyler → MutableState
