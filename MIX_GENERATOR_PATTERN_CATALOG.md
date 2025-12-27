@@ -470,15 +470,10 @@ packages/mix_generator/lib/src/core/styler/styler_builder.dart
 7. Generate `debugFillProperties()` for Styler (all DiagnosticsProperty, excludes base fields)
 8. Generate `props` getter with ALL `$`-prefixed fields INCLUDING base fields (see C19)
 9. Generate `call()` method for widget-creating Stylers
-10. Generate `static {Name}MutableStyler get chain` accessor (returns `{Name}MutableStyler({Name}Styler())`)
 
-**chain accessor pattern**:
-```dart
-/// Returns a mutable styler for cascade-style method chaining.
-static {Name}MutableStyler get chain => {Name}MutableStyler({Name}Styler());
-```
-
-**Consistency note**: StackStyler is currently missing the `chain` accessor in the hand-written code. The generator should add it for all Stylers uniformly.
+**NOT generated in this phase** (deferred to Phase 5):
+- `static {Name}MutableStyler get chain` accessor — requires MutableStyler generation
+- The `chain` accessor will remain hand-written until Phase 5 is implemented
 
 **call() method pattern** (for widget-creating Stylers):
 ```dart
@@ -500,33 +495,40 @@ static {Name}MutableStyler get chain => {Name}MutableStyler({Name}Styler());
 
 **Migration:** After verifying golden equivalence, delete the hand-written Styler file and update any barrel exports to import the generated file instead.
 
-### Phase 5: MutableStyler Builder (NEW)
-**File to create:**
+### Phase 5: MutableStyler Builder (DEFERRED)
+
+> **Status**: DEFERRED — MutableStyler classes remain hand-written for initial release.
+> This phase will be implemented after Spec mixin + Styler generation is stable.
+
+**Rationale for deferral**:
+- MutableStyler classes are more complex (utilities, convenience accessors, MutableState)
+- Hand-written MutableStyler code is stable and well-tested
+- Incremental approach: validate Spec + Styler generation first
+- The `Styler.chain` accessor will continue to work with hand-written MutableStyler
+
+**File to create** (future):
 ```
 packages/mix_generator/lib/src/core/mutable/mutable_builder.dart
 ```
 
-**Tasks:**
+**Tasks** (future):
 1. Generate utility field initializations with callbacks
 2. Generate convenience accessor chains
 3. Generate MutableState class with Mutable mixin
 4. Generate variant methods (`withVariant`, `withVariants`)
 5. Generate `merge()` and `resolve()` delegations
+6. Generate `Styler.chain` accessor (currently hand-written)
 
-**Explicitly NOT generated (de-scoped)**:
-- **Deprecated `on` utility**: Some hand-written MutableStylers have `@Deprecated('Use ...')` on their `on` property. This is legacy API and will not be generated. Update expected golden fixtures accordingly.
+**What remains hand-written until Phase 5**:
+- All `*_mutable_style.dart` files
+- The `static ... get chain` accessor in each Styler
+- MutableState classes
+- Utility patterns and registries
 
-**Clarification: MutableStyler is STILL REQUIRED**:
-The `on` utility is the ONLY deprecated piece. The following are NOT deprecated and must be generated:
-- `MutableStyler` classes themselves — `BoxStyler.chain` returns `BoxMutableStyler`
-- `MutableState` classes — required for mutable state management
-- Utility patterns (propMix, propDirect, methodTearOff, convenienceAccessor)
-- `StyleMutableBuilder` inheritance
-- All utility registries and resolvers
-
-Removing MutableStyler generation would break the `{Name}Styler.chain` accessor pattern.
-
-**Migration:** After verifying golden equivalence, delete the hand-written MutableStyler file and update any barrel exports to import the generated file instead.
+**Deprecated patterns** (will NOT be generated even in Phase 5):
+- `.on` utility property (replaced by `Styler().onHovered()` etc.)
+- `.wrap` utility property (replaced by `Styler().wrap()`)
+- Global `$box`, `$flex` accessors (replaced by `BoxStyler()`, `FlexStyler()`)
 
 ### Phase 6: Testing Infrastructure
 **Files to create:**
@@ -561,7 +563,8 @@ packages/mix_generator/test/builders/
 - [ ] `merge()` uses `MixOps.merge` for Props, `MixOps.mergeList` for Lists
 - [ ] Base fields (`animation`, `modifier`, `variants`) always included
 
-**For MutableStyler classes:**
+**For MutableStyler classes** (DEFERRED - Phase 5):
+> These criteria apply when Phase 5 is implemented. MutableStyler remains hand-written for initial release.
 - [ ] Utilities use `late final` with correct callback pattern
 - [ ] Convenience accessors chain correctly to nested properties
 - [ ] MutableState class extends Styler with Mutable mixin
@@ -1285,20 +1288,20 @@ String _normalize(String code) {
 
 ```
 Phase 0: Emission Strategy (DESIGN DECISION - COMPLETE)
-  └─ Decision: Mixin-based Spec methods + full Styler/MutableStyler classes
+  └─ Decision: Mixin-based Spec methods + full Styler classes
   └─ Decision: Single .g.dart per Spec containing all generated code
   └─ Outputs: Stub file structure expectations
        │
        ▼
 Phase 1: Registries + Derived Plans
-  └─ Inputs: Curated maps OR @MixableType/@MixableUtility annotations
-  └─ Outputs: MixTypeRegistry, UtilityRegistry, FieldModel, StylerPlan, MutablePlan
+  └─ Inputs: Curated maps OR @MixableType annotations
+  └─ Outputs: MixTypeRegistry, FieldModel, StylerPlan
   └─ NOTE: Plans are DERIVED from Spec, not extracted from Styler
        │
        ▼
 Phase 2: Resolvers
   └─ Inputs: FieldModel, Registries
-  └─ Outputs: LerpResolver, PropResolver, UtilityResolver, DiagnosticResolver
+  └─ Outputs: LerpResolver, PropResolver, DiagnosticResolver
        │
        ▼
 Phase 3: Spec Mixin Builder
@@ -1311,17 +1314,20 @@ Phase 4: Styler Builder
   └─ Outputs: Full Styler class generator
        │
        ▼
-Phase 5: MutableStyler Builder
-  └─ Inputs: MutablePlan, UtilityRegistry, StylerPlan
-  └─ Outputs: Full MutableStyler + MutableState class generator
-       │
-       ▼
 Phase 6: Testing
   └─ Inputs: All builders, expected .g.dart fixtures
   └─ Outputs: Golden tests (vs expected .g.dart), compile tests, regression tests
+
+       ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
+       │  DEFERRED (Phase 5: MutableStyler Builder)
+       │  └─ Inputs: MutablePlan, UtilityRegistry, StylerPlan
+       │  └─ Outputs: Full MutableStyler + MutableState class generator
+       │  └─ NOTE: Remains hand-written for initial release
+       ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
 ```
 
 **Implementation starts at Phase 1**: Phase 0 is already decided (mixin-based). Build registries first.
+**Initial scope**: Phases 1-4 + 6 (Spec mixin + Styler). Phase 5 (MutableStyler) is deferred.
 
 ---
 
@@ -2850,7 +2856,6 @@ class MixGenerator extends GeneratorForAnnotation<MixableSpec> {
 
     // 2. Build all derived plans (NOT extracted from existing code)
     final stylerPlan = StylerPlan.from(specMetadata, fieldModels, CuratedMaps.instance);
-    final mutablePlan = MutablePlan.from(stylerPlan, CuratedMaps.instance);
 
     // 3. Generate all outputs in order into single buffer
     final buffer = StringBuffer();
@@ -2864,8 +2869,11 @@ class MixGenerator extends GeneratorForAnnotation<MixableSpec> {
     // 3c. Full Styler class
     buffer.writeln(StylerBuilder().build(stylerPlan));
 
-    // 3d. Full MutableStyler + MutableState classes
-    buffer.writeln(MutableStylerBuilder().build(mutablePlan));
+    // NOTE: MutableStyler generation is DEFERRED (Phase 5)
+    // MutableStyler classes remain hand-written for initial release
+    // When Phase 5 is implemented, add:
+    // final mutablePlan = MutablePlan.from(stylerPlan, CuratedMaps.instance);
+    // buffer.writeln(MutableStylerBuilder().build(mutablePlan));
 
     return buffer.toString();
   }
@@ -2874,11 +2882,11 @@ class MixGenerator extends GeneratorForAnnotation<MixableSpec> {
 
 **Key points**:
 - Uses `PartBuilder` to output `.g.dart` directly to source
-- Single generator produces Spec mixin + Styler + MutableStyler in one pass
-- Future: Could migrate to `SharedPartBuilder` if multiple generators need to combine output
-- Single annotation (`@MixableSpec`) triggers generation of all related artifacts
+- Single generator produces Spec mixin + Styler in one pass
+- MutableStyler generation is DEFERRED (Phase 5) — remains hand-written
+- Single annotation (`@MixableSpec`) triggers generation of Spec mixin + Styler
 - Plans are computed fresh from Spec + registries (no reading of existing Styler code)
-- Output order: mixin → typedef → Styler → MutableStyler → MutableState
+- Output order: mixin → typedef → Styler
 
 ---
 
@@ -2886,19 +2894,19 @@ class MixGenerator extends GeneratorForAnnotation<MixableSpec> {
 
 **See C14 for phase dependencies.**
 
+**Initial scope**: Phases 1-4 + 6 (Spec mixin + Styler generation)
+**Deferred**: Phase 5 (MutableStyler generation)
+
 ### Phase 1: Curated Maps + Registries
 1. Create `core/curated/` directory with all curated maps (see C23)
 2. Create `MixTypeRegistry` using curated type mappings
-3. Create `UtilityRegistry` using curated utility mappings
-4. Create `FieldModel` with computed effective values
-5. Create `StylerPlan` derived from Spec + registries
-6. Create `MutablePlan` derived from StylerPlan
+3. Create `FieldModel` with computed effective values
+4. Create `StylerPlan` derived from Spec + registries
 
 ### Phase 2: Type Resolution Utilities
 1. Implement `LerpResolver` with type lookup (using curated maps)
 2. Implement `PropResolver` with Mix type detection (using registry)
-3. Implement `UtilityResolver` with utility mapping (using registry)
-4. Implement `DiagnosticResolver` with property type mapping
+3. Implement `DiagnosticResolver` with property type mapping
 
 ### Phase 3: Spec Mixin Builder
 1. Create `SpecMixinBuilder` to generate `_$XSpecMethods` mixin
@@ -2909,17 +2917,24 @@ class MixGenerator extends GeneratorForAnnotation<MixableSpec> {
 1. Generate typedef and full Styler class
 2. Generate field declarations ($-prefixed Props)
 3. Generate dual constructors (.create and public)
-3. Generate setter methods
-4. Generate resolve() method
-5. Generate merge() method
-6. Generate mixin applications
+4. Generate setter methods
+5. Generate resolve() method
+6. Generate merge() method
+7. Generate mixin applications
 
-### Phase 5: MutableStyler Builder
-1. Generate full MutableStyler class
-2. Generate utility initializations (using curated maps + registry)
-3. Generate convenience accessors (using curated map C9)
-4. Generate MutableState class
-5. Generate variant methods
+### Phase 5: MutableStyler Builder (DEFERRED)
+> This phase will be implemented after Phases 1-4 are stable.
+> MutableStyler classes remain hand-written for initial release.
+
+1. Create `UtilityRegistry` using curated utility mappings
+2. Create `MutablePlan` derived from StylerPlan
+3. Implement `UtilityResolver` with utility mapping
+4. Generate full MutableStyler class
+5. Generate utility initializations (using curated maps + registry)
+6. Generate convenience accessors (using curated map C9)
+7. Generate MutableState class
+8. Generate variant methods
+9. Generate `Styler.chain` accessor
 
 ### Phase 6: Testing Infrastructure
 1. **Golden file tests**: Compare generated `.g.dart` to expected fixtures (see Phase 0)
