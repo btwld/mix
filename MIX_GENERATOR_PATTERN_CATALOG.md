@@ -27,11 +27,9 @@ Rewrite `mix_generator` from scratch to auto-generate:
 1. **Spec class bodies**: `copyWith()`, `lerp()`, `debugFillProperties()`, `props`
 2. **Styler classes**: Field declarations, dual constructors, `resolve()`, `merge()`, setter methods
 
-> **Note**: MutableStyler generation is DEFERRED to Phase 5. MutableStyler classes remain hand-written for initial release.
-
 ### Current State
 - The existing generator in `packages/mix_generator/` is legacy and partially functional
-- Hand-written Spec/Styler/MutableStyler classes exist in `packages/mix/lib/src/specs/*/`
+- Hand-written Spec/Styler classes exist in `packages/mix/lib/src/specs/*/`
 - These hand-written files are the **source of truth** for patterns
 
 ### Approach
@@ -154,7 +152,6 @@ class BoxStyler extends Style<BoxSpec>
 }
 ```
 
-> **Note**: MutableStyler and MutableState generation is DEFERRED to Phase 5. These classes remain hand-written for initial release and continue to work via `Styler.chain` accessor.
 
 ---
 
@@ -166,14 +163,12 @@ class BoxStyler extends Style<BoxSpec>
 |------------|-------------------|------------------|
 | `box_spec.dart` | `@MixableSpec()` on `BoxSpec` | `box_spec.g.dart` |
 
-**Contents of generated `.g.dart`** (initial scope):
+**Contents of generated `.g.dart`**:
 1. `_$BoxSpecMethods` mixin (Spec method overrides)
 2. `typedef BoxMix = BoxStyler;`
 3. `BoxStyler` class (full)
 
-> **Deferred to Phase 5**: `BoxMutableStyler` and `BoxMutableState` classes
-
-**No separate `box_style.dart` needed**: Styler code lives in the generated part. Hand-written `box_mutable_style.dart` remains for MutableStyler.
+**No separate `box_style.dart` needed**: Styler code lives in the generated part.
 
 **Stub validation**: If the stub file omits the `part` directive pointing to the generated file (e.g., `part 'box_spec.g.dart';`), `build_runner` will not emit a combined `.g.dart`. The generator should emit a warning when `@MixableSpec` is found but no corresponding `part` directive exists.
 
@@ -323,7 +318,6 @@ packages/mix_generator/lib/src/core/plans/styler_plan.dart
 packages/mix_generator/lib/src/core/plans/field_model.dart
 ```
 
-**NOTE**: `UtilityRegistry` and `MutablePlan` are deferred to Phase 5 (MutableStyler generation).
 
 **Tasks:**
 
@@ -385,7 +379,6 @@ packages/mix_generator/lib/src/core/resolvers/prop_resolver.dart
 packages/mix_generator/lib/src/core/resolvers/diagnostic_resolver.dart
 ```
 
-**NOTE**: `UtilityResolver` is deferred to Phase 5 (MutableStyler generation).
 
 **Tasks:**
 1. `LerpResolver`: Map DartType → lerp strategy
@@ -436,10 +429,6 @@ packages/mix_generator/lib/src/core/styler/styler_builder.dart
 8. Generate `props` getter with ALL `$`-prefixed fields INCLUDING base fields (see C19)
 9. Generate `call()` method for widget-creating Stylers
 
-**NOT generated in this phase** (deferred to Phase 5):
-- `static {Name}MutableStyler get chain` accessor — requires MutableStyler generation
-- The `chain` accessor will remain hand-written until Phase 5 is implemented
-
 **call() method pattern** (for widget-creating Stylers):
 ```dart
 /// Returns a {WidgetName} widget with optional key and child.
@@ -460,42 +449,7 @@ packages/mix_generator/lib/src/core/styler/styler_builder.dart
 
 **Migration:** After verifying golden equivalence, delete the hand-written Styler file and update any barrel exports to import the generated file instead.
 
-### Phase 5: MutableStyler Builder (DEFERRED)
-
-> **Status**: DEFERRED — MutableStyler classes remain hand-written for initial release.
-> This phase will be implemented after Spec mixin + Styler generation is stable.
-
-**Rationale for deferral**:
-- MutableStyler classes are more complex (utilities, convenience accessors, MutableState)
-- Hand-written MutableStyler code is stable and well-tested
-- Incremental approach: validate Spec + Styler generation first
-- The `Styler.chain` accessor will continue to work with hand-written MutableStyler
-
-**File to create** (future):
-```
-packages/mix_generator/lib/src/core/mutable/mutable_builder.dart
-```
-
-**Tasks** (future):
-1. Generate utility field initializations with callbacks
-2. Generate convenience accessor chains
-3. Generate MutableState class with Mutable mixin
-4. Generate variant methods (`withVariant`, `withVariants`)
-5. Generate `merge()` and `resolve()` delegations
-6. Generate `Styler.chain` accessor (currently hand-written)
-
-**What remains hand-written until Phase 5**:
-- All `*_mutable_style.dart` files
-- The `static ... get chain` accessor in each Styler
-- MutableState classes
-- Utility patterns and registries
-
-**Deprecated patterns** (will NOT be generated even in Phase 5):
-- `.on` utility property (replaced by `Styler().onHovered()` etc.)
-- `.wrap` utility property (replaced by `Styler().wrap()`)
-- Global `$box`, `$flex` accessors (replaced by `BoxStyler()`, `FlexStyler()`)
-
-### Phase 6: Testing Infrastructure
+### Phase 5: Testing Infrastructure
 **Files to create:**
 ```
 packages/mix_generator/test/golden/
@@ -527,13 +481,6 @@ packages/mix_generator/test/builders/
 - [ ] `resolve()` returns `StyleSpec<{Name}Spec>` with correct structure
 - [ ] `merge()` uses `MixOps.merge` for Props, `MixOps.mergeList` for Lists
 - [ ] Base fields (`animation`, `modifier`, `variants`) always included
-
-**For MutableStyler classes** (DEFERRED - Phase 5):
-> These criteria apply when Phase 5 is implemented. MutableStyler remains hand-written for initial release.
-- [ ] Utilities use `late final` with correct callback pattern
-- [ ] Convenience accessors chain correctly to nested properties
-- [ ] MutableState class extends Styler with Mutable mixin
-- [ ] `value` and `currentValue` getters return `mutable.value`
 
 ### Code Quality
 - [ ] Generated code passes `dart format`
@@ -575,7 +522,7 @@ String _normalize(String code) {
 1. Start with simplest Spec (StackSpec - 4 fields)
 2. Progress to medium complexity (IconSpec - 13 fields)
 3. Complete with complex Spec (BoxSpec - 9 fields with nested types)
-4. Apply same progression for Styler (MutableStyler deferred to Phase 5)
+4. Apply same progression for Styler generation
 
 ---
 
@@ -587,25 +534,13 @@ String _normalize(String code) {
 | Item | Location | Replacement |
 |------|----------|-------------|
 | Global `$box`, `$flex`, `$text` etc. accessors | `mutable_stylers.dart` | `BoxStyler()`, `FlexStyler()`, `TextStyler()` etc. |
-| `.on` property in MutableStylers | All `*_mutable_style.dart` | Direct methods: `BoxStyler().onHovered()` |
-| `.wrap` property in MutableStylers | All `*_mutable_style.dart` | `BoxStyler().wrap(...)` |
 | Legacy widget constructors | Various `*_widget.dart` | New constructors like `Box(styleSpec: ...)` |
 
 **Source**: Commit `73749c6` - "feat: deprecate $ utility accessors in favor of Styler classes (#806)"
 
-**NOT DEPRECATED (still used in codebase)**:
-| Item | Evidence | Status |
-|------|----------|--------|
-| `Styler` classes | Primary API: `BoxStyler().color(...)` | **GENERATE** (initial scope) |
-| `MutableStyler` classes | `BoxStyler.chain` returns `BoxMutableStyler` | Hand-written (Phase 5 deferred) |
-| `MutableState` classes | Used internally by MutableStyler | Hand-written (Phase 5 deferred) |
-| Utility patterns | All `*_mutable_style.dart` files | Hand-written (Phase 5 deferred) |
-| `StyleMutableBuilder` | `core/spec_utility.dart:54` | Base class (no generation needed) |
-
-**Generator Impact (Initial Scope)**:
-- **Generate**: Spec mixin + Styler classes
-- **Do NOT generate**: MutableStyler, MutableState, utility patterns (remain hand-written)
-- **Mark deprecated in output**: Global `$` accessors (if generating mutable_stylers.dart entrypoints)
+**Generator produces**:
+- Spec mixin (`_$BoxSpecMethods`)
+- Styler class (`BoxStyler`)
 
 ### When to use MixOps.lerp vs MixOps.lerpSnap
 - Check `FieldModel.isLerpableEffective` (annotation override first)
@@ -618,14 +553,6 @@ String _normalize(String code) {
 - Use `MixTypeRegistry.getListMixType(typeKey)` → `Prop.mix(ListMix(value))`
 - Default to `Prop.maybe` for types not in registry
 
-### When to generate utility vs MixUtility (DEFERRED - Phase 5)
-> This section applies to MutableStyler generation, which is deferred to Phase 5.
-
-- Use `UtilityRegistry.getCallbackKind(typeKey)` (see C10 for enum)
-- `propMix` → specialized utility + `Prop.mix(prop)`
-- `propDirect` → specialized utility + direct `prop`
-- `methodTearOff` → `MixUtility(mutable.methodName)`
-
 ---
 
 ## CODEBASE NAVIGATION
@@ -637,10 +564,8 @@ String _normalize(String code) {
 | Base Style class | `packages/mix/lib/src/core/style.dart` |
 | Prop class | `packages/mix/lib/src/core/prop.dart` |
 | MixOps helpers | `packages/mix/lib/src/core/helpers.dart` |
-| StyleMutableBuilder | `packages/mix/lib/src/core/spec_utility.dart` |
 | Example Spec | `packages/mix/lib/src/specs/box/box_spec.dart` |
 | Example Styler | `packages/mix/lib/src/specs/box/box_style.dart` |
-| Example MutableStyler | `packages/mix/lib/src/specs/box/box_mutable_style.dart` |
 | Current Generator | `packages/mix_generator/lib/src/mix_generator.dart` |
 | Current TypeRegistry | `packages/mix_generator/lib/src/core/type_registry.dart` |
 
@@ -673,14 +598,10 @@ String _normalize(String code) {
 
 Begin with Phase 1: Build registries and derived plans:
 1. Create `MixTypeRegistry` from curated type mappings (or `@MixableType` scan)
-2. Create `UtilityRegistry` from curated utility mappings — DEFERRED to Phase 5
-3. Create `FieldModel` with computed effective values for each Spec field
-4. Create `StylerPlan` derived from SpecMetadata + registries (NOT extracted from existing Styler)
-5. Create `MutablePlan` derived from StylerPlan + utility config — DEFERRED to Phase 5
+2. Create `FieldModel` with computed effective values for each Spec field
+3. Create `StylerPlan` derived from SpecMetadata + registries (NOT extracted from existing Styler)
 
-**Key principle**: All plans are **derived from Spec + registries**, never extracted from existing Styler/MutableStyler classes.
-
-> **Initial scope (Phases 1-4 + 6)**: Steps 1, 3, 4 only. Steps 2, 5 are deferred to Phase 5.
+**Key principle**: All plans are **derived from Spec + registries**, never extracted from existing Styler classes.
 
 Then proceed through phases sequentially, validating each phase before moving to the next.
 
@@ -711,9 +632,8 @@ class MixableField {
 
 | Property | Affects | Logic |
 |----------|---------|-------|
-| `isLerpable: false` | lerp() | Use `MixOps.lerpSnap(field, other?.field, t)` instead of `MixOps.lerp` (see C16) |
+| `isLerpable: false` | lerp() | Use `MixOps.lerpSnap(field, other?.field, t)` instead of `MixOps.lerp` (see C14) |
 | `dto` | Prop wrapper, resolve | Use specified DTO type instead of inferred |
-| `utilities` | MutableStyler (DEFERRED) | Use specified utility instead of inferred — Phase 5 |
 
 **Required Addition**: The current `@MixableField` does NOT support:
 - FlagProperty `ifTrue` description
@@ -991,126 +911,21 @@ final emitter = DartEmitter(
 
 ---
 
-### C8: typedef and static chain Generation
+### C8: typedef Generation
 
-**Issue**: These appear in all stylers but weren't explicitly mentioned.
+**Issue**: The typedef alias appears in all stylers but wasn't explicitly mentioned.
 
 **Pattern**:
 ```dart
-// Always generate typedef at top of styler file
+// Always generate typedef at top of generated file
 typedef {Name}Mix = {Name}Styler;
-
-// In styler class body, always generate static chain accessor
-static {Name}MutableStyler get chain => {Name}MutableStyler({Name}Styler());
 ```
 
-**Rule**: Generate for ALL stylers, unconditionally.
+**Rule**: Generate typedef for ALL stylers, unconditionally.
 
 ---
 
-### C9: Utility Accessor Curated Mapping (DEFERRED - Phase 5)
-
-> This section applies to MutableStyler generation, which is deferred to Phase 5.
-
-**Issue**: Convenience accessor chains like `decoration.box.border` are not type-inferable.
-
-**Curated accessor mapping** (from hand-written files):
-
-| MutableStyler | Accessor | Chain |
-|---------------|----------|-------|
-| BoxMutableStyler | border | `decoration.box.border` |
-| BoxMutableStyler | borderRadius | `decoration.box.borderRadius` |
-| BoxMutableStyler | color | `decoration.box.color` |
-| BoxMutableStyler | shadow | `decoration.box.boxShadow` |
-| BoxMutableStyler | width | `constraints.width` |
-| BoxMutableStyler | height | `constraints.height` |
-| BoxMutableStyler | minWidth | `constraints.minWidth` |
-| BoxMutableStyler | maxWidth | `constraints.maxWidth` |
-| BoxMutableStyler | minHeight | `constraints.minHeight` |
-| BoxMutableStyler | maxHeight | `constraints.maxHeight` |
-| TextMutableStyler | fontSize | `style.fontSize` |
-| TextMutableStyler | fontWeight | `style.fontWeight` |
-| TextMutableStyler | fontFamily | `style.fontFamily` |
-| TextMutableStyler | letterSpacing | `style.letterSpacing` |
-| TextMutableStyler | wordSpacing | `style.wordSpacing` |
-| TextMutableStyler | textColor | `style.color` |
-| TextMutableStyler | height | `style.height` |
-
-**Resolution**: Use annotation `@MixableField(utilities: [...])` with `properties` to define chains, OR use curated map.
-
----
-
-### C10: Utility Callback Pattern Decision Rule (DEFERRED - Phase 5)
-
-> This section applies to MutableStyler generation, which is deferred to Phase 5.
-
-**Issue**: Three different utility patterns exist, need explicit decision rule with enum.
-
-**UtilityCallbackKind enum** (defined in Phase 1):
-```dart
-enum UtilityCallbackKind {
-  propMix,            // Specialized utility + Prop.mix(prop)
-  propDirect,         // Specialized utility + direct prop (e.g., ColorUtility for IconStyler)
-  methodTearOff,      // MixUtility(mutable.method)
-  convenienceAccessor // Delegates to nested utility (e.g., BoxMutableStyler.color → decoration.box.color)
-}
-```
-
-**Pattern A: propMix** — Specialized Utility with `Prop.mix(prop)`
-```dart
-// For types with corresponding Mix types that need Prop.mix wrapping
-late final padding = EdgeInsetsGeometryUtility<BoxStyler>(
-  (prop) => mutable.merge(BoxStyler.create(padding: Prop.mix(prop))),
-);
-```
-
-**Pattern B: propDirect** — Specialized Utility with direct prop
-```dart
-// For types where prop is already the resolved type (no Prop.mix needed)
-// Example: IconMutableStyler has direct color field
-late final color = ColorUtility<IconStyler>(
-  (prop) => mutable.merge(IconStyler.create(color: prop)),  // NOT Prop.mix(prop)
-);
-```
-
-**Pattern C: methodTearOff** — MixUtility with method reference
-```dart
-// For simple types (enums, scalars, no specialized utility)
-late final clipBehavior = MixUtility(mutable.clipBehavior);
-late final transform = MixUtility(mutable.transform);
-```
-
-**Pattern D: convenienceAccessor** — Delegates to nested utility chain
-```dart
-// For fields accessible via nested utility (NOT a direct utility initialization)
-// Example: BoxMutableStyler.color delegates to decoration.box.color
-late final color = decoration.box.color;  // NOT ColorUtility<BoxStyler>(...)
-```
-
-**IMPORTANT**: BoxMutableStyler does NOT have `propDirect` color. Its `color` is a convenience accessor to `decoration.box.color`. Only specs with direct color fields (like IconSpec) use `propDirect` pattern.
-
-**Decision Rule with CallbackKind**:
-
-| Field Type | Utility | CallbackKind | Code Pattern | Example |
-|------------|---------|--------------|--------------|---------|
-| `EdgeInsetsGeometry` | `EdgeInsetsGeometryUtility` | `propMix` | `Prop.mix(prop)` | BoxMutableStyler.padding |
-| `BoxConstraints` | `BoxConstraintsUtility` | `propMix` | `Prop.mix(prop)` | BoxMutableStyler.constraints |
-| `Decoration` | `DecorationUtility` | `propMix` | `Prop.mix(prop)` | BoxMutableStyler.decoration |
-| `TextStyle` | `TextStyleUtility` | `propMix` | `Prop.mix(prop)` | TextMutableStyler.style |
-| `Color` (direct field) | `ColorUtility` | `propDirect` | `prop` (no wrap) | IconMutableStyler.color |
-| `Color` (via decorator) | N/A | `convenienceAccessor` | `decoration.box.color` | BoxMutableStyler.color |
-| `Clip` (enum) | `MixUtility` | `methodTearOff` | `mutable.clipBehavior` | BoxMutableStyler.clipBehavior |
-| `Axis` (enum) | `MixUtility` | `methodTearOff` | `mutable.direction` | FlexMutableStyler.direction |
-| `Matrix4` | `MixUtility` | `methodTearOff` | `mutable.transform` | BoxMutableStyler.transform |
-| `AlignmentGeometry` | `MixUtility` | `methodTearOff` | `mutable.alignment` | BoxMutableStyler.alignment |
-
-**Key distinctions**:
-- `propDirect` vs `propMix` — ColorUtility uses `prop` directly (no Mix type wrapper needed)
-- `convenienceAccessor` — field accessed via nested utility chain, not direct initialization
-
----
-
-### C11: Edge Cases Consolidation
+### C9: Edge Cases Consolidation
 
 **Issue**: Edge cases are scattered. Consolidate here.
 
@@ -1121,7 +936,6 @@ late final color = decoration.box.color;  // NOT ColorUtility<BoxStyler>(...)
 | `FlagProperty ifTrue` | All Specs with bool | Requires curated map (see C2). |
 | Nested Spec types | FlexBoxSpec, StackBoxSpec | Contains `BoxSpec` and `FlexSpec`/`StackSpec`. Lerp delegates to nested `.lerp()`. |
 | `ImageStyler` | No AnimationStyleMixin | Only styler without AnimationStyleMixin in mixin list. |
-| Composite MutableStylers | FlexBoxMutableStyler, StackBoxMutableStyler | Have both box utilities AND flex/stack utilities with prefixed names to avoid collision. |
 
 **Required fixture test: textDirectives pattern** (must be one of the first tests):
 
@@ -1182,7 +996,7 @@ test('textDirectives uses raw List pattern', () {
 
 ---
 
-### C12: Error Handling Strategy
+### C10: Error Handling Strategy
 
 **Issue**: What happens when generator encounters unknown situations?
 
@@ -1218,7 +1032,7 @@ class GeneratorException implements Exception {
 
 ---
 
-### C13: Testing Normalization Rules
+### C11: Testing Normalization Rules
 
 **Issue**: Phase 6 needs explicit comparison rules.
 
@@ -1235,7 +1049,7 @@ test('BoxSpec .g.dart matches expected fixture', () {
   // 1. Run full generator on stub input
   final generated = runGenerator('test/golden/fixtures/box_spec_input.dart');
 
-  // 2. Compare to expected .g.dart fixture (contains mixin + Styler; MutableStyler deferred)
+  // 2. Compare to expected .g.dart fixture (contains mixin + Styler)
   final expected = File('test/golden/expected/box_spec.g.dart').readAsStringSync();
 
   expect(
@@ -1254,7 +1068,7 @@ String _normalize(String code) {
 
 ---
 
-### C14: Phase Dependencies (Explicit)
+### C12: Phase Dependencies (Explicit)
 
 **Clarification**: Each phase's outputs feed the next.
 
@@ -1286,24 +1100,16 @@ Phase 4: Styler Builder
   └─ Outputs: Full Styler class generator
        │
        ▼
-Phase 6: Testing
+Phase 5: Testing
   └─ Inputs: All builders, expected .g.dart fixtures
   └─ Outputs: Golden tests (vs expected .g.dart), compile tests, regression tests
-
-       ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
-       │  DEFERRED (Phase 5: MutableStyler Builder)
-       │  └─ Inputs: MutablePlan, UtilityRegistry, StylerPlan
-       │  └─ Outputs: Full MutableStyler + MutableState class generator
-       │  └─ NOTE: Remains hand-written for initial release
-       ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄
 ```
 
 **Implementation starts at Phase 1**: Phase 0 is already decided (mixin-based). Build registries first.
-**Initial scope**: Phases 1-4 + 6 (Spec mixin + Styler). Phase 5 (MutableStyler) is deferred.
 
 ---
 
-### C15: code_builder vs String Templates
+### C13: code_builder vs String Templates
 
 **Issue**: Constraint #4 (code_builder for all emission) may be over-strict.
 
@@ -1343,7 +1149,7 @@ Class buildStylerClass(StylerMetadata meta) {
 
 ---
 
-### C16: isLerpable:false Semantics (Clarified)
+### C14: isLerpable:false Semantics (Clarified)
 
 **Issue**: "Skip field in lerp, use other.field directly" is ambiguous.
 
@@ -1384,7 +1190,7 @@ TestSpec lerp(TestSpec? other, double t) {
 
 ---
 
-### C17: Compile-Level Integration Test
+### C15: Compile-Level Integration Test
 
 **Issue**: Golden string equality won't catch:
 - Missing imports due to `Allocator.none`
@@ -1444,7 +1250,7 @@ final class BoxSpec extends Spec<BoxSpec>
 
 ---
 
-### C18: Field Rename/Alias Handling
+### C16: Field Rename/Alias Handling
 
 **Issue**: Spec field names don't always match Styler public API names or diagnostics labels.
 
@@ -1458,7 +1264,6 @@ class FieldNameModel {
   final String stylerFieldName;       // $-prefixed Styler field (e.g., '$textDirectives')
   final String stylerPublicName;      // Public constructor/setter name (e.g., 'directives')
   final String stylerDiagnosticLabel; // Label in debugFillProperties (e.g., 'directives')
-  final String? mutableUtilityName;   // Utility accessor name if different
 }
 ```
 
@@ -1493,7 +1298,7 @@ This ensures API consistency — `textDirectives` internally maps to `directives
 
 ---
 
-### C19: Styler props Base-Fields Rule (Golden-Confirmed)
+### C17: Styler props Base-Fields Rule (Golden-Confirmed)
 
 **Issue**: Initial analysis was WRONG. Actual BoxStyler DOES include base fields.
 
@@ -1529,7 +1334,7 @@ test('BoxStyler props includes ALL fields including base fields', () {
 
 ---
 
-### C20: Registry Discovery + Caching
+### C18: Registry Discovery + Caching
 
 **Issue**: How to build registries from annotations without re-scanning for every Spec.
 
@@ -1613,7 +1418,7 @@ class TypeKey {
 
 ---
 
-### C21: Unknown Type Fallback Behavior
+### C19: Unknown Type Fallback Behavior
 
 **Issue**: Explicit fallback behavior for types not in curated maps.
 
@@ -1622,7 +1427,6 @@ class TypeKey {
 | Situation | Fallback | Warning |
 |-----------|----------|---------|
 | Unknown type in lerp | `MixOps.lerpSnap` | `Warning: Unknown type '{type}' in lerp, defaulting to snap` |
-| Unknown type for utility | `MixUtility(mutable.fieldName)` | `Warning: No utility for '{type}', using MixUtility` |
 | Unknown type for Prop wrapper | `Prop.maybe(value)` | `Warning: Unknown Mix type for '{type}', using Prop.maybe` |
 | Unknown diagnostic type | `DiagnosticsProperty` | No warning (this is expected default) |
 
@@ -1654,7 +1458,7 @@ test('unknown type falls back to MixUtility', () {
 
 ---
 
-### C22: Composite Spec Generation Rules
+### C20: Composite Spec Generation Rules
 
 **Issue**: FlexBoxSpec/StackBoxSpec contain nested specs.
 
@@ -1684,29 +1488,7 @@ FlexBoxSpec lerp(FlexBoxSpec? other, double t) {
 }
 ```
 
-**2. Composite MutableStyler utilities** (DEFERRED - Phase 5):
-
-> This subsection applies to MutableStyler generation, which is deferred to Phase 5.
-
-FlexBoxMutableStyler has BOTH:
-- Box utilities (padding, margin, decoration, etc.) prefixed or accessible via `box.*`
-- Flex utilities (direction, mainAxisAlignment, etc.) accessible directly or via `flex.*`
-
-**Collision avoidance**:
-```dart
-class FlexBoxMutableStyler {
-  // Direct access to flex utilities
-  late final direction = MixUtility(mutable.direction);
-  late final mainAxisAlignment = MixUtility(mutable.mainAxisAlignment);
-
-  // Box utilities via box accessor OR prefixed
-  late final box = BoxMutableStyler();  // OR inline
-  late final padding = box.padding;
-  late final decoration = box.decoration;
-}
-```
-
-**Curated composite mapping**:
+**2. Curated composite mapping**:
 ```dart
 const compositeSpecs = {
   'FlexBoxSpec': CompositeSpec(
@@ -1715,19 +1497,11 @@ const compositeSpecs = {
       'box': 'StyleSpec<BoxSpec>',
       'flex': 'StyleSpec<FlexSpec>',
     },
-    mutableAccessors: {
-      'box': 'BoxMutableStyler',
-      'flex': 'FlexMutableStyler',
-    },
   ),
   'StackBoxSpec': CompositeSpec(
     nestedFields: {
       'box': 'StyleSpec<BoxSpec>',
       'stack': 'StyleSpec<StackSpec>',
-    },
-    mutableAccessors: {
-      'box': 'BoxMutableStyler',
-      'stack': 'StackMutableStyler',
     },
   ),
 };
@@ -1735,12 +1509,11 @@ const compositeSpecs = {
 
 **Golden tests required**:
 - FlexBoxSpec lerp correctly delegates to nested specs
-- FlexBoxMutableStyler exposes both box and flex utilities without collision
-- StackBoxSpec/StackBoxMutableStyler follows same pattern
+- StackBoxSpec lerp correctly delegates to nested specs
 
 ---
 
-### C23: Curated Maps Consolidation
+### C21: Curated Maps Consolidation
 
 **Issue**: Curated maps scattered across corrections. Consolidate in one location.
 
@@ -1749,10 +1522,9 @@ const compositeSpecs = {
 packages/mix_generator/lib/src/core/curated/
   ├── mixin_mappings.dart       # C4: Styler → mixins
   ├── flag_descriptions.dart    # C2: Field → FlagProperty ifTrue
-  ├── field_aliases.dart        # C18: Field rename mappings
-  ├── convenience_accessors.dart # C9: MutableStyler accessors
-  ├── type_mappings.dart        # C20: Flutter type → Mix type/utility
-  ├── composite_specs.dart      # C22: Nested spec configurations
+  ├── field_aliases.dart        # C16: Field rename mappings
+  ├── type_mappings.dart        # C18: Flutter type → Mix type
+  ├── composite_specs.dart      # C20: Nested spec configurations
   └── index.dart                # Re-exports all curated maps
 ```
 
@@ -2105,9 +1877,6 @@ class {Name}Styler extends Style<{Name}Spec>
   // Public constructor
   {Name}Styler({...}) : this.create(...);
 
-  // Static chain accessor
-  static {Name}MutableStyler get chain => {Name}MutableStyler({Name}Styler());
-
   // Setter methods
   {Name}Styler fieldName(Type value);
 
@@ -2351,143 +2120,9 @@ List<Object?> get props => [
 
 ---
 
-## 3. MutableStyler Patterns (DEFERRED - Phase 5)
-
-> **Status**: DEFERRED — This section documents patterns for Phase 5 implementation.
-> MutableStyler classes remain hand-written for initial release.
+## 3. Mix Type Patterns
 
 ### 3.1 Class Structure Pattern
-
-```dart
-class {Name}MutableStyler extends StyleMutableBuilder<{Name}Spec>
-    with
-        UtilityVariantMixin<{Name}Styler, {Name}Spec>,
-        UtilityWidgetStateVariantMixin<{Name}Styler, {Name}Spec> {
-
-  // Utility declarations
-  late final fieldName = {Utility}Type<{Name}Styler>(...);
-
-  // Convenience accessors
-  late final shortcut = utility.nested.property;
-
-  // Mutable state
-  @override
-  @protected
-  late final {Name}MutableState mutable;
-
-  // Constructor
-  {Name}MutableStyler([{Name}Styler? attribute]) {
-    mutable = {Name}MutableState(attribute ?? {Name}Styler());
-  }
-
-  // Direct methods
-  {Name}Styler methodName(Type v) => mutable.methodName(v);
-
-  // Animation
-  {Name}Styler animate(AnimationConfig animation) => mutable.animate(animation);
-
-  // Variant methods
-  @override
-  {Name}Styler withVariant(Variant variant, {Name}Styler style);
-
-  @override
-  {Name}Styler withVariants(List<VariantStyle<{Name}Spec>> variants);
-
-  // merge() and resolve()
-  @override
-  {Name}MutableStyler merge(Style<{Name}Spec>? other);
-
-  @override
-  StyleSpec<{Name}Spec> resolve(BuildContext context);
-
-  // Value accessors
-  @override
-  {Name}Styler get currentValue => mutable.value;
-
-  @override
-  {Name}Styler get value => mutable.value;
-}
-
-class {Name}MutableState extends {Name}Styler with Mutable<{Name}Styler, {Name}Spec> {
-  {Name}MutableState({Name}Styler style) {
-    value = style;
-  }
-}
-```
-
-### 3.2 Utility Initialization Pattern
-
-```dart
-late final fieldName = {Utility}Type<{Name}Styler>(
-  (prop) => mutable.merge({Name}Styler.create(fieldName: Prop.mix(prop))),
-);
-```
-
-**Type → Utility Mapping**:
-
-| Field Type | Utility | Callback |
-|------------|---------|----------|
-| `EdgeInsetsGeometry` | `EdgeInsetsGeometryUtility` | `(prop) => mutable.merge({Name}Styler.create(fieldName: Prop.mix(prop)))` |
-| `BoxConstraints` | `BoxConstraintsUtility` | Same pattern |
-| `Decoration` | `DecorationUtility` | Same pattern |
-| `TextStyle` | `TextStyleUtility` | Same pattern |
-| `StrutStyle` | `StrutStyleUtility` | Same pattern |
-| `TextHeightBehavior` | `TextHeightBehaviorUtility` | Same pattern |
-| `Color` | `ColorUtility` | Same pattern |
-| Simple types | `MixUtility` | `MixUtility(mutable.methodName)` |
-
-### 3.3 Convenience Accessor Pattern
-
-```dart
-// Nested property delegation
-late final border = decoration.box.border;
-late final borderRadius = decoration.box.borderRadius;
-late final color = decoration.box.color;
-late final shadow = decoration.box.boxShadow;
-
-// Constraint shortcuts
-late final width = constraints.width;
-late final height = constraints.height;
-late final minWidth = constraints.minWidth;
-late final maxWidth = constraints.maxWidth;
-
-// Text style shortcuts
-late final fontSize = style.fontSize;
-late final fontWeight = style.fontWeight;
-late final fontFamily = style.fontFamily;
-```
-
-### 3.4 Deprecated Utility Patterns
-
-Both `.on` and `.wrap` are deprecated in favor of direct methods on Styler classes:
-
-```dart
-@Deprecated(
-  'Use {Name}Styler().onHovered() and similar methods directly instead. '
-  'This property was deprecated after Mix v2.0.0.',
-)
-late final on = OnContextVariantUtility<{Name}Spec, {Name}Styler>(
-  (v) => mutable.variants([v]),
-);
-
-@Deprecated(
-  'Use {Name}Styler().wrap() method directly instead. '
-  'This property was deprecated after Mix v2.0.0.',
-)
-late final wrap = WidgetModifierUtility(
-  (prop) => mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
-);
-```
-
-**Migration Examples**:
-- Before: `$box.on.hover()` → After: `BoxStyler().onHovered()`
-- Before: `$box.wrap.opacity(0.5)` → After: `BoxStyler().wrap(OpacityModifier(0.5))`
-
----
-
-## 4. Mix Type Patterns
-
-### 4.1 Class Structure Pattern
 
 ```dart
 @immutable
@@ -2510,7 +2145,7 @@ sealed class {Name}Mix<T extends {FlutterType}> extends Mix<T> {
 }
 ```
 
-### 4.2 Subclass Pattern
+### 3.2 Subclass Pattern
 
 ```dart
 final class {Subtype}Mix extends {Name}Mix<{FlutterType}> with Diagnosticable {
@@ -2555,9 +2190,9 @@ final class {Subtype}Mix extends {Name}Mix<{FlutterType}> with Diagnosticable {
 
 ---
 
-## 5. Mapping Tables
+## 4. Mapping Tables
 
-### 5.1 Type → Lerp Strategy
+### 4.1 Type → Lerp Strategy
 
 ```
 LERPABLE (use MixOps.lerp):
@@ -2592,7 +2227,7 @@ SNAPPABLE (use MixOps.lerpSnap):
   - Callbacks/Functions
 ```
 
-### 5.2 Type → Prop Wrapper
+### 4.2 Type → Prop Wrapper
 
 | Public Type | Prop Method |
 |-------------|-------------|
@@ -2601,7 +2236,7 @@ SNAPPABLE (use MixOps.lerpSnap):
 | `List<TMix>` (List of Mix) | `Prop.mix(TListMix(value))` |
 | `List<T>` (direct pass) | No wrapper (direct assignment) |
 
-### 5.3 Type → Utility Class
+### 4.3 Type → Utility Class
 
 | Type | Utility |
 |------|---------|
@@ -2621,7 +2256,7 @@ SNAPPABLE (use MixOps.lerpSnap):
 | `List<Shadow>` | `ShadowListUtility` |
 | Simple scalars | `MixUtility(callback)` |
 
-### 5.4 Type → Diagnostic Property
+### 4.4 Type → Diagnostic Property
 
 | Type | DiagnosticsProperty |
 |------|---------------------|
@@ -2655,9 +2290,9 @@ SNAPPABLE (use MixOps.lerpSnap):
 
 ---
 
-## 6. Generator Architecture
+## 5. Generator Architecture
 
-### 6.1 Proposed Directory Structure
+### 5.1 Proposed Directory Structure
 
 ```
 packages/mix_generator/lib/src/
@@ -2665,45 +2300,39 @@ packages/mix_generator/lib/src/
   core/
     registry/
       mix_type_registry.dart      # Flutter type → Mix type mappings
-      utility_registry.dart       # Flutter type → Utility mappings (DEFERRED - Phase 5)
     plans/
       field_model.dart            # Field with computed effective values
       styler_plan.dart            # DERIVED from Spec + registries
-      mutable_plan.dart           # DERIVED from StylerPlan (DEFERRED - Phase 5)
     builders/
       spec_mixin_builder.dart     # Generate _$XSpecMethods mixin
       styler_builder.dart         # Generate full Styler class
-      mutable_builder.dart        # Generate MutableStyler + MutableState (DEFERRED - Phase 5)
     resolvers/
       lerp_resolver.dart          # Type → lerp strategy
       prop_resolver.dart          # Type → Prop wrapper
-      utility_resolver.dart       # Type → Utility class (DEFERRED - Phase 5)
       diagnostic_resolver.dart    # Type → DiagnosticsProperty
-    curated/                      # See C23 for consolidation
+    curated/                      # See C21 for consolidation
       mixin_mappings.dart         # Styler → mixins (C4)
       flag_descriptions.dart      # Field → FlagProperty ifTrue (C2)
-      field_aliases.dart          # Field rename mappings (C18)
-      convenience_accessors.dart  # MutableStyler accessors (C9) (DEFERRED - Phase 5)
-      type_mappings.dart          # Flutter type → Mix type/utility (C20)
-      composite_specs.dart        # Nested spec configurations (C22)
+      field_aliases.dart          # Field rename mappings (C16)
+      type_mappings.dart          # Flutter type → Mix type (C18)
+      composite_specs.dart        # Nested spec configurations (C20)
       index.dart                  # Re-exports all curated maps
     utils/
       code_emitter.dart           # code_builder + string template helpers
       type_utils.dart             # Type analysis helpers
 ```
 
-### 6.2 Plan Classes (Derived, NOT Extracted)
+### 5.2 Plan Classes (Derived, NOT Extracted)
 
 **Key principle**: Plans are DERIVED from Spec + registries, never extracted from existing Styler classes.
 
 ```dart
-/// Field with all computed effective values (see C18 for naming)
+/// Field with all computed effective values (see C16 for naming)
 class FieldModel {
   final String specFieldName;           // e.g., 'textDirectives'
   final String stylerFieldName;         // e.g., '$textDirectives'
   final String stylerPublicName;        // e.g., 'directives' (from alias or default)
   final String stylerDiagnosticLabel;   // e.g., 'directives'
-  final String? mutableMethodName;      // For methodTearOff pattern; null = use specFieldName
   final DartType dartType;
   final MixableField? annotation;
 
@@ -2711,8 +2340,6 @@ class FieldModel {
   final String effectiveSpecType;
   final String? effectiveMixType;
   final bool isLerpableEffective;
-  final String effectiveUtility;
-  final UtilityCallbackKind callbackKind;
   final PropWrapperKind propWrapper;
   final bool isWrappedInProp;           // false for textDirectives
   final DiagnosticKind diagnosticKind;
@@ -2732,17 +2359,9 @@ class StylerPlan {
   final List<String> setterMethods;
   // NOT extracted from existing Styler - COMPUTED
 }
-
-/// Derived from StylerPlan + curated maps (DEFERRED - Phase 5)
-class MutablePlan {
-  final StylerPlan stylerPlan;
-  final List<UtilityDeclaration> utilities;
-  final List<ConvenienceAccessor> accessors;  // from curated map (C9)
-}
-// NOTE: MutablePlan is for Phase 5 (MutableStyler generation)
 ```
 
-### 6.3 Resolver Classes
+### 5.3 Resolver Classes
 
 ```dart
 abstract class LerpResolver {
@@ -2754,15 +2373,9 @@ abstract class PropResolver {
   PropWrapper resolveWrapper(DartType type, bool hasMixType);
   String generatePropCode(String value, DartType type);
 }
-
-// DEFERRED - Phase 5 (MutableStyler generation)
-abstract class UtilityResolver {
-  String? resolveUtility(DartType type);
-  String generateUtilityInit(String fieldName, DartType type, String stylerName);
-}
 ```
 
-### 6.4 Builder Classes
+### 5.4 Builder Classes
 
 ```dart
 /// Generates _$XSpecMethods mixin (see Phase 0)
@@ -2793,20 +2406,9 @@ class StylerBuilder {
   /// Generate complete class
   String build(StylerPlan plan);
 }
-
-// DEFERRED - Phase 5
-/// Generates full MutableStyler + MutableState classes (from MutablePlan)
-class MutableStylerBuilder {
-  String buildUtilities(MutablePlan plan);
-  String buildConvenienceAccessors(MutablePlan plan);
-  String buildMutableState(MutablePlan plan);
-
-  /// Generate complete MutableStyler + MutableState classes
-  String build(MutablePlan plan);
-}
 ```
 
-### 6.5 Generator Orchestration
+### 5.5 Generator Orchestration
 
 Single `MixGenerator` coordinates all output pieces into one `.g.dart` part file:
 
@@ -2849,12 +2451,6 @@ class MixGenerator extends GeneratorForAnnotation<MixableSpec> {
     // 3c. Full Styler class
     buffer.writeln(StylerBuilder().build(stylerPlan));
 
-    // NOTE: MutableStyler generation is DEFERRED (Phase 5)
-    // MutableStyler classes remain hand-written for initial release
-    // When Phase 5 is implemented, add:
-    // final mutablePlan = MutablePlan.from(stylerPlan, CuratedMaps.instance);
-    // buffer.writeln(MutableStylerBuilder().build(mutablePlan));
-
     return buffer.toString();
   }
 }
@@ -2863,22 +2459,18 @@ class MixGenerator extends GeneratorForAnnotation<MixableSpec> {
 **Key points**:
 - Uses `PartBuilder` to output `.g.dart` directly to source
 - Single generator produces Spec mixin + Styler in one pass
-- MutableStyler generation is DEFERRED (Phase 5) — remains hand-written
 - Single annotation (`@MixableSpec`) triggers generation of Spec mixin + Styler
 - Plans are computed fresh from Spec + registries (no reading of existing Styler code)
 - Output order: mixin → typedef → Styler
 
 ---
 
-## 7. Implementation Plan (Updated)
+## 6. Implementation Plan
 
-**See C14 for phase dependencies.**
-
-**Initial scope**: Phases 1-4 + 6 (Spec mixin + Styler generation)
-**Deferred**: Phase 5 (MutableStyler generation)
+**See C12 for phase dependencies.**
 
 ### Phase 1: Curated Maps + Registries
-1. Create `core/curated/` directory with all curated maps (see C23)
+1. Create `core/curated/` directory with all curated maps (see C21)
 2. Create `MixTypeRegistry` using curated type mappings
 3. Create `FieldModel` with computed effective values
 4. Create `StylerPlan` derived from Spec + registries
@@ -2902,30 +2494,16 @@ class MixGenerator extends GeneratorForAnnotation<MixableSpec> {
 6. Generate merge() method
 7. Generate mixin applications
 
-### Phase 5: MutableStyler Builder (DEFERRED)
-> This phase will be implemented after Phases 1-4 are stable.
-> MutableStyler classes remain hand-written for initial release.
-
-1. Create `UtilityRegistry` using curated utility mappings
-2. Create `MutablePlan` derived from StylerPlan
-3. Implement `UtilityResolver` with utility mapping
-4. Generate full MutableStyler class
-5. Generate utility initializations (using curated maps + registry)
-6. Generate convenience accessors (using curated map C9)
-7. Generate MutableState class
-8. Generate variant methods
-9. Generate `Styler.chain` accessor
-
-### Phase 6: Testing Infrastructure
+### Phase 5: Testing Infrastructure
 1. **Golden file tests**: Compare generated `.g.dart` to expected fixtures (see Phase 0)
-2. **Compile tests**: `dart analyze` on generated output (see C17)
+2. **Compile tests**: `dart analyze` on generated output (see C15)
 3. **Unit tests**: Each resolver with various type inputs
-4. **Curated map tests**: Validation that all known specs have entries (see C23)
+4. **Curated map tests**: Validation that all known specs have entries (see C21)
 5. **Integration tests**: Full build_runner runs on fixture specs
 
 ---
 
-## 8. File References
+## 7. File References
 
 ### Spec Files Analyzed
 - `packages/mix/lib/src/specs/box/box_spec.dart`
@@ -2940,10 +2518,6 @@ class MixGenerator extends GeneratorForAnnotation<MixableSpec> {
 - `packages/mix/lib/src/specs/text/text_style.dart`
 - `packages/mix/lib/src/specs/icon/icon_style.dart`
 - `packages/mix/lib/src/specs/flex/flex_style.dart`
-
-### MutableStyler Files Analyzed
-- `packages/mix/lib/src/specs/box/box_mutable_style.dart`
-- `packages/mix/lib/src/specs/text/text_mutable_style.dart`
 
 ### Core Files Analyzed
 - `packages/mix/lib/src/core/spec.dart`
