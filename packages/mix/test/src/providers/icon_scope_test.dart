@@ -133,5 +133,89 @@ void main() {
         ),
       );
     });
+
+    group('nested scopes', () {
+      testWidgets('inner scope overrides outer scope', (tester) async {
+        final outerIcon = IconStyler(size: 48.0);
+        final innerIcon = IconStyler(size: 24.0);
+
+        late IconStyler capturedScope;
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: IconScope(
+              icon: outerIcon,
+              child: IconScope(
+                icon: innerIcon,
+                child: Builder(
+                  builder: (context) {
+                    capturedScope = IconScope.of(context);
+                    return const SizedBox();
+                  },
+                ),
+              ),
+            ),
+          ),
+        );
+
+        // Inner scope should be accessible, not outer
+        expect(capturedScope, equals(innerIcon));
+        expect(capturedScope, isNot(equals(outerIcon)));
+      });
+
+      testWidgets('inner IconTheme overrides outer', (tester) async {
+        final outerIcon = IconStyler(size: 48.0);
+        final innerIcon = IconStyler(size: 24.0);
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: IconScope(
+              icon: outerIcon,
+              child: IconScope(
+                icon: innerIcon,
+                child: Builder(
+                  builder: (context) {
+                    final iconTheme = IconTheme.of(context);
+                    expect(iconTheme.size, 24.0);
+                    return const SizedBox();
+                  },
+                ),
+              ),
+            ),
+          ),
+        );
+      });
+
+      testWidgets('scope is accessible at multiple nesting depths', (
+        tester,
+      ) async {
+        final icon = IconStyler(size: 32.0, color: Colors.green);
+        late IconStyler capturedScope;
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: IconScope(
+              icon: icon,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Builder(
+                        builder: (context) {
+                          capturedScope = IconScope.of(context);
+                          return const SizedBox();
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+
+        expect(capturedScope, equals(icon));
+      });
+    });
   });
 }
