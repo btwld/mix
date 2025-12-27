@@ -320,16 +320,16 @@ final class BoxSpec extends Spec<BoxSpec> with Diagnosticable, _$BoxSpecMethods 
 
 ### Phase 1: Registries + Derived Plans Layer
 
-**CRITICAL**: StylerPlan/MutablePlan are **derived plans** from Spec + registries, NOT extractors from existing Styler classes. This avoids circular dependency.
+**CRITICAL**: StylerPlan is a **derived plan** from Spec + registries, NOT extracted from existing Styler classes. This avoids circular dependency.
 
 **Files to create:**
 ```
 packages/mix_generator/lib/src/core/registry/mix_type_registry.dart
-packages/mix_generator/lib/src/core/registry/utility_registry.dart
 packages/mix_generator/lib/src/core/plans/styler_plan.dart
-packages/mix_generator/lib/src/core/plans/mutable_plan.dart
 packages/mix_generator/lib/src/core/plans/field_model.dart
 ```
+
+**NOTE**: `UtilityRegistry` and `MutablePlan` are deferred to Phase 5 (MutableStyler generation).
 
 **Tasks:**
 
@@ -355,27 +355,7 @@ packages/mix_generator/lib/src/core/plans/field_model.dart
    3. Look up `T` in `listMixTypes` registry
    4. If found, generate `Prop.mix(TListMix(value))`
 
-2. **Build `UtilityRegistry`** with callback kind enum (see C10):
-   ```dart
-   /// Distinguishes utility initialization patterns
-   enum UtilityCallbackKind {
-     propMix,            // Specialized utility + Prop.mix(prop) — EdgeInsetsGeometryUtility, etc.
-     propDirect,         // Specialized utility + direct prop — ColorUtility (IconStyler)
-     methodTearOff,      // MixUtility(mutable.method) — enums, Matrix4, etc.
-     convenienceAccessor // Delegates to nested utility — BoxMutableStyler.color → decoration.box.color
-   }
-
-   class UtilityRegistry {
-     // FlutterType → (UtilityType, CallbackKind, MethodName?) mapping
-     final Map<String, (String, UtilityCallbackKind, String?)> utilities;
-
-     String? getUtility(String flutterType);
-     UtilityCallbackKind? getCallbackKind(String flutterType);
-     String? getMethodName(String flutterType);  // For methodTearOff pattern
-   }
-   ```
-
-3. **Create `FieldModel`** with computed effective values:
+2. **Create `FieldModel`** with computed effective values:
    ```dart
    class FieldModel {
      final String name;
@@ -387,12 +367,11 @@ packages/mix_generator/lib/src/core/plans/field_model.dart
      final String? effectiveMixType;      // from registry or annotation
      final String effectivePublicParamType;
      final bool isLerpableEffective;      // from annotation or type analysis
-     final String effectiveUtility;       // from registry or annotation
      final PropWrapperKind propWrapper;   // maybe, maybeMix, mix, none
    }
    ```
 
-4. **Create `StylerPlan`** derived from SpecMetadata + registries:
+3. **Create `StylerPlan`** derived from SpecMetadata + registries:
    ```dart
    class StylerPlan {
      final String specName;
@@ -404,23 +383,15 @@ packages/mix_generator/lib/src/core/plans/field_model.dart
    }
    ```
 
-5. **Create `MutablePlan`** derived from StylerPlan + utility config:
-   ```dart
-   class MutablePlan {
-     final StylerPlan stylerPlan;
-     final List<UtilityDeclaration> utilities;
-     final List<ConvenienceAccessor> accessors;  // from curated map
-   }
-   ```
-
 ### Phase 2: Type Resolution Utilities
 **Files to create:**
 ```
 packages/mix_generator/lib/src/core/resolvers/lerp_resolver.dart
 packages/mix_generator/lib/src/core/resolvers/prop_resolver.dart
-packages/mix_generator/lib/src/core/resolvers/utility_resolver.dart
 packages/mix_generator/lib/src/core/resolvers/diagnostic_resolver.dart
 ```
+
+**NOTE**: `UtilityResolver` is deferred to Phase 5 (MutableStyler generation).
 
 **Tasks:**
 1. `LerpResolver`: Map DartType → lerp strategy
@@ -1570,7 +1541,7 @@ const mixTypeMap = {
   'BoxConstraints': 'BoxConstraintsMix',
   'Decoration': 'DecorationMix',
   'TextStyle': 'TextStyleMix',
-  'Color': 'ColorMix',
+  // NOTE: Color does NOT have a Mix type - uses Prop.maybe(color) directly
   // ...
 };
 
@@ -1834,12 +1805,12 @@ field: field?.lerp(other?.field, t) ?? other?.field,
 - When `this.field` is null, we take `other?.field` as-is (snap behavior)
 - When `this.field` is non-null but `other?.field` is null, `lerp(null, t)` returns `this.field` (the nested spec's lerp handles this)
 
-**Example** (FlexBoxSpec):
+**Example** (FlexBoxSpec) — matches actual codebase:
 ```dart
 FlexBoxSpec lerp(FlexBoxSpec? other, double t) {
   return FlexBoxSpec(
-    box: box?.lerp(other?.box, t) ?? other?.box,
-    flex: flex?.lerp(other?.flex, t) ?? other?.flex,
+    box: box?.lerp(other?.box, t),   // NO ?? fallback (Pattern A)
+    flex: flex?.lerp(other?.flex, t), // StyleSpec handles null internally
   );
 }
 ```
