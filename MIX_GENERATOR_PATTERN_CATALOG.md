@@ -2542,3 +2542,252 @@ class MixGenerator extends GeneratorForAnnotation<MixableSpec> {
 - `packages/mix_generator/lib/src/mix_generator.dart`
 - `packages/mix_generator/lib/src/core/metadata/spec_metadata.dart`
 - `packages/mix_generator/lib/src/core/type_registry.dart`
+
+---
+
+## Appendix A: MutableStyler Generation (Out of Scope)
+
+> **Status**: NOT INCLUDED in current plan. MutableStyler classes remain hand-written.
+> This appendix documents what would be needed for MutableStyler generation in the future.
+
+### A.1 What Remains Hand-Written
+
+The following files continue to be manually maintained:
+
+| File Pattern | Example | Purpose |
+|--------------|---------|---------|
+| `*_mutable_style.dart` | `box_mutable_style.dart` | Full MutableStyler + MutableState classes |
+| Static chain accessor | `BoxStyler.chain` | Returns `BoxMutableStyler` instance |
+
+**Reference files**:
+- `packages/mix/lib/src/specs/box/box_mutable_style.dart`
+- `packages/mix/lib/src/specs/text/text_mutable_style.dart`
+- `packages/mix/lib/src/specs/icon/icon_mutable_style.dart`
+- `packages/mix/lib/src/specs/flex/flex_mutable_style.dart`
+
+### A.2 MutableStyler Class Structure (Reference)
+
+```dart
+class {Name}MutableStyler extends StyleMutableBuilder<{Name}Spec>
+    with
+        UtilityVariantMixin<{Name}Styler, {Name}Spec>,
+        UtilityWidgetStateVariantMixin<{Name}Styler, {Name}Spec> {
+
+  // Utility declarations
+  late final fieldName = {Utility}Type<{Name}Styler>(...);
+
+  // Convenience accessors
+  late final shortcut = utility.nested.property;
+
+  // Mutable state
+  @override
+  @protected
+  late final {Name}MutableState mutable;
+
+  // Constructor
+  {Name}MutableStyler([{Name}Styler? attribute]) {
+    mutable = {Name}MutableState(attribute ?? {Name}Styler());
+  }
+
+  // Direct methods
+  {Name}Styler methodName(Type v) => mutable.methodName(v);
+
+  // Animation
+  {Name}Styler animate(AnimationConfig animation) => mutable.animate(animation);
+
+  // Variant methods
+  @override
+  {Name}Styler withVariant(Variant variant, {Name}Styler style);
+
+  @override
+  {Name}Styler withVariants(List<VariantStyle<{Name}Spec>> variants);
+
+  // merge() and resolve()
+  @override
+  {Name}MutableStyler merge(Style<{Name}Spec>? other);
+
+  @override
+  StyleSpec<{Name}Spec> resolve(BuildContext context);
+
+  // Value accessors
+  @override
+  {Name}Styler get currentValue => mutable.value;
+
+  @override
+  {Name}Styler get value => mutable.value;
+}
+
+class {Name}MutableState extends {Name}Styler with Mutable<{Name}Styler, {Name}Spec> {
+  {Name}MutableState({Name}Styler style) {
+    value = style;
+  }
+}
+```
+
+### A.3 Utility Patterns (Reference)
+
+**Pattern A: propMix** — Specialized Utility with `Prop.mix(prop)`
+```dart
+late final padding = EdgeInsetsGeometryUtility<BoxStyler>(
+  (prop) => mutable.merge(BoxStyler.create(padding: Prop.mix(prop))),
+);
+```
+
+**Pattern B: propDirect** — Specialized Utility with direct prop
+```dart
+late final color = ColorUtility<IconStyler>(
+  (prop) => mutable.merge(IconStyler.create(color: prop)),
+);
+```
+
+**Pattern C: methodTearOff** — MixUtility with method reference
+```dart
+late final clipBehavior = MixUtility(mutable.clipBehavior);
+late final transform = MixUtility(mutable.transform);
+```
+
+**Pattern D: convenienceAccessor** — Delegates to nested utility chain
+```dart
+late final color = decoration.box.color;
+late final border = decoration.box.border;
+```
+
+### A.4 Convenience Accessor Mapping (Reference)
+
+| MutableStyler | Accessor | Chain |
+|---------------|----------|-------|
+| BoxMutableStyler | border | `decoration.box.border` |
+| BoxMutableStyler | borderRadius | `decoration.box.borderRadius` |
+| BoxMutableStyler | color | `decoration.box.color` |
+| BoxMutableStyler | shadow | `decoration.box.boxShadow` |
+| BoxMutableStyler | width | `constraints.width` |
+| BoxMutableStyler | height | `constraints.height` |
+| TextMutableStyler | fontSize | `style.fontSize` |
+| TextMutableStyler | fontWeight | `style.fontWeight` |
+| TextMutableStyler | fontFamily | `style.fontFamily` |
+
+### A.5 Type → Utility Mapping (Reference)
+
+| Field Type | Utility | Callback Pattern |
+|------------|---------|------------------|
+| `EdgeInsetsGeometry` | `EdgeInsetsGeometryUtility` | `propMix` |
+| `BoxConstraints` | `BoxConstraintsUtility` | `propMix` |
+| `Decoration` | `DecorationUtility` | `propMix` |
+| `TextStyle` | `TextStyleUtility` | `propMix` |
+| `Color` (direct field) | `ColorUtility` | `propDirect` |
+| `Color` (via decorator) | N/A | `convenienceAccessor` |
+| `Clip` (enum) | `MixUtility` | `methodTearOff` |
+| `Axis` (enum) | `MixUtility` | `methodTearOff` |
+| `Matrix4` | `MixUtility` | `methodTearOff` |
+| `AlignmentGeometry` | `MixUtility` | `methodTearOff` |
+
+### A.6 Removed Architecture Components
+
+**Files that would be created for MutableStyler generation**:
+```
+packages/mix_generator/lib/src/core/
+  registry/
+    utility_registry.dart       # Flutter type → Utility class mappings
+  plans/
+    mutable_plan.dart           # Derived from StylerPlan + utility config
+  builders/
+    mutable_builder.dart        # Generate MutableStyler + MutableState
+  resolvers/
+    utility_resolver.dart       # Type → Utility class resolution
+  curated/
+    convenience_accessors.dart  # MutableStyler accessor chains
+```
+
+**Plan classes that would be needed**:
+```dart
+/// Derived from StylerPlan + curated maps
+class MutablePlan {
+  final StylerPlan stylerPlan;
+  final List<UtilityDeclaration> utilities;
+  final List<ConvenienceAccessor> accessors;
+}
+
+enum UtilityCallbackKind {
+  propMix,            // Specialized utility + Prop.mix(prop)
+  propDirect,         // Specialized utility + direct prop
+  methodTearOff,      // MixUtility(mutable.method)
+  convenienceAccessor // Delegates to nested utility
+}
+
+abstract class UtilityResolver {
+  String? resolveUtility(DartType type);
+  String generateUtilityInit(String fieldName, DartType type, String stylerName);
+}
+
+class MutableStylerBuilder {
+  String buildUtilities(MutablePlan plan);
+  String buildConvenienceAccessors(MutablePlan plan);
+  String buildMutableState(MutablePlan plan);
+  String build(MutablePlan plan);
+}
+```
+
+### A.7 Static Chain Accessor (Reference)
+
+Would be generated in Styler class:
+```dart
+static {Name}MutableStyler get chain => {Name}MutableStyler({Name}Styler());
+```
+
+### A.8 Deprecated Patterns (DO NOT Generate)
+
+These patterns are deprecated and should NOT be generated even if MutableStyler generation is implemented:
+
+```dart
+// DEPRECATED: .on utility property
+@Deprecated('Use {Name}Styler().onHovered() instead.')
+late final on = OnContextVariantUtility<{Name}Spec, {Name}Styler>(
+  (v) => mutable.variants([v]),
+);
+
+// DEPRECATED: .wrap utility property
+@Deprecated('Use {Name}Styler().wrap() instead.')
+late final wrap = WidgetModifierUtility(
+  (prop) => mutable.wrap(WidgetModifierConfig(modifiers: [prop])),
+);
+
+// DEPRECATED: Global $ accessors
+// $box, $flex, $text, etc. in mutable_stylers.dart
+```
+
+### A.9 Composite MutableStyler Patterns (Reference)
+
+FlexBoxMutableStyler and StackBoxMutableStyler have utilities from both nested specs:
+
+```dart
+class FlexBoxMutableStyler {
+  // Direct access to flex utilities
+  late final direction = MixUtility(mutable.direction);
+  late final mainAxisAlignment = MixUtility(mutable.mainAxisAlignment);
+
+  // Box utilities via box accessor
+  late final box = BoxMutableStyler();
+  late final padding = box.padding;
+  late final decoration = box.decoration;
+}
+```
+
+**Curated composite mapping**:
+```dart
+const compositeSpecs = {
+  'FlexBoxSpec': CompositeSpec(
+    nestedFields: {'box': 'StyleSpec<BoxSpec>', 'flex': 'StyleSpec<FlexSpec>'},
+    mutableAccessors: {'box': 'BoxMutableStyler', 'flex': 'FlexMutableStyler'},
+  ),
+  'StackBoxSpec': CompositeSpec(
+    nestedFields: {'box': 'StyleSpec<BoxSpec>', 'stack': 'StyleSpec<StackSpec>'},
+    mutableAccessors: {'box': 'BoxMutableStyler', 'stack': 'StackMutableStyler'},
+  ),
+};
+```
+
+---
+
+**End of Appendix A**
+
+> When MutableStyler generation is needed, use this appendix as the reference for implementation.
