@@ -8,30 +8,27 @@ have() { command -v "$1" >/dev/null 2>&1; }
 # ----------------------------
 # Config (override via env vars)
 # ----------------------------
-: "${FVM_INSTALL_DIR:=$HOME/fvm}"         # default per docs  [oai_citation:5‡FVM](https://fvm.app/documentation/getting-started/installation)
-: "${FVM_VERSION:=}"                      # optional: install specific FVM version
-: "${FORCE_FVM_REINSTALL:=0}"             # 1 = reinstall fvm even if present
-: "${PERSIST_PATH:=0}"                    # 1 = write PATH to shell profile (non-Claude)
-: "${RUN_DOCTOR:=0}"                      # 1 = fvm flutter doctor -v
-: "${SKIP_MELOS:=0}"                      # 1 = skip melos even if melos.yaml exists
-: "${SKIP_PUB_GET:=0}"                    # 1 = skip pub get when no melos.yaml
-: "${FVM_INSTALL_ARGS:=}"                 # optional extra args for `fvm install` (e.g. --no-setup)
+: "${FVM_INSTALL_DIR:=$HOME/fvm}"
+: "${FVM_VERSION:=}"
+: "${FORCE_FVM_REINSTALL:=0}"
+: "${PERSIST_PATH:=0}"
+: "${RUN_DOCTOR:=0}"
+: "${SKIP_MELOS:=0}"
+: "${SKIP_PUB_GET:=0}"
+: "${FVM_INSTALL_ARGS:=}"
 
 FVM_BIN_DIR="$FVM_INSTALL_DIR/bin"
 PUB_CACHE_BIN="$HOME/.pub-cache/bin"
 
 # ----------------------------
 # Requirements
-# FVM install script requires curl + tar on macOS/Linux  [oai_citation:6‡FVM](https://fvm.app/documentation/getting-started/installation)
 # ----------------------------
 have curl || die "curl is required"
 have tar  || die "tar is required"
-have bash || die "bash is required to run the FVM install script (docs use: curl ... | bash)  [oai_citation:7‡FVM](https://fvm.app/documentation/getting-started/installation)"
+have bash || die "bash is required for the FVM install script"
 
 # ----------------------------
-# Install FVM (official install.sh)
-# Latest: curl -fsSL https://fvm.app/install.sh | bash  [oai_citation:8‡FVM](https://fvm.app/documentation/getting-started/installation)
-# Custom location supported via FVM_INSTALL_DIR env var  [oai_citation:9‡FVM](https://fvm.app/documentation/getting-started/installation)
+# Install FVM
 # ----------------------------
 install_fvm() {
   if [ -x "$FVM_BIN_DIR/fvm" ] && [ "$FORCE_FVM_REINSTALL" != "1" ]; then
@@ -47,11 +44,9 @@ install_fvm() {
 }
 
 # ----------------------------
-# PATH (current session + optional persistence)
-# Install docs: export PATH="<install_dir>/bin:$PATH"  [oai_citation:10‡FVM](https://fvm.app/documentation/getting-started/installation?utm_source=chatgpt.com)
+# PATH persistence
 # ----------------------------
 persist_path_line() {
-  # Keep it simple: fvm + pub-cache
   printf 'export PATH="%s:%s:$PATH"\n' "$FVM_BIN_DIR" "$PUB_CACHE_BIN"
 }
 
@@ -59,7 +54,7 @@ persist_path_claude_if_available() {
   if [ -n "${CLAUDE_ENV_FILE:-}" ] && [ -w "${CLAUDE_ENV_FILE:-/dev/null}" ]; then
     line="$(persist_path_line)"
     if ! grep -Fqs "$line" "$CLAUDE_ENV_FILE"; then
-      log "Persisting PATH via CLAUDE_ENV_FILE: $CLAUDE_ENV_FILE"
+      log "Persisting PATH via CLAUDE_ENV_FILE"
       printf '%s' "$line" >> "$CLAUDE_ENV_FILE"
     fi
     return 0
@@ -81,7 +76,7 @@ persist_path_profile_if_enabled() {
     return 0
   fi
 
-  log "Persisting PATH via profile: $profile"
+  log "Persisting PATH via: $profile"
   {
     printf '\n%s\n' "$marker"
     persist_path_line
@@ -91,8 +86,6 @@ persist_path_profile_if_enabled() {
 
 # ----------------------------
 # Project config detection
-# FVM uses .fvmrc as primary project config  [oai_citation:11‡FVM](https://fvm.app/documentation/getting-started/configuration)
-# Legacy .fvm/fvm_config.json exists for backward compatibility  [oai_citation:12‡FVM](https://fvm.app/documentation/getting-started/configuration)
 # ----------------------------
 has_fvm_project_config() {
   [ -f ".fvmrc" ] || [ -f ".fvm/fvm_config.json" ]
@@ -104,45 +97,34 @@ has_fvm_project_config() {
 install_fvm
 
 export PATH="$FVM_BIN_DIR:$PUB_CACHE_BIN:$PATH"
-have fvm || die "fvm not found on PATH after install (expected in $FVM_BIN_DIR)  [oai_citation:13‡FVM](https://fvm.app/documentation/getting-started/installation?utm_source=chatgpt.com)"
+have fvm || die "fvm not found on PATH after install"
 
-log "FVM:"
-fvm --version || true
+log "FVM: $(fvm --version)"
 
-# Ensure the repo's configured Flutter SDK is downloaded.
-# `fvm install` with no version installs from project configuration  [oai_citation:14‡FVM](https://fvm.app/documentation/guides/basic-commands?utm_source=chatgpt.com)
 if has_fvm_project_config; then
   log "Running: fvm install ${FVM_INSTALL_ARGS}"
   # shellcheck disable=SC2086
   fvm install $FVM_INSTALL_ARGS
 else
-  log "No .fvmrc (or legacy .fvm/fvm_config.json) found; skipping 'fvm install'."
-  log "FVM resolution order is: project .fvmrc → ancestor .fvmrc → global → system PATH  [oai_citation:15‡FVM](https://fvm.app/documentation/getting-started/faq?utm_source=chatgpt.com)"
+  log "No .fvmrc found; skipping 'fvm install'"
 fi
 
-# Persist PATH if the environment supports it, otherwise only if requested.
 persist_path_claude_if_available || persist_path_profile_if_enabled
 
-log "Flutter (via FVM):"
-fvm flutter --version
+log "Flutter: $(fvm flutter --version | head -1)"
 
 if [ "$RUN_DOCTOR" = "1" ]; then
   fvm flutter doctor -v || true
 fi
 
-# Optional monorepo bootstrapping:
-# Melos install: dart pub global activate melos  [oai_citation:16‡Melos](https://melos.invertase.dev/getting-started?utm_source=chatgpt.com)
+# Melos bootstrap for monorepos
 if [ "$SKIP_MELOS" != "1" ] && [ -f "melos.yaml" ]; then
-  log "melos.yaml detected; installing melos and bootstrapping..."
+  log "Installing melos and bootstrapping..."
   fvm dart pub global activate melos >/dev/null
-  export PATH="$PUB_CACHE_BIN:$PATH"
-  # Run melos via fvm dart to use the project's Flutter/Dart version
   fvm dart pub global run melos bootstrap
-else
-  if [ "$SKIP_PUB_GET" != "1" ] && [ -f "pubspec.yaml" ]; then
-    log "Running: fvm flutter pub get"
-    fvm flutter pub get
-  fi
+elif [ "$SKIP_PUB_GET" != "1" ] && [ -f "pubspec.yaml" ]; then
+  log "Running: fvm flutter pub get"
+  fvm flutter pub get
 fi
 
 log "Setup complete."
