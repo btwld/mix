@@ -82,23 +82,69 @@ void main() {
       );
     });
 
-    testWidgets('updateShouldNotify returns true when text changes', (
-      tester,
-    ) async {
+    testWidgets('notifies dependents when text changes', (tester) async {
       final text1 = TextStyler(maxLines: 1);
       final text2 = TextStyler(maxLines: 2);
+      var dependencyChanges = 0;
 
-      // Test through InheritedWidget implementation
-      expect(text1, isNot(equals(text2)));
+      await tester.pumpWidget(
+        TextScope(
+          text: text1,
+          child: _TextDependencyProbe(
+            key: const Key('text-probe'),
+            onDependenciesChanged: () => dependencyChanges++,
+            child: const SizedBox(),
+          ),
+        ),
+      );
+
+      expect(dependencyChanges, 1);
+
+      await tester.pumpWidget(
+        TextScope(
+          text: text2,
+          child: _TextDependencyProbe(
+            key: const Key('text-probe'),
+            onDependenciesChanged: () => dependencyChanges++,
+            child: const SizedBox(),
+          ),
+        ),
+      );
+
+      expect(dependencyChanges, 2);
     });
 
-    testWidgets('updateShouldNotify returns false when text is same', (
+    testWidgets('does not notify dependents when text is same', (
       tester,
     ) async {
       final text = TextStyler(maxLines: 1);
+      var dependencyChanges = 0;
 
-      // Test through InheritedWidget implementation
-      expect(text, equals(text));
+      await tester.pumpWidget(
+        TextScope(
+          text: text,
+          child: _TextDependencyProbe(
+            key: const Key('text-probe'),
+            onDependenciesChanged: () => dependencyChanges++,
+            child: const SizedBox(),
+          ),
+        ),
+      );
+
+      expect(dependencyChanges, 1);
+
+      await tester.pumpWidget(
+        TextScope(
+          text: text,
+          child: _TextDependencyProbe(
+            key: const Key('text-probe'),
+            onDependenciesChanged: () => dependencyChanges++,
+            child: const SizedBox(),
+          ),
+        ),
+      );
+
+      expect(dependencyChanges, 1);
     });
 
     testWidgets('handles null text properties', (tester) async {
@@ -295,4 +341,32 @@ void main() {
       });
     });
   });
+}
+
+class _TextDependencyProbe extends StatefulWidget {
+  const _TextDependencyProbe({
+    required this.onDependenciesChanged,
+    required this.child,
+    super.key,
+  });
+
+  final VoidCallback onDependenciesChanged;
+  final Widget child;
+
+  @override
+  State<_TextDependencyProbe> createState() => _TextDependencyProbeState();
+}
+
+class _TextDependencyProbeState extends State<_TextDependencyProbe> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    widget.onDependenciesChanged();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    TextScope.of(context);
+    return widget.child;
+  }
 }
