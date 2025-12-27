@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mix/mix.dart';
 import 'package:mix/src/animation/animation_config.dart';
 
+import '../../helpers/testing_utils.dart';
+
 void main() {
   group('AnimationConfig', () {
     group('CurveAnimationConfig', () {
@@ -343,6 +345,138 @@ void main() {
         expect(config.spring.mass, 1.0);
         expect(config.spring.stiffness, 180.0);
       });
+    });
+  });
+
+  group('PhaseAnimationConfig', () {
+    test('stores all required parameters', () {
+      final trigger = ValueNotifier(false);
+      final styles = [MockStyle(0.0), MockStyle(1.0)];
+      final curveConfigs = [
+        const CurveAnimationConfig(
+          duration: Duration(milliseconds: 100),
+          curve: Curves.easeIn,
+        ),
+        const CurveAnimationConfig(
+          duration: Duration(milliseconds: 200),
+          curve: Curves.easeOut,
+        ),
+      ];
+
+      final config = PhaseAnimationConfig<MockSpec<double>, MockStyle<double>>(
+        styles: styles,
+        curveConfigs: curveConfigs,
+        trigger: trigger,
+      );
+
+      expect(config.styles, styles);
+      expect(config.curveConfigs, curveConfigs);
+      expect(config.trigger, trigger);
+      expect(config.onEnd, isNull);
+
+      trigger.dispose();
+    });
+
+    test('stores optional onEnd callback', () {
+      var called = false;
+      final trigger = ValueNotifier(false);
+
+      final config = PhaseAnimationConfig<MockSpec<double>, MockStyle<double>>(
+        styles: [MockStyle(0.0)],
+        curveConfigs: [
+          const CurveAnimationConfig(
+            duration: Duration(milliseconds: 100),
+            curve: Curves.linear,
+          ),
+        ],
+        trigger: trigger,
+        onEnd: () => called = true,
+      );
+
+      expect(config.onEnd, isNotNull);
+      config.onEnd!();
+      expect(called, true);
+
+      trigger.dispose();
+    });
+
+    test('props contains styles, trigger, and curveConfigs for equality', () {
+      final trigger = ValueNotifier(false);
+      final styles = [MockStyle(0.0)];
+      final curveConfigs = [
+        const CurveAnimationConfig(
+          duration: Duration(milliseconds: 100),
+          curve: Curves.linear,
+        ),
+      ];
+
+      final config = PhaseAnimationConfig<MockSpec<double>, MockStyle<double>>(
+        styles: styles,
+        curveConfigs: curveConfigs,
+        trigger: trigger,
+      );
+
+      expect(config.props, contains(styles));
+      expect(config.props, contains(trigger));
+      expect(config.props, contains(curveConfigs));
+
+      trigger.dispose();
+    });
+
+    test('equal configs have same props', () {
+      final trigger = ValueNotifier(false);
+      final styles = [MockStyle(0.0)];
+      final curveConfigs = [
+        const CurveAnimationConfig(
+          duration: Duration(milliseconds: 100),
+          curve: Curves.linear,
+        ),
+      ];
+
+      final config1 = PhaseAnimationConfig<MockSpec<double>, MockStyle<double>>(
+        styles: styles,
+        curveConfigs: curveConfigs,
+        trigger: trigger,
+      );
+
+      final config2 = PhaseAnimationConfig<MockSpec<double>, MockStyle<double>>(
+        styles: styles,
+        curveConfigs: curveConfigs,
+        trigger: trigger,
+      );
+
+      expect(config1.props, equals(config2.props));
+
+      trigger.dispose();
+    });
+
+    test('different triggers produce different configs', () {
+      final trigger1 = ValueNotifier(false);
+      final trigger2 = ValueNotifier(false);
+      final styles = [MockStyle(0.0)];
+      final curveConfigs = [
+        const CurveAnimationConfig(
+          duration: Duration(milliseconds: 100),
+          curve: Curves.linear,
+        ),
+      ];
+
+      final config1 = PhaseAnimationConfig<MockSpec<double>, MockStyle<double>>(
+        styles: styles,
+        curveConfigs: curveConfigs,
+        trigger: trigger1,
+      );
+
+      final config2 = PhaseAnimationConfig<MockSpec<double>, MockStyle<double>>(
+        styles: styles,
+        curveConfigs: curveConfigs,
+        trigger: trigger2,
+      );
+
+      expect(config1, isNot(equals(config2)));
+
+      trigger1.dispose();
+      trigger2.dispose();
     });
   });
 }
