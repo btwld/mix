@@ -136,8 +136,8 @@ if [ "$SKIP_MELOS" != "1" ] && [ -f "melos.yaml" ]; then
   log "melos.yaml detected; installing melos and bootstrapping..."
   fvm dart pub global activate melos >/dev/null
   export PATH="$PUB_CACHE_BIN:$PATH"
-  # Run melos via fvm exec to ensure correct dart is used
-  fvm exec melos bootstrap
+  # Run melos via fvm dart to use the project's Flutter/Dart version
+  fvm dart pub global run melos bootstrap
 else
   if [ "$SKIP_PUB_GET" != "1" ] && [ -f "pubspec.yaml" ]; then
     log "Running: fvm flutter pub get"
