@@ -55,7 +55,7 @@ persist_path_claude_if_available() {
     line="$(persist_path_line)"
     if ! grep -Fqs "$line" "$CLAUDE_ENV_FILE"; then
       log "Persisting PATH via CLAUDE_ENV_FILE"
-      printf '%s' "$line" >> "$CLAUDE_ENV_FILE"
+      printf '%s\n' "$line" >> "$CLAUDE_ENV_FILE"
     fi
     return 0
   fi
