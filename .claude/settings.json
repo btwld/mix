@@ -7,7 +7,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/setup-flutter-env.sh"
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/setup-flutter-env.sh"
           }
         ]
       }
