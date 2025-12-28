@@ -108,12 +108,24 @@ fi
 if [ -d ".fvm/flutter_sdk/bin" ]; then
   FLUTTER_SDK_BIN="$(cd .fvm/flutter_sdk/bin && pwd)"
   export PATH="$FLUTTER_SDK_BIN:$PATH"
+
+  # Add to shell profiles for persistence
+  PATH_EXPORT="export PATH=\"$FLUTTER_SDK_BIN:\$PATH\""
+
+  for profile in "$HOME/.bashrc" "$HOME/.zshrc"; do
+    if [ -f "$profile" ]; then
+      if ! grep -q "$FLUTTER_SDK_BIN" "$profile" 2>/dev/null; then
+        log "Adding Flutter to PATH in $profile"
+        printf '\n# Flutter SDK (added by mix setup)\n%s\n' "$PATH_EXPORT" >> "$profile"
+      fi
+    fi
+  done
 fi
 
 log ""
 log "Setup complete. Flutter, Dart, and pub-cache are now available."
 log ""
-log "Verify with:"
+log "Run 'source ~/.bashrc' (or ~/.zshrc) or restart your shell to use:"
 log "  flutter --version"
 log "  dart --version"
 log "  melos --version"
