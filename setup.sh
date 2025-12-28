@@ -15,7 +15,7 @@ have() { command -v "$1" >/dev/null 2>&1; }
 : "${RUN_DOCTOR:=0}"
 : "${SKIP_MELOS:=0}"
 : "${SKIP_PUB_GET:=0}"
-: "${FVM_INSTALL_ARGS:=}"
+: "${FVM_INSTALL_ARGS:=}"  # space-separated args for fvm install (e.g. "--skip-setup")
 
 FVM_BIN_DIR="$FVM_INSTALL_DIR/bin"
 PUB_CACHE_BIN="$HOME/.pub-cache/bin"
@@ -103,7 +103,7 @@ log "FVM: $(fvm --version)"
 
 if has_fvm_project_config; then
   log "Running: fvm install ${FVM_INSTALL_ARGS}"
-  # shellcheck disable=SC2086
+  # shellcheck disable=SC2086 -- intentional word-splitting for multiple args
   fvm install $FVM_INSTALL_ARGS
 else
   log "No .fvmrc found; skipping 'fvm install'"
