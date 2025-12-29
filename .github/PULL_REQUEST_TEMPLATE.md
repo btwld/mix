@@ -1,15 +1,16 @@
-### Related Issue
-<!-- Link related issues or PRs. Example: Closes #123 -->
-- 
+#### Related issue
+
+Is it related to any opened issue?
 
 ### Description
-<!-- Please summarize the changes. -->
+
+Please summarize the changes.
 
 ### Changes
-<!-- List specific changes made in this PR. -->
-- 
 
-### Review Checklist
+List specific changes made in this PR.
+
+**Review Checklist**
 
 - [ ] **Testing**: Have you tested your changes, including unit tests and integration tests for affected code?
 - [ ] **Breaking Changes**: Does this change introduce breaking changes affecting existing code or users?
@@ -17,4 +18,5 @@
 - [ ] **Website Updates**: Is the website containing the updates you make on documentation?
 
 ### Additional Information (optional)
-<!-- Add any additional context or documentation that might be helpful for reviewers. -->
+
+Is there any additional context or documentation that might be helpful for reviewers?
