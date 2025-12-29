@@ -7,6 +7,7 @@ import '../../core/prop.dart';
 import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/widget_modifier_config.dart';
+import '../../style/mixins/animation_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
 import '../../style/mixins/widget_modifier_style_mixin.dart';
 import '../../style/mixins/widget_state_variant_mixin.dart';
@@ -22,7 +23,8 @@ class ImageStyler extends Style<ImageSpec>
         Diagnosticable,
         WidgetModifierStyleMixin<ImageStyler, ImageSpec>,
         VariantStyleMixin<ImageStyler, ImageSpec>,
-        WidgetStateVariantMixin<ImageStyler, ImageSpec> {
+        WidgetStateVariantMixin<ImageStyler, ImageSpec>,
+        AnimationStyleMixin<ImageStyler, ImageSpec> {
   final Prop<ImageProvider<Object>>? $image;
   final Prop<double>? $width;
   final Prop<double>? $height;
@@ -214,6 +216,7 @@ class ImageStyler extends Style<ImageSpec>
   }
 
   /// Convenience method for animating the ImageStyleSpec
+  @override
   ImageStyler animate(AnimationConfig animation) {
     return merge(ImageStyler(animation: animation));
   }

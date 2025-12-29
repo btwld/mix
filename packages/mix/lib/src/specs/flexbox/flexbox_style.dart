@@ -298,5 +298,5 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [FlexBoxStyler] instances for equality.
   @override
-  List<Object?> get props => [$box, $flex];
+  List<Object?> get props => [$box, $flex, $animation, $modifier, $variants];
 }

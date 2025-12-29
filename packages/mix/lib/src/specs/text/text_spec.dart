@@ -9,6 +9,7 @@ import '../../core/spec.dart';
 ///
 /// Provides comprehensive text styling including overflow behavior, structure styling,
 /// alignment, line limits, text direction, and string directive support.
+@immutable
 final class TextSpec extends Spec<TextSpec> with Diagnosticable {
   final TextOverflow? overflow;
   final StrutStyle? strutStyle;

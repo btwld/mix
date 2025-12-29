@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
 
+@immutable
 final class ImageSpec extends Spec<ImageSpec> with Diagnosticable {
   final ImageProvider<Object>? image;
   final double? width, height;
