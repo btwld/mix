@@ -4,7 +4,8 @@
 
 set -e
 
-FLUTTER_SDK_PATH="$(pwd)/.fvm/flutter_sdk/bin"
+PROJECT_DIR="${CLAUDE_PROJECT_DIR:-.}"
+FLUTTER_SDK_PATH="$PROJECT_DIR/.fvm/flutter_sdk/bin"
 FVM_BIN_PATH="$HOME/fvm/bin"
 PUB_CACHE_BIN="$HOME/.pub-cache/bin"
 
@@ -14,13 +15,13 @@ if [ "$CLAUDE_CODE_REMOTE" != "true" ]; then
 fi
 
 # Check if Flutter SDK is already installed via FVM
-if [ -d ".fvm/flutter_sdk/bin" ] && [ -x ".fvm/flutter_sdk/bin/flutter" ]; then
+if [ -d "$PROJECT_DIR/.fvm/flutter_sdk/bin" ] && [ -x "$PROJECT_DIR/.fvm/flutter_sdk/bin/flutter" ]; then
   # Flutter is installed - persist PATH to session environment
   if [ -n "$CLAUDE_ENV_FILE" ]; then
     echo "export PATH=\"$FLUTTER_SDK_PATH:$FVM_BIN_PATH:$PUB_CACHE_BIN:\$PATH\"" >> "$CLAUDE_ENV_FILE"
   fi
 
-  FLUTTER_VERSION=$(.fvm/flutter_sdk/bin/flutter --version 2>/dev/null | head -1 || echo "unknown")
+  FLUTTER_VERSION=$("$PROJECT_DIR/.fvm/flutter_sdk/bin/flutter" --version 2>/dev/null | head -1 || echo "unknown")
   echo "Mix Development Environment Ready"
   echo "=================================="
   echo "$FLUTTER_VERSION"
