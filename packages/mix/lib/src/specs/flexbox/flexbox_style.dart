@@ -32,6 +32,7 @@ import 'flexbox_mutable_style.dart';
 import 'flexbox_spec.dart';
 import 'flexbox_widget.dart';
 
+@Deprecated('Use FlexBoxStyler instead')
 typedef FlexBoxMix = FlexBoxStyler;
 
 /// Represents the attributes of a [FlexBoxSpec].

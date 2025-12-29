@@ -16,6 +16,7 @@ import '../../style/mixins/widget_state_variant_mixin.dart';
 import 'flex_mutable_style.dart';
 import 'flex_spec.dart';
 
+@Deprecated('Use FlexStyler instead')
 typedef FlexMix = FlexStyler;
 
 /// Represents the attributes of a [FlexSpec].

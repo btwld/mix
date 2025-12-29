@@ -31,6 +31,7 @@ import 'stackbox_mutable_style.dart';
 import 'stackbox_spec.dart';
 import 'stackbox_widget.dart';
 
+@Deprecated('Use StackBoxStyler instead')
 typedef StackBoxMix = StackBoxStyler;
 
 /// Represents the attributes of a [StackBoxSpec].
