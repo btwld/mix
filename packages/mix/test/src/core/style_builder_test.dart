@@ -792,6 +792,53 @@ void main() {
           );
         },
       );
+
+      testWidgets(
+        'preserves widget state when external controller is removed',
+        (tester) async {
+          final externalController = WidgetStatesController();
+          addTearDown(externalController.dispose);
+          externalController.update(WidgetState.hovered, true);
+
+          WidgetStatesController? controller = externalController;
+          late void Function(VoidCallback) setState;
+
+          await tester.pumpWidget(
+            MaterialApp(
+              home: StatefulBuilder(
+                builder: (context, stateSetter) {
+                  setState = stateSetter;
+                  return StyleBuilder<BoxSpec>(
+                    controller: controller,
+                    style: BoxStyler()
+                        .color(Colors.red)
+                        .onHovered(BoxStyler().color(Colors.blue)),
+                    builder: (context, spec) {
+                      return Container(decoration: spec.decoration);
+                    },
+                  );
+                },
+              ),
+            ),
+          );
+
+          final initial = tester.widget<Container>(find.byType(Container));
+          expect(initial.decoration, BoxDecoration(color: Colors.blue));
+
+          setState(() {
+            controller = null;
+          });
+          await tester.pump();
+
+          final afterSwap = tester.widget<Container>(find.byType(Container));
+          expect(afterSwap.decoration, BoxDecoration(color: Colors.blue));
+
+          expect(
+            () => externalController.update(WidgetState.hovered, false),
+            returnsNormally,
+          );
+        },
+      );
     });
 
     testWidgets(
