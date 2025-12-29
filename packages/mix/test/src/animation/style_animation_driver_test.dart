@@ -57,7 +57,7 @@ void main() {
       driver.dispose();
     });
 
-    test('reset should restore the driver to the begining', () {
+    test('reset should restore the driver to the beginning', () {
       driver.controller.value = 0.5;
 
       driver.reset();
