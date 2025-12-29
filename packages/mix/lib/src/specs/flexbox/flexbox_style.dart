@@ -16,6 +16,7 @@ import '../../style/mixins/border_radius_style_mixin.dart';
 import '../../style/mixins/border_style_mixin.dart';
 import '../../style/mixins/constraint_style_mixin.dart';
 import '../../style/mixins/decoration_style_mixin.dart';
+import '../../style/mixins/animation_style_mixin.dart';
 import '../../style/mixins/flex_style_mixin.dart';
 import '../../style/mixins/shadow_style_mixin.dart';
 import '../../style/mixins/spacing_style_mixin.dart';
@@ -53,7 +54,8 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
         SpacingStyleMixin<FlexBoxStyler>,
         TransformStyleMixin<FlexBoxStyler>,
         ConstraintStyleMixin<FlexBoxStyler>,
-        FlexStyleMixin<FlexBoxStyler> {
+        FlexStyleMixin<FlexBoxStyler>,
+        AnimationStyleMixin<FlexBoxStyler, FlexBoxSpec> {
   final Prop<StyleSpec<BoxSpec>>? $box;
   final Prop<StyleSpec<FlexSpec>>? $flex;
 
@@ -129,6 +131,7 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
       FlexBoxMutableStyler(FlexBoxStyler());
 
   /// Sets the animation property.
+  @override
   FlexBoxStyler animate(AnimationConfig animation) {
     return merge(FlexBoxStyler(animation: animation));
   }
