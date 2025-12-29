@@ -27,6 +27,7 @@ import 'box_mutable_style.dart';
 import 'box_spec.dart';
 import 'box_widget.dart';
 
+@Deprecated('Use BoxStyler instead')
 typedef BoxMix = BoxStyler;
 
 /// Style class for configuring [BoxSpec] properties.

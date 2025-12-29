@@ -11,8 +11,10 @@ import '../../style/mixins/animation_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
 import '../../style/mixins/widget_modifier_style_mixin.dart';
 import '../../style/mixins/widget_state_variant_mixin.dart';
+import 'stack_mutable_style.dart';
 import 'stack_spec.dart';
 
+@Deprecated('Use StackStyler instead')
 typedef StackMix = StackStyler;
 
 /// Represents the attributes of a [StackSpec].
@@ -64,6 +66,8 @@ class StackStyler extends Style<StackSpec>
          modifier: modifier,
          variants: variants,
        );
+
+  static StackMutableStyler get chain => StackMutableStyler(StackStyler());
 
   /// Sets stack alignment
   StackStyler alignment(AlignmentGeometry value) {
