@@ -426,7 +426,7 @@ packages/mix_generator/lib/src/core/styler/styler_builder.dart
 5. Generate `resolve()` method (calls MixOps.resolve per field)
 6. Generate `merge()` method (calls MixOps.merge per field)
 7. Generate `debugFillProperties()` for Styler (all DiagnosticsProperty, excludes base fields)
-8. Generate `props` getter with ALL `$`-prefixed fields INCLUDING base fields (see C19)
+8. Generate `props` getter with ALL `$`-prefixed fields INCLUDING base fields (see C17)
 9. Generate `call()` method for widget-creating Stylers
 
 **call() method pattern** (for widget-creating Stylers):
@@ -587,7 +587,7 @@ String _normalize(String code) {
    - **Clarification**: "Do not modify" means don't change patterns/logic — adding `part`/`with` boilerplate is required
 2. **Generated code must be identical** to hand-written code (ignoring formatting)
 3. **No backward compatibility required** - this is a from-scratch rewrite
-4. **Use code_builder for complex patterns** (class declarations, method signatures); string templates OK for simple repetitive patterns (see C15)
+4. **Use code_builder for complex patterns** (class declarations, method signatures); string templates OK for simple repetitive patterns (see C13)
 5. **Handle edge cases** found in existing code (e.g., `textDirectives` without Prop wrapper)
 
 ---
@@ -971,7 +971,7 @@ StyleSpec<TextSpec> resolve(BuildContext context) {
   );
 }
 
-// 4. Diagnostics label: 'directives', NOT 'textDirectives' (see C18)
+// 4. Diagnostics label: 'directives', NOT 'textDirectives' (see C16)
 ..add(DiagnosticsProperty('directives', $textDirectives));
 ```
 
@@ -1034,7 +1034,7 @@ class GeneratorException implements Exception {
 
 ### C11: Testing Normalization Rules
 
-**Issue**: Phase 6 needs explicit comparison rules.
+**Issue**: Phase 5 needs explicit comparison rules.
 
 **Normalization for golden file comparison**:
 
@@ -2077,7 +2077,7 @@ void debugFillProperties(DiagnosticPropertiesBuilder properties) {
 | Property type | Type-specific (ColorProperty, IntProperty, etc.) | **Always `DiagnosticsProperty`** |
 | Field reference | `fieldName` (direct) | `$fieldName` (Prop wrapper) |
 | Base fields in debugFillProperties | N/A | **NOT included** (animation, modifier, variants excluded) |
-| Base fields in props | N/A | **INCLUDED** (see C19) |
+| Base fields in props | N/A | **INCLUDED** (see C17) |
 | String name | Matches field name | Matches field name (without `$`) |
 
 **Examples from codebase**:
