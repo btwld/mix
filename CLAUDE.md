@@ -14,6 +14,16 @@ examples/           # Interactive widget gallery
 website/            # Documentation site
 ```
 
+## Environment Setup
+
+If Flutter is not installed or `flutter --version` fails, run the setup script:
+
+```bash
+bash setup.sh
+```
+
+This installs FVM, Flutter SDK (3.38.1), DCM, and melos, then bootstraps all packages.
+
 ## Commands
 
 ```bash
