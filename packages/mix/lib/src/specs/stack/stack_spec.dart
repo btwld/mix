@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import '../../core/helpers.dart';
 import '../../core/spec.dart';
 
+@immutable
 final class StackSpec extends Spec<StackSpec> with Diagnosticable {
   final AlignmentGeometry? alignment;
   final StackFit? fit;

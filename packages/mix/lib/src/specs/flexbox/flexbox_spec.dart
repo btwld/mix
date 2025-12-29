@@ -10,6 +10,7 @@ import '../flex/flex_spec.dart';
 /// Provides comprehensive styling for widgets that need both
 /// box decoration and flex layout capabilities. Merges [BoxSpec] and
 /// [FlexSpec] into a unified specification.
+@immutable
 final class FlexBoxSpec extends Spec<FlexBoxSpec> with Diagnosticable {
   /// Box styling properties for decoration, padding, constraints, etc.
   final StyleSpec<BoxSpec>? box;

@@ -296,5 +296,5 @@ class StackBoxStyler extends Style<StackBoxSpec>
   /// This property is used by the [==] operator and the [hashCode] getter to
   /// compare two [StackBoxStyler] instances for equality.
   @override
-  List<Object?> get props => [$box, $stack];
+  List<Object?> get props => [$box, $stack, $animation, $modifier, $variants];
 }

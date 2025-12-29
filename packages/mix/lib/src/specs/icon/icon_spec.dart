@@ -8,6 +8,7 @@ import '../../core/spec.dart';
 ///
 /// Provides comprehensive icon styling including color, size, weight, optical properties,
 /// text direction, scaling behavior, and shadow effects.
+@immutable
 final class IconSpec extends Spec<IconSpec> with Diagnosticable {
   /// The color to use when drawing the icon.
   final Color? color;
