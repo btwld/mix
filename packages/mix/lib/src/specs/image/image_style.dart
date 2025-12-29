@@ -14,6 +14,7 @@ import 'image_mutable_style.dart';
 import 'image_spec.dart';
 import 'image_widget.dart';
 
+@Deprecated('Use ImageStyler instead')
 typedef ImageMix = ImageStyler;
 
 class ImageStyler extends Style<ImageSpec>

@@ -20,6 +20,7 @@ import 'text_mutable_style.dart';
 import 'text_spec.dart';
 import 'text_widget.dart';
 
+@Deprecated('Use TextStyler instead')
 typedef TextMix = TextStyler;
 
 /// Represents the attributes of a [TextSpec].

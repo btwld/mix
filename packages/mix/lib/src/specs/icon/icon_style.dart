@@ -16,6 +16,7 @@ import 'icon_mutable_style.dart';
 import 'icon_spec.dart';
 import 'icon_widget.dart';
 
+@Deprecated('Use IconStyler instead')
 typedef IconMix = IconStyler;
 
 class IconStyler extends Style<IconSpec>
