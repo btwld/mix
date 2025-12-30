@@ -6,6 +6,14 @@ die() { log "ERROR: $*"; exit 1; }
 have() { command -v "$1" >/dev/null 2>&1; }
 
 # ----------------------------
+# Environment check
+# ----------------------------
+if [ "${CLAUDE_CODE_REMOTE:-}" != "true" ]; then
+  die "This setup script is intended for Claude Code remote environments only.
+       Set CLAUDE_CODE_REMOTE=true to override, or use standard Flutter/FVM installation."
+fi
+
+# ----------------------------
 # Config
 # ----------------------------
 FVM_INSTALL_DIR="${FVM_INSTALL_DIR:-$HOME/fvm}"
