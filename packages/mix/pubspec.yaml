@@ -1,7 +1,7 @@
 name: mix
 description: An expressive way to effortlessly build design systems in Flutter.
 version: 2.0.0-rc.0
-homepage: https://github.com/leoafarias/mix
+homepage: https://github.com/btwld/mix
 repository: https://github.com/btwld/mix/tree/main/packages/mix
 
 environment:

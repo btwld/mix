@@ -79,7 +79,8 @@ class ButtonSpec extends Spec<ButtonSpec> {
 
 ```dart
 class ButtonStyler extends Style<ButtonSpec>
-    with WidgetStateVariantMixin<ButtonStyler, ButtonSpec> {
+    with VariantStyleMixin<ButtonStyler, ButtonSpec>,
+         WidgetStateVariantMixin<ButtonStyler, ButtonSpec> {
   final Prop<StyleSpec<FlexBoxSpec>>? $container;
   final Prop<StyleSpec<IconSpec>>? $icon;
   final Prop<StyleSpec<TextSpec>>? $label;

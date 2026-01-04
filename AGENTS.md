@@ -84,7 +84,7 @@ final style = BoxStyler()
 
 ## Critical Rules
 
-- **Dart SDK:** >=3.9.0 (enables dot-shorthands)
+- **Dart SDK:** >=3.10.0 (enables dot-shorthands)
 - **Flutter:** >=3.38.1
 - **Immutability:** Specs are always immutable; use `copyWith()` for changes
 - **Code generation:** Run `melos run gen:build` after modifying specs
