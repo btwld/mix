@@ -168,7 +168,7 @@ class BoxStyler extends Style<BoxSpec>
 | BoxSpec | Yes | `Box call({Key? key, Widget? child})` | Mixins: Decoration/Spacing/Transform/Constraint/Border/BorderRadius/Shadow + Animation |
 | TextSpec | Yes | `StyledText call(String text)` | `textDirectives` raw list; `textDirective` + `directive` + case helpers |
 | IconSpec | Yes | `StyledIcon call({Key? key, IconData? icon, String? semanticLabel})` | `List<ShadowMix>` -> `Prop.mix(ShadowListMix(...))` |
-| ImageSpec | Yes | `StyledImage call({ImageProvider? image, ...})` | `animate(...)` without AnimationStyleMixin |
+| ImageSpec | Yes | `StyledImage call({ImageProvider? image, ...})` | Standard mixins including AnimationStyleMixin |
 | FlexSpec | Yes | **No call method** | Deprecated `gap` param in `.create()` |
 | StackSpec | Yes | **No call method** | Layout spec only |
 | FlexBoxSpec | **Spec mixin only** | N/A | Composite styler deferred |
@@ -194,9 +194,6 @@ Custom methods expected:
 
 ### FlexStyler deprecated gap (constructor override)
 `FlexStyler.create` must accept deprecated `gap` param and map to `$spacing`.
-
-### Animate without mixin
-`ImageStyler` exposes `animate(...)` even though it doesn't include `AnimationStyleMixin`.
 
 ### Composite stylers (FlexBox/StackBox)
 Composite stylers are hand-written in v1 and out of scope for generation.

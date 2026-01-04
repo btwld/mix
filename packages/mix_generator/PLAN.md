@@ -790,7 +790,7 @@ String getMergeCall(FieldMetadata field) {
 | BoxStyler | `Diagnosticable`, `WidgetModifierStyleMixin`, `VariantStyleMixin`, `WidgetStateVariantMixin`, `BorderStyleMixin`, `BorderRadiusStyleMixin`, `ShadowStyleMixin`, `DecorationStyleMixin`, `SpacingStyleMixin`, `TransformStyleMixin`, `ConstraintStyleMixin`, `AnimationStyleMixin` |
 | TextStyler | `Diagnosticable`, `WidgetModifierStyleMixin`, `VariantStyleMixin`, `WidgetStateVariantMixin`, `TextStyleMixin`, `AnimationStyleMixin` |
 | IconStyler | `Diagnosticable`, `WidgetModifierStyleMixin`, `VariantStyleMixin`, `WidgetStateVariantMixin`, `AnimationStyleMixin` |
-| ImageStyler | `Diagnosticable`, `WidgetModifierStyleMixin`, `VariantStyleMixin`, `WidgetStateVariantMixin` |
+| ImageStyler | `Diagnosticable`, `WidgetModifierStyleMixin`, `VariantStyleMixin`, `WidgetStateVariantMixin`, `AnimationStyleMixin` |
 | FlexStyler | `Diagnosticable`, `WidgetModifierStyleMixin`, `VariantStyleMixin`, `WidgetStateVariantMixin`, `FlexStyleMixin`, `AnimationStyleMixin` |
 | StackStyler | `Diagnosticable`, `WidgetModifierStyleMixin`, `VariantStyleMixin`, `WidgetStateVariantMixin`, `AnimationStyleMixin` |
 | FlexBoxStyler | `Diagnosticable`, `WidgetModifierStyleMixin`, `VariantStyleMixin`, `WidgetStateVariantMixin`, `BorderStyleMixin`, `BorderRadiusStyleMixin`, `ShadowStyleMixin`, `DecorationStyleMixin`, `SpacingStyleMixin`, `TransformStyleMixin`, `ConstraintStyleMixin`, `FlexStyleMixin`, `AnimationStyleMixin` |
@@ -974,7 +974,6 @@ final emitter = DartEmitter(
 | `shadows` vs `boxShadow` | IconSpec/BoxSpec | `List<Shadow>` in Spec, becomes `Prop<List<Shadow>>?` in Styler. Uses `MixOps.merge`. |
 | `FlagProperty ifTrue` | All Specs with bool | Requires curated map (see C2). |
 | Nested Spec types | FlexBoxSpec, StackBoxSpec | Contains `BoxSpec` and `FlexSpec`/`StackSpec`. Lerp delegates to nested `.lerp()`. |
-| `ImageStyler` | No AnimationStyleMixin | Still exposes `animate(...)`; generate animate method regardless of mixin list. |
 | `FlexStyler.create gap` | FlexSpec | Deprecated `gap` parameter maps to `$spacing`. |
 | `FlexBoxStyler.gap` | FlexBoxSpec | Deferred with composite stylers (v2). |
 
