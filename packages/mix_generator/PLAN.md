@@ -1351,6 +1351,18 @@ test('BoxStyler props includes ALL fields including base fields', () {
 
 **Strategy A: Curated maps (recommended for simplicity)**
 
+**Ecosystem precedent (why curated default is safest):**
+- `source_gen` guidance: keep builders deterministic; Part/SharedPart builders cannot safely depend on other generated parts. (See `source_gen` README / build_runner docs.)
+- `json_serializable`: unsupported types require explicit converters; no implicit registry. (Package docs/changelog.)
+- `built_value`: serializers are opt-in via `@SerializersFor` or manual registration; again explicit and deterministic.
+- SharedPartBuilder FAQ: you cannot run a SharedPartBuilder over outputs of another SharedPartBuilder (StackOverflow answers by package authors), so global discovery across packages is brittle.
+
+**Decision for Mix:**
+- Default to a curated, contract-first map for the Mix 2.0 surface (Box/Text/Icon/Image/Flex/Stack).
+- Allow additive overrides (builder options or `tool/mix_registry_overrides.yaml`) to register extra Mix/ListMix types in consuming packages (e.g., `/Users/leofarias/bitwild/remix`).
+- Provide an opt-in `scanMixableTypes` flag (scoped globs, cached) for teams that really want discovery inside their own package; off by default to preserve determinism and golden stability.
+- Fallbacks stay explicit and noisy: unknown type → `Prop.maybe` + `MixOps.lerpSnap` + warning.
+
 ```dart
 // packages/mix_generator/lib/src/core/curated/type_mappings.dart
 const mixTypeMap = {
@@ -1372,9 +1384,73 @@ const utilityMap = {
   'Clip': ('MixUtility', UtilityCallbackKind.methodTearOff, 'clip'),
   'Axis': ('MixUtility', UtilityCallbackKind.methodTearOff, 'axis'),
   'Matrix4': ('MixUtility', UtilityCallbackKind.methodTearOff, 'transform'),
-  // ...
+// ...
 };
 ```
+
+**Override mechanism (explicit, deterministic)**
+- Merge order: `curated` < `overrides` < `scanned` (when enabled).
+- Builder options (defaults):
+  - `extraMixTypes: {}` (map of FlutterType -> MixType)
+  - `extraListMixTypes: {}` (map of ElementMixType -> ListMixType)
+  - `scanMixableTypes: false`
+  - `scanGlobs: ['lib/**']` (used only when scan is true)
+- Optional file: `tool/mix_registry_overrides.yaml`
+  ```yaml
+  mixTypes:
+    AlignmentGeometry: AlignmentGeometryMix
+    IconData: IconDataMix
+  listMixTypes:
+    ShadowMix: ShadowListMix
+  ```
+  Loader merges this into `extra*` when present.
+
+**Coverage check (preflight)**
+- Before generation, assert that every field type in the target specs (Box/Text/Icon/Image/Flex/Stack) is either:
+  1) in `mixTypeMap` / `listMixTypeMap`, or
+  2) intentionally handled by fallback (Color, Clip enums, Axis, IconData, Locale, BoxFit, FilterQuality, AlignmentGeometry, Matrix4, MainAxisAlignment/CrossAxisAlignment/MainAxisSize/TextBaseline/VerticalDirection, etc.).
+- If missing and not in a documented fallback list, emit a warning and proceed with fallback; add a unit test to guard this list.
+
+**Fallback logging policy**
+- Log level: warning.
+- Throttle: one warning per unknown type per build (memoize by TypeKey).
+- Behavior: fallback to `Prop.maybe` + `MixOps.lerpSnap`.
+
+**Scan guardrails (if enabled)**
+- Respect `scanGlobs`; default `lib/**`.
+- Ignore outputs of other SharedPartBuilders; only inspect source libraries.
+- Cache results per build to avoid repeated scans.
+
+**Import validation (fail-fast)**
+- Before emitting, verify required symbols are resolvable in the stub library (Diagnosticable, MixOps, Prop, all mixins and mix types referenced). If missing, emit a clear error pointing at the stub, not the generated part.
+
+**Builder options example**
+```yaml
+targets:
+  $default:
+    builders:
+      mix_generator:
+        options:
+          scanMixableTypes: false    # default
+          scanGlobs:
+            - lib/**                # used only if scanMixableTypes=true
+          extraMixTypes:
+            IconData: IconDataMix
+          extraListMixTypes:
+            ShadowMix: ShadowListMix
+```
+
+**Golden coverage for registry behavior**
+- Tests should cover:
+  1) Unknown type → warning + snap + Prop.maybe.
+  2) Override adds mapping and changes generated output.
+  3) Scanning off vs. on yields different fixture outputs.
+
+**Composite spec reminder**
+- Even if overrides/scanning add composite-related types, composite Stylers remain deferred in v1; only Spec mixins are generated for composite specs.
+
+**Mixin/Call map sanity**
+- Re-validate curated mixin and call maps (C4) against current hand-written stylers whenever new fields are added (e.g., ImageStyler still exposes `animate` without AnimationStyleMixin). Add a checklist step in the workflow.
 
 **Strategy B: Annotation scanning with caching**
 
