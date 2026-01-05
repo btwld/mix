@@ -7,6 +7,7 @@
 // 1. Spec class bodies: copyWith(), lerp(), debugFillProperties(), props
 // 2. Styler classes: Field declarations, constructors, resolve(), merge()
 
+import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:mix_annotations/mix_annotations.dart';
@@ -18,9 +19,9 @@ import 'package:source_gen/source_gen.dart';
 /// - _$XSpecMethods mixin (Spec method overrides)
 /// - XStyler class (full Styler implementation)
 Builder mixGenerator(BuilderOptions options) {
-  return PartBuilder(
+  return SharedPartBuilder(
     [_PlaceholderGenerator()],
-    '.g.dart',
+    'mix_generator',
     formatOutput: (code, version) {
       return DartFormatter(languageVersion: version).format(code);
     },

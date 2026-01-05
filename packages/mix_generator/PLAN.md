@@ -233,17 +233,17 @@ builders:
   mix_generator:
     import: 'package:mix_generator/mix_generator.dart'
     builder_factories: ['mixGenerator']
-    build_extensions: {'.dart': ['.g.dart']}
+    build_extensions: {'.dart': ['.g.part']}
     auto_apply: dependents
-    build_to: source
-    applies_builders: []
+    build_to: cache
+    applies_builders: ['source_gen|combining_builder']
 ```
 
-**Note**: Uses `PartBuilder` with `.g.dart` output written directly to source. `PartBuilder` injects the `part of` directive, so the generator must **not** emit `part of` headers itself. The generator entry point is `mixGenerator` in `mix_generator.dart`.
+**Note**: Uses `SharedPartBuilder` with `combining_builder`. The generator emits `.g.part` to cache; `combining_builder` produces the final `.g.dart` in source. The generator must **not** emit `part of` headers itself. The generator entry point is `mixGenerator` in `mix_generator.dart`.
 
-**Current vs Future architecture**:
-- **Current**: `PartBuilder` outputs `.g.dart` directly to source
-- **Future option**: Could migrate to `SharedPartBuilder` with `combining_builder` if multiple generators need to contribute to the same `.g.dart`
+**Current architecture**:
+- `SharedPartBuilder` outputs `.g.part` (cache) and `combining_builder` writes `.g.dart` to source.
+- This follows the recommended `source_gen` pattern for `.g.dart` outputs and allows coexistence with other generators.
 
 **Consuming packages** — the `generate_for` in targets section limits generator scope:
 ```yaml
@@ -790,7 +790,7 @@ String getMergeCall(FieldMetadata field) {
 | BoxStyler | `Diagnosticable`, `WidgetModifierStyleMixin`, `VariantStyleMixin`, `WidgetStateVariantMixin`, `BorderStyleMixin`, `BorderRadiusStyleMixin`, `ShadowStyleMixin`, `DecorationStyleMixin`, `SpacingStyleMixin`, `TransformStyleMixin`, `ConstraintStyleMixin`, `AnimationStyleMixin` |
 | TextStyler | `Diagnosticable`, `WidgetModifierStyleMixin`, `VariantStyleMixin`, `WidgetStateVariantMixin`, `TextStyleMixin`, `AnimationStyleMixin` |
 | IconStyler | `Diagnosticable`, `WidgetModifierStyleMixin`, `VariantStyleMixin`, `WidgetStateVariantMixin`, `AnimationStyleMixin` |
-| ImageStyler | `Diagnosticable`, `WidgetModifierStyleMixin`, `VariantStyleMixin`, `WidgetStateVariantMixin` |
+| ImageStyler | `Diagnosticable`, `WidgetModifierStyleMixin`, `VariantStyleMixin`, `WidgetStateVariantMixin`, `AnimationStyleMixin` |
 | FlexStyler | `Diagnosticable`, `WidgetModifierStyleMixin`, `VariantStyleMixin`, `WidgetStateVariantMixin`, `FlexStyleMixin`, `AnimationStyleMixin` |
 | StackStyler | `Diagnosticable`, `WidgetModifierStyleMixin`, `VariantStyleMixin`, `WidgetStateVariantMixin`, `AnimationStyleMixin` |
 | FlexBoxStyler | `Diagnosticable`, `WidgetModifierStyleMixin`, `VariantStyleMixin`, `WidgetStateVariantMixin`, `BorderStyleMixin`, `BorderRadiusStyleMixin`, `ShadowStyleMixin`, `DecorationStyleMixin`, `SpacingStyleMixin`, `TransformStyleMixin`, `ConstraintStyleMixin`, `FlexStyleMixin`, `AnimationStyleMixin` |
@@ -974,7 +974,6 @@ final emitter = DartEmitter(
 | `shadows` vs `boxShadow` | IconSpec/BoxSpec | `List<Shadow>` in Spec, becomes `Prop<List<Shadow>>?` in Styler. Uses `MixOps.merge`. |
 | `FlagProperty ifTrue` | All Specs with bool | Requires curated map (see C2). |
 | Nested Spec types | FlexBoxSpec, StackBoxSpec | Contains `BoxSpec` and `FlexSpec`/`StackSpec`. Lerp delegates to nested `.lerp()`. |
-| `ImageStyler` | No AnimationStyleMixin | Still exposes `animate(...)`; generate animate method regardless of mixin list. |
 | `FlexStyler.create gap` | FlexSpec | Deprecated `gap` parameter maps to `$spacing`. |
 | `FlexBoxStyler.gap` | FlexBoxSpec | Deferred with composite stylers (v2). |
 
@@ -1389,13 +1388,15 @@ const utilityMap = {
 ```
 
 **Override mechanism (explicit, deterministic)**
-- Merge order: `curated` < `overrides` < `scanned` (when enabled).
+- Merge order (final): **curated (lowest) → scan (add-if-absent only) → explicit overrides (highest)**.
+  - Scan must NOT override curated entries. On scan-scan conflict for the same key, emit a hard error with a deterministic message.
 - Builder options (defaults):
   - `extraMixTypes: {}` (map of FlutterType -> MixType)
   - `extraListMixTypes: {}` (map of ElementMixType -> ListMixType)
   - `scanMixableTypes: false`
-  - `scanGlobs: ['lib/**']` (used only when scan is true)
-- Optional file: `tool/mix_registry_overrides.yaml`
+  - `scanGlobs: ['lib/**']` (used only when scan is true; sort inputs deterministically; ignore generated files)
+  - `unknownTypePolicy: warn` (options: `warn|error|ignore`; in Mix CI set to `error`)
+- Optional file (package-scoped): `tool/mix_registry_overrides.yaml`
   ```yaml
   mixTypes:
     AlignmentGeometry: AlignmentGeometryMix
@@ -1403,26 +1404,29 @@ const utilityMap = {
   listMixTypes:
     ShadowMix: ShadowListMix
   ```
-  Loader merges this into `extra*` when present.
+  Loader merges this into `extra*` when present. Workspace-wide configs should use builder options/defines or copy the overrides file per package.
 
 **Coverage check (preflight)**
-- Before generation, assert that every field type in the target specs (Box/Text/Icon/Image/Flex/Stack) is either:
-  1) in `mixTypeMap` / `listMixTypeMap`, or
-  2) intentionally handled by fallback (Color, Clip enums, Axis, IconData, Locale, BoxFit, FilterQuality, AlignmentGeometry, Matrix4, MainAxisAlignment/CrossAxisAlignment/MainAxisSize/TextBaseline/VerticalDirection, etc.).
-- If missing and not in a documented fallback list, emit a warning and proceed with fallback; add a unit test to guard this list.
+- Add an audit test that enumerates all spec field DartTypes and asserts each is either:
+  1) mapped in `mixTypeMap` / `listMixTypeMap`, or
+  2) on a small “intentional snap” allowlist (enums, bool, String, Locale, IconData).
+- `Matrix4` should be mapped (animate transforms); do NOT allow it to snap silently.
+- If a type is missing and not on the allowlist, emit a warning (or error in strict mode) and proceed with fallback; the audit test guards regressions.
 
 **Fallback logging policy**
-- Log level: warning.
-- Throttle: one warning per unknown type per build (memoize by TypeKey).
-- Behavior: fallback to `Prop.maybe` + `MixOps.lerpSnap`.
+- Default policy: `unknownTypePolicy: warn` → fallback to `Prop.maybe` + `MixOps.lerpSnap` + WARNING (throttled once per type per build).
+- In strict mode (`unknownTypePolicy: error`), fail generation on unknown types.
+- For obviously discrete types (enums, bool, String, Locale, IconData), warnings may be suppressed unless strict mode is enabled.
 
 **Scan guardrails (if enabled)**
-- Respect `scanGlobs`; default `lib/**`.
-- Ignore outputs of other SharedPartBuilders; only inspect source libraries.
-- Cache results per build to avoid repeated scans.
+- Scope to current package only; off by default.
+- Respect `scanGlobs` (default `lib/**`); sort inputs deterministically; ignore generated outputs (`**.g.dart`, `**.g.part`, etc.).
+- Cache scan results per build (shared resource) to avoid repeats.
+- Avoid scanning transitive dependencies unless explicitly enabled for a concrete use case.
 
 **Import validation (fail-fast)**
-- Before emitting, verify required symbols are resolvable in the stub library (Diagnosticable, MixOps, Prop, all mixins and mix types referenced). If missing, emit a clear error pointing at the stub, not the generated part.
+- Hard error if required symbols are not in scope (call widget, curated mixins, explicit references, resolved field types). Point at the stub, not the generated part.
+- Validate only symbols that will be emitted for that spec to reduce false positives.
 
 **Builder options example**
 ```yaml
@@ -1434,6 +1438,7 @@ targets:
           scanMixableTypes: false    # default
           scanGlobs:
             - lib/**                # used only if scanMixableTypes=true
+          unknownTypePolicy: warn   # warn|error|ignore
           extraMixTypes:
             IconData: IconDataMix
           extraListMixTypes:
@@ -1442,9 +1447,10 @@ targets:
 
 **Golden coverage for registry behavior**
 - Tests should cover:
-  1) Unknown type → warning + snap + Prop.maybe.
+  1) Unknown type → warning + snap + Prop.maybe (warn mode) / error in strict mode.
   2) Override adds mapping and changes generated output.
   3) Scanning off vs. on yields different fixture outputs.
+  4) Coverage audit: Matrix4 and other “animate” types are mapped; allowlist enforced for intentional snaps.
 
 **Composite spec reminder**
 - Even if overrides/scanning add composite-related types, composite Stylers remain deferred in v1; only Spec mixins are generated for composite specs.
