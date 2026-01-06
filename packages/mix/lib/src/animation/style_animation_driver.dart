@@ -360,6 +360,9 @@ class KeyframeAnimationDriver<S extends Spec<S>>
     required this.context,
   }) : _config = config {
     _setUpAnimation();
+    if (_isLooping) {
+      _startLoopingAnimation();
+    }
   }
 
   void _onTriggerChanged() {
@@ -376,8 +379,15 @@ class KeyframeAnimationDriver<S extends Spec<S>>
       _KeyframeAnimatable(_sequenceMap, _config, context),
     );
 
-    _config.trigger.addListener(_onTriggerChanged);
+    _config.trigger?.addListener(_onTriggerChanged);
   }
+
+  void _startLoopingAnimation() {
+    controller.duration = duration;
+    controller.repeat();
+  }
+
+  bool get _isLooping => _config.trigger == null;
 
   Duration get duration {
     if (_config.timeline.isEmpty) return Duration.zero;
@@ -390,7 +400,8 @@ class KeyframeAnimationDriver<S extends Spec<S>>
 
   @override
   void dispose() {
-    _config.trigger.removeListener(_onTriggerChanged);
+    _config.trigger?.removeListener(_onTriggerChanged);
+    controller.stop();
     super.dispose();
   }
 
@@ -407,7 +418,11 @@ class KeyframeAnimationDriver<S extends Spec<S>>
 
   @override
   void updateDriver(covariant KeyframeAnimationConfig<S> config) {
-    _config.trigger.removeListener(_onTriggerChanged);
+    _config.trigger?.removeListener(_onTriggerChanged);
+    if (_isLooping) {
+      controller.reset();
+      _startLoopingAnimation();
+    }
     _config = config;
     _setUpAnimation();
   }

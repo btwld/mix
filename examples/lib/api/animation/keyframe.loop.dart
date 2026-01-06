@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
@@ -25,26 +23,7 @@ class DemoApp extends StatefulWidget {
 }
 
 class _DemoAppState extends State<DemoApp> {
-  final trigger = ValueNotifier(0);
-  Timer? _timer;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _timer = Timer.periodic(5.s, (timer) {
-      trigger.value++;
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    trigger.dispose();
-    super.dispose();
-  }
-
-  BoxMix get _boxStyle => BoxStyler()
+  BoxStyler get _boxStyle => BoxStyler()
       .color(Colors.blueAccent.shade400)
       .paddingX(16)
       .paddingY(8)
@@ -60,7 +39,6 @@ class _DemoAppState extends State<DemoApp> {
         tileMode: .clamp,
       )
       .keyframeAnimation(
-        trigger: trigger,
         timeline: [
           KeyframeTrack<double>('progress', [.ease(1, 2000.ms)], initial: -1),
         ],

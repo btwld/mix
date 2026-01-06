@@ -10,7 +10,7 @@ mixin AnimationStyleMixin<T extends Style<S>, S extends Spec<S>> on Style<S> {
 
   /// Creates a keyframe animation. It will animate through the given timeline.
   T keyframeAnimation({
-    required Listenable trigger,
+    Listenable? trigger,
     required List<KeyframeTrack> timeline,
     required KeyframeStyleBuilder<S, T> styleBuilder,
   }) {

@@ -733,6 +733,64 @@ void main() {
         );
       });
     });
+
+    group('looping', () {
+      KeyframeAnimationConfig<MockSpec> createLoopingConfig({
+        Listenable? trigger,
+      }) {
+        return KeyframeAnimationConfig<MockSpec>(
+          trigger: trigger,
+          timeline: [
+            KeyframeTrack<double>('opacity', [
+              Keyframe.linear(0.5, 100.ms),
+              Keyframe.ease(1.0, 200.ms),
+            ], initial: 0.0),
+          ],
+          styleBuilder: (result, style) {
+            return MockStyle(result.get<double>('opacity'));
+          },
+          initialStyle: MockStyle(0.0),
+        );
+      }
+
+      KeyframeAnimationDriver<MockSpec> createLoopingDriver(
+        KeyframeAnimationConfig<MockSpec> config,
+      ) {
+        return KeyframeAnimationDriver<MockSpec>(
+          vsync: const TestVSync(),
+          config: config,
+          initialSpec: MockSpec(resolvedValue: 0.0).toStyleSpec(),
+          context: mockContext,
+        );
+      }
+
+      testWidgets('should auto run animation when no trigger is provided', (
+        tester,
+      ) async {
+        final driver = createLoopingDriver(createLoopingConfig());
+
+        await tester.pump(300.ms);
+
+        expect(driver.animation.isAnimating, true);
+        driver.dispose();
+      });
+
+      testWidgets('should auto run repeating animation when trigger is null', (
+        tester,
+      ) async {
+        final driver = createLoopingDriver(createLoopingConfig());
+
+        await tester.pump(300.ms);
+        expect(driver.animation.isAnimating, true);
+        await tester.pump(300.ms);
+        expect(driver.animation.isAnimating, true);
+        await tester.pump(300.ms);
+        expect(driver.animation.isAnimating, true);
+        await tester.pump(300.ms);
+        expect(driver.animation.isAnimating, true);
+        driver.dispose();
+      });
+    });
   });
 
   group('NoAnimationDriver', () {
