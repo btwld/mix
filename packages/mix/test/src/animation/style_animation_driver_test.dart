@@ -342,15 +342,12 @@ void main() {
   });
 
   group('PhaseAnimationDriver', () {
-    late PhaseAnimationDriver<MockSpec> driver;
-    late ValueNotifier<bool> trigger;
-    late MockBuildContext mockContext;
+    final mockContext = MockBuildContext();
 
-    setUp(() {
-      trigger = ValueNotifier(false);
-      mockContext = MockBuildContext();
-
-      final config = PhaseAnimationConfig<MockSpec, MockStyle>(
+    PhaseAnimationConfig<MockSpec, MockStyle> createConfig({
+      ValueNotifier<bool>? trigger,
+    }) {
+      return PhaseAnimationConfig<MockSpec, MockStyle>(
         styles: [
           MockStyle(MockSpec(resolvedValue: 0.0).toStyleSpec()),
           MockStyle(MockSpec(resolvedValue: 1.0).toStyleSpec()),
@@ -367,65 +364,138 @@ void main() {
         ],
         trigger: trigger,
       );
+    }
 
-      driver = PhaseAnimationDriver<MockSpec>(
+    PhaseAnimationDriver<MockSpec> createDriver(
+      PhaseAnimationConfig<MockSpec, MockStyle> config,
+    ) {
+      return PhaseAnimationDriver<MockSpec>(
         vsync: const TestVSync(),
         config: config,
         initialSpec: MockSpec(resolvedValue: 0.0).toStyleSpec(),
         context: mockContext,
       );
-    });
+    }
 
-    tearDown(() {
-      trigger.dispose();
-      driver.dispose();
-    });
+    group('triggered', () {
+      late PhaseAnimationDriver<MockSpec> driver;
+      late ValueNotifier<bool> trigger;
 
-    test('initializes with correct config', () {
-      expect(driver.config.styles.length, 2);
-      expect(driver.config.curveConfigs.length, 2);
-    });
-
-    testWidgets('animates when trigger updates', (tester) async {
-      trigger.value = true;
-
-      // Animation should be running
-      await tester.pump();
-      expect(driver.animation.isAnimating, true);
-
-      // Let the animation complete
-      await tester.pumpAndSettle();
-      expect(driver.animation.isAnimating, false);
-
-      // Change the trigger back to false, which should start the animation again
-      trigger.value = false;
-      await tester.pump();
-      expect(driver.animation.isAnimating, true);
-
-      await tester.pumpAndSettle();
-      expect(driver.animation.isAnimating, false);
-    });
-
-    testWidgets('triggers animation status changes', (tester) async {
-      int startCount = 0;
-      int completeCount = 0;
-
-      driver.animation.addStatusListener((status) {
-        if (status == AnimationStatus.forward ||
-            status == AnimationStatus.reverse) {
-          startCount++;
-        }
-        if (status == AnimationStatus.completed ||
-            status == AnimationStatus.dismissed) {
-          completeCount++;
-        }
+      setUp(() {
+        trigger = ValueNotifier(false);
+        driver = createDriver(createConfig(trigger: trigger));
       });
 
-      trigger.value = true;
-      await tester.pumpAndSettle();
+      test('initializes with correct config', () {
+        expect(driver.config.styles.length, 2);
+        expect(driver.config.curveConfigs.length, 2);
 
-      expect(startCount, 1);
-      expect(completeCount, 1);
+        trigger.dispose();
+        driver.dispose();
+      });
+
+      testWidgets('animates when trigger updates', (tester) async {
+        trigger.value = true;
+
+        // Animation should be running
+        await tester.pump(Duration.zero);
+        expect(driver.animation.isAnimating, true);
+
+        // Let the animation complete
+        await tester.pump(300.ms);
+        expect(driver.animation.isAnimating, true);
+
+        await tester.pump(300.ms);
+        expect(driver.animation.isAnimating, true);
+
+        await tester.pump(1.ms);
+        expect(driver.animation.isAnimating, false);
+
+        await tester.pump(100.ms);
+        expect(driver.animation.isAnimating, false);
+
+        trigger.dispose();
+        driver.dispose();
+      });
+
+      testWidgets('should run the animation only once when trigger is updated', (
+        tester,
+      ) async {
+        trigger.value = true;
+
+        // Animation should be running
+        await tester.pump();
+        expect(driver.animation.isAnimating, true);
+
+        // Let the animation complete
+        await tester.pumpAndSettle();
+        expect(driver.animation.isAnimating, false);
+
+        // Change the trigger back to false, which should start the animation again
+        trigger.value = false;
+        await tester.pump();
+        expect(driver.animation.isAnimating, true);
+
+        await tester.pumpAndSettle();
+        expect(driver.animation.isAnimating, false);
+
+        trigger.dispose();
+        driver.dispose();
+      });
+
+      testWidgets('triggers animation status changes', (tester) async {
+        int startCount = 0;
+        int completeCount = 0;
+
+        driver.animation.addStatusListener((status) {
+          if (status == AnimationStatus.forward ||
+              status == AnimationStatus.reverse) {
+            startCount++;
+          }
+          if (status == AnimationStatus.completed ||
+              status == AnimationStatus.dismissed) {
+            completeCount++;
+          }
+        });
+
+        trigger.value = true;
+        await tester.pumpAndSettle();
+
+        expect(startCount, 1);
+        expect(completeCount, 1);
+
+        trigger.dispose();
+        driver.dispose();
+      });
+    });
+
+    group('looping', () {
+      testWidgets('should auto run animation when no trigger is provided', (
+        tester,
+      ) async {
+        final driver = createDriver(createConfig());
+
+        await tester.pump(300.ms);
+
+        expect(driver.animation.isAnimating, true);
+        driver.dispose();
+      });
+
+      testWidgets('should auto run repeating animation when trigger is null', (
+        tester,
+      ) async {
+        final driver = createDriver(createConfig());
+
+        await tester.pump(300.ms);
+        expect(driver.animation.isAnimating, true);
+        await tester.pump(300.ms);
+        expect(driver.animation.isAnimating, true);
+        await tester.pump(300.ms);
+        expect(driver.animation.isAnimating, true);
+        await tester.pump(300.ms);
+        expect(driver.animation.isAnimating, true);
+        driver.dispose();
+      });
     });
   });
 

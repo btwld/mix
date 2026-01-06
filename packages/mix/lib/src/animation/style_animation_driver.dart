@@ -239,6 +239,9 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     required this.context,
   }) {
     _setUpAnimation();
+    if (_isLooping) {
+      _startLoopingAnimation();
+    }
   }
 
   void _setUpAnimation() {
@@ -251,7 +254,7 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     // Override the animation to use TweenSequence wrapped in a tween
     _animation = controller.drive(_PhasedSpecTween(_tweenSequence));
 
-    config.trigger.addListener(_onTriggerChanged);
+    config.trigger?.addListener(_onTriggerChanged);
 
     // Add status listener for onEnd callback
     if (config.curveConfigs.last.onEnd != null) {
@@ -301,6 +304,13 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
     return TweenSequence(items);
   }
 
+  void _startLoopingAnimation() {
+    controller.duration = totalDuration;
+    controller.repeat();
+  }
+
+  bool get _isLooping => config.trigger == null;
+
   /// Gets the total duration of all animation phases combined.
   Duration get totalDuration {
     return config.curveConfigs.fold(
@@ -311,7 +321,8 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
 
   @override
   void dispose() {
-    config.trigger.removeListener(_onTriggerChanged);
+    config.trigger?.removeListener(_onTriggerChanged);
+    controller.stop();
     super.dispose();
   }
 
@@ -324,7 +335,11 @@ class PhaseAnimationDriver<S extends Spec<S>> extends StyleAnimationDriver<S> {
 
   @override
   void updateDriver(covariant PhaseAnimationConfig config) {
-    config.trigger.removeListener(_onTriggerChanged);
+    config.trigger?.removeListener(_onTriggerChanged);
+    if (_isLooping) {
+      controller.reset();
+      _startLoopingAnimation();
+    }
     this.config = config;
     _setUpAnimation();
   }
