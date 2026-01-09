@@ -7,9 +7,9 @@ import 'package:mix/mix.dart';
 import 'package:mix/src/specs/icon/icon_spec.dart';
 
 void main() {
-  group('IconMutableStyler', () {
+  group('IconSpec', () {
     group('Constructor', () {
-      test('', () {
+      test('creates IconSpec with all properties', () {
         const spec = IconSpec(
           color: Colors.blue,
           size: 24.0,
@@ -36,7 +36,7 @@ void main() {
         expect(spec.fill, 1.0);
       });
 
-      test('', () {
+      test('creates IconSpec with default values', () {
         const spec = IconSpec();
 
         expect(spec.color, isNull);
@@ -99,7 +99,7 @@ void main() {
     });
 
     group('lerp', () {
-      test('', () {
+      test('interpolates between two IconSpecs correctly', () {
         const spec1 = IconSpec(
           color: Colors.red,
           size: 16.0,

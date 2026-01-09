@@ -7,9 +7,9 @@ import 'package:mix/mix.dart';
 import 'package:mix/src/specs/image/image_spec.dart';
 
 void main() {
-  group('ImageMutableStyler', () {
+  group('ImageSpec', () {
     group('Constructor', () {
-      test('', () {
+      test('creates ImageSpec with all properties', () {
         const spec = ImageSpec(
           width: 200.0,
           height: 150.0,
@@ -43,7 +43,7 @@ void main() {
         expect(spec.matchTextDirection, true);
       });
 
-      test('', () {
+      test('creates ImageSpec with default values', () {
         const spec = ImageSpec();
 
         expect(spec.width, isNull);
@@ -109,7 +109,7 @@ void main() {
     });
 
     group('lerp', () {
-      test('', () {
+      test('interpolates between two ImageSpecs correctly', () {
         const spec1 = ImageSpec(
           width: 100.0,
           height: 200.0,
