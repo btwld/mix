@@ -12,14 +12,15 @@ import '../../properties/layout/edge_insets_geometry_mix.dart';
 import '../../properties/painting/border_mix.dart';
 import '../../properties/painting/border_radius_mix.dart';
 import '../../properties/painting/decoration_mix.dart';
+import '../../style/mixins/animation_style_mixin.dart';
 import '../../style/mixins/border_radius_style_mixin.dart';
 import '../../style/mixins/border_style_mixin.dart';
 import '../../style/mixins/constraint_style_mixin.dart';
 import '../../style/mixins/decoration_style_mixin.dart';
-import '../../style/mixins/animation_style_mixin.dart';
 import '../../style/mixins/flex_style_mixin.dart';
 import '../../style/mixins/shadow_style_mixin.dart';
 import '../../style/mixins/spacing_style_mixin.dart';
+import '../../style/mixins/token_style_mixin.dart';
 import '../../style/mixins/transform_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
 import '../../style/mixins/widget_modifier_style_mixin.dart';
@@ -56,7 +57,8 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
         TransformStyleMixin<FlexBoxStyler>,
         ConstraintStyleMixin<FlexBoxStyler>,
         FlexStyleMixin<FlexBoxStyler>,
-        AnimationStyleMixin<FlexBoxStyler, FlexBoxSpec> {
+        AnimationStyleMixin<FlexBoxStyler, FlexBoxSpec>,
+        TokenStyleMixin<FlexBoxStyler, FlexBoxSpec> {
   final Prop<StyleSpec<BoxSpec>>? $box;
   final Prop<StyleSpec<FlexSpec>>? $flex;
 
@@ -131,12 +133,6 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
   static FlexBoxMutableStyler get chain =>
       FlexBoxMutableStyler(FlexBoxStyler());
 
-  /// Sets the animation property.
-  @override
-  FlexBoxStyler animate(AnimationConfig animation) {
-    return merge(FlexBoxStyler(animation: animation));
-  }
-
   // BoxMix instance methods
 
   /// Sets the alignment property.
@@ -171,6 +167,12 @@ class FlexBoxStyler extends Style<FlexBoxSpec>
   /// Creates a FlexBox widget with children.
   FlexBox call({Key? key, required List<Widget> children}) {
     return FlexBox(key: key, style: this, children: children);
+  }
+
+  /// Sets the animation property.
+  @override
+  FlexBoxStyler animate(AnimationConfig animation) {
+    return merge(FlexBoxStyler(animation: animation));
   }
 
   /// Sets the foreground decoration.

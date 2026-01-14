@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../mix_theme.dart';
-import 'token_refs.dart';
 
 /// A design token that resolves to a value within a Mix theme.
 ///
@@ -11,11 +10,6 @@ import 'token_refs.dart';
 abstract class MixToken<T> {
   final String name;
   const MixToken(this.name);
-
-  /// Returns a reference value for Mix utilities.
-  T call() {
-    return getReferenceValue(this);
-  }
 
   /// Resolves this token to a concrete value.
   T resolve(BuildContext context) {
