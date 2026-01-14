@@ -13,7 +13,7 @@ After thorough multi-agent validation, the original proposal was found to be **o
 | AnimationStyleMixin.phaseAnimation() | ✅ Verified | `animation_style_mixin.dart:27-49` |
 | WidgetModifierConfig.scale/rotate/opacity() | ✅ Verified | `widget_modifier_config.dart:62-165` |
 | PointerPositionProvider as InheritedNotifier | ✅ Verified | `pointer_position.dart:139-146` |
-| No GlobalKey usage in Mix | ✅ Verified | First usage for matchedGeometry |
+| No GlobalKey usage in Mix | ✅ Verified | Matched geometry should not *require* GlobalKey (optional implementation detail) |
 
 ---
 
@@ -370,6 +370,15 @@ StyledIcon(
 2. **Inconsistent scope pattern** - Should follow `PointerPositionProvider` pattern exactly
 3. **Animation direction confusion** - Clarified: target animates FROM source TO self
 
+### API DX Adjustments (Same-Route Focus)
+- **Use `Object` for `id`** (Hero-style tags) to avoid string collisions.
+- **Prefer a role enum** over `isSource: bool` for clarity: `GeometryRole.source` / `GeometryRole.target` (optional `auto` later).
+- **Dot shorthand note:** `curve: .easeOutCubic` is not valid; use `Curves.easeOutCubic`.
+- **Add early hooks to avoid dead-ends:**
+  - `flightBuilder` (or `shuttleBuilder`) for in-flight widget customization.
+  - `rectTweenBuilder` for custom motion paths.
+  - `interaction` policy (lock vs allow) to manage scroll/jitter during flight.
+
 ### Corrected Implementation
 
 #### Scope Widget (Following PointerPositionProvider Pattern Exactly)
@@ -538,16 +547,18 @@ import 'package:flutter/widgets.dart';
 
 import 'geometry_scope.dart';  // Same directory in providers/
 
+enum GeometryRole { source, target }
+
 /// Tracks widget geometry and optionally animates to match another tracked widget.
 ///
-/// When [isSource] is true, this widget reports its geometry to the scope.
-/// When [isSource] is false, this widget animates FROM the source's geometry
+/// When [role] is GeometryRole.source, this widget reports its geometry to the scope.
+/// When [role] is GeometryRole.target, this widget animates FROM the source's geometry
 /// TO its own final geometry when it first appears.
 ///
 /// V1 Limitations:
 /// - Same-screen only (no cross-route animations)
-/// - One-frame geometry delay on first appearance
-/// - No scroll handling (may glitch in scrollables)
+/// - Replacement patterns typically need a post-layout pass to measure destination
+/// - If scroll/relayout occurs during flight, destination rect can move (lock or accept jitter)
 /// - No scale clamping (extreme transforms possible)
 /// - Immediate geometry removal on dispose
 ///
@@ -557,14 +568,14 @@ import 'geometry_scope.dart';  // Same directory in providers/
 ///     children: [
 ///       if (!isExpanded)
 ///         GeometryMatch(
-///           id: 'card',
-///           isSource: true,
+///           id: const ValueKey('card'),
+///           role: GeometryRole.source,
 ///           child: smallCard,
 ///         ),
 ///       if (isExpanded)
 ///         GeometryMatch(
-///           id: 'card',
-///           isSource: false,
+///           id: const ValueKey('card'),
+///           role: GeometryRole.target,
 ///           child: largeCard,
 ///         ),
 ///     ],
@@ -578,20 +589,19 @@ class GeometryMatch extends StatefulWidget {
   /// The widget to track/animate.
   final Widget child;
 
-  /// If true, this widget provides the geometry reference (source).
-  /// If false, this widget animates FROM the source geometry (target).
-  final bool isSource;
+  /// Role of this participant in the transition.
+  final GeometryRole role;
 
-  /// Animation duration (only used when isSource: false).
+  /// Animation duration (only used when role == GeometryRole.target).
   final Duration duration;
 
-  /// Animation curve (only used when isSource: false).
+  /// Animation curve (only used when role == GeometryRole.target).
   final Curve curve;
 
   const GeometryMatch({
     required this.id,
     required this.child,
-    this.isSource = true,
+    this.role = GeometryRole.source,
     this.duration = const Duration(milliseconds: 300),
     this.curve = Curves.easeInOut,
     super.key,
@@ -612,7 +622,7 @@ class _GeometryMatchState extends State<GeometryMatch>
   @override
   void initState() {
     super.initState();
-    if (!widget.isSource) {
+    if (widget.role == GeometryRole.target) {
       _controller = AnimationController(vsync: this, duration: widget.duration);
     }
     SchedulerBinding.instance.addPostFrameCallback((_) => _initialize());
@@ -624,7 +634,7 @@ class _GeometryMatchState extends State<GeometryMatch>
     _notifier = GeometryScope.maybeOf(context);
     if (_notifier == null) return;
 
-    if (widget.isSource) {
+    if (widget.role == GeometryRole.source) {
       _reportGeometry();
     } else {
       // Target: get source geometry, then animate from it to our position
@@ -668,7 +678,7 @@ class _GeometryMatchState extends State<GeometryMatch>
   @override
   void didUpdateWidget(GeometryMatch oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.isSource) {
+    if (widget.role == GeometryRole.source) {
       SchedulerBinding.instance.addPostFrameCallback((_) => _reportGeometry());
     }
   }
@@ -676,7 +686,7 @@ class _GeometryMatchState extends State<GeometryMatch>
   @override
   Widget build(BuildContext context) {
     // Source widgets just render normally
-    if (widget.isSource || _controller == null) {
+    if (widget.role == GeometryRole.source || _controller == null) {
       return KeyedSubtree(key: _key, child: widget.child);
     }
 
@@ -721,10 +731,10 @@ class _GeometryMatchState extends State<GeometryMatch>
   @override
   void dispose() {
     _controller?.dispose();
-    if (!widget.isSource) {
+    if (widget.role == GeometryRole.target) {
       _notifier?.removeIdListener(widget.id, _onSourceChanged);
     }
-    if (widget.isSource) {
+    if (widget.role == GeometryRole.source) {
       _notifier?.unregister(widget.id);
     }
     super.dispose();
@@ -742,7 +752,7 @@ Small, YAGNI-friendly adjustments that reduce jitter and stale state:
 - **Notify on unregister**: when a source disposes, notify id listeners (or
   store `ValueNotifier<TrackedGeometry?>` per id) so targets can clear stale
   geometry.
-- **Handle id/isSource changes**: if a widget is reused with a new id or role,
+- **Handle id/role changes**: if a widget is reused with a new id or role,
   re-register and update listeners/controller to avoid stale references.
 
 #### Usage Example
@@ -763,8 +773,8 @@ class _ExpandableCardState extends State<ExpandableCard> {
         onTap: () => setState(() => isExpanded = !isExpanded),
         child: isExpanded
             ? GeometryMatch(
-                id: 'card',
-                isSource: false, // Animate FROM thumbnail position
+                id: const ValueKey('card'),
+                role: GeometryRole.target, // Animate FROM thumbnail position
                 duration: Duration(milliseconds: 400),
                 curve: Curves.easeOutCubic,
                 child: Container(
@@ -778,8 +788,8 @@ class _ExpandableCardState extends State<ExpandableCard> {
                 ),
               )
             : GeometryMatch(
-                id: 'card',
-                isSource: true, // This is the reference geometry
+                id: const ValueKey('card'),
+                role: GeometryRole.source, // This is the reference geometry
                 child: Container(
                   width: 100,
                   height: 100,
@@ -805,13 +815,13 @@ class _ExpandableCardState extends State<ExpandableCard> {
 
 #### matchedGeometryEffect
 - Same-screen only (no cross-route animations)
-- One-frame geometry delay on first appearance (unavoidable - layout must complete)
-- No scroll handling (may glitch in scrollable containers)
+- Replacement patterns typically need a post-layout pass to measure the destination (keeping both widgets mounted can avoid the extra-frame start)
+- If scrolling/relayout occurs during flight, the destination rect can move; lock interaction or accept possible jitter
 - No scale clamping (extreme transforms possible with large size ratios)
 - Immediate geometry removal on dispose (no persistence timer)
-- First GlobalKey usage in Mix codebase (justified for geometry tracking)
-- Transform artifacts (text may scale/blur during animation)
-- No clipping respect (widget may overflow during flight)
+- GlobalKey is optional; read RenderBox geometry via context instead of requiring keys
+- If implemented via Transform/layer scaling, text can appear soft; rect tween + relayout keeps text crisp
+- Overlay flights ignore ancestor clips by default; provide clip/shape options if needed
 
 ### V2 Enhancements (If Needed)
 
