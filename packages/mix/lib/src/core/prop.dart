@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:meta/meta.dart';
 
 import '../theme/mix_theme.dart';
 import '../theme/tokens/mix_token.dart';
@@ -204,6 +205,10 @@ class Prop<V> {
   /// 4. Applies any directives to transform the final value
   ///
   /// Throws [FlutterError] if the property has no sources.
+  ///
+  /// This method is internal to the Mix package. External consumers should use
+  /// [MixOps.resolve] instead.
+  @internal
   V resolveProp(BuildContext context) {
     if (sources.isEmpty) {
       throw FlutterError('Prop<$V> has no sources');
