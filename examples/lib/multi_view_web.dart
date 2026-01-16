@@ -50,10 +50,11 @@ Map<String, Object?>? _jsObjectToMap(JSAny? jsAny) {
   final result = <String, Object?>{};
 
   // Get keys using Object.keys()
-  final keys = _getObjectKeys(jsAny as JSObject);
+  final jsObject = jsAny as JSObject;
+  final keys = _getObjectKeys(jsObject);
 
   for (final key in keys) {
-    final value = _getProperty(jsAny as JSObject, key);
+    final value = _getProperty(jsObject, key);
     result[key] = _jsToValue(value);
   }
 
