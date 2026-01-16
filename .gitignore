@@ -112,3 +112,11 @@ packages/mix/.cody/ignore
 api-compat-*.md
 website/.next/
 website/public/_pagefind/
+
+# Flutter web demos (generated via: cd examples && flutter build web)
+# These are built and deployed separately, not committed to git
+website/public/demos/
+
+# Playwright
+website/playwright-report/
+website/test-results/

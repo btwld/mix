@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'api/animation/implicit.curved.hover.dart' as hover_scale;
@@ -13,7 +14,6 @@ import 'api/context_variants/pressed.dart' as pressed;
 import 'api/context_variants/responsive_size.dart' as responsive_size;
 import 'api/context_variants/selected.dart' as selected;
 import 'api/context_variants/selected_toggle.dart' as selected_toggle;
-// Animation examples have different class names, will be added separately
 import 'api/design_tokens/theme_tokens.dart' as theme_tokens;
 // Gradient examples
 import 'api/gradients/gradient_linear.dart' as gradient_linear;
@@ -31,9 +31,20 @@ import 'api/widgets/vbox/card_layout.dart' as card_layout;
 import 'api/widgets/zbox/layered_boxes.dart' as layered_boxes;
 import 'components/chip_button.dart';
 import 'components/custom_scaffold.dart';
+import 'multi_view_app.dart';
+
+// Conditional import for web-specific APIs
+import 'multi_view_stub.dart' if (dart.library.js_interop) 'multi_view_web.dart'
+    as multi_view;
 
 void main() {
-  runApp(const MixExampleApp());
+  // On web with multi-view mode, use runWidget for multiple views
+  // Otherwise use standard runApp for single view (including gallery mode)
+  if (kIsWeb && multi_view.isMultiViewEnabled) {
+    runWidget(const MultiViewApp());
+  } else {
+    runApp(const MixExampleApp());
+  }
 }
 
 class MixExampleApp extends StatelessWidget {

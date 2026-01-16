@@ -1,0 +1,104 @@
+---
+title: Demo Test Fixtures
+---
+
+{/*
+  TEST FIXTURE PAGE - FOR E2E/CI TESTING ONLY
+  This page is hidden from navigation and used by Playwright tests.
+  Do not reference in user documentation.
+*/}
+
+# Demo Test Fixtures
+
+This page contains test fixtures for E2E testing of demo components.
+
+## DartPad with Inline Code
+
+<div data-testid="test-dartpad-inline">
+<DartPadEmbed
+  code={`
+import 'package:flutter/material.dart';
+void main() => runApp(MaterialApp(home: Scaffold(body: Center(child: Text('Hello')))));
+`}
+  height={300}
+  theme="light"
+/>
+</div>
+
+## DartPad Dark Theme
+
+<div data-testid="test-dartpad-dark">
+<DartPadEmbed
+  code="void main() {}"
+  height={300}
+  theme="dark"
+/>
+</div>
+
+## FlutterEmbed Iframe Mode (Primary)
+
+<div data-testid="test-flutter-element">
+<FlutterEmbed
+  src="/demos"
+  height={350}
+  useIframe={true}
+  title="Iframe Embed Test (Primary)"
+/>
+</div>
+
+## FlutterEmbed Iframe Mode
+
+<div data-testid="test-flutter-iframe">
+<FlutterEmbed
+  src="/demos"
+  height={350}
+  useIframe={true}
+  title="Iframe Embed Test"
+/>
+</div>
+
+## Demo Component (DartPad)
+
+<div data-testid="test-demo-dartpad">
+<Demo
+  title="Demo DartPad"
+  code="import 'package:flutter/material.dart';\nvoid main() {}"
+  height={300}
+/>
+</div>
+
+## Demo Component (Flutter)
+
+<div data-testid="test-demo-flutter">
+<Demo
+  title="Demo Flutter"
+  flutterSrc="/demos"
+  useIframe={true}
+  height={350}
+/>
+</div>
+
+## FlutterMultiView (Multi-View Mode)
+
+Multiple demos using a single Flutter engine with multi-view API:
+
+<div data-testid="test-multiview-1">
+<FlutterMultiView
+  demoId="box-basic"
+  height={300}
+/>
+</div>
+
+<div data-testid="test-multiview-2">
+<FlutterMultiView
+  demoId="variant-hover"
+  height={300}
+/>
+</div>
+
+<div data-testid="test-multiview-3">
+<FlutterMultiView
+  demoId="anim-hover-scale"
+  height={300}
+/>
+</div>
