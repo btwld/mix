@@ -137,6 +137,38 @@ export function DartPadEmbed({
     );
   }
 
+  // Show error if iframe failed to load
+  if (status === "error") {
+    return (
+      <div
+        className="my-6 not-prose"
+        data-testid="dartpad-embed"
+        data-status={status}
+      >
+        {title && (
+          <div className="mb-2 text-sm font-medium text-zinc-300">{title}</div>
+        )}
+        <div
+          className="overflow-hidden rounded-lg border border-red-500/30 bg-red-500/10 flex items-center justify-center"
+          style={{ height }}
+        >
+          <div className="text-red-400 text-center px-4">
+            <div className="text-lg">Failed to load DartPad</div>
+            <div className="text-sm text-zinc-500 mt-2">
+              Unable to connect to dartpad.dev. Check your internet connection.
+            </div>
+            <button
+              onClick={() => setStatus("loading")}
+              className="mt-4 px-4 py-2 bg-purple-600 hover:bg-purple-500 rounded text-sm text-white transition-colors"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       className="my-6 not-prose"

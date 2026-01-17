@@ -48,3 +48,22 @@ test.describe('DartPadEmbed @slow', () => {
     await expect(iframe).toHaveAttribute('src', /theme=dark/);
   });
 });
+
+test.describe('DartPadEmbed Error States', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto(TEST_PAGE);
+  });
+
+  test('shows error state when no content provided', async ({ page }) => {
+    const wrapper = page.getByTestId('test-dartpad-no-content');
+    await scrollIntoViewAndWait(wrapper);
+
+    // Component should show "Missing content source" message
+    const errorText = wrapper.locator('text=Missing content source');
+    await expect(errorText).toBeVisible();
+
+    // Should also show guidance about required props
+    const guidance = wrapper.locator('text=gistId');
+    await expect(guidance).toBeVisible();
+  });
+});

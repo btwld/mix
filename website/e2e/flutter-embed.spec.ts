@@ -64,19 +64,17 @@ test.describe('FlutterEmbed', () => {
 });
 
 test.describe('FlutterEmbed Error States', () => {
-  test('shows error state for invalid src', async ({ page }) => {
-    await page.setContent(`
-      <div id="app"></div>
-      <script type="module">
-        import React from 'react';
-        import ReactDOM from 'react-dom/client';
-        // This test verifies error state via the validation error display
-      </script>
-    `);
+  test.beforeEach(async ({ page }) => {
+    await page.goto(TEST_PAGE);
+  });
 
-    // Note: This test is handled by component validation
+  test('shows error state for invalid src', async ({ page }) => {
+    const wrapper = page.getByTestId('test-flutter-invalid-src');
+    await scrollIntoViewAndWait(wrapper);
+
     // Empty src triggers immediate validation error in FlutterEmbed
     // The component shows "Invalid demo source" message
-    expect(true).toBe(true);
+    const errorText = wrapper.locator('text=Invalid demo source');
+    await expect(errorText).toBeVisible();
   });
 });

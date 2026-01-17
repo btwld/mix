@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import 'api/animation/implicit.curved.hover.dart' as hover_scale;
@@ -94,13 +93,11 @@ class DemoRegistry {
       return _UnknownDemo(demoId: demoId);
     }
 
-    // Wrap in error boundary to catch build errors
+    // Build with error handling for construction errors
     try {
-      return _DemoErrorBoundary(
-        demoId: demoId,
-        child: builder(context),
-      );
+      return builder(context);
     } catch (e, stackTrace) {
+      debugPrint('Demo "$demoId" construction error: $e');
       return _ErrorDemo(demoId: demoId, error: e, stackTrace: stackTrace);
     }
   }
@@ -139,60 +136,6 @@ class _UnknownDemo extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-/// Error boundary widget that catches errors during build.
-class _DemoErrorBoundary extends StatefulWidget {
-  const _DemoErrorBoundary({
-    required this.demoId,
-    required this.child,
-  });
-
-  final String demoId;
-  final Widget child;
-
-  @override
-  State<_DemoErrorBoundary> createState() => _DemoErrorBoundaryState();
-}
-
-class _DemoErrorBoundaryState extends State<_DemoErrorBoundary> {
-  Object? _error;
-  StackTrace? _stackTrace;
-  FlutterExceptionHandler? _previousErrorHandler;
-
-  @override
-  void initState() {
-    super.initState();
-    // Set up error handler for this widget tree
-    _previousErrorHandler = FlutterError.onError;
-    FlutterError.onError = (details) {
-      if (mounted) {
-        setState(() {
-          _error = details.exception;
-          _stackTrace = details.stack;
-        });
-      }
-      _previousErrorHandler?.call(details);
-    };
-  }
-
-  @override
-  void dispose() {
-    FlutterError.onError = _previousErrorHandler;
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (_error != null) {
-      return _ErrorDemo(
-        demoId: widget.demoId,
-        error: _error!,
-        stackTrace: _stackTrace,
-      );
-    }
-    return widget.child;
   }
 }
 

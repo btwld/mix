@@ -45,6 +45,26 @@ interface FlutterAppRunner {
   runApp: () => Promise<void>;
 }
 
+/**
+ * Flutter engine configuration for element embedding mode.
+ *
+ * MAINTENANCE: This revision must match Flutter version in .fvmrc (currently 3.38.1).
+ * To update after Flutter upgrade:
+ * 1. Run: flutter build web (in examples/)
+ * 2. Check build/web/flutter_bootstrap.js for new engineRevision
+ * 3. Update constant below
+ *
+ * Note: iframe mode doesn't require this - the iframe loads its own buildConfig.
+ * Element embedding requires it because we load flutter.js (not flutter_bootstrap.js)
+ * to avoid the auto-load that uses document.baseURI for path resolution.
+ */
+const FLUTTER_ENGINE_CONFIG = {
+  engineRevision: "78fc3012e45889657f72359b005af7beac47ba3d",
+  builds: [
+    { compileTarget: "dart2js", renderer: "canvaskit", mainJsPath: "main.dart.js" },
+  ],
+};
+
 interface FlutterEmbedProps {
   /**
    * Base URL where Flutter web build is hosted.
@@ -356,18 +376,9 @@ export function FlutterEmbed({
 
       // Step 2: Set buildConfig if not already set
       // This is required by the Flutter loader - normally set by flutter_bootstrap.js
-      // Engine revision is from Flutter 3.38.x stable channel
+      // See FLUTTER_ENGINE_CONFIG constant for maintenance instructions
       if (!window._flutter!.buildConfig) {
-        window._flutter!.buildConfig = {
-          engineRevision: "78fc3012e45889657f72359b005af7beac47ba3d",
-          builds: [
-            {
-              compileTarget: "dart2js",
-              renderer: "canvaskit",
-              mainJsPath: "main.dart.js",
-            },
-          ],
-        };
+        window._flutter!.buildConfig = { ...FLUTTER_ENGINE_CONFIG };
       }
 
       setLoadingStage("Initializing Flutter engine...");

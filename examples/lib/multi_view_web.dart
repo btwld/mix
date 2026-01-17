@@ -1,6 +1,8 @@
 import 'dart:js_interop';
 import 'dart:ui_web' as ui_web;
 
+import 'package:flutter/foundation.dart';
+
 /// Web implementation for multi-view mode support.
 ///
 /// These functions provide access to Flutter's multi-view APIs
@@ -17,7 +19,8 @@ bool get isMultiViewEnabled {
     // Check if we have multiple views or if multi-view was explicitly enabled
     // In multi-view mode, Flutter doesn't auto-create a default view
     return _isMultiViewModeFromJS;
-  } catch (_) {
+  } catch (e) {
+    debugPrint('isMultiViewEnabled check failed: $e');
     return false;
   }
 }
@@ -38,7 +41,8 @@ Map<String, Object?>? getInitialData(int viewId) {
 
     // Convert JSObject to Map
     return _jsObjectToMap(jsData);
-  } catch (_) {
+  } catch (e) {
+    debugPrint('getInitialData failed for viewId $viewId: $e');
     return null;
   }
 }
@@ -95,7 +99,8 @@ external bool? get _multiViewEnabledFlag;
 bool get _isMultiViewModeFromJS {
   try {
     return _multiViewEnabledFlag ?? false;
-  } catch (_) {
+  } catch (e) {
+    debugPrint('_isMultiViewModeFromJS check failed: $e');
     return false;
   }
 }

@@ -257,8 +257,10 @@ export function FlutterMultiView({
         // Clean up the view we just created
         try {
           app.removeView(viewId);
-        } catch {
-          // Ignore removal errors
+        } catch (err) {
+          if (process.env.NODE_ENV === "development") {
+            console.warn("[FlutterMultiView] Failed to remove view during unmount cleanup:", err);
+          }
         }
         return;
       }
@@ -292,6 +294,10 @@ export function FlutterMultiView({
   useEffect(() => {
     if (!containerRef.current) return;
 
+    // Prevent re-initialization if demoId changes after initial load
+    // (use React key prop to remount if demoId needs to change dynamically)
+    if (hasLoadedRef.current) return;
+
     if (!lazyLoad) {
       loadView();
       return;
@@ -314,7 +320,7 @@ export function FlutterMultiView({
     return () => {
       observer.disconnect();
     };
-  }, [lazyLoad]); // loadView is called immediately if !lazyLoad, no need in deps
+  }, [lazyLoad, loadView]);
 
   // Track mounted state and cleanup view on unmount
   useEffect(() => {
@@ -326,8 +332,13 @@ export function FlutterMultiView({
       if (viewIdRef.current !== null && window.flutterApp) {
         try {
           window.flutterApp.removeView(viewIdRef.current);
-        } catch {
-          // View may already be removed
+        } catch (err) {
+          if (process.env.NODE_ENV === "development") {
+            console.warn("[FlutterMultiView] Failed to remove view on unmount:", {
+              viewId: viewIdRef.current,
+              error: err instanceof Error ? err.message : String(err),
+            });
+          }
         }
         viewIdRef.current = null;
       }
