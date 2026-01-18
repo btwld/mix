@@ -1,49 +1,8 @@
 "use client";
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
-
-// Extend Window interface for Flutter loader
-declare global {
-  interface Window {
-    _flutter?: {
-      loader: {
-        load: (options: {
-          config?: {
-            hostElement?: HTMLElement;
-            entrypointBaseUrl?: string;
-          };
-          serviceWorkerSettings?: {
-            serviceWorkerVersion: string;
-          };
-          onEntrypointLoaded?: (engineInitializer: FlutterEngineInitializer) => Promise<void>;
-        }) => Promise<void>;
-        loadEntrypoint: (options: {
-          entrypointUrl?: string;
-          onEntrypointLoaded?: (engineInitializer: FlutterEngineInitializer) => void;
-        }) => Promise<void>;
-      };
-      buildConfig?: {
-        engineRevision: string;
-        builds: Array<{
-          compileTarget: string;
-          renderer: string;
-          mainJsPath: string;
-        }>;
-      };
-    };
-  }
-}
-
-interface FlutterEngineInitializer {
-  initializeEngine: (config?: {
-    hostElement?: HTMLElement;
-    assetBase?: string;
-  }) => Promise<FlutterAppRunner>;
-}
-
-interface FlutterAppRunner {
-  runApp: () => Promise<void>;
-}
+// Types are defined in flutter-types.ts - imported for re-export
+import "./flutter-types";
 
 /**
  * Flutter engine configuration for element embedding mode.

@@ -60,7 +60,9 @@ test.describe('Visual Regression - Flutter', () => {
   });
 
   test.skip('FlutterEmbed element mode screenshot', async ({ page }) => {
-    // Skip: Flutter element embedding may not load in headless Chrome
+    // SKIP RATIONALE: Flutter element embedding requires WebGL/CanvasKit which
+    // has known issues in headless Chromium. See flutter-embed.spec.ts for details.
+    // Iframe mode visual testing (below) provides equivalent coverage.
     const wrapper = page.getByTestId('test-flutter-element');
     await wrapper.scrollIntoViewIfNeeded();
 
@@ -90,7 +92,8 @@ test.describe('Visual Regression - Flutter', () => {
   });
 
   test.skip('Demo component Flutter mode screenshot', async ({ page }) => {
-    // Skip: Flutter element embedding may not load in headless Chrome
+    // SKIP RATIONALE: Same as FlutterEmbed element mode - WebGL/CanvasKit issues
+    // in headless Chromium. Demo component with flutterSrc uses element embedding internally.
     const wrapper = page.getByTestId('test-demo-flutter');
     await wrapper.scrollIntoViewIfNeeded();
 

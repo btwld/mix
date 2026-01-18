@@ -26,12 +26,38 @@ import 'api/widgets/text/styled_text.dart' as styled_text;
 import 'api/widgets/vbox/card_layout.dart' as card_layout;
 import 'api/widgets/zbox/layered_boxes.dart' as layered_boxes;
 
-/// Registry for demo widgets used in multi-view embedding.
+/// A demo entry with metadata for both multi-view embedding and gallery display.
+class DemoEntry {
+  const DemoEntry({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.category,
+    required this.builder,
+  });
+
+  /// Unique ID used for multi-view embedding (e.g., 'box-basic').
+  final String id;
+
+  /// Display title for the gallery (e.g., 'Box - Basic').
+  final String title;
+
+  /// Short description of what this demo shows.
+  final String description;
+
+  /// Category for grouping in the gallery.
+  final String category;
+
+  /// Widget builder function.
+  final WidgetBuilder builder;
+}
+
+/// Registry for demo widgets used in both multi-view embedding and the gallery.
 ///
-/// Maps demo IDs (strings) to widget builders, enabling Flutter's multi-view
-/// mode to render specific demos based on initialData from JavaScript.
+/// Single source of truth for all demo definitions, preventing duplication
+/// between multi-view mode and gallery mode.
 ///
-/// Usage from JavaScript:
+/// Usage from JavaScript (multi-view):
 /// ```javascript
 /// app.addView({
 ///   hostElement: container,
@@ -41,43 +67,207 @@ import 'api/widgets/zbox/layered_boxes.dart' as layered_boxes;
 class DemoRegistry {
   DemoRegistry._();
 
-  /// All available demo widgets mapped by their ID.
-  static final Map<String, WidgetBuilder> _demos = {
+  /// All available demos with full metadata.
+  static const String _widgets = 'Widgets';
+  static const String _variants = 'Context Variants';
+  static const String _gradients = 'Gradients';
+  static const String _tokens = 'Design System';
+  static const String _animations = 'Animations';
+
+  static final List<DemoEntry> _demos = [
     // Widget Examples
-    'box-basic': (_) => const simple_box.Example(),
-    'box-gradient': (_) => const gradient_box.Example(),
-    'hbox-chip': (_) => const icon_label_chip.Example(),
-    'vbox-card': (_) => const card_layout.Example(),
-    'zbox-layers': (_) => const layered_boxes.Example(),
-    'icon-styled': (_) => const styled_icon.Example(),
-    'text-styled': (_) => const styled_text.Example(),
-    'text-directives': (_) => const text_directives.Example(),
+    DemoEntry(
+      id: 'box-basic',
+      title: 'Box - Basic',
+      description: 'Simple red box with rounded corners',
+      category: _widgets,
+      builder: (_) => const simple_box.Example(),
+    ),
+    DemoEntry(
+      id: 'box-gradient',
+      title: 'Box - Gradient',
+      description: 'Box with gradient and shadow',
+      category: _widgets,
+      builder: (_) => const gradient_box.Example(),
+    ),
+    DemoEntry(
+      id: 'hbox-chip',
+      title: 'HBox - Horizontal Layout',
+      description: 'Horizontal flex container with icon and text',
+      category: _widgets,
+      builder: (_) => const icon_label_chip.Example(),
+    ),
+    DemoEntry(
+      id: 'vbox-card',
+      title: 'VBox - Vertical Layout',
+      description: 'Vertical flex container with styled elements',
+      category: _widgets,
+      builder: (_) => const card_layout.Example(),
+    ),
+    DemoEntry(
+      id: 'zbox-layers',
+      title: 'ZBox - Stack Layout',
+      description: 'Stacked boxes with different alignments',
+      category: _widgets,
+      builder: (_) => const layered_boxes.Example(),
+    ),
+    DemoEntry(
+      id: 'icon-styled',
+      title: 'Icon - Styled',
+      description: 'Styled icon with custom size and color',
+      category: _widgets,
+      builder: (_) => const styled_icon.Example(),
+    ),
+    DemoEntry(
+      id: 'text-styled',
+      title: 'Text - Styled',
+      description: 'Styled text with custom typography',
+      category: _widgets,
+      builder: (_) => const styled_text.Example(),
+    ),
+    DemoEntry(
+      id: 'text-directives',
+      title: 'Text - Directives',
+      description: 'Text transformations: uppercase, lowercase, capitalize, etc.',
+      category: _widgets,
+      builder: (_) => const text_directives.Example(),
+    ),
 
     // Context Variants
-    'variant-hover': (_) => const hovered.Example(),
-    'variant-pressed': (_) => const pressed.Example(),
-    'variant-focused': (_) => const focused.Example(),
-    'variant-selected': (_) => const selected.Example(),
-    'variant-disabled': (_) => const disabled.Example(),
-    'variant-dark-light': (_) => const dark_light.Example(),
-    'variant-selected-toggle': (_) => const selected_toggle.Example(),
-    'variant-responsive': (_) => const responsive_size.Example(),
+    DemoEntry(
+      id: 'variant-hover',
+      title: 'Hover State',
+      description: 'Box that changes color on hover',
+      category: _variants,
+      builder: (_) => const hovered.Example(),
+    ),
+    DemoEntry(
+      id: 'variant-pressed',
+      title: 'Press State',
+      description: 'Box that changes color when pressed',
+      category: _variants,
+      builder: (_) => const pressed.Example(),
+    ),
+    DemoEntry(
+      id: 'variant-focused',
+      title: 'Focus State',
+      description: 'Boxes that change color when focused',
+      category: _variants,
+      builder: (_) => const focused.Example(),
+    ),
+    DemoEntry(
+      id: 'variant-selected',
+      title: 'Selected State',
+      description: 'Box that toggles selected state',
+      category: _variants,
+      builder: (_) => const selected.Example(),
+    ),
+    DemoEntry(
+      id: 'variant-disabled',
+      title: 'Disabled State',
+      description: 'Disabled box with grey color',
+      category: _variants,
+      builder: (_) => const disabled.Example(),
+    ),
+    DemoEntry(
+      id: 'variant-dark-light',
+      title: 'Dark/Light Theme',
+      description: 'Boxes that adapt to theme changes',
+      category: _variants,
+      builder: (_) => const dark_light.Example(),
+    ),
+    DemoEntry(
+      id: 'variant-selected-toggle',
+      title: 'Selected Toggle',
+      description: 'Beautiful toggle button with selected state',
+      category: _variants,
+      builder: (_) => const selected_toggle.Example(),
+    ),
+    DemoEntry(
+      id: 'variant-responsive',
+      title: 'Responsive Size',
+      description: 'Dynamic sizing based on screen width',
+      category: _variants,
+      builder: (_) => const responsive_size.Example(),
+    ),
 
     // Gradients
-    'gradient-linear': (_) => const gradient_linear.Example(),
-    'gradient-radial': (_) => const gradient_radial.Example(),
-    'gradient-sweep': (_) => const gradient_sweep.Example(),
+    DemoEntry(
+      id: 'gradient-linear',
+      title: 'Linear Gradient',
+      description: 'Beautiful purple-to-pink gradient with shadow',
+      category: _gradients,
+      builder: (_) => const gradient_linear.Example(),
+    ),
+    DemoEntry(
+      id: 'gradient-radial',
+      title: 'Radial Gradient',
+      description: 'Orange radial gradient with focal points',
+      category: _gradients,
+      builder: (_) => const gradient_radial.Example(),
+    ),
+    DemoEntry(
+      id: 'gradient-sweep',
+      title: 'Sweep Gradient',
+      description: 'Colorful sweep gradient creating rainbow effect',
+      category: _gradients,
+      builder: (_) => const gradient_sweep.Example(),
+    ),
 
     // Design Tokens
-    'tokens-theme': (_) => const theme_tokens.Example(),
+    DemoEntry(
+      id: 'tokens-theme',
+      title: 'Design Tokens',
+      description: 'Using design tokens for consistent styling',
+      category: _tokens,
+      builder: (_) => const theme_tokens.Example(),
+    ),
 
     // Animations
-    'anim-hover-scale': (_) => const hover_scale.Example(),
-    'anim-auto-scale': (_) => const auto_scale.Example(),
-    'anim-tap-phase': (_) => const tap_phase.BlockAnimation(),
-    'anim-switch': (_) => const animated_switch.SwitchAnimation(),
-    'anim-spring': (_) => const spring_anim.Example(),
+    DemoEntry(
+      id: 'anim-hover-scale',
+      title: 'Hover Scale Animation',
+      description: 'Box that scales up smoothly when hovered',
+      category: _animations,
+      builder: (_) => const hover_scale.Example(),
+    ),
+    DemoEntry(
+      id: 'anim-auto-scale',
+      title: 'Auto Scale Animation',
+      description: 'Box that automatically scales on load',
+      category: _animations,
+      builder: (_) => const auto_scale.Example(),
+    ),
+    DemoEntry(
+      id: 'anim-tap-phase',
+      title: 'Tap Phase Animation',
+      description: 'Multi-phase animation triggered by tap',
+      category: _animations,
+      builder: (_) => const tap_phase.BlockAnimation(),
+    ),
+    DemoEntry(
+      id: 'anim-switch',
+      title: 'Animated Switch',
+      description: 'Toggle switch with phase-based animation',
+      category: _animations,
+      builder: (_) => const animated_switch.SwitchAnimation(),
+    ),
+    DemoEntry(
+      id: 'anim-spring',
+      title: 'Spring Animation',
+      description: 'Bouncy spring physics animation',
+      category: _animations,
+      builder: (_) => const spring_anim.Example(),
+    ),
+  ];
+
+  /// Index for fast ID lookup.
+  static final Map<String, DemoEntry> _byId = {
+    for (final demo in _demos) demo.id: demo,
   };
+
+  /// All registered demos.
+  static List<DemoEntry> get all => _demos;
 
   /// Builds a widget for the given demo ID.
   ///
@@ -88,14 +278,14 @@ class DemoRegistry {
       return const _UnknownDemo(demoId: 'null');
     }
 
-    final builder = _demos[demoId];
-    if (builder == null) {
+    final entry = _byId[demoId];
+    if (entry == null) {
       return _UnknownDemo(demoId: demoId);
     }
 
     // Build with error handling for construction errors
     try {
-      return builder(context);
+      return entry.builder(context);
     } catch (e, stackTrace) {
       debugPrint('Demo "$demoId" construction error: $e');
       return _ErrorDemo(demoId: demoId, error: e, stackTrace: stackTrace);
@@ -103,10 +293,13 @@ class DemoRegistry {
   }
 
   /// Returns a list of all available demo IDs.
-  static List<String> get availableDemos => _demos.keys.toList();
+  static List<String> get availableDemos => _byId.keys.toList();
 
   /// Checks if a demo ID exists in the registry.
-  static bool hasDemo(String demoId) => _demos.containsKey(demoId);
+  static bool hasDemo(String demoId) => _byId.containsKey(demoId);
+
+  /// Gets a demo entry by ID.
+  static DemoEntry? getById(String demoId) => _byId[demoId];
 }
 
 /// Widget displayed when an unknown demo ID is requested.

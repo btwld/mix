@@ -21,8 +21,15 @@ test.describe('FlutterEmbed', () => {
   });
 
   test.skip('element mode status becomes ready', async ({ page }) => {
-    // Skip: Flutter element embedding may not load in headless Chrome
-    // due to script loading or canvas rendering issues
+    // SKIP RATIONALE: Flutter element embedding requires WebGL/CanvasKit which
+    // has known issues in headless Chromium:
+    // - CanvasKit initialization may hang or fail silently
+    // - WebGL context creation can fail in headless mode
+    // - The 2-second resource stabilization delay in FlutterEmbed.tsx helps
+    //   but doesn't fully resolve timing issues in CI
+    //
+    // This test passes in headed mode: npx playwright test --headed
+    // Iframe mode (tested separately) is reliable in headless mode.
     const wrapper = page.getByTestId('test-flutter-element');
     const embed = wrapper.locator('[data-testid="flutter-embed"]');
 

@@ -1,29 +1,10 @@
 "use client";
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
+import type { FlutterMultiViewApp, FlutterEngineInitializer } from "./flutter-types";
 
-// Multi-view specific Flutter app interface
-interface FlutterMultiViewApp {
-  addView: (config: { hostElement: HTMLElement; initialData?: Record<string, unknown> }) => number;
-  removeView: (viewId: number) => void;
-}
-
-// TypeScript declarations for Flutter multi-view APIs
-// Note: _flutter is already declared in FlutterEmbed.tsx, so we only add multi-view properties
-declare global {
-  interface Window {
-    flutterApp?: FlutterMultiViewApp;
-    initFlutterMultiView?: () => Promise<FlutterMultiViewApp>;
-    addFlutterView?: (
-      hostElement: HTMLElement,
-      demoId: string,
-      options?: Record<string, unknown>
-    ) => Promise<number>;
-    removeFlutterView?: (viewId: number) => boolean;
-    FLUTTER_MULTI_VIEW_MODE?: boolean;
-    __FLUTTER_MULTI_VIEW_ENABLED__?: boolean;
-  }
-}
+// Re-export for consumers
+export type { FlutterMultiViewApp };
 
 type LoadingState = "idle" | "loading-engine" | "adding-view" | "ready" | "error";
 
@@ -151,20 +132,18 @@ async function ensureFlutterEngine(basePath: string): Promise<FlutterMultiViewAp
           config: {
             entrypointBaseUrl: basePath + "/",
           },
-          onEntrypointLoaded: async (engineInitializer) => {
+          onEntrypointLoaded: async (engineInitializer: FlutterEngineInitializer) => {
             try {
               window.__FLUTTER_MULTI_VIEW_ENABLED__ = true;
 
-              // Use type assertion for multi-view config (not in FlutterEmbed's type)
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              const engine = await (engineInitializer as any).initializeEngine({
+              const engine = await engineInitializer.initializeEngine({
                 multiViewEnabled: true,
               });
 
-              const app = await engine.runApp();
-              window.flutterApp = app as FlutterMultiViewApp;
+              const app = await engine.runApp() as unknown as FlutterMultiViewApp;
+              window.flutterApp = app;
               engineReady = true;
-              resolve(app as FlutterMultiViewApp);
+              resolve(app);
             } catch (err) {
               enginePromise = null;
               reject(err);
