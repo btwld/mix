@@ -13,6 +13,7 @@ import '../../properties/typography/text_height_behavior_mix.dart';
 import '../../properties/typography/text_style_mix.dart';
 import '../../style/mixins/animation_style_mixin.dart';
 import '../../style/mixins/text_style_mixin.dart';
+import '../../style/mixins/token_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
 import '../../style/mixins/widget_modifier_style_mixin.dart';
 import '../../style/mixins/widget_state_variant_mixin.dart';
@@ -37,7 +38,8 @@ class TextStyler extends Style<TextSpec>
         VariantStyleMixin<TextStyler, TextSpec>,
         WidgetStateVariantMixin<TextStyler, TextSpec>,
         TextStyleMixin<TextStyler>,
-        AnimationStyleMixin<TextStyler, TextSpec> {
+        AnimationStyleMixin<TextStyler, TextSpec>,
+        TokenStyleMixin<TextStyler, TextSpec> {
   final Prop<TextOverflow>? $overflow;
   final Prop<StrutStyle>? $strutStyle;
   final Prop<TextAlign>? $textAlign;

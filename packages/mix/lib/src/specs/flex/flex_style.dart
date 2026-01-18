@@ -10,6 +10,7 @@ import '../../core/style_spec.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../style/mixins/animation_style_mixin.dart';
 import '../../style/mixins/flex_style_mixin.dart';
+import '../../style/mixins/token_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
 import '../../style/mixins/widget_modifier_style_mixin.dart';
 import '../../style/mixins/widget_state_variant_mixin.dart';
@@ -34,7 +35,8 @@ class FlexStyler extends Style<FlexSpec>
         VariantStyleMixin<FlexStyler, FlexSpec>,
         WidgetStateVariantMixin<FlexStyler, FlexSpec>,
         FlexStyleMixin<FlexStyler>,
-        AnimationStyleMixin<FlexStyler, FlexSpec> {
+        AnimationStyleMixin<FlexStyler, FlexSpec>,
+        TokenStyleMixin<FlexStyler, FlexSpec> {
   final Prop<Axis>? $direction;
   final Prop<MainAxisAlignment>? $mainAxisAlignment;
   final Prop<CrossAxisAlignment>? $crossAxisAlignment;

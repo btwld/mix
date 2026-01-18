@@ -9,6 +9,7 @@ import '../../core/style_spec.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../properties/painting/shadow_mix.dart';
 import '../../style/mixins/animation_style_mixin.dart';
+import '../../style/mixins/token_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
 import '../../style/mixins/widget_modifier_style_mixin.dart';
 import '../../style/mixins/widget_state_variant_mixin.dart';
@@ -25,7 +26,8 @@ class IconStyler extends Style<IconSpec>
         WidgetModifierStyleMixin<IconStyler, IconSpec>,
         VariantStyleMixin<IconStyler, IconSpec>,
         WidgetStateVariantMixin<IconStyler, IconSpec>,
-        AnimationStyleMixin<IconStyler, IconSpec> {
+        AnimationStyleMixin<IconStyler, IconSpec>,
+        TokenStyleMixin<IconStyler, IconSpec> {
   final Prop<Color>? $color;
   final Prop<double>? $size;
   final Prop<double>? $weight;

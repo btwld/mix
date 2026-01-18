@@ -8,6 +8,7 @@ import '../../core/style.dart';
 import '../../core/style_spec.dart';
 import '../../modifiers/widget_modifier_config.dart';
 import '../../style/mixins/animation_style_mixin.dart';
+import '../../style/mixins/token_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
 import '../../style/mixins/widget_modifier_style_mixin.dart';
 import '../../style/mixins/widget_state_variant_mixin.dart';
@@ -30,7 +31,8 @@ class StackStyler extends Style<StackSpec>
         WidgetModifierStyleMixin<StackStyler, StackSpec>,
         VariantStyleMixin<StackStyler, StackSpec>,
         WidgetStateVariantMixin<StackStyler, StackSpec>,
-        AnimationStyleMixin<StackStyler, StackSpec> {
+        AnimationStyleMixin<StackStyler, StackSpec>,
+        TokenStyleMixin<StackStyler, StackSpec> {
   final Prop<AlignmentGeometry>? $alignment;
   final Prop<StackFit>? $fit;
   final Prop<TextDirection>? $textDirection;

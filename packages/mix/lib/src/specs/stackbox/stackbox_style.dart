@@ -19,6 +19,7 @@ import '../../style/mixins/constraint_style_mixin.dart';
 import '../../style/mixins/decoration_style_mixin.dart';
 import '../../style/mixins/shadow_style_mixin.dart';
 import '../../style/mixins/spacing_style_mixin.dart';
+import '../../style/mixins/token_style_mixin.dart';
 import '../../style/mixins/transform_style_mixin.dart';
 import '../../style/mixins/variant_style_mixin.dart';
 import '../../style/mixins/widget_modifier_style_mixin.dart';
@@ -54,7 +55,8 @@ class StackBoxStyler extends Style<StackBoxSpec>
         SpacingStyleMixin<StackBoxStyler>,
         TransformStyleMixin<StackBoxStyler>,
         ConstraintStyleMixin<StackBoxStyler>,
-        AnimationStyleMixin<StackBoxStyler, StackBoxSpec> {
+        AnimationStyleMixin<StackBoxStyler, StackBoxSpec>,
+        TokenStyleMixin<StackBoxStyler, StackBoxSpec> {
   final Prop<StyleSpec<BoxSpec>>? $box;
   final Prop<StyleSpec<StackSpec>>? $stack;
 
@@ -119,12 +121,6 @@ class StackBoxStyler extends Style<StackBoxSpec>
   static StackBoxMutableStyler get chain =>
       StackBoxMutableStyler(StackBoxStyler());
 
-  /// Sets animation
-  @override
-  StackBoxStyler animate(AnimationConfig animation) {
-    return merge(StackBoxStyler(animation: animation));
-  }
-
   // BoxMix instance methods
 
   /// Sets the alignment for the box.
@@ -175,6 +171,12 @@ class StackBoxStyler extends Style<StackBoxSpec>
   /// Applies a custom StackStyler to the StackBox.
   StackBoxStyler stack(StackStyler value) {
     return merge(StackBoxStyler.create(stack: Prop.maybeMix(value)));
+  }
+
+  /// Sets animation
+  @override
+  StackBoxStyler animate(AnimationConfig animation) {
+    return merge(StackBoxStyler(animation: animation));
   }
 
   /// Foreground decoration instance method

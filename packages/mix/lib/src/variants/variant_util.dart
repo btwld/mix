@@ -96,19 +96,19 @@ class OnContextVariantUtility<S extends Spec<S>, T extends Style<S>>
   }
 
   /// Creates a variant attribute for mobile size
-  VariantAttributeBuilder<S> get mobile {
-    return VariantAttributeBuilder(ContextVariant.mobile());
-  }
+  // VariantAttributeBuilder<S> get mobile {
+  //   return VariantAttributeBuilder(ContextVariant.mobile());
+  // }
 
-  /// Creates a variant attribute for tablet size
-  VariantAttributeBuilder<S> get tablet {
-    return VariantAttributeBuilder(ContextVariant.tablet());
-  }
+  // /// Creates a variant attribute for tablet size
+  // VariantAttributeBuilder<S> get tablet {
+  //   return VariantAttributeBuilder(ContextVariant.tablet());
+  // }
 
-  /// Creates a variant attribute for desktop size
-  VariantAttributeBuilder<S> get desktop {
-    return VariantAttributeBuilder(ContextVariant.desktop());
-  }
+  // /// Creates a variant attribute for desktop size
+  // VariantAttributeBuilder<S> get desktop {
+  //   return VariantAttributeBuilder(ContextVariant.desktop());
+  // }
 
   /// Creates a variant attribute for left-to-right direction
   VariantAttributeBuilder<S> get ltr {
